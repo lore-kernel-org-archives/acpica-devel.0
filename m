@@ -1,15 +1,15 @@
-Content-Type: multipart/mixed; boundary="===============3724565443926396741=="
+Content-Type: multipart/mixed; boundary="===============0037577008291206573=="
 MIME-Version: 1.0
 From: bugzilla-daemon at mail.opensource.intel.com
 Subject: [Devel] [Bug 738] iASL mishandles Alias() when target is longer than
  single nameseg
-Date: Mon, 24 Aug 2009 18:49:41 -0700
-Message-ID: <20090825014941.60B5E236D0FAB@mail.opensource.intel.com>
+Date: Tue, 25 Aug 2009 08:57:09 -0700
+Message-ID: <20090825155710.0FF63214CF3FD@mail.opensource.intel.com>
 In-Reply-To: bug-738-162@
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3724565443926396741==
+--===============0037577008291206573==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
@@ -17,40 +17,49 @@ Content-Transfer-Encoding: quoted-printable
 show_bug.cgi?id=3D738
 
 
-Ming Lin <ming.m.lin(a)intel.com> changed:
-
-           What    |Removed                     |Added
-----------------------------------------------------------------------------
-                 CC|                            |ming.m.lin(a)intel.com
 
 
 
+--- Comment #9 from Sergiy <yakovlevs(a)ami.com>  2009-08-25 08:57:09 ---
+Dear Lin Ming
 
---- Comment #8 from Ming Lin <ming.m.lin(a)intel.com>  2009-08-24 18:49:40 =
----
-(In reply to comment #7)
-> =
+Sorry for confusing you but I thought that first 2 lines of comment #6 was =
+the
+patch:
+Scope(\_SB){
+    Name(PRSA, ResourceTemplate(){    // Link name: LNKA
+    IRQ(Level, ActiveLow, Shared, LLKA) {3,4,5,6,7,10,11,12,14,15}
+        Alias(PRSA,PRSB)    // Link name: LNKB
+    })
+}
+Since it slightly different from what I have:
 
-> But this is not the fix for me.
+In your comment #6, Alias term located inside the scope of the
+ResourceTemplate,
+In example I was giving it was outside.
+Scope(\_SB){
+    Name(PRSA, ResourceTemplate(){    // Link name: LNKA
+        IRQ(Level, ActiveLow, Shared, LLKA) {3,4,5,6,7,10,11,12,14,15}
+    })
+    Alias(PRSA,PRSB)    // Link name: LNKB
+}
 
-Sorry, but I'm confused. =
+Meanwhile I'm having some difficulty building ACPI CA components.
 
-Have you tried the patch at comment #6?
-http://bugzilla.acpica.org/attachment.cgi?id=3D841
-It's a C code patch, not an ASL code workaround.
-It's the fix for you.
+I can't build the sources It is possible I'm missing some libraries or tool=
+s.
+I have VC 9 the project is for VC 6.
 
-> =
+So could you please build the version of iASL with that fix for me and atta=
+ch =
 
-> Could you tell me when to expect iASL with fix for this issue.
-> =
+*.exe file to this ISSUE tracker. Or send it directly to my email
+<yakovlevs(a)ami.com> with changed extension like iasl.ex_.
 
-
-Would you please help to test the patch?
-If the patch fixes the bug, we will integrate it into next release.
+I'll be happy to test it with my project.
 
 Thanks,
-Lin Ming
+Sergiy.
 
 -- =
 
@@ -58,5 +67,5 @@ Configure bugmail: userprefs.cgi?tab=3Demail
 ------- You are receiving this mail because: -------
 You are on the CC list for the bug.
 
---===============3724565443926396741==--
+--===============0037577008291206573==--
 
