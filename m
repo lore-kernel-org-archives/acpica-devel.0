@@ -1,41 +1,47 @@
-Content-Type: multipart/mixed; boundary="===============4133804462359666933=="
+Content-Type: multipart/mixed; boundary="===============2234200864772671894=="
 MIME-Version: 1.0
-From: bugzilla-daemon at mail.opensource.intel.com
-Subject: [Devel] [Bug 738] iASL mishandles Alias() when target is longer than
- single nameseg
-Date: Thu, 03 Sep 2009 14:03:03 -0700
-Message-ID: <20090903210304.04BD0207608EC@mail.opensource.intel.com>
-In-Reply-To: bug-738-162@
+From: Joerg Sonnenberger <joerg at britannica.bec.de>
+Subject: [Devel] Correct ACPI setup sequence
+Date: Fri, 04 Sep 2009 21:52:17 +0200
+Message-ID: <20090904195217.GA9222@britannica.bec.de>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4133804462359666933==
+--===============2234200864772671894==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-show_bug.cgi?id=3D738
+Hi all,
+after some puzzling issues with different DSDT on various system I would
+like to know the correct/best way to setup ACPICA.
 
+The core of the init sequence is:
+	AcpiEnableSubsystem(ACPI_FULL_INITIALIZATION);
+	AcpiInitializeObjects(ACPI_FULL_INITIALIZATION);
 
-Bob Moore <robert.moore(a)intel.com> changed:
+As part of the former call, the event subsystem is initialised,
+including setting up the SCI. To process that request, the overrides in
+the MADT have to be parsed and that in turn requires switching to APIC
+mode.
 
-           What    |Removed                     |Added
-----------------------------------------------------------------------------
-             Status|REOPENED                    |RESOLVED
-         Resolution|                            |FIXED
+This now leaves two primary options:
+- Switch to APIC mode and parse the MADT from the
+AcpiOsInstallInterruptHandler
+- Defer the SCI setup until after the call.
 
+The second is messy and can't be the intention of the code. The former
+makes me wonder about the error resilience though. We have seen some
+DSDTs in NetBSD that do not setup the _PRT correctly before the object
+initialisations are done. I don't know yet, if the _INI change in the
+last release fixed that. I am wondering though, if the MADT processing
+can be affecting by the same issue. Are there any known cases of such
+DSDTs?
 
+The second issue is the question of reentrancy. Is ACPICA supposed to be
+reentrant enough to allow this?
 
+Joerg
 
---- Comment #13 from Bob Moore <robert.moore(a)intel.com>  2009-09-03 14:03=
-:02 ---
-Fixed in ACPICA version 20090903.
-
--- =
-
-Configure bugmail: userprefs.cgi?tab=3Demail
-------- You are receiving this mail because: -------
-You are on the CC list for the bug.
-
---===============4133804462359666933==--
+--===============2234200864772671894==--
 
