@@ -1,52 +1,148 @@
-Content-Type: multipart/mixed; boundary="===============4231183642114015757=="
+Content-Type: multipart/mixed; boundary="===============2374286346473957599=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] FW:  [PATCH] Repair predefined Package -> Buffer
-Date: Fri, 04 Sep 2009 15:37:25 -0700
-Message-ID: <4911F71203A09E4D9981D27F9D8308583748BB31@orsmsx503.amr.corp.intel.com>
+From: Jung-uk Kim <jkim at FreeBSD.org>
+Subject: Re: [Devel] [PATCH] Repair predefined Package -> Buffer
+Date: Wed, 09 Sep 2009 13:57:49 -0400
+Message-ID: <200909091357.52465.jkim@FreeBSD.org>
+In-Reply-To: 200909081309.32223.jkim@FreeBSD.org
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4231183642114015757==
+--===============2374286346473957599==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
+On Tuesday 08 September 2009 01:09 pm, Jung-uk Kim wrote:
+> On Friday 04 September 2009 06:36 pm, Moore, Robert wrote:
+> > Sounds like a good idea. I'll look at it next week.
+>
+> Here I attached an optimized version of the patch.
+>
+> > In general, we now have the capability to add these kinds of
+> > fixes easily, so keep your eye out for anything that can be
+> > repaired like this.
+>
+> I will.
 
+I found we need another patch for nspredef.c.  When we repair Package =
 
------Original Message-----
-From: Moore, Robert =
+-> Buffer, the previous package is still referenced to check =
 
-Sent: Friday, September 04, 2009 3:37 PM
-To: 'Jung-uk Kim'
-Cc: Lin, Ming M
-Subject: RE: [Devel] [PATCH] Repair predefined Package -> Buffer
+sub-object type and causes trouble.  I think there are three options: =
 
-Sounds like a good idea. I'll look at it next week.
+1) reset ReturnObject from *ReturnObjectPtr if it is repaired, 2) =
 
-In general, we now have the capability to add these kinds of fixes easily, =
-so keep your eye out for anything that can be repaired like this.
+reset ReturnObject unconditionally, or 3) do not test sub-object if =
+
+the package is repaired assuming AcpiNsRepairObject() does the right =
+
+thing.  The attached patch is option #1 but feel free to implement #2 =
+
+or #3. :-)
 
 Thanks,
-Bob
 
+Jung-uk Kim
 
->-----Original Message-----
->From: devel-bounces(a)acpica.org [mailto:devel-bounces(a)acpica.org] On Be=
-half
->Of Jung-uk Kim
->Sent: Friday, September 04, 2009 3:10 PM
->To: devel(a)acpica.org
->Subject: [Devel] [PATCH] Repair predefined Package -> Buffer
->
->One of the most common mistake of _FDE is returning Package instead of
->Buffer of five 32-bit integers.  The attached patch repairs the case.
->Do you think it is a reasonable fix?  Basically, I want to get rid of
->a quirk handling in FreeBSD. :-)
->
->Thanks!
->
->Jung-uk Kim
+--===============2374286346473957599==
+Content-Type: text/plain
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="nspredef.diff"
 
---===============4231183642114015757==--
+LS0tIG5zcHJlZGVmLmMJMjAwOS0wOS0wNCAwMDo1MjoxMi4wMDAwMDAwMDAgLTA0MDAKKysrIG5z
+cHJlZGVmLmMJMjAwOS0wOS0wOSAxMzoyNjo0Ni4wMDAwMDAwMDAgLTA0MDAKQEAgLTMyMiw2ICsz
+MjIsMTAgQEAKICAgICB7CiAgICAgICAgIGdvdG8gQ2hlY2tWYWxpZGF0aW9uU3RhdHVzOwogICAg
+IH0KKyAgICBpZiAoKERhdGEtPkZsYWdzICYgQUNQSV9PQkpFQ1RfUkVQQUlSRUQpKQorICAgIHsK
+KyAgICAgICAgUmV0dXJuT2JqZWN0ID0gKlJldHVybk9iamVjdFB0cjsKKyAgICB9CiAKICAgICAv
+KiBGb3IgcmV0dXJuZWQgUGFja2FnZSBvYmplY3RzLCBjaGVjayB0aGUgdHlwZSBvZiBhbGwgc3Vi
+LW9iamVjdHMgKi8KIAo=
+
+--===============2374286346473957599==
+Content-Type: text/plain
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="nsrepair.diff"
+
+LS0tIG5zcmVwYWlyLmMub3JpZwkyMDA5LTA5LTA0IDAwOjUyOjEyLjAwMDAwMDAwMCAtMDQwMAor
+KysgbnNyZXBhaXIuYwkyMDA5LTA5LTA4IDEzOjAxOjMyLjAwMDAwMDAwMCAtMDQwMApAQCAtMTUy
+LDcgKzE1Miw5IEBACiB7CiAgICAgQUNQSV9PUEVSQU5EX09CSkVDVCAgICAgKlJldHVybk9iamVj
+dCA9ICpSZXR1cm5PYmplY3RQdHI7CiAgICAgQUNQSV9PUEVSQU5EX09CSkVDVCAgICAgKk5ld09i
+amVjdDsKKyAgICBVSU5UMzIgICAgICAgICAgICAgICAgICAqQnVmZmVyOwogICAgIEFDUElfU0la
+RSAgICAgICAgICAgICAgIExlbmd0aDsKKyAgICBVSU5UMzIgICAgICAgICAgICAgICAgICBDb3Vu
+dDsKIAogCiAgICAgc3dpdGNoIChSZXR1cm5PYmplY3QtPkNvbW1vbi5UeXBlKQpAQCAtMTk0LDQ0
+ICsxOTYsOTUgQEAKICAgICAgICAgQUNQSV9NRU1DUFkgKE5ld09iamVjdC0+U3RyaW5nLlBvaW50
+ZXIsCiAgICAgICAgICAgICBSZXR1cm5PYmplY3QtPkJ1ZmZlci5Qb2ludGVyLCBMZW5ndGgpOwog
+Ci0gICAgICAgIC8qCi0gICAgICAgICAqIElmIHRoZSBvcmlnaW5hbCBvYmplY3QgaXMgYSBwYWNr
+YWdlIGVsZW1lbnQsIHdlIG5lZWQgdG86Ci0gICAgICAgICAqIDEuIFNldCB0aGUgcmVmZXJlbmNl
+IGNvdW50IG9mIHRoZSBuZXcgb2JqZWN0IHRvIG1hdGNoIHRoZQotICAgICAgICAgKiAgICByZWZl
+cmVuY2UgY291bnQgb2YgdGhlIG9sZCBvYmplY3QuCi0gICAgICAgICAqIDIuIERlY3JlbWVudCB0
+aGUgcmVmZXJlbmNlIGNvdW50IG9mIHRoZSBvcmlnaW5hbCBvYmplY3QuCi0gICAgICAgICAqLwot
+ICAgICAgICBpZiAoUGFja2FnZUluZGV4ICE9IEFDUElfTk9UX1BBQ0tBR0VfRUxFTUVOVCkKKyAg
+ICAgICAgYnJlYWs7CisKKyAgICBjYXNlIEFDUElfVFlQRV9QQUNLQUdFOgorCisgICAgICAgIC8q
+IERvZXMgdGhlIG1ldGhvZC9vYmplY3QgbGVnYWxseSByZXR1cm4gYSBidWZmZXI/ICovCisKKyAg
+ICAgICAgaWYgKCEoRXhwZWN0ZWRCdHlwZXMgJiBBQ1BJX1JUWVBFX0JVRkZFUikpCiAgICAgICAg
+IHsKLSAgICAgICAgICAgIE5ld09iamVjdC0+Q29tbW9uLlJlZmVyZW5jZUNvdW50ID0KLSAgICAg
+ICAgICAgICAgICBSZXR1cm5PYmplY3QtPkNvbW1vbi5SZWZlcmVuY2VDb3VudDsKKyAgICAgICAg
+ICAgIHJldHVybiAoQUVfQU1MX09QRVJBTkRfVFlQRSk7CisgICAgICAgIH0KIAotICAgICAgICAg
+ICAgaWYgKFJldHVybk9iamVjdC0+Q29tbW9uLlJlZmVyZW5jZUNvdW50ID4gMSkKLSAgICAgICAg
+ICAgIHsKLSAgICAgICAgICAgICAgICBSZXR1cm5PYmplY3QtPkNvbW1vbi5SZWZlcmVuY2VDb3Vu
+dC0tOwotICAgICAgICAgICAgfQorICAgICAgICAvKiBEb2VzIHRoZSBvYmplY3QgYWN0dWFsbHkg
+Y29udGFpbiBpbnRlZ2Vycz8gKi8KIAotICAgICAgICAgICAgQUNQSV9XQVJOX1BSRURFRklORUQg
+KChBRV9JTkZPLCBEYXRhLT5QYXRobmFtZSwgRGF0YS0+Tm9kZUZsYWdzLAotICAgICAgICAgICAg
+ICAgICJDb252ZXJ0ZWQgQnVmZmVyIHRvIGV4cGVjdGVkIFN0cmluZyBhdCBpbmRleCAldSIsCi0g
+ICAgICAgICAgICAgICAgUGFja2FnZUluZGV4KSk7CisgICAgICAgIGlmIChSZXR1cm5PYmplY3Qt
+PlBhY2thZ2UuQ291bnQgPT0gMCB8fAorICAgICAgICAgICAgUmV0dXJuT2JqZWN0LT5QYWNrYWdl
+LkVsZW1lbnRzWzBdLT5Db21tb24uVHlwZSAhPSBBQ1BJX1RZUEVfSU5URUdFUikKKyAgICAgICAg
+eworICAgICAgICAgICAgcmV0dXJuIChBRV9BTUxfT1BFUkFORF9UWVBFKTsKICAgICAgICAgfQot
+ICAgICAgICBlbHNlCisKKyAgICAgICAgLyoKKyAgICAgICAgICogSGF2ZSBhIFBhY2thZ2UsIGV4
+cGVjdGVkIGEgQnVmZmVyLCBjb252ZXJ0LiBUaGUgYmVzdCBleGFtcGxlIG9mCisgICAgICAgICAq
+IHRoaXMgaXMgdGhlIF9GREUgbWV0aG9kLCB3aGVyZSB0aGUgYnVmZmVyIG9mIDMyLWJpdCBpbnRl
+Z2VycworICAgICAgICAgKiBpcyBvZnRlbiAoaW5jb3JyZWN0bHkpIHJldHVybmVkIGFzIHBhY2th
+Z2Ugb2JqZWN0IG9mIGludGVnZXJzLgorICAgICAgICAgKi8KKyAgICAgICAgTGVuZ3RoID0gUmV0
+dXJuT2JqZWN0LT5QYWNrYWdlLkNvdW50ICogc2l6ZW9mIChVSU5UMzIpOworCisgICAgICAgIC8q
+IEFsbG9jYXRlIGEgbmV3IGJ1ZmZlciBvYmplY3QgKi8KKworICAgICAgICBOZXdPYmplY3QgPSBB
+Y3BpVXRDcmVhdGVCdWZmZXJPYmplY3QgKExlbmd0aCk7CisgICAgICAgIGlmICghTmV3T2JqZWN0
+KQogICAgICAgICB7Ci0gICAgICAgICAgICBBQ1BJX1dBUk5fUFJFREVGSU5FRCAoKEFFX0lORk8s
+IERhdGEtPlBhdGhuYW1lLCBEYXRhLT5Ob2RlRmxhZ3MsCi0gICAgICAgICAgICAgICAgIkNvbnZl
+cnRlZCBCdWZmZXIgdG8gZXhwZWN0ZWQgU3RyaW5nIikpOworICAgICAgICAgICAgcmV0dXJuIChB
+RV9OT19NRU1PUlkpOwogICAgICAgICB9CiAKLSAgICAgICAgLyogRGVsZXRlIG9sZCBvYmplY3Qs
+IGluc3RhbGwgdGhlIG5ldyByZXR1cm4gb2JqZWN0ICovCisgICAgICAgIC8qCisgICAgICAgICAq
+IENvcHkgZWFjaCByYXcgZWxlbWVudCB0byBidWZmZXIgb2YgMzItYml0IGludGVnZXJzLgorICAg
+ICAgICAgKi8KKyAgICAgICAgQ291bnQgPSAwOworICAgICAgICBCdWZmZXIgPSBBQ1BJX0NBU1Rf
+UFRSIChVSU5UMzIsIE5ld09iamVjdC0+QnVmZmVyLlBvaW50ZXIpOworICAgICAgICB3aGlsZSAo
+Q291bnQgPCBSZXR1cm5PYmplY3QtPlBhY2thZ2UuQ291bnQpCisgICAgICAgIHsKKyAgICAgICAg
+ICAgIEJ1ZmZlcltDb3VudF0gPQorICAgICAgICAgICAgICAgIFJldHVybk9iamVjdC0+UGFja2Fn
+ZS5FbGVtZW50c1tDb3VudF0tPkludGVnZXIuVmFsdWU7CisgICAgICAgICAgICBDb3VudCsrOwor
+ICAgICAgICB9CiAKLSAgICAgICAgQWNwaVV0UmVtb3ZlUmVmZXJlbmNlIChSZXR1cm5PYmplY3Qp
+OwotICAgICAgICAqUmV0dXJuT2JqZWN0UHRyID0gTmV3T2JqZWN0OwotICAgICAgICBEYXRhLT5G
+bGFncyB8PSBBQ1BJX09CSkVDVF9SRVBBSVJFRDsKLSAgICAgICAgcmV0dXJuIChBRV9PSyk7Cisg
+ICAgICAgIGJyZWFrOwogCiAgICAgZGVmYXVsdDoKLSAgICAgICAgYnJlYWs7CisKKyAgICAgICAg
+cmV0dXJuIChBRV9BTUxfT1BFUkFORF9UWVBFKTsKICAgICB9CiAKLSAgICByZXR1cm4gKEFFX0FN
+TF9PUEVSQU5EX1RZUEUpOworICAgIC8qCisgICAgICogSWYgdGhlIG9yaWdpbmFsIG9iamVjdCBp
+cyBhIHBhY2thZ2UgZWxlbWVudCwgd2UgbmVlZCB0bzoKKyAgICAgKiAxLiBTZXQgdGhlIHJlZmVy
+ZW5jZSBjb3VudCBvZiB0aGUgbmV3IG9iamVjdCB0byBtYXRjaCB0aGUKKyAgICAgKiAgICByZWZl
+cmVuY2UgY291bnQgb2YgdGhlIG9sZCBvYmplY3QuCisgICAgICogMi4gRGVjcmVtZW50IHRoZSBy
+ZWZlcmVuY2UgY291bnQgb2YgdGhlIG9yaWdpbmFsIG9iamVjdC4KKyAgICAgKi8KKyAgICBpZiAo
+UGFja2FnZUluZGV4ICE9IEFDUElfTk9UX1BBQ0tBR0VfRUxFTUVOVCkKKyAgICB7CisgICAgICAg
+IE5ld09iamVjdC0+Q29tbW9uLlJlZmVyZW5jZUNvdW50ID0KKyAgICAgICAgICAgIFJldHVybk9i
+amVjdC0+Q29tbW9uLlJlZmVyZW5jZUNvdW50OworCisgICAgICAgIGlmIChSZXR1cm5PYmplY3Qt
+PkNvbW1vbi5SZWZlcmVuY2VDb3VudCA+IDEpCisgICAgICAgIHsKKyAgICAgICAgICAgIFJldHVy
+bk9iamVjdC0+Q29tbW9uLlJlZmVyZW5jZUNvdW50LS07CisgICAgICAgIH0KKworICAgICAgICBB
+Q1BJX1dBUk5fUFJFREVGSU5FRCAoKEFFX0lORk8sIERhdGEtPlBhdGhuYW1lLCBEYXRhLT5Ob2Rl
+RmxhZ3MsCisgICAgICAgICAgICAiQ29udmVydGVkICVzIHRvIGV4cGVjdGVkICVzIGF0IGluZGV4
+ICV1IiwKKyAgICAgICAgICAgIEFjcGlVdEdldFR5cGVOYW1lIChSZXR1cm5PYmplY3QtPkNvbW1v
+bi5UeXBlKSwKKyAgICAgICAgICAgIEFjcGlVdEdldFR5cGVOYW1lIChOZXdPYmplY3QtPkNvbW1v
+bi5UeXBlKSwgUGFja2FnZUluZGV4KSk7CisgICAgfQorICAgIGVsc2UKKyAgICB7CisgICAgICAg
+IEFDUElfV0FSTl9QUkVERUZJTkVEICgoQUVfSU5GTywgRGF0YS0+UGF0aG5hbWUsIERhdGEtPk5v
+ZGVGbGFncywKKyAgICAgICAgICAgICJDb252ZXJ0ZWQgJXMgdG8gZXhwZWN0ZWQgJXMiLAorICAg
+ICAgICAgICAgQWNwaVV0R2V0VHlwZU5hbWUgKFJldHVybk9iamVjdC0+Q29tbW9uLlR5cGUpLAor
+ICAgICAgICAgICAgQWNwaVV0R2V0VHlwZU5hbWUgKE5ld09iamVjdC0+Q29tbW9uLlR5cGUpKSk7
+CisgICAgfQorCisgICAgLyogRGVsZXRlIG9sZCBvYmplY3QsIGluc3RhbGwgdGhlIG5ldyByZXR1
+cm4gb2JqZWN0ICovCisKKyAgICBBY3BpVXRSZW1vdmVSZWZlcmVuY2UgKFJldHVybk9iamVjdCk7
+CisgICAgKlJldHVybk9iamVjdFB0ciA9IE5ld09iamVjdDsKKyAgICBEYXRhLT5GbGFncyB8PSBB
+Q1BJX09CSkVDVF9SRVBBSVJFRDsKKworICAgIHJldHVybiAoQUVfT0spOwogfQogCiAK
+
+--===============2374286346473957599==--
 
