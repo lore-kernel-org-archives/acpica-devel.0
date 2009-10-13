@@ -1,106 +1,77 @@
-Content-Type: multipart/mixed; boundary="===============6444458745370428761=="
+Content-Type: multipart/mixed; boundary="===============6045358283996320913=="
 MIME-Version: 1.0
 From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] acpica for other architecture
-Date: Mon, 12 Oct 2009 09:06:43 -0700
-Message-ID: <4911F71203A09E4D9981D27F9D8308583B2932A0@orsmsx503.amr.corp.intel.com>
-In-Reply-To: 4ACF0777.7000408@c-lab.de
+Subject: [Devel] ACPICA version 20091013 released
+Date: Tue, 13 Oct 2009 13:48:13 -0700
+Message-ID: <4911F71203A09E4D9981D27F9D8308583B31AFCB@orsmsx503.amr.corp.intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6444458745370428761==
+--===============6045358283996320913==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Most ACPI tables are directly consumed by the host OS and do not require an=
- AML interpreter (such as MADT, SRAT, SLIT, etc.)
+13 October 2009. Summary of changes for version 20091013:
 
-Only the DSDT and any SSDTs contain AML byte code that must be interpreted.
+This release is available at www.acpica.org/downloads
 
-If you only wish to create the non-AML tables, the Table Manager component =
-of ACPICA can be used standalone to discover and extract them.
+1) ACPI CA Core Subsystem:
 
-I suggest that you read the ACPI specification and the ACPICA programmer re=
-ference.
+Fixed a problem where an Operation Region _REG method could be executed mor=
+e than once. If a custom address space handler is installed by the host bef=
+ore the "initialize operation regions" phase of the ACPICA initialization, =
+any _REG methods for that address space could be executed twice. This chang=
+e fixes the problem. ACPICA BZ 427. Lin Ming.
 
-ACPI spec available at acpi.info
-ACPICA reference available at http://www.acpica.org/documentation/
+Fixed a possible memory leak for the Scope() ASL operator. When the exact i=
+nvocation of "Scope(\)" is executed (change scope to root), one internal op=
+erand object was leaked. Lin Ming.
+
+Implemented a run-time repair for the _MAT predefined method. If the _MAT r=
+eturn value is defined as a Field object in the AML, and the field
+size is less than or equal to the default width of an integer (32 or 64),_M=
+AT can incorrectly return an Integer instead of a Buffer. ACPICA now automa=
+tically repairs this problem. ACPICA BZ 810.
+
+Implemented a run-time repair for the _BIF and _BIX predefined methods. The=
+ "OEM Information" field is often incorrectly returned as an Integer with v=
+alue zero if the field is not supported by the platform. This is due to an =
+ambiguity in the ACPI specification. The field should always be a string. A=
+CPICA now automatically repairs this problem by returning a NULL string wit=
+hin the returned Package. ACPICA BZ 807.
+
+Example Code and Data Size: These are the sizes for the OS-independent acpi=
+ca.lib produced by the Microsoft Visual C++ 6.0 32-bit compiler. The debug =
+version of the code includes the debug output trace mechanism and has a muc=
+h larger code and data size.
+
+  Previous Release:
+    Non-Debug Version:  85.6K Code, 18.0K Data, 103.6K Total
+    Debug Version:     161.7K Code, 50.9K Data, 212.6K Total
+  Current Release:
+    Non-Debug Version:  85.8K Code, 18.0K Data, 103.8K Total
+    Debug Version:     161.8K Code, 50.6K Data, 212.4K Total
+
+2) iASL Compiler/Disassembler and Tools:
+
+Disassembler: Fixed a problem where references to external symbols that con=
+tained one or more parent-prefixes (carats) were not handled correctly, pos=
+sibly causing a fault. ACPICA BZ 806. Lin Ming.
+
+Disassembler: Restructured the code so that all functions that handle exter=
+nal symbols are in a single module. One new file is added, common/dmextern.=
+c.
+
+AML Debugger: Added a max count argument for the Batch command (which execu=
+tes multiple predefined methods within the namespace.)
+
+iASL: Updated the compiler documentation (User Reference.) Available at htt=
+p://www.acpica.org/documentation/. ACPICA BZ 750.
+
+AcpiXtract: Updated for Lint and other formatting changes. Close all open f=
+iles.
 
 
-Bob
-
-
->-----Original Message-----
->From: devel-bounces(a)acpica.org [mailto:devel-bounces(a)acpica.org] On Be=
-half
->Of Da He
->Sent: Friday, October 09, 2009 2:51 AM
->To: Lin Ming
->Cc: Devel(a)acpica.org
->Subject: Re: [Devel] acpica for other architecture
->
->Hello Liu Ming,
->
->Thanks for your reply. I was thinking about using ACPI concept in
->embedded systems to manage cpu and device power consumption. I know that
->there is lack of hardware ACPI supports, but as far as I understand, the
->core of ACPI is various ACPI tables which describe hardware device
->resources and define control methods. Just one very simple example, if I
->have one device or periphery attached on a bus that can be operated in
->different power saving states, maybe I could describe this device in the
->DSDT so that the OS could configure and govern it at runtime. Besides, I
->think there are also many embedded processors which supports DVFS. As I
->would like to try this on a FPGA based development platform, I could add
->some additional hardware supports by myself if needed.
->
->These are only some thoughts, but I am not sure if it is feasible. I
->would be very grateful if you could give me some advice. Thanks in advance.
->
->Best regards
->Da He
->
->Lin Ming wrote:
->> On Wed, Oct 7, 2009 at 10:26 PM, Da He <da.he(a)c-lab.de> wrote:
->>
->>> Hello all,
->>>
->>> I am a beginner in using ACPICA. I am wondering if I can use acpica for
->>> a non-x86 platform (e.g. PowerPC or ARM). As far as I understand, there
->>> is an integrated AML interpreter. If I cross compile acpica for other
->>> architecture, will that interpreter still work? Thanks in advance.
->>>
->>
->> Yes.
->>
->> But PowerPC or ARM does not have hardware support for ACPI at all.
->> What are you going to do of using acpica for a non-x86 platform?
->>
->> Lin Ming
->>
->>
->>> Best regards
->>> Da He
->>> _______________________________________________
->>> Devel mailing list
->>> Devel(a)acpica.org
->>> http://lists.acpica.org/listinfo/devel
->>>
->>>
->
->--
->Dipl.-Inform. Da He
->Univ. Paderborn/c-lab
->Fuerstenallee 11
->D-33102 Paderborn
->Tel:  +49 5251 60 6128
->Fax:  +49 5251 60 6065
->http://www.c-lab.de/
->
->_______________________________________________
->Devel mailing list
->Devel(a)acpica.org
->http://lists.acpica.org/listinfo/devel
-
---===============6444458745370428761==--
+--===============6045358283996320913==--
 
