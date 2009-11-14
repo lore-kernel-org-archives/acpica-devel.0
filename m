@@ -1,89 +1,52 @@
-Content-Type: multipart/mixed; boundary="===============0325164749268384462=="
+Content-Type: multipart/mixed; boundary="===============5723842616604299314=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] ACPICA version 20091112 released
-Date: Thu, 12 Nov 2009 10:42:12 -0800
-Message-ID: <4911F71203A09E4D9981D27F9D8308583E3066A4@orsmsx503.amr.corp.intel.com>
+From: Glen Cherry <renovatingn299 at creamytreat.com>
+Subject: [Devel] Masters degree with no efforts.
+Date: Sat, 14 Nov 2009 12:40:15 +0600
+Message-ID: <000d01ca64f5$52cc0d30$6400a8c0@renovatingn299>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0325164749268384462==
+--===============5723842616604299314==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-12 November 2009. Summary of changes for version 20091112:
+BECAUSE YOU DESERVE IT! Is your lack of a degree holding you back from care=
+er advancement? =
 
-This release is available at www.acpica.org/downloads
+Are you having difficulty finding employment in your field of interest beca=
+use you don=E2=80=99t have the
+paper to back it up =E2=80=93 even though you are qualified?
+If you are looking for a fast and effective solution, we can help! =
 
-1) ACPI CA Core Subsystem:
+Call us right now for your customized diploma: Inside U.SA.: 1-312-260-79-3=
+9 Outside U.S.A.: +1-312-260-79-39. =
 
-Implemented a post-order callback to AcpiWalkNamespace. The existing interf=
-ace only has a pre-order callback. This change adds an additional parameter=
- for a post-order callback which will be more useful for bus scans. ACPICA =
-BZ 779. Lin Ming. Updated the ACPICA Programmer Reference.
+Just leave your NAME & TEL. PHONE # (with country-code) on the voicemail an=
+d one of our staff members will get back to you promptly!     =20
 
-Modified the behavior of the operation region memory mapping cache for Syst=
-emMemory. Ensure that the memory mappings created for operation regions do =
-not cross 4K page boundaries. Crossing a page boundary while mapping region=
-s can cause kernel warnings on some hosts if the pages have different attri=
-butes. Such regions are probably BIOS bugs, and this is the workaround. Lin=
-ux BZ 14445. Lin Ming.
+--===============5723842616604299314==
+Content-Type: text/html
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="attachment.html"
 
-Implemented an automatic repair for predefined methods that must return sor=
-ted lists. This change will repair (by sorting) packages returned by _ALR, =
-_PSS, and _TSS. Drivers can now assume that the packages are correctly sort=
-ed and do not contain NULL package elements. Adds one new file, namespace/n=
-srepair2.c. ACPICA BZ 784. Lin Ming, Bob Moore.
+PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMCBUcmFuc2l0aW9uYWwv
+L0VOIj4KPEhUTUw+PEhFQUQ+CjxNRVRBIGh0dHAtZXF1aXY9Q29udGVudC1UeXBlIGNvbnRlbnQ9
+InRleHQvaHRtbDsgY2hhcnNldD1XaW5kb3dzLTEyNTIiPgo8TUVUQSBjb250ZW50PSJNU0hUTUwg
+Ni4wMC4yOTAwLjIxODAiIG5hbWU9R0VORVJBVE9SPgo8U1RZTEU+Lgo8L1NUWUxFPgo8L0hFQUQ+
+CjxCT0RZIGJnQ29sb3I9I2ZmZmZmZj4KQkVDQVVTRSBZT1UgREVTRVJWRSBJVCEgSXMgeW91ciBs
+YWNrIG9mIGEgZGVncmVlIGhvbGRpbmcgeW91IGJhY2sgZnJvbSBjYXJlZXIgYWR2YW5jZW1lbnQ/
+IApBcmUgeW91IGhhdmluZyBkaWZmaWN1bHR5IGZpbmRpbmcgZW1wbG95bWVudCBpbiB5b3VyIGZp
+ZWxkIG9mIGludGVyZXN0IGJlY2F1c2UgeW91IGRvbpJ0IGhhdmUgdGhlCnBhcGVyIHRvIGJhY2sg
+aXQgdXAgliBldmVuIHRob3VnaCB5b3UgYXJlIHF1YWxpZmllZD8KSWYgeW91IGFyZSBsb29raW5n
+IGZvciBhIGZhc3QgYW5kIGVmZmVjdGl2ZSBzb2x1dGlvbiwgd2UgY2FuIGhlbHAhIApDYWxsIHVz
+IHJpZ2h0IG5vdyBmb3IgeW91ciBjdXN0b21pemVkIGRpcGxvbWE6IEluc2lkZSBVLlNBLjogMS0z
+MTItMjYwLTc5LTM5IE91dHNpZGUgVS5TLkEuOiArMS0zMTItMjYwLTc5LTM5LiAKSnVzdCBsZWF2
+ZSB5b3VyIE5BTUUgJiBURUwuIFBIT05FICMgKHdpdGggY291bnRyeS1jb2RlKSBvbiB0aGUgdm9p
+Y2VtYWlsIGFuZCBvbmUgb2Ygb3VyIHN0YWZmIG1lbWJlcnMgd2lsbCBnZXQgYmFjayB0byB5b3Ug
+cHJvbXB0bHkhICAgICAgPC9CT0RZPjwvSFRNTD4K
 
-Fixed a possible fault during predefined name validation if a return Packag=
-e object contains NULL elements. Also adds a warning if a NULL element is f=
-ollowed by any non-null elements. ACPICA BZ 813, 814. Future enhancement ma=
-y include repair or removal of all such NULL elements where possible.
-
-Implemented additional module-level executable AML code support. This chang=
-e will execute module-level code that is not at the root of the namespace (=
-under a Device object, etc.) at table load time. Module-level executable AM=
-L code has been illegal since ACPI 2.0. ACPICA BZ 762. Lin Ming.
-
-Implemented a new internal function to create Integer objects. This functio=
-n simplifies miscellaneous object creation code. ACPICA BZ 823.
-
-Reduced the severity of predefined repair messages, Warning to Info. Since =
-the object was successfully repaired, a warning is too severe. Reduced to a=
-n info message for now. These messages may eventually be changed to debug-o=
-nly. ACPICA BZ 812.
-
-Example Code and Data Size: These are the sizes for the OS-independent acpi=
-ca.lib produced by the Microsoft Visual C++ 6.0 32-bit compiler. The debug =
-version of the code includes the debug output trace mechanism and has a muc=
-h larger code and data size.
-
-  Previous Release:
-    Non-Debug Version:  85.8K Code, 18.0K Data, 103.8K Total
-    Debug Version:     161.8K Code, 50.6K Data, 212.4K Total
-  Current Release:
-    Non-Debug Version:  86.6K Code, 18.2K Data, 104.8K Total
-    Debug Version:     162.7K Code, 50.8K Data, 213.5K Total
-
-2) iASL Compiler/Disassembler and Tools:
-
-iASL: Implemented Switch() with While(1) so that Break works correctly. Thi=
-s change correctly implements the Switch operator with a surrounding While(=
-1) so that the Break operator works as expected. ACPICA BZ 461. Lin Ming.
-
-iASL: Added a message if a package initializer list is shorter than package=
- length. Adds a new remark for a Package() declaration if an initializer li=
-st exists, but is shorter than the declared length of the package. Although=
- technically legal, this is probably a coding error and it is seen in the f=
-ield. ACPICA BZ 815. Lin Ming, Bob Moore.
-
-iASL: Fixed a problem where the compiler could fault after the maximum numb=
-er of errors was reached (200).
-
-acpixtract: Fixed a possible warning for pointer cast if the compiler warni=
-ng level set very high.
-
-
---===============0325164749268384462==--
+--===============5723842616604299314==--
 
