@@ -1,40 +1,38 @@
-Content-Type: multipart/mixed; boundary="===============9155288948241024091=="
+Content-Type: multipart/mixed; boundary="===============4408122361747917325=="
 MIME-Version: 1.0
-From: Lin Ming <lin at minggr.cn>
-Subject: Re: [Devel] Regarding powerTop Application
-Date: Tue, 01 Dec 2009 09:04:01 +0800
-Message-ID: <d3f22a0911301704n5e163249h153bb76191959bb7@mail.gmail.com>
-In-Reply-To: 6b4365880911301030o161547bcyd161bebede57b027@mail.gmail.com
+From: master chief <mail4chief at yahoo.com>
+Subject: [Devel] Base Address Granularity
+Date: Thu, 03 Dec 2009 11:28:28 -0800
+Message-ID: <136943.16644.qm@web62007.mail.re1.yahoo.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============9155288948241024091==
+--===============4408122361747917325==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi, Nisha
+In the ACPI specification, under IO (IO Resource Descriptor Macro) I read:
 
-Better to send this to linux acpi mail list,
-linux-acpi(a)vger.kernel.org
+"AddressAlignment evaluates to an 8-bit integer that specifies the alignmen=
+t granularity for the I/O address assigned. The field DescriptorName. _ALN =
+is automatically created to refer to this portion of the resource descripto=
+r."
 
-Lin Ming
+And while the latter part about the addition of _ALN is perfectly clear to =
+me, I have trouble understanding the former part.  I looked at a number of =
+Apple, Asus and GigaByte DSDT's and there I find Apple and GigaByte using a=
+ granularity of 0x01 and Asus 0x00.
 
-On Tue, Dec 1, 2009 at 2:30 AM, nisha jain <jain61(a)gmail.com> wrote:
-> Hi All,
->
-> Can any one help me with my previous mail? I have modified  the powertop
-> code for CPU1 related idle state but not able to see states also not sure
-> how to get cpu states while on full load if it is possible?
->
-> Thanks and Regards,
-> Nisha
->
-> _______________________________________________
-> Devel mailing list
-> Devel(a)acpica.org
-> http://lists.acpica.org/listinfo/devel
->
+Apparently both work, even in my own DSDT code, but I cannot for the life o=
+f me find anything related to the exact meaning of this "granularity".
 
---===============9155288948241024091==--
+Please advise.  Thank you.
+
+Chief
+
+
+     =20
+
+--===============4408122361747917325==--
 
