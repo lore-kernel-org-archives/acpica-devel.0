@@ -1,64 +1,78 @@
-Content-Type: multipart/mixed; boundary="===============8936213137058503234=="
+Content-Type: multipart/mixed; boundary="===============2729689798569044677=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] Base Address Granularity
-Date: Thu, 03 Dec 2009 12:27:07 -0800
-Message-ID: <4911F71203A09E4D9981D27F9D8308583E881CEE@orsmsx503.amr.corp.intel.com>
-In-Reply-To: 136943.16644.qm@web62007.mail.re1.yahoo.com
+From: Len Brown <lenb at kernel.org>
+Subject: [Devel] [patch] prevent possible NULL dereference. (fwd)
+Date: Wed, 09 Dec 2009 14:34:56 -0500
+Message-ID: <alpine.LFD.2.00.0912091433040.24891@localhost.localdomain>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8936213137058503234==
+--===============2729689798569044677==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-There's more information in the actual specification of the I/O port descri=
-ptor:
+forwarded to devel(a)acpica.org
 
-Base alignment, _ALN: Alignment for minimum base address, increment in 1-by=
-te blocks.
+thanks,
+Len Brown, Intel Open Source Technology Center
 
-I believe this is the required alignment within I/O space for the base addr=
-ess that is programmed into the device. Where 0,1 =3D Byte aligned, 2 =3D w=
-ord aligned, 4 =3D dword aligned, etc.
+---------- Forwarded message ----------
+Date: Tue, 10 Nov 2009 11:02:49 +0200 (SAST)
+From: Dan Carpenter <error27(a)gmail.com>
+To: linux-acpi(a)vger.kernel.org
+Cc: lenb(a)kernel.org
+Subject: [patch] prevent possible NULL dereference.
 
-Bob
+Move the check for walk_state->thread before the dereference.
 
+Found by smatch static checker.  Compile tested.
 
->-----Original Message-----
->From: devel-bounces(a)acpica.org [mailto:devel-bounces(a)acpica.org] On Be=
-half
->Of master chief
->Sent: Thursday, December 03, 2009 11:28 AM
->To: devel(a)acpica.org
->Subject: [Devel] Base Address Granularity
->
->In the ACPI specification, under IO (IO Resource Descriptor Macro) I read:
->
->"AddressAlignment evaluates to an 8-bit integer that specifies the
->alignment granularity for the I/O address assigned. The field
->DescriptorName. _ALN is automatically created to refer to this portion of
->the resource descriptor."
->
->And while the latter part about the addition of _ALN is perfectly clear to
->me, I have trouble understanding the former part.  I looked at a number of
->Apple, Asus and GigaByte DSDT's and there I find Apple and GigaByte using a
->granularity of 0x01 and Asus 0x00.
->
->Apparently both work, even in my own DSDT code, but I cannot for the life
->of me find anything related to the exact meaning of this "granularity".
->
->Please advise.  Thank you.
->
->Chief
->
->
->
->_______________________________________________
->Devel mailing list
->Devel(a)acpica.org
->http://lists.acpica.org/listinfo/devel
+regards,
+dan carpenter
 
---===============8936213137058503234==--
+Signed-off-by: Dan Carpenter <error27(a)gmail.com>
+
+--- orig/drivers/acpi/acpica/exmutex.c	2009-11-07 09:46:53.000000000 +0200
++++ devel/drivers/acpi/acpica/exmutex.c	2009-11-07 09:48:16.000000000 +0200
+@@ -375,6 +375,15 @@
+ 		return_ACPI_STATUS(AE_AML_MUTEX_NOT_ACQUIRED);
+ 	}
+ =
+
++	/* Must have a valid thread ID */
++
++	if (!walk_state->thread) {
++		ACPI_ERROR((AE_INFO,
++			    "Cannot release Mutex [%4.4s], null thread info",
++			    acpi_ut_get_node_name(obj_desc->mutex.node)));
++		return_ACPI_STATUS(AE_AML_INTERNAL);
++	}
++
+ 	/*
+ 	 * The Mutex is owned, but this thread must be the owner.
+ 	 * Special case for Global Lock, any thread can release
+@@ -392,15 +401,6 @@
+ 		return_ACPI_STATUS(AE_AML_NOT_OWNER);
+ 	}
+ =
+
+-	/* Must have a valid thread ID */
+-
+-	if (!walk_state->thread) {
+-		ACPI_ERROR((AE_INFO,
+-			    "Cannot release Mutex [%4.4s], null thread info",
+-			    acpi_ut_get_node_name(obj_desc->mutex.node)));
+-		return_ACPI_STATUS(AE_AML_INTERNAL);
+-	}
+-
+ 	/*
+ 	 * The sync level of the mutex must be equal to the current sync level. In
+ 	 * other words, the current level means that at least one mutex at that
+--
+To unsubscribe from this list: send the line "unsubscribe linux-acpi" in
+the body of a message to majordomo(a)vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+--===============2729689798569044677==--
 
