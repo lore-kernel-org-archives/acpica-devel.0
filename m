@@ -1,100 +1,83 @@
-Content-Type: multipart/mixed; boundary="===============0222084475612370759=="
+Content-Type: multipart/mixed; boundary="===============0364916464583308564=="
 MIME-Version: 1.0
 From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] [patch] prevent possible NULL dereference. (fwd)
-Date: Thu, 10 Dec 2009 14:50:41 -0800
-Message-ID: <4911F71203A09E4D9981D27F9D83085840F38876@orsmsx503.amr.corp.intel.com>
-In-Reply-To: alpine.LFD.2.00.0912091433040.24891@localhost.localdomain
+Subject: [Devel] ACPICA version 20091214 released
+Date: Mon, 14 Dec 2009 13:34:42 -0800
+Message-ID: <4911F71203A09E4D9981D27F9D8308584100E201@orsmsx503.amr.corp.intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0222084475612370759==
+--===============0364916464583308564==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Added to ACPICA base code for the next release (mid-December).
+14 December 2009. Summary of changes for version 20091214:
 
-Thanks,
-Bob
+This release is available at www.acpica.org/downloads
+
+1) ACPI CA Core Subsystem:
+
+Enhanced automatic data type conversions for predefined name repairs. This =
+change expands the automatic repairs/conversions for predefined name return=
+ values to make Integers, Strings, and Buffers fully interchangeable. Also,=
+ a Buffer can be converted to a Package of Integers if necessary. The nsrep=
+air.c module was completely restructured. Lin Ming, Bob Moore.
+
+Implemented automatic removal of null package elements during predefined na=
+me repairs. This change will automatically remove embedded and trailing NUL=
+L package elements from returned package objects that are defined to contai=
+n a variable number of sub-packages. The driver is then presented with a pa=
+ckage with no null elements to deal with. ACPICA BZ 819.
+
+Implemented a repair for the predefined _FDE and _GTM names. The expected r=
+eturn value for both names is a Buffer of 5 DWORDs. This repair fixes two p=
+ossible problems (both seen in the field), where a package of integers is r=
+eturned, or a buffer of BYTEs is returned. With assistance from Jung-uk Kim.
+
+Implemented additional module-level code support. This change will properly=
+ execute module-level code that is not at the root of the namespace (under =
+a Device object, etc.). Now executes the code within the current scope inst=
+ead of the root. ACPICA BZ 762. Lin Ming.
+
+Fixed possible mutex acquisition errors when running _REG methods. Fixes a =
+problem where mutex errors can occur when running a _REG method that is in =
+the same scope as a method-defined operation region or an operation region =
+under a module-level IF block. This type of code is rare, so the problem ha=
+s not been seen before. ACPICA BZ 826. Lin Ming, Bob Moore.
+
+Fixed a possible memory leak during module-level code execution. An object =
+could be leaked for each block of executed module-level code if the interpr=
+eter slack mode is enabled This change deletes any implicitly returned obje=
+ct from the module-level code block. Lin Ming.
+
+Removed messages for successful predefined repair(s). The repair mechanism =
+was considered too wordy. Now, messages are only unconditionally emitted if=
+ the return object cannot be repaired. Existing messages for successful rep=
+airs were converted to ACPI_DEBUG_PRINT messages for now. ACPICA BZ 827.
+
+Example Code and Data Size: These are the sizes for the OS-independent acpi=
+ca.lib produced by the Microsoft Visual C++ 6.0 32-bit compiler. The debug =
+version of the code includes the debug output trace mechanism and has a muc=
+h larger code and data size.
+
+  Previous Release:
+    Non-Debug Version:  86.6K Code, 18.2K Data, 104.8K Total
+    Debug Version:     162.7K Code, 50.8K Data, 213.5K Total
+  Current Release:
+    Non-Debug Version:  87.0K Code, 18.0K Data, 105.0K Total
+    Debug Version:     163.4K Code, 50.8K Data, 214.2K Total
+
+2) iASL Compiler/Disassembler and Tools:
+
+iASL: Fixed a regression introduced in 20091112 where intermediate .SRC fil=
+es were no longer automatically removed at the termination of the compile.
+
+acpiexec: Implemented the -f option to specify default region fill value. T=
+his option specifies the value used to initialize buffers that simulate ope=
+ration regions. Default value is zero. Useful for debugging problems that d=
+epend on a specific initial value for a region or field.
 
 
->-----Original Message-----
->From: devel-bounces(a)acpica.org [mailto:devel-bounces(a)acpica.org] On Be=
-half
->Of Len Brown
->Sent: Wednesday, December 09, 2009 11:35 AM
->To: devel(a)acpica.org
->Cc: linux-acpi(a)vger.kernel.org; Dan Carpenter
->Subject: [Devel] [patch] prevent possible NULL dereference. (fwd)
->
->forwarded to devel(a)acpica.org
->
->thanks,
->Len Brown, Intel Open Source Technology Center
->
->---------- Forwarded message ----------
->Date: Tue, 10 Nov 2009 11:02:49 +0200 (SAST)
->From: Dan Carpenter <error27(a)gmail.com>
->To: linux-acpi(a)vger.kernel.org
->Cc: lenb(a)kernel.org
->Subject: [patch] prevent possible NULL dereference.
->
->Move the check for walk_state->thread before the dereference.
->
->Found by smatch static checker.  Compile tested.
->
->regards,
->dan carpenter
->
->Signed-off-by: Dan Carpenter <error27(a)gmail.com>
->
->--- orig/drivers/acpi/acpica/exmutex.c	2009-11-07 09:46:53.000000000
->+0200
->+++ devel/drivers/acpi/acpica/exmutex.c	2009-11-07 09:48:16.000000000
->+0200
->@@ -375,6 +375,15 @@
-> 		return_ACPI_STATUS(AE_AML_MUTEX_NOT_ACQUIRED);
-> 	}
->
->+	/* Must have a valid thread ID */
->+
->+	if (!walk_state->thread) {
->+		ACPI_ERROR((AE_INFO,
->+			    "Cannot release Mutex [%4.4s], null thread info",
->+			    acpi_ut_get_node_name(obj_desc->mutex.node)));
->+		return_ACPI_STATUS(AE_AML_INTERNAL);
->+	}
->+
-> 	/*
-> 	 * The Mutex is owned, but this thread must be the owner.
-> 	 * Special case for Global Lock, any thread can release
->@@ -392,15 +401,6 @@
-> 		return_ACPI_STATUS(AE_AML_NOT_OWNER);
-> 	}
->
->-	/* Must have a valid thread ID */
->-
->-	if (!walk_state->thread) {
->-		ACPI_ERROR((AE_INFO,
->-			    "Cannot release Mutex [%4.4s], null thread info",
->-			    acpi_ut_get_node_name(obj_desc->mutex.node)));
->-		return_ACPI_STATUS(AE_AML_INTERNAL);
->-	}
->-
-> 	/*
-> 	 * The sync level of the mutex must be equal to the current sync
->level. In
-> 	 * other words, the current level means that at least one mutex at
->that
->--
->To unsubscribe from this list: send the line "unsubscribe linux-acpi" in
->the body of a message to majordomo(a)vger.kernel.org
->More majordomo info at  http://vger.kernel.org/majordomo-info.html
->_______________________________________________
->Devel mailing list
->Devel(a)acpica.org
->http://lists.acpica.org/listinfo/devel
-
---===============0222084475612370759==--
+--===============0364916464583308564==--
 
