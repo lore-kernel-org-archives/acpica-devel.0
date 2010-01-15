@@ -1,32 +1,56 @@
-Content-Type: multipart/mixed; boundary="===============3953350114641110731=="
+Content-Type: multipart/mixed; boundary="===============9031288406749843224=="
 MIME-Version: 1.0
-From: Hsu, Edward (ETD) <ehsu at hp.com>
-Subject: [Devel] Query about the ACPI
-Date: Fri, 15 Jan 2010 05:58:50 +0000
-Message-ID: <F3559959283BB949B69FE4146615117C67A544206C@GVW1161EXB.americas.hpqcorp.net>
+From: Moore, Robert <robert.moore at intel.com>
+Subject: Re: [Devel] Query about the ACPI
+Date: Fri, 15 Jan 2010 05:45:03 -0800
+Message-ID: <4911F71203A09E4D9981D27F9D830858500E2590@orsmsx503.amr.corp.intel.com>
+In-Reply-To: F3559959283BB949B69FE4146615117C67A544206C@GVW1161EXB.americas.hpqcorp.net
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3953350114641110731==
+--===============9031288406749843224==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-To whom it may concern,
-
-Hello, I've gone through the ACPI website, http://www.acpica.org/, and I wa=
-s wondering if the all Intel-related developmet tools would work for AMD pl=
-atform as well. =
 
 
-Besides, can it be merged into a Microsoft Windows application program?
+>-----Original Message-----
+>From: devel-bounces(a)acpica.org [mailto:devel-bounces(a)acpica.org] On Be=
+half
+>Of Hsu, Edward (ETD)
+>Sent: Thursday, January 14, 2010 9:59 PM
+>To: devel(a)acpica.org
+>Subject: [Devel] Query about the ACPI
+>
+>To whom it may concern,
+>
+>Hello, I've gone through the ACPI website, http://www.acpica.org/, and I
+>was wondering if the all Intel-related developmet tools would work for AMD
+>platform as well.
+>
 
-Thank you very much.
+Yes. ACPI is not processor specific.
 
 
-Best Regards,
+>Besides, can it be merged into a Microsoft Windows application program?
 
-Edward Hsu
+Please explain the question further.
 
---===============3953350114641110731==--
+Bob
+
+
+>
+>Thank you very much.
+>
+>
+>Best Regards,
+>
+>Edward Hsu
+>_______________________________________________
+>Devel mailing list
+>Devel(a)acpica.org
+>http://lists.acpica.org/listinfo/devel
+
+--===============9031288406749843224==--
 
