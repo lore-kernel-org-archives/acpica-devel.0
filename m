@@ -1,21 +1,63 @@
-Content-Type: multipart/mixed; boundary="===============0002065040281678562=="
+Content-Type: multipart/mixed; boundary="===============8962805112683682873=="
 MIME-Version: 1.0
 From: Hsu, Edward (ETD) <ehsu at hp.com>
 Subject: Re: [Devel] Query about the ACPI
-Date: Mon, 18 Jan 2010 10:22:26 +0000
-Message-ID: <F3559959283BB949B69FE4146615117C67A5442674@GVW1161EXB.americas.hpqcorp.net>
-In-Reply-To: 73BDC2BA3DA0BD47BAAEE12383D407EF358A4363@shzsmsx502.ccr.corp.intel.com
+Date: Mon, 18 Jan 2010 10:21:46 +0000
+Message-ID: <F3559959283BB949B69FE4146615117C67A5442672@GVW1161EXB.americas.hpqcorp.net>
+In-Reply-To: 4911F71203A09E4D9981D27F9D83085850150C7F@orsmsx503.amr.corp.intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0002065040281678562==
+--===============8962805112683682873==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hello Ming,
+Hi Robert,
 
- Thanks a lot for your explanations. =
+Thanks a lot for your explanations.
+
+
+
+Best Regards,
+
+Edward Hsu
+
+
+
+
+
+________________________________
+From: Moore, Robert [mailto:robert.moore(a)intel.com]
+Sent: Monday, January 18, 2010 12:25 PM
+To: Hsu, Edward (ETD); devel(a)acpica.org
+Subject: RE: Query about the ACPI
+
+There are two major implementations of ACPI. (1) Windows. (2) ACPICA.
+
+ACPICA is used in many flavors of unix, as well as some smaller operating s=
+ystems.
+
+
+
+________________________________
+From: Hsu, Edward (ETD) [mailto:ehsu(a)hp.com]
+Sent: Sunday, January 17, 2010 5:41 PM
+To: Moore, Robert; devel(a)acpica.org
+Subject: RE: Query about the ACPI
+
+
+Hi Bob,
+
+As programing the applications in Windows,  I was wondering if the applicat=
+ions are able to invoke the ACPI driver/AML Interpreter, ask for the data f=
+rom ACPI registers/ACPI BIOS/ACPI Tables as below. Thank you.
+
+
+
+
+
+
 
 
 
@@ -26,132 +68,174 @@ Edward Hsu
 
 
 -----Original Message-----
-From: Lin, Ming M [mailto:ming.m.lin(a)intel.com] =
+From: Moore, Robert [mailto:robert.moore(a)intel.com]
+Sent: Friday, January 15, 2010 9:45 PM
+To: Hsu, Edward (ETD); devel(a)acpica.org
+Subject: RE: Query about the ACPI
 
-Sent: Monday, January 18, 2010 10:21 AM
-To: Hsu, Edward (ETD)
-Cc: devel(a)acpica.org
-Subject: RE: [Devel] Query about the ACPI
 
-As I know, ACPICA is used in nearly every OS (Linux/FreeBSD/Solars/Apple et=
-c), except Windows.
-It's the driver interface, so it can't be used in applications.
-See http://www.acpica.org/documentation/ for the programmer reference.
-
-Lin Ming
 
 >-----Original Message-----
 >From: devel-bounces(a)acpica.org [mailto:devel-bounces(a)acpica.org] On Be=
-half Of
->Hsu, Edward (ETD)
->Sent: Monday, January 18, 2010 10:13 AM
->To: Lin Ming
->Cc: devel(a)acpica.org
->Subject: Re: [Devel] Query about the ACPI
+half
+>Of Hsu, Edward (ETD)
+>Sent: Thursday, January 14, 2010 9:59 PM
+>To: devel(a)acpica.org
+>Subject: [Devel] Query about the ACPI
 >
->Hi Ming,
+>To whom it may concern,
 >
->May I ask your ACPICA(indicated on http://www.acpica.org/,) is used under =
-which
->circumstances, such as developing in which enviroment, ...,etc?  Thank you=
- very
->much.
+>Hello, I've gone through the ACPI website, http://www.acpica.org/, and I
+>was wondering if the all Intel-related developmet tools would work for AMD
+>platform as well.
 >
+
+Yes. ACPI is not processor specific.
+
+
+>Besides, can it be merged into a Microsoft Windows application program?
+
+Please explain the question further.
+
+Bob
+
+
+>
+>Thank you very much.
 >
 >
 >Best Regards,
 >
 >Edward Hsu
->
->
->
->-----Original Message-----
->From: Lin Ming [mailto:lin(a)minggr.cn]
->Sent: Monday, January 18, 2010 10:02 AM
->To: Hsu, Edward (ETD)
->Cc: Moore, Robert; devel(a)acpica.org
->Subject: Re: [Devel] Query about the ACPI
->
->On Mon, Jan 18, 2010 at 9:40 AM, Hsu, Edward (ETD) <ehsu(a)hp.com> wrote:
->>
->> Hi Bob,
->>
->> As programing the applications in Windows,=C2=A0 I was wondering if the
->applications are able to invoke the ACPI driver/AML Interpreter, ask for t=
-he
->data from ACPI registers/ACPI BIOS/ACPI Tables as below. Thank you.
->
->Windows has its own ACPI driver/AML Interpreter. The interface is
->different with ACPICA.
->Applications can't access the register directly.
->You need to write a driver in Windows to access the register.
->
->Some info at http://msdn.microsoft.com/en-us/library/ms789240.aspx
->
->Lin Ming
->
->>
->>
->> Best Regards,
->>
->> Edward Hsu
->>
->>
->>
->> -----Original Message-----
->> From: Moore, Robert [mailto:robert.moore(a)intel.com]
->> Sent: Friday, January 15, 2010 9:45 PM
->> To: Hsu, Edward (ETD); devel(a)acpica.org
->> Subject: RE: Query about the ACPI
->>
->>
->>
->> >-----Original Message-----
->> >From: devel-bounces(a)acpica.org [mailto:devel-bounces(a)acpica.org] On=
- Behalf
->> >Of Hsu, Edward (ETD)
->> >Sent: Thursday, January 14, 2010 9:59 PM
->> >To: devel(a)acpica.org
->> >Subject: [Devel] Query about the ACPI
->> >
->> >To whom it may concern,
->> >
->> >Hello, I've gone through the ACPI website, http://www.acpica.org/, and I
->> >was wondering if the all Intel-related developmet tools would work for =
-AMD
->> >platform as well.
->> >
->>
->> Yes. ACPI is not processor specific.
->>
->>
->> >Besides, can it be merged into a Microsoft Windows application program?
->>
->> Please explain the question further.
->>
->> Bob
->>
->>
->> >
->> >Thank you very much.
->> >
->> >
->> >Best Regards,
->> >
->> >Edward Hsu
->> >_______________________________________________
->> >Devel mailing list
->> >Devel(a)acpica.org
->> >http://lists.acpica.org/listinfo/devel
->>
->> _______________________________________________
->> Devel mailing list
->> Devel(a)acpica.org
->> http://lists.acpica.org/listinfo/devel
 >_______________________________________________
 >Devel mailing list
 >Devel(a)acpica.org
 >http://lists.acpica.org/listinfo/devel
 
---===============0002065040281678562==--
+--===============8962805112683682873==
+Content-Type: text/html
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="attachment.html"
+
+PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMCBUcmFuc2l0aW9uYWwv
+L0VOIj4KPEhUTUwgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnL1RSL1JFQy1odG1sNDAiIHhtbG5z
+OnYgPSAKInVybjpzY2hlbWFzLW1pY3Jvc29mdC1jb206dm1sIiB4bWxuczpvID0gCiJ1cm46c2No
+ZW1hcy1taWNyb3NvZnQtY29tOm9mZmljZTpvZmZpY2UiIHhtbG5zOncgPSAKInVybjpzY2hlbWFz
+LW1pY3Jvc29mdC1jb206b2ZmaWNlOndvcmQiPjxIRUFEPgo8TUVUQSBodHRwLWVxdWl2PUNvbnRl
+bnQtVHlwZSBjb250ZW50PSJ0ZXh0L2h0bWw7IGNoYXJzZXQ9dXMtYXNjaWkiPgo8TUVUQSBjb250
+ZW50PSJNU0hUTUwgNi4wMC4yOTAwLjU4OTciIG5hbWU9R0VORVJBVE9SPjwhLS1baWYgIW1zb10+
+CjxTVFlMRT52XDoqIHsKCUJFSEFWSU9SOiB1cmwoI2RlZmF1bHQjVk1MKQp9Cm9cOiogewoJQkVI
+QVZJT1I6IHVybCgjZGVmYXVsdCNWTUwpCn0Kd1w6KiB7CglCRUhBVklPUjogdXJsKCNkZWZhdWx0
+I1ZNTCkKfQouc2hhcGUgewoJQkVIQVZJT1I6IHVybCgjZGVmYXVsdCNWTUwpCn0KPC9TVFlMRT4K
+PCFbZW5kaWZdLS0+CjxTVFlMRT5AZm9udC1mYWNlIHsKCWZvbnQtZmFtaWx5OiBUYWhvbWE7Cn0K
+QHBhZ2UgU2VjdGlvbjEge3NpemU6IDguNWluIDExLjBpbjsgbWFyZ2luOiAxLjBpbiAxLjI1aW4g
+MS4waW4gMS4yNWluOyB9ClAuTXNvTm9ybWFsIHsKCUZPTlQtU0laRTogMTJwdDsgTUFSR0lOOiAw
+aW4gMGluIDBwdDsgRk9OVC1GQU1JTFk6ICJUaW1lcyBOZXcgUm9tYW4iCn0KTEkuTXNvTm9ybWFs
+IHsKCUZPTlQtU0laRTogMTJwdDsgTUFSR0lOOiAwaW4gMGluIDBwdDsgRk9OVC1GQU1JTFk6ICJU
+aW1lcyBOZXcgUm9tYW4iCn0KRElWLk1zb05vcm1hbCB7CglGT05ULVNJWkU6IDEycHQ7IE1BUkdJ
+TjogMGluIDBpbiAwcHQ7IEZPTlQtRkFNSUxZOiAiVGltZXMgTmV3IFJvbWFuIgp9CkE6bGluayB7
+CglDT0xPUjogYmx1ZTsgVEVYVC1ERUNPUkFUSU9OOiB1bmRlcmxpbmUKfQpTUEFOLk1zb0h5cGVy
+bGluayB7CglDT0xPUjogYmx1ZTsgVEVYVC1ERUNPUkFUSU9OOiB1bmRlcmxpbmUKfQpBOnZpc2l0
+ZWQgewoJQ09MT1I6IGJsdWU7IFRFWFQtREVDT1JBVElPTjogdW5kZXJsaW5lCn0KU1BBTi5Nc29I
+eXBlcmxpbmtGb2xsb3dlZCB7CglDT0xPUjogYmx1ZTsgVEVYVC1ERUNPUkFUSU9OOiB1bmRlcmxp
+bmUKfQpQIHsKCUZPTlQtU0laRTogMTJwdDsgTUFSR0lOLUxFRlQ6IDBpbjsgTUFSR0lOLVJJR0hU
+OiAwaW47IEZPTlQtRkFNSUxZOiAiVGltZXMgTmV3IFJvbWFuIjsgbXNvLW1hcmdpbi10b3AtYWx0
+OiBhdXRvOyBtc28tbWFyZ2luLWJvdHRvbS1hbHQ6IGF1dG8KfQpTUEFOLkVtYWlsU3R5bGUxOCB7
+CglDT0xPUjogbmF2eTsgRk9OVC1GQU1JTFk6IEFyaWFsOyBtc28tc3R5bGUtdHlwZTogcGVyc29u
+YWwtcmVwbHkKfQpESVYuU2VjdGlvbjEgewoJcGFnZTogU2VjdGlvbjEKfQo8L1NUWUxFPgo8L0hF
+QUQ+CjxCT0RZIGxhbmc9RU4tVVMgdkxpbms9Ymx1ZSBsaW5rPWJsdWU+CjxESVYgZGlyPWx0ciBh
+bGlnbj1sZWZ0PjxGT05UIGZhY2U9QXJpYWwgY29sb3I9IzAwMDBmZiBzaXplPTI+PFNQQU4gCmNs
+YXNzPTUyOTU1MjAxMC0xODAxMjAxMD5IaSBSb2JlcnQsPC9TUEFOPjwvRk9OVD48L0RJVj4KPERJ
+ViBkaXI9bHRyIGFsaWduPWxlZnQ+PEZPTlQgZmFjZT1BcmlhbCBjb2xvcj0jMDAwMGZmIHNpemU9
+Mj48U1BBTiAKY2xhc3M9NTI5NTUyMDEwLTE4MDEyMDEwPjwvU1BBTj48L0ZPTlQ+Jm5ic3A7PC9E
+SVY+CjxESVYgZGlyPWx0ciBhbGlnbj1sZWZ0PjxGT05UIGZhY2U9QXJpYWwgY29sb3I9IzAwMDBm
+Zj48U1BBTiAKY2xhc3M9NTI5NTUyMDEwLTE4MDEyMDEwPjxGT05UIHNpemU9Mj5UaGFua3MgYSBs
+b3QgZm9yIHlvdXIgZXhwbGFuYXRpb25zLjwvRk9OVD4gCjwvU1BBTj48L0ZPTlQ+PC9ESVY+CjxE
+SVY+Jm5ic3A7PC9ESVY+PCEtLSBDb252ZXJ0ZWQgZnJvbSB0ZXh0L3BsYWluIGZvcm1hdCAtLT48
+QlI+CjxQPjxGT05UIHNpemU9Mj5CZXN0IFJlZ2FyZHMsPEJSPjxCUj5FZHdhcmQgSHN1PEJSPjxC
+Uj48QlI+PC9GT05UPjwvUD4KPERJVj4mbmJzcDs8L0RJVj48QlI+CjxESVYgY2xhc3M9T3V0bG9v
+a01lc3NhZ2VIZWFkZXIgbGFuZz1lbi11cyBkaXI9bHRyIGFsaWduPWxlZnQ+CjxIUiB0YWJJbmRl
+eD0tMT4KPEZPTlQgZmFjZT1UYWhvbWEgc2l6ZT0yPjxCPkZyb206PC9CPiBNb29yZSwgUm9iZXJ0
+IApbbWFpbHRvOnJvYmVydC5tb29yZUBpbnRlbC5jb21dIDxCUj48Qj5TZW50OjwvQj4gTW9uZGF5
+LCBKYW51YXJ5IDE4LCAyMDEwIDEyOjI1IApQTTxCUj48Qj5Ubzo8L0I+IEhzdSwgRWR3YXJkIChF
+VEQpOyBkZXZlbEBhY3BpY2Eub3JnPEJSPjxCPlN1YmplY3Q6PC9CPiBSRTogClF1ZXJ5IGFib3V0
+IHRoZSBBQ1BJPEJSPjwvRk9OVD48QlI+PC9ESVY+CjxESVY+PC9ESVY+CjxESVYgY2xhc3M9U2Vj
+dGlvbjE+CjxQIGNsYXNzPU1zb05vcm1hbD48Rk9OVCBmYWNlPUFyaWFsIGNvbG9yPW5hdnkgc2l6
+ZT0yPjxTUEFOIApzdHlsZT0iRk9OVC1TSVpFOiAxMHB0OyBDT0xPUjogbmF2eTsgRk9OVC1GQU1J
+TFk6IEFyaWFsIj5UaGVyZSBhcmUgdHdvIG1ham9yIAppbXBsZW1lbnRhdGlvbnMgb2YgQUNQSS4g
+KDEpIFdpbmRvd3MuICgyKSBBQ1BJQ0EuPG86cD48L286cD48L1NQQU4+PC9GT05UPjwvUD4KPFAg
+Y2xhc3M9TXNvTm9ybWFsPjxGT05UIGZhY2U9QXJpYWwgY29sb3I9bmF2eSBzaXplPTI+PFNQQU4g
+CnN0eWxlPSJGT05ULVNJWkU6IDEwcHQ7IENPTE9SOiBuYXZ5OyBGT05ULUZBTUlMWTogQXJpYWwi
+PjxvOnA+Jm5ic3A7PC9vOnA+PC9TUEFOPjwvRk9OVD48L1A+CjxQIGNsYXNzPU1zb05vcm1hbD48
+Rk9OVCBmYWNlPUFyaWFsIGNvbG9yPW5hdnkgc2l6ZT0yPjxTUEFOIApzdHlsZT0iRk9OVC1TSVpF
+OiAxMHB0OyBDT0xPUjogbmF2eTsgRk9OVC1GQU1JTFk6IEFyaWFsIj5BQ1BJQ0EgaXMgdXNlZCBp
+biBtYW55IApmbGF2b3JzIG9mIHVuaXgsIGFzIHdlbGwgYXMgc29tZSBzbWFsbGVyIG9wZXJhdGlu
+ZyAKc3lzdGVtcy48bzpwPjwvbzpwPjwvU1BBTj48L0ZPTlQ+PC9QPgo8UCBjbGFzcz1Nc29Ob3Jt
+YWw+PEZPTlQgZmFjZT1BcmlhbCBjb2xvcj1uYXZ5IHNpemU9Mj48U1BBTiAKc3R5bGU9IkZPTlQt
+U0laRTogMTBwdDsgQ09MT1I6IG5hdnk7IEZPTlQtRkFNSUxZOiBBcmlhbCI+PG86cD4mbmJzcDs8
+L286cD48L1NQQU4+PC9GT05UPjwvUD4KPFAgY2xhc3M9TXNvTm9ybWFsPjxGT05UIGZhY2U9QXJp
+YWwgY29sb3I9bmF2eSBzaXplPTI+PFNQQU4gCnN0eWxlPSJGT05ULVNJWkU6IDEwcHQ7IENPTE9S
+OiBuYXZ5OyBGT05ULUZBTUlMWTogQXJpYWwiPjxvOnA+Jm5ic3A7PC9vOnA+PC9TUEFOPjwvRk9O
+VD48L1A+CjxQIGNsYXNzPU1zb05vcm1hbD48Rk9OVCBmYWNlPUFyaWFsIGNvbG9yPW5hdnkgc2l6
+ZT0yPjxTUEFOIApzdHlsZT0iRk9OVC1TSVpFOiAxMHB0OyBDT0xPUjogbmF2eTsgRk9OVC1GQU1J
+TFk6IEFyaWFsIj48bzpwPiZuYnNwOzwvbzpwPjwvU1BBTj48L0ZPTlQ+PC9QPgo8RElWIApzdHls
+ZT0iQk9SREVSLVJJR0hUOiBtZWRpdW0gbm9uZTsgUEFERElORy1SSUdIVDogMGluOyBCT1JERVIt
+VE9QOiBtZWRpdW0gbm9uZTsgUEFERElORy1MRUZUOiA0cHQ7IFBBRERJTkctQk9UVE9NOiAwaW47
+IEJPUkRFUi1MRUZUOiBibHVlIDEuNXB0IHNvbGlkOyBQQURESU5HLVRPUDogMGluOyBCT1JERVIt
+Qk9UVE9NOiBtZWRpdW0gbm9uZSI+CjxESVY+CjxESVYgY2xhc3M9TXNvTm9ybWFsIHN0eWxlPSJU
+RVhULUFMSUdOOiBjZW50ZXIiIGFsaWduPWNlbnRlcj48Rk9OVCAKZmFjZT0iVGltZXMgTmV3IFJv
+bWFuIiBzaXplPTM+PFNQQU4gc3R5bGU9IkZPTlQtU0laRTogMTJwdCI+CjxIUiB0YWJJbmRleD0t
+MSBhbGlnbj1jZW50ZXIgd2lkdGg9IjEwMCUiIFNJWkU9Mj4KPC9TUEFOPjwvRk9OVD48L0RJVj4K
+PFAgY2xhc3M9TXNvTm9ybWFsPjxCPjxGT05UIGZhY2U9VGFob21hIHNpemU9Mj48U1BBTiAKc3R5
+bGU9IkZPTlQtV0VJR0hUOiBib2xkOyBGT05ULVNJWkU6IDEwcHQ7IEZPTlQtRkFNSUxZOiBUYWhv
+bWEiPkZyb206PC9TUEFOPjwvRk9OVD48L0I+PEZPTlQgCmZhY2U9VGFob21hIHNpemU9Mj48U1BB
+TiBzdHlsZT0iRk9OVC1TSVpFOiAxMHB0OyBGT05ULUZBTUlMWTogVGFob21hIj4gSHN1LCAKRWR3
+YXJkIChFVEQpIFttYWlsdG86ZWhzdUBocC5jb21dIDxCUj48Qj48U1BBTiAKc3R5bGU9IkZPTlQt
+V0VJR0hUOiBib2xkIj5TZW50OjwvU1BBTj48L0I+IFN1bmRheSwgSmFudWFyeSAxNywgMjAxMCA1
+OjQxIApQTTxCUj48Qj48U1BBTiBzdHlsZT0iRk9OVC1XRUlHSFQ6IGJvbGQiPlRvOjwvU1BBTj48
+L0I+IE1vb3JlLCBSb2JlcnQ7IApkZXZlbEBhY3BpY2Eub3JnPEJSPjxCPjxTUEFOIHN0eWxlPSJG
+T05ULVdFSUdIVDogYm9sZCI+U3ViamVjdDo8L1NQQU4+PC9CPiBSRTogClF1ZXJ5IGFib3V0IHRo
+ZSBBQ1BJPC9TUEFOPjwvRk9OVD48bzpwPjwvbzpwPjwvUD48L0RJVj4KPFAgY2xhc3M9TXNvTm9y
+bWFsPjxGT05UIGZhY2U9IlRpbWVzIE5ldyBSb21hbiIgc2l6ZT0zPjxTUEFOIApzdHlsZT0iRk9O
+VC1TSVpFOiAxMnB0Ij48bzpwPiZuYnNwOzwvbzpwPjwvU1BBTj48L0ZPTlQ+PC9QPgo8UCBzdHls
+ZT0iTUFSR0lOLUJPVFRPTTogMTJwdCI+PEZPTlQgZmFjZT1BcmlhbCBzaXplPTM+PFNQQU4gCnN0
+eWxlPSJGT05ULVNJWkU6IDEycHQ7IEZPTlQtRkFNSUxZOiBBcmlhbCI+SGkgQm9iLDxCUj48QlI+
+QXMgcHJvZ3JhbWluZyB0aGUgCmFwcGxpY2F0aW9ucyBpbiBXaW5kb3dzLCZuYnNwOyBJIHdhcyB3
+b25kZXJpbmcgaWYgdGhlIGFwcGxpY2F0aW9ucyBhcmUgYWJsZSB0byAKaW52b2tlIHRoZSBBQ1BJ
+IGRyaXZlci9BTUwgSW50ZXJwcmV0ZXIsIGFzayBmb3IgdGhlIGRhdGEgZnJvbSBBQ1BJIApyZWdp
+c3RlcnMvQUNQSSBCSU9TL0FDUEkgVGFibGVzIGFzIGJlbG93LiBUaGFuayB5b3UuPC9TUEFOPjwv
+Rk9OVD48Rk9OVCAKc2l6ZT0yPjxTUEFOIApzdHlsZT0iRk9OVC1TSVpFOiAxMHB0Ij48QlI+PEJS
+PjxCUj48QlI+PEJSPjxCUj48QlI+PC9TUEFOPjwvRk9OVD48bzpwPjwvbzpwPjwvUD4KPFA+PEZP
+TlQgZmFjZT0iVGltZXMgTmV3IFJvbWFuIiBzaXplPTM+PFNQQU4gCnN0eWxlPSJGT05ULVNJWkU6
+IDEycHQiPiZuYnNwOzxvOnA+PC9vOnA+PC9TUEFOPjwvRk9OVD48L1A+CjxQPjxGT05UIGZhY2U9
+IlRpbWVzIE5ldyBSb21hbiIgc2l6ZT0yPjxTUEFOIHN0eWxlPSJGT05ULVNJWkU6IDEwcHQiPkJl
+c3QgClJlZ2FyZHMsPEJSPjxCUj5FZHdhcmQgSHN1PEJSPjxCUj48QlI+PEJSPi0tLS0tT3JpZ2lu
+YWwgTWVzc2FnZS0tLS0tPEJSPkZyb206IApNb29yZSwgUm9iZXJ0IFs8QSAKaHJlZj0ibWFpbHRv
+OnJvYmVydC5tb29yZUBpbnRlbC5jb20iPm1haWx0bzpyb2JlcnQubW9vcmVAaW50ZWwuY29tPC9B
+Pl08QlI+U2VudDogCkZyaWRheSwgSmFudWFyeSAxNSwgMjAxMCA5OjQ1IFBNPEJSPlRvOiBIc3Us
+IEVkd2FyZCAoRVREKTsgCmRldmVsQGFjcGljYS5vcmc8QlI+U3ViamVjdDogUkU6IFF1ZXJ5IGFi
+b3V0IHRoZSAKQUNQSTxCUj48QlI+PEJSPjxCUj4mZ3Q7LS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0t
+LS08QlI+Jmd0O0Zyb206IApkZXZlbC1ib3VuY2VzQGFjcGljYS5vcmcgWzxBIApocmVmPSJtYWls
+dG86ZGV2ZWwtYm91bmNlc0BhY3BpY2Eub3JnIj5tYWlsdG86ZGV2ZWwtYm91bmNlc0BhY3BpY2Eu
+b3JnPC9BPl0gT24gCkJlaGFsZjxCUj4mZ3Q7T2YgSHN1LCBFZHdhcmQgKEVURCk8QlI+Jmd0O1Nl
+bnQ6IFRodXJzZGF5LCBKYW51YXJ5IDE0LCAyMDEwIDk6NTkgClBNPEJSPiZndDtUbzogZGV2ZWxA
+YWNwaWNhLm9yZzxCUj4mZ3Q7U3ViamVjdDogW0RldmVsXSBRdWVyeSBhYm91dCB0aGUgCkFDUEk8
+QlI+Jmd0OzxCUj4mZ3Q7VG8gd2hvbSBpdCBtYXkgY29uY2Vybiw8QlI+Jmd0OzxCUj4mZ3Q7SGVs
+bG8sIEkndmUgZ29uZSAKdGhyb3VnaCB0aGUgQUNQSSB3ZWJzaXRlLCA8QSAKaHJlZj0iaHR0cDov
+L3d3dy5hY3BpY2Eub3JnLyI+aHR0cDovL3d3dy5hY3BpY2Eub3JnLzwvQT4sIGFuZCBJPEJSPiZn
+dDt3YXMgCndvbmRlcmluZyBpZiB0aGUgYWxsIEludGVsLXJlbGF0ZWQgZGV2ZWxvcG1ldCB0b29s
+cyB3b3VsZCB3b3JrIGZvciAKQU1EPEJSPiZndDtwbGF0Zm9ybSBhcyB3ZWxsLjxCUj4mZ3Q7PEJS
+PjxCUj5ZZXMuIEFDUEkgaXMgbm90IHByb2Nlc3NvciAKc3BlY2lmaWMuPEJSPjxCUj48QlI+Jmd0
+O0Jlc2lkZXMsIGNhbiBpdCBiZSBtZXJnZWQgaW50byBhIE1pY3Jvc29mdCBXaW5kb3dzIAphcHBs
+aWNhdGlvbiBwcm9ncmFtPzxCUj48QlI+UGxlYXNlIGV4cGxhaW4gdGhlIHF1ZXN0aW9uIApmdXJ0
+aGVyLjxCUj48QlI+Qm9iPEJSPjxCUj48QlI+Jmd0OzxCUj4mZ3Q7VGhhbmsgeW91IHZlcnkgCm11
+Y2guPEJSPiZndDs8QlI+Jmd0OzxCUj4mZ3Q7QmVzdCBSZWdhcmRzLDxCUj4mZ3Q7PEJSPiZndDtF
+ZHdhcmQgCkhzdTxCUj4mZ3Q7X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX188QlI+Jmd0O0RldmVsIG1haWxpbmcgCmxpc3Q8QlI+Jmd0O0RldmVsQGFjcGljYS5v
+cmc8QlI+Jmd0OzxBIApocmVmPSJodHRwOi8vbGlzdHMuYWNwaWNhLm9yZy9saXN0aW5mby9kZXZl
+bCI+aHR0cDovL2xpc3RzLmFjcGljYS5vcmcvbGlzdGluZm8vZGV2ZWw8L0E+PG86cD48L286cD48
+L1NQQU4+PC9GT05UPjwvUD48L0RJVj48L0RJVj48L0JPRFk+PC9IVE1MPgo=
+
+--===============8962805112683682873==--
 
