@@ -1,17 +1,39 @@
-Content-Type: multipart/mixed; boundary="===============6307860667924629027=="
+Content-Type: multipart/mixed; boundary="===============1054046356419756998=="
 MIME-Version: 1.0
-From: Lin Ming <lin at minggr.cn>
+From: Hsu, Edward (ETD) <ehsu at hp.com>
 Subject: Re: [Devel] Query about the ACPI
-Date: Mon, 18 Jan 2010 10:02:26 +0800
-Message-ID: <d3f22a1001171802v2d7a292fm8811ba635678bb1a@mail.gmail.com>
-In-Reply-To: F3559959283BB949B69FE4146615117C67A5442381@GVW1161EXB.americas.hpqcorp.net
+Date: Mon, 18 Jan 2010 02:12:57 +0000
+Message-ID: <F3559959283BB949B69FE4146615117C67A54423A5@GVW1161EXB.americas.hpqcorp.net>
+In-Reply-To: d3f22a1001171802v2d7a292fm8811ba635678bb1a@mail.gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6307860667924629027==
+--===============1054046356419756998==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+
+Hi Ming,
+
+May I ask your ACPICA(indicated on http://www.acpica.org/,) is used under w=
+hich circumstances, such as developing in which enviroment, ...,etc?  Thank=
+ you very much.
+
+
+
+Best Regards,
+
+Edward Hsu
+
+
+
+-----Original Message-----
+From: Lin Ming [mailto:lin(a)minggr.cn] =
+
+Sent: Monday, January 18, 2010 10:02 AM
+To: Hsu, Edward (ETD)
+Cc: Moore, Robert; devel(a)acpica.org
+Subject: Re: [Devel] Query about the ACPI
 
 On Mon, Jan 18, 2010 at 9:40 AM, Hsu, Edward (ETD) <ehsu(a)hp.com> wrote:
 >
@@ -89,5 +111,5 @@ MD
 > Devel(a)acpica.org
 > http://lists.acpica.org/listinfo/devel
 
---===============6307860667924629027==--
+--===============1054046356419756998==--
 
