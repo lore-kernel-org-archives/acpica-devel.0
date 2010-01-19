@@ -1,17 +1,38 @@
-Content-Type: multipart/mixed; boundary="===============8346783673414398002=="
+Content-Type: multipart/mixed; boundary="===============0485746037130456823=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
+From: Hsu, Edward (ETD) <ehsu at hp.com>
 Subject: Re: [Devel] Query about the ACPI
-Date: Mon, 18 Jan 2010 08:31:45 -0800
-Message-ID: <4911F71203A09E4D9981D27F9D83085850150DDB@orsmsx503.amr.corp.intel.com>
-In-Reply-To: F3559959283BB949B69FE4146615117C67A5442674@GVW1161EXB.americas.hpqcorp.net
+Date: Tue, 19 Jan 2010 01:19:52 +0000
+Message-ID: <F3559959283BB949B69FE4146615117C67A54427C9@GVW1161EXB.americas.hpqcorp.net>
+In-Reply-To: 4911F71203A09E4D9981D27F9D83085850150DDB@orsmsx503.amr.corp.intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8346783673414398002==
+--===============0485746037130456823==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+
+Hi Robert,
+
+I was just wondering what acpiexec does. Thank you very much for pointing i=
+t out. =
+
+
+
+
+Best Regards,
+
+Edward Hsu
+
+
+-----Original Message-----
+From: Moore, Robert [mailto:robert.moore(a)intel.com] =
+
+Sent: Tuesday, January 19, 2010 12:32 AM
+To: Hsu, Edward (ETD)
+Cc: devel(a)acpica.org
+Subject: RE: [Devel] Query about the ACPI
 
 Also, ACPICA includes a 'simulator' that executes the AML interpreter, etc.=
  in user space (acpiexec). It does not touch the actual hardware however. A=
@@ -171,5 +192,5 @@ ehalf
 >Devel(a)acpica.org
 >http://lists.acpica.org/listinfo/devel
 
---===============8346783673414398002==--
+--===============0485746037130456823==--
 
