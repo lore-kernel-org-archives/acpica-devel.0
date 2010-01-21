@@ -1,196 +1,69 @@
-Content-Type: multipart/mixed; boundary="===============0485746037130456823=="
+Content-Type: multipart/mixed; boundary="===============9138448099052555084=="
 MIME-Version: 1.0
-From: Hsu, Edward (ETD) <ehsu at hp.com>
-Subject: Re: [Devel] Query about the ACPI
-Date: Tue, 19 Jan 2010 01:19:52 +0000
-Message-ID: <F3559959283BB949B69FE4146615117C67A54427C9@GVW1161EXB.americas.hpqcorp.net>
-In-Reply-To: 4911F71203A09E4D9981D27F9D83085850150DDB@orsmsx503.amr.corp.intel.com
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] ACPICA version 20100121 released
+Date: Thu, 21 Jan 2010 10:41:30 -0800
+Message-ID: <4911F71203A09E4D9981D27F9D830858502417DD@orsmsx503.amr.corp.intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0485746037130456823==
+--===============9138448099052555084==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi Robert,
+21 January 2010. Summary of changes for version 20100121:
 
-I was just wondering what acpiexec does. Thank you very much for pointing i=
-t out. =
+This release is available at www.acpica.org/downloads
+
+1) ACPI CA Core Subsystem:
+
+Added the 2010 copyright to all module headers and signons. This affects vi=
+rtually every file in the ACPICA core subsystem, the iASL compiler, the too=
+ls/utilities, and the test suites.
+
+Implemented a change to the AcpiGetDevices interface to eliminate unnecessa=
+ry invocations of the _STA method. In the case where a specific _HID is req=
+uested, do not run _STA until a _HID match is found. This eliminates potent=
+ially dozens of _STA calls during a search for a particular device/HID, whi=
+ch in turn can improve boot times. ACPICA BZ 828. Lin Ming.
+
+Implemented an additional repair for predefined method return values. Attem=
+pt to repair unexpected NULL elements within returned Package objects. Crea=
+te an Integer of value zero, a NULL String, or a zero-length Buffer as appr=
+opriate. ACPICA BZ 818. Lin Ming, Bob Moore.
+
+Removed the obsolete ACPI_INTEGER data type. This type was introduced as th=
+e code was migrated from ACPI 1.0 (with 32-bit AML integers) to ACPI 2.0 (w=
+ith 64-bit AML integers). It is now obsolete and this change removes it fro=
+m the ACPICA code base, replaced by UINT64. The original typedef has been r=
+etained for now for compatibility with existing device driver code. ACPICA =
+BZ 824.
+
+Removed the unused UINT32_STRUCT type, and the obsolete Integer64 field in =
+the parse tree object.
+
+Added additional warning options for the gcc-4 generation. Updated the sour=
+ce accordingly. This includes some code restructuring to eliminate unreacha=
+ble code, elimination of some gotos, elimination of unused return values, s=
+ome additional casting, and removal of redundant declarations.
+
+Example Code and Data Size: These are the sizes for the OS-independent acpi=
+ca.lib produced by the Microsoft Visual C++ 6.0 32-bit compiler. The debug =
+version of the code includes the debug output trace mechanism and has a muc=
+h larger code and data size.
+
+  Previous Release:
+    Non-Debug Version:  87.0K Code, 18.0K Data, 105.0K Total
+    Debug Version:     163.4K Code, 50.8K Data, 214.2K Total
+  Current Release:
+    Non-Debug Version:  87.1K Code, 18.0K Data, 105.1K Total
+    Debug Version:     163.5K Code, 50.9K Data, 214.4K Total
+
+2) iASL Compiler/Disassembler and Tools:
+
+No functional changes for this release.
 
 
-
-
-Best Regards,
-
-Edward Hsu
-
-
------Original Message-----
-From: Moore, Robert [mailto:robert.moore(a)intel.com] =
-
-Sent: Tuesday, January 19, 2010 12:32 AM
-To: Hsu, Edward (ETD)
-Cc: devel(a)acpica.org
-Subject: RE: [Devel] Query about the ACPI
-
-Also, ACPICA includes a 'simulator' that executes the AML interpreter, etc.=
- in user space (acpiexec). It does not touch the actual hardware however. A=
-cpiexec is portable and runs on windows.
-
-
->-----Original Message-----
->From: devel-bounces(a)acpica.org [mailto:devel-bounces(a)acpica.org] On Be=
-half
->Of Hsu, Edward (ETD)
->Sent: Monday, January 18, 2010 2:22 AM
->To: Lin, Ming M
->Cc: devel(a)acpica.org
->Subject: Re: [Devel] Query about the ACPI
->
->Hello Ming,
->
-> Thanks a lot for your explanations.
->
->
->Best Regards,
->
->Edward Hsu
->
->
->
->-----Original Message-----
->From: Lin, Ming M [mailto:ming.m.lin(a)intel.com]
->Sent: Monday, January 18, 2010 10:21 AM
->To: Hsu, Edward (ETD)
->Cc: devel(a)acpica.org
->Subject: RE: [Devel] Query about the ACPI
->
->As I know, ACPICA is used in nearly every OS (Linux/FreeBSD/Solars/Apple
->etc), except Windows.
->It's the driver interface, so it can't be used in applications.
->See http://www.acpica.org/documentation/ for the programmer reference.
->
->Lin Ming
->
->>-----Original Message-----
->>From: devel-bounces(a)acpica.org [mailto:devel-bounces(a)acpica.org] On B=
-ehalf
->Of
->>Hsu, Edward (ETD)
->>Sent: Monday, January 18, 2010 10:13 AM
->>To: Lin Ming
->>Cc: devel(a)acpica.org
->>Subject: Re: [Devel] Query about the ACPI
->>
->>Hi Ming,
->>
->>May I ask your ACPICA(indicated on http://www.acpica.org/,) is used under
->which
->>circumstances, such as developing in which enviroment, ...,etc?  Thank you
->very
->>much.
->>
->>
->>
->>Best Regards,
->>
->>Edward Hsu
->>
->>
->>
->>-----Original Message-----
->>From: Lin Ming [mailto:lin(a)minggr.cn]
->>Sent: Monday, January 18, 2010 10:02 AM
->>To: Hsu, Edward (ETD)
->>Cc: Moore, Robert; devel(a)acpica.org
->>Subject: Re: [Devel] Query about the ACPI
->>
->>On Mon, Jan 18, 2010 at 9:40 AM, Hsu, Edward (ETD) <ehsu(a)hp.com> wrote:
->>>
->>> Hi Bob,
->>>
->>> As programing the applications in Windows,=C2=A0 I was wondering if the
->>applications are able to invoke the ACPI driver/AML Interpreter, ask for
->the
->>data from ACPI registers/ACPI BIOS/ACPI Tables as below. Thank you.
->>
->>Windows has its own ACPI driver/AML Interpreter. The interface is
->>different with ACPICA.
->>Applications can't access the register directly.
->>You need to write a driver in Windows to access the register.
->>
->>Some info at http://msdn.microsoft.com/en-us/library/ms789240.aspx
->>
->>Lin Ming
->>
->>>
->>>
->>> Best Regards,
->>>
->>> Edward Hsu
->>>
->>>
->>>
->>> -----Original Message-----
->>> From: Moore, Robert [mailto:robert.moore(a)intel.com]
->>> Sent: Friday, January 15, 2010 9:45 PM
->>> To: Hsu, Edward (ETD); devel(a)acpica.org
->>> Subject: RE: Query about the ACPI
->>>
->>>
->>>
->>> >-----Original Message-----
->>> >From: devel-bounces(a)acpica.org [mailto:devel-bounces(a)acpica.org] On
->Behalf
->>> >Of Hsu, Edward (ETD)
->>> >Sent: Thursday, January 14, 2010 9:59 PM
->>> >To: devel(a)acpica.org
->>> >Subject: [Devel] Query about the ACPI
->>> >
->>> >To whom it may concern,
->>> >
->>> >Hello, I've gone through the ACPI website, http://www.acpica.org/, and
->I
->>> >was wondering if the all Intel-related developmet tools would work for
->AMD
->>> >platform as well.
->>> >
->>>
->>> Yes. ACPI is not processor specific.
->>>
->>>
->>> >Besides, can it be merged into a Microsoft Windows application program?
->>>
->>> Please explain the question further.
->>>
->>> Bob
->>>
->>>
->>> >
->>> >Thank you very much.
->>> >
->>> >
->>> >Best Regards,
->>> >
->>> >Edward Hsu
->>> >_______________________________________________
->>> >Devel mailing list
->>> >Devel(a)acpica.org
->>> >http://lists.acpica.org/listinfo/devel
->>>
->>> _______________________________________________
->>> Devel mailing list
->>> Devel(a)acpica.org
->>> http://lists.acpica.org/listinfo/devel
->>_______________________________________________
->>Devel mailing list
->>Devel(a)acpica.org
->>http://lists.acpica.org/listinfo/devel
->_______________________________________________
->Devel mailing list
->Devel(a)acpica.org
->http://lists.acpica.org/listinfo/devel
-
---===============0485746037130456823==--
+--===============9138448099052555084==--
 
