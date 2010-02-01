@@ -1,17 +1,104 @@
-Content-Type: multipart/mixed; boundary="===============7398196272901093099=="
+Content-Type: multipart/mixed; boundary="===============0240598444763455084=="
 MIME-Version: 1.0
-From: Lin Ming <ming.m.lin at intel.com>
+From: chittaraiah pabba <chittaraiahp at ami.com>
 Subject: Re: [Devel] How to read ACPI table from Linux application
-Date: Mon, 01 Feb 2010 10:32:38 +0800
-Message-ID: <1264991558.25564.239.camel@minggr.sh.intel.com>
-In-Reply-To: 9B4771B4D9FB73498B40311D4E7E8EE5112F1362@atl-ms2.us.megatrends.com
+Date: Mon, 01 Feb 2010 09:59:05 -0500
+Message-ID: <9B4771B4D9FB73498B40311D4E7E8EE5112F1504@atl-ms2.us.megatrends.com>
+In-Reply-To: 1264991558.25564.239.camel@minggr.sh.intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7398196272901093099==
+--===============0240598444763455084==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+
+Lin,
+
+Thanks for quick reply. It's true that ACPICA API are used in driver code b=
+ut I saw the utility called "acpixtract" tool in acpi tools directory. I th=
+ink this tool xtract system ACPI tables from dsdt file then users can read =
+the ACPI tables and object information from extracted dsdt.dsl file.
+
+Here is my requirements:
+1) Every system has dsdt file in /proc/acpi/ folder
+2) I can convert dsdt file from binary format to ASCII format with iasl com=
+piler
+3) Now I have dsdt.dsl file to read ACPI tables and objects in human readab=
+le format. Now onwards I need your help
+4) I Know ACPIxtract tool also have input argument of dsdt file to extract =
+the ACPI tables
+5) Similar way I want use ACPI code to walk through the dsdt.dsl file and r=
+eturn processor block/object information from dsdt.file
+
+
+Here is the processor block object and highlighted fields I like to read fr=
+om dsdt.dsl file.
+
+Scope (_PR)
+    {
+        OperationRegion (SSDT, SystemMemory, 0x7F3EBC10, 0x02CC)
+        Name (DCOR, 0x01)
+        Name (NCST, 0x01)
+        Name (NPSS, 0x02)
+        Name (HNDL, 0x80000000)
+        Name (CINT, Zero)
+        Name (APSS, Package (0x02)
+        {
+            Package (0x06)
+            {
+                0x0898, =
+
+                0x00006978, =
+
+                0x000A, =
+
+                0x000A, =
+
+                0x0B2A, =
+
+                0x0B2A
+            }, =
+
+
+            Package (0x06)
+            {
+                0x04B0, =
+
+                0x000035E8, =
+
+                0x000A, =
+
+                0x000A, =
+
+                0x061D, =
+
+                0x061D
+            }
+        })
+
+I am more interest to read APSS package information of P states like proces=
+sor supported P states and there usage of maximum power of in respected P s=
+tates for power management of Legacy servers.
+
+I didn't see any power usage of processor in following folder: /sys/devices=
+/system/cpu/cpu0/cpufreq/*. =
+
+
+I really appreciate your service and valuable suggestions. Let me know if y=
+ou need any further information to understand the problem. Please help me t=
+o read the processor block object from dsdt.dsl file.
+
+--Chittari
+
+
+-----Original Message-----
+From: Lin Ming [mailto:ming.m.lin(a)intel.com] =
+
+Sent: Sunday, January 31, 2010 9:33 PM
+To: chittaraiah pabba
+Cc: devel(a)acpica.org
+Subject: Re: [Devel] How to read ACPI table from Linux application
 
 On Sat, 2010-01-30 at 05:31 +0800, chittaraiah pabba wrote:
 > Hi,
@@ -99,5 +186,5 @@ ling
 
 
 
---===============7398196272901093099==--
+--===============0240598444763455084==--
 
