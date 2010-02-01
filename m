@@ -1,172 +1,103 @@
-Content-Type: multipart/mixed; boundary="===============0268169913737708125=="
+Content-Type: multipart/mixed; boundary="===============7398196272901093099=="
 MIME-Version: 1.0
-From: chittaraiah pabba <chittaraiahp at ami.com>
-Subject: [Devel] How to read ACPI table from Linux application
-Date: Fri, 29 Jan 2010 16:31:40 -0500
-Message-ID: <9B4771B4D9FB73498B40311D4E7E8EE5112F1362@atl-ms2.us.megatrends.com>
+From: Lin Ming <ming.m.lin at intel.com>
+Subject: Re: [Devel] How to read ACPI table from Linux application
+Date: Mon, 01 Feb 2010 10:32:38 +0800
+Message-ID: <1264991558.25564.239.camel@minggr.sh.intel.com>
+In-Reply-To: 9B4771B4D9FB73498B40311D4E7E8EE5112F1362@atl-ms2.us.megatrends.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0268169913737708125==
+--===============7398196272901093099==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
+On Sat, 2010-01-30 at 05:31 +0800, chittaraiah pabba wrote:
+> Hi,
+> =
+
+> I am new to ACPICA community. We are planning to use ACPICA API=E2=80=99s=
+ in
+> one of power management application to get ACPI Processor block
+> information from dsdt file in Linux server. =
+
+> =
+
+> I am planning to use ACPICA libraries to read ACPI Processor block
+> information from Linux application. Information like: processor
+> supported P-states and power usage of p states
+
 Hi,
 
-I am new to ACPICA community. We are planning to use ACPICA API's in one
-of power management application to get ACPI Processor block information
-from dsdt file in Linux server. =
+ACPICA API is used in driver code.
+You can't use it in userspace application to get hardware dependent
+info.
+
+Instead, see /sys/devices/system/cpu/cpu0/cpufreq/* for the info.
+
+Lin Ming
+
+> =
+
+> We wrote small application to initialize ACPI tables but it=E2=80=99s fai=
+ling
+> and saw below error:
+> =
+
+> ////////////////////
+> =
+
+> ACPI Exception: AE_NOT_FOUND, While initializing Table Manager
+> (20091214/examples-247)
+> =
+
+> ACPI example
+> =
+
+> examples-0206 [00] main                  : Example Debug output
+> =
+
+> ACPI: ACPICA example info message
+> =
+
+> ACPI Warning: ACPICA example warning message (20091214/examples-211)
+> =
+
+> ACPI Error: ACPICA example error message (20091214/examples-212)
+> =
+
+> ACPI Exception: AE_AML_OPERAND_TYPE, Example exception message
+> (20091214/examples-213)
+> =
+
+> ACPI: Executing OSI method
+> =
+
+> ACPI: _OSI returned FFFFFFFF
+> =
+
+> ///////////////////////////////////////////
+> =
+
+> Can anyone guide me how to read processor information block dsdt file
+> with ACPICA code?
+> =
+
+> --Chittari
+> =
+
+> The information contained in this message may be confidential and
+> proprietary to American Megatrends, Inc.  This communication is
+> intended to be read only by the individual or entity to whom it is
+> addressed or by their designee. If the reader of this message is not
+> the intended recipient, you are on notice that any distribution of
+> this message, in any form, is strictly prohibited.  Please promptly
+> notify the sender by reply e-mail or by telephone at 770-246-8600, and
+> then delete or destroy all copies of the transmission.
+> =
 
 
-I am planning to use ACPICA libraries to read ACPI Processor block
-information from Linux application. Information like: processor
-supported P-states and power usage of p states
 
-We wrote small application to initialize ACPI tables but it's failing
-and saw below error:
-
-////////////////////
-ACPI Exception: AE_NOT_FOUND, While initializing Table Manager
-(20091214/examples-247)
-ACPI example
-examples-0206 [00] main                  : Example Debug output
-ACPI: ACPICA example info message
-ACPI Warning: ACPICA example warning message (20091214/examples-211)
-ACPI Error: ACPICA example error message (20091214/examples-212)
-ACPI Exception: AE_AML_OPERAND_TYPE, Example exception message
-(20091214/examples-213)
-ACPI: Executing OSI method
-ACPI: _OSI returned FFFFFFFF
-///////////////////////////////////////////
-
-Can anyone guide me how to read processor information block dsdt file
-with ACPICA code?
-
---Chittari
-
-The information contained in this message may be confidential and proprieta=
-ry to American Megatrends, Inc.  This communication is intended to be read =
-only by the individual or entity to whom it is addressed or by their design=
-ee. If the reader of this message is not the intended recipient, you are on=
- notice that any distribution of this message, in any form, is strictly pro=
-hibited.  Please promptly notify the sender by reply e-mail or by telephone=
- at 770-246-8600, and then delete or destroy all copies of the transmission.
-
-
---===============0268169913737708125==
-Content-Type: text/html
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="attachment.html"
-
-PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDMuMi8vRU4iPgo8SFRNTD4K
-PEhFQUQ+CjxNRVRBIEhUVFAtRVFVSVY9IkNvbnRlbnQtVHlwZSIgQ09OVEVOVD0idGV4dC9odG1s
-OyBjaGFyc2V0PXVzLWFzY2lpIj4KPE1FVEEgTkFNRT0iR2VuZXJhdG9yIiBDT05URU5UPSJNUyBF
-eGNoYW5nZSBTZXJ2ZXIgdmVyc2lvbiA2LjUuNzY1MS41OSI+CjxUSVRMRT5Ib3cgdG8gcmVhZCBB
-Q1BJIHRhYmxlIGZyb20gTGludXggYXBwbGljYXRpb248L1RJVExFPgo8L0hFQUQ+CjxCT0RZPgo8
-IS0tIENvbnZlcnRlZCBmcm9tIHRleHQvcnRmIGZvcm1hdCAtLT4KCjxQIERJUj1MVFI+PFNQQU4g
-TEFORz0iZW4tdXMiPjwvU1BBTj48U1BBTiBMQU5HPSJlbi11cyI+PEZPTlQgRkFDRT0iQ2FsaWJy
-aSI+SGksPC9GT05UPjwvU1BBTj48L1A+Cgo8UCBESVI9TFRSPjxTUEFOIExBTkc9ImVuLXVzIj48
-L1NQQU4+PFNQQU4gTEFORz0iZW4tdXMiPjwvU1BBTj48L1A+Cgo8UCBESVI9TFRSPjxTUEFOIExB
-Tkc9ImVuLXVzIj48Rk9OVCBGQUNFPSJDYWxpYnJpIj5JIGFtIG5ldzwvRk9OVD48L1NQQU4+PFNQ
-QU4gTEFORz0iZW4tdXMiPjwvU1BBTj48U1BBTiBMQU5HPSJlbi11cyI+IDxGT05UIEZBQ0U9IkNh
-bGlicmkiPnRvPC9GT05UPjwvU1BBTj48U1BBTiBMQU5HPSJlbi11cyI+PC9TUEFOPjxTUEFOIExB
-Tkc9ImVuLXVzIj4gPEZPTlQgRkFDRT0iQ2FsaWJyaSI+QUNQSUNBPC9GT05UPjwvU1BBTj48U1BB
-TiBMQU5HPSJlbi11cyI+PC9TUEFOPjxTUEFOIExBTkc9ImVuLXVzIj4gPEZPTlQgRkFDRT0iQ2Fs
-aWJyaSI+Y29tbXVuaXR5PC9GT05UPjwvU1BBTj48U1BBTiBMQU5HPSJlbi11cyI+PC9TUEFOPjxT
-UEFOIExBTkc9ImVuLXVzIj48Rk9OVCBGQUNFPSJDYWxpYnJpIj4uIFdlIGFyZSBwbGFubmluZyB0
-byB1c2U8L0ZPTlQ+PC9TUEFOPjxTUEFOIExBTkc9ImVuLXVzIj48L1NQQU4+PFNQQU4gTEFORz0i
-ZW4tdXMiPiA8Rk9OVCBGQUNFPSJDYWxpYnJpIj5BQ1BJQ0E8L0ZPTlQ+PC9TUEFOPjxTUEFOIExB
-Tkc9ImVuLXVzIj48L1NQQU4+PFNQQU4gTEFORz0iZW4tdXMiPiA8Rk9OVCBGQUNFPSJDYWxpYnJp
-Ij5BUEk8L0ZPTlQ+PC9TUEFOPjxTUEFOIExBTkc9ImVuLXVzIj48L1NQQU4+PFNQQU4gTEFORz0i
-ZW4tdXMiPjxGT05UIEZBQ0U9IkNhbGlicmkiPiYjODIxNzs8L0ZPTlQ+PC9TUEFOPjxTUEFOIExB
-Tkc9ImVuLXVzIj48L1NQQU4+PFNQQU4gTEFORz0iZW4tdXMiPjxGT05UIEZBQ0U9IkNhbGlicmki
-PnM8L0ZPTlQ+PC9TUEFOPjxTUEFOIExBTkc9ImVuLXVzIj48L1NQQU4+PFNQQU4gTEFORz0iZW4t
-dXMiPjxGT05UIEZBQ0U9IkNhbGlicmkiPiBpbiBvbmUgb2YgcG93ZXI8L0ZPTlQ+PC9TUEFOPjxT
-UEFOIExBTkc9ImVuLXVzIj48L1NQQU4+PFNQQU4gTEFORz0iZW4tdXMiPiA8Rk9OVCBGQUNFPSJD
-YWxpYnJpIj5tYW5hZ2VtZW50PC9GT05UPjwvU1BBTj48U1BBTiBMQU5HPSJlbi11cyI+PC9TUEFO
-PjxTUEFOIExBTkc9ImVuLXVzIj48Rk9OVCBGQUNFPSJDYWxpYnJpIj4gYXBwbGljYXRpb24gdG8g
-Z2V0IEFDUEkgUHJvY2Vzc29yIGJsb2NrIGluZm9ybWF0aW9uPC9GT05UPjwvU1BBTj48U1BBTiBM
-QU5HPSJlbi11cyI+PC9TUEFOPjxTUEFOIExBTkc9ImVuLXVzIj48Rk9OVCBGQUNFPSJDYWxpYnJp
-Ij4gZnJvbSBkc2R0IGZpbGU8L0ZPTlQ+PC9TUEFOPjxTUEFOIExBTkc9ImVuLXVzIj48L1NQQU4+
-PFNQQU4gTEFORz0iZW4tdXMiPjxGT05UIEZBQ0U9IkNhbGlicmkiPiBpbjwvRk9OVD48L1NQQU4+
-PFNQQU4gTEFORz0iZW4tdXMiPjwvU1BBTj48U1BBTiBMQU5HPSJlbi11cyI+IDxGT05UIEZBQ0U9
-IkNhbGlicmkiPkxpbnV4PC9GT05UPjwvU1BBTj48U1BBTiBMQU5HPSJlbi11cyI+PC9TUEFOPjxT
-UEFOIExBTkc9ImVuLXVzIj48Rk9OVCBGQUNFPSJDYWxpYnJpIj4gc2VydmVyPC9GT05UPjwvU1BB
-Tj48U1BBTiBMQU5HPSJlbi11cyI+PC9TUEFOPjxTUEFOIExBTkc9ImVuLXVzIj48Rk9OVCBGQUNF
-PSJDYWxpYnJpIj4uIDwvRk9OVD48L1NQQU4+PC9QPgoKPFAgRElSPUxUUj48U1BBTiBMQU5HPSJl
-bi11cyI+PC9TUEFOPjxTUEFOIExBTkc9ImVuLXVzIj48Rk9OVCBGQUNFPSJDYWxpYnJpIj5JIGFt
-IHBsYW5uaW5nIHRvIHVzZSBBQ1BJQ0EgbGlicmFyaWVzIHRvIHI8L0ZPTlQ+PC9TUEFOPjxTUEFO
-IExBTkc9ImVuLXVzIj48L1NQQU4+PFNQQU4gTEFORz0iZW4tdXMiPjxGT05UIEZBQ0U9IkNhbGli
-cmkiPmVhZCBBQ1BJIFByb2Nlc3NvciBibG9jayBpbmZvcm1hdGlvbiBmcm9tPC9GT05UPjwvU1BB
-Tj48U1BBTiBMQU5HPSJlbi11cyI+PC9TUEFOPjxTUEFOIExBTkc9ImVuLXVzIj4gPEZPTlQgRkFD
-RT0iQ2FsaWJyaSI+TGludXg8L0ZPTlQ+PC9TUEFOPjxTUEFOIExBTkc9ImVuLXVzIj48L1NQQU4+
-PFNQQU4gTEFORz0iZW4tdXMiPjxGT05UIEZBQ0U9IkNhbGlicmkiPiBhcHBsaWNhdGlvbi4gSW5m
-b3JtYXRpb24gbGlrZTogcHJvY2Vzc29yPC9GT05UPjwvU1BBTj48U1BBTiBMQU5HPSJlbi11cyI+
-PC9TUEFOPjxTUEFOIExBTkc9ImVuLXVzIj4gPEZPTlQgRkFDRT0iQ2FsaWJyaSI+c3VwcG9ydGVk
-PC9GT05UPjwvU1BBTj48U1BBTiBMQU5HPSJlbi11cyI+PC9TUEFOPjxTUEFOIExBTkc9ImVuLXVz
-Ij4gPEZPTlQgRkFDRT0iQ2FsaWJyaSI+UC1zdGF0ZTwvRk9OVD48L1NQQU4+PFNQQU4gTEFORz0i
-ZW4tdXMiPjwvU1BBTj48U1BBTiBMQU5HPSJlbi11cyI+PEZPTlQgRkFDRT0iQ2FsaWJyaSI+czwv
-Rk9OVD48L1NQQU4+PFNQQU4gTEFORz0iZW4tdXMiPjwvU1BBTj48U1BBTiBMQU5HPSJlbi11cyI+
-PEZPTlQgRkFDRT0iQ2FsaWJyaSI+IGFuZCBwb3dlciB1c2FnZSBvZjwvRk9OVD48L1NQQU4+PFNQ
-QU4gTEFORz0iZW4tdXMiPjwvU1BBTj48U1BBTiBMQU5HPSJlbi11cyI+PEZPTlQgRkFDRT0iQ2Fs
-aWJyaSI+IHAgc3RhdGVzPC9GT05UPjwvU1BBTj48L1A+Cgo8UCBESVI9TFRSPjxTUEFOIExBTkc9
-ImVuLXVzIj48L1NQQU4+PFNQQU4gTEFORz0iZW4tdXMiPjwvU1BBTj48L1A+Cgo8UCBESVI9TFRS
-PjxTUEFOIExBTkc9ImVuLXVzIj48Rk9OVCBGQUNFPSJDYWxpYnJpIj5XZTwvRk9OVD48L1NQQU4+
-PFNQQU4gTEFORz0iZW4tdXMiPjwvU1BBTj48U1BBTiBMQU5HPSJlbi11cyI+PEZPTlQgRkFDRT0i
-Q2FsaWJyaSI+IHdyb3RlIHNtYWxsIGFwcGxpY2F0aW9uIHRvPC9GT05UPjwvU1BBTj48U1BBTiBM
-QU5HPSJlbi11cyI+PC9TUEFOPjxTUEFOIExBTkc9ImVuLXVzIj4gPEZPTlQgRkFDRT0iQ2FsaWJy
-aSI+aW5pdGlhbGl6ZTwvRk9OVD48L1NQQU4+PFNQQU4gTEFORz0iZW4tdXMiPjwvU1BBTj48U1BB
-TiBMQU5HPSJlbi11cyI+PEZPTlQgRkFDRT0iQ2FsaWJyaSI+IEFDUEkgdGFibGVzIGJ1dCBpdDwv
-Rk9OVD48L1NQQU4+PFNQQU4gTEFORz0iZW4tdXMiPjwvU1BBTj48U1BBTiBMQU5HPSJlbi11cyI+
-PEZPTlQgRkFDRT0iQ2FsaWJyaSI+JiM4MjE3OzwvRk9OVD48L1NQQU4+PFNQQU4gTEFORz0iZW4t
-dXMiPjwvU1BBTj48U1BBTiBMQU5HPSJlbi11cyI+PEZPTlQgRkFDRT0iQ2FsaWJyaSI+cyBmYWls
-aW5nIGFuZDwvRk9OVD48L1NQQU4+PFNQQU4gTEFORz0iZW4tdXMiPjwvU1BBTj48U1BBTiBMQU5H
-PSJlbi11cyI+IDxGT05UIEZBQ0U9IkNhbGlicmkiPnNhdzwvRk9OVD48L1NQQU4+PFNQQU4gTEFO
-Rz0iZW4tdXMiPjwvU1BBTj48U1BBTiBMQU5HPSJlbi11cyI+PEZPTlQgRkFDRT0iQ2FsaWJyaSI+
-IGJlbG93IGVycm9yOjwvRk9OVD48L1NQQU4+PC9QPgoKPFAgRElSPUxUUj48U1BBTiBMQU5HPSJl
-bi11cyI+PEZPTlQgRkFDRT0iQ2FsaWJyaSI+Ly8vLy8vLy8vLy8vLy8vLy8vLy88L0ZPTlQ+PC9T
-UEFOPjwvUD4KCjxQIERJUj1MVFI+PFNQQU4gTEFORz0iZW4tdXMiPjwvU1BBTj48U1BBTiBMQU5H
-PSJlbi11cyI+PEZPTlQgRkFDRT0iQ2FsaWJyaSI+QUNQSSBFeGNlcHRpb246IEFFX05PVF9GT1VO
-RCwgV2hpbGUgaW5pdGlhbGl6aW5nIFRhYmxlIE1hbmFnZXIgKDIwMDkxMjE0L2V4YW1wbGVzLTI0
-Nyk8L0ZPTlQ+PC9TUEFOPjwvUD4KCjxQIERJUj1MVFI+PFNQQU4gTEFORz0iZW4tdXMiPjxGT05U
-IEZBQ0U9IkNhbGlicmkiPkFDUEkgZXhhbXBsZTwvRk9OVD48L1NQQU4+PC9QPgoKPFAgRElSPUxU
-Uj48U1BBTiBMQU5HPSJlbi11cyI+PEZPTlQgRkFDRT0iQ2FsaWJyaSI+ZXhhbXBsZXMtMDIwNiBb
-MDBdIG1haW4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
-bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsgOiBF
-eGFtcGxlIERlYnVnIG91dHB1dDwvRk9OVD48L1NQQU4+PC9QPgoKPFAgRElSPUxUUj48U1BBTiBM
-QU5HPSJlbi11cyI+PEZPTlQgRkFDRT0iQ2FsaWJyaSI+QUNQSTogQUNQSUNBIGV4YW1wbGUgaW5m
-byBtZXNzYWdlPC9GT05UPjwvU1BBTj48L1A+Cgo8UCBESVI9TFRSPjxTUEFOIExBTkc9ImVuLXVz
-Ij48Rk9OVCBGQUNFPSJDYWxpYnJpIj5BQ1BJIFdhcm5pbmc6IEFDUElDQSBleGFtcGxlIHdhcm5p
-bmcgbWVzc2FnZSAoMjAwOTEyMTQvZXhhbXBsZXMtMjExKTwvRk9OVD48L1NQQU4+PC9QPgoKPFAg
-RElSPUxUUj48U1BBTiBMQU5HPSJlbi11cyI+PEZPTlQgRkFDRT0iQ2FsaWJyaSI+QUNQSSBFcnJv
-cjogQUNQSUNBIGV4YW1wbGUgZXJyb3IgbWVzc2FnZSAoMjAwOTEyMTQvZXhhbXBsZXMtMjEyKTwv
-Rk9OVD48L1NQQU4+PC9QPgoKPFAgRElSPUxUUj48U1BBTiBMQU5HPSJlbi11cyI+PEZPTlQgRkFD
-RT0iQ2FsaWJyaSI+QUNQSSBFeGNlcHRpb246IEFFX0FNTF9PUEVSQU5EX1RZUEUsIEV4YW1wbGUg
-ZXhjZXB0aW9uIG1lc3NhZ2UgKDIwMDkxMjE0L2V4YW1wbGVzLTIxMyk8L0ZPTlQ+PC9TUEFOPjwv
-UD4KCjxQIERJUj1MVFI+PFNQQU4gTEFORz0iZW4tdXMiPjxGT05UIEZBQ0U9IkNhbGlicmkiPkFD
-UEk6IEV4ZWN1dGluZyBPU0kgbWV0aG9kPC9GT05UPjwvU1BBTj48L1A+Cgo8UCBESVI9TFRSPjxT
-UEFOIExBTkc9ImVuLXVzIj48Rk9OVCBGQUNFPSJDYWxpYnJpIj5BQ1BJOiBfT1NJIHJldHVybmVk
-IEZGRkZGRkZGPC9GT05UPjwvU1BBTj48U1BBTiBMQU5HPSJlbi11cyI+PC9TUEFOPjxTUEFOIExB
-Tkc9ImVuLXVzIj48L1NQQU4+PC9QPgoKPFAgRElSPUxUUj48U1BBTiBMQU5HPSJlbi11cyI+PEZP
-TlQgRkFDRT0iQ2FsaWJyaSI+Ly8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8v
-Ly8vLzwvRk9OVD48L1NQQU4+PC9QPgoKPFAgRElSPUxUUj48U1BBTiBMQU5HPSJlbi11cyI+PEZP
-TlQgRkFDRT0iQ2FsaWJyaSI+Q2FuIGFueW9uZSBndWlkZSBtZTwvRk9OVD48L1NQQU4+PFNQQU4g
-TEFORz0iZW4tdXMiPiA8Rk9OVCBGQUNFPSJDYWxpYnJpIj5ob3cgdG8gcmVhZCBwcm9jZXNzb3Ig
-aW5mb3JtYXRpb24gYmxvY2sgZHNkdCBmaWxlIHdpdGggQUNQSUNBIGNvZGU/PC9GT05UPjwvU1BB
-Tj48U1BBTiBMQU5HPSJlbi11cyI+PC9TUEFOPjwvUD4KCjxQIERJUj1MVFI+PFNQQU4gTEFORz0i
-ZW4tdXMiPjxGT05UIEZBQ0U9IkNhbGlicmkiPi0tQ2hpdHRhcmk8L0ZPTlQ+PC9TUEFOPjxTUEFO
-IExBTkc9ImVuLXVzIj48L1NQQU4+PC9QPgoKPC9CT0RZPgo8IS0tW29iamVjdF9pZD0jYW1pLmNv
-bSNdLS0+PFA+VGhlIGluZm9ybWF0aW9uIGNvbnRhaW5lZCBpbiB0aGlzIG1lc3NhZ2UgbWF5IGJl
-IGNvbmZpZGVudGlhbCBhbmQgcHJvcHJpZXRhcnkgdG8gQW1lcmljYW4gTWVnYXRyZW5kcywgSW5j
-LiZuYnNwOyBUaGlzIGNvbW11bmljYXRpb24gaXMgaW50ZW5kZWQgdG8gYmUgcmVhZCBvbmx5IGJ5
-IHRoZSBpbmRpdmlkdWFsIG9yIGVudGl0eSB0byB3aG9tIGl0IGlzIGFkZHJlc3NlZCBvciBieSB0
-aGVpciBkZXNpZ25lZS4gSWYgdGhlIHJlYWRlciBvZiB0aGlzIG1lc3NhZ2UgaXMgbm90IHRoZSBp
-bnRlbmRlZCByZWNpcGllbnQsIHlvdSBhcmUgb24gbm90aWNlIHRoYXQgYW55IGRpc3RyaWJ1dGlv
-biBvZiB0aGlzIG1lc3NhZ2UsIGluIGFueSBmb3JtLCBpcyBzdHJpY3RseSBwcm9oaWJpdGVkLiZu
-YnNwOyBQbGVhc2UgcHJvbXB0bHkgbm90aWZ5IHRoZSBzZW5kZXIgYnkgcmVwbHkgZS1tYWlsIG9y
-IGJ5IHRlbGVwaG9uZSBhdCA3NzAtMjQ2LTg2MDAsIGFuZCB0aGVuIGRlbGV0ZSBvciBkZXN0cm95
-IGFsbCBjb3BpZXMgb2YgdGhlIHRyYW5zbWlzc2lvbi48L1A+PC9IVE1MPg==
---===============0268169913737708125==--
+--===============7398196272901093099==--
 
