@@ -1,18 +1,56 @@
-Content-Type: multipart/mixed; boundary="===============5615008596937566318=="
+Content-Type: multipart/mixed; boundary="===============4745282424408145521=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
+From: Chumbalkar, Nagananda <Nagananda.Chumbalkar at hp.com>
 Subject: Re: [Devel] [PATCH] ACPICA: exfield: minor format change in
  error	message (fwd)
-Date: Thu, 18 Feb 2010 23:48:43 -0800
-Message-ID: <4911F71203A09E4D9981D27F9D8308585995823D@orsmsx503.amr.corp.intel.com>
-In-Reply-To: alpine.LFD.2.00.1002190141280.24628@localhost.localdomain
+Date: Fri, 19 Feb 2010 16:37:35 +0000
+Message-ID: <66D9D2F0CDB5C9428E6166B01EC85EE161E3A2E496@GVW0676EXC.americas.hpqcorp.net>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5615008596937566318==
+--===============4745282424408145521==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+
+[PATCH v2] ACPICA: exfield: minor format change in error message
+
+Change %X to %u.
+
+V1->V2:
+%d to %u
+
+Signed-off-by: Naga Chumbalkar <nagananda.chumbalkar(a)hp.com>
+
+diff --git a/drivers/acpi/acpica/exfield.c b/drivers/acpi/acpica/exfield.c
+index 1588a2d..b9400e7 100644
+--- a/drivers/acpi/acpica/exfield.c
++++ b/drivers/acpi/acpica/exfield.c
+@@ -281,7 +281,8 @@ acpi_ex_write_data_to_field(union acpi_operand_object *=
+source_desc,
+ =
+
+ 		if (source_desc->buffer.length < length) {
+ 			ACPI_ERROR((AE_INFO,
+-				    "SMBus or IPMI write requires Buffer of length %X, found length %X=
+",
++				    "SMBus or IPMI write requires Buffer of "
++				    "length %u, found length %u",
+ 				    length, source_desc->buffer.length));
+ =
+
+ 			return_ACPI_STATUS(AE_AML_BUFFER_LIMIT);
+
+
+-----Original Message-----
+From: Moore, Robert [mailto:robert.moore(a)intel.com] =
+
+Sent: Friday, February 19, 2010 1:49 AM
+To: Len Brown; devel(a)acpica.org
+Cc: linux-acpi(a)vger.kernel.org; Chumbalkar, Nagananda
+Subject: RE: [Devel] [PATCH] ACPICA: exfield: minor format =
+
+change in error message (fwd)
 
 Yes.
 
@@ -24,8 +62,9 @@ We usually use %u on these:
 +				    "length %u, found length %u",
 
 >-----Original Message-----
->From: devel-bounces(a)acpica.org [mailto:devel-bounces(a)acpica.org] On Be=
-half
+>From: devel-bounces(a)acpica.org =
+
+[mailto:devel-bounces(a)acpica.org] On Behalf
 >Of Len Brown
 >Sent: Thursday, February 18, 2010 10:43 PM
 >To: devel(a)acpica.org
@@ -39,52 +78,6 @@ half
 >thanks,
 >Len Brown, Intel Open Source Technology Center
 >
->---------- Forwarded message ----------
->Date: Wed, 17 Feb 2010 03:13:27 +0000 (UTC)
->From: Naga Chumbalkar <nagananda.chumbalkar(a)hp.com>
->To: len.brown(a)intel.com
->Cc: linux-acpi(a)vger.kernel.org, Naga Chumbalkar
-><nagananda.chumbalkar(a)hp.com>
->Subject: [PATCH] ACPICA: exfield: minor format change in error message
->
->Found this while debugging a problem.  Trivial, but useful, format change.
->
->Before:
->ACPI Error: SMBus or IPMI write requires Buffer of length 42, found length
->20
->(20091214/exfield-285)
->
->After:
->ACPI Error: SMBus or IPMI write requires Buffer of length 66, found length
->32
->(20091214/exfield-286)
->
->Signed-off-by: Naga Chumbalkar <nagananda.chumbalkar(a)hp.com>
->
->diff --git a/drivers/acpi/acpica/exfield.c b/drivers/acpi/acpica/exfield.c
->index 1588a2d..be2b03a 100644
->--- a/drivers/acpi/acpica/exfield.c
->+++ b/drivers/acpi/acpica/exfield.c
->@@ -281,7 +281,8 @@ acpi_ex_write_data_to_field(union acpi_operand_object
->*source_desc,
->
-> 		if (source_desc->buffer.length < length) {
-> 			ACPI_ERROR((AE_INFO,
->-				    "SMBus or IPMI write requires Buffer of length
->%X, found length %X",
->+				    "SMBus or IPMI write requires Buffer of "
->+				    "length %d, found length %d",
-> 				    length, source_desc->buffer.length));
->
-> 			return_ACPI_STATUS(AE_AML_BUFFER_LIMIT);
->--
->To unsubscribe from this list: send the line "unsubscribe linux-acpi" in
->the body of a message to majordomo(a)vger.kernel.org
->More majordomo info at  http://vger.kernel.org/majordomo-info.html
->_______________________________________________
->Devel mailing list
->Devel(a)acpica.org
->http://lists.acpica.org/listinfo/devel
 
---===============5615008596937566318==--
+--===============4745282424408145521==--
 
