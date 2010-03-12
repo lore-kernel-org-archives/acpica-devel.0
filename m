@@ -1,71 +1,116 @@
-Content-Type: multipart/mixed; boundary="===============6946592059846387338=="
+Content-Type: multipart/mixed; boundary="===============0080148057376126421=="
 MIME-Version: 1.0
-From: Thomas Renninger <trenn at suse.de>
-Subject: [Devel] Reserved method has too many arguments (_OSC requires 4)
-Date: Fri, 12 Mar 2010 15:00:53 +0100
-Message-ID: <201003121500.53220.trenn@suse.de>
+From: Moore, Robert <robert.moore at intel.com>
+Subject: Re: [Devel] Reserved method has too many arguments (_OSC requires 4)
+Date: Fri, 12 Mar 2010 07:58:41 -0800
+Message-ID: <4911F71203A09E4D9981D27F9D83085859F8A2C7@orsmsx503.amr.corp.intel.com>
+In-Reply-To: 201003121500.53220.trenn@suse.de
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6946592059846387338==
+--===============0080148057376126421==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
 
-I have a laptop freezing early, acpi=3Doff and noapic helps.
-I wonder whether this could have to do with the broken _OSC method.
+>My other concern/question is: what exactly happens in such a case?
+>Will _OSC get invoked at all?
+>If yes, what will be the last argument, zero, -1?
 
-I cannot access the machine myself, eventually I can get more info
-if needed, but the machine is freezing really early (after ACPI
-initialization, somewhere around bringing up CPUs (possibly when
-starting PCI init already?).
+The method will be invoked with the 4 arguments, the correct number. What w=
+ill happen then is one of three things:
 
-This is not the first time I see this message.
-It would be great to get (from include/linux/kernel.h):
-#define FW_BUG          "[Firmware Bug]: "
-#define FW_WARN         "[Firmware Warn]: "
-#define FW_INFO         "[Firmware Info]: "
-marked messages into ACPICA and blame the guys who are responsible
-for that.
+1) The method attempts to access the phantom fifth argument and it will the=
+n be aborted with an AE_AML_UNINITIALIZED_ARG exception.
 
-My other concern/question is: what exactly happens in such a case?
-Will _OSC get invoked at all?
-If yes, what will be the last argument, zero, -1?
+2) The method has some other confusion about the first four arguments (give=
+n that it is already confused about the number of arguments in the first pl=
+ace), and does something unpredictable.
 
-Hmm, I doubt it has to do with the freeze, but it would still be
-great if someone knowing these parts could comment what people
-with such a BIOS could expect to happen.
+2) The method does not attempt to access the fifth argument, understands th=
+e first four arguments correctly and runs to completion correctly.
 
-Thanks,
 
-  Thomas
+>This is not the first time I see this message.
+>It would be great to get (from include/linux/kernel.h):
 
-Method (_OSC, 5, NotSerialized)
-{
-   Store (Arg3, Local0)
-   Multiply (Local0, 0x04, Local1)
-   Name (BUF1, Buffer (Local1) {})
-   Store (Arg4, BUF1)
-   Store (Zero, Local1)
-   Store (Zero, Local2)
-   While (Local0)
-   {
-       Multiply (Local1, 0x04, Local2)
-       CreateDWordField (BUF1, Local2, CAPB)
-       If (Arg2)
-       {
-           If (LEqual (Local1, Zero))
-           {
-               And (CAPB, 0xFFFFFFFC)
-           }
-       }
-       Increment (Local1)
-       Decrement (Local0)
-   }
-   Return (BUF1)
-}
+I've seen this suggestion before, I'll add it as something to look at -- si=
+nce it goes far beyond one or two error messages.
 
---===============6946592059846387338==--
+In the meantime, the existing error message could use some improvement to c=
+larify it, any suggestions?
+
+Bob
+
+
+>-----Original Message-----
+>From: devel-bounces(a)acpica.org [mailto:devel-bounces(a)acpica.org] On Be=
+half
+>Of Thomas Renninger
+>Sent: Friday, March 12, 2010 6:01 AM
+>To: linux-acpi(a)vger.kernel.org
+>Cc: devel(a)acpica.org
+>Subject: [Devel] Reserved method has too many arguments (_OSC requires 4)
+>
+>Hi,
+>
+>I have a laptop freezing early, acpi=3Doff and noapic helps.
+>I wonder whether this could have to do with the broken _OSC method.
+>
+>I cannot access the machine myself, eventually I can get more info
+>if needed, but the machine is freezing really early (after ACPI
+>initialization, somewhere around bringing up CPUs (possibly when
+>starting PCI init already?).
+>
+>This is not the first time I see this message.
+>It would be great to get (from include/linux/kernel.h):
+>#define FW_BUG          "[Firmware Bug]: "
+>#define FW_WARN         "[Firmware Warn]: "
+>#define FW_INFO         "[Firmware Info]: "
+>marked messages into ACPICA and blame the guys who are responsible
+>for that.
+>
+>My other concern/question is: what exactly happens in such a case?
+>Will _OSC get invoked at all?
+>If yes, what will be the last argument, zero, -1?
+>
+>Hmm, I doubt it has to do with the freeze, but it would still be
+>great if someone knowing these parts could comment what people
+>with such a BIOS could expect to happen.
+>
+>Thanks,
+>
+>  Thomas
+>
+>Method (_OSC, 5, NotSerialized)
+>{
+>   Store (Arg3, Local0)
+>   Multiply (Local0, 0x04, Local1)
+>   Name (BUF1, Buffer (Local1) {})
+>   Store (Arg4, BUF1)
+>   Store (Zero, Local1)
+>   Store (Zero, Local2)
+>   While (Local0)
+>   {
+>       Multiply (Local1, 0x04, Local2)
+>       CreateDWordField (BUF1, Local2, CAPB)
+>       If (Arg2)
+>       {
+>           If (LEqual (Local1, Zero))
+>           {
+>               And (CAPB, 0xFFFFFFFC)
+>           }
+>       }
+>       Increment (Local1)
+>       Decrement (Local0)
+>   }
+>   Return (BUF1)
+>}
+>_______________________________________________
+>Devel mailing list
+>Devel(a)acpica.org
+>http://lists.acpica.org/listinfo/devel
+
+--===============0080148057376126421==--
 
