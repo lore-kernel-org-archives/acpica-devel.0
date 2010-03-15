@@ -1,163 +1,163 @@
-Content-Type: multipart/mixed; boundary="===============8286614424364259441=="
+Content-Type: multipart/mixed; boundary="===============3272477139006838523=="
 MIME-Version: 1.0
 From: Moore, Robert <robert.moore at intel.com>
 Subject: Re: [Devel] Reserved method has too many arguments (_OSC requires 4)
-Date: Mon, 15 Mar 2010 09:59:09 -0700
-Message-ID: <4911F71203A09E4D9981D27F9D83085859FF9F81@orsmsx503.amr.corp.intel.com>
-In-Reply-To: 201003151030.38752.trenn@suse.de
+Date: Mon, 15 Mar 2010 10:28:54 -0700
+Message-ID: <4911F71203A09E4D9981D27F9D83085859FFA03E@orsmsx503.amr.corp.intel.com>
+In-Reply-To: 201003121500.53220.trenn@suse.de
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8286614424364259441==
+--===============3272477139006838523==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Please send the acpidump for this machine, we'd like to take a look at this.
-Thanks,
+
+Thomas,
+
+Looking closely at the ASL code for _OSC that you provided, I'm afraid that=
+ the control method is botched beyond all hope.
+
+
+Here is the definition of _OSC:
+
+Arguments: (4)
+Arg0 - A Buffer containing a UUID
+Arg1 - An Integer containing a Revision ID of the buffer format
+Arg2 - An Integer containing a count of entries in Arg3
+Arg3 - A Buffer containing a list of DWORD capabilities
+
+
+Analyzing the method:
+
+>Method (_OSC, 5, NotSerialized)
+>{
+>   Store (Arg3, Local0)
+>   Multiply (Local0, 0x04, Local1)
+
+Attempting to convert a DWORD count to a BYTE count. It is Arg2 that contai=
+ns the count, not Arg3.
+
+
+>   Name (BUF1, Buffer (Local1) {})
+>   Store (Arg4, BUF1)
+
+Attempting to copy the input buffer. It is Arg3 that contains the input buf=
+fer, not Arg4. =
+
+
+
+>   Store (Zero, Local1)
+>   Store (Zero, Local2)
+>   While (Local0)
+>   {
+
+Attempt to walk the entire input buffer, by DWORDs. Local0 incorrectly cont=
+ains Arg3, should the count -- Arg2.
+
+
+>       Multiply (Local1, 0x04, Local2)
+>       CreateDWordField (BUF1, Local2, CAPB)
+
+Create a named object (CAPB) within a loop. This will fail on the second it=
+eration of the loop -- i.e., on the second DWORD.
+
+
+>       If (Arg2)
+>       {
+>           If (LEqual (Local1, Zero))
+>           {
+>               And (CAPB, 0xFFFFFFFC)
+
+gr.asl    20:     And (CAPB, 0xFFFFFFFC)
+Warning  1106 -     ^ Result is not used, operator has no effect
+
+
+>           }
+>       }
+>       Increment (Local1)
+>       Decrement (Local0)
+>   }
+>   Return (BUF1)
+>}
+
+
+Even if the code would actually execute, it doesn't do anything.
+
+Also, the UUID is never checked.
+
 Bob
 
 
+
 >-----Original Message-----
->From: Thomas Renninger [mailto:trenn(a)suse.de]
->Sent: Monday, March 15, 2010 2:31 AM
->To: Moore, Robert
->Cc: linux-acpi(a)vger.kernel.org; devel(a)acpica.org
->Subject: Re: [Devel] Reserved method has too many arguments (_OSC requires
->4)
+>From: devel-bounces(a)acpica.org [mailto:devel-bounces(a)acpica.org] On Be=
+half
+>Of Thomas Renninger
+>Sent: Friday, March 12, 2010 6:01 AM
+>To: linux-acpi(a)vger.kernel.org
+>Cc: devel(a)acpica.org
+>Subject: [Devel] Reserved method has too many arguments (_OSC requires 4)
 >
->On Friday 12 March 2010 16:58:41 Moore, Robert wrote:
->>
->> >My other concern/question is: what exactly happens in such a case?
->> >Will _OSC get invoked at all?
->> >If yes, what will be the last argument, zero, -1?
->>
->> The method will be invoked with the 4 arguments, the correct number.
->> What will happen then is one of three things:
->>
->> 1) The method attempts to access the phantom fifth argument and it
->> will then be aborted with an AE_AML_UNINITIALIZED_ARG exception.
->>
->> 2) The method has some other confusion about the first four arguments
->> (given that it is already confused about the number of arguments in
->> the first place), and does something unpredictable.
->>
->> 3) The method does not attempt to access the fifth argument, understands
->> the first four arguments correctly and runs to completion correctly.
+>Hi,
 >
->I expect I have the first with acpiexec I get:
->execute \_SB_.PCI0._OSC 1 1 1 1
->Executing \_SB_.PCI0._OSC
->ACPI Error: Uninitialized Arg[4] at node 0x6c9648 (20100304/dsmthdat-544)
->ACPI Exception: AE_AML_UNINITIALIZED_ARG, While resolving operands for
->[Store] (20100304/dswexec-554)
->[AcpiExec] Exception AE_AML_UNINITIALIZED_ARG during execution of method
->[_OSC] Opcode [Store] @12
+>I have a laptop freezing early, acpi=3Doff and noapic helps.
+>I wonder whether this could have to do with the broken _OSC method.
 >
->**** Exception AE_AML_UNINITIALIZED_ARG during execution of method
->[\_SB_.PCI0._OSC] (Node 0x67b7c0)
+>I cannot access the machine myself, eventually I can get more info
+>if needed, but the machine is freezing really early (after ACPI
+>initialization, somewhere around bringing up CPUs (possibly when
+>starting PCI init already?).
 >
->Thanks!
+>This is not the first time I see this message.
+>It would be great to get (from include/linux/kernel.h):
+>#define FW_BUG          "[Firmware Bug]: "
+>#define FW_WARN         "[Firmware Warn]: "
+>#define FW_INFO         "[Firmware Info]: "
+>marked messages into ACPICA and blame the guys who are responsible
+>for that.
 >
->> >This is not the first time I see this message.
->> >It would be great to get (from include/linux/kernel.h):
->>
->> I've seen this suggestion before, I'll add it as something to look at
->> -- since it goes far beyond one or two error messages.
->Great, would be the possibilty/interface, first for now.
->This would help with most important/upcoming messages and newly written
->code.
->No need to go through all files and adjust every potential message.
+>My other concern/question is: what exactly happens in such a case?
+>Will _OSC get invoked at all?
+>If yes, what will be the last argument, zero, -1?
 >
->> In the meantime, the existing error message could use some improvement
->> to clarify it, any suggestions?
->Hm, not sure if this is necessary or possible.
->More important would be to find out what the fifth argument is for and how
->to solve this if Linux has to be able to differ _OSC 4 vs 5 arguments?
->As this is the 2nd OEM (maybe only one BIOS devel company?) making use of
->this...
->It's always the PCI root bridge _OSC method with 5 arguments, there are
->other _OSC methods (e.g. processor capabilities) which still have 4 args.
->This should be the first kind of such differentiation and probably is
->really
->ugly to implement?
->
->With the one vendor we are a bit in touch, I try to find out more.
+>Hmm, I doubt it has to do with the freeze, but it would still be
+>great if someone knowing these parts could comment what people
+>with such a BIOS could expect to happen.
 >
 >Thanks,
 >
->     Thomas
+>  Thomas
 >
->> >-----Original Message-----
->> >From: devel-bounces(a)acpica.org [mailto:devel-bounces(a)acpica.org] On
->Behalf
->> >Of Thomas Renninger
->> >Sent: Friday, March 12, 2010 6:01 AM
->> >To: linux-acpi(a)vger.kernel.org
->> >Cc: devel(a)acpica.org
->> >Subject: [Devel] Reserved method has too many arguments (_OSC requires
->4)
->> >
->> >Hi,
->> >
->> >I have a laptop freezing early, acpi=3Doff and noapic helps.
->> >I wonder whether this could have to do with the broken _OSC method.
->> >
->> >I cannot access the machine myself, eventually I can get more info
->> >if needed, but the machine is freezing really early (after ACPI
->> >initialization, somewhere around bringing up CPUs (possibly when
->> >starting PCI init already?).
->> >
->> >This is not the first time I see this message.
->> >It would be great to get (from include/linux/kernel.h):
->> >#define FW_BUG          "[Firmware Bug]: "
->> >#define FW_WARN         "[Firmware Warn]: "
->> >#define FW_INFO         "[Firmware Info]: "
->> >marked messages into ACPICA and blame the guys who are responsible
->> >for that.
->> >
->> >My other concern/question is: what exactly happens in such a case?
->> >Will _OSC get invoked at all?
->> >If yes, what will be the last argument, zero, -1?
->> >
->> >Hmm, I doubt it has to do with the freeze, but it would still be
->> >great if someone knowing these parts could comment what people
->> >with such a BIOS could expect to happen.
->> >
->> >Thanks,
->> >
->> >  Thomas
->> >
->> >Method (_OSC, 5, NotSerialized)
->> >{
->> >   Store (Arg3, Local0)
->> >   Multiply (Local0, 0x04, Local1)
->> >   Name (BUF1, Buffer (Local1) {})
->> >   Store (Arg4, BUF1)
->> >   Store (Zero, Local1)
->> >   Store (Zero, Local2)
->> >   While (Local0)
->> >   {
->> >       Multiply (Local1, 0x04, Local2)
->> >       CreateDWordField (BUF1, Local2, CAPB)
->> >       If (Arg2)
->> >       {
->> >           If (LEqual (Local1, Zero))
->> >           {
->> >               And (CAPB, 0xFFFFFFFC)
->> >           }
->> >       }
->> >       Increment (Local1)
->> >       Decrement (Local0)
->> >   }
->> >   Return (BUF1)
->> >}
->> >_______________________________________________
->> >Devel mailing list
->> >Devel(a)acpica.org
->> >http://lists.acpica.org/listinfo/devel
->>
+>Method (_OSC, 5, NotSerialized)
+>{
+>   Store (Arg3, Local0)
+>   Multiply (Local0, 0x04, Local1)
+>   Name (BUF1, Buffer (Local1) {})
+>   Store (Arg4, BUF1)
+>   Store (Zero, Local1)
+>   Store (Zero, Local2)
+>   While (Local0)
+>   {
+>       Multiply (Local1, 0x04, Local2)
+>       CreateDWordField (BUF1, Local2, CAPB)
+>       If (Arg2)
+>       {
+>           If (LEqual (Local1, Zero))
+>           {
+>               And (CAPB, 0xFFFFFFFC)
+>           }
+>       }
+>       Increment (Local1)
+>       Decrement (Local0)
+>   }
+>   Return (BUF1)
+>}
+>_______________________________________________
+>Devel mailing list
+>Devel(a)acpica.org
+>http://lists.acpica.org/listinfo/devel
 
-
---===============8286614424364259441==--
+--===============3272477139006838523==--
 
