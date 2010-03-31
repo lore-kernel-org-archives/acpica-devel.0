@@ -1,163 +1,94 @@
-Content-Type: multipart/mixed; boundary="===============3272477139006838523=="
+Content-Type: multipart/mixed; boundary="===============7928448099424600945=="
 MIME-Version: 1.0
 From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] Reserved method has too many arguments (_OSC requires 4)
-Date: Mon, 15 Mar 2010 10:28:54 -0700
-Message-ID: <4911F71203A09E4D9981D27F9D83085859FFA03E@orsmsx503.amr.corp.intel.com>
-In-Reply-To: 201003121500.53220.trenn@suse.de
+Subject: [Devel] ACPICA version 20100331 released
+Date: Wed, 31 Mar 2010 12:41:24 -0700
+Message-ID: <4911F71203A09E4D9981D27F9D83085861769D3F@orsmsx503.amr.corp.intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3272477139006838523==
+--===============7928448099424600945==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
+31 March 2010. Summary of changes for version 20100331:
 
-Thomas,
+This release is available at www.acpica.org/downloads
 
-Looking closely at the ASL code for _OSC that you provided, I'm afraid that=
- the control method is botched beyond all hope.
+1) ACPI CA Core Subsystem:
 
+Completed a major update for the GPE support in order to improve support fo=
+r shared GPEs and to simplify both host OS and ACPICA code. Added a referen=
+ce count mechanism to support shared GPEs that require multiple device driv=
+ers. Several external interfaces have changed. One external interface has b=
+een removed. One new external interface was added. Most of the GPE external=
+ interfaces now use the GPE spinlock instead of the events mutex (and the F=
+lags parameter for many GPE interfaces has been removed.) See the updated A=
+CPICA Programmer Reference for details. Matthew Garrett, Bob Moore, Rafael =
+Wysocki. ACPICA BZ 831.
 
-Here is the definition of _OSC:
+Changed:
+    AcpiEnableGpe, AcpiDisableGpe, AcpiClearGpe, AcpiGetGpeStatus
+Removed:
+    AcpiSetGpeType
+New:
+    AcpiSetGpe
 
-Arguments: (4)
-Arg0 - A Buffer containing a UUID
-Arg1 - An Integer containing a Revision ID of the buffer format
-Arg2 - An Integer containing a count of entries in Arg3
-Arg3 - A Buffer containing a list of DWORD capabilities
+Implemented write support for DataTable operation regions. These regions ar=
+e defined via the DataTableRegion() operator. Previously, only read support=
+ was implemented. The ACPI specification allows DataTableRegions to be read=
+/write, however.
 
+Implemented a new subsystem option to force a copy of the DSDT to local mem=
+ory. Optionally copy the entire DSDT to local memory (instead of simply map=
+ping it.) There are some (albeit very rare) BIOSs that corrupt or replace t=
+he original DSDT, creating the need for this option. Default is FALSE, do n=
+ot copy the DSDT.
 
-Analyzing the method:
+Implemented detection of a corrupted or replaced DSDT. This change adds sup=
+port to detect a DSDT that has been corrupted and/or replaced from outside =
+the OS (by firmware). This is typically catastrophic for the system, but ha=
+s been seen on some machines. Once this problem has been detected, the DSDT=
+ copy option can be enabled via system configuration. Lin Ming, Bob Moore.
 
->Method (_OSC, 5, NotSerialized)
->{
->   Store (Arg3, Local0)
->   Multiply (Local0, 0x04, Local1)
+Fixed two problems with AcpiReallocateRootTable during the root table copy.=
+ When copying the root table to the new allocation, the length used was inc=
+orrect. The new size was used instead of the current table size, meaning to=
+o much data was copied. Also, the count of available slots for ACPI tables =
+was not set correctly. Alexey Starikovskiy, Bob Moore.
 
-Attempting to convert a DWORD count to a BYTE count. It is Arg2 that contai=
-ns the count, not Arg3.
+Example Code and Data Size: These are the sizes for the OS-independent acpi=
+ca.lib produced by the Microsoft Visual C++ 6.0 32-bit compiler. The debug =
+version of the code includes the debug output trace mechanism and has a muc=
+h larger code and data size.
 
+  Previous Release:
+    Non-Debug Version:  87.5K Code, 18.4K Data, 105.9K Total
+    Debug Version:     163.4K Code, 51.1K Data, 214.5K Total
+  Current Release:
+    Non-Debug Version:  87.9K Code, 18.6K Data, 106.5K Total
+    Debug Version:     163.5K Code, 51.3K Data, 214.8K Total
 
->   Name (BUF1, Buffer (Local1) {})
->   Store (Arg4, BUF1)
+2) iASL Compiler/Disassembler and Tools:
 
-Attempting to copy the input buffer. It is Arg3 that contains the input buf=
-fer, not Arg4. =
+iASL: Implement limited typechecking for values returned from predefined co=
+ntrol methods. The type of any returned static (unnamed) object is now vali=
+dated. For example, Return(1). ACPICA BZ 786.
 
+iASL: Fixed a predefined name object verification regression. Fixes a probl=
+em introduced in version 20100304. An error is incorrectly generated if a p=
+redefined name is declared as a static named object with a value defined us=
+ing the keywords "Zero", "One", or "Ones". Lin Ming.
 
+iASL: Added Windows 7 support for the -g option (get local ACPI tables) by =
+reducing the requested registry access rights. ACPICA BZ 842.
 
->   Store (Zero, Local1)
->   Store (Zero, Local2)
->   While (Local0)
->   {
-
-Attempt to walk the entire input buffer, by DWORDs. Local0 incorrectly cont=
-ains Arg3, should the count -- Arg2.
-
-
->       Multiply (Local1, 0x04, Local2)
->       CreateDWordField (BUF1, Local2, CAPB)
-
-Create a named object (CAPB) within a loop. This will fail on the second it=
-eration of the loop -- i.e., on the second DWORD.
-
-
->       If (Arg2)
->       {
->           If (LEqual (Local1, Zero))
->           {
->               And (CAPB, 0xFFFFFFFC)
-
-gr.asl    20:     And (CAPB, 0xFFFFFFFC)
-Warning  1106 -     ^ Result is not used, operator has no effect
-
-
->           }
->       }
->       Increment (Local1)
->       Decrement (Local0)
->   }
->   Return (BUF1)
->}
-
-
-Even if the code would actually execute, it doesn't do anything.
-
-Also, the UUID is never checked.
-
-Bob
-
+Disassembler: fixed a possible fault when generating External() statements.=
+ Introduced in commit ae7d6fd: Properly handle externals with parent-prefix=
+ (carat). Fixes a string length allocation calculation. Lin Ming.
 
 
->-----Original Message-----
->From: devel-bounces(a)acpica.org [mailto:devel-bounces(a)acpica.org] On Be=
-half
->Of Thomas Renninger
->Sent: Friday, March 12, 2010 6:01 AM
->To: linux-acpi(a)vger.kernel.org
->Cc: devel(a)acpica.org
->Subject: [Devel] Reserved method has too many arguments (_OSC requires 4)
->
->Hi,
->
->I have a laptop freezing early, acpi=3Doff and noapic helps.
->I wonder whether this could have to do with the broken _OSC method.
->
->I cannot access the machine myself, eventually I can get more info
->if needed, but the machine is freezing really early (after ACPI
->initialization, somewhere around bringing up CPUs (possibly when
->starting PCI init already?).
->
->This is not the first time I see this message.
->It would be great to get (from include/linux/kernel.h):
->#define FW_BUG          "[Firmware Bug]: "
->#define FW_WARN         "[Firmware Warn]: "
->#define FW_INFO         "[Firmware Info]: "
->marked messages into ACPICA and blame the guys who are responsible
->for that.
->
->My other concern/question is: what exactly happens in such a case?
->Will _OSC get invoked at all?
->If yes, what will be the last argument, zero, -1?
->
->Hmm, I doubt it has to do with the freeze, but it would still be
->great if someone knowing these parts could comment what people
->with such a BIOS could expect to happen.
->
->Thanks,
->
->  Thomas
->
->Method (_OSC, 5, NotSerialized)
->{
->   Store (Arg3, Local0)
->   Multiply (Local0, 0x04, Local1)
->   Name (BUF1, Buffer (Local1) {})
->   Store (Arg4, BUF1)
->   Store (Zero, Local1)
->   Store (Zero, Local2)
->   While (Local0)
->   {
->       Multiply (Local1, 0x04, Local2)
->       CreateDWordField (BUF1, Local2, CAPB)
->       If (Arg2)
->       {
->           If (LEqual (Local1, Zero))
->           {
->               And (CAPB, 0xFFFFFFFC)
->           }
->       }
->       Increment (Local1)
->       Decrement (Local0)
->   }
->   Return (BUF1)
->}
->_______________________________________________
->Devel mailing list
->Devel(a)acpica.org
->http://lists.acpica.org/listinfo/devel
 
---===============3272477139006838523==--
+--===============7928448099424600945==--
 
