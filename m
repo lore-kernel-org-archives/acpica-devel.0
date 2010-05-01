@@ -1,39 +1,23 @@
-Content-Type: multipart/mixed; boundary="===============7045960695303643039=="
+Content-Type: multipart/mixed; boundary="===============6933173414187398450=="
 MIME-Version: 1.0
-From: Thomas Renninger <trenn at suse.de>
-Subject: Re: [Devel] ACPICA version 20100428 released
-Date: Fri, 30 Apr 2010 10:13:59 +0200
-Message-ID: <201004301013.59938.trenn@suse.de>
-In-Reply-To: 201004291430.25722.trenn@suse.de
+From: webczat at nullroute.eu.org
+Subject: [Devel] acpi requirements
+Date: Sat, 01 May 2010 18:03:42 +0300
+Message-ID: <20100501150343.2297A26202B6@wind.nullroute.eu.org>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7045960695303643039==
+--===============6933173414187398450==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Thursday 29 April 2010 14:30:25 Thomas Renninger wrote:
-> Hi,
-> =
+Hey.
+I'm not sure about something.
+Must dsdt/other def block contain all devices that are not on an enumerable=
+ bus, like keyboard controller/floppy controller/etc?
+Are there devices that are not on an enum bus but are not listed?
+And, must it provide objects for devices on pci or such?
 
-> On Wednesday 28 April 2010 22:10:27 Moore, Robert wrote:
-> > 28 April 2010. Summary of changes for version 20100428:
-> > =
-
-> > This release is available at www.acpica.org/downloads
-> > Note: The ACPI 4.0a specification was released on April 5, 2010 and is
-> > available at www.acpi.info. This is primarily an errata release.
-> =
-
-> If someone wants to give them an easy test on a build rpm package:
-> https://build.opensuse.org/package/show?package=3Dacpica&project=3Dhardwa=
-re
-Argh, I didn't know you need to have an opensuse account to access
-these builds. Still, someone (with an account :) ) might consider this usef=
-ul.
-
-   Thomas
-
---===============7045960695303643039==--
+--===============6933173414187398450==--
 
