@@ -1,21 +1,28 @@
-Content-Type: multipart/mixed; boundary="===============0063855470742532851=="
+Content-Type: multipart/mixed; boundary="===============4335235527896505783=="
 MIME-Version: 1.0
-From: webczat at nullroute.eu.org
-Subject: [Devel] device detection
-Date: Fri, 07 May 2010 16:55:15 +0300
-Message-ID: <20100507135515.EF1592620041@wind.nullroute.eu.org>
+From: Tripp rajah <jim at mail.avtorit.ru>
+Subject: [Devel] homeowner opt-in email lists
+Date: Mon, 10 May 2010 23:14:00 -0700
+Message-ID: <20100511061400.C39F72069A297@mail.opensource.intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0063855470742532851==
+--===============4335235527896505783==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hey.
-If i'm detecting a device using acpi and it is not present in the namespace=
-, does this always mean it is not present at all? i meant non pci devices l=
-ike pic, memory controller etc.
+You can reach me at my other email address for details:    Natalie.Sadler(a=
+)moveaheadmarketing.co.cc
 
---===============0063855470742532851==--
+  =
+
+
+
+
+
+Forward email to disappear(a)moveaheadmarketing.co.cc to purge you from our=
+ records
+
+--===============4335235527896505783==--
 
