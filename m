@@ -1,28 +1,42 @@
-Content-Type: multipart/mixed; boundary="===============4610885049624390606=="
+Content-Type: multipart/mixed; boundary="===============1968515378911927183=="
 MIME-Version: 1.0
-From: DanielCarnes at host2.amcwebhost.net
-Subject: [Devel] Light up the fire!
-Date: Mon, 24 May 2010 20:02:35 +0300
-Message-ID: <01CAFB4D.0B751394@host2.amcwebhost.net>
+From: Alexey Starikovskiy <astarikovskiy at suse.de>
+Subject: [Devel] [PATCH 1/4] ACPICA: Fix leak in DeleteSemaphore
+Date: Fri, 28 May 2010 17:56:49 +0400
+Message-ID: <20100528135648.26498.61828.stgit@thinkpad>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4610885049624390606==
+--===============1968515378911927183==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Wanna look in bed good enough for her?
-http://stopfel-ing.de/f.html
+Really delete semaphore, so it does not show up as leak in memory debuggers.
 
---===============4610885049624390606==
-Content-Type: text/html
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="attachment.html"
+Signed-off-by: Alexey Starikovskiy <astarikovskiy(a)suse.de>
+---
 
-PGEgaHJlZj0iaHR0cDovL2FkbWluMjMud2Vic2l0ZS5wbC92bG16YmF4Lmh0bWwiIHN0eWxlPSJj
-b2xvcjojNkY5NTA4OyBmb250LXNpemU6MTVweDsiPldhbm5hIGxvb2sgaW4gYmVkIGdvb2QgZW5v
-dWdoIGZvciBoZXI/PC9hPjxiciAvPjxiciAvPgpodHRwOi8vc3RvcGZlbC1pbmcuZGUvZi5odG1s
---===============4610885049624390606==--
+ 0 files changed, 0 insertions(+), 0 deletions(-)
+
+
+diff --git a/source/os_specific/service_layers/osunixxf.c b/source/os_speci=
+fic/service_layers/osunixxf.c
+index b457745..e90e22a 100644
+--- a/source/os_specific/service_layers/osunixxf.c
++++ b/source/os_specific/service_layers/osunixxf.c
+@@ -575,6 +575,8 @@ AcpiOsDeleteSemaphore (
+         return (AE_BAD_PARAMETER);
+     }
+ =
+
++    AcpiOsFree (Sem);
++
+     return (AE_OK);
+ }
+ =
+
+
+
+--===============1968515378911927183==--
 
