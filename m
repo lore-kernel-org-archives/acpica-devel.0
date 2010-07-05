@@ -1,136 +1,202 @@
-Content-Type: multipart/mixed; boundary="===============2206275471940652555=="
+Content-Type: multipart/mixed; boundary="===============1370664600305852127=="
 MIME-Version: 1.0
 From: malattia at linux.it
-Subject: [Devel] [patch 1/5] Allow overriding some of the CFLAGS
-Date: Mon, 05 Jul 2010 21:03:25 +0900
-Message-ID: <20100705120817.527713917@linux.it>
+Subject: [Devel] [patch 4/5] Fix aligment issues
+Date: Mon, 05 Jul 2010 21:03:28 +0900
+Message-ID: <20100705120818.293314314@linux.it>
 In-Reply-To: 20100705120324.581857151@linux.it
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2206275471940652555==
+--===============1370664600305852127==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-It makes it easier for package maintainers to override CFLAGS without touch=
-ing
-iasl specific defines and includes.
+Add more platforms to the list of the ones requiring aligned memory access.=
+ Also
+fix callsites where wrong assumptions where made in terms of aligment.
 
 Signed-off-by: Mattia Dongili <malattia(a)linux.it>
 ---
- compiler/Makefile         |    6 +++++-
- tools/acpiexec/Makefile   |    6 +++++-
- tools/acpisrc/Makefile    |    5 ++++-
- tools/acpixtract/Makefile |    5 ++++-
- 4 files changed, 18 insertions(+), 4 deletions(-)
+ compiler/asltree.c  |   15 ++++++++++-----
+ executer/exoparg2.c |   12 +++++++++---
+ include/actypes.h   |   26 +++++++++++++-------------
+ 3 files changed, 32 insertions(+), 21 deletions(-)
 
-Index: b/compiler/Makefile
+Index: b/include/actypes.h
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
---- a/compiler/Makefile	2010-07-02 21:42:26.849349488 +0900
-+++ b/compiler/Makefile	2010-07-04 11:18:15.830519370 +0900
-@@ -125,7 +125,8 @@
- 	../osunixxf.c
+--- a/include/actypes.h	2010-07-02 21:42:26.465350281 +0900
++++ b/include/actypes.h	2010-07-04 11:18:22.506529460 +0900
+@@ -205,6 +205,19 @@
  =
 
- NOMAN=3D	YES
--CFLAGS+=3D -Wall -O2 -Wstrict-prototypes -D_LINUX -DACPI_ASL_COMPILER -I..=
-/include -I../compiler
-+MK_CFLAGS =3D -DACPI_ASL_COMPILER -I../include -I../compiler
-+CFLAGS=3D -Wall -Wstrict-prototypes -O2
+ /*! [End] no source code translation !*/
  =
 
- #YACC=3D	yacc
- YACC=3D	bison
-@@ -141,6 +142,9 @@
- =
-
- LDLIBS =3D -lpthread -lrt
- =
-
-+%.o: %.c
-+	$(CC) $(MK_CFLAGS) $(CFLAGS) -c -o $@ $<
++/*
++ * In the case of the Itanium Processor Family (IPF), the hardware does not
++ * support misaligned memory transfers. Set the MISALIGNMENT_NOT_SUPPORTED=
+ flag
++ * to indicate that special precautions must be taken to avoid alignment f=
+aults.
++ * (IA64 or ia64 is currently used by existing compilers to indicate IPF.)
++ *
++ * Note: EM64T and other X86-64 processors support misaligned transfers,
++ * so there is no need to define this flag.
++ */
++#if defined (__IA64__) || defined (__ia64__) | defined(__alpha__) || defin=
+ed(__sparc__) || defined(__hppa__) || defined(__arm__)
++#define ACPI_MISALIGNMENT_NOT_SUPPORTED
++#endif
 +
- aslmain : $(patsubst %.c,%.o, $(SRCS))
- 	$(CC) $(LDFLAGS) $(patsubst %.c,%.o, $(SRCS)) \
- 		$(LOADLIBES) $(LDLIBS) -o iasl
-Index: b/tools/acpiexec/Makefile
+ =
+
+ /*************************************************************************=
+******
+  *
+@@ -231,19 +244,6 @@
+ #define ACPI_SIZE_MAX                   ACPI_UINT64_MAX
+ #define ACPI_USE_NATIVE_DIVIDE          /* Has native 64-bit integer suppo=
+rt */
+ =
+
+-/*
+- * In the case of the Itanium Processor Family (IPF), the hardware does not
+- * support misaligned memory transfers. Set the MISALIGNMENT_NOT_SUPPORTED=
+ flag
+- * to indicate that special precautions must be taken to avoid alignment f=
+aults.
+- * (IA64 or ia64 is currently used by existing compilers to indicate IPF.)
+- *
+- * Note: EM64T and other X86-64 processors support misaligned transfers,
+- * so there is no need to define this flag.
+- */
+-#if defined (__IA64__) || defined (__ia64__)
+-#define ACPI_MISALIGNMENT_NOT_SUPPORTED
+-#endif
+-
+ =
+
+ /*************************************************************************=
+******
+  *
+Index: b/executer/exoparg2.c
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
---- a/tools/acpiexec/Makefile	2010-07-02 21:42:26.893349116 +0900
-+++ b/tools/acpiexec/Makefile	2010-07-04 11:18:15.830519370 +0900
-@@ -139,8 +139,12 @@
- 	../../osunixxf.c
+--- a/executer/exoparg2.c	2010-07-02 21:42:26.477349196 +0900
++++ b/executer/exoparg2.c	2010-07-04 11:18:22.506529460 +0900
+@@ -248,6 +248,8 @@
+     ACPI_OPERAND_OBJECT     **Operand =3D &WalkState->Operands[0];
+     ACPI_OPERAND_OBJECT     *ReturnDesc1 =3D NULL;
+     ACPI_OPERAND_OBJECT     *ReturnDesc2 =3D NULL;
++    UINT64                  ReturnValue1 =3D 0;
++    UINT64                  ReturnValue2 =3D 0;
+     ACPI_STATUS             Status;
  =
 
  =
 
--CFLAGS+=3D -Wall -g -D_LINUX -DNDEBUG -D_CONSOLE -DACPI_EXEC_APP -D_MULTI_=
-THREADED -Wstrict-prototypes -I../../include =
-
-+MK_CFLAGS =3D -DNDEBUG -D_CONSOLE -DACPI_EXEC_APP -D_MULTI_THREADED \
-+            -I../../include
-+CFLAGS =3D -Wall -Wstrict-prototypes -O2 -g
+@@ -281,8 +283,10 @@
  =
 
-+%.o: %.c
-+	$(CC) $(MK_CFLAGS) $(CFLAGS) -c -o $@ $<
+         Status =3D AcpiUtDivide (Operand[0]->Integer.Value,
+                                Operand[1]->Integer.Value,
+-                               &ReturnDesc1->Integer.Value,
+-                               &ReturnDesc2->Integer.Value);
++                               &ReturnValue1, &ReturnValue2);
++        ReturnDesc1->Integer.Value =3D ReturnValue1;
++        ReturnDesc2->Integer.Value =3D ReturnValue2;
++
+         if (ACPI_FAILURE (Status))
+         {
+             goto Cleanup;
+@@ -357,6 +361,7 @@
+     ACPI_OPERAND_OBJECT     **Operand =3D &WalkState->Operands[0];
+     ACPI_OPERAND_OBJECT     *ReturnDesc =3D NULL;
+     UINT64                  Index;
++    UINT64                  ReturnValue =3D 0;
+     ACPI_STATUS             Status =3D AE_OK;
+     ACPI_SIZE               Length;
  =
 
- acpiexec : $(patsubst %.c,%.o, $(SRCS))
- 	$(CC) $(LDFLAGS) $(patsubst %.c,%.o, $(SRCS)) -lrt -lpthread -o $(PROG)
-Index: b/tools/acpisrc/Makefile
+@@ -400,7 +405,8 @@
+         Status =3D AcpiUtDivide (Operand[0]->Integer.Value,
+                                Operand[1]->Integer.Value,
+                                NULL,
+-                               &ReturnDesc->Integer.Value);
++                               &ReturnValue);
++        ReturnDesc->Integer.Value =3D ReturnValue;
+         break;
+ =
+
+ =
+
+Index: b/compiler/asltree.c
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
---- a/tools/acpisrc/Makefile	2010-07-02 21:42:26.877349353 +0900
-+++ b/tools/acpisrc/Makefile	2010-07-04 11:18:15.838518967 +0900
-@@ -4,8 +4,11 @@
- SRCS=3D	ascase.c asconvrt.c asfile.c asmain.c asremove.c astable.c \
-         asutils.c osunixdir.c ../../common/getopt.c
+--- a/compiler/asltree.c	2010-07-02 21:42:26.529349893 +0900
++++ b/compiler/asltree.c	2010-07-04 11:18:22.510539385 +0900
+@@ -501,24 +501,27 @@
+         "\nCreateValuedLeafNode  Ln/Col %u/%u NewNode %p  Op %s  Value %8.=
+8X%8.8X  ",
+         Op->Asl.LineNumber, Op->Asl.Column, Op, UtGetOpName(ParseOpcode),
+         ACPI_FORMAT_UINT64 (Value));
+-    Op->Asl.Value.Integer =3D Value;
  =
 
--CFLAGS+=3D -Wall -O2 -D_LINUX -DACPI_APPLICATION -Wstrict-prototypes -I../=
-../include =
-
-+MK_CFLAGS=3D -DACPI_APPLICATION -I../../include
-+CFLAGS=3D -Wall -Wstrict-prototypes -O2
+     switch (ParseOpcode)
+     {
+     case PARSEOP_STRING_LITERAL:
+-        DbgPrint (ASL_PARSE_OUTPUT, "STRING->%s", Value);
++        Op->Asl.Value.String =3D (ACPI_STRING) Value;
++        DbgPrint (ASL_PARSE_OUTPUT, "STRING->%s", (ACPI_STRING) Value);
+         break;
  =
 
-+%.o: %.c
-+	$(CC) $(MK_CFLAGS) $(CFLAGS) -c -o $@ $<
+     case PARSEOP_NAMESEG:
+-        DbgPrint (ASL_PARSE_OUTPUT, "NAMESEG->%s", Value);
++        Op->Asl.Value.String =3D (ACPI_STRING) Value;
++        DbgPrint (ASL_PARSE_OUTPUT, "NAMESEG->%s", (ACPI_STRING) Value);
+         break;
  =
 
- aslmain : $(patsubst %.c,%.o, $(SRCS))
- 	$(CC) $(LDFLAGS) $(patsubst %.c,%.o, $(SRCS)) -o $(PROG)
-Index: b/tools/acpixtract/Makefile
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
---- a/tools/acpixtract/Makefile	2010-07-02 21:42:26.861349031 +0900
-+++ b/tools/acpixtract/Makefile	2010-07-04 11:18:15.838518967 +0900
-@@ -3,8 +3,11 @@
- PROG=3D	acpixtract
- SRCS=3D	acpixtract.c
+     case PARSEOP_NAMESTRING:
+-        DbgPrint (ASL_PARSE_OUTPUT, "NAMESTRING->%s", Value);
++        Op->Asl.Value.String =3D (ACPI_STRING) Value;
++        DbgPrint (ASL_PARSE_OUTPUT, "NAMESTRING->%s", (ACPI_STRING) Value);
+         break;
  =
 
--CFLAGS+=3D -Wall -O2 -D_LINUX -DACPI_APPLICATION -Wstrict-prototypes -I../=
-../include =
-
-+MK_CFLAGS=3D -DACPI_APPLICATION -I../../include
-+CFLAGS=3D -Wall -Wstrict-prototypes -O2
+     case PARSEOP_EISAID:
+-        DbgPrint (ASL_PARSE_OUTPUT, "EISAID->%s", Value);
++        Op->Asl.Value.String =3D (ACPI_STRING) Value;
++        DbgPrint (ASL_PARSE_OUTPUT, "EISAID->%s", (ACPI_STRING) Value);
+         break;
  =
 
-+%.o: %.c
-+	$(CC) $(MK_CFLAGS) $(CFLAGS) -c -o $@ $<
+     case PARSEOP_METHOD:
+@@ -526,10 +529,12 @@
+         break;
  =
 
- acpixtract : $(patsubst %.c,%.o, $(SRCS))
- 	$(CC) $(LDFLAGS) $(patsubst %.c,%.o, $(SRCS)) -o $(PROG)
+     case PARSEOP_INTEGER:
++        Op->Asl.Value.Integer =3D Value;
+         DbgPrint (ASL_PARSE_OUTPUT, "INTEGER");
+         break;
+ =
+
+     default:
++        Op->Asl.Value.Integer =3D Value;
+         break;
+     }
+ =
 
 
---===============2206275471940652555==--
+
+--===============1370664600305852127==--
 
