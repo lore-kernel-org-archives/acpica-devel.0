@@ -1,45 +1,48 @@
-Content-Type: multipart/mixed; boundary="===============1459026026980344464=="
+Content-Type: multipart/mixed; boundary="===============3584704515216883829=="
 MIME-Version: 1.0
 From: malattia at linux.it
-Subject: Re: [Devel] [patch 0/5] iASL patches in Debian
-Date: Mon, 05 Jul 2010 20:49:31 +0900
-Message-ID: <20100705114930.GA11462@kamineko.org>
-In-Reply-To: 1278291699.9540.7.camel@minggr.sh.intel.com
+Subject: [Devel] [patch 2/5] Small tweak to define uintptr_t and successfully
+ build on debian/kfreebsd
+Date: Mon, 05 Jul 2010 21:03:26 +0900
+Message-ID: <20100705120817.782844519@linux.it>
+In-Reply-To: 20100705120324.581857151@linux.it
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1459026026980344464==
+--===============3584704515216883829==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jul 05, 2010 at 09:01:39AM +0800, Lin Ming wrote:
-> On Sun, 2010-07-04 at 12:43 +0800, malattia(a)linux.it wrote:
-> > Hi Robert,
-> > =
+This is required to build on a FreeBSD kernel running with the GNU userspace
+toolchain.
 
-> > Here is a series of patches that I've been carrying in the iasl Debian
-> > package for some time. They are all refreshed and reworked to apply
-> > cleanly on top of acpica-unix-20100528.
-...
-> Hi,
-> =
+Signed-off-by: Mattia Dongili <malattia(a)linux.it>
+---
+ include/platform/acenv.h |    3 +++
+ 1 file changed, 3 insertions(+)
 
-> Thanks for the patches.
-> =
+Index: b/include/platform/acenv.h
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+--- a/include/platform/acenv.h	2010-07-02 21:42:26.785349387 +0900
++++ b/include/platform/acenv.h	2010-07-04 11:18:37.250028892 +0900
+@@ -182,6 +182,9 @@
+ =
 
-> (linux-acpi(a)vger.kernel.org is for linux-specific acpi dicussion. Better
-> to post these patches to ACPICA maillist devel(a)acpica.org)
-> =
+ =
 
-> I read these patches but not clear what the problem they solved.
-> Could you add info in the log of each patch?
+ /*! [Begin] no source code translation */
++#if defined(__GLIBC__)
++#include <stdint.h>
++#endif
+ =
 
-Sure, thanks for the ML pointer too.
--- =
+ /*************************************************************************=
+*****
+  *
 
-mattia
-:wq!
 
---===============1459026026980344464==--
+--===============3584704515216883829==--
 
