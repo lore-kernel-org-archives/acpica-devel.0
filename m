@@ -1,54 +1,116 @@
-Content-Type: multipart/mixed; boundary="===============7805113906588066718=="
+Content-Type: multipart/mixed; boundary="===============5295004856298252369=="
 MIME-Version: 1.0
-From: Lin Ming <ming.m.lin at intel.com>
-Subject: Re: [Devel] [patch 0/5] iASL patches in Debian
-Date: Mon, 05 Jul 2010 09:01:39 +0800
-Message-ID: <1278291699.9540.7.camel@minggr.sh.intel.com>
-In-Reply-To: 20100704044332.573836359@linux.it
+From: Thomas Renninger <trenn at suse.de>
+Subject: Re: [Devel] ACPICA version 20100702 released
+Date: Mon, 05 Jul 2010 13:28:01 +0200
+Message-ID: <201007051328.01524.trenn@suse.de>
+In-Reply-To: 4C2E31AD.4020001@coresystems.de
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7805113906588066718==
+--===============5295004856298252369==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, 2010-07-04 at 12:43 +0800, malattia(a)linux.it wrote:
-> Hi Robert,
-> =
-
-> Here is a series of patches that I've been carrying in the iasl Debian
-> package for some time. They are all refreshed and reworked to apply
-> cleanly on top of acpica-unix-20100528.
-> The series consists a couple of trivial patches to fix building on the
-> FreeBSD and Hurd kernel flavours of Debian and some larger ones to enable
-> compiling ASL on big endian architectures.
-> It would be great if you could apply the patches to your source tree and
-> ship new release with this work included.
-> Let me know if you want me to run more tests or change something in the
-> patches.
-> =
-
-> I tested building tests/misc/grammar.asl (plus a number or other DSDTs I
-> have here) with the whole set applied and the results were identical on
-> BE and LE machines as well as being identical to what a clean iasl
-> produces on x86[1].
-> You can see build logs for all the architectures supported here:
-> https://buildd.debian.org/status/package.php?p=3Dacpica-unix
-
 Hi,
 
-Thanks for the patches.
+On Friday 02 July 2010 20:36:29 Stefan Reinauer wrote:
+>  On 7/2/10 6:48 PM, Moore, Robert wrote:
+> > Added support for Mac OS X in the Unix OSL used for iASL and AcpiExec. =
+Use the #define __APPLE__ to enable this support.
+> Are there specific build instructions for this? I get the following
+> error message on my MacBook Pro:
+These seem to be general build errors introduced in the latest release.
+ =
 
-(linux-acpi(a)vger.kernel.org is for linux-specific acpi dicussion. Better
-to post these patches to ACPICA maillist devel(a)acpica.org)
+> make: *** No rule to make target `../components/debugger/dbfileio.c',
+> needed by `dbfileio.o'.  Stop.
 
-I read these patches but not clear what the problem they solved.
-Could you add info in the log of each patch?
+Find attached a patch which fixes things for me.
+These lines:
++override ...
+are not needed and I used them also in previous releases.
+
+Would be nice if this can get fixed again for the next release...
+
+This change:
+-       $(CC) $(LDFLAGS) $(OBJS) -o $(PROG)
++       $(CC) $(OBJS) $(LDFLAGS) -o $(PROG)
+is needed in our environment because we make use of a specific
+linker flag (as-needed), thus the order of shared libraries added matters.
+Would be nice if this could also be added mainline.
 
 Thanks,
-Lin Ming
 
+     Thomas
 
---===============7805113906588066718==--
+--===============5295004856298252369==
+Content-Type: text/x-patch
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="acpica-override-CFLAGS.diff"
+
+TWFrZSBpdCBwb3NzaWJsZSB0byBleHRlbmQgQ0ZMQUdTIHdoZW4gaW52b2tpbmcgbWFrZQoKRnJv
+bTogVGhvbWFzIFJlbm5pbmdlciA8dHJlbm5Ac3VzZS5kZT4KCi0tLQogY29tcGlsZXIvTWFrZWZp
+bGUgICAgICAgICB8ICAgIDcgKysrKy0tLQogdG9vbHMvYWNwaWV4ZWMvTWFrZWZpbGUgICB8ICAg
+IDYgKysrLS0tCiB0b29scy9hY3Bpc3JjL01ha2VmaWxlICAgIHwgICAgNCArKy0tCiB0b29scy9h
+Y3BpeHRyYWN0L01ha2VmaWxlIHwgICAgMiArLQogNCBmaWxlcyBjaGFuZ2VkLCAxMCBpbnNlcnRp
+b25zKCspLCA5IGRlbGV0aW9ucygtKQoKSW5kZXg6IGFjcGljYS11bml4LTIwMTAwNzAyL2NvbXBp
+bGVyL01ha2VmaWxlCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT0KLS0tIGFjcGljYS11bml4LTIwMTAwNzAyLm9yaWcvY29t
+cGlsZXIvTWFrZWZpbGUKKysrIGFjcGljYS11bml4LTIwMTAwNzAyL2NvbXBpbGVyL01ha2VmaWxl
+CkBAIC03LDEyICs3LDEzIEBAIFBST0c9CWlhc2wKIEFDUElDQV9TUkMgPSAgICAuLgogQVNMX0NP
+TVBJTEVSID0gICQoQUNQSUNBX1NSQykvY29tcGlsZXIKIEFDUElDQV9DT01NT04gPSAkKEFDUElD
+QV9TUkMpL2NvbW1vbgotQUNQSUNBX0NPUkUgPSAgICQoQUNQSUNBX1NSQykvY29tcG9uZW50cwor
+I0FDUElDQV9DT1JFID0gICAkKEFDUElDQV9TUkMpL2NvbXBvbmVudHMKK0FDUElDQV9DT1JFID0g
+ICAkKEFDUElDQV9TUkMpCiBBQ1BJQ0FfVE9PTFMgPSAgJChBQ1BJQ0FfU1JDKS90b29scwogQUNQ
+SUNBX09TTCA9ICAgICQoQUNQSUNBX1NSQykvb3Nfc3BlY2lmaWMvc2VydmljZV9sYXllcnMKIAog
+Tk9NQU49CVlFUwotQ0ZMQUdTKz0gLVdhbGwgLU8yIC1Xc3RyaWN0LXByb3RvdHlwZXMgLURfTElO
+VVggLURBQ1BJX0FTTF9DT01QSUxFUiAtSS4uL2luY2x1ZGUgLUkuLi9jb21waWxlcgorb3ZlcnJp
+ZGUgQ0ZMQUdTKz0gLVdhbGwgLU8yIC1Xc3RyaWN0LXByb3RvdHlwZXMgLURfTElOVVggLURBQ1BJ
+X0FTTF9DT01QSUxFUiAtSS4uL2luY2x1ZGUgLUkuLi9jb21waWxlcgogCiAjCiAjIEJpc29uL0Zs
+ZXggY29uZmlndXJhdGlvbgpAQCAtMTY2LDcgKzE2Nyw3IEBAIE1JU0MgPSBcCiAjIFJvb3QgcnVs
+ZQogIwogJChQUk9HKSA6ICQoSU5URVJNRURJQVRFUykgJChPQkpTKQotCSQoQ0MpICQoTERGTEFH
+UykgJChPQkpTKSAtbyAkKFBST0cpCisJJChDQykgJChPQkpTKSAkKExERkxBR1MpIC1vICQoUFJP
+RykKIAkkKENPUFlQUk9HKQogCiAKSW5kZXg6IGFjcGljYS11bml4LTIwMTAwNzAyL3Rvb2xzL2Fj
+cGlleGVjL01ha2VmaWxlCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT0KLS0tIGFjcGljYS11bml4LTIwMTAwNzAyLm9yaWcv
+dG9vbHMvYWNwaWV4ZWMvTWFrZWZpbGUKKysrIGFjcGljYS11bml4LTIwMTAwNzAyL3Rvb2xzL2Fj
+cGlleGVjL01ha2VmaWxlCkBAIC00LDE0ICs0LDE0IEBACiAKIFBST0cgPSBhY3BpZXhlYwogCi1B
+Q1BJQ0FfU1JDID0gICAgLi4vLi4vLi4vc291cmNlCitBQ1BJQ0FfU1JDID0gICAgLi4vLi4KIEFD
+UElDQV9DT01NT04gPSAkKEFDUElDQV9TUkMpL2NvbW1vbgotQUNQSUNBX0NPUkUgPSAgICQoQUNQ
+SUNBX1NSQykvY29tcG9uZW50cworQUNQSUNBX0NPUkUgPSAgICQoQUNQSUNBX1NSQykKIEFDUElD
+QV9UT09MUyA9ICAkKEFDUElDQV9TUkMpL3Rvb2xzCiBBQ1BJQ0FfT1NMID0gICAgJChBQ1BJQ0Ff
+U1JDKS9vc19zcGVjaWZpYy9zZXJ2aWNlX2xheWVycwogCiBOT01BTj0JWUVTCi1DRkxBR1MrPSAt
+V2FsbCAtZyAtRF9MSU5VWCAtRE5ERUJVRyAtRF9DT05TT0xFIC1EQUNQSV9FWEVDX0FQUCAtRF9N
+VUxUSV9USFJFQURFRCAtV3N0cmljdC1wcm90b3R5cGVzIC1JJChBQ1BJQ0FfU1JDKS9pbmNsdWRl
+IAorb3ZlcnJpZGUgQ0ZMQUdTKz0gLVdhbGwgLWcgLURfTElOVVggLUROREVCVUcgLURfQ09OU09M
+RSAtREFDUElfRVhFQ19BUFAgLURfTVVMVElfVEhSRUFERUQgLVdzdHJpY3QtcHJvdG90eXBlcyAt
+SSQoQUNQSUNBX1NSQykvaW5jbHVkZQogCiBDT01QSUxFID0gJChDQykgLWMgJChDRkxBR1MpIC1v
+JEAgJD8KIExERkxBR1MgKz0gLWxwdGhyZWFkIC1scnQKSW5kZXg6IGFjcGljYS11bml4LTIwMTAw
+NzAyL3Rvb2xzL2FjcGl4dHJhY3QvTWFrZWZpbGUKPT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQotLS0gYWNwaWNhLXVuaXgt
+MjAxMDA3MDIub3JpZy90b29scy9hY3BpeHRyYWN0L01ha2VmaWxlCisrKyBhY3BpY2EtdW5peC0y
+MDEwMDcwMi90b29scy9hY3BpeHRyYWN0L01ha2VmaWxlCkBAIC0zLDcgKzMsNyBAQAogUFJPRz0J
+YWNwaXh0cmFjdAogU1JDUz0JYWNwaXh0cmFjdC5jCiAKLUNGTEFHUys9IC1XYWxsIC1PMiAtRF9M
+SU5VWCAtREFDUElfQVBQTElDQVRJT04gLVdzdHJpY3QtcHJvdG90eXBlcyAtSS4uLy4uL2luY2x1
+ZGUgCitvdmVycmlkZSBDRkxBR1MrPSAtRF9MSU5VWCAtREFDUElfQVBQTElDQVRJT04gLVdzdHJp
+Y3QtcHJvdG90eXBlcyAtSS4uLy4uL2luY2x1ZGUKIAogCiBhY3BpeHRyYWN0IDogJChwYXRzdWJz
+dCAlLmMsJS5vLCAkKFNSQ1MpKQpJbmRleDogYWNwaWNhLXVuaXgtMjAxMDA3MDIvdG9vbHMvYWNw
+aXNyYy9NYWtlZmlsZQo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09Ci0tLSBhY3BpY2EtdW5peC0yMDEwMDcwMi5vcmlnL3Rv
+b2xzL2FjcGlzcmMvTWFrZWZpbGUKKysrIGFjcGljYS11bml4LTIwMTAwNzAyL3Rvb2xzL2FjcGlz
+cmMvTWFrZWZpbGUKQEAgLTQsMTEgKzQsMTEgQEAgUFJPRz0JYWNwaXNyYwogU1JDUz0JYXNjYXNl
+LmMgYXNjb252cnQuYyBhc2ZpbGUuYyBhc21haW4uYyBhc3JlbW92ZS5jIGFzdGFibGUuYyBcCiAg
+ICAgICAgIGFzdXRpbHMuYyBvc3VuaXhkaXIuYyAuLi8uLi9jb21tb24vZ2V0b3B0LmMKIAotQ0ZM
+QUdTKz0gLVdhbGwgLU8yIC1EX0xJTlVYIC1EQUNQSV9BUFBMSUNBVElPTiAtV3N0cmljdC1wcm90
+b3R5cGVzIC1JLi4vLi4vaW5jbHVkZSAKK292ZXJyaWRlIENGTEFHUys9IC1EX0xJTlVYIC1EQUNQ
+SV9BUFBMSUNBVElPTiAtV3N0cmljdC1wcm90b3R5cGVzIC1JLi4vLi4vaW5jbHVkZQogCiAKIGFz
+bG1haW4gOiAkKHBhdHN1YnN0ICUuYywlLm8sICQoU1JDUykpCi0JJChDQykgJChMREZMQUdTKSAk
+KHBhdHN1YnN0ICUuYywlLm8sICQoU1JDUykpIC1vICQoUFJPRykKKwkkKENDKSAkKExERkxBR1Mp
+ICQoQ0ZMQUdTKSAkKHBhdHN1YnN0ICUuYywlLm8sICQoU1JDUykpIC1vICQoUFJPRykKIAogQ0xF
+QU5GSUxFUz0gJChQUk9HKQogCg==
+
+--===============5295004856298252369==--
 
