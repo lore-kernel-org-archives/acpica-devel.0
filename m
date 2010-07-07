@@ -1,59 +1,206 @@
-Content-Type: multipart/mixed; boundary="===============1680173641998139805=="
+Content-Type: multipart/mixed; boundary="===============7126940930660156865=="
 MIME-Version: 1.0
-From: Stefan Reinauer <stefan.reinauer at coresystems.de>
-Subject: Re: [Devel] ACPICA version 20100702 released
-Date: Wed, 07 Jul 2010 10:55:05 +0200
-Message-ID: <4C3440E9.5000004@coresystems.de>
-In-Reply-To: 1278398690.4398.17.camel@minggr.sh.intel.com
+From: Moore, Robert <robert.moore at intel.com>
+Subject: Re: [Devel] Reserved method (_PLD) is a buffer instead of a package
+Date: Wed, 07 Jul 2010 12:52:02 -0700
+Message-ID: <4911F71203A09E4D9981D27F9D830858A10EFE45@orsmsx503.amr.corp.intel.com>
+In-Reply-To: 201007051510.18302.trenn@suse.de
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1680173641998139805==
+--===============7126940930660156865==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
- On 7/6/10 8:44 AM, Lin Ming wrote:
-> Would you please try below patch?
+
+
+>-----Original Message-----
+>From: devel-bounces(a)acpica.org [mailto:devel-bounces(a)acpica.org] On Be=
+half
+>Of Thomas Renninger
+>Sent: Monday, July 05, 2010 6:10 AM
+>To: devel(a)acpica.org
+>Subject: [Devel] Reserved method (_PLD) is a buffer instead of a package
 >
-Great! This works!
+>Hi,
+>
+>I found this when compiling the DSDT from this dump:
+>https://bugzilla.kernel.org/attachment.cgi?id=3D27016
+>from this bug:
+>https://bugzilla.kernel.org/show_bug.cgi?id=3D16072
+>
+>The iasl error is:
+>DSDT.modif.dsl  6635:                         Name (_PLD, Buffer (0x10)
+>Error    4080 -       Invalid object type for reserved name, must be ^
+>(Package)
+>
+>
+>ACPI spec says (3.0b):
+>=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>6.1.6 _PLD (Physical Device Location)
+>
+>The _PLD method returns data...
+>
+>This method returns a package containing, a single
+>or multiple buffer entries. At least one buffer entry
+>must be returned using the bit definitions below.
+>=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+>So I expect the BIOS (see code snippet below) is wrong, because it
+>returns a plain buffer, instead of a Package of buffer(s)?
+>
 
-Stefan
+Yes.
 
-> diff --git a/compiler/Makefile b/compiler/Makefile
-> index 962ab67..c8c477b 100644
-> --- a/compiler/Makefile
-> +++ b/compiler/Makefile
-> @@ -7,7 +7,7 @@ PROG=3D	iasl
->  ACPICA_SRC =3D    ..
->  ASL_COMPILER =3D  $(ACPICA_SRC)/compiler
->  ACPICA_COMMON =3D $(ACPICA_SRC)/common
-> -ACPICA_CORE =3D   $(ACPICA_SRC)/components
-> +ACPICA_CORE =3D   $(ACPICA_SRC)
->  ACPICA_TOOLS =3D  $(ACPICA_SRC)/tools
->  ACPICA_OSL =3D    $(ACPICA_SRC)/os_specific/service_layers
->  =
 
-> diff --git a/tools/acpiexec/Makefile b/tools/acpiexec/Makefile
-> index b9e892a..31f2338 100644
-> --- a/tools/acpiexec/Makefile
-> +++ b/tools/acpiexec/Makefile
-> @@ -4,9 +4,9 @@
->  =
-
->  PROG =3D acpiexec
->  =
-
-> -ACPICA_SRC =3D    ../../../source
-> +ACPICA_SRC =3D    ../..
->  ACPICA_COMMON =3D $(ACPICA_SRC)/common
-> -ACPICA_CORE =3D   $(ACPICA_SRC)/components
-> +ACPICA_CORE =3D   $(ACPICA_SRC)
->  ACPICA_TOOLS =3D  $(ACPICA_SRC)/tools
->  ACPICA_OSL =3D    $(ACPICA_SRC)/os_specific/service_layers
->  =
+_PLD is defined to be a variable-length Package of Buffer objects.
 
 
 
---===============1680173641998139805==--
+
+
+>I could get rid of the error by explicitly declaring the buffer and
+>returning it (which should still be wrong, because a Package of
+>buffer(s) should get returned?).
+>
+>iasl should either:
+>  - complain about both (a named buffer is declared and the named
+>    object is returned or if simply a (unnamed) buffer is returned)
+>  - or if in case returning a plain buffer is accepted/workarounded,
+>    it should accept both versions.
+>
+
+Newer versions of iASL will in fact complain about a named buffer that is r=
+eturned, I think.
+
+
+
+>Argl, it's hard to get this into words, best you just have a look at below
+>code snippets...
+>
+>Be aware that this seem to be a rather new machine/BIOS.
+>It could be that neither Linux nor Windows make use of _PLD (don't know)
+>and these guys may have to fix that up anyway (return a package...).
+>
+>It would be great to get a statement should fix this and if this is the
+>case,
+>whether my patch at the very end of the mail is the correct way to do that.
+>
+
+Yes, your change at the end is correct.
+
+
+The ACPICA auto-repair code should be able to repair this problem. If a buf=
+fer is returned, it will wrap a package object around it.
+
+That doesn't change the fact that the original ASL is incorrect.
+
+
+
+>Thanks,
+>
+>      Thomas
+>
+>The affected ASL code:
+>=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+>Name (_ADR, Zero)
+>                    Device (PRT1)
+>                    {
+>                        Name (_ADR, One)
+>                        Name (_UPC, Package (0x04)
+>                        {
+>                            0xFF,
+>                            Zero,
+>                            Zero,
+>                            Zero
+>                        })
+>                        Name (_PLD, Buffer (0x10)
+>                        {
+>                            /* 0000 */    0x81, 0x00, 0x00, 0x00, 0x00,
+>0x00, 0x00, 0x00,
+>                            /* 0008 */    0x31, 0x1C, 0x00, 0x00, 0x00,
+>0x00, 0x00, 0x00
+>                        })
+>                    }
+>=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+>
+>The patch that fixes the error, but the code is still not correct (plain
+>buffer is
+>returned instead of a package containing the buffer):
+>=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+>--- DSDT.dsl	2010-07-05 13:14:20.945010000 +0200
+>+++ DSDT.modif.dsl	2010-07-05 13:56:56.478132000 +0200
+>@@ -6601,6 +6601,11 @@
+>                 Device (HU01)
+>                 {
+>                     Name (_ADR, Zero)
+>+		    Name (PLDB, Buffer (0x10)
+>+                    {
+>+                            /* 0000 */    0x81, 0x00, 0x00, 0x00, 0x00,
+>0x00, 0x00, 0x00,
+>+                            /* 0008 */    0x31, 0x1C, 0x00, 0x00, 0x00,
+>0x00, 0x00, 0x00
+>+                    })
+>                     Device (PRT1)
+>                     {
+>                         Name (_ADR, One)
+>@@ -6611,11 +6616,10 @@
+>                             Zero,
+>                             Zero
+>                         })
+>-                        Name (_PLD, Buffer (0x10)
+>+                        Method (_PLD, 0, NotSerialized)
+>                         {
+>-                            /* 0000 */    0x81, 0x00, 0x00, 0x00, 0x00,
+>0x00, 0x00, 0x00,
+>-                            /* 0008 */    0x31, 0x1C, 0x00, 0x00, 0x00,
+>0x00, 0x00, 0x00
+>-                        })
+>+			    return (PLDB)
+>+                        }
+>                     }
+>
+>                     Device (PRT2)
+>=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+>
+>The patch which works and should be the correct fix:
+>=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+>--- DSDT.dsl	2010-07-05 13:14:20.945010000 +0200
+>+++ DSDT.modif.dsl	2010-07-05 14:34:23.335580000 +0200
+>
+>@@ -6628,10 +6635,13 @@
+>                             Zero,
+>                             Zero
+>                         })
+>-                        Name (_PLD, Buffer (0x10)
+>+                        Name (_PLD, Package (0x1)
+>                         {
+>-                            /* 0000 */    0x81, 0x00, 0x00, 0x00, 0x00,
+>0x00, 0x00, 0x00,
+>-                            /* 0008 */    0x30, 0x1C, 0x00, 0x00, 0x00,
+>0x00, 0x00, 0x00
+>+                            Buffer (0x10)
+>+                            {
+>+                                /* 0000 */    0x81, 0x00, 0x00, 0x00,
+>0x00, 0x00, 0x00, 0x00,
+>+                                /* 0008 */    0x30, 0x1C, 0x00, 0x00,
+>0x00, 0x00, 0x00, 0x00
+>+                            }
+>                         })
+>                     }
+>                 }
+>=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+>_______________________________________________
+>Devel mailing list
+>Devel(a)acpica.org
+>http://lists.acpica.org/listinfo/devel
+
+--===============7126940930660156865==--
 
