@@ -1,98 +1,78 @@
-Content-Type: multipart/mixed; boundary="===============3333838345653663370=="
+Content-Type: multipart/mixed; boundary="===============1451115809947876555=="
 MIME-Version: 1.0
-From: admin <rishab99999 at gmail.com>
-Subject: [Devel] beginner guide
-Date: Wed, 28 Jul 2010 23:32:03 +0530
-Message-ID: <000501cb2e7f$0c5bfaf0$2513f0d0$@com>
+From: Rudi <r.ihle at s-t.de>
+Subject: Re: [Devel] Error in documentation of AcpiOsDerivePciId?
+Date: Sun, 01 Aug 2010 13:31:17 +0200
+Message-ID: <4C555B05.9020708@s-t.de>
+In-Reply-To: q2yefbf743b1004230544l5f8afbachb4e75ba38cd0d5d@mail.gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3333838345653663370==
+--===============1451115809947876555==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hello,
+Hi all,
 
-I am a B.tech college student and new to ACPI and =
-
-
-want to work for ACPI,but is there any prerequisite =
-
-
-that I need to fulfill.
-
-Please guide me.
-
- =
-
-Thank You.
-
- =
+is that still in the agenda ? Also, what is the reason why the last
+parameter of AcpiOsDerivePciId() is "ACPI_PCI_ID **" and not just
+"ACPI_PCI_ID *" ? Are there any situations, where AcpiOsDerivePciId
+would want to reallocate PciId ?
 
 
 
 
---===============3333838345653663370==
-Content-Type: text/html
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="attachment.html"
+Lin Ming wrote:
+> 2010/4/22 Gr=C3=A9goire Sutre <gregoire.sutre(a)gmail.com>:
+>> Hi Lin,
+>>
+>> Many thanks for your explanantion, I understand now why the second
+>> argument passed to AcpiOsDerivePciId is a handle to the (PCI_Config)
+>> operation region.
+>>
+>> But regarding the first argument of AcpiOsDerivePciId: the ACPICA
+>> programmer reference says that: it is a handle to _the PCI device_.
+>>
+>> My question is: which PCI device?
+>>
+>> In my (possibly wrong) interpretation of the documentation, _the PCI
+>> device_ is the device for which AcpiOsDerivePciId shall return an
+>> updated Pci id.
+>>
+>> However, as far as I understand the code of AcpiEvPciConfigRegionSetup
+>> (in file evrgnini.c), _the PCI device_ turns out to be an ancestor of
+>> the device for which AcpiOsDerivePciId shall return an updated Pci id.
+>> This ancestor being the upstream PCI root bridge (or the ACPI root node
+>> if none was found).  This interpretation of _the PCI device_ is also
+>> consistent with my understanding of the Linux implementation of
+>> AcpiOsDerivePciId, which finds the updated PCI id by ``traversing'' the
+>> PCI-to-PCI bridges that are on the branch from AcpiOsDerivePciId's first
+>> argument to its second argument.
+> =
 
-PGh0bWwgeG1sbnM6dj0idXJuOnNjaGVtYXMtbWljcm9zb2Z0LWNvbTp2bWwiIHhtbG5zOm89InVy
-bjpzY2hlbWFzLW1pY3Jvc29mdC1jb206b2ZmaWNlOm9mZmljZSIgeG1sbnM6dz0idXJuOnNjaGVt
-YXMtbWljcm9zb2Z0LWNvbTpvZmZpY2U6d29yZCIgeG1sbnM6bT0iaHR0cDovL3NjaGVtYXMubWlj
-cm9zb2Z0LmNvbS9vZmZpY2UvMjAwNC8xMi9vbW1sIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcv
-VFIvUkVDLWh0bWw0MCI+Cgo8aGVhZD4KPE1FVEEgSFRUUC1FUVVJVj0iQ29udGVudC1UeXBlIiBD
-T05URU5UPSJ0ZXh0L2h0bWw7IGNoYXJzZXQ9dXMtYXNjaWkiPgo8bWV0YSBuYW1lPUdlbmVyYXRv
-ciBjb250ZW50PSJNaWNyb3NvZnQgV29yZCAxMiAoZmlsdGVyZWQgbWVkaXVtKSI+CjxzdHlsZT4K
-PCEtLQogLyogRm9udCBEZWZpbml0aW9ucyAqLwogQGZvbnQtZmFjZQoJe2ZvbnQtZmFtaWx5OiJD
-YW1icmlhIE1hdGgiOwoJcGFub3NlLTE6MCAwIDAgMCAwIDAgMCAwIDAgMDt9CkBmb250LWZhY2UK
-CXtmb250LWZhbWlseTpDYWxpYnJpOwoJcGFub3NlLTE6MiAxNSA1IDIgMiAyIDQgMyAyIDQ7fQog
-LyogU3R5bGUgRGVmaW5pdGlvbnMgKi8KIHAuTXNvTm9ybWFsLCBsaS5Nc29Ob3JtYWwsIGRpdi5N
-c29Ob3JtYWwKCXttYXJnaW46MGluOwoJbWFyZ2luLWJvdHRvbTouMDAwMXB0OwoJZm9udC1zaXpl
-OjExLjBwdDsKCWZvbnQtZmFtaWx5OiJDYWxpYnJpIiwic2Fucy1zZXJpZiI7fQphOmxpbmssIHNw
-YW4uTXNvSHlwZXJsaW5rCgl7bXNvLXN0eWxlLXByaW9yaXR5Ojk5OwoJY29sb3I6Ymx1ZTsKCXRl
-eHQtZGVjb3JhdGlvbjp1bmRlcmxpbmU7fQphOnZpc2l0ZWQsIHNwYW4uTXNvSHlwZXJsaW5rRm9s
-bG93ZWQKCXttc28tc3R5bGUtcHJpb3JpdHk6OTk7Cgljb2xvcjpwdXJwbGU7Cgl0ZXh0LWRlY29y
-YXRpb246dW5kZXJsaW5lO30Kc3Bhbi5FbWFpbFN0eWxlMTcKCXttc28tc3R5bGUtdHlwZTpwZXJz
-b25hbC1jb21wb3NlOwoJZm9udC1mYW1pbHk6IkNhbGlicmkiLCJzYW5zLXNlcmlmIjsKCWNvbG9y
-OndpbmRvd3RleHQ7fQouTXNvQ2hwRGVmYXVsdAoJe21zby1zdHlsZS10eXBlOmV4cG9ydC1vbmx5
-O30KQHBhZ2UgU2VjdGlvbjEKCXtzaXplOjguNWluIDExLjBpbjsKCW1hcmdpbjoxLjBpbiAxLjBp
-biAxLjBpbiAxLjBpbjt9CmRpdi5TZWN0aW9uMQoJe3BhZ2U6U2VjdGlvbjE7fQotLT4KPC9zdHls
-ZT4KPCEtLVtpZiBndGUgbXNvIDldPjx4bWw+CiA8bzpzaGFwZWRlZmF1bHRzIHY6ZXh0PSJlZGl0
-IiBzcGlkbWF4PSIxMDI2IiAvPgo8L3htbD48IVtlbmRpZl0tLT48IS0tW2lmIGd0ZSBtc28gOV0+
-PHhtbD4KIDxvOnNoYXBlbGF5b3V0IHY6ZXh0PSJlZGl0Ij4KICA8bzppZG1hcCB2OmV4dD0iZWRp
-dCIgZGF0YT0iMSIgLz4KIDwvbzpzaGFwZWxheW91dD48L3htbD48IVtlbmRpZl0tLT4KPC9oZWFk
-PgoKPGJvZHkgbGFuZz1FTi1VUyBsaW5rPWJsdWUgdmxpbms9cHVycGxlPgoKPGRpdiBjbGFzcz1T
-ZWN0aW9uMT4KCjxwIGNsYXNzPU1zb05vcm1hbD5IZWxsbyw8bzpwPjwvbzpwPjwvcD4KCjxwIGNs
-YXNzPU1zb05vcm1hbD5JIGFtIGEgQi50ZWNoIGNvbGxlZ2Ugc3R1ZGVudCBhbmQgbmV3IHRvIEFD
-UEkgYW5kIDxvOnA+PC9vOnA+PC9wPgoKPHAgY2xhc3M9TXNvTm9ybWFsPndhbnQgdG8gd29yayBm
-b3IgQUNQSSxidXQgaXMgdGhlcmUgYW55IHByZXJlcXVpc2l0ZSA8bzpwPjwvbzpwPjwvcD4KCjxw
-IGNsYXNzPU1zb05vcm1hbD50aGF0IEkgbmVlZCB0byBmdWxmaWxsLjxvOnA+PC9vOnA+PC9wPgoK
-PHAgY2xhc3M9TXNvTm9ybWFsPlBsZWFzZSBndWlkZSBtZS48bzpwPjwvbzpwPjwvcD4KCjxwIGNs
-YXNzPU1zb05vcm1hbD4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
-bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
-cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
-bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
-cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
-bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
-cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
-bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
-cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsgVGhhbmsKWW91LjxvOnA+PC9vOnA+PC9w
-PgoKPHAgY2xhc3M9TXNvTm9ybWFsPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
-OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
-YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
-OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
-YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
-OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
-YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
-OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
-YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
-OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
-YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
-OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
-YnNwOyA8bzpwPjwvbzpwPjwvcD4KCjwvZGl2PgoKPC9ib2R5PgoKPC9odG1sPgo=
+> You are right, the first argument is the PCI root node.
+> We may need to update the doc to figure out this.
+> =
 
---===============3333838345653663370==--
+> Thanks,
+> Lin Ming
+> _______________________________________________
+> Devel mailing list
+> Devel(a)acpica.org
+> http://lists.acpica.org/listinfo/devel
+> =
+
+> To: gregoire.sutre(a)gmail.com
+> Cc: devel(a)acpica.org
+
+-- =
+
+
+Ruediger "Rudi" Ihle
+
+"There's a fine line between wrong and visionary. Unfortunately
+ you have to be a visionary to see it." - Sheldon Cooper, Ph.D.
+
+--===============1451115809947876555==--
 
