@@ -1,63 +1,156 @@
-Content-Type: multipart/mixed; boundary="===============2005321733655592401=="
+Content-Type: multipart/mixed; boundary="===============5975294321718438550=="
 MIME-Version: 1.0
 From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] acpi_os_read_memory() from interrupt context
-Date: Wed, 04 Aug 2010 15:26:15 -0700
-Message-ID: <4911F71203A09E4D9981D27F9D830858AC59CF57@orsmsx503.amr.corp.intel.com>
-In-Reply-To: 201008041119.23633.bjorn.helgaas@hp.com
+Subject: Re: [Devel] Error in documentation of AcpiOsDerivePciId?
+Date: Wed, 04 Aug 2010 16:33:44 -0700
+Message-ID: <4911F71203A09E4D9981D27F9D830858AC62BE0E@orsmsx503.amr.corp.intel.com>
+In-Reply-To: 4911F71203A09E4D9981D27F9D830858AC59CE99@orsmsx503.amr.corp.intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2005321733655592401==
+--===============5975294321718438550==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-If you need to pre-map the ACPI registers, I would expect the host to build=
- a list of these during initialization as you mention, then lookup and use =
-the appropriate mapping in acpi_os_read_memory.  The acpi_os memory interfa=
-ces are not generic memory interfaces; they are only used for memory-mapped=
- ACPI registers, so it is entirely appropriate to do whatever you need to d=
-o to obtain a mapping for the registers when at interrupt level.
+Sorry, now to address your original question.
 
+The AcpiOsDerivePciId interface was driven primarily by the needs of Linux,=
+ during the time that the Linux PCI-to-ACPI interaction was being designed =
+and implemented.
+
+I suspect that the ** was needed for the original implementation and then b=
+ecame obsolete later.
+
+To my knowledge, we have never been asked to change the interface, so it ha=
+s remained as-is.
+
+Since AcpiOsDerivePciId is going to go away soon (we have the code running =
+already), we will of course make the equivalent internal interface as simpl=
+e as possible.
+
+Bob
 
 
 >-----Original Message-----
 >From: devel-bounces(a)acpica.org [mailto:devel-bounces(a)acpica.org] On Be=
 half
->Of Bjorn Helgaas
->Sent: Wednesday, August 04, 2010 10:19 AM
->To: linux-acpi(a)vger.kernel.org; devel(a)acpica.org
->Subject: [Devel] acpi_os_read_memory() from interrupt context
+>Of Moore, Robert
+>Sent: Wednesday, August 04, 2010 2:37 PM
+>To: Rudi
+>Cc: devel(a)acpica.org
+>Subject: Re: [Devel] Error in documentation of AcpiOsDerivePciId?
 >
->Linux reads some ACPI registers from interrupt context.  For example,
->we read the PM1 Status register in the SCI interrupt handler via
->this path:
+>Yes, there is a reason for ACPI_PCI_ID **.
 >
->    acpi_irq
->      acpi_ev_sci_xrupt_handler
->        acpi_ev_fixed_event_detect
->          acpi_hw_register_read
->            acpi_hw_read_multiple
->              acpi_read
+From the ACPI Component Architecture User Guide and Programmer Reference:
 >
->But acpi_read() takes a generic address structure, and if that
->address happens to be in memory space (not I/O port space), we use
->acpi_os_read_memory().  In Linux, that uses ioremap() to map the
->address, and that doesn't work from interrupt context.
 >
->I can imagine fixing this by doing the ioremap() at boot-time
->rather than at interrupt-time, but most of this interrupt path
->is in the ACPI CA, not in Linux itself, so it would probably
->require some redesign in the CA.
+>AcpiOsDerivePciId
+>-----------------
 >
->Any suggestions?
+>PciId
 >
->Bjorn
+>Input: The full PCI ID (The full PCI configuration space address,
+>consisting of a segment number, bus number, device number, and function
+>number) as obtained from control methods within the BIOS ACPI tables.
+>
+>Output: Where the derived PCI ID is returned. Some or all of the PCI ID
+>subfields may be updated by this function.
+>
+>
+>
+>This function derives a full PCI ID for a PCI device, consisting of a
+>Segment number, a Bus number, and a Device number.
+>
+>The PCI hardware dynamically configures PCI bus numbers depending on the
+>bus topology discovered during system initialization. The AcpiOsDerivePciId
+>function is invoked by the ACPICA subsystem during configuration of a
+>PCI_Config Operation Region in order to (possibly) update the Bus number in
+>the PciId with the actual Bus number as determined by the hardware and
+>operating system configuration.
+>
+>The PciId parameter is initially populated by the ACPICA subsystem during
+>the Operation Region initialization. ACPICA then calls AcpiOsDerivePciId,
+>which is expected to make any necessary modifications to the Segment, Bus,
+>or Device number PCI ID subfields as appropriate for the current hardware
+>and OS configuration.
+>
+>
+>
+>>-----Original Message-----
+>>From: devel-bounces(a)acpica.org [mailto:devel-bounces(a)acpica.org] On B=
+ehalf
+>>Of Rudi
+>>Sent: Sunday, August 01, 2010 4:31 AM
+>>Cc: devel(a)acpica.org
+>>Subject: Re: [Devel] Error in documentation of AcpiOsDerivePciId?
+>>
+>>Hi all,
+>>
+>>is that still in the agenda ? Also, what is the reason why the last
+>>parameter of AcpiOsDerivePciId() is "ACPI_PCI_ID **" and not just
+>>"ACPI_PCI_ID *" ? Are there any situations, where AcpiOsDerivePciId
+>>would want to reallocate PciId ?
+>>
+>>
+>>
+>>
+>>Lin Ming wrote:
+>>> 2010/4/22 Gr=C3=A9goire Sutre <gregoire.sutre(a)gmail.com>:
+>>>> Hi Lin,
+>>>>
+>>>> Many thanks for your explanantion, I understand now why the second
+>>>> argument passed to AcpiOsDerivePciId is a handle to the (PCI_Config)
+>>>> operation region.
+>>>>
+>>>> But regarding the first argument of AcpiOsDerivePciId: the ACPICA
+>>>> programmer reference says that: it is a handle to _the PCI device_.
+>>>>
+>>>> My question is: which PCI device?
+>>>>
+>>>> In my (possibly wrong) interpretation of the documentation, _the PCI
+>>>> device_ is the device for which AcpiOsDerivePciId shall return an
+>>>> updated Pci id.
+>>>>
+>>>> However, as far as I understand the code of AcpiEvPciConfigRegionSetup
+>>>> (in file evrgnini.c), _the PCI device_ turns out to be an ancestor of
+>>>> the device for which AcpiOsDerivePciId shall return an updated Pci id.
+>>>> This ancestor being the upstream PCI root bridge (or the ACPI root node
+>>>> if none was found).  This interpretation of _the PCI device_ is also
+>>>> consistent with my understanding of the Linux implementation of
+>>>> AcpiOsDerivePciId, which finds the updated PCI id by ``traversing'' the
+>>>> PCI-to-PCI bridges that are on the branch from AcpiOsDerivePciId's
+>first
+>>>> argument to its second argument.
+>>>
+>>> You are right, the first argument is the PCI root node.
+>>> We may need to update the doc to figure out this.
+>>>
+>>> Thanks,
+>>> Lin Ming
+>>> _______________________________________________
+>>> Devel mailing list
+>>> Devel(a)acpica.org
+>>> http://lists.acpica.org/listinfo/devel
+>>>
+>>> To: gregoire.sutre(a)gmail.com
+>>> Cc: devel(a)acpica.org
+>>
+>>--
+>>
+>>Ruediger "Rudi" Ihle
+>>
+>>"There's a fine line between wrong and visionary. Unfortunately
+>> you have to be a visionary to see it." - Sheldon Cooper, Ph.D.
+>>_______________________________________________
+>>Devel mailing list
+>>Devel(a)acpica.org
+>>http://lists.acpica.org/listinfo/devel
 >_______________________________________________
 >Devel mailing list
 >Devel(a)acpica.org
 >http://lists.acpica.org/listinfo/devel
 
---===============2005321733655592401==--
+--===============5975294321718438550==--
 
