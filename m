@@ -1,73 +1,161 @@
-Content-Type: multipart/mixed; boundary="===============3380633919059208595=="
+Content-Type: multipart/mixed; boundary="===============5292867862258963045=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
+From: Thomas Renninger <trenn at suse.de>
 Subject: Re: [Devel] Can a userspace tool to read the Embedded Controller
  get	added to acpica sources?
-Date: Fri, 27 Aug 2010 14:47:55 -0700
-Message-ID: <4911F71203A09E4D9981D27F9D830858AED630B1@orsmsx503.amr.corp.intel.com>
-In-Reply-To: 201008271531.21589.trenn@suse.de
+Date: Thu, 02 Sep 2010 17:31:22 +0200
+Message-ID: <201009021731.22944.trenn@suse.de>
+In-Reply-To: 4911F71203A09E4D9981D27F9D830858AED630B1@orsmsx503.amr.corp.intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3380633919059208595==
+--===============5292867862258963045==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Seems like it will have lots of very EC-specific stuff, so sure, we can add=
- to ACPICA. Make sure any OS-dependent stuff is modularized.
+On Friday 27 August 2010 23:47:55 Moore, Robert wrote:
+> Seems like it will have lots of very EC-specific stuff, so sure, we
+> can add to ACPICA. Make sure any OS-dependent stuff is modularized.
+Ok, I tried on that.
 
+Find attached the source file which should go to:
+source/tools/ec_access/ec_access.c
+and the Makefile for:
+generate/linux/Makefile.ec_access
 
+I used stderr, fprintf, open, read, write, sync.
+Beside the last, some other files are doing the same.
 
->-----Original Message-----
->From: Moore, Robert
->Sent: Friday, August 27, 2010 2:36 PM
->To: 'Thomas Renninger'
->Subject: RE: [Devel] Can a userspace tool to read the Embedded Controller
->get added to acpica sources?
->
->OK, we'll take a look
->
->
->>-----Original Message-----
->>From: devel-bounces(a)acpica.org [mailto:devel-bounces(a)acpica.org] On B=
-ehalf
->>Of Thomas Renninger
->>Sent: Friday, August 27, 2010 6:31 AM
->>To: devel(a)acpica.org
->>Subject: [Devel] Can a userspace tool to read the Embedded Controller get
->>added to acpica sources?
->>
->>Hi,
->>
->>next kernel will have EC read/write support.
->>A userspace tool is needed to make use of the interface.
->>
->>As the Embedded Controller is tightly bound to ACPI
->>(devel/debugging/testing), the best package this tool would fit in is
->>acpica.
->>A new package is not worth it, if not accepted I'd still package
->>this together with acpica.rpm. But if it gets included, there is some
->>guarantee that this binary shows up in the same way on different
->>distros.
->>
->>Thus it would be great if this code:
->>ftp://ftp.suse.com/pub/people/trenn/sources/ec/ec_access.c
->>Could get integrated into the acpica repository.
->>
->>Not sure where this best could fit into if accepted, possibly:
->>acpica/source/os_specific/ec_access
->>or
->>acpica/source/os_specific/tools/ec_access
->>?
->>
->>Thanks,
->>
->>     Thomas
->>_______________________________________________
->>Devel mailing list
->>Devel(a)acpica.org
->>http://lists.acpica.org/listinfo/devel
+I didn't explicitly check a real read/write on a recent kernel
+after these changes, but I did before and there weren't that much
+modifications.
 
---===============3380633919059208595==--
+I didn't adopt the whole coding style to ACPICA one,
+hope that is ok.
+
+      Thomas
+
+--===============5292867862258963045==
+Content-Type: text/x-makefile
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="Makefile.bin"
+
+IwojIEFjcGlFeGVjIHV0aWxpdHkKIwoKUFJPRyA9IGVjX2FjY2VzcwpTUkNTPQllY19hY2Nlc3Mu
+YyBcCgkuLi8uLi9jb21tb24vZ2V0b3B0LmMKCgojYWJjb21wYXJlLmMgYWJtYWluLmMgXAojCS4u
+Ly4uL3V0aWxpdGllcy91dGFsbG9jLmMgXAojCS4uLy4uL3V0aWxpdGllcy91dGNhY2hlLmMgXAoj
+CS4uLy4uL3V0aWxpdGllcy91dGRlYnVnLmMgXAojCS4uLy4uL3V0aWxpdGllcy91dGdsb2JhbC5j
+IFwKIwkuLi8uLi91dGlsaXRpZXMvdXRtYXRoLmMgXAojCS4uLy4uL3V0aWxpdGllcy91dG1pc2Mu
+YyBcCiMJLi4vLi4vdXRpbGl0aWVzL3V0bXV0ZXguYyBcCiMJLi4vLi4vdXRpbGl0aWVzL3V0c3Rh
+dGUuYyBcCiMJLi4vLi4vb3N1bml4eGYuYyBcCgoKQ0ZMQUdTKz0gLVdhbGwgLU8yIC1EX0xJTlVY
+IC1EQUNQSV9BUFBMSUNBVElPTiAtV3N0cmljdC1wcm90b3R5cGVzIC1JLi4vLi4vaW5jbHVkZSAK
+CgplY19hY2Nlc3MgOiAkKHBhdHN1YnN0ICUuYywlLm8sICQoU1JDUykpCgkkKENDKSAkKExERkxB
+R1MpICQoQ0ZMQUdTKSAkKHBhdHN1YnN0ICUuYywlLm8sICQoU1JDUykpIC1vICQoUFJPRykKCmNs
+ZWFuIDogCglybSAtZiAkKFBST0cpICQocGF0c3Vic3QgJS5jLCUubywgJChTUkNTKSkKCg==
+
+--===============5292867862258963045==
+Content-Type: text/x-csrc
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="ec_access.c"
+
+Ci8qKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioKICoKICogTW9kdWxlIE5hbWU6IGVjX2FjY2VzcyAtIHJl
+YWQgb3Igd3JpdGUgYnl0ZXMgZnJvbS90byB0aGUgRW1iZWRkZWQgQ29udHJvbGxlcgogKgogKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKiovCgovKiAKICogZWNfYWNjZXNzLmMKICoKICogQ29weXJpZ2h0IChD
+KSAyMDEwIFNVU0UgUHJvZHVjdHMgR21iSC9Ob3ZlbGwKICogQXV0aG9yOgogKiAgICAgIFRob21h
+cyBSZW5uaW5nZXIgPHRyZW5uQHN1c2UuZGU+CiAqCiAqIFRoaXMgd29yayBpcyBsaWNlbnNlZCB1
+bmRlciB0aGUgdGVybXMgb2YgdGhlIEdOVSBHUEwsIHZlcnNpb24gMi4KICovCgojZGVmaW5lIF9E
+RUNMQVJFX0dMT0JBTFMKI2luY2x1ZGUgImFjcGkuaCIKI2luY2x1ZGUgImFjY29tbW9uLmgiCgoj
+aWZkZWYgX0RFQ0xBUkVfR0xPQkFMUwojZGVmaW5lIEVYVEVSTgojZGVmaW5lIElOSVRfR0xPQkFM
+KGEsYikgICAgICAgIGE9YgojZWxzZQojZGVmaW5lIEVYVEVSTiAgICAgICAgICAgICAgICAgIGV4
+dGVybgojZGVmaW5lIElOSVRfR0xPQkFMKGEsYikgICAgICAgIGEKI2VuZGlmCgojaW5jbHVkZSAi
+YWNhcHBzLmgiCgojaW5jbHVkZSA8ZmNudGwuaD4KI2luY2x1ZGUgPHN0ZGlvLmg+CgojZGVmaW5l
+IEVDX1NQQUNFX1NJWkUgMjU2CiNkZWZpbmUgU1lTRlNfUEFUSCAiL3N5cy9rZXJuZWwvZGVidWcv
+ZWMvZWMwL2lvIgoKI2lmbmRlZiBFWElUX0ZBSUxVUkUKI2RlZmluZSBFWElUX0ZBSUxVUkUgMQoj
+ZW5kaWYKCiNpZm5kZWYgRVhJVF9TVUNDRVNTCiNkZWZpbmUgRVhJVF9TVUNDRVNTIDEKI2VuZGlm
+CgovKiBUQkQvRW5oYW5jZW1lbnRzOgogICAtIFByb3ZpZGUgcGFyYW0gZm9yIGFjY2Vzc2luZyBk
+aWZmZXJlbnQgRUNzIChub3Qgc3VwcG9ydGVkIGJ5IGtlcm5lbCB5ZXQpCiovCgpzdGF0aWMgaW50
+IHJlYWRfbW9kZSA9IC0xOwpzdGF0aWMgaW50IHdyaXRlX2J5dGVfb2Zmc2V0ID0gLTE7CnN0YXRp
+YyBpbnQgcmVhZF9ieXRlX29mZnNldCA9IC0xOwpzdGF0aWMgVUlOVDggd3JpdGVfdmFsdWUgPSAt
+MTsKCnZvaWQgdXNhZ2UoY2hhciBwcm9nbmFtZVtdLCBpbnQgZXhpdF9zdGF0dXMpCnsKCXByaW50
+ZigiVXNhZ2U6XG4iKTsKCXByaW50ZigiMSkgJXMgLXJcbiIsIHByb2duYW1lKTsKCXByaW50Zigi
+MikgJXMgLWIgYnl0ZV9vZmZzZXRcbiIsIHByb2duYW1lKTsKCXByaW50ZigiMykgJXMgLXcgYnl0
+ZV9vZmZzZXQgLXYgdmFsdWVcblxuIiwgcHJvZ25hbWUpOwoKCXB1dHMoIlx0LXIgb3IgLS1yZWFk
+IC0tIER1bXAgRUMgcmVnaXN0ZXJzIik7CglwdXRzKCJcdC1iIG9yIC0tYnl0ZSBieXRlX29mZnNl
+dCAtLSBSZWFkIHZhbHVlICIKCSAgICAgIiBhdCBieXRlX29mZnNldCAoaW4gaGV4KSIpOwoJcHV0
+cygiXHQtdyBvciAtLXdyaXRlIGJ5dGVfb2Zmc2V0IC12IG9yIC0tdmFsdWUgdmFsdWUgLS0gIgoJ
+ICAgICAiV3JpdGUgdmFsdWUgYXQgYnl0ZV9vZmZzZXQiKTsKCXB1dHMoIlx0LWggb3IgLS1oZWxw
+IC0tIFByaW50IHRoaXMgaGVscFxuXG4iKTsKCXB1dHMoIk9mZnNldHMgYW5kIHZhbHVlcyBhcmUg
+aW4gaGV4YWRlY2ltYWwgbnVtYmVyIHN5dGVtLiIpOwoJcHV0cygiVGhlIG9mZnNldCBhbmQgdmFs
+dWUgbXVzdCBiZSBiZXR3ZWVuIDAgYW5kIDB4ZmYuIik7CglleGl0KGV4aXRfc3RhdHVzKTsKfQoK
+dm9pZCBwYXJzZV9vcHRzKGludCBhcmdjLCBjaGFyICphcmd2W10pCnsKCWludCBqOwoKCXdoaWxl
+ICgoaiA9IEFjcGlHZXRvcHQgKGFyZ2MsIGFyZ3YsICJyYjp3OnY6aCIpKSAhPSBFT0YpIHsKCQlz
+d2l0Y2goaikgewoJCWNhc2UgJ3InOgoJCQlpZiAocmVhZF9tb2RlICE9IC0xKQoJCQkJdXNhZ2Ug
+KGFyZ3ZbMF0sIEVYSVRfRkFJTFVSRSk7CgkJCXJlYWRfbW9kZSA9IDE7CgkJCWJyZWFrOwoJCWNh
+c2UgJ2InOgoJCQlpZiAocmVhZF9tb2RlICE9IC0xKQoJCQkJdXNhZ2UgKGFyZ3ZbMF0sIEVYSVRf
+RkFJTFVSRSk7CgkJCXJlYWRfbW9kZSA9IDE7CgkJCXJlYWRfYnl0ZV9vZmZzZXQgPSBBQ1BJX1NU
+UlRPVUwoQWNwaUdibF9PcHRhcmcsCgkJCQkJCQlOVUxMLCAxNik7CgkJCWJyZWFrOwoJCWNhc2Ug
+J3cnOgoJCQlpZiAocmVhZF9tb2RlICE9IC0xKQoJCQkJdXNhZ2UgKGFyZ3ZbMF0sIEVYSVRfRkFJ
+TFVSRSk7CgkJCXJlYWRfbW9kZSA9IDA7CgkJCXdyaXRlX2J5dGVfb2Zmc2V0ID0gQUNQSV9TVFJU
+T1VMKEFjcGlHYmxfT3B0YXJnLAoJCQkJCQkJIE5VTEwsIDE2KTsKCQkJYnJlYWs7CgkJY2FzZSAn
+dic6CgkJCXdyaXRlX3ZhbHVlID0gQUNQSV9TVFJUT1VMIChBY3BpR2JsX09wdGFyZywgTlVMTCwg
+MTYpOwoJCQlicmVhazsKCQljYXNlICdoJzoKCQkJdXNhZ2UoYXJndlswXSwgRVhJVF9TVUNDRVNT
+KTsKCQlkZWZhdWx0OgoJCQlmcHJpbnRmKHN0ZGVyciwgIlVua25vd24gb3B0aW9uIVxuIik7CgkJ
+CXVzYWdlKGFyZ3ZbMF0sIEVYSVRfRkFJTFVSRSk7CgkJfQoJfQoJaWYgKHJlYWRfbW9kZSA9PSAw
+KSB7CgkJaWYgKHdyaXRlX2J5dGVfb2Zmc2V0IDwgMCAvKiB8fAoJCQkJCSAgICAgd3JpdGVfYnl0
+ZV9vZmZzZXQgPj0gRUNfU1BBQ0VfU0laRSAqLykgewoJCQlmcHJpbnRmKHN0ZGVyciwgIldyb25n
+IGJ5dGUgb2Zmc2V0IDB4JS4yeCwgdmFsaWQ6ICIKCQkJCSJbMC0weCUuMnhdXG4iLAoJCQkJd3Jp
+dGVfYnl0ZV9vZmZzZXQsIEVDX1NQQUNFX1NJWkUgLSAxKTsKCQkJdXNhZ2UoYXJndlswXSwgRVhJ
+VF9GQUlMVVJFKTsKCQl9CgkJaWYgKHdyaXRlX3ZhbHVlIDwgMCB8fAoJCSAgICB3cml0ZV92YWx1
+ZSA+PSAyNTUpIHsKCQkJZnByaW50ZihzdGRlcnIsICJXcm9uZyBieXRlIG9mZnNldCAweCUuMngs
+IHZhbGlkOiIKCQkJCSJbMC0weGZmXVxuIiwgd3JpdGVfYnl0ZV9vZmZzZXQpOwoJCQl1c2FnZShh
+cmd2WzBdLCBFWElUX0ZBSUxVUkUpOwoJCX0KCX0KCWlmIChyZWFkX21vZGUgPT0gMSAmJiByZWFk
+X2J5dGVfb2Zmc2V0ICE9IC0xKSB7CgkJaWYgKHJlYWRfYnl0ZV9vZmZzZXQgPCAtMSB8fAoJCSAg
+ICByZWFkX2J5dGVfb2Zmc2V0ID49IEVDX1NQQUNFX1NJWkUpIHsKCQkJZnByaW50ZihzdGRlcnIs
+ICJXcm9uZyBieXRlIG9mZnNldCAweCUuMngsIHZhbGlkOiAiCgkJCQkiWzAtMHglLjJ4XVxuIiwK
+CQkJCXJlYWRfYnl0ZV9vZmZzZXQsIEVDX1NQQUNFX1NJWkUgLSAxKTsKCQkJdXNhZ2UoYXJndlsw
+XSwgRVhJVF9GQUlMVVJFKTsKCQl9Cgl9CgkvKiBBZGQgYWRkaXRpb25hbCBwYXJhbWV0ZXIgY2hl
+Y2tzIGhlcmUgKi8KfQoKdm9pZCBkdW1wX2VjKGludCBmZCkKewoJY2hhciBidWZbRUNfU1BBQ0Vf
+U0laRV07CglpbnQgYnl0ZV9vZmYsIGJ5dGVzX3JlYWQ7CgoJYnl0ZXNfcmVhZCA9IHJlYWQoZmQs
+IGJ1ZiwgRUNfU1BBQ0VfU0laRSk7CgoJaWYgKGJ5dGVzX3JlYWQgPT0gLTEpIHsKCQlmcHJpbnRm
+KHN0ZGVyciwgIkNvdWxkIG5vdCByZWFkIGZyb20gJXNcbiIsIFNZU0ZTX1BBVEgpOwoJCWV4aXQo
+RVhJVF9GQUlMVVJFKTsKCX0KCglpZiAoYnl0ZXNfcmVhZCAhPSBFQ19TUEFDRV9TSVpFKQoJCWZw
+cmludGYoc3RkZXJyLCAiQ291bGQgb25seSByZWFkICVkIGJ5dGVzXG4iLCBieXRlc19yZWFkKTsK
+CglwcmludGYoIlx0MDAgMDEgMDIgMDMgMDQgMDUgMDYgMDcgMDggMDkgMEEgMEIgMEMgMEQgMEUg
+MEZcbiIpOwoJZm9yIChieXRlX29mZiA9IDA7IGJ5dGVfb2ZmIDwgYnl0ZXNfcmVhZDsgYnl0ZV9v
+ZmYrKykgewoJCWlmICgoYnl0ZV9vZmYgJSAxNikgPT0gMCkKCQkJcHJpbnRmKCJcbiUuMlg6IFx0
+IiwgYnl0ZV9vZmYpOwoJCXByaW50ZigiJS4yeCAiLCAoVUlOVDgpYnVmW2J5dGVfb2ZmXSk7Cgl9
+CglwcmludGYoIlxuIik7CgkvKiBPUyBzcGVjaWZpYz8gKi8KCXN5bmMoKTsKfQoKdm9pZCByZWFk
+X2VjX3ZhbChpbnQgZmQsIGludCBieXRlX29mZnNldCkKewoJVUlOVDggYnVmOwoJaW50IGVycm9y
+OwoKCWVycm9yID0gbHNlZWsoZmQsIGJ5dGVfb2Zmc2V0LCBTRUVLX1NFVCk7CglpZiAoZXJyb3Ig
+IT0gYnl0ZV9vZmZzZXQpIHsKCQlmcHJpbnRmKHN0ZGVyciwgIkNhbm5vdCBzZXQgb2Zmc2V0IHRv
+IDB4JS4yeCIsIGJ5dGVfb2Zmc2V0KTsKCQlleGl0KEVYSVRfRkFJTFVSRSk7Cgl9CgoJZXJyb3Ig
+PSByZWFkKGZkLCAmYnVmLCAxKTsKCWlmIChlcnJvciAhPSAxKSB7CgkJZnByaW50ZihzdGRlcnIs
+ICJDb3VsZCBub3QgcmVhZCBieXRlIDB4JS4yeCBmcm9tICVzXG4iLAoJCSAgICBieXRlX29mZnNl
+dCwgU1lTRlNfUEFUSCk7CgkJZXhpdChFWElUX0ZBSUxVUkUpOwoJfQoJcHJpbnRmKCIweCUuMnhc
+biIsIGJ1Zik7CglyZXR1cm47Cn0KCnZvaWQgd3JpdGVfZWNfdmFsKGludCBmZCwgaW50IGJ5dGVf
+b2Zmc2V0LCBVSU5UOCB2YWx1ZSkKewoJaW50IGVycm9yOwoKCWVycm9yID0gbHNlZWsoZmQsIGJ5
+dGVfb2Zmc2V0LCBTRUVLX1NFVCk7CglpZiAoZXJyb3IgIT0gYnl0ZV9vZmZzZXQpIHsKCQlmcHJp
+bnRmKHN0ZGVyciwgIkNhbm5vdCBzZXQgb2Zmc2V0IHRvIDB4JS4yeCIsIGJ5dGVfb2Zmc2V0KTsK
+CQlleGl0KEVYSVRfRkFJTFVSRSk7Cgl9CgoJZXJyb3IgPSB3cml0ZShmZCwgJnZhbHVlLCAxKTsK
+CWlmIChlcnJvciAhPSAxKSB7CgkJZnByaW50ZihzdGRlcnIsICJDYW5ub3Qgd3JpdGUgdmFsdWUg
+MHglLjJ4IHRvIG9mZnNldCAweCUuMngiLAoJCSAgICB2YWx1ZSwgYnl0ZV9vZmZzZXQpOwoJCWV4
+aXQoRVhJVF9GQUlMVVJFKTsKCX0KfQoKaW50IG1haW4oaW50IGFyZ2MsIGNoYXIgKmFyZ3ZbXSkK
+ewoJaW50IGZpbGVfbW9kZTsKCWludCBmZDsKCglwYXJzZV9vcHRzKGFyZ2MsIGFyZ3YpOwoKCWlm
+IChyZWFkX21vZGUgPT0gMCkKCQlmaWxlX21vZGUgPSBPX1dST05MWTsKCWVsc2UgaWYgKHJlYWRf
+bW9kZSA9PSAxKQoJCWZpbGVfbW9kZSA9IE9fUkRPTkxZOwoJZWxzZSB7CgkJdXNhZ2UoYXJndlsw
+XSwgRVhJVF9GQUlMVVJFKTsKCQlyZXR1cm4gLTE7Cgl9CgoJZmQgPSBvcGVuKFNZU0ZTX1BBVEgs
+IGZpbGVfbW9kZSk7CglpZiAoZmQgPT0gLTEpIHsKCQlmcHJpbnRmKHN0ZGVyciwgIkNhbm5vdCBv
+cGVuICVzLCBpcyB0aGUgZWNfc3lzLmtvIGRyaXZlciAiCgkJCSJsb2FkZWQ/XG4iLCBTWVNGU19Q
+QVRIKTsKCQlleGl0KEVYSVRfRkFJTFVSRSk7Cgl9CgoJaWYgKHJlYWRfbW9kZSkKCQlpZiAocmVh
+ZF9ieXRlX29mZnNldCA9PSAtMSkKCQkJZHVtcF9lYyhmZCk7CgkJZWxzZSBpZiAocmVhZF9ieXRl
+X29mZnNldCA8IDAgfHwKCQkJIHJlYWRfYnl0ZV9vZmZzZXQgPj0gRUNfU1BBQ0VfU0laRSkKCQkJ
+dXNhZ2UoYXJndlswXSwgRVhJVF9GQUlMVVJFKTsKCQllbHNlCgkJCXJlYWRfZWNfdmFsKGZkLCBy
+ZWFkX2J5dGVfb2Zmc2V0KTsKCWVsc2UKCQl3cml0ZV9lY192YWwoZmQsIHdyaXRlX2J5dGVfb2Zm
+c2V0LCB3cml0ZV92YWx1ZSk7CgljbG9zZShmZCk7CgoJZXhpdChFWElUX1NVQ0NFU1MpOwp9Cg==
+
+--===============5292867862258963045==--
 
