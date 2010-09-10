@@ -1,111 +1,63 @@
-Content-Type: multipart/mixed; boundary="===============3615593905385114638=="
+Content-Type: multipart/mixed; boundary="===============1989264496139595053=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
+From: Thomas Renninger <trenn at suse.de>
 Subject: Re: [Devel] False positive iasl compiler error on resource object?
-Date: Fri, 10 Sep 2010 08:04:34 -0700
-Message-ID: <4911F71203A09E4D9981D27F9D830858AF0CA981@orsmsx503.amr.corp.intel.com>
-In-Reply-To: 201009101133.31663.trenn@suse.de
+Date: Fri, 10 Sep 2010 22:19:23 +0200
+Message-ID: <201009102219.23520.trenn@suse.de>
+In-Reply-To: 4911F71203A09E4D9981D27F9D830858AF0CA981@orsmsx503.amr.corp.intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3615593905385114638==
+--===============1989264496139595053==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-We've provided the -cr option to disable the resource descriptor error chec=
-king.
+On Friday 10 September 2010 17:04:34 Moore, Robert wrote:
+> We've provided the -cr option to disable the resource descriptor error
+> checking.
+AFAIK, these zeroed resources that get filled up dynamically later are a =
 
-This is an interesting problem. On one hand, we would like to provide stati=
-c (compile time) error checking as much as possible. On the other hand, the=
- resource descriptors (as well as most any other ASL/AML object) can be dyn=
-amically changed.
+rather common construct. If below additional checks cannot be added
+this (these?) specific resource checks should better get disabled.
 
-We've seen many ACPI tables with invalid resource descriptors (at both comp=
-ile time and runtime), and that is the reason the resource descriptor valid=
-ation was added to the compiler in the first place.
+> This is an interesting problem. On one hand, we would like to provide
+> static (compile time) error checking as much as possible. On the other
+> hand, the resource descriptors (as well as most any other ASL/AML
+> object) can be dynamically changed.
+> =
 
-I don't want to just remove this validation, but yes, perhaps iASL should b=
-e able to recognize that this descriptor may be modified at runtime and the=
-refore a static validation cannot be performed.
+> We've seen many ACPI tables with invalid resource descriptors (at both
+> compile time and runtime), and that is the reason the resource
+> descriptor validation was added to the compiler in the first place.
+> =
 
-There are at least a few indicators:
+> I don't want to just remove this validation, but yes, perhaps iASL
+> should be able to recognize that this descriptor may be modified at
+> runtime and therefore a static validation cannot be performed.
+> =
 
-1) The descriptor is basically all zeroes
-2) There is a CreateXxxField reference to the descriptor
-3) There is a Store to the created field
+> There are at least a few indicators:
+> =
 
-So, perhaps we could detect the above conditions and then disable validatio=
-n for this particular descriptor. Note, conditions (2) and (3) may be diffi=
-cult to detect.
+> 1) The descriptor is basically all zeroes
+> 2) There is a CreateXxxField reference to the descriptor
+> 3) There is a Store to the created field
+> =
 
-I'm open to suggestions.
+> So, perhaps we could detect the above conditions and then disable
+> validation for this particular descriptor. Note, conditions (2) and
+> (3) may be difficult to detect.
+> =
 
-Bob
+> I'm open to suggestions.
+Not sure whether runtime checks for this exist already.
+Bjorn has done some great work there in the past.
+If not, that should be by far easier, the so called "low hanging =
 
+fruit"...
 
->-----Original Message-----
->From: devel-bounces(a)acpica.org [mailto:devel-bounces(a)acpica.org] On Be=
-half
->Of Thomas Renninger
->Sent: Friday, September 10, 2010 2:34 AM
->To: devel(a)acpica.org
->Cc: linux-acpi(a)vger.kernel.org; bjorn.helgaas(a)hp.com
->Subject: [Devel] False positive iasl compiler error on resource object?
->
->I have a machine with a _CRS function which shows:
->
->Method (_CRS, 0, NotSerialized)
->{
->    Name (XY0, ResourceTemplate ()
->    {
->             WordIO (ResourceProducer, MinFixed, MaxFixed, PosDecode,
->EntireRange,
->                        0x0000,             // Granularity
->                        0x0000,             // Range Minimum
->                        0x0000,             // Range Maximum
->                        0x0000,             // Translation Offset
->                        0x0000,             // Length
->                        ,, _Y10, TypeStatic)
->     }
->This produces the compiler error:
->DSDT.dsl.orig  2364:                         0x0000,             // Length
->Error    4122 -                                   ^ Invalid combination of
->Length and Min/Max fixed flags
->
->Because iasl thinks this hits this condition:
->Advanced Configuration and Power Interface Specification
->Revision 3.0b October 10, 2006
->6.4.3.5 Address Space Resource Descriptors
->Table 6-38 Valid combination of Address Space Descriptors fields
->..
->_LEN   _MIF      _MAF           Definition
->0           1            1             (Illegal combination)
->
->But the _CRS function can still fill up the length of this resource object
->parts while _CRS gets executed (and the compiler probably does not
->take this into account), by e.g.:
->                CreateWordField (XY0, \_SB.PCI0._CRS._Y10._LEN, LEN9)
->                Store (Local0, LEN9)
->and the resource, returned to OS, might fulfill the ACPI specification and
->return a valid length, _MIF, _MAF combination:
->_LEN   _MIF      _MAF           Definition
->  >0       1           1              Fixed size, fixed location resource
->descriptor.
->                                          _GRA must be 0 and _LEN must be
->(_MAX - _MIN +1).
->
->I wonder whether my above assumptions are correct and the
->Error 4122 should get removed from the iasl compiler, at least in this
->case?
->
->Thanks,
->
->       Thomas
->_______________________________________________
->Devel mailing list
->Devel(a)acpica.org
->http://lists.acpica.org/listinfo/devel
+    Thomas
 
---===============3615593905385114638==--
+--===============1989264496139595053==--
 
