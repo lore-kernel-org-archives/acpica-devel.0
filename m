@@ -1,56 +1,65 @@
-Content-Type: multipart/mixed; boundary="===============9205249802856895848=="
+Content-Type: multipart/mixed; boundary="===============6355306044219101552=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] Can a userspace tool to read the Embedded Controller
- get	added to acpica sources?
-Date: Thu, 09 Sep 2010 15:24:11 -0700
-Message-ID: <4911F71203A09E4D9981D27F9D830858AF06FA92@orsmsx503.amr.corp.intel.com>
-In-Reply-To: 201009021731.22944.trenn@suse.de
+From: Thomas Renninger <trenn at suse.de>
+Subject: [Devel] False positive iasl compiler error on resource object?
+Date: Fri, 10 Sep 2010 11:33:31 +0200
+Message-ID: <201009101133.31663.trenn@suse.de>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============9205249802856895848==
+--===============6355306044219101552==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
+I have a machine with a _CRS function which shows:
 
->I didn't adopt the whole coding style to ACPICA one,
->hope that is ok.
+Method (_CRS, 0, NotSerialized)
+{
+    Name (XY0, ResourceTemplate ()
+    {
+             WordIO (ResourceProducer, MinFixed, MaxFixed, PosDecode, Entir=
+eRange,
+                        0x0000,             // Granularity
+                        0x0000,             // Range Minimum
+                        0x0000,             // Range Maximum
+                        0x0000,             // Translation Offset
+                        0x0000,             // Length
+                        ,, _Y10, TypeStatic)
+     }
+This produces the compiler error:
+DSDT.dsl.orig  2364:                         0x0000,             // Length
+Error    4122 -                                   ^ Invalid combination of =
+Length and Min/Max fixed flags
 
-Any os-independent code should be in the acpica style. Otherwise, it is an =
-os-dependent style.
+Because iasl thinks this hits this condition:
+Advanced Configuration and Power Interface Specification
+Revision 3.0b October 10, 2006
+6.4.3.5 Address Space Resource Descriptors
+Table 6-38 Valid combination of Address Space Descriptors fields
+..
+_LEN   _MIF      _MAF           Definition
+0           1            1             (Illegal combination)
 
+But the _CRS function can still fill up the length of this resource object
+parts while _CRS gets executed (and the compiler probably does not
+take this into account), by e.g.:
+                CreateWordField (XY0, \_SB.PCI0._CRS._Y10._LEN, LEN9)
+                Store (Local0, LEN9)
+and the resource, returned to OS, might fulfill the ACPI specification and
+return a valid length, _MIF, _MAF combination:
+_LEN   _MIF      _MAF           Definition
+  >0       1           1              Fixed size, fixed location resource d=
+escriptor.
+                                          _GRA must be 0 and _LEN must be (=
+_MAX - _MIN +1).
 
->-----Original Message-----
->From: Thomas Renninger [mailto:trenn(a)suse.de]
->Sent: Thursday, September 02, 2010 8:31 AM
->To: Moore, Robert
->Cc: devel(a)acpica.org
->Subject: Re: [Devel] Can a userspace tool to read the Embedded Controller
->get added to acpica sources?
->
->On Friday 27 August 2010 23:47:55 Moore, Robert wrote:
->> Seems like it will have lots of very EC-specific stuff, so sure, we
->> can add to ACPICA. Make sure any OS-dependent stuff is modularized.
->Ok, I tried on that.
->
->Find attached the source file which should go to:
->source/tools/ec_access/ec_access.c
->and the Makefile for:
->generate/linux/Makefile.ec_access
->
->I used stderr, fprintf, open, read, write, sync.
->Beside the last, some other files are doing the same.
->
->I didn't explicitly check a real read/write on a recent kernel
->after these changes, but I did before and there weren't that much
->modifications.
->
->I didn't adopt the whole coding style to ACPICA one,
->hope that is ok.
->
->      Thomas
+I wonder whether my above assumptions are correct and the
+Error 4122 should get removed from the iasl compiler, at least in this case?
 
---===============9205249802856895848==--
+Thanks,
+
+       Thomas
+
+--===============6355306044219101552==--
 
