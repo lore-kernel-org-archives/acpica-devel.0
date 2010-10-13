@@ -1,76 +1,125 @@
-Content-Type: multipart/mixed; boundary="===============3031980184599937659=="
+Content-Type: multipart/mixed; boundary="===============2888368630227387003=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] ACPICA version 20101013 released
-Date: Wed, 13 Oct 2010 09:54:53 -0700
-Message-ID: <4911F71203A09E4D9981D27F9D830858BBE58E68@orsmsx503.amr.corp.intel.com>
+From: Thomas Renninger <trenn at suse.de>
+Subject: [Devel] [PATCH] ACPICA: Sanity check global lock bits before ACPI
+ mode is enabled
+Date: Wed, 13 Oct 2010 22:17:33 +0200
+Message-ID: <1287001053-9964-1-git-send-email-trenn@suse.de>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3031980184599937659==
+--===============2888368630227387003==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-13 October 2010. Summary of changes for version 20101013:
+Be careful, not even compile tested!
 
-This release is available at www.acpica.org/downloads
+Reason for moving AcpiTbInitializeFacs:
+Doing the sanity check shortly after enabling ACPI mode may more often show:
+    if (AcpiGbl_FACS.GlobalLock & 0x1) {
+        ACPI_INFO ((AE_INFO, "Global lock acquired by BIOS before"
+		    " ACPI mode got enabled"));
+Because it's expected that BIOS may do quite some HW accesses when acpi
+got enabled (assumption).
 
-1) ACPI CA Core Subsystem:
+CC: Lin Ming <ming.m.lin(a)intel.com>
+CC: Len Brown <lenb(a)kernel.org>
+CC: Rafael Wysocki <rjw(a)suse.com>
+CC: devel(a)acpica.org
+Signed-off-by: Thomas Renninger <trenn(a)suse.de>
+---
+ source/components/tables/tbutils.c    |   21 +++++++++++++++++++--
+ source/components/utilities/utxface.c |   23 ++++++++++++-----------
+ 2 files changed, 31 insertions(+), 13 deletions(-)
 
-Added support to clear the PCIEXP_WAKE event. When clearing ACPI events, no=
-w clear the PCIEXP_WAKE_STS bit in the ACPI PM1 Status Register, via HwClea=
-rAcpiStatus. Original change from Colin King. ACPICA BZ 880.
+diff --git a/source/components/tables/tbutils.c b/source/components/tables/=
+tbutils.c
+index 100a91d..4562e9b 100644
+--- a/source/components/tables/tbutils.c
++++ b/source/components/tables/tbutils.c
+@@ -159,10 +159,27 @@ AcpiTbInitializeFacs (
+ {
+     ACPI_STATUS             Status;
+ =
 
-Changed the type of the predefined namespace object _TZ from ThermalZone to=
- Device. This was found to be confusing to the host software that processes=
- the various thermal zones, since _TZ is not really a ThermalZone. However,=
- a Notify() can still be performed on it. ACPICA BZ 876. Suggestion from Ru=
-i Zhang.
+-
+     Status =3D AcpiGetTableByIndex (ACPI_TABLE_INDEX_FACS,
+                 ACPI_CAST_INDIRECT_PTR (ACPI_TABLE_HEADER, &AcpiGbl_FACS));
+-    return (Status);
++
++    if (ACPI_FAILURE (Status))
++	return (Status);
++
++    /*
++     * Do some sanity checks on the Global Lock: A value of 0x1 is
++     * possible but could be a hint for a hard to debug issue.
++     * A value of 0x3 must not happen, but we try to handle it gracefully.
++     */
++    if (AcpiGbl_FACS.GlobalLock & 0x1) {
++        ACPI_INFO ((AE_INFO, "Global lock acquired by BIOS before"
++		    " ACPI mode got enabled"));
++	if (AcpiGbl_FACS.GlobalLock & 0x3) {
++	    ACPI_ERROR ((AE_INFO, "Found stale global lock pending bits"));
++	    AcpiGbl_FACS.GlobalLock &=3D ~0x3;
++	}
++    }
++
++    return (AE_OK);
+ }
+ =
 
-Added Windows Vista SP2 to the list of supported _OSI strings. The actual s=
-tring is "Windows 2006 SP2".
+ =
 
-Eliminated duplicate code in AcpiUtExecute* functions. Now that the nsrepai=
-r code automatically repairs _HID-related strings, this type of code is no =
-longer needed in Execute_HID, Execute_CID, and Execute_UID. ACPICA BZ 878.
+diff --git a/source/components/utilities/utxface.c b/source/components/util=
+ities/utxface.c
+index 9e52017..0819135 100644
+--- a/source/components/utilities/utxface.c
++++ b/source/components/utilities/utxface.c
+@@ -193,6 +193,18 @@ AcpiInitializeSubsystem (
+         return_ACPI_STATUS (Status);
+     }
+ =
 
-Example Code and Data Size: These are the sizes for the OS-independent acpi=
-ca.lib produced by the Microsoft Visual C++ 6.0 32-bit compiler. The debug =
-version of the code includes the debug output trace mechanism and has a muc=
-h larger code and data size.
++    /*
++     * Obtain a permanent mapping for the FACS. This is required for the
++     * Global Lock and the Firmware Waking Vector
++     */
++    Status =3D AcpiTbInitializeFacs ();
++    if (ACPI_FAILURE (Status))
++    {
++        ACPI_WARNING ((AE_INFO, "Could not map the FACS table"));
++        return_ACPI_STATUS (Status);
++    }
++
++
+     /* Initialize the global OSI interfaces list with the static names */
+ =
 
-  Previous Release:
-    Non-Debug Version:  89.9K Code, 19.0K Data, 108.9K Total
-    Debug Version:     166.3K Code, 52.1K Data, 218.4K Total
-  Current Release:
-    Non-Debug Version:  89.9K Code, 19.0K Data, 108.9K Total
-    Debug Version:     166.3K Code, 52.1K Data, 218.4K Total
+     Status =3D AcpiUtInitializeInterfaces ();
+@@ -251,17 +263,6 @@ AcpiEnableSubsystem (
+     }
+ =
 
-2) iASL Compiler/Disassembler and Tools:
+     /*
+-     * Obtain a permanent mapping for the FACS. This is required for the
+-     * Global Lock and the Firmware Waking Vector
+-     */
+-    Status =3D AcpiTbInitializeFacs ();
+-    if (ACPI_FAILURE (Status))
+-    {
+-        ACPI_WARNING ((AE_INFO, "Could not map the FACS table"));
+-        return_ACPI_STATUS (Status);
+-    }
+-
+-    /*
+      * Install the default OpRegion handlers.  These are installed unless
+      * other handlers have already been installed via the
+      * InstallAddressSpaceHandler interface.
+-- =
 
-iASL: Implemented additional compile-time validation for _HID strings. The =
-non-hex prefix (such as "PNP" or "ACPI") must be uppercase, and the length =
-of the string must be exactly seven or eight characters. For both _HID and =
-_CID strings, all characters must be alphanumeric. ACPICA BZ 874.
-
-iASL: Allow certain "null" resource descriptors. Some BIOS code creates des=
-criptors that are mostly or all zeros, with the expectation that they will =
-be filled in at runtime. iASL now allows this as long as there is a "resour=
-ce tag" (name) associated with the descriptor, which gives the ASL a handle=
- needed to modify the descriptor. ACPICA BZ 873.
-
-Added single-thread support to the generic Unix application OSL. Primarily =
-for iASL support, this change removes the use of semaphores in the single-t=
-hreaded ACPICA tools/applications - increasing performance. The _MULTI_THRE=
-ADED option was replaced by the (reverse) ACPI_SINGLE_THREADED option. ACPI=
-CA BZ 879.
-
-AcpiExec: several fixes for the 64-bit version. Adds XSDT support and suppo=
-rt for 64-bit DSDT/FACS addresses in the FADT. Lin Ming.
-
-iASL: Moved all compiler messages to a new file, aslmessages.h.
+1.6.3
 
 
---===============3031980184599937659==--
+--===============2888368630227387003==--
 
