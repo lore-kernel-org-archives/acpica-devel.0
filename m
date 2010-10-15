@@ -1,23 +1,32 @@
-Content-Type: multipart/mixed; boundary="===============4456547189640687279=="
+Content-Type: multipart/mixed; boundary="===============6202275893248133320=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rjw at sisk.pl>
+From: Lin Ming <ming.m.lin at intel.com>
 Subject: Re: [Devel] [PATCH] ACPICA: Sanity check global lock bits before ACPI
  mode is enabled
-Date: Fri, 15 Oct 2010 01:09:03 +0200
-Message-ID: <201010150109.03855.rjw@sisk.pl>
+Date: Fri, 15 Oct 2010 11:34:10 +0800
+Message-ID: <1287113650.6530.3007.camel@minggr.sh.intel.com>
 In-Reply-To: 1287001053-9964-1-git-send-email-trenn@suse.de
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4456547189640687279==
+--===============6202275893248133320==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Wednesday, October 13, 2010, Thomas Renninger wrote:
+On Thu, 2010-10-14 at 04:17 +0800, Thomas Renninger wrote:
 > Be careful, not even compile tested!
 
-Appears reasonable from a quick look.
+Compile error, =
+
+
+- AcpiGbl_FACS.GlobalLock
++ AcpiGbl_FACS->GlobalLock
+
+Thanks,
+Lin Ming
+
+> =
 
 > Reason for moving AcpiTbInitializeFacs:
 > Doing the sanity check shortly after enabling ACPI mode may more often sh=
@@ -78,7 +87,7 @@ y.
 >  }
 >  =
 
->  =
+> =
 
 > diff --git a/source/components/utilities/utxface.c b/source/components/ut=
 ilities/utxface.c
@@ -125,9 +134,8 @@ ilities/utxface.c
 >       * Install the default OpRegion handlers.  These are installed unless
 >       * other handlers have already been installed via the
 >       * InstallAddressSpaceHandler interface.
-> =
 
 
 
---===============4456547189640687279==--
+--===============6202275893248133320==--
 
