@@ -1,44 +1,41 @@
-Content-Type: multipart/mixed; boundary="===============4133509946478231027=="
+Content-Type: multipart/mixed; boundary="===============2043908566040881507=="
 MIME-Version: 1.0
-From: Stuart_Hayes at Dell.com
-Subject: Re: [Devel] [PATCH] ACPICA: Do not hang at mutex forever if BIOS
- tries to release global lock
-Date: Mon, 18 Oct 2010 10:37:15 -0500
-Message-ID: <07E32F241046DA418A0381C1225BFC011A42BCE7BF@AUSX7MCPS301.AMER.DELL.COM>
-In-Reply-To: alpine.LFD.2.00.1010152222150.2971@localhost.localdomain
+From: Thomas Renninger <trenn at suse.de>
+Subject: [Devel] Prefer 32 bit addresses over 64 ones
+Date: Thu, 28 Oct 2010 14:56:15 +0200
+Message-ID: <201010281456.15908.trenn@suse.de>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4133509946478231027==
+--===============2043908566040881507==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-> =
+Hi,
 
-> > There seem to be chipsets which can get this wrong (especially after
-> a kexec
-> > boot on Linux).
-> =
+you probably know this already, I just stumbled
+over this:
+http://download.microsoft.com/download/5/b/9/5b97017b-e28a-4bae-ba48-174cf4=
+7d23cd/CPA002_WH06.ppt
 
-> <recording>
-> =
+We prefer 32 bit addresses over 64 ones if they are
+not equal, which helped for some broken BIOSes
+from pre-Vista times.
+Now it's the other way around:
 
-> As kexec is fundamentally unreliable by design,
-> why should reliable software be modified for its beneift?
-> =
+If the FADT Revision field is > 2, =
 
-> </recording>
-> =
+Windows Vista will use the extended =
 
+64-bit addresses in the FADT
+X_FIRMWARE_CTRL and X_DSDT
+Extended addresses of ACPI fixed hardware
+X_PM1a_EVT_BLK, etc.
 
-The problem isn't just with kexec.  The lock is acquired by acpi_ev_global_=
-lock_handler() when a global lock release SCI occurs, even when the OS does=
-n't want it, which sets the "owned" bit on the first SCI and then the "pend=
-ing" bit on the second SCI.  This prevents the global lock from working cor=
-rectly, even though we're only seeing the OS hang waiting for the semaphore=
- because of this when a kexec boot is attempted.
+Just for info...
 
+    Thomas
 
---===============4133509946478231027==--
+--===============2043908566040881507==--
 
