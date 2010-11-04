@@ -1,41 +1,101 @@
-Content-Type: multipart/mixed; boundary="===============2043908566040881507=="
+Content-Type: multipart/mixed; boundary="===============8150919684559223160=="
 MIME-Version: 1.0
-From: Thomas Renninger <trenn at suse.de>
-Subject: [Devel] Prefer 32 bit addresses over 64 ones
-Date: Thu, 28 Oct 2010 14:56:15 +0200
-Message-ID: <201010281456.15908.trenn@suse.de>
+From: Sparks fasciculate <peter228778 at mail.heerhugowaard.nl>
+Subject: [Devel] Mailing/Email lists for sale
+Date: Thu, 04 Nov 2010 02:43:44 +0100
+Message-ID: <OF4175137C.A410159F-ONC12577D1.00097F76@heerhugowaard.nl>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2043908566040881507==
+--===============8150919684559223160==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+This week only I can sell you ANY individual list below for just $99 or 3 f=
+or $249:
 
-you probably know this already, I just stumbled
-over this:
-http://download.microsoft.com/download/5/b/9/5b97017b-e28a-4bae-ba48-174cf4=
-7d23cd/CPA002_WH06.ppt
+( HEALTHCARE )
 
-We prefer 32 bit addresses over 64 ones if they are
-not equal, which helped for some broken BIOSes
-from pre-Vista times.
-Now it's the other way around:
+- Doctors (34 different specialties)
+- Chiropractors
+- Alternative Medicine =
 
-If the FADT Revision field is > 2, =
+- Dentists =
 
-Windows Vista will use the extended =
+- Veterinarians =
 
-64-bit addresses in the FADT
-X_FIRMWARE_CTRL and X_DSDT
-Extended addresses of ACPI fixed hardware
-X_PM1a_EVT_BLK, etc.
+- Hospitals =
 
-Just for info...
+- National Health Service Corp Clinics =
 
-    Thomas
+- Nursing Homes =
 
---===============2043908566040881507==--
+- Pharmaceutical Companies
+- Physical Therapists =
+
+- Oncology Doctors
+- US Surgery Centers
+- Massage Therapists =
+
+- Acupuncturists =
+
+- Medical Equipment Suppliers
+- Mental Health Counselors
+- Visiting Nurses & RN's =
+
+- Optometrists =
+
+- Psychologists
+
+( BUSINESS LISTS )
+
+- Hotels
+- Real Estate Agents =
+
+- American Business Email List =
+
+- US New Business Database =
+
+- Manufacturers Database =
+
+- Financial Planners Database =
+
+- Finance and Money Professionals Database
+
+( CONSUMER LISTS )
+
+- American Consumer Database =
+
+- Credit Inquiries Database =
+
+- American Homeowners
+
+( PROFESSIONALS LISTS )
+
+- USA Lawyers Database =
+
+- Police and Sheriff Services =
+
+- Criminal Attorneys - 142,906 =
+
+
+
+email me here for counts & samples: powerlists(a)gmx.com
+
+  =
+
+
+
+
+
+to stop this email in future email us at purgefile(a)gmx.com
+  =
+
+
+
+
+
+
+--===============8150919684559223160==--
 
