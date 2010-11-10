@@ -1,104 +1,80 @@
-Content-Type: multipart/mixed; boundary="===============6165803004819963816=="
+Content-Type: multipart/mixed; boundary="===============1035332684223272013=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] Why are empty packages invalid for predefined ACPI
- objects?
-Date: Mon, 08 Nov 2010 13:10:20 -0800
-Message-ID: <4911F71203A09E4D9981D27F9D830858BC58146F@orsmsx503.amr.corp.intel.com>
-In-Reply-To: 4CD7C8C7.7060500@gmail.com
+From: Poole panda <chuck8866 at tisb-mail.tisb.ac.in>
+Subject: [Devel] Contact info including email and phone for businesses, medical,
+ professionals and more
+Date: Thu, 11 Nov 2010 02:55:39 +0530
+Message-ID: <TISB-SRVJswFCHOzyfy00000db1@tisb-srv.tisb.ac.in>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6165803004819963816==
+--===============1035332684223272013==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
+Pricing for this week only: ANY 1 list $99 or 3 for $249. Choose from the l=
+ists below:
 
->                  Method (_DOD, 0, NotSerialized)
->                  {
->                      Return (Package (0x00) {})
->                  }
+( HEALTHCARE )
 
-Looks odd to me. =
+- Doctors (34 different specialties)
+- Chiropractors
+- Alternative Medicine =
+
+- Dentists =
+
+- Veterinarians =
+
+- Hospitals =
+
+- Pharmaceutical Companies
+- Physical Therapists =
+
+- Oncology Doctors
+- US Surgery Centers
+- Massage Therapists =
+
+- Acupuncturists =
+
+- Medical Equipment Suppliers
+- Mental Health Counselors
+- Psychologists
+
+( BUSINESS LISTS )
+
+- Real Estate Agents =
+
+- US New Business Database =
+
+- Financial Planners Database =
+
+- Finance and Money Professionals Database
 
 
-What we are trying to do with the repair code in ACPICA is to move toward a=
- model where ACPICA will guarantee that if AE_OK is returned from the execu=
-tion of a predefined method, then in fact something useful was returned.
+( PROFESSIONALS LISTS )
 
-The point here, of course, is to eliminate a lot of code that checks for ob=
-ject types, lengths, etc. from the execution of these methods/names.
+- USA Lawyers Database =
 
-In the case above, I don't see that anything useful is returned, and the wa=
-rning indicates that.
+- Criminal Attorneys - 142,906 =
 
-And what we are moving toward is to return an error code in the case above,=
- something like AE_NOT_USEFUL_METHOD or AE_EMPTY_PACKAGE.
 
-Then, the driver can just move on and ignore the results of the method.
 
-Bob
+email me here for counts & samples: bestlists(a)gmx.com
 
->-----Original Message-----
->From: Gr=C3=A9goire Sutre [mailto:gregoire.sutre(a)gmail.com]
->Sent: Monday, November 08, 2010 1:54 AM
->To: Moore, Robert
->Cc: devel(a)acpica.org; Lin, Ming M
->Subject: Re: [Devel] Why are empty packages invalid for predefined ACPI
->objects?
->
->On 11/08/2010 05:23, Moore, Robert wrote:
->> I'd have to go through the spec, but thinking about it, I'm not sure that
->> any predefined name allows an empty package. All the definitions are
->> either 1) Fixed length package, or 2) Variable length package that is
->> defined as "one or more..."
->
->The practical example that triggered this question is the method _DOD
->(ACPI 4.0a, Appendix B, p. 698). For this method, the return value is:
->
->     "A package containing a variable-length list of Integers, each of
->      which contains the 32-bit device attribute of a child device".
->
->As far as I can see, the specification does not require the list to be
->non-empty.
->
->
->On some laptop (see report [1]), the BIOS declares a device as follows:
->
->              Device (VID2)
->              {
->                  Name (_ADR, 0x00020001)
->                  Method (_DOS, 1, NotSerialized)
->                  {
->                  }
->
->
->                  Method (_DOD, 0, NotSerialized)
->                  {
->                      Return (Package (0x00) {})
->                  }
->              }
->
->The device may appear useless since _DOS does nothing and _DOD returns an
->empty package. But VID2 is notified in the rest of the BIOS ASL. Maybe
->the methods _DOS and _DOD under VID2 are there to identify VID2 as a
->display
->adapter device?
->
->On this laptop, the _DOD method triggers an ACPICA warning
->
->ACPI Warning for \_SB_.PCI0.VID2._DOD: Return Package has no elements
->(empty) (20100528/nspredef-572)
->
->but, since VID2 conforms to the spec (afaics), is this warning really
->deserved?
->
->Best regards,
->
->Gr=C3=A9goire
->
->[1] http://gnats.netbsd.org/cgi-bin/query-pr-single.pl?number=3D44042
+  =
 
---===============6165803004819963816==--
+
+
+
+
+to terminate please send a blank message to takemeoff(a)gmx.com
+  =
+
+
+
+
+
+
+--===============1035332684223272013==--
 
