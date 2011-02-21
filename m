@@ -1,104 +1,211 @@
-Content-Type: multipart/mixed; boundary="===============6154671398321559843=="
+Content-Type: multipart/mixed; boundary="===============2387025594962247410=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] ACPICA version 20110211 released
-Date: Fri, 11 Feb 2011 14:33:27 -0800
-Message-ID: <4911F71203A09E4D9981D27F9D830858CA5E7F7E@orsmsx503.amr.corp.intel.com>
+From: Koen Blomme <koen.blomme at live.be>
+Subject: [Devel] undocumented SLIC structure in XSDT revealed
+Date: Mon, 21 Feb 2011 09:43:09 +0100
+Message-ID: <COL114-W601A3D0B30E19C780554EEE0D90@phx.gbl>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6154671398321559843==
+--===============2387025594962247410==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-11 February 2011. Summary of changes for version 20110211:
 
-This release is available at www.acpica.org/downloads
+From a Microsoft Confidential .doc file, 'Whitepaper - OEM Activation 2.0 =
+for Windows Vista Operating Systems', this undocumented matter:
+ =
 
-1) ACPI CA Core Subsystem:
-
-Added a mechanism to defer _REG methods for some early-installed handlers. =
-Most user handlers should be installed before call to AcpiEnableSubsystem. =
-However, Event handlers and region handlers should be installed after AcpiI=
-nitializeObjects. Override handlers for the "default" regions should be ins=
-talled early, however. This change executes all _REG methods for the defaul=
-t regions (Memory/IO/PCI/DataTable) simultaneously to prevent any chicken/e=
-gg issues between them. ACPICA BZ 848.
-
-Implemented an optimization for GPE detection. This optimization will simpl=
-y ignore GPE registers that contain no enabled GPEs -- there is no need to =
-read the register since this information is available internally. This beco=
-mes more important on machines with a large GPE space. ACPICA bugzilla 884.=
- Lin Ming. Suggestion from Joe Liu.
-
-Removed all use of the highly unreliable FADT revision field. The revision =
-number in the FADT has been found to be completely unreliable and cannot be=
- trusted. Only the actual table length can be used to infer the version. Th=
-is change updates the ACPICA core and the disassembler so that both no long=
-er even look at the FADT version and instead depend solely upon the FADT le=
-ngth.
-
-Fix an unresolved name issue for the no-debug and no-error-message source g=
-eneration cases. The _AcpiModuleName was left undefined in these cases, but=
- it is actually needed as a parameter to some interfaces. Define _AcpiModul=
-eName as a null string in these cases. ACPICA Bugzilla 888.
-
-Split several large files (makefiles and project files updated)
-  utglobal.c   -> utdecode.c
-  dbcomds.c    -> dbmethod.c dbnames.c
-  dsopcode.c   -> dsargs.c dscontrol.c
-  dsload.c     -> dsload2.c
-  aslanalyze.c -> aslbtypes.c aslwalks.c
-
-Example Code and Data Size: These are the sizes for the OS-independent acpi=
-ca.lib produced by the Microsoft Visual C++ 9.0 32-bit compiler. The debug =
-version of the code includes the debug output trace mechanism and has a muc=
-h larger code and data size.
-
-  Previous Release (VC 9.0):
-    Non-Debug Version:  89.7K Code, 23.7K Data, 113.4K Total
-    Debug Version:     163.9K Code, 67.5K Data, 231.4K Total
-  Current Release (VC 9.0):
-    Non-Debug Version:  89.7K Code, 23.7K Data, 113.4K Total
-    Debug Version:     163.9K Code, 67.5K Data, 231.4K Total
-
-2) iASL Compiler/Disassembler and Tools:
-
-iASL: Implemented the predefined macros __LINE__, __FILE__, and __DATE__. T=
-hese are useful C-style macros with the standard definitions. ACPICA bugzil=
-la 898.
-
-iASL/DTC: Added support for integer expressions and labels. Support for ful=
-l expressions for all integer fields in all ACPI tables. Support for labels=
- in "generic" portions of tables such as UEFI. See the iASL reference manua=
-l.
-
-Debugger: Added a command to display the status of global handlers. The "ha=
-ndlers" command will display op region, fixed event, and miscellaneous glob=
-al handlers. installation status -- and for op regions, whether default or =
-user-installed handler will be used.
-
-iASL: Warn if reserved method incorrectly returns a value. Many predefined =
-names are defined such that they do not return a value. If implemented as a=
- method, issue a warning if such a name explicitly returns a value. ACPICA =
-Bugzilla 855.
-
-iASL: Added detection of GPE method name conflicts. Detects a conflict wher=
-e there are two GPE methods of the form _Lxy and _Exy in the same scope. (F=
-or example, _L1D and _E1D in the same scope.) ACPICA bugzilla 848.
-
-iASL/DTC: Fixed a couple input scanner issues with comments and line number=
-s. Comment remover could get confused and miss a comment ending. Fixed a pr=
-oblem with line counter maintenance.
-
-iASL/DTC: Reduced the severity of some errors from fatal to error. There is=
- no need to abort on simple errors within a field definition.
-
-Debugger: Simplified the output of the help command. All help output now in=
- a single screen, instead of help subcommands. ACPICA Bugzilla 897.
+Software Licensing ACPI_SLIC Table =
 
 
 
---===============6154671398321559843==--
+
+
+
+
+Field
+
+Byte Length
+
+Byte Offset
+
+
+Description
+
+
+Signature
+
+4
+
+0
+
+SLIC. Signature for the Software Licensing Description Table.
+
+
+Length
+
+4
+
+4
+
+Length, in bytes, of the entire SLIC. The length implies the number of Entr=
+y fields at the end of the table.
+
+
+Revision
+
+1
+
+8
+
+1
+
+
+Checksum
+
+1
+
+9
+
+Entire table must sum to zero.
+
+
+OEMID
+
+6
+
+10
+
+OEM name
+
+
+OEM Table ID
+
+8
+
+16
+
+Mobo/BIOS logical identifier
+
+
+OEM Revision
+
+4
+
+24
+
+OEM revision of SLIC table for supplied OEM Table ID.
+
+
+Creator ID
+
+4
+
+28
+
+Vendor ID of utility that created the table.
+
+
+Creator Revision
+
+4
+
+32
+
+Revision of utility that created the table.
+
+
+Software Licensing Public Key structure
+
+156
+
+36
+
+Public key binary data file (OA20PubKey.bin) created by OATool.exe.
+
+
+Software Licensing Windows marker structure
+
+182
+
+192
+
+Windows marker binary data file (OA20Marker.bin) created by OATool.exe.
+ =
+
+Can be easily found Googling.
+ =
+
+Greetings,
+Koen 		 	   		 =20
+
+--===============2387025594962247410==
+Content-Type: text/html
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="attachment.html"
+
+PGh0bWw+CjxoZWFkPgo8c3R5bGU+PCEtLQouaG1tZXNzYWdlIFAKewptYXJnaW46MHB4OwpwYWRk
+aW5nOjBweAp9CmJvZHkuaG1tZXNzYWdlCnsKZm9udC1zaXplOiAxMHB0Owpmb250LWZhbWlseTpU
+YWhvbWEKfQotLT48L3N0eWxlPgo8L2hlYWQ+Cjxib2R5IGNsYXNzPSdobW1lc3NhZ2UnPgo+RnJv
+bSBhIE1pY3Jvc29mdCBDb25maWRlbnRpYWwgLmRvYyBmaWxlLCAnV2hpdGVwYXBlciAtIE9FTSBB
+Y3RpdmF0aW9uIDIuMCBmb3IgV2luZG93cyBWaXN0YSBPcGVyYXRpbmcgU3lzdGVtcycsIHRoaXMg
+dW5kb2N1bWVudGVkIG1hdHRlcjo8QlI+CiZuYnNwOzxCUj48Qj48Rk9OVCBzaXplPTY+ClNvZnR3
+YXJlIExpY2Vuc2luZyBBQ1BJX1NMSUMgVGFibGUgPEJSPgo8L0I+PC9GT05UPgo8VEFCTEUgZGly
+PWx0ciBib3JkZXI9MCBjZWxsU3BhY2luZz0wIGNlbGxQYWRkaW5nPTAgd2lkdGg9NjIzPgo8VEJP
+RFk+CjxUUj4KPFREIHZBbGlnbj1jZW50ZXIgd2lkdGg9IjI1JSI+CjxQPjxCUj5GaWVsZDxCUj48
+L1REPgo8VEQgdkFsaWduPWNlbnRlciB3aWR0aD0iNyUiPgpCeXRlIExlbmd0aDxCUj48L1REPgo8
+VEQgdkFsaWduPWNlbnRlciB3aWR0aD0iNyUiPgpCeXRlIE9mZnNldDxCUj48L1REPgo8VEQgdkFs
+aWduPWNlbnRlciB3aWR0aD0iNjElIj4KPEJSPkRlc2NyaXB0aW9uPEJSPjwvVEQ+PC9UUj4KPFRS
+Pgo8VEQgdkFsaWduPWNlbnRlciB3aWR0aD0iMjUlIj4KU2lnbmF0dXJlPEJSPjwvVEQ+CjxURCB2
+QWxpZ249Y2VudGVyIHdpZHRoPSI3JSI+CjQ8QlI+PC9URD4KPFREIHZBbGlnbj1jZW50ZXIgd2lk
+dGg9IjclIj4KMDxCUj48L1REPgo8VEQgdkFsaWduPWNlbnRlciB3aWR0aD0iNjElIj4KU0xJQy4g
+U2lnbmF0dXJlIGZvciB0aGUgU29mdHdhcmUgTGljZW5zaW5nIERlc2NyaXB0aW9uIFRhYmxlLjxC
+Uj48L1REPjwvVFI+CjxUUj4KPFREIHZBbGlnbj1jZW50ZXIgd2lkdGg9IjI1JSI+Ckxlbmd0aDxC
+Uj48L1REPgo8VEQgdkFsaWduPWNlbnRlciB3aWR0aD0iNyUiPgo0PEJSPjwvVEQ+CjxURCB2QWxp
+Z249Y2VudGVyIHdpZHRoPSI3JSI+CjQ8QlI+PC9URD4KPFREIHZBbGlnbj1jZW50ZXIgd2lkdGg9
+IjYxJSI+Ckxlbmd0aCwgaW4gYnl0ZXMsIG9mIHRoZSBlbnRpcmUgU0xJQy4gVGhlIGxlbmd0aCBp
+bXBsaWVzIHRoZSBudW1iZXIgb2YgRW50cnkgZmllbGRzIGF0IHRoZSBlbmQgb2YgdGhlIHRhYmxl
+LjxCUj48L1REPjwvVFI+CjxUUj4KPFREIHZBbGlnbj1jZW50ZXIgd2lkdGg9IjI1JSI+ClJldmlz
+aW9uPEJSPjwvVEQ+CjxURCB2QWxpZ249Y2VudGVyIHdpZHRoPSI3JSI+CjE8QlI+PC9URD4KPFRE
+IHZBbGlnbj1jZW50ZXIgd2lkdGg9IjclIj4KODxCUj48L1REPgo8VEQgdkFsaWduPWNlbnRlciB3
+aWR0aD0iNjElIj4KMTxCUj48L1REPjwvVFI+CjxUUj4KPFREIHZBbGlnbj1jZW50ZXIgd2lkdGg9
+IjI1JSI+CkNoZWNrc3VtPEJSPjwvVEQ+CjxURCB2QWxpZ249Y2VudGVyIHdpZHRoPSI3JSI+CjE8
+QlI+PC9URD4KPFREIHZBbGlnbj1jZW50ZXIgd2lkdGg9IjclIj4KOTxCUj48L1REPgo8VEQgdkFs
+aWduPWNlbnRlciB3aWR0aD0iNjElIj4KRW50aXJlIHRhYmxlIG11c3Qgc3VtIHRvIHplcm8uPEJS
+PjwvVEQ+PC9UUj4KPFRSPgo8VEQgdkFsaWduPWNlbnRlciB3aWR0aD0iMjUlIj4KT0VNSUQ8QlI+
+PC9URD4KPFREIHZBbGlnbj1jZW50ZXIgd2lkdGg9IjclIj4KNjxCUj48L1REPgo8VEQgdkFsaWdu
+PWNlbnRlciB3aWR0aD0iNyUiPgoxMDxCUj48L1REPgo8VEQgdkFsaWduPWNlbnRlciB3aWR0aD0i
+NjElIj4KT0VNIG5hbWU8QlI+PC9URD48L1RSPgo8VFI+CjxURCB2QWxpZ249Y2VudGVyIHdpZHRo
+PSIyNSUiPgpPRU0gVGFibGUgSUQ8QlI+PC9URD4KPFREIHZBbGlnbj1jZW50ZXIgd2lkdGg9Ijcl
+Ij4KODxCUj48L1REPgo8VEQgdkFsaWduPWNlbnRlciB3aWR0aD0iNyUiPgoxNjxCUj48L1REPgo8
+VEQgdkFsaWduPWNlbnRlciB3aWR0aD0iNjElIj4KTW9iby9CSU9TIGxvZ2ljYWwgaWRlbnRpZmll
+cjxCUj48L1REPjwvVFI+CjxUUj4KPFREIHZBbGlnbj1jZW50ZXIgd2lkdGg9IjI1JSI+Ck9FTSBS
+ZXZpc2lvbjxCUj48L1REPgo8VEQgdkFsaWduPWNlbnRlciB3aWR0aD0iNyUiPgo0PEJSPjwvVEQ+
+CjxURCB2QWxpZ249Y2VudGVyIHdpZHRoPSI3JSI+CjI0PEJSPjwvVEQ+CjxURCB2QWxpZ249Y2Vu
+dGVyIHdpZHRoPSI2MSUiPgpPRU0gcmV2aXNpb24gb2YgU0xJQyB0YWJsZSBmb3Igc3VwcGxpZWQg
+T0VNIFRhYmxlIElELjxCUj48L1REPjwvVFI+CjxUUj4KPFREIHZBbGlnbj1jZW50ZXIgd2lkdGg9
+IjI1JSI+CkNyZWF0b3IgSUQ8QlI+PC9URD4KPFREIHZBbGlnbj1jZW50ZXIgd2lkdGg9IjclIj4K
+NDxCUj48L1REPgo8VEQgdkFsaWduPWNlbnRlciB3aWR0aD0iNyUiPgoyODxCUj48L1REPgo8VEQg
+dkFsaWduPWNlbnRlciB3aWR0aD0iNjElIj4KVmVuZG9yIElEIG9mIHV0aWxpdHkgdGhhdCBjcmVh
+dGVkIHRoZSB0YWJsZS48QlI+PC9URD48L1RSPgo8VFI+CjxURCB2QWxpZ249Y2VudGVyIHdpZHRo
+PSIyNSUiPgpDcmVhdG9yIFJldmlzaW9uPEJSPjwvVEQ+CjxURCB2QWxpZ249Y2VudGVyIHdpZHRo
+PSI3JSI+CjQ8QlI+PC9URD4KPFREIHZBbGlnbj1jZW50ZXIgd2lkdGg9IjclIj4KMzI8QlI+PC9U
+RD4KPFREIHZBbGlnbj1jZW50ZXIgd2lkdGg9IjYxJSI+ClJldmlzaW9uIG9mIHV0aWxpdHkgdGhh
+dCBjcmVhdGVkIHRoZSB0YWJsZS48QlI+PC9URD48L1RSPgo8VFI+CjxURCB2QWxpZ249Y2VudGVy
+IHdpZHRoPSIyNSUiPgpTb2Z0d2FyZSBMaWNlbnNpbmcgUHVibGljIEtleSBzdHJ1Y3R1cmU8QlI+
+PC9URD4KPFREIHZBbGlnbj1jZW50ZXIgd2lkdGg9IjclIj4KMTU2PEJSPjwvVEQ+CjxURCB2QWxp
+Z249Y2VudGVyIHdpZHRoPSI3JSI+CjM2PEJSPjwvVEQ+CjxURCB2QWxpZ249Y2VudGVyIHdpZHRo
+PSI2MSUiPgpQdWJsaWMga2V5IGJpbmFyeSBkYXRhIGZpbGUgKE9BMjBQdWJLZXkuYmluKSBjcmVh
+dGVkIGJ5IE9BVG9vbC5leGUuPEJSPjwvVEQ+PC9UUj4KPFRSPgo8VEQgdkFsaWduPWNlbnRlciB3
+aWR0aD0iMjUlIj4KU29mdHdhcmUgTGljZW5zaW5nIFdpbmRvd3MgbWFya2VyIHN0cnVjdHVyZTxC
+Uj48L1REPgo8VEQgdkFsaWduPWNlbnRlciB3aWR0aD0iNyUiPgoxODI8QlI+PC9URD4KPFREIHZB
+bGlnbj1jZW50ZXIgd2lkdGg9IjclIj4KMTkyPEJSPjwvVEQ+CjxURCB2QWxpZ249Y2VudGVyIHdp
+ZHRoPSI2MSUiPgpXaW5kb3dzIG1hcmtlciBiaW5hcnkgZGF0YSBmaWxlIChPQTIwTWFya2VyLmJp
+bikgY3JlYXRlZCBieSBPQVRvb2wuZXhlLjxCUj48L1REPjwvVFI+PC9UQk9EWT48L1RBQkxFPjwv
+UD4KJm5ic3A7PEJSPgpDYW4gYmUgZWFzaWx5IGZvdW5kIEdvb2dsaW5nLjxCUj4KJm5ic3A7PEJS
+PgpHcmVldGluZ3MsPEJSPgpLb2VuPEJSPiAJCSAJICAgCQkgIDwvYm9keT4KPC9odG1sPg==
+--===============2387025594962247410==--
 
