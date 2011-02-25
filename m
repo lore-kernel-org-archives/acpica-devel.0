@@ -1,39 +1,96 @@
-Content-Type: multipart/mixed; boundary="===============8212161165650212129=="
+Content-Type: multipart/mixed; boundary="===============0190680485903509280=="
 MIME-Version: 1.0
-From: Koen Blomme <koen.blomme at live.be>
-Subject: [Devel] (no subject)
-Date: Thu, 24 Feb 2011 13:46:48 +0100
-Message-ID: <COL114-W26C58FD08746AB3D8CD04E0DA0@phx.gbl>
+From: Moore, Robert <robert.moore at intel.com>
+Subject: Re: [Devel] (no subject)
+Date: Fri, 25 Feb 2011 10:29:05 -0800
+Message-ID: <4911F71203A09E4D9981D27F9D830858CA92DE17@orsmsx503.amr.corp.intel.com>
+In-Reply-To: COL114-W26C58FD08746AB3D8CD04E0DA0@phx.gbl
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8212161165650212129==
+--===============0190680485903509280==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
+The whitepaper doesn't really break down the contents of the "Windows marke=
+r structure". Any ideas where this can be found?
+
+
+From: devel-bounces(a)acpica.org [mailto:devel-bounces(a)acpica.org] On Beh=
+alf Of Koen Blomme
+Sent: Thursday, February 24, 2011 4:47 AM
+To: devel(a)acpica.org
+Subject: [Devel] (no subject)
 
 Here is the link to the undocumented SLIC table in XSDT. Be quick while dow=
 nload links still last.
- =
 
 http://forums.mydigitallife.info/threads/4292-OEM-Activation-2.0-(SLP-2.0)-=
-Whitepaper 		 	   		 =20
+Whitepaper
 
---===============8212161165650212129==
+--===============0190680485903509280==
 Content-Type: text/html
 MIME-Version: 1.0
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="attachment.html"
 
-PGh0bWw+CjxoZWFkPgo8c3R5bGU+PCEtLQouaG1tZXNzYWdlIFAKewptYXJnaW46MHB4OwpwYWRk
-aW5nOjBweAp9CmJvZHkuaG1tZXNzYWdlCnsKZm9udC1zaXplOiAxMHB0Owpmb250LWZhbWlseTpU
-YWhvbWEKfQotLT48L3N0eWxlPgo8L2hlYWQ+Cjxib2R5IGNsYXNzPSdobW1lc3NhZ2UnPgpIZXJl
-IGlzIHRoZSBsaW5rIHRvIHRoZSB1bmRvY3VtZW50ZWQgU0xJQyB0YWJsZSBpbiBYU0RULiBCZSBx
-dWljayB3aGlsZSBkb3dubG9hZCBsaW5rcyBzdGlsbCBsYXN0LjxCUj4KJm5ic3A7PEJSPgo8QSBo
-cmVmPSJodHRwOi8vZm9ydW1zLm15ZGlnaXRhbGxpZmUuaW5mby90aHJlYWRzLzQyOTItT0VNLUFj
-dGl2YXRpb24tMi4wLShTTFAtMi4wKS1XaGl0ZXBhcGVyIj5odHRwOi8vZm9ydW1zLm15ZGlnaXRh
-bGxpZmUuaW5mby90aHJlYWRzLzQyOTItT0VNLUFjdGl2YXRpb24tMi4wLShTTFAtMi4wKS1XaGl0
-ZXBhcGVyPC9BPjxCUj4gCQkgCSAgIAkJICA8L2JvZHk+CjwvaHRtbD4=
---===============8212161165650212129==--
+PGh0bWwgeG1sbnM6dj0idXJuOnNjaGVtYXMtbWljcm9zb2Z0LWNvbTp2bWwiIHhtbG5zOm89InVy
+bjpzY2hlbWFzLW1pY3Jvc29mdC1jb206b2ZmaWNlOm9mZmljZSIgeG1sbnM6dz0idXJuOnNjaGVt
+YXMtbWljcm9zb2Z0LWNvbTpvZmZpY2U6d29yZCIgeG1sbnM6bT0iaHR0cDovL3NjaGVtYXMubWlj
+cm9zb2Z0LmNvbS9vZmZpY2UvMjAwNC8xMi9vbW1sIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcv
+VFIvUkVDLWh0bWw0MCI+PGhlYWQ+PE1FVEEgSFRUUC1FUVVJVj0iQ29udGVudC1UeXBlIiBDT05U
+RU5UPSJ0ZXh0L2h0bWw7IGNoYXJzZXQ9dXMtYXNjaWkiPjxtZXRhIG5hbWU9R2VuZXJhdG9yIGNv
+bnRlbnQ9Ik1pY3Jvc29mdCBXb3JkIDEyIChmaWx0ZXJlZCBtZWRpdW0pIj48c3R5bGU+PCEtLQov
+KiBGb250IERlZmluaXRpb25zICovCkBmb250LWZhY2UKCXtmb250LWZhbWlseTpDYWxpYnJpOwoJ
+cGFub3NlLTE6MiAxNSA1IDIgMiAyIDQgMyAyIDQ7fQpAZm9udC1mYWNlCgl7Zm9udC1mYW1pbHk6
+VGFob21hOwoJcGFub3NlLTE6MiAxMSA2IDQgMyA1IDQgNCAyIDQ7fQovKiBTdHlsZSBEZWZpbml0
+aW9ucyAqLwpwLk1zb05vcm1hbCwgbGkuTXNvTm9ybWFsLCBkaXYuTXNvTm9ybWFsCgl7bWFyZ2lu
+OjBpbjsKCW1hcmdpbi1ib3R0b206LjAwMDFwdDsKCWZvbnQtc2l6ZToxMi4wcHQ7Cglmb250LWZh
+bWlseToiVGltZXMgTmV3IFJvbWFuIiwic2VyaWYiO30KYTpsaW5rLCBzcGFuLk1zb0h5cGVybGlu
+awoJe21zby1zdHlsZS1wcmlvcml0eTo5OTsKCWNvbG9yOmJsdWU7Cgl0ZXh0LWRlY29yYXRpb246
+dW5kZXJsaW5lO30KYTp2aXNpdGVkLCBzcGFuLk1zb0h5cGVybGlua0ZvbGxvd2VkCgl7bXNvLXN0
+eWxlLXByaW9yaXR5Ojk5OwoJY29sb3I6cHVycGxlOwoJdGV4dC1kZWNvcmF0aW9uOnVuZGVybGlu
+ZTt9CnAKCXttc28tc3R5bGUtcHJpb3JpdHk6OTk7Cgltc28tbWFyZ2luLXRvcC1hbHQ6YXV0bzsK
+CW1hcmdpbi1yaWdodDowaW47Cgltc28tbWFyZ2luLWJvdHRvbS1hbHQ6YXV0bzsKCW1hcmdpbi1s
+ZWZ0OjBpbjsKCWZvbnQtc2l6ZToxMi4wcHQ7Cglmb250LWZhbWlseToiVGltZXMgTmV3IFJvbWFu
+Iiwic2VyaWYiO30Kc3Bhbi5FbWFpbFN0eWxlMTgKCXttc28tc3R5bGUtdHlwZTpwZXJzb25hbC1y
+ZXBseTsKCWZvbnQtZmFtaWx5OiJDYWxpYnJpIiwic2Fucy1zZXJpZiI7Cgljb2xvcjojMUY0OTdE
+O30KLk1zb0NocERlZmF1bHQKCXttc28tc3R5bGUtdHlwZTpleHBvcnQtb25seTsKCWZvbnQtc2l6
+ZToxMC4wcHQ7fQpAcGFnZSBXb3JkU2VjdGlvbjEKCXtzaXplOjguNWluIDExLjBpbjsKCW1hcmdp
+bjoxLjBpbiAxLjBpbiAxLjBpbiAxLjBpbjt9CmRpdi5Xb3JkU2VjdGlvbjEKCXtwYWdlOldvcmRT
+ZWN0aW9uMTt9Ci0tPjwvc3R5bGU+PCEtLVtpZiBndGUgbXNvIDldPjx4bWw+CjxvOnNoYXBlZGVm
+YXVsdHMgdjpleHQ9ImVkaXQiIHNwaWRtYXg9IjEwMjYiIC8+CjwveG1sPjwhW2VuZGlmXS0tPjwh
+LS1baWYgZ3RlIG1zbyA5XT48eG1sPgo8bzpzaGFwZWxheW91dCB2OmV4dD0iZWRpdCI+CjxvOmlk
+bWFwIHY6ZXh0PSJlZGl0IiBkYXRhPSIxIiAvPgo8L286c2hhcGVsYXlvdXQ+PC94bWw+PCFbZW5k
+aWZdLS0+PC9oZWFkPjxib2R5IGxhbmc9RU4tVVMgbGluaz1ibHVlIHZsaW5rPXB1cnBsZT48ZGl2
+IGNsYXNzPVdvcmRTZWN0aW9uMT48cCBjbGFzcz1Nc29Ob3JtYWw+PHNwYW4gc3R5bGU9J2ZvbnQt
+c2l6ZToxMS4wcHQ7Zm9udC1mYW1pbHk6IkNhbGlicmkiLCJzYW5zLXNlcmlmIjtjb2xvcjojMUY0
+OTdEJz5UaGUgd2hpdGVwYXBlciBkb2VzbiYjODIxNzt0IHJlYWxseSBicmVhayBkb3duIHRoZSBj
+b250ZW50cyBvZiB0aGUgJiM4MjIwO1dpbmRvd3MgbWFya2VyIHN0cnVjdHVyZSYjODIyMTsuIEFu
+eSBpZGVhcyB3aGVyZSB0aGlzIGNhbiBiZSBmb3VuZD88bzpwPjwvbzpwPjwvc3Bhbj48L3A+PHAg
+Y2xhc3M9TXNvTm9ybWFsPjxzcGFuIHN0eWxlPSdmb250LXNpemU6MTEuMHB0O2ZvbnQtZmFtaWx5
+OiJDYWxpYnJpIiwic2Fucy1zZXJpZiI7Y29sb3I6IzFGNDk3RCc+PG86cD4mbmJzcDs8L286cD48
+L3NwYW4+PC9wPjxwIGNsYXNzPU1zb05vcm1hbD48c3BhbiBzdHlsZT0nZm9udC1zaXplOjExLjBw
+dDtmb250LWZhbWlseToiQ2FsaWJyaSIsInNhbnMtc2VyaWYiO2NvbG9yOiMxRjQ5N0QnPjxvOnA+
+Jm5ic3A7PC9vOnA+PC9zcGFuPjwvcD48ZGl2IHN0eWxlPSdib3JkZXI6bm9uZTtib3JkZXItbGVm
+dDpzb2xpZCBibHVlIDEuNXB0O3BhZGRpbmc6MGluIDBpbiAwaW4gNC4wcHQnPjxkaXY+PGRpdiBz
+dHlsZT0nYm9yZGVyOm5vbmU7Ym9yZGVyLXRvcDpzb2xpZCAjQjVDNERGIDEuMHB0O3BhZGRpbmc6
+My4wcHQgMGluIDBpbiAwaW4nPjxwIGNsYXNzPU1zb05vcm1hbD48Yj48c3BhbiBzdHlsZT0nZm9u
+dC1zaXplOjEwLjBwdDtmb250LWZhbWlseToiVGFob21hIiwic2Fucy1zZXJpZiInPkZyb206PC9z
+cGFuPjwvYj48c3BhbiBzdHlsZT0nZm9udC1zaXplOjEwLjBwdDtmb250LWZhbWlseToiVGFob21h
+Iiwic2Fucy1zZXJpZiInPiBkZXZlbC1ib3VuY2VzQGFjcGljYS5vcmcgW21haWx0bzpkZXZlbC1i
+b3VuY2VzQGFjcGljYS5vcmddIDxiPk9uIEJlaGFsZiBPZiA8L2I+S29lbiBCbG9tbWU8YnI+PGI+
+U2VudDo8L2I+IFRodXJzZGF5LCBGZWJydWFyeSAyNCwgMjAxMSA0OjQ3IEFNPGJyPjxiPlRvOjwv
+Yj4gZGV2ZWxAYWNwaWNhLm9yZzxicj48Yj5TdWJqZWN0OjwvYj4gW0RldmVsXSAobm8gc3ViamVj
+dCk8bzpwPjwvbzpwPjwvc3Bhbj48L3A+PC9kaXY+PC9kaXY+PHAgY2xhc3M9TXNvTm9ybWFsPjxv
+OnA+Jm5ic3A7PC9vOnA+PC9wPjxwIGNsYXNzPU1zb05vcm1hbD48c3BhbiBzdHlsZT0nZm9udC1z
+aXplOjEwLjBwdDtmb250LWZhbWlseToiVGFob21hIiwic2Fucy1zZXJpZiInPkhlcmUgaXMgdGhl
+IGxpbmsgdG8gdGhlIHVuZG9jdW1lbnRlZCBTTElDIHRhYmxlIGluIFhTRFQuIEJlIHF1aWNrIHdo
+aWxlIGRvd25sb2FkIGxpbmtzIHN0aWxsIGxhc3QuPGJyPiZuYnNwOzxicj48YSBocmVmPSJodHRw
+Oi8vZm9ydW1zLm15ZGlnaXRhbGxpZmUuaW5mby90aHJlYWRzLzQyOTItT0VNLUFjdGl2YXRpb24t
+Mi4wLShTTFAtMi4wKS1XaGl0ZXBhcGVyIj5odHRwOi8vZm9ydW1zLm15ZGlnaXRhbGxpZmUuaW5m
+by90aHJlYWRzLzQyOTItT0VNLUFjdGl2YXRpb24tMi4wLShTTFAtMi4wKS1XaGl0ZXBhcGVyPC9h
+PjxvOnA+PC9vOnA+PC9zcGFuPjwvcD48L2Rpdj48L2Rpdj48L2JvZHk+PC9odG1sPg==
+--===============0190680485903509280==--
 
