@@ -1,63 +1,73 @@
-Content-Type: multipart/mixed; boundary="===============5155077449562414388=="
+Content-Type: multipart/mixed; boundary="===============1567123340428476572=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] ACPICA version 20110316 released
-Date: Wed, 16 Mar 2011 10:11:00 -0700
-Message-ID: <4911F71203A09E4D9981D27F9D830858CAD03071@orsmsx503.amr.corp.intel.com>
+From: Thomas Renninger <trenn at suse.de>
+Subject: [Devel] Fix build with latest release
+Date: Wed, 30 Mar 2011 17:54:18 +0200
+Message-ID: <201103301754.18618.trenn@suse.de>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5155077449562414388==
+--===============1567123340428476572==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-16 March 2011. Summary of changes for version 20110316:
+Hi,
 
-This release is available at www.acpica.org/downloads
+I got this error with latest sources (20110316):
 
-1) ACPI CA Core Subsystem:
+make: *** No rule to make target `utdecode.o', needed by `acpiexec'.  Stop.
+make: Leaving directory `/usr/src/packages/BUILD/acpica-unix-20110316/tools=
+/acpiexec'
+error: Bad exit status from /var/tmp/rpm-tmp.twh18w (%build)
 
-Fixed a problem caused by a _PRW method appearing at the namespace root sco=
-pe during the setup of wake GPEs. A fault could occur if a _PRW directly un=
-der the root object was passed to the AcpiSetupGpeForWake interface. Lin Mi=
-ng.
+Here is the fix:
 
-Implemented support for "spurious" Global Lock interrupts. On some systems,=
- a global lock interrupt can occur without the pending flag being set. Upon=
- a GL interrupt, we now ensure that a thread is actually waiting for the lo=
-ck before signaling GL availability. Rafael Wysocki, Bob Moore.
+acpica: fix build
 
-Example Code and Data Size: These are the sizes for the OS-independent acpi=
-ca.lib produced by the Microsoft Visual C++ 9.0 32-bit compiler. The debug =
-version of the code includes the debug output trace mechanism and has a muc=
-h larger code and data size.
+Signed-off-by: Thomas Renninger <trenn(a)suse.de>
 
-  Previous Release (VC 9.0):
-    Non-Debug Version:  89.7K Code, 23.7K Data, 113.4K Total
-    Debug Version:     163.9K Code, 67.5K Data, 231.4K Total
-  Current Release (VC 9.0):
-    Non-Debug Version:  89.8K Code, 23.8K Data, 113.6K Total
-    Debug Version:     164.2K Code, 67.9K Data, 232.1K Total
+---
+ tools/acpiexec/Makefile |    3 +++
+ 1 file changed, 3 insertions(+)
 
-2) iASL Compiler/Disassembler and Tools:
+Index: acpica-unix-20110316/tools/acpiexec/Makefile
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+--- acpica-unix-20110316.orig/tools/acpiexec/Makefile
++++ acpica-unix-20110316/tools/acpiexec/Makefile
+@@ -591,6 +591,9 @@ utdebug.o :         $(ACPICA_CORE)/utili
+ utdebug.o :         $(ACPICA_CORE)/utilities/utdebug.c
+ 	$(COMPILE)
+ =
 
-Implemented full support for the "SLIC" ACPI table. Includes support in the=
- header files, disassembler, table compiler, and template generator. Bob Mo=
-ore, Lin Ming.
++utdecode.o :         $(ACPICA_CORE)/utilities/utdecode.c
++	$(COMPILE)
++
+ utdelete.o :        $(ACPICA_CORE)/utilities/utdelete.c
+ 	$(COMPILE)
+=20
 
-AcpiXtract: Correctly handle embedded comments and messages from AcpiDump. =
-Apparently some or all versions of acpidump will occasionally emit a commen=
-t like "Wrong checksum", etc., into the dump file. This was causing problem=
-s for AcpiXtract. ACPICA BZ 905.
+--===============1567123340428476572==
+Content-Type: text/x-patch
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="acpiexec_fix_build_missing_utdecode.patch"
 
-iASL: Fix the Linux makefile by removing an inadvertent double file inclusi=
-on. ACPICA BZ 913.
+YWNwaWNhOiBmaXggYnVpbGQKClNpZ25lZC1vZmYtYnk6IFRob21hcyBSZW5uaW5nZXIgPHRyZW5u
+QHN1c2UuZGU+CgotLS0KIHRvb2xzL2FjcGlleGVjL01ha2VmaWxlIHwgICAgMyArKysKIDEgZmls
+ZSBjaGFuZ2VkLCAzIGluc2VydGlvbnMoKykKCkluZGV4OiBhY3BpY2EtdW5peC0yMDExMDMxNi90
+b29scy9hY3BpZXhlYy9NYWtlZmlsZQo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Ci0tLSBhY3BpY2EtdW5peC0yMDExMDMx
+Ni5vcmlnL3Rvb2xzL2FjcGlleGVjL01ha2VmaWxlCisrKyBhY3BpY2EtdW5peC0yMDExMDMxNi90
+b29scy9hY3BpZXhlYy9NYWtlZmlsZQpAQCAtNTkxLDYgKzU5MSw5IEBAIHV0ZGVidWcubyA6ICAg
+ICAgICAgJChBQ1BJQ0FfQ09SRSkvdXRpbGkKIHV0ZGVidWcubyA6ICAgICAgICAgJChBQ1BJQ0Ff
+Q09SRSkvdXRpbGl0aWVzL3V0ZGVidWcuYwogCSQoQ09NUElMRSkKIAordXRkZWNvZGUubyA6ICAg
+ICAgICAgJChBQ1BJQ0FfQ09SRSkvdXRpbGl0aWVzL3V0ZGVjb2RlLmMKKwkkKENPTVBJTEUpCisK
+IHV0ZGVsZXRlLm8gOiAgICAgICAgJChBQ1BJQ0FfQ09SRSkvdXRpbGl0aWVzL3V0ZGVsZXRlLmMK
+IAkkKENPTVBJTEUpCiAK
 
-AcpiExec: Update installation of operation region handlers. Install one han=
-dler for a user-defined address space. This is used by the ASL test suite (=
-ASLTS).
-
-
---===============5155077449562414388==--
+--===============1567123340428476572==--
 
