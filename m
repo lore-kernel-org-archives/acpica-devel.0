@@ -1,40 +1,95 @@
-Content-Type: multipart/mixed; boundary="===============1420302274192851570=="
+Content-Type: multipart/mixed; boundary="===============8262244783581812469=="
 MIME-Version: 1.0
-From: ktckd <ktckd9 at gmail.com>
-Subject: [Devel] Acpiexec
-Date: Thu, 07 Apr 2011 13:36:10 -0500
-Message-ID: <BANLkTin4mE1+TJcJLyXqViOooZutLDkvwQ@mail.gmail.com>
+From: Moore, Robert <robert.moore at intel.com>
+Subject: Re: [Devel] Acpiexec
+Date: Thu, 07 Apr 2011 13:09:30 -0700
+Message-ID: <4911F71203A09E4D9981D27F9D830858D3E4DEBB@orsmsx503.amr.corp.intel.com>
+In-Reply-To: BANLkTin4mE1+TJcJLyXqViOooZutLDkvwQ@mail.gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1420302274192851570==
+--===============8262244783581812469==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
+Do you mean that you know how to send an integer argument, but not a buffer=
+ or package?
+
+
+From: devel-bounces(a)acpica.org [mailto:devel-bounces(a)acpica.org] On Beh=
+alf Of ktckd
+Sent: Thursday, April 07, 2011 11:36 AM
+To: devel(a)acpica.org
+Subject: [Devel] Acpiexec
+
 Hi,
 
-I am trying to debug my asl code using acpiexec and got stuck at a place
-where I need to send a buffer/package as argument to my method (execute
-<method> [Arguments]). I tried searching the documentation but couldn't find
-any information. Can someone please help me provide information on how to do
-this?
+I am trying to debug my asl code using acpiexec and got stuck at a place wh=
+ere I need to send a buffer/package as argument to my method (execute <meth=
+od> [Arguments]). I tried searching the documentation but couldn't find any=
+ information. Can someone please help me provide information on how to do t=
+his?
 
 Thanks
 
---===============1420302274192851570==
+--===============8262244783581812469==
 Content-Type: text/html
 MIME-Version: 1.0
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="attachment.html"
 
-SGksIDxicj48YnI+SSBhbSB0cnlpbmcgdG8gZGVidWcgbXkgYXNsIGNvZGUgdXNpbmcgYWNwaWV4
-ZWMgYW5kIGdvdCBzdHVjayBhdCBhIHBsYWNlIHdoZXJlIEkgbmVlZCB0byBzZW5kIGEgYnVmZmVy
-L3BhY2thZ2UgYXMgYXJndW1lbnQgdG8gbXkgbWV0aG9kIChleGVjdXRlICZsdDttZXRob2QmZ3Q7
-IFtBcmd1bWVudHNdKS4gSSB0cmllZCBzZWFyY2hpbmcgdGhlIGRvY3VtZW50YXRpb24gYnV0IGNv
-dWxkbiYjMzk7dCBmaW5kIGFueSBpbmZvcm1hdGlvbi4gQ2FuIHNvbWVvbmUgcGxlYXNlIGhlbHAg
-bWUgcHJvdmlkZSBpbmZvcm1hdGlvbiBvbiBob3cgdG8gZG8gdGhpcz88YnI+Cgo8YnI+VGhhbmtz
-PGJyPgo=
-
---===============1420302274192851570==--
+PGh0bWwgeG1sbnM6dj0idXJuOnNjaGVtYXMtbWljcm9zb2Z0LWNvbTp2bWwiIHhtbG5zOm89InVy
+bjpzY2hlbWFzLW1pY3Jvc29mdC1jb206b2ZmaWNlOm9mZmljZSIgeG1sbnM6dz0idXJuOnNjaGVt
+YXMtbWljcm9zb2Z0LWNvbTpvZmZpY2U6d29yZCIgeG1sbnM6bT0iaHR0cDovL3NjaGVtYXMubWlj
+cm9zb2Z0LmNvbS9vZmZpY2UvMjAwNC8xMi9vbW1sIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcv
+VFIvUkVDLWh0bWw0MCI+PGhlYWQ+PE1FVEEgSFRUUC1FUVVJVj0iQ29udGVudC1UeXBlIiBDT05U
+RU5UPSJ0ZXh0L2h0bWw7IGNoYXJzZXQ9dXMtYXNjaWkiPjxtZXRhIG5hbWU9R2VuZXJhdG9yIGNv
+bnRlbnQ9Ik1pY3Jvc29mdCBXb3JkIDEyIChmaWx0ZXJlZCBtZWRpdW0pIj48c3R5bGU+PCEtLQov
+KiBGb250IERlZmluaXRpb25zICovCkBmb250LWZhY2UKCXtmb250LWZhbWlseTpDYWxpYnJpOwoJ
+cGFub3NlLTE6MiAxNSA1IDIgMiAyIDQgMyAyIDQ7fQpAZm9udC1mYWNlCgl7Zm9udC1mYW1pbHk6
+VGFob21hOwoJcGFub3NlLTE6MiAxMSA2IDQgMyA1IDQgNCAyIDQ7fQovKiBTdHlsZSBEZWZpbml0
+aW9ucyAqLwpwLk1zb05vcm1hbCwgbGkuTXNvTm9ybWFsLCBkaXYuTXNvTm9ybWFsCgl7bWFyZ2lu
+OjBpbjsKCW1hcmdpbi1ib3R0b206LjAwMDFwdDsKCWZvbnQtc2l6ZToxMi4wcHQ7Cglmb250LWZh
+bWlseToiVGltZXMgTmV3IFJvbWFuIiwic2VyaWYiO30KYTpsaW5rLCBzcGFuLk1zb0h5cGVybGlu
+awoJe21zby1zdHlsZS1wcmlvcml0eTo5OTsKCWNvbG9yOmJsdWU7Cgl0ZXh0LWRlY29yYXRpb246
+dW5kZXJsaW5lO30KYTp2aXNpdGVkLCBzcGFuLk1zb0h5cGVybGlua0ZvbGxvd2VkCgl7bXNvLXN0
+eWxlLXByaW9yaXR5Ojk5OwoJY29sb3I6cHVycGxlOwoJdGV4dC1kZWNvcmF0aW9uOnVuZGVybGlu
+ZTt9CnNwYW4uRW1haWxTdHlsZTE3Cgl7bXNvLXN0eWxlLXR5cGU6cGVyc29uYWwtcmVwbHk7Cglm
+b250LWZhbWlseToiQ2FsaWJyaSIsInNhbnMtc2VyaWYiOwoJY29sb3I6IzFGNDk3RDt9Ci5Nc29D
+aHBEZWZhdWx0Cgl7bXNvLXN0eWxlLXR5cGU6ZXhwb3J0LW9ubHk7fQpAcGFnZSBXb3JkU2VjdGlv
+bjEKCXtzaXplOjguNWluIDExLjBpbjsKCW1hcmdpbjoxLjBpbiAxLjBpbiAxLjBpbiAxLjBpbjt9
+CmRpdi5Xb3JkU2VjdGlvbjEKCXtwYWdlOldvcmRTZWN0aW9uMTt9Ci0tPjwvc3R5bGU+PCEtLVtp
+ZiBndGUgbXNvIDldPjx4bWw+CjxvOnNoYXBlZGVmYXVsdHMgdjpleHQ9ImVkaXQiIHNwaWRtYXg9
+IjEwMjYiIC8+CjwveG1sPjwhW2VuZGlmXS0tPjwhLS1baWYgZ3RlIG1zbyA5XT48eG1sPgo8bzpz
+aGFwZWxheW91dCB2OmV4dD0iZWRpdCI+CjxvOmlkbWFwIHY6ZXh0PSJlZGl0IiBkYXRhPSIxIiAv
+Pgo8L286c2hhcGVsYXlvdXQ+PC94bWw+PCFbZW5kaWZdLS0+PC9oZWFkPjxib2R5IGxhbmc9RU4t
+VVMgbGluaz1ibHVlIHZsaW5rPXB1cnBsZT48ZGl2IGNsYXNzPVdvcmRTZWN0aW9uMT48cCBjbGFz
+cz1Nc29Ob3JtYWw+PHNwYW4gc3R5bGU9J2ZvbnQtc2l6ZToxMS4wcHQ7Zm9udC1mYW1pbHk6IkNh
+bGlicmkiLCJzYW5zLXNlcmlmIjtjb2xvcjojMUY0OTdEJz5EbyB5b3UgbWVhbiB0aGF0IHlvdSBr
+bm93IGhvdyB0byBzZW5kIGFuIGludGVnZXIgYXJndW1lbnQsIGJ1dCBub3QgYSBidWZmZXIgb3Ig
+cGFja2FnZT88bzpwPjwvbzpwPjwvc3Bhbj48L3A+PHAgY2xhc3M9TXNvTm9ybWFsPjxzcGFuIHN0
+eWxlPSdmb250LXNpemU6MTEuMHB0O2ZvbnQtZmFtaWx5OiJDYWxpYnJpIiwic2Fucy1zZXJpZiI7
+Y29sb3I6IzFGNDk3RCc+PG86cD4mbmJzcDs8L286cD48L3NwYW4+PC9wPjxwIGNsYXNzPU1zb05v
+cm1hbD48c3BhbiBzdHlsZT0nZm9udC1zaXplOjExLjBwdDtmb250LWZhbWlseToiQ2FsaWJyaSIs
+InNhbnMtc2VyaWYiO2NvbG9yOiMxRjQ5N0QnPjxvOnA+Jm5ic3A7PC9vOnA+PC9zcGFuPjwvcD48
+ZGl2IHN0eWxlPSdib3JkZXI6bm9uZTtib3JkZXItbGVmdDpzb2xpZCBibHVlIDEuNXB0O3BhZGRp
+bmc6MGluIDBpbiAwaW4gNC4wcHQnPjxkaXY+PGRpdiBzdHlsZT0nYm9yZGVyOm5vbmU7Ym9yZGVy
+LXRvcDpzb2xpZCAjQjVDNERGIDEuMHB0O3BhZGRpbmc6My4wcHQgMGluIDBpbiAwaW4nPjxwIGNs
+YXNzPU1zb05vcm1hbD48Yj48c3BhbiBzdHlsZT0nZm9udC1zaXplOjEwLjBwdDtmb250LWZhbWls
+eToiVGFob21hIiwic2Fucy1zZXJpZiInPkZyb206PC9zcGFuPjwvYj48c3BhbiBzdHlsZT0nZm9u
+dC1zaXplOjEwLjBwdDtmb250LWZhbWlseToiVGFob21hIiwic2Fucy1zZXJpZiInPiBkZXZlbC1i
+b3VuY2VzQGFjcGljYS5vcmcgW21haWx0bzpkZXZlbC1ib3VuY2VzQGFjcGljYS5vcmddIDxiPk9u
+IEJlaGFsZiBPZiA8L2I+a3Rja2Q8YnI+PGI+U2VudDo8L2I+IFRodXJzZGF5LCBBcHJpbCAwNywg
+MjAxMSAxMTozNiBBTTxicj48Yj5Ubzo8L2I+IGRldmVsQGFjcGljYS5vcmc8YnI+PGI+U3ViamVj
+dDo8L2I+IFtEZXZlbF0gQWNwaWV4ZWM8bzpwPjwvbzpwPjwvc3Bhbj48L3A+PC9kaXY+PC9kaXY+
+PHAgY2xhc3M9TXNvTm9ybWFsPjxvOnA+Jm5ic3A7PC9vOnA+PC9wPjxwIGNsYXNzPU1zb05vcm1h
+bD5IaSwgPGJyPjxicj5JIGFtIHRyeWluZyB0byBkZWJ1ZyBteSBhc2wgY29kZSB1c2luZyBhY3Bp
+ZXhlYyBhbmQgZ290IHN0dWNrIGF0IGEgcGxhY2Ugd2hlcmUgSSBuZWVkIHRvIHNlbmQgYSBidWZm
+ZXIvcGFja2FnZSBhcyBhcmd1bWVudCB0byBteSBtZXRob2QgKGV4ZWN1dGUgJmx0O21ldGhvZCZn
+dDsgW0FyZ3VtZW50c10pLiBJIHRyaWVkIHNlYXJjaGluZyB0aGUgZG9jdW1lbnRhdGlvbiBidXQg
+Y291bGRuJ3QgZmluZCBhbnkgaW5mb3JtYXRpb24uIENhbiBzb21lb25lIHBsZWFzZSBoZWxwIG1l
+IHByb3ZpZGUgaW5mb3JtYXRpb24gb24gaG93IHRvIGRvIHRoaXM/PGJyPjxicj5UaGFua3M8bzpw
+PjwvbzpwPjwvcD48L2Rpdj48L2Rpdj48L2JvZHk+PC9odG1sPg==
+--===============8262244783581812469==--
 
