@@ -1,61 +1,77 @@
-Content-Type: multipart/mixed; boundary="===============7650427559775288105=="
+Content-Type: multipart/mixed; boundary="===============1418007712738532165=="
 MIME-Version: 1.0
-From: Jung-uk Kim <jkim at FreeBSD.org>
-Subject: Re: [Devel] ACPICA version 20110413 released
-Date: Thu, 14 Apr 2011 13:00:57 -0400
-Message-ID: <201104141300.59473.jkim@FreeBSD.org>
-In-Reply-To: 4911F71203A09E4D9981D27F9D830858D3FA3D3B@orsmsx503.amr.corp.intel.com
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] ACPICA version 20110527 released
+Date: Fri, 27 May 2011 16:03:45 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E3BC2F@ORSMSX101.amr.corp.intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7650427559775288105==
+--===============1418007712738532165==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Thursday 14 April 2011 12:26 pm, Moore, Robert wrote:
-> Thanks. I'll look at these changes and get back to you.
->
-> As I recall, you don't use flex/bison, you use the actual lex/yacc,
-> is that correct?
+27 May 2011. Summary of changes for version 20110527:
 
-Actually flex originated from BSD.  yacc is real thing from BSD, of =
+This release is available at www.acpica.org/downloads
 
-course. :-)
+1) ACPI CA Core Subsystem:
 
-> And that is the source of some of these differences.
+ASL Load() operator: Reinstate most restrictions on the incoming ACPI table=
+ signature. Now, only allow SSDT, OEMx, and a null signature. History:
+    1) Originally, we checked the table signature for "SSDT" or "PSDT".
+       (PSDT is now obsolete.)
+    2) We added support for OEMx tables, signature "OEM" plus a fourth
+       "don't care" character.
+    3) Valid tables were encountered with a null signature, so we just
+       gave up on validating the signature, (05/2008).
+    4) We encountered non-AML tables such as the MADT, which caused
+       interpreter errors and kernel faults. So now, we once again allow
+       only SSDT, OEMx, and now, also a null signature. (05/2011).
 
-Understood.
+Added the missing _TDL predefined name to the global name list in order to =
+enable validation. Affects both the core ACPICA code and the iASL compiler.
 
-> Which makefile is wrong, is it the one under generate/unix or
-> generate/linux?
+Example Code and Data Size: These are the sizes for the OS-independent acpi=
+ca.lib produced by the Microsoft Visual C++ 9.0 32-bit compiler. The debug =
+version of the code includes the debug output trace mechanism and has a muc=
+h larger code and data size.
 
-I guess it is from generate/unix because it's from =
+  Previous Release (VC 9.0):
+    Non-Debug Version:  90.0K Code, 23.8K Data, 113.8K Total
+    Debug Version:     164.5K Code, 68.0K Data, 232.5K Total
+  Current Release (VC 9.0):
+    Non-Debug Version:  90.1K Code, 23.9K Data, 114.0K Total
+    Debug Version:     165.6K Code, 68.4K Data, 234.0K Total
 
-acpica-unix2-20110413.tar.gz, right?
+2) iASL Compiler/Disassembler and Tools:
 
-Thanks,
+Debugger/AcpiExec: Implemented support for "complex" method arguments on th=
+e debugger command line. This adds support beyond simple integers -- includ=
+ing Strings, Buffers, and Packages. Includes support for nested packages. I=
+ncreased the default command line buffer size to accommodate these argument=
+s. See the ACPICA reference for details and syntax. ACPICA BZ 917.
+ =
 
-Jung-uk Kim
+Debugger/AcpiExec: Implemented support for "default" method arguments for t=
+he Execute/Debug command. Now, the debugger will always invoke a control me=
+thod with the required number of arguments -- even if the command line spec=
+ifies none or insufficient arguments. It uses default integer values for an=
+y missing arguments. Also fixes a bug where only six method arguments maxim=
+um were supported instead of the required seven.
 
-> Bob
->
-> > -----Original Message-----
-> > From: Jung-uk Kim [mailto:jkim(a)FreeBSD.org]
-> > Sent: Wednesday, April 13, 2011 4:33 PM
-> > To: devel(a)acpica.org
-> > Cc: Moore, Robert
-> > Subject: Re: [Devel] ACPICA version 20110413 released
-> >
-> >
-> > iASL doesn't build on BSD any more.  Please see the attached
-> > patch.
-> >
-> > Makefile:	Fix object dependencies and fix "clean" target.
-> > dtparser.l:	Add missing EOF.
-> > dtparser.y:	Declare DtParserparse() properly and fix yytname.
-> >
-> > Jung-uk Kim
+Debugger/AcpiExec: Add a maximum buffer length parameter to AcpiOsGetLine a=
+nd also return status in order to prevent buffer overruns. See the ACPICA r=
+eference for details and syntax. ACPICA BZ 921
 
---===============7650427559775288105==--
+iASL: Cleaned up support for Berkeley yacc. A general cleanup of code and m=
+akefiles to simplify support for the two different but similar parser gener=
+ators, bison and yacc.
+
+Updated the generic unix makefile for gcc 4. The default gcc version is now=
+ expected to be 4 or greater, since options specific to gcc 4 are used.
+
+
+--===============1418007712738532165==--
 
