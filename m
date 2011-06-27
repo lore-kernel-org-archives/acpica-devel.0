@@ -1,86 +1,107 @@
-Content-Type: multipart/mixed; boundary="===============5999606308385379767=="
+Content-Type: multipart/mixed; boundary="===============8719586443522868169=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] ACPICA version 20110623 released
-Date: Thu, 23 Jun 2011 17:08:11 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E3030E36@ORSMSX101.amr.corp.intel.com>
+From: Sivaraman  Nainar <sivaramann at amiindia.co.in>
+Subject: [Devel] reg: Accessing ACPI Objects / Execute Control Methods
+Date: Mon, 27 Jun 2011 10:59:46 +0530
+Message-ID: <13688C12F44C7C428726663F950CA253025946BF@venus.in.megatrends.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5999606308385379767==
+--===============8719586443522868169==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-23 June 2011. Summary of changes for version 20110623:
+Hello All,
 
-This release is available at www.acpica.org/downloads
-
-1) ACPI CA Core Subsystem:
-
-Updated the predefined name repair mechanism to not attempt repair of a _TS=
-S return object if a _PSS object is present. We can only sort the _TSS retu=
-rn package if there is no _PSS within the same scope. This is because if _P=
-SS is present, the ACPI specification dictates that the _TSS Power Dissipat=
-ion field is to be ignored, and therefore some BIOSs leave garbage values i=
-n the _TSS Power field(s). In this case, it is best to just return the _TSS=
- package as-is. Reported by, and fixed with assistance from Fenghua Yu.
-
-Added an option to globally disable the control method return value validat=
-ion and repair. This runtime option can be used to disable return value rep=
-air if this is causing a problem on a particular machine. Also added an opt=
-ion to AcpiExec (-dr) to set this disable flag.
-
-All makefiles and project files: Major changes to improve generation of ACP=
-ICA tools. ACPICA BZ 912:
-    Reduce default optimization levels to improve compatibility
-    For Linux, add strict-aliasing=3D0 for gcc 4
-    Cleanup and simplify use of command line defines
-    Cleanup multithread library support
-    Improve usage messages
-
-Linux-specific header: update handling of THREAD_ID and pthread. For the 32=
--bit case, improve casting to eliminate possible warnings, especially with =
-the acpica tools.
-
-Example Code and Data Size: These are the sizes for the OS-independent acpi=
-ca.lib produced by the Microsoft Visual C++ 9.0 32-bit compiler. The debug =
-version of the code includes the debug output trace mechanism and has a muc=
-h larger code and data size.
-
-  Previous Release (VC 9.0):
-    Non-Debug Version:  90.1K Code, 23.9K Data, 114.0K Total
-    Debug Version:     165.6K Code, 68.4K Data, 234.0K Total
-  Current Release (VC 9.0):
-    Non-Debug Version:  90.2K Code, 23.9K Data, 114.1K Total
-    Debug Version:     165.6K Code, 68.4K Data, 234.0K Total
-
-2) iASL Compiler/Disassembler and Tools:
-
-With this release, a new utility named "acpihelp" has been added to the ACP=
-ICA package. This utility summarizes the ACPI specification chapters for th=
-e ASL and AML languages. It generates under Linux/Unix as well as Windows, =
-and provides the following functionality:
-    Find/display ASL operator(s) -- with description and syntax.
-    Find/display ASL keyword(s) -- with exact spelling and descriptions.
-    Find/display ACPI predefined name(s) -- with description, number
-        of arguments, and the return value data type.
-    Find/display AML opcode name(s) -- with opcode, arguments, and grammar.
-    Decode/display AML opcode -- with opcode name, arguments, and grammar.
-
-Service Layers: Make multi-thread support configurable. Conditionally compi=
-le the multi-thread support so that threading libraries will not be linked =
-if not necessary. The only tool that requires multi-thread support is AcpiE=
-xec.
-
-iASL: Update yyerrror/AslCompilerError for "const" errors. Newer versions o=
-f Bison appear to want the interface to yyerror to be a const char * (or at=
- least this is a problem when generating iASL on some systems.) ACPICA BZ 9=
-23 Pierre Lejeune.
-
-Tools: Fix for systems where O_BINARY is not defined. Only used for Windows=
- versions of the tools.
+ =
 
 
---===============5999606308385379767==--
+I am working in a UEFI development environment. I am working on power
+management related task and would like to execute a Control method from
+an UEFI application.
+
+ =
+
+
+I had used the Intel ACPI drivers AED OSI / AED OSD for accessing ACPI
+interfaces, but the driver failed to initialize the ACPI subsystem.
+Hence I could not use the driver. The AED uses the sources of ACPICA.
+
+ =
+
+
+Does Intel released any later ACPI Driver to access ACPI methods. Is
+anybody here used ACPICA source to execute a control method.
+
+ =
+
+
+Can you please redirect to the source / document which will help me to
+achieve this.
+
+ =
+
+
+Thanks
+
+Siva
+
+ =
+
+
+
+--===============8719586443522868169==
+Content-Type: text/html
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="attachment.html"
+
+PGh0bWwgeG1sbnM6dj0idXJuOnNjaGVtYXMtbWljcm9zb2Z0LWNvbTp2bWwiIHhtbG5zOm89InVy
+bjpzY2hlbWFzLW1pY3Jvc29mdC1jb206b2ZmaWNlOm9mZmljZSIgeG1sbnM6dz0idXJuOnNjaGVt
+YXMtbWljcm9zb2Z0LWNvbTpvZmZpY2U6d29yZCIgeG1sbnM6bT0iaHR0cDovL3NjaGVtYXMubWlj
+cm9zb2Z0LmNvbS9vZmZpY2UvMjAwNC8xMi9vbW1sIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcv
+VFIvUkVDLWh0bWw0MCI+PGhlYWQ+PG1ldGEgaHR0cC1lcXVpdj1Db250ZW50LVR5cGUgY29udGVu
+dD0idGV4dC9odG1sOyBjaGFyc2V0PXVzLWFzY2lpIj48bWV0YSBuYW1lPUdlbmVyYXRvciBjb250
+ZW50PSJNaWNyb3NvZnQgV29yZCAxMiAoZmlsdGVyZWQgbWVkaXVtKSI+PHN0eWxlPjwhLS0KLyog
+Rm9udCBEZWZpbml0aW9ucyAqLwpAZm9udC1mYWNlCgl7Zm9udC1mYW1pbHk6IkNhbWJyaWEgTWF0
+aCI7CglwYW5vc2UtMToyIDQgNSAzIDUgNCA2IDMgMiA0O30KQGZvbnQtZmFjZQoJe2ZvbnQtZmFt
+aWx5OkNhbGlicmk7CglwYW5vc2UtMToyIDE1IDUgMiAyIDIgNCAzIDIgNDt9Ci8qIFN0eWxlIERl
+ZmluaXRpb25zICovCnAuTXNvTm9ybWFsLCBsaS5Nc29Ob3JtYWwsIGRpdi5Nc29Ob3JtYWwKCXtt
+YXJnaW46MGluOwoJbWFyZ2luLWJvdHRvbTouMDAwMXB0OwoJZm9udC1zaXplOjExLjBwdDsKCWZv
+bnQtZmFtaWx5OiJDYWxpYnJpIiwic2Fucy1zZXJpZiI7fQphOmxpbmssIHNwYW4uTXNvSHlwZXJs
+aW5rCgl7bXNvLXN0eWxlLXByaW9yaXR5Ojk5OwoJY29sb3I6Ymx1ZTsKCXRleHQtZGVjb3JhdGlv
+bjp1bmRlcmxpbmU7fQphOnZpc2l0ZWQsIHNwYW4uTXNvSHlwZXJsaW5rRm9sbG93ZWQKCXttc28t
+c3R5bGUtcHJpb3JpdHk6OTk7Cgljb2xvcjpwdXJwbGU7Cgl0ZXh0LWRlY29yYXRpb246dW5kZXJs
+aW5lO30Kc3Bhbi5FbWFpbFN0eWxlMTcKCXttc28tc3R5bGUtdHlwZTpwZXJzb25hbC1jb21wb3Nl
+OwoJZm9udC1mYW1pbHk6IkNhbGlicmkiLCJzYW5zLXNlcmlmIjsKCWNvbG9yOndpbmRvd3RleHQ7
+fQouTXNvQ2hwRGVmYXVsdAoJe21zby1zdHlsZS10eXBlOmV4cG9ydC1vbmx5O30KQHBhZ2UgV29y
+ZFNlY3Rpb24xCgl7c2l6ZTo4LjVpbiAxMS4waW47CgltYXJnaW46MS4waW4gMS4waW4gMS4waW4g
+MS4waW47fQpkaXYuV29yZFNlY3Rpb24xCgl7cGFnZTpXb3JkU2VjdGlvbjE7fQotLT48L3N0eWxl
+PjwhLS1baWYgZ3RlIG1zbyA5XT48eG1sPgo8bzpzaGFwZWRlZmF1bHRzIHY6ZXh0PSJlZGl0IiBz
+cGlkbWF4PSIxMDI2IiAvPgo8L3htbD48IVtlbmRpZl0tLT48IS0tW2lmIGd0ZSBtc28gOV0+PHht
+bD4KPG86c2hhcGVsYXlvdXQgdjpleHQ9ImVkaXQiPgo8bzppZG1hcCB2OmV4dD0iZWRpdCIgZGF0
+YT0iMSIgLz4KPC9vOnNoYXBlbGF5b3V0PjwveG1sPjwhW2VuZGlmXS0tPjwvaGVhZD48Ym9keSBs
+YW5nPUVOLVVTIGxpbms9Ymx1ZSB2bGluaz1wdXJwbGU+PGRpdiBjbGFzcz1Xb3JkU2VjdGlvbjE+
+PHAgY2xhc3M9TXNvTm9ybWFsPkhlbGxvIEFsbCw8bzpwPjwvbzpwPjwvcD48cCBjbGFzcz1Nc29O
+b3JtYWw+PG86cD4mbmJzcDs8L286cD48L3A+PHAgY2xhc3M9TXNvTm9ybWFsPkkgYW0gd29ya2lu
+ZyBpbiBhIFVFRkkgZGV2ZWxvcG1lbnQgZW52aXJvbm1lbnQuIEkgYW0gd29ya2luZyBvbiBwb3dl
+ciBtYW5hZ2VtZW50IHJlbGF0ZWQgdGFzayBhbmQgd291bGQgbGlrZSB0byBleGVjdXRlIGEgQ29u
+dHJvbCBtZXRob2QgZnJvbSBhbiBVRUZJIGFwcGxpY2F0aW9uLjxvOnA+PC9vOnA+PC9wPjxwIGNs
+YXNzPU1zb05vcm1hbD48bzpwPiZuYnNwOzwvbzpwPjwvcD48cCBjbGFzcz1Nc29Ob3JtYWw+SSBo
+YWQgdXNlZCB0aGUgSW50ZWwgQUNQSSBkcml2ZXJzIEFFRCBPU0kgLyBBRUQgT1NEIGZvciBhY2Nl
+c3NpbmcgQUNQSSBpbnRlcmZhY2VzLCBidXQgdGhlIGRyaXZlciBmYWlsZWQgdG8gaW5pdGlhbGl6
+ZSB0aGUgQUNQSSBzdWJzeXN0ZW0uIEhlbmNlIEkgY291bGQgbm90IHVzZSB0aGUgZHJpdmVyLiBU
+aGUgQUVEIHVzZXMgdGhlIHNvdXJjZXMgb2YgQUNQSUNBLjxvOnA+PC9vOnA+PC9wPjxwIGNsYXNz
+PU1zb05vcm1hbD48bzpwPiZuYnNwOzwvbzpwPjwvcD48cCBjbGFzcz1Nc29Ob3JtYWw+RG9lcyBJ
+bnRlbCByZWxlYXNlZCBhbnkgbGF0ZXIgQUNQSSBEcml2ZXIgdG8gYWNjZXNzIEFDUEkgbWV0aG9k
+cy4gSXMgYW55Ym9keSBoZXJlIHVzZWQgQUNQSUNBIHNvdXJjZSB0byBleGVjdXRlIGEgY29udHJv
+bCBtZXRob2QuPG86cD48L286cD48L3A+PHAgY2xhc3M9TXNvTm9ybWFsPjxvOnA+Jm5ic3A7PC9v
+OnA+PC9wPjxwIGNsYXNzPU1zb05vcm1hbD5DYW4geW91IHBsZWFzZSByZWRpcmVjdCB0byB0aGUg
+c291cmNlIC8gZG9jdW1lbnQgd2hpY2ggd2lsbCBoZWxwIG1lIHRvIGFjaGlldmUgdGhpcy48bzpw
+PjwvbzpwPjwvcD48cCBjbGFzcz1Nc29Ob3JtYWw+PG86cD4mbmJzcDs8L286cD48L3A+PHAgY2xh
+c3M9TXNvTm9ybWFsPlRoYW5rczxvOnA+PC9vOnA+PC9wPjxwIGNsYXNzPU1zb05vcm1hbD5TaXZh
+PG86cD48L286cD48L3A+PHAgY2xhc3M9TXNvTm9ybWFsPjxvOnA+Jm5ic3A7PC9vOnA+PC9wPjwv
+ZGl2PjwvYm9keT48L2h0bWw+
+--===============8719586443522868169==--
 
