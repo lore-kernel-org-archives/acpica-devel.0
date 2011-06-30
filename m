@@ -1,107 +1,37 @@
-Content-Type: multipart/mixed; boundary="===============8719586443522868169=="
+Content-Type: multipart/mixed; boundary="===============9022840215781793893=="
 MIME-Version: 1.0
-From: Sivaraman  Nainar <sivaramann at amiindia.co.in>
-Subject: [Devel] reg: Accessing ACPI Objects / Execute Control Methods
-Date: Mon, 27 Jun 2011 10:59:46 +0530
-Message-ID: <13688C12F44C7C428726663F950CA253025946BF@venus.in.megatrends.com>
+From: Lin Ming <ming.m.lin at intel.com>
+Subject: Re: [Devel] [PATCH 1/2] ACPICA: Provide global table flags
+Date: Thu, 30 Jun 2011 11:11:07 +0800
+Message-ID: <1309403467.24590.0.camel@minggr.sh.intel.com>
+In-Reply-To: 201106271044.21434.trenn@suse.de
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8719586443522868169==
+--===============9022840215781793893==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hello All,
+On Mon, 2011-06-27 at 16:44 +0800, Thomas Renninger wrote:
+> On Saturday, June 25, 2011 10:13:11 PM Thomas Renninger wrote:
+> > CC: devel(a)lists.acpica.org
 
- =
+Use devel(a)acpica.org
 
+> Please remove this list when replying, looks like one has to
+> be subscribed on the list, I got:
+> =
 
-I am working in a UEFI development environment. I am working on power
-management related task and would like to execute a Control method from
-an UEFI application.
-
- =
-
-
-I had used the Intel ACPI drivers AED OSI / AED OSD for accessing ACPI
-interfaces, but the driver failed to initialize the ACPI subsystem.
-Hence I could not use the driver. The AED uses the sources of ACPICA.
-
- =
-
-
-Does Intel released any later ACPI Driver to access ACPI methods. Is
-anybody here used ACPICA source to execute a control method.
-
- =
-
-
-Can you please redirect to the source / document which will help me to
-achieve this.
-
- =
-
-
-Thanks
-
-Siva
-
- =
+> Undelivered Mail Returned to Sender
+> ...
+> <devel(a)lists.acpica.org>: host mail.acpica.org[174.36.13.144] said: 550=
+ 5.1.1
+>     <devel(a)lists.acpica.org>: Recipient address rejected: User unknown =
+in relay
+>     recipient table (in reply to RCPT TO command)
 
 
 
---===============8719586443522868169==
-Content-Type: text/html
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="attachment.html"
-
-PGh0bWwgeG1sbnM6dj0idXJuOnNjaGVtYXMtbWljcm9zb2Z0LWNvbTp2bWwiIHhtbG5zOm89InVy
-bjpzY2hlbWFzLW1pY3Jvc29mdC1jb206b2ZmaWNlOm9mZmljZSIgeG1sbnM6dz0idXJuOnNjaGVt
-YXMtbWljcm9zb2Z0LWNvbTpvZmZpY2U6d29yZCIgeG1sbnM6bT0iaHR0cDovL3NjaGVtYXMubWlj
-cm9zb2Z0LmNvbS9vZmZpY2UvMjAwNC8xMi9vbW1sIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcv
-VFIvUkVDLWh0bWw0MCI+PGhlYWQ+PG1ldGEgaHR0cC1lcXVpdj1Db250ZW50LVR5cGUgY29udGVu
-dD0idGV4dC9odG1sOyBjaGFyc2V0PXVzLWFzY2lpIj48bWV0YSBuYW1lPUdlbmVyYXRvciBjb250
-ZW50PSJNaWNyb3NvZnQgV29yZCAxMiAoZmlsdGVyZWQgbWVkaXVtKSI+PHN0eWxlPjwhLS0KLyog
-Rm9udCBEZWZpbml0aW9ucyAqLwpAZm9udC1mYWNlCgl7Zm9udC1mYW1pbHk6IkNhbWJyaWEgTWF0
-aCI7CglwYW5vc2UtMToyIDQgNSAzIDUgNCA2IDMgMiA0O30KQGZvbnQtZmFjZQoJe2ZvbnQtZmFt
-aWx5OkNhbGlicmk7CglwYW5vc2UtMToyIDE1IDUgMiAyIDIgNCAzIDIgNDt9Ci8qIFN0eWxlIERl
-ZmluaXRpb25zICovCnAuTXNvTm9ybWFsLCBsaS5Nc29Ob3JtYWwsIGRpdi5Nc29Ob3JtYWwKCXtt
-YXJnaW46MGluOwoJbWFyZ2luLWJvdHRvbTouMDAwMXB0OwoJZm9udC1zaXplOjExLjBwdDsKCWZv
-bnQtZmFtaWx5OiJDYWxpYnJpIiwic2Fucy1zZXJpZiI7fQphOmxpbmssIHNwYW4uTXNvSHlwZXJs
-aW5rCgl7bXNvLXN0eWxlLXByaW9yaXR5Ojk5OwoJY29sb3I6Ymx1ZTsKCXRleHQtZGVjb3JhdGlv
-bjp1bmRlcmxpbmU7fQphOnZpc2l0ZWQsIHNwYW4uTXNvSHlwZXJsaW5rRm9sbG93ZWQKCXttc28t
-c3R5bGUtcHJpb3JpdHk6OTk7Cgljb2xvcjpwdXJwbGU7Cgl0ZXh0LWRlY29yYXRpb246dW5kZXJs
-aW5lO30Kc3Bhbi5FbWFpbFN0eWxlMTcKCXttc28tc3R5bGUtdHlwZTpwZXJzb25hbC1jb21wb3Nl
-OwoJZm9udC1mYW1pbHk6IkNhbGlicmkiLCJzYW5zLXNlcmlmIjsKCWNvbG9yOndpbmRvd3RleHQ7
-fQouTXNvQ2hwRGVmYXVsdAoJe21zby1zdHlsZS10eXBlOmV4cG9ydC1vbmx5O30KQHBhZ2UgV29y
-ZFNlY3Rpb24xCgl7c2l6ZTo4LjVpbiAxMS4waW47CgltYXJnaW46MS4waW4gMS4waW4gMS4waW4g
-MS4waW47fQpkaXYuV29yZFNlY3Rpb24xCgl7cGFnZTpXb3JkU2VjdGlvbjE7fQotLT48L3N0eWxl
-PjwhLS1baWYgZ3RlIG1zbyA5XT48eG1sPgo8bzpzaGFwZWRlZmF1bHRzIHY6ZXh0PSJlZGl0IiBz
-cGlkbWF4PSIxMDI2IiAvPgo8L3htbD48IVtlbmRpZl0tLT48IS0tW2lmIGd0ZSBtc28gOV0+PHht
-bD4KPG86c2hhcGVsYXlvdXQgdjpleHQ9ImVkaXQiPgo8bzppZG1hcCB2OmV4dD0iZWRpdCIgZGF0
-YT0iMSIgLz4KPC9vOnNoYXBlbGF5b3V0PjwveG1sPjwhW2VuZGlmXS0tPjwvaGVhZD48Ym9keSBs
-YW5nPUVOLVVTIGxpbms9Ymx1ZSB2bGluaz1wdXJwbGU+PGRpdiBjbGFzcz1Xb3JkU2VjdGlvbjE+
-PHAgY2xhc3M9TXNvTm9ybWFsPkhlbGxvIEFsbCw8bzpwPjwvbzpwPjwvcD48cCBjbGFzcz1Nc29O
-b3JtYWw+PG86cD4mbmJzcDs8L286cD48L3A+PHAgY2xhc3M9TXNvTm9ybWFsPkkgYW0gd29ya2lu
-ZyBpbiBhIFVFRkkgZGV2ZWxvcG1lbnQgZW52aXJvbm1lbnQuIEkgYW0gd29ya2luZyBvbiBwb3dl
-ciBtYW5hZ2VtZW50IHJlbGF0ZWQgdGFzayBhbmQgd291bGQgbGlrZSB0byBleGVjdXRlIGEgQ29u
-dHJvbCBtZXRob2QgZnJvbSBhbiBVRUZJIGFwcGxpY2F0aW9uLjxvOnA+PC9vOnA+PC9wPjxwIGNs
-YXNzPU1zb05vcm1hbD48bzpwPiZuYnNwOzwvbzpwPjwvcD48cCBjbGFzcz1Nc29Ob3JtYWw+SSBo
-YWQgdXNlZCB0aGUgSW50ZWwgQUNQSSBkcml2ZXJzIEFFRCBPU0kgLyBBRUQgT1NEIGZvciBhY2Nl
-c3NpbmcgQUNQSSBpbnRlcmZhY2VzLCBidXQgdGhlIGRyaXZlciBmYWlsZWQgdG8gaW5pdGlhbGl6
-ZSB0aGUgQUNQSSBzdWJzeXN0ZW0uIEhlbmNlIEkgY291bGQgbm90IHVzZSB0aGUgZHJpdmVyLiBU
-aGUgQUVEIHVzZXMgdGhlIHNvdXJjZXMgb2YgQUNQSUNBLjxvOnA+PC9vOnA+PC9wPjxwIGNsYXNz
-PU1zb05vcm1hbD48bzpwPiZuYnNwOzwvbzpwPjwvcD48cCBjbGFzcz1Nc29Ob3JtYWw+RG9lcyBJ
-bnRlbCByZWxlYXNlZCBhbnkgbGF0ZXIgQUNQSSBEcml2ZXIgdG8gYWNjZXNzIEFDUEkgbWV0aG9k
-cy4gSXMgYW55Ym9keSBoZXJlIHVzZWQgQUNQSUNBIHNvdXJjZSB0byBleGVjdXRlIGEgY29udHJv
-bCBtZXRob2QuPG86cD48L286cD48L3A+PHAgY2xhc3M9TXNvTm9ybWFsPjxvOnA+Jm5ic3A7PC9v
-OnA+PC9wPjxwIGNsYXNzPU1zb05vcm1hbD5DYW4geW91IHBsZWFzZSByZWRpcmVjdCB0byB0aGUg
-c291cmNlIC8gZG9jdW1lbnQgd2hpY2ggd2lsbCBoZWxwIG1lIHRvIGFjaGlldmUgdGhpcy48bzpw
-PjwvbzpwPjwvcD48cCBjbGFzcz1Nc29Ob3JtYWw+PG86cD4mbmJzcDs8L286cD48L3A+PHAgY2xh
-c3M9TXNvTm9ybWFsPlRoYW5rczxvOnA+PC9vOnA+PC9wPjxwIGNsYXNzPU1zb05vcm1hbD5TaXZh
-PG86cD48L286cD48L3A+PHAgY2xhc3M9TXNvTm9ybWFsPjxvOnA+Jm5ic3A7PC9vOnA+PC9wPjwv
-ZGl2PjwvYm9keT48L2h0bWw+
---===============8719586443522868169==--
+--===============9022840215781793893==--
 
