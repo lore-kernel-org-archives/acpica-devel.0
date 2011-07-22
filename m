@@ -1,37 +1,30 @@
-Content-Type: multipart/mixed; boundary="===============9022840215781793893=="
+Content-Type: multipart/mixed; boundary="===============7548899941078001306=="
 MIME-Version: 1.0
-From: Lin Ming <ming.m.lin at intel.com>
-Subject: Re: [Devel] [PATCH 1/2] ACPICA: Provide global table flags
-Date: Thu, 30 Jun 2011 11:11:07 +0800
-Message-ID: <1309403467.24590.0.camel@minggr.sh.intel.com>
-In-Reply-To: 201106271044.21434.trenn@suse.de
+From: Jung-uk Kim <jkim at FreeBSD.org>
+Subject: [Devel] _CRS/_PRS for address space range
+Date: Fri, 22 Jul 2011 12:45:41 -0400
+Message-ID: <201107221245.44245.jkim@FreeBSD.org>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============9022840215781793893==
+--===============7548899941078001306==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2011-06-27 at 16:44 +0800, Thomas Renninger wrote:
-> On Saturday, June 25, 2011 10:13:11 PM Thomas Renninger wrote:
-> > CC: devel(a)lists.acpica.org
+ACPI Spec. 4.0a, 6.4.3.5 Address Space Range Descriptor, Table 6-40 on =
 
-Use devel(a)acpica.org
+page 260 implies _LEN > 0, _MIF =3D 1, and _MAF =3D 1 is the only valid =
 
-> Please remove this list when replying, looks like one has to
-> be subscribed on the list, I got:
-> =
+combination for _CRS.  However, I found a _CRS example on page, which =
 
-> Undelivered Mail Returned to Sender
-> ...
-> <devel(a)lists.acpica.org>: host mail.acpica.org[174.36.13.144] said: 550=
- 5.1.1
->     <devel(a)lists.acpica.org>: Recipient address rejected: User unknown =
-in relay
->     recipient table (in reply to RCPT TO command)
+has _LEN =3D _MIF =3D _MAF =3D 0.  Can you please clarify?  If the table is =
 
+correct, iasl should have warned about it.  I think iasl currently =
 
+treats _PRS and _CRS equally.
 
---===============9022840215781793893==--
+Jung-uk Kim
+
+--===============7548899941078001306==--
 
