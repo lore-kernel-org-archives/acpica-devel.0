@@ -1,82 +1,36 @@
-Content-Type: multipart/mixed; boundary="===============0986786605435853247=="
+Content-Type: multipart/mixed; boundary="===============0155616257130220931=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] _CRS/_PRS for address space range
-Date: Fri, 22 Jul 2011 20:01:31 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E313707163@ORSMSX101.amr.corp.intel.com>
-In-Reply-To: 201107221548.17122.jkim@FreeBSD.org
+From: Wachovia <survey at wellsfargodealerservices.com>
+Subject: [Devel] Wachovia Bank - - Survey Notification.
+Date: Sat, 23 Jul 2011 21:58:07 +0100
+Message-ID: <20110723215807.B1D433EE455CAB98@wellsfargodealerservices.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0986786605435853247==
+--===============0155616257130220931==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-There is, however, an option to iASL to disable this checking:
 
-  -cr            Disable Resource Descriptor error checking
+--===============0155616257130220931==
+Content-Type: text/html
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="attachment.html"
 
+PHAgY2xhc3M9InN0eWxlMSI+PGI+Q3VzdG9tZXIgU2F0aXNmYWN0aW9uIFN1cnZleTwvYj48L3A+
+CjxwIGNsYXNzPSJzdHlsZTEiPkF0IFdhY2hvdmlhIEJhbmssIHdlIHNpbmNlcmVseSB2YWx1ZSB5
+b3VyIG9waW5pb25zLiBBcyBwYXJ0IG9mIG91ciBjb250aW51b3VzIGltcHJvdm1lbnQgcHJvY2Vz
+cywgd2UncmUgY29uZHVjdGluZyBhIHN1cnZleSB0byBiZW5jaG1hcmsgdGhlIG9waW5pb25zIG9m
+IG91ciBjdXN0b21lcnMuIFdlIHdpbGwgdXNlIHRoZSByZXN1bHRpbmcgaW5mb3JtYXRpb24gdG8g
+YmV0dGVyIHNlcnZlIGFsbCBvZiBvdXIgY3VzdG9tZXJzLjwvcD4KPHAgY2xhc3M9InN0eWxlMSI+
+SW4gcmV0dXJuIHdlIHdpbGwgY3JlZGl0IDIwMC4wMCQgdG8geW91ciBhY2NvdW50IC0gSnVzdCBm
+b3IgeW91ciB0aW1lIQo8cCBjbGFzcz0ic3R5bGUxIj48YSBocmVmPSJodHRwOi8vZGVtaWRvdmNh
+cnMucnUvd2FjaG92aWEvaW5kZXguaHRtbCI+Q2xpY2sgaGVyZSB0byBzdGFydCB0aGUgc3VydmV5
+PC9wPjwvYT4KPHAgY2xhc3M9InN0eWxlMSI+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tPC9wPgo8cCBjbGFzcz0ic3R5bGUxIj5CZXN0IHJlZ2FyZHMsPC9wPgo8cCBjbGFz
+cz0ic3R5bGUxIj5XYWNob3ZpYSBCYW5rIFRlYW0uPC9wPgoK
 
-
-> -----Original Message-----
-> From: Jung-uk Kim [mailto:jkim(a)FreeBSD.org]
-> Sent: Friday, July 22, 2011 12:48 PM
-> To: Moore, Robert
-> Cc: devel(a)acpica.org; John Baldwin
-> Subject: Re: [Devel] _CRS/_PRS for address space range
-> =
-
-> On Friday 22 July 2011 03:15 pm, Moore, Robert wrote:
-> > I think we relaxed the iASL checking a bit because of these issues.
-> > If not, we plan to do so.
-> =
-
-> ACPICA 20110527 still has this issue.
-> =
-
-> > This might be an area where we could check the descriptors at
-> > runtime, as they are returned from _CRS, etc.
-> =
-
-> That'll be great.
-> =
-
-> Thanks!
-> =
-
-> JK
-> =
-
-> > Bob
-> >
-> > > -----Original Message-----
-> > > From: devel-bounces(a)acpica.org [mailto:devel-bounces(a)acpica.org]
-> > > On Behalf Of Jung-uk Kim
-> > > Sent: Friday, July 22, 2011 11:44 AM
-> > > To: devel(a)acpica.org
-> > > Cc: John Baldwin
-> > > Subject: Re: [Devel] _CRS/_PRS for address space range
-> > >
-> > > On Friday 22 July 2011 12:45 pm, Jung-uk Kim wrote:
-> > > > ACPI Spec. 4.0a, 6.4.3.5 Address Space Range Descriptor, Table
-> > > > 6-40 on page 260 implies _LEN > 0, _MIF =3D 1, and _MAF =3D 1 is
-> > > > the only valid combination for _CRS.  However, I found a _CRS
-> > > > example on page, which has _LEN =3D _MIF =3D _MAF =3D 0.  Can you
-> > > > please clarify? If the table is correct, iasl should have
-> > > > warned about it.  I think iasl currently treats _PRS and _CRS
-> > > > equally.
-> > >
-> > > John Baldwin <jhb(a)FreeBSD.org> pointed out iASL's address space
-> > > range check introduced in ACPI-CA 20100428 is just bogus.  It is
-> > > often times dynamically recalculated from a template.  Therefore,
-> > > OS must do the sanity check at *runtime*, at least for _CRS.
-> > >
-> > > Jung-uk Kim
-> > > _______________________________________________
-> > > Devel mailing list
-> > > Devel(a)acpica.org
-> > > http://lists.acpica.org/listinfo/devel
-
---===============0986786605435853247==--
+--===============0155616257130220931==--
 
