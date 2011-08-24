@@ -1,34 +1,34 @@
-Content-Type: multipart/mixed; boundary="===============8767583794090588732=="
+Content-Type: multipart/mixed; boundary="===============0655388144741862114=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] New ACPICA source repository
-Date: Wed, 17 Aug 2011 15:00:57 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E316E5F3ED@FMSMSX151.amr.corp.intel.com>
+From: Thomas Renninger <trenn at suse.de>
+Subject: [Devel] [PATCH 0/2] Implement overriding of arbitrary ACPI tables via
+ initrd
+Date: Wed, 24 Aug 2011 11:48:08 +0200
+Message-ID: <1314179290-31526-1-git-send-email-trenn@suse.de>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8767583794090588732==
+--===============0655388144741862114==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-The public ACPICA git repository has changed.
+This patch series got some basic testing already (see patch 2 changelog) and
+is based on latest 3.1-rc2 Linus kernel.
 
-The new paths are below.
+The patches are separated into ACPICA parts (patch 1) and kernel parts (pat=
+ch 2).
+
+They are ready for integeration (if now objections should show up in a revi=
+ew
+discussion) and it would be great if they can be added in Len's latest acpi=
+-test
+tree for broader testing.
+
+Thanks,
+
+   Thomas
 
 
-Web access:
-
-https://github.com/otcshare/acpica
-
-
-Direct access:
-
-git://github.com/otcshare/acpica.git
-
-
-Bob
-
-
---===============8767583794090588732==--
+--===============0655388144741862114==--
 
