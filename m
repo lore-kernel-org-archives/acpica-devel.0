@@ -1,46 +1,92 @@
-Content-Type: multipart/mixed; boundary="===============6574378777477865460=="
+Content-Type: multipart/mixed; boundary="===============6740593460289030130=="
 MIME-Version: 1.0
-From: Thomas Renninger <trenn at suse.de>
-Subject: Re: [Devel] [PATCH 1/2] ACPICA: Introduce acpi_os_phys_table_override
- function
-Date: Wed, 31 Aug 2011 11:28:49 +0200
-Message-ID: <201108311128.50256.trenn@suse.de>
-In-Reply-To: 1314758622.6486.74.camel@minggr.sh.intel.com
+From: Doc Holliday <doc4holliday at gmail.com>
+Subject: [Devel] gcc 4.6 compatibility
+Date: Mon, 12 Sep 2011 14:30:04 -0400
+Message-ID: <CAFP2k92Q7m8zJ890FzwsmU3+A_jcShONhwmffL_CNy0Ch=dzPQ@mail.gmail.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6574378777477865460==
+--===============6740593460289030130==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Wednesday, August 31, 2011 04:43:42 AM Lin Ming wrote:
-> On Wed, 2011-08-24 at 17:48 +0800, Thomas Renninger wrote:
-...
-> You add a new interface.
-Yes, is this a bigger problem?
+With gcc 4.6, I am getting following error:
 
-> Can we just extend the existing interface: acpi_os_table_override?
-Not sure how to do that without OS/ACPICA API changes.
-The virtual address handling is nasty. You have to differ
-early mappings (early_ioremap) and later mappings (io/memremap).
-Re-mapping later is not possible because the physical address is
-lost with the current overriding interface.
-The physical address usage is transparent and from what I can
-see the only way to provide proper table overriding.
+i686-pc-linux-gnu-gcc -c -march=3Dcore2 -m32 -Os -pipe
+-fomit-frame-pointer -D_LINUX -D_GNU_SOURCE -DACPI_ASL_COMPILER
+-I../include -I../compiler -Wall -Werror -Wstrict-aliasing=3D0
+-oaslcompilerlex.o aslcompilerlex.c
+../compiler/aslcompiler.l: In function 'AslPopInputFileStack':
+../compiler/aslcompiler.l:554:30: error: variable 'InputFile' set but
+not used [-Werror=3Dunused-but-set-variable]
 
-If it's ok to add more paramters to acpi_os_table_override and
-either pass the virtual (as before) or the physical address,
-this would work:
-acpi_os_table_override(struct acpi_table_header *existing_table,
-                      struct acpi_table_header **new_table,
-                      acpi_physical_address *address, u32 *table_length);
+and
 
-This would be an interface change which looked even worse to me, than =
+i686-pc-linux-gnu-gcc -c -march=3Dcore2 -m32 -Os -pipe
+-fomit-frame-pointer -D_LINUX -D_GNU_SOURCE -DACPI_ASL_COMPILER
+-I../include -I../compiler -ansi -Wall -Wbad-function-cast
+-Wdeclaration-after-statement -Werror -Wformat=3D2
+-Wmissing-declarations -Wmissing-prototypes -Wstrict-aliasing=3D0
+-Wstrict-prototypes -Wswitch-default -Wpointer-arith -Wundef
+-oosunixxf.o ../os_specific/service_layers/osunixxf.c
+../os_specific/service_layers/osunixxf.c: In function 'AcpiOsVprintf':
+../os_specific/service_layers/osunixxf.c:352:29: error: variable
+'Count' set but not used [-Werror=3Dunused-but-set-variable]
 
-adding a new function.
+Following patch fixes the problem, but I've only ran make inside
+compiler dir, so there might be more:
 
-   Thomas
+--- acpica-unix-20110623/compiler/aslcompiler.l.orig	2011-09-12
+13:44:26.130040812 -0400
++++ acpica-unix-20110623/compiler/aslcompiler.l	2011-09-12
+13:46:36.116719238 -0400
+@@ -550,7 +550,6 @@
+     void)
+ {
+     ASL_FILE_NODE           *Fnode;
+-    FILE                    *InputFile =3D NULL;
 
---===============6574378777477865460==--
+
+     Fnode =3D InputStack;
+@@ -569,7 +568,6 @@
+     /* Update the top-of-stack */
+
+     InputStack =3D Fnode->Next;
+-    InputFile =3D Fnode->File;
+
+     /* Reset global line counter and filename */
+--- acpica-unix-20110623/os_specific/service_layers/osunixxf.c.orig	2011-09=
+-12
+14:18:17.866891275 -0400
++++ acpica-unix-20110623/os_specific/service_layers/osunixxf.c	2011-09-12
+14:19:46.230232603 -0400
+@@ -349,7 +349,6 @@
+     const char              *Fmt,
+     va_list                 Args)
+ {
+-    INT32                   Count =3D 0;
+     UINT8                   Flags;
+
+
+@@ -362,7 +361,7 @@
+         {
+             /* Output file is open, send the output there */
+
+-            Count =3D vfprintf (AcpiGbl_DebugFile, Fmt, Args);
++            vfprintf (AcpiGbl_DebugFile, Fmt, Args);
+         }
+         else
+         {
+@@ -374,7 +373,7 @@
+
+     if (Flags & ACPI_DB_CONSOLE_OUTPUT)
+     {
+-        Count =3D vfprintf (AcpiGbl_OutputFile, Fmt, Args);
++        vfprintf (AcpiGbl_OutputFile, Fmt, Args);
+     }
+ }
+
+--===============6740593460289030130==--
 
