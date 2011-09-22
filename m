@@ -1,92 +1,94 @@
-Content-Type: multipart/mixed; boundary="===============6740593460289030130=="
+Content-Type: multipart/mixed; boundary="===============2917297078645680826=="
 MIME-Version: 1.0
-From: Doc Holliday <doc4holliday at gmail.com>
-Subject: [Devel] gcc 4.6 compatibility
-Date: Mon, 12 Sep 2011 14:30:04 -0400
-Message-ID: <CAFP2k92Q7m8zJ890FzwsmU3+A_jcShONhwmffL_CNy0Ch=dzPQ@mail.gmail.com>
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] ACPICA version 20110922 released
+Date: Thu, 22 Sep 2011 16:17:49 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E316E9BF4B@ORSMSX101.amr.corp.intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6740593460289030130==
+--===============2917297078645680826==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-With gcc 4.6, I am getting following error:
+22 September 2011. Summary of changes for version 20110922:
 
-i686-pc-linux-gnu-gcc -c -march=3Dcore2 -m32 -Os -pipe
--fomit-frame-pointer -D_LINUX -D_GNU_SOURCE -DACPI_ASL_COMPILER
--I../include -I../compiler -Wall -Werror -Wstrict-aliasing=3D0
--oaslcompilerlex.o aslcompilerlex.c
-../compiler/aslcompiler.l: In function 'AslPopInputFileStack':
-../compiler/aslcompiler.l:554:30: error: variable 'InputFile' set but
-not used [-Werror=3Dunused-but-set-variable]
+This release is available at www.acpica.org/downloads
 
-and
+0) ACPI 5.0 News:
 
-i686-pc-linux-gnu-gcc -c -march=3Dcore2 -m32 -Os -pipe
--fomit-frame-pointer -D_LINUX -D_GNU_SOURCE -DACPI_ASL_COMPILER
--I../include -I../compiler -ansi -Wall -Wbad-function-cast
--Wdeclaration-after-statement -Werror -Wformat=3D2
--Wmissing-declarations -Wmissing-prototypes -Wstrict-aliasing=3D0
--Wstrict-prototypes -Wswitch-default -Wpointer-arith -Wundef
--oosunixxf.o ../os_specific/service_layers/osunixxf.c
-../os_specific/service_layers/osunixxf.c: In function 'AcpiOsVprintf':
-../os_specific/service_layers/osunixxf.c:352:29: error: variable
-'Count' set but not used [-Werror=3Dunused-but-set-variable]
+Support for ACPI 5.0 in ACPICA has been underway for several months and wil=
+l be released at the same time that ACPI 5.0 is officially released.
 
-Following patch fixes the problem, but I've only ran make inside
-compiler dir, so there might be more:
+The ACPI 5.0 specification is on track for release in the next few months.
+ =
 
---- acpica-unix-20110623/compiler/aslcompiler.l.orig	2011-09-12
-13:44:26.130040812 -0400
-+++ acpica-unix-20110623/compiler/aslcompiler.l	2011-09-12
-13:46:36.116719238 -0400
-@@ -550,7 +550,6 @@
-     void)
- {
-     ASL_FILE_NODE           *Fnode;
--    FILE                    *InputFile =3D NULL;
+1) ACPICA Core Subsystem:
+
+Fixed a problem where the maximum sleep time for the Sleep() operator was i=
+ntended to be limited to two seconds, but was inadvertently limited to 20 s=
+econds instead.
+
+Linux and Unix makefiles: Added header file dependencies to ensure correct =
+generation of ACPICA core code and utilities. Also simplified the makefiles=
+ considerably through the use of the vpath variable to specify search paths=
+. ACPICA BZ 924.
+
+2) iASL Compiler/Disassembler and Tools:
+
+iASL: Implemented support to check the access length for all fields created=
+ to access named Resource Descriptor fields. For example, if a resource fie=
+ld is defined to be two bits, a warning is issued if a CreateXxxxField() is=
+ used with an incorrect bit length. This is implemented for all current res=
+ource descriptor names. ACPICA BZ 930.
+  =
+
+Disassembler: Fixed a byte ordering problem with the output of 24-bit and 5=
+6-bit integers.
+
+iASL: Fixed a couple of issues associated with variable-length package obje=
+cts. 1) properly handle constants like One, Ones, Zero -- do not make a VAR=
+_PACKAGE when these are used as a package length. 2) Allow the VAR_PACKAGE =
+opcode (in addition to PACKAGE) when validating object types for predefined=
+ names.
+
+iASL: Emit statistics for all output files (instead of just the ASL input a=
+nd AML output). Includes listings, hex files, etc.
+
+iASL: Added -G option to the table compiler to allow the compilation of cus=
+tom ACPI tables. The only part of a table that is required is the standard =
+36-byte ACPI header.
+
+AcpiXtract: Ported to the standard ACPICA environment (with ACPICA headers)=
+, which also adds correct 64-bit support. Also, now all output filenames ar=
+e completely lower case.
+
+AcpiExec: Ignore any non-AML tables (tables other than DSDT or SSDT) when l=
+oading table files. A warning is issued for any such tables. The only excep=
+tion is an FADT. This also fixes a possible fault when attempting to load n=
+on-AML tables. ACPICA BZ 932.
+
+AcpiHelp: Added the AccessAs and Offset operators. Fixed a problem where a =
+missing table terminator could cause a fault when using the -p option.
+
+AcpiSrc: Fixed a possible divide-by-zero fault when generating file statist=
+ics.
+
+3) Example Code and Data Size
+
+These are the sizes for the OS-independent acpica.lib produced by the Micro=
+soft Visual C++ 9.0 32-bit compiler. The debug version of the code includes=
+ the debug output trace mechanism and has a much larger code and data size.
+
+  Previous Release (VC 9.0):
+    Non-Debug Version:  90.2K Code, 23.9K Data, 114.1K Total
+    Debug Version:     165.6K Code, 68.4K Data, 234.0K Total
+  Current Release (VC 9.0):
+    Non-Debug Version:  90.2K Code, 23.9K Data, 114.1K Total
+    Debug Version:     165.6K Code, 68.4K Data, 234.0K Total
 
 
-     Fnode =3D InputStack;
-@@ -569,7 +568,6 @@
-     /* Update the top-of-stack */
 
-     InputStack =3D Fnode->Next;
--    InputFile =3D Fnode->File;
-
-     /* Reset global line counter and filename */
---- acpica-unix-20110623/os_specific/service_layers/osunixxf.c.orig	2011-09=
--12
-14:18:17.866891275 -0400
-+++ acpica-unix-20110623/os_specific/service_layers/osunixxf.c	2011-09-12
-14:19:46.230232603 -0400
-@@ -349,7 +349,6 @@
-     const char              *Fmt,
-     va_list                 Args)
- {
--    INT32                   Count =3D 0;
-     UINT8                   Flags;
-
-
-@@ -362,7 +361,7 @@
-         {
-             /* Output file is open, send the output there */
-
--            Count =3D vfprintf (AcpiGbl_DebugFile, Fmt, Args);
-+            vfprintf (AcpiGbl_DebugFile, Fmt, Args);
-         }
-         else
-         {
-@@ -374,7 +373,7 @@
-
-     if (Flags & ACPI_DB_CONSOLE_OUTPUT)
-     {
--        Count =3D vfprintf (AcpiGbl_OutputFile, Fmt, Args);
-+        vfprintf (AcpiGbl_OutputFile, Fmt, Args);
-     }
- }
-
---===============6740593460289030130==--
+--===============2917297078645680826==--
 
