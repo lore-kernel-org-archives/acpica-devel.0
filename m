@@ -1,13 +1,13 @@
-Content-Type: multipart/mixed; boundary="===============2550589508294661553=="
+Content-Type: multipart/mixed; boundary="===============0588085518748458640=="
 MIME-Version: 1.0
 From: devel@acpica.org
-Subject: [Devel] Open the door with this key
-Date: Sat, 26 Nov 2011 09:22:45 -0400
-Message-ID: <7959646656.RO31NT0E488816@vpweprl.epmvavurctsgysb.info>
+Subject: [Devel] Affordable Education
+Date: Thu, 01 Dec 2011 11:39:56 +0100
+Message-ID: <0050469188.8K7MOU30936943@sfhryt.gyahtyjeynpps.ru>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2550589508294661553==
+--===============0588085518748458640==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
@@ -37,7 +37,7 @@ al Experience.
 
 Give us a call NOW!
 
-1-213-403-0169
+1-404-549-4731
 
 Please leave us your:
 1) Your Name
@@ -47,5 +47,5 @@ Please leave us your:
 We will get back to you ASAP
 
 
---===============2550589508294661553==--
+--===============0588085518748458640==--
 
