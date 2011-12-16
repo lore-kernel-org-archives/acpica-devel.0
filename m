@@ -1,51 +1,51 @@
-Content-Type: multipart/mixed; boundary="===============0588085518748458640=="
+Content-Type: multipart/mixed; boundary="===============6212359086143254415=="
 MIME-Version: 1.0
 From: devel@acpica.org
-Subject: [Devel] Affordable Education
-Date: Thu, 01 Dec 2011 11:39:56 +0100
-Message-ID: <0050469188.8K7MOU30936943@sfhryt.gyahtyjeynpps.ru>
+Subject: =?utf-8?q?=5BDevel=5D_=D0=A1=D0=BE=D0=B1=D0=B5=D1=80=D0=B5=D0=BC_=D0=B4?=
+ =?utf-8?q?=D0=BB=D1=8F_=D0=B2=D0=B0=D1=81_=D0=BF=D0=BE_=D1=81=D0=B5=D1=82?=
+ =?utf-8?q?=D0=B8_=D0=B8=D0=BD=D1=82=D0=B5=D1=80=D0=BD=D0=B5=D1=82_=D0=B1?=
+ =?utf-8?q?=D0=B0=D0=B7=D1=83_=D0=B4=D0=B0=D0=BD=D0=BD=D1=8B=D1=85_=D0=BF?=
+ =?utf-8?q?=D0=BE=D1=82=D0=B5=D0=BD=D1=86=D0=B8=D0=B0=D0=BB=D1=8C=D0=BD?=
+ =?utf-8?q?=D1=8B=D1=85_=D0=BA=D0=BB=D0=B8=D0=B5=D0=BD=D1=82=D0=BE=D0=B2_?=
+ =?utf-8?q?=D0=B4=D0=BB=D1=8F_=D0=92=D0=B0=D1=88=D0=B5=D0=B3=D0=BE_=D0=B1?=
+ =?utf-8?q?=D0=B8=D0=B7=D0=BD=D0=B5=D1=81=D0=B0=2E_=D0=92=D1=81=D0=B5_?=
+ =?utf-8?q?=D0=BA=D0=BE=D0=BD=D1=82=D0=B0=D0=BA=D1=82=D0=BD=D1=8B=D0=B5_?=
+ =?utf-8?q?=D0=B4=D0=B0=D0=BD=D0=BD=D1=8B=D0=B5=2E=D0=9C=D0=BD=D0=BE=D0=B3?=
+ =?utf-8?q?=D0=BE!=D0=91=D1=8B=D1=81=D1=82=D1=80=D0=BE!=D0=9D=D0=B5=D0=B4?=
+ =?utf-8?q?=D0=BE=D1=80=D0=BE=D0=B3=D0=BE!_=D0=A3=D0=B7=D0=BD=D0=B0=D0=B9?=
+ =?utf-8?q?=D1=82=D0=B5_=D0=BF=D0=BE=D0=B4=D1=80=D0=BE=D0=B1=D0=BD=D0=B5?=
+ =?utf-8?q?=D0=B5_=D0=BF=D0=BE_=D1=82=D0=B5=D0=BB=D0=B5=D1=84=D0=BE=D0=BD?=
+ =?utf-8?q?=D1=83__+79137936342_Email=3A_prodawez=40mixmail=2Ecom_ICQ=3A_6?=
+ =?utf-8?q?288862_Skype=3A_s=2E3837?=
+Date: Fri, 16 Dec 2011 06:38:17 -0200
+Message-ID: <20111216083818.688AE17F623CD@nac.andreetta.com.br>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0588085518748458640==
+--===============6212359086143254415==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-AFFORDABLE ONLINE BACHEL0R'S, MASTER'S & DOCT0RATE DEGREES
+=D0=A1=D0=BE=D0=B1=D0=B5=D1=80=D0=B5=D0=BC =D0=B4=D0=BB=D1=8F =D0=B2=D0=B0=
+=D1=81 =D0=BF=D0=BE =D1=81=D0=B5=D1=82=D0=B8 =D0=B8=D0=BD=D1=82=D0=B5=D1=80=
+=D0=BD=D0=B5=D1=82 =D0=B1=D0=B0=D0=B7=D1=83 =D0=B4=D0=B0=D0=BD=D0=BD=D1=8B=
+=D1=85 =D0=BF=D0=BE=D1=82=D0=B5=D0=BD=D1=86=D0=B8=D0=B0=D0=BB=D1=8C=D0=BD=
+=D1=8B=D1=85 =D0=BA=D0=BB=D0=B8=D0=B5=D0=BD=D1=82=D0=BE=D0=B2 =D0=B4=D0=BB=
+=D1=8F =D0=92=D0=B0=D1=88=D0=B5=D0=B3=D0=BE =D0=B1=D0=B8=D0=B7=D0=BD=D0=B5=
+=D1=81=D0=B0. =
 
-Add Bache1or's, Master's or Doctorate Degrees to your resume in just a few =
-weeks and open avenues to promotion and better jobs!
+=D0=92=D1=81=D0=B5 =D0=BA=D0=BE=D0=BD=D1=82=D0=B0=D0=BA=D1=82=D0=BD=D1=8B=
+=D0=B5 =D0=B4=D0=B0=D0=BD=D0=BD=D1=8B=D0=B5.=D0=9C=D0=BD=D0=BE=D0=B3=D0=BE!=
+=D0=91=D1=8B=D1=81=D1=82=D1=80=D0=BE!=D0=9D=D0=B5=D0=B4=D0=BE=D1=80=D0=BE=
+=D0=B3=D0=BE! =
 
-At your Own Pace!
-At your Own Schedule!
-At your Own Convenience!
+=D0=A3=D0=B7=D0=BD=D0=B0=D0=B9=D1=82=D0=B5 =D0=BF=D0=BE=D0=B4=D1=80=D0=BE=
+=D0=B1=D0=BD=D0=B5=D0=B5 =D0=BF=D0=BE =D1=82=D0=B5=D0=BB=D0=B5=D1=84=D0=BE=
+=D0=BD=D1=83  +79137936433
+Email: prodawez(a)mixmail.com
+ICQ: 6288862
+Skype: s.3837
 
-No Examination!
-No Study!
-No Class!
-
-Regardless of your age, sex, marital status, or location, you can receive a=
- degree in your desired field. All you need is sufficient work, military, o=
-r life experience and you are already on your way to an instant degree in y=
-our relevant field.
-
-Earn a recognized University Degree based on work or life experience within=
- weeks!
-Get your desired degree on the basis of your Prior Knowledge and Profession=
-al Experience.
-
-Give us a call NOW!
-
-1-404-549-4731
-
-Please leave us your:
-1) Your Name
-3) Phone No. =
-
-
-We will get back to you ASAP
-
-
---===============0588085518748458640==--
+--===============6212359086143254415==--
 
