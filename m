@@ -1,51 +1,39 @@
-Content-Type: multipart/mixed; boundary="===============6212359086143254415=="
+Content-Type: multipart/mixed; boundary="===============6452617598823044849=="
 MIME-Version: 1.0
-From: devel@acpica.org
-Subject: =?utf-8?q?=5BDevel=5D_=D0=A1=D0=BE=D0=B1=D0=B5=D1=80=D0=B5=D0=BC_=D0=B4?=
- =?utf-8?q?=D0=BB=D1=8F_=D0=B2=D0=B0=D1=81_=D0=BF=D0=BE_=D1=81=D0=B5=D1=82?=
- =?utf-8?q?=D0=B8_=D0=B8=D0=BD=D1=82=D0=B5=D1=80=D0=BD=D0=B5=D1=82_=D0=B1?=
- =?utf-8?q?=D0=B0=D0=B7=D1=83_=D0=B4=D0=B0=D0=BD=D0=BD=D1=8B=D1=85_=D0=BF?=
- =?utf-8?q?=D0=BE=D1=82=D0=B5=D0=BD=D1=86=D0=B8=D0=B0=D0=BB=D1=8C=D0=BD?=
- =?utf-8?q?=D1=8B=D1=85_=D0=BA=D0=BB=D0=B8=D0=B5=D0=BD=D1=82=D0=BE=D0=B2_?=
- =?utf-8?q?=D0=B4=D0=BB=D1=8F_=D0=92=D0=B0=D1=88=D0=B5=D0=B3=D0=BE_=D0=B1?=
- =?utf-8?q?=D0=B8=D0=B7=D0=BD=D0=B5=D1=81=D0=B0=2E_=D0=92=D1=81=D0=B5_?=
- =?utf-8?q?=D0=BA=D0=BE=D0=BD=D1=82=D0=B0=D0=BA=D1=82=D0=BD=D1=8B=D0=B5_?=
- =?utf-8?q?=D0=B4=D0=B0=D0=BD=D0=BD=D1=8B=D0=B5=2E=D0=9C=D0=BD=D0=BE=D0=B3?=
- =?utf-8?q?=D0=BE!=D0=91=D1=8B=D1=81=D1=82=D1=80=D0=BE!=D0=9D=D0=B5=D0=B4?=
- =?utf-8?q?=D0=BE=D1=80=D0=BE=D0=B3=D0=BE!_=D0=A3=D0=B7=D0=BD=D0=B0=D0=B9?=
- =?utf-8?q?=D1=82=D0=B5_=D0=BF=D0=BE=D0=B4=D1=80=D0=BE=D0=B1=D0=BD=D0=B5?=
- =?utf-8?q?=D0=B5_=D0=BF=D0=BE_=D1=82=D0=B5=D0=BB=D0=B5=D1=84=D0=BE=D0=BD?=
- =?utf-8?q?=D1=83__+79137936342_Email=3A_prodawez=40mixmail=2Ecom_ICQ=3A_6?=
- =?utf-8?q?288862_Skype=3A_s=2E3837?=
-Date: Fri, 16 Dec 2011 06:38:17 -0200
-Message-ID: <20111216083818.688AE17F623CD@nac.andreetta.com.br>
+From: Annabelle Carroll <additivet30 at hermes.com>
+Subject: [Devel] Healthy Ways to Male Enhancing
+Date: Tue, 20 Dec 2011 09:41:04 +0000
+Message-ID: <07N0Q4-VNSW69-CQ@hermes.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6212359086143254415==
+--===============6452617598823044849==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-=D0=A1=D0=BE=D0=B1=D0=B5=D1=80=D0=B5=D0=BC =D0=B4=D0=BB=D1=8F =D0=B2=D0=B0=
-=D1=81 =D0=BF=D0=BE =D1=81=D0=B5=D1=82=D0=B8 =D0=B8=D0=BD=D1=82=D0=B5=D1=80=
-=D0=BD=D0=B5=D1=82 =D0=B1=D0=B0=D0=B7=D1=83 =D0=B4=D0=B0=D0=BD=D0=BD=D1=8B=
-=D1=85 =D0=BF=D0=BE=D1=82=D0=B5=D0=BD=D1=86=D0=B8=D0=B0=D0=BB=D1=8C=D0=BD=
-=D1=8B=D1=85 =D0=BA=D0=BB=D0=B8=D0=B5=D0=BD=D1=82=D0=BE=D0=B2 =D0=B4=D0=BB=
-=D1=8F =D0=92=D0=B0=D1=88=D0=B5=D0=B3=D0=BE =D0=B1=D0=B8=D0=B7=D0=BD=D0=B5=
-=D1=81=D0=B0. =
+      Protrude deeper and give pleasure to every woman!      No consultatio=
+n fees.	Postage is a flat $7.50 per order.	No hidden charges.	No recipe req=
+uired.      We sell a wide range of products for your better feeling.      =
+More information on site      VISIT US!
 
-=D0=92=D1=81=D0=B5 =D0=BA=D0=BE=D0=BD=D1=82=D0=B0=D0=BA=D1=82=D0=BD=D1=8B=
-=D0=B5 =D0=B4=D0=B0=D0=BD=D0=BD=D1=8B=D0=B5.=D0=9C=D0=BD=D0=BE=D0=B3=D0=BE!=
-=D0=91=D1=8B=D1=81=D1=82=D1=80=D0=BE!=D0=9D=D0=B5=D0=B4=D0=BE=D1=80=D0=BE=
-=D0=B3=D0=BE! =
+--===============6452617598823044849==
+Content-Type: text/html
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="attachment.html"
 
-=D0=A3=D0=B7=D0=BD=D0=B0=D0=B9=D1=82=D0=B5 =D0=BF=D0=BE=D0=B4=D1=80=D0=BE=
-=D0=B1=D0=BD=D0=B5=D0=B5 =D0=BF=D0=BE =D1=82=D0=B5=D0=BB=D0=B5=D1=84=D0=BE=
-=D0=BD=D1=83  +79137936433
-Email: prodawez(a)mixmail.com
-ICQ: 6288862
-Skype: s.3837
+PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMDEgVHJhbnNpdGlvbmFs
+Ly9FTiI+CjxodG1sPgogIDxoZWFkPgogICAgPG1ldGEgaHR0cC1lcXVpdj0iY29udGVudC10eXBl
+IiBjb250ZW50PSJ0ZXh0L2h0bWw7IGNoYXJzZXQ9VVRGLTgiPgogIDwvaGVhZD4KICA8Ym9keSBi
+Z2NvbG9yPSIjZmZmZmZmIiB0ZXh0PSIjMDAwMDAwIj4KICAgIDxkaXYgYWxpZ249ImNlbnRlciI+
+CiAgICAgIDxoMT5Qcm90cnVkZSBkZWVwZXIgYW5kIGdpdmUgcGxlYXN1cmUgdG8gZXZlcnkgd29t
+YW4hPC9oMT4KICAgICAgPHA+Tm8gY29uc3VsdGF0aW9uIGZlZXMuPGJyLz4KCVBvc3RhZ2UgaXMg
+YSBmbGF0ICQ3LjUwIHBlciBvcmRlci48YnIvPgoJTm8gaGlkZGVuIGNoYXJnZXMuPGJyLz4KCU5v
+IHJlY2lwZSByZXF1aXJlZC48L3A+CiAgICAgIDxoMz5XZSBzZWxsIGEgd2lkZSByYW5nZSBvZiBw
+cm9kdWN0cyBmb3IgeW91ciBiZXR0ZXIgZmVlbGluZy48L2gzPgogICAgICA8cD5Nb3JlIGluZm9y
+bWF0aW9uIG9uIHNpdGU8L3A+CiAgICAgIDxoMT48YSBocmVmPSJodHRwOi8vdGJhLml0L3Q1NTB0
+Lmh0bWwiPlZJU0lUIFVTITwvYT48L2gxPgo8L2Rpdj4KICA8L2JvZHk+CjwvaHRtbD4K
 
---===============6212359086143254415==--
+--===============6452617598823044849==--
 
