@@ -1,73 +1,90 @@
-Content-Type: multipart/mixed; boundary="===============4499307938294724804=="
+Content-Type: multipart/mixed; boundary="===============4520520315523282102=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] one question about the release package and source repo
-Date: Wed, 11 Jan 2012 22:33:56 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E3256D0869@ORSMSX101.amr.corp.intel.com>
-In-Reply-To: CAHceRrgRHhFFB40pn7HbzgmYU3J0Gu=mqYVZ6zg3riUahmuzPw@mail.gmail.com
+From: kalpesh-bouwvolu <CommunityNews at email-hsn.com>
+Subject: [Devel] With reference to your letter of 23rd March
+Date: Sun, 05 Feb 2012 16:34:51 +0000
+Message-ID: <ot49yt6ysibjyau1fflmntlri7wvmp07cm75yh0x0yu9saaaaa.16311.9395.dlspvhcimailer25.DumpShot.1@email-hsn.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4499307938294724804==
+--===============4520520315523282102==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-I guess I don't fully understand the question. Yes, the unix "packages" and=
- the git tree are different. The unix packages flatten out the directory tr=
-ee somewhat. This is sortof a "legacy" thing for ACPICA and this flattening=
- is apparently no longer needed.
 
-We intend to change the unix packages to reflect the git structure sometime=
- early this year, unless there are major objections.
+--===============4520520315523282102==
+Content-Type: text/html
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="attachment.html"
 
-Bob
+PGh0bWw+Cjxib2R5Pgo8c3BhbiBzdHlsZT0iZm9udC1zaXplOiAycHQiPnN1YnNpZGVzLCBzbW9v
+dGhlcyBvdXQKPGI+CjxwcmU+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA2NiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIDY2ICAgICAgICAgICAgICAgICAgICAgICAgCjY2
+ICAgICA2NiA2NjY2NjY2IDY2NjY2NjYgNjY2NjY2NjYgICAgICA2NjY2NjYgIDY2ICAgNjYgIDY2
+NjY2NiAgNjY2NjY2ICAgICAgIDY2NiAgIDY2ICAgNjYgICAgICAgIDY2ICAgICAgICA2NjYgICA2
+NjY2NiAgICAgIDY2NjY2NjYgIDY2NjY2NiAKNjY2ICAgNjY2IDY2ICAgICAgNjYgICAgICAgICA2
+NiAgICAgICAgIDY2ICAgNjYgNjYgICA2NiA2NiAgICAgIDY2ICAgICAgIDY2ICA2NiA2NiAgNjY2
+ICA2NiAgICAgICAgNjYgICAgICAgNjYgNjYgIDY2ICA2NiAgNjYgNjYgICAgICA2NiAgICAgCjY2
+IDYgNiA2NiA2NiAgICAgIDY2ICAgICAgICAgNjYgICAgICAgICA2NiAgIDY2IDY2ICAgNjYgNjYg
+ICAgICA2NiAgICAgICA2NiA2NiAgIDY2IDY2NjYgNjYgICAgICAgIDY2ICAgICAgNjYgICA2NiA2
+NiAgIDY2IDY2IDY2ICAgICAgNjYKNjYgIDYgIDY2IDY2NjY2NiAgNjY2NjY2ICAgICA2NiAgICAg
+ICAgIDY2NjY2NiAgNjYgICA2NiAgNjY2NjYgICA2NjY2NiAgIDY2IDY2NjY2NjYgNjY2NjY2NiAg
+ICAgICAgNjYgICAgICA2NjY2NjY2IDY2ICAgNjYgNjYgNjY2NjY2ICAgNjY2NjYgIAo2NiAgICAg
+NjYgNjYgICAgICA2NiAgICAgICAgIDY2ICAgICAgICAgNjYgNjYgICA2NiAgIDY2ICAgICAgNjYg
+ICAgICA2NiAgNjYgNjYgICA2NiA2NiA2NjY2ICAgICAgICA2NiAgICAgIDY2ICAgNjYgNjYgICA2
+NiA2NiA2NiAgICAgICAgICAgNjYKNjYgICAgIDY2IDY2ICAgICAgNjYgICAgICAgICA2NiAgICAg
+ICAgIDY2ICA2NiAgNjYgICA2NiAgICAgIDY2ICAgICAgNjYgIDY2IDY2ICAgNjYgNjYgIDY2NiAg
+ICAgICAgNjYgICAgICA2NiAgIDY2IDY2ICA2NiAgNjYgNjYgICAgICAgICAgIDY2ICAgCjY2ICAg
+ICA2NiA2NjY2NjY2IDY2NjY2NjYgICAgNjYgICAgICAgICA2NiAgIDY2ICA2NjY2NiAgNjY2NjY2
+ICA2NjY2NjYgICA2NiA2NiAgIDY2IDY2ICAgNjYgICAgICAgIDY2NjY2NjYgNjYgICA2NiA2NjY2
+NiAgIDY2IDY2NjY2NjYgNjY2NjY2ICAgICAgICAgICAKCgoKCiAgICAgICBnZyAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIGdnICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGdnCmdnICAgICAg
+ICAgZ2cgICBnZyBnZ2dnZ2dnICAgICAgICAgIGdnZ2dnICBnZyAgIGdnICAgZ2dnICAgZ2dnZ2dn
+Z2cgICAgICAgIGdnICBnZyAgZ2cgICAgIGdnZ2dnZ2dnIGdnICAgZ2cgICAgICAgIGdnICAgZ2cg
+ICAgICBnZ2dnZyAgIGdnZ2dnZ2cgIGdnZ2dnICAgIApnZyAgICAgZ2cgIGdnICAgZ2cgZ2cgICAg
+ICAgICAgICAgIGdnICAgZ2cgZ2cgICBnZyAgZ2cgZ2cgICAgIGdnICAgICAgICAgICBnZyAgZ2cg
+IGdnICBnZyAgICBnZyAgICBnZyAgIGdnICAgICAgICBnZyAgIGdnICBnZyAgZ2cgIGdnICBnZyAg
+ICAgIGdnICAgZ2cgICAKZ2cgICAgIGdnICBnZyAgIGdnIGdnICAgICAgICAgICAgICBnZyAgICAg
+IGdnICAgZ2cgZ2cgICBnZyAgICBnZyAgICAgICAgICAgZ2cgIGdnICBnZyAgZ2cgICAgZ2cgICAg
+Z2cgICBnZyAgICAgICAgZ2cgICBnZyAgZ2cgIGdnICAgZ2cgZ2cgICAgICBnZyAgIGdnICAgCmdn
+ICAgICBnZyAgZ2cgICBnZyBnZ2dnZ2cgICAgICAgICAgZ2cgICAgICBnZ2dnZ2dnIGdnZ2dnZ2cg
+ICAgZ2cgICAgICAgICAgIGdnICBnZyAgZ2cgIGdnICAgIGdnICAgIGdnZ2dnZ2cgICAgICAgIGdn
+ICAgZ2cgIGdnICBnZyAgIGdnIGdnZ2dnZyAgZ2cgICBnZyAKZ2cgICAgIGdnICBnZyAgIGdnIGdn
+ICAgICAgICAgICAgICBnZyAgICAgIGdnICAgZ2cgZ2cgICBnZyAgICBnZyAgICAgICAgICAgZ2cg
+IGdnICBnZyAgZ2cgICAgZ2cgICAgZ2cgICBnZyAgICAgICAgZ2cgICBnZyAgZ2cgIGdnICAgZ2cg
+Z2cgICAgICBnZyAgIGdnICAgICAgICAgCmdnICAgICBnZyAgIGdnIGdnICBnZyAgICAgICAgICAg
+ICAgZ2cgICBnZyBnZyAgIGdnIGdnICAgZ2cgICAgZ2cgICAgICAgICAgICBnZ2cgIGdnZyAgIGdn
+ICAgIGdnICAgIGdnICAgZ2cgICAgICAgICBnZyBnZyAgIGdnICBnZyAgZ2cgIGdnICAgICAgZ2cg
+ICBnZyAgICAgCmdnZ2dnZyBnZyAgICBnZ2cgICBnZ2dnZ2dnICAgICAgICAgIGdnZ2dnICBnZyAg
+IGdnIGdnICAgZ2cgICAgZ2cgICAgICAgICAgICAgZyAgICBnICAgIGdnICAgIGdnICAgIGdnICAg
+Z2cgICAgICAgICAgZ2dnICAgIGdnICBnZ2dnZyAgIGdnZ2dnZ2cgIGdnZ2dnICAgZ2cKCgoKCgoK
+CQkJCQkJCQkJICAgICBnZwpnZwkgZ2cgICBnZyAgICAgICBnZyAgIGdnCSAgICAgZ2cJCSBnZ2dn
+ZwkgICAgZ2dnCSAgIGdnZ2dnZ2dnICAgCSAgZ2cgICBnZyAgIGdnZ2dnICAgZ2cJICAgZ2cgIGdn
+Z2dnZ2cJIGdnZ2dnZ2cgIGdnZ2dnZ2dnICBnZwkgICAgZ2cgIGdnZ2dnIAlnZyAgIGdnCQkgICBn
+Z2dnZ2cgICAgZ2cJICBnZwpnZwkgZ2cgICBnZyAgICAgICBnZyAgIGdnCSAgICAgZ2cJCSBnZyAg
+Z2cJICAgZ2cgZ2cgICAgICBnZyAgICAgZ2cJICBnZ2cgIGdnICBnZwlnZyAgZ2dnCSAgZ2dnICBn
+ZwkgZ2cJICAgICBnZwkgICAgIGdnCSAgIGdnICBnZyAgIGdnCWdnICAgZ2cJCSAgIGdnCWdnICAg
+Z2cJICBnZwpnZyAgIGcJIGdnICAgZ2cgICBnICAgZ2cgICBnZwkgZyAgIGdnCQkgZ2cgICBnZyAg
+Z2cgICBnZyAgICAgZ2cgICAgIGdnCSAgZ2dnZyBnZyAgZ2cJICAgIGdnIGcgZyBnZyAgZ2cJIGdn
+CSAgICAgZ2cJICAgICAgZ2cgIGdnICAgZ2cgICBnZwlnZyAgIGdnCQkgICBnZwlnZyAgIGdnCSAg
+Z2cKZ2cgIGdnZwkgZ2cgICBnZyAgZ2dnICBnZyAgIGdnICBnZ2cgIGdnCQkgZ2cgICBnZyAgZ2dn
+Z2dnZyAgICAgZ2cgICAgIGdnCSAgZ2dnZ2dnZyAgZ2cJICAgIGdnCWcgIGdnICBnZ2dnZ2cJIGdn
+Z2dnZwkgICAgIGdnCSAgICAgICBnZ2dnICAgIGdnICAgZ2cJZ2cgICBnZwkJICAgZ2dnZ2dnICAg
+IGdnCSAgZ2cKZ2dnZyAgIGdnZ2cgICBnZ2dnICAgZ2dnZyAgIGdnZ2cgICBnZ2dnCQkgZ2cgICBn
+ZyAgZ2cgICBnZyAgICAgZ2cgICAgIGdnCSAgZ2cgZ2dnZyAgZ2cgIGdnZyAgZ2cJICAgZ2cgIGdn
+CSBnZwkgICAgIGdnCSAgICAgICAgZ2cgICAgIGdnICAgZ2cJZ2cgICBnZwkJICAgZ2cgZ2cgICAg
+IGdnCSAgZ2cKZ2dnCWdnZyAgIGdnZyAgICAgZ2dnICAgZ2dnCSAgICBnZ2cJCSBnZyAgZ2cJICBn
+ZyAgIGdnICAgICBnZyAgICAgZ2cJICBnZyAgZ2dnICBnZwkgZyAgZ2cJICAgZ2cgIGdnCSBnZwkg
+ICAgIGdnCSAgICAgICAgZ2cgICAgIGdnICAgZ2cJZ2cgICBnZwkJICAgZ2cgIGdnICAgIGdnCSAg
+Z2cKIGcJIGcgICAgIGcgICAgICAgZyAgICAgZwkgICAgIGcJIGdnCSBnZ2dnZwkgIGdnICAgZ2cg
+ICAgIGdnICAgICBnZwkgIGdnICAgZ2cgICBnZ2dnZyAgIGdnCSAgIGdnICBnZ2dnZ2dnCSBnZ2dn
+Z2dnICAgICBnZwkgICAgICAgIGdnICAgICAgZ2dnZ2cgCSBnZ2dnZwkgIGdnCSAgIGdnCWdnICAg
+IGdnZ2dnCjwvcHJlPgpOb3IgZGltIHdpdGggdGVhcnMgdGhpcyBsaW1waWQgQ2FzdGFseSEKPC9z
+cGFuPgo8L2I+CjwvYm9keT4KPC9odG1sPgo=
 
-
-> -----Original Message-----
-> From: Moore, Robert
-> Sent: Wednesday, January 11, 2012 12:55 PM
-> To: 'Liang Qi'; devel(a)acpica.org
-> Subject: RE: [Devel] one question about the release package and source
-> repo
-> =
-
-> You can just download the source package from acpica.org.
-> =
-
-> However, the actual scripts are in generate/release.
-> =
-
-> Bob
-> =
-
-> =
-
-> > -----Original Message-----
-> > From: devel-bounces(a)acpica.org [mailto:devel-bounces(a)acpica.org] On
-> > Behalf Of Liang Qi
-> > Sent: Wednesday, January 11, 2012 12:49 PM
-> > To: devel(a)acpica.org
-> > Subject: [Devel] one question about the release package and source
-> repo
-> >
-> > Hi,
-> >
-> > I have a clone of acpica git repo, and downloaded the latest 20120111
-> > package, find out they are very different. Could you let me know
-> where
-> > I could find the release scripts which could generate the release
-> > package from source repo? Thanks.
-> >
-> > Regards,
-> > Liang
-> >
-> > --
-> > http://www.qiliang.net
-> > _______________________________________________
-> > Devel mailing list
-> > Devel(a)acpica.org
-> > http://lists.acpica.org/listinfo/devel
-
---===============4499307938294724804==--
+--===============4520520315523282102==--
 
