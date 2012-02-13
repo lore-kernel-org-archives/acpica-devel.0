@@ -1,33 +1,27 @@
-Content-Type: multipart/mixed; boundary="===============8478344764817989849=="
+Content-Type: multipart/mixed; boundary="===============8617526004054609610=="
 MIME-Version: 1.0
-From: mojisolaosier <support at mamboo.com>
-Subject: [Devel] Your stranger
-Date: Sat, 11 Feb 2012 07:37:34 +0400
-Message-ID: <20120211100969.97938728CDC@mailserv.support-love.com>
+From: jamesa <newsalert at ndtv.com>
+Subject: [Devel] Night meeting
+Date: Mon, 13 Feb 2012 15:43:58 +0000
+Message-ID: <6.7.5.708.C0IL94K4KUDWRJM1.9@mail2.mcsignup.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8478344764817989849==
+--===============8617526004054609610==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hello.
+Hi! =
 
-I'm beautiful stranger.
+My name is Zhanna Baranova
+Please Free-registration and Come to me in a livechat =
 
-I'm tired of loneliness and looking for love. I have a dream to meet a good=
- man and get married.
-I am a lady-smile who always tries to have a positive look at life and ever=
-ything that happens with us. =
-
-
-My heart is open for the man with kind and loving heart, who is ready to st=
-art serious relationship with me.
-If you want to make me happy, go to my page: http://rbgadoraq.webs.com/?U7=
-=3D98
-Best regards.
+http://all4webs.com/c/s/lolbwerneraq/home.htm?64004=3D52384 !!
+---
+With many thanks =
 
 
---===============8478344764817989849==--
+
+--===============8617526004054609610==--
 
