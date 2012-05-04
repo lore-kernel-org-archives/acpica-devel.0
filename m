@@ -1,27 +1,32 @@
-Content-Type: multipart/mixed; boundary="===============5422597821373182299=="
+Content-Type: multipart/mixed; boundary="===============7121059404847226936=="
 MIME-Version: 1.0
-From: kins <customerservice at shop.com>
-Subject: [Devel] I have already left
-Date: Sun, 22 Apr 2012 14:01:10 -0100
-Message-ID: <1565332.6354973886051.JavaMail.SYSTEM@exergmqgj304>
+From: cmcguine <alert at amor.com>
+Subject: [Devel] Greetings from your friends
+Date: Fri, 04 May 2012 20:30:38 +0200
+Message-ID: <5018825175.1795156506482852974.JavaMail.root@destiny8.flex-networks.net>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5422597821373182299==
+--===============7121059404847226936==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi! I am a beautiful and romantic person. My name is Dinara to me 25 year. =
-When people meet me for the first time they always say from where I took su=
-ch shining eyes. I am happy and positive and this makes my eyes to shine. =
+Hi! =
 
-The man of my dream is social but at the same time he has strong - minded c=
-haracter. My application form http://azaqawek-ijyv.digitalzones.com/ongshir=
-qey.html So I am pleased to meet you.
+Thank you so very much for your letter. I'm sorry for a rather long delay w=
+ith reply. I'll try to tell about myself more... =
+
+I am a very serious and family oriented woman. My name is Alesya - 22 years=
+ with a nice figure. I can not live without a good company, without good fr=
+iends=C2=85 Also from my childhood I am fond of music. I can not live witho=
+ut it. Music is my soul. =
+
+I want to share with men everything in my life. He should have a good sense=
+ of humor to manage all his problems without hard energies. My questionnair=
+e: http://ymuquvyz111.envy.nu/pilileg.html So I am glad to meet you. I'd li=
+ke to get your pictures. Could you send it? Please.
 
 
-
-
---===============5422597821373182299==--
+--===============7121059404847226936==--
 
