@@ -1,202 +1,32 @@
-Content-Type: multipart/mixed; boundary="===============6865114189815421341=="
+Content-Type: multipart/mixed; boundary="===============8416756626384762570=="
 MIME-Version: 1.0
-From: AP <mail at webglobalnet.info>
-Subject: [Devel] Community & educational development
-Date: Mon, 30 Jul 2012 07:52:25 -0700
-Message-ID: <134364545655cb39399946c551967dd4d4fe8bde7d_@webglobalnet.info>
+From: solovayeva at anacorteshousing.com
+Subject: [Devel] There are women - a glossy magazine)))
+Date: Mon, 06 Aug 2012 03:56:25 +0600
+Message-ID: <10d60d977e3a0602046@anacorteshousing.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6865114189815421341==
+--===============8416756626384762570==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-PRESS RELEASE
+Hey, [string]|
+[/stringI am a magnificent and faithful, tender and open for love. =
 
-The American Grants and Loans Catalog is now available. Our new and revised
-2012 edition contains more than 2800 financial programs, subsidies, scholar=
-ships,
-grants and loans offered by the US federal government.
+Those are probably the word I could describe myself with. I am open to all =
+the best and I wish to have a new relationship which will be the last http:=
+//mpqprak.tk and never ending one. =
 
-In addition you will also have access to over 2400 programs funded by priva=
-te
-corporations and foundations. That is over 5200 programs available through
-various sources of financial providing organizations.
+A understanding man is all I am missing at this period of my life. =
 
-NEW: You will also have access to our live Database that is updated on a da=
-ily
-basis. This product also provides daily email alerts as programs are announ=
-ced.
+I am looking for you, my perfect man. You should be tactful for strong and =
+healthy relationships. =
 
-The Database is also available with IP recognition. This allows you to login
-without a username or password (Great for libraries or educational institut=
-ions
-who want their users to access the database).
-
-Businesses, students, researchers, scientists, teachers, doctors, private i=
-ndividuals,
-municipalities, government departments, educational institutions, law enfor=
-cement
-agencies, nonprofits, foundations and associations will find a wealth of in=
-formation
-that will help them with their new ventures or existing projects.
-
-The document is a fully searchable PDF file for easy access to your particu=
-lar
-needs and interests. Simply enter your keywords to search through the publi=
-cation.
-
-It is the perfect tool for libraries and educational institutions to use as=
- a
-reference guide for students who require funds to pursue their education.
+I know that there are no the perfect people but everybody can become the pe=
+rfect person for somebody.
 
 
-Contents of the Directory:
-
--Web link to program announcement page
--Web link to Federal agency or foundation administering the program
--Authorization upon which a program is based
--Objectives and goals of the program
--Types of financial assistance offered under a program
--Uses and restrictions placed upon a program
--Eligibility requirements
--Application and award process
--Regulations, guidelines and literature relevant to a program
--Information contacts at the headquarters, regional, and local offices
--Programs that are related based upon program objectives and uses
-
-
-Programs in the Catalog provide a wide range of benefits and services
-for categories such as:
-
-Agriculture
-Business and Commerce
-Community Development
-Consumer Protection
-Cultural Affairs
-Disaster Prevention and Relief
-Education
-Employment, Labor and Training
-Energy
-Environmental Quality
-Food and Nutrition
-Health
-Housing
-Income Security and Social Services
-Information and Statistics
-Law, Justice, and Legal Services
-Natural Resources
-Regional Development
-Science and Technology
-Transportation
-
-
-CD version: $69.95
-Printed version: $149.95
-
-To order please call: 1 (888) 341-8645
-
-
-Please do not reply to the sender's email address as this address is only f=
-or outgoing mail.
-
-If you do not wish to receive information from us in the future please repl=
-y here:
-rem217(a)mail.com
-
-This is a CANSPAM ACT compliant advertising broadcast sent by:
-American Publishing Inc. , 7025 County Rd. 46A, Suite 1071, Lake Mary, FL, =
-32746-4753
-
---===============6865114189815421341==
-Content-Type: text/html
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="attachment.html"
-
-PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMDEgVHJhbnNpdGlvbmFs
-Ly9FTiIgImh0dHA6Ly93d3cudzMub3JnL1RSL2h0bWw0L2xvb3NlLmR0ZCI+CjxIVE1MPjxIRUFE
-Pgo8TUVUQSBodHRwLWVxdWl2PSJDb250ZW50LVR5cGUiIGNvbnRlbnQ9InRleHQvaHRtbDsgY2hh
-cnNldD1pc28tODg1OS0xIj4KPFNUWUxFPgpib2R5LHAsZGl2LHRkIHsgZm9udC1mYW1pbHk6IEFy
-aWFsOyB9CjwvU1RZTEU+CjwvSEVBRD4KPEJPRFkgYmdDb2xvcj0jZmZmZmZmPgo8RElWIGFsaWdu
-PWNlbnRlcj48Rk9OVCBzaXplPTI+UFJFU1MgUkVMRUFTRTwvRk9OVD48L0RJVj4KPERJViBhbGln
-bj1jZW50ZXI+Jm5ic3A7PC9ESVY+CjxESVYgYWxpZ249Y2VudGVyPjxGT05UIHNpemU9Mj5UaGUg
-QW1lcmljYW4gR3JhbnRzIGFuZCBMb2FucyBDYXRhbG9nIGlzIG5vdwphdmFpbGFibGUuIE91ciBu
-ZXcgYW5kIHJldmlzZWQ8QlI+MjAxMiBlZGl0aW9uIGNvbnRhaW5zIG1vcmUgdGhhbiAyODAwIGZp
-bmFuY2lhbApwcm9ncmFtcywgc3Vic2lkaWVzLCBzY2hvbGFyc2hpcHMsPEJSPmdyYW50cyBhbmQg
-bG9hbnMgb2ZmZXJlZCBieSB0aGUgVVMgZmVkZXJhbApnb3Zlcm5tZW50LjwvRk9OVD48L0RJVj4K
-PERJViBhbGlnbj1jZW50ZXI+Jm5ic3A7PC9ESVY+CjxESVYgYWxpZ249Y2VudGVyPjxGT05UIHNp
-emU9Mj5JbiBhZGRpdGlvbiB5b3Ugd2lsbCBhbHNvIGhhdmUgYWNjZXNzIHRvIG92ZXIKMjQwMCBw
-cm9ncmFtcyBmdW5kZWQgYnkgcHJpdmF0ZTxCUj5jb3Jwb3JhdGlvbnMgYW5kIGZvdW5kYXRpb25z
-LiBUaGF0IGlzIG92ZXIKNTIwMCBwcm9ncmFtcyBhdmFpbGFibGUgdGhyb3VnaDxCUj52YXJpb3Vz
-IHNvdXJjZXMgb2YgZmluYW5jaWFsIHByb3ZpZGluZwpvcmdhbml6YXRpb25zLjwvRk9OVD48L0RJ
-Vj4KPERJViBhbGlnbj1jZW50ZXI+Jm5ic3A7PC9ESVY+CjxESVYgYWxpZ249Y2VudGVyPjxGT05U
-IHNpemU9Mj5ORVc6IFlvdSB3aWxsIGFsc28gaGF2ZSBhY2Nlc3MgdG8gb3VyIGxpdmUKRGF0YWJh
-c2UgdGhhdCBpcyB1cGRhdGVkIG9uIGEgZGFpbHk8QlI+YmFzaXMuIFRoaXMgcHJvZHVjdCBhbHNv
-IHByb3ZpZGVzIGRhaWx5CmVtYWlsIGFsZXJ0cyBhcyBwcm9ncmFtcyBhcmUgYW5ub3VuY2VkLjwv
-Rk9OVD48L0RJVj4KPERJViBhbGlnbj1jZW50ZXI+Jm5ic3A7PC9ESVY+CjxESVYgYWxpZ249Y2Vu
-dGVyPjxGT05UIHNpemU9Mj5UaGUgRGF0YWJhc2UgaXMgYWxzbyBhdmFpbGFibGUgd2l0aCBJUApy
-ZWNvZ25pdGlvbi4gVGhpcyBhbGxvd3MgeW91IHRvIGxvZ2luPEJSPndpdGhvdXQgYSB1c2VybmFt
-ZSBvciBwYXNzd29yZCAoR3JlYXQKZm9yIGxpYnJhcmllcyBvciBlZHVjYXRpb25hbCBpbnN0aXR1
-dGlvbnM8QlI+d2hvIHdhbnQgdGhlaXIgdXNlcnMgdG8gYWNjZXNzIHRoZQpkYXRhYmFzZSkuPC9G
-T05UPjwvRElWPgo8RElWIGFsaWduPWNlbnRlcj4mbmJzcDs8L0RJVj4KPERJViBhbGlnbj1jZW50
-ZXI+PEZPTlQgc2l6ZT0yPkJ1c2luZXNzZXMsIHN0dWRlbnRzLCByZXNlYXJjaGVycywgc2NpZW50
-aXN0cywKdGVhY2hlcnMsIGRvY3RvcnMsIHByaXZhdGUgaW5kaXZpZHVhbHMsPEJSPm11bmljaXBh
-bGl0aWVzLCBnb3Zlcm5tZW50CmRlcGFydG1lbnRzLCBlZHVjYXRpb25hbCBpbnN0aXR1dGlvbnMs
-IGxhdyBlbmZvcmNlbWVudDxCUj5hZ2VuY2llcywgbm9ucHJvZml0cywKZm91bmRhdGlvbnMgYW5k
-IGFzc29jaWF0aW9ucyB3aWxsIGZpbmQgYSB3ZWFsdGggb2YgaW5mb3JtYXRpb248QlI+dGhhdCB3
-aWxsIGhlbHAKdGhlbSB3aXRoIHRoZWlyIG5ldyB2ZW50dXJlcyBvciBleGlzdGluZyBwcm9qZWN0
-cy48L0ZPTlQ+PC9ESVY+CjxESVYgYWxpZ249Y2VudGVyPiZuYnNwOzwvRElWPgo8RElWIGFsaWdu
-PWNlbnRlcj48Rk9OVCBzaXplPTI+VGhlIGRvY3VtZW50IGlzIGEgZnVsbHkgc2VhcmNoYWJsZSBQ
-REYgZmlsZSBmb3IKZWFzeSBhY2Nlc3MgdG8geW91ciBwYXJ0aWN1bGFyPEJSPm5lZWRzIGFuZCBp
-bnRlcmVzdHMuIFNpbXBseSBlbnRlciB5b3VyCmtleXdvcmRzIHRvIHNlYXJjaCB0aHJvdWdoIHRo
-ZSBwdWJsaWNhdGlvbi48L0ZPTlQ+PC9ESVY+CjxESVYgYWxpZ249Y2VudGVyPiZuYnNwOzwvRElW
-Pgo8RElWIGFsaWduPWNlbnRlcj48Rk9OVCBzaXplPTI+SXQgaXMgdGhlIHBlcmZlY3QgdG9vbCBm
-b3IgbGlicmFyaWVzIGFuZAplZHVjYXRpb25hbCBpbnN0aXR1dGlvbnMgdG8gdXNlIGFzIGE8QlI+
-cmVmZXJlbmNlIGd1aWRlIGZvciBzdHVkZW50cyB3aG8gcmVxdWlyZQpmdW5kcyB0byBwdXJzdWUg
-dGhlaXIgZWR1Y2F0aW9uLjwvRk9OVD48L0RJVj4KPERJViBhbGlnbj1jZW50ZXI+Jm5ic3A7PC9E
-SVY+CjxESVYgYWxpZ249Y2VudGVyPjxCUj48Rk9OVCBzaXplPTI+Q29udGVudHMgb2YgdGhlIERp
-cmVjdG9yeTo8L0ZPTlQ+PC9ESVY+CjxESVYgYWxpZ249Y2VudGVyPiZuYnNwOzwvRElWPgo8RElW
-IGFsaWduPWNlbnRlcj48Rk9OVCBzaXplPTI+LVdlYiBsaW5rIHRvIHByb2dyYW0gYW5ub3VuY2Vt
-ZW50IHBhZ2U8QlI+LVdlYgpsaW5rIHRvIEZlZGVyYWwgYWdlbmN5IG9yIGZvdW5kYXRpb24gYWRt
-aW5pc3RlcmluZyB0aGUgcHJvZ3JhbTxCUj4tQXV0aG9yaXphdGlvbgp1cG9uIHdoaWNoIGEgcHJv
-Z3JhbSBpcyBiYXNlZDxCUj4tT2JqZWN0aXZlcyBhbmQgZ29hbHMgb2YgdGhlIHByb2dyYW08QlI+
-LVR5cGVzCm9mIGZpbmFuY2lhbCBhc3Npc3RhbmNlIG9mZmVyZWQgdW5kZXIgYSBwcm9ncmFtPEJS
-Pi1Vc2VzIGFuZCByZXN0cmljdGlvbnMgcGxhY2VkCnVwb24gYSBwcm9ncmFtPEJSPi1FbGlnaWJp
-bGl0eSByZXF1aXJlbWVudHM8QlI+LUFwcGxpY2F0aW9uIGFuZCBhd2FyZApwcm9jZXNzPEJSPi1S
-ZWd1bGF0aW9ucywgZ3VpZGVsaW5lcyBhbmQgbGl0ZXJhdHVyZSByZWxldmFudCB0byBhCnByb2dy
-YW08QlI+LUluZm9ybWF0aW9uIGNvbnRhY3RzIGF0IHRoZSBoZWFkcXVhcnRlcnMsIHJlZ2lvbmFs
-LCBhbmQgbG9jYWwKb2ZmaWNlczxCUj4tUHJvZ3JhbXMgdGhhdCBhcmUgcmVsYXRlZCBiYXNlZCB1
-cG9uIHByb2dyYW0gb2JqZWN0aXZlcyBhbmQKdXNlczwvRk9OVD48L0RJVj4KPERJViBhbGlnbj1j
-ZW50ZXI+Jm5ic3A7PC9ESVY+CjxESVYgYWxpZ249Y2VudGVyPjxCUj48Rk9OVCBzaXplPTI+UHJv
-Z3JhbXMgaW4gdGhlIENhdGFsb2cgcHJvdmlkZSBhIHdpZGUgcmFuZ2UKb2YgYmVuZWZpdHMgYW5k
-IHNlcnZpY2VzPEJSPmZvciBjYXRlZ29yaWVzIHN1Y2ggYXM6PC9GT05UPjwvRElWPgo8RElWIGFs
-aWduPWNlbnRlcj4mbmJzcDs8L0RJVj4KPERJViBhbGlnbj1jZW50ZXI+PEZPTlQgc2l6ZT0yPkFn
-cmljdWx0dXJlPEJSPkJ1c2luZXNzIGFuZCBDb21tZXJjZTxCUj5Db21tdW5pdHkKRGV2ZWxvcG1l
-bnQ8QlI+Q29uc3VtZXIgUHJvdGVjdGlvbjxCUj5DdWx0dXJhbCBBZmZhaXJzPEJSPkRpc2FzdGVy
-IFByZXZlbnRpb24KYW5kIFJlbGllZjxCUj5FZHVjYXRpb248QlI+RW1wbG95bWVudCwgTGFib3Ig
-YW5kClRyYWluaW5nPEJSPkVuZXJneTxCUj5FbnZpcm9ubWVudGFsIFF1YWxpdHk8QlI+Rm9vZCBh
-bmQKTnV0cml0aW9uPEJSPkhlYWx0aDxCUj5Ib3VzaW5nPEJSPkluY29tZSBTZWN1cml0eSBhbmQg
-U29jaWFsClNlcnZpY2VzPEJSPkluZm9ybWF0aW9uIGFuZCBTdGF0aXN0aWNzPEJSPkxhdywgSnVz
-dGljZSwgYW5kIExlZ2FsClNlcnZpY2VzPEJSPk5hdHVyYWwgUmVzb3VyY2VzPEJSPlJlZ2lvbmFs
-IERldmVsb3BtZW50PEJSPlNjaWVuY2UgYW5kClRlY2hub2xvZ3k8QlI+VHJhbnNwb3J0YXRpb248
-L0ZPTlQ+PC9ESVY+CjxESVYgYWxpZ249Y2VudGVyPiZuYnNwOzwvRElWPgo8RElWIGFsaWduPWNl
-bnRlcj48QlI+PEZPTlQgc2l6ZT0yPkNEIHZlcnNpb246ICQ2OS45NTxCUj5QcmludGVkIHZlcnNp
-b246CiQxNDkuOTU8L0ZPTlQ+PC9ESVY+CjxESVYgYWxpZ249Y2VudGVyPiZuYnNwOzwvRElWPgo8
-RElWIGFsaWduPWNlbnRlcj48Rk9OVCBzaXplPTI+VG8gb3JkZXIgcGxlYXNlIGNhbGw6IDEgKDg4
-OCkKMzQxLTg2NDU8L0ZPTlQ+PC9ESVY+CjxESVYgYWxpZ249Y2VudGVyPiZuYnNwOzwvRElWPgo8
-RElWIGFsaWduPWNlbnRlcj48QlI+PEZPTlQgc2l6ZT0yPlBsZWFzZSBkbyBub3QgcmVwbHkgdG8g
-dGhlIHNlbmRlcidzIGVtYWlsCmFkZHJlc3MgYXMgdGhpcyBhZGRyZXNzIGlzIG9ubHkgZm9yIG91
-dGdvaW5nIG1haWwuPC9GT05UPjwvRElWPgo8RElWIGFsaWduPWNlbnRlcj4mbmJzcDs8L0RJVj4K
-PERJViBhbGlnbj1jZW50ZXI+PEZPTlQgc2l6ZT0xPklmIHlvdSBkbyBub3Qgd2lzaCB0byByZWNl
-aXZlIGluZm9ybWF0aW9uIGZyb20gdXMKaW4gdGhlIGZ1dHVyZSBwbGVhc2UgcmVwbHkgaGVyZTo8
-QlI+PC9GT05UPjxBCmhyZWY9Im1haWx0bzpyZW0yMTdAbWFpbC5jb20iPjxGT05UIHNpemU9MT5y
-ZW0yMTdAbWFpbC5jb208L0ZPTlQ+PC9BPjwvRElWPgo8RElWIGFsaWduPWNlbnRlcj4mbmJzcDs8
-L0RJVj4KPERJViBhbGlnbj1jZW50ZXI+PEZPTlQgc2l6ZT0xPlRoaXMgaXMgYSBDQU5TUEFNIEFD
-VCBjb21wbGlhbnQgYWR2ZXJ0aXNpbmcKYnJvYWRjYXN0IHNlbnQgYnk6PEJSPkFtZXJpY2FuIFB1
-Ymxpc2hpbmcgSW5jLiAsIDcwMjUgQ291bnR5IFJkLiA0NkEsIFN1aXRlCjEwNzEsIExha2UgTWFy
-eSwgRkwsIDMyNzQ2LTQ3NTM8L0ZPTlQ+PC9ESVY+PC9CT0RZPjwvSFRNTD4K
-
---===============6865114189815421341==--
+--===============8416756626384762570==--
 
