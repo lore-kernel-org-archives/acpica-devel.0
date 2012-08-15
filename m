@@ -1,32 +1,73 @@
-Content-Type: multipart/mixed; boundary="===============8416756626384762570=="
+Content-Type: multipart/mixed; boundary="===============5594478152371316778=="
 MIME-Version: 1.0
-From: solovayeva at anacorteshousing.com
-Subject: [Devel] There are women - a glossy magazine)))
-Date: Mon, 06 Aug 2012 03:56:25 +0600
-Message-ID: <10d60d977e3a0602046@anacorteshousing.com>
+From: Hamel, Lee M <lee.m.hamel at intel.com>
+Subject: [Devel] force C macro to output newline
+Date: Wed, 15 Aug 2012 01:14:11 +0000
+Message-ID: <094059313931114D94E4423826B411644907F27F@fmsmsx110.amr.corp.intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8416756626384762570==
+--===============5594478152371316778==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hey, [string]|
-[/stringI am a magnificent and faithful, tender and open for love. =
-
-Those are probably the word I could describe myself with. I am open to all =
-the best and I wish to have a new relationship which will be the last http:=
-//mpqprak.tk and never ending one. =
-
-A understanding man is all I am missing at this period of my life. =
-
-I am looking for you, my perfect man. You should be tactful for strong and =
-healthy relationships. =
-
-I know that there are no the perfect people but everybody can become the pe=
-rfect person for somebody.
+I'm running up against an ASL 20120711-32 compiler issue that could be easi=
+ly solved if I could figure out how to emit a newline in a C macro.  There =
+are some ACPI macros that, upon having a certain processor core count, blow=
+ up the ASL compiler because there are over 16384 (16-bit value) characters=
+ on a single line.  The processor definition macro is a series of ASL comma=
+nds, but macro continuation with \ doesn't preserve the newline in the macr=
+o, thus creating a single line of multiple processor definitions.  Google i=
+sn't helping me find a solution.  Do you know how to make a C macro emit a =
+newline?
 
 
---===============8416756626384762570==--
+--===============5594478152371316778==
+Content-Type: text/html
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="attachment.html"
+
+PGh0bWwgeG1sbnM6dj0idXJuOnNjaGVtYXMtbWljcm9zb2Z0LWNvbTp2bWwiIHhtbG5zOm89InVy
+bjpzY2hlbWFzLW1pY3Jvc29mdC1jb206b2ZmaWNlOm9mZmljZSIgeG1sbnM6dz0idXJuOnNjaGVt
+YXMtbWljcm9zb2Z0LWNvbTpvZmZpY2U6d29yZCIgeG1sbnM6bT0iaHR0cDovL3NjaGVtYXMubWlj
+cm9zb2Z0LmNvbS9vZmZpY2UvMjAwNC8xMi9vbW1sIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcv
+VFIvUkVDLWh0bWw0MCI+CjxoZWFkPgo8bWV0YSBodHRwLWVxdWl2PSJDb250ZW50LVR5cGUiIGNv
+bnRlbnQ9InRleHQvaHRtbDsgY2hhcnNldD11cy1hc2NpaSI+CjxtZXRhIG5hbWU9IkdlbmVyYXRv
+ciIgY29udGVudD0iTWljcm9zb2Z0IFdvcmQgMTQgKGZpbHRlcmVkIG1lZGl1bSkiPgo8c3R5bGU+
+PCEtLQovKiBGb250IERlZmluaXRpb25zICovCkBmb250LWZhY2UKCXtmb250LWZhbWlseTpDYWxp
+YnJpOwoJcGFub3NlLTE6MiAxNSA1IDIgMiAyIDQgMyAyIDQ7fQovKiBTdHlsZSBEZWZpbml0aW9u
+cyAqLwpwLk1zb05vcm1hbCwgbGkuTXNvTm9ybWFsLCBkaXYuTXNvTm9ybWFsCgl7bWFyZ2luOjBp
+bjsKCW1hcmdpbi1ib3R0b206LjAwMDFwdDsKCWZvbnQtc2l6ZToxMS4wcHQ7Cglmb250LWZhbWls
+eToiQ2FsaWJyaSIsInNhbnMtc2VyaWYiO30KYTpsaW5rLCBzcGFuLk1zb0h5cGVybGluawoJe21z
+by1zdHlsZS1wcmlvcml0eTo5OTsKCWNvbG9yOmJsdWU7Cgl0ZXh0LWRlY29yYXRpb246dW5kZXJs
+aW5lO30KYTp2aXNpdGVkLCBzcGFuLk1zb0h5cGVybGlua0ZvbGxvd2VkCgl7bXNvLXN0eWxlLXBy
+aW9yaXR5Ojk5OwoJY29sb3I6cHVycGxlOwoJdGV4dC1kZWNvcmF0aW9uOnVuZGVybGluZTt9CnNw
+YW4uRW1haWxTdHlsZTE3Cgl7bXNvLXN0eWxlLXR5cGU6cGVyc29uYWwtY29tcG9zZTsKCWZvbnQt
+ZmFtaWx5OiJDYWxpYnJpIiwic2Fucy1zZXJpZiI7Cgljb2xvcjp3aW5kb3d0ZXh0O30KLk1zb0No
+cERlZmF1bHQKCXttc28tc3R5bGUtdHlwZTpleHBvcnQtb25seTsKCWZvbnQtZmFtaWx5OiJDYWxp
+YnJpIiwic2Fucy1zZXJpZiI7fQpAcGFnZSBXb3JkU2VjdGlvbjEKCXtzaXplOjguNWluIDExLjBp
+bjsKCW1hcmdpbjoxLjBpbiAxLjBpbiAxLjBpbiAxLjBpbjt9CmRpdi5Xb3JkU2VjdGlvbjEKCXtw
+YWdlOldvcmRTZWN0aW9uMTt9Ci0tPjwvc3R5bGU+PCEtLVtpZiBndGUgbXNvIDldPjx4bWw+Cjxv
+OnNoYXBlZGVmYXVsdHMgdjpleHQ9ImVkaXQiIHNwaWRtYXg9IjEwMjYiIC8+CjwveG1sPjwhW2Vu
+ZGlmXS0tPjwhLS1baWYgZ3RlIG1zbyA5XT48eG1sPgo8bzpzaGFwZWxheW91dCB2OmV4dD0iZWRp
+dCI+CjxvOmlkbWFwIHY6ZXh0PSJlZGl0IiBkYXRhPSIxIiAvPgo8L286c2hhcGVsYXlvdXQ+PC94
+bWw+PCFbZW5kaWZdLS0+CjwvaGVhZD4KPGJvZHkgbGFuZz0iRU4tVVMiIGxpbms9ImJsdWUiIHZs
+aW5rPSJwdXJwbGUiPgo8ZGl2IGNsYXNzPSJXb3JkU2VjdGlvbjEiPgo8cCBjbGFzcz0iTXNvTm9y
+bWFsIj5JJiM4MjE3O20gcnVubmluZyB1cCBhZ2FpbnN0IGFuIEFTTCAyMDEyMDcxMS0zMiBjb21w
+aWxlciBpc3N1ZSB0aGF0IGNvdWxkIGJlIGVhc2lseSBzb2x2ZWQgaWYgSSBjb3VsZCBmaWd1cmUg
+b3V0IGhvdyB0byBlbWl0IGEgbmV3bGluZSBpbiBhIEMgbWFjcm8uJm5ic3A7IFRoZXJlIGFyZSBz
+b21lIEFDUEkgbWFjcm9zIHRoYXQsIHVwb24gaGF2aW5nIGEgY2VydGFpbiBwcm9jZXNzb3IgY29y
+ZSBjb3VudCwgYmxvdyB1cCB0aGUgQVNMCiBjb21waWxlciBiZWNhdXNlIHRoZXJlIGFyZSBvdmVy
+IDE2Mzg0ICgxNi1iaXQgdmFsdWUpIGNoYXJhY3RlcnMgb24gYSBzaW5nbGUgbGluZS4mbmJzcDsg
+VGhlIHByb2Nlc3NvciBkZWZpbml0aW9uIG1hY3JvIGlzIGEgc2VyaWVzIG9mIEFTTCBjb21tYW5k
+cywgYnV0IG1hY3JvIGNvbnRpbnVhdGlvbiB3aXRoIFwgZG9lc24mIzgyMTc7dCBwcmVzZXJ2ZSB0
+aGUgbmV3bGluZSBpbiB0aGUgbWFjcm8sIHRodXMgY3JlYXRpbmcgYSBzaW5nbGUgbGluZSBvZiBt
+dWx0aXBsZQogcHJvY2Vzc29yIGRlZmluaXRpb25zLiZuYnNwOyBHb29nbGUgaXNuJiM4MjE3O3Qg
+aGVscGluZyBtZSBmaW5kIGEgc29sdXRpb24uJm5ic3A7IERvIHlvdSBrbm93IGhvdyB0byBtYWtl
+IGEgQyBtYWNybyBlbWl0IGEgbmV3bGluZT88bzpwPjwvbzpwPjwvcD4KPHAgY2xhc3M9Ik1zb05v
+cm1hbCI+PG86cD4mbmJzcDs8L286cD48L3A+CjwvZGl2Pgo8L2JvZHk+CjwvaHRtbD4K
+
+--===============5594478152371316778==--
 
