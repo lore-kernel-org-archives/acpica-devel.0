@@ -1,205 +1,88 @@
-Content-Type: multipart/mixed; boundary="===============4457929406058673454=="
+Content-Type: multipart/mixed; boundary="===============5905901712882099667=="
 MIME-Version: 1.0
 From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] acd disassemble command
-Date: Thu, 13 Sep 2012 13:10:23 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E346B607E1@ORSMSX101.amr.corp.intel.com>
-In-Reply-To: BAY153-W18503F08AA3DC5C03621F3D6910@phx.gbl
+Subject: [Devel] ACPICA version 20120913 released
+Date: Thu, 13 Sep 2012 20:14:56 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E346B60A57@ORSMSX101.amr.corp.intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4457929406058673454==
+--===============5905901712882099667==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Please post or send me the binary table that is causing the problem.
-Thanks,
-Bob
+13 September 2012. Summary of changes for version 20120913:
+
+This release is available at https://www.acpica.org/downloads
+The ACPI 5.0 specification is available at www.acpi.info
+
+1) ACPICA Kernel-resident Subsystem:
+
+ACPI 5.0: Added two new notify types for the Hardware Error Notification St=
+ructure within the Hardware Error Source Table (HEST) table -- CMCI(5) and =
+MCE(6).
+
+Table Manager: Merged/removed duplicate code in the root table resize funct=
+ions. One function is external, the other is internal. Lv Zheng, ACPICA BZ =
+846.
+
+Makefiles: Completely removed the obsolete "Linux" makefiles under acpica/g=
+enerate/linux. These makefiles are obsolete and have been replaced by the g=
+eneric unix makefiles under acpica/generate/unix.
+
+Makefiles: Ensure that binary files always copied properly. Minor rule chan=
+ge to ensure that the final binary output files are always copied up to the=
+ appropriate binary directory (bin32 or bin64.)
+
+Example Code and Data Size: These are the sizes for the OS-independent acpi=
+ca.lib produced by the Microsoft Visual C++ 9.0 32-bit compiler. The debug =
+version of the code includes the debug output trace mechanism and has a muc=
+h larger code and data size.
+
+  Previous Release:
+    Non-Debug Version:  93.8K Code, 25.3K Data, 119.1K Total
+    Debug Version:     175.7K Code, 74.8K Data, 250.5K Total
+  Current Release:
+    Non-Debug Version:  93.7K Code, 25.3K Data, 119.0K Total
+    Debug Version:     175.0K Code, 74.4K Data, 249.4K Total
 
 
-________________________________
-From: devel-bounces(a)acpica.org [mailto:devel-bounces(a)acpica.org] On Beh=
-alf Of shuang-shuan guo
-Sent: Thursday, September 13, 2012 12:02 AM
-To: devel(a)acpica.org
-Subject: [Devel] acd disassemble command
+2) iASL Compiler/Disassembler and Tools:
 
-hi,
-    I am a user of ACPI-CA, I have integrated the acpi-ca code into my appl=
-ication. And, I can use the acpi-ca debugger to do some testing. Recently, =
-I came across one issue.
-    When I was using the 'acd disassemble' to disassemble these type method=
-s(highlighted with yellow as below), then the system will crash, it seems i=
-t was accessing some invalid address.
-The _CRS is under '\_SB_.LNKA'
-                    Method (_CRS, 0, NotSerialized)
-                    {
-                        Name (BUF0, ResourceTemplate()
-                        {
-                            IRQ (Level, Activ eLow, Shared) {0}
+Disassembler: Fixed a possible fault during the disassembly of resource des=
+criptors when a second parse is required because of the invocation of exter=
+nal control methods within the table. With assistance from adq(a)lidskialf.=
+net. ACPICA BZ 976.
 
-                        })
-                        CreateWordField (BUF0, One, IRQW)
-                        If (And (PIRB, 0x80))
-                        {
-                            Store (Zero, Local0)
-                        }< BR>                       Else
-                        {
-                            Store (One, Local0)
-                        }
-however, using the 'acd resources \_SB_.LNKA' can parse out the IRQ resourc=
-e without any errors. I guess probably there is one issue in acpi-ca disass=
-embler.
-Is there any one can help me to address?
+iASL: Fixed a namepath optimization problem. An error can occur if the pars=
+e node that contains the namepath to be optimized does not have a parent no=
+de that is a named object. This change fixes the problem.
 
---===============4457929406058673454==
-Content-Type: text/html
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="attachment.html"
+iASL: Fixed a regression where the AML file is not deleted on errors. The A=
+ML output file should be deleted if there are any errors during the compile=
+r. The only exception is if the -f (force output) option is used. ACPICA BZ=
+ 974.
 
-PGh0bWwgeG1sbnM6dj0idXJuOnNjaGVtYXMtbWljcm9zb2Z0LWNvbTp2bWwiIHhtbG5zOm89InVy
-bjpzY2hlbWFzLW1pY3Jvc29mdC1jb206b2ZmaWNlOm9mZmljZSIgeG1sbnM6dz0idXJuOnNjaGVt
-YXMtbWljcm9zb2Z0LWNvbTpvZmZpY2U6d29yZCIgeG1sbnM6c3QxPSJ1cm46c2NoZW1hcy1taWNy
-b3NvZnQtY29tOm9mZmljZTpzbWFydHRhZ3MiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy9UUi9S
-RUMtaHRtbDQwIj4KPGhlYWQ+CjxtZXRhIGh0dHAtZXF1aXY9IkNvbnRlbnQtVHlwZSIgY29udGVu
-dD0idGV4dC9odG1sOyBjaGFyc2V0PXVzLWFzY2lpIj4KPG1ldGEgbmFtZT0iR2VuZXJhdG9yIiBj
-b250ZW50PSJNaWNyb3NvZnQgV29yZCAxMSAoZmlsdGVyZWQgbWVkaXVtKSI+CjwhLS1baWYgIW1z
-b10+CjxzdHlsZT4Kdlw6KiB7YmVoYXZpb3I6dXJsKCNkZWZhdWx0I1ZNTCk7fQpvXDoqIHtiZWhh
-dmlvcjp1cmwoI2RlZmF1bHQjVk1MKTt9CndcOioge2JlaGF2aW9yOnVybCgjZGVmYXVsdCNWTUwp
-O30KLnNoYXBlIHtiZWhhdmlvcjp1cmwoI2RlZmF1bHQjVk1MKTt9Cjwvc3R5bGU+CjwhW2VuZGlm
-XS0tPjxvOlNtYXJ0VGFnVHlwZSBuYW1lc3BhY2V1cmk9InVybjpzY2hlbWFzLW1pY3Jvc29mdC1j
-b206b2ZmaWNlOnNtYXJ0dGFncyIgbmFtZT0iUGVyc29uTmFtZSIgLz48IS0tW2lmICFtc29dPgo8
-c3R5bGU+CnN0MVw6KntiZWhhdmlvcjp1cmwoI2RlZmF1bHQjaWVvb3VpKSB9Cjwvc3R5bGU+Cjwh
-W2VuZGlmXS0tPjxzdHlsZT4KPCEtLQogLyogRm9udCBEZWZpbml0aW9ucyAqLwogQGZvbnQtZmFj
-ZQoJe2ZvbnQtZmFtaWx5OlNpbVN1bjsKCXBhbm9zZS0xOjIgMSA2IDAgMyAxIDEgMSAxIDE7fQpA
-Zm9udC1mYWNlCgl7Zm9udC1mYW1pbHk6VGFob21hOwoJcGFub3NlLTE6MiAxMSA2IDQgMyA1IDQg
-NCAyIDQ7fQpAZm9udC1mYWNlCgl7Zm9udC1mYW1pbHk6IlxAU2ltU3VuIjsKCXBhbm9zZS0xOjIg
-MSA2IDAgMyAxIDEgMSAxIDE7fQogLyogU3R5bGUgRGVmaW5pdGlvbnMgKi8KIHAuTXNvTm9ybWFs
-LCBsaS5Nc29Ob3JtYWwsIGRpdi5Nc29Ob3JtYWwKCXttYXJnaW46MGluOwoJbWFyZ2luLWJvdHRv
-bTouMDAwMXB0OwoJZm9udC1zaXplOjEyLjBwdDsKCWZvbnQtZmFtaWx5OlNpbVN1bjt9CmE6bGlu
-aywgc3Bhbi5Nc29IeXBlcmxpbmsKCXtjb2xvcjpibHVlOwoJdGV4dC1kZWNvcmF0aW9uOnVuZGVy
-bGluZTt9CmE6dmlzaXRlZCwgc3Bhbi5Nc29IeXBlcmxpbmtGb2xsb3dlZAoJe2NvbG9yOnB1cnBs
-ZTsKCXRleHQtZGVjb3JhdGlvbjp1bmRlcmxpbmU7fQpwCgl7bXNvLW1hcmdpbi10b3AtYWx0OmF1
-dG87CgltYXJnaW4tcmlnaHQ6MGluOwoJbXNvLW1hcmdpbi1ib3R0b20tYWx0OmF1dG87CgltYXJn
-aW4tbGVmdDowaW47Cglmb250LXNpemU6MTIuMHB0OwoJZm9udC1mYW1pbHk6U2ltU3VuO30Kc3Bh
-bi5FbWFpbFN0eWxlMTgKCXttc28tc3R5bGUtdHlwZTpwZXJzb25hbC1yZXBseTsKCWZvbnQtZmFt
-aWx5OkFyaWFsOwoJY29sb3I6bmF2eTt9CkBwYWdlIFNlY3Rpb24xCgl7c2l6ZTo4LjVpbiAxMS4w
-aW47CgltYXJnaW46MS4waW4gMS4yNWluIDEuMGluIDEuMjVpbjt9CmRpdi5TZWN0aW9uMQoJe3Bh
-Z2U6U2VjdGlvbjE7fQotLT4KPC9zdHlsZT4KPC9oZWFkPgo8Ym9keSBsYW5nPSJFTi1VUyIgbGlu
-az0iYmx1ZSIgdmxpbms9InB1cnBsZSI+CjxkaXYgY2xhc3M9IlNlY3Rpb24xIj4KPHAgY2xhc3M9
-Ik1zb05vcm1hbCI+PGZvbnQgc2l6ZT0iMiIgY29sb3I9Im5hdnkiIGZhY2U9IkFyaWFsIj48c3Bh
-biBzdHlsZT0iZm9udC1zaXplOgoxMC4wcHQ7Zm9udC1mYW1pbHk6QXJpYWw7Y29sb3I6bmF2eSI+
-UGxlYXNlIHBvc3Qgb3Igc2VuZCBtZSB0aGUgYmluYXJ5IHRhYmxlIHRoYXQgaXMgY2F1c2luZyB0
-aGUgcHJvYmxlbS48bzpwPjwvbzpwPjwvc3Bhbj48L2ZvbnQ+PC9wPgo8cCBjbGFzcz0iTXNvTm9y
-bWFsIj48Zm9udCBzaXplPSIyIiBjb2xvcj0ibmF2eSIgZmFjZT0iQXJpYWwiPjxzcGFuIHN0eWxl
-PSJmb250LXNpemU6CjEwLjBwdDtmb250LWZhbWlseTpBcmlhbDtjb2xvcjpuYXZ5Ij5UaGFua3Ms
-PG86cD48L286cD48L3NwYW4+PC9mb250PjwvcD4KPHAgY2xhc3M9Ik1zb05vcm1hbCI+PGZvbnQg
-c2l6ZT0iMiIgY29sb3I9Im5hdnkiIGZhY2U9IkFyaWFsIj48c3BhbiBzdHlsZT0iZm9udC1zaXpl
-OgoxMC4wcHQ7Zm9udC1mYW1pbHk6QXJpYWw7Y29sb3I6bmF2eSI+Qm9iPG86cD48L286cD48L3Nw
-YW4+PC9mb250PjwvcD4KPHAgY2xhc3M9Ik1zb05vcm1hbCI+PGZvbnQgc2l6ZT0iMiIgY29sb3I9
-Im5hdnkiIGZhY2U9IkFyaWFsIj48c3BhbiBzdHlsZT0iZm9udC1zaXplOgoxMC4wcHQ7Zm9udC1m
-YW1pbHk6QXJpYWw7Y29sb3I6bmF2eSI+PG86cD4mbmJzcDs8L286cD48L3NwYW4+PC9mb250Pjwv
-cD4KPHAgY2xhc3M9Ik1zb05vcm1hbCI+PGZvbnQgc2l6ZT0iMiIgY29sb3I9Im5hdnkiIGZhY2U9
-IkFyaWFsIj48c3BhbiBzdHlsZT0iZm9udC1zaXplOgoxMC4wcHQ7Zm9udC1mYW1pbHk6QXJpYWw7
-Y29sb3I6bmF2eSI+PG86cD4mbmJzcDs8L286cD48L3NwYW4+PC9mb250PjwvcD4KPGRpdiBzdHls
-ZT0iYm9yZGVyOm5vbmU7Ym9yZGVyLWxlZnQ6c29saWQgYmx1ZSAxLjVwdDtwYWRkaW5nOjBpbiAw
-aW4gMGluIDQuMHB0Ij4KPGRpdj4KPGRpdiBjbGFzcz0iTXNvTm9ybWFsIiBhbGlnbj0iY2VudGVy
-IiBzdHlsZT0idGV4dC1hbGlnbjpjZW50ZXIiPjxmb250IHNpemU9IjMiIGZhY2U9IlNpbVN1biI+
-PHNwYW4gc3R5bGU9ImZvbnQtc2l6ZToxMi4wcHQiPgo8aHIgc2l6ZT0iMiIgd2lkdGg9IjEwMCUi
-IGFsaWduPSJjZW50ZXIiIHRhYmluZGV4PSItMSI+Cjwvc3Bhbj48L2ZvbnQ+PC9kaXY+CjxwIGNs
-YXNzPSJNc29Ob3JtYWwiPjxiPjxmb250IHNpemU9IjIiIGZhY2U9IlRhaG9tYSI+PHNwYW4gc3R5
-bGU9ImZvbnQtc2l6ZToxMC4wcHQ7CmZvbnQtZmFtaWx5OlRhaG9tYTtmb250LXdlaWdodDpib2xk
-Ij5Gcm9tOjwvc3Bhbj48L2ZvbnQ+PC9iPjxmb250IHNpemU9IjIiIGZhY2U9IlRhaG9tYSI+PHNw
-YW4gc3R5bGU9ImZvbnQtc2l6ZToxMC4wcHQ7Zm9udC1mYW1pbHk6VGFob21hIj4gZGV2ZWwtYm91
-bmNlc0BhY3BpY2Eub3JnIFttYWlsdG86ZGV2ZWwtYm91bmNlc0BhY3BpY2Eub3JnXQo8Yj48c3Bh
-biBzdHlsZT0iZm9udC13ZWlnaHQ6Ym9sZCI+T24gQmVoYWxmIE9mIDwvc3Bhbj48L2I+c2h1YW5n
-LXNodWFuIGd1bzxicj4KPGI+PHNwYW4gc3R5bGU9ImZvbnQtd2VpZ2h0OmJvbGQiPlNlbnQ6PC9z
-cGFuPjwvYj4gVGh1cnNkYXksIFNlcHRlbWJlciAxMywgMjAxMiAxMjowMiBBTTxicj4KPGI+PHNw
-YW4gc3R5bGU9ImZvbnQtd2VpZ2h0OmJvbGQiPlRvOjwvc3Bhbj48L2I+IDxzdDE6UGVyc29uTmFt
-ZSB3OnN0PSJvbiI+ZGV2ZWxAYWNwaWNhLm9yZzwvc3QxOlBlcnNvbk5hbWU+PGJyPgo8Yj48c3Bh
-biBzdHlsZT0iZm9udC13ZWlnaHQ6Ym9sZCI+U3ViamVjdDo8L3NwYW4+PC9iPiBbRGV2ZWxdIGFj
-ZCBkaXNhc3NlbWJsZSBjb21tYW5kPC9zcGFuPjwvZm9udD48bzpwPjwvbzpwPjwvcD4KPC9kaXY+
-CjxwIGNsYXNzPSJNc29Ob3JtYWwiPjxmb250IHNpemU9IjMiIGZhY2U9IlNpbVN1biI+PHNwYW4g
-c3R5bGU9ImZvbnQtc2l6ZToxMi4wcHQiPjxvOnA+Jm5ic3A7PC9vOnA+PC9zcGFuPjwvZm9udD48
-L3A+CjxkaXY+CjxwIGNsYXNzPSJNc29Ob3JtYWwiPjxmb250IHNpemU9IjMiIGZhY2U9IlRhaG9t
-YSI+PHNwYW4gc3R5bGU9ImZvbnQtc2l6ZToxMi4wcHQ7CmZvbnQtZmFtaWx5OlRhaG9tYSI+aGks
-Cjwvc3Bhbj48L2ZvbnQ+PGZvbnQgc2l6ZT0iMiIgZmFjZT0iVGFob21hIj48c3BhbiBzdHlsZT0i
-Zm9udC1zaXplOjEwLjBwdDtmb250LWZhbWlseTpUYWhvbWEiPjxicj4KJm5ic3A7Jm5ic3A7PC9z
-cGFuPjwvZm9udD48Zm9udCBmYWNlPSJUYWhvbWEiPjxzcGFuIHN0eWxlPSJmb250LWZhbWlseTpU
-YWhvbWEiPiZuYnNwOyBJIGFtIGEgdXNlciBvZiBBQ1BJLUNBLCBJIGhhdmUgaW50ZWdyYXRlZCB0
-aGUgYWNwaS1jYSBjb2RlIGludG8gbXkgYXBwbGljYXRpb24uIEFuZCwgSSBjYW4gdXNlIHRoZSBh
-Y3BpLWNhIGRlYnVnZ2VyIHRvIGRvIHNvbWUgdGVzdGluZy4gUmVjZW50bHksIEkgY2FtZSBhY3Jv
-c3Mgb25lIGlzc3VlLgo8L3NwYW4+PC9mb250Pjxmb250IHNpemU9IjIiIGZhY2U9IlRhaG9tYSI+
-PHNwYW4gc3R5bGU9ImZvbnQtc2l6ZToxMC4wcHQ7CmZvbnQtZmFtaWx5OlRhaG9tYSI+PGJyPgo8
-L3NwYW4+PC9mb250Pjxmb250IGZhY2U9IlRhaG9tYSI+PHNwYW4gc3R5bGU9ImZvbnQtZmFtaWx5
-OlRhaG9tYSI+Jm5ic3A7Jm5ic3A7Jm5ic3A7IFdoZW4gSSB3YXMgdXNpbmcgdGhlICdhY2QgZGlz
-YXNzZW1ibGUnIHRvIGRpc2Fzc2VtYmxlIHRoZXNlIHR5cGUgbWV0aG9kcyhoaWdobGlnaHRlZCB3
-aXRoIHllbGxvdyBhcyBiZWxvdyksIHRoZW4gdGhlIHN5c3RlbSB3aWxsIGNyYXNoLCBpdCBzZWVt
-cyBpdCB3YXMgYWNjZXNzaW5nIHNvbWUgaW52YWxpZCBhZGRyZXNzLjwvc3Bhbj48L2ZvbnQ+PGZv
-bnQgc2l6ZT0iMiIgZmFjZT0iVGFob21hIj48c3BhbiBzdHlsZT0iZm9udC1zaXplOjEwLjBwdDtm
-b250LWZhbWlseTpUYWhvbWEiPjxicj4KPC9zcGFuPjwvZm9udD48Zm9udCBmYWNlPSJUYWhvbWEi
-PjxzcGFuIHN0eWxlPSJmb250LWZhbWlseTpUYWhvbWEiPlRoZSBfQ1JTIGlzIHVuZGVyICdcX1NC
-Xy5MTktBJzwvc3Bhbj48L2ZvbnQ+PGZvbnQgc2l6ZT0iMiIgZmFjZT0iVGFob21hIj48c3BhbiBz
-dHlsZT0iZm9udC1zaXplOjEwLjBwdDtmb250LWZhbWlseTpUYWhvbWEiPjxicj4KPC9zcGFuPjwv
-Zm9udD48Zm9udCBjb2xvcj0iYmxhY2siPjxzcGFuIHN0eWxlPSJjb2xvcjpibGFjayI+Jm5ic3A7
-Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
-c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7IE1ldGhv
-ZCAoX0NSUywgMCwgTm90U2VyaWFsaXplZCk8YnI+CiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
-YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
-OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyB7PGJyPgombmJzcDsmbmJzcDsmbmJzcDsm
-bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
-cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
-bmJzcDsgPHNwYW4gc3R5bGU9ImJhY2tncm91bmQ6eWVsbG93Ij5OYW1lIChCVUYwLCBSZXNvdXJj
-ZVRlbXBsYXRlKCk8YnI+CiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
-OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
-YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyB7PGJyPgombmJzcDsmbmJz
-cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
-bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
-cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsgSVJRIChMZXZlbCwgQWN0aXYg
-ZUxvdywgU2hhcmVkKSB7MH08YnI+Cjxicj4KJm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
-Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
-c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7IH0pPGJy
-Pgo8L3NwYW4+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
-Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
-c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7IENyZWF0ZVdvcmRGaWVsZCAoQlVGMCwg
-T25lLCBJUlFXKTxicj4KJm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
-Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
-c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7IElmIChBbmQgKFBJUkIsIDB4
-ODApKTxicj4KJm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
-Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
-c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7IHs8YnI+CiZuYnNwOyZuYnNwOyZuYnNw
-OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
-YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
-OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyBTdG9yZSAoWmVybywgTG9jYWwwKTxicj4K
-Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
-c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
-Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7IH0mbHQ7IEJSJmd0OyZuYnNwOyZuYnNwOyAmbmJzcDsm
-bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
-cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsgRWxzZTxi
-cj4KJm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
-Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
-c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7IHs8YnI+CiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
-OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
-YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
-OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyBTdG9yZSAoT25lLCBMb2NhbDApPGJyPgombmJzcDsm
-bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
-cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
-bmJzcDsmbmJzcDsmbmJzcDsgfTwvc3Bhbj48L2ZvbnQ+PGZvbnQgc2l6ZT0iMiIgZmFjZT0iVGFo
-b21hIj48c3BhbiBzdHlsZT0iZm9udC1zaXplOjEwLjBwdDsKZm9udC1mYW1pbHk6VGFob21hIj48
-YnI+Cjwvc3Bhbj48L2ZvbnQ+PGZvbnQgY29sb3I9ImJsYWNrIiBmYWNlPSJUYWhvbWEiPjxzcGFu
-IHN0eWxlPSJmb250LWZhbWlseTpUYWhvbWE7CmNvbG9yOmJsYWNrIj5ob3dldmVyLCB1c2luZyB0
-aGUgJ2FjZCByZXNvdXJjZXMgXF9TQl8uTE5LQScgY2FuIHBhcnNlIG91dCB0aGUgSVJRIHJlc291
-cmNlIHdpdGhvdXQgYW55IGVycm9ycy4gSSBndWVzcyBwcm9iYWJseSB0aGVyZSBpcyBvbmUgaXNz
-dWUgaW4gYWNwaS1jYSBkaXNhc3NlbWJsZXIuPC9zcGFuPjwvZm9udD48Zm9udCBzaXplPSIyIiBm
-YWNlPSJUYWhvbWEiPjxzcGFuIHN0eWxlPSJmb250LXNpemU6CjEwLjBwdDtmb250LWZhbWlseTpU
-YWhvbWEiPjxicj4KPC9zcGFuPjwvZm9udD48Zm9udCBjb2xvcj0iYmxhY2siIGZhY2U9IlRhaG9t
-YSI+PHNwYW4gc3R5bGU9ImZvbnQtZmFtaWx5OlRhaG9tYTsKY29sb3I6YmxhY2siPklzIHRoZXJl
-IGFueSBvbmUgY2FuIGhlbHAgbWUgdG8gYWRkcmVzcz8KPC9zcGFuPjwvZm9udD48Zm9udCBzaXpl
-PSIyIiBmYWNlPSJUYWhvbWEiPjxzcGFuIHN0eWxlPSJmb250LXNpemU6MTAuMHB0O2ZvbnQtZmFt
-aWx5OlRhaG9tYSI+PG86cD48L286cD48L3NwYW4+PC9mb250PjwvcD4KPC9kaXY+CjwvZGl2Pgo8
-L2Rpdj4KPC9ib2R5Pgo8L2h0bWw+Cg==
+iASL: Added a feature to automatically increase internal line buffer sizes.=
+ Via realloc(), automatically increase the internal line buffer sizes as ne=
+cessary to support very long source code lines. The current version of the =
+preprocessor requires a buffer long enough to contain full source code line=
+s. This change increases the line buffer(s) if the input lines go beyond th=
+e current buffer size. This eliminates errors that occurred when a source c=
+ode line was longer than the buffer.
 
---===============4457929406058673454==--
+iASL: Fixed a problem with constant folding in method declarations. The Syn=
+cLevel term is a ByteConstExpr, and incorrect code would be generated if a =
+Type3 opcode was used.
+
+Debugger: Improved command help support. For incorrect argument count, disp=
+lay full help for the command. For help command itself, allow an argument t=
+o specify a command.
+
+Test Suites: Several bug fixes for the ASLTS suite reduces the number of er=
+rors during execution of the suite. Guan Chao.
+
+
+--===============5905901712882099667==--
 
