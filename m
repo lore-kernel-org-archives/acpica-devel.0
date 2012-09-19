@@ -1,67 +1,34 @@
-Content-Type: multipart/mixed; boundary="===============0861353913651285741=="
+Content-Type: multipart/mixed; boundary="===============4150396281118696904=="
 MIME-Version: 1.0
 From: trenn at suse.de
-Subject: [Devel] [patch 6/6] acpcia: Fixes some minor Tab vs whitespace issues
- in Makefiles.
-Date: Wed, 19 Sep 2012 13:14:47 +0200
-Message-ID: <20120919111905.944436733@ett.arch.suse.de>
-In-Reply-To: 20120919111441.021908206@ett.arch.suse.de
+Subject: [Devel] [patch 0/6] Various acpica cleanups
+Date: Wed, 19 Sep 2012 13:14:41 +0200
+Message-ID: <20120919111441.021908206@ett.arch.suse.de>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0861353913651285741==
+--===============4150396281118696904==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Thomas Renninger <trenn(a)suse.de>
----
- generate/unix/acpibin/Makefile |    2 +-
- generate/unix/iasl/Makefile    |    6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+Hi,
 
-Index: acpica-unix2-20120913/generate/unix/acpibin/Makefile
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
---- acpica-unix2-20120913.orig/generate/unix/acpibin/Makefile
-+++ acpica-unix2-20120913/generate/unix/acpibin/Makefile
-@@ -27,7 +27,7 @@ HEADERS =3D \
-     $(wildcard $(ACPIBIN)/*.h)
- =
+these are the patches on latest acpica needed for SUSE packaging.
 
- OBJECTS =3D \
--   	$(OBJDIR)/abcompare.o \
-+	$(OBJDIR)/abcompare.o \
- 	$(OBJDIR)/abmain.o \
- 	$(OBJDIR)/utalloc.o \
- 	$(OBJDIR)/utcache.o \
-Index: acpica-unix2-20120913/generate/unix/iasl/Makefile
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
---- acpica-unix2-20120913.orig/generate/unix/iasl/Makefile
-+++ acpica-unix2-20120913/generate/unix/iasl/Makefile
-@@ -192,13 +192,13 @@ INTERMEDIATES =3D \
- 	$(OBJDIR)/prparserparse.c
- =
+Please ignore the acpidump patch.
 
- MISC =3D \
--   	$(OBJDIR)/aslcompilerparse.h \
-+	$(OBJDIR)/aslcompilerparse.h \
- 	$(OBJDIR)/aslcompiler.y.h \
- 	$(OBJDIR)/aslcompilerparse.output \
--   	$(OBJDIR)/dtparserparse.h \
-+	$(OBJDIR)/dtparserparse.h \
- 	$(OBJDIR)/dtparser.y.h \
- 	$(OBJDIR)/dtparserparse.output \
--   	$(OBJDIR)/prparserparse.h \
-+	$(OBJDIR)/prparserparse.h \
- 	$(OBJDIR)/prparser.y.h \
- 	$(OBJDIR)/prparserparse.output
- =
+Not sure about the "avoid void cast warning in 32-bit case"
+and the "Do not compile in date/time" patch. If one or both can go in
+that's fine, if not, it's not a big deal.
 
+The others are cleanups/fixes which I'd appreciate if they
+can get applied to latest acpica code base so that we do not
+have to maintain them forever in our package.
 
+Thanks,
 
---===============0861353913651285741==--
+    Thomas
+
+--===============4150396281118696904==--
 
