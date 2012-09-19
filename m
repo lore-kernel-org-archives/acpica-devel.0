@@ -1,37 +1,45 @@
-Content-Type: multipart/mixed; boundary="===============6773729523793595109=="
+Content-Type: multipart/mixed; boundary="===============8291164169769642918=="
 MIME-Version: 1.0
 From: trenn at suse.de
-Subject: [Devel] [patch 4/6] --- source/include/platform/aclinux.h | 2 +- 1
- file changed, 1 insertion(+), 1 deletion(-)
-Date: Wed, 19 Sep 2012 13:14:45 +0200
-Message-ID: <20120919111905.500896570@ett.arch.suse.de>
+Subject: [Devel] [patch 2/6] Make it possible to extend CFLAGS when invoking
+ make
+Date: Wed, 19 Sep 2012 13:14:43 +0200
+Message-ID: <20120919111905.072264712@ett.arch.suse.de>
 In-Reply-To: 20120919111441.021908206@ett.arch.suse.de
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6773729523793595109==
+--===============8291164169769642918==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Index: acpica-unix2-20120518/source/include/platform/aclinux.h
+From: Thomas Renninger <trenn(a)suse.de>
+
+---
+ acpidump/Makefile |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+Index: acpica-unix-20110413/acpidump/Makefile
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
---- acpica-unix2-20120518.orig/source/include/platform/aclinux.h
-+++ acpica-unix2-20120518/source/include/platform/aclinux.h
-@@ -98,7 +98,7 @@
- #define COMPILER_DEPENDENT_INT64    long long
- #define COMPILER_DEPENDENT_UINT64   unsigned long long
- #define ACPI_USE_NATIVE_DIVIDE
--#define ACPI_CAST_PTHREAD_T(pthread) ((ACPI_THREAD_ID) (UINT32) (void *) (=
-pthread))
-+#define ACPI_CAST_PTHREAD_T(pthread) ((ACPI_THREAD_ID) (UINT32) (pthread))
- #endif
+--- acpica-unix-20110413.orig/acpidump/Makefile
++++ acpica-unix-20110413/acpidump/Makefile
+@@ -1,7 +1,7 @@
+ PROG=3D acpidump
+ SRCS=3D	acpidump.c
+ KERNEL_INCLUDE :=3D ../include
+-CFLAGS +=3D -Wall -Wstrict-prototypes -Wdeclaration-after-statement -Os -s=
+ -D_LINUX -DDEFINE_ALTERNATE_TYPES -I$(KERNEL_INCLUDE) =
+
++override CFLAGS +=3D -Wall -Wstrict-prototypes -Wdeclaration-after-stateme=
+nt -Os -s -D_LINUX -DDEFINE_ALTERNATE_TYPES -I$(KERNEL_INCLUDE)
  =
 
- #ifndef __cdecl
+ all: acpidump
+ $(PROG) : $(SRCS)
 
 
---===============6773729523793595109==--
+--===============8291164169769642918==--
 
