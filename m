@@ -1,45 +1,67 @@
-Content-Type: multipart/mixed; boundary="===============8291164169769642918=="
+Content-Type: multipart/mixed; boundary="===============0861353913651285741=="
 MIME-Version: 1.0
 From: trenn at suse.de
-Subject: [Devel] [patch 2/6] Make it possible to extend CFLAGS when invoking
- make
-Date: Wed, 19 Sep 2012 13:14:43 +0200
-Message-ID: <20120919111905.072264712@ett.arch.suse.de>
+Subject: [Devel] [patch 6/6] acpcia: Fixes some minor Tab vs whitespace issues
+ in Makefiles.
+Date: Wed, 19 Sep 2012 13:14:47 +0200
+Message-ID: <20120919111905.944436733@ett.arch.suse.de>
 In-Reply-To: 20120919111441.021908206@ett.arch.suse.de
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8291164169769642918==
+--===============0861353913651285741==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-From: Thomas Renninger <trenn(a)suse.de>
-
+Signed-off-by: Thomas Renninger <trenn(a)suse.de>
 ---
- acpidump/Makefile |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ generate/unix/acpibin/Makefile |    2 +-
+ generate/unix/iasl/Makefile    |    6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-Index: acpica-unix-20110413/acpidump/Makefile
+Index: acpica-unix2-20120913/generate/unix/acpibin/Makefile
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
---- acpica-unix-20110413.orig/acpidump/Makefile
-+++ acpica-unix-20110413/acpidump/Makefile
-@@ -1,7 +1,7 @@
- PROG=3D acpidump
- SRCS=3D	acpidump.c
- KERNEL_INCLUDE :=3D ../include
--CFLAGS +=3D -Wall -Wstrict-prototypes -Wdeclaration-after-statement -Os -s=
- -D_LINUX -DDEFINE_ALTERNATE_TYPES -I$(KERNEL_INCLUDE) =
-
-+override CFLAGS +=3D -Wall -Wstrict-prototypes -Wdeclaration-after-stateme=
-nt -Os -s -D_LINUX -DDEFINE_ALTERNATE_TYPES -I$(KERNEL_INCLUDE)
+--- acpica-unix2-20120913.orig/generate/unix/acpibin/Makefile
++++ acpica-unix2-20120913/generate/unix/acpibin/Makefile
+@@ -27,7 +27,7 @@ HEADERS =3D \
+     $(wildcard $(ACPIBIN)/*.h)
  =
 
- all: acpidump
- $(PROG) : $(SRCS)
+ OBJECTS =3D \
+-   	$(OBJDIR)/abcompare.o \
++	$(OBJDIR)/abcompare.o \
+ 	$(OBJDIR)/abmain.o \
+ 	$(OBJDIR)/utalloc.o \
+ 	$(OBJDIR)/utcache.o \
+Index: acpica-unix2-20120913/generate/unix/iasl/Makefile
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+--- acpica-unix2-20120913.orig/generate/unix/iasl/Makefile
++++ acpica-unix2-20120913/generate/unix/iasl/Makefile
+@@ -192,13 +192,13 @@ INTERMEDIATES =3D \
+ 	$(OBJDIR)/prparserparse.c
+ =
+
+ MISC =3D \
+-   	$(OBJDIR)/aslcompilerparse.h \
++	$(OBJDIR)/aslcompilerparse.h \
+ 	$(OBJDIR)/aslcompiler.y.h \
+ 	$(OBJDIR)/aslcompilerparse.output \
+-   	$(OBJDIR)/dtparserparse.h \
++	$(OBJDIR)/dtparserparse.h \
+ 	$(OBJDIR)/dtparser.y.h \
+ 	$(OBJDIR)/dtparserparse.output \
+-   	$(OBJDIR)/prparserparse.h \
++	$(OBJDIR)/prparserparse.h \
+ 	$(OBJDIR)/prparser.y.h \
+ 	$(OBJDIR)/prparserparse.output
+ =
 
 
---===============8291164169769642918==--
+
+--===============0861353913651285741==--
 
