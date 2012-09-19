@@ -1,116 +1,78 @@
-Content-Type: multipart/mixed; boundary="===============7591509818737364708=="
+Content-Type: multipart/mixed; boundary="===============6504871287425963052=="
 MIME-Version: 1.0
 From: trenn at suse.de
-Subject: [Devel] [patch 3/6] From: <idoenmez@suse.de>
-Date: Wed, 19 Sep 2012 13:14:44 +0200
-Message-ID: <20120919111905.287403690@ett.arch.suse.de>
+Subject: [Devel] [patch 1/6] acpcia: Make it possible to pass additional
+ CFLAGS when invoking make
+Date: Wed, 19 Sep 2012 13:14:42 +0200
+Message-ID: <20120919111904.832563186@ett.arch.suse.de>
 In-Reply-To: 20120919111441.021908206@ett.arch.suse.de
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7591509818737364708==
+--===============6504871287425963052==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-acpica: Do not compile in date or time into binaries
+-D_FORTIFY_SOURCE=3D2 without -O2 can cause:
+--
+  /usr/include/features.h:314:4: error: #warning _FORTIFY_SOURCE requires
+  compiling with optimization (-O) [-Werror=3Dcpp]
+--
+Such compiler flags must be able to get passed when invoking make.
+OpenSUSE packages require to build binaries with CLFAGS=3D"$RPM_OPT_FLAGS",
+to make sure debuginfo can be obtained, security/optimization flags of
+the compiler for the distribution built against are passed, etc.
 
-Otherwise the data/time compiled in may cause constant re-compilation
-in build service environments
+This patch differs between:
+  1) Optional CFLAGS (OPT_CFLAGS) which have a sane default:
+     -D_FORTIFY_SOURCE=3D2 -O2 and warning flags
+     These will get replaced if OPT_CFLAGS=3D are passed via
+     make OPT_CFLAGS=3D".." invokation
+  2) Elementary CFLAGS (-I includes, -Dxy, ...) which are
+     mandatory for a successful compile run
 
 Signed-off-by: Thomas Renninger <trenn(a)suse.de>
+CC: arjan(a)linux.intel.com
 ---
- source/compiler/aslcompile.c |    9 ++-------
- source/compiler/aslutils.c   |    4 ++--
- source/include/acapps.h      |    8 ++++----
- 3 files changed, 8 insertions(+), 13 deletions(-)
+ generate/unix/Makefile.config |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-Index: acpica-unix2-20120913/source/compiler/aslcompile.c
+Index: acpica-unix2-20120913/generate/unix/Makefile.config
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
---- acpica-unix2-20120913.orig/source/compiler/aslcompile.c
-+++ acpica-unix2-20120913/source/compiler/aslcompile.c
-@@ -161,8 +161,6 @@ void
- AslCompilerFileHeader (
-     UINT32                  FileId)
- {
--    struct tm               *NewTime;
--    time_t                  Aclock;
-     char                    *Prefix =3D "";
+--- acpica-unix2-20120913.orig/generate/unix/Makefile.config
++++ acpica-unix2-20120913/generate/unix/Makefile.config
+@@ -38,7 +38,7 @@ CC =3D    gcc
+ OBJDIR =3D     obj$(BITS)
+ BINDIR =3D     bin$(BITS)
+ BITSFLAG =3D   -m$(BITS)
+-COMPILEOBJ =3D $(CC) -c $(CFLAGS) $(CWARNINGFLAGS) -o$@ $<
++COMPILEOBJ =3D $(CC) -c $(CFLAGS) -o$@ $<
+ LINKPROG =3D   $(CC) $(OBJECTS) -o $(PROG) $(LDFLAGS)
+ INSTALLDIR =3D /usr/bin
+ INSTALLPROG =3D install -D ../$(BINDIR)/$(PROG) $(DESTDIR)$(INSTALLDIR)/$(=
+PROG)
+@@ -103,11 +103,15 @@ ACPICA_HEADERS =3D \
+ # Common compiler flags. The warning flags in addition to -Wall are not
+ # automatically included in -Wall.
+ #
++OPT_CFLAGS ?=3D \
++    -D_FORTIFY_SOURCE=3D2 -O2 \
++    $(CWARNINGFLAGS)
++
+ CFLAGS +=3D \
++    $(OPT_CFLAGS) \
+     $(BITSFLAG) \
+     -D$(HOST) \
+     -D_GNU_SOURCE \
+-    -D_FORTIFY_SOURCE=3D2 \
+     -I$(ACPICA_INCLUDE)
  =
 
- =
-
-@@ -202,12 +200,9 @@ AslCompilerFileHeader (
- =
-
-     /* Compilation header with timestamp */
- =
-
--    (void) time (&Aclock);
--    NewTime =3D localtime (&Aclock);
--
-     FlPrintFile (FileId,
--        "%sCompilation of \"%s\" - %s%s\n",
--        Prefix, Gbl_Files[ASL_FILE_INPUT].Filename, asctime (NewTime),
-+        "%sCompilation of \"%s\"\n",
-+        Prefix, Gbl_Files[ASL_FILE_INPUT].Filename,
-         Prefix);
- =
-
-     switch (FileId)
-Index: acpica-unix2-20120913/source/compiler/aslutils.c
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
---- acpica-unix2-20120913.orig/source/compiler/aslutils.c
-+++ acpica-unix2-20120913/source/compiler/aslutils.c
-@@ -456,8 +456,8 @@ UtDisplaySummary (
-     {
-         /* Compiler name and version number */
- =
-
--        FlPrintFile (FileId, "%s version %X%s [%s]\n\n",
--            ASL_COMPILER_NAME, (UINT32) ACPI_CA_VERSION, ACPI_WIDTH, __DAT=
-E__);
-+        FlPrintFile (FileId, "%s version %X%s\n\n",
-+            ASL_COMPILER_NAME, (UINT32) ACPI_CA_VERSION, ACPI_WIDTH);
-     }
- =
-
-     /* Summary of main input and output files */
-Index: acpica-unix2-20120913/source/include/acapps.h
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
---- acpica-unix2-20120913.orig/source/include/acapps.h
-+++ acpica-unix2-20120913/source/include/acapps.h
-@@ -69,15 +69,15 @@
- /* Macros for signons and file headers */
- =
-
- #define ACPI_COMMON_SIGNON(UtilityName) \
--    "\n%s\n%s version %8.8X%s [%s]\n%s\n\n", \
-+    "\n%s\n%s version %8.8X%s\n%s\n\n", \
-     ACPICA_NAME, \
--    UtilityName, ((UINT32) ACPI_CA_VERSION), ACPI_WIDTH, __DATE__, \
-+    UtilityName, ((UINT32) ACPI_CA_VERSION), ACPI_WIDTH, \
-     ACPICA_COPYRIGHT
- =
-
- #define ACPI_COMMON_HEADER(UtilityName, Prefix) \
--    "%s%s\n%s%s version %8.8X%s [%s]\n%s%s\n%s\n", \
-+    "%s%s\n%s%s version %8.8X%s\n%s%s\n%s\n", \
-     Prefix, ACPICA_NAME, \
--    Prefix, UtilityName, ((UINT32) ACPI_CA_VERSION), ACPI_WIDTH, __DATE__,=
- \
-+    Prefix, UtilityName, ((UINT32) ACPI_CA_VERSION), ACPI_WIDTH, \
-     Prefix, ACPICA_COPYRIGHT, \
-     Prefix
- =
+ LDFLAGS +=3D $(BITSFLAG)
 
 
-
---===============7591509818737364708==--
+--===============6504871287425963052==--
 
