@@ -1,78 +1,37 @@
-Content-Type: multipart/mixed; boundary="===============6504871287425963052=="
+Content-Type: multipart/mixed; boundary="===============6773729523793595109=="
 MIME-Version: 1.0
 From: trenn at suse.de
-Subject: [Devel] [patch 1/6] acpcia: Make it possible to pass additional
- CFLAGS when invoking make
-Date: Wed, 19 Sep 2012 13:14:42 +0200
-Message-ID: <20120919111904.832563186@ett.arch.suse.de>
+Subject: [Devel] [patch 4/6] --- source/include/platform/aclinux.h | 2 +- 1
+ file changed, 1 insertion(+), 1 deletion(-)
+Date: Wed, 19 Sep 2012 13:14:45 +0200
+Message-ID: <20120919111905.500896570@ett.arch.suse.de>
 In-Reply-To: 20120919111441.021908206@ett.arch.suse.de
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6504871287425963052==
+--===============6773729523793595109==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
--D_FORTIFY_SOURCE=3D2 without -O2 can cause:
---
-  /usr/include/features.h:314:4: error: #warning _FORTIFY_SOURCE requires
-  compiling with optimization (-O) [-Werror=3Dcpp]
---
-Such compiler flags must be able to get passed when invoking make.
-OpenSUSE packages require to build binaries with CLFAGS=3D"$RPM_OPT_FLAGS",
-to make sure debuginfo can be obtained, security/optimization flags of
-the compiler for the distribution built against are passed, etc.
-
-This patch differs between:
-  1) Optional CFLAGS (OPT_CFLAGS) which have a sane default:
-     -D_FORTIFY_SOURCE=3D2 -O2 and warning flags
-     These will get replaced if OPT_CFLAGS=3D are passed via
-     make OPT_CFLAGS=3D".." invokation
-  2) Elementary CFLAGS (-I includes, -Dxy, ...) which are
-     mandatory for a successful compile run
-
-Signed-off-by: Thomas Renninger <trenn(a)suse.de>
-CC: arjan(a)linux.intel.com
----
- generate/unix/Makefile.config |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-Index: acpica-unix2-20120913/generate/unix/Makefile.config
+Index: acpica-unix2-20120518/source/include/platform/aclinux.h
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
---- acpica-unix2-20120913.orig/generate/unix/Makefile.config
-+++ acpica-unix2-20120913/generate/unix/Makefile.config
-@@ -38,7 +38,7 @@ CC =3D    gcc
- OBJDIR =3D     obj$(BITS)
- BINDIR =3D     bin$(BITS)
- BITSFLAG =3D   -m$(BITS)
--COMPILEOBJ =3D $(CC) -c $(CFLAGS) $(CWARNINGFLAGS) -o$@ $<
-+COMPILEOBJ =3D $(CC) -c $(CFLAGS) -o$@ $<
- LINKPROG =3D   $(CC) $(OBJECTS) -o $(PROG) $(LDFLAGS)
- INSTALLDIR =3D /usr/bin
- INSTALLPROG =3D install -D ../$(BINDIR)/$(PROG) $(DESTDIR)$(INSTALLDIR)/$(=
-PROG)
-@@ -103,11 +103,15 @@ ACPICA_HEADERS =3D \
- # Common compiler flags. The warning flags in addition to -Wall are not
- # automatically included in -Wall.
- #
-+OPT_CFLAGS ?=3D \
-+    -D_FORTIFY_SOURCE=3D2 -O2 \
-+    $(CWARNINGFLAGS)
-+
- CFLAGS +=3D \
-+    $(OPT_CFLAGS) \
-     $(BITSFLAG) \
-     -D$(HOST) \
-     -D_GNU_SOURCE \
--    -D_FORTIFY_SOURCE=3D2 \
-     -I$(ACPICA_INCLUDE)
+--- acpica-unix2-20120518.orig/source/include/platform/aclinux.h
++++ acpica-unix2-20120518/source/include/platform/aclinux.h
+@@ -98,7 +98,7 @@
+ #define COMPILER_DEPENDENT_INT64    long long
+ #define COMPILER_DEPENDENT_UINT64   unsigned long long
+ #define ACPI_USE_NATIVE_DIVIDE
+-#define ACPI_CAST_PTHREAD_T(pthread) ((ACPI_THREAD_ID) (UINT32) (void *) (=
+pthread))
++#define ACPI_CAST_PTHREAD_T(pthread) ((ACPI_THREAD_ID) (UINT32) (pthread))
+ #endif
  =
 
- LDFLAGS +=3D $(BITSFLAG)
+ #ifndef __cdecl
 
 
---===============6504871287425963052==--
+--===============6773729523793595109==--
 
