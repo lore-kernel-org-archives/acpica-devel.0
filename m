@@ -1,25 +1,20 @@
-Content-Type: multipart/mixed; boundary="===============8716049057124634676=="
+Content-Type: multipart/mixed; boundary="===============3255713968362038217=="
 MIME-Version: 1.0
 From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] [patch 3/6] From: <idoenmez@suse.de>
-Date: Wed, 19 Sep 2012 15:08:17 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E346B643EB@ORSMSX101.amr.corp.intel.com>
-In-Reply-To: 20120919111905.287403690@ett.arch.suse.de
+Subject: Re: [Devel] [patch 6/6] acpcia: Fixes some minor Tab vs
+ whitespace	issues in Makefiles.
+Date: Wed, 19 Sep 2012 15:09:23 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E346B64400@ORSMSX101.amr.corp.intel.com>
+In-Reply-To: 20120919111905.944436733@ett.arch.suse.de
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8716049057124634676==
+--===============3255713968362038217==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Thomas,
-
-This code is not used to insert the date/time into AML "binaries". It is us=
-ed for the various listing files.
-
-Can you explain further?
-
+OK, thanks.
 Bob
 
 
@@ -28,110 +23,58 @@ Bob
 > Behalf Of trenn(a)suse.de
 > Sent: Wednesday, September 19, 2012 4:15 AM
 > To: devel(a)acpica.org
-> Subject: [Devel] [patch 3/6] From: <idoenmez(a)suse.de>
-> =
-
-> acpica: Do not compile in date or time into binaries
-> =
-
-> Otherwise the data/time compiled in may cause constant re-compilation in
-> build service environments
+> Subject: [Devel] [patch 6/6] acpcia: Fixes some minor Tab vs whitespace
+> issues in Makefiles.
 > =
 
 > Signed-off-by: Thomas Renninger <trenn(a)suse.de>
 > ---
->  source/compiler/aslcompile.c |    9 ++-------
->  source/compiler/aslutils.c   |    4 ++--
->  source/include/acapps.h      |    8 ++++----
->  3 files changed, 8 insertions(+), 13 deletions(-)
+>  generate/unix/acpibin/Makefile |    2 +-
+>  generate/unix/iasl/Makefile    |    6 +++---
+>  2 files changed, 4 insertions(+), 4 deletions(-)
 > =
 
-> Index: acpica-unix2-20120913/source/compiler/aslcompile.c
+> Index: acpica-unix2-20120913/generate/unix/acpibin/Makefile
 > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D
 > =3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- acpica-unix2-20120913.orig/source/compiler/aslcompile.c
-> +++ acpica-unix2-20120913/source/compiler/aslcompile.c
-> @@ -161,8 +161,6 @@ void
->  AslCompilerFileHeader (
->      UINT32                  FileId)
->  {
-> -    struct tm               *NewTime;
-> -    time_t                  Aclock;
->      char                    *Prefix =3D "";
+> --- acpica-unix2-20120913.orig/generate/unix/acpibin/Makefile
+> +++ acpica-unix2-20120913/generate/unix/acpibin/Makefile
+> @@ -27,7 +27,7 @@ HEADERS =3D \
+>      $(wildcard $(ACPIBIN)/*.h)
 > =
 
-> =
-
-> @@ -202,12 +200,9 @@ AslCompilerFileHeader (
-> =
-
->      /* Compilation header with timestamp */
-> =
-
-> -    (void) time (&Aclock);
-> -    NewTime =3D localtime (&Aclock);
-> -
->      FlPrintFile (FileId,
-> -        "%sCompilation of \"%s\" - %s%s\n",
-> -        Prefix, Gbl_Files[ASL_FILE_INPUT].Filename, asctime (NewTime),
-> +        "%sCompilation of \"%s\"\n",
-> +        Prefix, Gbl_Files[ASL_FILE_INPUT].Filename,
->          Prefix);
-> =
-
->      switch (FileId)
-> Index: acpica-unix2-20120913/source/compiler/aslutils.c
+>  OBJECTS =3D \
+> -   	$(OBJDIR)/abcompare.o \
+> +	$(OBJDIR)/abcompare.o \
+>  	$(OBJDIR)/abmain.o \
+>  	$(OBJDIR)/utalloc.o \
+>  	$(OBJDIR)/utcache.o \
+> Index: acpica-unix2-20120913/generate/unix/iasl/Makefile
 > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D
 > =3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- acpica-unix2-20120913.orig/source/compiler/aslutils.c
-> +++ acpica-unix2-20120913/source/compiler/aslutils.c
-> @@ -456,8 +456,8 @@ UtDisplaySummary (
->      {
->          /* Compiler name and version number */
+> --- acpica-unix2-20120913.orig/generate/unix/iasl/Makefile
+> +++ acpica-unix2-20120913/generate/unix/iasl/Makefile
+> @@ -192,13 +192,13 @@ INTERMEDIATES =3D \
+>  	$(OBJDIR)/prparserparse.c
 > =
 
-> -        FlPrintFile (FileId, "%s version %X%s [%s]\n\n",
-> -            ASL_COMPILER_NAME, (UINT32) ACPI_CA_VERSION, ACPI_WIDTH,
-> __DATE__);
-> +        FlPrintFile (FileId, "%s version %X%s\n\n",
-> +            ASL_COMPILER_NAME, (UINT32) ACPI_CA_VERSION, ACPI_WIDTH);
->      }
-> =
-
->      /* Summary of main input and output files */
-> Index: acpica-unix2-20120913/source/include/acapps.h
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- acpica-unix2-20120913.orig/source/include/acapps.h
-> +++ acpica-unix2-20120913/source/include/acapps.h
-> @@ -69,15 +69,15 @@
->  /* Macros for signons and file headers */
-> =
-
->  #define ACPI_COMMON_SIGNON(UtilityName) \
-> -    "\n%s\n%s version %8.8X%s [%s]\n%s\n\n", \
-> +    "\n%s\n%s version %8.8X%s\n%s\n\n", \
->      ACPICA_NAME, \
-> -    UtilityName, ((UINT32) ACPI_CA_VERSION), ACPI_WIDTH, __DATE__, \
-> +    UtilityName, ((UINT32) ACPI_CA_VERSION), ACPI_WIDTH, \
->      ACPICA_COPYRIGHT
-> =
-
->  #define ACPI_COMMON_HEADER(UtilityName, Prefix) \
-> -    "%s%s\n%s%s version %8.8X%s [%s]\n%s%s\n%s\n", \
-> +    "%s%s\n%s%s version %8.8X%s\n%s%s\n%s\n", \
->      Prefix, ACPICA_NAME, \
-> -    Prefix, UtilityName, ((UINT32) ACPI_CA_VERSION), ACPI_WIDTH,
-> __DATE__, \
-> +    Prefix, UtilityName, ((UINT32) ACPI_CA_VERSION), ACPI_WIDTH, \
->      Prefix, ACPICA_COPYRIGHT, \
->      Prefix
+>  MISC =3D \
+> -   	$(OBJDIR)/aslcompilerparse.h \
+> +	$(OBJDIR)/aslcompilerparse.h \
+>  	$(OBJDIR)/aslcompiler.y.h \
+>  	$(OBJDIR)/aslcompilerparse.output \
+> -   	$(OBJDIR)/dtparserparse.h \
+> +	$(OBJDIR)/dtparserparse.h \
+>  	$(OBJDIR)/dtparser.y.h \
+>  	$(OBJDIR)/dtparserparse.output \
+> -   	$(OBJDIR)/prparserparse.h \
+> +	$(OBJDIR)/prparserparse.h \
+>  	$(OBJDIR)/prparser.y.h \
+>  	$(OBJDIR)/prparserparse.output
 > =
 
 > =
@@ -141,5 +84,5 @@ Bob
 > Devel(a)acpica.org
 > http://lists.acpica.org/listinfo/devel
 
---===============8716049057124634676==--
+--===============3255713968362038217==--
 
