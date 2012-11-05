@@ -1,28 +1,46 @@
-Content-Type: multipart/mixed; boundary="===============5688986127350623605=="
+Content-Type: multipart/mixed; boundary="===============3413005248313119682=="
 MIME-Version: 1.0
-From: Volkova <support at mamboo.com>
-Subject: [Devel] Perfectly?
-Date: Mon, 29 Oct 2012 20:37:10 +0100
-Message-ID: <20122910574792.65962826FCC@mailserv.support-love.com>
+From: Nando Eva <nando4eva at ymail.com>
+Subject: [Devel] Any FreeDOS port of the acpi tools (eg: acpiexec)?
+Date: Sun, 04 Nov 2012 20:26:05 -0800
+Message-ID: <1352089565.20688.YahooMailNeo@web121901.mail.ne1.yahoo.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5688986127350623605==
+--===============3413005248313119682==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hello.. I'm a very emotional person. If I smile, I smile sincerely, if I'm =
-angry, you'll easily see it in my eyes. =
+Hi acpcia developers,
 
-First impressions last and I would be happy to start corresponding with you=
- and get to know each other better. I am looking for a man, my second part.=
- I'm a very nice girl, I'm cultured, kind and tolerant. I like to learn eve=
-rything new: excursions, exhibitions and different trips. I adore traveling=
-. I always try to develop myself and my knowledge as much as possible! =
+Has anybody managed to port the ACPI tools like acpiexec to FreeDOS? I requ=
+ire those utilities as a better mechanisms to substitute a in-memory DSDT t=
+able with my own custom version. The tools being a better way of doing it t=
+han my kludge at outlined at http://forum.techinferno.com/diy-e-gpu-project=
+s/2109-diy-egpu-experiences-%5Bversion-2-0%5D-27.html#post31421
 
-Here's my profile and a photo: http://5pl.us/5hzr I hope to see you soon
+Thanks,
+Nando
 
+--===============3413005248313119682==
+Content-Type: text/html
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="attachment.html"
 
---===============5688986127350623605==--
+PGh0bWw+PGJvZHk+PGRpdiBzdHlsZT0iY29sb3I6IzAwMDsgYmFja2dyb3VuZC1jb2xvcjojZmZm
+OyBmb250LWZhbWlseTp0aW1lcyBuZXcgcm9tYW4sIG5ldyB5b3JrLCB0aW1lcywgc2VyaWY7Zm9u
+dC1zaXplOjEycHQiPkhpIGFjcGNpYSBkZXZlbG9wZXJzLDxicj48YnI+SGFzIGFueWJvZHkgbWFu
+YWdlZCB0byBwb3J0IHRoZSBBQ1BJIHRvb2xzIGxpa2UgYWNwaWV4ZWMgdG8gRnJlZURPUz8gSSBy
+ZXF1aXJlIHRob3NlIHV0aWxpdGllcyBhcyBhIGJldHRlciBtZWNoYW5pc21zIHRvIHN1YnN0aXR1
+dGUgYSBpbi1tZW1vcnkgRFNEVCB0YWJsZSB3aXRoIG15IG93biBjdXN0b20gdmVyc2lvbi4gVGhl
+IHRvb2xzIGJlaW5nIGEgYmV0dGVyIHdheSBvZiBkb2luZyBpdCB0aGFuIG15IGtsdWRnZSBhdCBv
+dXRsaW5lZCBhdCA8YSBocmVmPSJodHRwOi8vZm9ydW0udGVjaGluZmVybm8uY29tL2RpeS1lLWdw
+dS1wcm9qZWN0cy8yMTA5LWRpeS1lZ3B1LWV4cGVyaWVuY2VzLSU1QnZlcnNpb24tMi0wJTVELTI3
+Lmh0bWwjcG9zdDMxNDIxIj5odHRwOi8vZm9ydW0udGVjaGluZmVybm8uY29tL2RpeS1lLWdwdS1w
+cm9qZWN0cy8yMTA5LWRpeS1lZ3B1LWV4cGVyaWVuY2VzLSU1QnZlcnNpb24tMi0wJTVELTI3Lmh0
+bWwjcG9zdDMxNDIxPC9hPjxicj48YnI+VGhhbmtzLDxicj5OYW5kbzxicj48ZGl2Pjxicj48L2Rp
+dj48L2Rpdj48L2JvZHk+PC9odG1sPg==
+--===============3413005248313119682==--
 
