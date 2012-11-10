@@ -1,35 +1,51 @@
-Content-Type: multipart/mixed; boundary="===============7348591967899086601=="
+Content-Type: multipart/mixed; boundary="===============9063024242735958191=="
 MIME-Version: 1.0
 From: Andriy Gapon <avg at FreeBSD.org>
 Subject: Re: [Devel] ref-counting races?
-Date: Fri, 09 Nov 2012 18:03:11 +0200
-Message-ID: <509D293F.4090105@FreeBSD.org>
-In-Reply-To: 94F2FBAB4432B54E8AACC7DFDE6C92E346BBFD4B@ORSMSX101.amr.corp.intel.com
+Date: Sat, 10 Nov 2012 17:04:01 +0200
+Message-ID: <509E6CE1.8050706@FreeBSD.org>
+In-Reply-To: 509D2869.5030703@FreeBSD.org
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7348591967899086601==
+--===============9063024242735958191==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-on 09/11/2012 17:50 Moore, Robert said the following:
-> Of course, that is not to say that there isn't a hole somewhere. However,=
- we
-> have not seen any similar issues from other host operating systems at this
-> time.
+on 09/11/2012 17:59 Andriy Gapon said the following:
+> on 09/11/2012 17:42 Moore, Robert said the following:
+>>> To make sure that we speak about the same thing - is e.g.
+>>> AcpiUtEvaluateObject always called under that lock?
+>>
+>> Yes.
+>>
+>>
+>> AcpiUtEvaluateObject
+>>     AcpiNsEvaluate
+>>         AcpiExEnterInterpreter ();
+>>             AcpiUtAcquireMutex (ACPI_MTX_INTERPRETER);
+>>         AcpiPsExecuteMethod (Info);
+>>
+> =
 
-Unfortunately it is not easy to reproduce the condition and it is very hard=
- to
-debug it postmortem.
-Maybe my conjecture is completely wrong and the problem is not in the refer=
-ence
-counting in general, but in some code which does double-free or alike by mi=
-stake.
+> This is not exactly what I meant.  ACPI_MTX_INTERPRETER does not cover th=
+e calls
+> to AcpiUtRemoveReference that can be made in AcpiUtEvaluateObject or in
+> AcpiUtExecute_HID or in AcpiUtEvaluateNumericObject, etc.
+> There could be other places in the code where AcpiUtRemoveReference or
+> AcpiUtAddReference are called without any lock serializing the access to a
+> reference counter.
+> =
 
+
+Just in case, AcpiEvaluateObject->AcpiNsResolveReferences seems to be an ex=
+ample
+of a place where AcpiUtAddReference is called without ACPI_MTX_INTERPRETER
+serialization.
 -- =
 
 Andriy Gapon
 
---===============7348591967899086601==--
+--===============9063024242735958191==--
 
