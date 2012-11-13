@@ -1,20 +1,30 @@
-Content-Type: multipart/mixed; boundary="===============4133780533282894200=="
+Content-Type: multipart/mixed; boundary="===============6795785034505776890=="
 MIME-Version: 1.0
 From: Moore, Robert <robert.moore at intel.com>
 Subject: Re: [Devel] ref-counting races?
-Date: Tue, 13 Nov 2012 01:51:24 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E346BC020C@ORSMSX101.amr.corp.intel.com>
+Date: Tue, 13 Nov 2012 16:50:17 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E346BC06D0@ORSMSX101.amr.corp.intel.com>
 In-Reply-To: 509E6CE1.8050706@FreeBSD.org
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4133780533282894200==
+--===============6795785034505776890==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Ok, I will take a look.
-Thanks,
+Here's what I see in AcpiEvaluateObject:
+
+The incoming method arguments are converted from external format to interna=
+l format. During this conversion, new objects are created and the reference=
+ counts are set. However, at this time AcpiEvaluateObject has exclusive acc=
+ess to these objects, at least until they are handed off to the interpreter=
+ (which is locked just before the call to AcpiNsEvaluate.)
+
+I still think that it might be interesting to examine the AcpiGbl_MutexInfo=
+ array during add reference and remove reference to see if there is any cas=
+e where the reference count functions are called with no lock held.
+
 Bob
 
 
@@ -57,5 +67,5 @@ Bob
 > --
 > Andriy Gapon
 
---===============4133780533282894200==--
+--===============6795785034505776890==--
 
