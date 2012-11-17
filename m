@@ -1,55 +1,202 @@
-Content-Type: multipart/mixed; boundary="===============0402616599023990448=="
+Content-Type: multipart/mixed; boundary="===============4044235179546439772=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] [RESEND] [PATCH 1/2] acpica Makefile: Make it possible
- to	pass additional CFLAGS when invoking make
-Date: Wed, 14 Nov 2012 17:47:49 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E346BDA6FF@ORSMSX101.amr.corp.intel.com>
-In-Reply-To: 1372054.QLoJ56Viao@hammer82.arch.suse.de
+From: AP <mail at infomediacom.info>
+Subject: [Devel] Community & educational development
+Date: Sat, 17 Nov 2012 15:46:35 -0800
+Message-ID: <135318865655cb39399946c551967dd4d4fe8bde7d_@infomediacom.info>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0402616599023990448==
+--===============4044235179546439772==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Yes, I understand. We are thinking about what the defaults should be.
+PRESS RELEASE
 
-However, of course we will add the ability to pass in flags.
-Thanks,
-Bob
+The American Grants and Loans Catalog is now available. Our new and revised
+2013 edition contains more than 2800 financial programs, subsidies, scholar=
+ships,
+grants and loans offered by the US federal government.
+
+In addition you will also have access to over 2400 programs funded by priva=
+te
+corporations and foundations. That is over 5200 programs available through
+various sources of financial providing organizations.
+
+NEW: You will also have access to our live Database that is updated on a da=
+ily
+basis. This product also provides daily email alerts as programs are announ=
+ced.
+
+The Database is also available with IP recognition. This allows you to login
+without a username or password (Great for libraries or educational institut=
+ions
+who want their users to access the database).
+
+Businesses, students, researchers, scientists, teachers, doctors, private i=
+ndividuals,
+municipalities, government departments, educational institutions, law enfor=
+cement
+agencies, nonprofits, foundations and associations will find a wealth of in=
+formation
+that will help them with their new ventures or existing projects.
+
+The document is a fully searchable PDF file for easy access to your particu=
+lar
+needs and interests. Simply enter your keywords to search through the publi=
+cation.
+
+It is the perfect tool for libraries and educational institutions to use as=
+ a
+reference guide for students who require funds to pursue their education.
 
 
-> -----Original Message-----
-> From: Thomas Renninger [mailto:trenn(a)suse.de]
-> Sent: Wednesday, November 14, 2012 9:46 AM
-> To: Moore, Robert
-> Cc: devel(a)acpica.org
-> Subject: Re: [Devel] [RESEND] [PATCH 1/2] acpica Makefile: Make it
-> possible to pass additional CFLAGS when invoking make
-> =
+Contents of the Directory:
 
-> On Wednesday, November 14, 2012 03:43:04 PM Moore, Robert wrote:
-> > We have to think about _FORTIFY_SOURCE a bit more because we have had
-> > problems on some hosts with the -O2 flag.
-> =
+-Web link to program announcement page
+-Web link to Federal agency or foundation administering the program
+-Authorization upon which a program is based
+-Objectives and goals of the program
+-Types of financial assistance offered under a program
+-Uses and restrictions placed upon a program
+-Eligibility requirements
+-Application and award process
+-Regulations, guidelines and literature relevant to a program
+-Information contacts at the headquarters, regional, and local offices
+-Programs that are related based upon program objectives and uses
 
-> But this is the whole point.
-> Currently I cannot see a possibility to pass a compiler flag dynamically
-> via make at all to give someone the chance to remove _FORTIFY_SOURCE or
-> add/remove other compiler flags dynamically (without the need of modifying
-> the Makefile itself).
-> =
 
-> I do not care much about the default CFLAGS, but we need a possibility to
-> pass optional flags dynamically.
-> =
+Programs in the Catalog provide a wide range of benefits and services
+for categories such as:
 
-> Thanks,
-> =
+Agriculture
+Business and Commerce
+Community Development
+Consumer Protection
+Cultural Affairs
+Disaster Prevention and Relief
+Education
+Employment, Labor and Training
+Energy
+Environmental Quality
+Food and Nutrition
+Health
+Housing
+Income Security and Social Services
+Information and Statistics
+Law, Justice, and Legal Services
+Natural Resources
+Regional Development
+Science and Technology
+Transportation
 
->    Thomas
 
---===============0402616599023990448==--
+CD version: $69.95
+Printed version: $149.95
+
+To order please call: 1 (800) 610-4543
+
+
+Please do not reply to the sender's email address as this address is only f=
+or outgoing mail.
+
+If you do not wish to receive information from us in the future please repl=
+y here:
+rem218(a)mail.com
+
+This is a CANSPAM ACT compliant advertising broadcast sent by:
+American Publishing Inc. , 7025 County Rd. 46A, Suite 1071, Lake Mary, FL, =
+32746-4753
+
+--===============4044235179546439772==
+Content-Type: text/html
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="attachment.html"
+
+PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMDEgVHJhbnNpdGlvbmFs
+Ly9FTiIgImh0dHA6Ly93d3cudzMub3JnL1RSL2h0bWw0L2xvb3NlLmR0ZCI+CjxIVE1MPjxIRUFE
+PjxNRVRBIGh0dHAtZXF1aXY9IkNvbnRlbnQtVHlwZSIgY29udGVudD0idGV4dC9odG1sOyBjaGFy
+c2V0PWlzby04ODU5LTEiPgo8U1RZTEU+CmJvZHkscCxkaXYsdGQgeyBmb250LWZhbWlseTogQXJp
+YWw7IH0KPC9TVFlMRT4KPC9IRUFEPgo8Qk9EWSBiZ0NvbG9yPSNmZmZmZmY+CjxESVYgYWxpZ249
+Y2VudGVyPjxGT05UIHNpemU9Mj5QUkVTUyBSRUxFQVNFPC9GT05UPjwvRElWPgo8RElWIGFsaWdu
+PWNlbnRlcj4mbmJzcDs8L0RJVj4KPERJViBhbGlnbj1jZW50ZXI+PEZPTlQgc2l6ZT0yPlRoZSBB
+bWVyaWNhbiBHcmFudHMgYW5kIExvYW5zIENhdGFsb2cgaXMgbm93CmF2YWlsYWJsZS4gT3VyIG5l
+dyBhbmQgcmV2aXNlZDxCUj4yMDEzIGVkaXRpb24gY29udGFpbnMgbW9yZSB0aGFuIDI4MDAgZmlu
+YW5jaWFsCnByb2dyYW1zLCBzdWJzaWRpZXMsIHNjaG9sYXJzaGlwcyw8QlI+Z3JhbnRzIGFuZCBs
+b2FucyBvZmZlcmVkIGJ5IHRoZSBVUyBmZWRlcmFsCmdvdmVybm1lbnQuPC9GT05UPjwvRElWPgo8
+RElWIGFsaWduPWNlbnRlcj4mbmJzcDs8L0RJVj4KPERJViBhbGlnbj1jZW50ZXI+PEZPTlQgc2l6
+ZT0yPkluIGFkZGl0aW9uIHlvdSB3aWxsIGFsc28gaGF2ZSBhY2Nlc3MgdG8gb3ZlcgoyNDAwIHBy
+b2dyYW1zIGZ1bmRlZCBieSBwcml2YXRlPEJSPmNvcnBvcmF0aW9ucyBhbmQgZm91bmRhdGlvbnMu
+IFRoYXQgaXMgb3Zlcgo1MjAwIHByb2dyYW1zIGF2YWlsYWJsZSB0aHJvdWdoPEJSPnZhcmlvdXMg
+c291cmNlcyBvZiBmaW5hbmNpYWwgcHJvdmlkaW5nCm9yZ2FuaXphdGlvbnMuPC9GT05UPjwvRElW
+Pgo8RElWIGFsaWduPWNlbnRlcj4mbmJzcDs8L0RJVj4KPERJViBhbGlnbj1jZW50ZXI+PEZPTlQg
+c2l6ZT0yPk5FVzogWW91IHdpbGwgYWxzbyBoYXZlIGFjY2VzcyB0byBvdXIgbGl2ZQpEYXRhYmFz
+ZSB0aGF0IGlzIHVwZGF0ZWQgb24gYSBkYWlseTxCUj5iYXNpcy4gVGhpcyBwcm9kdWN0IGFsc28g
+cHJvdmlkZXMgZGFpbHkKZW1haWwgYWxlcnRzIGFzIHByb2dyYW1zIGFyZSBhbm5vdW5jZWQuPC9G
+T05UPjwvRElWPgo8RElWIGFsaWduPWNlbnRlcj4mbmJzcDs8L0RJVj4KPERJViBhbGlnbj1jZW50
+ZXI+PEZPTlQgc2l6ZT0yPlRoZSBEYXRhYmFzZSBpcyBhbHNvIGF2YWlsYWJsZSB3aXRoIElQCnJl
+Y29nbml0aW9uLiBUaGlzIGFsbG93cyB5b3UgdG8gbG9naW48QlI+d2l0aG91dCBhIHVzZXJuYW1l
+IG9yIHBhc3N3b3JkIChHcmVhdApmb3IgbGlicmFyaWVzIG9yIGVkdWNhdGlvbmFsIGluc3RpdHV0
+aW9uczxCUj53aG8gd2FudCB0aGVpciB1c2VycyB0byBhY2Nlc3MgdGhlCmRhdGFiYXNlKS48L0ZP
+TlQ+PC9ESVY+CjxESVYgYWxpZ249Y2VudGVyPiZuYnNwOzwvRElWPgo8RElWIGFsaWduPWNlbnRl
+cj48Rk9OVCBzaXplPTI+QnVzaW5lc3Nlcywgc3R1ZGVudHMsIHJlc2VhcmNoZXJzLCBzY2llbnRp
+c3RzLAp0ZWFjaGVycywgZG9jdG9ycywgcHJpdmF0ZSBpbmRpdmlkdWFscyw8QlI+bXVuaWNpcGFs
+aXRpZXMsIGdvdmVybm1lbnQKZGVwYXJ0bWVudHMsIGVkdWNhdGlvbmFsIGluc3RpdHV0aW9ucywg
+bGF3IGVuZm9yY2VtZW50PEJSPmFnZW5jaWVzLCBub25wcm9maXRzLApmb3VuZGF0aW9ucyBhbmQg
+YXNzb2NpYXRpb25zIHdpbGwgZmluZCBhIHdlYWx0aCBvZiBpbmZvcm1hdGlvbjxCUj50aGF0IHdp
+bGwgaGVscAp0aGVtIHdpdGggdGhlaXIgbmV3IHZlbnR1cmVzIG9yIGV4aXN0aW5nIHByb2plY3Rz
+LjwvRk9OVD48L0RJVj4KPERJViBhbGlnbj1jZW50ZXI+Jm5ic3A7PC9ESVY+CjxESVYgYWxpZ249
+Y2VudGVyPjxGT05UIHNpemU9Mj5UaGUgZG9jdW1lbnQgaXMgYSBmdWxseSBzZWFyY2hhYmxlIFBE
+RiBmaWxlIGZvcgplYXN5IGFjY2VzcyB0byB5b3VyIHBhcnRpY3VsYXI8QlI+bmVlZHMgYW5kIGlu
+dGVyZXN0cy4gU2ltcGx5IGVudGVyIHlvdXIKa2V5d29yZHMgdG8gc2VhcmNoIHRocm91Z2ggdGhl
+IHB1YmxpY2F0aW9uLjwvRk9OVD48L0RJVj4KPERJViBhbGlnbj1jZW50ZXI+Jm5ic3A7PC9ESVY+
+CjxESVYgYWxpZ249Y2VudGVyPjxGT05UIHNpemU9Mj5JdCBpcyB0aGUgcGVyZmVjdCB0b29sIGZv
+ciBsaWJyYXJpZXMgYW5kCmVkdWNhdGlvbmFsIGluc3RpdHV0aW9ucyB0byB1c2UgYXMgYTxCUj5y
+ZWZlcmVuY2UgZ3VpZGUgZm9yIHN0dWRlbnRzIHdobyByZXF1aXJlCmZ1bmRzIHRvIHB1cnN1ZSB0
+aGVpciBlZHVjYXRpb24uPC9GT05UPjwvRElWPgo8RElWIGFsaWduPWNlbnRlcj4mbmJzcDs8L0RJ
+Vj4KPERJViBhbGlnbj1jZW50ZXI+PEJSPjxGT05UIHNpemU9Mj5Db250ZW50cyBvZiB0aGUgRGly
+ZWN0b3J5OjwvRk9OVD48L0RJVj4KPERJViBhbGlnbj1jZW50ZXI+Jm5ic3A7PC9ESVY+CjxESVYg
+YWxpZ249Y2VudGVyPjxGT05UIHNpemU9Mj4tV2ViIGxpbmsgdG8gcHJvZ3JhbSBhbm5vdW5jZW1l
+bnQgcGFnZTxCUj4tV2ViCmxpbmsgdG8gRmVkZXJhbCBhZ2VuY3kgb3IgZm91bmRhdGlvbiBhZG1p
+bmlzdGVyaW5nIHRoZSBwcm9ncmFtPEJSPi1BdXRob3JpemF0aW9uCnVwb24gd2hpY2ggYSBwcm9n
+cmFtIGlzIGJhc2VkPEJSPi1PYmplY3RpdmVzIGFuZCBnb2FscyBvZiB0aGUgcHJvZ3JhbTxCUj4t
+VHlwZXMKb2YgZmluYW5jaWFsIGFzc2lzdGFuY2Ugb2ZmZXJlZCB1bmRlciBhIHByb2dyYW08QlI+
+LVVzZXMgYW5kIHJlc3RyaWN0aW9ucyBwbGFjZWQKdXBvbiBhIHByb2dyYW08QlI+LUVsaWdpYmls
+aXR5IHJlcXVpcmVtZW50czxCUj4tQXBwbGljYXRpb24gYW5kIGF3YXJkCnByb2Nlc3M8QlI+LVJl
+Z3VsYXRpb25zLCBndWlkZWxpbmVzIGFuZCBsaXRlcmF0dXJlIHJlbGV2YW50IHRvIGEKcHJvZ3Jh
+bTxCUj4tSW5mb3JtYXRpb24gY29udGFjdHMgYXQgdGhlIGhlYWRxdWFydGVycywgcmVnaW9uYWws
+IGFuZCBsb2NhbApvZmZpY2VzPEJSPi1Qcm9ncmFtcyB0aGF0IGFyZSByZWxhdGVkIGJhc2VkIHVw
+b24gcHJvZ3JhbSBvYmplY3RpdmVzIGFuZAp1c2VzPC9GT05UPjwvRElWPgo8RElWIGFsaWduPWNl
+bnRlcj4mbmJzcDs8L0RJVj4KPERJViBhbGlnbj1jZW50ZXI+PEJSPjxGT05UIHNpemU9Mj5Qcm9n
+cmFtcyBpbiB0aGUgQ2F0YWxvZyBwcm92aWRlIGEgd2lkZSByYW5nZQpvZiBiZW5lZml0cyBhbmQg
+c2VydmljZXM8QlI+Zm9yIGNhdGVnb3JpZXMgc3VjaCBhczo8L0ZPTlQ+PC9ESVY+CjxESVYgYWxp
+Z249Y2VudGVyPiZuYnNwOzwvRElWPgo8RElWIGFsaWduPWNlbnRlcj48Rk9OVCBzaXplPTI+QWdy
+aWN1bHR1cmU8QlI+QnVzaW5lc3MgYW5kIENvbW1lcmNlPEJSPkNvbW11bml0eQpEZXZlbG9wbWVu
+dDxCUj5Db25zdW1lciBQcm90ZWN0aW9uPEJSPkN1bHR1cmFsIEFmZmFpcnM8QlI+RGlzYXN0ZXIg
+UHJldmVudGlvbgphbmQgUmVsaWVmPEJSPkVkdWNhdGlvbjxCUj5FbXBsb3ltZW50LCBMYWJvciBh
+bmQKVHJhaW5pbmc8QlI+RW5lcmd5PEJSPkVudmlyb25tZW50YWwgUXVhbGl0eTxCUj5Gb29kIGFu
+ZApOdXRyaXRpb248QlI+SGVhbHRoPEJSPkhvdXNpbmc8QlI+SW5jb21lIFNlY3VyaXR5IGFuZCBT
+b2NpYWwKU2VydmljZXM8QlI+SW5mb3JtYXRpb24gYW5kIFN0YXRpc3RpY3M8QlI+TGF3LCBKdXN0
+aWNlLCBhbmQgTGVnYWwKU2VydmljZXM8QlI+TmF0dXJhbCBSZXNvdXJjZXM8QlI+UmVnaW9uYWwg
+RGV2ZWxvcG1lbnQ8QlI+U2NpZW5jZSBhbmQKVGVjaG5vbG9neTxCUj5UcmFuc3BvcnRhdGlvbjwv
+Rk9OVD48L0RJVj4KPERJViBhbGlnbj1jZW50ZXI+Jm5ic3A7PC9ESVY+CjxESVYgYWxpZ249Y2Vu
+dGVyPjxCUj48Rk9OVCBzaXplPTI+Q0QgdmVyc2lvbjogJDY5Ljk1PEJSPlByaW50ZWQgdmVyc2lv
+bjoKJDE0OS45NTwvRk9OVD48L0RJVj4KPERJViBhbGlnbj1jZW50ZXI+Jm5ic3A7PC9ESVY+CjxE
+SVYgYWxpZ249Y2VudGVyPjxGT05UIHNpemU9Mj5UbyBvcmRlciBwbGVhc2UgY2FsbDogMSAoODAw
+KQo2MTAtNDU0MzwvRk9OVD48L0RJVj4KPERJViBhbGlnbj1jZW50ZXI+Jm5ic3A7PC9ESVY+CjxE
+SVYgYWxpZ249Y2VudGVyPjxCUj48Rk9OVCBzaXplPTI+UGxlYXNlIGRvIG5vdCByZXBseSB0byB0
+aGUgc2VuZGVyJ3MgZW1haWwKYWRkcmVzcyBhcyB0aGlzIGFkZHJlc3MgaXMgb25seSBmb3Igb3V0
+Z29pbmcgbWFpbC48L0ZPTlQ+PC9ESVY+CjxESVYgYWxpZ249Y2VudGVyPiZuYnNwOzwvRElWPgo8
+RElWIGFsaWduPWNlbnRlcj48Rk9OVCBzaXplPTI+SWYgeW91IGRvIG5vdCB3aXNoIHRvIHJlY2Vp
+dmUgaW5mb3JtYXRpb24gZnJvbSB1cwppbiB0aGUgZnV0dXJlIHBsZWFzZSByZXBseSBoZXJlOjxC
+Uj48L0ZPTlQ+PEEKaHJlZj0ibWFpbHRvOnJlbTIxOEBtYWlsLmNvbSI+PEZPTlQgc2l6ZT0yPnJl
+bTIxOEBtYWlsLmNvbTwvRk9OVD48L0E+PC9ESVY+CjxESVYgYWxpZ249Y2VudGVyPiZuYnNwOzwv
+RElWPgo8RElWIGFsaWduPWNlbnRlcj48Rk9OVCBzaXplPTI+VGhpcyBpcyBhIENBTlNQQU0gQUNU
+IGNvbXBsaWFudCBhZHZlcnRpc2luZwpicm9hZGNhc3Qgc2VudCBieTo8QlI+QW1lcmljYW4gUHVi
+bGlzaGluZyBJbmMuICwgNzAyNSBDb3VudHkgUmQuIDQ2QSwgU3VpdGUKMTA3MSwgTGFrZSBNYXJ5
+LCBGTCwgMzI3NDYtNDc1MzxCUj48L0ZPTlQ+PC9ESVY+PC9CT0RZPjwvSFRNTD4K
+
+--===============4044235179546439772==--
 
