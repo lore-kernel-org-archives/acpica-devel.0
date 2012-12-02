@@ -1,79 +1,98 @@
-Content-Type: multipart/mixed; boundary="===============0424366384847342555=="
+Content-Type: multipart/mixed; boundary="===============5582511977247404898=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] ref-counting races?
-Date: Wed, 21 Nov 2012 15:18:36 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E346BDDCF3@ORSMSX101.amr.corp.intel.com>
-In-Reply-To: 50AC0D88.5070709@FreeBSD.org
+From: Ayan Halder <Ayan.Halder at open-silicon.com>
+Subject: [Devel] ACPI 5.0 implementation for armv7 and armv8 architecture
+Date: Sun, 02 Dec 2012 13:29:39 +0000
+Message-ID: <F730C77BC573E24CA82F062C27B524A2092E6D7A@BY2PRD0510MB378.namprd05.prod.outlook.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0424366384847342555==
+--===============5582511977247404898==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-> -----Original Message-----
-> From: Andriy Gapon [mailto:avg(a)FreeBSD.org]
-> Sent: Tuesday, November 20, 2012 3:09 PM
-> To: Moore, Robert
-> Cc: devel(a)acpica.org; Zheng, Lv
-> Subject: Re: [Devel] ref-counting races?
-> =
+Hi,
 
-> on 13/11/2012 18:50 Moore, Robert said the following:
-> > I still think that it might be interesting to examine the
-> > AcpiGbl_MutexInfo array during add reference and remove reference to
-> > see if there is any case where the reference count functions are called
-> with no lock held.
-> =
+I am planning to implement ACPI5.0 on an SOC having Cortex A5 and Atlas cpu=
+( based on armv8 architecture) running linux on top of them.
+As per the ACPI 5.0 hardware specification(Fixed Hardware/ Generic Hardware=
+  model) of ACPI5.0, the processor needs to support various low power modes=
+(C0, C1, C2, C3) and sleep states(S1, S2, S3, S4, S5) via register interfac=
+es as well as OEM provided AML(ACPI Machine Language).
+Therefore, which instructions in armv7 and armv8 put the processor into the=
+ afore-mentioned low power modes and sleep states?
+( The arm instruction manual specifies "wfe" and "wfi" to put the processor=
+ in a sleep state, but I am not sure if this confirms to the ACPI 5.0 requi=
+rements )
+Besides, does arm provide any AML(ACPI Machine Language) code to put the pr=
+ocessor to low power modes? If not, then how do we create an ACPI machine l=
+anguage code for armv7 and armv8 architecture and do we have an AML interpr=
+eter for armv7 and armv8 architecture?
 
-> I still haven't got around to implementing this useful debugging
-> technique.
-> =
-
-> Meanwhile we've got another FreeBSD report which appears to be related:
-> http://article.gmane.org/gmane.os.freebsd.devel.acpi/7562
-> =
-
-> Two new notes.
-> =
-
-> Could these issues be caused by FreeBSD using multiple threads to handle
-> ACPI
-> Notify-s?   So that some Notify-s may get processed in parallel and thus
-> cause
-> some parallel access to ACPICA and AML.
-> =
+Regards,
+Ayan Kumar Halder
 
 
+--===============5582511977247404898==
+Content-Type: text/html
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="attachment.html"
 
-I don't know of any issues concerning multiple threads with multiple notifi=
-es.
+PGh0bWwgeG1sbnM6dj0idXJuOnNjaGVtYXMtbWljcm9zb2Z0LWNvbTp2bWwiIHhtbG5zOm89InVy
+bjpzY2hlbWFzLW1pY3Jvc29mdC1jb206b2ZmaWNlOm9mZmljZSIgeG1sbnM6dz0idXJuOnNjaGVt
+YXMtbWljcm9zb2Z0LWNvbTpvZmZpY2U6d29yZCIgeG1sbnM6bT0iaHR0cDovL3NjaGVtYXMubWlj
+cm9zb2Z0LmNvbS9vZmZpY2UvMjAwNC8xMi9vbW1sIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcv
+VFIvUkVDLWh0bWw0MCI+CjxoZWFkPgo8bWV0YSBodHRwLWVxdWl2PSJDb250ZW50LVR5cGUiIGNv
+bnRlbnQ9InRleHQvaHRtbDsgY2hhcnNldD11cy1hc2NpaSI+CjxtZXRhIG5hbWU9IkdlbmVyYXRv
+ciIgY29udGVudD0iTWljcm9zb2Z0IFdvcmQgMTQgKGZpbHRlcmVkIG1lZGl1bSkiPgo8c3R5bGU+
+PCEtLQovKiBGb250IERlZmluaXRpb25zICovCkBmb250LWZhY2UKCXtmb250LWZhbWlseTpDYWxp
+YnJpOwoJcGFub3NlLTE6MiAxNSA1IDIgMiAyIDQgMyAyIDQ7fQovKiBTdHlsZSBEZWZpbml0aW9u
+cyAqLwpwLk1zb05vcm1hbCwgbGkuTXNvTm9ybWFsLCBkaXYuTXNvTm9ybWFsCgl7bWFyZ2luOjBp
+bjsKCW1hcmdpbi1ib3R0b206LjAwMDFwdDsKCWZvbnQtc2l6ZToxMS4wcHQ7Cglmb250LWZhbWls
+eToiQ2FsaWJyaSIsInNhbnMtc2VyaWYiO30KYTpsaW5rLCBzcGFuLk1zb0h5cGVybGluawoJe21z
+by1zdHlsZS1wcmlvcml0eTo5OTsKCWNvbG9yOmJsdWU7Cgl0ZXh0LWRlY29yYXRpb246dW5kZXJs
+aW5lO30KYTp2aXNpdGVkLCBzcGFuLk1zb0h5cGVybGlua0ZvbGxvd2VkCgl7bXNvLXN0eWxlLXBy
+aW9yaXR5Ojk5OwoJY29sb3I6cHVycGxlOwoJdGV4dC1kZWNvcmF0aW9uOnVuZGVybGluZTt9CnNw
+YW4uRW1haWxTdHlsZTE3Cgl7bXNvLXN0eWxlLXR5cGU6cGVyc29uYWw7Cglmb250LWZhbWlseToi
+Q2FsaWJyaSIsInNhbnMtc2VyaWYiOwoJY29sb3I6d2luZG93dGV4dDt9CnNwYW4uRW1haWxTdHls
+ZTE4Cgl7bXNvLXN0eWxlLXR5cGU6cGVyc29uYWwtcmVwbHk7Cglmb250LWZhbWlseToiQ2FsaWJy
+aSIsInNhbnMtc2VyaWYiOwoJY29sb3I6IzFGNDk3RDt9Ci5Nc29DaHBEZWZhdWx0Cgl7bXNvLXN0
+eWxlLXR5cGU6ZXhwb3J0LW9ubHk7Cglmb250LXNpemU6MTAuMHB0O30KQHBhZ2UgV29yZFNlY3Rp
+b24xCgl7c2l6ZTo4LjVpbiAxMS4waW47CgltYXJnaW46MS4waW4gMS4waW4gMS4waW4gMS4waW47
+fQpkaXYuV29yZFNlY3Rpb24xCgl7cGFnZTpXb3JkU2VjdGlvbjE7fQotLT48L3N0eWxlPjwhLS1b
+aWYgZ3RlIG1zbyA5XT48eG1sPgo8bzpzaGFwZWRlZmF1bHRzIHY6ZXh0PSJlZGl0IiBzcGlkbWF4
+PSIxMDI2IiAvPgo8L3htbD48IVtlbmRpZl0tLT48IS0tW2lmIGd0ZSBtc28gOV0+PHhtbD4KPG86
+c2hhcGVsYXlvdXQgdjpleHQ9ImVkaXQiPgo8bzppZG1hcCB2OmV4dD0iZWRpdCIgZGF0YT0iMSIg
+Lz4KPC9vOnNoYXBlbGF5b3V0PjwveG1sPjwhW2VuZGlmXS0tPgo8L2hlYWQ+Cjxib2R5IGxhbmc9
+IkVOLVVTIiBsaW5rPSJibHVlIiB2bGluaz0icHVycGxlIj4KPGRpdiBjbGFzcz0iV29yZFNlY3Rp
+b24xIj4KPHAgY2xhc3M9Ik1zb05vcm1hbCI+SGksPG86cD48L286cD48L3A+CjxwIGNsYXNzPSJN
+c29Ob3JtYWwiPjxvOnA+Jm5ic3A7PC9vOnA+PC9wPgo8cCBjbGFzcz0iTXNvTm9ybWFsIj5JIGFt
+IHBsYW5uaW5nIHRvIGltcGxlbWVudCBBQ1BJNS4wIG9uIGFuIFNPQyBoYXZpbmcgQ29ydGV4IEE1
+IGFuZCBBdGxhcyBjcHUoIGJhc2VkIG9uIGFybXY4IGFyY2hpdGVjdHVyZSkgcnVubmluZyBsaW51
+eCBvbiB0b3Agb2YgdGhlbS4KPG86cD48L286cD48L3A+CjxwIGNsYXNzPSJNc29Ob3JtYWwiPkFz
+IHBlciB0aGUgQUNQSSA1LjAgaGFyZHdhcmUgc3BlY2lmaWNhdGlvbihGaXhlZCBIYXJkd2FyZS8g
+R2VuZXJpYyBIYXJkd2FyZSZuYnNwOyBtb2RlbCkgb2YgQUNQSTUuMCwgdGhlIHByb2Nlc3NvciBu
+ZWVkcyB0byBzdXBwb3J0IHZhcmlvdXMgbG93IHBvd2VyIG1vZGVzKEMwLCBDMSwgQzIsIEMzKSBh
+bmQgc2xlZXAgc3RhdGVzKFMxLCBTMiwgUzMsIFM0LCBTNSkgdmlhIHJlZ2lzdGVyIGludGVyZmFj
+ZXMgYXMgd2VsbAogYXMgT0VNIHByb3ZpZGVkIEFNTChBQ1BJIE1hY2hpbmUgTGFuZ3VhZ2UpLiA8
+bzpwPjwvbzpwPjwvcD4KPHAgY2xhc3M9Ik1zb05vcm1hbCI+VGhlcmVmb3JlLCB3aGljaCBpbnN0
+cnVjdGlvbnMgaW4gYXJtdjcgYW5kIGFybXY4IHB1dCB0aGUgcHJvY2Vzc29yIGludG8gdGhlIGFm
+b3JlLW1lbnRpb25lZCBsb3cgcG93ZXIgbW9kZXMgYW5kIHNsZWVwIHN0YXRlcz8KPG86cD48L286
+cD48L3A+CjxwIGNsYXNzPSJNc29Ob3JtYWwiPiggVGhlIGFybSBpbnN0cnVjdGlvbiBtYW51YWwg
+c3BlY2lmaWVzICYjODIyMDt3ZmUmIzgyMjE7IGFuZCAmIzgyMjA7d2ZpJiM4MjIxOyB0byBwdXQg
+dGhlIHByb2Nlc3NvciBpbiBhIHNsZWVwIHN0YXRlLCBidXQgSSBhbSBub3Qgc3VyZSBpZiB0aGlz
+IGNvbmZpcm1zIHRvIHRoZSBBQ1BJIDUuMCByZXF1aXJlbWVudHMgKTxvOnA+PC9vOnA+PC9wPgo8
+cCBjbGFzcz0iTXNvTm9ybWFsIj5CZXNpZGVzLCBkb2VzIGFybSBwcm92aWRlIGFueSBBTUwoQUNQ
+SSBNYWNoaW5lIExhbmd1YWdlKSBjb2RlIHRvIHB1dCB0aGUgcHJvY2Vzc29yIHRvIGxvdyBwb3dl
+ciBtb2Rlcz8gSWYgbm90LCB0aGVuIGhvdyBkbyB3ZSBjcmVhdGUgYW4gQUNQSSBtYWNoaW5lIGxh
+bmd1YWdlIGNvZGUgZm9yIGFybXY3IGFuZCBhcm12OCBhcmNoaXRlY3R1cmUgYW5kIGRvIHdlIGhh
+dmUgYW4gQU1MIGludGVycHJldGVyIGZvciBhcm12NwogYW5kIGFybXY4IGFyY2hpdGVjdHVyZT88
+bzpwPjwvbzpwPjwvcD4KPHAgY2xhc3M9Ik1zb05vcm1hbCI+PG86cD4mbmJzcDs8L286cD48L3A+
+CjxwIGNsYXNzPSJNc29Ob3JtYWwiPlJlZ2FyZHMsPG86cD48L286cD48L3A+CjxwIGNsYXNzPSJN
+c29Ob3JtYWwiPkF5YW4gS3VtYXIgSGFsZGVyPG86cD48L286cD48L3A+CjxwIGNsYXNzPSJNc29O
+b3JtYWwiPjxvOnA+Jm5ic3A7PC9vOnA+PC9wPgo8L2Rpdj4KPC9ib2R5Pgo8L2h0bWw+Cg==
 
-
-
-> AcpiUtUpdateRefCount handling of REF_DECREMENT && Count < 1 looks
-> worrying.
-> Not sure if that ever happens in practice, but since the code exists...
-> The case is being treated as a minor event (judging from the debugging
-> print), but we are already lucky if we see Count =3D=3D 0 there instead of
-> some garbage or just plain crashing because the memory is already freed.
-> Nevertheless we discard even that luck by happily continuing into
-> potentially a repeated call to AcpiUtDeleteInternalObj.
-> =
-
-> --
-> Andriy Gapon
-
-This code appears in order to essentially catch a case where an attempt is =
-made to delete an object twice. Admittedly, it doesn't serve much purpose t=
-hese days and should probably be removed. In practice, we never, ever hit t=
-he (Count < 1) case that I know of. In other words, I don't know of any cas=
-es where the acpica code ever attempts to delete an object twice.
-
-
-
-
---===============0424366384847342555==--
+--===============5582511977247404898==--
 
