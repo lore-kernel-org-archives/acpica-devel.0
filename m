@@ -1,202 +1,231 @@
-Content-Type: multipart/mixed; boundary="===============6497287655454191308=="
+Content-Type: multipart/mixed; boundary="===============3686916515112825866=="
 MIME-Version: 1.0
-From: AP <mail at mediainfocom.info>
-Subject: [Devel] Community & educational development
-Date: Fri, 07 Dec 2012 00:25:58 -0800
-Message-ID: <135482549055cb39399946c551967dd4d4fe8bde7d_@mediainfocom.info>
+From: Zhang Rui <rui.zhang at intel.com>
+Subject: [Devel] [PATCH] Execute "orphan" _REG method for specified EC device
+Date: Thu, 13 Dec 2012 15:12:56 +0800
+Message-ID: <1355382776.2276.8.camel@rzhang1-mobl4>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6497287655454191308==
+--===============3686916515112825866==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-PRESS RELEASE
+From 7b7c81250eb6511d9f237bdd96f4f2f61231c1ec Mon Sep 17 00:00:00 2001
+From: Zhang Rui <rui.zhang(a)intel.com>
+Date: Thu, 13 Dec 2012 11:44:19 +0800
+Subject: [PATCH] Execute "orphan" _REG method for specified EC device
 
-The American Grants and Loans Catalog is now available. Our new and revised
-2013 edition contains more than 2800 financial programs, subsidies, scholar=
-ships,
-grants and loans offered by the US federal government.
+As it is always the EC device driver that installs the
+EC address space handler, we can make the assumption that
+the ACPI_NAMESPACE_NODE parameter of AcpiEvInstallHandler
+always points to the EC device node.
+Thus we do not need to look for EC device in ECDT.
 
-In addition you will also have access to over 2400 programs funded by priva=
-te
-corporations and foundations. That is over 5200 programs available through
-various sources of financial providing organizations.
+https://bugzilla.kernel.org/show_bug.cgi?id=3D15707
 
-NEW: You will also have access to our live Database that is updated on a da=
-ily
-basis. This product also provides daily email alerts as programs are announ=
-ced.
+Signed-off-by: Zhang Rui <rui.zhang(a)intel.com>
+---
+ source/components/events/evregion.c |   39 +++++++------------------------=
+----
+ 1 file changed, 8 insertions(+), 31 deletions(-)
 
-The Database is also available with IP recognition. This allows you to login
-without a username or password (Great for libraries or educational institut=
-ions
-who want their users to access the database).
+diff --git a/source/components/events/evregion.c b/source/components/events=
+/evregion.c
+index 2ab7922..7a619be 100644
+--- a/source/components/events/evregion.c
++++ b/source/components/events/evregion.c
+@@ -135,7 +135,7 @@ AcpiEvHasDefaultHandler (
+ =
 
-Businesses, students, researchers, scientists, teachers, doctors, private i=
-ndividuals,
-municipalities, government departments, educational institutions, law enfor=
-cement
-agencies, nonprofits, foundations and associations will find a wealth of in=
-formation
-that will help them with their new ventures or existing projects.
+ static void
+ AcpiEvOrphanEcRegMethod (
+-    void);
++    ACPI_NAMESPACE_NODE     *Node);
+ =
 
-The document is a fully searchable PDF file for easy access to your particu=
-lar
-needs and interests. Simply enter your keywords to search through the publi=
-cation.
+ static ACPI_STATUS
+ AcpiEvRegRun (
+@@ -1248,7 +1248,7 @@ AcpiEvExecuteRegMethods (
+ =
 
-It is the perfect tool for libraries and educational institutions to use as=
- a
-reference guide for students who require funds to pursue their education.
+     if (SpaceId =3D=3D ACPI_ADR_SPACE_EC)
+     {
+-        AcpiEvOrphanEcRegMethod ();
++        AcpiEvOrphanEcRegMethod (Node);
+     }
+ =
+
+     return_ACPI_STATUS (Status);
+@@ -1326,7 +1326,7 @@ AcpiEvRegRun (
+  *
+  * FUNCTION:    AcpiEvOrphanEcRegMethod
+  *
+- * PARAMETERS:  None
++ * PARAMETERS:  Node:		- Namespace node for the EC device
+  *
+  * RETURN:      None
+  *
+@@ -1347,32 +1347,19 @@ AcpiEvRegRun (
+ =
+
+ static void
+ AcpiEvOrphanEcRegMethod (
+-    void)
++    ACPI_NAMESPACE_NODE	    *Node)
+ {
+     ACPI_TABLE_ECDT         *Table;
+     ACPI_STATUS             Status;
+     ACPI_OBJECT_LIST        Args;
+     ACPI_OBJECT             Objects[2];
+-    ACPI_NAMESPACE_NODE     *EcDeviceNode;
+     ACPI_NAMESPACE_NODE     *RegMethod;
+     ACPI_NAMESPACE_NODE     *NextNode;
+ =
+
+ =
+
+     ACPI_FUNCTION_TRACE (EvOrphanEcRegMethod);
+ =
+
+-
+-    /* Get the ECDT (if present in system) */
+-
+-    Status =3D AcpiGetTable (ACPI_SIG_ECDT, 0,
+-        ACPI_CAST_INDIRECT_PTR (ACPI_TABLE_HEADER, &Table));
+-    if (ACPI_FAILURE (Status))
+-    {
+-        return_VOID;
+-    }
+-
+-    /* We need a valid EC_ID string */
+-
+-    if (!(*Table->Id))
++    if (!Node)
+     {
+         return_VOID;
+     }
+@@ -1381,19 +1368,9 @@ AcpiEvOrphanEcRegMethod (
+ =
+
+     (void) AcpiUtReleaseMutex (ACPI_MTX_NAMESPACE);
+ =
+
+-    /* Get a handle to the EC device referenced in the ECDT */
+-
+-    Status =3D AcpiGetHandle (NULL,
+-        ACPI_CAST_PTR (char, Table->Id),
+-        ACPI_CAST_PTR (ACPI_HANDLE, &EcDeviceNode));
+-    if (ACPI_FAILURE (Status))
+-    {
+-        goto Exit;
+-    }
+-
+     /* Get a handle to a _REG method immediately under the EC device */
+ =
+
+-    Status =3D AcpiGetHandle (EcDeviceNode,
++    Status =3D AcpiGetHandle (Node,
+         METHOD_NAME__REG, ACPI_CAST_PTR (ACPI_HANDLE, &RegMethod));
+     if (ACPI_FAILURE (Status))
+     {
+@@ -1407,7 +1384,7 @@ AcpiEvOrphanEcRegMethod (
+      * with other space IDs to be present; but the code below will then
+      * execute the _REG method with the EC space ID argument.
+      */
+-    NextNode =3D AcpiNsGetNextNode (EcDeviceNode, NULL);
++    NextNode =3D AcpiNsGetNextNode (Node, NULL);
+     while (NextNode)
+     {
+         if ((NextNode->Type =3D=3D ACPI_TYPE_REGION) &&
+@@ -1416,7 +1393,7 @@ AcpiEvOrphanEcRegMethod (
+         {
+             goto Exit; /* Do not execute _REG */
+         }
+-        NextNode =3D AcpiNsGetNextNode (EcDeviceNode, NextNode);
++        NextNode =3D AcpiNsGetNextNode (Node, NextNode);
+     }
+ =
+
+     /* Evaluate the _REG(EC,Connect) method */
+-- =
+
+1.7.9.5
 
 
-Contents of the Directory:
 
--Web link to program announcement page
--Web link to Federal agency or foundation administering the program
--Authorization upon which a program is based
--Objectives and goals of the program
--Types of financial assistance offered under a program
--Uses and restrictions placed upon a program
--Eligibility requirements
--Application and award process
--Regulations, guidelines and literature relevant to a program
--Information contacts at the headquarters, regional, and local offices
--Programs that are related based upon program objectives and uses
-
-
-Programs in the Catalog provide a wide range of benefits and services
-for categories such as:
-
-Agriculture
-Business and Commerce
-Community Development
-Consumer Protection
-Cultural Affairs
-Disaster Prevention and Relief
-Education
-Employment, Labor and Training
-Energy
-Environmental Quality
-Food and Nutrition
-Health
-Housing
-Income Security and Social Services
-Information and Statistics
-Law, Justice, and Legal Services
-Natural Resources
-Regional Development
-Science and Technology
-Transportation
-
-
-CD version: $69.95
-Printed version: $149.95
-
-To order please call: 1 (800) 610-4543
-
-
-Please do not reply to the sender's email address as this address is only f=
-or outgoing mail.
-
-If you do not wish to receive information from us in the future please repl=
-y here:
-rem218(a)mail.com
-
-This is a CANSPAM ACT compliant advertising broadcast sent by:
-American Publishing Inc. , 7025 County Rd. 46A, Suite 1071, Lake Mary, FL, =
-32746-4753
-
---===============6497287655454191308==
-Content-Type: text/html
+--===============3686916515112825866==
+Content-Type: text/x-patch
 MIME-Version: 1.0
 Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="attachment.html"
+Content-Disposition: attachment;
+ filename="0001-Execute-orphan-_REG-method-for-specified-EC-device.patch"
 
-PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMDEgVHJhbnNpdGlvbmFs
-Ly9FTiIgImh0dHA6Ly93d3cudzMub3JnL1RSL2h0bWw0L2xvb3NlLmR0ZCI+CjxIVE1MPjxIRUFE
-PjxNRVRBIGh0dHAtZXF1aXY9IkNvbnRlbnQtVHlwZSIgY29udGVudD0idGV4dC9odG1sOyBjaGFy
-c2V0PWlzby04ODU5LTEiPgo8U1RZTEU+CmJvZHkscCxkaXYsdGQgeyBmb250LWZhbWlseTogQXJp
-YWw7IH0KPC9TVFlMRT4KPC9IRUFEPgo8Qk9EWSBiZ0NvbG9yPSNmZmZmZmY+CjxESVYgYWxpZ249
-Y2VudGVyPjxGT05UIHNpemU9Mj5QUkVTUyBSRUxFQVNFPC9GT05UPjwvRElWPgo8RElWIGFsaWdu
-PWNlbnRlcj4mbmJzcDs8L0RJVj4KPERJViBhbGlnbj1jZW50ZXI+PEZPTlQgc2l6ZT0yPlRoZSBB
-bWVyaWNhbiBHcmFudHMgYW5kIExvYW5zIENhdGFsb2cgaXMgbm93CmF2YWlsYWJsZS4gT3VyIG5l
-dyBhbmQgcmV2aXNlZDxCUj4yMDEzIGVkaXRpb24gY29udGFpbnMgbW9yZSB0aGFuIDI4MDAgZmlu
-YW5jaWFsCnByb2dyYW1zLCBzdWJzaWRpZXMsIHNjaG9sYXJzaGlwcyw8QlI+Z3JhbnRzIGFuZCBs
-b2FucyBvZmZlcmVkIGJ5IHRoZSBVUyBmZWRlcmFsCmdvdmVybm1lbnQuPC9GT05UPjwvRElWPgo8
-RElWIGFsaWduPWNlbnRlcj4mbmJzcDs8L0RJVj4KPERJViBhbGlnbj1jZW50ZXI+PEZPTlQgc2l6
-ZT0yPkluIGFkZGl0aW9uIHlvdSB3aWxsIGFsc28gaGF2ZSBhY2Nlc3MgdG8gb3ZlcgoyNDAwIHBy
-b2dyYW1zIGZ1bmRlZCBieSBwcml2YXRlPEJSPmNvcnBvcmF0aW9ucyBhbmQgZm91bmRhdGlvbnMu
-IFRoYXQgaXMgb3Zlcgo1MjAwIHByb2dyYW1zIGF2YWlsYWJsZSB0aHJvdWdoPEJSPnZhcmlvdXMg
-c291cmNlcyBvZiBmaW5hbmNpYWwgcHJvdmlkaW5nCm9yZ2FuaXphdGlvbnMuPC9GT05UPjwvRElW
-Pgo8RElWIGFsaWduPWNlbnRlcj4mbmJzcDs8L0RJVj4KPERJViBhbGlnbj1jZW50ZXI+PEZPTlQg
-c2l6ZT0yPk5FVzogWW91IHdpbGwgYWxzbyBoYXZlIGFjY2VzcyB0byBvdXIgbGl2ZQpEYXRhYmFz
-ZSB0aGF0IGlzIHVwZGF0ZWQgb24gYSBkYWlseTxCUj5iYXNpcy4gVGhpcyBwcm9kdWN0IGFsc28g
-cHJvdmlkZXMgZGFpbHkKZW1haWwgYWxlcnRzIGFzIHByb2dyYW1zIGFyZSBhbm5vdW5jZWQuPC9G
-T05UPjwvRElWPgo8RElWIGFsaWduPWNlbnRlcj4mbmJzcDs8L0RJVj4KPERJViBhbGlnbj1jZW50
-ZXI+PEZPTlQgc2l6ZT0yPlRoZSBEYXRhYmFzZSBpcyBhbHNvIGF2YWlsYWJsZSB3aXRoIElQCnJl
-Y29nbml0aW9uLiBUaGlzIGFsbG93cyB5b3UgdG8gbG9naW48QlI+d2l0aG91dCBhIHVzZXJuYW1l
-IG9yIHBhc3N3b3JkIChHcmVhdApmb3IgbGlicmFyaWVzIG9yIGVkdWNhdGlvbmFsIGluc3RpdHV0
-aW9uczxCUj53aG8gd2FudCB0aGVpciB1c2VycyB0byBhY2Nlc3MgdGhlCmRhdGFiYXNlKS48L0ZP
-TlQ+PC9ESVY+CjxESVYgYWxpZ249Y2VudGVyPiZuYnNwOzwvRElWPgo8RElWIGFsaWduPWNlbnRl
-cj48Rk9OVCBzaXplPTI+QnVzaW5lc3Nlcywgc3R1ZGVudHMsIHJlc2VhcmNoZXJzLCBzY2llbnRp
-c3RzLAp0ZWFjaGVycywgZG9jdG9ycywgcHJpdmF0ZSBpbmRpdmlkdWFscyw8QlI+bXVuaWNpcGFs
-aXRpZXMsIGdvdmVybm1lbnQKZGVwYXJ0bWVudHMsIGVkdWNhdGlvbmFsIGluc3RpdHV0aW9ucywg
-bGF3IGVuZm9yY2VtZW50PEJSPmFnZW5jaWVzLCBub25wcm9maXRzLApmb3VuZGF0aW9ucyBhbmQg
-YXNzb2NpYXRpb25zIHdpbGwgZmluZCBhIHdlYWx0aCBvZiBpbmZvcm1hdGlvbjxCUj50aGF0IHdp
-bGwgaGVscAp0aGVtIHdpdGggdGhlaXIgbmV3IHZlbnR1cmVzIG9yIGV4aXN0aW5nIHByb2plY3Rz
-LjwvRk9OVD48L0RJVj4KPERJViBhbGlnbj1jZW50ZXI+Jm5ic3A7PC9ESVY+CjxESVYgYWxpZ249
-Y2VudGVyPjxGT05UIHNpemU9Mj5UaGUgZG9jdW1lbnQgaXMgYSBmdWxseSBzZWFyY2hhYmxlIFBE
-RiBmaWxlIGZvcgplYXN5IGFjY2VzcyB0byB5b3VyIHBhcnRpY3VsYXI8QlI+bmVlZHMgYW5kIGlu
-dGVyZXN0cy4gU2ltcGx5IGVudGVyIHlvdXIKa2V5d29yZHMgdG8gc2VhcmNoIHRocm91Z2ggdGhl
-IHB1YmxpY2F0aW9uLjwvRk9OVD48L0RJVj4KPERJViBhbGlnbj1jZW50ZXI+Jm5ic3A7PC9ESVY+
-CjxESVYgYWxpZ249Y2VudGVyPjxGT05UIHNpemU9Mj5JdCBpcyB0aGUgcGVyZmVjdCB0b29sIGZv
-ciBsaWJyYXJpZXMgYW5kCmVkdWNhdGlvbmFsIGluc3RpdHV0aW9ucyB0byB1c2UgYXMgYTxCUj5y
-ZWZlcmVuY2UgZ3VpZGUgZm9yIHN0dWRlbnRzIHdobyByZXF1aXJlCmZ1bmRzIHRvIHB1cnN1ZSB0
-aGVpciBlZHVjYXRpb24uPC9GT05UPjwvRElWPgo8RElWIGFsaWduPWNlbnRlcj4mbmJzcDs8L0RJ
-Vj4KPERJViBhbGlnbj1jZW50ZXI+PEJSPjxGT05UIHNpemU9Mj5Db250ZW50cyBvZiB0aGUgRGly
-ZWN0b3J5OjwvRk9OVD48L0RJVj4KPERJViBhbGlnbj1jZW50ZXI+Jm5ic3A7PC9ESVY+CjxESVYg
-YWxpZ249Y2VudGVyPjxGT05UIHNpemU9Mj4tV2ViIGxpbmsgdG8gcHJvZ3JhbSBhbm5vdW5jZW1l
-bnQgcGFnZTxCUj4tV2ViCmxpbmsgdG8gRmVkZXJhbCBhZ2VuY3kgb3IgZm91bmRhdGlvbiBhZG1p
-bmlzdGVyaW5nIHRoZSBwcm9ncmFtPEJSPi1BdXRob3JpemF0aW9uCnVwb24gd2hpY2ggYSBwcm9n
-cmFtIGlzIGJhc2VkPEJSPi1PYmplY3RpdmVzIGFuZCBnb2FscyBvZiB0aGUgcHJvZ3JhbTxCUj4t
-VHlwZXMKb2YgZmluYW5jaWFsIGFzc2lzdGFuY2Ugb2ZmZXJlZCB1bmRlciBhIHByb2dyYW08QlI+
-LVVzZXMgYW5kIHJlc3RyaWN0aW9ucyBwbGFjZWQKdXBvbiBhIHByb2dyYW08QlI+LUVsaWdpYmls
-aXR5IHJlcXVpcmVtZW50czxCUj4tQXBwbGljYXRpb24gYW5kIGF3YXJkCnByb2Nlc3M8QlI+LVJl
-Z3VsYXRpb25zLCBndWlkZWxpbmVzIGFuZCBsaXRlcmF0dXJlIHJlbGV2YW50IHRvIGEKcHJvZ3Jh
-bTxCUj4tSW5mb3JtYXRpb24gY29udGFjdHMgYXQgdGhlIGhlYWRxdWFydGVycywgcmVnaW9uYWws
-IGFuZCBsb2NhbApvZmZpY2VzPEJSPi1Qcm9ncmFtcyB0aGF0IGFyZSByZWxhdGVkIGJhc2VkIHVw
-b24gcHJvZ3JhbSBvYmplY3RpdmVzIGFuZAp1c2VzPC9GT05UPjwvRElWPgo8RElWIGFsaWduPWNl
-bnRlcj4mbmJzcDs8L0RJVj4KPERJViBhbGlnbj1jZW50ZXI+PEJSPjxGT05UIHNpemU9Mj5Qcm9n
-cmFtcyBpbiB0aGUgQ2F0YWxvZyBwcm92aWRlIGEgd2lkZSByYW5nZQpvZiBiZW5lZml0cyBhbmQg
-c2VydmljZXM8QlI+Zm9yIGNhdGVnb3JpZXMgc3VjaCBhczo8L0ZPTlQ+PC9ESVY+CjxESVYgYWxp
-Z249Y2VudGVyPiZuYnNwOzwvRElWPgo8RElWIGFsaWduPWNlbnRlcj48Rk9OVCBzaXplPTI+QWdy
-aWN1bHR1cmU8QlI+QnVzaW5lc3MgYW5kIENvbW1lcmNlPEJSPkNvbW11bml0eQpEZXZlbG9wbWVu
-dDxCUj5Db25zdW1lciBQcm90ZWN0aW9uPEJSPkN1bHR1cmFsIEFmZmFpcnM8QlI+RGlzYXN0ZXIg
-UHJldmVudGlvbgphbmQgUmVsaWVmPEJSPkVkdWNhdGlvbjxCUj5FbXBsb3ltZW50LCBMYWJvciBh
-bmQKVHJhaW5pbmc8QlI+RW5lcmd5PEJSPkVudmlyb25tZW50YWwgUXVhbGl0eTxCUj5Gb29kIGFu
-ZApOdXRyaXRpb248QlI+SGVhbHRoPEJSPkhvdXNpbmc8QlI+SW5jb21lIFNlY3VyaXR5IGFuZCBT
-b2NpYWwKU2VydmljZXM8QlI+SW5mb3JtYXRpb24gYW5kIFN0YXRpc3RpY3M8QlI+TGF3LCBKdXN0
-aWNlLCBhbmQgTGVnYWwKU2VydmljZXM8QlI+TmF0dXJhbCBSZXNvdXJjZXM8QlI+UmVnaW9uYWwg
-RGV2ZWxvcG1lbnQ8QlI+U2NpZW5jZSBhbmQKVGVjaG5vbG9neTxCUj5UcmFuc3BvcnRhdGlvbjwv
-Rk9OVD48L0RJVj4KPERJViBhbGlnbj1jZW50ZXI+Jm5ic3A7PC9ESVY+CjxESVYgYWxpZ249Y2Vu
-dGVyPjxCUj48Rk9OVCBzaXplPTI+Q0QgdmVyc2lvbjogJDY5Ljk1PEJSPlByaW50ZWQgdmVyc2lv
-bjoKJDE0OS45NTwvRk9OVD48L0RJVj4KPERJViBhbGlnbj1jZW50ZXI+Jm5ic3A7PC9ESVY+CjxE
-SVYgYWxpZ249Y2VudGVyPjxGT05UIHNpemU9Mj5UbyBvcmRlciBwbGVhc2UgY2FsbDogMSAoODAw
-KQo2MTAtNDU0MzwvRk9OVD48L0RJVj4KPERJViBhbGlnbj1jZW50ZXI+Jm5ic3A7PC9ESVY+CjxE
-SVYgYWxpZ249Y2VudGVyPjxCUj48Rk9OVCBzaXplPTI+UGxlYXNlIGRvIG5vdCByZXBseSB0byB0
-aGUgc2VuZGVyJ3MgZW1haWwKYWRkcmVzcyBhcyB0aGlzIGFkZHJlc3MgaXMgb25seSBmb3Igb3V0
-Z29pbmcgbWFpbC48L0ZPTlQ+PC9ESVY+CjxESVYgYWxpZ249Y2VudGVyPiZuYnNwOzwvRElWPgo8
-RElWIGFsaWduPWNlbnRlcj48Rk9OVCBzaXplPTI+SWYgeW91IGRvIG5vdCB3aXNoIHRvIHJlY2Vp
-dmUgaW5mb3JtYXRpb24gZnJvbSB1cwppbiB0aGUgZnV0dXJlIHBsZWFzZSByZXBseSBoZXJlOjxC
-Uj48L0ZPTlQ+PEEKaHJlZj0ibWFpbHRvOnJlbTIxOEBtYWlsLmNvbSI+PEZPTlQgc2l6ZT0yPnJl
-bTIxOEBtYWlsLmNvbTwvRk9OVD48L0E+PC9ESVY+CjxESVYgYWxpZ249Y2VudGVyPiZuYnNwOzwv
-RElWPgo8RElWIGFsaWduPWNlbnRlcj48Rk9OVCBzaXplPTI+VGhpcyBpcyBhIENBTlNQQU0gQUNU
-IGNvbXBsaWFudCBhZHZlcnRpc2luZwpicm9hZGNhc3Qgc2VudCBieTo8QlI+QW1lcmljYW4gUHVi
-bGlzaGluZyBJbmMuICwgNzAyNSBDb3VudHkgUmQuIDQ2QSwgU3VpdGUKMTA3MSwgTGFrZSBNYXJ5
-LCBGTCwgMzI3NDYtNDc1MzwvRk9OVD48QlI+PC9ESVY+PC9CT0RZPjwvSFRNTD4K
+PkZyb20gN2I3YzgxMjUwZWI2NTExZDlmMjM3YmRkOTZmNGYyZjYxMjMxYzFlYyBNb24gU2VwIDE3
+IDAwOjAwOjAwIDIwMDEKRnJvbTogWmhhbmcgUnVpIDxydWkuemhhbmdAaW50ZWwuY29tPgpEYXRl
+OiBUaHUsIDEzIERlYyAyMDEyIDExOjQ0OjE5ICswODAwClN1YmplY3Q6IFtQQVRDSF0gRXhlY3V0
+ZSAib3JwaGFuIiBfUkVHIG1ldGhvZCBmb3Igc3BlY2lmaWVkIEVDIGRldmljZQoKQXMgaXQgaXMg
+YWx3YXlzIHRoZSBFQyBkZXZpY2UgZHJpdmVyIHRoYXQgaW5zdGFsbHMgdGhlCkVDIGFkZHJlc3Mg
+c3BhY2UgaGFuZGxlciwgd2UgY2FuIG1ha2UgdGhlIGFzc3VtcHRpb24gdGhhdAp0aGUgQUNQSV9O
+QU1FU1BBQ0VfTk9ERSBwYXJhbWV0ZXIgb2YgQWNwaUV2SW5zdGFsbEhhbmRsZXIKYWx3YXlzIHBv
+aW50cyB0byB0aGUgRUMgZGV2aWNlIG5vZGUuClRodXMgd2UgZG8gbm90IG5lZWQgdG8gbG9vayBm
+b3IgRUMgZGV2aWNlIGluIEVDRFQuCgpodHRwczovL2J1Z3ppbGxhLmtlcm5lbC5vcmcvc2hvd19i
+dWcuY2dpP2lkPTE1NzA3CgpTaWduZWQtb2ZmLWJ5OiBaaGFuZyBSdWkgPHJ1aS56aGFuZ0BpbnRl
+bC5jb20+Ci0tLQogc291cmNlL2NvbXBvbmVudHMvZXZlbnRzL2V2cmVnaW9uLmMgfCAgIDM5ICsr
+KysrKystLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiAxIGZpbGUgY2hhbmdlZCwgOCBpbnNl
+cnRpb25zKCspLCAzMSBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VyY2UvY29tcG9uZW50
+cy9ldmVudHMvZXZyZWdpb24uYyBiL3NvdXJjZS9jb21wb25lbnRzL2V2ZW50cy9ldnJlZ2lvbi5j
+CmluZGV4IDJhYjc5MjIuLjdhNjE5YmUgMTAwNjQ0Ci0tLSBhL3NvdXJjZS9jb21wb25lbnRzL2V2
+ZW50cy9ldnJlZ2lvbi5jCisrKyBiL3NvdXJjZS9jb21wb25lbnRzL2V2ZW50cy9ldnJlZ2lvbi5j
+CkBAIC0xMzUsNyArMTM1LDcgQEAgQWNwaUV2SGFzRGVmYXVsdEhhbmRsZXIgKAogCiBzdGF0aWMg
+dm9pZAogQWNwaUV2T3JwaGFuRWNSZWdNZXRob2QgKAotICAgIHZvaWQpOworICAgIEFDUElfTkFN
+RVNQQUNFX05PREUgICAgICpOb2RlKTsKIAogc3RhdGljIEFDUElfU1RBVFVTCiBBY3BpRXZSZWdS
+dW4gKApAQCAtMTI0OCw3ICsxMjQ4LDcgQEAgQWNwaUV2RXhlY3V0ZVJlZ01ldGhvZHMgKAogCiAg
+ICAgaWYgKFNwYWNlSWQgPT0gQUNQSV9BRFJfU1BBQ0VfRUMpCiAgICAgewotICAgICAgICBBY3Bp
+RXZPcnBoYW5FY1JlZ01ldGhvZCAoKTsKKyAgICAgICAgQWNwaUV2T3JwaGFuRWNSZWdNZXRob2Qg
+KE5vZGUpOwogICAgIH0KIAogICAgIHJldHVybl9BQ1BJX1NUQVRVUyAoU3RhdHVzKTsKQEAgLTEz
+MjYsNyArMTMyNiw3IEBAIEFjcGlFdlJlZ1J1biAoCiAgKgogICogRlVOQ1RJT046ICAgIEFjcGlF
+dk9ycGhhbkVjUmVnTWV0aG9kCiAgKgotICogUEFSQU1FVEVSUzogIE5vbmUKKyAqIFBBUkFNRVRF
+UlM6ICBOb2RlOgkJLSBOYW1lc3BhY2Ugbm9kZSBmb3IgdGhlIEVDIGRldmljZQogICoKICAqIFJF
+VFVSTjogICAgICBOb25lCiAgKgpAQCAtMTM0NywzMiArMTM0NywxOSBAQCBBY3BpRXZSZWdSdW4g
+KAogCiBzdGF0aWMgdm9pZAogQWNwaUV2T3JwaGFuRWNSZWdNZXRob2QgKAotICAgIHZvaWQpCisg
+ICAgQUNQSV9OQU1FU1BBQ0VfTk9ERQkgICAgKk5vZGUpCiB7CiAgICAgQUNQSV9UQUJMRV9FQ0RU
+ICAgICAgICAgKlRhYmxlOwogICAgIEFDUElfU1RBVFVTICAgICAgICAgICAgIFN0YXR1czsKICAg
+ICBBQ1BJX09CSkVDVF9MSVNUICAgICAgICBBcmdzOwogICAgIEFDUElfT0JKRUNUICAgICAgICAg
+ICAgIE9iamVjdHNbMl07Ci0gICAgQUNQSV9OQU1FU1BBQ0VfTk9ERSAgICAgKkVjRGV2aWNlTm9k
+ZTsKICAgICBBQ1BJX05BTUVTUEFDRV9OT0RFICAgICAqUmVnTWV0aG9kOwogICAgIEFDUElfTkFN
+RVNQQUNFX05PREUgICAgICpOZXh0Tm9kZTsKIAogCiAgICAgQUNQSV9GVU5DVElPTl9UUkFDRSAo
+RXZPcnBoYW5FY1JlZ01ldGhvZCk7CiAKLQotICAgIC8qIEdldCB0aGUgRUNEVCAoaWYgcHJlc2Vu
+dCBpbiBzeXN0ZW0pICovCi0KLSAgICBTdGF0dXMgPSBBY3BpR2V0VGFibGUgKEFDUElfU0lHX0VD
+RFQsIDAsCi0gICAgICAgIEFDUElfQ0FTVF9JTkRJUkVDVF9QVFIgKEFDUElfVEFCTEVfSEVBREVS
+LCAmVGFibGUpKTsKLSAgICBpZiAoQUNQSV9GQUlMVVJFIChTdGF0dXMpKQotICAgIHsKLSAgICAg
+ICAgcmV0dXJuX1ZPSUQ7Ci0gICAgfQotCi0gICAgLyogV2UgbmVlZCBhIHZhbGlkIEVDX0lEIHN0
+cmluZyAqLwotCi0gICAgaWYgKCEoKlRhYmxlLT5JZCkpCisgICAgaWYgKCFOb2RlKQogICAgIHsK
+ICAgICAgICAgcmV0dXJuX1ZPSUQ7CiAgICAgfQpAQCAtMTM4MSwxOSArMTM2OCw5IEBAIEFjcGlF
+dk9ycGhhbkVjUmVnTWV0aG9kICgKIAogICAgICh2b2lkKSBBY3BpVXRSZWxlYXNlTXV0ZXggKEFD
+UElfTVRYX05BTUVTUEFDRSk7CiAKLSAgICAvKiBHZXQgYSBoYW5kbGUgdG8gdGhlIEVDIGRldmlj
+ZSByZWZlcmVuY2VkIGluIHRoZSBFQ0RUICovCi0KLSAgICBTdGF0dXMgPSBBY3BpR2V0SGFuZGxl
+IChOVUxMLAotICAgICAgICBBQ1BJX0NBU1RfUFRSIChjaGFyLCBUYWJsZS0+SWQpLAotICAgICAg
+ICBBQ1BJX0NBU1RfUFRSIChBQ1BJX0hBTkRMRSwgJkVjRGV2aWNlTm9kZSkpOwotICAgIGlmIChB
+Q1BJX0ZBSUxVUkUgKFN0YXR1cykpCi0gICAgewotICAgICAgICBnb3RvIEV4aXQ7Ci0gICAgfQot
+CiAgICAgLyogR2V0IGEgaGFuZGxlIHRvIGEgX1JFRyBtZXRob2QgaW1tZWRpYXRlbHkgdW5kZXIg
+dGhlIEVDIGRldmljZSAqLwogCi0gICAgU3RhdHVzID0gQWNwaUdldEhhbmRsZSAoRWNEZXZpY2VO
+b2RlLAorICAgIFN0YXR1cyA9IEFjcGlHZXRIYW5kbGUgKE5vZGUsCiAgICAgICAgIE1FVEhPRF9O
+QU1FX19SRUcsIEFDUElfQ0FTVF9QVFIgKEFDUElfSEFORExFLCAmUmVnTWV0aG9kKSk7CiAgICAg
+aWYgKEFDUElfRkFJTFVSRSAoU3RhdHVzKSkKICAgICB7CkBAIC0xNDA3LDcgKzEzODQsNyBAQCBB
+Y3BpRXZPcnBoYW5FY1JlZ01ldGhvZCAoCiAgICAgICogd2l0aCBvdGhlciBzcGFjZSBJRHMgdG8g
+YmUgcHJlc2VudDsgYnV0IHRoZSBjb2RlIGJlbG93IHdpbGwgdGhlbgogICAgICAqIGV4ZWN1dGUg
+dGhlIF9SRUcgbWV0aG9kIHdpdGggdGhlIEVDIHNwYWNlIElEIGFyZ3VtZW50LgogICAgICAqLwot
+ICAgIE5leHROb2RlID0gQWNwaU5zR2V0TmV4dE5vZGUgKEVjRGV2aWNlTm9kZSwgTlVMTCk7Cisg
+ICAgTmV4dE5vZGUgPSBBY3BpTnNHZXROZXh0Tm9kZSAoTm9kZSwgTlVMTCk7CiAgICAgd2hpbGUg
+KE5leHROb2RlKQogICAgIHsKICAgICAgICAgaWYgKChOZXh0Tm9kZS0+VHlwZSA9PSBBQ1BJX1RZ
+UEVfUkVHSU9OKSAmJgpAQCAtMTQxNiw3ICsxMzkzLDcgQEAgQWNwaUV2T3JwaGFuRWNSZWdNZXRo
+b2QgKAogICAgICAgICB7CiAgICAgICAgICAgICBnb3RvIEV4aXQ7IC8qIERvIG5vdCBleGVjdXRl
+IF9SRUcgKi8KICAgICAgICAgfQotICAgICAgICBOZXh0Tm9kZSA9IEFjcGlOc0dldE5leHROb2Rl
+IChFY0RldmljZU5vZGUsIE5leHROb2RlKTsKKyAgICAgICAgTmV4dE5vZGUgPSBBY3BpTnNHZXRO
+ZXh0Tm9kZSAoTm9kZSwgTmV4dE5vZGUpOwogICAgIH0KIAogICAgIC8qIEV2YWx1YXRlIHRoZSBf
+UkVHKEVDLENvbm5lY3QpIG1ldGhvZCAqLwotLSAKMS43LjkuNQoK
 
---===============6497287655454191308==--
+--===============3686916515112825866==--
 
