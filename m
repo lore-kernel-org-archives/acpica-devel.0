@@ -1,355 +1,82 @@
-Content-Type: multipart/mixed; boundary="===============8290044375794985456=="
+Content-Type: multipart/mixed; boundary="===============0173057870896620267=="
 MIME-Version: 1.0
-From: Thomas Renninger <trenn at suse.de>
-Subject: [Devel] [PATCH] tools/power/acpi: Introduce acpi_validate with
- manpage for easy validation of ACPI BIOS tables
-Date: Sat, 15 Dec 2012 10:57:48 +0100
-Message-ID: <1355565468-26024-1-git-send-email-trenn@suse.de>
+From: Al Stone <ahs3 at redhat.com>
+Subject: Re: [Devel] ACPI 5.0 implementation for armv7 and armv8 architecture
+Date: Mon, 17 Dec 2012 16:30:19 -0700
+Message-ID: <50CFAB0B.4000305@redhat.com>
+In-Reply-To: D9DB7F56087E294C83142799ED69E2A0773154C4@G4W3293.americas.hpqcorp.net
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8290044375794985456==
+--===============0173057870896620267==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-The used iasl compiler shares the same code base as the kernel.
-Warnings or errors mostly point to bad BIOSes.
-These errors should get reported to the BIOS vendors and may indicated that
-acpica (kernel ACPI parts) need compatibility adjustings.
+I've only lurked on this list in the past, but this work sounds very
+similar to work I've been tasked to take on for Linaro (please see
+https://wiki.linaro.org/LEG for the context).  I'll be looking at
+Cortex A9/A15 and ARMv8 for the same reasons so I'm thinking perhaps
+we should coordinate our efforts here...
+
+On 12/02/2012 08:37 PM, Wei, Dong (=E9=AD=8F=E4=B8=9C UEFI-ACPI) wrote:
+> Copying Andrew Sloss from ARM.
+>
+> -DW
+>
+> *From:*devel-bounces(a)acpica.org [mailto:devel-bounces(a)acpica.org] *On
+> Behalf Of *Ayan Halder
+> *Sent:* Sunday, December 02, 2012 5:30 AM
+> *To:* devel(a)acpica.org
+> *Subject:* [Devel] ACPI 5.0 implementation for armv7 and armv8 architectu=
+re
+>
+> Hi,
+>
+> I am planning to implement ACPI5.0 on an SOC having Cortex A5 and Atlas
+> cpu( based on armv8 architecture) running linux on top of them.
+>
+> As per the ACPI 5.0 hardware specification(Fixed Hardware/ Generic
+> Hardware  model) of ACPI5.0, the processor needs to support various low
+> power modes(C0, C1, C2, C3) and sleep states(S1, S2, S3, S4, S5) via
+> register interfaces as well as OEM provided AML(ACPI Machine Language).
+>
+> Therefore, which instructions in armv7 and armv8 put the processor into
+> the afore-mentioned low power modes and sleep states?
+>
+> ( The arm instruction manual specifies =E2=80=9Cwfe=E2=80=9D and =E2=80=
+=9Cwfi=E2=80=9D to put the
+> processor in a sleep state, but I am not sure if this confirms to the
+> ACPI 5.0 requirements )
+>
+> Besides, does arm provide any AML(ACPI Machine Language) code to put the
+> processor to low power modes? If not, then how do we create an ACPI
+> machine language code for armv7 and armv8 architecture and do we have an
+> AML interpreter for armv7 and armv8 architecture?
+>
+> Regards,
+>
+> Ayan Kumar Halder
+>
+>
+>
+> _______________________________________________
+> Devel mailing list
+> Devel(a)acpica.org
+> http://lists.acpica.org/listinfo/devel
+>
 
 
-Why is an extra tool needed for this?
-
-The dynamic ACPI Source Language (ASL) parts are located in DSDT and often
-multiple SSDT tables. Those often have dependencies to each other and the i=
-asl
-compiler often cannot resolve external symbols correctly if they are not
-passed as external tables (iasl -e option) when tables get disassembled.
-This quickly leads to false positive errors.
-This tool makes sure disassembling and recompilation is done correctly.
-
-This tool is also made for ACPI BIOS table verification for BIOS vendors and
-hardware certification tools for distributions.
-Hardware which supports Linux must/should not show any warnings or errors.
-Remarks and optimization hints in the logs can be used to further enhance
-the ACPI BIOS code.
-Warnings and errors mostly describe the issues in a way, so that they can
-get passed to and used by BIOS developers to fix the problems easily.
-
-Signed-off-by: Thomas Renninger <trenn(a)suse.de>
----
- tools/power/acpi/acpi_validate   |  193 ++++++++++++++++++++++++++++++++++=
-++++
- tools/power/acpi/acpi_validate.8 |   72 ++++++++++++++
- 2 files changed, 265 insertions(+), 0 deletions(-)
- create mode 100755 tools/power/acpi/acpi_validate
- create mode 100644 tools/power/acpi/acpi_validate.8
-
-diff --git a/tools/power/acpi/acpi_validate b/tools/power/acpi/acpi_validate
-new file mode 100755
-index 0000000..12d105b
---- /dev/null
-+++ b/tools/power/acpi/acpi_validate
-@@ -0,0 +1,193 @@
-+#!/bin/bash
-+#
-+# Copyright (c) 2012 SUSE Linux Products GmbH
-+# Thomas Renninger <trenn(a)suse.de>
-+#
-+# This program is free software; you can redistribute it and/or modify it
-+# under the terms and conditions of the GNU General Public License,
-+# version 2, as published by the Free Software Foundation.
-+#
-+# This program is distributed in the hope it will be useful, but WITHOUT
-+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-+# more details.
-+#
-+# You should have received a copy of the GNU General Public License along =
-with
-+# this program; if not, write to the Free Software Foundation, Inc.,
-+# 51 Franklin St - Fifth Floor, Boston, MA 02110-1301 USA.
-+#
-+
-+OUTPUT_DIR=3D"$PWD"
-+VERBOSE=3D0
-+# Disable remarks and resource checks. The latter often/mostly generates
-+# false positive warnings. Can be overridden via -c option
-+COMPILE_OPTIONS=3D"-sa -cr -vr"
-+DISASSEMBLE_OPTIONS=3D""
-+OUTPUT=3D"/dev/null"
-+ACPIDUMP=3D""
-+
-+function usage()
-+{
-+    echo "acpi_validate [ -o output_dir ] [ -v ] [ -a acpidump ]"
-+    echo "              [ -c compile_options ] [ -d disassemble_options ]"
-+    echo
-+    echo "This tool extracts, disassembles and recompiles ACPI BIOS tables=
-."
-+    echo "The disassembled files will be copied into the local or specifie=
-d"
-+    echo "output directory (-o option)."
-+    echo
-+    echo "The underlying iasl compiler verifies and may complain about"
-+    echo "correctness of some of the BIOS tables."
-+    echo "These can give a pointer to possible malfunction of the system."
-+    echo
-+    echo "If you think you found a bug in the iasl compiler or related too=
-ls,"
-+    echo "you can ask here for help: devel(a)acpica.org"
-+    echo "You may also want to ask there if you are not sure whether it re=
-ally"
-+    echo "is a BIOS bug."
-+    echo
-+    echo "If you are sure you found a BIOS issue, complain to your hardwar=
-e vendor."
-+    echo "The iasl compiler typically provides a description of the warnin=
-g/error in a way,"
-+    echo "so that BIOS authors can easily fix it."
-+    echo
-+    echo "Options"
-+    echo "   -o output_dir: Copy tables to this directory instead of local=
- one"
-+    echo "   -v:          : be more verbose"
-+    echo "   -a acpidump  : Use this acpidump file"
-+    echo "                  instead of the tables from the local machine"
-+    echo "   -d options   : Pass iasl disassemble options"
-+    echo "   -c options   : Pass iasl compile options"
-+    echo "                  will override -sa -cr -vr (default options)"
-+    echo "   -h           : Show help"
-+    exit 1
-+}
-+
-+if [ "$(id -u)" !=3D "0" ]; then
-+   echo "This script must be run as root"
-+   exit 1
-+fi
-+
-+while getopts hva:o:c:d: name ; do
-+    case $name in
-+        o)
-+	    OUTPUT_DIR=3D"$OPTARG"
-+	    if [ ! -d "$OUTPUT_DIR" ];then
-+		mkdir "$OUTPUT_DIR"
-+		if [[ $? !=3D 0 ]];then
-+		    echo "Cannot create directory $OUTPUT_DIR"
-+		    exit 1
-+		fi
-+	    elif [ ! -w "$OUTPUT_DIR" ];then
-+		echo "Cannot write into directory $OUTPUT_DIR"
-+		exit 1
-+	    fi
-+
-+	    [[ $VERBOSE =3D=3D 1 ]] && echo "Installing for architecture: $OUTPUT=
-_DIR"
-+	    ;;
-+        a)
-+	    ACPIDUMP=3D"$OPTARG"
-+	    if [ ! -r "$ACPIDUMP" ];then
-+		echo "$ACPIDUMP does not exist"
-+		exit 1
-+	    fi
-+	    [[ $VERBOSE =3D=3D 1 ]] && echo "acpidump file: $ACPIDUMP"
-+	    ;;
-+        c)
-+	    COMPILE_OPTIONS=3D"$OPTARG"
-+	    [[ $VERBOSE =3D=3D 1 ]] && echo "Compile options: $COMPILE_OPTIONS"
-+	    ;;
-+        c)
-+	    DISASSEMBLE_OPTIONS=3D"$OPTARG"
-+	    [[ $VERBOSE =3D=3D 1 ]] && echo "Disassemble options: $DISASSEMBLE_OP=
-TIONS"
-+	    ;;
-+        v)
-+            VERBOSE=3D1
-+	    OUTPUT=3D"1"
-+            ;;
-+        ?)
-+	    usage
-+	    ;;
-+    esac
-+done
-+shift $(($OPTIND -1))
-+
-+shopt -s nocasematch
-+TEMP_DIR=3D$(mktemp -d)
-+[[ $VERBOSE =3D=3D 1 ]] && echo "Using temporary directory: $TEMP_DIR"
-+
-+if [ -r "$ACPIDUMP" ];then
-+    cp "$ACPIDUMP" "$TEMP_DIR"/acpidump
-+fi
-+
-+pushd "$TEMP_DIR" >/dev/null
-+
-+mkdir log
-+mkdir err
-+if [ ! -r acpidump ];then
-+    acpidump >acpidump
-+fi
-+acpixtract -a acpidump >&$OUTPUT 2>&1
-+
-+
-+# ACPICA changed from uppercase to lowercase, try to find both:
-+SDTs=3D$(ls [SD]DST*.dat 2>/dev/null)
-+SDTs=3D"${SDTs}$(ls [sd]sdt*.dat 2>/dev/null)"
-+
-+for file in *.dat;do
-+    table=3D${file/.dat/}
-+    # Enable case insensitive pattern matching
-+
-+    case $file in
-+	[DS]SDT*.dat | [sd]sdt*.dat)
-+		# Use other [sd]sdt*.dat tables to reference possible
-+		# external symbols. Pass the table itself for disassembling
-+		# comma separted.
-+		# For example you we have:
-+		# dsdt.dat ssdt1 ssdt2.dat
-+		# and the current table to disassemble is ssdt1.dat the
-+		# command has to be:
-+		# iasl -e dsdt.dat,ssdt2.dat -d ssdt1.dat
-+
-+		# Get rid of the table which gets disassembled
-+		# could have leading or trailing whitespace depending whether
-+		# it is at the end or the beginning of the list
-+		REF_TABLE_LIST=3D${SDTs/[[:space:]]$file/}
-+		REF_TABLE_LIST=3D${SDTs/$file[[:space:]]/}
-+		# Convert the whitespace list into a comma separated one:
-+		REF_TABLE_LIST=3D${REF_TABLE_LIST//[[:space:]]/,}
-+		echo "stdout and stderr of $file disassembling:" >log/${table}.log
-+		iasl $DISASSEMBLE_OPTIONS -e ${REF_TABLE_LIST} -d $file 1>>log/${table}.=
-log 2>&1
-+		[[ $VERBOSE =3D=3D 1 ]] && echo "iasl $DISASSEMBLE_OPTIONS -e ${REF_TABL=
-E_LIST} -d $file 1>>log/${table}.log 2>&1"
-+		iasl $COMPILE_OPTIONS ${table}.dsl 1>>log/${table}.log 2>>err/${table}.e=
-rr
-+		[[ $VERBOSE =3D=3D 1 ]] && echo "iasl $COMPILE_OPTIONS ${table}.dsl 1>>l=
-og/${table}.log 2>>err/${table}.err"
-+		;;
-+	*.dat)
-+		iasl -d $file 1>log/${table}.log 2>&1
-+		iasl -sa ${table}.dsl 1>log/${table}.log 2>err/${table}.err
-+		;;
-+    esac
-+done
-+
-+# remove empty error files
-+rm $(find err -size 0)
-+ERR_TABLES=3D$(ls err)
-+ERR_TABLES=3D${ERR_TABLES//.err/}
-+
-+popd >/dev/null
-+cp -r "$TEMP_DIR"/* "$OUTPUT_DIR"
-+
-+if [[ $VERBOSE =3D=3D 1 ]];then
-+    echo "Temporary directory (undeleted): $TEMP_DIR"
-+else
-+    rm -rf "$TEMP_DIR"
-+fi
-+
-+if [ "$ERR_TABLES" =3D "" ];then
-+    echo "No errors or warnings detected"
-+    exit 0
-+else
-+    echo "These tables have warnings or errors (details in "$OUTPUT_DIR"/e=
-rr directory):"
-+    for err in $ERR_TABLES;do
-+	echo -n $err $'\t'
-+	sed -n -e 's/Compilation complete. \(.* Errors, .* Warnings\).*/\1/p' "$O=
-UTPUT_DIR"/log/$err.log
-+    done
-+    exit 1
-+fi
-diff --git a/tools/power/acpi/acpi_validate.8 b/tools/power/acpi/acpi_valid=
-ate.8
-new file mode 100644
-index 0000000..cd10694
---- /dev/null
-+++ b/tools/power/acpi/acpi_validate.8
-@@ -0,0 +1,72 @@
-+.TH ACPI_VALIDATE 8
-+.SH NAME
-+acpi_validate \- Extracts, disassembles and recompiles ACPI BIOS tables.
-+.SH SYNOPSIS
-+.ft B
-+.B acpica_validate [ \-o output_dir ] [ \-a acpidump ] [ \-v ] [ \-c compi=
-le_options ] [ \-d disassemble_options ]
-+.SH DESCRIPTION
-+\fBacpi_validate \fP extracts, disassembles and recompiles ACPI BIOS
-+tables. The disassembled files will be copied into the local or specified
-+output directory (-o option).
-+
-+The underlying iasl compiler verifies and may complain about correctness of
-+some of the BIOS tables. Warnings or errors can give a pointer to possible
-+malfunction of the system. The Linux kernel uses the same code base as the
-+iasl interpreter which is used to validate tables.
-+
-+The ASL (ACPI Source Language) files (*.dsl) can get recompiled manually v=
-ia
-+\fBiasl -sa\fP and the resulting compilation (*.aml) can get passed to the
-+kernel via the "Overriding ACPI tables via initrd" mechanism. Only use this
-+feature if you know what you are doing. Read
-+Documentation/acpi/initrd_table_override.txt (part of the kernel sources) =
-for
-+further information.
-+
-+If you think you found a bug in the iasl compiler or related
-+tools, you can ask here for help: \fBdevel(a)acpica.org\fP
-+
-+You may also want to ask there if you are not sure whether it really
-+is a BIOS bug.
-+
-+If you are sure you found a BIOS issue, complain to your hardware vendor. =
-The
-+iasl compiler typically provides a description of the warning/error in a w=
-ay,
-+so that BIOS authors can easily fix it.
-+
-+.SH OPTIONS
-+\fB-o output_dir\fP
-+
-+The output directory where extracted, disassembled and
-+recompiled tables are copied to. Compiler output is located in a log
-+subdirectory, warnings and errors found by the compiler are located in the=
- err
-+directory.
-+.PP
-+\fB-a acpidump\fP
-+
-+Take this acpidump file instead of dumping and extracting
-+ACPI tables from the local machine
-+.PP
-+\fB-v\fP
-+
-+Be more verbose
-+.PP
-+\fB-c options\fP
-+
-+Override default iasl compile options (default -sa -cr -vr)
-+.PP
-+\fB-d options\fP
-+
-+Override default iasl disassemble options
-+
-+.SH NOTES
-+
-+.B "acpi_validate"
-+must be run as root.
-+
-+.SH REFERENCES
-+ACPICA: https://acpica.org/
-+
-+.SH "SEE ALSO"
-+.BR acpidump (8)
-+
-+.SH AUTHOR
-+.nf
-+Written by Thomas Renninger <trenn(a)suse.de>
 -- =
 
-1.7.6.1
+ciao,
+al
+-----------------------------------
+Al Stone
+Software Engineer
+Red Hat, Inc.
+ahs3(a)redhat.com
+-----------------------------------
 
-
---===============8290044375794985456==--
+--===============0173057870896620267==--
 
