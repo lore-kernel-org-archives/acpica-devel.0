@@ -1,46 +1,32 @@
-Content-Type: multipart/mixed; boundary="===============5962337718623594183=="
+Content-Type: multipart/mixed; boundary="===============6319356064399490227=="
 MIME-Version: 1.0
-From: Andriy Gapon <avg at FreeBSD.org>
-Subject: [Devel] AcpiGetEventStatus: interface with behavior
-Date: Wed, 26 Dec 2012 10:42:15 +0200
-Message-ID: <50DAB867.4050402@FreeBSD.org>
+From: albertwong <member at forumotion.com>
+Subject: [Devel] I'll be waiting for you!
+Date: Sun, 30 Dec 2012 16:50:04 -0600
+Message-ID: <7lwd3dt0a55spbhpk0qgx2ac2fk25u6o@hvirus.forumactif.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5962337718623594183==
+--===============6319356064399490227==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
+I wish to find my soul mate! =
 
-AcpiGetEventStatus has an out parameter of type ACPI_EVENT_STATUS.
-My impression that values of that type should conform to bit definitions
-provided near the type declaration (ACPI_EVENT_FLAG_ENABLED,
-ACPI_EVENT_FLAG_SET, etc).
-But it seems that currently AcpiGetEventStatus returns only values zero and=
- one
-corresponding to inactive and active status.
+I am a attractive and confident lady. =
 
-The linux (adaption of the) code here
-http://lxr.linux.no/#linux+v3.7.1/drivers/acpi/acpica/evxfevnt.c#L313
-seems to be a bit more elaborate.  It actually tries to produce a value that
-conforms to the definitions by examining not only the status register but a=
-lso
-enable register.
+I do believe in love based on a deep passion and even deeper understanding =
 
-It looks like AcpiHwGetGpeStatus is the model for how ACPI_EVENT_STATUS sho=
-uld
-be populated.  I am not sure if AcpiGetEventStatus should be made compatible
-with ACPI_EVENT_STATUS or if its out type should be changed to something el=
-se.
+And I know how to love and cherish a truly fine man. I appreciate in men th=
+eir ability to communicate with girl. =
 
-Also, it looks that the comment near ACPI_EVENT_STATUS definitions is a lit=
-tle
-bit out of sync.
+I am a straightforward girl and I have nothing to hide from you. My dream i=
+s to create a family with a decent man. =
 
--- =
+Here are my photos and my profile, perhaps http://jejaqoju.webclot.org/ I a=
+m yours fate.
 
-Andriy Gapon
 
---===============5962337718623594183==--
+--===============6319356064399490227==--
 
