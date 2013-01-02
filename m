@@ -1,50 +1,54 @@
-Content-Type: multipart/mixed; boundary="===============2703669945411951389=="
+Content-Type: multipart/mixed; boundary="===============5312490281454317869=="
 MIME-Version: 1.0
-From: Yaron Weinsberg <wyaron at gmail.com>
-Subject: [Devel] Fwd: question about _PTS invocation - mandatory ?
-Date: Wed, 02 Jan 2013 09:17:15 +0200
-Message-ID: <CAMNNis6OHJQC3qoTO_3tmGamZuGED_D0bLB18zQtf2D1oXeGUw@mail.gmail.com>
-In-Reply-To: CAMNNis63w4DavuTMq6C6=b3uzpAyAHMp6u25tSnRU+kXBA+o6g@mail.gmail.com
+From: Alex Hung <alex.hung at canonical.com>
+Subject: Re: [Devel] Fwd: question about _PTS invocation - mandatory ?
+Date: Wed, 02 Jan 2013 16:14:06 +0800
+Message-ID: <50E3EC4E.1070908@canonical.com>
+In-Reply-To: CAMNNis6OHJQC3qoTO_3tmGamZuGED_D0bLB18zQtf2D1oXeGUw@mail.gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2703669945411951389==
+--===============5312490281454317869==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi Guys,
+Hi,
 
-is it mandatory for the OSPM to invoke _PTS before switching to the S5
-state ?
+I checked ACPI spec 5.0 and it states as below:
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+7.3.2 \_PTS (Prepare To Sleep)
+The _PTS control method is executed by the OS during the sleep =
 
-I've noticed that during power loss, the BIOS settings sometimes reset.
-E.g. all user settings in the BIOS retrun to their default values.
+transition process for S1, S2, S3, S4, and for orderly S5 shutdown
+...
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+So it seems it is mandatory.
 
-Could it be related ?
+On 01/02/2013 03:17 PM, Yaron Weinsberg wrote:
+> Hi Guys,
+> is it mandatory for the OSPM to invoke _PTS before switching to the S5
+> state ?
+> I've noticed that during power loss, the BIOS settings sometimes reset.
+> E.g. all user settings in the BIOS retrun to their default values.
+> Could it be related ?
+> what possibly cause the BIOS to reset its settings ? (the battery is new.=
+.)
+> thanks,
+> - Yaron
+>
+>
+>
+> _______________________________________________
+> Devel mailing list
+> Devel(a)acpica.org
+> http://lists.acpica.org/listinfo/devel
+>
 
-what possibly cause the BIOS to reset its settings ? (the battery is new..)
 
-thanks,
-- Yaron
 
---===============2703669945411951389==
-Content-Type: text/html
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="attachment.html"
 
-PGRpdiBkaXI9Imx0ciI+PGRpdiBjbGFzcz0iZ21haWxfcXVvdGUiPjxkaXYgZGlyPSJsdHIiPjxk
-aXY+SGkgR3V5cywgPC9kaXY+PGRpdj6gPC9kaXY+PGRpdj5pcyBpdCBtYW5kYXRvcnkgZm9yIHRo
-ZSBPU1BNIHRvIGludm9rZSBfUFRTIGJlZm9yZSBzd2l0Y2hpbmcgdG8gdGhlIFM1IHN0YXRlID8g
-PC9kaXY+PGRpdj6gPC9kaXY+PGRpdj5JJiMzOTt2ZSBub3RpY2VkIHRoYXQgZHVyaW5nIHBvd2Vy
-IGxvc3MsIHRoZSBCSU9TIHNldHRpbmdzIHNvbWV0aW1lcyByZXNldC48L2Rpdj4KCgo8ZGl2PkUu
-Zy4gYWxsIHVzZXIgc2V0dGluZ3MgaW4gdGhlIEJJT1MgcmV0cnVuIHRvIHRoZWlyIGRlZmF1bHQg
-dmFsdWVzLiA8L2Rpdj48ZGl2PqA8L2Rpdj48ZGl2PkNvdWxkIGl0IGJlIHJlbGF0ZWQgPyA8L2Rp
-dj48ZGl2PqA8L2Rpdj48ZGl2PndoYXQgcG9zc2libHkgY2F1c2UgdGhlIEJJT1MgdG8gcmVzZXQg
-aXRzIHNldHRpbmdzID8gKHRoZSBiYXR0ZXJ5IGlzIG5ldy4uKTwvZGl2PgoKCjxkaXY+oDwvZGl2
-PjxkaXY+dGhhbmtzLDwvZGl2PjxkaXY+LSBZYXJvbjwvZGl2PjwvZGl2Pgo8L2Rpdj48YnI+PC9k
-aXY+Cg==
-
---===============2703669945411951389==--
+--===============5312490281454317869==--
 
