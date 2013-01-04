@@ -1,13 +1,14 @@
-Content-Type: multipart/mixed; boundary="===============9130731915870550691=="
+Content-Type: multipart/mixed; boundary="===============8116906173322121771=="
 MIME-Version: 1.0
 From: Lv Zheng <lv.zheng at intel.com>
-Subject: [Devel] [PATCH 1/1] ACPICA: Table: Add VRTC table support.
-Date: Fri, 04 Jan 2013 13:39:53 +0800
-Message-ID: <9dce16ee5a6821f10e419c5b286fb0c287200758.1357277898.git.lv.zheng@intel.com>
+Subject: [Devel] [PATCH v2] ACPICA: iASL: Add VRTC table support.
+Date: Fri, 04 Jan 2013 13:46:16 +0800
+Message-ID: <89ab702ddf863684fb421e978b69e456d708a567.1357278252.git.lv.zheng@intel.com>
+In-Reply-To: 9dce16ee5a6821f10e419c5b286fb0c287200758.1357277898.git.lv.zheng@intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============9130731915870550691==
+--===============8116906173322121771==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
@@ -20,7 +21,13 @@ This patch introduces VRTC table support into ACPICA.
 
 Signed-off-by: Lv Zheng <lv.zheng(a)intel.com>
 ---
- source/common/dmtable.c      |    2 ++
+History:
+ v1:
+   1. Add dump/compile support for VRTC in iASL.
+ v2:
+   1. Fix mistake in dmtable.c.
+---
+ source/common/dmtable.c      |    1 +
  source/common/dmtbdump.c     |   52 ++++++++++++++++++++++++++++++++++++++=
 ++++
  source/common/dmtbinfo.c     |   22 ++++++++++++++++++
@@ -29,13 +36,13 @@ Signed-off-by: Lv Zheng <lv.zheng(a)intel.com>
  source/compiler/dttemplate.h |   11 +++++++++
  source/include/acdisasm.h    |    6 +++++
  source/include/actbl2.h      |   27 ++++++++++++++++++++++
- 8 files changed, 150 insertions(+)
+ 8 files changed, 149 insertions(+)
 
 diff --git a/source/common/dmtable.c b/source/common/dmtable.c
-index 6c2fbdf..7f4696f 100644
+index 6c2fbdf..31a213e 100644
 --- a/source/common/dmtable.c
 +++ b/source/common/dmtable.c
-@@ -384,6 +384,8 @@ ACPI_DMTABLE_DATA    AcpiDmTableData[] =3D
+@@ -384,6 +384,7 @@ ACPI_DMTABLE_DATA    AcpiDmTableData[] =3D
      {ACPI_SIG_TCPA, AcpiDmTableInfoTcpa,    NULL,           NULL,         =
   TemplateTcpa,   "Trusted Computing Platform Alliance table"},
      {ACPI_SIG_TPM2, AcpiDmTableInfoTpm2,    NULL,           NULL,         =
@@ -44,8 +51,6 @@ index 6c2fbdf..7f4696f 100644
   TemplateUefi,   "UEFI Boot Optimization Table"},
 +    {ACPI_SIG_VRTC, AcpiDmTableInfoVrtc,    AcpiDmDumpVrtc, DtCompileVrtc,=
   TemplateVrtc,   "SFI - Virutal Real Time Clock Table"},
-+    {ACPI_SIG_WAET, AcpiDmTableInfoWaet,    NULL,           NULL,         =
-  TemplateWaet,   "Windows ACPI Emulated Devices Table"},
      {ACPI_SIG_WAET, AcpiDmTableInfoWaet,    NULL,           NULL,         =
   TemplateWaet,   "Windows ACPI Emulated Devices Table"},
      {ACPI_SIG_WDAT, NULL,                   AcpiDmDumpWdat, DtCompileWdat,=
@@ -350,5 +355,5 @@ r */
 1.7.10
 
 
---===============9130731915870550691==--
+--===============8116906173322121771==--
 
