@@ -1,117 +1,122 @@
-Content-Type: multipart/mixed; boundary="===============8690827294356873912=="
+Content-Type: multipart/mixed; boundary="===============8454806351188397114=="
 MIME-Version: 1.0
 From: Lv Zheng <lv.zheng at intel.com>
-Subject: [Devel] [PATCH 1/1] ACPICA: Tables: Update RASF table definitions.
-Date: Wed, 09 Jan 2013 08:26:47 +0800
-Message-ID: <af8608d1aa6286018c798f6b98d030408a0c529e.1357656519.git.lv.zheng@intel.com>
+Subject: [Devel] [PATCH 1/1] ACPICA: Cleanup ACPI_DEBUG_PRINT macros to fix
+ potential build breakages.
+Date: Thu, 10 Jan 2013 12:39:23 +0800
+Message-ID: <7fe52be62b03ad486aa7550264d98a0aa1bb0f80.1357792644.git.lv.zheng@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8690827294356873912==
+--===============8454806351188397114==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Update RASF table definitions to reflect ACPI 5.0 changes.
+From: Bob Moore <robert.moore(a)intel.com>
 
+Fix two issues with the ACPI_DEBUG_PRINT macros.
+1) Add the ACPI_DO_WHILE macro to the main DEBUG_PRINT helper macro.
+2) Rename ACPI_DEBUG macro to ACPI_DO_DEBUG_PRINT since ACPI_DEBUG
+   is already commonly used by the various hosts.
+
+Signed-off-by: Bob Moore <robert.moore(a)intel.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki(a)intel.com>
 Signed-off-by: Lv Zheng <lv.zheng(a)intel.com>
 ---
- source/include/actbl3.h |   59 +++++++++++++++++++++++++++++++++++++++----=
-----
- 1 file changed, 49 insertions(+), 10 deletions(-)
+ source/include/acoutput.h |   36 ++++++++++++++++++++----------------
+ 1 file changed, 20 insertions(+), 16 deletions(-)
 
-diff --git a/source/include/actbl3.h b/source/include/actbl3.h
-index 5433bfd..f2fafe0 100644
---- a/source/include/actbl3.h
-+++ b/source/include/actbl3.h
-@@ -671,28 +671,67 @@ typedef struct acpi_rasf_shared_memory
-     UINT32                  Signature;
-     UINT16                  Command;
-     UINT16                  Status;
--    UINT64                  RequestedAddress;
--    UINT64                  RequestedLength;
--    UINT64                  ActualAddress;
--    UINT64                  ActualLength;
--    UINT16                  Flags;
--    UINT8                   Speed;
-+    UINT16                  Version;
-+    UINT8                   RASCapabilities[16];
-+    UINT8                   SetRASCapabilities[16];
-+    UINT16                  NumberOfRASFParameterBlocks;
-+    UINT32                  SetRASCapabilitiesStatus;
+diff --git a/source/include/acoutput.h b/source/include/acoutput.h
+index b9d19e2..e1ad7d1 100644
+--- a/source/include/acoutput.h
++++ b/source/include/acoutput.h
+@@ -357,7 +357,16 @@
+  * debug message outside of the print function itself. This improves overa=
+ll
+  * performance at a relatively small code cost. Implementation involves the
+  * use of variadic macros supported by C99.
++ *
++ * Note: the ACPI_DO_WHILE0 macro is used to prevent some compilers from
++ * complaining about these constructs. On other compilers the do...while
++ * adds some extra code, so this feature is optional.
+  */
++#ifdef ACPI_USE_DO_WHILE_0
++#define ACPI_DO_WHILE0(a)               do a while(0)
++#else
++#define ACPI_DO_WHILE0(a)               a
++#endif
  =
 
- } ACPI_RASF_SHARED_MEMORY;
+ /* DEBUG_PRINT functions */
  =
 
-+/* RASF Parameter Block Structure Header */
-+
-+typedef struct acpi_rasf_parameter_block
-+{
-+    UINT16                  Type;
-+    UINT16                  Version;
-+    UINT16                  Length;
-+
-+} ACPI_RASF_PARAMETER_BLOCK;
-+
-+/* RASF Parameter Block Structure for PATROL_SCRUB */
-+
-+typedef struct acpi_rasf_patrol_scrub_parameter
-+{
-+    ACPI_RASF_PARAMETER_BLOCK   Header;
-+    UINT16                      PatrolScrubCommand;
-+    UINT64                      RequestedAddressRange[2];
-+    UINT64                      ActualAddressRange[2];
-+    UINT16                      Flags;
-+    UINT8                       RequestedSpeed;
-+
-+} ACPI_RASF_PATROL_SCRUB_PARAMETER;
-+
- /* Masks for Flags and Speed fields above */
+@@ -366,17 +375,21 @@
  =
 
- #define ACPI_RASF_SCRUBBER_RUNNING      1
- #define ACPI_RASF_SPEED                 (7<<1)
-+#define ACPI_RASF_SPEED_SLOW            (0<<1)
-+#define ACPI_RASF_SPEED_MEDIUM          (4<<1)
-+#define ACPI_RASF_SPEED_FAST            (7<<1)
+ /* Helper macros for DEBUG_PRINT */
  =
 
- /* Channel Commands */
+-#define ACPI_DEBUG(Function, Level, Line, Filename, Modulename, Component,=
+ ...) \
+-    if (ACPI_IS_DEBUG_ENABLED (Level, Component)) \
+-    { \
+-        Function (Level, Line, Filename, Modulename, Component, __VA_ARGS_=
+_); \
+-    }
++#define ACPI_DO_DEBUG_PRINT(Function, Level, Line, Filename, Modulename, C=
+omponent, ...) \
++    ACPI_DO_WHILE0 ({ \
++        if (ACPI_IS_DEBUG_ENABLED (Level, Component)) \
++        { \
++            Function (Level, Line, Filename, Modulename, Component, __VA_A=
+RGS__); \
++        } \
++    })
  =
 
- enum AcpiRasfCommands
- {
--    ACPI_RASF_GET_RAS_CAPABILITIES      =3D 1,
--    ACPI_RASF_GET_PATROL_PARAMETERS     =3D 2,
--    ACPI_RASF_START_PATROL_SCRUBBER     =3D 3,
--    ACPI_RASF_STOP_PATROL_SCRUBBER      =3D 4
-+    ACPI_RASF_EXECUTE_RASF_COMMAND      =3D 1
-+};
-+
-+/* Platform RAS Capabilities */
-+
-+enum AcpiRasfCapabiliities
-+{
-+    ACPI_HW_PATROL_SCRUB_SUPPORTED      =3D 0,
-+    ACPI_SW_PATROL_SCRUB_EXPOSED        =3D 1
-+};
-+
-+/* Patrol Scrub Commands */
-+
-+enum AcpiRasfPatrolScrubCommands
-+{
-+    ACPI_RASF_GET_PATROL_PARAMETERS     =3D 1,
-+    ACPI_RASF_START_PATROL_SCRUBBER     =3D 2,
-+    ACPI_RASF_STOP_PATROL_SCRUBBER      =3D 3
- };
+ #define ACPI_ACTUAL_DEBUG(Level, Line, Filename, Modulename, Component, ..=
+.) \
+-    ACPI_DEBUG (AcpiDebugPrint, Level, Line, Filename, Modulename, Compone=
+nt, __VA_ARGS__)
++    ACPI_DO_DEBUG_PRINT (AcpiDebugPrint, Level, Line, \
++        Filename, Modulename, Component, __VA_ARGS__)
  =
 
- /* Channel Command flags */
+ #define ACPI_ACTUAL_DEBUG_RAW(Level, Line, Filename, Modulename, Component=
+, ...) \
+-    ACPI_DEBUG (AcpiDebugPrintRaw, Level, Line, Filename, Modulename, Comp=
+onent, __VA_ARGS__)
++    ACPI_DO_DEBUG_PRINT (AcpiDebugPrintRaw, Level, Line, \
++        Filename, Modulename, Component, __VA_ARGS__)
+ =
+
+ =
+
+ /*
+@@ -420,16 +433,7 @@
+  *
+  * One of the FUNCTION_TRACE macros above must be used in conjunction
+  * with these macros so that "_AcpiFunctionName" is defined.
+- *
+- * Note: the DO_WHILE0 macro is used to prevent some compilers from
+- * complaining about these constructs. On other compilers the do...while
+- * adds some extra code, so this feature is optional.
+  */
+-#ifdef ACPI_USE_DO_WHILE_0
+-#define ACPI_DO_WHILE0(a)               do a while(0)
+-#else
+-#define ACPI_DO_WHILE0(a)               a
+-#endif
+ =
+
+ /* Exit trace helper macro */
+ =
+
 -- =
 
 1.7.10
 
 
---===============8690827294356873912==--
+--===============8454806351188397114==--
 
