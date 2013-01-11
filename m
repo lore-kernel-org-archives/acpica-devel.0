@@ -1,28 +1,42 @@
-Content-Type: multipart/mixed; boundary="===============0474338881242011410=="
+Content-Type: multipart/mixed; boundary="===============6773822874416116321=="
 MIME-Version: 1.0
-From: uncaged.com <info at digital-heaven.co.uk>
-Subject: [Devel] Informatio for devel
-Date: Thu, 10 Jan 2013 01:16:13 -0600
-Message-ID: <2b4ad445a878af4fabae91a039193ad8b@www.digital-heaven.co.uk>
+From: Lv Zheng <lv.zheng at intel.com>
+Subject: [Devel] [PATCH v2 0/2] ACPICA: Update linuxized scripts.
+Date: Sat, 12 Jan 2013 01:18:21 +0800
+Message-ID: <cover.1357924466.git.lv.zheng@intel.com>
+In-Reply-To: b4290bf9f1459cc36ffb785f7d59ebbc1a54bca0.1357921698.git.lv.zheng@intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0474338881242011410==
+--===============6773822874416116321==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
+Update linuxized scripts to make proper genereated patches.
 
---===============0474338881242011410==
-Content-Type: text/html
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="attachment.html"
+History:
+ v1:
+   1. Add header fields for linuxized patches, one per file.
+   2. Fix acpisrc generation position to allow copyright patches to be crea=
+ted.
+ v2:
+   1. Fix header fields for linuxized patches, mbox file.
 
-PGh0bWw+Cjxib2R5Pgo8Yj5Zb3VyIE9yZGVyIGlkOjY0NzM2OSBBY2NlcHRlZC48YnI+CjxhIGhy
-ZWY9Imh0dHA6Ly9hYmx1bm5lcmpzdmcucHVibGlzaHBhdGguY29tLyI+RGV0YWlscyEhIQo8YnI+
-PGJyPlRoYW5rIHlvdSwKPGJyPnVuY2FnZWQuY29tIEN1c3RvbWVyIFN1cHBvcnQ8L2E+PC9iPgo8
-L2JvZHk+CjwvaHRtbD4K
+Lv Zheng (2):
+  ACPICA: Linuxize: Add patch header fields for linuxized patches.
+  ACPICA: Linuxize: Move acpisrc generation from make-patch.pl to
+    linuxize.sh.
 
---===============0474338881242011410==--
+ generate/linux/patches/linuxize.sh     |    5 +++
+ generate/linux/patches/make-patches.pl |   64 ++++++++++++++++++++++++++++=
++---
+ 2 files changed, 64 insertions(+), 5 deletions(-)
+
+-- =
+
+1.7.10
+
+
+--===============6773822874416116321==--
 
