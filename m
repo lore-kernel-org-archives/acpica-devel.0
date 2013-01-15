@@ -1,25 +1,22 @@
-Content-Type: multipart/mixed; boundary="===============0950512175337357800=="
+Content-Type: multipart/mixed; boundary="===============5536955512682758499=="
 MIME-Version: 1.0
 From: Moore, Robert <robert.moore at intel.com>
 Subject: Re: [Devel] [PATCH 2/2] Update MSVC project/workspace files.
-Date: Tue, 15 Jan 2013 19:46:26 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E357E4D56C@ORSMSX101.amr.corp.intel.com>
+Date: Tue, 15 Jan 2013 20:06:54 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E357E4E5E4@ORSMSX101.amr.corp.intel.com>
 In-Reply-To: 454a9183e51786f989f92c7736e86528e255d7f8.1358122823.git.lv.zheng@intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0950512175337357800==
+--===============5536955512682758499==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Lv,
+The project files in generate/msvc are for MSVC 6.0 and are deprecated and =
+no longer supported. At this time, deletion should be considered.
 
-The files under generate/msvc were used for MS VC 6.0, and are now "fully" =
-deprecated (and probably should now be deleted, since we don't want to supp=
-ort them.)
-
-Use generate/msvc9
+The current windows project files are in generate/msvc9.
 
 Bob
 
@@ -1952,5 +1949,5 @@ xe
 > 1.7.10
 
 
---===============0950512175337357800==--
+--===============5536955512682758499==--
 
