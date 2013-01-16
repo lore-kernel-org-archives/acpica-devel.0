@@ -1,20 +1,20 @@
-Content-Type: multipart/mixed; boundary="===============1717138611153365914=="
+Content-Type: multipart/mixed; boundary="===============0027316499952580897=="
 MIME-Version: 1.0
 From: bugzilla-daemon at mail.opensource.intel.com
-Subject: [Devel] [Bug 738] iASL mishandles Alias() when target is longer than
- single nameseg
-Date: Tue, 15 Jan 2013 21:03:51 -0800
-Message-ID: <20130116050351.2843D200C6F4D@mail.opensource.intel.com>
-In-Reply-To: bug-738-162@
+Subject: [Devel] [Bug 742] iASL: AE_ALREADY_EXISTS if Scope(xxxx) in external
+ table and Device(xxxx) in disassembled table
+Date: Tue, 15 Jan 2013 21:40:03 -0800
+Message-ID: <20130116054003.BBE7520294B2D@mail.opensource.intel.com>
+In-Reply-To: bug-742-162@
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1717138611153365914==
+--===============0027316499952580897==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-https://acpica.org/bugzilla/show_bug.cgi?id=3D738
+https://acpica.org/bugzilla/show_bug.cgi?id=3D742
 
 
 Lv Zheng <lv.zheng(a)intel.com> changed:
@@ -33,5 +33,5 @@ Configure bugmail: https://acpica.org/bugzilla/userprefs.cgi?tab=3Demail
 ------- You are receiving this mail because: -------
 You are on the CC list for the bug.
 
---===============1717138611153365914==--
+--===============0027316499952580897==--
 
