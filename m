@@ -1,58 +1,118 @@
-Content-Type: multipart/mixed; boundary="===============5120069164366838350=="
+Content-Type: multipart/mixed; boundary="===============5773609330064668990=="
 MIME-Version: 1.0
 From: Lv Zheng <lv.zheng at intel.com>
-Subject: [Devel] [PATCH v4 0/3] ACPICA: iASL: Add tables support.
-Date: Tue, 22 Jan 2013 10:46:23 +0800
-Message-ID: <cover.1358822364.git.lv.zheng@intel.com>
-In-Reply-To: cover.1357281212.git.lv.zheng@intel.com
+Subject: [Devel] [PATCH v4 1/3] ACPICA: Tables: Update RASF table definitions
+Date: Tue, 22 Jan 2013 10:46:37 +0800
+Message-ID: <a295d742954c30340f7ac038fb5c876a32e3b483.1358822364.git.lv.zheng@intel.com>
+In-Reply-To: cover.1358822364.git.lv.zheng@intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5120069164366838350==
+--===============5773609330064668990==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-MID tables can be found in the recent ACPI BIOS enabled Intel MID
-platforms. These table includes: VRTC and MTMR.
-This patch set introduces MID tables support into ACPICA.
-This patch set also updates RASF table definition according to the
-ACPI 5.0 specification.
+Update RASF table definitions to reflect ACPI 5.0 changes.
 
-History:
- v1:
-   1. Add dump/compile support for VRTC in iASL.
- v2:
-   1. Fix mistake in dmtable.c.
- v3:
-   1. Fix coding style issue in actbl2.h.
-   2. Add dump/compile support for MTMR in iASL.
- v4:
-   1. Update RASF table definition.
-   2. Update VRTC/MTMR table templates.
-   3. Remove SFI from table namings.
+Signed-off-by: Lv Zheng <lv.zheng(a)intel.com>
+---
+ source/include/actbl3.h |   59 +++++++++++++++++++++++++++++++++++++++----=
+----
+ 1 file changed, 49 insertions(+), 10 deletions(-)
 
-Lv Zheng (3):
-  ACPICA: Tables: Update RASF table definitions
-  ACPICA: iASL: Add MTMR table support
-  ACPICA: iASL: Add VRTC table support
+diff --git a/source/include/actbl3.h b/source/include/actbl3.h
+index 8588925..fa82493 100644
+--- a/source/include/actbl3.h
++++ b/source/include/actbl3.h
+@@ -671,28 +671,67 @@ typedef struct acpi_rasf_shared_memory
+     UINT32                  Signature;
+     UINT16                  Command;
+     UINT16                  Status;
+-    UINT64                  RequestedAddress;
+-    UINT64                  RequestedLength;
+-    UINT64                  ActualAddress;
+-    UINT64                  ActualLength;
+-    UINT16                  Flags;
+-    UINT8                   Speed;
++    UINT16                  Version;
++    UINT8                   Capabilities[16];
++    UINT8                   SetCapabilities[16];
++    UINT16                  NumParameterBlocks;
++    UINT32                  SetCapabilitiesStatus;
+ =
 
- source/common/dmtable.c      |    2 +
- source/common/dmtbdump.c     |  104 ++++++++++++++++++++++++++++++++++++++=
-++++
- source/common/dmtbinfo.c     |   45 ++++++++++++++++++
- source/compiler/dtcompiler.h |   10 ++++
- source/compiler/dttable.c    |   50 ++++++++++++++++++++
- source/compiler/dttemplate.h |   26 +++++++++++
- source/include/acdisasm.h    |   12 +++++
- source/include/actbl2.h      |   57 +++++++++++++++++++++++
- source/include/actbl3.h      |   59 ++++++++++++++++++++----
- 9 files changed, 355 insertions(+), 10 deletions(-)
+ } ACPI_RASF_SHARED_MEMORY;
+ =
 
++/* RASF Parameter Block Structure Header */
++
++typedef struct acpi_rasf_parameter_block
++{
++    UINT16                  Type;
++    UINT16                  Version;
++    UINT16                  Length;
++
++} ACPI_RASF_PARAMETER_BLOCK;
++
++/* RASF Parameter Block Structure for PATROL_SCRUB */
++
++typedef struct acpi_rasf_patrol_scrub_parameter
++{
++    ACPI_RASF_PARAMETER_BLOCK   Header;
++    UINT16                      PatrolScrubCommand;
++    UINT64                      RequestedAddressRange[2];
++    UINT64                      ActualAddressRange[2];
++    UINT16                      Flags;
++    UINT8                       RequestedSpeed;
++
++} ACPI_RASF_PATROL_SCRUB_PARAMETER;
++
+ /* Masks for Flags and Speed fields above */
+ =
+
+ #define ACPI_RASF_SCRUBBER_RUNNING      1
+ #define ACPI_RASF_SPEED                 (7<<1)
++#define ACPI_RASF_SPEED_SLOW            (0<<1)
++#define ACPI_RASF_SPEED_MEDIUM          (4<<1)
++#define ACPI_RASF_SPEED_FAST            (7<<1)
+ =
+
+ /* Channel Commands */
+ =
+
+ enum AcpiRasfCommands
+ {
+-    ACPI_RASF_GET_RAS_CAPABILITIES      =3D 1,
+-    ACPI_RASF_GET_PATROL_PARAMETERS     =3D 2,
+-    ACPI_RASF_START_PATROL_SCRUBBER     =3D 3,
+-    ACPI_RASF_STOP_PATROL_SCRUBBER      =3D 4
++    ACPI_RASF_EXECUTE_RASF_COMMAND      =3D 1
++};
++
++/* Platform RAS Capabilities */
++
++enum AcpiRasfCapabiliities
++{
++    ACPI_HW_PATROL_SCRUB_SUPPORTED      =3D 0,
++    ACPI_SW_PATROL_SCRUB_EXPOSED        =3D 1
++};
++
++/* Patrol Scrub Commands */
++
++enum AcpiRasfPatrolScrubCommands
++{
++    ACPI_RASF_GET_PATROL_PARAMETERS     =3D 1,
++    ACPI_RASF_START_PATROL_SCRUBBER     =3D 2,
++    ACPI_RASF_STOP_PATROL_SCRUBBER      =3D 3
+ };
+ =
+
+ /* Channel Command flags */
 -- =
 
 1.7.10
 
 
---===============5120069164366838350==--
+--===============5773609330064668990==--
 
