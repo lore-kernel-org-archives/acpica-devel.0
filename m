@@ -1,91 +1,90 @@
-Content-Type: multipart/mixed; boundary="===============8079613106362432002=="
+Content-Type: multipart/mixed; boundary="===============6087778351380833052=="
 MIME-Version: 1.0
 From: Lv Zheng <lv.zheng at intel.com>
-Subject: [Devel] [PATCH v4 3/3] ACPICA: iASL: Add VRTC table support
-Date: Tue, 22 Jan 2013 10:46:50 +0800
-Message-ID: <d423ecf03e1a6259cbeb4d76c2c44a76f4c6d2e3.1358822364.git.lv.zheng@intel.com>
+Subject: [Devel] [PATCH v4 2/3] ACPICA: iASL: Add MTMR table support
+Date: Tue, 22 Jan 2013 10:46:43 +0800
+Message-ID: <741434c70e87223c44bff8c54d77581821df32da.1358822364.git.lv.zheng@intel.com>
 In-Reply-To: cover.1358822364.git.lv.zheng@intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8079613106362432002==
+--===============6087778351380833052==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-VRTC is used in Intel MID platforms as a replacement of the traditional
-x86 RTC. VRTC table can be found in the recent ACPI BIOS enabled MID
-platforms. The format of this table has been defined in the "Simple
-Firmware Interface Specification" except using GAS instead of 64-bit
-values for address fields.
-This patch introduces VRTC table support into ACPICA.
+MTMR table is used in the recent ACPI BIOS enabled Intel MID platforms.
+The format of this table has been defined in the "Simple Firmware
+Interface Specification" except using GAS instead of 64-bit values for
+address fields.
+This patch introduces MTMR table support into ACPICA.
 
 Signed-off-by: Lv Zheng <lv.zheng(a)intel.com>
 ---
  source/common/dmtable.c      |    1 +
  source/common/dmtbdump.c     |   52 ++++++++++++++++++++++++++++++++++++++=
 ++++
- source/common/dmtbinfo.c     |   22 ++++++++++++++++++
+ source/common/dmtbinfo.c     |   23 +++++++++++++++++++
  source/compiler/dtcompiler.h |    5 ++++
  source/compiler/dttable.c    |   25 ++++++++++++++++++++
  source/compiler/dttemplate.h |   13 +++++++++++
  source/include/acdisasm.h    |    6 +++++
- source/include/actbl2.h      |   28 +++++++++++++++++++++++
- 8 files changed, 152 insertions(+)
+ source/include/actbl2.h      |   29 +++++++++++++++++++++++
+ 8 files changed, 154 insertions(+)
 
 diff --git a/source/common/dmtable.c b/source/common/dmtable.c
-index e4cf4ce..876d7be 100644
+index 51303ff..e4cf4ce 100644
 --- a/source/common/dmtable.c
 +++ b/source/common/dmtable.c
-@@ -385,6 +385,7 @@ ACPI_DMTABLE_DATA    AcpiDmTableData[] =3D
-     {ACPI_SIG_TCPA, AcpiDmTableInfoTcpa,    NULL,           NULL,         =
-  TemplateTcpa,   "Trusted Computing Platform Alliance table"},
-     {ACPI_SIG_TPM2, AcpiDmTableInfoTpm2,    NULL,           NULL,         =
-  TemplateTpm2,   "Trusted Platform Module hardware interface table"},
-     {ACPI_SIG_UEFI, AcpiDmTableInfoUefi,    NULL,           DtCompileUefi,=
-  TemplateUefi,   "UEFI Boot Optimization Table"},
-+    {ACPI_SIG_VRTC, AcpiDmTableInfoVrtc,    AcpiDmDumpVrtc, DtCompileVrtc,=
-  TemplateVrtc,   "MID Virtual RTC Table"},
-     {ACPI_SIG_WAET, AcpiDmTableInfoWaet,    NULL,           NULL,         =
-  TemplateWaet,   "Windows ACPI Emulated Devices Table"},
-     {ACPI_SIG_WDAT, NULL,                   AcpiDmDumpWdat, DtCompileWdat,=
-  TemplateWdat,   "Watchdog Action Table"},
-     {ACPI_SIG_WDDT, AcpiDmTableInfoWddt,    NULL,           NULL,         =
-  TemplateWddt,   "Watchdog Description Table"},
+@@ -371,6 +371,7 @@ ACPI_DMTABLE_DATA    AcpiDmTableData[] =3D
+     {ACPI_SIG_MCHI, AcpiDmTableInfoMchi,    NULL,           NULL,         =
+  TemplateMchi,   "Management Controller Host Interface table"},
+     {ACPI_SIG_MPST, AcpiDmTableInfoMpst,    AcpiDmDumpMpst, DtCompileMpst,=
+  TemplateMpst,   "Memory Power State Table"},
+     {ACPI_SIG_MSCT, NULL,                   AcpiDmDumpMsct, DtCompileMsct,=
+  TemplateMsct,   "Maximum System Characteristics Table"},
++    {ACPI_SIG_MTMR, NULL,                   AcpiDmDumpMtmr, DtCompileMtmr,=
+  TemplateMtmr,   "MID Timer Table"},
+     {ACPI_SIG_PCCT, NULL,                   AcpiDmDumpPcct, NULL,         =
+  NULL,           "Platform Communications Channel Table"},
+     {ACPI_SIG_PMTT, NULL,                   AcpiDmDumpPmtt, DtCompilePmtt,=
+  TemplatePmtt,   "Platform Memory Topology Table"},
+     {ACPI_SIG_RSDT, NULL,                   AcpiDmDumpRsdt, DtCompileRsdt,=
+  TemplateRsdt,   "Root System Description Table"},
 diff --git a/source/common/dmtbdump.c b/source/common/dmtbdump.c
-index 37ca0f4..5125681 100644
+index fe68fe5..37ca0f4 100644
 --- a/source/common/dmtbdump.c
 +++ b/source/common/dmtbdump.c
-@@ -2502,6 +2502,58 @@ NextSubTable:
+@@ -1868,6 +1868,58 @@ AcpiDmDumpMsct (
  =
 
  /*************************************************************************=
 ******
   *
-+ * FUNCTION:    AcpiDmDumpVrtc
++ * FUNCTION:    AcpiDmDumpMtmr
 + *
-+ * PARAMETERS:  Table               - A VRTC table
++ * PARAMETERS:  Table               - A MTMR table
 + *
 + * RETURN:      None
 + *
-+ * DESCRIPTION: Format the contents of a VRTC
++ * DESCRIPTION: Format the contents of a MTMR
 + *
 + *************************************************************************=
 *****/
 +
 +void
-+AcpiDmDumpVrtc (
++AcpiDmDumpMtmr (
 +    ACPI_TABLE_HEADER       *Table)
 +{
 +    ACPI_STATUS             Status;
-+    UINT32                  Offset =3D sizeof (ACPI_TABLE_VRTC);
-+    ACPI_VRTC_ENTRY         *SubTable;
++    UINT32                  Offset =3D sizeof (ACPI_TABLE_MTMR);
++    ACPI_MTMR_ENTRY         *SubTable;
 +
 +
 +    /* Main table */
 +
 +    Status =3D AcpiDmDumpTable (Table->Length, 0, Table, 0, AcpiDmTableInf=
-oVrtc);
+oMtmr);
 +    if (ACPI_FAILURE (Status))
 +    {
 +        return;
@@ -93,14 +92,14 @@ oVrtc);
 +
 +    /* Sub-tables */
 +
-+    SubTable =3D ACPI_ADD_PTR (ACPI_VRTC_ENTRY, Table, Offset);
++    SubTable =3D ACPI_ADD_PTR (ACPI_MTMR_ENTRY, Table, Offset);
 +    while (Offset < Table->Length)
 +    {
 +        /* Common sub-table header */
 +
 +        AcpiOsPrintf ("\n");
 +        Status =3D AcpiDmDumpTable (Table->Length, Offset, SubTable,
-+                    sizeof (ACPI_VRTC_ENTRY), AcpiDmTableInfoVrtc0);
++                    sizeof (ACPI_MTMR_ENTRY), AcpiDmTableInfoMtmr0);
 +        if (ACPI_FAILURE (Status))
 +        {
 +            return;
@@ -108,9 +107,9 @@ oVrtc);
 +
 +        /* Point to next sub-table */
 +
-+        Offset +=3D sizeof (ACPI_VRTC_ENTRY);
-+        SubTable =3D ACPI_ADD_PTR (ACPI_VRTC_ENTRY, SubTable, sizeof (ACPI=
-_VRTC_ENTRY));
++        Offset +=3D sizeof (ACPI_MTMR_ENTRY);
++        SubTable =3D ACPI_ADD_PTR (ACPI_MTMR_ENTRY, SubTable, sizeof (ACPI=
+_MTMR_ENTRY));
 +    }
 +}
 +
@@ -118,51 +117,54 @@ _VRTC_ENTRY));
 +/*************************************************************************=
 ******
 + *
-  * FUNCTION:    AcpiDmDumpWdat
+  * FUNCTION:    AcpiDmDumpPcct
   *
-  * PARAMETERS:  Table               - A WDAT table
+  * PARAMETERS:  Table               - A PCCT table
 diff --git a/source/common/dmtbinfo.c b/source/common/dmtbinfo.c
-index d9424c6..743c654 100644
+index 952c1bc..d9424c6 100644
 --- a/source/common/dmtbinfo.c
 +++ b/source/common/dmtbinfo.c
-@@ -268,6 +268,7 @@
- #define ACPI_SRAT0_OFFSET(f)            (UINT16) ACPI_OFFSET (ACPI_SRAT_CP=
-U_AFFINITY,f)
- #define ACPI_SRAT1_OFFSET(f)            (UINT16) ACPI_OFFSET (ACPI_SRAT_ME=
-M_AFFINITY,f)
- #define ACPI_SRAT2_OFFSET(f)            (UINT16) ACPI_OFFSET (ACPI_SRAT_X2=
-APIC_CPU_AFFINITY,f)
-+#define ACPI_VRTC0_OFFSET(f)            (UINT16) ACPI_OFFSET (ACPI_VRTC_EN=
+@@ -251,6 +251,7 @@
+ #define ACPI_MPST1_OFFSET(f)            (UINT16) ACPI_OFFSET (ACPI_MPST_DA=
+TA_HDR,f)
+ #define ACPI_MPST2_OFFSET(f)            (UINT16) ACPI_OFFSET (ACPI_MPST_PO=
+WER_DATA,f)
+ #define ACPI_MSCT0_OFFSET(f)            (UINT16) ACPI_OFFSET (ACPI_MSCT_PR=
+OXIMITY,f)
++#define ACPI_MTMR0_OFFSET(f)            (UINT16) ACPI_OFFSET (ACPI_MTMR_EN=
 TRY,f)
- #define ACPI_WDAT0_OFFSET(f)            (UINT16) ACPI_OFFSET (ACPI_WDAT_EN=
-TRY,f)
- =
-
- /*
-@@ -2130,6 +2131,27 @@ ACPI_DMTABLE_INFO           AcpiDmTableInfoUefi[] =
+ #define ACPI_PCCT0_OFFSET(f)            (UINT16) ACPI_OFFSET (ACPI_PCCT_SU=
+BSPACE,f)
+ #define ACPI_PMTT0_OFFSET(f)            (UINT16) ACPI_OFFSET (ACPI_PMTT_SO=
+CKET,f)
+ #define ACPI_PMTT1_OFFSET(f)            (UINT16) ACPI_OFFSET (ACPI_PMTT_CO=
+NTROLLER,f)
+@@ -1716,6 +1717,28 @@ ACPI_DMTABLE_INFO           AcpiDmTableInfoMsct0[] =
 =3D
  =
 
  /*************************************************************************=
 ******
   *
-+ * VRTC - Virtual Real Time Clock Table
++ * MTMR - MID Timer Table
 + *
 + *************************************************************************=
 *****/
 +
-+ACPI_DMTABLE_INFO           AcpiDmTableInfoVrtc[] =3D
++ACPI_DMTABLE_INFO           AcpiDmTableInfoMtmr[] =3D
 +{
 +    ACPI_DMT_TERMINATOR
 +};
 +
-+/* VRTC Subtables - VRTC Entry */
++/* MTMR Subtables - MTMR Entry */
 +
-+ACPI_DMTABLE_INFO           AcpiDmTableInfoVrtc0[] =3D
++ACPI_DMTABLE_INFO           AcpiDmTableInfoMtmr0[] =3D
 +{
-+    {ACPI_DMT_GAS,      ACPI_VRTC0_OFFSET (PhysicalAddress),        "Physi=
++    {ACPI_DMT_GAS,      ACPI_MTMR0_OFFSET (PhysicalAddress),        "Physi=
 calAddress", 0},
-+    {ACPI_DMT_UINT32,   ACPI_VRTC0_OFFSET (Irq),                    "IRQ",=
++    {ACPI_DMT_UINT32,   ACPI_MTMR0_OFFSET (Frequency),              "Frequ=
+ency", 0},
++    {ACPI_DMT_UINT32,   ACPI_MTMR0_OFFSET (Irq),                    "IRQ",=
  0},
 +    ACPI_DMT_TERMINATOR
 +};
@@ -171,65 +173,65 @@ calAddress", 0},
 +/*************************************************************************=
 ******
 + *
-  * WAET - Windows ACPI Emulated devices Table
+  * PCCT - Platform Communications Channel Table (ACPI 5.0)
   *
   *************************************************************************=
 *****/
 diff --git a/source/compiler/dtcompiler.h b/source/compiler/dtcompiler.h
-index c4064fe..9868662 100644
+index 1b2467a..c4064fe 100644
 --- a/source/compiler/dtcompiler.h
 +++ b/source/compiler/dtcompiler.h
-@@ -548,6 +548,10 @@ DtCompileUefi (
+@@ -516,6 +516,10 @@ DtCompileMsct (
      void                    **PFieldList);
  =
 
  ACPI_STATUS
-+DtCompileVrtc (
++DtCompileMtmr (
 +    void                    **PFieldList);
 +
 +ACPI_STATUS
- DtCompileWdat (
+ DtCompilePmtt (
      void                    **PFieldList);
  =
 
-@@ -600,6 +604,7 @@ extern const unsigned char  TemplateSrat[];
- extern const unsigned char  TemplateTcpa[];
- extern const unsigned char  TemplateTpm2[];
- extern const unsigned char  TemplateUefi[];
-+extern const unsigned char  TemplateVrtc[];
- extern const unsigned char  TemplateWaet[];
- extern const unsigned char  TemplateWdat[];
- extern const unsigned char  TemplateWddt[];
+@@ -583,6 +587,7 @@ extern const unsigned char  TemplateMcfg[];
+ extern const unsigned char  TemplateMchi[];
+ extern const unsigned char  TemplateMpst[];
+ extern const unsigned char  TemplateMsct[];
++extern const unsigned char  TemplateMtmr[];
+ extern const unsigned char  TemplatePmtt[];
+ extern const unsigned char  TemplateRsdt[];
+ extern const unsigned char  TemplateS3pt[];
 diff --git a/source/compiler/dttable.c b/source/compiler/dttable.c
-index b5eeff6..da34e7b 100644
+index f9ba5fa..b5eeff6 100644
 --- a/source/compiler/dttable.c
 +++ b/source/compiler/dttable.c
-@@ -2071,6 +2071,31 @@ DtCompileUefi (
+@@ -1484,6 +1484,31 @@ DtCompileMsct (
  =
 
  /*************************************************************************=
 *****
   *
-+ * FUNCTION:    DtCompileVrtc
++ * FUNCTION:    DtCompileMtmr
 + *
 + * PARAMETERS:  List                - Current field list pointer
 + *
 + * RETURN:      Status
 + *
-+ * DESCRIPTION: Compile VRTC.
++ * DESCRIPTION: Compile MTMR.
 + *
 + *************************************************************************=
 ****/
 +
 +ACPI_STATUS
-+DtCompileVrtc (
++DtCompileMtmr (
 +    void                    **List)
 +{
 +    ACPI_STATUS             Status;
 +
 +
 +    Status =3D DtCompileTwoSubtables (List,
-+                 AcpiDmTableInfoVrtc, AcpiDmTableInfoVrtc0);
++                 AcpiDmTableInfoMtmr, AcpiDmTableInfoMtmr0);
 +    return (Status);
 +}
 +
@@ -237,19 +239,19 @@ index b5eeff6..da34e7b 100644
 +/*************************************************************************=
 *****
 + *
-  * FUNCTION:    DtCompileWdat
+  * FUNCTION:    DtCompilePmtt
   *
   * PARAMETERS:  List                - Current field list pointer
 diff --git a/source/compiler/dttemplate.h b/source/compiler/dttemplate.h
-index 314b72f..89024a8 100644
+index 9305993..314b72f 100644
 --- a/source/compiler/dttemplate.h
 +++ b/source/compiler/dttemplate.h
-@@ -978,6 +978,19 @@ const unsigned char TemplateUefi[] =3D
-     0x0C,0x0D,0x0E,0x0F,0x00,0x00             /* 00000030    "......"   */
+@@ -704,6 +704,19 @@ const unsigned char TemplateMsct[] =3D
+     0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00   /* 00000088    "........" */
  };
  =
 
-+const unsigned char TemplateVrtc[] =3D
++const unsigned char TemplateMtmr[] =3D
 +{
 +    0x56,0x52,0x54,0x43,0x44,0x00,0x00,0x00,  /* 00000000    "VRTCD..." */
 +    0x01,0xEF,0x49,0x4E,0x54,0x45,0x4C,0x20,  /* 00000008    "..INTEL " */
@@ -262,90 +264,91 @@ index 314b72f..89024a8 100644
 +    0x00,0x00,0x00,0x00                       /* 00000040    "...."     */
 +};
 +
- const unsigned char TemplateWaet[] =3D
+ const unsigned char TemplatePmtt[] =3D
  {
-     0x57,0x41,0x45,0x54,0x28,0x00,0x00,0x00,  /* 00000000    "WAET(..." */
+     0x50,0x4D,0x54,0x54,0xB4,0x00,0x00,0x00,  /* 00000000    "PMTT...." */
 diff --git a/source/include/acdisasm.h b/source/include/acdisasm.h
-index 57e8829..bff065e 100644
+index af25153..57e8829 100644
 --- a/source/include/acdisasm.h
 +++ b/source/include/acdisasm.h
-@@ -417,6 +417,8 @@ extern ACPI_DMTABLE_INFO        AcpiDmTableInfoSrat2[];
- extern ACPI_DMTABLE_INFO        AcpiDmTableInfoTcpa[];
- extern ACPI_DMTABLE_INFO        AcpiDmTableInfoTpm2[];
- extern ACPI_DMTABLE_INFO        AcpiDmTableInfoUefi[];
-+extern ACPI_DMTABLE_INFO        AcpiDmTableInfoVrtc[];
-+extern ACPI_DMTABLE_INFO        AcpiDmTableInfoVrtc0[];
- extern ACPI_DMTABLE_INFO        AcpiDmTableInfoWaet[];
- extern ACPI_DMTABLE_INFO        AcpiDmTableInfoWdat[];
- extern ACPI_DMTABLE_INFO        AcpiDmTableInfoWdat0[];
-@@ -567,6 +569,10 @@ AcpiDmDumpSrat (
+@@ -386,6 +386,8 @@ extern ACPI_DMTABLE_INFO        AcpiDmTableInfoMpst1[];
+ extern ACPI_DMTABLE_INFO        AcpiDmTableInfoMpst2[];
+ extern ACPI_DMTABLE_INFO        AcpiDmTableInfoMsct[];
+ extern ACPI_DMTABLE_INFO        AcpiDmTableInfoMsct0[];
++extern ACPI_DMTABLE_INFO        AcpiDmTableInfoMtmr[];
++extern ACPI_DMTABLE_INFO        AcpiDmTableInfoMtmr0[];
+ extern ACPI_DMTABLE_INFO        AcpiDmTableInfoPmtt[];
+ extern ACPI_DMTABLE_INFO        AcpiDmTableInfoPmtt0[];
+ extern ACPI_DMTABLE_INFO        AcpiDmTableInfoPmtt1[];
+@@ -529,6 +531,10 @@ AcpiDmDumpMsct (
      ACPI_TABLE_HEADER       *Table);
  =
 
  void
-+AcpiDmDumpVrtc (
++AcpiDmDumpMtmr (
 +    ACPI_TABLE_HEADER       *Table);
 +
 +void
- AcpiDmDumpWdat (
+ AcpiDmDumpPcct (
      ACPI_TABLE_HEADER       *Table);
  =
 
 diff --git a/source/include/actbl2.h b/source/include/actbl2.h
-index 2aa6e88..2ad8f9b 100644
+index f400360..2aa6e88 100644
 --- a/source/include/actbl2.h
 +++ b/source/include/actbl2.h
-@@ -152,6 +152,7 @@
+@@ -146,6 +146,7 @@
+ #define ACPI_SIG_IVRS           "IVRS"      /* I/O Virtualization Reportin=
+g Structure */
+ #define ACPI_SIG_MCFG           "MCFG"      /* PCI Memory Mapped Configura=
+tion table */
+ #define ACPI_SIG_MCHI           "MCHI"      /* Management Controller Host =
+Interface table */
++#define ACPI_SIG_MTMR           "MTMR"      /* MID Timer table */
+ #define ACPI_SIG_SLIC           "SLIC"      /* Software Licensing Descript=
+ion Table */
+ #define ACPI_SIG_SPCR           "SPCR"      /* Serial Port Console Redirec=
+tion table */
  #define ACPI_SIG_SPMI           "SPMI"      /* Server Platform Management =
 Interface table */
- #define ACPI_SIG_TCPA           "TCPA"      /* Trusted Computing Platform =
-Alliance table */
- #define ACPI_SIG_UEFI           "UEFI"      /* Uefi Boot Optimization Tabl=
-e */
-+#define ACPI_SIG_VRTC           "VRTC"      /* Virtual Real Time Clock Tab=
-le */
- #define ACPI_SIG_WAET           "WAET"      /* Windows ACPI Emulated devic=
-es Table */
- #define ACPI_SIG_WDAT           "WDAT"      /* Watchdog Action Table */
- #define ACPI_SIG_WDDT           "WDDT"      /* Watchdog Timer Description =
-Table */
-@@ -1283,6 +1284,33 @@ typedef struct acpi_table_uefi
+@@ -1055,6 +1056,34 @@ typedef struct acpi_table_mchi
  =
 
  /*************************************************************************=
 ******
   *
-+ * VRTC - Virtual Real Time Clock Table
++ * MTMR - MID Timer Table
 + *        Version 1
 + *
 + * Conforms to "Simple Firmware Interface Specification",
 + * Draft 0.8.2, Oct 19, 2010
-+ * NOTE: ACPI VRTC is equivalent to SFI MRTC table.
++ * NOTE: ACPI MTMR is equivalent to SFI MTMR table.
 + *
 + *************************************************************************=
 *****/
 +
-+typedef struct acpi_table_vrtc
++typedef struct acpi_table_mtmr
 +{
 +    ACPI_TABLE_HEADER       Header;             /* Common ACPI table heade=
 r */
 +
-+} ACPI_TABLE_VRTC;
++} ACPI_TABLE_MTMR;
 +
-+/* VRTC entry */
++/* MTMR entry */
 +
-+typedef struct acpi_vrtc_entry
++typedef struct acpi_mtmr_entry
 +{
 +    ACPI_GENERIC_ADDRESS    PhysicalAddress;
++    UINT32                  Frequency;
 +    UINT32                  Irq;
 +
-+} ACPI_VRTC_ENTRY;
++} ACPI_MTMR_ENTRY;
 +
 +
 +/*************************************************************************=
 ******
 + *
-  * WAET - Windows ACPI Emulated devices Table
+  * SLIC - Software Licensing Description Table
   *        Version 1
   *
 -- =
@@ -353,5 +356,5 @@ r */
 1.7.10
 
 
---===============8079613106362432002==--
+--===============6087778351380833052==--
 
