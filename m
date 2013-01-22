@@ -1,32 +1,58 @@
-Content-Type: multipart/mixed; boundary="===============0263914108094363707=="
+Content-Type: multipart/mixed; boundary="===============5120069164366838350=="
 MIME-Version: 1.0
-From: Belousova <newsletters at walmart.com>
-Subject: [Devel] I am looking for a male friend
-Date: Sat, 19 Jan 2013 18:19:28 -0200
-Message-ID: <54139339.4964@walmart.com>
+From: Lv Zheng <lv.zheng at intel.com>
+Subject: [Devel] [PATCH v4 0/3] ACPICA: iASL: Add tables support.
+Date: Tue, 22 Jan 2013 10:46:23 +0800
+Message-ID: <cover.1358822364.git.lv.zheng@intel.com>
+In-Reply-To: cover.1357281212.git.lv.zheng@intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0263914108094363707==
+--===============5120069164366838350==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-I'm looking for my soul mate! =
+MID tables can be found in the recent ACPI BIOS enabled Intel MID
+platforms. These table includes: VRTC and MTMR.
+This patch set introduces MID tables support into ACPICA.
+This patch set also updates RASF table definition according to the
+ACPI 5.0 specification.
 
-I am a young and confident lady. =
+History:
+ v1:
+   1. Add dump/compile support for VRTC in iASL.
+ v2:
+   1. Fix mistake in dmtable.c.
+ v3:
+   1. Fix coding style issue in actbl2.h.
+   2. Add dump/compile support for MTMR in iASL.
+ v4:
+   1. Update RASF table definition.
+   2. Update VRTC/MTMR table templates.
+   3. Remove SFI from table namings.
 
-I do believe in love founded on a deep passion and even deeper respect =
+Lv Zheng (3):
+  ACPICA: Tables: Update RASF table definitions
+  ACPICA: iASL: Add MTMR table support
+  ACPICA: iASL: Add VRTC table support
 
-And I know how to love and cherish a truly fine man. I appreciate in men th=
-eir ability to communicate with lady. I am a kind and caring woman and I ha=
-ve nothing to hide from you. =
+ source/common/dmtable.c      |    2 +
+ source/common/dmtbdump.c     |  104 ++++++++++++++++++++++++++++++++++++++=
+++++
+ source/common/dmtbinfo.c     |   45 ++++++++++++++++++
+ source/compiler/dtcompiler.h |   10 ++++
+ source/compiler/dttable.c    |   50 ++++++++++++++++++++
+ source/compiler/dttemplate.h |   26 +++++++++++
+ source/include/acdisasm.h    |   12 +++++
+ source/include/actbl2.h      |   57 +++++++++++++++++++++++
+ source/include/actbl3.h      |   59 ++++++++++++++++++++----
+ 9 files changed, 355 insertions(+), 10 deletions(-)
 
-My dream is to create a family with a deserving man. =
+-- =
 
-Here are my photos and my profile, perhaps http://tinyurl.com/hsmiZbQK9O yo=
-u are my destiny.
+1.7.10
 
 
---===============0263914108094363707==--
+--===============5120069164366838350==--
 
