@@ -1,57 +1,72 @@
-Content-Type: multipart/mixed; boundary="===============6303159835953925886=="
+Content-Type: multipart/mixed; boundary="===============8723285914523697950=="
 MIME-Version: 1.0
-From: Lv Zheng <lv.zheng at intel.com>
-Subject: [Devel] [RFC PATCH] ACPI: Add boot option to disable auto return
+From: Thomas Renninger <trenn at suse.de>
+Subject: Re: [Devel] [RFC PATCH] ACPI: Add boot option to disable auto return
  object repair
-Date: Wed, 23 Jan 2013 15:29:02 +0800
-Message-ID: <59ec303219ed43c247fd5afc75de35553b9a52d5.1358954645.git.lv.zheng@intel.com>
+Date: Wed, 23 Jan 2013 13:18:52 +0100
+Message-ID: <201301231318.52311.trenn@suse.de>
+In-Reply-To: 59ec303219ed43c247fd5afc75de35553b9a52d5.1358954645.git.lv.zheng@intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6303159835953925886==
+--===============8723285914523697950==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-There is automatic return object repair mechanism implemented in
-ACPICA which can not handle all of the issues exposed by BIOS
-currently. This patch allow a kernel boots up without such
-workarounds enabled. A better choice should refine the repair
-mechanism to allow more robust evaluation result.
+On Wednesday, January 23, 2013 08:29:02 AM Lv Zheng wrote:
+> There is automatic return object repair mechanism implemented in
+> ACPICA which can not handle all of the issues exposed by BIOS
+> currently. This patch allow a kernel boots up without such
+> workarounds enabled. A better choice should refine the repair
+> mechanism to allow more robust evaluation result.
+> =
 
-Signed-off-by: Lv Zheng <lv.zheng(a)intel.com>
----
- drivers/acpi/bus.c |   12 ++++++++++++
- 1 file changed, 12 insertions(+)
+> Signed-off-by: Lv Zheng <lv.zheng(a)intel.com>
+> ---
+>  drivers/acpi/bus.c |   12 ++++++++++++
 
-diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c
-index 01708a1..e33577f 100644
---- a/drivers/acpi/bus.c
-+++ b/drivers/acpi/bus.c
-@@ -805,6 +805,18 @@ static int __init acpi_bus_init(void)
- struct kobject *acpi_kobj;
- EXPORT_SYMBOL_GPL(acpi_kobj);
- =
+drivers/acpi/osl.c would IMO make more sense to add this, there
+is no __setup function in bus.c yet, but in osl.c there is:
+__setup("acpi_serialize", acpi_serialize_setup);
+doing more or less the same.
 
-+static int __init acpi_disable_repair(char *s)
-+{
-+        printk(KERN_NOTICE PREFIX
-+	       "ACPI: Predefined names repair disabled\n");
-+
-+        acpi_gbl_disable_auto_repair =3D TRUE;
-+
-+        return 1;
-+}
-+
-+__setup("acpi_no_repair", acpi_disable_repair);
-+
- static int __init acpi_init(void)
- {
- 	int result;
--- =
+>  1 file changed, 12 insertions(+)
+> =
 
-1.7.10.4
+> diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c
+> index 01708a1..e33577f 100644
+> --- a/drivers/acpi/bus.c
+> +++ b/drivers/acpi/bus.c
+> @@ -805,6 +805,18 @@ static int __init acpi_bus_init(void)
+>  struct kobject *acpi_kobj;
+>  EXPORT_SYMBOL_GPL(acpi_kobj);
+>  =
 
+> +static int __init acpi_disable_repair(char *s)
+> +{
+> +        printk(KERN_NOTICE PREFIX
+pr_notice()
 
---===============6303159835953925886==--
+No need to change other printk(KERN_NOTICE..., but new patches
+should make use of pr_notice.
+
+Are there known error messages that indicate when it makes sense
+to try this out?
+How would I know I should try this boot param?
+
+If there are hints when to use this, it makes sense to mention them at =
+
+least in the changelog (or a bug reference or similar).
+
+kernel parameters are typically described in
+Documentation/kernel-parameters.txt
+Not sure whether it's worth for this one (if it's intended for low level =
+
+ACPI debugging only and people making use of it know the drivers/acpi/*
+code and therefore know about this option it may not).
+
+   Thomas
+
+--===============8723285914523697950==--
 
