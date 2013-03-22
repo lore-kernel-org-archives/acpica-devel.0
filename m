@@ -1,69 +1,74 @@
-Content-Type: multipart/mixed; boundary="===============6628739392389427909=="
+Content-Type: multipart/mixed; boundary="===============0070853751034751235=="
 MIME-Version: 1.0
-From: Al Stone <ahs3 at redhat.com>
-Subject: [Devel] [PATCH] faulty name compares on big-endian machines
-Date: Thu, 21 Mar 2013 19:02:28 -0600
-Message-ID: <514BADA4.5070901@redhat.com>
+From: Zheng, Lv <lv.zheng at intel.com>
+Subject: Re: [Devel] ref-counting races?
+Date: Fri, 22 Mar 2013 04:28:06 +0000
+Message-ID: <1AE640813FDE7649BE1B193DEA596E88015C68A8@SHSMSX101.ccr.corp.intel.com>
+In-Reply-To: 514B4C70.5050305@FreeBSD.org
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6628739392389427909==
+--===============0070853751034751235==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-When iasl is checking for GPE name conflicts on big-endian machines,
-the comparisons will fail when they should succeed.
+> 1. Ensure that AcpiGetObjectInfo/AcpiUtExecute_HID/etc are never executed
+> concurrently on the same object at the OS level code (primarily in the ba=
+ttery
+> driver).
+> =
 
-The failure is due to the name bytes being in the wrong order.  The
-bytes are in the wrong order because the name is being treated as a
-32-bit integer and not as a string.
+> 2. Ensure that AcpiUtRemoveReference is always invoked under some lock.
+> Not sure
+> if it should be the Interpreter mutex or the Namespace mutex.  I believe =
+that
+> AcpiUtAddReference are always consistently called under a lock, but I hav=
+en't
+> verified all the code paths.  On the other hand, it is obvious that there=
+ are
+> many
+> places where AcpiUtRemoveReference is called without any protection, but =
+it is
+> hard to conclusively enumerate _all_ of them.
 
-This patch causes the name to be used as a string and works properly
-on big- and little-endian machines running iasl.
+Hi, Andriy, your codes are using AcpiOsAcquireMutext to achieve this goal, =
+it does not look like correct.
 
-This was found by running tests/misc/badcode.asl through iasl on a
-big-endian machine (PPC and s390) and noting that it would not catch
-the error at line 184 in badcode.asl that was being caught elsewhere.
+> 3. Introduce locking to AcpiUtUpdateRefCount to ensure that ReferenceCount
+> is
+> never modified concurrently.  Essentially this should give an equivalence=
+ of
+> atomicity for ReferenceCount manipulations.
+> Additionally, it would be a good idea to make ReferenceCount =3D=3D 0 che=
+ck more
+> strict (if not fatal).  Also, unused and dangerous REF_FORCE_DELETE should
+> be removed.
 
+It does not look good and sufficient.
+We need to add a "never-return error" mutex in OSL first then do many tests=
+ to see if there are regressions.
+There might be regressions if dead lock happens.
 
-Signed-off-by: Al Stone <ahs3(a)redhat.com>
---
-source/compiler/aslanalyze.c | 4 ++--
-  1 file changed, 2 insertions(+), 2 deletions(-)
+> I like #3 the best because it provides the most guarantees while requirin=
+g the
+> least code inspection/verification efforts.
+> Of course, you know the code much better, so your assessment of the probl=
+em
+> and
+> possible solutions could be very different.
+> =
 
-diff --git a/source/compiler/aslanalyze.c b/source/compiler/aslanalyze.c
-index 99b17e6..bd6272a 100644
---- a/source/compiler/aslanalyze.c
-+++ b/source/compiler/aslanalyze.c
-@@ -516,7 +516,7 @@ ApCheckForGpeNameConflict (
+> Here is a quickly hacked together prototype patch that seems to have help=
+ed
+> the user:
+> http://people.freebsd.org/~avg/acpi-ref-count-2.diff
 
-      /* Need a null-terminated string version of NameSeg */
+The code looks broken on Linux, it might be broken on freebsd. Isn't it?
+Why don't we consider to have an AcpiAtomic implementation in every OSL?
 
--    ACPI_MOVE_32_TO_32 (Name, &Op->Asl.NameSeg);
-+    ACPI_MOVE_NAME (Name, &Op->Asl.NameSeg);
-      Name[ACPI_NAME_SIZE] =3D 0;
+Thanks and best regards
+-Lv
 
-      /*
-@@ -543,7 +543,7 @@ ApCheckForGpeNameConflict (
-       * We are now sure we have an _Lxx or _Exx.
-       * Create the target name that would cause collision (Flip E/L)
-       */
--    ACPI_MOVE_32_TO_32 (Target, Name);
-+    ACPI_MOVE_NAME (Target, Name);
-
-      /* Inject opposite letter ("L" versus "E") */
-
--- =
-
-ciao,
-al
------------------------------------
-Al Stone
-Software Engineer
-Red Hat, Inc.
-ahs3(a)redhat.com
------------------------------------
-
---===============6628739392389427909==--
+--===============0070853751034751235==--
 
