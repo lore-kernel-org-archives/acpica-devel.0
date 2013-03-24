@@ -1,84 +1,106 @@
-Content-Type: multipart/mixed; boundary="===============8113615667167149707=="
+Content-Type: multipart/mixed; boundary="===============7878981642387154388=="
 MIME-Version: 1.0
 From: Andriy Gapon <avg at FreeBSD.org>
 Subject: Re: [Devel] ref-counting races?
-Date: Sun, 24 Mar 2013 12:54:52 +0200
-Message-ID: <514EDB7C.8040202@FreeBSD.org>
-In-Reply-To: 94F2FBAB4432B54E8AACC7DFDE6C92E36F48C23B@ORSMSX101.amr.corp.intel.com
+Date: Sun, 24 Mar 2013 13:10:13 +0200
+Message-ID: <514EDF15.9070609@FreeBSD.org>
+In-Reply-To: 1AE640813FDE7649BE1B193DEA596E88015C68A8@SHSMSX101.ccr.corp.intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8113615667167149707==
+--===============7878981642387154388==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-on 22/03/2013 22:23 Moore, Robert said the following:
-> Andriy,
+on 22/03/2013 06:28 Zheng, Lv said the following:
+>> 1. Ensure that AcpiGetObjectInfo/AcpiUtExecute_HID/etc are never executed
+>> concurrently on the same object at the OS level code (primarily in the b=
+attery
+>> driver).
+>>
+>> 2. Ensure that AcpiUtRemoveReference is always invoked under some lock.
+>> Not sure
+>> if it should be the Interpreter mutex or the Namespace mutex.  I believe=
+ that
+>> AcpiUtAddReference are always consistently called under a lock, but I ha=
+ven't
+>> verified all the code paths.  On the other hand, it is obvious that ther=
+e are
+>> many
+>> places where AcpiUtRemoveReference is called without any protection, but=
+ it is
+>> hard to conclusively enumerate _all_ of them.
 > =
 
-> This will of course take a bit of time for us to completely sort out. You=
- are
-> correct that there are unlocked calls to the reference count mechanism. T=
-his
-> could be a result of some code restructuring sometime in the past, as I h=
-ope
-> that this didn't happen as an oversight.
+> Hi, Andriy, your codes are using AcpiOsAcquireMutext to achieve this goal=
+, it does not look like correct.
+>
+
+Perhaps it's not perfect/appropriate, but I am sure that it is not incorrec=
+t.
+In either case, I support using a spin-lock here.
+
+>> 3. Introduce locking to AcpiUtUpdateRefCount to ensure that ReferenceCou=
+nt
+>> is
+>> never modified concurrently.  Essentially this should give an equivalenc=
+e of
+>> atomicity for ReferenceCount manipulations.
+>> Additionally, it would be a good idea to make ReferenceCount =3D=3D 0 ch=
+eck more
+>> strict (if not fatal).  Also, unused and dangerous REF_FORCE_DELETE shou=
+ld
+>> be removed.
 > =
 
-> I want to investigate some older code as well as the original design of t=
-he
-> reference counts.
+> It does not look good and sufficient.
+> We need to add a "never-return error" mutex in OSL first then do many tes=
+ts to see if there are regressions.
 
-Thank you!
+Well, I think that possibilities for ACPICA mutex to return an error are ve=
+ry
+well enumerated in the ACPICA reference manual.  So, if there is no timeout
+specified and the lock parameter is definitely not NULL, then we should exp=
+ect
+that mutex lock and unlock never fail.
 
-> If we do need a separate lock for the reference count mechanism, perhaps a
-> spin lock could be used instead of a mutex, as there is nothing that will
-> block for any length of time. This may not make any difference on FreeBSD=
- as
-> spinlocks may not be available, I'm not sure.
+> There might be regressions if dead lock happens.
 
-I agree that a spinlock would be more appropriate.  Just in case, FreeBSD d=
-oes
-provide ACPICA spinlock implementation.
+I do not see any possibility for a deadlock with the proposed new lock, bec=
+ause
+it is a leaf lock (it spans only basic operations and no function calls).
 
-> In the meantime, I have removed the REF_FORCE_DELETE option as per your
-> suggestion; it was implemented in case it was ever needed, which it has n=
-ot.
+>> I like #3 the best because it provides the most guarantees while requiri=
+ng the
+>> least code inspection/verification efforts.
+>> Of course, you know the code much better, so your assessment of the prob=
+lem
+>> and
+>> possible solutions could be very different.
+>>
+>> Here is a quickly hacked together prototype patch that seems to have hel=
+ped
+>> the user:
+>> http://people.freebsd.org/~avg/acpi-ref-count-2.diff
+> =
 
-Thank you again.
+> The code looks broken on Linux, it might be broken on freebsd. Isn't it?
 
-Do you perhaps have an advice on an interim solution for FreeBSD users who =
-seem
-to keep bumping into this issue?
-I will have a look into trying to prevent concurrency at the battery driver
-level.  To, at least, reduce the chances of hitting the problem.
+It is not broken on FreeBSD.
+What is broken on Linux?  If you mean the panic calls, then I've already sa=
+id
+that they are FreeBSD-specific and are only there to mark dangerous (fatal,
+even) conditions that the current code simply ignores.
 
-In fact, I'll ask the user who helped me, kron24(a)gmail.com, to test the
-following (rather coarse) patch:
---- a/sys/dev/acpica/acpi_battery.c
-+++ b/sys/dev/acpica/acpi_battery.c
-@@ -360,6 +360,8 @@ acpi_battery_ioctl(u_long cmd, caddr_t addr, void *arg)
-     int error, unit;
-     device_t dev;
+> Why don't we consider to have an AcpiAtomic implementation in every OSL?
 
-+    mtx_lock(&Giant);
-+
-     /* For commands that use the ioctl_arg struct, validate it first. */
-     error =3D ENXIO;
-     unit =3D 0;
-@@ -417,6 +419,7 @@ acpi_battery_ioctl(u_long cmd, caddr_t addr, void *arg)
- 	error =3D EINVAL;
-     }
-
-+    mtx_unlock(&Giant);
-     return (error);
- }
-
+AcpiAtomic could be useful for other things, but I do not see it being
+_required_ here.
 
 -- =
 
 Andriy Gapon
 
---===============8113615667167149707==--
+--===============7878981642387154388==--
 
