@@ -1,106 +1,269 @@
-Content-Type: multipart/mixed; boundary="===============7878981642387154388=="
+Content-Type: multipart/mixed; boundary="===============4593049224697484659=="
 MIME-Version: 1.0
-From: Andriy Gapon <avg at FreeBSD.org>
-Subject: Re: [Devel] ref-counting races?
-Date: Sun, 24 Mar 2013 13:10:13 +0200
-Message-ID: <514EDF15.9070609@FreeBSD.org>
-In-Reply-To: 1AE640813FDE7649BE1B193DEA596E88015C68A8@SHSMSX101.ccr.corp.intel.com
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] ACPICA version 20130328 released
+Date: Thu, 28 Mar 2013 16:58:46 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E36F48D470@ORSMSX101.amr.corp.intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7878981642387154388==
+--===============4593049224697484659==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-on 22/03/2013 06:28 Zheng, Lv said the following:
->> 1. Ensure that AcpiGetObjectInfo/AcpiUtExecute_HID/etc are never executed
->> concurrently on the same object at the OS level code (primarily in the b=
-attery
->> driver).
->>
->> 2. Ensure that AcpiUtRemoveReference is always invoked under some lock.
->> Not sure
->> if it should be the Interpreter mutex or the Namespace mutex.  I believe=
- that
->> AcpiUtAddReference are always consistently called under a lock, but I ha=
-ven't
->> verified all the code paths.  On the other hand, it is obvious that ther=
-e are
->> many
->> places where AcpiUtRemoveReference is called without any protection, but=
- it is
->> hard to conclusively enumerate _all_ of them.
-> =
+28 March 2013. Summary of changes for version 20130328:
 
-> Hi, Andriy, your codes are using AcpiOsAcquireMutext to achieve this goal=
-, it does not look like correct.
->
 
-Perhaps it's not perfect/appropriate, but I am sure that it is not incorrec=
-t.
-In either case, I support using a spin-lock here.
 
->> 3. Introduce locking to AcpiUtUpdateRefCount to ensure that ReferenceCou=
-nt
->> is
->> never modified concurrently.  Essentially this should give an equivalenc=
-e of
->> atomicity for ReferenceCount manipulations.
->> Additionally, it would be a good idea to make ReferenceCount =3D=3D 0 ch=
-eck more
->> strict (if not fatal).  Also, unused and dangerous REF_FORCE_DELETE shou=
-ld
->> be removed.
-> =
+This release is available at https://www.acpica.org/downloads
 
-> It does not look good and sufficient.
-> We need to add a "never-return error" mutex in OSL first then do many tes=
-ts to see if there are regressions.
+Note: The site is undergoing reconstruction and may not be available for a =
+few days.
 
-Well, I think that possibilities for ACPICA mutex to return an error are ve=
-ry
-well enumerated in the ACPICA reference manual.  So, if there is no timeout
-specified and the lock parameter is definitely not NULL, then we should exp=
-ect
-that mutex lock and unlock never fail.
 
-> There might be regressions if dead lock happens.
 
-I do not see any possibility for a deadlock with the proposed new lock, bec=
-ause
-it is a leaf lock (it spans only basic operations and no function calls).
 
->> I like #3 the best because it provides the most guarantees while requiri=
-ng the
->> least code inspection/verification efforts.
->> Of course, you know the code much better, so your assessment of the prob=
-lem
->> and
->> possible solutions could be very different.
->>
->> Here is a quickly hacked together prototype patch that seems to have hel=
-ped
->> the user:
->> http://people.freebsd.org/~avg/acpi-ref-count-2.diff
-> =
 
-> The code looks broken on Linux, it might be broken on freebsd. Isn't it?
+1) ACPICA kernel-resident subsystem:
 
-It is not broken on FreeBSD.
-What is broken on Linux?  If you mean the panic calls, then I've already sa=
-id
-that they are FreeBSD-specific and are only there to mark dangerous (fatal,
-even) conditions that the current code simply ignores.
 
-> Why don't we consider to have an AcpiAtomic implementation in every OSL?
 
-AcpiAtomic could be useful for other things, but I do not see it being
-_required_ here.
+Fixed several possible race conditions with the internal object reference c=
+ounting mechanism. Some of the external ACPICA interfaces update object ref=
+erence counts without holding the interpreter or namespace lock. This chang=
+e adds a spinlock to protect reference count updates on the internal ACPICA=
+ objects. Reported by and with assistance from Andriy Gapon (avg(a)FreeBSD.=
+org).
 
--- =
 
-Andriy Gapon
 
---===============7878981642387154388==--
+FADT support: Removed an extraneous warning for very large GPE register set=
+s. This change removes a size mismatch warning if the legacy length field f=
+or a GPE register set is larger than the 64-bit GAS structure can accommoda=
+te. GPE register sets can be larger than the 255-bit width limitation of th=
+e GAS structure. Linn Crosetto (linn(a)hp.com).
+
+
+
+_OSI Support: handle any errors from AcpiOsAcquireMutex. Check for error re=
+turn from this interface. Handles a possible timeout case if ACPI_WAIT_FORE=
+VER is modified by the host to be a value less than "forever". Jung-uk Kim.
+
+
+
+Predefined name support: Add allowed/required argument type information to =
+the master predefined info table. This change adds the infrastructure to en=
+able typechecking on incoming arguments for all predefined methods/objects.=
+ It does not actually contain the code that will fully utilize this informa=
+tion, this is still under development. Also condenses some duplicate code f=
+or the predefined names into a new module, utilities/utpredef.c
+
+
+
+Example Code and Data Size: These are the sizes for the OS-independent acpi=
+ca.lib produced by the Microsoft Visual C++ 9.0 32-bit compiler. The debug =
+version of the code includes the debug output trace mechanism and has a muc=
+h larger code and data size.
+
+
+
+  Previous Release:
+
+    Non-Debug Version:  95.0K Code, 25.9K Data, 120.9K Total
+
+    Debug Version:     182.9K Code, 75.6K Data, 258.5K Total
+
+  Current Release:
+
+    Non-Debug Version:  95.2K Code, 26.4K Data, 121.6K Total
+
+    Debug Version:     183.0K Code, 76.0K Data, 259.0K Total
+
+
+
+
+
+2) iASL Compiler/Disassembler and Tools:
+
+
+
+iASL: Implemented a new option to simplify the development of ACPI-related =
+BIOS code. Adds support for a new "offset table" output file. The -so optio=
+n will create a C table containing the AML table offsets of various named o=
+bjects in the namespace so that BIOS code can modify them easily at boot ti=
+me. This can simplify BIOS runtime code by eliminating expensive searches f=
+or "magic values", enhancing boot times and adding greater reliability. Wit=
+h assistance from Lee Hamel.
+
+
+
+iASL: Allow additional predefined names to return zero-length packages. Now=
+, all predefined names that are defined by the ACPI specification to return=
+ a "variable-length package of packages" are allowed to return a zero lengt=
+h top-level package. This allows the BIOS to tell the host that the request=
+ed feature is not supported, and supports existing BIOS/ASL code and practi=
+ces.
+
+
+
+iASL: Changed the "result not used" warning to an error. This is the case w=
+here an ASL operator is effectively a NOOP because the result of the operat=
+ion is not stored anywhere. For example:
+
+    Add (4, Local0)
+
+There is no target (missing 3rd argument), nor is the function return value=
+ used. This is potentially a very serious problem -- since the code was pro=
+bably intended to do something, but for whatever reason, the value was not =
+stored. Therefore, this issue has been upgraded from a warning to an error.
+
+
+
+AcpiHelp: Added allowable/required argument types to the predefined names i=
+nfo display. This feature utilizes the recent update to the predefined name=
+s table (above).
+
+
+
+
+--===============4593049224697484659==
+Content-Type: text/html
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="attachment.html"
+
+PGh0bWwgeG1sbnM6dj0idXJuOnNjaGVtYXMtbWljcm9zb2Z0LWNvbTp2bWwiIHhtbG5zOm89InVy
+bjpzY2hlbWFzLW1pY3Jvc29mdC1jb206b2ZmaWNlOm9mZmljZSIgeG1sbnM6dz0idXJuOnNjaGVt
+YXMtbWljcm9zb2Z0LWNvbTpvZmZpY2U6d29yZCIgeG1sbnM6bT0iaHR0cDovL3NjaGVtYXMubWlj
+cm9zb2Z0LmNvbS9vZmZpY2UvMjAwNC8xMi9vbW1sIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcv
+VFIvUkVDLWh0bWw0MCI+CjxoZWFkPgo8bWV0YSBodHRwLWVxdWl2PSJDb250ZW50LVR5cGUiIGNv
+bnRlbnQ9InRleHQvaHRtbDsgY2hhcnNldD11cy1hc2NpaSI+CjxtZXRhIG5hbWU9IkdlbmVyYXRv
+ciIgY29udGVudD0iTWljcm9zb2Z0IFdvcmQgMTQgKGZpbHRlcmVkIG1lZGl1bSkiPgo8c3R5bGU+
+PCEtLQovKiBGb250IERlZmluaXRpb25zICovCkBmb250LWZhY2UKCXtmb250LWZhbWlseTpDYWxp
+YnJpOwoJcGFub3NlLTE6MiAxNSA1IDIgMiAyIDQgMyAyIDQ7fQovKiBTdHlsZSBEZWZpbml0aW9u
+cyAqLwpwLk1zb05vcm1hbCwgbGkuTXNvTm9ybWFsLCBkaXYuTXNvTm9ybWFsCgl7bWFyZ2luOjBp
+bjsKCW1hcmdpbi1ib3R0b206LjAwMDFwdDsKCWZvbnQtc2l6ZToxMS4wcHQ7Cglmb250LWZhbWls
+eToiQ2FsaWJyaSIsInNhbnMtc2VyaWYiO30KYTpsaW5rLCBzcGFuLk1zb0h5cGVybGluawoJe21z
+by1zdHlsZS1wcmlvcml0eTo5OTsKCWNvbG9yOmJsdWU7Cgl0ZXh0LWRlY29yYXRpb246dW5kZXJs
+aW5lO30KYTp2aXNpdGVkLCBzcGFuLk1zb0h5cGVybGlua0ZvbGxvd2VkCgl7bXNvLXN0eWxlLXBy
+aW9yaXR5Ojk5OwoJY29sb3I6cHVycGxlOwoJdGV4dC1kZWNvcmF0aW9uOnVuZGVybGluZTt9CnAu
+TXNvUGxhaW5UZXh0LCBsaS5Nc29QbGFpblRleHQsIGRpdi5Nc29QbGFpblRleHQKCXttc28tc3R5
+bGUtcHJpb3JpdHk6OTk7Cgltc28tc3R5bGUtbGluazoiUGxhaW4gVGV4dCBDaGFyIjsKCW1hcmdp
+bjowaW47CgltYXJnaW4tYm90dG9tOi4wMDAxcHQ7Cglmb250LXNpemU6MTAuMHB0OwoJZm9udC1m
+YW1pbHk6IkNvdXJpZXIgTmV3Ijt9CnNwYW4uRW1haWxTdHlsZTE3Cgl7bXNvLXN0eWxlLXR5cGU6
+cGVyc29uYWwtY29tcG9zZTsKCWZvbnQtZmFtaWx5OiJDYWxpYnJpIiwic2Fucy1zZXJpZiI7Cglj
+b2xvcjp3aW5kb3d0ZXh0O30Kc3Bhbi5QbGFpblRleHRDaGFyCgl7bXNvLXN0eWxlLW5hbWU6IlBs
+YWluIFRleHQgQ2hhciI7Cgltc28tc3R5bGUtcHJpb3JpdHk6OTk7Cgltc28tc3R5bGUtbGluazoi
+UGxhaW4gVGV4dCI7Cglmb250LWZhbWlseToiQ291cmllciBOZXciO30KLk1zb0NocERlZmF1bHQK
+CXttc28tc3R5bGUtdHlwZTpleHBvcnQtb25seTsKCWZvbnQtZmFtaWx5OiJDYWxpYnJpIiwic2Fu
+cy1zZXJpZiI7fQpAcGFnZSBXb3JkU2VjdGlvbjEKCXtzaXplOjguNWluIDExLjBpbjsKCW1hcmdp
+bjoxLjBpbiAxLjBpbiAxLjBpbiAxLjBpbjt9CmRpdi5Xb3JkU2VjdGlvbjEKCXtwYWdlOldvcmRT
+ZWN0aW9uMTt9Ci0tPjwvc3R5bGU+PCEtLVtpZiBndGUgbXNvIDldPjx4bWw+CjxvOnNoYXBlZGVm
+YXVsdHMgdjpleHQ9ImVkaXQiIHNwaWRtYXg9IjEwMjYiIC8+CjwveG1sPjwhW2VuZGlmXS0tPjwh
+LS1baWYgZ3RlIG1zbyA5XT48eG1sPgo8bzpzaGFwZWxheW91dCB2OmV4dD0iZWRpdCI+CjxvOmlk
+bWFwIHY6ZXh0PSJlZGl0IiBkYXRhPSIxIiAvPgo8L286c2hhcGVsYXlvdXQ+PC94bWw+PCFbZW5k
+aWZdLS0+CjwvaGVhZD4KPGJvZHkgbGFuZz0iRU4tVVMiIGxpbms9ImJsdWUiIHZsaW5rPSJwdXJw
+bGUiPgo8ZGl2IGNsYXNzPSJXb3JkU2VjdGlvbjEiPgo8cCBjbGFzcz0iTXNvUGxhaW5UZXh0Ij4y
+OCBNYXJjaCAyMDEzLiBTdW1tYXJ5IG9mIGNoYW5nZXMgZm9yIHZlcnNpb24gMjAxMzAzMjg6PG86
+cD48L286cD48L3A+CjxwIGNsYXNzPSJNc29QbGFpblRleHQiPjxvOnA+Jm5ic3A7PC9vOnA+PC9w
+Pgo8cCBjbGFzcz0iTXNvUGxhaW5UZXh0Ij5UaGlzIHJlbGVhc2UgaXMgYXZhaWxhYmxlIGF0IDxh
+IGhyZWY9Imh0dHBzOi8vd3d3LmFjcGljYS5vcmcvZG93bmxvYWRzIj4KaHR0cHM6Ly93d3cuYWNw
+aWNhLm9yZy9kb3dubG9hZHM8L2E+PG86cD48L286cD48L3A+CjxwIGNsYXNzPSJNc29QbGFpblRl
+eHQiPk5vdGU6IFRoZSBzaXRlIGlzIHVuZGVyZ29pbmcgcmVjb25zdHJ1Y3Rpb24gYW5kIG1heSBu
+b3QgYmUgYXZhaWxhYmxlIGZvciBhIGZldyBkYXlzLjxvOnA+PC9vOnA+PC9wPgo8cCBjbGFzcz0i
+TXNvUGxhaW5UZXh0Ij48bzpwPiZuYnNwOzwvbzpwPjwvcD4KPHAgY2xhc3M9Ik1zb1BsYWluVGV4
+dCI+PG86cD4mbmJzcDs8L286cD48L3A+CjxwIGNsYXNzPSJNc29QbGFpblRleHQiPjEpIEFDUElD
+QSBrZXJuZWwtcmVzaWRlbnQgc3Vic3lzdGVtOjxvOnA+PC9vOnA+PC9wPgo8cCBjbGFzcz0iTXNv
+UGxhaW5UZXh0Ij48bzpwPiZuYnNwOzwvbzpwPjwvcD4KPHAgY2xhc3M9Ik1zb1BsYWluVGV4dCI+
+Rml4ZWQgc2V2ZXJhbCBwb3NzaWJsZSByYWNlIGNvbmRpdGlvbnMgd2l0aCB0aGUgaW50ZXJuYWwg
+b2JqZWN0IHJlZmVyZW5jZSBjb3VudGluZyBtZWNoYW5pc20uIFNvbWUgb2YgdGhlIGV4dGVybmFs
+IEFDUElDQSBpbnRlcmZhY2VzIHVwZGF0ZSBvYmplY3QgcmVmZXJlbmNlIGNvdW50cyB3aXRob3V0
+IGhvbGRpbmcgdGhlIGludGVycHJldGVyIG9yIG5hbWVzcGFjZSBsb2NrLiBUaGlzIGNoYW5nZSBh
+ZGRzIGEKIHNwaW5sb2NrIHRvIHByb3RlY3QgcmVmZXJlbmNlIGNvdW50IHVwZGF0ZXMgb24gdGhl
+IGludGVybmFsIEFDUElDQSBvYmplY3RzLiBSZXBvcnRlZCBieSBhbmQgd2l0aCBhc3Npc3RhbmNl
+IGZyb20gQW5kcml5IEdhcG9uIChhdmdARnJlZUJTRC5vcmcpLjxvOnA+PC9vOnA+PC9wPgo8cCBj
+bGFzcz0iTXNvUGxhaW5UZXh0Ij48bzpwPiZuYnNwOzwvbzpwPjwvcD4KPHAgY2xhc3M9Ik1zb1Bs
+YWluVGV4dCI+RkFEVCBzdXBwb3J0OiBSZW1vdmVkIGFuIGV4dHJhbmVvdXMgd2FybmluZyBmb3Ig
+dmVyeSBsYXJnZSBHUEUgcmVnaXN0ZXIgc2V0cy4gVGhpcyBjaGFuZ2UgcmVtb3ZlcyBhIHNpemUg
+bWlzbWF0Y2ggd2FybmluZyBpZiB0aGUgbGVnYWN5IGxlbmd0aCBmaWVsZCBmb3IgYSBHUEUgcmVn
+aXN0ZXIgc2V0IGlzIGxhcmdlciB0aGFuIHRoZSA2NC1iaXQgR0FTIHN0cnVjdHVyZSBjYW4gYWNj
+b21tb2RhdGUuIEdQRQogcmVnaXN0ZXIgc2V0cyBjYW4gYmUgbGFyZ2VyIHRoYW4gdGhlIDI1NS1i
+aXQgd2lkdGggbGltaXRhdGlvbiBvZiB0aGUgR0FTIHN0cnVjdHVyZS4gTGlubiBDcm9zZXR0byAo
+bGlubkBocC5jb20pLjxvOnA+PC9vOnA+PC9wPgo8cCBjbGFzcz0iTXNvUGxhaW5UZXh0Ij48bzpw
+PiZuYnNwOzwvbzpwPjwvcD4KPHAgY2xhc3M9Ik1zb1BsYWluVGV4dCI+X09TSSBTdXBwb3J0OiBo
+YW5kbGUgYW55IGVycm9ycyBmcm9tIEFjcGlPc0FjcXVpcmVNdXRleC4gQ2hlY2sgZm9yIGVycm9y
+IHJldHVybiBmcm9tIHRoaXMgaW50ZXJmYWNlLiBIYW5kbGVzIGEgcG9zc2libGUgdGltZW91dCBj
+YXNlIGlmIEFDUElfV0FJVF9GT1JFVkVSIGlzIG1vZGlmaWVkIGJ5IHRoZSBob3N0IHRvIGJlIGEg
+dmFsdWUgbGVzcyB0aGFuICZxdW90O2ZvcmV2ZXImcXVvdDsuIEp1bmctdWsgS2ltLjxvOnA+PC9v
+OnA+PC9wPgo8cCBjbGFzcz0iTXNvUGxhaW5UZXh0Ij48bzpwPiZuYnNwOzwvbzpwPjwvcD4KPHAg
+Y2xhc3M9Ik1zb1BsYWluVGV4dCI+UHJlZGVmaW5lZCBuYW1lIHN1cHBvcnQ6IEFkZCBhbGxvd2Vk
+L3JlcXVpcmVkIGFyZ3VtZW50IHR5cGUgaW5mb3JtYXRpb24gdG8gdGhlIG1hc3RlciBwcmVkZWZp
+bmVkIGluZm8gdGFibGUuIFRoaXMgY2hhbmdlIGFkZHMgdGhlIGluZnJhc3RydWN0dXJlIHRvIGVu
+YWJsZSB0eXBlY2hlY2tpbmcgb24gaW5jb21pbmcgYXJndW1lbnRzIGZvciBhbGwgcHJlZGVmaW5l
+ZCBtZXRob2RzL29iamVjdHMuIEl0IGRvZXMKIG5vdCBhY3R1YWxseSBjb250YWluIHRoZSBjb2Rl
+IHRoYXQgd2lsbCBmdWxseSB1dGlsaXplIHRoaXMgaW5mb3JtYXRpb24sIHRoaXMgaXMgc3RpbGwg
+dW5kZXIgZGV2ZWxvcG1lbnQuIEFsc28gY29uZGVuc2VzIHNvbWUgZHVwbGljYXRlIGNvZGUgZm9y
+IHRoZSBwcmVkZWZpbmVkIG5hbWVzIGludG8gYSBuZXcgbW9kdWxlLCB1dGlsaXRpZXMvdXRwcmVk
+ZWYuYzxvOnA+PC9vOnA+PC9wPgo8cCBjbGFzcz0iTXNvUGxhaW5UZXh0Ij48bzpwPiZuYnNwOzwv
+bzpwPjwvcD4KPHAgY2xhc3M9Ik1zb1BsYWluVGV4dCI+RXhhbXBsZSBDb2RlIGFuZCBEYXRhIFNp
+emU6IFRoZXNlIGFyZSB0aGUgc2l6ZXMgZm9yIHRoZSBPUy1pbmRlcGVuZGVudCBhY3BpY2EubGli
+IHByb2R1Y2VkIGJ5IHRoZSBNaWNyb3NvZnQgVmlzdWFsIEMmIzQzOyYjNDM7IDkuMCAzMi1iaXQg
+Y29tcGlsZXIuIFRoZSBkZWJ1ZyB2ZXJzaW9uIG9mIHRoZSBjb2RlIGluY2x1ZGVzIHRoZSBkZWJ1
+ZyBvdXRwdXQgdHJhY2UgbWVjaGFuaXNtIGFuZCBoYXMgYSBtdWNoIGxhcmdlcgogY29kZSBhbmQg
+ZGF0YSBzaXplLjxvOnA+PC9vOnA+PC9wPgo8cCBjbGFzcz0iTXNvUGxhaW5UZXh0Ij48bzpwPiZu
+YnNwOzwvbzpwPjwvcD4KPHAgY2xhc3M9Ik1zb1BsYWluVGV4dCI+Jm5ic3A7IFByZXZpb3VzIFJl
+bGVhc2U6PG86cD48L286cD48L3A+CjxwIGNsYXNzPSJNc29QbGFpblRleHQiPiZuYnNwOyZuYnNw
+OyZuYnNwOyBOb24tRGVidWcgVmVyc2lvbjombmJzcDsgOTUuMEsgQ29kZSwgMjUuOUsgRGF0YSwg
+MTIwLjlLIFRvdGFsPG86cD48L286cD48L3A+CjxwIGNsYXNzPSJNc29QbGFpblRleHQiPiZuYnNw
+OyZuYnNwOyZuYnNwOyBEZWJ1ZyBWZXJzaW9uOiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyAxODIu
+OUsgQ29kZSwgNzUuNksgRGF0YSwgMjU4LjVLIFRvdGFsPG86cD48L286cD48L3A+CjxwIGNsYXNz
+PSJNc29QbGFpblRleHQiPiZuYnNwOyBDdXJyZW50IFJlbGVhc2U6PG86cD48L286cD48L3A+Cjxw
+IGNsYXNzPSJNc29QbGFpblRleHQiPiZuYnNwOyZuYnNwOyZuYnNwOyBOb24tRGVidWcgVmVyc2lv
+bjombmJzcDsgOTUuMksgQ29kZSwgMjYuNEsgRGF0YSwgMTIxLjZLIFRvdGFsPG86cD48L286cD48
+L3A+CjxwIGNsYXNzPSJNc29QbGFpblRleHQiPiZuYnNwOyZuYnNwOyZuYnNwOyBEZWJ1ZyBWZXJz
+aW9uOiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyAxODMuMEsgQ29kZSwgNzYuMEsgRGF0YSwgMjU5
+LjBLIFRvdGFsPG86cD48L286cD48L3A+CjxwIGNsYXNzPSJNc29QbGFpblRleHQiPjxvOnA+Jm5i
+c3A7PC9vOnA+PC9wPgo8cCBjbGFzcz0iTXNvUGxhaW5UZXh0Ij48bzpwPiZuYnNwOzwvbzpwPjwv
+cD4KPHAgY2xhc3M9Ik1zb1BsYWluVGV4dCI+MikgaUFTTCBDb21waWxlci9EaXNhc3NlbWJsZXIg
+YW5kIFRvb2xzOjxvOnA+PC9vOnA+PC9wPgo8cCBjbGFzcz0iTXNvUGxhaW5UZXh0Ij48bzpwPiZu
+YnNwOzwvbzpwPjwvcD4KPHAgY2xhc3M9Ik1zb1BsYWluVGV4dCI+aUFTTDogSW1wbGVtZW50ZWQg
+YSBuZXcgb3B0aW9uIHRvIHNpbXBsaWZ5IHRoZSBkZXZlbG9wbWVudCBvZiBBQ1BJLXJlbGF0ZWQg
+QklPUyBjb2RlLiBBZGRzIHN1cHBvcnQgZm9yIGEgbmV3ICZxdW90O29mZnNldCB0YWJsZSZxdW90
+OyBvdXRwdXQgZmlsZS4gVGhlIC1zbyBvcHRpb24gd2lsbCBjcmVhdGUgYSBDIHRhYmxlIGNvbnRh
+aW5pbmcgdGhlIEFNTCB0YWJsZSBvZmZzZXRzIG9mIHZhcmlvdXMgbmFtZWQgb2JqZWN0cyBpbgog
+dGhlIG5hbWVzcGFjZSBzbyB0aGF0IEJJT1MgY29kZSBjYW4gbW9kaWZ5IHRoZW0gZWFzaWx5IGF0
+IGJvb3QgdGltZS4gVGhpcyBjYW4gc2ltcGxpZnkgQklPUyBydW50aW1lIGNvZGUgYnkgZWxpbWlu
+YXRpbmcgZXhwZW5zaXZlIHNlYXJjaGVzIGZvciAmcXVvdDttYWdpYyB2YWx1ZXMmcXVvdDssIGVu
+aGFuY2luZyBib290IHRpbWVzIGFuZCBhZGRpbmcgZ3JlYXRlciByZWxpYWJpbGl0eS4gV2l0aCBh
+c3Npc3RhbmNlIGZyb20gTGVlIEhhbWVsLjxvOnA+PC9vOnA+PC9wPgo8cCBjbGFzcz0iTXNvUGxh
+aW5UZXh0Ij48bzpwPiZuYnNwOzwvbzpwPjwvcD4KPHAgY2xhc3M9Ik1zb1BsYWluVGV4dCI+aUFT
+TDogQWxsb3cgYWRkaXRpb25hbCBwcmVkZWZpbmVkIG5hbWVzIHRvIHJldHVybiB6ZXJvLWxlbmd0
+aCBwYWNrYWdlcy4gTm93LCBhbGwgcHJlZGVmaW5lZCBuYW1lcyB0aGF0IGFyZSBkZWZpbmVkIGJ5
+IHRoZSBBQ1BJIHNwZWNpZmljYXRpb24gdG8gcmV0dXJuIGEgJnF1b3Q7dmFyaWFibGUtbGVuZ3Ro
+IHBhY2thZ2Ugb2YgcGFja2FnZXMmcXVvdDsgYXJlIGFsbG93ZWQgdG8gcmV0dXJuIGEgemVybyBs
+ZW5ndGggdG9wLWxldmVsCiBwYWNrYWdlLiBUaGlzIGFsbG93cyB0aGUgQklPUyB0byB0ZWxsIHRo
+ZSBob3N0IHRoYXQgdGhlIHJlcXVlc3RlZCBmZWF0dXJlIGlzIG5vdCBzdXBwb3J0ZWQsIGFuZCBz
+dXBwb3J0cyBleGlzdGluZyBCSU9TL0FTTCBjb2RlIGFuZCBwcmFjdGljZXMuPG86cD48L286cD48
+L3A+CjxwIGNsYXNzPSJNc29QbGFpblRleHQiPjxvOnA+Jm5ic3A7PC9vOnA+PC9wPgo8cCBjbGFz
+cz0iTXNvUGxhaW5UZXh0Ij5pQVNMOiBDaGFuZ2VkIHRoZSAmcXVvdDtyZXN1bHQgbm90IHVzZWQm
+cXVvdDsgd2FybmluZyB0byBhbiBlcnJvci4gVGhpcyBpcyB0aGUgY2FzZSB3aGVyZSBhbiBBU0wg
+b3BlcmF0b3IgaXMgZWZmZWN0aXZlbHkgYSBOT09QIGJlY2F1c2UgdGhlIHJlc3VsdCBvZiB0aGUg
+b3BlcmF0aW9uIGlzIG5vdCBzdG9yZWQgYW55d2hlcmUuIEZvciBleGFtcGxlOjxvOnA+PC9vOnA+
+PC9wPgo8cCBjbGFzcz0iTXNvUGxhaW5UZXh0Ij4mbmJzcDsmbmJzcDsmbmJzcDsgQWRkICg0LCBM
+b2NhbDApPG86cD48L286cD48L3A+CjxwIGNsYXNzPSJNc29QbGFpblRleHQiPlRoZXJlIGlzIG5v
+IHRhcmdldCAobWlzc2luZyAzcmQgYXJndW1lbnQpLCBub3IgaXMgdGhlIGZ1bmN0aW9uIHJldHVy
+biB2YWx1ZSB1c2VkLiBUaGlzIGlzIHBvdGVudGlhbGx5IGEgdmVyeSBzZXJpb3VzIHByb2JsZW0g
+LS0gc2luY2UgdGhlIGNvZGUgd2FzIHByb2JhYmx5IGludGVuZGVkIHRvIGRvIHNvbWV0aGluZywg
+YnV0IGZvciB3aGF0ZXZlciByZWFzb24sIHRoZSB2YWx1ZSB3YXMgbm90IHN0b3JlZC4KIFRoZXJl
+Zm9yZSwgdGhpcyBpc3N1ZSBoYXMgYmVlbiB1cGdyYWRlZCBmcm9tIGEgd2FybmluZyB0byBhbiBl
+cnJvci48bzpwPjwvbzpwPjwvcD4KPHAgY2xhc3M9Ik1zb1BsYWluVGV4dCI+PG86cD4mbmJzcDs8
+L286cD48L3A+CjxwIGNsYXNzPSJNc29QbGFpblRleHQiPkFjcGlIZWxwOiBBZGRlZCBhbGxvd2Fi
+bGUvcmVxdWlyZWQgYXJndW1lbnQgdHlwZXMgdG8gdGhlIHByZWRlZmluZWQgbmFtZXMgaW5mbyBk
+aXNwbGF5LiBUaGlzIGZlYXR1cmUgdXRpbGl6ZXMgdGhlIHJlY2VudCB1cGRhdGUgdG8gdGhlIHBy
+ZWRlZmluZWQgbmFtZXMgdGFibGUgKGFib3ZlKS48bzpwPjwvbzpwPjwvcD4KPHAgY2xhc3M9Ik1z
+b1BsYWluVGV4dCI+PG86cD4mbmJzcDs8L286cD48L3A+CjxwIGNsYXNzPSJNc29Ob3JtYWwiPjxv
+OnA+Jm5ic3A7PC9vOnA+PC9wPgo8L2Rpdj4KPC9ib2R5Pgo8L2h0bWw+Cg==
+
+--===============4593049224697484659==--
 
