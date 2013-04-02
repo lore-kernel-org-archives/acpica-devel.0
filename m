@@ -1,13 +1,13 @@
-Content-Type: multipart/mixed; boundary="===============0221246799524383686=="
+Content-Type: multipart/mixed; boundary="===============1964320789788542154=="
 MIME-Version: 1.0
-From: AP <mail at intwebbcst.info>
+From: AP <mail at bcstewbinfo.info>
 Subject: [Devel] Community & educational development
-Date: Sat, 30 Mar 2013 08:58:04 -0400
-Message-ID: <136462749355cb39399946c551967dd4d4fe8bde7d_@intwebbcst.info>
+Date: Tue, 02 Apr 2013 03:52:07 -0400
+Message-ID: <136483337255cb39399946c551967dd4d4fe8bde7d_@bcstewbinfo.info>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0221246799524383686==
+--===============1964320789788542154==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
@@ -109,7 +109,7 @@ This is a CANSPAM ACT compliant advertising broadcast sent by:
 American Publishing Inc. , 7025 County Rd. 46A, Suite 1071, Lake Mary, FL, =
 32746-4753
 
---===============0221246799524383686==
+--===============1964320789788542154==
 Content-Type: text/html
 MIME-Version: 1.0
 Content-Transfer-Encoding: base64
@@ -198,5 +198,5 @@ IGNvbXBsaWFudCBhZHZlcnRpc2luZwpicm9hZGNhc3Qgc2VudCBieTo8QlI+QW1lcmljYW4gUHVi
 bGlzaGluZyBJbmMuICwgNzAyNSBDb3VudHkgUmQuIDQ2QSwgU3VpdGUKMTA3MSwgTGFrZSBNYXJ5
 LCBGTCwgMzI3NDYtNDc1MzwvRk9OVD48L0RJVj48L0JPRFk+PC9IVE1MPgo=
 
---===============0221246799524383686==--
+--===============1964320789788542154==--
 
