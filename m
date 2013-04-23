@@ -1,45 +1,25 @@
-Content-Type: multipart/mixed; boundary="===============2751346453154326945=="
+Content-Type: multipart/mixed; boundary="===============9011997189058763240=="
 MIME-Version: 1.0
-From: #1 Social Marketing <mike.sfsd4f564s6df45ds at gmail.com>
-Subject: [Devel] C h e a p - F a c e b o o k - L i k e s
-Date: Tue, 23 Apr 2013 08:27:29 +0000
-Message-ID: <52B096A7.37108ECA@gmail.com>
+From: Mollie Schultz <82269D3EC at alnpete.co.uk>
+Subject: [Devel] Wanna talk?
+Date: Tue, 23 Apr 2013 14:52:50 -0700
+Message-ID: <ED387483-820E-4D3F-7820-76C3CDE98665@deluxe>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2751346453154326945==
+--===============9011997189058763240==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Buy GUARANTEED Facebook Likes/Fans, =
+Goo day devel,
 
-at the cheapest prices and become more popular!
+I sent you a message. Click to read
+http://www.datingfise.ru/?CDA751=3DC66244E7E0922ADC56A
 
-- Safely delivered, absolutely no risk!
-- Order processed within 24 hours or less!
-- Manually Promoted by experts  not bots/software involved
-- High-Quality service.
+I'm waiting for you :-) xoxo
 
-We offer different packages at different prices.
+Sent from my iPhone
 
-
-For Full Details please visit our website:
-http://www.advertise-bzs.net/facebook/
-
-
-
-
-
-
-
-
-
-
-
-http://www.advertise-bzs.net/unsubscribe/
-
-
-
---===============2751346453154326945==--
+--===============9011997189058763240==--
 
