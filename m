@@ -1,64 +1,41 @@
-Content-Type: multipart/mixed; boundary="===============6047937160194076599=="
+Content-Type: multipart/mixed; boundary="===============9079335629410330339=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] Emergency ACPICA bug fix (bugzilla 1016)
-Date: Tue, 07 May 2013 21:35:27 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E36FE54194@ORSMSX103.amr.corp.intel.com>
-In-Reply-To: 94F2FBAB4432B54E8AACC7DFDE6C92E36FE4F56E@FMSMSX153.amr.corp.intel.com
+From: Liang Qi <cavendish.qi at gmail.com>
+Subject: [Devel] Patch for building on Mac
+Date: Wed, 08 May 2013 11:10:01 +0200
+Message-ID: <CAHceRrizmUOd5ghWyi9rLsv+MJKf+FC5KeiyEi75DrQq5puCkQ@mail.gmail.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6047937160194076599==
+--===============9079335629410330339==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
+https://github.com/acpica/acpica/pull/7
 
-Attached (and below), please find a high-priority fix for ACPICA version 20=
-130328 and later.
-Sorry for any inconvenience,
-Bob
+I only tested on 10.8.3, the build works.
 
+Just for your information, because I found there is another pending Pull
+Request, which was opened about a month ago.
 
+Regards,
+Liang
 
-Fix for _INI regression.
-
-This change fixes a problem introduced in 20130328 where _INI methods are n=
-o longer executed properly because of a memory block that is not initialize=
-d properly.
-ACPICA BZ 1016. Tomasz Nowicki <tomasz.nowicki(a)linaro.org>.
-
-diff --git a/source/components/namespace/nsinit.c b/source/components/names=
-pace/nsinit.c
-index c1544cd..8619d68 100644
---- a/source/components/namespace/nsinit.c
-+++ b/source/components/namespace/nsinit.c
-@@ -690,6 +690,7 @@ AcpiNsInitOneDevice (
-     ACPI_DEBUG_EXEC (AcpiUtDisplayInitPathname (
-         ACPI_TYPE_METHOD, DeviceNode, METHOD_NAME__INI));
- =
-
-+    ACPI_MEMSET (Info, 0, sizeof (ACPI_EVALUATE_INFO));
-     Info->PrefixNode =3D DeviceNode;
-     Info->RelativePathname =3D METHOD_NAME__INI;
-     Info->Parameters =3D NULL;
-
---===============6047937160194076599==
-Content-Type: application/octet-stream
+--===============9079335629410330339==
+Content-Type: text/html
 MIME-Version: 1.0
 Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="nsinit.patch"
+Content-Disposition: attachment; filename="attachment.html"
 
-ZGlmZiAtLWdpdCBhL3NvdXJjZS9jb21wb25lbnRzL25hbWVzcGFjZS9uc2luaXQuYyBiL3NvdXJj
-ZS9jb21wb25lbnRzL25hbWVzcGFjZS9uc2luaXQuYwppbmRleCBjMTU0NGNkLi44NjE5ZDY4IDEw
-MDY0NAotLS0gYS9zb3VyY2UvY29tcG9uZW50cy9uYW1lc3BhY2UvbnNpbml0LmMKKysrIGIvc291
-cmNlL2NvbXBvbmVudHMvbmFtZXNwYWNlL25zaW5pdC5jCkBAIC02OTAsNiArNjkwLDcgQEAgQWNw
-aU5zSW5pdE9uZURldmljZSAoCiAgICAgQUNQSV9ERUJVR19FWEVDIChBY3BpVXREaXNwbGF5SW5p
-dFBhdGhuYW1lICgKICAgICAgICAgQUNQSV9UWVBFX01FVEhPRCwgRGV2aWNlTm9kZSwgTUVUSE9E
-X05BTUVfX0lOSSkpOwogCisgICAgQUNQSV9NRU1TRVQgKEluZm8sIDAsIHNpemVvZiAoQUNQSV9F
-VkFMVUFURV9JTkZPKSk7CiAgICAgSW5mby0+UHJlZml4Tm9kZSA9IERldmljZU5vZGU7CiAgICAg
-SW5mby0+UmVsYXRpdmVQYXRobmFtZSA9IE1FVEhPRF9OQU1FX19JTkk7CiAgICAgSW5mby0+UGFy
-YW1ldGVycyA9IE5VTEw7Cg==
+PGRpdiBkaXI9Imx0ciI+PGEgaHJlZj0iaHR0cHM6Ly9naXRodWIuY29tL2FjcGljYS9hY3BpY2Ev
+cHVsbC83Ij5odHRwczovL2dpdGh1Yi5jb20vYWNwaWNhL2FjcGljYS9wdWxsLzc8L2E+PGRpdj48
+YnI+PC9kaXY+PGRpdj5JIG9ubHkgdGVzdGVkIG9uIDEwLjguMywgdGhlIGJ1aWxkIHdvcmtzLjxi
+cj48ZGl2Pjxicj48L2Rpdj48ZGl2Pkp1c3QgZm9yIHlvdXIgaW5mb3JtYXRpb24sIGJlY2F1c2Ug
+SSBmb3VuZCB0aGVyZSBpcyBhbm90aGVyIHBlbmRpbmcgUHVsbCBSZXF1ZXN0LCB3aGljaCB3YXMg
+b3BlbmVkIGFib3V0IGEgbW9udGggYWdvLjwvZGl2Pgo8ZGl2Pjxicj48L2Rpdj48ZGl2PlJlZ2Fy
+ZHMsPC9kaXY+PGRpdj5MaWFuZzxiciBjbGVhcj0iYWxsIj48ZGl2Pjxicj48L2Rpdj48L2Rpdj48
+L2Rpdj48L2Rpdj4K
 
---===============6047937160194076599==--
+--===============9079335629410330339==--
 
