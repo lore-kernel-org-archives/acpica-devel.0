@@ -1,41 +1,33 @@
-Content-Type: multipart/mixed; boundary="===============9079335629410330339=="
+Content-Type: multipart/mixed; boundary="===============6341368271059617623=="
 MIME-Version: 1.0
-From: Liang Qi <cavendish.qi at gmail.com>
-Subject: [Devel] Patch for building on Mac
-Date: Wed, 08 May 2013 11:10:01 +0200
-Message-ID: <CAHceRrizmUOd5ghWyi9rLsv+MJKf+FC5KeiyEi75DrQq5puCkQ@mail.gmail.com>
+From: Naresh Bhat <naresh.bhat at linaro.org>
+Subject: [Devel] [PATCH 0/2] ACPI ASL test suite compilation fix for 32bit ARM
+ architecture
+Date: Wed, 08 May 2013 19:23:34 +0530
+Message-ID: <1368021217-19585-1-git-send-email-naresh.bhat@linaro.org>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============9079335629410330339==
+--===============6341368271059617623==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-https://github.com/acpica/acpica/pull/7
+The following patches do compilation errors fix for 32bit ARM architecture
 
-I only tested on 10.8.3, the build works.
+Naresh Bhat (2):
+  Fix config so it will compile with GCC versions that do not have
+    -m32/-m64
+  Resolve problem where -Werror fails to build when compiling iasl
 
-Just for your information, because I found there is another pending Pull
-Request, which was opened about a month ago.
+ generate/unix/Makefile.config |    1 -
+ source/compiler/dtio.c        |    4 ++--
+ 2 files changed, 2 insertions(+), 3 deletions(-)
 
-Regards,
-Liang
+-- =
 
---===============9079335629410330339==
-Content-Type: text/html
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="attachment.html"
+1.7.9.5
 
-PGRpdiBkaXI9Imx0ciI+PGEgaHJlZj0iaHR0cHM6Ly9naXRodWIuY29tL2FjcGljYS9hY3BpY2Ev
-cHVsbC83Ij5odHRwczovL2dpdGh1Yi5jb20vYWNwaWNhL2FjcGljYS9wdWxsLzc8L2E+PGRpdj48
-YnI+PC9kaXY+PGRpdj5JIG9ubHkgdGVzdGVkIG9uIDEwLjguMywgdGhlIGJ1aWxkIHdvcmtzLjxi
-cj48ZGl2Pjxicj48L2Rpdj48ZGl2Pkp1c3QgZm9yIHlvdXIgaW5mb3JtYXRpb24sIGJlY2F1c2Ug
-SSBmb3VuZCB0aGVyZSBpcyBhbm90aGVyIHBlbmRpbmcgUHVsbCBSZXF1ZXN0LCB3aGljaCB3YXMg
-b3BlbmVkIGFib3V0IGEgbW9udGggYWdvLjwvZGl2Pgo8ZGl2Pjxicj48L2Rpdj48ZGl2PlJlZ2Fy
-ZHMsPC9kaXY+PGRpdj5MaWFuZzxiciBjbGVhcj0iYWxsIj48ZGl2Pjxicj48L2Rpdj48L2Rpdj48
-L2Rpdj48L2Rpdj4K
 
---===============9079335629410330339==--
+--===============6341368271059617623==--
 
