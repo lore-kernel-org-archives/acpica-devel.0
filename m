@@ -1,139 +1,122 @@
-Content-Type: multipart/mixed; boundary="===============6658350970767862103=="
+Content-Type: multipart/mixed; boundary="===============3229021573502922268=="
 MIME-Version: 1.0
-From: Alexei Fedorov <Alexei.Fedorov at arm.com>
-Subject: Re: [Devel] -D <symbol> Preprocessor Option Doesn't Work
-Date: Fri, 17 May 2013 11:16:12 +0100
-Message-ID: <20E136AF98049A48A90A7417B4343D5E32BC64FF05@BUNGLE.Emea.Arm.com>
-In-Reply-To: mailman.113.1368724147.2837.devel@acpica.org
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] ACPICA version 20130517 released
+Date: Fri, 17 May 2013 17:00:57 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E36FE6CCED@ORSMSX103.amr.corp.intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6658350970767862103==
+--===============3229021573502922268==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
->Yes, it looks like it has been there a while.
->You can checkout the patch, or I can send you an updated windows binary.
-Hi Robert,
-Please send me an updated binary.
-Thanks.
------Original Message-----
-From: devel-bounces(a)acpica.org [mailto:devel-bounces(a)acpica.org] On Beh=
-alf Of devel-request(a)acpica.org
-Sent: 16 May 2013 18:09
-To: devel(a)acpica.org
-Subject: Devel Digest, Vol 38, Issue 5
+17 May 2013. Summary of changes for version 20130517:
 
-Send Devel mailing list submissions to
-        devel(a)acpica.org
-
-To subscribe or unsubscribe via the World Wide Web, visit
-        https://lists.acpica.org/mailman/listinfo/devel
-or, via email, send a message with subject or body 'help' to
-        devel-request(a)acpica.org
-
-You can reach the person managing the list at
-        devel-owner(a)acpica.org
-
-When replying, please edit your Subject line so it is more specific
-than "Re: Contents of Devel digest..."
+This release is available at https://acpica.org/downloads
 
 
-Today's Topics:
+1) ACPICA kernel-resident subsystem:
 
-   1. Re: -D <symbol> Preprocessor Option Doesn't Work (Moore, Robert)
-   2. Re: -D <symbol> Preprocessor Option Doesn't Work (Moore, Robert)
+Fixed a regression introduced in version 20130328 for _INI methods. This ch=
+ange fixes a problem introduced in 20130328 where _INI methods are no longe=
+r executed properly because of a memory block that was not initialized corr=
+ectly. ACPICA BZ 1016. Tomasz Nowicki <tomasz.nowicki(a)linaro.org>.
 
+Fixed a possible problem with the new extended sleep registers in the ACPI =
+5.0 FADT. Do not use these registers (even if populated) unless the HW-redu=
+ced bit is set in the FADT (as per the ACPI specification). ACPICA BZ 1020.=
+ Lv Zheng.
 
-----------------------------------------------------------------------
+Implemented return value repair code for _CST predefined objects: Sort the =
+list and detect/remove invalid entries. ACPICA BZ 890. Lv Zheng.
 
-Message: 1
-Date: Thu, 16 May 2013 15:59:17 +0000
-From: "Moore, Robert" <robert.moore(a)intel.com>
-To: Alexei Fedorov <Alexei.Fedorov(a)arm.com>, "devel(a)acpica.org"
-        <devel(a)acpica.org>
-Subject: Re: [Devel] -D <symbol> Preprocessor Option Doesn't Work
-Message-ID:
-        <94F2FBAB4432B54E8AACC7DFDE6C92E36FE6C321(a)ORSMSX103.amr.corp.inte=
-l.com>
+Implemented a debug-only option to disable loading of SSDTs from the RSDT/X=
+SDT during ACPICA initialization. This can be useful for debugging ACPI pro=
+blems on some machines. Set AcpiGbl_DisableSsdtTableLoad in acglobal.h - AC=
+PICA BZ 1005. Lv Zheng.
 
-Content-Type: text/plain; charset=3D"us-ascii"
+Fixed some issues in the ACPICA initialization and termination code: Tomasz=
+ Nowicki <tomasz.nowicki(a)linaro.org>
+1) Clear events initialized flag upon event component termination. ACPICA B=
+Z 1013.
+2) Fixed a possible memory leak in GPE init error path. ACPICA BZ 1018. =
 
-The fix for this is checked into our git tree.
-Bob
-From: devel-bounces(a)acpica.org [mailto:devel-bounces(a)acpica.org] On Beh=
-alf Of Moore, Robert
-Sent: Wednesday, May 15, 2013 10:33 AM
-To: Alexei Fedorov; devel(a)acpica.org
-Subject: Re: [Devel] -D <symbol> Preprocessor Option Doesn't Work
+3) Delete global lock pending lock during termination. ACPICA BZ 1012.
+4) Clear debug buffer global on termination to prevent possible multiple de=
+lete. ACPICA BZ 1010.
 
-Sorry, we did some code restructuring and broke this. You can go back to an=
- earlier version of the compiler, or wait until later this week when there =
-will be a new version.
-Bob
-From: devel-bounces(a)acpica.org<mailto:devel-bounces(a)acpica.org> [mailto=
-:devel-bounces(a)acpica.org] On Behalf Of Moore, Robert
-Sent: Wednesday, May 15, 2013 8:43 AM
-To: Alexei Fedorov; devel(a)acpica.org<mailto:devel(a)acpica.org>
-Subject: Re: [Devel] -D <symbol> Preprocessor Option Doesn't Work
+Standardized all switch() blocks across the entire source base. After many =
+years, different formatting for switch() had crept in. This change makes th=
+e formatting of every switch block identical. ACPICA BZ 997. Chao Guan.
 
-We will check it out.
-Thanks,
-Bob
-From: devel-bounces(a)acpica.org<mailto:devel-bounces(a)acpica.org> [mailto=
-:devel-bounces(a)acpica.org] On Behalf Of Alexei Fedorov
-Sent: Tuesday, May 14, 2013 5:27 AM
-To: devel(a)acpica.org<mailto:devel(a)acpica.org>
-Subject: [Devel] -D <symbol> Preprocessor Option Doesn't Work
+Split some files to enhance ACPICA modularity and configurability:
+1) Split buffer dump routines into utilities/utbuffer.c
+2) Split internal error message routines into utilities/uterror.c
+3) Split table print utilities into tables/tbprint.c
+4) Split iASL command-line option processing into asloptions.c
 
-Hi,
+Makefile enhancements:
+1) Support for all new files above.
+2) Abort make on errors from any subcomponent. Chao Guan.
+3) Add build support for Apple Mac OS X. Liang Qi.
 
-ASL User Guide states that #ifdef statements are recognized when a symbol i=
-s defined in the command line:
+Example Code and Data Size: These are the sizes for the OS-independent acpi=
+ca.lib produced by the Microsoft Visual C++ 9.0 32-bit compiler. The debug =
+version of the code includes the debug output trace mechanism and has a muc=
+h larger code and data size.
 
-"3.3.2.2 #ifdef
-Usage:
-#ifdef symbol
-Conditionally compile a block of text. The block is included in the compila=
-tion if the symbol is defined, either from a #define or from the - D comman=
-d line option"
-
-but I cannot make ASL Compiler to recognize the following option
-  -D <symbol>       Define symbol for preprocessor use
-
-In the example below
-
-DefinitionBlock("DSDT.AML", "DSDT", 0x01, "      ", "        ", 3) {
-  Scope(_SB) {
-    Device(CPU0) {
-      Name(_HID, "ACPI0007")
-      Name(_UID, Zero)
-    }
-#ifdef CPU_1
-    Device(CPU1) {
-              Name(_HID, "ACPI0007")
-              Name(_UID, One)
-    }
-#endif
-  }
-}
-
-The section between #ifdef CPU_1 ... #endif is not being compiled when ASL =
-is invoked as:
-iasl.exe -l -D CPU_1 Dsdt.asl
-Checked with the latest version 20130418-32 [Apr 18 2013].
-
-Any thoughts on what might be going wrong here?
-Thanks.
+  Current Release:
+    Non-Debug Version:  96.0K Code, 27.0K Data, 123.0K Total
+    Debug Version:     184.1K Code, 76.8K Data, 260.9K Total
+  Previous Release:
+    Non-Debug Version:  95.6K Code, 26.8K Data, 122.4K Total
+    Debug Version:     183.5K Code, 76.6K Data, 260.1K Total
 
 
+2) iASL Compiler/Disassembler and Tools:
 
--- IMPORTANT NOTICE: The contents of this email and any attachments are con=
-fidential and may also be privileged. If you are not the intended recipient=
-, please notify the sender immediately and do not disclose the contents to =
-any other person, use it for any purpose, or store or copy the information =
-in any medium. Thank you.
+New utility: Implemented an easily portable version of the acpidump utility=
+ to extract ACPI tables from the system (or a file) in an ASCII hex dump fo=
+rmat. The top-level code implements the various command line options, file =
+I/O, and table dump routines. To port to a new host, only three functions n=
+eed to be implemented to get tables -- since this functionality is OS-depen=
+dent. See the tools/acpidump/apmain.c module and the ACPICA reference for p=
+orting instructions. ACPICA BZ 859. Notes:
+1) The Windows version obtains the ACPI tables from the Registry.
+2) The Linux version is under development.
+3) Other hosts - If an OS-dependent module is submitted, it will be distrib=
+uted with ACPICA.
 
---===============6658350970767862103==--
+iASL: Fixed a regression for -D preprocessor option (define symbol). A rest=
+ructuring/change to the initialization sequence caused this option to no lo=
+nger work properly.
+
+iASL: Implemented a mechanism to disable specific warnings and remarks. Add=
+s a new command line option, "-vw <messageid> as well as "#pragma disable <=
+messageid>". ACPICA BZ 989. Chao Guan, Bob Moore.
+
+iASL: Fix for too-strict package object validation. The package object vali=
+dation for return values from the predefined names is a bit too strict, it =
+does not allow names references within the package (which will be resolved =
+at runtime.) These types of references cannot be validated at compile time.=
+ This change ignores named references within package objects for names that=
+ return or define static packages.
+
+Debugger: Fixed the 80-character command line limitation for the History co=
+mmand. Now allows lines of arbitrary length. ACPICA BZ 1000. Chao Guan.
+
+iASL: Added control method and package support for the -so option (generate=
+s AML offset table for BIOS support.)
+
+iASL: issue a remark if a non-serialized method creates named objects. If a=
+ thread blocks within the method for any reason, and another thread enters =
+the method, the method will fail because an attempt will be made to create =
+the same (named) object twice. In this case, issue a remark that the method=
+ should be marked serialized. NOTE: may become a warning later. ACPICA BZ 9=
+09.
+
+
+--===============3229021573502922268==--
 
