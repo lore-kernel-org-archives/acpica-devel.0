@@ -1,120 +1,133 @@
-Content-Type: multipart/mixed; boundary="===============6123882695668813691=="
+Content-Type: multipart/mixed; boundary="===============7819627688742676516=="
 MIME-Version: 1.0
-From: Alexei A. Piatetsky <Alexei_Piatetsky at tssc.de>
-Subject: [Devel] ACPIScope - ACPI exploration tool for Windows
-Date: Thu, 08 Aug 2013 11:26:17 +0200
-Message-ID: <BBF408765164D844A7648EE5E476A5820EFE5184C99A@INTRANETMAIL.tssc.de>
+From: Andrew McDermott <andrew.mcdermott at linaro.org>
+Subject: [Devel] [PATCH] generate/unix/iasl: fix parallel build
+Date: Thu, 08 Aug 2013 17:20:01 +0100
+Message-ID: <1375978801-1020-1-git-send-email-andrew.mcdermott@linaro.org>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6123882695668813691==
+--===============7819627688742676516==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Ladies and Gentlemen,
+A parallel build fails because the rules for generating the YACC
+derived files get invoked twice, given the current dependency graph,
+and the simultaneous invocation trashes the generated headers.
 
-APSoft Germany released new version of ACPIScope - ACPI exploration tool fo=
-r Windows OS (http://www.tssc.de/products/tools/acpiscope/default.htm).
-ACPIScope provides an access to all three sources of ACPI information on Wi=
-ndows computer:
-*         OSPM driver
-*         BIOS ACPI tables
-*         ACPI tables cached in Windows registry
-Please feel free to download and try product free for two weeks. Please fee=
-l free to send us suggestions for the product improvements to mailto:suppor=
-t(a)tssc.de.
+This commit makes the YACC generated headers depend on the YACC
+generated source files which serialises that part of the build.  By
+making all $(OBJECTS) depend on the headers we have a dependency graph
+that will first generate the YACC derived .c's, then the .h's which,
+when complete, will allow all the $(OBJECTS) to be built in parallel.
 
-With best regards,
+Signed-off-by: Andrew McDermott <andrew.mcdermott(a)linaro.org>
+---
+ generate/unix/iasl/Makefile |   33 ++++++++++++++++++++-------------
+ 1 file changed, 20 insertions(+), 13 deletions(-)
 
-APSoft Team.
+diff --git a/generate/unix/iasl/Makefile b/generate/unix/iasl/Makefile
+index e9520ed..672e519 100644
+--- a/generate/unix/iasl/Makefile
++++ b/generate/unix/iasl/Makefile
+@@ -212,13 +212,10 @@ INTERMEDIATES =3D \
+ MISC =3D \
+ 	$(OBJDIR)/aslcompilerparse.h\
+ 	$(OBJDIR)/aslcompiler.y.h\
+-	$(OBJDIR)/aslcompilerparse.output\
+ 	$(OBJDIR)/dtparserparse.h\
+ 	$(OBJDIR)/dtparser.y.h\
+-	$(OBJDIR)/dtparserparse.output\
+ 	$(OBJDIR)/prparserparse.h\
+-	$(OBJDIR)/prparser.y.h\
+-	$(OBJDIR)/prparserparse.output
++	$(OBJDIR)/prparser.y.h
+ =
+
+ #
+ # Flags specific to iASL compiler
+@@ -240,21 +237,29 @@ include ../Makefile.rules
+ $(OBJDIR)/aslcompilerlex.c :   $(ASL_COMPILER)/aslcompiler.l $(ASL_COMPILE=
+R)/aslsupport.l
+ 	$(LEX) $(LFLAGS) -PAslCompiler -o$@ $(ASL_COMPILER)/aslcompiler.l
+ =
+
+-$(OBJDIR)/aslcompilerparse.c $(OBJDIR)/aslcompilerparse.h : $(ASL_COMPILER=
+)/aslcompiler.y
++$(OBJDIR)/aslcompilerparse.c : $(ASL_COMPILER)/aslcompiler.y
+ 	$(YACC) $(YFLAGS) -pAslCompiler -o$@ $?
+ =
+
+ $(OBJDIR)/dtparserlex.c :      $(ASL_COMPILER)/dtparser.l
+ 	$(LEX) $(LFLAGS) -PDtParser -o$@ $?
+ =
+
+-$(OBJDIR)/dtparserparse.c $(OBJDIR)/dtparserparse.h : $(ASL_COMPILER)/dtpa=
+rser.y
++$(OBJDIR)/dtparserparse.c : $(ASL_COMPILER)/dtparser.y
+ 	$(YACC) $(YFLAGS) -pDtParser -o$@ $?
+ =
+
+ $(OBJDIR)/prparserlex.c :      $(ASL_COMPILER)/prparser.l
+ 	$(LEX) $(LFLAGS) -PPrParser -o$@ $?
+ =
+
+-$(OBJDIR)/prparserparse.c $(OBJDIR)/prparserparse.h : $(ASL_COMPILER)/prpa=
+rser.y
++$(OBJDIR)/prparserparse.c : $(ASL_COMPILER)/prparser.y
+ 	$(YACC) $(YFLAGS) -pPrParser -o$@ $?
+ =
+
++$(OBJDIR)/aslcompilerparse.h : $(OBJDIR)/aslcompilerparse.c
++	touch $@
++
++$(OBJDIR)/dtparserparse.h : $(OBJDIR)/dtparserparse.c
++	touch $@
++
++$(OBJDIR)/prparserparse.h:  $(OBJDIR)/prparserparse.c
++	touch $@
+ =
+
+ #
+ # Rename the headers produced by bison/yacc
+@@ -279,19 +284,21 @@ $(OBJDIR)/prparser.y.h: $(OBJDIR)/prparserparse.h
+ # by the utilities above and they are not necessarily ANSI C, etc.
+ #
+ $(OBJDIR)/aslcompilerlex.o :   $(OBJDIR)/aslcompilerlex.c
+-	$(CC) -c $(CFLAGS) -Wall -Werror -o$@ $?
++	$(CC) -c $(CFLAGS) -Wall -Werror -o$@ $<
+ =
+
+ $(OBJDIR)/aslcompilerparse.o : $(OBJDIR)/aslcompilerparse.c
+-	$(CC) -c $(CFLAGS) -Wall -Werror -o$@ $?
++	$(CC) -c $(CFLAGS) -Wall -Werror -o$@ $<
+ =
+
+ $(OBJDIR)/dtparserlex.o :      $(OBJDIR)/dtparserlex.c
+-	$(CC) -c $(CFLAGS) -Wall -Werror -o$@ $?
++	$(CC) -c $(CFLAGS) -Wall -Werror -o$@ $<
+ =
+
+ $(OBJDIR)/dtparserparse.o :    $(OBJDIR)/dtparserparse.c
+-	$(CC) -c $(CFLAGS) -Wall -Werror -o$@ $?
++	$(CC) -c $(CFLAGS) -Wall -Werror -o$@ $<
+ =
+
+ $(OBJDIR)/prparserlex.o :      $(OBJDIR)/prparserlex.c
+-	$(CC) -c $(CFLAGS) -Wall -Werror -o$@ $?
++	$(CC) -c $(CFLAGS) -Wall -Werror -o$@ $<
+ =
+
+ $(OBJDIR)/prparserparse.o :    $(OBJDIR)/prparserparse.c
+-	$(CC) -c $(CFLAGS) -Wall -Werror -o$@ $?
++	$(CC) -c $(CFLAGS) -Wall -Werror -o$@ $<
++
++$(OBJECTS): $(HEADERS)
+-- =
+
+1.7.9.5
 
 
---===============6123882695668813691==
-Content-Type: text/html
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="attachment.html"
-
-PGh0bWwgeG1sbnM6dj0idXJuOnNjaGVtYXMtbWljcm9zb2Z0LWNvbTp2bWwiIHhtbG5zOm89InVy
-bjpzY2hlbWFzLW1pY3Jvc29mdC1jb206b2ZmaWNlOm9mZmljZSIgeG1sbnM6dz0idXJuOnNjaGVt
-YXMtbWljcm9zb2Z0LWNvbTpvZmZpY2U6d29yZCIgeG1sbnM6bT0iaHR0cDovL3NjaGVtYXMubWlj
-cm9zb2Z0LmNvbS9vZmZpY2UvMjAwNC8xMi9vbW1sIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcv
-VFIvUkVDLWh0bWw0MCI+PGhlYWQ+PG1ldGEgaHR0cC1lcXVpdj1Db250ZW50LVR5cGUgY29udGVu
-dD0idGV4dC9odG1sOyBjaGFyc2V0PXVzLWFzY2lpIj48bWV0YSBuYW1lPUdlbmVyYXRvciBjb250
-ZW50PSJNaWNyb3NvZnQgV29yZCAxMiAoZmlsdGVyZWQgbWVkaXVtKSI+PHN0eWxlPjwhLS0KLyog
-Rm9udCBEZWZpbml0aW9ucyAqLwpAZm9udC1mYWNlCgl7Zm9udC1mYW1pbHk6IkNhbWJyaWEgTWF0
-aCI7CglwYW5vc2UtMToyIDQgNSAzIDUgNCA2IDMgMiA0O30KQGZvbnQtZmFjZQoJe2ZvbnQtZmFt
-aWx5OkNhbGlicmk7CglwYW5vc2UtMToyIDE1IDUgMiAyIDIgNCAzIDIgNDt9CkBmb250LWZhY2UK
-CXtmb250LWZhbWlseTpWZXJkYW5hOwoJcGFub3NlLTE6MiAxMSA2IDQgMyA1IDQgNCAyIDQ7fQov
-KiBTdHlsZSBEZWZpbml0aW9ucyAqLwpwLk1zb05vcm1hbCwgbGkuTXNvTm9ybWFsLCBkaXYuTXNv
-Tm9ybWFsCgl7bWFyZ2luOjBjbTsKCW1hcmdpbi1ib3R0b206LjAwMDFwdDsKCWZvbnQtc2l6ZTox
-MS4wcHQ7Cglmb250LWZhbWlseToiQ2FsaWJyaSIsInNhbnMtc2VyaWYiO30KYTpsaW5rLCBzcGFu
-Lk1zb0h5cGVybGluawoJe21zby1zdHlsZS1wcmlvcml0eTo5OTsKCWNvbG9yOmJsdWU7Cgl0ZXh0
-LWRlY29yYXRpb246dW5kZXJsaW5lO30KYTp2aXNpdGVkLCBzcGFuLk1zb0h5cGVybGlua0ZvbGxv
-d2VkCgl7bXNvLXN0eWxlLXByaW9yaXR5Ojk5OwoJY29sb3I6cHVycGxlOwoJdGV4dC1kZWNvcmF0
-aW9uOnVuZGVybGluZTt9CnNwYW4uRW1haWxTdHlsZTE3Cgl7bXNvLXN0eWxlLXR5cGU6cGVyc29u
-YWwtY29tcG9zZTsKCWZvbnQtZmFtaWx5OiJDYWxpYnJpIiwic2Fucy1zZXJpZiI7Cgljb2xvcjp3
-aW5kb3d0ZXh0O30KLk1zb0NocERlZmF1bHQKCXttc28tc3R5bGUtdHlwZTpleHBvcnQtb25seTt9
-CkBwYWdlIFdvcmRTZWN0aW9uMQoJe3NpemU6NjEyLjBwdCA3OTIuMHB0OwoJbWFyZ2luOjcyLjBw
-dCA3Mi4wcHQgNzIuMHB0IDcyLjBwdDt9CmRpdi5Xb3JkU2VjdGlvbjEKCXtwYWdlOldvcmRTZWN0
-aW9uMTt9Ci8qIExpc3QgRGVmaW5pdGlvbnMgKi8KQGxpc3QgbDAKCXttc28tbGlzdC1pZDoxNjY5
-Njc0Nzg3OwoJbXNvLWxpc3QtdGVtcGxhdGUtaWRzOi00MDk4MjY1MDQ7fQpAbGlzdCBsMDpsZXZl
-bDEKCXttc28tbGV2ZWwtbnVtYmVyLWZvcm1hdDpidWxsZXQ7Cgltc28tbGV2ZWwtdGV4dDpcRjBC
-NzsKCW1zby1sZXZlbC10YWItc3RvcDozNi4wcHQ7Cgltc28tbGV2ZWwtbnVtYmVyLXBvc2l0aW9u
-OmxlZnQ7Cgl0ZXh0LWluZGVudDotMTguMHB0OwoJbXNvLWFuc2ktZm9udC1zaXplOjEwLjBwdDsK
-CWZvbnQtZmFtaWx5OlN5bWJvbDt9Cm9sCgl7bWFyZ2luLWJvdHRvbTowY207fQp1bAoJe21hcmdp
-bi1ib3R0b206MGNtO30KLS0+PC9zdHlsZT48IS0tW2lmIGd0ZSBtc28gOV0+PHhtbD4KPG86c2hh
-cGVkZWZhdWx0cyB2OmV4dD0iZWRpdCIgc3BpZG1heD0iMTAyNiIgLz4KPC94bWw+PCFbZW5kaWZd
-LS0+PCEtLVtpZiBndGUgbXNvIDldPjx4bWw+CjxvOnNoYXBlbGF5b3V0IHY6ZXh0PSJlZGl0Ij4K
-PG86aWRtYXAgdjpleHQ9ImVkaXQiIGRhdGE9IjEiIC8+CjwvbzpzaGFwZWxheW91dD48L3htbD48
-IVtlbmRpZl0tLT48L2hlYWQ+PGJvZHkgbGFuZz1FTi1VUyBsaW5rPWJsdWUgdmxpbms9cHVycGxl
-PjxkaXYgY2xhc3M9V29yZFNlY3Rpb24xPjxwIGNsYXNzPU1zb05vcm1hbD5MYWRpZXMgYW5kIEdl
-bnRsZW1lbiw8bzpwPjwvbzpwPjwvcD48cCBjbGFzcz1Nc29Ob3JtYWw+PG86cD4mbmJzcDs8L286
-cD48L3A+PHAgY2xhc3M9TXNvTm9ybWFsPkFQU29mdCBHZXJtYW55IHJlbGVhc2VkIG5ldyB2ZXJz
-aW9uIG9mIEFDUElTY29wZSAtIEFDUEkgZXhwbG9yYXRpb24gdG9vbCBmb3IgV2luZG93cyBPUyAo
-PGEgaHJlZj0iaHR0cDovL3d3dy50c3NjLmRlL3Byb2R1Y3RzL3Rvb2xzL2FjcGlzY29wZS9kZWZh
-dWx0Lmh0bSI+aHR0cDovL3d3dy50c3NjLmRlL3Byb2R1Y3RzL3Rvb2xzL2FjcGlzY29wZS9kZWZh
-dWx0Lmh0bTwvYT4pLiA8bzpwPjwvbzpwPjwvcD48cCBjbGFzcz1Nc29Ob3JtYWwgc3R5bGU9J21z
-by1tYXJnaW4tdG9wLWFsdDoxNC40cHQ7bWFyZ2luLXJpZ2h0OjBjbTttYXJnaW4tYm90dG9tOjEy
-LjBwdDttYXJnaW4tbGVmdDowY20nPjxzcGFuIHN0eWxlPSdmb250LXNpemU6MTAuMHB0O2ZvbnQt
-ZmFtaWx5OiJWZXJkYW5hIiwic2Fucy1zZXJpZiI7Y29sb3I6YmxhY2snPkFDUElTY29wZSBwcm92
-aWRlcyBhbiBhY2Nlc3MgdG8gYWxsIHRocmVlIHNvdXJjZXMgb2YgQUNQSSBpbmZvcm1hdGlvbiBv
-biBXaW5kb3dzIGNvbXB1dGVyOiA8bzpwPjwvbzpwPjwvc3Bhbj48L3A+PHAgY2xhc3M9TXNvTm9y
-bWFsIHN0eWxlPSdtc28tbWFyZ2luLXRvcC1hbHQ6YXV0bzttYXJnaW4tYm90dG9tOjcuMnB0O21h
-cmdpbi1sZWZ0OjIyLjhwdDt0ZXh0LWluZGVudDotMTguMHB0O21zby1saXN0OmwwIGxldmVsMSBs
-Zm8xJz48IVtpZiAhc3VwcG9ydExpc3RzXT48c3BhbiBzdHlsZT0nZm9udC1zaXplOjEwLjBwdDtm
-b250LWZhbWlseTpTeW1ib2w7Y29sb3I6YmxhY2snPjxzcGFuIHN0eWxlPSdtc28tbGlzdDpJZ25v
-cmUnPiZtaWRkb3Q7PHNwYW4gc3R5bGU9J2ZvbnQ6Ny4wcHQgIlRpbWVzIE5ldyBSb21hbiInPiZu
-YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyA8L3NwYW4+PC9z
-cGFuPjwvc3Bhbj48IVtlbmRpZl0+PHNwYW4gc3R5bGU9J2ZvbnQtc2l6ZToxMC4wcHQ7Zm9udC1m
-YW1pbHk6IlZlcmRhbmEiLCJzYW5zLXNlcmlmIjtjb2xvcjpibGFjayc+T1NQTSBkcml2ZXIgPG86
-cD48L286cD48L3NwYW4+PC9wPjxwIGNsYXNzPU1zb05vcm1hbCBzdHlsZT0nbXNvLW1hcmdpbi10
-b3AtYWx0OmF1dG87bWFyZ2luLWJvdHRvbTo3LjJwdDttYXJnaW4tbGVmdDoyMi44cHQ7dGV4dC1p
-bmRlbnQ6LTE4LjBwdDttc28tbGlzdDpsMCBsZXZlbDEgbGZvMSc+PCFbaWYgIXN1cHBvcnRMaXN0
-c10+PHNwYW4gc3R5bGU9J2ZvbnQtc2l6ZToxMC4wcHQ7Zm9udC1mYW1pbHk6U3ltYm9sO2NvbG9y
-OmJsYWNrJz48c3BhbiBzdHlsZT0nbXNvLWxpc3Q6SWdub3JlJz4mbWlkZG90OzxzcGFuIHN0eWxl
-PSdmb250OjcuMHB0ICJUaW1lcyBOZXcgUm9tYW4iJz4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
-bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsgPC9zcGFuPjwvc3Bhbj48L3NwYW4+PCFbZW5kaWZdPjxz
-cGFuIHN0eWxlPSdmb250LXNpemU6MTAuMHB0O2ZvbnQtZmFtaWx5OiJWZXJkYW5hIiwic2Fucy1z
-ZXJpZiI7Y29sb3I6YmxhY2snPkJJT1MgQUNQSSB0YWJsZXMgPG86cD48L286cD48L3NwYW4+PC9w
-PjxwIGNsYXNzPU1zb05vcm1hbCBzdHlsZT0nbXNvLW1hcmdpbi10b3AtYWx0OmF1dG87bWFyZ2lu
-LWJvdHRvbTo3LjJwdDttYXJnaW4tbGVmdDoyMi44cHQ7dGV4dC1pbmRlbnQ6LTE4LjBwdDttc28t
-bGlzdDpsMCBsZXZlbDEgbGZvMSc+PCFbaWYgIXN1cHBvcnRMaXN0c10+PHNwYW4gc3R5bGU9J2Zv
-bnQtc2l6ZToxMC4wcHQ7Zm9udC1mYW1pbHk6U3ltYm9sO2NvbG9yOmJsYWNrJz48c3BhbiBzdHls
-ZT0nbXNvLWxpc3Q6SWdub3JlJz4mbWlkZG90OzxzcGFuIHN0eWxlPSdmb250OjcuMHB0ICJUaW1l
-cyBOZXcgUm9tYW4iJz4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
-bmJzcDsgPC9zcGFuPjwvc3Bhbj48L3NwYW4+PCFbZW5kaWZdPjxzcGFuIHN0eWxlPSdmb250LXNp
-emU6MTAuMHB0O2ZvbnQtZmFtaWx5OiJWZXJkYW5hIiwic2Fucy1zZXJpZiI7Y29sb3I6YmxhY2sn
-PkFDUEkgdGFibGVzIGNhY2hlZCBpbiBXaW5kb3dzIHJlZ2lzdHJ5IDxvOnA+PC9vOnA+PC9zcGFu
-PjwvcD48cCBjbGFzcz1Nc29Ob3JtYWw+UGxlYXNlIGZlZWwgZnJlZSB0byBkb3dubG9hZCBhbmQg
-dHJ5IHByb2R1Y3QgZnJlZSBmb3IgdHdvIHdlZWtzLiBQbGVhc2UgZmVlbCBmcmVlIHRvIHNlbmQg
-dXMgc3VnZ2VzdGlvbnMgZm9yIHRoZSBwcm9kdWN0IGltcHJvdmVtZW50cyB0byA8YSBocmVmPSJt
-YWlsdG86c3VwcG9ydEB0c3NjLmRlIj5tYWlsdG86c3VwcG9ydEB0c3NjLmRlPC9hPi48bzpwPjwv
-bzpwPjwvcD48cCBjbGFzcz1Nc29Ob3JtYWw+PG86cD4mbmJzcDs8L286cD48L3A+PHAgY2xhc3M9
-TXNvTm9ybWFsPldpdGggYmVzdCByZWdhcmRzLDxvOnA+PC9vOnA+PC9wPjxwIGNsYXNzPU1zb05v
-cm1hbD48bzpwPiZuYnNwOzwvbzpwPjwvcD48cCBjbGFzcz1Nc29Ob3JtYWw+QVBTb2Z0IFRlYW0u
-PG86cD48L286cD48L3A+PHAgY2xhc3M9TXNvTm9ybWFsPjxvOnA+Jm5ic3A7PC9vOnA+PC9wPjwv
-ZGl2PjwvYm9keT48L2h0bWw+
---===============6123882695668813691==--
+--===============7819627688742676516==--
 
