@@ -1,95 +1,124 @@
-Content-Type: multipart/mixed; boundary="===============3892438538867431741=="
+Content-Type: multipart/mixed; boundary="===============4291011546122577460=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] [PATCH] ACPICA:enable 64bit build for aarch64 architecture
-Date: Wed, 14 Aug 2013 17:34:49 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E36FEBC031@ORSMSX103.amr.corp.intel.com>
-In-Reply-To: CAFoFrHaOSQUgWh0t3RYtFJ0s2HYFBB9zZoaU8sYi_WYWA1hOGQ@mail.gmail.com
+From: Al Stone <ahs3 at redhat.com>
+Subject: [Devel] [PATCH] explicit licensing file?
+Date: Tue, 20 Aug 2013 17:48:46 -0600
+Message-ID: <5214005E.10208@redhat.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3892438538867431741==
+--===============4291011546122577460==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-OK, done.
+Greetings.
+
+Would it be possible to use the following patch?  Or, a file
+very similar to it -- I do not know if the wording of the first
+paragraph would be acceptable or not, so it may need changing.
+
+The reason I ask is that this makes life much simpler for the
+various Linux distributions.  In the Unix(tm) versions provided
+at acpica.org, _most_ files have a nicely done header that lays
+out the licensing.  In fact, in the patch below, everything from
+"Copyright..." to the end is from that header.
+
+However, not all files have the header (e.g., the AAPITS tests,
+and some of the .sh or Makefiles used) which makes both Debian
+and Fedora a little nervous.  The FAQ clearly states the GPL
+can be used, but the source code does not always repeat it.
+
+I am currently the primary uploader for Debian of a package called
+'acpica-tools' that provides all of the user space commands from
+the ACPICA source trees.  Further, when the package is built, the
+ASLTS and AAPITS tests are run against the commands to help with
+QA.  I am doing the same work for Fedora, and trying to keep both
+distributions (and in turn, their derivatives) as up-to-date as
+possible.
+
+Having this one file in the ACPICA provided source trees for
+Unix(tm) would help make things much clearer for both of these
+Linux distributions.
+
+Thanks in advance for your consideration.
+
+---
+  LICENSE | 44 ++++++++++++++++++++++++++++++++++++++++++++
+  1 file changed, 44 insertions(+)
+  create mode 100644 LICENSE
+
+diff --git a/LICENSE b/LICENSE
+new file mode 100644
+index 0000000..7a39325
+--- /dev/null
++++ b/LICENSE
+@@ -0,0 +1,44 @@
++Licensing for Linux Systems:
++=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
++Whether explicitly stated in the source code for this software or not,
++this software is distributed under the terms of the GNU General Public
++License ("GPL") version 2 as published by the Free Software Foundation.
++This is in accordance with the following license from Intel Corporation
++that should be a part of all source code files:
++
++
++   Copyright (C) 2000 - 2013, Intel Corp.
++   All rights reserved.
++
++   Redistribution and use in source and binary forms, with or without
++   modification, are permitted provided that the following conditions
++   are met:
++   1. Redistributions of source code must retain the above copyright
++      notice, this list of conditions, and the following disclaimer,
++      without modification.
++   2. Redistributions in binary form must reproduce at minimum a disclaimer
++      substantially similar to the "NO WARRANTY" disclaimer below
++      ("Disclaimer") and any redistribution must be conditioned upon
++      including a substantially similar Disclaimer requirement for further
++      binary redistribution.
++   3. Neither the names of the above-listed copyright holders nor the names
++      of any contributors may be used to endorse or promote products =
+
+derived
++      from this software without specific prior written permission.
++
++   Alternatively, this software may be distributed under the terms of the
++   GNU General Public License ("GPL") version 2 as published by the Free
++   Software Foundation.
++
++   NO WARRANTY
++   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
++   "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
++   LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR
++   A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
++   HOLDERS OR CONTRIBUTORS BE LIABLE FOR SPECIAL, EXEMPLARY, OR =
+
+CONSEQUENTIAL
++   DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
++   OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++   HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
++   STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
++   IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++   POSSIBILITY OF SUCH DAMAGES.
++
+-- =
+
+1.8.3.1
 
 
-> -----Original Message-----
-> From: Naresh Bhat [mailto:naresh.bhat(a)linaro.org]
-> Sent: Wednesday, August 14, 2013 9:40 AM
-> To: Moore, Robert
-> Cc: devel(a)acpica.org; patches(a)linaro.org; linaro-acpi(a)lists.linaro.=
-org
-> Subject: Re: [PATCH] ACPICA:enable 64bit build for aarch64 architecture
-> =
 
-> Hi Robert,
-> =
+-- =
 
-> Ah my bad typo's..:( , you are right it is "defined(__aarch64__)" I don't
-> know some how I have missed the defined (looks like I was in hurry).
-> =
+ciao,
+al
+-----------------------------------
+Al Stone
+Software Engineer
+Red Hat, Inc.
+ahs3(a)redhat.com
+-----------------------------------
 
-> Thanks for identifying and correcting it.
-> =
-
-> Regards
-> -Naresh Bhat
-> =
-
-> On 14 August 2013 21:47, Moore, Robert <robert.moore(a)intel.com> wrote:
-> > OK, we'll add this for the next acpica release.
-> > Thanks,
-> > Bob
-> >
-> >> -#if defined(__ia64__) || defined(__x86_64__)
-> >> +#if defined(__ia64__) || defined(__x86_64__) || (__aarch64__)
-> >
-> >
-> > Shouldn't this be:
-> >
-> >> -#if defined(__ia64__) || defined(__x86_64__)
-> >> +#if defined(__ia64__) || defined(__x86_64__) || defined(__aarch64__)
-> >
-> >
-> >> -----Original Message-----
-> >> From: naresh.bhat(a)linaro.org [mailto:naresh.bhat(a)linaro.org]
-> >> Sent: Wednesday, August 14, 2013 12:45 AM
-> >> To: devel(a)acpica.org
-> >> Cc: Moore, Robert; patches(a)linaro.org; linaro-acpi(a)lists.linaro.or=
-g;
-> >> Naresh Bhat
-> >> Subject: [PATCH] ACPICA:enable 64bit build for aarch64 architecture
-> >>
-> >> From: Naresh Bhat <naresh.bhat(a)linaro.org>
-> >>
-> >> Signed-off-by: Naresh Bhat <naresh.bhat(a)linaro.org>
-> >>
-> >> Enable 64 bit build for aarch64 architecture in ACPICA Linux platform
-> >> specific defines.
-> >> ---
-> >>  source/include/platform/aclinux.h |    2 +-
-> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/source/include/platform/aclinux.h
-> >> b/source/include/platform/aclinux.h
-> >> index e561292..6b8b1ab 100644
-> >> --- a/source/include/platform/aclinux.h
-> >> +++ b/source/include/platform/aclinux.h
-> >> @@ -159,7 +159,7 @@
-> >>  #define ACPI_FLUSH_CPU_CACHE()
-> >>  #define ACPI_CAST_PTHREAD_T(pthread) ((ACPI_THREAD_ID) (pthread))
-> >>
-> >> -#if defined(__ia64__) || defined(__x86_64__)
-> >> +#if defined(__ia64__) || defined(__x86_64__) || (__aarch64__)
-> >>  #define ACPI_MACHINE_WIDTH          64
-> >>  #define COMPILER_DEPENDENT_INT64    long
-> >>  #define COMPILER_DEPENDENT_UINT64   unsigned long
-> >> --
-> >> 1.7.9.5
-> >
-
---===============3892438538867431741==--
+--===============4291011546122577460==--
 
