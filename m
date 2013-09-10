@@ -1,102 +1,72 @@
-Content-Type: multipart/mixed; boundary="===============5135921314920210866=="
+Content-Type: multipart/mixed; boundary="===============0538366054647802947=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] ACPICA version 20130823 released
-Date: Fri, 23 Aug 2013 17:15:47 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E36FED0212@ORSMSX103.amr.corp.intel.com>
+From: Hamel, Lee M <lee.m.hamel at intel.com>
+Subject: [Devel] ACPI BDAT table not in any ACPI spec or on internet
+Date: Tue, 10 Sep 2013 18:53:09 +0000
+Message-ID: <094059313931114D94E4423826B4116469529AF5@FMSMSX104.amr.corp.intel.com>
+In-Reply-To: 094059313931114D94E4423826B4116469529AD8@FMSMSX104.amr.corp.intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5135921314920210866==
+--===============0538366054647802947==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-23 August 2013. Summary of changes for version 20130823:
+I=E2=80=99m trying to find info about this ACPI BDAT table, but it=E2=80=99=
+s not in any version ACPI spec, nor does an internet search find anything.
+Can anyone provide info on the ACPI BDAT table?
 
-This release is available at https://acpica.org/downloads
+--===============0538366054647802947==
+Content-Type: text/html
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="attachment.html"
 
+PGh0bWwgeG1sbnM6dj0idXJuOnNjaGVtYXMtbWljcm9zb2Z0LWNvbTp2bWwiIHhtbG5zOm89InVy
+bjpzY2hlbWFzLW1pY3Jvc29mdC1jb206b2ZmaWNlOm9mZmljZSIgeG1sbnM6dz0idXJuOnNjaGVt
+YXMtbWljcm9zb2Z0LWNvbTpvZmZpY2U6d29yZCIgeG1sbnM6bT0iaHR0cDovL3NjaGVtYXMubWlj
+cm9zb2Z0LmNvbS9vZmZpY2UvMjAwNC8xMi9vbW1sIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcv
+VFIvUkVDLWh0bWw0MCI+DQo8aGVhZD4NCjxtZXRhIGh0dHAtZXF1aXY9IkNvbnRlbnQtVHlwZSIg
+Y29udGVudD0idGV4dC9odG1sOyBjaGFyc2V0PXV0Zi04Ij4NCjxtZXRhIG5hbWU9IkdlbmVyYXRv
+ciIgY29udGVudD0iTWljcm9zb2Z0IFdvcmQgMTUgKGZpbHRlcmVkIG1lZGl1bSkiPg0KPHN0eWxl
+PjwhLS0NCi8qIEZvbnQgRGVmaW5pdGlvbnMgKi8NCkBmb250LWZhY2UNCgl7Zm9udC1mYW1pbHk6
+IkNhbWJyaWEgTWF0aCI7DQoJcGFub3NlLTE6MiA0IDUgMyA1IDQgNiAzIDIgNDt9DQpAZm9udC1m
+YWNlDQoJe2ZvbnQtZmFtaWx5OkNhbGlicmk7DQoJcGFub3NlLTE6MiAxNSA1IDIgMiAyIDQgMyAy
+IDQ7fQ0KLyogU3R5bGUgRGVmaW5pdGlvbnMgKi8NCnAuTXNvTm9ybWFsLCBsaS5Nc29Ob3JtYWws
+IGRpdi5Nc29Ob3JtYWwNCgl7bWFyZ2luOjBpbjsNCgltYXJnaW4tYm90dG9tOi4wMDAxcHQ7DQoJ
+Zm9udC1zaXplOjEyLjBwdDsNCglmb250LWZhbWlseToiVGltZXMgTmV3IFJvbWFuIiwic2VyaWYi
+O30NCmE6bGluaywgc3Bhbi5Nc29IeXBlcmxpbmsNCgl7bXNvLXN0eWxlLXByaW9yaXR5Ojk5Ow0K
+CWNvbG9yOmJsdWU7DQoJdGV4dC1kZWNvcmF0aW9uOnVuZGVybGluZTt9DQphOnZpc2l0ZWQsIHNw
+YW4uTXNvSHlwZXJsaW5rRm9sbG93ZWQNCgl7bXNvLXN0eWxlLXByaW9yaXR5Ojk5Ow0KCWNvbG9y
+OnB1cnBsZTsNCgl0ZXh0LWRlY29yYXRpb246dW5kZXJsaW5lO30NCnANCgl7bXNvLXN0eWxlLXBy
+aW9yaXR5Ojk5Ow0KCW1zby1tYXJnaW4tdG9wLWFsdDphdXRvOw0KCW1hcmdpbi1yaWdodDowaW47
+DQoJbXNvLW1hcmdpbi1ib3R0b20tYWx0OmF1dG87DQoJbWFyZ2luLWxlZnQ6MGluOw0KCWZvbnQt
+c2l6ZToxMi4wcHQ7DQoJZm9udC1mYW1pbHk6IlRpbWVzIE5ldyBSb21hbiIsInNlcmlmIjt9DQpz
+cGFuLkVtYWlsU3R5bGUxOA0KCXttc28tc3R5bGUtdHlwZTpwZXJzb25hbDsNCglmb250LWZhbWls
+eToiQ2FsaWJyaSIsInNhbnMtc2VyaWYiOw0KCWNvbG9yOiMxRjQ5N0Q7fQ0Kc3Bhbi5FbWFpbFN0
+eWxlMTkNCgl7bXNvLXN0eWxlLXR5cGU6cGVyc29uYWwtcmVwbHk7DQoJZm9udC1mYW1pbHk6IkNh
+bGlicmkiLCJzYW5zLXNlcmlmIjsNCgljb2xvcjojMUY0OTdEO30NCi5Nc29DaHBEZWZhdWx0DQoJ
+e21zby1zdHlsZS10eXBlOmV4cG9ydC1vbmx5Ow0KCWZvbnQtc2l6ZToxMC4wcHQ7fQ0KQHBhZ2Ug
+V29yZFNlY3Rpb24xDQoJe3NpemU6OC41aW4gMTEuMGluOw0KCW1hcmdpbjoxLjBpbiAxLjBpbiAx
+LjBpbiAxLjBpbjt9DQpkaXYuV29yZFNlY3Rpb24xDQoJe3BhZ2U6V29yZFNlY3Rpb24xO30NCi0t
+Pjwvc3R5bGU+PCEtLVtpZiBndGUgbXNvIDldPjx4bWw+DQo8bzpzaGFwZWRlZmF1bHRzIHY6ZXh0
+PSJlZGl0IiBzcGlkbWF4PSIxMDI2IiAvPg0KPC94bWw+PCFbZW5kaWZdLS0+PCEtLVtpZiBndGUg
+bXNvIDldPjx4bWw+DQo8bzpzaGFwZWxheW91dCB2OmV4dD0iZWRpdCI+DQo8bzppZG1hcCB2OmV4
+dD0iZWRpdCIgZGF0YT0iMSIgLz4NCjwvbzpzaGFwZWxheW91dD48L3htbD48IVtlbmRpZl0tLT4N
+CjwvaGVhZD4NCjxib2R5IGxhbmc9IkVOLVVTIiBsaW5rPSJibHVlIiB2bGluaz0icHVycGxlIj4N
+CjxkaXYgY2xhc3M9IldvcmRTZWN0aW9uMSI+DQo8cCBjbGFzcz0iTXNvTm9ybWFsIj48c3BhbiBz
+dHlsZT0iZm9udC1zaXplOjExLjBwdDtmb250LWZhbWlseTomcXVvdDtDYWxpYnJpJnF1b3Q7LCZx
+dW90O3NhbnMtc2VyaWYmcXVvdDs7Y29sb3I6IzFGNDk3RCI+SeKAmW0gdHJ5aW5nIHRvIGZpbmQg
+aW5mbyBhYm91dCB0aGlzIEFDUEkgQkRBVCB0YWJsZSwgYnV0IGl04oCZcyBub3QgaW4gYW55IHZl
+cnNpb24gQUNQSSBzcGVjLCBub3IgZG9lcyBhbiBpbnRlcm5ldCBzZWFyY2ggZmluZCBhbnl0aGlu
+Zy48bzpwPjwvbzpwPjwvc3Bhbj48L3A+DQo8cCBjbGFzcz0iTXNvTm9ybWFsIj48c3BhbiBzdHls
+ZT0iZm9udC1zaXplOjExLjBwdDtmb250LWZhbWlseTomcXVvdDtDYWxpYnJpJnF1b3Q7LCZxdW90
+O3NhbnMtc2VyaWYmcXVvdDs7Y29sb3I6IzFGNDk3RCI+Q2FuIGFueW9uZSBwcm92aWRlIGluZm8g
+b24gdGhlIEFDUEkgQkRBVCB0YWJsZT88L3NwYW4+PHNwYW4gc3R5bGU9ImZvbnQtc2l6ZTo4LjBw
+dDtmb250LWZhbWlseTomcXVvdDtBcmlhbCZxdW90OywmcXVvdDtzYW5zLXNlcmlmJnF1b3Q7O2Nv
+bG9yOmJsYWNrIj4NCjxvOnA+PC9vOnA+PC9zcGFuPjwvcD4NCjwvZGl2Pg0KPC9ib2R5Pg0KPC9o
+dG1sPg0K
 
-1) ACPICA kernel-resident subsystem:
-
-Implemented support for host-installed System Control Interrupt (SCI) handl=
-ers. Certain ACPI functionality requires the host to handle raw SCIs. For e=
-xample, the "SCI Doorbell" that is defined for memory power state support r=
-equires the host device driver to handle SCIs to examine if the doorbell ha=
-s been activated. Multiple SCI handlers can be installed to allow for futur=
-e expansion. New external interfaces are AcpiInstallSciHandler, AcpiRemoveS=
-ciHandler; see the ACPICA reference for details. Lv Zheng, Bob Moore. ACPIC=
-A BZ 1032.
-
-Operation region support: Never locally free the handler "context" pointer.=
- This change removes some dangerous code that attempts to free the handler =
-context pointer in some (rare) circumstances. The owner of the handler owns=
- this pointer and the ACPICA code should never touch it. Although not seen =
-to be an issue in any kernel, it did show up as a problem (fault) under Acp=
-iExec. Also, set the internal storage field for the context pointer to zero=
- when the region is deactivated, simply for sanity. David Box. ACPICA BZ 10=
-39.
-
-AcpiRead: On error, do not modify the return value target location. If an e=
-rror happens in the middle of a split 32/32 64-bit I/O operation, do not mo=
-dify the target of the return value pointer. Makes the code consistent with=
- the rest of ACPICA. Bjorn Helgaas.
-
-Example Code and Data Size: These are the sizes for the OS-independent acpi=
-ca.lib produced by the Microsoft Visual C++ 9.0 32-bit compiler. The debug =
-version of the code includes the debug output trace mechanism and has a muc=
-h larger code and data size.
-
-  Current Release:
-    Non-Debug Version:  96.7K Code, 27.1K Data, 123.9K Total
-    Debug Version:     184.4K Code, 76.8K Data, 261.2K Total
-  Previous Release:
-    Non-Debug Version:  96.2K Code, 27.1K Data, 123.3K Total
-    Debug Version:     185.4K Code, 77.1K Data, 262.5K Total
-
-
-2) iASL Compiler/Disassembler and Tools:
-
-AcpiDump: Implemented several new features and fixed some problems:
-1) Added support to dump the RSDP, RSDT, and XSDT tables.
-2) Added support for multiple table instances (SSDT, UEFI).
-3) Added option to dump "customized" (overridden) tables (-c).
-4) Fixed a problem where some table filenames were improperly constructed.
-5) Improved some error messages, removed some unnecessary messages.
-
-iASL: Implemented additional support for disassembly of ACPI tables that co=
-ntain invocations of external control methods. The -fe<file> option allows =
-the import of a file that specifies the external methods along with the req=
-uired number of arguments for each -- allowing for the correct disassembly =
-of the table. This is a workaround for a limitation of AML code where the d=
-isassembler often cannot determine the number of arguments required for an =
-external control method and generates incorrect ASL code. See the iASL refe=
-rence for details. ACPICA BZ 1030.
-
-Debugger: Implemented a new command (paths) that displays the full pathname=
-s (namepaths) and object types of all objects in the namespace. This is an =
-alternative to the namespace command.
-
-Debugger: Implemented a new command (sci) that invokes the SCI dispatch mec=
-hanism and any installed handlers.
-
-iASL: Fixed a possible segfault for "too many parent prefixes" condition. T=
-his can occur if there are too many parent prefixes in a namepath (for exam=
-ple, ^^^^^^PCI0.ECRD). ACPICA BZ 1035.
-
-Application OSLs: Set the return value for the PCI read functions. These fu=
-nctions simply return AE_OK, but should set the return value to zero also. =
-This change implements this. ACPICA BZ 1038.
-
-Debugger: Prevent possible command line buffer overflow. Increase the size =
-of a couple of the debugger line buffers, and ensure that overflow cannot h=
-appen. ACPICA BZ 1037.
-
-iASL: Changed to abort immediately on serious errors during the parsing pha=
-se. Due to the nature of ASL, there is no point in attempting to compile th=
-ese types of errors, and they typically end up causing a cascade of hundred=
-s of errors which obscure the original problem.
-
-
---===============5135921314920210866==--
+--===============0538366054647802947==--
 
