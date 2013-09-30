@@ -1,327 +1,60 @@
-Content-Type: multipart/mixed; boundary="===============4456327191975126034=="
+Content-Type: multipart/mixed; boundary="===============4185995368095755397=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] ACPICA version 20130927 released
-Date: Fri, 27 Sep 2013 16:59:34 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E36FF11F71@ORSMSX103.amr.corp.intel.com>
+From: Jung-uk Kim <jkim at FreeBSD.org>
+Subject: Re: [Devel] ACPICA version 20130927 released
+Date: Mon, 30 Sep 2013 13:11:21 -0400
+Message-ID: <5249B0B9.4050905@FreeBSD.org>
+In-Reply-To: 94F2FBAB4432B54E8AACC7DFDE6C92E36FF11F71@ORSMSX103.amr.corp.intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4456327191975126034==
+--===============4185995368095755397==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-27 September 2013. Summary of changes for version 20130927:
-
-
-
-This release is available at https://acpica.org/downloads
-
-
-
-
-
-1) ACPICA kernel-resident subsystem:
-
-
-
-Fixed a problem with store operations to reference objects. This change fix=
-es a problem where a Store operation to an ArgX object that contained a ref=
-erence to a field object did not complete the automatic dereference and the=
-n write to the actual field object. Instead, the object type of the field o=
-bject was inadvertently changed to match the type of the source operand. Th=
-e new behavior will actually write to the field object (buffer field or fie=
-ld unit), thus matching the correct ACPI-defined behavior.
-
-
-
-Implemented support to allow the host to redefine individual OSL prototypes=
-. This change enables the host to redefine OSL prototypes found in the acpi=
-osxf.h file. This allows the host to implement OSL interfaces with a macro =
-or inlined function. Further, it allows the host to add any additional requ=
-ired modifiers such as __iomem, __init, __exit, etc., as necessary on a per=
--interface basis. Enables maximum flexibility for the OSL interfaces. Lv Zh=
-eng.
-
-
-
-Hardcoded the access width for the FADT-defined reset register. The ACPI sp=
-ecification requires the reset register width to be 8 bits. ACPICA now hard=
-codes the width to 8 and ignores the FADT width value. This provides compat=
-ibility with other ACPI implementations that have allowed BIOS code with ba=
-d register width values to go unnoticed. Matthew Garett, Bob Moore, Lv Zhen=
-g.
-
-
-
-Changed the position/use of the ACPI_PRINTF_LIKE macro. This macro is used =
-in the OSL header (acpiosxf). The change modifies the position of this macr=
-o in each instance where it is used (AcpiDebugPrint, etc.) to avoid build i=
-ssues if the OSL defines the implementation of the interface to be an inlin=
-e stub function. Lv Zheng.
-
-
-
-Deployed a new macro ACPI_EXPORT_SYMBOL_INIT for the main ACPICA initializa=
-tion interfaces. This change adds a new macro for the main init and termina=
-te external interfaces in order to support hosts that require additional or=
- different processing for these functions. Changed from ACPI_EXPORT_SYMBOL =
-to ACPI_EXPORT_SYMBOL_INIT for these functions. Lv Zheng, Bob Moore.
-
-
-
-Cleaned up the memory allocation macros for configurability. In the common =
-case, the ACPI_ALLOCATE and related macros now resolve directly to their re=
-spective AcpiOs* OSL interfaces. Two options:
-
-1) The ACPI_ALLOCATE_ZEROED macro uses a simple local implementation by def=
-ault, unless overridden by the USE_NATIVE_ALLOCATE_ZEROED define.
-
-2) For AcpiExec (and for debugging), the macros can optionally be resolved =
-to the local ACPICA interfaces that track each allocation (local tracking i=
-s used to immediately detect memory leaks).
-
-Lv Zheng.
-
-
-
-Simplified the configuration for ACPI_REDUCED_HARDWARE. Allows the kernel t=
-o predefine this macro to either TRUE or FALSE during the system build.
-
-
-
-Replaced __FUNCTION_ with __func__ in the gcc-specific header.
-
-
-
-Example Code and Data Size: These are the sizes for the OS-independent acpi=
-ca.lib produced by the Microsoft Visual C++ 9.0 32-bit compiler. The debug =
-version of the code includes the debug output trace mechanism and has a muc=
-h larger code and data size.
-
-
-
-  Current Release:
-
-    Non-Debug Version:  95.8K Code, 27.0K Data, 122.8K Total
-
-    Debug Version:     185.2K Code, 77.2K Data, 262.4K Total
-
-  Previous Release:
-
-    Non-Debug Version:  96.7K Code, 27.1K Data, 123.9K Total
-
-    Debug Version:     184.4K Code, 76.8K Data, 261.2K Total
-
-
-
-
-
-2) iASL Compiler/Disassembler and Tools:
-
-
-
-iASL: Implemented wildcard support for the -e option. This simplifies use w=
-hen there are many SSDTs that must be included to resolve external method d=
-eclarations. ACPICA BZ 1041. Example:
-
-    iasl -e ssdt*.dat -d dsdt.dat
-
-
-
-AcpiExec: Add history/line-editing for Unix/Linux systems. This change adds=
- a portable module that implements full history and limited line editing fo=
-r Unix and Linux systems. It does not use readline() due to portability iss=
-ues. Instead it uses the POSIX termio interface to put the terminal in raw =
-input mode so that the various special keys can be trapped (such as up/down=
--arrow for history support and left/right-arrow for line editing). Uses the=
- existing debugger history mechanism. ACPICA BZ 1036.
-
-
-
-AcpiXtract: Add support to handle (ignore) "empty" lines containing only on=
-e or more spaces. This provides compatible with early or different versions=
- of the AcpiDump utility. ACPICA BZ 1044.
-
-
-
-AcpiDump: Do not ignore tables that contain only an ACPI table header. Appa=
-rently, some BIOSs create SSDTs that contain an ACPI table header but no ot=
-her data. This change adds support to dump these tables. Any tables shorter=
- than the length of an ACPI table header remain in error (an error message =
-is emitted). Reported by Yi Li.
-
-
-
-Debugger: Echo actual command along with the "unknown command" message.
-
-
-
-
---===============4456327191975126034==
-Content-Type: text/html
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="attachment.html"
-
-PGh0bWwgeG1sbnM6dj0idXJuOnNjaGVtYXMtbWljcm9zb2Z0LWNvbTp2bWwiIHhtbG5zOm89InVy
-bjpzY2hlbWFzLW1pY3Jvc29mdC1jb206b2ZmaWNlOm9mZmljZSIgeG1sbnM6dz0idXJuOnNjaGVt
-YXMtbWljcm9zb2Z0LWNvbTpvZmZpY2U6d29yZCIgeG1sbnM6bT0iaHR0cDovL3NjaGVtYXMubWlj
-cm9zb2Z0LmNvbS9vZmZpY2UvMjAwNC8xMi9vbW1sIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcv
-VFIvUkVDLWh0bWw0MCI+CjxoZWFkPgo8bWV0YSBodHRwLWVxdWl2PSJDb250ZW50LVR5cGUiIGNv
-bnRlbnQ9InRleHQvaHRtbDsgY2hhcnNldD11cy1hc2NpaSI+CjxtZXRhIG5hbWU9IkdlbmVyYXRv
-ciIgY29udGVudD0iTWljcm9zb2Z0IFdvcmQgMTQgKGZpbHRlcmVkIG1lZGl1bSkiPgo8c3R5bGU+
-PCEtLQovKiBGb250IERlZmluaXRpb25zICovCkBmb250LWZhY2UKCXtmb250LWZhbWlseTpDYWxp
-YnJpOwoJcGFub3NlLTE6MiAxNSA1IDIgMiAyIDQgMyAyIDQ7fQovKiBTdHlsZSBEZWZpbml0aW9u
-cyAqLwpwLk1zb05vcm1hbCwgbGkuTXNvTm9ybWFsLCBkaXYuTXNvTm9ybWFsCgl7bWFyZ2luOjBp
-bjsKCW1hcmdpbi1ib3R0b206LjAwMDFwdDsKCWZvbnQtc2l6ZToxMS4wcHQ7Cglmb250LWZhbWls
-eToiQ2FsaWJyaSIsInNhbnMtc2VyaWYiO30KYTpsaW5rLCBzcGFuLk1zb0h5cGVybGluawoJe21z
-by1zdHlsZS1wcmlvcml0eTo5OTsKCWNvbG9yOmJsdWU7Cgl0ZXh0LWRlY29yYXRpb246dW5kZXJs
-aW5lO30KYTp2aXNpdGVkLCBzcGFuLk1zb0h5cGVybGlua0ZvbGxvd2VkCgl7bXNvLXN0eWxlLXBy
-aW9yaXR5Ojk5OwoJY29sb3I6cHVycGxlOwoJdGV4dC1kZWNvcmF0aW9uOnVuZGVybGluZTt9CnAu
-TXNvUGxhaW5UZXh0LCBsaS5Nc29QbGFpblRleHQsIGRpdi5Nc29QbGFpblRleHQKCXttc28tc3R5
-bGUtcHJpb3JpdHk6OTk7Cgltc28tc3R5bGUtbGluazoiUGxhaW4gVGV4dCBDaGFyIjsKCW1hcmdp
-bjowaW47CgltYXJnaW4tYm90dG9tOi4wMDAxcHQ7Cglmb250LXNpemU6MTAuMHB0OwoJZm9udC1m
-YW1pbHk6IkNvdXJpZXIgTmV3Ijt9CnNwYW4uRW1haWxTdHlsZTE3Cgl7bXNvLXN0eWxlLXR5cGU6
-cGVyc29uYWwtY29tcG9zZTsKCWZvbnQtZmFtaWx5OiJDYWxpYnJpIiwic2Fucy1zZXJpZiI7Cglj
-b2xvcjp3aW5kb3d0ZXh0O30Kc3Bhbi5QbGFpblRleHRDaGFyCgl7bXNvLXN0eWxlLW5hbWU6IlBs
-YWluIFRleHQgQ2hhciI7Cgltc28tc3R5bGUtcHJpb3JpdHk6OTk7Cgltc28tc3R5bGUtbGluazoi
-UGxhaW4gVGV4dCI7Cglmb250LWZhbWlseToiQ291cmllciBOZXciO30KLk1zb0NocERlZmF1bHQK
-CXttc28tc3R5bGUtdHlwZTpleHBvcnQtb25seTsKCWZvbnQtZmFtaWx5OiJDYWxpYnJpIiwic2Fu
-cy1zZXJpZiI7fQpAcGFnZSBXb3JkU2VjdGlvbjEKCXtzaXplOjguNWluIDExLjBpbjsKCW1hcmdp
-bjoxLjBpbiAxLjBpbiAxLjBpbiAxLjBpbjt9CmRpdi5Xb3JkU2VjdGlvbjEKCXtwYWdlOldvcmRT
-ZWN0aW9uMTt9Ci0tPjwvc3R5bGU+PCEtLVtpZiBndGUgbXNvIDldPjx4bWw+CjxvOnNoYXBlZGVm
-YXVsdHMgdjpleHQ9ImVkaXQiIHNwaWRtYXg9IjEwMjYiIC8+CjwveG1sPjwhW2VuZGlmXS0tPjwh
-LS1baWYgZ3RlIG1zbyA5XT48eG1sPgo8bzpzaGFwZWxheW91dCB2OmV4dD0iZWRpdCI+CjxvOmlk
-bWFwIHY6ZXh0PSJlZGl0IiBkYXRhPSIxIiAvPgo8L286c2hhcGVsYXlvdXQ+PC94bWw+PCFbZW5k
-aWZdLS0+CjwvaGVhZD4KPGJvZHkgbGFuZz0iRU4tVVMiIGxpbms9ImJsdWUiIHZsaW5rPSJwdXJw
-bGUiPgo8ZGl2IGNsYXNzPSJXb3JkU2VjdGlvbjEiPgo8cCBjbGFzcz0iTXNvUGxhaW5UZXh0Ij4y
-NyBTZXB0ZW1iZXIgMjAxMy4gU3VtbWFyeSBvZiBjaGFuZ2VzIGZvciB2ZXJzaW9uIDIwMTMwOTI3
-OjxvOnA+PC9vOnA+PC9wPgo8cCBjbGFzcz0iTXNvUGxhaW5UZXh0Ij48bzpwPiZuYnNwOzwvbzpw
-PjwvcD4KPHAgY2xhc3M9Ik1zb1BsYWluVGV4dCI+VGhpcyByZWxlYXNlIGlzIGF2YWlsYWJsZSBh
-dCBodHRwczovL2FjcGljYS5vcmcvZG93bmxvYWRzPG86cD48L286cD48L3A+CjxwIGNsYXNzPSJN
-c29QbGFpblRleHQiPjxvOnA+Jm5ic3A7PC9vOnA+PC9wPgo8cCBjbGFzcz0iTXNvUGxhaW5UZXh0
-Ij48bzpwPiZuYnNwOzwvbzpwPjwvcD4KPHAgY2xhc3M9Ik1zb1BsYWluVGV4dCI+MSkgQUNQSUNB
-IGtlcm5lbC1yZXNpZGVudCBzdWJzeXN0ZW06PG86cD48L286cD48L3A+CjxwIGNsYXNzPSJNc29Q
-bGFpblRleHQiPjxvOnA+Jm5ic3A7PC9vOnA+PC9wPgo8cCBjbGFzcz0iTXNvUGxhaW5UZXh0Ij5G
-aXhlZCBhIHByb2JsZW0gd2l0aCBzdG9yZSBvcGVyYXRpb25zIHRvIHJlZmVyZW5jZSBvYmplY3Rz
-LiBUaGlzIGNoYW5nZSBmaXhlcyBhIHByb2JsZW0gd2hlcmUgYSBTdG9yZSBvcGVyYXRpb24gdG8g
-YW4gQXJnWCBvYmplY3QgdGhhdCBjb250YWluZWQgYSByZWZlcmVuY2UgdG8gYSBmaWVsZCBvYmpl
-Y3QgZGlkIG5vdCBjb21wbGV0ZSB0aGUgYXV0b21hdGljIGRlcmVmZXJlbmNlIGFuZCB0aGVuIHdy
-aXRlCiB0byB0aGUgYWN0dWFsIGZpZWxkIG9iamVjdC4gSW5zdGVhZCwgdGhlIG9iamVjdCB0eXBl
-IG9mIHRoZSBmaWVsZCBvYmplY3Qgd2FzIGluYWR2ZXJ0ZW50bHkgY2hhbmdlZCB0byBtYXRjaCB0
-aGUgdHlwZSBvZiB0aGUgc291cmNlIG9wZXJhbmQuIFRoZSBuZXcgYmVoYXZpb3Igd2lsbCBhY3R1
-YWxseSB3cml0ZSB0byB0aGUgZmllbGQgb2JqZWN0IChidWZmZXIgZmllbGQgb3IgZmllbGQgdW5p
-dCksIHRodXMgbWF0Y2hpbmcgdGhlIGNvcnJlY3QgQUNQSS1kZWZpbmVkCiBiZWhhdmlvci48bzpw
-PjwvbzpwPjwvcD4KPHAgY2xhc3M9Ik1zb1BsYWluVGV4dCI+PG86cD4mbmJzcDs8L286cD48L3A+
-CjxwIGNsYXNzPSJNc29QbGFpblRleHQiPkltcGxlbWVudGVkIHN1cHBvcnQgdG8gYWxsb3cgdGhl
-IGhvc3QgdG8gcmVkZWZpbmUgaW5kaXZpZHVhbCBPU0wgcHJvdG90eXBlcy4gVGhpcyBjaGFuZ2Ug
-ZW5hYmxlcyB0aGUgaG9zdCB0byByZWRlZmluZSBPU0wgcHJvdG90eXBlcyBmb3VuZCBpbiB0aGUg
-YWNwaW9zeGYuaCBmaWxlLiBUaGlzIGFsbG93cyB0aGUgaG9zdCB0byBpbXBsZW1lbnQgT1NMIGlu
-dGVyZmFjZXMgd2l0aCBhIG1hY3JvIG9yIGlubGluZWQKIGZ1bmN0aW9uLiBGdXJ0aGVyLCBpdCBh
-bGxvd3MgdGhlIGhvc3QgdG8gYWRkIGFueSBhZGRpdGlvbmFsIHJlcXVpcmVkIG1vZGlmaWVycyBz
-dWNoIGFzIF9faW9tZW0sIF9faW5pdCwgX19leGl0LCBldGMuLCBhcyBuZWNlc3Nhcnkgb24gYSBw
-ZXItaW50ZXJmYWNlIGJhc2lzLiBFbmFibGVzIG1heGltdW0gZmxleGliaWxpdHkgZm9yIHRoZSBP
-U0wgaW50ZXJmYWNlcy4gTHYgWmhlbmcuPG86cD48L286cD48L3A+CjxwIGNsYXNzPSJNc29QbGFp
-blRleHQiPjxvOnA+Jm5ic3A7PC9vOnA+PC9wPgo8cCBjbGFzcz0iTXNvUGxhaW5UZXh0Ij5IYXJk
-Y29kZWQgdGhlIGFjY2VzcyB3aWR0aCBmb3IgdGhlIEZBRFQtZGVmaW5lZCByZXNldCByZWdpc3Rl
-ci4gVGhlIEFDUEkgc3BlY2lmaWNhdGlvbiByZXF1aXJlcyB0aGUgcmVzZXQgcmVnaXN0ZXIgd2lk
-dGggdG8gYmUgOCBiaXRzLiBBQ1BJQ0Egbm93IGhhcmRjb2RlcyB0aGUgd2lkdGggdG8gOCBhbmQg
-aWdub3JlcyB0aGUgRkFEVCB3aWR0aCB2YWx1ZS4gVGhpcyBwcm92aWRlcyBjb21wYXRpYmlsaXR5
-CiB3aXRoIG90aGVyIEFDUEkgaW1wbGVtZW50YXRpb25zIHRoYXQgaGF2ZSBhbGxvd2VkIEJJT1Mg
-Y29kZSB3aXRoIGJhZCByZWdpc3RlciB3aWR0aCB2YWx1ZXMgdG8gZ28gdW5ub3RpY2VkLiBNYXR0
-aGV3IEdhcmV0dCwgQm9iIE1vb3JlLCBMdiBaaGVuZy48bzpwPjwvbzpwPjwvcD4KPHAgY2xhc3M9
-Ik1zb1BsYWluVGV4dCI+PG86cD4mbmJzcDs8L286cD48L3A+CjxwIGNsYXNzPSJNc29QbGFpblRl
-eHQiPkNoYW5nZWQgdGhlIHBvc2l0aW9uL3VzZSBvZiB0aGUgQUNQSV9QUklOVEZfTElLRSBtYWNy
-by4gVGhpcyBtYWNybyBpcyB1c2VkIGluIHRoZSBPU0wgaGVhZGVyIChhY3Bpb3N4ZikuIFRoZSBj
-aGFuZ2UgbW9kaWZpZXMgdGhlIHBvc2l0aW9uIG9mIHRoaXMgbWFjcm8gaW4gZWFjaCBpbnN0YW5j
-ZSB3aGVyZSBpdCBpcyB1c2VkIChBY3BpRGVidWdQcmludCwgZXRjLikgdG8gYXZvaWQgYnVpbGQg
-aXNzdWVzIGlmCiB0aGUgT1NMIGRlZmluZXMgdGhlIGltcGxlbWVudGF0aW9uIG9mIHRoZSBpbnRl
-cmZhY2UgdG8gYmUgYW4gaW5saW5lIHN0dWIgZnVuY3Rpb24uIEx2IFpoZW5nLjxvOnA+PC9vOnA+
-PC9wPgo8cCBjbGFzcz0iTXNvUGxhaW5UZXh0Ij48bzpwPiZuYnNwOzwvbzpwPjwvcD4KPHAgY2xh
-c3M9Ik1zb1BsYWluVGV4dCI+RGVwbG95ZWQgYSBuZXcgbWFjcm8gQUNQSV9FWFBPUlRfU1lNQk9M
-X0lOSVQgZm9yIHRoZSBtYWluIEFDUElDQSBpbml0aWFsaXphdGlvbiBpbnRlcmZhY2VzLiBUaGlz
-IGNoYW5nZSBhZGRzIGEgbmV3IG1hY3JvIGZvciB0aGUgbWFpbiBpbml0IGFuZCB0ZXJtaW5hdGUg
-ZXh0ZXJuYWwgaW50ZXJmYWNlcyBpbiBvcmRlciB0byBzdXBwb3J0IGhvc3RzIHRoYXQgcmVxdWly
-ZSBhZGRpdGlvbmFsIG9yIGRpZmZlcmVudAogcHJvY2Vzc2luZyBmb3IgdGhlc2UgZnVuY3Rpb25z
-LiBDaGFuZ2VkIGZyb20gQUNQSV9FWFBPUlRfU1lNQk9MIHRvIEFDUElfRVhQT1JUX1NZTUJPTF9J
-TklUIGZvciB0aGVzZSBmdW5jdGlvbnMuIEx2IFpoZW5nLCBCb2IgTW9vcmUuPG86cD48L286cD48
-L3A+CjxwIGNsYXNzPSJNc29QbGFpblRleHQiPjxvOnA+Jm5ic3A7PC9vOnA+PC9wPgo8cCBjbGFz
-cz0iTXNvUGxhaW5UZXh0Ij5DbGVhbmVkIHVwIHRoZSBtZW1vcnkgYWxsb2NhdGlvbiBtYWNyb3Mg
-Zm9yIGNvbmZpZ3VyYWJpbGl0eS4gSW4gdGhlIGNvbW1vbiBjYXNlLCB0aGUgQUNQSV9BTExPQ0FU
-RSBhbmQgcmVsYXRlZCBtYWNyb3Mgbm93IHJlc29sdmUgZGlyZWN0bHkgdG8gdGhlaXIgcmVzcGVj
-dGl2ZSBBY3BpT3MqIE9TTCBpbnRlcmZhY2VzLiBUd28gb3B0aW9uczo8bzpwPjwvbzpwPjwvcD4K
-PHAgY2xhc3M9Ik1zb1BsYWluVGV4dCI+MSkgVGhlIEFDUElfQUxMT0NBVEVfWkVST0VEIG1hY3Jv
-IHVzZXMgYSBzaW1wbGUgbG9jYWwgaW1wbGVtZW50YXRpb24gYnkgZGVmYXVsdCwgdW5sZXNzIG92
-ZXJyaWRkZW4gYnkgdGhlIFVTRV9OQVRJVkVfQUxMT0NBVEVfWkVST0VEIGRlZmluZS48bzpwPjwv
-bzpwPjwvcD4KPHAgY2xhc3M9Ik1zb1BsYWluVGV4dCI+MikgRm9yIEFjcGlFeGVjIChhbmQgZm9y
-IGRlYnVnZ2luZyksIHRoZSBtYWNyb3MgY2FuIG9wdGlvbmFsbHkgYmUgcmVzb2x2ZWQgdG8gdGhl
-IGxvY2FsIEFDUElDQSBpbnRlcmZhY2VzIHRoYXQgdHJhY2sgZWFjaCBhbGxvY2F0aW9uIChsb2Nh
-bCB0cmFja2luZyBpcyB1c2VkIHRvIGltbWVkaWF0ZWx5IGRldGVjdCBtZW1vcnkgbGVha3MpLjxv
-OnA+PC9vOnA+PC9wPgo8cCBjbGFzcz0iTXNvUGxhaW5UZXh0Ij5MdiBaaGVuZy48bzpwPjwvbzpw
-PjwvcD4KPHAgY2xhc3M9Ik1zb1BsYWluVGV4dCI+PG86cD4mbmJzcDs8L286cD48L3A+CjxwIGNs
-YXNzPSJNc29QbGFpblRleHQiPlNpbXBsaWZpZWQgdGhlIGNvbmZpZ3VyYXRpb24gZm9yIEFDUElf
-UkVEVUNFRF9IQVJEV0FSRS4gQWxsb3dzIHRoZSBrZXJuZWwgdG8gcHJlZGVmaW5lIHRoaXMgbWFj
-cm8gdG8gZWl0aGVyIFRSVUUgb3IgRkFMU0UgZHVyaW5nIHRoZSBzeXN0ZW0gYnVpbGQuPG86cD48
-L286cD48L3A+CjxwIGNsYXNzPSJNc29QbGFpblRleHQiPjxvOnA+Jm5ic3A7PC9vOnA+PC9wPgo8
-cCBjbGFzcz0iTXNvUGxhaW5UZXh0Ij5SZXBsYWNlZCBfX0ZVTkNUSU9OXyB3aXRoIF9fZnVuY19f
-IGluIHRoZSBnY2Mtc3BlY2lmaWMgaGVhZGVyLjxvOnA+PC9vOnA+PC9wPgo8cCBjbGFzcz0iTXNv
-UGxhaW5UZXh0Ij48bzpwPiZuYnNwOzwvbzpwPjwvcD4KPHAgY2xhc3M9Ik1zb1BsYWluVGV4dCI+
-RXhhbXBsZSBDb2RlIGFuZCBEYXRhIFNpemU6IFRoZXNlIGFyZSB0aGUgc2l6ZXMgZm9yIHRoZSBP
-Uy1pbmRlcGVuZGVudCBhY3BpY2EubGliIHByb2R1Y2VkIGJ5IHRoZSBNaWNyb3NvZnQgVmlzdWFs
-IEMmIzQzOyYjNDM7IDkuMCAzMi1iaXQgY29tcGlsZXIuIFRoZSBkZWJ1ZyB2ZXJzaW9uIG9mIHRo
-ZSBjb2RlIGluY2x1ZGVzIHRoZSBkZWJ1ZyBvdXRwdXQgdHJhY2UgbWVjaGFuaXNtIGFuZCBoYXMg
-YSBtdWNoIGxhcmdlcgogY29kZSBhbmQgZGF0YSBzaXplLjxvOnA+PC9vOnA+PC9wPgo8cCBjbGFz
-cz0iTXNvUGxhaW5UZXh0Ij48bzpwPiZuYnNwOzwvbzpwPjwvcD4KPHAgY2xhc3M9Ik1zb1BsYWlu
-VGV4dCI+Jm5ic3A7IEN1cnJlbnQgUmVsZWFzZTo8bzpwPjwvbzpwPjwvcD4KPHAgY2xhc3M9Ik1z
-b1BsYWluVGV4dCI+Jm5ic3A7Jm5ic3A7Jm5ic3A7IE5vbi1EZWJ1ZyBWZXJzaW9uOiZuYnNwOyA5
-NS44SyBDb2RlLCAyNy4wSyBEYXRhLCAxMjIuOEsgVG90YWw8bzpwPjwvbzpwPjwvcD4KPHAgY2xh
-c3M9Ik1zb1BsYWluVGV4dCI+Jm5ic3A7Jm5ic3A7Jm5ic3A7IERlYnVnIFZlcnNpb246Jm5ic3A7
-Jm5ic3A7Jm5ic3A7Jm5ic3A7IDE4NS4ySyBDb2RlLCA3Ny4ySyBEYXRhLCAyNjIuNEsgVG90YWw8
-bzpwPjwvbzpwPjwvcD4KPHAgY2xhc3M9Ik1zb1BsYWluVGV4dCI+Jm5ic3A7IFByZXZpb3VzIFJl
-bGVhc2U6PG86cD48L286cD48L3A+CjxwIGNsYXNzPSJNc29QbGFpblRleHQiPiZuYnNwOyZuYnNw
-OyZuYnNwOyBOb24tRGVidWcgVmVyc2lvbjombmJzcDsgOTYuN0sgQ29kZSwgMjcuMUsgRGF0YSwg
-MTIzLjlLIFRvdGFsPG86cD48L286cD48L3A+CjxwIGNsYXNzPSJNc29QbGFpblRleHQiPiZuYnNw
-OyZuYnNwOyZuYnNwOyBEZWJ1ZyBWZXJzaW9uOiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyAxODQu
-NEsgQ29kZSwgNzYuOEsgRGF0YSwgMjYxLjJLIFRvdGFsPG86cD48L286cD48L3A+CjxwIGNsYXNz
-PSJNc29QbGFpblRleHQiPjxvOnA+Jm5ic3A7PC9vOnA+PC9wPgo8cCBjbGFzcz0iTXNvUGxhaW5U
-ZXh0Ij48bzpwPiZuYnNwOzwvbzpwPjwvcD4KPHAgY2xhc3M9Ik1zb1BsYWluVGV4dCI+MikgaUFT
-TCBDb21waWxlci9EaXNhc3NlbWJsZXIgYW5kIFRvb2xzOjxvOnA+PC9vOnA+PC9wPgo8cCBjbGFz
-cz0iTXNvUGxhaW5UZXh0Ij48bzpwPiZuYnNwOzwvbzpwPjwvcD4KPHAgY2xhc3M9Ik1zb1BsYWlu
-VGV4dCI+aUFTTDogSW1wbGVtZW50ZWQgd2lsZGNhcmQgc3VwcG9ydCBmb3IgdGhlIC1lIG9wdGlv
-bi4gVGhpcyBzaW1wbGlmaWVzIHVzZSB3aGVuIHRoZXJlIGFyZSBtYW55IFNTRFRzIHRoYXQgbXVz
-dCBiZSBpbmNsdWRlZCB0byByZXNvbHZlIGV4dGVybmFsIG1ldGhvZCBkZWNsYXJhdGlvbnMuIEFD
-UElDQSBCWiAxMDQxLiBFeGFtcGxlOjxvOnA+PC9vOnA+PC9wPgo8cCBjbGFzcz0iTXNvUGxhaW5U
-ZXh0Ij4mbmJzcDsmbmJzcDsmbmJzcDsgaWFzbCAtZSBzc2R0Ki5kYXQgLWQgZHNkdC5kYXQ8bzpw
-PjwvbzpwPjwvcD4KPHAgY2xhc3M9Ik1zb1BsYWluVGV4dCI+PG86cD4mbmJzcDs8L286cD48L3A+
-CjxwIGNsYXNzPSJNc29QbGFpblRleHQiPkFjcGlFeGVjOiBBZGQgaGlzdG9yeS9saW5lLWVkaXRp
-bmcgZm9yIFVuaXgvTGludXggc3lzdGVtcy4gVGhpcyBjaGFuZ2UgYWRkcyBhIHBvcnRhYmxlIG1v
-ZHVsZSB0aGF0IGltcGxlbWVudHMgZnVsbCBoaXN0b3J5IGFuZCBsaW1pdGVkIGxpbmUgZWRpdGlu
-ZyBmb3IgVW5peCBhbmQgTGludXggc3lzdGVtcy4gSXQgZG9lcyBub3QgdXNlIHJlYWRsaW5lKCkg
-ZHVlIHRvIHBvcnRhYmlsaXR5IGlzc3Vlcy4gSW5zdGVhZAogaXQgdXNlcyB0aGUgUE9TSVggdGVy
-bWlvIGludGVyZmFjZSB0byBwdXQgdGhlIHRlcm1pbmFsIGluIHJhdyBpbnB1dCBtb2RlIHNvIHRo
-YXQgdGhlIHZhcmlvdXMgc3BlY2lhbCBrZXlzIGNhbiBiZSB0cmFwcGVkIChzdWNoIGFzIHVwL2Rv
-d24tYXJyb3cgZm9yIGhpc3Rvcnkgc3VwcG9ydCBhbmQgbGVmdC9yaWdodC1hcnJvdyBmb3IgbGlu
-ZSBlZGl0aW5nKS4gVXNlcyB0aGUgZXhpc3RpbmcgZGVidWdnZXIgaGlzdG9yeSBtZWNoYW5pc20u
-IEFDUElDQQogQlogMTAzNi48bzpwPjwvbzpwPjwvcD4KPHAgY2xhc3M9Ik1zb1BsYWluVGV4dCI+
-PG86cD4mbmJzcDs8L286cD48L3A+CjxwIGNsYXNzPSJNc29QbGFpblRleHQiPkFjcGlYdHJhY3Q6
-IEFkZCBzdXBwb3J0IHRvIGhhbmRsZSAoaWdub3JlKSAmcXVvdDtlbXB0eSZxdW90OyBsaW5lcyBj
-b250YWluaW5nIG9ubHkgb25lIG9yIG1vcmUgc3BhY2VzLiBUaGlzIHByb3ZpZGVzIGNvbXBhdGli
-bGUgd2l0aCBlYXJseSBvciBkaWZmZXJlbnQgdmVyc2lvbnMgb2YgdGhlIEFjcGlEdW1wIHV0aWxp
-dHkuIEFDUElDQSBCWiAxMDQ0LjxvOnA+PC9vOnA+PC9wPgo8cCBjbGFzcz0iTXNvUGxhaW5UZXh0
-Ij48bzpwPiZuYnNwOzwvbzpwPjwvcD4KPHAgY2xhc3M9Ik1zb1BsYWluVGV4dCI+QWNwaUR1bXA6
-IERvIG5vdCBpZ25vcmUgdGFibGVzIHRoYXQgY29udGFpbiBvbmx5IGFuIEFDUEkgdGFibGUgaGVh
-ZGVyLiBBcHBhcmVudGx5LCBzb21lIEJJT1NzIGNyZWF0ZSBTU0RUcyB0aGF0IGNvbnRhaW4gYW4g
-QUNQSSB0YWJsZSBoZWFkZXIgYnV0IG5vIG90aGVyIGRhdGEuIFRoaXMgY2hhbmdlIGFkZHMgc3Vw
-cG9ydCB0byBkdW1wIHRoZXNlIHRhYmxlcy4gQW55IHRhYmxlcyBzaG9ydGVyIHRoYW4gdGhlCiBs
-ZW5ndGggb2YgYW4gQUNQSSB0YWJsZSBoZWFkZXIgcmVtYWluIGluIGVycm9yIChhbiBlcnJvciBt
-ZXNzYWdlIGlzIGVtaXR0ZWQpLiBSZXBvcnRlZCBieSBZaSBMaS48bzpwPjwvbzpwPjwvcD4KPHAg
-Y2xhc3M9Ik1zb1BsYWluVGV4dCI+PG86cD4mbmJzcDs8L286cD48L3A+CjxwIGNsYXNzPSJNc29Q
-bGFpblRleHQiPkRlYnVnZ2VyOiBFY2hvIGFjdHVhbCBjb21tYW5kIGFsb25nIHdpdGggdGhlICZx
-dW90O3Vua25vd24gY29tbWFuZCZxdW90OyBtZXNzYWdlLjxvOnA+PC9vOnA+PC9wPgo8cCBjbGFz
-cz0iTXNvUGxhaW5UZXh0Ij48bzpwPiZuYnNwOzwvbzpwPjwvcD4KPHAgY2xhc3M9Ik1zb05vcm1h
-bCI+PG86cD4mbmJzcDs8L286cD48L3A+CjwvZGl2Pgo8L2JvZHk+CjwvaHRtbD4K
-
---===============4456327191975126034==--
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+On 2013-09-27 12:59:34 -0400, Robert Moore wrote:
+> 27 September 2013. Summary of changes for version 20130927:
+...
+Unfortunately, there are two regressions with the release.  First, the
+release tarballs are missing Makefile.config:
+
+% tar tfv acpica-unix-20130927.tar.gz | grep generate/unix/Makefile
+- -rw-r--r--  0 rmoore1 Domain Users    543  9 27 12:18
+acpica-unix-20130927/generate/unix/Makefile
+- -rw-r--r--  0 rmoore1 Domain Users   2057  9 27 12:18
+acpica-unix-20130927/generate/unix/Makefile.common
+- -rw-r--r--  0 rmoore1 Domain Users    519  9 27 12:18
+acpica-unix-20130927/generate/unix/Makefile.rules
+% tar tfv acpica-unix2-20130927.tar.gz | grep generate/unix/Makefile
+- -rw-r--r--  0 rmoore1 Domain Users    543  9 27 12:18
+acpica-unix2-20130927/generate/unix/Makefile
+- -rw-r--r--  0 rmoore1 Domain Users   2057  9 27 12:18
+acpica-unix2-20130927/generate/unix/Makefile.common
+- -rw-r--r--  0 rmoore1 Domain Users    519  9 27 12:18
+acpica-unix2-20130927/generate/unix/Makefile.rules
+
+Even after adding the file from github, I realized this release does
+not support traditional yacc any more and now it only builds with GNU
+bison since this commit:
+
+https://github.com/acpica/acpica/commit/d8a0e964
+
+Jung-uk Kim
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.21 (FreeBSD)
+
+iQEcBAEBAgAGBQJSSbC4AAoJEHyflib82/FGuKYH/jmdm/vsgq2svgHIrIzJBK7R
+GDkHtJjpNNGXIh7+OGndoodQCIesyXPfd1NOKYIww8S8ScO80vAJ0eK/qx2dkJUU
+ZPtgiAgZkgU/S413OXIa6FDd1sdV1gOMOiIEIc6NeCgyOr+L3pxzVsrN2/KNgymH
+8XnRtP7svnNatrpv8bWl48PX1VT2Vxe6ZlXJSh7jbz0YG5cAqQ+ycnKiZBmpHtId
+v92aDFKbbqXg8nOYJcpqFCsxr+dlQtcUxPLfYyzo0q1jK4kTRjGsus1eDk6BEJuP
+u9TpyRV9V9wj3s/G5JPV4sFJpeoOHXLqoavHypipima8fherg8ATBDP240juiM4=3D
+=3DSGYi
+-----END PGP SIGNATURE-----
+
+--===============4185995368095755397==--
 
