@@ -1,22 +1,19 @@
-Content-Type: multipart/mixed; boundary="===============0371540359850192036=="
+Content-Type: multipart/mixed; boundary="===============6743666706473929903=="
 MIME-Version: 1.0
 From: Moore, Robert <robert.moore at intel.com>
 Subject: Re: [Devel] ACPICA version 20130927 released
-Date: Tue, 01 Oct 2013 22:56:50 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E36FF149D8@ORSMSX103.amr.corp.intel.com>
+Date: Wed, 02 Oct 2013 16:15:16 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E36FF15D39@ORSMSX103.amr.corp.intel.com>
 In-Reply-To: 1AE640813FDE7649BE1B193DEA596E8802467AB8@SHSMSX101.ccr.corp.intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0371540359850192036==
+--===============6743666706473929903==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Yes, I think the idea was to support Bison in "yacc compatibility" mode so =
-that actual yacc could be used instead.
-
-Bob
+Yes, I think we need to support yacc
 
 
 > -----Original Message-----
@@ -83,5 +80,5 @@ Bob
 > > =3DCVe9
 > > -----END PGP SIGNATURE-----
 
---===============0371540359850192036==--
+--===============6743666706473929903==--
 
