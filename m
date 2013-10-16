@@ -1,48 +1,33 @@
-Content-Type: multipart/mixed; boundary="===============1517305575664488590=="
+Content-Type: multipart/mixed; boundary="===============6564702609953916931=="
 MIME-Version: 1.0
 From: naresh.bhat at linaro.org
-Subject: [Devel] [PATCH 1/2] iASL: Fix Table Info handler for DBG2
-Date: Wed, 16 Oct 2013 13:18:39 +0530
-Message-ID: <1381909720-21314-2-git-send-email-naresh.bhat@linaro.org>
+Subject: [Devel] [PATCH 2/2] iASL: Add template support for dbg2
+Date: Wed, 16 Oct 2013 13:18:40 +0530
+Message-ID: <1381909720-21314-3-git-send-email-naresh.bhat@linaro.org>
 In-Reply-To: 1381909720-21314-1-git-send-email-naresh.bhat@linaro.org
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1517305575664488590==
+--===============6564702609953916931==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
 From: Naresh Bhat <naresh.bhat(a)linaro.org>
 
-Fix dbg2.asl compilation issue. The DBG2 table is not able to
-compile because of "Table Info" handler call is missing.
-The DBG2 compilation logs are as below
-
-$ iasl dbg2.asl
-
-Intel ACPI Component Architecture
-ASL Optimizing Compiler version 20130927-64 [Oct 10 2013]
-Copyright (c) 2000 - 2013 Intel Corporation
-
-Error    6126 -  Could not compile input file
-
-dbg2.asl     12: [0004]                        Info Offset : 00000044 [Firs=
-t DDIS entry]
-Error    6010 -                     Internal compiler error ^  (Missing tab=
-le dispatch info)
-
-Table Input:   dbg2.asl - 38 lines, 2383 bytes, 9 fields
-
-Compilation complete. 2 Errors, 0 Warnings, 0 Remarks
+This patch will add the template support for dbg2.
+$ iasl -T DBG2
+DBG2: No template available
 
 Signed-off-by: Naresh Bhat <naresh.bhat(a)linaro.org>
 ---
- source/common/dmtable.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ source/common/dmtable.c      |    2 +-
+ source/compiler/dtcompiler.h |    1 +
+ source/compiler/dttemplate.h |   10 ++++++++++
+ 3 files changed, 12 insertions(+), 1 deletion(-)
 
 diff --git a/source/common/dmtable.c b/source/common/dmtable.c
-index fa7b300..12b8905 100644
+index 12b8905..5552553 100644
 --- a/source/common/dmtable.c
 +++ b/source/common/dmtable.c
 @@ -358,7 +358,7 @@ ACPI_DMTABLE_DATA    AcpiDmTableData[] =3D
@@ -52,20 +37,54 @@ index fa7b300..12b8905 100644
   TemplateCpep,   "Corrected Platform Error Polling table"},
      {ACPI_SIG_CSRT, NULL,                   AcpiDmDumpCsrt, DtCompileCsrt,=
   TemplateCsrt,   "Core System Resource Table"},
--    {ACPI_SIG_DBG2, NULL,                   AcpiDmDumpDbg2, NULL,         =
+-    {ACPI_SIG_DBG2, AcpiDmTableInfoDbg2,    AcpiDmDumpDbg2, NULL,         =
   NULL,           "Debug Port table type 2"},
 +    {ACPI_SIG_DBG2, AcpiDmTableInfoDbg2,    AcpiDmDumpDbg2, NULL,         =
-  NULL,           "Debug Port table type 2"},
+  TemplateDbg2,   "Debug Port table type 2"},
      {ACPI_SIG_DBGP, AcpiDmTableInfoDbgp,    NULL,           NULL,         =
   TemplateDbgp,   "Debug Port table"},
      {ACPI_SIG_DMAR, NULL,                   AcpiDmDumpDmar, DtCompileDmar,=
   TemplateDmar,   "DMA Remapping table"},
      {ACPI_SIG_ECDT, AcpiDmTableInfoEcdt,    NULL,           NULL,         =
   TemplateEcdt,   "Embedded Controller Boot Resources Table"},
+diff --git a/source/compiler/dtcompiler.h b/source/compiler/dtcompiler.h
+index 9868662..96ece50 100644
+--- a/source/compiler/dtcompiler.h
++++ b/source/compiler/dtcompiler.h
+@@ -575,6 +575,7 @@ extern const unsigned char  TemplateBert[];
+ extern const unsigned char  TemplateBgrt[];
+ extern const unsigned char  TemplateCpep[];
+ extern const unsigned char  TemplateCsrt[];
++extern const unsigned char  TemplateDbg2[];
+ extern const unsigned char  TemplateDbgp[];
+ extern const unsigned char  TemplateDmar[];
+ extern const unsigned char  TemplateEcdt[];
+diff --git a/source/compiler/dttemplate.h b/source/compiler/dttemplate.h
+index f131b62..816c87e 100644
+--- a/source/compiler/dttemplate.h
++++ b/source/compiler/dttemplate.h
+@@ -246,6 +246,16 @@ const unsigned char TemplateCsrt[] =3D
+     0x43,0x48,0x41,0x37                       /* 00000148    "CHA7"     */
+ };
+ =
+
++const unsigned char TemplateDbg2[] =3D
++{
++    0x44,0x42,0x47,0x32,0x2C,0x00,0x00,0x00,  /* 00000000    "DBG2,..." */
++    0x01,0xD3,0x4C,0x49,0x4E,0x41,0x52,0x4F,  /* 00000008    "..LINARO" */
++    0x54,0x45,0x4D,0x50,0x4C,0x41,0x54,0x45,  /* 00000010    "TEMPLATE" */
++    0x01,0x00,0x00,0x00,0x49,0x4E,0x54,0x4C,  /* 00000018    "....INTL" */
++    0x27,0x09,0x13,0x20,0x44,0x00,0x00,0x00,  /* 00000020    "'.. D..." */
++    0x01,0x00,0x00,0x00                       /* 00000028    "...."     */
++};
++
+ const unsigned char TemplateDbgp[] =3D
+ {
+     0x44,0x42,0x47,0x50,0x34,0x00,0x00,0x00,  /* 00000000    "DBGP4..." */
 -- =
 
 1.7.9.5
 
 
---===============1517305575664488590==--
+--===============6564702609953916931==--
 
