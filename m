@@ -1,207 +1,108 @@
-Content-Type: multipart/mixed; boundary="===============0733799697808503171=="
+Content-Type: multipart/mixed; boundary="===============7548541853727117000=="
 MIME-Version: 1.0
-From: Naresh Bhat <naresh.bhat at linaro.org>
-Subject: Re: [Devel] [PATCH 0/2] Fix DBG2 compilation template issue
-Date: Thu, 24 Oct 2013 00:53:06 +0530
-Message-ID: <CAFoFrHYW62KKdRRHrD2BTMwKw7KE2NXMXvYxj-ZuyMrDkbn8iw@mail.gmail.com>
-In-Reply-To: 94F2FBAB4432B54E8AACC7DFDE6C92E37C78CF46@ORSMSX103.amr.corp.intel.com
+From: Stefan Demharter <stefan.demharter at gmx.net>
+Subject: [Devel] Advice for in-kernel acpi patching
+Date: Wed, 30 Oct 2013 22:31:40 +0100
+Message-ID: <52717ABC.6010204@gmx.net>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0733799697808503171==
+--===============7548541853727117000==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-That's great. Hopefully will be added in the next release. Let me know
-If I can do anything more on DBG2.  Its too late night for me. Will
-get some sleep..-:)
+Hi all,
 
-Thanks.
--Naresh
+I have a laptop (acer 3820tg) with muxed intel + radeon graphic cards which=
+ has the following problem:
 
-On 24 October 2013 00:47, Moore, Robert <robert.moore(a)intel.com> wrote:
-> I've got most of it working today.
->
->
->> -----Original Message-----
->> From: Naresh Bhat [mailto:naresh.bhat(a)linaro.org]
->> Sent: Wednesday, October 23, 2013 8:30 AM
->> To: Moore, Robert
->> Cc: devel(a)acpica.org; linaro-acpi(a)lists.linaro.org
->> Subject: Re: [Devel] [PATCH 0/2] Fix DBG2 compilation template issue
->>
->> Hi Robert Moore,
->>
->> OK sure. My apologies I could not able to spend time on it today.
->> Since I was focusing on other items.
->>
->> Regards
->> -Naresh Bhat
->>
->> On 23 October 2013 20:55, Moore, Robert <robert.moore(a)intel.com> wrote:
->> > I have started on it, but if I don't have the time, perhaps you can
->> help. I'll let you know of my progress later today.
->> > Bob
->> >
->> >
->> >> -----Original Message-----
->> >> From: Naresh Bhat [mailto:naresh.bhat(a)linaro.org]
->> >> Sent: Wednesday, October 23, 2013 2:07 AM
->> >> To: Moore, Robert
->> >> Cc: devel(a)acpica.org; linaro-acpi(a)lists.linaro.org
->> >> Subject: Re: [Devel] [PATCH 0/2] Fix DBG2 compilation template issue
->> >>
->> >> Hi Robert,
->> >>
->> >> Thank you very much.  I will implement sub-table compilation method
->> >> and post the patches.
->> >>
->> >> Regards
->> >> -Naresh Bhat
->> >>
->> >> On 23 October 2013 02:28, Moore, Robert <robert.moore(a)intel.com> wr=
-ote:
->> >> > The real issue is that the code to actually compile a DBG2
->> >> > (including
->> >> all subtables) has not been written yet.
->> >> >
->> >> > Here's an example of a large DBG2 with subtables.
->> >> >
->> >> >
->> >> >
->> >> > /*
->> >> >  * Intel ACPI Component Architecture
->> >> >  * AML Disassembler version 20120711-32 [Aug 14 2012]
->> >> >  * Copyright (c) 2000 - 2012 Intel Corporation
->> >> >  *
->> >> >  * Disassembly of dbg2.aml, Tue Aug 14 09:34:28 2012
->> >> >  *
->> >> >  * ACPI Data Table [DBG2]
->> >> >  *
->> >> >  * Format: [HexOffset DecimalOffset ByteLength]  FieldName :
->> >> > FieldValue  */
->> >> >
->> >> > [000h 0000   4]                    Signature : "DBG2"    [Debug Port
->> >> table type 2]
->> >> > [004h 0004   4]                 Table Length : 000000CE
->> >> > [008h 0008   1]                     Revision : 01
->> >> > [009h 0009   1]                     Checksum : B1
->> >> > [00Ah 0010   6]                       Oem ID : "INTEL "
->> >> > [010h 0016   8]                 Oem Table ID : "TEMPLATE"
->> >> > [018h 0024   4]                 Oem Revision : 00000000
->> >> > [01Ch 0028   4]              Asl Compiler ID : "INTL"
->> >> > [020h 0032   4]        Asl Compiler Revision : 20120711
->> >> >
->> >> > [024h 0036   4]                  Info Offset : 0000002C
->> >> > [028h 0040   4]                   Info Count : 00000002
->> >> >
->> >> > [02Ch 0044   1]                     Revision : 00
->> >> > [02Dh 0045   2]                       Length : 004C
->> >> > [02Fh 0047   1]               Register Count : 02
->> >> > [030h 0048   2]              Namepath Length : 0009
->> >> > [032h 0050   2]              Namepath Offset : 0036
->> >> > [034h 0052   2]              OEM Data Length : 000D
->> >> > [036h 0054   2]              OEM Data Offset : 003F
->> >> > [038h 0056   2]                    Port Type : 8000
->> >> > [03Ah 0058   2]                 Port Subtype : 0000
->> >> > [03Ch 0060   2]                     Reserved : 0000
->> >> > [03Eh 0062   2]          Base Address Offset : 0016
->> >> > [040h 0064   2]          Address Size Offset : 002E
->> >> >
->> >> > [042h 0066  12]        Base Address Register : [Generic Address
->> >> Structure]
->> >> > [042h 0066   1]                     Space ID : 01 [SystemIO]
->> >> > [043h 0067   1]                    Bit Width : 32
->> >> > [044h 0068   1]                   Bit Offset : 00
->> >> > [045h 0069   1]         Encoded Access Width : 03 [DWord Access:32]
->> >> > [046h 0070   8]                      Address : 1122334455667788
->> >> >
->> >> >
->> >> > [04Eh 0078  12]        Base Address Register : [Generic Address
->> >> Structure]
->> >> > [04Eh 0078   1]                     Space ID : 01 [SystemIO]
->> >> > [04Fh 0079   1]                    Bit Width : 64
->> >> > [050h 0080   1]                   Bit Offset : 00
->> >> > [051h 0081   1]         Encoded Access Width : 04 [QWord Access:64]
->> >> > [052h 0082   8]                      Address : AABBCCDDEEFF0011
->> >> >
->> >> > [05Ah 0090   4]                 Address Size : 76543210
->> >> > [05Eh 0094   4]                 Address Size : FEDCBA98
->> >> >
->> >> > [062h 0098   9]                     Namepath : "MyDevice"
->> >> >
->> >> > [06Bh 0107  13]                     OEM Data : 01 02 03 04 05 06 07
->> 08
->> >> 09 0A 0B 0C 0D
->> >> >
->> >> > [078h 0120   1]                     Revision : 00
->> >> > [079h 0121   2]                       Length : 0056
->> >> > [07Bh 0123   1]               Register Count : 01
->> >> > [07Ch 0124   2]              Namepath Length : 0010
->> >> > [07Eh 0126   2]              Namepath Offset : 0026
->> >> > [080h 0128   2]              OEM Data Length : 0020
->> >> > [082h 0130   2]              OEM Data Offset : 0036
->> >> > [084h 0132   2]                    Port Type : 8000
->> >> > [086h 0134   2]                 Port Subtype : 0000
->> >> > [088h 0136   2]                     Reserved : 0000
->> >> > [08Ah 0138   2]          Base Address Offset : 0016
->> >> > [08Ch 0140   2]          Address Size Offset : 0022
->> >> >
->> >> > [08Eh 0142  12]        Base Address Register : [Generic Address
->> >> Structure]
->> >> > [08Eh 0142   1]                     Space ID : 01 [SystemIO]
->> >> > [08Fh 0143   1]                    Bit Width : 64
->> >> > [090h 0144   1]                   Bit Offset : 00
->> >> > [091h 0145   1]         Encoded Access Width : 04 [QWord Access:64]
->> >> > [092h 0146   8]                      Address : AABBCCDDEEFF0011
->> >> >
->> >> > [09Ah 0154   4]                 Address Size : FEDCBA98
->> >> >
->> >> > [09Eh 0158  16]                     Namepath : "\\_SB_.PCI0.DBGP"
->> >> >
->> >> > [0AEh 0174  16]                     OEM Data : 41 42 43 44 45 46 47
->> 48
->> >> 49 50 51 52 53 54 55 56
->> >> > [0BEh 0190  16]                              : 57 58 59 01 02 03 04
->> 05
->> >> 06 07 08 09 0A 0B 0C 0D
->> >> >
->> >> >
->> >> >
->> >> >
->> >> >
->> >> >
->> >> >> -----Original Message-----
->> >> >> From: devel-bounces(a)acpica.org [mailto:devel-bounces(a)acpica.or=
-g]
->> >> >> On Behalf Of naresh.bhat(a)linaro.org
->> >> >> Sent: Wednesday, October 16, 2013 12:49 AM
->> >> >> To: devel(a)acpica.org
->> >> >> Cc: linaro-acpi(a)lists.linaro.org
->> >> >> Subject: [Devel] [PATCH 0/2] Fix DBG2 compilation template issue
->> >> >>
->> >> >> From: Naresh Bhat <naresh.bhat(a)linaro.org>
->> >> >>
->> >> >> The patches try to fix the DBG2 table compilation issue and also
->> >> >> tries to add a template support for DBG2 tables.
->> >> >>
->> >> >> Naresh Bhat (2):
->> >> >>   iASL: Fix Table Info handler for DBG2
->> >> >>   iASL: Add template support for dbg2
->> >> >>
->> >> >>  source/common/dmtable.c      |    2 +-
->> >> >>  source/compiler/dtcompiler.h |    1 +
->> >> >>  source/compiler/dttemplate.h |   10 ++++++++++
->> >> >>  3 files changed, 12 insertions(+), 1 deletion(-)
->> >> >>
->> >> >> --
->> >> >> 1.7.9.5
->> >> >>
->> >> >> _______________________________________________
->> >> >> Devel mailing list
->> >> >> Devel(a)acpica.org
->> >> >> https://lists.acpica.org/mailman/listinfo/devel
+If I use the intel as primary card and switch the radeon card off an on, th=
+e mux wronlgy changes to the discrete card.
+This is particularily bad if you want to enable dynamic-power-off for the r=
+adeon card.
 
---===============0733799697808503171==--
+I identifed the problem to be a specific STORE-call in the method PEGP._ON =
+in the table SSDT1.
+I also wrote a module which patches the SSDT1 table on the fly. The functio=
+n which does the real patching is attached.
+
+As of now I think it's a somewhat hacky solution which should be improved.
+
+At first I have the following questions:
+- Is there already an easy way to patch acpi methods within the linux kerne=
+l?
+- Do you agree that solving such stuff within the kernel is the right way t=
+o go?
+
+Any other advice would be appreciated, too.
+
+Best Regards,
+Stefan
+
+PS: I don't think loading a user-patched SSDT1 table at kernel start is the=
+ right way to go because:
+- It doesn't work out of the box for new linux installations on the aforeme=
+ntioned laptop.
+- If you change the bios setting for the graphic cards from switchable to i=
+ntel-only or radeon-only the patched SSDT1 table would be wrong.
+
+--===============7548541853727117000==
+Content-Type: text/x-csrc
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="fix_ssdt1_fn.c"
+
+LyoqCiAqIFBhdGNoIHRoZSBTU0RUMSBhY3BpIHRhYmxlLgogKiBJIGtub3cgaXQncyBhIGhhY2sg
+YnV0IEkgY3VycmVudGx5IGRvbid0IGtub3cgb2YgYSBiZXR0ZXIgbWV0aG9kLi4uCiAqCiAqIFRo
+aXMgcGF0Y2ggZGlzYWJsZXMgdGhlIGNhbGwgIlN0b3JlIChaZXJvLCBQTzUyKSIgaW4gTWV0aG9k
+IFBFR1AuX09OIGJlY2F1c2UgdGhpcyBzd2l0Y2hlcwogKiB0aGUgbXV4IHRvIHRoZSBkaXNjcmV0
+ZSBHUFUgd2hlbiB0aGUgR1BVIGlzIG9ubHkgc3dpdGNoZWQgb24uCiAqLwpzdGF0aWMgaW50IGFj
+ZXJ4X3BhdGNoX211eF9pbl9zc2R0MV9vZl9hY2VyXzM4MjAoZW51bSBQQVRDSF9NT0RFIG1vZGUp
+CnsKCXN0YXRpYyBjb25zdCB1OCByZXBsYWNlW10gPSB7IEFNTF9TVE9SRV9PUCwgQU1MX1pFUk9f
+T1AsICdQJywgJ08nLCAnNScsICcyJyB9OyAvLyBTdG9yZSAoWmVybywgUE81MikKCXN0YXRpYyBj
+b25zdCB1OCB3aXRoW10gPSB7IEFNTF9OT09QX09QLCBBTUxfTk9PUF9PUCwgQU1MX05PT1BfT1As
+IEFNTF9OT09QX09QLCBBTUxfTk9PUF9PUCwgQU1MX05PT1BfT1AgfTsgLy8gTm9PcCB4IDYKCXN0
+YXRpYyBjb25zdCB1OCBsZW4gPSBBUlJBWV9TSVpFKHJlcGxhY2UpOwoJc3RhdGljIGNvbnN0IHNp
+emVfdCByZXBsYWNlX29mZnNldCA9IDB4ZWJjOyAvLyBQb3NpdGlvbiB3aGVyZSB0byBwYXRjaCB3
+aXRoaW4gdGhlIGJpbmFyeSB0YWJsZSBTU0RUMQoKCS8qCgkgKiBjaGVjayB0aGF0IHNzZHQxIGlz
+IHNzZHQxCgkgKiBjaGVjawoJICogU2lnbmF0dXJlICAgICAgICAiU1NEVCIKCSAqIExlbmd0aCAg
+ICAgICAgICAgMHgwMDAwMTBCOSAoNDI4MSkKCSAqIFJldmlzaW9uICAgICAgICAgMHgwMQoJICog
+Q2hlY2tzdW0gICAgICAgICAweDBCCgkgKiBPRU0gSUQgICAgICAgICAgICJBbWRSZWYiCgkgKiBP
+RU0gVGFibGUgSUQgICAgICJBbWRUYWJsIgoJICogT0VNIFJldmlzaW9uICAgICAweDAwMDAxMDAw
+ICg0MDk2KQoJICogQ29tcGlsZXIgSUQgICAgICAiSU5UTCIKCSAqIENvbXBpbGVyIFZlcnNpb24g
+MHgyMDA2MDkxMiAoNTM3MjY2NDUwKQoJICovCglzdHJ1Y3QgYWNwaV90YWJsZV9oZWFkZXIgKnNz
+ZHQxOwoJYWNwaV9zaXplIHNpemU7Cgl1OCogb2Zmc2V0OwoJY29uc3QgdTggKnJlcCA9IG1vZGUg
+PT0gUEFUQ0hfTU9ERV9SRVZFUlNFID8gd2l0aCA6IHJlcGxhY2U7Cgljb25zdCB1OCAqd2l0ID0g
+bW9kZSA9PSBQQVRDSF9NT0RFX1JFVkVSU0UgPyByZXBsYWNlIDogd2l0aDsKCXU4IGNoZWNrc3Vt
+OwoJYWNwaV9zdGF0dXMgc3RhdHVzOwoJc2l6ZV90IGV4cGVjdGVkX3NpemUgPSA0MjgxOwoKI2lm
+IDAKCS8qIEdyYWIgdGhlIG11dGV4IC0tIGN1cnJlbnRseSB1bnN1cHBvcnRlZCBpbiB0aGlzIGRp
+cmVjdG9yeSAqLwoJc3RhdHVzID0gYWNwaV91dF9hY3F1aXJlX3dyaXRlX2xvY2soJmFjcGlfZ2Js
+X25hbWVzcGFjZV9yd19sb2NrKTsKCWlmICghQUNQSV9TVUNDRVNTKHN0YXR1cykpIHsKCQlwcl93
+YXJuKCJDb3VsZG4ndCBnZXQgYWNwaSBsb2NrXG4iKTsKCQlyZXR1cm4gc3RhdHVzOwoJfQojZW5k
+aWYKCglzdGF0dXMgPSBhY3BpX2dldF90YWJsZV93aXRoX3NpemUoQUNQSV9TSUdfU1NEVCwgMSwg
+JnNzZHQxLCAmc2l6ZSk7CglpZiAoIUFDUElfU1VDQ0VTUyhzdGF0dXMpKSB7CgkJcHJfZXJyKCJD
+b3VsZG4ndCBnZXQgc3NkdDEgdGFibGVcbiIpOwoJCWdvdG8gdW5sb2NrOwoJfQoJaWYgKHNpemUg
+IT0gZXhwZWN0ZWRfc2l6ZSB8fCBzaXplIDwgcmVwbGFjZV9vZmZzZXQgKyBsZW4pIHsKCQlwcl9p
+bmZvKCJOb24gbWF0Y2hpbmcgc3NkdDEgdGFibGluZyAtIHdvbid0IHBhdGNoLlxuIik7CgkJZ290
+byB1bmxvY2s7Cgl9CgkvLyBhdCBmaXJzdCBjaGVjayBjaGVja3N1bS4uLgoJY2hlY2tzdW0gPSBh
+Y3BpX3RiX2NoZWNrc3VtX2Nsb25lZChBQ1BJX0NBU1RfUFRSKHU4LCBzc2R0MSksIHNpemUpOwoJ
+aWYgKGNoZWNrc3VtKSB7CgkJcHJfZXJyKCJJbnZhbGlkIGNoZWNrc3VtICVkIC0gYWJvcnQgcGF0
+Y2hpbmclc1xuIiwgY2hlY2tzdW0sIG1vZGUgPT0gUEFUQ0hfTU9ERV9SRVZFUlNFID8gIiAocmV2
+ZXJzZWQpIiA6ICIiKTsKCQlnb3RvIHVubG9jazsKCX0KCglvZmZzZXQgPSAoKHU4Kilzc2R0MSkg
+KyByZXBsYWNlX29mZnNldDsKCWlmICghbWVtZXEob2Zmc2V0LCByZXAsIGxlbikpIHsKCQlwcl9l
+cnIoIk5vbiBtYXRjaGluZyBtZW1vcnkgYnl0ZXMgJXggJXggLi4uXG4iLCAoaW50KSpvZmZzZXQs
+IChpbnQpKihvZmZzZXQgKyAxKSk7CgkJc3RhdHVzID0gLUVJTlZBTDsKCQlnb3RvIHVubG9jazsK
+CX0KCXByX2luZm8oIkFDUEkgdGFibGUgU1NEVDEgc3VjY2Vzc2Z1bGx5IHBhdGNoZWQlc1xuIiwg
+bW9kZSA9PSBQQVRDSF9NT0RFX1JFVkVSU0UgPwoJCSIgKHJldmVyc2VkKSIgOiAiIChyZW1vdmVz
+IGltcGxpY2l0IG11eC1zd2l0Y2ggdG8gZGlzY3JldGUgZ3JhcGhpY3MgY2FyZCB3aGVuIHN3aXRj
+aGluZyBpdCBvbikiKTsKCW1lbWNweShvZmZzZXQsIHdpdCwgbGVuKTsKCWNoZWNrc3VtID0gYWNw
+aV90Yl9jaGVja3N1bV9jbG9uZWQoQUNQSV9DQVNUX1BUUih1OCwgc3NkdDEpLCBzaXplKTsKCXNz
+ZHQxLT5jaGVja3N1bSAtPSBjaGVja3N1bTsKCWNvbXBpbGV0aW1lX2Fzc2VydChsZW4gPT0gQVJS
+QVlfU0laRSh3aXRoKSwgImxlbihyZXBsYWNlKSAhPSBsZW4od2l0aCkiKTsKdW5sb2NrOgojaWYg
+MAoJLyogTXV0ZXggY29udHJvbCAtLSBkaXNhYmxlZC4uLiBzZWUgYWJvdmUgKi8KCWFjcGlfdXRf
+cmVsZWFzZV93cml0ZV9sb2NrKCZhY3BpX2dibF9uYW1lc3BhY2VfcndfbG9jayk7CiNlbmRpZgoJ
+cmV0dXJuIHN0YXR1czsKfQo=
+
+--===============7548541853727117000==--
 
