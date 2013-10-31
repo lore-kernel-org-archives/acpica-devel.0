@@ -1,108 +1,79 @@
-Content-Type: multipart/mixed; boundary="===============7548541853727117000=="
+Content-Type: multipart/mixed; boundary="===============1144862722495978742=="
 MIME-Version: 1.0
-From: Stefan Demharter <stefan.demharter at gmx.net>
-Subject: [Devel] Advice for in-kernel acpi patching
-Date: Wed, 30 Oct 2013 22:31:40 +0100
-Message-ID: <52717ABC.6010204@gmx.net>
+From: Zheng, Lv <lv.zheng at intel.com>
+Subject: Re: [Devel] Advice for in-kernel acpi patching
+Date: Thu, 31 Oct 2013 02:41:06 +0000
+Message-ID: <1AE640813FDE7649BE1B193DEA596E8802479D73@SHSMSX101.ccr.corp.intel.com>
+In-Reply-To: 52717ABC.6010204@gmx.net
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7548541853727117000==
+--===============1144862722495978742==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+> From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of Stefan Demha=
+rter
+> Sent: Thursday, October 31, 2013 5:32 AM
+> To: devel(a)acpica.org
+> Subject: [Devel] Advice for in-kernel acpi patching
+> =
 
-I have a laptop (acer 3820tg) with muxed intel + radeon graphic cards which=
- has the following problem:
+> Hi all,
+> =
 
-If I use the intel as primary card and switch the radeon card off an on, th=
-e mux wronlgy changes to the discrete card.
-This is particularily bad if you want to enable dynamic-power-off for the r=
-adeon card.
+> I have a laptop (acer 3820tg) with muxed intel + radeon graphic cards whi=
+ch has the following problem:
+> =
 
-I identifed the problem to be a specific STORE-call in the method PEGP._ON =
-in the table SSDT1.
-I also wrote a module which patches the SSDT1 table on the fly. The functio=
-n which does the real patching is attached.
+> If I use the intel as primary card and switch the radeon card off an on, =
+the mux wronlgy changes to the discrete card.
+> This is particularily bad if you want to enable dynamic-power-off for the=
+ radeon card.
+> =
 
-As of now I think it's a somewhat hacky solution which should be improved.
+> I identifed the problem to be a specific STORE-call in the method PEGP._O=
+N in the table SSDT1.
+> I also wrote a module which patches the SSDT1 table on the fly. The funct=
+ion which does the real patching is attached.
+> =
 
-At first I have the following questions:
-- Is there already an easy way to patch acpi methods within the linux kerne=
-l?
-- Do you agree that solving such stuff within the kernel is the right way t=
-o go?
+> As of now I think it's a somewhat hacky solution which should be improved.
+> =
 
-Any other advice would be appreciated, too.
+> At first I have the following questions:
+> - Is there already an easy way to patch acpi methods within the linux ker=
+nel?
+> - Do you agree that solving such stuff within the kernel is the right way=
+ to go?
 
-Best Regards,
-Stefan
+There are means in the Linux kernel can be used to achieve such kind of nam=
+espace patching, please find the documentation at:
+Documentation/acpi/dsdt-override
+Documentation/initrd_table_override
 
-PS: I don't think loading a user-patched SSDT1 table at kernel start is the=
- right way to go because:
-- It doesn't work out of the box for new linux installations on the aforeme=
-ntioned laptop.
-- If you change the bios setting for the graphic cards from switchable to i=
-ntel-only or radeon-only the patched SSDT1 table would be wrong.
+I think the latter might be able to fit your requirement.
 
---===============7548541853727117000==
-Content-Type: text/x-csrc
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="fix_ssdt1_fn.c"
+Thanks
+-Lv
 
-LyoqCiAqIFBhdGNoIHRoZSBTU0RUMSBhY3BpIHRhYmxlLgogKiBJIGtub3cgaXQncyBhIGhhY2sg
-YnV0IEkgY3VycmVudGx5IGRvbid0IGtub3cgb2YgYSBiZXR0ZXIgbWV0aG9kLi4uCiAqCiAqIFRo
-aXMgcGF0Y2ggZGlzYWJsZXMgdGhlIGNhbGwgIlN0b3JlIChaZXJvLCBQTzUyKSIgaW4gTWV0aG9k
-IFBFR1AuX09OIGJlY2F1c2UgdGhpcyBzd2l0Y2hlcwogKiB0aGUgbXV4IHRvIHRoZSBkaXNjcmV0
-ZSBHUFUgd2hlbiB0aGUgR1BVIGlzIG9ubHkgc3dpdGNoZWQgb24uCiAqLwpzdGF0aWMgaW50IGFj
-ZXJ4X3BhdGNoX211eF9pbl9zc2R0MV9vZl9hY2VyXzM4MjAoZW51bSBQQVRDSF9NT0RFIG1vZGUp
-CnsKCXN0YXRpYyBjb25zdCB1OCByZXBsYWNlW10gPSB7IEFNTF9TVE9SRV9PUCwgQU1MX1pFUk9f
-T1AsICdQJywgJ08nLCAnNScsICcyJyB9OyAvLyBTdG9yZSAoWmVybywgUE81MikKCXN0YXRpYyBj
-b25zdCB1OCB3aXRoW10gPSB7IEFNTF9OT09QX09QLCBBTUxfTk9PUF9PUCwgQU1MX05PT1BfT1As
-IEFNTF9OT09QX09QLCBBTUxfTk9PUF9PUCwgQU1MX05PT1BfT1AgfTsgLy8gTm9PcCB4IDYKCXN0
-YXRpYyBjb25zdCB1OCBsZW4gPSBBUlJBWV9TSVpFKHJlcGxhY2UpOwoJc3RhdGljIGNvbnN0IHNp
-emVfdCByZXBsYWNlX29mZnNldCA9IDB4ZWJjOyAvLyBQb3NpdGlvbiB3aGVyZSB0byBwYXRjaCB3
-aXRoaW4gdGhlIGJpbmFyeSB0YWJsZSBTU0RUMQoKCS8qCgkgKiBjaGVjayB0aGF0IHNzZHQxIGlz
-IHNzZHQxCgkgKiBjaGVjawoJICogU2lnbmF0dXJlICAgICAgICAiU1NEVCIKCSAqIExlbmd0aCAg
-ICAgICAgICAgMHgwMDAwMTBCOSAoNDI4MSkKCSAqIFJldmlzaW9uICAgICAgICAgMHgwMQoJICog
-Q2hlY2tzdW0gICAgICAgICAweDBCCgkgKiBPRU0gSUQgICAgICAgICAgICJBbWRSZWYiCgkgKiBP
-RU0gVGFibGUgSUQgICAgICJBbWRUYWJsIgoJICogT0VNIFJldmlzaW9uICAgICAweDAwMDAxMDAw
-ICg0MDk2KQoJICogQ29tcGlsZXIgSUQgICAgICAiSU5UTCIKCSAqIENvbXBpbGVyIFZlcnNpb24g
-MHgyMDA2MDkxMiAoNTM3MjY2NDUwKQoJICovCglzdHJ1Y3QgYWNwaV90YWJsZV9oZWFkZXIgKnNz
-ZHQxOwoJYWNwaV9zaXplIHNpemU7Cgl1OCogb2Zmc2V0OwoJY29uc3QgdTggKnJlcCA9IG1vZGUg
-PT0gUEFUQ0hfTU9ERV9SRVZFUlNFID8gd2l0aCA6IHJlcGxhY2U7Cgljb25zdCB1OCAqd2l0ID0g
-bW9kZSA9PSBQQVRDSF9NT0RFX1JFVkVSU0UgPyByZXBsYWNlIDogd2l0aDsKCXU4IGNoZWNrc3Vt
-OwoJYWNwaV9zdGF0dXMgc3RhdHVzOwoJc2l6ZV90IGV4cGVjdGVkX3NpemUgPSA0MjgxOwoKI2lm
-IDAKCS8qIEdyYWIgdGhlIG11dGV4IC0tIGN1cnJlbnRseSB1bnN1cHBvcnRlZCBpbiB0aGlzIGRp
-cmVjdG9yeSAqLwoJc3RhdHVzID0gYWNwaV91dF9hY3F1aXJlX3dyaXRlX2xvY2soJmFjcGlfZ2Js
-X25hbWVzcGFjZV9yd19sb2NrKTsKCWlmICghQUNQSV9TVUNDRVNTKHN0YXR1cykpIHsKCQlwcl93
-YXJuKCJDb3VsZG4ndCBnZXQgYWNwaSBsb2NrXG4iKTsKCQlyZXR1cm4gc3RhdHVzOwoJfQojZW5k
-aWYKCglzdGF0dXMgPSBhY3BpX2dldF90YWJsZV93aXRoX3NpemUoQUNQSV9TSUdfU1NEVCwgMSwg
-JnNzZHQxLCAmc2l6ZSk7CglpZiAoIUFDUElfU1VDQ0VTUyhzdGF0dXMpKSB7CgkJcHJfZXJyKCJD
-b3VsZG4ndCBnZXQgc3NkdDEgdGFibGVcbiIpOwoJCWdvdG8gdW5sb2NrOwoJfQoJaWYgKHNpemUg
-IT0gZXhwZWN0ZWRfc2l6ZSB8fCBzaXplIDwgcmVwbGFjZV9vZmZzZXQgKyBsZW4pIHsKCQlwcl9p
-bmZvKCJOb24gbWF0Y2hpbmcgc3NkdDEgdGFibGluZyAtIHdvbid0IHBhdGNoLlxuIik7CgkJZ290
-byB1bmxvY2s7Cgl9CgkvLyBhdCBmaXJzdCBjaGVjayBjaGVja3N1bS4uLgoJY2hlY2tzdW0gPSBh
-Y3BpX3RiX2NoZWNrc3VtX2Nsb25lZChBQ1BJX0NBU1RfUFRSKHU4LCBzc2R0MSksIHNpemUpOwoJ
-aWYgKGNoZWNrc3VtKSB7CgkJcHJfZXJyKCJJbnZhbGlkIGNoZWNrc3VtICVkIC0gYWJvcnQgcGF0
-Y2hpbmclc1xuIiwgY2hlY2tzdW0sIG1vZGUgPT0gUEFUQ0hfTU9ERV9SRVZFUlNFID8gIiAocmV2
-ZXJzZWQpIiA6ICIiKTsKCQlnb3RvIHVubG9jazsKCX0KCglvZmZzZXQgPSAoKHU4Kilzc2R0MSkg
-KyByZXBsYWNlX29mZnNldDsKCWlmICghbWVtZXEob2Zmc2V0LCByZXAsIGxlbikpIHsKCQlwcl9l
-cnIoIk5vbiBtYXRjaGluZyBtZW1vcnkgYnl0ZXMgJXggJXggLi4uXG4iLCAoaW50KSpvZmZzZXQs
-IChpbnQpKihvZmZzZXQgKyAxKSk7CgkJc3RhdHVzID0gLUVJTlZBTDsKCQlnb3RvIHVubG9jazsK
-CX0KCXByX2luZm8oIkFDUEkgdGFibGUgU1NEVDEgc3VjY2Vzc2Z1bGx5IHBhdGNoZWQlc1xuIiwg
-bW9kZSA9PSBQQVRDSF9NT0RFX1JFVkVSU0UgPwoJCSIgKHJldmVyc2VkKSIgOiAiIChyZW1vdmVz
-IGltcGxpY2l0IG11eC1zd2l0Y2ggdG8gZGlzY3JldGUgZ3JhcGhpY3MgY2FyZCB3aGVuIHN3aXRj
-aGluZyBpdCBvbikiKTsKCW1lbWNweShvZmZzZXQsIHdpdCwgbGVuKTsKCWNoZWNrc3VtID0gYWNw
-aV90Yl9jaGVja3N1bV9jbG9uZWQoQUNQSV9DQVNUX1BUUih1OCwgc3NkdDEpLCBzaXplKTsKCXNz
-ZHQxLT5jaGVja3N1bSAtPSBjaGVja3N1bTsKCWNvbXBpbGV0aW1lX2Fzc2VydChsZW4gPT0gQVJS
-QVlfU0laRSh3aXRoKSwgImxlbihyZXBsYWNlKSAhPSBsZW4od2l0aCkiKTsKdW5sb2NrOgojaWYg
-MAoJLyogTXV0ZXggY29udHJvbCAtLSBkaXNhYmxlZC4uLiBzZWUgYWJvdmUgKi8KCWFjcGlfdXRf
-cmVsZWFzZV93cml0ZV9sb2NrKCZhY3BpX2dibF9uYW1lc3BhY2VfcndfbG9jayk7CiNlbmRpZgoJ
-cmV0dXJuIHN0YXR1czsKfQo=
+> =
 
---===============7548541853727117000==--
+> Any other advice would be appreciated, too.
+> =
+
+> Best Regards,
+> Stefan
+> =
+
+> PS: I don't think loading a user-patched SSDT1 table at kernel start is t=
+he right way to go because:
+> - It doesn't work out of the box for new linux installations on the afore=
+mentioned laptop.
+> - If you change the bios setting for the graphic cards from switchable to=
+ intel-only or radeon-only the patched SSDT1 table would be
+> wrong.
+
+--===============1144862722495978742==--
 
