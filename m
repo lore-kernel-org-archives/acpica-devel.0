@@ -1,95 +1,88 @@
-Content-Type: multipart/mixed; boundary="===============6614475301291898009=="
+Content-Type: multipart/mixed; boundary="===============8282776697016600098=="
 MIME-Version: 1.0
-From: Zhang, Rui <rui.zhang at intel.com>
-Subject: Re: [Devel] Advice for in-kernel acpi patching
-Date: Thu, 31 Oct 2013 12:31:33 +0000
-Message-ID: <744357E9AAD1214791ACBA4B0B9092630119918D@SHSMSX101.ccr.corp.intel.com>
-In-Reply-To: 1AE640813FDE7649BE1B193DEA596E8802479D73@SHSMSX101.ccr.corp.intel.com
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] ACPICA version 20131115 released
+Date: Fri, 15 Nov 2013 18:49:07 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37C79FC19@ORSMSX103.amr.corp.intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6614475301291898009==
+--===============8282776697016600098==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
+15 November 2013. Summary of changes for version 20131115:
+
+This release is available at https://acpica.org/downloads
 
 
-> -----Original Message-----
-> From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of Zheng, Lv
-> Sent: Thursday, October 31, 2013 10:41 AM
-> To: Stefan Demharter; devel(a)acpica.org
-> Subject: Re: [Devel] Advice for in-kernel acpi patching
-> =
+1) ACPICA kernel-resident subsystem:
 
-> > From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of Stefan
-> > Demharter
-> > Sent: Thursday, October 31, 2013 5:32 AM
-> > To: devel(a)acpica.org
-> > Subject: [Devel] Advice for in-kernel acpi patching
-> >
-> > Hi all,
-> >
-> > I have a laptop (acer 3820tg) with muxed intel + radeon graphic cards
-> which has the following problem:
-> >
-> > If I use the intel as primary card and switch the radeon card off an
-> on, the mux wronlgy changes to the discrete card.
-> > This is particularily bad if you want to enable dynamic-power-off for
-> the radeon card.
-> >
-> > I identifed the problem to be a specific STORE-call in the method
-> PEGP._ON in the table SSDT1.
-> > I also wrote a module which patches the SSDT1 table on the fly. The
-> function which does the real patching is attached.
-> >
-> > As of now I think it's a somewhat hacky solution which should be
-> improved.
-> >
-> > At first I have the following questions:
-> > - Is there already an easy way to patch acpi methods within the linux
-> kernel?
-> > - Do you agree that solving such stuff within the kernel is the right
-> way to go?
-> =
+Resource Manager: Fixed loop termination for the "get AML length" function.=
+ The loop previously had an error termination on a NULL resource pointer, w=
+hich can never happen since the loop simply increments a valid resource poi=
+nter. This fix changes the loop to terminate with an error on an invalid en=
+d-of-buffer condition. The problem can be seen as an infinite loop by calle=
+rs to AcpiSetCurrentResources with an invalid or corrupted resource descrip=
+tor, or a resource descriptor that is missing an END_TAG descriptor. Report=
+ed by Dan Carpenter <dan.carpenter(a)oracle.com>. Lv Zheng, Bob Moore.
 
-> There are means in the Linux kernel can be used to achieve such kind of
-> namespace patching, please find the documentation at:
-> Documentation/acpi/dsdt-override
-> Documentation/initrd_table_override
+Table unload and ACPICA termination: Delete all attached data objects durin=
+g namespace node deletion. This fix updates namespace node deletion to dele=
+te the entire list of attached objects (attached via AcpiAttachObject) inst=
+ead of just one of the attached items. ACPICA BZ 1024. Tomasz Nowicki (toma=
+sz.nowicki(a)linaro.org).
 
-Plus, Documentation/acpi/method_customizing.txt introduces a way to overrid=
-e a control method at runtime, without rebuilding the kernel, please check =
-if it helps.
+ACPICA termination: Added support to delete all objects attached to the roo=
+t namespace node. This fix deletes any and all objects that have been attac=
+hed to the root node via AcpiAttachData. Previously, none of these objects =
+were deleted. Reported by Tomasz Nowicki. ACPICA BZ 1026.
 
-Thanks,
-rui
-> =
+Debug output: Do not emit the function nesting level for the in-kernel buil=
+d. The nesting level is really only useful during a single-thread execution=
+. Therefore, only enable this output for the AcpiExec utility. Also, only e=
+mit the thread ID when executing under AcpiExec (Context switches are still=
+ always detected and a message is emitted). ACPICA BZ 972.
 
-> I think the latter might be able to fit your requirement.
-> =
+Example Code and Data Size: These are the sizes for the OS-independent acpi=
+ca.lib produced by the Microsoft Visual C++ 9.0 32-bit compiler. The debug =
+version of the code includes the debug output trace mechanism and has a muc=
+h larger code and data size.
 
-> Thanks
-> -Lv
-> =
+  Current Release:
+    Non-Debug Version:  95.9K Code, 27.0K Data, 122.9K Total
+    Debug Version:     185.1K Code, 77.2K Data, 262.3K Total
+  Previous Release:
+    Non-Debug Version:  95.8K Code, 27.0K Data, 122.8K Total
+    Debug Version:     185.2K Code, 77.2K Data, 262.4K Total
 
-> >
-> > Any other advice would be appreciated, too.
-> >
-> > Best Regards,
-> > Stefan
-> >
-> > PS: I don't think loading a user-patched SSDT1 table at kernel start
-> is the right way to go because:
-> > - It doesn't work out of the box for new linux installations on the
-> aforementioned laptop.
-> > - If you change the bios setting for the graphic cards from
-> switchable
-> > to intel-only or radeon-only the patched SSDT1 table would be wrong.
-> _______________________________________________
-> Devel mailing list
-> Devel(a)acpica.org
-> https://lists.acpica.org/mailman/listinfo/devel
 
---===============6614475301291898009==--
+2) iASL Compiler/Disassembler and Tools:
+
+AcpiExec/Unix-OSL: Use <termios.h> instead of <termio.h>. This is the corre=
+ct portable POSIX header for terminal control functions.
+
+Disassembler: Fixed control method invocation issues related to the use of =
+the CondRefOf() operator. The problem is seen in the disassembly where cont=
+rol method invocations may not be disassembled properly if the control meth=
+od name has been used previously as an argument to CondRefOf. The solution =
+is to not attempt to emit an external declaration for the CondRefOf target =
+(it is not necessary in the first place). This prevents disassembler object=
+ type confusion. ACPICA BZ 988.
+
+Unix Makefiles: Added an option to disable compiler optimizations and the _=
+FORTIFY_SOURCE flag. Some older compilers have problems compiling ACPICA wi=
+th optimizations (reportedly, gcc 4.4 for example). This change adds a comm=
+and line option for make (NOOPT) that disables all compiler optimizations a=
+nd the _FORTIFY_SOURCE compiler flag. The default optimization is -O2 with =
+the _FORTIFY_SOURCE flag specified. ACPICA BZ 1034. Lv Zheng, Bob Moore.
+
+Tests/ASLTS: Added options to specify individual test cases and modes. This=
+ allows testers running aslts.sh to optionally specify individual test mode=
+s and test cases. Also added an option to disable the forced generation of =
+the ACPICA tools from source if desired. Lv Zheng.
+
+
+--===============8282776697016600098==--
 
