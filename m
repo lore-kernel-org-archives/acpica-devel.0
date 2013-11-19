@@ -1,71 +1,46 @@
-Content-Type: multipart/mixed; boundary="===============4499060629477095477=="
+Content-Type: multipart/mixed; boundary="===============6091266675417898827=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
+From: Dean Nelson <dnelson at redhat.com>
 Subject: Re: [Devel] [PATCH] eliminate use after free in
  AcpiOsGetNextFilename()
-Date: Tue, 19 Nov 2013 16:54:19 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37C7A349E@ORSMSX103.amr.corp.intel.com>
-In-Reply-To: 20131119164152.4957.33932.email-sent-by-dnelson@teal
+Date: Tue, 19 Nov 2013 12:06:08 -0600
+Message-ID: <528BA890.5060503@redhat.com>
+In-Reply-To: 94F2FBAB4432B54E8AACC7DFDE6C92E37C7A349E@ORSMSX103.amr.corp.intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4499060629477095477==
+--===============6091266675417898827==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Could you open a bugzilla on this? Thanks.
+On 11/19/2013 10:54 AM, Moore, Robert wrote:
+> Could you open a bugzilla on this? Thanks.
+>
+> https://bugs.acpica.org/
 
-https://bugs.acpica.org/
+Just did.
 
+Sorry, if I'm not doing things in the manner desired. I'm quite a
+novice to acpica. If you prefer that we open BZs and not post patches
+to the mailing list, I'm fine with that. Just let me know the protocol
+to follow.
 
-> -----Original Message-----
-> From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of Dean Nelson
-> Sent: Tuesday, November 19, 2013 8:41 AM
-> To: devel(a)acpica.org
-> Subject: [Devel] [PATCH] eliminate use after free in
-> AcpiOsGetNextFilename()
-> =
+I'm pulling acpica-unix2 into RHEL and Coverity Scan (a static analysis
+tool for C source code) flagged 164 potential 'defects'. A number are
+false-positives, but some are legit. (I've not been through them all,
+so I don't know the numbers.)
 
-> AcpiOsGetNextFilename() references temp_str in an unlikely error path,
-> after having freed the memory allocated for it.
-> =
+This was one of the legit ones, though the likelihood of it ever
+showing up is about NIL. I posted the patch because it was trivial
+and from it I hoped to learn how your process works.
 
-> Signed-off-by: Dean Nelson <dnelson(a)redhat.com>
-> ---
->  source/os_specific/service_layers/osunixdir.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> =
+As time allows, I hope to deal with the other legitimately flagged
+'defects'. But it will probably be awhile, as there are other pressing
+needs to attend to.
 
-> diff --git a/source/os_specific/service_layers/osunixdir.c
-> b/source/os_specific/service_layers/osunixdir.c
-> index 02b347d..ef2a924 100644
-> --- a/source/os_specific/service_layers/osunixdir.c
-> +++ b/source/os_specific/service_layers/osunixdir.c
-> @@ -239,14 +239,15 @@ AcpiOsGetNextFilename (
->              strcat (temp_str, dir_entry->d_name);
-> =
+Thanks,
+Dean
 
->              err =3D stat (temp_str, &temp_stat);
-> -            free (temp_str);
->              if (err =3D=3D -1)
->              {
->                  fprintf (stderr,
->                      "Cannot stat file (should not happen) - %s\n",
->                      temp_str);
-> +                free (temp_str);
->                  return (NULL);
->              }
-> +            free (temp_str);
-> =
-
->              if ((S_ISDIR (temp_stat.st_mode)
->                  && (ExternalInfo->RequestedFileType =3D=3D REQUEST_DIR_O=
-NLY))
-> _______________________________________________
-> Devel mailing list
-> Devel(a)acpica.org
-> https://lists.acpica.org/mailman/listinfo/devel
-
---===============4499060629477095477==--
+--===============6091266675417898827==--
 
