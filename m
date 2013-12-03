@@ -1,46 +1,50 @@
-Content-Type: multipart/mixed; boundary="===============6091266675417898827=="
+Content-Type: multipart/mixed; boundary="===============3660791082456749005=="
 MIME-Version: 1.0
-From: Dean Nelson <dnelson at redhat.com>
-Subject: Re: [Devel] [PATCH] eliminate use after free in
- AcpiOsGetNextFilename()
-Date: Tue, 19 Nov 2013 12:06:08 -0600
-Message-ID: <528BA890.5060503@redhat.com>
-In-Reply-To: 94F2FBAB4432B54E8AACC7DFDE6C92E37C7A349E@ORSMSX103.amr.corp.intel.com
+From: Al Stone <ahs3 at redhat.com>
+Subject: [Devel] GPE blocks in reduced hardware mode
+Date: Tue, 03 Dec 2013 15:38:23 -0700
+Message-ID: <529E5D5F.0@redhat.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6091266675417898827==
+--===============3660791082456749005==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On 11/19/2013 10:54 AM, Moore, Robert wrote:
-> Could you open a bugzilla on this? Thanks.
->
-> https://bugs.acpica.org/
+Howdy.
 
-Just did.
+I've been trying to do some clean-up on the Linux ACPI driver with
+regard to the reduced hardware profile introduced in ACPI 5.0.
 
-Sorry, if I'm not doing things in the manner desired. I'm quite a
-novice to acpica. If you prefer that we open BZs and not post patches
-to the mailing list, I'm fine with that. Just let me know the protocol
-to follow.
+In thinking about GPE block devices, I was looking through the
+functions in source/components/events/evxfgpe.c and noticed that
+they are all #ifdef'd out for ACPI_REDUCED_HARDWARE.  When I look
+back through the specification, however, I cannot find any place
+where they are prohibited.
 
-I'm pulling acpica-unix2 into RHEL and Coverity Scan (a static analysis
-tool for C source code) flagged 164 potential 'defects'. A number are
-false-positives, but some are legit. (I've not been through them all,
-so I don't know the numbers.)
+Clearly, the gpe0/1 blocks in the FADT are not to be used; this
+is explicitly stated in section 5.2.9 of the spec.  Could someone
+please point me to a similar statement for a GPE block device?  I
+just cannot seem to find it.
 
-This was one of the legit ones, though the likelihood of it ever
-showing up is about NIL. I posted the patch because it was trivial
-and from it I hoped to learn how your process works.
+The closest thing I can find is section 9.10 implying that a GPE
+block device is an extension of the gpe0/1 blocks from the FADT,
+but there is no explicit statement there so it is ambiguous to me.
 
-As time allows, I hope to deal with the other legitimately flagged
-'defects'. But it will probably be awhile, as there are other pressing
-needs to attend to.
+Thanks in advance for any pointers; I'm just puzzled at this point
+and trying to understand how the conclusion came to be.
 
-Thanks,
-Dean
+-- =
 
---===============6091266675417898827==--
+ciao,
+al
+-----------------------------------
+Al Stone
+Software Engineer
+Red Hat, Inc.
+ahs3(a)redhat.com
+-----------------------------------
+
+--===============3660791082456749005==--
 
