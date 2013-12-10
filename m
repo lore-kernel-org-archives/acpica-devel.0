@@ -1,214 +1,132 @@
-Content-Type: multipart/mixed; boundary="===============4302339672841908107=="
+Content-Type: multipart/mixed; boundary="===============4971609565334199678=="
 MIME-Version: 1.0
 From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] GPE blocks in reduced hardware mode
-Date: Thu, 05 Dec 2013 16:25:30 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37C7A66B3@ORSMSX103.amr.corp.intel.com>
-In-Reply-To: 52A0A897.4000905@redhat.com
+Subject: Re: [Devel] [PATCH] PCI/ACPI: Use PCIe segment in the ACPI HEST AER
+ error sources
+Date: Tue, 10 Dec 2013 00:18:34 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37C7B5522@ORSMSX103.amr.corp.intel.com>
+In-Reply-To: CAErSpo5z7XisBMb2WZa0hJQv5=c-zdDgX+DsP_HK8v0BoysZWQ@mail.gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4302339672841908107==
+--===============4971609565334199678==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
+It will go out in the next ACPICA release, in a few days. Our git tree can =
+be accessed via the acpica.org website, but the code is not in Linux format.
+
+Bob
 
 
 > -----Original Message-----
-> From: Al Stone [mailto:ahs3(a)redhat.com]
-> Sent: Thursday, December 05, 2013 8:24 AM
-> To: Moore, Robert; devel(a)acpica.org
-> Subject: Re: [Devel] GPE blocks in reduced hardware mode
+> From: Bjorn Helgaas [mailto:bhelgaas(a)google.com]
+> Sent: Monday, December 09, 2013 3:34 PM
+> To: Moore, Robert
+> Cc: Betty Dall; rjw(a)rjwysocki.net; Zheng, Lv; devel(a)acpica.org
+> Subject: Re: [PATCH] PCI/ACPI: Use PCIe segment in the ACPI HEST AER error
+> sources
 > =
 
-> On 12/04/2013 08:51 AM, Moore, Robert wrote:
-> > Some text pulled from the ACPI 5.0 Spec:
-> >
-> >
-> > 5.6 ACPI Event Programming Model
-> > The ACPI event programming model is based on the SCI interrupt and
-> General-Purpose Event (GPE) register. ACPI provides an extensible method
-> to raise and handle the SCI interrupt, as described in this section.
-> > Hardware-reduced ACPI platforms (Section 4.1) use GPIO Interrupt
-> Connections to signal ACPI Events, described in Section 5.6.5.
-> >
-> >
-> > 5.6.1 ACPI Event Programming Model Components The components of the
-> > ACPI event programming model are the following:
-> > * OSPM
-> > * FADT
-> > * PM1a_STS, PM1b_STS and PM1a_EN, PM1b_EN fixed register blocks
-> > * GPE0_BLK and GPE1_BLK register blocks
-> > * GPE register blocks defined in GPE block devices
-> >
-> >
-> > 5.6.5 GPIO-signaled ACPI Events
-> > On Hardware-reduced ACPI platforms, ACPI events are signaled when a
-> > GPIO Interrupt is received by OSPM,
-> >
-> >
-> > 7.2.13 PRW (Power Resources for Wake)
-> > For HW-Reduced ACPI platforms, the GpeInfo structure is ignored by OSPM.
-> >
-> >
-> >>> Hardware-reduced ACPI platforms (Section 4.1) use GPIO Interrupt
-> Connections to signal ACPI Events.
-> >
-> > I think this sentence says that on hardware-reduced ACPI platforms,
-> there are no GPEs, period.
-> > Bob
+> On Thu, Dec 5, 2013 at 9:11 AM, Moore, Robert <robert.moore(a)intel.com>
+> wrote:
+> > Ok, I've picked up the ACPICA changes in actbl1.h
 > =
 
-> Thanks for the pointers; I'm afraid I can't add anything to that list --
-> it matches what I came up with when I scanned again last night.
+> Bob, when do you plan to ask Linus to pull the actbl1.h change?  Do you
+> have a public git tree with that commit in it?  If so, I could cherry-pick
+> it and apply the PCI part on top of it.
 > =
 
-> I agree with you that the spec is saying are no GPEs in hardware reduced,
-> but I think it is implied, versus it being stated explicitly.
-> And that's where I get a bit puzzled.
-
-
-Welcome to the ACPI spec :-)
-
-
-
-> =
-
-> I'll take this up with the ASWG and see if I can get some sort of
-> unambiguous wording added in.
+> Bjorn
 > =
 
 > >> -----Original Message-----
-> >> From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of Moore,
-> >> Robert
-> >> Sent: Tuesday, December 03, 2013 10:28 PM
-> >> To: Al Stone; devel(a)acpica.org
-> >> Subject: Re: [Devel] GPE blocks in reduced hardware mode
+> >> From: Betty Dall [mailto:betty.dall(a)hp.com]
+> >> Sent: Thursday, December 05, 2013 7:08 AM
+> >> To: lenb(a)kernel.org; rjw(a)rjwysocki.net; bhelgaas(a)google.com; Moo=
+re,
+> >> Robert; Zheng, Lv
+> >> Cc: linux-acpi(a)vger.kernel.org; linux-kernel(a)vger.kernel.org; linu=
+x-
+> >> pci(a)vger.kernel.org; devel(a)acpica.org; Betty Dall
+> >> Subject: [PATCH] PCI/ACPI: Use PCIe segment in the ACPI HEST AER
+> >> error sources
+> >>
+> >> In the discussion for this set of patches:
+> >> https://lkml.org/lkml/2013/6/6/517,
+> >> Bjorn Helgaas pointed out that the ACPI HEST AER error sources do not
+> >> have the PCIe segment number associated with the bus. I worked with
+> >> the ACPI spec and got this change to definition of the "Bus" field
+> >> into the recently released ACPI Spec 5.0a section 18.3.2.3-5:
+> >>
+> >> "Identifies the PCI Bus and Segment of the device. The Bus is encoded
+> >> in bits 0-7. For systems that expose multiple PCI segment groups, the
+> >> segment number is encoded in bits 8-23 and bits 24-31 must be zero.
+> >> For systems that do not expose multiple PCI segment groups, bits 8-31
+> >> must be zero. If the GLOBAL flag is specified, this field is ignored."
+> >>
+> >> This patch makes use of the new definition in the only place in the
+> >> kernel that uses the acpi_hest_aer_common's bus field.
+> >>
+> >> Signed-off-by: Betty Dall <betty.dall(a)hp.com>
+> >> ---
+> >>
+> >>  drivers/pci/pcie/aer/aerdrv_acpi.c |    8 ++++----
+> >>  include/acpi/actbl1.h              |   11 ++++++++++-
+> >>  2 files changed, 14 insertions(+), 5 deletions(-)
 > >>
 > >>
+> >> diff --git a/drivers/pci/pcie/aer/aerdrv_acpi.c
+> >> b/drivers/pci/pcie/aer/aerdrv_acpi.c
+> >> index cf611ab..93f852b 100644
+> >> --- a/drivers/pci/pcie/aer/aerdrv_acpi.c
+> >> +++ b/drivers/pci/pcie/aer/aerdrv_acpi.c
+> >> @@ -23,10 +23,10 @@
+> >>  static inline int hest_match_pci(struct acpi_hest_aer_common *p,
+> >>                                struct pci_dev *pci)  {
+> >> -     return  (0           =3D=3D pci_domain_nr(pci->bus) &&
+> >> -              p->bus      =3D=3D pci->bus->number &&
+> >> -              p->device   =3D=3D PCI_SLOT(pci->devfn) &&
+> >> -              p->function =3D=3D PCI_FUNC(pci->devfn));
+> >> +     return   ACPI_HEST_SEGMENT(p->bus) =3D=3D pci_domain_nr(pci->bus=
+) &&
+> >> +              ACPI_HEST_BUS(p->bus)     =3D=3D pci->bus->number &&
+> >> +              p->device                 =3D=3D PCI_SLOT(pci->devfn) &&
+> >> +              p->function               =3D=3D PCI_FUNC(pci->devfn);
+> >>  }
 > >>
-> >>> -----Original Message-----
-> >>> From: Al Stone [mailto:ahs3(a)redhat.com]
-> >>> Sent: Tuesday, December 03, 2013 5:39 PM
-> >>> To: Moore, Robert; devel(a)acpica.org
-> >>> Subject: Re: [Devel] GPE blocks in reduced hardware mode
-> >>>
-> >>> On 12/03/2013 05:18 PM, Moore, Robert wrote:
-> >>>> The first thing is that there are no GPE block devices in the
-> >>>> field,
-> >>> never have been. I don't think ACPICA actually supports them fully.
-> >>> It is a bit of an "orphan" feature of ACPI.
-> >>>
-> >>> I see.  Yeah, I did find GPE block device support confusing in the
-> code.
-> >>> It seems like the infrastructure to handle them is present, but
-> >>> there is no code to handle the "ACPI0006" ID anywhere I can find
-> >>> (that may be a Linux limitation, though).
+> >>  static inline bool hest_match_type(struct acpi_hest_header
+> >> *hest_hdr, diff --git a/include/acpi/actbl1.h b/include/acpi/actbl1.h
+> >> index 556c83ee..0c7428b 100644
+> >> --- a/include/acpi/actbl1.h
+> >> +++ b/include/acpi/actbl1.h
+> >> @@ -457,7 +457,7 @@ struct acpi_hest_aer_common {
+> >>       u8 enabled;
+> >>       u32 records_to_preallocate;
+> >>       u32 max_sections_per_record;
+> >> -     u32 bus;
+> >> +     u32 bus;                /* bus: bits 0-7; segment: bits 8-23 */
+> >>       u16 device;
+> >>       u16 function;
+> >>       u16 device_control;
+> >> @@ -473,6 +473,15 @@ struct acpi_hest_aer_common {
+> >>  #define ACPI_HEST_FIRMWARE_FIRST        (1)
+> >>  #define ACPI_HEST_GLOBAL                (1<<1)
 > >>
+> >> +/*
+> >> + * The segment/bus of the PCIe device is encoded in the bus field
+> >> + * of the acpi_hest_aer_common structure as follows:
+> >> + *      23:8 =3D segment
+> >> + *      7:0 =3D bus
+> >> + */
+> >> +#define ACPI_HEST_SEGMENT(bus)               (((bus) >> 8) & 0xFFFF)
+> >> +#define ACPI_HEST_BUS(bus)           ((bus) & 0xFF)
+> >> +
+> >>  /* Hardware Error Notification */
 > >>
-> >> Correct. There needs to be a linux driver that is loaded upon
-> >> detection of an _HID of ACPI0006. This does not exist. Thus, there is
-> >> no support for this feature in Linux.
-> >>
-> >> The GPE block device was a bit of a fantasy that never materialized
-> >> in any hardware that I know of. And one could certainly conclude with
-> >> some high degree of probability that nobody is going to implement
-> >> custom hardware to support a GPE block device on a (ahem) "hardware
-> reduced platform".
-> >>
-> >> Bob
-> >>
-> >>
-> >>
-> >>
-> >>>
-> >>>> I'll have to take a look closer at the spec for an exact reference,
-> >>>> but
-> >>> basically one of the things that ACPI_REDUCED_HARDWARE means is no
-> >>> GPEs, IIRC.
-> >>>
-> >>> Right -- that's what ACPI_REDUCED_HARDWARE means in the ACPICA code;
-> >>> that seems pretty clear.  I just can't seem to find anything that
-> >>> clear in the spec :/...
-> >>>
-> >>> I'll continue to look in the spec but if you find something before I
-> >>> do, do let me know.
-> >>>
-> >>> Thanks!
-> >>>
-> >>>>> -----Original Message-----
-> >>>>> From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of Al
-> >>>>> Stone
-> >>>>> Sent: Tuesday, December 03, 2013 2:38 PM
-> >>>>> To: devel(a)acpica.org
-> >>>>> Subject: [Devel] GPE blocks in reduced hardware mode
-> >>>>>
-> >>>>> Howdy.
-> >>>>>
-> >>>>> I've been trying to do some clean-up on the Linux ACPI driver with
-> >>>>> regard to the reduced hardware profile introduced in ACPI 5.0.
-> >>>>>
-> >>>>> In thinking about GPE block devices, I was looking through the
-> >>>>> functions in source/components/events/evxfgpe.c and noticed that
-> >>>>> they are all #ifdef'd out for ACPI_REDUCED_HARDWARE.  When I look
-> >>>>> back through the specification, however, I cannot find any place
-> >>>>> where they
-> >>> are prohibited.
-> >>>>>
-> >>>>> Clearly, the gpe0/1 blocks in the FADT are not to be used; this is
-> >>>>> explicitly stated in section 5.2.9 of the spec.  Could someone
-> >>>>> please point me to a similar statement for a GPE block device?  I
-> >>>>> just cannot seem to find it.
-> >>>>>
-> >>>>> The closest thing I can find is section 9.10 implying that a GPE
-> >>>>> block device is an extension of the gpe0/1 blocks from the FADT,
-> >>>>> but there is no explicit statement there so it is ambiguous to me.
-> >>>>>
-> >>>>> Thanks in advance for any pointers; I'm just puzzled at this point
-> >>>>> and trying to understand how the conclusion came to be.
-> >>>>>
-> >>>>> --
-> >>>>> ciao,
-> >>>>> al
-> >>>>> -----------------------------------
-> >>>>> Al Stone
-> >>>>> Software Engineer
-> >>>>> Red Hat, Inc.
-> >>>>> ahs3(a)redhat.com
-> >>>>> -----------------------------------
-> >>>>> _______________________________________________
-> >>>>> Devel mailing list
-> >>>>> Devel(a)acpica.org
-> >>>>> https://lists.acpica.org/mailman/listinfo/devel
-> >>>
-> >>>
-> >>> --
-> >>> ciao,
-> >>> al
-> >>> -----------------------------------
-> >>> Al Stone
-> >>> Software Engineer
-> >>> Red Hat, Inc.
-> >>> ahs3(a)redhat.com
-> >>> -----------------------------------
-> >> _______________________________________________
-> >> Devel mailing list
-> >> Devel(a)acpica.org
-> >> https://lists.acpica.org/mailman/listinfo/devel
-> =
+> >>  struct acpi_hest_notify {
 
-> =
-
-> --
-> ciao,
-> al
-> -----------------------------------
-> Al Stone
-> Software Engineer
-> Red Hat, Inc.
-> ahs3(a)redhat.com
-> -----------------------------------
-
---===============4302339672841908107==--
+--===============4971609565334199678==--
 
