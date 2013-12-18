@@ -1,226 +1,109 @@
-Content-Type: multipart/mixed; boundary="===============2363154188720144356=="
+Content-Type: multipart/mixed; boundary="===============6920126445716912265=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] ACPICA support for reduced-hardware platforms
-Date: Wed, 18 Dec 2013 00:56:23 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37C7BA18B@ORSMSX103.amr.corp.intel.com>
+From: Zheng, Lv <lv.zheng at intel.com>
+Subject: Re: [Devel] [PATCH 05/11] drivers: acpi: Include appropriate header
+ file in utstate.c
+Date: Wed, 18 Dec 2013 06:17:33 +0000
+Message-ID: <1AE640813FDE7649BE1B193DEA596E88024987F6@SHSMSX101.ccr.corp.intel.com>
+In-Reply-To: 94F2FBAB4432B54E8AACC7DFDE6C92E37C7B99F5@ORSMSX103.amr.corp.intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2363154188720144356==
+--===============6920126445716912265==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-There have been several questions that have come up concerning the ACPICA s=
-upport for hardware reduced platforms. Here is an updated/clarified section=
- of the ACPICA reference manual that addresses this (hopefully completely.)
+Hi,
 
-Please forward to any interested parties. The updated document will be rele=
-ased to the public this week.
+Currently we didn't do much on automatically optimized out ACPI_FUTURE_USAG=
+E functions as long as they do not affect the generation of vmlinux binary.
 
-Bob
-
-
-5.1.1	Reduced Hardware Platforms
-
-Reduced hardware platforms are defined in ACPI 5.0 and refer to ACPI system=
-s without the usual ACPI hardware. There are two ways in which the reduced =
-hardware platforms are supported by ACPICA:
-
-1) A runtime configuration feature that dynamically disables all ACPI hardw=
-are access code whenever the HW_REDUCED_ACPI flag is found to be set in the=
- FADT.
-
-2) A compile-time option to entirely remove the ACPI hardware support code =
-from the ACPICA subsystem. This option is primarily intended for custom bui=
-lds of host operating systems where the target platform is known to support=
- ACPI in the reduced hardware mode.
-
-5.1.1.1	Runtime Reduced Hardware Support
-
-This feature automatically supports reduced hardware platforms without any =
-code changes. The reduced hardware support is dynamically enabled via the H=
-W_REDUCED_ACPI flag in the revision 5 FADT. If this flag is set, ACPICA wil=
-l not attempt to initialize or use any of the usual ACPI hardware. Note, wh=
-en this flag is set, all of the following ACPI hardware is assumed to be no=
-t present and is not initialized or accessed:
-
-General Purpose Events (GPEs)
-Fixed Events (PM1a/PM1b and PM Control)
-Power Management Timer and Console Buttons (power/sleep)
-Real-time Clock Alarm
-Global Lock
-System Control Interrupt (SCI)
-The FACS is assumed to be non-existent
-
-5.1.1.2	Compile-Time Reduced Hardware Support
-
-This option is used during the build/compile of the ACPICA subystem. It dis=
-ables the compilation of all code related to the hardware in the previous s=
-ection. When the ACPI_REDUCED_HARDWARE option is specified during the build=
-, all ACPI hardware-related code is omitted from the source code generation=
-, resulting in a considerable savings of both code and data. The affected e=
-xternal interfaces are stubbed, however, and will return a status value of =
-AE_NOT_CONFIGURED. The affected external interfaces are shown below:
-
-AcpiInstallSciHandler
-AcpiRemoveSciHandler
-AcpiInstallGlobalEventHandler
-AcpiInstallFixedEventHandler
-AcpiRemoveFixedEventHandler
-AcpiInstallGpeHandler
-AcpiRemoveGpeHandler
-AcpiAcquireGlobalLock
-AcpiReleaseGlobalLock
-AcpiEnable
-AcpiDisable
-AcpiEnableEvent
-AcpiDisableEvent
-AcpiClearEvent
-AcpiGetEventStatus
-AcpiUpdateAllGpes
-AcpiEnableGpe
-AcpiDisableGpe
-AcpiSetGpe
-AcpiSetupGpeForWake
-AcpiSetGpeWakeMask
-AcpiClearGpe
-AcpiGetGpeStatus
-AcpiFinishGpe
-AcpiDisableAllGpes
-AcpiEnableAllRuntimeGpes
-AcpiInstallGpeBlock
-AcpiRemoveGpeBlock
-AcpiGetGpeDevice
-AcpiGetTimerResolution
-AcpiGetTimer
-AcpiGetTimerDuration
-AcpiReadBitRegister
-AcpiWriteBitRegister
-AcpiSetFirmwareWakingVector
-AcpiSetFirmwareWakingVector64
-AcpiEnterSleepStateS4bios
-
-
-
-
-> -----Original Message-----
-> From: acpi-bounces(a)linux.intel.com [mailto:acpi-bounces(a)linux.intel.c=
-om]
-> On Behalf Of Zhao, Lijian
-> Sent: Tuesday, December 17, 2013 4:42 PM
-> To: Wysocki, Rafael J; Arjan van de Ven; Van De Ven, Arjan
-> Cc: Sheng, Alan; 'acpi(a)linux.intel.com'; 'linux-power-
-> mgmt(a)linux.intel.com'; Schlobohm, Bruce; Wang, Brett
-> Subject: RE: [ACPI] Re: [Linux-power-mgmt] Linux Power US/China
-> Engineering Meeting Minutes - 2013-12-16
+> From: Moore, Robert
+> Sent: Wednesday, December 18, 2013 1:36 AM
 > =
 
-> Yes, the byt-t/32 platform is not actual hw-reduced platform. But the
-> implementation in fw totally follow the 5.0 spec for HW-reduced mode and
-> already PRQ. Now people are working on to gain the same level of quality
-> on Android side with ACPI 5.0 and HW-reduced mode.
+> I'm not sure what version of ACPICA you are looking at, but in the master=
+ git tree for ACPICA, the file accommon.h includes "acutils.h".
 > =
 
-> =
-
-> The following statement for BYT-T.
-> =
-
-> > 	What we prototyped on Clovertrail:
-> > 	All HW regs, including, ACPI GPIO support; FADT registers become
-> > reserved,
->              ACPI 5.0 interface for GPIO/I2C/UART had been fully
-> supported.
-> > 	no FACS, and so no global lock;
-> 	Correct.
-> > 	no FADT reset
-> 	Yes, EFI service will do the reset.
-> > 	no fixed C-states
-> 	We do have C-state and confirmed working.
-> > 	no fixed events
-> 	Yes.
-> > 	no GPEs
-> 	Yes.
-> > 	no FADT-based S3/S3 entry - new DSDT sleep method required
-> 	Yes, only s0i3 supported and which should not cost extra power than
-> S3.
-> > 	no PM-TIMER
-> 	Yes
-> > 	no PIC
-> 	We do have PIC, but running in IOAPIC mode.
-> > 	no HPET
-> 	We do have HPET.
-> > 	no PIT
-> 	We do have PIT, seems no one is using that.
+> > -----Original Message-----
+> > From: Rashika Kheria [mailto:rashika.kheria(a)gmail.com]
+> > Sent: Tuesday, December 17, 2013 1:22 AM
+> > To: linux-kernel(a)vger.kernel.org
+> > Cc: Moore, Robert; Zheng, Lv; Wysocki, Rafael J; Len Brown; linux-
+> > acpi(a)vger.kernel.org; josh(a)joshtriplett.org; devel(a)acpica.org
+> > Subject: [PATCH 05/11] drivers: acpi: Include appropriate header file in
+> > utstate.c
 > >
-> =
-
-> Best regards,
-> Lance
-> =
-
-> -----Original Message-----
-> From: acpi-bounces(a)linux.intel.com [mailto:acpi-bounces(a)linux.intel.c=
-om]
-> On Behalf Of Wysocki, Rafael J
-> Sent: Wednesday, December 18, 2013 12:28 AM
-> To: Arjan van de Ven; Van De Ven, Arjan
-> Cc: 'acpi(a)linux.intel.com'; 'linux-power-mgmt(a)linux.intel.com'; Schlo=
-bohm,
-> Bruce
-> Subject: [ACPI] Re: [Linux-power-mgmt] Linux Power US/China Engineering
-> Meeting Minutes - 2013-12-16
-> =
-
-> On 12/17/2013 5:14 PM, Arjan van de Ven wrote:
-> > On 12/17/2013 7:51 AM, Rafael J. Wysocki wrote:
-> >> On 12/17/2013 4:40 PM, Van De Ven, Arjan wrote:
-> >>> All 64 bit tablets will not be reduced.
-> >>
-> >> That's a good news.
-> >>
-> >> It would be awesome if we could simply assume no HW-reduced x86, at
-> >> least as far as the mainline is concerned.
-> >>
-> >>> Also byt-t/32 is not actually reduced... They just set the bit for
-> >>> Windows compat.
-> >>> I'm working with the Windows folks to get the need for that fixed.
-> >>
-> >> If the above assumption can be made, we may simply ignore the
-> >> HW-reduced bit on x86, I suppose.
+> > Include appropriate header file acutils.h in acpica/utstate.c because
+> > function acpi_ut_create_pkg_state_and_push() has its prototype declarat=
+ion
+> > in acutils.h. Also, encloses the function in acpica/utstate.c in ifdef
+> > condition of ACPI_FUTURE_USAGE.
 > >
-> > people are booting linux on a HWred baytrail T today.
-> > just google for "asus t100".... that's a baytrail T.
+> > This eliminates the following warning in utstate.c:
+> > drivers/acpi/acpica/utstate.c:64:1: warning: no previous prototype for
+> > =E2=80=98acpi_ut_create_pkg_state_and_push=E2=80=99 [-Wmissing-prototyp=
+es]
 > >
-> =
+> > Signed-off-by: Rashika Kheria <rashika.kheria(a)gmail.com>
+> > Reviewed-by: Josh Triplett <josh(a)joshtriplett.org>
+> > ---
+> >  drivers/acpi/acpica/utstate.c |    3 +++
+> >  1 file changed, 3 insertions(+)
+> >
+> > diff --git a/drivers/acpi/acpica/utstate.c b/drivers/acpi/acpica/utstat=
+e.c
+> > index 03c4c2f..0920d23 100644
+> > --- a/drivers/acpi/acpica/utstate.c
+> > +++ b/drivers/acpi/acpica/utstate.c
+> > @@ -43,6 +43,7 @@
+> >
+> >  #include <acpi/acpi.h>
+> >  #include "accommon.h"
+> > +#include "acutils.h"
 
-> I know this generally works today, but it may not work any more after the
-> changes that the Linaro folks are proposing.
-> =
+IMO, this line is useless.
 
-> So if we can assume no HW-reduced x86, then we can ignore that bit on
-> x86 entirely and allow the ARM people to do what they want for HW-reduced.
-> Otherwise, we have to be very careful about changes related to HW-reduced,
-> because they may break something for us inadvertently and it is quite
-> difficult to say in advance what that may be.
-> =
+> >
+> >  #define _COMPONENT          ACPI_UTILITIES
+> >  ACPI_MODULE_NAME("utstate")
+> > @@ -60,6 +61,7 @@ ACPI_MODULE_NAME("utstate")
+> >   * DESCRIPTION: Create a new state and push it
+> >   *
+> >
+> > ***********************************************************************=
+***
+> > ****/
+> > +#ifdef  ACPI_FUTURE_USAGE
+> >  acpi_status
+> >  acpi_ut_create_pkg_state_and_push(void *internal_object,
+> >  				  void *external_object,
+> > @@ -79,6 +81,7 @@ acpi_ut_create_pkg_state_and_push(void *internal_obje=
+ct,
+> >  	acpi_ut_push_generic_state(state_list, state);
+> >  	return (AE_OK);
+> >  }
+> > +#endif
 
-> I mean I have no good arguments as "this will break that on machine X"
-> for rejecting changes being proposed, especially if "machine X" is not on
-> the market yet (or it is on the market, but no one has tried to install
-> Linux on it yet).
-> =
+IMO, these lines are useful.
+I have a plan to do a cleanup on all ACPICA build warnings so that such inc=
+onsistencies can be sorted out.
+Maybe it is time to do it right now.
 
-> _______________________________________________
-> acpi mailing list
-> acpi(a)linux.intel.com
-> http://linux.intel.com/mailman/listinfo/acpi
-> _______________________________________________
-> acpi mailing list
-> acpi(a)linux.intel.com
-> http://linux.intel.com/mailman/listinfo/acpi
+Thanks
+-Lv
 
---===============2363154188720144356==--
+> >
+> >
+> > /**********************************************************************=
+***
+> > ******
+> >   *
+> > --
+> > 1.7.9.5
+
+
+--===============6920126445716912265==--
 
