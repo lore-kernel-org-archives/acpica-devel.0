@@ -1,93 +1,194 @@
-Content-Type: multipart/mixed; boundary="===============2374642491442480478=="
+Content-Type: multipart/mixed; boundary="===============1246941107607784081=="
 MIME-Version: 1.0
 From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] ACPICA version 20140114 released
-Date: Tue, 14 Jan 2014 22:35:51 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37C7BF3B0@ORSMSX103.amr.corp.intel.com>
+Subject: Re: [Devel] [PATCH 1/2] ACPI / ACPICA: refactor
+ acpi_evaluate_object() to reduce nesting if
+Date: Fri, 24 Jan 2014 16:29:19 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37C7D13E4@ORSMSX103.amr.corp.intel.com>
+In-Reply-To: 1390580407-14525-1-git-send-email-hanjun.guo@linaro.org
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2374642491442480478==
+--===============1246941107607784081==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-14 January 2014. Summary of changes for version 20140114:
+Please file a bugzilla on this at:
 
-This release is available at https://acpica.org/downloads
+https://bugs.acpica.org/
 
-1) ACPICA kernel-resident subsystem:
-
-Updated all ACPICA copyrights and signons to 2014. Added the 2014 copyright=
- to all module headers and signons, including the standard Linux header. Th=
-is affects virtually every file in the ACPICA core subsystem, iASL compiler=
-, all ACPICA utilities, and the test suites.
-
-Improved parameter validation for AcpiInstallGpeBlock. Added the following =
-checks:
-1) The incoming device handle refers to type ACPI_TYPE_DEVICE.
-2) There is not already a GPE block attached to the device.
-Likewise, with AcpiRemoveGpeBlock, ensure that the incoming object is a dev=
-ice.
-
-Correctly support "references" in the ACPI_OBJECT. This change fixes the su=
-pport to allow references (namespace nodes) to be passed as arguments to co=
-ntrol methods via the evaluate object interface. This is probably most usef=
-ul for testing purposes, however.
-
-Improved support for 32/64 bit physical addresses in printf()-like output. =
-This change improves the support for physical addresses in printf debug sta=
-tements and other output on both 32-bit and 64-bit hosts. It consistently o=
-utputs the appropriate number of bytes for each host. The %p specifier is u=
-nsatisfactory since it does not emit uniform output on all hosts/clib imple=
-mentations (on some, leading zeros are not supported, leading to difficult-=
-to-read output).
-
-Example Code and Data Size: These are the sizes for the OS-independent acpi=
-ca.lib produced by the Microsoft Visual C++ 9.0 32-bit compiler. The debug =
-version of the code includes the debug output trace mechanism and has a muc=
-h larger code and data size.
-
-  Current Release:
-    Non-Debug Version:  96.2K Code, 27.0K Data, 123.2K Total
-    Debug Version:     187.5K Code, 78.3K Data, 265.8K Total
-  Previous Release:
-    Non-Debug Version:  96.1K Code, 27.0K Data, 123.1K Total
-    Debug Version:     185.6K Code, 77.3K Data, 262.9K Total
+thanks.
+Bob
 
 
-2) iASL Compiler/Disassembler and Tools:
+> -----Original Message-----
+> From: Hanjun Guo [mailto:hanjun.guo(a)linaro.org]
+> Sent: Friday, January 24, 2014 8:20 AM
+> To: Zheng, Lv; Moore, Robert
+> Cc: Rafael J. Wysocki; linux-acpi(a)vger.kernel.org; devel(a)acpica.org;
+> patches(a)linaro.org; linux-kernel(a)vger.kernel.org; linaro-
+> acpi(a)lists.linaro.org; Hanjun Guo
+> Subject: [PATCH 1/2] ACPI / ACPICA: refactor acpi_evaluate_object() to
+> reduce nesting if
+> =
 
-iASL: Fix a possible fault when using the Connection() operator. Fixes a pr=
-oblem if the parent Field definition for the Connection operator refers to =
-an operation region that does not exist. ACPICA BZ 1064.
+> acpi_evaluate_object() has nesting if judgement to make code a little bit
+> complicated, refactor it to make things simple.
+> =
 
-AcpiExec: Load of local test tables is now optional. The utility has the ca=
-pability to load some various tables to test features of ACPICA. However, t=
-here are enough of them that the output of the utility became confusing. Wi=
-th this change, only the required local tables are displayed (RSDP, XSDT, e=
-tc.) along with the actual tables loaded via the command line specification=
-. This makes the default output simler and easier to understand. The -el co=
-mmand line option restores the original behavior for testing purposes.
+> Signed-off-by: Hanjun Guo <hanjun.guo(a)linaro.org>
+> ---
+>  drivers/acpi/acpica/nsxfeval.c |  104 +++++++++++++++++++----------------
+> -----
+>  1 file changed, 50 insertions(+), 54 deletions(-)
+> =
 
-AcpiExec: Added support for overlapping operation regions. This change expa=
-nds the simulation of operation regions by supporting regions that overlap =
-within the given address space. Supports SystemMemory and SystemIO. ASLTS t=
-est suite updated also. David Box. ACPICA BZ 1031.
+> diff --git a/drivers/acpi/acpica/nsxfeval.c
+> b/drivers/acpi/acpica/nsxfeval.c index 1f0c28b..a1b0b88 100644
+> --- a/drivers/acpi/acpica/nsxfeval.c
+> +++ b/drivers/acpi/acpica/nsxfeval.c
+> @@ -370,68 +370,64 @@ acpi_evaluate_object(acpi_handle handle,
+>  	 * If we are expecting a return value, and all went well above,
+>  	 * copy the return value to an external object.
+>  	 */
+> -	if (return_buffer) {
+> -		if (!info->return_object) {
+> -			return_buffer->length =3D 0;
+> -		} else {
+> -			if (ACPI_GET_DESCRIPTOR_TYPE(info->return_object) =3D=3D
+> -			    ACPI_DESC_TYPE_NAMED) {
+> -				/*
+> -				 * If we received a NS Node as a return object,
+> this means that
+> -				 * the object we are evaluating has nothing
+> interesting to
+> -				 * return (such as a mutex, etc.)  We return an
+> error because
+> -				 * these types are essentially unsupported by this
+> interface.
+> -				 * We don't check up front because this makes it
+> easier to add
+> -				 * support for various types at a later date if
+> necessary.
+> -				 */
+> -				status =3D AE_TYPE;
+> -				info->return_object =3D NULL;	/* No need to delete
+> a NS Node */
+> -				return_buffer->length =3D 0;
+> -			}
+> +	if (!return_buffer)
+> +		goto out;
+> =
 
-AcpiExec: Added region handler support for PCI_Config and EC spaces. This a=
-llows AcpiExec to simulate these address spaces, similar to the current sup=
-port for SystemMemory and SystemIO.
+> -			if (ACPI_SUCCESS(status)) {
+> +	if (!info->return_object) {
+> +		return_buffer->length =3D 0;
+> +		goto out;
+> +	}
+> =
 
-Debugger: Added new command to read/write/compare all namespace objects. Th=
-e command "test objects" will exercise the entire namespace by writing new =
-values to each data object, and ensuring that the write was successful. The=
- original value is then restored and verified.
+> -				/* Dereference Index and ref_of references */
+> +	if (ACPI_GET_DESCRIPTOR_TYPE(info->return_object) =3D=3D
+> +		ACPI_DESC_TYPE_NAMED) {
+> +		/*
+> +		 * If we received a NS Node as a return object, this means
+> that
+> +		 * the object we are evaluating has nothing interesting to
+> +		 * return (such as a mutex, etc.)  We return an error because
+> +		 * these types are essentially unsupported by this interface.
+> +		 * We don't check up front because this makes it easier to add
+> +		 * support for various types at a later date if necessary.
+> +		 */
+> +		status =3D AE_TYPE;
+> +		info->return_object =3D NULL;	/* No need to delete a NS Node
+> */
+> +		return_buffer->length =3D 0;
+> +	}
+> =
 
-Debugger: Added the "test predefined" command. This change makes this test =
-public and puts it under the new "test" command. The test executes each and=
- every predefined name within the current namespace.
+> -				acpi_ns_resolve_references(info);
+> +	if (ACPI_FAILURE(status))
+> +		goto out;
+> =
+
+> -				/* Get the size of the returned object */
+> +	/* Dereference Index and ref_of references */
+> =
+
+> -				status =3D
+> -				    acpi_ut_get_object_size(info->return_object,
+> -							    &buffer_space_needed);
+> -				if (ACPI_SUCCESS(status)) {
+> -
+> -					/* Validate/Allocate/Clear caller buffer */
+> -
+> -					status =3D
+> -					    acpi_ut_initialize_buffer
+> -					    (return_buffer,
+> -					     buffer_space_needed);
+> -					if (ACPI_FAILURE(status)) {
+> -						/*
+> -						 * Caller's buffer is too small or a
+> new one can't
+> -						 * be allocated
+> -						 */
+> -						ACPI_DEBUG_PRINT((ACPI_DB_INFO,
+> -								  "Needed buffer size %X,
+> %s\n",
+> -								  (u32)
+> -								  buffer_space_needed,
+> -								  acpi_format_exception
+> -								  (status)));
+> -					} else {
+> -						/* We have enough space for the
+> object, build it */
+> -
+> -						status =3D
+> -						    acpi_ut_copy_iobject_to_eobject
+> -						    (info->return_object,
+> -						     return_buffer);
+> -					}
+> -				}
+> -			}
+> +	acpi_ns_resolve_references(info);
+> +
+> +	/* Get the size of the returned object */
+> +
+> +	status =3D acpi_ut_get_object_size(info->return_object,
+> +						&buffer_space_needed);
+> +	if (ACPI_SUCCESS(status)) {
+> +
+> +		/* Validate/Allocate/Clear caller buffer */
+> +
+> +		status =3D acpi_ut_initialize_buffer(return_buffer,
+> +							buffer_space_needed);
+> +		if (ACPI_FAILURE(status)) {
+> +			/*
+> +			 * Caller's buffer is too small or a new one can't
+> +			 * be allocated
+> +			 */
+> +			ACPI_DEBUG_PRINT((ACPI_DB_INFO,
+> +					"Needed buffer size %X, %s\n",
+> +					(u32)buffer_space_needed,
+> +					 acpi_format_exception(status)));
+> +		} else {
+> +			/* We have enough space for the object, build it */
+> +
+> +			status =3D acpi_ut_copy_iobject_to_eobject(
+> +					info->return_object, return_buffer);
+>  		}
+>  	}
+> =
+
+> +out:
+>  	if (info->return_object) {
+>  		/*
+>  		 * Delete the internal return object. NOTE: Interpreter must
+> be
+> --
+> 1.7.9.5
 
 
---===============2374642491442480478==--
+--===============1246941107607784081==--
 
