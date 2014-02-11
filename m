@@ -1,194 +1,40 @@
-Content-Type: multipart/mixed; boundary="===============1246941107607784081=="
+Content-Type: multipart/mixed; boundary="===============8800077890531968453=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] [PATCH 1/2] ACPI / ACPICA: refactor
- acpi_evaluate_object() to reduce nesting if
-Date: Fri, 24 Jan 2014 16:29:19 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37C7D13E4@ORSMSX103.amr.corp.intel.com>
-In-Reply-To: 1390580407-14525-1-git-send-email-hanjun.guo@linaro.org
+From: Sascha Wildner <swildner at gmail.com>
+Subject: [Devel] Wrong license in acpica-unix2-20140114/.../aehandlers.c
+Date: Tue, 11 Feb 2014 10:53:34 +0100
+Message-ID: <CABC13nFomVF_=JmC8amESuBoSAtjKu-KdmiX-S=nwOSswXyXeA@mail.gmail.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1246941107607784081==
+--===============8800077890531968453==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Please file a bugzilla on this at:
+Hello,
 
-https://bugs.acpica.org/
+in acpica-unix2-20140114/source/tools/acpiexec/aehandlers.c, i.e. the
+dual-licensed version, the license was (accidentally, I suppose) exchanged
+with the Intel license, when just the copyright year should have been
+bumped.
 
-thanks.
-Bob
+Regards,
+Sascha
 
+--===============8800077890531968453==
+Content-Type: text/html
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="attachment.html"
 
-> -----Original Message-----
-> From: Hanjun Guo [mailto:hanjun.guo(a)linaro.org]
-> Sent: Friday, January 24, 2014 8:20 AM
-> To: Zheng, Lv; Moore, Robert
-> Cc: Rafael J. Wysocki; linux-acpi(a)vger.kernel.org; devel(a)acpica.org;
-> patches(a)linaro.org; linux-kernel(a)vger.kernel.org; linaro-
-> acpi(a)lists.linaro.org; Hanjun Guo
-> Subject: [PATCH 1/2] ACPI / ACPICA: refactor acpi_evaluate_object() to
-> reduce nesting if
-> =
+PGRpdiBkaXI9Imx0ciI+PGRpdj5IZWxsbyw8L2Rpdj48ZGl2Pjxicj48L2Rpdj5pbsKgYWNwaWNh
+LXVuaXgyLTIwMTQwMTE0L3NvdXJjZS90b29scy9hY3BpZXhlYy9hZWhhbmRsZXJzLmMsIGkuZS4g
+dGhlIGR1YWwtbGljZW5zZWQgdmVyc2lvbiwgdGhlIGxpY2Vuc2Ugd2FzIChhY2NpZGVudGFsbHks
+IEkgc3VwcG9zZSkgZXhjaGFuZ2VkIHdpdGggdGhlIEludGVsIGxpY2Vuc2UsIHdoZW4ganVzdCB0
+aGUgY29weXJpZ2h0IHllYXIgc2hvdWxkIGhhdmUgYmVlbiBidW1wZWQuPGRpdj4KPGJyPjwvZGl2
+PjxkaXY+UmVnYXJkcyw8L2Rpdj48ZGl2PlNhc2NoYTwvZGl2PjxkaXY+PGJyPjwvZGl2PjwvZGl2
+Pgo=
 
-> acpi_evaluate_object() has nesting if judgement to make code a little bit
-> complicated, refactor it to make things simple.
-> =
-
-> Signed-off-by: Hanjun Guo <hanjun.guo(a)linaro.org>
-> ---
->  drivers/acpi/acpica/nsxfeval.c |  104 +++++++++++++++++++----------------
-> -----
->  1 file changed, 50 insertions(+), 54 deletions(-)
-> =
-
-> diff --git a/drivers/acpi/acpica/nsxfeval.c
-> b/drivers/acpi/acpica/nsxfeval.c index 1f0c28b..a1b0b88 100644
-> --- a/drivers/acpi/acpica/nsxfeval.c
-> +++ b/drivers/acpi/acpica/nsxfeval.c
-> @@ -370,68 +370,64 @@ acpi_evaluate_object(acpi_handle handle,
->  	 * If we are expecting a return value, and all went well above,
->  	 * copy the return value to an external object.
->  	 */
-> -	if (return_buffer) {
-> -		if (!info->return_object) {
-> -			return_buffer->length =3D 0;
-> -		} else {
-> -			if (ACPI_GET_DESCRIPTOR_TYPE(info->return_object) =3D=3D
-> -			    ACPI_DESC_TYPE_NAMED) {
-> -				/*
-> -				 * If we received a NS Node as a return object,
-> this means that
-> -				 * the object we are evaluating has nothing
-> interesting to
-> -				 * return (such as a mutex, etc.)  We return an
-> error because
-> -				 * these types are essentially unsupported by this
-> interface.
-> -				 * We don't check up front because this makes it
-> easier to add
-> -				 * support for various types at a later date if
-> necessary.
-> -				 */
-> -				status =3D AE_TYPE;
-> -				info->return_object =3D NULL;	/* No need to delete
-> a NS Node */
-> -				return_buffer->length =3D 0;
-> -			}
-> +	if (!return_buffer)
-> +		goto out;
-> =
-
-> -			if (ACPI_SUCCESS(status)) {
-> +	if (!info->return_object) {
-> +		return_buffer->length =3D 0;
-> +		goto out;
-> +	}
-> =
-
-> -				/* Dereference Index and ref_of references */
-> +	if (ACPI_GET_DESCRIPTOR_TYPE(info->return_object) =3D=3D
-> +		ACPI_DESC_TYPE_NAMED) {
-> +		/*
-> +		 * If we received a NS Node as a return object, this means
-> that
-> +		 * the object we are evaluating has nothing interesting to
-> +		 * return (such as a mutex, etc.)  We return an error because
-> +		 * these types are essentially unsupported by this interface.
-> +		 * We don't check up front because this makes it easier to add
-> +		 * support for various types at a later date if necessary.
-> +		 */
-> +		status =3D AE_TYPE;
-> +		info->return_object =3D NULL;	/* No need to delete a NS Node
-> */
-> +		return_buffer->length =3D 0;
-> +	}
-> =
-
-> -				acpi_ns_resolve_references(info);
-> +	if (ACPI_FAILURE(status))
-> +		goto out;
-> =
-
-> -				/* Get the size of the returned object */
-> +	/* Dereference Index and ref_of references */
-> =
-
-> -				status =3D
-> -				    acpi_ut_get_object_size(info->return_object,
-> -							    &buffer_space_needed);
-> -				if (ACPI_SUCCESS(status)) {
-> -
-> -					/* Validate/Allocate/Clear caller buffer */
-> -
-> -					status =3D
-> -					    acpi_ut_initialize_buffer
-> -					    (return_buffer,
-> -					     buffer_space_needed);
-> -					if (ACPI_FAILURE(status)) {
-> -						/*
-> -						 * Caller's buffer is too small or a
-> new one can't
-> -						 * be allocated
-> -						 */
-> -						ACPI_DEBUG_PRINT((ACPI_DB_INFO,
-> -								  "Needed buffer size %X,
-> %s\n",
-> -								  (u32)
-> -								  buffer_space_needed,
-> -								  acpi_format_exception
-> -								  (status)));
-> -					} else {
-> -						/* We have enough space for the
-> object, build it */
-> -
-> -						status =3D
-> -						    acpi_ut_copy_iobject_to_eobject
-> -						    (info->return_object,
-> -						     return_buffer);
-> -					}
-> -				}
-> -			}
-> +	acpi_ns_resolve_references(info);
-> +
-> +	/* Get the size of the returned object */
-> +
-> +	status =3D acpi_ut_get_object_size(info->return_object,
-> +						&buffer_space_needed);
-> +	if (ACPI_SUCCESS(status)) {
-> +
-> +		/* Validate/Allocate/Clear caller buffer */
-> +
-> +		status =3D acpi_ut_initialize_buffer(return_buffer,
-> +							buffer_space_needed);
-> +		if (ACPI_FAILURE(status)) {
-> +			/*
-> +			 * Caller's buffer is too small or a new one can't
-> +			 * be allocated
-> +			 */
-> +			ACPI_DEBUG_PRINT((ACPI_DB_INFO,
-> +					"Needed buffer size %X, %s\n",
-> +					(u32)buffer_space_needed,
-> +					 acpi_format_exception(status)));
-> +		} else {
-> +			/* We have enough space for the object, build it */
-> +
-> +			status =3D acpi_ut_copy_iobject_to_eobject(
-> +					info->return_object, return_buffer);
->  		}
->  	}
-> =
-
-> +out:
->  	if (info->return_object) {
->  		/*
->  		 * Delete the internal return object. NOTE: Interpreter must
-> be
-> --
-> 1.7.9.5
-
-
---===============1246941107607784081==--
+--===============8800077890531968453==--
 
