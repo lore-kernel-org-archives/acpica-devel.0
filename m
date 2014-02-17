@@ -1,82 +1,136 @@
-Content-Type: multipart/mixed; boundary="===============1492117212544604398=="
+Content-Type: multipart/mixed; boundary="===============8922728439175373946=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] ACPICA version 20140214 released
-Date: Fri, 14 Feb 2014 22:43:56 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37C7D70EC@ORSMSX103.amr.corp.intel.com>
+From: Thomas Renninger <trenn at suse.de>
+Subject: Re: [Devel] [PATCH] x86: HPET force enable for Soekris net6501
+Date: Mon, 17 Feb 2014 19:23:10 +0100
+Message-ID: <1678556.oPQNyVF84j@skinner>
+In-Reply-To: 09d1230f-a261-4858-a390-72df138aaa34@email.android.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1492117212544604398==
+--===============8922728439175373946==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-14 February 2014. Summary of changes for version 20140214:
+On Monday, February 17, 2014 09:19:03 AM H. Peter Anvin wrote:
+> What I gather is that they want to add tables where there are none, and t=
+hat
+> the ACPI code doesn't play along because there is no RSDP nor any
+> RSDT/XSDT.
+Yep, this does currently not work.
 
-This release is available at https://acpica.org/downloads
+Easiest I can think of instead of trying to modify RSDP or similar, is
+to still pass the tables via unzipped, glued cpio which the kernel
+can access early. The same way it is done for current ACPI table overriding
+and early microcode passing.
 
-1) ACPICA kernel-resident subsystem:
+Also find them via:
+file =3D find_cpio_data(cpio_path, data, size, &offset);
+(compare with drivers/acpi/osl.c)
 
-Implemented a new mechanism to proactively prevent problems with ill-behave=
-d reentrant control methods that create named ACPI objects. This behavior i=
-s illegal as per the ACPI specification, but is nonetheless frequently seen=
- in the field. Previously, this could lead to an AE_ALREADY_EXISTS exceptio=
-n if the method was actually entered by more than one thread. This new mech=
-anism detects such methods at table load time and marks them "serialized" t=
-o prevent reentrancy. A new global option, AcpiGbl_AutoSerializeMethods, ha=
-s been added to disable this feature if desired. This mechanism and global =
-option obsoletes and supersedes the previous AcpiGbl_SerializeAllMethods op=
-tion.
+and add them to (compare with drivers/acpi/acpica/acglobal.h):
+/*
+ * acpi_gbl_root_table_list is the master list of ACPI tables that were
+ * found in the RSDT/XSDT.
+ */
+ACPI_EXTERN struct acpi_table_list acpi_gbl_root_table_list;
 
-Added the "Windows 2013" string to the _OSI support. ACPICA will now respon=
-d TRUE to _OSI queries with this string. It is the stated policy of ACPICA =
-to add new strings to the _OSI support as soon as possible after they are d=
-efined. See the full ACPICA _OSI policy which has been added to the utiliti=
-es/utosi.c file.
+But right now, this is acpica internal only.
+Most elegant way should be that ACPICA people would add another OS
+callback:
 
-Hardened/updated the _PRT return value auto-repair code:
-1) Do not abort the repair on a single subpackage failure, continue to chec=
-k all subpackages.
-2) Add check for the minimum subpackage length (4).
-3) Properly handle extraneous NULL package elements.
+acpi_status
+acpi_os_physical_table_add(acpi_physical_address *address,
+                                u32 *table_length));
 
-Added support to avoid the possibility of infinite loops when traversing ob=
-ject linked lists. Never allow an infinite loop, even in the face of corrup=
-ted object lists.
+which is called right after acpi_os_physical_table_override.
 
-ACPICA headers: Deployed the use of #pragma pack(push) and #pragma pack(pop=
-) directives to ensure that the ACPICA headers are independent of compiler =
-settings or other host headers.
+Implementation of it should be in osl.c again where it can easily
+be tracked whether a table has been replaced already and need not to
+be added, for example something like:
+__initdata struct cpio_data overridden_tables[ACPI_OVERRIDE_TABLES];
 
-Example Code and Data Size: These are the sizes for the OS-independent acpi=
-ca.lib produced by the Microsoft Visual C++ 9.0 32-bit compiler. The debug =
-version of the code includes the debug output trace mechanism and has a muc=
-h larger code and data size.
+ACPICA part should not be hard as well. It's some time ago, but it
+may be a simple call to:
+        /* Add the table to the global root table list */
 
-  Current Release:
-    Non-Debug Version:  96.5K Code, 27.2K Data, 123.7K Total
-    Debug Version:     188.6K Code, 79.0K Data, 267.6K Total
-  Previous Release:
-    Non-Debug Version:  96.2K Code, 27.0K Data, 123.2K Total
-    Debug Version:     187.5K Code, 78.3K Data, 265.8K Total
+        status =3D acpi_tb_store_table(table_desc->address, table_desc->poi=
+nter,
+                                     table_desc->length, table_desc->flags,
+                                     table_index);
 
+if acpi_os_physical_table_add() has returned a valid address/length.
+This would then add the table to acpica internal:
 
-2) iASL Compiler/Disassembler and Tools:
+/*
+ * acpi_gbl_root_table_list is the master list of ACPI tables that were
+ * found in the RSDT/XSDT.
+ */
+ACPI_EXTERN struct acpi_table_list acpi_gbl_root_table_list;
 
-iASL/Table-compiler: Fixed a problem with support for the SPMI table. The f=
-irst reserved field was incorrectly forced to have a value of zero. This ch=
-ange correctly forces the field to have a value of one. ACPICA BZ 1081.
+and later all the tables in there get loaded and set up as if they
+were passed from BIOS.
 
-Debugger: Added missing support for the "Extra" and "Data" subobjects when =
-displaying object data.
-
-Debugger: Added support to display entire object linked lists when displayi=
-ng object data.
-
-iASL: Removed the obsolete -g option to obtain ACPI tables from the Windows=
- registry. This feature has been superseded by the acpidump utility.
+       Thomas
 
 
---===============1492117212544604398==--
+> On February 17, 2014 8:28:05 AM PST, Thomas Renninger <trenn(a)suse.de> w=
+rote:
+> >On Friday, February 14, 2014 10:16:41 PM Thomas Gleixner wrote:
+> >> On Fri, 14 Feb 2014, H. Peter Anvin wrote:
+> >> > On 02/14/2014 11:59 AM, Thomas Gleixner wrote:
+> >> > > On Fri, 14 Feb 2014, H. Peter Anvin wrote:
+> >> > >> On 02/14/2014 11:15 AM, Thomas Gleixner wrote:
+> >> > >>> I'm fine with ACPI tables if we can provide simple means for
+> >
+> >embedded
+> >
+> >> > >>> users to load one via grub or just attach it to the kernel
+> >
+> >image.
+> >
+> >> > >> That already exists, see
+> >
+> >Documentation/acpi/initrd_table_override.txt.
+> >
+> >> > > That requires, that you have already ACPI tables.
+> >> > > =
+
+> >> > > ACPI_SIG_RSDP cannot be overridden and that's the base table you
+> >
+> >need
+> >
+> >> > > to get ACPI going in the first place. So we need support for that
+> >
+> >and
+> >
+> >> > > probably for storing the tables at some non canonical place.
+> >> > =
+
+> >> > Well, the RSDP and RSDT/XSDT are nothing but pointers to other
+> >
+> >tables,
+> >
+> >> > so if explicitly overridden I'm not sure if one actually would need
+> >> > them.  That doesn't mean our current code will work without them,
+> >
+> >though.
+> >
+> >> I tried once to overload all of the tables, but failed miserably in
+> >> the ACPI dungeon. RSDP was the major pain point IIRC.
+> >
+> >What exactly do you try to achieve?
+> >I cannot imagine a use-case where RSDP  and XSDT overriding would help
+> >you.
+> >
+> >Have you tried the current mechanism to override tables?
+> >What is missing and for what do you need it for?
+> >
+> >I need more context, maybe I can help then.
+> >
+> >   Thomas
+
+
+--===============8922728439175373946==--
 
