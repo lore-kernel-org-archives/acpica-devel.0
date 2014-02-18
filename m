@@ -1,51 +1,39 @@
-Content-Type: multipart/mixed; boundary="===============5923820065648246454=="
+Content-Type: multipart/mixed; boundary="===============3527134258227821885=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] ACPI: Also allow ACPI table adding via initrd not
- only	overriding
-Date: Tue, 18 Feb 2014 18:38:45 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37C7D7846@ORSMSX103.amr.corp.intel.com>
-In-Reply-To: 1392747763-3384-1-git-send-email-trenn@suse.de
+From: Thomas Renninger <trenn at suse.de>
+Subject: Re: [Devel] [PATCH 1/4] ACPI: Provide support for ACPI table adding
+ via OS
+Date: Tue, 18 Feb 2014 19:44:26 +0100
+Message-ID: <1568883.1dLS7uNIC1@skinner>
+In-Reply-To: 7af8855f-8055-467c-89c0-bcab453f3969@email.android.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5923820065648246454==
+--===============3527134258227821885==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-acpi_load_table won't work?
+On Tuesday, February 18, 2014 10:27:23 AM H. Peter Anvin wrote:
+> Why can't you add SSDTs? It would be particularly useful.
 
+There are 2 ways how ACPI tables get added:
+   - Via pointer from a root table (XSDT or RSDT iirc)
+   - Via load statement inside of ACPI context when ACPI BIOS
+     code gets executed (iirc the physical address is passed).
 
+The latter is only for SSDTs.
+The problem is that you if you add an SSDT early, it might
+have been intended for overriding when an SSDT gets dynamically
+loaded later when the system is up which is particular useful as
+well if you want to debug this specific BIOS table.
 
-> -----Original Message-----
-> From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of Thomas
-> Renninger
-> Sent: Tuesday, February 18, 2014 10:23 AM
-> Cc: x86(a)kernel.org; ck(a)conrad-kostecki.de; linux-kernel(a)vger.kernel=
-.org;
-> mingo(a)redhat.com; hpa(a)zytor.com; tglx(a)linutronix.de; devel(a)acpica=
-.org
-> Subject: [Devel] ACPI: Also allow ACPI table adding via initrd not only
-> overriding
-> =
+This could be workarounded via a boot param:
+acpi=3Dallow_ssdt_adding
+But this is not nice. Maybe someone has a more elegant idea.
+Something could still be added if someone is really needing this.
 
-> The ACPICA patches have to go into separate acpica repository first.
-> It should also be checked in acpica whether the table signature the OS
-> likes to add already exists (from BIOS). In this case the table must not
-> be added.
-> =
+     Thomas
 
-> Worked here by trying to override a DSDT and addind a BGRT table.
-> =
-
->      Thomas
-> =
-
-> _______________________________________________
-> Devel mailing list
-> Devel(a)acpica.org
-> https://lists.acpica.org/mailman/listinfo/devel
-
---===============5923820065648246454==--
+--===============3527134258227821885==--
 
