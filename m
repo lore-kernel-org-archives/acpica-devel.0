@@ -1,80 +1,38 @@
-Content-Type: multipart/mixed; boundary="===============7404542786754655082=="
+Content-Type: multipart/mixed; boundary="===============0411278734740689029=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
+From: Thomas Renninger <trenn at suse.de>
 Subject: Re: [Devel] ACPI: Also allow ACPI table adding via initrd not only
  overriding
-Date: Tue, 18 Feb 2014 19:59:17 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37C7D78A7@ORSMSX103.amr.corp.intel.com>
-In-Reply-To: 139301482.3RWgg14omZ@skinner
+Date: Wed, 19 Feb 2014 12:14:38 +0100
+Message-ID: <2779111.V9OOdv2fEJ@skinner>
+In-Reply-To: 94F2FBAB4432B54E8AACC7DFDE6C92E37C7D78A7@ORSMSX103.amr.corp.intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7404542786754655082==
+--===============0411278734740689029==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Maybe not exactly "running", but at the very least, ACPICA must be initiali=
-zed.
-
-All of this of course depends on how early the table needs to be loaded.
-
-
-> -----Original Message-----
-> From: Thomas Renninger [mailto:trenn(a)suse.de]
-> Sent: Tuesday, February 18, 2014 10:53 AM
-> To: Moore, Robert
-> Cc: x86(a)kernel.org; ck(a)conrad-kostecki.de; linux-kernel(a)vger.kernel=
-.org;
-> mingo(a)redhat.com; hpa(a)zytor.com; tglx(a)linutronix.de; devel(a)acpica=
-.org
-> Subject: Re: [Devel] ACPI: Also allow ACPI table adding via initrd not
-> only overriding
+On Tuesday, February 18, 2014 07:59:17 PM Moore, Robert wrote:
+> Maybe not exactly "running", but at the very least, ACPICA must be
+> initialized.
 > =
 
-> On Tuesday, February 18, 2014 06:38:45 PM Moore, Robert wrote:
-> > acpi_load_table won't work?
-> =
+> All of this of course depends on how early the table needs to be loaded.
 
-> I guess not, there is:
->         /* Must acquire the interpreter lock during this operation */
->         status =3D acpi_ut_acquire_mutex(ACPI_MTX_INTERPRETER);
-> =
+I'd say as early as possible.
+Not sure about Thomas' use case.
+I expect most of the extra tables are needed before ACPICA gets
+initialized otherwise it could have been specified to put the info
+into DSDT/SSDT via ASL.
+Sooner or later people will hit the "I need it earlier" limit and
+patch:
+ACPICA: Introduce new acpi_os_physical_table_add OS callback
+shows that it can be done early and that it integrates nicely
+with only some additional lines.
 
-> So the interpreter must be running already?
-> That would mean the adding can only happen much later.
-> This probably would eleminate most use cases for adding arbitrary ACPI
-> tables. Most tables (beside DSDT and SSDT) are needed really early,
-> otherwise the info could have been added as AML as well.
-> =
+   Thomas
 
->     Thomas
-> =
-
-> > > -----Original Message-----
-> > > From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of Thomas
-> > > Renninger
-> > > Sent: Tuesday, February 18, 2014 10:23 AM
-> > > Cc: x86(a)kernel.org; ck(a)conrad-kostecki.de;
-> > > linux-kernel(a)vger.kernel.org; mingo(a)redhat.com; hpa(a)zytor.com;
-> > > tglx(a)linutronix.de; devel(a)acpica.org
-> > > Subject: [Devel] ACPI: Also allow ACPI table adding via initrd not
-> > > only overriding
-> > >
-> > > The ACPICA patches have to go into separate acpica repository first.
-> > > It should also be checked in acpica whether the table signature the
-> > > OS likes to add already exists (from BIOS). In this case the table
-> > > must not be added.
-> > >
-> > > Worked here by trying to override a DSDT and addind a BGRT table.
-> > >
-> > >      Thomas
-> > >
-> > > _______________________________________________
-> > > Devel mailing list
-> > > Devel(a)acpica.org
-> > > https://lists.acpica.org/mailman/listinfo/devel
-
-
---===============7404542786754655082==--
+--===============0411278734740689029==--
 
