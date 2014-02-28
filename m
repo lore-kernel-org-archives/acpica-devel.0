@@ -1,18 +1,20 @@
-Content-Type: multipart/mixed; boundary="===============2278611396671663512=="
+Content-Type: multipart/mixed; boundary="===============1635885783576966643=="
 MIME-Version: 1.0
 From: Thomas Renninger <trenn at suse.de>
-Subject: [Devel] [PATCH 4/4] ACPI: Add new table signatures that can be
- overridden/added.
+Subject: [Devel] [PATCH 3/4] ACPICA: Add BGRT signature to known signatures
 Date: Fri, 28 Feb 2014 17:23:44 +0000
-Message-ID: <1393608241-31037-5-git-send-email-trenn@suse.de>
+Message-ID: <1393608241-31037-4-git-send-email-trenn@suse.de>
 In-Reply-To: 1393608241-31037-1-git-send-email-trenn@suse.de
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2278611396671663512==
+--===============1635885783576966643==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+
+In Linux there even exists a driver already making use of this table:
+drivers/acpi/bgrt.c:MODULE_DESCRIPTION("BGRT boot graphic support");
 
 Signed-off-by: Thomas Renninger <trenn(a)suse.de>
 CC: hpa(a)zytor.com
@@ -24,36 +26,27 @@ CC: mingo(a)redhat.com
 CC: rjw(a)rjwysocki.net
 CC: devel(a)acpica.org
 ---
- drivers/acpi/osl.c |    4 +++-
- 1 files changed, 3 insertions(+), 1 deletions(-)
+ include/acpi/actbl2.h |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
-index 7f9a865..23ce5b1 100644
---- a/drivers/acpi/osl.c
-+++ b/drivers/acpi/osl.c
-@@ -38,6 +38,7 @@
- #include <linux/delay.h>
- #include <linux/workqueue.h>
- #include <linux/nmi.h>
-+# define ACPI_UNDEFINED_TABLES 1
- #include <linux/acpi.h>
- #include <linux/efi.h>
- #include <linux/ioport.h>
-@@ -559,7 +560,8 @@ static const char * const table_sigs[] =3D {
- 	ACPI_SIG_IBFT, ACPI_SIG_IVRS, ACPI_SIG_MCFG, ACPI_SIG_MCHI,
- 	ACPI_SIG_SLIC, ACPI_SIG_SPCR, ACPI_SIG_SPMI, ACPI_SIG_TCPA,
- 	ACPI_SIG_UEFI, ACPI_SIG_WAET, ACPI_SIG_WDAT, ACPI_SIG_WDDT,
--	ACPI_SIG_WDRT, ACPI_SIG_DSDT, ACPI_SIG_FADT, ACPI_SIG_PSDT,
-+	ACPI_SIG_WDRT, ACPI_SIG_BGRT, ACPI_SIG_ATKG, ACPI_SIG_GSCI,
-+	ACPI_SIG_IEIT, ACPI_SIG_DSDT, ACPI_SIG_FADT, ACPI_SIG_PSDT,
- 	ACPI_SIG_RSDT, ACPI_SIG_XSDT, ACPI_SIG_SSDT, NULL };
+diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
+index 094a906..9ed1c20 100644
+--- a/include/acpi/actbl2.h
++++ b/include/acpi/actbl2.h
+@@ -83,6 +83,7 @@
+ #define ACPI_SIG_WDAT           "WDAT"	/* Watchdog Action Table */
+ #define ACPI_SIG_WDDT           "WDDT"	/* Watchdog Timer Description Table=
+ */
+ #define ACPI_SIG_WDRT           "WDRT"	/* Watchdog Resource Table */
++#define ACPI_SIG_BGRT           "BGRT"  /* Boot Graphic Support */
  =
 
- #define ACPI_HEADER_SIZE sizeof(struct acpi_table_header)
+ #ifdef ACPI_UNDEFINED_TABLES
+ /*
 -- =
 
 1.7.6.1
 
 
---===============2278611396671663512==--
+--===============1635885783576966643==--
 
