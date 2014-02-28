@@ -1,20 +1,23 @@
-Content-Type: multipart/mixed; boundary="===============1635885783576966643=="
+Content-Type: multipart/mixed; boundary="===============1729875863615922346=="
 MIME-Version: 1.0
 From: Thomas Renninger <trenn at suse.de>
-Subject: [Devel] [PATCH 3/4] ACPICA: Add BGRT signature to known signatures
+Subject: [Devel] [PATCH 2/4] ACPICA: Introduce new acpi_os_physical_table_add
+ OS callback
 Date: Fri, 28 Feb 2014 17:23:44 +0000
-Message-ID: <1393608241-31037-4-git-send-email-trenn@suse.de>
+Message-ID: <1393608241-31037-3-git-send-email-trenn@suse.de>
 In-Reply-To: 1393608241-31037-1-git-send-email-trenn@suse.de
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1635885783576966643==
+--===============1729875863615922346==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-In Linux there even exists a driver already making use of this table:
-drivers/acpi/bgrt.c:MODULE_DESCRIPTION("BGRT boot graphic support");
+This one allows OS to add arbitrary ACPI tables.
+
+ToDo: It should get checked whether a table with the same signature already
+exists and if this is the case, adding should not happen.
 
 Signed-off-by: Thomas Renninger <trenn(a)suse.de>
 CC: hpa(a)zytor.com
@@ -26,27 +29,93 @@ CC: mingo(a)redhat.com
 CC: rjw(a)rjwysocki.net
 CC: devel(a)acpica.org
 ---
- include/acpi/actbl2.h |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+ drivers/acpi/acpica/tbutils.c |   36 ++++++++++++++++++++++++++++++++++++
+ include/acpi/acpiosxf.h       |    6 ++++++
+ 2 files changed, 42 insertions(+), 0 deletions(-)
 
-diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
-index 094a906..9ed1c20 100644
---- a/include/acpi/actbl2.h
-+++ b/include/acpi/actbl2.h
-@@ -83,6 +83,7 @@
- #define ACPI_SIG_WDAT           "WDAT"	/* Watchdog Action Table */
- #define ACPI_SIG_WDDT           "WDDT"	/* Watchdog Timer Description Table=
- */
- #define ACPI_SIG_WDRT           "WDRT"	/* Watchdog Resource Table */
-+#define ACPI_SIG_BGRT           "BGRT"  /* Boot Graphic Support */
+diff --git a/drivers/acpi/acpica/tbutils.c b/drivers/acpi/acpica/tbutils.c
+index 6412d3c..a819d198 100644
+--- a/drivers/acpi/acpica/tbutils.c
++++ b/drivers/acpi/acpica/tbutils.c
+@@ -453,6 +453,8 @@ static acpi_status acpi_tb_validate_xsdt(acpi_physical_=
+address xsdt_address)
+  *
+  *************************************************************************=
+*****/
  =
 
- #ifdef ACPI_UNDEFINED_TABLES
++#define ACPI_MAX_TABLE_ADD 64
++
+ acpi_status __init acpi_tb_parse_root_table(acpi_physical_address rsdp_add=
+ress)
+ {
+ 	struct acpi_table_rsdp *rsdp;
+@@ -623,5 +625,39 @@ acpi_status __init acpi_tb_parse_root_table(acpi_physi=
+cal_address rsdp_address)
+ 		}
+ 	}
+ =
+
++	/*
++	 * ACPI Table Add:
++	 * Allow the OS to add additional tables to the global root table list
++	 */
++	for (i =3D 0; i < ACPI_MAX_TABLE_ADD; i++) {
++		int tmp, k;
++		table_entry_size =3D 0;
++		address =3D 0;
++		status =3D acpi_os_physical_table_add(&address,
++						    &table_entry_size);
++		if (status =3D=3D AE_OK && table_entry_size && address) {
++			table =3D acpi_os_map_memory(address, table_entry_size);
++			for (k =3D 2; k < acpi_gbl_root_table_list.current_table_count; k++) {
++				/*
++				  Always add SSDTs. Only allow adding of other
++				  tables if none of such a signature already
++				  exists. Use the override interface instead
++				  in such a case.
++				*/
++				if (ACPI_COMPARE_NAME("SSDT", table->signature) &&
++				    !ACPI_COMPARE_NAME(&acpi_gbl_root_table_list.tables[i].signature, =
+table->signature)) {
++	ACPI_INFO((AE_INFO, "OS table not added, signature already exists:"));
++	acpi_tb_print_table_header(address, table);
++	acpi_os_unmap_memory(table, table_entry_size);
++				} else {
++	ACPI_INFO((AE_INFO, "Add OS provided table:"));
++	acpi_tb_print_table_header(address, table);
++	status =3D acpi_tb_store_table(address, table, table_entry_size,
++				     ACPI_TABLE_ORIGIN_MAPPED, &tmp);
++				}
++			}
++		} else
++			break;
++	}
+ 	return_ACPI_STATUS(AE_OK);
+ }
+diff --git a/include/acpi/acpiosxf.h b/include/acpi/acpiosxf.h
+index 01e6c6d..70c00ed 100644
+--- a/include/acpi/acpiosxf.h
++++ b/include/acpi/acpiosxf.h
+@@ -111,6 +111,12 @@ acpi_os_physical_table_override(struct acpi_table_head=
+er *existing_table,
+ 				u32 *new_table_length);
+ #endif
+ =
+
++#ifndef ACPI_USE_ALTERNATE_PROTOTYPE_acpi_os_physical_table_add
++acpi_status
++acpi_os_physical_table_add(acpi_physical_address * new_address,
++			   u32 *new_table_length);
++#endif
++
  /*
+  * Spinlock primitives
+  */
 -- =
 
 1.7.6.1
 
 
---===============1635885783576966643==--
+--===============1729875863615922346==--
 
