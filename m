@@ -1,65 +1,59 @@
-Content-Type: multipart/mixed; boundary="===============6598552163781493935=="
+Content-Type: multipart/mixed; boundary="===============2278611396671663512=="
 MIME-Version: 1.0
-From: Al Stone <ahs3 at redhat.com>
-Subject: [Devel] [PATCH] minor correction for big endian machines
-Date: Fri, 28 Feb 2014 09:05:31 -0700
-Message-ID: <5310B3CB.8060906@redhat.com>
+From: Thomas Renninger <trenn at suse.de>
+Subject: [Devel] [PATCH 4/4] ACPI: Add new table signatures that can be
+ overridden/added.
+Date: Fri, 28 Feb 2014 17:23:44 +0000
+Message-ID: <1393608241-31037-5-git-send-email-trenn@suse.de>
+In-Reply-To: 1393608241-31037-1-git-send-email-trenn@suse.de
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6598552163781493935==
+--===============2278611396671663512==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-When using the ASL files in the misc tests directory, I found a
-case where a warning message printed out the table signature in
-the wrong order on big endian machines.  The patch below fixes
-the message so it works on little- or big-endian.
+Signed-off-by: Thomas Renninger <trenn(a)suse.de>
+CC: hpa(a)zytor.com
+CC: tglx(a)linutronix.de
+CC: ck(a)conrad-kostecki.de
+CC: linux-kernel(a)vger.kernel.org
+CC: x86(a)kernel.org
+CC: mingo(a)redhat.com
+CC: rjw(a)rjwysocki.net
+CC: devel(a)acpica.org
+---
+ drivers/acpi/osl.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
 
-Signed-off-by: Al Stone <ahs3(a)redhat.com>
+diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
+index 7f9a865..23ce5b1 100644
+--- a/drivers/acpi/osl.c
++++ b/drivers/acpi/osl.c
+@@ -38,6 +38,7 @@
+ #include <linux/delay.h>
+ #include <linux/workqueue.h>
+ #include <linux/nmi.h>
++# define ACPI_UNDEFINED_TABLES 1
+ #include <linux/acpi.h>
+ #include <linux/efi.h>
+ #include <linux/ioport.h>
+@@ -559,7 +560,8 @@ static const char * const table_sigs[] =3D {
+ 	ACPI_SIG_IBFT, ACPI_SIG_IVRS, ACPI_SIG_MCFG, ACPI_SIG_MCHI,
+ 	ACPI_SIG_SLIC, ACPI_SIG_SPCR, ACPI_SIG_SPMI, ACPI_SIG_TCPA,
+ 	ACPI_SIG_UEFI, ACPI_SIG_WAET, ACPI_SIG_WDAT, ACPI_SIG_WDDT,
+-	ACPI_SIG_WDRT, ACPI_SIG_DSDT, ACPI_SIG_FADT, ACPI_SIG_PSDT,
++	ACPI_SIG_WDRT, ACPI_SIG_BGRT, ACPI_SIG_ATKG, ACPI_SIG_GSCI,
++	ACPI_SIG_IEIT, ACPI_SIG_DSDT, ACPI_SIG_FADT, ACPI_SIG_PSDT,
+ 	ACPI_SIG_RSDT, ACPI_SIG_XSDT, ACPI_SIG_SSDT, NULL };
+ =
 
-
-diff -urN acpica-unix2-20140214/source/compiler/asllookup.c =
-
-acpica-unix2-20140214-patch/source/compiler/asllookup.c
---- acpica-unix2-20140214/source/compiler/asllookup.c	2014-02-14 =
-
-16:23:33.000000000 -0700
-+++ acpica-unix2-20140214-patch/source/compiler/asllookup.c	2014-02-27 =
-
-11:50:52.168659866 -0700
-@@ -120,6 +120,7 @@
-  {
-      ACPI_NAMESPACE_NODE     *Node =3D ACPI_CAST_PTR =
-
-(ACPI_NAMESPACE_NODE, ObjHandle);
-      ACPI_NAMESPACE_NODE     *Next;
-+    ACPI_NAME_UNION         tmp;
-
-
-      /* Referenced flag is set during the namespace xref */
-@@ -163,8 +164,9 @@
-               * Issue a remark even if it is a reserved name (starts
-               * with an underscore).
-               */
-+            ACPI_MOVE_32_TO_32(&tmp.Ascii, Next->Name.Ascii);
-              sprintf (MsgBuffer, "Name is within method [%4.4s]",
--                Next->Name.Ascii);
-+                tmp.Ascii);
-              AslError (ASL_REMARK, ASL_MSG_NOT_REFERENCED,
-                  LkGetNameOp (Node->Op), MsgBuffer);
-              return (AE_OK);
+ #define ACPI_HEADER_SIZE sizeof(struct acpi_table_header)
 -- =
 
-ciao,
-al
------------------------------------
-Al Stone
-Software Engineer
-Red Hat, Inc.
-ahs3(a)redhat.com
------------------------------------
+1.7.6.1
 
---===============6598552163781493935==--
+
+--===============2278611396671663512==--
 
