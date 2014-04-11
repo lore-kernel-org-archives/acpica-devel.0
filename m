@@ -1,91 +1,253 @@
-Content-Type: multipart/mixed; boundary="===============3776142447256984313=="
+Content-Type: multipart/mixed; boundary="===============1153063212232708315=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] Coverity CID 134632: acpi_hw_build_pci_list() memory leak
-Date: Thu, 03 Apr 2014 18:39:53 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37C7FF18B@ORSMSX103.amr.corp.intel.com>
-In-Reply-To: CAErSpo7hZUQsLQw7WHes=_Sb-+Hv_aCZTix+NdpjfkEUAartEg@mail.gmail.com
+From: Zheng, Lv <lv.zheng at intel.com>
+Subject: Re: [Devel] [PATCH] include: replace asm headers to linux
+Date: Fri, 11 Apr 2014 00:26:23 +0000
+Message-ID: <1AE640813FDE7649BE1B193DEA596E88025521F4@SHSMSX101.ccr.corp.intel.com>
+In-Reply-To: 1397172486-13214-1-git-send-email-paulmcquad@gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3776142447256984313==
+--===============1153063212232708315==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
+Hi,
 
-
-> -----Original Message-----
-> From: Bjorn Helgaas [mailto:bhelgaas(a)google.com]
-> Sent: Thursday, April 03, 2014 10:28 AM
-> To: Moore, Robert
-> Cc: Zheng, Lv; Wysocki, Rafael J; Box, David E; linux-
-> acpi(a)vger.kernel.org; devel(a)acpica.org
-> Subject: Re: Coverity CID 134632: acpi_hw_build_pci_list() memory leak
+> From: linux-acpi-owner(a)vger.kernel.org [mailto:linux-acpi-owner(a)vger.=
+kernel.org] On Behalf Of Paul McQuade
+> Sent: Friday, April 11, 2014 7:28 AM
 > =
 
-> On Thu, Apr 3, 2014 at 11:03 AM, Moore, Robert <robert.moore(a)intel.com>
-> wrote:
-> > On second thought, did you notice that the caller always deletes the
-> list, regardless of the return status?
+> Use #include <linux/uaccess.h> instead of <asm/uaccess.h>
+> Use #include <linux/types.h> instead of <asm/types.h>
 > =
 
-> Hmm, no, I didn't notice that, and obviously Coverity didn't either.
-> So I guess there's no actual bug, as long as every caller deletes the list
-> regardless of status.  And there's only one caller.
+> Signed-off-by: Paul McQuade <paulmcquad(a)gmail.com>
+> ---
+>  include/acpi/platform/aclinux.h           | 2 +-
+>  include/asm-generic/bitops/__ffs.h        | 2 +-
+>  include/asm-generic/bitops/__fls.h        | 2 +-
+>  include/asm-generic/bitops/arch_hweight.h | 2 +-
+>  include/asm-generic/bitops/atomic.h       | 6 +++---
+>  include/asm-generic/bitops/count_zeros.h  | 2 +-
+>  include/asm-generic/bitops/fls64.h        | 2 +-
+>  include/asm-generic/bitops/le.h           | 2 +-
+>  include/asm-generic/bitops/non-atomic.h   | 2 +-
+>  include/asm-generic/bitops/sched.h        | 2 +-
+>  10 files changed, 12 insertions(+), 12 deletions(-)
 > =
 
-> I wouldn't hold it up as good style, but I guess it's safe :)
-
-
-Yes, no real leak. But we will change it anyway on principle.
-Thanks,
-Bob
-
-
-
+> diff --git a/include/acpi/platform/aclinux.h b/include/acpi/platform/acli=
+nux.h
+> index 93c55ed..d52317f 100644
+> --- a/include/acpi/platform/aclinux.h
+> +++ b/include/acpi/platform/aclinux.h
+> @@ -71,7 +71,7 @@
+>  #ifdef EXPORT_ACPI_INTERFACES
+>  #include <linux/export.h>
+>  #endif
+> -#include <asm/acpi.h>
+> +#include <linux/acpi.h>
 > =
 
-> >     /* Build a list of PCI devices, from PciRegion up to RootPciDevice
-> > */
-> >
-> >     Status =3D AcpiHwBuildPciList (RootPciDevice, PciRegion, &ListHead);
-> >     if (ACPI_SUCCESS (Status))
-> >     {
-> >         /* Walk the list, updating the PCI device/function/bus numbers
-> > */
-> >
-> >         Status =3D AcpiHwProcessPciList (PciId, ListHead);
-> >     }
-> >
-> >     /* Always delete the list */
-> >
-> >     AcpiHwDeletePciList (ListHead);
-> >     return_ACPI_STATUS (Status);
-> >
-> >> -----Original Message-----
-> >> From: Bjorn Helgaas [mailto:bhelgaas(a)google.com]
-> >> Sent: Thursday, April 03, 2014 9:22 AM
-> >> To: Moore, Robert; Zheng, Lv; Wysocki, Rafael J
-> >> Cc: linux-acpi(a)vger.kernel.org; devel(a)acpica.org
-> >> Subject: Coverity CID 134632: acpi_hw_build_pci_list() memory leak
-> >>
-> >> Coverity complains that acpi_hw_build_pci_list() leaks memory when it
-> >> returns here:
-> >>
-> >> 201                if (!list_element) {
-> >>
-> >> CID 134632 (#1 of 2): Resource leak (RESOURCE_LEAK) 13. leaked_storage:
-> >> Variable list_head going out of scope leaks the storage it points to.
-> >> 202                        return (AE_NO_MEMORY);
-> >> 203                }
-> >>
-> >> We're building up a list, and if we fail to allocate another element,
-> >> we return failure without deallocating the already built-up list.
-> >>
-> >> This is CID 134632.
-> >>
-> >> Bjorn
+>  /* Host-dependent types and defines for in-kernel ACPICA */
+> =
 
---===============3776142447256984313==--
+
+This diff block is wrong.
+
+The acpi/platform/aclinux.h is a "platform specific ACPICA environment head=
+er".
+The linux/acpi.h is a "Top level header of Linux ACPI".
+The asm/acpi.h is a combination of " architecture specific ACPICA environme=
+nt header" and "architecture specific Linux ACPI header".
+
+The relationship between Linux ACPI and ACPICA is:
+Linux ACPI is using ACPICA.
+So linux ACPI header should __INCLUDE__ ACPICA header, which means linux/ac=
+pi.h should include acpi/platform/aclinux.h.
+You patch thus is wrong.
+
+In fact, acpi/platform/aclinux.h is included by acpi/acpi.h and acpi/acpi.h=
+ is included by linux/acpi.h.
+
+For asm/acpi.h, there are really things messed up in it.
+I have a series to split its role so that wrong "architecture specific Linu=
+x ACPI header" can be sorted out from acpi/platform/aclinux.h.
+Please refer to:
+https://lkml.org/lkml/2014/4/8/57
+
+The correct way to fix the issue you are trying to fix is this patch:
+https://lkml.org/lkml/2014/4/8/60
+
+So please drop this diff block and just wait for the above mentioned series=
+ to be merged.
+
+Thanks and best regards
+-Lv
+
+> diff --git a/include/asm-generic/bitops/__ffs.h b/include/asm-generic/bit=
+ops/__ffs.h
+> index 937d7c4..8236f91 100644
+> --- a/include/asm-generic/bitops/__ffs.h
+> +++ b/include/asm-generic/bitops/__ffs.h
+> @@ -1,7 +1,7 @@
+>  #ifndef _ASM_GENERIC_BITOPS___FFS_H_
+>  #define _ASM_GENERIC_BITOPS___FFS_H_
+> =
+
+> -#include <asm/types.h>
+> +#include <linux/types.h>
+> =
+
+>  /**
+>   * __ffs - find first bit in word.
+> diff --git a/include/asm-generic/bitops/__fls.h b/include/asm-generic/bit=
+ops/__fls.h
+> index a60a7cc..60e5360 100644
+> --- a/include/asm-generic/bitops/__fls.h
+> +++ b/include/asm-generic/bitops/__fls.h
+> @@ -1,7 +1,7 @@
+>  #ifndef _ASM_GENERIC_BITOPS___FLS_H_
+>  #define _ASM_GENERIC_BITOPS___FLS_H_
+> =
+
+> -#include <asm/types.h>
+> +#include <linux/types.h>
+> =
+
+>  /**
+>   * __fls - find last (most-significant) set bit in a long word
+> diff --git a/include/asm-generic/bitops/arch_hweight.h b/include/asm-gene=
+ric/bitops/arch_hweight.h
+> index 6a211f4..a9a48a8 100644
+> --- a/include/asm-generic/bitops/arch_hweight.h
+> +++ b/include/asm-generic/bitops/arch_hweight.h
+> @@ -1,7 +1,7 @@
+>  #ifndef _ASM_GENERIC_BITOPS_ARCH_HWEIGHT_H_
+>  #define _ASM_GENERIC_BITOPS_ARCH_HWEIGHT_H_
+> =
+
+> -#include <asm/types.h>
+> +#include <linux/types.h>
+> =
+
+>  static inline unsigned int __arch_hweight32(unsigned int w)
+>  {
+> diff --git a/include/asm-generic/bitops/atomic.h b/include/asm-generic/bi=
+tops/atomic.h
+> index 9ae6c34..4469696 100644
+> --- a/include/asm-generic/bitops/atomic.h
+> +++ b/include/asm-generic/bitops/atomic.h
+> @@ -1,12 +1,12 @@
+>  #ifndef _ASM_GENERIC_BITOPS_ATOMIC_H_
+>  #define _ASM_GENERIC_BITOPS_ATOMIC_H_
+> =
+
+> -#include <asm/types.h>
+> +#include <linux/types.h>
+>  #include <linux/irqflags.h>
+> =
+
+>  #ifdef CONFIG_SMP
+> -#include <asm/spinlock.h>
+> -#include <asm/cache.h>		/* we use L1_CACHE_BYTES */
+> +#include <linux/spinlock.h>
+> +#include <linux/cache.h>		/* we use L1_CACHE_BYTES */
+> =
+
+>  /* Use an array of spinlocks for our atomic_ts.
+>   * Hash function to index into a different SPINLOCK.
+> diff --git a/include/asm-generic/bitops/count_zeros.h b/include/asm-gener=
+ic/bitops/count_zeros.h
+> index 97520d2..7f8e1d0 100644
+> --- a/include/asm-generic/bitops/count_zeros.h
+> +++ b/include/asm-generic/bitops/count_zeros.h
+> @@ -12,7 +12,7 @@
+>  #ifndef _ASM_GENERIC_BITOPS_COUNT_ZEROS_H_
+>  #define _ASM_GENERIC_BITOPS_COUNT_ZEROS_H_
+> =
+
+> -#include <asm/bitops.h>
+> +#include <linux/bitops.h>
+> =
+
+>  /**
+>   * count_leading_zeros - Count the number of zeros from the MSB back
+> diff --git a/include/asm-generic/bitops/fls64.h b/include/asm-generic/bit=
+ops/fls64.h
+> index b097cf8..3999f5c 100644
+> --- a/include/asm-generic/bitops/fls64.h
+> +++ b/include/asm-generic/bitops/fls64.h
+> @@ -1,7 +1,7 @@
+>  #ifndef _ASM_GENERIC_BITOPS_FLS64_H_
+>  #define _ASM_GENERIC_BITOPS_FLS64_H_
+> =
+
+> -#include <asm/types.h>
+> +#include <linux/types.h>
+> =
+
+>  /**
+>   * fls64 - find last set bit in a 64-bit word
+> diff --git a/include/asm-generic/bitops/le.h b/include/asm-generic/bitops=
+/le.h
+> index 6173154..8f4f574 100644
+> --- a/include/asm-generic/bitops/le.h
+> +++ b/include/asm-generic/bitops/le.h
+> @@ -1,7 +1,7 @@
+>  #ifndef _ASM_GENERIC_BITOPS_LE_H_
+>  #define _ASM_GENERIC_BITOPS_LE_H_
+> =
+
+> -#include <asm/types.h>
+> +#include <linux/types.h>
+>  #include <asm/byteorder.h>
+> =
+
+>  #if defined(__LITTLE_ENDIAN)
+> diff --git a/include/asm-generic/bitops/non-atomic.h b/include/asm-generi=
+c/bitops/non-atomic.h
+> index 697cc2b..4b04267 100644
+> --- a/include/asm-generic/bitops/non-atomic.h
+> +++ b/include/asm-generic/bitops/non-atomic.h
+> @@ -1,7 +1,7 @@
+>  #ifndef _ASM_GENERIC_BITOPS_NON_ATOMIC_H_
+>  #define _ASM_GENERIC_BITOPS_NON_ATOMIC_H_
+> =
+
+> -#include <asm/types.h>
+> +#include <linux/types.h>
+> =
+
+>  /**
+>   * __set_bit - Set a bit in memory
+> diff --git a/include/asm-generic/bitops/sched.h b/include/asm-generic/bit=
+ops/sched.h
+> index 604fab7..65ad856 100644
+> --- a/include/asm-generic/bitops/sched.h
+> +++ b/include/asm-generic/bitops/sched.h
+> @@ -2,7 +2,7 @@
+>  #define _ASM_GENERIC_BITOPS_SCHED_H_
+> =
+
+>  #include <linux/compiler.h>	/* unlikely() */
+> -#include <asm/types.h>
+> +#include <linux/types.h>
+> =
+
+>  /*
+>   * Every architecture must define this function. It's the fastest
+> --
+> 1.8.3.2
+> =
+
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-acpi" in
+> the body of a message to majordomo(a)vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+--===============1153063212232708315==--
 
