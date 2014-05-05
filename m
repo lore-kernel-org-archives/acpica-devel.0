@@ -1,83 +1,105 @@
-Content-Type: multipart/mixed; boundary="===============4114826748105224343=="
+Content-Type: multipart/mixed; boundary="===============0089831473039751724=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] ACPICA version 20140424 released
-Date: Thu, 24 Apr 2014 16:11:36 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D1AE24D@ORSMSX112.amr.corp.intel.com>
+From: Zheng, Lv <lv.zheng at intel.com>
+Subject: Re: [Devel] [patch] lib: check for strcpy() overflows to fixed length
+ buffers
+Date: Mon, 05 May 2014 00:19:10 +0000
+Message-ID: <1AE640813FDE7649BE1B193DEA596E8802559A8F@SHSMSX101.ccr.corp.intel.com>
+In-Reply-To: 20140430201529.GX4963@mwanda
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4114826748105224343==
+--===============0089831473039751724==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-24 April 2014. Summary of changes for version 20140424:
+Hi,
 
-This release is available at https://acpica.org/downloads
+> From: Dan Carpenter [mailto:dan.carpenter(a)oracle.com]
+> Sent: Thursday, May 01, 2014 4:15 AM
+> =
 
-1) ACPICA kernel-resident subsystem:
+> On Wed, Apr 30, 2014 at 09:49:23PM +0200, Rafael J. Wysocki wrote:
+> > On Wednesday, April 30, 2014 06:08:44 PM Dan Carpenter wrote:
+> > > There are sometimes where we know that we are doing an strcpy() into a
+> > > fixed length buffer.  In those cases, we could verify that the strcpy=
+()
+> > > doesn't overflow.  This patch introduces DEBUG_STRICT_SLOW_STRCPY_CHE=
+CKS
+> > > if you want to check for that.  The downside is that it makes strcpy
+> > > slower.
+> > >
+> > > I introduced __compiletime_size() to make this work.  It returns the
+> > > size of the destination buffer or zero if the size isn't known.  The
+> > > __compiletime_object_size() is similar but if you pass it a struct
+> > > member then it returns the size of everything from there to the end of
+> > > the struct.  Another difference is __compiletime_object_size() returns
+> > > -1 for unknown sizes.
+> > >
+> > > If you pass a char pointer to __compiletime_size() then it returns ze=
+ro.
+> > >
+> > > The strcpy() check ignores buffers with just one byte because people
+> > > often use those for variable length strings at the end of a struct.
+> > >
+> > > I have tested this patch lightly and created some bugs for it to dete=
+ct
+> > > but I have not detected any real life overflows.
+> > >
+> > > Signed-off-by: Dan Carpenter <dan.carpenter(a)oracle.com>
+> > >
+> > > diff --git a/include/acpi/platform/acenv.h b/include/acpi/platform/ac=
+env.h
+> > > index e863dd5..5e0fc2b 100644
+> > > --- a/include/acpi/platform/acenv.h
+> > > +++ b/include/acpi/platform/acenv.h
+> >
+> > This is an ACPICA header and changes to it need to be submitted to the =
+ACPICA
+> > maintainers (as per MAINTAINERS).  We only get ACPICA changes from the
+> > upstream project (except for really special situations).
+> =
 
-Implemented support to skip/ignore NULL address entries in the RSDT/XSDT. S=
-ome of these tables are known to contain a trailing NULL entry. Lv Zheng.
+> Ok.  I should have added Robert and Lv to the CC list.  My guess is
+> that the (void) is needed to avoid compile warnings but it's needed for
+> us to avoid compile breakage with this change.
 
-Removed an extraneous error message for the case where there are a large nu=
-mber of system GPEs (> 124). This was the "32-bit FADT register is too long=
- to convert to GAS struct" message, which is irrelevant for GPEs since the =
-GPEx_BLK_LEN fields of the FADT are always used instead of the (limited cap=
-acity) GAS bit length. Also, several changes to ensure proper support for G=
-PE numbers > 255, where some "GPE number" fields were 8-bits internally.
+In normal ACPICA build environment, I didn't suffer from new build errors a=
+fter deleting this "void".
+But this might be required by lint users.
+You can split ACPICA changes into a separate patch so that it could be easi=
+ly reverted if someone complained.
 
-Implemented and deployed additional configuration support for the public AC=
-PICA external interfaces. Entire classes of interfaces can now be easily mo=
-dified or configured out, replaced by stubbed inline functions by default. =
-Lv Zheng.
+Thanks
+-Lv
 
-Moved all public ACPICA runtime configuration globals to the public ACPICA =
-external interface file for convenience. Also, removed some obsolete/unused=
- globals. See the file acpixf.h. Lv Zheng.
+> =
 
-Documentation: Added a new section to the ACPICA reference describing the m=
-aximum number of GPEs that can be supported by the FADT-defined GPEs in blo=
-ck zero and one. About 1200 total. See section 4.4.1 of the ACPICA referenc=
-e.
+> Anyway, I'll wait for a couple days and resend that bit broken out.
+> =
 
-Example Code and Data Size: These are the sizes for the OS-independent acpi=
-ca.lib produced by the Microsoft Visual C++ 9.0 32-bit compiler. The debug =
-version of the code includes the debug output trace mechanism and has a muc=
-h larger code and data size.
+> regards,
+> dan carpenter
+> =
 
-  Current Release:
-    Non-Debug Version:  96.8K Code, 27.2K Data, 124.0K Total
-    Debug Version:     189.5K Code, 79.7K Data, 269.2K Total
-  Previous Release:
-    Non-Debug Version:  97.0K Code, 27.2K Data, 124.2K Total
-    Debug Version:     189.7K Code, 79.5K Data, 269.2K Total
+> >
+> > > @@ -320,7 +320,7 @@
+> > >  #define ACPI_STRSTR(s1,s2)      strstr((s1), (s2))
+> > >  #define ACPI_STRCHR(s1,c)       strchr((s1), (c))
+> > >  #define ACPI_STRLEN(s)          (acpi_size) strlen((s))
+> > > -#define ACPI_STRCPY(d,s)        (void) strcpy((d), (s))
+> > > +#define ACPI_STRCPY(d,s)        strcpy((d), (s))
+> > >  #define ACPI_STRNCPY(d,s,n)     (void) strncpy((d), (s), (acpi_size)=
+(n))
+> > >  #define ACPI_STRNCMP(d,s,n)     strncmp((d), (s), (acpi_size)(n))
+> > >  #define ACPI_STRCMP(d,s)        strcmp((d), (s))
+> >
+> > Thanks!
+> >
+> > --
+> > I speak only for myself.
+> > Rafael J. Wysocki, Intel Open Source Technology Center.
 
-
-2) iASL Compiler/Disassembler and Tools:
-
-iASL and disassembler: Add full support for the LPIT table (Low Power Idle =
-Table). Includes support in the disassembler, data table compiler, and temp=
-late generator.
-
-AcpiDump utility:
-1) Add option to force the use of the RSDT (over the XSDT).
-2) Improve validation of the RSDP signature (use 8 chars instead of 4).
-
-iASL: Add check for predefined packages that are too large.  For predefined=
- names that contain subpackages, check if each subpackage is too large. (Ch=
-eck for too small already exists.)
-
-Debugger: Updated the GPE command (which simulates a GPE by executing the G=
-PE code paths in ACPICA). The GPE device is now optional, and defaults to t=
-he GPE 0/1 FADT-defined blocks.
-
-Unix application OSL: Update line-editing support. Add additional error che=
-cking and take care not to reset terminal attributes on exit if they were n=
-ever set. This should help guarantee that the terminal is always left in th=
-e previous state on program exit.
-
-
---===============4114826748105224343==--
+--===============0089831473039751724==--
 
