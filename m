@@ -1,147 +1,119 @@
-Content-Type: multipart/mixed; boundary="===============1397792389011933447=="
+Content-Type: multipart/mixed; boundary="===============5955746531509071160=="
 MIME-Version: 1.0
-From: Anthony Jenkins <Anthony.B.Jenkins at att.net>
-Subject: [Devel] [PATCH] Naive implementation of AcpiExCmosSpaceHandler()
-Date: Sat, 07 Jun 2014 10:28:11 -0400
-Message-ID: <5393217B.2010101@att.net>
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] ACPICA version 20140627 released
+Date: Fri, 27 Jun 2014 16:13:24 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D1BD921@ORSMSX112.amr.corp.intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1397792389011933447==
+--===============5955746531509071160==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-I'm testing on FreeBSD 11.0-CURRENT #18 r266756M on an HP Envy Sleekbook 6z=
--1100 (AMD A-10).  This is a naive implementation of AcpiExCmosSpaceHandler=
-(), it simply uses I/O ports 0x70 and 0x71 to read/write CMOS registers usi=
-ng AcpiHwWritePort()/AcpiHwReadPort() calls. I'm new(ish) to the ACPICA sub=
-system and I'm probably not going about this the right way - I think I shou=
-ld implement an actual FreeBSD CMOS RTC device which handles the three PNP =
-IDs that represent those hardware devices, but this was good enough for wha=
-t I was trying to do.
+27 June 2014. Summary of changes for version 20140627:
 
-This fixes my HP Envy 6z-1100 laptop's suspend/resume (except video fails t=
-o resume, but I believe that's due to backlight handling from my research).=
- Before, initiating a suspend (zzz(8)) caused the laptop to suspend and imm=
-ediately resume. Now trying to track down the backlight issue. I implemente=
-d a missing _BQC method which returns a single value from the _BCL listj; I=
- think Linux does some kind of vendor backlight control method if this meth=
-od is missing.
+This release is available at https://acpica.org/downloads
 
-Suggestions on the patch or backlight issue welcome.
-Anthony Jenkins
+1) ACPICA kernel-resident subsystem:
 
-diff --git a/source/components/events/evhandler.c b/source/components/event=
-s/evhandler.c
-index d17411e..4f341ca 100644
---- a/source/components/events/evhandler.c
-+++ b/source/components/events/evhandler.c
-@@ -142,6 +142,7 @@ UINT8        AcpiGbl_DefaultAddressSpaces[ACPI_NUM_DEFA=
-ULT_SPACES] =3D
-     ACPI_ADR_SPACE_SYSTEM_MEMORY,
-     ACPI_ADR_SPACE_SYSTEM_IO,
-     ACPI_ADR_SPACE_PCI_CONFIG,
-+    ACPI_ADR_SPACE_CMOS,
-     ACPI_ADR_SPACE_DATA_TABLE
- };
- =
+Formatted Output: Implemented local versions of standard formatted output u=
+tilities such as printf, etc. Over time, it has been discovered that there =
+are in fact many portability issues with printf, and the addition of this f=
+eature will fix/prevent these issues once and for all. Some known issues ar=
+e summarized below:
 
-@@ -451,9 +452,12 @@ AcpiEvInstallSpaceHandler (
-      */
-     if ((Node->Type !=3D ACPI_TYPE_DEVICE)     &&
-         (Node->Type !=3D ACPI_TYPE_PROCESSOR)  &&
-+        (Node->Type !=3D ACPI_TYPE_REGION)     &&
-         (Node->Type !=3D ACPI_TYPE_THERMAL)    &&
-         (Node !=3D AcpiGbl_RootNode))
-     {
-+        ACPI_DEBUG_PRINT ((ACPI_DB_OPREGION,
-+            "Device %p not a DEVICE, PROCESSOR, REGION, THERMAL type or ro=
-ot node.\n", Node));
-         Status =3D AE_BAD_PARAMETER;
-         goto UnlockAndExit;
-     }
-diff --git a/source/components/executer/exregion.c b/source/components/exec=
-uter/exregion.c
-index ea10a01..bfdd721 100644
---- a/source/components/executer/exregion.c
-+++ b/source/components/executer/exregion.c
-@@ -521,6 +521,20 @@ AcpiExPciConfigSpaceHandler (
-     return_ACPI_STATUS (Status);
- }
- =
+1) Output of 64-bit values is not portable. For example, UINT64 is %ull for=
+ the Linux kernel and is %uI64 for some MSVC versions.
+2) Invoking printf consistently in a manner that is portable across both 32=
+-bit and 64-bit platforms is difficult at best in many situations.
+3) The output format for pointers varies from system to system (leading zer=
+os especially), and leads to inconsistent output from ACPICA across platfor=
+ms.
+4) Certain platform-specific printf formats may conflict with ACPICA use.
+5) If there is no local C library available, ACPICA now has local support f=
+or printf.
 
-+static UINT8 AcpiExCmosRead(ACPI_PHYSICAL_ADDRESS Address)
-+{
-+    UINT32 Value32;
-+
-+    AcpiHwWritePort((ACPI_IO_ADDRESS) 0x70, (UINT32) Address, 8);
-+    AcpiHwReadPort ((ACPI_IO_ADDRESS) 0x71, &Value32, 8);
-+    return Value32 & 0xFF;
-+}
-+
-+static void AcpiExCmosWrite(ACPI_PHYSICAL_ADDRESS Address, UINT8 Value)
-+{
-+    AcpiHwWritePort((ACPI_IO_ADDRESS) 0x70, (UINT32) Address, 8);
-+    AcpiHwWritePort((ACPI_IO_ADDRESS) 0x71, (UINT32) Value, 8);
-+}
- =
+-- To address these printf issues in a complete manner, ACPICA now directly=
+ implements a small subset of printf format specifiers, only those that it =
+requires. Adds a new file, utilities/utprint.c. Lv Zheng.
 
- /*************************************************************************=
-******
-  *
-@@ -545,7 +559,7 @@ AcpiExCmosSpaceHandler (
-     UINT32                  Function,
-     ACPI_PHYSICAL_ADDRESS   Address,
-     UINT32                  BitWidth,
--    UINT64                  *Value,
-+    UINT64                  *Value64,
-     void                    *HandlerContext,
-     void                    *RegionContext)
- {
-@@ -554,7 +568,23 @@ AcpiExCmosSpaceHandler (
- =
+Implemented support for ACPICA generation within the EFI environment. Initi=
+ally, the AcpiDump utility is supported in the UEFI shell environment. Lv Z=
+heng.
 
-     ACPI_FUNCTION_TRACE (ExCmosSpaceHandler);
- =
+Added a new external interface, AcpiLogError, to improve ACPICA portability=
+. This allows the host to redirect error messages from the ACPICA utilities=
+. Lv Zheng.
 
--
-+    if (Address < 0x80 &&
-+        (Function =3D=3D ACPI_READ || Function =3D=3D ACPI_WRITE) &&
-+        BitWidth <=3D 64)
-+    {
-+        UINT32 i;
-+        UINT8 *Value =3D (UINT8 *)Value64;
-+
-+        for (i =3D 0; i < (BitWidth + 7) / 8; ++i, ++Address, ++Value) {
-+            if (Function =3D=3D ACPI_READ) {
-+                *Value =3D AcpiExCmosRead(Address);
-+            } else {
-+                AcpiExCmosWrite(Address, *Value);
-+            }
-+        }
-+    } else {
-+        Status =3D AE_BAD_PARAMETER;
-+    }
-     return_ACPI_STATUS (Status);
- }
- =
+Added and deployed new OSL file I/O interfaces to improve ACPICA portabilit=
+y:
+  AcpiOsOpenFile
+  AcpiOsCloseFile
+  AcpiOsReadFile
+  AcpiOsWriteFile
+  AcpiOsGetFileOffset
+  AcpiOsSetFileOffset
+There are C library implementations of these functions in the new file serv=
+ice_layers/oslibcfs.c -- however, the functions can be implemented by the l=
+ocal host in any way necessary. Lv Zheng.
 
-diff --git a/source/include/acconfig.h b/source/include/acconfig.h
-index 6b34484..7fe2eac 100644
---- a/source/include/acconfig.h
-+++ b/source/include/acconfig.h
-@@ -270,7 +270,7 @@
- /* Maximum SpaceIds for Operation Regions */
- =
+Implemented a mechanism to disable/enable ACPI table checksum validation at=
+ runtime. This can be useful when loading tables very early during OS initi=
+alization when it may not be possible to map the entire table in order to c=
+ompute the checksum. Lv Zheng.
 
- #define ACPI_MAX_ADDRESS_SPACE          255
--#define ACPI_NUM_DEFAULT_SPACES         4
-+#define ACPI_NUM_DEFAULT_SPACES         5
- =
+Fixed a buffer allocation issue for the Generic Serial Bus support. Origina=
+lly, a fixed buffer length was used. This change allows for variable-length=
+ buffers based upon the protocol indicated by the field access attributes. =
+Reported by Lan Tianyu. Lv Zheng.
 
- /* Array sizes. Used for range checking also */
-=20
+Fixed a problem where an object detached from a namespace node was not prop=
+erly terminated/cleared and could cause a circular list problem if reattach=
+ed. ACPICA BZ 1063. David Box.
 
---===============1397792389011933447==--
+Fixed a possible recursive lock acquisition in hwregs.c. Rakib Mullick.
+
+Fixed a possible memory leak in an error return path within the function Ac=
+piUtCopyIobjectToIobject. ACPICA BZ 1087. Colin Ian King.
+
+Example Code and Data Size: These are the sizes for the OS-independent acpi=
+ca.lib produced by the Microsoft Visual C++ 9.0 32-bit compiler. The debug =
+version of the code includes the debug output trace mechanism and has a muc=
+h larger code and data size.
+
+  Current Release:
+    Non-Debug Version:  98.7K Code, 27.2K Data, 125.9K Total
+    Debug Version:     191.7K Code, 79.6K Data, 271.3K Total
+  Previous Release:
+    Non-Debug Version:  96.8K Code, 27.2K Data, 124.0K Total
+    Debug Version:     189.5K Code, 79.7K Data, 269.2K Total
+
+
+2) iASL Compiler/Disassembler and Tools:
+
+Disassembler: Add dump of ASCII equivalent text within a comment at the end=
+ of each line of the output for the Buffer() ASL operator.
+
+AcpiDump: Miscellaneous changes:
+  Fixed repetitive table dump in -n mode.
+  For older EFI platforms, use the ACPI 1.0 GUID during RSDP search if the =
+ACPI 2.0 GUID fails.
+
+iASL: Fixed a problem where the compiler could fault if incorrectly given a=
+n acpidump output file as input. ACPICA BZ 1088. David Box.
+
+AcpiExec/AcpiNames: Fixed a problem where these utilities could fault if th=
+ey are invoked without any arguments.
+
+Debugger: Fixed a possible memory leak in an error return path. ACPICA BZ 1=
+086. Colin Ian King.
+
+Disassembler: Cleaned up a block of code that extracts a parent Op object. =
+Added a comment that explains that the parent is guaranteed to be valid in =
+this case. ACPICA BZ 1069.
+
+
+--===============5955746531509071160==--
 
