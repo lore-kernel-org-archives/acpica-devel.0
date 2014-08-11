@@ -1,95 +1,61 @@
-Content-Type: multipart/mixed; boundary="===============5150828300288857740=="
+Content-Type: multipart/mixed; boundary="===============5716032475478457410=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] ACPICA version 20140724 released
-Date: Thu, 24 Jul 2014 17:53:18 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D1CD75F@ORSMSX112.amr.corp.intel.com>
+From: Neel Natu <neelnatu at gmail.com>
+Subject: [Devel] Patch to override "Creator ID" and "Creator Revision"
+Date: Mon, 11 Aug 2014 14:11:54 -0700
+Message-ID: <CAFgRE9H3XFWaWROKhpiX8LCcOU0jSH5duEzzMrU2G=ACypJ0uA@mail.gmail.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5150828300288857740==
+--===============5716032475478457410==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-24 July 2014. Summary of changes for version 20140724:
+Hi,
 
-This release is available at https://acpica.org/downloads
+The following patch allows the "Creator ID" and "Creator Revision" to
+be overridden at compile time.
 
-The ACPI 5.1 specification has been released and is available at: http://ue=
-fi.org/specs/access
+At the moment the "Creator Revision" is a stand-in for the compiler
+version which implies that the tables change every time the compiler
+version changes. This patch decouples "Creator Revision" from the
+compiler version.
 
+It would be great if this could be committed.
 
-0) ACPI 5.1 support in ACPICA:
+best
+Neel
 
-ACPI 5.1 is fully supported in ACPICA as of this release.
+diff --git a/source/compiler/asldefine.h b/source/compiler/asldefine.h
+index b05bd7f..6a15bf1 100644
+--- a/source/compiler/asldefine.h
++++ b/source/compiler/asldefine.h
+@@ -125,7 +125,9 @@
+ #define ASL_COMPILER_NAME           "ASL Optimizing Compiler"
+ #define AML_DISASSEMBLER_NAME       "AML Disassembler"
+ #define ASL_INVOCATION_NAME         "iasl"
++#ifndef ASL_CREATOR_ID
+ #define ASL_CREATOR_ID              "INTL"
++#endif
 
-New predefined names. Support includes iASL and runtime ACPICA validation.
-    _CCA (Cache Coherency Attribute).
-    _DSD (Device-Specific Data). David Box.
+ #define ASL_COMPLIANCE              "Supports ACPI Specification Revision =
+5.1"
 
-Modifications to existing ACPI tables. Support includes headers, iASL Data =
-Table compiler, disassembler, and the template generator.
-    FADT - New fields and flags. Graeme Gregory.
-    GTDT - One new subtable and new fields. Tomasz Nowicki.
-    MADT - Two new subtables. Tomasz Nowicki.
-    PCCT - One new subtable.
+diff --git a/source/include/acpixf.h b/source/include/acpixf.h
+index cafc37b..005325c 100644
+--- a/source/include/acpixf.h
++++ b/source/include/acpixf.h
+@@ -118,7 +118,9 @@
 
-Miscellaneous.
-    New notification type for System Resource Affinity change events.
+ /* Current ACPICA subsystem version in YYYYMMDD format */
 
++#ifndef ACPI_CA_VERSION
+ #define ACPI_CA_VERSION                 0x20140724
++#endif
 
-1) ACPICA kernel-resident subsystem:
+ #include "acconfig.h"
+ #include "actypes.h"
 
-Fixed a regression introduced in 20140627 where a fault can happen during t=
-he deletion of Alias AML namespace objects. The problem affected both the c=
-ore ACPICA and the ACPICA tools including iASL and AcpiExec.
-
-Implemented a new GPE public interface, AcpiMarkGpeForWake. Provides a simp=
-le mechanism to enable wake GPEs that have no associated handler or control=
- method. Rafael Wysocki.
-
-Updated the AcpiEnableGpe interface to disallow the enable if there is no h=
-andler or control method associated with the particular GPE. This will help=
- avoid meaningless GPEs and even GPE floods. Rafael Wysocki.
-
-Updated GPE handling and dispatch by disabling the GPE before clearing the =
-status bit for edge-triggered GPEs. Lv Zheng.
-
-Added Timer() support to the AML Debug object. The current timer value is n=
-ow displayed with each invocation of (Store to) the debug object to enable =
-simple generation of execution times for AML code (method execution for exa=
-mple.) ACPICA BZ 1093.
-
-Example Code and Data Size: These are the sizes for the OS-independent acpi=
-ca.lib produced by the Microsoft Visual C++ 9.0 32-bit compiler. The debug =
-version of the code includes the debug output trace mechanism and has a muc=
-h larger code and data size.
-
-  Current Release:
-    Non-Debug Version:  98.7K Code, 27.3K Data, 126.0K Total
-    Debug Version:     192.0K Code, 79.7K Data, 271.7K Total
-  Previous Release:
-    Non-Debug Version:  98.7K Code, 27.2K Data, 125.9K Total
-    Debug Version:     191.7K Code, 79.6K Data, 271.3K Total
-
-
-2) iASL Compiler/Disassembler and Tools:
-
-Fixed an issue with the recently added local printf implementation, concern=
-ing width/precision specifiers that could cause incorrect output. Lv Zheng.=
- ACPICA BZ 1094.
-
-Disassembler: Added support to detect buffers that contain UUIDs and disass=
-emble them to an invocation of the ToUUID operator. Also emit commented des=
-criptions of known ACPI-related UUIDs.
-
-AcpiHelp: Added support to display known ACPI-related UUIDs. New option, -u=
-. Adds three new files.
-
-iASL: Update table compiler and disassembler for DMAR table changes that we=
-re introduced in September 2013. With assistance by David Woodhouse.
-
-
---===============5150828300288857740==--
+--===============5716032475478457410==--
 
