@@ -1,150 +1,84 @@
-Content-Type: multipart/mixed; boundary="===============3835767238047878586=="
+Content-Type: multipart/mixed; boundary="===============4699031789527464556=="
 MIME-Version: 1.0
-From: Neel Natu <neelnatu at gmail.com>
-Subject: Re: [Devel] Patch to override "Creator ID" and "Creator Revision"
-Date: Mon, 11 Aug 2014 16:45:57 -0700
-Message-ID: <CAFgRE9GE+R8HApTkSk1SXtHZA2y__VBVJHu4A7NP6D+m92+12A@mail.gmail.com>
-In-Reply-To: 94F2FBAB4432B54E8AACC7DFDE6C92E37D1D90CB@ORSMSX112.amr.corp.intel.com
+From: Zheng, Lv <lv.zheng at intel.com>
+Subject: Re: [Devel] kernel boot fail with efi earlyprintk (bisected)
+Date: Fri, 22 Aug 2014 01:43:37 +0000
+Message-ID: <1AE640813FDE7649BE1B193DEA596E880265EF49@SHSMSX101.ccr.corp.intel.com>
+In-Reply-To: 20140821205224.GJ29733@console-pimps.org
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3835767238047878586==
+--===============4699031789527464556==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi Robert,
+Hi,
 
-On Mon, Aug 11, 2014 at 4:24 PM, Moore, Robert <robert.moore(a)intel.com> w=
-rote:
-> Sometimes the output does in fact change across compiler versions.
->
-> Really, how difficult is it to just ignore this field, or even the entire=
- ACPI table header?
->
-> We even have a utility to do it, called acpibin.
->
+There is only limited entries in the x86 early mapping which is implemented=
+ by the FIXMAP.
+So this means for all __init call invoked for x86, if there was a early map=
+ping in it, it should be unmapped before exiting the __init call.
 
-Ok, I wasn't aware of this. I'll try and see if I can make it do what I nee=
-d.
+Using this rule, all __init call implementers can make sure that before ent=
+ering the __init call, the limited number of FIXMAP entries is enough.
 
-best
-Neel
+The following bisected commit just increase early mapping times from 1 to 2=
+ in ACPICA early table handling code.
+The number of 2 is less than the number of available FIXMAP entries.
+And ACPICA code has ensured that all mappings are correctly unmapped after =
+the table initialization.
+So we didn't break the rule.
 
-> Bob
->
->
->> -----Original Message-----
->> From: Neel Natu [mailto:neelnatu(a)gmail.com]
->> Sent: Monday, August 11, 2014 3:02 PM
->> To: Moore, Robert
->> Cc: devel(a)acpica.org
->> Subject: Re: [Devel] Patch to override "Creator ID" and "Creator Revisio=
-n"
->>
->> Hi Robert,
->>
->> On Mon, Aug 11, 2014 at 2:40 PM, Moore, Robert <robert.moore(a)intel.com>
->> wrote:
->> > CreatorID is meant to identify the compiler. The OemID, etc. are meant
->> to identify the manufacturer of the table.
->> >
->>
->> Indeed. I got a bit carried away :-)
->>
->> > So, why would you want to override the compiler revision? A different
->> version of the compiler can certainly generate different table contents,
->> and this helps us identify the compiler used to build the table.
->> >
->>
->> I use this to compare the generated tables on different systems.
->>
->> If the output changes because different compilers do output different
->> table contents then that's one thing.
->>
->> However, if the only difference between the generated tables is due to t=
-he
->> compiler revision then I would like a way to control that. I expect this
->> to be the common case but perhaps I am mistaken?
->>
->> best
->> Neel
->>
->> >
->> >
->> >> -----Original Message-----
->> >> From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of Moore,
->> >> Robert
->> >> Sent: Monday, August 11, 2014 2:37 PM
->> >> To: Neel Natu; devel(a)acpica.org
->> >> Subject: Re: [Devel] Patch to override "Creator ID" and "Creator
->> Revision"
->> >>
->> >> I doubt we would allow the creator ID to be overridden.
->> >>
->> >>
->> >>
->> >> > -----Original Message-----
->> >> > From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of Neel
->> >> > Natu
->> >> > Sent: Monday, August 11, 2014 2:12 PM
->> >> > To: devel(a)acpica.org
->> >> > Subject: [Devel] Patch to override "Creator ID" and "Creator
->> Revision"
->> >> >
->> >> > Hi,
->> >> >
->> >> > The following patch allows the "Creator ID" and "Creator Revision"
->> >> > to be overridden at compile time.
->> >> >
->> >> > At the moment the "Creator Revision" is a stand-in for the compiler
->> >> > version which implies that the tables change every time the
->> >> > compiler version changes. This patch decouples "Creator Revision"
->> >> > from the compiler version.
->> >> >
->> >> > It would be great if this could be committed.
->> >> >
->> >> > best
->> >> > Neel
->> >> >
->> >> > diff --git a/source/compiler/asldefine.h
->> >> > b/source/compiler/asldefine.h index b05bd7f..6a15bf1 100644
->> >> > --- a/source/compiler/asldefine.h
->> >> > +++ b/source/compiler/asldefine.h
->> >> > @@ -125,7 +125,9 @@
->> >> >  #define ASL_COMPILER_NAME           "ASL Optimizing Compiler"
->> >> >  #define AML_DISASSEMBLER_NAME       "AML Disassembler"
->> >> >  #define ASL_INVOCATION_NAME         "iasl"
->> >> > +#ifndef ASL_CREATOR_ID
->> >> >  #define ASL_CREATOR_ID              "INTL"
->> >> > +#endif
->> >> >
->> >> >  #define ASL_COMPLIANCE              "Supports ACPI Specification
->> >> Revision
->> >> > 5.1"
->> >> >
->> >> > diff --git a/source/include/acpixf.h b/source/include/acpixf.h
->> >> > index cafc37b..005325c 100644
->> >> > --- a/source/include/acpixf.h
->> >> > +++ b/source/include/acpixf.h
->> >> > @@ -118,7 +118,9 @@
->> >> >
->> >> >  /* Current ACPICA subsystem version in YYYYMMDD format */
->> >> >
->> >> > +#ifndef ACPI_CA_VERSION
->> >> >  #define ACPI_CA_VERSION                 0x20140724
->> >> > +#endif
->> >> >
->> >> >  #include "acconfig.h"
->> >> >  #include "actypes.h"
->> >> > _______________________________________________
->> >> > Devel mailing list
->> >> > Devel(a)acpica.org
->> >> > https://lists.acpica.org/mailman/listinfo/devel
->> >> _______________________________________________
->> >> Devel mailing list
->> >> Devel(a)acpica.org
->> >> https://lists.acpica.org/mailman/listinfo/devel
+We can offer a workaround in ACPICA to reduce mapping count from 2 to 1 usi=
+ng a global option.
+But since this report sounds like that the root cause is earlyprintk=3Defi =
+has broken the above rule and the existing issue is triggered by this clean=
+up.
+So could someone check the earlyprintk=3Defi code first?
+I think earlyprintk=3Defi should either unmap the increased mapping or incr=
+ease the number of FIXMAP entries in case earlyprintk=3Defi need additional=
+ early mappings.
+Otherwise it will always be chances for earlyprintk=3Defi to break future c=
+ode.
 
---===============3835767238047878586==--
+Thanks and best regards
+-Lv
+
+> From: Matt Fleming [mailto:matt(a)console-pimps.org]
+> Sent: Friday, August 22, 2014 4:52 AM
+> =
+
+> On Tue, 19 Aug, at 04:16:58PM, Dave Young wrote:
+> > Hi,
+> >
+> > 3.16 kernel boot fail with earlyprintk=3Defi on my laptop.
+> > It keeps scrolling at the bottom line of screen.
+> >
+> > Bisected, the first bad commit is below:
+> > commit 86dfc6f339886559d80ee0d4bd20fe5ee90450f0
+> > Author: Lv Zheng <lv.zheng(a)intel.com>
+> > Date:   Fri Apr 4 12:38:57 2014 +0800
+> >
+> >     ACPICA: Tables: Fix table checksums verification before installatio=
+n.
+> >
+> >
+> > I did some debugging by enabling both serial and efi earlyprintk, below=
+ is
+> > some debug dmesg, seems early_ioremap fails in scroll up function due to
+> > no free slot, but I'm still not sure if the debug info is right or not.
+> =
+
+> Thanks Dave, your callstack seems to make sense.
+> =
+
+> Can you also enable early_ioremap_debug so that we can figure out where
+> all the FIXMAP slots are going?
+> =
+
+> --
+> Matt Fleming, Intel Open Source Technology Center
+
+--===============4699031789527464556==--
 
