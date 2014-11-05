@@ -1,82 +1,118 @@
-Content-Type: multipart/mixed; boundary="===============4803251286414954729=="
+Content-Type: multipart/mixed; boundary="===============7528668183849954201=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] ACPICA version 20140926 released
-Date: Fri, 26 Sep 2014 19:53:39 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D209773@ORSMSX112.amr.corp.intel.com>
+From: Lv Zheng <lv.zheng at intel.com>
+Subject: [Devel] [PATCH] ACPI/OSL: Add IRQ handler flushing support in the OSL.
+Date: Wed, 05 Nov 2014 07:06:42 +0000
+Message-ID: <454129232241014e949861cc07a7f3ff6c80bd52.1415156960.git.lv.zheng@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4803251286414954729==
+--===============7528668183849954201==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-26 September 2014. Summary of changes for version 20140926:
+It is possible that a GPE handler or a fixed event handler still accessed
+after removing the handlers by invoking acpi_remove_gpe_handler() or
+acpi_remove_fixed_event_handler(), this possibility can crash OPSM after a
+module removal. In the Linux kernel, though all other GPE drivers are not
+modules, since the IPMI_SI (ipmi_si_intf.c) can be compiled as a module, we
+still need to consider a solution for this issue when the driver switches
+to ACPI_GPE_RAW_HANDLER mode in order to invoke GPE APIs.
 
-This release is available at https://acpica.org/downloads
+ACPICA expects acpi_os_wait_events_complete() to be invoked after GPE
+disabling so that OSPM can ensure all running GPE handlers have exitted.
+But currently acpi_os_wait_events_complete() can only flush _Lxx/_Exx
+evaluation work queue and this philosophy cannot work for drivers that have
+installed a dedicated GPE handler.
+
+The only way to protect a callback is to perform some state holders
+(reference count, state machine) before invoking the callback. Then this
+issue can only be fixed by the following means:
+1. Flush GPE in ACPICA before invoking the GPE handler. But currently,
+   there is no such implementation in acpi_ev_gpe_dispatch().
+2. Flush GPE in ACPICA OSL before invoking the SCI handler. But currently,
+   there is no such implementation in acpi_irq().
+3. Flush IRQ in OSPM IRQ layer before invoking the IRQ handler. In Linus
+   kernel, this can be done by synchronize_irq().
+4. Flush scheduling in OSPM vector entry layer before invoking the vector.
+   In Linux, this can be done by synchronize_sched().
+
+Since ACPICA expects the GPE handlers to be flushed by the ACPICA OSL or
+the GPE drivers. If it is implemented by the GPE driver, we should see
+synchronize_irq()/synchronize_sched() invoked in such drivers. If it is
+implemented by the ACPICA OSL, ACPICA currently provides
+acpi_os_wait_events_complete() hook to achieve this. After the following
+commit:
+  Commit: 69c841b6dd8313c9a673246cc0e2535174272cab
+  Author: Lv Zheng <lv.zheng(a)intel.com>
+  Subject: ACPICA: Update use of acpi_os_wait_events_complete interface.
+The OSL acpi_os_wait_events_complete() is invoked after a GPE handler is
+removed from acpi_remove_gpe_handler() or a fixed event handler is removed
+from acpi_remove_fixed_event_handler(). Thus it is possible to implement
+GPE handler flushing using this ACPICA OSL now. So the solution 1 is
+currently not taken into account.
+
+By examining the IPMI_SI driver, we noticed that the IPMI_SI driver:
+1. Uses free_irq() to flush non GPE based IRQ handlers, in free_irq(),
+   synchronize_irq() is invoked, and
+2. Uses acpi_remove_gpe_handler() to flush GPE based IRQ handlers, for such
+   IRQ handlers, there is no synchronize_irq() invoked.
+Since there isn't synchronize_sched() implemented for this driver, from the
+driver's perspective, acpi_remove_gpe_handler() should have properly
+flushed the GPE handlers for it. Since the driver doesn't invoke
+synchronize_irq(), the solution 3 is not what the drivers expect.
+
+This patch implements solution 2. But since given the fact that the GPE is
+managed inside of ACPICA, and implementing the GPE flushing requires to
+implement the whole GPE management code again in the OSL, instead of
+flushing GPE, this patch flushes IRQ in acpi_os_wait_events_complete(). The
+flushing could last longer than expected as though the target GPE/fixed
+event that is removed can be fastly flushed, other GPEs/fix events can still
+be issued during the flushing period.
+
+This patch fixes this issue by invoking synchronize_hardirq() in
+acpi_os_wait_events_complete(). The reason why we don't invoke
+synchronize_irq() is: currently ACPICA is not threaded IRQ capable and the
+only difference between synchronize_irq() and synchronize_hardirq() is
+synchronize_irq() also flushes threaded IRQ handlers. Thus using
+synchronize_hardirq() can help to reduce the overall synchronization time
+for the current ACPICA implementation.
+
+Signed-off-by: Lv Zheng <lv.zheng(a)intel.com>
+Cc: Rafael J. Wysocki <rjw(a)rjwysocki.net>
+Cc: Len Brown <lenb(a)kernel.org>
+Cc: Robert Moore <robert.moore(a)intel.com>
+Cc: Corey Minyard <minyard(a)acm.org>
+Cc: linux-acpi(a)vger.kernel.org
+Cc: devel(a)acpica.org
+Cc: openipmi-developer(a)lists.sourceforge.net
+---
+ drivers/acpi/osl.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
+index 9964f70..2524196 100644
+--- a/drivers/acpi/osl.c
++++ b/drivers/acpi/osl.c
+@@ -1188,6 +1188,12 @@ EXPORT_SYMBOL(acpi_os_execute);
+ =
+
+ void acpi_os_wait_events_complete(void)
+ {
++	/*
++	 * Make sure the GPE handler or the fixed event handler is not used
++	 * on another CPU after removal.
++	 */
++	if (acpi_irq_handler)
++		synchronize_hardirq(acpi_gbl_FADT.sci_interrupt);
+ 	flush_workqueue(kacpid_wq);
+ 	flush_workqueue(kacpi_notify_wq);
+ }
+-- =
+
+1.7.10
 
 
-1) ACPICA kernel-resident subsystem:
-
-Updated the GPIO operation region handler interface (GeneralPurposeIo). In =
-order to support GPIO Connection objects with multiple pins, along with the=
- related Field objects, the following changes to the interface have been ma=
-de: The Address is now defined to be the offset in bits of the field unit f=
-rom the previous invocation of a Connection. It can be viewed as a "Pin Num=
-ber Index" into the connection resource descriptor. The BitWidth is the exa=
-ct bit width of the field. It is usually one bit, but not always. See the A=
-CPICA reference guide (section 8.8.6.2.1) for additional information and ex=
-amples.
-
-GPE support: During ACPICA/GPE initialization, ensure that all GPEs with co=
-rresponding _Lxx/_Exx methods are disabled (they may have been enabled by t=
-he firmware), so that they cannot fire until they are enabled via AcpiUpdat=
-eAllGpes. Rafael J. Wysocki.
-
-Added a new return flag for the Event/GPE status interfaces -- AcpiGetEvent=
-Status and AcpiGetGpeStatus. The new ACPI_EVENT_FLAGS_HAS_HANDLER flag is u=
-sed to indicate that the event or GPE currently has a handler associated wi=
-th it, and can thus actually affect the system. Lv Zheng.
-
-Example Code and Data Size: These are the sizes for the OS-independent acpi=
-ca.lib produced by the Microsoft Visual C++ 9.0 32-bit compiler. The debug =
-version of the code includes the debug output trace mechanism and has a muc=
-h larger code and data size.
-
-  Current Release:
-    Non-Debug Version:  99.1K Code, 27.3K Data, 126.4K Total
-    Debug Version:     192.8K Code, 79.9K Data, 272.7K Total
-  Previous Release:
-    Non-Debug Version:  98.8K Code, 27.3K Data, 126.1K Total
-    Debug Version:     192.1K Code, 79.8K Data, 271.9K Total
-
-2) iASL Compiler/Disassembler and Tools:
-
-iASL: Fixed a memory allocation/free regression introduced in 20140828 that=
- could cause the compiler to crash. This was introduced inadvertently durin=
-g the effort to eliminate compiler memory leaks. ACPICA BZ 1111, 1113.
-
-iASL: Removed two error messages that have been found to create false posit=
-ives, until they can be fixed and fully validated (ACPICA BZ 1112):
-1) Illegal forward reference within a method
-2) Illegal reference across two methods
-
-iASL: Implemented a new option (-lm) to create a hardware mapping file that=
- summarizes all GPIO, I2C, SPI, and UART connections. This option works for=
- both the compiler and disassembler. See the iASL compiler user guide for a=
-dditional information and examples (section 6.4.6).
-
-AcpiDump: Added support for the version 1 (ACPI 1.0) RSDP in addition to ve=
-rsion 2. This corrects the AE_BAD_HEADER exception seen on systems with a v=
-ersion 1 RSDP. Lv Zheng ACPICA BZ 1097.
-
-AcpiExec: For Unix versions, don't attempt to put STDIN into raw mode unles=
-s STDIN is actually a terminal. Assists with batch-mode processing. ACPICA =
-BZ 1114.
-
-Disassembler/AcpiHelp: Added another large group of recognized _HID values.
-
-
---===============4803251286414954729==--
+--===============7528668183849954201==--
 
