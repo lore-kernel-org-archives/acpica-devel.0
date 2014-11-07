@@ -1,118 +1,194 @@
-Content-Type: multipart/mixed; boundary="===============7528668183849954201=="
+Content-Type: multipart/mixed; boundary="===============6000120940842210357=="
 MIME-Version: 1.0
-From: Lv Zheng <lv.zheng at intel.com>
-Subject: [Devel] [PATCH] ACPI/OSL: Add IRQ handler flushing support in the OSL.
-Date: Wed, 05 Nov 2014 07:06:42 +0000
-Message-ID: <454129232241014e949861cc07a7f3ff6c80bd52.1415156960.git.lv.zheng@intel.com>
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] ACPICA version 20141107 released
+Date: Fri, 07 Nov 2014 20:07:19 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D21FB84@ORSMSX112.amr.corp.intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7528668183849954201==
+--===============6000120940842210357==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-It is possible that a GPE handler or a fixed event handler still accessed
-after removing the handlers by invoking acpi_remove_gpe_handler() or
-acpi_remove_fixed_event_handler(), this possibility can crash OPSM after a
-module removal. In the Linux kernel, though all other GPE drivers are not
-modules, since the IPMI_SI (ipmi_si_intf.c) can be compiled as a module, we
-still need to consider a solution for this issue when the driver switches
-to ACPI_GPE_RAW_HANDLER mode in order to invoke GPE APIs.
+07 November 2014. Summary of changes for version 20141107:
 
-ACPICA expects acpi_os_wait_events_complete() to be invoked after GPE
-disabling so that OSPM can ensure all running GPE handlers have exitted.
-But currently acpi_os_wait_events_complete() can only flush _Lxx/_Exx
-evaluation work queue and this philosophy cannot work for drivers that have
-installed a dedicated GPE handler.
+This release is available at https://acpica.org/downloads
 
-The only way to protect a callback is to perform some state holders
-(reference count, state machine) before invoking the callback. Then this
-issue can only be fixed by the following means:
-1. Flush GPE in ACPICA before invoking the GPE handler. But currently,
-   there is no such implementation in acpi_ev_gpe_dispatch().
-2. Flush GPE in ACPICA OSL before invoking the SCI handler. But currently,
-   there is no such implementation in acpi_irq().
-3. Flush IRQ in OSPM IRQ layer before invoking the IRQ handler. In Linus
-   kernel, this can be done by synchronize_irq().
-4. Flush scheduling in OSPM vector entry layer before invoking the vector.
-   In Linux, this can be done by synchronize_sched().
-
-Since ACPICA expects the GPE handlers to be flushed by the ACPICA OSL or
-the GPE drivers. If it is implemented by the GPE driver, we should see
-synchronize_irq()/synchronize_sched() invoked in such drivers. If it is
-implemented by the ACPICA OSL, ACPICA currently provides
-acpi_os_wait_events_complete() hook to achieve this. After the following
-commit:
-  Commit: 69c841b6dd8313c9a673246cc0e2535174272cab
-  Author: Lv Zheng <lv.zheng(a)intel.com>
-  Subject: ACPICA: Update use of acpi_os_wait_events_complete interface.
-The OSL acpi_os_wait_events_complete() is invoked after a GPE handler is
-removed from acpi_remove_gpe_handler() or a fixed event handler is removed
-from acpi_remove_fixed_event_handler(). Thus it is possible to implement
-GPE handler flushing using this ACPICA OSL now. So the solution 1 is
-currently not taken into account.
-
-By examining the IPMI_SI driver, we noticed that the IPMI_SI driver:
-1. Uses free_irq() to flush non GPE based IRQ handlers, in free_irq(),
-   synchronize_irq() is invoked, and
-2. Uses acpi_remove_gpe_handler() to flush GPE based IRQ handlers, for such
-   IRQ handlers, there is no synchronize_irq() invoked.
-Since there isn't synchronize_sched() implemented for this driver, from the
-driver's perspective, acpi_remove_gpe_handler() should have properly
-flushed the GPE handlers for it. Since the driver doesn't invoke
-synchronize_irq(), the solution 3 is not what the drivers expect.
-
-This patch implements solution 2. But since given the fact that the GPE is
-managed inside of ACPICA, and implementing the GPE flushing requires to
-implement the whole GPE management code again in the OSL, instead of
-flushing GPE, this patch flushes IRQ in acpi_os_wait_events_complete(). The
-flushing could last longer than expected as though the target GPE/fixed
-event that is removed can be fastly flushed, other GPEs/fix events can still
-be issued during the flushing period.
-
-This patch fixes this issue by invoking synchronize_hardirq() in
-acpi_os_wait_events_complete(). The reason why we don't invoke
-synchronize_irq() is: currently ACPICA is not threaded IRQ capable and the
-only difference between synchronize_irq() and synchronize_hardirq() is
-synchronize_irq() also flushes threaded IRQ handlers. Thus using
-synchronize_hardirq() can help to reduce the overall synchronization time
-for the current ACPICA implementation.
-
-Signed-off-by: Lv Zheng <lv.zheng(a)intel.com>
-Cc: Rafael J. Wysocki <rjw(a)rjwysocki.net>
-Cc: Len Brown <lenb(a)kernel.org>
-Cc: Robert Moore <robert.moore(a)intel.com>
-Cc: Corey Minyard <minyard(a)acm.org>
-Cc: linux-acpi(a)vger.kernel.org
-Cc: devel(a)acpica.org
-Cc: openipmi-developer(a)lists.sourceforge.net
----
- drivers/acpi/osl.c |    6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
-index 9964f70..2524196 100644
---- a/drivers/acpi/osl.c
-+++ b/drivers/acpi/osl.c
-@@ -1188,6 +1188,12 @@ EXPORT_SYMBOL(acpi_os_execute);
- =
-
- void acpi_os_wait_events_complete(void)
- {
-+	/*
-+	 * Make sure the GPE handler or the fixed event handler is not used
-+	 * on another CPU after removal.
-+	 */
-+	if (acpi_irq_handler)
-+		synchronize_hardirq(acpi_gbl_FADT.sci_interrupt);
- 	flush_workqueue(kacpid_wq);
- 	flush_workqueue(kacpi_notify_wq);
- }
--- =
-
-1.7.10
+This release introduces and implements language extensions to ASL that prov=
+ide support for symbolic ("C-style") operators and expressions. These langu=
+age extensions are known collectively as ASL+.
 
 
---===============7528668183849954201==--
+1) iASL Compiler/Disassembler and Tools:
+
+Disassembler: Fixed a problem with disassembly of the UartSerialBus macro. =
+Changed "StopBitsNone" to the correct "StopBitsZero". David E. Box.
+
+Disassembler: Fixed the Unicode macro support to add escape sequences. All =
+non-printable ASCII values are emitted as escape sequences, as well as the =
+standard escapes for quote and backslash. Ensures that the disassembled mac=
+ro can be correctly recompiled.
+
+iASL: Added Printf/Fprintf macros for formatted output. These macros are tr=
+anslated to existing AML Concatenate and Store operations. Printf writes to=
+ the ASL Debug object. Fprintf allows the specification of an ASL name as t=
+he target. Only a single format specifier is required, %o, since the AML in=
+terpreter dynamically converts objects to the required type. David E. Box.
+
+    (old)    Store (Concatenate (Concatenate (Concatenate (Concatenate
+                 (Concatenate (Concatenate (Concatenate ("", Arg0),
+                 ": Unexpected value for "), Arg1), ", "), Arg2),
+                 " at line "), Arg3), Debug)
+
+    (new)    Printf ("%o: Unexpected value for %o, %o at line %o",
+                 Arg0, Arg1, Arg2, Arg3)
+
+    (old)    Store (Concatenate (Concatenate (Concatenate (Concatenate
+                 ("", Arg1), ": "), Arg0), " Successful"), STR1)
+
+    (new)    Fprintf (STR1, "%o: %o Successful", Arg1, Arg0)
+
+iASL: Added debug options (-bp, -bt) to dynamically prune levels of the ASL=
+ parse tree before the AML code is generated. This allows blocks of ASL cod=
+e to be removed in order to help locate and identify problem devices and/or=
+ code. David E. Box.
+
+AcpiExec: Added support (-fi) for an optional namespace object initializati=
+on file. This file specifies initial values for namespace objects as necess=
+ary for debugging and testing different ASL code paths that may be taken as=
+ a result of BIOS options.
+
+
+2) Overview of symbolic operator support for ASL (ASL+)
+-------------------------------------------------------
+
+As an extension to the ASL language, iASL implements support for symbolic (=
+C-style) operators for math and logical expressions. This can greatly simpl=
+ify ASL code as well as improve both readability and maintainability. These=
+ language extensions can exist concurrently with all legacy ASL code and ex=
+pressions.
+
+The symbolic extensions are 100% compatible with existing AML interpreters,=
+ since no new AML opcodes are created. To implement the extensions, the iAS=
+L compiler transforms the symbolic expressions into the legacy ASL/AML equi=
+valents at compile time.
+
+Full symbolic expressions are supported, along with the standard C preceden=
+ce and associativity rules.
+
+Full disassembler support for the symbolic expressions is provided, and cre=
+ates an automatic migration path for existing ASL code to ASL+ code via the=
+ disassembly process. By default, the disassembler now emits ASL+ code with=
+ symbolic expressions. An option (-dl) is provided to force the disassemble=
+r to emit legacy ASL code if desired.
+
+Below is the complete list of the currently supported symbolic operators wi=
+th examples. See the iASL User Guide for additional information.
+
+
+ASL+ Syntax      Legacy ASL Equivalent
+-----------      ---------------------
+
+    // Math operators
+
+Z =3D X + Y        Add (X, Y, Z)
+Z =3D X - Y        Subtract (X, Y, Z)
+Z =3D X * Y        Multiply (X, Y, Z)
+Z =3D X / Y        Divide (X, Y, , Z)
+Z =3D X % Y        Mod (X, Y, Z)
+Z =3D X << Y       ShiftLeft (X, Y, Z)
+Z =3D X >> Y       ShiftRight (X, Y, Z)
+Z =3D X & Y        And (X, Y, Z)
+Z =3D X | Y        Or (X, Y, Z)
+Z =3D X ^ Y        Xor (X, Y, Z)
+Z =3D ~X           Not (X, Z)
+X++              Increment (X)
+X--              Decrement (X)
+
+    // Logical operators
+
+(X =3D=3D Y)         LEqual (X, Y)
+(X !=3D Y)         LNotEqual (X, Y)
+(X < Y)          LLess (X, Y)
+(X > Y)          LGreater (X, Y)
+(X <=3D Y)         LLessEqual (X, Y)
+(X >=3D Y)         LGreaterEqual (X, Y)
+(X && Y)         LAnd (X, Y)
+(X || Y)         LOr (X, Y)
+(!X)             LNot (X)
+
+    // Assignment and compound assignment operations
+
+X =3D Y           Store (Y, X)
+X +=3D Y          Add (X, Y, X)
+X -=3D Y          Subtract (X, Y, X)
+X *=3D Y          Multiply (X, Y, X)
+X /=3D Y          Divide (X, Y, , X)
+X %=3D Y          Mod (X, Y, X)
+X <<=3D Y         ShiftLeft (X, Y, X)
+X >>=3D Y         ShiftRight (X, Y, X)
+X &=3D Y          And (X, Y, X)
+X |=3D Y          Or (X, Y, X)
+X ^=3D Y          Xor (X, Y, X)
+
+
+3) ASL+ Examples:
+-----------------
+
+Legacy ASL:
+        If (LOr (LOr (LEqual (And (R510, 0x03FB), 0x02E0), LEqual (
+            And (R520, 0x03FB), 0x02E0)), LOr (LEqual (And (R530, 0x03FB), =
+
+            0x02E0), LEqual (And (R540, 0x03FB), 0x02E0))))
+        {
+            And (MEMB, 0xFFFFFFF0, SRMB)
+            Store (MEMB, Local2)
+            Store (PDBM, Local1)
+            And (PDBM, 0xFFFFFFFFFFFFFFF9, PDBM)
+            Store (SRMB, MEMB)
+            Or (PDBM, 0x02, PDBM)
+        }
+
+ASL+ version:
+        If (((R510 & 0x03FB) =3D=3D 0x02E0) ||
+            ((R520 & 0x03FB) =3D=3D 0x02E0) ||
+            ((R530 & 0x03FB) =3D=3D 0x02E0) || =
+
+            ((R540 & 0x03FB) =3D=3D 0x02E0))
+        {
+            SRMB =3D (MEMB & 0xFFFFFFF0)
+            Local2 =3D MEMB
+            Local1 =3D PDBM
+            PDBM &=3D 0xFFFFFFFFFFFFFFF9
+            MEMB =3D SRMB
+            PDBM |=3D 0x02
+        }
+
+Legacy ASL:
+        Store (0x1234, Local1)
+        Multiply (Add (Add (Local1, TEST), 0x20), Local2, Local3)
+        Multiply (Local2, Add (Add (Local1, TEST), 0x20), Local3)
+        Add (Local1, Add (TEST, Multiply (0x20, Local2)), Local3)
+        Store (Index (PKG1, 0x03), Local6)
+        Store (Add (Local3, Local2), Debug)
+        Add (Local1, 0x0F, Local2)
+        Add (Local1, Multiply (Local2, Local3), Local2)
+        Multiply (Add (Add (Local1, TEST), 0x20), ToBCD (Local1), Local3)
+
+ASL+ version:
+        Local1 =3D 0x1234
+        Local3 =3D (((Local1 + TEST) + 0x20) * Local2)
+        Local3 =3D (Local2 * ((Local1 + TEST) + 0x20))
+        Local3 =3D (Local1 + (TEST + (0x20 * Local2)))
+        Local6 =3D Index (PKG1, 0x03)
+        Debug =3D (Local3 + Local2)
+        Local2 =3D (Local1 + 0x0F)
+        Local2 =3D (Local1 + (Local2 * Local3))
+        Local3 =3D (((Local1 + TEST) + 0x20) * ToBCD (Local1))
+
+
+
+--===============6000120940842210357==--
 
