@@ -1,121 +1,78 @@
-Content-Type: multipart/mixed; boundary="===============7371223012081921093=="
+Content-Type: multipart/mixed; boundary="===============3520274414222820383=="
 MIME-Version: 1.0
 From: Zheng, Lv <lv.zheng at intel.com>
-Subject: Re: [Devel] [PATCH] acpi: acpica: utstate:  Remove unused function
-Date: Mon, 05 Jan 2015 08:39:37 +0000
-Message-ID: <1AE640813FDE7649BE1B193DEA596E88026AACAC@SHSMSX101.ccr.corp.intel.com>
-In-Reply-To: 1420232480-3252-1-git-send-email-rickard_strandqvist@spectrumdigital.se
+Subject: Re: [Devel] [PATCH 3/3] ACPICA: Remove use of __DATE__ macro
+Date: Mon, 05 Jan 2015 08:47:43 +0000
+Message-ID: <1AE640813FDE7649BE1B193DEA596E88026AACD9@SHSMSX101.ccr.corp.intel.com>
+In-Reply-To: 1418381488-25123-3-git-send-email-linux@rasmusvillemoes.dk
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7371223012081921093==
+--===============3520274414222820383==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi, Richard
+Hi,
 
-> From: Rickard Strandqvist [mailto:rickard_strandqvist(a)spectrumdigital.s=
-e]
-> Sent: Saturday, January 03, 2015 5:01 AM
+> From: Rasmus Villemoes [mailto:linux(a)rasmusvillemoes.dk]
+> Sent: Friday, December 12, 2014 6:51 PM
+> To: Zheng, Lv
+> Cc: Rasmus Villemoes; linux-acpi(a)vger.kernel.org; devel(a)acpica.org; l=
+inux-kernel(a)vger.kernel.org
+> Subject: [PATCH 3/3] ACPICA: Remove use of __DATE__ macro
 > =
 
-> Remove the function acpi_ut_create_pkg_state_and_push() that is not used =
-anywhere.
+> The macro __DATE__ and friends is not allowed in the kernel. Also,
+> including the build time in output doesn't seem to provide any value.
 > =
 
-> This was partially found by using a static code analysis program called c=
-ppcheck.
 
-acpi_ut_create_pkg_state_and_push() is not even used in ACPICA.
-We can remove it now.
+Could you confirm that it is not useful even for the user tools?
+Please perform the following commands in the kernel source tree
+1. stay in tools folder
+2. type "make acpi"
+3. type "./power/acpi/acpidump -v"
 
 Thanks and best regards
 -Lv
 
-> =
-
-> Signed-off-by: Rickard Strandqvist <rickard_strandqvist(a)spectrumdigital=
-.se>
+> Signed-off-by: Rasmus Villemoes <linux(a)rasmusvillemoes.dk>
 > ---
->  drivers/acpi/acpica/acutils.h |    8 --------
->  drivers/acpi/acpica/utstate.c |   33 ---------------------------------
->  2 files changed, 41 deletions(-)
+>  drivers/acpi/acpica/acapps.h | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 > =
 
-> diff --git a/drivers/acpi/acpica/acutils.h b/drivers/acpi/acpica/acutils.h
-> index 486d342..ef2ad3c 100644
-> --- a/drivers/acpi/acpica/acutils.h
-> +++ b/drivers/acpi/acpica/acutils.h
-> @@ -539,14 +539,6 @@ acpi_ut_create_update_state_and_push(union acpi_oper=
-and_object *object,
->  				     u16 action,
->  				     union acpi_generic_state **state_list);
+> diff --git a/drivers/acpi/acpica/acapps.h b/drivers/acpi/acpica/acapps.h
+> index 3d2c88289da9..f72826176ebe 100644
+> --- a/drivers/acpi/acpica/acapps.h
+> +++ b/drivers/acpi/acpica/acapps.h
+> @@ -64,15 +64,15 @@
+>  /* Macros for signons and file headers */
 > =
 
-> -#ifdef	ACPI_FUTURE_USAGE
-> -acpi_status
-> -acpi_ut_create_pkg_state_and_push(void *internal_object,
-> -				  void *external_object,
-> -				  u16 index,
-> -				  union acpi_generic_state **state_list);
-> -#endif				/* ACPI_FUTURE_USAGE */
-> -
->  union acpi_generic_state *acpi_ut_create_control_state(void);
+>  #define ACPI_COMMON_SIGNON(utility_name) \
+> -	"\n%s\n%s version %8.8X%s [%s]\n%s\n\n", \
+> +	"\n%s\n%s version %8.8X%s\n%s\n\n", \
+>  	ACPICA_NAME, \
+> -	utility_name, ((u32) ACPI_CA_VERSION), ACPI_WIDTH, __DATE__, \
+> +	utility_name, ((u32) ACPI_CA_VERSION), ACPI_WIDTH, \
+>  	ACPICA_COPYRIGHT
 > =
 
->  void acpi_ut_delete_generic_state(union acpi_generic_state *state);
-> diff --git a/drivers/acpi/acpica/utstate.c b/drivers/acpi/acpica/utstate.c
-> index 1cc97a7..fa932e9 100644
-> --- a/drivers/acpi/acpica/utstate.c
-> +++ b/drivers/acpi/acpica/utstate.c
-> @@ -49,39 +49,6 @@ ACPI_MODULE_NAME("utstate")
+>  #define ACPI_COMMON_HEADER(utility_name, prefix) \
+> -	"%s%s\n%s%s version %8.8X%s [%s]\n%s%s\n%s\n", \
+> +	"%s%s\n%s%s version %8.8X%s\n%s%s\n%s\n", \
+>  	prefix, ACPICA_NAME, \
+> -	prefix, utility_name, ((u32) ACPI_CA_VERSION), ACPI_WIDTH, __DATE__, \
+> +	prefix, utility_name, ((u32) ACPI_CA_VERSION), ACPI_WIDTH, \
+>  	prefix, ACPICA_COPYRIGHT, \
+>  	prefix
 > =
 
->  /***********************************************************************=
-********
->   *
-> - * FUNCTION:    acpi_ut_create_pkg_state_and_push
-> - *
-> - * PARAMETERS:  object          - Object to be added to the new state
-> - *              action          - Increment/Decrement
-> - *              state_list      - List the state will be added to
-> - *
-> - * RETURN:      Status
-> - *
-> - * DESCRIPTION: Create a new state and push it
-> - *
-> - ***********************************************************************=
-*******/
-> -acpi_status
-> -acpi_ut_create_pkg_state_and_push(void *internal_object,
-> -				  void *external_object,
-> -				  u16 index,
-> -				  union acpi_generic_state **state_list)
-> -{
-> -	union acpi_generic_state *state;
-> -
-> -	ACPI_FUNCTION_ENTRY();
-> -
-> -	state =3D
-> -	    acpi_ut_create_pkg_state(internal_object, external_object, index);
-> -	if (!state) {
-> -		return (AE_NO_MEMORY);
-> -	}
-> -
-> -	acpi_ut_push_generic_state(state_list, state);
-> -	return (AE_OK);
-> -}
-> -
-> -/***********************************************************************=
-********
-> - *
->   * FUNCTION:    acpi_ut_push_generic_state
->   *
->   * PARAMETERS:  list_head           - Head of the state stack
 > --
-> 1.7.10.4
+> 2.1.3
 
 
---===============7371223012081921093==--
+--===============3520274414222820383==--
 
