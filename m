@@ -1,118 +1,121 @@
-Content-Type: multipart/mixed; boundary="===============2578354860064221025=="
+Content-Type: multipart/mixed; boundary="===============7371223012081921093=="
 MIME-Version: 1.0
 From: Zheng, Lv <lv.zheng at intel.com>
-Subject: Re: [Devel] [PATCH] acpi: acpica: utmisc.c: Remove unused function
-Date: Mon, 05 Jan 2015 08:32:59 +0000
-Message-ID: <1AE640813FDE7649BE1B193DEA596E88026AAC8D@SHSMSX101.ccr.corp.intel.com>
-In-Reply-To: 1420132554-32049-1-git-send-email-rickard_strandqvist@spectrumdigital.se
+Subject: Re: [Devel] [PATCH] acpi: acpica: utstate:  Remove unused function
+Date: Mon, 05 Jan 2015 08:39:37 +0000
+Message-ID: <1AE640813FDE7649BE1B193DEA596E88026AACAC@SHSMSX101.ccr.corp.intel.com>
+In-Reply-To: 1420232480-3252-1-git-send-email-rickard_strandqvist@spectrumdigital.se
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2578354860064221025==
+--===============7371223012081921093==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi, Rickard
+Hi, Richard
 
 > From: Rickard Strandqvist [mailto:rickard_strandqvist(a)spectrumdigital.s=
 e]
-> Sent: Friday, January 02, 2015 1:16 AM
+> Sent: Saturday, January 03, 2015 5:01 AM
 > =
 
-> Remove the function acpi_ut_is_aml_table() that is not used anywhere.
+> Remove the function acpi_ut_create_pkg_state_and_push() that is not used =
+anywhere.
+> =
 
-This function is used by the ACPICA debugger and disassembler.
-The ACPICA release process has just automatically released this function fr=
-om the ACPICA code base to the Linux kernel.
+> This was partially found by using a static code analysis program called c=
+ppcheck.
 
-We shouldn't just remove it from the Linux kernel code base.
-If we do so, it's just turned into divergences that can hurt the release au=
-tomation.
-You may use ACPI_FUTURE_USAGE around these functions instead.
-
-Same rule should apply to all of the other patches from you.
+acpi_ut_create_pkg_state_and_push() is not even used in ACPICA.
+We can remove it now.
 
 Thanks and best regards
 -Lv
 
 > =
 
-> This was partially found by using a static code analysis program called c=
-ppcheck.
-> =
-
 > Signed-off-by: Rickard Strandqvist <rickard_strandqvist(a)spectrumdigital=
 .se>
 > ---
->  drivers/acpi/acpica/acutils.h |    2 --
->  drivers/acpi/acpica/utmisc.c  |   28 ----------------------------
->  2 files changed, 30 deletions(-)
+>  drivers/acpi/acpica/acutils.h |    8 --------
+>  drivers/acpi/acpica/utstate.c |   33 ---------------------------------
+>  2 files changed, 41 deletions(-)
 > =
 
 > diff --git a/drivers/acpi/acpica/acutils.h b/drivers/acpi/acpica/acutils.h
-> index 486d342..ec5da45 100644
+> index 486d342..ef2ad3c 100644
 > --- a/drivers/acpi/acpica/acutils.h
 > +++ b/drivers/acpi/acpica/acutils.h
-> @@ -570,8 +570,6 @@ const struct acpi_exception_info *acpi_ut_validate_ex=
-ception(acpi_status
+> @@ -539,14 +539,6 @@ acpi_ut_create_update_state_and_push(union acpi_oper=
+and_object *object,
+>  				     u16 action,
+>  				     union acpi_generic_state **state_list);
 > =
 
->  u8 acpi_ut_is_pci_root_bridge(char *id);
-> =
-
-> -u8 acpi_ut_is_aml_table(struct acpi_table_header *table);
+> -#ifdef	ACPI_FUTURE_USAGE
+> -acpi_status
+> -acpi_ut_create_pkg_state_and_push(void *internal_object,
+> -				  void *external_object,
+> -				  u16 index,
+> -				  union acpi_generic_state **state_list);
+> -#endif				/* ACPI_FUTURE_USAGE */
 > -
->  acpi_status
->  acpi_ut_walk_package_tree(union acpi_operand_object *source_object,
->  			  void *target_object,
-> diff --git a/drivers/acpi/acpica/utmisc.c b/drivers/acpi/acpica/utmisc.c
-> index 2e2bb14..a9440af 100644
-> --- a/drivers/acpi/acpica/utmisc.c
-> +++ b/drivers/acpi/acpica/utmisc.c
-> @@ -77,34 +77,6 @@ u8 acpi_ut_is_pci_root_bridge(char *id)
+>  union acpi_generic_state *acpi_ut_create_control_state(void);
+> =
+
+>  void acpi_ut_delete_generic_state(union acpi_generic_state *state);
+> diff --git a/drivers/acpi/acpica/utstate.c b/drivers/acpi/acpica/utstate.c
+> index 1cc97a7..fa932e9 100644
+> --- a/drivers/acpi/acpica/utstate.c
+> +++ b/drivers/acpi/acpica/utstate.c
+> @@ -49,39 +49,6 @@ ACPI_MODULE_NAME("utstate")
 > =
 
 >  /***********************************************************************=
 ********
 >   *
-> - * FUNCTION:    acpi_ut_is_aml_table
+> - * FUNCTION:    acpi_ut_create_pkg_state_and_push
 > - *
-> - * PARAMETERS:  table               - An ACPI table
+> - * PARAMETERS:  object          - Object to be added to the new state
+> - *              action          - Increment/Decrement
+> - *              state_list      - List the state will be added to
 > - *
-> - * RETURN:      TRUE if table contains executable AML; FALSE otherwise
+> - * RETURN:      Status
 > - *
-> - * DESCRIPTION: Check ACPI Signature for a table that contains AML code.
-> - *              Currently, these are DSDT,SSDT,PSDT. All other table typ=
-es are
-> - *              data tables that do not contain AML code.
+> - * DESCRIPTION: Create a new state and push it
 > - *
 > - ***********************************************************************=
 *******/
-> -
-> -u8 acpi_ut_is_aml_table(struct acpi_table_header *table)
+> -acpi_status
+> -acpi_ut_create_pkg_state_and_push(void *internal_object,
+> -				  void *external_object,
+> -				  u16 index,
+> -				  union acpi_generic_state **state_list)
 > -{
+> -	union acpi_generic_state *state;
 > -
-> -	/* These are the only tables that contain executable AML */
+> -	ACPI_FUNCTION_ENTRY();
 > -
-> -	if (ACPI_COMPARE_NAME(table->signature, ACPI_SIG_DSDT) ||
-> -	    ACPI_COMPARE_NAME(table->signature, ACPI_SIG_PSDT) ||
-> -	    ACPI_COMPARE_NAME(table->signature, ACPI_SIG_SSDT)) {
-> -		return (TRUE);
+> -	state =3D
+> -	    acpi_ut_create_pkg_state(internal_object, external_object, index);
+> -	if (!state) {
+> -		return (AE_NO_MEMORY);
 > -	}
 > -
-> -	return (FALSE);
+> -	acpi_ut_push_generic_state(state_list, state);
+> -	return (AE_OK);
 > -}
 > -
 > -/***********************************************************************=
 ********
 > - *
->   * FUNCTION:    acpi_ut_dword_byte_swap
+>   * FUNCTION:    acpi_ut_push_generic_state
 >   *
->   * PARAMETERS:  value           - Value to be converted
+>   * PARAMETERS:  list_head           - Head of the state stack
 > --
 > 1.7.10.4
 
 
---===============2578354860064221025==--
+--===============7371223012081921093==--
 
