@@ -1,14 +1,14 @@
-Content-Type: multipart/mixed; boundary="===============1007272960892520841=="
+Content-Type: multipart/mixed; boundary="===============1746547603448520987=="
 MIME-Version: 1.0
 From: Zheng, Lv <lv.zheng at intel.com>
-Subject: Re: [Devel] [PATCH 3/3] ACPICA: Remove use of __DATE__ macro
-Date: Tue, 13 Jan 2015 02:33:18 +0000
-Message-ID: <1AE640813FDE7649BE1B193DEA596E88026AC9E4@SHSMSX101.ccr.corp.intel.com>
-In-Reply-To: 20150106193610.GA7141@pathfinder
+Subject: Re: [Devel] [PATCH] acpi: acpica: utstate:  Remove unused function
+Date: Tue, 13 Jan 2015 02:33:54 +0000
+Message-ID: <1AE640813FDE7649BE1B193DEA596E88026AC9F1@SHSMSX101.ccr.corp.intel.com>
+In-Reply-To: 3056635.sprz8UnhD7@vostro.rjw.lan
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1007272960892520841==
+--===============1746547603448520987==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
@@ -23,70 +23,35 @@ Thanks for reporting.
 Best regards
 -Lv
 
-> From: David E. Box [mailto:david.e.box(a)linux.intel.com]
-> Sent: Wednesday, January 07, 2015 3:36 AM
+> From: Rafael J. Wysocki [mailto:rjw(a)rjwysocki.net]
+> Sent: Tuesday, January 06, 2015 7:30 AM
 > =
 
-> On Tue, Jan 06, 2015 at 12:30:05AM +0000, Zheng, Lv wrote:
-> > Hi,
+> On Monday, January 05, 2015 08:39:37 AM Zheng, Lv wrote:
+> > Hi, Richard
 > >
-> > > From: Rasmus Villemoes [mailto:linux(a)rasmusvillemoes.dk]
-> > > Sent: Monday, January 05, 2015 6:27 PM
+> > > From: Rickard Strandqvist [mailto:rickard_strandqvist(a)spectrumdigit=
+al.se]
+> > > Sent: Saturday, January 03, 2015 5:01 AM
 > > >
-> > > On Mon, Jan 05 2015, "Zheng, Lv" <lv.zheng(a)intel.com> wrote:
+> > > Remove the function acpi_ut_create_pkg_state_and_push() that is not u=
+sed anywhere.
 > > >
-> > > > Hi,
-> > > >
-> > > >> From: Rasmus Villemoes [mailto:linux(a)rasmusvillemoes.dk]
-> > > >> Sent: Friday, December 12, 2014 6:51 PM
-> > > >> To: Zheng, Lv
-> > > >> Cc: Rasmus Villemoes; linux-acpi(a)vger.kernel.org; devel(a)acpica=
-.org; linux-kernel(a)vger.kernel.org
-> > > >> Subject: [PATCH 3/3] ACPICA: Remove use of __DATE__ macro
-> > > >>
-> > > >> The macro __DATE__ and friends is not allowed in the kernel. Also,
-> > > >> including the build time in output doesn't seem to provide any val=
-ue.
-> > > >>
-> > > >
-> > > > Could you confirm that it is not useful even for the user tools?
-> > > > Please perform the following commands in the kernel source tree
-> > > > 1. stay in tools folder
-> > > > 2. type "make acpi"
-> > > > 3. type "./power/acpi/acpidump -v"
-> > > >
-> > >
-> > > Yeah, it's part of the output, but for what reason? What can userspace
-> > > possibly use that information for?
+> > > This was partially found by using a static code analysis program call=
+ed cppcheck.
 > >
-> > I also want to know.
+> > acpi_ut_create_pkg_state_and_push() is not even used in ACPICA.
+> > We can remove it now.
 > =
 
-> I don't see a reason for userspace to know the build date.
+> Let's first remove it in upstream ACPICA, then, I suppose.
 > =
 
-> >
-> > > I can see some utility in printing a
-> > > version number, since that may tell something about the features
-> > > present or absent. The compilation date, on the other hand, seems
-> > > completely useless. Different distros may ship different versions whi=
-ch
-> > > happened to be compiled on the same day, or older versions compiled l=
-ater.
-> >
-> > If the deletion was done for this reason, IMO, it's acceptable.
-> > So let's wait to see others' feedback.
-> >
 > =
 
-> I'm okay with removing it (the build date) in Linux and ACPICA as well. H=
-owever
-> the version, which is essentially the release date, is important for the =
-exact
-> reasons already stated.
-> =
+> --
+> I speak only for myself.
+> Rafael J. Wysocki, Intel Open Source Technology Center.
 
-> Dave
-
---===============1007272960892520841==--
+--===============1746547603448520987==--
 
