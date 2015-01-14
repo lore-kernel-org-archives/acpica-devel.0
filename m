@@ -1,116 +1,129 @@
-Content-Type: multipart/mixed; boundary="===============2182523341408589015=="
+Content-Type: multipart/mixed; boundary="===============6351737979108994984=="
 MIME-Version: 1.0
 From: Zheng, Lv <lv.zheng at intel.com>
-Subject: Re: [Devel] [PATCH 3/3] ACPICA: Remove use of __DATE__ macro
-Date: Tue, 13 Jan 2015 05:42:16 +0000
-Message-ID: <1AE640813FDE7649BE1B193DEA596E88026ADAD3@SHSMSX101.ccr.corp.intel.com>
-In-Reply-To: 1AE640813FDE7649BE1B193DEA596E88026AC9E4@SHSMSX101.ccr.corp.intel.com
+Subject: Re: [Devel] [PATCH] ACPICA: tbinstal: Remove unused function
+Date: Wed, 14 Jan 2015 08:49:51 +0000
+Message-ID: <1AE640813FDE7649BE1B193DEA596E88026B7443@SHSMSX101.ccr.corp.intel.com>
+In-Reply-To: 1421174925-5796-1-git-send-email-rickard_strandqvist@spectrumdigital.se
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2182523341408589015==
+--===============6351737979108994984==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi, Rasmus
+Hi, Rickard
 
-Just for your information.
+This function contains logic that is only correct to iasl.
+It seems we can move it to a separate file that can only be linked by iasl =
+to avoid releasing this function to the kernel.
+Let me do this in the ACPICA upstream.
 
-There is also a known bug related to the application header printing.
-The fix is:
-https://github.com/zetalog/acpica/commit/79e75432
-But this bug can only be seen for EFI ports of ACPICA utilities, it won't b=
-e detected in the kernel source tree.
-Hope this is not the motivation that has caused you to try to remove the __=
-DATE__ usages.
-
-Thanks and best regards
+Thanks
 -Lv
 
-> From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of Zheng, Lv
-> Sent: Tuesday, January 13, 2015 10:33 AM
+> From: Rickard Strandqvist [mailto:rickard_strandqvist(a)spectrumdigital.s=
+e]
+> Sent: Wednesday, January 14, 2015 2:49 AM
+> To: Moore, Robert; Zheng, Lv
+> Cc: Rickard Strandqvist; Wysocki, Rafael J; Len Brown; linux-acpi(a)vger.=
+kernel.org; devel(a)acpica.org; linux-kernel(a)vger.kernel.org
+> Subject: [PATCH] ACPICA: tbinstal: Remove unused function
 > =
 
-> Hi,
+> Remove the function acpi_tb_store_table() that is not used anywhere.
 > =
 
-> I've added this patch into the 201501 ACPICA materials for review:
-> https://github.com/acpica/acpica/pull/61
-> If it is merged, it will appear in Linux kernel after 201501 ACPICA relea=
-se.
-> Thanks for reporting.
+> This was partially found by using a static code analysis program called c=
+ppcheck.
 > =
 
-> Best regards
-> -Lv
+> Signed-off-by: Rickard Strandqvist <rickard_strandqvist(a)spectrumdigital=
+.se>
+> ---
+>  drivers/acpi/acpica/actables.h |    5 -----
+>  drivers/acpi/acpica/tbinstal.c |   37 ----------------------------------=
+---
+>  2 files changed, 42 deletions(-)
 > =
 
-> > From: David E. Box [mailto:david.e.box(a)linux.intel.com]
-> > Sent: Wednesday, January 07, 2015 3:36 AM
-> >
-> > On Tue, Jan 06, 2015 at 12:30:05AM +0000, Zheng, Lv wrote:
-> > > Hi,
-> > >
-> > > > From: Rasmus Villemoes [mailto:linux(a)rasmusvillemoes.dk]
-> > > > Sent: Monday, January 05, 2015 6:27 PM
-> > > >
-> > > > On Mon, Jan 05 2015, "Zheng, Lv" <lv.zheng(a)intel.com> wrote:
-> > > >
-> > > > > Hi,
-> > > > >
-> > > > >> From: Rasmus Villemoes [mailto:linux(a)rasmusvillemoes.dk]
-> > > > >> Sent: Friday, December 12, 2014 6:51 PM
-> > > > >> To: Zheng, Lv
-> > > > >> Cc: Rasmus Villemoes; linux-acpi(a)vger.kernel.org; devel(a)acpi=
-ca.org; linux-kernel(a)vger.kernel.org
-> > > > >> Subject: [PATCH 3/3] ACPICA: Remove use of __DATE__ macro
-> > > > >>
-> > > > >> The macro __DATE__ and friends is not allowed in the kernel. Als=
-o,
-> > > > >> including the build time in output doesn't seem to provide any v=
-alue.
-> > > > >>
-> > > > >
-> > > > > Could you confirm that it is not useful even for the user tools?
-> > > > > Please perform the following commands in the kernel source tree
-> > > > > 1. stay in tools folder
-> > > > > 2. type "make acpi"
-> > > > > 3. type "./power/acpi/acpidump -v"
-> > > > >
-> > > >
-> > > > Yeah, it's part of the output, but for what reason? What can usersp=
-ace
-> > > > possibly use that information for?
-> > >
-> > > I also want to know.
-> >
-> > I don't see a reason for userspace to know the build date.
-> >
-> > >
-> > > > I can see some utility in printing a
-> > > > version number, since that may tell something about the features
-> > > > present or absent. The compilation date, on the other hand, seems
-> > > > completely useless. Different distros may ship different versions w=
-hich
-> > > > happened to be compiled on the same day, or older versions compiled=
- later.
-> > >
-> > > If the deletion was done for this reason, IMO, it's acceptable.
-> > > So let's wait to see others' feedback.
-> > >
-> >
-> > I'm okay with removing it (the build date) in Linux and ACPICA as well.=
- However
-> > the version, which is essentially the release date, is important for th=
-e exact
-> > reasons already stated.
-> >
-> > Dave
-> _______________________________________________
-> Devel mailing list
-> Devel(a)acpica.org
-> https://lists.acpica.org/mailman/listinfo/devel
+> diff --git a/drivers/acpi/acpica/actables.h b/drivers/acpi/acpica/actable=
+s.h
+> index 1afe46e..7d65cac 100644
+> --- a/drivers/acpi/acpica/actables.h
+> +++ b/drivers/acpi/acpica/actables.h
+> @@ -119,11 +119,6 @@ acpi_tb_install_standard_table(acpi_physical_address=
+ address,
+>  			       u8 flags,
+>  			       u8 reload, u8 override, u32 *table_index);
+> =
 
---===============2182523341408589015==--
+> -acpi_status
+> -acpi_tb_store_table(acpi_physical_address address,
+> -		    struct acpi_table_header *table,
+> -		    u32 length, u8 flags, u32 *table_index);
+> -
+>  void acpi_tb_uninstall_table(struct acpi_table_desc *table_desc);
+> =
+
+>  void acpi_tb_terminate(void);
+> diff --git a/drivers/acpi/acpica/tbinstal.c b/drivers/acpi/acpica/tbinsta=
+l.c
+> index 755b90c..a998e8c 100644
+> --- a/drivers/acpi/acpica/tbinstal.c
+> +++ b/drivers/acpi/acpica/tbinstal.c
+> @@ -455,43 +455,6 @@ finish_override:
+> =
+
+>  /***********************************************************************=
+********
+>   *
+> - * FUNCTION:    acpi_tb_store_table
+> - *
+> - * PARAMETERS:  address             - Table address
+> - *              table               - Table header
+> - *              length              - Table length
+> - *              flags               - Install flags
+> - *              table_index         - Where the table index is returned
+> - *
+> - * RETURN:      Status and table index.
+> - *
+> - * DESCRIPTION: Add an ACPI table to the global table list
+> - *
+> - ***********************************************************************=
+*******/
+> -
+> -acpi_status
+> -acpi_tb_store_table(acpi_physical_address address,
+> -		    struct acpi_table_header * table,
+> -		    u32 length, u8 flags, u32 *table_index)
+> -{
+> -	acpi_status status;
+> -	struct acpi_table_desc *table_desc;
+> -
+> -	status =3D acpi_tb_get_next_root_index(table_index);
+> -	if (ACPI_FAILURE(status)) {
+> -		return (status);
+> -	}
+> -
+> -	/* Initialize added table */
+> -
+> -	table_desc =3D &acpi_gbl_root_table_list.tables[*table_index];
+> -	acpi_tb_init_table_descriptor(table_desc, address, flags, table);
+> -	table_desc->pointer =3D table;
+> -	return (AE_OK);
+> -}
+> -
+> -/***********************************************************************=
+********
+> - *
+>   * FUNCTION:    acpi_tb_uninstall_table
+>   *
+>   * PARAMETERS:  table_desc          - Table descriptor
+> --
+> 1.7.10.4
+
+
+--===============6351737979108994984==--
 
