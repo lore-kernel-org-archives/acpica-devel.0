@@ -1,297 +1,285 @@
-Content-Type: multipart/mixed; boundary="===============8370153528299739801=="
+Content-Type: multipart/mixed; boundary="===============9204282419589702125=="
 MIME-Version: 1.0
 From: Zheng, Lv <lv.zheng at intel.com>
-Subject: Re: [Devel] [PATCH] acpica: utpredef: Remove some unused functions
-Date: Thu, 15 Jan 2015 02:00:51 +0000
-Message-ID: <1AE640813FDE7649BE1B193DEA596E88026B79CC@SHSMSX101.ccr.corp.intel.com>
-In-Reply-To: CAKXHbyN4ypE3W-exxYUy_TW8HLuBc3hbdwgcX7WkN9mXM5w76Q@mail.gmail.com
+Subject: Re: [Devel] [PATCH] ACPICA: rsdump: Remove some unused functions
+Date: Thu, 15 Jan 2015 03:29:08 +0000
+Message-ID: <1AE640813FDE7649BE1B193DEA596E88026B7A16@SHSMSX101.ccr.corp.intel.com>
+In-Reply-To: 1421174632-5146-1-git-send-email-rickard_strandqvist@spectrumdigital.se
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8370153528299739801==
+--===============9204282419589702125==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+Hi, Rickard
 
-> From: Rickard Strandqvist [mailto:rickard_strandqvist(a)spectrumdigital.s=
-e]
-> Sent: Thursday, January 15, 2015 6:50 AM
-> =
+I've done some corrections in the following commit for this report:
+https://github.com/zetalog/acpica/commit/f86ad0858eacfe890cbeae43846da2638c=
+389c1c
+All other utilities related corrections are done in:
+https://github.com/zetalog/acpica/commit/06fb69ea0e4c47edc91544a90a69b983fd=
+161963
+And the patches are now part of the 201501 release materials pending for re=
+view:
+https://github.com/acpica/acpica/pull/61
 
-> 2015-01-14 9:55 GMT+01:00 Zheng, Lv <lv.zheng(a)intel.com>:
-> > Hi, Rickard
-> >
-> > The functions below seem already marked by "ACPI_ASL_COMPILER || ACPI_H=
-ELP_APP".
-> > How did you detect them as used functions?
+I think I should also let you know my opinions against this kind of no usag=
+e functions.
 
-Do you mean something like this?
+IMO, what you've done is useless and make source tree maintenance more diff=
+icult than anyone expects.
 
-<?xml version=3D"1.0"?>
-<def>
-  <define name=3D"ACPI_ASL_COMPILER" value=3D"0"/>
-  <define name=3D"ACPI_HELP_APP" value=3D"0"/>
-</def>
+Kernel compilation contains "strip" step which can automatically remove sym=
+bols without any references on them.
+So we don't need to maintain this in the source level.
+And there is a defect in maintaining it in the source level.
 
-Can Cppcheck automatically remove code blocks depending on the define setti=
-ngs during preprocessor stage?
+A module could have native variables and functions accessing these native v=
+ariables should be bounded to the same source file.
+So if there are 2 functions using one native variables in a source file lik=
+e the following example:
+
+a.c
+
+static int a;
+
+int get_a(void)
+{
+	return a;
+}
+
+void set_a(int a)
+{
+	a =3D v;
+}
+
+If get_a is only used by a module enabled with CONFIG_DEVICE_X and set_a is=
+ only used by a module enabled with CONFIG_DEVICE_Y.
+Should we do such modifications?
+
+static int a;
+
+#ifdef CONFIG_DEVICE_X
+int get_a(void)
+{
+	return a;
+}
+#endif
+
+#ifdef CONFIG_DEVICE_Y
+void set_a(int a)
+{
+	a =3D v;
+}
+#endif
+
+I think no one will do this in the kernel.
+We simply will prepare another config itme for a.c, for example CONFIG_MODU=
+LE_A
+
+Then we will have dependencies in Kconfig:
+config DEVICE_X
+	bool
+	depends MODULE_A
+
+config DEVICE_Y
+	bool
+	depends MODULE_A
+
+And let the no user function automatically be deleted by "strip".
+Because if the references changes, the developers will need to check plenty=
+ of such "#ifdef" to correct compilation warnings...
+
+If you do want to do this in the upstream kernel, you'll find millions of f=
+unctions need to be wrapped by such useless "#ifdef".
+A source file should only contain the self contained logics in it without c=
+onsidering the users.
 
 Thanks and best regards
 -Lv
 
-> >
-> > Thanks
-> > -Lv
-> >
-> >
-> >> -----Original Message-----
-> >> From: Rickard Strandqvist [mailto:rickard_strandqvist(a)spectrumdigita=
-l.se]
-> >> Sent: Sunday, January 04, 2015 11:23 PM
-> >> To: Moore, Robert; Zheng, Lv
-> >> Cc: Rickard Strandqvist; Wysocki, Rafael J; Len Brown; linux-acpi(a)vg=
-er.kernel.org; devel(a)acpica.org; linux-kernel(a)vger.kernel.org
-> >> Subject: [PATCH] acpica: utpredef: Remove some unused functions
-> >>
-> >> Removes some functions that are not used anywhere:
-> >> acpi_ut_get_resource_bit_width() acpi_ut_display_predefined_method() a=
-cpi_ut_match_resource_name()
-> >>
-> >> This was partially found by using a static code analysis program calle=
-d cppcheck.
-> >>
-> >> Signed-off-by: Rickard Strandqvist <rickard_strandqvist(a)spectrumdigi=
-tal.se>
-> >> ---
-> >>  drivers/acpi/acpica/acutils.h  |    9 ---
-> >>  drivers/acpi/acpica/utpredef.c |  134 -------------------------------=
----------
-> >>  2 files changed, 143 deletions(-)
-> >>
-> >> diff --git a/drivers/acpi/acpica/acutils.h b/drivers/acpi/acpica/acuti=
-ls.h
-> >> index 486d342..9b3fab1 100644
-> >> --- a/drivers/acpi/acpica/acutils.h
-> >> +++ b/drivers/acpi/acpica/acutils.h
-> >> @@ -502,17 +502,8 @@ const union acpi_predefined_info *acpi_ut_get_nex=
-t_predefined_method(const union
-> >>
-> >>  const union acpi_predefined_info *acpi_ut_match_predefined_method(cha=
-r *name);
-> >>
-> >> -const union acpi_predefined_info *acpi_ut_match_resource_name(char *n=
-ame);
-> >> -
-> >> -void
-> >> -acpi_ut_display_predefined_method(char *buffer,
-> >> -                               const union acpi_predefined_info *this=
-_name,
-> >> -                               u8 multi_line);
-> >> -
-> >>  void acpi_ut_get_expected_return_types(char *buffer, u32 expected_bty=
-pes);
-> >>
-> >> -u32 acpi_ut_get_resource_bit_width(char *buffer, u16 types);
-> >> -
-> >>  /*
-> >>   * utstate - Generic state creation/cache routines
-> >>   */
-> >> diff --git a/drivers/acpi/acpica/utpredef.c b/drivers/acpi/acpica/utpr=
-edef.c
-> >> index db30caf..f1ff33c 100644
-> >> --- a/drivers/acpi/acpica/utpredef.c
-> >> +++ b/drivers/acpi/acpica/utpredef.c
-> >> @@ -209,105 +209,6 @@ static const char *ut_resource_type_names[] =3D {
-> >>
-> >>  /********************************************************************=
-***********
-> >>   *
-> >> - * FUNCTION:    acpi_ut_match_resource_name
-> >> - *
-> >> - * PARAMETERS:  name                - Name to find
-> >> - *
-> >> - * RETURN:      Pointer to entry in the resource table. NULL indicate=
-s not
-> >> - *              found.
-> >> - *
-> >> - * DESCRIPTION: Check an object name against the predefined resource
-> >> - *              descriptor object list.
-> >> - *
-> >> - ********************************************************************=
-**********/
-> >> -
-> >> -const union acpi_predefined_info *acpi_ut_match_resource_name(char *n=
-ame)
-> >> -{
-> >> -     const union acpi_predefined_info *this_name;
-> >> -
-> >> -     /* Quick check for a predefined name, first character must be un=
-derscore */
-> >> -
-> >> -     if (name[0] !=3D '_') {
-> >> -             return (NULL);
-> >> -     }
-> >> -
-> >> -     /* Search info table for a predefined method/object name */
-> >> -
-> >> -     this_name =3D acpi_gbl_resource_names;
-> >> -     while (this_name->info.name[0]) {
-> >> -             if (ACPI_COMPARE_NAME(name, this_name->info.name)) {
-> >> -                     return (this_name);
-> >> -             }
-> >> -
-> >> -             this_name++;
-> >> -     }
-> >> -
-> >> -     return (NULL);          /* Not found */
-> >> -}
-> >> -
-> >> -/********************************************************************=
-***********
-> >> - *
-> >> - * FUNCTION:    acpi_ut_display_predefined_method
-> >> - *
-> >> - * PARAMETERS:  buffer              - Scratch buffer for this function
-> >> - *              this_name           - Entry in the predefined method/=
-name table
-> >> - *              multi_line          - TRUE if output should be on >1 =
-line
-> >> - *
-> >> - * RETURN:      None
-> >> - *
-> >> - * DESCRIPTION: Display information about a predefined method. Number=
- and
-> >> - *              type of the input arguments, and expected type(s) for=
- the
-> >> - *              return value, if any.
-> >> - *
-> >> - ********************************************************************=
-**********/
-> >> -
-> >> -void
-> >> -acpi_ut_display_predefined_method(char *buffer,
-> >> -                               const union acpi_predefined_info *this=
-_name,
-> >> -                               u8 multi_line)
-> >> -{
-> >> -     u32 arg_count;
-> >> -
-> >> -     /*
-> >> -      * Get the argument count and the string buffer
-> >> -      * containing all argument types
-> >> -      */
-> >> -     arg_count =3D acpi_ut_get_argument_types(buffer,
-> >> -                                            this_name->info.argument_=
-list);
-> >> -
-> >> -     if (multi_line) {
-> >> -             printf("      ");
-> >> -     }
-> >> -
-> >> -     printf("%4.4s    Requires %s%u argument%s",
-> >> -            this_name->info.name,
-> >> -            (this_name->info.argument_list & ARG_COUNT_IS_MINIMUM) ?
-> >> -            "(at least) " : "", arg_count, arg_count !=3D 1 ? "s" : "=
-");
-> >> -
-> >> -     /* Display the types for any arguments */
-> >> -
-> >> -     if (arg_count > 0) {
-> >> -             printf(" (%s)", buffer);
-> >> -     }
-> >> -
-> >> -     if (multi_line) {
-> >> -             printf("\n    ");
-> >> -     }
-> >> -
-> >> -     /* Get the return value type(s) allowed */
-> >> -
-> >> -     if (this_name->info.expected_btypes) {
-> >> -             acpi_ut_get_expected_return_types(buffer,
-> >> -                                               this_name->info.
-> >> -                                               expected_btypes);
-> >> -             printf("  Return value types: %s\n", buffer);
-> >> -     } else {
-> >> -             printf("  No return value\n");
-> >> -     }
-> >> -}
-> >> -
-> >> -/********************************************************************=
-***********
-> >> - *
-> >>   * FUNCTION:    acpi_ut_get_argument_types
-> >>   *
-> >>   * PARAMETERS:  buffer              - Where to return the formatted t=
-ypes
-> >> @@ -361,39 +262,4 @@ static u32 acpi_ut_get_argument_types(char *buffe=
-r, u16 argument_types)
-> >>       return (arg_count);
-> >>  }
-> >>
-> >> -/********************************************************************=
-***********
-> >> - *
-> >> - * FUNCTION:    acpi_ut_get_resource_bit_width
-> >> - *
-> >> - * PARAMETERS:  buffer              - Where the formatted string is r=
-eturned
-> >> - *              types               - Bitfield of expected data types
-> >> - *
-> >> - * RETURN:      Count of return types. Formatted string in Buffer.
-> >> - *
-> >> - * DESCRIPTION: Format the resource bit widths into a printable strin=
-g.
-> >> - *
-> >> - ********************************************************************=
-**********/
-> >> -
-> >> -u32 acpi_ut_get_resource_bit_width(char *buffer, u16 types)
-> >> -{
-> >> -     u32 i;
-> >> -     u16 sub_index;
-> >> -     u32 found;
-> >> -
-> >> -     *buffer =3D 0;
-> >> -     sub_index =3D 1;
-> >> -     found =3D 0;
-> >> -
-> >> -     for (i =3D 0; i < NUM_RESOURCE_WIDTHS; i++) {
-> >> -             if (types & 1) {
-> >> -                     strcat(buffer, &(ut_resource_type_names[i][sub_i=
-ndex]));
-> >> -                     sub_index =3D 0;
-> >> -                     found++;
-> >> -             }
-> >> -
-> >> -             types >>=3D 1;
-> >> -     }
-> >> -
-> >> -     return (found);
-> >> -}
-> >>  #endif
-> >> --
-> >> 1.7.10.4
-> >
+> -----Original Message-----
+> From: Rickard Strandqvist [mailto:rickard_strandqvist(a)spectrumdigital.s=
+e]
+> Sent: Wednesday, January 14, 2015 2:44 AM
+> To: Moore, Robert; Zheng, Lv
+> Cc: Rickard Strandqvist; Wysocki, Rafael J; Len Brown; linux-acpi(a)vger.=
+kernel.org; devel(a)acpica.org; linux-kernel(a)vger.kernel.org
+> Subject: [PATCH] ACPICA: rsdump: Remove some unused functions
 > =
 
-> Hi
+> Removes some functions that are not used anywhere:
+> acpi_rs_dump_irq_list() acpi_rs_dump_resource_list()
 > =
 
-> Cppcheck running depending on the settings all define on and off, if
-> that's what you wonder.
+> This was partially found by using a static code analysis program called c=
+ppcheck.
 > =
 
-> Otherwise, I did a little deeper explanation how I made did this with
-> cppcheck, and same scripts.
-> https://lkml.org/lkml/2015/1/9/531
+> Signed-off-by: Rickard Strandqvist <rickard_strandqvist(a)spectrumdigital=
+.se>
+> ---
+>  drivers/acpi/acpica/acresrc.h |    7 ---
+>  drivers/acpi/acpica/rsdump.c  |  110 -----------------------------------=
+------
+>  2 files changed, 117 deletions(-)
 > =
 
+> diff --git a/drivers/acpi/acpica/acresrc.h b/drivers/acpi/acpica/acresrc.h
+> index 4b008e8..4a4f8af 100644
+> --- a/drivers/acpi/acpica/acresrc.h
+> +++ b/drivers/acpi/acpica/acresrc.h
+> @@ -299,13 +299,6 @@ acpi_rs_set_resource_length(acpi_rsdesc_size total_l=
+ength,
+>  			    union aml_resource *aml);
 > =
 
-> Kind regards
-> Rickard Strandqvist
+>  /*
+> - * rsdump
+> - */
+> -void acpi_rs_dump_resource_list(struct acpi_resource *resource);
+> -
+> -void acpi_rs_dump_irq_list(u8 * route_table);
+> -
+> -/*
+>   * Resource conversion tables
+>   */
+>  extern struct acpi_rsconvert_info acpi_rs_convert_dma[];
+> diff --git a/drivers/acpi/acpica/rsdump.c b/drivers/acpi/acpica/rsdump.c
+> index c3c56b5..8bd41ec 100644
+> --- a/drivers/acpi/acpica/rsdump.c
+> +++ b/drivers/acpi/acpica/rsdump.c
+> @@ -357,116 +357,6 @@ static void acpi_rs_dump_address_common(union acpi_=
+resource_data *resource)
+> =
 
---===============8370153528299739801==--
+>  /***********************************************************************=
+********
+>   *
+> - * FUNCTION:    acpi_rs_dump_resource_list
+> - *
+> - * PARAMETERS:  resource_list       - Pointer to a resource descriptor l=
+ist
+> - *
+> - * RETURN:      None
+> - *
+> - * DESCRIPTION: Dispatches the structure to the correct dump routine.
+> - *
+> - ***********************************************************************=
+*******/
+> -
+> -void acpi_rs_dump_resource_list(struct acpi_resource *resource_list)
+> -{
+> -	u32 count =3D 0;
+> -	u32 type;
+> -
+> -	ACPI_FUNCTION_ENTRY();
+> -
+> -	/* Check if debug output enabled */
+> -
+> -	if (!ACPI_IS_DEBUG_ENABLED(ACPI_LV_RESOURCES, _COMPONENT)) {
+> -		return;
+> -	}
+> -
+> -	/* Walk list and dump all resource descriptors (END_TAG terminates) */
+> -
+> -	do {
+> -		acpi_os_printf("\n[%02X] ", count);
+> -		count++;
+> -
+> -		/* Validate Type before dispatch */
+> -
+> -		type =3D resource_list->type;
+> -		if (type > ACPI_RESOURCE_TYPE_MAX) {
+> -			acpi_os_printf
+> -			    ("Invalid descriptor type (%X) in resource list\n",
+> -			     resource_list->type);
+> -			return;
+> -		}
+> -
+> -		/* Sanity check the length. It must not be zero, or we loop forever */
+> -
+> -		if (!resource_list->length) {
+> -			acpi_os_printf
+> -			    ("Invalid zero length descriptor in resource list\n");
+> -			return;
+> -		}
+> -
+> -		/* Dump the resource descriptor */
+> -
+> -		if (type =3D=3D ACPI_RESOURCE_TYPE_SERIAL_BUS) {
+> -			acpi_rs_dump_descriptor(&resource_list->data,
+> -						acpi_gbl_dump_serial_bus_dispatch
+> -						[resource_list->data.
+> -						 common_serial_bus.type]);
+> -		} else {
+> -			acpi_rs_dump_descriptor(&resource_list->data,
+> -						acpi_gbl_dump_resource_dispatch
+> -						[type]);
+> -		}
+> -
+> -		/* Point to the next resource structure */
+> -
+> -		resource_list =3D ACPI_NEXT_RESOURCE(resource_list);
+> -
+> -		/* Exit when END_TAG descriptor is reached */
+> -
+> -	} while (type !=3D ACPI_RESOURCE_TYPE_END_TAG);
+> -}
+> -
+> -/***********************************************************************=
+********
+> - *
+> - * FUNCTION:    acpi_rs_dump_irq_list
+> - *
+> - * PARAMETERS:  route_table     - Pointer to the routing table to dump.
+> - *
+> - * RETURN:      None
+> - *
+> - * DESCRIPTION: Print IRQ routing table
+> - *
+> - ***********************************************************************=
+*******/
+> -
+> -void acpi_rs_dump_irq_list(u8 * route_table)
+> -{
+> -	struct acpi_pci_routing_table *prt_element;
+> -	u8 count;
+> -
+> -	ACPI_FUNCTION_ENTRY();
+> -
+> -	/* Check if debug output enabled */
+> -
+> -	if (!ACPI_IS_DEBUG_ENABLED(ACPI_LV_RESOURCES, _COMPONENT)) {
+> -		return;
+> -	}
+> -
+> -	prt_element =3D ACPI_CAST_PTR(struct acpi_pci_routing_table, route_tabl=
+e);
+> -
+> -	/* Dump all table elements, Exit on zero length element */
+> -
+> -	for (count =3D 0; prt_element->length; count++) {
+> -		acpi_os_printf("\n[%02X] PCI IRQ Routing Table Package\n",
+> -			       count);
+> -		acpi_rs_dump_descriptor(prt_element, acpi_rs_dump_prt);
+> -
+> -		prt_element =3D ACPI_ADD_PTR(struct acpi_pci_routing_table,
+> -					   prt_element, prt_element->length);
+> -	}
+> -}
+> -
+> -/***********************************************************************=
+********
+> - *
+>   * FUNCTION:    acpi_rs_out*
+>   *
+>   * PARAMETERS:  title       - Name of the resource field
+> --
+> 1.7.10.4
+
+
+--===============9204282419589702125==--
 
