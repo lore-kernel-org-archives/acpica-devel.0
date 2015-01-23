@@ -1,320 +1,181 @@
-Content-Type: multipart/mixed; boundary="===============6123618200213131329=="
+Content-Type: multipart/mixed; boundary="===============0944669281509582385=="
 MIME-Version: 1.0
-From: Zheng, Lv <lv.zheng at intel.com>
-Subject: Re: [Devel] [RFC PATCH] ACPICA: Resources: Provide common part for
- struct acpi_resource_address structures.
-Date: Fri, 23 Jan 2015 02:21:42 +0000
-Message-ID: <1AE640813FDE7649BE1B193DEA596E88026BA180@SHSMSX101.ccr.corp.intel.com>
-In-Reply-To: 1829383.GqIMIsbMR3@vostro.rjw.lan
+From: Al Stone <ahs3 at redhat.com>
+Subject: Re: [Devel] [PATCH 0/7] Start deprecating _OSI on new architectures
+Date: Fri, 23 Jan 2015 16:33:00 +0000
+Message-ID: <54C277B4.4090808@redhat.com>
+In-Reply-To: 11226733.uCXYutOZUW@vostro.rjw.lan
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6123618200213131329==
+--===============0944669281509582385==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi, Rafael
-
-> From: Rafael J. Wysocki [mailto:rjw(a)rjwysocki.net]
-> Sent: Friday, January 23, 2015 6:50 AM
+On 01/23/2015 08:43 AM, Rafael J. Wysocki wrote:
+> Hi Al,
 > =
 
-> On Thursday, January 22, 2015 10:46:00 AM Lv Zheng wrote:
-> > struct acpi_resource_address and struct acpi_resource_extended_address6=
-4 share substracts
-> > just at different offsets. To unify the parsing functions, OSPMs like L=
-inux
-> > need a new ACPI_ADDRESS64_ATTRIBUTE as their substructs, so they can
-> > extract the shared data.
+> On Thursday, January 22, 2015 05:44:37 PM al.stone(a)linaro.org wrote:
+>> From: Al Stone <al.stone(a)linaro.org>
+>>
+>> The use of the ACPI _OSI method in Linux has a long and sordid history.
+>> Instead of perpetuating past complications on new architectures, the =
+
+>> consensus amongst those writing the ACPI specification and those using
+>> it seems to be to ultimately deprecate the use of _OSI.  I plan to
+>> propose such a change to the ACPI specification in the near future.
+>>
+>> In the meantime, these patches rearrange the implementation of _OSI so
+>> that it can be deprecated, or ultimately removed completely, on at least
+>> arm64 platforms.  This is done by simply moving the functions implementi=
+ng =
+
+>> _OSI to arch-dependent locations.  For x86, there should be no change
+>> in functionality.  For ia64, while it does duplicate some code from x86,
+>> there is no longer any connection to the ACPI blacklist code that is only
+>> used by x86.  For arm64, any use of the _OSI method generates a warning
+>> that it has been deprecated, and then always returns false; i.e., that
+>> the capability being queried for, whether OS name or functionality, is
+>> not supported.  This is the first six of the patches.
 > =
 
-> Looks OK to me.
+> While I seem to understand the motivation, I don't really like moving code
+> around, especially in the ia64 area where we have limited means to test t=
+he
+> changes.  And I hate code duplication pretty much in any form.
 
-Could you help to ship it with linux-next directly so that Gerry can re-bas=
-e his patchset on top of linux-next using this change?
-I'll take care of remove this patch from ACPICA release cycle.
+I'm not too wild about it either, but it seemed to avoid #ifdefs when I
+was trying to think it through.
 
-Thanks and best regards
--Lv
+> Also I don't see anything wrong with sharing code between x86 and ia64 li=
+ke
+> we do today.
 
+Fair enough.  That's entirely up to you; the only reason I saw for
+separating them was removing the one call to check the blacklist on
+ia64.  That would have a tiny time savings at boot time, but it is
+definitely down in the noise level.
+
+> So, why don't you move the _OSI handling out of osl.c into a separate file
+> that will only build if something like CONFIG_ARCH_SPECIFIC_ACPI_OSI is n=
+ot
+> set (and same for blacklist.c).  Then, you'll only need to make ARM64
+> set CONFIG_ARCH_SPECIFIC_ACPI_OSI and provide the necessary functions
+> and you can leave the other architectures alone.
 > =
 
-> > Original-by: Thomas Gleixner <tglx(a)linutronix.de>
-> > Original-by: Jiang Liu <jiang.liu(a)linux.intel.com>
-> > Signed-off-by: Lv Zheng <lv.zheng(a)intel.com>
-> > ---
-> >  drivers/acpi/acpica/rsaddr.c     |    9 +++---
-> >  drivers/acpi/acpica/rsdumpinfo.c |   59 +++++++++++++++++++-----------=
---------
-> >  drivers/acpi/acpica/rsxface.c    |   10 +++----
-> >  include/acpi/acrestyp.h          |   40 +++++++++++++++-----------
-> >  4 files changed, 64 insertions(+), 54 deletions(-)
-> >
-> > diff --git a/drivers/acpi/acpica/rsaddr.c b/drivers/acpi/acpica/rsaddr.c
-> > index 916fd09..94a3a05 100644
-> > --- a/drivers/acpi/acpica/rsaddr.c
-> > +++ b/drivers/acpi/acpica/rsaddr.c
-> > @@ -74,7 +74,7 @@ struct acpi_rsconvert_info acpi_rs_convert_address16[=
-5] =3D {
-> >  	 * Address Translation Offset
-> >  	 * Address Length
-> >  	 */
-> > -	{ACPI_RSC_MOVE16, ACPI_RS_OFFSET(data.address16.granularity),
-> > +	{ACPI_RSC_MOVE16, ACPI_RS_OFFSET(data.address16.address.granularity),
-> >  	 AML_OFFSET(address16.granularity),
-> >  	 5},
-> >
-> > @@ -112,7 +112,7 @@ struct acpi_rsconvert_info acpi_rs_convert_address3=
-2[5] =3D {
-> >  	 * Address Translation Offset
-> >  	 * Address Length
-> >  	 */
-> > -	{ACPI_RSC_MOVE32, ACPI_RS_OFFSET(data.address32.granularity),
-> > +	{ACPI_RSC_MOVE32, ACPI_RS_OFFSET(data.address32.address.granularity),
-> >  	 AML_OFFSET(address32.granularity),
-> >  	 5},
-> >
-> > @@ -150,7 +150,7 @@ struct acpi_rsconvert_info acpi_rs_convert_address6=
-4[5] =3D {
-> >  	 * Address Translation Offset
-> >  	 * Address Length
-> >  	 */
-> > -	{ACPI_RSC_MOVE64, ACPI_RS_OFFSET(data.address64.granularity),
-> > +	{ACPI_RSC_MOVE64, ACPI_RS_OFFSET(data.address64.address.granularity),
-> >  	 AML_OFFSET(address64.granularity),
-> >  	 5},
-> >
-> > @@ -194,7 +194,8 @@ struct acpi_rsconvert_info acpi_rs_convert_ext_addr=
-ess64[5] =3D {
-> >  	 * Address Length
-> >  	 * Type-Specific Attribute
-> >  	 */
-> > -	{ACPI_RSC_MOVE64, ACPI_RS_OFFSET(data.ext_address64.granularity),
-> > +	{ACPI_RSC_MOVE64,
-> > +	 ACPI_RS_OFFSET(data.ext_address64.address.granularity),
-> >  	 AML_OFFSET(ext_address64.granularity),
-> >  	 6}
-> >  };
-> > diff --git a/drivers/acpi/acpica/rsdumpinfo.c b/drivers/acpi/acpica/rsd=
-umpinfo.c
-> > index 2f9332d..6ba7ad5 100644
-> > --- a/drivers/acpi/acpica/rsdumpinfo.c
-> > +++ b/drivers/acpi/acpica/rsdumpinfo.c
-> > @@ -183,15 +183,15 @@ struct acpi_rsdump_info acpi_rs_dump_address16[8]=
- =3D {
-> >  	{ACPI_RSD_TITLE, ACPI_RSD_TABLE_SIZE(acpi_rs_dump_address16),
-> >  	 "16-Bit WORD Address Space", NULL},
-> >  	{ACPI_RSD_ADDRESS, 0, NULL, NULL},
-> > -	{ACPI_RSD_UINT16, ACPI_RSD_OFFSET(address16.granularity), "Granularit=
-y",
-> > -	 NULL},
-> > -	{ACPI_RSD_UINT16, ACPI_RSD_OFFSET(address16.minimum), "Address Minimu=
-m",
-> > -	 NULL},
-> > -	{ACPI_RSD_UINT16, ACPI_RSD_OFFSET(address16.maximum), "Address Maximu=
-m",
-> > -	 NULL},
-> > -	{ACPI_RSD_UINT16, ACPI_RSD_OFFSET(address16.translation_offset),
-> > +	{ACPI_RSD_UINT16, ACPI_RSD_OFFSET(address16.address.granularity),
-> > +	 "Granularity", NULL},
-> > +	{ACPI_RSD_UINT16, ACPI_RSD_OFFSET(address16.address.minimum),
-> > +	 "Address Minimum", NULL},
-> > +	{ACPI_RSD_UINT16, ACPI_RSD_OFFSET(address16.address.maximum),
-> > +	 "Address Maximum", NULL},
-> > +	{ACPI_RSD_UINT16, ACPI_RSD_OFFSET(address16.address.translation_offse=
-t),
-> >  	 "Translation Offset", NULL},
-> > -	{ACPI_RSD_UINT16, ACPI_RSD_OFFSET(address16.address_length),
-> > +	{ACPI_RSD_UINT16, ACPI_RSD_OFFSET(address16.address.address_length),
-> >  	 "Address Length", NULL},
-> >  	{ACPI_RSD_SOURCE, ACPI_RSD_OFFSET(address16.resource_source), NULL, N=
-ULL}
-> >  };
-> > @@ -200,15 +200,15 @@ struct acpi_rsdump_info acpi_rs_dump_address32[8]=
- =3D {
-> >  	{ACPI_RSD_TITLE, ACPI_RSD_TABLE_SIZE(acpi_rs_dump_address32),
-> >  	 "32-Bit DWORD Address Space", NULL},
-> >  	{ACPI_RSD_ADDRESS, 0, NULL, NULL},
-> > -	{ACPI_RSD_UINT32, ACPI_RSD_OFFSET(address32.granularity), "Granularit=
-y",
-> > -	 NULL},
-> > -	{ACPI_RSD_UINT32, ACPI_RSD_OFFSET(address32.minimum), "Address Minimu=
-m",
-> > -	 NULL},
-> > -	{ACPI_RSD_UINT32, ACPI_RSD_OFFSET(address32.maximum), "Address Maximu=
-m",
-> > -	 NULL},
-> > -	{ACPI_RSD_UINT32, ACPI_RSD_OFFSET(address32.translation_offset),
-> > +	{ACPI_RSD_UINT32, ACPI_RSD_OFFSET(address32.address.granularity),
-> > +	 "Granularity", NULL},
-> > +	{ACPI_RSD_UINT32, ACPI_RSD_OFFSET(address32.address.minimum),
-> > +	 "Address Minimum", NULL},
-> > +	{ACPI_RSD_UINT32, ACPI_RSD_OFFSET(address32.address.maximum),
-> > +	 "Address Maximum", NULL},
-> > +	{ACPI_RSD_UINT32, ACPI_RSD_OFFSET(address32.address.translation_offse=
-t),
-> >  	 "Translation Offset", NULL},
-> > -	{ACPI_RSD_UINT32, ACPI_RSD_OFFSET(address32.address_length),
-> > +	{ACPI_RSD_UINT32, ACPI_RSD_OFFSET(address32.address.address_length),
-> >  	 "Address Length", NULL},
-> >  	{ACPI_RSD_SOURCE, ACPI_RSD_OFFSET(address32.resource_source), NULL, N=
-ULL}
-> >  };
-> > @@ -217,15 +217,15 @@ struct acpi_rsdump_info acpi_rs_dump_address64[8]=
- =3D {
-> >  	{ACPI_RSD_TITLE, ACPI_RSD_TABLE_SIZE(acpi_rs_dump_address64),
-> >  	 "64-Bit QWORD Address Space", NULL},
-> >  	{ACPI_RSD_ADDRESS, 0, NULL, NULL},
-> > -	{ACPI_RSD_UINT64, ACPI_RSD_OFFSET(address64.granularity), "Granularit=
-y",
-> > -	 NULL},
-> > -	{ACPI_RSD_UINT64, ACPI_RSD_OFFSET(address64.minimum), "Address Minimu=
-m",
-> > -	 NULL},
-> > -	{ACPI_RSD_UINT64, ACPI_RSD_OFFSET(address64.maximum), "Address Maximu=
-m",
-> > -	 NULL},
-> > -	{ACPI_RSD_UINT64, ACPI_RSD_OFFSET(address64.translation_offset),
-> > +	{ACPI_RSD_UINT64, ACPI_RSD_OFFSET(address64.address.granularity),
-> > +	 "Granularity", NULL},
-> > +	{ACPI_RSD_UINT64, ACPI_RSD_OFFSET(address64.address.minimum),
-> > +	 "Address Minimum", NULL},
-> > +	{ACPI_RSD_UINT64, ACPI_RSD_OFFSET(address64.address.maximum),
-> > +	 "Address Maximum", NULL},
-> > +	{ACPI_RSD_UINT64, ACPI_RSD_OFFSET(address64.address.translation_offse=
-t),
-> >  	 "Translation Offset", NULL},
-> > -	{ACPI_RSD_UINT64, ACPI_RSD_OFFSET(address64.address_length),
-> > +	{ACPI_RSD_UINT64, ACPI_RSD_OFFSET(address64.address.address_length),
-> >  	 "Address Length", NULL},
-> >  	{ACPI_RSD_SOURCE, ACPI_RSD_OFFSET(address64.resource_source), NULL, N=
-ULL}
-> >  };
-> > @@ -234,15 +234,16 @@ struct acpi_rsdump_info acpi_rs_dump_ext_address6=
-4[8] =3D {
-> >  	{ACPI_RSD_TITLE, ACPI_RSD_TABLE_SIZE(acpi_rs_dump_ext_address64),
-> >  	 "64-Bit Extended Address Space", NULL},
-> >  	{ACPI_RSD_ADDRESS, 0, NULL, NULL},
-> > -	{ACPI_RSD_UINT64, ACPI_RSD_OFFSET(ext_address64.granularity),
-> > +	{ACPI_RSD_UINT64, ACPI_RSD_OFFSET(ext_address64.address.granularity),
-> >  	 "Granularity", NULL},
-> > -	{ACPI_RSD_UINT64, ACPI_RSD_OFFSET(ext_address64.minimum),
-> > +	{ACPI_RSD_UINT64, ACPI_RSD_OFFSET(ext_address64.address.minimum),
-> >  	 "Address Minimum", NULL},
-> > -	{ACPI_RSD_UINT64, ACPI_RSD_OFFSET(ext_address64.maximum),
-> > +	{ACPI_RSD_UINT64, ACPI_RSD_OFFSET(ext_address64.address.maximum),
-> >  	 "Address Maximum", NULL},
-> > -	{ACPI_RSD_UINT64, ACPI_RSD_OFFSET(ext_address64.translation_offset),
-> > +	{ACPI_RSD_UINT64,
-> > +	 ACPI_RSD_OFFSET(ext_address64.address.translation_offset),
-> >  	 "Translation Offset", NULL},
-> > -	{ACPI_RSD_UINT64, ACPI_RSD_OFFSET(ext_address64.address_length),
-> > +	{ACPI_RSD_UINT64, ACPI_RSD_OFFSET(ext_address64.address.address_lengt=
-h),
-> >  	 "Address Length", NULL},
-> >  	{ACPI_RSD_UINT64, ACPI_RSD_OFFSET(ext_address64.type_specific),
-> >  	 "Type-Specific Attribute", NULL}
-> > diff --git a/drivers/acpi/acpica/rsxface.c b/drivers/acpi/acpica/rsxfac=
-e.c
-> > index 877ab92..2952878 100644
-> > --- a/drivers/acpi/acpica/rsxface.c
-> > +++ b/drivers/acpi/acpica/rsxface.c
-> > @@ -60,11 +60,11 @@ ACPI_MODULE_NAME("rsxface")
-> >  	ACPI_COPY_FIELD(out, in, min_address_fixed);         \
-> >  	ACPI_COPY_FIELD(out, in, max_address_fixed);         \
-> >  	ACPI_COPY_FIELD(out, in, info);                      \
-> > -	ACPI_COPY_FIELD(out, in, granularity);               \
-> > -	ACPI_COPY_FIELD(out, in, minimum);                   \
-> > -	ACPI_COPY_FIELD(out, in, maximum);                   \
-> > -	ACPI_COPY_FIELD(out, in, translation_offset);        \
-> > -	ACPI_COPY_FIELD(out, in, address_length);            \
-> > +	ACPI_COPY_FIELD(out, in, address.granularity);       \
-> > +	ACPI_COPY_FIELD(out, in, address.minimum);           \
-> > +	ACPI_COPY_FIELD(out, in, address.maximum);           \
-> > +	ACPI_COPY_FIELD(out, in, address.translation_offset); \
-> > +	ACPI_COPY_FIELD(out, in, address.address_length);    \
-> >  	ACPI_COPY_FIELD(out, in, resource_source);
-> >  /* Local prototypes */
-> >  static acpi_status
-> > diff --git a/include/acpi/acrestyp.h b/include/acpi/acrestyp.h
-> > index eb760ca..023959d 100644
-> > --- a/include/acpi/acrestyp.h
-> > +++ b/include/acpi/acrestyp.h
-> > @@ -305,43 +305,51 @@ struct acpi_resource_source {
-> >  	u8                                      max_address_fixed; \
-> >  	union acpi_resource_attribute           info;
-> >
-> > -struct acpi_resource_address {
-> > -ACPI_RESOURCE_ADDRESS_COMMON};
-> > -
-> > -struct acpi_resource_address16 {
-> > -	ACPI_RESOURCE_ADDRESS_COMMON u16 granularity;
-> > +struct acpi_address16_attribute {
-> > +	u16 granularity;
-> >  	u16 minimum;
-> >  	u16 maximum;
-> >  	u16 translation_offset;
-> >  	u16 address_length;
-> > -	struct acpi_resource_source resource_source;
-> >  };
-> >
-> > -struct acpi_resource_address32 {
-> > -	ACPI_RESOURCE_ADDRESS_COMMON u32 granularity;
-> > +struct acpi_address32_attribute {
-> > +	u32 granularity;
-> >  	u32 minimum;
-> >  	u32 maximum;
-> >  	u32 translation_offset;
-> >  	u32 address_length;
-> > -	struct acpi_resource_source resource_source;
-> >  };
-> >
-> > -struct acpi_resource_address64 {
-> > -	ACPI_RESOURCE_ADDRESS_COMMON u64 granularity;
-> > +struct acpi_address64_attribute {
-> > +	u64 granularity;
-> >  	u64 minimum;
-> >  	u64 maximum;
-> >  	u64 translation_offset;
-> >  	u64 address_length;
-> > +};
-> > +
-> > +struct acpi_resource_address {
-> > +ACPI_RESOURCE_ADDRESS_COMMON};
-> > +
-> > +struct acpi_resource_address16 {
-> > +	ACPI_RESOURCE_ADDRESS_COMMON ACPI_ADDRESS16_ATTRIBUTE address;
-> > +	struct acpi_resource_source resource_source;
-> > +};
-> > +
-> > +struct acpi_resource_address32 {
-> > +	ACPI_RESOURCE_ADDRESS_COMMON ACPI_ADDRESS32_ATTRIBUTE address;
-> > +	struct acpi_resource_source resource_source;
-> > +};
-> > +
-> > +struct acpi_resource_address64 {
-> > +	ACPI_RESOURCE_ADDRESS_COMMON ACPI_ADDRESS64_ATTRIBUTE address;
-> >  	struct acpi_resource_source resource_source;
-> >  };
-> >
-> >  struct acpi_resource_extended_address64 {
-> >  	ACPI_RESOURCE_ADDRESS_COMMON u8 revision_ID;
-> > -	u64 granularity;
-> > -	u64 minimum;
-> > -	u64 maximum;
-> > -	u64 translation_offset;
-> > -	u64 address_length;
-> > +	ACPI_ADDRESS64_ATTRIBUTE address;
-> >  	u64 type_specific;
-> >  };
-> >
-> >
+> Does that make sense to you?
+
+It does.  I'll rewrite these based on that approach.  Definitely a lot
+less code motion involved...
+
+>> The final patch changes the default value for the _OS_ method for arm64
+>> only.  Since there is no need to pretend to be older versions of Windows,
+>> or any other OS at all, the _OS_ method will return "Linux" on arm64.
+>> One can still use the acpi_os_name kernel parameter if there is a need
+>> to use some other value.
+>>
+>> Since we are breaking apart code previously shared, I have tried to make
+>> it so that applying the x86 patches alone will continue to compile, at
+>> the expense of breaking the build on non-x86 platforms.  However, once
+>> all of the patches are applied, we should be able to compile on all three
+>> architectures.  It is best to treat these as one whole.
+>>
+>> I have only done simple testing with these patches on arm64 and x86 (AMD
+>> Seattle and a Lenovo t440s ThinkPad, respectively).  Things seem to work
+>> as they should once booted, but this is a very, very small sample of
+>> possible machines.  The ia64 patches cross-compile, but I personally have
+>> no way to test them.
+>>
+>> The arm64 patches also rely on having applied Hanjun's patches for ACPI =
+5.1
+>> on arm64 [0].  The x86 and ia64 parts are not dependent on that patch se=
+t,
+>> though, and should be usable independently (i.e., patches 1, 3, 4 and 6).
+>>
+>> NB: some of the patches do not pass checkpatch.pl; the failures I saw we=
+re
+>> all part of the original code but are only showing up because that code =
+is
+>> changing location, so I have left them as is.  If necessary, they could =
+be
+>> fixed but I was more concerned about the number of changes needed on ia64
+>> and not having any way to test them.
+>>
+>>
+>> [0] https://lkml.org/lkml/2015/1/14/586
+>>
+>>
+>> Al Stone (6):
+>>   ia64: ACPI: move kernel acpi files to a directory
+>>   arm64: ACPI: move kernel acpi files to a directory
+>>   x86: ACPI: create arch-dependent version of acpi_osi_handler()
+>>   ia64: ACPI: create arch-dependent version of acpi_osi_handler()
+>>   arm64: ACPI: create arch-dependent version of acpi_osi_handler()
+>>   x86: ia64: arm64: ACPI: move _OSI support functions to arch-dependent
+>>     locations
+>>
+>> Hanjun Guo (1):
+>>   ACPI: use Linux as ACPI_OS_NAME for _OS on ARM64
+>>
+>>  arch/arm64/Kconfig               |    1 +
+>>  arch/arm64/kernel/Makefile       |    2 +-
+>>  arch/arm64/kernel/acpi.c         |  359 --------------
+>>  arch/arm64/kernel/acpi/Makefile  |    1 +
+>>  arch/arm64/kernel/acpi/acpi.c    |  359 ++++++++++++++
+>>  arch/arm64/kernel/acpi/osi.c     |   26 +
+>>  arch/ia64/kernel/Makefile        |    2 +-
+>>  arch/ia64/kernel/acpi-ext.c      |  104 ----
+>>  arch/ia64/kernel/acpi.c          | 1000 -------------------------------=
+-------
+>>  arch/ia64/kernel/acpi/Makefile   |    1 +
+>>  arch/ia64/kernel/acpi/acpi-ext.c |  104 ++++
+>>  arch/ia64/kernel/acpi/acpi.c     | 1000 +++++++++++++++++++++++++++++++=
++++++++
+>>  arch/ia64/kernel/acpi/osi.c      |  119 +++++
+>>  arch/x86/kernel/acpi/Makefile    |    2 +-
+>>  arch/x86/kernel/acpi/blacklist.c |  327 +++++++++++++
+>>  arch/x86/kernel/acpi/boot.c      |    5 +-
+>>  arch/x86/kernel/acpi/osi.c       |  255 ++++++++++
+>>  drivers/acpi/Kconfig             |    8 +
+>>  drivers/acpi/Makefile            |    1 -
+>>  drivers/acpi/blacklist.c         |  323 ------------
+>>  drivers/acpi/osl.c               |  217 ---------
+>>  include/acpi/acconfig.h          |    2 +
+>>  include/acpi/platform/aclinux.h  |    4 +
+>>  include/linux/acpi.h             |    4 +-
+>>  24 files changed, 2215 insertions(+), 2011 deletions(-)
+>>  delete mode 100644 arch/arm64/kernel/acpi.c
+>>  create mode 100644 arch/arm64/kernel/acpi/Makefile
+>>  create mode 100644 arch/arm64/kernel/acpi/acpi.c
+>>  create mode 100644 arch/arm64/kernel/acpi/osi.c
+>>  delete mode 100644 arch/ia64/kernel/acpi-ext.c
+>>  delete mode 100644 arch/ia64/kernel/acpi.c
+>>  create mode 100644 arch/ia64/kernel/acpi/Makefile
+>>  create mode 100644 arch/ia64/kernel/acpi/acpi-ext.c
+>>  create mode 100644 arch/ia64/kernel/acpi/acpi.c
+>>  create mode 100644 arch/ia64/kernel/acpi/osi.c
+>>  create mode 100644 arch/x86/kernel/acpi/blacklist.c
+>>  create mode 100644 arch/x86/kernel/acpi/osi.c
+>>  delete mode 100644 drivers/acpi/blacklist.c
+>>
+>>
 > =
 
-> --
-> I speak only for myself.
-> Rafael J. Wysocki, Intel Open Source Technology Center.
 
---===============6123618200213131329==--
+
+-- =
+
+ciao,
+al
+-----------------------------------
+Al Stone
+Software Engineer
+Red Hat, Inc.
+ahs3(a)redhat.com
+-----------------------------------
+
+--===============0944669281509582385==--
 
