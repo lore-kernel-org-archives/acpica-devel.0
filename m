@@ -1,117 +1,71 @@
-Content-Type: multipart/mixed; boundary="===============6861899523810626686=="
+Content-Type: multipart/mixed; boundary="===============1969237202402089685=="
 MIME-Version: 1.0
-From: Al Stone <ahs3 at redhat.com>
-Subject: Re: [Devel] [PATCH v2 3/5] ACPI: add arch-specific compilation for
- _OSI and the blacklist
-Date: Wed, 04 Feb 2015 22:46:20 +0000
-Message-ID: <54D2A139.5030602@redhat.com>
-In-Reply-To: 2903181.4VVp3X75UK@vostro.rjw.lan
+From: Moore, Robert <robert.moore at intel.com>
+Subject: Re: [Devel] [PATCH 0/4] int to bool conversion
+Date: Wed, 18 Feb 2015 19:09:31 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D27FE3F@ORSMSX112.amr.corp.intel.com>
+In-Reply-To: 2189735.DtT3OIbRBT@vostro.rjw.lan
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6861899523810626686==
+--===============1969237202402089685==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On 02/04/2015 07:03 AM, Rafael J. Wysocki wrote:
-> On Wednesday, February 04, 2015 03:00:15 PM Rafael J. Wysocki wrote:
->> On Tuesday, February 03, 2015 05:21:42 PM al.stone(a)linaro.org wrote:
->>> From: Al Stone <al.stone(a)linaro.org>
->>>
->>> Now that all of the _OSI functionality has been separated out, we can
->>> provide arch-specific functionality for it.  This also allows us to do
->>> the same for the acpi_blacklisted() function.
->>>
->>> Whether arch-specific functions are used or not now depends on the conf=
-ig
->>> options CONFIG_ACPI_ARCH_SPECIFIC_OSI and CONFIG_ARCH_SPECIFIC_BLACKLIS=
-T.
->>> By default, both are set false which causes the x86/ia64 versions to be
->>> used, just as is done today.  Setting one or both of these options true
->>> will cause architecture-specific implementations to be built instead; t=
-his
->>> patch also provides arm64 implementations.
->>>
->>> For x86/ia64, there is no functional change.
->>>
->>> For arm64, any use of _OSI will issue a warning that it is deprecated.
->>> All use of _OSI will return false -- i.e., it will return no useful
->>> information to any firmware using it.  The ability to temporarily turn
->>> on _OSI, or turn off _OSI, or affect it in other ways from the command
->>> line is no longer available for arm64, either.  The blacklist for ACPI
->>> on arm64 is empty.  This will, of course, require ACPI to be enabled
->>> for arm64.
->>>
->>> Signed-off-by: Al Stone <al.stone(a)linaro.org>
->>> ---
->>>  drivers/acpi/Kconfig         | 22 ++++++++++++++++++++++
->>>  drivers/acpi/Makefile        | 19 ++++++++++++++++++-
->>>  drivers/acpi/blacklist-arm.c | 20 ++++++++++++++++++++
->>>  drivers/acpi/blacklist.c     |  5 +++++
->>>  drivers/acpi/osi-arm.c       | 25 +++++++++++++++++++++++++
->>>  5 files changed, 90 insertions(+), 1 deletion(-)
->>>  create mode 100644 drivers/acpi/blacklist-arm.c
->>>  create mode 100644 drivers/acpi/osi-arm.c
->>>
->>> diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
->>> index 3e3bd35..4190940 100644
->>> --- a/drivers/acpi/Kconfig
->>> +++ b/drivers/acpi/Kconfig
->>> @@ -369,6 +369,28 @@ config ACPI_REDUCED_HARDWARE_ONLY
->>>  =
+"bool" can be problematic as it isn't totally portable. It is usually imple=
+mented as a macro.
 
->>>  	  If you are unsure what to do, do not enable this option.
->>>  =
+That=E2=80=99s why ACPICA doesn't use it.
 
->>> +config ACPI_ARCH_SPECIFIC_OSI
->>
->> I woulnd't make this and the other one user-selectable.  Let architectur=
-es
->> select them from their top-level Kconfig files.
->>
->> That's what we do with the other CONFIG_ARCH_ things.
->>
->> So in the architecture-specific Kconfig you'll have
->>
->> config ACPI_ARCH_SPECIFIC_OSI
->> 	def_bool n
->> 	depends on ACPI
->>
->> Moreover, I'd call that ARCH_SPECIFIC_ACPI_OSI.
+
+> -----Original Message-----
+> From: Rafael J. Wysocki [mailto:rjw(a)rjwysocki.net]
+> Sent: Monday, January 26, 2015 5:33 AM
+> To: Quentin Lambert
+> Cc: Zhang, Rui; Moore, Robert; Zheng, Lv; Wysocki, Rafael J; Len Brown;
+> Shaohua Li; linux-acpi(a)vger.kernel.org; devel(a)acpica.org; linux-
+> kernel(a)vger.kernel.org
+> Subject: Re: [PATCH 0/4] int to bool conversion
 > =
 
-> Or even better, you can define them here (drivers/acpi/Kconfig/) as
+> On Monday, January 26, 2015 09:30:55 AM Quentin Lambert wrote:
+> > Sorry for the delay in answering ....
+> >
+> > On 22/01/2015 17:18, Rafael J. Wysocki wrote:
+> > > On Thursday, January 22, 2015 09:49:41 AM Quentin Lambert wrote:
+> > >> These patches convert local variables from int to bool when relevant.
+> > > And what exactly is the need for that?  Does that fix any functional
+> problems?
+> > >
+> > >
+> > It doesn't fix any functional problem. The point of this patch is to
+> > increase the code readability by lifting some of the ambiguities that
+> > appear when using an integer variable as boolean.
+> >
+> > My understanding is that by explicitly using a boolean declaration
+> > when it is relevant it clearly informs the reader that the variable is
+> > going to represent a binary state. Moreover, using the keywords true
+> > and false help indicate that the variable will not be involved in any
+> > computation other than boolean arithmetic.
 > =
 
-> config ARCH_SPECIFIC_ACPI_OSI
-> 	def_bool n
+> Well, in the new code, yes.  The existing code is a different matter
+> though and it doesn't actually hurt if you leave the ints where they are,
+> so there's no reason to make those changes.
 > =
 
-> and then do
-> =
-
-> 	select ARCH_SPECIFIC_ACPI_OSI if ACPI
-> =
-
-> as you did in [4/5].
+> If you change old code and the change is not trivial (eg. fixes of white
+> space or comments, or kernel messages etc.) and someone enounters a bug
+> that may be related to it, they will have to go through your changes to
+> see if that's not the source of the bug.  That's not really productive.
 > =
 
 > =
 
+> --
+> I speak only for myself.
+> Rafael J. Wysocki, Intel Open Source Technology Center.
 
-Ah, indeed I did.  Okay; I'll touch that up.
-
--- =
-
-ciao,
-al
------------------------------------
-Al Stone
-Software Engineer
-Red Hat, Inc.
-ahs3(a)redhat.com
------------------------------------
-
---===============6861899523810626686==--
+--===============1969237202402089685==--
 
