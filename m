@@ -1,71 +1,77 @@
-Content-Type: multipart/mixed; boundary="===============1969237202402089685=="
+Content-Type: multipart/mixed; boundary="===============2198126596670442228=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] [PATCH 0/4] int to bool conversion
-Date: Wed, 18 Feb 2015 19:09:31 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D27FE3F@ORSMSX112.amr.corp.intel.com>
-In-Reply-To: 2189735.DtT3OIbRBT@vostro.rjw.lan
+From: Al Stone <ahs3 at redhat.com>
+Subject: Re: [Devel] [PATCH v3 1/9] ACPI: fix all errors reported by
+ cleanpatch.pl in osl.c
+Date: Wed, 04 Mar 2015 23:56:15 +0000
+Message-ID: <54F79B9C.1030901@redhat.com>
+In-Reply-To: 1528624.HcuCny6IaW@vostro.rjw.lan
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1969237202402089685==
+--===============2198126596670442228==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-"bool" can be problematic as it isn't totally portable. It is usually imple=
-mented as a macro.
-
-That=E2=80=99s why ACPICA doesn't use it.
-
-
-> -----Original Message-----
-> From: Rafael J. Wysocki [mailto:rjw(a)rjwysocki.net]
-> Sent: Monday, January 26, 2015 5:33 AM
-> To: Quentin Lambert
-> Cc: Zhang, Rui; Moore, Robert; Zheng, Lv; Wysocki, Rafael J; Len Brown;
-> Shaohua Li; linux-acpi(a)vger.kernel.org; devel(a)acpica.org; linux-
-> kernel(a)vger.kernel.org
-> Subject: Re: [PATCH 0/4] int to bool conversion
+On 03/04/2015 04:04 PM, Rafael J. Wysocki wrote:
+> On Tuesday, February 24, 2015 05:36:17 PM al.stone(a)linaro.org wrote:
+>> From: Al Stone <al.stone(a)linaro.org>
+>>
+>> In preparation for later splitting out some of the arch-dependent code f=
+rom
+>> osl.c, clean up the errors reported by checkpatch.pl.  They fell into th=
+ese
+>> classes:
+>>
+>>    -- remove the FSF address from the GPL notice
+>>    -- "foo * bar" should be "foo *bar" (and the ** variation of same)
+>>    -- a return is not a function, so parentheses are not required.
+>>
+>> Signed-off-by: Al Stone <al.stone(a)linaro.org>
 > =
 
-> On Monday, January 26, 2015 09:30:55 AM Quentin Lambert wrote:
-> > Sorry for the delay in answering ....
-> >
-> > On 22/01/2015 17:18, Rafael J. Wysocki wrote:
-> > > On Thursday, January 22, 2015 09:49:41 AM Quentin Lambert wrote:
-> > >> These patches convert local variables from int to bool when relevant.
-> > > And what exactly is the need for that?  Does that fix any functional
-> problems?
-> > >
-> > >
-> > It doesn't fix any functional problem. The point of this patch is to
-> > increase the code readability by lifting some of the ambiguities that
-> > appear when using an integer variable as boolean.
-> >
-> > My understanding is that by explicitly using a boolean declaration
-> > when it is relevant it clearly informs the reader that the variable is
-> > going to represent a binary state. Moreover, using the keywords true
-> > and false help indicate that the variable will not be involved in any
-> > computation other than boolean arithmetic.
+> checkpatch.pl is irrelevant here.  You're trying to make the coding style=
+ be
+> more consistent with the coding style of the rest of the kernel.
 > =
 
-> Well, in the new code, yes.  The existing code is a different matter
-> though and it doesn't actually hurt if you leave the ints where they are,
-> so there's no reason to make those changes.
+> The warnings from checkpatch.pl are meaningless for the existing code, so
+> it should not be used to justify changes in that code.
 > =
 
-> If you change old code and the change is not trivial (eg. fixes of white
-> space or comments, or kernel messages etc.) and someone enounters a bug
-> that may be related to it, they will have to go through your changes to
-> see if that's not the source of the bug.  That's not really productive.
+> Of course, the same applies to patches [2-4/9].
 > =
 
 > =
 
-> --
-> I speak only for myself.
-> Rafael J. Wysocki, Intel Open Source Technology Center.
 
---===============1969237202402089685==--
+Okay, I'm puzzled.  In the last version of these patches, I asked if I
+should clean up osl.c as long as I was creating the new osi.c file.  I
+understood the reply to mean it would also be good to correct osl.c [0]
+from checkpatch's point of view.  I took that to mean errors (patch [1/9])
+and warnings (patches [2-4/9]) -- so that's what I did.  What did I
+misunderstand from that reply?
+
+If these changes are objectionable, then I'll drop these from the next
+version of the patch set; I'm not hung up on insisting on either of the
+kernel's or ACPI's coding style -- I try to adapt as needed.  I only did
+the patches because I thought it was helping out with some long-term
+maintenance type work.
+
+
+[0] https://lkml.org/lkml/2015/2/4/749
+
+-- =
+
+ciao,
+al
+-----------------------------------
+Al Stone
+Software Engineer
+Red Hat, Inc.
+ahs3(a)redhat.com
+-----------------------------------
+
+--===============2198126596670442228==--
 
