@@ -1,44 +1,45 @@
-Content-Type: multipart/mixed; boundary="===============7006278464095905907=="
+Content-Type: multipart/mixed; boundary="===============4234237601028973941=="
 MIME-Version: 1.0
 From: Bob Paauwe <bob.j.paauwe at intel.com>
-Subject: [Devel] [PATCH 1/2] Remove extra release mutex call.
-Date: Tue, 07 Apr 2015 09:52:14 -0700
-Message-ID: <1428425535-31774-2-git-send-email-bob.j.paauwe@intel.com>
+Subject: [Devel] [PATCH 2/2] Acutally unload a table.
+Date: Tue, 07 Apr 2015 09:52:15 -0700
+Message-ID: <1428425535-31774-3-git-send-email-bob.j.paauwe@intel.com>
 In-Reply-To: 1428425535-31774-1-git-send-email-bob.j.paauwe@intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7006278464095905907==
+--===============4234237601028973941==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Remove the release mutex call when a table is re-loaded. This seems to
-be here to release a mutex that was aquired at one time in table verify
-function.  That aquire is no longer present, so remove the release.
+Instead of simply marking it as unloaded.  If a table is dynamically
+loaded by a module and the module is then unloaded, the table is no
+longer valid so it's best to make sure it is unloaded.
 
 Signed-off-by: Bob Paauwe <bob.j.paauwe(a)intel.com>
 ---
- drivers/acpi/acpica/tbinstal.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/acpi/acpica/tbxfload.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/acpi/acpica/tbinstal.c b/drivers/acpi/acpica/tbinstal.c
-index 9bad45e..7fbc2b9 100644
---- a/drivers/acpi/acpica/tbinstal.c
-+++ b/drivers/acpi/acpica/tbinstal.c
-@@ -346,7 +346,6 @@ acpi_tb_install_standard_table(acpi_physical_address ad=
-dress,
- 				 */
- 				acpi_tb_uninstall_table(&new_table_desc);
- 				*table_index =3D i;
--				(void)acpi_ut_release_mutex(ACPI_MTX_TABLES);
- 				return_ACPI_STATUS(AE_OK);
- 			}
- 		}
+diff --git a/drivers/acpi/acpica/tbxfload.c b/drivers/acpi/acpica/tbxfload.c
+index aadb300..ce75ca2 100644
+--- a/drivers/acpi/acpica/tbxfload.c
++++ b/drivers/acpi/acpica/tbxfload.c
+@@ -408,6 +408,7 @@ acpi_status acpi_unload_parent_table(acpi_handle object)
+ =
+
+ 		status =3D acpi_tb_release_owner_id(i);
+ 		acpi_tb_set_table_loaded_flag(i, FALSE);
++		acpi_tb_uninstall_table(&acpi_gbl_root_table_list.tables[i]);
+ 		break;
+ 	}
+ =
+
 -- =
 
 2.1.0
 
 
---===============7006278464095905907==--
+--===============4234237601028973941==--
 
