@@ -1,90 +1,50 @@
-Content-Type: multipart/mixed; boundary="===============1770235546283747372=="
+Content-Type: multipart/mixed; boundary="===============2588380574935547341=="
 MIME-Version: 1.0
-From: Al Stone <ahs3 at redhat.com>
-Subject: Re: [Devel] [PATCH v3 1/9] ACPI: fix all errors reported by
- cleanpatch.pl in osl.c
-Date: Thu, 05 Mar 2015 00:06:17 +0000
-Message-ID: <54F79DF6.60204@redhat.com>
-In-Reply-To: 3363575.FHEZ9Qjrf1@vostro.rjw.lan
+From: Bob Paauwe <bob.j.paauwe at intel.com>
+Subject: [Devel] [PATCH 0/2] dynamic table unload fixes
+Date: Tue, 07 Apr 2015 09:52:13 -0700
+Message-ID: <1428425535-31774-1-git-send-email-bob.j.paauwe@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1770235546283747372==
+--===============2588380574935547341==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On 03/04/2015 05:25 PM, Rafael J. Wysocki wrote:
-> On Wednesday, March 04, 2015 04:56:12 PM Al Stone wrote:
->> On 03/04/2015 04:04 PM, Rafael J. Wysocki wrote:
->>> On Tuesday, February 24, 2015 05:36:17 PM al.stone(a)linaro.org wrote:
->>>> From: Al Stone <al.stone(a)linaro.org>
->>>>
->>>> In preparation for later splitting out some of the arch-dependent code=
- from
->>>> osl.c, clean up the errors reported by checkpatch.pl.  They fell into =
-these
->>>> classes:
->>>>
->>>>    -- remove the FSF address from the GPL notice
->>>>    -- "foo * bar" should be "foo *bar" (and the ** variation of same)
->>>>    -- a return is not a function, so parentheses are not required.
->>>>
->>>> Signed-off-by: Al Stone <al.stone(a)linaro.org>
->>>
->>> checkpatch.pl is irrelevant here.  You're trying to make the coding sty=
-le be
->>> more consistent with the coding style of the rest of the kernel.
->>>
->>> The warnings from checkpatch.pl are meaningless for the existing code, =
-so
->>> it should not be used to justify changes in that code.
->>>
->>> Of course, the same applies to patches [2-4/9].
->>>
->>>
->>
->> Okay, I'm puzzled.  In the last version of these patches, I asked if I
->> should clean up osl.c as long as I was creating the new osi.c file.  I
->> understood the reply to mean it would also be good to correct osl.c [0]
->> from checkpatch's point of view.  I took that to mean errors (patch [1/9=
-])
->> and warnings (patches [2-4/9]) -- so that's what I did.  What did I
->> misunderstand from that reply?
->>
->> If these changes are objectionable, then I'll drop these from the next
->> version of the patch set; I'm not hung up on insisting on either of the
->> kernel's or ACPI's coding style -- I try to adapt as needed.  I only did
->> the patches because I thought it was helping out with some long-term
->> maintenance type work.
-> =
+While trying to make use of dynamic tables as a way to provide driver
+initialization properties, I've encountered a couple of issues with the
+way dynamic tables are being handled.
 
-> The changes are basically OK, but the justification is bogus to me.
-> "I'm making the chagne, because checkpatch.pl told me so" is a pretty bad
-> explanation in my view.  It is much better to say "This file does not
-> adhere to the general kernel coding style and since I'm going to split it
-> into pieces and I want those pieces to follow the coding style more close=
-ly,
-> make changes as follows."
-> =
+The first patch appears to be a bug. There is a mutex release without
+a corresponding aquire. This extra release causes a mutex error message
+when a table is re-loaded after being unloaded.
 
-> So this is more about the changelogs (and subjects) than the code changes
-> themselves.
+The second patch actually unloads a table when table unload is called. =
 
-Aha.  That makes much more sense to me.  Sorry if I was being a bit dense;
-I'll rev these for the next version so it's far clearer.  Thanks for being
-patient :).
+When a table is being dynamically loaded by a driver module and that
+driver module is unloaded, the memory for the table would typically be
+freed resulting in a table that is marked as unloaded but still pointing
+to that freed memory.  If the driver module is then re-loaded, the
+ACPI table reload function will attempt to access that freed memory when
+it does a table compare and results in a oops.
+
+These patches solve the problems I've encountered but may not be the =
+
+proper way to solve.
+
+Bob Paauwe (2):
+  Remove extra release mutex call.
+  Acutally unload a table.
+
+ drivers/acpi/acpica/tbinstal.c | 1 -
+ drivers/acpi/acpica/tbxfload.c | 1 +
+ 2 files changed, 1 insertion(+), 1 deletion(-)
 
 -- =
 
-ciao,
-al
------------------------------------
-Al Stone
-Software Engineer
-Red Hat, Inc.
-ahs3(a)redhat.com
------------------------------------
+2.1.0
 
---===============1770235546283747372==--
+
+--===============2588380574935547341==--
 
