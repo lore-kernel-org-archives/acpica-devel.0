@@ -1,119 +1,88 @@
-Content-Type: multipart/mixed; boundary="===============1940313516299952541=="
+Content-Type: multipart/mixed; boundary="===============7639003210418891428=="
 MIME-Version: 1.0
-From: Bob Paauwe <bob.j.paauwe at intel.com>
-Subject: Re: [Devel] [PATCH 2/2] Acutally unload a table.
-Date: Tue, 07 Apr 2015 11:34:34 -0700
-Message-ID: <20150407113434.0fd8d75b@bpaauwe-desk.fm.intel.com>
-In-Reply-To: 94F2FBAB4432B54E8AACC7DFDE6C92E37D2BB71D@ORSMSX112.amr.corp.intel.com
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] ACPICA version 20150408 released
+Date: Wed, 08 Apr 2015 17:40:33 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D2BBF61@ORSMSX112.amr.corp.intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1940313516299952541==
+--===============7639003210418891428==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 7 Apr 2015 10:50:55 -0700
-"Moore, Robert" <robert.moore(a)intel.com> wrote:
+08 April 2015. Summary of changes for version 20150408:
 
-> Is this really such a big deal? I don't think that a loaded table is real=
-ly consuming much in the way of resources. Sure, it is mapped, but at least=
- some of the internal stuff is relatively static. Plus, we have to:
-> =
-
-> 1) Add a new external interface which must be documented.
-> 2) Disallow unloading things like DSDT and SSDTs, FADT, FACS.
-> 3) What if a table is used by more than one "module"?
-> =
-
-> You'll have to convince me that this is worth the trouble.
-> Bob
-
-I'm doing something that's a bit unconventional so I'm not sure I can
-convince you.  But maybe I'm doing something really wrong and there's a
-better way.  So with that.
-
-I'm using the new acpi properties as a way to provide some
-configuration data to the driver. Right now, I have three ways to get
-these values loaded.
-
-1) They could be inserted into the ACPI firmware for the device.  I
-think this will work, but I don't have any way of doing this today.
-
-2) I can create a table, compile it, and add it as a firmware blob
-in /lib/firmware (or build the blob into the kernel).
-
-3) I can create a table, compile it, and include it in the driver
-source as static data.
-
-I'm using #3 right now to test everything.  If I do the following:
-
-	modprobe i915
-		acpi_load_table(static table data);
-		[ use properties to configure driver and test]
-		acpi_unload_parent_table();
-	rmmod i915
-
-	modprobe i915
-		acpi_load_table(static table data);
-
-I'll get a kernel null dereference in acpi_load_table() because it
-thinks the static table data from the first load is still there, but
-since it was part of the module that was unloaded, it's gone.
-
-This patch was the easiest way for me to stop crashing and allow me
-to test stuff without having to reboot every time. =
+This release is available at https://acpica.org/downloads
 
 
-Bob
+1) ACPICA kernel-resident subsystem:
 
-> =
+Permanently set the return value for the _REV predefined name. It now retur=
+ns 2 (was 5). This matches other ACPI implementations. _REV will be depreca=
+ted in the future, and is now defined to be 1 for ACPI 1.0, and 2 for ACPI =
+2.0 and later.
 
-> =
+Added the "Windows 2015" string to the _OSI support. ACPICA will now return=
+ TRUE to a query with this string.
 
-> > -----Original Message-----
-> > From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of Bob Paauwe
-> > Sent: Tuesday, April 07, 2015 9:52 AM
-> > To: devel-acpica
-> > Subject: [Devel] [PATCH 2/2] Acutally unload a table.
-> > =
+Fixed several issues with the local version of the printf function.
 
-> > Instead of simply marking it as unloaded.  If a table is dynamically
-> > loaded by a module and the module is then unloaded, the table is no lon=
-ger
-> > valid so it's best to make sure it is unloaded.
-> > =
+Added the C99 compiler option (-std=3Dc99) to the Unix makefiles.
 
-> > Signed-off-by: Bob Paauwe <bob.j.paauwe(a)intel.com>
-> > ---
-> >  drivers/acpi/acpica/tbxfload.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> > =
-
-> > diff --git a/drivers/acpi/acpica/tbxfload.c
-> > b/drivers/acpi/acpica/tbxfload.c index aadb300..ce75ca2 100644
-> > --- a/drivers/acpi/acpica/tbxfload.c
-> > +++ b/drivers/acpi/acpica/tbxfload.c
-> > @@ -408,6 +408,7 @@ acpi_status acpi_unload_parent_table(acpi_handle
-> > object)
-> > =
-
-> >  		status =3D acpi_tb_release_owner_id(i);
-> >  		acpi_tb_set_table_loaded_flag(i, FALSE);
-> > +		acpi_tb_uninstall_table(&acpi_gbl_root_table_list.tables[i]);
-> >  		break;
-> >  	}
-> > =
-
-> > --
-> > 2.1.0
-> > =
-
-> > _______________________________________________
-> > Devel mailing list
-> > Devel(a)acpica.org
-> > https://lists.acpica.org/mailman/listinfo/devel
+  Current Release:
+    Non-Debug Version:  99.1K Code, 27.3K Data, 126.4K Total
+    Debug Version:     192.8K Code, 79.9K Data, 272.7K Total
+  Previous Release:
+    Non-Debug Version:  98.8K Code, 27.3K Data, 126.1K Total
+    Debug Version:     192.1K Code, 79.8K Data, 271.9K Total
 
 
---===============1940313516299952541==--
+2) iASL Compiler/Disassembler and Tools:
+
+Implemented an enhancement to the constant folding feature to transform the=
+ parse tree to a simple Store operation whenever possible:
+    Add (2, 3, X) =3D=3D> Store (5, X)
+    X =3D 2 + 3 =3D=3D> X =3D 5 =3D=3D> Store (5, X)
+
+Updated support for the SLIC table (Software Licensing Description Table) i=
+n both the Data Table compiler and the disassembler. The SLIC table support=
+ now conforms to "Microsoft Software Licensing Tables (SLIC and MSDM). Nove=
+mber 29, 2011. Copyright 2011 Microsoft". Note: The SLIC data following the=
+ ACPI header is now defined to be "Proprietary Data", and as such, can only=
+ be displayed as a hex data block.
+
+Implemented full support for the MSDM table as described in the document ab=
+ove. Note: The MSDM data following the ACPI header is defined to be "Propri=
+etary Data", and as such, can only be displayed as a hex data block.
+
+Changes for the EFI version of the tools:
+1) Fixed a build error/issue
+2) Fixed a cast warning
+
+Implemented the -Pn option for the Table Compiler (in addition to the ASL c=
+ompiler). This option disables the preprocessor.
+
+Fixed some problems with the local version of the strstr function.
+
+Disassembler: For disassembly of Data Tables, added a comment field around =
+the Ascii equivalent data that is emitted as part of the "Raw Table Data" b=
+lock. This prevents the iASL Preprocessor from possible confusion if/when t=
+he table is compiled.
+
+Disassembler: Added an option (-df) to force the disassembler to assume tha=
+t the table being disassembled contains valid AML. This feature is useful f=
+or disassembling AML files that contain ACPI signatures other than DSDT or =
+SSDT (such as OEMx or other signatures).
+
+iASL: Fixed a path issue with the __FILE__ operator by making the directory=
+ prefix optional within the internal SplitInputFilename function.
+
+Debugger: Remove some unused global variables.
+
+Tests: Updated the makefile for the AAPITS suite.
+
+
+--===============7639003210418891428==--
 
