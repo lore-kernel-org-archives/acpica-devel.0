@@ -1,105 +1,75 @@
-Content-Type: multipart/mixed; boundary="===============0245481168354494979=="
+Content-Type: multipart/mixed; boundary="===============7188735048441151678=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] AcpiDump.efi tool for uefi shell
-Date: Fri, 24 Apr 2015 19:09:38 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D2CE9F3@ORSMSX112.amr.corp.intel.com>
-In-Reply-To: 1AE640813FDE7649BE1B193DEA596E880270EA55@SHSMSX101.ccr.corp.intel.com
+From: Zheng, Lv <lv.zheng at intel.com>
+Subject: Re: [Devel] [PATCH] ACPICA: remove duplicate u8 typedef
+Date: Wed, 29 Apr 2015 00:29:44 +0000
+Message-ID: <1AE640813FDE7649BE1B193DEA596E880270FB14@SHSMSX101.ccr.corp.intel.com>
+In-Reply-To: 1624281.lNzTEna4Ru@vostro.rjw.lan
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0245481168354494979==
+--===============7188735048441151678==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Then send us the new acefi.h so we can integrate it into ACPICA.
-Thanks,
-Bob
+Hi,
 
-
-> -----Original Message-----
-> From: Zheng, Lv
-> Sent: Thursday, April 23, 2015 11:21 PM
-> To: Moore, Robert; Anteja Vuk Macek; devel(a)acpica.org; dsd(a)acpica.org
-> Subject: RE: [Devel] AcpiDump.efi tool for uefi shell
+> From: Rafael J. Wysocki [mailto:rjw(a)rjwysocki.net]
+> Sent: Wednesday, April 29, 2015 8:44 AM
+> Subject: Re: [PATCH] ACPICA: remove duplicate u8 typedef
 > =
 
-> It should be possible to build it under Cygwin environment.
-> =
-
-> IMO, if you really want to compile EFI ACPICA tools using MSVC, then you
-> should 1. Copy necessary definitions from efi.h/efistdarg.h/efilib.h to
-> acefi.h so that acefi.h no long depends on GNU-EFI 2. Define useful #ifdef
-> in acenv.h to include acefi.h for MSVC builds 3. Change DivU64x32 to
-> ACPI_OS_DIV64 and implement it for both GNU-EFI and MSVC builds.
-> Then everything should be OK and you can even use MSVC to build
-> acpidump.efi.
-> =
-
-> Thanks and best regards
-> -Lv
-> =
-
-> > From: Moore, Robert
-> > Sent: Friday, April 24, 2015 11:42 AM
-> > To: Zheng, Lv; Anteja Vuk Macek; devel(a)acpica.org; dsd(a)acpica.org
-> > Subject: RE: [Devel] AcpiDump.efi tool for uefi shell
+> On Tuesday, April 28, 2015 04:54:04 PM Olaf Hering wrote:
+> > During commit e252652fb2664d42de19f933aa3688bbc470de3f ("ACPICA:
+> > acpidump: Remove integer types translation protection.") two 'unsigned
+> > char' types got converted to 'u8'.
 > >
-> > How about generation in the Cygwin environment?
+> > The result does not compile with gcc-4.5, it can not cope with duplicate
+> > typedefs.
 > >
-> >
-> > > -----Original Message-----
-> > > From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of Zheng, Lv
-> > > Sent: Thursday, April 23, 2015 7:37 PM
-> > > To: Anteja Vuk Macek; devel(a)acpica.org; dsd(a)acpica.org
-> > > Subject: Re: [Devel] AcpiDump.efi tool for uefi shell
-> > >
-> > > Hi,
-> > >
-> > > You should generate acpidump.efi in the Linux environment.
-> > >
-> > > And make sure GNU EFI is installed in your environment:
-> > > # apt-get install gnu-efi
-> > >
-> > > Then type the following command in the command prompt:
-> > > # make OS=3Defi
-> > >
-> > > You'll find it in the generate/efi/bin.
-> > >
-> > > Thanks
-> > > -Lv
-> > >
-> > > From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of Anteja
-> > > Vuk Macek
-> > > Sent: Thursday, April 23, 2015 3:38 PM
-> > > To: devel(a)acpica.org; dsd(a)acpica.org
-> > > Subject: [Devel] AcpiDump.efi tool for uefi shell
-> > >
-> > > Hi,
-> > >
-> > > I have a problem with creating AcpiDump.efi . I only can create
-> > > AcpiDump.exe with Visual Studio 2013, but I can't create efi file. I
-> > > try to do with minnowMax 078 buidable developming tree, but it don't
-> > > work beacause I got error :
-> > >
-> > > c:\minmax078\acpica-master\source\tools\acpidump\acenv.h(296) :
-> > > fatal error C1189 : #error : Unknown target environment NMAKE :
-> > > fatal error
-> > > U1077 : ' "C:\Program Files(x86)\Microsoft Visual Studio
-> > > 9.0\Vc\bin\cl.exe" ' : return code 0x2 '
-> > >
-> > > PROBLEM : What I need to do to create the AcpiDump.efi ?
-> > >
-> > >
-> > > Best regards,
-> > > Anteja
-> > >
-> > >
-> > > _______________________________________________
-> > > Devel mailing list
-> > > Devel(a)acpica.org
-> > > https://lists.acpica.org/mailman/listinfo/devel
+> > Signed-off-by: Olaf Hering <olaf(a)aepfle.de>
+> =
 
---===============0245481168354494979==--
+> Applied, thanks!
+> =
+
+> Lv, can you please see if that's an upstream issue too?
+
+In ACPICA, one u8 is UINT8 and the other is for BOOLEAN.
+Pleas merge this first.
+I'll think about a solution to reduce this divergence.
+
+Thanks and best regards
+-Lv
+
+> =
+
+> > ---
+> >  include/acpi/actypes.h | 1 -
+> >  1 file changed, 1 deletion(-)
+> >
+> > diff --git a/include/acpi/actypes.h b/include/acpi/actypes.h
+> > index f5ca0e9..1c3002e 100644
+> > --- a/include/acpi/actypes.h
+> > +++ b/include/acpi/actypes.h
+> > @@ -124,7 +124,6 @@
+> >  #ifndef ACPI_USE_SYSTEM_INTTYPES
+> >
+> >  typedef unsigned char u8;
+> > -typedef unsigned char u8;
+> >  typedef unsigned short u16;
+> >  typedef short s16;
+> >  typedef COMPILER_DEPENDENT_UINT64 u64;
+> > --
+> > To unsubscribe from this list: send the line "unsubscribe linux-acpi" in
+> > the body of a message to majordomo(a)vger.kernel.org
+> > More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> =
+
+> --
+> I speak only for myself.
+> Rafael J. Wysocki, Intel Open Source Technology Center.
+
+--===============7188735048441151678==--
 
