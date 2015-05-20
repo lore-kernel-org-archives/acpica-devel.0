@@ -1,343 +1,384 @@
-Content-Type: multipart/mixed; boundary="===============3811830574118919064=="
+Content-Type: multipart/mixed; boundary="===============6990869683755503323=="
 MIME-Version: 1.0
-From: Adam Goode <agoode at google.com>
+From: Moore, Robert <robert.moore at intel.com>
 Subject: Re: [Devel] Correct place to send patches?
-Date: Wed, 20 May 2015 15:52:43 -0400
-Message-ID: <CAOf41Nm5yjmuYuzSj34xrdE2NA41waNbvxw0Bh6ySLVQmqnm2Q@mail.gmail.com>
-In-Reply-To: 94F2FBAB4432B54E8AACC7DFDE6C92E37D2EE133@ORSMSX112.amr.corp.intel.com
+Date: Wed, 20 May 2015 20:42:07 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D2EE236@ORSMSX112.amr.corp.intel.com>
+In-Reply-To: CAOf41Nm5yjmuYuzSj34xrdE2NA41waNbvxw0Bh6ySLVQmqnm2Q@mail.gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3811830574118919064==
+--===============6990869683755503323==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Interesting point about ACPICA throwing an exception when there is no
-handler. The spec (6.0) says this:
-"When an operation region handler is unavailable, AML cannot access
-data fields in that region. (Operation region writes will be ignored
-and reads will return indeterminate data.)."
-
-If unavailable reads just returned 0, this code would all work. I have
-no idea when this field would ever be set. I don't know if Windows
-Installer has particular bytes it sets in the CMOS.
-
-Perhaps Windows is just returning 0 on read. Why does ACPICA throw an excep=
-tion?
 
 
+> -----Original Message-----
+> From: Adam Goode [mailto:agoode(a)google.com]
+> Sent: Wednesday, May 20, 2015 12:53 PM
+> To: Moore, Robert
+> Cc: Lan, Tianyu; linux-acpi(a)vger.kernel.org; Box, David E;
+> devel(a)acpica.org
+> Subject: Re: [Devel] Correct place to send patches?
+> =
 
-Here is the relevant device and _INI disassembly, with most things
-elided. OSDW is a method that determines if the OS is Darwin.
-\_SB.PCI0.LPCB.RTC.ISWI is the field of interest. I have not elided
-any of these RTC references. On unpatched ACPICA/Linux (when Darwin
-mode is disabled), the first Debug =3D \_SB.PCI0.LPCB.RTC.ISWI fails.
+> Interesting point about ACPICA throwing an exception when there is no
+> handler. The spec (6.0) says this:
+> "When an operation region handler is unavailable, AML cannot access data
+> fields in that region. (Operation region writes will be ignored and reads
+> will return indeterminate data.)."
+
+Well, this is very interesting and I don't exactly remember this text. Perh=
+aps it was added in one of the more recent versions of the ACPI spec.
+
+If this is what is happening on Windows, we will need to determine what "in=
+determinate data" means on Windows. For example, I would make it either zer=
+o or all ones. In any case, it would be simple for ACPICA to install its ow=
+n "null handler" that would return the "no handler" values.
+
+Looks like a read is happening here:
+
+>                     If ((\_SB.PCI0.LPCB.RTC.ISWI !=3D 0x01))
+
+This of course would conceivably affect all of the region address spaces.
 
 
 
+> =
 
-.....
-                Device (RTC)
-                {
-                    Name (_HID, EisaId ("PNP0B00") /* AT Real-Time
-Clock */)  // _HID: Hardware ID
-                    Name (_CRS, ResourceTemplate ()  // _CRS: Current
-Resource Settings
-                    {
-                        IO (Decode16,
-                            0x0070,             // Range Minimum
-                            0x0070,             // Range Maximum
-                            0x01,               // Alignment
-                            0x08,               // Length
-                            )
-                    })
-                    OperationRegion (CMS0, SystemCMOS, 0x00, 0x40)
-                    Field (CMS0, ByteAcc, NoLock, Preserve)
-                    {
-                        Offset (0x38),
-                        ISTB,   1,
-                            ,   2,
-                        ISWI,   1,
-                        Offset (0x39)
-                    }
-                }
+> If unavailable reads just returned 0, this code would all work. I have no
+> idea when this field would ever be set. I don't know if Windows Installer
+> has particular bytes it sets in the CMOS.
+> =
 
-.....
+> Perhaps Windows is just returning 0 on read. Why does ACPICA throw an
+> exception?
+> =
 
-    Scope (\_SB.PCI0)
-    {
-        Method (_INI, 0, NotSerialized)  // _INI: Initialize
-        {
-..... [elided]
-            Debug =3D \_SB.PCI0.LPCB.RTC.ISWI
-            If (!OSDW ())
-            {
-                If ((OSYS >=3D 0x07DC))
-                {
-                    Debug =3D "Save Ridge Config on Boot"
-..... [thunderbolt init code elided]
-                    If ((\_SB.PCI0.LPCB.RTC.ISWI !=3D 0x01))
-                    {
-                        Debug =3D "Enable ICM on Boot"
-..... [more init code elided]
-                    }
-                    Else
-                    {
-                        Debug =3D "Windows Installation"
-                    }
-..... [more code elided]
-                    Debug =3D "Enable ICM on Boot, Complete"
-                }
-            }
+> =
 
-On Wed, May 20, 2015 at 1:24 PM, Moore, Robert <robert.moore(a)intel.com> w=
-rote:
-> Another possibility is that Windows just *ignores* a CMOS access from the=
- _INI before it gets a real CMOS driver installed. We've seen similar befor=
-e.
->
-> Could you please post the disassembled _INI method, or the binary DSDT wh=
-ere it came from?
-> Thanks.
->
->> -----Original Message-----
->> From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of Moore, Robe=
-rt
->> Sent: Wednesday, May 20, 2015 10:17 AM
->> To: Adam Goode
->> Cc: Lan, Tianyu; linux-acpi(a)vger.kernel.org; Box, David E;
->> devel(a)acpica.org
->> Subject: Re: [Devel] Correct place to send patches?
->>
->> ACPICA does in fact try to bug-for-bug compatible with Windows.
->>
->> The trick is to figure out just *how* Windows works in these cases.
->>
->> I might guess that a solution may be that a "default handler" for the CM=
-OS
->> operation region should be installed immediately at boot time. If and wh=
-en
->> this handler is first run, it should figure out which CMOS device is
->> present on the system and then install the "real" handler for the device.
->> Or, if you want to support only one CMOS device, just install the region
->> handler at boot time and be done with it.
->>
->>
->>
->> > -----Original Message-----
->> > From: Adam Goode [mailto:agoode(a)google.com]
->> > Sent: Wednesday, May 20, 2015 10:11 AM
->> > To: Moore, Robert
->> > Cc: Zheng, Lv; Lan, Tianyu; linux-acpi(a)vger.kernel.org;
->> > devel(a)acpica.org; Box, David E
->> > Subject: Re: [Devel] Correct place to send patches?
->> >
->> > Yes, it really looks like a bug in the firmware. Still, Windows works
->> > correctly without any special support.
->> >
->> > What is the policy for ACPICA in this case where Windows works in a
->> > spec- violating way?
->> >
->> >
->> > Adam
->> >
->> >
->> > On Wed, May 20, 2015 at 1:07 PM, Moore, Robert
->> > <robert.moore(a)intel.com>
->> > wrote:
->> > > Then perhaps this is where the machine is violating the ACPI
->> > specification:
->> > >
->> > >
->> > > 6.5.1 _INI (Init)
->> > >
->> > > The _INI method must only access Operation Regions that have been
->> > indicated to be available as defined by the _REG method.
->> > >
->> > >
->> > >
->> > >
->> > >> -----Original Message-----
->> > >> From: Adam Goode [mailto:agoode(a)google.com]
->> > >> Sent: Wednesday, May 20, 2015 9:56 AM
->> > >> To: Moore, Robert
->> > >> Cc: Zheng, Lv; Lan, Tianyu; linux-acpi(a)vger.kernel.org;
->> > >> devel(a)acpica.org
->> > >> Subject: Re: [Devel] Correct place to send patches?
->> > >>
->> > >> No, I did not see a _REG method defined in the code.
->> > >>
->> > >>
->> > >> Adam
->> > >>
->> > >>
->> > >> On Wed, May 20, 2015 at 12:46 PM, Moore, Robert
->> > >> <robert.moore(a)intel.com>
->> > >> wrote:
->> > >> > Does the CMOS operation region have a _REG method?
->> > >> >
->> > >> >
->> > >> >
->> > >> >
->> > >> >
->> > >> > From: Zheng, Lv
->> > >> > Sent: Tuesday, May 19, 2015 11:03 PM
->> > >> > To: Zheng, Lv; Moore, Robert; Adam Goode; Lan, Tianyu
->> > >> > Cc: linux-acpi(a)vger.kernel.org; devel(a)acpica.org
->> > >> >
->> > >> >
->> > >> > Subject: RE: [Devel] Correct place to send patches?
->> > >> >
->> > >> >
->> > >> >
->> > >> > Since no reply from Tianyu=E2=80=A6
->> > >> >
->> > >> > What if we move _INI invocation out of ACPICA, and let OSPM to
->> > >> > invoke
->> > >> it.
->> > >> >
->> > >> >
->> > >> >
->> > >> > Thanks
->> > >> >
->> > >> > -Lv
->> > >> >
->> > >> >
->> > >> >
->> > >> > From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of Zhen=
-g,
->> > >> > Lv
->> > >> > Sent: Thursday, May 14, 2015 8:33 AM
->> > >> > To: Moore, Robert; Adam Goode; Lan, Tianyu
->> > >> > Cc: linux-acpi(a)vger.kernel.org; devel(a)acpica.org
->> > >> > Subject: Re: [Devel] Correct place to send patches?
->> > >> >
->> > >> >
->> > >> >
->> > >> > You should discuss this in the linux-acpi mailing list where the
->> > >> > Linux CMOS opregion driver is implemented, reviewed, and merged.
->> > >> >
->> > >> > Let me Cc Tianyu who is the original author of the CMOS opregion
->> > driver.
->> > >> >
->> > >> >
->> > >> >
->> > >> > Thanks
->> > >> >
->> > >> > -Lv
->> > >> >
->> > >> >
->> > >> >
->> > >> > From: Moore, Robert
->> > >> > Sent: Wednesday, May 13, 2015 10:25 PM
->> > >> > To: Adam Goode; Zheng, Lv
->> > >> > Cc: devel(a)acpica.org
->> > >> > Subject: RE: [Devel] Correct place to send patches?
->> > >> >
->> > >> >
->> > >> >
->> > >> > I=E2=80=99ll have to let Lv answer this question.
->> > >> >
->> > >> >
->> > >> >
->> > >> >
->> > >> >
->> > >> > From: Adam Goode [mailto:agoode(a)google.com]
->> > >> > Sent: Wednesday, May 13, 2015 7:23 AM
->> > >> > To: Moore, Robert
->> > >> > Cc: devel(a)acpica.org
->> > >> > Subject: Re: [Devel] Correct place to send patches?
->> > >> >
->> > >> >
->> > >> >
->> > >> > The problem is that on new Apple hardware (Macmini7,1 and
->> > >> > others), the system reads and writes from CMOS in _INI. With no
->> > >> > CMOS handler, the Thunderbolt device doesn't initialize correctly.
->> > >> >
->> > >> >
->> > >> >
->> > >> > The current framework in Linux doesn't register the PNP* CMOS
->> > >> > devices until after _INI runs. Do you have a suggestion on what
->> > >> > to do in this case? Is it possible to register a device driver
->> > >> > before
->> > _INI runs?
->> > >> >
->> > >> >
->> > >> >
->> > >> >
->> > >> >
->> > >> > Thanks,
->> > >> >
->> > >> >
->> > >> >
->> > >> > Adam
->> > >> >
->> > >> >
->> > >> >
->> > >> >
->> > >> >
->> > >> > On Wed, May 13, 2015 at 4:07 PM, Moore, Robert
->> > >> > <robert.moore(a)intel.com>
->> > >> > wrote:
->> > >> >
->> > >> > Actually, I had a question about this.
->> > >> >
->> > >> >
->> > >> >
->> > >> > Given that the CMOS device has a _HID and requires a device
->> > >> > driver (there can be multiple types of CMOS devices), in ACPICA
->> > >> > we decided that we could not provide CMOS interfaces.
->> > >> >
->> > >> >
->> > >> >
->> > >> > What problem does this patch solve, and how will it work in the
->> > >> > face of different CMOS devices?
->> > >> >
->> > >> >
->> > >> >
->> > >> > Thanks,
->> > >> >
->> > >> > Bob
->> > >> >
->> > >> >
->> > >> >
->> > >> >
->> > >> >
->> > >> > From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of Adam
->> > >> > Goode
->> > >> > Sent: Wednesday, May 13, 2015 4:53 AM
->> > >> > To: devel(a)acpica.org
->> > >> > Subject: [Devel] Correct place to send patches?
->> > >> >
->> > >> >
->> > >> >
->> > >> > Hi,
->> > >> >
->> > >> >
->> > >> >
->> > >> > Is this the correct place to send patches for review? I have a
->> > >> > patch from a few weeks ago
->> > >> > (https://lists.acpica.org/pipermail/devel/2015-May/000698.html)
->> > >> > that I would like feedback on.
->> > >> >
->> > >> >
->> > >> >
->> > >> >
->> > >> >
->> > >> > Thanks,
->> > >> >
->> > >> >
->> > >> >
->> > >> > Adam
->> > >> >
->> > >> >
->> > >> >
->> > >> >
->> _______________________________________________
->> Devel mailing list
->> Devel(a)acpica.org
->> https://lists.acpica.org/mailman/listinfo/devel
+> =
 
---===============3811830574118919064==--
+> Here is the relevant device and _INI disassembly, with most things elided.
+> OSDW is a method that determines if the OS is Darwin.
+> \_SB.PCI0.LPCB.RTC.ISWI is the field of interest. I have not elided any of
+> these RTC references. On unpatched ACPICA/Linux (when Darwin mode is
+> disabled), the first Debug =3D \_SB.PCI0.LPCB.RTC.ISWI fails.
+> =
+
+> =
+
+> =
+
+> =
+
+> .....
+>                 Device (RTC)
+>                 {
+>                     Name (_HID, EisaId ("PNP0B00") /* AT Real-Time Clock
+> */)  // _HID: Hardware ID
+>                     Name (_CRS, ResourceTemplate ()  // _CRS: Current
+> Resource Settings
+>                     {
+>                         IO (Decode16,
+>                             0x0070,             // Range Minimum
+>                             0x0070,             // Range Maximum
+>                             0x01,               // Alignment
+>                             0x08,               // Length
+>                             )
+>                     })
+>                     OperationRegion (CMS0, SystemCMOS, 0x00, 0x40)
+>                     Field (CMS0, ByteAcc, NoLock, Preserve)
+>                     {
+>                         Offset (0x38),
+>                         ISTB,   1,
+>                             ,   2,
+>                         ISWI,   1,
+>                         Offset (0x39)
+>                     }
+>                 }
+> =
+
+> .....
+> =
+
+>     Scope (\_SB.PCI0)
+>     {
+>         Method (_INI, 0, NotSerialized)  // _INI: Initialize
+>         {
+> ..... [elided]
+>             Debug =3D \_SB.PCI0.LPCB.RTC.ISWI
+>             If (!OSDW ())
+>             {
+>                 If ((OSYS >=3D 0x07DC))
+>                 {
+>                     Debug =3D "Save Ridge Config on Boot"
+> ..... [thunderbolt init code elided]
+>                     If ((\_SB.PCI0.LPCB.RTC.ISWI !=3D 0x01))
+>                     {
+>                         Debug =3D "Enable ICM on Boot"
+> ..... [more init code elided]
+>                     }
+>                     Else
+>                     {
+>                         Debug =3D "Windows Installation"
+>                     }
+> ..... [more code elided]
+>                     Debug =3D "Enable ICM on Boot, Complete"
+>                 }
+>             }
+> =
+
+> On Wed, May 20, 2015 at 1:24 PM, Moore, Robert <robert.moore(a)intel.com>
+> wrote:
+> > Another possibility is that Windows just *ignores* a CMOS access from
+> the _INI before it gets a real CMOS driver installed. We've seen similar
+> before.
+> >
+> > Could you please post the disassembled _INI method, or the binary DSDT
+> where it came from?
+> > Thanks.
+> >
+> >> -----Original Message-----
+> >> From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of Moore,
+> >> Robert
+> >> Sent: Wednesday, May 20, 2015 10:17 AM
+> >> To: Adam Goode
+> >> Cc: Lan, Tianyu; linux-acpi(a)vger.kernel.org; Box, David E;
+> >> devel(a)acpica.org
+> >> Subject: Re: [Devel] Correct place to send patches?
+> >>
+> >> ACPICA does in fact try to bug-for-bug compatible with Windows.
+> >>
+> >> The trick is to figure out just *how* Windows works in these cases.
+> >>
+> >> I might guess that a solution may be that a "default handler" for the
+> >> CMOS operation region should be installed immediately at boot time.
+> >> If and when this handler is first run, it should figure out which
+> >> CMOS device is present on the system and then install the "real"
+> handler for the device.
+> >> Or, if you want to support only one CMOS device, just install the
+> >> region handler at boot time and be done with it.
+> >>
+> >>
+> >>
+> >> > -----Original Message-----
+> >> > From: Adam Goode [mailto:agoode(a)google.com]
+> >> > Sent: Wednesday, May 20, 2015 10:11 AM
+> >> > To: Moore, Robert
+> >> > Cc: Zheng, Lv; Lan, Tianyu; linux-acpi(a)vger.kernel.org;
+> >> > devel(a)acpica.org; Box, David E
+> >> > Subject: Re: [Devel] Correct place to send patches?
+> >> >
+> >> > Yes, it really looks like a bug in the firmware. Still, Windows
+> >> > works correctly without any special support.
+> >> >
+> >> > What is the policy for ACPICA in this case where Windows works in a
+> >> > spec- violating way?
+> >> >
+> >> >
+> >> > Adam
+> >> >
+> >> >
+> >> > On Wed, May 20, 2015 at 1:07 PM, Moore, Robert
+> >> > <robert.moore(a)intel.com>
+> >> > wrote:
+> >> > > Then perhaps this is where the machine is violating the ACPI
+> >> > specification:
+> >> > >
+> >> > >
+> >> > > 6.5.1 _INI (Init)
+> >> > >
+> >> > > The _INI method must only access Operation Regions that have been
+> >> > indicated to be available as defined by the _REG method.
+> >> > >
+> >> > >
+> >> > >
+> >> > >
+> >> > >> -----Original Message-----
+> >> > >> From: Adam Goode [mailto:agoode(a)google.com]
+> >> > >> Sent: Wednesday, May 20, 2015 9:56 AM
+> >> > >> To: Moore, Robert
+> >> > >> Cc: Zheng, Lv; Lan, Tianyu; linux-acpi(a)vger.kernel.org;
+> >> > >> devel(a)acpica.org
+> >> > >> Subject: Re: [Devel] Correct place to send patches?
+> >> > >>
+> >> > >> No, I did not see a _REG method defined in the code.
+> >> > >>
+> >> > >>
+> >> > >> Adam
+> >> > >>
+> >> > >>
+> >> > >> On Wed, May 20, 2015 at 12:46 PM, Moore, Robert
+> >> > >> <robert.moore(a)intel.com>
+> >> > >> wrote:
+> >> > >> > Does the CMOS operation region have a _REG method?
+> >> > >> >
+> >> > >> >
+> >> > >> >
+> >> > >> >
+> >> > >> >
+> >> > >> > From: Zheng, Lv
+> >> > >> > Sent: Tuesday, May 19, 2015 11:03 PM
+> >> > >> > To: Zheng, Lv; Moore, Robert; Adam Goode; Lan, Tianyu
+> >> > >> > Cc: linux-acpi(a)vger.kernel.org; devel(a)acpica.org
+> >> > >> >
+> >> > >> >
+> >> > >> > Subject: RE: [Devel] Correct place to send patches?
+> >> > >> >
+> >> > >> >
+> >> > >> >
+> >> > >> > Since no reply from Tianyu=E2=80=A6
+> >> > >> >
+> >> > >> > What if we move _INI invocation out of ACPICA, and let OSPM to
+> >> > >> > invoke
+> >> > >> it.
+> >> > >> >
+> >> > >> >
+> >> > >> >
+> >> > >> > Thanks
+> >> > >> >
+> >> > >> > -Lv
+> >> > >> >
+> >> > >> >
+> >> > >> >
+> >> > >> > From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of
+> >> > >> > Zheng, Lv
+> >> > >> > Sent: Thursday, May 14, 2015 8:33 AM
+> >> > >> > To: Moore, Robert; Adam Goode; Lan, Tianyu
+> >> > >> > Cc: linux-acpi(a)vger.kernel.org; devel(a)acpica.org
+> >> > >> > Subject: Re: [Devel] Correct place to send patches?
+> >> > >> >
+> >> > >> >
+> >> > >> >
+> >> > >> > You should discuss this in the linux-acpi mailing list where
+> >> > >> > the Linux CMOS opregion driver is implemented, reviewed, and
+> merged.
+> >> > >> >
+> >> > >> > Let me Cc Tianyu who is the original author of the CMOS
+> >> > >> > opregion
+> >> > driver.
+> >> > >> >
+> >> > >> >
+> >> > >> >
+> >> > >> > Thanks
+> >> > >> >
+> >> > >> > -Lv
+> >> > >> >
+> >> > >> >
+> >> > >> >
+> >> > >> > From: Moore, Robert
+> >> > >> > Sent: Wednesday, May 13, 2015 10:25 PM
+> >> > >> > To: Adam Goode; Zheng, Lv
+> >> > >> > Cc: devel(a)acpica.org
+> >> > >> > Subject: RE: [Devel] Correct place to send patches?
+> >> > >> >
+> >> > >> >
+> >> > >> >
+> >> > >> > I=E2=80=99ll have to let Lv answer this question.
+> >> > >> >
+> >> > >> >
+> >> > >> >
+> >> > >> >
+> >> > >> >
+> >> > >> > From: Adam Goode [mailto:agoode(a)google.com]
+> >> > >> > Sent: Wednesday, May 13, 2015 7:23 AM
+> >> > >> > To: Moore, Robert
+> >> > >> > Cc: devel(a)acpica.org
+> >> > >> > Subject: Re: [Devel] Correct place to send patches?
+> >> > >> >
+> >> > >> >
+> >> > >> >
+> >> > >> > The problem is that on new Apple hardware (Macmini7,1 and
+> >> > >> > others), the system reads and writes from CMOS in _INI. With
+> >> > >> > no CMOS handler, the Thunderbolt device doesn't initialize
+> correctly.
+> >> > >> >
+> >> > >> >
+> >> > >> >
+> >> > >> > The current framework in Linux doesn't register the PNP* CMOS
+> >> > >> > devices until after _INI runs. Do you have a suggestion on
+> >> > >> > what to do in this case? Is it possible to register a device
+> >> > >> > driver before
+> >> > _INI runs?
+> >> > >> >
+> >> > >> >
+> >> > >> >
+> >> > >> >
+> >> > >> >
+> >> > >> > Thanks,
+> >> > >> >
+> >> > >> >
+> >> > >> >
+> >> > >> > Adam
+> >> > >> >
+> >> > >> >
+> >> > >> >
+> >> > >> >
+> >> > >> >
+> >> > >> > On Wed, May 13, 2015 at 4:07 PM, Moore, Robert
+> >> > >> > <robert.moore(a)intel.com>
+> >> > >> > wrote:
+> >> > >> >
+> >> > >> > Actually, I had a question about this.
+> >> > >> >
+> >> > >> >
+> >> > >> >
+> >> > >> > Given that the CMOS device has a _HID and requires a device
+> >> > >> > driver (there can be multiple types of CMOS devices), in
+> >> > >> > ACPICA we decided that we could not provide CMOS interfaces.
+> >> > >> >
+> >> > >> >
+> >> > >> >
+> >> > >> > What problem does this patch solve, and how will it work in
+> >> > >> > the face of different CMOS devices?
+> >> > >> >
+> >> > >> >
+> >> > >> >
+> >> > >> > Thanks,
+> >> > >> >
+> >> > >> > Bob
+> >> > >> >
+> >> > >> >
+> >> > >> >
+> >> > >> >
+> >> > >> >
+> >> > >> > From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of
+> >> > >> > Adam Goode
+> >> > >> > Sent: Wednesday, May 13, 2015 4:53 AM
+> >> > >> > To: devel(a)acpica.org
+> >> > >> > Subject: [Devel] Correct place to send patches?
+> >> > >> >
+> >> > >> >
+> >> > >> >
+> >> > >> > Hi,
+> >> > >> >
+> >> > >> >
+> >> > >> >
+> >> > >> > Is this the correct place to send patches for review? I have a
+> >> > >> > patch from a few weeks ago
+> >> > >> > (https://lists.acpica.org/pipermail/devel/2015-May/000698.html
+> >> > >> > ) that I would like feedback on.
+> >> > >> >
+> >> > >> >
+> >> > >> >
+> >> > >> >
+> >> > >> >
+> >> > >> > Thanks,
+> >> > >> >
+> >> > >> >
+> >> > >> >
+> >> > >> > Adam
+> >> > >> >
+> >> > >> >
+> >> > >> >
+> >> > >> >
+> >> _______________________________________________
+> >> Devel mailing list
+> >> Devel(a)acpica.org
+> >> https://lists.acpica.org/mailman/listinfo/devel
+
+--===============6990869683755503323==--
 
