@@ -1,14 +1,14 @@
-Content-Type: multipart/mixed; boundary="===============6990869683755503323=="
+Content-Type: multipart/mixed; boundary="===============2089197453292301577=="
 MIME-Version: 1.0
 From: Moore, Robert <robert.moore at intel.com>
 Subject: Re: [Devel] Correct place to send patches?
-Date: Wed, 20 May 2015 20:42:07 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D2EE236@ORSMSX112.amr.corp.intel.com>
+Date: Thu, 21 May 2015 00:03:04 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D2EE3B3@ORSMSX112.amr.corp.intel.com>
 In-Reply-To: CAOf41Nm5yjmuYuzSj34xrdE2NA41waNbvxw0Bh6ySLVQmqnm2Q@mail.gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6990869683755503323==
+--===============2089197453292301577==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
@@ -29,23 +29,6 @@ Content-Transfer-Encoding: quoted-printable
 > "When an operation region handler is unavailable, AML cannot access data
 > fields in that region. (Operation region writes will be ignored and reads
 > will return indeterminate data.)."
-
-Well, this is very interesting and I don't exactly remember this text. Perh=
-aps it was added in one of the more recent versions of the ACPI spec.
-
-If this is what is happening on Windows, we will need to determine what "in=
-determinate data" means on Windows. For example, I would make it either zer=
-o or all ones. In any case, it would be simple for ACPICA to install its ow=
-n "null handler" that would return the "no handler" values.
-
-Looks like a read is happening here:
-
->                     If ((\_SB.PCI0.LPCB.RTC.ISWI !=3D 0x01))
-
-This of course would conceivably affect all of the region address spaces.
-
-
-
 > =
 
 > If unavailable reads just returned 0, this code would all work. I have no
@@ -55,6 +38,20 @@ This of course would conceivably affect all of the region address spaces.
 
 > Perhaps Windows is just returning 0 on read. Why does ACPICA throw an
 > exception?
+
+
+The original idea is to tell someone that "you forgot to load a CMOS driver=
+" (or EC driver, etc.)
+
+I don't really subscribe to any philosophy that has an I/O handler or simil=
+ar doing nothing and returning a status of "yeah, I did it, and it worked!"
+
+Bob
+
+
+
+
+
 > =
 
 > =
@@ -380,5 +377,5 @@ This of course would conceivably affect all of the region address spaces.
 > >> Devel(a)acpica.org
 > >> https://lists.acpica.org/mailman/listinfo/devel
 
---===============6990869683755503323==--
+--===============2089197453292301577==--
 
