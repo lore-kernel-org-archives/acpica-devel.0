@@ -1,35 +1,33 @@
-Content-Type: multipart/mixed; boundary="===============2572590292268320433=="
+Content-Type: multipart/mixed; boundary="===============0955031944970949474=="
 MIME-Version: 1.0
-From: Zheng, Lv <lv.zheng at intel.com>
-Subject: [Devel] Adding table via initrd
-Date: Fri, 22 May 2015 03:28:45 +0000
-Message-ID: <1AE640813FDE7649BE1B193DEA596E8802720ECA@SHSMSX101.ccr.corp.intel.com>
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] _REV method changed in ACPI/ACPICA
+Date: Fri, 22 May 2015 15:53:07 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D2EED94@ORSMSX112.amr.corp.intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2572590292268320433==
+--===============0955031944970949474==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi, Thomas
+Recently, the _REV method in ACPICA was changed to return '2' instead of '5=
+' or '6'. This is because it was discovered that some BIOS vendors are usin=
+g _REV to differentiate between Linux and Windows (Windows returns '2' and =
+has no plans to ever change it).
 
-It's long since you've posted the following patch in the community:
-https://lkml.org/lkml/2014/2/28/368
+In the face of this, the ACPI Working Group decided to do the following:
+1) Redefine _REV to permanently return '2'
+2) Deprecate the _REV method in a future revision of the ACPI specification.
 
-The ACPICA API to support OSPM guided early table installation is ready in =
-the upstream:
-https://github.com/acpica/acpica/commit/32ae0ea
-https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=
-=3Dcaf4a15c
+This is why ACPICA was changed _REV to return '2', and why this change shou=
+ld be supported in Linux.
 
-Now we have a new use case also requiring your idea to install tables via i=
-nitrd.
-Would you like to do a rebase to revive the patch?
-
-Thanks and best regards
--Lv
+Bob
 
 
---===============2572590292268320433==--
+
+
+--===============0955031944970949474==--
 
