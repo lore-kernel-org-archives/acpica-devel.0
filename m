@@ -1,92 +1,75 @@
-Content-Type: multipart/mixed; boundary="===============9174580357479466505=="
+Content-Type: multipart/mixed; boundary="===============8021557645595497062=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] [PATCH] ACPICA: Add MADT generic distributor version
- values for ACPI 6.0
-Date: Fri, 29 May 2015 15:45:31 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D2F08B1@ORSMSX112.amr.corp.intel.com>
-In-Reply-To: 94F2FBAB4432B54E8AACC7DFDE6C92E37D2F07D1@ORSMSX112.amr.corp.intel.com
+From: Al Stone <ahs3 at redhat.com>
+Subject: [Devel] [RFC] proposed patch for some segfaults encountered
+Date: Mon, 01 Jun 2015 14:59:22 -0600
+Message-ID: <556CC7AA.4010000@redhat.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============9174580357479466505==
+--===============8021557645595497062==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Actually, that is fine the way it is. I'll integrate it today.
+It's not clear to me that this is the correct way to handle a segfault that
+was reported to me via Fedora.
 
+Using the ssdt9.dat file attached, a simple "iasl -d ssdt9.dat" will segfau=
+lt
+around calls to AcpiDmPromoteTarget -- and it turns out that the Target poi=
+nter
+being passed into that function was sometimes null but not being checked in=
+ the
+calling function, AcpiDmCheckForSymbolicOpcode.  So, this patch adds in some
+checks for null pointers and can now get through this particular problem.
 
-> -----Original Message-----
-> From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of Moore, Robert
-> Sent: Friday, May 29, 2015 5:55 AM
-> To: Hanjun Guo; Zheng, Lv
-> Cc: linux-acpi(a)vger.kernel.org; Rafael J. Wysocki; Al Stone;
-> devel(a)acpica.org
-> Subject: Re: [Devel] [PATCH] ACPICA: Add MADT generic distributor version
-> values for ACPI 6.0
-> =
+However, I did not study AcpiDmCheckForSymbolicOpcode long enough to determ=
+ine
+if the Target pointer in that function should or should not ever be null.  =
+So,
+this patch fixes this issue, but it may not be the proper long term solutio=
+n.
 
-> Usually, we ACPICA just #defines the individual values so that it is very
-> easy to see the values at a glance. We only enum internal things.
-> =
+-- =
 
-> =
+ciao,
+al
+-----------------------------------
+Al Stone
+Software Engineer
+Red Hat, Inc.
+ahs3(a)redhat.com
+-----------------------------------
 
-> =
+--===============8021557645595497062==
+Content-Type: text/x-patch
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="segfault.patch"
 
-> > -----Original Message-----
-> > From: Hanjun Guo [mailto:hanjun.guo(a)linaro.org]
-> > Sent: Friday, May 29, 2015 12:46 AM
-> > To: Zheng, Lv
-> > Cc: Moore, Robert; Rafael J. Wysocki; Al Stone; devel(a)acpica.org;
-> > linux- acpi(a)vger.kernel.org; Hanjun Guo
-> > Subject: [PATCH] ACPICA: Add MADT generic distributor version values
-> > for ACPI 6.0
-> >
-> > ACPI 6.0 specified MADT generic distributor version values, but the
-> > detail definition is missing in ACPICA version 20150515, add its
-> > support in this patch.
-> >
-> > Signed-off-by: Hanjun Guo <hanjun.guo(a)linaro.org>
-> > ---
-> >
-> > This is the linux version of GIC version patch, please help to handle
-> > it, thanks!
-> >
-> >  include/acpi/actbl1.h | 11 +++++++++++
-> >  1 file changed, 11 insertions(+)
-> >
-> > diff --git a/include/acpi/actbl1.h b/include/acpi/actbl1.h index
-> > 06b61f0..a53530d1 100644
-> > --- a/include/acpi/actbl1.h
-> > +++ b/include/acpi/actbl1.h
-> > @@ -835,6 +835,17 @@ struct acpi_madt_generic_distributor {
-> >  	u8 reserved2[3];	/* reserved - must be zero */
-> >  };
-> >
-> > +/* Values for version in Generic Distributor  (ACPI 6.0) */
-> > +
-> > +enum acpi_madt_gic_version_type {
-> > +	ACPI_MADT_GIC_VER_UNKNOWN	=3D 0,
-> > +	ACPI_MADT_GIC_VER_V1		=3D 1,
-> > +	ACPI_MADT_GIC_VER_V2		=3D 2,
-> > +	ACPI_MADT_GIC_VER_V3		=3D 3,
-> > +	ACPI_MADT_GIC_VER_V4		=3D 4,
-> > +	ACPI_MADT_GIC_VER_RESERVED	=3D 5	/* 5 and greater are reserved */
-> > +};
-> > +
-> >  /* 13: Generic MSI Frame (ACPI 5.1) */
-> >
-> >  struct acpi_madt_generic_msi_frame {
-> > --
-> > 1.9.1
-> =
+ZGlmZiAtTmF1ciBhY3BpY2EtdW5peDItMjAxNTA1MTUub3JpZy9zb3VyY2UvY29tcG9uZW50cy9k
+aXNhc3NlbWJsZXIvZG1jc3R5bGUuYyBhY3BpY2EtdW5peDItMjAxNTA1MTUvc291cmNlL2NvbXBv
+bmVudHMvZGlzYXNzZW1ibGVyL2RtY3N0eWxlLmMKLS0tIGFjcGljYS11bml4Mi0yMDE1MDUxNS5v
+cmlnL3NvdXJjZS9jb21wb25lbnRzL2Rpc2Fzc2VtYmxlci9kbWNzdHlsZS5jCTIwMTUtMDYtMDEg
+MTQ6MzI6NTEuNzY5MjE4ODg3IC0wNjAwCisrKyBhY3BpY2EtdW5peDItMjAxNTA1MTUvc291cmNl
+L2NvbXBvbmVudHMvZGlzYXNzZW1ibGVyL2RtY3N0eWxlLmMJMjAxNS0wNi0wMSAxNDozNzozOC45
+NzM4OTg4MzkgLTA2MDAKQEAgLTQwNyw3ICs0MDcsNyBAQAogICAgICAgICB7CiAgICAgICAgICAg
+ICBBY3BpRG1Qcm9tb3RlVGFyZ2V0IChPcCwgVGFyZ2V0KTsKIAotICAgICAgICAgICAgaWYgKCFU
+YXJnZXQtPkNvbW1vbi5PcGVyYXRvclN5bWJvbCkKKyAgICAgICAgICAgIGlmIChUYXJnZXQgJiYg
+IVRhcmdldC0+Q29tbW9uLk9wZXJhdG9yU3ltYm9sKQogICAgICAgICAgICAgewogICAgICAgICAg
+ICAgICAgIFRhcmdldC0+Q29tbW9uLk9wZXJhdG9yU3ltYm9sID0gIiA9ICI7CiAgICAgICAgICAg
+ICB9CkBAIC00MjUsNyArNDI1LDcgQEAKICAgICAgICAgVGFyZ2V0ID0gQ2hpbGQxLT5Db21tb24u
+TmV4dDsKICAgICAgICAgQWNwaURtUHJvbW90ZVRhcmdldCAoT3AsIFRhcmdldCk7CiAKLSAgICAg
+ICAgaWYgKCFUYXJnZXQtPkNvbW1vbi5PcGVyYXRvclN5bWJvbCkKKyAgICAgICAgaWYgKFRhcmdl
+dCAmJiAhVGFyZ2V0LT5Db21tb24uT3BlcmF0b3JTeW1ib2wpCiAgICAgICAgIHsKICAgICAgICAg
+ICAgIFRhcmdldC0+Q29tbW9uLk9wZXJhdG9yU3ltYm9sID0gIiA9ICI7CiAgICAgICAgIH0KQEAg
+LTQ0Niw3ICs0NDYsMTAgQEAKICAgICAgICAgICAgIC8qIFZhbGlkIHRhcmdldCwgbm90IGEgcGxh
+Y2Vob2xkZXIgKi8KIAogICAgICAgICAgICAgQWNwaURtUHJvbW90ZVRhcmdldCAoT3AsIFRhcmdl
+dCk7Ci0gICAgICAgICAgICBUYXJnZXQtPkNvbW1vbi5PcGVyYXRvclN5bWJvbCA9ICIgPSB+IjsK
+KwkgICAgaWYgKFRhcmdldCkKKwkgICAgeworICAgICAgICAgICAgCVRhcmdldC0+Q29tbW9uLk9w
+ZXJhdG9yU3ltYm9sID0gIiA9IH4iOworCSAgICB9CiAgICAgICAgIH0KICAgICAgICAgZWxzZQog
+ICAgICAgICB7Cg==
 
-> _______________________________________________
-> Devel mailing list
-> Devel(a)acpica.org
-> https://lists.acpica.org/mailman/listinfo/devel
-
---===============9174580357479466505==--
+--===============8021557645595497062==--
 
