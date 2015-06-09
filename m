@@ -1,68 +1,77 @@
-Content-Type: multipart/mixed; boundary="===============8811292678978465846=="
+Content-Type: multipart/mixed; boundary="===============2474398716719458817=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] [PATCH] acpi: update struct acpi_table_tpm2
-Date: Mon, 08 Jun 2015 20:52:02 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D2F28EC@ORSMSX112.amr.corp.intel.com>
-In-Reply-To: 1433770706-3332-1-git-send-email-jarkko.sakkinen@linux.intel.com
+From: Zheng, Lv <lv.zheng at intel.com>
+Subject: Re: [Devel] [PATCH] handle Linux systems without /dev/mem
+Date: Tue, 09 Jun 2015 06:16:43 +0000
+Message-ID: <1AE640813FDE7649BE1B193DEA596E88027264E2@SHSMSX101.ccr.corp.intel.com>
+In-Reply-To: 556F9F23.6020808@redhat.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8811292678978465846==
+--===============2474398716719458817==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-It looks like there is a change to the TCPA table also.
+Hi,
 
+The patch is wrong.
+If we want to dump tables without accessing /dev/mem, we have acpidump -c.
+The only problem here is:
+There is a bug that even with -c specified, acpidump cannot work without ac=
+cessing /dev/mem.
+So we shouldn't introduce a new portable acpidump OSL but should fix the ve=
+ry problem.
 
-> -----Original Message-----
-> From: Jarkko Sakkinen [mailto:jarkko.sakkinen(a)linux.intel.com]
-> Sent: Monday, June 08, 2015 6:38 AM
-> To: Moore, Robert
-> Cc: Jarkko Sakkinen; Zheng, Lv; Wysocki, Rafael J; Len Brown; open
-> list:ACPI COMPONENT AR...; open list:ACPI COMPONENT AR...; open list
-> Subject: [PATCH] acpi: update struct acpi_table_tpm2
+We've noticed the similar issue in handling this kernel bug:
+https://bugzilla.kernel.org/show_bug.cgi?id=3D87971
+The fix for this issue can be found here:
+https://github.com/acpica/acpica/pull/77
+
+Thanks and best regards
+-Lv
+
+> From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of Al Stone
+> Sent: Thursday, June 04, 2015 8:43 AM
 > =
 
-> Updated struct acpi_table_tpm2 to conform to the official TCG ACPI spec.
+> On arm64 systems in particular, the use of /dev/mem is not recommended.  =
+The
+> contents may or may not be valid depending on the memory map being used, =
+since
+> they are not standardized.
 > =
 
-> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen(a)linux.intel.com>
-> ---
->  include/acpi/actbl3.h | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+> The attached patch will cause arm64 (aka ARMv8 or AArch64) Linux systems =
+to
+> use a new file called source/os_specific/service_layers/oslinuxtbl_nodevm=
+em.c
+> (a subset of the oslinuxtbl.c code) that allows acpidump to read all ACPI
+> tables from /sys/firmware/acpi instead of from /dev/mem.  This will help =
+ensure
+> that the tables retrieved are the ones actually being used and that their
+> content is correct.
 > =
 
-> diff --git a/include/acpi/actbl3.h b/include/acpi/actbl3.h index
-> 440ca81..33df1dd 100644
-> --- a/include/acpi/actbl3.h
-> +++ b/include/acpi/actbl3.h
-> @@ -688,13 +688,14 @@ enum acpi_rasf_status {
->   * TPM2 - Trusted Platform Module (TPM) 2.0 Hardware Interface Table
->   *        Version 3
->   *
-> - * Conforms to "TPM 2.0 Hardware Interface Table (TPM2)" 29 November 2011
-> + * Conforms to "TCG ACPI Specification for Family 1.2 and 2.0" 19
-> + December 2014
->   *
+> This patch applies on top of the 20150515 version, and I have included it=
+ in
+> the 20150515-2 versions of the Fedora and Debian packages.  I've tried the
+> resulting acpidump on x86, x86_64 and arm64 systems and it seems to work =
+well.
 > =
 
-> **************************************************************************
-> ****/
+> Signed-off-by: Al Stone <ahs3(a)redhat.com>
 > =
 
->  struct acpi_table_tpm2 {
->  	struct acpi_table_header header;	/* Common ACPI table header */
-> -	u32 flags;
-> +	u16 platform_class;
-> +	u16 reserved;
->  	u64 control_address;
->  	u32 start_method;
->  };
 > --
-> 2.1.4
+> ciao,
+> al
+> -----------------------------------
+> Al Stone
+> Software Engineer
+> Red Hat, Inc.
+> ahs3(a)redhat.com
+> -----------------------------------
 
-
---===============8811292678978465846==--
+--===============2474398716719458817==--
 
