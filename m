@@ -1,77 +1,55 @@
-Content-Type: multipart/mixed; boundary="===============2474398716719458817=="
+Content-Type: multipart/mixed; boundary="===============3206387465387930667=="
 MIME-Version: 1.0
-From: Zheng, Lv <lv.zheng at intel.com>
-Subject: Re: [Devel] [PATCH] handle Linux systems without /dev/mem
-Date: Tue, 09 Jun 2015 06:16:43 +0000
-Message-ID: <1AE640813FDE7649BE1B193DEA596E88027264E2@SHSMSX101.ccr.corp.intel.com>
-In-Reply-To: 556F9F23.6020808@redhat.com
+From: Moore, Robert <robert.moore at intel.com>
+Subject: Re: [Devel] [PATCH] acpi: update struct acpi_table_tpm2
+Date: Tue, 09 Jun 2015 14:21:12 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D2F2BE7@ORSMSX112.amr.corp.intel.com>
+In-Reply-To: 20150609091757.GB4968@jsakkine-mobl1
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2474398716719458817==
+--===============3206387465387930667==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+ACPICA usually defines any "related" data structures, just for user conveni=
+ence.
 
-The patch is wrong.
-If we want to dump tables without accessing /dev/mem, we have acpidump -c.
-The only problem here is:
-There is a bug that even with -c specified, acpidump cannot work without ac=
-cessing /dev/mem.
-So we shouldn't introduce a new portable acpidump OSL but should fix the ve=
-ry problem.
-
-We've noticed the similar issue in handling this kernel bug:
-https://bugzilla.kernel.org/show_bug.cgi?id=3D87971
-The fix for this issue can be found here:
-https://github.com/acpica/acpica/pull/77
-
-Thanks and best regards
--Lv
-
-> From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of Al Stone
-> Sent: Thursday, June 04, 2015 8:43 AM
+> -----Original Message-----
+> From: Jarkko Sakkinen [mailto:jarkko.sakkinen(a)linux.intel.com]
+> Sent: Tuesday, June 09, 2015 2:18 AM
+> To: Moore, Robert
+> Cc: Zheng, Lv; Wysocki, Rafael J; Len Brown; open list:ACPI COMPONENT
+> AR...; open list:ACPI COMPONENT AR...; open list
+> Subject: Re: [PATCH] acpi: update struct acpi_table_tpm2
 > =
 
-> On arm64 systems in particular, the use of /dev/mem is not recommended.  =
-The
-> contents may or may not be valid depending on the memory map being used, =
-since
-> they are not standardized.
+> On Mon, Jun 08, 2015 at 08:52:02PM +0000, Moore, Robert wrote:
+> > It looks like there is a change to the TCPA table also.
 > =
 
-> The attached patch will cause arm64 (aka ARMv8 or AArch64) Linux systems =
-to
-> use a new file called source/os_specific/service_layers/oslinuxtbl_nodevm=
-em.c
-> (a subset of the oslinuxtbl.c code) that allows acpidump to read all ACPI
-> tables from /sys/firmware/acpi instead of from /dev/mem.  This will help =
-ensure
-> that the tables retrieved are the ones actually being used and that their
-> content is correct.
+> Right. I'll update that too.
 > =
 
-> This patch applies on top of the 20150515 version, and I have included it=
- in
-> the 20150515-2 versions of the Fedora and Debian packages.  I've tried the
-> resulting acpidump on x86, x86_64 and arm64 systems and it seems to work =
-well.
+> I strongly think that the struct acpi_tpm2_control should not be in
+> actbl3.h. It is not defined in the TCG ACPI specification. It is defined
+> in
 > =
 
-> Signed-off-by: Al Stone <ahs3(a)redhat.com>
+> http://www.trustedcomputinggroup.org/resources/pc_client_platform_tpm_prof
+> ile_ptp_specification
 > =
 
-> --
-> ciao,
-> al
-> -----------------------------------
-> Al Stone
-> Software Engineer
-> Red Hat, Inc.
-> ahs3(a)redhat.com
-> -----------------------------------
+> FIFO control structures are internal for to the TPM subsystem and so
+> should be CRB control structures (and we have already inside tpm_crb.c).
+> =
 
---===============2474398716719458817==--
+> The structure ended up there probably because it was combined with the
+> TPM2 table in that Microsoft specification.
+> =
+
+> /Jarkko
+
+--===============3206387465387930667==--
 
