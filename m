@@ -1,242 +1,123 @@
-Content-Type: multipart/mixed; boundary="===============4093123570802674581=="
+Content-Type: multipart/mixed; boundary="===============6379107774444657283=="
 MIME-Version: 1.0
-From: Zheng, Lv <lv.zheng at intel.com>
-Subject: Re: [Devel] [PATCH] handle Linux systems without /dev/mem
-Date: Tue, 16 Jun 2015 00:41:42 +0000
-Message-ID: <1AE640813FDE7649BE1B193DEA596E8802731E27@SHSMSX101.ccr.corp.intel.com>
-In-Reply-To: 557F456F.5060904@redhat.com
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] ACPICA version 20150616 released
+Date: Tue, 16 Jun 2015 19:11:22 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D300481@ORSMSX112.amr.corp.intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4093123570802674581==
+--===============6379107774444657283==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+16 June 2015. Summary of changes for version 20150616:
 
-> From: Al Stone [mailto:ahs3(a)redhat.com]
-> Sent: Tuesday, June 16, 2015 5:37 AM
-> =
+This release is available at https://acpica.org/downloads
 
-> On 06/14/2015 06:39 PM, Zheng, Lv wrote:
-> > Hi,
-> >
-> >> From: Al Stone [mailto:ahs3(a)redhat.com]
-> >> Sent: Saturday, June 13, 2015 6:00 AM
-> >>
-> >> On 06/09/2015 12:16 AM, Zheng, Lv wrote:
-> >>> Hi,
-> >>>
-> >>> The patch is wrong.
-> >>> If we want to dump tables without accessing /dev/mem, we have acpidum=
-p -c.
-> >>> The only problem here is:
-> >>> There is a bug that even with -c specified, acpidump cannot work with=
-out accessing /dev/mem.
-> >>> So we shouldn't introduce a new portable acpidump OSL but should fix =
-the very problem.
-> >>>
-> >>> We've noticed the similar issue in handling this kernel bug:
-> >>> https://bugzilla.kernel.org/show_bug.cgi?id=3D87971
-> >>> The fix for this issue can be found here:
-> >>> https://github.com/acpica/acpica/pull/77
-> >>>
-> >>> Thanks and best regards
-> >>> -Lv
-> >>
-> >> The problem I have with this fix for the issue is that this command:
-> >>
-> >> 	# acpidump -n APIC
-> >>
-> >> will work on x86 but fail on arm64.  Getting the -c option to work pro=
-perly
-> >> is a good thing, and should be done regardless.  But, this means we ha=
-ve to
-> >> use "acpidump -c -n APIC" on systems without /dev/mem.  For my part:
-> >>
-> >>    (a) these are not really customized tables, but the standard ACPI t=
-ables
-> >>        used to boot the system, so using -c is a little confusing, and
-> >>
-> >>    (b) we now have to use different commands on different architecture=
-s to
-> >>        get the same result.
-> >>
-> >> My preference would be that the same command has the same behavior eve=
-rywhere,
-> >> which is why I patched it the way I did.
-> >
-> > This is not our preference, though...
-> > I've been in the trouble of being easily confused by the bug reporters.
-> > And I cannot distinguish if the table has been customized or root cause=
- the bugs if the reporter did what I asked for but hid what he
-> silently did.
-> > If we cannot distinguish the BIOS provided tables and the user customiz=
-ed tables from users' output, we'll likely lose the capability of
-> taking evidence...
-> =
+1) ACPICA kernel-resident subsystem:
 
-> Understood; I was in technical support roles for many years.
-> =
+Across the entire ACPICA source code base, the various macros for the C lib=
+rary functions (such as ACPI_STRLEN, etc.) have been removed and replaced b=
+y the standard C library names (strlen, etc.) The original purpose for thes=
+e macros is no longer applicable. This simplification reduces the number of=
+ macros used in the ACPICA source code significantly, improving readability=
+ and maintainability.
 
-> Perhaps I am misunderstanding this use of the word "customized."  On ARM,=
- the
-> only way I can be sure to get the tables supplied by UEFI is to use the U=
-EFI
-> shell and dump them.  Once the OS has booted, the tables in /sys/firmware=
-/acpi
-> are what the system is currently using, and those are the ones I'm intere=
-sted
-> in using for debugging when something breaks.  So, unless I have replaced=
- the
-> DSDT in the initrd, or added SSDTs, /sys/firmware/acpi will be exactly th=
-e same
-> as what UEFI provided.  Even then, those are the tables I want to see if =
-there
-> is a problem since those are the ones being used.  Is that what "customiz=
-ed"
-> means, in this case: the actual run-time tables and not the tables provid=
-ed by
-> UEFI?
+Implemented support for a new ACPI table, the OSDT. This table, the "overri=
+de" SDT, can be loaded directly by the host OS at boot time. It enables the=
+ replacement of existing namespace objects that were installed via the DSDT=
+ and/or SSDTs. The primary purpose for this is to replace buggy or incorrec=
+t ASL/AML code obtained via the BIOS. The OSDT is slated for inclusion in a=
+ future version of the ACPI Specification. Lv Zheng/Bob Moore.
 
-Yes, so the "customized" tables should be dumped by default as you've sugge=
-sted.
+Added support for systems with (improperly) two FACS tables -- a "32-bit" t=
+able (via FADT 32-bit legacy field) and a "64-bit" table (via the 64-bit X =
+field). This change will support both automatically. There continues to be =
+systems found with this issue. This support requires a change to the AcpiSe=
+tFirmwareWakingVector interface. Also, a public global variable has been ad=
+ded to allow the host to select which FACS is desired (AcpiGbl_Use32BitFacs=
+Addresses). See the ACPICA reference for more details Lv Zheng.
 
-> =
+Added a new feature to allow for systems that do not contain an FACS. Altho=
+ugh this is already supported on hardware-reduced platforms, the feature ha=
+s been extended for all platforms. The reasoning is that we do not want to =
+abort the entire ACPICA initialization just because the system is seriously=
+ buggy and has no FACS.
 
-> >> This happens to be very useful on arm64 where /dev/mem is not reliable=
-, but it
-> >> could also be usable on any system that does not want to expose /dev/m=
-em for
-> >> some reason.  I think the advantage of the patch sent is that the user=
- command
-> >> stays the same no matter what the situation.
-> >
-> > My suggestion would be to support this via kernel.
-> > Let the kernel exposes 2 kind of tables (customized or not customized) =
-into the /sys/firmware/acpi/tables.
-> > Which can meet both of the requirements.
-> =
+Fixed a problem where the GUID strings for NFIT tables (in acuuid.h) were n=
+ot correctly transcribed from the ACPI specification in ACPICA version 2015=
+0515.
 
-> Okay, this sort of answers my questions.  "Customized" is not the word I =
-would
-> have chosen for this -- I think I would have made it
-> /sys/firmware/acpi/tables/current (i.e., "customized") and
-> /sys/firmware/acpi/tables/boot (i.e.,
-> not "customized").  When I was thinking of tables as being customized, I =
-was
-> thinking of new versions of all kinds of tables, not just the DSDT and SS=
-DTs.
-> On ARM, going in and out of ACPI mode is just not allowed so there's real=
-ly no
-> opportunity to customize the tables much, other than adding SSDTs.
-> =
+Implemented support for the _CLS object in the AcpiGetObjectInfo external i=
+nterface.
 
-> Creating new sysfs entries in a kernel driver would be simple enough to d=
-o;
-> the issue would be getting it accepted.  On x86, there's no guarantee that
-> the BIOS tables and run-time tables are the same, so customized and not
-> customized may be very different, and these kernel changes would make sen=
-se.
-> On ARMv8, the boot and run-time tables will be essentially identical most=
- of
-> the time so it's not clear there's a lot of value in adding more stuff to
-> sysfs.  If I create this kernel code, though, it seems to me it would make
-> sense to change acpidump so it does not use /dev/mem for any architecture=
-, but
-> always uses sysfs on all architectures -- do you agree?
+Updated the definitions of the TCPA and TPM2 ACPI tables to the more recent=
+ TCG ACPI Specification, December 14, 2014. Table disassembler and compiler=
+ also updated. Note: The TCPA "server" table is not supported by the disass=
+embler/table-compiler at this time.
 
-IMO, we could do this better.
-Users won't want to see the original BIOS tables.
-So the BIOS tables needn't appear in the userspace unless required, thus we=
- could export them via debugfs.
+ACPI 6.0: Added definitions for the new GIC version field in the MADT.
 
-Or even better:
-We could provide some ioctl or sysctl from kernel to allow acpidump to obta=
-in what it want, for example:
-1. Find RSDP
-2. Validate and dump a table from any address (we need to support Load/Load=
-Table opcodes)
+Example Code and Data Size: These are the sizes for the OS-independent acpi=
+ca.lib produced by the Microsoft Visual C++ 9.0 32-bit compiler. The debug =
+version of the code includes the debug output trace mechanism and has a muc=
+h larger code and data size.
 
-> =
+  Current Release:
+    Non-Debug Version: 100.6K Code, 27.6K Data, 128.2K Total
+    Debug Version:     196.2K Code, 81.0K Data, 277.2K Total
+  Previous Release:
+    Non-Debug Version:  99.9K Code, 27.5K Data, 127.4K Total
+    Debug Version:     195.2K Code, 80.8K Data, 276.0K Total
 
-> I'll take a look at doing this on the kernel side...
 
-Thanks.
+2) iASL Compiler/Disassembler and Tools:
 
-Best regards
--Lv
+Disassembler: Fixed a problem with the new symbolic operator disassembler w=
+here incorrect ASL code could be emitted in some cases for the "non-commuta=
+tive" operators -- Subtract, Divide, Modulo, ShiftLeft, and ShiftRight. The=
+ actual problem cases seem to be rather unusual in common ASL code, however=
+. David Box.
 
-> =
+Modified the linux version of acpidump to obtain ACPI tables from not just =
+/dev/mem (which may not exist) and /sys/firmware/acpi/tables. Lv Zheng.
 
-> > Thanks and best regards
-> > -Lv
-> >
-> >>
-> >>>> From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of Al Stone
-> >>>> Sent: Thursday, June 04, 2015 8:43 AM
-> >>>>
-> >>>> On arm64 systems in particular, the use of /dev/mem is not recommend=
-ed.  The
-> >>>> contents may or may not be valid depending on the memory map being u=
-sed, since
-> >>>> they are not standardized.
-> >>>>
-> >>>> The attached patch will cause arm64 (aka ARMv8 or AArch64) Linux sys=
-tems to
-> >>>> use a new file called source/os_specific/service_layers/oslinuxtbl_n=
-odevmem.c
-> >>>> (a subset of the oslinuxtbl.c code) that allows acpidump to read all=
- ACPI
-> >>>> tables from /sys/firmware/acpi instead of from /dev/mem.  This will =
-help ensure
-> >>>> that the tables retrieved are the ones actually being used and that =
-their
-> >>>> content is correct.
-> >>>>
-> >>>> This patch applies on top of the 20150515 version, and I have includ=
-ed it in
-> >>>> the 20150515-2 versions of the Fedora and Debian packages.  I've tri=
-ed the
-> >>>> resulting acpidump on x86, x86_64 and arm64 systems and it seems to =
-work well.
-> >>>>
-> >>>> Signed-off-by: Al Stone <ahs3(a)redhat.com>
-> >>>>
-> >>>> --
-> >>>> ciao,
-> >>>> al
-> >>>> -----------------------------------
-> >>>> Al Stone
-> >>>> Software Engineer
-> >>>> Red Hat, Inc.
-> >>>> ahs3(a)redhat.com
-> >>>> -----------------------------------
-> >>
-> >>
-> >> --
-> >> ciao,
-> >> al
-> >> -----------------------------------
-> >> Al Stone
-> >> Software Engineer
-> >> Red Hat, Inc.
-> >> ahs3(a)redhat.com
-> >> -----------------------------------
-> =
+iASL: Fixed a problem where the user preprocessor output file (.i) containe=
+d extra data that was not expected. The compiler was using this file as a t=
+emporary file and passed through #line directives in order to keep compiler=
+ error messages in sync with the input file and line number across multiple=
+ include files. The (.i) is no longer a temporary file as the compiler uses=
+ a new, different file for the original purpose.
 
-> =
+iASL: Fixed a problem where comments within the original ASL source code fi=
+le were not passed through to the preprocessor output file, nor any listing=
+ files.
 
-> --
-> ciao,
-> al
-> -----------------------------------
-> Al Stone
-> Software Engineer
-> Red Hat, Inc.
-> ahs3(a)redhat.com
-> -----------------------------------
+iASL: Fixed some issues for the handling of the "#include" preprocessor dir=
+ective and the similar (but not the same) "Include" ASL operator.
 
---===============4093123570802674581==--
+iASL: Add support for the new OSDT in both the disassembler and compiler.
+
+iASL: Fixed a problem with the constant folding support where a Buffer obje=
+ct could be incorrectly generated (incorrectly formed) during a conversion =
+to a Store() operator.
+
+AcpiHelp: Updated for new NFIT GUIDs, "External" AML opcode, and new descri=
+ption text for the _REV predefined name. _REV now permanently returns 2, as=
+ per the ACPI 6.0 specification.
+
+Debugger: Enhanced the output of the Debug ASL object for references produc=
+ed by the Index operator. For Buffers and strings, only output the actual b=
+yte pointed to by the index. For packages, only print the single package el=
+ement decoded by the index. Previously, the entire buffer/string/package wa=
+s emitted.
+
+iASL/Table-compiler: Fixed a regression where the "generic" data types were=
+ no longer recognized, causing errors.
+
+
+
+--===============6379107774444657283==--
 
