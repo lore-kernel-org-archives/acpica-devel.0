@@ -1,95 +1,71 @@
-Content-Type: multipart/mixed; boundary="===============2681355874989892173=="
+Content-Type: multipart/mixed; boundary="===============9087107084973109578=="
 MIME-Version: 1.0
 From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] ACPICA version 20150619 released
-Date: Fri, 19 Jun 2015 15:08:21 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D3038C9@ORSMSX112.amr.corp.intel.com>
-In-Reply-To: 5584277A.7030509@redhat.com
+Subject: Re: [Devel] [PATCH] ACPICA: Delete an unnecessary check before the
+ function call "acpi_ds_delete_walk_state"
+Date: Wed, 24 Jun 2015 15:16:25 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D306826@ORSMSX112.amr.corp.intel.com>
+In-Reply-To: 558A9864.2020608@users.sourceforge.net
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2681355874989892173==
+--===============9087107084973109578==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
+Got it, thanks.
 
 
 > -----Original Message-----
-> From: Dean Nelson [mailto:dnelson(a)redhat.com]
-> Sent: Friday, June 19, 2015 7:30 AM
-> To: Moore, Robert
-> Cc: acpica.org list
-> Subject: Re: [Devel] ACPICA version 20150619 released
+> From: SF Markus Elfring [mailto:elfring(a)users.sourceforge.net]
+> Sent: Wednesday, June 24, 2015 4:46 AM
+> To: Len Brown; Zheng, Lv; Wysocki, Rafael J; Moore, Robert; linux-
+> acpi(a)vger.kernel.org; devel(a)acpica.org
+> Cc: LKML; kernel-janitors(a)vger.kernel.org; Julia Lawall
+> Subject: [PATCH] ACPICA: Delete an unnecessary check before the function
+> call "acpi_ds_delete_walk_state"
 > =
 
-> On 06/19/2015 09:15 AM, Moore, Robert wrote:
-> > 19 June 2015. Summary of changes for version 20150619:
-> >
-> > This release is available at https://acpica.org/downloads
+> From: Markus Elfring <elfring(a)users.sourceforge.net>
+> Date: Wed, 24 Jun 2015 13:33:47 +0200
 > =
 
-> Please excuse my ignorance, but why are the download files named
-> *.tar_0.gz ? Why the '_0' ?
+> The acpi_ds_delete_walk_state() function tests whether its argument is
+> NULL and then returns immediately. Thus the test around the call is not
+> needed.
 > =
 
-
-Yes, the website software did this. I'm working on fixing it.
-
-
-
-> Also I noticed that the git-repo with the latest commit being...
+> This issue was detected by using the Coccinelle software.
 > =
 
->    commit d7a940bb308d001b5d2b196174fee36c7daa61d6
->    Author:     Robert Moore <Robert.Moore(a)intel.com>
->    AuthorDate: Thu Jun 18 08:13:39 2015 -0700
->    Commit:     Robert Moore <Robert.Moore(a)intel.com>
->    CommitDate: Thu Jun 18 08:13:39 2015 -0700
->        Update version to 20150619.
+> Signed-off-by: Markus Elfring <elfring(a)users.sourceforge.net>
+> ---
+>  drivers/acpi/acpica/dsmethod.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
 > =
 
-> differs from the two source code tarballs with regard to
-> source/compiler/asllookup.c by the git-diff file that I've attached. But I
-> don't see that patch mentioned in the git-repo.
-> So where did those changes come from? And do they really belong in the
-> tarballs? And if yes, why aren't they in the git-repo?
+> diff --git a/drivers/acpi/acpica/dsmethod.c
+> b/drivers/acpi/acpica/dsmethod.c index 85bb951..188b254 100644
+> --- a/drivers/acpi/acpica/dsmethod.c
+> +++ b/drivers/acpi/acpica/dsmethod.c
+> @@ -574,10 +574,7 @@ cleanup:
+>  	/* On error, we must terminate the method properly */
 > =
 
-> Thanks,
-> Dean
->
-
-Yes, this is in fact a problem, thanks for reporting it.
-
-Fix for both problems is underway.
-
-
-
+>  	acpi_ds_terminate_control_method(obj_desc, next_walk_state);
+> -	if (next_walk_state) {
+> -		acpi_ds_delete_walk_state(next_walk_state);
+> -	}
+> -
+> +	acpi_ds_delete_walk_state(next_walk_state);
+>  	return_ACPI_STATUS(status);
+>  }
 > =
 
-> >
-> > Two regressions in version 20150616 have been addressed:
-> >
-> > Fixes some problems/issues with the C library macro removal
-> > (ACPI_STRLEN, etc.) This update changes ACPICA to only use the
-> > standard headers for functions, or
-> > (optionally) the local prototypes for the local versions of the C
-> library functions.
-> > Across the source code, this required some additional casts for some
-> > Clib invocations for portability. Moved all local prototypes to a new
-> > file, acclib.h
-> >
-> > Fixes several problems with recent changes to the handling of the FACS
-> > table that could cause some systems not to boot.
-> >
-> >
-> > _______________________________________________
-> > Devel mailing list
-> > Devel(a)acpica.org
-> > https://lists.acpica.org/mailman/listinfo/devel
-> >
+> --
+> 2.4.4
 
 
---===============2681355874989892173==--
+--===============9087107084973109578==--
 
