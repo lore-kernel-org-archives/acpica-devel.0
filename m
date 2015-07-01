@@ -1,71 +1,54 @@
-Content-Type: multipart/mixed; boundary="===============9087107084973109578=="
+Content-Type: multipart/mixed; boundary="===============6783854723820589734=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] [PATCH] ACPICA: Delete an unnecessary check before the
- function call "acpi_ds_delete_walk_state"
-Date: Wed, 24 Jun 2015 15:16:25 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D306826@ORSMSX112.amr.corp.intel.com>
-In-Reply-To: 558A9864.2020608@users.sourceforge.net
+From: Colin King <colin.king at canonical.com>
+Subject: [Devel] [PATCH] AcpiXtract: fix warning on int printed with %u
+ specifier
+Date: Wed, 01 Jul 2015 08:01:41 +0100
+Message-ID: <1435734101-5185-1-git-send-email-colin.king@canonical.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============9087107084973109578==
+--===============6783854723820589734==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Got it, thanks.
+From: Colin Ian King <colin.king(a)canonical.com>
+
+A signed integer is being printed using %u.  Since the
+integer is never going to be negative, make it unsigned
+and this also cleans up the warning found by static analysis:
+
+[source/tools/acpixtract/acpixtract.c:819]: (warning) %u in
+  format string (no. 1) requires 'unsigned int' but the argument
+  type is 'int'.
+
+Signed-off-by: Colin Ian King <colin.king(a)canonical.com>
+---
+ source/tools/acpixtract/acpixtract.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/source/tools/acpixtract/acpixtract.c b/source/tools/acpixtract=
+/acpixtract.c
+index fa2cb5a..7e961ff 100644
+--- a/source/tools/acpixtract/acpixtract.c
++++ b/source/tools/acpixtract/acpixtract.c
+@@ -738,7 +738,7 @@ AxListTables (
+     FILE                    *InputFile;
+     size_t                  HeaderSize;
+     unsigned char           Header[48];
+-    int                     TableCount =3D 0;
++    unsigned int            TableCount =3D 0;
+     ACPI_TABLE_HEADER       *TableHeader =3D (ACPI_TABLE_HEADER *) (void *=
+) Header;
+ =
+
+ =
+
+-- =
+
+2.1.4
 
 
-> -----Original Message-----
-> From: SF Markus Elfring [mailto:elfring(a)users.sourceforge.net]
-> Sent: Wednesday, June 24, 2015 4:46 AM
-> To: Len Brown; Zheng, Lv; Wysocki, Rafael J; Moore, Robert; linux-
-> acpi(a)vger.kernel.org; devel(a)acpica.org
-> Cc: LKML; kernel-janitors(a)vger.kernel.org; Julia Lawall
-> Subject: [PATCH] ACPICA: Delete an unnecessary check before the function
-> call "acpi_ds_delete_walk_state"
-> =
-
-> From: Markus Elfring <elfring(a)users.sourceforge.net>
-> Date: Wed, 24 Jun 2015 13:33:47 +0200
-> =
-
-> The acpi_ds_delete_walk_state() function tests whether its argument is
-> NULL and then returns immediately. Thus the test around the call is not
-> needed.
-> =
-
-> This issue was detected by using the Coccinelle software.
-> =
-
-> Signed-off-by: Markus Elfring <elfring(a)users.sourceforge.net>
-> ---
->  drivers/acpi/acpica/dsmethod.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
-> =
-
-> diff --git a/drivers/acpi/acpica/dsmethod.c
-> b/drivers/acpi/acpica/dsmethod.c index 85bb951..188b254 100644
-> --- a/drivers/acpi/acpica/dsmethod.c
-> +++ b/drivers/acpi/acpica/dsmethod.c
-> @@ -574,10 +574,7 @@ cleanup:
->  	/* On error, we must terminate the method properly */
-> =
-
->  	acpi_ds_terminate_control_method(obj_desc, next_walk_state);
-> -	if (next_walk_state) {
-> -		acpi_ds_delete_walk_state(next_walk_state);
-> -	}
-> -
-> +	acpi_ds_delete_walk_state(next_walk_state);
->  	return_ACPI_STATUS(status);
->  }
-> =
-
-> --
-> 2.4.4
-
-
---===============9087107084973109578==--
+--===============6783854723820589734==--
 
