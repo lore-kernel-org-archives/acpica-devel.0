@@ -1,54 +1,66 @@
-Content-Type: multipart/mixed; boundary="===============6783854723820589734=="
+Content-Type: multipart/mixed; boundary="===============5532247489766802408=="
 MIME-Version: 1.0
-From: Colin King <colin.king at canonical.com>
-Subject: [Devel] [PATCH] AcpiXtract: fix warning on int printed with %u
- specifier
-Date: Wed, 01 Jul 2015 08:01:41 +0100
-Message-ID: <1435734101-5185-1-git-send-email-colin.king@canonical.com>
+From: Moore, Robert <robert.moore at intel.com>
+Subject: Re: [Devel] [PATCH] ACPI, Repair of outdated variable
+Date: Thu, 02 Jul 2015 03:35:39 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D3095DC@ORSMSX112.amr.corp.intel.com>
+In-Reply-To: 1435806344-4060-1-git-send-email-yanxiaofeng@inspur.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6783854723820589734==
+--===============5532247489766802408==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-From: Colin Ian King <colin.king(a)canonical.com>
+This module is in the process of being deprecated; it is not in the linux k=
+ernel:
 
-A signed integer is being printed using %u.  Since the
-integer is never going to be negative, make it unsigned
-and this also cleans up the warning found by static analysis:
-
-[source/tools/acpixtract/acpixtract.c:819]: (warning) %u in
-  format string (no. 1) requires 'unsigned int' but the argument
-  type is 'int'.
-
-Signed-off-by: Colin Ian King <colin.king(a)canonical.com>
----
- source/tools/acpixtract/acpixtract.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/source/tools/acpixtract/acpixtract.c b/source/tools/acpixtract=
-/acpixtract.c
-index fa2cb5a..7e961ff 100644
---- a/source/tools/acpixtract/acpixtract.c
-+++ b/source/tools/acpixtract/acpixtract.c
-@@ -738,7 +738,7 @@ AxListTables (
-     FILE                    *InputFile;
-     size_t                  HeaderSize;
-     unsigned char           Header[48];
--    int                     TableCount =3D 0;
-+    unsigned int            TableCount =3D 0;
-     ACPI_TABLE_HEADER       *TableHeader =3D (ACPI_TABLE_HEADER *) (void *=
-) Header;
- =
-
- =
-
--- =
-
-2.1.4
+/* TBD: This entire module is apparently obsolete and should be removed */
 
 
---===============6783854723820589734==--
+
+> -----Original Message-----
+> From: xiaofeng_yan2006(a)126.com [mailto:xiaofeng_yan2006(a)126.com] On B=
+ehalf
+> Of xiaofeng.yan
+> Sent: Wednesday, July 01, 2015 8:06 PM
+> To: Moore, Robert; Zheng, Lv; Wysocki, Rafael J; lenb(a)kernel.org
+> Cc: linux-acpi(a)vger.kernel.org; devel(a)acpica.org; linux-
+> kernel(a)vger.kernel.org; xiaofeng.yan
+> Subject: [PATCH] ACPI, Repair of outdated variable
+> =
+
+> variable "value" in struct acpi_pnp_device_id has been changed to
+> "string".
+> =
+
+> Signed-off-by: xiaofeng.yan <yanxiaofeng(a)inspur.com>
+> ---
+>  drivers/acpi/acpica/nsdumpdv.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> =
+
+> diff --git a/drivers/acpi/acpica/nsdumpdv.c
+> b/drivers/acpi/acpica/nsdumpdv.c index 7dc367e..1af1af7 100644
+> --- a/drivers/acpi/acpica/nsdumpdv.c
+> +++ b/drivers/acpi/acpica/nsdumpdv.c
+> @@ -89,7 +89,7 @@ acpi_ns_dump_one_device(acpi_handle obj_handle,
+> =
+
+>  		ACPI_DEBUG_PRINT_RAW((ACPI_DB_TABLES,
+>  				      "    HID: %s, ADR: %8.8X%8.8X, Status:
+> %X\n",
+> -				      info->hardware_id.value,
+> +				      info->hardware_id.string,
+>  				      ACPI_FORMAT_UINT64(info->address),
+>  				      info->current_status));
+>  		ACPI_FREE(info);
+> --
+> 1.9.1
+> =
+
+
+
+--===============5532247489766802408==--
 
