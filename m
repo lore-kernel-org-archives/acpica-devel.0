@@ -1,21 +1,19 @@
-Content-Type: multipart/mixed; boundary="===============8411652912413014219=="
+Content-Type: multipart/mixed; boundary="===============8750880337669678693=="
 MIME-Version: 1.0
 From: Moore, Robert <robert.moore at intel.com>
 Subject: Re: [Devel] Can't build IASL on today's ACPICA tip
-Date: Wed, 15 Jul 2015 18:11:15 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D30C427@ORSMSX112.amr.corp.intel.com>
+Date: Wed, 15 Jul 2015 19:41:47 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D30C709@ORSMSX112.amr.corp.intel.com>
 In-Reply-To: 55A69F28.2010501@canonical.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8411652912413014219==
+--===============8750880337669678693==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Yes, dmobject needs to be removed. We already have a fix.
-Thanks,
-Bob
+Fixed.
 
 
 > -----Original Message-----
@@ -62,5 +60,5 @@ ng
 > Devel(a)acpica.org
 > https://lists.acpica.org/mailman/listinfo/devel
 
---===============8411652912413014219==--
+--===============8750880337669678693==--
 
