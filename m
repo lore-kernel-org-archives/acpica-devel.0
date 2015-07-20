@@ -1,99 +1,102 @@
-Content-Type: multipart/mixed; boundary="===============0919988619070276607=="
+Content-Type: multipart/mixed; boundary="===============4262424051754176641=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] ACPICA version 20150717 released
-Date: Fri, 17 Jul 2015 16:46:14 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D30D327@ORSMSX112.amr.corp.intel.com>
+From: Zheng, Lv <lv.zheng at intel.com>
+Subject: Re: [Devel] [PATCH] ACPI: Fix indent for variable declaration
+Date: Mon, 20 Jul 2015 00:29:09 +0000
+Message-ID: <1AE640813FDE7649BE1B193DEA596E8802738299@SHSMSX101.ccr.corp.intel.com>
+In-Reply-To: 12c0c6.1a666.14e9582064a.Coremail.yizhouzhou@ict.ac.cn
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0919988619070276607==
+--===============4262424051754176641==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-17 July 2015. Summary of changes for version 20150717:
+Hi,
 
-This release is available at https://acpica.org/downloads
+There is a process to release ACPICA code to the Linux kernel.
 
-1) ACPICA kernel-resident subsystem:
+ACPICA code -> Linuxized Linux code
+We call the differences between the linuxized Linux code and current Linux =
+ACPICA code as divergences.
 
-Improved the partitioning between the Debugger and Disassembler components.=
- This allows the Debugger to be used standalone within kernel code without =
-the Disassembler (which is used for single stepping also). This renames and=
- moves one file, dmobject.c to dbobject.c. Lv Zheng.
+Such indent issues actually doesn't affect this process much and we only ge=
+nerate indent fixing patches that can reduce the divergences.
+So we do this in another way:
+1. During ACPICA release process, if conflicts are found that will cause ne=
+w patches to be maintained with human intervention, a pre-requisite indent =
+fixing patch will be included by the release.
+2. After all ACPICA divergences are reduced, we will run indent to generate=
+ a big patch to reduce all indent issues.
+3. We will continue to improve the release tools to generate more purified =
+"Linuxized linux code", this is not easy as "indent" is not controlled by t=
+his project.
+Otherwise the indentation issues there are not fixed in order not to genera=
+te such small fixes to mess up real stable materials.
 
-Debugger: Implemented a new command to trace the execution of control metho=
-ds (Trace). This is especially useful for the in-kernel version of the debu=
-gger when file I/O may not be available for method trace output. See the AC=
-PICA reference for more information. Lv Zheng.
+Thanks and best regards
+-Lv
 
-Moved all C library prototypes (used for the local versions of these functi=
-ons when requested) to a new header, acclib.h
+> -----Original Message-----
+> From: Zhouyi Zhou [mailto:yizhouzhou(a)ict.ac.cn]
+> Sent: Thursday, July 16, 2015 2:17 PM
+> To: Moore, Robert; Zheng, Lv
+> Cc: devel(a)acpica.org; Wysocki, Rafael J
+> Subject: Fw: [PATCH] ACPI: Fix indent for variable declaration
+> =
 
-Cleaned up the use of non-ANSI C library functions. These functions are imp=
-lemented locally in ACPICA. Moved all such functions to a common source fil=
-e, utnonansi.c
+> -----Original Messages-----
+> From: "Zhouyi Zhou" <yizhouzhou(a)ict.ac.cn>
+> Sent Time: Wednesday, July 15, 2015
+> To: lenb(a)kernel.org, linux-acpi(a)vger.kernel.org, linux-kernel(a)vger.=
+kernel.org
+> Cc:
+> Subject: [PATCH] ACPI: Fix indent for variable declaration
+> =
 
-Debugger: Fixed a problem with the "!!" command (get last command executed)=
- where the debugger could enter an infinite loop and eventually crash.
+> In function acpi_ns_one_complete_parse, the variable declaration
+> aml_length is not correctly indented.
+> =
 
-Removed the use of local macros that were used for some of the standard C l=
-ibrary functions to automatically cast input parameters. This mostly affect=
-ed the is* functions where the input parameter is defined to be an int. Thi=
-s required a few modifications to the main ACPICA source code to provide ca=
-sting for these functions and eliminate possible compiler warnings for thes=
-e parameters.
+> Signed-off-by: Zhouyi Zhou <yizhouzhou(a)ict.ac.cn>
+> ---
+>  drivers/acpi/acpica/nsparse.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> =
 
-Across the source code, added additional status/error checking to resolve i=
-ssues discovered by static source code analysis tools such as Coverity.
+> diff --git a/drivers/acpi/acpica/nsparse.c b/drivers/acpi/acpica/nsparse.c
+> index 57a4cfe..802afdc 100644
+> --- a/drivers/acpi/acpica/nsparse.c
+> +++ b/drivers/acpi/acpica/nsparse.c
+> @@ -70,7 +70,7 @@ acpi_ns_one_complete_parse(u32 pass_number,
+>  {
+>         union acpi_parse_object *parse_root;
+>         acpi_status status;
+> -       u32 aml_length;
+> +       u32 aml_length;
+>         u8 *aml_start;
+>         struct acpi_walk_state *walk_state;
+>         struct acpi_table_header *table;
+> --
+> 2.4.5
+> =
 
-Example Code and Data Size: These are the sizes for the OS-independent acpi=
-ca.lib produced by the Microsoft Visual C++ 9.0 32-bit compiler. The debug =
-version of the code includes the debug output trace mechanism and has a muc=
-h larger code and data size.
+> =
 
-  Current Release:
-    Non-Debug Version: 100.9K Code, 24.5K Data, 125.4K Total
-    Debug Version:     197.8K Code, 81.5K Data, 279.3K Total
-  Previous Release:
-    Non-Debug Version: 100.6K Code, 27.6K Data, 128.2K Total
-    Debug Version:     196.2K Code, 81.0K Data, 277.2K Total
+> =
 
+> =
 
-2) iASL Compiler/Disassembler and Tools:
+> =
 
-iASL: Fixed a regression where the device map file feature no longer worked=
- properly when used in conjunction with the disassembler. It only worked pr=
-operly with the compiler itself.
+> =
 
-iASL: Implemented a new warning for method LocalX variables that are set bu=
-t never used (similar to a C compiler such as gcc). This also applies to Ar=
-gX variables that are not defined by the parent method, and are instead (le=
-gally) used as local variables.
+> =
 
-iASL/Preprocessor: Finished the pass-through of line numbers from the prepr=
-ocessor to the compiler. This ensures that compiler errors/warnings have th=
-e correct original line numbers and filenames, regardless of any #include f=
-iles.
-
-iASL/Preprocessor: Fixed a couple of issues with comment handling and the p=
-ass-through of comments to the preprocessor output file (which becomes the =
-compiler input file). Also fixed a problem with // comments that appear aft=
-er a math expression.
-
-iASL: Added support for the TCPA server table to the table compiler and tem=
-plate generator. (The client table was already previously supported)
-
-iASL/Preprocessor: Added a permanent #define of the symbol "__IASL__" to id=
-entify the iASL compiler.
-
-Cleaned up the use of the macros NEGATIVE and POSITIVE which were defined m=
-ultiple times. The new names are ACPI_SIGN_NEGATIVE and ACPI_SIGN_POSITIVE.
-
-AcpiHelp: Update to expand help messages for the iASL preprocessor directiv=
-es.
+> =
 
 
---===============0919988619070276607==--
+
+--===============4262424051754176641==--
 
