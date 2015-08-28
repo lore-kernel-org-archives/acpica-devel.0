@@ -1,72 +1,150 @@
-Content-Type: multipart/mixed; boundary="===============3635659989097660007=="
+Content-Type: multipart/mixed; boundary="===============6273852751272694745=="
 MIME-Version: 1.0
 From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] ACPICA version 20150818 released
-Date: Wed, 26 Aug 2015 02:09:05 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D3405F5@ORSMSX112.amr.corp.intel.com>
-In-Reply-To: 55DCFCCE.8080705@FreeBSD.org
+Subject: Re: [Devel] [PATCH]: acpica/nfit: Rename not-armed bit definition
+Date: Fri, 28 Aug 2015 15:44:17 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D3420EF@ORSMSX112.amr.corp.intel.com>
+In-Reply-To: 1440772817-13562-1-git-send-email-toshi.kani@hp.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3635659989097660007==
+--===============6273852751272694745==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Ok, thanks for reporting it. I'm not quite sure how it happened, tho.
++#define ACPI_NFIT_MEM_NOT_ARMED         (1<<3)	/* 03: Memory Device observ=
+ed to be not armed */
+
+I'll add this to ACPICA immediately, for the next release in mid-september.
 
 
 > -----Original Message-----
-> From: Jung-uk Kim [mailto:jkim(a)FreeBSD.org]
-> Sent: Tuesday, August 25, 2015 4:40 PM
-> To: Moore, Robert; acpica.org list
-> Subject: Re: [Devel] ACPICA version 20150818 released
+> From: Toshi Kani [mailto:toshi.kani(a)hp.com]
+> Sent: Friday, August 28, 2015 7:40 AM
+> To: Williams, Dan J; Wysocki, Rafael J; Moore, Robert
+> Cc: devel(a)acpica.org; linux-nvdimm(a)lists.01.org; linux-
+> acpi(a)vger.kernel.org; linux-kernel(a)vger.kernel.org; Toshi Kani
+> Subject: [PATCH]: acpica/nfit: Rename not-armed bit definition
 > =
 
-> -----BEGIN PGP SIGNED MESSAGE-----
-> Hash: SHA256
+> ACPI 6.0 NFIT Memory Device State Flags in Table 5-129 defines bit 3 as
+> follows.
 > =
 
-> On 08/25/2015 19:30, Moore, Robert wrote:
-> > Yes, I see the file.
-> >
-> > You don't actually need AcpiNames utility do you? It is more of an
-> > example utility, how to use smaller parts of ACPICA.
+>   Bit [3] set to 1 to indicate that the Memory Device is observed
+>   to be not armed prior to OSPM hand off. A Memory Device is
+>   considered armed if it is able to accept persistent writes.
 > =
 
-> No, I don't need it.  I just don't like to see broken stuff. ;-)
+> This bit is currently defined as ACPI_NFIT_MEM_ARMED, which can be
+> confusing as if the Memory Device is armed when this bit is set.
 > =
 
-> Jung-uk Kim
+> Change the name to ACPI_NFIT_MEM_NOT_ARMED per the spec.
 > =
 
-> >> -----Original Message----- From: Jung-uk Kim
-> >> [mailto:jkim(a)FreeBSD.org] Sent: Tuesday, August 25, 2015 2:01 PM
-> >> To: Moore, Robert; acpica.org list Subject: Re: [Devel] ACPICA
-> >> version 20150818 released
-> >>
-> > On 08/25/2015 16:50, Moore, Robert wrote:
-> >>>>> Unfortunately, AcpiNames does not build because
-> >>>>> source/tools/acpinames/acpinames.h is wrongly included as
-> >>>>> AcpiNames.h in the release tarballs.
-> >>>>
-> >>>> Is this something new?
-> >
-> > Yes, 20150717 did not have this problem.
-> >
-> > Jung-uk Kim
-> -----BEGIN PGP SIGNATURE-----
-> Version: GnuPG v2
+> Signed-off-by: Toshi Kani <toshi.kani(a)hp.com>
+> Cc: Bob Moore <robert.moore(a)intel.com>
+> Cc: Dan Williams <dan.j.williams(a)intel.com>
+> Cc: Rafael J. Wysocki <rafael.j.wysocki(a)intel.com>
+> ---
+> This patch is based on the linus's tree.
+> ---
+>  drivers/acpi/nfit.c              |    6 +++---
+>  drivers/acpi/nfit.h              |    2 +-
+>  include/acpi/actbl1.h            |    2 +-
+>  tools/testing/nvdimm/test/nfit.c |    2 +-
+>  4 files changed, 6 insertions(+), 6 deletions(-)
 > =
 
-> iQEcBAEBCAAGBQJV3PzIAAoJEHyflib82/FG4AoH/jvpEIHHjOb5YbkZ6rbfhGnk
-> rlrsyGAj6tGCx7wDUsnTWSR5EmjPc/soRsUsK7GNfXHokFhUbRPQYkxr+fb+KPiQ
-> wo2ixaC4HZLhNelgjNE6bGUz00ZFM1JFvnmVDQXuI36wAdrb/9dDmQZrVYMoXA65
-> rURpy9buCeEYyqboHqePmOEPO9r3UTw7JlGoxHOd/UQM9TIfAArJWUSxpL2K1zvB
-> 95656mHUfZYyZL+3ZT4uZiDBcDDHB3XMCoXLmONMmgUZj1j3e+weq4DgHMjRu4cM
-> pEOmG81e65XnTZxUInSrnDWyLi6s0w32jl7sZiTUlABBLUE1KtXuYpk48Lc9rXg=3D
-> =3DWjY3
-> -----END PGP SIGNATURE-----
+> diff --git a/drivers/acpi/nfit.c b/drivers/acpi/nfit.c index
+> cf0fd96..4596e0a 100644
+> --- a/drivers/acpi/nfit.c
+> +++ b/drivers/acpi/nfit.c
+> @@ -705,7 +705,7 @@ static ssize_t flags_show(struct device *dev,
+>  		flags & ACPI_NFIT_MEM_SAVE_FAILED ? "save_fail " : "",
+>  		flags & ACPI_NFIT_MEM_RESTORE_FAILED ? "restore_fail " : "",
+>  		flags & ACPI_NFIT_MEM_FLUSH_FAILED ? "flush_fail " : "",
+> -		flags & ACPI_NFIT_MEM_ARMED ? "not_armed " : "",
+> +		flags & ACPI_NFIT_MEM_NOT_ARMED ? "not_armed " : "",
+>  		flags & ACPI_NFIT_MEM_HEALTH_OBSERVED ? "smart_event " : "");
+> }  static DEVICE_ATTR_RO(flags); @@ -830,7 +830,7 @@ static int
+> acpi_nfit_register_dimms(struct acpi_nfit_desc *acpi_desc)
+>  			flags |=3D NDD_ALIASING;
+> =
 
---===============3635659989097660007==--
+>  		mem_flags =3D __to_nfit_memdev(nfit_mem)->flags;
+> -		if (mem_flags & ACPI_NFIT_MEM_ARMED)
+> +		if (mem_flags & ACPI_NFIT_MEM_NOT_ARMED)
+>  			flags |=3D NDD_UNARMED;
+> =
+
+>  		rc =3D acpi_nfit_add_dimm(acpi_desc, nfit_mem, device_handle);
+> @@ -854,7 +854,7 @@ static int acpi_nfit_register_dimms(struct
+> acpi_nfit_desc *acpi_desc)
+>  		  mem_flags & ACPI_NFIT_MEM_SAVE_FAILED ? " save_fail" : "",
+>  		  mem_flags & ACPI_NFIT_MEM_RESTORE_FAILED ? "
+> restore_fail":"",
+>  		  mem_flags & ACPI_NFIT_MEM_FLUSH_FAILED ? " flush_fail" : "",
+> -		  mem_flags & ACPI_NFIT_MEM_ARMED ? " not_armed" : "");
+> +		  mem_flags & ACPI_NFIT_MEM_NOT_ARMED ? " not_armed" : "");
+> =
+
+>  	}
+> =
+
+> diff --git a/drivers/acpi/nfit.h b/drivers/acpi/nfit.h index
+> 79b6d83..90505e3 100644
+> --- a/drivers/acpi/nfit.h
+> +++ b/drivers/acpi/nfit.h
+> @@ -24,7 +24,7 @@
+>  #define UUID_NFIT_DIMM "4309ac30-0d11-11e4-9191-0800200c9a66"
+>  #define ACPI_NFIT_MEM_FAILED_MASK (ACPI_NFIT_MEM_SAVE_FAILED \
+>  		| ACPI_NFIT_MEM_RESTORE_FAILED | ACPI_NFIT_MEM_FLUSH_FAILED \
+> -		| ACPI_NFIT_MEM_ARMED)
+> +		| ACPI_NFIT_MEM_NOT_ARMED)
+> =
+
+>  enum nfit_uuids {
+>  	NFIT_SPA_VOLATILE,
+> diff --git a/include/acpi/actbl1.h b/include/acpi/actbl1.h index
+> fcd5709..238754e 100644
+> --- a/include/acpi/actbl1.h
+> +++ b/include/acpi/actbl1.h
+> @@ -1012,7 +1012,7 @@ struct acpi_nfit_memory_map {
+>  #define ACPI_NFIT_MEM_SAVE_FAILED       (1)	/* 00: Last SAVE to Memory
+> Device failed */
+>  #define ACPI_NFIT_MEM_RESTORE_FAILED    (1<<1)	/* 01: Last RESTORE from
+> Memory Device failed */
+>  #define ACPI_NFIT_MEM_FLUSH_FAILED      (1<<2)	/* 02: Platform flush
+> failed */
+> -#define ACPI_NFIT_MEM_ARMED             (1<<3)	/* 03: Memory Device
+> observed to be not armed */
+> +#define ACPI_NFIT_MEM_NOT_ARMED         (1<<3)	/* 03: Memory Device
+> observed to be not armed */
+>  #define ACPI_NFIT_MEM_HEALTH_OBSERVED   (1<<4)	/* 04: Memory Device
+> observed SMART/health events */
+>  #define ACPI_NFIT_MEM_HEALTH_ENABLED    (1<<5)	/* 05: SMART/health events
+> enabled */
+> =
+
+> diff --git a/tools/testing/nvdimm/test/nfit.c
+> b/tools/testing/nvdimm/test/nfit.c
+> index d0bdae4..ed271ba 100644
+> --- a/tools/testing/nvdimm/test/nfit.c
+> +++ b/tools/testing/nvdimm/test/nfit.c
+> @@ -917,7 +917,7 @@ static void nfit_test1_setup(struct nfit_test *t)
+>  	memdev->interleave_ways =3D 1;
+>  	memdev->flags =3D ACPI_NFIT_MEM_SAVE_FAILED |
+> ACPI_NFIT_MEM_RESTORE_FAILED
+>  		| ACPI_NFIT_MEM_FLUSH_FAILED | ACPI_NFIT_MEM_HEALTH_OBSERVED
+> -		| ACPI_NFIT_MEM_ARMED;
+> +		| ACPI_NFIT_MEM_NOT_ARMED;
+> =
+
+>  	offset +=3D sizeof(*memdev);
+>  	/* dcr-descriptor0 */
+
+--===============6273852751272694745==--
 
