@@ -1,22 +1,25 @@
-Content-Type: multipart/mixed; boundary="===============4298050950029612127=="
+Content-Type: multipart/mixed; boundary="===============5776970927234416796=="
 MIME-Version: 1.0
 From: Moore, Robert <robert.moore at intel.com>
 Subject: Re: [Devel] PATCH proposal removing use of strtoul in
  events/evgpeinit.c
-Date: Wed, 09 Sep 2015 18:00:07 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D343F87@ORSMSX112.amr.corp.intel.com>
+Date: Wed, 09 Sep 2015 18:01:57 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D343FA1@ORSMSX112.amr.corp.intel.com>
 In-Reply-To: 55EA8551.2090207@netbsd.org
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4298050950029612127==
+--===============5776970927234416796==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-This is hardly the only use of strtoul in ACPICA. May or may not be an issu=
-e on solaris, depending on the kernel/ACPICA configuration.
+I've got a better question:
 
+> which is to say that strtoul, strictly speaking is unavailable in the
+> Solaris kernel (excepting kmdb).
+
+Why not?
 
 > -----Original Message-----
 > From: Richard PALO [mailto:richard(a)netbsd.org]
@@ -63,5 +66,5 @@ e on solaris, depending on the kernel/ACPICA configuration.
 > Richard PALO
 
 
---===============4298050950029612127==--
+--===============5776970927234416796==--
 
