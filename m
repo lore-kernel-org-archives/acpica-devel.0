@@ -1,104 +1,75 @@
-Content-Type: multipart/mixed; boundary="===============6950435733942681116=="
+Content-Type: multipart/mixed; boundary="===============2090440241238599013=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
+From: Richard PALO <richard at netbsd.org>
 Subject: Re: [Devel] PATCH proposal removing use of strtoul in
  events/evgpeinit.c
-Date: Fri, 11 Sep 2015 14:57:51 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D344574@ORSMSX112.amr.corp.intel.com>
-In-Reply-To: 55F2B361.6060404@netbsd.org
+Date: Fri, 11 Sep 2015 17:36:26 +0200
+Message-ID: <55F2F4FA.3030504@netbsd.org>
+In-Reply-To: 94F2FBAB4432B54E8AACC7DFDE6C92E37D344574@ORSMSX112.amr.corp.intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6950435733942681116==
+--===============2090440241238599013==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Not to mention that every compiler is different, and you need to put your o=
-wn "ignore error" types of things in your platform-specific or compiler-spe=
-cific header. Such is the price of attempting to build OS- and compiler-ind=
-ependent code.
-
-
-> -----Original Message-----
-> From: Moore, Robert
-> Sent: Friday, September 11, 2015 7:54 AM
-> To: 'Richard PALO'; devel(a)acpica.org
-> Cc: Box, David E; Zheng, Lv
-> Subject: RE: [Devel] PATCH proposal removing use of strtoul in
-> events/evgpeinit.c
+Le 11/09/15 16:57, Moore, Robert a =C3=A9crit :
+> Not to mention that every compiler is different, and you need to put your=
+ own "ignore error" types of things in your platform-specific or compiler-s=
+pecific header. Such is the price of attempting to build OS- and compiler-i=
+ndependent code.
 > =
 
-> =
 
-> =
+>>> not to mention kludge needed when linting global crosschecks in the
+>>> illumos gate, for the later
+>>>> "/home/richard/src/illumos-gate/usr/src/common/acpica/components/dis
+>>>> pa tcher/dsobject.c", line 351: warning: function returns value
+>>>> which is sometimes ignored: memcpy (E_FUNC_RET_MAYBE_IGNORED2)
+>>>> "/home/richard/src/illumos-gate/usr/src/common/acpica/components/dis
+>>>> pa tcher/dsutils.c", line 608: warning: function returns value which
+>>>> is sometimes ignored: strncpy (E_FUNC_RET_MAYBE_IGNORED2)
+>>>> "/home/richard/src/illumos-gate/usr/src/common/acpica/components/exe
+>>>> cu ter/exmisc.c", line 370: warning: function returns value which is
+>>>> sometimes ignored: strcpy (E_FUNC_RET_MAYBE_IGNORED2)
+>>>> "/home/richard/src/illumos-gate/usr/src/common/acpica/components/exe
+>>>> cu ter/exnames.c", line 224: warning: function returns value which
+>>>> is sometimes ignored: strcat (E_FUNC_RET_MAYBE_IGNORED2)
+>>>
 
-> > -----Original Message-----
-> > From: Richard PALO [mailto:richard(a)netbsd.org]
-> > Sent: Friday, September 11, 2015 3:57 AM
-> > To: Moore, Robert; devel(a)acpica.org
-> > Subject: Re: [Devel] PATCH proposal removing use of strtoul in
-> > events/evgpeinit.c
-> >
-> > Le 09/09/15 20:01, Moore, Robert a =C3=A9crit :
-> > > I've got a better question:
-> > >
-> > >> which is to say that strtoul, strictly speaking is unavailable in
-> > >> the Solaris kernel (excepting kmdb).
-> > >
-> > > Why not?
-> > >
-> > >
-> >
-> > Given numerous other build problems involving ACPI_DISASSEMLER in
-> > _KERNEL, those are disabled for now (issues with MpSave* which I
-> > believe other platforms are experiencing as well, just like the
-> > visibility of AcpiUtConvertStringToUuid).
-> >
-> > I believe other uses of strtoul may tend to be concentrated there...
-> >
-> > As to the history of decisions involving ddi_strtoul/strtoul, a
-> > veteran sun kernel developer needs to be asked...
-> >
-> > In any event, currently the wrapper around ddi_strtoul seems
-> > reasonable enough.
-> >
-> > BTW, have things been linted recently (we use sun studio lint)?
-> =
+? Sorry, I guess I don't follow. for example, posix, and various c standard=
+s define memcpy as =
 
-> Every lint is different, unfortunately. And there are lots of things that
-> we need to ignore, which in itself depends on which lint. So, it is mostly
-> useless for us.
-> =
+>  void *memcpy(void *restrict s1, const void *restrict s2, size_t n);
 
-> =
+the first reference above, components/dispatcher/dsobject.c does:
 
-> >
-> > I had to add the following to acsolaris.h
-> > > #ifdef __SUNPRO_C
-> > > #pragma error_messages(off, E_STATIC_UNUSED) #pragma
-> > > error_messages(off, E_FUNC_ARG_UNUSED) #pragma error_messages(off,
-> > > E_END_OF_LOOP_CODE_NOT_REACHED) #pragma error_messages(off,
-> > > E_FUNC_RET_MAYBE_IGNORED2) #endif
-> >
-> > not to mention kludge needed when linting global crosschecks in the
-> > illumos gate, for the later
-> > > "/home/richard/src/illumos-gate/usr/src/common/acpica/components/dis
-> > > pa tcher/dsobject.c", line 351: warning: function returns value
-> > > which is sometimes ignored: memcpy (E_FUNC_RET_MAYBE_IGNORED2)
-> > > "/home/richard/src/illumos-gate/usr/src/common/acpica/components/dis
-> > > pa tcher/dsutils.c", line 608: warning: function returns value which
-> > > is sometimes ignored: strncpy (E_FUNC_RET_MAYBE_IGNORED2)
-> > > "/home/richard/src/illumos-gate/usr/src/common/acpica/components/exe
-> > > cu ter/exmisc.c", line 370: warning: function returns value which is
-> > > sometimes ignored: strcpy (E_FUNC_RET_MAYBE_IGNORED2)
-> > > "/home/richard/src/illumos-gate/usr/src/common/acpica/components/exe
-> > > cu ter/exnames.c", line 224: warning: function returns value which
-> > > is sometimes ignored: strcat (E_FUNC_RET_MAYBE_IGNORED2)
-> >
-> > --
-> > Richard PALO
+> 349         if (ByteList)
+> 350         {
+> 351             memcpy (ObjDesc->Buffer.Pointer, ByteList->Named.Data,
+> 352                          ByteListLength);
+> 353         }
+
+what would make most static analyzers happy is a simple void cast -- (void)=
+ memcpy(...)
+
+Then, at least, ignoring the return value is explicit instead of possibly =
+
+just being forgotten.. =
 
 
---===============6950435733942681116==--
+This should also be the most portable form of C (at least for the cases at =
+hand).
+
+There are numerous examples of this sort of thing over and above what I lis=
+ted above...
+
+cheers,
+-- =
+
+Richard PALO
+
+
+--===============2090440241238599013==--
 
