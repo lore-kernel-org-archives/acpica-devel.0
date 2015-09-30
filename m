@@ -1,69 +1,109 @@
-Content-Type: multipart/mixed; boundary="===============4014904636250594152=="
+Content-Type: multipart/mixed; boundary="===============1763489853303538512=="
 MIME-Version: 1.0
 From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] [PATCH] ACPICA: fix possible NULL dereference
-Date: Wed, 23 Sep 2015 16:32:36 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D3536B1@ORSMSX112.amr.corp.intel.com>
-In-Reply-To: 1AE640813FDE7649BE1B193DEA596E883406456A@SHSMSX101.ccr.corp.intel.com
+Subject: [Devel] ACPICA version 20150930 released
+Date: Wed, 30 Sep 2015 19:33:34 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D357C41@ORSMSX112.amr.corp.intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4014904636250594152==
+--===============1763489853303538512==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-This is the type of thing such that if we get to the code, it is guaranteed=
- that NULL will not be returned by virtue of the fact that it would have be=
-en caught much earlier.
+30 September 2015. Summary of changes for version 20150930:
 
-I don't want to start littering the code with assert, etc.
+This release is available at https://acpica.org/downloads
 
-It is not as if we have not thought about these things and made certain dec=
-isions.
+1) ACPICA kernel-resident subsystem:
 
-Bob
+Debugger: Implemented several changes and bug fixes to assist support for t=
+he in-kernel version of the AML debugger. Lv Zheng.
+- Fix the "predefined" command for in-kernel debugger.
+- Do not enter debug command loop for the help and version commands.
+- Disallow "execute" command during execution/single-step of a method.
+
+Interpreter: Updated runtime typechecking for all operators that have targe=
+t operands. The operand is resolved and validated that it is legal. For exa=
+mple, the target cannot be a non-data object such as a Device, Mutex, Therm=
+alZone, etc., as per the ACPI specification.
+
+Debugger: Fixed the double-mutex user I/O handshake to work when local dead=
+lock detection is enabled.
+
+Debugger: limited display of method locals and arguments (LocalX and ArgX) =
+to only those that have actually been initialized. This prevents lines of e=
+xtraneous output.
+
+Updated the definition of the NFIT table to correct the bit polarity of one=
+ flag: ACPI_NFIT_MEM_ARMED --> ACPI_NFIT_MEM_NOT_ARMED
+
+Example Code and Data Size: These are the sizes for the OS-independent acpi=
+ca.lib produced by the Microsoft Visual C++ 9.0 32-bit compiler. The debug =
+version of the code includes the debug output trace mechanism and has a muc=
+h larger code and data size.
+
+  Current Release:
+    Non-Debug Version: 101.7K Code, 27.9K Data, 129.6K Total
+    Debug Version:     199.3K Code, 81.4K Data, 280.7K Total
+  Previous Release:
+    Non-Debug Version: 101.3K Code, 27.7K Data, 129.0K Total
+    Debug Version:     198.6K Code, 80.9K Data, 279.5K Total
 
 
-> -----Original Message-----
-> From: Zheng, Lv
-> Sent: Sunday, September 20, 2015 5:59 PM
-> To: Sudip Mukherjee; Moore, Robert
-> Cc: Wysocki, Rafael J; Len Brown; devel(a)acpica.org
-> Subject: RE: [PATCH] ACPICA: fix possible NULL dereference
-> =
+2) iASL Compiler/Disassembler and Tools:
 
-> If it is intentional, can we put something like assert(), BUG_ON() there
-> so that the checker can always be coded but not compiled when the binary
-> is released?
-> =
+iASL: Improved the compile-time typechecking for operands of many of the AS=
+L operators:
 
-> Thanks
-> -Lv
-> =
+-- Added an option to disable compiler operand/operator typechecking (-ot).
 
-> > From: Sudip Mukherjee [mailto:sudipm.mukherjee(a)gmail.com]
-> > Sent: Friday, September 18, 2015 2:06 PM
-> >
-> > On Thu, Sep 10, 2015 at 07:06:02PM +0000, Moore, Robert wrote:
-> > > One of the things we always have to think about and look at is that
-> > > often, things like this are *guaranteed" to be valid simply by
-> > virtue of the fact that the code has gotten as far as it has.
-> > >
-> > > So, rather than litter the code with NULL checks for every single
-> access, we know up front that the object is valid.
-> > >
-> > > This isn't always true and there are some valid situations, but we
-> would appreciate it if you help track this down.
-> > I tried but looks like acpi is very tough to understand. The only
-> > argument I can give in favor of my patch is that in all the places
-> > this function acpi_ns_get_secondary_object() has been used the return
-> > has been checked, only the three calls in this file
-> > acpi/acpica/dsargs.c has not checked the return. Like you said it
-> > might be intentional also to not check the return only in this file.
-> >
-> > regards
-> > sudip
+-- For the following operators, the TermArg operands are now validated when=
+ possible to be Integer data objects: BankField, OperationRegion, DataTable=
+Region, Buffer, and Package.
 
---===============4014904636250594152==--
+-- Store (Source, Target): Both the source and target operands are resolved=
+ and checked that the operands are both legal. For example, neither operand=
+ can be a non-data object such as a Device, Mutex, ThermalZone, etc. Note, =
+as per the ACPI specification, the CopyObject operator can be used to store=
+ an object to any type of target object.
+
+-- Store (Source, Target): If the source is a Package object, the target mu=
+st be a Package object, LocalX, ArgX, or Debug. Likewise, if the target is =
+a Package, the source must also be a Package.
+
+-- Store (Source, Target): A warning is issued if the source and target res=
+olve to the identical named object.
+
+-- Store (Source, <method invocation>): An error is generated for the targe=
+t method invocation, as this construct is not supported by the AML interpre=
+ter.
+
+-- For all ASL math and logic operators, the target operand must be a data =
+object (Integer, String, Buffer, LocalX, ArgX, or Debug). This includes the=
+ function return value also.
+
+-- External declarations are also included in the typechecking where possib=
+le. External objects defined using the UnknownObj keyword cannot be typeche=
+cked, however.
+
+iASL and Disassembler: Added symbolic (ASL+) support for the ASL Index oper=
+ator:
+- Legacy code: Index(PKG1, 3)
+- New ASL+ code: PKG1[3]
+This completes the ACPI 6.0 ASL+ support as it was the only operator not su=
+pported.
+
+iASL: Fixed the file suffix for the preprocessor output file (.i). Two spac=
+es were inadvertently appended to the filename, causing file access and del=
+etion problems on some systems.
+
+ASL Test Suite (ASLTS): Updated the master makefile to generate all possibl=
+e compiler output files when building the test suite -- thus exercising the=
+se features of the compiler. These files are automatically deleted when the=
+ test suite exits.
+
+
+--===============1763489853303538512==--
 
