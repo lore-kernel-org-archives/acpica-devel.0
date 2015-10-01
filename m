@@ -1,109 +1,146 @@
-Content-Type: multipart/mixed; boundary="===============1763489853303538512=="
+Content-Type: multipart/mixed; boundary="===============1353431111367442483=="
 MIME-Version: 1.0
 From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] ACPICA version 20150930 released
-Date: Wed, 30 Sep 2015 19:33:34 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D357C41@ORSMSX112.amr.corp.intel.com>
+Subject: Re: [Devel] [PATCH] ACPICA: AcpiGetSleepTypeData: Failure to find
+ \_Sx should not result in a loud warning
+Date: Thu, 01 Oct 2015 17:57:52 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D357F6E@ORSMSX112.amr.corp.intel.com>
+In-Reply-To: 1443720528-14499-1-git-send-email-prarit@redhat.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1763489853303538512==
+--===============1353431111367442483==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-30 September 2015. Summary of changes for version 20150930:
+I seem to remember that this came up a long time ago.
 
-This release is available at https://acpica.org/downloads
-
-1) ACPICA kernel-resident subsystem:
-
-Debugger: Implemented several changes and bug fixes to assist support for t=
-he in-kernel version of the AML debugger. Lv Zheng.
-- Fix the "predefined" command for in-kernel debugger.
-- Do not enter debug command loop for the help and version commands.
-- Disallow "execute" command during execution/single-step of a method.
-
-Interpreter: Updated runtime typechecking for all operators that have targe=
-t operands. The operand is resolved and validated that it is legal. For exa=
-mple, the target cannot be a non-data object such as a Device, Mutex, Therm=
-alZone, etc., as per the ACPI specification.
-
-Debugger: Fixed the double-mutex user I/O handshake to work when local dead=
-lock detection is enabled.
-
-Debugger: limited display of method locals and arguments (LocalX and ArgX) =
-to only those that have actually been initialized. This prevents lines of e=
-xtraneous output.
-
-Updated the definition of the NFIT table to correct the bit polarity of one=
- flag: ACPI_NFIT_MEM_ARMED --> ACPI_NFIT_MEM_NOT_ARMED
-
-Example Code and Data Size: These are the sizes for the OS-independent acpi=
-ca.lib produced by the Microsoft Visual C++ 9.0 32-bit compiler. The debug =
-version of the code includes the debug output trace mechanism and has a muc=
-h larger code and data size.
-
-  Current Release:
-    Non-Debug Version: 101.7K Code, 27.9K Data, 129.6K Total
-    Debug Version:     199.3K Code, 81.4K Data, 280.7K Total
-  Previous Release:
-    Non-Debug Version: 101.3K Code, 27.7K Data, 129.0K Total
-    Debug Version:     198.6K Code, 80.9K Data, 279.5K Total
+Perhaps someone else will remember.
 
 
-2) iASL Compiler/Disassembler and Tools:
+> -----Original Message-----
+> From: Prarit Bhargava [mailto:prarit(a)redhat.com]
+> Sent: Thursday, October 01, 2015 10:29 AM
+> To: devel(a)acpica.org
+> Cc: Prarit Bhargava; Moore, Robert; Zheng, Lv; Wysocki, Rafael J; Len
+> Brown; linux-acpi(a)vger.kernel.org
+> Subject: [PATCH] ACPICA: AcpiGetSleepTypeData: Failure to find \_Sx should
+> not result in a loud warning
+> =
 
-iASL: Improved the compile-time typechecking for operands of many of the AS=
-L operators:
+> 48ffb94 ("ACPICA: AcpiGetSleepTypeData: Allow \_Sx to return either 1 or 2
+> integers") changed the error handling in AcpiGetSleepTypeData such that
+> =
 
--- Added an option to disable compiler operand/operator typechecking (-ot).
+> ACPI Exception: AE_NOT_FOUND, While evaluating Sleep State [\_S1_]
+> (20130517/hwxface-571)
+> =
 
--- For the following operators, the TermArg operands are now validated when=
- possible to be Integer data objects: BankField, OperationRegion, DataTable=
-Region, Buffer, and Package.
+> is displayed on systems not implementing individual ACPI \_Sx sleep
+> states.
+> Since these states are optional the loud warning is incorrect.  This patch
+> changes the kernel to the older behaviour of not warning on a missing
+> \_Sx.
+> =
 
--- Store (Source, Target): Both the source and target operands are resolved=
- and checked that the operands are both legal. For example, neither operand=
- can be a non-data object such as a Device, Mutex, ThermalZone, etc. Note, =
-as per the ACPI specification, the CopyObject operator can be used to store=
- an object to any type of target object.
+> Before patch:
+> =
 
--- Store (Source, Target): If the source is a Package object, the target mu=
-st be a Package object, LocalX, ArgX, or Debug. Likewise, if the target is =
-a Package, the source must also be a Package.
+> [root(a)dell-pem520-03 ~]# dmesg | grep "While evaluating Sleep State"
+>  ACPI Exception: AE_NOT_FOUND, While evaluating Sleep State [\_S1_]
+> (20130517/hwxface-571)  ACPI Exception: AE_NOT_FOUND, While evaluating
+> Sleep State [\_S2_] (20130517/hwxface-571)  ACPI Exception: AE_NOT_FOUND,
+> While evaluating Sleep State [\_S3_] (20130517/hwxface-571)
+> [root(a)dell-pem520-03 ~]#
+> =
 
--- Store (Source, Target): A warning is issued if the source and target res=
-olve to the identical named object.
+> After patch:
+> =
 
--- Store (Source, <method invocation>): An error is generated for the targe=
-t method invocation, as this construct is not supported by the AML interpre=
-ter.
+> [root(a)dell-pem520-03 ~]# dmesg | grep "While evaluating Sleep State"
+> [root(a)dell-pem520-03 ~]#
+> =
 
--- For all ASL math and logic operators, the target operand must be a data =
-object (Integer, String, Buffer, LocalX, ArgX, or Debug). This includes the=
- function return value also.
+> Fixes: 48ffb94 ("ACPICA: AcpiGetSleepTypeData: Allow \_Sx to return either
+> 1 or 2 integers")
+> Cc: Robert Moore <robert.moore(a)intel.com>
+> Cc: Lv Zheng <lv.zheng(a)intel.com>
+> Cc: "Rafael J. Wysocki" <rafael.j.wysocki(a)intel.com>
+> Cc: Len Brown <lenb(a)kernel.org>
+> Cc: linux-acpi(a)vger.kernel.org
+> =
 
--- External declarations are also included in the typechecking where possib=
-le. External objects defined using the UnknownObj keyword cannot be typeche=
-cked, however.
+> Signed-off-by: Prarit Bhargava <prarit(a)redhat.com>
+> ---
+>  drivers/acpi/acpica/hwxface.c |   10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+> =
 
-iASL and Disassembler: Added symbolic (ASL+) support for the ASL Index oper=
-ator:
-- Legacy code: Index(PKG1, 3)
-- New ASL+ code: PKG1[3]
-This completes the ACPI 6.0 ASL+ support as it was the only operator not su=
-pported.
+> diff --git a/drivers/acpi/acpica/hwxface.c b/drivers/acpi/acpica/hwxface.c
+> index 5f97468..8f50a7f 100644
+> --- a/drivers/acpi/acpica/hwxface.c
+> +++ b/drivers/acpi/acpica/hwxface.c
+> @@ -508,6 +508,7 @@ acpi_get_sleep_type_data(u8 sleep_state, u8
+> *sleep_type_a, u8 *sleep_type_b)
+>  	    ACPI_CAST_PTR(char, acpi_gbl_sleep_state_names[sleep_state]);
+>  	status =3D acpi_ns_evaluate(info);
+>  	if (ACPI_FAILURE(status)) {
+> +		/* \_Sx states are optional */
+>  		goto cleanup;
+>  	}
+> =
 
-iASL: Fixed the file suffix for the preprocessor output file (.i). Two spac=
-es were inadvertently appended to the filename, causing file access and del=
-etion problems on some systems.
+> @@ -517,7 +518,7 @@ acpi_get_sleep_type_data(u8 sleep_state, u8
+> *sleep_type_a, u8 *sleep_type_b)
+>  		ACPI_ERROR((AE_INFO, "No Sleep State object returned from
+> [%s]",
+>  			    info->relative_pathname));
+>  		status =3D AE_AML_NO_RETURN_VALUE;
+> -		goto cleanup;
+> +		goto cleanup1;
+>  	}
+> =
 
-ASL Test Suite (ASLTS): Updated the master makefile to generate all possibl=
-e compiler output files when building the test suite -- thus exercising the=
-se features of the compiler. These files are automatically deleted when the=
- test suite exits.
+>  	/* Return object must be of type Package */ @@ -526,7 +527,7 @@
+> acpi_get_sleep_type_data(u8 sleep_state, u8 *sleep_type_a, u8
+> *sleep_type_b)
+>  		ACPI_ERROR((AE_INFO,
+>  			    "Sleep State return object is not a Package"));
+>  		status =3D AE_AML_OPERAND_TYPE;
+> -		goto cleanup1;
+> +		goto cleanup2;
+>  	}
+> =
+
+>  	/*
+> @@ -570,16 +571,17 @@ acpi_get_sleep_type_data(u8 sleep_state, u8
+> *sleep_type_a, u8 *sleep_type_b)
+>  		break;
+>  	}
+> =
+
+> -cleanup1:
+> +cleanup2:
+>  	acpi_ut_remove_reference(info->return_object);
+> =
+
+> -cleanup:
+> +cleanup1:
+>  	if (ACPI_FAILURE(status)) {
+>  		ACPI_EXCEPTION((AE_INFO, status,
+>  				"While evaluating Sleep State [%s]",
+>  				info->relative_pathname));
+>  	}
+> =
+
+> +cleanup:
+>  	ACPI_FREE(info);
+>  	return_ACPI_STATUS(status);
+>  }
+> --
+> 1.7.9.3
 
 
---===============1763489853303538512==--
+--===============1353431111367442483==--
 
