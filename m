@@ -1,123 +1,279 @@
-Content-Type: multipart/mixed; boundary="===============5365677838749068437=="
+Content-Type: multipart/mixed; boundary="===============1749665437458459724=="
 MIME-Version: 1.0
-From: Zheng, Lv <lv.zheng at intel.com>
-Subject: Re: [Devel] [PATCH] ACPICA: AcpiGetSleepTypeData: Failure to find
- \_Sx should not result in a loud warning [v2]
-Date: Wed, 14 Oct 2015 01:47:42 +0000
-Message-ID: <1AE640813FDE7649BE1B193DEA596E883BAC7C87@SHSMSX101.ccr.corp.intel.com>
-In-Reply-To: 94F2FBAB4432B54E8AACC7DFDE6C92E37D98000D@ORSMSX112.amr.corp.intel.com
+From: Moore, Robert <robert.moore at intel.com>
+Subject: Re: [Devel] [PATCH] acpi: set return value to const char for some
+ functions
+Date: Wed, 14 Oct 2015 20:53:19 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D9803BD@ORSMSX112.amr.corp.intel.com>
+In-Reply-To: 1444849635-14456-1-git-send-email-clabbe.montjoie@gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5365677838749068437==
+--===============1749665437458459724==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi, Bob
+In ACPICA, we tend to be very careful concerning the "const" keyword in ord=
+er to avoid a phenomenon known as "const pollution".
+
+That is not to say that we won't use const in some limited cases.
+
+Bob
+
 
 > -----Original Message-----
-> From: Moore, Robert
-> Sent: Wednesday, October 14, 2015 5:00 AM
-> To: Zheng, Lv; Prarit Bhargava; devel(a)acpica.org
-> Cc: linux-acpi(a)vger.kernel.org; Wysocki, Rafael J
-> Subject: RE: [PATCH] ACPICA: AcpiGetSleepTypeData: Failure to find \_Sx s=
-hould not result in a loud warning [v2]
+> From: LABBE Corentin [mailto:clabbe.montjoie(a)gmail.com]
+> Sent: Wednesday, October 14, 2015 12:07 PM
+> To: Moore, Robert; Zheng, Lv; Wysocki, Rafael J; lenb(a)kernel.org
+> Cc: linux-acpi(a)vger.kernel.org; devel(a)acpica.org; linux-
+> kernel(a)vger.kernel.org; LABBE Corentin
+> Subject: [PATCH] acpi: set return value to const char for some functions
 > =
 
-> I'm a bit confused. What does the execution of the _Sx methods have to do=
- with module-level code? Obviously, many times the _Sx
-> objects are implemented as simply named objects, but the table load doesn=
-'t care what is and what isn't present.
+> This patch set some array of const char as const.
+> In the same time, some function return pointer to thoses array without
+> properly giving the information that the data is const.
+> This patch set the return type of thoses functions as const char *
 > =
 
+> Signed-off-by: LABBE Corentin <clabbe.montjoie(a)gmail.com>
+> ---
+>  drivers/acpi/acpica/acutils.h  | 12 ++++++------
+> drivers/acpi/acpica/utdecode.c | 24 ++++++++++++------------
+>  drivers/acpi/acpica/uthex.c    |  4 ++--
+>  drivers/acpi/tables.c          |  6 ++++--
+>  4 files changed, 24 insertions(+), 22 deletions(-)
+> =
 
-The AE_NOT_FOUND for _Sx should have been fixed.
+> diff --git a/drivers/acpi/acpica/acutils.h b/drivers/acpi/acpica/acutils.h
+> index fb2aa50..e5d9d4f 100644
+> --- a/drivers/acpi/acpica/acutils.h
+> +++ b/drivers/acpi/acpica/acutils.h
+> @@ -189,21 +189,21 @@ char *acpi_ut_get_mutex_name(u32 mutex_id);  const
+> char *acpi_ut_get_notify_name(u32 notify_value, acpi_object_type type);
+> #endif
+> =
 
-What we are talking is not related to the _Sx warning.
-I was just replying Prarit that why such kind of warning messages could be =
-useful.
+> -char *acpi_ut_get_type_name(acpi_object_type type);
+> +const char *acpi_ut_get_type_name(acpi_object_type type);
+> =
 
-Thanks and best regards
--Lv
+>  char *acpi_ut_get_node_name(void *object);
+> =
+
+> -char *acpi_ut_get_descriptor_name(void *object);
+> +const char *acpi_ut_get_descriptor_name(void *object);
+> =
+
+>  const char *acpi_ut_get_reference_name(union acpi_operand_object
+> *object);
+> =
+
+> -char *acpi_ut_get_object_type_name(union acpi_operand_object *obj_desc);
+> +const char *acpi_ut_get_object_type_name(union acpi_operand_object
+> +*obj_desc);
+> =
+
+> -char *acpi_ut_get_region_name(u8 space_id);
+> +const char *acpi_ut_get_region_name(u8 space_id);
+> =
+
+> -char *acpi_ut_get_event_name(u32 event_id);
+> +const char *acpi_ut_get_event_name(u32 event_id);
+> =
+
+> -char acpi_ut_hex_to_ascii_char(u64 integer, u32 position);
+> +const char acpi_ut_hex_to_ascii_char(u64 integer, u32 position);
+> =
+
+>  u8 acpi_ut_ascii_char_to_hex(int hex_char);
+> =
+
+> diff --git a/drivers/acpi/acpica/utdecode.c
+> b/drivers/acpi/acpica/utdecode.c index 988e23b..e08cdb1 100644
+> --- a/drivers/acpi/acpica/utdecode.c
+> +++ b/drivers/acpi/acpica/utdecode.c
+> @@ -114,7 +114,7 @@ const char
+> *acpi_gbl_region_types[ACPI_NUM_PREDEFINED_REGIONS] =3D {
+>  	"PCC"			/* 0x0A */
+>  };
+> =
+
+> -char *acpi_ut_get_region_name(u8 space_id)
+> +const char *acpi_ut_get_region_name(u8 space_id)
+>  {
+> =
+
+>  	if (space_id >=3D ACPI_USER_REGION_BEGIN) { @@ -127,7 +127,7 @@ char
+> *acpi_ut_get_region_name(u8 space_id)
+>  		return ("InvalidSpaceId");
+>  	}
+> =
+
+> -	return (ACPI_CAST_PTR(char, acpi_gbl_region_types[space_id]));
+> +	return (ACPI_CAST_PTR(const char, acpi_gbl_region_types[space_id]));
+>  }
+> =
 
 > =
 
-> > -----Original Message-----
-> > From: Zheng, Lv
-> > Sent: Friday, October 09, 2015 6:38 PM
-> > To: Prarit Bhargava; Moore, Robert; devel(a)acpica.org
-> > Cc: linux-acpi(a)vger.kernel.org; Wysocki, Rafael J
-> > Subject: RE: [PATCH] ACPICA: AcpiGetSleepTypeData: Failure to find \_Sx
-> > should not result in a loud warning [v2]
-> >
-> > Hi,
-> >
-> > > From: Prarit Bhargava [mailto:prarit(a)redhat.com]
-> > > Sent: Friday, October 09, 2015 7:30 PM
-> > >
-> > > On 10/09/2015 01:26 AM, Zheng, Lv wrote:
-> > > > Please ignore this.
-> > > > The fix is against the caller.
-> > > >
-> > > > Thanks and best regards
-> > > > -Lv
-> > > >
-> > > >> From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of Zheng,
-> > > >> Lv
-> > > >> Sent: Friday, October 09, 2015 10:02 AM
-> > > >>
-> > > >> Why don't you fix this in the invoker side?
-> > > >> For example:
-> > > >> If (acpi_get_handle())
-> > > >> 	acpi_evaluate_object()
-> > >
-> > > That seems like a sloppy workaround an actual bug in ACPICA.
-> >
-> > So let me ignore this which is a reply for a useless question.
-> >
-> > >
-> > > >> So that the AE_NOT_FOUND warning can still be kept for the real
-> > troubles?
-> > >
-> > > The code is warning 100% of the time on something that is optional.
-> >
-> > Let me ignore this which is a reply for a useless question.
-> >
-> > >
-> > > >> There are really scenarios that such warning is useful for catching
-> > bugs.
-> > > >>
-> > >
-> > > What scenario is possible where this causes a problem?  Issuing an
-> > > error on something that is optional is not a good idea.
-> >
-> > There are several scenarios, let me say some known stuffs about the mod=
-ule
-> > level code support.
-> > In AML grammar, module level code (non-object-definition AML opcodes
-> > outside of a control method) is legal.
-> > While it is supported in ACPICA in a split way:
-> > 1. In the early stage, table loading code only executes those object
-> > definition opcodes and links all "if/else/while" AML fragments together.
-> > 2. In the late stage, object initialization code will execute such AML
-> > fragments before invoking all _INI methods.
-> >
-> > 1. Since code is not executed in the Windows compliant order during the
-> > early table loading stage, some objects are not defined while they shou=
-ld.
-> > 2. Even worse, during the early stage, ACPICA may fail the whole table
-> > loading process due to AE_NOT_FOUND, leaving us partial initialized
-> > objects (the ACPICA AML interpreter implements 2 phases to parse a table
-> > to complete the table loading).
-> > Such issue is worked around by deleting the namespace objects created
-> > during the early stage if an exception (AE_NOT_FOUND) is encountered.
-> >
-> > So you can see, such kind of error is sometime useful for catching AML
-> > interpreter issues or BIOS bugs.
-> >
-> > Thanks and best regards
-> > -Lv
+> /*************************************************************************
+> ******
+> @@ -152,14 +152,14 @@ static const char
+> *acpi_gbl_event_types[ACPI_NUM_FIXED_EVENTS] =3D {
+>  	"RealTimeClock",
+>  };
+> =
 
---===============5365677838749068437==--
+> -char *acpi_ut_get_event_name(u32 event_id)
+> +const char *acpi_ut_get_event_name(u32 event_id)
+>  {
+> =
+
+>  	if (event_id > ACPI_EVENT_MAX) {
+>  		return ("InvalidEventID");
+>  	}
+> =
+
+> -	return (ACPI_CAST_PTR(char, acpi_gbl_event_types[event_id]));
+> +	return (ACPI_CAST_PTR(const char, acpi_gbl_event_types[event_id]));
+>  }
+> =
+
+> =
+
+> /*************************************************************************
+> ******
+> @@ -220,17 +220,17 @@ static const char *acpi_gbl_ns_type_names[] =3D {
+>  	/* 30 */ "Invalid"
+>  };
+> =
+
+> -char *acpi_ut_get_type_name(acpi_object_type type)
+> +const char *acpi_ut_get_type_name(acpi_object_type type)
+>  {
+> =
+
+>  	if (type > ACPI_TYPE_INVALID) {
+> -		return (ACPI_CAST_PTR(char, acpi_gbl_bad_type));
+> +		return (ACPI_CAST_PTR(const char, acpi_gbl_bad_type));
+>  	}
+> =
+
+> -	return (ACPI_CAST_PTR(char, acpi_gbl_ns_type_names[type]));
+> +	return (ACPI_CAST_PTR(const char, acpi_gbl_ns_type_names[type]));
+>  }
+> =
+
+> -char *acpi_ut_get_object_type_name(union acpi_operand_object *obj_desc)
+> +const char *acpi_ut_get_object_type_name(union acpi_operand_object
+> +*obj_desc)
+>  {
+> =
+
+>  	if (!obj_desc) {
+> @@ -318,7 +318,7 @@ static const char *acpi_gbl_desc_type_names[] =3D {
+>  	/* 15 */ "Node"
+>  };
+> =
+
+> -char *acpi_ut_get_descriptor_name(void *object)
+> +const char *acpi_ut_get_descriptor_name(void *object)
+>  {
+> =
+
+>  	if (!object) {
+> @@ -329,7 +329,7 @@ char *acpi_ut_get_descriptor_name(void *object)
+>  		return ("Not a Descriptor");
+>  	}
+> =
+
+> -	return (ACPI_CAST_PTR(char,
+> +	return (ACPI_CAST_PTR(const char,
+>  			      acpi_gbl_desc_type_names[ACPI_GET_DESCRIPTOR_TYPE
+>  						       (object)]));
+> =
+
+> @@ -400,7 +400,7 @@ const char *acpi_ut_get_reference_name(union
+> acpi_operand_object *object)
+> =
+
+>  /* Names for internal mutex objects, used for debug output */
+> =
+
+> -static char *acpi_gbl_mutex_names[ACPI_NUM_MUTEX] =3D {
+> +static const char *acpi_gbl_mutex_names[ACPI_NUM_MUTEX] =3D {
+>  	"ACPI_MTX_Interpreter",
+>  	"ACPI_MTX_Namespace",
+>  	"ACPI_MTX_Tables",
+> @@ -411,7 +411,7 @@ static char *acpi_gbl_mutex_names[ACPI_NUM_MUTEX] =3D=
+ {
+>  	"ACPI_MTX_CommandReady"
+>  };
+> =
+
+> -char *acpi_ut_get_mutex_name(u32 mutex_id)
+> +const char *acpi_ut_get_mutex_name(u32 mutex_id)
+>  {
+> =
+
+>  	if (mutex_id > ACPI_MAX_MUTEX) {
+> diff --git a/drivers/acpi/acpica/uthex.c b/drivers/acpi/acpica/uthex.c
+> index fda8b3d..9239711 100644
+> --- a/drivers/acpi/acpica/uthex.c
+> +++ b/drivers/acpi/acpica/uthex.c
+> @@ -48,7 +48,7 @@
+>  ACPI_MODULE_NAME("uthex")
+> =
+
+>  /* Hex to ASCII conversion table */
+> -static char acpi_gbl_hex_to_ascii[] =3D {
+> +static const char acpi_gbl_hex_to_ascii[] =3D {
+>  	'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C',
+> 'D',
+>  	    'E', 'F'
+>  };
+> @@ -67,7 +67,7 @@ static char acpi_gbl_hex_to_ascii[] =3D {
+>   *
+> =
+
+> **************************************************************************
+> ****/
+> =
+
+> -char acpi_ut_hex_to_ascii_char(u64 integer, u32 position)
+> +const char acpi_ut_hex_to_ascii_char(u64 integer, u32 position)
+>  {
+> =
+
+>  	return (acpi_gbl_hex_to_ascii[(integer >> position) & 0xF]); diff --
+> git a/drivers/acpi/tables.c b/drivers/acpi/tables.c index 17a6fa0..7c8a037
+> 100644
+> --- a/drivers/acpi/tables.c
+> +++ b/drivers/acpi/tables.c
+> @@ -35,8 +35,10 @@
+> =
+
+>  #define ACPI_MAX_TABLES		128
+> =
+
+> -static char *mps_inti_flags_polarity[] =3D { "dfl", "high", "res", "low"=
+ };
+> -static char *mps_inti_flags_trigger[] =3D { "dfl", "edge", "res", "level"
+> };
+> +static const char * const mps_inti_flags_polarity[] =3D {
+> +	"dfl", "high", "res", "low" };
+> +static const char * const mps_inti_flags_trigger[] =3D {
+> +	"dfl", "edge", "res", "level" };
+> =
+
+>  static struct acpi_table_desc initial_tables[ACPI_MAX_TABLES] __initdata;
+> =
+
+> --
+> 2.4.9
+
+
+--===============1749665437458459724==--
 
