@@ -1,279 +1,298 @@
-Content-Type: multipart/mixed; boundary="===============1749665437458459724=="
+Content-Type: multipart/mixed; boundary="===============2418870717282913484=="
 MIME-Version: 1.0
 From: Moore, Robert <robert.moore at intel.com>
 Subject: Re: [Devel] [PATCH] acpi: set return value to const char for some
  functions
-Date: Wed, 14 Oct 2015 20:53:19 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D9803BD@ORSMSX112.amr.corp.intel.com>
-In-Reply-To: 1444849635-14456-1-git-send-email-clabbe.montjoie@gmail.com
+Date: Thu, 15 Oct 2015 19:32:57 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D9806CC@ORSMSX112.amr.corp.intel.com>
+In-Reply-To: 1444875266.2718.37.camel@perches.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1749665437458459724==
+--===============2418870717282913484==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-In ACPICA, we tend to be very careful concerning the "const" keyword in ord=
-er to avoid a phenomenon known as "const pollution".
-
-That is not to say that we won't use const in some limited cases.
-
-Bob
-
-
-> -----Original Message-----
-> From: LABBE Corentin [mailto:clabbe.montjoie(a)gmail.com]
-> Sent: Wednesday, October 14, 2015 12:07 PM
-> To: Moore, Robert; Zheng, Lv; Wysocki, Rafael J; lenb(a)kernel.org
-> Cc: linux-acpi(a)vger.kernel.org; devel(a)acpica.org; linux-
-> kernel(a)vger.kernel.org; LABBE Corentin
-> Subject: [PATCH] acpi: set return value to const char for some functions
+> Please describe the effects of "const pollution".
 > =
 
-> This patch set some array of const char as const.
-> In the same time, some function return pointer to thoses array without
-> properly giving the information that the data is const.
-> This patch set the return type of thoses functions as const char *
-> =
+> Why isn't it useful to update the functions that don't modify function
+> pointer arguments to const?
 
-> Signed-off-by: LABBE Corentin <clabbe.montjoie(a)gmail.com>
-> ---
->  drivers/acpi/acpica/acutils.h  | 12 ++++++------
-> drivers/acpi/acpica/utdecode.c | 24 ++++++++++++------------
->  drivers/acpi/acpica/uthex.c    |  4 ++--
->  drivers/acpi/tables.c          |  6 ++++--
->  4 files changed, 24 insertions(+), 22 deletions(-)
-> =
+It's not that const isn't useful, but it can create problems, especially in=
+ existing code. It can bubble up to higher functions, causing lots of chang=
+es to existing variables and the definition of existing functions. Not to m=
+ention lots of casting and recasting.
 
-> diff --git a/drivers/acpi/acpica/acutils.h b/drivers/acpi/acpica/acutils.h
-> index fb2aa50..e5d9d4f 100644
-> --- a/drivers/acpi/acpica/acutils.h
-> +++ b/drivers/acpi/acpica/acutils.h
-> @@ -189,21 +189,21 @@ char *acpi_ut_get_mutex_name(u32 mutex_id);  const
-> char *acpi_ut_get_notify_name(u32 notify_value, acpi_object_type type);
-> #endif
-> =
+Example quote:
 
-> -char *acpi_ut_get_type_name(acpi_object_type type);
-> +const char *acpi_ut_get_type_name(acpi_object_type type);
-> =
+"if you started to use "const" for some methods you usually forced to use t=
+his in most of your code. But the time spent for maintaining (typing, recom=
+piling when some const is missing, etc.) of const-correctness in code seems=
+ greater than for fixing of possible (very rare) problems caused by not usi=
+ng of const-correctness at all."
 
->  char *acpi_ut_get_node_name(void *object);
-> =
+Also, ACPICA has to be additionally careful because it must compile with ma=
+ny different C compilers.
 
-> -char *acpi_ut_get_descriptor_name(void *object);
-> +const char *acpi_ut_get_descriptor_name(void *object);
-> =
 
->  const char *acpi_ut_get_reference_name(union acpi_operand_object
-> *object);
-> =
 
-> -char *acpi_ut_get_object_type_name(union acpi_operand_object *obj_desc);
-> +const char *acpi_ut_get_object_type_name(union acpi_operand_object
-> +*obj_desc);
-> =
+All that being said, I went ahead and made the actual ACPICA changes corres=
+ponding to your patches. There were no pollution issues, and it actually si=
+mplified the code by eliminating the need for some uses of ACPI_CAST_PTR.
 
-> -char *acpi_ut_get_region_name(u8 space_id);
-> +const char *acpi_ut_get_region_name(u8 space_id);
-> =
+The only issue I found was here, so we won't do this one:
 
-> -char *acpi_ut_get_event_name(u32 event_id);
-> +const char *acpi_ut_get_event_name(u32 event_id);
-> =
+const char
+AcpiUtHexToAsciiChar
 
-> -char acpi_ut_hex_to_ascii_char(u64 integer, u32 position);
-> +const char acpi_ut_hex_to_ascii_char(u64 integer, u32 position);
-> =
+\acpica\source\include\acutils.h(322) :
+    warning C4180: qualifier applied to function type has no meaning; ignor=
+ed
 
->  u8 acpi_ut_ascii_char_to_hex(int hex_char);
-> =
 
-> diff --git a/drivers/acpi/acpica/utdecode.c
-> b/drivers/acpi/acpica/utdecode.c index 988e23b..e08cdb1 100644
-> --- a/drivers/acpi/acpica/utdecode.c
-> +++ b/drivers/acpi/acpica/utdecode.c
-> @@ -114,7 +114,7 @@ const char
-> *acpi_gbl_region_types[ACPI_NUM_PREDEFINED_REGIONS] =3D {
->  	"PCC"			/* 0x0A */
->  };
-> =
+Here is the current patch to the actual ACPICA code (which is in a differen=
+t format than the Linux version of the code):
 
-> -char *acpi_ut_get_region_name(u8 space_id)
-> +const char *acpi_ut_get_region_name(u8 space_id)
->  {
-> =
-
->  	if (space_id >=3D ACPI_USER_REGION_BEGIN) { @@ -127,7 +127,7 @@ char
-> *acpi_ut_get_region_name(u8 space_id)
->  		return ("InvalidSpaceId");
->  	}
-> =
-
-> -	return (ACPI_CAST_PTR(char, acpi_gbl_region_types[space_id]));
-> +	return (ACPI_CAST_PTR(const char, acpi_gbl_region_types[space_id]));
->  }
-> =
-
-> =
-
-> /*************************************************************************
-> ******
-> @@ -152,14 +152,14 @@ static const char
-> *acpi_gbl_event_types[ACPI_NUM_FIXED_EVENTS] =3D {
->  	"RealTimeClock",
->  };
-> =
-
-> -char *acpi_ut_get_event_name(u32 event_id)
-> +const char *acpi_ut_get_event_name(u32 event_id)
->  {
-> =
-
->  	if (event_id > ACPI_EVENT_MAX) {
->  		return ("InvalidEventID");
->  	}
-> =
-
-> -	return (ACPI_CAST_PTR(char, acpi_gbl_event_types[event_id]));
-> +	return (ACPI_CAST_PTR(const char, acpi_gbl_event_types[event_id]));
->  }
-> =
-
-> =
-
-> /*************************************************************************
-> ******
-> @@ -220,17 +220,17 @@ static const char *acpi_gbl_ns_type_names[] =3D {
->  	/* 30 */ "Invalid"
->  };
-> =
-
-> -char *acpi_ut_get_type_name(acpi_object_type type)
-> +const char *acpi_ut_get_type_name(acpi_object_type type)
->  {
-> =
-
->  	if (type > ACPI_TYPE_INVALID) {
-> -		return (ACPI_CAST_PTR(char, acpi_gbl_bad_type));
-> +		return (ACPI_CAST_PTR(const char, acpi_gbl_bad_type));
->  	}
-> =
-
-> -	return (ACPI_CAST_PTR(char, acpi_gbl_ns_type_names[type]));
-> +	return (ACPI_CAST_PTR(const char, acpi_gbl_ns_type_names[type]));
->  }
-> =
-
-> -char *acpi_ut_get_object_type_name(union acpi_operand_object *obj_desc)
-> +const char *acpi_ut_get_object_type_name(union acpi_operand_object
-> +*obj_desc)
->  {
-> =
-
->  	if (!obj_desc) {
-> @@ -318,7 +318,7 @@ static const char *acpi_gbl_desc_type_names[] =3D {
->  	/* 15 */ "Node"
->  };
-> =
-
-> -char *acpi_ut_get_descriptor_name(void *object)
-> +const char *acpi_ut_get_descriptor_name(void *object)
->  {
-> =
-
->  	if (!object) {
-> @@ -329,7 +329,7 @@ char *acpi_ut_get_descriptor_name(void *object)
->  		return ("Not a Descriptor");
->  	}
-> =
-
-> -	return (ACPI_CAST_PTR(char,
-> +	return (ACPI_CAST_PTR(const char,
->  			      acpi_gbl_desc_type_names[ACPI_GET_DESCRIPTOR_TYPE
->  						       (object)]));
-> =
-
-> @@ -400,7 +400,7 @@ const char *acpi_ut_get_reference_name(union
-> acpi_operand_object *object)
-> =
-
->  /* Names for internal mutex objects, used for debug output */
-> =
-
-> -static char *acpi_gbl_mutex_names[ACPI_NUM_MUTEX] =3D {
-> +static const char *acpi_gbl_mutex_names[ACPI_NUM_MUTEX] =3D {
->  	"ACPI_MTX_Interpreter",
->  	"ACPI_MTX_Namespace",
->  	"ACPI_MTX_Tables",
-> @@ -411,7 +411,7 @@ static char *acpi_gbl_mutex_names[ACPI_NUM_MUTEX] =3D=
+diff --git a/source/components/namespace/nsxfname.c b/source/components/nam=
+espace/nsxfname.c
+index 51cc4f4..c368c1f 100644
+--- a/source/components/namespace/nsxfname.c
++++ b/source/components/namespace/nsxfname.c
+@@ -249,7 +249,7 @@ AcpiGetName (
  {
->  	"ACPI_MTX_CommandReady"
->  };
-> =
+     ACPI_STATUS             Status;
+     ACPI_NAMESPACE_NODE     *Node;
+-    char                    *NodeName;
++    const char              *NodeName;
+ =
 
-> -char *acpi_ut_get_mutex_name(u32 mutex_id)
-> +const char *acpi_ut_get_mutex_name(u32 mutex_id)
->  {
-> =
+ =
 
->  	if (mutex_id > ACPI_MAX_MUTEX) {
-> diff --git a/drivers/acpi/acpica/uthex.c b/drivers/acpi/acpica/uthex.c
-> index fda8b3d..9239711 100644
-> --- a/drivers/acpi/acpica/uthex.c
-> +++ b/drivers/acpi/acpica/uthex.c
-> @@ -48,7 +48,7 @@
->  ACPI_MODULE_NAME("uthex")
-> =
-
->  /* Hex to ASCII conversion table */
-> -static char acpi_gbl_hex_to_ascii[] =3D {
-> +static const char acpi_gbl_hex_to_ascii[] =3D {
->  	'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C',
-> 'D',
->  	    'E', 'F'
->  };
-> @@ -67,7 +67,7 @@ static char acpi_gbl_hex_to_ascii[] =3D {
->   *
-> =
-
-> **************************************************************************
-> ****/
-> =
-
-> -char acpi_ut_hex_to_ascii_char(u64 integer, u32 position)
-> +const char acpi_ut_hex_to_ascii_char(u64 integer, u32 position)
->  {
-> =
-
->  	return (acpi_gbl_hex_to_ascii[(integer >> position) & 0xF]); diff --
-> git a/drivers/acpi/tables.c b/drivers/acpi/tables.c index 17a6fa0..7c8a037
-> 100644
-> --- a/drivers/acpi/tables.c
-> +++ b/drivers/acpi/tables.c
-> @@ -35,8 +35,10 @@
-> =
-
->  #define ACPI_MAX_TABLES		128
-> =
-
-> -static char *mps_inti_flags_polarity[] =3D { "dfl", "high", "res", "low"=
+     /* Parameter validation */
+diff --git a/source/components/utilities/utdecode.c b/source/components/uti=
+lities/utdecode.c
+index 580f891..3d927f5 100644
+--- a/source/components/utilities/utdecode.c
++++ b/source/components/utilities/utdecode.c
+@@ -191,7 +191,7 @@ const char        *AcpiGbl_RegionTypes[ACPI_NUM_PREDEFI=
+NED_REGIONS] =3D
  };
-> -static char *mps_inti_flags_trigger[] =3D { "dfl", "edge", "res", "level"
-> };
-> +static const char * const mps_inti_flags_polarity[] =3D {
-> +	"dfl", "high", "res", "low" };
-> +static const char * const mps_inti_flags_trigger[] =3D {
-> +	"dfl", "edge", "res", "level" };
-> =
+ =
 
->  static struct acpi_table_desc initial_tables[ACPI_MAX_TABLES] __initdata;
-> =
+ =
 
-> --
-> 2.4.9
+-char *
++const char *
+ AcpiUtGetRegionName (
+     UINT8                   SpaceId)
+ {
+@@ -213,7 +213,7 @@ AcpiUtGetRegionName (
+         return ("InvalidSpaceId");
+     }
+ =
+
+-    return (ACPI_CAST_PTR (char, AcpiGbl_RegionTypes[SpaceId]));
++    return (AcpiGbl_RegionTypes[SpaceId]);
+ }
+ =
+
+ =
+
+@@ -241,7 +241,7 @@ static const char        *AcpiGbl_EventTypes[ACPI_NUM_F=
+IXED_EVENTS] =3D
+ };
+ =
+
+ =
+
+-char *
++const char *
+ AcpiUtGetEventName (
+     UINT32                  EventId)
+ {
+@@ -251,7 +251,7 @@ AcpiUtGetEventName (
+         return ("InvalidEventID");
+     }
+ =
+
+-    return (ACPI_CAST_PTR (char, AcpiGbl_EventTypes[EventId]));
++    return (AcpiGbl_EventTypes[EventId]);
+ }
+ =
+
+ =
+
+@@ -316,21 +316,21 @@ static const char           *AcpiGbl_NsTypeNames[] =
+=3D
+ };
+ =
+
+ =
+
+-char *
++const char *
+ AcpiUtGetTypeName (
+     ACPI_OBJECT_TYPE        Type)
+ {
+ =
+
+     if (Type > ACPI_TYPE_INVALID)
+     {
+-        return (ACPI_CAST_PTR (char, AcpiGbl_BadType));
++        return (AcpiGbl_BadType);
+     }
+ =
+
+-    return (ACPI_CAST_PTR (char, AcpiGbl_NsTypeNames[Type]));
++    return (AcpiGbl_NsTypeNames[Type]);
+ }
+ =
+
+ =
+
+-char *
++const char *
+ AcpiUtGetObjectTypeName (
+     ACPI_OPERAND_OBJECT     *ObjDesc)
+ {
+@@ -372,7 +372,7 @@ AcpiUtGetObjectTypeName (
+  *
+  *************************************************************************=
+*****/
+ =
+
+-char *
++const char *
+ AcpiUtGetNodeName (
+     void                    *Object)
+ {
+@@ -448,7 +448,7 @@ static const char           *AcpiGbl_DescTypeNames[] =
+=3D
+ };
+ =
+
+ =
+
+-char *
++const char *
+ AcpiUtGetDescriptorName (
+     void                    *Object)
+ {
+@@ -463,9 +463,7 @@ AcpiUtGetDescriptorName (
+         return ("Not a Descriptor");
+     }
+ =
+
+-    return (ACPI_CAST_PTR (char,
+-        AcpiGbl_DescTypeNames[ACPI_GET_DESCRIPTOR_TYPE (Object)]));
+-
++    return (AcpiGbl_DescTypeNames[ACPI_GET_DESCRIPTOR_TYPE (Object)]);
+ }
+ =
+
+ =
+
+@@ -542,7 +540,7 @@ AcpiUtGetReferenceName (
+ =
+
+ /* Names for internal mutex objects, used for debug output */
+ =
+
+-static char                 *AcpiGbl_MutexNames[ACPI_NUM_MUTEX] =3D
++static const char           *AcpiGbl_MutexNames[ACPI_NUM_MUTEX] =3D
+ {
+     "ACPI_MTX_Interpreter",
+     "ACPI_MTX_Namespace",
+@@ -552,7 +550,7 @@ static char                 *AcpiGbl_MutexNames[ACPI_NU=
+M_MUTEX] =3D
+     "ACPI_MTX_Memory",
+ };
+ =
+
+-char *
++const char *
+ AcpiUtGetMutexName (
+     UINT32                  MutexId)
+ {
+diff --git a/source/components/utilities/uthex.c b/source/components/utilit=
+ies/uthex.c
+index c652f6a..3a32003 100644
+--- a/source/components/utilities/uthex.c
++++ b/source/components/utilities/uthex.c
+@@ -122,7 +122,7 @@
+ =
+
+ /* Hex to ASCII conversion table */
+ =
+
+-static char                 AcpiGbl_HexToAscii[] =3D
++static const char           AcpiGbl_HexToAscii[] =3D
+ {
+     '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'
+ };
+diff --git a/source/include/acutils.h b/source/include/acutils.h
+index 4fc44ff..f9372a2 100644
+--- a/source/include/acutils.h
++++ b/source/include/acutils.h
+@@ -278,7 +278,7 @@ AcpiUtInitGlobals (
+ =
+
+ #if defined(ACPI_DEBUG_OUTPUT) || defined(ACPI_DEBUGGER)
+ =
+
+-char *
++const char *
+ AcpiUtGetMutexName (
+     UINT32                  MutexId);
+ =
+
+@@ -288,15 +288,15 @@ AcpiUtGetNotifyName (
+     ACPI_OBJECT_TYPE        Type);
+ #endif
+ =
+
+-char *
++const char *
+ AcpiUtGetTypeName (
+     ACPI_OBJECT_TYPE        Type);
+ =
+
+-char *
++const char *
+ AcpiUtGetNodeName (
+     void                    *Object);
+ =
+
+-char *
++const char *
+ AcpiUtGetDescriptorName (
+     void                    *Object);
+ =
+
+@@ -304,15 +304,15 @@ const char *
+ AcpiUtGetReferenceName (
+     ACPI_OPERAND_OBJECT     *Object);
+ =
+
+-char *
++const char *
+ AcpiUtGetObjectTypeName (
+     ACPI_OPERAND_OBJECT     *ObjDesc);
+ =
+
+-char *
++const char *
+ AcpiUtGetRegionName (
+     UINT8                   SpaceId);
+ =
+
+-char *
++const char *
+ AcpiUtGetEventName (
+     UINT32                  EventId);
 
 
---===============1749665437458459724==--
+--===============2418870717282913484==--
 
