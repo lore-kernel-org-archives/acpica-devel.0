@@ -1,97 +1,292 @@
-Content-Type: multipart/mixed; boundary="===============2188285585704083824=="
+Content-Type: multipart/mixed; boundary="===============3436863907890066991=="
 MIME-Version: 1.0
 From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] ACPICA Legal Info
-Date: Fri, 16 Oct 2015 14:39:54 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D981A44@ORSMSX112.amr.corp.intel.com>
+Subject: Re: [Devel] [PATCH] acpi: set return value to const char for some
+ functions
+Date: Mon, 19 Oct 2015 17:04:32 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D981F16@ORSMSX112.amr.corp.intel.com>
+In-Reply-To: 20151019120255.GA18559@Red
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2188285585704083824==
+--===============3436863907890066991==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-This is the ACPICA legal information posted at: www.acpica.org/Licensing.
-It is reproduced here for convenience and wide distribution.
+Actually, I thought I got most of the changes.
+
+Again, ACPICA code is in a different format than the Linux version of the c=
+ode, so your patch cannot be directly applied.
+
+Bob
 
 
+> -----Original Message-----
+> From: LABBE Corentin [mailto:montjoie.mailing(a)gmail.com]
+> Sent: Monday, October 19, 2015 5:03 AM
+> To: Moore, Robert
+> Cc: LABBE Corentin; Zheng, Lv; Wysocki, Rafael J; lenb(a)kernel.org; linu=
+x-
+> acpi(a)vger.kernel.org; devel(a)acpica.org; linux-kernel(a)vger.kernel.org
+> Subject: Re: [PATCH] acpi: set return value to const char for some
+> functions
+> =
 
+> On Wed, Oct 14, 2015 at 08:53:19PM +0000, Moore, Robert wrote:
+> > In ACPICA, we tend to be very careful concerning the "const" keyword in
+> order to avoid a phenomenon known as "const pollution".
+> >
+> > That is not to say that we won't use const in some limited cases.
+> >
+> > Bob
+> >
+> =
 
-ACPICA Licensing for Source Code and Contributions
+> Hello
+> =
 
+> The problem is that all function in this patch return a pointer to string
+> literal without giving that information.
+> I am sad to see that you seems to agree with that but, for resuming your
+> conversation with Joe Perches, you reject this patch just because you
+> worry that perhaps in the future it will make you more works do deal with
+> it.
+> =
 
-Licensing of the ACPICA Source Code
+> Does you will accept the subset of this patch for adding const to "static
+> char xxx[] =3D {}" ?
+> =
 
-The ACPICA source code is licensed under three different licenses:
+> Regards
+> =
 
-      1. A non-open source license (the "Intel license").
-      2. A BSD license.
-      3. A GPLv2 license.
+> >
+> > > -----Original Message-----
+> > > From: LABBE Corentin [mailto:clabbe.montjoie(a)gmail.com]
+> > > Sent: Wednesday, October 14, 2015 12:07 PM
+> > > To: Moore, Robert; Zheng, Lv; Wysocki, Rafael J; lenb(a)kernel.org
+> > > Cc: linux-acpi(a)vger.kernel.org; devel(a)acpica.org; linux-
+> > > kernel(a)vger.kernel.org; LABBE Corentin
+> > > Subject: [PATCH] acpi: set return value to const char for some
+> > > functions
+> > >
+> > > This patch set some array of const char as const.
+> > > In the same time, some function return pointer to thoses array
+> > > without properly giving the information that the data is const.
+> > > This patch set the return type of thoses functions as const char *
+> > >
+> > > Signed-off-by: LABBE Corentin <clabbe.montjoie(a)gmail.com>
+> > > ---
+> > >  drivers/acpi/acpica/acutils.h  | 12 ++++++------
+> > > drivers/acpi/acpica/utdecode.c | 24 ++++++++++++------------
+> > >  drivers/acpi/acpica/uthex.c    |  4 ++--
+> > >  drivers/acpi/tables.c          |  6 ++++--
+> > >  4 files changed, 24 insertions(+), 22 deletions(-)
+> > >
+> > > diff --git a/drivers/acpi/acpica/acutils.h
+> > > b/drivers/acpi/acpica/acutils.h index fb2aa50..e5d9d4f 100644
+> > > --- a/drivers/acpi/acpica/acutils.h
+> > > +++ b/drivers/acpi/acpica/acutils.h
+> > > @@ -189,21 +189,21 @@ char *acpi_ut_get_mutex_name(u32 mutex_id);
+> > > const char *acpi_ut_get_notify_name(u32 notify_value,
+> > > acpi_object_type type); #endif
+> > >
+> > > -char *acpi_ut_get_type_name(acpi_object_type type);
+> > > +const char *acpi_ut_get_type_name(acpi_object_type type);
+> > >
+> > >  char *acpi_ut_get_node_name(void *object);
+> > >
+> > > -char *acpi_ut_get_descriptor_name(void *object);
+> > > +const char *acpi_ut_get_descriptor_name(void *object);
+> > >
+> > >  const char *acpi_ut_get_reference_name(union acpi_operand_object
+> > > *object);
+> > >
+> > > -char *acpi_ut_get_object_type_name(union acpi_operand_object
+> > > *obj_desc);
+> > > +const char *acpi_ut_get_object_type_name(union acpi_operand_object
+> > > +*obj_desc);
+> > >
+> > > -char *acpi_ut_get_region_name(u8 space_id);
+> > > +const char *acpi_ut_get_region_name(u8 space_id);
+> > >
+> > > -char *acpi_ut_get_event_name(u32 event_id);
+> > > +const char *acpi_ut_get_event_name(u32 event_id);
+> > >
+> > > -char acpi_ut_hex_to_ascii_char(u64 integer, u32 position);
+> > > +const char acpi_ut_hex_to_ascii_char(u64 integer, u32 position);
+> > >
+> > >  u8 acpi_ut_ascii_char_to_hex(int hex_char);
+> > >
+> > > diff --git a/drivers/acpi/acpica/utdecode.c
+> > > b/drivers/acpi/acpica/utdecode.c index 988e23b..e08cdb1 100644
+> > > --- a/drivers/acpi/acpica/utdecode.c
+> > > +++ b/drivers/acpi/acpica/utdecode.c
+> > > @@ -114,7 +114,7 @@ const char
+> > > *acpi_gbl_region_types[ACPI_NUM_PREDEFINED_REGIONS] =3D {
+> > >  	"PCC"			/* 0x0A */
+> > >  };
+> > >
+> > > -char *acpi_ut_get_region_name(u8 space_id)
+> > > +const char *acpi_ut_get_region_name(u8 space_id)
+> > >  {
+> > >
+> > >  	if (space_id >=3D ACPI_USER_REGION_BEGIN) { @@ -127,7 +127,7 @@ char
+> > > *acpi_ut_get_region_name(u8 space_id)
+> > >  		return ("InvalidSpaceId");
+> > >  	}
+> > >
+> > > -	return (ACPI_CAST_PTR(char, acpi_gbl_region_types[space_id]));
+> > > +	return (ACPI_CAST_PTR(const char,
+> > > +acpi_gbl_region_types[space_id]));
+> > >  }
+> > >
+> > >
+> > > /*******************************************************************
+> > > ******
+> > > ******
+> > > @@ -152,14 +152,14 @@ static const char
+> > > *acpi_gbl_event_types[ACPI_NUM_FIXED_EVENTS] =3D {
+> > >  	"RealTimeClock",
+> > >  };
+> > >
+> > > -char *acpi_ut_get_event_name(u32 event_id)
+> > > +const char *acpi_ut_get_event_name(u32 event_id)
+> > >  {
+> > >
+> > >  	if (event_id > ACPI_EVENT_MAX) {
+> > >  		return ("InvalidEventID");
+> > >  	}
+> > >
+> > > -	return (ACPI_CAST_PTR(char, acpi_gbl_event_types[event_id]));
+> > > +	return (ACPI_CAST_PTR(const char,
+> > > +acpi_gbl_event_types[event_id]));
+> > >  }
+> > >
+> > >
+> > > /*******************************************************************
+> > > ******
+> > > ******
+> > > @@ -220,17 +220,17 @@ static const char *acpi_gbl_ns_type_names[] =3D=
+ {
+> > >  	/* 30 */ "Invalid"
+> > >  };
+> > >
+> > > -char *acpi_ut_get_type_name(acpi_object_type type)
+> > > +const char *acpi_ut_get_type_name(acpi_object_type type)
+> > >  {
+> > >
+> > >  	if (type > ACPI_TYPE_INVALID) {
+> > > -		return (ACPI_CAST_PTR(char, acpi_gbl_bad_type));
+> > > +		return (ACPI_CAST_PTR(const char, acpi_gbl_bad_type));
+> > >  	}
+> > >
+> > > -	return (ACPI_CAST_PTR(char, acpi_gbl_ns_type_names[type]));
+> > > +	return (ACPI_CAST_PTR(const char, acpi_gbl_ns_type_names[type]));
+> > >  }
+> > >
+> > > -char *acpi_ut_get_object_type_name(union acpi_operand_object
+> > > *obj_desc)
+> > > +const char *acpi_ut_get_object_type_name(union acpi_operand_object
+> > > +*obj_desc)
+> > >  {
+> > >
+> > >  	if (!obj_desc) {
+> > > @@ -318,7 +318,7 @@ static const char *acpi_gbl_desc_type_names[] =3D=
+ {
+> > >  	/* 15 */ "Node"
+> > >  };
+> > >
+> > > -char *acpi_ut_get_descriptor_name(void *object)
+> > > +const char *acpi_ut_get_descriptor_name(void *object)
+> > >  {
+> > >
+> > >  	if (!object) {
+> > > @@ -329,7 +329,7 @@ char *acpi_ut_get_descriptor_name(void *object)
+> > >  		return ("Not a Descriptor");
+> > >  	}
+> > >
+> > > -	return (ACPI_CAST_PTR(char,
+> > > +	return (ACPI_CAST_PTR(const char,
+> > >  			      acpi_gbl_desc_type_names[ACPI_GET_DESCRIPTOR_TYPE
+> > >  						       (object)]));
+> > >
+> > > @@ -400,7 +400,7 @@ const char *acpi_ut_get_reference_name(union
+> > > acpi_operand_object *object)
+> > >
+> > >  /* Names for internal mutex objects, used for debug output */
+> > >
+> > > -static char *acpi_gbl_mutex_names[ACPI_NUM_MUTEX] =3D {
+> > > +static const char *acpi_gbl_mutex_names[ACPI_NUM_MUTEX] =3D {
+> > >  	"ACPI_MTX_Interpreter",
+> > >  	"ACPI_MTX_Namespace",
+> > >  	"ACPI_MTX_Tables",
+> > > @@ -411,7 +411,7 @@ static char *acpi_gbl_mutex_names[ACPI_NUM_MUTEX]
+> =3D {
+> > >  	"ACPI_MTX_CommandReady"
+> > >  };
+> > >
+> > > -char *acpi_ut_get_mutex_name(u32 mutex_id)
+> > > +const char *acpi_ut_get_mutex_name(u32 mutex_id)
+> > >  {
+> > >
+> > >  	if (mutex_id > ACPI_MAX_MUTEX) {
+> > > diff --git a/drivers/acpi/acpica/uthex.c
+> > > b/drivers/acpi/acpica/uthex.c index fda8b3d..9239711 100644
+> > > --- a/drivers/acpi/acpica/uthex.c
+> > > +++ b/drivers/acpi/acpica/uthex.c
+> > > @@ -48,7 +48,7 @@
+> > >  ACPI_MODULE_NAME("uthex")
+> > >
+> > >  /* Hex to ASCII conversion table */ -static char
+> > > acpi_gbl_hex_to_ascii[] =3D {
+> > > +static const char acpi_gbl_hex_to_ascii[] =3D {
+> > >  	'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C',
+> > > 'D',
+> > >  	    'E', 'F'
+> > >  };
+> > > @@ -67,7 +67,7 @@ static char acpi_gbl_hex_to_ascii[] =3D {
+> > >   *
+> > >
+> > > ********************************************************************
+> > > ******
+> > > ****/
+> > >
+> > > -char acpi_ut_hex_to_ascii_char(u64 integer, u32 position)
+> > > +const char acpi_ut_hex_to_ascii_char(u64 integer, u32 position)
+> > >  {
+> > >
+> > >  	return (acpi_gbl_hex_to_ascii[(integer >> position) & 0xF]); diff
+> > > -- git a/drivers/acpi/tables.c b/drivers/acpi/tables.c index
+> > > 17a6fa0..7c8a037
+> > > 100644
+> > > --- a/drivers/acpi/tables.c
+> > > +++ b/drivers/acpi/tables.c
+> > > @@ -35,8 +35,10 @@
+> > >
+> > >  #define ACPI_MAX_TABLES		128
+> > >
+> > > -static char *mps_inti_flags_polarity[] =3D { "dfl", "high", "res",
+> > > "low" }; -static char *mps_inti_flags_trigger[] =3D { "dfl", "edge",
+> "res", "level"
+> > > };
+> > > +static const char * const mps_inti_flags_polarity[] =3D {
+> > > +	"dfl", "high", "res", "low" };
+> > > +static const char * const mps_inti_flags_trigger[] =3D {
+> > > +	"dfl", "edge", "res", "level" };
+> > >
+> > >  static struct acpi_table_desc initial_tables[ACPI_MAX_TABLES]
+> > > __initdata;
+> > >
+> > > --
+> > > 2.4.9
+> >
+> > --
+> > To unsubscribe from this list: send the line "unsubscribe
+> > linux-kernel" in the body of a message to majordomo(a)vger.kernel.org
+> > More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> > Please read the FAQ at  http://www.tux.org/lkml/
 
-The user may select which license they wish to use for ACPICA. There are se=
-parate source code
-downloads (tar/zip) for the Intel license version and for the BSD & GPLv2 l=
-icense version (called
-the "dual license" version). These downloads are available at https://acpic=
-a.org/downloads
-
-      1. acpica-unix: Intel license.
-      2. acpica-unix2: GPLv2/BSD dual license.
-      3. acpica-win: Intel license.
-      3. acpitests-win and acpitest-unix : GPLv2/BSD dual license.
-      3. iasl-win: Intel license. (Binary Windows utilities.)
-
-For source code packages that contain the Intel license, only the Intel lic=
-ense applies; for packages
-that contain the dual license, the user can choose either the BSD or GPLv2 =
-license they wish to apply
-to their use of ACPICA. =
-
-
-The ACPICA test suite is licensed under the GPLv2/BSD license only.
-
-
-Submitting Contributions to ACPICA
-
-Any contributions (including patches, bug fixes, improvements, or new featu=
-res) submitted to the
-ACPICA project will be governed by the "simplified" BSD license reproduced =
-below. Contributions
-are accepted under this license in order to preserve ACPICA's ability to tr=
-i-license ACPICA in the
-manner described above.
-
-
-License for Contributions to ACPICA
-
-Copyright (c) 2000 - 2015 Intel Corp.
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modifica=
-tion, are permitted
-provided that the following conditions are met:
-
-1. Redistributions of source code must retain the above copyright notice, t=
-his list of conditions
-and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright notice=
-, this list of conditions
-and the following disclaimer in the documentation and/or other materials pr=
-ovided with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
-LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINES
-INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGE.
-
-
---===============2188285585704083824==--
+--===============3436863907890066991==--
 
