@@ -1,123 +1,105 @@
-Content-Type: multipart/mixed; boundary="===============0859259877430789303=="
+Content-Type: multipart/mixed; boundary="===============6610527113400919626=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] [PATCH v2] acpi: Use kstrtoul() instead of
- strtoul()/simple_strtoul()
-Date: Fri, 06 Nov 2015 16:21:41 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D991668@ORSMSX112.amr.corp.intel.com>
-In-Reply-To: 55BDD287.70004@roeck-us.net
+From: David Renz <sun.kisses.horizon at gmail.com>
+Subject: [Devel] ACPI table code of Lenovo G710 corrupted?
+Date: Tue, 17 Nov 2015 20:30:59 +0100
+Message-ID: <CAB=Lj3Qjsi3jmrsgk9GDPynSedLZuhkJtsM=Dt-qFZ+_+AtfLA@mail.gmail.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0859259877430789303==
+--===============6610527113400919626==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
+Hello everyone,
 
-> Subject: Re: [PATCH v2] acpi: Use kstrtoul() instead of
-> strtoul()/simple_strtoul()
+I own a Lenovo G710 notebook (here one can see the exact model:
+http://postimg.org/image/rm5vjgkb5/), and I find that the code stored in
+its ACPI tables, which I extracted using the Windows tool "Read&Write
+Everything", leads to strange/suspicious results when I submitted it to
+malwr.com:
+https://malwr.com/analysis/MjZkOGU4Y2ZmMGM5NDQ1Njg5OTc4NTVlOTQ5NThiMmY/
 
-So, this would fix the issue(s) (in aclinux.h):
+Why should the ACPI table code lead to the deployment of files related to
+Microsoft office, which is not even installed right after having installed
+Windows?
 
-#define strtoul                     kstrtoul
-
-
-
-strtoul is used frequently in with the ACPICA in-kernel AML Debugger:
-
-dbcmds.c(188):        Address =3D strtoul (InString, NULL, 16);
-dbcmds.c(266):    SleepState =3D (UINT8) strtoul (ObjectArg, NULL, 0);
-dbcmds.c(1283):    GpeNumber =3D strtoul (GpeArg, NULL, 0);
-dbcmds.c(1291):        BlockNumber =3D strtoul (BlockArg, NULL, 0);
-dbdisply.c(213):    Address =3D strtoul (Target, NULL, 16);
-dbdisply.c(749):    Handle =3D ACPI_TO_POINTER (strtoul (ObjectArg, NULL, 1=
-6));
-dbexec.c(769):    NumThreads =3D strtoul (NumThreadsArg, NULL, 0);
-dbexec.c(770):    NumLoops =3D strtoul (NumLoopsArg, NULL, 0);
-dbhistry.c(292):        CmdNum =3D strtoul (CommandNumArg, NULL, 0);
-dbinput.c(1018):                strtoul (AcpiGbl_DbArgs[1], NULL, 16);
-dbinput.c(1026):            AcpiGbl_DbDebugLevel =3D strtoul (AcpiGbl_DbArg=
-s[1], NULL, 16);
-dbinput.c(1060):        Temp =3D strtoul (AcpiGbl_DbArgs[2], NULL, 0);
-dbmethod.c(162):    Address =3D strtoul (Location, NULL, 16);
-dbmethod.c(249):    Value =3D strtoul (ValueArg, NULL, 16);
-dbmethod.c(271):    Index =3D strtoul (IndexArg, NULL, 16);
-dbmethod.c(381):        NumStatements =3D strtoul (Statements, NULL, 0);
-dbnames.c(334):            MaxDepth =3D strtoul (DepthArg, NULL, 0);
-dbnames.c(405):    OwnerId =3D (ACPI_OWNER_ID) strtoul (OwnerArg, NULL, 0);
-dbnames.c(411):        MaxDepth =3D strtoul (DepthArg, NULL, 0);
-dbnames.c(990):    Address =3D strtoul (ObjectArg, NULL, 16);
-dbtest.c(1046):        Info.MaxCount =3D strtoul (CountArg, NULL, 0);
+And looking at the section "Registry keys":
+Isn't it strange that this code causes all those registry changes,
+especially regarding all those "InProcServer32" entries?
 
 
+Could anyone, who owns the same model, try to extract its ACPI tables and
+submit them to malwr.com in order to check if this leads to the same
+results? And if one should thinks of this code being corrupted, then I
+guess it would be a good idea to perform a comparison in order to find
+differences and to check what those would imply.
+I uploaded the extracted ACPI tables of my notebook on GoogleDrive:
+https://drive.google.com/file/d/0B62Y5Qk_rdbWamlXRXZBSkJQYkU/view?usp=3Dsha=
+ring
 
+Under Pentoo Linux (and any other Linux distro I tried) the dmesg output
+also shows quite many ACPI related error messages (starting at second 13):
+https://drive.google.com/file/d/0B62Y5Qk_rdbWMGJNVnpXcVBIbEE/view?usp=3Dsha=
+ring
+
+
+Thanks in advance and best wishes
+
+David
 
 
 
-> -----Original Message-----
-> From: Guenter Roeck [mailto:linux(a)roeck-us.net]
-> Sent: Sunday, August 02, 2015 1:19 AM
-> To: Pavel Machek
-> Cc: rjw(a)rjwysocki.net; lenb(a)kernel.org; Moore, Robert; Zheng, Lv; lin=
-ux-
-> acpi(a)vger.kernel.org; linux-kernel(a)vger.kernel.org; devel(a)acpica.org
-> Subject: Re: [PATCH v2] acpi: Use kstrtoul() instead of
-> strtoul()/simple_strtoul()
-> =
-
-> On 08/02/2015 12:16 AM, Pavel Machek wrote:
-> > On Mon 2015-07-27 17:32:22, Guenter Roeck wrote:
-> >> simple_strtoul() is deprecated; replace with kstrtoul() and
-> kstrtouint().
-> >> Return an error if the value passed to the sysfs attribute is not a
-> >> number.
-> >>
-> >> Drop the definition of strtoul() since it is no longer needed.
-> >>
-> >> Signed-off-by: Guenter Roeck <linux(a)roeck-us.net>
-> >> ---
-> >> v2: An additional use of strtoul() was introduced with commit 4fa4616e.
-> >>      Replace it as well.
-> >>
-> >>   drivers/acpi/acpica/evgpeinit.c | 5 +++--
-> >>   drivers/acpi/sysfs.c            | 8 ++++++--
-> >>   include/acpi/platform/aclinux.h | 1 -
-> >>   3 files changed, 9 insertions(+), 5 deletions(-)
-> >>
-> >> diff --git a/drivers/acpi/acpica/evgpeinit.c
-> >> b/drivers/acpi/acpica/evgpeinit.c index ea4c0d3fca2d..aa1e8c1f2d4a
-> >> 100644
-> >> --- a/drivers/acpi/acpica/evgpeinit.c
-> >> +++ b/drivers/acpi/acpica/evgpeinit.c
-> >> @@ -326,6 +326,7 @@ acpi_ev_match_gpe_method(acpi_handle obj_handle,
-> >>   	u32 gpe_number;
-> >>   	char name[ACPI_NAME_SIZE + 1];
-> >>   	u8 type;
-> >> +	int err;
-> >>
-> >>   	ACPI_FUNCTION_TRACE(ev_match_gpe_method);
-> >>
-> >> @@ -377,8 +378,8 @@ acpi_ev_match_gpe_method(acpi_handle obj_handle,
-> >>
-> >>   	/* 4) The last two characters of the name are the hex GPE Number
-> >> */
-> >>
-> >> -	gpe_number =3D strtoul(&name[2], NULL, 16);
-> >> -	if (gpe_number =3D=3D ACPI_UINT32_MAX) {
-> >> +	er =3D kstrtouint(&name[2], 16, &gpe_number);
-> >> +	if (err < 0 || gpe_number =3D=3D ACPI_UINT32_MAX) {
-> >
-> > Are you sure you compile-tested this?
-> >
-> =
-
-> I was, but maybe not ;-). Since the patch was rejected it does not really
-> matter.
-> =
-
-> Guenter
 
 
---===============0859259877430789303==--
+
+Best wishes and thanks in advance
+
+--===============6610527113400919626==
+Content-Type: text/html
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="attachment.html"
+
+PGRpdiBkaXI9Imx0ciI+PGRpdj48ZGl2PjxkaXY+PGRpdj5IZWxsbyBldmVyeW9uZSw8YnI+PGJy
+Pkkgb3duIGEgTGVub3ZvIEc3MTAgbm90ZWJvb2sgKGhlcmUgb25lIGNhbiBzZWUgdGhlIGV4YWN0
+IG1vZGVsOiA8YSBocmVmPSJodHRwOi8vcG9zdGltZy5vcmcvaW1hZ2Uvcm01dmpna2I1LyI+aHR0
+cDovL3Bvc3RpbWcub3JnL2ltYWdlL3JtNXZqZ2tiNS88L2E+KSwgYW5kIEkgZmluZCB0aGF0IHRo
+ZSBjb2RlIHN0b3JlZCBpbiBpdHMgQUNQSSB0YWJsZXMsIHdoaWNoIEkgZXh0cmFjdGVkIHVzaW5n
+IHRoZSBXaW5kb3dzIHRvb2wgJnF1b3Q7UmVhZCZhbXA7V3JpdGUgRXZlcnl0aGluZyZxdW90Oywg
+bGVhZHMgdG8gc3RyYW5nZS9zdXNwaWNpb3VzIHJlc3VsdHMgd2hlbiBJIHN1Ym1pdHRlZCBpdCB0
+byA8YSBocmVmPSJodHRwOi8vbWFsd3IuY29tIj5tYWx3ci5jb208L2E+Ojxicj48YSBocmVmPSJo
+dHRwczovL21hbHdyLmNvbS9hbmFseXNpcy9NalprT0dVNFkyWm1NR001TkRRMU5qZzVPVGM0TlRW
+bE9UUTVOVGhpTW1ZLyI+aHR0cHM6Ly9tYWx3ci5jb20vYW5hbHlzaXMvTWpaa09HVTRZMlptTUdN
+NU5EUTFOamc1T1RjNE5UVmxPVFE1TlRoaU1tWS88L2E+PGJyPjxicj5XaHkgc2hvdWxkIHRoZSBB
+Q1BJIHRhYmxlIGNvZGUgbGVhZCB0byB0aGUgZGVwbG95bWVudCBvZiBmaWxlcyByZWxhdGVkIHRv
+IE1pY3Jvc29mdCBvZmZpY2UsIHdoaWNoIGlzIG5vdCBldmVuIGluc3RhbGxlZCByaWdodCBhZnRl
+ciBoYXZpbmcgaW5zdGFsbGVkIFdpbmRvd3M/PGJyPjxicj5BbmQgbG9va2luZyBhdCB0aGUgc2Vj
+dGlvbiAmcXVvdDtSZWdpc3RyeSBrZXlzJnF1b3Q7Ojxicj5Jc24mIzM5O3QgaXQgc3RyYW5nZSB0
+aGF0IHRoaXMgY29kZSBjYXVzZXMgYWxsIHRob3NlIHJlZ2lzdHJ5IGNoYW5nZXMsIGVzcGVjaWFs
+bHkgcmVnYXJkaW5nIGFsbCB0aG9zZSAmcXVvdDtJblByb2NTZXJ2ZXIzMiZxdW90OyBlbnRyaWVz
+Pzxicj48YnI+PGJyPkNvdWxkIGFueW9uZSwgd2hvIG93bnMgdGhlIHNhbWUgbW9kZWwsIHRyeSB0
+byBleHRyYWN0IGl0cyBBQ1BJIHRhYmxlcyBhbmQgc3VibWl0IHRoZW0gdG8gPGEgaHJlZj0iaHR0
+cDovL21hbHdyLmNvbSI+bWFsd3IuY29tPC9hPiBpbiBvcmRlciB0byBjaGVjayBpZiB0aGlzIGxl
+YWRzIHRvIHRoZSBzYW1lIHJlc3VsdHM/IEFuZCBpZiBvbmUgc2hvdWxkIHRoaW5rcyBvZiB0aGlz
+IGNvZGUgYmVpbmcgY29ycnVwdGVkLCB0aGVuIEkgZ3Vlc3MgaXQgd291bGQgYmUgYSBnb29kIGlk
+ZWEgdG8gcGVyZm9ybSBhIGNvbXBhcmlzb24gaW4gb3JkZXIgdG8gZmluZCBkaWZmZXJlbmNlcyBh
+bmQgdG8gY2hlY2sgd2hhdCB0aG9zZSB3b3VsZCBpbXBseS48YnI+PC9kaXY+SSB1cGxvYWRlZCB0
+aGUgZXh0cmFjdGVkIEFDUEkgdGFibGVzIG9mIG15IG5vdGVib29rIG9uIEdvb2dsZURyaXZlOjxi
+cj48YSBocmVmPSJodHRwczovL2RyaXZlLmdvb2dsZS5jb20vZmlsZS9kLzBCNjJZNVFrX3JkYldh
+bWxYUlhaQlNrSlFZa1Uvdmlldz91c3A9c2hhcmluZyI+aHR0cHM6Ly9kcml2ZS5nb29nbGUuY29t
+L2ZpbGUvZC8wQjYyWTVRa19yZGJXYW1sWFJYWkJTa0pRWWtVL3ZpZXc/dXNwPXNoYXJpbmc8L2E+
+PGJyPjxicj48L2Rpdj5VbmRlciBQZW50b28gTGludXggKGFuZCBhbnkgb3RoZXIgTGludXggZGlz
+dHJvIEkgdHJpZWQpIHRoZSBkbWVzZyBvdXRwdXQgYWxzbyBzaG93cyBxdWl0ZSBtYW55IEFDUEkg
+cmVsYXRlZCBlcnJvciBtZXNzYWdlcyAoc3RhcnRpbmcgYXQgc2Vjb25kIDEzKTo8YnI+PGEgaHJl
+Zj0iaHR0cHM6Ly9kcml2ZS5nb29nbGUuY29tL2ZpbGUvZC8wQjYyWTVRa19yZGJXTUdKTlZucFhj
+VkJJYkVFL3ZpZXc/dXNwPXNoYXJpbmciPmh0dHBzOi8vZHJpdmUuZ29vZ2xlLmNvbS9maWxlL2Qv
+MEI2Mlk1UWtfcmRiV01HSk5WbnBYY1ZCSWJFRS92aWV3P3VzcD1zaGFyaW5nPC9hPjxicj48YnI+
+PGJyPjwvZGl2PlRoYW5rcyBpbiBhZHZhbmNlIGFuZCBiZXN0IHdpc2hlczxicj48YnI+PC9kaXY+
+RGF2aWQ8YnI+PGJyPjxkaXY+PGRpdj48ZGl2PjxkaXY+PGRpdj48YnI+wqA8YnI+PGJyPsKgPGJy
+Pjxicj5CZXN0IHdpc2hlcyBhbmQgdGhhbmtzIGluIGFkdmFuY2U8YnI+PGJyPjwvZGl2PjwvZGl2
+PjwvZGl2PjwvZGl2PjwvZGl2PjwvZGl2Pgo=
+
+--===============6610527113400919626==--
 
