@@ -1,51 +1,95 @@
-Content-Type: multipart/mixed; boundary="===============8404074639357088000=="
+Content-Type: multipart/mixed; boundary="===============8085977348537557178=="
 MIME-Version: 1.0
-From: Hanjun Guo <hanjun.guo at linaro.org>
-Subject: Re: [Devel] [PATCH 1/5] ACPICA: Add acpi_dev_present
-Date: Tue, 24 Nov 2015 14:54:43 +0000
-Message-ID: <56547A2B.8030401@linaro.org>
-In-Reply-To: 2460979.tXaWt9xg5Q@vostro.rjw.lan
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] ACPICA version 20151124 released
+Date: Tue, 24 Nov 2015 15:40:18 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D999057@ORSMSX112.amr.corp.intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8404074639357088000==
+--===============8085977348537557178==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On 11/24/2015 10:22 PM, Rafael J. Wysocki wrote:
-> On Tuesday, November 24, 2015 12:40:51 PM Hanjun Guo wrote:
->> On 2015/11/24 7:32, Lukas Wunner wrote:
->>> Hi Robert,
->>>
->>> On Mon, Nov 23, 2015 at 10:22:27PM +0000, Moore, Robert wrote:
->>>>>> acpi_dev_present
->>>> Do you really want to be walking the ACPICA namespace for every call?
->>> That's what the drivers currently do. Typically this is called only once
->>> on initialization by the driver's ->probe callback.
->>>
->>> What did you have in mind instead, cache the result? Or store the HIDs
->>> in the namespace in a hash that can be queried faster?
->>
->> Will those drivers be loaded before the acpi namespace is scanned? if no=
-t, I think
->> those IDs already cached, in acpi_init_device_object(),
->>
->> INIT_LIST_HEAD(&device->pnp.ids);
->> ...
->> acpi_set_pnp_ids(handle, &device->pnp, type);
->>
->> please see API acpi_device_hid(), so I think you can introduce a API with
->> acpi_device and HID passed as arguments in scan.c
->
-> I'd prefer that to go to utils.c to be honest, even if the namespace need=
-s to
-> be walked.
+24 November 2015. Summary of changes for version 20151124:
 
-I agree, utils.c is the better place to go.
+This release is available at https://acpica.org/downloads
 
-Thanks
-Hanjun
 
---===============8404074639357088000==--
+1) ACPICA kernel-resident subsystem:
+
+Fixed a possible regression for a previous update to FADT handling. The FAD=
+T no longer has a fixed table ID, causing some issues with code that was ha=
+rdwired to a specific ID. Lv Zheng.
+
+Fixed a problem where the method auto-serialization could interfere with th=
+e current SyncLevel. This change makes the auto-serialization support trans=
+parent to the SyncLevel support and management.
+
+Removed support for the _SUB predefined name in AcpiGetObjectInfo. This int=
+erface is intended for early access to the namespace during the initial nam=
+espace device discovery walk. The _SUB method has been seen to access opera=
+tion regions in some cases, causing errors because the operation regions ar=
+e not fully initialized.
+
+AML Debugger: Fixed some issues with the terminate/quit/exit commands that =
+can cause faults. Lv Zheng.
+
+AML Debugger: Add thread ID support so that single-step mode only applies t=
+o the AML Debugger thread. This prevents runtime errors within some kernels=
+. Lv Zheng. =
+
+
+Eliminated extraneous warnings from AcpiGetSleepTypeData. Since the _Sx met=
+hods that are invoked by this interface are optional, removed warnings emit=
+ted for the case where one or more of these methods do not exist. ACPICA BZ=
+ 1208, original change by Prarit Bhargava.
+
+Made a major pass through the entire ACPICA source code base to standardize=
+ formatting that has diverged a bit over time. There are no functional chan=
+ges, but this will of course cause quite a few code differences from the pr=
+evious ACPICA release.
+
+Example Code and Data Size: These are the sizes for the OS-independent acpi=
+ca.lib produced by the Microsoft Visual C++ 9.0 32-bit compiler. The debug =
+version of the code includes the debug output trace mechanism and has a muc=
+h larger code and data size.
+
+  Current Release:
+    Non-Debug Version: 102.0K Code, 28.3K Data, 130.3K Total
+    Debug Version:     199.6K Code, 81.8K Data, 281.4K Total
+  Previous Release:
+    Non-Debug Version: 101.7K Code, 27.9K Data, 129.6K Total
+    Debug Version:     199.3K Code, 81.4K Data, 280.7K Total
+
+
+2) iASL Compiler/Disassembler and Tools:
+
+iASL/acpiexec/acpixtract/disassembler: Added support to allow multiple defi=
+nition blocks within a single ASL file and the resulting AML file. Support =
+for this type of file was also added to the various tools that use binary A=
+ML files: acpiexec, acpixtract, and the AML disassembler. The example code =
+below shows two definition blocks within the same file:
+
+    DefinitionBlock ("dsdt.aml", "DSDT", 2, "Intel", "Template", 0x12345678)
+    {
+    }
+    DefinitionBlock ("", "SSDT", 2, "Intel", "Template", 0xABCDEF01)
+    {
+    }
+
+iASL: Enhanced typechecking for the Name() operator. All expressions for th=
+e value of the named object must be reduced/folded to a single constant at =
+compile time, as per the ACPI specification (the AML definition of Name()).
+
+iASL: Fixed some code indentation issues for the -ic and -ia options (C and=
+ assembly headers). Now all emitted code correctly begins in column 1.
+
+iASL: Added an error message for an attempt to open a Scope() on an object =
+defined in an SSDT. The DSDT is always loaded into the namespace first, so =
+any attempt to open a Scope on an SSDT object will fail at runtime.
+
+
+--===============8085977348537557178==--
 
