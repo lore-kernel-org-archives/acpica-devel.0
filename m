@@ -1,64 +1,167 @@
-Content-Type: multipart/mixed; boundary="===============4543026611794419846=="
+Content-Type: multipart/mixed; boundary="===============6523076197683791734=="
 MIME-Version: 1.0
 From: Lukas Wunner <lukas at wunner.de>
-Subject: [Devel] [PATCH v2 1/2] ACPI / scan: Fix acpi_bus_id_list bookkeeping
+Subject: [Devel] [PATCH v2 2/2] ACPI / utils: Add acpi_dev_present()
 Date: Wed, 25 Nov 2015 21:19:55 +0100
-Message-ID: <994278b96189033970d0a2add95645110c716fbb.1448480385.git.lukas@wunner.de>
+Message-ID: <e6b4c58be0bc78dbc9ca8b14acf0448eda6b325c.1448480385.git.lukas@wunner.de>
 In-Reply-To: cover.1448480385.git.lukas@wunner.de
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4543026611794419846==
+--===============6523076197683791734==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-acpi_device_add() allocates and adds an element to acpi_bus_id_list
-(or increments the instance count if the device's HID is already
-present in the list), but the element is never deleted from the list
-nor freed. Fix it.
+There's an idiom in use by 7 Linux drivers to detect the presence of a
+particular ACPI HID by walking the namespace with acpi_get_devices().
+The callback passed to acpi_get_devices() is mostly identical across
+the drivers, leading to lots of duplicate code.
 
+Add acpi_dev_present(), the ACPI equivalent to pci_dev_present(),
+allowing us to deduplicate all that boilerplate in the drivers.
+
+v2: * Instead of walking the namespace, iterate over acpi_bus_id_list
+      which has all HIDs cached (Hanjun Guo, Robert Moore).
+    * Move to utils.c (Rafael J. Wysocki). This necessitates non-static
+      declaration of acpi_bus_id_list.
+
+Cc: Hanjun Guo <guohanjun(a)huawei.com>
+Cc: Robert Moore <robert.moore(a)intel.com>
+Cc: "Rafael J. Wysocki" <rjw(a)rjwysocki.net>
 Signed-off-by: Lukas Wunner <lukas(a)wunner.de>
 ---
- drivers/acpi/scan.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ drivers/acpi/internal.h |  8 ++++++++
+ drivers/acpi/scan.c     |  8 +-------
+ drivers/acpi/utils.c    | 31 +++++++++++++++++++++++++++++++
+ include/acpi/acpi_bus.h |  2 ++
+ 4 files changed, 42 insertions(+), 7 deletions(-)
 
+diff --git a/drivers/acpi/internal.h b/drivers/acpi/internal.h
+index 11d87bf..60bda0d 100644
+--- a/drivers/acpi/internal.h
++++ b/drivers/acpi/internal.h
+@@ -86,6 +86,14 @@ bool acpi_scan_is_offline(struct acpi_device *adev, bool=
+ uevent);
+ #define ACPI_STA_DEFAULT (ACPI_STA_DEVICE_PRESENT | ACPI_STA_DEVICE_ENABLE=
+D | \
+ 			  ACPI_STA_DEVICE_UI | ACPI_STA_DEVICE_FUNCTIONING)
+ =
+
++extern struct list_head acpi_bus_id_list;
++
++struct acpi_device_bus_id{
++	char bus_id[15];
++	unsigned int instance_no;
++	struct list_head node;
++};
++
+ int acpi_device_add(struct acpi_device *device,
+ 		    void (*release)(struct device *));
+ void acpi_init_device_object(struct acpi_device *device, acpi_handle handl=
+e,
 diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-index 78d5f02..a0e942b 100644
+index a0e942b..4be2179 100644
 --- a/drivers/acpi/scan.c
 +++ b/drivers/acpi/scan.c
-@@ -471,10 +471,24 @@ static void acpi_device_release(struct device *dev)
+@@ -39,7 +39,7 @@ static const char *dummy_hid =3D "device";
  =
 
- static void acpi_device_del(struct acpi_device *device)
+ static LIST_HEAD(acpi_dep_list);
+ static DEFINE_MUTEX(acpi_dep_list_lock);
+-static LIST_HEAD(acpi_bus_id_list);
++LIST_HEAD(acpi_bus_id_list);
+ static DEFINE_MUTEX(acpi_scan_lock);
+ static LIST_HEAD(acpi_scan_handlers_list);
+ DEFINE_MUTEX(acpi_device_lock);
+@@ -52,12 +52,6 @@ struct acpi_dep_data {
+ 	acpi_handle slave;
+ };
+ =
+
+-struct acpi_device_bus_id{
+-	char bus_id[15];
+-	unsigned int instance_no;
+-	struct list_head node;
+-};
+-
+ void acpi_scan_lock_acquire(void)
  {
-+	struct acpi_device_bus_id *acpi_device_bus_id;
-+
- 	mutex_lock(&acpi_device_lock);
- 	if (device->parent)
- 		list_del(&device->node);
+ 	mutex_lock(&acpi_scan_lock);
+diff --git a/drivers/acpi/utils.c b/drivers/acpi/utils.c
+index 475c907..f2f9873 100644
+--- a/drivers/acpi/utils.c
++++ b/drivers/acpi/utils.c
+@@ -29,6 +29,7 @@
+ #include <linux/dynamic_debug.h>
  =
 
+ #include "internal.h"
++#include "sleep.h"
+ =
+
+ #define _COMPONENT		ACPI_BUS_COMPONENT
+ ACPI_MODULE_NAME("utils");
+@@ -709,6 +710,36 @@ bool acpi_check_dsm(acpi_handle handle, const u8 *uuid=
+, int rev, u64 funcs)
+ }
+ EXPORT_SYMBOL(acpi_check_dsm);
+ =
+
++/**
++ * acpi_dev_present - Detect presence of a given ACPI device in the system.
++ * @hid: Hardware ID of the device.
++ *
++ * Return %true if the device was present at the moment of invocation.
++ * Note that if the device is pluggable, it may since have disappeared.
++ *
++ * For this function to work, acpi_bus_scan() must have been executed
++ * which happens in the subsys_initcall() subsection. Hence, do not
++ * call from a subsys_initcall() or earlier (use acpi_get_devices()
++ * instead). Calling from module_init() is fine (which is synonymous
++ * with device_initcall()).
++ */
++bool acpi_dev_present(const char *hid)
++{
++	struct acpi_device_bus_id *acpi_device_bus_id;
++	bool found =3D false;
++
++	mutex_lock(&acpi_device_lock);
 +	list_for_each_entry(acpi_device_bus_id, &acpi_bus_id_list, node)
-+		if (!strcmp(acpi_device_bus_id->bus_id,
-+			    acpi_device_hid(device))) {
-+			if (acpi_device_bus_id->instance_no > 0)
-+				acpi_device_bus_id->instance_no--;
-+			else {
-+				list_del(&acpi_device_bus_id->node);
-+				kfree(acpi_device_bus_id);
-+			}
++		if (!strcmp(acpi_device_bus_id->bus_id, hid)) {
++			found =3D true;
 +			break;
 +		}
++	mutex_unlock(&acpi_device_lock);
 +
- 	list_del(&device->wakeup_list);
- 	mutex_unlock(&acpi_device_lock);
++	return found;
++}
++EXPORT_SYMBOL(acpi_dev_present);
++
+ /*
+  * acpi_backlight=3D handling, this is done here rather then in video_dete=
+ct.c
+  * because __setup cannot be used in modules.
+diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+index ad0a5ff..0fe7bab 100644
+--- a/include/acpi/acpi_bus.h
++++ b/include/acpi/acpi_bus.h
+@@ -87,6 +87,8 @@ acpi_evaluate_dsm_typed(acpi_handle handle, const u8 *uui=
+d, int rev, int func,
+ 	  .package.elements =3D (eles)			\
+ 	}
  =
 
++bool acpi_dev_present(const char *hid);
++
+ #ifdef CONFIG_ACPI
+ =
+
+ #include <linux/proc_fs.h>
 -- =
 
 1.8.5.2 (Apple Git-48)
 
 
---===============4543026611794419846==--
+--===============6523076197683791734==--
 
