@@ -1,95 +1,79 @@
-Content-Type: multipart/mixed; boundary="===============8085977348537557178=="
+Content-Type: multipart/mixed; boundary="===============8607565391687099167=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] ACPICA version 20151124 released
-Date: Tue, 24 Nov 2015 15:40:18 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37D999057@ORSMSX112.amr.corp.intel.com>
+From: Lukas Wunner <lukas at wunner.de>
+Subject: [Devel] [PATCH v2 0/2] Add acpi_dev_present
+Date: Wed, 25 Nov 2015 21:19:55 +0100
+Message-ID: <cover.1448480385.git.lukas@wunner.de>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8085977348537557178==
+--===============8607565391687099167==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-24 November 2015. Summary of changes for version 20151124:
+Hi,
 
-This release is available at https://acpica.org/downloads
+On Tue, Nov 24, 2015 at 12:40:51 +0800, Hanjun Guo wrote:
+> I think those IDs already cached, in acpi_init_device_object(),
+> INIT_LIST_HEAD(&device->pnp.ids);
+> ...
+> acpi_set_pnp_ids(handle, &device->pnp, type);
+> please see API acpi_device_hid(), so I think you can introduce a API with
+> acpi_device and HID passed as arguments in scan.c
 
+Thank you for your feedback, I've reworked the patch to iterate over
+acpi_bus_id_list instead of walking the namespace.
 
-1) ACPICA kernel-resident subsystem:
-
-Fixed a possible regression for a previous update to FADT handling. The FAD=
-T no longer has a fixed table ID, causing some issues with code that was ha=
-rdwired to a specific ID. Lv Zheng.
-
-Fixed a problem where the method auto-serialization could interfere with th=
-e current SyncLevel. This change makes the auto-serialization support trans=
-parent to the SyncLevel support and management.
-
-Removed support for the _SUB predefined name in AcpiGetObjectInfo. This int=
-erface is intended for early access to the namespace during the initial nam=
-espace device discovery walk. The _SUB method has been seen to access opera=
-tion regions in some cases, causing errors because the operation regions ar=
-e not fully initialized.
-
-AML Debugger: Fixed some issues with the terminate/quit/exit commands that =
-can cause faults. Lv Zheng.
-
-AML Debugger: Add thread ID support so that single-step mode only applies t=
-o the AML Debugger thread. This prevents runtime errors within some kernels=
-. Lv Zheng. =
+An alternative approach would have been to traverse the acpi_device
+tree but it would have been more code. If you would prefer that over
+the solution I've settled on please let me know. It would be useful
+for stuff like this to have a function that traverses the acpi_device
+tree and invokes a callback for each node, =C3=A0 la acpi_ns_walk_namespace=
+().
+Does such a thing exist already? If so I've missed it.
 
 
-Eliminated extraneous warnings from AcpiGetSleepTypeData. Since the _Sx met=
-hods that are invoked by this interface are optional, removed warnings emit=
-ted for the case where one or more of these methods do not exist. ACPICA BZ=
- 1208, original change by Prarit Bhargava.
+> Will those drivers be loaded before the acpi namespace is scanned?
 
-Made a major pass through the entire ACPICA source code base to standardize=
- formatting that has diverged a bit over time. There are no functional chan=
-ges, but this will of course cause quite a few code differences from the pr=
-evious ACPICA release.
-
-Example Code and Data Size: These are the sizes for the OS-independent acpi=
-ca.lib produced by the Microsoft Visual C++ 9.0 32-bit compiler. The debug =
-version of the code includes the debug output trace mechanism and has a muc=
-h larger code and data size.
-
-  Current Release:
-    Non-Debug Version: 102.0K Code, 28.3K Data, 130.3K Total
-    Debug Version:     199.6K Code, 81.8K Data, 281.4K Total
-  Previous Release:
-    Non-Debug Version: 101.7K Code, 27.9K Data, 129.6K Total
-    Debug Version:     199.3K Code, 81.4K Data, 280.7K Total
+I verified that all 7 existing users invoke the new API from initcall
+level "device". The bus is scanned in initcall level "subsystem",
+i.e. earlier. So we're on the safe side here. I added a note in the
+kernel-doc that the function may not be called from a subsys_initcall()
+or earlier, this will hopefully make it foolproof. (If you feel this is
+over the top then just leave it out if/when merging.)
 
 
-2) iASL Compiler/Disassembler and Tools:
+On Tue, Nov 24, 2015 at 15:22:18 +0100, Rafael J. Wysocki wrote:
+> I'd prefer that to go to utils.c to be honest, even if the namespace
+> needs to be walked.
 
-iASL/acpiexec/acpixtract/disassembler: Added support to allow multiple defi=
-nition blocks within a single ASL file and the resulting AML file. Support =
-for this type of file was also added to the various tools that use binary A=
-ML files: acpiexec, acpixtract, and the AML disassembler. The example code =
-below shows two definition blocks within the same file:
+Done. Since this is not part of ACPICA, would it be okay to merge via
+ASoC as requested by Mark Brown?
 
-    DefinitionBlock ("dsdt.aml", "DSDT", 2, "Intel", "Template", 0x12345678)
-    {
-    }
-    DefinitionBlock ("", "SSDT", 2, "Intel", "Template", 0xABCDEF01)
-    {
-    }
+I've pushed the new version of the series to GitHub for more convenient
+reviewing. All driver patches except the one for Mark have acks now:
+https://github.com/l1k/linux/commits/acpi_dev_present
 
-iASL: Enhanced typechecking for the Name() operator. All expressions for th=
-e value of the named object must be reduced/folded to a single constant at =
-compile time, as per the ACPI specification (the AML definition of Name()).
+Thanks,
 
-iASL: Fixed some code indentation issues for the -ic and -ia options (C and=
- assembly headers). Now all emitted code correctly begins in column 1.
-
-iASL: Added an error message for an attempt to open a Scope() on an object =
-defined in an SSDT. The DSDT is always loaded into the namespace first, so =
-any attempt to open a Scope on an SSDT object will fail at runtime.
+Lukas
 
 
---===============8085977348537557178==--
+Lukas Wunner (2):
+  ACPI / scan: Fix acpi_bus_id_list bookkeeping
+  ACPI / utils: Add acpi_dev_present()
+
+ drivers/acpi/internal.h |  8 ++++++++
+ drivers/acpi/scan.c     | 22 +++++++++++++++-------
+ drivers/acpi/utils.c    | 31 +++++++++++++++++++++++++++++++
+ include/acpi/acpi_bus.h |  2 ++
+ 4 files changed, 56 insertions(+), 7 deletions(-)
+
+-- =
+
+1.8.5.2 (Apple Git-48)
+
+
+--===============8607565391687099167==--
 
