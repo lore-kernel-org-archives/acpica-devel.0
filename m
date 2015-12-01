@@ -1,67 +1,74 @@
-Content-Type: multipart/mixed; boundary="===============8615182147172466076=="
+Content-Type: multipart/mixed; boundary="===============4125094677173520372=="
 MIME-Version: 1.0
 From: Lukas Wunner <lukas at wunner.de>
-Subject: Re: [Devel] [PATCH v2 2/2] ACPI / utils: Add acpi_dev_present()
-Date: Tue, 01 Dec 2015 13:58:14 +0100
-Message-ID: <20151201125814.GA28094@wunner.de>
-In-Reply-To: 565C086B.4000000@huawei.com
+Subject: Re: [Devel] [PATCH v2 1/2] ACPI / scan: Fix acpi_bus_id_list
+ bookkeeping
+Date: Tue, 01 Dec 2015 14:08:29 +0100
+Message-ID: <20151201130829.GB28094@wunner.de>
+In-Reply-To: 565C0568.90905@huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8615182147172466076==
+--===============4125094677173520372==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi Hanjun Guo,
+Hi,
 
-thank you for taking a look at the patches.
-
-On Mon, Nov 30, 2015 at 04:27:23PM +0800, Hanjun Guo wrote:
-> If the driver can't pass the "dev" as the argument form acpi device or
-> platform device, this is the way to match HIDs.
+On Mon, Nov 30, 2015 at 04:14:32PM +0800, Hanjun Guo wrote:
+> On 2015/11/30 14:27, Hanjun Guo wrote:
+> > On 2015/11/26 4:19, Lukas Wunner wrote:
+> >> acpi_device_add() allocates and adds an element to acpi_bus_id_list
+> >> (or increments the instance count if the device's HID is already
+> >> present in the list), but the element is never deleted from the list
+> >> nor freed. Fix it.
+> > Hmm, I didn't get it here. Seems the device's ID already freed in devic=
+e core:
+> >
+> >  In acpi_add_single_object(), acpi_device_release() registered as a cal=
+lback,
+> > ...
+> >   result =3D acpi_device_add(device, acpi_device_release);
+> > ...
+> >
+> > And in acpi_device_release(), it will call acpi_free_pnp_ids() to free =
+the
+> > IDs, did I miss some something?
 > =
 
-> But if we get the pointer to acpi device or platform device structure
-> before calling this function, I think acpi_match_device_ids() can match
-> what you need, and we don't need to invent another function.
+> Sorry, I misread the code, I thought it was the pnn ids connect to the AC=
+PI device,
+> actually you are referring to HIDs connecting to acpi_bus_id_list, sorry =
+for the noise.
 
-Of the 7 users,
+Yes, I should have been more clear about this in the first place:
 
-* 4 detect the presence of a particular HID to activate platform-
-  specific quirks (acer-wmi.c, eeepc-wmi.c, thinkpad_helper.c,
-  cht_bsw_max98090_ti.c). The drivers never obtain a pointer to the
-  struct acpi_device. This is also the reason why I need to detect
-  the presence of apple-gmux in several DRM drivers, to activate
-  quirks specific to MacBook Pros with dual GPUs, and the one thing
-  they have in common is the presence of the gmux controller.
-  The DRM drivers likewise never have a need to hold a pointer to
-  apple-gmux' struct acpi_device.
+When the bus is scanned and acpi_device_add() is called for each device,
+not only do we initialize a struct acpi_device and attach it to the
+device tree, but we also add an element to acpi_bus_id_list.
 
-* 2 detect the presence of a particular HID and *afterwards*
-  instantiate a platform_device (atom/sst/sst_acpi.c and
-  common/sst-acpi.c). So we can't use acpi_match_device_ids()
-  there either.
+Hence there are two ways to detect the presence of a HID: By traversing
+the device tree or by iterating over the list. I chose the latter because
+it is obviously cheaper and requires less code.
 
-* 1 is a driver for a platform_device (cht_bsw_rt5645.c) which was
-  instantiated by atom/sst/sst_acpi.c. The driver is responsible
-  for two chips and differentiates between the two by detecting the
-  presence of a particular HID. It would be possible to refactor the
-  code so that atom/sst/sst_acpi.c passes down the matched HID to
-  cht_bsw_rt5645.c, then it wouldn't be necessary to match for a
-  second time. Also, the only difference between the two chipsets
-  seems to be a minute change in struct snd_soc_dapm_route, so I'm
-  wondering if it's necessary to differentiate between the chipsets
-  at all. Mark Brown may want to poke the developers of the driver to
-  refactor the code.
+However elements only ever get added to the list, never deleted. I'm not
+sure if hotpluggable ACPI devices exist but if they do, this is a bug
+which is fixed by this patch.
 
-TL;DR: 6 of the 7 users can't use acpi_match_device_ids() and the
-7th could be refactored so that it doesn't have to detect the presence
-of a specific HID at all.
+The list was added with e49bd2dd5a50 ("ACPI: use PNPID:instance_no as
+bus_id of ACPI device") 9 years ago and the author even mentioned that
+the list elements are never freed:
+
+   "NOTE:       Now I don't take the memory free work in charge.
+        If necessary, I can add a reference count in
+        struct acpi_device_bus_id, and check the reference and
+        when unregister a device, i.e. memory is freed when
+        the reference count of a given PNPID is 0."
 
 Best regards,
 
 Lukas
 
---===============8615182147172466076==--
+--===============4125094677173520372==--
 
