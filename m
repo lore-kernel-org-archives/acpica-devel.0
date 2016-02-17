@@ -1,79 +1,80 @@
-Content-Type: multipart/mixed; boundary="===============4548142011708577548=="
+Content-Type: multipart/mixed; boundary="===============4884774522757206950=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] [PATCH v2 6/9] ACPI: add definition of DBG2 subtypes
-Date: Fri, 12 Feb 2016 22:47:44 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37DA9BA10@ORSMSX112.amr.corp.intel.com>
-In-Reply-To: 1455299022-11641-7-git-send-email-aleksey.makarov@linaro.org
+From: Zheng, Lv <lv.zheng at intel.com>
+Subject: Re: [Devel] [PATCH] compiler: remove unnecessary zero check on
+ Length	before zero'ing it
+Date: Wed, 17 Feb 2016 05:58:02 +0000
+Message-ID: <1AE640813FDE7649BE1B193DEA596E883BB4BE5A@SHSMSX101.ccr.corp.intel.com>
+In-Reply-To: 1452162077-12119-1-git-send-email-colin.king@canonical.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4548142011708577548==
+--===============4884774522757206950==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-OK, we'll take these for the next release of ACPICA.
-Thanks,
-Bob
+Hi,
 
-
-> -----Original Message-----
-> From: Aleksey Makarov [mailto:aleksey.makarov(a)linaro.org]
-> Sent: Friday, February 12, 2016 9:44 AM
-> To: linux-acpi(a)vger.kernel.org
-> Cc: linux-serial(a)vger.kernel.org; linux-kernel(a)vger.kernel.org; linux=
--arm-
-> kernel(a)lists.infradead.org; Aleksey Makarov; Russell King; Greg Kroah-
-> Hartman; Rafael J . Wysocki; Leif Lindholm; Graeme Gregory; Al Stone;
-> Christopher Covington; Moore, Robert; Zheng, Lv; Wysocki, Rafael J; Len
-> Brown; devel(a)acpica.org
-> Subject: [PATCH v2 6/9] ACPI: add definition of DBG2 subtypes
+> From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of Colin King
+> Subject: [Devel] [PATCH] compiler: remove unnecessary zero check on Length
+> before zero'ing it
 > =
 
-> The recent version of Microsoft Debug Port Table 2 (DBG2) [1] specifies
-> additional serial debug port subtypes.  These constants are also referred
-> by Serial Port Console Redirection Table (SPCR) [2]
+> From: Colin Ian King <colin.king(a)canonical.com>
 > =
 
-> Add these constants.
+> Length is being checked to see if the contents is non-zero before
+> setting it to zero. It would be simpler to just set this to zero
+> without doing the non-zero check as it saves a load and a jmp
+> (~14 bytes in x86 object code). This also fixes a static analysis
+> warning in DtCompileIort:
 > =
 
-> [1] https://msdn.microsoft.com/en-
-> us/library/windows/hardware/dn639131(v=3Dvs.85).aspx
-> [2] https://msdn.microsoft.com/en-
-> us/library/windows/hardware/dn639132(v=3Dvs.85).aspx
+> CID 1298707 (#1 of 1): Uninitialized scalar variable (UNINIT).
+>   uninit_use_in_call: Using uninitialized value PaddingLength
+>   when calling DtCompileGeneric.
 > =
 
-> Signed-off-by: Aleksey Makarov <aleksey.makarov(a)linaro.org>
-> Tested-by: Christopher Covington <cov(a)codeaurora.org>
+> ..since the length is not being intitialized in this code before
+> calling DtCompileGeneric.
+> =
+
+> Signed-off-by: Colin Ian King <colin.king(a)canonical.com>
+
+Acked-by: Lv Zheng <lv.zheng(a)intel.com>
+
+Thanks
+-Lv
+
 > ---
->  include/acpi/actbl2.h | 5 +++++
->  1 file changed, 5 insertions(+)
+>  source/compiler/dttable2.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > =
 
-> diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h index
-> a4ef625..e9930ab 100644
-> --- a/include/acpi/actbl2.h
-> +++ b/include/acpi/actbl2.h
-> @@ -371,6 +371,11 @@ struct acpi_dbg2_device {
+> diff --git a/source/compiler/dttable2.c b/source/compiler/dttable2.c
+> index b281b5c..1add6f7 100644
+> --- a/source/compiler/dttable2.c
+> +++ b/source/compiler/dttable2.c
+> @@ -1707,7 +1707,7 @@ DtCompileGeneric (
 > =
 
->  #define ACPI_DBG2_16550_COMPATIBLE  0x0000
->  #define ACPI_DBG2_16550_SUBSET      0x0001
-> +#define ACPI_DBG2_ARM_PL011         0x0003
-> +#define ACPI_DBG2_ARM_SBSA_32BIT    0x000d
-> +#define ACPI_DBG2_ARM_SBSA_GENERIC  0x000e
-> +#define ACPI_DBG2_ARM_DCC           0x000f
-> +#define ACPI_DBG2_BCM2835           0x0010
+>      /* Now we can actually compile the parse tree */
 > =
 
->  #define ACPI_DBG2_1394_STANDARD     0x0000
-> =
-
+> -    if (Length && *Length)
+> +    if (Length)
+>      {
+>          *Length =3D 0;
+>      }
 > --
-> 2.7.0
+> 2.7.0.rc3
+> =
 
+> _______________________________________________
+> Devel mailing list
+> Devel(a)acpica.org
+> https://lists.acpica.org/mailman/listinfo/devel
 
---===============4548142011708577548==--
+--===============4884774522757206950==--
 
