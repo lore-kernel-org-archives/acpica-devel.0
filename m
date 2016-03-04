@@ -1,50 +1,33 @@
-Content-Type: multipart/mixed; boundary="===============2150397264211164890=="
+Content-Type: multipart/mixed; boundary="===============8314682628530454089=="
 MIME-Version: 1.0
-From: Colin King <colin.king at canonical.com>
-Subject: [Devel] [PATCH] Core: trivial fix on indentation,
- remove extraneous white space
-Date: Fri, 04 Mar 2016 00:26:55 +0000
-Message-ID: <1457051215-26878-1-git-send-email-colin.king@canonical.com>
+From: Will Miles <wmiles at sgl.com>
+Subject: [Devel] QNX port?
+Date: Fri, 04 Mar 2016 12:22:57 -0500
+Message-ID: <56D9C471.4020303@sgl.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2150397264211164890==
+--===============8314682628530454089==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-From: Colin Ian King <colin.king(a)canonical.com>
+Hi ACPICA developers,
 
-Remove white space to correct the indentation. No functional change.
+Do you have any interest in accepting patches for unusual target =
 
-Signed-off-by: Colin Ian King <colin.king(a)canonical.com>
----
- source/components/namespace/nsprepkg.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+platforms?   I've made a small patch to port the ACPICA package to QNX =
 
-diff --git a/source/components/namespace/nsprepkg.c b/source/components/nam=
-espace/nsprepkg.c
-index aad9de0..f83b1c7 100644
---- a/source/components/namespace/nsprepkg.c
-+++ b/source/components/namespace/nsprepkg.c
-@@ -438,8 +438,8 @@ AcpiNsCheckPackage (
- =
+6.6 for use as part of a device enumerator for my company's data =
 
-             Elements +=3D 2;
-             Count -=3D 2;
--         }
--         break;
-+        }
-+        break;
- =
+acquisition systems, and I'd be happy to send a pull request if there's =
 
-     default:
- =
+any interest in including such support to the upstream distribution.
 
--- =
-
-2.7.0
+Thanks,
+-Will Miles
+Sander Geophysics Ltd.
 
 
---===============2150397264211164890==--
+--===============8314682628530454089==--
 
