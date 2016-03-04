@@ -1,46 +1,50 @@
-Content-Type: multipart/mixed; boundary="===============0494854742639436931=="
+Content-Type: multipart/mixed; boundary="===============2150397264211164890=="
 MIME-Version: 1.0
 From: Colin King <colin.king at canonical.com>
 Subject: [Devel] [PATCH] Core: trivial fix on indentation,
- remove extraneous white spaces
-Date: Fri, 04 Mar 2016 00:24:34 +0000
-Message-ID: <1457051074-26807-1-git-send-email-colin.king@canonical.com>
+ remove extraneous white space
+Date: Fri, 04 Mar 2016 00:26:55 +0000
+Message-ID: <1457051215-26878-1-git-send-email-colin.king@canonical.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0494854742639436931==
+--===============2150397264211164890==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
 From: Colin Ian King <colin.king(a)canonical.com>
 
-Remove white spaces to correct the indentation. No functional change.
+Remove white space to correct the indentation. No functional change.
 
 Signed-off-by: Colin Ian King <colin.king(a)canonical.com>
 ---
- source/components/namespace/nsload.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ source/components/namespace/nsprepkg.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/source/components/namespace/nsload.c b/source/components/names=
-pace/nsload.c
-index d33719f..70e0c11 100644
---- a/source/components/namespace/nsload.c
-+++ b/source/components/namespace/nsload.c
-@@ -212,7 +212,7 @@ AcpiNsLoadTable (
-         (void) AcpiUtReleaseMutex (ACPI_MTX_NAMESPACE);
-         AcpiNsDeleteNamespaceByOwner (
-             AcpiGbl_RootTableList.Tables[TableIndex].OwnerId);
--            AcpiTbReleaseOwnerId (TableIndex);
-+        AcpiTbReleaseOwnerId (TableIndex);
+diff --git a/source/components/namespace/nsprepkg.c b/source/components/nam=
+espace/nsprepkg.c
+index aad9de0..f83b1c7 100644
+--- a/source/components/namespace/nsprepkg.c
++++ b/source/components/namespace/nsprepkg.c
+@@ -438,8 +438,8 @@ AcpiNsCheckPackage (
  =
 
-         return_ACPI_STATUS (Status);
-     }
+             Elements +=3D 2;
+             Count -=3D 2;
+-         }
+-         break;
++        }
++        break;
+ =
+
+     default:
+ =
+
 -- =
 
 2.7.0
 
 
---===============0494854742639436931==--
+--===============2150397264211164890==--
 
