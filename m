@@ -1,14 +1,13 @@
-Content-Type: multipart/mixed; boundary="===============9003212941862217917=="
+Content-Type: multipart/mixed; boundary="===============5956783738874527313=="
 MIME-Version: 1.0
 From: Colin King <colin.king at canonical.com>
-Subject: [Devel] [PATCH] compiler: trivial fix on indentation,
- missing white space
-Date: Fri, 04 Mar 2016 00:12:40 +0000
-Message-ID: <1457050360-26338-1-git-send-email-colin.king@canonical.com>
+Subject: [Devel] [PATCH] Core: trivial fix on indentation, missing white space
+Date: Fri, 04 Mar 2016 00:18:52 +0000
+Message-ID: <1457050732-26641-1-git-send-email-colin.king@canonical.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============9003212941862217917==
+--===============5956783738874527313==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
@@ -20,29 +19,30 @@ functional change.
 
 Signed-off-by: Colin Ian King <colin.king(a)canonical.com>
 ---
- source/compiler/aslrestype2e.c | 2 +-
+ source/components/executer/exsystem.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/source/compiler/aslrestype2e.c b/source/compiler/aslrestype2e.c
-index 1d91913..9288a95 100644
---- a/source/compiler/aslrestype2e.c
-+++ b/source/compiler/aslrestype2e.c
-@@ -215,7 +215,7 @@ RsDoExtendedIoDescriptor (
-             RsCreateQwordField (InitializerOp, ACPI_RESTAG_GRANULARITY,
-                 CurrentByteOffset + ASL_RESDESC_OFFSET (ExtAddress64.Granu=
-larity));
-             GranOp =3D InitializerOp;
--           break;
-+            break;
+diff --git a/source/components/executer/exsystem.c b/source/components/exec=
+uter/exsystem.c
+index b8fbdd7..ef64344 100644
+--- a/source/components/executer/exsystem.c
++++ b/source/components/executer/exsystem.c
+@@ -166,7 +166,7 @@ AcpiExSystemWaitSemaphore (
  =
 
-         case 6: /* Address Min */
+         /* Reacquire the interpreter */
  =
 
+-       AcpiExEnterInterpreter ();
++        AcpiExEnterInterpreter ();
+     }
+ =
+
+     return_ACPI_STATUS (Status);
 -- =
 
 2.7.0
 
 
---===============9003212941862217917==--
+--===============5956783738874527313==--
 
