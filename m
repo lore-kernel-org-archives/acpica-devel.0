@@ -1,21 +1,23 @@
-Content-Type: multipart/mixed; boundary="===============4428473832145787707=="
+Content-Type: multipart/mixed; boundary="===============2764455214731287821=="
 MIME-Version: 1.0
 From: Moore, Robert <robert.moore at intel.com>
 Subject: Re: [Devel] New to ACPICA, could use a pointer
-Date: Tue, 08 Mar 2016 15:41:43 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E44FC69@ORSMSX110.amr.corp.intel.com>
+Date: Tue, 08 Mar 2016 19:58:52 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E44FD75@ORSMSX110.amr.corp.intel.com>
 In-Reply-To: 989CF009-260A-445C-BCC1-6005A78DAA97@elemental.org
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4428473832145787707==
+--===============2764455214731287821==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Adding Lv, who has worked on the handler stuff.
-Bob
+>ACPI: XSDT 0x       0DBFF0040 00004C
 
+This may be your printf, I have not seen it before with our printf.
+
+We use %8.8X%8.8X for 64-bit values.
 
 > -----Original Message-----
 > From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of Dale Ghent
@@ -93,5 +95,5 @@ Bob
 > /dale
 
 
---===============4428473832145787707==--
+--===============2764455214731287821==--
 
