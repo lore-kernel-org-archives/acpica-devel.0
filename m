@@ -1,51 +1,51 @@
-Content-Type: multipart/mixed; boundary="===============0409665577598942356=="
+Content-Type: multipart/mixed; boundary="===============8617996283436426855=="
 MIME-Version: 1.0
 From: Colin King <colin.king at canonical.com>
-Subject: [Devel] [PATCH] tools/power/acpi: close file only if it is open
-Date: Fri, 18 Mar 2016 14:28:32 +0000
-Message-ID: <1458311312-23330-1-git-send-email-colin.king@canonical.com>
+Subject: [Devel] [PATCH] ACPI / util: cast data to u64 before shifting to fix
+ sign extension
+Date: Fri, 18 Mar 2016 15:08:01 +0000
+Message-ID: <1458313681-24239-1-git-send-email-colin.king@canonical.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0409665577598942356==
+--===============8617996283436426855==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
 From: Colin Ian King <colin.king(a)canonical.com>
 
-the logic on the test for a valid fd to close is incorrect and
-the current code will close -ve fd's which is not was intended.
-Since the only path to the exit label is on a failed open, we
-may as well just close fd if it has been opened successfully
-before the exit label and also remove the valid fd check.
+obj->buffer.pointer[i] should be cast to u64 to prevent an unintentional
+sign extension.  For example, if pointer[7] is 0x80, then the value
+0xffffffffff000000 is or'd into mask rather than the intended value
+0xff00000000000000
+
+Detected with static analysis by CoverityScan
 
 Signed-off-by: Colin Ian King <colin.king(a)canonical.com>
 ---
- tools/power/acpi/tools/acpidbg/acpidbg.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/acpi/utils.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/power/acpi/tools/acpidbg/acpidbg.c b/tools/power/acpi/to=
-ols/acpidbg/acpidbg.c
-index d070fcc..38ccac9 100644
---- a/tools/power/acpi/tools/acpidbg/acpidbg.c
-+++ b/tools/power/acpi/tools/acpidbg/acpidbg.c
-@@ -429,9 +429,8 @@ int main(int argc, char **argv)
- 		acpi_aml_flush(fd);
- 	acpi_aml_loop(fd);
+diff --git a/drivers/acpi/utils.c b/drivers/acpi/utils.c
+index f12a724..050673f 100644
+--- a/drivers/acpi/utils.c
++++ b/drivers/acpi/utils.c
+@@ -692,7 +692,7 @@ bool acpi_check_dsm(acpi_handle handle, const u8 *uuid,=
+ int rev, u64 funcs)
+ 		mask =3D obj->integer.value;
+ 	else if (obj->type =3D=3D ACPI_TYPE_BUFFER)
+ 		for (i =3D 0; i < obj->buffer.length && i < 8; i++)
+-			mask |=3D (((u8)obj->buffer.pointer[i]) << (i * 8));
++			mask |=3D (((u64)obj->buffer.pointer[i]) << (i * 8));
+ 	ACPI_FREE(obj);
  =
 
-+	close(fd);
- exit:
--	if (fd < 0)
--		close(fd);
- 	if (acpi_aml_batch_cmd)
- 		free(acpi_aml_batch_cmd);
- 	return ret;
+ 	/*
 -- =
 
 2.7.3
 
 
---===============0409665577598942356==--
+--===============8617996283436426855==--
 
