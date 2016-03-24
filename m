@@ -1,61 +1,75 @@
-Content-Type: multipart/mixed; boundary="===============1915376729860843635=="
+Content-Type: multipart/mixed; boundary="===============2349184488622132853=="
 MIME-Version: 1.0
-From: Colin King <colin.king at canonical.com>
-Subject: [Devel] [PATCH] Check for failed string allocation and set Status
- accordingly
-Date: Tue, 22 Mar 2016 22:16:32 +0000
-Message-ID: <1458684992-10395-1-git-send-email-colin.king@canonical.com>
+From: Moore, Robert <robert.moore at intel.com>
+Subject: Re: [Devel] [PATCH v6 2/5] ACPI: add definitions of DBG2 subtypes
+Date: Thu, 24 Mar 2016 16:45:44 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E453CD6@ORSMSX110.amr.corp.intel.com>
+In-Reply-To: 1458823925-19560-3-git-send-email-aleksey.makarov@linaro.org
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1915376729860843635==
+--===============2349184488622132853==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-From: Colin Ian King <colin.king(a)canonical.com>
-
-It is possible that AcpiUtCreateStringObject fails to allocate a
-string object, so check for this condition and set Status to
-AE_NO_MEMORY to indicate a memory allocation failure.
-
-Signed-off-by: Colin Ian King <colin.king(a)canonical.com>
----
- source/components/dispatcher/dsutils.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
-
-diff --git a/source/components/dispatcher/dsutils.c b/source/components/dis=
-patcher/dsutils.c
-index 52e9ca8..124dc67 100644
---- a/source/components/dispatcher/dsutils.c
-+++ b/source/components/dispatcher/dsutils.c
-@@ -678,9 +678,15 @@ AcpiDsCreateOperand (
-                     /* TBD: May only be temporary */
- =
-
-                     ObjDesc =3D AcpiUtCreateStringObject ((ACPI_SIZE) Name=
-Length);
--
--                    strncpy (ObjDesc->String.Pointer, NameString, NameLeng=
-th);
--                    Status =3D AE_OK;
-+                    if (!ObjDesc)
-+                    {
-+                        Status =3D AE_NO_MEMORY;
-+                    }
-+                    else
-+                    {
-+                        strncpy (ObjDesc->String.Pointer, NameString, Name=
-Length);
-+                        Status =3D AE_OK;
-+                    }
-                 }
-                 else
-                 {
--- =
-
-2.7.3
+We implemented all of these in ACPICA version 20160318.
 
 
---===============1915376729860843635==--
+> -----Original Message-----
+> From: Aleksey Makarov [mailto:aleksey.makarov(a)linaro.org]
+> Sent: Thursday, March 24, 2016 5:52 AM
+> To: Greg Kroah-Hartman; Rafael J . Wysocki; Len Brown
+> Cc: linux-serial(a)vger.kernel.org; linux-acpi(a)vger.kernel.org; linux-
+> kernel(a)vger.kernel.org; linux-arm-kernel(a)lists.infradead.org; Aleksey
+> Makarov; Russell King; Leif Lindholm; Graeme Gregory; Al Stone;
+> Christopher Covington; Yury Norov; Peter Hurley; Zheng, Lv; Moore, Robert;
+> Wysocki, Rafael J; devel(a)acpica.org
+> Subject: [PATCH v6 2/5] ACPI: add definitions of DBG2 subtypes
+> =
+
+> The recent version of Microsoft Debug Port Table 2 (DBG2) [1] specifies
+> additional serial debug port subtypes.  These constants are also referred
+> by Serial Port Console Redirection Table (SPCR) [2]
+> =
+
+> Add these constants.
+> =
+
+> [1] https://msdn.microsoft.com/en-
+> us/library/windows/hardware/dn639131(v=3Dvs.85).aspx
+> [2] https://msdn.microsoft.com/en-
+> us/library/windows/hardware/dn639132(v=3Dvs.85).aspx
+> =
+
+> Signed-off-by: Aleksey Makarov <aleksey.makarov(a)linaro.org>
+> ---
+>  include/acpi/actbl2.h | 5 +++++
+>  1 file changed, 5 insertions(+)
+> =
+
+> diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h index
+> a4ef625..652f747 100644
+> --- a/include/acpi/actbl2.h
+> +++ b/include/acpi/actbl2.h
+> @@ -371,6 +371,11 @@ struct acpi_dbg2_device {
+> =
+
+>  #define ACPI_DBG2_16550_COMPATIBLE  0x0000
+>  #define ACPI_DBG2_16550_SUBSET      0x0001
+> +#define ACPI_DBG2_ARM_PL011         0x0003
+> +#define ACPI_DBG2_ARM_SBSA_32BIT    0x000D
+> +#define ACPI_DBG2_ARM_SBSA_GENERIC  0x000E
+> +#define ACPI_DBG2_ARM_DCC           0x000F
+> +#define ACPI_DBG2_BCM2835           0x0010
+> =
+
+>  #define ACPI_DBG2_1394_STANDARD     0x0000
+> =
+
+> --
+> 2.7.4
+
+
+--===============2349184488622132853==--
 
