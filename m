@@ -1,530 +1,508 @@
-Content-Type: multipart/mixed; boundary="===============7940823596334119473=="
+Content-Type: multipart/mixed; boundary="===============4585356052252721063=="
 MIME-Version: 1.0
 From: Moore, Robert <robert.moore at intel.com>
 Subject: Re: [Devel] [RFC PATCH] acpi: Use a more normal logging style for
  ACPI_<LEVEL> calls
-Date: Tue, 29 Mar 2016 15:27:12 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E4553D5@ORSMSX110.amr.corp.intel.com>
-In-Reply-To: 1459222225.25110.58.camel@perches.com
+Date: Tue, 29 Mar 2016 15:34:39 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E4553F8@ORSMSX110.amr.corp.intel.com>
+In-Reply-To: 94F2FBAB4432B54E8AACC7DFDE6C92E37E4553D5@ORSMSX110.amr.corp.intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7940823596334119473==
+--===============4585356052252721063==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Probably not, because ACPI_INFO is a public (and documented) macro, and ACP=
-ICA is used in many operating systems.
-
-The double parens are there to allow for variable-length arguments, I belie=
-ve.
-
-Bob
+On the other hand, we removed AE_INFO from ACPI_INFO a while back, and this=
+ may remove the necessity for the double parens.
 
 
 > -----Original Message-----
-> From: Joe Perches [mailto:joe(a)perches.com]
-> Sent: Monday, March 28, 2016 8:30 PM
-> To: Moore, Robert; Zheng, Lv; Wysocki, Rafael J; Len Brown
-> Cc: linux-acpi(a)vger.kernel.org; devel(a)acpica.org; linux-kernel
-> Subject: [RFC PATCH] acpi: Use a more normal logging style for
+> From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of Moore, Robert
+> Sent: Tuesday, March 29, 2016 8:27 AM
+> To: Joe Perches; Zheng, Lv; Wysocki, Rafael J; Len Brown
+> Cc: linux-acpi(a)vger.kernel.org; linux-kernel; devel(a)acpica.org
+> Subject: Re: [Devel] [RFC PATCH] acpi: Use a more normal logging style for
 > ACPI_<LEVEL> calls
 > =
 
-> This is just an example of a conversion of ACPI_INFO to a more typical
-> kernel use style.  All of the other ACPI_<LEVEL> calls would also need
-> conversion.
+> Probably not, because ACPI_INFO is a public (and documented) macro, and
+> ACPICA is used in many operating systems.
 > =
 
-> Almost all logging functions and macros in the kernel are lower case and
-> nearly all use formats with terminating newlines.
+> The double parens are there to allow for variable-length arguments, I
+> believe.
 > =
 
-> ACPI uses upper case macros and no terminating newline in the format.
+> Bob
 > =
 
-> Some of the uses though _do_ have newlines. =C2=A0This can cause undesired
-> newlines in dmesg output.
 > =
 
-> Also, the ACPI_<LEVEL> macros use a somewhat odd and unpleasant style with
-> double parentheses.
-> =
-
-> Convert this to a lower case macro, add terminating newlines to formats
-> and remove the unnecessary extra parentheses.
-> =
-
-> Rename the logging function to _acpi_info and have the acpi_info macros
-> call this _acpi_info function.
-> =
-
-> Remove the newline from the _acpi_info call.
-> =
-
-> This means that all calls to acpi_info are complete and it is not possible
-> for any other message to be interleaved into this message.
-> =
-
-> Miscellanea:
-> =
-
-> o Coalesce formats
-> o Realign arguments
-> o Coalesce arguments even if > 80 columns
-> ---
-> =C2=A0drivers/acpi/acpica/dbcmds.c=C2=A0=C2=A0=C2=A0=C2=A0|=C2=A0=C2=A04 =
-++--
-> =C2=A0drivers/acpi/acpica/dsmethod.c=C2=A0=C2=A0|=C2=A0=C2=A06 ++----
-> =C2=A0drivers/acpi/acpica/dsobject.c=C2=A0=C2=A0|=C2=A0=C2=A05 ++---
-> =C2=A0drivers/acpi/acpica/evgpeblk.c=C2=A0=C2=A0|=C2=A0=C2=A08 ++++----
-> =C2=A0drivers/acpi/acpica/evgpeinit.c |=C2=A0=C2=A02 +-
-> =C2=A0drivers/acpi/acpica/exconfig.c=C2=A0=C2=A0|=C2=A0=C2=A04 ++--
-> =C2=A0drivers/acpi/acpica/nseval.c=C2=A0=C2=A0=C2=A0=C2=A0|=C2=A0=C2=A04 =
-++--
-> =C2=A0drivers/acpi/acpica/tbinstal.c=C2=A0=C2=A0| 15 +++++++--------
-> =C2=A0drivers/acpi/acpica/tbprint.c=C2=A0=C2=A0=C2=A0| 36 +++++++++++++++=
-+--------------------
-> =C2=A0drivers/acpi/acpica/tbutils.c=C2=A0=C2=A0=C2=A0|=C2=A0=C2=A03 ++-
-> =C2=A0drivers/acpi/acpica/tbxfload.c=C2=A0=C2=A0|=C2=A0=C2=A05 +++--
-> =C2=A0drivers/acpi/acpica/uttrack.c=C2=A0=C2=A0=C2=A0|=C2=A0=C2=A02 +-
-> =C2=A0drivers/acpi/acpica/utxferror.c |=C2=A0=C2=A07 +++----
-> =C2=A0include/acpi/acoutput.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+> > -----Original Message-----
+> > From: Joe Perches [mailto:joe(a)perches.com]
+> > Sent: Monday, March 28, 2016 8:30 PM
+> > To: Moore, Robert; Zheng, Lv; Wysocki, Rafael J; Len Brown
+> > Cc: linux-acpi(a)vger.kernel.org; devel(a)acpica.org; linux-kernel
+> > Subject: [RFC PATCH] acpi: Use a more normal logging style for
+> > ACPI_<LEVEL> calls
+> >
+> > This is just an example of a conversion of ACPI_INFO to a more typical
+> > kernel use style.  All of the other ACPI_<LEVEL> calls would also need
+> > conversion.
+> >
+> > Almost all logging functions and macros in the kernel are lower case
+> > and nearly all use formats with terminating newlines.
+> >
+> > ACPI uses upper case macros and no terminating newline in the format.
+> >
+> > Some of the uses though _do_ have newlines. =C2=A0This can cause undesi=
+red
+> > newlines in dmesg output.
+> >
+> > Also, the ACPI_<LEVEL> macros use a somewhat odd and unpleasant style
+> > with double parentheses.
+> >
+> > Convert this to a lower case macro, add terminating newlines to
+> > formats and remove the unnecessary extra parentheses.
+> >
+> > Rename the logging function to _acpi_info and have the acpi_info
+> > macros call this _acpi_info function.
+> >
+> > Remove the newline from the _acpi_info call.
+> >
+> > This means that all calls to acpi_info are complete and it is not
+> > possible for any other message to be interleaved into this message.
+> >
+> > Miscellanea:
+> >
+> > o Coalesce formats
+> > o Realign arguments
+> > o Coalesce arguments even if > 80 columns
+> > ---
+> > =C2=A0drivers/acpi/acpica/dbcmds.c=C2=A0=C2=A0=C2=A0=C2=A0|=C2=A0=C2=A0=
+4 ++--
+> > =C2=A0drivers/acpi/acpica/dsmethod.c=C2=A0=C2=A0|=C2=A0=C2=A06 ++----
+> > =C2=A0drivers/acpi/acpica/dsobject.c=C2=A0=C2=A0|=C2=A0=C2=A05 ++---
+> > =C2=A0drivers/acpi/acpica/evgpeblk.c=C2=A0=C2=A0|=C2=A0=C2=A08 ++++----
+> > =C2=A0drivers/acpi/acpica/evgpeinit.c |=C2=A0=C2=A02 +-
+> > =C2=A0drivers/acpi/acpica/exconfig.c=C2=A0=C2=A0|=C2=A0=C2=A04 ++--
+> > =C2=A0drivers/acpi/acpica/nseval.c=C2=A0=C2=A0=C2=A0=C2=A0|=C2=A0=C2=A0=
+4 ++--
+> > =C2=A0drivers/acpi/acpica/tbinstal.c=C2=A0=C2=A0| 15 +++++++--------
+> > =C2=A0drivers/acpi/acpica/tbprint.c=C2=A0=C2=A0=C2=A0| 36
+> > ++++++++++++++++--------------------
+> > =C2=A0drivers/acpi/acpica/tbutils.c=C2=A0=C2=A0=C2=A0|=C2=A0=C2=A03 ++-
+> > =C2=A0drivers/acpi/acpica/tbxfload.c=C2=A0=C2=A0|=C2=A0=C2=A05 +++--
+> > =C2=A0drivers/acpi/acpica/uttrack.c=C2=A0=C2=A0=C2=A0|=C2=A0=C2=A02 +-
+> > =C2=A0drivers/acpi/acpica/utxferror.c |=C2=A0=C2=A07 +++----
+> > =C2=A0include/acpi/acoutput.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
 =C2=A0=C2=A0|=C2=A0=C2=A06 +++---
-> =C2=A0include/acpi/acpixf.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0|=C2=A0=C2=A02 +-
-> =C2=A015 files changed, 51 insertions(+), 58 deletions(-)
-> =
-
-> diff --git a/drivers/acpi/acpica/dbcmds.c b/drivers/acpi/acpica/dbcmds.c
-> index 772178c..1ef21be 100644
-> --- a/drivers/acpi/acpica/dbcmds.c
-> +++ b/drivers/acpi/acpica/dbcmds.c
-> @@ -348,8 +348,8 @@ void acpi_db_display_table_info(char *table_arg)
-> =C2=A0		} else {
-> =C2=A0			/* If the pointer is null, the table has been unloaded
+> > =C2=A0include/acpi/acpixf.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0|=C2=A0=C2=A02 +-
+> > =C2=A015 files changed, 51 insertions(+), 58 deletions(-)
+> >
+> > diff --git a/drivers/acpi/acpica/dbcmds.c
+> > b/drivers/acpi/acpica/dbcmds.c index 772178c..1ef21be 100644
+> > --- a/drivers/acpi/acpica/dbcmds.c
+> > +++ b/drivers/acpi/acpica/dbcmds.c
+> > @@ -348,8 +348,8 @@ void acpi_db_display_table_info(char *table_arg)
+> > =C2=A0		} else {
+> > =C2=A0			/* If the pointer is null, the table has been unloaded
 > */
-> =
-
-> -			ACPI_INFO(("%4.4s - Table has been unloaded",
-> -				=C2=A0=C2=A0=C2=A0table_desc->signature.ascii));
-> +			acpi_info("%4.4s - Table has been unloaded\n",
-> +				=C2=A0=C2=A0table_desc->signature.ascii);
-> =C2=A0		}
-> =C2=A0	}
-> =C2=A0}
-> diff --git a/drivers/acpi/acpica/dsmethod.c
-> b/drivers/acpi/acpica/dsmethod.c index 1982310..4730b0a 100644
-> --- a/drivers/acpi/acpica/dsmethod.c
-> +++ b/drivers/acpi/acpica/dsmethod.c
-> @@ -809,10 +809,8 @@ acpi_ds_terminate_control_method(union
-> acpi_operand_object *method_desc,
-> =C2=A0		if (method_desc->method.
-> =C2=A0		=C2=A0=C2=A0=C2=A0=C2=A0info_flags & ACPI_METHOD_SERIALIZED_PENDI=
-NG) {
-> =C2=A0			if (walk_state) {
-> -				ACPI_INFO(("Marking method %4.4s as Serialized "
-> -					=C2=A0=C2=A0=C2=A0"because of AE_ALREADY_EXISTS error",
-> -					=C2=A0=C2=A0=C2=A0walk_state->method_node->name.
-> -					=C2=A0=C2=A0=C2=A0ascii));
-> +				acpi_info("Marking method %4.4s as Serialized
-> because of AE_ALREADY_EXISTS error\n",
-> +					=C2=A0=C2=A0walk_state->method_node->name.ascii);
-> =C2=A0			}
-> =
-
-> =C2=A0			/*
-> diff --git a/drivers/acpi/acpica/dsobject.c
-> b/drivers/acpi/acpica/dsobject.c index a91de2b..6787274 100644
-> --- a/drivers/acpi/acpica/dsobject.c
-> +++ b/drivers/acpi/acpica/dsobject.c
-> @@ -524,9 +524,8 @@ acpi_ds_build_internal_package_obj(struct
-> acpi_walk_state *walk_state,
-> =C2=A0			arg =3D arg->common.next;
-> =C2=A0		}
-> =
-
-> -		ACPI_INFO(("Actual Package length (%u) is larger than "
-> -			=C2=A0=C2=A0=C2=A0"NumElements field (%u), truncated",
-> -			=C2=A0=C2=A0=C2=A0i, element_count));
-> +		acpi_info("Actual Package length (%u) is larger than
-> NumElements field (%u), truncated\n",
-> +			=C2=A0=C2=A0i, element_count);
-> =C2=A0	} else if (i < element_count) {
-> =C2=A0		/*
-> =C2=A0		=C2=A0* Arg list (elements) was exhausted, but we did not reach
-> num_elements count.
-> diff --git a/drivers/acpi/acpica/evgpeblk.c
-> b/drivers/acpi/acpica/evgpeblk.c index 447fa1c..2244ed8 100644
-> --- a/drivers/acpi/acpica/evgpeblk.c
-> +++ b/drivers/acpi/acpica/evgpeblk.c
-> @@ -499,10 +499,10 @@ acpi_ev_initialize_gpe_block(struct
-> acpi_gpe_xrupt_info *gpe_xrupt_info,
-> =C2=A0	}
-> =
-
-> =C2=A0	if (gpe_enabled_count) {
-> -		ACPI_INFO(("Enabled %u GPEs in block %02X to %02X",
-> -			=C2=A0=C2=A0=C2=A0gpe_enabled_count, (u32)gpe_block->block_base_numbe=
-r,
-> -			=C2=A0=C2=A0=C2=A0(u32)(gpe_block->block_base_number +
-> -				=C2=A0(gpe_block->gpe_count - 1))));
-> +		acpi_info("Enabled %u GPEs in block %02X to %02X\n",
-> +			=C2=A0=C2=A0gpe_enabled_count, (u32)gpe_block->block_base_number,
-> +			=C2=A0=C2=A0(u32)(gpe_block->block_base_number +
-> +				gpe_block->gpe_count - 1));
-> =C2=A0	}
-> =
-
-> =C2=A0	gpe_block->initialized =3D TRUE;
-> diff --git a/drivers/acpi/acpica/evgpeinit.c
-> b/drivers/acpi/acpica/evgpeinit.c index 7dc7547..3a6d717 100644
-> --- a/drivers/acpi/acpica/evgpeinit.c
-> +++ b/drivers/acpi/acpica/evgpeinit.c
-> @@ -281,7 +281,7 @@ void acpi_ev_update_gpes(acpi_owner_id table_owner_id)
-> =C2=A0	}
-> =
-
-> =C2=A0	if (walk_info.count) {
-> -		ACPI_INFO(("Enabled %u new GPEs", walk_info.count));
-> +		acpi_info("Enabled %u new GPEs\n", walk_info.count);
-> =C2=A0	}
-> =
-
-> =C2=A0	(void)acpi_ut_release_mutex(ACPI_MTX_EVENTS);
-> diff --git a/drivers/acpi/acpica/exconfig.c
-> b/drivers/acpi/acpica/exconfig.c index f741613..99916fe 100644
-> --- a/drivers/acpi/acpica/exconfig.c
-> +++ b/drivers/acpi/acpica/exconfig.c
-> @@ -252,7 +252,7 @@ acpi_ex_load_table_op(struct acpi_walk_state
-> *walk_state,
-> =
-
-> =C2=A0	status =3D acpi_get_table_by_index(table_index, &table);
-> =C2=A0	if (ACPI_SUCCESS(status)) {
-> -		ACPI_INFO(("Dynamic OEM Table Load:"));
-> +		acpi_info("Dynamic OEM Table Load:\n");
-> =C2=A0		acpi_tb_print_table_header(0, table);
-> =C2=A0	}
-> =
-
-> @@ -472,7 +472,7 @@ acpi_ex_load_op(union acpi_operand_object *obj_desc,
-> =
-
-> =C2=A0	/* Install the new table into the local data structures */
-> =
-
-> -	ACPI_INFO(("Dynamic OEM Table Load:"));
-> +	acpi_info("Dynamic OEM Table Load:\n");
-> =C2=A0	(void)acpi_ut_acquire_mutex(ACPI_MTX_TABLES);
-> =
-
-> =C2=A0	status =3D acpi_tb_install_standard_table(ACPI_PTR_TO_PHYSADDR(tab=
-le),
-> diff --git a/drivers/acpi/acpica/nseval.c b/drivers/acpi/acpica/nseval.c
-> index 5d59cfc..18777f0 100644
-> --- a/drivers/acpi/acpica/nseval.c
-> +++ b/drivers/acpi/acpica/nseval.c
-> @@ -378,8 +378,8 @@ void acpi_ns_exec_module_code_list(void)
-> =C2=A0		acpi_ut_remove_reference(prev);
-> =C2=A0	}
-> =
-
-> -	ACPI_INFO(("Executed %u blocks of module-level executable AML code",
-> -		=C2=A0=C2=A0=C2=A0method_count));
-> +	acpi_info("Executed %u blocks of module-level executable AML
-> code\n",
-> +		=C2=A0=C2=A0method_count);
-> =
-
-> =C2=A0	ACPI_FREE(info);
-> =C2=A0	acpi_gbl_module_code_list =3D NULL;
-> diff --git a/drivers/acpi/acpica/tbinstal.c
-> b/drivers/acpi/acpica/tbinstal.c index 4dc6108..28f2ab7 100644
-> --- a/drivers/acpi/acpica/tbinstal.c
-> +++ b/drivers/acpi/acpica/tbinstal.c
-> @@ -267,9 +267,9 @@ acpi_tb_install_standard_table(acpi_physical_address
-> address,
-> =C2=A0	if (!reload &&
-> =C2=A0	=C2=A0=C2=A0=C2=A0=C2=A0acpi_gbl_disable_ssdt_table_install &&
-> =C2=A0	=C2=A0=C2=A0=C2=A0=C2=A0ACPI_COMPARE_NAME(&new_table_desc.signatur=
-e, ACPI_SIG_SSDT)) {
-> -		ACPI_INFO(("Ignoring installation of %4.4s at %8.8X%8.8X",
-> -			=C2=A0=C2=A0=C2=A0new_table_desc.signature.ascii,
-> -			=C2=A0=C2=A0=C2=A0ACPI_FORMAT_UINT64(address)));
-> +		acpi_info("Ignoring installation of %4.4s at %8.8X%8.8X\n",
-> +			=C2=A0=C2=A0new_table_desc.signature.ascii,
-> +			=C2=A0=C2=A0ACPI_FORMAT_UINT64(address));
-> =C2=A0		goto release_and_exit;
-> =C2=A0	}
-> =
-
-> @@ -431,11 +431,10 @@ finish_override:
-> =C2=A0		return;
-> =C2=A0	}
-> =
-
-> -	ACPI_INFO(("%4.4s 0x%8.8X%8.8X"
-> -		=C2=A0=C2=A0=C2=A0" %s table override, new table: 0x%8.8X%8.8X",
-> -		=C2=A0=C2=A0=C2=A0old_table_desc->signature.ascii,
-> -		=C2=A0=C2=A0=C2=A0ACPI_FORMAT_UINT64(old_table_desc->address),
-> -		=C2=A0=C2=A0=C2=A0override_type,
-> ACPI_FORMAT_UINT64(new_table_desc.address)));
-> +	acpi_info("%4.4s 0x%8.8X%8.8X %s table override, new table:
-> 0x%8.8X%8.8X\n",
-> +		=C2=A0=C2=A0old_table_desc->signature.ascii,
-> +		=C2=A0=C2=A0ACPI_FORMAT_UINT64(old_table_desc->address),
-> +		=C2=A0=C2=A0override_type, ACPI_FORMAT_UINT64(new_table_desc.address));
-> =
-
-> =C2=A0	/* We can now uninstall the original table */
-> =
-
-> diff --git a/drivers/acpi/acpica/tbprint.c b/drivers/acpi/acpica/tbprint.c
-> index 26d61db..030d610 100644
-> --- a/drivers/acpi/acpica/tbprint.c
-> +++ b/drivers/acpi/acpica/tbprint.c
-> @@ -132,9 +132,9 @@ acpi_tb_print_table_header(acpi_physical_address
-> address,
-> =
-
-> =C2=A0		/* FACS only has signature and length fields */
-> =
-
-> -		ACPI_INFO(("%-4.4s 0x%8.8X%8.8X %06X",
-> -			=C2=A0=C2=A0=C2=A0header->signature, ACPI_FORMAT_UINT64(address),
-> -			=C2=A0=C2=A0=C2=A0header->length));
-> +		acpi_info("%-4.4s 0x%8.8X%8.8X %06X\n",
-> +			=C2=A0=C2=A0header->signature, ACPI_FORMAT_UINT64(address),
-> +			=C2=A0=C2=A0header->length);
-> =C2=A0	} else if (ACPI_VALIDATE_RSDP_SIG(header->signature)) {
-> =
-
-> =C2=A0		/* RSDP has no common fields */
-> @@ -144,28 +144,24 @@ acpi_tb_print_table_header(acpi_physical_address
-> address,
-> =C2=A0		=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ACPI_OEM_ID_SIZE);
-> =C2=A0		acpi_tb_fix_string(local_header.oem_id, ACPI_OEM_ID_SIZE);
-> =
-
-> -		ACPI_INFO(("RSDP 0x%8.8X%8.8X %06X (v%.2d %-6.6s)",
-> -			=C2=A0=C2=A0=C2=A0ACPI_FORMAT_UINT64(address),
-> -			=C2=A0=C2=A0=C2=A0(ACPI_CAST_PTR(struct acpi_table_rsdp, header)->
-> -			=C2=A0=C2=A0=C2=A0=C2=A0revision >
-> -			=C2=A0=C2=A0=C2=A0=C2=A00) ? ACPI_CAST_PTR(struct acpi_table_rsdp,
-> -					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0header)->length : 20,
-> -			=C2=A0=C2=A0=C2=A0ACPI_CAST_PTR(struct acpi_table_rsdp,
-> -					=C2=A0header)->revision,
-> -			=C2=A0=C2=A0=C2=A0local_header.oem_id));
-> +		acpi_info("RSDP 0x%8.8X%8.8X %06X (v%.2d %-6.6s)\n",
-> +			=C2=A0=C2=A0ACPI_FORMAT_UINT64(address),
-> +			=C2=A0=C2=A0ACPI_CAST_PTR(struct acpi_table_rsdp, header)-
-> >revision > 0 ?
-> +			=C2=A0=C2=A0ACPI_CAST_PTR(struct acpi_table_rsdp, header)->length
-> : 20,
-> +			=C2=A0=C2=A0ACPI_CAST_PTR(struct acpi_table_rsdp, header)-
-> >revision,
-> +			=C2=A0=C2=A0local_header.oem_id);
-> =C2=A0	} else {
-> =C2=A0		/* Standard ACPI table with full common header */
-> =
-
-> =C2=A0		acpi_tb_cleanup_table_header(&local_header, header);
-> =
-
-> -		ACPI_INFO(("%-4.4s 0x%8.8X%8.8X"
-> -			=C2=A0=C2=A0=C2=A0" %06X (v%.2d %-6.6s %-8.8s %08X %-4.4s %08X)",
-> -			=C2=A0=C2=A0=C2=A0local_header.signature, ACPI_FORMAT_UINT64(address),
-> -			=C2=A0=C2=A0=C2=A0local_header.length, local_header.revision,
-> -			=C2=A0=C2=A0=C2=A0local_header.oem_id, local_header.oem_table_id,
-> -			=C2=A0=C2=A0=C2=A0local_header.oem_revision,
-> -			=C2=A0=C2=A0=C2=A0local_header.asl_compiler_id,
-> -			=C2=A0=C2=A0=C2=A0local_header.asl_compiler_revision));
-> +		acpi_info("%-4.4s 0x%8.8X%8.8X %06X (v%.2d %-6.6s %-8.8s %08X
-> %-4.4s %08X)\n",
-> +			=C2=A0=C2=A0local_header.signature, ACPI_FORMAT_UINT64(address),
-> +			=C2=A0=C2=A0local_header.length, local_header.revision,
-> +			=C2=A0=C2=A0local_header.oem_id, local_header.oem_table_id,
-> +			=C2=A0=C2=A0local_header.oem_revision,
-> +			=C2=A0=C2=A0local_header.asl_compiler_id,
-> +			=C2=A0=C2=A0local_header.asl_compiler_revision);
-> =C2=A0	}
-> =C2=A0}
-> =
-
-> diff --git a/drivers/acpi/acpica/tbutils.c b/drivers/acpi/acpica/tbutils.c
-> index 9240c76..8f64b38 100644
-> --- a/drivers/acpi/acpica/tbutils.c
-> +++ b/drivers/acpi/acpica/tbutils.c
-> @@ -174,7 +174,8 @@ struct acpi_table_header *acpi_tb_copy_dsdt(u32
-> table_index)
-> =C2=A0				=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ACPI_TABLE_ORIGIN_INTERNAL_=
-VIRTUAL,
-> =C2=A0				=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0new_table);
-> =
-
-> -	ACPI_INFO(("Forced DSDT copy: length 0x%05X copied locally, original
-> unmapped", new_table->length));
-> +	acpi_info("Forced DSDT copy: length 0x%05X copied locally, original
-> unmapped\n",
-> +		=C2=A0=C2=A0new_table->length);
-> =
-
-> =C2=A0	return (new_table);
-> =C2=A0}
-> diff --git a/drivers/acpi/acpica/tbxfload.c
-> b/drivers/acpi/acpica/tbxfload.c index 3151968..0827d17 100644
-> --- a/drivers/acpi/acpica/tbxfload.c
-> +++ b/drivers/acpi/acpica/tbxfload.c
-> @@ -240,7 +240,8 @@ acpi_status acpi_tb_load_namespace(void)
-> =C2=A0	}
-> =
-
-> =C2=A0	if (!tables_failed) {
-> -		ACPI_INFO(("%u ACPI AML tables successfully acquired and
-> loaded\n", tables_loaded));
-> +		acpi_info("%u ACPI AML tables successfully acquired and
-> loaded\n",
-> +			=C2=A0=C2=A0tables_loaded);
-> =C2=A0	} else {
-> =C2=A0		ACPI_ERROR((AE_INFO,
-> =C2=A0			=C2=A0=C2=A0=C2=A0=C2=A0"%u table load failures, %u successful",=
- @@ -333,7
-> +334,7 @@ acpi_status acpi_load_table(struct acpi_table_header *table)
-> =
-
-> =C2=A0	/* Install the table and load it into the namespace */
-> =
-
-> -	ACPI_INFO(("Host-directed Dynamic ACPI Table Load:"));
-> +	acpi_info("Host-directed Dynamic ACPI Table Load:\n");
-> =C2=A0	(void)acpi_ut_acquire_mutex(ACPI_MTX_TABLES);
-> =
-
-> =C2=A0	status =3D acpi_tb_install_standard_table(ACPI_PTR_TO_PHYSADDR(tab=
-le),
-> diff --git a/drivers/acpi/acpica/uttrack.c b/drivers/acpi/acpica/uttrack.c
-> index 60c406a..b1d6f4a 100644
-> --- a/drivers/acpi/acpica/uttrack.c
-> +++ b/drivers/acpi/acpica/uttrack.c
-> @@ -712,7 +712,7 @@ void acpi_ut_dump_allocations(u32 component, const
-> char *module)
-> =C2=A0	/* Print summary */
-> =
-
-> =C2=A0	if (!num_outstanding) {
-> -		ACPI_INFO(("No outstanding allocations"));
-> +		acpi_info("No outstanding allocations\n");
-> =C2=A0	} else {
-> =C2=A0		ACPI_ERROR((AE_INFO, "%u(0x%X) Outstanding allocations",
-> =C2=A0			=C2=A0=C2=A0=C2=A0=C2=A0num_outstanding, num_outstanding)); diff=
- --git
-> a/drivers/acpi/acpica/utxferror.c b/drivers/acpi/acpica/utxferror.c index
-> d9f15cb..e9a80c2 100644
-> --- a/drivers/acpi/acpica/utxferror.c
-> +++ b/drivers/acpi/acpica/utxferror.c
-> @@ -161,7 +161,7 @@ ACPI_EXPORT_SYMBOL(acpi_warning)
-> =
-
-> =C2=A0/******************************************************************=
-******
-> *******
-> =C2=A0 *
-> - * FUNCTION:=C2=A0=C2=A0=C2=A0=C2=A0acpi_info
-> + * FUNCTION:=C2=A0=C2=A0=C2=A0=C2=A0_acpi_info
-> =C2=A0 *
-> =C2=A0 * PARAMETERS:=C2=A0=C2=A0module_name=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0- Caller's module name (for error
-> output)
-> =C2=A0 *=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+> >
+> > -			ACPI_INFO(("%4.4s - Table has been unloaded",
+> > -				=C2=A0=C2=A0=C2=A0table_desc->signature.ascii));
+> > +			acpi_info("%4.4s - Table has been unloaded\n",
+> > +				=C2=A0=C2=A0table_desc->signature.ascii);
+> > =C2=A0		}
+> > =C2=A0	}
+> > =C2=A0}
+> > diff --git a/drivers/acpi/acpica/dsmethod.c
+> > b/drivers/acpi/acpica/dsmethod.c index 1982310..4730b0a 100644
+> > --- a/drivers/acpi/acpica/dsmethod.c
+> > +++ b/drivers/acpi/acpica/dsmethod.c
+> > @@ -809,10 +809,8 @@ acpi_ds_terminate_control_method(union
+> > acpi_operand_object *method_desc,
+> > =C2=A0		if (method_desc->method.
+> > =C2=A0		=C2=A0=C2=A0=C2=A0=C2=A0info_flags & ACPI_METHOD_SERIALIZED_PEN=
+DING) {
+> > =C2=A0			if (walk_state) {
+> > -				ACPI_INFO(("Marking method %4.4s as Serialized "
+> > -					=C2=A0=C2=A0=C2=A0"because of AE_ALREADY_EXISTS error",
+> > -					=C2=A0=C2=A0=C2=A0walk_state->method_node->name.
+> > -					=C2=A0=C2=A0=C2=A0ascii));
+> > +				acpi_info("Marking method %4.4s as Serialized
+> > because of AE_ALREADY_EXISTS error\n",
+> > +					=C2=A0=C2=A0walk_state->method_node->name.ascii);
+> > =C2=A0			}
+> >
+> > =C2=A0			/*
+> > diff --git a/drivers/acpi/acpica/dsobject.c
+> > b/drivers/acpi/acpica/dsobject.c index a91de2b..6787274 100644
+> > --- a/drivers/acpi/acpica/dsobject.c
+> > +++ b/drivers/acpi/acpica/dsobject.c
+> > @@ -524,9 +524,8 @@ acpi_ds_build_internal_package_obj(struct
+> > acpi_walk_state *walk_state,
+> > =C2=A0			arg =3D arg->common.next;
+> > =C2=A0		}
+> >
+> > -		ACPI_INFO(("Actual Package length (%u) is larger than "
+> > -			=C2=A0=C2=A0=C2=A0"NumElements field (%u), truncated",
+> > -			=C2=A0=C2=A0=C2=A0i, element_count));
+> > +		acpi_info("Actual Package length (%u) is larger than
+> > NumElements field (%u), truncated\n",
+> > +			=C2=A0=C2=A0i, element_count);
+> > =C2=A0	} else if (i < element_count) {
+> > =C2=A0		/*
+> > =C2=A0		=C2=A0* Arg list (elements) was exhausted, but we did not reach
+> > num_elements count.
+> > diff --git a/drivers/acpi/acpica/evgpeblk.c
+> > b/drivers/acpi/acpica/evgpeblk.c index 447fa1c..2244ed8 100644
+> > --- a/drivers/acpi/acpica/evgpeblk.c
+> > +++ b/drivers/acpi/acpica/evgpeblk.c
+> > @@ -499,10 +499,10 @@ acpi_ev_initialize_gpe_block(struct
+> > acpi_gpe_xrupt_info *gpe_xrupt_info,
+> > =C2=A0	}
+> >
+> > =C2=A0	if (gpe_enabled_count) {
+> > -		ACPI_INFO(("Enabled %u GPEs in block %02X to %02X",
+> > -			=C2=A0=C2=A0=C2=A0gpe_enabled_count, (u32)gpe_block->block_base_num=
+ber,
+> > -			=C2=A0=C2=A0=C2=A0(u32)(gpe_block->block_base_number +
+> > -				=C2=A0(gpe_block->gpe_count - 1))));
+> > +		acpi_info("Enabled %u GPEs in block %02X to %02X\n",
+> > +			=C2=A0=C2=A0gpe_enabled_count, (u32)gpe_block->block_base_number,
+> > +			=C2=A0=C2=A0(u32)(gpe_block->block_base_number +
+> > +				gpe_block->gpe_count - 1));
+> > =C2=A0	}
+> >
+> > =C2=A0	gpe_block->initialized =3D TRUE;
+> > diff --git a/drivers/acpi/acpica/evgpeinit.c
+> > b/drivers/acpi/acpica/evgpeinit.c index 7dc7547..3a6d717 100644
+> > --- a/drivers/acpi/acpica/evgpeinit.c
+> > +++ b/drivers/acpi/acpica/evgpeinit.c
+> > @@ -281,7 +281,7 @@ void acpi_ev_update_gpes(acpi_owner_id
+> table_owner_id)
+> > =C2=A0	}
+> >
+> > =C2=A0	if (walk_info.count) {
+> > -		ACPI_INFO(("Enabled %u new GPEs", walk_info.count));
+> > +		acpi_info("Enabled %u new GPEs\n", walk_info.count);
+> > =C2=A0	}
+> >
+> > =C2=A0	(void)acpi_ut_release_mutex(ACPI_MTX_EVENTS);
+> > diff --git a/drivers/acpi/acpica/exconfig.c
+> > b/drivers/acpi/acpica/exconfig.c index f741613..99916fe 100644
+> > --- a/drivers/acpi/acpica/exconfig.c
+> > +++ b/drivers/acpi/acpica/exconfig.c
+> > @@ -252,7 +252,7 @@ acpi_ex_load_table_op(struct acpi_walk_state
+> > *walk_state,
+> >
+> > =C2=A0	status =3D acpi_get_table_by_index(table_index, &table);
+> > =C2=A0	if (ACPI_SUCCESS(status)) {
+> > -		ACPI_INFO(("Dynamic OEM Table Load:"));
+> > +		acpi_info("Dynamic OEM Table Load:\n");
+> > =C2=A0		acpi_tb_print_table_header(0, table);
+> > =C2=A0	}
+> >
+> > @@ -472,7 +472,7 @@ acpi_ex_load_op(union acpi_operand_object
+> > *obj_desc,
+> >
+> > =C2=A0	/* Install the new table into the local data structures */
+> >
+> > -	ACPI_INFO(("Dynamic OEM Table Load:"));
+> > +	acpi_info("Dynamic OEM Table Load:\n");
+> > =C2=A0	(void)acpi_ut_acquire_mutex(ACPI_MTX_TABLES);
+> >
+> > =C2=A0	status =3D acpi_tb_install_standard_table(ACPI_PTR_TO_PHYSADDR(t=
+able),
+> > diff --git a/drivers/acpi/acpica/nseval.c
+> > b/drivers/acpi/acpica/nseval.c index 5d59cfc..18777f0 100644
+> > --- a/drivers/acpi/acpica/nseval.c
+> > +++ b/drivers/acpi/acpica/nseval.c
+> > @@ -378,8 +378,8 @@ void acpi_ns_exec_module_code_list(void)
+> > =C2=A0		acpi_ut_remove_reference(prev);
+> > =C2=A0	}
+> >
+> > -	ACPI_INFO(("Executed %u blocks of module-level executable AML code",
+> > -		=C2=A0=C2=A0=C2=A0method_count));
+> > +	acpi_info("Executed %u blocks of module-level executable AML
+> > code\n",
+> > +		=C2=A0=C2=A0method_count);
+> >
+> > =C2=A0	ACPI_FREE(info);
+> > =C2=A0	acpi_gbl_module_code_list =3D NULL;
+> > diff --git a/drivers/acpi/acpica/tbinstal.c
+> > b/drivers/acpi/acpica/tbinstal.c index 4dc6108..28f2ab7 100644
+> > --- a/drivers/acpi/acpica/tbinstal.c
+> > +++ b/drivers/acpi/acpica/tbinstal.c
+> > @@ -267,9 +267,9 @@
+> > acpi_tb_install_standard_table(acpi_physical_address
+> > address,
+> > =C2=A0	if (!reload &&
+> > =C2=A0	=C2=A0=C2=A0=C2=A0=C2=A0acpi_gbl_disable_ssdt_table_install &&
+> > =C2=A0	=C2=A0=C2=A0=C2=A0=C2=A0ACPI_COMPARE_NAME(&new_table_desc.signat=
+ure, ACPI_SIG_SSDT)) {
+> > -		ACPI_INFO(("Ignoring installation of %4.4s at %8.8X%8.8X",
+> > -			=C2=A0=C2=A0=C2=A0new_table_desc.signature.ascii,
+> > -			=C2=A0=C2=A0=C2=A0ACPI_FORMAT_UINT64(address)));
+> > +		acpi_info("Ignoring installation of %4.4s at %8.8X%8.8X\n",
+> > +			=C2=A0=C2=A0new_table_desc.signature.ascii,
+> > +			=C2=A0=C2=A0ACPI_FORMAT_UINT64(address));
+> > =C2=A0		goto release_and_exit;
+> > =C2=A0	}
+> >
+> > @@ -431,11 +431,10 @@ finish_override:
+> > =C2=A0		return;
+> > =C2=A0	}
+> >
+> > -	ACPI_INFO(("%4.4s 0x%8.8X%8.8X"
+> > -		=C2=A0=C2=A0=C2=A0" %s table override, new table: 0x%8.8X%8.8X",
+> > -		=C2=A0=C2=A0=C2=A0old_table_desc->signature.ascii,
+> > -		=C2=A0=C2=A0=C2=A0ACPI_FORMAT_UINT64(old_table_desc->address),
+> > -		=C2=A0=C2=A0=C2=A0override_type,
+> > ACPI_FORMAT_UINT64(new_table_desc.address)));
+> > +	acpi_info("%4.4s 0x%8.8X%8.8X %s table override, new table:
+> > 0x%8.8X%8.8X\n",
+> > +		=C2=A0=C2=A0old_table_desc->signature.ascii,
+> > +		=C2=A0=C2=A0ACPI_FORMAT_UINT64(old_table_desc->address),
+> > +		=C2=A0=C2=A0override_type, ACPI_FORMAT_UINT64(new_table_desc.address=
+));
+> >
+> > =C2=A0	/* We can now uninstall the original table */
+> >
+> > diff --git a/drivers/acpi/acpica/tbprint.c
+> > b/drivers/acpi/acpica/tbprint.c index 26d61db..030d610 100644
+> > --- a/drivers/acpi/acpica/tbprint.c
+> > +++ b/drivers/acpi/acpica/tbprint.c
+> > @@ -132,9 +132,9 @@ acpi_tb_print_table_header(acpi_physical_address
+> > address,
+> >
+> > =C2=A0		/* FACS only has signature and length fields */
+> >
+> > -		ACPI_INFO(("%-4.4s 0x%8.8X%8.8X %06X",
+> > -			=C2=A0=C2=A0=C2=A0header->signature, ACPI_FORMAT_UINT64(address),
+> > -			=C2=A0=C2=A0=C2=A0header->length));
+> > +		acpi_info("%-4.4s 0x%8.8X%8.8X %06X\n",
+> > +			=C2=A0=C2=A0header->signature, ACPI_FORMAT_UINT64(address),
+> > +			=C2=A0=C2=A0header->length);
+> > =C2=A0	} else if (ACPI_VALIDATE_RSDP_SIG(header->signature)) {
+> >
+> > =C2=A0		/* RSDP has no common fields */
+> > @@ -144,28 +144,24 @@ acpi_tb_print_table_header(acpi_physical_address
+> > address,
+> > =C2=A0		=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ACPI_OEM_ID_SIZE);
+> > =C2=A0		acpi_tb_fix_string(local_header.oem_id, ACPI_OEM_ID_SIZE);
+> >
+> > -		ACPI_INFO(("RSDP 0x%8.8X%8.8X %06X (v%.2d %-6.6s)",
+> > -			=C2=A0=C2=A0=C2=A0ACPI_FORMAT_UINT64(address),
+> > -			=C2=A0=C2=A0=C2=A0(ACPI_CAST_PTR(struct acpi_table_rsdp, header)->
+> > -			=C2=A0=C2=A0=C2=A0=C2=A0revision >
+> > -			=C2=A0=C2=A0=C2=A0=C2=A00) ? ACPI_CAST_PTR(struct acpi_table_rsdp,
+> > -					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0header)->length : 20,
+> > -			=C2=A0=C2=A0=C2=A0ACPI_CAST_PTR(struct acpi_table_rsdp,
+> > -					=C2=A0header)->revision,
+> > -			=C2=A0=C2=A0=C2=A0local_header.oem_id));
+> > +		acpi_info("RSDP 0x%8.8X%8.8X %06X (v%.2d %-6.6s)\n",
+> > +			=C2=A0=C2=A0ACPI_FORMAT_UINT64(address),
+> > +			=C2=A0=C2=A0ACPI_CAST_PTR(struct acpi_table_rsdp, header)-
+> > >revision > 0 ?
+> > +			=C2=A0=C2=A0ACPI_CAST_PTR(struct acpi_table_rsdp, header)->length
+> > : 20,
+> > +			=C2=A0=C2=A0ACPI_CAST_PTR(struct acpi_table_rsdp, header)-
+> > >revision,
+> > +			=C2=A0=C2=A0local_header.oem_id);
+> > =C2=A0	} else {
+> > =C2=A0		/* Standard ACPI table with full common header */
+> >
+> > =C2=A0		acpi_tb_cleanup_table_header(&local_header, header);
+> >
+> > -		ACPI_INFO(("%-4.4s 0x%8.8X%8.8X"
+> > -			=C2=A0=C2=A0=C2=A0" %06X (v%.2d %-6.6s %-8.8s %08X %-4.4s %08X)",
+> > -			=C2=A0=C2=A0=C2=A0local_header.signature, ACPI_FORMAT_UINT64(addres=
+s),
+> > -			=C2=A0=C2=A0=C2=A0local_header.length, local_header.revision,
+> > -			=C2=A0=C2=A0=C2=A0local_header.oem_id, local_header.oem_table_id,
+> > -			=C2=A0=C2=A0=C2=A0local_header.oem_revision,
+> > -			=C2=A0=C2=A0=C2=A0local_header.asl_compiler_id,
+> > -			=C2=A0=C2=A0=C2=A0local_header.asl_compiler_revision));
+> > +		acpi_info("%-4.4s 0x%8.8X%8.8X %06X (v%.2d %-6.6s %-8.8s %08X
+> > %-4.4s %08X)\n",
+> > +			=C2=A0=C2=A0local_header.signature, ACPI_FORMAT_UINT64(address),
+> > +			=C2=A0=C2=A0local_header.length, local_header.revision,
+> > +			=C2=A0=C2=A0local_header.oem_id, local_header.oem_table_id,
+> > +			=C2=A0=C2=A0local_header.oem_revision,
+> > +			=C2=A0=C2=A0local_header.asl_compiler_id,
+> > +			=C2=A0=C2=A0local_header.asl_compiler_revision);
+> > =C2=A0	}
+> > =C2=A0}
+> >
+> > diff --git a/drivers/acpi/acpica/tbutils.c
+> > b/drivers/acpi/acpica/tbutils.c index 9240c76..8f64b38 100644
+> > --- a/drivers/acpi/acpica/tbutils.c
+> > +++ b/drivers/acpi/acpica/tbutils.c
+> > @@ -174,7 +174,8 @@ struct acpi_table_header *acpi_tb_copy_dsdt(u32
+> > table_index)
+> > =C2=A0				=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ACPI_TABLE_ORIGIN_INTERNA=
+L_VIRTUAL,
+> > =C2=A0				=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0new_table);
+> >
+> > -	ACPI_INFO(("Forced DSDT copy: length 0x%05X copied locally, original
+> > unmapped", new_table->length));
+> > +	acpi_info("Forced DSDT copy: length 0x%05X copied locally, original
+> > unmapped\n",
+> > +		=C2=A0=C2=A0new_table->length);
+> >
+> > =C2=A0	return (new_table);
+> > =C2=A0}
+> > diff --git a/drivers/acpi/acpica/tbxfload.c
+> > b/drivers/acpi/acpica/tbxfload.c index 3151968..0827d17 100644
+> > --- a/drivers/acpi/acpica/tbxfload.c
+> > +++ b/drivers/acpi/acpica/tbxfload.c
+> > @@ -240,7 +240,8 @@ acpi_status acpi_tb_load_namespace(void)
+> > =C2=A0	}
+> >
+> > =C2=A0	if (!tables_failed) {
+> > -		ACPI_INFO(("%u ACPI AML tables successfully acquired and
+> > loaded\n", tables_loaded));
+> > +		acpi_info("%u ACPI AML tables successfully acquired and
+> > loaded\n",
+> > +			=C2=A0=C2=A0tables_loaded);
+> > =C2=A0	} else {
+> > =C2=A0		ACPI_ERROR((AE_INFO,
+> > =C2=A0			=C2=A0=C2=A0=C2=A0=C2=A0"%u table load failures, %u successful=
+", @@ -333,7
+> > +334,7 @@ acpi_status acpi_load_table(struct acpi_table_header *table)
+> >
+> > =C2=A0	/* Install the table and load it into the namespace */
+> >
+> > -	ACPI_INFO(("Host-directed Dynamic ACPI Table Load:"));
+> > +	acpi_info("Host-directed Dynamic ACPI Table Load:\n");
+> > =C2=A0	(void)acpi_ut_acquire_mutex(ACPI_MTX_TABLES);
+> >
+> > =C2=A0	status =3D acpi_tb_install_standard_table(ACPI_PTR_TO_PHYSADDR(t=
+able),
+> > diff --git a/drivers/acpi/acpica/uttrack.c
+> > b/drivers/acpi/acpica/uttrack.c index 60c406a..b1d6f4a 100644
+> > --- a/drivers/acpi/acpica/uttrack.c
+> > +++ b/drivers/acpi/acpica/uttrack.c
+> > @@ -712,7 +712,7 @@ void acpi_ut_dump_allocations(u32 component, const
+> > char *module)
+> > =C2=A0	/* Print summary */
+> >
+> > =C2=A0	if (!num_outstanding) {
+> > -		ACPI_INFO(("No outstanding allocations"));
+> > +		acpi_info("No outstanding allocations\n");
+> > =C2=A0	} else {
+> > =C2=A0		ACPI_ERROR((AE_INFO, "%u(0x%X) Outstanding allocations",
+> > =C2=A0			=C2=A0=C2=A0=C2=A0=C2=A0num_outstanding, num_outstanding)); di=
+ff --git
+> > a/drivers/acpi/acpica/utxferror.c b/drivers/acpi/acpica/utxferror.c
+> > index
+> > d9f15cb..e9a80c2 100644
+> > --- a/drivers/acpi/acpica/utxferror.c
+> > +++ b/drivers/acpi/acpica/utxferror.c
+> > @@ -161,7 +161,7 @@ ACPI_EXPORT_SYMBOL(acpi_warning)
+> >
+> >
+> > /*********************************************************************
+> > ***
+> > *******
+> > =C2=A0 *
+> > - * FUNCTION:=C2=A0=C2=A0=C2=A0=C2=A0acpi_info
+> > + * FUNCTION:=C2=A0=C2=A0=C2=A0=C2=A0_acpi_info
+> > =C2=A0 *
+> > =C2=A0 * PARAMETERS:=C2=A0=C2=A0module_name=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0- Caller's module name (for error
+> > output)
+> > =C2=A0 *=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
 =A0=C2=A0=C2=A0=C2=A0line_number=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
 =C2=A0=C2=A0- Caller's line number (for error
-> output) @@ -175,7 +175,7 @@ ACPI_EXPORT_SYMBOL(acpi_warning)
-> =C2=A0 * TBD: module_name and line_number args are not needed, should be
-> removed.
-> =C2=A0 *
-> =C2=A0 ******************************************************************=
-******
-> ******/
-> -void ACPI_INTERNAL_VAR_XFACE acpi_info(const char *format, ...)
-> +void ACPI_INTERNAL_VAR_XFACE _acpi_info(const char *format, ...)
-> =C2=A0{
-> =C2=A0	va_list arg_list;
-> =
-
-> @@ -184,13 +184,12 @@ void ACPI_INTERNAL_VAR_XFACE acpi_info(const char
-> *format, ...)
-> =
-
-> =C2=A0	va_start(arg_list, format);
-> =C2=A0	acpi_os_vprintf(format, arg_list);
-> -	acpi_os_printf("\n");
-> =C2=A0	va_end(arg_list);
-> =
-
-> =C2=A0	ACPI_MSG_REDIRECT_END;
-> =C2=A0}
-> =
-
-> -ACPI_EXPORT_SYMBOL(acpi_info)
-> +ACPI_EXPORT_SYMBOL(_acpi_info)
-> =
-
-> =C2=A0/******************************************************************=
-******
-> *******
-> =C2=A0 *
-> diff --git a/include/acpi/acoutput.h b/include/acpi/acoutput.h index
-> 34f601e..4812992 100644
-> --- a/include/acpi/acoutput.h
-> +++ b/include/acpi/acoutput.h
-> @@ -223,10 +223,9 @@
-> =
-
-> =C2=A0/*
-> =C2=A0 * Error reporting. Callers module and line number are inserted by
-> AE_INFO,
-> - * the plist contains a set of parens to allow variable-length lists.
-> =C2=A0 * These macros are used for both the debug and non-debug versions =
-of the
-> code.
-> =C2=A0 */
-> -#define ACPI_INFO(plist)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0acpi_info plist
-> +#define acpi_info(fmt, ...)		_acpi_info(fmt, ##__VA_ARGS__)
-> =C2=A0#define ACPI_WARNING(plist)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0acpi_warning plist
-> =C2=A0#define ACPI_EXCEPTION(plist)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+> > output) @@ -175,7 +175,7 @@ ACPI_EXPORT_SYMBOL(acpi_warning)
+> > =C2=A0 * TBD: module_name and line_number args are not needed, should be
+> > removed.
+> > =C2=A0 *
+> >
+> > **********************************************************************
+> > **
+> > ******/
+> > -void ACPI_INTERNAL_VAR_XFACE acpi_info(const char *format, ...)
+> > +void ACPI_INTERNAL_VAR_XFACE _acpi_info(const char *format, ...)
+> > =C2=A0{
+> > =C2=A0	va_list arg_list;
+> >
+> > @@ -184,13 +184,12 @@ void ACPI_INTERNAL_VAR_XFACE acpi_info(const
+> > char *format, ...)
+> >
+> > =C2=A0	va_start(arg_list, format);
+> > =C2=A0	acpi_os_vprintf(format, arg_list);
+> > -	acpi_os_printf("\n");
+> > =C2=A0	va_end(arg_list);
+> >
+> > =C2=A0	ACPI_MSG_REDIRECT_END;
+> > =C2=A0}
+> >
+> > -ACPI_EXPORT_SYMBOL(acpi_info)
+> > +ACPI_EXPORT_SYMBOL(_acpi_info)
+> >
+> >
+> > /*********************************************************************
+> > ***
+> > *******
+> > =C2=A0 *
+> > diff --git a/include/acpi/acoutput.h b/include/acpi/acoutput.h index
+> > 34f601e..4812992 100644
+> > --- a/include/acpi/acoutput.h
+> > +++ b/include/acpi/acoutput.h
+> > @@ -223,10 +223,9 @@
+> >
+> > =C2=A0/*
+> > =C2=A0 * Error reporting. Callers module and line number are inserted by
+> > AE_INFO,
+> > - * the plist contains a set of parens to allow variable-length lists.
+> > =C2=A0 * These macros are used for both the debug and non-debug version=
+s of
+> > the code.
+> > =C2=A0 */
+> > -#define ACPI_INFO(plist)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0acpi_info plist
+> > +#define acpi_info(fmt, ...)		_acpi_info(fmt, ##__VA_ARGS__)
+> > =C2=A0#define ACPI_WARNING(plist)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0acpi_warning plist
+> > =C2=A0#define ACPI_EXCEPTION(plist)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0acpi_exception plist
-> =C2=A0#define ACPI_ERROR(plist)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0acpi_error plist @@ -238,7 =
-+237,8
-> @@
-> =
+> > =C2=A0#define ACPI_ERROR(plist)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0acpi_error plist @@ -238=
+,7
+> > +237,8 @@
+> >
+> > =C2=A0/* No error messages */
+> >
+> > -#define ACPI_INFO(plist)
+> > +#define acpi_info(fmt, ...)					\
+> > +	do { if (0) _acpi_info(fmt, ##__VA_ARGS__); } while (0)
+> > =C2=A0#define ACPI_WARNING(plist)
+> > =C2=A0#define ACPI_EXCEPTION(plist)
+> > =C2=A0#define ACPI_ERROR(plist)
+> > diff --git a/include/acpi/acpixf.h b/include/acpi/acpixf.h index
+> > 1755697..f5f96ac 100644
+> > --- a/include/acpi/acpixf.h
+> > +++ b/include/acpi/acpixf.h
+> > @@ -899,7 +899,7 @@ ACPI_MSG_DEPENDENT_RETURN_VOID(ACPI_PRINTF_LIKE(3)
+> > =C2=A0					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0const char *format, ...))
+> > =C2=A0ACPI_MSG_DEPENDENT_RETURN_VOID(ACPI_PRINTF_LIKE(1)
+> > =C2=A0				void ACPI_INTERNAL_VAR_XFACE
+> > -				acpi_info(const char *format, ...))
+> > +				_acpi_info(const char *format, ...))
+> > =C2=A0ACPI_MSG_DEPENDENT_RETURN_VOID(ACPI_PRINTF_LIKE(3)
+> > =C2=A0				void ACPI_INTERNAL_VAR_XFACE
+> > =C2=A0				acpi_bios_error(const char *module_name,
+> _______________________________________________
+> Devel mailing list
+> Devel(a)acpica.org
+> https://lists.acpica.org/mailman/listinfo/devel
 
-> =C2=A0/* No error messages */
-> =
-
-> -#define ACPI_INFO(plist)
-> +#define acpi_info(fmt, ...)					\
-> +	do { if (0) _acpi_info(fmt, ##__VA_ARGS__); } while (0)
-> =C2=A0#define ACPI_WARNING(plist)
-> =C2=A0#define ACPI_EXCEPTION(plist)
-> =C2=A0#define ACPI_ERROR(plist)
-> diff --git a/include/acpi/acpixf.h b/include/acpi/acpixf.h index
-> 1755697..f5f96ac 100644
-> --- a/include/acpi/acpixf.h
-> +++ b/include/acpi/acpixf.h
-> @@ -899,7 +899,7 @@ ACPI_MSG_DEPENDENT_RETURN_VOID(ACPI_PRINTF_LIKE(3)
-> =C2=A0					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0const char *format, ...))
-> =C2=A0ACPI_MSG_DEPENDENT_RETURN_VOID(ACPI_PRINTF_LIKE(1)
-> =C2=A0				void ACPI_INTERNAL_VAR_XFACE
-> -				acpi_info(const char *format, ...))
-> +				_acpi_info(const char *format, ...))
-> =C2=A0ACPI_MSG_DEPENDENT_RETURN_VOID(ACPI_PRINTF_LIKE(3)
-> =C2=A0				void ACPI_INTERNAL_VAR_XFACE
-> =C2=A0				acpi_bios_error(const char *module_name,
-
---===============7940823596334119473==--
+--===============4585356052252721063==--
 
