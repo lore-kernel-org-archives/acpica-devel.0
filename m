@@ -1,52 +1,50 @@
-Content-Type: multipart/mixed; boundary="===============5349463641172337611=="
+Content-Type: multipart/mixed; boundary="===============4979382150866277650=="
 MIME-Version: 1.0
 From: Moore, Robert <robert.moore at intel.com>
 Subject: Re: [Devel] [PATCH] ACPICA: fix Thunderbolt hotplug
-Date: Wed, 30 Mar 2016 21:10:22 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E456D1F@ORSMSX110.amr.corp.intel.com>
-In-Reply-To: 1459291086-8634-1-git-send-email-prarit@redhat.com
+Date: Thu, 07 Apr 2016 20:12:07 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E4591EB@ORSMSX110.amr.corp.intel.com>
+In-Reply-To: 570665B5.6060405@redhat.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5349463641172337611==
+--===============4979382150866277650==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-This patch looks familiar, we may have it fixed already.
+I'll give the change a try here.
 
-Lv should know.
-Bob
+
+> -----Original Message-----
+> From: Prarit Bhargava [mailto:prarit(a)redhat.com]
+> Sent: Thursday, April 07, 2016 6:51 AM
+> To: devel(a)acpica.org; Zheng, Lv
+> Cc: Moore, Robert
+> Subject: Re: [PATCH] ACPICA: fix Thunderbolt hotplug
+> =
 
 > =
 
-> Cc: Robert Moore <robert.moore(a)intel.com>
-> Cc: Lv Zheng <lv.zheng(a)intel.com>
-> Signed-off-by: Prarit Bhargava <prarit(a)redhat.com>
-> ---
->  source/components/dispatcher/dsmethod.c |    3 +++
->  1 file changed, 3 insertions(+)
 > =
 
-> diff --git a/source/components/dispatcher/dsmethod.c
-> b/source/components/dispatcher/dsmethod.c
-> index a861838..ceb6c75 100644
-> --- a/source/components/dispatcher/dsmethod.c
-> +++ b/source/components/dispatcher/dsmethod.c
-> @@ -532,6 +532,9 @@ AcpiDsBeginMethodExecution (
->              {
->                  ObjDesc->Method.Mutex->Mutex.OriginalSyncLevel =3D
->                      ObjDesc->Method.Mutex->Mutex.SyncLevel;
-> +
-> +                ObjDesc->Method.Mutex->Mutex.ThreadId =3D
-> +                    AcpiOsGetThreadId();
->              }
->          }
+> On 03/30/2016 05:10 PM, Moore, Robert wrote:
+> > This patch looks familiar, we may have it fixed already.
+> >
+> > Lv should know.
 > =
 
-> --
-> 1.7.9.3
+> Lv?  Second ping on this ...
+> =
 
+> BTW:  https://bugzilla.kernel.org/show_bug.cgi?id=3D115121
+> =
 
---===============5349463641172337611==--
+> shows three users with positive results.  Additionally I'm testing on two
+> Thunderbolt platforms here and both show positive results.
+> =
+
+> P.
+
+--===============4979382150866277650==--
 
