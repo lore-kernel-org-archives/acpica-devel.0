@@ -1,163 +1,87 @@
-Content-Type: multipart/mixed; boundary="===============6988750145586297632=="
+Content-Type: multipart/mixed; boundary="===============0094358459518688877=="
 MIME-Version: 1.0
 From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] AcpiHwRead/AcpiHwWrite regression in 20160318
-Date: Thu, 14 Apr 2016 15:48:00 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E47468E@ORSMSX110.amr.corp.intel.com>
-In-Reply-To: 570FAE09.7010107@reactos.org
+Subject: Re: [Devel] [PATCH v2] Introduce AcpiOs(Read|Write)Cmos and enable
+ these in AcpiExCmosSpaceHandler
+Date: Thu, 14 Apr 2016 15:49:19 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E4746B0@ORSMSX110.amr.corp.intel.com>
+In-Reply-To: 570FB4DC.4070607@yahoo.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6988750145586297632==
+--===============0094358459518688877==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Yes, we know about it.
-
-It will be reverted in the next ACPICA release for now, since we are still =
-working on it.
-
-We want to support arbitrary bit lengths on arbitrary bit boundaries, it is=
- a pain.
-Bob
+I'm not sure what the status of this is in ACPICA. But it does sound like w=
+e could supply a default handler that only accesses the addresses 0-63
 
 
 > -----Original Message-----
-> From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of Thomas Faber
-> Sent: Thursday, April 14, 2016 7:50 AM
+> From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of Anthony Jenk=
+ins
+> Sent: Thursday, April 14, 2016 8:19 AM
 > To: devel(a)acpica.org
-> Subject: [Devel] AcpiHwRead/AcpiHwWrite regression in 20160318
+> Subject: Re: [Devel] [PATCH v2] Introduce AcpiOs(Read|Write)Cmos and
+> enable these in AcpiExCmosSpaceHandler
+> =
+
+> On Thu Feb 18 08:05:56 PST 2016, Robert Moore wrote:
+> > To clarify:
+> >
+> > The ACPI specification defines three _HID values for the supported
+> RTC/CMOS devices:
+> >
+> > 1) PNP0B00 (PC/AT-compatible)
+> > 2) PNP0B01 (Intel PIIX4-compatible)
+> > 3) PNP0B02 (Dallas Semiconductor-compatible)
+> >
+> > This is the reason that ACPICA has never defined low-level CMOS
+> interfaces, since there are 3 different devices. Therefore, the model that
+> is used by ACPICA is this:
+> >
+> > The host OS scans the ACPI namespace for the various devices with _HIDs.
+> > Upon detection of _HID PNP0B00, PNP0B01, or PNP0B02, the host loads the
+> appropriate CMOS driver.
+> > The driver installs an operation region handler that hands off all CMOS
+> requests to the driver.
+> > ACPICA will invoke the handler on any CMOS address space access.
+> > The driver then accesses the CMOS device as appropriate.
+> >
+> > It appears that the first 64 bytes of the CMOS may be common between the
+> chips. Accessing anything past 64 bytes seems to be device-dependent. So,
+> any "common" CMOS code is playing with fire, I would think. For example,
+> For PNP0B01, the ACPI specification has this to say: "The upper 192 bytes
+> are accessed through an interface that is only used on Intel chips. (See
+> 82371AB PCI-TO-ISA / IDEXCELERATOR (PIIX4) for details)"
+> >
+> > Bob
 > =
 
 > Hi,
 > =
 
-> the new AcpiHwRead/AcpiHwWrite implementations have caused a regression on
-> VirtualBox here. On ReactOS I'm getting an interrupt storm because
-> interaction with the event status register is no longer working.
+> I've proposed a patch to FreeBSD-11(CURRENT) to add an ACPI CMOS region
+> handler to its atrtc(4) device, which supports PNP0B00 devices, exactly as
+> you've suggested in your model.  Is there anything ACPICA can/will provide
+> to support this effort, or should my patch represent the the complete
+> implementation of CMOS region support in our OSPM (at least for this
+> particular CMOS device)?  At least the HP Envy line of laptops requires
+> this support to enable FreeBSD to suspend/power-down.
 > =
 
-> The obvious issue that I observe is that the XPm1aStatus register is now
-> read from/written to in individual 8-bit operations instead of using the
-> full 16 bit length as before.
+> Thanks,
 > =
 
-> VirtualBox does not seem to allow this:
-> https://github.com/mdaniel/virtualbox-org-svn-vbox-
-> trunk/blob/master/src/VBox/Devices/PC/DevACPI.cpp#L1466
+> --
+> Anthony Jenkins
 > =
 
-> The register description looks like this (which seems as expected):
-> kd> ?? AcpiGbl_FADT.XPm1aEventBlock
-> struct acpi_generic_address
-> +0x000 SpaceId : 0x1 ''
-> +0x001 BitWidth : 0x20 ' '
-> +0x002 BitOffset : 0 ''
-> +0x003 AccessWidth : 0x2 ''
-> +0x004 Address : 0x4000
-> kd> ?? AcpiGbl_XPm1aStatus
-> struct acpi_generic_address
-> +0x000 SpaceId : 0x1 ''
-> +0x001 BitWidth : 0x10 ''
-> +0x002 BitOffset : 0 ''
-> +0x003 AccessWidth : 0 ''
-> +0x004 Address : 0x4000
-> =
-
-> It looks like the AccessWidth needs to be explicitly set to 2 here now
-> rather than defaulting to 0? Alternatively, zero AccessWidth would have to
-> lead to a smarter default than just assuming 8-bit reads.
-> =
-
-> For reference, backtraces for reading this register with versions
-> 20160318 and 20160108 showing the arguments passed to the OSL functions
-> can be found below.
-> =
-
-> Assuming my analysis is correct, it's probably faster & more correct for
-> someone else to fix the issue in the code, but I can provide a patch if
-> you prefer.
-> =
-
-> Thanks!
-> -Thomas
-> =
-
-> =
-
-> =
-
-> Read New (20160318) -- returns 0xff (and so does the follow-up read on
-> port 0x4001):
-> kd> kp
-> ChildEBP RetAddr
-> f392a228 f8b3eb5a acpi!AcpiOsReadPort(unsigned int64 Address =3D 0x4000,
-> unsigned int * Value =3D 0xf392a288, unsigned int Width =3D 8)
-> [reactos\drivers\bus\acpi\osl.c @ 707] f392a24c f8b3e26d
-> acpi!AcpiHwReadPort(unsigned int64 Address =3D 0x4000, unsigned int * Val=
-ue
-> =3D 0xf392a288, unsigned int Width =3D 8)+0x5a
-> [reactos\drivers\bus\acpi\acpica\hardware\hwvalid.c @ 258] f392a29c
-> f8b3ea43 acpi!AcpiHwRead(unsigned int * Value =3D 0xf392a2b4, struct
-> acpi_generic_address * Reg =3D 0xf8b68860)+0x11d
-> [reactos\drivers\bus\acpi\acpica\hardware\hwregs.c @ 231] f392a2bc
-> f8b3e795 acpi!AcpiHwReadMultiple(unsigned int * Value =3D 0xf392a2d8, str=
-uct
-> acpi_generic_address * RegisterA =3D 0xf8b68860, struct acpi_generic_addr=
-ess
-> * RegisterB =3D 0xf8b68690)+0x23
-> [reactos\drivers\bus\acpi\acpica\hardware\hwregs.c @ 780] f392a2dc
-> f8b3d17a acpi!AcpiHwRegisterRead(unsigned int RegisterId =3D 1, unsigned =
-int
-> * ReturnValue =3D 0xf392a2f0)+0x45
-> [reactos\drivers\bus\acpi\acpica\hardware\hwregs.c @ 565] f392a2fc
-> f8b4683a acpi!AcpiEvFixedEventDetect(void)+0x1a
-> [reactos\drivers\bus\acpi\acpica\events\evevent.c @ 248] f392a30c f8b2f1d2
-> acpi!AcpiEvSciXruptHandler(void * Context =3D 0xf50dbff0)+0x1a
-> [reactos\drivers\bus\acpi\acpica\events\evsci.c @ 146] f392a31c 804f160c
-> acpi!OslIsrStub(struct _KINTERRUPT * Interrupt =3D 0xf50ddd98, void *
-> ServiceContext =3D 0x00000000)+0x12 [reactos\drivers\bus\acpi\osl.c @ 541]
-> f392a350 804f1738 nt!KiChainedDispatch(struct _KTRAP_FRAME * TrapFrame =
-=3D
-> 0xf392a364, struct _KINTERRUPT * Interrupt =3D 0xf50ddd98)+0xbc
-> [reactos\ntoskrnl\ke\i386\irqobj.c @ 284]
-> =
-
-> Read Old (20160108) -- returns 0x0000:
-> kd> kp
-> ChildEBP RetAddr
-> f392a350 f8b3f57a acpi!AcpiOsReadPort(unsigned int64 Address =3D 0x4000,
-> unsigned int * Value =3D 0xf392a3bc, unsigned int Width =3D 0x10)
-> [reactos\drivers\bus\acpi\osl.c @ 707]
-> f392a374 f8b3efbd acpi!AcpiHwReadPort(unsigned int64 Address =3D 0x4000,
-> unsigned int * Value =3D 0xf392a3bc, unsigned int Width =3D 0x10)+0x5a
-> [reactos\drivers\bus\acpi\acpica\hardware\hwvalid.c @ 258]
-> f392a3a4 f8b3f463 acpi!AcpiHwRead(unsigned int * Value =3D 0xf392a3bc,
-> struct acpi_generic_address * Reg =3D 0xf8b68800)+0x7d
-> [reactos\drivers\bus\acpi\acpica\hardware\hwregs.c @ 207]
-> f392a3c4 f8b3f1b5 acpi!AcpiHwReadMultiple(unsigned int * Value =3D
-> 0xf392a3e0, struct acpi_generic_address * RegisterA =3D 0xf8b68800, struct
-> acpi_generic_address * RegisterB =3D 0xf8b68630)+0x23
-> [reactos\drivers\bus\acpi\acpica\hardware\hwregs.c @ 646]
-> f392a3e4 f8b3d72a acpi!AcpiHwRegisterRead(unsigned int RegisterId =3D 1,
-> unsigned int * ReturnValue =3D 0xf392a3f8)+0x45
-> [reactos\drivers\bus\acpi\acpica\hardware\hwregs.c @ 431]
-> f392a404 f8b46d6a acpi!AcpiEvFixedEventDetect(void)+0x1a
-> [reactos\drivers\bus\acpi\acpica\events\evevent.c @ 248]
-> f392a414 f8b2f1c2 acpi!AcpiEvSciXruptHandler(void * Context =3D
-> 0xf4717ff0)+0x1a [reactos\drivers\bus\acpi\acpica\events\evsci.c @ 146]
-> f392a424 804f160c acpi!OslIsrStub(struct _KINTERRUPT * Interrupt =3D
-> 0xf4719d98, void * ServiceContext =3D 0x00000000)+0x12
-> [reactos\drivers\bus\acpi\osl.c @ 541]
-> f392a458 804f1738 nt!KiChainedDispatch(struct _KTRAP_FRAME * TrapFrame =
-=3D
-> 0xf392a46c, struct _KINTERRUPT * Interrupt =3D 0xf4719d98)+0xbc
-> [reactos\ntoskrnl\ke\i386\irqobj.c @ 284]
 > _______________________________________________
 > Devel mailing list
 > Devel(a)acpica.org
 > https://lists.acpica.org/mailman/listinfo/devel
 
---===============6988750145586297632==--
+--===============0094358459518688877==--
 
