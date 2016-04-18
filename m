@@ -1,51 +1,46 @@
-Content-Type: multipart/mixed; boundary="===============2241867366368653730=="
+Content-Type: multipart/mixed; boundary="===============4812446067460398588=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] [PATCH] acpi/acpica: fix Thunderbolt hotplug
-Date: Fri, 15 Apr 2016 17:05:19 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E474FAF@ORSMSX110.amr.corp.intel.com>
-In-Reply-To: 57111ED5.90204@redhat.com
+From: Colin King <colin.king at canonical.com>
+Subject: [Devel] [PATCH] tools/acpi: fix inverted logic when closing fd
+Date: Mon, 18 Apr 2016 23:17:51 +0100
+Message-ID: <1461017871-5395-1-git-send-email-colin.king@canonical.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2241867366368653730==
+--===============4812446067460398588==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Internal discussion.
+From: Colin Ian King <colin.king(a)canonical.com>
 
-Given the urgency, we've decided to take the patch.
-Bob
+The current close on fd only occurs when fd is -ve, it should
+actually be closing the file if it a valid fd. Fix the inverted logic.
+
+Signed-off-by: Colin Ian King <colin.king(a)canonical.com>
+---
+ tools/power/acpi/tools/acpidbg/acpidbg.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/power/acpi/tools/acpidbg/acpidbg.c b/tools/power/acpi/to=
+ols/acpidbg/acpidbg.c
+index d070fcc..ebe44dd 100644
+--- a/tools/power/acpi/tools/acpidbg/acpidbg.c
++++ b/tools/power/acpi/tools/acpidbg/acpidbg.c
+@@ -430,7 +430,7 @@ int main(int argc, char **argv)
+ 	acpi_aml_loop(fd);
+ =
+
+ exit:
+-	if (fd < 0)
++	if (fd >=3D 0)
+ 		close(fd);
+ 	if (acpi_aml_batch_cmd)
+ 		free(acpi_aml_batch_cmd);
+-- =
+
+2.7.4
 
 
-> -----Original Message-----
-> From: Prarit Bhargava [mailto:prarit(a)redhat.com]
-> Sent: Friday, April 15, 2016 10:03 AM
-> To: Moore, Robert; Mika Westerberg
-> Cc: linux-kernel(a)vger.kernel.org; Zheng, Lv; Wysocki, Rafael J; Len Bro=
-wn;
-> linux-acpi(a)vger.kernel.org; devel(a)acpica.org
-> Subject: Re: [PATCH] acpi/acpica: fix Thunderbolt hotplug
-> =
-
-> =
-
-> =
-
-> On 04/15/2016 12:21 PM, Moore, Robert wrote:
-> > Lv is looking at it. He has already commented that this might not be the
-> best solution, so he is continuing to investigate.
-> >
-> =
-
-> /me scratches head
-> =
-
-> Where was that comment made?
-> =
-
-> P.
-
---===============2241867366368653730==--
+--===============4812446067460398588==--
 
