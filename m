@@ -1,46 +1,61 @@
-Content-Type: multipart/mixed; boundary="===============4812446067460398588=="
+Content-Type: multipart/mixed; boundary="===============1997431254185015643=="
 MIME-Version: 1.0
 From: Colin King <colin.king at canonical.com>
-Subject: [Devel] [PATCH] tools/acpi: fix inverted logic when closing fd
-Date: Mon, 18 Apr 2016 23:17:51 +0100
-Message-ID: <1461017871-5395-1-git-send-email-colin.king@canonical.com>
+Subject: [Devel] [PATCH] acpixtract: use %u format specifier on unsigned int
+ Gbl_TableCount
+Date: Wed, 20 Apr 2016 10:04:45 +0100
+Message-ID: <1461143085-12932-1-git-send-email-colin.king@canonical.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4812446067460398588==
+--===============1997431254185015643==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
 From: Colin Ian King <colin.king(a)canonical.com>
 
-The current close on fd only occurs when fd is -ve, it should
-actually be closing the file if it a valid fd. Fix the inverted logic.
+Minor issue, Gbl_TableCount is an unsigned int, so we should be using
+a %u format specifier instead of %d.
 
 Signed-off-by: Colin Ian King <colin.king(a)canonical.com>
 ---
- tools/power/acpi/tools/acpidbg/acpidbg.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ source/tools/acpixtract/acpixtract.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/power/acpi/tools/acpidbg/acpidbg.c b/tools/power/acpi/to=
-ols/acpidbg/acpidbg.c
-index d070fcc..ebe44dd 100644
---- a/tools/power/acpi/tools/acpidbg/acpidbg.c
-+++ b/tools/power/acpi/tools/acpidbg/acpidbg.c
-@@ -430,7 +430,7 @@ int main(int argc, char **argv)
- 	acpi_aml_loop(fd);
+diff --git a/source/tools/acpixtract/acpixtract.c b/source/tools/acpixtract=
+/acpixtract.c
+index 3da6637..bb937a9 100644
+--- a/source/tools/acpixtract/acpixtract.c
++++ b/source/tools/acpixtract/acpixtract.c
+@@ -311,7 +311,7 @@ CleanupAndExit:
  =
 
- exit:
--	if (fd < 0)
-+	if (fd >=3D 0)
- 		close(fd);
- 	if (acpi_aml_batch_cmd)
- 		free(acpi_aml_batch_cmd);
+     if (Gbl_TableCount > 1)
+     {
+-        printf ("\n%d binary ACPI tables extracted\n",
++        printf ("\n%u binary ACPI tables extracted\n",
+             Gbl_TableCount);
+     }
+ =
+
+@@ -455,7 +455,7 @@ CleanupAndExit:
+             ThisSignature, ThisTableBytesWritten, Gbl_OutputFilename);
+     }
+ =
+
+-    printf ("\n%d binary ACPI tables extracted and written to %s (%u bytes=
+)\n",
++    printf ("\n%u binary ACPI tables extracted and written to %s (%u bytes=
+)\n",
+         Gbl_TableCount, Gbl_OutputFilename, TotalBytesWritten);
+ =
+
+     fclose (InputFile);
 -- =
 
 2.7.4
 
 
---===============4812446067460398588==--
+--===============1997431254185015643==--
 
