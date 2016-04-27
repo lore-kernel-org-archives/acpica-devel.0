@@ -1,103 +1,203 @@
-Content-Type: multipart/mixed; boundary="===============3000611805999419153=="
+Content-Type: multipart/mixed; boundary="===============7585205094749008147=="
 MIME-Version: 1.0
 From: Hanjun Guo <hanjun.guo at linaro.org>
-Subject: Re: [Devel] [PATCH v5 00/14] ACPI NUMA support for ARM64
-Date: Wed, 27 Apr 2016 01:49:45 +0000
-Message-ID: <57201AB0.9050202@linaro.org>
-In-Reply-To: 20160426133500.GQ27312@arm.com
+Subject: Re: [Devel] [PATCH v5 12/14] arm64, acpi,
+ numa: NUMA support based on SRAT and SLIT
+Date: Wed, 27 Apr 2016 04:04:33 +0000
+Message-ID: <57203A47.9000108@linaro.org>
+In-Reply-To: 5720127E.1030307@caviumnetworks.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3000611805999419153==
+--===============7585205094749008147==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi Will,
+Hi Dennis, David,
 
-On 2016/4/26 21:35, Will Deacon wrote:
-> On Tue, Apr 26, 2016 at 09:03:25PM +0800, Hanjun Guo wrote:
->> On 2016/4/26 20:15, Will Deacon wrote:
->>> On Tue, Apr 26, 2016 at 01:31:07PM +0800, Hanjun Guo wrote:
->>>> On 2016/4/26 0:47, David Daney wrote:
->>>>> On 04/25/2016 04:13 AM, Will Deacon wrote:
->>>>>> On Tue, Apr 19, 2016 at 06:40:25PM -0700, David Daney wrote:
->>>>>>> From: David Daney <david.daney(a)cavium.com>
->>>>>>>
->>>>>>> Based on v16 of device-tree NUMA patch set for arm64 [1],this patch
->>>>>>> set introduce the ACPI based configuration to provide NUMA
->>>>>>> information.
->>>>>>>
->>>>>>> ACPI 5.1 already introduced NUMA support for ARM64, which can get t=
-he
->>>>>>> NUMA domain information from SRAT and SLIT table, so parse those two
->>>>>>> tables to get mappings from cpu/mem to numa node configuration and
->>>>>>> system locality.
->>>>>>
->>>>>> Whilst I've queued the main NUMA series for arm64, I'd really like to
->>>>>> see more movement on the generic header file cleanups that you posted
->>>>>> separately:
->>>>>>
->>>>>> http://lkml.kernel.org/r/1456358528-24213-1-git-send-email-ddaney.ca=
-vm(a)gmail.com
->>>>>>
->>>>>
->>>>> FWIW:  Those patches should still apply.  I am carrying them in my
->>>>> development trees, and have not changed them in any way.
->>>
->>> What's your plan for getting them merged?
+Sorry for the late reply, please see my comments below.
+
+On 2016/4/27 9:14, David Daney wrote:
+> On 04/21/2016 03:06 AM, Dennis Chen wrote:
+>> On 20 April 2016 at 09:40, David Daney <ddaney.cavm(a)gmail.com> wrote:
+> [...]
+>>> +/* Callback for Proximity Domain -> ACPI processor UID mapping */
+>>> +void __init acpi_numa_gicc_affinity_init(struct
+>>> acpi_srat_gicc_affinity *pa)
+>>> +{
+>>> +       int pxm, node;
+>>> +       u64 mpidr;
+>>> +
+>>> +       if (srat_disabled())
+>>> +               return;
+>>> +
+>>> +       if (pa->header.length < sizeof(struct
+>>> acpi_srat_gicc_affinity)) {
+>>> +               pr_err("SRAT: Invalid SRAT header length: %d\n",
+>>> +                       pa->header.length);
+>>> +               bad_srat();
+>>> +               return;
+>>> +       }
+>>> +
+>>> +       if (!(pa->flags & ACPI_SRAT_GICC_ENABLED))
+>>> +               return;
+>>> +
+>>> +       if (cpus_in_srat >=3D NR_CPUS) {
+>>> +               pr_warn_once("SRAT: cpu_to_node_map[%d] is too small,
+>>> may not be able to use all cpus\n",
+>>> +                            NR_CPUS);
+>>> +               return;
+>>> +       }
+>>> +
+>>> +       pxm =3D pa->proximity_domain;
+>>> +       node =3D acpi_map_pxm_to_node(pxm);
+>>> +
+>>> +       if (node =3D=3D NUMA_NO_NODE || node >=3D MAX_NUMNODES) {
+>>> +               pr_err("SRAT: Too many proximity domains %d\n", pxm);
+>>> +               bad_srat();
+>>> +               return;
+>>> +       }
+>>> +
+>>> +       if (get_mpidr_in_madt(pa->acpi_processor_uid, &mpidr)) {
+>>> +               pr_err("SRAT: PXM %d with ACPI ID %d has no valid
+>>> MPIDR in MADT\n",
+>>> +                       pxm, pa->acpi_processor_uid);
+>>> +               bad_srat();
+>>> +               return;
+>>> +       }
+>>> +
+>>> +       early_node_cpu_hwid[cpus_in_srat].node_id =3D node;
+>>> +       early_node_cpu_hwid[cpus_in_srat].cpu_hwid =3D  mpidr;
+>>> +       node_set(node, numa_nodes_parsed);
+>>> +       cpus_in_srat++;
+>>> +       pr_info("SRAT: PXM %d -> MPIDR 0x%Lx -> Node %d cpu %d\n",
+>>> +               pxm, mpidr, node, cpus_in_srat);
+>>> +}
 >>
->> This patch set touches lots of ACPI related file in arch/x86,
->> arch/ia64, and drivers/acpi/ (also arch/arm64), I think it can be
->> merged via ACPI tree by Rafael with your ack to ARM64 code, does
->> it make sense?
->
-> It doesn't touch anything in drivers/acpi/... are you following the link
-> above?
+>> What does the *cpu* means in above pr_info function? If it's the
+>> logical processor ID or ACPI processor UID, then I suggest to use
+>> pa->acpi_processor_uid instead of cpus_in_srat, I understand the
 
-Sorry, my bad, I though you were talking about this ACPI NUMA support
-for ARM64 patch set.
+I think print cpus_in_srat is pointless here, as the logic cpu number
+is allocated by OS when initializing SMP by scanning MADT table. As
+Dennis said, it's just a count number, not a number mapping to MPIDR.
 
->
->>>>>> Given that this ACPI series already requires some significant cross-=
-arch
->>>>>> interaction (which is actually good!), perhaps extending the clean-up
->>>>>> patches to encompass some of the ACPI bits might make sense, and we =
-can
->>>>>> get that queued as a pre-requisite.
->>>>>
->>>>> The cleanup patches you mention above are really independent of the A=
-CPI
->>>>> things.  I have applied them both before and after the ACPI patches, =
-and
->>>>> both seem to work.  With a quick perusal of the ACPI patches nothing
->>>>> jumps out at me as being a candidate for inclusion in the header file
->>>>> cleanup series.
->>>>
->>>> I agree. My patch set is ACPI related enablement, cleanups and
->>>> consolidations, it would be good to merge as a single patch set
->>>> as it's self-contained.
->>>
->>> Up to you. I just thought you might want to avoid having two sets of
->>> cross-arch changes and the associated merging headaches that go with
->>> that.
+ACPI processor UID is the key value to connect MADT, SRAT, DSDT.
+
+For MADT, it will have MPIDR and ACPI processor UID, and OS will
+create mappings to MPIDR and cpu logical number,
+ACPI processor UID <------> MPIDR <------> CPU logical number
+
+In SRAT, there is ACPI processor UID represented, mappings will be
+ACPI processor UID <------> PXM <------> NUMA node logical number
+
+So we can use ACPI processor UID to get the MPIDR by scanning the
+MADT, then we can map NUMA node logical number to cpu logical
+number later.
+
+>> cpus_in_srat is just a count number of the entries of GICC Affinity
+>> Struct instance in SRAT, correct me if I am wrong. So at least it sees
+>> to me, the above pr_info will output message looks like:
+>> SRAT: PXM 0 -> MPIDR 0x100 -> Node 0 cpu 1
+>> SRAT: PXM 0 -> MPIDR 0x101 -> Node 0 cpu 2
+>> SRAT: PXM 0 -> MPIDR 0x102 -> Node 0 cpu 3
 >>
->> Good point, as I suggested above, it can go with ACPI tree if it's ok
->> to you and Rafael. The problem we have now is that dt based core NUMA
->> support for ARM64 is queued in your tree, that would be the headache.
 >
-> Sorry, but if you wanted me *not* to queue the patches, then you should
-> have said so (similarly, if you wanted a stable branch). I'm not rebasing
-> our for-next/core branch now.
+> Yes, that is correct, and for my system seems to be what we want as the
+> names in /sys/devices/system/cpu/ and /proc/cpu_info agree with the
+> sequential numbering (0..95) with 48 CPUs on each node.
 
-I misread the message above, I'm really sorry if I did something
-offending you, I didn't mean that.
+That's because you place CPUs in the same order both in MADT and SRAT :)
+if not, that will be not match.
 
-How about this patch set? We only get few comments on it, your
-comments on it are appreciated.
+>
+> If I make the change you suggest, I get :
+> .
+> .
+> .
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x0 -> Node 0 cpu 0
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x1 -> Node 0 cpu 1
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x2 -> Node 0 cpu 2
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x3 -> Node 0 cpu 3
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x4 -> Node 0 cpu 4
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x5 -> Node 0 cpu 5
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x6 -> Node 0 cpu 6
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x7 -> Node 0 cpu 7
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x8 -> Node 0 cpu 8
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x9 -> Node 0 cpu 9
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0xa -> Node 0 cpu 10
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0xb -> Node 0 cpu 11
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0xc -> Node 0 cpu 12
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0xd -> Node 0 cpu 13
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0xe -> Node 0 cpu 14
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0xf -> Node 0 cpu 15
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x100 -> Node 0 cpu 256
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x101 -> Node 0 cpu 257
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x102 -> Node 0 cpu 258
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x103 -> Node 0 cpu 259
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x104 -> Node 0 cpu 260
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x105 -> Node 0 cpu 261
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x106 -> Node 0 cpu 262
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x107 -> Node 0 cpu 263
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x108 -> Node 0 cpu 264
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x109 -> Node 0 cpu 265
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x10a -> Node 0 cpu 266
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x10b -> Node 0 cpu 267
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x10c -> Node 0 cpu 268
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x10d -> Node 0 cpu 269
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x10e -> Node 0 cpu 270
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x10f -> Node 0 cpu 271
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x200 -> Node 0 cpu 512
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x201 -> Node 0 cpu 513
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x202 -> Node 0 cpu 514
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x203 -> Node 0 cpu 515
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x204 -> Node 0 cpu 516
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x205 -> Node 0 cpu 517
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x206 -> Node 0 cpu 518
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x207 -> Node 0 cpu 519
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x208 -> Node 0 cpu 520
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x209 -> Node 0 cpu 521
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x20a -> Node 0 cpu 522
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x20b -> Node 0 cpu 523
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x20c -> Node 0 cpu 524
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x20d -> Node 0 cpu 525
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x20e -> Node 0 cpu 526
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> MPIDR 0x20f -> Node 0 cpu 527
+> [    0.000000] ACPI: NUMA: SRAT: PXM 1 -> MPIDR 0x10000 -> Node 1 cpu 655=
+36
+> [    0.000000] ACPI: NUMA: SRAT: PXM 1 -> MPIDR 0x10001 -> Node 1 cpu 655=
+37
+> [    0.000000] ACPI: NUMA: SRAT: PXM 1 -> MPIDR 0x10002 -> Node 1 cpu 655=
+38
+> [    0.000000] ACPI: NUMA: SRAT: PXM 1 -> MPIDR 0x10003 -> Node 1 cpu 655=
+39
+> .
+> .
+> .
+>
+> Not really what I would want.
+
+How about remove the print for "cpu"? it's not the right value we want,
+and we can get such mapping information under in sysfs.
+
+>
+>
+>> While the /sys/devices/system/cpu will use the ACPI processor UID to
+>> generate the index of the cpu, like:
+>> cpu0  cpu1  cpu2 ...
+>>
+>> As the GICC Affinity Struct indicated, the ps->proximity_domain is the
+>> domain to which the logical processor belongs...
+
+Yes, we can get such information in /sys/devices/system/node, I think
+we can only print:
+
+ACPI: NUMA: SRAT: PXM x -> MPIDR y -> Node z
 
 Thanks
 Hanjun
 
---===============3000611805999419153==--
+
+--===============7585205094749008147==--
 
