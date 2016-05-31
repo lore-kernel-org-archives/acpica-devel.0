@@ -1,15 +1,15 @@
-Content-Type: multipart/mixed; boundary="===============4465577580490044223=="
+Content-Type: multipart/mixed; boundary="===============8171605444377363128=="
 MIME-Version: 1.0
 From: Hanjun Guo <hanjun.guo at linaro.org>
-Subject: Re: [Devel] [PATCH v7 07/15] arm64,
- numa: Cleanup NUMA disabled messages.
-Date: Tue, 31 May 2016 12:28:51 +0000
-Message-ID: <574D836A.2090905@linaro.org>
-In-Reply-To: 1464129345-18985-8-git-send-email-ddaney.cavm@gmail.com
+Subject: Re: [Devel] [PATCH v7 13/15] ACPI / processor: Add
+ acpi_map_madt_entry().
+Date: Tue, 31 May 2016 13:05:37 +0000
+Message-ID: <574D8C09.3030608@linaro.org>
+In-Reply-To: 1464129345-18985-14-git-send-email-ddaney.cavm@gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4465577580490044223==
+--===============8171605444377363128==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
@@ -17,67 +17,73 @@ Content-Transfer-Encoding: quoted-printable
 On 2016/5/25 6:35, David Daney wrote:
 > From: David Daney <david.daney(a)cavium.com>
 >
-> As noted by Dennis Chen, we don't want to print "No NUMA configuration
-> found" if NUMA was forced off from the command line.
+> Follow-on arm64 ACPI/NUMA patches need to map MADT entries very early
+> (before kmalloc is usable).
 >
-> Change the type of numa_off to bool, and clean up printing code.
-> Print "NUMA disabled" if forced off on command line and "No NUMA
-> configuration found" if there was no firmware NUMA information.
+> Add acpi_map_madt_entry() which, indirectly, uses
+> early_memremap()/early_memunmap() to access the table and parse out
+> the mpidr.  The existing implementation of map_madt_entry() is
+> modified to take a pointer to the MADT as a parameter and the callers
+> adjusted.
 >
 > Signed-off-by: David Daney <david.daney(a)cavium.com>
-> Acked-by: Catalin Marinas <catalin.marinas(a)arm.com>
 > ---
->   arch/arm64/mm/numa.c | 11 +++++++----
->   1 file changed, 7 insertions(+), 4 deletions(-)
+>   drivers/acpi/processor_core.c | 26 ++++++++++++++++++++++----
+>   include/acpi/processor.h      |  1 +
+>   2 files changed, 23 insertions(+), 4 deletions(-)
 >
-> diff --git a/arch/arm64/mm/numa.c b/arch/arm64/mm/numa.c
-> index 6cb03f9..1def1de 100644
-> --- a/arch/arm64/mm/numa.c
-> +++ b/arch/arm64/mm/numa.c
-> @@ -29,7 +29,7 @@ static int cpu_to_node_map[NR_CPUS] =3D { [0 ... NR_CPU=
-S-1] =3D NUMA_NO_NODE };
+> diff --git a/drivers/acpi/processor_core.c b/drivers/acpi/processor_core.c
+> index 33a38d6..9125d7d 100644
+> --- a/drivers/acpi/processor_core.c
+> +++ b/drivers/acpi/processor_core.c
+> @@ -108,13 +108,12 @@ static int map_gicc_mpidr(struct acpi_subtable_head=
+er *entry,
+>   	return -EINVAL;
+>   }
 >
->   static int numa_distance_cnt;
->   static u8 *numa_distance;
-> -static int numa_off;
-> +static bool numa_off;
->
->   static __init int numa_parse_early_param(char *opt)
+> -static phys_cpuid_t map_madt_entry(int type, u32 acpi_id)
+> +static phys_cpuid_t map_madt_entry(struct acpi_table_madt *madt,
+> +				   int type, u32 acpi_id)
 >   {
-> @@ -37,7 +37,7 @@ static __init int numa_parse_early_param(char *opt)
->   		return -EINVAL;
->   	if (!strncmp(opt, "off", 3)) {
->   		pr_info("%s\n", "NUMA turned off");
-> -		numa_off =3D 1;
-> +		numa_off =3D true;
->   	}
->   	return 0;
+>   	unsigned long madt_end, entry;
+>   	phys_cpuid_t phys_id =3D PHYS_CPUID_INVALID;	/* CPU hardware ID */
+> -	struct acpi_table_madt *madt;
+>
+> -	madt =3D get_madt_table();
+>   	if (!madt)
+>   		return phys_id;
+>
+> @@ -145,6 +144,25 @@ static phys_cpuid_t map_madt_entry(int type, u32 acp=
+i_id)
+>   	return phys_id;
 >   }
-> @@ -362,7 +362,10 @@ static int __init dummy_numa_init(void)
->   	int ret;
->   	struct memblock_region *mblk;
 >
-> -	pr_info("%s\n", "No NUMA configuration found");
-> +	if (numa_off)
-> +		pr_info("NUMA disabled\n"); /* Forced off on command line. */
-> +	else
-> +		pr_info("No NUMA configuration found\n");
->   	pr_info("NUMA: Faking a node at [mem %#018Lx-%#018Lx]\n",
->   	       0LLU, PFN_PHYS(max_pfn) - 1);
->
-> @@ -375,7 +378,7 @@ static int __init dummy_numa_init(void)
->   		return ret;
->   	}
->
-> -	numa_off =3D 1;
-> +	numa_off =3D true;
->   	return 0;
->   }
+> +phys_cpuid_t __init acpi_map_madt_entry(u32 acpi_id)
+> +{
+> +	struct acpi_table_madt *madt =3D NULL;
+> +	acpi_size tbl_size;
+> +	phys_cpuid_t rv;
+> +
+> +	acpi_get_table_with_size(ACPI_SIG_MADT, 0,
+> +				 (struct acpi_table_header **)&madt,
+> +				 &tbl_size);
+> +	if (!madt)
+> +		return PHYS_CPUID_INVALID;
+> +
+> +	rv =3D map_madt_entry(madt, 1, acpi_id);
 
-Reviewed-by: Hanjun Guo <hanjun.guo(a)linaro.org>
+Just nit-pick, pass 1 here means we need to define an acpi processor
+device object in DSDT (see function map_gicc_mpidr(),
+device_declaration), it would be fine for x2apic and gic mode,
+but not for lapic mode, since the function name is acpi_map_madt_entry
+which is general for all architecture, it will confuse people I think.
 
->
->
+How about rename acpi_map_madt_entry() to acpi_map_madt_gicc_entry()?
+It's only used for AMR64 to get mpidrs from GICC entries using acpi_id,
+other than that, it's good to me.
 
---===============4465577580490044223==--
+Thanks
+Hanjun
+
+--===============8171605444377363128==--
 
