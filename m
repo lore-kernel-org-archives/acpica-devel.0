@@ -1,79 +1,40 @@
-Content-Type: multipart/mixed; boundary="===============4640189720547539577=="
+Content-Type: multipart/mixed; boundary="===============6645476106344746604=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] [PATCH] ACPICA: Use acpi_os_allocate_zeroed
-Date: Mon, 20 Jun 2016 17:23:37 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E4C01BC@ORSMSX110.amr.corp.intel.com>
-In-Reply-To: 20160620055234.GA3104@amitoj-Inspiron-3542
+From: Jo <j.o.l at live.com>
+Subject: [Devel] Suspend to RAM when not supported by BIOS?
+Date: Tue, 21 Jun 2016 22:51:46 +0200
+Message-ID: <BAY405-EAS16572C097033C68C788C93CA2B0@phx.gbl>
+In-Reply-To: BAY405-EAS29574ADAD627D87553A9CC3CA280@phx.gbl
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4640189720547539577==
+--===============6645476106344746604==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Got it, thanks. Will appear in next acpica release.
+Hello,
+not sure whether this is the best place to ask the question, feel free to
+provide any pointer you consider adequate.
+I am using two Dell T20, one with Windows Server 2008 R2, the other with
+Linux (I tried both CentOS 7.x and Ubuntu 16.04). According to the technical
+manual, the Dell T20 does not officially support Suspend-To-RAM. However the
+initial installation of the Windows Server was performed on a different
+system that was able to suspend and then I moved the entire installation to
+the T20, and it continues to suspend properly despite the technical manual.
+And I really like suspend as the system is up within seconds when needed.
+And in more than a year I never experienced any crash or incident that I
+would associate with the "hack".
+I tried both clean installs of Windows and Linux on the other T20, but
+always the installations claim suspend is not supported - in line with the
+official support statement. Now I am wondering how I can trick Linux into
+supporting suspend despite the BIOS telling it is not supported. Is there a
+configuration option to override the information the BIOS provides? I read
+about OSDT, however I have no clue about how to leverage that with Linux. =
+
+And for sure I understand this is on my own risk..
+Thanks & Best Regards, Joachim
 
 
------Original Message-----
-From: Amitoj Kaur Chawla [mailto:amitoj1606(a)gmail.com] =
-
-Sent: Sunday, June 19, 2016 10:53 PM
-To: Moore, Robert; Zheng, Lv; Wysocki, Rafael J; lenb(a)kernel.org; linux-a=
-cpi(a)vger.kernel.org; devel(a)acpica.org; linux-kernel(a)vger.kernel.org
-Cc: julia.lawall(a)lip6.fr
-Subject: [PATCH] ACPICA: Use acpi_os_allocate_zeroed
-
-acpi_os_allocate_zeroed combines acpi_os_allocate and memset 0.
-
-The Coccinelle semantic patch used to make this change is as follows:
-@@
-type T;
-T *d;
-expression e;
-statement S;
-@@
-
-        d =3D
--            acpi_os_allocate
-+            acpi_os_allocate_zeroed
-             (...);
-        if (!d) S
--       memset(d, 0, sizeof(T));
-
-Signed-off-by: Amitoj Kaur Chawla <amitoj1606(a)gmail.com>
----
- drivers/acpi/acpica/utcache.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/acpi/acpica/utcache.c b/drivers/acpi/acpica/utcache.c =
-index f8e9978..862f963 100644
---- a/drivers/acpi/acpica/utcache.c
-+++ b/drivers/acpi/acpica/utcache.c
-@@ -77,14 +77,13 @@ acpi_os_create_cache(char *cache_name,
- =
-
- 	/* Create the cache object */
- =
-
--	cache =3D acpi_os_allocate(sizeof(struct acpi_memory_list));
-+	cache =3D acpi_os_allocate_zeroed(sizeof(struct acpi_memory_list));
- 	if (!cache) {
- 		return (AE_NO_MEMORY);
- 	}
- =
-
- 	/* Populate the cache object and return it */
- =
-
--	memset(cache, 0, sizeof(struct acpi_memory_list));
- 	cache->list_name =3D cache_name;
- 	cache->object_size =3D object_size;
- 	cache->max_depth =3D max_depth;
---
-1.9.1
-
-
---===============4640189720547539577==--
+--===============6645476106344746604==--
 
