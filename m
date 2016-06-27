@@ -1,113 +1,206 @@
-Content-Type: multipart/mixed; boundary="===============0180625186002618995=="
+Content-Type: multipart/mixed; boundary="===============7494291062994169609=="
 MIME-Version: 1.0
-From: David Renz <efficient_language_learning at yahoo.com>
-Subject: [Devel] ACPI tables of Lenovo G710
-Date: Sun, 26 Jun 2016 12:42:07 +0000
-Message-ID: <2003649968.2606620.1466944927207.JavaMail.yahoo@mail.yahoo.com>
-In-Reply-To: 2003649968.2606620.1466944927207.JavaMail.yahoo.ref@mail.yahoo.com
+From: Zheng, Lv <lv.zheng at intel.com>
+Subject: Re: [Devel] acpi: broken suspend to RAM with v4.7-rc1
+Date: Mon, 27 Jun 2016 01:17:22 +0000
+Message-ID: <1AE640813FDE7649BE1B193DEA596E883BBFA365@SHSMSX101.ccr.corp.intel.com>
+In-Reply-To: 20160624213235.GA8304@nest
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0180625186002618995==
+--===============7494291062994169609==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hello,
+Hi,
 
-I'm the owner of a Lenovo G710, and after I saw a huge number of ACPI relat=
-ed error messages in the Linux dmesg log, whose were also confirmed by runn=
-ing Firmware Test Suite Live, I decided to do some research on this, which =
-gave me a really strong impression:
-I extracted the ACPI tables using Read&Write Everything (Windows) and submi=
-tted them to malwar.com for getting them analyzed. Here you can see what th=
-e running of the ACPI code on the malwr.com sandbox (Windows environment) d=
-id, and which one normally wouldn't expect as I guess:
+> From: Andrey Skvortsov [mailto:andrej.skvortzov(a)gmail.com]
+> Subject: Re: acpi: broken suspend to RAM with v4.7-rc1
+> =
 
+> On 24 Jun, Zheng, Lv wrote:
+> > Hi,
+> >
+> > > From: Andrey Skvortsov [mailto:andrej.skvortzov(a)gmail.com]
+> > > Subject: Re: acpi: broken suspend to RAM with v4.7-rc1
+> > >
+> > > Hi Lv,
+> > >
+> > > On 13 Jun, Zheng, Lv wrote:
+> > > > > From: linux-acpi-owner(a)vger.kernel.org [mailto:linux-acpi-
+> > > > > owner(a)vger.kernel.org] On Behalf Of Rafael J. Wysocki
+> > > > > Subject: Re: acpi: broken suspend to RAM with v4.7-rc1
+> > > > >
+> > > > > On Saturday, June 11, 2016 01:49:22 PM Andrey Skvortsov wrote:
+> > > > > > On 10 Jun, Rafael J. Wysocki wrote:
+> > > > > > > On Friday, June 10, 2016 11:32:10 PM Andrey Skvortsov wrote:
+> > > > > > > > Hi,
+> > > > > > > >
+> > > > > > > > On my laptop (DELL Vostro 1500) in v4.7-rc1 is broken
+> suspend
+> > > to RAM.
+> > > > > > > > Laptop doesn't finish suspend to RAM process (disks are off,
+> but
+> > > > > > > > WiFi and Power LEDs are still on). The only way to get it o=
+ut of
+> > > > > > > > this state, is to turn the power off.
+> > > > > > > >
+> > > > > > > > I've bisected the issue to commit 66b1ed5aa8dd25
+> > > > > > > > [ACPICA: ACPI 2.0, Hardware: Add access_width/bit_offset
+> > > support
+> > > > > > > > for acpi_hw_write()].
+> > > > > > > >
+> > > > > > > > If I revert this commit in v4.7-rc1 (or v4.7-rc2), suspend =
+to
+> RAM
+> > > > > > > > is working again.
+> > > > > > > >
+> > > > > > > > The cause of this problem is that after this commit write to
+> > > PM1A
+> > > > > > > > Control Block (16-bit register) is done using two 8-bit wri=
+tes.
+> > > > > > > > If I force this write to be 16-bit, then all is working as =
+before.
+> > > > > > > >
+> > > > > > > > To get it working 'access_width' for PM1A Control Block
+> needs to
+> > > > > > > > be 2 (16-bit), but it's 1 (8-bit).
+> > > > [Lv Zheng]
+> > > > Could you send me the acpidump of the machine?
+> > > Here it is
+> > >
+> https://dl.dropboxusercontent.com/u/24023626/dell_vostro_1500.acpid
+> > > ump.bin
+> > [Lv Zheng]
+> > I've been trying to download it these days but all failed.
+> > Could you send an off-list email to me with this attached?
+> Strange. I've check now. The link above is working, but I see that
+> part of the link above is moved to the next line.
+[Lv Zheng] =
 
-File changes:
+Maybe this is just because of ISP firewall.
 
-https://malwr.com/analysis/ZmEyZTNhNzg1ZTg3NDBhM2I2OWEwYTFjM2FiYmVmOTM/#sum=
-mary_files
+> Anyway I resend you all files off-list.
+[Lv Zheng] =
 
-Registry keys changed:
-https://malwr.com/analysis/ZmEyZTNhNzg1ZTg3NDBhM2I2OWEwYTFjM2FiYmVmOTM/#sum=
-mary_keys
+Great!
 
-Mutexes:
-https://malwr.com/analysis/ZmEyZTNhNzg1ZTg3NDBhM2I2OWEwYTFjM2FiYmVmOTM/#sum=
-mary_mutexes
+> =
 
-Behaviorial analysis (particularly interesting):
-https://malwr.com/analysis/ZmEyZTNhNzg1ZTg3NDBhM2I2OWEwYTFjM2FiYmVmOTM/#beh=
-avior
+> =
 
+> > > > > > > > The root of the problem seems to be not the commit
+> > > > > 66b1ed5aa8dd25
+> > > > > > > > itself, but the ACPI tables in BIOS where wrong access_width
+> > > > > > > > comes from. I fixed problem in FACP  table, put it in initr=
+d to
+> > > > > > > > override FACP table from BIOS. This fixed the issue, suspend
+> to
+> > > > > > > > RAM is working now again.
+> > > > > > > >
+> > > > > > > > But I'm not sure whether is this proper fix for this proble=
+m.
+> > > > > > > > Is there any place in the kernel, where such ACPI quirks are
+> placed?
+> > > > [Lv Zheng]
+> > > > My question would be:
+> > > > Does Windows behave correctly for this table?
+> > > Yes, suspend to RAM is working under Windows Vista.
+> > > IIRC it worked under Windows XP too.
+> > >
+> > > > However there is a real case showing that there are real tables need
+> us to
+> > > correctly support BitWidth/BitOffset.
+> > > > Here is the information for you to refer:
+> > > >
+> http://permalink.gmane.org/gmane.linux.kernel.commits.head/313870
+> > > >
+> > > > > > >
+> > > > > > > Well, if the commit in question caused a problem to happen for
+> > > you,
+> > > > > > > it also might cause similar problems to happen elsewhere.
+> > > > > > >
+> > > > > > > It looks like we'll need to revert that commit.
+> > > > > > Hi,
+> > > > > >
+> > > > > > or maybe to reset access_width AnyAcc from FACP table only for
+> > > PM1A
+> > > > > > control register or even for all registers? This will fix the i=
+ssue too.
+> > > > >
+> > > > > That's a good idea actually.
+> > > > >
+> > > > > > diff --git a/drivers/acpi/acpica/tbfadt.c
+> > > > > > b/drivers/acpi/acpica/tbfadt.c index 6208069..a476e94 100644
+> > > > > > --- a/drivers/acpi/acpica/tbfadt.c
+> > > > > > +++ b/drivers/acpi/acpica/tbfadt.c
+> > > > > > @@ -714,7 +714,14 @@ static void
+> > > acpi_tb_setup_fadt_registers(void)
+> > > > > >                         }
+> > > > > >                 }
+> > > > > >         }
+> > > > > >
+> > > > > > +       /*
+> > > > > > +        * Reset access_width in the GAS for PM1A control regis=
+ter
+> to
+> > > > > > +        * undefined value. Because in some cases this field co=
+ntains
+> > > > > > +        * wrong value.
+> > > > > > +        */
+> > > > > > +       acpi_gbl_FADT.xpm1a_control_block.access_width =3D 0;
+> > > > >
+> > > > > OK, let's see what Bob and Lv think about that.
+> > > > [Lv Zheng]
+> > > > There is a commit in 4.7-rc2:
+> > > >
+> > >
+> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?i=
+d=3D
+> > > 7f9bef9d
+> > > > Have you tried if the problem still exists in 4.7-rc2?
+> > > I've just tried v4.7-rc3. It contains commit 7f9bef9d and the problem
+> > > exists there too.
+> > [Lv Zheng]
+> > IMO, for the time being, you can use quirks.
+> > Booting your kernel with the following parameters:
+> >
+> > acpi=3Drsdt
+> > Or
+> > acpi_force_32bit_fadt_addr
+> > Or
+> > Both
+> =
 
-What is even more unsettling is the fact that I found several sites related=
- to malware, when I searched for the registry keys, files or mutexes change=
-d/created by that ACPI code:
-http://www.lavasoft.com/mylavasoft/malware-descriptions/blog/BackdoorWin32F=
-arflie1368ba67c
-https://isc.sans.edu/forums/diary/Suspect+Sendori+software/16466/
-https://isc.sans.edu/diary.html?date=3D2013-08-29
+> Rafael reverted commit, so I'm ok now.
+> =
 
+> Actually acpi_force_32bit_fadt_addr will not help here, because it's take
+> effect only if address64 !=3D address32. But here these addresses are
+> the same, therefore access_width is taken from extended address.
+> =
 
-You can download the extracted ACPI tables from malwr.com after registering=
- there, but I also uploaded it on Google Drive and gave shared access to it:
-https://drive.google.com/open?id=3D0B62Y5Qk_rdbWRFg1aDZPcEs4bTA
+> http://lxr.free-electrons.com/source/drivers/acpi/acpica/tbfadt.c#L576
+[Lv Zheng] =
 
+In addition to the address check, we may add access width check here.
+I need to check this with the decision makers.
 
-Now I would assume that those are not genuine ACPI tables by Lenovo. I have=
- a few questions in this regard:
-1) Obviously I didn't flash my BIOS' ACPI tables with malicious code - So h=
-ow can those be modified? Would it be possible that the computer's network =
-adapter enters a so-called 'maintenance mode' by receiving packages contain=
-ing certain 'magic numbers'? At least I've read in various sources that gen=
-erally it would be possible to do that.
-2) I'm not an expert about ACPI code at all (just knowing x86 assembly stuf=
-f), but when looking at the disassembled ACPI tables (which I did using ias=
-l under Linux) I could find no hint at all pointing to all those code actio=
-ns which are being performed. I know that ACPI code is very obscure littera=
-lly speaking, but is it possible to hide all this?
-3) I downloaded a BIOS image using a secure method, flashed the BIOS while =
-being offline and installed an OS right after rebooting - With no effect at=
- all, the ACPI code was still the same. Shouldn't the ACPI tables be overwr=
-itten by flashing the BIOS? If that's not possible, then is it in fact impo=
-ssible to get rid of this by any means?
+> =
 
+> =
 
-Those are the GERM scan results, which don't look nice as well:
-http://pastebin.com/A5J3pmpF
+> acpi=3Drsdt helps. Thanks for the information about this option. I
+> missed it, when I read documentation.
+[Lv Zheng] =
 
-Like, "SSDT  ZwAcceptConnectPort  fffff80003135d20 \SystemRoot\system32\xNt=
-Krnl.exe" sounds rather suspicious.
+Great to know that at least 1 quirk works.
+Back to this bug, it seems we should use fixed access_width for some pre-de=
+fined PM registers.
 
+Thanks and best regards
+-Lv
 
-I guess that there is no chance to find out where those connections lead to=
-, since my system seems to be modified on such a deep level - There's nothi=
-ng suspicious being visible in Wireshark and Comodo doesn't give any alert =
-as well. But still I'm deeply interested in what the origin of all this mig=
-ht be - And since it seems like it all started with the ACPI code modifying=
- the OS, this information must logically be stored in the ACPI code as well=
-. Would there be any chance to find out some information on this?
-
-
-I would highly appreciate any thoughts, comments and advices. Maybe someone=
- having a Lenovo G710, too, could extract his ACPI tables, so that a compar=
-ison could give some hints about what has been modified.
-
-
-
-Finally, I also did some information gathering using the Volatility Tools u=
-nder Linux, and it seems like this code might affect Linux as well, but I s=
-till have to conduct further analysis in this regard to be sure that this i=
-s not just a false alert. In any case I have the strong impression that thi=
-s code demonstrates very high technical skills.
-
-
-Kind regards and thanks in advance
-
-David
-
---===============0180625186002618995==--
+--===============7494291062994169609==--
 
