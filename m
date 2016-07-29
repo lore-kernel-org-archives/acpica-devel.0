@@ -1,40 +1,80 @@
-Content-Type: multipart/mixed; boundary="===============4414402824176901795=="
+Content-Type: multipart/mixed; boundary="===============6992402776590914482=="
 MIME-Version: 1.0
-From: Rudolf Marek <r.marek at assembler.cz>
-Subject: Re: [Devel] AcpiOsAllocate with zero argument
-Date: Thu, 28 Jul 2016 10:06:36 +0200
-Message-ID: <5799BD0C.6060706@assembler.cz>
-In-Reply-To: 1AE640813FDE7649BE1B193DEA596E883BC07BF4@SHSMSX101.ccr.corp.intel.com
+From: Zheng, Lv <lv.zheng at intel.com>
+Subject: Re: [Devel] [PATCH] ACPICA: cleanup method properly on error
+Date: Fri, 29 Jul 2016 04:47:10 +0000
+Message-ID: <1AE640813FDE7649BE1B193DEA596E883BC07E8C@SHSMSX101.ccr.corp.intel.com>
+In-Reply-To: 1469201709-10518-1-git-send-email-vegard.nossum@oracle.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4414402824176901795==
+--===============6992402776590914482==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi Lv,
+Hi, Vegard
 
-Thanks for the quick response. I checked the Linux kmalloc() and also UEFI =
+> From: linux-acpi-owner(a)vger.kernel.org [mailto:linux-acpi-
+> owner(a)vger.kernel.org] On Behalf Of Vegard Nossum
+> Subject: [PATCH] ACPICA: cleanup method properly on error
+> =
 
-AllocatePool() and they accept the zero size. No NULL is returned.
+> If the call to acpi_ds_init_aml_walk() fails, then we have to undo the
+> walk state push done by acpi_ds_create_walk_state(). Otherwise, the new
+> walk state (which has just been freed) will remain on the thread's
+> walk_state_list and be dereferenced in acpi_ps_parse_aml() when we try
+> to get the new state.
+[Lv Zheng] =
 
-Therefore I would like to ask if it can be documented in the Programming Ma=
-nual =
+I haven't looked into the detail.
+Let me first ask simple questions and present simple concerns in order to m=
+ove this discussion on.
 
-that zero size should be OK and
-non-NULL value should be returned. Otherwise, it may happen that if =
+> =
 
-implementation of  AcpiOsAllocate() returns NULL and maybe there is some ch=
-eck =
+> You can observe this when reading e.g.
+> =
 
-in the ACPICA code which will complain and break things.
+>     /sys/devices/LNXSYSTM:00/LNXSYBUS:00/PNP0C0F:01/status
+[Lv Zheng] =
 
-As for the free() you mean that NULL should be ignored?
+Do you mean you have real issues related to this?
+If so, could provide the .config and dmesg for us?
 
-Thanks
-Rudolf
+> =
 
+> Cc: stable(a)vger.kernel.org
+> Signed-off-by: Vegard Nossum <vegard.nossum(a)oracle.com>
+> ---
+>  drivers/acpi/acpica/dsmethod.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> =
 
---===============4414402824176901795==--
+> diff --git a/drivers/acpi/acpica/dsmethod.c
+> b/drivers/acpi/acpica/dsmethod.c
+> index 47c7b52..44b50a6 100644
+> --- a/drivers/acpi/acpica/dsmethod.c
+> +++ b/drivers/acpi/acpica/dsmethod.c
+> @@ -596,6 +596,8 @@ cleanup:
+>  	/* On error, we must terminate the method properly */
+> =
+
+>  	acpi_ds_terminate_control_method(obj_desc, next_walk_state);
+> +	if (thread)
+> +		acpi_ds_pop_walk_state(thread);
+>  	acpi_ds_delete_walk_state(next_walk_state);
+[Lv Zheng] =
+
+It seems, if acpi_ds_create_walk_state() fails, acpi_ds_delete_walk_state()=
+ will be invoked.
+So they are paired. Fixing this in acpi_ds_delete_walk_state() could help t=
+o fix all of them.
+Given the fix is useful, why don't you do this in acpi_ds_delete_walk_state=
+()?
+
+Thanks and best regards
+-Lv
+
+--===============6992402776590914482==--
 
