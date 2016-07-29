@@ -1,115 +1,114 @@
-Content-Type: multipart/mixed; boundary="===============1156744474108769666=="
+Content-Type: multipart/mixed; boundary="===============3207560519628366217=="
 MIME-Version: 1.0
-From: David Renz <sun.kisses.horizon at gmail.com>
-Subject: [Devel] Strange behavior of ACPI code
-Date: Fri, 29 Jul 2016 17:25:34 +0200
-Message-ID: <CAB=Lj3TRfo52A3Rgwp2tF+tz8ZDCy3iej4Wt+VTtsUUp7cXx+Q@mail.gmail.com>
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] ACPICA version 20160729
+Date: Fri, 29 Jul 2016 19:23:14 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E4CE98F@ORSMSX110.amr.corp.intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1156744474108769666==
+--===============3207560519628366217==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hello,
+29 July 2016. Summary of changes for version 20160729:
 
-I addressed this issue before on the ACPI developers' mailing list, where I
-observed a strange/suspicious behavior of my system's ACPI code in the case
-of a Lenovo G710 notebook. I concluded that this might be explained by the
-fact that Lenovo employs ACPI code in order to install harmless crapware on
-Windows, but finally I can definitely say that this conclusion can not be
-true, since the ACPI code of four different systems I'm using, which I
-extracted and submitted to malwr.com, led to the same results in each case.
-E. g., this is the result for the ACPI I extracted from an AMD x64 desktop
-PC:
-https://malwr.com/analysis/ODkxOThjOTk1MDAzNGE4M2JhOWNhNzk1ZTJjM2IyYWQ/
-It shows what happens when the ACPI code gets executed on a Windows system,
-and if you google some of files which get deployed or take a look at the
-registry modifications being made, it should be obvious to everyone that it
-compromises the system in order to gain full remote access over it and
-forward its' network traffic (which I can also observe in Wireshark).
-Recently someone from the Comodo support also confirmed me that my system
-is compromised, but even the Comodo software itself seems to have been
-gotten manipulated, so the Comodo firewall doesn't block the remote access
-(they're investigating about this now).
-
-However, this ACPI not only compromises Windows systems, but also every
-Linux and BSD distro I've tested for the purpose of analysis so far. The
-files in this Dropbox folder will give you only a first impression of this:
-https://www.dropbox.com/sh/x6vf2fqsbqdx0k8/AACdgsdbN_UA4w2XDaob9Maia?dl=3D0
-"modified_files.out" shows a list of files having been modified during the
-first 10 minutes after the first boot of a freshly installed system,
-dmesg.out shows various ACPI related errors and the netstat output shows
-that the UDP and UDP6 ports 50988 and 47815 are open, which shouldn't be
-the case normally. (Wireshark gives the same impression of traffic being
-forwared like it does on Windows.)
-The folder also contains the ACPI code extracted and disassembled using the
-IASL code.
+This release is available at https://acpica.org/downloads
 
 
-Would anyone be able to perform a debugging of this code in order to make
-visible what its execution on a Linux system does in detail?
+1) ACPICA kernel-resident subsystem:
+
+Implemented basic UEFI support for the various ACPICA tools. This includes:
+1) An OSL to implement the various AcpiOs* interfaces on UEFI.
+2) Support to obtain the ACPI tables on UEFI.
+3) Local implementation of required C library functions not available on UE=
+FI.
+4) A front-end (main) function for the tools for UEFI-related initializatio=
+n.
+
+The initial deployment of this support is the AcpiDump utility executing as=
+ an UEFI application via EDK2 (EDKII, "UEFI Firmware Development Kit"). Cur=
+rent environments supported are Linux/Unix. MSVC generation is not supporte=
+d at this time. See the generate/efi/README file for build instructions. Lv=
+ Zheng.
+
+Future plans include porting the AcpiExec utility to execute natively on th=
+e platform with I/O and memory access. This will allow viewing/dump of the =
+platform namespace and native execution of ACPI control methods that access=
+ the actual hardware. To fully implement this support, the OSL functions be=
+low must be implemented with UEFI interfaces. Any community help in the imp=
+lementation of these functions would be appreciated:
+    AcpiOsReadPort
+    AcpiOsWritePort
+    AcpiOsReadMemory
+    AcpiOsWriteMemory
+    AcpiOsReadPciConfiguration
+    AcpiOsWritePciConfiguration
 
 
-Thanks in advance and kind regards
+Restructured and standardized the C library configuration for ACPICA, resul=
+ting in the various configuration options below. This includes a global res=
+tructuring of the compiler-dependent and platform-dependent include files. =
+These changes may affect the existing platform-dependent configuration file=
+s on some hosts. Lv Zheng.
 
-David
+The current C library configuration options appear below. For any issues, i=
+t may be helpful to examine the existing compiler-dependent and platform-de=
+pendent files as examples. Lv Zheng.
 
---===============1156744474108769666==
-Content-Type: text/html
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="attachment.html"
+1) Linux kernel:
+    ACPI_USE_STANDARD_HEADERS=3Dn in order not to use system-provided C lib=
+rary.
+    ACPI_USE_SYSTEM_CLIBRARY=3Dy in order not to use ACPICA mini C library.
+2) Unix/Windows/BSD applications:
+    ACPI_USE_STANDARD_HEADERS=3Dy in order to use system-provided C library.
+    ACPI_USE_SYSTEM_CLIBRARY=3Dy in order not to use ACPICA mini C library.
+3) UEFI applications:
+    ACPI_USE_STANDARD_HEADERS=3Dn in order not to use system-provided C lib=
+rary.
+    ACPI_USE_SYSTEM_CLIBRARY=3Dn in order to use ACPICA mini C library.
+4) UEFI applications (EDK2/StdLib):
+    ACPI_USE_STANDARD_HEADERS=3Dy in order to use EDK2 StdLib C library.
+    ACPI_USE_SYSTEM_CLIBRARY=3Dy in order to use EDK2 StdLib C library.
 
-PGRpdiBkaXI9Imx0ciI+PGRpdj48ZGl2PjxkaXY+PGRpdj48ZGl2PjxkaXY+PGRpdj48ZGl2Pkhl
-bGxvLDxicj48YnI+PC9kaXY+SSBhZGRyZXNzZWQgdGhpcyBpc3N1ZSBiZWZvcmUgb24gdGhlIEFD
-UEkgZGV2ZWxvcGVycyYjMzk7IG1haWxpbmcgbGlzdCwgd2hlcmUgSSBvYnNlcnZlZCBhIHN0cmFu
-Z2Uvc3VzcGljaW91cyBiZWhhdmlvciBvZiBteSBzeXN0ZW0mIzM5O3MgQUNQSSBjb2RlIGluIHRo
-ZSBjYXNlIG9mIGEgTGVub3ZvIEc3MTAgbm90ZWJvb2suIEkgY29uY2x1ZGVkIHRoYXQgdGhpcyBt
-aWdodCBiZSBleHBsYWluZWQgYnkgdGhlIGZhY3QgdGhhdCBMZW5vdm8gZW1wbG95cyBBQ1BJIGNv
-ZGUgaW4gb3JkZXIgdG8gaW5zdGFsbCBoYXJtbGVzcyBjcmFwd2FyZSBvbiBXaW5kb3dzLCBidXQg
-ZmluYWxseSBJIGNhbiBkZWZpbml0ZWx5IHNheSB0aGF0IHRoaXMgY29uY2x1c2lvbiBjYW4gbm90
-IGJlIHRydWUsIHNpbmNlIHRoZSBBQ1BJIGNvZGUgb2YgZm91ciBkaWZmZXJlbnQgc3lzdGVtcyBJ
-JiMzOTttIHVzaW5nLCB3aGljaCBJIGV4dHJhY3RlZCBhbmQgc3VibWl0dGVkIHRvIDxhIGhyZWY9
-Imh0dHA6Ly9tYWx3ci5jb20iPm1hbHdyLmNvbTwvYT4sIGxlZCB0byB0aGUgc2FtZSByZXN1bHRz
-IGluIGVhY2ggY2FzZS4gRS4gZy4sIHRoaXMgaXMgdGhlIHJlc3VsdCBmb3IgdGhlIEFDUEkgSSBl
-eHRyYWN0ZWQgZnJvbSBhbiBBTUQgeDY0IGRlc2t0b3AgUEM6PGJyPjxhIGhyZWY9Imh0dHBzOi8v
-bWFsd3IuY29tL2FuYWx5c2lzL09Ea3hPVGhqT1RrMU1EQXpOR0U0TTJKaE9XTmhOemsxWlRKak0y
-SXlZV1EvIj5odHRwczovL21hbHdyLmNvbS9hbmFseXNpcy9PRGt4T1Roak9UazFNREF6TkdFNE0y
-SmhPV05oTnprMVpUSmpNMkl5WVdRLzwvYT48YnI+PC9kaXY+SXQgc2hvd3Mgd2hhdCBoYXBwZW5z
-IHdoZW4gdGhlIEFDUEkgY29kZSBnZXRzIGV4ZWN1dGVkIG9uIGEgV2luZG93cyBzeXN0ZW0sIGFu
-ZCBpZiB5b3UgZ29vZ2xlIHNvbWUgb2YgZmlsZXMgd2hpY2ggZ2V0IGRlcGxveWVkIG9yIHRha2Ug
-YSBsb29rIGF0IHRoZSByZWdpc3RyeSBtb2RpZmljYXRpb25zIGJlaW5nIG1hZGUsIGl0IHNob3Vs
-ZCBiZSBvYnZpb3VzIHRvIGV2ZXJ5b25lIHRoYXQgaXQgY29tcHJvbWlzZXMgdGhlIHN5c3RlbSBp
-biBvcmRlciB0byBnYWluIGZ1bGwgcmVtb3RlIGFjY2VzcyBvdmVyIGl0IGFuZCBmb3J3YXJkIGl0
-cyYjMzk7IG5ldHdvcmsgdHJhZmZpYyAod2hpY2ggSSBjYW4gYWxzbyBvYnNlcnZlIGluIFdpcmVz
-aGFyaykuIFJlY2VudGx5IHNvbWVvbmUgZnJvbSB0aGUgQ29tb2RvIHN1cHBvcnQgYWxzbyBjb25m
-aXJtZWQgbWUgdGhhdCBteSBzeXN0ZW0gaXMgY29tcHJvbWlzZWQsIGJ1dCBldmVuIHRoZSBDb21v
-ZG8gc29mdHdhcmUgaXRzZWxmIHNlZW1zIHRvIGhhdmUgYmVlbiBnb3R0ZW4gbWFuaXB1bGF0ZWQs
-IHNvIHRoZSBDb21vZG8gZmlyZXdhbGwgZG9lc24mIzM5O3QgYmxvY2sgdGhlIHJlbW90ZSBhY2Nl
-c3MgKHRoZXkmIzM5O3JlIGludmVzdGlnYXRpbmcgYWJvdXQgdGhpcyBub3cpLjxicj48YnI+PC9k
-aXY+SG93ZXZlciwgdGhpcyBBQ1BJIG5vdCBvbmx5IGNvbXByb21pc2VzIFdpbmRvd3Mgc3lzdGVt
-cywgYnV0IGFsc28gZXZlcnkgTGludXggYW5kIEJTRCBkaXN0cm8gSSYjMzk7dmUgdGVzdGVkIGZv
-ciB0aGUgcHVycG9zZSBvZiBhbmFseXNpcyBzbyBmYXIuIFRoZSBmaWxlcyBpbiB0aGlzIERyb3Bi
-b3ggZm9sZGVyIHdpbGwgZ2l2ZSB5b3Ugb25seSBhIGZpcnN0IGltcHJlc3Npb24gb2YgdGhpczo8
-YnI+PGEgaHJlZj0iaHR0cHM6Ly93d3cuZHJvcGJveC5jb20vc2gveDZ2ZjJmcXNicWR4MGs4L0FB
-Q2Rnc2RiTl9VQTR3MlhEYW9iOU1haWE/ZGw9MCI+aHR0cHM6Ly93d3cuZHJvcGJveC5jb20vc2gv
-eDZ2ZjJmcXNicWR4MGs4L0FBQ2Rnc2RiTl9VQTR3MlhEYW9iOU1haWE/ZGw9MDwvYT48YnI+PC9k
-aXY+JnF1b3Q7bW9kaWZpZWRfZmlsZXMub3V0JnF1b3Q7IHNob3dzIGEgbGlzdCBvZiBmaWxlcyBo
-YXZpbmcgYmVlbiBtb2RpZmllZCBkdXJpbmcgdGhlIGZpcnN0IDEwIG1pbnV0ZXMgYWZ0ZXIgdGhl
-IGZpcnN0IGJvb3Qgb2YgYSBmcmVzaGx5IGluc3RhbGxlZCBzeXN0ZW0sIGRtZXNnLm91dCBzaG93
-cyB2YXJpb3VzIEFDUEkgcmVsYXRlZCBlcnJvcnMgYW5kIHRoZSBuZXRzdGF0IG91dHB1dCBzaG93
-cyB0aGF0IHRoZSBVRFAgYW5kIFVEUDYgcG9ydHMgNTA5ODggYW5kIDQ3ODE1IGFyZSBvcGVuLCB3
-aGljaCBzaG91bGRuJiMzOTt0IGJlIHRoZSBjYXNlIG5vcm1hbGx5LiAoV2lyZXNoYXJrIGdpdmVz
-IHRoZSBzYW1lIGltcHJlc3Npb24gb2YgdHJhZmZpYyBiZWluZyBmb3J3YXJlZCBsaWtlIGl0IGRv
-ZXMgb24gV2luZG93cy4pPGJyPjwvZGl2PlRoZSBmb2xkZXIgYWxzbyBjb250YWlucyB0aGUgQUNQ
-SSBjb2RlIGV4dHJhY3RlZCBhbmQgZGlzYXNzZW1ibGVkIHVzaW5nIHRoZSBJQVNMIGNvZGUuPGJy
-Pjxicj48YnI+PC9kaXY+V291bGQgYW55b25lIGJlIGFibGUgdG8gcGVyZm9ybSBhIGRlYnVnZ2lu
-ZyBvZiB0aGlzIGNvZGUgaW4gb3JkZXIgdG8gbWFrZSB2aXNpYmxlIHdoYXQgaXRzIGV4ZWN1dGlv
-biBvbiBhIExpbnV4IHN5c3RlbSBkb2VzIGluIGRldGFpbD88YnI+PGJyPjxicj48L2Rpdj5UaGFu
-a3MgaW4gYWR2YW5jZSBhbmQga2luZCByZWdhcmRzPGJyPjxicj48L2Rpdj5EYXZpZDxicj48YnI+
-PC9kaXY+Cg==
 
---===============1156744474108769666==--
+AML interpreter: "module-level code" support. Allows for execution of so-ca=
+lled "executable" AML code (math/logical operations, etc.) outside of contr=
+ol methods not just at the module level (top level) but also within any sco=
+pe declared outside of a control method - Scope{}, Device{}, Processor{}, P=
+owerResource{}, and ThermalZone{}. Lv Zheng.
+
+Simplified the configuration of the "maximum AML loops" global option by ad=
+ding a global public variable, "AcpiGbl_MaxLoopIterations" which can be mod=
+ified at runtime.
+
+
+Example Code and Data Size: These are the sizes for the OS-independent acpi=
+ca.lib produced by the Microsoft Visual C++ 9.0 32-bit compiler. The debug =
+version of the code includes the debug output trace mechanism and has a muc=
+h larger code and data size.
+
+  Current Release:
+    Non-Debug Version: 139.1K Code, 22.9K Data, 162.0K Total
+    Debug Version:     199.0K Code, 81.8K Data, 280.8K Total
+
+
+2) iASL Compiler/Disassembler and Tools:
+
+iASL: Add full support for the RASF ACPI table (RAS Features Table). Includ=
+es disassembler, data table compiler, and header support.
+
+iASL Expand "module-level code" support. Allows for compilation/disassembly=
+ of so-called "executable" AML code (math/logical operations, etc.) outside=
+ of control methods not just at the module level (top level) but also withi=
+n any scope declared outside of a control method - Scope{}, Device{}, Proce=
+ssor{}, PowerResource{}, and ThermalZone{}.
+
+AcpiDump: Added support for dumping all SSDTs on newer versions of Windows.=
+ These tables are now easily available -- SSDTs are not available through t=
+he registry on older versions.
+
+
+--===============3207560519628366217==--
 
