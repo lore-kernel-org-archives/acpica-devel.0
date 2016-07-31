@@ -1,222 +1,323 @@
-Content-Type: multipart/mixed; boundary="===============2274458936963939597=="
+Content-Type: multipart/mixed; boundary="===============3481535713692450793=="
 MIME-Version: 1.0
 From: David Renz <sun.kisses.horizon at gmail.com>
-Subject: Re: [Devel] Strange behavior of ACPI code
-Date: Sat, 30 Jul 2016 03:44:58 +0200
-Message-ID: <CAB=Lj3QvLGsqb6s6+XwsJii0=B=F1giiFo70bC8TdELHXoexCQ@mail.gmail.com>
-In-Reply-To: CAB=Lj3TRfo52A3Rgwp2tF+tz8ZDCy3iej4Wt+VTtsUUp7cXx+Q@mail.gmail.com
+Subject: [Devel] Linux getting compromised by the execution of ACPI code
+Date: Sun, 31 Jul 2016 14:58:43 +0200
+Message-ID: <CAB=Lj3Qaaxu0NVNm7SzUfO3mAX3bb012wg57saaybJU9a92rtg@mail.gmail.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2274458936963939597==
+--===============3481535713692450793==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-I loaded the extracted ACPI code with acpiexec, whose initial output was
-this:
-"ACPI: RSDP 0x00000000006854E0 000024 (v02 Intel )
-ACPI: XSDT 0x0000000000BEAA80 00003C (v00 Intel  AcpiExec 00001001 INTL
-20160729)
-ACPI: FACP 0x0000000000BE4E20 0000F4 (v03 061210 FACP1416 20100612 MSFT
-00000097)
-ACPI: DSDT 0x0000000000BDD420 0079CA (v01 A1556  A1556000 00000000 INTL
-20060113)
-ACPI: FACS 0x00000000006854A0 000040
-ACPI: SSDT 0x0000000000BEBCC0 000DA4 (v01 A M I  POWERNOW 00000001 AMD
-00000001)
-Initializing General Purpose Events (GPEs):
-    Initialized GPE 00 to 1F [_GPE] 4 regs on interrupt 0x9 (SCI)
-    Initialized GPE 20 to 5F [_GPE] 8 regs on interrupt 0x9 (SCI)
+Hello,
 
-Initializing Namespace objects:
-Table [DSDT: A1556000] (id 01) - 1088 Objects with  65 Devices,  23
-Regions,  360 Methods (62/298/43 Serial/Non/Cvt)
-ACPI: Executed 1 blocks of module-level executable AML code
-Table [SSDT: POWERNOW] (id 02) -   36 Objects with   0 Devices,   0
-Regions,    0 Methods (0/0/0 Serial/Non/Cvt)
-ACPI: 2 ACPI AML tables successfully acquired and loaded
+I just posted this message on the volatility mailing list, and when
+considering that the system obviously got compromised while considering the
+ACPI related dmesg output (plus considering that its execution on a Windows
+system is responsible for its manipulation, s. malwr.com links), I think it
+is safe to assume that the execution of the ACPI code on Linux is
+responsible for what shows up in the results of the various tests I
+performed.
 
-Completing Region/Field/Buffer/Package initialization:
-    Initialized 22/23 Regions 38/38 Fields 53/53 Buffers 117/117 Packages
-(1133 nodes)
-Initializing Device/Processor/Thermal objects and executing _INI/_STA
-methods:
-    Executed 1 _INI methods requiring 1 _STA executions (examined 73
-objects)
-Unexpected AE_BAD_ADDRESS from AcpiWriteBitRegister (aeexec-609)
-Unexpected AE_BAD_ADDRESS from AcpiReadBitRegister (aeexec-622)
-Unexpected AE_BAD_PARAMETER from AcpiInstallGpeHandler (aeexec-898)
-Unexpected AE_BAD_PARAMETER from AcpiEnableGpe (aeexec-901)
-Unexpected AE_BAD_PARAMETER from AcpiDisableGpe (aeexec-904)"
+Since this should be the best place for reaching experts about ACPI code, I
+can only repeat what I already said in my forwarded message: It would be
+highly interesting to see how exactly the ACPI code's execution interacts
+with the kernel in order to compromise the system. Maybe there's someone
+who could take a look at the code extracted from my system or give me some
+advice on how to perform a debugging which would be able to provide some
+further information about this.
 
-The full output including the methods found by it can be seen in the file
-acpiexec.out, which I uploaded on GoogleDrive:
+
+Thanks in advance and kind regards
+
+David
+
+
+---------- Forwarded message ----------
+From: David Renz <sun.kisses.horizon(a)gmail.com>
+Date: Sun, Jul 31, 2016 at 2:45 PM
+Subject: Request for advice on how to proceed with further analysis
+To: vol-users(a)volatilesystems.com
+
+
+Hello,
+
+I recently posted a message, where I asked how to create a profile which
+could be used with ArchLinux, but now I just solved this by having
+installed Lubuntu 16.04 (4.4.0-31-generic 64-bit), so that I was able to
+analyze my system's dumped memory using the pre-built Ubuntu 16.04 image I
+found on GitHub (the image I created by myself couldn't be used by
+Volatility, although I definitely followed each step precisely).
+
+The checks I performed confirmed my suspicion that my system would be
+compromised, as one can see by taking a look at the results I uploaded on
+GoogleDrive:
+https://drive.google.com/open?id=3D0B62Y5Qk_rdbWTnNYWlJRWXpsZUE
+
+E.g.:
+linux_check_afinfo
+Symbol Name                                Member
+Address
+------------------------------------------ ------------------------------
+------------------
+udplite6_seq_afinfo                        next
+0xffffffff81effcc8
+udplite6_seq_afinfo                        stop
+0xffffffff81eff808
+udplite4_seq_afinfo                        next
+0xffffffff81efeac8
+udplite4_seq_afinfo                        stop
+0xffffffff81efbce8
+udp4_seq_afinfo                            start
+ 0xffffffff81efae00
+udp4_seq_afinfo                            stop
+0xffffffff81efa3a0
+
+linux_check_inline_kernel
+Name                                             Member           Hook Type
+Hook Address
+------------------------------------------------ ---------------- ---------
+------------------
+udp4_seq_afinfo                                  stop             JMP
+0x0000000000000000
+
+[A huge number of hooks shown by linux_check_syscall]
+
+
+Using the netstat plugin shows no result at all (none of the connections
+shown by using the normal Linux netstat command). Neither linux_lsmod nor
+linux_hidden_modules give any output as well.
+
+
+I assume that my system is infected by an ACPI rootkit, which is able to
+compromise both Linux and Windows systems. After having submitted the
+extracted the ACPI tables' code to malwr.com, where it gets executed on a
+Windows sandbox, it shows that the system gets manipulated in the following
+way:
+https://malwr.com/analysis/ODkxOThjOTk1MDAzNGE4M2JhOWNhNzk1ZTJjM2IyYWQ/
+
+It might be interesting that the ACPI code of four different systems being
+used by me seems to have been manipulated in the same way, since the
+extracted code found on one of the other systems leads to the same result
+when submitting it to malwr.com. E.g., the link above shows the result for
+the analysis of ACPI code on my AMD 64-bit desktop computer (Asus-M4N68T-M
+LE mainboard), while the ACPI code extracted from my Lenovo G710 notebook
+leads to the same when executed on a Windows system:
+https://malwr.com/analysis/MjZkOGU4Y2ZmMGM5NDQ1Njg5OTc4NTVlOTQ5NThiMmY/
+
+I guess everyone can see that the results show how the Windows system gets
+compromised for being able to monitor it and gaining remote access over it,
+if you take a look at the file and registry activities (just googling some
+of the file names makes that clear).
+
+Since a Linux system running on the same machine gets compromised as well,
+it would be reasonable to assume that this also takes place by the ACPI
+code's execution. Taking a look at the dmesg output, which I also uploaded
+on GoogleDrive, seems to confirm this assumption:
+[    0.225468] ACPI: Added _OSI(Module Device)
+[    0.225470] ACPI: Added _OSI(Processor Device)
+[    0.225471] ACPI: Added _OSI(3.0 _SCP Extensions)
+[    0.225472] ACPI: Added _OSI(Processor Aggregator Device)
+[    0.227433] ACPI: Executed 1 blocks of module-level executable AML code
+[    0.293448] ACPI: Interpreter enabled
+[    0.293458] ACPI Exception: AE_NOT_FOUND, While evaluating Sleep State
+[\_S2_] (20150930/hwxface-580)
+[    0.293469] ACPI: (supports S0 S1 S3 S4 S5)
+[    0.293470] ACPI: Using IOAPIC for interrupt routing
+[    0.293491] PCI: MMCONFIG for domain 0000 [bus 00-ff] at [mem
+0xe0000000-0xefffffff] (base 0xe0000000)
+[    0.294509] PCI: MMCONFIG at [mem 0xe0000000-0xefffffff] reserved in
+ACPI motherboard resources
+[    0.294522] PCI: Using host bridge windows from ACPI; if necessary, use
+"pci=3Dnocrs" and report a bug
+[    0.298938] ACPI: PCI Root Bridge [PCI0] (domain 0000 [bus 00-ff])
+[    0.298943] acpi PNP0A03:00: _OSC: OS supports [ExtendedConfig ASPM
+ClockPM Segments MSI]
+[    0.299051] acpi PNP0A03:00: _OSC: platform does not support
+[PCIeHotplug PCIeCapability]
+[    0.299099] acpi PNP0A03:00: _OSC: not requesting control; platform does
+not support [PCIeCapability]
+[    0.299101] acpi PNP0A03:00: _OSC: OS requested [PCIeHotplug PME AER
+PCIeCapability]
+[    0.299103] acpi PNP0A03:00: _OSC: platform willing to grant [PME AER]
+[    0.299104] acpi PNP0A03:00: _OSC failed (AE_SUPPORT); disabling ASPM
+[    8.647712] ACPI Warning: SystemIO range
+0x0000000000000600-0x000000000000063F conflicts with OpRegion
+0x0000000000000600-0x00000000000006FF (\_SB_.PCI0.SBRG.ASOC.SMRG)
+(20150930/utaddress-254)
+
+The extracted and disassembled ACPI code of my AMD system can be downloaded
+from here:
 https://drive.google.com/open?id=3D0B62Y5Qk_rdbWYzhPTHhHM1RxRTg
 
-However, although I definitely don't know enough about the ACPI system, I
-guess it would in fact not be realistic to understand how this ACPI code
-compromises a Linux system using acpiexec. Probably there's no other way
-than debugging the kernel with ACPI debug output enabled...
+
+So I would appreciate it, if anyone would have an idea on how to proceed
+with a further analysis. It would be interesting, if one would be able to
+see how exactly the ACPI code's execution interacts with the kernel in
+order to compromise the system. And of course it would be interesting to
+discover where the relevant network traffic gets forwarded to / comes in
+from (for remote access), since the checks I already performed showed that
+the networking structure got manipulated, so that the usage of Wireshark
+etc. won't show anything.
 
 
-On Fri, Jul 29, 2016 at 5:25 PM, David Renz <sun.kisses.horizon(a)gmail.com>
-wrote:
+Kind regards and thanks in advance
 
-> Hello,
->
-> I addressed this issue before on the ACPI developers' mailing list, where
-> I observed a strange/suspicious behavior of my system's ACPI code in the
-> case of a Lenovo G710 notebook. I concluded that this might be explained =
-by
-> the fact that Lenovo employs ACPI code in order to install harmless
-> crapware on Windows, but finally I can definitely say that this conclusion
-> can not be true, since the ACPI code of four different systems I'm using,
-> which I extracted and submitted to malwr.com, led to the same results in
-> each case. E. g., this is the result for the ACPI I extracted from an AMD
-> x64 desktop PC:
-> https://malwr.com/analysis/ODkxOThjOTk1MDAzNGE4M2JhOWNhNzk1ZTJjM2IyYWQ/
-> It shows what happens when the ACPI code gets executed on a Windows
-> system, and if you google some of files which get deployed or take a look
-> at the registry modifications being made, it should be obvious to everyone
-> that it compromises the system in order to gain full remote access over it
-> and forward its' network traffic (which I can also observe in Wireshark).
-> Recently someone from the Comodo support also confirmed me that my system
-> is compromised, but even the Comodo software itself seems to have been
-> gotten manipulated, so the Comodo firewall doesn't block the remote access
-> (they're investigating about this now).
->
-> However, this ACPI not only compromises Windows systems, but also every
-> Linux and BSD distro I've tested for the purpose of analysis so far. The
-> files in this Dropbox folder will give you only a first impression of thi=
-s:
-> https://www.dropbox.com/sh/x6vf2fqsbqdx0k8/AACdgsdbN_UA4w2XDaob9Maia?dl=
-=3D0
-> "modified_files.out" shows a list of files having been modified during the
-> first 10 minutes after the first boot of a freshly installed system,
-> dmesg.out shows various ACPI related errors and the netstat output shows
-> that the UDP and UDP6 ports 50988 and 47815 are open, which shouldn't be
-> the case normally. (Wireshark gives the same impression of traffic being
-> forwared like it does on Windows.)
-> The folder also contains the ACPI code extracted and disassembled using
-> the IASL code.
->
->
-> Would anyone be able to perform a debugging of this code in order to make
-> visible what its execution on a Linux system does in detail?
->
->
-> Thanks in advance and kind regards
->
-> David
->
->
+David
 
---===============2274458936963939597==
+--===============3481535713692450793==
 Content-Type: text/html
 MIME-Version: 1.0
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="attachment.html"
 
-PGRpdiBkaXI9Imx0ciI+PGRpdj48ZGl2PkkgbG9hZGVkIHRoZSBleHRyYWN0ZWQgQUNQSSBjb2Rl
-IHdpdGggYWNwaWV4ZWMsIHdob3NlIGluaXRpYWwgb3V0cHV0IHdhcyB0aGlzOjxicj4mcXVvdDtB
-Q1BJOiBSU0RQIDB4MDAwMDAwMDAwMDY4NTRFMCAwMDAwMjQgKHYwMiBJbnRlbCApPGJyPkFDUEk6
-IFhTRFQgMHgwMDAwMDAwMDAwQkVBQTgwIDAwMDAzQyAodjAwIEludGVswqAgQWNwaUV4ZWMgMDAw
-MDEwMDEgSU5UTCAyMDE2MDcyOSk8YnI+QUNQSTogRkFDUCAweDAwMDAwMDAwMDBCRTRFMjAgMDAw
-MEY0ICh2MDMgMDYxMjEwIEZBQ1AxNDE2IDIwMTAwNjEyIE1TRlQgMDAwMDAwOTcpPGJyPkFDUEk6
-IERTRFQgMHgwMDAwMDAwMDAwQkRENDIwIDAwNzlDQSAodjAxIEExNTU2wqAgQTE1NTYwMDAgMDAw
-MDAwMDAgSU5UTCAyMDA2MDExMyk8YnI+QUNQSTogRkFDUyAweDAwMDAwMDAwMDA2ODU0QTAgMDAw
-MDQwPGJyPkFDUEk6IFNTRFQgMHgwMDAwMDAwMDAwQkVCQ0MwIDAwMERBNCAodjAxIEEgTSBJwqAg
-UE9XRVJOT1cgMDAwMDAwMDEgQU1EwqAgMDAwMDAwMDEpPGJyPkluaXRpYWxpemluZyBHZW5lcmFs
-IFB1cnBvc2UgRXZlbnRzIChHUEVzKTo8YnI+wqDCoMKgIEluaXRpYWxpemVkIEdQRSAwMCB0byAx
-RiBbX0dQRV0gNCByZWdzIG9uIGludGVycnVwdCAweDkgKFNDSSk8YnI+wqDCoMKgIEluaXRpYWxp
-emVkIEdQRSAyMCB0byA1RiBbX0dQRV0gOCByZWdzIG9uIGludGVycnVwdCAweDkgKFNDSSk8YnI+
-PGJyPkluaXRpYWxpemluZyBOYW1lc3BhY2Ugb2JqZWN0czo8YnI+VGFibGUgW0RTRFQ6IEExNTU2
-MDAwXSAoaWQgMDEpIC0gMTA4OCBPYmplY3RzIHdpdGjCoCA2NSBEZXZpY2VzLMKgIDIzIFJlZ2lv
-bnMswqAgMzYwIE1ldGhvZHMgKDYyLzI5OC80MyBTZXJpYWwvTm9uL0N2dCk8YnI+QUNQSTogRXhl
-Y3V0ZWQgMSBibG9ja3Mgb2YgbW9kdWxlLWxldmVsIGV4ZWN1dGFibGUgQU1MIGNvZGU8YnI+VGFi
-bGUgW1NTRFQ6IFBPV0VSTk9XXSAoaWQgMDIpIC3CoMKgIDM2IE9iamVjdHMgd2l0aMKgwqAgMCBE
-ZXZpY2VzLMKgwqAgMCBSZWdpb25zLMKgwqDCoCAwIE1ldGhvZHMgKDAvMC8wIFNlcmlhbC9Ob24v
-Q3Z0KTxicj5BQ1BJOiAyIEFDUEkgQU1MIHRhYmxlcyBzdWNjZXNzZnVsbHkgYWNxdWlyZWQgYW5k
-IGxvYWRlZDxicj48YnI+Q29tcGxldGluZyBSZWdpb24vRmllbGQvQnVmZmVyL1BhY2thZ2UgaW5p
-dGlhbGl6YXRpb246PGJyPsKgwqDCoCBJbml0aWFsaXplZCAyMi8yMyBSZWdpb25zIDM4LzM4IEZp
-ZWxkcyA1My81MyBCdWZmZXJzIDExNy8xMTcgUGFja2FnZXMgKDExMzMgbm9kZXMpPGJyPkluaXRp
-YWxpemluZyBEZXZpY2UvUHJvY2Vzc29yL1RoZXJtYWwgb2JqZWN0cyBhbmQgZXhlY3V0aW5nIF9J
-TkkvX1NUQSBtZXRob2RzOjxicj7CoMKgwqAgRXhlY3V0ZWQgMSBfSU5JIG1ldGhvZHMgcmVxdWly
-aW5nIDEgX1NUQSBleGVjdXRpb25zIChleGFtaW5lZCA3MyBvYmplY3RzKTxicj5VbmV4cGVjdGVk
-IEFFX0JBRF9BRERSRVNTIGZyb20gQWNwaVdyaXRlQml0UmVnaXN0ZXIgKGFlZXhlYy02MDkpPGJy
-PlVuZXhwZWN0ZWQgQUVfQkFEX0FERFJFU1MgZnJvbSBBY3BpUmVhZEJpdFJlZ2lzdGVyIChhZWV4
-ZWMtNjIyKTxicj5VbmV4cGVjdGVkIEFFX0JBRF9QQVJBTUVURVIgZnJvbSBBY3BpSW5zdGFsbEdw
-ZUhhbmRsZXIgKGFlZXhlYy04OTgpPGJyPlVuZXhwZWN0ZWQgQUVfQkFEX1BBUkFNRVRFUiBmcm9t
-IEFjcGlFbmFibGVHcGUgKGFlZXhlYy05MDEpPGJyPlVuZXhwZWN0ZWQgQUVfQkFEX1BBUkFNRVRF
-UiBmcm9tIEFjcGlEaXNhYmxlR3BlIChhZWV4ZWMtOTA0KSZxdW90Ozxicj48YnI+PC9kaXY+VGhl
-IGZ1bGwgb3V0cHV0IGluY2x1ZGluZyB0aGUgbWV0aG9kcyBmb3VuZCBieSBpdCBjYW4gYmUgc2Vl
-biBpbiB0aGUgZmlsZSBhY3BpZXhlYy5vdXQsIHdoaWNoIEkgdXBsb2FkZWQgb24gR29vZ2xlRHJp
-dmU6PGJyPjxhIGhyZWY9Imh0dHBzOi8vZHJpdmUuZ29vZ2xlLmNvbS9vcGVuP2lkPTBCNjJZNVFr
-X3JkYldZemhQVEhoSE0xUnhSVGciPmh0dHBzOi8vZHJpdmUuZ29vZ2xlLmNvbS9vcGVuP2lkPTBC
-NjJZNVFrX3JkYldZemhQVEhoSE0xUnhSVGc8L2E+PGJyPjxicj48L2Rpdj5Ib3dldmVyLCBhbHRo
-b3VnaCBJIGRlZmluaXRlbHkgZG9uJiMzOTt0IGtub3cgZW5vdWdoIGFib3V0IHRoZSBBQ1BJIHN5
-c3RlbSwgSSBndWVzcyBpdCB3b3VsZCBpbiBmYWN0IG5vdCBiZSByZWFsaXN0aWMgdG8gdW5kZXJz
-dGFuZCBob3cgdGhpcyBBQ1BJIGNvZGUgY29tcHJvbWlzZXMgYSBMaW51eCBzeXN0ZW0gdXNpbmcg
-YWNwaWV4ZWMuIFByb2JhYmx5IHRoZXJlJiMzOTtzIG5vIG90aGVyIHdheSB0aGFuIGRlYnVnZ2lu
-ZyB0aGUga2VybmVsIHdpdGggQUNQSSBkZWJ1ZyBvdXRwdXQgZW5hYmxlZC4uLjxicj48YnI+PC9k
-aXY+PGRpdiBjbGFzcz0iZ21haWxfZXh0cmEiPjxicj48ZGl2IGNsYXNzPSJnbWFpbF9xdW90ZSI+
-T24gRnJpLCBKdWwgMjksIDIwMTYgYXQgNToyNSBQTSwgRGF2aWQgUmVueiA8c3BhbiBkaXI9Imx0
-ciI+Jmx0OzxhIGhyZWY9Im1haWx0bzpzdW4ua2lzc2VzLmhvcml6b25AZ21haWwuY29tIiB0YXJn
-ZXQ9Il9ibGFuayI+c3VuLmtpc3Nlcy5ob3Jpem9uQGdtYWlsLmNvbTwvYT4mZ3Q7PC9zcGFuPiB3
-cm90ZTo8YnI+PGJsb2NrcXVvdGUgY2xhc3M9ImdtYWlsX3F1b3RlIiBzdHlsZT0ibWFyZ2luOjAg
-MCAwIC44ZXg7Ym9yZGVyLWxlZnQ6MXB4ICNjY2Mgc29saWQ7cGFkZGluZy1sZWZ0OjFleCI+PGRp
-diBkaXI9Imx0ciI+PGRpdj48ZGl2PjxkaXY+PGRpdj48ZGl2PjxkaXY+PGRpdj48ZGl2PkhlbGxv
-LDxicj48YnI+PC9kaXY+SSBhZGRyZXNzZWQgdGhpcyBpc3N1ZSBiZWZvcmUgb24gdGhlIEFDUEkg
-ZGV2ZWxvcGVycyYjMzk7IG1haWxpbmcgbGlzdCwgd2hlcmUgSSBvYnNlcnZlZCBhIHN0cmFuZ2Uv
-c3VzcGljaW91cyBiZWhhdmlvciBvZiBteSBzeXN0ZW0mIzM5O3MgQUNQSSBjb2RlIGluIHRoZSBj
-YXNlIG9mIGEgTGVub3ZvIEc3MTAgbm90ZWJvb2suIEkgY29uY2x1ZGVkIHRoYXQgdGhpcyBtaWdo
-dCBiZSBleHBsYWluZWQgYnkgdGhlIGZhY3QgdGhhdCBMZW5vdm8gZW1wbG95cyBBQ1BJIGNvZGUg
-aW4gb3JkZXIgdG8gaW5zdGFsbCBoYXJtbGVzcyBjcmFwd2FyZSBvbiBXaW5kb3dzLCBidXQgZmlu
-YWxseSBJIGNhbiBkZWZpbml0ZWx5IHNheSB0aGF0IHRoaXMgY29uY2x1c2lvbiBjYW4gbm90IGJl
-IHRydWUsIHNpbmNlIHRoZSBBQ1BJIGNvZGUgb2YgZm91ciBkaWZmZXJlbnQgc3lzdGVtcyBJJiMz
-OTttIHVzaW5nLCB3aGljaCBJIGV4dHJhY3RlZCBhbmQgc3VibWl0dGVkIHRvIDxhIGhyZWY9Imh0
-dHA6Ly9tYWx3ci5jb20iIHRhcmdldD0iX2JsYW5rIj5tYWx3ci5jb208L2E+LCBsZWQgdG8gdGhl
-IHNhbWUgcmVzdWx0cyBpbiBlYWNoIGNhc2UuIEUuIGcuLCB0aGlzIGlzIHRoZSByZXN1bHQgZm9y
-IHRoZSBBQ1BJIEkgZXh0cmFjdGVkIGZyb20gYW4gQU1EIHg2NCBkZXNrdG9wIFBDOjxicj48YSBo
-cmVmPSJodHRwczovL21hbHdyLmNvbS9hbmFseXNpcy9PRGt4T1Roak9UazFNREF6TkdFNE0ySmhP
-V05oTnprMVpUSmpNMkl5WVdRLyIgdGFyZ2V0PSJfYmxhbmsiPmh0dHBzOi8vbWFsd3IuY29tL2Fu
-YWx5c2lzL09Ea3hPVGhqT1RrMU1EQXpOR0U0TTJKaE9XTmhOemsxWlRKak0ySXlZV1EvPC9hPjxi
-cj48L2Rpdj5JdCBzaG93cyB3aGF0IGhhcHBlbnMgd2hlbiB0aGUgQUNQSSBjb2RlIGdldHMgZXhl
-Y3V0ZWQgb24gYSBXaW5kb3dzIHN5c3RlbSwgYW5kIGlmIHlvdSBnb29nbGUgc29tZSBvZiBmaWxl
-cyB3aGljaCBnZXQgZGVwbG95ZWQgb3IgdGFrZSBhIGxvb2sgYXQgdGhlIHJlZ2lzdHJ5IG1vZGlm
-aWNhdGlvbnMgYmVpbmcgbWFkZSwgaXQgc2hvdWxkIGJlIG9idmlvdXMgdG8gZXZlcnlvbmUgdGhh
-dCBpdCBjb21wcm9taXNlcyB0aGUgc3lzdGVtIGluIG9yZGVyIHRvIGdhaW4gZnVsbCByZW1vdGUg
-YWNjZXNzIG92ZXIgaXQgYW5kIGZvcndhcmQgaXRzJiMzOTsgbmV0d29yayB0cmFmZmljICh3aGlj
-aCBJIGNhbiBhbHNvIG9ic2VydmUgaW4gV2lyZXNoYXJrKS4gUmVjZW50bHkgc29tZW9uZSBmcm9t
-IHRoZSBDb21vZG8gc3VwcG9ydCBhbHNvIGNvbmZpcm1lZCBtZSB0aGF0IG15IHN5c3RlbSBpcyBj
-b21wcm9taXNlZCwgYnV0IGV2ZW4gdGhlIENvbW9kbyBzb2Z0d2FyZSBpdHNlbGYgc2VlbXMgdG8g
-aGF2ZSBiZWVuIGdvdHRlbiBtYW5pcHVsYXRlZCwgc28gdGhlIENvbW9kbyBmaXJld2FsbCBkb2Vz
-biYjMzk7dCBibG9jayB0aGUgcmVtb3RlIGFjY2VzcyAodGhleSYjMzk7cmUgaW52ZXN0aWdhdGlu
-ZyBhYm91dCB0aGlzIG5vdykuPGJyPjxicj48L2Rpdj5Ib3dldmVyLCB0aGlzIEFDUEkgbm90IG9u
-bHkgY29tcHJvbWlzZXMgV2luZG93cyBzeXN0ZW1zLCBidXQgYWxzbyBldmVyeSBMaW51eCBhbmQg
-QlNEIGRpc3RybyBJJiMzOTt2ZSB0ZXN0ZWQgZm9yIHRoZSBwdXJwb3NlIG9mIGFuYWx5c2lzIHNv
-IGZhci4gVGhlIGZpbGVzIGluIHRoaXMgRHJvcGJveCBmb2xkZXIgd2lsbCBnaXZlIHlvdSBvbmx5
-IGEgZmlyc3QgaW1wcmVzc2lvbiBvZiB0aGlzOjxicj48YSBocmVmPSJodHRwczovL3d3dy5kcm9w
-Ym94LmNvbS9zaC94NnZmMmZxc2JxZHgwazgvQUFDZGdzZGJOX1VBNHcyWERhb2I5TWFpYT9kbD0w
-IiB0YXJnZXQ9Il9ibGFuayI+aHR0cHM6Ly93d3cuZHJvcGJveC5jb20vc2gveDZ2ZjJmcXNicWR4
-MGs4L0FBQ2Rnc2RiTl9VQTR3MlhEYW9iOU1haWE/ZGw9MDwvYT48YnI+PC9kaXY+JnF1b3Q7bW9k
-aWZpZWRfZmlsZXMub3V0JnF1b3Q7IHNob3dzIGEgbGlzdCBvZiBmaWxlcyBoYXZpbmcgYmVlbiBt
-b2RpZmllZCBkdXJpbmcgdGhlIGZpcnN0IDEwIG1pbnV0ZXMgYWZ0ZXIgdGhlIGZpcnN0IGJvb3Qg
-b2YgYSBmcmVzaGx5IGluc3RhbGxlZCBzeXN0ZW0sIGRtZXNnLm91dCBzaG93cyB2YXJpb3VzIEFD
-UEkgcmVsYXRlZCBlcnJvcnMgYW5kIHRoZSBuZXRzdGF0IG91dHB1dCBzaG93cyB0aGF0IHRoZSBV
-RFAgYW5kIFVEUDYgcG9ydHMgNTA5ODggYW5kIDQ3ODE1IGFyZSBvcGVuLCB3aGljaCBzaG91bGRu
-JiMzOTt0IGJlIHRoZSBjYXNlIG5vcm1hbGx5LiAoV2lyZXNoYXJrIGdpdmVzIHRoZSBzYW1lIGlt
-cHJlc3Npb24gb2YgdHJhZmZpYyBiZWluZyBmb3J3YXJlZCBsaWtlIGl0IGRvZXMgb24gV2luZG93
-cy4pPGJyPjwvZGl2PlRoZSBmb2xkZXIgYWxzbyBjb250YWlucyB0aGUgQUNQSSBjb2RlIGV4dHJh
-Y3RlZCBhbmQgZGlzYXNzZW1ibGVkIHVzaW5nIHRoZSBJQVNMIGNvZGUuPGJyPjxicj48YnI+PC9k
-aXY+V291bGQgYW55b25lIGJlIGFibGUgdG8gcGVyZm9ybSBhIGRlYnVnZ2luZyBvZiB0aGlzIGNv
-ZGUgaW4gb3JkZXIgdG8gbWFrZSB2aXNpYmxlIHdoYXQgaXRzIGV4ZWN1dGlvbiBvbiBhIExpbnV4
-IHN5c3RlbSBkb2VzIGluIGRldGFpbD88YnI+PGJyPjxicj48L2Rpdj5UaGFua3MgaW4gYWR2YW5j
-ZSBhbmQga2luZCByZWdhcmRzPHNwYW4gY2xhc3M9IkhPRW5aYiI+PGZvbnQgY29sb3I9IiM4ODg4
-ODgiPjxicj48YnI+PC9mb250Pjwvc3Bhbj48L2Rpdj48c3BhbiBjbGFzcz0iSE9FblpiIj48Zm9u
-dCBjb2xvcj0iIzg4ODg4OCI+RGF2aWQ8YnI+PGJyPjwvZm9udD48L3NwYW4+PC9kaXY+CjwvYmxv
-Y2txdW90ZT48L2Rpdj48YnI+PC9kaXY+Cg==
+PGRpdiBkaXI9Imx0ciI+SGVsbG8sPGJyPjxicj5JIGp1c3QgcG9zdGVkIHRoaXMgbWVzc2FnZSBv
+biB0aGUgdm9sYXRpbGl0eSBtYWlsaW5nIGxpc3QsIGFuZCB3aGVuIGNvbnNpZGVyaW5nIHRoYXQg
+dGhlIHN5c3RlbSBvYnZpb3VzbHkgZ290IGNvbXByb21pc2VkIHdoaWxlIGNvbnNpZGVyaW5nIHRo
+ZSBBQ1BJIHJlbGF0ZWQgZG1lc2cgb3V0cHV0IChwbHVzIGNvbnNpZGVyaW5nIHRoYXQgaXRzIGV4
+ZWN1dGlvbiBvbiBhIFdpbmRvd3Mgc3lzdGVtIGlzIHJlc3BvbnNpYmxlIGZvciBpdHMgbWFuaXB1
+bGF0aW9uLCBzLiA8YSBocmVmPSJodHRwOi8vbWFsd3IuY29tIj5tYWx3ci5jb208L2E+IGxpbmtz
+KSwgSSB0aGluayBpdCBpcyBzYWZlIHRvIGFzc3VtZSB0aGF0IHRoZSBleGVjdXRpb24gb2YgdGhl
+IEFDUEkgY29kZSBvbiBMaW51eCBpcyByZXNwb25zaWJsZSBmb3Igd2hhdCBzaG93cyB1cCBpbiB0
+aGUgcmVzdWx0cyBvZiB0aGUgdmFyaW91cyB0ZXN0cyBJIHBlcmZvcm1lZC48YnI+PGJyPlNpbmNl
+IHRoaXMgc2hvdWxkIGJlIHRoZSBiZXN0IHBsYWNlIGZvciByZWFjaGluZyBleHBlcnRzIGFib3V0
+IEFDUEkgY29kZSwgSSBjYW4gb25seSByZXBlYXQgd2hhdCBJIGFscmVhZHkgc2FpZCBpbiBteSBm
+b3J3YXJkZWQgbWVzc2FnZTogSXQgd291bGQgYmUgaGlnaGx5IGludGVyZXN0aW5nIHRvIHNlZSBo
+b3cgZXhhY3RseSB0aGUgQUNQSSBjb2RlJiMzOTtzIGV4ZWN1dGlvbiBpbnRlcmFjdHMgd2l0aCB0
+aGUga2VybmVsIGluIG9yZGVyIHRvIGNvbXByb21pc2UgdGhlIHN5c3RlbS4gTWF5YmUgdGhlcmUm
+IzM5O3Mgc29tZW9uZSB3aG8gY291bGQgdGFrZSBhIGxvb2sgYXQgdGhlIGNvZGUgZXh0cmFjdGVk
+IGZyb20gbXkgc3lzdGVtIG9yIGdpdmUgbWUgc29tZSBhZHZpY2Ugb24gaG93IHRvIHBlcmZvcm0g
+YSBkZWJ1Z2dpbmcgd2hpY2ggd291bGQgYmUgYWJsZSB0byBwcm92aWRlIHNvbWUgZnVydGhlciBp
+bmZvcm1hdGlvbiBhYm91dCB0aGlzLjxicj48YnI+PGJyPlRoYW5rcyBpbiBhZHZhbmNlIGFuZCBr
+aW5kIHJlZ2FyZHM8YnI+PGJyPkRhdmlkPGJyPjxicj48YnI+LS0tLS0tLS0tLSBGb3J3YXJkZWQg
+bWVzc2FnZSAtLS0tLS0tLS0tPGJyPkZyb206IERhdmlkIFJlbnogJmx0OzxhIGhyZWY9Im1haWx0
+bzpzdW4ua2lzc2VzLmhvcml6b25AZ21haWwuY29tIj5zdW4ua2lzc2VzLmhvcml6b25AZ21haWwu
+Y29tPC9hPiZndDs8YnI+RGF0ZTogU3VuLCBKdWwgMzEsIDIwMTYgYXQgMjo0NSBQTTxicj5TdWJq
+ZWN0OiBSZXF1ZXN0IGZvciBhZHZpY2Ugb24gaG93IHRvIHByb2NlZWQgd2l0aCBmdXJ0aGVyIGFu
+YWx5c2lzPGJyPlRvOiA8YSBocmVmPSJtYWlsdG86dm9sLXVzZXJzQHZvbGF0aWxlc3lzdGVtcy5j
+b20iPnZvbC11c2Vyc0B2b2xhdGlsZXN5c3RlbXMuY29tPC9hPjxicj48YnI+PGJyPkhlbGxvLDxi
+cj48YnI+SSByZWNlbnRseSBwb3N0ZWQgYSBtZXNzYWdlLCB3aGVyZSBJIGFza2VkIGhvdyB0byBj
+cmVhdGUgYSBwcm9maWxlIHdoaWNoIGNvdWxkIGJlIHVzZWQgd2l0aCBBcmNoTGludXgsIGJ1dCBu
+b3cgSSBqdXN0IHNvbHZlZCB0aGlzIGJ5IGhhdmluZyBpbnN0YWxsZWQgTHVidW50dSAxNi4wNCAo
+NC40LjAtMzEtZ2VuZXJpYyA2NC1iaXQpLCBzbyB0aGF0IEkgd2FzIGFibGUgdG8gYW5hbHl6ZSBt
+eSBzeXN0ZW0mIzM5O3MgZHVtcGVkIG1lbW9yeSB1c2luZyB0aGUgcHJlLWJ1aWx0IFVidW50dSAx
+Ni4wNCBpbWFnZSBJIGZvdW5kIG9uIEdpdEh1YiAodGhlIGltYWdlIEkgY3JlYXRlZCBieSBteXNl
+bGYgY291bGRuJiMzOTt0IGJlIHVzZWQgYnkgVm9sYXRpbGl0eSwgYWx0aG91Z2ggSSBkZWZpbml0
+ZWx5IGZvbGxvd2VkIGVhY2ggc3RlcCBwcmVjaXNlbHkpLjxicj48YnI+VGhlIGNoZWNrcyBJIHBl
+cmZvcm1lZCBjb25maXJtZWQgbXkgc3VzcGljaW9uIHRoYXQgbXkgc3lzdGVtIHdvdWxkIGJlIGNv
+bXByb21pc2VkLCBhcyBvbmUgY2FuIHNlZSBieSB0YWtpbmcgYSBsb29rIGF0IHRoZSByZXN1bHRz
+IEkgdXBsb2FkZWQgb24gR29vZ2xlRHJpdmU6PGJyPjxhIGhyZWY9Imh0dHBzOi8vZHJpdmUuZ29v
+Z2xlLmNvbS9vcGVuP2lkPTBCNjJZNVFrX3JkYldUbk5ZV2xKUldYcHNaVUUiPmh0dHBzOi8vZHJp
+dmUuZ29vZ2xlLmNvbS9vcGVuP2lkPTBCNjJZNVFrX3JkYldUbk5ZV2xKUldYcHNaVUU8L2E+PGJy
+Pjxicj5FLmcuOjxicj5saW51eF9jaGVja19hZmluZm88YnI+U3ltYm9sIE5hbWUgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBNZW1iZXIgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgQWRkcmVzcyDCoCDCoCDCoCDCoCDCoDxicj4tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0gLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tIC0tLS0tLS0tLS0tLS0tLS0tLTxicj51ZHBsaXRlNl9zZXFfYWZpbmZvIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgbmV4dCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCAweGZmZmZmZmZmODFlZmZjYzg8YnI+dWRwbGl0ZTZfc2VxX2FmaW5m
+byDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoHN0b3AgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgMHhmZmZmZmZmZjgxZWZmODA4PGJyPnVkcGxpdGU0X3Nl
+cV9hZmluZm8gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBuZXh0IMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIDB4ZmZmZmZmZmY4MWVmZWFjODxicj51ZHBs
+aXRlNF9zZXFfYWZpbmZvIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgc3RvcCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCAweGZmZmZmZmZmODFlZmJjZTg8
+YnI+dWRwNF9zZXFfYWZpbmZvIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgc3RhcnQgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAweGZmZmZmZmZm
+ODFlZmFlMDA8YnI+dWRwNF9zZXFfYWZpbmZvIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgc3RvcCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCAw
+eGZmZmZmZmZmODFlZmEzYTA8YnI+PGJyPmxpbnV4X2NoZWNrX2lubGluZV9rZXJuZWw8YnI+TmFt
+ZSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCBNZW1iZXIgwqAgwqAgwqAgwqAgwqAgSG9vayBUeXBlIEhvb2sgQWRkcmVzcyDC
+oCDCoCA8YnI+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+IC0tLS0tLS0tLS0tLS0tLS0gLS0tLS0tLS0tIC0tLS0tLS0tLS0tLS0tLS0tLTxicj51ZHA0X3Nl
+cV9hZmluZm8gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqBzdG9wIMKgIMKgIMKgIMKgIMKgIMKgIEpNUCDCoCDCoCDCoCAweDAwMDAwMDAwMDAwMDAwMDA8
+YnI+PGJyPltBIGh1Z2UgbnVtYmVyIG9mIGhvb2tzIHNob3duIGJ5IGxpbnV4X2NoZWNrX3N5c2Nh
+bGxdPGJyPjxicj48YnI+VXNpbmcgdGhlIG5ldHN0YXQgcGx1Z2luIHNob3dzIG5vIHJlc3VsdCBh
+dCBhbGwgKG5vbmUgb2YgdGhlIGNvbm5lY3Rpb25zIHNob3duIGJ5IHVzaW5nIHRoZSBub3JtYWwg
+TGludXggbmV0c3RhdCBjb21tYW5kKS4gTmVpdGhlciBsaW51eF9sc21vZCBub3IgbGludXhfaGlk
+ZGVuX21vZHVsZXMgZ2l2ZSBhbnkgb3V0cHV0IGFzIHdlbGwuPGJyPjxicj48YnI+SSBhc3N1bWUg
+dGhhdCBteSBzeXN0ZW0gaXMgaW5mZWN0ZWQgYnkgYW4gQUNQSSByb290a2l0LCB3aGljaCBpcyBh
+YmxlIHRvIGNvbXByb21pc2UgYm90aCBMaW51eCBhbmQgV2luZG93cyBzeXN0ZW1zLiBBZnRlciBo
+YXZpbmcgc3VibWl0dGVkIHRoZSBleHRyYWN0ZWQgdGhlIEFDUEkgdGFibGVzJiMzOTsgY29kZSB0
+byA8YSBocmVmPSJodHRwOi8vbWFsd3IuY29tIj5tYWx3ci5jb208L2E+LCB3aGVyZSBpdCBnZXRz
+IGV4ZWN1dGVkIG9uIGEgV2luZG93cyBzYW5kYm94LCBpdCBzaG93cyB0aGF0IHRoZSBzeXN0ZW0g
+Z2V0cyBtYW5pcHVsYXRlZCBpbiB0aGUgZm9sbG93aW5nIHdheTo8YnI+PGEgaHJlZj0iaHR0cHM6
+Ly9tYWx3ci5jb20vYW5hbHlzaXMvT0RreE9UaGpPVGsxTURBek5HRTRNMkpoT1dOaE56azFaVEpq
+TTJJeVlXUS8iPmh0dHBzOi8vbWFsd3IuY29tL2FuYWx5c2lzL09Ea3hPVGhqT1RrMU1EQXpOR0U0
+TTJKaE9XTmhOemsxWlRKak0ySXlZV1EvPC9hPjxicj48YnI+SXQgbWlnaHQgYmUgaW50ZXJlc3Rp
+bmcgdGhhdCB0aGUgQUNQSSBjb2RlIG9mIGZvdXIgZGlmZmVyZW50IHN5c3RlbXMgYmVpbmcgdXNl
+ZCBieSBtZSBzZWVtcyB0byBoYXZlIGJlZW4gbWFuaXB1bGF0ZWQgaW4gdGhlIHNhbWUgd2F5LCBz
+aW5jZSB0aGUgZXh0cmFjdGVkIGNvZGUgZm91bmQgb24gb25lIG9mIHRoZSBvdGhlciBzeXN0ZW1z
+IGxlYWRzIHRvIHRoZSBzYW1lIHJlc3VsdCB3aGVuIHN1Ym1pdHRpbmcgaXQgdG8gPGEgaHJlZj0i
+aHR0cDovL21hbHdyLmNvbSI+bWFsd3IuY29tPC9hPi4gRS5nLiwgdGhlIGxpbmsgYWJvdmUgc2hv
+d3MgdGhlIHJlc3VsdCBmb3IgdGhlIGFuYWx5c2lzIG9mIEFDUEkgY29kZSBvbiBteSBBTUQgNjQt
+Yml0IGRlc2t0b3AgY29tcHV0ZXIgKEFzdXMtTTRONjhULU0gTEUgbWFpbmJvYXJkKSwgd2hpbGUg
+dGhlIEFDUEkgY29kZSBleHRyYWN0ZWQgZnJvbSBteSBMZW5vdm8gRzcxMCBub3RlYm9vayBsZWFk
+cyB0byB0aGUgc2FtZSB3aGVuIGV4ZWN1dGVkIG9uIGEgV2luZG93cyBzeXN0ZW06PGJyPjxhIGhy
+ZWY9Imh0dHBzOi8vbWFsd3IuY29tL2FuYWx5c2lzL01qWmtPR1U0WTJabU1HTTVORFExTmpnNU9U
+YzROVFZsT1RRNU5UaGlNbVkvIj5odHRwczovL21hbHdyLmNvbS9hbmFseXNpcy9NalprT0dVNFky
+Wm1NR001TkRRMU5qZzVPVGM0TlRWbE9UUTVOVGhpTW1ZLzwvYT48YnI+PGJyPkkgZ3Vlc3MgZXZl
+cnlvbmUgY2FuIHNlZSB0aGF0IHRoZSByZXN1bHRzIHNob3cgaG93IHRoZSBXaW5kb3dzIHN5c3Rl
+bSBnZXRzIGNvbXByb21pc2VkIGZvciBiZWluZyBhYmxlIHRvIG1vbml0b3IgaXQgYW5kIGdhaW5p
+bmcgcmVtb3RlIGFjY2VzcyBvdmVyIGl0LCBpZiB5b3UgdGFrZSBhIGxvb2sgYXQgdGhlIGZpbGUg
+YW5kIHJlZ2lzdHJ5IGFjdGl2aXRpZXMgKGp1c3QgZ29vZ2xpbmcgc29tZSBvZiB0aGUgZmlsZSBu
+YW1lcyBtYWtlcyB0aGF0IGNsZWFyKS48YnI+PGJyPlNpbmNlIGEgTGludXggc3lzdGVtIHJ1bm5p
+bmcgb24gdGhlIHNhbWUgbWFjaGluZSBnZXRzIGNvbXByb21pc2VkIGFzIHdlbGwsIGl0IHdvdWxk
+IGJlIHJlYXNvbmFibGUgdG8gYXNzdW1lIHRoYXQgdGhpcyBhbHNvIHRha2VzIHBsYWNlIGJ5IHRo
+ZSBBQ1BJIGNvZGUmIzM5O3MgZXhlY3V0aW9uLiBUYWtpbmcgYSBsb29rIGF0IHRoZSBkbWVzZyBv
+dXRwdXQsIHdoaWNoIEkgYWxzbyB1cGxvYWRlZCBvbiBHb29nbGVEcml2ZSwgc2VlbXMgdG8gY29u
+ZmlybSB0aGlzIGFzc3VtcHRpb246PGJyPlsgwqAgwqAwLjIyNTQ2OF0gQUNQSTogQWRkZWQgX09T
+SShNb2R1bGUgRGV2aWNlKTxicj5bIMKgIMKgMC4yMjU0NzBdIEFDUEk6IEFkZGVkIF9PU0koUHJv
+Y2Vzc29yIERldmljZSk8YnI+WyDCoCDCoDAuMjI1NDcxXSBBQ1BJOiBBZGRlZCBfT1NJKDMuMCBf
+U0NQIEV4dGVuc2lvbnMpPGJyPlsgwqAgwqAwLjIyNTQ3Ml0gQUNQSTogQWRkZWQgX09TSShQcm9j
+ZXNzb3IgQWdncmVnYXRvciBEZXZpY2UpPGJyPlsgwqAgwqAwLjIyNzQzM10gQUNQSTogRXhlY3V0
+ZWQgMSBibG9ja3Mgb2YgbW9kdWxlLWxldmVsIGV4ZWN1dGFibGUgQU1MIGNvZGU8YnI+WyDCoCDC
+oDAuMjkzNDQ4XSBBQ1BJOiBJbnRlcnByZXRlciBlbmFibGVkPGJyPlsgwqAgwqAwLjI5MzQ1OF0g
+QUNQSSBFeGNlcHRpb246IEFFX05PVF9GT1VORCwgV2hpbGUgZXZhbHVhdGluZyBTbGVlcCBTdGF0
+ZSBbXF9TMl9dICgyMDE1MDkzMC9od3hmYWNlLTU4MCk8YnI+WyDCoCDCoDAuMjkzNDY5XSBBQ1BJ
+OiAoc3VwcG9ydHMgUzAgUzEgUzMgUzQgUzUpPGJyPlsgwqAgwqAwLjI5MzQ3MF0gQUNQSTogVXNp
+bmcgSU9BUElDIGZvciBpbnRlcnJ1cHQgcm91dGluZzxicj5bIMKgIMKgMC4yOTM0OTFdIFBDSTog
+TU1DT05GSUcgZm9yIGRvbWFpbiAwMDAwIFtidXMgMDAtZmZdIGF0IFttZW0gMHhlMDAwMDAwMC0w
+eGVmZmZmZmZmXSAoYmFzZSAweGUwMDAwMDAwKTxicj5bIMKgIMKgMC4yOTQ1MDldIFBDSTogTU1D
+T05GSUcgYXQgW21lbSAweGUwMDAwMDAwLTB4ZWZmZmZmZmZdIHJlc2VydmVkIGluIEFDUEkgbW90
+aGVyYm9hcmQgcmVzb3VyY2VzPGJyPlsgwqAgwqAwLjI5NDUyMl0gUENJOiBVc2luZyBob3N0IGJy
+aWRnZSB3aW5kb3dzIGZyb20gQUNQSTsgaWYgbmVjZXNzYXJ5LCB1c2UgJnF1b3Q7cGNpPW5vY3Jz
+JnF1b3Q7IGFuZCByZXBvcnQgYSBidWc8YnI+WyDCoCDCoDAuMjk4OTM4XSBBQ1BJOiBQQ0kgUm9v
+dCBCcmlkZ2UgW1BDSTBdIChkb21haW4gMDAwMCBbYnVzIDAwLWZmXSk8YnI+WyDCoCDCoDAuMjk4
+OTQzXSBhY3BpIFBOUDBBMDM6MDA6IF9PU0M6IE9TIHN1cHBvcnRzIFtFeHRlbmRlZENvbmZpZyBB
+U1BNIENsb2NrUE0gU2VnbWVudHMgTVNJXTxicj5bIMKgIMKgMC4yOTkwNTFdIGFjcGkgUE5QMEEw
+MzowMDogX09TQzogcGxhdGZvcm0gZG9lcyBub3Qgc3VwcG9ydCBbUENJZUhvdHBsdWcgUENJZUNh
+cGFiaWxpdHldPGJyPlsgwqAgwqAwLjI5OTA5OV0gYWNwaSBQTlAwQTAzOjAwOiBfT1NDOiBub3Qg
+cmVxdWVzdGluZyBjb250cm9sOyBwbGF0Zm9ybSBkb2VzIG5vdCBzdXBwb3J0IFtQQ0llQ2FwYWJp
+bGl0eV08YnI+WyDCoCDCoDAuMjk5MTAxXSBhY3BpIFBOUDBBMDM6MDA6IF9PU0M6IE9TIHJlcXVl
+c3RlZCBbUENJZUhvdHBsdWcgUE1FIEFFUiBQQ0llQ2FwYWJpbGl0eV08YnI+WyDCoCDCoDAuMjk5
+MTAzXSBhY3BpIFBOUDBBMDM6MDA6IF9PU0M6IHBsYXRmb3JtIHdpbGxpbmcgdG8gZ3JhbnQgW1BN
+RSBBRVJdPGJyPlsgwqAgwqAwLjI5OTEwNF0gYWNwaSBQTlAwQTAzOjAwOiBfT1NDIGZhaWxlZCAo
+QUVfU1VQUE9SVCk7IGRpc2FibGluZyBBU1BNPGJyPlsgwqAgwqA4LjY0NzcxMl0gQUNQSSBXYXJu
+aW5nOiBTeXN0ZW1JTyByYW5nZSAweDAwMDAwMDAwMDAwMDA2MDAtMHgwMDAwMDAwMDAwMDAwNjNG
+IGNvbmZsaWN0cyB3aXRoIE9wUmVnaW9uIDB4MDAwMDAwMDAwMDAwMDYwMC0weDAwMDAwMDAwMDAw
+MDA2RkYgKFxfU0JfLlBDSTAuU0JSRy5BU09DLlNNUkcpICgyMDE1MDkzMC91dGFkZHJlc3MtMjU0
+KTxicj48YnI+VGhlIGV4dHJhY3RlZCBhbmQgZGlzYXNzZW1ibGVkIEFDUEkgY29kZSBvZiBteSBB
+TUQgc3lzdGVtIGNhbiBiZSBkb3dubG9hZGVkIGZyb20gaGVyZTo8YnI+PGEgaHJlZj0iaHR0cHM6
+Ly9kcml2ZS5nb29nbGUuY29tL29wZW4/aWQ9MEI2Mlk1UWtfcmRiV1l6aFBUSGhITTFSeFJUZyI+
+aHR0cHM6Ly9kcml2ZS5nb29nbGUuY29tL29wZW4/aWQ9MEI2Mlk1UWtfcmRiV1l6aFBUSGhITTFS
+eFJUZzwvYT48YnI+PGJyPjxicj5TbyBJIHdvdWxkIGFwcHJlY2lhdGUgaXQsIGlmIGFueW9uZSB3
+b3VsZCBoYXZlIGFuIGlkZWEgb24gaG93IHRvIHByb2NlZWQgd2l0aCBhIGZ1cnRoZXIgYW5hbHlz
+aXMuIEl0IHdvdWxkIGJlIGludGVyZXN0aW5nLCBpZiBvbmUgd291bGQgYmUgYWJsZSB0byBzZWUg
+aG93IGV4YWN0bHkgdGhlIEFDUEkgY29kZSYjMzk7cyBleGVjdXRpb24gaW50ZXJhY3RzIHdpdGgg
+dGhlIGtlcm5lbCBpbiBvcmRlciB0byBjb21wcm9taXNlIHRoZSBzeXN0ZW0uIEFuZCBvZiBjb3Vy
+c2UgaXQgd291bGQgYmUgaW50ZXJlc3RpbmcgdG8gZGlzY292ZXIgd2hlcmUgdGhlIHJlbGV2YW50
+IG5ldHdvcmsgdHJhZmZpYyBnZXRzIGZvcndhcmRlZCB0byAvIGNvbWVzIGluIGZyb20gKGZvciBy
+ZW1vdGUgYWNjZXNzKSwgc2luY2UgdGhlIGNoZWNrcyBJIGFscmVhZHkgcGVyZm9ybWVkIHNob3dl
+ZCB0aGF0IHRoZSBuZXR3b3JraW5nIHN0cnVjdHVyZSBnb3QgbWFuaXB1bGF0ZWQsIHNvIHRoYXQg
+dGhlIHVzYWdlIG9mIFdpcmVzaGFyayBldGMuIHdvbiYjMzk7dCBzaG93IGFueXRoaW5nLjxicj48
+YnI+PGJyPktpbmQgcmVnYXJkcyBhbmQgdGhhbmtzIGluIGFkdmFuY2U8YnI+PGJyPkRhdmlkPGJy
+Pjxicj48L2Rpdj4K
 
---===============2274458936963939597==--
+--===============3481535713692450793==--
 
