@@ -1,84 +1,142 @@
-Content-Type: multipart/mixed; boundary="===============3577477534334800552=="
+Content-Type: multipart/mixed; boundary="===============6532407435337844625=="
 MIME-Version: 1.0
-From: Rudolf Marek <r.marek at assembler.cz>
-Subject: Re: [Devel] Linux getting compromised by the execution of ACPI code
-Date: Sun, 31 Jul 2016 15:23:12 +0200
-Message-ID: <371aa087-be78-c12a-c51c-a3f9f211b939@assembler.cz>
-In-Reply-To: CAB=Lj3Qaaxu0NVNm7SzUfO3mAX3bb012wg57saaybJU9a92rtg@mail.gmail.com
+From: Zheng, Lv <lv.zheng at intel.com>
+Subject: Re: [Devel] [PATCH 1/2] ACPICA: adapt buffer length for Field Attrib
+ Raw Process in Ops Region
+Date: Mon, 01 Aug 2016 05:58:18 +0000
+Message-ID: <1AE640813FDE7649BE1B193DEA596E883BC0844E@SHSMSX101.ccr.corp.intel.com>
+In-Reply-To: 1469807366-24642-2-git-send-email-benjamin.tissoires@redhat.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3577477534334800552==
+--===============6532407435337844625==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi David,
+Hi,
 
-I checked the ACPI error messages and they are pretty harmless. I don't thi=
-nk =
+> From: Benjamin Tissoires [mailto:benjamin.tissoires(a)redhat.com]
+> Subject: [PATCH 1/2] ACPICA: adapt buffer length for Field Attrib Raw
+> Process in Ops Region
+> =
 
-attacker would use the ACPI subsystem to plant the rootkit. I think the roo=
-tkit =
+> Detected on the Surface 3:
+> The MSHW0011 driver uses Field Attrib Raw Process to return information
+> for the ACPI Battery. The DSDT declares a parameter of 2 though
+> functions like _BST or _BIX require a much bigger out buffer.
+> =
 
-might be hidden in the system management mode memory which is inaccessible =
-by =
+> It looks like the incoming buffer has the requested size and we can
+> work around the issue by using this input size as the output and
+> parameters size.
+> =
 
-the operating system. Therefore I don't think this is good mailing list to =
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D106231
+> =
 
-discuss it but I hope no one will complain if I give you some hints to try:
+> Signed-off-by: Benjamin Tissoires <benjamin.tissoires(a)redhat.com>
+> ---
+>  drivers/acpi/acpica/exfield.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> =
 
-1) physically exchange a BIOS chip - use some service which will send you a=
- BIOS =
+> diff --git a/drivers/acpi/acpica/exfield.c b/drivers/acpi/acpica/exfield.c
+> index d7d3ee3..a1bd041 100644
+> --- a/drivers/acpi/acpica/exfield.c
+> +++ b/drivers/acpi/acpica/exfield.c
+> @@ -413,6 +413,17 @@ acpi_ex_write_data_to_field(union
+> acpi_operand_object *source_desc,
+>  			 *     Data[x-1]: (Bytes 2-x of the arbitrary length
+> data buffer)
+>  			 */
+>  			length +=3D 2;
+> +
+> +			/*
+> +			 * When using Field Attrib Raw Process, it looks like
+> +			 * the parameter access_length can be wrong and
+> the
+> +			 * required output buffer can be much bigger.
+> +			 * So just take the incoming buffer length as the
+> +			 * reference.
+> +			 */
+> +			if (accessor_type =3D=3D
+> AML_FIELD_ATTRIB_RAW_PROCESS)
+> +				length =3D source_desc->buffer.length;
+> +
+[Lv Zheng] =
 
-chip replacement - they can even pre-load it with a factory BIOS
+I think the related code is:
 
-2) If you can't do that, and if the BIOS is socketed then use some external =
+            OperationRegion (OR02, GenericSerialBus, Zero, 0x0100)
+            Field (OR02, BufferAcc, NoLock, Preserve)
+            {
+                Connection (BX00), =
 
-programmer to read out the BIOS, then go to the ASUS pages and download the=
- BIOS =
+                AccessAs (BufferAcc, AttribRawProcessBytes (0x02)), =
 
-as a CAP file. The file usually has 2KB header which you can strip and then=
- you =
+                BB00,   8
+            }
+            Name (SPB0, Buffer (0x80) {})
+            CreateByteField (SPB0, Zero, STA2)
+            CreateByteField (SPB0, One, LEN0)
+            CreateByteField (SPB0, 0x02, CMD0)
+            CreateByteField (SPB0, 0x03, DAT0)
+            CreateByteField (SPB0, 0x04, DAT1)
+            CreateDWordField (SPB0, 0x05, DAT2)
+            CreateField (SPB0, 0x10, 0x0320, DAT3)
+            Method (RSPB, 3, NotSerialized)
+            {
+                CMD0 =3D One
+                LEN0 =3D 0x08
+                DAT0 =3D Arg0
+                DAT1 =3D Arg1
+                DAT2 =3D Arg2
+                SPB0 =3D ^^I2Z1.BB00 =3D SPB0 /* \_SB_.BAT0.SPB0 */
+                ...
+            }
+And we have confirmed that the iASL disassembly result is correct.
 
-will get the 8MiB image which you can directly flash. Do not expect that th=
-e =
+Then this issue is not a parser issue, but looks like an issue either in in=
+terpreter or in BIOS as:
 
-backup image will match - BIOS contains some places with a variables/scratc=
-h =
+1. The following line triggers i2c operation region handlers:
+    SPB0 =3D ^^I2Z1.BB00 =3D SPB0
+    Where:
+    SPB0 is sized as 0x80, BB00 is sized as 0x02.
+    And in spec 19.6.1 AccessAs (Change Field Unit Access), it is said that=
+ AttribRawProcessBytes(AccessLength) requires an AccessLength parameter.
+    However in this case, the length of the output buffer is not correct, m=
+uch smaller than the container buffer.
+    So this firstly looks like a BIOS issue. And then needn't be fixed in O=
+S.
+2. If this is not a BIOS bug but an interpreter bug, then SPB0 should be a =
+buffer passing to the i2c region handler.
+    The bug should be something related to "data type conversion".
+    Please refer to:
+    19.2.5.4 Implicit Source Operand Conversion
+    19.2.5.5 Implicit Result Object Conversion
+    It looks like that we have troubles in either 1st Store or 2nd Store.
+    If so, it seems we shouldn't fix this issue here. And thus this fix als=
+o looks invalid.
 
-space so this won't help.
+IMO (may be wrong), this bug finally may cause dissension among different p=
+arties (BIOS, Windows, ACPICA, spec).
 
-3) Check your malware detection procedure. I don't have the dropbox account=
- so I =
+However, for the time being, is that possible to work this issue around in =
+the i2c operation region driver?
 
-can't help much. All distributions have a way to check the integrity of =
-
-installed packages, so you can use this mechanism to check if something has=
- been =
-
-changed or not. (maybe the binary changed because of the update?)
-
-4) I personally think that if you wold be a victim of such sophisticated ma=
-lware =
-
-which can infect any Linux/BSD then I would also think think that the malwa=
-re =
-
-would for sure prevent you to see the modified files.
-
-Thanks all I can say to this, now go and try to find some other more approp=
-riate =
-
-mailing list (sorry no idea here), also I don't think I can personally help=
- any =
-
-further
-
-Thanks
-Rudolf
+Thanks and best regards
+-Lv
 
 
+>  			function =3D ACPI_WRITE | (accessor_type << 16);
+>  		} else {	/* IPMI */
+> =
 
---===============3577477534334800552==--
+> --
+> 2.5.5
+
+
+--===============6532407435337844625==--
 
