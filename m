@@ -1,142 +1,315 @@
-Content-Type: multipart/mixed; boundary="===============6532407435337844625=="
+Content-Type: multipart/mixed; boundary="===============6261798819653270598=="
 MIME-Version: 1.0
-From: Zheng, Lv <lv.zheng at intel.com>
-Subject: Re: [Devel] [PATCH 1/2] ACPICA: adapt buffer length for Field Attrib
- Raw Process in Ops Region
-Date: Mon, 01 Aug 2016 05:58:18 +0000
-Message-ID: <1AE640813FDE7649BE1B193DEA596E883BC0844E@SHSMSX101.ccr.corp.intel.com>
-In-Reply-To: 1469807366-24642-2-git-send-email-benjamin.tissoires@redhat.com
+From: David Renz <sun.kisses.horizon at gmail.com>
+Subject: [Devel] Fwd: Linux getting compromised by the execution of ACPI code
+Date: Tue, 02 Aug 2016 21:32:59 +0200
+Message-ID: <CAB=Lj3Q+PmPwYCADy-zjDcboSMC4o=jMupvNpFBC9UuNC7JMWg@mail.gmail.com>
+In-Reply-To: CAB=Lj3S349eSnaRb=Kit1PRB1r4Yek04g+1db=UOdbS4LPkUqg@mail.gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6532407435337844625==
+--===============6261798819653270598==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
+By mistake I've sent my reply only to Rudolf Marek instead to the list, as
+I just saw, so here is what I wrote as a reply.
+
 Hi,
 
-> From: Benjamin Tissoires [mailto:benjamin.tissoires(a)redhat.com]
-> Subject: [PATCH 1/2] ACPICA: adapt buffer length for Field Attrib Raw
-> Process in Ops Region
-> =
+well, I assumed that, since the compromise of a Windows system running on
+the same machine obviously takes place by the execution of the ACPI code,
+as one can see by looking at the malwr.com sandbox analysis. It's also
+interesting to find ACPI code resulting in the same Windows manipulations
+on four different systems being used by me. The ACPI code extracted from my
+Lenovo notebook can be downloaded from the malwr.com link, same for the
+ACPI code I extracted from my AMD desktop. In the latter case the
+disassembled code can also be downloaded from the GoogleDrive link I
+provided. Maybe one could observe similarities by comparing the two codes
+of those different systems.
 
-> Detected on the Surface 3:
-> The MSHW0011 driver uses Field Attrib Raw Process to return information
-> for the ACPI Battery. The DSDT declares a parameter of 2 though
-> functions like _BST or _BIX require a much bigger out buffer.
-> =
-
-> It looks like the incoming buffer has the requested size and we can
-> work around the issue by using this input size as the output and
-> parameters size.
-> =
-
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D106231
-> =
-
-> Signed-off-by: Benjamin Tissoires <benjamin.tissoires(a)redhat.com>
-> ---
->  drivers/acpi/acpica/exfield.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> =
-
-> diff --git a/drivers/acpi/acpica/exfield.c b/drivers/acpi/acpica/exfield.c
-> index d7d3ee3..a1bd041 100644
-> --- a/drivers/acpi/acpica/exfield.c
-> +++ b/drivers/acpi/acpica/exfield.c
-> @@ -413,6 +413,17 @@ acpi_ex_write_data_to_field(union
-> acpi_operand_object *source_desc,
->  			 *     Data[x-1]: (Bytes 2-x of the arbitrary length
-> data buffer)
->  			 */
->  			length +=3D 2;
-> +
-> +			/*
-> +			 * When using Field Attrib Raw Process, it looks like
-> +			 * the parameter access_length can be wrong and
-> the
-> +			 * required output buffer can be much bigger.
-> +			 * So just take the incoming buffer length as the
-> +			 * reference.
-> +			 */
-> +			if (accessor_type =3D=3D
-> AML_FIELD_ATTRIB_RAW_PROCESS)
-> +				length =3D source_desc->buffer.length;
-> +
-[Lv Zheng] =
-
-I think the related code is:
-
-            OperationRegion (OR02, GenericSerialBus, Zero, 0x0100)
-            Field (OR02, BufferAcc, NoLock, Preserve)
-            {
-                Connection (BX00), =
-
-                AccessAs (BufferAcc, AttribRawProcessBytes (0x02)), =
-
-                BB00,   8
-            }
-            Name (SPB0, Buffer (0x80) {})
-            CreateByteField (SPB0, Zero, STA2)
-            CreateByteField (SPB0, One, LEN0)
-            CreateByteField (SPB0, 0x02, CMD0)
-            CreateByteField (SPB0, 0x03, DAT0)
-            CreateByteField (SPB0, 0x04, DAT1)
-            CreateDWordField (SPB0, 0x05, DAT2)
-            CreateField (SPB0, 0x10, 0x0320, DAT3)
-            Method (RSPB, 3, NotSerialized)
-            {
-                CMD0 =3D One
-                LEN0 =3D 0x08
-                DAT0 =3D Arg0
-                DAT1 =3D Arg1
-                DAT2 =3D Arg2
-                SPB0 =3D ^^I2Z1.BB00 =3D SPB0 /* \_SB_.BAT0.SPB0 */
-                ...
-            }
-And we have confirmed that the iASL disassembly result is correct.
-
-Then this issue is not a parser issue, but looks like an issue either in in=
-terpreter or in BIOS as:
-
-1. The following line triggers i2c operation region handlers:
-    SPB0 =3D ^^I2Z1.BB00 =3D SPB0
-    Where:
-    SPB0 is sized as 0x80, BB00 is sized as 0x02.
-    And in spec 19.6.1 AccessAs (Change Field Unit Access), it is said that=
- AttribRawProcessBytes(AccessLength) requires an AccessLength parameter.
-    However in this case, the length of the output buffer is not correct, m=
-uch smaller than the container buffer.
-    So this firstly looks like a BIOS issue. And then needn't be fixed in O=
-S.
-2. If this is not a BIOS bug but an interpreter bug, then SPB0 should be a =
-buffer passing to the i2c region handler.
-    The bug should be something related to "data type conversion".
-    Please refer to:
-    19.2.5.4 Implicit Source Operand Conversion
-    19.2.5.5 Implicit Result Object Conversion
-    It looks like that we have troubles in either 1st Store or 2nd Store.
-    If so, it seems we shouldn't fix this issue here. And thus this fix als=
-o looks invalid.
-
-IMO (may be wrong), this bug finally may cause dissension among different p=
-arties (BIOS, Windows, ACPICA, spec).
-
-However, for the time being, is that possible to work this issue around in =
-the i2c operation region driver?
-
-Thanks and best regards
--Lv
+I also think that the technology tries a lot to prevent many things, since
+the Volatility plugins weren't able to display the loaded kernel modules,
+the netstat plugin didn't give any output etc. And I was able to perform
+some (!) of the tests on my AMD desktop system, while no test could be
+performed on my Lenovo notebook. It's very reasonable to assume that a
+highly sophisticated rootkit also includes various mechanisms for
+preventing its analysis, but that doesn't rule out the possibility that
+those mechanisms might fail, especially when considering that malware based
+on firmware manipulation must face many difficulties due to the specifics
+of various system's hardware components (and their according firmware).
 
 
->  			function =3D ACPI_WRITE | (accessor_type << 16);
->  		} else {	/* IPMI */
-> =
+Now I really don't want to make the impression of being stubborn, but
+please consider the following facts:
+1) Submitting the extracted firmware of different systems being used by me
+to malwr.com, where the ACPI code gets executed, leads to the EXACTLY same
+results regarding the files created (which turn out to be part of
+malware/trojan software as a quick search for their filenames shows) AND
+the same registry activity (a proxy server is being set up etc.). Those
+system activities can only have been caused by the submitted ACPI code, I
+didn't submit anything else. Submitting ACPI code extracted from
+non-compromised systems doesn't show any special activities.
+--> It's not an assumption, but an evident fact that those manipulations
+took place by the execution of ACPI code.
 
-> --
-> 2.5.5
+2) The Linux systems on those systems are compromised as well, as the
+Volatility tests obviously demonstrate (kernel hooks, modification of the
+network layers/structure so that the network traffic visible to the user is
+probably not the whole traffic being sent/received, etc.).
+
+Therefore, thinking logical: Why should a Windows OS on a machine get
+compromised by the execution of ACPI code, while a Linux OS on the same
+system should be safe in this regard/gets compromised by another way? There
+are enough papers out there proving that Linux can definitely be
+compromised by the execution of ACPI code.
+[By arguing this way I don't want to imply that a compromise could ONLY
+take place through the execution of ACPI code - I agree to everything what
+Rudolf wrote regarding this aspect. In fact I would assume that a
+sophisticated rootkit would operate in a multi-redundant way, e. g. taking
+precautions that the system will still get compromised for example by
+employing means like mentioned by Rudolf, in case that the user would find
+a way to flash the ACPI code (which is not possible by performing a simple
+BIOS flash, as I already verified - the ACPI code remains being
+unmodified). I merely want to state that the ACPI code's execution seems to
+be the starting point of the system getting compromised.]
 
 
---===============6532407435337844625==--
+So I had the idea to find out whether my thoughts are correct or not by
+letting a Linux system run in a VM, one time without making them use my
+system's ACPI code, and one time with specifying those as arguments, which
+is basically possible both for VirtualBox and for QEMU/KVM, so that I could
+afterwards compare what took place on each VM guest. However, it was not
+possible for me to do so, because both VirtualBox and QEMU/KVM have the
+restriction that the size of the total ACPI code is allowed to have a
+maximum size of 64kb (I have no idea for which reason this is the case) -
+This issue is even addressed on bug reports/issue lists, but it seems like
+nobody was able to find a solution or explanation for this so far.
+Did anyone on this list test Linux systems' ACPI compatibility etc. by this
+VM approach? If so, I'd be really thankful if someone would be able to
+perform such a test using my system's ACPI code - Just checking for
+differences regarding the creation/modification of files might be
+instructive already.
+
+I guess it wouldn't be an easy task to check the whole source of VirtualBox
+or QEMU/KWM in order to find a way how to remove this size limitation,
+although I'd try doing so, if there shouldn't be any other way to test this.
+
+I dumped my ACPI tables using proc /sys/... this time and uploaded the .bin
+files to GoogleDrive:
+https://drive.google.com/open?id=3D0B62Y5Qk_rdbWTVpfVlgwWDFjYWc
+
+I've put the .dsl files disassembled by iasl (which reported quite many
+errors) into the folder as well. There was no RSDT table in the /sys/...
+directory, and by using acpidump plus acpixtract I wasn't able to obtain
+one neither.
+
+
+Thanks in advance and all the best to everyone
+
+David
+
+
+Kind regards
+
+David
+
+Am 31.07.2016 15:23 schrieb "Rudolf Marek" <r.marek(a)assembler.cz>:
+
+Hi David,
+
+I checked the ACPI error messages and they are pretty harmless. I don't
+think attacker would use the ACPI subsystem to plant the rootkit. I think
+the rootkit might be hidden in the system management mode memory which is
+inaccessible by the operating system. Therefore I don't think this is good
+mailing list to discuss it but I hope no one will complain if I give you
+some hints to try:
+
+1) physically exchange a BIOS chip - use some service which will send you a
+BIOS chip replacement - they can even pre-load it with a factory BIOS
+
+2) If you can't do that, and if the BIOS is socketed then use some external
+programmer to read out the BIOS, then go to the ASUS pages and download the
+BIOS as a CAP file. The file usually has 2KB header which you can strip and
+then you will get the 8MiB image which you can directly flash. Do not
+expect that the backup image will match - BIOS contains some places with a
+variables/scratch space so this won't help.
+
+3) Check your malware detection procedure. I don't have the dropbox account
+so I can't help much. All distributions have a way to check the integrity
+of installed packages, so you can use this mechanism to check if something
+has been changed or not. (maybe the binary changed because of the update?)
+
+4) I personally think that if you wold be a victim of such sophisticated
+malware which can infect any Linux/BSD then I would also think think that
+the malware would for sure prevent you to see the modified files.
+
+Thanks all I can say to this, now go and try to find some other more
+appropriate mailing list (sorry no idea here), also I don't think I can
+personally help any further
+
+Thanks
+Rudolf
+
+--===============6261798819653270598==
+Content-Type: text/html
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="attachment.html"
+
+PGRpdiBkaXI9Imx0ciI+QnkgbWlzdGFrZSBJJiMzOTt2ZSBzZW50IG15IHJlcGx5IG9ubHkgdG8g
+UnVkb2xmIE1hcmVrIGluc3RlYWQgdG8gdGhlIGxpc3QsIGFzIEkganVzdCBzYXcsIHNvIGhlcmUg
+aXMgd2hhdCBJIHdyb3RlIGFzIGEgcmVwbHkuPGJyPjxkaXY+PGRpdiBjbGFzcz0iZ21haWxfcXVv
+dGUiPjxicj48cCBkaXI9Imx0ciI+SGksIDwvcD4KPHAgZGlyPSJsdHIiPndlbGwsIEkgYXNzdW1l
+ZCB0aGF0LCBzaW5jZSB0aGUgY29tcHJvbWlzZSBvZiBhIFdpbmRvd3Mgc3lzdGVtIHJ1bm5pbmcg
+b24gdGhlIHNhbWUgbWFjaGluZSBvYnZpb3VzbHkgdGFrZXMgcGxhY2UgYnkgdGhlIGV4ZWN1dGlv
+biBvZiB0aGUgQUNQSSBjb2RlLCBhcyBvbmUgY2FuIHNlZSBieSBsb29raW5nIGF0IHRoZSA8YSB0
+YXJnZXQ9Il9ibGFuayIgaHJlZj0iaHR0cDovL21hbHdyLmNvbSI+bWFsd3IuY29tPC9hPiBzYW5k
+Ym94IGFuYWx5c2lzLiBJdCYjMzk7cyBhbHNvIGludGVyZXN0aW5nIHRvIGZpbmQgQUNQSSBjb2Rl
+IHJlc3VsdGluZyBpbiB0aGUgc2FtZSBXaW5kb3dzIG1hbmlwdWxhdGlvbnMgb24gZm91ciBkaWZm
+ZXJlbnQgc3lzdGVtcyBiZWluZyB1c2VkIGJ5IG1lLiBUaGUgQUNQSSBjb2RlIGV4dHJhY3RlZCBm
+cm9tIG15IExlbm92byBub3RlYm9vayBjYW4gYmUgZG93bmxvYWRlZCBmcm9tIHRoZSA8YSB0YXJn
+ZXQ9Il9ibGFuayIgaHJlZj0iaHR0cDovL21hbHdyLmNvbSI+bWFsd3IuY29tPC9hPiBsaW5rLCBz
+YW1lIGZvciB0aGUgQUNQSSBjb2RlIEkgZXh0cmFjdGVkIGZyb20gbXkgQU1EIGRlc2t0b3AuIElu
+IHRoZSBsYXR0ZXIgY2FzZSB0aGUgZGlzYXNzZW1ibGVkIGNvZGUgY2FuIGFsc28gYmUgZG93bmxv
+YWRlZCBmcm9tIHRoZSBHb29nbGVEcml2ZSBsaW5rIEkgcHJvdmlkZWQuIE1heWJlIG9uZSBjb3Vs
+ZCBvYnNlcnZlIHNpbWlsYXJpdGllcyBieSBjb21wYXJpbmcgdGhlIHR3byBjb2RlcyBvZiB0aG9z
+ZSBkaWZmZXJlbnQgc3lzdGVtcy48L3A+CjxwIGRpcj0ibHRyIj5JIGFsc28gdGhpbmsgdGhhdCB0
+aGUgdGVjaG5vbG9neSB0cmllcyBhIGxvdCB0byBwcmV2ZW50IG1hbnkgdGhpbmdzLCBzaW5jZSB0
+aGUgVm9sYXRpbGl0eSBwbHVnaW5zIHdlcmVuJiMzOTt0IGFibGUgdG8gZGlzcGxheSB0aGUgbG9h
+ZGVkIGtlcm5lbCBtb2R1bGVzLCB0aGUgbmV0c3RhdCBwbHVnaW4gZGlkbiYjMzk7dCBnaXZlIGFu
+eSBvdXRwdXQgZXRjLiBBbmQgSSB3YXMgYWJsZSB0byBwZXJmb3JtIHNvbWUgKCEpIG9mIHRoZSB0
+ZXN0cyBvbiBteSBBTUQgZGVza3RvcCBzeXN0ZW0sIHdoaWxlIG5vIHRlc3QgY291bGQgYmUgcGVy
+Zm9ybWVkIG9uIG15IExlbm92byBub3RlYm9vay4gSXQmIzM5O3MgdmVyeSByZWFzb25hYmxlIHRv
+IGFzc3VtZSB0aGF0IGEgaGlnaGx5IHNvcGhpc3RpY2F0ZWQgcm9vdGtpdCBhbHNvIGluY2x1ZGVz
+IHZhcmlvdXMgbWVjaGFuaXNtcyBmb3IgcHJldmVudGluZyBpdHMgYW5hbHlzaXMsIGJ1dCB0aGF0
+IGRvZXNuJiMzOTt0IHJ1bGUgb3V0IHRoZSBwb3NzaWJpbGl0eSB0aGF0IHRob3NlIG1lY2hhbmlz
+bXMgbWlnaHQgZmFpbCwgZXNwZWNpYWxseSB3aGVuIGNvbnNpZGVyaW5nIHRoYXQgbWFsd2FyZSBi
+YXNlZCBvbiBmaXJtd2FyZSBtYW5pcHVsYXRpb24gbXVzdCBmYWNlIG1hbnkgZGlmZmljdWx0aWVz
+IGR1ZSB0byB0aGUgc3BlY2lmaWNzIG9mIHZhcmlvdXMgc3lzdGVtJiMzOTtzIGhhcmR3YXJlIGNv
+bXBvbmVudHMgKGFuZCB0aGVpciBhY2NvcmRpbmcgZmlybXdhcmUpLjwvcD48cCBkaXI9Imx0ciI+
+PGJyPjwvcD5Ob3cgSSByZWFsbHkgZG9uJiMzOTt0IHdhbnQgdG8gbWFrZSB0aGUgaW1wcmVzc2lv
+biBvZiBiZWluZyBzdHViYm9ybiwgYnV0IHBsZWFzZSBjb25zaWRlciB0aGUgZm9sbG93aW5nIGZh
+Y3RzOjxicj48L2Rpdj48ZGl2IGNsYXNzPSJnbWFpbF9xdW90ZSI+MSkgU3VibWl0dGluZyB0aGUg
+ZXh0cmFjdGVkIGZpcm13YXJlIG9mIGRpZmZlcmVudCBzeXN0ZW1zIGJlaW5nIHVzZWQgYnkgbWUg
+dG8gPGEgaHJlZj0iaHR0cDovL21hbHdyLmNvbSI+bWFsd3IuY29tPC9hPiwgd2hlcmUgdGhlIEFD
+UEkgY29kZSBnZXRzIGV4ZWN1dGVkLCBsZWFkcyB0byB0aGUgRVhBQ1RMWSBzYW1lIHJlc3VsdHMg
+cmVnYXJkaW5nIHRoZSBmaWxlcyBjcmVhdGVkICh3aGljaCB0dXJuIG91dCB0byBiZSBwYXJ0IG9m
+IG1hbHdhcmUvdHJvamFuIHNvZnR3YXJlIGFzIGEgcXVpY2sgc2VhcmNoIGZvciB0aGVpciBmaWxl
+bmFtZXMgc2hvd3MpIEFORCB0aGUgc2FtZSByZWdpc3RyeSBhY3Rpdml0eSAoYSBwcm94eSBzZXJ2
+ZXIgaXMgYmVpbmcgc2V0IHVwIGV0Yy4pLiBUaG9zZSBzeXN0ZW0gYWN0aXZpdGllcyBjYW4gb25s
+eSBoYXZlIGJlZW4gY2F1c2VkIGJ5IHRoZSBzdWJtaXR0ZWQgQUNQSSBjb2RlLCBJIGRpZG4mIzM5
+O3Qgc3VibWl0IGFueXRoaW5nIGVsc2UuIFN1Ym1pdHRpbmcgQUNQSSBjb2RlIGV4dHJhY3RlZCBm
+cm9tIG5vbi1jb21wcm9taXNlZCBzeXN0ZW1zIGRvZXNuJiMzOTt0IHNob3cgYW55IHNwZWNpYWwg
+YWN0aXZpdGllcy48YnI+PC9kaXY+PGRpdiBjbGFzcz0iZ21haWxfcXVvdGUiPi0tJmd0OyBJdCYj
+Mzk7cyBub3QgYW4gYXNzdW1wdGlvbiwgYnV0IGFuIGV2aWRlbnQgZmFjdCB0aGF0IHRob3NlIG1h
+bmlwdWxhdGlvbnMgdG9vayBwbGFjZSBieSB0aGUgZXhlY3V0aW9uIG9mIEFDUEkgY29kZS48YnI+
+PC9kaXY+PGRpdiBjbGFzcz0iZ21haWxfcXVvdGUiPjxicj4yKSBUaGUgTGludXggc3lzdGVtcyBv
+biB0aG9zZSBzeXN0ZW1zIGFyZSBjb21wcm9taXNlZCBhcyB3ZWxsLCBhcyB0aGUgVm9sYXRpbGl0
+eSB0ZXN0cyBvYnZpb3VzbHkgZGVtb25zdHJhdGUgKGtlcm5lbCBob29rcywgbW9kaWZpY2F0aW9u
+IG9mIHRoZSBuZXR3b3JrIGxheWVycy9zdHJ1Y3R1cmUgc28gdGhhdCB0aGUgbmV0d29yayB0cmFm
+ZmljIHZpc2libGUgdG8gdGhlIHVzZXIgaXMgcHJvYmFibHkgbm90IHRoZSB3aG9sZSB0cmFmZmlj
+IGJlaW5nIHNlbnQvcmVjZWl2ZWQsIGV0Yy4pLjxicj48YnI+PC9kaXY+PGRpdiBjbGFzcz0iZ21h
+aWxfcXVvdGUiPlRoZXJlZm9yZSwgdGhpbmtpbmcgbG9naWNhbDogV2h5IHNob3VsZCBhIFdpbmRv
+d3MgT1Mgb24gYSBtYWNoaW5lIGdldCBjb21wcm9taXNlZCBieSB0aGUgZXhlY3V0aW9uIG9mIEFD
+UEkgY29kZSwgd2hpbGUgYSBMaW51eCBPUyBvbiB0aGUgc2FtZSBzeXN0ZW0gc2hvdWxkIGJlIHNh
+ZmUgaW4gdGhpcyByZWdhcmQvZ2V0cyBjb21wcm9taXNlZCBieSBhbm90aGVyIHdheT8gVGhlcmUg
+YXJlIGVub3VnaCBwYXBlcnMgb3V0IHRoZXJlIHByb3ZpbmcgdGhhdCBMaW51eCBjYW4gZGVmaW5p
+dGVseSBiZSBjb21wcm9taXNlZCBieSB0aGUgZXhlY3V0aW9uIG9mIEFDUEkgY29kZS48YnI+PC9k
+aXY+PGRpdiBjbGFzcz0iZ21haWxfcXVvdGUiPltCeSBhcmd1aW5nIHRoaXMgd2F5IEkgZG9uJiMz
+OTt0IHdhbnQgdG8gaW1wbHkgdGhhdCBhIGNvbXByb21pc2UgY291bGQgT05MWSB0YWtlIHBsYWNl
+IHRocm91Z2ggdGhlIGV4ZWN1dGlvbiBvZiBBQ1BJIGNvZGUgLSBJIGFncmVlIHRvIGV2ZXJ5dGhp
+bmcgd2hhdCBSdWRvbGYgd3JvdGUgcmVnYXJkaW5nIHRoaXMgYXNwZWN0LiBJbiBmYWN0IEkgd291
+bGQgYXNzdW1lIHRoYXQgYSBzb3BoaXN0aWNhdGVkIHJvb3RraXQgd291bGQgb3BlcmF0ZSBpbiBh
+IG11bHRpLXJlZHVuZGFudCB3YXksIGUuIGcuIHRha2luZyBwcmVjYXV0aW9ucyB0aGF0IHRoZSBz
+eXN0ZW0gd2lsbCBzdGlsbCBnZXQgY29tcHJvbWlzZWQgZm9yIGV4YW1wbGUgYnkgZW1wbG95aW5n
+IG1lYW5zIGxpa2UgbWVudGlvbmVkIGJ5IFJ1ZG9sZiwgaW4gY2FzZSB0aGF0IHRoZSB1c2VyIHdv
+dWxkIGZpbmQgYSB3YXkgdG8gZmxhc2ggdGhlIEFDUEkgY29kZSAod2hpY2ggaXMgbm90IHBvc3Np
+YmxlIGJ5IHBlcmZvcm1pbmcgYSBzaW1wbGUgQklPUyBmbGFzaCwgYXMgSSBhbHJlYWR5IHZlcmlm
+aWVkIC0gdGhlIEFDUEkgY29kZSByZW1haW5zIGJlaW5nIHVubW9kaWZpZWQpLiBJIG1lcmVseSB3
+YW50IHRvIHN0YXRlIHRoYXQgdGhlIEFDUEkgY29kZSYjMzk7cyBleGVjdXRpb24gc2VlbXMgdG8g
+YmUgdGhlIHN0YXJ0aW5nIHBvaW50IG9mIHRoZSBzeXN0ZW0gZ2V0dGluZyBjb21wcm9taXNlZC5d
+PGJyPjxicj48YnI+PC9kaXY+PGRpdiBjbGFzcz0iZ21haWxfcXVvdGUiPlNvIEkgaGFkIHRoZSBp
+ZGVhIHRvIGZpbmQgb3V0IHdoZXRoZXIgbXkgdGhvdWdodHMgYXJlIGNvcnJlY3Qgb3Igbm90IGJ5
+IGxldHRpbmcgYSBMaW51eCBzeXN0ZW0gcnVuIGluIGEgVk0sIG9uZSB0aW1lIHdpdGhvdXQgbWFr
+aW5nIHRoZW0gdXNlIG15IHN5c3RlbSYjMzk7cyBBQ1BJIGNvZGUsIGFuZCBvbmUgdGltZSB3aXRo
+IHNwZWNpZnlpbmcgdGhvc2UgYXMgYXJndW1lbnRzLCB3aGljaCBpcyBiYXNpY2FsbHkgcG9zc2li
+bGUgYm90aCBmb3IgVmlydHVhbEJveCBhbmQgZm9yIFFFTVUvS1ZNLCBzbyB0aGF0IEkgY291bGQg
+YWZ0ZXJ3YXJkcyBjb21wYXJlIHdoYXQgdG9vayBwbGFjZSBvbiBlYWNoIFZNIGd1ZXN0LiBIb3dl
+dmVyLCBpdCB3YXMgbm90IHBvc3NpYmxlIGZvciBtZSB0byBkbyBzbywgYmVjYXVzZSBib3RoIFZp
+cnR1YWxCb3ggYW5kIFFFTVUvS1ZNIGhhdmUgdGhlIHJlc3RyaWN0aW9uIHRoYXQgdGhlIHNpemUg
+b2YgdGhlIHRvdGFsIEFDUEkgY29kZSBpcyBhbGxvd2VkIHRvIGhhdmUgYSBtYXhpbXVtIHNpemUg
+b2YgNjRrYiAoSSBoYXZlIG5vIGlkZWEgZm9yIHdoaWNoIHJlYXNvbiB0aGlzIGlzIHRoZSBjYXNl
+KSAtIFRoaXMgaXNzdWUgaXMgZXZlbiBhZGRyZXNzZWQgb24gYnVnIHJlcG9ydHMvaXNzdWUgbGlz
+dHMsIGJ1dCBpdCBzZWVtcyBsaWtlIG5vYm9keSB3YXMgYWJsZSB0byBmaW5kIGEgc29sdXRpb24g
+b3IgZXhwbGFuYXRpb24gZm9yIHRoaXMgc28gZmFyLjxicj48L2Rpdj48ZGl2IGNsYXNzPSJnbWFp
+bF9xdW90ZSI+RGlkIGFueW9uZSBvbiB0aGlzIGxpc3QgdGVzdCBMaW51eCBzeXN0ZW1zJiMzOTsg
+QUNQSSBjb21wYXRpYmlsaXR5IGV0Yy4gYnkgdGhpcyBWTSBhcHByb2FjaD8gSWYgc28sIEkmIzM5
+O2QgYmUgcmVhbGx5IHRoYW5rZnVsIGlmIHNvbWVvbmUgd291bGQgYmUgYWJsZSB0byBwZXJmb3Jt
+IHN1Y2ggYSB0ZXN0IHVzaW5nIG15IHN5c3RlbSYjMzk7cyBBQ1BJIGNvZGUgLSBKdXN0IGNoZWNr
+aW5nIGZvciBkaWZmZXJlbmNlcyByZWdhcmRpbmcgdGhlIGNyZWF0aW9uL21vZGlmaWNhdGlvbiBv
+ZiBmaWxlcyBtaWdodCBiZSBpbnN0cnVjdGl2ZSBhbHJlYWR5Ljxicj48L2Rpdj48ZGl2IGNsYXNz
+PSJnbWFpbF9xdW90ZSI+PGJyPkkgZ3Vlc3MgaXQgd291bGRuJiMzOTt0IGJlIGFuIGVhc3kgdGFz
+ayB0byBjaGVjayB0aGUgd2hvbGUgc291cmNlIG9mIFZpcnR1YWxCb3ggb3IgUUVNVS9LV00gaW4g
+b3JkZXIgdG8gZmluZCBhIHdheSBob3cgdG8gcmVtb3ZlIHRoaXMgc2l6ZSBsaW1pdGF0aW9uLCBh
+bHRob3VnaCBJJiMzOTtkIHRyeSBkb2luZyBzbywgaWYgdGhlcmUgc2hvdWxkbiYjMzk7dCBiZSBh
+bnkgb3RoZXIgd2F5IHRvIHRlc3QgdGhpcy48YnI+PGJyPjwvZGl2PjxkaXYgY2xhc3M9ImdtYWls
+X3F1b3RlIj5JIGR1bXBlZCBteSBBQ1BJIHRhYmxlcyB1c2luZyBwcm9jIC9zeXMvLi4uIHRoaXMg
+dGltZSBhbmQgdXBsb2FkZWQgdGhlIC5iaW4gZmlsZXMgdG8gR29vZ2xlRHJpdmU6PGJyPjxhIGhy
+ZWY9Imh0dHBzOi8vZHJpdmUuZ29vZ2xlLmNvbS9vcGVuP2lkPTBCNjJZNVFrX3JkYldUVnBmVmxn
+d1dERmpZV2MiPmh0dHBzOi8vZHJpdmUuZ29vZ2xlLmNvbS9vcGVuP2lkPTBCNjJZNVFrX3JkYldU
+VnBmVmxnd1dERmpZV2M8L2E+PGJyPjwvZGl2PjxkaXYgY2xhc3M9ImdtYWlsX3F1b3RlIj48YnI+
+PC9kaXY+PGRpdiBjbGFzcz0iZ21haWxfcXVvdGUiPkkmIzM5O3ZlIHB1dCB0aGUgLmRzbCBmaWxl
+cyBkaXNhc3NlbWJsZWQgYnkgaWFzbCAod2hpY2ggcmVwb3J0ZWQgcXVpdGUgbWFueSBlcnJvcnMp
+IGludG8gdGhlIGZvbGRlciBhcyB3ZWxsLiBUaGVyZSB3YXMgbm8gUlNEVCB0YWJsZSBpbiB0aGUg
+L3N5cy8uLi4gZGlyZWN0b3J5LCBhbmQgYnkgdXNpbmcgYWNwaWR1bXAgcGx1cyBhY3BpeHRyYWN0
+IEkgd2FzbiYjMzk7dCBhYmxlIHRvIG9idGFpbiBvbmUgbmVpdGhlci48YnI+PGJyPjxicj48L2Rp
+dj48ZGl2IGNsYXNzPSJnbWFpbF9xdW90ZSI+VGhhbmtzIGluIGFkdmFuY2UgYW5kIGFsbCB0aGUg
+YmVzdCB0byBldmVyeW9uZTxicj48YnI+PC9kaXY+PGRpdiBjbGFzcz0iZ21haWxfcXVvdGUiPkRh
+dmlkPGJyPjxicj48L2Rpdj48ZGl2IGNsYXNzPSJnbWFpbF9xdW90ZSI+PGJyPjwvZGl2PjxkaXYg
+Y2xhc3M9ImdtYWlsX3F1b3RlIj4KPHAgZGlyPSJsdHIiPktpbmQgcmVnYXJkcyA8L3A+PHNwYW4g
+Y2xhc3M9ImdtYWlsLUhPRW5aYiI+PGZvbnQgY29sb3I9IiM4ODg4ODgiPgo8cCBkaXI9Imx0ciI+
+RGF2aWQgPC9wPjwvZm9udD48L3NwYW4+PGRpdiBjbGFzcz0iZ21haWwtSE9FblpiIj48ZGl2IGNs
+YXNzPSJnbWFpbC1oNSI+CjxkaXYgY2xhc3M9ImdtYWlsX2V4dHJhIj48YnI+PGRpdiBjbGFzcz0i
+Z21haWxfcXVvdGUiPkFtIDMxLjA3LjIwMTYgMTU6MjMgc2NocmllYiAmcXVvdDtSdWRvbGYgTWFy
+ZWsmcXVvdDsgJmx0OzxhIHRhcmdldD0iX2JsYW5rIiBocmVmPSJtYWlsdG86ci5tYXJla0Bhc3Nl
+bWJsZXIuY3oiPnIubWFyZWtAYXNzZW1ibGVyLmN6PC9hPiZndDs6PGJyIHR5cGU9ImF0dHJpYnV0
+aW9uIj48YmxvY2txdW90ZSBzdHlsZT0ibWFyZ2luOjBweCAwcHggMHB4IDAuOGV4O2JvcmRlci1s
+ZWZ0OjFweCBzb2xpZCByZ2IoMjA0LDIwNCwyMDQpO3BhZGRpbmctbGVmdDoxZXgiPkhpIERhdmlk
+LDxicj4KPGJyPgpJIGNoZWNrZWQgdGhlIEFDUEkgZXJyb3IgbWVzc2FnZXMgYW5kIHRoZXkgYXJl
+IHByZXR0eSBoYXJtbGVzcy4gSSBkb24mIzM5O3QgdGhpbmsgYXR0YWNrZXIgd291bGQgdXNlIHRo
+ZSBBQ1BJIHN1YnN5c3RlbSB0byBwbGFudCB0aGUgcm9vdGtpdC4gSSB0aGluayB0aGUgcm9vdGtp
+dCBtaWdodCBiZSBoaWRkZW4gaW4gdGhlIHN5c3RlbSBtYW5hZ2VtZW50IG1vZGUgbWVtb3J5IHdo
+aWNoIGlzIGluYWNjZXNzaWJsZSBieSB0aGUgb3BlcmF0aW5nIHN5c3RlbS4gVGhlcmVmb3JlIEkg
+ZG9uJiMzOTt0IHRoaW5rIHRoaXMgaXMgZ29vZCBtYWlsaW5nIGxpc3QgdG8gZGlzY3VzcyBpdCBi
+dXQgSSBob3BlIG5vIG9uZSB3aWxsIGNvbXBsYWluIGlmIEkgZ2l2ZSB5b3Ugc29tZSBoaW50cyB0
+byB0cnk6PGJyPgo8YnI+CjEpIHBoeXNpY2FsbHkgZXhjaGFuZ2UgYSBCSU9TIGNoaXAgLSB1c2Ug
+c29tZSBzZXJ2aWNlIHdoaWNoIHdpbGwgc2VuZCB5b3UgYSBCSU9TIGNoaXAgcmVwbGFjZW1lbnQg
+LSB0aGV5IGNhbiBldmVuIHByZS1sb2FkIGl0IHdpdGggYSBmYWN0b3J5IEJJT1M8YnI+Cjxicj4K
+MikgSWYgeW91IGNhbiYjMzk7dCBkbyB0aGF0LCBhbmQgaWYgdGhlIEJJT1MgaXMgc29ja2V0ZWQg
+dGhlbiB1c2Ugc29tZSBleHRlcm5hbCBwcm9ncmFtbWVyIHRvIHJlYWQgb3V0IHRoZSBCSU9TLCB0
+aGVuIGdvIHRvIHRoZSBBU1VTIHBhZ2VzIGFuZCBkb3dubG9hZCB0aGUgQklPUyBhcyBhIENBUCBm
+aWxlLiBUaGUgZmlsZSB1c3VhbGx5IGhhcyAyS0IgaGVhZGVyIHdoaWNoIHlvdSBjYW4gc3RyaXAg
+YW5kIHRoZW4geW91IHdpbGwgZ2V0IHRoZSA4TWlCIGltYWdlIHdoaWNoIHlvdSBjYW4gZGlyZWN0
+bHkgZmxhc2guIERvIG5vdCBleHBlY3QgdGhhdCB0aGUgYmFja3VwIGltYWdlIHdpbGwgbWF0Y2gg
+LSBCSU9TIGNvbnRhaW5zIHNvbWUgcGxhY2VzIHdpdGggYSB2YXJpYWJsZXMvc2NyYXRjaCBzcGFj
+ZSBzbyB0aGlzIHdvbiYjMzk7dCBoZWxwLjxicj4KPGJyPgozKSBDaGVjayB5b3VyIG1hbHdhcmUg
+ZGV0ZWN0aW9uIHByb2NlZHVyZS4gSSBkb24mIzM5O3QgaGF2ZSB0aGUgZHJvcGJveCBhY2NvdW50
+IHNvIEkgY2FuJiMzOTt0IGhlbHAgbXVjaC4gQWxsIGRpc3RyaWJ1dGlvbnMgaGF2ZSBhIHdheSB0
+byBjaGVjayB0aGUgaW50ZWdyaXR5IG9mIGluc3RhbGxlZCBwYWNrYWdlcywgc28geW91IGNhbiB1
+c2UgdGhpcyBtZWNoYW5pc20gdG8gY2hlY2sgaWYgc29tZXRoaW5nIGhhcyBiZWVuIGNoYW5nZWQg
+b3Igbm90LiAobWF5YmUgdGhlIGJpbmFyeSBjaGFuZ2VkIGJlY2F1c2Ugb2YgdGhlIHVwZGF0ZT8p
+PGJyPgo8YnI+CjQpIEkgcGVyc29uYWxseSB0aGluayB0aGF0IGlmIHlvdSB3b2xkIGJlIGEgdmlj
+dGltIG9mIHN1Y2ggc29waGlzdGljYXRlZCBtYWx3YXJlIHdoaWNoIGNhbiBpbmZlY3QgYW55IExp
+bnV4L0JTRCB0aGVuIEkgd291bGQgYWxzbyB0aGluayB0aGluayB0aGF0IHRoZSBtYWx3YXJlIHdv
+dWxkIGZvciBzdXJlIHByZXZlbnQgeW91IHRvIHNlZSB0aGUgbW9kaWZpZWQgZmlsZXMuPGJyPgo8
+YnI+ClRoYW5rcyBhbGwgSSBjYW4gc2F5IHRvIHRoaXMsIG5vdyBnbyBhbmQgdHJ5IHRvIGZpbmQg
+c29tZSBvdGhlciBtb3JlIGFwcHJvcHJpYXRlIG1haWxpbmcgbGlzdCAoc29ycnkgbm8gaWRlYSBo
+ZXJlKSwgYWxzbyBJIGRvbiYjMzk7dCB0aGluayBJIGNhbiBwZXJzb25hbGx5IGhlbHAgYW55IGZ1
+cnRoZXI8YnI+Cjxicj4KVGhhbmtzPGZvbnQgY29sb3I9IiM4ODg4ODgiPjxicj4KUnVkb2xmPGJy
+Pgo8YnI+Cjxicj4KPC9mb250PjwvYmxvY2txdW90ZT48L2Rpdj48YnI+PC9kaXY+CjwvZGl2Pjwv
+ZGl2PjwvZGl2Pjxicj48L2Rpdj48L2Rpdj4K
+
+--===============6261798819653270598==--
 
