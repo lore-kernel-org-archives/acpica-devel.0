@@ -1,211 +1,411 @@
-Content-Type: multipart/mixed; boundary="===============6499736148352417173=="
+Content-Type: multipart/mixed; boundary="===============0381840845965332977=="
 MIME-Version: 1.0
-From: Zheng, Lv <lv.zheng at intel.com>
-Subject: Re: [Devel] acpi: broken suspend to RAM with v4.7-rc1
-Date: Fri, 05 Aug 2016 01:06:57 +0000
-Message-ID: <1AE640813FDE7649BE1B193DEA596E883BC0A4BE@SHSMSX101.ccr.corp.intel.com>
-In-Reply-To: 20160624213235.GA8304@nest
+From: David Renz <sun.kisses.horizon at gmail.com>
+Subject: Re: [Devel] Strange behavior of ACPI code
+Date: Sat, 06 Aug 2016 18:23:01 +0200
+Message-ID: <CAB=Lj3QxT8ZZNoid=+v-=uYERyhEvS7TvBrDBszJb9un59RZng@mail.gmail.com>
+In-Reply-To: 1AE640813FDE7649BE1B193DEA596E883BC0A492@SHSMSX101.ccr.corp.intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6499736148352417173==
+--===============0381840845965332977==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi, Andrey
+Hi,
 
-> From: Andrey Skvortsov [mailto:andrej.skvortzov(a)gmail.com]
-> Subject: Re: acpi: broken suspend to RAM with v4.7-rc1
-> =
+you can find all ACPI relevant files of the three systems I'm using in the
+following shared folder:
+https://mega.nz/#F!DEBARZzB
 
-> On 24 Jun, Zheng, Lv wrote:
-> > Hi,
-> >
-> > > From: Andrey Skvortsov [mailto:andrej.skvortzov(a)gmail.com]
-> > > Subject: Re: acpi: broken suspend to RAM with v4.7-rc1
-> > >
-> > > Hi Lv,
-> > >
-> > > On 13 Jun, Zheng, Lv wrote:
-> > > > > From: linux-acpi-owner(a)vger.kernel.org [mailto:linux-acpi-
-> > > > > owner(a)vger.kernel.org] On Behalf Of Rafael J. Wysocki
-> > > > > Subject: Re: acpi: broken suspend to RAM with v4.7-rc1
-> > > > >
-> > > > > On Saturday, June 11, 2016 01:49:22 PM Andrey Skvortsov wrote:
-> > > > > > On 10 Jun, Rafael J. Wysocki wrote:
-> > > > > > > On Friday, June 10, 2016 11:32:10 PM Andrey Skvortsov wrote:
-> > > > > > > > Hi,
-> > > > > > > >
-> > > > > > > > On my laptop (DELL Vostro 1500) in v4.7-rc1 is broken
-> suspend
-> > > to RAM.
-> > > > > > > > Laptop doesn't finish suspend to RAM process (disks are off,
-> but
-> > > > > > > > WiFi and Power LEDs are still on). The only way to get it o=
-ut of
-> > > > > > > > this state, is to turn the power off.
-> > > > > > > >
-> > > > > > > > I've bisected the issue to commit 66b1ed5aa8dd25
-> > > > > > > > [ACPICA: ACPI 2.0, Hardware: Add access_width/bit_offset
-> > > support
-> > > > > > > > for acpi_hw_write()].
-> > > > > > > >
-> > > > > > > > If I revert this commit in v4.7-rc1 (or v4.7-rc2), suspend =
-to
-> RAM
-> > > > > > > > is working again.
-> > > > > > > >
-> > > > > > > > The cause of this problem is that after this commit write to
-> > > PM1A
-> > > > > > > > Control Block (16-bit register) is done using two 8-bit wri=
-tes.
-> > > > > > > > If I force this write to be 16-bit, then all is working as =
-before.
-> > > > > > > >
-> > > > > > > > To get it working 'access_width' for PM1A Control Block
-> needs to
-> > > > > > > > be 2 (16-bit), but it's 1 (8-bit).
-> > > > [Lv Zheng]
-> > > > Could you send me the acpidump of the machine?
-> > > Here it is
-> > >
-> https://dl.dropboxusercontent.com/u/24023626/dell_vostro_1500.acpid
-> > > ump.bin
-> > [Lv Zheng]
-> > I've been trying to download it these days but all failed.
-> > Could you send an off-list email to me with this attached?
-> Strange. I've check now. The link above is working, but I see that
-> part of the link above is moved to the next line.
-> Anyway I resend you all files off-list.
-> =
+It also contains files showing the results of various other analysis
+methods I used. E. g., I was able to find out a few details of how this
+rootkit works by comparing the files contained in a Raspberry image with
+the files which were written on the SD card. At least this analysis showed
+how this technology manipulates the SSH configuration of a Linux system in
+order to gain remote access:
 
-> =
-
-> > > > > > > > The root of the problem seems to be not the commit
-> > > > > 66b1ed5aa8dd25
-> > > > > > > > itself, but the ACPI tables in BIOS where wrong access_width
-> > > > > > > > comes from. I fixed problem in FACP  table, put it in initr=
-d to
-> > > > > > > > override FACP table from BIOS. This fixed the issue, suspend
-> to
-> > > > > > > > RAM is working now again.
-> > > > > > > >
-> > > > > > > > But I'm not sure whether is this proper fix for this proble=
-m.
-> > > > > > > > Is there any place in the kernel, where such ACPI quirks are
-> placed?
-> > > > [Lv Zheng]
-> > > > My question would be:
-> > > > Does Windows behave correctly for this table?
-> > > Yes, suspend to RAM is working under Windows Vista.
-> > > IIRC it worked under Windows XP too.
-> > >
-> > > > However there is a real case showing that there are real tables need
-> us to
-> > > correctly support BitWidth/BitOffset.
-> > > > Here is the information for you to refer:
-> > > >
-> http://permalink.gmane.org/gmane.linux.kernel.commits.head/313870
-> > > >
-> > > > > > >
-> > > > > > > Well, if the commit in question caused a problem to happen for
-> > > you,
-> > > > > > > it also might cause similar problems to happen elsewhere.
-> > > > > > >
-> > > > > > > It looks like we'll need to revert that commit.
-> > > > > > Hi,
-> > > > > >
-> > > > > > or maybe to reset access_width AnyAcc from FACP table only for
-> > > PM1A
-> > > > > > control register or even for all registers? This will fix the i=
-ssue too.
-> > > > >
-> > > > > That's a good idea actually.
-> > > > >
-> > > > > > diff --git a/drivers/acpi/acpica/tbfadt.c
-> > > > > > b/drivers/acpi/acpica/tbfadt.c index 6208069..a476e94 100644
-> > > > > > --- a/drivers/acpi/acpica/tbfadt.c
-> > > > > > +++ b/drivers/acpi/acpica/tbfadt.c
-> > > > > > @@ -714,7 +714,14 @@ static void
-> > > acpi_tb_setup_fadt_registers(void)
-> > > > > >                         }
-> > > > > >                 }
-> > > > > >         }
-> > > > > >
-> > > > > > +       /*
-> > > > > > +        * Reset access_width in the GAS for PM1A control regis=
-ter
-> to
-> > > > > > +        * undefined value. Because in some cases this field co=
-ntains
-> > > > > > +        * wrong value.
-> > > > > > +        */
-> > > > > > +       acpi_gbl_FADT.xpm1a_control_block.access_width =3D 0;
-> > > > >
-> > > > > OK, let's see what Bob and Lv think about that.
-> > > > [Lv Zheng]
-> > > > There is a commit in 4.7-rc2:
-> > > >
-> > >
-> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?i=
-d=3D
-> > > 7f9bef9d
-> > > > Have you tried if the problem still exists in 4.7-rc2?
-> > > I've just tried v4.7-rc3. It contains commit 7f9bef9d and the problem
-> > > exists there too.
-> > [Lv Zheng]
-> > IMO, for the time being, you can use quirks.
-> > Booting your kernel with the following parameters:
-> >
-> > acpi=3Drsdt
-> > Or
-> > acpi_force_32bit_fadt_addr
-> > Or
-> > Both
-> =
-
-> Rafael reverted commit, so I'm ok now.
-> =
-
-> Actually acpi_force_32bit_fadt_addr will not help here, because it's take
-> effect only if address64 !=3D address32. But here these addresses are
-> the same, therefore access_width is taken from extended address.
-[Lv Zheng] =
-
-This sounds strange.
-My recent investigation shows that Windows may favor 32bit fadt address.
-So we need to get this quirk working.
-I filed a bug here, hope you can help me to dig this a bit further:
-https://bugzilla.kernel.org/show_bug.cgi?id=3D151501
-
-Thanks in advance.
-
-Best regards
-Lv
+["Nur in" means "Only exists at", while "sind verschieden" means "are
+different" (referring to the files which got compared]
 
 
-> =
-
-> http://lxr.free-electrons.com/source/drivers/acpi/acpica/tbfadt.c#L576
-> =
-
-> =
-
-> acpi=3Drsdt helps. Thanks for the information about this option. I
-> missed it, when I read documentation.
-> =
-
-> =
-
-> =
-
-> --
-> Best regards,
-> Andrey Skvortsov
-> =
+Does nobody have an idea how one could test which effects the execution of
+ACPI code on Linux system has in detail, which I wanted to find out by
+making use of my VM approach? How do ACPI developers test this in order to
+ensure ACPI code's compatibility with Linux systems? Please let me know, if
+anyone has an idea about this.
 
 
+Thanks in advance and kind regards
 
---===============6499736148352417173==--
+David
+
+
+On Fri, Aug 5, 2016 at 2:55 AM, Zheng, Lv <lv.zheng(a)intel.com> wrote:
+
+> Hi,
+>
+>
+>
+> I cannot reach the google driver.
+>
+> Could you send me a private email with the acpidump output attached?
+>
+> Also please let me know the options that you=E2=80=99ve passed to acpiexe=
+c.
+>
+>
+>
+> Thanks and best regards
+>
+> -Lv
+>
+>
+>
+> *From:* Devel [mailto:devel-bounces(a)acpica.org] *On Behalf Of *David Re=
+nz
+> *Sent:* Saturday, July 30, 2016 9:45 AM
+> *To:* devel(a)acpica.org
+> *Subject:* Re: [Devel] Strange behavior of ACPI code
+>
+>
+>
+> I loaded the extracted ACPI code with acpiexec, whose initial output was
+> this:
+> "ACPI: RSDP 0x00000000006854E0 000024 (v02 Intel )
+> ACPI: XSDT 0x0000000000BEAA80 00003C (v00 Intel  AcpiExec 00001001 INTL
+> 20160729)
+> ACPI: FACP 0x0000000000BE4E20 0000F4 (v03 061210 FACP1416 20100612 MSFT
+> 00000097)
+> ACPI: DSDT 0x0000000000BDD420 0079CA (v01 A1556  A1556000 00000000 INTL
+> 20060113)
+> ACPI: FACS 0x00000000006854A0 000040
+> ACPI: SSDT 0x0000000000BEBCC0 000DA4 (v01 A M I  POWERNOW 00000001 AMD
+> 00000001)
+> Initializing General Purpose Events (GPEs):
+>     Initialized GPE 00 to 1F [_GPE] 4 regs on interrupt 0x9 (SCI)
+>     Initialized GPE 20 to 5F [_GPE] 8 regs on interrupt 0x9 (SCI)
+>
+> Initializing Namespace objects:
+> Table [DSDT: A1556000] (id 01) - 1088 Objects with  65 Devices,  23
+> Regions,  360 Methods (62/298/43 Serial/Non/Cvt)
+> ACPI: Executed 1 blocks of module-level executable AML code
+> Table [SSDT: POWERNOW] (id 02) -   36 Objects with   0 Devices,   0
+> Regions,    0 Methods (0/0/0 Serial/Non/Cvt)
+> ACPI: 2 ACPI AML tables successfully acquired and loaded
+>
+> Completing Region/Field/Buffer/Package initialization:
+>     Initialized 22/23 Regions 38/38 Fields 53/53 Buffers 117/117 Packages
+> (1133 nodes)
+> Initializing Device/Processor/Thermal objects and executing _INI/_STA
+> methods:
+>     Executed 1 _INI methods requiring 1 _STA executions (examined 73
+> objects)
+> Unexpected AE_BAD_ADDRESS from AcpiWriteBitRegister (aeexec-609)
+> Unexpected AE_BAD_ADDRESS from AcpiReadBitRegister (aeexec-622)
+> Unexpected AE_BAD_PARAMETER from AcpiInstallGpeHandler (aeexec-898)
+> Unexpected AE_BAD_PARAMETER from AcpiEnableGpe (aeexec-901)
+> Unexpected AE_BAD_PARAMETER from AcpiDisableGpe (aeexec-904)"
+>
+> The full output including the methods found by it can be seen in the file
+> acpiexec.out, which I uploaded on GoogleDrive:
+> https://drive.google.com/open?id=3D0B62Y5Qk_rdbWYzhPTHhHM1RxRTg
+>
+> However, although I definitely don't know enough about the ACPI system, I
+> guess it would in fact not be realistic to understand how this ACPI code
+> compromises a Linux system using acpiexec. Probably there's no other way
+> than debugging the kernel with ACPI debug output enabled...
+>
+>
+>
+> On Fri, Jul 29, 2016 at 5:25 PM, David Renz <sun.kisses.horizon(a)gmail.c=
+om>
+> wrote:
+>
+> Hello,
+>
+> I addressed this issue before on the ACPI developers' mailing list, where
+> I observed a strange/suspicious behavior of my system's ACPI code in the
+> case of a Lenovo G710 notebook. I concluded that this might be explained =
+by
+> the fact that Lenovo employs ACPI code in order to install harmless
+> crapware on Windows, but finally I can definitely say that this conclusio=
+n can
+> not be true, since the ACPI code of four different systems I'm using,
+> which I extracted and submitted to malwr.com, led to the same results in
+> each case. E. g., this is the result for the ACPI I extracted from an AMD
+> x64 desktop PC:
+> https://malwr.com/analysis/ODkxOThjOTk1MDAzNGE4M2JhOWNhNzk1ZTJjM2IyYWQ/
+>
+> It shows what happens when the ACPI code gets executed on a Windows
+> system, and if you google some of files which get deployed or take a look
+> at the registry modifications being made, it should be obvious to everyone
+> that it compromises the system in order to gain full remote access over it
+> and forward its' network traffic (which I can also observe in Wireshark).
+> Recently someone from the Comodo support also confirmed me that my system
+> is compromised, but even the Comodo software itself seems to have been
+> gotten manipulated, so the Comodo firewall doesn't block the remote
+> access (they're investigating about this now).
+>
+> However, this ACPI not only compromises Windows systems, but also every
+> Linux and BSD distro I've tested for the purpose of analysis so far. The
+> files in this Dropbox folder will give you only a first impression of thi=
+s:
+> https://www.dropbox.com/sh/x6vf2fqsbqdx0k8/AACdgsdbN_UA4w2XDaob9Maia?dl=
+=3D0
+>
+> "modified_files.out" shows a list of files having been modified during
+> the first 10 minutes after the first boot of a freshly installed system,
+> dmesg.out shows various ACPI related errors and the netstat output shows
+> that the UDP and UDP6 ports 50988 and 47815 are open, which shouldn't be
+> the case normally. (Wireshark gives the same impression of traffic being
+> forwared like it does on Windows.)
+>
+> The folder also contains the ACPI code extracted and disassembled using
+> the IASL code.
+>
+> Would anyone be able to perform a debugging of this code in order to make
+> visible what its execution on a Linux system does in detail?
+>
+> Thanks in advance and kind regards
+>
+> David
+>
+>
+>
+
+--===============0381840845965332977==
+Content-Type: text/html
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="attachment.html"
+
+PGRpdiBkaXI9Imx0ciI+PGRpdj48ZGl2PjxkaXY+PGRpdj48ZGl2PjxkaXY+SGksPGJyPjxicj48
+L2Rpdj55b3UgY2FuIGZpbmQgYWxsIEFDUEkgcmVsZXZhbnQgZmlsZXMgb2YgdGhlIHRocmVlIHN5
+c3RlbXMgSSYjMzk7bSB1c2luZyBpbiB0aGUgZm9sbG93aW5nIHNoYXJlZCBmb2xkZXI6PGJyPjxh
+IGhyZWY9Imh0dHBzOi8vbWVnYS5uei8jRiFERUJBUlp6QiI+aHR0cHM6Ly9tZWdhLm56LyNGIURF
+QkFSWnpCPC9hPjxicj48YnI+PC9kaXY+SXQgYWxzbyBjb250YWlucyBmaWxlcyBzaG93aW5nIHRo
+ZSByZXN1bHRzIG9mIHZhcmlvdXMgb3RoZXIgYW5hbHlzaXMgbWV0aG9kcyBJIHVzZWQuIEUuIGcu
+LCBJIHdhcyBhYmxlIHRvIGZpbmQgb3V0IGEgZmV3IGRldGFpbHMgb2YgaG93IHRoaXMgcm9vdGtp
+dCB3b3JrcyBieSBjb21wYXJpbmcgdGhlIGZpbGVzIGNvbnRhaW5lZCBpbiBhIFJhc3BiZXJyeSBp
+bWFnZSB3aXRoIHRoZSBmaWxlcyB3aGljaCB3ZXJlIHdyaXR0ZW4gb24gdGhlIFNEIGNhcmQuIEF0
+IGxlYXN0IHRoaXMgYW5hbHlzaXMgc2hvd2VkIGhvdyB0aGlzIHRlY2hub2xvZ3kgbWFuaXB1bGF0
+ZXMgdGhlIFNTSCBjb25maWd1cmF0aW9uIG9mIGEgTGludXggc3lzdGVtIGluIG9yZGVyIHRvIGdh
+aW4gcmVtb3RlIGFjY2Vzczo8YnI+PGJyPjwvZGl2PlsmcXVvdDtOdXIgaW4mcXVvdDsgbWVhbnMg
+JnF1b3Q7T25seSBleGlzdHMgYXQmcXVvdDssIHdoaWxlICZxdW90O3NpbmQgdmVyc2NoaWVkZW4m
+cXVvdDsgbWVhbnMgJnF1b3Q7YXJlIGRpZmZlcmVudCZxdW90OyAocmVmZXJyaW5nIHRvIHRoZSBm
+aWxlcyB3aGljaCBnb3QgY29tcGFyZWRdPGJyPjxicj48YnI+PC9kaXY+RG9lcyBub2JvZHkgaGF2
+ZSBhbiBpZGVhIGhvdyBvbmUgY291bGQgdGVzdCB3aGljaCBlZmZlY3RzIHRoZSBleGVjdXRpb24g
+b2YgQUNQSSBjb2RlIG9uIExpbnV4IHN5c3RlbSBoYXMgaW4gZGV0YWlsLCB3aGljaCBJIHdhbnRl
+ZCB0byBmaW5kIG91dCBieSBtYWtpbmcgdXNlIG9mIG15IFZNIGFwcHJvYWNoPyBIb3cgZG8gQUNQ
+SSBkZXZlbG9wZXJzIHRlc3QgdGhpcyBpbiBvcmRlciB0byBlbnN1cmUgQUNQSSBjb2RlJiMzOTtz
+IGNvbXBhdGliaWxpdHkgd2l0aCBMaW51eCBzeXN0ZW1zPyBQbGVhc2UgbGV0IG1lIGtub3csIGlm
+IGFueW9uZSBoYXMgYW4gaWRlYSBhYm91dCB0aGlzLjxicj48YnI+PGJyPjwvZGl2PlRoYW5rcyBp
+biBhZHZhbmNlIGFuZCBraW5kIHJlZ2FyZHM8YnI+PGJyPjwvZGl2PkRhdmlkPGJyPjxicj48L2Rp
+dj48ZGl2IGNsYXNzPSJnbWFpbF9leHRyYSI+PGJyPjxkaXYgY2xhc3M9ImdtYWlsX3F1b3RlIj5P
+biBGcmksIEF1ZyA1LCAyMDE2IGF0IDI6NTUgQU0sIFpoZW5nLCBMdiA8c3BhbiBkaXI9Imx0ciI+
+Jmx0OzxhIGhyZWY9Im1haWx0bzpsdi56aGVuZ0BpbnRlbC5jb20iIHRhcmdldD0iX2JsYW5rIj5s
+di56aGVuZ0BpbnRlbC5jb208L2E+Jmd0Ozwvc3Bhbj4gd3JvdGU6PGJyPjxibG9ja3F1b3RlIGNs
+YXNzPSJnbWFpbF9xdW90ZSIgc3R5bGU9Im1hcmdpbjowIDAgMCAuOGV4O2JvcmRlci1sZWZ0OjFw
+eCAjY2NjIHNvbGlkO3BhZGRpbmctbGVmdDoxZXgiPgoKCgoKCgoKPGRpdiBsaW5rPSJibHVlIiB2
+bGluaz0icHVycGxlIiBsYW5nPSJFTi1VUyI+CjxkaXY+CjxwIGNsYXNzPSJNc29Ob3JtYWwiPjxm
+b250IHNpemU9IjIiIGZhY2U9IkNhbGlicmkiIGNvbG9yPSIjMWY0OTdkIj48c3BhbiBzdHlsZT0i
+Zm9udC1zaXplOjExLjBwdDtmb250LWZhbWlseTomcXVvdDtDYWxpYnJpJnF1b3Q7LHNhbnMtc2Vy
+aWY7Y29sb3I6IzFmNDk3ZCI+SGksPHU+PC91Pjx1PjwvdT48L3NwYW4+PC9mb250PjwvcD4KPHAg
+Y2xhc3M9Ik1zb05vcm1hbCI+PGZvbnQgc2l6ZT0iMiIgZmFjZT0iQ2FsaWJyaSIgY29sb3I9IiMx
+ZjQ5N2QiPjxzcGFuIHN0eWxlPSJmb250LXNpemU6MTEuMHB0O2ZvbnQtZmFtaWx5OiZxdW90O0Nh
+bGlicmkmcXVvdDssc2Fucy1zZXJpZjtjb2xvcjojMWY0OTdkIj48dT48L3U+wqA8dT48L3U+PC9z
+cGFuPjwvZm9udD48L3A+CjxwIGNsYXNzPSJNc29Ob3JtYWwiPjxmb250IHNpemU9IjIiIGZhY2U9
+IkNhbGlicmkiIGNvbG9yPSIjMWY0OTdkIj48c3BhbiBzdHlsZT0iZm9udC1zaXplOjExLjBwdDtm
+b250LWZhbWlseTomcXVvdDtDYWxpYnJpJnF1b3Q7LHNhbnMtc2VyaWY7Y29sb3I6IzFmNDk3ZCI+
+SSBjYW5ub3QgcmVhY2ggdGhlIGdvb2dsZSBkcml2ZXIuPHU+PC91Pjx1PjwvdT48L3NwYW4+PC9m
+b250PjwvcD4KPHAgY2xhc3M9Ik1zb05vcm1hbCI+PGZvbnQgc2l6ZT0iMiIgZmFjZT0iQ2FsaWJy
+aSIgY29sb3I9IiMxZjQ5N2QiPjxzcGFuIHN0eWxlPSJmb250LXNpemU6MTEuMHB0O2ZvbnQtZmFt
+aWx5OiZxdW90O0NhbGlicmkmcXVvdDssc2Fucy1zZXJpZjtjb2xvcjojMWY0OTdkIj5Db3VsZCB5
+b3Ugc2VuZCBtZSBhIHByaXZhdGUgZW1haWwgd2l0aCB0aGUKPHNwYW4+YWNwaWR1bXA8L3NwYW4+
+IG91dHB1dCBhdHRhY2hlZD88dT48L3U+PHU+PC91Pjwvc3Bhbj48L2ZvbnQ+PC9wPgo8cCBjbGFz
+cz0iTXNvTm9ybWFsIj48Zm9udCBzaXplPSIyIiBmYWNlPSJDYWxpYnJpIiBjb2xvcj0iIzFmNDk3
+ZCI+PHNwYW4gc3R5bGU9ImZvbnQtc2l6ZToxMS4wcHQ7Zm9udC1mYW1pbHk6JnF1b3Q7Q2FsaWJy
+aSZxdW90OyxzYW5zLXNlcmlmO2NvbG9yOiMxZjQ5N2QiPkFsc28gcGxlYXNlIGxldCBtZSBrbm93
+IHRoZSBvcHRpb25zIHRoYXQgeW914oCZdmUgcGFzc2VkIHRvCjxzcGFuPmFjcGlleGVjPC9zcGFu
+Pi48dT48L3U+PHU+PC91Pjwvc3Bhbj48L2ZvbnQ+PC9wPgo8cCBjbGFzcz0iTXNvTm9ybWFsIj48
+Zm9udCBzaXplPSIyIiBmYWNlPSJDYWxpYnJpIiBjb2xvcj0iIzFmNDk3ZCI+PHNwYW4gc3R5bGU9
+ImZvbnQtc2l6ZToxMS4wcHQ7Zm9udC1mYW1pbHk6JnF1b3Q7Q2FsaWJyaSZxdW90OyxzYW5zLXNl
+cmlmO2NvbG9yOiMxZjQ5N2QiPjx1PjwvdT7CoDx1PjwvdT48L3NwYW4+PC9mb250PjwvcD4KPHAg
+Y2xhc3M9Ik1zb05vcm1hbCI+PGZvbnQgc2l6ZT0iMiIgZmFjZT0iQ2FsaWJyaSIgY29sb3I9IiMx
+ZjQ5N2QiPjxzcGFuIHN0eWxlPSJmb250LXNpemU6MTEuMHB0O2ZvbnQtZmFtaWx5OiZxdW90O0Nh
+bGlicmkmcXVvdDssc2Fucy1zZXJpZjtjb2xvcjojMWY0OTdkIj5UaGFua3MgYW5kIGJlc3QgcmVn
+YXJkczx1PjwvdT48dT48L3U+PC9zcGFuPjwvZm9udD48L3A+CjxwIGNsYXNzPSJNc29Ob3JtYWwi
+Pjxmb250IHNpemU9IjIiIGZhY2U9IkNhbGlicmkiIGNvbG9yPSIjMWY0OTdkIj48c3BhbiBzdHls
+ZT0iZm9udC1zaXplOjExLjBwdDtmb250LWZhbWlseTomcXVvdDtDYWxpYnJpJnF1b3Q7LHNhbnMt
+c2VyaWY7Y29sb3I6IzFmNDk3ZCI+LUx2PHU+PC91Pjx1PjwvdT48L3NwYW4+PC9mb250PjwvcD4K
+PHAgY2xhc3M9Ik1zb05vcm1hbCI+PGEgbmFtZT0ibV82NzM4NDMxMjQ0NDY5MTIwOTFfX01haWxF
+bmRDb21wb3NlIj48Zm9udCBzaXplPSIyIiBmYWNlPSJDYWxpYnJpIiBjb2xvcj0iIzFmNDk3ZCI+
+PHNwYW4gc3R5bGU9ImZvbnQtc2l6ZToxMS4wcHQ7Zm9udC1mYW1pbHk6JnF1b3Q7Q2FsaWJyaSZx
+dW90OyxzYW5zLXNlcmlmO2NvbG9yOiMxZjQ5N2QiPjx1PjwvdT7CoDx1PjwvdT48L3NwYW4+PC9m
+b250PjwvYT48L3A+CjxzcGFuPjwvc3Bhbj4KPGRpdiBzdHlsZT0iYm9yZGVyOm5vbmU7Ym9yZGVy
+LWxlZnQ6c29saWQgYmx1ZSAxLjVwdDtwYWRkaW5nOjBpbiAwaW4gMGluIDQuMHB0Ij4KPGRpdj4K
+PGRpdiBzdHlsZT0iYm9yZGVyOm5vbmU7Ym9yZGVyLXRvcDpzb2xpZCAjZTFlMWUxIDEuMHB0O3Bh
+ZGRpbmc6My4wcHQgMGluIDBpbiAwaW4iPgo8cCBjbGFzcz0iTXNvTm9ybWFsIj48YSBuYW1lPSJt
+XzY3Mzg0MzEyNDQ0NjkxMjA5MV9fX19fX3JlcGx5c2VwYXJhdG9yIj48L2E+PGI+PGZvbnQgc2l6
+ZT0iMiIgZmFjZT0iQ2FsaWJyaSI+PHNwYW4gc3R5bGU9ImZvbnQtc2l6ZToxMS4wcHQ7Zm9udC1m
+YW1pbHk6JnF1b3Q7Q2FsaWJyaSZxdW90OyxzYW5zLXNlcmlmO2ZvbnQtd2VpZ2h0OmJvbGQiPkZy
+b206PC9zcGFuPjwvZm9udD48L2I+PGZvbnQgc2l6ZT0iMiIgZmFjZT0iQ2FsaWJyaSI+PHNwYW4g
+c3R5bGU9ImZvbnQtc2l6ZToxMS4wcHQ7Zm9udC1mYW1pbHk6JnF1b3Q7Q2FsaWJyaSZxdW90Oyxz
+YW5zLXNlcmlmIj4KPHNwYW4+RGV2ZWw8L3NwYW4+IFttYWlsdG86PGEgaHJlZj0ibWFpbHRvOmRl
+dmVsLWJvdW5jZXNAYWNwaWNhLm9yZyIgdGFyZ2V0PSJfYmxhbmsiPmRldmVsLWJvdW5jZXNAYWNw
+aWNhLjx3YnI+b3JnPC9hPl0gPGI+PHNwYW4gc3R5bGU9ImZvbnQtd2VpZ2h0OmJvbGQiPk9uIEJl
+aGFsZiBPZgo8L3NwYW4+PC9iPkRhdmlkIFJlbno8YnI+CjxiPjxzcGFuIHN0eWxlPSJmb250LXdl
+aWdodDpib2xkIj5TZW50Ojwvc3Bhbj48L2I+IFNhdHVyZGF5LCBKdWx5IDMwLCAyMDE2IDk6NDUg
+QU08YnI+CjxiPjxzcGFuIHN0eWxlPSJmb250LXdlaWdodDpib2xkIj5Ubzo8L3NwYW4+PC9iPiA8
+YSBocmVmPSJtYWlsdG86ZGV2ZWxAYWNwaWNhLm9yZyIgdGFyZ2V0PSJfYmxhbmsiPmRldmVsQGFj
+cGljYS5vcmc8L2E+PGJyPgo8Yj48c3BhbiBzdHlsZT0iZm9udC13ZWlnaHQ6Ym9sZCI+U3ViamVj
+dDo8L3NwYW4+PC9iPiBSZTogWzxzcGFuPkRldmVsPC9zcGFuPl0gU3RyYW5nZSBiZWhhdmlvciBv
+ZiBBQ1BJIGNvZGU8dT48L3U+PHU+PC91Pjwvc3Bhbj48L2ZvbnQ+PC9wPgo8L2Rpdj4KPC9kaXY+
+PGRpdj48ZGl2IGNsYXNzPSJoNSI+CjxwIGNsYXNzPSJNc29Ob3JtYWwiPjxmb250IHNpemU9IjMi
+IGZhY2U9IlRpbWVzIE5ldyBSb21hbiI+PHNwYW4gc3R5bGU9ImZvbnQtc2l6ZToxMi4wcHQiPjx1
+PjwvdT7CoDx1PjwvdT48L3NwYW4+PC9mb250PjwvcD4KPGRpdj4KPGRpdj4KPGRpdj4KPHAgY2xh
+c3M9Ik1zb05vcm1hbCIgc3R5bGU9Im1hcmdpbi1ib3R0b206MTIuMHB0Ij48Zm9udCBzaXplPSIz
+IiBmYWNlPSJUaW1lcyBOZXcgUm9tYW4iPjxzcGFuIHN0eWxlPSJmb250LXNpemU6MTIuMHB0Ij5J
+IGxvYWRlZCB0aGUgZXh0cmFjdGVkIEFDUEkgY29kZSB3aXRoCjxzcGFuPmFjcGlleGVjPC9zcGFu
+Piwgd2hvc2UgaW5pdGlhbCBvdXRwdXQgd2FzIHRoaXM6PGJyPgomcXVvdDtBQ1BJOiBSU0RQIDB4
+MDAwMDAwMDAwMDY4NTRFMCAwMDAwMjQgKHYwMiBJbnRlbCApPGJyPgpBQ1BJOiBYU0RUIDB4MDAw
+MDAwMDAwMEJFQUE4MCAwMDAwM0MgKHYwMCBJbnRlbMKgIDxzcGFuPkFjcGlFeGVjPC9zcGFuPiAw
+MDAwMTAwMSBJTlRMIDIwMTYwNzI5KTxicj4KQUNQSTogRkFDUCAweDAwMDAwMDAwMDBCRTRFMjAg
+MDAwMEY0ICh2MDMgMDYxMjEwIEZBQ1AxNDE2IDIwMTAwNjEyIE1TRlQgMDAwMDAwOTcpPGJyPgpB
+Q1BJOiBEU0RUIDB4MDAwMDAwMDAwMEJERDQyMCAwMDc5Q0EgKHYwMSBBMTU1NsKgIEExNTU2MDAw
+IDAwMDAwMDAwIElOVEwgMjAwNjAxMTMpPGJyPgpBQ1BJOiBGQUNTIDB4MDAwMDAwMDAwMDY4NTRB
+MCAwMDAwNDA8YnI+CkFDUEk6IFNTRFQgMHgwMDAwMDAwMDAwQkVCQ0MwIDAwMERBNCAodjAxIEEg
+TSBJwqAgUE9XRVJOT1cgMDAwMDAwMDEgQU1EwqAgMDAwMDAwMDEpPGJyPgpJbml0aWFsaXppbmcg
+R2VuZXJhbCBQdXJwb3NlIEV2ZW50cyAoR1BFcyk6PGJyPgrCoMKgwqAgSW5pdGlhbGl6ZWQgR1BF
+IDAwIHRvIDFGIFtfR1BFXSA0IDxzcGFuPnJlZ3M8L3NwYW4+IG9uIGludGVycnVwdCAweDkgKFND
+SSk8YnI+CsKgwqDCoCBJbml0aWFsaXplZCBHUEUgMjAgdG8gNUYgW19HUEVdIDggPHNwYW4+cmVn
+czwvc3Bhbj4gb24gaW50ZXJydXB0IDB4OSAoU0NJKTxicj4KPGJyPgpJbml0aWFsaXppbmcgTmFt
+ZXNwYWNlIG9iamVjdHM6PGJyPgpUYWJsZSBbRFNEVDogQTE1NTYwMDBdIChpZCAwMSkgLSAxMDg4
+IE9iamVjdHMgd2l0aMKgIDY1IERldmljZXMswqAgMjMgUmVnaW9ucyzCoCAzNjAgTWV0aG9kcyAo
+NjIvMjk4LzQzIFNlcmlhbC9Ob24vPHNwYW4+Q3Z0PC9zcGFuPik8YnI+CkFDUEk6IEV4ZWN1dGVk
+IDEgYmxvY2tzIG9mIG1vZHVsZS1sZXZlbCBleGVjdXRhYmxlIEFNTCBjb2RlPGJyPgpUYWJsZSBb
+U1NEVDogUE9XRVJOT1ddIChpZCAwMikgLcKgwqAgMzYgT2JqZWN0cyB3aXRowqDCoCAwIERldmlj
+ZXMswqDCoCAwIFJlZ2lvbnMswqDCoMKgIDAgTWV0aG9kcyAoMC8wLzAgU2VyaWFsL05vbi88c3Bh
+bj5DdnQ8L3NwYW4+KTxicj4KQUNQSTogMiBBQ1BJIEFNTCB0YWJsZXMgc3VjY2Vzc2Z1bGx5IGFj
+cXVpcmVkIGFuZCBsb2FkZWQ8YnI+Cjxicj4KQ29tcGxldGluZyBSZWdpb24vRmllbGQvQnVmZmVy
+L1BhY2thZ2UgaW5pdGlhbGl6YXRpb246PGJyPgrCoMKgwqAgSW5pdGlhbGl6ZWQgMjIvMjMgUmVn
+aW9ucyAzOC8zOCBGaWVsZHMgNTMvNTMgQnVmZmVycyAxMTcvMTE3IFBhY2thZ2VzICgxMTMzIG5v
+ZGVzKTxicj4KSW5pdGlhbGl6aW5nIERldmljZS9Qcm9jZXNzb3IvVGhlcm1hbCBvYmplY3RzIGFu
+ZCBleGVjdXRpbmcgX0lOSS9fU1RBIG1ldGhvZHM6PGJyPgrCoMKgwqAgRXhlY3V0ZWQgMSBfSU5J
+IG1ldGhvZHMgcmVxdWlyaW5nIDEgX1NUQSBleGVjdXRpb25zIChleGFtaW5lZCA3MyBvYmplY3Rz
+KTxicj4KVW5leHBlY3RlZCBBRV9CQURfQUREUkVTUyBmcm9tIDxzcGFuPkFjcGlXcml0ZUJpdFJl
+Z2lzdGVyPC9zcGFuPiAoYWVleGVjLTYwOSk8YnI+ClVuZXhwZWN0ZWQgQUVfQkFEX0FERFJFU1Mg
+ZnJvbSA8c3Bhbj5BY3BpUmVhZEJpdFJlZ2lzdGVyPC9zcGFuPiAoYWVleGVjLTYyMik8YnI+ClVu
+ZXhwZWN0ZWQgQUVfQkFEX1BBUkFNRVRFUiBmcm9tIDxzcGFuPkFjcGlJbnN0YWxsR3BlSGFuZGxl
+cjwvc3Bhbj4gKGFlZXhlYy04OTgpPGJyPgpVbmV4cGVjdGVkIEFFX0JBRF9QQVJBTUVURVIgZnJv
+bSA8c3Bhbj5BY3BpRW5hYmxlR3BlPC9zcGFuPiAoYWVleGVjLTkwMSk8YnI+ClVuZXhwZWN0ZWQg
+QUVfQkFEX1BBUkFNRVRFUiBmcm9tIDxzcGFuPkFjcGlEaXNhYmxlR3BlPC9zcGFuPiAoYWVleGVj
+LTkwNCkmcXVvdDs8dT48L3U+PHU+PC91Pjwvc3Bhbj48L2ZvbnQ+PC9wPgo8L2Rpdj4KPHAgY2xh
+c3M9Ik1zb05vcm1hbCIgc3R5bGU9Im1hcmdpbi1ib3R0b206MTIuMHB0Ij48Zm9udCBzaXplPSIz
+IiBmYWNlPSJUaW1lcyBOZXcgUm9tYW4iPjxzcGFuIHN0eWxlPSJmb250LXNpemU6MTIuMHB0Ij5U
+aGUgZnVsbCBvdXRwdXQgaW5jbHVkaW5nIHRoZSBtZXRob2RzIGZvdW5kIGJ5IGl0IGNhbiBiZSBz
+ZWVuIGluIHRoZSBmaWxlCjxzcGFuPmFjcGlleGVjLm91dDwvc3Bhbj4sIHdoaWNoIEkgdXBsb2Fk
+ZWQgb24gPHNwYW4+Ckdvb2dsZURyaXZlPC9zcGFuPjo8YnI+CjxhIGhyZWY9Imh0dHBzOi8vZHJp
+dmUuZ29vZ2xlLmNvbS9vcGVuP2lkPTBCNjJZNVFrX3JkYldZemhQVEhoSE0xUnhSVGciIHRhcmdl
+dD0iX2JsYW5rIj5odHRwczovL2RyaXZlLmdvb2dsZS5jb20vb3Blbj88d2JyPmlkPTBCNjJZNVFr
+Xzx3YnI+cmRiV1l6aFBUSGhITTFSeFJUZzwvYT48dT48L3U+PHU+PC91Pjwvc3Bhbj48L2ZvbnQ+
+PC9wPgo8L2Rpdj4KPHAgY2xhc3M9Ik1zb05vcm1hbCIgc3R5bGU9Im1hcmdpbi1ib3R0b206MTIu
+MHB0Ij48Zm9udCBzaXplPSIzIiBmYWNlPSJUaW1lcyBOZXcgUm9tYW4iPjxzcGFuIHN0eWxlPSJm
+b250LXNpemU6MTIuMHB0Ij5Ib3dldmVyLCBhbHRob3VnaCBJIGRlZmluaXRlbHkgZG9uJiMzOTt0
+IGtub3cgZW5vdWdoIGFib3V0IHRoZSBBQ1BJIHN5c3RlbSwgSSBndWVzcyBpdCB3b3VsZCBpbiBm
+YWN0IG5vdCBiZSByZWFsaXN0aWMgdG8gdW5kZXJzdGFuZCBob3cgdGhpcyBBQ1BJCiBjb2RlIGNv
+bXByb21pc2VzIGEgTGludXggc3lzdGVtIHVzaW5nIDxzcGFuPmFjcGlleGVjPC9zcGFuPi4gUHJv
+YmFibHkgdGhlcmUmIzM5O3Mgbm8gb3RoZXIgd2F5IHRoYW4gZGVidWdnaW5nIHRoZSBrZXJuZWwg
+d2l0aCBBQ1BJIGRlYnVnIG91dHB1dCBlbmFibGVkLi4uPHU+PC91Pjx1PjwvdT48L3NwYW4+PC9m
+b250PjwvcD4KPC9kaXY+CjxkaXY+CjxwIGNsYXNzPSJNc29Ob3JtYWwiPjxmb250IHNpemU9IjMi
+IGZhY2U9IlRpbWVzIE5ldyBSb21hbiI+PHNwYW4gc3R5bGU9ImZvbnQtc2l6ZToxMi4wcHQiPjx1
+PjwvdT7CoDx1PjwvdT48L3NwYW4+PC9mb250PjwvcD4KPGRpdj4KPHAgY2xhc3M9Ik1zb05vcm1h
+bCI+PGZvbnQgc2l6ZT0iMyIgZmFjZT0iVGltZXMgTmV3IFJvbWFuIj48c3BhbiBzdHlsZT0iZm9u
+dC1zaXplOjEyLjBwdCI+T24gRnJpLCBKdWwgMjksIDIwMTYgYXQgNToyNSBQTSwgRGF2aWQgUmVu
+eiAmbHQ7PGEgaHJlZj0ibWFpbHRvOnN1bi5raXNzZXMuaG9yaXpvbkBnbWFpbC5jb20iIHRhcmdl
+dD0iX2JsYW5rIj5zdW4ua2lzc2VzLmhvcml6b25AZ21haWwuY29tPC9hPiZndDsgd3JvdGU6PHU+
+PC91Pjx1PjwvdT48L3NwYW4+PC9mb250PjwvcD4KPGJsb2NrcXVvdGUgc3R5bGU9ImJvcmRlcjpu
+b25lO2JvcmRlci1sZWZ0OnNvbGlkICNjY2NjY2MgMS4wcHQ7cGFkZGluZzowaW4gMGluIDBpbiA2
+LjBwdDttYXJnaW4tbGVmdDo0LjhwdDttYXJnaW4tcmlnaHQ6MGluIj4KPGRpdj4KPGRpdj4KPGRp
+dj4KPGRpdj4KPGRpdj4KPGRpdj4KPGRpdj4KPGRpdj4KPGRpdj4KPHAgY2xhc3M9Ik1zb05vcm1h
+bCIgc3R5bGU9Im1hcmdpbi1ib3R0b206MTIuMHB0Ij48Zm9udCBzaXplPSIzIiBmYWNlPSJUaW1l
+cyBOZXcgUm9tYW4iPjxzcGFuIHN0eWxlPSJmb250LXNpemU6MTIuMHB0Ij5IZWxsbyw8dT48L3U+
+PHU+PC91Pjwvc3Bhbj48L2ZvbnQ+PC9wPgo8L2Rpdj4KPHAgY2xhc3M9Ik1zb05vcm1hbCI+PGZv
+bnQgc2l6ZT0iMyIgZmFjZT0iVGltZXMgTmV3IFJvbWFuIj48c3BhbiBzdHlsZT0iZm9udC1zaXpl
+OjEyLjBwdCI+SSBhZGRyZXNzZWQgdGhpcyBpc3N1ZSBiZWZvcmUgb24gdGhlIEFDUEkgZGV2ZWxv
+cGVycyYjMzk7IG1haWxpbmcgbGlzdCwgd2hlcmUgSSBvYnNlcnZlZCBhIHN0cmFuZ2Uvc3VzcGlj
+aW91cyBiZWhhdmlvciBvZiBteSBzeXN0ZW0mIzM5O3MgQUNQSSBjb2RlIGluIHRoZSBjYXNlIG9m
+IGEgTGVub3ZvIEc3MTAKIG5vdGVib29rLiBJIGNvbmNsdWRlZCB0aGF0IHRoaXMgbWlnaHQgYmUg
+ZXhwbGFpbmVkIGJ5IHRoZSBmYWN0IHRoYXQgTGVub3ZvIGVtcGxveXMgQUNQSSBjb2RlIGluIG9y
+ZGVyIHRvIGluc3RhbGwgaGFybWxlc3MgY3JhcHdhcmUgb24gV2luZG93cywgYnV0IGZpbmFsbHkg
+SSBjYW4gZGVmaW5pdGVseSBzYXkgdGhhdCB0aGlzIGNvbmNsdXNpb24KPHNwYW4+Y2FuIG5vdDwv
+c3Bhbj4gYmUgdHJ1ZSwgc2luY2UgdGhlIEFDUEkgY29kZSBvZiBmb3VyIGRpZmZlcmVudCBzeXN0
+ZW1zIEkmIzM5O20gdXNpbmcsIHdoaWNoIEkgZXh0cmFjdGVkIGFuZCBzdWJtaXR0ZWQgdG8KPGEg
+aHJlZj0iaHR0cDovL21hbHdyLmNvbSIgdGFyZ2V0PSJfYmxhbmsiPm1hbHdyLmNvbTwvYT4sIGxl
+ZCB0byB0aGUgc2FtZSByZXN1bHRzIGluIGVhY2ggY2FzZS4gRS4gZy4sIHRoaXMgaXMgdGhlIHJl
+c3VsdCBmb3IgdGhlIEFDUEkgSSBleHRyYWN0ZWQgZnJvbSBhbiBBTUQgeDY0IGRlc2t0b3AgUEM6
+PGJyPgo8YSBocmVmPSJodHRwczovL21hbHdyLmNvbS9hbmFseXNpcy9PRGt4T1Roak9UazFNREF6
+TkdFNE0ySmhPV05oTnprMVpUSmpNMkl5WVdRLyIgdGFyZ2V0PSJfYmxhbmsiPmh0dHBzOi8vbWFs
+d3IuY29tL2FuYWx5c2lzLzx3YnI+T0RreE9UaGpPVGsxTURBek5HRTRNMkpoT1dOaE56PHdicj5r
+MVpUSmpNMkl5WVdRLzwvYT48dT48L3U+PHU+PC91Pjwvc3Bhbj48L2ZvbnQ+PC9wPgo8L2Rpdj4K
+PHAgY2xhc3M9Ik1zb05vcm1hbCIgc3R5bGU9Im1hcmdpbi1ib3R0b206MTIuMHB0Ij48Zm9udCBz
+aXplPSIzIiBmYWNlPSJUaW1lcyBOZXcgUm9tYW4iPjxzcGFuIHN0eWxlPSJmb250LXNpemU6MTIu
+MHB0Ij5JdCBzaG93cyB3aGF0IGhhcHBlbnMgd2hlbiB0aGUgQUNQSSBjb2RlIGdldHMgZXhlY3V0
+ZWQgb24gYSBXaW5kb3dzIHN5c3RlbSwgYW5kIGlmIHlvdSBnb29nbGUgc29tZSBvZiBmaWxlcyB3
+aGljaCBnZXQgZGVwbG95ZWQgb3IgdGFrZSBhIGxvb2sKIGF0IHRoZSByZWdpc3RyeSBtb2RpZmlj
+YXRpb25zIGJlaW5nIG1hZGUsIGl0IHNob3VsZCBiZSBvYnZpb3VzIHRvIGV2ZXJ5b25lIHRoYXQg
+aXQgY29tcHJvbWlzZXMgdGhlIHN5c3RlbSBpbiBvcmRlciB0byBnYWluIGZ1bGwgcmVtb3RlIGFj
+Y2VzcyBvdmVyIGl0IGFuZCBmb3J3YXJkIGl0cyYjMzk7IG5ldHdvcmsgdHJhZmZpYyAod2hpY2gg
+SSBjYW4gYWxzbyBvYnNlcnZlIGluIFdpcmVzaGFyaykuIFJlY2VudGx5IHNvbWVvbmUgZnJvbSB0
+aGUKPHNwYW4+Q29tb2RvPC9zcGFuPiBzdXBwb3J0IGFsc28gY29uZmlybWVkIG1lIHRoYXQgbXkg
+c3lzdGVtIGlzIGNvbXByb21pc2VkLCBidXQgZXZlbiB0aGUKPHNwYW4+Q29tb2RvPC9zcGFuPiBz
+b2Z0d2FyZSBpdHNlbGYgc2VlbXMgdG8gaGF2ZSBiZWVuIGdvdHRlbiBtYW5pcHVsYXRlZCwgc28g
+dGhlCjxzcGFuPkNvbW9kbzwvc3Bhbj4gZmlyZXdhbGwgZG9lc24mIzM5O3QgYmxvY2sgdGhlIHJl
+bW90ZSBhY2Nlc3MgKHRoZXkmIzM5O3JlIGludmVzdGlnYXRpbmcgYWJvdXQgdGhpcyBub3cpLjx1
+PjwvdT48dT48L3U+PC9zcGFuPjwvZm9udD48L3A+CjwvZGl2Pgo8cCBjbGFzcz0iTXNvTm9ybWFs
+Ij48Zm9udCBzaXplPSIzIiBmYWNlPSJUaW1lcyBOZXcgUm9tYW4iPjxzcGFuIHN0eWxlPSJmb250
+LXNpemU6MTIuMHB0Ij5Ib3dldmVyLCB0aGlzIEFDUEkgbm90IG9ubHkgY29tcHJvbWlzZXMgV2lu
+ZG93cyBzeXN0ZW1zLCBidXQgYWxzbyBldmVyeSBMaW51eCBhbmQgQlNEIGRpc3RybyBJJiMzOTt2
+ZSB0ZXN0ZWQgZm9yIHRoZSBwdXJwb3NlIG9mIGFuYWx5c2lzIHNvIGZhci4gVGhlIGZpbGVzIGlu
+IHRoaXMgRHJvcGJveAogZm9sZGVyIHdpbGwgZ2l2ZSB5b3Ugb25seSBhIGZpcnN0IGltcHJlc3Np
+b24gb2YgdGhpczo8YnI+CjxhIGhyZWY9Imh0dHBzOi8vd3d3LmRyb3Bib3guY29tL3NoL3g2dmYy
+ZnFzYnFkeDBrOC9BQUNkZ3NkYk5fVUE0dzJYRGFvYjlNYWlhP2RsPTAiIHRhcmdldD0iX2JsYW5r
+Ij5odHRwczovL3d3dy5kcm9wYm94LmNvbS9zaC88d2JyPng2dmYyZnFzYnFkeDBrOC9BQUNkZ3Nk
+Yk5fPHdicj5VQTR3MlhEYW9iOU1haWE/ZGw9MDwvYT48dT48L3U+PHU+PC91Pjwvc3Bhbj48L2Zv
+bnQ+PC9wPgo8L2Rpdj4KPHAgY2xhc3M9Ik1zb05vcm1hbCI+PGZvbnQgc2l6ZT0iMyIgZmFjZT0i
+VGltZXMgTmV3IFJvbWFuIj48c3BhbiBzdHlsZT0iZm9udC1zaXplOjEyLjBwdCI+JnF1b3Q7PHNw
+YW4+bW9kaWZpZWRfZmlsZXMub3V0PC9zcGFuPiZxdW90OyBzaG93cyBhIGxpc3Qgb2YgZmlsZXMg
+aGF2aW5nIGJlZW4gbW9kaWZpZWQgZHVyaW5nIHRoZSBmaXJzdCAxMCBtaW51dGVzIGFmdGVyIHRo
+ZSBmaXJzdCBib290IG9mIGEgZnJlc2hseSBpbnN0YWxsZWQgc3lzdGVtLAo8c3Bhbj5kbWVzZy5v
+dXQ8L3NwYW4+IHNob3dzIHZhcmlvdXMgQUNQSSByZWxhdGVkIGVycm9ycyBhbmQgdGhlIDxzcGFu
+PgpuZXRzdGF0PC9zcGFuPiBvdXRwdXQgc2hvd3MgdGhhdCB0aGUgVURQIGFuZCBVRFA2IHBvcnRz
+IDUwOTg4IGFuZCA0NzgxNSBhcmUgb3Blbiwgd2hpY2ggc2hvdWxkbiYjMzk7dCBiZSB0aGUgY2Fz
+ZSBub3JtYWxseS4gKFdpcmVzaGFyayBnaXZlcyB0aGUgc2FtZSBpbXByZXNzaW9uIG9mIHRyYWZm
+aWMgYmVpbmcKPHNwYW4+Zm9yd2FyZWQ8L3NwYW4+IGxpa2UgaXQgZG9lcyBvbiBXaW5kb3dzLik8
+dT48L3U+PHU+PC91Pjwvc3Bhbj48L2ZvbnQ+PC9wPgo8L2Rpdj4KPHAgY2xhc3M9Ik1zb05vcm1h
+bCIgc3R5bGU9Im1hcmdpbi1ib3R0b206MTIuMHB0Ij48Zm9udCBzaXplPSIzIiBmYWNlPSJUaW1l
+cyBOZXcgUm9tYW4iPjxzcGFuIHN0eWxlPSJmb250LXNpemU6MTIuMHB0Ij5UaGUgZm9sZGVyIGFs
+c28gY29udGFpbnMgdGhlIEFDUEkgY29kZSBleHRyYWN0ZWQgYW5kIGRpc2Fzc2VtYmxlZCB1c2lu
+ZyB0aGUgSUFTTCBjb2RlLjxicj4KPHU+PC91Pjxicj4KPHU+PC91Pjx1PjwvdT48dT48L3U+PC9z
+cGFuPjwvZm9udD48L3A+CjwvZGl2Pgo8cCBjbGFzcz0iTXNvTm9ybWFsIiBzdHlsZT0ibWFyZ2lu
+LWJvdHRvbToxMi4wcHQiPjxmb250IHNpemU9IjMiIGZhY2U9IlRpbWVzIE5ldyBSb21hbiI+PHNw
+YW4gc3R5bGU9ImZvbnQtc2l6ZToxMi4wcHQiPldvdWxkIGFueW9uZSBiZSBhYmxlIHRvIHBlcmZv
+cm0gYSBkZWJ1Z2dpbmcgb2YgdGhpcyBjb2RlIGluIG9yZGVyIHRvIG1ha2UgdmlzaWJsZSB3aGF0
+IGl0cyBleGVjdXRpb24gb24gYSBMaW51eCBzeXN0ZW0gZG9lcyBpbiBkZXRhaWw/PGJyPgo8dT48
+L3U+PGJyPgo8dT48L3U+PHU+PC91Pjx1PjwvdT48L3NwYW4+PC9mb250PjwvcD4KPC9kaXY+Cjxw
+IGNsYXNzPSJNc29Ob3JtYWwiIHN0eWxlPSJtYXJnaW4tYm90dG9tOjEyLjBwdCI+PGZvbnQgc2l6
+ZT0iMyIgZmFjZT0iVGltZXMgTmV3IFJvbWFuIj48c3BhbiBzdHlsZT0iZm9udC1zaXplOjEyLjBw
+dCI+VGhhbmtzIGluIGFkdmFuY2UgYW5kIGtpbmQgcmVnYXJkczx1PjwvdT48dT48L3U+PC9zcGFu
+PjwvZm9udD48L3A+CjwvZGl2Pgo8cCBjbGFzcz0iTXNvTm9ybWFsIiBzdHlsZT0ibWFyZ2luLWJv
+dHRvbToxMi4wcHQiPjxzcGFuPjxmb250IHNpemU9IjMiIGZhY2U9IlRpbWVzIE5ldyBSb21hbiIg
+Y29sb3I9IiM4ODg4ODgiPjxzcGFuIHN0eWxlPSJmb250LXNpemU6MTIuMHB0O2NvbG9yOiM4ODg4
+ODgiPkRhdmlkPC9zcGFuPjwvZm9udD48L3NwYW4+PHU+PC91Pjx1PjwvdT48L3A+CjwvZGl2Pgo8
+L2Jsb2NrcXVvdGU+CjwvZGl2Pgo8cCBjbGFzcz0iTXNvTm9ybWFsIj48Zm9udCBzaXplPSIzIiBm
+YWNlPSJUaW1lcyBOZXcgUm9tYW4iPjxzcGFuIHN0eWxlPSJmb250LXNpemU6MTIuMHB0Ij48dT48
+L3U+wqA8dT48L3U+PC9zcGFuPjwvZm9udD48L3A+CjwvZGl2Pgo8L2Rpdj48L2Rpdj48L2Rpdj4K
+PC9kaXY+CjwvZGl2PgoKPC9ibG9ja3F1b3RlPjwvZGl2Pjxicj48L2Rpdj4K
+
+--===============0381840845965332977==--
 
