@@ -1,102 +1,49 @@
-Content-Type: multipart/mixed; boundary="===============6918148900731267751=="
+Content-Type: multipart/mixed; boundary="===============8741531369568290912=="
 MIME-Version: 1.0
-From: Hanjun Guo <hanjun.guo at linaro.org>
-Subject: Re: [Devel] [PATCH v7 14/15] arm64, acpi,
- numa: NUMA support based on SRAT and SLIT
-Date: Tue, 16 Aug 2016 11:58:21 +0000
-Message-ID: <3ac8ffb3-f447-45ef-c118-dde4efe74911@linaro.org>
-In-Reply-To: 20160815153546.GF22320@e104818-lin.cambridge.arm.com
+From: Colin King <colin.king at canonical.com>
+Subject: [Devel] [PATCH] AcpiExec: Add in missing TableEvents INSTALL and
+ UNINSTALL
+Date: Fri, 26 Aug 2016 22:54:09 +0100
+Message-ID: <20160826215409.9843-1-colin.king@canonical.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6918148900731267751==
+--===============8741531369568290912==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On 2016/8/15 23:35, Catalin Marinas wrote:
-> On Tue, May 24, 2016 at 03:35:44PM -0700, David Daney wrote:
->> diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi=
-.h
->> index aee323b..4b13ecd 100644
->> --- a/arch/arm64/include/asm/acpi.h
->> +++ b/arch/arm64/include/asm/acpi.h
->> @@ -113,4 +113,12 @@ static inline const char *acpi_get_enable_method(in=
-t cpu)
->>  pgprot_t arch_apei_get_mem_attribute(phys_addr_t addr);
->>  #endif
->>
->> +#ifdef CONFIG_ACPI_NUMA
->> +int arm64_acpi_numa_init(void);
->> +int acpi_numa_get_nid(unsigned int cpu, u64 hwid);
->> +#else
->> +static inline int arm64_acpi_numa_init(void) { return -ENOSYS; }
->> +static inline int acpi_numa_get_nid(unsigned int cpu, u64 hwid) { retur=
-n NUMA_NO_NODE; }
->> +#endif /* CONFIG_ACPI_NUMA */
->> +
->>  #endif /*_ASM_ACPI_H*/
->
-> Apparently this doesn't always build since asm/acpi.h is conditionally
-> included from linux/acpi.h only when CONFIG_ACPI is enabled. Disabling
-> this option on arm64 leads to:
->
-> arch/arm64/mm/numa.c: In function =E2=80=98arm64_numa_init=E2=80=99:
-> arch/arm64/mm/numa.c:395:24: error: =E2=80=98arm64_acpi_numa_init=E2=80=
-=99 undeclared (first use in this function)
->    if (!acpi_disabled && !numa_init(arm64_acpi_numa_init))
->
-> I'll fix it in arch/arm64 by including asm/acpi.h directly as we do in a
-> couple of other files:
->
-> ------------------8<------------------------------
-> From 9a83bf400e0b4ef066b83eeaecdbca909b8491ea Mon Sep 17 00:00:00 2001
-> From: Catalin Marinas <catalin.marinas(a)arm.com>
-> Date: Mon, 15 Aug 2016 16:33:10 +0100
-> Subject: [PATCH] arm64: Fix NUMA build error when !CONFIG_ACPI
-> MIME-Version: 1.0
-> Content-Type: text/plain; charset=3DUTF-8
-> Content-Transfer-Encoding: 8bit
->
-> Since asm/acpi.h is only included by linux/acpi.h when CONFIG_ACPI is
-> enabled, disabling the latter leads to the following build error on
-> arm64:
->
-> arch/arm64/mm/numa.c: In function =E2=80=98arm64_numa_init=E2=80=99:
-> arch/arm64/mm/numa.c:395:24: error: =E2=80=98arm64_acpi_numa_init=E2=80=
-=99 undeclared (first use in this function)
->    if (!acpi_disabled && !numa_init(arm64_acpi_numa_init))
->
-> This patch include the asm/acpi.h explicitly in arch/arm64/mm/numa.c for
-> the arm64_acpi_numa_init() definition.
->
-> Fixes: d8b47fca8c23 ("arm64, ACPI, NUMA: NUMA support based on SRAT and S=
-LIT")
-> Signed-off-by: Catalin Marinas <catalin.marinas(a)arm.com>
-> ---
->  arch/arm64/mm/numa.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/arch/arm64/mm/numa.c b/arch/arm64/mm/numa.c
-> index c7fe3ec70774..5bb15eab6f00 100644
-> --- a/arch/arm64/mm/numa.c
-> +++ b/arch/arm64/mm/numa.c
-> @@ -23,6 +23,8 @@
->  #include <linux/module.h>
->  #include <linux/of.h>
->
-> +#include <asm/acpi.h>
-> +
->  struct pglist_data *node_data[MAX_NUMNODES] __read_mostly;
->  EXPORT_SYMBOL(node_data);
->  nodemask_t numa_nodes_parsed __initdata;
+From: Colin Ian King <colin.king(a)canonical.com>
+
+commit ed6a5fbc694f3a27d93014391aa9a6f6fe490461 ("Tables: Add
+new table events indicating table installation/uninstallation") added
+new table events but the TableEvents array was not updated with
+these two new events.  Update TableEvents with the new INSTALL
+and UNINSTALL event types.
+
+Signed-off-by: Colin Ian King <colin.king(a)canonical.com>
+---
+ source/tools/acpiexec/aehandlers.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/source/tools/acpiexec/aehandlers.c b/source/tools/acpiexec/aeh=
+andlers.c
+index f08ffbe..b52e4d8 100644
+--- a/source/tools/acpiexec/aehandlers.c
++++ b/source/tools/acpiexec/aehandlers.c
+@@ -187,6 +187,8 @@ static char                *TableEvents[] =3D
+ {
+     "LOAD",
+     "UNLOAD",
++    "INSTALL",
++    "UNINSTALL",
+     "UNKNOWN"
+ };
+ #endif /* !ACPI_REDUCED_HARDWARE */
+-- =
+
+2.9.3
 
 
-Thanks a lot!
-
-Reviewed-by: Hanjun Guo <hanjun.guo(a)linaro.org>
-
-Hanjun
-
---===============6918148900731267751==--
+--===============8741531369568290912==--
 
