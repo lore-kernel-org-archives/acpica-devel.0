@@ -1,114 +1,83 @@
-Content-Type: multipart/mixed; boundary="===============6955027474222281976=="
+Content-Type: multipart/mixed; boundary="===============1503239885886356436=="
 MIME-Version: 1.0
-From: Zheng, Lv <lv.zheng at intel.com>
-Subject: Re: [Devel] [PATCH] iasl:iort fix the incorrect MappingOffset value
- for ITS group
-Date: Tue, 30 Aug 2016 07:52:09 +0000
-Message-ID: <1AE640813FDE7649BE1B193DEA596E886A179768@SHSMSX101.ccr.corp.intel.com>
-In-Reply-To: 1472462176-19666-1-git-send-email-dennis.chen@arm.com
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] ACPICA version 20160831 released
+Date: Wed, 31 Aug 2016 20:06:30 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E4F02C4@ORSMSX110.amr.corp.intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6955027474222281976==
+--===============1503239885886356436==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+31 August 2016. Summary of changes for version 20160831:
 
-> From: Dennis Chen [mailto:dennis.chen(a)arm.com]
-> Subject: [PATCH] iasl:iort fix the incorrect MappingOffset value for ITS =
-group
-> =
+This release is available at https://acpica.org/downloads
 
-> According to the IORT spec[1], the *Mapping Offset* field of the
-> ITS group node is always 0 since there isn't ID mapping for this kind
-> of node. Current iasl codes will assign a wrong value for this field,
-> for instance, below is an IORT ITS group node data segment created
-> by existing iasl tool:
-> =
 
-> [031h 0049   1]                         Type : 00
-> [032h 0050   2]                       Length : 001C
-> [034h 0052   1]                     Revision : 00
-> [035h 0053   4]                     Reserved : 00000000
-> [039h 0057   4]                Mapping Count : 00000000
-> [03Dh 0061   4]               Mapping Offset : 0000001C
-> =
+1) ACPICA kernel-resident subsystem:
 
-> [041h 0065   4]                     ItsCount : 00000002
-> [045h 0069   4]                  Identifiers : 00000000
-> [049h 0073   4]                  Identifiers : 00000001
-> =
+Improve support for the so-called "module-level code", which is defined to =
+be math, logical and control AML opcodes that appear outside of any control=
+ method. This change improves the support by adding more opcodes that can b=
+e executed in the manner. Some other issues have been solved, and the ASL g=
+rammar changes to support such code under all scope operators (Device, etc.=
+) are complete. Lv Zheng.
 
-> We can see from above that the *Mapping Offset* has been assigned the
-> value 0x1C while not 0x0.
+UEFI support: these OSL functions have been implemented. This is an additio=
+nal step toward supporting the AcpiExec utility natively (with full hardwar=
+e access) under UEFI. Marcelo Ferreira.
+    AcpiOsReadPciConfiguration
+    AcpiOsWritePciConfiguration
 
-What kind of real issue can be caused by this value?
+Fixed a possible mutex error during control method auto-serialization. Lv Z=
+heng.
 
-> After applied this patch, the new data segment
-> generated will be:
-> =
+Updated support for the Generic Address Structure by fully implementing all=
+ GAS fields when a 32-bit address is expanded to a 64-bit GAS. Lv Zheng.
 
-> [031h 0049   1]                         Type : 00
-> [032h 0050   2]                       Length : 001C
-> [034h 0052   1]                     Revision : 00
-> [035h 0053   4]                     Reserved : 00000000
-> [039h 0057   4]                Mapping Count : 00000000
-> [03Dh 0061   4]               Mapping Offset : 00000000
-> =
+Updated the return value for the internal _OSI method. Instead of 0xFFFFFFF=
+F, the "Ones" value is now returned, which is 0xFFFFFFFFFFFFFFFF for 64-bit=
+ ACPI tables. This fixes an incompatibility with other ACPI implementations=
+, and will be reflected and clarified in the next version of the ACPI speci=
+fication.
 
-> [041h 0065   4]                     ItsCount : 00000002
-> [045h 0069   4]                  Identifiers : 00000000
-> [049h 0073   4]                  Identifiers : 00000001
-> =
+Implemented two new table events that can be passed to an ACPICA table hand=
+ler. These events are used to indicate a table installation or uninstallati=
+on. These events are used in addition to existed table load and unload even=
+ts. Lv Zheng.
 
-> Notice that the *Mapping Offset* filed has been set the correct value acc=
-ording
-> to the spec.
-> =
+Implemented a cleanup for all internal string-to-integer conversions. Conso=
+lidate multiple versions of this functionality and limit possible bases to =
+either 10 or 16 to simplify the code. Adds a new file, utstrtoul64.
 
-> [1]http://infocenter.arm.com/help/topic/com.arm.doc.den0049b/DEN0049B_IO_=
-Remapping_Table.pdf
-> =
+Cleanup the inclusion order of the various compiler-specific headers. This =
+simplifies build configuration management. The compiler-specific headers ar=
+e now split out from the host-specific headers. Lv Zheng.
 
-> Signed-off-by: Dennis Chen <dennis.chen(a)arm.com>
-> Cc: Lv Zheng <lv.zheng(a)intel.com>
-> Cc: Robert Moore <robert.moore(a)intel.com>
-> ---
->  source/compiler/dttable1.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> =
+Example Code and Data Size: These are the sizes for the OS-independent acpi=
+ca.lib produced by the Microsoft Visual C++ 9.0 32-bit compiler. The debug =
+version of the code includes the debug output trace mechanism and has a muc=
+h larger code and data size.
 
-> diff --git a/source/compiler/dttable1.c b/source/compiler/dttable1.c
-> index cacd9de..a620dcc 100644
-> --- a/source/compiler/dttable1.c
-> +++ b/source/compiler/dttable1.c
-> @@ -1568,7 +1568,10 @@ DtCompileIort (
-> =
+  Current Release:
+    Non-Debug Version: 140.1K Code, 58.1K Data, 198.1K Total
+    Debug Version:     200.3K Code, 82.1K Data, 282.4K Total
 
->          /* Compile Array of ID mappings */
-> =
 
-> -        IortNode->MappingOffset =3D NodeLength;
-> +	/* For ITS group node, the MappingOffset field is always 0 */
-> +	if (IortNode->Type !=3D ACPI_IORT_NODE_ITS_GROUP)
-> +		IortNode->MappingOffset =3D NodeLength;
-> +
+2) iASL Compiler/Disassembler and Tools:
 
-You have coding style issues here:
-1. No tab in ACPICA upstream, you need to use 4 spaces.
-2. For single line comment, you need to put an empty line before/after it.
+iASL/AcpiExec: Added a command line option to display the build date/time o=
+f the tool (-vd). This can be useful to verify that the correct version of =
+the tools are being used.
 
->          IdMappingNumber =3D 0;
->          while (*PFieldList)
->          {
+AML Debugger: Implemented a new subcommand ("execute predef") to execute al=
+l predefined control methods and names within the current namespace. This c=
+an be useful for debugging problems with ACPI tables and the ACPI namespace.
 
-IMO, the better fix should be relying on (IdMappingNumber =3D=3D 0),
-Rather than relying on (IortNode->Type !=3D ACPI_IORT_NODE_ITS_GROUP).
 
-Thanks
-Lv
 
---===============6955027474222281976==--
+--===============1503239885886356436==--
 
