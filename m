@@ -1,66 +1,72 @@
-Content-Type: multipart/mixed; boundary="===============3819234891640230342=="
+Content-Type: multipart/mixed; boundary="===============8120654983938956101=="
 MIME-Version: 1.0
 From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] [PATCH] acpisrc: trivial fix to misaligned code
- indentation
-Date: Wed, 07 Sep 2016 15:30:27 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E4F2A97@ORSMSX110.amr.corp.intel.com>
-In-Reply-To: 20160906100507.2718-1-colin.king@canonical.com
+Subject: Re: [Devel] [PATCH] ACPICA / Interpreter: Remove redundant newline
+Date: Fri, 09 Sep 2016 18:26:17 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E4F34B4@ORSMSX110.amr.corp.intel.com>
+In-Reply-To: 20160909161253.30952-1-bp@alien8.de
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3819234891640230342==
+--===============8120654983938956101==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Got it, thanks.
-Bob
+Is this a big deal?
+
+We do this on purpose for AcpiExec, to make the screen output more readable.
 
 
 > -----Original Message-----
-> From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of Colin King
-> Sent: Tuesday, September 6, 2016 3:05 AM
-> To: devel(a)acpica.org
-> Subject: [Devel] [PATCH] acpisrc: trivial fix to misaligned code
-> indentation
+> From: Borislav Petkov [mailto:bp(a)alien8.de]
+> Sent: Friday, September 9, 2016 9:13 AM
+> To: LKML <linux-kernel(a)vger.kernel.org>
+> Cc: Moore, Robert <robert.moore(a)intel.com>; Zheng, Lv
+> <lv.zheng(a)intel.com>; Wysocki, Rafael J <rafael.j.wysocki(a)intel.com>;
+> Len Brown <lenb(a)kernel.org>; linux-acpi(a)vger.kernel.org;
+> devel(a)acpica.org
+> Subject: [PATCH] ACPICA / Interpreter: Remove redundant newline
 > =
 
-> From: Colin Ian King <colin.king(a)canonical.com>
+> From: Borislav Petkov <bp(a)suse.de>
 > =
 
-> Insert missing space to correct indentation
+> acpi_info() already issues a '\n' so remove it in the call.
 > =
 
-> Signed-off-by: Colin Ian King <colin.king(a)canonical.com>
+> Signed-off-by: Borislav Petkov <bp(a)suse.de>
+> Cc: Robert Moore <robert.moore(a)intel.com>
+> Cc: Lv Zheng <lv.zheng(a)intel.com>
+> Cc: "Rafael J. Wysocki" <rafael.j.wysocki(a)intel.com>
+> Cc: Len Brown <lenb(a)kernel.org>
+> Cc: linux-acpi(a)vger.kernel.org
+> Cc: devel(a)acpica.org
 > ---
->  source/tools/acpisrc/asfile.c | 2 +-
+>  drivers/acpi/acpica/tbxfload.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 > =
 
-> diff --git a/source/tools/acpisrc/asfile.c
-> b/source/tools/acpisrc/asfile.c index 51d1c69..07830c0 100644
-> --- a/source/tools/acpisrc/asfile.c
-> +++ b/source/tools/acpisrc/asfile.c
-> @@ -393,7 +393,7 @@ AsConvertFile (
->          ConditionalTable    =3D ConversionTable->SourceConditionalTable;
->          StructTable         =3D ConversionTable->SourceStructTable;
->          SpecialMacroTable   =3D ConversionTable->SourceSpecialMacroTable;
-> -       break;
-> +        break;
+> diff --git a/drivers/acpi/acpica/tbxfload.c
+> b/drivers/acpi/acpica/tbxfload.c index ac71abcd32bb..e7119b7ccd79 100644
+> --- a/drivers/acpi/acpica/tbxfload.c
+> +++ b/drivers/acpi/acpica/tbxfload.c
+> @@ -240,7 +240,7 @@ acpi_status acpi_tb_load_namespace(void)
+>  	}
 > =
 
->      case FILE_TYPE_HEADER:
-> =
-
+>  	if (!tables_failed) {
+> -		ACPI_INFO(("%u ACPI AML tables successfully acquired and
+> loaded\n", tables_loaded));
+> +		ACPI_INFO(("%u ACPI AML tables successfully acquired and
+> loaded",
+> +tables_loaded));
+>  	} else {
+>  		ACPI_ERROR((AE_INFO,
+>  			    "%u table load failures, %u successful",
 > --
-> 2.9.3
-> =
+> 2.10.0
 
-> _______________________________________________
-> Devel mailing list
-> Devel(a)acpica.org
-> https://lists.acpica.org/mailman/listinfo/devel
 
---===============3819234891640230342==--
+--===============8120654983938956101==--
 
