@@ -1,67 +1,66 @@
-Content-Type: multipart/mixed; boundary="===============6251778444120830977=="
+Content-Type: multipart/mixed; boundary="===============1195038994380565344=="
 MIME-Version: 1.0
 From: Zheng, Lv <lv.zheng at intel.com>
 Subject: Re: [Devel] [PATCH] ACPICA / Interpreter: Remove redundant newline
-Date: Wed, 14 Sep 2016 03:09:25 +0000
-Message-ID: <1AE640813FDE7649BE1B193DEA596E886A1849D8@SHSMSX101.ccr.corp.intel.com>
-In-Reply-To: 20160909161253.30952-1-bp@alien8.de
+Date: Wed, 14 Sep 2016 03:11:29 +0000
+Message-ID: <1AE640813FDE7649BE1B193DEA596E886A1849EF@SHSMSX101.ccr.corp.intel.com>
+In-Reply-To: 94F2FBAB4432B54E8AACC7DFDE6C92E37E4F34E9@ORSMSX110.amr.corp.intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6251778444120830977==
+--===============1195038994380565344==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-The newline is intentional for acpiexec.
-So you should fix this issue in acpiexec, aka, in ACPICA upstream.
+Hi,
+
+> From: linux-acpi-owner(a)vger.kernel.org [mailto:linux-acpi-owner(a)vger.=
+kernel.org] On Behalf Of Moore,
+> Robert
+> David E <david.e.box(a)intel.com>
+> Subject: RE: [PATCH] ACPICA / Interpreter: Remove redundant newline
+> =
+
+> Well, I never thought I would write a couple lines of code like this, but=
+ here is a solution that
+> should make everyone happy.
+> =
+
+> diff --git a/source/components/tables/tbxfload.c b/source/components/tabl=
+es/tbxfload.c
+> index 6a937b1..73ee1a2 100644
+> --- a/source/components/tables/tbxfload.c
+> +++ b/source/components/tables/tbxfload.c
+> @@ -334,7 +334,7 @@ AcpiTbLoadNamespace (
+>      if (!TablesFailed)
+>      {
+>          ACPI_INFO ((
+> -            "%u ACPI AML tables successfully acquired and loaded\n",
+> +            "%u ACPI AML tables successfully acquired and loaded",
+>              TablesLoaded));
+>      }
+>      else
+> @@ -348,6 +348,11 @@ AcpiTbLoadNamespace (
+>          Status =3D AE_CTRL_TERMINATE;
+>      }
+> =
+
+> +#ifdef ACPI_APPLICATION
+> +    ACPI_DEBUG_PRINT_RAW ((ACPI_DB_INIT, "\n"));
+> +#endif
+> +
+> +
+
+IMO, these lines should be in ACPICA upstream, in a file under tools/acpiex=
+ec.
 
 Thanks
 Lv
 
-> From: linux-acpi-owner(a)vger.kernel.org [mailto:linux-acpi-owner(a)vger.=
-kernel.org] On Behalf Of Borislav
-> Petkov
-> Subject: [PATCH] ACPICA / Interpreter: Remove redundant newline
-> =
-
-> From: Borislav Petkov <bp(a)suse.de>
-> =
-
-> acpi_info() already issues a '\n' so remove it in the call.
-> =
-
-> Signed-off-by: Borislav Petkov <bp(a)suse.de>
-> Cc: Robert Moore <robert.moore(a)intel.com>
-> Cc: Lv Zheng <lv.zheng(a)intel.com>
-> Cc: "Rafael J. Wysocki" <rafael.j.wysocki(a)intel.com>
-> Cc: Len Brown <lenb(a)kernel.org>
-> Cc: linux-acpi(a)vger.kernel.org
-> Cc: devel(a)acpica.org
-> ---
->  drivers/acpi/acpica/tbxfload.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> =
-
-> diff --git a/drivers/acpi/acpica/tbxfload.c b/drivers/acpi/acpica/tbxfloa=
-d.c
-> index ac71abcd32bb..e7119b7ccd79 100644
-> --- a/drivers/acpi/acpica/tbxfload.c
-> +++ b/drivers/acpi/acpica/tbxfload.c
-> @@ -240,7 +240,7 @@ acpi_status acpi_tb_load_namespace(void)
->  	}
-> =
-
->  	if (!tables_failed) {
-> -		ACPI_INFO(("%u ACPI AML tables successfully acquired and loaded\n", ta=
-bles_loaded));
-> +		ACPI_INFO(("%u ACPI AML tables successfully acquired and loaded", tabl=
-es_loaded));
->  	} else {
->  		ACPI_ERROR((AE_INFO,
->  			    "%u table load failures, %u successful",
-> --
-> 2.10.0
+>  UnlockAndExit:
+>      (void) AcpiUtReleaseMutex (ACPI_MTX_TABLES);
+>      return_ACPI_STATUS (Status);
 > =
 
 > --
@@ -69,5 +68,5 @@ es_loaded));
 > the body of a message to majordomo(a)vger.kernel.org
 > More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
---===============6251778444120830977==--
+--===============1195038994380565344==--
 
