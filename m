@@ -1,92 +1,56 @@
-Content-Type: multipart/mixed; boundary="===============7059548877299099093=="
+Content-Type: multipart/mixed; boundary="===============7402500642158200956=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
+From: Zheng, Lv <lv.zheng at intel.com>
 Subject: Re: [Devel] [PATCH] ACPICA / Interpreter: Remove redundant newline
-Date: Wed, 14 Sep 2016 14:03:42 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E4FC413@ORSMSX110.amr.corp.intel.com>
-In-Reply-To: 1AE640813FDE7649BE1B193DEA596E886A1849EF@SHSMSX101.ccr.corp.intel.com
+Date: Mon, 19 Sep 2016 09:30:44 +0000
+Message-ID: <1AE640813FDE7649BE1B193DEA596E886A2223F1@SHSMSX101.ccr.corp.intel.com>
+In-Reply-To: 20160914113031.GA7387@nazgul.tnic
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7059548877299099093==
+--===============7402500642158200956==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
+Hi,
 
-
-> -----Original Message-----
-> From: Zheng, Lv
-> Sent: Tuesday, September 13, 2016 8:11 PM
-> To: Moore, Robert <robert.moore(a)intel.com>; Moore, Robert
-> <robert.moore(a)intel.com>; Borislav Petkov <bp(a)alien8.de>; LKML <linux-
-> kernel(a)vger.kernel.org>
-> Cc: linux-acpi(a)vger.kernel.org; devel(a)acpica.org; Wysocki, Rafael J
-> <rafael.j.wysocki(a)intel.com>; Box, David E <david.e.box(a)intel.com>
-> Subject: RE: [PATCH] ACPICA / Interpreter: Remove redundant newline
+> From: linux-acpi-owner(a)vger.kernel.org [mailto:linux-acpi-owner(a)vger.=
+kernel.org] On Behalf Of Borislav
+> Petkov
+> Subject: Re: [PATCH] ACPICA / Interpreter: Remove redundant newline
 > =
 
-> Hi,
+> On Wed, Sep 14, 2016 at 03:09:25AM +0000, Zheng, Lv wrote:
+> > The newline is intentional for acpiexec.
+> > So you should fix this issue in acpiexec, aka, in ACPICA upstream.
 > =
 
-> > From: linux-acpi-owner(a)vger.kernel.org
-> > [mailto:linux-acpi-owner(a)vger.kernel.org] On Behalf Of Moore, Robert
-> > David E <david.e.box(a)intel.com>
-> > Subject: RE: [PATCH] ACPICA / Interpreter: Remove redundant newline
-> >
-> > Well, I never thought I would write a couple lines of code like this,
-> > but here is a solution that should make everyone happy.
-> >
-> > diff --git a/source/components/tables/tbxfload.c
-> > b/source/components/tables/tbxfload.c
-> > index 6a937b1..73ee1a2 100644
-> > --- a/source/components/tables/tbxfload.c
-> > +++ b/source/components/tables/tbxfload.c
-> > @@ -334,7 +334,7 @@ AcpiTbLoadNamespace (
-> >      if (!TablesFailed)
-> >      {
-> >          ACPI_INFO ((
-> > -            "%u ACPI AML tables successfully acquired and loaded\n",
-> > +            "%u ACPI AML tables successfully acquired and loaded",
-> >              TablesLoaded));
-> >      }
-> >      else
-> > @@ -348,6 +348,11 @@ AcpiTbLoadNamespace (
-> >          Status =3D AE_CTRL_TERMINATE;
-> >      }
-> >
-> > +#ifdef ACPI_APPLICATION
-> > +    ACPI_DEBUG_PRINT_RAW ((ACPI_DB_INIT, "\n")); #endif
-> > +
-> > +
+> If you elaborate as to from where I get the sources and against which
+> branch/version/...?, I can try to send you a patch.
+
+You can obtain a local copy of acpica.git via:
+$ git clone https://github.com/acpica/acpica
+
+The fix patch should only be sent to devel(a)acpica.org.
+And you'll see it in Linux upstream after an acpica release cycle.
+
+Regards
+Lv
+
 > =
 
-[Moore, Robert] =
-
-
-I have no problem with this, I just want to get it over with.
-It is not a big deal, let's leave it at that and not make it a big issue.
-
-
-
-
-
-> IMO, these lines should be in ACPICA upstream, in a file under
-> tools/acpiexec.
+> --
+> Regards/Gruss,
+>     Boris.
 > =
 
-> Thanks
-> Lv
-> =
+> ECO tip #101: Trim your mails when you reply.
+> --
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-acpi" in
+> the body of a message to majordomo(a)vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
-> >  UnlockAndExit:
-> >      (void) AcpiUtReleaseMutex (ACPI_MTX_TABLES);
-> >      return_ACPI_STATUS (Status);
-> >
-> > --
-> > To unsubscribe from this list: send the line "unsubscribe linux-acpi"
-> > in the body of a message to majordomo(a)vger.kernel.org More majordomo
-> > info at  http://vger.kernel.org/majordomo-info.html
-
---===============7059548877299099093==--
+--===============7402500642158200956==--
 
