@@ -1,56 +1,70 @@
-Content-Type: multipart/mixed; boundary="===============7402500642158200956=="
+Content-Type: multipart/mixed; boundary="===============5711209925892847999=="
 MIME-Version: 1.0
-From: Zheng, Lv <lv.zheng at intel.com>
-Subject: Re: [Devel] [PATCH] ACPICA / Interpreter: Remove redundant newline
-Date: Mon, 19 Sep 2016 09:30:44 +0000
-Message-ID: <1AE640813FDE7649BE1B193DEA596E886A2223F1@SHSMSX101.ccr.corp.intel.com>
-In-Reply-To: 20160914113031.GA7387@nazgul.tnic
+From: Lv Zheng <lv.zheng at intel.com>
+Subject: [Devel] [PATCH] acpiexec: Move an acpiexec specific purposed new line
+ to acpiexec specific file
+Date: Fri, 23 Sep 2016 06:46:24 +0000
+Message-ID: <1474613175-23008-1-git-send-email-lv.zheng@intel.com>
+In-Reply-To: 20160919101234.r2zfor37m7eq6k6p@pd.tnic
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7402500642158200956==
+--===============5711209925892847999==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
-
-> From: linux-acpi-owner(a)vger.kernel.org [mailto:linux-acpi-owner(a)vger.=
-kernel.org] On Behalf Of Borislav
-> Petkov
-> Subject: Re: [PATCH] ACPICA / Interpreter: Remove redundant newline
+> No need, Robert did it already:
 > =
 
-> On Wed, Sep 14, 2016 at 03:09:25AM +0000, Zheng, Lv wrote:
-> > The newline is intentional for acpiexec.
-> > So you should fix this issue in acpiexec, aka, in ACPICA upstream.
-> =
+> 1d435008fd9e ("Update an info message during table load phase.")
 
-> If you elaborate as to from where I get the sources and against which
-> branch/version/...?, I can try to send you a patch.
+Not exactly what I meant. I meant the following on top of the above
+mentioned commit. As the newline is an acpiexec specific logic, it should
+be kept in acpiexec, shouldn't be left polluting a common file. Lv Zheng.
 
-You can obtain a local copy of acpica.git via:
-$ git clone https://github.com/acpica/acpica
+Signed-off-by: Lv Zheng <lv.zheng(a)intel.com>
+To: Borislav Petkov <bp(a)alien8.de>
+Cc: Rafael J. Wysocki <rafael.j.wysocki(a)intel.com>
+Cc: Rafael J. Wysocki <rjw(a)rjwysocki.net>
+Cc: Len Brown <len.brown(a)intel.com>
+Cc: <linux-acpi(a)vger.kernel.org>
+--
+Index: acpica/source/components/tables/tbxfload.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+--- acpica.orig/source/components/tables/tbxfload.c
++++ acpica/source/components/tables/tbxfload.c
+@@ -348,11 +348,6 @@ AcpiTbLoadNamespace (
+         Status =3D AE_CTRL_TERMINATE;
+     }
+ =
 
-The fix patch should only be sent to devel(a)acpica.org.
-And you'll see it in Linux upstream after an acpica release cycle.
+-#ifdef ACPI_APPLICATION
+-    ACPI_DEBUG_PRINT_RAW ((ACPI_DB_INIT, "\n"));
+-#endif
+-
+-
+ UnlockAndExit:
+     (void) AcpiUtReleaseMutex (ACPI_MTX_TABLES);
+     return_ACPI_STATUS (Status);
+Index: acpica/source/tools/acpiexec/aetables.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+--- acpica.orig/source/tools/acpiexec/aetables.c
++++ acpica/source/tools/acpiexec/aetables.c
+@@ -625,6 +625,7 @@ AeLoadTables (
+ =
 
-Regards
-Lv
+     Status =3D AcpiLoadTables ();
+     ACPI_CHECK_OK (AcpiLoadTables, Status);
++    ACPI_DEBUG_PRINT_RAW ((ACPI_DB_INIT, "\n"));
+ =
 
-> =
+     /*
+      * Test run-time control method installation. Do it twice to test code
 
-> --
-> Regards/Gruss,
->     Boris.
-> =
-
-> ECO tip #101: Trim your mails when you reply.
-> --
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-acpi" in
-> the body of a message to majordomo(a)vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
---===============7402500642158200956==--
+--===============5711209925892847999==--
 
