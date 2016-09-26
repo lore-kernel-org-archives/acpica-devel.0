@@ -1,65 +1,76 @@
-Content-Type: multipart/mixed; boundary="===============0707396722381171324=="
+Content-Type: multipart/mixed; boundary="===============5935315609846010417=="
 MIME-Version: 1.0
-From: Lv Zheng <lv.zheng at intel.com>
-Subject: [Devel] [PATCH] acpiexec: Move an acpiexec specific purposed new line
- to acpiexec specific file
-Date: Fri, 23 Sep 2016 06:49:59 +0000
-Message-ID: <1474613366-23043-1-git-send-email-lv.zheng@intel.com>
-In-Reply-To: 20160919101234.r2zfor37m7eq6k6p@pd.tnic
+From: Moore, Robert <robert.moore at intel.com>
+Subject: Re: [Devel] Turning iasl's "-oe" option into a documented,
+ regular option?
+Date: Mon, 26 Sep 2016 21:34:22 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E503478@ORSMSX110.amr.corp.intel.com>
+In-Reply-To: 2217ad77-18d3-710b-7a6c-be1bee15feb7@redhat.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0707396722381171324==
+--===============5935315609846010417==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-> No need, Robert did it already:
+
+
+> -----Original Message-----
+> From: Laszlo Ersek [mailto:lersek(a)redhat.com]
+> Sent: Monday, September 26, 2016 2:23 PM
+> To: Moore, Robert <robert.moore(a)intel.com>
+> Cc: devel(a)acpica.org; Michael Tsirkin <mtsirkin(a)redhat.com>
+> Subject: Turning iasl's "-oe" option into a documented, regular option?
 > =
 
-> 1d435008fd9e ("Update an info message during table load phase.")
+> Hi,
+> =
 
-Not exactly what I meant. I meant the following on top of the above
-mentioned commit. As the newline is an acpiexec specific logic, it should
-be kept in acpiexec, shouldn't be left polluting a common file. Lv Zheng.
+> the addition of the External() opcode (i.e., 0x15), from ACPI v6.0,
+> causes iASL to generate AML that breaks old versions of ACPICA's AML
+> interpreter that are shipped with old (but still variably supported)
+> Linux distributions, for example, RHEL-5.11. The breakage happens
+> despite the If(0) conditional that surrounds the opcode and is supposed
+> to hide it.
+> =
 
-Signed-off-by: Lv Zheng <lv.zheng(a)intel.com>
---
-Index: acpica/source/components/tables/tbxfload.c
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
---- acpica.orig/source/components/tables/tbxfload.c
-+++ acpica/source/components/tables/tbxfload.c
-@@ -348,11 +348,6 @@ AcpiTbLoadNamespace (
-         Status =3D AE_CTRL_TERMINATE;
-     }
- =
+> I found ACPICA commit
+> =
 
--#ifdef ACPI_APPLICATION
--    ACPI_DEBUG_PRINT_RAW ((ACPI_DB_INIT, "\n"));
--#endif
--
--
- UnlockAndExit:
-     (void) AcpiUtReleaseMutex (ACPI_MTX_TABLES);
-     return_ACPI_STATUS (Status);
-Index: acpica/source/tools/acpiexec/aetables.c
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
---- acpica.orig/source/tools/acpiexec/aetables.c
-+++ acpica/source/tools/acpiexec/aetables.c
-@@ -625,6 +625,7 @@ AeLoadTables (
- =
+> commit 69620304a02d5a14d1fd0040aeb2e32bd1d7023e
+> Author: Robert Moore <Robert.Moore(a)intel.com>
+> Date:   Fri Feb 26 08:55:38 2016 -0800
+> =
 
-     Status =3D AcpiLoadTables ();
-     ACPI_CHECK_OK (AcpiLoadTables, Status);
-+    ACPI_DEBUG_PRINT_RAW ((ACPI_DB_INIT, "\n"));
- =
+>     iASL: Add debug option for External opcode
+> =
 
-     /*
-      * Test run-time control method installation. Do it twice to test code
+>     option to temporarily disable the opcode for debug purposes
+>     only.
+> =
 
---===============0707396722381171324==--
+> which adds the "-oe" option, but -- on purpose -- does not document it.
+> =
+
+> Is there any intention to turn this option into a regular, long-term,
+> documented option?
+> =
+
+[Moore, Robert] =
+
+
+No, this is a temporary flag for debugging any issues. But the external opc=
+ode support is stable, and we plan to remove the option.
+
+
+
+> For reference, please see
+> <https://bugzilla.redhat.com/show_bug.cgi?id=3D1377087>.
+> =
+
+> Thanks
+> Laszlo
+
+--===============5935315609846010417==--
 
