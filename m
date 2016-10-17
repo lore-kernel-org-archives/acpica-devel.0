@@ -1,253 +1,109 @@
-Content-Type: multipart/mixed; boundary="===============2657816327668107181=="
+Content-Type: multipart/mixed; boundary="===============6895028774114986795=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] [PATCH] ACPICA: Avoid return Access Size error with PCC
- Register
-Date: Tue, 11 Oct 2016 16:27:07 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E506175@ORSMSX110.amr.corp.intel.com>
-In-Reply-To: CAFHUOYw=_XzFNqObYsYHH31mWyiW9GA6qpWtg6dxceqBP3=yuA@mail.gmail.com
+From: Zheng, Lv <lv.zheng at intel.com>
+Subject: Re: [Devel] [PATCH] ACPICA: arm64: fix compile apci tools fail for
+ arm64
+Date: Mon, 17 Oct 2016 22:26:53 +0000
+Message-ID: <1AE640813FDE7649BE1B193DEA596E886A253666@SHSMSX101.ccr.corp.intel.com>
+In-Reply-To: 1476402698-40963-1-git-send-email-xieyisheng1@huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2657816327668107181==
+--===============6895028774114986795==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Things sometimes take a bit of time for testing/validation before we make c=
-ommits.
+Hi, Yisheng
 
-That said, your patch is now committed.
-Thanks,
-Bob
+> From: Yisheng Xie [mailto:xieyisheng1(a)huawei.com]
+> Subject: [PATCH] ACPICA: arm64: fix compile apci tools fail for arm64
+> =
+
+> when try to cross compile acpi tool in dir kernel/tools
+> for arm64 use command:
+>     make ARCH=3Darm64 CROSS_COMPILE=3Daarch64-linux-gnu- acpi
+> it failed with the following log:
+> In file included
+>     from ../../../../../include/acpi/acpi.h:58:0,
+>     from ../../../../../drivers/acpi/acpica/utstring.c:44:
+>     ../../../../../include/acpi/actypes.h:130:34: error: conflicting type=
+s for 's64'
+>  typedef signed long long s64;
+>                            ^
+> In file included
+>     from /opt/aarch64-linux-gnu/libc/usr/include/asm-generic/types.h:6:0
+>     from /opt/aarch64-linux-gnu/libc/usr/include/asm/types.h:1,
+>     from ../../../../../include/uapi/linux/types.h:4,
+>     from ../../../../../include/linux/types.h:5,
+>     from /opt/aarch64-linux-gnu/libc/usr/include/asm/sigcontext.h:19,
+>     from /opt/aarch64-linux-gnu/libc/usr/include/bits/sigcontext.h:27,
+>     from /opt/aarch64-linux-gnu/libc/usr/include/signal.h:308,
+>     from ../../../../../include/acpi/platform/acenv.h:365,
+>     from ../../../../../include/acpi/acpi.h:56,
+>     from ./acpidump.h:55,
+>     from ../../os_specific/service_layers/oslinuxtbl.c:44:
+> ../../../../../include/asm-generic/int-ll64.h:24:26: note: previous decla=
+ration of 's64' was here
+>  typedef signed long long s64;
+>                            ^
+> Fix this compile problem.
+
+This looks like a conflict between asm-generic/int-ll64.h and actypes.h.
+
+When a build environment actually has s64 definition.
+ACPICA shouldn't define it.
+ACPICA should define ACPI_USE_SYSTEM_INTTYPES instead.
+
+However it is not clear if a Linux userspace should be aware of s64.
+We couldn't see this issue in other arch builds.
+So I wonder if this is just a missing "#ifdef __KERNEL__" in asm-generic/in=
+t-ll64.h.
+
+If Linux should be aware of s64.
+Then ACPICA definition of s64 should be disabled by defining ACPI_USE_SYSTE=
+M_INTTYPES.
+Since this is a post-ACPICA-release issue.
+You should only fix it in tools/power/acpi/Makefile*.
+
+So I think this patch is not a right fix, but a wrong workaround.
+It can easily cause regressions in other ACPICA builds.
+
+> =
+
+> Fixes: e323c02dee59 ("ACPICA: MSVC9: Fix <sys/stat.h> inclusion order iss=
+ue")
+> Signed-off-by: Yisheng Xie <xieyisheng1(a)huawei.com>
+> ---
+>  include/acpi/platform/acenv.h | 4 ++++
+>  1 file changed, 4 insertions(+)
+> =
+
+> diff --git a/include/acpi/platform/acenv.h b/include/acpi/platform/acenv.h
+> index 34cce72..0089fa0 100644
+> --- a/include/acpi/platform/acenv.h
+> +++ b/include/acpi/platform/acenv.h
+> @@ -361,9 +361,13 @@
+>  #include <stdio.h>
+>  #include <fcntl.h>
+>  #include <errno.h>
+> +#ifdef __aarch64__
+> +#include <sys/stat.h>
+> +#else
+>  #include <time.h>
+>  #include <signal.h>
+>  #endif
+> +#endif
+> =
+
+>  #endif				/* ACPI_USE_STANDARD_HEADERS */
 
 
-From: Hoan Tran [mailto:hotran(a)apm.com]
-Sent: Monday, October 10, 2016 10:42 AM
-To: Moore, Robert <robert.moore(a)intel.com>
-Cc: devel(a)acpica.org; Loc Ho <lho(a)apm.com>
-Subject: Re: [PATCH] ACPICA: Avoid return Access Size error with PCC Regist=
-er
+We shouldn't rely on inclusion orders to fix this issue.
+It can easily cause order problem on other ACPICA build environment.
 
-Hi Moore,
+Thanks
+Lv
 
-I would like to check the status of my patch as I haven't seen it on https:=
-//github.com/acpica/acpica/commits/master yet.
-
-Thanks and Regards
-Hoan
-
-On Wed, Oct 5, 2016 at 7:10 AM, Moore, Robert <robert.moore(a)intel.com<mai=
-lto:robert.moore(a)intel.com>> wrote:
-This looks OK. We'll integrate it for the next release of ACPICA later this=
- month. I'll commit it today.
-Thanks,
-Bob
-
-
-> -----Original Message-----
-> From: Hoan Tran [mailto:hotran(a)apm.com<mailto:hotran(a)apm.com>]
-> Sent: Monday, October 3, 2016 1:39 PM
-> To: Moore, Robert <robert.moore(a)intel.com<mailto:robert.moore(a)intel.c=
-om>>; devel(a)acpica.org<mailto:devel(a)acpica.org>
-> Cc: Loc Ho <lho(a)apm.com<mailto:lho(a)apm.com>>; Hoan Tran <hotran(a)apm=
-.com<mailto:hotran(a)apm.com>>
-> Subject: Re: [PATCH] ACPICA: Avoid return Access Size error with PCC
-> Register
->
-> Correct devel acpica email (devel(a)acpica.org<mailto:devel(a)acpica.org>)
->
-> Thanks
-> Hoan
->
-> On Mon, Oct 3, 2016 at 10:59 AM, Hoan Tran <hotran(a)apm.com<mailto:hotra=
-n(a)apm.com>> wrote:
-> > Based on section "14.5 Referencing the PCC address space" of ACPI
-> > 6.1 specification, an individual register may be referenced in a
-> > Generic Register Descriptor by using the Address Space ID PCC (0xA).
-> > When using the PCC address space, the Access Size field is redefined
-> > to PCC Subspace ID.
-> >
-> > This patch avoids iasl return Access Size error with PCC register when
-> > its value is over 4.
-> >
-> > Signed-off-by: Hoan Tran <hotran(a)apm.com<mailto:hotran(a)apm.com>>
-> > ---
-> >  source/compiler/aslrestype2.c | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> >
-> > diff --git a/source/compiler/aslrestype2.c
-> > b/source/compiler/aslrestype2.c index 9fc77b0..cbec1b3 100644
-> > --- a/source/compiler/aslrestype2.c
-> > +++ b/source/compiler/aslrestype2.c
-> > @@ -199,6 +199,11 @@ RsDoGeneralRegisterDescriptor (
-> >              RsCreateByteField (InitializerOp, ACPI_RESTAG_ACCESSSIZE,
-> >                  CurrentByteOffset + ASL_RESDESC_OFFSET
-> > (GenericReg.AccessSize));
-> >
-> > +            if (Descriptor->GenericReg.AddressSpaceId =3D=3D
-> ACPI_ADR_SPACE_PLATFORM_COMM)
-> > +            {
-> > +                break;
-> > +            }
-> > +
-> >              if (Descriptor->GenericReg.AccessSize >
-> AML_FIELD_ACCESS_QWORD)
-> >              {
-> >                  AslError (ASL_ERROR, ASL_MSG_INVALID_ACCESS_SIZE,
-> > --
-> > 1.9.1
-> >
-
-
---===============2657816327668107181==
-Content-Type: text/html
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="attachment.html"
-
-PGh0bWwgeG1sbnM6dj0idXJuOnNjaGVtYXMtbWljcm9zb2Z0LWNvbTp2bWwiIHhtbG5zOm89InVy
-bjpzY2hlbWFzLW1pY3Jvc29mdC1jb206b2ZmaWNlOm9mZmljZSIgeG1sbnM6dz0idXJuOnNjaGVt
-YXMtbWljcm9zb2Z0LWNvbTpvZmZpY2U6d29yZCIgeG1sbnM6bT0iaHR0cDovL3NjaGVtYXMubWlj
-cm9zb2Z0LmNvbS9vZmZpY2UvMjAwNC8xMi9vbW1sIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcv
-VFIvUkVDLWh0bWw0MCI+DQo8aGVhZD4NCjxtZXRhIGh0dHAtZXF1aXY9IkNvbnRlbnQtVHlwZSIg
-Y29udGVudD0idGV4dC9odG1sOyBjaGFyc2V0PXV0Zi04Ij4NCjxtZXRhIG5hbWU9IkdlbmVyYXRv
-ciIgY29udGVudD0iTWljcm9zb2Z0IFdvcmQgMTUgKGZpbHRlcmVkIG1lZGl1bSkiPg0KPHN0eWxl
-PjwhLS0NCi8qIEZvbnQgRGVmaW5pdGlvbnMgKi8NCkBmb250LWZhY2UNCgl7Zm9udC1mYW1pbHk6
-IkNhbWJyaWEgTWF0aCI7DQoJcGFub3NlLTE6MiA0IDUgMyA1IDQgNiAzIDIgNDt9DQpAZm9udC1m
-YWNlDQoJe2ZvbnQtZmFtaWx5OkNhbGlicmk7DQoJcGFub3NlLTE6MiAxNSA1IDIgMiAyIDQgMyAy
-IDQ7fQ0KLyogU3R5bGUgRGVmaW5pdGlvbnMgKi8NCnAuTXNvTm9ybWFsLCBsaS5Nc29Ob3JtYWws
-IGRpdi5Nc29Ob3JtYWwNCgl7bWFyZ2luOjBpbjsNCgltYXJnaW4tYm90dG9tOi4wMDAxcHQ7DQoJ
-Zm9udC1zaXplOjEyLjBwdDsNCglmb250LWZhbWlseToiVGltZXMgTmV3IFJvbWFuIixzZXJpZjt9
-DQphOmxpbmssIHNwYW4uTXNvSHlwZXJsaW5rDQoJe21zby1zdHlsZS1wcmlvcml0eTo5OTsNCglj
-b2xvcjpibHVlOw0KCXRleHQtZGVjb3JhdGlvbjp1bmRlcmxpbmU7fQ0KYTp2aXNpdGVkLCBzcGFu
-Lk1zb0h5cGVybGlua0ZvbGxvd2VkDQoJe21zby1zdHlsZS1wcmlvcml0eTo5OTsNCgljb2xvcjpw
-dXJwbGU7DQoJdGV4dC1kZWNvcmF0aW9uOnVuZGVybGluZTt9DQpzcGFuLkVtYWlsU3R5bGUxNw0K
-CXttc28tc3R5bGUtdHlwZTpwZXJzb25hbC1yZXBseTsNCglmb250LWZhbWlseToiQ2FsaWJyaSIs
-c2Fucy1zZXJpZjsNCgljb2xvcjojMUY0OTdEO30NCi5Nc29DaHBEZWZhdWx0DQoJe21zby1zdHls
-ZS10eXBlOmV4cG9ydC1vbmx5Ow0KCWZvbnQtZmFtaWx5OiJDYWxpYnJpIixzYW5zLXNlcmlmO30N
-CkBwYWdlIFdvcmRTZWN0aW9uMQ0KCXtzaXplOjguNWluIDExLjBpbjsNCgltYXJnaW46MS4waW4g
-MS4waW4gMS4waW4gMS4waW47fQ0KZGl2LldvcmRTZWN0aW9uMQ0KCXtwYWdlOldvcmRTZWN0aW9u
-MTt9DQotLT48L3N0eWxlPjwhLS1baWYgZ3RlIG1zbyA5XT48eG1sPg0KPG86c2hhcGVkZWZhdWx0
-cyB2OmV4dD0iZWRpdCIgc3BpZG1heD0iMTAyNiIgLz4NCjwveG1sPjwhW2VuZGlmXS0tPjwhLS1b
-aWYgZ3RlIG1zbyA5XT48eG1sPg0KPG86c2hhcGVsYXlvdXQgdjpleHQ9ImVkaXQiPg0KPG86aWRt
-YXAgdjpleHQ9ImVkaXQiIGRhdGE9IjEiIC8+DQo8L286c2hhcGVsYXlvdXQ+PC94bWw+PCFbZW5k
-aWZdLS0+DQo8L2hlYWQ+DQo8Ym9keSBsYW5nPSJFTi1VUyIgbGluaz0iYmx1ZSIgdmxpbms9InB1
-cnBsZSI+DQo8ZGl2IGNsYXNzPSJXb3JkU2VjdGlvbjEiPg0KPHAgY2xhc3M9Ik1zb05vcm1hbCI+
-PHNwYW4gc3R5bGU9ImZvbnQtc2l6ZToxMS4wcHQ7Zm9udC1mYW1pbHk6JnF1b3Q7Q2FsaWJyaSZx
-dW90OyxzYW5zLXNlcmlmO2NvbG9yOiMxRjQ5N0QiPlRoaW5ncyBzb21ldGltZXMgdGFrZSBhIGJp
-dCBvZiB0aW1lIGZvciB0ZXN0aW5nL3ZhbGlkYXRpb24gYmVmb3JlIHdlIG1ha2UgY29tbWl0cy48
-bzpwPjwvbzpwPjwvc3Bhbj48L3A+DQo8cCBjbGFzcz0iTXNvTm9ybWFsIj48c3BhbiBzdHlsZT0i
-Zm9udC1zaXplOjExLjBwdDtmb250LWZhbWlseTomcXVvdDtDYWxpYnJpJnF1b3Q7LHNhbnMtc2Vy
-aWY7Y29sb3I6IzFGNDk3RCI+PG86cD4mbmJzcDs8L286cD48L3NwYW4+PC9wPg0KPHAgY2xhc3M9
-Ik1zb05vcm1hbCI+PHNwYW4gc3R5bGU9ImZvbnQtc2l6ZToxMS4wcHQ7Zm9udC1mYW1pbHk6JnF1
-b3Q7Q2FsaWJyaSZxdW90OyxzYW5zLXNlcmlmO2NvbG9yOiMxRjQ5N0QiPlRoYXQgc2FpZCwgeW91
-ciBwYXRjaCBpcyBub3cgY29tbWl0dGVkLjxvOnA+PC9vOnA+PC9zcGFuPjwvcD4NCjxwIGNsYXNz
-PSJNc29Ob3JtYWwiPjxzcGFuIHN0eWxlPSJmb250LXNpemU6MTEuMHB0O2ZvbnQtZmFtaWx5OiZx
-dW90O0NhbGlicmkmcXVvdDssc2Fucy1zZXJpZjtjb2xvcjojMUY0OTdEIj5UaGFua3MsPG86cD48
-L286cD48L3NwYW4+PC9wPg0KPHAgY2xhc3M9Ik1zb05vcm1hbCI+PHNwYW4gc3R5bGU9ImZvbnQt
-c2l6ZToxMS4wcHQ7Zm9udC1mYW1pbHk6JnF1b3Q7Q2FsaWJyaSZxdW90OyxzYW5zLXNlcmlmO2Nv
-bG9yOiMxRjQ5N0QiPkJvYjxvOnA+PC9vOnA+PC9zcGFuPjwvcD4NCjxwIGNsYXNzPSJNc29Ob3Jt
-YWwiPjxzcGFuIHN0eWxlPSJmb250LXNpemU6MTEuMHB0O2ZvbnQtZmFtaWx5OiZxdW90O0NhbGli
-cmkmcXVvdDssc2Fucy1zZXJpZjtjb2xvcjojMUY0OTdEIj48bzpwPiZuYnNwOzwvbzpwPjwvc3Bh
-bj48L3A+DQo8cCBjbGFzcz0iTXNvTm9ybWFsIj48c3BhbiBzdHlsZT0iZm9udC1zaXplOjExLjBw
-dDtmb250LWZhbWlseTomcXVvdDtDYWxpYnJpJnF1b3Q7LHNhbnMtc2VyaWY7Y29sb3I6IzFGNDk3
-RCI+PG86cD4mbmJzcDs8L286cD48L3NwYW4+PC9wPg0KPGRpdiBzdHlsZT0iYm9yZGVyOm5vbmU7
-Ym9yZGVyLWxlZnQ6c29saWQgYmx1ZSAxLjVwdDtwYWRkaW5nOjBpbiAwaW4gMGluIDQuMHB0Ij4N
-CjxkaXY+DQo8ZGl2IHN0eWxlPSJib3JkZXI6bm9uZTtib3JkZXItdG9wOnNvbGlkICNFMUUxRTEg
-MS4wcHQ7cGFkZGluZzozLjBwdCAwaW4gMGluIDBpbiI+DQo8cCBjbGFzcz0iTXNvTm9ybWFsIj48
-Yj48c3BhbiBzdHlsZT0iZm9udC1zaXplOjExLjBwdDtmb250LWZhbWlseTomcXVvdDtDYWxpYnJp
-JnF1b3Q7LHNhbnMtc2VyaWYiPkZyb206PC9zcGFuPjwvYj48c3BhbiBzdHlsZT0iZm9udC1zaXpl
-OjExLjBwdDtmb250LWZhbWlseTomcXVvdDtDYWxpYnJpJnF1b3Q7LHNhbnMtc2VyaWYiPiBIb2Fu
-IFRyYW4gW21haWx0bzpob3RyYW5AYXBtLmNvbV0NCjxicj4NCjxiPlNlbnQ6PC9iPiBNb25kYXks
-IE9jdG9iZXIgMTAsIDIwMTYgMTA6NDIgQU08YnI+DQo8Yj5Ubzo8L2I+IE1vb3JlLCBSb2JlcnQg
-Jmx0O3JvYmVydC5tb29yZUBpbnRlbC5jb20mZ3Q7PGJyPg0KPGI+Q2M6PC9iPiBkZXZlbEBhY3Bp
-Y2Eub3JnOyBMb2MgSG8gJmx0O2xob0BhcG0uY29tJmd0Ozxicj4NCjxiPlN1YmplY3Q6PC9iPiBS
-ZTogW1BBVENIXSBBQ1BJQ0E6IEF2b2lkIHJldHVybiBBY2Nlc3MgU2l6ZSBlcnJvciB3aXRoIFBD
-QyBSZWdpc3RlcjxvOnA+PC9vOnA+PC9zcGFuPjwvcD4NCjwvZGl2Pg0KPC9kaXY+DQo8cCBjbGFz
-cz0iTXNvTm9ybWFsIj48bzpwPiZuYnNwOzwvbzpwPjwvcD4NCjxkaXY+DQo8ZGl2Pg0KPHAgY2xh
-c3M9Ik1zb05vcm1hbCI+PHNwYW4gc3R5bGU9ImZvbnQtZmFtaWx5OiZxdW90O0FyaWFsJnF1b3Q7
-LHNhbnMtc2VyaWYiPkhpIE1vb3JlLDxvOnA+PC9vOnA+PC9zcGFuPjwvcD4NCjwvZGl2Pg0KPGRp
-dj4NCjxwIGNsYXNzPSJNc29Ob3JtYWwiPjxzcGFuIHN0eWxlPSJmb250LWZhbWlseTomcXVvdDtB
-cmlhbCZxdW90OyxzYW5zLXNlcmlmIj48bzpwPiZuYnNwOzwvbzpwPjwvc3Bhbj48L3A+DQo8L2Rp
-dj4NCjxkaXY+DQo8cCBjbGFzcz0iTXNvTm9ybWFsIj48c3BhbiBzdHlsZT0iZm9udC1mYW1pbHk6
-JnF1b3Q7QXJpYWwmcXVvdDssc2Fucy1zZXJpZiI+SSB3b3VsZCBsaWtlIHRvIGNoZWNrIHRoZSBz
-dGF0dXMgb2YgbXkgcGF0Y2ggYXMgSSBoYXZlbid0IHNlZW4gaXQgb24mbmJzcDs8YSBocmVmPSJo
-dHRwczovL2dpdGh1Yi5jb20vYWNwaWNhL2FjcGljYS9jb21taXRzL21hc3RlciI+aHR0cHM6Ly9n
-aXRodWIuY29tL2FjcGljYS9hY3BpY2EvY29tbWl0cy9tYXN0ZXI8L2E+IHlldC48bzpwPjwvbzpw
-Pjwvc3Bhbj48L3A+DQo8L2Rpdj4NCjxkaXY+DQo8cCBjbGFzcz0iTXNvTm9ybWFsIj48c3BhbiBz
-dHlsZT0iZm9udC1mYW1pbHk6JnF1b3Q7QXJpYWwmcXVvdDssc2Fucy1zZXJpZiI+PG86cD4mbmJz
-cDs8L286cD48L3NwYW4+PC9wPg0KPC9kaXY+DQo8ZGl2Pg0KPHAgY2xhc3M9Ik1zb05vcm1hbCI+
-PHNwYW4gc3R5bGU9ImZvbnQtZmFtaWx5OiZxdW90O0FyaWFsJnF1b3Q7LHNhbnMtc2VyaWYiPlRo
-YW5rcyBhbmQgUmVnYXJkczxvOnA+PC9vOnA+PC9zcGFuPjwvcD4NCjwvZGl2Pg0KPGRpdj4NCjxw
-IGNsYXNzPSJNc29Ob3JtYWwiPjxzcGFuIHN0eWxlPSJmb250LWZhbWlseTomcXVvdDtBcmlhbCZx
-dW90OyxzYW5zLXNlcmlmIj5Ib2FuPG86cD48L286cD48L3NwYW4+PC9wPg0KPC9kaXY+DQo8ZGl2
-Pg0KPHAgY2xhc3M9Ik1zb05vcm1hbCI+PG86cD4mbmJzcDs8L286cD48L3A+DQo8ZGl2Pg0KPHAg
-Y2xhc3M9Ik1zb05vcm1hbCI+T24gV2VkLCBPY3QgNSwgMjAxNiBhdCA3OjEwIEFNLCBNb29yZSwg
-Um9iZXJ0ICZsdDs8YSBocmVmPSJtYWlsdG86cm9iZXJ0Lm1vb3JlQGludGVsLmNvbSIgdGFyZ2V0
-PSJfYmxhbmsiPnJvYmVydC5tb29yZUBpbnRlbC5jb208L2E+Jmd0OyB3cm90ZTo8bzpwPjwvbzpw
-PjwvcD4NCjxibG9ja3F1b3RlIHN0eWxlPSJib3JkZXI6bm9uZTtib3JkZXItbGVmdDpzb2xpZCAj
-Q0NDQ0NDIDEuMHB0O3BhZGRpbmc6MGluIDBpbiAwaW4gNi4wcHQ7bWFyZ2luLWxlZnQ6NC44cHQ7
-bWFyZ2luLXJpZ2h0OjBpbiI+DQo8cCBjbGFzcz0iTXNvTm9ybWFsIj5UaGlzIGxvb2tzIE9LLiBX
-ZSdsbCBpbnRlZ3JhdGUgaXQgZm9yIHRoZSBuZXh0IHJlbGVhc2Ugb2YgQUNQSUNBIGxhdGVyIHRo
-aXMgbW9udGguIEknbGwgY29tbWl0IGl0IHRvZGF5Ljxicj4NClRoYW5rcyw8YnI+DQpCb2I8bzpw
-PjwvbzpwPjwvcD4NCjxkaXY+DQo8ZGl2Pg0KPHAgY2xhc3M9Ik1zb05vcm1hbCI+PGJyPg0KPGJy
-Pg0KJmd0OyAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLTxicj4NCiZndDsgRnJvbTogSG9hbiBU
-cmFuIFttYWlsdG86PGEgaHJlZj0ibWFpbHRvOmhvdHJhbkBhcG0uY29tIj5ob3RyYW5AYXBtLmNv
-bTwvYT5dPGJyPg0KJmd0OyBTZW50OiBNb25kYXksIE9jdG9iZXIgMywgMjAxNiAxOjM5IFBNPGJy
-Pg0KJmd0OyBUbzogTW9vcmUsIFJvYmVydCAmbHQ7PGEgaHJlZj0ibWFpbHRvOnJvYmVydC5tb29y
-ZUBpbnRlbC5jb20iPnJvYmVydC5tb29yZUBpbnRlbC5jb208L2E+Jmd0OzsNCjxhIGhyZWY9Im1h
-aWx0bzpkZXZlbEBhY3BpY2Eub3JnIj5kZXZlbEBhY3BpY2Eub3JnPC9hPjxicj4NCiZndDsgQ2M6
-IExvYyBIbyAmbHQ7PGEgaHJlZj0ibWFpbHRvOmxob0BhcG0uY29tIj5saG9AYXBtLmNvbTwvYT4m
-Z3Q7OyBIb2FuIFRyYW4gJmx0OzxhIGhyZWY9Im1haWx0bzpob3RyYW5AYXBtLmNvbSI+aG90cmFu
-QGFwbS5jb208L2E+Jmd0Ozxicj4NCiZndDsgU3ViamVjdDogUmU6IFtQQVRDSF0gQUNQSUNBOiBB
-dm9pZCByZXR1cm4gQWNjZXNzIFNpemUgZXJyb3Igd2l0aCBQQ0M8YnI+DQomZ3Q7IFJlZ2lzdGVy
-PGJyPg0KJmd0Ozxicj4NCiZndDsgQ29ycmVjdCBkZXZlbCBhY3BpY2EgZW1haWwgKDxhIGhyZWY9
-Im1haWx0bzpkZXZlbEBhY3BpY2Eub3JnIj5kZXZlbEBhY3BpY2Eub3JnPC9hPik8YnI+DQomZ3Q7
-PGJyPg0KJmd0OyBUaGFua3M8YnI+DQomZ3Q7IEhvYW48YnI+DQomZ3Q7PGJyPg0KJmd0OyBPbiBN
-b24sIE9jdCAzLCAyMDE2IGF0IDEwOjU5IEFNLCBIb2FuIFRyYW4gJmx0OzxhIGhyZWY9Im1haWx0
-bzpob3RyYW5AYXBtLmNvbSI+aG90cmFuQGFwbS5jb208L2E+Jmd0OyB3cm90ZTo8YnI+DQomZ3Q7
-ICZndDsgQmFzZWQgb24gc2VjdGlvbiAmcXVvdDsxNC41IFJlZmVyZW5jaW5nIHRoZSBQQ0MgYWRk
-cmVzcyBzcGFjZSZxdW90OyBvZiBBQ1BJPGJyPg0KJmd0OyAmZ3Q7IDYuMSBzcGVjaWZpY2F0aW9u
-LCBhbiBpbmRpdmlkdWFsIHJlZ2lzdGVyIG1heSBiZSByZWZlcmVuY2VkIGluIGE8YnI+DQomZ3Q7
-ICZndDsgR2VuZXJpYyBSZWdpc3RlciBEZXNjcmlwdG9yIGJ5IHVzaW5nIHRoZSBBZGRyZXNzIFNw
-YWNlIElEIFBDQyAoMHhBKS48YnI+DQomZ3Q7ICZndDsgV2hlbiB1c2luZyB0aGUgUENDIGFkZHJl
-c3Mgc3BhY2UsIHRoZSBBY2Nlc3MgU2l6ZSBmaWVsZCBpcyByZWRlZmluZWQ8YnI+DQomZ3Q7ICZn
-dDsgdG8gUENDIFN1YnNwYWNlIElELjxicj4NCiZndDsgJmd0Ozxicj4NCiZndDsgJmd0OyBUaGlz
-IHBhdGNoIGF2b2lkcyBpYXNsIHJldHVybiBBY2Nlc3MgU2l6ZSBlcnJvciB3aXRoIFBDQyByZWdp
-c3RlciB3aGVuPGJyPg0KJmd0OyAmZ3Q7IGl0cyB2YWx1ZSBpcyBvdmVyIDQuPGJyPg0KJmd0OyAm
-Z3Q7PGJyPg0KJmd0OyAmZ3Q7IFNpZ25lZC1vZmYtYnk6IEhvYW4gVHJhbiAmbHQ7PGEgaHJlZj0i
-bWFpbHRvOmhvdHJhbkBhcG0uY29tIj5ob3RyYW5AYXBtLmNvbTwvYT4mZ3Q7PGJyPg0KJmd0OyAm
-Z3Q7IC0tLTxicj4NCiZndDsgJmd0OyZuYnNwOyBzb3VyY2UvY29tcGlsZXIvYXNscmVzdHlwZTIu
-YyB8IDUgJiM0MzsmIzQzOyYjNDM7JiM0MzsmIzQzOzxicj4NCiZndDsgJmd0OyZuYnNwOyAxIGZp
-bGUgY2hhbmdlZCwgNSBpbnNlcnRpb25zKCYjNDM7KTxicj4NCiZndDsgJmd0Ozxicj4NCiZndDsg
-Jmd0OyBkaWZmIC0tZ2l0IGEvc291cmNlL2NvbXBpbGVyL2FzbHJlc3R5cGUyLmM8YnI+DQomZ3Q7
-ICZndDsgYi9zb3VyY2UvY29tcGlsZXIvYXNscmVzdHlwZTIuYyBpbmRleCA5ZmM3N2IwLi5jYmVj
-MWIzIDEwMDY0NDxicj4NCiZndDsgJmd0OyAtLS0gYS9zb3VyY2UvY29tcGlsZXIvYXNscmVzdHlw
-ZTIuYzxicj4NCiZndDsgJmd0OyAmIzQzOyYjNDM7JiM0MzsgYi9zb3VyY2UvY29tcGlsZXIvYXNs
-cmVzdHlwZTIuYzxicj4NCiZndDsgJmd0OyBAQCAtMTk5LDYgJiM0MzsxOTksMTEgQEAgUnNEb0dl
-bmVyYWxSZWdpc3RlckRlc2NyaXB0b3IgKDxicj4NCiZndDsgJmd0OyZuYnNwOyAmbmJzcDsgJm5i
-c3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyBSc0NyZWF0ZUJ5dGVGaWVsZCAoSW5pdGlh
-bGl6ZXJPcCwgQUNQSV9SRVNUQUdfQUNDRVNTU0laRSw8YnI+DQomZ3Q7ICZndDsmbmJzcDsgJm5i
-c3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyBDdXJy
-ZW50Qnl0ZU9mZnNldCAmIzQzOyBBU0xfUkVTREVTQ19PRkZTRVQ8YnI+DQomZ3Q7ICZndDsgKEdl
-bmVyaWNSZWcuQWNjZXNzU2l6ZSkpOzxicj4NCiZndDsgJmd0Ozxicj4NCiZndDsgJmd0OyAmIzQz
-OyZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7IGlmIChEZXNjcmlwdG9y
-LSZndDtHZW5lcmljUmVnLkFkZHJlc3NTcGFjZUlkID09PGJyPg0KJmd0OyBBQ1BJX0FEUl9TUEFD
-RV9QTEFURk9STV9DT01NKTxicj4NCiZndDsgJmd0OyAmIzQzOyZuYnNwOyAmbmJzcDsgJm5ic3A7
-ICZuYnNwOyAmbmJzcDsgJm5ic3A7IHs8YnI+DQomZ3Q7ICZndDsgJiM0MzsmbmJzcDsgJm5ic3A7
-ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7IGJyZWFrOzxicj4NCiZn
-dDsgJmd0OyAmIzQzOyZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7IH08
-YnI+DQomZ3Q7ICZndDsgJiM0Mzs8YnI+DQomZ3Q7ICZndDsmbmJzcDsgJm5ic3A7ICZuYnNwOyAm
-bmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgaWYgKERlc2NyaXB0b3ItJmd0O0dlbmVyaWNSZWcu
-QWNjZXNzU2l6ZSAmZ3Q7PGJyPg0KJmd0OyBBTUxfRklFTERfQUNDRVNTX1FXT1JEKTxicj4NCiZn
-dDsgJmd0OyZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyB7
-PGJyPg0KJmd0OyAmZ3Q7Jm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsg
-Jm5ic3A7ICZuYnNwOyAmbmJzcDsgQXNsRXJyb3IgKEFTTF9FUlJPUiwgQVNMX01TR19JTlZBTElE
-X0FDQ0VTU19TSVpFLDxicj4NCiZndDsgJmd0OyAtLTxicj4NCiZndDsgJmd0OyAxLjkuMTxicj4N
-CiZndDsgJmd0OzxvOnA+PC9vOnA+PC9wPg0KPC9kaXY+DQo8L2Rpdj4NCjwvYmxvY2txdW90ZT4N
-CjwvZGl2Pg0KPHAgY2xhc3M9Ik1zb05vcm1hbCI+PG86cD4mbmJzcDs8L286cD48L3A+DQo8L2Rp
-dj4NCjwvZGl2Pg0KPC9kaXY+DQo8L2Rpdj4NCjwvYm9keT4NCjwvaHRtbD4NCg==
-
---===============2657816327668107181==--
+--===============6895028774114986795==--
 
