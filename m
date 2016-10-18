@@ -1,109 +1,34 @@
-Content-Type: multipart/mixed; boundary="===============6895028774114986795=="
+Content-Type: multipart/mixed; boundary="===============4170548343870114043=="
 MIME-Version: 1.0
-From: Zheng, Lv <lv.zheng at intel.com>
-Subject: Re: [Devel] [PATCH] ACPICA: arm64: fix compile apci tools fail for
- arm64
-Date: Mon, 17 Oct 2016 22:26:53 +0000
-Message-ID: <1AE640813FDE7649BE1B193DEA596E886A253666@SHSMSX101.ccr.corp.intel.com>
-In-Reply-To: 1476402698-40963-1-git-send-email-xieyisheng1@huawei.com
+From: Hanjun Guo <hanjun.guo at linaro.org>
+Subject: Re: [Devel] [PATCH V3 05/10] acpi: apei: handle SEA notification type
+ for ARMv8
+Date: Tue, 18 Oct 2016 12:44:49 +0000
+Message-ID: <496ddac3-a220-fd42-5ca1-3d0fb0238907@linaro.org>
+In-Reply-To: 1475875882-2604-6-git-send-email-tbaicar@codeaurora.org
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6895028774114986795==
+--===============4170548343870114043==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi, Yisheng
+Hi Tyler,
 
-> From: Yisheng Xie [mailto:xieyisheng1(a)huawei.com]
-> Subject: [PATCH] ACPICA: arm64: fix compile apci tools fail for arm64
-> =
+On 2016/10/8 5:31, Tyler Baicar wrote:
+> ARM APEI extension proposal added SEA (Synchrounous External
+> Abort) notification type for ARMv8.
+> Add a new GHES error source handling function for SEA. If an error
+> source's notification type is SEA, then this function can be registered
+> into the SEA exception handler. That way GHES will parse and report
+> SEA exceptions when they occur.
 
-> when try to cross compile acpi tool in dir kernel/tools
-> for arm64 use command:
->     make ARCH=3Darm64 CROSS_COMPILE=3Daarch64-linux-gnu- acpi
-> it failed with the following log:
-> In file included
->     from ../../../../../include/acpi/acpi.h:58:0,
->     from ../../../../../drivers/acpi/acpica/utstring.c:44:
->     ../../../../../include/acpi/actypes.h:130:34: error: conflicting type=
-s for 's64'
->  typedef signed long long s64;
->                            ^
-> In file included
->     from /opt/aarch64-linux-gnu/libc/usr/include/asm-generic/types.h:6:0
->     from /opt/aarch64-linux-gnu/libc/usr/include/asm/types.h:1,
->     from ../../../../../include/uapi/linux/types.h:4,
->     from ../../../../../include/linux/types.h:5,
->     from /opt/aarch64-linux-gnu/libc/usr/include/asm/sigcontext.h:19,
->     from /opt/aarch64-linux-gnu/libc/usr/include/bits/sigcontext.h:27,
->     from /opt/aarch64-linux-gnu/libc/usr/include/signal.h:308,
->     from ../../../../../include/acpi/platform/acenv.h:365,
->     from ../../../../../include/acpi/acpi.h:56,
->     from ./acpidump.h:55,
->     from ../../os_specific/service_layers/oslinuxtbl.c:44:
-> ../../../../../include/asm-generic/int-ll64.h:24:26: note: previous decla=
-ration of 's64' was here
->  typedef signed long long s64;
->                            ^
-> Fix this compile problem.
-
-This looks like a conflict between asm-generic/int-ll64.h and actypes.h.
-
-When a build environment actually has s64 definition.
-ACPICA shouldn't define it.
-ACPICA should define ACPI_USE_SYSTEM_INTTYPES instead.
-
-However it is not clear if a Linux userspace should be aware of s64.
-We couldn't see this issue in other arch builds.
-So I wonder if this is just a missing "#ifdef __KERNEL__" in asm-generic/in=
-t-ll64.h.
-
-If Linux should be aware of s64.
-Then ACPICA definition of s64 should be disabled by defining ACPI_USE_SYSTE=
-M_INTTYPES.
-Since this is a post-ACPICA-release issue.
-You should only fix it in tools/power/acpi/Makefile*.
-
-So I think this patch is not a right fix, but a wrong workaround.
-It can easily cause regressions in other ACPICA builds.
-
-> =
-
-> Fixes: e323c02dee59 ("ACPICA: MSVC9: Fix <sys/stat.h> inclusion order iss=
-ue")
-> Signed-off-by: Yisheng Xie <xieyisheng1(a)huawei.com>
-> ---
->  include/acpi/platform/acenv.h | 4 ++++
->  1 file changed, 4 insertions(+)
-> =
-
-> diff --git a/include/acpi/platform/acenv.h b/include/acpi/platform/acenv.h
-> index 34cce72..0089fa0 100644
-> --- a/include/acpi/platform/acenv.h
-> +++ b/include/acpi/platform/acenv.h
-> @@ -361,9 +361,13 @@
->  #include <stdio.h>
->  #include <fcntl.h>
->  #include <errno.h>
-> +#ifdef __aarch64__
-> +#include <sys/stat.h>
-> +#else
->  #include <time.h>
->  #include <signal.h>
->  #endif
-> +#endif
-> =
-
->  #endif				/* ACPI_USE_STANDARD_HEADERS */
-
-
-We shouldn't rely on inclusion orders to fix this issue.
-It can easily cause order problem on other ACPICA build environment.
+Does this SEA is replayed by the firmware (firmware first handling)
+or directly triggered by the hardware when error is happened?
 
 Thanks
-Lv
+Hanjun
 
---===============6895028774114986795==--
+--===============4170548343870114043==--
 
