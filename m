@@ -1,88 +1,193 @@
-Content-Type: multipart/mixed; boundary="===============1828367566066931149=="
+Content-Type: multipart/mixed; boundary="===============7152213567030984700=="
 MIME-Version: 1.0
 From: Zheng, Lv <lv.zheng at intel.com>
-Subject: Re: [Devel] 4.9-rc1: [TMP_] ACPI namespace lookup failure,
- AE_ALREADY_EXISTS
-Date: Thu, 20 Oct 2016 23:05:25 +0000
-Message-ID: <1AE640813FDE7649BE1B193DEA596E886A25657B@SHSMSX101.ccr.corp.intel.com>
-In-Reply-To: CAJZ5v0jMtzSg8JCLQDzYRK5xtdWOJTUKktHKjhAw1o0nRG2Thw@mail.gmail.com
+Subject: Re: [Devel] [PATCH] ACPICA: arm64: fix compile apci tools fail for
+ arm64
+Date: Fri, 21 Oct 2016 19:40:26 +0000
+Message-ID: <1AE640813FDE7649BE1B193DEA596E886A256F1E@SHSMSX101.ccr.corp.intel.com>
+In-Reply-To: 1AE640813FDE7649BE1B193DEA596E886A256324@SHSMSX101.ccr.corp.intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1828367566066931149==
+--===============7152213567030984700==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi, Rafael
+Hi,
 
-> From: rjwysocki(a)gmail.com [mailto:rjwysocki(a)gmail.com] On Behalf Of R=
-afael J. Wysocki
-> Subject: Re: 4.9-rc1: [TMP_] ACPI namespace lookup failure, AE_ALREADY_EX=
-ISTS
-> =
-
-> On Thu, Oct 20, 2016 at 8:44 PM, Zheng, Lv <lv.zheng(a)intel.com> wrote:
-> > Hi,
-> >
-> >> From: Deak, Imre
-> >> Subject: 4.9-rc1: [TMP_] ACPI namespace lookup failure, AE_ALREADY_EXI=
-STS
-> >>
-> >> Hi,
-> >>
-> >> after upgrading to 4.9-rc1 I get the following errors occasionally
-> >> during boot and suspend-to-ram on an APL system:
-> >>
-> >> [   59.513434] ACPI Error: [TMP_] Namespace lookup failure, AE_ALREADY=
-_EXISTS (20160831/dswload2-
-> 330)
-> >> [   59.513446] ACPI Exception: AE_ALREADY_EXISTS, During name lookup/c=
-atalog (20160831/psobject-227)
-> >> [   59.513469] ACPI Error: Method parse/execution failed [\_SB.PCI0.SC=
-PG] (Node ffff8802770b7bb8),
-> >> AE_ALREADY_EXISTS (20160831/psparse-543)
-> >> [   59.515415] ACPI Error: Method parse/execution failed [\_SB.PCI0.SD=
-HA._PS3] (Node
-> ffff8802770b7dc0),
-> >> AE_ALREADY_EXISTS (20160831/psparse-543)
-> >> [   59.517118] ACPI: Marking method _PS3 as Serialized because of AE_A=
-LREADY_EXISTS error
-> >>
-> >> Other than these error messages, booting and suspend/resume seems to w=
-ork ok.
-> >> Bisecting points to
-> >> commit 74f51b80a0c4ff84fbeb7f12ea43ce66934d29aa
-> >> Author: Lv Zheng <lv.zheng(a)intel.com>
-> >> Date:   Wed Sep 7 14:07:10 2016 +0800
-> >>
-> >>     ACPICA: Namespace: Fix dynamic table loading issues
-> >>
-> >> Reverting this on top of 4.9-rc1 gets rid of the error messages.
-> >
-> > The commit in question only modified code to make locks unlocked/locked.
-> > Which should be transparent to the functional stuffs.
-> =
-
-> It might change the relative timing of thigs (which might result in
-> ordering changes).
-
-Yes, I'll check that with the acpidump.
-To see if this is caused by wrong reduced lock affection scope.
-
-> =
-
-> > I'm not sure how it can lead to such error in the single-threading boot=
- environment.
-> =
-
-> Why do you think it's single-threaded?  At least suspend/resume isn't
-> in general.
-
-I just say that because it is also reported as "occasionally during boot".
+I generated a solution with tools/power/acpi makefiles.
+Please give it a try.
+Sorry for the hackish build includes.
 
 Thanks and best regards
 Lv
 
---===============1828367566066931149==--
+> From: linux-acpi-owner(a)vger.kernel.org [mailto:linux-acpi-owner(a)vger.=
+kernel.org] On Behalf Of Zheng,
+> Lv
+> Subject: RE: [PATCH] ACPICA: arm64: fix compile apci tools fail for arm64
+> =
+
+> Hi,
+> =
+
+> > From: linux-acpi-owner(a)vger.kernel.org [mailto:linux-acpi-owner(a)vge=
+r.kernel.org] On Behalf Of
+> Yisheng
+> > Xie
+> > Subject: Re: [PATCH] ACPICA: arm64: fix compile apci tools fail for arm=
+64
+> >
+> > Hi,
+> >
+> > On 2016/10/19 6:07, Zheng, Lv wrote:
+> > > Hi,
+> > >
+> > > I'm not sure what you mean.
+> > > I mean you need ACPI_USE_SYSTEM_INTTYPES in case s64 has already been=
+ defined in that environment.
+> > > Are you sure s64 should be defined for your environment?
+> > >
+> > s64 is not defined in my build environment but in kernel code.
+> =
+
+> Yes, in-kernel ACPICA applications trickily reused this to get it compile=
+d in kernel source tree with
+> minimal porting effort.
+> And it is working on x86.
+> =
+
+> >
+> > > IMO, s64 is kernel space specific, while you are compiling user space=
+ tools.
+> > > It looks to me like there is something wrong with ARM kernel's asm/ty=
+pes.h.
+> > >
+> > >> I listed in change log. And I also have tried that way.
+> > >> However, it still have many other errors.(I am sorry to not have lis=
+ted all of them.)
+> > >>
+> > >> From the following log, you can see, all of the conflict type is fro=
+m signal.h.
+> > >> And maybe this patch is a better way to fix these compile error, wit=
+hout too much
+> > >> change of code.
+> > >>
+> > >> Are you sure that it will cause order problem when build ACPICA on o=
+ther build
+> > >> environment, for it only effect aarch64.
+> > >
+> > > I'm not sure what this is.
+> > > How did you get this?
+> > > Were you compiling kernel acpi tools or compiling the kernel itself?
+> > >
+> > It's about compiling kernel acpi tools.
+> >
+> > > For tool compilation, are you sure you have correctly configured your=
+ cross-compilation
+> environment?
+> > Maybe it is not my cross-compilation environment problem, for your also=
+ can reproduce it,
+> > as your said in another email, right?
+> =
+
+> Yes, I reproduced it.
+> By commenting out <signal.h> inclusion from acenv.h.
+> Tools can be built by aarch64-linux-gnu tool chain downloaded from linaro.
+> =
+
+> However this is still not the root cause, IMO.
+> =
+
+> Thanks
+> Lv
+> =
+
+> >
+> > > Will you see problems in compiling ACPICA applications from:
+> > > https://github.com/acpica/acpica
+> > >
+> >
+> > > Thanks
+> > > Lv
+> > >
+> > > .
+> > >
+> >
+> > --
+> > To unsubscribe from this list: send the line "unsubscribe linux-acpi" in
+> > the body of a message to majordomo(a)vger.kernel.org
+> > More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-acpi" in
+> the body of a message to majordomo(a)vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+--===============7152213567030984700==
+Content-Type: application/octet-stream
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="lv-tools1.patch"
+
+RnJvbTogTHYgWmhlbmcgPGx2LnpoZW5nQGludGVsLmNvbT4KU3ViamVjdDogW1BBVENIXSB0b29s
+cy9wb3dlci9hY3BpOiBSZW1vdmUgZGlyZWN0IGtlcm5lbCBzb3VyY2UgaW5jbHVkZSByZWZlcmVu
+Y2UKCkFDUElDQSB0b29scyB0cmlja2lseSB1c2VzIGludGVnZXIgdHlwZXMsIGFuZCB0cmlja2ls
+eSBpbmNsdWRlcyBrZXJuZWwKaW5jbHVkZSBkaXJlY3RvcnkgZGlyZWN0bHksIHdoaWNoIGJyZWFr
+cyB0b29scyBidWlsZCBmb3Igc29tZSBjcm9zcwpjb21waWxlcnMuIFRoaXMgcGF0Y2ggZml4ZXMg
+dGhpcyBidWlsZCBpc3N1ZS4KClJlcG9ydGVkLWJ5OiBZaXNoZW5nIFhpZSA8eGlleWlzaGVuZzFA
+aHVhd2VpLmNvbT4KU2lnbmVkLW9mZi1ieTogTHYgWmhlbmcgPGx2LnpoZW5nQGludGVsLmNvbT4K
+LS0tCkluZGV4OiBsaW51eC1hY3BpY2EvdG9vbHMvcG93ZXIvYWNwaS9NYWtlZmlsZQo9PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09Ci0tLSBsaW51eC1hY3BpY2Eub3JpZy90b29scy9wb3dlci9hY3BpL01ha2VmaWxlCisrKyBs
+aW51eC1hY3BpY2EvdG9vbHMvcG93ZXIvYWNwaS9NYWtlZmlsZQpAQCAtMTEsMTEgKzExLDE3IEBA
+CiBpbmNsdWRlIC4uLy4uL3NjcmlwdHMvTWFrZWZpbGUuaW5jbHVkZQogCiBhbGw6IGFjcGlkYmcg
+YWNwaWR1bXAgZWMKLWNsZWFuOiBhY3BpZGJnX2NsZWFuIGFjcGlkdW1wX2NsZWFuIGVjX2NsZWFu
+CitjbGVhbjogYWNwaWRiZ19jbGVhbiBhY3BpZHVtcF9jbGVhbiBpbmNsdWRlX2NsZWFuIGVjX2Ns
+ZWFuCiBpbnN0YWxsOiBhY3BpZGJnX2luc3RhbGwgYWNwaWR1bXBfaW5zdGFsbCBlY19pbnN0YWxs
+CiB1bmluc3RhbGw6IGFjcGlkYmdfdW5pbnN0YWxsIGFjcGlkdW1wX3VuaW5zdGFsbCBlY191bmlu
+c3RhbGwKK2luY2x1ZGUvYWNwaToKKwlta2RpciAtcCBpbmNsdWRlCisJbG4gLXMgLi4vLi4vLi4v
+Li4vaW5jbHVkZS9hY3BpIGluY2x1ZGUvYWNwaQoraW5jbHVkZV9jbGVhbjoKKwlybSAtZiBpbmNs
+dWRlL2FjcGkKKwlybSAtcmYgaW5jbHVkZQogCi1hY3BpZGJnIGFjcGlkdW1wIGVjOiBGT1JDRQor
+YWNwaWRiZyBhY3BpZHVtcCBlYzogaW5jbHVkZS9hY3BpIEZPUkNFCiAJJChjYWxsIGRlc2NlbmQs
+dG9vbHMvJEAsYWxsKQogYWNwaWRiZ19jbGVhbiBhY3BpZHVtcF9jbGVhbiBlY19jbGVhbjoKIAkk
+KGNhbGwgZGVzY2VuZCx0b29scy8kKEA6X2NsZWFuPSksY2xlYW4pCkluZGV4OiBsaW51eC1hY3Bp
+Y2EvdG9vbHMvcG93ZXIvYWNwaS90b29scy9hY3BpZGJnL01ha2VmaWxlCj09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KLS0t
+IGxpbnV4LWFjcGljYS5vcmlnL3Rvb2xzL3Bvd2VyL2FjcGkvdG9vbHMvYWNwaWRiZy9NYWtlZmls
+ZQorKysgbGludXgtYWNwaWNhL3Rvb2xzL3Bvd2VyL2FjcGkvdG9vbHMvYWNwaWRiZy9NYWtlZmls
+ZQpAQCAtMTksNyArMTksNyBAQCB2cGF0aCAlLmMgXAogQ0ZMQUdTICs9IC1EQUNQSV9BUFBMSUNB
+VElPTiAtREFDUElfU0lOR0xFX1RIUkVBRCAtREFDUElfREVCVUdHRVJcCiAJLUkuXAogCS1JLi4v
+Li4vLi4vLi4vLi4vZHJpdmVycy9hY3BpL2FjcGljYVwKLQktSS4uLy4uLy4uLy4uLy4uL2luY2x1
+ZGUKKwktSS4uLy4uL2luY2x1ZGUKIExERkxBR1MgKz0gLWxwdGhyZWFkCiBUT09MX09CSlMgPSBc
+CiAJYWNwaWRiZy5vCkluZGV4OiBsaW51eC1hY3BpY2EvdG9vbHMvcG93ZXIvYWNwaS90b29scy9h
+Y3BpZGJnL2FjcGlkYmcuYwo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09Ci0tLSBsaW51eC1hY3BpY2Eub3JpZy90b29scy9w
+b3dlci9hY3BpL3Rvb2xzL2FjcGlkYmcvYWNwaWRiZy5jCisrKyBsaW51eC1hY3BpY2EvdG9vbHMv
+cG93ZXIvYWNwaS90b29scy9hY3BpZGJnL2FjcGlkYmcuYwpAQCAtMTIsMTAgKzEyLDE2IEBACiAj
+aW5jbHVkZSA8YWNwaS9hY3BpLmg+CiAKIC8qIEhlYWRlcnMgbm90IGluY2x1ZGVkIGJ5IGluY2x1
+ZGUvYWNwaS9wbGF0Zm9ybS9hY2xpbnV4LmggKi8KKyNpbmNsdWRlIDx1bmlzdGQuaD4KKyNpbmNs
+dWRlIDxzdGRpby5oPgorI2luY2x1ZGUgPHN0ZGxpYi5oPgorI2luY2x1ZGUgPHN0cmluZy5oPgor
+I2luY2x1ZGUgPGVycm9yLmg+CiAjaW5jbHVkZSA8c3RkYm9vbC5oPgogI2luY2x1ZGUgPGZjbnRs
+Lmg+CiAjaW5jbHVkZSA8YXNzZXJ0Lmg+Ci0jaW5jbHVkZSA8bGludXgvY2lyY19idWYuaD4KKyNp
+bmNsdWRlIDxzeXMvc2VsZWN0Lmg+CisjaW5jbHVkZSAiLi4vLi4vLi4vLi4vLi4vaW5jbHVkZS9s
+aW51eC9jaXJjX2J1Zi5oIgogCiAjZGVmaW5lIEFDUElfQU1MX0ZJTEUJCSIvc3lzL2tlcm5lbC9k
+ZWJ1Zy9hY3BpL2FjcGlkYmciCiAjZGVmaW5lIEFDUElfQU1MX1NFQ19USUNLCTEKSW5kZXg6IGxp
+bnV4LWFjcGljYS90b29scy9wb3dlci9hY3BpL3Rvb2xzL2FjcGlkdW1wL01ha2VmaWxlCj09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT0KLS0tIGxpbnV4LWFjcGljYS5vcmlnL3Rvb2xzL3Bvd2VyL2FjcGkvdG9vbHMvYWNwaWR1
+bXAvTWFrZWZpbGUKKysrIGxpbnV4LWFjcGljYS90b29scy9wb3dlci9hY3BpL3Rvb2xzL2FjcGlk
+dW1wL01ha2VmaWxlCkBAIC0yMSw3ICsyMSw3IEBAIHZwYXRoICUuYyBcCiAJLi4vLi4vb3Nfc3Bl
+Y2lmaWMvc2VydmljZV9sYXllcnMKIENGTEFHUyArPSAtREFDUElfRFVNUF9BUFAgLUkuXAogCS1J
+Li4vLi4vLi4vLi4vLi4vZHJpdmVycy9hY3BpL2FjcGljYVwKLQktSS4uLy4uLy4uLy4uLy4uL2lu
+Y2x1ZGUKKwktSS4uLy4uL2luY2x1ZGUKIFRPT0xfT0JKUyA9IFwKIAlhcGR1bXAub1wKIAlhcGZp
+bGVzLm9cCkluZGV4OiBsaW51eC1hY3BpY2EvaW5jbHVkZS9hY3BpL3BsYXRmb3JtL2FjbGludXgu
+aAo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09Ci0tLSBsaW51eC1hY3BpY2Eub3JpZy9pbmNsdWRlL2FjcGkvcGxhdGZvcm0v
+YWNsaW51eC5oCisrKyBsaW51eC1hY3BpY2EvaW5jbHVkZS9hY3BpL3BsYXRmb3JtL2FjbGludXgu
+aApAQCAtMTkxLDYgKzE5MSw5IEBACiAjaWZuZGVmIF9faW5pdAogI2RlZmluZSBfX2luaXQKICNl
+bmRpZgorI2lmbmRlZiBfX2lvbWVtCisjZGVmaW5lIF9faW9tZW0KKyNlbmRpZgogCiAvKiBIb3N0
+LWRlcGVuZGVudCB0eXBlcyBhbmQgZGVmaW5lcyBmb3IgdXNlci1zcGFjZSBBQ1BJQ0EgKi8KIAo=
+
+--===============7152213567030984700==--
 
