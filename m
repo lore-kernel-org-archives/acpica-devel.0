@@ -1,15 +1,15 @@
-Content-Type: multipart/mixed; boundary="===============5656067686488864035=="
+Content-Type: multipart/mixed; boundary="===============5612735230594817803=="
 MIME-Version: 1.0
 From: Zheng, Lv <lv.zheng at intel.com>
 Subject: Re: [Devel] 4.9-rc1: [TMP_] ACPI namespace lookup failure,
  AE_ALREADY_EXISTS
-Date: Fri, 21 Oct 2016 19:46:01 +0000
-Message-ID: <1AE640813FDE7649BE1B193DEA596E886A256F5B@SHSMSX101.ccr.corp.intel.com>
-In-Reply-To: 1476913001.7633.13.camel@intel.com
+Date: Mon, 24 Oct 2016 06:10:43 +0000
+Message-ID: <1AE640813FDE7649BE1B193DEA596E886A257836@SHSMSX101.ccr.corp.intel.com>
+In-Reply-To: 1477216090.7258.9.camel@intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5656067686488864035==
+--===============5612735230594817803==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
@@ -17,134 +17,57 @@ Content-Transfer-Encoding: quoted-printable
 Hi, Imre
 
 > From: Deak, Imre
-> Subject: 4.9-rc1: [TMP_] ACPI namespace lookup failure, AE_ALREADY_EXISTS
+> Subject: Re: 4.9-rc1: [TMP_] ACPI namespace lookup failure, AE_ALREADY_EX=
+ISTS
 > =
 
-> Hi,
+> On Fri, 2016-10-21 at 22:46 +0300, Zheng, Lv wrote:
+> >=C2=A0[...]
+> > I checked the code, only found one issue.
+> > And I'm not sure if it is related.
+> > Please send me the full dmesg containing the errors and the acpidump
+> > output.
 > =
 
-> after upgrading to 4.9-rc1 I get the following errors occasionally
-> during boot and suspend-to-ram on an APL system:
+> I attached the dmesg containing the error during boot (happened 1 out
+> of 200 boots), during reboot (20 out of 200 reboots), during suspend
+> (happened all the time).
 > =
 
-> [=C2=A0=C2=A0=C2=A059.513434] ACPI Error: [TMP_] Namespace lookup failure=
-, AE_ALREADY_EXISTS (20160831/dswload2-330)
-> [=C2=A0=C2=A0=C2=A059.513446] ACPI Exception: AE_ALREADY_EXISTS, During n=
-ame lookup/catalog (20160831/psobject-227)
-> [=C2=A0=C2=A0=C2=A059.513469] ACPI Error: Method parse/execution failed [=
-\_SB.PCI0.SCPG] (Node=C2=A0ffff8802770b7bb8),
-> AE_ALREADY_EXISTS (20160831/psparse-543)
-> [=C2=A0=C2=A0=C2=A059.515415] ACPI Error: Method parse/execution failed [=
-\_SB.PCI0.SDHA._PS3] (Node ffff8802770b7dc0),
-> AE_ALREADY_EXISTS (20160831/psparse-543)
-> [=C2=A0=C2=A0=C2=A059.517118] ACPI: Marking method _PS3 as Serialized bec=
-ause of AE_ALREADY_EXISTS error
+> I attached the acpidump output.
+
+Thanks for the information.
+
 > =
 
-> Other than these error messages, booting and suspend/resume seems to work=
- ok.
-> Bisecting points to
-> commit 74f51b80a0c4ff84fbeb7f12ea43ce66934d29aa
-> Author: Lv Zheng <lv.zheng(a)intel.com>
-> Date:=C2=A0=C2=A0=C2=A0Wed Sep 7 14:07:10 2016 +0800
+> > Please give the fix a try (see attachment).
 > =
 
-> =C2=A0=C2=A0=C2=A0=C2=A0ACPICA: Namespace: Fix dynamic table loading issu=
-es
-> =
+> The patch didn't apply on 4.9-rc1 or Linus' master, please see the
+> attached patch for my attempt to resolve the conflicts. With the patch
+> applied I could still trigger the same problem during suspend.
 
-> Reverting this on top of 4.9-rc1 gets rid of the error messages.
+Could you pull this branch directly and try again:
+https://github.com/zetalog/linux
+Branch: acpica-lock
 
-I checked the code, only found one issue.
-And I'm not sure if it is related.
-Please send me the full dmesg containing the errors and the acpidump output.
+I've pushed the fix commit there.
 
-Please give the fix a try (see attachment).
-I'm sorry for sending fix patch using attachment.
-It's not convenient for me due to my current working environment.
+Thanks in advance.
 
-Thanks and best regards
+Best regards
 Lv
 
---===============5656067686488864035==
-Content-Type: application/octet-stream
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="lv-lockx.patch"
+> =
 
-RnJvbSA1ZjkxOWY2NmMxNDdjOWZkNGNlMGEzYzgxNDQ4MGFkNTg0NzlkMjUyIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBMdiBaaGVuZyA8bHYuemhlbmdAaW50ZWwuY29tPgpEYXRlOiBT
-YXQsIDIyIE9jdCAyMDE2IDAxOjQxOjAzICswODAwCkZyb206IEx2IFpoZW5nIDxsdi56aGVuZ0Bp
-bnRlbC5jb20+ClN1YmplY3Q6IFtQQVRDSCAwXSBBQ1BJQ0E6IERpc3BhdGNoZXI6IFR1bmUgaW50
-ZXJwcmV0ZXIgbG9jayBhcm91bmQgYWNwaV9ldl9pbml0aWFsaXplX3JlZ2lvbigpCgpJbiBjb2Rl
-IHBhdGggb2YgYWNwaV9ldl9pbml0aWFsaXplX3JlZ2lvbigpLCB0aGVyZSBhcmUgbmFtZXNwYWNl
-IG1vZGlmaWNhdGlvbgpjb2RlIHVubG9ja2VkLiBUaGlzIHBhdGNoIHR1bmVzIHRoZSBjb2RlIHRv
-IG1ha2Ugc3VyZSBzdWNoIG1vZGlmaWNhdGlvbiBhcmUKbG9ja2VkLiBMdiBaaGVuZy4KClNpZ25l
-ZC1vZmYtYnk6IEx2IFpoZW5nIDxsdi56aGVuZ0BpbnRlbC5jb20+Ci0tLQogZHNpbml0LmMgICB8
-ICAgMTMgKysrKystLS0tLS0tLQogZHN3bG9hZDIuYyB8ICAgIDIgLS0KIGV2cmduaW5pLmMgfCAg
-ICAzICsrKwogbnNsb2FkLmMgICB8ICAgIDIgKysKIDQgZmlsZXMgY2hhbmdlZCwgMTAgaW5zZXJ0
-aW9ucygrKSwgMTAgZGVsZXRpb25zKC0pCgpkaWZmIC1OdXJwIGxpbnV4LmJlZm9yZS9kcml2ZXJz
-L2FjcGkvYWNwaWNhL2RzaW5pdC5jIGxpbnV4LmFmdGVyL2RyaXZlcnMvYWNwaS9hY3BpY2EvZHNp
-bml0LmMKLS0tIGxpbnV4LmJlZm9yZS9kcml2ZXJzL2FjcGkvYWNwaWNhL2RzaW5pdC5jCTIwMTYt
-MTAtMjIgMDE6NTA6MDkuNDk2NDMwNTAyICswODAwCisrKyBsaW51eC5hZnRlci9kcml2ZXJzL2Fj
-cGkvYWNwaWNhL2RzaW5pdC5jCTIwMTYtMTAtMjIgMDE6NTA6MDUuOTc2NDMwNDc5ICswODAwCkBA
-IC00Niw2ICs0Niw3IEBACiAjaW5jbHVkZSAiYWNkaXNwYXQuaCIKICNpbmNsdWRlICJhY25hbWVz
-cC5oIgogI2luY2x1ZGUgImFjdGFibGVzLmgiCisjaW5jbHVkZSAiYWNpbnRlcnAuaCIKIAogI2Rl
-ZmluZSBfQ09NUE9ORU5UICAgICAgICAgIEFDUElfRElTUEFUQ0hFUgogQUNQSV9NT0RVTEVfTkFN
-RSgiZHNpbml0IikKQEAgLTE0MCw3ICsxNDEsOSBAQCBhY3BpX2RzX2luaXRfb25lX29iamVjdChh
-Y3BpX2hhbmRsZSBvYmpfCiAKIAkJCS8qIFBhcnNlL3NjYW4gbWV0aG9kIGFuZCBzZXJpYWxpemUg
-aXQgaWYgbmVjZXNzYXJ5ICovCiAKKwkJCWFjcGlfZXhfZXhpdF9pbnRlcnByZXRlcigpOwogCQkJ
-YWNwaV9kc19hdXRvX3NlcmlhbGl6ZV9tZXRob2Qobm9kZSwgb2JqX2Rlc2MpOworCQkJYWNwaV9l
-eF9lbnRlcl9pbnRlcnByZXRlcigpOwogCQkJaWYgKG9ial9kZXNjLT5tZXRob2QuCiAJCQkgICAg
-aW5mb19mbGFncyAmIEFDUElfTUVUSE9EX1NFUklBTElaRUQpIHsKIApAQCAtMjE0LDIzICsyMTcs
-MTcgQEAgYWNwaV9kc19pbml0aWFsaXplX29iamVjdHModTMyIHRhYmxlX2luZAogCiAJLyogV2Fs
-ayBlbnRpcmUgbmFtZXNwYWNlIGZyb20gdGhlIHN1cHBsaWVkIHJvb3QgKi8KIAotCXN0YXR1cyA9
-IGFjcGlfdXRfYWNxdWlyZV9tdXRleChBQ1BJX01UWF9OQU1FU1BBQ0UpOwotCWlmIChBQ1BJX0ZB
-SUxVUkUoc3RhdHVzKSkgewotCQlyZXR1cm5fQUNQSV9TVEFUVVMoc3RhdHVzKTsKLQl9Ci0KIAkv
-KgogCSAqIFdlIGRvbid0IHVzZSBhY3BpX3dhbGtfbmFtZXNwYWNlIHNpbmNlIHdlIGRvIG5vdCB3
-YW50IHRvIGFjcXVpcmUKIAkgKiB0aGUgbmFtZXNwYWNlIHJlYWRlciBsb2NrLgogCSAqLwogCXN0
-YXR1cyA9CiAJICAgIGFjcGlfbnNfd2Fsa19uYW1lc3BhY2UoQUNQSV9UWVBFX0FOWSwgc3RhcnRf
-bm9kZSwgQUNQSV9VSU5UMzJfTUFYLAotCQkJCSAgIEFDUElfTlNfV0FMS19VTkxPQ0ssIGFjcGlf
-ZHNfaW5pdF9vbmVfb2JqZWN0LAotCQkJCSAgIE5VTEwsICZpbmZvLCBOVUxMKTsKKwkJCQkgICAw
-LCBhY3BpX2RzX2luaXRfb25lX29iamVjdCwgTlVMTCwgJmluZm8sCisJCQkJICAgTlVMTCk7CiAJ
-aWYgKEFDUElfRkFJTFVSRShzdGF0dXMpKSB7CiAJCUFDUElfRVhDRVBUSU9OKChBRV9JTkZPLCBz
-dGF0dXMsICJEdXJpbmcgV2Fsa05hbWVzcGFjZSIpKTsKIAl9Ci0JKHZvaWQpYWNwaV91dF9yZWxl
-YXNlX211dGV4KEFDUElfTVRYX05BTUVTUEFDRSk7CiAKIAlzdGF0dXMgPSBhY3BpX2dldF90YWJs
-ZV9ieV9pbmRleCh0YWJsZV9pbmRleCwgJnRhYmxlKTsKIAlpZiAoQUNQSV9GQUlMVVJFKHN0YXR1
-cykpIHsKZGlmZiAtTnVycCBsaW51eC5iZWZvcmUvZHJpdmVycy9hY3BpL2FjcGljYS9kc3dsb2Fk
-Mi5jIGxpbnV4LmFmdGVyL2RyaXZlcnMvYWNwaS9hY3BpY2EvZHN3bG9hZDIuYwotLS0gbGludXgu
-YmVmb3JlL2RyaXZlcnMvYWNwaS9hY3BpY2EvZHN3bG9hZDIuYwkyMDE2LTEwLTIyIDAxOjUwOjA5
-LjQ4MDQzMDUwMiArMDgwMAorKysgbGludXguYWZ0ZXIvZHJpdmVycy9hY3BpL2FjcGljYS9kc3ds
-b2FkMi5jCTIwMTYtMTAtMjIgMDE6NTA6MDUuOTYwNDMwNDc5ICswODAwCkBAIC02MDcsMTEgKzYw
-Nyw5IEBAIGFjcGlfc3RhdHVzIGFjcGlfZHNfbG9hZDJfZW5kX29wKHN0cnVjdAogCQkJCX0KIAkJ
-CX0KIAotCQkJYWNwaV9leF9leGl0X2ludGVycHJldGVyKCk7CiAJCQlzdGF0dXMgPQogCQkJICAg
-IGFjcGlfZXZfaW5pdGlhbGl6ZV9yZWdpb24KIAkJCSAgICAoYWNwaV9uc19nZXRfYXR0YWNoZWRf
-b2JqZWN0KG5vZGUpKTsKLQkJCWFjcGlfZXhfZW50ZXJfaW50ZXJwcmV0ZXIoKTsKIAkJCWJyZWFr
-OwogCiAJCWNhc2UgQU1MX05BTUVfT1A6CmRpZmYgLU51cnAgbGludXguYmVmb3JlL2RyaXZlcnMv
-YWNwaS9hY3BpY2EvZXZyZ25pbmkuYyBsaW51eC5hZnRlci9kcml2ZXJzL2FjcGkvYWNwaWNhL2V2
-cmduaW5pLmMKLS0tIGxpbnV4LmJlZm9yZS9kcml2ZXJzL2FjcGkvYWNwaWNhL2V2cmduaW5pLmMJ
-MjAxNi0xMC0yMiAwMTo1MDowOS40ODQ0MzA1MDIgKzA4MDAKKysrIGxpbnV4LmFmdGVyL2RyaXZl
-cnMvYWNwaS9hY3BpY2EvZXZyZ25pbmkuYwkyMDE2LTEwLTIyIDAxOjUwOjA1Ljk2NDQzMDQ3OSAr
-MDgwMApAQCAtNDUsNiArNDUsNyBAQAogI2luY2x1ZGUgImFjY29tbW9uLmgiCiAjaW5jbHVkZSAi
-YWNldmVudHMuaCIKICNpbmNsdWRlICJhY25hbWVzcC5oIgorI2luY2x1ZGUgImFjaW50ZXJwLmgi
-CiAKICNkZWZpbmUgX0NPTVBPTkVOVCAgICAgICAgICBBQ1BJX0VWRU5UUwogQUNQSV9NT0RVTEVf
-TkFNRSgiZXZyZ25pbmkiKQpAQCAtNTk0LDggKzU5NSwxMCBAQCBhY3BpX3N0YXR1cyBhY3BpX2V2
-X2luaXRpYWxpemVfcmVnaW9uKHVuCiAJCQkJICogVGVsbCBhbGwgdXNlcnMgdGhhdCB0aGlzIHJl
-Z2lvbiBpcyB1c2FibGUgYnkKIAkJCQkgKiBydW5uaW5nIHRoZSBfUkVHIG1ldGhvZAogCQkJCSAq
-LworCQkJCWFjcGlfZXhfZXhpdF9pbnRlcnByZXRlcigpOwogCQkJCSh2b2lkKWFjcGlfZXZfZXhl
-Y3V0ZV9yZWdfbWV0aG9kKHJlZ2lvbl9vYmosCiAJCQkJCQkJCSBBQ1BJX1JFR19DT05ORUNUKTsK
-KwkJCQlhY3BpX2V4X2VudGVyX2ludGVycHJldGVyKCk7CiAJCQkJcmV0dXJuX0FDUElfU1RBVFVT
-KEFFX09LKTsKIAkJCX0KIAkJfQpkaWZmIC1OdXJwIGxpbnV4LmJlZm9yZS9kcml2ZXJzL2FjcGkv
-YWNwaWNhL25zbG9hZC5jIGxpbnV4LmFmdGVyL2RyaXZlcnMvYWNwaS9hY3BpY2EvbnNsb2FkLmMK
-LS0tIGxpbnV4LmJlZm9yZS9kcml2ZXJzL2FjcGkvYWNwaWNhL25zbG9hZC5jCTIwMTYtMTAtMjIg
-MDE6NTA6MDkuNDk2NDMwNTAyICswODAwCisrKyBsaW51eC5hZnRlci9kcml2ZXJzL2FjcGkvYWNw
-aWNhL25zbG9hZC5jCTIwMTYtMTAtMjIgMDE6NTA6MDUuOTc2NDMwNDc5ICswODAwCkBAIC0xMzcs
-NyArMTM3LDkgQEAgdW5sb2NrOgogCUFDUElfREVCVUdfUFJJTlQoKEFDUElfREJfSU5GTywKIAkJ
-CSAgIioqKiogQmVnaW4gVGFibGUgT2JqZWN0IEluaXRpYWxpemF0aW9uXG4iKSk7CiAKKwlhY3Bp
-X2V4X2VudGVyX2ludGVycHJldGVyKCk7CiAJc3RhdHVzID0gYWNwaV9kc19pbml0aWFsaXplX29i
-amVjdHModGFibGVfaW5kZXgsIG5vZGUpOworCWFjcGlfZXhfZXhpdF9pbnRlcnByZXRlcigpOwog
-CiAJQUNQSV9ERUJVR19QUklOVCgoQUNQSV9EQl9JTkZPLAogCQkJICAiKioqKiBDb21wbGV0ZWQg
-VGFibGUgT2JqZWN0IEluaXRpYWxpemF0aW9uXG4iKSk7Cg==
+> --Imre
+> =
 
---===============5656067686488864035==--
+> > I'm sorry for sending fix patch using attachment.
+> > It's not convenient for me due to my current working environment.
+> >
+> > Thanks and best regards
+> > Lv
+
+--===============5612735230594817803==--
 
