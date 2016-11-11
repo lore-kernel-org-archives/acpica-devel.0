@@ -1,174 +1,245 @@
-Content-Type: multipart/mixed; boundary="===============7765045290605642585=="
+Content-Type: multipart/mixed; boundary="===============5949171296310576739=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] 4.9-rc1: [TMP_] ACPI namespace lookup failure,
- AE_ALREADY_EXISTS
-Date: Thu, 27 Oct 2016 15:31:47 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E51855E@ORSMSX110.amr.corp.intel.com>
-In-Reply-To: 1AE640813FDE7649BE1B193DEA596E886A2579A5@SHSMSX101.ccr.corp.intel.com
+From: Kein Yuan <kein.yuan at yahoo.com>
+Subject: [Devel] Question about the code in
+ source/components/hardware/hwxfsleep.c
+Date: Fri, 11 Nov 2016 23:53:18 +0000
+Message-ID: <1726054798.2937692.1478908398300@mail.yahoo.com>
+In-Reply-To: 1726054798.2937692.1478908398300.ref@mail.yahoo.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7765045290605642585==
+--===============5949171296310576739==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
+Hi ACPICA experts,=C2=A0 =C2=A0A quick question,=C2=A0
+File: source/components/hardware/hwxfsleep.cFunction: AcpiHwSetFirmwareWaki=
+ngVector
+static ACPI_STATUSAcpiHwSetFirmwareWakingVector (=C2=A0 =C2=A0 ACPI_TABLE_F=
+ACS =C2=A0 =C2=A0 =C2=A0 =C2=A0 *Facs,=C2=A0 =C2=A0 ACPI_PHYSICAL_ADDRESS =
+=C2=A0 PhysicalAddress,=C2=A0 =C2=A0 ACPI_PHYSICAL_ADDRESS =C2=A0 PhysicalA=
+ddress64){=C2=A0 =C2=A0 ACPI_FUNCTION_TRACE (AcpiHwSetFirmwareWakingVector);
+
+=C2=A0 =C2=A0 /*=C2=A0 =C2=A0 =C2=A0* According to the ACPI specification 2=
+.0c and later, the 64-bit=C2=A0 =C2=A0 =C2=A0* waking vector should be clea=
+red and the 32-bit waking vector should=C2=A0 =C2=A0 =C2=A0* be used, unles=
+s we want the wake-up code to be called by the BIOS in=C2=A0 =C2=A0 =C2=A0*=
+ Protected Mode. Some systems (for example HP dv5-1004nr) are known=C2=A0 =
+=C2=A0 =C2=A0* to fail to resume if the 64-bit vector is used.=C2=A0 =C2=A0=
+ =C2=A0*/
+=C2=A0 =C2=A0 /* Set the 32-bit vector */
+=C2=A0 =C2=A0 Facs->FirmwareWakingVector =3D (UINT32) PhysicalAddress;
+=C2=A0 =C2=A0 if (Facs->Length > 32) =C2=A0 // ---------------------> Quest=
+ion for this compare=C2=A0 =C2=A0 {=C2=A0 =C2=A0 =C2=A0 =C2=A0 if (Facs->Ve=
+rsion >=3D 1)=C2=A0 =C2=A0 =C2=A0 =C2=A0 {=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 /* Set the 64-bit vector */
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Facs->XFirmwareWakingVector =3D P=
+hysicalAddress64;=C2=A0 =C2=A0 =C2=A0 =C2=A0 }=C2=A0 =C2=A0 =C2=A0 =C2=A0 e=
+lse=C2=A0 =C2=A0 =C2=A0 =C2=A0 {=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 /=
+* Clear the 64-bit vector if it exists */
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Facs->XFirmwareWakingVector =3D 0=
+;=C2=A0 =C2=A0 =C2=A0 =C2=A0 }=C2=A0 =C2=A0 }
+=C2=A0 =C2=A0 return_ACPI_STATUS (AE_OK);}
+Since the FACS structure defined as:typedef struct acpi_table_facs{=C2=A0 =
+=C2=A0 char =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0Signature[4]; =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 /* ASCII table signa=
+ture */=C2=A0 =C2=A0 UINT32 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0Length; =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 /* Length of structure, in bytes */=C2=A0 =C2=A0 UINT32 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0HardwareSignature; =C2=
+=A0 =C2=A0 =C2=A0/* Hardware configuration signature */=C2=A0 =C2=A0 UINT32=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0FirmwareWaki=
+ngVector; =C2=A0 /* 32-bit physical address of the Firmware Waking Vector *=
+/=C2=A0 =C2=A0 UINT32 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0GlobalLock; =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 /* Global L=
+ock for shared hardware resources */=C2=A0 =C2=A0 UINT32 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Flags;=C2=A0 =C2=A0 UINT64 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0XFirmwareWakingV=
+ector; =C2=A0/* 64-bit version of the Firmware Waking Vector (ACPI 2.0+) */=
+=C2=A0 =C2=A0 UINT8 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 Version; =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0/* =
+Version of this table (ACPI 2.0+) */=C2=A0 =C2=A0 UINT8 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Reserved[3]; =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0/* Reserved, must be zero */=C2=A0 =C2=A0 UINT32=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0OspmFlags; =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0/* Flags to be set by OSPM =
+(ACPI 4.0) */=C2=A0 =C2=A0 UINT8 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 Reserved1[24]; =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0/* Re=
+served, must be zero */
+} ACPI_TABLE_FACS;
+
+May I know in what case Facs->Length < 32?
+If looks to me that Facs->XFirmwareWakingVector =3D PhysicalAddress64; will=
+ always be executed?
+Thanks,Kein
 
 
-> -----Original Message-----
-> From: Zheng, Lv
-> Sent: Monday, October 24, 2016 12:36 AM
-> To: Deak, Imre <imre.deak(a)intel.com>; Moore, Robert
-> <robert.moore(a)intel.com>; Wysocki, Rafael J
-> <rafael.j.wysocki(a)intel.com>; linux-acpi(a)vger.kernel.org;
-> devel(a)acpica.org
-> Subject: RE: 4.9-rc1: [TMP_] ACPI namespace lookup failure,
-> AE_ALREADY_EXISTS
-> =
-
-> Hi, Imre
-> =
-
-> > From: Deak, Imre
-> > Subject: Re: 4.9-rc1: [TMP_] ACPI namespace lookup failure,
-> > AE_ALREADY_EXISTS
-> >
-> > On Fri, 2016-10-21 at 22:46 +0300, Zheng, Lv wrote:
-> > >=C2=A0[...]
-> > > I checked the code, only found one issue.
-> > > And I'm not sure if it is related.
-> > > Please send me the full dmesg containing the errors and the acpidump
-> > >output.
-> >
-> > I attached the dmesg containing the error during boot (happened 1 out
-> > of 200 boots), during reboot (20 out of 200 reboots), during suspend
-> > (happened all the time).
-> =
-
-> I just checked the error and the related code.
-> =
-
-> 1. What the error is
-> The error message is generated by an old method auto-serial mechanism.
-> However this mechanism should have been disabled by new auto-serial
-> approach.
-[Moore, Robert] =
 
 
+--===============5949171296310576739==
+Content-Type: text/html
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="attachment.html"
 
-We kept the original auto-serialize mechanism because the new one is not 10=
-0% deterministic. Thus, the original mechanism is a fallback case, that is =
-why it is still there. It should not be removed.
-
-
-
-
-
-> =
-
-> See: the error is generated by the code in
-> drivers/acpi/acpica/psparse.c:
-> 			if ((status =3D=3D AE_ALREADY_EXISTS) &&
-> 			    (!(walk_state->method_desc->method.
-> 			       info_flags & ACPI_METHOD_SERIALIZED))) {
-> 				/*
-> 				 * Method is not serialized and tried to create an
-> object
-> 				 * twice. The probable cause is that the method
-> cannot
-> 				 * handle reentrancy. Mark as "pending serialized"
-> now, and
-> 				 * then mark "serialized" when the last thread
-> exits.
-> 				 */
-> 				walk_state->method_desc->method.info_flags |=3D
-> 				    ACPI_METHOD_SERIALIZED_PENDING;
-> 			}
-> It can only happen when ACPI_METHOD_SERIALIZED flag is not set.
-> However, in the upstream kernel, this flag is set by the code in
-> drivers/acpi/acpica/dsinit.c:
-> 		if (obj_desc->method.info_flags & ACPI_METHOD_SERIALIZED) {
-> 			info->serial_method_count++;
-> 			break;
-> 		}
-> =
-
-> 		if (acpi_gbl_auto_serialize_methods) {
-> =
-
-> 			/* Parse/scan method and serialize it if necessary */
-> =
-
-> 			acpi_ds_auto_serialize_method(node, obj_desc);
-> 			if (obj_desc->method.
-> 			    info_flags & ACPI_METHOD_SERIALIZED) {
-> =
-
-> 				/* Method was just converted to Serialized */
-> =
-
-> 				info->serial_method_count++;
-> 				info->serialized_method_count++;
-> 				break;
-> 			}
-> 		}
-> Which is invoked by acpi_ds_initialize_objects(), always invoked in
-> acpi_ns_load_table().
-> Unless acpi_gbl_auto_serialize_methods =3D false or acpi_ns_parse_table()
-> failed, the flag won't be remained unset.
-> =
-
-> The error message is generated by old auto-serialize implementation.
-> And acpi_gbl_auto_serialize_methods is meant to mute the warnings.
-> =
-
-> Both mechanism should work, thus this error message is not fatal.
-> It just makes ACPICA to fall back to use old auto-serial method.
-> So the issue is not urgent.
-> =
-
-> 2. Why the error message is caused
-> I couldn't see whether the bisected commit can be related to this
-> feature.
-> It seems we need your help to debug what the problem is.
-> =
-
-> First, please try the mentioned branch here:
-> https://github.com/zetalog/linux
-> acpica-lock branch.
-> =
-
-> As I may need to ask for several debugging steps, let me file a kernel
-> Bugzilla bug for this.
-> So that we can communicate there in order not to bother others:
-> =
-
-> https://bugzilla.kernel.org/show_bug.cgi?id=3D180111
-> =
-
-> Thanks and best regards
-> Lv
-> =
-
-> =
-
-> >
-> > I attached the acpidump output.
-> >
-> > > Please give the fix a try (see attachment).
-> >
-> > The patch didn't apply on 4.9-rc1 or Linus' master, please see the
-> > attached patch for my attempt to resolve the conflicts. With the patch
-> > applied I could still trigger the same problem during suspend.
-> >
-> > --Imre
-> >
-> > > I'm sorry for sending fix patch using attachment.
-> > > It's not convenient for me due to my current working environment.
-> > >
-> > > Thanks and best regards
-> > > Lv
-
---===============7765045290605642585==--
+PGh0bWw+PGhlYWQ+PC9oZWFkPjxib2R5PjxkaXYgc3R5bGU9ImNvbG9yOiMwMDA7IGJhY2tncm91
+bmQtY29sb3I6I2ZmZjsgZm9udC1mYW1pbHk6Ym9va21hbiBvbGQgc3R5bGUsIG5ldyB5b3JrLCB0
+aW1lcywgc2VyaWY7Zm9udC1zaXplOjE2cHgiPjxkaXYgaWQ9Inl1aV8zXzE2XzBfeW0xOV8xXzE0
+Nzg5MDgwODk4MzNfMzk2NyI+SGkgQUNQSUNBIGV4cGVydHMsPC9kaXY+PGRpdiBpZD0ieXVpXzNf
+MTZfMF95bTE5XzFfMTQ3ODkwODA4OTgzM18zOTY4Ij4mbmJzcDsgJm5ic3A7QSBxdWljayBxdWVz
+dGlvbiwmbmJzcDs8L2Rpdj48ZGl2IGlkPSJ5dWlfM18xNl8wX3ltMTlfMV8xNDc4OTA4MDg5ODMz
+XzM5NjkiPjxiciBpZD0ieXVpXzNfMTZfMF95bTE5XzFfMTQ3ODkwODA4OTgzM18zOTcwIj48L2Rp
+dj48ZGl2IGlkPSJ5dWlfM18xNl8wX3ltMTlfMV8xNDc4OTA4MDg5ODMzXzM5NzEiPkZpbGU6IHNv
+dXJjZS9jb21wb25lbnRzL2hhcmR3YXJlL2h3eGZzbGVlcC5jPC9kaXY+PGRpdiBpZD0ieXVpXzNf
+MTZfMF95bTE5XzFfMTQ3ODkwODA4OTgzM18zOTcyIj5GdW5jdGlvbjogQWNwaUh3U2V0RmlybXdh
+cmVXYWtpbmdWZWN0b3I8L2Rpdj48ZGl2IGlkPSJ5dWlfM18xNl8wX3ltMTlfMV8xNDc4OTA4MDg5
+ODMzXzM5NzMiPjxiciBpZD0ieXVpXzNfMTZfMF95bTE5XzFfMTQ3ODkwODA4OTgzM18zOTc0Ij48
+L2Rpdj48ZGl2IGlkPSJ5dWlfM18xNl8wX3ltMTlfMV8xNDc4OTA4MDg5ODMzXzM5NzUiPnN0YXRp
+YyBBQ1BJX1NUQVRVUzwvZGl2PjxkaXYgaWQ9Inl1aV8zXzE2XzBfeW0xOV8xXzE0Nzg5MDgwODk4
+MzNfMzk3NiI+QWNwaUh3U2V0RmlybXdhcmVXYWtpbmdWZWN0b3IgKDwvZGl2PjxkaXYgaWQ9Inl1
+aV8zXzE2XzBfeW0xOV8xXzE0Nzg5MDgwODk4MzNfMzk3NyI+Jm5ic3A7ICZuYnNwOyBBQ1BJX1RB
+QkxFX0ZBQ1MgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICpGYWNzLDwvZGl2PjxkaXYgaWQ9
+Inl1aV8zXzE2XzBfeW0xOV8xXzE0Nzg5MDgwODk4MzNfMzk3OCI+Jm5ic3A7ICZuYnNwOyBBQ1BJ
+X1BIWVNJQ0FMX0FERFJFU1MgJm5ic3A7IFBoeXNpY2FsQWRkcmVzcyw8L2Rpdj48ZGl2IGlkPSJ5
+dWlfM18xNl8wX3ltMTlfMV8xNDc4OTA4MDg5ODMzXzM5NzkiPiZuYnNwOyAmbmJzcDsgQUNQSV9Q
+SFlTSUNBTF9BRERSRVNTICZuYnNwOyBQaHlzaWNhbEFkZHJlc3M2NCk8L2Rpdj48ZGl2IGlkPSJ5
+dWlfM18xNl8wX3ltMTlfMV8xNDc4OTA4MDg5ODMzXzM5ODAiPns8L2Rpdj48ZGl2IGlkPSJ5dWlf
+M18xNl8wX3ltMTlfMV8xNDc4OTA4MDg5ODMzXzM5ODEiPiZuYnNwOyAmbmJzcDsgQUNQSV9GVU5D
+VElPTl9UUkFDRSAoQWNwaUh3U2V0RmlybXdhcmVXYWtpbmdWZWN0b3IpOzwvZGl2PjxkaXYgaWQ9
+Inl1aV8zXzE2XzBfeW0xOV8xXzE0Nzg5MDgwODk4MzNfMzk4MiI+PGJyIGlkPSJ5dWlfM18xNl8w
+X3ltMTlfMV8xNDc4OTA4MDg5ODMzXzM5ODMiPjwvZGl2PjxkaXYgaWQ9Inl1aV8zXzE2XzBfeW0x
+OV8xXzE0Nzg5MDgwODk4MzNfMzk4NCI+PGJyIGlkPSJ5dWlfM18xNl8wX3ltMTlfMV8xNDc4OTA4
+MDg5ODMzXzM5ODUiPjwvZGl2PjxkaXYgaWQ9Inl1aV8zXzE2XzBfeW0xOV8xXzE0Nzg5MDgwODk4
+MzNfMzk4NiI+Jm5ic3A7ICZuYnNwOyAvKjwvZGl2PjxkaXYgaWQ9Inl1aV8zXzE2XzBfeW0xOV8x
+XzE0Nzg5MDgwODk4MzNfMzk4NyI+Jm5ic3A7ICZuYnNwOyAmbmJzcDsqIEFjY29yZGluZyB0byB0
+aGUgQUNQSSBzcGVjaWZpY2F0aW9uIDIuMGMgYW5kIGxhdGVyLCB0aGUgNjQtYml0PC9kaXY+PGRp
+diBpZD0ieXVpXzNfMTZfMF95bTE5XzFfMTQ3ODkwODA4OTgzM18zOTg4Ij4mbmJzcDsgJm5ic3A7
+ICZuYnNwOyogd2FraW5nIHZlY3RvciBzaG91bGQgYmUgY2xlYXJlZCBhbmQgdGhlIDMyLWJpdCB3
+YWtpbmcgdmVjdG9yIHNob3VsZDwvZGl2PjxkaXYgaWQ9Inl1aV8zXzE2XzBfeW0xOV8xXzE0Nzg5
+MDgwODk4MzNfMzk4OSI+Jm5ic3A7ICZuYnNwOyAmbmJzcDsqIGJlIHVzZWQsIHVubGVzcyB3ZSB3
+YW50IHRoZSB3YWtlLXVwIGNvZGUgdG8gYmUgY2FsbGVkIGJ5IHRoZSBCSU9TIGluPC9kaXY+PGRp
+diBpZD0ieXVpXzNfMTZfMF95bTE5XzFfMTQ3ODkwODA4OTgzM18zOTkwIj4mbmJzcDsgJm5ic3A7
+ICZuYnNwOyogUHJvdGVjdGVkIE1vZGUuIFNvbWUgc3lzdGVtcyAoZm9yIGV4YW1wbGUgSFAgZHY1
+LTEwMDRucikgYXJlIGtub3duPC9kaXY+PGRpdiBpZD0ieXVpXzNfMTZfMF95bTE5XzFfMTQ3ODkw
+ODA4OTgzM18zOTkxIj4mbmJzcDsgJm5ic3A7ICZuYnNwOyogdG8gZmFpbCB0byByZXN1bWUgaWYg
+dGhlIDY0LWJpdCB2ZWN0b3IgaXMgdXNlZC48L2Rpdj48ZGl2IGlkPSJ5dWlfM18xNl8wX3ltMTlf
+MV8xNDc4OTA4MDg5ODMzXzM5OTIiPiZuYnNwOyAmbmJzcDsgJm5ic3A7Ki88L2Rpdj48ZGl2IGlk
+PSJ5dWlfM18xNl8wX3ltMTlfMV8xNDc4OTA4MDg5ODMzXzM5OTMiPjxiciBpZD0ieXVpXzNfMTZf
+MF95bTE5XzFfMTQ3ODkwODA4OTgzM18zOTk0Ij48L2Rpdj48ZGl2IGlkPSJ5dWlfM18xNl8wX3lt
+MTlfMV8xNDc4OTA4MDg5ODMzXzM5OTUiPiZuYnNwOyAmbmJzcDsgLyogU2V0IHRoZSAzMi1iaXQg
+dmVjdG9yICovPC9kaXY+PGRpdiBpZD0ieXVpXzNfMTZfMF95bTE5XzFfMTQ3ODkwODA4OTgzM18z
+OTk2Ij48YnIgaWQ9Inl1aV8zXzE2XzBfeW0xOV8xXzE0Nzg5MDgwODk4MzNfMzk5NyI+PC9kaXY+
+PGRpdiBpZD0ieXVpXzNfMTZfMF95bTE5XzFfMTQ3ODkwODA4OTgzM18zOTk4Ij4mbmJzcDsgJm5i
+c3A7IEZhY3MtJmd0O0Zpcm13YXJlV2FraW5nVmVjdG9yID0gKFVJTlQzMikgUGh5c2ljYWxBZGRy
+ZXNzOzwvZGl2PjxkaXYgaWQ9Inl1aV8zXzE2XzBfeW0xOV8xXzE0Nzg5MDgwODk4MzNfMzk5OSI+
+PGJyIGlkPSJ5dWlfM18xNl8wX3ltMTlfMV8xNDc4OTA4MDg5ODMzXzQwMDAiPjwvZGl2PjxkaXYg
+aWQ9Inl1aV8zXzE2XzBfeW0xOV8xXzE0Nzg5MDgwODk4MzNfNDAwMSI+Jm5ic3A7ICZuYnNwOyBp
+ZiAoRmFjcy0mZ3Q7TGVuZ3RoICZndDsgMzIpICZuYnNwOyAvLyAtLS0tLS0tLS0tLS0tLS0tLS0t
+LS0mZ3Q7IFF1ZXN0aW9uIGZvciB0aGlzIGNvbXBhcmU8L2Rpdj48ZGl2IGlkPSJ5dWlfM18xNl8w
+X3ltMTlfMV8xNDc4OTA4MDg5ODMzXzQwMDIiPiZuYnNwOyAmbmJzcDsgezwvZGl2PjxkaXYgaWQ9
+Inl1aV8zXzE2XzBfeW0xOV8xXzE0Nzg5MDgwODk4MzNfNDAwMyI+Jm5ic3A7ICZuYnNwOyAmbmJz
+cDsgJm5ic3A7IGlmIChGYWNzLSZndDtWZXJzaW9uICZndDs9IDEpPC9kaXY+PGRpdiBpZD0ieXVp
+XzNfMTZfMF95bTE5XzFfMTQ3ODkwODA4OTgzM180MDA0Ij4mbmJzcDsgJm5ic3A7ICZuYnNwOyAm
+bmJzcDsgezwvZGl2PjxkaXYgaWQ9Inl1aV8zXzE2XzBfeW0xOV8xXzE0Nzg5MDgwODk4MzNfNDAw
+NSI+Jm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgLyogU2V0IHRoZSA2
+NC1iaXQgdmVjdG9yICovPC9kaXY+PGRpdiBpZD0ieXVpXzNfMTZfMF95bTE5XzFfMTQ3ODkwODA4
+OTgzM180MDA2Ij48YnIgaWQ9Inl1aV8zXzE2XzBfeW0xOV8xXzE0Nzg5MDgwODk4MzNfNDAwNyI+
+PC9kaXY+PGRpdiBpZD0ieXVpXzNfMTZfMF95bTE5XzFfMTQ3ODkwODA4OTgzM180MDA4Ij4mbmJz
+cDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyBGYWNzLSZndDtYRmlybXdhcmVX
+YWtpbmdWZWN0b3IgPSBQaHlzaWNhbEFkZHJlc3M2NDs8L2Rpdj48ZGl2IGlkPSJ5dWlfM18xNl8w
+X3ltMTlfMV8xNDc4OTA4MDg5ODMzXzQwMDkiPiZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyB9
+PC9kaXY+PGRpdiBpZD0ieXVpXzNfMTZfMF95bTE5XzFfMTQ3ODkwODA4OTgzM180MDEwIj4mbmJz
+cDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgZWxzZTwvZGl2PjxkaXYgaWQ9Inl1aV8zXzE2XzBfeW0x
+OV8xXzE0Nzg5MDgwODk4MzNfNDAxMSI+Jm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7IHs8L2Rp
+dj48ZGl2IGlkPSJ5dWlfM18xNl8wX3ltMTlfMV8xNDc4OTA4MDg5ODMzXzQwMTIiPiZuYnNwOyAm
+bmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7IC8qIENsZWFyIHRoZSA2NC1iaXQgdmVj
+dG9yIGlmIGl0IGV4aXN0cyAqLzwvZGl2PjxkaXYgaWQ9Inl1aV8zXzE2XzBfeW0xOV8xXzE0Nzg5
+MDgwODk4MzNfNDAxMyI+PGJyIGlkPSJ5dWlfM18xNl8wX3ltMTlfMV8xNDc4OTA4MDg5ODMzXzQw
+MTQiPjwvZGl2PjxkaXYgaWQ9Inl1aV8zXzE2XzBfeW0xOV8xXzE0Nzg5MDgwODk4MzNfNDAxNSI+
+Jm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgRmFjcy0mZ3Q7WEZpcm13
+YXJlV2FraW5nVmVjdG9yID0gMDs8L2Rpdj48ZGl2IGlkPSJ5dWlfM18xNl8wX3ltMTlfMV8xNDc4
+OTA4MDg5ODMzXzQwMTYiPiZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyB9PC9kaXY+PGRpdiBp
+ZD0ieXVpXzNfMTZfMF95bTE5XzFfMTQ3ODkwODA4OTgzM180MDE3Ij4mbmJzcDsgJm5ic3A7IH08
+L2Rpdj48ZGl2IGlkPSJ5dWlfM18xNl8wX3ltMTlfMV8xNDc4OTA4MDg5ODMzXzQwMTgiPjxiciBp
+ZD0ieXVpXzNfMTZfMF95bTE5XzFfMTQ3ODkwODA4OTgzM180MDE5Ij48L2Rpdj48ZGl2IGlkPSJ5
+dWlfM18xNl8wX3ltMTlfMV8xNDc4OTA4MDg5ODMzXzQwMjAiPiZuYnNwOyAmbmJzcDsgcmV0dXJu
+X0FDUElfU1RBVFVTIChBRV9PSyk7PC9kaXY+PGRpdiBpZD0ieXVpXzNfMTZfMF95bTE5XzFfMTQ3
+ODkwODA4OTgzM180MDIxIj59PC9kaXY+PGRpdiBpZD0ieXVpXzNfMTZfMF95bTE5XzFfMTQ3ODkw
+ODA4OTgzM180MDIyIj48YnIgaWQ9Inl1aV8zXzE2XzBfeW0xOV8xXzE0Nzg5MDgwODk4MzNfNDAy
+MyI+PC9kaXY+PGRpdiBpZD0ieXVpXzNfMTZfMF95bTE5XzFfMTQ3ODkwODA4OTgzM180MDI0Ij5T
+aW5jZSB0aGUgRkFDUyBzdHJ1Y3R1cmUgZGVmaW5lZCBhczo8L2Rpdj48ZGl2IGlkPSJ5dWlfM18x
+Nl8wX3ltMTlfMV8xNDc4OTA4MDg5ODMzXzQwMjUiPnR5cGVkZWYgc3RydWN0IGFjcGlfdGFibGVf
+ZmFjczwvZGl2PjxkaXYgaWQ9Inl1aV8zXzE2XzBfeW0xOV8xXzE0Nzg5MDgwODk4MzNfNDAyNiI+
+ezwvZGl2PjxkaXYgaWQ9Inl1aV8zXzE2XzBfeW0xOV8xXzE0Nzg5MDgwODk4MzNfNDAyNyI+Jm5i
+c3A7ICZuYnNwOyBjaGFyICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7
+ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwO1NpZ25hdHVyZVs0XTsgJm5ic3A7ICZuYnNwOyAm
+bmJzcDsgJm5ic3A7ICZuYnNwOyAvKiBBU0NJSSB0YWJsZSBzaWduYXR1cmUgKi88L2Rpdj48ZGl2
+IGlkPSJ5dWlfM18xNl8wX3ltMTlfMV8xNDc4OTA4MDg5ODMzXzQwMjgiPiZuYnNwOyAmbmJzcDsg
+VUlOVDMyICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAm
+bmJzcDsgJm5ic3A7TGVuZ3RoOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZu
+YnNwOyAmbmJzcDsgJm5ic3A7IC8qIExlbmd0aCBvZiBzdHJ1Y3R1cmUsIGluIGJ5dGVzICovPC9k
+aXY+PGRpdiBpZD0ieXVpXzNfMTZfMF95bTE5XzFfMTQ3ODkwODA4OTgzM180MDI5Ij4mbmJzcDsg
+Jm5ic3A7IFVJTlQzMiAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAm
+bmJzcDsgJm5ic3A7ICZuYnNwO0hhcmR3YXJlU2lnbmF0dXJlOyAmbmJzcDsgJm5ic3A7ICZuYnNw
+Oy8qIEhhcmR3YXJlIGNvbmZpZ3VyYXRpb24gc2lnbmF0dXJlICovPC9kaXY+PGRpdiBpZD0ieXVp
+XzNfMTZfMF95bTE5XzFfMTQ3ODkwODA4OTgzM180MDMwIj4mbmJzcDsgJm5ic3A7IFVJTlQzMiAm
+bmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZu
+YnNwO0Zpcm13YXJlV2FraW5nVmVjdG9yOyAmbmJzcDsgLyogMzItYml0IHBoeXNpY2FsIGFkZHJl
+c3Mgb2YgdGhlIEZpcm13YXJlIFdha2luZyBWZWN0b3IgKi88L2Rpdj48ZGl2IGlkPSJ5dWlfM18x
+Nl8wX3ltMTlfMV8xNDc4OTA4MDg5ODMzXzQwMzEiPiZuYnNwOyAmbmJzcDsgVUlOVDMyICZuYnNw
+OyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7
+R2xvYmFsTG9jazsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgLyog
+R2xvYmFsIExvY2sgZm9yIHNoYXJlZCBoYXJkd2FyZSByZXNvdXJjZXMgKi88L2Rpdj48ZGl2IGlk
+PSJ5dWlfM18xNl8wX3ltMTlfMV8xNDc4OTA4MDg5ODMzXzQwMzIiPiZuYnNwOyAmbmJzcDsgVUlO
+VDMyICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJz
+cDsgJm5ic3A7RmxhZ3M7PC9kaXY+PGRpdiBpZD0ieXVpXzNfMTZfMF95bTE5XzFfMTQ3ODkwODA4
+OTgzM180MDMzIj4mbmJzcDsgJm5ic3A7IFVJTlQ2NCAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJz
+cDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwO1hGaXJtd2FyZVdha2luZ1ZlY3Rv
+cjsgJm5ic3A7LyogNjQtYml0IHZlcnNpb24gb2YgdGhlIEZpcm13YXJlIFdha2luZyBWZWN0b3Ig
+KEFDUEkgMi4wKykgKi88L2Rpdj48ZGl2IGlkPSJ5dWlfM18xNl8wX3ltMTlfMV8xNDc4OTA4MDg5
+ODMzXzQwMzQiPiZuYnNwOyAmbmJzcDsgVUlOVDggJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7
+ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgVmVyc2lvbjsgJm5ic3A7ICZuYnNw
+OyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOy8qIFZlcnNpb24gb2Yg
+dGhpcyB0YWJsZSAoQUNQSSAyLjArKSAqLzwvZGl2PjxkaXYgaWQ9Inl1aV8zXzE2XzBfeW0xOV8x
+XzE0Nzg5MDgwODk4MzNfNDAzNSI+Jm5ic3A7ICZuYnNwOyBVSU5UOCAmbmJzcDsgJm5ic3A7ICZu
+YnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyBSZXNlcnZlZFsz
+XTsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsvKiBSZXNlcnZlZCwg
+bXVzdCBiZSB6ZXJvICovPC9kaXY+PGRpdiBpZD0ieXVpXzNfMTZfMF95bTE5XzFfMTQ3ODkwODA4
+OTgzM180MDM2Ij4mbmJzcDsgJm5ic3A7IFVJTlQzMiAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJz
+cDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwO09zcG1GbGFnczsgJm5ic3A7ICZu
+YnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7LyogRmxhZ3MgdG8gYmUgc2V0
+IGJ5IE9TUE0gKEFDUEkgNC4wKSAqLzwvZGl2PjxkaXYgaWQ9Inl1aV8zXzE2XzBfeW0xOV8xXzE0
+Nzg5MDgwODk4MzNfNDAzNyI+Jm5ic3A7ICZuYnNwOyBVSU5UOCAmbmJzcDsgJm5ic3A7ICZuYnNw
+OyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyBSZXNlcnZlZDFbMjRd
+OyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7LyogUmVzZXJ2ZWQsIG11c3QgYmUg
+emVybyAqLzwvZGl2PjxkaXYgaWQ9Inl1aV8zXzE2XzBfeW0xOV8xXzE0Nzg5MDgwODk4MzNfNDAz
+OCI+PGJyIGlkPSJ5dWlfM18xNl8wX3ltMTlfMV8xNDc4OTA4MDg5ODMzXzQwMzkiPjwvZGl2Pjxk
+aXYgaWQ9Inl1aV8zXzE2XzBfeW0xOV8xXzE0Nzg5MDgwODk4MzNfNDA0MCI+fSBBQ1BJX1RBQkxF
+X0ZBQ1M7PC9kaXY+PGRpdiBpZD0ieXVpXzNfMTZfMF95bTE5XzFfMTQ3ODkwODA4OTgzM180MDQx
+Ij48YnIgaWQ9Inl1aV8zXzE2XzBfeW0xOV8xXzE0Nzg5MDgwODk4MzNfNDA0MiI+PC9kaXY+PGRp
+diBpZD0ieXVpXzNfMTZfMF95bTE5XzFfMTQ3ODkwODA4OTgzM180MDQzIj48YnIgaWQ9Inl1aV8z
+XzE2XzBfeW0xOV8xXzE0Nzg5MDgwODk4MzNfNDA0NCI+PC9kaXY+PGRpdiBpZD0ieXVpXzNfMTZf
+MF95bTE5XzFfMTQ3ODkwODA4OTgzM180MDQ1Ij5NYXkgSSBrbm93IGluIHdoYXQgY2FzZSBGYWNz
+LSZndDtMZW5ndGggJmx0OyAzMj88L2Rpdj48ZGl2IGlkPSJ5dWlfM18xNl8wX3ltMTlfMV8xNDc4
+OTA4MDg5ODMzXzQwNDYiPjxiciBpZD0ieXVpXzNfMTZfMF95bTE5XzFfMTQ3ODkwODA4OTgzM180
+MDQ3Ij48L2Rpdj48ZGl2IGlkPSJ5dWlfM18xNl8wX3ltMTlfMV8xNDc4OTA4MDg5ODMzXzQwNDgi
+PklmIGxvb2tzIHRvIG1lIHRoYXQgRmFjcy0mZ3Q7WEZpcm13YXJlV2FraW5nVmVjdG9yID0gUGh5
+c2ljYWxBZGRyZXNzNjQ7IHdpbGwgYWx3YXlzIGJlIGV4ZWN1dGVkPzwvZGl2PjxkaXYgaWQ9Inl1
+aV8zXzE2XzBfeW0xOV8xXzE0Nzg5MDgwODk4MzNfNDA0OSI+PGJyIGlkPSJ5dWlfM18xNl8wX3lt
+MTlfMV8xNDc4OTA4MDg5ODMzXzQwNTAiPjwvZGl2PjxkaXYgaWQ9Inl1aV8zXzE2XzBfeW0xOV8x
+XzE0Nzg5MDgwODk4MzNfNDA1MSI+VGhhbmtzLDwvZGl2PjxkaXYgZGlyPSJsdHIiIGlkPSJ5dWlf
+M18xNl8wX3ltMTlfMV8xNDc4OTA4MDg5ODMzXzQwNTIiPktlaW48L2Rpdj48ZGl2IGRpcj0ibHRy
+IiBpZD0ieXVpXzNfMTZfMF95bTE5XzFfMTQ3ODkwODA4OTgzM18zNTg2Ij48c3BhbiBzdHlsZT0i
+Zm9udC12YXJpYW50LWxpZ2F0dXJlczogbm8tY29tbW9uLWxpZ2F0dXJlcyI+PGJyPjwvc3Bhbj48
+L2Rpdj48ZGl2IGRpcj0ibHRyIiBpZD0ieXVpXzNfMTZfMF95bTE5XzFfMTQ3ODkwODA4OTgzM18z
+NTg2Ij48c3BhbiBzdHlsZT0iZm9udC12YXJpYW50LWxpZ2F0dXJlczogbm8tY29tbW9uLWxpZ2F0
+dXJlcyI+PGJyPjwvc3Bhbj48L2Rpdj48ZGl2IGRpcj0ibHRyIiBpZD0ieXVpXzNfMTZfMF95bTE5
+XzFfMTQ3ODkwODA4OTgzM18zNTg2Ij48c3BhbiBzdHlsZT0iZm9udC12YXJpYW50LWxpZ2F0dXJl
+czogbm8tY29tbW9uLWxpZ2F0dXJlcyI+PGJyPjwvc3Bhbj48L2Rpdj48ZGl2IGRpcj0ibHRyIiBp
+ZD0ieXVpXzNfMTZfMF95bTE5XzFfMTQ3ODkwODA4OTgzM18zNTg2Ij48c3BhbiBzdHlsZT0iZm9u
+dC12YXJpYW50LWxpZ2F0dXJlczogbm8tY29tbW9uLWxpZ2F0dXJlcyI+PGJyPjwvc3Bhbj48L2Rp
+dj48L2Rpdj48L2JvZHk+PC9odG1sPg==
+--===============5949171296310576739==--
 
