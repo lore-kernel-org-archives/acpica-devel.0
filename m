@@ -1,75 +1,113 @@
-Content-Type: multipart/mixed; boundary="===============6012634165618590059=="
+Content-Type: multipart/mixed; boundary="===============1988334404726811374=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] [PATCH] acpi: Fix format string type mistakes
-Date: Mon, 19 Dec 2016 21:45:44 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E547D9A@ORSMSX110.amr.corp.intel.com>
-In-Reply-To: CAGXu5jKc35OzaPCR-f34THEkmE4ZbPP-cW2BVFzTgPYVmT_5dw@mail.gmail.com
+From: Leif Lindholm <leif.lindholm at linaro.org>
+Subject: Re: [Devel] [PATCH] EFI: fix build for AARCH64
+Date: Mon, 19 Dec 2016 23:25:21 +0000
+Message-ID: <20161219232521.GA16872@bivouac.eciton.net>
+In-Reply-To: 20161219181430.28668-1-leif.lindholm@linaro.org
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6012634165618590059==
+--===============1988334404726811374==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-
-
-> -----Original Message-----
-> From: keescook(a)google.com [mailto:keescook(a)google.com] On Behalf Of K=
-ees
-> Cook
-> Sent: Friday, December 16, 2016 3:04 PM
-> To: Rafael J. Wysocki <rafael(a)kernel.org>
-> Cc: Moore, Robert <robert.moore(a)intel.com>; Linux Kernel Mailing List
-> <linux-kernel(a)vger.kernel.org>; Zheng, Lv <lv.zheng(a)intel.com>; Wysoc=
-ki,
-> Rafael J <rafael.j.wysocki(a)intel.com>; Len Brown <lenb(a)kernel.org>; A=
-CPI
-> Devel Maling List <linux-acpi(a)vger.kernel.org>; Emese Revfy
-> <re.emese(a)gmail.com>; devel(a)acpica.org
-> Subject: Re: [PATCH] acpi: Fix format string type mistakes
+On Mon, Dec 19, 2016 at 06:14:30PM +0000, Leif Lindholm wrote:
+> AARCH64 build was left out of initial version, so add to .dsc and set
+> ACPI_MACHINE_WIDTH correctly.
 > =
 
-> On Fri, Dec 16, 2016 at 2:36 PM, Rafael J. Wysocki <rafael(a)kernel.org>
-> wrote:
-> > On Fri, Dec 16, 2016 at 10:51 PM, Kees Cook <keescook(a)chromium.org>
-> wrote:
-> >> From: Emese Revfy <re.emese(a)gmail.com>
-> >>
-> >> This adds the missing __printf attribute which allows compile time
-> >> format string checking (and will be used by the coming initify gcc
-> >> plugin). Additionally, this fixes the warnings exposed by the
-> attribute.
-> >>
-> >> Signed-off-by: Emese Revfy <re.emese(a)gmail.com>
-> >> [kees: split scsi/acpi, merged attr and fix, new commit messages]
-> >> Signed-off-by: Kees Cook <keescook(a)chromium.org>
-> >
-> > This modifies code that we get from an external projiect (ACPICA) and
-> > the bugs should be fixed in there in the first place.
+> Also, acpidump.inf specified explicit per-architecture (but identical)
+> CFLAGS. Rather than duplicating this further, use the same setting for
+> all architectures until there is actually a need to diverge.
 > =
 
-> Who should get CCed?
+> Also update README to make it obvious AArch64 is supported.
 > =
 
-> > Moreover, I'm not sure if adding __printf in acpiosxf.h is a good
-> idea.
+> Signed-off-by: Leif Lindholm <leif.lindholm(a)linaro.org>
+> ---
+>  generate/efi/AcpiPkg.dsc           | 2 +-
+>  generate/efi/README                | 1 +
+>  generate/efi/acpidump/acpidump.inf | 6 ++----
+>  source/include/platform/acefi.h    | 2 +-
+>  4 files changed, 5 insertions(+), 6 deletions(-)
 > =
 
-> Why not? This is going to be needed by the initify plugin to do correct
-> detection of what's being passed around to functions...
-> =
+> diff --git a/generate/efi/AcpiPkg.dsc b/generate/efi/AcpiPkg.dsc
+> index 323d39c..9302555 100644
+> --- a/generate/efi/AcpiPkg.dsc
+> +++ b/generate/efi/AcpiPkg.dsc
+> @@ -18,7 +18,7 @@
+>    PLATFORM_VERSION        =3D 1.0
+>    DSC_SPECIFICATION       =3D 0x00010005
+>    OUTPUT_DIRECTORY        =3D Build/Acpi
+> -  SUPPORTED_ARCHITECTURES =3D IA32|X64
+> +  SUPPORTED_ARCHITECTURES =3D AARCH64|IA32|X64
+>    BUILD_TARGETS           =3D DEBUG|RELEASE
+>    SKUID_IDENTIFIER        =3D DEFAULT
+>  =
 
+> diff --git a/generate/efi/README b/generate/efi/README
+> index 7550e9d..b3ec3ff 100644
+> --- a/generate/efi/README
+> +++ b/generate/efi/README
+> @@ -20,6 +20,7 @@ But the porting has only been tested in a Linux environ=
+ment.
+>  =
 
-[Moore, Robert] It's compiler-dependent.
+>     You can find built EFI binaries (e.x., acpidump.efi) in the following
+>     folders:
+> +     Build/Acpi/DEBUG_GCC47/AARCH64: aarch64 targets
+>       Build/Acpi/DEBUG_GCC47/IA32: i386 targets
+>       Build/Acpi/DEBUG_GCC47/X64: x86_64 targets
+>  =
 
-> -Kees
-> =
+> diff --git a/generate/efi/acpidump/acpidump.inf b/generate/efi/acpidump/a=
+cpidump.inf
+> index 8d2c979..e5f21c0 100644
+> --- a/generate/efi/acpidump/acpidump.inf
+> +++ b/generate/efi/acpidump/acpidump.inf
+> @@ -55,7 +55,5 @@
+>    BaseLib
+>  =
 
-> --
-> Kees Cook
-> Nexus Security
+>  [BuildOptions]
+> -  MSFT:*_*_IA32_CC_FLAGS =3D /Oi- /WX- /D_EDK2_EFI /DACPI_DUMP_APP
+> -  MSFT:*_*_X64_CC_FLAGS  =3D /Oi- /WX- /D_EDK2_EFI /DACPI_DUMP_APP
+> -  GCC:*_*_IA32_CC_FLAGS  =3D -U__linux__ -U_LINUX -D_EDK2_EFI -DACPI_DUM=
+P_APP -fno-builtin -iwithprefix include
+> -  GCC:*_*_X64_CC_FLAGS   =3D -U__linux__ -U_LINUX -D_EDK2_EFI -DACPI_DUM=
+P_APP -fno-builtin -iwithprefix include
+> +  MSFT:*_*_*_CC_FLAGS =3D /Oi- /WX- /D_EDK2_EFI /DACPI_DUMP_APP
+> +  GCC:*_*_*_CC_FLAGS  =3D -U__linux__ -U_LINUX -D_EDK2_EFI -DACPI_DUMP_A=
+PP -fno-builtin -iwithprefix include
+> diff --git a/source/include/platform/acefi.h b/source/include/platform/ac=
+efi.h
+> index dfa4894..30a5429 100644
+> --- a/source/include/platform/acefi.h
+> +++ b/source/include/platform/acefi.h
+> @@ -140,7 +140,7 @@
+>  =
 
---===============6012634165618590059==--
+>  #define VOID        void
+>  =
+
+> -#if defined(__ia64__) || defined(__x86_64__)
+> +#if defined(__aarch64__) || (__ia64__) || defined(__x86_64__)
+
+And this is of course a bug. Should be defined(__ia64__).
+
+>  =
+
+>  #define ACPI_MACHINE_WIDTH          64
+>  =
+
+> -- =
+
+> 2.10.2
+>=20
+
+--===============1988334404726811374==--
 
