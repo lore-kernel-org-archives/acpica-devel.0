@@ -1,43 +1,108 @@
-Content-Type: multipart/mixed; boundary="===============5822317470686848301=="
+Content-Type: multipart/mixed; boundary="===============3815305478653522336=="
 MIME-Version: 1.0
-From: Zhang Rui <rui.zhang at intel.com>
-Subject: Re: [Devel] Missing _BQC method
-Date: Tue, 03 Jan 2017 11:42:20 +0800
-Message-ID: <1483414940.2320.35.camel@intel.com>
-In-Reply-To: 8036e82a-c79b-6824-1245-bf5fb027a1fa@yahoo.com
+From: Leif Lindholm <leif.lindholm at linaro.org>
+Subject: [Devel] [PATCH v2] EFI: fix build for AARCH64
+Date: Tue, 03 Jan 2017 12:21:15 +0000
+Message-ID: <20170103122116.27358-1-leif.lindholm@linaro.org>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5822317470686848301==
+--===============3815305478653522336==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, 2017-01-01 at 17:01 -0500, Anthony Jenkins wrote:
-> What may the OSPM assume/do about a missing _BQC (Brightness Query
-> Current level) method?
+AARCH64 build was left out of initial version, so add to .dsc and set
+ACPI_MACHINE_WIDTH correctly.
 
-_BQC is optional according to the latest ACPI spec.
-I don't know about the others, but in Linux, the brightness level is
-set to 100% during boot if _BQC is missing, and a cached value is used
-to save the current brightness level.=C2=A0
+Also, acpidump.inf specified explicit per-architecture (but identical)
+CFLAGS. Rather than duplicating this further, use the same setting for
+all architectures until there is actually a need to diverge.
 
-thanks,
-rui
-> =C2=A0=C2=A0The last two HP ENVY laptops I owned do not have
-> this method, and FreeBSD's acpi_video driver (currently) requires it
-> to
-> control screen brightness - unless I can assume _only_ the OSPM can
-> set
-> the screen brightness.=C2=A0=C2=A0My current workaround is a patch to the=
- DSDT
-> to
-> add a simple method that copies and returns a variable used by _BCM
-> (Brightness Control Method).
-> =
+Also update README to make it obvious AArch64 is supported.
 
-> Thanks in advance,
->=20
+Signed-off-by: Leif Lindholm <leif.lindholm(a)linaro.org>
+---
 
---===============5822317470686848301==--
+v2 contains a fix for a non-functional issue, which could generate
+warnings when building with CLANG.
+
+ generate/efi/AcpiPkg.dsc           | 2 +-
+ generate/efi/README                | 1 +
+ generate/efi/acpidump/acpidump.inf | 6 ++----
+ source/include/platform/acefi.h    | 2 +-
+ 4 files changed, 5 insertions(+), 6 deletions(-)
+
+diff --git a/generate/efi/AcpiPkg.dsc b/generate/efi/AcpiPkg.dsc
+index 323d39c..9302555 100644
+--- a/generate/efi/AcpiPkg.dsc
++++ b/generate/efi/AcpiPkg.dsc
+@@ -18,7 +18,7 @@
+   PLATFORM_VERSION        =3D 1.0
+   DSC_SPECIFICATION       =3D 0x00010005
+   OUTPUT_DIRECTORY        =3D Build/Acpi
+-  SUPPORTED_ARCHITECTURES =3D IA32|X64
++  SUPPORTED_ARCHITECTURES =3D AARCH64|IA32|X64
+   BUILD_TARGETS           =3D DEBUG|RELEASE
+   SKUID_IDENTIFIER        =3D DEFAULT
+ =
+
+diff --git a/generate/efi/README b/generate/efi/README
+index 7550e9d..b3ec3ff 100644
+--- a/generate/efi/README
++++ b/generate/efi/README
+@@ -20,6 +20,7 @@ But the porting has only been tested in a Linux environme=
+nt.
+ =
+
+    You can find built EFI binaries (e.x., acpidump.efi) in the following
+    folders:
++     Build/Acpi/DEBUG_GCC47/AARCH64: aarch64 targets
+      Build/Acpi/DEBUG_GCC47/IA32: i386 targets
+      Build/Acpi/DEBUG_GCC47/X64: x86_64 targets
+ =
+
+diff --git a/generate/efi/acpidump/acpidump.inf b/generate/efi/acpidump/acp=
+idump.inf
+index 8d2c979..e5f21c0 100644
+--- a/generate/efi/acpidump/acpidump.inf
++++ b/generate/efi/acpidump/acpidump.inf
+@@ -55,7 +55,5 @@
+   BaseLib
+ =
+
+ [BuildOptions]
+-  MSFT:*_*_IA32_CC_FLAGS =3D /Oi- /WX- /D_EDK2_EFI /DACPI_DUMP_APP
+-  MSFT:*_*_X64_CC_FLAGS  =3D /Oi- /WX- /D_EDK2_EFI /DACPI_DUMP_APP
+-  GCC:*_*_IA32_CC_FLAGS  =3D -U__linux__ -U_LINUX -D_EDK2_EFI -DACPI_DUMP_=
+APP -fno-builtin -iwithprefix include
+-  GCC:*_*_X64_CC_FLAGS   =3D -U__linux__ -U_LINUX -D_EDK2_EFI -DACPI_DUMP_=
+APP -fno-builtin -iwithprefix include
++  MSFT:*_*_*_CC_FLAGS =3D /Oi- /WX- /D_EDK2_EFI /DACPI_DUMP_APP
++  GCC:*_*_*_CC_FLAGS  =3D -U__linux__ -U_LINUX -D_EDK2_EFI -DACPI_DUMP_APP=
+ -fno-builtin -iwithprefix include
+diff --git a/source/include/platform/acefi.h b/source/include/platform/acef=
+i.h
+index 8328ab6..75ef89a 100644
+--- a/source/include/platform/acefi.h
++++ b/source/include/platform/acefi.h
+@@ -140,7 +140,7 @@
+ =
+
+ #define VOID        void
+ =
+
+-#if defined(__ia64__) || defined(__x86_64__)
++#if defined(__aarch64__) || defined(__ia64__) || defined(__x86_64__)
+ =
+
+ #define ACPI_MACHINE_WIDTH          64
+ =
+
+-- =
+
+2.10.2
+
+
+--===============3815305478653522336==--
 
