@@ -1,13 +1,14 @@
-Content-Type: multipart/mixed; boundary="===============3815305478653522336=="
+Content-Type: multipart/mixed; boundary="===============8698530401730436028=="
 MIME-Version: 1.0
 From: Leif Lindholm <leif.lindholm at linaro.org>
 Subject: [Devel] [PATCH v2] EFI: fix build for AARCH64
-Date: Tue, 03 Jan 2017 12:21:15 +0000
-Message-ID: <20170103122116.27358-1-leif.lindholm@linaro.org>
+Date: Tue, 03 Jan 2017 12:21:16 +0000
+Message-ID: <20170103122116.27358-2-leif.lindholm@linaro.org>
+In-Reply-To: 20170103122116.27358-1-leif.lindholm@linaro.org
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3815305478653522336==
+--===============8698530401730436028==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
@@ -104,5 +105,5 @@ index 8328ab6..75ef89a 100644
 2.10.2
 
 
---===============3815305478653522336==--
+--===============8698530401730436028==--
 
