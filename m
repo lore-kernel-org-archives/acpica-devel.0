@@ -1,60 +1,62 @@
-Content-Type: multipart/mixed; boundary="===============1989654601584839764=="
+Content-Type: multipart/mixed; boundary="===============7108185839370239387=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] ACPICA version 20170119 released
-Date: Thu, 19 Jan 2017 17:09:10 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E55F6B5@ORSMSX110.amr.corp.intel.com>
+From: Colin King <colin.king at canonical.com>
+Subject: [Devel] [PATCH] iASL: Predefine names: make argument errors more
+ understandable
+Date: Tue, 24 Jan 2017 12:58:54 +0000
+Message-ID: <20170124125854.5349-1-colin.king@canonical.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1989654601584839764==
+--===============7108185839370239387==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-19 January 2017. Summary of changes for version 20170119:
+From: Colin Ian King <colin.king(a)canonical.com>
 
-This release is available at https://acpica.org/downloads
+The current errors print out the number of arguments but is not clear
+what these values mean. Clarify the error messages by specifically
+mentioning that these refer to the number of arguments.  I took the
+liberty to replace the %u and 0 with the text 'zero' to match the
+style found in other similar error messages.
 
-1) General ACPICA software:
+Signed-off-by: Colin Ian King <colin.king(a)canonical.com>
+---
+ source/compiler/aslpredef.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Entire source code base: Added the 2017 copyright to all source code =
+diff --git a/source/compiler/aslpredef.c b/source/compiler/aslpredef.c
+index 1218401..9dcc757 100644
+--- a/source/compiler/aslpredef.c
++++ b/source/compiler/aslpredef.c
+@@ -186,7 +186,7 @@ ApCheckForPredefinedMethod (
+ =
 
-legal/licensing module headers and utility/tool signons. This includes =
+         if (MethodInfo->NumArguments !=3D 0)
+         {
+-            sprintf (MsgBuffer, "%s requires %u", Op->Asl.ExternalName, 0);
++            sprintf (MsgBuffer, "%s requires zero arguments", Op->Asl.Exte=
+rnalName);
+ =
 
-the standard Linux dual-license header. This affects virtually every file =
+             AslError (ASL_WARNING, ASL_MSG_RESERVED_ARG_COUNT_HI, Op,
+                 MsgBuffer);
+@@ -208,7 +208,7 @@ ApCheckForPredefinedMethod (
+ =
 
-in the ACPICA core subsystem, iASL compiler, all ACPICA utilities, and =
+         if (MethodInfo->NumArguments !=3D RequiredArgCount)
+         {
+-            sprintf (MsgBuffer, "%4.4s requires %u",
++            sprintf (MsgBuffer, "%4.4s requires %u arguments",
+                 ThisName->Info.Name, RequiredArgCount);
+ =
 
-the ACPICA test suite.
+             if (MethodInfo->NumArguments < RequiredArgCount)
+-- =
 
-
-2) iASL Compiler/Disassembler and Tools:
-
-iASL: Removed/fixed an inadvertent remark when a method argument =
-
-containing a reference is used as a target operand within the method (and =
-
-never used as a simple argument), as in the example below. Jeffrey Hugo.
-
-    dsdt.asl   1507:    Store(0x1, Arg0)
-    Remark   2146 -                ^ Method Argument is never used (Arg0)
-
-All tools: Removed the bit width of the compiler that generated the tool =
-
-from the common signon for all user space tools. This proved to be =
-
-confusing and unnecessary. This includes similar removal of HARDWARE_NAME =
-
-from the generic makefiles (Thomas Petazzoni). Example below.
-
-    Old:
-    ASL+ Optimizing Compiler version 20170119-32
-    ASL+ Optimizing Compiler version 20170119-64
-
-    New:
-    ASL+ Optimizing Compiler version 20170119
+2.10.2
 
 
---===============1989654601584839764==--
+--===============7108185839370239387==--
 
