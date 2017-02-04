@@ -1,132 +1,83 @@
-Content-Type: multipart/mixed; boundary="===============3238975524380038819=="
+Content-Type: multipart/mixed; boundary="===============8199334982644517287=="
 MIME-Version: 1.0
-From: Al Stone <ahs3 at redhat.com>
-Subject: Re: [Devel] [PATCH v2] EFI: fix build for AARCH64
-Date: Thu, 26 Jan 2017 10:05:13 -0700
-Message-ID: <92ea6fc2-8972-e885-faf0-6c657d418e30@redhat.com>
-In-Reply-To: 20170103122116.27358-1-leif.lindholm@linaro.org
+From: Moore, Robert <robert.moore at intel.com>
+Subject: Re: [Devel] [PATCH] acpica: Fix double-free in acpi_ns_repair_CID()
+Date: Sat, 04 Feb 2017 04:19:33 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E563AEA@ORSMSX110.amr.corp.intel.com>
+In-Reply-To: 20170203205654.28269-1-jprvita@endlessm.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3238975524380038819==
+--===============8199334982644517287==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On 01/03/2017 05:21 AM, Leif Lindholm wrote:
-> AARCH64 build was left out of initial version, so add to .dsc and set
-> ACPI_MACHINE_WIDTH correctly.
+Here's the sequence of events as I see it:
+
+Repair_HID is a standalone function that removes one reference on the incom=
+ing object. For simple _HID objects, this in fact deletes the object.
+
+For _CID, all elements of the package are examined. If a repair was made on=
+ a _HID within the _CID function, one reference on the original object was =
+removed by Repair_HID. However, since the object is part of a package, it h=
+as an extra reference to reflect this fact. Thus, in the case in question, =
+the elements of the package all have at least two references. Repair_HID re=
+moves one reference, thus the extra RemoveReference is needed in Repair_CID=
+ to bring the reference count down to zero actually delete the object (in t=
+he typical case where the object had two references).
+
+Bob
+
+
+> -----Original Message-----
+> From: Jo=C3=A3o Paulo Rechi Vita [mailto:jprvita(a)gmail.com]
+> Sent: Friday, February 03, 2017 12:57 PM
+> To: Moore, Robert; Zheng, Lv; Wysocki, Rafael J; Len Brown; Lin Ming
+> Cc: linux-acpi(a)vger.kernel.org; devel(a)acpica.org; linux-
+> kernel(a)vger.kernel.org; Daniel Drake; linux(a)endlessm.com; Jo=C3=A3o P=
+aulo Rechi
+> Vita
+> Subject: [PATCH] acpica: Fix double-free in acpi_ns_repair_CID()
 > =
 
-> Also, acpidump.inf specified explicit per-architecture (but identical)
-> CFLAGS. Rather than duplicating this further, use the same setting for
-> all architectures until there is actually a need to diverge.
+> When acpi_ns_repair_CID() is called for a _CID which returns a package of
+> strings, it calls acpi_ns_repair_HID() for each of the package elements.
+> acpi_ns_repair_HID() calls acpi_ut_remove_reference() on the original
+> object, but acpi_ns_repair_CID() calls it again on return, leading to a
+> double free.
 > =
 
-> Also update README to make it obvious AArch64 is supported.
+> This problem was seen on a Acer TravelMate P449-G2-MG.
 > =
 
-> Signed-off-by: Leif Lindholm <leif.lindholm(a)linaro.org>
+> Thanks to Daniel Drake for helping investigating this problem.
+> =
+
+> Signed-off-by: Jo=C3=A3o Paulo Rechi Vita <jprvita(a)endlessm.com>
 > ---
+>  drivers/acpi/acpica/nsrepair2.c | 2 --
+>  1 file changed, 2 deletions(-)
 > =
 
-> v2 contains a fix for a non-functional issue, which could generate
-> warnings when building with CLANG.
+> diff --git a/drivers/acpi/acpica/nsrepair2.c
+> b/drivers/acpi/acpica/nsrepair2.c index d5336122486b..c429c8eca476 100644
+> --- a/drivers/acpi/acpica/nsrepair2.c
+> +++ b/drivers/acpi/acpica/nsrepair2.c
+> @@ -411,8 +411,6 @@ acpi_ns_repair_CID(struct acpi_evaluate_info *info,
 > =
 
->  generate/efi/AcpiPkg.dsc           | 2 +-
->  generate/efi/README                | 1 +
->  generate/efi/acpidump/acpidump.inf | 6 ++----
->  source/include/platform/acefi.h    | 2 +-
->  4 files changed, 5 insertions(+), 6 deletions(-)
+>  			(*element_ptr)->common.reference_count =3D
+>  			    original_ref_count;
+> -
+> -			acpi_ut_remove_reference(original_element);
+>  		}
 > =
 
-> diff --git a/generate/efi/AcpiPkg.dsc b/generate/efi/AcpiPkg.dsc
-> index 323d39c..9302555 100644
-> --- a/generate/efi/AcpiPkg.dsc
-> +++ b/generate/efi/AcpiPkg.dsc
-> @@ -18,7 +18,7 @@
->    PLATFORM_VERSION        =3D 1.0
->    DSC_SPECIFICATION       =3D 0x00010005
->    OUTPUT_DIRECTORY        =3D Build/Acpi
-> -  SUPPORTED_ARCHITECTURES =3D IA32|X64
-> +  SUPPORTED_ARCHITECTURES =3D AARCH64|IA32|X64
->    BUILD_TARGETS           =3D DEBUG|RELEASE
->    SKUID_IDENTIFIER        =3D DEFAULT
->  =
-
-> diff --git a/generate/efi/README b/generate/efi/README
-> index 7550e9d..b3ec3ff 100644
-> --- a/generate/efi/README
-> +++ b/generate/efi/README
-> @@ -20,6 +20,7 @@ But the porting has only been tested in a Linux environ=
-ment.
->  =
-
->     You can find built EFI binaries (e.x., acpidump.efi) in the following
->     folders:
-> +     Build/Acpi/DEBUG_GCC47/AARCH64: aarch64 targets
->       Build/Acpi/DEBUG_GCC47/IA32: i386 targets
->       Build/Acpi/DEBUG_GCC47/X64: x86_64 targets
->  =
-
-> diff --git a/generate/efi/acpidump/acpidump.inf b/generate/efi/acpidump/a=
-cpidump.inf
-> index 8d2c979..e5f21c0 100644
-> --- a/generate/efi/acpidump/acpidump.inf
-> +++ b/generate/efi/acpidump/acpidump.inf
-> @@ -55,7 +55,5 @@
->    BaseLib
->  =
-
->  [BuildOptions]
-> -  MSFT:*_*_IA32_CC_FLAGS =3D /Oi- /WX- /D_EDK2_EFI /DACPI_DUMP_APP
-> -  MSFT:*_*_X64_CC_FLAGS  =3D /Oi- /WX- /D_EDK2_EFI /DACPI_DUMP_APP
-> -  GCC:*_*_IA32_CC_FLAGS  =3D -U__linux__ -U_LINUX -D_EDK2_EFI -DACPI_DUM=
-P_APP -fno-builtin -iwithprefix include
-> -  GCC:*_*_X64_CC_FLAGS   =3D -U__linux__ -U_LINUX -D_EDK2_EFI -DACPI_DUM=
-P_APP -fno-builtin -iwithprefix include
-> +  MSFT:*_*_*_CC_FLAGS =3D /Oi- /WX- /D_EDK2_EFI /DACPI_DUMP_APP
-> +  GCC:*_*_*_CC_FLAGS  =3D -U__linux__ -U_LINUX -D_EDK2_EFI -DACPI_DUMP_A=
-PP -fno-builtin -iwithprefix include
-> diff --git a/source/include/platform/acefi.h b/source/include/platform/ac=
-efi.h
-> index 8328ab6..75ef89a 100644
-> --- a/source/include/platform/acefi.h
-> +++ b/source/include/platform/acefi.h
-> @@ -140,7 +140,7 @@
->  =
-
->  #define VOID        void
->  =
-
-> -#if defined(__ia64__) || defined(__x86_64__)
-> +#if defined(__aarch64__) || defined(__ia64__) || defined(__x86_64__)
->  =
-
->  #define ACPI_MACHINE_WIDTH          64
->  =
-
-> =
+>  		element_ptr++;
+> --
+> 2.11.0
 
 
-It's been over a month since this really very simple patch was submitted.  =
-In
-the meantime, acpidump.efi does not build without it.  Any particular reason
-this has not been merged?  Leif isn't the only user that needs it.
-
-Thanks.
-
--- =
-
-ciao,
-al
------------------------------------
-Al Stone
-Software Engineer
-Red Hat, Inc.
-ahs3(a)redhat.com
------------------------------------
-
---===============3238975524380038819==--
+--===============8199334982644517287==--
 
