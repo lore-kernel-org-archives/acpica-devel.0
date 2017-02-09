@@ -1,115 +1,157 @@
-Content-Type: multipart/mixed; boundary="===============1155451627102783601=="
+Content-Type: multipart/mixed; boundary="===============6615663201357912783=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] [PATCH] acpica: Fix double-free in acpi_ns_repair_CID()
-Date: Tue, 07 Feb 2017 21:07:26 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E564357@ORSMSX110.amr.corp.intel.com>
-In-Reply-To: CA+A7VXXNk58unA+k6743VV7=cHTTbW8YHVf_5GAYdv1EPA5dPw@mail.gmail.com
+From: Zheng, Lv <lv.zheng at intel.com>
+Subject: Re: [Devel] [PATCH v2] EFI: fix build for AARCH64
+Date: Thu, 09 Feb 2017 02:24:39 +0000
+Message-ID: <1AE640813FDE7649BE1B193DEA596E886CE38642@SHSMSX101.ccr.corp.intel.com>
+In-Reply-To: 92ea6fc2-8972-e885-faf0-6c657d418e30@redhat.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1155451627102783601==
+--===============6615663201357912783==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-We are looking at this. It might also help if you could send a full acpidum=
-p for the machine. Thanks.
+Hi, Guys
 
+Thanks for the reminder.
+Here goes my opinions.
 
-> -----Original Message-----
-> From: Jo=C3=A3o Paulo Rechi Vita [mailto:jprvita(a)gmail.com]
-> Sent: Monday, February 6, 2017 6:46 AM
-> To: Zheng, Lv <lv.zheng(a)intel.com>
-> Cc: Moore, Robert <robert.moore(a)intel.com>; Wysocki, Rafael J
-> <rafael.j.wysocki(a)intel.com>; Len Brown <lenb(a)kernel.org>; Lin Ming
-> <ming.m.lin(a)intel.com>; linux-acpi(a)vger.kernel.org; devel(a)acpica.or=
-g;
-> linux-kernel(a)vger.kernel.org; Daniel Drake <drake(a)endlessm.com>;
-> linux(a)endlessm.com; Jo?o Paulo Rechi Vita <jprvita(a)endlessm.com>; Box,
-> David E <david.e.box(a)intel.com>; Schmauss, Erik
-> <erik.schmauss(a)intel.com>
-> Subject: Re: [PATCH] acpica: Fix double-free in acpi_ns_repair_CID()
+> From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of Al Stone
+> Sent: Friday, January 27, 2017 1:05 AM
+> Subject: Re: [Devel] [PATCH v2] EFI: fix build for AARCH64
 > =
 
-> On 5 February 2017 at 20:44, Zheng, Lv <lv.zheng(a)intel.com> wrote:
-> >> From: Moore, Robert
-> >> Subject: RE: [PATCH] acpica: Fix double-free in acpi_ns_repair_CID()
-> >>
-> >> Here's the sequence of events as I see it:
-> >>
-> >> Repair_HID is a standalone function that removes one reference on the
-> >> incoming object. For simple _HID objects, this in fact deletes the
-> object.
-> >>
-> >> For _CID, all elements of the package are examined. If a repair was
-> >> made on a _HID within the _CID function, one reference on the
-> >> original object was removed by Repair_HID. However, since the object
-> >> is part of a package, it has an extra reference to reflect this fact.
-> >> Thus, in the case in question, the elements of the package all have
-> >> at least two references. Repair_HID removes one reference, thus the
-> extra RemoveReference is needed in Repair_CID to bring the reference
-> count down to zero actually delete the object (in the typical case where
-> the object had two references).
-> >>
-> =
-
-> This is not what is happening on this machine. Bellow you can see some
-> printks I've added in acpi_ns_repair_CID(), right before and after
-> acpi_ns_repair_HID() is called:
-> =
-
-> [    0.244942] acpi_ns_repair_CID: calling acpi_ns_repair_HID for
-> element ffff9a67b3a44f30, refcount=3D1 [\_SB.PCI0.I2C1.TPL1._CID]
-> [    0.245072] acpi_ns_repair_CID: returned from acpi_ns_repair_HID
-> for element ffff9a67b3a44f30, refcount=3D0 [\_SB.PCI0.I2C1.TPL1._CID]
-> [    0.245202] acpi_ns_repair_CID: element was replaced by element_ptr
-> ffff9a67b3a44828, refcount=3D1 [\_SB.PCI0.I2C1.TPL1._CID]
-> =
-
-> Here we would call
-> acpi_ut_remove_reference(original_element=3D=3Dffff9a67b3a44f30), which
-> already has refcount=3D=3D0. Maybe there is a refcount increment missing
-> from somewhere else?
-> =
-
-> > Hi,
+> On 01/03/2017 05:21 AM, Leif Lindholm wrote:
+> > AARCH64 build was left out of initial version, so add to .dsc and set
+> > ACPI_MACHINE_WIDTH correctly.
 > >
-> > So if a real problem related to package reference counting is
-> triggered, the problem should be fixed elsewhere IMO.
-> =
-
-> Yes, the real problem is i2c_hid not being probed for the touchpad
-> device on this platform (sorry, should have added this information to
-> the commit message as well). What brought me to this unref was following
-> messages on the kernel log:
-> =
-
-> [    0.317002] ACPI Warning: Obj ffffa00472a445e8, Reference Count is
-> already zero, cannot decrement
-> [    0.317178]  (20160422/utdelete-442)
-> =
-
-> > See this bug for reference:
-> > https://bugs.acpica.org/show_bug.cgi?id=3D1336
+> > Also, acpidump.inf specified explicit per-architecture (but identical)
+> > CFLAGS. Rather than duplicating this further, use the same setting for
+> > all architectures until there is actually a need to diverge.
 > >
+> > Also update README to make it obvious AArch64 is supported.
+> >
+> > Signed-off-by: Leif Lindholm <leif.lindholm(a)linaro.org>
+> > ---
+> >
+> > v2 contains a fix for a non-functional issue, which could generate
+> > warnings when building with CLANG.
+> >
+> >  generate/efi/AcpiPkg.dsc           | 2 +-
+> >  generate/efi/README                | 1 +
+> >  generate/efi/acpidump/acpidump.inf | 6 ++----
+> >  source/include/platform/acefi.h    | 2 +-
+> >  4 files changed, 5 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/generate/efi/AcpiPkg.dsc b/generate/efi/AcpiPkg.dsc
+> > index 323d39c..9302555 100644
+> > --- a/generate/efi/AcpiPkg.dsc
+> > +++ b/generate/efi/AcpiPkg.dsc
+> > @@ -18,7 +18,7 @@
+> >    PLATFORM_VERSION        =3D 1.0
+> >    DSC_SPECIFICATION       =3D 0x00010005
+> >    OUTPUT_DIRECTORY        =3D Build/Acpi
+> > -  SUPPORTED_ARCHITECTURES =3D IA32|X64
+> > +  SUPPORTED_ARCHITECTURES =3D AARCH64|IA32|X64
+> >    BUILD_TARGETS           =3D DEBUG|RELEASE
+> >    SKUID_IDENTIFIER        =3D DEFAULT
+> >
+> > diff --git a/generate/efi/README b/generate/efi/README
+> > index 7550e9d..b3ec3ff 100644
+> > --- a/generate/efi/README
+> > +++ b/generate/efi/README
+> > @@ -20,6 +20,7 @@ But the porting has only been tested in a Linux envir=
+onment.
+> >
+> >     You can find built EFI binaries (e.x., acpidump.efi) in the followi=
+ng
+> >     folders:
+> > +     Build/Acpi/DEBUG_GCC47/AARCH64: aarch64 targets
+> >       Build/Acpi/DEBUG_GCC47/IA32: i386 targets
+> >       Build/Acpi/DEBUG_GCC47/X64: x86_64 targets
+
+Could you reorder this list in the README file?
+New support should be listed below the old supports.
+And I believe EFI is much more widely used on IA32 and X64 platforms.
+
+> >
+> > diff --git a/generate/efi/acpidump/acpidump.inf b/generate/efi/acpidump=
+/acpidump.inf
+> > index 8d2c979..e5f21c0 100644
+> > --- a/generate/efi/acpidump/acpidump.inf
+> > +++ b/generate/efi/acpidump/acpidump.inf
+> > @@ -55,7 +55,5 @@
+> >    BaseLib
+> >
+> >  [BuildOptions]
+> > -  MSFT:*_*_IA32_CC_FLAGS =3D /Oi- /WX- /D_EDK2_EFI /DACPI_DUMP_APP
+> > -  MSFT:*_*_X64_CC_FLAGS  =3D /Oi- /WX- /D_EDK2_EFI /DACPI_DUMP_APP
+> > -  GCC:*_*_IA32_CC_FLAGS  =3D -U__linux__ -U_LINUX -D_EDK2_EFI -DACPI_D=
+UMP_APP -fno-builtin -
+> iwithprefix include
+> > -  GCC:*_*_X64_CC_FLAGS   =3D -U__linux__ -U_LINUX -D_EDK2_EFI -DACPI_D=
+UMP_APP -fno-builtin -
+> iwithprefix include
+> > +  MSFT:*_*_*_CC_FLAGS =3D /Oi- /WX- /D_EDK2_EFI /DACPI_DUMP_APP
+> > +  GCC:*_*_*_CC_FLAGS  =3D -U__linux__ -U_LINUX -D_EDK2_EFI -DACPI_DUMP=
+_APP -fno-builtin -iwithprefix
+> include
+
+Maybe this should be in a separate patch.
+
+> > diff --git a/source/include/platform/acefi.h b/source/include/platform/=
+acefi.h
+> > index 8328ab6..75ef89a 100644
+> > --- a/source/include/platform/acefi.h
+> > +++ b/source/include/platform/acefi.h
+> > @@ -140,7 +140,7 @@
+> >
+> >  #define VOID        void
+> >
+> > -#if defined(__ia64__) || defined(__x86_64__)
+> > +#if defined(__aarch64__) || defined(__ia64__) || defined(__x86_64__)
+> >
+> >  #define ACPI_MACHINE_WIDTH          64
+> >
+> >
+
+TBH, I don't have any idea on how aarch64 EFI wrapper should be.
+So what we can do is just relying on the community.
+So I'm OK with this change.
+But it seems this commit should also define __aarch64__ in accygwin.h.
+Is this a mistake?
+
+Thanks and best regards
+Lv
+
+
 > =
 
-> Looks like it could be the same problem, indeed. I'm attaching a kernel
-> log with acpi.trace_debug_layer=3D0x10091 acpi.trace_debug_level=3D0x107F=
-FF
-> acpi.trace_method_name=3D_SB.PCI0.I2C1.TPL1._CID
-> acpi.trace_state=3Dopcode, which is what I was using to investigate the
-> problem, and the machine's DSDT. Please let me know if there is any
-> other information I can provide to help clarify this issue.
+> It's been over a month since this really very simple patch was submitted.=
+  In
+> the meantime, acpidump.efi does not build without it.  Any particular rea=
+son
+> this has not been merged?  Leif isn't the only user that needs it.
 > =
 
-> Thanks,
+> Thanks.
 > =
 
 > --
-> Jo=C3=A3o Paulo Rechi Vita
-> http://about.me/jprvita
+> ciao,
+> al
+> -----------------------------------
+> Al Stone
+> Software Engineer
+> Red Hat, Inc.
+> ahs3(a)redhat.com
+> -----------------------------------
+> _______________________________________________
+> Devel mailing list
+> Devel(a)acpica.org
+> https://lists.acpica.org/mailman/listinfo/devel
 
---===============1155451627102783601==--
+--===============6615663201357912783==--
 
