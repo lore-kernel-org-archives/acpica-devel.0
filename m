@@ -1,230 +1,182 @@
-Content-Type: multipart/mixed; boundary="===============0115562948372197792=="
+Content-Type: multipart/mixed; boundary="===============7707685254291250469=="
 MIME-Version: 1.0
 From: Zheng, Lv <lv.zheng at intel.com>
-Subject: Re: [Devel] [PATCH v2] EFI: fix build for AARCH64
-Date: Fri, 10 Feb 2017 02:33:25 +0000
-Message-ID: <1AE640813FDE7649BE1B193DEA596E886CE38E52@SHSMSX101.ccr.corp.intel.com>
-In-Reply-To: 20170209123423.GB16034@bivouac.eciton.net
+Subject: Re: [Devel] [PATCH v2] acpi: acpica: fix acpi operand cache leak
+Date: Tue, 21 Feb 2017 00:33:08 +0000
+Message-ID: <1AE640813FDE7649BE1B193DEA596E886CE3D1B6@SHSMSX101.ccr.corp.intel.com>
+In-Reply-To: 1487292003-25769-1-git-send-email-kkamagui@gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0115562948372197792==
+--===============7707685254291250469==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
 Hi,
 
-Thanks for the contribution.
-
-> From: Leif Lindholm [mailto:leif.lindholm(a)linaro.org]
-> Subject: Re: [Devel] [PATCH v2] EFI: fix build for AARCH64
+> From: linux-acpi-owner(a)vger.kernel.org [mailto:linux-acpi-owner(a)vger.=
+kernel.org] On Behalf Of Seunghun
+> Han
+> Subject: [PATCH v2] acpi: acpica: fix acpi operand cache leak
 > =
 
-> Hi Lv,
+> I'm Seunghun Han, and I work for National Security Research Institute of
+> South Korea.
 > =
 
-> Many thanks for review.
+> I have been doing a research on ACPI and making a handcrafted ACPI table
+> for my research.
+> Errors of handcrafted ACPI tables are handled well in Linux kernel while =
+boot
+> process, and Linux kernel goes well without critical problems.
+> But I found some ACPI operand cache leaks in ACPI early abort cases.
 > =
 
-> On Thu, Feb 09, 2017 at 02:24:39AM +0000, Zheng, Lv wrote:
-> > Hi, Guys
-> >
-> > Thanks for the reminder.
-> > Here goes my opinions.
-> >
-> > > From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of Al Stone
-> > > Sent: Friday, January 27, 2017 1:05 AM
-> > > Subject: Re: [Devel] [PATCH v2] EFI: fix build for AARCH64
-> > >
-> > > On 01/03/2017 05:21 AM, Leif Lindholm wrote:
-> > > > AARCH64 build was left out of initial version, so add to .dsc and s=
-et
-> > > > ACPI_MACHINE_WIDTH correctly.
-> > > >
-> > > > Also, acpidump.inf specified explicit per-architecture (but identic=
-al)
-> > > > CFLAGS. Rather than duplicating this further, use the same setting =
-for
-> > > > all architectures until there is actually a need to diverge.
-> > > >
-> > > > Also update README to make it obvious AArch64 is supported.
-> > > >
-> > > > Signed-off-by: Leif Lindholm <leif.lindholm(a)linaro.org>
-> > > > ---
-> > > >
-> > > > v2 contains a fix for a non-functional issue, which could generate
-> > > > warnings when building with CLANG.
-> > > >
-> > > >  generate/efi/AcpiPkg.dsc           | 2 +-
-> > > >  generate/efi/README                | 1 +
-> > > >  generate/efi/acpidump/acpidump.inf | 6 ++----
-> > > >  source/include/platform/acefi.h    | 2 +-
-> > > >  4 files changed, 5 insertions(+), 6 deletions(-)
-> > > >
-> > > > diff --git a/generate/efi/AcpiPkg.dsc b/generate/efi/AcpiPkg.dsc
-> > > > index 323d39c..9302555 100644
-> > > > --- a/generate/efi/AcpiPkg.dsc
-> > > > +++ b/generate/efi/AcpiPkg.dsc
-> > > > @@ -18,7 +18,7 @@
-> > > >    PLATFORM_VERSION        =3D 1.0
-> > > >    DSC_SPECIFICATION       =3D 0x00010005
-> > > >    OUTPUT_DIRECTORY        =3D Build/Acpi
-> > > > -  SUPPORTED_ARCHITECTURES =3D IA32|X64
-> > > > +  SUPPORTED_ARCHITECTURES =3D AARCH64|IA32|X64
-> > > >    BUILD_TARGETS           =3D DEBUG|RELEASE
-> > > >    SKUID_IDENTIFIER        =3D DEFAULT
-> > > >
-> > > > diff --git a/generate/efi/README b/generate/efi/README
-> > > > index 7550e9d..b3ec3ff 100644
-> > > > --- a/generate/efi/README
-> > > > +++ b/generate/efi/README
-> > > > @@ -20,6 +20,7 @@ But the porting has only been tested in a Linux e=
-nvironment.
-> > > >
-> > > >     You can find built EFI binaries (e.x., acpidump.efi) in the fol=
-lowing
-> > > >     folders:
-> > > > +     Build/Acpi/DEBUG_GCC47/AARCH64: aarch64 targets
-> > > >       Build/Acpi/DEBUG_GCC47/IA32: i386 targets
-> > > >       Build/Acpi/DEBUG_GCC47/X64: x86_64 targets
-> >
-> > Could you reorder this list in the README file?
-> > New support should be listed below the old supports.
-> > And I believe EFI is much more widely used on IA32 and X64 platforms.
-> =
+> Boot log of ACPI operand cache leak is as follows:
+> >[    0.174332] ACPI: Added _OSI(Module Device)
+> >[    0.175504] ACPI: Added _OSI(Processor Device)
+> >[    0.176010] ACPI: Added _OSI(3.0 _SCP Extensions)
+> >[    0.177032] ACPI: Added _OSI(Processor Aggregator Device)
+> >[    0.178284] ACPI: SCI (IRQ16705) allocation failed
+> >[    0.179352] ACPI Exception: AE_NOT_ACQUIRED, Unable to install System=
+ Control Interrupt handler
+> (20160930/evevent-131)
+> >[    0.180008] ACPI: Unable to start the ACPI Interpreter
+> >[    0.181125] ACPI Error: Could not remove SCI handler (20160930/evmisc=
+-281)
+> >[    0.184068] kmem_cache_destroy Acpi-Operand: Slab cache still has obj=
+ects
+> >[    0.185358] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 4.10.0-rc3 #2
+> >[    0.186820] Hardware name: innotek GmbH VirtualBox/VirtualBox, BIOS V=
+irtualBox 12/01/2006
+> >[    0.188000] Call Trace:
+> >[    0.188000]  ? dump_stack+0x5c/0x7d
+> >[    0.188000]  ? kmem_cache_destroy+0x224/0x230
+> >[    0.188000]  ? acpi_sleep_proc_init+0x22/0x22
+> >[    0.188000]  ? acpi_os_delete_cache+0xa/0xd
+> >[    0.188000]  ? acpi_ut_delete_caches+0x3f/0x7b
+> >[    0.188000]  ? acpi_terminate+0x5/0xf
+> >[    0.188000]  ? acpi_init+0x288/0x32e
+> >[    0.188000]  ? __class_create+0x4c/0x80
+> >[    0.188000]  ? video_setup+0x7a/0x7a
+> >[    0.188000]  ? do_one_initcall+0x4e/0x1b0
+> >[    0.188000]  ? kernel_init_freeable+0x194/0x21a
+> >[    0.188000]  ? rest_init+0x80/0x80
+> >[    0.188000]  ? kernel_init+0xa/0x100
+> >[    0.188000]  ? ret_from_fork+0x25/0x30
 
-> That's probably true, I was going for alphabetical order :)
-> If we are sorting by order of most widely used, I would think x86_64
-> should go first. So please clarify which order you would prefer.
-
-I agreed.
-Then this is OK to me and it is really trivial.
+I'm more interested in the way of triggering AE_NOT_ACQUIRED error.
+So could you send us the handcrafted ACPI table or both the "acpidump -c on=
+" and "acpidump -c off" output?
 
 > =
 
-> > > >
-> > > > diff --git a/generate/efi/acpidump/acpidump.inf b/generate/efi/acpi=
-dump/acpidump.inf
-> > > > index 8d2c979..e5f21c0 100644
-> > > > --- a/generate/efi/acpidump/acpidump.inf
-> > > > +++ b/generate/efi/acpidump/acpidump.inf
-> > > > @@ -55,7 +55,5 @@
-> > > >    BaseLib
-> > > >
-> > > >  [BuildOptions]
-> > > > -  MSFT:*_*_IA32_CC_FLAGS =3D /Oi- /WX- /D_EDK2_EFI /DACPI_DUMP_APP
-> > > > -  MSFT:*_*_X64_CC_FLAGS  =3D /Oi- /WX- /D_EDK2_EFI /DACPI_DUMP_APP
-> > > > -  GCC:*_*_IA32_CC_FLAGS  =3D -U__linux__ -U_LINUX -D_EDK2_EFI -DAC=
-PI_DUMP_APP -fno-builtin -
-> > > iwithprefix include
-> > > > -  GCC:*_*_X64_CC_FLAGS   =3D -U__linux__ -U_LINUX -D_EDK2_EFI -DAC=
-PI_DUMP_APP -fno-builtin -
-> > > iwithprefix include
-> > > > +  MSFT:*_*_*_CC_FLAGS =3D /Oi- /WX- /D_EDK2_EFI /DACPI_DUMP_APP
-> > > > +  GCC:*_*_*_CC_FLAGS  =3D -U__linux__ -U_LINUX -D_EDK2_EFI -DACPI_=
-DUMP_APP -fno-builtin -
-> iwithprefix
-> > > include
-> >
-> > Maybe this should be in a separate patch.
+> When early abort is occurred due to invalid ACPI information, Linux kernel
+> terminates ACPI by calling acpi_terminate() function.
+> The function calls acpi_ns_terminate() function to delete namespace data
+> and ACPI operand cache (acpi_gbl_module_code_list).
 > =
 
-> I could, but this is actually part of the main build fix. It's been a
-> while since I wrote it, but I think the -U_LINUX was the change that
-> made it possible to build at all, whereas the changes below made the
-> application function properly.
+> But the deletion code in acpi_ns_terminate() function is wrapped in
+> ACPI_EXEC_APP definition, therefore the code is only executed when the
+> definition exists.
+> If the define doesn't exist, ACPI operand cache (acpi_gbl_module_code_lis=
+t) is
+> leaked, and stack dump is shown in kernel log.
+> =
 
-I don't understand here.
-Both
- -  GCC:*_*_X64_CC_FLAGS
- -  GCC:*_*_IA32_CC_FLAGS
-And
- +  GCC:*_*_*_CC_FLAGS
-Lines contain "-U__linux__ -U_LINUX".
-So this change is only a cleanup to convert:
-*_*_IA32_XXX/*_*_X64_XXX
-Into:
-*_*_*_XXX
-Which can be done in a separate patch.
 
-And if AARCH64 support is dependent on it, you can rebase AARCH64 support o=
-n top of this patch.
+acpi_ns_terminate() actually shouldn't be invoked by Linux.
+It's not fully functioning in Linux kernel environment.
 
-It's just an upstream philosophy that one patch should only do one thing an=
-d do it perfectly.
-So that fix can be easily back ported and when regression is triggered, onl=
-y affection wrong parts are reverted.
+> This causes a security threat because the old kernel (<=3D 4.9) shows mem=
+ory
+> locations of kernel functions in stack dump, therefore kernel ASLR can be
+> neutralized.
+> =
 
-Thanks and best regards
-Lv
+> To fix ACPI operand leak for enhancing security, I made a patch which rem=
+oves
+> the ACPI_EXEC_APP define in acpi_ns_terminate() function for executing the
+> deletion code unconditionally.
+
+However acpi_gbl_module_code_list deletion shouldn't be dependent on ACPI_E=
+XEC_APP.
+So your change is acceptable.
 
 > =
 
-> > > > diff --git a/source/include/platform/acefi.h b/source/include/platf=
-orm/acefi.h
-> > > > index 8328ab6..75ef89a 100644
-> > > > --- a/source/include/platform/acefi.h
-> > > > +++ b/source/include/platform/acefi.h
-> > > > @@ -140,7 +140,7 @@
-> > > >
-> > > >  #define VOID        void
-> > > >
-> > > > -#if defined(__ia64__) || defined(__x86_64__)
-> > > > +#if defined(__aarch64__) || defined(__ia64__) || defined(__x86_64_=
-_)
-> > > >
-> > > >  #define ACPI_MACHINE_WIDTH          64
-> > > >
-> > > >
-> >
-> > TBH, I don't have any idea on how aarch64 EFI wrapper should be.
-> > So what we can do is just relying on the community.
-> > So I'm OK with this change.
-> > But it seems this commit should also define __aarch64__ in accygwin.h.
-> > Is this a mistake?
+> I hope that this patch improves the security of Linux kernel.
 > =
 
-> That is possibly true, but I don't have a Windows environment
-> available to test in.
+> Thank you.
 > =
 
-> Evan, Alexei? Could either of you test this?
+> Signed-off-by: Seunghun Han <kkamagui(a)gmail.com>
+> ---
+> Changes since v1: move position of variables to remove compile warning.
 > =
 
-> Best Regards,
+> drivers/acpi/acpica/nsutils.c | 23 +++++++++--------------
+>  1 file changed, 9 insertions(+), 14 deletions(-)
 > =
 
-> Leif
+> diff --git a/drivers/acpi/acpica/nsutils.c b/drivers/acpi/acpica/nsutils.c
+> index 691814d..943702d 100644
+> --- a/drivers/acpi/acpica/nsutils.c
+> +++ b/drivers/acpi/acpica/nsutils.c
+> @@ -594,25 +594,20 @@ struct acpi_namespace_node *acpi_ns_validate_handle=
+(acpi_handle handle)
+>  void acpi_ns_terminate(void)
+>  {
+>  	acpi_status status;
+> +	union acpi_operand_object *prev;
+> +	union acpi_operand_object *next;
 > =
 
-> >
-> > Thanks and best regards
-> > Lv
-> >
-> >
-> > >
-> > > It's been over a month since this really very simple patch was submit=
-ted.  In
-> > > the meantime, acpidump.efi does not build without it.  Any particular=
- reason
-> > > this has not been merged?  Leif isn't the only user that needs it.
-> > >
-> > > Thanks.
-> > >
-> > > --
-> > > ciao,
-> > > al
-> > > -----------------------------------
-> > > Al Stone
-> > > Software Engineer
-> > > Red Hat, Inc.
-> > > ahs3(a)redhat.com
-> > > -----------------------------------
-> > > _______________________________________________
-> > > Devel mailing list
-> > > Devel(a)acpica.org
-> > > https://lists.acpica.org/mailman/listinfo/devel
+>  	ACPI_FUNCTION_TRACE(ns_terminate);
+> =
 
---===============0115562948372197792==--
+> -#ifdef ACPI_EXEC_APP
+> -	{
+> -		union acpi_operand_object *prev;
+> -		union acpi_operand_object *next;
+> +	/* Delete any module-level code blocks */
+> =
+
+> -		/* Delete any module-level code blocks */
+> -
+> -		next =3D acpi_gbl_module_code_list;
+> -		while (next) {
+> -			prev =3D next;
+> -			next =3D next->method.mutex;
+> -			prev->method.mutex =3D NULL;	/* Clear the Mutex (cheated) field */
+> -			acpi_ut_remove_reference(prev);
+> -		}
+> +	next =3D acpi_gbl_module_code_list;
+> +	while (next) {
+> +		prev =3D next;
+> +		next =3D next->method.mutex;
+> +		prev->method.mutex =3D NULL;	/* Clear the Mutex (cheated) field */
+> +		acpi_ut_remove_reference(prev);
+>  	}
+> -#endif
+
+Thus this looks OK to me.
+
+> =
+
+>  	/*
+>  	 * Free the entire namespace -- all nodes and all objects
+> --
+> 2.1.4
+> =
+
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-acpi" in
+> the body of a message to majordomo(a)vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+--===============7707685254291250469==--
 
