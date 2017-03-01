@@ -1,81 +1,329 @@
-Content-Type: multipart/mixed; boundary="===============7885940859534915621=="
+Content-Type: multipart/mixed; boundary="===============1293314612206916293=="
 MIME-Version: 1.0
-From: Hanjun Guo <hanjun.guo at linaro.org>
-Subject: Re: [Devel] [RFC PATCH V1 v4.10-rc3 1/1] acpi: apei: handle GSIV
- notification type
-Date: Wed, 01 Mar 2017 16:27:25 +0800
-Message-ID: <43507f99-d80b-6409-d249-b9b18425a1da@linaro.org>
-In-Reply-To: 58B579A1.90109@arm.com
+From: Moore, Robert <robert.moore at intel.com>
+Subject: Re: [Devel] [PATCH] ACPICA: Detect duplicate SSDT tables
+Date: Wed, 01 Mar 2017 20:38:19 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E56876F@ORSMSX110.amr.corp.intel.com>
+In-Reply-To: a2cdcf07-055c-6cb2-a0f2-b179a128f845@redhat.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7885940859534915621==
+--===============1293314612206916293==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi James,
+Sorry if I've missed any of this conversation, but I have a couple of thoug=
+hts:
 
-On 2017/2/28 21:22, James Morse wrote:
-> Hi Shiju,
->
-> On 27/02/17 18:19, Shiju Jose wrote:
->> Add a new GHES error source handling function for
->> GSIV(Global System Interrupt Vector).
->> If an error source's notification type is GSIV,
->> then this handling function can be registered
->> into the GSIV handler and it can parse
->> and report error information when they occur.
->
-> I'm missing some of the story here, but how is GSIV different from 'Exter=
-nal
-> Interrupt'? I'm guessing something other than the CPU takes this 'interru=
-pt'...
+1) It might be sufficient to just compare the incoming table header (36 byt=
+es). The header contains both the table length and the checksum -- as well =
+as the OEM ID and OEM version. I take it that the XSDT pointers to the dupl=
+icate tables are different.
 
-Yes, it's the same from CPU side (they are interrupts!), but there
-is history behind them and the usage is different.
+2) As far as comparing every incoming SSDT byte-for-byte against all previo=
+usly loaded SSDTs, I have to think "what about the boot time?". Especially =
+since SSDTs are increasing in both size and number (See example from a real=
+ machine below).
 
-I think External Interrupt was introduced before ACPI is available on
-ARM (hardware reduced platforms), so I guess it was used for errors
-reported to OS which were not using SCI mechanism, for example, some
-IO error reporting.
 
-For External Interrupt, we don't use the ACPI event system, so for
-the firmware, it just report the errors associate with the interrupt
-number, the kernel map the interrupt number and install the
-irq handler for it.
+ACPI: RSDP 0x0000000000492954 000024 (v02 Intel )
+ACPI: XSDT 0x000000000068C938 0000B4 (v00 Intel  AcpiExec 00001001 INTL 201=
+70224)
+ACPI: FACP 0x0000000000492978 000114 (v05 Intel  AcpiExec 00001001 INTL 201=
+70224)
+ACPI: DSDT 0x0000000000690048 022FD6 (v02 LENOVO CB-01    00000001 ACPI 000=
+40000)
+ACPI: FACS 0x0000000000492AB0 000040
+ACPI: SSDT 0x00000000006B3028 0004B7 (v02 LENOVO CB-01    00000001 ACPI 000=
+40000)
+ACPI: SSDT 0x000000000068D940 000B49 (v02 LENOVO CB-01    00000001 ACPI 000=
+40000)
+ACPI: SSDT 0x00000000006B34E8 0004A3 (v02 LENOVO CB-01    00000001 ACPI 000=
+40000)
+ACPI: SSDT 0x00000000006B3998 000E58 (v02 LENOVO CB-01    00000001 ACPI 000=
+40000)
+ACPI: SSDT 0x00000000006B47F8 00037F (v02 PmRef  Cpu0Cst  00003001 INTL 201=
+21220)
+ACPI: SSDT 0x000000000068E498 000660 (v02 PmRef  Cpu0Ist  00003000 INTL 201=
+21220)
+ACPI: SSDT 0x00000000006B4B80 0005AA (v02 PmRef  ApIst    00003000 INTL 201=
+21220)
+ACPI: SSDT 0x000000000068EB00 000119 (v02 PmRef  ApCst    00003000 INTL 201=
+21220)
+ACPI: SSDT 0x000000000068EC28 00004B (v02 LENOVO CB-01    00000001 ACPI 000=
+40000)
+ACPI: SSDT 0x00000000006B5138 0052EE (v02 LENOVO CB-01    00000001 ACPI 000=
+40000)
+ACPI: SSDT 0x00000000006BA430 002C4A (v02 LENOVO CB-01    00000001 ACPI 000=
+40000)
+ACPI: SSDT 0x00000000006BD088 0004C8 (v02 LENOVO CB-01    00000001 ACPI 000=
+40000)
+ACPI: SSDT 0x000000000068EC80 0002D4 (v01 LENOVO CB-01    00000001 ACPI 000=
+40000)
+ACPI: SSDT 0x00000000006BD558 002BAE (v02 LENOVO CB-01    00000001 ACPI 000=
+40000)
+ACPI: SSDT 0x00000000006C0110 00019A (v02 LENOVO CB-01    00000001 ACPI 000=
+40000)
+ACPI: SSDT 0x00000000006C02B8 0006DC (v02 LENOVO CB-01    00000001 ACPI 000=
+40000)
 
-For GSIV based event, it was introduced for hardware reduced platform
-in recent ACPI revision, and ARM64 is one of its consumers. When
-errors are reported via GSIV, ACPI event notification needs to be
-implemented and requires the platform to define a hardware error device
-(PNP0C33) in ACPI namespace, and also a generic event device ACPI0013.
 
-For example, if we are using SPI (ARM GIC) 100 to report errors, there
-is a ACPI0013 driver in drivers/acpi/evged.c to register the irq, when
-error happened and trigger the interrupt, ACPI0013 driver will
-notify the error device (PNP0C33), then error device driver
-(drivers/acpi/hed.c) will process the error data form APEI table...
 
-So GSIV is quite different from 'External interrupt' in the way of
-working from both firmware and kernel side.
 
->
->
-> The GHES GSIV code below is identical to the behaviour of the SCI Notific=
-ation
-> type... are these two names for the same thing? (I'm confused!)
+> -----Original Message-----
+> From: Hans de Goede [mailto:hdegoede(a)redhat.com]
+> Sent: Wednesday, March 1, 2017 1:19 AM
+> To: Zheng, Lv <lv.zheng(a)intel.com>; Rafael J . Wysocki
+> <rjw(a)rjwysocki.net>; Len Brown <lenb(a)kernel.org>; Moore, Robert
+> <robert.moore(a)intel.com>
+> Cc: linux-acpi(a)vger.kernel.org; devel(a)acpica.org
+> Subject: Re: [PATCH] ACPICA: Detect duplicate SSDT tables
+> =
 
-SCI is also an 'interrupt' but it's a special irq number for ACPI
-event, and it has GPE (general purpose event) registers behind it,
-which is used only on Intel platforms. SCI based event use
-Method(\_GPE._L0x) to notify the error device (PNP0C33), but GSIV
-is used for HW-reduced platform which has no GPEs.
+> Hi,
+> =
 
-Hope it can clarify something :)
+> On 01-03-17 04:21, Zheng, Lv wrote:
+> > Hi,
+> >
+> >> From: Hans de Goede [mailto:hdegoede(a)redhat.com]
+> >> Subject: Re: [PATCH] ACPICA: Detect duplicate SSDT tables
+> >>
+> >> Hi,
+> >>
+> >> On 28-02-17 06:19, Zheng, Lv wrote:
+> >>> Hi,
+> >>>
+> >>>> From: Hans de Goede [mailto:hdegoede(a)redhat.com]
+> >>>> Subject: [PATCH] ACPICA: Detect duplicate SSDT tables
+> >>>>
+> >>>> Some machines have the exact (byte for byte) same SSDT tables
+> >>>> multiple times in the root_table_list.
+> >>>
+> >>> Could you give a machine list here?
+> >>
+> >> Currently I'm seeing this on a GPD win machine:
+> >>
+> >> http://www.gpd.hk/gpdwin.asp
+> >>
+> >> I thought I was seeing it on more machines, but those have different
+> >> apci table loading errors...
+> >
+> > I'm not sure what the Windows clones will behave in this case.
+> > Upon seeing a duplicate table, will Windows:
+> > 1. override old namespace node, or
+> > 2. discard (maybe silently) new namespace node that has conflict
+> > namespace hierarchy position against existing node, or 3. just
+> > complain us with a blue screen, or 4. compare all tables first.
+> >
+> > Before knowing the de-facto standard behavior, I'm not sure if the
+> behavior introduced by this commit is correct.
+> > We should be able to judge if this case is real after knowing the
+> Windows behavior.
+> =
 
-Thanks
-Hanjun
+> It is impossible to know what Windows does under the hood, but it does
+> work without complaints on this device, so it certainly does not do 3.
+> As for 1., 2. and 4. since these are identical tables the end result is
+> the same in all 3 cases, it is as if only a single copy was used:
+> =
 
---===============7885940859534915621==--
+> 1. Overriding with the exact same table is a no-op 2. Silently
+> discarding means the old copy is used 4. Comparing tables and presumable
+> then not loading duplicate
+>     ones will result in the old copy being used.
+> =
+
+> So it really does not matter which route windows goes, the end result
+> is: Things work without the user being show scary error messages during
+> boot.
+> =
+
+> > So I don't think this commit goes the right direction on the right
+> track.
+> >
+> >>
+> >>>> Detect this and silently skip the duplicates rather then printing a
+> >>>> scary looking set of errors.
+> >>>
+> >>> Why will this matter to OSPMs?
+> >>
+> >> Not sure what you mean with OSPMs but I can tell you why this matters
+> >> in general, Linux distributions like e.g. Fedora have been putting a
+> >> lot of work in a smooth boot experience where end users do not get
+> >> any scary text messages. For some more embedded like systems this
+> >> even is a hard requirement.
+> >>
+> >> The kernel supports quiet kernel cmdline argument to silence normal
+> >> kernel messages, which is part of what is needed but messages with a
+> >> log level of error still get shown, breaking the "no scary text
+> >> messages" product requirement.
+> >>
+> >>> And should we add non-costless steps just in order to reduce errors,
+> >>
+> >> Yes we should, work on that front has been happening for years, also
+> >> the CPU cost of this check is quite small, memcmp will only happen on
+> >> identically sized tables and even then it will exit as soon as a
+> >> single byte differs.
+> >
+> > Even though, there are server systems containing many tables, almost
+> one/two/three table(s) per CPU.
+> > And you surely need to compare each of them against each of the
+> others.
+> =
+
+> And those machines typically take quite a lot time to boot anyways.
+> =
+
+> Note my patch is only checking previously loaded tables (we do want to
+> load the first copy). So all it is doing is accessing system memory from
+> the CPU. I think you will find in impossible to even measure the extra
+> boot time these few extra (likely cached) system memory accesses take,
+> let alone that it will be anywhere near relevant for the total boot
+> time.
+> =
+
+> >>> while the errors are on the contrary useful (in1dicating platform
+> issues)?
+> >>
+> >> These errors are useful for developers / during testing but not in
+> >> production setups, esp. in the case of duplicate tables where not
+> >> loading the duplicate leads to 0 bad side effects.
+> >>
+> >> I've an alternative proposal though, since this check just fixes a
+> >> small part of the early boot messages caused by SSDT loading and
+> >> since the code itself chooses to ignore any errors:
+> >>
+> >>          /* Ignore errors while loading tables, get as many as
+> >> possible */
+> >>
+> >> How about setting a global flag while loading these tables and making
+> >>
+> >> ACPI_EXCEPTION calls log the exceptions with a log level of warning
+> >> as well as turning the final:
+> >>
+> >>                  ACPI_ERROR((AE_INFO,
+> >>                              "%u table load failures, %u successful",
+> >>                              tables_failed, tables_loaded));
+> >>
+> >> Into a warning ?
+> >
+> > So will Linux just unconditionally change pr_err() into pr_warn() in
+> the printk.h?
+> =
+
+> I'm not talking about unconditionally doing this, the acpica code itself
+> contains in drivers/acpi/acpica/tbxfload.c:
+> =
+
+>          /* Ignore errors while loading tables, get as many as possible
+> */
+> =
+
+> Since acpica is ignoring errors here, it would seem reasonable to me for
+> acpica to treat all ACPI_ERROR / ACPI_EXCEPTION calls while doing this
+> as ACPI_WARNING calls.
+> =
+
+> > ACPI_EXCEPTION here actually means blue screen in Windows.
+> > Maybe it's correct, maybe not.
+> > Linux doesn't run into panic in ACPI_EXCEPTIION just because Linux
+> ACPI implementation still has compliance issues against the de-facto
+> standard.
+> =
+
+> De-facto standard ? ACPI is a written standard, not a de-facto standard.
+> I surely hope ACPICA tries to implements the standard as written...
+> =
+
+> Regards,
+> =
+
+> Hans
+> =
+
+> =
+
+> =
+
+> >>>> Signed-off-by: Hans de Goede <hdegoede(a)redhat.com>
+> >>>> ---
+> >>>>  drivers/acpi/acpica/tbxfload.c | 41
+> >>>> ++++++++++++++++++++++++++++++++++++++++-
+> >>>>  1 file changed, 40 insertions(+), 1 deletion(-)
+> >>>>
+> >>>> diff --git a/drivers/acpi/acpica/tbxfload.c
+> >>>> b/drivers/acpi/acpica/tbxfload.c index 82019c0..1971cd7 100644
+> >>>> --- a/drivers/acpi/acpica/tbxfload.c
+> >>>> +++ b/drivers/acpi/acpica/tbxfload.c
+> >>>> @@ -125,6 +125,44 @@ ACPI_EXPORT_SYMBOL_INIT(acpi_load_tables)
+> >>>>
+> >>>>
+> /***********************************************************************
+> ********
+> >>>>   *
+> >>>> + * FUNCTION:    acpi_tb_find_duplicate_ssdt
+> >>>> + *
+> >>>> + * PARAMETERS:  table         - validated acpi_table_desc of table
+> to check
+> >>>> + *              index         - index of table to find a duplicate
+> of
+> >>>> + *
+> >>>> + * RETURN:      TRUE if a duplicate is found, FALSE if not
+> >>>> + *
+> >>>> + * DESCRIPTION: Private helper function for acpi_tb_load_namespace
+> to
+> >>>> + *              avoid trying to load duplicate ssdt tables
+> >>>> + *
+> >>>> +
+> >>>> +******************************************************************
+> >>>> +************/ static u8 acpi_tb_find_duplicate_ssdt(struct
+> >>>> +acpi_table_desc *table, u32 index) {
+> >>>> +	struct acpi_table_desc *dup;
+> >>>> +	u32 i;
+> >>>> +
+> >>>> +	for (i =3D 0; i < index; ++i) {
+> >>>> +		dup =3D &acpi_gbl_root_table_list.tables[i];
+> >>>> +
+> >>>> +		if (!acpi_gbl_root_table_list.tables[i].address ||
+> >>>> +		    (!ACPI_COMPARE_NAME(dup->signature.ascii,
+> ACPI_SIG_SSDT)
+> >>>> +		     && !ACPI_COMPARE_NAME(dup->signature.ascii,
+> >>>> +					   ACPI_SIG_PSDT)
+> >>>> +		     && !ACPI_COMPARE_NAME(dup->signature.ascii,
+> >>>> +					   ACPI_SIG_OSDT))
+> >>>> +		    || ACPI_FAILURE(acpi_tb_validate_table(dup))
+> >>>> +		    || dup->length !=3D table->length) {
+> >>>> +			continue;
+> >>>> +		}
+> >>>> +
+> >>>> +		if (memcmp(dup->pointer, table->pointer, table->length)
+> =3D=3D 0)
+> >>>> +			return TRUE;
+> >>>> +	}
+> >>>> +	return FALSE;
+> >>>> +}
+> >>>> +
+> >>>> +/*****************************************************************
+> >>>> +**************
+> >>>> + *
+> >>>>   * FUNCTION:    acpi_tb_load_namespace
+> >>>>   *
+> >>>>   * PARAMETERS:  None
+> >>>> @@ -212,7 +250,8 @@ acpi_status acpi_tb_load_namespace(void)
+> >>>>  					   ACPI_SIG_PSDT)
+> >>>>  		     && !ACPI_COMPARE_NAME(table->signature.ascii,
+> >>>>  					   ACPI_SIG_OSDT))
+> >>>> -		    || ACPI_FAILURE(acpi_tb_validate_table(table))) {
+> >>>> +		    || ACPI_FAILURE(acpi_tb_validate_table(table))
+> >>>> +		    || acpi_tb_find_duplicate_ssdt(table, i)) {
+> >>>>  			continue;
+> >>>>  		}
+> >>>>
+> >>>> --
+> >>>> 2.9.3
+> >>>
+
+--===============1293314612206916293==--
 
