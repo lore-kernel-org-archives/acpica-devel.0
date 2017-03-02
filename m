@@ -1,83 +1,21 @@
-Content-Type: multipart/mixed; boundary="===============1293314612206916293=="
+Content-Type: multipart/mixed; boundary="===============8417292703164076794=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
+From: Zheng, Lv <lv.zheng at intel.com>
 Subject: Re: [Devel] [PATCH] ACPICA: Detect duplicate SSDT tables
-Date: Wed, 01 Mar 2017 20:38:19 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E56876F@ORSMSX110.amr.corp.intel.com>
+Date: Thu, 02 Mar 2017 01:59:54 +0000
+Message-ID: <1AE640813FDE7649BE1B193DEA596E886CE446CB@SHSMSX101.ccr.corp.intel.com>
 In-Reply-To: a2cdcf07-055c-6cb2-a0f2-b179a128f845@redhat.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1293314612206916293==
+--===============8417292703164076794==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Sorry if I've missed any of this conversation, but I have a couple of thoug=
-hts:
+Hi,
 
-1) It might be sufficient to just compare the incoming table header (36 byt=
-es). The header contains both the table length and the checksum -- as well =
-as the OEM ID and OEM version. I take it that the XSDT pointers to the dupl=
-icate tables are different.
-
-2) As far as comparing every incoming SSDT byte-for-byte against all previo=
-usly loaded SSDTs, I have to think "what about the boot time?". Especially =
-since SSDTs are increasing in both size and number (See example from a real=
- machine below).
-
-
-ACPI: RSDP 0x0000000000492954 000024 (v02 Intel )
-ACPI: XSDT 0x000000000068C938 0000B4 (v00 Intel  AcpiExec 00001001 INTL 201=
-70224)
-ACPI: FACP 0x0000000000492978 000114 (v05 Intel  AcpiExec 00001001 INTL 201=
-70224)
-ACPI: DSDT 0x0000000000690048 022FD6 (v02 LENOVO CB-01    00000001 ACPI 000=
-40000)
-ACPI: FACS 0x0000000000492AB0 000040
-ACPI: SSDT 0x00000000006B3028 0004B7 (v02 LENOVO CB-01    00000001 ACPI 000=
-40000)
-ACPI: SSDT 0x000000000068D940 000B49 (v02 LENOVO CB-01    00000001 ACPI 000=
-40000)
-ACPI: SSDT 0x00000000006B34E8 0004A3 (v02 LENOVO CB-01    00000001 ACPI 000=
-40000)
-ACPI: SSDT 0x00000000006B3998 000E58 (v02 LENOVO CB-01    00000001 ACPI 000=
-40000)
-ACPI: SSDT 0x00000000006B47F8 00037F (v02 PmRef  Cpu0Cst  00003001 INTL 201=
-21220)
-ACPI: SSDT 0x000000000068E498 000660 (v02 PmRef  Cpu0Ist  00003000 INTL 201=
-21220)
-ACPI: SSDT 0x00000000006B4B80 0005AA (v02 PmRef  ApIst    00003000 INTL 201=
-21220)
-ACPI: SSDT 0x000000000068EB00 000119 (v02 PmRef  ApCst    00003000 INTL 201=
-21220)
-ACPI: SSDT 0x000000000068EC28 00004B (v02 LENOVO CB-01    00000001 ACPI 000=
-40000)
-ACPI: SSDT 0x00000000006B5138 0052EE (v02 LENOVO CB-01    00000001 ACPI 000=
-40000)
-ACPI: SSDT 0x00000000006BA430 002C4A (v02 LENOVO CB-01    00000001 ACPI 000=
-40000)
-ACPI: SSDT 0x00000000006BD088 0004C8 (v02 LENOVO CB-01    00000001 ACPI 000=
-40000)
-ACPI: SSDT 0x000000000068EC80 0002D4 (v01 LENOVO CB-01    00000001 ACPI 000=
-40000)
-ACPI: SSDT 0x00000000006BD558 002BAE (v02 LENOVO CB-01    00000001 ACPI 000=
-40000)
-ACPI: SSDT 0x00000000006C0110 00019A (v02 LENOVO CB-01    00000001 ACPI 000=
-40000)
-ACPI: SSDT 0x00000000006C02B8 0006DC (v02 LENOVO CB-01    00000001 ACPI 000=
-40000)
-
-
-
-
-> -----Original Message-----
 > From: Hans de Goede [mailto:hdegoede(a)redhat.com]
-> Sent: Wednesday, March 1, 2017 1:19 AM
-> To: Zheng, Lv <lv.zheng(a)intel.com>; Rafael J . Wysocki
-> <rjw(a)rjwysocki.net>; Len Brown <lenb(a)kernel.org>; Moore, Robert
-> <robert.moore(a)intel.com>
-> Cc: linux-acpi(a)vger.kernel.org; devel(a)acpica.org
 > Subject: Re: [PATCH] ACPICA: Detect duplicate SSDT tables
 > =
 
@@ -98,8 +36,9 @@ ACPI: SSDT 0x00000000006C02B8 0006DC (v02 LENOVO CB-01    00000001 ACPI 000=
 > >>>> From: Hans de Goede [mailto:hdegoede(a)redhat.com]
 > >>>> Subject: [PATCH] ACPICA: Detect duplicate SSDT tables
 > >>>>
-> >>>> Some machines have the exact (byte for byte) same SSDT tables
-> >>>> multiple times in the root_table_list.
+> >>>> Some machines have the exact (byte for byte) same SSDT tables multip=
+le
+> >>>> times in the root_table_list.
 > >>>
 > >>> Could you give a machine list here?
 > >>
@@ -107,96 +46,127 @@ ACPI: SSDT 0x00000000006C02B8 0006DC (v02 LENOVO CB-01    00000001 ACPI 000=
 > >>
 > >> http://www.gpd.hk/gpdwin.asp
 > >>
-> >> I thought I was seeing it on more machines, but those have different
-> >> apci table loading errors...
+> >> I thought I was seeing it on more machines, but those have
+> >> different apci table loading errors...
 > >
 > > I'm not sure what the Windows clones will behave in this case.
 > > Upon seeing a duplicate table, will Windows:
 > > 1. override old namespace node, or
-> > 2. discard (maybe silently) new namespace node that has conflict
-> > namespace hierarchy position against existing node, or 3. just
-> > complain us with a blue screen, or 4. compare all tables first.
+> > 2. discard (maybe silently) new namespace node that has conflict namesp=
+ace hierarchy position
+> against existing node, or
+> > 3. just complain us with a blue screen, or
+> > 4. compare all tables first.
 > >
-> > Before knowing the de-facto standard behavior, I'm not sure if the
-> behavior introduced by this commit is correct.
-> > We should be able to judge if this case is real after knowing the
-> Windows behavior.
+> > Before knowing the de-facto standard behavior, I'm not sure if the beha=
+vior introduced by this
+> commit is correct.
+> > We should be able to judge if this case is real after knowing the Windo=
+ws behavior.
 > =
 
-> It is impossible to know what Windows does under the hood, but it does
-> work without complaints on this device, so it certainly does not do 3.
-> As for 1., 2. and 4. since these are identical tables the end result is
-> the same in all 3 cases, it is as if only a single copy was used:
+> It is impossible to know what Windows does under the hood,
+
+It's possible.
+By injecting acpitable for qemu and obtain the test result via writing to a=
+ debugging port operation region field.
+But you won't know if this error is silent or not.
+
+Or if you have checked build windows clones, it is possible to see logs in =
+windbg with amli enabled.
+And you'll know if the error is silent or not.
+
+> but it
+> does work without complaints on this device, so it certainly does
+> not do 3. As for 1., 2. and 4. since these are identical tables
+> the end result is the same in all 3 cases, it is as if only a
+> single copy was used:
 > =
 
-> 1. Overriding with the exact same table is a no-op 2. Silently
-> discarding means the old copy is used 4. Comparing tables and presumable
-> then not loading duplicate
+> 1. Overriding with the exact same table is a no-op
+> 2. Silently discarding means the old copy is used
+> 4. Comparing tables and presumable then not loading duplicate
 >     ones will result in the old copy being used.
 > =
 
-> So it really does not matter which route windows goes, the end result
-> is: Things work without the user being show scary error messages during
-> boot.
+> So it really does not matter which route windows goes, the
+> end result is: Things work without the user being show scary
+> error messages during boot.
+
+OK, I can see you really prefer the workaround way rather than the natural =
+way to achieve the same engineering result.
+Then I'll give you suggestions on how it could be done better below.
+
 > =
 
-> > So I don't think this commit goes the right direction on the right
-> track.
+> > So I don't think this commit goes the right direction on the right trac=
+k.
 > >
 > >>
-> >>>> Detect this and silently skip the duplicates rather then printing a
-> >>>> scary looking set of errors.
+> >>>> Detect this and silently skip the duplicates
+> >>>> rather then printing a scary looking set of errors.
 > >>>
 > >>> Why will this matter to OSPMs?
 > >>
-> >> Not sure what you mean with OSPMs but I can tell you why this matters
-> >> in general, Linux distributions like e.g. Fedora have been putting a
-> >> lot of work in a smooth boot experience where end users do not get
-> >> any scary text messages. For some more embedded like systems this
-> >> even is a hard requirement.
+> >> Not sure what you mean with OSPMs but I can tell you why this
+> >> matters in general, Linux distributions like e.g. Fedora have
+> >> been putting a lot of work in a smooth boot experience where
+> >> end users do not get any scary text messages. For some more
+> >> embedded like systems this even is a hard requirement.
 > >>
-> >> The kernel supports quiet kernel cmdline argument to silence normal
-> >> kernel messages, which is part of what is needed but messages with a
-> >> log level of error still get shown, breaking the "no scary text
-> >> messages" product requirement.
+> >> The kernel supports quiet kernel cmdline argument to silence
+> >> normal kernel messages, which is part of what is needed but
+> >> messages with a log level of error still get shown, breaking
+> >> the "no scary text messages" product requirement.
 > >>
 > >>> And should we add non-costless steps just in order to reduce errors,
 > >>
-> >> Yes we should, work on that front has been happening for years, also
-> >> the CPU cost of this check is quite small, memcmp will only happen on
-> >> identically sized tables and even then it will exit as soon as a
-> >> single byte differs.
+> >> Yes we should, work on that front has been happening for years,
+> >> also the CPU cost of this check is quite small, memcmp will
+> >> only happen on identically sized tables and even then it will
+> >> exit as soon as a single byte differs.
 > >
-> > Even though, there are server systems containing many tables, almost
-> one/two/three table(s) per CPU.
-> > And you surely need to compare each of them against each of the
-> others.
+> > Even though, there are server systems containing many tables, almost on=
+e/two/three table(s) per CPU.
+> > And you surely need to compare each of them against each of the others.
 > =
 
 > And those machines typically take quite a lot time to boot anyways.
 > =
 
-> Note my patch is only checking previously loaded tables (we do want to
-> load the first copy). So all it is doing is accessing system memory from
-> the CPU. I think you will find in impossible to even measure the extra
-> boot time these few extra (likely cached) system memory accesses take,
-> let alone that it will be anywhere near relevant for the total boot
-> time.
+> Note my patch is only checking previously loaded tables (we do want
+> to load the first copy). So all it is doing is accessing system memory
+> from the CPU. I think you will find in impossible to even measure the
+> extra boot time these few extra (likely cached) system memory accesses
+> take, let alone that it will be anywhere near relevant for the total
+> boot time.
+
+But if it is not done in natural way, I'm afraid other functionality won't =
+get any benefit from doing this.
+And after the root cause is determined and the right approach is upstreamed=
+, the workarounds will need a cleanup.
+
+So the whole thing looks to me is:
+It's just increase a burden of maintenance by adding useless logics in orde=
+r to reduce several error messages.
+If it's not done in the right place, it's affection won't be minimized and =
+actually makes things worse.
+
 > =
 
-> >>> while the errors are on the contrary useful (in1dicating platform
-> issues)?
+> >>> while the errors are on the contrary useful (in1dicating platform iss=
+ues)?
 > >>
-> >> These errors are useful for developers / during testing but not in
-> >> production setups, esp. in the case of duplicate tables where not
-> >> loading the duplicate leads to 0 bad side effects.
+> >> These errors are useful for developers / during testing but
+> >> not in production setups, esp. in the case of duplicate tables
+> >> where not loading the duplicate leads to 0 bad side effects.
 > >>
-> >> I've an alternative proposal though, since this check just fixes a
-> >> small part of the early boot messages caused by SSDT loading and
-> >> since the code itself chooses to ignore any errors:
+> >> I've an alternative proposal though, since this check just fixes
+> >> a small part of the early boot messages caused by SSDT loading
+> >> and since the code itself chooses to ignore any errors:
 > >>
-> >>          /* Ignore errors while loading tables, get as many as
-> >> possible */
+> >>          /* Ignore errors while loading tables, get as many as possibl=
+e */
 > >>
 > >> How about setting a global flag while loading these tables and making
 > >>
@@ -209,16 +179,26 @@ ACPI: SSDT 0x00000000006C02B8 0006DC (v02 LENOVO CB-01    00000001 ACPI 000=
 > >>
 > >> Into a warning ?
 > >
-> > So will Linux just unconditionally change pr_err() into pr_warn() in
-> the printk.h?
+> > So will Linux just unconditionally change pr_err() into pr_warn() in th=
+e printk.h?
 > =
 
-> I'm not talking about unconditionally doing this, the acpica code itself
+> I'm not talking about unconditionally doing this,
+
+OK, I see.
+
+> the acpica code itself
 > contains in drivers/acpi/acpica/tbxfload.c:
 > =
 
->          /* Ignore errors while loading tables, get as many as possible
-> */
+>          /* Ignore errors while loading tables, get as many as possible */
+
+Actually, if Windows interpreter encounters an error during table load, the=
+re is only 1 result - blue screen.
+During runtime, there is no blue screen but only exceptions returned to the=
+ drivers who call the method evaluations.
+So this comment just means a compromise to me.
+
 > =
 
 > Since acpica is ignoring errors here, it would seem reasonable to me for
@@ -228,85 +208,113 @@ ACPI: SSDT 0x00000000006C02B8 0006DC (v02 LENOVO CB-01    00000001 ACPI 000=
 
 > > ACPI_EXCEPTION here actually means blue screen in Windows.
 > > Maybe it's correct, maybe not.
-> > Linux doesn't run into panic in ACPI_EXCEPTIION just because Linux
-> ACPI implementation still has compliance issues against the de-facto
-> standard.
+> > Linux doesn't run into panic in ACPI_EXCEPTIION just because Linux ACPI=
+ implementation still has
+> compliance issues against the de-facto standard.
 > =
 
 > De-facto standard ? ACPI is a written standard, not a de-facto standard.
 > I surely hope ACPICA tries to implements the standard as written...
-> =
 
-> Regards,
-> =
-
-> Hans
-> =
-
-> =
-
-> =
+By calling de-facto standard, I mean Windows interpreter behavior.
+Windows is the de-facto standard and almost all BIOSen are tested by runnin=
+g one of Windows clones.
+And we are following Windows behavior rather than following the spec words.
 
 > >>>> Signed-off-by: Hans de Goede <hdegoede(a)redhat.com>
 > >>>> ---
-> >>>>  drivers/acpi/acpica/tbxfload.c | 41
-> >>>> ++++++++++++++++++++++++++++++++++++++++-
+> >>>>  drivers/acpi/acpica/tbxfload.c | 41 +++++++++++++++++++++++++++++++=
++++++++++-
 > >>>>  1 file changed, 40 insertions(+), 1 deletion(-)
 > >>>>
-> >>>> diff --git a/drivers/acpi/acpica/tbxfload.c
-> >>>> b/drivers/acpi/acpica/tbxfload.c index 82019c0..1971cd7 100644
+> >>>> diff --git a/drivers/acpi/acpica/tbxfload.c b/drivers/acpi/acpica/tb=
+xfload.c
+> >>>> index 82019c0..1971cd7 100644
 > >>>> --- a/drivers/acpi/acpica/tbxfload.c
 > >>>> +++ b/drivers/acpi/acpica/tbxfload.c
 > >>>> @@ -125,6 +125,44 @@ ACPI_EXPORT_SYMBOL_INIT(acpi_load_tables)
 > >>>>
-> >>>>
-> /***********************************************************************
-> ********
+> >>>>  /******************************************************************=
+*************
 > >>>>   *
 > >>>> + * FUNCTION:    acpi_tb_find_duplicate_ssdt
 > >>>> + *
-> >>>> + * PARAMETERS:  table         - validated acpi_table_desc of table
-> to check
-> >>>> + *              index         - index of table to find a duplicate
-> of
+> >>>> + * PARAMETERS:  table         - validated acpi_table_desc of table =
+to check
+> >>>> + *              index         - index of table to find a duplicate =
+of
 > >>>> + *
 > >>>> + * RETURN:      TRUE if a duplicate is found, FALSE if not
 > >>>> + *
-> >>>> + * DESCRIPTION: Private helper function for acpi_tb_load_namespace
-> to
+> >>>> + * DESCRIPTION: Private helper function for acpi_tb_load_namespace =
+to
 > >>>> + *              avoid trying to load duplicate ssdt tables
 > >>>> + *
-> >>>> +
-> >>>> +******************************************************************
-> >>>> +************/ static u8 acpi_tb_find_duplicate_ssdt(struct
-> >>>> +acpi_table_desc *table, u32 index) {
+> >>>> + ******************************************************************=
+************/
+> >>>> +static u8 acpi_tb_find_duplicate_ssdt(struct acpi_table_desc *table=
+, u32 index)
+
+If you really want to add this.
+My suggestion is:
+Invoke this function in acpi_tb_verify_temp_table().
+This is the function we use to verify if a table is OK.
+Otherwise it won't be installed to the global table list.
+
+And the name should contain "aml_table" or "aml" rather than "ssdt" accordi=
+ng to your check below.
+
+> >>>> +{
 > >>>> +	struct acpi_table_desc *dup;
 > >>>> +	u32 i;
 > >>>> +
 > >>>> +	for (i =3D 0; i < index; ++i) {
+
+Parameter of index is not useful here.
+You should use acpi_gbl_root_table_list.current_table_count instead.
+
 > >>>> +		dup =3D &acpi_gbl_root_table_list.tables[i];
 > >>>> +
 > >>>> +		if (!acpi_gbl_root_table_list.tables[i].address ||
-> >>>> +		    (!ACPI_COMPARE_NAME(dup->signature.ascii,
-> ACPI_SIG_SSDT)
+
+The address check then is useless as for now we never uninstall tables once=
+ they are in acpi_gbl_root_table_list.
+
+> >>>> +		    (!ACPI_COMPARE_NAME(dup->signature.ascii, ACPI_SIG_SSDT)
 > >>>> +		     && !ACPI_COMPARE_NAME(dup->signature.ascii,
 > >>>> +					   ACPI_SIG_PSDT)
 > >>>> +		     && !ACPI_COMPARE_NAME(dup->signature.ascii,
 > >>>> +					   ACPI_SIG_OSDT))
+
+All above ones might be changed to just check if it is an AML table.
+You can enable the function of acpi_ut_is_aml_table() for linux and invoke =
+it here.
+
 > >>>> +		    || ACPI_FAILURE(acpi_tb_validate_table(dup))
+
+You won't need this, as you should invoke this function from a point in acp=
+i_tb_verify_temp_table() where the table should have already been validated=
+. =
+
+
 > >>>> +		    || dup->length !=3D table->length) {
 > >>>> +			continue;
 > >>>> +		}
 > >>>> +
-> >>>> +		if (memcmp(dup->pointer, table->pointer, table->length)
-> =3D=3D 0)
+> >>>> +		if (memcmp(dup->pointer, table->pointer, table->length) =3D=3D 0)
+
+I'm not sure if you know the story of acpi_gbl_verify_table_checksum.
+IMO, you can only do this when acpi_gbl_verify_table_checksum is TRUE.
+So in early stage, the functionality you introduced may still be a no-op fo=
+r the same reason.
+
 > >>>> +			return TRUE;
 > >>>> +	}
 > >>>> +	return FALSE;
 > >>>> +}
 > >>>> +
-> >>>> +/*****************************************************************
-> >>>> +**************
+> >>>> +/******************************************************************=
+*************
 > >>>> + *
 > >>>>   * FUNCTION:    acpi_tb_load_namespace
 > >>>>   *
@@ -318,6 +326,20 @@ ACPI: SSDT 0x00000000006C02B8 0006DC (v02 LENOVO CB-01    00000001 ACPI 000=
 > >>>> -		    || ACPI_FAILURE(acpi_tb_validate_table(table))) {
 > >>>> +		    || ACPI_FAILURE(acpi_tb_validate_table(table))
 > >>>> +		    || acpi_tb_find_duplicate_ssdt(table, i)) {
+
+So it shouldn't be invoked in acpi_tb_load_namespace().
+If you really want it to be verified in case "acpi_gbl_verify_table_checksu=
+m=3Dfalse" skipped the check.
+You should find a right position (should be where the acpi_gbl_verify_table=
+_checksum is set to TRUE),
+Invoking acpi_tb_verify_temp_table() for those unverified tables (maybe a f=
+lag in acpi_table_desc).
+
+That could be the right approach.
+
+Thanks
+Lv
+
 > >>>>  			continue;
 > >>>>  		}
 > >>>>
@@ -325,5 +347,5 @@ ACPI: SSDT 0x00000000006C02B8 0006DC (v02 LENOVO CB-01    00000001 ACPI 000=
 > >>>> 2.9.3
 > >>>
 
---===============1293314612206916293==--
+--===============8417292703164076794==--
 
