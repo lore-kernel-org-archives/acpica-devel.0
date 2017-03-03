@@ -1,116 +1,186 @@
-Content-Type: multipart/mixed; boundary="===============1951545221896339421=="
+Content-Type: multipart/mixed; boundary="===============4409267622812348714=="
 MIME-Version: 1.0
-From: Hanjun Guo <hanjun.guo at linaro.org>
-Subject: Re: [Devel] [RFC PATCH V1 v4.10-rc3 1/1] acpi: apei: handle GSIV
- notification type
-Date: Fri, 03 Mar 2017 12:20:15 +0800
-Message-ID: <43301c6b-558c-990a-5736-7725063b0c23@linaro.org>
-In-Reply-To: 86258A5CC0A3704780874CF6004BA8A62DCAC378@lhreml502-mbs
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] ACPICA version 20170303
+Date: Fri, 03 Mar 2017 18:04:57 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E569027@ORSMSX110.amr.corp.intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1951545221896339421==
+--===============4409267622812348714==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On 2017/3/2 21:45, Shiju Jose wrote:
-> Hi James,
->
->>
->> Hi Hanjun,
->>
->> On 01/03/17 08:27, Hanjun Guo wrote:
->>> On 2017/2/28 21:22, James Morse wrote:
->>>> On 27/02/17 18:19, Shiju Jose wrote:
->>>>> Add a new GHES error source handling function for GSIV(Global
->> System
->>>>> Interrupt Vector).
->>>>> If an error source's notification type is GSIV, then this handling
->>>>> function can be registered into the GSIV handler and it can parse
->>>>> and report error information when they occur.
->>>>
->>>> I'm missing some of the story here, but how is GSIV different from
->>>> 'External Interrupt'? I'm guessing something other than the CPU
->> takes this 'interrupt'...
->>>
->>> Yes, it's the same from CPU side (they are interrupts!), but there is
->>> history behind them and the usage is different.
->>>
->>> I think External Interrupt was introduced before ACPI is available on
->>> ARM (hardware reduced platforms), so I guess it was used for errors
->>> reported to OS which were not using SCI mechanism, for example, some
->>> IO error reporting.
->>>
->>> For External Interrupt, we don't use the ACPI event system, so for
->> the
->>> firmware, it just report the errors associate with the interrupt
->>> number, the kernel map the interrupt number and install the irq
->>> handler for it.
->>>
->>> For GSIV based event, it was introduced for hardware reduced platform
->>> in recent ACPI revision, and ARM64 is one of its consumers. When
->>> errors are reported via GSIV, ACPI event notification needs to be
->>> implemented and requires the platform to define a hardware error
->>> device
->>> (PNP0C33) in ACPI namespace, and also a generic event device ACPI0013.
->>
->> Okay, so for APEI this really means PNP0C33 was Notify()d. 'SCI' means
->> the same but the route they take to get into APEI is different.
->>
->>
->>> For example, if we are using SPI (ARM GIC) 100 to report errors,
->> there
->>> is a ACPI0013 driver in drivers/acpi/evged.c to register the irq,
->> when
->>
->> Aha, this is where the interrupt-magic happens.
->>
->>
->>> error happened and trigger the interrupt, ACPI0013 driver will notify
->>> the error device (PNP0C33), then error device driver
->>> (drivers/acpi/hed.c) will process the error data form APEI table...
->>
->>
->>>> The GHES GSIV code below is identical to the behaviour of the SCI
->>>> Notification type... are these two names for the same thing? (I'm
->>>> confused!)
->>>
->>> SCI is also an 'interrupt' but it's a special irq number for ACPI
->>> event, and it has GPE (general purpose event) registers behind it,
->>> which is used only on Intel platforms. SCI based event use
->>> Method(\_GPE._L0x) to notify the error device (PNP0C33), but GSIV is
->>> used for HW-reduced platform which has no GPEs.
->>
->>> Hope it can clarify something :)
->>
->> Yes thanks! (the mist is slowly clearing...)
->>
->> If ACPI_HEST_NOTIFY_SCI and ACPI_HEST_NOTIFY_GSIV both mean 'receive
->> notification from PNP0C33', is there any point having separate lists
->> and add/remove functions for them?
->>
->> Instead, could we rename Linux's ghes_notifier_sci() and ghes_sci list
->> to describe 'hed' instead, then group the two case statements together?
->> There would be no need to add a selectable CONFIG_ACPI_APEI_GSIV, as
->> SCI is already built-in and this way the code added is tiny. The only
->> thing we would lose is the name 'GSIV' in the not-supported error
->> message which we don't need if its always supported.
->
-> This method was tested ok. However we were not sure about reusing/changin=
-g the
-> existing ghes_notifier_sci() for gsiv will be accepted.
+03 March 2017. Summary of changes for version 20170303:
 
-For now a notify (SCI/GSIV/GPIO) will trigger the process of all the
-ghes data even they are on different list, so add them on a single
-list and process them will have the same effect.
 
-> Thus added a separate handling function ghes_notifier_gsiv() for gsiv.
 
-I think we can prepare the patch and send out for review.
+This release is available at https://acpica.org/downloads
 
-Thanks
-Hanjun
 
---===============1951545221896339421==--
+
+
+
+0) ACPICA licensing:
+
+
+
+The licensing information at the start of each source code module has been =
+updated. In addition to the Intel license, the dual GPLv2/BSD license has b=
+een added for completeness. Now, a single version of the source code should=
+ be suitable for all ACPICA customers. This is the major change for this re=
+lease since it affects all source code modules.
+
+
+
+
+1) ACPICA kernel-resident subsystem:
+
+
+
+Fixed two issues with the common asltypes.h header that could cause problem=
+s in some environments: (Kim Jung-uk)
+
+    Removed typedef for YY_BUFFER_STATE -
+
+        Fixes an error with earlier versions of Flex.
+
+    Removed use of FILE typedef (which is only defined in stdio.h)
+
+
+
+
+2) iASL Compiler/Disassembler and Tools:
+
+
+
+Disassembler: fixed a regression introduced in 20170224. A fix for a memory=
+ leak related to resource descriptor tags (names) could fault when the disa=
+ssembler was generated with 64-bit compilers.
+
+
+
+The ASLTS test suite has been updated to implement a new testing architectu=
+re. During generation of the suite from ASL source, both the ASL and ASL+ c=
+ompilers are now validated, as well as the disassembler itself (Erik Schmau=
+ss). The architecture executes as follows:
+
+
+
+   For every ASL source module:
+
+        Compile (legacy ASL compilation)
+
+        Disassemble the resulting AML to ASL+ source code
+
+        Compile the new ASL+ module
+
+        Perform a binary compare on the legacy AML and the new ASL+ AML
+
+    The ASLTS suite then executes normally using the AML binaries.
+
+
+
+
+--===============4409267622812348714==
+Content-Type: text/html
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="attachment.html"
+
+PGh0bWwgeG1sbnM6dj0idXJuOnNjaGVtYXMtbWljcm9zb2Z0LWNvbTp2bWwiIHhtbG5zOm89InVy
+bjpzY2hlbWFzLW1pY3Jvc29mdC1jb206b2ZmaWNlOm9mZmljZSIgeG1sbnM6dz0idXJuOnNjaGVt
+YXMtbWljcm9zb2Z0LWNvbTpvZmZpY2U6d29yZCIgeG1sbnM6bT0iaHR0cDovL3NjaGVtYXMubWlj
+cm9zb2Z0LmNvbS9vZmZpY2UvMjAwNC8xMi9vbW1sIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcv
+VFIvUkVDLWh0bWw0MCI+CjxoZWFkPgo8bWV0YSBodHRwLWVxdWl2PSJDb250ZW50LVR5cGUiIGNv
+bnRlbnQ9InRleHQvaHRtbDsgY2hhcnNldD11cy1hc2NpaSI+CjxtZXRhIG5hbWU9IkdlbmVyYXRv
+ciIgY29udGVudD0iTWljcm9zb2Z0IFdvcmQgMTUgKGZpbHRlcmVkIG1lZGl1bSkiPgo8c3R5bGU+
+PCEtLQovKiBGb250IERlZmluaXRpb25zICovCkBmb250LWZhY2UKCXtmb250LWZhbWlseToiQ2Ft
+YnJpYSBNYXRoIjsKCXBhbm9zZS0xOjIgNCA1IDMgNSA0IDYgMyAyIDQ7fQpAZm9udC1mYWNlCgl7
+Zm9udC1mYW1pbHk6Q2FsaWJyaTsKCXBhbm9zZS0xOjIgMTUgNSAyIDIgMiA0IDMgMiA0O30KLyog
+U3R5bGUgRGVmaW5pdGlvbnMgKi8KcC5Nc29Ob3JtYWwsIGxpLk1zb05vcm1hbCwgZGl2Lk1zb05v
+cm1hbAoJe21hcmdpbjowaW47CgltYXJnaW4tYm90dG9tOi4wMDAxcHQ7Cglmb250LXNpemU6MTEu
+MHB0OwoJZm9udC1mYW1pbHk6IkNhbGlicmkiLHNhbnMtc2VyaWY7fQphOmxpbmssIHNwYW4uTXNv
+SHlwZXJsaW5rCgl7bXNvLXN0eWxlLXByaW9yaXR5Ojk5OwoJY29sb3I6IzA1NjNDMTsKCXRleHQt
+ZGVjb3JhdGlvbjp1bmRlcmxpbmU7fQphOnZpc2l0ZWQsIHNwYW4uTXNvSHlwZXJsaW5rRm9sbG93
+ZWQKCXttc28tc3R5bGUtcHJpb3JpdHk6OTk7Cgljb2xvcjojOTU0RjcyOwoJdGV4dC1kZWNvcmF0
+aW9uOnVuZGVybGluZTt9CnAuTXNvUGxhaW5UZXh0LCBsaS5Nc29QbGFpblRleHQsIGRpdi5Nc29Q
+bGFpblRleHQKCXttc28tc3R5bGUtcHJpb3JpdHk6OTk7Cgltc28tc3R5bGUtbGluazoiUGxhaW4g
+VGV4dCBDaGFyIjsKCW1hcmdpbjowaW47CgltYXJnaW4tYm90dG9tOi4wMDAxcHQ7Cglmb250LXNp
+emU6MTEuMHB0OwoJZm9udC1mYW1pbHk6IkNvdXJpZXIgTmV3Ijt9CnNwYW4uRW1haWxTdHlsZTE3
+Cgl7bXNvLXN0eWxlLXR5cGU6cGVyc29uYWwtY29tcG9zZTsKCWZvbnQtZmFtaWx5OiJDYWxpYnJp
+IixzYW5zLXNlcmlmOwoJY29sb3I6d2luZG93dGV4dDt9CnNwYW4uUGxhaW5UZXh0Q2hhcgoJe21z
+by1zdHlsZS1uYW1lOiJQbGFpbiBUZXh0IENoYXIiOwoJbXNvLXN0eWxlLXByaW9yaXR5Ojk5OwoJ
+bXNvLXN0eWxlLWxpbms6IlBsYWluIFRleHQiOwoJZm9udC1mYW1pbHk6IkNvdXJpZXIgTmV3Ijt9
+Ci5Nc29DaHBEZWZhdWx0Cgl7bXNvLXN0eWxlLXR5cGU6ZXhwb3J0LW9ubHk7Cglmb250LWZhbWls
+eToiQ2FsaWJyaSIsc2Fucy1zZXJpZjt9CkBwYWdlIFdvcmRTZWN0aW9uMQoJe3NpemU6OC41aW4g
+MTEuMGluOwoJbWFyZ2luOjEuMGluIDEuMGluIDEuMGluIDEuMGluO30KZGl2LldvcmRTZWN0aW9u
+MQoJe3BhZ2U6V29yZFNlY3Rpb24xO30KLS0+PC9zdHlsZT48IS0tW2lmIGd0ZSBtc28gOV0+PHht
+bD4KPG86c2hhcGVkZWZhdWx0cyB2OmV4dD0iZWRpdCIgc3BpZG1heD0iMTAyNiIgLz4KPC94bWw+
+PCFbZW5kaWZdLS0+PCEtLVtpZiBndGUgbXNvIDldPjx4bWw+CjxvOnNoYXBlbGF5b3V0IHY6ZXh0
+PSJlZGl0Ij4KPG86aWRtYXAgdjpleHQ9ImVkaXQiIGRhdGE9IjEiIC8+CjwvbzpzaGFwZWxheW91
+dD48L3htbD48IVtlbmRpZl0tLT4KPC9oZWFkPgo8Ym9keSBsYW5nPSJFTi1VUyIgbGluaz0iIzA1
+NjNDMSIgdmxpbms9IiM5NTRGNzIiPgo8ZGl2IGNsYXNzPSJXb3JkU2VjdGlvbjEiPgo8cCBjbGFz
+cz0iTXNvUGxhaW5UZXh0Ij4wMyBNYXJjaCAyMDE3LiBTdW1tYXJ5IG9mIGNoYW5nZXMgZm9yIHZl
+cnNpb24gMjAxNzAzMDM6PG86cD48L286cD48L3A+CjxwIGNsYXNzPSJNc29QbGFpblRleHQiPjxv
+OnA+Jm5ic3A7PC9vOnA+PC9wPgo8cCBjbGFzcz0iTXNvUGxhaW5UZXh0Ij5UaGlzIHJlbGVhc2Ug
+aXMgYXZhaWxhYmxlIGF0IGh0dHBzOi8vYWNwaWNhLm9yZy9kb3dubG9hZHM8bzpwPjwvbzpwPjwv
+cD4KPHAgY2xhc3M9Ik1zb1BsYWluVGV4dCI+PG86cD4mbmJzcDs8L286cD48L3A+CjxwIGNsYXNz
+PSJNc29QbGFpblRleHQiPjxvOnA+Jm5ic3A7PC9vOnA+PC9wPgo8cCBjbGFzcz0iTXNvUGxhaW5U
+ZXh0Ij4wKSBBQ1BJQ0EgbGljZW5zaW5nOjxvOnA+PC9vOnA+PC9wPgo8cCBjbGFzcz0iTXNvUGxh
+aW5UZXh0Ij48bzpwPiZuYnNwOzwvbzpwPjwvcD4KPHAgY2xhc3M9Ik1zb1BsYWluVGV4dCI+VGhl
+IGxpY2Vuc2luZyBpbmZvcm1hdGlvbiBhdCB0aGUgc3RhcnQgb2YgZWFjaCBzb3VyY2UgY29kZSBt
+b2R1bGUgaGFzIGJlZW4gdXBkYXRlZC4gSW4gYWRkaXRpb24gdG8gdGhlIEludGVsIGxpY2Vuc2Us
+IHRoZSBkdWFsIEdQTHYyL0JTRCBsaWNlbnNlIGhhcyBiZWVuIGFkZGVkIGZvciBjb21wbGV0ZW5l
+c3MuIE5vdywgYSBzaW5nbGUgdmVyc2lvbiBvZiB0aGUgc291cmNlIGNvZGUgc2hvdWxkIGJlIHN1
+aXRhYmxlCiBmb3IgYWxsIEFDUElDQSBjdXN0b21lcnMuIFRoaXMgaXMgdGhlIG1ham9yIGNoYW5n
+ZSBmb3IgdGhpcyByZWxlYXNlIHNpbmNlIGl0IGFmZmVjdHMgYWxsIHNvdXJjZSBjb2RlIG1vZHVs
+ZXMuPG86cD48L286cD48L3A+CjxwIGNsYXNzPSJNc29QbGFpblRleHQiPjxvOnA+Jm5ic3A7PC9v
+OnA+PC9wPgo8cCBjbGFzcz0iTXNvUGxhaW5UZXh0Ij48bzpwPiZuYnNwOzwvbzpwPjwvcD4KPHAg
+Y2xhc3M9Ik1zb05vcm1hbCI+PHNwYW4gc3R5bGU9ImZvbnQtZmFtaWx5OiZxdW90O0NvdXJpZXIg
+TmV3JnF1b3Q7Ij4xKSBBQ1BJQ0Ega2VybmVsLXJlc2lkZW50IHN1YnN5c3RlbTo8bzpwPjwvbzpw
+Pjwvc3Bhbj48L3A+CjxwIGNsYXNzPSJNc29QbGFpblRleHQiPjxvOnA+Jm5ic3A7PC9vOnA+PC9w
+Pgo8cCBjbGFzcz0iTXNvUGxhaW5UZXh0Ij5GaXhlZCB0d28gaXNzdWVzIHdpdGggdGhlIGNvbW1v
+biBhc2x0eXBlcy5oIGhlYWRlciB0aGF0IGNvdWxkIGNhdXNlIHByb2JsZW1zIGluIHNvbWUgZW52
+aXJvbm1lbnRzOiAoS2ltIEp1bmctdWspPG86cD48L286cD48L3A+CjxwIGNsYXNzPSJNc29QbGFp
+blRleHQiPiZuYnNwOyZuYnNwOyZuYnNwOyBSZW1vdmVkIHR5cGVkZWYgZm9yIFlZX0JVRkZFUl9T
+VEFURSAtPG86cD48L286cD48L3A+CjxwIGNsYXNzPSJNc29QbGFpblRleHQiPiZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyBGaXhlcyBhbiBlcnJvciB3aXRoIGVhcmxp
+ZXIgdmVyc2lvbnMgb2YgRmxleC48bzpwPjwvbzpwPjwvcD4KPHAgY2xhc3M9Ik1zb1BsYWluVGV4
+dCI+Jm5ic3A7Jm5ic3A7Jm5ic3A7IFJlbW92ZWQgdXNlIG9mIEZJTEUgdHlwZWRlZiAod2hpY2gg
+aXMgb25seSBkZWZpbmVkIGluIHN0ZGlvLmgpPG86cD48L286cD48L3A+CjxwIGNsYXNzPSJNc29Q
+bGFpblRleHQiPjxvOnA+Jm5ic3A7PC9vOnA+PC9wPgo8cCBjbGFzcz0iTXNvUGxhaW5UZXh0Ij48
+bzpwPiZuYnNwOzwvbzpwPjwvcD4KPHAgY2xhc3M9Ik1zb05vcm1hbCI+PHNwYW4gc3R5bGU9ImZv
+bnQtZmFtaWx5OiZxdW90O0NvdXJpZXIgTmV3JnF1b3Q7Ij4yKSBpQVNMIENvbXBpbGVyL0Rpc2Fz
+c2VtYmxlciBhbmQgVG9vbHM6PG86cD48L286cD48L3NwYW4+PC9wPgo8cCBjbGFzcz0iTXNvUGxh
+aW5UZXh0Ij48bzpwPiZuYnNwOzwvbzpwPjwvcD4KPHAgY2xhc3M9Ik1zb1BsYWluVGV4dCI+RGlz
+YXNzZW1ibGVyOiBmaXhlZCBhIHJlZ3Jlc3Npb24gaW50cm9kdWNlZCBpbiAyMDE3MDIyNC4gQSBm
+aXggZm9yIGEgbWVtb3J5IGxlYWsgcmVsYXRlZCB0byByZXNvdXJjZSBkZXNjcmlwdG9yIHRhZ3Mg
+KG5hbWVzKSBjb3VsZCBmYXVsdCB3aGVuIHRoZSBkaXNhc3NlbWJsZXIgd2FzIGdlbmVyYXRlZCB3
+aXRoIDY0LWJpdCBjb21waWxlcnMuPG86cD48L286cD48L3A+CjxwIGNsYXNzPSJNc29QbGFpblRl
+eHQiPjxvOnA+Jm5ic3A7PC9vOnA+PC9wPgo8cCBjbGFzcz0iTXNvUGxhaW5UZXh0Ij5UaGUgQVNM
+VFMgdGVzdCBzdWl0ZSBoYXMgYmVlbiB1cGRhdGVkIHRvIGltcGxlbWVudCBhIG5ldyB0ZXN0aW5n
+IGFyY2hpdGVjdHVyZS4gRHVyaW5nIGdlbmVyYXRpb24gb2YgdGhlIHN1aXRlIGZyb20gQVNMIHNv
+dXJjZSwgYm90aCB0aGUgQVNMIGFuZCBBU0wmIzQzOyBjb21waWxlcnMgYXJlIG5vdyB2YWxpZGF0
+ZWQsIGFzIHdlbGwgYXMgdGhlIGRpc2Fzc2VtYmxlciBpdHNlbGYgKEVyaWsgU2NobWF1c3MpLiBU
+aGUKIGFyY2hpdGVjdHVyZSBleGVjdXRlcyBhcyBmb2xsb3dzOjxvOnA+PC9vOnA+PC9wPgo8cCBj
+bGFzcz0iTXNvUGxhaW5UZXh0Ij48bzpwPiZuYnNwOzwvbzpwPjwvcD4KPHAgY2xhc3M9Ik1zb1Bs
+YWluVGV4dCI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Rm9yIGV2ZXJ5IEFTTCBzb3VyY2UgbW9kdWxlOjxv
+OnA+PC9vOnA+PC9wPgo8cCBjbGFzcz0iTXNvUGxhaW5UZXh0Ij4mbmJzcDsmbmJzcDsmbmJzcDsg
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Q29tcGlsZSAobGVnYWN5IEFTTCBjb21waWxhdGlvbik8
+bzpwPjwvbzpwPjwvcD4KPHAgY2xhc3M9Ik1zb1BsYWluVGV4dCI+Jm5ic3A7Jm5ic3A7Jm5ic3A7
+ICZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO0Rpc2Fzc2VtYmxlIHRoZSByZXN1bHRpbmcgQU1MIHRv
+IEFTTCYjNDM7IHNvdXJjZSBjb2RlPG86cD48L286cD48L3A+CjxwIGNsYXNzPSJNc29QbGFpblRl
+eHQiPiZuYnNwOyZuYnNwOyZuYnNwOyAmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtDb21waWxlIHRo
+ZSBuZXcgQVNMJiM0MzsgbW9kdWxlPG86cD48L286cD48L3A+CjxwIGNsYXNzPSJNc29QbGFpblRl
+eHQiPiZuYnNwOyZuYnNwOyZuYnNwOyAmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtQZXJmb3JtIGEg
+YmluYXJ5IGNvbXBhcmUgb24gdGhlIGxlZ2FjeSBBTUwgYW5kIHRoZSBuZXcgQVNMJiM0MzsgQU1M
+PG86cD48L286cD48L3A+CjxwIGNsYXNzPSJNc29QbGFpblRleHQiPiZuYnNwOyZuYnNwOyZuYnNw
+OyBUaGUgQVNMVFMgc3VpdGUgdGhlbiBleGVjdXRlcyBub3JtYWxseSB1c2luZyB0aGUgQU1MIGJp
+bmFyaWVzLjxvOnA+PC9vOnA+PC9wPgo8cCBjbGFzcz0iTXNvUGxhaW5UZXh0Ij48bzpwPiZuYnNw
+OzwvbzpwPjwvcD4KPHAgY2xhc3M9Ik1zb05vcm1hbCI+PG86cD4mbmJzcDs8L286cD48L3A+Cjwv
+ZGl2Pgo8L2JvZHk+CjwvaHRtbD4K
+
+--===============4409267622812348714==--
 
