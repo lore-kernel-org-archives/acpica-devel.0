@@ -1,337 +1,144 @@
-Content-Type: multipart/mixed; boundary="===============8880710080910750358=="
+Content-Type: multipart/mixed; boundary="===============4360443953803850564=="
 MIME-Version: 1.0
 From: Lv Zheng <lv.zheng at intel.com>
-Subject: [Devel] [RFC PATCH 6/7] ACPICA: Tables: Add sanity check for static
- table load
-Date: Wed, 15 Mar 2017 14:37:35 +0800
-Message-ID: <97da7387f97478e3ffba5a7295aaadf3e095bcb2.1489558845.git.lv.zheng@intel.com>
+Subject: [Devel] [RFC PATCH 7/7] ACPICA: Tables: Change table comparison using
+ table header for static load tables
+Date: Wed, 15 Mar 2017 14:37:42 +0800
+Message-ID: <a70b2cb791b0d5f7571b624279fc46ace35d920a.1489558845.git.lv.zheng@intel.com>
 In-Reply-To: cover.1489558845.git.lv.zheng@intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8880710080910750358==
+--===============4360443953803850564==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-This patch extends sanity check to static table load. Also enables
-acpi_ut_is_aml_table() for Linux kernel. This patch achieves this by invoki=
-ng
-acpi_tb_load_table() instead of acpi_ns_load_table().
+For AML tables, checksum is available for us to detect a duplicate table,
+so this patch removes byte-by-byte check for static load tables to improve
+performance, and comparing header allows us to validate if
+LEN/CSUM/OEM fields match. Suggested by Bob Moore, fixed by Lv Zheng.
 
-Some redundant code blocks are therefore reduced:
-1. acpi_tb_validate_table() is replaced by acpi_get_table_by_index() invoke=
-d in
-   acpi_tb_validate_table_for_load(), DSDT handling code is thus moved to t=
-his
-   function as it must be invoked for validated tables;
-2. MLC handling in both acpi_ns_load_table() and acpi_tb_load_table() can be
-   combined into acpi_tb_load_table(), Reload parameter is added to
-   acpi_tb_load_table() in order to distiguish different table loading stag=
-es
-   to keep group MLC logics.
-Reported by Hans de Goede, fixed by Lv Zheng.
-
-Reported-by: Hans de Goede <hdegoede(a)redhat.com>
+Suggested-by: Bob Moore <robert.moore(a)intel.com>
 Signed-off-by: Lv Zheng <lv.zheng(a)intel.com>
 Cc: Hans de Goede <hdegoede(a)redhat.com>
 ---
- drivers/acpi/acpica/actables.h |  3 +-
- drivers/acpi/acpica/exconfig.c |  2 +-
- drivers/acpi/acpica/nsload.c   | 18 -----------
- drivers/acpi/acpica/tbdata.c   | 69 +++++++++++++++++++++++++++++++++-----=
-----
- drivers/acpi/acpica/tbxfload.c | 40 +++---------------------
- 5 files changed, 63 insertions(+), 69 deletions(-)
-
-diff --git a/drivers/acpi/acpica/actables.h b/drivers/acpi/acpica/actables.h
-index db78af4..e478576 100644
---- a/drivers/acpi/acpica/actables.h
-+++ b/drivers/acpi/acpica/actables.h
-@@ -124,7 +124,8 @@ acpi_tb_install_standard_table(acpi_physical_address ad=
-dress,
- void acpi_tb_uninstall_table(struct acpi_table_desc *table_desc);
- =
-
- acpi_status
--acpi_tb_load_table(u32 *table_index, struct acpi_namespace_node *parent_no=
-de);
-+acpi_tb_load_table(u32 *table_index,
-+		   u8 reload, struct acpi_namespace_node *parent_node);
- =
-
- acpi_status
- acpi_tb_install_and_load_table(acpi_physical_address address,
-diff --git a/drivers/acpi/acpica/exconfig.c b/drivers/acpi/acpica/exconfig.c
-index c82ea9b..a95c71d 100644
---- a/drivers/acpi/acpica/exconfig.c
-+++ b/drivers/acpi/acpica/exconfig.c
-@@ -197,7 +197,7 @@ acpi_ex_load_table_op(struct acpi_walk_state *walk_stat=
-e,
- =
-
- 	ACPI_INFO(("Dynamic OEM Table Load:"));
- 	acpi_ex_exit_interpreter();
--	status =3D acpi_tb_load_table(&table_index, parent_node);
-+	status =3D acpi_tb_load_table(&table_index, TRUE, parent_node);
- 	acpi_ex_enter_interpreter();
- 	if (ACPI_FAILURE(status)) {
- 		return_ACPI_STATUS(status);
-diff --git a/drivers/acpi/acpica/nsload.c b/drivers/acpi/acpica/nsload.c
-index d2915e1..1f3163a 100644
---- a/drivers/acpi/acpica/nsload.c
-+++ b/drivers/acpi/acpica/nsload.c
-@@ -144,24 +144,6 @@ acpi_ns_load_table(u32 table_index, struct acpi_namesp=
-ace_node *node)
- 	ACPI_DEBUG_PRINT((ACPI_DB_INFO,
- 			  "**** Completed Table Object Initialization\n"));
- =
-
--	/*
--	 * Execute any module-level code that was detected during the table load
--	 * phase. Although illegal since ACPI 2.0, there are many machines that
--	 * contain this type of code. Each block of detected executable AML code
--	 * outside of any control method is wrapped with a temporary control
--	 * method object and placed on a global list. The methods on this list
--	 * are executed below.
--	 *
--	 * This case executes the module-level code for each table immediately
--	 * after the table has been loaded. This provides compatibility with
--	 * other ACPI implementations. Optionally, the execution can be deferred
--	 * until later, see acpi_initialize_objects.
--	 */
--	if (!acpi_gbl_parse_table_as_term_list
--	    && !acpi_gbl_group_module_level_code) {
--		acpi_ns_exec_module_code_list();
--	}
--
- 	return_ACPI_STATUS(status);
- }
- =
+ drivers/acpi/acpica/tbdata.c | 28 ++++++++++++++++++++--------
+ 1 file changed, 20 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/acpi/acpica/tbdata.c b/drivers/acpi/acpica/tbdata.c
-index 1e1222d..180c7a3 100644
+index 180c7a3..09fab1d 100644
 --- a/drivers/acpi/acpica/tbdata.c
 +++ b/drivers/acpi/acpica/tbdata.c
-@@ -843,6 +843,7 @@ acpi_tb_validate_table_for_load(u32 *table_index,
- 	u32 i;
- 	struct acpi_table_desc *table_desc;
- 	acpi_status status =3D AE_OK;
-+	struct acpi_table_header *new_dsdt;
+@@ -52,10 +52,12 @@ ACPI_MODULE_NAME("tbdata")
  =
 
- 	/* Acquire the table lock */
+ /* Local prototypes */
+ static u8
+-acpi_tb_compare_tables(struct acpi_table_desc *table_desc, u32 table_index=
+);
++acpi_tb_compare_tables(struct acpi_table_desc *table_desc,
++		       u8 reload, u32 table_index);
  =
 
-@@ -859,6 +860,37 @@ acpi_tb_validate_table_for_load(u32 *table_index,
- 		goto unlock_and_exit;
- 	}
+ static acpi_status
+ acpi_tb_validate_table_for_load(u32 *table_index,
++				u8 reload,
+ 				struct acpi_table_header **out_table);
  =
 
-+	if (*table_index =3D=3D acpi_gbl_dsdt_index) {
-+		/*
-+		 * Save the DSDT pointer for simple access. This is the mapped memory
-+		 * address. We must take care here because the address of the .Tables
-+		 * array can change dynamically as tables are loaded at run-time.
-+		 * Note: .Pointer field is not validated until after call to
-+		 * acpi_get_table_by_index().
-+		 */
-+		acpi_gbl_DSDT =3D table_desc->pointer;
-+
-+		/*
-+		 * Optionally copy the entire DSDT to local memory (instead of simply
-+		 * mapping it.) There are some BIOSs that corrupt or replace the
-+		 * original DSDT, creating the need for this option. Default is FALSE,
-+		 * do not copy the DSDT.
-+		 */
-+		if (acpi_gbl_copy_dsdt_locally) {
-+			new_dsdt =3D acpi_tb_copy_dsdt(acpi_gbl_dsdt_index);
-+			if (new_dsdt) {
-+				acpi_gbl_DSDT =3D new_dsdt;
-+			}
-+		}
-+
-+		/*
-+		 * Save the original DSDT header for detection of table corruption
-+		 * and/or replacement of the DSDT from outside the OS.
-+		 */
-+		memcpy(&acpi_gbl_original_dsdt_header, acpi_gbl_DSDT,
-+		       sizeof(struct acpi_table_header));
-+	}
-+
- 	/* Validate the incoming table signature */
- =
-
- 	if (!acpi_ut_is_aml_table(table_desc->signature.ascii)) {
-@@ -920,6 +952,7 @@ acpi_tb_validate_table_for_load(u32 *table_index,
-  * FUNCTION:    acpi_tb_load_table
+ /*************************************************************************=
+******
+@@ -782,6 +784,7 @@ void acpi_tb_set_table_loaded_flag(u32 table_index, u8 =
+is_loaded)
+  * FUNCTION:    acpi_tb_compare_tables
   *
-  * PARAMETERS:  table_index             - Table index
-+ *              reload                  - Whether reload should be perform=
-ed
-  *              parent_node             - Where table index is returned
+  * PARAMETERS:  table_desc          - Table 1 descriptor to be compared
++ *              reload              - Whether reload should be performed
+  *              table_index         - Index of table 2 to be compared
   *
-  * RETURN:      Status
-@@ -929,7 +962,8 @@ acpi_tb_validate_table_for_load(u32 *table_index,
+  * RETURN:      TRUE if both tables are identical.
+@@ -792,7 +795,8 @@ void acpi_tb_set_table_loaded_flag(u32 table_index, u8 =
+is_loaded)
   *************************************************************************=
 *****/
  =
 
- acpi_status
--acpi_tb_load_table(u32 *table_index, struct acpi_namespace_node *parent_no=
-de)
-+acpi_tb_load_table(u32 *table_index,
-+		   u8 reload, struct acpi_namespace_node *parent_node)
+ static u8
+-acpi_tb_compare_tables(struct acpi_table_desc *table_desc, u32 table_index)
++acpi_tb_compare_tables(struct acpi_table_desc *table_desc,
++		       u8 reload, u32 table_index)
  {
- 	struct acpi_table_header *table;
- 	acpi_status status;
-@@ -953,21 +987,28 @@ acpi_tb_load_table(u32 *table_index, struct acpi_name=
-space_node *parent_node)
- =
-
- 	status =3D acpi_ns_load_table(*table_index, parent_node);
- =
-
--	/* Execute any module-level code that was found in the table */
--
--	if (!acpi_gbl_parse_table_as_term_list
--	    && acpi_gbl_group_module_level_code) {
-+	/*
-+	 * Execute any module-level code that was found in the table. This only
-+	 * applies when new grammar support is not set (as MLC are executed in
-+	 * place) and dynamic table loading. For static table loading, executes
-+	 * MLC here if group module level code is not set, otherwise, it is
-+	 * executed in acpi_initialize_objects().
-+	 */
-+	if (!acpi_gbl_parse_table_as_term_list &&
-+	    (reload || !acpi_gbl_group_module_level_code)) {
- 		acpi_ns_exec_module_code_list();
- 	}
- =
-
--	/*
--	 * Update GPEs for any new _Lxx/_Exx methods. Ignore errors. The host is
--	 * responsible for discovering any new wake GPEs by running _PRW methods
--	 * that may have been loaded by this table.
--	 */
--	status =3D acpi_tb_get_owner_id(*table_index, &owner_id);
--	if (ACPI_SUCCESS(status)) {
--		acpi_ev_update_gpes(owner_id);
+ 	acpi_status status =3D AE_OK;
+ 	u8 is_identical;
+@@ -811,9 +815,16 @@ acpi_tb_compare_tables(struct acpi_table_desc *table_d=
+esc, u32 table_index)
+ 	 * Check for a table match on the entire table length,
+ 	 * not just the header.
+ 	 */
+-	is_identical =3D (u8)((table_desc->length !=3D table_length ||
+-			     memcmp(table_desc->pointer, table, table_length)) ?
+-			    FALSE : TRUE);
 +	if (reload) {
-+		/*
-+		 * Update GPEs for any new _Lxx/_Exx methods. Ignore errors. The host
-+		 * is responsible for discovering any new wake GPEs by running _PRW
-+		 * methods that may have been loaded by this table.
-+		 */
-+		status =3D acpi_tb_get_owner_id(*table_index, &owner_id);
-+		if (ACPI_SUCCESS(status)) {
-+			acpi_ev_update_gpes(owner_id);
-+		}
- 	}
++		is_identical =3D (u8)((table_desc->length !=3D table_length ||
++				     memcmp(table_desc->pointer, table,
++					    table_length)) ? FALSE : TRUE);
++	} else {
++		is_identical =3D
++		    (u8)(memcmp
++			 (table_desc->pointer, table,
++			  sizeof(struct acpi_table_header)) ? FALSE : TRUE);
++	}
  =
 
- 	/* Invoke table handler */
-@@ -1008,7 +1049,7 @@ acpi_tb_install_and_load_table(acpi_physical_address =
-address,
- 		goto exit;
- 	}
+ 	/* Release the acquired table */
  =
 
--	status =3D acpi_tb_load_table(&i, acpi_gbl_root_node);
-+	status =3D acpi_tb_load_table(&i, TRUE, acpi_gbl_root_node);
+@@ -826,6 +837,7 @@ acpi_tb_compare_tables(struct acpi_table_desc *table_de=
+sc, u32 table_index)
+  * FUNCTION:    acpi_tb_validate_table_for_load
+  *
+  * PARAMETERS:  table_index         - Index of table
++ *              reload              - Whether reload should be performed
+  *              out_table           - Validated table
+  *
+  * RETURN:      Status
+@@ -838,7 +850,7 @@ acpi_tb_compare_tables(struct acpi_table_desc *table_de=
+sc, u32 table_index)
  =
 
- exit:
- 	*table_index =3D i;
-diff --git a/drivers/acpi/acpica/tbxfload.c b/drivers/acpi/acpica/tbxfload.c
-index 9753176..76f4c1b 100644
---- a/drivers/acpi/acpica/tbxfload.c
-+++ b/drivers/acpi/acpica/tbxfload.c
-@@ -139,7 +139,6 @@ acpi_status acpi_tb_load_namespace(void)
+ static acpi_status
+ acpi_tb_validate_table_for_load(u32 *table_index,
+-				struct acpi_table_header **out_table)
++				u8 reload, struct acpi_table_header **out_table)
  {
- 	acpi_status status;
  	u32 i;
--	struct acpi_table_header *new_dsdt;
- 	struct acpi_table_desc *table;
- 	u32 tables_loaded =3D 0;
- 	u32 tables_failed =3D 0;
-@@ -155,44 +154,16 @@ acpi_status acpi_tb_load_namespace(void)
- 	table =3D &acpi_gbl_root_table_list.tables[acpi_gbl_dsdt_index];
- =
-
- 	if (!acpi_gbl_root_table_list.current_table_count ||
--	    !ACPI_COMPARE_NAME(table->signature.ascii, ACPI_SIG_DSDT) ||
--	    ACPI_FAILURE(acpi_tb_validate_table(table))) {
-+	    !ACPI_COMPARE_NAME(table->signature.ascii, ACPI_SIG_DSDT)) {
- 		status =3D AE_NO_ACPI_TABLES;
- 		goto unlock_and_exit;
- 	}
- =
-
--	/*
--	 * Save the DSDT pointer for simple access. This is the mapped memory
--	 * address. We must take care here because the address of the .Tables
--	 * array can change dynamically as tables are loaded at run-time. Note:
--	 * .Pointer field is not validated until after call to acpi_tb_validate_t=
-able.
--	 */
--	acpi_gbl_DSDT =3D table->pointer;
--
--	/*
--	 * Optionally copy the entire DSDT to local memory (instead of simply
--	 * mapping it.) There are some BIOSs that corrupt or replace the original
--	 * DSDT, creating the need for this option. Default is FALSE, do not copy
--	 * the DSDT.
--	 */
--	if (acpi_gbl_copy_dsdt_locally) {
--		new_dsdt =3D acpi_tb_copy_dsdt(acpi_gbl_dsdt_index);
--		if (new_dsdt) {
--			acpi_gbl_DSDT =3D new_dsdt;
--		}
--	}
--
--	/*
--	 * Save the original DSDT header for detection of table corruption
--	 * and/or replacement of the DSDT from outside the OS.
--	 */
--	memcpy(&acpi_gbl_original_dsdt_header, acpi_gbl_DSDT,
--	       sizeof(struct acpi_table_header));
--
- 	/* Load and parse tables */
- =
-
- 	(void)acpi_ut_release_mutex(ACPI_MTX_TABLES);
--	status =3D acpi_ns_load_table(acpi_gbl_dsdt_index, acpi_gbl_root_node);
-+	status =3D
-+	    acpi_tb_load_table(&acpi_gbl_dsdt_index, FALSE, acpi_gbl_root_node);
- 	(void)acpi_ut_acquire_mutex(ACPI_MTX_TABLES);
- 	if (ACPI_FAILURE(status)) {
- 		ACPI_EXCEPTION((AE_INFO, status, "[DSDT] table load failed"));
-@@ -207,15 +178,14 @@ acpi_status acpi_tb_load_namespace(void)
- 		table =3D &acpi_gbl_root_table_list.tables[i];
- =
-
- 		if (!table->address || i =3D=3D acpi_gbl_dsdt_index ||
--		    !acpi_ut_is_aml_table(table->signature.ascii) ||
--		    ACPI_FAILURE(acpi_tb_validate_table(table))) {
-+		    !acpi_ut_is_aml_table(table->signature.ascii)) {
+ 	struct acpi_table_desc *table_desc;
+@@ -913,7 +925,7 @@ acpi_tb_validate_table_for_load(u32 *table_index,
+ 		 * Check for a table match on the entire table length, not just the
+ 		 * header.
+ 		 */
+-		if (!acpi_tb_compare_tables(table_desc, i)) {
++		if (!acpi_tb_compare_tables(table_desc, reload, i)) {
  			continue;
  		}
  =
 
- 		/* Ignore errors while loading tables, get as many as possible */
+@@ -973,7 +985,7 @@ acpi_tb_load_table(u32 *table_index,
  =
 
- 		(void)acpi_ut_release_mutex(ACPI_MTX_TABLES);
--		status =3D acpi_ns_load_table(i, acpi_gbl_root_node);
-+		status =3D acpi_tb_load_table(&i, FALSE, acpi_gbl_root_node);
- 		(void)acpi_ut_acquire_mutex(ACPI_MTX_TABLES);
- 		if (ACPI_FAILURE(status)) {
- 			ACPI_EXCEPTION((AE_INFO, status,
+ 	/* Sanity checks */
+ =
+
+-	status =3D acpi_tb_validate_table_for_load(table_index, &table);
++	status =3D acpi_tb_validate_table_for_load(table_index, reload, &table);
+ 	if (ACPI_FAILURE(status)) {
+ 		if (status =3D=3D AE_ALREADY_EXISTS) {
+ 			/*
 -- =
 
 2.7.4
 
 
---===============8880710080910750358==--
+--===============4360443953803850564==--
 
