@@ -1,165 +1,91 @@
-Content-Type: multipart/mixed; boundary="===============9078713149110034030=="
+Content-Type: multipart/mixed; boundary="===============5219721407327496495=="
 MIME-Version: 1.0
 From: Zheng, Lv <lv.zheng at intel.com>
-Subject: Re: [Devel] [PATCH v2] ACPICA: Detect duplicate SSDT tables
-Date: Wed, 15 Mar 2017 01:13:01 +0000
-Message-ID: <1AE640813FDE7649BE1B193DEA596E886CE4A41C@SHSMSX101.ccr.corp.intel.com>
-In-Reply-To: 20170314204556.16099-1-hdegoede@redhat.com
+Subject: Re: [Devel] [PATCH] ACPICA: Log Exceptions and Errors as warning
+ while loading extra tables
+Date: Wed, 15 Mar 2017 01:16:44 +0000
+Message-ID: <1AE640813FDE7649BE1B193DEA596E886CE4A433@SHSMSX101.ccr.corp.intel.com>
+In-Reply-To: 9a6d4e50-41e7-28f6-b19d-f5f989da032d@redhat.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============9078713149110034030==
+--===============5219721407327496495==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
 Hi, Hans
 
-> From: linux-acpi-owner(a)vger.kernel.org [mailto:linux-acpi-owner(a)vger.=
-kernel.org] On Behalf Of Hans de
-> Goede
-> Subject: [PATCH v2] ACPICA: Detect duplicate SSDT tables
+> From: Hans de Goede [mailto:hdegoede(a)redhat.com]
+> Subject: Re: [PATCH] ACPICA: Log Exceptions and Errors as warning while l=
+oading extra tables
 > =
 
-> Some machines have the exact (byte for byte) same SSDT tables multiple
-> times in the root_table_list. Detect this and silently skip the duplicates
-> rather then printing a scary looking set of errors.
+> Hi,
+> =
 
-The problems are:
-1. ACPICA messes up table install sanity check and table load sanity check.
-   For table install check, we only need to check address and table type (p=
-hysical address or virtual address).
-   For table load check, we may do byte for byte comparison.
-2. ACPICA only implements table load sanity check for Load opcode, it doesn=
-'t cover LoadTable opcode and static loaded tables.
+> On 14-03-17 09:15, Zheng, Lv wrote:
+> > Hi, Hans
+> >
+> >> From: Hans de Goede [mailto:hdegoede(a)redhat.com]
+> >> Subject: Re: [PATCH] ACPICA: Log Exceptions and Errors as warning whil=
+e loading extra tables
+> >>
+> >> Hi,
+> >>
+> >> On 13-03-17 10:52, Zheng, Lv wrote:
+> >>> Hi, Hans
+> >>>
+> >>> For log level issue, is this fix useful for you?
+> >>> https://github.com/acpica/acpica/pull/121/commits/a505d3942
+> >>
+> >> That fixes reloading already loaded tables, the problem I'm
+> >> getting errors about its loading a different table with identical
+> >> contents.
+> >>
+> >> I will look into your suggestion to do something similar to
+> >> AcpiTbInstallStandardTable using AcpiTbCompareTables for the
+> >> SSDT tables. I will send a new patch when I can make some time
+> >> to look into this.
+> >
+> > I just completed a prototype here:
+> > https://github.com/acpica/acpica/pull/121
+> >
+> > I guess the original "duplicate table check" couldn't cover static SSDT=
+s.
+> > Actually the duplicate table check should be a sanity check of table lo=
+ad.
+> > And for table install, we should have a different sanity check like:
+> > https://github.com/acpica/acpica/pull/121/commits/6e825cae5e5
+> > I'm not sure if this is what you want.
+> =
 
-So this really needs not only the following change, but a slight bigger one.
+> This checks for having 2 table_descriptors pointing to the same table
+> (address in memory). But in my case there are 2 identical copies of
+> the table at 2 different addresses in memory, so this won't work.
+> =
+
+> After looking at this a bit myself, I think fixing this is actually
+> quite easy (now that you've pointed me to acpi_tb_install_standard_table()
+> =
+
+> I've come up with the attached patch to fix this. I will give this a test
+> spin and then submit it officially (assuming it works).
+
+In the pull request, there are 4 fixes:
+1. add table install sanity check by detecting duplicates with table addres=
+s and table type.
+2. extend table load sanity check to LoadTable opcode.
+3. extend table load sanity check to static loaded SSDTs - I think this sho=
+uld be able to cover your case.
+4. if install/load sanity checks detect duplicate tables, they return AE_AL=
+READY_EXISTS and the error is silently discarded.
+
+That's the whole story for the pull request.
+I think you only checked one of them.
 
 Thanks and best regards
 Lv
 
-> =
-
-> Signed-off-by: Hans de Goede <hdegoede(a)redhat.com>
-> ---
-> Changes in v2:
-> -Use existing acpi_tb_compare_tables helper
-> ---
->  drivers/acpi/acpica/actables.h |  2 ++
->  drivers/acpi/acpica/tbinstal.c |  6 +-----
->  drivers/acpi/acpica/tbxfload.c | 27 ++++++++++++++++++++++++++-
->  3 files changed, 29 insertions(+), 6 deletions(-)
-> =
-
-> diff --git a/drivers/acpi/acpica/actables.h b/drivers/acpi/acpica/actable=
-s.h
-> index c8da453..d50437c 100644
-> --- a/drivers/acpi/acpica/actables.h
-> +++ b/drivers/acpi/acpica/actables.h
-> @@ -99,6 +99,8 @@ acpi_tb_find_table(char *signature,
->  /*
->   * tbinstal - Table removal and deletion
->   */
-> +u8 acpi_tb_compare_tables(struct acpi_table_desc *table_desc, u32 table_=
-index);
-> +
->  acpi_status acpi_tb_resize_root_table_list(void);
-> =
-
->  acpi_status acpi_tb_validate_table(struct acpi_table_desc *table_desc);
-> diff --git a/drivers/acpi/acpica/tbinstal.c b/drivers/acpi/acpica/tbinsta=
-l.c
-> index 4620f3c..1431bfa 100644
-> --- a/drivers/acpi/acpica/tbinstal.c
-> +++ b/drivers/acpi/acpica/tbinstal.c
-> @@ -48,10 +48,6 @@
->  #define _COMPONENT          ACPI_TABLES
->  ACPI_MODULE_NAME("tbinstal")
-> =
-
-> -/* Local prototypes */
-> -static u8
-> -acpi_tb_compare_tables(struct acpi_table_desc *table_desc, u32 table_ind=
-ex);
-> -
->  /***********************************************************************=
-********
->   *
->   * FUNCTION:    acpi_tb_compare_tables
-> @@ -66,7 +62,7 @@ acpi_tb_compare_tables(struct acpi_table_desc *table_de=
-sc, u32 table_index);
->   *
->   ***********************************************************************=
-*******/
-> =
-
-> -static u8
-> +u8
->  acpi_tb_compare_tables(struct acpi_table_desc *table_desc, u32 table_ind=
-ex)
->  {
->  	acpi_status status =3D AE_OK;
-> diff --git a/drivers/acpi/acpica/tbxfload.c b/drivers/acpi/acpica/tbxfloa=
-d.c
-> index b71ce3b..2f718b0 100644
-> --- a/drivers/acpi/acpica/tbxfload.c
-> +++ b/drivers/acpi/acpica/tbxfload.c
-> @@ -125,6 +125,30 @@ ACPI_EXPORT_SYMBOL_INIT(acpi_load_tables)
-> =
-
->  /***********************************************************************=
-********
->   *
-> + * FUNCTION:    acpi_tb_find_duplicate_ssdt
-> + *
-> + * PARAMETERS:  table         - validated acpi_table_desc of table to ch=
-eck
-> + *              index         - index of table to find a duplicate of
-> + *
-> + * RETURN:      TRUE if a duplicate is found, FALSE if not
-> + *
-> + * DESCRIPTION: Private helper function for acpi_tb_load_namespace to
-> + *              avoid trying to load duplicate ssdt tables
-> + *
-> + ***********************************************************************=
-*******/
-> +static u8 acpi_tb_find_duplicate_ssdt(struct acpi_table_desc *table, u32=
- index)
-> +{
-> +	u32 i;
-> +
-> +	for (i =3D 0; i < index; ++i)
-> +		if (acpi_tb_compare_tables(table, i))
-> +			return TRUE;
-> +
-> +	return FALSE;
-> +}
-> +
-> +/***********************************************************************=
-********
-> + *
->   * FUNCTION:    acpi_tb_load_namespace
->   *
->   * PARAMETERS:  None
-> @@ -212,7 +236,8 @@ acpi_status acpi_tb_load_namespace(void)
->  					   ACPI_SIG_PSDT)
->  		     && !ACPI_COMPARE_NAME(table->signature.ascii,
->  					   ACPI_SIG_OSDT))
-> -		    || ACPI_FAILURE(acpi_tb_validate_table(table))) {
-> +		    || ACPI_FAILURE(acpi_tb_validate_table(table))
-> +		    || acpi_tb_find_duplicate_ssdt(table, i)) {
->  			continue;
->  		}
-> =
-
-> --
-> 2.9.3
-> =
-
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-acpi" in
-> the body of a message to majordomo(a)vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
---===============9078713149110034030==--
+--===============5219721407327496495==--
 
