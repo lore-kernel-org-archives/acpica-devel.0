@@ -1,144 +1,135 @@
-Content-Type: multipart/mixed; boundary="===============4360443953803850564=="
+Content-Type: multipart/mixed; boundary="===============2935849584394398529=="
 MIME-Version: 1.0
-From: Lv Zheng <lv.zheng at intel.com>
-Subject: [Devel] [RFC PATCH 7/7] ACPICA: Tables: Change table comparison using
- table header for static load tables
-Date: Wed, 15 Mar 2017 14:37:42 +0800
-Message-ID: <a70b2cb791b0d5f7571b624279fc46ace35d920a.1489558845.git.lv.zheng@intel.com>
-In-Reply-To: cover.1489558845.git.lv.zheng@intel.com
+From: Zheng, Lv <lv.zheng at intel.com>
+Subject: Re: [Devel] [RFC PATCH 0/7] ACPICA: Tables: Cleanup table sanity
+ checks
+Date: Thu, 16 Mar 2017 06:29:02 +0000
+Message-ID: <1AE640813FDE7649BE1B193DEA596E886CE4AD50@SHSMSX101.ccr.corp.intel.com>
+In-Reply-To: 77ba7bff-d1e8-e430-c422-961eb07ff296@redhat.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4360443953803850564==
+--===============2935849584394398529==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-For AML tables, checksum is available for us to detect a duplicate table,
-so this patch removes byte-by-byte check for static load tables to improve
-performance, and comparing header allows us to validate if
-LEN/CSUM/OEM fields match. Suggested by Bob Moore, fixed by Lv Zheng.
+Hi,
 
-Suggested-by: Bob Moore <robert.moore(a)intel.com>
-Signed-off-by: Lv Zheng <lv.zheng(a)intel.com>
-Cc: Hans de Goede <hdegoede(a)redhat.com>
----
- drivers/acpi/acpica/tbdata.c | 28 ++++++++++++++++++++--------
- 1 file changed, 20 insertions(+), 8 deletions(-)
+> From: Hans de Goede [mailto:hdegoede(a)redhat.com]
+> Subject: Re: [RFC PATCH 0/7] ACPICA: Tables: Cleanup table sanity checks
+> =
 
-diff --git a/drivers/acpi/acpica/tbdata.c b/drivers/acpi/acpica/tbdata.c
-index 180c7a3..09fab1d 100644
---- a/drivers/acpi/acpica/tbdata.c
-+++ b/drivers/acpi/acpica/tbdata.c
-@@ -52,10 +52,12 @@ ACPI_MODULE_NAME("tbdata")
- =
+> Hi,
+> =
 
- /* Local prototypes */
- static u8
--acpi_tb_compare_tables(struct acpi_table_desc *table_desc, u32 table_index=
-);
-+acpi_tb_compare_tables(struct acpi_table_desc *table_desc,
-+		       u8 reload, u32 table_index);
- =
+> On 15-03-17 07:36, Lv Zheng wrote:
+> > Originally AML table sanity check is only done for Load opcode, as
+> > acpi_tb_compare_tables() is only invoked in
+> > acpi_tb_install_standard_table(). While LoadTable opcode cannot be cove=
+red
+> > as it directly invokes acpi_tb_load_table() without invoking
+> > acpi_tb_install_standard_table(). Furthermore, standard table load also
+> > cannot be covered as acpi_ns_load_table() is invoked instead of
+> > acpi_tb_install_standard_table() and acpi_tb_load_table().
+> >
+> > So it becomes a problem if a duplicate table is in RSDT/XSDT, there is =
+no
+> > such check implemented for static load tables and LoadTable opcode.
+> >
+> > This patchset combines code paths (in return reduces some redundant code
+> > blocks and enhances checks/locks) so that duplicate table detection can=
+ be
+> > applied to all cases.
+> =
 
- static acpi_status
- acpi_tb_validate_table_for_load(u32 *table_index,
-+				u8 reload,
- 				struct acpi_table_header **out_table);
- =
+> I can confirm that this series fixes the errors I was seeing on my
+> GPD win machine.
 
- /*************************************************************************=
-******
-@@ -782,6 +784,7 @@ void acpi_tb_set_table_loaded_flag(u32 table_index, u8 =
-is_loaded)
-  * FUNCTION:    acpi_tb_compare_tables
-  *
-  * PARAMETERS:  table_desc          - Table 1 descriptor to be compared
-+ *              reload              - Whether reload should be performed
-  *              table_index         - Index of table 2 to be compared
-  *
-  * RETURN:      TRUE if both tables are identical.
-@@ -792,7 +795,8 @@ void acpi_tb_set_table_loaded_flag(u32 table_index, u8 =
-is_loaded)
-  *************************************************************************=
-*****/
- =
+Ok, thanks for the test and the report.
 
- static u8
--acpi_tb_compare_tables(struct acpi_table_desc *table_desc, u32 table_index)
-+acpi_tb_compare_tables(struct acpi_table_desc *table_desc,
-+		       u8 reload, u32 table_index)
- {
- 	acpi_status status =3D AE_OK;
- 	u8 is_identical;
-@@ -811,9 +815,16 @@ acpi_tb_compare_tables(struct acpi_table_desc *table_d=
-esc, u32 table_index)
- 	 * Check for a table match on the entire table length,
- 	 * not just the header.
- 	 */
--	is_identical =3D (u8)((table_desc->length !=3D table_length ||
--			     memcmp(table_desc->pointer, table, table_length)) ?
--			    FALSE : TRUE);
-+	if (reload) {
-+		is_identical =3D (u8)((table_desc->length !=3D table_length ||
-+				     memcmp(table_desc->pointer, table,
-+					    table_length)) ? FALSE : TRUE);
-+	} else {
-+		is_identical =3D
-+		    (u8)(memcmp
-+			 (table_desc->pointer, table,
-+			  sizeof(struct acpi_table_header)) ? FALSE : TRUE);
-+	}
- =
+> Note as explained in my reply to Robert I believe that
+> the last patch from the series can be dropped:
+> =
 
- 	/* Release the acquired table */
- =
+> "On 15-03-17 04:05, Moore, Robert wrote:
+>  > And I would suppose a refinement would be:
+>  >
+>  > Compare headers
+>  > If headers match, compare entire tables.
+> =
 
-@@ -826,6 +837,7 @@ acpi_tb_compare_tables(struct acpi_table_desc *table_de=
-sc, u32 table_index)
-  * FUNCTION:    acpi_tb_validate_table_for_load
-  *
-  * PARAMETERS:  table_index         - Index of table
-+ *              reload              - Whether reload should be performed
-  *              out_table           - Validated table
-  *
-  * RETURN:      Status
-@@ -838,7 +850,7 @@ acpi_tb_compare_tables(struct acpi_table_desc *table_de=
-sc, u32 table_index)
- =
+> The existing memcmp already does that since the header is in the
+> front, and memcmp will stop on the first difference, so there
+> is no need to change anything."
+> =
 
- static acpi_status
- acpi_tb_validate_table_for_load(u32 *table_index,
--				struct acpi_table_header **out_table)
-+				u8 reload, struct acpi_table_header **out_table)
- {
- 	u32 i;
- 	struct acpi_table_desc *table_desc;
-@@ -913,7 +925,7 @@ acpi_tb_validate_table_for_load(u32 *table_index,
- 		 * Check for a table match on the entire table length, not just the
- 		 * header.
- 		 */
--		if (!acpi_tb_compare_tables(table_desc, i)) {
-+		if (!acpi_tb_compare_tables(table_desc, reload, i)) {
- 			continue;
- 		}
- =
+> As Robert mentions we really a should compare the entire table
+> if the checksums match since an 8 bit checksum is really weak and
+> if we want to do that a simple memcmp will suffice as that will
+> already exit directly if the checksum mismatches as the checksum
+> is before the actual data.
 
-@@ -973,7 +985,7 @@ acpi_tb_load_table(u32 *table_index,
- =
+Maybe the suggestion is made on the previous fact.
+The previous design prevents such duplicate tables from being
+installed. It surely is able to prevent same table from being
+installed twice.
+Under the previous design, we should do the duplicate table
+detection in acpi_tb_verify_temp_table() which is exact the API used
+before the table is installed to the global table list.
+But there is a special logic for table install:
+Linux can only use limited slots to map ACPI tables.
+Thus most of the time, we can only map the table header.
 
- 	/* Sanity checks */
- =
+The series now follows your idea, split sanity checks into 2 levels:
+1. for table install, only check "address" and "memory types"
+2. for table load, check "table content" to detect duplicate tables
+And since the table load doesn't have similar restriction, we seem
+to be able to map the whole table to compare.
 
--	status =3D acpi_tb_validate_table_for_load(table_index, &table);
-+	status =3D acpi_tb_validate_table_for_load(table_index, reload, &table);
- 	if (ACPI_FAILURE(status)) {
- 		if (status =3D=3D AE_ALREADY_EXISTS) {
- 			/*
--- =
+And I noticed comments in acpi_tb_compare_tables(). It looks like
+comparing the Whole table rather than comparing the table header is
+a design decision made several years ago due to some reasons.
 
-2.7.4
+As such:
+1. With new design, we are able to compare the whole table
+2. Comparing whole table rather than comparing table header looks
+   like a determined design choice
+I made it the last patch and a separate one so that we can drop
+it at any time.
 
+Thanks and best regards
+Lv
 
---===============4360443953803850564==--
+> =
+
+> =
+
+> =
+
+> >
+> > Lv Zheng (7):
+> >   ACPICA: Tables: Cleanup table handler invokers
+> >   ACPICA: Tables: Add sanity check for load_table opcode
+> >   ACPICA: Tables: Add sanity check for table install
+> >   ACPICA: Tables: Fix an unwanted exception for table reloading
+> >   ACPICA: Tables: Enable acpi_ut_is_aml_table() for all ACPICA modules
+> >   ACPICA: Tables: Add sanity check for static table load
+> >   ACPICA: Tables: Change table comparison using table header for static
+> >     load tables
+> >
+> >  drivers/acpi/acpica/actables.h |   7 +-
+> >  drivers/acpi/acpica/acutils.h  |   4 +-
+> >  drivers/acpi/acpica/exconfig.c |   2 +-
+> >  drivers/acpi/acpica/nsload.c   |  18 ---
+> >  drivers/acpi/acpica/tbdata.c   | 288 +++++++++++++++++++++++++++++++++=
++++-----
+> >  drivers/acpi/acpica/tbinstal.c | 197 ++++++----------------------
+> >  drivers/acpi/acpica/tbxfload.c |  46 +------
+> >  drivers/acpi/acpica/utmisc.c   |  27 ++--
+> >  include/acpi/actbl.h           |   1 +
+> >  9 files changed, 325 insertions(+), 265 deletions(-)
+> >
+
+--===============2935849584394398529==--
 
