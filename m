@@ -1,148 +1,192 @@
-Content-Type: multipart/mixed; boundary="===============7393293713848266694=="
+Content-Type: multipart/mixed; boundary="===============2048364090820106212=="
 MIME-Version: 1.0
 From: Zheng, Lv <lv.zheng at intel.com>
-Subject: Re: [Devel] [RFC PATCH 0/7] ACPICA: Tables: Cleanup table sanity
- checks
-Date: Thu, 16 Mar 2017 06:50:12 +0000
-Message-ID: <1AE640813FDE7649BE1B193DEA596E886CE4AE59@SHSMSX101.ccr.corp.intel.com>
-In-Reply-To: 1AE640813FDE7649BE1B193DEA596E886CE4AD50@SHSMSX101.ccr.corp.intel.com
+Subject: Re: [Devel] [RFC PATCH 5/7] ACPICA: Tables: Enable
+ acpi_ut_is_aml_table() for all ACPICA modules
+Date: Wed, 22 Mar 2017 07:00:09 +0000
+Message-ID: <1AE640813FDE7649BE1B193DEA596E886CE4E589@SHSMSX101.ccr.corp.intel.com>
+In-Reply-To: aebe450e81b34015bf32aee74a73144df5fecce4.1489558845.git.lv.zheng@intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7393293713848266694==
+--===============2048364090820106212==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+Hi, Hans
 
-> From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of Zheng, Lv
-> Subject: Re: [Devel] [RFC PATCH 0/7] ACPICA: Tables: Cleanup table sanity=
- checks
-> =
+Just FYI.
+This commit is wrong.
+It shouldn't change static table load signature check.
+Should be replaced by this fix:
+https://github.com/acpica/acpica/pull/121/commits/3d9eeb046c
+Thanks Xiaolong for his test and report.
 
-> Hi,
-> =
-
-> > From: Hans de Goede [mailto:hdegoede(a)redhat.com]
-> > Subject: Re: [RFC PATCH 0/7] ACPICA: Tables: Cleanup table sanity checks
-> >
-> > Hi,
-> >
-> > On 15-03-17 07:36, Lv Zheng wrote:
-> > > Originally AML table sanity check is only done for Load opcode, as
-> > > acpi_tb_compare_tables() is only invoked in
-> > > acpi_tb_install_standard_table(). While LoadTable opcode cannot be co=
-vered
-> > > as it directly invokes acpi_tb_load_table() without invoking
-> > > acpi_tb_install_standard_table(). Furthermore, standard table load al=
-so
-> > > cannot be covered as acpi_ns_load_table() is invoked instead of
-> > > acpi_tb_install_standard_table() and acpi_tb_load_table().
-> > >
-> > > So it becomes a problem if a duplicate table is in RSDT/XSDT, there i=
-s no
-> > > such check implemented for static load tables and LoadTable opcode.
-> > >
-> > > This patchset combines code paths (in return reduces some redundant c=
-ode
-> > > blocks and enhances checks/locks) so that duplicate table detection c=
-an be
-> > > applied to all cases.
-> >
-> > I can confirm that this series fixes the errors I was seeing on my
-> > GPD win machine.
-> =
-
-> Ok, thanks for the test and the report.
-> =
-
-> > Note as explained in my reply to Robert I believe that
-> > the last patch from the series can be dropped:
-> >
-> > "On 15-03-17 04:05, Moore, Robert wrote:
-> >  > And I would suppose a refinement would be:
-> >  >
-> >  > Compare headers
-> >  > If headers match, compare entire tables.
-> >
-> > The existing memcmp already does that since the header is in the
-> > front, and memcmp will stop on the first difference, so there
-> > is no need to change anything."
-> >
-> > As Robert mentions we really a should compare the entire table
-> > if the checksums match since an 8 bit checksum is really weak and
-> > if we want to do that a simple memcmp will suffice as that will
-> > already exit directly if the checksum mismatches as the checksum
-> > is before the actual data.
-> =
-
-> Maybe the suggestion is made on the previous fact.
-> The previous design prevents such duplicate tables from being
-> installed. It surely is able to prevent same table from being
-> installed twice.
-> Under the previous design, we should do the duplicate table
-> detection in acpi_tb_verify_temp_table() which is exact the API used
-> before the table is installed to the global table list.
-> But there is a special logic for table install:
-> Linux can only use limited slots to map ACPI tables.
-> Thus most of the time, we can only map the table header.
-> =
-
-> The series now follows your idea, split sanity checks into 2 levels:
-> 1. for table install, only check "address" and "memory types"
-> 2. for table load, check "table content" to detect duplicate tables
-> And since the table load doesn't have similar restriction, we seem
-> to be able to map the whole table to compare.
-> =
-
-> And I noticed comments in acpi_tb_compare_tables(). It looks like
-> comparing the Whole table rather than comparing the table header is
-> a design decision made several years ago due to some reasons.
-> =
-
-> As such:
-> 1. With new design, we are able to compare the whole table
-> 2. Comparing whole table rather than comparing table header looks
->    like a determined design choice
-> I made it the last patch and a separate one so that we can drop
-> it at any time.
-
-Dropped and the pull request is updated:
-https://github.com/acpica/acpica/pull/121
-If everything works smoothly, you'll see it fixed by next ACPICA release.
-
-Thanks
+Thanks and best regards
 Lv
 
-> > >
-> > > Lv Zheng (7):
-> > >   ACPICA: Tables: Cleanup table handler invokers
-> > >   ACPICA: Tables: Add sanity check for load_table opcode
-> > >   ACPICA: Tables: Add sanity check for table install
-> > >   ACPICA: Tables: Fix an unwanted exception for table reloading
-> > >   ACPICA: Tables: Enable acpi_ut_is_aml_table() for all ACPICA modules
-> > >   ACPICA: Tables: Add sanity check for static table load
-> > >   ACPICA: Tables: Change table comparison using table header for stat=
-ic
-> > >     load tables
-> > >
-> > >  drivers/acpi/acpica/actables.h |   7 +-
-> > >  drivers/acpi/acpica/acutils.h  |   4 +-
-> > >  drivers/acpi/acpica/exconfig.c |   2 +-
-> > >  drivers/acpi/acpica/nsload.c   |  18 ---
-> > >  drivers/acpi/acpica/tbdata.c   | 288 +++++++++++++++++++++++++++++++=
-+++++-----
-> > >  drivers/acpi/acpica/tbinstal.c | 197 ++++++----------------------
-> > >  drivers/acpi/acpica/tbxfload.c |  46 +------
-> > >  drivers/acpi/acpica/utmisc.c   |  27 ++--
-> > >  include/acpi/actbl.h           |   1 +
-> > >  9 files changed, 325 insertions(+), 265 deletions(-)
-> > >
-> _______________________________________________
-> Devel mailing list
-> Devel(a)acpica.org
-> https://lists.acpica.org/mailman/listinfo/devel
+> From: linux-acpi-owner(a)vger.kernel.org [mailto:linux-acpi-owner(a)vger.=
+kernel.org] On Behalf Of Lv Zheng
+> Subject: [RFC PATCH 5/7] ACPICA: Tables: Enable acpi_ut_is_aml_table() fo=
+r all ACPICA modules
+> =
 
---===============7393293713848266694==--
+> This patch enables acpi_ut_is_aml_table() for all ACPICA modules so that =
+it can
+> be used by Linux kernel. Lv Zheng.
+> =
+
+> Signed-off-by: Lv Zheng <lv.zheng(a)intel.com>
+> Cc: Hans de Goede <hdegoede(a)redhat.com>
+> ---
+>  drivers/acpi/acpica/acutils.h  |  4 +---
+>  drivers/acpi/acpica/tbdata.c   | 17 +++--------------
+>  drivers/acpi/acpica/tbxfload.c | 10 +++-------
+>  drivers/acpi/acpica/utmisc.c   | 27 +++++++++++++++++----------
+>  4 files changed, 24 insertions(+), 34 deletions(-)
+> =
+
+> diff --git a/drivers/acpi/acpica/acutils.h b/drivers/acpi/acpica/acutils.h
+> index 6f28cfa..c0b697f 100644
+> --- a/drivers/acpi/acpica/acutils.h
+> +++ b/drivers/acpi/acpica/acutils.h
+> @@ -545,9 +545,7 @@ const struct acpi_exception_info *acpi_ut_validate_ex=
+ception(acpi_status
+> =
+
+>  u8 acpi_ut_is_pci_root_bridge(char *id);
+> =
+
+> -#if (defined ACPI_ASL_COMPILER || defined ACPI_EXEC_APP || defined ACPI_=
+NAMES_APP)
+> -u8 acpi_ut_is_aml_table(struct acpi_table_header *table);
+> -#endif
+> +u8 acpi_ut_is_aml_table(char *signature);
+> =
+
+>  acpi_status
+>  acpi_ut_walk_package_tree(union acpi_operand_object *source_object,
+> diff --git a/drivers/acpi/acpica/tbdata.c b/drivers/acpi/acpica/tbdata.c
+> index 1a4371b..1e1222d 100644
+> --- a/drivers/acpi/acpica/tbdata.c
+> +++ b/drivers/acpi/acpica/tbdata.c
+> @@ -859,20 +859,9 @@ acpi_tb_validate_table_for_load(u32 *table_index,
+>  		goto unlock_and_exit;
+>  	}
+> =
+
+> -	/*
+> -	 * Validate the incoming table signature.
+> -	 *
+> -	 * 1) Originally, we checked the table signature for "SSDT" or "PSDT".
+> -	 * 2) We added support for OEMx tables, signature "OEM".
+> -	 * 3) Valid tables were encountered with a null signature, so we just
+> -	 *    gave up on validating the signature, (05/2008).
+> -	 * 4) We encountered non-AML tables such as the MADT, which caused
+> -	 *    interpreter errors and kernel faults. So now, we once again allow
+> -	 *    only "SSDT", "OEMx", and now, also a null signature. (05/2011).
+> -	 */
+> -	if ((table_desc->signature.ascii[0] !=3D 0x00) &&
+> -	    (!ACPI_COMPARE_NAME(&table_desc->signature, ACPI_SIG_SSDT)) &&
+> -	    (strncmp(table_desc->signature.ascii, "OEM", 3))) {
+> +	/* Validate the incoming table signature */
+> +
+> +	if (!acpi_ut_is_aml_table(table_desc->signature.ascii)) {
+>  		ACPI_BIOS_ERROR((AE_INFO,
+>  				 "Table has invalid signature [%4.4s] (0x%8.8X), "
+>  				 "must be SSDT or OEMx",
+> diff --git a/drivers/acpi/acpica/tbxfload.c b/drivers/acpi/acpica/tbxfloa=
+d.c
+> index b71ce3b..9753176 100644
+> --- a/drivers/acpi/acpica/tbxfload.c
+> +++ b/drivers/acpi/acpica/tbxfload.c
+> @@ -206,13 +206,9 @@ acpi_status acpi_tb_load_namespace(void)
+>  	for (i =3D 0; i < acpi_gbl_root_table_list.current_table_count; ++i) {
+>  		table =3D &acpi_gbl_root_table_list.tables[i];
+> =
+
+> -		if (!acpi_gbl_root_table_list.tables[i].address ||
+> -		    (!ACPI_COMPARE_NAME(table->signature.ascii, ACPI_SIG_SSDT)
+> -		     && !ACPI_COMPARE_NAME(table->signature.ascii,
+> -					   ACPI_SIG_PSDT)
+> -		     && !ACPI_COMPARE_NAME(table->signature.ascii,
+> -					   ACPI_SIG_OSDT))
+> -		    || ACPI_FAILURE(acpi_tb_validate_table(table))) {
+> +		if (!table->address || i =3D=3D acpi_gbl_dsdt_index ||
+> +		    !acpi_ut_is_aml_table(table->signature.ascii) ||
+> +		    ACPI_FAILURE(acpi_tb_validate_table(table))) {
+>  			continue;
+>  		}
+> =
+
+> diff --git a/drivers/acpi/acpica/utmisc.c b/drivers/acpi/acpica/utmisc.c
+> index 443ffad..e5074d8 100644
+> --- a/drivers/acpi/acpica/utmisc.c
+> +++ b/drivers/acpi/acpica/utmisc.c
+> @@ -75,7 +75,6 @@ u8 acpi_ut_is_pci_root_bridge(char *id)
+>  	return (FALSE);
+>  }
+> =
+
+> -#if (defined ACPI_ASL_COMPILER || defined ACPI_EXEC_APP || defined ACPI_=
+NAMES_APP)
+>  /***********************************************************************=
+********
+>   *
+>   * FUNCTION:    acpi_ut_is_aml_table
+> @@ -90,21 +89,29 @@ u8 acpi_ut_is_pci_root_bridge(char *id)
+>   *
+>   ***********************************************************************=
+*******/
+> =
+
+> -u8 acpi_ut_is_aml_table(struct acpi_table_header *table)
+> +u8 acpi_ut_is_aml_table(char *signature)
+>  {
+> -
+> -	/* These are the only tables that contain executable AML */
+> -
+> -	if (ACPI_COMPARE_NAME(table->signature, ACPI_SIG_DSDT) ||
+> -	    ACPI_COMPARE_NAME(table->signature, ACPI_SIG_PSDT) ||
+> -	    ACPI_COMPARE_NAME(table->signature, ACPI_SIG_SSDT) ||
+> -	    ACPI_COMPARE_NAME(table->signature, ACPI_SIG_OSDT)) {
+> +	/*
+> +	 * These are the only tables that contain executable AML
+> +	 * 1) Originally, we checked the table signature for "SSDT" or "PSDT".
+> +	 * 2) We added support for OEMx tables, signature "OEM".
+> +	 * 3) Valid tables were encountered with a null signature, so we just
+> +	 *    gave up on validating the signature, (05/2008).
+> +	 * 4) We encountered non-AML tables such as the MADT, which caused
+> +	 *    interpreter errors and kernel faults. So now, we once again allow
+> +	 *    only "SSDT", "OEMx", and now, also a null signature. (05/2011).
+> +	 */
+> +	if (signature[0] =3D=3D 0x00 ||
+> +	    ACPI_COMPARE_NAME(signature, ACPI_SIG_DSDT) ||
+> +	    ACPI_COMPARE_NAME(signature, ACPI_SIG_PSDT) ||
+> +	    ACPI_COMPARE_NAME(signature, ACPI_SIG_SSDT) ||
+> +	    ACPI_COMPARE_NAME(signature, ACPI_SIG_OSDT) ||
+> +	    strncmp(signature, "OEM", 3) =3D=3D 0) {
+>  		return (TRUE);
+>  	}
+> =
+
+>  	return (FALSE);
+>  }
+> -#endif
+> =
+
+>  /***********************************************************************=
+********
+>   *
+> --
+> 2.7.4
+> =
+
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-acpi" in
+> the body of a message to majordomo(a)vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+--===============2048364090820106212==--
 
