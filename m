@@ -1,155 +1,162 @@
-Content-Type: multipart/mixed; boundary="===============8785785317156268603=="
+Content-Type: multipart/mixed; boundary="===============0686753285650103837=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] [PATCH] ACPICA: use designated initializers
-Date: Thu, 30 Mar 2017 14:26:08 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E58E285@ORSMSX110.amr.corp.intel.com>
-In-Reply-To: 1AE640813FDE7649BE1B193DEA596E886CE6BD95@SHSMSX101.ccr.corp.intel.com
+From: Al Stone <ahs3 at redhat.com>
+Subject: [Devel] [PATCH] ACPICA: enable compilation for embedded Linux systems
+Date: Thu, 30 Mar 2017 16:29:27 -0600
+Message-ID: <efb72bc8-9d20-b587-21ec-d477a0e73d2a@redhat.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8785785317156268603==
+--===============0686753285650103837==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Yes, ACPICA must support many compilers, so we keep the code as simple as p=
-ossible.
+The ACPICA subsystem of the ACPI driver sets up a compilation environment
+for itself, adding in multiple typedefs unique to ACPICA that depend on
+where ACPICA will be used.
 
-Many of the corporate OS vendors use their own compilers.
+The vast majority of such environments (Linux, QNX, ...) have an environment
+defined in the acenv.h header file.  When using a Linaro compiler [1]
+specifically built to be used in an embedded environment where perhaps a
+kernel and an init process are the only things running, there is no
+environment defined for ACPICA so the typedefs it needs are not set up
+properly, causing compilation to fail unless ACPI is completely disabled.
+Since ACPI is enabled in the default config for the kernel, the compilation
+failure becomes fairly obvious [2].
+
+Since building _for_ embedded Linux systems is slightly different than
+building _in_ a Linux environment, define a new environment header
+called acembed.h.  Compilers for these systems may not have the normal
+defines a compiler for a Linux environment might, but they are very
+close.  Then, we fix acenv.h so that when we are using GCC without GLIBC,
+we select the embedded environment of acembed.h.
+
+[1]
+https://releases.linaro.org/components/toolchain/binaries/latest/aarch64-el=
+ff/gcc-linaro-6.1.1-2016-08-x86_64_aarch64-elf.tar.xz
+[2] This error was originally discovered by Will Deacon
+
+Signed-off-by: Al Stone <ahs3(a)redhat.com>
+Cc: Will Deacon <will.deacon(a)arm.com>
+Cc: Rafael J. Wysocki <rjw(a)rjwysocki.net>
+Cc: Len Brown <lenb(a)kernel.org>
+Cc: Robert Moore <robert.moore(a)intel.com>
+Cc: Lv Zheng <lv.zheng(a)intel.com>
+---
+ source/include/platform/acembed.h | 57 +++++++++++++++++++++++++++++++++++=
+++++
+ source/include/platform/acenv.h   | 11 ++++++++
+ 2 files changed, 68 insertions(+)
+ create mode 100644 source/include/platform/acembed.h
+
+diff --git a/source/include/platform/acembed.h b/source/include/platform/ac=
+embed.h
+new file mode 100644
+index 0000000..e741f8d
+--- /dev/null
++++ b/source/include/platform/acembed.h
+@@ -0,0 +1,57 @@
++/*************************************************************************=
+*****
++ *
++ * Name: acembed.h - OS specific defines, etc. for embedded Linux systems
++ *
++ *************************************************************************=
+****/
++
++/*
++ * Copyright (C) 2017, Red Hat, Inc.
++ * All rights reserved.
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions
++ * are met:
++ * 1. Redistributions of source code must retain the above copyright
++ *    notice, this list of conditions, and the following disclaimer,
++ *    without modification.
++ * 2. Redistributions in binary form must reproduce at minimum a disclaimer
++ *    substantially similar to the "NO WARRANTY" disclaimer below
++ *    ("Disclaimer") and any redistribution must be conditioned upon
++ *    including a substantially similar Disclaimer requirement for further
++ *    binary redistribution.
++ * 3. Neither the names of the above-listed copyright holders nor the names
++ *    of any contributors may be used to endorse or promote products deriv=
+ed
++ *    from this software without specific prior written permission.
++ *
++ * Alternatively, this software may be distributed under the terms of the
++ * GNU General Public License ("GPL") version 2 as published by the Free
++ * Software Foundation.
++ *
++ * NO WARRANTY
++ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
++ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
++ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR
++ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
++ * HOLDERS OR CONTRIBUTORS BE LIABLE FOR SPECIAL, EXEMPLARY, OR CONSEQUENT=
+IAL
++ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
++ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
++ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
++ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGES.
++ */
++
++#ifndef __ACEMBED_H__
++#define __ACEMBED_H__
++
++#if !defined(_LINUX)
++#define _LINUX
++#endif
++
++#if !defined(__linux__)
++#define __linux__
++#endif
++
++#include <acpi/platform/aclinux.h>
++
++#endif				/* __ACEMBED_H__ */
+diff --git a/source/include/platform/acenv.h b/source/include/platform/acen=
+v.h
+index 5bec576..b300afa 100644
+--- a/source/include/platform/acenv.h
++++ b/source/include/platform/acenv.h
+@@ -343,6 +343,17 @@
+ #elif defined(_AED_EFI) || defined(_GNU_EFI) || defined(_EDK2_EFI)
+ #include "acefi.h"
+
++/*
++ * There are systems that run just a minimal Linux kernel; they have
++ * no user space and often extremely pared down configurations -- e.g.,
++ * a small embedded Linux system in a light bulb or other IoT device.
++ * In those cases, we're mostly a Linux system, but the compilers used
++ * may not be aware of that, so create an evironment specific to their
++ * needs.
++ */
++#elif defined(__GNUC__) && !defined(__INTEL_COMPILER) && !defined(__GLIBC_=
+_)
++#include <acpi/platform/acembed.h>
++
+ #else
+
+ /* Unknown environment */
+-- =
+
+2.9.3
 
 
-> -----Original Message-----
-> From: Zheng, Lv
-> Sent: Wednesday, March 29, 2017 7:12 PM
-> To: Kees Cook <keescook(a)chromium.org>
-> Cc: linux-kernel(a)vger.kernel.org; Moore, Robert
-> <robert.moore(a)intel.com>; Wysocki, Rafael J
-> <rafael.j.wysocki(a)intel.com>; Len Brown <lenb(a)kernel.org>; linux-
-> acpi(a)vger.kernel.org; devel(a)acpica.org
-> Subject: RE: [PATCH] ACPICA: use designated initializers
-> =
+-- =
 
-> Hi,
-> =
+ciao,
+al
+-----------------------------------
+Al Stone
+Software Engineer
+Red Hat, Inc.
+ahs3(a)redhat.com
+-----------------------------------
 
-> > From: keescook(a)google.com [mailto:keescook(a)google.com] On Behalf Of
-> > Kees Cook
-> > Subject: Re: [PATCH] ACPICA: use designated initializers
-> >
-> > On Sun, Dec 18, 2016 at 10:06 PM, Zheng, Lv <lv.zheng(a)intel.com>
-> wrote:
-> > > Hi,
-> > >
-> > >> From: Kees Cook [mailto:keescook(a)chromium.org]
-> > >> Subject: [PATCH] ACPICA: use designated initializers
-> > >>
-> > >> Prepare to mark sensitive kernel structures for randomization by
-> > >> making sure they're using designated initializers. These were
-> > >> identified during allyesconfig builds of x86, arm, and arm64, with
-> > >> most initializer fixes extracted from grsecurity.
-> > >
-> > > This commit is not suitable for ACPICA upstream.
-> > > It's not portable. Please drop.
-> >
-> > What compilers are building this that do not support designated
-> > initializers? Also, couldn't this be made into a macro so it could be
-> > supported in either case?
-> =
-
-> It's MSVC.
-> In ACPICA upstream, it supports Intel compiler, GCC and MSVC.
-> =
-
-> >
-> > #ifdef __GNUC__
-> > # define ACPI_SLEEP_FUNCTIONS(legacy, extended) { \
-> >     .legacy_function =3D legacy, \
-> >     .extended_function =3D extended, \
-> > }
-> > #else
-> > # define ACPI_SLEEP_FUNCTIONS(legacy, extended) { legacy, extended }
-> > #endif
-> >
-> > ...
-> >
-> >  static struct acpi_sleep_functions acpi_sleep_dispatch[] =3D {
-> >         ACPI_SLEEP_FUNCTIONS(
-> >                ACPI_HW_OPTIONAL_FUNCTION(acpi_hw_legacy_sleep),
-> >                acpi_hw_extended_sleep), ...
-> =
-
-> There are many such cases in ACPICA, and I couldn't see the benefit to
-> introduce such mechanism to such a software whose purposes contain
-> portability.
-> Unless you can invent a mechanism that can be utilized by all such
-> cases.
-> Then you should put it into acgcc.h and implement a replaceable in
-> acmsvc.h.
-> After that, you surely need to do a cleanup in the entire ACPICA code
-> base using this new mechanism.
-> =
-
-> Thanks
-> Lv
-> =
-
-> >
-> >
-> > -Kees
-> >
-> > >
-> > > Thanks
-> > > Lv
-> > >
-> > >>
-> > >> Signed-off-by: Kees Cook <keescook(a)chromium.org>
-> > >> ---
-> > >>  drivers/acpi/acpica/hwxfsleep.c | 11 ++++++-----
-> > >>  1 file changed, 6 insertions(+), 5 deletions(-)
-> > >>
-> > >> diff --git a/drivers/acpi/acpica/hwxfsleep.c
-> > >> b/drivers/acpi/acpica/hwxfsleep.c index f76e0eab32b8..25cd5c66e102
-> > >> 100644
-> > >> --- a/drivers/acpi/acpica/hwxfsleep.c
-> > >> +++ b/drivers/acpi/acpica/hwxfsleep.c
-> > >> @@ -70,11 +70,12 @@ static acpi_status acpi_hw_sleep_dispatch(u8
-> > >> sleep_state, u32 function_id);
-> > >>  /* Legacy functions are optional, based upon ACPI_REDUCED_HARDWARE
-> > >> */
-> > >>
-> > >>  static struct acpi_sleep_functions acpi_sleep_dispatch[] =3D {
-> > >> -     {ACPI_HW_OPTIONAL_FUNCTION(acpi_hw_legacy_sleep),
-> > >> -      acpi_hw_extended_sleep},
-> > >> -     {ACPI_HW_OPTIONAL_FUNCTION(acpi_hw_legacy_wake_prep),
-> > >> -      acpi_hw_extended_wake_prep},
-> > >> -     {ACPI_HW_OPTIONAL_FUNCTION(acpi_hw_legacy_wake),
-> acpi_hw_extended_wake}
-> > >> +     { .legacy_function =3D
-> ACPI_HW_OPTIONAL_FUNCTION(acpi_hw_legacy_sleep),
-> > >> +       .extended_function =3D acpi_hw_extended_sleep },
-> > >> +     { .legacy_function =3D
-> ACPI_HW_OPTIONAL_FUNCTION(acpi_hw_legacy_wake_prep),
-> > >> +       .extended_function =3D acpi_hw_extended_wake_prep },
-> > >> +     { .legacy_function =3D
-> ACPI_HW_OPTIONAL_FUNCTION(acpi_hw_legacy_wake),
-> > >> +       .extended_function =3D acpi_hw_extended_wake }
-> > >>  };
-> > >>
-> > >>  /*
-> > >> --
-> > >> 2.7.4
-> > >>
-> > >>
-> > >> --
-> > >> Kees Cook
-> > >> Nexus Security
-> >
-> >
-> >
-> > --
-> > Kees Cook
-> > Pixel Security
-
---===============8785785317156268603==--
+--===============0686753285650103837==--
 
