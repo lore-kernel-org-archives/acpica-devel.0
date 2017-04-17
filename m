@@ -1,162 +1,89 @@
-Content-Type: multipart/mixed; boundary="===============6510424023922284625=="
+Content-Type: multipart/mixed; boundary="===============6815494953719075891=="
 MIME-Version: 1.0
-From: Zheng, Lv <lv.zheng at intel.com>
+From: Moore, Robert <robert.moore at intel.com>
 Subject: Re: [Devel] [PATCH] ACPICA: Export mutex functions
-Date: Mon, 17 Apr 2017 09:48:50 +0000
-Message-ID: <1AE640813FDE7649BE1B193DEA596E886CE92ACC@SHSMSX101.ccr.corp.intel.com>
-In-Reply-To: 1AE640813FDE7649BE1B193DEA596E886CE92A85@SHSMSX101.ccr.corp.intel.com
+Date: Mon, 17 Apr 2017 17:12:57 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E59332C@ORSMSX110.amr.corp.intel.com>
+In-Reply-To: 20170417155646.GA8730@roeck-us.net
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6510424023922284625==
+--===============6815494953719075891==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+There is a model for the drivers to directly acquire an AML mutex object. T=
+hat is why the acquire/release public interfaces were added to ACPICA.
 
-> From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of Zheng, Lv
-> Sent: Monday, April 17, 2017 5:40 PM
-> To: Guenter Roeck <linux(a)roeck-us.net>; Moore, Robert <robert.moore(a)i=
-ntel.com>
-> Cc: linux-acpi(a)vger.kernel.org; devel(a)acpica.org; Wysocki, Rafael J <=
-rafael.j.wysocki(a)intel.com>;
-> linux-kernel(a)vger.kernel.org
-> Subject: Re: [Devel] [PATCH] ACPICA: Export mutex functions
+I forget all of the details, but the model was developed with MS and others=
+ during the ACPI 6.0 timeframe.
+
+
+> -----Original Message-----
+> From: Guenter Roeck [mailto:linux(a)roeck-us.net]
+> Sent: Monday, April 17, 2017 8:57 AM
+> To: Zheng, Lv
+> Cc: Moore, Robert; Wysocki, Rafael J; Len Brown; linux-
+> acpi(a)vger.kernel.org; devel(a)acpica.org; linux-kernel(a)vger.kernel.org
+> Subject: Re: [PATCH] ACPICA: Export mutex functions
 > =
 
 > Hi,
 > =
 
-> > From: Guenter Roeck [mailto:linux(a)roeck-us.net]
-> > Subject: Re: [PATCH] ACPICA: Export mutex functions
+> On Mon, Apr 17, 2017 at 09:39:35AM +0000, Zheng, Lv wrote:
+> > Hi,
 > >
-> > On Wed, Apr 12, 2017 at 03:29:55PM +0000, Moore, Robert wrote:
-> > > The ACPICA mutex functions are based on the host OS functions, so the=
-y don't really buy you
-> anything.
-> > You should just use the native Linux functions.
+> > > From: Guenter Roeck [mailto:linux(a)roeck-us.net]
+> > > Subject: Re: [PATCH] ACPICA: Export mutex functions
 > > >
+> > > On Wed, Apr 12, 2017 at 03:29:55PM +0000, Moore, Robert wrote:
+> > > > The ACPICA mutex functions are based on the host OS functions, so
+> they don't really buy you anything.
+> > > You should just use the native Linux functions.
+> > > >
+> > >
+> > > You mean they don't really acquire the requested ACPI mutex, and the
+> > > underlying DSDT which declares and uses the mutex just ignores if
+> > > the mutex was acquired by acpi_acquire_mutex() ?
+> > >
+> > > To clarify: You are saying that code such as
+> > >
+> > > 	acpi_status status;
+> > >
+> > > 	status =3D acpi_acquire_mutex(NULL, "\\_SB.PCI0.SBRG.SIO1.MUT0",
+> 0x10);
+> > > 	if (ACPI_FAILURE(status)) {
+> > > 		pr_err("Failed to acquire ACPI mutex\n");
+> > > 		return -EBUSY;
+> > > 	}
 > >
-> > You mean they don't really acquire the requested ACPI mutex,
-> > and the underlying DSDT which declares and uses the mutex
-> > just ignores if the mutex was acquired by acpi_acquire_mutex() ?
+> > Why do you need to access \_SB.PCI0.SBRG.SIO1.MUT0?
+> > OSPM should only invoke entry methods predefined by ACPI spec or
+> whatever specs.
+> > There shouldn't be any needs that a driver acquires an arbitrary AML
+> mutex.
+> > You do not seem to have justified the usage model, IMO.
 > >
-> > To clarify: You are saying that code such as
-> >
-> > 	acpi_status status;
-> >
-> > 	status =3D acpi_acquire_mutex(NULL, "\\_SB.PCI0.SBRG.SIO1.MUT0", 0x10);
-> > 	if (ACPI_FAILURE(status)) {
-> > 		pr_err("Failed to acquire ACPI mutex\n");
-> > 		return -EBUSY;
-> > 	}
 > =
 
-> Why do you need to access \_SB.PCI0.SBRG.SIO1.MUT0?
-> OSPM should only invoke entry methods predefined by ACPI spec or whatever=
- specs.
-> There shouldn't be any needs that a driver acquires an arbitrary AML mute=
-x.
-> You do not seem to have justified the usage model, IMO.
+> I am sorry, I have no idea how to do that. I can see that the resource in
+> question (IO address 0x2e/0x2f) is accessed from the DSDT, that the
+> resource is mutex protected, and that accesses to the same IO address from
+> the Linux kernel are unreliable unless I acquire the mutex in question. At
+> the same time, I can see that request_muxed_region() succeeds, so
+> presumably ACPI does not reserve the region for its exclusive use.
 > =
 
-> Thanks
-> Lv
+> It may well be that the "official" response to this problem is "you must
+> not instantiate a watchdog, environmental monitor, or gpio driver (or
+> anything else provided by the Super-IO chip that requires access to those
+> ports) on this platform in Linux". Is that what you are suggesting ?
 > =
 
-> > 	...
-> >
-> > when used in conjunction with
-> >
-> > 	...
-> > 	Mutex (MUT0, 0x00)
-> > 	Method (ENFG, 1, NotSerialized)
-> > 	{
-> > 		Acquire (MUT0, 0x0FFF)
-> > 		...
-> > 	}
-> >
-> > doesn't really provide exclusive access to the resource(s) protected
-> > by MUT0, even if acpi_acquire_mutex() returns ACPI_SUCCESS ?
+> Thanks,
+> Guenter
 
-IMO, the use case you are talking about is commonly seen in an operation re=
-gion access code.
-Most likely, we'll prepare a driver own lock, and use it for both driver in=
-itiated accesses and AML initiated accesses.
-
-Finally, how can the driver writer know which mutex he should acquire?
-AML mutexes should be invisible to the OS (except the global lock).
-
-So I'm really confused by your argument.
-Please explain in details - what the resource is.
-
-Thanks
-Lv
-
-
-> >
-> > Outch. Really ?
-> >
-> > Thanks,
-> > Guenter
-> >
-> > >
-> > > > -----Original Message-----
-> > > > From: Guenter Roeck [mailto:linux(a)roeck-us.net]
-> > > > Sent: Wednesday, April 12, 2017 8:13 AM
-> > > > To: Moore, Robert <robert.moore(a)intel.com>; Zheng, Lv
-> > > > <lv.zheng(a)intel.com>; Wysocki, Rafael J <rafael.j.wysocki(a)intel=
-.com>;
-> > > > Len Brown <lenb(a)kernel.org>
-> > > > Cc: linux-acpi(a)vger.kernel.org; devel(a)acpica.org; linux-
-> > > > kernel(a)vger.kernel.org; Guenter Roeck <linux(a)roeck-us.net>
-> > > > Subject: [PATCH] ACPICA: Export mutex functions
-> > > >
-> > > > Mutex functions may be needed by drivers. Examples are accesses to
-> > > > Super-IO SIO registers (0x2e/0x2f or 0x4e/0x4f) or Super-IO
-> > > > environmental monitor registers, both which may also be accessed th=
-rough
-> > > > DSDT.
-> > > >
-> > > > Signed-off-by: Guenter Roeck <linux(a)roeck-us.net>
-> > > > ---
-> > > >  drivers/acpi/acpica/utxfmutex.c | 2 ++
-> > > >  1 file changed, 2 insertions(+)
-> > > >
-> > > > diff --git a/drivers/acpi/acpica/utxfmutex.c
-> > > > b/drivers/acpi/acpica/utxfmutex.c index c016211c35ae..5d20581f4b2f
-> > > > 100644
-> > > > --- a/drivers/acpi/acpica/utxfmutex.c
-> > > > +++ b/drivers/acpi/acpica/utxfmutex.c
-> > > > @@ -150,6 +150,7 @@ acpi_acquire_mutex(acpi_handle handle, acpi_str=
-ing
-> > > > pathname, u16 timeout)
-> > > >  	status =3D acpi_os_acquire_mutex(mutex_obj->mutex.os_mutex, timeo=
-ut);
-> > > >  	return (status);
-> > > >  }
-> > > > +ACPI_EXPORT_SYMBOL(acpi_acquire_mutex)
-> > > >
-> > > >
-> > > > /******************************************************************=
-*****
-> > > > ********
-> > > >   *
-> > > > @@ -185,3 +186,4 @@ acpi_status acpi_release_mutex(acpi_handle hand=
-le,
-> > > > acpi_string pathname)
-> > > >  	acpi_os_release_mutex(mutex_obj->mutex.os_mutex);
-> > > >  	return (AE_OK);
-> > > >  }
-> > > > +ACPI_EXPORT_SYMBOL(acpi_release_mutex)
-> > > > --
-> > > > 2.7.4
-> > >
-> _______________________________________________
-> Devel mailing list
-> Devel(a)acpica.org
-> https://lists.acpica.org/mailman/listinfo/devel
-
---===============6510424023922284625==--
+--===============6815494953719075891==--
 
