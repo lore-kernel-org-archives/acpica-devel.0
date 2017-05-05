@@ -1,35 +1,23 @@
-Content-Type: multipart/mixed; boundary="===============2279665907848428638=="
+Content-Type: multipart/mixed; boundary="===============6954827953220535068=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
+From: Zheng, Lv <lv.zheng at intel.com>
 Subject: Re: [Devel] [PATCH] ACPI: SPCR: Use access width to determine mmio
  usage
-Date: Thu, 04 May 2017 16:28:23 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E597D3A@ORSMSX110.amr.corp.intel.com>
+Date: Fri, 05 May 2017 03:09:34 +0000
+Message-ID: <1AE640813FDE7649BE1B193DEA596E886CE9DCBC@SHSMSX101.ccr.corp.intel.com>
 In-Reply-To: 1493910330-17913-1-git-send-email-jon.mason@broadcom.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2279665907848428638==
+--===============6954827953220535068==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Jon,
+Hi,
 
-You might want to take a look at using the acpi_read and acpi_write ACPICA =
-interfaces that accept a GAS structure and handle the access width (etc.) a=
-utomatically.
-
-Bob
-
-
-> -----Original Message-----
 > From: Jon Mason [mailto:jon.mason(a)broadcom.com]
-> Sent: Thursday, May 4, 2017 8:06 AM
-> To: Rafael Wysocki <rjw(a)rjwysocki.net>; Len Brown <lenb(a)kernel.org>;
-> Moore, Robert <robert.moore(a)intel.com>; Zheng, Lv <lv.zheng(a)intel.com>
-> Cc: linux-acpi(a)vger.kernel.org; linux-kernel(a)vger.kernel.org;
-> devel(a)acpica.org; bcm-kernel-feedback-list(a)broadcom.com
+> Sent: Thursday, May 4, 2017 11:06 PM
 > Subject: [PATCH] ACPI: SPCR: Use access width to determine mmio usage
 > =
 
@@ -48,8 +36,8 @@ Bob
 >  2 files changed, 23 insertions(+), 2 deletions(-)
 > =
 
-> diff --git a/drivers/acpi/spcr.c b/drivers/acpi/spcr.c index
-> 01c9466..11233f6 100644
+> diff --git a/drivers/acpi/spcr.c b/drivers/acpi/spcr.c
+> index 01c9466..11233f6 100644
 > --- a/drivers/acpi/spcr.c
 > +++ b/drivers/acpi/spcr.c
 > @@ -74,8 +74,22 @@ int __init parse_spcr(bool earlycon)
@@ -57,14 +45,13 @@ Bob
 >  	}
 > =
 
-> -	iotype =3D table->serial_port.space_id =3D=3D
-> ACPI_ADR_SPACE_SYSTEM_MEMORY ?
+> -	iotype =3D table->serial_port.space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_MEM=
+ORY ?
 > -			"mmio" : "io";
 > +	if (table->serial_port.space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_MEMORY) {
 > +		switch (table->serial_port.access_width) {
 > +		default:
-> +			pr_err("Unexpected SPCR Access Width.  Defaulting to
-> byte size\n");
+> +			pr_err("Unexpected SPCR Access Width.  Defaulting to byte size\n");
 > +		case ACPI_ACCESS_SIZE_BYTE:
 > +			iotype =3D "mmio";
 > +			break;
@@ -81,8 +68,8 @@ Bob
 
 >  	switch (table->interface_type) {
 >  	case ACPI_DBG2_ARM_SBSA_32BIT:
-> diff --git a/include/acpi/acrestyp.h b/include/acpi/acrestyp.h index
-> f0f7403..781cb55 100644
+> diff --git a/include/acpi/acrestyp.h b/include/acpi/acrestyp.h
+> index f0f7403..781cb55 100644
 > --- a/include/acpi/acrestyp.h
 > +++ b/include/acpi/acrestyp.h
 > @@ -372,6 +372,13 @@ struct acpi_resource_generic_register {
@@ -100,9 +87,15 @@ Bob
 >  struct acpi_resource_gpio {
 >  	u8 revision_id;
 >  	u8 connection_type;
-> --
-> 2.7.4
+
+Please don't define this.
+It's possible to calculate 8/16/32/64 from the access width value.
+Try:
+1 << (access_width + 2=EF=BC=89
+
+Thanks
+Lv
 
 
---===============2279665907848428638==--
+--===============6954827953220535068==--
 
