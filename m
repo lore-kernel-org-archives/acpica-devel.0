@@ -1,98 +1,215 @@
-Content-Type: multipart/mixed; boundary="===============8107599871358593014=="
+Content-Type: multipart/mixed; boundary="===============7309745728642626357=="
 MIME-Version: 1.0
-From: Al Stone <ahs3 at redhat.com>
-Subject: Re: [Devel] Concatenate() operator
-Date: Fri, 02 Jun 2017 09:58:42 -0600
-Message-ID: <a441a8b4-fb86-e3b6-2dbf-a43de32b910a@redhat.com>
-In-Reply-To: 94F2FBAB4432B54E8AACC7DFDE6C92E37E5BD5A8@ORSMSX110.amr.corp.intel.com
+From: Moore, Robert <robert.moore at intel.com>
+Subject: Re: [Devel] [RFC 1/6] ACPICA: add HMAT table definitions
+Date: Fri, 02 Jun 2017 21:23:14 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E5BD764@ORSMSX110.amr.corp.intel.com>
+In-Reply-To: 20170602205956.28351-2-ross.zwisler@linux.intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8107599871358593014==
+--===============7309745728642626357==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On 06/02/2017 08:48 AM, Moore, Robert wrote:
+Full support for HMAT was just released in ACPICA version 20170531.
+
+
+> -----Original Message-----
+> From: Ross Zwisler [mailto:ross.zwisler(a)linux.intel.com]
+> Sent: Friday, June 2, 2017 2:00 PM
+> To: linux-kernel(a)vger.kernel.org
+> Cc: Ross Zwisler <ross.zwisler(a)linux.intel.com>; Anaczkowski, Lukasz
+> <lukasz.anaczkowski(a)intel.com>; Box, David E <david.e.box(a)intel.com>;
+> Kogut, Jaroslaw <Jaroslaw.Kogut(a)intel.com>; Lahtinen, Joonas
+> <joonas.lahtinen(a)intel.com>; Moore, Robert <robert.moore(a)intel.com>;
+> Nachimuthu, Murugasamy <murugasamy.nachimuthu(a)intel.com>; Odzioba,
+> Lukasz <lukasz.odzioba(a)intel.com>; Wysocki, Rafael J
+> <rafael.j.wysocki(a)intel.com>; Rafael J. Wysocki <rjw(a)rjwysocki.net>;
+> Schmauss, Erik <erik.schmauss(a)intel.com>; Verma, Vishal L
+> <vishal.l.verma(a)intel.com>; Zheng, Lv <lv.zheng(a)intel.com>; Williams,
+> Dan J <dan.j.williams(a)intel.com>; Hansen, Dave <dave.hansen(a)intel.com=
+>;
+> Dave Hansen <dave.hansen(a)linux.intel.com>; Greg Kroah-Hartman
+> <gregkh(a)linuxfoundation.org>; Len Brown <lenb(a)kernel.org>; Tim Chen
+> <tim.c.chen(a)linux.intel.com>; devel(a)acpica.org; linux-
+> acpi(a)vger.kernel.org; linux-nvdimm(a)lists.01.org
+> Subject: [RFC 1/6] ACPICA: add HMAT table definitions
 > =
 
-> There are a few things going on here.
+> Import HMAT table definitions from the ACPICA codebase.
 > =
 
-> 1) The version of the DSDT is 1, so integers are 32 bits (as per ACPI spe=
-cification). So, any integers larger than 32 bits are truncated to 32 bits.=
- Change the version to 2, and you will get 64-bit integers.
-
-Ah.  Missed this part.  That helps some.
-
-> 2) Yes, the strings will be converted to integers
+> This kernel patch was generated using an ACPICA patch from "Zheng, Lv"
+> <lv.zheng(a)intel.com>.  The actual upstream patch that adds these table
+> definitions will come from the Intel ACPICA team as part of their
+> greater ACPI 6.2 update.
 > =
 
-> 2) The compiler is folding both Concatenate operators to simple constants=
- (buffers). =
-
-
-Yup, got that part.
-
-> 3)The string-to-integer implicit conversion is in fact covered by the ACP=
-I spec, and the strings are always treated as hex constants, as below:
+> Signed-off-by: Ross Zwisler <ross.zwisler(a)linux.intel.com>
+> ---
+>  include/acpi/actbl1.h | 119
+> ++++++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 119 insertions(+)
 > =
 
-> 19.3.5.7 Data Type Conversion Rules
-> =
-
-> From String-to-Integer conversion section from the table:
-> =
-
-> "the ASCII string is interpreted as a hexadecimal constant"
-> "a 0x prefix is not allowed"
-> =
-
-> There are no octal constants in all of ACPI, BTW.
-
-Okay.  Now I see why this happens.  Thanks.
-
-The part about octal is not correct, though.  ASL literal constants are all=
-owed
-to be decimal, hexadecimal, or octal -- that's what section 19.3.2.1 says q=
-uite
-explicitly.  iasl does appear to behave properly with 32-bit values, but it
-looks like 64-bit octal conversion is off a bit; here's a simple test case =
-for
-that:
-
-DefinitionBlock ("", "DSDT", 2, "xxxxx", "Many", 0x00000001)
-{
-	Name (WBCD, 321)
-	Name (WBCO, 0321)
-	Name (WBCX, 0x0321)
-
-	Name (QBCD, 987654321987654321)
-	Name (QBCO, 066646645757675011261)
-	Name (QBCX, 0xdb4da5f7ef412b1)
-}
-
-The QBC* values should all produce identical bytes; decimal and
-hex are correct.
-
-> I think this covers your questions.
-> Bob
+> diff --git a/include/acpi/actbl1.h b/include/acpi/actbl1.h index
+> b4ce55c..a5df3f3 100644
+> --- a/include/acpi/actbl1.h
+> +++ b/include/acpi/actbl1.h
+> @@ -65,6 +65,7 @@
+>  #define ACPI_SIG_ECDT           "ECDT"	/* Embedded Controller Boot
+> Resources Table */
+>  #define ACPI_SIG_EINJ           "EINJ"	/* Error Injection table */
+>  #define ACPI_SIG_ERST           "ERST"	/* Error Record Serialization
+> Table */
+> +#define ACPI_SIG_HMAT           "HMAT"  /* Heterogeneous Memory
+> Attributes Table */
+>  #define ACPI_SIG_HEST           "HEST"	/* Hardware Error Source
+> Table */
+>  #define ACPI_SIG_MADT           "APIC"	/* Multiple APIC Description
+> Table */
+>  #define ACPI_SIG_MSCT           "MSCT"	/* Maximum System
+> Characteristics Table */
+> @@ -688,6 +689,124 @@ struct acpi_hest_generic_data_v300 {
 > =
 
 > =
 
+> /***********************************************************************
+> ********
+>   *
+> + * HMAT - Heterogeneous Memory Attributes Table (ACPI 6.2)
+> + *        Version 1
+> + *
+> + **********************************************************************
+> + ********/
+> +
+> +struct acpi_table_hmat {
+> +	struct acpi_table_header header; /* Common ACPI table header */
+> +	u32 reserved;
+> +};
+> +
+> +
+> +/* Values for HMAT structure types */
+> +
+> +enum acpi_hmat_type {
+> +	ACPI_HMAT_TYPE_ADDRESS_RANGE =3D 0, /* Memory subystem address range
+> */
+> +	ACPI_HMAT_TYPE_LOCALITY      =3D 1, /* System locality latency and
+> bandwidth information */
+> +	ACPI_HMAT_TYPE_CACHE         =3D 2, /* Memory side cache information
+> */
+> +	ACPI_HMAT_TYPE_RESERVED      =3D 3  /* 3 and greater are reserved */
+> +};
+> +
+> +struct acpi_hmat_structure {
+> +	u16 type;
+> +	u16 reserved;
+> +	u32 length;
+> +};
+> +
+> +/*
+> + * HMAT Structures, correspond to Type in struct acpi_hmat_structure
+> +*/
+> +
+> +/* 0: Memory subystem address range */
+> +
+> +struct acpi_hmat_address_range {
+> +	struct acpi_hmat_structure header;
+> +	u16 flags;
+> +	u16 reserved1;
+> +	u32 processor_PD;           /* Processor proximity domain */
+> +	u32 memory_PD;              /* Memory proximity domain */
+> +	u32 reserved2;
+> +	u64 physical_address_base;  /* Physical address range base */
+> +	u64 physical_address_length; /* Physical address range length */ };
+> +
+> +/* Masks for Flags field above */
+> +
+> +#define ACPI_HMAT_PROCESSOR_PD_VALID (1)    /* 1: processor_PD field is
+> valid */
+> +#define ACPI_HMAT_MEMORY_PD_VALID    (1<<1) /* 1: memory_PD field is
+> valid */
+> +#define ACPI_HMAT_RESERVATION_HINT   (1<<2) /* 1: Reservation hint */
+> +
+> +/* 1: System locality latency and bandwidth information */
+> +
+> +struct acpi_hmat_locality {
+> +	struct acpi_hmat_structure header;
+> +	u8  flags;
+> +	u8  data_type;
+> +	u16 reserved1;
+> +	u32 number_of_initiator_Pds;
+> +	u32 number_of_target_Pds;
+> +	u32 reserved2;
+> +	u64 entry_base_unit;
+> +	u32 data[1]; /* initiator/target lists followed by entry matrix */
+> };
+> +
+> +/* Masks for Flags field above */
+> +
+> +#define ACPI_HMAT_MEMORY_HIERARCHY  (0x0F)
+> +
+> +/* Values for Memory Hierarchy flag */
+> +
+> +#define ACPI_HMAT_MEMORY            0
+> +#define ACPI_HMAT_LAST_LEVEL_CACHE  1
+> +#define ACPI_HMAT_1ST_LEVEL_CACHE   2
+> +#define ACPI_HMAT_2ND_LEVEL_CACHE   3
+> +#define ACPI_HMAT_3RD_LEVEL_CACHE   4
+> +
+> +/* Values for data_type field above */
+> +
+> +#define ACPI_HMAT_ACCESS_LATENCY    0
+> +#define ACPI_HMAT_READ_LATENCY      1
+> +#define ACPI_HMAT_WRITE_LATENCY     2
+> +#define ACPI_HMAT_ACCESS_BANDWIDTH  3
+> +#define ACPI_HMAT_READ_BANDWIDTH    4
+> +#define ACPI_HMAT_WRITE_BANDWIDTH   5
+> +
+> +/* 2: Memory side cache information */
+> +
+> +struct acpi_hmat_cache {
+> +	struct acpi_hmat_structure header;
+> +	u32 memory_PD;
+> +	u32 reserved1;
+> +	u64 cache_size;
+> +	u32 cache_attributes;
+> +	u16 reserved2;
+> +	u16 number_of_SMBIOShandles;
+> +};
+> +
+> +/* Masks for cache_attributes field above */
+> +
+> +#define ACPI_HMAT_TOTAL_CACHE_LEVEL     (0x0000000F)
+> +#define ACPI_HMAT_CACHE_LEVEL           (0x000000F0)
+> +#define ACPI_HMAT_CACHE_ASSOCIATIVITY   (0x00000F00)
+> +#define ACPI_HMAT_WRITE_POLICY          (0x0000F000)
+> +#define ACPI_HMAT_CACHE_LINE_SIZE       (0xFFFF0000)
+> +
+> +/* Values for cache associativity flag */
+> +
+> +#define ACPI_HMAT_CA_NONE                     (0)
+> +#define ACPI_HMAT_CA_DIRECT_MAPPED            (1)
+> +#define ACPI_HMAT_CA_COMPLEX_CACHE_INDEXING   (2)
+> +
+> +/* Values for write policy flag */
+> +
+> +#define ACPI_HMAT_CP_NONE   (0)
+> +#define ACPI_HMAT_CP_WB     (1)
+> +#define ACPI_HMAT_CP_WT     (2)
+> +
+> +/**********************************************************************
+> +*********
+> + *
+>   * MADT - Multiple APIC Description Table
+>   *        Version 3
+>   *
+> --
+> 2.9.4
 
 
--- =
-
-ciao,
-al
------------------------------------
-Al Stone
-Software Engineer
-Red Hat, Inc.
-ahs3(a)redhat.com
------------------------------------
-
---===============8107599871358593014==--
+--===============7309745728642626357==--
 
