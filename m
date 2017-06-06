@@ -1,40 +1,39 @@
-Content-Type: multipart/mixed; boundary="===============4264491122019511702=="
+Content-Type: multipart/mixed; boundary="===============5479078094505284510=="
 MIME-Version: 1.0
-From: Ross Zwisler <ross.zwisler at linux.intel.com>
-Subject: Re: [Devel] [resend RFC 1/6] ACPICA: add HMAT table definitions
-Date: Mon, 05 Jun 2017 18:30:36 -0600
-Message-ID: <20170606003036.GA5997@linux.intel.com>
-In-Reply-To: CAJZ5v0iARt8WT+VHt21trSvYqqy6f4ExLEL3UVxJ4vbX_=_bcQ@mail.gmail.com
+From: Hanjun Guo <hanjun.guo at linaro.org>
+Subject: Re: [Devel] [v6 2/3] iommu/arm-smmu-v3: Add workaround for Cavium
+ ThunderX2 erratum #74
+Date: Tue, 06 Jun 2017 17:38:37 +0800
+Message-ID: <9ab6fba9-5270-a618-d149-2e4c11d4cbf6@linaro.org>
+In-Reply-To: 5FC3163CFD30C246ABAA99954A238FA838351762@FRAEML521-MBX.china.huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4264491122019511702==
+--===============5479078094505284510==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jun 05, 2017 at 10:44:11PM +0200, Rafael J. Wysocki wrote:
-> On Mon, Jun 5, 2017 at 9:50 PM, Ross Zwisler
-> <ross.zwisler(a)linux.intel.com> wrote:
-> > Import HMAT table definitions from the ACPICA codebase.
-> >
-> > This kernel patch was generated using an ACPICA patch from "Zheng, Lv"
-> > <lv.zheng(a)intel.com>.  The actual upstream patch that adds these table
-> > definitions will come from the Intel ACPICA team as part of their great=
-er
-> > ACPI 6.2 update.
-> >
-> > Signed-off-by: Ross Zwisler <ross.zwisler(a)linux.intel.com>
-> =
+On 2017/5/17 18:13, Shameerali Kolothum Thodi wrote:
+>>   #ifdef CONFIG_ACPI
+>> +static void acpi_smmu_get_options(u32 model, struct arm_smmu_device
+>> +*smmu) {
+>> +	if (model =3D=3D ACPI_IORT_SMMU_CAVIUM_CN99XX)
+>> +		smmu->options |=3D ARM_SMMU_OPT_PAGE0_REGS_ONLY;
+ >
+> HiSIlicon hip06/07 boards have a similar existing option to enable,
+> ARM_SMMU_OPT_SKIP_PREFETCH. I have just sent out a similar patch to enable
+> It-" [PATCH] iommu/arm-smmu-v3: Enable ACPI based HiSilicon CMD_PREFETCH
+>   quirk(erratum 161010701)".  May be it can be merged here, if this serie=
+s goes through.
+>   Not sure about the protocol though.
 
-> Can you please hold on util we have integrated all of the pending
-> ACPICA changes?
+I think you can add a patch on top of Geetha's, and clarify
+the dependency in the change log, then it will be easy for
+maintainer to apply.
 
-Sure, this is really just meant to spur discussion on the correct course.
-Comments welcome (encouraged!) on the series as a whole and especially the
-APIs needed by userspace, but ultimately patch 1 will be dropped and I'll j=
-ust
-build on the ACPICA definitions.
+Thanks
+Hanjun
 
---===============4264491122019511702==--
+--===============5479078094505284510==--
 
