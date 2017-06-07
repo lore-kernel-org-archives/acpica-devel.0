@@ -1,119 +1,202 @@
-Content-Type: multipart/mixed; boundary="===============0870920076748774270=="
+Content-Type: multipart/mixed; boundary="===============3006818342020502955=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] [PATCH] acpi: acpica: dsutils: fix an off-by-one index
-Date: Wed, 07 Jun 2017 15:14:46 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E5BF38C@ORSMSX110.amr.corp.intel.com>
-In-Reply-To: 20170606215951.3429-1-kirkseraph@gmail.com
+From: Lorenzo Pieralisi <lorenzo.pieralisi at arm.com>
+Subject: Re: [Devel] [RFCv2 2/2] iommu/arm-smmu-v3:Enable ACPI based HiSilicon
+ erratum 161010801
+Date: Wed, 07 Jun 2017 18:16:18 +0100
+Message-ID: <20170607171618.GC7937@red-moon>
+In-Reply-To: 5FC3163CFD30C246ABAA99954A238FA838362082@FRAEML521-MBX.china.huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0870920076748774270==
+--===============3006818342020502955==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-I believe that the rationale for this is that at that point in the code, it=
- is *guaranteed* that there is at least one operand; therefore the -1 would=
- always be valid.
-
-In the end, we just deleted that call to acpi_db_display_argument_object.
-
-I don't know if this change has made it into Linux yet.
-
-Bob
-
-
-> -----Original Message-----
-> From: Seraphime Kirkovski [mailto:kirkseraph(a)gmail.com]
-> Sent: Tuesday, June 6, 2017 3:00 PM
-> To: devel(a)acpica.org; linux-acpi(a)vger.kernel.org
-> Cc: Moore, Robert <robert.moore(a)intel.com>; Zheng, Lv
-> <lv.zheng(a)intel.com>; Wysocki, Rafael J <rafael.j.wysocki(a)intel.com>;
-> lenb(a)kernel.org; linux-kernel(a)vger.kernel.org; Seraphime Kirkovski
-> <kirkseraph(a)gmail.com>
-> Subject: [PATCH] acpi: acpica: dsutils: fix an off-by-one index
+On Tue, Jun 06, 2017 at 03:01:36PM +0000, Shameerali Kolothum Thodi wrote:
+> Hi Lorenzo,
 > =
 
-> This was detected by UBSAN.
-> Fix it by checking whether there are any arguments prior to indexing the
-> array.
+> > -----Original Message-----
+> > From: Lorenzo Pieralisi [mailto:lorenzo.pieralisi(a)arm.com]
+> > Sent: Tuesday, June 06, 2017 2:56 PM
+> > To: Shameerali Kolothum Thodi
+> > Cc: marc.zyngier(a)arm.com; sudeep.holla(a)arm.com; will.deacon(a)arm.c=
+om;
+> > robin.murphy(a)arm.com; hanjun.guo(a)linaro.org; Gabriele Paoloni; John
+> > Garry; iommu(a)lists.linux-foundation.org; linux-arm-
+> > kernel(a)lists.infradead.org; linux-acpi(a)vger.kernel.org; devel(a)acp=
+ica.org;
+> > Linuxarm; Wangzhou (B); Guohanjun (Hanjun Guo)
+> > Subject: Re: [RFCv2 2/2] iommu/arm-smmu-v3:Enable ACPI based HiSilicon
+> > erratum 161010801
+> > =
+
+> > On Wed, May 31, 2017 at 03:32:13PM +0100, shameer wrote:
+> > > The HiSilicon erratum 161010801 describes the limitation of HiSilicon
+> > > platforms Hip06/Hip07 to support the SMMU mappings for MSI
+> > transactions.
+> > >
+> > > On these platforms GICv3 ITS translator is presented with the deviceID
+> > > by extending the MSI payload data to 64 bits to include the deviceID.
+> > > Hence, the PCIe controller on this platforms has to differentiate the
+> > > MSI payload against other DMA payload and has to modify the MSI
+> > payload.
+> > > This basically makes it difficult for this platforms to have a SMMU
+> > > translation for MSI.
+> > >
+> > > This patch implements a ACPI table based quirk to reserve the hw msi
+> > > regions in the smmu-v3 driver which means these address regions will
+> > > not be translated and will be excluded from iova allocations.
+> > >
+> > > The HW ITS address region associated with the dev is retrieved using a
+> > > new helper function added in the IORT code.
+> > =
+
+> > Remove or rephrase last paragraph, it reads as if you are adding an IORT
+> > helper function in this patch but you actually aren't.
 > =
 
-> [    0.222775] UBSAN: Undefined behaviour in
-> drivers/acpi/acpica/dsutils.c:640:16
-> [    0.222778] index -1 is out of range for type
-> 'acpi_operand_object*[9]'
-> [    0.222781] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 4.12.0-rc4-
-> dirty #32
-> [    0.222782] Hardware name: Hewlett-Packard HP EliteBook 2560p/162B,
-> BIOS 68SSU Ver. F.02 07/26/2011
-> [    0.222783] Call Trace:
-> [    0.222790]  dump_stack+0x4e/0x78
-> [    0.222792]  ubsan_epilogue+0xd/0x40
-> [    0.222794]  __ubsan_handle_out_of_bounds+0x68/0x80
-> [    0.222795]  ? perf_trace_sys_exit+0x12d/0x170
-> [    0.222797]  ? kmem_cache_alloc+0x1e6/0x2e0
-> [    0.222800]  acpi_ds_create_operand+0x20b/0x2a6
-> [    0.222801]  acpi_ds_eval_data_object_operands+0x58/0x16c
-> [    0.222803]  acpi_ds_exec_end_op+0x424/0x582
-> [    0.222805]  acpi_ps_parse_loop+0x730/0x792
-> [    0.222807]  acpi_ps_parse_aml+0xac/0x2eb
-> [    0.222809]  acpi_ds_execute_arguments+0x129/0x14d
-> [    0.222810]  acpi_ds_get_buffer_arguments+0x62/0x65
-> [    0.222812]  acpi_ns_init_one_object+0xe0/0x13b
-> [    0.222814]  acpi_ns_walk_namespace+0x121/0x1ef
-> [    0.222815]  ? acpi_ns_exec_module_code_list+0x1b7/0x1b7
-> [    0.222817]  ? acpi_ns_exec_module_code_list+0x1b7/0x1b7
-> [    0.222818]  acpi_walk_namespace+0xa0/0xd5
-> [    0.222820]  acpi_ns_initialize_objects+0x37/0x5a
-> [    0.222823]  acpi_initialize_objects+0x34/0x54
-> [    0.222824]  ? acpi_sleep_proc_init+0x2d/0x2d
-> [    0.222826]  acpi_init+0xcb/0x34d
-> [    0.222828]  ? __class_create+0x54/0x80
-> [    0.222830]  ? fbmem_init+0x7f/0xd4
-> [    0.222831]  ? acpi_sleep_proc_init+0x2d/0x2d
-> [    0.222832]  do_one_initcall+0x52/0x1d0
-> [    0.222835]  kernel_init_freeable+0x314/0x3a6
-> [    0.222837]  ? rest_init+0x80/0x80
-> [    0.222838]  kernel_init+0xf/0x120
-> [    0.222839]  ? rest_init+0x80/0x80
-> [    0.222841]  ret_from_fork+0x22/0x30
+> Thanks for going through this patch series. I will remove this in next ve=
+rsion.
 > =
 
-> Signed-off-by: Seraphime Kirkovski <kirkseraph(a)gmail.com>
-> ---
->  drivers/acpi/acpica/dsutils.c | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
+> > > Signed-off-by: shameer <shameerali.kolothum.thodi(a)huawei.com>
+> > > ---
+> > >  drivers/iommu/arm-smmu-v3.c | 49
+> > > ++++++++++++++++++++++++++++++++++++++++++---
+> > >  1 file changed, 46 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/drivers/iommu/arm-smmu-v3.c b/drivers/iommu/arm-smmu-
+> > v3.c
+> > > index abe4b88..3767526 100644
+> > > --- a/drivers/iommu/arm-smmu-v3.c
+> > > +++ b/drivers/iommu/arm-smmu-v3.c
+> > > @@ -597,6 +597,7 @@ struct arm_smmu_device {
+> > >  	u32				features;
+> > >
+> > >  #define ARM_SMMU_OPT_SKIP_PREFETCH	(1 << 0)
+> > > +#define ARM_SMMU_OPT_RESV_HW_MSI	(1 << 1)
+> > >  	u32				options;
+> > >
+> > >  	struct arm_smmu_cmdq		cmdq;
+> > > @@ -1755,6 +1756,38 @@ static bool arm_smmu_sid_in_range(struct
+> > > arm_smmu_device *smmu, u32 sid)
+> > >
+> > >  static struct iommu_ops arm_smmu_ops;
+> > >
+> > > +#ifdef CONFIG_ACPI
+> > > +static struct iommu_resv_region *arm_smmu_acpi_alloc_hw_msi(struct
+> > > +device *dev) {
+> > > +	struct iommu_resv_region *region;
+> > > +	struct	irq_domain *irq_dom;
+> > > +	int prot =3D IOMMU_WRITE | IOMMU_NOEXEC | IOMMU_MMIO;
+> > > +	u64	base;
+> > =
+
+> > phys_addr_t
 > =
 
-> diff --git a/drivers/acpi/acpica/dsutils.c
-> b/drivers/acpi/acpica/dsutils.c index 406edec20de7..b66eddd3df6e 100644
-> --- a/drivers/acpi/acpica/dsutils.c
-> +++ b/drivers/acpi/acpica/dsutils.c
-> @@ -636,11 +636,10 @@ acpi_ds_create_operand(struct acpi_walk_state
-> *walk_state,
->  			ACPI_DEBUG_PRINT((ACPI_DB_DISPATCH,
->  					  "Argument previously created, already
-> stacked\n"));
+> Ok.
 > =
 
-> -			acpi_db_display_argument_object(walk_state->
-> -							operands[walk_state->
-> -								 num_operands -
-> -								 1],
-> -							walk_state);
-> +			if (walk_state->num_operands)
-> +				acpi_db_display_argument_object(walk_state->
-> +					operands[walk_state->num_operands - 1],
-> +					walk_state);
+> > > +	irq_dom =3D pci_msi_get_device_domain(to_pci_dev(dev));
+> > > +	if (irq_dom) {
+> > > +		int	ret;
+> > > +		u32	rid;
+> > > +
+> > > +		rid =3D pci_msi_domain_get_msi_rid(irq_dom,
+> > to_pci_dev(dev));
+> > > +		ret =3D iort_dev_find_its_base(dev, rid, 0, &base);
+> > =
+
+> > Well, here we use ITS id 0 which is fine as long as code in IORT uses t=
+he same
+> > policy for getting the irq_domain (ie we want to reserve the ITS address
+> > space that is actually used by the device to send IRQs not a a differen=
+t one) it
+> > is just a heads-up because I find this confusing.
 > =
 
->  			/*
->  			 * Use value that was already previously returned
-> --
-> 2.11.0
+> Ok. Just to make it clear, 0 is the index into the ITS identifier list.
+> I noted that iort_get_device_domain() uses index 0 while retrieving the I=
+TS identifier.
+> May be use the same approach here as well? ie, remove the index from func=
+tion call?
+> =
 
+> I am not sure, how we can get the index info  though theoretically It is =
+possible for
+> the ITS group node having multiple ITSs.
 
---===============0870920076748774270==--
+Yes, it would be ideal to avoid the look-up through the ITS index and
+just reuse the ITS node associated with the MSI domain because I do not
+want this quirk to force the ITS domain allocation policy (what I mean
+I do not want to be tied to index 0 if for any reason we change
+the allocation in IORT for normal ITS<->device mapping).
+
+I will have a further look to see if we can improve the code to
+this extent.
+
+> > > +		if (!ret) {
+> > > +			dev_info(dev, "SMMUv3:HW MSI resv addr
+> > 0x%pa\n", &base);
+> > > +			region =3D iommu_alloc_resv_region(base, SZ_128K,
+> > > +							 prot,
+> > IOMMU_RESV_MSI);
+> > > +			return region;
+> > > +		}
+> > > +	}
+> > > +
+> > > +	return NULL;
+> > > +}
+> > > +#else
+> > > +static struct iommu_resv_region *arm_smmu_acpi_alloc_hw_msi(struct
+> > > +device *dev) {
+> > > +	return NULL;
+> > > +}
+> > > +#endif
+> > > +
+> > >  static int arm_smmu_add_device(struct device *dev)  {
+> > >  	int i, ret;
+> > > @@ -1903,11 +1936,20 @@ static int arm_smmu_of_xlate(struct device
+> > > *dev, struct of_phandle_args *args)  static void
+> > arm_smmu_get_resv_regions(struct device *dev,
+> > >  				      struct list_head *head)
+> > >  {
+> > > -	struct iommu_resv_region *region;
+> > > +	struct iommu_fwspec *fwspec =3D dev->iommu_fwspec;
+> > > +	struct iommu_resv_region *region =3D NULL;
+> > >  	int prot =3D IOMMU_WRITE | IOMMU_NOEXEC | IOMMU_MMIO;
+> > > +	struct arm_smmu_device *smmu;
+> > > +
+> > > +	smmu =3D arm_smmu_get_by_fwnode(fwspec->iommu_fwnode);
+> > >
+> > > -	region =3D iommu_alloc_resv_region(MSI_IOVA_BASE,
+> > MSI_IOVA_LENGTH,
+> > > -					 prot, IOMMU_RESV_SW_MSI);
+> > > +	if (smmu && (smmu->options & ARM_SMMU_OPT_RESV_HW_MSI)
+> > &&
+> > > +		      dev_is_pci(dev))
+> > > +		region =3D arm_smmu_acpi_alloc_hw_msi(dev);
+> > =
+
+> > Is it safe to carry on if arm_smmu_acpi_alloc_hw_msi() returns NULL her=
+e ?
+> =
+
+> It is just that PCIe devices won't be functional on this platforms as the=
+ endpoint will =
+
+> be configured with ITS IOVA address. May be I should add some dev_warn() =
+here.
+
+Well yes and also I am not sure that if arm_smmu_acpi_alloc_hw_msi()
+fails you should allocate the SW_MSI region I am not sure I understand
+the logic, so you should add a warning and just return on failure right ?
+
+Lorenzo
+
+--===============3006818342020502955==--
 
