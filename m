@@ -1,254 +1,119 @@
-Content-Type: multipart/mixed; boundary="===============3678128265002095784=="
+Content-Type: multipart/mixed; boundary="===============0870920076748774270=="
 MIME-Version: 1.0
-From: Ganapatrao Kulkarni <gpkulkarni at gmail.com>
-Subject: Re: [Devel] [PATCH 2/2] acpi, gicv3-its,
- numa: Adding numa node mapping for gic-its units
-Date: Wed, 07 Jun 2017 09:09:39 +0530
-Message-ID: <CAFpQJXVRJH33NCJobF6oWUbJXkH0HChDmBYmVnSdSACdgf4mcw@mail.gmail.com>
-In-Reply-To: 1496753787-27735-3-git-send-email-ganapatrao.kulkarni@cavium.com
+From: Moore, Robert <robert.moore at intel.com>
+Subject: Re: [Devel] [PATCH] acpi: acpica: dsutils: fix an off-by-one index
+Date: Wed, 07 Jun 2017 15:14:46 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E5BF38C@ORSMSX110.amr.corp.intel.com>
+In-Reply-To: 20170606215951.3429-1-kirkseraph@gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3678128265002095784==
+--===============0870920076748774270==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Adding  Lorenzo and  Hanzun.
+I believe that the rationale for this is that at that point in the code, it=
+ is *guaranteed* that there is at least one operand; therefore the -1 would=
+ always be valid.
 
-On Tue, Jun 6, 2017 at 6:26 PM, Ganapatrao Kulkarni
-<ganapatrao.kulkarni(a)cavium.com> wrote:
-> Add code to parse SRAT ITS Affinity sub table as defined in ACPI 6.2
-> Later in driver probe, its devices are mapped to numa node
-> using its id to proximity domain mapping.
->
-> Signed-off-by: Ganapatrao Kulkarni <ganapatrao.kulkarni(a)cavium.com>
+In the end, we just deleted that call to acpi_db_display_argument_object.
+
+I don't know if this change has made it into Linux yet.
+
+Bob
+
+
+> -----Original Message-----
+> From: Seraphime Kirkovski [mailto:kirkseraph(a)gmail.com]
+> Sent: Tuesday, June 6, 2017 3:00 PM
+> To: devel(a)acpica.org; linux-acpi(a)vger.kernel.org
+> Cc: Moore, Robert <robert.moore(a)intel.com>; Zheng, Lv
+> <lv.zheng(a)intel.com>; Wysocki, Rafael J <rafael.j.wysocki(a)intel.com>;
+> lenb(a)kernel.org; linux-kernel(a)vger.kernel.org; Seraphime Kirkovski
+> <kirkseraph(a)gmail.com>
+> Subject: [PATCH] acpi: acpica: dsutils: fix an off-by-one index
+> =
+
+> This was detected by UBSAN.
+> Fix it by checking whether there are any arguments prior to indexing the
+> array.
+> =
+
+> [    0.222775] UBSAN: Undefined behaviour in
+> drivers/acpi/acpica/dsutils.c:640:16
+> [    0.222778] index -1 is out of range for type
+> 'acpi_operand_object*[9]'
+> [    0.222781] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 4.12.0-rc4-
+> dirty #32
+> [    0.222782] Hardware name: Hewlett-Packard HP EliteBook 2560p/162B,
+> BIOS 68SSU Ver. F.02 07/26/2011
+> [    0.222783] Call Trace:
+> [    0.222790]  dump_stack+0x4e/0x78
+> [    0.222792]  ubsan_epilogue+0xd/0x40
+> [    0.222794]  __ubsan_handle_out_of_bounds+0x68/0x80
+> [    0.222795]  ? perf_trace_sys_exit+0x12d/0x170
+> [    0.222797]  ? kmem_cache_alloc+0x1e6/0x2e0
+> [    0.222800]  acpi_ds_create_operand+0x20b/0x2a6
+> [    0.222801]  acpi_ds_eval_data_object_operands+0x58/0x16c
+> [    0.222803]  acpi_ds_exec_end_op+0x424/0x582
+> [    0.222805]  acpi_ps_parse_loop+0x730/0x792
+> [    0.222807]  acpi_ps_parse_aml+0xac/0x2eb
+> [    0.222809]  acpi_ds_execute_arguments+0x129/0x14d
+> [    0.222810]  acpi_ds_get_buffer_arguments+0x62/0x65
+> [    0.222812]  acpi_ns_init_one_object+0xe0/0x13b
+> [    0.222814]  acpi_ns_walk_namespace+0x121/0x1ef
+> [    0.222815]  ? acpi_ns_exec_module_code_list+0x1b7/0x1b7
+> [    0.222817]  ? acpi_ns_exec_module_code_list+0x1b7/0x1b7
+> [    0.222818]  acpi_walk_namespace+0xa0/0xd5
+> [    0.222820]  acpi_ns_initialize_objects+0x37/0x5a
+> [    0.222823]  acpi_initialize_objects+0x34/0x54
+> [    0.222824]  ? acpi_sleep_proc_init+0x2d/0x2d
+> [    0.222826]  acpi_init+0xcb/0x34d
+> [    0.222828]  ? __class_create+0x54/0x80
+> [    0.222830]  ? fbmem_init+0x7f/0xd4
+> [    0.222831]  ? acpi_sleep_proc_init+0x2d/0x2d
+> [    0.222832]  do_one_initcall+0x52/0x1d0
+> [    0.222835]  kernel_init_freeable+0x314/0x3a6
+> [    0.222837]  ? rest_init+0x80/0x80
+> [    0.222838]  kernel_init+0xf/0x120
+> [    0.222839]  ? rest_init+0x80/0x80
+> [    0.222841]  ret_from_fork+0x22/0x30
+> =
+
+> Signed-off-by: Seraphime Kirkovski <kirkseraph(a)gmail.com>
 > ---
->  arch/arm64/include/asm/acpi.h    |  2 ++
->  arch/arm64/kernel/acpi_numa.c    | 59 ++++++++++++++++++++++++++++++++++=
-++++++
->  drivers/acpi/numa.c              | 32 +++++++++++++++++++++-
->  drivers/irqchip/irq-gic-v3-its.c |  3 +-
->  include/linux/acpi.h             |  3 ++
->  5 files changed, 97 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
-> index 0e99978..60ea7d1 100644
-> --- a/arch/arm64/include/asm/acpi.h
-> +++ b/arch/arm64/include/asm/acpi.h
-> @@ -143,9 +143,11 @@ static inline void arch_apei_flush_tlb_one(unsigned =
-long addr)
->  #ifdef CONFIG_ACPI_NUMA
->  int arm64_acpi_numa_init(void);
->  int acpi_numa_get_nid(unsigned int cpu, u64 hwid);
-> +int acpi_numa_get_its_nid(u32 its_id);
->  #else
->  static inline int arm64_acpi_numa_init(void) { return -ENOSYS; }
->  static inline int acpi_numa_get_nid(unsigned int cpu, u64 hwid) { return=
- NUMA_NO_NODE; }
-> +static inline int acpi_numa_get_its_nid(u32 its_id) { return NUMA_NO_NOD=
-E; }
->  #endif /* CONFIG_ACPI_NUMA */
->
->  #define ACPI_TABLE_UPGRADE_MAX_PHYS MEMBLOCK_ALLOC_ACCESSIBLE
-> diff --git a/arch/arm64/kernel/acpi_numa.c b/arch/arm64/kernel/acpi_numa.c
-> index f01fab6..f7b2ea6 100644
-> --- a/arch/arm64/kernel/acpi_numa.c
-> +++ b/arch/arm64/kernel/acpi_numa.c
-> @@ -29,15 +29,24 @@
->  #include <asm/numa.h>
->
->  static int cpus_in_srat;
-> +static int its_in_srat;
->
->  struct __node_cpu_hwid {
->         u32 node_id;    /* logical node containing this CPU */
->         u64 cpu_hwid;   /* MPIDR for this CPU */
->  };
->
-> +struct __node_its_id {
-> +       u32 node_id;    /* numa node id */
-> +       u32 its_id ;   /* GIC ITS ID */
-> +};
-> +
->  static struct __node_cpu_hwid early_node_cpu_hwid[NR_CPUS] =3D {
->  [0 ... NR_CPUS - 1] =3D {NUMA_NO_NODE, PHYS_CPUID_INVALID} };
->
-> +static struct __node_its_id early_node_its_id[MAX_NUMNODES] =3D {
-> +[0 ... MAX_NUMNODES - 1] =3D {NUMA_NO_NODE, UINT_MAX} };
-> +
->  int acpi_numa_get_nid(unsigned int cpu, u64 hwid)
->  {
->         int i;
-> @@ -50,6 +59,18 @@ int acpi_numa_get_nid(unsigned int cpu, u64 hwid)
->         return NUMA_NO_NODE;
->  }
->
-> +int acpi_numa_get_its_nid(u32 its_id)
-> +{
-> +       int i;
-> +
-> +       for (i =3D 0; i < its_in_srat; i++) {
-> +               if (its_id =3D=3D early_node_its_id[i].its_id)
-> +                       return early_node_its_id[i].node_id;
-> +       }
-> +
-> +       return NUMA_NO_NODE;
-> +}
-> +
->  /* Callback for Proximity Domain -> ACPI processor UID mapping */
->  void __init acpi_numa_gicc_affinity_init(struct acpi_srat_gicc_affinity =
-*pa)
->  {
-> @@ -100,6 +121,44 @@ void __init acpi_numa_gicc_affinity_init(struct acpi=
-_srat_gicc_affinity *pa)
->                 pxm, mpidr, node);
->  }
->
-> +/* Callback for ITS ACPI Proximity Domain mapping */
-> +void __init acpi_numa_its_affinity_init(struct acpi_srat_its_affinity *p=
-a)
-> +{
-> +       int pxm, node;
-> +
-> +       if (srat_disabled())
-> +               return;
-> +
-> +       if (pa->header.length < sizeof(struct acpi_srat_its_affinity)) {
-> +               pr_err("SRAT: Invalid SRAT header length: %d\n",
-> +                       pa->header.length);
-> +               bad_srat();
-> +               return;
-> +       }
-> +
-> +       if (its_in_srat >=3D MAX_NUMNODES) {
-> +               pr_warn_once("SRAT: its count exceeding max count[%d]\n",
-> +                            MAX_NUMNODES);
-> +               return;
-> +       }
-> +
-> +       pxm =3D pa->proximity_domain;
-> +       node =3D acpi_map_pxm_to_node(pxm);
-> +
-> +       if (node =3D=3D NUMA_NO_NODE || node >=3D MAX_NUMNODES) {
-> +               pr_err("SRAT: Too many proximity domains %d\n", pxm);
-> +               bad_srat();
-> +               return;
-> +       }
-> +
-> +       early_node_its_id[its_in_srat].node_id =3D node;
-> +       early_node_its_id[its_in_srat].its_id =3D  its_in_srat;
-> +       node_set(node, numa_nodes_parsed);
-> +       pr_info("SRAT: PXM %d -> ITS %d -> Node %d\n",
-> +               pxm, its_in_srat, node);
-> +       its_in_srat++;
-> +}
-> +
->  int __init arm64_acpi_numa_init(void)
->  {
->         int ret;
-> diff --git a/drivers/acpi/numa.c b/drivers/acpi/numa.c
-> index edb0c79..9c04dba 100644
-> --- a/drivers/acpi/numa.c
-> +++ b/drivers/acpi/numa.c
-> @@ -182,6 +182,16 @@ int acpi_map_pxm_to_online_node(int pxm)
->                 }
->                 break;
->
-> +       case ACPI_SRAT_TYPE_GIC_ITS_AFFINITY:
-> +               {
-> +                       struct acpi_srat_its_affinity *p =3D
-> +                           (struct acpi_srat_its_affinity *)header;
-> +                       pr_debug("SRAT ITS [0x%04x]) in proximity domain =
-%d\n",
-> +                                p->its_id,
-> +                                p->proximity_domain);
-> +               }
-> +               break;
-> +
->         default:
->                 pr_warn("Found unsupported SRAT entry (type =3D 0x%x)\n",
->                         header->type);
-> @@ -390,6 +400,24 @@ static int __init acpi_parse_slit(struct acpi_table_=
-header *table)
->         return 0;
->  }
->
-> +static int __init
-> +acpi_parse_its_affinity(struct acpi_subtable_header *header,
-> +                        const unsigned long end)
-> +{
-> +       struct acpi_srat_its_affinity *its_affinity;
-> +
-> +       its_affinity =3D (struct acpi_srat_its_affinity *)header;
-> +       if (!its_affinity)
-> +               return -EINVAL;
-> +
-> +       acpi_table_print_srat_entry(header);
-> +
-> +       /* let architecture-dependent part to do it */
-> +       acpi_numa_its_affinity_init(its_affinity);
-> +
-> +       return 0;
-> +}
-> +
->  static int __initdata parsed_numa_memblks;
->
->  static int __init
-> @@ -445,7 +473,7 @@ int __init acpi_numa_init(void)
->
->         /* SRAT: Static Resource Affinity Table */
->         if (!acpi_table_parse(ACPI_SIG_SRAT, acpi_parse_srat)) {
-> -               struct acpi_subtable_proc srat_proc[3];
-> +               struct acpi_subtable_proc srat_proc[4];
->
->                 memset(srat_proc, 0, sizeof(srat_proc));
->                 srat_proc[0].id =3D ACPI_SRAT_TYPE_CPU_AFFINITY;
-> @@ -454,6 +482,8 @@ int __init acpi_numa_init(void)
->                 srat_proc[1].handler =3D acpi_parse_x2apic_affinity;
->                 srat_proc[2].id =3D ACPI_SRAT_TYPE_GICC_AFFINITY;
->                 srat_proc[2].handler =3D acpi_parse_gicc_affinity;
-> +               srat_proc[3].id =3D ACPI_SRAT_TYPE_GIC_ITS_AFFINITY;
-> +               srat_proc[3].handler =3D acpi_parse_its_affinity;
->
->                 acpi_table_parse_entries_array(ACPI_SIG_SRAT,
->                                         sizeof(struct acpi_table_srat),
-> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v=
-3-its.c
-> index 45ea1933..84936da 100644
-> --- a/drivers/irqchip/irq-gic-v3-its.c
-> +++ b/drivers/irqchip/irq-gic-v3-its.c
-> @@ -1861,7 +1861,8 @@ static int __init gic_acpi_parse_madt_its(struct ac=
-pi_subtable_header *header,
->                 goto dom_err;
->         }
->
-> -       err =3D its_probe_one(&res, dom_handle, NUMA_NO_NODE);
-> +       err =3D its_probe_one(&res, dom_handle,
-> +                       acpi_numa_get_its_nid(its_entry->translation_id));
->         if (!err)
->                 return 0;
->
-> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-> index 137e4a3..e5e8ae3 100644
-> --- a/include/linux/acpi.h
-> +++ b/include/linux/acpi.h
-> @@ -260,9 +260,12 @@ int acpi_table_parse_madt(enum acpi_madt_type id,
->
->  #ifdef CONFIG_ARM64
->  void acpi_numa_gicc_affinity_init(struct acpi_srat_gicc_affinity *pa);
-> +void acpi_numa_its_affinity_init(struct acpi_srat_its_affinity *pa);
->  #else
->  static inline void
->  acpi_numa_gicc_affinity_init(struct acpi_srat_gicc_affinity *pa) { }
-> +static inline void
-> +acpi_numa_its_affinity_init(struct acpi_srat_its_affinity *pa) { }
->  #endif
->
->  int acpi_numa_memory_affinity_init (struct acpi_srat_mem_affinity *ma);
-> --
-> 1.8.1.4
->
+>  drivers/acpi/acpica/dsutils.c | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
+> =
 
---===============3678128265002095784==--
+> diff --git a/drivers/acpi/acpica/dsutils.c
+> b/drivers/acpi/acpica/dsutils.c index 406edec20de7..b66eddd3df6e 100644
+> --- a/drivers/acpi/acpica/dsutils.c
+> +++ b/drivers/acpi/acpica/dsutils.c
+> @@ -636,11 +636,10 @@ acpi_ds_create_operand(struct acpi_walk_state
+> *walk_state,
+>  			ACPI_DEBUG_PRINT((ACPI_DB_DISPATCH,
+>  					  "Argument previously created, already
+> stacked\n"));
+> =
+
+> -			acpi_db_display_argument_object(walk_state->
+> -							operands[walk_state->
+> -								 num_operands -
+> -								 1],
+> -							walk_state);
+> +			if (walk_state->num_operands)
+> +				acpi_db_display_argument_object(walk_state->
+> +					operands[walk_state->num_operands - 1],
+> +					walk_state);
+> =
+
+>  			/*
+>  			 * Use value that was already previously returned
+> --
+> 2.11.0
+
+
+--===============0870920076748774270==--
 
