@@ -1,202 +1,36 @@
-Content-Type: multipart/mixed; boundary="===============3006818342020502955=="
+Content-Type: multipart/mixed; boundary="===============0724877292800851673=="
 MIME-Version: 1.0
-From: Lorenzo Pieralisi <lorenzo.pieralisi at arm.com>
-Subject: Re: [Devel] [RFCv2 2/2] iommu/arm-smmu-v3:Enable ACPI based HiSilicon
- erratum 161010801
-Date: Wed, 07 Jun 2017 18:16:18 +0100
-Message-ID: <20170607171618.GC7937@red-moon>
-In-Reply-To: 5FC3163CFD30C246ABAA99954A238FA838362082@FRAEML521-MBX.china.huawei.com
+From: Seraphime Kirkovski <kirkseraph at gmail.com>
+Subject: Re: [Devel] [PATCH] acpi:  acpica:  dsutils: fixanoff-by-one index
+Date: Wed, 07 Jun 2017 19:18:14 +0200
+Message-ID: <20170607171814.zjvrikbjonp5n3gd@macchiaveli>
+In-Reply-To: 94F2FBAB4432B54E8AACC7DFDE6C92E37E5BF38C@ORSMSX110.amr.corp.intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3006818342020502955==
+--===============0724877292800851673==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jun 06, 2017 at 03:01:36PM +0000, Shameerali Kolothum Thodi wrote:
-> Hi Lorenzo,
+On Wed, Jun 07, 2017 at 03:14:46PM +0000, Moore, Robert wrote:
+> I believe that the rationale for this is that at that point in the code, =
+it is *guaranteed* that there is at least one operand; therefore the -1 wou=
+ld always be valid.
+>
+> In the end, we just deleted that call to =
+
+> acpi_db_display_argument_object.
 > =
 
-> > -----Original Message-----
-> > From: Lorenzo Pieralisi [mailto:lorenzo.pieralisi(a)arm.com]
-> > Sent: Tuesday, June 06, 2017 2:56 PM
-> > To: Shameerali Kolothum Thodi
-> > Cc: marc.zyngier(a)arm.com; sudeep.holla(a)arm.com; will.deacon(a)arm.c=
-om;
-> > robin.murphy(a)arm.com; hanjun.guo(a)linaro.org; Gabriele Paoloni; John
-> > Garry; iommu(a)lists.linux-foundation.org; linux-arm-
-> > kernel(a)lists.infradead.org; linux-acpi(a)vger.kernel.org; devel(a)acp=
-ica.org;
-> > Linuxarm; Wangzhou (B); Guohanjun (Hanjun Guo)
-> > Subject: Re: [RFCv2 2/2] iommu/arm-smmu-v3:Enable ACPI based HiSilicon
-> > erratum 161010801
-> > =
-
-> > On Wed, May 31, 2017 at 03:32:13PM +0100, shameer wrote:
-> > > The HiSilicon erratum 161010801 describes the limitation of HiSilicon
-> > > platforms Hip06/Hip07 to support the SMMU mappings for MSI
-> > transactions.
-> > >
-> > > On these platforms GICv3 ITS translator is presented with the deviceID
-> > > by extending the MSI payload data to 64 bits to include the deviceID.
-> > > Hence, the PCIe controller on this platforms has to differentiate the
-> > > MSI payload against other DMA payload and has to modify the MSI
-> > payload.
-> > > This basically makes it difficult for this platforms to have a SMMU
-> > > translation for MSI.
-> > >
-> > > This patch implements a ACPI table based quirk to reserve the hw msi
-> > > regions in the smmu-v3 driver which means these address regions will
-> > > not be translated and will be excluded from iova allocations.
-> > >
-> > > The HW ITS address region associated with the dev is retrieved using a
-> > > new helper function added in the IORT code.
-> > =
-
-> > Remove or rephrase last paragraph, it reads as if you are adding an IORT
-> > helper function in this patch but you actually aren't.
+> I don't know if this change has made it into Linux yet.
 > =
 
-> Thanks for going through this patch series. I will remove this in next ve=
-rsion.
-> =
+The latest rc actually produces the UBSAN splat in my previous message.
+So I suppose, I have some buggy hardware/firmware.
 
-> > > Signed-off-by: shameer <shameerali.kolothum.thodi(a)huawei.com>
-> > > ---
-> > >  drivers/iommu/arm-smmu-v3.c | 49
-> > > ++++++++++++++++++++++++++++++++++++++++++---
-> > >  1 file changed, 46 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/drivers/iommu/arm-smmu-v3.c b/drivers/iommu/arm-smmu-
-> > v3.c
-> > > index abe4b88..3767526 100644
-> > > --- a/drivers/iommu/arm-smmu-v3.c
-> > > +++ b/drivers/iommu/arm-smmu-v3.c
-> > > @@ -597,6 +597,7 @@ struct arm_smmu_device {
-> > >  	u32				features;
-> > >
-> > >  #define ARM_SMMU_OPT_SKIP_PREFETCH	(1 << 0)
-> > > +#define ARM_SMMU_OPT_RESV_HW_MSI	(1 << 1)
-> > >  	u32				options;
-> > >
-> > >  	struct arm_smmu_cmdq		cmdq;
-> > > @@ -1755,6 +1756,38 @@ static bool arm_smmu_sid_in_range(struct
-> > > arm_smmu_device *smmu, u32 sid)
-> > >
-> > >  static struct iommu_ops arm_smmu_ops;
-> > >
-> > > +#ifdef CONFIG_ACPI
-> > > +static struct iommu_resv_region *arm_smmu_acpi_alloc_hw_msi(struct
-> > > +device *dev) {
-> > > +	struct iommu_resv_region *region;
-> > > +	struct	irq_domain *irq_dom;
-> > > +	int prot =3D IOMMU_WRITE | IOMMU_NOEXEC | IOMMU_MMIO;
-> > > +	u64	base;
-> > =
+Thanks,
+Seraph
 
-> > phys_addr_t
-> =
-
-> Ok.
-> =
-
-> > > +	irq_dom =3D pci_msi_get_device_domain(to_pci_dev(dev));
-> > > +	if (irq_dom) {
-> > > +		int	ret;
-> > > +		u32	rid;
-> > > +
-> > > +		rid =3D pci_msi_domain_get_msi_rid(irq_dom,
-> > to_pci_dev(dev));
-> > > +		ret =3D iort_dev_find_its_base(dev, rid, 0, &base);
-> > =
-
-> > Well, here we use ITS id 0 which is fine as long as code in IORT uses t=
-he same
-> > policy for getting the irq_domain (ie we want to reserve the ITS address
-> > space that is actually used by the device to send IRQs not a a differen=
-t one) it
-> > is just a heads-up because I find this confusing.
-> =
-
-> Ok. Just to make it clear, 0 is the index into the ITS identifier list.
-> I noted that iort_get_device_domain() uses index 0 while retrieving the I=
-TS identifier.
-> May be use the same approach here as well? ie, remove the index from func=
-tion call?
-> =
-
-> I am not sure, how we can get the index info  though theoretically It is =
-possible for
-> the ITS group node having multiple ITSs.
-
-Yes, it would be ideal to avoid the look-up through the ITS index and
-just reuse the ITS node associated with the MSI domain because I do not
-want this quirk to force the ITS domain allocation policy (what I mean
-I do not want to be tied to index 0 if for any reason we change
-the allocation in IORT for normal ITS<->device mapping).
-
-I will have a further look to see if we can improve the code to
-this extent.
-
-> > > +		if (!ret) {
-> > > +			dev_info(dev, "SMMUv3:HW MSI resv addr
-> > 0x%pa\n", &base);
-> > > +			region =3D iommu_alloc_resv_region(base, SZ_128K,
-> > > +							 prot,
-> > IOMMU_RESV_MSI);
-> > > +			return region;
-> > > +		}
-> > > +	}
-> > > +
-> > > +	return NULL;
-> > > +}
-> > > +#else
-> > > +static struct iommu_resv_region *arm_smmu_acpi_alloc_hw_msi(struct
-> > > +device *dev) {
-> > > +	return NULL;
-> > > +}
-> > > +#endif
-> > > +
-> > >  static int arm_smmu_add_device(struct device *dev)  {
-> > >  	int i, ret;
-> > > @@ -1903,11 +1936,20 @@ static int arm_smmu_of_xlate(struct device
-> > > *dev, struct of_phandle_args *args)  static void
-> > arm_smmu_get_resv_regions(struct device *dev,
-> > >  				      struct list_head *head)
-> > >  {
-> > > -	struct iommu_resv_region *region;
-> > > +	struct iommu_fwspec *fwspec =3D dev->iommu_fwspec;
-> > > +	struct iommu_resv_region *region =3D NULL;
-> > >  	int prot =3D IOMMU_WRITE | IOMMU_NOEXEC | IOMMU_MMIO;
-> > > +	struct arm_smmu_device *smmu;
-> > > +
-> > > +	smmu =3D arm_smmu_get_by_fwnode(fwspec->iommu_fwnode);
-> > >
-> > > -	region =3D iommu_alloc_resv_region(MSI_IOVA_BASE,
-> > MSI_IOVA_LENGTH,
-> > > -					 prot, IOMMU_RESV_SW_MSI);
-> > > +	if (smmu && (smmu->options & ARM_SMMU_OPT_RESV_HW_MSI)
-> > &&
-> > > +		      dev_is_pci(dev))
-> > > +		region =3D arm_smmu_acpi_alloc_hw_msi(dev);
-> > =
-
-> > Is it safe to carry on if arm_smmu_acpi_alloc_hw_msi() returns NULL her=
-e ?
-> =
-
-> It is just that PCIe devices won't be functional on this platforms as the=
- endpoint will =
-
-> be configured with ITS IOVA address. May be I should add some dev_warn() =
-here.
-
-Well yes and also I am not sure that if arm_smmu_acpi_alloc_hw_msi()
-fails you should allocate the SW_MSI region I am not sure I understand
-the logic, so you should add a warning and just return on failure right ?
-
-Lorenzo
-
---===============3006818342020502955==--
+--===============0724877292800851673==--
 
