@@ -1,75 +1,81 @@
-Content-Type: multipart/mixed; boundary="===============1533896309156319981=="
+Content-Type: multipart/mixed; boundary="===============0043458419586657768=="
 MIME-Version: 1.0
-From: Lorenzo Pieralisi <lorenzo.pieralisi at arm.com>
-Subject: Re: [Devel] [PATCH v7 1/3] ACPI/IORT: Fixup SMMUv3 resource size for
- Cavium ThunderX2 SMMUv3 model
-Date: Thu, 08 Jun 2017 09:58:58 +0100
-Message-ID: <20170608085857.GB8607@red-moon>
-In-Reply-To: 1496145821-3411-2-git-send-email-gakula@caviumnetworks.com
+From: Shameerali Kolothum Thodi <shameerali.kolothum.thodi at huawei.com>
+Subject: Re: [Devel] [RFCv2 2/2] iommu/arm-smmu-v3:Enable ACPI based HiSilicon
+ erratum 161010801
+Date: Thu, 08 Jun 2017 09:09:28 +0000
+Message-ID: <5FC3163CFD30C246ABAA99954A238FA838363D5D@FRAEML521-MBX.china.huawei.com>
+In-Reply-To: 20170608084851.GA8607@red-moon
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1533896309156319981==
+--===============0043458419586657768==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, May 30, 2017 at 05:33:39PM +0530, Geetha sowjanya wrote:
-> From: Linu Cherian <linu.cherian(a)cavium.com>
+
+
+> -----Original Message-----
+> From: Lorenzo Pieralisi [mailto:lorenzo.pieralisi(a)arm.com]
+> Sent: Thursday, June 08, 2017 9:49 AM
+> To: Shameerali Kolothum Thodi
+> Cc: marc.zyngier(a)arm.com; sudeep.holla(a)arm.com; will.deacon(a)arm.com;
+> robin.murphy(a)arm.com; hanjun.guo(a)linaro.org; Gabriele Paoloni; John
+> Garry; iommu(a)lists.linux-foundation.org; linux-arm-
+> kernel(a)lists.infradead.org; linux-acpi(a)vger.kernel.org; devel(a)acpic=
+a.org;
+> Linuxarm; Wangzhou (B); Guohanjun (Hanjun Guo)
+> Subject: Re: [RFCv2 2/2] iommu/arm-smmu-v3:Enable ACPI based HiSilicon
+> erratum 161010801
 > =
 
-> Cavium ThunderX2 implementation doesn't support second page in SMMU
-> register space. Hence, resource size is set as 64k for this model.
+> On Tue, Jun 06, 2017 at 03:01:36PM +0000, Shameerali Kolothum Thodi
+> wrote:
 > =
 
-> Signed-off-by: Linu Cherian <linu.cherian(a)cavium.com>
-> Signed-off-by: Geetha Sowjanya <geethasowjanya.akula(a)cavium.com>
-> ---
->  drivers/acpi/arm64/iort.c |   10 +++++++++-
->  1 files changed, 9 insertions(+), 1 deletions(-)
+> [...]
 > =
 
-> diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
-> index c5fecf9..bba2b59 100644
-> --- a/drivers/acpi/arm64/iort.c
-> +++ b/drivers/acpi/arm64/iort.c
-> @@ -833,12 +833,20 @@ static void __init arm_smmu_v3_init_resources(struc=
-t resource *res,
->  {
->  	struct acpi_iort_smmu_v3 *smmu;
->  	int num_res =3D 0;
-> +	unsigned long size =3D SZ_128K;
->  =
+> > > > +	irq_dom =3D pci_msi_get_device_domain(to_pci_dev(dev));
+> > > > +	if (irq_dom) {
+> > > > +		int	ret;
+> > > > +		u32	rid;
+> > > > +
+> > > > +		rid =3D pci_msi_domain_get_msi_rid(irq_dom,
+> > > to_pci_dev(dev));
+> > > > +		ret =3D iort_dev_find_its_base(dev, rid, 0, &base);
+> > >
+> > > Well, here we use ITS id 0 which is fine as long as code in IORT
+> > > uses the same policy for getting the irq_domain (ie we want to
+> > > reserve the ITS address space that is actually used by the device to
+> > > send IRQs not a a different one) it is just a heads-up because I find=
+ this
+> confusing.
+> >
+> > Ok. Just to make it clear, 0 is the index into the ITS identifier
+> > list.  I noted that iort_get_device_domain() uses index 0 while
+> > retrieving the ITS identifier.  May be use the same approach here as
+> > well? ie, remove the index from function call?
+> >
+> > I am not sure, how we can get the index info  though theoretically It
+> > is possible for the ITS group node having multiple ITSs.
+> =
 
->  	/* Retrieve SMMUv3 specific data */
->  	smmu =3D (struct acpi_iort_smmu_v3 *)node->node_data;
->  =
+> Actually I think it would make sense to reserve ALL ITS regions a device =
+may
+> be mapped to instead of just index 0 (ie in your case it is equivalent); =
+this
+> leaves us some leeway as to choose which ITS the device will be actually
+> mapped to and this code does not have to care.
 
-> +	/*
-> +	 * Override the size, for Cavium ThunderX2 implementation
-> +	 * which doesn't support the page 1 SMMU register space.
-> +	 */
-> +	if (smmu->model =3D=3D ACPI_IORT_SMMU_CAVIUM_CN99XX)
-> +		size =3D SZ_64K;
+Ok. That make sense. Just a quick one, is it ok to add another helper funct=
+ion in
+iort code to retrieve the its->its_count then? =
 
-Nit: add a function, say arm_smmu_v3_resource_size() with the logic
-above that by default returns SZ_128K, I do not like this switch
-in the middle of this function.
 
-Lorenzo
+Thanks,
+Shameer
 
-> +
->  	res[num_res].start =3D smmu->base_address;
-> -	res[num_res].end =3D smmu->base_address + SZ_128K - 1;
-> +	res[num_res].end =3D smmu->base_address + size - 1;
->  	res[num_res].flags =3D IORESOURCE_MEM;
->  =
-
->  	num_res++;
-> -- =
-
-> 1.7.1
->=20
-
---===============1533896309156319981==--
+--===============0043458419586657768==--
 
