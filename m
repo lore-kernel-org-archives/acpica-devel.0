@@ -1,96 +1,108 @@
-Content-Type: multipart/mixed; boundary="===============0792513079456738607=="
+Content-Type: multipart/mixed; boundary="===============0176038637481716353=="
 MIME-Version: 1.0
-From: Ganapatrao Kulkarni <gpkulkarni at gmail.com>
-Subject: Re: [Devel] [PATCH] iasl: Update to IORT SMMUv3 disassembling
-Date: Fri, 09 Jun 2017 07:47:29 +0530
-Message-ID: <CAFpQJXV9zxZ8zSM4m-8AKikk+z5-_KnvBqrEb+M6DVR-1LfvaQ@mail.gmail.com>
-In-Reply-To: 1496723245-17465-1-git-send-email-ganapatrao.kulkarni@cavium.com
+From: Zheng, Lv <lv.zheng at intel.com>
+Subject: Re: [Devel] [PATCH] ACPICA: Remove unnecessary call to debugger
+Date: Fri, 09 Jun 2017 02:56:56 +0000
+Message-ID: <1AE640813FDE7649BE1B193DEA596E886CECBCD5@SHSMSX101.ccr.corp.intel.com>
+In-Reply-To: 20170609013351.fvpuwqcxw2jxp2dv@angband.pl
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0792513079456738607==
+--===============0176038637481716353==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi Lv, Robert,
+Hi,
 
-can you please pull in this patch, if there are no comments?
+> From: Adam Borowski [mailto:kilobyte(a)angband.pl]
+> Subject: Re: [PATCH] ACPICA: Remove unnecessary call to debugger
+> =
 
-On Tue, Jun 6, 2017 at 9:57 AM, Ganapatrao Kulkarni
-<ganapatrao.kulkarni(a)cavium.com> wrote:
-> ARM IORT specification has provision to define Proximity domain
-> in SMMUv3 IORT table. Adding required changes to decode
-> Proximity domain of SMMUv3 IORT table.
->
-> Signed-off-by: Ganapatrao Kulkarni <ganapatrao.kulkarni(a)cavium.com>
-> ---
->  source/common/dmtbinfo.c | 2 ++
->  source/include/actbl2.h  | 4 ++++
->  2 files changed, 6 insertions(+)
->
-> diff --git a/source/common/dmtbinfo.c b/source/common/dmtbinfo.c
-> index 692763f..f9c48e4 100644
-> --- a/source/common/dmtbinfo.c
-> +++ b/source/common/dmtbinfo.c
-> @@ -1838,6 +1838,7 @@ ACPI_DMTABLE_INFO           AcpiDmTableInfoIort4[] =
-=3D
->      {ACPI_DMT_UINT32,   ACPI_IORT4_OFFSET (Flags),                  "Fla=
-gs (decoded below)", 0},
->      {ACPI_DMT_FLAG0,    ACPI_IORT4_FLAG_OFFSET (Flags, 0),          "COH=
-ACC Override", 0},
->      {ACPI_DMT_FLAG1,    ACPI_IORT4_FLAG_OFFSET (Flags, 0),          "HTT=
-U Override", 0},
-> +    {ACPI_DMT_FLAG3,    ACPI_IORT4_FLAG_OFFSET (Flags, 0),          "Pro=
-ximity Valid", 0},
->      {ACPI_DMT_UINT32,   ACPI_IORT4_OFFSET (Reserved),               "Res=
-erved", 0},
->      {ACPI_DMT_UINT64,   ACPI_IORT4_OFFSET (VatosAddress),           "VAT=
-OS Address", 0},
->      {ACPI_DMT_UINT32,   ACPI_IORT4_OFFSET (Model),                  "Mod=
-el", 0},
-> @@ -1845,6 +1846,7 @@ ACPI_DMTABLE_INFO           AcpiDmTableInfoIort4[] =
-=3D
->      {ACPI_DMT_UINT32,   ACPI_IORT4_OFFSET (PriGsiv),                "PRI=
- GSIV", 0},
->      {ACPI_DMT_UINT32,   ACPI_IORT4_OFFSET (GerrGsiv),               "GER=
-R GSIV", 0},
->      {ACPI_DMT_UINT32,   ACPI_IORT4_OFFSET (SyncGsiv),               "Syn=
-c GSIV", 0},
-> +    {ACPI_DMT_UINT8,   ACPI_IORT4_OFFSET (Pxm),                     "Pro=
-ximity", 0},
->      ACPI_DMT_TERMINATOR
->  };
->
-> diff --git a/source/include/actbl2.h b/source/include/actbl2.h
-> index 80495d8..2583863 100644
-> --- a/source/include/actbl2.h
-> +++ b/source/include/actbl2.h
-> @@ -1041,6 +1041,9 @@ typedef struct acpi_iort_smmu_v3
->      UINT32                  PriGsiv;
->      UINT32                  GerrGsiv;
->      UINT32                  SyncGsiv;
-> +    UINT8                   Pxm;
-> +    UINT8                   Reserved1;
-> +    UINT16                  Reserved2;
->
->  } ACPI_IORT_SMMU_V3;
->
-> @@ -1048,6 +1051,7 @@ typedef struct acpi_iort_smmu_v3
->
->  #define ACPI_IORT_SMMU_V3_COHACC_OVERRIDE   (1)
->  #define ACPI_IORT_SMMU_V3_HTTU_OVERRIDE     (1<<1)
-> +#define ACPI_IORT_SMMU_V3_PXM               (1<<3)
->
->
->  /***********************************************************************=
-********
+> On Fri, Jun 09, 2017 at 01:18:25AM +0000, Zheng, Lv wrote:
+> > > Subject: [PATCH] ACPICA: Remove unnecessary call to debugger
+> > >
+> > > This is a port of https://github.com/acpica/acpica/commit/eaa455ac by
+> > > Robert Moore to the kernel:
+> > >
+> > > > This call was simply wrong, and resulted in a -1 index into the ope=
+rand
+> > > > stack.
+> > >
+> > > Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=3D120351
+> > > Signed-off-by: Adam Borowski <kilobyte(a)angband.pl>
+> >
+> > I think my first fix also worked and your test on bug 120351 was wrong.
+> > I just added comment a moment ago.
+> >
+> > However I just pushed the removal of the wrong debugging statement fix =
+to the upstream.
+> > It's really redundant, you need to enable the log and check them.
+> >
+> > The patch has already been sent here:
+> > https://patchwork.kernel.org/patch/9765837/
+> > So you don't have to send it again.
+> =
+
+> Date: June 5, and it's not even in next-20170608 yet, so I obviously didn=
+'t
+> see you applying the fix (it seemed stalled since Apr 4).  If it's already
+> on the way, that's good.
+
+Yes, ACPICA release was frozen, waiting for spec 6.2 release.
+
+> =
+
+> However, it is not redundant: without this removal, I see the UBSAN error
+> (at least in current mainline).
+
+We have different meaning of redundant. :)
+
+I mean:
+I managed to enable the debugging log, and it always dumps things in this w=
+ay:
+ ArgObj: 00ADA610 Integer 0000000000000000
+ ArgObj: 00ADA4F0 Integer 00000000FFFF00FF
+ ArgObj: 00ADA4F0 Integer 00000000FFFF00FF <=3D redundant log generated by =
+this line
+ ArgObj: 00ADA580 Integer 0000000000000000
+ ResultObj: 00ADA710 Integer 0000000000000000
+In theory, AcpiDbDisplayArgumentObject() should be invoked for each AcpiDsO=
+bjStackPush().
+There are only 2 AcpiDsObjStackPush() invocations.
+Both of them have already been paired with AcpiDbDisplayArgumentObject() in=
+ AcpiDsCreateOperand().
+
+This isolated AcpiDbDisplayArgumentObject() tries to find back missing stac=
+ked object debugging information.
+			ACPI_DEBUG_PRINT((ACPI_DB_DISPATCH,
+ 					  "Argument previously created, already stacked\n"));
+However there won't be such a missing object as all operands are created vi=
+a AcpiDsCreateOperand().
+Finally this invocation only generates above redundant debugging logs.
+
+Cheers,
+Lv
+
+> =
+
+> Whether an alternate fix would be enough is another question.  You guys k=
+now
+> more about the issue, all I know is whether I see warnings spewed into my
+> dmesg :)
+> =
+
+> =
+
+> Meow!
 > --
-> 1.8.1.4
->
+> =E2=A2=80=E2=A3=B4=E2=A0=BE=E2=A0=BB=E2=A2=B6=E2=A3=A6=E2=A0=80 A tit a d=
+ay keeps the vet away.
+> =E2=A3=BE=E2=A0=81=E2=A2=B0=E2=A0=92=E2=A0=80=E2=A3=BF=E2=A1=81
+> =E2=A2=BF=E2=A1=84=E2=A0=98=E2=A0=B7=E2=A0=9A=E2=A0=8B=E2=A0=80 (Rejoice =
+as my small-animal-murder-machine got unbroken after
+> =E2=A0=88=E2=A0=B3=E2=A3=84=E2=A0=80=E2=A0=80=E2=A0=80=E2=A0=80 nearly tw=
+o years of no catch!)
 
-thanks
-Ganapat
-
---===============0792513079456738607==--
+--===============0176038637481716353==--
 
