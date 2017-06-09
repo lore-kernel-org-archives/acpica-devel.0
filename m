@@ -1,98 +1,96 @@
-Content-Type: multipart/mixed; boundary="===============4643564750944021434=="
+Content-Type: multipart/mixed; boundary="===============0792513079456738607=="
 MIME-Version: 1.0
-From: Zheng, Lv <lv.zheng at intel.com>
-Subject: Re: [Devel] [PATCH] ACPICA: Remove unnecessary call to debugger
-Date: Fri, 09 Jun 2017 01:18:25 +0000
-Message-ID: <1AE640813FDE7649BE1B193DEA596E886CECBBA1@SHSMSX101.ccr.corp.intel.com>
-In-Reply-To: 20170608213106.11982-1-kilobyte@angband.pl
+From: Ganapatrao Kulkarni <gpkulkarni at gmail.com>
+Subject: Re: [Devel] [PATCH] iasl: Update to IORT SMMUv3 disassembling
+Date: Fri, 09 Jun 2017 07:47:29 +0530
+Message-ID: <CAFpQJXV9zxZ8zSM4m-8AKikk+z5-_KnvBqrEb+M6DVR-1LfvaQ@mail.gmail.com>
+In-Reply-To: 1496723245-17465-1-git-send-email-ganapatrao.kulkarni@cavium.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4643564750944021434==
+--===============0792513079456738607==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi, Adam
+Hi Lv, Robert,
 
-> From: linux-acpi-owner(a)vger.kernel.org [mailto:linux-acpi-owner(a)vger.=
-kernel.org] On Behalf Of Adam
-> Borowski
-> Sent: Friday, June 9, 2017 5:31 AM
-> To: Moore, Robert <robert.moore(a)intel.com>; Zheng, Lv <lv.zheng(a)intel=
-.com>; Wysocki, Rafael J
-> <rafael.j.wysocki(a)intel.com>; Len Brown <lenb(a)kernel.org>; linux-acpi=
-(a)vger.kernel.org;
-> devel(a)acpica.org
-> Cc: Adam Borowski <kilobyte(a)angband.pl>
-> Subject: [PATCH] ACPICA: Remove unnecessary call to debugger
-> =
+can you please pull in this patch, if there are no comments?
 
-> This is a port of https://github.com/acpica/acpica/commit/eaa455ac by
-> Robert Moore to the kernel:
-> =
-
-> > This call was simply wrong, and resulted in a -1 index into the operand
-> > stack.
-> =
-
-> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=3D120351
-> Signed-off-by: Adam Borowski <kilobyte(a)angband.pl>
-
-I think my first fix also worked and your test on bug 120351 was wrong.
-I just added comment a moment ago.
-
-However I just pushed the removal of the wrong debugging statement fix to t=
-he upstream.
-It's really redundant, you need to enable the log and check them.
-
-The patch has already been sent here:
-https://patchwork.kernel.org/patch/9765837/
-So you don't have to send it again.
-
-Thanks
-Lv
-
-> You guys fixed this in your tool months ago, but it's still unfixed in the
-> kernel.  Let's apply that patch, then.  The coding styles differ so much =
-the
-> patch is hardly recognizable, but it's a direct port.
-> =
-
->  drivers/acpi/acpica/dsutils.c | 9 ---------
->  1 file changed, 9 deletions(-)
-> =
-
-> diff --git a/drivers/acpi/acpica/dsutils.c b/drivers/acpi/acpica/dsutils.c
-> index 406edec20de7..0dabd9b95684 100644
-> --- a/drivers/acpi/acpica/dsutils.c
-> +++ b/drivers/acpi/acpica/dsutils.c
-> @@ -633,15 +633,6 @@ acpi_ds_create_operand(struct acpi_walk_state *walk_=
-state,
-> =
-
->  		if ((op_info->flags & AML_HAS_RETVAL) ||
->  		    (arg->common.flags & ACPI_PARSEOP_IN_STACK)) {
-> -			ACPI_DEBUG_PRINT((ACPI_DB_DISPATCH,
-> -					  "Argument previously created, already stacked\n"));
-> -
-> -			acpi_db_display_argument_object(walk_state->
-> -							operands[walk_state->
-> -								 num_operands -
-> -								 1],
-> -							walk_state);
-> -
->  			/*
->  			 * Use value that was already previously returned
->  			 * by the evaluation of this argument
+On Tue, Jun 6, 2017 at 9:57 AM, Ganapatrao Kulkarni
+<ganapatrao.kulkarni(a)cavium.com> wrote:
+> ARM IORT specification has provision to define Proximity domain
+> in SMMUv3 IORT table. Adding required changes to decode
+> Proximity domain of SMMUv3 IORT table.
+>
+> Signed-off-by: Ganapatrao Kulkarni <ganapatrao.kulkarni(a)cavium.com>
+> ---
+>  source/common/dmtbinfo.c | 2 ++
+>  source/include/actbl2.h  | 4 ++++
+>  2 files changed, 6 insertions(+)
+>
+> diff --git a/source/common/dmtbinfo.c b/source/common/dmtbinfo.c
+> index 692763f..f9c48e4 100644
+> --- a/source/common/dmtbinfo.c
+> +++ b/source/common/dmtbinfo.c
+> @@ -1838,6 +1838,7 @@ ACPI_DMTABLE_INFO           AcpiDmTableInfoIort4[] =
+=3D
+>      {ACPI_DMT_UINT32,   ACPI_IORT4_OFFSET (Flags),                  "Fla=
+gs (decoded below)", 0},
+>      {ACPI_DMT_FLAG0,    ACPI_IORT4_FLAG_OFFSET (Flags, 0),          "COH=
+ACC Override", 0},
+>      {ACPI_DMT_FLAG1,    ACPI_IORT4_FLAG_OFFSET (Flags, 0),          "HTT=
+U Override", 0},
+> +    {ACPI_DMT_FLAG3,    ACPI_IORT4_FLAG_OFFSET (Flags, 0),          "Pro=
+ximity Valid", 0},
+>      {ACPI_DMT_UINT32,   ACPI_IORT4_OFFSET (Reserved),               "Res=
+erved", 0},
+>      {ACPI_DMT_UINT64,   ACPI_IORT4_OFFSET (VatosAddress),           "VAT=
+OS Address", 0},
+>      {ACPI_DMT_UINT32,   ACPI_IORT4_OFFSET (Model),                  "Mod=
+el", 0},
+> @@ -1845,6 +1846,7 @@ ACPI_DMTABLE_INFO           AcpiDmTableInfoIort4[] =
+=3D
+>      {ACPI_DMT_UINT32,   ACPI_IORT4_OFFSET (PriGsiv),                "PRI=
+ GSIV", 0},
+>      {ACPI_DMT_UINT32,   ACPI_IORT4_OFFSET (GerrGsiv),               "GER=
+R GSIV", 0},
+>      {ACPI_DMT_UINT32,   ACPI_IORT4_OFFSET (SyncGsiv),               "Syn=
+c GSIV", 0},
+> +    {ACPI_DMT_UINT8,   ACPI_IORT4_OFFSET (Pxm),                     "Pro=
+ximity", 0},
+>      ACPI_DMT_TERMINATOR
+>  };
+>
+> diff --git a/source/include/actbl2.h b/source/include/actbl2.h
+> index 80495d8..2583863 100644
+> --- a/source/include/actbl2.h
+> +++ b/source/include/actbl2.h
+> @@ -1041,6 +1041,9 @@ typedef struct acpi_iort_smmu_v3
+>      UINT32                  PriGsiv;
+>      UINT32                  GerrGsiv;
+>      UINT32                  SyncGsiv;
+> +    UINT8                   Pxm;
+> +    UINT8                   Reserved1;
+> +    UINT16                  Reserved2;
+>
+>  } ACPI_IORT_SMMU_V3;
+>
+> @@ -1048,6 +1051,7 @@ typedef struct acpi_iort_smmu_v3
+>
+>  #define ACPI_IORT_SMMU_V3_COHACC_OVERRIDE   (1)
+>  #define ACPI_IORT_SMMU_V3_HTTU_OVERRIDE     (1<<1)
+> +#define ACPI_IORT_SMMU_V3_PXM               (1<<3)
+>
+>
+>  /***********************************************************************=
+********
 > --
-> 2.11.0
-> =
+> 1.8.1.4
+>
 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-acpi" in
-> the body of a message to majordomo(a)vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+thanks
+Ganapat
 
---===============4643564750944021434==--
+--===============0792513079456738607==--
 
