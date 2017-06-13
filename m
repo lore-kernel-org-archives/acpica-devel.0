@@ -1,308 +1,70 @@
-Content-Type: multipart/mixed; boundary="===============0429201878300476494=="
+Content-Type: multipart/mixed; boundary="===============4350502166080610656=="
 MIME-Version: 1.0
 From: Lorenzo Pieralisi <lorenzo.pieralisi at arm.com>
-Subject: Re: [Devel] [PATCH 2/2] acpi, gicv3-its,
- numa: Adding numa node mapping for gic-its units
-Date: Mon, 12 Jun 2017 11:53:35 +0100
-Message-ID: <20170612105335.GA30594@red-moon>
-In-Reply-To: 1496753787-27735-3-git-send-email-ganapatrao.kulkarni@cavium.com
+Subject: Re: [Devel] [PATCH v7 0/3] Cavium ThunderX2 SMMUv3 errata workarounds
+Date: Tue, 13 Jun 2017 12:51:10 +0100
+Message-ID: <20170613115110.GA2868@red-moon>
+In-Reply-To: CAJZ5v0gnjxwBXEQ--u6Sbviks74MXLFWTfN+J90cdDZbO2Q7+w@mail.gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0429201878300476494==
+--===============4350502166080610656==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jun 06, 2017 at 06:26:27PM +0530, Ganapatrao Kulkarni wrote:
-> Add code to parse SRAT ITS Affinity sub table as defined in ACPI 6.2
-> Later in driver probe, its devices are mapped to numa node
+Hi Rafael, Lv,
 
-Nit: Capitalize "its".
-
-> using its id to proximity domain mapping.
-
-Ditto.
-
-> Signed-off-by: Ganapatrao Kulkarni <ganapatrao.kulkarni(a)cavium.com>
-> ---
->  arch/arm64/include/asm/acpi.h    |  2 ++
->  arch/arm64/kernel/acpi_numa.c    | 59 ++++++++++++++++++++++++++++++++++=
-++++++
->  drivers/acpi/numa.c              | 32 +++++++++++++++++++++-
->  drivers/irqchip/irq-gic-v3-its.c |  3 +-
->  include/linux/acpi.h             |  3 ++
->  5 files changed, 97 insertions(+), 2 deletions(-)
+On Thu, Jun 08, 2017 at 07:13:24PM +0200, Rafael J. Wysocki wrote:
+> On Thu, Jun 8, 2017 at 6:32 PM, Lorenzo Pieralisi
+> <lorenzo.pieralisi(a)arm.com> wrote:
+> > On Tue, May 30, 2017 at 05:33:38PM +0530, Geetha sowjanya wrote:
+> >> Cavium ThunderX2 SMMUv3 implementation has two Silicon Erratas.
+> >> 1. Errata ID #74
+> >>    SMMU register alias Page 1 is not implemented
+> >> 2. Errata ID #126
+> >>    SMMU doesnt support unique IRQ lines and also MSI for gerror,
+> >>    eventq and cmdq-sync
+> >>
+> >> The following patchset does software workaround for these two erratas.
+> >>
+> >> This series is based on patchset.
+> >> https://www.spinics.net/lists/arm-kernel/msg578443.html
+> >
+> > Yes so it is not standalone. How are we going to merge these
+> > ACPI IORT/ACPICA/SMMU patches - inclusive of:
+> >
+> > [1] https://www.spinics.net/lists/arm-kernel/msg586458.html
+> >
+> > Rafael, do ACPICA patches go upstream via the ACPI tree pull request ?
 > =
 
-> diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
-> index 0e99978..60ea7d1 100644
-> --- a/arch/arm64/include/asm/acpi.h
-> +++ b/arch/arm64/include/asm/acpi.h
-> @@ -143,9 +143,11 @@ static inline void arch_apei_flush_tlb_one(unsigned =
-long addr)
->  #ifdef CONFIG_ACPI_NUMA
->  int arm64_acpi_numa_init(void);
->  int acpi_numa_get_nid(unsigned int cpu, u64 hwid);
-> +int acpi_numa_get_its_nid(u32 its_id);
->  #else
->  static inline int arm64_acpi_numa_init(void) { return -ENOSYS; }
->  static inline int acpi_numa_get_nid(unsigned int cpu, u64 hwid) { return=
- NUMA_NO_NODE; }
-> +static inline int acpi_numa_get_its_nid(u32 its_id) { return NUMA_NO_NOD=
-E; }
->  #endif /* CONFIG_ACPI_NUMA */
->  =
+> Not as a rule.
 
->  #define ACPI_TABLE_UPGRADE_MAX_PHYS MEMBLOCK_ALLOC_ACCESSIBLE
-> diff --git a/arch/arm64/kernel/acpi_numa.c b/arch/arm64/kernel/acpi_numa.c
-> index f01fab6..f7b2ea6 100644
-> --- a/arch/arm64/kernel/acpi_numa.c
-> +++ b/arch/arm64/kernel/acpi_numa.c
-> @@ -29,15 +29,24 @@
->  #include <asm/numa.h>
->  =
+So I take it as the can they go in as separate pull (standalone ACPICA
+updates) ?
 
->  static int cpus_in_srat;
-> +static int its_in_srat;
->  =
+> > To remove dependency on ACPICA changes this series needs updating
+> > anyway and for [1] above I think the only solution is for all the
+> > patches to go via the ACPI tree (if ACPICA updates go upstream with it).
+> =
 
->  struct __node_cpu_hwid {
->  	u32 node_id;    /* logical node containing this CPU */
->  	u64 cpu_hwid;   /* MPIDR for this CPU */
->  };
->  =
+> I think we may ask Lv to backport the header changes once they have
+> been merged into Linux.
+> =
 
-> +struct __node_its_id {
-> +	u32 node_id;    /* numa node id */
-> +	u32 its_id ;   /* GIC ITS ID */
-                  ^
-Remove space.
+> Lv, would that work?
 
-> +};
-> +
->  static struct __node_cpu_hwid early_node_cpu_hwid[NR_CPUS] =3D {
->  [0 ... NR_CPUS - 1] =3D {NUMA_NO_NODE, PHYS_CPUID_INVALID} };
->  =
+I was asking to understand how to queue some patches for the upcoming
+merge window that have an ACPICA dependency, how are we supposed to
+handle that ? I would like to avoid cross tree dependencies, that's why
+I asked about the ACPI pull request, so that IORT patches could go via
+ACPI tree too this time along with ACPICA changes just trying to make
+it simple.
 
-> +static struct __node_its_id early_node_its_id[MAX_NUMNODES] =3D {
+Please let us know, thanks a lot.
 
-Mind explaining to us where does MAX_NUMNODES as an array size limit
-stem from here ?
-
-> +[0 ... MAX_NUMNODES - 1] =3D {NUMA_NO_NODE, UINT_MAX} };
-> +
->  int acpi_numa_get_nid(unsigned int cpu, u64 hwid)
->  {
->  	int i;
-> @@ -50,6 +59,18 @@ int acpi_numa_get_nid(unsigned int cpu, u64 hwid)
->  	return NUMA_NO_NODE;
->  }
->  =
-
-> +int acpi_numa_get_its_nid(u32 its_id)
-> +{
-> +	int i;
-> +
-> +	for (i =3D 0; i < its_in_srat; i++) {
-> +		if (its_id =3D=3D early_node_its_id[i].its_id)
-> +			return early_node_its_id[i].node_id;
-> +	}
-> +
-> +	return NUMA_NO_NODE;
-> +}
-> +
->  /* Callback for Proximity Domain -> ACPI processor UID mapping */
->  void __init acpi_numa_gicc_affinity_init(struct acpi_srat_gicc_affinity =
-*pa)
->  {
-> @@ -100,6 +121,44 @@ void __init acpi_numa_gicc_affinity_init(struct acpi=
-_srat_gicc_affinity *pa)
->  		pxm, mpidr, node);
->  }
->  =
-
-> +/* Callback for ITS ACPI Proximity Domain mapping */
-> +void __init acpi_numa_its_affinity_init(struct acpi_srat_its_affinity *p=
-a)
-> +{
-> +	int pxm, node;
-> +
-> +	if (srat_disabled())
-> +		return;
-> +
-> +	if (pa->header.length < sizeof(struct acpi_srat_its_affinity)) {
-> +		pr_err("SRAT: Invalid SRAT header length: %d\n",
-> +			pa->header.length);
-> +		bad_srat();
-> +		return;
-> +	}
-> +
-> +	if (its_in_srat >=3D MAX_NUMNODES) {
-
-I do not understand why maxcount =3D=3D MAX_NUMNODES in the first place.
-
-> +		pr_warn_once("SRAT: its count exceeding max count[%d]\n",
-> +			     MAX_NUMNODES);
-> +		return;
-> +	}
-> +
-> +	pxm =3D pa->proximity_domain;
-> +	node =3D acpi_map_pxm_to_node(pxm);
-> +
-> +	if (node =3D=3D NUMA_NO_NODE || node >=3D MAX_NUMNODES) {
-> +		pr_err("SRAT: Too many proximity domains %d\n", pxm);
-
-Wrong error log message or at least inconsistent (yes, GICC code
-where you copied this code from needs patching too).
-
-> +		bad_srat();
-> +		return;
-> +	}
-> +
-> +	early_node_its_id[its_in_srat].node_id =3D node;
-> +	early_node_its_id[its_in_srat].its_id =3D  its_in_srat;
-                                               ^
-One space is enough (again - that's through for GICC code too).
-
-> +	node_set(node, numa_nodes_parsed);
-> +	pr_info("SRAT: PXM %d -> ITS %d -> Node %d\n",
-> +		pxm, its_in_srat, node);
-> +	its_in_srat++;
-> +}
-> +
->  int __init arm64_acpi_numa_init(void)
->  {
->  	int ret;
-> diff --git a/drivers/acpi/numa.c b/drivers/acpi/numa.c
-> index edb0c79..9c04dba 100644
-> --- a/drivers/acpi/numa.c
-> +++ b/drivers/acpi/numa.c
-> @@ -182,6 +182,16 @@ int acpi_map_pxm_to_online_node(int pxm)
->  		}
->  		break;
->  =
-
-> +	case ACPI_SRAT_TYPE_GIC_ITS_AFFINITY:
-> +		{
-> +			struct acpi_srat_its_affinity *p =3D
-> +			    (struct acpi_srat_its_affinity *)header;
-> +			pr_debug("SRAT ITS [0x%04x]) in proximity domain %d\n",
-> +				 p->its_id,
-> +				 p->proximity_domain);
-> +		}
-> +		break;
-> +
->  	default:
->  		pr_warn("Found unsupported SRAT entry (type =3D 0x%x)\n",
->  			header->type);
-> @@ -390,6 +400,24 @@ static int __init acpi_parse_slit(struct acpi_table_=
-header *table)
->  	return 0;
->  }
->  =
-
-> +static int __init
-> +acpi_parse_its_affinity(struct acpi_subtable_header *header,
-> +			 const unsigned long end)
-> +{
-> +	struct acpi_srat_its_affinity *its_affinity;
-> +
-> +	its_affinity =3D (struct acpi_srat_its_affinity *)header;
-> +	if (!its_affinity)
-> +		return -EINVAL;
-> +
-> +	acpi_table_print_srat_entry(header);
-> +
-> +	/* let architecture-dependent part to do it */
-> +	acpi_numa_its_affinity_init(its_affinity);
-> +
-> +	return 0;
-> +}
-> +
->  static int __initdata parsed_numa_memblks;
->  =
-
->  static int __init
-> @@ -445,7 +473,7 @@ int __init acpi_numa_init(void)
->  =
-
->  	/* SRAT: Static Resource Affinity Table */
->  	if (!acpi_table_parse(ACPI_SIG_SRAT, acpi_parse_srat)) {
-> -		struct acpi_subtable_proc srat_proc[3];
-> +		struct acpi_subtable_proc srat_proc[4];
->  =
-
->  		memset(srat_proc, 0, sizeof(srat_proc));
->  		srat_proc[0].id =3D ACPI_SRAT_TYPE_CPU_AFFINITY;
-> @@ -454,6 +482,8 @@ int __init acpi_numa_init(void)
->  		srat_proc[1].handler =3D acpi_parse_x2apic_affinity;
->  		srat_proc[2].id =3D ACPI_SRAT_TYPE_GICC_AFFINITY;
->  		srat_proc[2].handler =3D acpi_parse_gicc_affinity;
-> +		srat_proc[3].id =3D ACPI_SRAT_TYPE_GIC_ITS_AFFINITY;
-> +		srat_proc[3].handler =3D acpi_parse_its_affinity;
->  =
-
->  		acpi_table_parse_entries_array(ACPI_SIG_SRAT,
->  					sizeof(struct acpi_table_srat),
-> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v=
-3-its.c
-> index 45ea1933..84936da 100644
-> --- a/drivers/irqchip/irq-gic-v3-its.c
-> +++ b/drivers/irqchip/irq-gic-v3-its.c
-> @@ -1861,7 +1861,8 @@ static int __init gic_acpi_parse_madt_its(struct ac=
-pi_subtable_header *header,
->  		goto dom_err;
->  	}
->  =
-
-> -	err =3D its_probe_one(&res, dom_handle, NUMA_NO_NODE);
-> +	err =3D its_probe_one(&res, dom_handle,
-> +			acpi_numa_get_its_nid(its_entry->translation_id));
-
-If that's the only usage I wonder whether we really need all arm64
-arch code/data, instead of parsing the SRAT in ITS code driver straight
-away at probe, retrieve its node and be done with this.
-
-I understand you replicated what x86/GICC does with APIC code, I would
-like to understand though if we see a reason why (or better, why we keep
-the relevant stashed data in arch/arm64 instead of the ITS driver).
-
-Thanks,
 Lorenzo
 
->  	if (!err)
->  		return 0;
->  =
-
-> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-> index 137e4a3..e5e8ae3 100644
-> --- a/include/linux/acpi.h
-> +++ b/include/linux/acpi.h
-> @@ -260,9 +260,12 @@ int acpi_table_parse_madt(enum acpi_madt_type id,
->  =
-
->  #ifdef CONFIG_ARM64
->  void acpi_numa_gicc_affinity_init(struct acpi_srat_gicc_affinity *pa);
-> +void acpi_numa_its_affinity_init(struct acpi_srat_its_affinity *pa);
->  #else
->  static inline void
->  acpi_numa_gicc_affinity_init(struct acpi_srat_gicc_affinity *pa) { }
-> +static inline void
-> +acpi_numa_its_affinity_init(struct acpi_srat_its_affinity *pa) { }
->  #endif
->  =
-
->  int acpi_numa_memory_affinity_init (struct acpi_srat_mem_affinity *ma);
-> -- =
-
-> 1.8.1.4
-> =
-
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-acpi" in
-> the body of a message to majordomo(a)vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
---===============0429201878300476494==--
+--===============4350502166080610656==--
 
