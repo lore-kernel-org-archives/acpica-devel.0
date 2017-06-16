@@ -1,104 +1,105 @@
-Content-Type: multipart/mixed; boundary="===============0884610986949514244=="
+Content-Type: multipart/mixed; boundary="===============3207305491989730407=="
 MIME-Version: 1.0
-From: Ganapatrao Kulkarni <ganapatrao.kulkarni at cavium.com>
-Subject: [Devel]  [PATCH v2] iasl: Update to IORT SMMUv3 disassembling
-Date: Fri, 16 Jun 2017 09:03:19 +0530
-Message-ID: <1497583999-17020-1-git-send-email-ganapatrao.kulkarni@cavium.com>
+From: Shameerali Kolothum Thodi <shameerali.kolothum.thodi at huawei.com>
+Subject: Re: [Devel] [PATCH 2/2] iommu/arm-smmu-v3:Enable ACPI based
+ HiSilicon	erratum 161010801
+Date: Fri, 16 Jun 2017 09:43:52 +0000
+Message-ID: <5FC3163CFD30C246ABAA99954A238FA83836B212@FRAEML521-MBX.china.huawei.com>
+In-Reply-To: 5FC3163CFD30C246ABAA99954A238FA838368BC6@FRAEML521-MBX.china.huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0884610986949514244==
+--===============3207305491989730407==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-ARM IORT specification has provision to define Proximity domain
-in SMMUv3 IORT table. Adding required changes to decode
-Proximity domain of SMMUv3 IORT table.
+Hi Lorenzo,
 
-Signed-off-by: Ganapatrao Kulkarni <ganapatrao.kulkarni(a)cavium.com>
+> -----Original Message-----
+> From: linuxarm-bounces(a)huawei.com [mailto:linuxarm-
+> bounces(a)huawei.com] On Behalf Of Shameerali Kolothum Thodi
+> Sent: Tuesday, June 13, 2017 3:53 PM
+> To: Lorenzo Pieralisi
+> Cc: marc.zyngier(a)arm.com; will.deacon(a)arm.com; Linuxarm; linux-
+> acpi(a)vger.kernel.org; iommu(a)lists.linux-foundation.org;
+> hanjun.guo(a)linaro.org; sudeep.holla(a)arm.com; robin.murphy(a)arm.com;
+> linux-arm-kernel(a)lists.infradead.org; devel(a)acpica.org
+> Subject: RE: [PATCH 2/2] iommu/arm-smmu-v3:Enable ACPI based HiSilicon
+> erratum 161010801
 
-v2:
-  - updated to decode reserved1 and reserved2 in IORT SMMUv3 table
-  as suggested from Hanjun Guo.
-  - Minor updates to variable name and description.
+[...]
+ > > > ---
+> > >  drivers/iommu/arm-smmu-v3.c | 27 ++++++++++++++++++++++-----
+> > >  1 file changed, 22 insertions(+), 5 deletions(-)
+> > >
+> > > diff --git a/drivers/iommu/arm-smmu-v3.c b/drivers/iommu/arm-smmu-
+> > v3.c
+> > > index abe4b88..2636c85 100644
+> > > --- a/drivers/iommu/arm-smmu-v3.c
+> > > +++ b/drivers/iommu/arm-smmu-v3.c
+> > > @@ -597,6 +597,7 @@ struct arm_smmu_device {
+> > >  	u32				features;
+> > >
+> > >  #define ARM_SMMU_OPT_SKIP_PREFETCH	(1 << 0)
+> > > +#define ARM_SMMU_OPT_RESV_HW_MSI	(1 << 1)
+> > >  	u32				options;
+> > >
+> > >  	struct arm_smmu_cmdq		cmdq;
+> > > @@ -1904,14 +1905,29 @@ static void
+> arm_smmu_get_resv_regions(struct
+> > device *dev,
+> > >  				      struct list_head *head)
+> > >  {
+> > >  	struct iommu_resv_region *region;
+> > > +	struct arm_smmu_device *smmu;
+> > > +	struct iommu_fwspec *fwspec =3D dev->iommu_fwspec;
+> > >  	int prot =3D IOMMU_WRITE | IOMMU_NOEXEC | IOMMU_MMIO;
+> > >
+> > > -	region =3D iommu_alloc_resv_region(MSI_IOVA_BASE,
+> > MSI_IOVA_LENGTH,
+> > > -					 prot, IOMMU_RESV_SW_MSI);
+> > > -	if (!region)
+> > > -		return;
+> > > +	smmu =3D arm_smmu_get_by_fwnode(fwspec->iommu_fwnode);
+> > >
+> > > -	list_add_tail(&region->list, head);
+> > > +	if (smmu && (smmu->options & ARM_SMMU_OPT_RESV_HW_MSI)
+> > &&
+> > > +		      dev_is_pci(dev)) {
+> > > +		int ret;
+> > > +
+> > > +		ret =3D iort_iommu_its_get_resv_regions(dev, head);
+> >
+> > This should be made fwnode dependent, it makes precious little sense to
+> call
+> > IORT to reserve regions on a DT based platforms (I know the
+> > ARM_SMMU_OPT_RESV_HW_MSI option is only selected in ACPI (?) but
+> > comment applies regardless - have you prototyped a DT version too ?).
+> =
 
-v1: first patch
+> Ok. I will add a check here. =
+
+
+This is what I have in mind. Please take a look and let me know. I will sen=
+d out
+a v2 of this series soon.
+....
+if (smmu && (smmu->options & ARM_SMMU_OPT_RESV_HW_MSI) &&
+			dev_is_pci(dev)) {
+	int ret =3D -EINVAL;
+
+	if (!is_of_node(smmu->dev->fwnode))
+		ret =3D iort_iommu_its_get_resv_regions(dev, head);
+
+	if (ret) {
+		dev_warn(dev, "HW MSI region resv failed: %d\n", ret);
+		return;
+	}
+} else {
 ---
- source/common/dmtbinfo.c | 4 ++++
- source/include/actbl2.h  | 4 ++++
- 2 files changed, 8 insertions(+)
+Many thanks,
+Shameer
 
-diff --git a/source/common/dmtbinfo.c b/source/common/dmtbinfo.c
-index 692763f..56dd553 100644
---- a/source/common/dmtbinfo.c
-+++ b/source/common/dmtbinfo.c
-@@ -1838,6 +1838,7 @@ ACPI_DMTABLE_INFO           AcpiDmTableInfoIort4[] =
-=3D
-     {ACPI_DMT_UINT32,   ACPI_IORT4_OFFSET (Flags),                  "Flags=
- (decoded below)", 0},
-     {ACPI_DMT_FLAG0,    ACPI_IORT4_FLAG_OFFSET (Flags, 0),          "COHAC=
-C Override", 0},
-     {ACPI_DMT_FLAG1,    ACPI_IORT4_FLAG_OFFSET (Flags, 0),          "HTTU =
-Override", 0},
-+    {ACPI_DMT_FLAG3,    ACPI_IORT4_FLAG_OFFSET (Flags, 0),          "Proxi=
-mity Domain Valid", 0},
-     {ACPI_DMT_UINT32,   ACPI_IORT4_OFFSET (Reserved),               "Reser=
-ved", 0},
-     {ACPI_DMT_UINT64,   ACPI_IORT4_OFFSET (VatosAddress),           "VATOS=
- Address", 0},
-     {ACPI_DMT_UINT32,   ACPI_IORT4_OFFSET (Model),                  "Model=
-", 0},
-@@ -1845,6 +1846,9 @@ ACPI_DMTABLE_INFO           AcpiDmTableInfoIort4[] =
-=3D
-     {ACPI_DMT_UINT32,   ACPI_IORT4_OFFSET (PriGsiv),                "PRI G=
-SIV", 0},
-     {ACPI_DMT_UINT32,   ACPI_IORT4_OFFSET (GerrGsiv),               "GERR =
-GSIV", 0},
-     {ACPI_DMT_UINT32,   ACPI_IORT4_OFFSET (SyncGsiv),               "Sync =
-GSIV", 0},
-+    {ACPI_DMT_UINT8,    ACPI_IORT4_OFFSET (Pxm),                    "Proxi=
-mity Domain", 0},
-+    {ACPI_DMT_UINT8,    ACPI_IORT4_OFFSET (Reserved1),              "Reser=
-ved", 0},
-+    {ACPI_DMT_UINT16,   ACPI_IORT4_OFFSET (Reserved2),              "Reser=
-ved", 0},
-     ACPI_DMT_TERMINATOR
- };
- =
-
-diff --git a/source/include/actbl2.h b/source/include/actbl2.h
-index 80495d8..8029a5a 100644
---- a/source/include/actbl2.h
-+++ b/source/include/actbl2.h
-@@ -1041,6 +1041,9 @@ typedef struct acpi_iort_smmu_v3
-     UINT32                  PriGsiv;
-     UINT32                  GerrGsiv;
-     UINT32                  SyncGsiv;
-+    UINT8                   Pxm;
-+    UINT8                   Reserved1;
-+    UINT16                  Reserved2;
- =
-
- } ACPI_IORT_SMMU_V3;
- =
-
-@@ -1048,6 +1051,7 @@ typedef struct acpi_iort_smmu_v3
- =
-
- #define ACPI_IORT_SMMU_V3_COHACC_OVERRIDE   (1)
- #define ACPI_IORT_SMMU_V3_HTTU_OVERRIDE     (1<<1)
-+#define ACPI_IORT_SMMU_V3_PXM_VALID         (1<<3)
- =
-
- =
-
- /*************************************************************************=
-******
--- =
-
-1.8.1.4
-
-
---===============0884610986949514244==--
+--===============3207305491989730407==--
 
