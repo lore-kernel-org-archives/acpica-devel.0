@@ -1,299 +1,130 @@
-Content-Type: multipart/mixed; boundary="===============1089180727752776295=="
+Content-Type: multipart/mixed; boundary="===============5830493988808832431=="
 MIME-Version: 1.0
-From: James Morse <james.morse at arm.com>
-Subject: [Devel] [PATCH] iASL: Add support for the SDEI table
-Date: Fri, 16 Jun 2017 11:47:26 +0100
-Message-ID: <20170616104726.15065-1-james.morse@arm.com>
+From: Lorenzo Pieralisi <lorenzo.pieralisi at arm.com>
+Subject: Re: [Devel] [PATCH 2/2] iommu/arm-smmu-v3:Enable ACPI based HiSilicon
+ erratum 161010801
+Date: Fri, 16 Jun 2017 12:17:29 +0100
+Message-ID: <20170616111729.GB22323@red-moon>
+In-Reply-To: 5FC3163CFD30C246ABAA99954A238FA83836B212@FRAEML521-MBX.china.huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1089180727752776295==
+--===============5830493988808832431==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-ACPI 6.2 adds support for the Software Delegated Exception Interface,
-which is described by "Software Delegated Exception Interface (SDEI)"
-ARM DEN0054A.
+On Fri, Jun 16, 2017 at 09:43:52AM +0000, Shameerali Kolothum Thodi wrote:
+> Hi Lorenzo,
+> =
 
-Add the necessary types in the ACPICA header files and support for
-compiling/decompiling the table.
+> > -----Original Message-----
+> > From: linuxarm-bounces(a)huawei.com [mailto:linuxarm-
+> > bounces(a)huawei.com] On Behalf Of Shameerali Kolothum Thodi
+> > Sent: Tuesday, June 13, 2017 3:53 PM
+> > To: Lorenzo Pieralisi
+> > Cc: marc.zyngier(a)arm.com; will.deacon(a)arm.com; Linuxarm; linux-
+> > acpi(a)vger.kernel.org; iommu(a)lists.linux-foundation.org;
+> > hanjun.guo(a)linaro.org; sudeep.holla(a)arm.com; robin.murphy(a)arm.com;
+> > linux-arm-kernel(a)lists.infradead.org; devel(a)acpica.org
+> > Subject: RE: [PATCH 2/2] iommu/arm-smmu-v3:Enable ACPI based HiSilicon
+> > erratum 161010801
+> =
 
-Signed-off-by: James Morse <james.morse(a)arm.com>
----
- source/common/dmtable.c      |  1 +
- source/common/dmtbdump.c     | 20 ++++++++++++++++++++
- source/common/dmtbinfo.c     | 11 +++++++++++
- source/compiler/dtcompiler.h |  5 +++++
- source/compiler/dttable2.c   | 18 ++++++++++++++++++
- source/compiler/dttemplate.h |  9 +++++++++
- source/include/acdisasm.h    |  6 ++++++
- source/include/actbl2.h      | 16 ++++++++++++++++
- 8 files changed, 86 insertions(+)
+> [...]
+>  > > > ---
+> > > >  drivers/iommu/arm-smmu-v3.c | 27 ++++++++++++++++++++++-----
+> > > >  1 file changed, 22 insertions(+), 5 deletions(-)
+> > > >
+> > > > diff --git a/drivers/iommu/arm-smmu-v3.c b/drivers/iommu/arm-smmu-
+> > > v3.c
+> > > > index abe4b88..2636c85 100644
+> > > > --- a/drivers/iommu/arm-smmu-v3.c
+> > > > +++ b/drivers/iommu/arm-smmu-v3.c
+> > > > @@ -597,6 +597,7 @@ struct arm_smmu_device {
+> > > >  	u32				features;
+> > > >
+> > > >  #define ARM_SMMU_OPT_SKIP_PREFETCH	(1 << 0)
+> > > > +#define ARM_SMMU_OPT_RESV_HW_MSI	(1 << 1)
+> > > >  	u32				options;
+> > > >
+> > > >  	struct arm_smmu_cmdq		cmdq;
+> > > > @@ -1904,14 +1905,29 @@ static void
+> > arm_smmu_get_resv_regions(struct
+> > > device *dev,
+> > > >  				      struct list_head *head)
+> > > >  {
+> > > >  	struct iommu_resv_region *region;
+> > > > +	struct arm_smmu_device *smmu;
+> > > > +	struct iommu_fwspec *fwspec =3D dev->iommu_fwspec;
+> > > >  	int prot =3D IOMMU_WRITE | IOMMU_NOEXEC | IOMMU_MMIO;
+> > > >
+> > > > -	region =3D iommu_alloc_resv_region(MSI_IOVA_BASE,
+> > > MSI_IOVA_LENGTH,
+> > > > -					 prot, IOMMU_RESV_SW_MSI);
+> > > > -	if (!region)
+> > > > -		return;
+> > > > +	smmu =3D arm_smmu_get_by_fwnode(fwspec->iommu_fwnode);
+> > > >
+> > > > -	list_add_tail(&region->list, head);
+> > > > +	if (smmu && (smmu->options & ARM_SMMU_OPT_RESV_HW_MSI)
+> > > &&
+> > > > +		      dev_is_pci(dev)) {
+> > > > +		int ret;
+> > > > +
+> > > > +		ret =3D iort_iommu_its_get_resv_regions(dev, head);
+> > >
+> > > This should be made fwnode dependent, it makes precious little sense =
+to
+> > call
+> > > IORT to reserve regions on a DT based platforms (I know the
+> > > ARM_SMMU_OPT_RESV_HW_MSI option is only selected in ACPI (?) but
+> > > comment applies regardless - have you prototyped a DT version too ?).
+> > =
 
-diff --git a/source/common/dmtable.c b/source/common/dmtable.c
-index b85bb0c3a..b7e03568b 100644
---- a/source/common/dmtable.c
-+++ b/source/common/dmtable.c
-@@ -493,6 +493,7 @@ const ACPI_DMTABLE_DATA     AcpiDmTableData[] =3D
-     {ACPI_SIG_RSDT, NULL,                   AcpiDmDumpRsdt, DtCompileRsdt,=
-  TemplateRsdt},
-     {ACPI_SIG_S3PT, NULL,                   NULL,           NULL,         =
-  TemplateS3pt},
-     {ACPI_SIG_SBST, AcpiDmTableInfoSbst,    NULL,           NULL,         =
-  TemplateSbst},
-+    {ACPI_SIG_SDEI, NULL,                   AcpiDmDumpSDEI, DtCompileSDEI,=
-  TemplateSDEI},
-     {ACPI_SIG_SLIC, NULL,                   AcpiDmDumpSlic, DtCompileSlic,=
-  TemplateSlic},
-     {ACPI_SIG_SLIT, NULL,                   AcpiDmDumpSlit, DtCompileSlit,=
-  TemplateSlit},
-     {ACPI_SIG_SPCR, AcpiDmTableInfoSpcr,    NULL,           NULL,         =
-  TemplateSpcr},
-diff --git a/source/common/dmtbdump.c b/source/common/dmtbdump.c
-index 9441ca494..025653ee6 100644
---- a/source/common/dmtbdump.c
-+++ b/source/common/dmtbdump.c
-@@ -3677,6 +3677,26 @@ NextSubTable:
- =
+> > Ok. I will add a check here. =
 
- /*************************************************************************=
-******
-  *
-+ * FUNCTION:    AcpiDmDumpSDEI
-+ *
-+ * PARAMETERS:  Table               - A SDEI table
-+ *
-+ * RETURN:      None
-+ *
-+ * DESCRIPTION: Format the contents of a SDEI Descriptor Table
-+ *
-+ *************************************************************************=
-*****/
-+
-+void
-+AcpiDmDumpSDEI (
-+    ACPI_TABLE_HEADER       *Table)
-+{
-+    AcpiDmDumpTable (Table->Length, 0, Table, 0, AcpiDmTableInfoSDEI);
-+}
-+
-+
-+/*************************************************************************=
-******
-+ *
-  * FUNCTION:    AcpiDmDumpSlic
-  *
-  * PARAMETERS:  Table               - A SLIC table
-diff --git a/source/common/dmtbinfo.c b/source/common/dmtbinfo.c
-index 692763fd4..e175f620c 100644
---- a/source/common/dmtbinfo.c
-+++ b/source/common/dmtbinfo.c
-@@ -218,6 +218,7 @@
- #define ACPI_RASF_OFFSET(f)             (UINT16) ACPI_OFFSET (ACPI_TABLE_R=
-ASF,f)
- #define ACPI_S3PT_OFFSET(f)             (UINT16) ACPI_OFFSET (ACPI_TABLE_S=
-3PT,f)
- #define ACPI_SBST_OFFSET(f)             (UINT16) ACPI_OFFSET (ACPI_TABLE_S=
-BST,f)
-+#define ACPI_SDEI_OFFSET(f)             (UINT16) ACPI_OFFSET (ACPI_TABLE_S=
-DEI,f)
- #define ACPI_SLIT_OFFSET(f)             (UINT16) ACPI_OFFSET (ACPI_TABLE_S=
-LIT,f)
- #define ACPI_SPCR_OFFSET(f)             (UINT16) ACPI_OFFSET (ACPI_TABLE_S=
-PCR,f)
- #define ACPI_SPMI_OFFSET(f)             (UINT16) ACPI_OFFSET (ACPI_TABLE_S=
-PMI,f)
-@@ -2763,6 +2764,16 @@ ACPI_DMTABLE_INFO           AcpiDmTableInfoPmtt2[] =
-=3D
-     ACPI_DMT_TERMINATOR
- };
- =
+> =
 
-+/*************************************************************************=
-******
-+ *
-+ * SDEI - Software Delegated Execption Interface Descriptor Table
-+ *
-+ *************************************************************************=
-*****/
-+
-+ACPI_DMTABLE_INFO           AcpiDmTableInfoSDEI[] =3D
-+{
-+    ACPI_DMT_TERMINATOR
-+};
- =
+> This is what I have in mind. Please take a look and let me know. I will s=
+end out
+> a v2 of this series soon.
+> ....
+> if (smmu && (smmu->options & ARM_SMMU_OPT_RESV_HW_MSI) &&
+> 			dev_is_pci(dev)) {
+> 	int ret =3D -EINVAL;
+> =
 
- /*************************************************************************=
-******
-  *
-diff --git a/source/compiler/dtcompiler.h b/source/compiler/dtcompiler.h
-index 61b40b4a9..5cdb2a678 100644
---- a/source/compiler/dtcompiler.h
-+++ b/source/compiler/dtcompiler.h
-@@ -638,6 +638,10 @@ DtCompileS3pt (
-     DT_FIELD                **PFieldList);
- =
+> 	if (!is_of_node(smmu->dev->fwnode))
+> 		ret =3D iort_iommu_its_get_resv_regions(dev, head);
+> =
 
- ACPI_STATUS
-+DtCompileSDEI (
-+    void                    **PFieldList);
-+
-+ACPI_STATUS
- DtCompileSlic (
-     void                    **PFieldList);
- =
+> 	if (ret) {
+> 		dev_warn(dev, "HW MSI region resv failed: %d\n", ret);
+> 		return;
+> 	}
+> } else {
 
-@@ -726,6 +730,7 @@ extern const unsigned char  TemplateRasf[];
- extern const unsigned char  TemplateRsdt[];
- extern const unsigned char  TemplateS3pt[];
- extern const unsigned char  TemplateSbst[];
-+extern const unsigned char  TemplateSDEI[];
- extern const unsigned char  TemplateSlic[];
- extern const unsigned char  TemplateSlit[];
- extern const unsigned char  TemplateSpcr[];
-diff --git a/source/compiler/dttable2.c b/source/compiler/dttable2.c
-index 356a7d0d1..e5106d1c8 100644
---- a/source/compiler/dttable2.c
-+++ b/source/compiler/dttable2.c
-@@ -1282,6 +1282,24 @@ DtCompileS3pt (
-     return (AE_OK);
- }
- =
+The fwnode handling is fine, I do not like much the:
 
-+/*************************************************************************=
-*****
-+ *
-+ * FUNCTION:    DtCompileSDEI
-+ *
-+ * PARAMETERS:  List                - Current field list pointer
-+ *
-+ * RETURN:      Status
-+ *
-+ * DESCRIPTION: Compile SDEI.
-+ *
-+ *************************************************************************=
-****/
-+
-+ACPI_STATUS
-+DtCompileSDEI (
-+    void                    **List)
-+{
-+    return (AE_OK);
-+}
- =
+dev_is_pci()
 
- /*************************************************************************=
-*****
-  *
-diff --git a/source/compiler/dttemplate.h b/source/compiler/dttemplate.h
-index bb4dded4e..281e45e38 100644
---- a/source/compiler/dttemplate.h
-+++ b/source/compiler/dttemplate.h
-@@ -1178,6 +1178,15 @@ const unsigned char TemplateSbst[] =3D
-     0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00   /* 00000028    "........" */
- };
- =
+check because it relies on implicit knowledge of the platform and
+the quirks you need (ie you know that it is _just_ a PCI RC quirk
+implicitly), the logic behind reserving the regions is a bit
+convoluted and not easy to understand at all.
 
-+const unsigned char TemplateSDEI[] =3D
-+{
-+    0x53,0x44,0x45,0x49,0x3e,0x00,0x00,0x00,  /* 00000000    "SDEI>..." */
-+    0x01,0x59,0x41,0x52,0x4d,0x20,0x20,0x20,  /* 00000008    ".mARM  " */
-+    0x54,0x45,0x4D,0x50,0x4C,0x41,0x54,0x45,  /* 00000010    "TEMPLATE" */
-+    0x01,0x00,0x00,0x00,0x49,0x4E,0x54,0x4C,  /* 00000018    "....INTL" */
-+    0x30,0x09,0x16,0x20                       /* 00000028    "0.. " */
-+};
-+
- const unsigned char TemplateSlic[] =3D
- {
-     0x53,0x4C,0x49,0x43,0x76,0x01,0x00,0x00,  /* 00000000    "SLICv..." */
-diff --git a/source/include/acdisasm.h b/source/include/acdisasm.h
-index 5beec2d4f..301695eb4 100644
---- a/source/include/acdisasm.h
-+++ b/source/include/acdisasm.h
-@@ -271,6 +271,7 @@ typedef enum
-     ACPI_DMT_PCCT,
-     ACPI_DMT_PMTT,
-     ACPI_DMT_PPTT,
-+    ACPI_DMT_SDEI,
-     ACPI_DMT_SLIC,
-     ACPI_DMT_SRAT,
- =
+Let me try to rephrase it: you know, through an SMMU model number,
+that your PCI RC handles MSI in a specific way, but by reading the
+code above this is not clear at all, at least to me. This is a PCI
+RC quirk but it does not depend on any PCI RC specific firmware binding
+whatsoever, that's what is a bit hard to understand.
 
-@@ -527,6 +528,7 @@ extern ACPI_DMTABLE_INFO        AcpiDmTableInfoS3ptHdr[=
-];
- extern ACPI_DMTABLE_INFO        AcpiDmTableInfoS3pt0[];
- extern ACPI_DMTABLE_INFO        AcpiDmTableInfoS3pt1[];
- extern ACPI_DMTABLE_INFO        AcpiDmTableInfoSbst[];
-+extern ACPI_DMTABLE_INFO        AcpiDmTableInfoSDEI[];
- extern ACPI_DMTABLE_INFO        AcpiDmTableInfoSlic[];
- extern ACPI_DMTABLE_INFO        AcpiDmTableInfoSlit[];
- extern ACPI_DMTABLE_INFO        AcpiDmTableInfoSpcr[];
-@@ -731,6 +733,10 @@ AcpiDmDumpS3pt (
-     ACPI_TABLE_HEADER       *Table);
- =
+Anyway you can post the patches and we will take it from there to
+see if there is a way to improve it.
 
- void
-+AcpiDmDumpSDEI (
-+    ACPI_TABLE_HEADER       *Table);
-+
-+void
- AcpiDmDumpSlic (
-     ACPI_TABLE_HEADER       *Table);
- =
+Thanks,
+Lorenzo
 
-diff --git a/source/include/actbl2.h b/source/include/actbl2.h
-index 80495d8fa..f3264d7c3 100644
---- a/source/include/actbl2.h
-+++ b/source/include/actbl2.h
-@@ -186,6 +186,7 @@
- #define ACPI_SIG_MCHI           "MCHI"      /* Management Controller Host =
-Interface table */
- #define ACPI_SIG_MSDM           "MSDM"      /* Microsoft Data Management T=
-able */
- #define ACPI_SIG_MTMR           "MTMR"      /* MID Timer table */
-+#define ACPI_SIG_SDEI           "SDEI"      /* Software Delegated Exceptio=
-n Interface Table */
- #define ACPI_SIG_SLIC           "SLIC"      /* Software Licensing Descript=
-ion Table */
- #define ACPI_SIG_SPCR           "SPCR"      /* Serial Port Console Redirec=
-tion table */
- #define ACPI_SIG_SPMI           "SPMI"      /* Server Platform Management =
-Interface table */
-@@ -1410,6 +1411,21 @@ typedef struct acpi_mtmr_entry
- =
-
- } ACPI_MTMR_ENTRY;
- =
-
-+/*************************************************************************=
-******
-+ *
-+ * SDEI - Software Delegated Exception Interface Descriptor Table
-+ *
-+ * Conforms to "Software Delegated Exception Interface (SDEI)" ARM DEN0054=
-A,
-+ * May 8th, 2017. Copyright 2017 ARM Ltd.
-+ *
-+ *************************************************************************=
-*****/
-+
-+typedef struct acpi_table_sdei
-+{
-+    ACPI_TABLE_HEADER       Header;             /* Common ACPI table heade=
-r */
-+
-+} ACPI_TABLE_SDEI;
-+
- =
-
- /*************************************************************************=
-******
-  *
--- =
-
-2.11.0
-
-
---===============1089180727752776295==--
+--===============5830493988808832431==--
 
