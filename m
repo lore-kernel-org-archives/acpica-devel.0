@@ -1,15 +1,15 @@
-Content-Type: multipart/mixed; boundary="===============6153867101795074581=="
+Content-Type: multipart/mixed; boundary="===============2488803329638224107=="
 MIME-Version: 1.0
 From: Shameerali Kolothum Thodi <shameerali.kolothum.thodi at huawei.com>
 Subject: Re: [Devel] [PATCH v2 2/2] iommu/arm-smmu-v3:Enable ACPI based
  HiSilicon erratum 161010801
-Date: Tue, 20 Jun 2017 13:11:28 +0000
-Message-ID: <5FC3163CFD30C246ABAA99954A238FA838385EC5@FRAEML521-MBS.china.huawei.com>
-In-Reply-To: 311de3aa-aec9-f403-d9a8-48b3e3de54c3@arm.com
+Date: Tue, 20 Jun 2017 14:07:18 +0000
+Message-ID: <5FC3163CFD30C246ABAA99954A238FA83838617D@FRAEML521-MBS.china.huawei.com>
+In-Reply-To: 20170620102906.GA26908@red-moon
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6153867101795074581==
+--===============2488803329638224107==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
@@ -17,20 +17,23 @@ Content-Transfer-Encoding: quoted-printable
 
 
 > -----Original Message-----
-> From: Robin Murphy [mailto:robin.murphy(a)arm.com]
-> Sent: Monday, June 19, 2017 6:42 PM
-> To: Shameerali Kolothum Thodi; lorenzo.pieralisi(a)arm.com;
-> marc.zyngier(a)arm.com; sudeep.holla(a)arm.com; will.deacon(a)arm.com;
-> hanjun.guo(a)linaro.org
-> Cc: Gabriele Paoloni; John Garry; iommu(a)lists.linux-foundation.org; lin=
-ux-
-> arm-kernel(a)lists.infradead.org; linux-acpi(a)vger.kernel.org;
-> devel(a)acpica.org; Linuxarm; Wangzhou (B); Guohanjun (Hanjun Guo)
+> From: Lorenzo Pieralisi [mailto:lorenzo.pieralisi(a)arm.com]
+> Sent: Tuesday, June 20, 2017 11:29 AM
+> To: Shameerali Kolothum Thodi
+> Cc: marc.zyngier(a)arm.com; sudeep.holla(a)arm.com; will.deacon(a)arm.com;
+> robin.murphy(a)arm.com; hanjun.guo(a)linaro.org; Gabriele Paoloni; John
+> Garry; iommu(a)lists.linux-foundation.org; linux-arm-
+> kernel(a)lists.infradead.org; linux-acpi(a)vger.kernel.org; devel(a)acpic=
+a.org;
+> Linuxarm; Wangzhou (B); Guohanjun (Hanjun Guo)
 > Subject: Re: [PATCH v2 2/2] iommu/arm-smmu-v3:Enable ACPI based
 > HiSilicon erratum 161010801
 > =
 
-> On 19/06/17 16:45, shameer wrote:
+> Hi Shameer,
+> =
+
+> On Mon, Jun 19, 2017 at 04:45:00PM +0100, shameer wrote:
 > > The HiSilicon erratum 161010801 describes the limitation of HiSilicon
 > > platforms Hip06/Hip07 to support the SMMU mappings for MSI
 > transactions.
@@ -83,18 +86,32 @@ ux-
 > > +
 > > +	if (smmu && (smmu->options & ARM_SMMU_OPT_RESV_HW_MSI)
 > &&
+> > +		      dev_is_pci(dev)) {
 > =
 
-> AFAICS, iommu_get_resv_regions is only ever called on devices which are
-> at least already part of an iommu_group, so smmu should never
-> legitimately be NULL. I'd say if you really want to be robust against
-> flagrant API misuse, at least WARN_ON and bail out immediately.
+> IORT changes are fine to me, I am still no big fan of this supposedly
+> generic option that is _really_ platform specific (in particular as I
+> said before the quirk depends on the PCI host bridge but in this
+> patchset I see no such dependency. In short - the quirk is hooked off
+> the SMMUv3 model which implicitly implies a PCI host bridge
+> configuration IIUC). It is Will and Robin decision though, I am not sure
+> you can make it any tidier (given that on ACPI you may not even have
+> a PCI host bridge specific _HID to base your check above on).
 
-Ok.  I will address this in next revision.
+Thanks Lorenzo. I understand your point. As far as our platform is =
+
+concerned, I think It is ok to remove the dev_is_pci() check and make
+it generic, if that helps.  I don't think it will harm us other than couple=
+ of
+ "HW MSI region resv failed: " logs  for our platform devices.
+
+Hi Will/Robin,
+Please let me know your thoughts.
 
 Thanks,
 Shameer
 
 
---===============6153867101795074581==--
+
+--===============2488803329638224107==--
 
