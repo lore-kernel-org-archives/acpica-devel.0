@@ -1,107 +1,108 @@
-Content-Type: multipart/mixed; boundary="===============4495622324380413223=="
+Content-Type: multipart/mixed; boundary="===============9111362559581497298=="
 MIME-Version: 1.0
-From: shameer <shameerali.kolothum.thodi at huawei.com>
-Subject: [Devel] [PATCH v2 2/2] iommu/arm-smmu-v3:Enable ACPI based HiSilicon
- erratum 161010801
-Date: Mon, 19 Jun 2017 16:45:00 +0100
-Message-ID: <20170619154500.92336-3-shameerali.kolothum.thodi@huawei.com>
-In-Reply-To: 20170619154500.92336-1-shameerali.kolothum.thodi@huawei.com
+From: Ganapatrao Kulkarni <gpkulkarni at gmail.com>
+Subject: Re: [Devel] [PATCH v2] iasl: Update to IORT SMMUv3 disassembling
+Date: Tue, 20 Jun 2017 08:04:13 +0530
+Message-ID: <CAFpQJXXNBA+L2D0V7f1P9toxbhFuEvzhh37HBLWyjxX1hULkmQ@mail.gmail.com>
+In-Reply-To: 1497583999-17020-1-git-send-email-ganapatrao.kulkarni@cavium.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4495622324380413223==
+--===============9111362559581497298==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-The HiSilicon erratum 161010801 describes the limitation of HiSilicon
-platforms Hip06/Hip07 to support the SMMU mappings for MSI transactions.
+Hi Lv, Robert,
 
-On these platforms GICv3 ITS translator is presented with the deviceID
-by extending the MSI payload data to 64 bits to include the deviceID.
-Hence, the PCIe controller on this platforms has to differentiate the
-MSI payload against other DMA payload and has to modify the MSI payload.
-This basically makes it difficult for this platforms to have a SMMU
-translation for MSI.
+if you don't have any comments on this patch, can i send you github
+pull request?
 
-This patch implements a ACPI table based quirk to reserve the hw msi
-regions in the smmu-v3 driver which means these address regions will
-not be translated and will be excluded from iova allocations.
+On Fri, Jun 16, 2017 at 9:03 AM, Ganapatrao Kulkarni
+<ganapatrao.kulkarni(a)cavium.com> wrote:
+> ARM IORT specification has provision to define Proximity domain
+> in SMMUv3 IORT table. Adding required changes to decode
+> Proximity domain of SMMUv3 IORT table.
+>
+> Signed-off-by: Ganapatrao Kulkarni <ganapatrao.kulkarni(a)cavium.com>
+>
+> v2:
+>   - updated to decode reserved1 and reserved2 in IORT SMMUv3 table
+>   as suggested from Hanjun Guo.
+>   - Minor updates to variable name and description.
+>
+> v1: first patch
+> ---
+>  source/common/dmtbinfo.c | 4 ++++
+>  source/include/actbl2.h  | 4 ++++
+>  2 files changed, 8 insertions(+)
+>
+> diff --git a/source/common/dmtbinfo.c b/source/common/dmtbinfo.c
+> index 692763f..56dd553 100644
+> --- a/source/common/dmtbinfo.c
+> +++ b/source/common/dmtbinfo.c
+> @@ -1838,6 +1838,7 @@ ACPI_DMTABLE_INFO           AcpiDmTableInfoIort4[] =
+=3D
+>      {ACPI_DMT_UINT32,   ACPI_IORT4_OFFSET (Flags),                  "Fla=
+gs (decoded below)", 0},
+>      {ACPI_DMT_FLAG0,    ACPI_IORT4_FLAG_OFFSET (Flags, 0),          "COH=
+ACC Override", 0},
+>      {ACPI_DMT_FLAG1,    ACPI_IORT4_FLAG_OFFSET (Flags, 0),          "HTT=
+U Override", 0},
+> +    {ACPI_DMT_FLAG3,    ACPI_IORT4_FLAG_OFFSET (Flags, 0),          "Pro=
+ximity Domain Valid", 0},
+>      {ACPI_DMT_UINT32,   ACPI_IORT4_OFFSET (Reserved),               "Res=
+erved", 0},
+>      {ACPI_DMT_UINT64,   ACPI_IORT4_OFFSET (VatosAddress),           "VAT=
+OS Address", 0},
+>      {ACPI_DMT_UINT32,   ACPI_IORT4_OFFSET (Model),                  "Mod=
+el", 0},
+> @@ -1845,6 +1846,9 @@ ACPI_DMTABLE_INFO           AcpiDmTableInfoIort4[] =
+=3D
+>      {ACPI_DMT_UINT32,   ACPI_IORT4_OFFSET (PriGsiv),                "PRI=
+ GSIV", 0},
+>      {ACPI_DMT_UINT32,   ACPI_IORT4_OFFSET (GerrGsiv),               "GER=
+R GSIV", 0},
+>      {ACPI_DMT_UINT32,   ACPI_IORT4_OFFSET (SyncGsiv),               "Syn=
+c GSIV", 0},
+> +    {ACPI_DMT_UINT8,    ACPI_IORT4_OFFSET (Pxm),                    "Pro=
+ximity Domain", 0},
+> +    {ACPI_DMT_UINT8,    ACPI_IORT4_OFFSET (Reserved1),              "Res=
+erved", 0},
+> +    {ACPI_DMT_UINT16,   ACPI_IORT4_OFFSET (Reserved2),              "Res=
+erved", 0},
+>      ACPI_DMT_TERMINATOR
+>  };
+>
+> diff --git a/source/include/actbl2.h b/source/include/actbl2.h
+> index 80495d8..8029a5a 100644
+> --- a/source/include/actbl2.h
+> +++ b/source/include/actbl2.h
+> @@ -1041,6 +1041,9 @@ typedef struct acpi_iort_smmu_v3
+>      UINT32                  PriGsiv;
+>      UINT32                  GerrGsiv;
+>      UINT32                  SyncGsiv;
+> +    UINT8                   Pxm;
+> +    UINT8                   Reserved1;
+> +    UINT16                  Reserved2;
+>
+>  } ACPI_IORT_SMMU_V3;
+>
+> @@ -1048,6 +1051,7 @@ typedef struct acpi_iort_smmu_v3
+>
+>  #define ACPI_IORT_SMMU_V3_COHACC_OVERRIDE   (1)
+>  #define ACPI_IORT_SMMU_V3_HTTU_OVERRIDE     (1<<1)
+> +#define ACPI_IORT_SMMU_V3_PXM_VALID         (1<<3)
+>
+>
+>  /***********************************************************************=
+********
+> --
+> 1.8.1.4
+>
 
-Signed-off-by: shameer <shameerali.kolothum.thodi(a)huawei.com>
----
- drivers/iommu/arm-smmu-v3.c | 29 ++++++++++++++++++++++++-----
- 1 file changed, 24 insertions(+), 5 deletions(-)
+thanks
+Ganapat
 
-diff --git a/drivers/iommu/arm-smmu-v3.c b/drivers/iommu/arm-smmu-v3.c
-index abe4b88..f03c63b 100644
---- a/drivers/iommu/arm-smmu-v3.c
-+++ b/drivers/iommu/arm-smmu-v3.c
-@@ -597,6 +597,7 @@ struct arm_smmu_device {
- 	u32				features;
- =
-
- #define ARM_SMMU_OPT_SKIP_PREFETCH	(1 << 0)
-+#define ARM_SMMU_OPT_RESV_HW_MSI	(1 << 1)
- 	u32				options;
- =
-
- 	struct arm_smmu_cmdq		cmdq;
-@@ -1904,14 +1905,31 @@ static void arm_smmu_get_resv_regions(struct device=
- *dev,
- 				      struct list_head *head)
- {
- 	struct iommu_resv_region *region;
-+	struct arm_smmu_device *smmu;
-+	struct iommu_fwspec *fwspec =3D dev->iommu_fwspec;
- 	int prot =3D IOMMU_WRITE | IOMMU_NOEXEC | IOMMU_MMIO;
- =
-
--	region =3D iommu_alloc_resv_region(MSI_IOVA_BASE, MSI_IOVA_LENGTH,
--					 prot, IOMMU_RESV_SW_MSI);
--	if (!region)
--		return;
-+	smmu =3D arm_smmu_get_by_fwnode(fwspec->iommu_fwnode);
-+
-+	if (smmu && (smmu->options & ARM_SMMU_OPT_RESV_HW_MSI) &&
-+		      dev_is_pci(dev)) {
-+		int ret =3D -EINVAL;
-+
-+		if (!is_of_node(smmu->dev->fwnode))
-+			ret =3D iort_iommu_its_get_resv_regions(dev, head);
- =
-
--	list_add_tail(&region->list, head);
-+		if (ret) {
-+			dev_warn(dev, "HW MSI region resv failed: %d\n", ret);
-+			return;
-+		}
-+	} else {
-+		region =3D iommu_alloc_resv_region(MSI_IOVA_BASE, MSI_IOVA_LENGTH,
-+						 prot, IOMMU_RESV_SW_MSI);
-+		if (!region)
-+			return;
-+
-+		list_add_tail(&region->list, head);
-+	}
- =
-
- 	iommu_dma_get_resv_regions(dev, head);
- }
-@@ -2611,6 +2629,7 @@ static void parse_driver_acpi_options(struct acpi_ior=
-t_smmu_v3 *iort_smmu,
- 	switch (iort_smmu->model) {
- 	case ACPI_IORT_SMMU_HISILICON_HI161X:
- 		smmu->options |=3D ARM_SMMU_OPT_SKIP_PREFETCH;
-+		smmu->options |=3D ARM_SMMU_OPT_RESV_HW_MSI;
- 		break;
- 	default:
- 		break;
--- =
-
-1.9.1
-
-
-
---===============4495622324380413223==--
+--===============9111362559581497298==--
 
