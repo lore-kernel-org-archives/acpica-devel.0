@@ -1,130 +1,144 @@
-Content-Type: multipart/mixed; boundary="===============8065860068526048032=="
+Content-Type: multipart/mixed; boundary="===============8084525147448327425=="
 MIME-Version: 1.0
-From: Lorenzo Pieralisi <lorenzo.pieralisi at arm.com>
+From: Robin Murphy <robin.murphy at arm.com>
 Subject: Re: [Devel] [PATCH v2 2/2] iommu/arm-smmu-v3:Enable ACPI based
  HiSilicon erratum 161010801
-Date: Tue, 20 Jun 2017 16:51:05 +0100
-Message-ID: <20170620155105.GD11351@red-moon>
-In-Reply-To: d6e824b0-17bd-dd41-2d11-0491d8f66759@arm.com
+Date: Tue, 20 Jun 2017 17:01:29 +0100
+Message-ID: <fff72a19-007b-0ce8-a8b0-1584058ebea1@arm.com>
+In-Reply-To: 20170620155105.GD11351@red-moon
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8065860068526048032==
+--===============8084525147448327425==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jun 20, 2017 at 04:16:18PM +0100, Robin Murphy wrote:
-> On 20/06/17 15:07, Shameerali Kolothum Thodi wrote:
-> > =
-
-> > =
-
-> >> -----Original Message-----
-> >> From: Lorenzo Pieralisi [mailto:lorenzo.pieralisi(a)arm.com]
-> >> Sent: Tuesday, June 20, 2017 11:29 AM
-> >> To: Shameerali Kolothum Thodi
-> >> Cc: marc.zyngier(a)arm.com; sudeep.holla(a)arm.com; will.deacon(a)arm.=
+On 20/06/17 16:51, Lorenzo Pieralisi wrote:
+> On Tue, Jun 20, 2017 at 04:16:18PM +0100, Robin Murphy wrote:
+>> On 20/06/17 15:07, Shameerali Kolothum Thodi wrote:
+>>>
+>>>
+>>>> -----Original Message-----
+>>>> From: Lorenzo Pieralisi [mailto:lorenzo.pieralisi(a)arm.com]
+>>>> Sent: Tuesday, June 20, 2017 11:29 AM
+>>>> To: Shameerali Kolothum Thodi
+>>>> Cc: marc.zyngier(a)arm.com; sudeep.holla(a)arm.com; will.deacon(a)arm.=
 com;
-> >> robin.murphy(a)arm.com; hanjun.guo(a)linaro.org; Gabriele Paoloni; John
-> >> Garry; iommu(a)lists.linux-foundation.org; linux-arm-
-> >> kernel(a)lists.infradead.org; linux-acpi(a)vger.kernel.org; devel(a)ac=
+>>>> robin.murphy(a)arm.com; hanjun.guo(a)linaro.org; Gabriele Paoloni; John
+>>>> Garry; iommu(a)lists.linux-foundation.org; linux-arm-
+>>>> kernel(a)lists.infradead.org; linux-acpi(a)vger.kernel.org; devel(a)ac=
 pica.org;
-> >> Linuxarm; Wangzhou (B); Guohanjun (Hanjun Guo)
-> >> Subject: Re: [PATCH v2 2/2] iommu/arm-smmu-v3:Enable ACPI based
-> >> HiSilicon erratum 161010801
-> >>
-> >> Hi Shameer,
-> >>
-> >> On Mon, Jun 19, 2017 at 04:45:00PM +0100, shameer wrote:
-> >>> The HiSilicon erratum 161010801 describes the limitation of HiSilicon
-> >>> platforms Hip06/Hip07 to support the SMMU mappings for MSI
-> >> transactions.
-> >>>
-> >>> On these platforms GICv3 ITS translator is presented with the deviceID
-> >>> by extending the MSI payload data to 64 bits to include the deviceID.
-> >>> Hence, the PCIe controller on this platforms has to differentiate the
-> >>> MSI payload against other DMA payload and has to modify the MSI
-> >> payload.
-> >>> This basically makes it difficult for this platforms to have a SMMU
-> >>> translation for MSI.
-> >>>
-> >>> This patch implements a ACPI table based quirk to reserve the hw msi
-> >>> regions in the smmu-v3 driver which means these address regions will
-> >>> not be translated and will be excluded from iova allocations.
-> >>>
-> >>> Signed-off-by: shameer <shameerali.kolothum.thodi(a)huawei.com>
-> >>> ---
-> >>>  drivers/iommu/arm-smmu-v3.c | 29 ++++++++++++++++++++++++-----
-> >>>  1 file changed, 24 insertions(+), 5 deletions(-)
-> >>>
-> >>> diff --git a/drivers/iommu/arm-smmu-v3.c b/drivers/iommu/arm-smmu-
-> >> v3.c
-> >>> index abe4b88..f03c63b 100644
-> >>> --- a/drivers/iommu/arm-smmu-v3.c
-> >>> +++ b/drivers/iommu/arm-smmu-v3.c
-> >>> @@ -597,6 +597,7 @@ struct arm_smmu_device {
-> >>>  	u32				features;
-> >>>
-> >>>  #define ARM_SMMU_OPT_SKIP_PREFETCH	(1 << 0)
-> >>> +#define ARM_SMMU_OPT_RESV_HW_MSI	(1 << 1)
-> >>>  	u32				options;
-> >>>
-> >>>  	struct arm_smmu_cmdq		cmdq;
-> >>> @@ -1904,14 +1905,31 @@ static void arm_smmu_get_resv_regions(struct
-> >> device *dev,
-> >>>  				      struct list_head *head)
-> >>>  {
-> >>>  	struct iommu_resv_region *region;
-> >>> +	struct arm_smmu_device *smmu;
-> >>> +	struct iommu_fwspec *fwspec =3D dev->iommu_fwspec;
-> >>>  	int prot =3D IOMMU_WRITE | IOMMU_NOEXEC | IOMMU_MMIO;
-> >>>
-> >>> -	region =3D iommu_alloc_resv_region(MSI_IOVA_BASE,
-> >> MSI_IOVA_LENGTH,
-> >>> -					 prot, IOMMU_RESV_SW_MSI);
-> >>> -	if (!region)
-> >>> -		return;
-> >>> +	smmu =3D arm_smmu_get_by_fwnode(fwspec->iommu_fwnode);
-> >>> +
-> >>> +	if (smmu && (smmu->options & ARM_SMMU_OPT_RESV_HW_MSI)
-> >> &&
-> >>> +		      dev_is_pci(dev)) {
-> >>
-> >> IORT changes are fine to me, I am still no big fan of this supposedly
-> >> generic option that is _really_ platform specific (in particular as I
-> >> said before the quirk depends on the PCI host bridge but in this
-> >> patchset I see no such dependency. In short - the quirk is hooked off
-> >> the SMMUv3 model which implicitly implies a PCI host bridge
-> >> configuration IIUC). It is Will and Robin decision though, I am not su=
+>>>> Linuxarm; Wangzhou (B); Guohanjun (Hanjun Guo)
+>>>> Subject: Re: [PATCH v2 2/2] iommu/arm-smmu-v3:Enable ACPI based
+>>>> HiSilicon erratum 161010801
+>>>>
+>>>> Hi Shameer,
+>>>>
+>>>> On Mon, Jun 19, 2017 at 04:45:00PM +0100, shameer wrote:
+>>>>> The HiSilicon erratum 161010801 describes the limitation of HiSilicon
+>>>>> platforms Hip06/Hip07 to support the SMMU mappings for MSI
+>>>> transactions.
+>>>>>
+>>>>> On these platforms GICv3 ITS translator is presented with the deviceID
+>>>>> by extending the MSI payload data to 64 bits to include the deviceID.
+>>>>> Hence, the PCIe controller on this platforms has to differentiate the
+>>>>> MSI payload against other DMA payload and has to modify the MSI
+>>>> payload.
+>>>>> This basically makes it difficult for this platforms to have a SMMU
+>>>>> translation for MSI.
+>>>>>
+>>>>> This patch implements a ACPI table based quirk to reserve the hw msi
+>>>>> regions in the smmu-v3 driver which means these address regions will
+>>>>> not be translated and will be excluded from iova allocations.
+>>>>>
+>>>>> Signed-off-by: shameer <shameerali.kolothum.thodi(a)huawei.com>
+>>>>> ---
+>>>>>  drivers/iommu/arm-smmu-v3.c | 29 ++++++++++++++++++++++++-----
+>>>>>  1 file changed, 24 insertions(+), 5 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/iommu/arm-smmu-v3.c b/drivers/iommu/arm-smmu-
+>>>> v3.c
+>>>>> index abe4b88..f03c63b 100644
+>>>>> --- a/drivers/iommu/arm-smmu-v3.c
+>>>>> +++ b/drivers/iommu/arm-smmu-v3.c
+>>>>> @@ -597,6 +597,7 @@ struct arm_smmu_device {
+>>>>>  	u32				features;
+>>>>>
+>>>>>  #define ARM_SMMU_OPT_SKIP_PREFETCH	(1 << 0)
+>>>>> +#define ARM_SMMU_OPT_RESV_HW_MSI	(1 << 1)
+>>>>>  	u32				options;
+>>>>>
+>>>>>  	struct arm_smmu_cmdq		cmdq;
+>>>>> @@ -1904,14 +1905,31 @@ static void arm_smmu_get_resv_regions(struct
+>>>> device *dev,
+>>>>>  				      struct list_head *head)
+>>>>>  {
+>>>>>  	struct iommu_resv_region *region;
+>>>>> +	struct arm_smmu_device *smmu;
+>>>>> +	struct iommu_fwspec *fwspec =3D dev->iommu_fwspec;
+>>>>>  	int prot =3D IOMMU_WRITE | IOMMU_NOEXEC | IOMMU_MMIO;
+>>>>>
+>>>>> -	region =3D iommu_alloc_resv_region(MSI_IOVA_BASE,
+>>>> MSI_IOVA_LENGTH,
+>>>>> -					 prot, IOMMU_RESV_SW_MSI);
+>>>>> -	if (!region)
+>>>>> -		return;
+>>>>> +	smmu =3D arm_smmu_get_by_fwnode(fwspec->iommu_fwnode);
+>>>>> +
+>>>>> +	if (smmu && (smmu->options & ARM_SMMU_OPT_RESV_HW_MSI)
+>>>> &&
+>>>>> +		      dev_is_pci(dev)) {
+>>>>
+>>>> IORT changes are fine to me, I am still no big fan of this supposedly
+>>>> generic option that is _really_ platform specific (in particular as I
+>>>> said before the quirk depends on the PCI host bridge but in this
+>>>> patchset I see no such dependency. In short - the quirk is hooked off
+>>>> the SMMUv3 model which implicitly implies a PCI host bridge
+>>>> configuration IIUC). It is Will and Robin decision though, I am not su=
 re
-> >> you can make it any tidier (given that on ACPI you may not even have
-> >> a PCI host bridge specific _HID to base your check above on).
-> > =
+>>>> you can make it any tidier (given that on ACPI you may not even have
+>>>> a PCI host bridge specific _HID to base your check above on).
+>>>
+>>> Thanks Lorenzo. I understand your point. As far as our platform is =
 
-> > Thanks Lorenzo. I understand your point. As far as our platform is =
-
-> > concerned, I think It is ok to remove the dev_is_pci() check and make
-> > it generic, if that helps.  I don't think it will harm us other than co=
+>>> concerned, I think It is ok to remove the dev_is_pci() check and make
+>>> it generic, if that helps.  I don't think it will harm us other than co=
 uple of
-> >  "HW MSI region resv failed: " logs  for our platform devices.
+>>>  "HW MSI region resv failed: " logs  for our platform devices.
+>>
+>> I think the answer there is that iort_iommu_its_get_resv_regions()
+>> really should distinguish between "this device just doesn't have an ITS
+>> mapping" and "something actually went wrong", such that you don't treat
+>> the former as an error. That's almost certainly cleaner than e.g. trying
+>> to check if dev has an associated MSI domain here before calling it.
 > =
 
-> I think the answer there is that iort_iommu_its_get_resv_regions()
-> really should distinguish between "this device just doesn't have an ITS
-> mapping" and "something actually went wrong", such that you don't treat
-> the former as an error. That's almost certainly cleaner than e.g. trying
-> to check if dev has an associated MSI domain here before calling it.
+> I would agree, even though this way we would end up reserving the ITS
+> address regions for all devices mapping to an ITS even though they may
+> or may not be affected by the quirk (because IIUC that's just a PCI
+> bridge problem), which is what my point is all about.
 
-I would agree, even though this way we would end up reserving the ITS
-address regions for all devices mapping to an ITS even though they may
-or may not be affected by the quirk (because IIUC that's just a PCI
-bridge problem), which is what my point is all about.
+As I'm sure I've said before, there's no foreseeable issue with that.
+For DMA, all it means is that we'll preallocate an identity mapping of
+the whole ITS rather than dynamically mapping pages of it as devices
+request MSIs; no functional change - if anything, it's slightly more
+efficient. For VFIO, it just means that the groups for platform devices
+will expose an MSI reservation at GITS_TRANSLATER instead of the
+arbitrary MSI_IOVA_BASE - again, arguably that's actually desirable
+because having all IOMMU groups be consistent with each other makes
+userspace's life that little bit simpler.
 
-It does not seem to be clean-cut, however we slice it.
+Robin.
 
-Thanks,
-Lorenzo
+> It does not seem to be clean-cut, however we slice it.
+> =
 
---===============8065860068526048032==--
+> Thanks,
+> Lorenzo
+> =
+
+
+
+--===============8084525147448327425==--
 
