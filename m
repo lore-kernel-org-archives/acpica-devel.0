@@ -1,48 +1,35 @@
-Content-Type: multipart/mixed; boundary="===============4901037732665432209=="
+Content-Type: multipart/mixed; boundary="===============8065860068526048032=="
 MIME-Version: 1.0
-From: Shameerali Kolothum Thodi <shameerali.kolothum.thodi at huawei.com>
+From: Lorenzo Pieralisi <lorenzo.pieralisi at arm.com>
 Subject: Re: [Devel] [PATCH v2 2/2] iommu/arm-smmu-v3:Enable ACPI based
  HiSilicon erratum 161010801
-Date: Tue, 20 Jun 2017 15:39:30 +0000
-Message-ID: <5FC3163CFD30C246ABAA99954A238FA8383866C7@FRAEML521-MBS.china.huawei.com>
+Date: Tue, 20 Jun 2017 16:51:05 +0100
+Message-ID: <20170620155105.GD11351@red-moon>
 In-Reply-To: d6e824b0-17bd-dd41-2d11-0491d8f66759@arm.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4901037732665432209==
+--===============8065860068526048032==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-
-
-> -----Original Message-----
-> From: Robin Murphy [mailto:robin.murphy(a)arm.com]
-> Sent: Tuesday, June 20, 2017 4:16 PM
-> To: Shameerali Kolothum Thodi; Lorenzo Pieralisi
-> Cc: marc.zyngier(a)arm.com; sudeep.holla(a)arm.com; will.deacon(a)arm.com;
-> hanjun.guo(a)linaro.org; Gabriele Paoloni; John Garry; iommu(a)lists.linu=
-x-
-> foundation.org; linux-arm-kernel(a)lists.infradead.org; linux-
-> acpi(a)vger.kernel.org; devel(a)acpica.org; Linuxarm; Wangzhou (B);
-> Guohanjun (Hanjun Guo)
-> Subject: Re: [PATCH v2 2/2] iommu/arm-smmu-v3:Enable ACPI based
-> HiSilicon erratum 161010801
-> =
-
+On Tue, Jun 20, 2017 at 04:16:18PM +0100, Robin Murphy wrote:
 > On 20/06/17 15:07, Shameerali Kolothum Thodi wrote:
-> >
-> >
+> > =
+
+> > =
+
 > >> -----Original Message-----
 > >> From: Lorenzo Pieralisi [mailto:lorenzo.pieralisi(a)arm.com]
 > >> Sent: Tuesday, June 20, 2017 11:29 AM
 > >> To: Shameerali Kolothum Thodi
-> >> Cc: marc.zyngier(a)arm.com; sudeep.holla(a)arm.com;
-> will.deacon(a)arm.com;
+> >> Cc: marc.zyngier(a)arm.com; sudeep.holla(a)arm.com; will.deacon(a)arm.=
+com;
 > >> robin.murphy(a)arm.com; hanjun.guo(a)linaro.org; Gabriele Paoloni; John
 > >> Garry; iommu(a)lists.linux-foundation.org; linux-arm-
-> >> kernel(a)lists.infradead.org; linux-acpi(a)vger.kernel.org;
-> devel(a)acpica.org;
+> >> kernel(a)lists.infradead.org; linux-acpi(a)vger.kernel.org; devel(a)ac=
+pica.org;
 > >> Linuxarm; Wangzhou (B); Guohanjun (Hanjun Guo)
 > >> Subject: Re: [PATCH v2 2/2] iommu/arm-smmu-v3:Enable ACPI based
 > >> HiSilicon erratum 161010801
@@ -71,8 +58,7 @@ x-
 > >>>  drivers/iommu/arm-smmu-v3.c | 29 ++++++++++++++++++++++++-----
 > >>>  1 file changed, 24 insertions(+), 5 deletions(-)
 > >>>
-> >>> diff --git a/drivers/iommu/arm-smmu-v3.c b/drivers/iommu/arm-
-> smmu-
+> >>> diff --git a/drivers/iommu/arm-smmu-v3.c b/drivers/iommu/arm-smmu-
 > >> v3.c
 > >>> index abe4b88..f03c63b 100644
 > >>> --- a/drivers/iommu/arm-smmu-v3.c
@@ -85,8 +71,7 @@ x-
 > >>>  	u32				options;
 > >>>
 > >>>  	struct arm_smmu_cmdq		cmdq;
-> >>> @@ -1904,14 +1905,31 @@ static void
-> arm_smmu_get_resv_regions(struct
+> >>> @@ -1904,14 +1905,31 @@ static void arm_smmu_get_resv_regions(struct
 > >> device *dev,
 > >>>  				      struct list_head *head)
 > >>>  {
@@ -115,8 +100,10 @@ x-
 re
 > >> you can make it any tidier (given that on ACPI you may not even have
 > >> a PCI host bridge specific _HID to base your check above on).
-> >
-> > Thanks Lorenzo. I understand your point. As far as our platform is
+> > =
+
+> > Thanks Lorenzo. I understand your point. As far as our platform is =
+
 > > concerned, I think It is ok to remove the dev_is_pci() check and make
 > > it generic, if that helps.  I don't think it will harm us other than co=
 uple of
@@ -129,29 +116,15 @@ uple of
 > the former as an error. That's almost certainly cleaner than e.g. trying
 > to check if dev has an associated MSI domain here before calling it.
 
-If I understood that correctly, the suggestion is to treat cases where devi=
-ce
-doesn=E2=80=99t have any ITS node associated with it as "success".
+I would agree, even though this way we would end up reserving the ITS
+address regions for all devices mapping to an ITS even though they may
+or may not be affected by the quirk (because IIUC that's just a PCI
+bridge problem), which is what my point is all about.
 
-+int iort_iommu_its_get_resv_regions(struct device *dev, struct list_head *=
-head)
-+{
-[....]
-+	if (!its_node)
-+		return -ENODEV;
-
-ie, return success above from patch 1/2.
-
-Lorenzo, =
-
-
-Please let me know if that=E2=80=99s a correct thing to do as I am not sure=
- about all the error
-scenarios here.
+It does not seem to be clean-cut, however we slice it.
 
 Thanks,
-Shameer
+Lorenzo
 
-
---===============4901037732665432209==--
+--===============8065860068526048032==--
 
