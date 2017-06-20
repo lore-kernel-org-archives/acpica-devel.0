@@ -1,84 +1,78 @@
-Content-Type: multipart/mixed; boundary="===============2569097891887177910=="
+Content-Type: multipart/mixed; boundary="===============4250533369527853066=="
 MIME-Version: 1.0
-From: Will Deacon <will.deacon at arm.com>
-Subject: Re: [Devel] [PATCH v8 2/3] iommu/arm-smmu-v3: Add workaround for
- Cavium ThunderX2 erratum #74
-Date: Tue, 20 Jun 2017 19:06:19 +0100
-Message-ID: <20170620180618.GE28035@arm.com>
-In-Reply-To: 1497968259-16390-3-git-send-email-gakula@caviumnetworks.com
+From: Lorenzo Pieralisi <lorenzo.pieralisi at arm.com>
+Subject: Re: [Devel] [PATCH v8 1/3] ACPI/IORT: Fixup SMMUv3 resource size for
+ Cavium ThunderX2 SMMUv3 model
+Date: Tue, 20 Jun 2017 20:27:47 +0100
+Message-ID: <20170620192747.GA30990@red-moon>
+In-Reply-To: 1497968259-16390-2-git-send-email-gakula@caviumnetworks.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2569097891887177910==
+--===============4250533369527853066==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jun 20, 2017 at 07:47:38PM +0530, Geetha sowjanya wrote:
+On Tue, Jun 20, 2017 at 07:47:37PM +0530, Geetha sowjanya wrote:
 > From: Linu Cherian <linu.cherian(a)cavium.com>
 > =
 
-> Cavium ThunderX2 SMMU implementation doesn't support page 1 register space
-> and PAGE0_REGS_ONLY option is enabled as an errata workaround.
-> This option when turned on, replaces all page 1 offsets used for
-> EVTQ_PROD/CONS, PRIQ_PROD/CONS register access with page 0 offsets.
-> =
-
-> SMMU resource size checks are now based on SMMU option PAGE0_REGS_ONLY,
-> since resource size can be either 64k/128k.
-> For this, arm_smmu_device_dt_probe/acpi_probe has been moved before
-> platform_get_resource call, so that SMMU options are set beforehand.
+> Cavium ThunderX2 implementation doesn't support second page in SMMU
+> register space. Hence, resource size is set as 64k for this model.
 > =
 
 > Signed-off-by: Linu Cherian <linu.cherian(a)cavium.com>
 > Signed-off-by: Geetha Sowjanya <geethasowjanya.akula(a)cavium.com>
 > ---
->  Documentation/arm64/silicon-errata.txt             |    1 +
->  .../devicetree/bindings/iommu/arm,smmu-v3.txt      |    6 ++
->  drivers/iommu/arm-smmu-v3.c                        |   68 ++++++++++++++=
------
->  3 files changed, 57 insertions(+), 18 deletions(-)
-> =
+>  drivers/acpi/arm64/iort.c |   15 ++++++++++++++-
+>  1 files changed, 14 insertions(+), 1 deletions(-)
 
-> diff --git a/Documentation/arm64/silicon-errata.txt b/Documentation/arm64=
-/silicon-errata.txt
-> index 10f2ddd..4693a32 100644
-> --- a/Documentation/arm64/silicon-errata.txt
-> +++ b/Documentation/arm64/silicon-errata.txt
-> @@ -62,6 +62,7 @@ stable kernels.
->  | Cavium         | ThunderX GICv3  | #23154          | CAVIUM_ERRATUM_23=
-154        |
->  | Cavium         | ThunderX Core   | #27456          | CAVIUM_ERRATUM_27=
-456        |
->  | Cavium         | ThunderX SMMUv2 | #27704          | N/A              =
-           |
-> +| Cavium         | ThunderX2 SMMUv3| #74             | N/A              =
-           |
->  |                |                 |                 |                  =
-           |
->  | Freescale/NXP  | LS2080A/LS1043A | A-008585        | FSL_ERRATUM_A0085=
-85         |
->  |                |                 |                 |                  =
-           |
-> diff --git a/Documentation/devicetree/bindings/iommu/arm,smmu-v3.txt b/Do=
-cumentation/devicetree/bindings/iommu/arm,smmu-v3.txt
-> index be57550..6ecc48c 100644
-> --- a/Documentation/devicetree/bindings/iommu/arm,smmu-v3.txt
-> +++ b/Documentation/devicetree/bindings/iommu/arm,smmu-v3.txt
-> @@ -49,6 +49,12 @@ the PCIe specification.
->  - hisilicon,broken-prefetch-cmd
->                      : Avoid sending CMD_PREFETCH_* commands to the SMMU.
+Acked-by: Lorenzo Pieralisi <lorenzo.pieralisi(a)arm.com>
+
+> diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
+> index c5fecf9..c166f3e 100644
+> --- a/drivers/acpi/arm64/iort.c
+> +++ b/drivers/acpi/arm64/iort.c
+> @@ -828,6 +828,18 @@ static int __init arm_smmu_v3_count_resources(struct=
+ acpi_iort_node *node)
+>  	return num_res;
+>  }
 >  =
 
-> +- cavium,cn9900-broken-page1-regspace
-> +                    : Replaces all page 1 offsets used for EVTQ_PROD/CON=
-S,
-> +		      PRIQ_PROD/CONS register access with page 0 offsets.
-> +		      Set for Caviun ThunderX2 silicon that doesn't support
+> +static unsigned long arm_smmu_v3_resource_size(struct acpi_iort_smmu_v3 =
+*smmu)
+> +{
+> +	/*
+> +	 * Override the size, for Cavium ThunderX2 implementation
+> +	 * which doesn't support the page 1 SMMU register space.
+> +	 */
+> +	if (smmu->model =3D=3D ACPI_IORT_SMMU_V3_CAVIUM_CN99XX)
+> +		return SZ_64K;
+> +
+> +	return SZ_128K;
+> +}
+> +
+>  static void __init arm_smmu_v3_init_resources(struct resource *res,
+>  					      struct acpi_iort_node *node)
+>  {
+> @@ -838,7 +850,8 @@ static void __init arm_smmu_v3_init_resources(struct =
+resource *res,
+>  	smmu =3D (struct acpi_iort_smmu_v3 *)node->node_data;
+>  =
 
-s/Caviun/Cavium/
+>  	res[num_res].start =3D smmu->base_address;
+> -	res[num_res].end =3D smmu->base_address + SZ_128K - 1;
+> +	res[num_res].end =3D smmu->base_address +
+> +				arm_smmu_v3_resource_size(smmu) - 1;
+>  	res[num_res].flags =3D IORESOURCE_MEM;
+>  =
 
-Will
+>  	num_res++;
+> -- =
 
---===============2569097891887177910==--
+> 1.7.1
+>=20
+
+--===============4250533369527853066==--
 
