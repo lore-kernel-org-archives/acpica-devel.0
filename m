@@ -1,193 +1,208 @@
-Content-Type: multipart/mixed; boundary="===============6539635352127157472=="
+Content-Type: multipart/mixed; boundary="===============1178127083720451026=="
 MIME-Version: 1.0
-From: Lorenzo Pieralisi <lorenzo.pieralisi at arm.com>
-Subject: Re: [Devel] [PATCH v2 2/2] acpi, gicv3-its,
- numa: Adding numa node mapping for gic-its units
-Date: Tue, 20 Jun 2017 18:30:00 +0100
-Message-ID: <20170620173000.GA30839@red-moon>
-In-Reply-To: CAFpQJXW3oDc-R=j5Jzok_5W+tTcut9b9f_=6q9Q0PwWy+pq3=w@mail.gmail.com
+From: Will Deacon <will.deacon at arm.com>
+Subject: Re: [Devel] [PATCH v8 3/3] iommu/arm-smmu-v3: Add workaround for
+ Cavium ThunderX2 erratum #126
+Date: Tue, 20 Jun 2017 19:00:39 +0100
+Message-ID: <20170620180038.GC28035@arm.com>
+In-Reply-To: 1497968259-16390-4-git-send-email-gakula@caviumnetworks.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6539635352127157472==
+--===============1178127083720451026==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jun 20, 2017 at 10:47:24PM +0530, Ganapatrao Kulkarni wrote:
-> Hi Lorenzo,
+On Tue, Jun 20, 2017 at 07:47:39PM +0530, Geetha sowjanya wrote:
+> From: Geetha Sowjanya <geethasowjanya.akula(a)cavium.com>
 > =
 
-> On Tue, Jun 20, 2017 at 8:47 PM, Lorenzo Pieralisi
-> <lorenzo.pieralisi(a)arm.com> wrote:
-> > Hi Ganapatrao,
-> >
-> > On Tue, Jun 20, 2017 at 12:37:17PM +0530, Ganapatrao Kulkarni wrote:
-> >> Add code to parse SRAT ITS Affinity sub table as defined in ACPI 6.2
-> >> Later in per device probe, ITS devices are mapped to
-> >> numa node using ITS id to proximity domain mapping.
-> >>
-> >> Signed-off-by: Ganapatrao Kulkarni <ganapatrao.kulkarni(a)cavium.com>
-> >> ---
-> >>  drivers/irqchip/irq-gic-v3-its.c | 76 +++++++++++++++++++++++++++++++=
-++++++++-
-> >>  1 file changed, 75 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gi=
-c-v3-its.c
-> >> index 45ea1933..5865a75 100644
-> >> --- a/drivers/irqchip/irq-gic-v3-its.c
-> >> +++ b/drivers/irqchip/irq-gic-v3-its.c
-> >> @@ -1833,6 +1833,78 @@ static int __init its_of_probe(struct device_no=
-de *node)
-> >>
-> >>  #define ACPI_GICV3_ITS_MEM_SIZE (SZ_128K)
-> >>
-> >> +#ifdef CONFIG_ACPI_NUMA
-> >> +struct its_srat_map {
-> >> +     u32                     numa_node;  /* numa node id */
-> >> +     u32                     its_id;  /* GIC ITS ID */
-> >> +     struct list_head        entry;
-> >> +};
-> >> +
-> >> +static LIST_HEAD(its_srat_maps);
-> >> +
-> >> +static int acpi_get_its_numa_node(u32 its_id)
-> >> +{
-> >> +     struct its_srat_map *srat_map;
-> >> +
-> >> +     list_for_each_entry(srat_map, &its_srat_maps, entry) {
-> >> +             if (its_id =3D=3D srat_map->its_id)
-> >> +                     return srat_map->numa_node;
-> >> +     }
-> >> +     return NUMA_NO_NODE;
-> >> +}
-> >
-> > I do not want to come across as pedantic and I understand that the API
-> > to parse static ACPI tables sucks (ie in theory you could avoid stashing
-> > nodes altogether and just use a global variable to parse an ITS ID at
-> > a time but it sucks to go through the SRAT multiple times) but would not
-> > it be easier to just declare an __initdata static array and counter and
-> > be done with this ? We do not need this stuff after boot so I do not see
-> > a point in keeping it in memory and in allocating the nodes dynamically.
+> Cavium ThunderX2 SMMU doesn't support MSI and also doesn't have unique irq
+> lines for gerror, eventq and cmdq-sync.
 > =
 
-> yes, it was my initial thought (as done v1), and i have replaced to
-> dynamic array in this series. I might have misunderstood your comments.
-> if you have no objection for the static array of size MAX_NUMNODES
-> as done v1 [1], i can send v3 with that change?
+> SHARED_IRQ option is set as a errata workaround, which allows to share th=
+e irq
+> line by register single irq handler for all the interrupts.
 > =
 
-> [1] https://patchwork.kernel.org/patch/9768869/
->
-It is ok by me sorry for delaying you further.
-
-> > Apologies if I was not clear in my comments to the previous set, I did
-> > not like stashing ITS PXM values in arch/arm64 code but I understand you
-> > need an array (__initdata) to avoid reading the SRAT multiple times.
+> Signed-off-by: Geetha sowjanya <gakula(a)caviumnetworks.com>
+> ---
+>  .../devicetree/bindings/iommu/arm,smmu-v3.txt      |    5 ++
+>  drivers/iommu/arm-smmu-v3.c                        |   73 ++++++++++++++=
+++----
+>  2 files changed, 64 insertions(+), 14 deletions(-)
 > =
 
-> yes, having static array to hold parsed table is required to avoid
-> multiple iterations
-> of parsing functions.
-> This array can go in __initdata.
+> diff --git a/Documentation/devicetree/bindings/iommu/arm,smmu-v3.txt b/Do=
+cumentation/devicetree/bindings/iommu/arm,smmu-v3.txt
+> index 6ecc48c..44b40e0 100644
+> --- a/Documentation/devicetree/bindings/iommu/arm,smmu-v3.txt
+> +++ b/Documentation/devicetree/bindings/iommu/arm,smmu-v3.txt
+> @@ -55,6 +55,11 @@ the PCIe specification.
+>  		      Set for Caviun ThunderX2 silicon that doesn't support
+>  		      SMMU page1 register space.
+>  =
 
-Agreed, thanks.
+> +- cavium,cn9900-broken-unique-irqline
+> +                    : Use single irq line for all the SMMUv3 interrupts.
+> +		      Set for Caviun ThunderX2 silicon that doesn't support
+> +		      MSI and also doesn't have unique irq lines for gerror,
+> +		      eventq and cmdq-sync.
 
-Lorenzo
+I think we're better off just supporting a new (optional) named interrupt
+as "combined", and then allowing that to be used instead of the others.
 
-> =
+>  ** Example
+>  =
 
-> >
-> > Thanks,
-> > Lorenzo
-> >
-> >> +
-> >> +static int __init
-> >> +gic_acpi_parse_srat_its(struct acpi_subtable_header *header,
-> >> +                      const unsigned long end)
-> >> +{
-> >> +     int pxm, node;
-> >> +     struct its_srat_map *srat_map;
-> >> +     struct acpi_srat_its_affinity *its_affinity;
-> >> +
-> >> +     its_affinity =3D (struct acpi_srat_its_affinity *)header;
-> >> +     if (!its_affinity)
-> >> +             return -EINVAL;
-> >> +
-> >> +     if (its_affinity->header.length <
-> >> +                     sizeof(struct acpi_srat_its_affinity)) {
-> >> +             pr_err("SRAT:ITS: Invalid SRAT header length: %d\n",
-> >> +                     its_affinity->header.length);
-> >> +             return -EINVAL;
-> >> +     }
-> >> +
-> >> +     pxm =3D its_affinity->proximity_domain;
-> >> +     node =3D acpi_map_pxm_to_node(pxm);
-> >> +
-> >> +     if (node =3D=3D NUMA_NO_NODE || node >=3D MAX_NUMNODES) {
-> >> +             pr_err("SRAT:ITS Invalid numa node %d\n", node);
-> >> +             return -EINVAL;
-> >> +     }
-> >> +
-> >> +     srat_map =3D kzalloc(sizeof(*srat_map), GFP_KERNEL);
-> >> +     if (!srat_map)
-> >> +             return -ENOMEM;
-> >> +
-> >> +     srat_map->numa_node =3D node;
-> >> +     srat_map->its_id =3D its_affinity->its_id;
-> >> +     list_add(&srat_map->entry, &its_srat_maps);
-> >> +     pr_info("ACPI: NUMA: SRAT: ITS: PXM %d -> ITS_ID %d -> NODE %d\n=
-",
-> >> +             srat_map->its_id, pxm, node);
-> >> +
-> >> +     return 0;
-> >> +}
-> >> +
-> >> +static int __init acpi_table_parse_srat_its(void)
-> >> +{
-> >> +     return acpi_table_parse_entries(ACPI_SIG_SRAT,
-> >> +                                     sizeof(struct acpi_table_srat),
-> >> +                                     ACPI_SRAT_TYPE_GIC_ITS_AFFINITY,
-> >> +                                     gic_acpi_parse_srat_its, 0);
-> >> +}
-> >> +#else
-> >> +#define acpi_table_parse_srat_its(void) { }
-> >> +#define acpi_get_its_numa_node(its_id) NUMA_NO_NODE
-> >> +#endif
-> >> +
-> >>  static int __init gic_acpi_parse_madt_its(struct acpi_subtable_header=
- *header,
-> >>                                         const unsigned long end)
-> >>  {
-> >> @@ -1861,7 +1933,8 @@ static int __init gic_acpi_parse_madt_its(struct=
- acpi_subtable_header *header,
-> >>               goto dom_err;
-> >>       }
-> >>
-> >> -     err =3D its_probe_one(&res, dom_handle, NUMA_NO_NODE);
-> >> +     err =3D its_probe_one(&res, dom_handle,
-> >> +                     acpi_get_its_numa_node(its_entry->translation_id=
-));
-> >>       if (!err)
-> >>               return 0;
-> >>
-> >> @@ -1873,6 +1946,7 @@ static int __init gic_acpi_parse_madt_its(struct=
- acpi_subtable_header *header,
-> >>
-> >>  static void __init its_acpi_probe(void)
-> >>  {
-> >> +     acpi_table_parse_srat_its();
-> >>       acpi_table_parse_madt(ACPI_MADT_TYPE_GENERIC_TRANSLATOR,
-> >>                             gic_acpi_parse_madt_its, 0);
-> >>  }
-> >> --
-> >> 1.8.1.4
-> >>
-> =
+>          smmu(a)2b400000 {
+> diff --git a/drivers/iommu/arm-smmu-v3.c b/drivers/iommu/arm-smmu-v3.c
+> index 2dea4a9..6c0c632 100644
+> --- a/drivers/iommu/arm-smmu-v3.c
+> +++ b/drivers/iommu/arm-smmu-v3.c
+> @@ -598,6 +598,7 @@ struct arm_smmu_device {
+>  =
 
-> thanks
-> Ganapat
+>  #define ARM_SMMU_OPT_SKIP_PREFETCH	(1 << 0)
+>  #define ARM_SMMU_OPT_PAGE0_REGS_ONLY	(1 << 1)
+> +#define ARM_SMMU_OPT_SHARED_IRQ	(1 << 2)
 
---===============6539635352127157472==--
+Please call this COMBINED instead of SHARED (similarly elsewhere). That
+said, not sure we need this.
+
+>  	u32				options;
+>  =
+
+>  	struct arm_smmu_cmdq		cmdq;
+> @@ -665,6 +666,7 @@ struct arm_smmu_option_prop {
+>  static struct arm_smmu_option_prop arm_smmu_options[] =3D {
+>  	{ ARM_SMMU_OPT_SKIP_PREFETCH, "hisilicon,broken-prefetch-cmd" },
+>  	{ ARM_SMMU_OPT_PAGE0_REGS_ONLY, "cavium,cn9900-broken-page1-regspace"},
+> +	{ ARM_SMMU_OPT_SHARED_IRQ, "cavium,cn9900-broken-unique-irqline"},
+>  	{ 0, NULL},
+>  };
+>  =
+
+> @@ -1313,6 +1315,21 @@ static irqreturn_t arm_smmu_gerror_handler(int irq=
+, void *dev)
+>  	writel(gerror, smmu->base + ARM_SMMU_GERRORN);
+>  	return IRQ_HANDLED;
+>  }
+> +/* Shared irq handler*/
+> +static irqreturn_t arm_smmu_shared_irq_thread(int irq, void *dev)
+> +{
+> +	struct arm_smmu_device *smmu =3D dev;
+> +	irqreturn_t ret;
+> +
+> +	ret =3D arm_smmu_gerror_handler(irq, dev);
+> +	if (ret =3D=3D IRQ_NONE) {
+> +		arm_smmu_evtq_thread(irq, dev);
+> +		arm_smmu_cmdq_sync_handler(irq, dev);
+> +		if (smmu->features & ARM_SMMU_FEAT_PRI)
+> +			arm_smmu_priq_thread(irq, dev);
+> +	}
+> +	return IRQ_HANDLED;
+> +}
+
+This isn't quite right, because you're now running low-level handlers (like
+the gerror handler) in threaded context. You're better off registering a
+low-level handler too (see below) which can kick gerror and cmdq_sync
+before unconditionally returning IRQ_WAKE_THREAD.
+
+>  =
+
+>  /* IO_PGTABLE API */
+>  static void __arm_smmu_tlb_sync(struct arm_smmu_device *smmu)
+> @@ -2230,18 +2247,9 @@ static void arm_smmu_setup_msis(struct arm_smmu_de=
+vice *smmu)
+>  	devm_add_action(dev, arm_smmu_free_msis, dev);
+>  }
+>  =
+
+> -static int arm_smmu_setup_irqs(struct arm_smmu_device *smmu)
+> +static void arm_smmu_setup_unique_irqs(struct arm_smmu_device *smmu)
+>  {
+> -	int ret, irq;
+> -	u32 irqen_flags =3D IRQ_CTRL_EVTQ_IRQEN | IRQ_CTRL_GERROR_IRQEN;
+> -
+> -	/* Disable IRQs first */
+> -	ret =3D arm_smmu_write_reg_sync(smmu, 0, ARM_SMMU_IRQ_CTRL,
+> -				      ARM_SMMU_IRQ_CTRLACK);
+> -	if (ret) {
+> -		dev_err(smmu->dev, "failed to disable irqs\n");
+> -		return ret;
+> -	}
+> +	int irq, ret;
+>  =
+
+>  	arm_smmu_setup_msis(smmu);
+>  =
+
+> @@ -2284,10 +2292,46 @@ static int arm_smmu_setup_irqs(struct arm_smmu_de=
+vice *smmu)
+>  			if (ret < 0)
+>  				dev_warn(smmu->dev,
+>  					 "failed to enable priq irq\n");
+> -			else
+> -				irqen_flags |=3D IRQ_CTRL_PRIQ_IRQEN;
+>  		}
+>  	}
+> +}
+> +
+> +static void arm_smmu_setup_shared_irqs(struct arm_smmu_device *smmu)
+> +{
+> +	int ret, irq;
+> +
+> +	/* Single irq is used for all queues, request single interrupt lines */
+> +	irq =3D smmu->evtq.q.irq;
+> +	if (irq) {
+> +		ret =3D devm_request_threaded_irq(smmu->dev, irq, NULL,
+
+As above, stick your low-level handler in instead of NULL here.
+
+> +					arm_smmu_shared_irq_thread,
+> +					IRQF_ONESHOT | IRQF_SHARED,
+
+Why do you need IRQF_SHARED here?
+
+> +					"arm-smmu-v3-shared_irq", smmu);
+
+Call this "combined" instead of shared, to avoid confusion with the IRQ
+flags.
+
+> +		if (ret < 0)
+> +			dev_warn(smmu->dev, "failed to enable shared irq\n");
+> +	}
+> +}
+> +
+> +static int arm_smmu_setup_irqs(struct arm_smmu_device *smmu)
+> +{
+> +	int ret;
+> +	u32 irqen_flags =3D IRQ_CTRL_EVTQ_IRQEN | IRQ_CTRL_GERROR_IRQEN;
+> +
+> +	/* Disable IRQs first */
+> +	ret =3D arm_smmu_write_reg_sync(smmu, 0, ARM_SMMU_IRQ_CTRL,
+> +				      ARM_SMMU_IRQ_CTRLACK);
+> +	if (ret) {
+> +		dev_err(smmu->dev, "failed to disable irqs\n");
+> +		return ret;
+> +	}
+> +
+> +	if (smmu->options & ARM_SMMU_OPT_SHARED_IRQ)
+> +		arm_smmu_setup_shared_irqs(smmu);
+> +	else
+> +		arm_smmu_setup_unique_irqs(smmu);
+
+I'd rather just have something like:
+
+  irq =3D platform_get_irq_byname(pdev, "combined");
+
+in the arm_smmu_device_probe function. If we find it's there, we use that
+in preference to the other interrupts.
+
+Will
+
+--===============1178127083720451026==--
 
