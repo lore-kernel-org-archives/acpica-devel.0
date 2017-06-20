@@ -1,21 +1,25 @@
-Content-Type: multipart/mixed; boundary="===============6415668021140917742=="
+Content-Type: multipart/mixed; boundary="===============6473341312291854598=="
 MIME-Version: 1.0
-From: Loc Ho <lho at apm.com>
+From: Rafael J. Wysocki <rafael at kernel.org>
 Subject: Re: [Devel] [PATCH] ACPI: SPCR: Use access width to determine mmio
  usage
-Date: Tue, 20 Jun 2017 14:41:18 -0700
-Message-ID: <CAPw-ZTmKk7XM-FmN9wes-0ai3e8X0Ta_uR4H-qEMP42Yzoim6g@mail.gmail.com>
+Date: Tue, 20 Jun 2017 23:43:51 +0200
+Message-ID: <CAJZ5v0jDiOUNYz-iZ0dox1SRbVLYoRVtzaTUivyCEwVHE2jD1Q@mail.gmail.com>
 In-Reply-To: CAC3K-4rAt0CZ2=45uJyR5PPJctxVzL0_wKv9j+1UTE+BWVx5uw@mail.gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6415668021140917742==
+--===============6473341312291854598==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi Jon,
-
+On Tue, Jun 20, 2017 at 11:27 PM, Jon Mason <jon.mason(a)broadcom.com> wrot=
+e:
+> On Tue, Jun 20, 2017 at 2:33 PM, Loc Ho <lho(a)apm.com> wrote:
+>> Hi Jon,
+>>
+>>>
 >>> >> >>>>>> The current SPCR code does not check the access width of the =
 mmio, and
 >>> >> >>>>>> uses a default of 8bit register accesses.  This prevents devi=
@@ -174,11 +178,15 @@ tion.
 >
 > Is there someone else I should be directing this patch through?
 
-Can you generate a new patch set that includes all the required
-patches (including mine workaround for X-Gene) and re-post? Then we
-check with Rafael or Len again.
+Generally, whoever is going to be affected by this change.
 
--Loc
+git seems to tell me that the spcr.c file went in through the tty tree
+and Aleksey introduced it.
 
---===============6415668021140917742==--
+I can apply it if no one has any objections.
+
+Thanks,
+Rafael
+
+--===============6473341312291854598==--
 
