@@ -1,144 +1,133 @@
-Content-Type: multipart/mixed; boundary="===============3030132408775536651=="
+Content-Type: multipart/mixed; boundary="===============2149585765295126388=="
 MIME-Version: 1.0
-From: Ganapatrao Kulkarni <ganapatrao.kulkarni at cavium.com>
-Subject: [Devel] [PATCH v2 2/2] acpi, gicv3-its,
- numa: Adding numa node mapping for gic-its units
-Date: Tue, 20 Jun 2017 12:37:17 +0530
-Message-ID: <1497942437-1390-3-git-send-email-ganapatrao.kulkarni@cavium.com>
-In-Reply-To: 1497942437-1390-1-git-send-email-ganapatrao.kulkarni@cavium.com
+From: Lorenzo Pieralisi <lorenzo.pieralisi at arm.com>
+Subject: Re: [Devel] [PATCH v2 2/2] iommu/arm-smmu-v3:Enable ACPI based
+ HiSilicon erratum 161010801
+Date: Tue, 20 Jun 2017 11:29:06 +0100
+Message-ID: <20170620102906.GA26908@red-moon>
+In-Reply-To: 20170619154500.92336-3-shameerali.kolothum.thodi@huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3030132408775536651==
+--===============2149585765295126388==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Add code to parse SRAT ITS Affinity sub table as defined in ACPI 6.2
-Later in per device probe, ITS devices are mapped to
-numa node using ITS id to proximity domain mapping.
+Hi Shameer,
 
-Signed-off-by: Ganapatrao Kulkarni <ganapatrao.kulkarni(a)cavium.com>
----
- drivers/irqchip/irq-gic-v3-its.c | 76 ++++++++++++++++++++++++++++++++++++=
-+++-
- 1 file changed, 75 insertions(+), 1 deletion(-)
+On Mon, Jun 19, 2017 at 04:45:00PM +0100, shameer wrote:
+> The HiSilicon erratum 161010801 describes the limitation of HiSilicon
+> platforms Hip06/Hip07 to support the SMMU mappings for MSI transactions.
+> =
 
-diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-=
-its.c
-index 45ea1933..5865a75 100644
---- a/drivers/irqchip/irq-gic-v3-its.c
-+++ b/drivers/irqchip/irq-gic-v3-its.c
-@@ -1833,6 +1833,78 @@ static int __init its_of_probe(struct device_node *n=
-ode)
- =
+> On these platforms GICv3 ITS translator is presented with the deviceID
+> by extending the MSI payload data to 64 bits to include the deviceID.
+> Hence, the PCIe controller on this platforms has to differentiate the
+> MSI payload against other DMA payload and has to modify the MSI payload.
+> This basically makes it difficult for this platforms to have a SMMU
+> translation for MSI.
+> =
 
- #define ACPI_GICV3_ITS_MEM_SIZE (SZ_128K)
- =
+> This patch implements a ACPI table based quirk to reserve the hw msi
+> regions in the smmu-v3 driver which means these address regions will
+> not be translated and will be excluded from iova allocations.
+> =
 
-+#ifdef CONFIG_ACPI_NUMA
-+struct its_srat_map {
-+	u32			numa_node;  /* numa node id */
-+	u32			its_id;  /* GIC ITS ID */
-+	struct list_head	entry;
-+};
-+
-+static LIST_HEAD(its_srat_maps);
-+
-+static int acpi_get_its_numa_node(u32 its_id)
-+{
-+	struct its_srat_map *srat_map;
-+
-+	list_for_each_entry(srat_map, &its_srat_maps, entry) {
-+		if (its_id =3D=3D srat_map->its_id)
-+			return srat_map->numa_node;
-+	}
-+	return NUMA_NO_NODE;
-+}
-+
-+static int __init
-+gic_acpi_parse_srat_its(struct acpi_subtable_header *header,
-+			 const unsigned long end)
-+{
-+	int pxm, node;
-+	struct its_srat_map *srat_map;
-+	struct acpi_srat_its_affinity *its_affinity;
-+
-+	its_affinity =3D (struct acpi_srat_its_affinity *)header;
-+	if (!its_affinity)
-+		return -EINVAL;
-+
-+	if (its_affinity->header.length <
-+			sizeof(struct acpi_srat_its_affinity)) {
-+		pr_err("SRAT:ITS: Invalid SRAT header length: %d\n",
-+			its_affinity->header.length);
-+		return -EINVAL;
-+	}
-+
-+	pxm =3D its_affinity->proximity_domain;
-+	node =3D acpi_map_pxm_to_node(pxm);
-+
-+	if (node =3D=3D NUMA_NO_NODE || node >=3D MAX_NUMNODES) {
-+		pr_err("SRAT:ITS Invalid numa node %d\n", node);
-+		return -EINVAL;
-+	}
-+
-+	srat_map =3D kzalloc(sizeof(*srat_map), GFP_KERNEL);
-+	if (!srat_map)
-+		return -ENOMEM;
-+
-+	srat_map->numa_node =3D node;
-+	srat_map->its_id =3D its_affinity->its_id;
-+	list_add(&srat_map->entry, &its_srat_maps);
-+	pr_info("ACPI: NUMA: SRAT: ITS: PXM %d -> ITS_ID %d -> NODE %d\n",
-+		srat_map->its_id, pxm, node);
-+
-+	return 0;
-+}
-+
-+static int __init acpi_table_parse_srat_its(void)
-+{
-+	return acpi_table_parse_entries(ACPI_SIG_SRAT,
-+					sizeof(struct acpi_table_srat),
-+					ACPI_SRAT_TYPE_GIC_ITS_AFFINITY,
-+					gic_acpi_parse_srat_its, 0);
-+}
-+#else
-+#define acpi_table_parse_srat_its(void) { }
-+#define acpi_get_its_numa_node(its_id) NUMA_NO_NODE
-+#endif
-+
- static int __init gic_acpi_parse_madt_its(struct acpi_subtable_header *hea=
-der,
- 					  const unsigned long end)
- {
-@@ -1861,7 +1933,8 @@ static int __init gic_acpi_parse_madt_its(struct acpi=
-_subtable_header *header,
- 		goto dom_err;
- 	}
- =
+> Signed-off-by: shameer <shameerali.kolothum.thodi(a)huawei.com>
+> ---
+>  drivers/iommu/arm-smmu-v3.c | 29 ++++++++++++++++++++++++-----
+>  1 file changed, 24 insertions(+), 5 deletions(-)
+> =
 
--	err =3D its_probe_one(&res, dom_handle, NUMA_NO_NODE);
-+	err =3D its_probe_one(&res, dom_handle,
-+			acpi_get_its_numa_node(its_entry->translation_id));
- 	if (!err)
- 		return 0;
- =
+> diff --git a/drivers/iommu/arm-smmu-v3.c b/drivers/iommu/arm-smmu-v3.c
+> index abe4b88..f03c63b 100644
+> --- a/drivers/iommu/arm-smmu-v3.c
+> +++ b/drivers/iommu/arm-smmu-v3.c
+> @@ -597,6 +597,7 @@ struct arm_smmu_device {
+>  	u32				features;
+>  =
 
-@@ -1873,6 +1946,7 @@ static int __init gic_acpi_parse_madt_its(struct acpi=
-_subtable_header *header,
- =
+>  #define ARM_SMMU_OPT_SKIP_PREFETCH	(1 << 0)
+> +#define ARM_SMMU_OPT_RESV_HW_MSI	(1 << 1)
+>  	u32				options;
+>  =
 
- static void __init its_acpi_probe(void)
- {
-+	acpi_table_parse_srat_its();
- 	acpi_table_parse_madt(ACPI_MADT_TYPE_GENERIC_TRANSLATOR,
- 			      gic_acpi_parse_madt_its, 0);
- }
--- =
+>  	struct arm_smmu_cmdq		cmdq;
+> @@ -1904,14 +1905,31 @@ static void arm_smmu_get_resv_regions(struct devi=
+ce *dev,
+>  				      struct list_head *head)
+>  {
+>  	struct iommu_resv_region *region;
+> +	struct arm_smmu_device *smmu;
+> +	struct iommu_fwspec *fwspec =3D dev->iommu_fwspec;
+>  	int prot =3D IOMMU_WRITE | IOMMU_NOEXEC | IOMMU_MMIO;
+>  =
 
-1.8.1.4
+> -	region =3D iommu_alloc_resv_region(MSI_IOVA_BASE, MSI_IOVA_LENGTH,
+> -					 prot, IOMMU_RESV_SW_MSI);
+> -	if (!region)
+> -		return;
+> +	smmu =3D arm_smmu_get_by_fwnode(fwspec->iommu_fwnode);
+> +
+> +	if (smmu && (smmu->options & ARM_SMMU_OPT_RESV_HW_MSI) &&
+> +		      dev_is_pci(dev)) {
 
+IORT changes are fine to me, I am still no big fan of this supposedly
+generic option that is _really_ platform specific (in particular as I
+said before the quirk depends on the PCI host bridge but in this
+patchset I see no such dependency. In short - the quirk is hooked off
+the SMMUv3 model which implicitly implies a PCI host bridge
+configuration IIUC). It is Will and Robin decision though, I am not sure
+you can make it any tidier (given that on ACPI you may not even have
+a PCI host bridge specific _HID to base your check above on).
 
---===============3030132408775536651==--
+Thanks,
+Lorenzo
+
+> +		int ret =3D -EINVAL;
+> +
+> +		if (!is_of_node(smmu->dev->fwnode))
+> +			ret =3D iort_iommu_its_get_resv_regions(dev, head);
+>  =
+
+> -	list_add_tail(&region->list, head);
+> +		if (ret) {
+> +			dev_warn(dev, "HW MSI region resv failed: %d\n", ret);
+> +			return;
+> +		}
+> +	} else {
+> +		region =3D iommu_alloc_resv_region(MSI_IOVA_BASE, MSI_IOVA_LENGTH,
+> +						 prot, IOMMU_RESV_SW_MSI);
+> +		if (!region)
+> +			return;
+> +
+> +		list_add_tail(&region->list, head);
+> +	}
+>  =
+
+>  	iommu_dma_get_resv_regions(dev, head);
+>  }
+> @@ -2611,6 +2629,7 @@ static void parse_driver_acpi_options(struct acpi_i=
+ort_smmu_v3 *iort_smmu,
+>  	switch (iort_smmu->model) {
+>  	case ACPI_IORT_SMMU_HISILICON_HI161X:
+>  		smmu->options |=3D ARM_SMMU_OPT_SKIP_PREFETCH;
+> +		smmu->options |=3D ARM_SMMU_OPT_RESV_HW_MSI;
+>  		break;
+>  	default:
+>  		break;
+> -- =
+
+> 1.9.1
+> =
+
+> =
+
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-acpi" in
+> the body of a message to majordomo(a)vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+--===============2149585765295126388==--
 
