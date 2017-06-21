@@ -1,22 +1,22 @@
-Content-Type: multipart/mixed; boundary="===============3431795555343142757=="
+Content-Type: multipart/mixed; boundary="===============2678778353399030865=="
 MIME-Version: 1.0
 From: Ganapatrao Kulkarni <gpkulkarni at gmail.com>
 Subject: Re: [Devel] [PATCH v3 2/2] acpi, gicv3-its,
  numa: Adding numa node mapping for gic-its units
-Date: Wed, 21 Jun 2017 15:26:08 +0530
-Message-ID: <CAFpQJXV-HfVK1GoOb7_svAK7NLoJvYgUmjV36DhgqhfDoafFaQ@mail.gmail.com>
-In-Reply-To: 89b8b97d-1f4c-4938-9932-b2d637797e14@arm.com
+Date: Wed, 21 Jun 2017 15:36:21 +0530
+Message-ID: <CAFpQJXVXQq_cFYxxamStN4aRktL_o6wvQWfK1KVU1SEYXpOORA@mail.gmail.com>
+In-Reply-To: 20170621092853.GA31599@red-moon
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3431795555343142757==
+--===============2678778353399030865==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jun 21, 2017 at 2:28 PM, Marc Zyngier <marc.zyngier(a)arm.com> wrot=
-e:
-> On 21/06/17 07:15, Ganapatrao Kulkarni wrote:
+On Wed, Jun 21, 2017 at 2:58 PM, Lorenzo Pieralisi
+<lorenzo.pieralisi(a)arm.com> wrote:
+> On Wed, Jun 21, 2017 at 11:45:43AM +0530, Ganapatrao Kulkarni wrote:
 >> Add code to parse SRAT ITS Affinity sub table as defined in ACPI 6.2
 >> Later in per device probe, ITS devices are mapped to
 >> numa node using ITS id to proximity domain mapping.
@@ -45,16 +45,19 @@ v3-its.c
 >> +
 >> +static struct its_srat_map its_srat_maps[MAX_NUMNODES] __initdata =3D {
 >> +     [0 ... MAX_NUMNODES - 1] =3D {NUMA_NO_NODE, UINT_MAX} };
->> +
+>
+> Nit: UINT_MAX is as valid as 0 as its_id (but the intent here is to make
+> it look like an invalid value), given that the its_in_srat counter
+> defines what entries are valid I do not necessarily see the point in
+> initializing with something that is a valid value !=3D 0.
+
+ok, this array may not need any init,
+
+>
 >> +static int its_in_srat __initdata;
 >> +
 >> +static int __init
 >> +acpi_get_its_numa_node(u32 its_id)
->
-> Please keep these on the same line.
-
-sure.
->
 >> +{
 >> +     int i;
 >> +
@@ -68,11 +71,6 @@ sure.
 >> +static int __init
 >> +gic_acpi_parse_srat_its(struct acpi_subtable_header *header,
 >> +                      const unsigned long end)
->
-> Same remark.
-
-ok
->
 >> +{
 >> +     int pxm, node;
 >> +     struct acpi_srat_its_affinity *its_affinity;
@@ -83,11 +81,6 @@ ok
 >> +
 >> +     if (its_affinity->header.length <
 >> +                     sizeof(struct acpi_srat_its_affinity)) {
->
-> Same thing.
-
-ok
->
 >> +             pr_err("SRAT:ITS: Invalid SRAT header length: %d\n",
 >> +                     its_affinity->header.length);
 >> +             return -EINVAL;
@@ -105,18 +98,16 @@ ok
 >> +     if (node =3D=3D NUMA_NO_NODE || node >=3D MAX_NUMNODES) {
 >> +             pr_err("SRAT:ITS: Invalid numa node %d\n", node);
 >> +             return -EINVAL;
+>
+> As Marc mentioned you should bail out here but continue parsing entries,
+> aka "return 0";
+
+agreed.
+>
+> Thanks,
+> Lorenzo
+>
 >> +     }
->
-> So if you find an entry that doesn't match the current kernel
-> configuration, you drop all the subsequent entries? That doesn't feel rig=
-ht.
-
-thanks, it is reasonable to print warning to notify that
-mapping is broken for some tables and continue.
-anyway device which does not have mapping gets mapped default to NUMA_NO_NO=
-DE.
-
->
 >> +
 >> +     its_srat_maps[its_in_srat].numa_node =3D node;
 >> +     its_srat_maps[its_in_srat].its_id =3D its_affinity->its_id;
@@ -133,11 +124,6 @@ DE.
 >> +                                     sizeof(struct acpi_table_srat),
 >> +                                     ACPI_SRAT_TYPE_GIC_ITS_AFFINITY,
 >> +                                     gic_acpi_parse_srat_its, 0);
->
-> If you don't check the return value, there is no point returning it.
-
- thanks, return value is don't care, i will change accordingly.
->
 >> +}
 >> +#else
 >> +#define acpi_table_parse_srat_its()  do { } while (0)
@@ -168,16 +154,12 @@ cpi_subtable_header *header,
 >>       acpi_table_parse_madt(ACPI_MADT_TYPE_GENERIC_TRANSLATOR,
 >>                             gic_acpi_parse_madt_its, 0);
 >>  }
+>> --
+>> 1.8.1.4
 >>
->
-> Thanks,
->
->         M.
-> --
-> Jazz is not dead. It just smells funny...
 
 thanks
 Ganapat
 
---===============3431795555343142757==--
+--===============2678778353399030865==--
 
