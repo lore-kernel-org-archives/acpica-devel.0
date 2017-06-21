@@ -1,43 +1,66 @@
-Content-Type: multipart/mixed; boundary="===============0635421939243807019=="
+Content-Type: multipart/mixed; boundary="===============8239641452762900633=="
 MIME-Version: 1.0
 From: Ganapatrao Kulkarni <ganapatrao.kulkarni at cavium.com>
-Subject: [Devel] [PATCH v3 0/2] acpi, gicv3-its,
- numa: Adding numa node mapping for ITS
-Date: Wed, 21 Jun 2017 11:45:41 +0530
-Message-ID: <1498025743-6340-1-git-send-email-ganapatrao.kulkarni@cavium.com>
+Subject: [Devel] [PATCH v3 1/2] ACPICA: ACPI 6.2: Add support for new SRAT
+ subtable
+Date: Wed, 21 Jun 2017 11:45:42 +0530
+Message-ID: <1498025743-6340-2-git-send-email-ganapatrao.kulkarni@cavium.com>
+In-Reply-To: 1498025743-6340-1-git-send-email-ganapatrao.kulkarni@cavium.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0635421939243807019==
+--===============8239641452762900633==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-ACPI 6.2 have added SRAT subtable to define proximity domain for ITS
-devices. This patchset updates acpi header file from acpica repo and
-adds numa node mapping for ITS devices.
+Add GIC ITS Affinity (ACPI 6.2) subtable to SRAT table.
 
-v3:
-  - Use static array to stash parsed data from srat its table.
+ACPICA commit 5bc67f63918da249bfe279ee461d152bb3e6f55b
+Link: https://github.com/acpica/acpica/commit/5bc67f6
 
-v2:
- - Incorporated comments from Lorenzo Pieralisi and Marc Zyngier.
+Signed-off-by: Ganapatrao Kulkarni <ganapatrao.kulkarni(a)cavium.com>
+---
+ include/acpi/actbl1.h | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-v1: first patch
+diff --git a/include/acpi/actbl1.h b/include/acpi/actbl1.h
+index b4ce55c..253c9db 100644
+--- a/include/acpi/actbl1.h
++++ b/include/acpi/actbl1.h
+@@ -1192,7 +1192,8 @@ enum acpi_srat_type {
+ 	ACPI_SRAT_TYPE_MEMORY_AFFINITY =3D 1,
+ 	ACPI_SRAT_TYPE_X2APIC_CPU_AFFINITY =3D 2,
+ 	ACPI_SRAT_TYPE_GICC_AFFINITY =3D 3,
+-	ACPI_SRAT_TYPE_RESERVED =3D 4	/* 4 and greater are reserved */
++	ACPI_SRAT_TYPE_GIC_ITS_AFFINITY =3D 4,	/* ACPI 6.2 */
++	ACPI_SRAT_TYPE_RESERVED =3D 5	/* 5 and greater are reserved */
+ };
+ =
 
-Ganapatrao Kulkarni (2):
-  ACPICA: ACPI 6.2: Add support for new SRAT subtable
-  acpi, gicv3-its, numa: Adding numa node mapping for gic-its units
+ /*
+@@ -1260,6 +1261,15 @@ struct acpi_srat_gicc_affinity {
+ 	u32 clock_domain;
+ };
+ =
 
- drivers/irqchip/irq-gic-v3-its.c | 80 ++++++++++++++++++++++++++++++++++++=
-+++-
- include/acpi/actbl1.h            | 12 +++++-
- 2 files changed, 90 insertions(+), 2 deletions(-)
++/* 4: GIC ITS Affinity (ACPI 6.2) */
++
++struct acpi_srat_its_affinity {
++	struct acpi_subtable_header header;
++	u32 proximity_domain;
++	u16 reserved;
++	u32 its_id;
++};
++
+ /* Flags for struct acpi_srat_gicc_affinity */
+ =
 
+ #define ACPI_SRAT_GICC_ENABLED     (1)	/* 00: Use affinity structure */
 -- =
 
 1.8.1.4
 
 
---===============0635421939243807019==--
+--===============8239641452762900633==--
 
