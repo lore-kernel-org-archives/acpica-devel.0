@@ -1,165 +1,43 @@
-Content-Type: multipart/mixed; boundary="===============2678778353399030865=="
+Content-Type: multipart/mixed; boundary="===============5989503333652928740=="
 MIME-Version: 1.0
-From: Ganapatrao Kulkarni <gpkulkarni at gmail.com>
-Subject: Re: [Devel] [PATCH v3 2/2] acpi, gicv3-its,
- numa: Adding numa node mapping for gic-its units
-Date: Wed, 21 Jun 2017 15:36:21 +0530
-Message-ID: <CAFpQJXVXQq_cFYxxamStN4aRktL_o6wvQWfK1KVU1SEYXpOORA@mail.gmail.com>
-In-Reply-To: 20170621092853.GA31599@red-moon
+From: Robert Richter <robert.richter at cavium.com>
+Subject: Re: [Devel] [PATCH v8 3/3] iommu/arm-smmu-v3: Add workaround for
+ Cavium ThunderX2 erratum #126
+Date: Wed, 21 Jun 2017 20:19:47 +0200
+Message-ID: <20170621181947.GH16981@rric.localdomain>
+In-Reply-To: 1497968259-16390-4-git-send-email-gakula@caviumnetworks.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2678778353399030865==
+--===============5989503333652928740==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jun 21, 2017 at 2:58 PM, Lorenzo Pieralisi
-<lorenzo.pieralisi(a)arm.com> wrote:
-> On Wed, Jun 21, 2017 at 11:45:43AM +0530, Ganapatrao Kulkarni wrote:
->> Add code to parse SRAT ITS Affinity sub table as defined in ACPI 6.2
->> Later in per device probe, ITS devices are mapped to
->> numa node using ITS id to proximity domain mapping.
->>
->> Signed-off-by: Ganapatrao Kulkarni <ganapatrao.kulkarni(a)cavium.com>
->> ---
->>  drivers/irqchip/irq-gic-v3-its.c | 80 +++++++++++++++++++++++++++++++++=
-++++++-
->>  1 file changed, 79 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-=
-v3-its.c
->> index 45ea1933..88cfb32 100644
->> --- a/drivers/irqchip/irq-gic-v3-its.c
->> +++ b/drivers/irqchip/irq-gic-v3-its.c
->> @@ -1833,6 +1833,82 @@ static int __init its_of_probe(struct device_node=
- *node)
->>
->>  #define ACPI_GICV3_ITS_MEM_SIZE (SZ_128K)
->>
->> +#ifdef CONFIG_ACPI_NUMA
->> +struct its_srat_map {
->> +     u32     numa_node;  /* numa node id */
->> +     u32     its_id;  /* GIC ITS ID */
->> +};
->> +
->> +static struct its_srat_map its_srat_maps[MAX_NUMNODES] __initdata =3D {
->> +     [0 ... MAX_NUMNODES - 1] =3D {NUMA_NO_NODE, UINT_MAX} };
->
-> Nit: UINT_MAX is as valid as 0 as its_id (but the intent here is to make
-> it look like an invalid value), given that the its_in_srat counter
-> defines what entries are valid I do not necessarily see the point in
-> initializing with something that is a valid value !=3D 0.
+On 20.06.17 19:47:39, Geetha sowjanya wrote:
+> From: Geetha Sowjanya <geethasowjanya.akula(a)cavium.com>
+> =
 
-ok, this array may not need any init,
+> Cavium ThunderX2 SMMU doesn't support MSI and also doesn't have unique irq
+> lines for gerror, eventq and cmdq-sync.
+> =
 
->
->> +static int its_in_srat __initdata;
->> +
->> +static int __init
->> +acpi_get_its_numa_node(u32 its_id)
->> +{
->> +     int i;
->> +
->> +     for (i =3D 0; i < its_in_srat; i++) {
->> +             if (its_id =3D=3D its_srat_maps[i].its_id)
->> +                     return its_srat_maps[i].numa_node;
->> +     }
->> +     return NUMA_NO_NODE;
->> +}
->> +
->> +static int __init
->> +gic_acpi_parse_srat_its(struct acpi_subtable_header *header,
->> +                      const unsigned long end)
->> +{
->> +     int pxm, node;
->> +     struct acpi_srat_its_affinity *its_affinity;
->> +
->> +     its_affinity =3D (struct acpi_srat_its_affinity *)header;
->> +     if (!its_affinity)
->> +             return -EINVAL;
->> +
->> +     if (its_affinity->header.length <
->> +                     sizeof(struct acpi_srat_its_affinity)) {
->> +             pr_err("SRAT:ITS: Invalid SRAT header length: %d\n",
->> +                     its_affinity->header.length);
->> +             return -EINVAL;
->> +     }
->> +
->> +     if (its_in_srat >=3D MAX_NUMNODES) {
->> +             pr_err("SRAT:ITS: ITS devices exceeding max count[%d]\n",
->> +                             MAX_NUMNODES);
->> +             return -EINVAL;
->> +     }
->> +
->> +     pxm =3D its_affinity->proximity_domain;
->> +     node =3D acpi_map_pxm_to_node(pxm);
->> +
->> +     if (node =3D=3D NUMA_NO_NODE || node >=3D MAX_NUMNODES) {
->> +             pr_err("SRAT:ITS: Invalid numa node %d\n", node);
->> +             return -EINVAL;
->
-> As Marc mentioned you should bail out here but continue parsing entries,
-> aka "return 0";
+> SHARED_IRQ option is set as a errata workaround, which allows to share th=
+e irq
+> line by register single irq handler for all the interrupts.
 
-agreed.
->
-> Thanks,
-> Lorenzo
->
->> +     }
->> +
->> +     its_srat_maps[its_in_srat].numa_node =3D node;
->> +     its_srat_maps[its_in_srat].its_id =3D its_affinity->its_id;
->> +     its_in_srat++;
->> +     pr_info("ACPI: NUMA: SRAT: ITS: PXM %d -> ITS_ID %d -> NODE %d\n",
->> +             pxm, its_affinity->its_id, node);
->> +
->> +     return 0;
->> +}
->> +
->> +static int __init acpi_table_parse_srat_its(void)
->> +{
->> +     return acpi_table_parse_entries(ACPI_SIG_SRAT,
->> +                                     sizeof(struct acpi_table_srat),
->> +                                     ACPI_SRAT_TYPE_GIC_ITS_AFFINITY,
->> +                                     gic_acpi_parse_srat_its, 0);
->> +}
->> +#else
->> +#define acpi_table_parse_srat_its()  do { } while (0)
->> +#define acpi_get_its_numa_node(its_id)       NUMA_NO_NODE
->> +#endif
->> +
->>  static int __init gic_acpi_parse_madt_its(struct acpi_subtable_header *=
-header,
->>                                         const unsigned long end)
->>  {
->> @@ -1861,7 +1937,8 @@ static int __init gic_acpi_parse_madt_its(struct a=
-cpi_subtable_header *header,
->>               goto dom_err;
->>       }
->>
->> -     err =3D its_probe_one(&res, dom_handle, NUMA_NO_NODE);
->> +     err =3D its_probe_one(&res, dom_handle,
->> +                     acpi_get_its_numa_node(its_entry->translation_id));
->>       if (!err)
->>               return 0;
->>
->> @@ -1873,6 +1950,7 @@ static int __init gic_acpi_parse_madt_its(struct a=
-cpi_subtable_header *header,
->>
->>  static void __init its_acpi_probe(void)
->>  {
->> +     acpi_table_parse_srat_its();
->>       acpi_table_parse_madt(ACPI_MADT_TYPE_GENERIC_TRANSLATOR,
->>                             gic_acpi_parse_madt_its, 0);
->>  }
->> --
->> 1.8.1.4
->>
+I found the entry in silicon-errata.txt missing, is that on purpose?
 
-thanks
-Ganapat
+-Robert
 
---===============2678778353399030865==--
+> =
+
+> Signed-off-by: Geetha sowjanya <gakula(a)caviumnetworks.com>
+> ---
+>  .../devicetree/bindings/iommu/arm,smmu-v3.txt      |    5 ++
+>  drivers/iommu/arm-smmu-v3.c                        |   73 ++++++++++++++=
+++----
+>  2 files changed, 64 insertions(+), 14 deletions(-)
+
+--===============5989503333652928740==--
 
