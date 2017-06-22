@@ -1,43 +1,46 @@
-Content-Type: multipart/mixed; boundary="===============5989503333652928740=="
+Content-Type: multipart/mixed; boundary="===============2218293994398547653=="
 MIME-Version: 1.0
-From: Robert Richter <robert.richter at cavium.com>
-Subject: Re: [Devel] [PATCH v8 3/3] iommu/arm-smmu-v3: Add workaround for
- Cavium ThunderX2 erratum #126
-Date: Wed, 21 Jun 2017 20:19:47 +0200
-Message-ID: <20170621181947.GH16981@rric.localdomain>
-In-Reply-To: 1497968259-16390-4-git-send-email-gakula@caviumnetworks.com
+From: Ganapatrao Kulkarni <ganapatrao.kulkarni at cavium.com>
+Subject: [Devel] [PATCH v4 0/2] acpi, gicv3-its,
+ numa: Adding numa node mapping for ITS
+Date: Thu, 22 Jun 2017 11:40:10 +0530
+Message-ID: <1498111812-17053-1-git-send-email-ganapatrao.kulkarni@cavium.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5989503333652928740==
+--===============2218293994398547653==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On 20.06.17 19:47:39, Geetha sowjanya wrote:
-> From: Geetha Sowjanya <geethasowjanya.akula(a)cavium.com>
-> =
+ACPI 6.2 have added SRAT subtable to define proximity domain for ITS
+devices. This patchset updates acpi header file from acpica repo and
+adds numa node mapping for ITS devices.
 
-> Cavium ThunderX2 SMMU doesn't support MSI and also doesn't have unique irq
-> lines for gerror, eventq and cmdq-sync.
-> =
+v4:
+  -Addressed review comments.
 
-> SHARED_IRQ option is set as a errata workaround, which allows to share th=
-e irq
-> line by register single irq handler for all the interrupts.
+v3:
+  - Use static array to stash parsed data from srat its table.
 
-I found the entry in silicon-errata.txt missing, is that on purpose?
+v2:
+ - Incorporated comments from Lorenzo Pieralisi and Marc Zyngier.
 
--Robert
+v1: first patch
 
-> =
+Ganapatrao Kulkarni (2):
+  ACPICA: ACPI 6.2: Add support for new SRAT subtable
+  acpi, gicv3-its, numa: Adding numa node mapping for gic-its units
 
-> Signed-off-by: Geetha sowjanya <gakula(a)caviumnetworks.com>
-> ---
->  .../devicetree/bindings/iommu/arm,smmu-v3.txt      |    5 ++
->  drivers/iommu/arm-smmu-v3.c                        |   73 ++++++++++++++=
-++----
->  2 files changed, 64 insertions(+), 14 deletions(-)
+ drivers/irqchip/irq-gic-v3-its.c | 75 ++++++++++++++++++++++++++++++++++++=
++++-
+ include/acpi/actbl1.h            | 12 ++++++-
+ 2 files changed, 85 insertions(+), 2 deletions(-)
 
---===============5989503333652928740==--
+-- =
+
+1.8.1.4
+
+
+--===============2218293994398547653==--
 
