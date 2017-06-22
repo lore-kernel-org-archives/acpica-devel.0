@@ -1,145 +1,92 @@
-Content-Type: multipart/mixed; boundary="===============2585951222635936187=="
+Content-Type: multipart/mixed; boundary="===============0736936092255267786=="
 MIME-Version: 1.0
-From: Ganapatrao Kulkarni <ganapatrao.kulkarni at cavium.com>
-Subject: [Devel] [PATCH v4 2/2] acpi, gicv3-its,
- numa: Adding numa node mapping for gic-its units
-Date: Thu, 22 Jun 2017 11:40:12 +0530
-Message-ID: <1498111812-17053-3-git-send-email-ganapatrao.kulkarni@cavium.com>
-In-Reply-To: 1498111812-17053-1-git-send-email-ganapatrao.kulkarni@cavium.com
+From: Geetha sowjanya <gakula at caviumnetworks.com>
+Subject: [Devel] [PATCH v9 0/3] Cavium ThunderX2 SMMUv3 errata workarounds
+Date: Thu, 22 Jun 2017 17:35:35 +0530
+Message-ID: <1498133138-20244-1-git-send-email-gakula@caviumnetworks.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2585951222635936187==
+--===============0736936092255267786==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Add code to parse SRAT ITS Affinity sub table as defined in ACPI 6.2.
-Later in per device probe, ITS devices are mapped to numa node using
-ITS Id to proximity domain mapping.
+Cavium ThunderX2 SMMUv3 implementation has two Silicon Erratas.
+1. Errata ID #74
+   SMMU register alias Page 1 is not implemented
+2. Errata ID #126
+   SMMU doesnt support unique IRQ lines and also MSI for gerror,
+   eventq and cmdq-sync
 
-Signed-off-by: Ganapatrao Kulkarni <ganapatrao.kulkarni(a)cavium.com>
----
- drivers/irqchip/irq-gic-v3-its.c | 75 ++++++++++++++++++++++++++++++++++++=
-+++-
- 1 file changed, 74 insertions(+), 1 deletion(-)
+The following patchset does software workaround for these two erratas.
 
-diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-=
-its.c
-index 45ea1933..1c21e01 100644
---- a/drivers/irqchip/irq-gic-v3-its.c
-+++ b/drivers/irqchip/irq-gic-v3-its.c
-@@ -1833,6 +1833,77 @@ static int __init its_of_probe(struct device_node *n=
-ode)
- =
+This series is based on patchset.
+https://www.spinics.net/lists/arm-kernel/msg578443.html
 
- #define ACPI_GICV3_ITS_MEM_SIZE (SZ_128K)
- =
+Changes since v8:
+    - Reworked patch #3 as suggested by Will. =
 
-+#ifdef CONFIG_ACPI_NUMA
-+struct its_srat_map {
-+	u32	numa_node;  /* numa node id */
-+	u32	its_id;  /* GIC ITS ID */
-+};
-+
-+static struct its_srat_map its_srat_maps[MAX_NUMNODES] __initdata;
-+static int its_in_srat __initdata;
-+
-+static int __init acpi_get_its_numa_node(u32 its_id)
-+{
-+	int i;
-+
-+	for (i =3D 0; i < its_in_srat; i++) {
-+		if (its_id =3D=3D its_srat_maps[i].its_id)
-+			return its_srat_maps[i].numa_node;
-+	}
-+	return NUMA_NO_NODE;
-+}
-+
-+static int __init gic_acpi_parse_srat_its(struct acpi_subtable_header *hea=
-der,
-+			 const unsigned long end)
-+{
-+	int pxm, node;
-+	struct acpi_srat_its_affinity *its_affinity;
-+
-+	its_affinity =3D (struct acpi_srat_its_affinity *)header;
-+	if (!its_affinity)
-+		return -EINVAL;
-+
-+	if (its_affinity->header.length < sizeof(*its_affinity)) {
-+		pr_err("SRAT: Invalid header length %d in ITS affinity\n",
-+			its_affinity->header.length);
-+		return -EINVAL;
-+	}
-+
-+	if (its_in_srat >=3D MAX_NUMNODES) {
-+		pr_err("SRAT: ITS affinity exceeding max count[%d]\n",
-+				MAX_NUMNODES);
-+		return -EINVAL;
-+	}
-+
-+	pxm =3D its_affinity->proximity_domain;
-+	node =3D acpi_map_pxm_to_node(pxm);
-+
-+	if (node =3D=3D NUMA_NO_NODE || node >=3D MAX_NUMNODES) {
-+		pr_err("SRAT: Invalid NUMA node %d in ITS affinity\n", node);
-+		return 0;
-+	}
-+
-+	its_srat_maps[its_in_srat].numa_node =3D node;
-+	its_srat_maps[its_in_srat].its_id =3D its_affinity->its_id;
-+	its_in_srat++;
-+	pr_info("SRAT: PXM %d -> ITS %d -> Node %d\n",
-+		pxm, its_affinity->its_id, node);
-+
-+	return 0;
-+}
-+
-+static void __init acpi_table_parse_srat_its(void)
-+{
-+	acpi_table_parse_entries(ACPI_SIG_SRAT,
-+			sizeof(struct acpi_table_srat),
-+			ACPI_SRAT_TYPE_GIC_ITS_AFFINITY,
-+			gic_acpi_parse_srat_its, 0);
-+}
-+#else
-+static void __init acpi_table_parse_srat_its(void)	{ }
-+static int __init acpi_get_its_numa_node(u32 its_id) { return NUMA_NO_NODE=
-; }
-+#endif
-+
- static int __init gic_acpi_parse_madt_its(struct acpi_subtable_header *hea=
-der,
- 					  const unsigned long end)
- {
-@@ -1861,7 +1932,8 @@ static int __init gic_acpi_parse_madt_its(struct acpi=
-_subtable_header *header,
- 		goto dom_err;
- 	}
- =
+    - Corrected typo mistake in patch #2
 
--	err =3D its_probe_one(&res, dom_handle, NUMA_NO_NODE);
-+	err =3D its_probe_one(&res, dom_handle,
-+			acpi_get_its_numa_node(its_entry->translation_id));
- 	if (!err)
- 		return 0;
- =
+Changes since v7:
+    - Added new function "arm_smmu_v3_resource_size" in iort.c to get resou=
+rce
+      size.
+    - Added new SMMU option "SHARED_IRQ" to enable errata #126 workaround.
+    - Coding style issues fixed.
+    - Suggested changes in arm_smmu_device_probe addressed.
+    - Replaced ACPI_IORT_SMMU_CAVIUM_CN99XX macro with ACPI_IORT_SMMU_V3_CA=
+VIUM_CN99XX
 
-@@ -1873,6 +1945,7 @@ static int __init gic_acpi_parse_madt_its(struct acpi=
-_subtable_header *header,
- =
+Changes since v6:
+   - Changed device tree compatible string to vendor specific.
+   - Rebased on Robin's latest "Update SMMU models for IORT rev. C" v2 patc=
+h.
+     https://www.spinics.net/lists/arm-kernel/msg582809.html
 
- static void __init its_acpi_probe(void)
- {
-+	acpi_table_parse_srat_its();
- 	acpi_table_parse_madt(ACPI_MADT_TYPE_GENERIC_TRANSLATOR,
- 			      gic_acpi_parse_madt_its, 0);
- }
--- =
+Changes since v5:
+   - Rebased on Robin's "Update SMMU models for IORT rev. C" patch.
+     https://www.spinics.net/lists/arm-kernel/msg580728.html
+   - Replaced ACPI_IORT_SMMU_V3_CAVIUM_CN99XX macro with ACPI_IORT_SMMU_CAV=
+IUM_CN99XX
 
-1.8.1.4
+Changes since v4:
+  - Replaced all page1 offset macros ARM_SMMU_EVTQ/PRIQ_PROD/CONS with
+    arm_smmu_page1_fixup(ARM_SMMU_EVTQ/PRIQ_PROD/CONS, smmu)
+
+Changes since v3:
+  - Merged patches 1, 2 and 4 of Version 3.
+  - Modified the page1_offset_adjust() and get_irq_flags() implementation as
+    suggested by Robin.
+
+Changes since v2:
+  - Updated "Documentation/devicetree/bindings/iommu/arm,smmu-v3.txt" docum=
+ent with
+    new SMMU option used to enable errata workaround.
+
+Changes since v1:
+ - Since the use of MIDR register is rejected and SMMU_IIDR is broken on th=
+is
+   silicon, as suggested by Will Deacon modified the patches to use Thunder=
+X2
+   SMMUv3 IORT model number to enable errata workaround.
+
+Geetha Sowjanya (1):
+  iommu/arm-smmu-v3: Add workaround for Cavium ThunderX2 erratum #126
+
+Linu Cherian (2):
+  ACPI/IORT: Fixup SMMUv3 resource size for Cavium ThunderX2 SMMUv3
+    model
+  iommu/arm-smmu-v3: Add workaround for Cavium ThunderX2 erratum #74
+
+ Documentation/arm64/silicon-errata.txt             |    2 +
+ .../devicetree/bindings/iommu/arm,smmu-v3.txt      |    7 +
+ drivers/acpi/arm64/iort.c                          |   69 ++++++---
+ drivers/iommu/arm-smmu-v3.c                        |  171 +++++++++++++++-=
+----
+ 4 files changed, 186 insertions(+), 63 deletions(-)
 
 
---===============2585951222635936187==--
+--===============0736936092255267786==--
 
