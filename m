@@ -1,68 +1,322 @@
-Content-Type: multipart/mixed; boundary="===============0884611895110474341=="
+Content-Type: multipart/mixed; boundary="===============3489271473988839909=="
 MIME-Version: 1.0
-From: Shameerali Kolothum Thodi <shameerali.kolothum.thodi at huawei.com>
-Subject: Re: [Devel] [PATCH] iommu/arm-smmu-v3: Enable ACPI based HiSilicon
- CMD_PREFETCH quirk(erratum 161010701)
-Date: Fri, 23 Jun 2017 12:49:34 +0000
-Message-ID: <5FC3163CFD30C246ABAA99954A238FA83838930B@FRAEML521-MBS.china.huawei.com>
-In-Reply-To: 20170623120207.GA2310@arm.com
+From: Geetha sowjanya <gakula at caviumnetworks.com>
+Subject: [Devel] [RESEND PATCH v9 3/3] iommu/arm-smmu-v3: Add workaround for
+ Cavium ThunderX2 erratum #126
+Date: Fri, 23 Jun 2017 19:04:36 +0530
+Message-ID: <1498224876-5200-1-git-send-email-gakula@caviumnetworks.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0884611895110474341==
+--===============3489271473988839909==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
+From: Geetha Sowjanya <geethasowjanya.akula(a)cavium.com>
+
+Cavium ThunderX2 SMMU doesn't support MSI and also doesn't have unique irq
+lines for gerror, eventq and cmdq-sync.
+
+New named irq "combined" is set as a errata workaround, which allows to
+share the irq line by register single irq handler for all the interrupts.
+
+Signed-off-by: Geetha sowjanya <gakula(a)caviumnetworks.com>
+---
+ Documentation/arm64/silicon-errata.txt             |    1 +
+ .../devicetree/bindings/iommu/arm,smmu-v3.txt      |    6 +
+ drivers/acpi/arm64/iort.c                          |   57 ++++++++---
+ drivers/iommu/arm-smmu-v3.c                        |  100 ++++++++++++++--=
+---
+ 4 files changed, 121 insertions(+), 43 deletions(-)
+
+diff --git a/Documentation/arm64/silicon-errata.txt b/Documentation/arm64/s=
+ilicon-errata.txt
+index 4693a32..42422f6 100644
+--- a/Documentation/arm64/silicon-errata.txt
++++ b/Documentation/arm64/silicon-errata.txt
+@@ -63,6 +63,7 @@ stable kernels.
+ | Cavium         | ThunderX Core   | #27456          | CAVIUM_ERRATUM_2745=
+6        |
+ | Cavium         | ThunderX SMMUv2 | #27704          | N/A                =
+         |
+ | Cavium         | ThunderX2 SMMUv3| #74             | N/A                =
+         |
++| Cavium         | ThunderX2 SMMUv3| #126            | N/A                =
+         |
+ |                |                 |                 |                    =
+         |
+ | Freescale/NXP  | LS2080A/LS1043A | A-008585        | FSL_ERRATUM_A008585=
+         |
+ |                |                 |                 |                    =
+         |
+diff --git a/Documentation/devicetree/bindings/iommu/arm,smmu-v3.txt b/Docu=
+mentation/devicetree/bindings/iommu/arm,smmu-v3.txt
+index e7855cf..c9abbf3 100644
+--- a/Documentation/devicetree/bindings/iommu/arm,smmu-v3.txt
++++ b/Documentation/devicetree/bindings/iommu/arm,smmu-v3.txt
+@@ -26,6 +26,12 @@ the PCIe specification.
+                       * "priq"      - PRI Queue not empty
+                       * "cmdq-sync" - CMD_SYNC complete
+                       * "gerror"    - Global Error activated
++                      * "combined"  - The combined interrupt is optional,
++				      and should only be provided if the
++				      hardware supports just a single,
++				      combined interrupt line.
++				      If provided, then the combined interrupt
++				      will be used in preference to any others.
+ =
+
+ - #iommu-cells      : See the generic IOMMU binding described in
+                         devicetree/bindings/pci/pci-iommu.txt
+diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
+index bd97b7d..21c1ed3 100644
+--- a/drivers/acpi/arm64/iort.c
++++ b/drivers/acpi/arm64/iort.c
+@@ -828,6 +828,18 @@ static int __init arm_smmu_v3_count_resources(struct a=
+cpi_iort_node *node)
+ 	return num_res;
+ }
+ =
+
++static bool arm_smmu_v3_is_combined_irq(struct acpi_iort_smmu_v3 *smmu)
++{
++	/*
++	 * Cavium ThunderX2 implementation doesn't not support unique
++	 * irq line. Use single irq line for all the SMMUv3 interrupts.
++	 */
++	if (smmu->model =3D=3D ACPI_IORT_SMMU_V3_CAVIUM_CN99XX)
++		return true;
++
++	return false;
++}
++
+ static unsigned long arm_smmu_v3_resource_size(struct acpi_iort_smmu_v3 *s=
+mmu)
+ {
+ 	/*
+@@ -855,26 +867,39 @@ static void __init arm_smmu_v3_init_resources(struct =
+resource *res,
+ 	res[num_res].flags =3D IORESOURCE_MEM;
+ =
+
+ 	num_res++;
++	if (arm_smmu_v3_is_combined_irq(smmu)) {
++		int irq =3D smmu->event_gsiv;
+ =
+
+-	if (smmu->event_gsiv)
+-		acpi_iort_register_irq(smmu->event_gsiv, "eventq",
+-				       ACPI_EDGE_SENSITIVE,
+-				       &res[num_res++]);
+-
+-	if (smmu->pri_gsiv)
+-		acpi_iort_register_irq(smmu->pri_gsiv, "priq",
+-				       ACPI_EDGE_SENSITIVE,
+-				       &res[num_res++]);
+-
+-	if (smmu->gerr_gsiv)
+-		acpi_iort_register_irq(smmu->gerr_gsiv, "gerror",
++		if (!(irq =3D=3D smmu->pri_gsiv && irq =3D=3D smmu->gerr_gsiv &&
++		    irq =3D=3D smmu->sync_gsiv)) {
++			pr_warn(FW_BUG "Incosistent combined GSIV configuration\n");
++			return;
++		}
++		acpi_iort_register_irq(smmu->event_gsiv, "combined",
+ 				       ACPI_EDGE_SENSITIVE,
+ 				       &res[num_res++]);
++	} else {
+ =
+
+-	if (smmu->sync_gsiv)
+-		acpi_iort_register_irq(smmu->sync_gsiv, "cmdq-sync",
+-				       ACPI_EDGE_SENSITIVE,
+-				       &res[num_res++]);
++		if (smmu->event_gsiv)
++			acpi_iort_register_irq(smmu->event_gsiv, "eventq",
++					       ACPI_EDGE_SENSITIVE,
++					       &res[num_res++]);
++
++		if (smmu->pri_gsiv)
++			acpi_iort_register_irq(smmu->pri_gsiv, "priq",
++					       ACPI_EDGE_SENSITIVE,
++					       &res[num_res++]);
++
++		if (smmu->gerr_gsiv)
++			acpi_iort_register_irq(smmu->gerr_gsiv, "gerror",
++					       ACPI_EDGE_SENSITIVE,
++					       &res[num_res++]);
++
++		if (smmu->sync_gsiv)
++			acpi_iort_register_irq(smmu->sync_gsiv, "cmdq-sync",
++					       ACPI_EDGE_SENSITIVE,
++					       &res[num_res++]);
++	}
+ }
+ =
+
+ static bool __init arm_smmu_v3_is_coherent(struct acpi_iort_node *node)
+diff --git a/drivers/iommu/arm-smmu-v3.c b/drivers/iommu/arm-smmu-v3.c
+index 2dea4a9..fd5a48c 100644
+--- a/drivers/iommu/arm-smmu-v3.c
++++ b/drivers/iommu/arm-smmu-v3.c
+@@ -605,6 +605,7 @@ struct arm_smmu_device {
+ 	struct arm_smmu_priq		priq;
+ =
+
+ 	int				gerr_irq;
++	int				combined_irq;
+ =
+
+ 	unsigned long			ias; /* IPA */
+ 	unsigned long			oas; /* PA */
+@@ -1314,6 +1315,24 @@ static irqreturn_t arm_smmu_gerror_handler(int irq, =
+void *dev)
+ 	return IRQ_HANDLED;
+ }
+ =
+
++static irqreturn_t arm_smmu_combined_irq_thread(int irq, void *dev)
++{
++	struct arm_smmu_device *smmu =3D dev;
++
++	arm_smmu_evtq_thread(irq, dev);
++	if (smmu->features & ARM_SMMU_FEAT_PRI)
++		arm_smmu_priq_thread(irq, dev);
++
++	return IRQ_HANDLED;
++}
++
++static irqreturn_t arm_smmu_combined_irq_handler(int irq, void *dev)
++{
++	arm_smmu_gerror_handler(irq, dev);
++	arm_smmu_cmdq_sync_handler(irq, dev);
++	return IRQ_WAKE_THREAD;
++}
++
+ /* IO_PGTABLE API */
+ static void __arm_smmu_tlb_sync(struct arm_smmu_device *smmu)
+ {
+@@ -2230,18 +2249,9 @@ static void arm_smmu_setup_msis(struct arm_smmu_devi=
+ce *smmu)
+ 	devm_add_action(dev, arm_smmu_free_msis, dev);
+ }
+ =
+
+-static int arm_smmu_setup_irqs(struct arm_smmu_device *smmu)
++static void arm_smmu_setup_unique_irqs(struct arm_smmu_device *smmu)
+ {
+-	int ret, irq;
+-	u32 irqen_flags =3D IRQ_CTRL_EVTQ_IRQEN | IRQ_CTRL_GERROR_IRQEN;
+-
+-	/* Disable IRQs first */
+-	ret =3D arm_smmu_write_reg_sync(smmu, 0, ARM_SMMU_IRQ_CTRL,
+-				      ARM_SMMU_IRQ_CTRLACK);
+-	if (ret) {
+-		dev_err(smmu->dev, "failed to disable irqs\n");
+-		return ret;
+-	}
++	int irq, ret;
+ =
+
+ 	arm_smmu_setup_msis(smmu);
+ =
+
+@@ -2284,10 +2294,41 @@ static int arm_smmu_setup_irqs(struct arm_smmu_devi=
+ce *smmu)
+ 			if (ret < 0)
+ 				dev_warn(smmu->dev,
+ 					 "failed to enable priq irq\n");
+-			else
+-				irqen_flags |=3D IRQ_CTRL_PRIQ_IRQEN;
+ 		}
+ 	}
++}
++
++static int arm_smmu_setup_irqs(struct arm_smmu_device *smmu)
++{
++	int ret, irq;
++	u32 irqen_flags =3D IRQ_CTRL_EVTQ_IRQEN | IRQ_CTRL_GERROR_IRQEN;
++
++	/* Disable IRQs first */
++	ret =3D arm_smmu_write_reg_sync(smmu, 0, ARM_SMMU_IRQ_CTRL,
++				      ARM_SMMU_IRQ_CTRLACK);
++	if (ret) {
++		dev_err(smmu->dev, "failed to disable irqs\n");
++		return ret;
++	}
++
++	irq =3D smmu->combined_irq;
++	if (irq) {
++		/*
++		 * Cavium ThunderX2 implementation doesn't not support unique
++		 * irq lines. Use single irq line for all the SMMUv3 interrupts.
++		 */
++		ret =3D devm_request_threaded_irq(smmu->dev, irq,
++					arm_smmu_combined_irq_handler,
++					arm_smmu_combined_irq_thread,
++					IRQF_ONESHOT,
++					"arm-smmu-v3-combined-irq", smmu);
++		if (ret < 0)
++			dev_warn(smmu->dev, "failed to enable combined irq\n");
++	} else
++		arm_smmu_setup_unique_irqs(smmu);
++
++	if (smmu->features & ARM_SMMU_FEAT_PRI)
++		irqen_flags |=3D IRQ_CTRL_PRIQ_IRQEN;
+ =
+
+ 	/* Enable interrupt generation on the SMMU */
+ 	ret =3D arm_smmu_write_reg_sync(smmu, irqen_flags,
+@@ -2724,22 +2765,27 @@ static int arm_smmu_device_probe(struct platform_de=
+vice *pdev)
+ 		return PTR_ERR(smmu->base);
+ =
+
+ 	/* Interrupt lines */
+-	irq =3D platform_get_irq_byname(pdev, "eventq");
+-	if (irq > 0)
+-		smmu->evtq.q.irq =3D irq;
+ =
+
+-	irq =3D platform_get_irq_byname(pdev, "priq");
++	irq =3D platform_get_irq_byname(pdev, "combined");
+ 	if (irq > 0)
+-		smmu->priq.q.irq =3D irq;
++		smmu->combined_irq =3D irq;
++	else {
++		irq =3D platform_get_irq_byname(pdev, "eventq");
++		if (irq > 0)
++			smmu->evtq.q.irq =3D irq;
+ =
+
+-	irq =3D platform_get_irq_byname(pdev, "cmdq-sync");
+-	if (irq > 0)
+-		smmu->cmdq.q.irq =3D irq;
++		irq =3D platform_get_irq_byname(pdev, "priq");
++		if (irq > 0)
++			smmu->priq.q.irq =3D irq;
+ =
+
+-	irq =3D platform_get_irq_byname(pdev, "gerror");
+-	if (irq > 0)
+-		smmu->gerr_irq =3D irq;
++		irq =3D platform_get_irq_byname(pdev, "cmdq-sync");
++		if (irq > 0)
++			smmu->cmdq.q.irq =3D irq;
+ =
+
++		irq =3D platform_get_irq_byname(pdev, "gerror");
++		if (irq > 0)
++			smmu->gerr_irq =3D irq;
++	}
+ 	/* Probe the h/w */
+ 	ret =3D arm_smmu_device_hw_probe(smmu);
+ 	if (ret)
+-- =
+
+1.7.1
 
 
-> -----Original Message-----
-> From: Will Deacon [mailto:will.deacon(a)arm.com]
-> Sent: Friday, June 23, 2017 1:02 PM
-> To: Shameerali Kolothum Thodi
-> Cc: robin.murphy(a)arm.com; mark.rutland(a)arm.com;
-> lorenzo.pieralisi(a)arm.com; John Garry; Gabriele Paoloni; Guohanjun
-> (Hanjun Guo); xuwei (O); Linuxarm; devel(a)acpica.org; linux-
-> acpi(a)vger.kernel.org; linux-arm-kernel(a)lists.infradead.org;
-> devicetree(a)vger.kernel.org
-> Subject: Re: [PATCH] iommu/arm-smmu-v3: Enable ACPI based HiSilicon
-> CMD_PREFETCH quirk(erratum 161010701)
-> =
-
-> On Fri, Jun 23, 2017 at 08:29:28AM +0000, Shameerali Kolothum Thodi wrote:
-> > > -----Original Message-----
-> > > From: Shameerali Kolothum Thodi
-> > > Sent: Wednesday, May 17, 2017 10:12 AM
-> > > To: robin.murphy(a)arm.com; will.deacon(a)arm.com;
-> mark.rutland(a)arm.com;
-> > > lorenzo.pieralisi(a)arm.com
-> > > Cc: John Garry; Gabriele Paoloni; Guohanjun (Hanjun Guo); xuwei (O);
-> > > Linuxarm; devel(a)acpica.org; linux-acpi(a)vger.kernel.org; linux-arm-
-> > > kernel(a)lists.infradead.org; devicetree(a)vger.kernel.org; Shameerali
-> > > Kolothum Thodi
-> > > Subject: [PATCH] iommu/arm-smmu-v3: Enable ACPI based HiSilicon
-> > > CMD_PREFETCH quirk(erratum 161010701)
-> > >
-> > > HiSilicon SMMUv3 on Hip06/Hip07 platforms doesn't support
-> > > CMD_PREFETCH command. The dt based support for this quirk is already
-> > > present in the driver(hisilicon,broken-prefetch-cmd). This adds ACPI
-> > > support for the quirk using the IORT smmu model number.
-> >
-> > This also  has dependency on acpica header update and it looks like
-> > it's going to take a while to appear on Linux mainline. I have seen
-> > patches where a temp local definition for SMMU v3 model number is
-> suggested instead.
-> >
-> > Could you please let me know the plan so that I can base this patch
-> > similar to or on top of Caviums "[PATCH] iommu/arm-smmu-v3, acpi: Add
-> > temporary Cavium SMMU-V3 IORT model number definitions"
-> =
-
-> I think I've got this in hand, but I'll shout if I run into any issues.
-
-Ok. Thanks Will. Sure.
-
-Shameer
-
---===============0884611895110474341==--
+--===============3489271473988839909==--
 
