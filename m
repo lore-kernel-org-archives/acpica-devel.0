@@ -1,126 +1,184 @@
-Content-Type: multipart/mixed; boundary="===============1185911241431694719=="
+Content-Type: multipart/mixed; boundary="===============5805772779819793823=="
 MIME-Version: 1.0
-From: Lorenzo Pieralisi <lorenzo.pieralisi at arm.com>
-Subject: Re: [Devel] [PATCH v4 1/2] ACPICA: ACPI 6.2: Add support for new SRAT
- subtable
-Date: Thu, 22 Jun 2017 22:06:35 +0100
-Message-ID: <20170622210635.GB27861@red-moon>
-In-Reply-To: 7426901.eKsnQBecvM@aspire.rjw.lan
+From: Seunghun Han <kkamagui at gmail.com>
+Subject: [Devel] [PATCH V2] acpi: acpica: fix acpi parse and parseext cache
+ leaks
+Date: Fri, 23 Jun 2017 13:18:32 +0900
+Message-ID: <1498191512-125542-1-git-send-email-kkamagui@gmail.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1185911241431694719==
+--===============5805772779819793823==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jun 22, 2017 at 04:27:18PM +0200, Rafael J. Wysocki wrote:
-> On Thursday, June 22, 2017 02:13:18 PM Moore, Robert wrote:
-> > This support is already in the ACPICA code base, but I can't speak to w=
-hen it will be upstreamed to Linux. Lv would know this.
-> =
+I'm Seunghun Han, and I work for National Security Research Institute of
+South Korea.
 
-> It should be there in linux-next already AFAICS.
-> =
+I have been doing a research on ACPI and found an ACPI cache leak in ACPI
+early abort cases.
 
-> Lorenzo, can you please double check?
+Boot log of ACPI cache leak is as follows:
+[    0.352414] ACPI: Added _OSI(Module Device)
+[    0.353182] ACPI: Added _OSI(Processor Device)
+[    0.353182] ACPI: Added _OSI(3.0 _SCP Extensions)
+[    0.353182] ACPI: Added _OSI(Processor Aggregator Device)
+[    0.356028] ACPI: Unable to start the ACPI Interpreter
+[    0.356799] ACPI Error: Could not remove SCI handler (20170303/evmisc-28=
+1)
+[    0.360215] kmem_cache_destroy Acpi-State: Slab cache still has objects
+[    0.360648] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G        W
+4.12.0-rc4-next-20170608+ #10
+[    0.361273] Hardware name: innotek GmbH VirtualBox/VirtualBox, BIOS
+VirtualBox 12/01/2006
+[    0.361873] Call Trace:
+[    0.362243]  ? dump_stack+0x5c/0x81
+[    0.362591]  ? kmem_cache_destroy+0x1aa/0x1c0
+[    0.362944]  ? acpi_sleep_proc_init+0x27/0x27
+[    0.363296]  ? acpi_os_delete_cache+0xa/0x10
+[    0.363646]  ? acpi_ut_delete_caches+0x6d/0x7b
+[    0.364000]  ? acpi_terminate+0xa/0x14
+[    0.364000]  ? acpi_init+0x2af/0x34f
+[    0.364000]  ? __class_create+0x4c/0x80
+[    0.364000]  ? video_setup+0x7f/0x7f
+[    0.364000]  ? acpi_sleep_proc_init+0x27/0x27
+[    0.364000]  ? do_one_initcall+0x4e/0x1a0
+[    0.364000]  ? kernel_init_freeable+0x189/0x20a
+[    0.364000]  ? rest_init+0xc0/0xc0
+[    0.364000]  ? kernel_init+0xa/0x100
+[    0.364000]  ? ret_from_fork+0x25/0x30
 
-Yes, it is all fine, thank you Rafael for taking the ACPICA changes.
+I analyzed this memory leak in detail. I found that =E2=80=9CAcpi-State=E2=
+=80=9D cache and
+=E2=80=9CAcpi-Parse=E2=80=9D cache were merged because the size of cache ob=
+jects was same
+slab cache size.
 
-Thanks !
-Lorenzo
+I finally found =E2=80=9CAcpi-Parse=E2=80=9D cache and =E2=80=9CAcpi-ParseE=
+xt=E2=80=9D cache were leaked
+using SLAB_NEVER_MERGE flag in kmem_cache_create() function.
 
-> Thanks,
-> Rafael
-> =
+Real ACPI cache leak point is as follows:
+[    0.360101] ACPI: Added _OSI(Module Device)
+[    0.360101] ACPI: Added _OSI(Processor Device)
+[    0.360101] ACPI: Added _OSI(3.0 _SCP Extensions)
+[    0.361043] ACPI: Added _OSI(Processor Aggregator Device)
+[    0.364016] ACPI: Unable to start the ACPI Interpreter
+[    0.365061] ACPI Error: Could not remove SCI handler (20170303/evmisc-28=
+1)
+[    0.368174] kmem_cache_destroy Acpi-Parse: Slab cache still has objects
+[    0.369332] CPU: 1 PID: 1 Comm: swapper/0 Tainted: G        W
+4.12.0-rc4-next-20170608+ #8
+[    0.371256] Hardware name: innotek GmbH VirtualBox/VirtualBox, BIOS
+VirtualBox 12/01/2006
+[    0.372000] Call Trace:
+[    0.372000]  ? dump_stack+0x5c/0x81
+[    0.372000]  ? kmem_cache_destroy+0x1aa/0x1c0
+[    0.372000]  ? acpi_sleep_proc_init+0x27/0x27
+[    0.372000]  ? acpi_os_delete_cache+0xa/0x10
+[    0.372000]  ? acpi_ut_delete_caches+0x56/0x7b
+[    0.372000]  ? acpi_terminate+0xa/0x14
+[    0.372000]  ? acpi_init+0x2af/0x34f
+[    0.372000]  ? __class_create+0x4c/0x80
+[    0.372000]  ? video_setup+0x7f/0x7f
+[    0.372000]  ? acpi_sleep_proc_init+0x27/0x27
+[    0.372000]  ? do_one_initcall+0x4e/0x1a0
+[    0.372000]  ? kernel_init_freeable+0x189/0x20a
+[    0.372000]  ? rest_init+0xc0/0xc0
+[    0.372000]  ? kernel_init+0xa/0x100
+[    0.372000]  ? ret_from_fork+0x25/0x30
+[    0.388039] kmem_cache_destroy Acpi-ParseExt: Slab cache still has objec=
+ts
+[    0.389063] CPU: 1 PID: 1 Comm: swapper/0 Tainted: G        W
+4.12.0-rc4-next-20170608+ #8
+[    0.390557] Hardware name: innotek GmbH VirtualBox/VirtualBox, BIOS
+VirtualBox 12/01/2006
+[    0.392000] Call Trace:
+[    0.392000]  ? dump_stack+0x5c/0x81
+[    0.392000]  ? kmem_cache_destroy+0x1aa/0x1c0
+[    0.392000]  ? acpi_sleep_proc_init+0x27/0x27
+[    0.392000]  ? acpi_os_delete_cache+0xa/0x10
+[    0.392000]  ? acpi_ut_delete_caches+0x6d/0x7b
+[    0.392000]  ? acpi_terminate+0xa/0x14
+[    0.392000]  ? acpi_init+0x2af/0x34f
+[    0.392000]  ? __class_create+0x4c/0x80
+[    0.392000]  ? video_setup+0x7f/0x7f
+[    0.392000]  ? acpi_sleep_proc_init+0x27/0x27
+[    0.392000]  ? do_one_initcall+0x4e/0x1a0
+[    0.392000]  ? kernel_init_freeable+0x189/0x20a
+[    0.392000]  ? rest_init+0xc0/0xc0
+[    0.392000]  ? kernel_init+0xa/0x100
+[    0.392000]  ? ret_from_fork+0x25/0x30
 
-> =
+When early abort is occurred due to invalid ACPI information, Linux kernel
+terminates ACPI by calling acpi_terminate() function. The function calls
+acpi_ut_delete_caches() function to delete local caches (acpi_gbl_namespace_
+cache, state_cache, operand_cache, ps_node_cache, ps_node_ext_cache).
 
-> > > -----Original Message-----
-> > > From: Lorenzo Pieralisi [mailto:lorenzo.pieralisi(a)arm.com]
-> > > Sent: Thursday, June 22, 2017 6:43 AM
-> > > To: Ganapatrao Kulkarni <ganapatrao.kulkarni(a)cavium.com>; Zheng, Lv
-> > > <lv.zheng(a)intel.com>; Moore, Robert <robert.moore(a)intel.com>; Raf=
-ael J.
-> > > Wysocki <rjw(a)rjwysocki.net>
-> > > Cc: linux-acpi(a)vger.kernel.org; devel(a)acpica.org; linux-
-> > > kernel(a)vger.kernel.org; linux-arm-kernel(a)lists.infradead.org;
-> > > marc.zyngier(a)arm.com; catalin.marinas(a)arm.com; will.deacon(a)arm.=
-com;
-> > > hanjun.guo(a)linaro.org; tglx(a)linutronix.de; jason(a)lakedaemon.net;
-> > > jnair(a)caviumnetworks.com; gpkulkarni(a)gmail.com
-> > > Subject: Re: [PATCH v4 1/2] ACPICA: ACPI 6.2: Add support for new SRAT
-> > > subtable
-> > > =
+But the deletion codes in acpi_ut_delete_caches() function only delete
+slab caches using kmem_cache_destroy() function, therefore the cache
+objects should be flushed before acpi_ut_delete_caches() function.
 
-> > > Hi Rafael, Lv, Robert,
-> > > =
+=E2=80=9CAcpi-Parse=E2=80=9D cache and =E2=80=9CAcpi-ParseExt=E2=80=9D cach=
+e are used in an AML parse
+function, acpi_ps_parse_loop(). The function should have flush codes to
+handle an error state due to invalid AML codes.
 
-> > > On Thu, Jun 22, 2017 at 11:40:11AM +0530, Ganapatrao Kulkarni wrote:
-> > > > Add GIC ITS Affinity (ACPI 6.2) subtable to SRAT table.
-> > > >
-> > > > ACPICA commit 5bc67f63918da249bfe279ee461d152bb3e6f55b
-> > > > Link: https://github.com/acpica/acpica/commit/5bc67f6
-> > > >
-> > > > Signed-off-by: Ganapatrao Kulkarni <ganapatrao.kulkarni(a)cavium.co=
-m>
-> > > > ---
-> > > >  include/acpi/actbl1.h | 12 +++++++++++-
-> > > >  1 file changed, 11 insertions(+), 1 deletion(-)
-> > > =
+This cache leak has a security threat because an old kernel (<=3D 4.9) shows
+memory locations of kernel functions in stack dump. Some malicious users
+could use this information to neutralize kernel ASLR.
 
-> > > This patch is fine to me but it is up to you or who sends the ACPICA
-> > > pull request to send it upstream or give us an ACK so that it can go =
-via
-> > > irqchip.
-> > > =
+To fix ACPI cache leak for enhancing security, I made a patch which has
+flush codes in acpi_ps_parse_loop() function.
 
-> > > We need to know how this commit (and other ACPICA changes) will be se=
-nt
-> > > upstream to handle trees dependencies, please advise it is a bit urge=
-nt,
-> > > thank you.
-> > > =
+I hope that this patch improves the security of Linux kernel.
 
-> > > Lorenzo
-> > > =
+Thank you.
 
-> > > > diff --git a/include/acpi/actbl1.h b/include/acpi/actbl1.h index
-> > > > b4ce55c..253c9db 100644
-> > > > --- a/include/acpi/actbl1.h
-> > > > +++ b/include/acpi/actbl1.h
-> > > > @@ -1192,7 +1192,8 @@ enum acpi_srat_type {
-> > > >  	ACPI_SRAT_TYPE_MEMORY_AFFINITY =3D 1,
-> > > >  	ACPI_SRAT_TYPE_X2APIC_CPU_AFFINITY =3D 2,
-> > > >  	ACPI_SRAT_TYPE_GICC_AFFINITY =3D 3,
-> > > > -	ACPI_SRAT_TYPE_RESERVED =3D 4	/* 4 and greater are reserved */
-> > > > +	ACPI_SRAT_TYPE_GIC_ITS_AFFINITY =3D 4,	/* ACPI 6.2 */
-> > > > +	ACPI_SRAT_TYPE_RESERVED =3D 5	/* 5 and greater are reserved */
-> > > >  };
-> > > >
-> > > >  /*
-> > > > @@ -1260,6 +1261,15 @@ struct acpi_srat_gicc_affinity {
-> > > >  	u32 clock_domain;
-> > > >  };
-> > > >
-> > > > +/* 4: GIC ITS Affinity (ACPI 6.2) */
-> > > > +
-> > > > +struct acpi_srat_its_affinity {
-> > > > +	struct acpi_subtable_header header;
-> > > > +	u32 proximity_domain;
-> > > > +	u16 reserved;
-> > > > +	u32 its_id;
-> > > > +};
-> > > > +
-> > > >  /* Flags for struct acpi_srat_gicc_affinity */
-> > > >
-> > > >  #define ACPI_SRAT_GICC_ENABLED     (1)	/* 00: Use affinity structu=
-re
-> > > */
-> > > > --
-> > > > 1.8.1.4
-> > > >
->=20
+Signed-off-by: Seunghun Han <kkamagui(a)gmail.com>
+---
+Changes since v1: move flush code to acpi_ps_complete_final_op() function. =
 
---===============1185911241431694719==--
+
+ drivers/acpi/acpica/psobject.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+
+diff --git a/drivers/acpi/acpica/psobject.c b/drivers/acpi/acpica/psobject.c
+index 5bcb618..3030c3c 100644
+--- a/drivers/acpi/acpica/psobject.c
++++ b/drivers/acpi/acpica/psobject.c
+@@ -680,6 +680,25 @@ acpi_ps_complete_final_op(struct acpi_walk_state *walk=
+_state,
+ 					(void)
+ 					    acpi_ps_complete_this_op(walk_state,
+ 								     op);
++
++					/* Clean up */
++					do {
++						acpi_ps_pop_scope(&
++								  (walk_state->
++								   parser_state),
++								  &op,
++								  &walk_state->
++								  arg_types,
++								  &walk_state->
++								  arg_count);
++
++						if (op) {
++							acpi_ps_complete_this_op
++							    (walk_state, op);
++						}
++
++					} while (op);
++
+ 					return_ACPI_STATUS(status);
+ 				}
+ 			}
+-- =
+
+2.1.4
+
+
+--===============5805772779819793823==--
 
