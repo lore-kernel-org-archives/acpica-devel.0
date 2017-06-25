@@ -1,281 +1,154 @@
-Content-Type: multipart/mixed; boundary="===============2171682929766585369=="
+Content-Type: multipart/mixed; boundary="===============5535932933044036990=="
 MIME-Version: 1.0
-From: Lorenzo Pieralisi <lorenzo.pieralisi at arm.com>
-Subject: Re: [Devel] [PATCH v3 1/2] acpi:iort: Add an IORT helper function to
- reserve HW ITS address regions for IOMMU drivers
-Date: Fri, 23 Jun 2017 17:54:06 +0100
-Message-ID: <20170623165406.GA6412@red-moon>
-In-Reply-To: 20170623145801.325244-2-shameerali.kolothum.thodi@huawei.com
+From: Seunghun Han <kkamagui at gmail.com>
+Subject: Re: [Devel] [PATCH V4] acpi: acpica: fix acpi parse and parseext
+ cache leaks
+Date: Sun, 25 Jun 2017 22:12:18 +0000
+Message-ID: <CAHjaAcRH6qnS8Fpkj4DC7ON7foBp0EQ1_w6YCnEu-BYhBP-O6w@mail.gmail.com>
+In-Reply-To: CAHp75VfssiqaMG0Qm_0EG1pMotGg5pMt1_bZobAFYkoRUv1W3w@mail.gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2171682929766585369==
+--===============5535932933044036990==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jun 23, 2017 at 03:58:00PM +0100, shameer wrote:
-> The helper function retrieves ITS address regions through IORT
-> device <-> ITS mappings and reserves it so that these regions
-> will not be translated by IOMMU and will be excluded from IOVA
-> allocations. IOMMU drivers can use this to implement their
-> .get_resv_regions callback.
-> =
+Hello, Andy.
 
-> Signed-off-by: shameer <shameerali.kolothum.thodi(a)huawei.com>
-> ---
->  drivers/acpi/arm64/iort.c        | 91 ++++++++++++++++++++++++++++++++++=
-++++--
->  drivers/irqchip/irq-gic-v3-its.c |  3 +-
->  include/linux/acpi_iort.h        |  7 +++-
->  3 files changed, 96 insertions(+), 5 deletions(-)
-> =
+Thank you for your reply.
 
-> diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
-> index c5fecf9..cf0a6b8 100644
-> --- a/drivers/acpi/arm64/iort.c
-> +++ b/drivers/acpi/arm64/iort.c
-> @@ -34,6 +34,7 @@
->  struct iort_its_msi_chip {
->  	struct list_head	list;
->  	struct fwnode_handle	*fw_node;
-> +	phys_addr_t		base_addr;
->  	u32			translation_id;
->  };
->  =
+Patch V4 is the last patch which is applied all changes from original code.
+Due to reviewer's advice, Patch V1, V2, V3 has reverted and I made the
+latest patch, Patch V4.
+Therefore, it seems that incremental patch is not needed.
 
-> @@ -131,14 +132,16 @@ typedef acpi_status (*iort_find_node_callback)
->  static DEFINE_SPINLOCK(iort_msi_chip_lock);
->  =
+If you have any requests, please let me know.
 
->  /**
-> - * iort_register_domain_token() - register domain token and related ITS =
-ID
-> - * to the list from where we can get it back later on.
-> + * iort_register_domain_token() - register domain token along with relat=
-ed
-> + * ITS ID and base address to the list from where we can get it back lat=
-er on.
->   * @trans_id: ITS ID.
-> + * @base: ITS base address.
->   * @fw_node: Domain token.
->   *
->   * Returns: 0 on success, -ENOMEM if no memory when allocating list elem=
-ent
->   */
-> -int iort_register_domain_token(int trans_id, struct fwnode_handle *fw_no=
-de)
-> +int iort_register_domain_token(int trans_id, phys_addr_t base,
-> +			       struct fwnode_handle *fw_node)
->  {
->  	struct iort_its_msi_chip *its_msi_chip;
->  =
+Best regards.
 
-> @@ -148,6 +151,7 @@ int iort_register_domain_token(int trans_id, struct f=
-wnode_handle *fw_node)
->  =
 
->  	its_msi_chip->fw_node =3D fw_node;
->  	its_msi_chip->translation_id =3D trans_id;
-> +	its_msi_chip->base_addr =3D base;
->  =
+2017=EB=85=84 6=EC=9B=94 26=EC=9D=BC (=EC=9B=94) =EC=98=A4=EC=A0=84 1:13, A=
+ndy Shevchenko <andy.shevchenko(a)gmail.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=
+=84=B1:
 
->  	spin_lock(&iort_msi_chip_lock);
->  	list_add(&its_msi_chip->list, &iort_msi_chip_list);
-> @@ -491,6 +495,24 @@ int iort_pmsi_get_dev_id(struct device *dev, u32 *de=
-v_id)
->  	return -ENODEV;
->  }
->  =
-
-> +static int iort_find_its_base(u32 its_id, phys_addr_t *base)
-> +{
-> +	struct iort_its_msi_chip *its_msi_chip;
-> +	bool match =3D false;
-> +
-> +	spin_lock(&iort_msi_chip_lock);
-> +	list_for_each_entry(its_msi_chip, &iort_msi_chip_list, list) {
-> +		if (its_msi_chip->translation_id =3D=3D its_id) {
-> +			*base =3D its_msi_chip->base_addr;
-> +			match =3D true;
-> +			break;
-> +		}
-> +	}
-> +	spin_unlock(&iort_msi_chip_lock);
-> +
-> +	return match ? 0 : -ENODEV;
-> +}
-> +
->  /**
->   * iort_dev_find_its_id() - Find the ITS identifier for a device
->   * @dev: The device.
-> @@ -649,6 +671,67 @@ int iort_add_device_replay(const struct iommu_ops *o=
-ps, struct device *dev)
->  =
-
->  	return err;
->  }
-> +
-> +/**
-> + * iort_iommu_its_get_resv_regions - Reserved region driver helper
-> + * @dev: Device from iommu_get_resv_regions()
-> + * @list: Reserved region list from iommu_get_resv_regions()
-> + *
-> + * Returns: Number of reserved regions on success(0 if no associated ITS=
-),
-> + *          appropriate error value otherwise.
-> + *
-> + * IOMMU drivers can use this to implement their .get_resv_regions callb=
-ack
-> + * for reserving the HW ITS address regions.
-> + */
-> +int iort_iommu_its_get_resv_regions(struct device *dev, struct list_head=
- *head)
-> +{
-> +	int i;
-> +	struct acpi_iort_its_group *its;
-> +	struct acpi_iort_node *node, *its_node =3D NULL;
-> +	int resv =3D 0;
-> +
-> +	node =3D iort_find_dev_node(dev);
-> +	if (!node)
-> +		return -ENODEV;
-> +
-> +	if (dev_is_pci(dev)) {
-> +		u32 rid;
-> +
-> +		pci_for_each_dma_alias(to_pci_dev(dev), __get_pci_rid, &rid);
-> +		its_node =3D iort_node_map_id(node, rid, NULL, IORT_MSI_TYPE);
-> +	} else {
-> +		for (i =3D 0; i < node->mapping_count; i++) {
-> +			its_node =3D iort_node_map_platform_id(node, NULL,
-> +							 IORT_MSI_TYPE, i);
-> +			if (its_node)
-> +				break;
-> +		}
-> +	}
-> +
-> +	if (!its_node)
-> +		return 0;
-> +
-> +	/* Move to ITS specific data */
-> +	its =3D (struct acpi_iort_its_group *)its_node->node_data;
-> +
-> +	for (i =3D 0; i < its->its_count; i++) {
-> +		phys_addr_t base;
-> +
-> +		if (!iort_find_its_base(its->identifiers[i], &base)) {
-> +			int prot =3D IOMMU_WRITE | IOMMU_NOEXEC | IOMMU_MMIO;
-> +			struct iommu_resv_region *region;
-> +
-> +			region =3D iommu_alloc_resv_region(base, SZ_128K, prot,
-> +							 IOMMU_RESV_MSI);
-> +			if (region) {
-> +				list_add_tail(&region->list, head);
-> +				resv++;
-> +			}
-> +		}
-> +	}
-> +
-> +	return resv ? : -ENODEV;
-
-IIUC I think this is not right (ie resv < its_count should count as a
-failure).
-
-This should be easy to fix-up but I am not sure there is still time for
-these patches to be merged for this merge window, I take the blame since
-I am the cause of the delay but I thought the logic in the SMMU driver
-should have been clarified and this version does it IMO.
-
-Thanks and apologies,
-Lorenzo
-
-> +}
->  #else
->  static inline
->  const struct iommu_ops *iort_fwspec_iommu_ops(struct iommu_fwspec *fwspe=
-c)
-> @@ -656,6 +739,8 @@ const struct iommu_ops *iort_fwspec_iommu_ops(struct =
-iommu_fwspec *fwspec)
->  static inline
->  int iort_add_device_replay(const struct iommu_ops *ops, struct device *d=
-ev)
->  { return 0; }
-> +int iort_iommu_its_get_resv_regions(struct device *dev, struct list_head=
- *head)
-> +{ return -ENODEV; }
->  #endif
->  =
-
->  static const struct iommu_ops *iort_iommu_xlate(struct device *dev,
-> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v=
-3-its.c
-> index 45ea1933..c45a2ad 100644
-> --- a/drivers/irqchip/irq-gic-v3-its.c
-> +++ b/drivers/irqchip/irq-gic-v3-its.c
-> @@ -1854,7 +1854,8 @@ static int __init gic_acpi_parse_madt_its(struct ac=
-pi_subtable_header *header,
->  		return -ENOMEM;
->  	}
->  =
-
-> -	err =3D iort_register_domain_token(its_entry->translation_id, dom_handl=
-e);
-> +	err =3D iort_register_domain_token(its_entry->translation_id, res.start,
-> +					 dom_handle);
->  	if (err) {
->  		pr_err("ITS@%pa: Unable to register GICv3 ITS domain token (ITS ID %d)=
- to IORT\n",
->  		       &res.start, its_entry->translation_id);
-> diff --git a/include/linux/acpi_iort.h b/include/linux/acpi_iort.h
-> index 3ff9ace..35cf45c 100644
-> --- a/include/linux/acpi_iort.h
-> +++ b/include/linux/acpi_iort.h
-> @@ -26,7 +26,8 @@
->  #define IORT_IRQ_MASK(irq)		(irq & 0xffffffffULL)
->  #define IORT_IRQ_TRIGGER_MASK(irq)	((irq >> 32) & 0xffffffffULL)
->  =
-
-> -int iort_register_domain_token(int trans_id, struct fwnode_handle *fw_no=
-de);
-> +int iort_register_domain_token(int trans_id, phys_addr_t base,
-> +			       struct fwnode_handle *fw_node);
->  void iort_deregister_domain_token(int trans_id);
->  struct fwnode_handle *iort_find_domain_token(int trans_id);
->  #ifdef CONFIG_ACPI_IORT
-> @@ -39,6 +40,7 @@
->  /* IOMMU interface */
->  void iort_set_dma_mask(struct device *dev);
->  const struct iommu_ops *iort_iommu_configure(struct device *dev);
-> +int iort_iommu_its_get_resv_regions(struct device *dev, struct list_head=
- *head);
->  #else
->  static inline void acpi_iort_init(void) { }
->  static inline bool iort_node_match(u8 type) { return false; }
-> @@ -53,6 +55,9 @@ static inline void iort_set_dma_mask(struct device *dev=
-) { }
->  static inline
->  const struct iommu_ops *iort_iommu_configure(struct device *dev)
->  { return NULL; }
-> +static inline
-> +int iort_iommu_its_get_resv_regions(struct device *dev, struct list_head=
- *head)
-> +{ return -ENODEV; }
->  #endif
->  =
-
->  #endif /* __ACPI_IORT_H__ */
-> -- =
-
-> 1.9.1
-> =
-
-> =
-
+> On Fri, Jun 23, 2017 at 12:36 PM, Seunghun Han <kkamagui(a)gmail.com> wro=
+te:
+> > I'm Seunghun Han, and I work for National Security Research Institute of
+> > South Korea.
+>
+>
+> > -                                       /* Clean up */
+> > -                                       do {
+> > -                                               if (op) {
+> > -                                                       status2 =3D
+> > -
+>  acpi_ps_complete_this_op
+> > -                                                           (walk_state,
+> op);
+> > -                                                       if (ACPI_FAILURE
+> > -                                                           (status2)) {
+> > -
+>  return_ACPI_STATUS
+> > -
+>  (status2);
+> > -                                                       }
+> > -                                               }
+> > -
+> > -                                               acpi_ps_pop_scope(&
+> > -
+>  (walk_state->
+> > -
+> parser_state),
+> > -                                                                 &op,
+> > -
+>  &walk_state->
+> > -
+>  arg_types,
+> > -
+>  &walk_state->
+> > -
+>  arg_count);
+> > -
+> > -                                       } while (op);
+>
+> I didn't get, do you send an incremental patch as a new version?!
+>
 > --
-> To unsubscribe from this list: send the line "unsubscribe linux-acpi" in
-> the body of a message to majordomo(a)vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> With Best Regards,
+> Andy Shevchenko
+>
 
---===============2171682929766585369==--
+--===============5535932933044036990==
+Content-Type: text/html
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="attachment.html"
+
+PGRpdj48ZGl2PkhlbGxvLCBBbmR5LjwvZGl2PjxkaXY+PGJyPjwvZGl2PjxkaXY+VGhhbmsgeW91
+IGZvciB5b3VyIHJlcGx5LjwvZGl2PjxkaXY+PGJyPjwvZGl2PjxkaXY+UGF0Y2ggVjQgaXMgdGhl
+IGxhc3QgcGF0Y2ggd2hpY2ggaXMgYXBwbGllZCBhbGwgY2hhbmdlcyBmcm9tIG9yaWdpbmFsIGNv
+ZGUuPC9kaXY+PGRpdj5EdWUgdG8gcmV2aWV3ZXImIzM5O3MgYWR2aWNlLCBQYXRjaCBWMSwgVjIs
+IFYzIGhhcyByZXZlcnRlZCBhbmQgSSBtYWRlIHRoZSBsYXRlc3QgcGF0Y2gsIFBhdGNoIFY0Ljwv
+ZGl2PjxkaXY+VGhlcmVmb3JlLCBpdCBzZWVtcyB0aGF0IGluY3JlbWVudGFsIHBhdGNoIGlzIG5v
+dCBuZWVkZWQuPGJyPjwvZGl2PjxkaXY+PGJyPjwvZGl2PjxkaXY+SWYgeW91IGhhdmUgYW55IHJl
+cXVlc3RzLCBwbGVhc2UgbGV0IG1lIGtub3cuPGJyPjwvZGl2PjxkaXY+PGJyPjwvZGl2PjxkaXY+
+QmVzdCByZWdhcmRzLjwvZGl2PjxkaXY+PGJyPjwvZGl2PjxkaXY+PGJyPjxkaXYgY2xhc3M9Imdt
+YWlsX3F1b3RlIj48ZGl2PjIwMTfrhYQgNuyblCAyNuydvCAo7JuUKSDsmKTsoIQgMToxMywgQW5k
+eSBTaGV2Y2hlbmtvICZsdDs8YSBocmVmPSJtYWlsdG86YW5keS5zaGV2Y2hlbmtvQGdtYWlsLmNv
+bSIgdGFyZ2V0PSJfYmxhbmsiPmFuZHkuc2hldmNoZW5rb0BnbWFpbC5jb208L2E+Jmd0O+uLmOyd
+tCDsnpHshLE6PGJyPjwvZGl2PjwvZGl2PjwvZGl2PjwvZGl2PjxkaXY+PGRpdj48ZGl2IGNsYXNz
+PSJnbWFpbF9xdW90ZSI+PGJsb2NrcXVvdGUgY2xhc3M9ImdtYWlsX3F1b3RlIiBzdHlsZT0ibWFy
+Z2luOjAgMCAwIC44ZXg7Ym9yZGVyLWxlZnQ6MXB4ICNjY2Mgc29saWQ7cGFkZGluZy1sZWZ0OjFl
+eCI+T24gRnJpLCBKdW4gMjMsIDIwMTcgYXQgMTI6MzYgUE0sIFNldW5naHVuIEhhbiAmbHQ7PGEg
+aHJlZj0ibWFpbHRvOmtrYW1hZ3VpQGdtYWlsLmNvbSIgdGFyZ2V0PSJfYmxhbmsiPmtrYW1hZ3Vp
+QGdtYWlsLmNvbTwvYT4mZ3Q7IHdyb3RlOjxicj4NCiZndDsgSSYjMzk7bSBTZXVuZ2h1biBIYW4s
+IGFuZCBJIHdvcmsgZm9yIE5hdGlvbmFsIFNlY3VyaXR5IFJlc2VhcmNoIEluc3RpdHV0ZSBvZjxi
+cj4NCiZndDsgU291dGggS29yZWEuPGJyPg0KPGJyPg0KPGJyPg0KJmd0OyAtwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAvKiBDbGVhbiB1
+cCAqLzxicj4NCiZndDsgLcKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgZG8gezxicj4NCiZndDsgLcKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgaWYgKG9wKSB7
+PGJyPg0KJmd0OyAtwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBzdGF0dXMyID08YnI+DQomZ3Q7
+IC3CoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoGFjcGlfcHNfY29tcGxldGVfdGhpc19v
+cDxicj4NCiZndDsgLcKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgKHdhbGtfc3RhdGUs
+IG9wKTs8YnI+DQomZ3Q7IC3CoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoGlmIChBQ1BJX0ZBSUxV
+UkU8YnI+DQomZ3Q7IC3CoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoChzdGF0dXMyKSkg
+ezxicj4NCiZndDsgLcKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgcmV0dXJu
+X0FDUElfU1RBVFVTPGJyPg0KJmd0OyAtwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAoc3RhdHVzMik7PGJyPg0KJmd0OyAtwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqB9PGJyPg0KJmd0OyAtwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqB9PGJyPg0KJmd0OyAtPGJyPg0KJmd0OyAtwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqBhY3BpX3BzX3BvcF9zY29wZSgmYW1wOzxicj4NCiZndDsgLcKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgKHdhbGtfc3RhdGUtJmd0Ozxicj4NCiZndDsg
+LcKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHBhcnNlcl9zdGF0ZSks
+PGJyPg0KJmd0OyAtwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAmYW1w
+O29wLDxicj4NCiZndDsgLcKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+JmFtcDt3YWxrX3N0YXRlLSZndDs8YnI+DQomZ3Q7IC3CoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoGFyZ190eXBlcyw8YnI+DQomZ3Q7IC3CoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCZhbXA7d2Fsa19zdGF0ZS0mZ3Q7PGJyPg0KJmd0OyAtwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBhcmdfY291bnQpOzxicj4NCiZn
+dDsgLTxicj4NCiZndDsgLcKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgfSB3aGlsZSAob3ApOzxicj4NCjxicj4NCkkgZGlkbiYjMzk7dCBn
+ZXQsIGRvIHlvdSBzZW5kIGFuIGluY3JlbWVudGFsIHBhdGNoIGFzIGEgbmV3IHZlcnNpb24/ITxi
+cj4NCjxicj4NCi0tPGJyPg0KV2l0aCBCZXN0IFJlZ2FyZHMsPGJyPg0KQW5keSBTaGV2Y2hlbmtv
+PGJyPg0KPC9ibG9ja3F1b3RlPjwvZGl2PjwvZGl2PjwvZGl2Pg0K
+
+--===============5535932933044036990==--
 
