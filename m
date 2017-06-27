@@ -1,75 +1,112 @@
-Content-Type: multipart/mixed; boundary="===============8193054610086668814=="
+Content-Type: multipart/mixed; boundary="===============5659352409599886427=="
 MIME-Version: 1.0
-From: Robert Richter <rric at kernel.org>
-Subject: Re: [Devel] [PATCH v4 2/2] acpi, gicv3-its,
- numa: Adding numa node mapping for gic-its units
-Date: Mon, 26 Jun 2017 19:45:01 +0200
-Message-ID: <20170626174501.GB10237@rric.localdomain>
-In-Reply-To: 76d94864-d121-1d7a-bc23-00ac57cd7fb2@arm.com
+From: Robert Richter <robert.richter at cavium.com>
+Subject: Re: [Devel] [RESEND PATCH v9 3/3] iommu/arm-smmu-v3: Add workaround
+ for Cavium ThunderX2 erratum #126
+Date: Tue, 27 Jun 2017 15:56:10 +0200
+Message-ID: <20170627135610.GX658@rric.localdomain>
+In-Reply-To: 1498224876-5200-1-git-send-email-gakula@caviumnetworks.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8193054610086668814==
+--===============5659352409599886427==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On 26.06.17 18:43:47, Marc Zyngier wrote:
-> On 26/06/17 18:38, Robert Richter wrote:
-> > On 22.06.17 15:49:25, Marc Zyngier wrote:
-> >> On 22/06/17 07:10, Ganapatrao Kulkarni wrote:
-> >>> Add code to parse SRAT ITS Affinity sub table as defined in ACPI 6.2.
-> >>> Later in per device probe, ITS devices are mapped to numa node using
-> >>> ITS Id to proximity domain mapping.
-> >>>
-> >>> Signed-off-by: Ganapatrao Kulkarni <ganapatrao.kulkarni(a)cavium.com>
-> >>> ---
-> >>>  drivers/irqchip/irq-gic-v3-its.c | 75 ++++++++++++++++++++++++++++++=
-+++++++++-
-> >>>  1 file changed, 74 insertions(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-g=
-ic-v3-its.c
-> >>> index 45ea1933..1c21e01 100644
-> >>> --- a/drivers/irqchip/irq-gic-v3-its.c
-> >>> +++ b/drivers/irqchip/irq-gic-v3-its.c
-> >>> @@ -1833,6 +1833,77 @@ static int __init its_of_probe(struct device_n=
-ode *node)
-> >>>  =
-
-> >>>  #define ACPI_GICV3_ITS_MEM_SIZE (SZ_128K)
-> >>>  =
-
-> >>> +#ifdef CONFIG_ACPI_NUMA
-> >>
-> >> So given that there is a dependency issue between the irqchip and apci=
-ca
-> >> trees, I plan on taking this patch with the following change:
-> >>
-> >> #if defined(CONFIG_ACPI_NUMA) && (ACPI_CA_VERSION >=3D 0x20170531)
-> > =
-
-> > The struct name was changed :/
-> > =
-
-> >  s/acpi_srat_its_affinity/acpi_srat_gic_its_affinity/
-> > =
-
-> > You need to update this too.
+On 23.06.17 19:04:36, Geetha sowjanya wrote:
+> From: Geetha Sowjanya <geethasowjanya.akula(a)cavium.com>
 > =
 
-> I changed it when I applied the patch. See
+> Cavium ThunderX2 SMMU doesn't support MSI and also doesn't have unique irq
+> lines for gerror, eventq and cmdq-sync.
 > =
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git/com=
-mit/?h=3Dirq/irqchip-4.13&id=3Ddbd2b826723319eb6e4bee5214f8901e336c06be
+> New named irq "combined" is set as a errata workaround, which allows to
+> share the irq line by register single irq handler for all the interrupts.
 > =
 
-> Which is also in tip/irq/core.
+> Signed-off-by: Geetha sowjanya <gakula(a)caviumnetworks.com>
+> ---
+>  Documentation/arm64/silicon-errata.txt             |    1 +
+>  .../devicetree/bindings/iommu/arm,smmu-v3.txt      |    6 +
+>  drivers/acpi/arm64/iort.c                          |   57 ++++++++---
+>  drivers/iommu/arm-smmu-v3.c                        |  100 ++++++++++++++=
+-----
+>  4 files changed, 121 insertions(+), 43 deletions(-)
 
-Great, thanks for the pointer.
+> +static int arm_smmu_setup_irqs(struct arm_smmu_device *smmu)
+> +{
+> +	int ret, irq;
+> +	u32 irqen_flags =3D IRQ_CTRL_EVTQ_IRQEN | IRQ_CTRL_GERROR_IRQEN;
+> +
+> +	/* Disable IRQs first */
+> +	ret =3D arm_smmu_write_reg_sync(smmu, 0, ARM_SMMU_IRQ_CTRL,
+> +				      ARM_SMMU_IRQ_CTRLACK);
+> +	if (ret) {
+> +		dev_err(smmu->dev, "failed to disable irqs\n");
+> +		return ret;
+> +	}
+> +
+> +	irq =3D smmu->combined_irq;
+> +	if (irq) {
+> +		/*
+> +		 * Cavium ThunderX2 implementation doesn't not support unique
+> +		 * irq lines. Use single irq line for all the SMMUv3 interrupts.
+> +		 */
+> +		ret =3D devm_request_threaded_irq(smmu->dev, irq,
+> +					arm_smmu_combined_irq_handler,
+> +					arm_smmu_combined_irq_thread,
+> +					IRQF_ONESHOT,
+
+Without the IRQF_SHARED flag set I see the following on a dual node
+system now:
+
+[   17.403260] arm-smmu-v3 arm-smmu-v3.0.auto: option mask 0x2
+[   17.408853] arm-smmu-v3 arm-smmu-v3.0.auto: ias 44-bit, oas 44-bit (feat=
+ures 0x0000172d)
+[   17.417259] arm-smmu-v3 arm-smmu-v3.1.auto: option mask 0x2
+[   17.422856] arm-smmu-v3 arm-smmu-v3.1.auto: ias 44-bit, oas 44-bit (feat=
+ures 0x0000172d)
+[   17.431193] arm-smmu-v3 arm-smmu-v3.2.auto: option mask 0x2
+[   17.436787] arm-smmu-v3 arm-smmu-v3.2.auto: ias 44-bit, oas 44-bit (feat=
+ures 0x0000172d)
+[   17.445123] arm-smmu-v3 arm-smmu-v3.3.auto: option mask 0x2
+[   17.450697] arm-smmu-v3 arm-smmu-v3.3.auto: ias 44-bit, oas 44-bit (feat=
+ures 0x0000172d)
+[   17.458984] genirq: Flags mismatch irq 5. 00002001 (arm-smmu-v3-combined=
+-irq) vs. 00002001 (arm-smmu-v3-combined-irq)
+[   17.610636] arm-smmu-v3 arm-smmu-v3.3.auto: failed to enable combined irq
+[   17.617491] arm-smmu-v3 arm-smmu-v3.4.auto: option mask 0x2
+[   17.623073] arm-smmu-v3 arm-smmu-v3.4.auto: ias 44-bit, oas 44-bit (feat=
+ures 0x0000172d)
+[   17.631339] genirq: Flags mismatch irq 6. 00002001 (arm-smmu-v3-combined=
+-irq) vs. 00002001 (arm-smmu-v3-combined-irq)
+[   17.782944] arm-smmu-v3 arm-smmu-v3.4.auto: failed to enable combined irq
+[   17.789780] arm-smmu-v3 arm-smmu-v3.5.auto: option mask 0x2
+[   17.795367] arm-smmu-v3 arm-smmu-v3.5.auto: ias 44-bit, oas 44-bit (feat=
+ures 0x0000172d)
+[   17.803640] genirq: Flags mismatch irq 7. 00002001 (arm-smmu-v3-combined=
+-irq) vs. 00002001 (arm-smmu-v3-combined-irq)
+[   17.955248] arm-smmu-v3 arm-smmu-v3.5.auto: failed to enable combined irq
+
+In __setup_irq() in kernel/irq/manage.c there is a check if that flag
+is set which causes the error is shown.
 
 -Robert
 
---===============8193054610086668814==--
+> +					"arm-smmu-v3-combined-irq", smmu);
+> +		if (ret < 0)
+> +			dev_warn(smmu->dev, "failed to enable combined irq\n");
+> +	} else
+> +		arm_smmu_setup_unique_irqs(smmu);
+> +
+> +	if (smmu->features & ARM_SMMU_FEAT_PRI)
+> +		irqen_flags |=3D IRQ_CTRL_PRIQ_IRQEN;
+>  =
+
+>  	/* Enable interrupt generation on the SMMU */
+>  	ret =3D arm_smmu_write_reg_sync(smmu, irqen_flags,
+
+--===============5659352409599886427==--
 
