@@ -1,112 +1,82 @@
-Content-Type: multipart/mixed; boundary="===============5659352409599886427=="
+Content-Type: multipart/mixed; boundary="===============4550713225684506608=="
 MIME-Version: 1.0
-From: Robert Richter <robert.richter at cavium.com>
+From: Will Deacon <will.deacon at arm.com>
 Subject: Re: [Devel] [RESEND PATCH v9 3/3] iommu/arm-smmu-v3: Add workaround
  for Cavium ThunderX2 erratum #126
-Date: Tue, 27 Jun 2017 15:56:10 +0200
-Message-ID: <20170627135610.GX658@rric.localdomain>
-In-Reply-To: 1498224876-5200-1-git-send-email-gakula@caviumnetworks.com
+Date: Tue, 27 Jun 2017 15:06:00 +0100
+Message-ID: <20170627140559.GK14041@arm.com>
+In-Reply-To: 20170627135610.GX658@rric.localdomain
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5659352409599886427==
+--===============4550713225684506608==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On 23.06.17 19:04:36, Geetha sowjanya wrote:
-> From: Geetha Sowjanya <geethasowjanya.akula(a)cavium.com>
+On Tue, Jun 27, 2017 at 03:56:10PM +0200, Robert Richter wrote:
+> On 23.06.17 19:04:36, Geetha sowjanya wrote:
+> > From: Geetha Sowjanya <geethasowjanya.akula(a)cavium.com>
+> > =
+
+> > Cavium ThunderX2 SMMU doesn't support MSI and also doesn't have unique =
+irq
+> > lines for gerror, eventq and cmdq-sync.
+> > =
+
+> > New named irq "combined" is set as a errata workaround, which allows to
+> > share the irq line by register single irq handler for all the interrupt=
+s.
+> > =
+
+> > Signed-off-by: Geetha sowjanya <gakula(a)caviumnetworks.com>
+> > ---
+> >  Documentation/arm64/silicon-errata.txt             |    1 +
+> >  .../devicetree/bindings/iommu/arm,smmu-v3.txt      |    6 +
+> >  drivers/acpi/arm64/iort.c                          |   57 ++++++++---
+> >  drivers/iommu/arm-smmu-v3.c                        |  100 ++++++++++++=
+++-----
+> >  4 files changed, 121 insertions(+), 43 deletions(-)
 > =
 
-> Cavium ThunderX2 SMMU doesn't support MSI and also doesn't have unique irq
-> lines for gerror, eventq and cmdq-sync.
+> > +static int arm_smmu_setup_irqs(struct arm_smmu_device *smmu)
+> > +{
+> > +	int ret, irq;
+> > +	u32 irqen_flags =3D IRQ_CTRL_EVTQ_IRQEN | IRQ_CTRL_GERROR_IRQEN;
+> > +
+> > +	/* Disable IRQs first */
+> > +	ret =3D arm_smmu_write_reg_sync(smmu, 0, ARM_SMMU_IRQ_CTRL,
+> > +				      ARM_SMMU_IRQ_CTRLACK);
+> > +	if (ret) {
+> > +		dev_err(smmu->dev, "failed to disable irqs\n");
+> > +		return ret;
+> > +	}
+> > +
+> > +	irq =3D smmu->combined_irq;
+> > +	if (irq) {
+> > +		/*
+> > +		 * Cavium ThunderX2 implementation doesn't not support unique
+> > +		 * irq lines. Use single irq line for all the SMMUv3 interrupts.
+> > +		 */
+> > +		ret =3D devm_request_threaded_irq(smmu->dev, irq,
+> > +					arm_smmu_combined_irq_handler,
+> > +					arm_smmu_combined_irq_thread,
+> > +					IRQF_ONESHOT,
 > =
 
-> New named irq "combined" is set as a errata workaround, which allows to
-> share the irq line by register single irq handler for all the interrupts.
-> =
+> Without the IRQF_SHARED flag set I see the following on a dual node
+> system now:
 
-> Signed-off-by: Geetha sowjanya <gakula(a)caviumnetworks.com>
-> ---
->  Documentation/arm64/silicon-errata.txt             |    1 +
->  .../devicetree/bindings/iommu/arm,smmu-v3.txt      |    6 +
->  drivers/acpi/arm64/iort.c                          |   57 ++++++++---
->  drivers/iommu/arm-smmu-v3.c                        |  100 ++++++++++++++=
------
->  4 files changed, 121 insertions(+), 43 deletions(-)
+We asked about that before:
 
-> +static int arm_smmu_setup_irqs(struct arm_smmu_device *smmu)
-> +{
-> +	int ret, irq;
-> +	u32 irqen_flags =3D IRQ_CTRL_EVTQ_IRQEN | IRQ_CTRL_GERROR_IRQEN;
-> +
-> +	/* Disable IRQs first */
-> +	ret =3D arm_smmu_write_reg_sync(smmu, 0, ARM_SMMU_IRQ_CTRL,
-> +				      ARM_SMMU_IRQ_CTRLACK);
-> +	if (ret) {
-> +		dev_err(smmu->dev, "failed to disable irqs\n");
-> +		return ret;
-> +	}
-> +
-> +	irq =3D smmu->combined_irq;
-> +	if (irq) {
-> +		/*
-> +		 * Cavium ThunderX2 implementation doesn't not support unique
-> +		 * irq lines. Use single irq line for all the SMMUv3 interrupts.
-> +		 */
-> +		ret =3D devm_request_threaded_irq(smmu->dev, irq,
-> +					arm_smmu_combined_irq_handler,
-> +					arm_smmu_combined_irq_thread,
-> +					IRQF_ONESHOT,
+https://marc.info/?l=3Dlinux-arm-kernel&m=3D149803613513068&w=3D2
+https://marc.info/?l=3Dlinux-acpi&m=3D149803744713475&w=3D2
 
-Without the IRQF_SHARED flag set I see the following on a dual node
-system now:
+and Geetha didn't reply, but the next version of the patch dropped the flag.
+Is it just that firmware is misprogramming something here, or something
+more fundamental?
 
-[   17.403260] arm-smmu-v3 arm-smmu-v3.0.auto: option mask 0x2
-[   17.408853] arm-smmu-v3 arm-smmu-v3.0.auto: ias 44-bit, oas 44-bit (feat=
-ures 0x0000172d)
-[   17.417259] arm-smmu-v3 arm-smmu-v3.1.auto: option mask 0x2
-[   17.422856] arm-smmu-v3 arm-smmu-v3.1.auto: ias 44-bit, oas 44-bit (feat=
-ures 0x0000172d)
-[   17.431193] arm-smmu-v3 arm-smmu-v3.2.auto: option mask 0x2
-[   17.436787] arm-smmu-v3 arm-smmu-v3.2.auto: ias 44-bit, oas 44-bit (feat=
-ures 0x0000172d)
-[   17.445123] arm-smmu-v3 arm-smmu-v3.3.auto: option mask 0x2
-[   17.450697] arm-smmu-v3 arm-smmu-v3.3.auto: ias 44-bit, oas 44-bit (feat=
-ures 0x0000172d)
-[   17.458984] genirq: Flags mismatch irq 5. 00002001 (arm-smmu-v3-combined=
--irq) vs. 00002001 (arm-smmu-v3-combined-irq)
-[   17.610636] arm-smmu-v3 arm-smmu-v3.3.auto: failed to enable combined irq
-[   17.617491] arm-smmu-v3 arm-smmu-v3.4.auto: option mask 0x2
-[   17.623073] arm-smmu-v3 arm-smmu-v3.4.auto: ias 44-bit, oas 44-bit (feat=
-ures 0x0000172d)
-[   17.631339] genirq: Flags mismatch irq 6. 00002001 (arm-smmu-v3-combined=
--irq) vs. 00002001 (arm-smmu-v3-combined-irq)
-[   17.782944] arm-smmu-v3 arm-smmu-v3.4.auto: failed to enable combined irq
-[   17.789780] arm-smmu-v3 arm-smmu-v3.5.auto: option mask 0x2
-[   17.795367] arm-smmu-v3 arm-smmu-v3.5.auto: ias 44-bit, oas 44-bit (feat=
-ures 0x0000172d)
-[   17.803640] genirq: Flags mismatch irq 7. 00002001 (arm-smmu-v3-combined=
--irq) vs. 00002001 (arm-smmu-v3-combined-irq)
-[   17.955248] arm-smmu-v3 arm-smmu-v3.5.auto: failed to enable combined irq
+Will
 
-In __setup_irq() in kernel/irq/manage.c there is a check if that flag
-is set which causes the error is shown.
-
--Robert
-
-> +					"arm-smmu-v3-combined-irq", smmu);
-> +		if (ret < 0)
-> +			dev_warn(smmu->dev, "failed to enable combined irq\n");
-> +	} else
-> +		arm_smmu_setup_unique_irqs(smmu);
-> +
-> +	if (smmu->features & ARM_SMMU_FEAT_PRI)
-> +		irqen_flags |=3D IRQ_CTRL_PRIQ_IRQEN;
->  =
-
->  	/* Enable interrupt generation on the SMMU */
->  	ret =3D arm_smmu_write_reg_sync(smmu, irqen_flags,
-
---===============5659352409599886427==--
+--===============4550713225684506608==--
 
