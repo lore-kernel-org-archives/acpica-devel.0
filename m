@@ -1,87 +1,58 @@
-Content-Type: multipart/mixed; boundary="===============7088167674217625352=="
+Content-Type: multipart/mixed; boundary="===============3998233541035822375=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] ACPICA version 20170629 released
-Date: Thu, 29 Jun 2017 15:33:09 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E5C4382@ORSMSX110.amr.corp.intel.com>
+From: Rafael J. Wysocki <rafael at kernel.org>
+Subject: Re: [Devel] [PATCH v2] ACPI: surface3_power: MSHW0011 rev-eng
+ implementation
+Date: Thu, 29 Jun 2017 22:22:50 +0200
+Message-ID: <CAJZ5v0hq1YSECBGD9QvqKuzmaFW2+jhWPSzvTb64yTxd6yH06w@mail.gmail.com>
+In-Reply-To: CAHp75Vdn1-m0gDSHtZXX2A=Q07xG9j1eBiV8iM4e11Qk=oJfZg@mail.gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7088167674217625352==
+--===============3998233541035822375==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-29 June 2017. Summary of changes for version 20170629:
+On Thu, Jun 29, 2017 at 4:22 PM, Andy Shevchenko
+<andy.shevchenko(a)gmail.com> wrote:
+> +Cc: Hans (he might give some advice regarding to the below)
+>
+> On Thu, Jun 29, 2017 at 3:10 PM, Benjamin Tissoires
+> <benjamin.tissoires(a)redhat.com> wrote:
+>> MSHW0011 replaces the battery firmware by using ACPI operation regions.
+>> The values have been obtained by reverse engineering, and are subject to
+>> errors. Looks like it works on overall pretty well.
+>
+> What devices (laptops, tablets) have it?
+> Surface 3. What else?
+>
+>> I couldn't manage to get the IRQ correctly triggered, so I am using a
+>> good old polling thread to check for changes.
+>
+> It might be
+>
+>>
+>> Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D106231
+>
+>> +config ACPI_SURFACE3_POWER_OPREGION
+>> +       tristate "Surface 3 battery platform operation region support"
+>
+> depends on ACPI ?
+>
+>> +       help
+>> +         Select this option to enable support for ACPI operation
+>> +         region of the Surface 3 battery platform driver.
+>
+>> +/*
+>> + * Supports for the power IC on the Surface 3 tablet.
+>
+> Shouldn't it go to drivers/acpi/pmic folder ?
 
-This release is available at https://acpica.org/downloads
+Surely not directly into drivers/acpi/ in any case.
 
+Thanks,
+Rafael
 
-1) ACPICA kernel-resident subsystem:
-
-Tables: Implemented a deferred ACPI table verification. This is useful for =
-operating systems where the tables cannot be verified in the early initiali=
-zation stage due to early memory mapping limitations on some architectures.=
- Lv Zheng.
-
-Tables: Removed the signature validation for dynamically loaded tables. Pro=
-vides compatibility with other ACPI implementations. Previously, only SSDT =
-tables were allowed, as per the ACPI specification. Now, any table signatur=
-e can be used via the Load() operator. Lv Zheng.
-
-Tables: Fixed several mutex issues that could cause errors during table acq=
-uisition. Lv Zheng.
-
-Tables: Fixed a problem where an ACPI warning could be generated if a null =
-pointer was passed to the AcpiPutTable interface. Lv Zheng.
-
-Tables: Added a mechanism to handle imbalances for the AcpiGetTable and Acp=
-iPutTable interfaces. This applies to the "late stage" table loading when t=
-he use of AcpiPutTable is no longer required (since the system memory manag=
-er is fully running and available). Lv Zheng.
-
-Fixed/Reverted a regression during processing of resource descriptors that =
-contain only a single EndTag. Fixes an AE_AML_NO_RESOURCE_END_TAG exception=
- in this case.
-
-Headers: IORT/SMMU support: Updated the SMMU models for Revision C of the I=
-/O Remapping specification. Robin Murphy <robin.murphy(a)arm.com>
-
-Interpreter: Fixed a possible fault if an Alias operator with an invalid or=
- duplicate target is encountered during Alias creation in AcpiExCreateAlias=
-. Alex James <theracermaster(a)gmail.com>
-
-Added an option to use designated initializers for function pointers. Kees =
-Cook <keescook(a)google.com>
-
-
-2) iASL Compiler/Disassembler and Tools:
-
-iASL: Allow compilation of External declarations with target pathnames that=
- refer to existing named objects within the table. Erik Schmauss.
-
-iASL: Fixed a regression when compiling FieldUnits. Fixes an error if a Fie=
-ldUnit name also is declared via External in the same table. Erik Schmauss.
-
-iASL: Allow existing scope names within pathnames used in External statemen=
-ts. For example:
-    External (ABCD.EFGH) // ABCD exists, but EFGH is truly external
-    Device (ABCD)
-
-iASL: IORT ACPI table: Implemented changes required to decode the new Proxi=
-mity Domain for the SMMUv3 IORT. Disassembler and Data Table compiler. Gana=
-patrao Kulkarni <ganapatrao.kulkarni(a)cavium.com>
-
-Disassembler: Don't abort disassembly on errors from External() statements.=
- Erik Schmauss.
-
-Disassembler: fixed a possible fault when one of the Create*Field operators=
- references a Resource Template. ACPICA Bugzilla 1396.
-
-iASL: In the source code, resolved some naming inconsistences across the pa=
-rsing support. Fixes confusion between "Parse Op" and "Parse Node". Adds a =
-new file, aslparseop.c
-
-
---===============7088167674217625352==--
+--===============3998233541035822375==--
 
