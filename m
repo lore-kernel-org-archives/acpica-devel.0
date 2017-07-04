@@ -1,127 +1,94 @@
-Content-Type: multipart/mixed; boundary="===============3285075434585025270=="
+Content-Type: multipart/mixed; boundary="===============5398875138273824820=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: Re: [Devel] [PATCH v3] acpi: configfs: Unload SSDT on configfs entry
- removal
-Date: Tue, 04 Jul 2017 14:05:20 +0200
-Message-ID: <CAJZ5v0j_UMDqkr82v6OEcmUW5Lqn-fae2wsSmFLC8zsCyprx0w@mail.gmail.com>
-In-Reply-To: ba9505c1-1412-42be-9af7-57972fc50d3f@siemens.com
+From: Will Deacon <will.deacon at arm.com>
+Subject: Re: [Devel] [PATCH v3 2/2] iommu/arm-smmu-v3:Enable ACPI based
+ HiSilicon erratum 161010801
+Date: Tue, 04 Jul 2017 18:38:21 +0100
+Message-ID: <20170704173820.GO22175@arm.com>
+In-Reply-To: 20170623145801.325244-3-shameerali.kolothum.thodi@huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3285075434585025270==
+--===============5398875138273824820==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jul 4, 2017 at 8:14 AM, Jan Kiszka <jan.kiszka(a)siemens.com> wrote:
-> On 2017-06-09 20:36, Jan Kiszka wrote:
->> Call directly into acpica to load a table to obtain its index on return.
->> We choose the direct call of acpica internal functions to avoid having
->> to modify its API which is used outside of Linux as well.
->>
->> Use that index to unload the table again when the corresponding
->> directory in configfs gets removed. This allows to change SSDTs without
->> rebooting the system. It also allows to destroy devices again that a
->> dynamically loaded SSDT created.
->>
->> This is widely similar to the DT overlay behavior.
->>
->> Signed-off-by: Jan Kiszka <jan.kiszka(a)siemens.com>
->> ---
->>
->> Change in v3:
->>  - fix breakage if acpi_configfs is modular
->>
->>  drivers/acpi/acpi_configfs.c | 20 +++++++++++++++++++-
->>  drivers/acpi/acpica/tbdata.c |  4 ++++
->>  2 files changed, 23 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/acpi/acpi_configfs.c b/drivers/acpi/acpi_configfs.c
->> index 146a77fb762d..853bc7fc673f 100644
->> --- a/drivers/acpi/acpi_configfs.c
->> +++ b/drivers/acpi/acpi_configfs.c
->> @@ -15,11 +15,15 @@
->>  #include <linux/configfs.h>
->>  #include <linux/acpi.h>
->>
->> +#include "acpica/accommon.h"
->> +#include "acpica/actables.h"
->> +
->>  static struct config_group *acpi_table_group;
->>
->>  struct acpi_table {
->>       struct config_item cfg;
->>       struct acpi_table_header *header;
->> +     u32 index;
->>  };
->>
->>  static ssize_t acpi_table_aml_write(struct config_item *cfg,
->> @@ -52,7 +56,11 @@ static ssize_t acpi_table_aml_write(struct config_ite=
-m *cfg,
->>       if (!table->header)
->>               return -ENOMEM;
->>
->> -     ret =3D acpi_load_table(table->header);
->> +     ACPI_INFO(("Host-directed Dynamic ACPI Table Load:"));
->> +     ret =3D acpi_tb_install_and_load_table(
->> +                     ACPI_PTR_TO_PHYSADDR(table->header),
->> +                     ACPI_TABLE_ORIGIN_EXTERNAL_VIRTUAL, FALSE,
->> +                     &table->index);
->>       if (ret) {
->>               kfree(table->header);
->>               table->header =3D NULL;
->> @@ -215,8 +223,18 @@ static struct config_item *acpi_table_make_item(str=
-uct config_group *group,
->>       return &table->cfg;
->>  }
->>
->> +static void acpi_table_drop_item(struct config_group *group,
->> +                              struct config_item *cfg)
->> +{
->> +     struct acpi_table *table =3D container_of(cfg, struct acpi_table, =
-cfg);
->> +
->> +     ACPI_INFO(("Host-directed Dynamic ACPI Table Unload"));
->> +     acpi_tb_unload_table(table->index);
->> +}
->> +
->>  struct configfs_group_operations acpi_table_group_ops =3D {
->>       .make_item =3D acpi_table_make_item,
->> +     .drop_item =3D acpi_table_drop_item,
->>  };
->>
->>  static struct config_item_type acpi_tables_type =3D {
->> diff --git a/drivers/acpi/acpica/tbdata.c b/drivers/acpi/acpica/tbdata.c
->> index 27c5c27d4818..c9d6fa6d7cc6 100644
->> --- a/drivers/acpi/acpica/tbdata.c
->> +++ b/drivers/acpi/acpica/tbdata.c
->> @@ -867,6 +867,8 @@ acpi_tb_install_and_load_table(acpi_physical_address=
- address,
->>       return_ACPI_STATUS(status);
->>  }
->>
->> +ACPI_EXPORT_SYMBOL(acpi_tb_install_and_load_table)
->> +
->>  /**********************************************************************=
-*********
->>   *
->>   * FUNCTION:    acpi_tb_unload_table
->> @@ -914,3 +916,5 @@ acpi_status acpi_tb_unload_table(u32 table_index)
->>       acpi_tb_set_table_loaded_flag(table_index, FALSE);
->>       return_ACPI_STATUS(status);
->>  }
->> +
->> +ACPI_EXPORT_SYMBOL(acpi_tb_unload_table)
->>
->
-> Ping for this patch.
+On Fri, Jun 23, 2017 at 03:58:01PM +0100, shameer wrote:
+> The HiSilicon erratum 161010801 describes the limitation of HiSilicon
+> platforms Hip06/Hip07 to support the SMMU mappings for MSI transactions.
+> =
 
-Pushed to Linus and is waiting for merging (along with the other ACPI
-changes for 4.13).
+> On these platforms GICv3 ITS translator is presented with the deviceID
+> by extending the MSI payload data to 64 bits to include the deviceID.
+> Hence, the PCIe controller on this platforms has to differentiate the
+> MSI payload against other DMA payload and has to modify the MSI payload.
+> This basically makes it difficult for this platforms to have a SMMU
+> translation for MSI.
+> =
 
-Thanks,
-Rafael
+> This patch implements a ACPI table based quirk to reserve the hw msi
+> regions in the smmu-v3 driver which means these address regions will
+> not be translated and will be excluded from iova allocations.
+> =
 
---===============3285075434585025270==--
+> Signed-off-by: shameer <shameerali.kolothum.thodi(a)huawei.com>
+> ---
+>  drivers/iommu/arm-smmu-v3.c | 30 ++++++++++++++++++++++++++----
+>  1 file changed, 26 insertions(+), 4 deletions(-)
+> =
+
+> diff --git a/drivers/iommu/arm-smmu-v3.c b/drivers/iommu/arm-smmu-v3.c
+> index abe4b88..c9346f2 100644
+> --- a/drivers/iommu/arm-smmu-v3.c
+> +++ b/drivers/iommu/arm-smmu-v3.c
+> @@ -597,6 +597,7 @@ struct arm_smmu_device {
+>  	u32				features;
+>  =
+
+>  #define ARM_SMMU_OPT_SKIP_PREFETCH	(1 << 0)
+> +#define ARM_SMMU_OPT_RESV_HW_MSI	(1 << 1)
+>  	u32				options;
+>  =
+
+>  	struct arm_smmu_cmdq		cmdq;
+> @@ -1904,14 +1905,34 @@ static void arm_smmu_get_resv_regions(struct devi=
+ce *dev,
+>  				      struct list_head *head)
+>  {
+>  	struct iommu_resv_region *region;
+> +	struct arm_smmu_device *smmu;
+> +	struct iommu_fwspec *fwspec =3D dev->iommu_fwspec;
+>  	int prot =3D IOMMU_WRITE | IOMMU_NOEXEC | IOMMU_MMIO;
+> +	int resv =3D 0;
+>  =
+
+> -	region =3D iommu_alloc_resv_region(MSI_IOVA_BASE, MSI_IOVA_LENGTH,
+> -					 prot, IOMMU_RESV_SW_MSI);
+> -	if (!region)
+> +	smmu =3D arm_smmu_get_by_fwnode(fwspec->iommu_fwnode);
+
+Does this callback actually get called without a prior ->add_device callback
+for the master in question? If not, then we can already claw the structure
+out via the iommu_priv field in the fwspec.
+
+> +	if (WARN_ON(!smmu))
+
+Again, how does this trigger?
+
+>  		return;
+>  =
+
+> -	list_add_tail(&region->list, head);
+> +	if ((smmu->options & ARM_SMMU_OPT_RESV_HW_MSI)) {
+> +
+> +		if (!is_of_node(smmu->dev->fwnode))
+> +			resv =3D iort_iommu_its_get_resv_regions(dev, head);
+
+How does this work when we're not using ACPI? Shouldn't of vs ACPI be
+abstracted from the driver?
+
+Will
+
+--===============5398875138273824820==--
 
