@@ -1,42 +1,224 @@
-Content-Type: multipart/mixed; boundary="===============1582836586515826594=="
+Content-Type: multipart/mixed; boundary="===============1139930666666668152=="
 MIME-Version: 1.0
-From: Andy Shevchenko <andy.shevchenko at gmail.com>
-Subject: Re: [Devel] [PATCH] coccinelle: api: detect unnecessary le16_to_cpu
-Date: Tue, 04 Jul 2017 12:51:15 +0300
-Message-ID: <CAHp75VdyurjwN+DZQuKnEzNe+XgZwiLLkc0Rg0NvFr=4D2GiQA@mail.gmail.com>
-In-Reply-To: alpine.DEB.2.20.1707041104390.3346@hadrien
+From: Lorenzo Pieralisi <lorenzo.pieralisi at arm.com>
+Subject: Re: [Devel] [PATCH v3 1/2] acpi:iort: Add an IORT helper function to
+ reserve HW ITS address regions for IOMMU drivers
+Date: Tue, 04 Jul 2017 11:16:39 +0100
+Message-ID: <20170704101638.GB17491@red-moon>
+In-Reply-To: 5FC3163CFD30C246ABAA99954A238FA838399F10@FRAEML521-MBX.china.huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1582836586515826594==
+--===============1139930666666668152==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jul 4, 2017 at 12:11 PM, Julia Lawall <julia.lawall(a)lip6.fr> wrot=
-e:
-> Here is a revised version (not a patch because it doesn't support all of
-> the various modes) and the results.  It doesn't return anything beyond
-> what was mentioned in previous mails.
->
-> For the following code:
->
->         ret =3D i2c_smbus_read_word_data(chip->client, reg << 1);
->         val[0] =3D (u16)ret & 0xFF;
->         val[1] =3D (u16)ret >> 8;
->
-> do we want to see:
->
-> put_unaligned(val,i2c_smbus_read_word_data(chip->client, reg << 1));
+On Mon, Jul 03, 2017 at 08:18:45AM +0000, Shameerali Kolothum Thodi wrote:
+> =
 
-If and only if the type of the pointer is a byte type (u8 *, char *,
-or alike) _and_ we try to use it as a provider for 16-bit value (2
-bytes).
+> =
 
--- =
+> > -----Original Message-----
+> > From: Lorenzo Pieralisi [mailto:lorenzo.pieralisi(a)arm.com]
+> > Sent: Friday, June 23, 2017 5:54 PM
+> > To: Shameerali Kolothum Thodi
+> > Cc: marc.zyngier(a)arm.com; sudeep.holla(a)arm.com; will.deacon(a)arm.c=
+om;
+> > robin.murphy(a)arm.com; hanjun.guo(a)linaro.org; Gabriele Paoloni; John
+> > Garry; iommu(a)lists.linux-foundation.org; linux-arm-
+> > kernel(a)lists.infradead.org; linux-acpi(a)vger.kernel.org; devel(a)acp=
+ica.org;
+> > Linuxarm; Wangzhou (B); Guohanjun (Hanjun Guo)
+> > Subject: Re: [PATCH v3 1/2] acpi:iort: Add an IORT helper function to r=
+eserve
+> > HW ITS address regions for IOMMU drivers
+> > =
 
-With Best Regards,
-Andy Shevchenko
+> > On Fri, Jun 23, 2017 at 03:58:00PM +0100, shameer wrote:
+> > > The helper function retrieves ITS address regions through IORT device
+> > > <-> ITS mappings and reserves it so that these regions will not be
+> > > translated by IOMMU and will be excluded from IOVA allocations. IOMMU
+> > > drivers can use this to implement their .get_resv_regions callback.
+> > >
+> > > Signed-off-by: shameer <shameerali.kolothum.thodi(a)huawei.com>
+> > > ---
+> > >  drivers/acpi/arm64/iort.c        | 91
+> > ++++++++++++++++++++++++++++++++++++++--
+> > >  drivers/irqchip/irq-gic-v3-its.c |  3 +-
+> > >  include/linux/acpi_iort.h        |  7 +++-
+> > >  3 files changed, 96 insertions(+), 5 deletions(-)
+> > >
+> > > diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
+> > > index c5fecf9..cf0a6b8 100644
+> > > --- a/drivers/acpi/arm64/iort.c
+> > > +++ b/drivers/acpi/arm64/iort.c
+> > > @@ -34,6 +34,7 @@
+> > >  struct iort_its_msi_chip {
+> > >  	struct list_head	list;
+> > >  	struct fwnode_handle	*fw_node;
+> > > +	phys_addr_t		base_addr;
+> > >  	u32			translation_id;
+> > >  };
+> > >
+> > > @@ -131,14 +132,16 @@ typedef acpi_status (*iort_find_node_callback)
+> > > static DEFINE_SPINLOCK(iort_msi_chip_lock);
+> > >
+> > >  /**
+> > > - * iort_register_domain_token() - register domain token and related
+> > > ITS ID
+> > > - * to the list from where we can get it back later on.
+> > > + * iort_register_domain_token() - register domain token along with
+> > > + related
+> > > + * ITS ID and base address to the list from where we can get it back=
+ later
+> > on.
+> > >   * @trans_id: ITS ID.
+> > > + * @base: ITS base address.
+> > >   * @fw_node: Domain token.
+> > >   *
+> > >   * Returns: 0 on success, -ENOMEM if no memory when allocating list
+> > element
+> > >   */
+> > > -int iort_register_domain_token(int trans_id, struct fwnode_handle
+> > > *fw_node)
+> > > +int iort_register_domain_token(int trans_id, phys_addr_t base,
+> > > +			       struct fwnode_handle *fw_node)
+> > >  {
+> > >  	struct iort_its_msi_chip *its_msi_chip;
+> > >
+> > > @@ -148,6 +151,7 @@ int iort_register_domain_token(int trans_id,
+> > > struct fwnode_handle *fw_node)
+> > >
+> > >  	its_msi_chip->fw_node =3D fw_node;
+> > >  	its_msi_chip->translation_id =3D trans_id;
+> > > +	its_msi_chip->base_addr =3D base;
+> > >
+> > >  	spin_lock(&iort_msi_chip_lock);
+> > >  	list_add(&its_msi_chip->list, &iort_msi_chip_list); @@ -491,6
+> > > +495,24 @@ int iort_pmsi_get_dev_id(struct device *dev, u32 *dev_id)
+> > >  	return -ENODEV;
+> > >  }
+> > >
+> > > +static int iort_find_its_base(u32 its_id, phys_addr_t *base) {
+> > > +	struct iort_its_msi_chip *its_msi_chip;
+> > > +	bool match =3D false;
+> > > +
+> > > +	spin_lock(&iort_msi_chip_lock);
+> > > +	list_for_each_entry(its_msi_chip, &iort_msi_chip_list, list) {
+> > > +		if (its_msi_chip->translation_id =3D=3D its_id) {
+> > > +			*base =3D its_msi_chip->base_addr;
+> > > +			match =3D true;
+> > > +			break;
+> > > +		}
+> > > +	}
+> > > +	spin_unlock(&iort_msi_chip_lock);
+> > > +
+> > > +	return match ? 0 : -ENODEV;
+> > > +}
+> > > +
+> > >  /**
+> > >   * iort_dev_find_its_id() - Find the ITS identifier for a device
+> > >   * @dev: The device.
+> > > @@ -649,6 +671,67 @@ int iort_add_device_replay(const struct
+> > iommu_ops
+> > > *ops, struct device *dev)
+> > >
+> > >  	return err;
+> > >  }
+> > > +
+> > > +/**
+> > > + * iort_iommu_its_get_resv_regions - Reserved region driver helper
+> > > + * @dev: Device from iommu_get_resv_regions()
+> > > + * @list: Reserved region list from iommu_get_resv_regions()
+> > > + *
+> > > + * Returns: Number of reserved regions on success(0 if no associated=
+ ITS),
+> > > + *          appropriate error value otherwise.
+> > > + *
+> > > + * IOMMU drivers can use this to implement their .get_resv_regions
+> > > +callback
+> > > + * for reserving the HW ITS address regions.
+> > > + */
+> > > +int iort_iommu_its_get_resv_regions(struct device *dev, struct
+> > > +list_head *head) {
+> > > +	int i;
+> > > +	struct acpi_iort_its_group *its;
+> > > +	struct acpi_iort_node *node, *its_node =3D NULL;
+> > > +	int resv =3D 0;
+> > > +
+> > > +	node =3D iort_find_dev_node(dev);
+> > > +	if (!node)
+> > > +		return -ENODEV;
+> > > +
+> > > +	if (dev_is_pci(dev)) {
+> > > +		u32 rid;
+> > > +
+> > > +		pci_for_each_dma_alias(to_pci_dev(dev), __get_pci_rid,
+> > &rid);
+> > > +		its_node =3D iort_node_map_id(node, rid, NULL,
+> > IORT_MSI_TYPE);
+> > > +	} else {
+> > > +		for (i =3D 0; i < node->mapping_count; i++) {
+> > > +			its_node =3D iort_node_map_platform_id(node, NULL,
+> > > +							 IORT_MSI_TYPE, i);
+> > > +			if (its_node)
+> > > +				break;
+> > > +		}
+> > > +	}
+> > > +
+> > > +	if (!its_node)
+> > > +		return 0;
+> > > +
+> > > +	/* Move to ITS specific data */
+> > > +	its =3D (struct acpi_iort_its_group *)its_node->node_data;
+> > > +
+> > > +	for (i =3D 0; i < its->its_count; i++) {
+> > > +		phys_addr_t base;
+> > > +
+> > > +		if (!iort_find_its_base(its->identifiers[i], &base)) {
+> > > +			int prot =3D IOMMU_WRITE | IOMMU_NOEXEC |
+> > IOMMU_MMIO;
+> > > +			struct iommu_resv_region *region;
+> > > +
+> > > +			region =3D iommu_alloc_resv_region(base, SZ_128K,
+> > prot,
+> > > +							 IOMMU_RESV_MSI);
+> > > +			if (region) {
+> > > +				list_add_tail(&region->list, head);
+> > > +				resv++;
+> > > +			}
+> > > +		}
+> > > +	}
+> > > +
+> > > +	return resv ? : -ENODEV;
+> > =
 
---===============1582836586515826594==--
+> > IIUC I think this is not right (ie resv < its_count should count as a f=
+ailure).
+> =
+
+> Yes, that is a valid error.
+> =
+
+> > This should be easy to fix-up but I am not sure there is still time for=
+ these
+> > patches to be merged for this merge window, I take the blame since I am=
+ the
+> > cause of the delay but I thought the logic in the SMMU driver should ha=
+ve
+> > been clarified and this version does it IMO.
+> =
+
+> No problem and thanks for your support. I could rebase this on  rc1 and s=
+end
+> the next version. Please let me know.
+
+Yes, that will work, please resend the final version at -rc1 and if
+Will and Robin are ok with SMMU changes we can queue it for 4.14.
+
+Thanks,
+Lorenzo
+
+--===============1139930666666668152==--
 
