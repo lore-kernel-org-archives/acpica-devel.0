@@ -1,144 +1,581 @@
-Content-Type: multipart/mixed; boundary="===============3277850013336509239=="
+Content-Type: multipart/mixed; boundary="===============6464554124129611482=="
 MIME-Version: 1.0
 From: Ross Zwisler <ross.zwisler at linux.intel.com>
-Subject: [Devel] [RFC v2 4/5] sysfs: add sysfs_add_group_link()
-Date: Thu, 06 Jul 2017 15:52:32 -0600
-Message-ID: <20170706215233.11329-5-ross.zwisler@linux.intel.com>
+Subject: [Devel] [RFC v2 5/5] hmem: add performance attributes
+Date: Thu, 06 Jul 2017 15:52:33 -0600
+Message-ID: <20170706215233.11329-6-ross.zwisler@linux.intel.com>
 In-Reply-To: 20170706215233.11329-1-ross.zwisler@linux.intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3277850013336509239==
+--===============6464554124129611482==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-The current __compat_only_sysfs_link_entry_to_kobj() code allows us to
-create symbolic links in sysfs to groups or attributes.  Something like:
+Add performance information found in the HMAT to the sysfs representation.
+This information lives as an attribute group named "local_init" in the
+memory target:
 
-/sys/.../entry1/groupA -> /sys/.../entry2/groupA
+  # tree mem_tgt2/
+  mem_tgt2/
+  =E2=94=9C=E2=94=80=E2=94=80 firmware_id
+  =E2=94=9C=E2=94=80=E2=94=80 is_cached
+  =E2=94=9C=E2=94=80=E2=94=80 is_enabled
+  =E2=94=9C=E2=94=80=E2=94=80 is_isolated
+  =E2=94=9C=E2=94=80=E2=94=80 local_init
+  =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 mem_init0 -> ../../mem_=
+init0
+  =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 mem_init1 -> ../../mem_=
+init1
+  =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 mem_tgt2 -> ../../mem_t=
+gt2
+  =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 read_bw_MBps
+  =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 read_lat_nsec
+  =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 write_bw_MBps
+  =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 write_lat_nsec
+  =E2=94=9C=E2=94=80=E2=94=80 node2 -> ../../node/node2
+  =E2=94=9C=E2=94=80=E2=94=80 phys_addr_base
+  =E2=94=9C=E2=94=80=E2=94=80 phys_length_bytes
+  =E2=94=9C=E2=94=80=E2=94=80 power
+  =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 async
+  =E2=94=82=C2=A0=C2=A0 ...
+  =E2=94=9C=E2=94=80=E2=94=80 subsystem -> ../../../../bus/hmem
+  =E2=94=94=E2=94=80=E2=94=80 uevent
 
-This patch extends this functionality with a new sysfs_add_group_link()
-call that allows the link to have a different name than the group or
-attribute, so:
+This attribute group surfaces latency and bandwidth performance for a memory
+target and its local initiators.  For example:
 
-/sys/.../entry1/link_name -> /sys/.../entry2/groupA
+  # grep . mem_tgt2/local_init/* 2>/dev/null
+  mem_tgt2/local_init/read_bw_MBps:30720
+  mem_tgt2/local_init/read_lat_nsec:100
+  mem_tgt2/local_init/write_bw_MBps:30720
+  mem_tgt2/local_init/write_lat_nsec:100
 
-__compat_only_sysfs_link_entry_to_kobj() now just calls
-sysfs_add_group_link(), passing in the same name for both the
-group/attribute and for the link name.
-
-This is needed by the ACPI HMAT enabling work because we want to have a
-group of performance attributes that live in a memory target.  This group
-represents the performance between a memory target and its local
-inititator.  In the target the attribute group is named "local_init":
-
-  # tree mem_tgt2/local_init/
-  mem_tgt2/local_init/
-  =E2=94=9C=E2=94=80=E2=94=80 mem_init0 -> ../../mem_init0
-  =E2=94=9C=E2=94=80=E2=94=80 mem_tgt2 -> ../../mem_tgt2
-  =E2=94=9C=E2=94=80=E2=94=80 read_bw_MBps
-  =E2=94=9C=E2=94=80=E2=94=80 read_lat_nsec
-  =E2=94=9C=E2=94=80=E2=94=80 write_bw_MBps
-  =E2=94=94=E2=94=80=E2=94=80 write_lat_nsec
-
-We then want to link to this attribute group from the initiator, but change
-the name of the link to "mem_tgtX" since we're now looking at it from the
-initiator's perspective, and because a given initiator can have multiple
-local memory targets:
+The local initiators have a symlink to the performance information which li=
+ves
+in the target's attribute group:
 
   # ls -l mem_init0/mem_tgt2
   lrwxrwxrwx. 1 root root 0 Jul  5 14:38 mem_init0/mem_tgt2 ->
   ../mem_tgt2/local_init
 
+We create performance attribute groups only for local (initiator,target)
+pairings, where the the first local initiator for a given target is defined
+by the "Processor Proximity Domain" field in the HMAT's Memory Subsystem
+Address Range Structure table.  After we have one local initiator we scan
+the performance data to link to any other "local" initiators with the same
+local performance to a given memory target.
+
+A given target only has one set of local performance values, so each target
+will have at most one "local_init" attribute group, though that group can
+contain links to multiple initiators that all have local performance.  A
+given memory initiator may have multiple local memory targets, so multiple
+"mem_tgtX" links may exist for a given initiator.
+
+If a given memory target is cached we give performance numbers only for the
+media itself, and rely on the "is_cached" attribute to represent the
+fact that there is a caching layer.
+
+The fact that we only expose a subset of the performance information
+presented in the HMAT via sysfs as a compromise, driven by fact that those
+usages will be the highest performing and because to represent all possible
+paths could cause an unmanageable explosion of sysfs entries.
+
+If we dump everything from the HMAT into sysfs we end up with
+O(num_targets * num_initiators * num_caching_levels) attributes.  Each of
+these attributes only takes up 2 bytes in a System Locality Latency and
+Bandwidth Information Structure, but if we have to create a directory entry
+for each it becomes much more expensive.
+
+For example, very large systems today can have on the order of thousands of
+NUMA nodes.  Say we have a system which used to have 1,000 NUMA nodes that
+each had both a CPU and local memory.  The HMAT allows us to separate the
+CPUs and memory into separate NUMA nodes, so we can end up with 1,000 CPU
+initiator NUMA nodes and 1,000 memory target NUMA nodes.  If we represented
+the performance information for each possible CPU/memory pair in sysfs we
+would end up with 1,000,000 attribute groups.
+
+This is a lot to pass in a set of packed data tables, but I think we'll
+break sysfs if we try to create millions of attributes, regardless of how
+we nest them in a directory hierarchy.
+
+By only representing performance information for local (initiator,target)
+pairings, we reduce the number of sysfs entries to O(num_targets).
+
 Signed-off-by: Ross Zwisler <ross.zwisler(a)linux.intel.com>
 ---
- fs/sysfs/group.c      | 30 +++++++++++++++++++++++-------
- include/linux/sysfs.h |  2 ++
- 2 files changed, 25 insertions(+), 7 deletions(-)
+ drivers/acpi/hmem/Makefile          |   2 +-
+ drivers/acpi/hmem/core.c            | 268 ++++++++++++++++++++++++++++++++=
++++-
+ drivers/acpi/hmem/hmem.h            |  17 +++
+ drivers/acpi/hmem/perf_attributes.c |  56 ++++++++
+ 4 files changed, 341 insertions(+), 2 deletions(-)
+ create mode 100644 drivers/acpi/hmem/perf_attributes.c
 
-diff --git a/fs/sysfs/group.c b/fs/sysfs/group.c
-index ac2de0e..19db57c8 100644
---- a/fs/sysfs/group.c
-+++ b/fs/sysfs/group.c
-@@ -367,15 +367,15 @@ void sysfs_remove_link_from_group(struct kobject *kob=
-j, const char *group_name,
- EXPORT_SYMBOL_GPL(sysfs_remove_link_from_group);
+diff --git a/drivers/acpi/hmem/Makefile b/drivers/acpi/hmem/Makefile
+index d2aa546..44e8304 100644
+--- a/drivers/acpi/hmem/Makefile
++++ b/drivers/acpi/hmem/Makefile
+@@ -1,2 +1,2 @@
+ obj-$(CONFIG_ACPI_HMEM) :=3D hmem.o
+-hmem-y :=3D core.o initiator.o target.o
++hmem-y :=3D core.o initiator.o target.o perf_attributes.o
+diff --git a/drivers/acpi/hmem/core.c b/drivers/acpi/hmem/core.c
+index f7638db..8f3ab35 100644
+--- a/drivers/acpi/hmem/core.c
++++ b/drivers/acpi/hmem/core.c
+@@ -23,11 +23,230 @@
+ #include <linux/slab.h>
+ #include "hmem.h"
  =
 
- /**
-- * __compat_only_sysfs_link_entry_to_kobj - add a symlink to a kobject poi=
-nting
-- * to a group or an attribute
-+ * sysfs_add_group_link - add a symlink to a kobject pointing to a group or
-+ * an attribute
-  * @kobj:		The kobject containing the group.
-  * @target_kobj:	The target kobject.
-  * @target_name:	The name of the target group or attribute.
-+ * @link_name:		The name of the link to the target group or attribute.
-  */
--int __compat_only_sysfs_link_entry_to_kobj(struct kobject *kobj,
--				      struct kobject *target_kobj,
--				      const char *target_name)
-+int sysfs_add_group_link(struct kobject *kobj, struct kobject *target_kobj,
-+		const char *target_name, const char *link_name)
++#define NO_VALUE	-1
++#define LOCAL_INIT	"local_init"
++
+ static LIST_HEAD(target_list);
+ static LIST_HEAD(initiator_list);
++LIST_HEAD(locality_list);
+ =
+
+ static bool bad_hmem;
+ =
+
++/* Performance attributes for an initiator/target pair. */
++static int get_performance_data(u32 init_pxm, u32 tgt_pxm,
++		struct acpi_hmat_locality *hmat_loc)
++{
++	int num_init =3D hmat_loc->number_of_initiator_Pds;
++	int num_tgt =3D hmat_loc->number_of_target_Pds;
++	int init_idx =3D NO_VALUE;
++	int tgt_idx =3D NO_VALUE;
++	u32 *initiators, *targets;
++	u16 *entries, val;
++	int i;
++
++	/* the initiator array is after the struct acpi_hmat_locality fields */
++	initiators =3D (u32 *)(hmat_loc + 1);
++	targets =3D &initiators[num_init];
++	entries =3D (u16 *)&targets[num_tgt];
++
++	for (i =3D 0; i < num_init; i++) {
++		if (initiators[i] =3D=3D init_pxm) {
++			init_idx =3D i;
++			break;
++		}
++	}
++
++	if (init_idx =3D=3D NO_VALUE)
++		return NO_VALUE;
++
++	for (i =3D 0; i < num_tgt; i++) {
++		if (targets[i] =3D=3D tgt_pxm) {
++			tgt_idx =3D i;
++			break;
++		}
++	}
++
++	if (tgt_idx =3D=3D NO_VALUE)
++		return NO_VALUE;
++
++	val =3D entries[init_idx*num_tgt + tgt_idx];
++	if (val < 10 || val =3D=3D 0xFFFF)
++		return NO_VALUE;
++
++	return (val * hmat_loc->entry_base_unit) / 10;
++}
++
++/*
++ * 'direction' is either READ or WRITE
++ * Latency is reported in nanoseconds and bandwidth is reported in MB/s.
++ */
++static int hmem_get_attribute(int init_pxm, int tgt_pxm, int direction,
++		enum hmem_attr_type type)
++{
++	struct memory_locality *loc;
++	int value;
++
++	list_for_each_entry(loc, &locality_list, list) {
++		struct acpi_hmat_locality *hmat_loc =3D loc->hmat_loc;
++
++		if (direction =3D=3D READ && type =3D=3D LATENCY &&
++		    (hmat_loc->data_type =3D=3D ACPI_HMAT_ACCESS_LATENCY ||
++		     hmat_loc->data_type =3D=3D ACPI_HMAT_READ_LATENCY)) {
++			value =3D get_performance_data(init_pxm, tgt_pxm,
++					hmat_loc);
++			if (value !=3D NO_VALUE)
++				return value;
++		}
++
++		if (direction =3D=3D WRITE && type =3D=3D LATENCY &&
++		    (hmat_loc->data_type =3D=3D ACPI_HMAT_ACCESS_LATENCY ||
++		     hmat_loc->data_type =3D=3D ACPI_HMAT_WRITE_LATENCY)) {
++			value =3D get_performance_data(init_pxm, tgt_pxm,
++					hmat_loc);
++			if (value !=3D NO_VALUE)
++				return value;
++		}
++
++		if (direction =3D=3D READ && type =3D=3D BANDWIDTH &&
++		    (hmat_loc->data_type =3D=3D ACPI_HMAT_ACCESS_BANDWIDTH ||
++		     hmat_loc->data_type =3D=3D ACPI_HMAT_READ_BANDWIDTH)) {
++			value =3D get_performance_data(init_pxm, tgt_pxm,
++					hmat_loc);
++			if (value !=3D NO_VALUE)
++				return value;
++		}
++
++		if (direction =3D=3D WRITE && type =3D=3D BANDWIDTH &&
++		    (hmat_loc->data_type =3D=3D ACPI_HMAT_ACCESS_BANDWIDTH ||
++		     hmat_loc->data_type =3D=3D ACPI_HMAT_WRITE_BANDWIDTH)) {
++			value =3D get_performance_data(init_pxm, tgt_pxm,
++					hmat_loc);
++			if (value !=3D NO_VALUE)
++				return value;
++		}
++	}
++
++	return NO_VALUE;
++}
++
++/*
++ * 'direction' is either READ or WRITE
++ * Latency is reported in nanoseconds and bandwidth is reported in MB/s.
++ */
++int hmem_local_attribute(struct device *tgt_dev, int direction,
++		enum hmem_attr_type type)
++{
++	struct memory_target *tgt =3D to_memory_target(tgt_dev);
++	int tgt_pxm =3D tgt->ma->proximity_domain;
++	int init_pxm;
++
++	if (!tgt->local_init)
++		return NO_VALUE;
++
++	init_pxm =3D tgt->local_init->pxm;
++	return hmem_get_attribute(init_pxm, tgt_pxm, direction, type);
++}
++
++static bool is_local_init(int init_pxm, int tgt_pxm, int read_lat,
++		int write_lat, int read_bw, int write_bw)
++{
++	if (read_lat !=3D hmem_get_attribute(init_pxm, tgt_pxm, READ, LATENCY))
++		return false;
++
++	if (write_lat !=3D hmem_get_attribute(init_pxm, tgt_pxm, WRITE, LATENCY))
++		return false;
++
++	if (read_bw !=3D hmem_get_attribute(init_pxm, tgt_pxm, READ, BANDWIDTH))
++		return false;
++
++	if (write_bw !=3D hmem_get_attribute(init_pxm, tgt_pxm, WRITE, BANDWIDTH))
++		return false;
++
++	return true;
++}
++
++static const struct attribute_group performance_attribute_group =3D {
++	.attrs =3D performance_attributes,
++	.name =3D LOCAL_INIT,
++};
++
++static void remove_performance_attributes(struct memory_target *tgt)
++{
++	if (!tgt->local_init)
++		return;
++
++	/*
++	 * FIXME: Need to enhance the core sysfs code to remove all the links
++	 * in both the attribute group and in the device itself when those are
++	 * removed.
++	 */
++	sysfs_remove_group(&tgt->dev.kobj, &performance_attribute_group);
++}
++
++static int add_performance_attributes(struct memory_target *tgt)
++{
++	int read_lat, write_lat, read_bw, write_bw;
++	int tgt_pxm =3D tgt->ma->proximity_domain;
++	struct kobject *init_kobj, *tgt_kobj;
++	struct device *init_dev, *tgt_dev;
++	struct memory_initiator *init;
++	int ret;
++
++	if (!tgt->local_init)
++		return 0;
++
++	tgt_dev =3D &tgt->dev;
++	tgt_kobj =3D &tgt_dev->kobj;
++
++	/* Create entries for initiator/target pair in the target.  */
++	ret =3D sysfs_create_group(tgt_kobj, &performance_attribute_group);
++	if (ret < 0)
++		return ret;
++
++	ret =3D sysfs_add_link_to_group(tgt_kobj, LOCAL_INIT, tgt_kobj,
++			dev_name(tgt_dev));
++	if (ret < 0)
++		goto err;
++
++	/*
++	 * Iterate through initiators and find all the ones that have the same
++	 * performance as the local initiator.
++	 */
++	read_lat =3D hmem_local_attribute(tgt_dev, READ, LATENCY);
++	write_lat =3D hmem_local_attribute(tgt_dev, WRITE, LATENCY);
++	read_bw =3D hmem_local_attribute(tgt_dev, READ, BANDWIDTH);
++	write_bw =3D hmem_local_attribute(tgt_dev, WRITE, BANDWIDTH);
++
++	list_for_each_entry(init, &initiator_list, list) {
++		init_dev =3D &init->dev;
++		init_kobj =3D &init_dev->kobj;
++
++		if (init =3D=3D tgt->local_init ||
++			is_local_init(init->pxm, tgt_pxm, read_lat,
++				write_lat, read_bw, write_bw)) {
++			ret =3D sysfs_add_link_to_group(tgt_kobj, LOCAL_INIT,
++					init_kobj, dev_name(init_dev));
++			if (ret < 0)
++				goto err;
++
++			/*
++			 * Create a link in the initiator to the performance
++			 * attributes.
++			 */
++			ret =3D sysfs_add_group_link(init_kobj, tgt_kobj,
++					LOCAL_INIT, dev_name(tgt_dev));
++			if (ret < 0)
++				goto err;
++		}
++
++	}
++	tgt->has_perf_attributes =3D true;
++	return 0;
++err:
++	remove_performance_attributes(tgt);
++	return ret;
++}
++
+ static int link_node_for_kobj(unsigned int node, struct kobject *kobj)
  {
- 	struct kernfs_node *target;
- 	struct kernfs_node *entry;
-@@ -400,12 +400,28 @@ int __compat_only_sysfs_link_entry_to_kobj(struct kob=
-ject *kobj,
- 		return -ENOENT;
+ 	if (node_devices[node])
+@@ -178,6 +397,9 @@ static void release_memory_target(struct device *dev)
+ =
+
+ static void __init remove_memory_target(struct memory_target *tgt)
+ {
++	if (tgt->has_perf_attributes)
++		remove_performance_attributes(tgt);
++
+ 	if (tgt->is_registered) {
+ 		remove_node_for_kobj(pxm_to_node(tgt->ma->proximity_domain),
+ 				&tgt->dev.kobj);
+@@ -309,6 +531,38 @@ hmat_parse_address_range(struct acpi_subtable_header *=
+header,
+ 	return -EINVAL;
+ }
+ =
+
++static int __init hmat_parse_locality(struct acpi_subtable_header *header,
++		const unsigned long end)
++{
++	struct acpi_hmat_locality *hmat_loc;
++	struct memory_locality *loc;
++
++	if (bad_hmem)
++		return 0;
++
++	hmat_loc =3D (struct acpi_hmat_locality *)header;
++	if (!hmat_loc) {
++		pr_err("HMEM: NULL table entry\n");
++		bad_hmem =3D true;
++		return -EINVAL;
++	}
++
++	/* We don't report cached performance information in sysfs. */
++	if (hmat_loc->flags =3D=3D ACPI_HMAT_MEMORY ||
++			hmat_loc->flags =3D=3D ACPI_HMAT_LAST_LEVEL_CACHE) {
++		loc =3D kzalloc(sizeof(*loc), GFP_KERNEL);
++		if (!loc) {
++			bad_hmem =3D true;
++			return -ENOMEM;
++		}
++
++		loc->hmat_loc =3D hmat_loc;
++		list_add_tail(&loc->list, &locality_list);
++	}
++
++	return 0;
++}
++
+ static int __init hmat_parse_cache(struct acpi_subtable_header *header,
+ 		const unsigned long end)
+ {
+@@ -464,6 +718,7 @@ srat_parse_memory_affinity(struct acpi_subtable_header =
+*header,
+ static void hmem_cleanup(void)
+ {
+ 	struct memory_initiator *init, *init_iter;
++	struct memory_locality *loc, *loc_iter;
+ 	struct memory_target *tgt, *tgt_iter;
+ =
+
+ 	list_for_each_entry_safe(tgt, tgt_iter, &target_list, list)
+@@ -471,6 +726,11 @@ static void hmem_cleanup(void)
+ =
+
+ 	list_for_each_entry_safe(init, init_iter, &initiator_list, list)
+ 		remove_memory_initiator(init);
++
++	list_for_each_entry_safe(loc, loc_iter, &locality_list, list) {
++		list_del(&loc->list);
++		kfree(loc);
++	}
+ }
+ =
+
+ static int __init hmem_init(void)
+@@ -521,13 +781,15 @@ static int __init hmem_init(void)
  	}
  =
 
--	link =3D kernfs_create_link(kobj->sd, target_name, entry);
-+	link =3D kernfs_create_link(kobj->sd, link_name, entry);
- 	if (IS_ERR(link) && PTR_ERR(link) =3D=3D -EEXIST)
--		sysfs_warn_dup(kobj->sd, target_name);
-+		sysfs_warn_dup(kobj->sd, link_name);
+ 	if (!acpi_table_parse(ACPI_SIG_HMAT, hmem_noop_parse)) {
+-		struct acpi_subtable_proc hmat_proc[2];
++		struct acpi_subtable_proc hmat_proc[3];
  =
 
- 	kernfs_put(entry);
- 	kernfs_put(target);
- 	return IS_ERR(link) ? PTR_ERR(link) : 0;
- }
-+EXPORT_SYMBOL_GPL(sysfs_add_group_link);
+ 		memset(hmat_proc, 0, sizeof(hmat_proc));
+ 		hmat_proc[0].id =3D ACPI_HMAT_TYPE_ADDRESS_RANGE;
+ 		hmat_proc[0].handler =3D hmat_parse_address_range;
+ 		hmat_proc[1].id =3D ACPI_HMAT_TYPE_CACHE;
+ 		hmat_proc[1].handler =3D hmat_parse_cache;
++		hmat_proc[2].id =3D ACPI_HMAT_TYPE_LOCALITY;
++		hmat_proc[2].handler =3D hmat_parse_locality;
+ =
+
+ 		acpi_table_parse_entries_array(ACPI_SIG_HMAT,
+ 					sizeof(struct acpi_table_hmat),
+@@ -549,6 +811,10 @@ static int __init hmem_init(void)
+ 		ret =3D register_memory_target(tgt);
+ 		if (ret)
+ 			goto err;
 +
-+/**
-+ * __compat_only_sysfs_link_entry_to_kobj - add a symlink to a kobject poi=
-nting
-+ * to a group or an attribute
-+ * @kobj:		The kobject containing the group.
-+ * @target_kobj:	The target kobject.
-+ * @target_name:	The name of the target group or attribute.
++		ret =3D add_performance_attributes(tgt);
++		if (ret)
++			goto err;
+ 	}
+ =
+
+ 	return 0;
+diff --git a/drivers/acpi/hmem/hmem.h b/drivers/acpi/hmem/hmem.h
+index 38ff540..71b10f0 100644
+--- a/drivers/acpi/hmem/hmem.h
++++ b/drivers/acpi/hmem/hmem.h
+@@ -16,6 +16,11 @@
+ #ifndef _ACPI_HMEM_H_
+ #define _ACPI_HMEM_H_
+ =
+
++enum hmem_attr_type {
++	LATENCY,
++	BANDWIDTH,
++};
++
+ struct memory_initiator {
+ 	struct list_head list;
+ 	struct device dev;
+@@ -39,9 +44,21 @@ struct memory_target {
+ =
+
+ 	bool is_cached;
+ 	bool is_registered;
++	bool has_perf_attributes;
+ };
+ #define to_memory_target(d) container_of((d), struct memory_target, dev)
+ =
+
++struct memory_locality {
++	struct list_head list;
++	struct acpi_hmat_locality *hmat_loc;
++};
++
+ extern const struct attribute_group *memory_initiator_attribute_groups[];
+ extern const struct attribute_group *memory_target_attribute_groups[];
++extern struct attribute *performance_attributes[];
++
++extern struct list_head locality_list;
++
++int hmem_local_attribute(struct device *tgt_dev, int direction,
++		enum hmem_attr_type type);
+ #endif /* _ACPI_HMEM_H_ */
+diff --git a/drivers/acpi/hmem/perf_attributes.c b/drivers/acpi/hmem/perf_a=
+ttributes.c
+new file mode 100644
+index 0000000..72a710a
+--- /dev/null
++++ b/drivers/acpi/hmem/perf_attributes.c
+@@ -0,0 +1,56 @@
++/*
++ * Heterogeneous memory performance attributes
++ *
++ * Copyright (c) 2017, Intel Corporation.
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms and conditions of the GNU General Public License,
++ * version 2, as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License f=
+or
++ * more details.
 + */
-+int __compat_only_sysfs_link_entry_to_kobj(struct kobject *kobj,
-+				      struct kobject *target_kobj,
-+				      const char *target_name)
++
++#include <linux/acpi.h>
++#include <linux/device.h>
++#include <linux/sysfs.h>
++#include "hmem.h"
++
++static ssize_t read_lat_nsec_show(struct device *dev,
++			struct device_attribute *attr, char *buf)
 +{
-+	return sysfs_add_group_link(kobj, target_kobj, target_name,
-+			target_name);
++	return sprintf(buf, "%d\n", hmem_local_attribute(dev, READ, LATENCY));
 +}
- EXPORT_SYMBOL_GPL(__compat_only_sysfs_link_entry_to_kobj);
-diff --git a/include/linux/sysfs.h b/include/linux/sysfs.h
-index c6f0f0d..865f499 100644
---- a/include/linux/sysfs.h
-+++ b/include/linux/sysfs.h
-@@ -278,6 +278,8 @@ int sysfs_add_link_to_group(struct kobject *kobj, const=
- char *group_name,
- 			    struct kobject *target, const char *link_name);
- void sysfs_remove_link_from_group(struct kobject *kobj, const char *group_=
-name,
- 				  const char *link_name);
-+int sysfs_add_group_link(struct kobject *kobj, struct kobject *target_kobj,
-+		const char *target_name, const char *link_name);
- int __compat_only_sysfs_link_entry_to_kobj(struct kobject *kobj,
- 				      struct kobject *target_kobj,
- 				      const char *target_name);
++static DEVICE_ATTR_RO(read_lat_nsec);
++
++static ssize_t write_lat_nsec_show(struct device *dev,
++			struct device_attribute *attr, char *buf)
++{
++	return sprintf(buf, "%d\n", hmem_local_attribute(dev, WRITE, LATENCY));
++}
++static DEVICE_ATTR_RO(write_lat_nsec);
++
++static ssize_t read_bw_MBps_show(struct device *dev,
++			struct device_attribute *attr, char *buf)
++{
++	return sprintf(buf, "%d\n", hmem_local_attribute(dev, READ, BANDWIDTH));
++}
++static DEVICE_ATTR_RO(read_bw_MBps);
++
++static ssize_t write_bw_MBps_show(struct device *dev,
++			struct device_attribute *attr, char *buf)
++{
++	return sprintf(buf, "%d\n",
++			hmem_local_attribute(dev, WRITE, BANDWIDTH));
++}
++static DEVICE_ATTR_RO(write_bw_MBps);
++
++struct attribute *performance_attributes[] =3D {
++	&dev_attr_read_lat_nsec.attr,
++	&dev_attr_write_lat_nsec.attr,
++	&dev_attr_read_bw_MBps.attr,
++	&dev_attr_write_bw_MBps.attr,
++	NULL
++};
 -- =
 
 2.9.4
 
 
---===============3277850013336509239==--
+--===============6464554124129611482==--
 
