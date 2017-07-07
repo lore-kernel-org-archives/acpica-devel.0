@@ -1,79 +1,43 @@
-Content-Type: multipart/mixed; boundary="===============4459759734656179377=="
+Content-Type: multipart/mixed; boundary="===============2900247239565801685=="
 MIME-Version: 1.0
 From: Ross Zwisler <ross.zwisler at linux.intel.com>
-Subject: Re: [Devel] [RFC v2 0/5] surface heterogeneous memory performance
- information
-Date: Fri, 07 Jul 2017 10:30:58 -0600
-Message-ID: <20170707163058.GB22856@linux.intel.com>
-In-Reply-To: 7cb3b9c4-9082-97e9-ebfd-542243bf652b@nvidia.com
+Subject: Re: [Devel] [RFC v2 3/5] hmem: add heterogeneous memory sysfs support
+Date: Fri, 07 Jul 2017 10:32:13 -0600
+Message-ID: <20170707163213.GC22856@linux.intel.com>
+In-Reply-To: 9ea40a37-3549-2294-8605-036b37aec023@nvidia.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4459759734656179377==
+--===============2900247239565801685==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 06, 2017 at 10:30:46PM -0700, John Hubbard wrote:
+On Thu, Jul 06, 2017 at 10:53:39PM -0700, John Hubbard wrote:
 > On 07/06/2017 02:52 PM, Ross Zwisler wrote:
 > [...]
-> > =
-
-> > The naming collision between Jerome's "Heterogeneous Memory Management
-> > (HMM)" and this "Heterogeneous Memory (HMEM)" series is unfortunate, bu=
-t I
-> > was trying to stick with the word "Heterogeneous" because of the naming=
- of
-> > the ACPI 6.2 Heterogeneous Memory Attribute Table table.  Suggestions f=
-or
-> > better naming are welcome.
-> > =
-
+> > diff --git a/drivers/acpi/Makefile b/drivers/acpi/Makefile
+> > index b1aacfc..31e3f20 100644
+> > --- a/drivers/acpi/Makefile
+> > +++ b/drivers/acpi/Makefile
+> > @@ -72,6 +72,7 @@ obj-$(CONFIG_ACPI_PROCESSOR)	+=3D processor.o
+> >  obj-$(CONFIG_ACPI)		+=3D container.o
+> >  obj-$(CONFIG_ACPI_THERMAL)	+=3D thermal.o
+> >  obj-$(CONFIG_ACPI_NFIT)		+=3D nfit/
+> > +obj-$(CONFIG_ACPI_HMEM)		+=3D hmem/
+> >  obj-$(CONFIG_ACPI)		+=3D acpi_memhotplug.o
+> >  obj-$(CONFIG_ACPI_HOTPLUG_IOAPIC) +=3D ioapic.o
+> >  obj-$(CONFIG_ACPI_BATTERY)	+=3D battery.o
 > =
 
 > Hi Ross,
 > =
 
-> Say, most of the places (file names, function and variable names, and even
-> print statements) where this patchset uses hmem or HMEM, it really seems =
-to
-> mean, the Heterogeneous Memory Attribute Table. That's not *always* true,=
- but
-> given that it's a pretty severe naming conflict, how about just changing:
-> =
+> Following are a series of suggestions, intended to clarify naming just
+> enough so that, when Jerome's HMM patchset lands, we'll be able to
+> tell the difference between the two types of Heterogeneous Memory.
 
-> hmem --> hmat
-> HMEM --> HMAT
-> =
+Sure, these all seem sane to me, thanks.  I'll fix this up in v3.
 
-> ...everywhere? Then you still have Heterogeneous Memory in the name, but
-> there is enough lexical distance (is that a thing? haha) between HMM and =
-HMAT
-> to keep us all sane. :)
-> =
-
-> With or without the above suggestion, there are a few places (Kconfig, co=
-mments,
-> prints) where we can more easily make it clear that HMM !=3D HMEM (or HMA=
-T), =
-
-> so for those I can just comment on them separately in the individual patc=
-hes.
-> =
-
-> thanks,
-> john h
-
-Hi John,
-
-Sure, that change makes sense to me.  I had initially tried to make this
-enabling more generic so that other, non-ACPI systems could use the same sy=
-sfs
-representation even if they got their performance numbers from some other
-source, but while implementing it pretty quickly became very tightly tied to
-the ACPI HMAT.
-
-- Ross
-
---===============4459759734656179377==--
+--===============2900247239565801685==--
 
