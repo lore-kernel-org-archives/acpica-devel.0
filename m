@@ -1,43 +1,95 @@
-Content-Type: multipart/mixed; boundary="===============2900247239565801685=="
+Content-Type: multipart/mixed; boundary="===============8743525047611275819=="
 MIME-Version: 1.0
-From: Ross Zwisler <ross.zwisler at linux.intel.com>
-Subject: Re: [Devel] [RFC v2 3/5] hmem: add heterogeneous memory sysfs support
-Date: Fri, 07 Jul 2017 10:32:13 -0600
-Message-ID: <20170707163213.GC22856@linux.intel.com>
-In-Reply-To: 9ea40a37-3549-2294-8605-036b37aec023@nvidia.com
+From: Evan Lloyd <Evan.Lloyd at arm.com>
+Subject: [Devel] Digital signing of binaries
+Date: Thu, 13 Jul 2017 12:05:23 +0000
+Message-ID: <AM4PR0801MB1444F2E5F3038ECDCBD32A2A8BAC0@AM4PR0801MB1444.eurprd08.prod.outlook.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2900247239565801685==
+--===============8743525047611275819==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 06, 2017 at 10:53:39PM -0700, John Hubbard wrote:
-> On 07/06/2017 02:52 PM, Ross Zwisler wrote:
-> [...]
-> > diff --git a/drivers/acpi/Makefile b/drivers/acpi/Makefile
-> > index b1aacfc..31e3f20 100644
-> > --- a/drivers/acpi/Makefile
-> > +++ b/drivers/acpi/Makefile
-> > @@ -72,6 +72,7 @@ obj-$(CONFIG_ACPI_PROCESSOR)	+=3D processor.o
-> >  obj-$(CONFIG_ACPI)		+=3D container.o
-> >  obj-$(CONFIG_ACPI_THERMAL)	+=3D thermal.o
-> >  obj-$(CONFIG_ACPI_NFIT)		+=3D nfit/
-> > +obj-$(CONFIG_ACPI_HMEM)		+=3D hmem/
-> >  obj-$(CONFIG_ACPI)		+=3D acpi_memhotplug.o
-> >  obj-$(CONFIG_ACPI_HOTPLUG_IOAPIC) +=3D ioapic.o
-> >  obj-$(CONFIG_ACPI_BATTERY)	+=3D battery.o
-> =
+Hi.
+We are getting problems with "Symantec Endpoint Protection".  It is unhappy=
+ about the ACPICA binaries (iasl.exe, etc.) because they do not meet the "r=
+eputation" requirements - they are not widely used, and change fairly frequ=
+ently, so...
+I'm advised the ideal solution would be for the binaries to be digitally si=
+gned.
+So:
+              Is digital signing a feasible option?
+              Is anyone else experiencing this sort of problem?
 
-> Hi Ross,
-> =
+Regards,
+Evan
+IMPORTANT NOTICE: The contents of this email and any attachments are confid=
+ential and may also be privileged. If you are not the intended recipient, p=
+lease notify the sender immediately and do not disclose the contents to any=
+ other person, use it for any purpose, or store or copy the information in =
+any medium. Thank you.
 
-> Following are a series of suggestions, intended to clarify naming just
-> enough so that, when Jerome's HMM patchset lands, we'll be able to
-> tell the difference between the two types of Heterogeneous Memory.
+--===============8743525047611275819==
+Content-Type: text/html
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="attachment.html"
 
-Sure, these all seem sane to me, thanks.  I'll fix this up in v3.
+PGh0bWwgeG1sbnM6dj0idXJuOnNjaGVtYXMtbWljcm9zb2Z0LWNvbTp2bWwiIHhtbG5zOm89InVy
+bjpzY2hlbWFzLW1pY3Jvc29mdC1jb206b2ZmaWNlOm9mZmljZSIgeG1sbnM6dz0idXJuOnNjaGVt
+YXMtbWljcm9zb2Z0LWNvbTpvZmZpY2U6d29yZCIgeG1sbnM6bT0iaHR0cDovL3NjaGVtYXMubWlj
+cm9zb2Z0LmNvbS9vZmZpY2UvMjAwNC8xMi9vbW1sIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcv
+VFIvUkVDLWh0bWw0MCI+CjxoZWFkPgo8bWV0YSBodHRwLWVxdWl2PSJDb250ZW50LVR5cGUiIGNv
+bnRlbnQ9InRleHQvaHRtbDsgY2hhcnNldD11cy1hc2NpaSI+CjxtZXRhIG5hbWU9IkdlbmVyYXRv
+ciIgY29udGVudD0iTWljcm9zb2Z0IFdvcmQgMTUgKGZpbHRlcmVkIG1lZGl1bSkiPgo8c3R5bGU+
+PCEtLQovKiBGb250IERlZmluaXRpb25zICovCkBmb250LWZhY2UKCXtmb250LWZhbWlseToiQ2Ft
+YnJpYSBNYXRoIjsKCXBhbm9zZS0xOjIgNCA1IDMgNSA0IDYgMyAyIDQ7fQpAZm9udC1mYWNlCgl7
+Zm9udC1mYW1pbHk6RGVuZ1hpYW47CglwYW5vc2UtMToyIDEgNiAwIDMgMSAxIDEgMSAxO30KQGZv
+bnQtZmFjZQoJe2ZvbnQtZmFtaWx5OkNhbGlicmk7CglwYW5vc2UtMToyIDE1IDUgMiAyIDIgNCAz
+IDIgNDt9CkBmb250LWZhY2UKCXtmb250LWZhbWlseToiXEBEZW5nWGlhbiI7CglwYW5vc2UtMToy
+IDEgNiAwIDMgMSAxIDEgMSAxO30KLyogU3R5bGUgRGVmaW5pdGlvbnMgKi8KcC5Nc29Ob3JtYWws
+IGxpLk1zb05vcm1hbCwgZGl2Lk1zb05vcm1hbAoJe21hcmdpbjowY207CgltYXJnaW4tYm90dG9t
+Oi4wMDAxcHQ7Cglmb250LXNpemU6MTEuMHB0OwoJZm9udC1mYW1pbHk6IkNhbGlicmkiLHNhbnMt
+c2VyaWY7fQphOmxpbmssIHNwYW4uTXNvSHlwZXJsaW5rCgl7bXNvLXN0eWxlLXByaW9yaXR5Ojk5
+OwoJY29sb3I6IzA1NjNDMTsKCXRleHQtZGVjb3JhdGlvbjp1bmRlcmxpbmU7fQphOnZpc2l0ZWQs
+IHNwYW4uTXNvSHlwZXJsaW5rRm9sbG93ZWQKCXttc28tc3R5bGUtcHJpb3JpdHk6OTk7Cgljb2xv
+cjojOTU0RjcyOwoJdGV4dC1kZWNvcmF0aW9uOnVuZGVybGluZTt9CnNwYW4uRW1haWxTdHlsZTE3
+Cgl7bXNvLXN0eWxlLXR5cGU6cGVyc29uYWwtY29tcG9zZTsKCWZvbnQtZmFtaWx5OiJDYWxpYnJp
+IixzYW5zLXNlcmlmOwoJY29sb3I6d2luZG93dGV4dDt9Ci5Nc29DaHBEZWZhdWx0Cgl7bXNvLXN0
+eWxlLXR5cGU6ZXhwb3J0LW9ubHk7Cglmb250LWZhbWlseToiQ2FsaWJyaSIsc2Fucy1zZXJpZjt9
+CkBwYWdlIFdvcmRTZWN0aW9uMQoJe3NpemU6NjEyLjBwdCA3OTIuMHB0OwoJbWFyZ2luOjcyLjBw
+dCA3Mi4wcHQgNzIuMHB0IDcyLjBwdDt9CmRpdi5Xb3JkU2VjdGlvbjEKCXtwYWdlOldvcmRTZWN0
+aW9uMTt9Ci0tPjwvc3R5bGU+PCEtLVtpZiBndGUgbXNvIDldPjx4bWw+CjxvOnNoYXBlZGVmYXVs
+dHMgdjpleHQ9ImVkaXQiIHNwaWRtYXg9IjEwMjYiIC8+CjwveG1sPjwhW2VuZGlmXS0tPjwhLS1b
+aWYgZ3RlIG1zbyA5XT48eG1sPgo8bzpzaGFwZWxheW91dCB2OmV4dD0iZWRpdCI+CjxvOmlkbWFw
+IHY6ZXh0PSJlZGl0IiBkYXRhPSIxIiAvPgo8L286c2hhcGVsYXlvdXQ+PC94bWw+PCFbZW5kaWZd
+LS0+CjwvaGVhZD4KPGJvZHkgbGFuZz0iRU4tR0IiIGxpbms9IiMwNTYzQzEiIHZsaW5rPSIjOTU0
+RjcyIj4KPGRpdiBjbGFzcz0iV29yZFNlY3Rpb24xIj4KPHAgY2xhc3M9Ik1zb05vcm1hbCI+SGku
+PG86cD48L286cD48L3A+CjxwIGNsYXNzPSJNc29Ob3JtYWwiPldlIGFyZSBnZXR0aW5nIHByb2Js
+ZW1zIHdpdGggJiM4MjIwO1N5bWFudGVjIEVuZHBvaW50IFByb3RlY3Rpb24mIzgyMjE7LiZuYnNw
+OyBJdCBpcyB1bmhhcHB5IGFib3V0IHRoZSBBQ1BJQ0EgYmluYXJpZXMgKGlhc2wuZXhlLCBldGMu
+KSBiZWNhdXNlIHRoZXkgZG8gbm90IG1lZXQgdGhlICYjODIyMDtyZXB1dGF0aW9uJiM4MjIxOyBy
+ZXF1aXJlbWVudHMgJiM4MjExOyB0aGV5IGFyZSBub3Qgd2lkZWx5IHVzZWQsIGFuZCBjaGFuZ2Ug
+ZmFpcmx5IGZyZXF1ZW50bHksIHNvJiM4MjMwOzxvOnA+PC9vOnA+PC9wPgo8cCBjbGFzcz0iTXNv
+Tm9ybWFsIj5JJiM4MjE3O20gYWR2aXNlZCB0aGUgaWRlYWwgc29sdXRpb24gd291bGQgYmUgZm9y
+IHRoZSBiaW5hcmllcyB0byBiZSBkaWdpdGFsbHkgc2lnbmVkLjxvOnA+PC9vOnA+PC9wPgo8cCBj
+bGFzcz0iTXNvTm9ybWFsIj5Tbzo8bzpwPjwvbzpwPjwvcD4KPHAgY2xhc3M9Ik1zb05vcm1hbCI+
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7IElzIGRpZ2l0YWwgc2lnbmluZyBhIGZlYXNpYmxlIG9wdGlv
+bj88bzpwPjwvbzpwPjwvcD4KPHAgY2xhc3M9Ik1zb05vcm1hbCI+Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7IElzIGFueW9uZSBlbHNlIGV4cGVyaWVuY2luZyB0aGlzIHNvcnQgb2YgcHJvYmxlbT88bzpw
+PjwvbzpwPjwvcD4KPHAgY2xhc3M9Ik1zb05vcm1hbCI+PG86cD4mbmJzcDs8L286cD48L3A+Cjxw
+IGNsYXNzPSJNc29Ob3JtYWwiPlJlZ2FyZHMsPG86cD48L286cD48L3A+CjxwIGNsYXNzPSJNc29O
+b3JtYWwiPkV2YW48bzpwPjwvbzpwPjwvcD4KPC9kaXY+CklNUE9SVEFOVCBOT1RJQ0U6IFRoZSBj
+b250ZW50cyBvZiB0aGlzIGVtYWlsIGFuZCBhbnkgYXR0YWNobWVudHMgYXJlIGNvbmZpZGVudGlh
+bCBhbmQgbWF5IGFsc28gYmUgcHJpdmlsZWdlZC4gSWYgeW91IGFyZSBub3QgdGhlIGludGVuZGVk
+IHJlY2lwaWVudCwgcGxlYXNlIG5vdGlmeSB0aGUgc2VuZGVyIGltbWVkaWF0ZWx5IGFuZCBkbyBu
+b3QgZGlzY2xvc2UgdGhlIGNvbnRlbnRzIHRvIGFueSBvdGhlciBwZXJzb24sIHVzZSBpdCBmb3Ig
+YW55IHB1cnBvc2UsCiBvciBzdG9yZSBvciBjb3B5IHRoZSBpbmZvcm1hdGlvbiBpbiBhbnkgbWVk
+aXVtLiBUaGFuayB5b3UuCjwvYm9keT4KPC9odG1sPgo=
 
---===============2900247239565801685==--
+--===============8743525047611275819==--
 
