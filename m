@@ -1,227 +1,594 @@
-Content-Type: multipart/mixed; boundary="===============8085727430956190356=="
+Content-Type: multipart/mixed; boundary="===============8732277283548946252=="
 MIME-Version: 1.0
-From: Evan Lloyd <Evan.Lloyd at arm.com>
-Subject: Re: [Devel] Digital signing of binaries
-Date: Thu, 13 Jul 2017 19:22:36 +0000
-Message-ID: <AM4PR0801MB144400E26056695C7D61C9A78BAC0@AM4PR0801MB1444.eurprd08.prod.outlook.com>
-In-Reply-To: 94F2FBAB4432B54E8AACC7DFDE6C92E37E5D51C1@ORSMSX110.amr.corp.intel.com
+From: George Cherian <gcherian at caviumnetworks.com>
+Subject: Re: [Devel] [PATCH 2/2] ACPI / CPPC: Make cppc acpi driver aware of
+ pcc subspace ids
+Date: Fri, 14 Jul 2017 16:32:19 +0530
+Message-ID: <5968A4BB.6070200@caviumnetworks.com>
+In-Reply-To: 84ba5386-d33b-b7e7-9295-c15f02fe1d01@codeaurora.org
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8085727430956190356==
+--===============8732277283548946252==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi Robert.
-You are right, iASL is the bee's knees - thank you.
+Hi Prashanth,
 
-All we want to accomplish is to use iASL.exe to build ACPI tables, etc.
-The problem, really, is that Symantec get awkward and try to delete it.
+Thanks for the review.
 
-I'm not sure if anyone else has this problem currently, but I suspect such =
-things will become more of a factor over time.
-If you have access to an existing infrastructure for signing binaries, then=
- you might view it as a worthwhile thing.
-Of course, I can well understand that helping us out may not be top of your=
- priority list, but it might affect other partners, so I thought it worth e=
-nquiring.
+On 07/14/2017 03:14 AM, Prakash, Prashanth wrote:
+> Hi George,
+>
+> On 6/13/2017 8:17 AM, George Cherian wrote:
+>> Based on ACPI 6.2 Section 8.4.7.1.9 If the PCC register space is used,
+>> all PCC registers, for all processors in the same performance
+>> domain (as defined by _PSD), must be defined to be in the same subspace.
+>> Based on Section 14.1 of ACPI specification, it is possible to have a
+>> maximum of 256 PCC subspace ids. Add support of multiple PCC subspace id
+>> instead of using a single global pcc_data structure.
+>>
+>> While at that fix the time_delta check in send_pcc_cmd() so that last_mp=
+ar_reset
+>> and mpar_count is initialized properly.
+>>
+>> Signed-off-by: George Cherian <george.cherian(a)cavium.com>
+>> ---
+>>   drivers/acpi/cppc_acpi.c | 179 +++++++++++++++++++++++++--------------=
+--------
+>>   1 file changed, 96 insertions(+), 83 deletions(-)
+>>
+>> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+>> index 3ca0729..79c35b1 100644
+>> --- a/drivers/acpi/cppc_acpi.c
+>> +++ b/drivers/acpi/cppc_acpi.c
+>> @@ -77,11 +77,10 @@ struct cppc_pcc_data {
+>>   	wait_queue_head_t pcc_write_wait_q;
+>>   };
+>>
+>> -/* Structure to represent the single PCC channel */
+>> -static struct cppc_pcc_data pcc_data =3D {
+>> -	.pcc_subspace_idx =3D -1,
+>> -	.platform_owns_pcc =3D true,
+>> -};
+>> +/* Array  to represent the PCC channel per subspace id */
+>> +static struct cppc_pcc_data pcc_data[MAX_PCC_SUBSPACES];
+> It is unlikely we will end up using all 256 PCC subspaces, so can we
+> please make it a an array(size=3DMAX_PCC_SUBSPACES) of cppc_pcc_data
+> pointers. We can dynamically allocate the cppc_pcc_data structures and
+> maintain their references in this array.
+Yes, I will do that in next version.
+>> +/* The cpu_pcc_subspace_idx containsper CPU subspace id */
+>> +static DEFINE_PER_CPU(int, cpu_pcc_subspace_idx);
+>>
+>>   /*
+>>    * The cpc_desc structure contains the ACPI register details
+>> @@ -93,7 +92,8 @@ static struct cppc_pcc_data pcc_data =3D {
+>>   static DEFINE_PER_CPU(struct cpc_desc *, cpc_desc_ptr);
+>>
+>>   /* pcc mapped address + header size + offset within PCC subspace */
+>> -#define GET_PCC_VADDR(offs) (pcc_data.pcc_comm_addr + 0x8 + (offs))
+>> +#define GET_PCC_VADDR(offs, pcc_ss_id) (pcc_data[pcc_ss_id].pcc_comm_ad=
+dr + \
+>> +						0x8 + (offs))
+>>
+>>   /* Check if a CPC regsiter is in PCC */
+>>   #define CPC_IN_PCC(cpc) ((cpc)->type =3D=3D ACPI_TYPE_BUFFER &&		\
+>> @@ -183,13 +183,16 @@ static struct kobj_type cppc_ktype =3D {
+>>   	.default_attrs =3D cppc_attrs,
+>>   };
+>>
+>> -static int check_pcc_chan(bool chk_err_bit)
+>> +static int check_pcc_chan(int pcc_ss_id, bool chk_err_bit)
+>>   {
+>>   	int ret =3D -EIO, status =3D 0;
+>> -	struct acpi_pcct_shared_memory __iomem *generic_comm_base =3D pcc_data=
+.pcc_comm_addr;
+>> -	ktime_t next_deadline =3D ktime_add(ktime_get(), pcc_data.deadline);
+>> +	struct cppc_pcc_data *pcc_ss_data =3D &pcc_data[pcc_ss_id];
+>> +	struct acpi_pcct_shared_memory __iomem *generic_comm_base =3D
+>> +		pcc_ss_data->pcc_comm_addr;
+>> +	ktime_t next_deadline =3D ktime_add(ktime_get(),
+>> +					  pcc_ss_data->deadline);
+>>
+>> -	if (!pcc_data.platform_owns_pcc)
+>> +	if (!pcc_ss_data->platform_owns_pcc)
+>>   		return 0;
+>>
+>>   	/* Retry in case the remote processor was too slow to catch up. */
+>> @@ -214,7 +217,7 @@ static int check_pcc_chan(bool chk_err_bit)
+>>   	}
+>>
+>>   	if (likely(!ret))
+>> -		pcc_data.platform_owns_pcc =3D false;
+>> +		pcc_ss_data->platform_owns_pcc =3D false;
+>>   	else
+>>   		pr_err("PCC check channel failed. Status=3D%x\n", status);
+>>
+>> @@ -225,11 +228,12 @@ static int check_pcc_chan(bool chk_err_bit)
+>>    * This function transfers the ownership of the PCC to the platform
+>>    * So it must be called while holding write_lock(pcc_lock)
+>>    */
+>> -static int send_pcc_cmd(u16 cmd)
+>> +static int send_pcc_cmd(int pcc_ss_id, u16 cmd)
+>>   {
+>>   	int ret =3D -EIO, i;
+>> +	struct cppc_pcc_data *pcc_ss_data =3D &pcc_data[pcc_ss_id];
+>>   	struct acpi_pcct_shared_memory *generic_comm_base =3D
+>> -		(struct acpi_pcct_shared_memory *) pcc_data.pcc_comm_addr;
+>> +		(struct acpi_pcct_shared_memory *)pcc_ss_data->pcc_comm_addr;
+>>   	static ktime_t last_cmd_cmpl_time, last_mpar_reset;
+>>   	static int mpar_count;
+> Since we had only one PCC channel until ACPI6.1, it was ok to maintain
+> these (mpar_count, last_cmd_cmpl_time, last_mpar_reset) here as static
+> variables.
+> Now that we are supporting multiple PCC subspaces these should be
+> maintained per PCC subspaces. Can you please move these over to the
+> cppc_pcc_data?
+Yes I will move these to be maintained as per subspace.
+>>   	unsigned int time_delta;
+>> @@ -244,24 +248,24 @@ static int send_pcc_cmd(u16 cmd)
+>>   		 * before write completion, so first send a WRITE command to
+>>   		 * platform
+>>   		 */
+>> -		if (pcc_data.pending_pcc_write_cmd)
+>> -			send_pcc_cmd(CMD_WRITE);
+>> +		if (pcc_ss_data->pending_pcc_write_cmd)
+>> +			send_pcc_cmd(pcc_ss_id, CMD_WRITE);
+>>
+>> -		ret =3D check_pcc_chan(false);
+>> +		ret =3D check_pcc_chan(pcc_ss_id, false);
+>>   		if (ret)
+>>   			goto end;
+>>   	} else /* CMD_WRITE */
+>> -		pcc_data.pending_pcc_write_cmd =3D FALSE;
+>> +		pcc_ss_data->pending_pcc_write_cmd =3D FALSE;
+>>
+>>   	/*
+>>   	 * Handle the Minimum Request Turnaround Time(MRTT)
+>>   	 * "The minimum amount of time that OSPM must wait after the completi=
+on
+>>   	 * of a command before issuing the next command, in microseconds"
+>>   	 */
+>> -	if (pcc_data.pcc_mrtt) {
+>> +	if (pcc_ss_data->pcc_mrtt) {
+>>   		time_delta =3D ktime_us_delta(ktime_get(), last_cmd_cmpl_time);
+>> -		if (pcc_data.pcc_mrtt > time_delta)
+>> -			udelay(pcc_data.pcc_mrtt - time_delta);
+>> +		if (pcc_ss_data->pcc_mrtt > time_delta)
+>> +			udelay(pcc_ss_data->pcc_mrtt - time_delta);
+>>   	}
+>>
+>>   	/*
+>> @@ -275,16 +279,16 @@ static int send_pcc_cmd(u16 cmd)
+>>   	 * not send the request to the platform after hitting the MPAR limit =
+in
+>>   	 * any 60s window
+>>   	 */
+>> -	if (pcc_data.pcc_mpar) {
+>> +	if (pcc_ss_data->pcc_mpar) {
+>>   		if (mpar_count =3D=3D 0) {
+>>   			time_delta =3D ktime_ms_delta(ktime_get(), last_mpar_reset);
+>> -			if (time_delta < 60 * MSEC_PER_SEC) {
+>> +			if ((time_delta < 60 * MSEC_PER_SEC) && last_mpar_reset) {
+>>   				pr_debug("PCC cmd not sent due to MPAR limit");
+>>   				ret =3D -EIO;
+>>   				goto end;
+>>   			}
+>>   			last_mpar_reset =3D ktime_get();
+>> -			mpar_count =3D pcc_data.pcc_mpar;
+>> +			mpar_count =3D pcc_ss_data->pcc_mpar;
+>>   		}
+>>   		mpar_count--;
+>>   	}
+> The above mpar and mrtt checks should be modified to use per subspace var=
+iables.
+Will do.
+>> @@ -295,10 +299,10 @@ static int send_pcc_cmd(u16 cmd)
+>>   	/* Flip CMD COMPLETE bit */
+>>   	writew_relaxed(0, &generic_comm_base->status);
+>>
+>> -	pcc_data.platform_owns_pcc =3D true;
+>> +	pcc_ss_data->platform_owns_pcc =3D true;
+>>
+>>   	/* Ring doorbell */
+>> -	ret =3D mbox_send_message(pcc_data.pcc_channel, &cmd);
+>> +	ret =3D mbox_send_message(pcc_ss_data->pcc_channel, &cmd);
+>>   	if (ret < 0) {
+>>   		pr_err("Err sending PCC mbox message. cmd:%d, ret:%d\n",
+>>   				cmd, ret);
+>> @@ -306,15 +310,15 @@ static int send_pcc_cmd(u16 cmd)
+>>   	}
+>>
+>>   	/* wait for completion and check for PCC errro bit */
+>> -	ret =3D check_pcc_chan(true);
+>> +	ret =3D check_pcc_chan(pcc_ss_id, true);
+>>
+>> -	if (pcc_data.pcc_mrtt)
+>> +	if (pcc_ss_data->pcc_mrtt)
+>>   		last_cmd_cmpl_time =3D ktime_get();
+>>
+>> -	if (pcc_data.pcc_channel->mbox->txdone_irq)
+>> -		mbox_chan_txdone(pcc_data.pcc_channel, ret);
+>> +	if (pcc_ss_data->pcc_channel->mbox->txdone_irq)
+>> +		mbox_chan_txdone(pcc_ss_data->pcc_channel, ret);
+>>   	else
+>> -		mbox_client_txdone(pcc_data.pcc_channel, ret);
+>> +		mbox_client_txdone(pcc_ss_data->pcc_channel, ret);
+>>
+>>   end:
+>>   	if (cmd =3D=3D CMD_WRITE) {
+>> @@ -324,12 +328,12 @@ static int send_pcc_cmd(u16 cmd)
+>>   				if (!desc)
+>>   					continue;
+>>
+>> -				if (desc->write_cmd_id =3D=3D pcc_data.pcc_write_cnt)
+>> +				if (desc->write_cmd_id =3D=3D pcc_ss_data->pcc_write_cnt)
+>>   					desc->write_cmd_status =3D ret;
+>>   			}
+>>   		}
+>> -		pcc_data.pcc_write_cnt++;
+>> -		wake_up_all(&pcc_data.pcc_write_wait_q);
+>> +		pcc_ss_data->pcc_write_cnt++;
+>> +		wake_up_all(&pcc_ss_data->pcc_write_wait_q);
+>>   	}
+>>
+>>   	return ret;
+>> @@ -531,16 +535,16 @@ int acpi_get_psd_map(struct cppc_cpudata **all_cpu=
+_data)
+>>   }
+>>   EXPORT_SYMBOL_GPL(acpi_get_psd_map);
+>>
+>> -static int register_pcc_channel(int pcc_subspace_idx)
+>> +static int register_pcc_channel(int pcc_ss_idx)
+>>   {
+>>   	struct acpi_pcct_hw_reduced *cppc_ss;
+>>   	u64 usecs_lat;
+>>
+>> -	if (pcc_subspace_idx >=3D 0) {
+>> -		pcc_data.pcc_channel =3D pcc_mbox_request_channel(&cppc_mbox_cl,
+>> -				pcc_subspace_idx);
+>> +	if (pcc_ss_idx >=3D 0) {
+>> +		pcc_data[pcc_ss_idx].pcc_channel =3D
+>> +			pcc_mbox_request_channel(&cppc_mbox_cl,	pcc_ss_idx);
+>>
+>> -		if (IS_ERR(pcc_data.pcc_channel)) {
+>> +		if (IS_ERR(pcc_data[pcc_ss_idx].pcc_channel)) {
+>>   			pr_err("Failed to find PCC communication channel\n");
+>>   			return -ENODEV;
+>>   		}
+>> @@ -551,7 +555,7 @@ static int register_pcc_channel(int pcc_subspace_idx)
+>>   		 * PCC channels) and stored pointers to the
+>>   		 * subspace communication region in con_priv.
+>>   		 */
+>> -		cppc_ss =3D (pcc_data.pcc_channel)->con_priv;
+>> +		cppc_ss =3D (pcc_data[pcc_ss_idx].pcc_channel)->con_priv;
+>>
+>>   		if (!cppc_ss) {
+>>   			pr_err("No PCC subspace found for CPPC\n");
+>> @@ -564,19 +568,20 @@ static int register_pcc_channel(int pcc_subspace_i=
+dx)
+>>   		 * So add an arbitrary amount of wait on top of Nominal.
+>>   		 */
+>>   		usecs_lat =3D NUM_RETRIES * cppc_ss->latency;
+>> -		pcc_data.deadline =3D ns_to_ktime(usecs_lat * NSEC_PER_USEC);
+>> -		pcc_data.pcc_mrtt =3D cppc_ss->min_turnaround_time;
+>> -		pcc_data.pcc_mpar =3D cppc_ss->max_access_rate;
+>> -		pcc_data.pcc_nominal =3D cppc_ss->latency;
+>> -
+>> -		pcc_data.pcc_comm_addr =3D acpi_os_ioremap(cppc_ss->base_address, cpp=
+c_ss->length);
+>> -		if (!pcc_data.pcc_comm_addr) {
+>> +		pcc_data[pcc_ss_idx].deadline =3D ns_to_ktime(usecs_lat * NSEC_PER_US=
+EC);
+>> +		pcc_data[pcc_ss_idx].pcc_mrtt =3D cppc_ss->min_turnaround_time;
+>> +		pcc_data[pcc_ss_idx].pcc_mpar =3D cppc_ss->max_access_rate;
+>> +		pcc_data[pcc_ss_idx].pcc_nominal =3D cppc_ss->latency;
+>> +
+>> +		pcc_data[pcc_ss_idx].pcc_comm_addr =3D
+>> +			acpi_os_ioremap(cppc_ss->base_address, cppc_ss->length);
+>> +		if (!pcc_data[pcc_ss_idx].pcc_comm_addr) {
+>>   			pr_err("Failed to ioremap PCC comm region mem\n");
+>>   			return -ENOMEM;
+>>   		}
+>>
+>>   		/* Set flag so that we dont come here for each CPU. */
+>> -		pcc_data.pcc_channel_acquired =3D true;
+>> +		pcc_data[pcc_ss_idx].pcc_channel_acquired =3D true;
+>>   	}
+>>
+>>   	return 0;
+>> @@ -656,6 +661,7 @@ int acpi_cppc_processor_probe(struct acpi_processor =
+*pr)
+>>   	struct device *cpu_dev;
+>>   	acpi_handle handle =3D pr->handle;
+>>   	unsigned int num_ent, i, cpc_rev;
+>> +	unsigned int pcc_subspace_id =3D 0;
+>>   	acpi_status status;
+>>   	int ret =3D -EFAULT;
+>>
+>> @@ -728,12 +734,9 @@ int acpi_cppc_processor_probe(struct acpi_processor=
+ *pr)
+>>   			 * so extract it only once.
+>>   			 */
+>>   			if (gas_t->space_id =3D=3D ACPI_ADR_SPACE_PLATFORM_COMM) {
+>> -				if (pcc_data.pcc_subspace_idx < 0)
+>> -					pcc_data.pcc_subspace_idx =3D gas_t->access_width;
+>> -				else if (pcc_data.pcc_subspace_idx !=3D gas_t->access_width) {
+>> -					pr_debug("Mismatched PCC ids.\n");
+>> -					goto out_free;
+>> -				}
+>> +				pcc_subspace_id =3D gas_t->access_width;
+>> +				pcc_data[pcc_subspace_id].pcc_subspace_idx =3D gas_t->access_width;
+>> +				per_cpu(cpu_pcc_subspace_idx, pr->id) =3D gas_t->access_width;
+> pcc_data[pcc_subspace_id].pcc_subspace_idx =3D pcc_subspace_id;
+> per_cpu(cpu_pcc_subspace_idx, pr->id) =3D pcc_subspace_id;
+>
+> I don't see a need for pcc_subspace_idx to be in struct cppc_pcc_data
+> anymore.  If you agree, may be we can remove it.
+
+Okay, I agree.
+>
+>>   			} else if (gas_t->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_MEMORY) {
+>>   				if (gas_t->address) {
+>>   					void __iomem *addr;
+>> @@ -766,14 +769,14 @@ int acpi_cppc_processor_probe(struct acpi_processo=
+r *pr)
+>>   	if (ret)
+>>   		goto out_free;
+>>
+>> -	/* Register PCC channel once for all CPUs. */
+>> -	if (!pcc_data.pcc_channel_acquired) {
+>> -		ret =3D register_pcc_channel(pcc_data.pcc_subspace_idx);
+>> +	/* Register PCC channel once for all PCC subspace id. */
+>> +	if (!pcc_data[pcc_subspace_id].pcc_channel_acquired) {
+> Looks like we assume a PCC subspace is always present and looking at the
+> 6.2 spec it doesn't look like a mandatory requirement. So, the correct ch=
+eck
+> here should be:
+> if (pcc_subspace_id is valid && !pcc_data[pcc_subspace_id].pcc_channel_ac=
+quired)
+>
+> We need to make sure pcc_subspace_id is set to an invalid value until we =
+find a valid
+> PCC subspace within the _CPC package. You can correct this in next versio=
+n or I can
+> submit a small patch.
+Okay I will do the necessary changes.
+>> +		ret =3D register_pcc_channel(pcc_data[pcc_subspace_id].pcc_subspace_i=
+dx);
+>>   		if (ret)
+>>   			goto out_free;
+>>
+>> -		init_rwsem(&pcc_data.pcc_lock);
+>> -		init_waitqueue_head(&pcc_data.pcc_write_wait_q);
+>> +		init_rwsem(&pcc_data[pcc_subspace_id].pcc_lock);
+>> +		init_waitqueue_head(&pcc_data[pcc_subspace_id].pcc_write_wait_q);
+>>   	}
+>>
+>>   	/* Everything looks okay */
+>> @@ -883,6 +886,7 @@ static int cpc_read(int cpu, struct cpc_register_res=
+ource *reg_res, u64 *val)
+>>   {
+>>   	int ret_val =3D 0;
+>>   	void __iomem *vaddr =3D 0;
+>> +	int pcc_ss_id =3D per_cpu(cpu_pcc_subspace_idx, cpu);
+>>   	struct cpc_reg *reg =3D &reg_res->cpc_entry.reg;
+>>
+>>   	if (reg_res->type =3D=3D ACPI_TYPE_INTEGER) {
+>> @@ -892,7 +896,7 @@ static int cpc_read(int cpu, struct cpc_register_res=
+ource *reg_res, u64 *val)
+>>
+>>   	*val =3D 0;
+>>   	if (reg->space_id =3D=3D ACPI_ADR_SPACE_PLATFORM_COMM)
+>> -		vaddr =3D GET_PCC_VADDR(reg->address);
+>> +		vaddr =3D GET_PCC_VADDR(reg->address, pcc_ss_id);
+>>   	else if (reg->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_MEMORY)
+>>   		vaddr =3D reg_res->sys_mem_vaddr;
+>>   	else if (reg->space_id =3D=3D ACPI_ADR_SPACE_FIXED_HARDWARE)
+>> @@ -927,10 +931,11 @@ static int cpc_write(int cpu, struct cpc_register_=
+resource *reg_res, u64 val)
+>>   {
+>>   	int ret_val =3D 0;
+>>   	void __iomem *vaddr =3D 0;
+>> +	int pcc_ss_id =3D per_cpu(cpu_pcc_subspace_idx, cpu);
+>>   	struct cpc_reg *reg =3D &reg_res->cpc_entry.reg;
+>>
+>>   	if (reg->space_id =3D=3D ACPI_ADR_SPACE_PLATFORM_COMM)
+>> -		vaddr =3D GET_PCC_VADDR(reg->address);
+>> +		vaddr =3D GET_PCC_VADDR(reg->address, pcc_ss_id);
+>>   	else if (reg->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_MEMORY)
+>>   		vaddr =3D reg_res->sys_mem_vaddr;
+>>   	else if (reg->space_id =3D=3D ACPI_ADR_SPACE_FIXED_HARDWARE)
+>> @@ -974,6 +979,8 @@ int cppc_get_perf_caps(int cpunum, struct cppc_perf_=
+caps *perf_caps)
+>>   	struct cpc_desc *cpc_desc =3D per_cpu(cpc_desc_ptr, cpunum);
+>>   	struct cpc_register_resource *highest_reg, *lowest_reg, *ref_perf,
+>>   								 *nom_perf;
+>> +	int pcc_ss_id =3D per_cpu(cpu_pcc_subspace_idx, cpunum);
+>> +	struct cppc_pcc_data *pcc_ss_data =3D &pcc_data[pcc_ss_id];
+>>   	u64 high, low, nom;
+>>   	int ret =3D 0, regs_in_pcc =3D 0;
+>>
+>> @@ -991,9 +998,9 @@ int cppc_get_perf_caps(int cpunum, struct cppc_perf_=
+caps *perf_caps)
+>>   	if (CPC_IN_PCC(highest_reg) || CPC_IN_PCC(lowest_reg) ||
+>>   		CPC_IN_PCC(ref_perf) || CPC_IN_PCC(nom_perf)) {
+>>   		regs_in_pcc =3D 1;
+>> -		down_write(&pcc_data.pcc_lock);
+>> +		down_write(&pcc_ss_data->pcc_lock);
+>>   		/* Ring doorbell once to update PCC subspace */
+>> -		if (send_pcc_cmd(CMD_READ) < 0) {
+>> +		if (send_pcc_cmd(pcc_ss_id, CMD_READ) < 0) {
+>>   			ret =3D -EIO;
+>>   			goto out_err;
+>>   		}
+>> @@ -1013,7 +1020,7 @@ int cppc_get_perf_caps(int cpunum, struct cppc_per=
+f_caps *perf_caps)
+>>
+>>   out_err:
+>>   	if (regs_in_pcc)
+>> -		up_write(&pcc_data.pcc_lock);
+>> +		up_write(&pcc_ss_data->pcc_lock);
+>>   	return ret;
+>>   }
+>>   EXPORT_SYMBOL_GPL(cppc_get_perf_caps);
+>> @@ -1030,6 +1037,8 @@ int cppc_get_perf_ctrs(int cpunum, struct cppc_per=
+f_fb_ctrs *perf_fb_ctrs)
+>>   	struct cpc_desc *cpc_desc =3D per_cpu(cpc_desc_ptr, cpunum);
+>>   	struct cpc_register_resource *delivered_reg, *reference_reg,
+>>   		*ref_perf_reg, *ctr_wrap_reg;
+>> +	int pcc_ss_id =3D per_cpu(cpu_pcc_subspace_idx, cpunum);
+>> +	struct cppc_pcc_data *pcc_ss_data =3D &pcc_data[pcc_ss_id];
+>>   	u64 delivered, reference, ref_perf, ctr_wrap_time;
+>>   	int ret =3D 0, regs_in_pcc =3D 0;
+>>
+>> @@ -1053,10 +1062,10 @@ int cppc_get_perf_ctrs(int cpunum, struct cppc_p=
+erf_fb_ctrs *perf_fb_ctrs)
+>>   	/* Are any of the regs PCC ?*/
+>>   	if (CPC_IN_PCC(delivered_reg) || CPC_IN_PCC(reference_reg) ||
+>>   		CPC_IN_PCC(ctr_wrap_reg) || CPC_IN_PCC(ref_perf_reg)) {
+>> -		down_write(&pcc_data.pcc_lock);
+>> +		down_write(&pcc_ss_data->pcc_lock);
+>>   		regs_in_pcc =3D 1;
+>>   		/* Ring doorbell once to update PCC subspace */
+>> -		if (send_pcc_cmd(CMD_READ) < 0) {
+>> +		if (send_pcc_cmd(pcc_ss_id, CMD_READ) < 0) {
+>>   			ret =3D -EIO;
+>>   			goto out_err;
+>>   		}
+>> @@ -1086,7 +1095,7 @@ int cppc_get_perf_ctrs(int cpunum, struct cppc_per=
+f_fb_ctrs *perf_fb_ctrs)
+>>   	perf_fb_ctrs->ctr_wrap_time =3D ctr_wrap_time;
+>>   out_err:
+>>   	if (regs_in_pcc)
+>> -		up_write(&pcc_data.pcc_lock);
+>> +		up_write(&pcc_ss_data->pcc_lock);
+>>   	return ret;
+>>   }
+>>   EXPORT_SYMBOL_GPL(cppc_get_perf_ctrs);
+>> @@ -1102,6 +1111,8 @@ int cppc_set_perf(int cpu, struct cppc_perf_ctrls =
+*perf_ctrls)
+>>   {
+>>   	struct cpc_desc *cpc_desc =3D per_cpu(cpc_desc_ptr, cpu);
+>>   	struct cpc_register_resource *desired_reg;
+>> +	int pcc_ss_id =3D per_cpu(cpu_pcc_subspace_idx, cpu);
+>> +	struct cppc_pcc_data *pcc_ss_data =3D &pcc_data[pcc_ss_id];
+>>   	int ret =3D 0;
+>>
+>>   	if (!cpc_desc) {
+>> @@ -1119,11 +1130,11 @@ int cppc_set_perf(int cpu, struct cppc_perf_ctrl=
+s *perf_ctrls)
+>>   	 * achieve that goal here
+>>   	 */
+>>   	if (CPC_IN_PCC(desired_reg)) {
+>> -		down_read(&pcc_data.pcc_lock);	/* BEGIN Phase-I */
+>> -		if (pcc_data.platform_owns_pcc) {
+>> -			ret =3D check_pcc_chan(false);
+>> +		down_read(&pcc_ss_data->pcc_lock); /* BEGIN Phase-I */
+>> +		if (pcc_ss_data->platform_owns_pcc) {
+>> +			ret =3D check_pcc_chan(pcc_ss_id, false);
+>>   			if (ret) {
+>> -				up_read(&pcc_data.pcc_lock);
+>> +				up_read(&pcc_ss_data->pcc_lock);
+>>   				return ret;
+>>   			}
+>>   		}
+>> @@ -1131,8 +1142,8 @@ int cppc_set_perf(int cpu, struct cppc_perf_ctrls =
+*perf_ctrls)
+>>   		 * Update the pending_write to make sure a PCC CMD_READ will not
+>>   		 * arrive and steal the channel during the switch to write lock
+>>   		 */
+>> -		pcc_data.pending_pcc_write_cmd =3D true;
+>> -		cpc_desc->write_cmd_id =3D pcc_data.pcc_write_cnt;
+>> +		pcc_ss_data->pending_pcc_write_cmd =3D true;
+>> +		cpc_desc->write_cmd_id =3D pcc_ss_data->pcc_write_cnt;
+>>   		cpc_desc->write_cmd_status =3D 0;
+>>   	}
+>>
+>> @@ -1143,7 +1154,7 @@ int cppc_set_perf(int cpu, struct cppc_perf_ctrls =
+*perf_ctrls)
+>>   	cpc_write(cpu, desired_reg, perf_ctrls->desired_perf);
+>>
+>>   	if (CPC_IN_PCC(desired_reg))
+>> -		up_read(&pcc_data.pcc_lock);	/* END Phase-I */
+>> +		up_read(&pcc_ss_data->pcc_lock);	/* END Phase-I */
+>>   	/*
+>>   	 * This is Phase-II where we transfer the ownership of PCC to Platform
+>>   	 *
+>> @@ -1191,15 +1202,15 @@ int cppc_set_perf(int cpu, struct cppc_perf_ctrl=
+s *perf_ctrls)
+>>   	 * the write command before servicing the read command
+>>   	 */
+>>   	if (CPC_IN_PCC(desired_reg)) {
+>> -		if (down_write_trylock(&pcc_data.pcc_lock)) {	/* BEGIN Phase-II */
+>> +		if (down_write_trylock(&pcc_ss_data->pcc_lock)) {/* BEGIN Phase-II */
+>>   			/* Update only if there are pending write commands */
+>> -			if (pcc_data.pending_pcc_write_cmd)
+>> -				send_pcc_cmd(CMD_WRITE);
+>> -			up_write(&pcc_data.pcc_lock);		/* END Phase-II */
+>> +			if (pcc_ss_data->pending_pcc_write_cmd)
+>> +				send_pcc_cmd(pcc_ss_id, CMD_WRITE);
+>> +			up_write(&pcc_ss_data->pcc_lock);	/* END Phase-II */
+>>   		} else
+>>   			/* Wait until pcc_write_cnt is updated by send_pcc_cmd */
+>> -			wait_event(pcc_data.pcc_write_wait_q,
+>> -				cpc_desc->write_cmd_id !=3D pcc_data.pcc_write_cnt);
+>> +			wait_event(pcc_ss_data->pcc_write_wait_q,
+>> +				   cpc_desc->write_cmd_id !=3D pcc_ss_data->pcc_write_cnt);
+>>
+>>   		/* send_pcc_cmd updates the status in case of failure */
+>>   		ret =3D cpc_desc->write_cmd_status;
+>> @@ -1232,6 +1243,8 @@ unsigned int cppc_get_transition_latency(int cpu_n=
+um)
+>>   	unsigned int latency_ns =3D 0;
+>>   	struct cpc_desc *cpc_desc;
+>>   	struct cpc_register_resource *desired_reg;
+>> +	int pcc_ss_id =3D per_cpu(cpu_pcc_subspace_idx, cpu_num);
+>> +	struct cppc_pcc_data *pcc_ss_data =3D &pcc_data[pcc_ss_id];
+>>
+>>   	cpc_desc =3D per_cpu(cpc_desc_ptr, cpu_num);
+>>   	if (!cpc_desc)
+>> @@ -1241,11 +1254,11 @@ unsigned int cppc_get_transition_latency(int cpu=
+_num)
+>>   	if (!CPC_IN_PCC(desired_reg))
+>>   		return CPUFREQ_ETERNAL;
+>>
+>> -	if (pcc_data.pcc_mpar)
+>> -		latency_ns =3D 60 * (1000 * 1000 * 1000 / pcc_data.pcc_mpar);
+>> +	if (pcc_ss_data->pcc_mpar)
+>> +		latency_ns =3D 60 * (1000 * 1000 * 1000 / pcc_ss_data->pcc_mpar);
+>>
+>> -	latency_ns =3D max(latency_ns, pcc_data.pcc_nominal * 1000);
+>> -	latency_ns =3D max(latency_ns, pcc_data.pcc_mrtt * 1000);
+>> +	latency_ns =3D max(latency_ns, pcc_ss_data->pcc_nominal * 1000);
+>> +	latency_ns =3D max(latency_ns, pcc_ss_data->pcc_mrtt * 1000);
+>>
+>>   	return latency_ns;
+>>   }
+>
+> When you send the next version with updates, can you please add a version
+> to the patches ex: [PATCH v2 2/2]? I think this series is v2, as it addre=
+sses some
+> of Alexey's  comments on the initial version.
+Not only Alexey's comments, Initially this approach was rejected due to =
+
+the ACPI spec(6.1) limitations.
+
+Now that the spec changes for multiple subspaces are adapted I thought =
+
+of reseting the patch version to v1. Going forward I will maintain the =
+
+versions.
+>
+> --
+> Thanks,
+> Prashanth
 
 Regards,
-Evan
+-George
+>
 
-From: Moore, Robert [mailto:robert.moore(a)intel.com]
-Sent: 13 July 2017 18:47
-To: Evan Lloyd <Evan.Lloyd(a)arm.com>; devel(a)acpica.org
-Cc: Wesley Dudzinski <Wesley.Dudzinski(a)arm.com>; Schmauss, Erik <erik.sch=
-mauss(a)intel.com>
-Subject: RE: Digital signing of binaries
-
-Well, at least iASL has become the industry standard ASL compiler.
-
-The AcpiExec utility includes the full ACPICA code.
-
-All other binaries are small development help tools.
-
-What are you trying to accomplish? None of these tools are really intended =
-to be released with an actual product.
-
-Bob
-
-
-From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of Evan Lloyd
-Sent: Thursday, July 13, 2017 5:05 AM
-To: devel(a)acpica.org<mailto:devel(a)acpica.org>
-Cc: Wesley Dudzinski <Wesley.Dudzinski(a)arm.com<mailto:Wesley.Dudzinski(a)=
-arm.com>>
-Subject: [Devel] Digital signing of binaries
-
-Hi.
-We are getting problems with "Symantec Endpoint Protection".  It is unhappy=
- about the ACPICA binaries (iasl.exe, etc.) because they do not meet the "r=
-eputation" requirements - they are not widely used, and change fairly frequ=
-ently, so...
-I'm advised the ideal solution would be for the binaries to be digitally si=
-gned.
-So:
-              Is digital signing a feasible option?
-              Is anyone else experiencing this sort of problem?
-
-Regards,
-Evan
-IMPORTANT NOTICE: The contents of this email and any attachments are confid=
-ential and may also be privileged. If you are not the intended recipient, p=
-lease notify the sender immediately and do not disclose the contents to any=
- other person, use it for any purpose, or store or copy the information in =
-any medium. Thank you.
-IMPORTANT NOTICE: The contents of this email and any attachments are confid=
-ential and may also be privileged. If you are not the intended recipient, p=
-lease notify the sender immediately and do not disclose the contents to any=
- other person, use it for any purpose, or store or copy the information in =
-any medium. Thank you.
-
---===============8085727430956190356==
-Content-Type: text/html
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="attachment.html"
-
-PGh0bWwgeG1sbnM6dj0idXJuOnNjaGVtYXMtbWljcm9zb2Z0LWNvbTp2bWwiIHhtbG5zOm89InVy
-bjpzY2hlbWFzLW1pY3Jvc29mdC1jb206b2ZmaWNlOm9mZmljZSIgeG1sbnM6dz0idXJuOnNjaGVt
-YXMtbWljcm9zb2Z0LWNvbTpvZmZpY2U6d29yZCIgeG1sbnM6bT0iaHR0cDovL3NjaGVtYXMubWlj
-cm9zb2Z0LmNvbS9vZmZpY2UvMjAwNC8xMi9vbW1sIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcv
-VFIvUkVDLWh0bWw0MCI+CjxoZWFkPgo8bWV0YSBodHRwLWVxdWl2PSJDb250ZW50LVR5cGUiIGNv
-bnRlbnQ9InRleHQvaHRtbDsgY2hhcnNldD11cy1hc2NpaSI+CjxtZXRhIG5hbWU9IkdlbmVyYXRv
-ciIgY29udGVudD0iTWljcm9zb2Z0IFdvcmQgMTUgKGZpbHRlcmVkIG1lZGl1bSkiPgo8c3R5bGU+
-PCEtLQovKiBGb250IERlZmluaXRpb25zICovCkBmb250LWZhY2UKCXtmb250LWZhbWlseToiQ2Ft
-YnJpYSBNYXRoIjsKCXBhbm9zZS0xOjIgNCA1IDMgNSA0IDYgMyAyIDQ7fQpAZm9udC1mYWNlCgl7
-Zm9udC1mYW1pbHk6RGVuZ1hpYW47CglwYW5vc2UtMToyIDEgNiAwIDMgMSAxIDEgMSAxO30KQGZv
-bnQtZmFjZQoJe2ZvbnQtZmFtaWx5OkNhbGlicmk7CglwYW5vc2UtMToyIDE1IDUgMiAyIDIgNCAz
-IDIgNDt9CkBmb250LWZhY2UKCXtmb250LWZhbWlseToiXEBEZW5nWGlhbiI7CglwYW5vc2UtMToy
-IDEgNiAwIDMgMSAxIDEgMSAxO30KLyogU3R5bGUgRGVmaW5pdGlvbnMgKi8KcC5Nc29Ob3JtYWws
-IGxpLk1zb05vcm1hbCwgZGl2Lk1zb05vcm1hbAoJe21hcmdpbjowY207CgltYXJnaW4tYm90dG9t
-Oi4wMDAxcHQ7Cglmb250LXNpemU6MTEuMHB0OwoJZm9udC1mYW1pbHk6IkNhbGlicmkiLHNhbnMt
-c2VyaWY7fQphOmxpbmssIHNwYW4uTXNvSHlwZXJsaW5rCgl7bXNvLXN0eWxlLXByaW9yaXR5Ojk5
-OwoJY29sb3I6IzA1NjNDMTsKCXRleHQtZGVjb3JhdGlvbjp1bmRlcmxpbmU7fQphOnZpc2l0ZWQs
-IHNwYW4uTXNvSHlwZXJsaW5rRm9sbG93ZWQKCXttc28tc3R5bGUtcHJpb3JpdHk6OTk7Cgljb2xv
-cjojOTU0RjcyOwoJdGV4dC1kZWNvcmF0aW9uOnVuZGVybGluZTt9CnAubXNvbm9ybWFsMCwgbGku
-bXNvbm9ybWFsMCwgZGl2Lm1zb25vcm1hbDAKCXttc28tc3R5bGUtbmFtZTptc29ub3JtYWw7Cglt
-c28tbWFyZ2luLXRvcC1hbHQ6YXV0bzsKCW1hcmdpbi1yaWdodDowY207Cgltc28tbWFyZ2luLWJv
-dHRvbS1hbHQ6YXV0bzsKCW1hcmdpbi1sZWZ0OjBjbTsKCWZvbnQtc2l6ZToxMi4wcHQ7Cglmb250
-LWZhbWlseToiVGltZXMgTmV3IFJvbWFuIixzZXJpZjt9CnNwYW4uRW1haWxTdHlsZTE4Cgl7bXNv
-LXN0eWxlLXR5cGU6cGVyc29uYWw7Cglmb250LWZhbWlseToiQ2FsaWJyaSIsc2Fucy1zZXJpZjsK
-CWNvbG9yOndpbmRvd3RleHQ7fQpzcGFuLkVtYWlsU3R5bGUxOQoJe21zby1zdHlsZS10eXBlOnBl
-cnNvbmFsOwoJZm9udC1mYW1pbHk6IkNhbGlicmkiLHNhbnMtc2VyaWY7Cgljb2xvcjojMUY0OTdE
-O30Kc3Bhbi5FbWFpbFN0eWxlMjEKCXttc28tc3R5bGUtdHlwZTpwZXJzb25hbC1yZXBseTsKCWZv
-bnQtZmFtaWx5OiJDYWxpYnJpIixzYW5zLXNlcmlmOwoJY29sb3I6d2luZG93dGV4dDt9Ci5Nc29D
-aHBEZWZhdWx0Cgl7bXNvLXN0eWxlLXR5cGU6ZXhwb3J0LW9ubHk7Cglmb250LXNpemU6MTAuMHB0
-O30KQHBhZ2UgV29yZFNlY3Rpb24xCgl7c2l6ZTo2MTIuMHB0IDc5Mi4wcHQ7CgltYXJnaW46NzIu
-MHB0IDcyLjBwdCA3Mi4wcHQgNzIuMHB0O30KZGl2LldvcmRTZWN0aW9uMQoJe3BhZ2U6V29yZFNl
-Y3Rpb24xO30KLS0+PC9zdHlsZT48IS0tW2lmIGd0ZSBtc28gOV0+PHhtbD4KPG86c2hhcGVkZWZh
-dWx0cyB2OmV4dD0iZWRpdCIgc3BpZG1heD0iMTAyNiIgLz4KPC94bWw+PCFbZW5kaWZdLS0+PCEt
-LVtpZiBndGUgbXNvIDldPjx4bWw+CjxvOnNoYXBlbGF5b3V0IHY6ZXh0PSJlZGl0Ij4KPG86aWRt
-YXAgdjpleHQ9ImVkaXQiIGRhdGE9IjEiIC8+CjwvbzpzaGFwZWxheW91dD48L3htbD48IVtlbmRp
-Zl0tLT4KPC9oZWFkPgo8Ym9keSBsYW5nPSJFTi1HQiIgbGluaz0iIzA1NjNDMSIgdmxpbms9IiM5
-NTRGNzIiPgo8ZGl2IGNsYXNzPSJXb3JkU2VjdGlvbjEiPgo8cCBjbGFzcz0iTXNvTm9ybWFsIj5I
-aSBSb2JlcnQuPG86cD48L286cD48L3A+CjxwIGNsYXNzPSJNc29Ob3JtYWwiPllvdSBhcmUgcmln
-aHQsIGlBU0wgaXMgdGhlIGJlZSYjODIxNztzIGtuZWVzICYjODIxMTsgdGhhbmsgeW91LjxvOnA+
-PC9vOnA+PC9wPgo8cCBjbGFzcz0iTXNvTm9ybWFsIj48bzpwPiZuYnNwOzwvbzpwPjwvcD4KPHAg
-Y2xhc3M9Ik1zb05vcm1hbCI+QWxsIHdlIHdhbnQgdG8gYWNjb21wbGlzaCBpcyB0byB1c2UgaUFT
-TC5leGUgdG8gYnVpbGQgQUNQSSB0YWJsZXMsIGV0Yy48bzpwPjwvbzpwPjwvcD4KPHAgY2xhc3M9
-Ik1zb05vcm1hbCI+VGhlIHByb2JsZW0sIHJlYWxseSwgaXMgdGhhdCBTeW1hbnRlYyBnZXQgYXdr
-d2FyZCBhbmQgdHJ5IHRvIGRlbGV0ZSBpdC48bzpwPjwvbzpwPjwvcD4KPHAgY2xhc3M9Ik1zb05v
-cm1hbCI+PG86cD4mbmJzcDs8L286cD48L3A+CjxwIGNsYXNzPSJNc29Ob3JtYWwiPkkmIzgyMTc7
-bSBub3Qgc3VyZSBpZiBhbnlvbmUgZWxzZSBoYXMgdGhpcyBwcm9ibGVtIGN1cnJlbnRseSwgYnV0
-IEkgc3VzcGVjdCBzdWNoIHRoaW5ncyB3aWxsIGJlY29tZSBtb3JlIG9mIGEgZmFjdG9yIG92ZXIg
-dGltZS48bzpwPjwvbzpwPjwvcD4KPHAgY2xhc3M9Ik1zb05vcm1hbCI+SWYgeW91IGhhdmUgYWNj
-ZXNzIHRvIGFuIGV4aXN0aW5nIGluZnJhc3RydWN0dXJlIGZvciBzaWduaW5nIGJpbmFyaWVzLCB0
-aGVuIHlvdSBtaWdodCB2aWV3IGl0IGFzIGEgd29ydGh3aGlsZSB0aGluZy48bzpwPjwvbzpwPjwv
-cD4KPHAgY2xhc3M9Ik1zb05vcm1hbCI+T2YgY291cnNlLCBJIGNhbiB3ZWxsIHVuZGVyc3RhbmQg
-dGhhdCBoZWxwaW5nIHVzIG91dCBtYXkgbm90IGJlIHRvcCBvZiB5b3VyIHByaW9yaXR5IGxpc3Qs
-IGJ1dCBpdCBtaWdodCBhZmZlY3Qgb3RoZXIgcGFydG5lcnMsIHNvIEkgdGhvdWdodCBpdCB3b3J0
-aCBlbnF1aXJpbmcuPG86cD48L286cD48L3A+CjxwIGNsYXNzPSJNc29Ob3JtYWwiPjxvOnA+Jm5i
-c3A7PC9vOnA+PC9wPgo8cCBjbGFzcz0iTXNvTm9ybWFsIj5SZWdhcmRzLDxvOnA+PC9vOnA+PC9w
-Pgo8cCBjbGFzcz0iTXNvTm9ybWFsIj5FdmFuPG86cD48L286cD48L3A+CjxwIGNsYXNzPSJNc29O
-b3JtYWwiPjxhIG5hbWU9Il9NYWlsRW5kQ29tcG9zZSI+PG86cD4mbmJzcDs8L286cD48L2E+PC9w
-Pgo8c3BhbiBzdHlsZT0ibXNvLWJvb2ttYXJrOl9NYWlsRW5kQ29tcG9zZSI+PC9zcGFuPgo8ZGl2
-IHN0eWxlPSJib3JkZXI6bm9uZTtib3JkZXItbGVmdDpzb2xpZCBibHVlIDEuNXB0O3BhZGRpbmc6
-MGNtIDBjbSAwY20gNC4wcHQiPgo8ZGl2Pgo8ZGl2IHN0eWxlPSJib3JkZXI6bm9uZTtib3JkZXIt
-dG9wOnNvbGlkICNFMUUxRTEgMS4wcHQ7cGFkZGluZzozLjBwdCAwY20gMGNtIDBjbSI+CjxwIGNs
-YXNzPSJNc29Ob3JtYWwiPjxiPjxzcGFuIGxhbmc9IkVOLVVTIj5Gcm9tOjwvc3Bhbj48L2I+PHNw
-YW4gbGFuZz0iRU4tVVMiPiBNb29yZSwgUm9iZXJ0IFttYWlsdG86cm9iZXJ0Lm1vb3JlQGludGVs
-LmNvbV0KPGJyPgo8Yj5TZW50OjwvYj4gMTMgSnVseSAyMDE3IDE4OjQ3PGJyPgo8Yj5Ubzo8L2I+
-IEV2YW4gTGxveWQgJmx0O0V2YW4uTGxveWRAYXJtLmNvbSZndDs7IGRldmVsQGFjcGljYS5vcmc8
-YnI+CjxiPkNjOjwvYj4gV2VzbGV5IER1ZHppbnNraSAmbHQ7V2VzbGV5LkR1ZHppbnNraUBhcm0u
-Y29tJmd0OzsgU2NobWF1c3MsIEVyaWsgJmx0O2VyaWsuc2NobWF1c3NAaW50ZWwuY29tJmd0Ozxi
-cj4KPGI+U3ViamVjdDo8L2I+IFJFOiBEaWdpdGFsIHNpZ25pbmcgb2YgYmluYXJpZXM8bzpwPjwv
-bzpwPjwvc3Bhbj48L3A+CjwvZGl2Pgo8L2Rpdj4KPHAgY2xhc3M9Ik1zb05vcm1hbCI+PG86cD4m
-bmJzcDs8L286cD48L3A+CjxwIGNsYXNzPSJNc29Ob3JtYWwiPjxzcGFuIGxhbmc9IkVOLVVTIiBz
-dHlsZT0iY29sb3I6IzFGNDk3RCI+V2VsbCwgYXQgbGVhc3QgaUFTTCBoYXMgYmVjb21lIHRoZSBp
-bmR1c3RyeSBzdGFuZGFyZCBBU0wgY29tcGlsZXIuPG86cD48L286cD48L3NwYW4+PC9wPgo8cCBj
-bGFzcz0iTXNvTm9ybWFsIj48c3BhbiBsYW5nPSJFTi1VUyIgc3R5bGU9ImNvbG9yOiMxRjQ5N0Qi
-PjxvOnA+Jm5ic3A7PC9vOnA+PC9zcGFuPjwvcD4KPHAgY2xhc3M9Ik1zb05vcm1hbCI+PHNwYW4g
-bGFuZz0iRU4tVVMiIHN0eWxlPSJjb2xvcjojMUY0OTdEIj5UaGUgQWNwaUV4ZWMgdXRpbGl0eSBp
-bmNsdWRlcyB0aGUgZnVsbCBBQ1BJQ0EgY29kZS48bzpwPjwvbzpwPjwvc3Bhbj48L3A+CjxwIGNs
-YXNzPSJNc29Ob3JtYWwiPjxzcGFuIGxhbmc9IkVOLVVTIiBzdHlsZT0iY29sb3I6IzFGNDk3RCI+
-PG86cD4mbmJzcDs8L286cD48L3NwYW4+PC9wPgo8cCBjbGFzcz0iTXNvTm9ybWFsIj48c3BhbiBs
-YW5nPSJFTi1VUyIgc3R5bGU9ImNvbG9yOiMxRjQ5N0QiPkFsbCBvdGhlciBiaW5hcmllcyBhcmUg
-c21hbGwgZGV2ZWxvcG1lbnQgaGVscCB0b29scy48bzpwPjwvbzpwPjwvc3Bhbj48L3A+CjxwIGNs
-YXNzPSJNc29Ob3JtYWwiPjxzcGFuIGxhbmc9IkVOLVVTIiBzdHlsZT0iY29sb3I6IzFGNDk3RCI+
-PG86cD4mbmJzcDs8L286cD48L3NwYW4+PC9wPgo8cCBjbGFzcz0iTXNvTm9ybWFsIj48c3BhbiBs
-YW5nPSJFTi1VUyIgc3R5bGU9ImNvbG9yOiMxRjQ5N0QiPldoYXQgYXJlIHlvdSB0cnlpbmcgdG8g
-YWNjb21wbGlzaD8gTm9uZSBvZiB0aGVzZSB0b29scyBhcmUgcmVhbGx5IGludGVuZGVkIHRvIGJl
-IHJlbGVhc2VkIHdpdGggYW4gYWN0dWFsIHByb2R1Y3QuPG86cD48L286cD48L3NwYW4+PC9wPgo8
-cCBjbGFzcz0iTXNvTm9ybWFsIj48c3BhbiBsYW5nPSJFTi1VUyIgc3R5bGU9ImNvbG9yOiMxRjQ5
-N0QiPjxvOnA+Jm5ic3A7PC9vOnA+PC9zcGFuPjwvcD4KPHAgY2xhc3M9Ik1zb05vcm1hbCI+PHNw
-YW4gbGFuZz0iRU4tVVMiIHN0eWxlPSJjb2xvcjojMUY0OTdEIj5Cb2I8bzpwPjwvbzpwPjwvc3Bh
-bj48L3A+CjxwIGNsYXNzPSJNc29Ob3JtYWwiPjxzcGFuIGxhbmc9IkVOLVVTIiBzdHlsZT0iY29s
-b3I6IzFGNDk3RCI+PG86cD4mbmJzcDs8L286cD48L3NwYW4+PC9wPgo8cCBjbGFzcz0iTXNvTm9y
-bWFsIj48c3BhbiBsYW5nPSJFTi1VUyIgc3R5bGU9ImNvbG9yOiMxRjQ5N0QiPjxvOnA+Jm5ic3A7
-PC9vOnA+PC9zcGFuPjwvcD4KPGRpdiBzdHlsZT0iYm9yZGVyOm5vbmU7Ym9yZGVyLWxlZnQ6c29s
-aWQgYmx1ZSAxLjVwdDtwYWRkaW5nOjBjbSAwY20gMGNtIDQuMHB0Ij4KPGRpdj4KPGRpdiBzdHls
-ZT0iYm9yZGVyOm5vbmU7Ym9yZGVyLXRvcDpzb2xpZCAjRTFFMUUxIDEuMHB0O3BhZGRpbmc6My4w
-cHQgMGNtIDBjbSAwY20iPgo8cCBjbGFzcz0iTXNvTm9ybWFsIj48Yj48c3BhbiBsYW5nPSJFTi1V
-UyI+RnJvbTo8L3NwYW4+PC9iPjxzcGFuIGxhbmc9IkVOLVVTIj4gRGV2ZWwgWzxhIGhyZWY9Im1h
-aWx0bzpkZXZlbC1ib3VuY2VzQGFjcGljYS5vcmciPm1haWx0bzpkZXZlbC1ib3VuY2VzQGFjcGlj
-YS5vcmc8L2E+XQo8Yj5PbiBCZWhhbGYgT2YgPC9iPkV2YW4gTGxveWQ8YnI+CjxiPlNlbnQ6PC9i
-PiBUaHVyc2RheSwgSnVseSAxMywgMjAxNyA1OjA1IEFNPGJyPgo8Yj5Ubzo8L2I+IDxhIGhyZWY9
-Im1haWx0bzpkZXZlbEBhY3BpY2Eub3JnIj5kZXZlbEBhY3BpY2Eub3JnPC9hPjxicj4KPGI+Q2M6
-PC9iPiBXZXNsZXkgRHVkemluc2tpICZsdDs8YSBocmVmPSJtYWlsdG86V2VzbGV5LkR1ZHppbnNr
-aUBhcm0uY29tIj5XZXNsZXkuRHVkemluc2tpQGFybS5jb208L2E+Jmd0Ozxicj4KPGI+U3ViamVj
-dDo8L2I+IFtEZXZlbF0gRGlnaXRhbCBzaWduaW5nIG9mIGJpbmFyaWVzPG86cD48L286cD48L3Nw
-YW4+PC9wPgo8L2Rpdj4KPC9kaXY+CjxwIGNsYXNzPSJNc29Ob3JtYWwiPjxzcGFuIGxhbmc9IkVO
-LVVTIj48bzpwPiZuYnNwOzwvbzpwPjwvc3Bhbj48L3A+CjxwIGNsYXNzPSJNc29Ob3JtYWwiPkhp
-LjxvOnA+PC9vOnA+PC9wPgo8cCBjbGFzcz0iTXNvTm9ybWFsIj5XZSBhcmUgZ2V0dGluZyBwcm9i
-bGVtcyB3aXRoICYjODIyMDtTeW1hbnRlYyBFbmRwb2ludCBQcm90ZWN0aW9uJiM4MjIxOy4mbmJz
-cDsgSXQgaXMgdW5oYXBweSBhYm91dCB0aGUgQUNQSUNBIGJpbmFyaWVzIChpYXNsLmV4ZSwgZXRj
-LikgYmVjYXVzZSB0aGV5IGRvIG5vdCBtZWV0IHRoZSAmIzgyMjA7cmVwdXRhdGlvbiYjODIyMTsg
-cmVxdWlyZW1lbnRzICYjODIxMTsgdGhleSBhcmUgbm90IHdpZGVseSB1c2VkLCBhbmQgY2hhbmdl
-IGZhaXJseSBmcmVxdWVudGx5LCBzbyYjODIzMDs8bzpwPjwvbzpwPjwvcD4KPHAgY2xhc3M9Ik1z
-b05vcm1hbCI+SSYjODIxNzttIGFkdmlzZWQgdGhlIGlkZWFsIHNvbHV0aW9uIHdvdWxkIGJlIGZv
-ciB0aGUgYmluYXJpZXMgdG8gYmUgZGlnaXRhbGx5IHNpZ25lZC48bzpwPjwvbzpwPjwvcD4KPHAg
-Y2xhc3M9Ik1zb05vcm1hbCI+U286PG86cD48L286cD48L3A+CjxwIGNsYXNzPSJNc29Ob3JtYWwi
-PiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
-YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyBJcyBkaWdpdGFsIHNpZ25pbmcgYSBmZWFzaWJsZSBvcHRp
-b24/PG86cD48L286cD48L3A+CjxwIGNsYXNzPSJNc29Ob3JtYWwiPiZuYnNwOyZuYnNwOyZuYnNw
-OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
-YnNwOyBJcyBhbnlvbmUgZWxzZSBleHBlcmllbmNpbmcgdGhpcyBzb3J0IG9mIHByb2JsZW0/PG86
-cD48L286cD48L3A+CjxwIGNsYXNzPSJNc29Ob3JtYWwiPjxvOnA+Jm5ic3A7PC9vOnA+PC9wPgo8
-cCBjbGFzcz0iTXNvTm9ybWFsIj5SZWdhcmRzLDxvOnA+PC9vOnA+PC9wPgo8cCBjbGFzcz0iTXNv
-Tm9ybWFsIj5FdmFuPG86cD48L286cD48L3A+CjxwIGNsYXNzPSJNc29Ob3JtYWwiPjxzcGFuIHN0
-eWxlPSJmb250LXNpemU6MTIuMHB0O2ZvbnQtZmFtaWx5OiZxdW90O1RpbWVzIE5ldyBSb21hbiZx
-dW90OyxzZXJpZiI+SU1QT1JUQU5UIE5PVElDRTogVGhlIGNvbnRlbnRzIG9mIHRoaXMgZW1haWwg
-YW5kIGFueSBhdHRhY2htZW50cyBhcmUgY29uZmlkZW50aWFsIGFuZCBtYXkgYWxzbyBiZSBwcml2
-aWxlZ2VkLiBJZiB5b3UgYXJlIG5vdCB0aGUgaW50ZW5kZWQgcmVjaXBpZW50LCBwbGVhc2Ugbm90
-aWZ5IHRoZSBzZW5kZXIKIGltbWVkaWF0ZWx5IGFuZCBkbyBub3QgZGlzY2xvc2UgdGhlIGNvbnRl
-bnRzIHRvIGFueSBvdGhlciBwZXJzb24sIHVzZSBpdCBmb3IgYW55IHB1cnBvc2UsIG9yIHN0b3Jl
-IG9yIGNvcHkgdGhlIGluZm9ybWF0aW9uIGluIGFueSBtZWRpdW0uIFRoYW5rIHlvdS4KPG86cD48
-L286cD48L3NwYW4+PC9wPgo8L2Rpdj4KPC9kaXY+CjwvZGl2PgpJTVBPUlRBTlQgTk9USUNFOiBU
-aGUgY29udGVudHMgb2YgdGhpcyBlbWFpbCBhbmQgYW55IGF0dGFjaG1lbnRzIGFyZSBjb25maWRl
-bnRpYWwgYW5kIG1heSBhbHNvIGJlIHByaXZpbGVnZWQuIElmIHlvdSBhcmUgbm90IHRoZSBpbnRl
-bmRlZCByZWNpcGllbnQsIHBsZWFzZSBub3RpZnkgdGhlIHNlbmRlciBpbW1lZGlhdGVseSBhbmQg
-ZG8gbm90IGRpc2Nsb3NlIHRoZSBjb250ZW50cyB0byBhbnkgb3RoZXIgcGVyc29uLCB1c2UgaXQg
-Zm9yIGFueSBwdXJwb3NlLAogb3Igc3RvcmUgb3IgY29weSB0aGUgaW5mb3JtYXRpb24gaW4gYW55
-IG1lZGl1bS4gVGhhbmsgeW91Lgo8L2JvZHk+CjwvaHRtbD4K
-
---===============8085727430956190356==--
+--===============8732277283548946252==--
 
