@@ -1,76 +1,55 @@
-Content-Type: multipart/mixed; boundary="===============6244184342570217109=="
+Content-Type: multipart/mixed; boundary="===============3664968786720660520=="
 MIME-Version: 1.0
-From: Lorenzo Pieralisi <lorenzo.pieralisi at arm.com>
-Subject: [Devel] [PATCH] ResourceMgr: Allow _DMA method in walk resources
-Date: Fri, 21 Jul 2017 16:28:15 +0100
-Message-ID: <20170721152815.8501-1-lorenzo.pieralisi@arm.com>
+From: Ross Zwisler <ross.zwisler at linux.intel.com>
+Subject: [Devel] [PATCH 1/2] acpi: add missing include in acpi_numa.h
+Date: Fri, 21 Jul 2017 16:51:23 -0600
+Message-ID: <20170721225124.15297-1-ross.zwisler@linux.intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6244184342570217109==
+--===============3664968786720660520==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-The _DMA object contains a resource template, this change adds support
-for the walk resources function so that ACPI devices containing a _DMA
-object can actually parse it to detect DMA ranges for the respective
-bus.
+Right now if a file includes acpi_numa.h and they don't happen to include
+linux/numa.h before it, they get the following warning:
 
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi(a)arm.com>
+./include/acpi/acpi_numa.h:9:5: warning: "MAX_NUMNODES" is not defined [-Wu=
+ndef]
+ #if MAX_NUMNODES > 256
+     ^~~~~~~~~~~~
+
+Signed-off-by: Ross Zwisler <ross.zwisler(a)linux.intel.com>
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki(a)intel.com>
 ---
- source/components/resources/rsxface.c | 7 ++++---
- source/include/acnames.h              | 1 +
- 2 files changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/source/components/resources/rsxface.c b/source/components/reso=
-urces/rsxface.c
-index 5e3f735..2c27eaf 100644
---- a/source/components/resources/rsxface.c
-+++ b/source/components/resources/rsxface.c
-@@ -796,7 +796,7 @@ ACPI_EXPORT_SYMBOL (AcpiWalkResourceBuffer)
-  *                                device we are querying
-  *              Name            - Method name of the resources we want.
-  *                                (METHOD_NAME__CRS, METHOD_NAME__PRS, or
-- *                                METHOD_NAME__AEI)
-+ *                                METHOD_NAME__AEI or METHOD_NAME__DMA)
-  *              UserFunction    - Called for each resource
-  *              Context         - Passed to UserFunction
-  *
-@@ -827,12 +827,13 @@ AcpiWalkResources (
-     if (!DeviceHandle || !UserFunction || !Name ||
-         (!ACPI_COMPARE_NAME (Name, METHOD_NAME__CRS) &&
-          !ACPI_COMPARE_NAME (Name, METHOD_NAME__PRS) &&
--         !ACPI_COMPARE_NAME (Name, METHOD_NAME__AEI)))
-+         !ACPI_COMPARE_NAME (Name, METHOD_NAME__AEI) &&
-+         !ACPI_COMPARE_NAME (Name, METHOD_NAME__DMA)))
-     {
-         return_ACPI_STATUS (AE_BAD_PARAMETER);
-     }
+These two small fixes were previously part of my HMAT enabling series, but
+I thought I'd submit them seperately so they don't get held up while I'm
+iterating that series.
+
+---
+ include/acpi/acpi_numa.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/acpi/acpi_numa.h b/include/acpi/acpi_numa.h
+index d4b7294..1e3a74f 100644
+--- a/include/acpi/acpi_numa.h
++++ b/include/acpi/acpi_numa.h
+@@ -3,6 +3,7 @@
  =
 
--    /* Get the _CRS/_PRS/_AEI resource list */
-+    /* Get the _CRS/_PRS/_AEI/_DMA resource list */
+ #ifdef CONFIG_ACPI_NUMA
+ #include <linux/kernel.h>
++#include <linux/numa.h>
  =
 
-     Buffer.Length =3D ACPI_ALLOCATE_LOCAL_BUFFER;
-     Status =3D AcpiRsGetMethodData (DeviceHandle, Name, &Buffer);
-diff --git a/source/include/acnames.h b/source/include/acnames.h
-index 27b0b97..69f8884 100644
---- a/source/include/acnames.h
-+++ b/source/include/acnames.h
-@@ -162,6 +162,7 @@
- #define METHOD_NAME__CLS        "_CLS"
- #define METHOD_NAME__CRS        "_CRS"
- #define METHOD_NAME__DDN        "_DDN"
-+#define METHOD_NAME__DMA        "_DMA"
- #define METHOD_NAME__HID        "_HID"
- #define METHOD_NAME__INI        "_INI"
- #define METHOD_NAME__PLD        "_PLD"
+ /* Proximity bitmap length */
+ #if MAX_NUMNODES > 256
 -- =
 
-2.10.0
+2.9.4
 
 
---===============6244184342570217109==--
+--===============3664968786720660520==--
 
