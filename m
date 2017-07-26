@@ -1,186 +1,90 @@
-Content-Type: multipart/mixed; boundary="===============6157293284779675081=="
+Content-Type: multipart/mixed; boundary="===============0909823167697867409=="
 MIME-Version: 1.0
 From: Lorenzo Pieralisi <lorenzo.pieralisi at arm.com>
-Subject: Re: [Devel] [PATCH v4 1/2] acpi:iort: Add an IORT helper function to
- reserve HW ITS address regions for IOMMU drivers
-Date: Wed, 26 Jul 2017 10:52:08 +0100
-Message-ID: <20170726095208.GA2468@red-moon>
-In-Reply-To: b7512f89-4fe7-940e-0fa9-9274d8b1e935@arm.com
+Subject: Re: [Devel] [PATCH] ResourceMgr: Allow _DMA method in walk resources
+Date: Wed, 26 Jul 2017 18:04:03 +0100
+Message-ID: <20170726170403.GA9926@red-moon>
+In-Reply-To: 20170721152815.8501-1-lorenzo.pieralisi@arm.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6157293284779675081==
+--===============0909823167697867409==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jul 25, 2017 at 06:32:40PM +0100, Robin Murphy wrote:
-> On 25/07/17 18:11, Lorenzo Pieralisi wrote:
-> > On Tue, Jul 25, 2017 at 12:17:31PM +0100, Shameer Kolothum wrote:
-> >> The helper function retrieves ITS address regions through IORT
-> >> device <-> ITS mappings and reserves it so that these regions
-> >> will not be translated by IOMMU and will be excluded from IOVA
-> >> allocations. IOMMU drivers can use this to implement their
-> >> .get_resv_regions callback.
-> >>
-> >> Signed-off-by: Shameer Kolothum <shameerali.kolothum.thodi(a)huawei.co=
-m>
-> >> ---
-> >>  drivers/acpi/arm64/iort.c        | 91 +++++++++++++++++++++++++++++++=
-+++++++--
-> >>  drivers/irqchip/irq-gic-v3-its.c |  3 +-
-> >>  include/linux/acpi_iort.h        |  8 +++-
-> >>  3 files changed, 97 insertions(+), 5 deletions(-)
-> >>
-> >> diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
-> >> index a3215ee..e28f30c 100644
-> >> --- a/drivers/acpi/arm64/iort.c
-> >> +++ b/drivers/acpi/arm64/iort.c
-> >> @@ -39,6 +39,7 @@
-> >>  struct iort_its_msi_chip {
-> >>  	struct list_head	list;
-> >>  	struct fwnode_handle	*fw_node;
-> >> +	phys_addr_t		base_addr;
-> >>  	u32			translation_id;
-> >>  };
-> >>  =
+Hi Robert,
 
-> >> @@ -136,14 +137,16 @@ typedef acpi_status (*iort_find_node_callback)
-> >>  static DEFINE_SPINLOCK(iort_msi_chip_lock);
-> >>  =
+do you pull patches from the list or you require an explicit github pull
+request for that ?
 
-> >>  /**
-> >> - * iort_register_domain_token() - register domain token and related I=
-TS ID
-> >> - * to the list from where we can get it back later on.
-> >> + * iort_register_domain_token() - register domain token along with re=
-lated
-> >> + * ITS ID and base address to the list from where we can get it back =
-later on.
-> >>   * @trans_id: ITS ID.
-> >> + * @base: ITS base address.
-> >>   * @fw_node: Domain token.
-> >>   *
-> >>   * Returns: 0 on success, -ENOMEM if no memory when allocating list e=
-lement
-> >>   */
-> >> -int iort_register_domain_token(int trans_id, struct fwnode_handle *fw=
-_node)
-> >> +int iort_register_domain_token(int trans_id, phys_addr_t base,
-> >> +			       struct fwnode_handle *fw_node)
-> >>  {
-> >>  	struct iort_its_msi_chip *its_msi_chip;
-> >>  =
+Plase let me know.
 
-> >> @@ -153,6 +156,7 @@ int iort_register_domain_token(int trans_id, struc=
-t fwnode_handle *fw_node)
-> >>  =
-
-> >>  	its_msi_chip->fw_node =3D fw_node;
-> >>  	its_msi_chip->translation_id =3D trans_id;
-> >> +	its_msi_chip->base_addr =3D base;
-> >>  =
-
-> >>  	spin_lock(&iort_msi_chip_lock);
-> >>  	list_add(&its_msi_chip->list, &iort_msi_chip_list);
-> >> @@ -481,6 +485,24 @@ int iort_pmsi_get_dev_id(struct device *dev, u32 =
-*dev_id)
-> >>  	return -ENODEV;
-> >>  }
-> >>  =
-
-> >> +static int iort_find_its_base(u32 its_id, phys_addr_t *base)
-> > =
-
-> > You have to tag it as __maybe_unused for the !IOMMU_API case.
-> > =
-
-> >> +{
-> >> +	struct iort_its_msi_chip *its_msi_chip;
-> >> +	bool match =3D false;
-> >> +
-> >> +	spin_lock(&iort_msi_chip_lock);
-> >> +	list_for_each_entry(its_msi_chip, &iort_msi_chip_list, list) {
-> >> +		if (its_msi_chip->translation_id =3D=3D its_id) {
-> >> +			*base =3D its_msi_chip->base_addr;
-> >> +			match =3D true;
-> >> +			break;
-> >> +		}
-> >> +	}
-> >> +	spin_unlock(&iort_msi_chip_lock);
-> >> +
-> >> +	return match ? 0 : -ENODEV;
-> >> +}
-> >> +
-> >>  /**
-> >>   * iort_dev_find_its_id() - Find the ITS identifier for a device
-> >>   * @dev: The device.
-> >> @@ -639,6 +661,67 @@ int iort_add_device_replay(const struct iommu_ops=
- *ops, struct device *dev)
-> >>  =
-
-> >>  	return err;
-> >>  }
-> >> +
-> >> +/**
-> >> + * iort_iommu_its_get_resv_regions - Reserved region driver helper
-> >> + * @dev: Device from iommu_get_resv_regions()
-> >> + * @list: Reserved region list from iommu_get_resv_regions()
-> >> + *
-> >> + * Returns: Number of reserved regions on success(0 if no associated =
-ITS),
-> >> + *          appropriate error value otherwise.
-> >> + *
-> >> + * IOMMU drivers can use this to implement their .get_resv_regions ca=
-llback
-> >> + * for reserving the HW ITS address regions.
-> > =
-
-> > Stale comment.
-> > =
-
-> >> + */
-> >> +int iort_iommu_its_get_resv_regions(struct device *dev, struct list_h=
-ead *head)
-> >> +{
-> >> +	int i;
-> >> +	struct acpi_iort_its_group *its;
-> >> +	struct acpi_iort_node *node, *its_node =3D NULL;
-> >> +	int resv =3D 0;
-> > =
-
-> > Nit: int i, resv =3D 0;
-> > =
-
-> > I can make these changes but I suspect this series will go via IOMMU
-> > tree, let me know how you want to handle it.
-> > =
-
-> > Lorenzo
-> > =
-
-> >> +	node =3D iort_find_dev_node(dev);
-> >> +	if (!node)
-> >> +		return -ENODEV;
-> >> +
-> =
-
-> I'd suggest we also want a comment here to clarify that we're currently
-> assuming straightforward topologies where all mappings for a given root
-> complex/named component target the same ITS group. Otherwise we're going
-> to need somewhat more logic to iterate the its_node processing over
-> every mapping (or every alias in the PCI case), but avoid creating
-> duplicate entries.
-
-You have a point and we have time to update the code. Short of reserving
-all ITS regions for every device that maps to one at least, we could (even
-pre-compute instead of looking it up on the fly) create a list of ITS
-identifiers a given IORT node may map to and use that to reserve the
-regions.
-
-Thoughts ?
-
+Thanks,
 Lorenzo
 
---===============6157293284779675081==--
+On Fri, Jul 21, 2017 at 04:28:15PM +0100, Lorenzo Pieralisi wrote:
+> The _DMA object contains a resource template, this change adds support
+> for the walk resources function so that ACPI devices containing a _DMA
+> object can actually parse it to detect DMA ranges for the respective
+> bus.
+> =
+
+> Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi(a)arm.com>
+> ---
+>  source/components/resources/rsxface.c | 7 ++++---
+>  source/include/acnames.h              | 1 +
+>  2 files changed, 5 insertions(+), 3 deletions(-)
+> =
+
+> diff --git a/source/components/resources/rsxface.c b/source/components/re=
+sources/rsxface.c
+> index 5e3f735..2c27eaf 100644
+> --- a/source/components/resources/rsxface.c
+> +++ b/source/components/resources/rsxface.c
+> @@ -796,7 +796,7 @@ ACPI_EXPORT_SYMBOL (AcpiWalkResourceBuffer)
+>   *                                device we are querying
+>   *              Name            - Method name of the resources we want.
+>   *                                (METHOD_NAME__CRS, METHOD_NAME__PRS, or
+> - *                                METHOD_NAME__AEI)
+> + *                                METHOD_NAME__AEI or METHOD_NAME__DMA)
+>   *              UserFunction    - Called for each resource
+>   *              Context         - Passed to UserFunction
+>   *
+> @@ -827,12 +827,13 @@ AcpiWalkResources (
+>      if (!DeviceHandle || !UserFunction || !Name ||
+>          (!ACPI_COMPARE_NAME (Name, METHOD_NAME__CRS) &&
+>           !ACPI_COMPARE_NAME (Name, METHOD_NAME__PRS) &&
+> -         !ACPI_COMPARE_NAME (Name, METHOD_NAME__AEI)))
+> +         !ACPI_COMPARE_NAME (Name, METHOD_NAME__AEI) &&
+> +         !ACPI_COMPARE_NAME (Name, METHOD_NAME__DMA)))
+>      {
+>          return_ACPI_STATUS (AE_BAD_PARAMETER);
+>      }
+>  =
+
+> -    /* Get the _CRS/_PRS/_AEI resource list */
+> +    /* Get the _CRS/_PRS/_AEI/_DMA resource list */
+>  =
+
+>      Buffer.Length =3D ACPI_ALLOCATE_LOCAL_BUFFER;
+>      Status =3D AcpiRsGetMethodData (DeviceHandle, Name, &Buffer);
+> diff --git a/source/include/acnames.h b/source/include/acnames.h
+> index 27b0b97..69f8884 100644
+> --- a/source/include/acnames.h
+> +++ b/source/include/acnames.h
+> @@ -162,6 +162,7 @@
+>  #define METHOD_NAME__CLS        "_CLS"
+>  #define METHOD_NAME__CRS        "_CRS"
+>  #define METHOD_NAME__DDN        "_DDN"
+> +#define METHOD_NAME__DMA        "_DMA"
+>  #define METHOD_NAME__HID        "_HID"
+>  #define METHOD_NAME__INI        "_INI"
+>  #define METHOD_NAME__PLD        "_PLD"
+> -- =
+
+> 2.10.0
+>=20
+
+--===============0909823167697867409==--
 
