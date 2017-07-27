@@ -1,137 +1,102 @@
-Content-Type: multipart/mixed; boundary="===============3027439967978096159=="
+Content-Type: multipart/mixed; boundary="===============4572463859021018604=="
 MIME-Version: 1.0
-From: Shameerali Kolothum Thodi <shameerali.kolothum.thodi at huawei.com>
-Subject: Re: [Devel] [PATCH v4 1/2] acpi:iort: Add an IORT helper function to
- reserve HW ITS address regions for IOMMU drivers
-Date: Thu, 27 Jul 2017 13:26:14 +0000
-Message-ID: <5FC3163CFD30C246ABAA99954A238FA8383C04A2@FRAEML521-MBX.china.huawei.com>
-In-Reply-To: 989fec76-45e7-d744-3411-78ec2764cb7d@arm.com
+From: Moore, Robert <robert.moore at intel.com>
+Subject: Re: [Devel] [PATCH] ResourceMgr: Allow _DMA method in walk resources
+Date: Thu, 27 Jul 2017 15:02:03 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E5DA11B@ORSMSX110.amr.corp.intel.com>
+In-Reply-To: 20170726170403.GA9926@red-moon
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3027439967978096159==
+--===============4572463859021018604==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
+We will just take the patch as posted.
 
 
 > -----Original Message-----
-> From: Robin Murphy [mailto:robin.murphy(a)arm.com]
-> Sent: Thursday, July 27, 2017 12:13 PM
-> To: Shameerali Kolothum Thodi; Lorenzo Pieralisi
-> Cc: Guohanjun (Hanjun Guo); Gabriele Paoloni; marc.zyngier(a)arm.com;
-> John Garry; will.deacon(a)arm.com; Linuxarm; linux-acpi(a)vger.kernel.org;
-> iommu(a)lists.linux-foundation.org; hanjun.guo(a)linaro.org; Wangzhou (B);
-> sudeep.holla(a)arm.com; linux-arm-kernel(a)lists.infradead.org;
-> devel(a)acpica.org
-> Subject: Re: [PATCH v4 1/2] acpi:iort: Add an IORT helper function to res=
-erve
-> HW ITS address regions for IOMMU drivers
+> From: Lorenzo Pieralisi [mailto:lorenzo.pieralisi(a)arm.com]
+> Sent: Wednesday, July 26, 2017 10:04 AM
+> To: devel(a)acpica.org; Moore, Robert <robert.moore(a)intel.com>
+> Subject: Re: [PATCH] ResourceMgr: Allow _DMA method in walk resources
 > =
 
-[...]
+> Hi Robert,
+> =
 
-> >>>> I can make these changes but I suspect this series will go via IOMMU
-> >>>> tree, let me know how you want to handle it.
-> >>>>
-> >>>> Lorenzo
-> >>>>
-> >>>>> +	node =3D iort_find_dev_node(dev);
-> >>>>> +	if (!node)
-> >>>>> +		return -ENODEV;
-> >>>>> +
-> >>>
-> >>> I'd suggest we also want a comment here to clarify that we're current=
-ly
-> >>> assuming straightforward topologies where all mappings for a given ro=
-ot
-> >>> complex/named component target the same ITS group. Otherwise
-> we're
-> >> going
-> >>> to need somewhat more logic to iterate the its_node processing over
-> >>> every mapping (or every alias in the PCI case), but avoid creating
-> >>> duplicate entries.
-> >>
-> >> You have a point and we have time to update the code. Short of reservi=
-ng
-> >> all ITS regions for every device that maps to one at least, we could (=
-even
-> >> pre-compute instead of looking it up on the fly) create a list of ITS
-> >> identifiers a given IORT node may map to and use that to reserve the
-> >> regions.
+> do you pull patches from the list or you require an explicit github pull
+> request for that ?
+> =
+
+> Plase let me know.
+> =
+
+> Thanks,
+> Lorenzo
+> =
+
+> On Fri, Jul 21, 2017 at 04:28:15PM +0100, Lorenzo Pieralisi wrote:
+> > The _DMA object contains a resource template, this change adds support
+> > for the walk resources function so that ACPI devices containing a _DMA
+> > object can actually parse it to detect DMA ranges for the respective
+> > bus.
 > >
-> > I am trying to understand the use case scenario discussed here. Apologi=
-es
-> > if it is a dumb query.
+> > Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi(a)arm.com>
+> > ---
+> >  source/components/resources/rsxface.c | 7 ++++---
+> >  source/include/acnames.h              | 1 +
+> >  2 files changed, 5 insertions(+), 3 deletions(-)
 > >
-> > My understanding is that, it is possible to have a PCI  RC iort node ma=
-pped
-> to
-> > multiple ITS group nodes.  That is perfectly fine and given a dev input=
- RID
-> we
-> > can identify the ITS group the device points to using - iort_node_map_i=
-d().
+> > diff --git a/source/components/resources/rsxface.c
+> > b/source/components/resources/rsxface.c
+> > index 5e3f735..2c27eaf 100644
+> > --- a/source/components/resources/rsxface.c
+> > +++ b/source/components/resources/rsxface.c
+> > @@ -796,7 +796,7 @@ ACPI_EXPORT_SYMBOL (AcpiWalkResourceBuffer)
+> >   *                                device we are querying
+> >   *              Name            - Method name of the resources we
+> want.
+> >   *                                (METHOD_NAME__CRS,
+> METHOD_NAME__PRS, or
+> > - *                                METHOD_NAME__AEI)
+> > + *                                METHOD_NAME__AEI or
+> METHOD_NAME__DMA)
+> >   *              UserFunction    - Called for each resource
+> >   *              Context         - Passed to UserFunction
+> >   *
+> > @@ -827,12 +827,13 @@ AcpiWalkResources (
+> >      if (!DeviceHandle || !UserFunction || !Name ||
+> >          (!ACPI_COMPARE_NAME (Name, METHOD_NAME__CRS) &&
+> >           !ACPI_COMPARE_NAME (Name, METHOD_NAME__PRS) &&
+> > -         !ACPI_COMPARE_NAME (Name, METHOD_NAME__AEI)))
+> > +         !ACPI_COMPARE_NAME (Name, METHOD_NAME__AEI) &&
+> > +         !ACPI_COMPARE_NAME (Name, METHOD_NAME__DMA)))
+> >      {
+> >          return_ACPI_STATUS (AE_BAD_PARAMETER);
+> >      }
 > >
-> > But the above discussion seems to suggest that there might be situations
-> where
-> > we have to go through all the mapped ITS groups and identify all the IT=
-Ss
-> associated
-> > with the RC.  Clearly I am missing something.
-> =
+> > -    /* Get the _CRS/_PRS/_AEI resource list */
+> > +    /* Get the _CRS/_PRS/_AEI/_DMA resource list */
+> >
+> >      Buffer.Length =3D ACPI_ALLOCATE_LOCAL_BUFFER;
+> >      Status =3D AcpiRsGetMethodData (DeviceHandle, Name, &Buffer); diff
+> > --git a/source/include/acnames.h b/source/include/acnames.h index
+> > 27b0b97..69f8884 100644
+> > --- a/source/include/acnames.h
+> > +++ b/source/include/acnames.h
+> > @@ -162,6 +162,7 @@
+> >  #define METHOD_NAME__CLS        "_CLS"
+> >  #define METHOD_NAME__CRS        "_CRS"
+> >  #define METHOD_NAME__DDN        "_DDN"
+> > +#define METHOD_NAME__DMA        "_DMA"
+> >  #define METHOD_NAME__HID        "_HID"
+> >  #define METHOD_NAME__INI        "_INI"
+> >  #define METHOD_NAME__PLD        "_PLD"
+> > --
+> > 2.10.0
+> >
 
-> I was mostly thinking of a situation like this:
-> =
-
-> +----Node 0-----+  +----Node 1-----+
-> |  [CPU 0..n]   |  |  [CPU n+1..]  |
-> | [ITS group 0] |  | [ITS group 1] |
-> +---------------+  +---------------+
->         ^                  ^
->          \_______  _______/
->                  \/
->             +--Node 2--+
->             |  [SMMU]  |
->             |     ^    |
->             |     |    |
->             | [Device] |
->             +----------+
-> =
-
-> where the (named component) device has IDs for both ITS groups (to help
-> optimise affining, or allow physically hotplugging CPU nodes, or
-> whatever - I'm hypothesising here ;)).  A generic IORT function isn't in
-> a position to decide *which* ITS region the device may be targeting at
-> any given time, so can only correctly describe both.
-
-Thanks Robin. That makes it clear.
- =
-
-> I'm perfectly happy not to even try to support such crazy configurations
-> until they actually exist, if ever; I'd just prefer to document whatever
-> assumptions we do make, so that we don't have to remember or re-derive
-> them when looking at the code in future.
-
-So I think the conclusion here is we will document the assumption that we a=
-re
-only taking care of the straightforward topologies for now.
-
-Hi Lorenzo,
-If you are ok with the above, please let me know if it make sense to send o=
-ut
-a v5 with this and your other comments or you can take care of them. I am f=
-ine
-either way.
-
-Many thanks,
-Shameer
-
-
-
-
-
-
---===============3027439967978096159==--
+--===============4572463859021018604==--
 
