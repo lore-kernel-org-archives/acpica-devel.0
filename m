@@ -1,96 +1,97 @@
-Content-Type: multipart/mixed; boundary="===============0275307990735894319=="
+Content-Type: multipart/mixed; boundary="===============0234759954944253400=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] ACPICA version 20170728 released
-Date: Fri, 28 Jul 2017 17:07:19 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E5DA500@ORSMSX110.amr.corp.intel.com>
+From: Shameer Kolothum <shameerali.kolothum.thodi at huawei.com>
+Subject: [Devel] [PATCH v5 0/2] iommu/smmu-v3: Workaround for hisilicon
+ 161010801 erratum(reserve HW MSI)
+Date: Tue, 01 Aug 2017 11:49:11 +0100
+Message-ID: <20170801104913.71912-1-shameerali.kolothum.thodi@huawei.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0275307990735894319==
+--===============0234759954944253400==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-28 July 2017. Summary of changes for version 20170728:
+On certain HiSilicon platforms (Hip06/Hip07) the GIC ITS and
+PCIe RC deviates from the standard implementation and this breaks
+PCIe MSI functionality when SMMU is enabled.
 
-This release is available at https://acpica.org/downloads
+The HiSilicon erratum 161010801 describes this limitation of certain
+HiSilicon platforms to support the SMMU mappings for MSI transactions.
+On these platforms GICv3 ITS translator is presented with the deviceID
+by extending the MSI payload data to 64 bits to include the deviceID.
+Hence, the PCIe controller on this platforms has to differentiate the
+MSI payload against other DMA payload and has to modify the MSI payload.
+This basically makes it difficult for this platforms to have a SMMU
+translation for MSI.
+
+To implement this quirk, the following changes are incorporated:
+
+1. Added a generic helper function to IORT code to retrieve and
+   reserve the HW ITS address regions.
+2. Modified iommu_dma_get_resv_regions() to reserve the hw msi
+   regions which means these address regions will not be translated and
+   will be excluded from iova allocations.
+
+Note: This requires patches [1] and [2] for vfio pass-through support
+on these platforms.
+
+Thanks,
+Shameer
+
+[1]: https://lkml.org/lkml/2017/7/27/388
+[2]: https://lkml.org/lkml/2017/7/27/386
+
+Changelog:
+
+v4 --> v5
+Addressed comments from Robin and Lorenzo:
+-Added a comment to make it clear that, for now, only straightforward =
+
+ HW topologies are handled while reserving ITS regions(patch #1).
+
+v3 --> v4
+Rebased on 4.13-rc1.
+Addressed comments from Robin, Will and Lorenzo:
+-As suggested by Robin, moved the ITS msi reservation into
+ iommu_dma_get_resv_regions().
+-Added its_count !=3D resv region failure case(patch #1).
+
+v2 --> v3
+Addressed comments from Lorenzo and Robin:
+-Removed dev_is_pci() check in smmuV3 driver.
+-Don't treat device not having an ITS mapping as an error in
+ iort helper function.
+
+v1 --> v2
+-patch 2/2: Invoke iort helper fn based on fwnode type(acpi).
+
+RFCv2 -->PATCH
+-Incorporated Lorenzo's review comments.
+
+RFC v1 --> RFC v2
+Based on Robin's review comments,
+-Removed  the generic erratum framework.
+-Using IORT/MADT tables to retrieve the ITS base addr instead
+ of vendor specific CSRT table.
+
+Shameer Kolothum (2):
+  ACPI/IORT: Add ITS address regions reservation helper
+  iommu/dma: Add HW MSI address regions reservation
+
+ drivers/acpi/arm64/iort.c        | 95 ++++++++++++++++++++++++++++++++++++=
+++--
+ drivers/iommu/dma-iommu.c        |  8 +++-
+ drivers/irqchip/irq-gic-v3-its.c |  3 +-
+ include/linux/acpi_iort.h        |  7 ++-
+ 4 files changed, 107 insertions(+), 6 deletions(-)
+
+-- =
+
+1.9.1
 
 
-1) ACPICA kernel-resident subsystem:
 
-Fixed a regression seen with small resource descriptors that could cause an=
- inadvertent AE_AML_NO_RESOURCE_END_TAG exception.
-
-AML interpreter: Implemented a new feature that allows forward references f=
-rom individual named references within package objects that are contained w=
-ithin blocks of "module-level code". This provides compatibility with other=
- ACPI implementations and supports existing firmware that depends on this f=
-eature. Example:
-
-    Name (ABCD, 1)
-    If (ABCD)                       /* An If() at module-level */
-    {
-        Name (PKG1, Package()
-        {
-            INT1                    /* Forward reference to object INT1 */
-        })
-        Name (INT1, 0x1234)
-    }
-
-AML Interpreter: Fixed a problem with the Alias() operator where aliases to=
- some ASL objects were not handled properly. Objects affected are: Mutex, E=
-vent, and OperationRegion.
-
-AML Debugger: Enhanced to properly handle AML Alias objects. These objects =
-have one level of indirection which was not fully supported by the debugger.
-
-Table Manager: Added support to detect and ignore duplicate SSDTs within th=
-e XSDT/RSDT. This error in the XSDT has been seen in the field.
-
-EFI and EDK2 support:
-    Enabled /WX flag for MSVC builds
-    Added support for AcpiOsStall, AcpiOsSleep, and AcpiOsGetTimer
-    Added local support for 64-bit multiply and shift operations
-    Added support to compile acpidump.efi on Windows
-    Added OSL function stubs for interfaces not used under EFI
-
-Added additional support for the _DMA predefined name. _DMA returns a buffe=
-r containing a resource template. This change add support within the resour=
-ce manager (AcpiWalkResourceBuffer) to walk and parse this list of resource=
- descriptors. Lorenzo Pieralisi <lorenzo.pieralisi(a)arm.com>
-
-
-2) iASL Compiler/Disassembler and Tools:
-
-iASL: Fixed a problem where the internal input line buffer(s) could overflo=
-w if there are very long lines in the input ASL source code file. Implement=
-ed buffer management that automatically increases the size of the buffers a=
-s necessary.
-
-iASL: Added an option (-vx) to "expect" particular remarks, warnings and er=
-rors. If the specified exception is not raised during compilation, the comp=
-iler emits an error. This is intended to support the ASL test suite, but ma=
-y be useful in other contexts.
-
-iASL: Implemented a new predefined macro, __METHOD__, which returns a strin=
-g containing the name of the current control method that is being compiled.
-
-iASL: Implemented debugger and table compiler support for the SDEI ACPI tab=
-le (Software Delegated Exception Interface). James Morse <james.morse(a)arm=
-.com>
-
-Unix/Linux makefiles: Added an option to disable compile optimizations. The=
- disable occurs when the NOOPT flag is set to TRUE. theracermaster(a)gmail.=
-com
-
-Acpidump: Added support for multiple DSDT and FACS tables. This can occur w=
-hen there are different tables for 32-bit versus 64-bit.
-
-Enhanced error reporting for the ASL test suite (ASLTS) by removing unneces=
-sary/verbose text, and emit the actual line number where an error has occur=
-red. These changes are intended to improve the usefulness of the test suite.
-
-
---===============0275307990735894319==--
+--===============0234759954944253400==--
 
