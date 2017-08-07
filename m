@@ -1,74 +1,100 @@
-Content-Type: multipart/mixed; boundary="===============0073421536107352403=="
+Content-Type: multipart/mixed; boundary="===============2128992188892977124=="
 MIME-Version: 1.0
-From: Shameerali Kolothum Thodi <shameerali.kolothum.thodi at huawei.com>
+From: Lorenzo Pieralisi <lorenzo.pieralisi at arm.com>
 Subject: Re: [Devel] [PATCH v5 1/2] ACPI/IORT: Add ITS address regions
  reservation helper
-Date: Mon, 07 Aug 2017 08:21:40 +0000
-Message-ID: <5FC3163CFD30C246ABAA99954A238FA8383C7EF8@FRAEML521-MBX.china.huawei.com>
-In-Reply-To: b478d1b4-5993-9459-adfc-dec05525d72e@arm.com
+Date: Mon, 07 Aug 2017 18:09:21 +0100
+Message-ID: <20170807170921.GB27830@red-moon>
+In-Reply-To: 5FC3163CFD30C246ABAA99954A238FA8383C7EF8@FRAEML521-MBX.china.huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0073421536107352403==
+--===============2128992188892977124==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-
-
-> -----Original Message-----
-> From: Robin Murphy [mailto:robin.murphy(a)arm.com]
-> Sent: Friday, August 04, 2017 5:57 PM
-> To: Shameerali Kolothum Thodi; lorenzo.pieralisi(a)arm.com;
-> marc.zyngier(a)arm.com; sudeep.holla(a)arm.com; will.deacon(a)arm.com;
-> hanjun.guo(a)linaro.org
-> Cc: Gabriele Paoloni; John Garry; iommu(a)lists.linux-foundation.org; lin=
-ux-
-> arm-kernel(a)lists.infradead.org; linux-acpi(a)vger.kernel.org;
-> devel(a)acpica.org; Linuxarm; Wangzhou (B); Guohanjun (Hanjun Guo)
-> Subject: Re: [PATCH v5 1/2] ACPI/IORT: Add ITS address regions reservation
-> helper
+On Mon, Aug 07, 2017 at 08:21:40AM +0000, Shameerali Kolothum Thodi wrote:
 > =
 
-> On 01/08/17 11:49, Shameer Kolothum wrote:
-> > On some platforms ITS address regions have to be excluded from normal
-> > IOVA allocation in that they are detected and decoded in a HW specific
-> > way by system components and so they cannot be considered normal
-> IOVA
-> > address space.
-> >
-> > Add an helper function that retrieves ITS address regions through IORT
-> > device <-> ITS mappings and reserves it so that these regions will not
-> > be translated by IOMMU and will be excluded from IOVA allocations.
 > =
 
-> I've just realised that we no longer seem to have a check that ensures
-> the regions are only reserved on platforms that need it - if not, then
-> we're going to break everything else that does have an ITS behind SMMU
-> translation as expected.
+> > -----Original Message-----
+> > From: Robin Murphy [mailto:robin.murphy(a)arm.com]
+> > Sent: Friday, August 04, 2017 5:57 PM
+> > To: Shameerali Kolothum Thodi; lorenzo.pieralisi(a)arm.com;
+> > marc.zyngier(a)arm.com; sudeep.holla(a)arm.com; will.deacon(a)arm.com;
+> > hanjun.guo(a)linaro.org
+> > Cc: Gabriele Paoloni; John Garry; iommu(a)lists.linux-foundation.org; l=
+inux-
+> > arm-kernel(a)lists.infradead.org; linux-acpi(a)vger.kernel.org;
+> > devel(a)acpica.org; Linuxarm; Wangzhou (B); Guohanjun (Hanjun Guo)
+> > Subject: Re: [PATCH v5 1/2] ACPI/IORT: Add ITS address regions reservat=
+ion
+> > helper
+> > =
 
-Right. I had this doubt, but then my thinking was that we will have the SW_=
-MSI
-regions for those and will end up  using that. But that doesn=E2=80=99t see=
-ms
-to be the case now.
+> > On 01/08/17 11:49, Shameer Kolothum wrote:
+> > > On some platforms ITS address regions have to be excluded from normal
+> > > IOVA allocation in that they are detected and decoded in a HW specific
+> > > way by system components and so they cannot be considered normal
+> > IOVA
+> > > address space.
+> > >
+> > > Add an helper function that retrieves ITS address regions through IORT
+> > > device <-> ITS mappings and reserves it so that these regions will not
+> > > be translated by IOMMU and will be excluded from IOVA allocations.
+> > =
 
-> It feels like IORT should know enough to be able to make that decision
-> internally, but if not (or if it would be hideous to do so), then I
-> guess my idea for patch #2 was a bust and we probably do need to go back
-> to calling directly from the SMMU driver based on the SMMU model.
+> > I've just realised that we no longer seem to have a check that ensures
+> > the regions are only reserved on platforms that need it - if not, then
+> > we're going to break everything else that does have an ITS behind SMMU
+> > translation as expected.
+> =
 
-It might be possible to do that check inside iort code, but then we have to=
- find
-the  smmu node first and check the model number. I think it will be more
-cleaner if SMMU driver makes that check and call the
-iommu_dma_get_msi_resv_regions().
+> Right. I had this doubt, but then my thinking was that we will have the S=
+W_MSI
+> regions for those and will end up  using that. But that doesn=E2=80=99t s=
+eems
+> to be the case now.
+> =
 
-If you are Ok with that I will quickly rework and send out the next version.
+> > It feels like IORT should know enough to be able to make that decision
+> > internally, but if not (or if it would be hideous to do so), then I
+> > guess my idea for patch #2 was a bust and we probably do need to go back
+> > to calling directly from the SMMU driver based on the SMMU model.
+> =
 
-Thanks,
-Shameer
+> It might be possible to do that check inside iort code, but then we have =
+to find
+> the  smmu node first and check the model number. I think it will be more
+> cleaner if SMMU driver makes that check and call the
+> iommu_dma_get_msi_resv_regions().
 
++1 on this one - we can do it in IORT but I think it is more logical
+to have a flag in the SMMU driver (keeping the DT/ACPI fwnode switch in
+generic IOMMU layer though).
 
---===============0073421536107352403==--
+Side note I: AFAICS iommu_dma_get_resv_regions() is only used on ARM, if
+it is not patch 2 would break miserably on arches that do not select
+IORT - you should rework the return code on !CONFIG_ACPI_IORT configs.
+
+Side note II(nit): why not call the function iort_iommu_get_resv_regions() ?
+
+Lorenzo
+
+> If you are Ok with that I will quickly rework and send out the next versi=
+on.
+> =
+
+> Thanks,
+> Shameer
+> =
+
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel(a)lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+--===============2128992188892977124==--
 
