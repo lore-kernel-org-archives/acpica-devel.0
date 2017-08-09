@@ -1,123 +1,18 @@
-Content-Type: multipart/mixed; boundary="===============4753987378512991826=="
+Content-Type: multipart/mixed; boundary="===============4507749496149169999=="
 MIME-Version: 1.0
-From: Shameerali Kolothum Thodi <shameerali.kolothum.thodi at huawei.com>
-Subject: Re: [Devel] [PATCH v5 1/2] ACPI/IORT: Add ITS address regions
- reservation helper
-Date: Tue, 08 Aug 2017 09:49:51 +0000
-Message-ID: <5FC3163CFD30C246ABAA99954A238FA8383C8FED@FRAEML521-MBX.china.huawei.com>
-In-Reply-To: 20170807170921.GB27830@red-moon
+From: Shameer Kolothum <shameerali.kolothum.thodi at huawei.com>
+Subject: [Devel] [PATCH v6 2/3] iommu/dma: Add a helper function to reserve HW
+ MSI address regions for IOMMU drivers
+Date: Wed, 09 Aug 2017 11:07:14 +0100
+Message-ID: <20170809100715.870516-3-shameerali.kolothum.thodi@huawei.com>
+In-Reply-To: 20170809100715.870516-1-shameerali.kolothum.thodi@huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4753987378512991826==
+--===============4507749496149169999==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-
-
-
-> -----Original Message-----
-> From: Lorenzo Pieralisi [mailto:lorenzo.pieralisi(a)arm.com]
-> Sent: Monday, August 07, 2017 6:09 PM
-> To: Shameerali Kolothum Thodi
-> Cc: Robin Murphy; marc.zyngier(a)arm.com; sudeep.holla(a)arm.com;
-> will.deacon(a)arm.com; hanjun.guo(a)linaro.org; Gabriele Paoloni; John Ga=
-rry;
-> Linuxarm; linux-acpi(a)vger.kernel.org; iommu(a)lists.linux-foundation.or=
-g;
-> Wangzhou (B); Guohanjun (Hanjun Guo); linux-arm-
-> kernel(a)lists.infradead.org; devel(a)acpica.org
-> Subject: Re: [PATCH v5 1/2] ACPI/IORT: Add ITS address regions reservation
-> helper
-> =
-
-> On Mon, Aug 07, 2017 at 08:21:40AM +0000, Shameerali Kolothum Thodi
-> wrote:
-> >
-> >
-> > > -----Original Message-----
-> > > From: Robin Murphy [mailto:robin.murphy(a)arm.com]
-> > > Sent: Friday, August 04, 2017 5:57 PM
-> > > To: Shameerali Kolothum Thodi; lorenzo.pieralisi(a)arm.com;
-> > > marc.zyngier(a)arm.com; sudeep.holla(a)arm.com; will.deacon(a)arm.com;
-> > > hanjun.guo(a)linaro.org
-> > > Cc: Gabriele Paoloni; John Garry; iommu(a)lists.linux-foundation.org;
-> linux-
-> > > arm-kernel(a)lists.infradead.org; linux-acpi(a)vger.kernel.org;
-> > > devel(a)acpica.org; Linuxarm; Wangzhou (B); Guohanjun (Hanjun Guo)
-> > > Subject: Re: [PATCH v5 1/2] ACPI/IORT: Add ITS address regions
-> reservation
-> > > helper
-> > >
-> > > On 01/08/17 11:49, Shameer Kolothum wrote:
-> > > > On some platforms ITS address regions have to be excluded from
-> normal
-> > > > IOVA allocation in that they are detected and decoded in a HW speci=
-fic
-> > > > way by system components and so they cannot be considered normal
-> > > IOVA
-> > > > address space.
-> > > >
-> > > > Add an helper function that retrieves ITS address regions through I=
-ORT
-> > > > device <-> ITS mappings and reserves it so that these regions will =
-not
-> > > > be translated by IOMMU and will be excluded from IOVA allocations.
-> > >
-> > > I've just realised that we no longer seem to have a check that ensures
-> > > the regions are only reserved on platforms that need it - if not, then
-> > > we're going to break everything else that does have an ITS behind SMMU
-> > > translation as expected.
-> >
-> > Right. I had this doubt, but then my thinking was that we will have the
-> SW_MSI
-> > regions for those and will end up  using that. But that doesn=E2=80=99t=
- seems
-> > to be the case now.
-> >
-> > > It feels like IORT should know enough to be able to make that decision
-> > > internally, but if not (or if it would be hideous to do so), then I
-> > > guess my idea for patch #2 was a bust and we probably do need to go
-> back
-> > > to calling directly from the SMMU driver based on the SMMU model.
-> >
-> > It might be possible to do that check inside iort code, but then we hav=
-e to
-> find
-> > the  smmu node first and check the model number. I think it will be more
-> > cleaner if SMMU driver makes that check and call the
-> > iommu_dma_get_msi_resv_regions().
-> =
-
-> +1 on this one - we can do it in IORT but I think it is more logical
-> to have a flag in the SMMU driver (keeping the DT/ACPI fwnode switch in
-> generic IOMMU layer though).
-
-Please find [1] for the generic iommu helper function which will be called
-from SMMU driver based on the model.
-
-> Side note I: AFAICS iommu_dma_get_resv_regions() is only used on ARM, if
-> it is not patch 2 would break miserably on arches that do not select
-> IORT - you should rework the return code on !CONFIG_ACPI_IORT configs.
-
-Yes. But so far it is only used on ARM. In any way this function is not goi=
-ng to be
-changed and will introduce a new iommu_dma_get_msi_resv_regions() fn  as
-proposed in [1].
-
-Please take a look and let me know. I will submit the series again if this =
-is fine.
-
-Thanks,
-Shameer
-
-[1] This will replace patch 2 and will be followed by smmu driver patch to =
-invoke
-iommu_dma_get_msi_resv_regions() based on SMMU model.
-
--->8--
-Subject: [PATCH] iommu/dma: Add a helper  function to reserve HW MSI addres=
-s regions for IOMMU drivers
 
 IOMMU drivers can use this to implement their .get_resv_regions callback
 for HW MSI specific reservations(e.g. ARM GICv3 ITS MSI region).
@@ -206,5 +101,7 @@ t list_head *list)
 
 1.9.1
 
---===============4753987378512991826==--
+
+
+--===============4507749496149169999==--
 
