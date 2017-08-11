@@ -1,45 +1,41 @@
-Content-Type: multipart/mixed; boundary="===============5029227340883239076=="
+Content-Type: multipart/mixed; boundary="===============1174548880789216877=="
 MIME-Version: 1.0
-From: Al Stone <ahs3 at redhat.com>
-Subject: Re: [Devel] [PATCH] iasl: Add SMMUv3 device ID mapping index support
-Date: Thu, 10 Aug 2017 15:00:06 -0600
-Message-ID: <b506e6bd-bdf2-2804-efcd-046b259824b1@redhat.com>
-In-Reply-To: 94F2FBAB4432B54E8AACC7DFDE6C92E37E5E87EB@ORSMSX110.amr.corp.intel.com
+From: Lv Zheng <lv.zheng at intel.com>
+Subject: [Devel] [PATCH 0/2] ACPICA: Events: Fix GPE enabling issues related
+ to edge-triggered GPEs
+Date: Fri, 11 Aug 2017 13:57:23 +0800
+Message-ID: <cover.1502430636.git.lv.zheng@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5029227340883239076==
+--===============1174548880789216877==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On 08/10/2017 08:17 AM, Moore, Robert wrote:
-> /************************************************************************=
-*******
->  *
->  * IORT - IO Remapping Table
->  *
->  * Conforms to "IO Remapping Table System Software on ARM Platforms",
->  * Document number: ARM DEN 0049C, May 2017
->  *
->  ************************************************************************=
-******/
-> Is there a new version of this spec (with definition of IORT)?
+There are 2 issues related to the enabling of GPEs:
+1. Currently, our code clears GPE before enabling it. In case of edge
+   triggered GPEs, doing this risks GPE losses.
+2. For edge-triggered GPEs, enabling it is not sufficiently to trigger an
+   already triggered GPE, we need to poll the GPE once it is enabled.
+This patchset fixes these 2 problems.
 
-Of course, in the same place it always is: http://uefi.org/acpi
+Lv Zheng (2):
+  ACPICA: Events: Stop unconditionally clearing ACPI IRQs during
+    suspend/resume
+  ACPICA: Events: Dispatch GPEs after enabling for the first time
 
-See section 3.1.1.2, Table 9.
+ drivers/acpi/acpica/evgpe.c     |  7 -------
+ drivers/acpi/acpica/evxfgpe.c   | 22 ++++++++++++++++++++++
+ drivers/acpi/acpica/hwgpe.c     |  1 -
+ drivers/acpi/acpica/hwsleep.c   | 11 ++---------
+ drivers/acpi/acpica/hwxfsleep.c |  2 +-
+ 5 files changed, 25 insertions(+), 18 deletions(-)
 
 -- =
 
-ciao,
-al
------------------------------------
-Al Stone
-Software Engineer
-Red Hat, Inc.
-ahs3(a)redhat.com
------------------------------------
+2.7.4
 
---===============5029227340883239076==--
+
+--===============1174548880789216877==--
 
