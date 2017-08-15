@@ -1,163 +1,515 @@
-Content-Type: multipart/mixed; boundary="===============0982658563309419742=="
+Content-Type: multipart/mixed; boundary="===============1487056104350629508=="
 MIME-Version: 1.0
 From: kbuild test robot <fengguang.wu at intel.com>
-Subject: [Devel] [pm:testing 6/14] drivers//acpi/spcr.c:168:1: error: version
- control conflict marker in file
-Date: Tue, 15 Aug 2017 01:06:58 +0800
-Message-ID: <201708150156.HrsDCRkl%fengguang.wu@intel.com>
+Subject: [Devel] [pm:bleeding-edge 136/148] drivers//acpi/spcr.c:205:2: note:
+ in expansion of macro 'pr_info'
+Date: Tue, 15 Aug 2017 23:41:57 +0800
+Message-ID: <201708152354.4yR5FXMk%fengguang.wu@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0982658563309419742==
+--===============1487056104350629508==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git=
- testing
-head:   c394fc6acab189ab34001d7b994e5b3c7fae66c3
-commit: f69ba1326ac33b30659e1b64911391a37ae8a13f [6/14] Merge branch 'acpi-=
-spcr' into linux-next
+ bleeding-edge
+head:   8c649da5a7719ff87155d4c9e850f374a39856d4
+commit: fd46b1aebee729fb984f74b7b8d81db210ec6355 [136/148] ACPI: SPCR: work=
+ around clock issue on xgene UART
 config: arm64-allmodconfig (attached as .config)
 compiler: aarch64-linux-gnu-gcc (Debian 6.1.1-9) 6.1.1 20160705
 reproduce:
         wget https://raw.githubusercontent.com/01org/lkp-tests/master/sbin/=
 make.cross -O ~/bin/make.cross
         chmod +x ~/bin/make.cross
-        git checkout f69ba1326ac33b30659e1b64911391a37ae8a13f
+        git checkout fd46b1aebee729fb984f74b7b8d81db210ec6355
         # save the attached .config to linux build tree
         make.cross ARCH=3Darm64 =
 
 
-All errors (new ones prefixed by >>):
+All error/warnings (new ones prefixed by >>):
 
    drivers//acpi/spcr.c: In function 'parse_spcr':
->> drivers//acpi/spcr.c:168:1: error: version control conflict marker in fi=
-le
-    <<<<<<< HEAD
-    ^~~~~~~
-   drivers//acpi/spcr.c:198:1: error: version control conflict marker in fi=
-le
-    >>>>>>> acpi-spcr
-    ^~~~~~~
-   At top level:
-   drivers//acpi/spcr.c:34:13: warning: 'qdf2400_erratum_44_present' define=
-d but not used [-Wunused-function]
-    static bool qdf2400_erratum_44_present(struct acpi_table_header *h)
-                ^~~~~~~~~~~~~~~~~~~~~~~~~~
+>> drivers//acpi/spcr.c:191:2: warning: this 'if' clause does not guard... =
+[-Wmisleading-indentation]
+     if (xgene_8250_erratum_present(table))
+     ^~
+   drivers//acpi/spcr.c:198:3: note: ...this statement, but the latter is m=
+isleadingly indented as if it is guarded by the 'if'
+      snprintf(opts, sizeof(opts), "%s,%s,0x%llx", uart, iotype,
+      ^~~~~~~~
+>> drivers//acpi/spcr.c:164:3: error: label 'done' used but not defined
+      goto done;
+      ^~~~
+   drivers//acpi/spcr.c: At top level:
+>> drivers//acpi/spcr.c:200:4: error: expected identifier or '(' before 'el=
+se'
+     } else {
+       ^~~~
+   In file included from include/linux/printk.h:6:0,
+                    from include/linux/kernel.h:13,
+                    from include/linux/list.h:8,
+                    from include/linux/resource_ext.h:17,
+                    from include/linux/acpi.h:26,
+                    from drivers//acpi/spcr.c:14:
+>> include/linux/kern_levels.h:4:18: error: expected declaration specifiers=
+ or '...' before string constant
+    #define KERN_SOH "\001"  /* ASCII Start Of Header */
+                     ^
+   include/linux/kern_levels.h:13:19: note: in expansion of macro 'KERN_SOH'
+    #define KERN_INFO KERN_SOH "6" /* informational */
+                      ^~~~~~~~
+   include/linux/printk.h:308:9: note: in expansion of macro 'KERN_INFO'
+     printk(KERN_INFO pr_fmt(fmt), ##__VA_ARGS__)
+            ^~~~~~~~~
+>> drivers//acpi/spcr.c:205:2: note: in expansion of macro 'pr_info'
+     pr_info("console: %s\n", opts);
+     ^~~~~~~
+   In file included from include/linux/kernel.h:13:0,
+                    from include/linux/list.h:8,
+                    from include/linux/resource_ext.h:17,
+                    from include/linux/acpi.h:26,
+                    from drivers//acpi/spcr.c:14:
+>> drivers//acpi/spcr.c:205:27: error: unknown type name 'opts'
+     pr_info("console: %s\n", opts);
+                              ^
+   include/linux/printk.h:308:34: note: in definition of macro 'pr_info'
+     printk(KERN_INFO pr_fmt(fmt), ##__VA_ARGS__)
+                                     ^~~~~~~~~~~
+>> drivers//acpi/spcr.c:207:2: error: expected identifier or '(' before 'if'
+     if (earlycon)
+     ^~
+>> drivers//acpi/spcr.c:210:2: warning: data definition has no type or stor=
+age class
+     err =3D add_preferred_console(uart, 0, opts + strlen(uart) + 1);
+     ^~~
+>> drivers//acpi/spcr.c:210:2: error: type defaults to 'int' in declaration=
+ of 'err' [-Werror=3Dimplicit-int]
+>> drivers//acpi/spcr.c:210:30: error: 'uart' undeclared here (not in a fun=
+ction)
+     err =3D add_preferred_console(uart, 0, opts + strlen(uart) + 1);
+                                 ^~~~
+>> drivers//acpi/spcr.c:210:39: error: 'opts' undeclared here (not in a fun=
+ction)
+     err =3D add_preferred_console(uart, 0, opts + strlen(uart) + 1);
+                                          ^~~~
+>> drivers//acpi/spcr.c:212:5: error: expected '=3D', ',', ';', 'asm' or '_=
+_attribute__' before ':' token
+    done:
+        ^
+>> drivers//acpi/spcr.c:214:2: error: expected identifier or '(' before 're=
+turn'
+     return err;
+     ^~~~~~
+>> drivers//acpi/spcr.c:215:1: error: expected identifier or '(' before '}'=
+ token
+    }
+    ^
+   drivers//acpi/spcr.c: In function 'parse_spcr':
+>> drivers//acpi/spcr.c:200:2: warning: control reaches end of non-void fun=
+ction [-Wreturn-type]
+     } else {
+     ^
+   cc1: some warnings being treated as errors
+--
+   drivers/acpi/spcr.c: In function 'parse_spcr':
+   drivers/acpi/spcr.c:191:2: warning: this 'if' clause does not guard... [=
+-Wmisleading-indentation]
+     if (xgene_8250_erratum_present(table))
+     ^~
+   drivers/acpi/spcr.c:198:3: note: ...this statement, but the latter is mi=
+sleadingly indented as if it is guarded by the 'if'
+      snprintf(opts, sizeof(opts), "%s,%s,0x%llx", uart, iotype,
+      ^~~~~~~~
+   drivers/acpi/spcr.c:164:3: error: label 'done' used but not defined
+      goto done;
+      ^~~~
+   drivers/acpi/spcr.c: At top level:
+   drivers/acpi/spcr.c:200:4: error: expected identifier or '(' before 'els=
+e'
+     } else {
+       ^~~~
+   In file included from include/linux/printk.h:6:0,
+                    from include/linux/kernel.h:13,
+                    from include/linux/list.h:8,
+                    from include/linux/resource_ext.h:17,
+                    from include/linux/acpi.h:26,
+                    from drivers/acpi/spcr.c:14:
+>> include/linux/kern_levels.h:4:18: error: expected declaration specifiers=
+ or '...' before string constant
+    #define KERN_SOH "\001"  /* ASCII Start Of Header */
+                     ^
+   include/linux/kern_levels.h:13:19: note: in expansion of macro 'KERN_SOH'
+    #define KERN_INFO KERN_SOH "6" /* informational */
+                      ^~~~~~~~
+   include/linux/printk.h:308:9: note: in expansion of macro 'KERN_INFO'
+     printk(KERN_INFO pr_fmt(fmt), ##__VA_ARGS__)
+            ^~~~~~~~~
+   drivers/acpi/spcr.c:205:2: note: in expansion of macro 'pr_info'
+     pr_info("console: %s\n", opts);
+     ^~~~~~~
+   In file included from include/linux/kernel.h:13:0,
+                    from include/linux/list.h:8,
+                    from include/linux/resource_ext.h:17,
+                    from include/linux/acpi.h:26,
+                    from drivers/acpi/spcr.c:14:
+   drivers/acpi/spcr.c:205:27: error: unknown type name 'opts'
+     pr_info("console: %s\n", opts);
+                              ^
+   include/linux/printk.h:308:34: note: in definition of macro 'pr_info'
+     printk(KERN_INFO pr_fmt(fmt), ##__VA_ARGS__)
+                                     ^~~~~~~~~~~
+   drivers/acpi/spcr.c:207:2: error: expected identifier or '(' before 'if'
+     if (earlycon)
+     ^~
+   drivers/acpi/spcr.c:210:2: warning: data definition has no type or stora=
+ge class
+     err =3D add_preferred_console(uart, 0, opts + strlen(uart) + 1);
+     ^~~
+   drivers/acpi/spcr.c:210:2: error: type defaults to 'int' in declaration =
+of 'err' [-Werror=3Dimplicit-int]
+   drivers/acpi/spcr.c:210:30: error: 'uart' undeclared here (not in a func=
+tion)
+     err =3D add_preferred_console(uart, 0, opts + strlen(uart) + 1);
+                                 ^~~~
+   drivers/acpi/spcr.c:210:39: error: 'opts' undeclared here (not in a func=
+tion)
+     err =3D add_preferred_console(uart, 0, opts + strlen(uart) + 1);
+                                          ^~~~
+   drivers/acpi/spcr.c:212:5: error: expected '=3D', ',', ';', 'asm' or '__=
+attribute__' before ':' token
+    done:
+        ^
+   drivers/acpi/spcr.c:214:2: error: expected identifier or '(' before 'ret=
+urn'
+     return err;
+     ^~~~~~
+   drivers/acpi/spcr.c:215:1: error: expected identifier or '(' before '}' =
+token
+    }
+    ^
+   drivers/acpi/spcr.c: In function 'parse_spcr':
+   drivers/acpi/spcr.c:200:2: warning: control reaches end of non-void func=
+tion [-Wreturn-type]
+     } else {
+     ^
+   cc1: some warnings being treated as errors
 
-vim +168 drivers//acpi/spcr.c
+vim +/pr_info +205 drivers//acpi/spcr.c
 
-    75	=
+ad1696f6f Aleksey Makarov       2016-09-27   13  =
 
-    76	/**
-    77	 * parse_spcr() - parse ACPI SPCR table and add preferred console
-    78	 *
-    79	 * @earlycon: set up earlycon for the console specified by the table
-    80	 *
-    81	 * For the architectures with support for ACPI, CONFIG_ACPI_SPCR_TAB=
-LE may be
-    82	 * defined to parse ACPI SPCR table.  As a result of the parsing pre=
-ferred
-    83	 * console is registered and if @earlycon is true, earlycon is set u=
-p.
-    84	 *
-    85	 * When CONFIG_ACPI_SPCR_TABLE is defined, this function should be c=
-alled
-    86	 * from arch initialization code as soon as the DT/ACPI decision is =
-made.
-    87	 *
-    88	 */
-    89	int __init parse_spcr(bool earlycon)
-    90	{
-    91		static char opts[64];
-    92		struct acpi_table_spcr *table;
-    93		acpi_status status;
-    94		char *uart;
-    95		char *iotype;
-    96		int baud_rate;
-    97		int err;
-    98	=
+ad1696f6f Aleksey Makarov       2016-09-27  @14  #include <linux/acpi.h>
+ad1696f6f Aleksey Makarov       2016-09-27   15  #include <linux/console.h>
+ad1696f6f Aleksey Makarov       2016-09-27   16  #include <linux/kernel.h>
+ad1696f6f Aleksey Makarov       2016-09-27   17  #include <linux/serial_cor=
+e.h>
+ad1696f6f Aleksey Makarov       2016-09-27   18  =
 
-    99		if (acpi_disabled)
-   100			return -ENODEV;
-   101	=
+d8a4995bc Christopher Covington 2017-02-15   19  /*
+37ef38f3f Timur Tabi            2017-07-27   20   * Erratum 44 for QDF2432v=
+1 and QDF2400v1 SoCs describes the BUSY bit as
+37ef38f3f Timur Tabi            2017-07-27   21   * occasionally getting st=
+uck as 1. To avoid the potential for a hang, check
+37ef38f3f Timur Tabi            2017-07-27   22   * TXFE =3D=3D 0 instead o=
+f BUSY =3D=3D 1. This may not be suitable for all UART
+37ef38f3f Timur Tabi            2017-07-27   23   * implementations, so onl=
+y do so if an affected platform is detected in
+37ef38f3f Timur Tabi            2017-07-27   24   * parse_spcr().
+37ef38f3f Timur Tabi            2017-07-27   25   */
+37ef38f3f Timur Tabi            2017-07-27   26  bool qdf2400_e44_present;
+37ef38f3f Timur Tabi            2017-07-27   27  EXPORT_SYMBOL(qdf2400_e44_=
+present);
+37ef38f3f Timur Tabi            2017-07-27   28  =
 
-   102		status =3D acpi_get_table(ACPI_SIG_SPCR, 0,
-   103					(struct acpi_table_header **)&table);
-   104	=
+37ef38f3f Timur Tabi            2017-07-27   29  /*
+d8a4995bc Christopher Covington 2017-02-15   30   * Some Qualcomm Datacente=
+r Technologies SoCs have a defective UART BUSY bit.
+d8a4995bc Christopher Covington 2017-02-15   31   * Detect them by examinin=
+g the OEM fields in the SPCR header, similiar to PCI
+d8a4995bc Christopher Covington 2017-02-15   32   * quirk detection in pci_=
+mcfg.c.
+d8a4995bc Christopher Covington 2017-02-15   33   */
+d8a4995bc Christopher Covington 2017-02-15   34  static bool qdf2400_erratu=
+m_44_present(struct acpi_table_header *h)
+d8a4995bc Christopher Covington 2017-02-15   35  {
+d8a4995bc Christopher Covington 2017-02-15   36  	if (memcmp(h->oem_id, "QC=
+OM  ", ACPI_OEM_ID_SIZE))
+d8a4995bc Christopher Covington 2017-02-15   37  		return false;
+d8a4995bc Christopher Covington 2017-02-15   38  =
 
-   105		if (ACPI_FAILURE(status))
-   106			return -ENOENT;
-   107	=
+d8a4995bc Christopher Covington 2017-02-15   39  	if (!memcmp(h->oem_table_=
+id, "QDF2432 ", ACPI_OEM_TABLE_ID_SIZE))
+d8a4995bc Christopher Covington 2017-02-15   40  		return true;
+d8a4995bc Christopher Covington 2017-02-15   41  =
 
-   108		if (table->header.revision < 2) {
-   109			err =3D -ENOENT;
-   110			pr_err("wrong table version\n");
-   111			goto done;
-   112		}
-   113	=
+d8a4995bc Christopher Covington 2017-02-15   42  	if (!memcmp(h->oem_table_=
+id, "QDF2400 ", ACPI_OEM_TABLE_ID_SIZE) &&
+542ed7846 Timur Tabi            2017-02-28   43  			h->oem_revision =3D=3D =
+1)
+d8a4995bc Christopher Covington 2017-02-15   44  		return true;
+d8a4995bc Christopher Covington 2017-02-15   45  =
 
-   114		if (table->serial_port.space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_MEMORY=
-) {
-   115			switch (ACPI_ACCESS_BIT_WIDTH((
-   116				table->serial_port.access_width))) {
-   117			default:
-   118				pr_err("Unexpected SPCR Access Width.  Defaulting to byte size\n"=
-);
-   119			case 8:
-   120				iotype =3D "mmio";
-   121				break;
-   122			case 16:
-   123				iotype =3D "mmio16";
-   124				break;
-   125			case 32:
-   126				iotype =3D "mmio32";
-   127				break;
-   128			}
-   129		} else
-   130			iotype =3D "io";
-   131	=
+d8a4995bc Christopher Covington 2017-02-15   46  	return false;
+d8a4995bc Christopher Covington 2017-02-15   47  }
+d8a4995bc Christopher Covington 2017-02-15   48  =
 
-   132		switch (table->interface_type) {
-   133		case ACPI_DBG2_ARM_SBSA_32BIT:
-   134			iotype =3D "mmio32";
-   135			/* fall through */
-   136		case ACPI_DBG2_ARM_PL011:
-   137		case ACPI_DBG2_ARM_SBSA_GENERIC:
-   138		case ACPI_DBG2_BCM2835:
-   139			uart =3D "pl011";
-   140			break;
-   141		case ACPI_DBG2_16550_COMPATIBLE:
-   142		case ACPI_DBG2_16550_SUBSET:
-   143			uart =3D "uart";
-   144			break;
-   145		default:
-   146			err =3D -ENOENT;
-   147			goto done;
-   148		}
-   149	=
+79a648328 Loc Ho                2017-07-03   49  /*
+79a648328 Loc Ho                2017-07-03   50   * APM X-Gene v1 and v2 UA=
+RT hardware is an 16550 like device but has its
+79a648328 Loc Ho                2017-07-03   51   * register aligned to 32-=
+bit. In addition, the BIOS also encoded the
+79a648328 Loc Ho                2017-07-03   52   * access width to be 8 bi=
+ts. This function detects this errata condition.
+79a648328 Loc Ho                2017-07-03   53   */
+79a648328 Loc Ho                2017-07-03   54  static bool xgene_8250_err=
+atum_present(struct acpi_table_spcr *tb)
+79a648328 Loc Ho                2017-07-03   55  {
+dee82bc1e Graeme Gregory        2017-08-04   56  	bool xgene_8250 =3D false;
+dee82bc1e Graeme Gregory        2017-08-04   57  =
 
-   150		switch (table->baud_rate) {
-   151		case 3:
-   152			baud_rate =3D 9600;
-   153			break;
-   154		case 4:
-   155			baud_rate =3D 19200;
-   156			break;
-   157		case 6:
-   158			baud_rate =3D 57600;
-   159			break;
-   160		case 7:
-   161			baud_rate =3D 115200;
-   162			break;
-   163		default:
-   164			err =3D -ENOENT;
-   165			goto done;
-   166		}
-   167	=
+79a648328 Loc Ho                2017-07-03   58  	if (tb->interface_type !=
+=3D ACPI_DBG2_16550_COMPATIBLE)
+79a648328 Loc Ho                2017-07-03   59  		return false;
+79a648328 Loc Ho                2017-07-03   60  =
 
- > 168	<<<<<<< HEAD
+dee82bc1e Graeme Gregory        2017-08-04   61  	if (memcmp(tb->header.oem=
+_id, "APMC0D", ACPI_OEM_ID_SIZE) &&
+dee82bc1e Graeme Gregory        2017-08-04   62  	    memcmp(tb->header.oem=
+_id, "HPE   ", ACPI_OEM_ID_SIZE))
+79a648328 Loc Ho                2017-07-03   63  		return false;
+79a648328 Loc Ho                2017-07-03   64  =
+
+79a648328 Loc Ho                2017-07-03   65  	if (!memcmp(tb->header.oe=
+m_table_id, "XGENESPC",
+79a648328 Loc Ho                2017-07-03   66  	    ACPI_OEM_TABLE_ID_SIZ=
+E) && tb->header.oem_revision =3D=3D 0)
+dee82bc1e Graeme Gregory        2017-08-04   67  		xgene_8250 =3D true;
+79a648328 Loc Ho                2017-07-03   68  =
+
+dee82bc1e Graeme Gregory        2017-08-04   69  	if (!memcmp(tb->header.oe=
+m_table_id, "ProLiant",
+dee82bc1e Graeme Gregory        2017-08-04   70  	    ACPI_OEM_TABLE_ID_SIZ=
+E) && tb->header.oem_revision =3D=3D 1)
+dee82bc1e Graeme Gregory        2017-08-04   71  		xgene_8250 =3D true;
+dee82bc1e Graeme Gregory        2017-08-04   72  =
+
+dee82bc1e Graeme Gregory        2017-08-04   73  	return xgene_8250;
+79a648328 Loc Ho                2017-07-03   74  }
+79a648328 Loc Ho                2017-07-03   75  =
+
+ad1696f6f Aleksey Makarov       2016-09-27   76  /**
+ad1696f6f Aleksey Makarov       2016-09-27   77   * parse_spcr() - parse AC=
+PI SPCR table and add preferred console
+ad1696f6f Aleksey Makarov       2016-09-27   78   *
+ad1696f6f Aleksey Makarov       2016-09-27   79   * @earlycon: set up early=
+con for the console specified by the table
+ad1696f6f Aleksey Makarov       2016-09-27   80   *
+ad1696f6f Aleksey Makarov       2016-09-27   81   * For the architectures w=
+ith support for ACPI, CONFIG_ACPI_SPCR_TABLE may be
+ad1696f6f Aleksey Makarov       2016-09-27   82   * defined to parse ACPI S=
+PCR table.  As a result of the parsing preferred
+ad1696f6f Aleksey Makarov       2016-09-27   83   * console is registered a=
+nd if @earlycon is true, earlycon is set up.
+ad1696f6f Aleksey Makarov       2016-09-27   84   *
+ad1696f6f Aleksey Makarov       2016-09-27   85   * When CONFIG_ACPI_SPCR_T=
+ABLE is defined, this function should be called
+183b8021f Masahiro Yamada       2017-02-27   86   * from arch initializatio=
+n code as soon as the DT/ACPI decision is made.
+ad1696f6f Aleksey Makarov       2016-09-27   87   *
+ad1696f6f Aleksey Makarov       2016-09-27   88   */
+ad1696f6f Aleksey Makarov       2016-09-27   89  int __init parse_spcr(bool=
+ earlycon)
+ad1696f6f Aleksey Makarov       2016-09-27   90  {
+ad1696f6f Aleksey Makarov       2016-09-27   91  	static char opts[64];
+ad1696f6f Aleksey Makarov       2016-09-27   92  	struct acpi_table_spcr *t=
+able;
+ad1696f6f Aleksey Makarov       2016-09-27   93  	acpi_status status;
+ad1696f6f Aleksey Makarov       2016-09-27   94  	char *uart;
+ad1696f6f Aleksey Makarov       2016-09-27   95  	char *iotype;
+ad1696f6f Aleksey Makarov       2016-09-27   96  	int baud_rate;
+ad1696f6f Aleksey Makarov       2016-09-27   97  	int err;
+ad1696f6f Aleksey Makarov       2016-09-27   98  =
+
+ad1696f6f Aleksey Makarov       2016-09-27   99  	if (acpi_disabled)
+ad1696f6f Aleksey Makarov       2016-09-27  100  		return -ENODEV;
+ad1696f6f Aleksey Makarov       2016-09-27  101  =
+
+6b11d1d67 Lv Zheng              2016-12-14  102  	status =3D acpi_get_table=
+(ACPI_SIG_SPCR, 0,
+6b11d1d67 Lv Zheng              2016-12-14  103  				(struct acpi_table_hea=
+der **)&table);
+ad1696f6f Aleksey Makarov       2016-09-27  104  =
+
+ad1696f6f Aleksey Makarov       2016-09-27  105  	if (ACPI_FAILURE(status))
+ad1696f6f Aleksey Makarov       2016-09-27  106  		return -ENOENT;
+ad1696f6f Aleksey Makarov       2016-09-27  107  =
+
+ad1696f6f Aleksey Makarov       2016-09-27  108  	if (table->header.revisio=
+n < 2) {
+ad1696f6f Aleksey Makarov       2016-09-27  109  		err =3D -ENOENT;
+ad1696f6f Aleksey Makarov       2016-09-27  110  		pr_err("wrong table vers=
+ion\n");
+ad1696f6f Aleksey Makarov       2016-09-27  111  		goto done;
+ad1696f6f Aleksey Makarov       2016-09-27  112  	}
+ad1696f6f Aleksey Makarov       2016-09-27  113  =
+
+2bece4939 Loc Ho                2017-07-03  114  	if (table->serial_port.sp=
+ace_id =3D=3D ACPI_ADR_SPACE_SYSTEM_MEMORY) {
+2bece4939 Loc Ho                2017-07-03  115  		switch (table->serial_po=
+rt.access_width) {
+2bece4939 Loc Ho                2017-07-03  116  		default:
+2bece4939 Loc Ho                2017-07-03  117  			pr_err("Unexpected SPCR=
+ Access Width.  Defaulting to byte size\n");
+2bece4939 Loc Ho                2017-07-03  118  		case ACPI_ACCESS_SIZE_BY=
+TE:
+2bece4939 Loc Ho                2017-07-03  119  			iotype =3D "mmio";
+2bece4939 Loc Ho                2017-07-03  120  			break;
+2bece4939 Loc Ho                2017-07-03  121  		case ACPI_ACCESS_SIZE_WO=
+RD:
+2bece4939 Loc Ho                2017-07-03  122  			iotype =3D "mmio16";
+2bece4939 Loc Ho                2017-07-03  123  			break;
+2bece4939 Loc Ho                2017-07-03  124  		case ACPI_ACCESS_SIZE_DW=
+ORD:
+2bece4939 Loc Ho                2017-07-03  125  			iotype =3D "mmio32";
+2bece4939 Loc Ho                2017-07-03  126  			break;
+2bece4939 Loc Ho                2017-07-03  127  		}
+2bece4939 Loc Ho                2017-07-03  128  	} else
+2bece4939 Loc Ho                2017-07-03  129  		iotype =3D "io";
+ad1696f6f Aleksey Makarov       2016-09-27  130  =
+
+ad1696f6f Aleksey Makarov       2016-09-27  131  	switch (table->interface_=
+type) {
+ad1696f6f Aleksey Makarov       2016-09-27  132  	case ACPI_DBG2_ARM_SBSA_3=
+2BIT:
+ad1696f6f Aleksey Makarov       2016-09-27  133  		iotype =3D "mmio32";
+ad1696f6f Aleksey Makarov       2016-09-27  134  		/* fall through */
+ad1696f6f Aleksey Makarov       2016-09-27  135  	case ACPI_DBG2_ARM_PL011:
+ad1696f6f Aleksey Makarov       2016-09-27  136  	case ACPI_DBG2_ARM_SBSA_G=
+ENERIC:
+ad1696f6f Aleksey Makarov       2016-09-27  137  	case ACPI_DBG2_BCM2835:
+ad1696f6f Aleksey Makarov       2016-09-27  138  		uart =3D "pl011";
+ad1696f6f Aleksey Makarov       2016-09-27  139  		break;
+ad1696f6f Aleksey Makarov       2016-09-27  140  	case ACPI_DBG2_16550_COMP=
+ATIBLE:
+ad1696f6f Aleksey Makarov       2016-09-27  141  	case ACPI_DBG2_16550_SUBS=
+ET:
+ad1696f6f Aleksey Makarov       2016-09-27  142  		uart =3D "uart";
+ad1696f6f Aleksey Makarov       2016-09-27  143  		break;
+ad1696f6f Aleksey Makarov       2016-09-27  144  	default:
+ad1696f6f Aleksey Makarov       2016-09-27  145  		err =3D -ENOENT;
+ad1696f6f Aleksey Makarov       2016-09-27  146  		goto done;
+ad1696f6f Aleksey Makarov       2016-09-27  147  	}
+ad1696f6f Aleksey Makarov       2016-09-27  148  =
+
+ad1696f6f Aleksey Makarov       2016-09-27  149  	switch (table->baud_rate)=
+ {
+ad1696f6f Aleksey Makarov       2016-09-27  150  	case 3:
+ad1696f6f Aleksey Makarov       2016-09-27  151  		baud_rate =3D 9600;
+ad1696f6f Aleksey Makarov       2016-09-27  152  		break;
+ad1696f6f Aleksey Makarov       2016-09-27  153  	case 4:
+ad1696f6f Aleksey Makarov       2016-09-27  154  		baud_rate =3D 19200;
+ad1696f6f Aleksey Makarov       2016-09-27  155  		break;
+ad1696f6f Aleksey Makarov       2016-09-27  156  	case 6:
+ad1696f6f Aleksey Makarov       2016-09-27  157  		baud_rate =3D 57600;
+ad1696f6f Aleksey Makarov       2016-09-27  158  		break;
+ad1696f6f Aleksey Makarov       2016-09-27  159  	case 7:
+ad1696f6f Aleksey Makarov       2016-09-27  160  		baud_rate =3D 115200;
+ad1696f6f Aleksey Makarov       2016-09-27  161  		break;
+ad1696f6f Aleksey Makarov       2016-09-27  162  	default:
+ad1696f6f Aleksey Makarov       2016-09-27  163  		err =3D -ENOENT;
+ad1696f6f Aleksey Makarov       2016-09-27 @164  		goto done;
+ad1696f6f Aleksey Makarov       2016-09-27  165  	}
+ad1696f6f Aleksey Makarov       2016-09-27  166  =
+
+37ef38f3f Timur Tabi            2017-07-27  167  	/*
+37ef38f3f Timur Tabi            2017-07-27  168  	 * If the E44 erratum is =
+required, then we need to tell the pl011
+37ef38f3f Timur Tabi            2017-07-27  169  	 * driver to implement th=
+e work-around.
+37ef38f3f Timur Tabi            2017-07-27  170  	 *
+37ef38f3f Timur Tabi            2017-07-27  171  	 * The global variable is=
+ used by the probe function when it
+37ef38f3f Timur Tabi            2017-07-27  172  	 * creates the UARTs, whe=
+ther or not they're used as a console.
+37ef38f3f Timur Tabi            2017-07-27  173  	 *
+37ef38f3f Timur Tabi            2017-07-27  174  	 * If the user specifies =
+"traditional" earlycon, the qdf2400_e44
+37ef38f3f Timur Tabi            2017-07-27  175  	 * console name matches t=
+he EARLYCON_DECLARE() statement, and
+37ef38f3f Timur Tabi            2017-07-27  176  	 * SPCR is not used.  Par=
+ameter "earlycon" is false.
+37ef38f3f Timur Tabi            2017-07-27  177  	 *
+37ef38f3f Timur Tabi            2017-07-27  178  	 * If the user specifies =
+"SPCR" earlycon, then we need to update
+37ef38f3f Timur Tabi            2017-07-27  179  	 * the console name so th=
+at it also says "qdf2400_e44".  Parameter
+37ef38f3f Timur Tabi            2017-07-27  180  	 * "earlycon" is true.
+37ef38f3f Timur Tabi            2017-07-27  181  	 *
+37ef38f3f Timur Tabi            2017-07-27  182  	 * For consistency, if we=
+ change the console name, then we do it
+37ef38f3f Timur Tabi            2017-07-27  183  	 * for everyone, not just=
+ earlycon.
+37ef38f3f Timur Tabi            2017-07-27  184  	 */
+37ef38f3f Timur Tabi            2017-07-27  185  	if (qdf2400_erratum_44_pr=
+esent(&table->header)) {
+37ef38f3f Timur Tabi            2017-07-27  186  		qdf2400_e44_present =3D =
+true;
+37ef38f3f Timur Tabi            2017-07-27  187  		if (earlycon)
+d8a4995bc Christopher Covington 2017-02-15  188  			uart =3D "qdf2400_e44";
+37ef38f3f Timur Tabi            2017-07-27  189  	}
+37ef38f3f Timur Tabi            2017-07-27  190  =
+
+79a648328 Loc Ho                2017-07-03 @191  	if (xgene_8250_erratum_pr=
+esent(table))
+79a648328 Loc Ho                2017-07-03  192  		iotype =3D "mmio32";
+d8a4995bc Christopher Covington 2017-02-15  193  =
+
+fd46b1aeb Graeme Gregory        2017-08-04  194  		/* for xgene v1 and v2 w=
+e don't know the clock rate of the
+fd46b1aeb Graeme Gregory        2017-08-04  195  		 * UART so don't attempt=
+ to change to the baud rate state
+fd46b1aeb Graeme Gregory        2017-08-04  196  		 * in the table because =
+driver cannot calculate the dividers
+fd46b1aeb Graeme Gregory        2017-08-04  197  		 */
+fd46b1aeb Graeme Gregory        2017-08-04 @198  		snprintf(opts, sizeof(op=
+ts), "%s,%s,0x%llx", uart, iotype,
+fd46b1aeb Graeme Gregory        2017-08-04  199  			 table->serial_port.add=
+ress);
+fd46b1aeb Graeme Gregory        2017-08-04 @200  	} else {
+ad1696f6f Aleksey Makarov       2016-09-27  201  		snprintf(opts, sizeof(op=
+ts), "%s,%s,0x%llx,%d", uart, iotype,
+ad1696f6f Aleksey Makarov       2016-09-27  202  			 table->serial_port.add=
+ress, baud_rate);
+fd46b1aeb Graeme Gregory        2017-08-04  203  	}
+ad1696f6f Aleksey Makarov       2016-09-27  204  =
+
+ad1696f6f Aleksey Makarov       2016-09-27 @205  	pr_info("console: %s\n", =
+opts);
+ad1696f6f Aleksey Makarov       2016-09-27  206  =
+
+ad1696f6f Aleksey Makarov       2016-09-27 @207  	if (earlycon)
+ad1696f6f Aleksey Makarov       2016-09-27  208  		setup_earlycon(opts);
+ad1696f6f Aleksey Makarov       2016-09-27  209  =
+
+ad1696f6f Aleksey Makarov       2016-09-27 @210  	err =3D add_preferred_con=
+sole(uart, 0, opts + strlen(uart) + 1);
+ad1696f6f Aleksey Makarov       2016-09-27  211  =
+
+ad1696f6f Aleksey Makarov       2016-09-27 @212  done:
+6b11d1d67 Lv Zheng              2016-12-14  213  	acpi_put_table((struct ac=
+pi_table_header *)table);
+ad1696f6f Aleksey Makarov       2016-09-27 @214  	return err;
+ad1696f6f Aleksey Makarov       2016-09-27 @215  }
+
+:::::: The code at line 205 was first introduced by commit
+:::::: ad1696f6f09daacfdf2bf04bc83cd8f48d80e34a ACPI: parse SPCR and enable=
+ matching console
+
+:::::: TO: Aleksey Makarov <aleksey.makarov(a)linaro.org>
+:::::: CC: Greg Kroah-Hartman <gregkh(a)linuxfoundation.org>
 
 ---
 0-DAY kernel test infrastructure                Open Source Technology Cent=
@@ -165,13 +517,13 @@ er
 https://lists.01.org/pipermail/kbuild-all                   Intel Corporati=
 on
 
---===============0982658563309419742==
+--===============1487056104350629508==
 Content-Type: application/gzip
 MIME-Version: 1.0
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="config.gz"
 
-H4sICOXUkVkAAy5jb25maWcAlDzLdtu4kvv+Cp30LGYWt2PZsuOcOV6AICjhiiRoAJRkb3jUjtLx
+H4sICI4Pk1kAAy5jb25maWcAlDzLdtu4kvv+Cp30LGYWt2PZsuOcOV6AICjhiiRoAJRkb3jUjtLx
 ubacK8vdN38/VQAfAAi5M71IR1WFwqveKObXX36dkLfjy/P2+PiwfXr6Mfljt98dtsfdl8nXx6fd
 /05SMSmFnrCU69+AOH/cv/3n4/bwfDWbzH6bXvx29o/Dw+VkuTvsd08T+rL/+vjHG4x/fNn/8usv
 VJQZnzdEFlezmx/dz6tZwvXwk0i6aKrFnWpImspGh/iiqF1iYNVUZM4ateCZvpme+yj4oVvUzJuh
@@ -1169,5 +1521,5 @@ L1JpsZK/PHI5T2U0o7RqOxVtOExvMQEDey80JDd1RtzvDkM3lAV3GczKRAYpdL8R6OuIiUDMvYW5
 EOqGn/qui7xxw10hWiumi58XDsJHMEHnP3msJII+/JwvFYSZ2lJPgQG0Qu7BMZxht/zpedlMQfPZ
 z7l+um5zT00BnS9+LpiUqfFqX8oPo2vM7Vb4PDVrHFyBcPzAcRTFJXd7ra1z87htUY7JoHFlMab5
 WBkf6v8HWEx5omqCAwA=
---===============0982658563309419742==--
+--===============1487056104350629508==--
 
