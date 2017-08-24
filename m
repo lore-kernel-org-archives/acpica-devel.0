@@ -1,129 +1,101 @@
-Content-Type: multipart/mixed; boundary="===============7151398885666465507=="
+Content-Type: multipart/mixed; boundary="===============8811675045006460680=="
 MIME-Version: 1.0
-From: Seunghun Han <kkamagui at gmail.com>
-Subject: [Devel] [PATCH] acpi: acpica: fix acpi operand cache leak in dsutils.c
-Date: Thu, 24 Aug 2017 14:11:35 +0900
-Message-ID: <1503551495-33286-1-git-send-email-kkamagui@gmail.com>
+From: Will Deacon <will.deacon at arm.com>
+Subject: Re: [Devel] [PATCH v6 3/3] iommu/arm-smmu-v3:Enable ACPI based
+ HiSilicon erratum 161010801
+Date: Thu, 24 Aug 2017 15:35:37 +0100
+Message-ID: <20170824143536.GA8904@arm.com>
+In-Reply-To: 53b9795c-6222-9cf0-50dc-9dafbfb67a2c@huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7151398885666465507==
+--===============8811675045006460680==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-I found an ACPI cache leak in ACPI early termination and boot continuing ca=
-se.
+On Wed, Aug 23, 2017 at 05:55:52PM +0100, John Garry wrote:
+> On 23/08/2017 17:43, Will Deacon wrote:
+> >On Wed, Aug 23, 2017 at 03:29:46PM +0100, John Garry wrote:
+> >>On 23/08/2017 14:24, Will Deacon wrote:
+> >>>On Wed, Aug 23, 2017 at 02:17:24PM +0100, John Garry wrote:
+> >>>>>>>Signed-off-by: Shameer Kolothum
+> >>>>>><shameerali.kolothum.thodi(a)huawei.com>
+> >>>>>>>---
+> >>>>>>>drivers/iommu/arm-smmu-v3.c | 27 ++++++++++++++++++++++-----
+> >>>>>>>1 file changed, 22 insertions(+), 5 deletions(-)
+> >>>>>>
+> >>>>>>Please can you also add a devicetree binding with corresponding
+> >>>>>>documentation to enable this workaround on non-ACPI based systems t=
+oo?
+> >>>>>>It should be straightforward if you update the arm_smmu_options tab=
+le.
+> >>>>>
+> >>>>>As I mentioned before, devicetree was a lower priority and we would =
+definitely
+> >>>>>submit patch to support that. Even if we update the arm_smmu_options=
+ table
+> >>>>>with DT binding, the generic function to retrieve the MSI address re=
+gions only
+> >>>>>works on ACPI/IORT case now.
+> >>>>>
+> >>>>
+> >>>>Hi Will,
+> >>>>
+> >>>>Can you confirm your stance on supporting this workaround for DT as w=
+ell as
+> >>>>ACPI?
+> >>>>
+> >>>>For us, we now only "officially" support ACPI FW, and DT support at t=
+his
+> >>>>point is patchy/limited. To me, adding DT support is just more errata
+> >>>>workaround code to maintain with little useful gain.
+> >>>
+> >>>I basically don't like the idea of a driver that only works for one of
+> >>>ACPI or DT yet claims to support both. I'm less fussed about functiona=
+lity
+> >>>differences (feature X is only available with firmware Y), but not wor=
+king
+> >>>around a hardware erratum that we know about is just lazy.
+> >>>
+> >>>So I'd prefer that we handle this in both cases, or blacklist affected
+> >>>devices when booting with DT. Continuing as though there isn't an erra=
+tum
+> >>>is the worst thing we can do.
+> >>
+> >>OK, seems reasonable.
+> >>
+> >>We would consider blacklisting the device, where/how to do is the quest=
+ion.
+> >>
+> >>So the errata is in the GICv3 ITS/PCI host controller, and we just use =
+the
+> >>in-between SMMU (driver) to provide the workaround. So my initial impre=
+ssion
+> >>is that the PCI host controller would have to be blacklisted IFF behind=
+ an
+> >>IOMMU for DT firmware in pcie-hisi.c or pci quirks framework. How does =
+it
+> >>sound?
+> >
+> >If that avoids us running into the erratum, then fine by me. I'd obvious=
+ly
+> >prefer we work-around it since we know how to, but that's up to you.
+> =
 
-When early termination is occurred due to malicious ACPI table, Linux kernel
-terminates ACPI function and continues to boot process. While kernel termin=
-ates
-ACPI function, kmem_cache_destroy() reports Acpi-Operand cache leak.
+> I'm surpsised that you may want more errata workaround code to maintain.
+> =
 
-Boot log of ACPI operand cache leak is as follows:
->[    0.585957] ACPI: Added _OSI(Module Device)
->[    0.587218] ACPI: Added _OSI(Processor Device)
->[    0.588530] ACPI: Added _OSI(3.0 _SCP Extensions)
->[    0.589790] ACPI: Added _OSI(Processor Aggregator Device)
->[    0.591534] ACPI Error: Illegal I/O port address/length above 64K: C806=
-E00000004002/0x2 (20170303/hwvalid-155)
->[    0.594351] ACPI Exception: AE_LIMIT, Unable to initialize fixed events=
- (20170303/evevent-88)
->[    0.597858] ACPI: Unable to start the ACPI Interpreter
->[    0.599162] ACPI Error: Could not remove SCI handler (20170303/evmisc-2=
-81)
->[    0.601836] kmem_cache_destroy Acpi-Operand: Slab cache still has objec=
-ts
->[    0.603556] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 4.12.0-rc5 #26
->[    0.605159] Hardware name: innotek GmbH VirtualBox/VirtualBox, BIOS Vir=
-tualBox 12/01/2006
->[    0.609177] Call Trace:
->[    0.610063]  ? dump_stack+0x5c/0x81
->[    0.611118]  ? kmem_cache_destroy+0x1aa/0x1c0
->[    0.612632]  ? acpi_sleep_proc_init+0x27/0x27
->[    0.613906]  ? acpi_os_delete_cache+0xa/0x10
->[    0.617986]  ? acpi_ut_delete_caches+0x3f/0x7b
->[    0.619293]  ? acpi_terminate+0xa/0x14
->[    0.620394]  ? acpi_init+0x2af/0x34f
->[    0.621616]  ? __class_create+0x4c/0x80
->[    0.623412]  ? video_setup+0x7f/0x7f
->[    0.624585]  ? acpi_sleep_proc_init+0x27/0x27
->[    0.625861]  ? do_one_initcall+0x4e/0x1a0
->[    0.627513]  ? kernel_init_freeable+0x19e/0x21f
->[    0.628972]  ? rest_init+0x80/0x80
->[    0.630043]  ? kernel_init+0xa/0x100
->[    0.631084]  ? ret_from_fork+0x25/0x30
->[    0.633343] vgaarb: loaded
->[    0.635036] EDAC MC: Ver: 3.0.0
->[    0.638601] PCI: Probing PCI hardware
->[    0.639833] PCI host bridge to bus 0000:00
->[    0.641031] pci_bus 0000:00: root bus resource [io  0x0000-0xffff]
-> ... Continue to boot and log is omitted ...
+> Anyway we'll check both approaches and show you how they look and go from
+> there.
 
-I analyzed this memory leak in detail and found acpi_ds_obj_stack_pop_and_
-delete() function miscalculated the top of the stack. acpi_ds_obj_stack_pus=
-h()
-function uses walk_state->operand_index for start position of the top, but
-acpi_ds_obj_stack_pop_and_delete() function considers index 0 for it.
-Therefore, this causes acpi operand memory leak.
+Don't get me wrong, I don't dream about adding errata workarounds to the
+code, but our job as an operating system is to abstract the hardware from
+the user, which means dealing with its quirks whether we like it or not.
 
-This cache leak causes a security threat because an old kernel (<=3D 4.9) s=
-hows
-memory locations of kernel functions in stack dump. Some malicious users
-could use this information to neutralize kernel ASLR.
+Thanks,
 
-I made a patch to fix ACPI operand cache leak.
+Will
 
-Signed-off-by: Seunghun Han <kkamagui(a)gmail.com>
----
- drivers/acpi/acpica/dsutils.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/acpi/acpica/dsutils.c b/drivers/acpi/acpica/dsutils.c
-index 0dabd9b..2c8a060 100644
---- a/drivers/acpi/acpica/dsutils.c
-+++ b/drivers/acpi/acpica/dsutils.c
-@@ -705,6 +705,8 @@ acpi_ds_create_operands(struct acpi_walk_state *walk_st=
-ate,
- 	union acpi_parse_object *arguments[ACPI_OBJ_NUM_OPERANDS];
- 	u32 arg_count =3D 0;
- 	u32 index =3D walk_state->num_operands;
-+	u32 prev_num_operands =3D walk_state->num_operands;
-+	u32 new_num_operands;
- 	u32 i;
- =
-
- 	ACPI_FUNCTION_TRACE_PTR(ds_create_operands, first_arg);
-@@ -733,6 +735,7 @@ acpi_ds_create_operands(struct acpi_walk_state *walk_st=
-ate,
- =
-
- 	/* Create the interpreter arguments, in reverse order */
- =
-
-+	new_num_operands =3D index;
- 	index--;
- 	for (i =3D 0; i < arg_count; i++) {
- 		arg =3D arguments[index];
-@@ -757,7 +760,11 @@ acpi_ds_create_operands(struct acpi_walk_state *walk_s=
-tate,
- 	 * pop everything off of the operand stack and delete those
- 	 * objects
- 	 */
--	acpi_ds_obj_stack_pop_and_delete(arg_count, walk_state);
-+	walk_state->num_operands =3D i;
-+	acpi_ds_obj_stack_pop_and_delete(new_num_operands, walk_state);
-+
-+	/* Restore operand count */
-+	walk_state->num_operands =3D prev_num_operands;
- =
-
- 	ACPI_EXCEPTION((AE_INFO, status, "While creating Arg %u", index));
- 	return_ACPI_STATUS(status);
--- =
-
-2.1.4
-
-
---===============7151398885666465507==--
+--===============8811675045006460680==--
 
