@@ -1,76 +1,61 @@
-Content-Type: multipart/mixed; boundary="===============5663005259409337744=="
+Content-Type: multipart/mixed; boundary="===============1815242547696970444=="
 MIME-Version: 1.0
 From: George Cherian <george.cherian at cavium.com>
-Subject: [Devel] [PATCH v3 0/2] Make cppc acpi driver aware of pcc subspace ids
-Date: Tue, 05 Sep 2017 03:18:08 +0000
-Message-ID: <1504581490-4183-1-git-send-email-george.cherian@cavium.com>
+Subject: [Devel] [PATCH v3 1/2] mailbox: PCC: Move the MAX_PCC_SUBSPACES
+ definition to header file
+Date: Tue, 05 Sep 2017 03:18:09 +0000
+Message-ID: <1504581490-4183-2-git-send-email-george.cherian@cavium.com>
+In-Reply-To: 1504581490-4183-1-git-send-email-george.cherian@cavium.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5663005259409337744==
+--===============1815242547696970444==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
+Move the MAX_PCC_SUBSPACES definition to acpi/pcc.h file. In preparation to=
+ add
+subspace id support for cppc_acpi driver.
 
-The current cppc acpi driver works with only one pcc subspace id.
-It maintains and registers only one pcc channel even if the acpi table has =
+Signed-off-by: George Cherian <george.cherian(a)cavium.com>
+---
+ drivers/mailbox/pcc.c | 1 -
+ include/acpi/pcc.h    | 1 +
+ 2 files changed, 1 insertion(+), 1 deletion(-)
 
-different pcc subspace ids. =
-
-
-As per ACPI 6.2 spec  all PCC registers, for all processors in the same =
-
-performance domain (as defined by _PSD), must be defined to be in the same
-subspace. The series tries to address the same by making cppc acpi driver =
-
-aware of multiple possible pcc subspace ids.
-
-Patch 1 : In preparation to share the MAX_PCC_SUBSPACE definition with cppc=
- acpi
-          driver
-Patch 2 : Make the cppc acpi driver aware of multiple pcc subspace ids.
-
-Changes from v2:
-  - Addressed Prashanth's comments on
-    * Not to use local variables to update mpar_count, last_mpar_reset and =
-
-      last_cmd_cmpl_time
-    * Add check for kzalloc failure in pcc_data_alloc()
-    * Initialize pcc_subspace_id to -1 in acpi_cppc_processor_probe()
-    * Check for pcc_subspace_id validity before registering pcc_channel
-
-Changes from v1:
-  - Add last_cmd_cmpl_time, last_mpar_reset, mpar_count to the cppc_pcc_dat=
-a to
-make it per subspace.
-  - PCC per subspace dynamic allocation support added instead of static
-allocation
-  - Added a new function pcc_data_alloc, In instances where CPU's with SMT
-support same PCC subspace would be used for all CPU's belonging to same =
-
-physical core. This function adds the pcc_subspace refcounting and allocates
-the cppc_pcc_data per unique subspace idx.
-  - Added cleanup in acpi_cppc_processor_exit. Free the mbox channel and fr=
-ee
-the cppc_pcc_data in case refcount is zero.
+diff --git a/drivers/mailbox/pcc.c b/drivers/mailbox/pcc.c
+index cbca5e5..df1a50a 100644
+--- a/drivers/mailbox/pcc.c
++++ b/drivers/mailbox/pcc.c
+@@ -69,7 +69,6 @@
  =
 
+ #include "mailbox.h"
+ =
 
-George Cherian (2):
-  mailbox: PCC: Move the MAX_PCC_SUBSPACES definition to header file
-  ACPI / CPPC: Make cppc acpi driver aware of pcc subspace ids
+-#define MAX_PCC_SUBSPACES	256
+ #define MBOX_IRQ_NAME		"pcc-mbox"
+ =
 
- drivers/acpi/cppc_acpi.c | 241 +++++++++++++++++++++++++++++--------------=
-----
- drivers/mailbox/pcc.c    |   1 -
- include/acpi/pcc.h       |   1 +
- 3 files changed, 152 insertions(+), 91 deletions(-)
+ static struct mbox_chan *pcc_mbox_channels;
+diff --git a/include/acpi/pcc.h b/include/acpi/pcc.h
+index 8caa79c..cd6ef45 100644
+--- a/include/acpi/pcc.h
++++ b/include/acpi/pcc.h
+@@ -13,6 +13,7 @@
+ #include <linux/mailbox_controller.h>
+ #include <linux/mailbox_client.h>
+ =
 
++#define MAX_PCC_SUBSPACES	256
+ #ifdef CONFIG_PCC
+ extern struct mbox_chan *pcc_mbox_request_channel(struct mbox_client *cl,
+ 						  int subspace_id);
 -- =
 
 2.1.4
 
 
---===============5663005259409337744==--
+--===============1815242547696970444==--
 
