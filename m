@@ -1,72 +1,80 @@
-Content-Type: multipart/mixed; boundary="===============1261284807651479690=="
+Content-Type: multipart/mixed; boundary="===============3468790844320142213=="
 MIME-Version: 1.0
-From: Hanjun Guo <hanjun.guo at linaro.org>
-Subject: Re: [Devel] [RFC PATCH 0/6] Add platform device SVM support for ARM
- SMMUv3
-Date: Wed, 06 Sep 2017 09:24:23 +0800
-Message-ID: <1bd8a485-d915-5d82-1ffe-0754b32a7656@linaro.org>
-In-Reply-To: 1504167642-14922-1-git-send-email-xieyisheng1@huawei.com
+From: Moore, Robert <robert.moore at intel.com>
+Subject: Re: [Devel] [PATCH 1/1] ACPI: NULL pointer checking
+Date: Wed, 06 Sep 2017 16:42:39 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E60BA3F@ORSMSX110.amr.corp.intel.com>
+In-Reply-To: 20170906133522.7884-1-lizhenhuajiyang@163.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1261284807651479690==
+--===============3468790844320142213==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On 2017/8/31 16:20, Yisheng Xie wrote:
-> Jean-Philippe has post a patchset for Adding PCIe SVM support to ARM SMMU=
-v3:
-> https://www.spinics.net/lists/arm-kernel/msg565155.html
+
+
+> -----Original Message-----
+> From: Zhenhua [mailto:lizhenhuajiyang(a)163.com]
+> Sent: Wednesday, September 6, 2017 6:35 AM
+> To: devel(a)acpica.org; Moore, Robert <robert.moore(a)intel.com>; Zheng, =
+Lv
+> <lv.zheng(a)intel.com>; Wysocki, Rafael J <rafael.j.wysocki(a)intel.com>;
+> lenb(a)kernel.org; linux-acpi(a)vger.kernel.org; linux-
+> kernel(a)vger.kernel.org
+> Cc: Zhenhua <lizhenhuajiyang(a)163.com>
+> Subject: [PATCH 1/1] ACPI: NULL pointer checking
 > =
 
-> But for some platform devices(aka on-chip integrated devices), there is a=
-lso
-> SVM requirement, which works based on the SMMU stall mode.
-> Jean-Philippe has prepared a prototype patchset to support it:
-> git://linux-arm.org/linux-jpb.git svm/stall
+> These two pointers should be checked, for some broken devices they may
+> cause system crash.
 > =
 
-> We tested this patchset with some fixes on a on-chip integrated device. T=
-he
-> basic function is ok, so I just send them out for review, although this
-> patchset heavily depends on the former patchset (PCIe SVM support for ARM
-> SMMUv3), which is still under discussion.
+> Signed-off-by: Zhenhua <lizhenhuajiyang(a)163.com>
+> ---
+>  drivers/acpi/acpica/nsaccess.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > =
 
-> Patch Overview:
-> *1 to 3 prepare for device tree or acpi get the device stall ability and =
-pasid bits
-> *4 is to realise the SVM function for platform device
-> *5 is fix a bug when test SVM function while SMMU donnot support this fea=
-ture
-> *6 avoid ILLEGAL setting of STE and CD entry about stall
+> diff --git a/drivers/acpi/acpica/nsaccess.c
+> b/drivers/acpi/acpica/nsaccess.c index f2733f51ca8d..151abb0ef4d5 100644
+> --- a/drivers/acpi/acpica/nsaccess.c
+> +++ b/drivers/acpi/acpica/nsaccess.c
+> @@ -338,7 +338,7 @@ acpi_ns_lookup(union acpi_generic_state *scope_info,
+>  			return_ACPI_STATUS(AE_AML_INTERNAL);
+>  		}
 > =
 
-> Acctually here, I also have a question about SVM on SMMUv3:
+> -		if (!(flags & ACPI_NS_PREFIX_IS_SCOPE)) {
+> +		if ((!prefix_node) && (!(flags & ACPI_NS_PREFIX_IS_SCOPE))) {
+[Moore, Robert] =
+
+
+Is there an actual case where the original code failed?
+
+
+
+>  			/*
+>  			 * This node might not be a actual "scope" node (such as
+> a
+>  			 * Device/Method, etc.)  It could be a Package or other
+> object @@ -369,7 +369,7 @@ acpi_ns_lookup(union acpi_generic_state
+> *scope_info,
+>  		ACPI_DEBUG_PRINT((ACPI_DB_NAMES,
+>  				  "Null Pathname (Zero segments), Flags=3D%X\n",
+>  				  flags));
+> -	} else {
+> +	} else if (path) {
+>  		/*
+>  		 * Name pointer is valid (and must be in internal name
+> format)
+>  		 *
+> --
+> 2.14.1
 > =
 
-> 1. Why the SVM feature on SMMUv3 depends on BTM feature? when bind a task=
- to device,
->     it will register a mmu_notify. Therefore, when a page range is invali=
-d, we can
->     send TLBI or ATC invalid without BTM?
-> =
 
-> 2. According to ACPI IORT spec, named component specific data has a node =
-flags field
->     whoes bit0 is for Stall support. However, it do not have any field fo=
-r pasid bit.
->     Can we use other 5 bits[5:1] for pasid bit numbers, so we can have 32=
- pasid bit for
->     a single platform device which should be enough, because SMMU only su=
-pport 20 bit pasid
 
-I think we can propose something similar, it's a missing function in
-IORT.
-
-Thanks
-Hanjun
-
---===============1261284807651479690==--
+--===============3468790844320142213==--
 
