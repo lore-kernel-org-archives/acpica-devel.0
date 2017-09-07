@@ -1,80 +1,182 @@
-Content-Type: multipart/mixed; boundary="===============3468790844320142213=="
+Content-Type: multipart/mixed; boundary="===============8032602842867732220=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] [PATCH 1/1] ACPI: NULL pointer checking
-Date: Wed, 06 Sep 2017 16:42:39 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E60BA3F@ORSMSX110.amr.corp.intel.com>
-In-Reply-To: 20170906133522.7884-1-lizhenhuajiyang@163.com
+From: Lorenzo Pieralisi <lorenzo.pieralisi at arm.com>
+Subject: Re: [Devel] [PATCH v6 3/3] iommu/arm-smmu-v3:Enable ACPI based
+ HiSilicon erratum 161010801
+Date: Thu, 07 Sep 2017 10:54:11 +0100
+Message-ID: <20170907095411.GA5057@red-moon>
+In-Reply-To: 9a999fd4-3ade-f7a4-56d7-68ed731ff646@huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3468790844320142213==
+--===============8032602842867732220==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-
-
-> -----Original Message-----
-> From: Zhenhua [mailto:lizhenhuajiyang(a)163.com]
-> Sent: Wednesday, September 6, 2017 6:35 AM
-> To: devel(a)acpica.org; Moore, Robert <robert.moore(a)intel.com>; Zheng, =
-Lv
-> <lv.zheng(a)intel.com>; Wysocki, Rafael J <rafael.j.wysocki(a)intel.com>;
-> lenb(a)kernel.org; linux-acpi(a)vger.kernel.org; linux-
-> kernel(a)vger.kernel.org
-> Cc: Zhenhua <lizhenhuajiyang(a)163.com>
-> Subject: [PATCH 1/1] ACPI: NULL pointer checking
+On Tue, Sep 05, 2017 at 12:07:59PM +0100, John Garry wrote:
+> >>
+> >>Hi Will, Lorenzo, Robin,
+> >>
+> >>I have created the patch to add DT support for this erratum.
+> >>However, currently I have only added support for pci-based devices.
+> >>I'm a bit stumped on how to add platform device support, or if we
+> >>should also add support at all. And I would rather ask before
+> >>sending the patches.
+> >>
+> >>The specific issue is that I know of no platform device with an ITS
+> >>msi-parent which we would want reserve, i.e. do not translate msi.
+> >>And, if there were, how to do it.
+> >>
+> >>The only platform devices I know off with msi ITS parents are SMMUv3
+> >>and mbigen. For mbigen, the msi are not translated. Actually, as I
+> >>see under IORT solution, for mbigen we don't reserve the hw msi
+> >>region as the SMMUv3 does not have an ID mapping. And we have no
+> >>equivalent ID mapping property for DT SMMUv3, so cannot create an
+> >>equivalent check.
+> >>
+> >>So here is how the DT iommu get reserved region function with only
+> >>pci device support looks:
+> >>
+> >>/**
+> >> * of_iommu_its_get_resv_regions - Reserved region driver helper
+> >> * @dev: Device from iommu_get_resv_regions()
+> >> * @list: Reserved region list from iommu_get_resv_regions()
+> >> *
+> >> * Returns: Number of reserved regions on success(0 if no associated IT=
+S),
+> >> *          appropriate error value otherwise.
+> >> */
+> >>int of_iommu_its_get_resv_regions(struct device *dev, struct
+> >>list_head *head)
+> >>{
+> >>    struct device_node *of_node =3D NULL;
+> >>    struct device *parent_dev;
+> >>    const __be32 *msi_map;
+> >>    int num_mappings, i, err, len, resv =3D 0;
+> >>
+> >>    /* walk up to find the parent with a msi-map property */
+> >>    for (parent_dev =3D dev; parent_dev; parent_dev =3D parent_dev->par=
+ent) {
+> >>        if (!parent_dev->of_node)
+> >>            continue;
+> >>
+> >>        /*
+> >>         * Current logic to reserve ITS regions for only PCI root
+> >>         * complex.
+> >>         */
+> >>        msi_map =3D of_get_property(parent_dev->of_node, "msi-map", &le=
+n);
+> >>        if (msi_map) {
+> >>            of_node =3D parent_dev->of_node;
+> >>            break;
+> >>        }
+> >>    }
+> >>
+> >>    if (!of_node)
+> >>        return 0;
+> >>
+> >>    num_mappings =3D of_count_phandle_with_args(of_node, "msi-map",
+> >>NULL) / 4;
+> >>
+> >>    for (i =3D 0; i < num_mappings; i++) {
+> >>        int prot =3D IOMMU_WRITE | IOMMU_NOEXEC | IOMMU_MMIO;
+> >>        struct iommu_resv_region *region;
+> >>        struct device_node *msi_node;
+> >>        struct resource resource;
+> >>        u32 phandle;
+> >>
+> >>        phandle =3D be32_to_cpup(msi_map + 1);
+> >>        msi_node =3D of_find_node_by_phandle(phandle);
+> >>        if (!msi_node)
+> >>            return -ENODEV;
+> >>
+> >>        /*
+> >>         * There may be different types of msi-controller, so check
+> >>         * for ITS.
+> >>         */
+> >>        if (!of_device_is_compatible(msi_node, "arm,gic-v3-its")) {
+> >>            of_node_put(msi_node);
+> >>            continue;
+> >>        }
+> >>
+> >>        err =3D of_address_to_resource(msi_node, 0, &resource);
+> >>
+> >>        of_node_put(msi_node);
+> >>        if (err)
+> >>            return err;
+> >>
+> >>        region =3D iommu_alloc_resv_region(resource.start, SZ_128K, pro=
+t,
+> >>                         IOMMU_RESV_MSI);
+> >>        if (region) {
+> >>            list_add_tail(&region->list, head);
+> >>            resv++;
+> >>        }
+> >>    }
+> >>
+> >>    return (resv =3D=3D num_mappings) ? resv : -ENODEV;
+> >>}
+> >>
+> >>Any feedback is appreciated.
+> >
+> >Hi John,
+> >
+> >I appreciate it is not trivial to make the code generic, part of the
+> >snippet above can be shared between ACPI/IORT and OF, the only sticking
+> >point is probably the "compatible" string that has to be parameterized
+> >since having this code in generic IOMMU layer is a bit horrible to
+> >have it ITS specific (and it is a problem that was existing already
+> >in the original patch with the hardcoded ITS node type or function
+> >name).
 > =
 
-> These two pointers should be checked, for some broken devices they may
-> cause system crash.
+> Hi Lorenzo,
 > =
 
-> Signed-off-by: Zhenhua <lizhenhuajiyang(a)163.com>
-> ---
->  drivers/acpi/acpica/nsaccess.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> Agreed, checking the ITS compatible string in IOMMU code is not
+> nice. However the function is just trying to replicate our ACPI
+> version, which calls IORT code directly, and this is ITS specific.
+> Anyway, we can make it generic.
 > =
 
-> diff --git a/drivers/acpi/acpica/nsaccess.c
-> b/drivers/acpi/acpica/nsaccess.c index f2733f51ca8d..151abb0ef4d5 100644
-> --- a/drivers/acpi/acpica/nsaccess.c
-> +++ b/drivers/acpi/acpica/nsaccess.c
-> @@ -338,7 +338,7 @@ acpi_ns_lookup(union acpi_generic_state *scope_info,
->  			return_ACPI_STATUS(AE_AML_INTERNAL);
->  		}
+> >
+> >To sum it up the hook:
+> >
+> >- has to be called from SMMU driver in a firmware agnostic way
 > =
 
-> -		if (!(flags & ACPI_NS_PREFIX_IS_SCOPE)) {
-> +		if ((!prefix_node) && (!(flags & ACPI_NS_PREFIX_IS_SCOPE))) {
-[Moore, Robert] =
-
-
-Is there an actual case where the original code failed?
-
-
-
->  			/*
->  			 * This node might not be a actual "scope" node (such as
-> a
->  			 * Device/Method, etc.)  It could be a Package or other
-> object @@ -369,7 +369,7 @@ acpi_ns_lookup(union acpi_generic_state
-> *scope_info,
->  		ACPI_DEBUG_PRINT((ACPI_DB_NAMES,
->  				  "Null Pathname (Zero segments), Flags=3D%X\n",
->  				  flags));
-> -	} else {
-> +	} else if (path) {
->  		/*
->  		 * Name pointer is valid (and must be in internal name
-> format)
->  		 *
-> --
-> 2.14.1
+> ok
 > =
 
+> >- somehow it has to ascertain which interrupt controller "compatible"
+> >  (which in IORT is a node type) to match against so the hook has to
+> >  take an id of sorts
+> =
 
+> OK
+> =
 
---===============3468790844320142213==--
+> I will mention 2 more points after discussion on OF solution with Shameer:
+> - for platform device, we can add suppport by checking for the
+> devices msi-parent property
+> - for both pci and platform device, we should check device rid for
+> msi-controller also, like IORT solution
+> =
+
+> BTW, even though merge window is open, we would like to send some
+> solution to the lists this week, so any outstanding topics can
+> potentially be discussed at LPC next week. Let me know if you're
+> unhappy about this.
+
+I am happy to find a way forward for this next week, posting patches
+this week would not help much with the merge window ongoing, I think
+it is better to try to find a way forward and post the resulting code
+after reaching an agreement, at -rc1 (or right after the IOMMU PR is
+merged).
+
+Thanks,
+Lorenzo
+
+--===============8032602842867732220==--
 
