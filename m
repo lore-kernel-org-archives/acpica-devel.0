@@ -1,213 +1,110 @@
-Content-Type: multipart/mixed; boundary="===============9150983158394403573=="
+Content-Type: multipart/mixed; boundary="===============3981679665984386277=="
 MIME-Version: 1.0
-From: James Morse <james.morse at arm.com>
-Subject: Re: [Devel] [PATCH v6 0/7] Add RAS virtualization support for SEA/SEI
- notification type in KVM
-Date: Thu, 07 Sep 2017 17:32:53 +0100
-Message-ID: <59B174B5.20807@arm.com>
-In-Reply-To: 61d15c7d-803b-15b2-78e1-637fdb9396d6@huawei.com
+From: Moore, Robert <robert.moore at intel.com>
+Subject: Re: [Devel] [PATCH 1/1] ACPI: NULL pointer checking
+Date: Thu, 07 Sep 2017 19:26:56 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E60C211@ORSMSX110.amr.corp.intel.com>
+In-Reply-To: 94F2FBAB4432B54E8AACC7DFDE6C92E37E60BA3F@ORSMSX110.amr.corp.intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============9150983158394403573==
+--===============3981679665984386277==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi gengdongjiu,
-
-(I've re-ordered some of the hunks here:)
-
-On 04/09/17 12:10, gengdongjiu wrote:
-> On 2017/9/1 1:43, James Morse wrote:
->> On 28/08/17 11:38, Dongjiu Geng wrote:
->>> Not call memory_failure() to handle it. Because the error address recor=
-ded
->>> by APEI is not accurated, so can not identify the address to hwpoison
->>> memory.
->>
->> This looks like a firmware bug, what address do you get in your CPER
->> records? It should be a physical address.
-
-> No, not firmware bug. At least in the armv8.0 CPU and huawei's armv8.2 CP=
-U,
-> the architecture decided it is not accurate, this abort is asynchronous n=
-ot
-> synchronous.
-
-This is going to be a problem. (I'm chasing Achin to find out when this is
-allowed to happen and what we're expected to do about it!)
-
-I hope this isn't the default behaviour, but only happens in exceptionally =
-rare
-circumstances.
 
 
->> To report a memory-error you must have an address.
-> maybe we can not get the accurate error address, can you get it in your a=
-rmv8
-> platform?
+> -----Original Message-----
+> From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of Moore, Robert
+> Sent: Wednesday, September 6, 2017 9:43 AM
+> To: Zhenhua <lizhenhuajiyang(a)163.com>; devel(a)acpica.org; Zheng, Lv
+> <lv.zheng(a)intel.com>; Wysocki, Rafael J <rafael.j.wysocki(a)intel.com>;
+> lenb(a)kernel.org; linux-acpi(a)vger.kernel.org; linux-
+> kernel(a)vger.kernel.org
+> Subject: Re: [Devel] [PATCH 1/1] ACPI: NULL pointer checking
+> =
 
-I only have software-models, they only generate the errors you tell them to.
+> =
 
+> =
 
-I think I see why you're taking this approach with the series, the scenario=
- is:
-1. Firmware takes an SError due to a bad memory location from guest EL0.
-2. The CPU doesn't provide the address of the memory location.
+> > -----Original Message-----
+> > From: Zhenhua [mailto:lizhenhuajiyang(a)163.com]
+> > Sent: Wednesday, September 6, 2017 6:35 AM
+> > To: devel(a)acpica.org; Moore, Robert <robert.moore(a)intel.com>; Zheng,
+> > Lv <lv.zheng(a)intel.com>; Wysocki, Rafael J
+> > <rafael.j.wysocki(a)intel.com>; lenb(a)kernel.org;
+> > linux-acpi(a)vger.kernel.org; linux- kernel(a)vger.kernel.org
+> > Cc: Zhenhua <lizhenhuajiyang(a)163.com>
+> > Subject: [PATCH 1/1] ACPI: NULL pointer checking
+> >
+> > These two pointers should be checked, for some broken devices they may
+> > cause system crash.
+> >
+> > Signed-off-by: Zhenhua <lizhenhuajiyang(a)163.com>
+> > ---
+> >  drivers/acpi/acpica/nsaccess.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/acpi/acpica/nsaccess.c
+> > b/drivers/acpi/acpica/nsaccess.c index f2733f51ca8d..151abb0ef4d5
+> > 100644
+> > --- a/drivers/acpi/acpica/nsaccess.c
+> > +++ b/drivers/acpi/acpica/nsaccess.c
+> > @@ -338,7 +338,7 @@ acpi_ns_lookup(union acpi_generic_state
+> *scope_info,
+> >  			return_ACPI_STATUS(AE_AML_INTERNAL);
+> >  		}
+> >
+> > -		if (!(flags & ACPI_NS_PREFIX_IS_SCOPE)) {
+> > +		if ((!prefix_node) && (!(flags & ACPI_NS_PREFIX_IS_SCOPE))) {
+> [Moore, Robert]
+> =
 
-You want to confine this error as much as possible, in particular to the co=
-ntext
-it came from (e.g. guest EL0). CPU context isn't something the CPER records=
- can
-describe (they describe failures in system components), hence your hybrid
-{kernel,firmware}-first code.
+> Is there an actual case where the original code failed?
+> =
 
-I don't think its safe to kill guest-EL0 and hope this confined the error.
+> =
 
-If the affected page of guest memory has never been written to by the guest=
-, the
-host will map in the global zero-page, (made read-only at stage2). If the
-corruption is in this page it affects the host kernel, guests and user-space
-processes. Just because the error came from guest-EL0 doesn't mean
-kernel/hypervisor memory isn't affected.
-
-This doesn't just affect that one page: KSM may have merged every copy of e=
-very
-guest user-space's libc, which has subsequently become corrupt. The first
-guest-EL0 to step in this triggers the fault, but it affects all the guests.
-With the address all the guests can fix this error, and KSM will re-merge t=
-he
-pages. Without the address every user-space process in every guest will
-eventually be killed.
-
-We aren't even guaranteed that the access that caused the fault came from y=
-our
-guest EL0. The fault may be in the page tables belonging to the guest kerne=
-l,
-even worse they may belong to they hypervisor's stage2 page tables.
-
-(Thanks to Mark and Robin for these examples)
-
-
-I think in this scenario your firmware should describe a memory-error with =
-an
-unknown address. (i.e. don't set the 'physical address valid' bit in CPER's
-'Table 275 Memory Error Record'). When Linux gets one of these, it should
-panic(): We know some memory is corrupt, we don't know where it is.
-
-
->> User-space may be signalled by the memory_failure() helper, and user-spa=
-ce >>
-may choose to notify the guest about the memory-failure, but this would be a
->> new error.
-
-> For the SError, it is asynchronous abort. so it is not better to call
-> memory_failure() helper, because the error address is not accurate.
-> memory_failure() will offline or poison the address, but the address is n=
-ot
-> accurate. so it is dangerous
-
-By 'not accurate' do you mean the CPU provides an address, and its wrong.
-(surely this is a CPU bug), or just no address is provided. (i.e. the
-ERR<n>ADDR.AI 'address incorrect' bit is set).
+[Moore, Robert] =
 
 
->>> Because the error was taken from a lower Exception level, if the
->>> exception is SEA/SEI and HCR_EL2.TEA/HCR_EL2.AMO is 1, firmware
->>> sets ESR_EL2/FAR_EL2 to fake a exception trap to EL2, then
->>> transfers to hypervisor.
->>
->> What happens if you took an SError from EL2 and EL2 has PSTATE.A set mas=
-king
->> SError? (this is very common today: all kernel code runs like this).
-
-> Firstly, the guest OS usually runs in the El1 or El0, not El2.
-> if El2 happens an SError, it will trap to EL3 firmware even though the PS=
-TATE.A is set.
-> Because the PSTATE.A can not mask it if the SError is trapped to EL3.
-
-Sure, we agree that from the CPU's view when SCR_EL3.EA is set physical-SEr=
-ror
-can't be masked when executing any EL below EL3.
-
-My question was about the 'firmware sets ESR_EL2/FAR_EL2 to fake an excepti=
-on
-trap to EL2' step. While EL3 can take the physical-SError at any time the
-normal-world is running, it can't always deliver a fake-SError to EL2, beca=
-use
-EL2 believes it has masked physical-SError.
-
-With the SError rework this should only be masked while we are in entry.S
-preparing to handle an exception, receiving an unexpected asynchronous exce=
-ption
-at this point would overwrite ELR/ESR, meaning we could never handle the
-original exception.
+Prefix_node is guaranteed to be valid at this point in the code.
 
 
->> What happens if the hypervisor then executes an ESB with PSTATE.A set? It
->> expects to see any pending SError deferred and its syndrome written to D=
-ISR_EL1,
->> but this register is RAZ/WI when you set SCR_EL3.EA. '4.4.2' of [0]
+> =
 
-> From my understand, if the SCR_EL3.EA is set, the Abort can not mask, it =
-always happen and
-> take to EL3, DISR_El1 can not record the syndrome. DISR_El1 is only recor=
-ded when
-> the External Abort is masked, but when SCR_EL3.EA is set, the pstate.A ca=
-n not mask the Error.
-
-But once EL3 wants to notify EL2, and EL2 believes it has SError masked, (e=
-ven
-if the CPU knows its going route physical-SError to EL3) what do you do?
-
-(The best I can think of is that if firmware has to deliver a RAS Error as a
-fake-SError, and the target exception-level has SError masked, then firmware
-should reboot normal-world and deliver the error via the BERT. To support
-NOTIFY_SEI the OS should aim to mask SError as little as possible.)
+> >  			/*
+> >  			 * This node might not be a actual "scope" node (such as
+> a
+> >  			 * Device/Method, etc.)  It could be a Package or other
+> object @@
+> > -369,7 +369,7 @@ acpi_ns_lookup(union acpi_generic_state *scope_info,
+> >  		ACPI_DEBUG_PRINT((ACPI_DB_NAMES,
+> >  				  "Null Pathname (Zero segments), Flags=3D%X\n",
+> >  				  flags));
+> > -	} else {
+> > +	} else if (path) {
+[Moore, Robert] =
 
 
->>> For the synchronous external abort(SEA), Hypervisor calls the
->>> ghes_handle_memory_failure() to deal with this error,
->>> ghes_handle_memory_failure() function reads the APEI table and =
-
->>> callls memory_failure() to decide whether it needs to deliver
->>> SIGBUS signal to user space, the advantage of using SIGBUS signal
->>> to notify user space is that it can be compatible with Non-Kvm users.
->>>
->>> For the SError Interrupt(SEI),KVM firstly classified the error.
->>
->> KVM can't parse the CPER records, nor does it know where to look to find=
- them.
->> KVM should call out to the APEI code so the host kernel can handle the e=
-rror.
-
-> KVM does not parse the CPER records, I mean KVM classified the error acco=
-rding to the esr_el2.AET.
-
-Decoding the AET bits in KVM is stub code for systems without firmware-firs=
-t.
-This will eventually be a call-out to some arm64 arch code to decode the RA=
-S ERR
-records and do kernel-first handling.
-
-All the GHES notification methods mean 'go read the CPER records'. The CPER
-records then contain all the information, including severities. The SError =
-ESR
-value should be irrelevant if the host supports firmware-first.
-
-Without firmware-first or kernel-first we decode the SError ESR to know whe=
-ther
-or not to panic(). This is the minimum-work to avoid data corruption while =
-Linux
-only supports firmware-first and the platform expects kernel-first.
+Likewise, "path" is guaranteed to be valid at this point.
 
 
+> >  		/*
+> >  		 * Name pointer is valid (and must be in internal name
+> > format)
+> >  		 *
+> > --
+> > 2.14.1
+> >
+> =
 
-Thanks,
+> _______________________________________________
+> Devel mailing list
+> Devel(a)acpica.org
+> https://lists.acpica.org/mailman/listinfo/devel
 
-James
-
-
---===============9150983158394403573==--
+--===============3981679665984386277==--
 
