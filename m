@@ -1,157 +1,173 @@
-Content-Type: multipart/mixed; boundary="===============1752200845854567493=="
+Content-Type: multipart/mixed; boundary="===============5367973646962638471=="
 MIME-Version: 1.0
 From: gengdongjiu <gengdongjiu at huawei.com>
-Subject: Re: [Devel] [PATCH v6 3/7] acpi: apei: remove the unused code
-Date: Mon, 11 Sep 2017 20:04:21 +0800
-Message-ID: <b06c680c-93a3-7e20-1118-c6a9a24704df@huawei.com>
-In-Reply-To: 59B2DEBA.6030608@arm.com
+Subject: Re: [Devel] [PATCH v11 6/6] target-arm: kvm64: Handle SError
+ interrupt for the guest OS
+Date: Mon, 11 Sep 2017 15:17:56 +0000
+Message-ID: <0184EA26B2509940AA629AE1405DD7F2015FE17F@DGGEMA503-MBX.china.huawei.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1752200845854567493==
+--===============5367973646962638471==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-James,
-   Thanks for the review.
-
-On 2017/9/9 2:17, James Morse wrote:
-> Hi gengdongjiu,
-> =
-
-> On 04/09/17 12:43, gengdongjiu wrote:
->> On 2017/9/1 1:50, James Morse wrote:
->>> On 28/08/17 11:38, Dongjiu Geng wrote:
->>>> In current code logic, the two functions ghes_sea_add() and
->>>> ghes_sea_remove() are only called when CONFIG_ACPI_APEI_SEA
->>>> is defined. If not, it will return errors in the ghes_probe()
->>>> and not contiue. Hence, remove the unnecessary handling when
->>>> CONFIG_ACPI_APEI_SEI is not defined.
->>>
->>> This doesn't match what the patch does. I get this feeling this is need=
-ed for
->>> some future patch you haven't included.
->>
->> James, let check the code, when the ghes_probe, if the CONFIG_ACPI_APEI_=
-SEA is not defined.
->> it will return -ENOTSUPP and goto error, and the ghes_sea_add has no cha=
-nce to execute.
->> similar, if the probe is failed, it should not have chance to execute gh=
-es_sea_remove.
-> =
-
-> It's the 'unnecessary handling when CONFIG_ACPI_APEI_SEI' in the commit m=
-essage
-> that confuses me: this patch doesn't reference that Kconfig symbol. I gue=
-ss that
-> sentence needs removing for this v6?
- thanks for the pointing out, That needs to be removed for v6.
+Hi peter,
 
 > =
 
-> Re-reading without that part of the commit-message:
+> On 18 August 2017 at 15:23, Dongjiu Geng <gengdongjiu(a)huawei.com> wrote:
+> > When guest OS happens SError interrupt(SEI), it will trap to host.
+> > Host firstly calls memory failure to deal with this error and decide
+> > whether it needs to deliver SIGBUS signal to userspace. The advantage
+> > that using signal to notify is that it can make the notification
+> > method is general, non-KVM user can also use it. when userspace gets
+> > this signal and knows this is SError interrupt, it will translate the
+> > delivered host VA to PA and record this PA to GHES.
+> >
+> > Because ARMv8.2 adds an extension to RAS to allow system software
+> > insert implicit Error Synchronization Barrier operations to isolate
+> > the error and allow passes specified syndrome to guest OS, so after
+> > record the CPER, user space calls IOCTL to pass a specified syndrome
+> > to KVM, then switch to guest OS, guest OS can use the recorded CPER
+> > record and syndrome information to do the recovery.
+> >
+> > The steps are shown below:
+> > 1. translate the host VA to guest OS PA and record this error PA to HES=
+T table.
+> > 2. set specified virtual SError syndrome and pass the value to KVM.
+> >
+> > Signed-off-by: Dongjiu Geng <gengdongjiu(a)huawei.com>
+> > Signed-off-by: Quanming Wu <wuquanming(a)huawei.com>
+> > ---
+> >  linux-headers/linux/kvm.h |  1 +
+> >  target/arm/internals.h    |  1 +
+> >  target/arm/kvm64.c        | 28 ++++++++++++++++++++++++++++
+> >  3 files changed, 30 insertions(+)
+> >
+> > diff --git a/linux-headers/linux/kvm.h b/linux-headers/linux/kvm.h
+> > index 2aa176e..10dfcab 100644
+> > --- a/linux-headers/linux/kvm.h
+> > +++ b/linux-headers/linux/kvm.h
+> > @@ -1356,6 +1356,7 @@ struct kvm_s390_ucas_mapping {
+> >  /* Available with KVM_CAP_S390_CMMA_MIGRATION */
+> >  #define KVM_S390_GET_CMMA_BITS      _IOWR(KVMIO, 0xb8, struct kvm_s390=
+_cmma_log)
+> >  #define KVM_S390_SET_CMMA_BITS      _IOW(KVMIO, 0xb9, struct kvm_s390_=
+cmma_log)
+> > +#define KVM_ARM_SEI                 _IO(KVMIO,   0xb10)
+> >
+> >  #define KVM_DEV_ASSIGN_ENABLE_IOMMU    (1 << 0)
+> >  #define KVM_DEV_ASSIGN_PCI_2_3         (1 << 1)
+> > diff --git a/target/arm/internals.h b/target/arm/internals.h index
+> > fc0ad6d..18b1cbc 100644
+> > --- a/target/arm/internals.h
+> > +++ b/target/arm/internals.h
+> > @@ -237,6 +237,7 @@ enum arm_exception_class {  #define ARM_EL_ISV (1
+> > << ARM_EL_ISV_SHIFT)  #define ARM_EL_EC_MASK  ((0x3F) <<
+> > ARM_EL_EC_SHIFT)  #define ARM_EL_FSC_TYPE (0x3C)
+> > +#define ARM_EL_ISS_MASK ((1 << ARM_EL_IL_SHIFT) - 1)
+> >
+> >  #define FSC_SEA         (0x10)
+> >  #define FSC_SEA_TTW0    (0x14)
+> > diff --git a/target/arm/kvm64.c b/target/arm/kvm64.c index
+> > d3bdab2..b84cb49 100644
+> > --- a/target/arm/kvm64.c
+> > +++ b/target/arm/kvm64.c
+> > @@ -616,6 +616,22 @@ static int kvm_arm_cpreg_value(ARMCPU *cpu, ptrdif=
+f_t fieldoffset)
+> >      return -EINVAL;
+> >  }
+> >
+> > +static int kvm_inject_arm_sei(CPUState *cs) {
+> > +    ARMCPU *cpu =3D ARM_CPU(cs);
+> > +    CPUARMState *env =3D &cpu->env;
+> > +
+> > +    unsigned long syndrome =3D env->exception.vaddress;
+> > +    /* set virtual SError syndrome */
+> > +    if (arm_feature(env, ARM_FEATURE_RAS_EXTENSION)) {
+> > +        syndrome =3D syndrome & ARM_EL_ISS_MASK;
+> > +    } else {
+> > +        syndrome =3D 0;
+> > +    }
+> > +
+> > +    return  kvm_vcpu_ioctl(CPU(cpu), KVM_ARM_SEI, &syndrome);
 > =
 
-> You're relying on the compiler's dead-code elimination to spot unused sta=
-tic
-> functions and silently drop them. Great!
-> (there is the small risk that gcc 3.2[0] can't do this, x86 still has to =
-support
-> this gcc version)
-> =
+> This looks odd. If we don't have the RAS extension why do we need to do a=
+nything at all here ?
 
-> As this is just clean-up patch can you break it out of this series, it is=
-n't
-> needed to add support for SEI.
-sure, I will.
+This is because Qemu may need to support non-RAS extension as discussed wit=
+h ARM James before.
+That is to say host hardware CPU does not support RAS, but guest supports.
+That is under discussion.
+When host hardware supports RAS, specify the syndrome to a valid value, oth=
+erwise, set it to 0.
 
 > =
 
-> (This series adds support for what should be an APEI notification, but th=
-e only
-> code that touches APEI removes some code from a different notification me=
-thod.)
+> > +}
+> > +
+> >  /* Inject synchronous external abort */  static int
+> > kvm_inject_arm_sea(CPUState *c)  { @@ -1007,6 +1023,15 @@ static bool
+> > is_abort_sea(unsigned long syndrome)
+> >      }
+> >  }
+> >
+> > +static bool is_abort_sei(unsigned long syndrome) {
+> > +    uint8_t ec =3D ((syndrome & ARM_EL_EC_MASK) >> ARM_EL_EC_SHIFT);
+> =
 
-understand.
+> You don't need to bother masking here -- in other places in QEMU we assum=
+e that the EC field is at the top of the word, so just "syndrome >>
+> ARM_EL_EC_SHIFT" is sufficient.
+
+OK, thanks for the suggestion.
 
 > =
 
+> > +    if ((ec !=3D EC_SERROR))
+> > +        return false;
+> > +    else
+> > +        return true;
 > =
 
->>> Setting NOTIFY_SEI as the GHES entry's notification type means the OS s=
-hould
->>> check the GHES->ErrorStatusAddress for CPER records when it receives an
->>> SError-Interrupt, as it may be a notification of an error from this err=
-or source.
+> scripts/checkpatch.pl should tell you that this if needs braces (it's goo=
+d to get in the habit of running it on all patches; it is not always
+> correct, so judgement is required, but it will flag up some common mistak=
+es).
 > =
 
->> previously I added the NOTIFY_SEI support,
-> =
+> In this particular case, you should just
+>    return ec =3D=3D EC_SERROR;
+> though.
 
-> (Yes, I saw that in v5 and expected this series to add some APEI support =
-code )
-> =
-
-> =
-
->> but consider the error address in CPER is not accurate and calling memor=
-y_failure() may not make sense.
->> so I remove it.
-> =
-
-> 'not accurate'... this is going to be a problem, but lets keep that discu=
-ssion
-> on the cover-letter.
-
-Ok.
-
+Good suggestion.
 
 > =
 
+> > +}
+> > +
+> >  void kvm_arch_on_sigbus_vcpu(CPUState *c, int code, void *addr)  {
+> >      ram_addr_t ram_addr;
+> > @@ -1024,6 +1049,9 @@ void kvm_arch_on_sigbus_vcpu(CPUState *c, int cod=
+e, void *addr)
+> >              if (is_abort_sea(env->exception.syndrome)) {
+> >                  ghes_update_guest(ACPI_HEST_NOTIFY_SEA, paddr);
+> >                  kvm_inject_arm_sea(c);
+> > +            } else if (is_abort_sei(env->exception.syndrome)) {
+> > +                ghes_update_guest(ACPI_HEST_NOTIFY_SEI, paddr);
+> > +                kvm_inject_arm_sei(c);
+> >              }
+> >              return;
+> >          }
+> > --
+> > 1.8.3.1
 > =
 
->>> If you aren't handling the notification, why is this is in the HEST at =
-all?
->>> (and if its not: its not firmware-first)
-> =
+> thanks
+> -- PMM
 
->> For the SEI notification, may be we can parse and handle the CPER record=
- other than the Error physical address
-> =
-
-> Sure, but I only see this cleanup patch in this series, where does APEI l=
-earn
-> about NOTIFY_SEI? As this is nothing will ever touch those CPER records, =
-if
-> you're using GHESv2 firmware will be prevented from delivering subsequent
-> notifications.
-James, whether it is possible you can review the previous v5 patch which ad=
-ds the support for NOTIFY_SEI? thanks in advancecIn that patch, I share the=
- SEI notification handling with the SEA notification handling to avoid dupl=
-icated code.
-
-https://www.spinics.net/lists/arm-kernel/msg601767.html
-
-> =
-
-> =
-
-> Thanks,
-> =
-
-> James
-> =
-
-> [0]
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/D=
-ocumentation/admin-guide/README.rst#n251
-> =
-
-> .
-> =
-
-
-
---===============1752200845854567493==--
+--===============5367973646962638471==--
 
