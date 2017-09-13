@@ -1,64 +1,103 @@
-Content-Type: multipart/mixed; boundary="===============2167638078511819199=="
+Content-Type: multipart/mixed; boundary="===============7080739008988866999=="
 MIME-Version: 1.0
 From: gengdongjiu <gengdongjiu at huawei.com>
-Subject: Re: [Devel] [PATCH v11 6/6] target-arm: kvm64: Handle SError
- interrupt for the guest OS
-Date: Wed, 13 Sep 2017 15:52:14 +0800
-Message-ID: <5552cf68-b998-686b-8e7e-710399c2b014@huawei.com>
-In-Reply-To: CAFEAcA8J5wZ23kQypzcbUScUResjWnN6rDG0b0idD1rv7F5Fsw@mail.gmail.com
+Subject: Re: [Devel] [PATCH v6 5/7] arm64: kvm: route synchronous external
+ abort exceptions to el2
+Date: Wed, 13 Sep 2017 16:12:10 +0800
+Message-ID: <761bca49-7257-75a6-f6a9-e8e5e2af9ad0@huawei.com>
+In-Reply-To: 59B17449.6010201@arm.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2167638078511819199==
+--===============7080739008988866999==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2017/9/12 0:39, Peter Maydell wrote:
->>>> +    return  kvm_vcpu_ioctl(CPU(cpu), KVM_ARM_SEI, &syndrome);
->>> This looks odd. If we don't have the RAS extension why do we need to do=
- anything at all here ?
->> This is because Qemu may need to support non-RAS extension as discussed =
-with ARM James before.
->> That is to say host hardware CPU does not support RAS, but guest support=
-s.
->> That is under discussion.
->> When host hardware supports RAS, specify the syndrome to a valid value, =
-otherwise, set it to 0.
-> If the guest CPU doesn't support the RAS extension then we have
-> no mechanism for delivering it a notification about the
-> memory problem at all, so setting the syndrome to anything
-> doesn't make sense.
+On 2017/9/8 0:31, James Morse wrote:
+> Hi Dongjiu Geng,
 > =
 
-> I'm not sure what you should do in the case of "host
-> supports telling us about a memory problem and has
-> done so, but guest does not support being told about it",
-> but I'm pretty sure it shouldn't be this.
-Hi peter,
-   thanks for the comments.
+> On 28/08/17 11:38, Dongjiu Geng wrote:
+>> ARMv8.2 adds a new bit HCR_EL2.TEA which controls to
+>> route synchronous external aborts to EL2, and adds a
+>> trap control bit HCR_EL2.TERR which controls to
+>> trap all Non-secure EL1&0 error record accesses to EL2.
+>>
+>> This patch enables the two bits for the guest OS.
+>> when an synchronous abort is generated in the guest OS,
+> =
 
-   in short, if the hardware CPU does not support RAS extension, do you thi=
-nk whether the Qemu or guest OS
-needs to support RAS(generate APEI table / record CPER / Error recovery).
+>> it will trap to EL3 firmware, EL3 firmware will check the
+>> HCR_EL2.TEA value to decide to jump to hypervisor or host
+>> OS.
+> =
 
-CC James,
+> (This is what you are using this for, the patch has nothing to do with EL=
+3.)
 
-Hi James,
-  you ever have below comments:
-
------------------------------------------------------------------------
-But you can use APEI in a guest on CPUs without the RAS extensions: the hos=
-t may
-signal memory errors to Qemu for any number of reasons.
-------------------------------------------------------------------
-
-in fact, I have a concern about it. If CPU without the RAS extension, the h=
-ost should not deliver the sigbus.
-in which case in your test that host still deliver sigbus without RAS?
+No, EL3 will check the HCR_EL2.TEA to decide to jump to hypervisor or host =
+kernel.
 
 
---===============2167638078511819199==--
+> =
+
+> =
+
+>> Enabling HCR_EL2.TERR makes error record access
+>> from guest trap to EL2.
+> =
+
+> =
+
+> KVM already handles external aborts from lower exception levels, no more =
+work
+> needs doing for TEA.
+when SCR_EL3.EA is set, TEA will not workable, El3 only check its value to =
+decide to hypervisor or EL1 host kernel.
+
+> =
+
+> What happens when a guest access the RAS-Error-Record registers?
+it will trap to EL2 kvm
+
+> =
+
+> Before we can set HCR_EL2.TERR I think we need to add some minimal emulat=
+ion for
+> the registers it traps. Most of them should be RAZ/WI, so it should be
+> straightforward. (I think KVMs default is to emulate an undef for unknown=
+ traps).
+
+if KVM default handling is to emulate an undef for unknown traps, how about=
+ we use its default way? because no one access
+the ERR RAS register in the guest .
+
+> =
+
+> Eventually we will want to back this with a page of memory that lets
+> Qemu/kvmtool configure what the guest can see. (i.e. the emulated machine=
+'s
+> errors for kernel-first handling.)
+I think emulate it to an undef for unknown traps can be enough, no one acce=
+ss the ERR register in the guest.
+
+> =
+
+> =
+
+> Thanks,
+> =
+
+> James
+> =
+
+> .
+> =
+
+
+
+--===============7080739008988866999==--
 
