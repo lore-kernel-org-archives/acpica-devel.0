@@ -1,103 +1,72 @@
-Content-Type: multipart/mixed; boundary="===============7080739008988866999=="
+Content-Type: multipart/mixed; boundary="===============4396308617735936337=="
 MIME-Version: 1.0
-From: gengdongjiu <gengdongjiu at huawei.com>
-Subject: Re: [Devel] [PATCH v6 5/7] arm64: kvm: route synchronous external
- abort exceptions to el2
-Date: Wed, 13 Sep 2017 16:12:10 +0800
-Message-ID: <761bca49-7257-75a6-f6a9-e8e5e2af9ad0@huawei.com>
-In-Reply-To: 59B17449.6010201@arm.com
+From: Peter Maydell <peter.maydell at linaro.org>
+Subject: Re: [Devel] [PATCH v11 6/6] target-arm: kvm64: Handle SError
+ interrupt for the guest OS
+Date: Wed, 13 Sep 2017 11:52:34 +0100
+Message-ID: <CAFEAcA_zO_-kDYb0MkW=p5oY6tQPk4PpCqZoG0_01pn=sa3upw@mail.gmail.com>
+In-Reply-To: 5552cf68-b998-686b-8e7e-710399c2b014@huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7080739008988866999==
+--===============4396308617735936337==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-
-
-On 2017/9/8 0:31, James Morse wrote:
-> Hi Dongjiu Geng,
-> =
-
-> On 28/08/17 11:38, Dongjiu Geng wrote:
->> ARMv8.2 adds a new bit HCR_EL2.TEA which controls to
->> route synchronous external aborts to EL2, and adds a
->> trap control bit HCR_EL2.TERR which controls to
->> trap all Non-secure EL1&0 error record accesses to EL2.
+On 13 September 2017 at 08:52, gengdongjiu <gengdongjiu(a)huawei.com> wrote:
+>
+>
+> On 2017/9/12 0:39, Peter Maydell wrote:
+>>>>> +    return  kvm_vcpu_ioctl(CPU(cpu), KVM_ARM_SEI, &syndrome);
+>>>> This looks odd. If we don't have the RAS extension why do we need to d=
+o anything at all here ?
+>>> This is because Qemu may need to support non-RAS extension as discussed=
+ with ARM James before.
+>>> That is to say host hardware CPU does not support RAS, but guest suppor=
+ts.
+>>> That is under discussion.
+>>> When host hardware supports RAS, specify the syndrome to a valid value,=
+ otherwise, set it to 0.
+>> If the guest CPU doesn't support the RAS extension then we have
+>> no mechanism for delivering it a notification about the
+>> memory problem at all, so setting the syndrome to anything
+>> doesn't make sense.
 >>
->> This patch enables the two bits for the guest OS.
->> when an synchronous abort is generated in the guest OS,
-> =
+>> I'm not sure what you should do in the case of "host
+>> supports telling us about a memory problem and has
+>> done so, but guest does not support being told about it",
+>> but I'm pretty sure it shouldn't be this.
 
->> it will trap to EL3 firmware, EL3 firmware will check the
->> HCR_EL2.TEA value to decide to jump to hypervisor or host
->> OS.
-> =
+>    in short, if the hardware CPU does not support RAS extension, do you t=
+hink whether the Qemu or guest OS
+> needs to support RAS(generate APEI table / record CPER / Error recovery).
 
-> (This is what you are using this for, the patch has nothing to do with EL=
-3.)
+This question seems to be not really related to the review
+comment that it is responding to.
 
-No, EL3 will check the HCR_EL2.TEA to decide to jump to hypervisor or host =
-kernel.
+(1) If the host does not support notifying us about
+errors, then there is clearly nothing to do in this
+code, because we will never get a notification.
 
+(2) If the host does support notifying us about errors,
+but we choose not to expose RAS to the guest, then
+there's not much to do either. We probably just want
+to take whatever the default behaviour is for any
+application when it touches memory that's bad.
+We definitely don't want to tell the guest anything.
 
-> =
+(3) If the host supports notification, and we choose
+to expose RAS to the guest, then we need to do
+whatever we have to do to notify the guest.
 
-> =
+If we're in this signal handler and also
+arm_feature(env, ARM_FEATURE_RAS) is false then that
+is case (2), and my point is that doing anything with
+the guest 'syndrome' value looks like the wrong thing.
 
->> Enabling HCR_EL2.TERR makes error record access
->> from guest trap to EL2.
-> =
+thanks
+-- PMM
 
-> =
-
-> KVM already handles external aborts from lower exception levels, no more =
-work
-> needs doing for TEA.
-when SCR_EL3.EA is set, TEA will not workable, El3 only check its value to =
-decide to hypervisor or EL1 host kernel.
-
-> =
-
-> What happens when a guest access the RAS-Error-Record registers?
-it will trap to EL2 kvm
-
-> =
-
-> Before we can set HCR_EL2.TERR I think we need to add some minimal emulat=
-ion for
-> the registers it traps. Most of them should be RAZ/WI, so it should be
-> straightforward. (I think KVMs default is to emulate an undef for unknown=
- traps).
-
-if KVM default handling is to emulate an undef for unknown traps, how about=
- we use its default way? because no one access
-the ERR RAS register in the guest .
-
-> =
-
-> Eventually we will want to back this with a page of memory that lets
-> Qemu/kvmtool configure what the guest can see. (i.e. the emulated machine=
-'s
-> errors for kernel-first handling.)
-I think emulate it to an undef for unknown traps can be enough, no one acce=
-ss the ERR register in the guest.
-
-> =
-
-> =
-
-> Thanks,
-> =
-
-> James
-> =
-
-> .
-> =
-
-
-
---===============7080739008988866999==--
+--===============4396308617735936337==--
 
