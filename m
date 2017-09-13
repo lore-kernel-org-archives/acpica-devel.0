@@ -1,72 +1,52 @@
-Content-Type: multipart/mixed; boundary="===============4396308617735936337=="
+Content-Type: multipart/mixed; boundary="===============1213767701168913554=="
 MIME-Version: 1.0
-From: Peter Maydell <peter.maydell at linaro.org>
+From: gengdongjiu <gengdongjiu at huawei.com>
 Subject: Re: [Devel] [PATCH v11 6/6] target-arm: kvm64: Handle SError
  interrupt for the guest OS
-Date: Wed, 13 Sep 2017 11:52:34 +0100
-Message-ID: <CAFEAcA_zO_-kDYb0MkW=p5oY6tQPk4PpCqZoG0_01pn=sa3upw@mail.gmail.com>
-In-Reply-To: 5552cf68-b998-686b-8e7e-710399c2b014@huawei.com
+Date: Wed, 13 Sep 2017 19:51:56 +0800
+Message-ID: <c105c670-6aec-32cd-d32b-30642819323e@huawei.com>
+In-Reply-To: CAFEAcA_zO_-kDYb0MkW=p5oY6tQPk4PpCqZoG0_01pn=sa3upw@mail.gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4396308617735936337==
+--===============1213767701168913554==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On 13 September 2017 at 08:52, gengdongjiu <gengdongjiu(a)huawei.com> wrote:
->
->
-> On 2017/9/12 0:39, Peter Maydell wrote:
->>>>> +    return  kvm_vcpu_ioctl(CPU(cpu), KVM_ARM_SEI, &syndrome);
->>>> This looks odd. If we don't have the RAS extension why do we need to d=
-o anything at all here ?
->>> This is because Qemu may need to support non-RAS extension as discussed=
- with ARM James before.
->>> That is to say host hardware CPU does not support RAS, but guest suppor=
-ts.
->>> That is under discussion.
->>> When host hardware supports RAS, specify the syndrome to a valid value,=
- otherwise, set it to 0.
->> If the guest CPU doesn't support the RAS extension then we have
->> no mechanism for delivering it a notification about the
->> memory problem at all, so setting the syndrome to anything
->> doesn't make sense.
->>
->> I'm not sure what you should do in the case of "host
->> supports telling us about a memory problem and has
->> done so, but guest does not support being told about it",
->> but I'm pretty sure it shouldn't be this.
 
->    in short, if the hardware CPU does not support RAS extension, do you t=
-hink whether the Qemu or guest OS
-> needs to support RAS(generate APEI table / record CPER / Error recovery).
 
-This question seems to be not really related to the review
-comment that it is responding to.
+On 2017/9/13 18:52, Peter Maydell wrote:
+> This question seems to be not really related to the review
+> comment that it is responding to.
+> =
 
-(1) If the host does not support notifying us about
-errors, then there is clearly nothing to do in this
-code, because we will never get a notification.
+> (1) If the host does not support notifying us about
+> errors, then there is clearly nothing to do in this
+> code, because we will never get a notification.
+> =
 
-(2) If the host does support notifying us about errors,
-but we choose not to expose RAS to the guest, then
-there's not much to do either. We probably just want
-to take whatever the default behaviour is for any
-application when it touches memory that's bad.
-We definitely don't want to tell the guest anything.
+> (2) If the host does support notifying us about errors,
+> but we choose not to expose RAS to the guest, then
+> there's not much to do either. We probably just want
+> to take whatever the default behaviour is for any
+> application when it touches memory that's bad.
+> We definitely don't want to tell the guest anything.
+> =
 
-(3) If the host supports notification, and we choose
-to expose RAS to the guest, then we need to do
-whatever we have to do to notify the guest.
+> (3) If the host supports notification, and we choose
+> to expose RAS to the guest, then we need to do
+> whatever we have to do to notify the guest.
+> =
 
-If we're in this signal handler and also
-arm_feature(env, ARM_FEATURE_RAS) is false then that
-is case (2), and my point is that doing anything with
-the guest 'syndrome' value looks like the wrong thing.
+> If we're in this signal handler and also
+> arm_feature(env, ARM_FEATURE_RAS) is false then that
+> is case (2), and my point is that doing anything with
+> the guest 'syndrome' value looks like the wrong thing.
 
-thanks
--- PMM
+Peter,
+  your explanation is clear. OK, understand, thanks.
 
---===============4396308617735936337==--
+
+--===============1213767701168913554==--
 
