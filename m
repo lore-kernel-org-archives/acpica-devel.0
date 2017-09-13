@@ -1,58 +1,77 @@
-Content-Type: multipart/mixed; boundary="===============0579323684074064181=="
+Content-Type: multipart/mixed; boundary="===============1840493421822560233=="
 MIME-Version: 1.0
-From: Peter Maydell <peter.maydell at linaro.org>
-Subject: Re: [Devel] [PATCH v11 6/6] target-arm: kvm64: Handle SError
- interrupt for the guest OS
-Date: Mon, 11 Sep 2017 17:39:03 +0100
-Message-ID: <CAFEAcA8J5wZ23kQypzcbUScUResjWnN6rDG0b0idD1rv7F5Fsw@mail.gmail.com>
-In-Reply-To: 0184EA26B2509940AA629AE1405DD7F2015FE17F@DGGEMA503-MBX.china.huawei.com
+From: Will Deacon <will.deacon at arm.com>
+Subject: Re: [Devel] [RFC PATCH 6/6] iommu/arm-smmu-v3: Avoid ILLEGAL setting
+ of STE.S1STALLD and CD.S
+Date: Wed, 13 Sep 2017 04:06:44 +0100
+Message-ID: <20170913030643.GD12411@arm.com>
+In-Reply-To: 738977bb-4cd7-7d86-0ea0-0c88b6af721c@arm.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0579323684074064181==
+--===============1840493421822560233==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On 11 September 2017 at 16:17, gengdongjiu <gengdongjiu(a)huawei.com> wrote:
->> On 18 August 2017 at 15:23, Dongjiu Geng <gengdongjiu(a)huawei.com> wrot=
-e:
->> > +static int kvm_inject_arm_sei(CPUState *cs) {
->> > +    ARMCPU *cpu =3D ARM_CPU(cs);
->> > +    CPUARMState *env =3D &cpu->env;
->> > +
->> > +    unsigned long syndrome =3D env->exception.vaddress;
->> > +    /* set virtual SError syndrome */
->> > +    if (arm_feature(env, ARM_FEATURE_RAS_EXTENSION)) {
->> > +        syndrome =3D syndrome & ARM_EL_ISS_MASK;
->> > +    } else {
->> > +        syndrome =3D 0;
->> > +    }
->> > +
->> > +    return  kvm_vcpu_ioctl(CPU(cpu), KVM_ARM_SEI, &syndrome);
->>
->> This looks odd. If we don't have the RAS extension why do we need to do =
-anything at all here ?
->
-> This is because Qemu may need to support non-RAS extension as discussed w=
-ith ARM James before.
-> That is to say host hardware CPU does not support RAS, but guest supports.
-> That is under discussion.
-> When host hardware supports RAS, specify the syndrome to a valid value, o=
-therwise, set it to 0.
+On Tue, Sep 05, 2017 at 01:54:19PM +0100, Jean-Philippe Brucker wrote:
+> On 31/08/17 09:20, Yisheng Xie wrote:
+> > It is ILLEGAL to set STE.S1STALLD if STALL_MODEL is not 0b00, which
+> > means we should not disable stall mode if stall/terminate mode is not
+> > configuable.
+> > =
 
-If the guest CPU doesn't support the RAS extension then we have
-no mechanism for delivering it a notification about the
-memory problem at all, so setting the syndrome to anything
-doesn't make sense.
+> > Meanwhile, it is also ILLEGAL when STALL_MODEL=3D=3D0b10 && CD.S=3D=3D0=
+ which
+> > means if stall mode is force we should always set CD.S.
+> > =
 
-I'm not sure what you should do in the case of "host
-supports telling us about a memory problem and has
-done so, but guest does not support being told about it",
-but I'm pretty sure it shouldn't be this.
+> > This patch add ARM_SMMU_FEAT_TERMINATE feature bit for smmu, and use
+> > TERMINATE feature checking to ensue above ILLEGAL cases from happening.
+> > =
 
-thanks
--- PMM
+> > Signed-off-by: Yisheng Xie <xieyisheng1(a)huawei.com>
+> > ---
+> >  drivers/iommu/arm-smmu-v3.c | 22 ++++++++++++++++------
+> >  1 file changed, 16 insertions(+), 6 deletions(-)
+> > =
 
---===============0579323684074064181==--
+> > diff --git a/drivers/iommu/arm-smmu-v3.c b/drivers/iommu/arm-smmu-v3.c
+> > index dbda2eb..0745522 100644
+> > --- a/drivers/iommu/arm-smmu-v3.c
+> > +++ b/drivers/iommu/arm-smmu-v3.c
+> > @@ -55,6 +55,7 @@
+> >  #define IDR0_STALL_MODEL_SHIFT		24
+> >  #define IDR0_STALL_MODEL_MASK		0x3
+> >  #define IDR0_STALL_MODEL_STALL		(0 << IDR0_STALL_MODEL_SHIFT)
+> > +#define IDR0_STALL_MODEL_NS		(1 << IDR0_STALL_MODEL_SHIFT)
+> >  #define IDR0_STALL_MODEL_FORCE		(2 << IDR0_STALL_MODEL_SHIFT)
+> >  #define IDR0_TTENDIAN_SHIFT		21
+> >  #define IDR0_TTENDIAN_MASK		0x3
+> > @@ -766,6 +767,7 @@ struct arm_smmu_device {
+> >  #define ARM_SMMU_FEAT_SVM		(1 << 15)
+> >  #define ARM_SMMU_FEAT_HA		(1 << 16)
+> >  #define ARM_SMMU_FEAT_HD		(1 << 17)
+> > +#define ARM_SMMU_FEAT_TERMINATE		(1 << 18)
+> =
+
+> I'd rather introduce something like "ARM_SMMU_FEAT_STALL_FORCE" instead.
+> Terminate model has another meaning, and is defined by a different bit in
+> IDR0.
+
+Yes. What we need to do is:
+
+- If STALL_MODEL is 0b00, then set S1STALLD
+- If STALL_MODEL is 0b01, then we're ok (in future, avoiding trying to use
+  stalls, even for masters that claim to support it)
+- If STALL_MODEL is 0b10, then force all PCI devices and any platform
+  devices that don't claim to support stalls into bypass (depending on
+  disable_bypass).
+
+Reasonable? We could actually knock up a fix for mainline to do most of
+this already.
+
+Will
+
+--===============1840493421822560233==--
 
