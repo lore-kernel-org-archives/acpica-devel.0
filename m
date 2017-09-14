@@ -1,79 +1,117 @@
-Content-Type: multipart/mixed; boundary="===============4476342481998641159=="
+Content-Type: multipart/mixed; boundary="===============8805361713716453539=="
 MIME-Version: 1.0
-From: Will Deacon <will.deacon at arm.com>
-Subject: Re: [Devel] [RFC PATCH 6/6] iommu/arm-smmu-v3: Avoid ILLEGAL setting
- of STE.S1STALLD and CD.S
-Date: Wed, 13 Sep 2017 18:11:59 +0100
-Message-ID: <20170913171159.GB14955@arm.com>
-In-Reply-To: 2f952821-afc3-46dd-17eb-40e8626bd6e5@huawei.com
+From: Shameer Kolothum <shameerali.kolothum.thodi at huawei.com>
+Subject: [Devel] [PATCH v7 5/5] iommu/arm-smmu-v3:Enable ACPI based HiSilicon
+ erratum 161010801
+Date: Thu, 14 Sep 2017 13:57:56 +0100
+Message-ID: <20170914125756.14836-6-shameerali.kolothum.thodi@huawei.com>
+In-Reply-To: 20170914125756.14836-1-shameerali.kolothum.thodi@huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4476342481998641159==
+--===============8805361713716453539==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Sep 13, 2017 at 06:11:13PM +0800, Yisheng Xie wrote:
-> On 2017/9/13 11:06, Will Deacon wrote:
-> > On Tue, Sep 05, 2017 at 01:54:19PM +0100, Jean-Philippe Brucker wrote:
-> >> On 31/08/17 09:20, Yisheng Xie wrote:
-> >>> It is ILLEGAL to set STE.S1STALLD if STALL_MODEL is not 0b00, which
-> >>> means we should not disable stall mode if stall/terminate mode is not
-> >>> configuable.
-> >>>
-> >>> Meanwhile, it is also ILLEGAL when STALL_MODEL=3D=3D0b10 && CD.S=3D=
-=3D0 which
-> >>> means if stall mode is force we should always set CD.S.
-> >>>
-> >>> This patch add ARM_SMMU_FEAT_TERMINATE feature bit for smmu, and use
-> >>> TERMINATE feature checking to ensue above ILLEGAL cases from happenin=
-g.
-> >>>
-> >>> Signed-off-by: Yisheng Xie <xieyisheng1(a)huawei.com>
-> >>> ---
-> >>>  drivers/iommu/arm-smmu-v3.c | 22 ++++++++++++++++------
-> >>>  1 file changed, 16 insertions(+), 6 deletions(-)
-> >>>
-> >>> diff --git a/drivers/iommu/arm-smmu-v3.c b/drivers/iommu/arm-smmu-v3.c
-> >>> index dbda2eb..0745522 100644
-> >>> --- a/drivers/iommu/arm-smmu-v3.c
-> >>> +++ b/drivers/iommu/arm-smmu-v3.c
-> >>> @@ -55,6 +55,7 @@
-> >>>  #define IDR0_STALL_MODEL_SHIFT		24
-> >>>  #define IDR0_STALL_MODEL_MASK		0x3
-> >>>  #define IDR0_STALL_MODEL_STALL		(0 << IDR0_STALL_MODEL_SHIFT)
-> >>> +#define IDR0_STALL_MODEL_NS		(1 << IDR0_STALL_MODEL_SHIFT)
-> >>>  #define IDR0_STALL_MODEL_FORCE		(2 << IDR0_STALL_MODEL_SHIFT)
-> >>>  #define IDR0_TTENDIAN_SHIFT		21
-> >>>  #define IDR0_TTENDIAN_MASK		0x3
-> >>> @@ -766,6 +767,7 @@ struct arm_smmu_device {
-> >>>  #define ARM_SMMU_FEAT_SVM		(1 << 15)
-> >>>  #define ARM_SMMU_FEAT_HA		(1 << 16)
-> >>>  #define ARM_SMMU_FEAT_HD		(1 << 17)
-> >>> +#define ARM_SMMU_FEAT_TERMINATE		(1 << 18)
-> >>
-> >> I'd rather introduce something like "ARM_SMMU_FEAT_STALL_FORCE" instea=
-d.
-> >> Terminate model has another meaning, and is defined by a different bit=
- in
-> >> IDR0.
-> > =
+The HiSilicon erratum 161010801 describes the limitation of HiSilicon
+platforms Hip06/Hip07 to support the SMMU mappings for MSI transactions.
 
-> > Yes. What we need to do is:
-> > =
+On these platforms GICv3 ITS translator is presented with the deviceID
+by extending the MSI payload data to 64 bits to include the deviceID.
+Hence, the PCIe controller on this platforms has to differentiate the
+MSI payload against other DMA payload and has to modify the MSI payload.
+This basically makes it difficult for this platforms to have a SMMU
+translation for MSI.
 
-> > - If STALL_MODEL is 0b00, then set S1STALLD
-> =
+This patch implements a quirk to reserve the hw msi regions in the
+smmu-v3 driver which means these address regions will not be
+translated and will be excluded from iova allocations.
 
-> Yes, and within this case, we can only set the S1STALLD for masters which=
- can
-> not stall in the future?
+Signed-off-by: Shameer Kolothum <shameerali.kolothum.thodi(a)huawei.com>
+[John: add DT support]
+Signed-off-by: John Garry <john.garry(a)huawei.com>
+---
+ drivers/iommu/arm-smmu-v3.c | 28 +++++++++++++++++++++++-----
+ 1 file changed, 23 insertions(+), 5 deletions(-)
 
-Yeah, something like that. I'd probably predicate it on having afault
-handler registered too.
+diff --git a/drivers/iommu/arm-smmu-v3.c b/drivers/iommu/arm-smmu-v3.c
+index 568c400..8503f4d 100644
+--- a/drivers/iommu/arm-smmu-v3.c
++++ b/drivers/iommu/arm-smmu-v3.c
+@@ -608,6 +608,7 @@ struct arm_smmu_device {
+ =
 
-Will
+ #define ARM_SMMU_OPT_SKIP_PREFETCH	(1 << 0)
+ #define ARM_SMMU_OPT_PAGE0_REGS_ONLY	(1 << 1)
++#define ARM_SMMU_OPT_RESV_HW_MSI	(1 << 2)
+ 	u32				options;
+ =
 
---===============4476342481998641159==--
+ 	struct arm_smmu_cmdq		cmdq;
+@@ -674,6 +675,7 @@ struct arm_smmu_option_prop {
+ =
+
+ static struct arm_smmu_option_prop arm_smmu_options[] =3D {
+ 	{ ARM_SMMU_OPT_SKIP_PREFETCH, "hisilicon,broken-prefetch-cmd" },
++	{ ARM_SMMU_OPT_RESV_HW_MSI, "hisilicon,broken-untranslated-msi" },
+ 	{ ARM_SMMU_OPT_PAGE0_REGS_ONLY, "cavium,cn9900-broken-page1-regspace"},
+ 	{ 0, NULL},
+ };
+@@ -1934,14 +1936,29 @@ static void arm_smmu_get_resv_regions(struct device=
+ *dev,
+ 				      struct list_head *head)
+ {
+ 	struct iommu_resv_region *region;
++	struct arm_smmu_master_data *master =3D dev->iommu_fwspec->iommu_priv;
++	struct arm_smmu_device *smmu =3D master->smmu;
+ 	int prot =3D IOMMU_WRITE | IOMMU_NOEXEC | IOMMU_MMIO;
++	int resv =3D 0;
+ =
+
+-	region =3D iommu_alloc_resv_region(MSI_IOVA_BASE, MSI_IOVA_LENGTH,
+-					 prot, IOMMU_RESV_SW_MSI);
+-	if (!region)
+-		return;
++	if ((smmu->options & ARM_SMMU_OPT_RESV_HW_MSI)) {
+ =
+
+-	list_add_tail(&region->list, head);
++		resv =3D iommu_dma_get_msi_resv_regions(dev, head);
++
++		if (resv < 0) {
++			dev_warn(dev, "HW MSI region resv failed: %d\n", resv);
++			return;
++		}
++	}
++
++	if (!resv) {
++		region =3D iommu_alloc_resv_region(MSI_IOVA_BASE, MSI_IOVA_LENGTH,
++						 prot, IOMMU_RESV_SW_MSI);
++		if (!region)
++			return;
++
++		list_add_tail(&region->list, head);
++	}
+ =
+
+ 	iommu_dma_get_resv_regions(dev, head);
+ }
+@@ -2667,6 +2684,7 @@ static void acpi_smmu_get_options(u32 model, struct a=
+rm_smmu_device *smmu)
+ 		break;
+ 	case ACPI_IORT_SMMU_HISILICON_HI161X:
+ 		smmu->options |=3D ARM_SMMU_OPT_SKIP_PREFETCH;
++		smmu->options |=3D ARM_SMMU_OPT_RESV_HW_MSI;
+ 		break;
+ 	}
+ =
+
+-- =
+
+1.9.1
+
+
+
+--===============8805361713716453539==--
 
