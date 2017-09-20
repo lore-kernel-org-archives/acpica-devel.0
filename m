@@ -1,92 +1,76 @@
-Content-Type: multipart/mixed; boundary="===============7211133590173227259=="
+Content-Type: multipart/mixed; boundary="===============3320524828372495108=="
 MIME-Version: 1.0
-From: Shameerali Kolothum Thodi <shameerali.kolothum.thodi at huawei.com>
-Subject: Re: [Devel] [PATCH v7 1/5] Doc: iommu/arm-smmu-v3: Add workaround for
- HiSilicon erratum 161010801
-Date: Tue, 19 Sep 2017 16:09:33 +0000
-Message-ID: <5FC3163CFD30C246ABAA99954A238FA838411AD3@FRAEML521-MBX.china.huawei.com>
-In-Reply-To: 20170919145314.2irmqpsfneeydupo@rob-hp-laptop
+From: George Cherian <george.cherian at cavium.com>
+Subject: [Devel] [PATCH v4 0/2] Make cppc acpi driver aware of pcc subspace ids
+Date: Wed, 20 Sep 2017 05:24:45 +0000
+Message-ID: <1505885087-5112-1-git-send-email-george.cherian@cavium.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7211133590173227259==
+--===============3320524828372495108==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
+The current cppc acpi driver works with only one pcc subspace id.
+It maintains and registers only one pcc channel even if the acpi table has =
+
+different pcc subspace ids. =
 
 
-> -----Original Message-----
-> From: Rob Herring [mailto:robh(a)kernel.org]
-> Sent: Tuesday, September 19, 2017 3:53 PM
-> To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi(a)huawei.com>
-> Cc: lorenzo.pieralisi(a)arm.com; marc.zyngier(a)arm.com;
-> sudeep.holla(a)arm.com; will.deacon(a)arm.com; robin.murphy(a)arm.com;
-> joro(a)8bytes.org; mark.rutland(a)arm.com; hanjun.guo(a)linaro.org; Gabri=
-ele
-> Paoloni <gabriele.paoloni(a)huawei.com>; John Garry
-> <john.garry(a)huawei.com>; iommu(a)lists.linux-foundation.org; linux-arm-
-> kernel(a)lists.infradead.org; linux-acpi(a)vger.kernel.org;
-> devicetree(a)vger.kernel.org; devel(a)acpica.org; Linuxarm
-> <linuxarm(a)huawei.com>; Wangzhou (B) <wangzhou1(a)hisilicon.com>;
-> Guohanjun (Hanjun Guo) <guohanjun(a)huawei.com>
-> Subject: Re: [PATCH v7 1/5] Doc: iommu/arm-smmu-v3: Add workaround for
-> HiSilicon erratum 161010801
-> =
+As per ACPI 6.2 spec  all PCC registers, for all processors in the same =
 
-> On Thu, Sep 14, 2017 at 01:57:52PM +0100, Shameer Kolothum wrote:
-> > From: John Garry <john.garry(a)huawei.com>
-> >
-> > The HiSilicon erratum 161010801 describes the limitation of HiSilicon
-> platforms
-> > hip06/hip07 to support the SMMU mappings for MSI transactions.
-> >
-> > On these platforms, GICv3 ITS translator is presented with the deviceID
-> > by extending the MSI payload data to 64 bits to include the deviceID.
-> > Hence, the PCIe controller on this platforms has to differentiate the M=
-SI
-> > payload against other DMA payload and has to modify the MSI payload.
-> > This basically makes it difficult for this platforms to have a SMMU
-> > translation for MSI.
-> >
-> > This patch adds a SMMUv3 binding to flag that the SMMU breaks msi
-> > translation at ITS.
-> >
-> > Also, the arm64 silicon errata is updated with this same erratum.
-> >
-> > Signed-off-by: John Garry <john.garry(a)huawei.com>
-> > Signed-off-by: Shameer Kolothum
-> <shameerali.kolothum.thodi(a)huawei.com>
-[...]
-> > --- a/Documentation/devicetree/bindings/iommu/arm,smmu-v3.txt
-> > +++ b/Documentation/devicetree/bindings/iommu/arm,smmu-v3.txt
-> > @@ -55,6 +55,9 @@ the PCIe specification.
-> >  - hisilicon,broken-prefetch-cmd
-> >                      : Avoid sending CMD_PREFETCH_* commands to the SMM=
-U.
-> >
-> > +- hisilicon,broken-untranslated-msi
-> > +                    : Reserve ITS HW region to avoid translating msi.
-> > +
-> =
+performance domain (as defined by _PSD), must be defined to be in the same
+subspace. The series tries to address the same by making cppc acpi driver =
 
-> This should be determined from the compatible string. Continuing to add
-> properties for each errata doesn't scale.
+aware of multiple possible pcc subspace ids.
 
-Ok. I think the suggestion here is to follow the arm-smmu.c (SMMUv1/v2) =
+Patch 1 : In preparation to share the MAX_PCC_SUBSPACE definition with cppc=
+ acpi
+          driver
+Patch 2 : Make the cppc acpi driver aware of multiple pcc subspace ids.
 
-driver way of implementing the errata. As you might have noticed,  the =
+Changes from v3:
+  - Address Issue reported by kbuild-robot.
 
-SMMUv3 driver dt errata framework depends on properties  and this will
-change the way errata is implemented in the driver now.
+Changes from v2:
+  - Addressed Prashanth's comments on
+    * Not to use local variables to update mpar_count, last_mpar_reset and =
 
-Hi Will/Robin,
-Could you please take a look and let us know your thoughts on changing
-the SMMUv3 dt errata implementation to version/model/compatible string
-framework for this quirk.
+      last_cmd_cmpl_time
+    * Add check for kzalloc failure in pcc_data_alloc()
+    * Initialize pcc_subspace_id to -1 in acpi_cppc_processor_probe()
+    * Check for pcc_subspace_id validity before registering pcc_channel
 
-Thanks,
-Shameer
+Changes from v1:
+  - Add last_cmd_cmpl_time, last_mpar_reset, mpar_count to the cppc_pcc_dat=
+a to
+make it per subspace.
+  - PCC per subspace dynamic allocation support added instead of static
+allocation
+  - Added a new function pcc_data_alloc, In instances where CPU's with SMT
+support same PCC subspace would be used for all CPU's belonging to same =
 
---===============7211133590173227259==--
+physical core. This function adds the pcc_subspace refcounting and allocates
+the cppc_pcc_data per unique subspace idx.
+  - Added cleanup in acpi_cppc_processor_exit. Free the mbox channel and fr=
+ee
+the cppc_pcc_data in case refcount is zero.
+
+George Cherian (2):
+  mailbox: PCC: Move the MAX_PCC_SUBSPACES definition to header file
+  ACPI / CPPC: Make cppc acpi driver aware of pcc subspace ids
+
+ drivers/acpi/cppc_acpi.c | 243 +++++++++++++++++++++++++++++--------------=
+----
+ drivers/mailbox/pcc.c    |   1 -
+ include/acpi/pcc.h       |   1 +
+ 3 files changed, 154 insertions(+), 91 deletions(-)
+
+-- =
+
+2.1.4
+
+
+--===============3320524828372495108==--
 
