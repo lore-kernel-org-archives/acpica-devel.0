@@ -1,662 +1,248 @@
-Content-Type: multipart/mixed; boundary="===============8314992024225757946=="
+Content-Type: multipart/mixed; boundary="===============9058224848175014848=="
 MIME-Version: 1.0
-From: George Cherian <george.cherian at cavium.com>
-Subject: [Devel] [PATCH v4 2/2] ACPI / CPPC: Make cppc acpi driver aware of
- pcc subspace ids
-Date: Wed, 20 Sep 2017 05:24:47 +0000
-Message-ID: <1505885087-5112-3-git-send-email-george.cherian@cavium.com>
-In-Reply-To: 1505885087-5112-1-git-send-email-george.cherian@cavium.com
+From: Lorenzo Pieralisi <lorenzo.pieralisi at arm.com>
+Subject: Re: [Devel] [PATCH v7 3/5] iommu/of: Add msi address regions
+ reservation helper
+Date: Fri, 22 Sep 2017 15:27:58 +0100
+Message-ID: <20170922142758.GE3475@red-moon>
+In-Reply-To: 20170914125756.14836-4-shameerali.kolothum.thodi@huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8314992024225757946==
+--===============9058224848175014848==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Based on ACPI 6.2 Section 8.4.7.1.9 If the PCC register space is used,
-all PCC registers, for all processors in the same performance
-domain (as defined by _PSD), must be defined to be in the same subspace.
-Based on Section 14.1 of ACPI specification, it is possible to have a
-maximum of 256 PCC subspace ids. Add support of multiple PCC subspace id
-instead of using a single global pcc_data structure.
+John, Shameer,
 
-While at that fix the time_delta check in send_pcc_cmd() so that last_mpar_=
-reset
-and mpar_count is initialized properly.
+On Thu, Sep 14, 2017 at 01:57:54PM +0100, Shameer Kolothum wrote:
+> From: John Garry <john.garry(a)huawei.com>
+> =
 
-Signed-off-by: George Cherian <george.cherian(a)cavium.com>
----
- drivers/acpi/cppc_acpi.c | 243 +++++++++++++++++++++++++++++--------------=
-----
- 1 file changed, 153 insertions(+), 90 deletions(-)
+> On some platforms msi-controller address regions have to be excluded
+> from normal IOVA allocation in that they are detected and decoded in
+> a HW specific way by system components and so they cannot be considered
+> normal IOVA address space.
+> =
 
-diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-index e5b47f0..3ae79ef 100644
---- a/drivers/acpi/cppc_acpi.c
-+++ b/drivers/acpi/cppc_acpi.c
-@@ -75,13 +75,16 @@ struct cppc_pcc_data {
- =
+> Add a helper function that retrieves msi address regions through device
+> tree msi mapping, so that these regions will not be translated by IOMMU
+> and will be excluded from IOVA allocations.
+> =
 
- 	/* Wait queue for CPUs whose requests were batched */
- 	wait_queue_head_t pcc_write_wait_q;
-+	ktime_t last_cmd_cmpl_time;
-+	ktime_t last_mpar_reset;
-+	int mpar_count;
-+	int refcount;
- };
- =
+> Signed-off-by: John Garry <john.garry(a)huawei.com>
+> Signed-off-by: Shameer Kolothum <shameerali.kolothum.thodi(a)huawei.com>
+> ---
+>  drivers/iommu/of_iommu.c | 117 +++++++++++++++++++++++++++++++++++++++++=
+++++++
+>  include/linux/of_iommu.h |  10 ++++
+>  2 files changed, 127 insertions(+)
+> =
 
--/* Structure to represent the single PCC channel */
--static struct cppc_pcc_data pcc_data =3D {
--	.pcc_subspace_idx =3D -1,
--	.platform_owns_pcc =3D true,
--};
-+/* Array  to represent the PCC channel per subspace id */
-+static struct cppc_pcc_data *pcc_data[MAX_PCC_SUBSPACES];
-+/* The cpu_pcc_subspace_idx containsper CPU subspace id */
-+static DEFINE_PER_CPU(int, cpu_pcc_subspace_idx);
- =
+> diff --git a/drivers/iommu/of_iommu.c b/drivers/iommu/of_iommu.c
+> index 8cb6082..f2d1a76 100644
+> --- a/drivers/iommu/of_iommu.c
+> +++ b/drivers/iommu/of_iommu.c
+> @@ -21,6 +21,7 @@
+>  #include <linux/iommu.h>
+>  #include <linux/limits.h>
+>  #include <linux/of.h>
+> +#include <linux/of_address.h>
+>  #include <linux/of_iommu.h>
+>  #include <linux/of_pci.h>
+>  #include <linux/slab.h>
+> @@ -246,6 +247,122 @@ const struct iommu_ops *of_iommu_configure(struct d=
+evice *dev,
+>  	return ops;
+>  }
+>  =
 
- /*
-  * The cpc_desc structure contains the ACPI register details
-@@ -93,7 +96,8 @@ static struct cppc_pcc_data pcc_data =3D {
- static DEFINE_PER_CPU(struct cpc_desc *, cpc_desc_ptr);
- =
+> +/**
+> + * of_iommu_msi_get_resv_regions - Reserved region driver helper
+> + * @dev: Device from iommu_get_resv_regions()
+> + * @list: Reserved region list from iommu_get_resv_regions()
+> + *
+> + * Returns: Number of reserved regions on success (0 if no associated
+> + *          msi parent), appropriate error value otherwise.
+> + */
+> +int of_iommu_msi_get_resv_regions(struct device *dev, struct list_head *=
+head)
+> +{
+> +	int prot =3D IOMMU_WRITE | IOMMU_NOEXEC | IOMMU_MMIO;
+> +	struct iommu_resv_region *region;
+> +	struct device_node *np;
+> +	struct resource res;
+> +	int i, resv =3D 0, mappings =3D 0;
+> +
+> +	if (dev_is_pci(dev)) {
+> +		struct device *dma_dev, *bridge;
+> +		struct of_phandle_args iommu_spec;
+> +		struct pci_dev *pdev =3D to_pci_dev(dev);
+> +		int err, count;
+> +		u32 rid, map_mask;
+> +		const __be32 *msi_map;
+> +
+> +		bridge =3D pci_get_host_bridge_device(pdev);
+> +		dma_dev =3D bridge->parent;
+> +		pci_put_host_bridge_device(bridge);
+> +
+> +		if (!dma_dev->of_node)
+> +			return -ENODEV;
+> +
+> +		iommu_spec.args_count =3D 1;
+> +		np =3D iommu_spec.np =3D dma_dev->of_node;
+> +		pci_for_each_dma_alias(pdev, __get_pci_rid, &iommu_spec);
+> +
+> +		rid =3D iommu_spec.args[0];
+> +		if (!of_property_read_u32(np, "msi-map-mask", &map_mask))
+> +			rid &=3D map_mask;
+> +
+> +		msi_map =3D of_get_property(np, "msi-map", NULL);
+> +		if (!msi_map)
+> +			return -ENODEV;
+> +
+> +		mappings =3D of_count_phandle_with_args(np, "msi-map", NULL) / 4;
+> +
+> +		for (i =3D 0, count =3D mappings; i < count; i++, msi_map +=3D 4) {
+> +			struct device_node *msi_node;
+> +			u32 rid_base, rid_len, phandle;
+> +
+> +			rid_base =3D be32_to_cpup(msi_map + 0);
+> +			phandle =3D be32_to_cpup(msi_map + 1);
+> +			rid_len =3D be32_to_cpup(msi_map + 3);
+> +
+> +			/* check rid is within range */
+> +			if (rid < rid_base || rid >=3D rid_base + rid_len) {
+> +				mappings--;
+> +				continue;
+> +			}
+> +
+> +			msi_node =3D of_find_node_by_phandle(phandle);
+> +			if (!msi_node)
+> +				return -ENODEV;
 
- /* pcc mapped address + header size + offset within PCC subspace */
--#define GET_PCC_VADDR(offs) (pcc_data.pcc_comm_addr + 0x8 + (offs))
-+#define GET_PCC_VADDR(offs, pcc_ss_id) (pcc_data[pcc_ss_id]->pcc_comm_addr=
- + \
-+						0x8 + (offs))
- =
+This is basically of_pci_map_rid(), I wonder whether there is not
+a way to consolidate some code here - duplicating certainly does not
+help. To make MSI reservations generic this is probably the only way
+to do it but it would be nice to reuse some OF MSI code.
 
- /* Check if a CPC register is in PCC */
- #define CPC_IN_PCC(cpc) ((cpc)->type =3D=3D ACPI_TYPE_BUFFER &&		\
-@@ -188,13 +192,16 @@ static struct kobj_type cppc_ktype =3D {
- 	.default_attrs =3D cppc_attrs,
- };
- =
+With the current kernel API there is a way but it is a bit whacky.
 
--static int check_pcc_chan(bool chk_err_bit)
-+static int check_pcc_chan(int pcc_ss_id, bool chk_err_bit)
- {
- 	int ret =3D -EIO, status =3D 0;
--	struct acpi_pcct_shared_memory __iomem *generic_comm_base =3D pcc_data.pc=
-c_comm_addr;
--	ktime_t next_deadline =3D ktime_add(ktime_get(), pcc_data.deadline);
-+	struct cppc_pcc_data *pcc_ss_data =3D pcc_data[pcc_ss_id];
-+	struct acpi_pcct_shared_memory __iomem *generic_comm_base =3D
-+		pcc_ss_data->pcc_comm_addr;
-+	ktime_t next_deadline =3D ktime_add(ktime_get(),
-+					  pcc_ss_data->deadline);
- =
+Just loop over "msi-controller" nodes and try to map the device to
+them through of_pci_map_rid, if mapping succeeds reserve region for
+the target node.
 
--	if (!pcc_data.platform_owns_pcc)
-+	if (!pcc_ss_data->platform_owns_pcc)
- 		return 0;
- =
+Not a big fan of what I am proposing but it certainly helps reuse
+some existing code that makes no sense to duplicate.
 
- 	/* Retry in case the remote processor was too slow to catch up. */
-@@ -219,7 +226,7 @@ static int check_pcc_chan(bool chk_err_bit)
- 	}
- =
+> +			err =3D of_address_to_resource(msi_node, 0, &res);
+> +			of_node_put(msi_node);
+> +			if (err)
+> +				return err;
+> +
+> +			region =3D iommu_alloc_resv_region(res.start,
+> +							 resource_size(&res),
+> +							 prot, IOMMU_RESV_MSI);
+> +			if (region) {
+> +				list_add_tail(&region->list, head);
+> +				resv++;
+> +			}
+> +		}
+> +	} else if (dev->of_node) {
+> +		struct device_node *msi_np;
+> +		int index =3D 0;
+> +		int tuples;
+> +
+> +		np =3D dev->of_node;
+> +
+> +		tuples =3D of_count_phandle_with_args(np, "msi-parent", NULL);
+> +
+> +		while (index < tuples) {
 
- 	if (likely(!ret))
--		pcc_data.platform_owns_pcc =3D false;
-+		pcc_ss_data->platform_owns_pcc =3D false;
- 	else
- 		pr_err("PCC check channel failed. Status=3D%x\n", status);
- =
+Would not be easier to have an of_parse_phandle_with_args() loop here ?
 
-@@ -230,13 +237,12 @@ static int check_pcc_chan(bool chk_err_bit)
-  * This function transfers the ownership of the PCC to the platform
-  * So it must be called while holding write_lock(pcc_lock)
-  */
--static int send_pcc_cmd(u16 cmd)
-+static int send_pcc_cmd(int pcc_ss_id, u16 cmd)
- {
- 	int ret =3D -EIO, i;
-+	struct cppc_pcc_data *pcc_ss_data =3D pcc_data[pcc_ss_id];
- 	struct acpi_pcct_shared_memory *generic_comm_base =3D
--		(struct acpi_pcct_shared_memory *) pcc_data.pcc_comm_addr;
--	static ktime_t last_cmd_cmpl_time, last_mpar_reset;
--	static int mpar_count;
-+		(struct acpi_pcct_shared_memory *)pcc_ss_data->pcc_comm_addr;
- 	unsigned int time_delta;
- =
+Lorenzo
 
- 	/*
-@@ -249,24 +255,25 @@ static int send_pcc_cmd(u16 cmd)
- 		 * before write completion, so first send a WRITE command to
- 		 * platform
- 		 */
--		if (pcc_data.pending_pcc_write_cmd)
--			send_pcc_cmd(CMD_WRITE);
-+		if (pcc_ss_data->pending_pcc_write_cmd)
-+			send_pcc_cmd(pcc_ss_id, CMD_WRITE);
- =
+> +			int msi_cells =3D 0;
+> +			int err;
+> +
+> +			msi_np =3D of_parse_phandle(np, "msi-parent", index);
+> +			if (!msi_np)
+> +				return -ENODEV;
+> +
+> +			of_property_read_u32(msi_np, "#msi-cells", &msi_cells);
+> +
+> +			err =3D of_address_to_resource(msi_np, 0, &res);
+> +			of_node_put(msi_np);
+> +			if (err)
+> +				return err;
+> +
+> +			mappings++;
+> +
+> +			region =3D iommu_alloc_resv_region(res.start,
+> +							 resource_size(&res),
+> +							 prot, IOMMU_RESV_MSI);
+> +			if (region) {
+> +				list_add_tail(&region->list, head);
+> +				resv++;
+> +			}
+> +			index +=3D 1 + msi_cells;
+> +		}
+> +	}
+> +
+> +	return (resv =3D=3D mappings) ? resv : -ENODEV;
+> +}
+> +
+>  static int __init of_iommu_init(void)
+>  {
+>  	struct device_node *np;
+> diff --git a/include/linux/of_iommu.h b/include/linux/of_iommu.h
+> index 13394ac..9267772 100644
+> --- a/include/linux/of_iommu.h
+> +++ b/include/linux/of_iommu.h
+> @@ -14,6 +14,9 @@ extern int of_get_dma_window(struct device_node *dn, co=
+nst char *prefix,
+>  extern const struct iommu_ops *of_iommu_configure(struct device *dev,
+>  					struct device_node *master_np);
+>  =
 
--		ret =3D check_pcc_chan(false);
-+		ret =3D check_pcc_chan(pcc_ss_id, false);
- 		if (ret)
- 			goto end;
- 	} else /* CMD_WRITE */
--		pcc_data.pending_pcc_write_cmd =3D FALSE;
-+		pcc_ss_data->pending_pcc_write_cmd =3D FALSE;
- =
+> +extern int of_iommu_msi_get_resv_regions(struct device *dev,
+> +					struct list_head *head);
+> +
+>  #else
+>  =
 
- 	/*
- 	 * Handle the Minimum Request Turnaround Time(MRTT)
- 	 * "The minimum amount of time that OSPM must wait after the completion
- 	 * of a command before issuing the next command, in microseconds"
- 	 */
--	if (pcc_data.pcc_mrtt) {
--		time_delta =3D ktime_us_delta(ktime_get(), last_cmd_cmpl_time);
--		if (pcc_data.pcc_mrtt > time_delta)
--			udelay(pcc_data.pcc_mrtt - time_delta);
-+	if (pcc_ss_data->pcc_mrtt) {
-+		time_delta =3D ktime_us_delta(ktime_get(),
-+					    pcc_ss_data->last_cmd_cmpl_time);
-+		if (pcc_ss_data->pcc_mrtt > time_delta)
-+			udelay(pcc_ss_data->pcc_mrtt - time_delta);
- 	}
- =
+>  static inline int of_get_dma_window(struct device_node *dn, const char *=
+prefix,
+> @@ -29,6 +32,13 @@ static inline const struct iommu_ops *of_iommu_configu=
+re(struct device *dev,
+>  	return NULL;
+>  }
+>  =
 
- 	/*
-@@ -280,18 +287,19 @@ static int send_pcc_cmd(u16 cmd)
- 	 * not send the request to the platform after hitting the MPAR limit in
- 	 * any 60s window
- 	 */
--	if (pcc_data.pcc_mpar) {
--		if (mpar_count =3D=3D 0) {
--			time_delta =3D ktime_ms_delta(ktime_get(), last_mpar_reset);
--			if (time_delta < 60 * MSEC_PER_SEC) {
-+	if (pcc_ss_data->pcc_mpar) {
-+		if (pcc_ss_data->mpar_count =3D=3D 0) {
-+			time_delta =3D ktime_ms_delta(ktime_get(),
-+						    pcc_ss_data->last_mpar_reset);
-+			if ((time_delta < 60 * MSEC_PER_SEC) && pcc_ss_data->last_mpar_reset) {
- 				pr_debug("PCC cmd not sent due to MPAR limit");
- 				ret =3D -EIO;
- 				goto end;
- 			}
--			last_mpar_reset =3D ktime_get();
--			mpar_count =3D pcc_data.pcc_mpar;
-+			pcc_ss_data->last_mpar_reset =3D ktime_get();
-+			pcc_ss_data->mpar_count =3D pcc_ss_data->pcc_mpar;
- 		}
--		mpar_count--;
-+		pcc_ss_data->mpar_count--;
- 	}
- =
+> +static int of_iommu_msi_get_resv_regions(struct device *dev,
+> +					struct list_head *head)
+> +{
+> +	return -ENODEV;
+> +}
+> +
+> +
+>  #endif	/* CONFIG_OF_IOMMU */
+>  =
 
- 	/* Write to the shared comm region. */
-@@ -300,10 +308,10 @@ static int send_pcc_cmd(u16 cmd)
- 	/* Flip CMD COMPLETE bit */
- 	writew_relaxed(0, &generic_comm_base->status);
- =
+>  extern struct of_device_id __iommu_of_table;
+> -- =
 
--	pcc_data.platform_owns_pcc =3D true;
-+	pcc_ss_data->platform_owns_pcc =3D true;
- =
+> 1.9.1
+> =
 
- 	/* Ring doorbell */
--	ret =3D mbox_send_message(pcc_data.pcc_channel, &cmd);
-+	ret =3D mbox_send_message(pcc_ss_data->pcc_channel, &cmd);
- 	if (ret < 0) {
- 		pr_err("Err sending PCC mbox message. cmd:%d, ret:%d\n",
- 				cmd, ret);
-@@ -311,15 +319,15 @@ static int send_pcc_cmd(u16 cmd)
- 	}
- =
+> =
 
- 	/* wait for completion and check for PCC errro bit */
--	ret =3D check_pcc_chan(true);
-+	ret =3D check_pcc_chan(pcc_ss_id, true);
- =
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-acpi" in
+> the body of a message to majordomo(a)vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
--	if (pcc_data.pcc_mrtt)
--		last_cmd_cmpl_time =3D ktime_get();
-+	if (pcc_ss_data->pcc_mrtt)
-+		pcc_ss_data->last_cmd_cmpl_time =3D ktime_get();
- =
-
--	if (pcc_data.pcc_channel->mbox->txdone_irq)
--		mbox_chan_txdone(pcc_data.pcc_channel, ret);
-+	if (pcc_ss_data->pcc_channel->mbox->txdone_irq)
-+		mbox_chan_txdone(pcc_ss_data->pcc_channel, ret);
- 	else
--		mbox_client_txdone(pcc_data.pcc_channel, ret);
-+		mbox_client_txdone(pcc_ss_data->pcc_channel, ret);
- =
-
- end:
- 	if (cmd =3D=3D CMD_WRITE) {
-@@ -329,12 +337,12 @@ static int send_pcc_cmd(u16 cmd)
- 				if (!desc)
- 					continue;
- =
-
--				if (desc->write_cmd_id =3D=3D pcc_data.pcc_write_cnt)
-+				if (desc->write_cmd_id =3D=3D pcc_ss_data->pcc_write_cnt)
- 					desc->write_cmd_status =3D ret;
- 			}
- 		}
--		pcc_data.pcc_write_cnt++;
--		wake_up_all(&pcc_data.pcc_write_wait_q);
-+		pcc_ss_data->pcc_write_cnt++;
-+		wake_up_all(&pcc_ss_data->pcc_write_wait_q);
- 	}
- =
-
- 	return ret;
-@@ -536,16 +544,16 @@ int acpi_get_psd_map(struct cppc_cpudata **all_cpu_da=
-ta)
- }
- EXPORT_SYMBOL_GPL(acpi_get_psd_map);
- =
-
--static int register_pcc_channel(int pcc_subspace_idx)
-+static int register_pcc_channel(int pcc_ss_idx)
- {
- 	struct acpi_pcct_hw_reduced *cppc_ss;
- 	u64 usecs_lat;
- =
-
--	if (pcc_subspace_idx >=3D 0) {
--		pcc_data.pcc_channel =3D pcc_mbox_request_channel(&cppc_mbox_cl,
--				pcc_subspace_idx);
-+	if (pcc_ss_idx >=3D 0) {
-+		pcc_data[pcc_ss_idx]->pcc_channel =3D
-+			pcc_mbox_request_channel(&cppc_mbox_cl,	pcc_ss_idx);
- =
-
--		if (IS_ERR(pcc_data.pcc_channel)) {
-+		if (IS_ERR(pcc_data[pcc_ss_idx]->pcc_channel)) {
- 			pr_err("Failed to find PCC communication channel\n");
- 			return -ENODEV;
- 		}
-@@ -556,7 +564,7 @@ static int register_pcc_channel(int pcc_subspace_idx)
- 		 * PCC channels) and stored pointers to the
- 		 * subspace communication region in con_priv.
- 		 */
--		cppc_ss =3D (pcc_data.pcc_channel)->con_priv;
-+		cppc_ss =3D (pcc_data[pcc_ss_idx]->pcc_channel)->con_priv;
- =
-
- 		if (!cppc_ss) {
- 			pr_err("No PCC subspace found for CPPC\n");
-@@ -569,19 +577,20 @@ static int register_pcc_channel(int pcc_subspace_idx)
- 		 * So add an arbitrary amount of wait on top of Nominal.
- 		 */
- 		usecs_lat =3D NUM_RETRIES * cppc_ss->latency;
--		pcc_data.deadline =3D ns_to_ktime(usecs_lat * NSEC_PER_USEC);
--		pcc_data.pcc_mrtt =3D cppc_ss->min_turnaround_time;
--		pcc_data.pcc_mpar =3D cppc_ss->max_access_rate;
--		pcc_data.pcc_nominal =3D cppc_ss->latency;
--
--		pcc_data.pcc_comm_addr =3D acpi_os_ioremap(cppc_ss->base_address, cppc_s=
-s->length);
--		if (!pcc_data.pcc_comm_addr) {
-+		pcc_data[pcc_ss_idx]->deadline =3D ns_to_ktime(usecs_lat * NSEC_PER_USEC=
-);
-+		pcc_data[pcc_ss_idx]->pcc_mrtt =3D cppc_ss->min_turnaround_time;
-+		pcc_data[pcc_ss_idx]->pcc_mpar =3D cppc_ss->max_access_rate;
-+		pcc_data[pcc_ss_idx]->pcc_nominal =3D cppc_ss->latency;
-+
-+		pcc_data[pcc_ss_idx]->pcc_comm_addr =3D
-+			acpi_os_ioremap(cppc_ss->base_address, cppc_ss->length);
-+		if (!pcc_data[pcc_ss_idx]->pcc_comm_addr) {
- 			pr_err("Failed to ioremap PCC comm region mem\n");
- 			return -ENOMEM;
- 		}
- =
-
- 		/* Set flag so that we dont come here for each CPU. */
--		pcc_data.pcc_channel_acquired =3D true;
-+		pcc_data[pcc_ss_idx]->pcc_channel_acquired =3D true;
- 	}
- =
-
- 	return 0;
-@@ -600,6 +609,39 @@ bool __weak cpc_ffh_supported(void)
- 	return false;
- }
- =
-
-+
-+/**
-+ * pcc_data_alloc() - Allocate the pcc_data memory for pcc subspace
-+ *
-+ * Check and allocate the cppc_pcc_data memory.
-+ * In some processor configurations it is possible that same subspace
-+ * is shared between multiple CPU's. This is seen especially in CPU's
-+ * with hardware multi-threading support.
-+ *
-+ * Return: 0 for success, errno for failure
-+ */
-+int pcc_data_alloc(int pcc_ss_id)
-+{
-+	int loop;
-+
-+	if (pcc_ss_id < 0)
-+		return -EINVAL;
-+
-+	for (loop =3D 0; pcc_data[loop] !=3D NULL; loop++) {
-+		if (pcc_data[loop]->pcc_subspace_idx =3D=3D pcc_ss_id) {
-+			pcc_data[loop]->refcount++;
-+			return 0;
-+		}
-+	}
-+
-+	pcc_data[pcc_ss_id] =3D kzalloc(sizeof(struct cppc_pcc_data), GFP_KERNEL);
-+	if (!pcc_data[pcc_ss_id])
-+		return -ENOMEM;
-+	pcc_data[pcc_ss_id]->pcc_subspace_idx =3D pcc_ss_id;
-+	pcc_data[pcc_ss_id]->refcount++;
-+
-+	return 0;
-+}
- /*
-  * An example CPC table looks like the following.
-  *
-@@ -661,6 +703,7 @@ int acpi_cppc_processor_probe(struct acpi_processor *pr)
- 	struct device *cpu_dev;
- 	acpi_handle handle =3D pr->handle;
- 	unsigned int num_ent, i, cpc_rev;
-+	int pcc_subspace_id =3D -1;
- 	acpi_status status;
- 	int ret =3D -EFAULT;
- =
-
-@@ -733,12 +776,9 @@ int acpi_cppc_processor_probe(struct acpi_processor *p=
-r)
- 			 * so extract it only once.
- 			 */
- 			if (gas_t->space_id =3D=3D ACPI_ADR_SPACE_PLATFORM_COMM) {
--				if (pcc_data.pcc_subspace_idx < 0)
--					pcc_data.pcc_subspace_idx =3D gas_t->access_width;
--				else if (pcc_data.pcc_subspace_idx !=3D gas_t->access_width) {
--					pr_debug("Mismatched PCC ids.\n");
-+				pcc_subspace_id =3D gas_t->access_width;
-+				if (pcc_data_alloc(pcc_subspace_id))
- 					goto out_free;
--				}
- 			} else if (gas_t->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_MEMORY) {
- 				if (gas_t->address) {
- 					void __iomem *addr;
-@@ -763,6 +803,7 @@ int acpi_cppc_processor_probe(struct acpi_processor *pr)
- 			goto out_free;
- 		}
- 	}
-+	per_cpu(cpu_pcc_subspace_idx, pr->id) =3D pcc_subspace_id;
- 	/* Store CPU Logical ID */
- 	cpc_ptr->cpu_id =3D pr->id;
- =
-
-@@ -771,14 +812,14 @@ int acpi_cppc_processor_probe(struct acpi_processor *=
-pr)
- 	if (ret)
- 		goto out_free;
- =
-
--	/* Register PCC channel once for all CPUs. */
--	if (!pcc_data.pcc_channel_acquired) {
--		ret =3D register_pcc_channel(pcc_data.pcc_subspace_idx);
-+	/* Register PCC channel once for all PCC subspace id. */
-+	if (pcc_subspace_id >=3D 0 && !pcc_data[pcc_subspace_id]->pcc_channel_acq=
-uired) {
-+		ret =3D register_pcc_channel(pcc_subspace_id);
- 		if (ret)
- 			goto out_free;
- =
-
--		init_rwsem(&pcc_data.pcc_lock);
--		init_waitqueue_head(&pcc_data.pcc_write_wait_q);
-+		init_rwsem(&pcc_data[pcc_subspace_id]->pcc_lock);
-+		init_waitqueue_head(&pcc_data[pcc_subspace_id]->pcc_write_wait_q);
- 	}
- =
-
- 	/* Everything looks okay */
-@@ -831,6 +872,18 @@ void acpi_cppc_processor_exit(struct acpi_processor *p=
-r)
- 	struct cpc_desc *cpc_ptr;
- 	unsigned int i;
- 	void __iomem *addr;
-+	int pcc_ss_id =3D per_cpu(cpu_pcc_subspace_idx, pr->id);
-+
-+	if (pcc_ss_id >=3D0 && pcc_data[pcc_ss_id]) {
-+		if (pcc_data[pcc_ss_id]->pcc_channel_acquired) {
-+			pcc_data[pcc_ss_id]->refcount--;
-+			if (!pcc_data[pcc_ss_id]->refcount) {
-+				pcc_mbox_free_channel(pcc_data[pcc_ss_id]->pcc_channel);
-+				pcc_data[pcc_ss_id]->pcc_channel_acquired =3D 0;
-+				kfree(pcc_data[pcc_ss_id]);
-+			}
-+		}
-+	}
- =
-
- 	cpc_ptr =3D per_cpu(cpc_desc_ptr, pr->id);
- 	if (!cpc_ptr)
-@@ -888,6 +941,7 @@ static int cpc_read(int cpu, struct cpc_register_resour=
-ce *reg_res, u64 *val)
- {
- 	int ret_val =3D 0;
- 	void __iomem *vaddr =3D 0;
-+	int pcc_ss_id =3D per_cpu(cpu_pcc_subspace_idx, cpu);
- 	struct cpc_reg *reg =3D &reg_res->cpc_entry.reg;
- =
-
- 	if (reg_res->type =3D=3D ACPI_TYPE_INTEGER) {
-@@ -897,7 +951,7 @@ static int cpc_read(int cpu, struct cpc_register_resour=
-ce *reg_res, u64 *val)
- =
-
- 	*val =3D 0;
- 	if (reg->space_id =3D=3D ACPI_ADR_SPACE_PLATFORM_COMM)
--		vaddr =3D GET_PCC_VADDR(reg->address);
-+		vaddr =3D GET_PCC_VADDR(reg->address, pcc_ss_id);
- 	else if (reg->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_MEMORY)
- 		vaddr =3D reg_res->sys_mem_vaddr;
- 	else if (reg->space_id =3D=3D ACPI_ADR_SPACE_FIXED_HARDWARE)
-@@ -932,10 +986,11 @@ static int cpc_write(int cpu, struct cpc_register_res=
-ource *reg_res, u64 val)
- {
- 	int ret_val =3D 0;
- 	void __iomem *vaddr =3D 0;
-+	int pcc_ss_id =3D per_cpu(cpu_pcc_subspace_idx, cpu);
- 	struct cpc_reg *reg =3D &reg_res->cpc_entry.reg;
- =
-
- 	if (reg->space_id =3D=3D ACPI_ADR_SPACE_PLATFORM_COMM)
--		vaddr =3D GET_PCC_VADDR(reg->address);
-+		vaddr =3D GET_PCC_VADDR(reg->address, pcc_ss_id);
- 	else if (reg->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_MEMORY)
- 		vaddr =3D reg_res->sys_mem_vaddr;
- 	else if (reg->space_id =3D=3D ACPI_ADR_SPACE_FIXED_HARDWARE)
-@@ -980,6 +1035,8 @@ int cppc_get_perf_caps(int cpunum, struct cppc_perf_ca=
-ps *perf_caps)
- 	struct cpc_register_resource *highest_reg, *lowest_reg,
- 		*lowest_non_linear_reg, *nominal_reg;
- 	u64 high, low, nom, min_nonlinear;
-+	int pcc_ss_id =3D per_cpu(cpu_pcc_subspace_idx, cpunum);
-+	struct cppc_pcc_data *pcc_ss_data =3D pcc_data[pcc_ss_id];
- 	int ret =3D 0, regs_in_pcc =3D 0;
- =
-
- 	if (!cpc_desc) {
-@@ -996,9 +1053,9 @@ int cppc_get_perf_caps(int cpunum, struct cppc_perf_ca=
-ps *perf_caps)
- 	if (CPC_IN_PCC(highest_reg) || CPC_IN_PCC(lowest_reg) ||
- 		CPC_IN_PCC(lowest_non_linear_reg) || CPC_IN_PCC(nominal_reg)) {
- 		regs_in_pcc =3D 1;
--		down_write(&pcc_data.pcc_lock);
-+		down_write(&pcc_ss_data->pcc_lock);
- 		/* Ring doorbell once to update PCC subspace */
--		if (send_pcc_cmd(CMD_READ) < 0) {
-+		if (send_pcc_cmd(pcc_ss_id, CMD_READ) < 0) {
- 			ret =3D -EIO;
- 			goto out_err;
- 		}
-@@ -1021,7 +1078,7 @@ int cppc_get_perf_caps(int cpunum, struct cppc_perf_c=
-aps *perf_caps)
- =
-
- out_err:
- 	if (regs_in_pcc)
--		up_write(&pcc_data.pcc_lock);
-+		up_write(&pcc_ss_data->pcc_lock);
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(cppc_get_perf_caps);
-@@ -1038,6 +1095,8 @@ int cppc_get_perf_ctrs(int cpunum, struct cppc_perf_f=
-b_ctrs *perf_fb_ctrs)
- 	struct cpc_desc *cpc_desc =3D per_cpu(cpc_desc_ptr, cpunum);
- 	struct cpc_register_resource *delivered_reg, *reference_reg,
- 		*ref_perf_reg, *ctr_wrap_reg;
-+	int pcc_ss_id =3D per_cpu(cpu_pcc_subspace_idx, cpunum);
-+	struct cppc_pcc_data *pcc_ss_data =3D pcc_data[pcc_ss_id];
- 	u64 delivered, reference, ref_perf, ctr_wrap_time;
- 	int ret =3D 0, regs_in_pcc =3D 0;
- =
-
-@@ -1061,10 +1120,10 @@ int cppc_get_perf_ctrs(int cpunum, struct cppc_perf=
-_fb_ctrs *perf_fb_ctrs)
- 	/* Are any of the regs PCC ?*/
- 	if (CPC_IN_PCC(delivered_reg) || CPC_IN_PCC(reference_reg) ||
- 		CPC_IN_PCC(ctr_wrap_reg) || CPC_IN_PCC(ref_perf_reg)) {
--		down_write(&pcc_data.pcc_lock);
-+		down_write(&pcc_ss_data->pcc_lock);
- 		regs_in_pcc =3D 1;
- 		/* Ring doorbell once to update PCC subspace */
--		if (send_pcc_cmd(CMD_READ) < 0) {
-+		if (send_pcc_cmd(pcc_ss_id, CMD_READ) < 0) {
- 			ret =3D -EIO;
- 			goto out_err;
- 		}
-@@ -1094,7 +1153,7 @@ int cppc_get_perf_ctrs(int cpunum, struct cppc_perf_f=
-b_ctrs *perf_fb_ctrs)
- 	perf_fb_ctrs->wraparound_time =3D ctr_wrap_time;
- out_err:
- 	if (regs_in_pcc)
--		up_write(&pcc_data.pcc_lock);
-+		up_write(&pcc_ss_data->pcc_lock);
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(cppc_get_perf_ctrs);
-@@ -1110,6 +1169,8 @@ int cppc_set_perf(int cpu, struct cppc_perf_ctrls *pe=
-rf_ctrls)
- {
- 	struct cpc_desc *cpc_desc =3D per_cpu(cpc_desc_ptr, cpu);
- 	struct cpc_register_resource *desired_reg;
-+	int pcc_ss_id =3D per_cpu(cpu_pcc_subspace_idx, cpu);
-+	struct cppc_pcc_data *pcc_ss_data =3D pcc_data[pcc_ss_id];
- 	int ret =3D 0;
- =
-
- 	if (!cpc_desc) {
-@@ -1127,11 +1188,11 @@ int cppc_set_perf(int cpu, struct cppc_perf_ctrls *=
-perf_ctrls)
- 	 * achieve that goal here
- 	 */
- 	if (CPC_IN_PCC(desired_reg)) {
--		down_read(&pcc_data.pcc_lock);	/* BEGIN Phase-I */
--		if (pcc_data.platform_owns_pcc) {
--			ret =3D check_pcc_chan(false);
-+		down_read(&pcc_ss_data->pcc_lock); /* BEGIN Phase-I */
-+		if (pcc_ss_data->platform_owns_pcc) {
-+			ret =3D check_pcc_chan(pcc_ss_id, false);
- 			if (ret) {
--				up_read(&pcc_data.pcc_lock);
-+				up_read(&pcc_ss_data->pcc_lock);
- 				return ret;
- 			}
- 		}
-@@ -1139,8 +1200,8 @@ int cppc_set_perf(int cpu, struct cppc_perf_ctrls *pe=
-rf_ctrls)
- 		 * Update the pending_write to make sure a PCC CMD_READ will not
- 		 * arrive and steal the channel during the switch to write lock
- 		 */
--		pcc_data.pending_pcc_write_cmd =3D true;
--		cpc_desc->write_cmd_id =3D pcc_data.pcc_write_cnt;
-+		pcc_ss_data->pending_pcc_write_cmd =3D true;
-+		cpc_desc->write_cmd_id =3D pcc_ss_data->pcc_write_cnt;
- 		cpc_desc->write_cmd_status =3D 0;
- 	}
- =
-
-@@ -1151,7 +1212,7 @@ int cppc_set_perf(int cpu, struct cppc_perf_ctrls *pe=
-rf_ctrls)
- 	cpc_write(cpu, desired_reg, perf_ctrls->desired_perf);
- =
-
- 	if (CPC_IN_PCC(desired_reg))
--		up_read(&pcc_data.pcc_lock);	/* END Phase-I */
-+		up_read(&pcc_ss_data->pcc_lock);	/* END Phase-I */
- 	/*
- 	 * This is Phase-II where we transfer the ownership of PCC to Platform
- 	 *
-@@ -1199,15 +1260,15 @@ int cppc_set_perf(int cpu, struct cppc_perf_ctrls *=
-perf_ctrls)
- 	 * the write command before servicing the read command
- 	 */
- 	if (CPC_IN_PCC(desired_reg)) {
--		if (down_write_trylock(&pcc_data.pcc_lock)) {	/* BEGIN Phase-II */
-+		if (down_write_trylock(&pcc_ss_data->pcc_lock)) {/* BEGIN Phase-II */
- 			/* Update only if there are pending write commands */
--			if (pcc_data.pending_pcc_write_cmd)
--				send_pcc_cmd(CMD_WRITE);
--			up_write(&pcc_data.pcc_lock);		/* END Phase-II */
-+			if (pcc_ss_data->pending_pcc_write_cmd)
-+				send_pcc_cmd(pcc_ss_id, CMD_WRITE);
-+			up_write(&pcc_ss_data->pcc_lock);	/* END Phase-II */
- 		} else
- 			/* Wait until pcc_write_cnt is updated by send_pcc_cmd */
--			wait_event(pcc_data.pcc_write_wait_q,
--				cpc_desc->write_cmd_id !=3D pcc_data.pcc_write_cnt);
-+			wait_event(pcc_ss_data->pcc_write_wait_q,
-+				   cpc_desc->write_cmd_id !=3D pcc_ss_data->pcc_write_cnt);
- =
-
- 		/* send_pcc_cmd updates the status in case of failure */
- 		ret =3D cpc_desc->write_cmd_status;
-@@ -1240,6 +1301,8 @@ unsigned int cppc_get_transition_latency(int cpu_num)
- 	unsigned int latency_ns =3D 0;
- 	struct cpc_desc *cpc_desc;
- 	struct cpc_register_resource *desired_reg;
-+	int pcc_ss_id =3D per_cpu(cpu_pcc_subspace_idx, cpu_num);
-+	struct cppc_pcc_data *pcc_ss_data =3D pcc_data[pcc_ss_id];
- =
-
- 	cpc_desc =3D per_cpu(cpc_desc_ptr, cpu_num);
- 	if (!cpc_desc)
-@@ -1249,11 +1312,11 @@ unsigned int cppc_get_transition_latency(int cpu_nu=
-m)
- 	if (!CPC_IN_PCC(desired_reg))
- 		return CPUFREQ_ETERNAL;
- =
-
--	if (pcc_data.pcc_mpar)
--		latency_ns =3D 60 * (1000 * 1000 * 1000 / pcc_data.pcc_mpar);
-+	if (pcc_ss_data->pcc_mpar)
-+		latency_ns =3D 60 * (1000 * 1000 * 1000 / pcc_ss_data->pcc_mpar);
- =
-
--	latency_ns =3D max(latency_ns, pcc_data.pcc_nominal * 1000);
--	latency_ns =3D max(latency_ns, pcc_data.pcc_mrtt * 1000);
-+	latency_ns =3D max(latency_ns, pcc_ss_data->pcc_nominal * 1000);
-+	latency_ns =3D max(latency_ns, pcc_ss_data->pcc_mrtt * 1000);
- =
-
- 	return latency_ns;
- }
--- =
-
-2.1.4
-
-
---===============8314992024225757946==--
+--===============9058224848175014848==--
 
