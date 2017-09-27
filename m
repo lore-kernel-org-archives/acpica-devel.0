@@ -1,88 +1,99 @@
-Content-Type: multipart/mixed; boundary="===============7651914999924165952=="
+Content-Type: multipart/mixed; boundary="===============3005329109065463318=="
 MIME-Version: 1.0
-From: Zheng, Lv <lv.zheng at intel.com>
-Subject: Re: [Devel] [PATCH] tools/power/acpi: fix acpi power tool building
- error
-Date: Wed, 27 Sep 2017 02:54:43 +0000
-Message-ID: <1AE640813FDE7649BE1B193DEA596E886CF6D69A@SHSMSX101.ccr.corp.intel.com>
-In-Reply-To: 1504282974-2821-1-git-send-email-18502523564@163.com
+From: Shameer Kolothum <shameerali.kolothum.thodi at huawei.com>
+Subject: [Devel] [PATCH v8 1/5] Doc: iommu/arm-smmu-v3: Add workaround for
+ HiSilicon erratum 161010801
+Date: Wed, 27 Sep 2017 14:32:37 +0100
+Message-ID: <20170927133241.21036-2-shameerali.kolothum.thodi@huawei.com>
+In-Reply-To: 20170927133241.21036-1-shameerali.kolothum.thodi@huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7651914999924165952==
+--===============3005329109065463318==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+From: John Garry <john.garry(a)huawei.com>
 
-> From: winton.liu [mailto:18502523564(a)163.com]
-> Subject: [PATCH] tools/power/acpi: fix acpi power tool building error
-> =
+The HiSilicon erratum 161010801 describes the limitation of HiSilicon
+platforms hip06/hip07 to support the SMMU mappings for MSI transactions.
 
-> When we tried to build acpi power tool, just like the following:
->  $make tools/acpi
->  ... ...
->  can't create power/acpi/tools/acpidbg/acpidbg.o: No such file or directo=
-ry
->  ... ...
-> =
+On these platforms, GICv3 ITS translator is presented with the deviceID
+by extending the MSI payload data to 64 bits to include the deviceID.
+Hence, the PCIe controller on this platforms has to differentiate the MSI
+payload against other DMA payload and has to modify the MSI payload.
+This basically makes it difficult for this platforms to have a SMMU
+translation for MSI.
 
-> Root cause is that the 'tools' folder in the path
-> 'power/acpi/tools/acpidbg/acpidbg.o' doesn't exist.
+This patch adds a compatible string to implement this errata for
+HiSilicon Hi161x SMMUv3 model on hip06/hip07 platforms.
 
-The problem actually is:
-The tools/power/acpi makefiles tried to derive the descend mechanism from t=
-ools generic makefile.
-And the generic descend mechanism contains a trick to hide the intermediate=
- folder (ex., power) and finally it doesn't cover all build cases.
+Also, the arm64 silicon errata is updated with this same erratum.
 
-For example:
-1. Stay in kernel source tree, type "make tools/acpi"
-2. Stay in tools folder, type "make acpi"
-3. Stay in tools/power/acpi, type "make"
-4. Stay in tools/power/acpi/tools/acpidbg, type "make"
-And if you combine -O, you'll find more problems.
-It's not resolvable unless you can fix the descend mechanism.
+Signed-off-by: John Garry <john.garry(a)huawei.com>
+[Shameer: Modified to use compatible string for errata]
+Signed-off-by: Shameer Kolothum <shameerali.kolothum.thodi(a)huawei.com>
+---
+ Documentation/arm64/silicon-errata.txt                  | 1 +
+ Documentation/devicetree/bindings/iommu/arm,smmu-v3.txt | 9 ++++++++-
+ 2 files changed, 9 insertions(+), 1 deletion(-)
 
-Currently, we prepared the makefile to be safe for
-1. Case 2,3,4 without -O.
-2. Case 2 with -O
-So you need to ensure all supported stuffs are still working after applying=
- your change.
+diff --git a/Documentation/arm64/silicon-errata.txt b/Documentation/arm64/s=
+ilicon-errata.txt
+index 66e8ce1..02816b1 100644
+--- a/Documentation/arm64/silicon-errata.txt
++++ b/Documentation/arm64/silicon-errata.txt
+@@ -70,6 +70,7 @@ stable kernels.
+ |                |                 |                 |                    =
+         |
+ | Hisilicon      | Hip0{5,6,7}     | #161010101      | HISILICON_ERRATUM_1=
+61010101 |
+ | Hisilicon      | Hip0{6,7}       | #161010701      | N/A                =
+         |
++| Hisilicon      | Hip0{6,7}       | #161010801      | N/A                =
+         |
+ |                |                 |                 |                    =
+         |
+ | Qualcomm Tech. | Falkor v1       | E1003           | QCOM_FALKOR_ERRATUM=
+_1003    |
+ | Qualcomm Tech. | Falkor v1       | E1009           | QCOM_FALKOR_ERRATUM=
+_1009    |
+diff --git a/Documentation/devicetree/bindings/iommu/arm,smmu-v3.txt b/Docu=
+mentation/devicetree/bindings/iommu/arm,smmu-v3.txt
+index c9abbf3..3b0d599 100644
+--- a/Documentation/devicetree/bindings/iommu/arm,smmu-v3.txt
++++ b/Documentation/devicetree/bindings/iommu/arm,smmu-v3.txt
+@@ -7,11 +7,18 @@ the PCIe specification.
+ =
 
-Thanks
-Lv
+ ** SMMUv3 required properties:
+ =
 
-> =
+-- compatible        : Should include:
++- compatible        : Should be one of:
++
++                      "arm,smmu-v3"
++                      "hisilicon,hi161x-smmu-v3"
++
++                      depending on the particular implementation.
+ =
 
-> Signed-off-by: winton.liu <18502523564(a)163.com>
-> ---
->  tools/power/acpi/Makefile.config | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> =
+                       * "arm,smmu-v3" for any SMMUv3 compliant
+                         implementation. This entry should be last in the
+                         compatible list.
++                      * "hisilicon,hi161x-smmu-v3" for HiSilicon hi161x
++                         SMMUv3 implementation on hip06/hip07 platforms.
+ =
 
-> diff --git a/tools/power/acpi/Makefile.config b/tools/power/acpi/Makefile=
-.config
-> index a1883bb..fb5559f 100644
-> --- a/tools/power/acpi/Makefile.config
-> +++ b/tools/power/acpi/Makefile.config
-> @@ -18,7 +18,7 @@ include $(srctree)/../../scripts/Makefile.include
-> =
+ - reg               : Base address and size of the SMMU.
+ =
 
->  OUTPUT=3D$(srctree)/
->  ifeq ("$(origin O)", "command line")
-> -	OUTPUT :=3D $(O)/power/acpi/
-> +	OUTPUT :=3D $(O)/tools/power/acpi/
->  endif
->  #$(info Determined 'OUTPUT' to be $(OUTPUT))
-> =
+-- =
 
-> --
-> 1.9.1
-> =
+1.9.1
 
 
 
---===============7651914999924165952==--
+--===============3005329109065463318==--
 
