@@ -1,156 +1,182 @@
-Content-Type: multipart/mixed; boundary="===============8062228962805252795=="
+Content-Type: multipart/mixed; boundary="===============7905933170691249735=="
 MIME-Version: 1.0
-From: Shameer Kolothum <shameerali.kolothum.thodi at huawei.com>
-Subject: [Devel] [PATCH v8 5/5] iommu/arm-smmu-v3:Enable ACPI based HiSilicon
- erratum 161010801
-Date: Wed, 27 Sep 2017 14:32:41 +0100
-Message-ID: <20170927133241.21036-6-shameerali.kolothum.thodi@huawei.com>
-In-Reply-To: 20170927133241.21036-1-shameerali.kolothum.thodi@huawei.com
+From: Al Stone <ahs3 at redhat.com>
+Subject: [Devel] [PATCH] ASLTS: provide proper PATH for acpibin in tests
+Date: Wed, 27 Sep 2017 15:20:00 -0600
+Message-ID: <0f7e87e5-a968-de12-6264-a41eca0eb8f9@redhat.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8062228962805252795==
+--===============7905933170691249735==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-The HiSilicon erratum 161010801 describes the limitation of HiSilicon
-platforms Hip06/Hip07 to support the SMMU mappings for MSI transactions.
+Recent versions of ASLTS now use the acpibin utility, much like they
+use acpiexec.  However, when use of acpibin was added, it was not
+treated like acpiexec and was assumed to exist in whatever PATH a user
+had set when running the tests.  When trying to use ASLTS in a very
+pristine environment (i.e., no previous version of ACPICA user space
+tools is available), portions of the test suite will produce false
+failures because acpibin cannot be found and run.
 
-On these platforms GICv3 ITS translator is presented with the deviceID
-by extending the MSI payload data to 64 bits to include the deviceID.
-Hence, the PCIe controller on this platforms has to differentiate the
-MSI payload against other DMA payload and has to modify the MSI payload.
-This basically makes it difficult for this platforms to have a SMMU
-translation for MSI.
+This patch fixes ASLTS so that the use of acpibin is treated exactly
+the same as acpiexec -- an environment variable must be defined (in
+this case, $acpibin) with the location of the executable, aslts.sh
+makes sure a value for the variable is set, Do uses $acpibin (instead
+of assuming acpibin exists in a user's PATH), and the various bits
+of documentation are updated to note the new environment variable.
 
-This patch implements a quirk to reserve the hw msi regions in the
-smmu-v3 driver which means these address regions will not be
-translated and will be excluded from iova allocations.
-
-Signed-off-by: Shameer Kolothum <shameerali.kolothum.thodi(a)huawei.com>
+Signed-off-by: Al Stone <ahs3(a)redhat.com>
 ---
- drivers/iommu/arm-smmu-v3.c | 41 +++++++++++++++++++++++++++++++++++------
- 1 file changed, 35 insertions(+), 6 deletions(-)
+ tests/aslts.sh             | 10 ++++++++--
+ tests/aslts/HOW_TO_INSTALL |  6 +++++-
+ tests/aslts/HOW_TO_USE     |  4 ++++
+ tests/aslts/bin/Do         | 11 +++++++++--
+ 4 files changed, 26 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/iommu/arm-smmu-v3.c b/drivers/iommu/arm-smmu-v3.c
-index e67ba6c..fb7f08d 100644
---- a/drivers/iommu/arm-smmu-v3.c
-+++ b/drivers/iommu/arm-smmu-v3.c
-@@ -413,6 +413,9 @@
- #define MSI_IOVA_BASE			0x8000000
- #define MSI_IOVA_LENGTH			0x100000
- =
+diff --git a/tests/aslts.sh b/tests/aslts.sh
+index 8df422fbc..d8b364be4 100755
+--- a/tests/aslts.sh
++++ b/tests/aslts.sh
+@@ -7,6 +7,7 @@
+ postfix=3D`date +%H%M%S`
+ tmp_iasl=3D/tmp/iasl-$postfix
+ tmp_acpiexec=3D/tmp/acpiexec-$postfix
++tmp_acpibin=3D/tmp/acpibin-$postfix
 
-+#define SMMU_V3_GENERIC_ARM		0x0
-+#define SMMU_V3_HISILICON_HI161X	0x1
-+
- /* Until ACPICA headers cover IORT rev. C */
- #ifndef ACPI_IORT_SMMU_HISILICON_HI161X
- #define ACPI_IORT_SMMU_HISILICON_HI161X		0x1
-@@ -608,6 +611,7 @@ struct arm_smmu_device {
- =
+ TEST_CASES=3D
+ TEST_MODES=3D
+@@ -65,6 +66,7 @@ setup_environment() {
 
- #define ARM_SMMU_OPT_SKIP_PREFETCH	(1 << 0)
- #define ARM_SMMU_OPT_PAGE0_REGS_ONLY	(1 << 1)
-+#define ARM_SMMU_OPT_RESV_HW_MSI	(1 << 2)
- 	u32				options;
- =
+ 	export ASL=3D$tmp_iasl
+ 	export acpiexec=3D$tmp_acpiexec		=
 
- 	struct arm_smmu_cmdq		cmdq;
-@@ -696,6 +700,8 @@ static struct arm_smmu_domain *to_smmu_domain(struct io=
-mmu_domain *dom)
- static void parse_driver_options(struct arm_smmu_device *smmu)
- {
- 	int i =3D 0;
-+	const void *data =3D of_device_get_match_data(smmu->dev);
-+	u32 model =3D *(u32 *)&data;
- =
-
- 	do {
- 		if (of_property_read_bool(smmu->dev->of_node,
-@@ -705,6 +711,11 @@ static void parse_driver_options(struct arm_smmu_devic=
-e *smmu)
- 				arm_smmu_options[i].prop);
- 		}
- 	} while (arm_smmu_options[++i].opt);
-+
-+	if (model =3D=3D SMMU_V3_HISILICON_HI161X) {
-+		smmu->options |=3D ARM_SMMU_OPT_RESV_HW_MSI;
-+		dev_notice(smmu->dev, "\tenabling workaround for HiSilicon erratum 16101=
-0801\n");
-+	}
++	export acpibin=3D$tmp_acpibin
+ 	export ASLTSDIR=3D$aslts_dir
+ 	export PATH=3D$ASLTSDIR/bin:$PATH
  }
- =
+@@ -75,7 +77,7 @@ build_acpi_tools() {
 
- /* Low-level queue manipulation functions */
-@@ -1934,14 +1945,29 @@ static void arm_smmu_get_resv_regions(struct device=
- *dev,
- 				      struct list_head *head)
- {
- 	struct iommu_resv_region *region;
-+	struct arm_smmu_master_data *master =3D dev->iommu_fwspec->iommu_priv;
-+	struct arm_smmu_device *smmu =3D master->smmu;
- 	int prot =3D IOMMU_WRITE | IOMMU_NOEXEC | IOMMU_MMIO;
-+	int resv =3D 0;
- =
+ 	restore_dir=3D$PWD
+ 	cd ${generation_dir}
+-	rm -f $tmp_iasl $tmp_acpiexec
++	rm -f $tmp_iasl $tmp_acpiexec $tmp_acpibin
 
--	region =3D iommu_alloc_resv_region(MSI_IOVA_BASE, MSI_IOVA_LENGTH,
--					 prot, IOMMU_RESV_SW_MSI);
--	if (!region)
--		return;
-+	if ((smmu->options & ARM_SMMU_OPT_RESV_HW_MSI)) {
- =
+ 	# Build native-width iASL compiler and acpiexec
+ 	if [ ! -e bin/iasl -o ! -e bin/acpiexec ]; then
+@@ -91,6 +93,7 @@ build_acpi_tools() {
+ 		echo "Installing ACPICA tools"
+ 		cp bin/iasl $tmp_iasl
+ 		cp bin/acpiexec $tmp_acpiexec
++		cp bin/acpibin $tmp_acpibin
+ 	else
+ 		echo "Could not find iASL/acpiexec tools"
+ 		exit
+@@ -103,6 +106,9 @@ build_acpi_tools() {
+ 	elif [ ! -f $tmp_acpiexec ] ; then
+ 		echo "acpiexec utility not found"
+ 		exit
++	elif [ ! -f $tmp_acpibin ] ; then
++		echo "acpibin utility not found"
++		exit
+ 	fi
 
--	list_add_tail(&region->list, head);
-+		resv =3D iommu_dma_get_msi_resv_regions(dev, head);
-+
-+		if (resv < 0) {
-+			dev_warn(dev, "HW MSI region resv failed: %d\n", resv);
-+			return;
-+		}
-+	}
-+
-+	if (!resv) {
-+		region =3D iommu_alloc_resv_region(MSI_IOVA_BASE, MSI_IOVA_LENGTH,
-+						 prot, IOMMU_RESV_SW_MSI);
-+		if (!region)
-+			return;
-+
-+		list_add_tail(&region->list, head);
-+	}
- =
+ 	cd $restore_dir
+@@ -140,7 +146,7 @@ run_aslts() {
+ 		echo "ASL Test Suite Finished: `date`"
+ 		echo "                Started: $start_time"
 
- 	iommu_dma_get_resv_regions(dev, head);
+-		rm -f $tmp_iasl $tmp_acpiexec
++		rm -f $tmp_iasl $tmp_acpiexec $tmp_acpibin
+ 	fi;
  }
-@@ -2667,6 +2693,7 @@ static void acpi_smmu_get_options(u32 model, struct a=
-rm_smmu_device *smmu)
- 		break;
- 	case ACPI_IORT_SMMU_HISILICON_HI161X:
- 		smmu->options |=3D ARM_SMMU_OPT_SKIP_PREFETCH;
-+		smmu->options |=3D ARM_SMMU_OPT_RESV_HW_MSI;
- 		break;
- 	}
- =
 
-@@ -2862,7 +2889,9 @@ static void arm_smmu_device_shutdown(struct platform_=
-device *pdev)
- }
- =
+diff --git a/tests/aslts/HOW_TO_INSTALL b/tests/aslts/HOW_TO_INSTALL
+index 44648e2fe..300a86310 100644
+--- a/tests/aslts/HOW_TO_INSTALL
++++ b/tests/aslts/HOW_TO_INSTALL
+@@ -49,12 +49,16 @@ ENVIRONMENT
+             > export ASL=3D"c:/acpica/libraries/iasl.exe"
 
- static const struct of_device_id arm_smmu_of_match[] =3D {
--	{ .compatible =3D "arm,smmu-v3", },
-+	{ .compatible =3D "hisilicon,hi161x-smmu-v3",
-+			.data =3D (void *)SMMU_V3_HISILICON_HI161X },
-+	{ .compatible =3D "arm,smmu-v3", .data =3D (void *)SMMU_V3_GENERIC_ARM },
- 	{ },
- };
- MODULE_DEVICE_TABLE(of, arm_smmu_of_match);
+
+-   For test execution, two additional variables are required:
++   For test execution, three additional variables are required:
+
+         acpiexec - path to acpiexec utility: (example)
+
+             > export acpiexec=3D"c:/acpica/libraries/acpiexec.exe"
+
++        acpibin - path to acpibin utility: (example)
++
++            > export acpibin=3D"c:/acpica/libraries/acpibin.exe"
++
+         ASLTSDIR - path to the aslts directory: (example)
+
+             > export ASLTSDIR=3D"c:/acpica/tests/aslts"
+diff --git a/tests/aslts/HOW_TO_USE b/tests/aslts/HOW_TO_USE
+index 233fdbb03..d60945802 100644
+--- a/tests/aslts/HOW_TO_USE
++++ b/tests/aslts/HOW_TO_USE
+@@ -32,6 +32,10 @@ How to execute the run-time tests
+
+             > export acpiexec=3D"c:/acpica/libraries/acpiexec.exe"
+
++        acpibin - path to acpibin utility: (example)
++
++            > export acpibin=3D"c:/acpica/libraries/acpibin.exe"
++
+         ASLTSDIR - path to the aslts directory: (example)
+
+             > export ASLTSDIR=3D"c:/acpica/tests/aslts"
+diff --git a/tests/aslts/bin/Do b/tests/aslts/bin/Do
+index d034072d4..f4742eda1 100755
+--- a/tests/aslts/bin/Do
++++ b/tests/aslts/bin/Do
+@@ -20,12 +20,13 @@
+ #
+ #     ASL      - iASL compiler
+ #     acpiexec - AcpiExec utility
++#     acpibin  - AcpiBin utility
+ #     ASLTSDIR - pathname of root directory of aslts test suite
+ #
+ # External definitions required for particular command:
+ #
+ #     0 - ASLTSDIR, ASL
+-#     1 - ASLTSDIR, acpiexec
++#     1 - ASLTSDIR, acpiexec, acpibin
+ #     2 - ASLTSDIR
+ #     3 - none
+ #     4 - ASLTSDIR
+@@ -346,7 +347,7 @@ binary_compare()
+                 if [ ! -f "$normal_compile_dir/$filename" ]; then
+ 			echo "  binary compare $mode the following file does not exist:
+$normal_compile_dir/$filename"
+ 		else
+-			acpibin -a "$f" "$normal_compile_dir/$filename" > /dev/null
++			$acpibin -a "$f" "$normal_compile_dir/$filename" > /dev/null
+ 			if [ $? -ne 0 ]; then
+ 				echo " [[ Error: $mode Binary compare for $filename failed ]]"
+ 			else
+@@ -809,6 +810,12 @@ elif [ $CMD =3D=3D $RUNTESTS ]; then
+ 		do_exit 1 "Undefined acpiexec variable! Set it to pathname of AcpiExec u=
+tility."
+ 	fi
+
++	# Check access to AcpiBin utility
++
++	if [ ! -f "$acpibin" ]; then
++		do_exit 1 "Undefined acpibin variable! Set it to pathname of AcpiBin uti=
+lity."
++	fi
++
+ 	shift 1
+ 	ASLTSRUN_PARAMS=3D
+
 -- =
 
-1.9.1
+2.13.5
 
 
-
---===============8062228962805252795==--
+--===============7905933170691249735==--
 
