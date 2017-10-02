@@ -1,28 +1,33 @@
-Content-Type: multipart/mixed; boundary="===============1974445532917855429=="
+Content-Type: multipart/mixed; boundary="===============9075436356072256806=="
 MIME-Version: 1.0
-From: Zheng, Lv <lv.zheng at intel.com>
-Subject: [Devel] acpica: Fix double-free in acpi_ns_repair_CID()
-Date: Sat, 30 Sep 2017 06:50:48 +0000
-Message-ID: <1AE640813FDE7649BE1B193DEA596E886CF72394@SHSMSX101.ccr.corp.intel.com>
+From: Rafael J. Wysocki <rjw at rjwysocki.net>
+Subject: Re: [Devel] [PATCH 15/18] acpi: use ARRAY_SIZE
+Date: Mon, 02 Oct 2017 14:27:52 +0200
+Message-ID: <1668017.YFhvic4TWu@aspire.rjw.lan>
+In-Reply-To: 20171001193101.8898-16-jeremy.lefaure@lse.epita.fr
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1974445532917855429==
+--===============9075436356072256806==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Sunday, October 1, 2017 9:30:53 PM CEST J=C3=A9r=C3=A9my Lefaure wrote:
+> Using the ARRAY_SIZE macro improves the readability of the code. It is
+> useless to re-invent the ARRAY_SIZE macro so let's use it.
+> =
 
-Are you still monitoring this issue?
-https://patchwork.kernel.org/patch/9555103/
-I have a fix related, are you still available for testing this issue?
-I just created a kernel Bugzilla entry for us to communicate:
-https://bugzilla.kernel.org/show_bug.cgi?id=3D197085
+> It is useless to re-invent the ARRAY_SIZE macro so let's use it.
 
-Thanks
-Lv
+ACPICA is soewhat special code, though and I'm not taking or ACKing patches
+for it directly as a rule.
+
+For one, I'm not sure if ACPICA can use ARRAY_SIZE at all.
+
+Thanks,
+Rafael
 
 
---===============1974445532917855429==--
+--===============9075436356072256806==--
 
