@@ -1,14 +1,15 @@
-Content-Type: multipart/mixed; boundary="===============1717158692729143326=="
+Content-Type: multipart/mixed; boundary="===============6623738160595487883=="
 MIME-Version: 1.0
 From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] [PATCH 15/18] acpi: use ARRAY_SIZE
-Date: Tue, 03 Oct 2017 16:38:17 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E613032@ORSMSX110.amr.corp.intel.com>
-In-Reply-To: CAJZ5v0j+UPDJrWfiZzE26=PGSzmqZnQwMwCkei9N8+M1JkEmyg@mail.gmail.com
+Subject: Re: [Devel] [pm:bleeding-edge 12/41] utstrsuppt.c:undefined reference
+ to `__udivdi3'
+Date: Tue, 03 Oct 2017 16:43:42 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E613050@ORSMSX110.amr.corp.intel.com>
+In-Reply-To: 2859755.8uSvH3hIdc@aspire.rjw.lan
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1717158692729143326==
+--===============6623738160595487883==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
@@ -16,54 +17,59 @@ Content-Transfer-Encoding: quoted-printable
 
 
 > -----Original Message-----
-> From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of Rafael J.
-> Wysocki
-> Sent: Tuesday, October 3, 2017 9:05 AM
-> To: Colin Ian King <colin.king(a)canonical.com>
-> Cc: Wysocki, Rafael J <rafael.j.wysocki(a)intel.com>; Rafael J. Wysocki
-> <rjw(a)rjwysocki.net>; Linux Kernel Mailing List <linux-
-> kernel(a)vger.kernel.org>; ACPI Devel Maling List <linux-
-> acpi(a)vger.kernel.org>; J=C3=A9r=C3=A9my Lefaure <jeremy.lefaure(a)lse.e=
-pita.fr>;
-> devel(a)acpica.org
-> Subject: Re: [Devel] [PATCH 15/18] acpi: use ARRAY_SIZE
+> From: Rafael J. Wysocki [mailto:rjw(a)rjwysocki.net]
+> Sent: Tuesday, October 3, 2017 4:32 AM
+> To: Moore, Robert <robert.moore(a)intel.com>; Zheng, Lv
+> <lv.zheng(a)intel.com>
+> Cc: Wu, Fengguang <fengguang.wu(a)intel.com>; kbuild-all(a)01.org; linux-
+> acpi(a)vger.kernel.org; devel(a)acpica.org; linux-pm(a)vger.kernel.org
+> Subject: Re: [pm:bleeding-edge 12/41] utstrsuppt.c:undefined reference
+> to `__udivdi3'
 > =
 
-> On Tue, Oct 3, 2017 at 2:34 PM, Colin Ian King
-> <colin.king(a)canonical.com> wrote:
-> > On 03/10/17 12:39, Rafael J. Wysocki wrote:
-> >> On Tuesday, October 3, 2017 3:16:22 AM CEST J=C3=A9r=C3=A9my Lefaure w=
-rote:
-> >>> On Mon, 02 Oct 2017 14:27:52 +0200
-> >>> "Rafael J. Wysocki" <rjw(a)rjwysocki.net> wrote:
-> >>>
-> >>>> ACPICA is soewhat special code, though and I'm not taking or ACKing
-> >>>> patches for it directly as a rule.
-> >>>>
-> >>>> For one, I'm not sure if ACPICA can use ARRAY_SIZE at all.
-> >>> Why is it special code that can't use ARRAY_SIZE ? Is it because
-> >>> this macro is defined in linux/kernel.h ?
+> On Tuesday, October 3, 2017 4:25:52 AM CEST kbuild test robot wrote:
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-
+> pm.git bleeding-edge
+> > head:   09b089a247ea7272df93a2116368bf24b656cd65
+> > commit: 05545b3fb6eab35290413211617793bc274e136b [12/41] ACPICA:
+> Restructure/cleanup all string-to-integer conversion functions
+> > config: i386-defconfig (attached as .config)
+> > compiler: gcc-6 (Debian 6.2.0-3) 6.2.0 20160901
+> > reproduce:
+> >         git checkout 05545b3fb6eab35290413211617793bc274e136b
+> >         # save the attached .config to linux build tree
+> >         make ARCH=3Di386
 > >
-> > However, ACPICA does have ACPI_ARRAY_LENGTH(x), see
-> > source/include/actypes.h
+> > All errors (new ones prefixed by >>):
+> >
+> >    drivers/acpi/acpica/utstrsuppt.o: In function
+> `acpi_ut_insert_digit':
+> > >> utstrsuppt.c:(.text+0x33): undefined reference to `__udivdi3'
 > =
 
-> Fair enough, but that cleanup should go in via ACPICA upstream anyway.
+> __udivdi3() doesn't work on 32-bit x86 AFAICS.
+> =
+
+> Can we avoid using it or at least put it under #ifdef somehow?
 [Moore, Robert] =
 
 
-This would be acceptable, as long as it will work properly in the cases tha=
-t were presented earlier (using ARRAY_SIZE).
+
+I take it that __udivdi3 is a 64-bit divide?
+We do have a local divide implementation(s) for things like this.
+
+However, I don't see a divide in ut_insert_digit; There is a 64-bit divide =
+in ut_strtoul_add_64, however.
+
+So, there are no issues with 64-bit add, subtract, and multiply?
+
 
 
 > =
 
 > Thanks,
 > Rafael
-> _______________________________________________
-> Devel mailing list
-> Devel(a)acpica.org
-> https://lists.acpica.org/mailman/listinfo/devel
 
---===============1717158692729143326==--
+
+--===============6623738160595487883==--
 
