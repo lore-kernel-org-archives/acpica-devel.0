@@ -1,47 +1,51 @@
-Content-Type: multipart/mixed; boundary="===============6611961000033580179=="
+Content-Type: multipart/mixed; boundary="===============2809612675063240410=="
 MIME-Version: 1.0
 From: Rafael J. Wysocki <rjw at rjwysocki.net>
-Subject: Re: [Devel] [pm:bleeding-edge 12/41] utstrsuppt.c:undefined reference
- to `__udivdi3'
-Date: Tue, 03 Oct 2017 13:31:47 +0200
-Message-ID: <2859755.8uSvH3hIdc@aspire.rjw.lan>
-In-Reply-To: 201710031050.2Iy92vzG%fengguang.wu@intel.com
+Subject: Re: [Devel] [PATCH 15/18] acpi: use ARRAY_SIZE
+Date: Tue, 03 Oct 2017 13:39:22 +0200
+Message-ID: <5437275.MVdmGJ04h3@aspire.rjw.lan>
+In-Reply-To: 20171002211622.30d324ca@blatinox-laptop.localdomain
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6611961000033580179==
+--===============2809612675063240410==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Tuesday, October 3, 2017 4:25:52 AM CEST kbuild test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.g=
-it bleeding-edge
-> head:   09b089a247ea7272df93a2116368bf24b656cd65
-> commit: 05545b3fb6eab35290413211617793bc274e136b [12/41] ACPICA: Restruct=
-ure/cleanup all string-to-integer conversion functions
-> config: i386-defconfig (attached as .config)
-> compiler: gcc-6 (Debian 6.2.0-3) 6.2.0 20160901
-> reproduce:
->         git checkout 05545b3fb6eab35290413211617793bc274e136b
->         # save the attached .config to linux build tree
->         make ARCH=3Di386 =
-
+On Tuesday, October 3, 2017 3:16:22 AM CEST J=C3=A9r=C3=A9my Lefaure wrote:
+> On Mon, 02 Oct 2017 14:27:52 +0200
+> "Rafael J. Wysocki" <rjw(a)rjwysocki.net> wrote:
 > =
 
-> All errors (new ones prefixed by >>):
-> =
+> > ACPICA is soewhat special code, though and I'm not taking or ACKing pat=
+ches
+> > for it directly as a rule.
+> > =
 
->    drivers/acpi/acpica/utstrsuppt.o: In function `acpi_ut_insert_digit':
-> >> utstrsuppt.c:(.text+0x33): undefined reference to `__udivdi3'
+> > For one, I'm not sure if ACPICA can use ARRAY_SIZE at all.
+> Why is it special code that can't use ARRAY_SIZE ? Is it because this
+> macro is defined in linux/kernel.h ?
 
-__udivdi3() doesn't work on 32-bit x86 AFAICS.
+Basically, yes.
 
-Can we avoid using it or at least put it under #ifdef somehow?
+ACPICA is a separate project and the kernel acquires its source code from
+the upstream (which is used by other OSes too).  That is not the case for
+any other code in the kernel I know about.
+
+
+We strive to keep the ACPICA code in the kernel as close to the upstream as
+reasonably possible for maintenance reasons, so we avoid doing Linux-specif=
+ic
+things in it.
+
+As a rule of thumb, if you do cleanups like this one, better avoid the ACPI=
+CA
+code. :-)
 
 Thanks,
 Rafael
 
 
---===============6611961000033580179==--
+--===============2809612675063240410==--
 
