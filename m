@@ -1,186 +1,171 @@
-Content-Type: multipart/mixed; boundary="===============0797603639170802826=="
+Content-Type: multipart/mixed; boundary="===============7734840882046765229=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rjw at rjwysocki.net>
-Subject: Re: [Devel] [pm:bleeding-edge 12/41] utstrsuppt.c:undefined reference
- to `__udivdi3'
-Date: Wed, 04 Oct 2017 01:44:55 +0200
-Message-ID: <1613813.8GnoMyR66V@aspire.rjw.lan>
-In-Reply-To: 94F2FBAB4432B54E8AACC7DFDE6C92E37E613222@ORSMSX110.amr.corp.intel.com
+From: Shameerali Kolothum Thodi <shameerali.kolothum.thodi at huawei.com>
+Subject: Re: [Devel] [PATCH v8 0/5] iommu/smmu-v3: Workaround for hisilicon
+ 161010801 erratum(reserve HW MSI)
+Date: Wed, 04 Oct 2017 10:03:39 +0000
+Message-ID: <5FC3163CFD30C246ABAA99954A238FA83841C405@FRAEML521-MBX.china.huawei.com>
+In-Reply-To: 20170927133241.21036-1-shameerali.kolothum.thodi@huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0797603639170802826==
+--===============7734840882046765229==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Tuesday, October 3, 2017 11:44:38 PM CEST Moore, Robert wrote:
+Hi Will/Lorenzo/Marc,
+
+Any feedback on this series, please? Really appreciate if you can take a lo=
+ok
+and let us know. =
+
+
+Thanks,
+Shameer
+
+> -----Original Message-----
+> From: Shameerali Kolothum Thodi
+> Sent: Wednesday, September 27, 2017 2:33 PM
+> To: lorenzo.pieralisi(a)arm.com; marc.zyngier(a)arm.com;
+> sudeep.holla(a)arm.com; will.deacon(a)arm.com; robin.murphy(a)arm.com;
+> joro(a)8bytes.org; mark.rutland(a)arm.com; robh(a)kernel.org
+> Cc: Gabriele Paoloni <gabriele.paoloni(a)huawei.com>; John Garry
+> <john.garry(a)huawei.com>; iommu(a)lists.linux-foundation.org; linux-arm-
+> kernel(a)lists.infradead.org; linux-acpi(a)vger.kernel.org;
+> devicetree(a)vger.kernel.org; devel(a)acpica.org; Linuxarm
+> <linuxarm(a)huawei.com>; Wangzhou (B) <wangzhou1(a)hisilicon.com>;
+> Guohanjun (Hanjun Guo) <guohanjun(a)huawei.com>; Shameerali Kolothum
+> Thodi <shameerali.kolothum.thodi(a)huawei.com>
+> Subject: [PATCH v8 0/5] iommu/smmu-v3: Workaround for hisilicon
+> 161010801 erratum(reserve HW MSI)
 > =
 
-> > -----Original Message-----
-> > From: Rafael J. Wysocki [mailto:rjw(a)rjwysocki.net]
-> > Sent: Tuesday, October 3, 2017 2:18 PM
-> > To: Moore, Robert <robert.moore(a)intel.com>
-> > Cc: Rafael J. Wysocki <rafael(a)kernel.org>; Zheng, Lv
-> > <lv.zheng(a)intel.com>; Wu, Fengguang <fengguang.wu(a)intel.com>; kbuil=
-d-
-> > all(a)01.org; linux-acpi(a)vger.kernel.org; devel(a)acpica.org; linux-
-> > pm(a)vger.kernel.org
-> > Subject: Re: [pm:bleeding-edge 12/41] utstrsuppt.c:undefined reference
-> > to `__udivdi3'
-> > =
-
-> > On Tuesday, October 3, 2017 11:23:36 PM CEST Moore, Robert wrote:
-> > >
-> > > > -----Original Message-----
-> > > > From: Rafael J. Wysocki [mailto:rjw(a)rjwysocki.net]
-> > > > Sent: Tuesday, October 3, 2017 2:07 PM
-> > > > To: Moore, Robert <robert.moore(a)intel.com>
-> > > > Cc: Rafael J. Wysocki <rafael(a)kernel.org>; Zheng, Lv
-> > > > <lv.zheng(a)intel.com>; Wu, Fengguang <fengguang.wu(a)intel.com>;
-> > > > kbuild- all(a)01.org; linux-acpi(a)vger.kernel.org; devel(a)acpica.=
-org;
-> > > > linux- pm(a)vger.kernel.org
-> > > > Subject: Re: [pm:bleeding-edge 12/41] utstrsuppt.c:undefined
-> > > > reference to `__udivdi3'
-> > > >
-> > > > On Tuesday, October 3, 2017 10:50:11 PM CEST Rafael J. Wysocki
-> > wrote:
-> > > > > On Tuesday, October 3, 2017 9:41:23 PM CEST Moore, Robert wrote:
-> > > > > >
-> > > > > > > -----Original Message-----
-> > > > > > > From: rjwysocki(a)gmail.com [mailto:rjwysocki(a)gmail.com] On
-> > > > > > > Behalf Of Rafael J. Wysocki
-> > > > > > > Sent: Tuesday, October 3, 2017 11:21 AM
-> > > > > > > To: Moore, Robert <robert.moore(a)intel.com>
-> > > > > > > Cc: Rafael J. Wysocki <rjw(a)rjwysocki.net>; Zheng, Lv
-> > > > > > > <lv.zheng(a)intel.com>; Wu, Fengguang <fengguang.wu(a)intel.c=
-om>;
-> > > > > > > kbuild- all(a)01.org; linux-acpi(a)vger.kernel.org;
-> > > > > > > devel(a)acpica.org;
-> > > > > > > linux- pm(a)vger.kernel.org
-> > > > > > > Subject: Re: [pm:bleeding-edge 12/41] utstrsuppt.c:undefined
-> > > > > > > reference to `__udivdi3'
-> > > > > > >
-> > > > > > > On Tue, Oct 3, 2017 at 6:43 PM, Moore, Robert
-> > > > > > > <robert.moore(a)intel.com>
-> > > > > > > wrote:
-> > > > > > > >
-> > > > > > > >
-> > > > > > > >> -----Original Message-----
-> > > > > > > >> From: Rafael J. Wysocki [mailto:rjw(a)rjwysocki.net]
-> > > > > > > >> Sent: Tuesday, October 3, 2017 4:32 AM
-> > > > > > > >> To: Moore, Robert <robert.moore(a)intel.com>; Zheng, Lv
-> > > > > > > >> <lv.zheng(a)intel.com>
-> > > > > > > >> Cc: Wu, Fengguang <fengguang.wu(a)intel.com>;
-> > > > > > > >> kbuild-all(a)01.org;
-> > > > > > > >> linux- acpi(a)vger.kernel.org; devel(a)acpica.org;
-> > > > > > > >> linux-pm(a)vger.kernel.org
-> > > > > > > >> Subject: Re: [pm:bleeding-edge 12/41]
-> > > > > > > >> utstrsuppt.c:undefined reference to `__udivdi3'
-> > > > > > > >>
-> > > > > > > >> On Tuesday, October 3, 2017 4:25:52 AM CEST kbuild test
-> > > > > > > >> robot
-> > > > wrote:
-> > > > > > > >> > tree:
-> > > > > > > https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-
-> > > > > > > >> pm.git bleeding-edge
-> > > > > > > >> > head:   09b089a247ea7272df93a2116368bf24b656cd65
-> > > > > > > >> > commit: 05545b3fb6eab35290413211617793bc274e136b [12/41]
-> > > > ACPICA:
-> > > > > > > >> Restructure/cleanup all string-to-integer conversion
-> > > > > > > >> functions
-> > > > > > > >> > config: i386-defconfig (attached as .config)
-> > > > > > > >> > compiler: gcc-6 (Debian 6.2.0-3) 6.2.0 20160901
-> > > > > > > >> > reproduce:
-> > > > > > > >> >         git checkout
-> > 05545b3fb6eab35290413211617793bc274e136b
-> > > > > > > >> >         # save the attached .config to linux build tree
-> > > > > > > >> >         make ARCH=3Di386
-> > > > > > > >> >
-> > > > > > > >> > All errors (new ones prefixed by >>):
-> > > > > > > >> >
-> > > > > > > >> >    drivers/acpi/acpica/utstrsuppt.o: In function
-> > > > > > > >> `acpi_ut_insert_digit':
-> > > > > > > >> > >> utstrsuppt.c:(.text+0x33): undefined reference to
-> > > > `__udivdi3'
-> > > > > > > >>
-> > > > > > > >> __udivdi3() doesn't work on 32-bit x86 AFAICS.
-> > > > > > > >>
-> > > > > > > >> Can we avoid using it or at least put it under #ifdef
-> > somehow?
-> > > > > > > > [Moore, Robert]
-> > > > > > > >
-> > > > > > > >
-> > > > > > > > I take it that __udivdi3 is a 64-bit divide?
-> > > > > > >
-> > > > > > > Practically, yes (AFAICS).
-> > > > > > >
-> > > > > > > > We do have a local divide implementation(s) for things like
-> > > > this.
-> > > > > > > >
-> > > > > > > > However, I don't see a divide in ut_insert_digit; There is a
-> > > > > > > > 64-bit
-> > > > > > > divide in ut_strtoul_add_64, however.
-> > > > > > [Moore, Robert]
-> > > > > >
-> > > > > > Oops, sorry. The divided is in strtoul_multiply_64. We are
-> > > > > > checking for an overflow condition up front.
-> > > > >
-> > > > > But this is a plain division, so it looks like a build system or
-> > > > > compiler issue to me.
-> > > >
-> > > > Well, OK.  Plain u64 / u64 divisions need to be avoided for stuff to
-> > > > build on 32-bit x86.
-> > > >
-> > > [Moore, Robert]
-> > >
-> > > Even u64/u32.
-> > >
-> > > Anyway, this is no problem to change since we already have the
-> > functionality locally.
-> > =
-
-> > OK
-> > =
-
-> > Can you please send me a patch against upstream ACPICA to change this?
-> > =
-
-> > I'll try do fold it in. :-)
-> [Moore, Robert] =
-
+> On certain HiSilicon platforms (hip06/hip07) the GIC ITS and PCIe RC
+> deviates from the standard implementation and this breaks PCIe MSI
+> functionality when SMMU is enabled.
 > =
 
-> I'll need to do it and then run some tests on it, so when it is done, I'l=
-l send it. I envision 2
+> The HiSilicon erratum 161010801 describes this limitation of certain
+> HiSilicon platforms to support the SMMU mappings for MSI transactions.
+> On these platforms GICv3 ITS translator is presented with the deviceID
+> by extending the MSI payload data to 64 bits to include the deviceID.
+> Hence, the PCIe controller on this platforms has to differentiate the MSI
+> payload against other DMA payload and has to modify the MSI payload.
+> This basically makes it difficult for this platforms to have a SMMU
+> translation for MSI.
 > =
 
-> [Moore, Robert] I think it will look something like this:
+> This patch implements an ACPI and DT based quirk to reserve the hw msi
+> regions in the smmu-v3 driver which means these address regions will
+> not be translated and will be excluded from iova allocations.
 > =
 
->     UINT64                  Quotient;
+> To implement this quirk, the following changes are incorporated:
+> 1. Added a generic helper function to IORT code to retrieve the
+>    associated ITS base address from a device IORT node.
+> 2. Added a generic helper function to of iommu code to retrieve the
+>    associated msi controller base address from for a PCI RC
+>    msi-mapping and also platform device msi-parent.
+> 3. Added quirk to SMMUv3 to retrieve the HW ITS address and replace
+>    the default SW MSI reserve address based on the IORT SMMU model
+>    or DT bindings.
 > =
 
-> ...
+> Changelog:
 > =
 
->     /* Check for 64-bit overflow before the actual multiplication */
+> v7 --> v8
+> Addressed comments from Rob and Lorenzo:
+>  -Modified to use DT compatible string for errata.
+>  -Changed logic to retrieve the msi-parent for DT case.
 > =
 
->     AcpiUtShortDivide (ACPI_UINT64_MAX, (UINT32) Multiplier, &Quotient, N=
-ULL);
->     if (Multiplicand > Quotient)
->     {
->         return (AE_NUMERIC_OVERFLOW);
->     }
+> v6 --> v7
+> Addressed request from Will to add DT support for the erratum:
+>  - added bt binding
+>  - add of_iommu_msi_get_resv_regions()
+> New arm64 silicon errata entry
+> Rename iort_iommu_{its->msi}_get_resv_regions
+> =
 
-OK, thanks!
+> v5 --> v6
+> Addressed comments from Robin and Lorenzo:
+> -No change to patch#1 .
+> -Reverted v5 patch#2 as this might break the platforms where this quirk
+>   is not applicable. Provided a generic function in iommu code and added
+>   back the quirk implementation in SMMU v3 driver(patch#3)
+> =
 
-I hope I have not butchered it. :-)
+> v4 --> v5
+> Addressed comments from Robin and Lorenzo:
+> -Added a comment to make it clear that, for now, only straightforward
+>   HW topologies are handled while reserving ITS regions(patch #1).
+> =
 
-Anyway, it's in my bleeding-edge branch now.
+> v3 --> v4
+> Rebased on 4.13-rc1.
+> Addressed comments from Robin, Will and Lorenzo:
+> -As suggested by Robin, moved the ITS msi reservation into
+>   iommu_dma_get_resv_regions().
+> -Added its_count !=3D resv region failure case(patch #1).
+> =
+
+> v2 --> v3
+> Addressed comments from Lorenzo and Robin:
+> -Removed dev_is_pci() check in smmuV3 driver.
+> -Don't treat device not having an ITS mapping as an error in
+>   iort helper function.
+> =
+
+> v1 --> v2
+> -patch 2/2: Invoke iort helper fn based on fwnode type(acpi).
+> =
+
+> RFCv2 -->PATCH
+> -Incorporated Lorenzo's review comments.
+> =
+
+> RFC v1 --> RFC v2
+> Based on Robin's review comments,
+> -Removed  the generic erratum framework.
+> -Using IORT/MADT tables to retrieve the ITS base addr instead  of vendor
+> specific CSRT table.
+> =
+
+> John Garry (2):
+>   Doc: iommu/arm-smmu-v3: Add workaround for HiSilicon erratum
+> 161010801
+>   iommu/of: Add msi address regions reservation helper
+> =
+
+> Shameer Kolothum (3):
+>   ACPI/IORT: Add msi address regions reservation helper
+>   iommu/dma: Add a helper function to reserve HW MSI address regions for
+>     IOMMU drivers
+>   iommu/arm-smmu-v3:Enable ACPI based HiSilicon erratum 161010801
+> =
+
+>  Documentation/arm64/silicon-errata.txt             |  1 +
+>  .../devicetree/bindings/iommu/arm,smmu-v3.txt      |  9 +-
+>  drivers/acpi/arm64/iort.c                          | 96 ++++++++++++++++=
++++++-
+>  drivers/iommu/arm-smmu-v3.c                        | 41 +++++++--
+>  drivers/iommu/dma-iommu.c                          | 19 +++++
+>  drivers/iommu/of_iommu.c                           | 95 ++++++++++++++++=
++++++
+>  drivers/irqchip/irq-gic-v3-its.c                   |  3 +-
+>  include/linux/acpi_iort.h                          |  7 +-
+>  include/linux/dma-iommu.h                          |  7 ++
+>  include/linux/of_iommu.h                           | 10 +++
+>  10 files changed, 276 insertions(+), 12 deletions(-)
+> =
+
+> --
+> 1.9.1
+> =
 
 
---===============0797603639170802826==--
+
+--===============7734840882046765229==--
 
