@@ -1,112 +1,120 @@
-Content-Type: multipart/mixed; boundary="===============2286802196617536658=="
+Content-Type: multipart/mixed; boundary="===============5903424105133471850=="
 MIME-Version: 1.0
-From: Marc Zyngier <marc.zyngier at arm.com>
+From: Lorenzo Pieralisi <lorenzo.pieralisi at arm.com>
 Subject: Re: [Devel] [PATCH v8 3/5] iommu/of: Add msi address regions
  reservation helper
-Date: Wed, 04 Oct 2017 12:22:04 +0100
-Message-ID: <f3146f49-6004-7a15-866b-653e3ea54856@arm.com>
-In-Reply-To: 20170927133241.21036-4-shameerali.kolothum.thodi@huawei.com
+Date: Wed, 04 Oct 2017 14:50:07 +0100
+Message-ID: <20171004135007.GA12327@red-moon>
+In-Reply-To: f3146f49-6004-7a15-866b-653e3ea54856@arm.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2286802196617536658==
+--===============5903424105133471850==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On 27/09/17 14:32, Shameer Kolothum wrote:
-> From: John Garry <john.garry(a)huawei.com>
+On Wed, Oct 04, 2017 at 12:22:04PM +0100, Marc Zyngier wrote:
+> On 27/09/17 14:32, Shameer Kolothum wrote:
+> > From: John Garry <john.garry(a)huawei.com>
+> > =
+
+> > On some platforms msi-controller address regions have to be excluded
+> > from normal IOVA allocation in that they are detected and decoded in
+> > a HW specific way by system components and so they cannot be considered
+> > normal IOVA address space.
+> > =
+
+> > Add a helper function that retrieves msi address regions through device
+> > tree msi mapping, so that these regions will not be translated by IOMMU
+> > and will be excluded from IOVA allocations.
+> > =
+
+> > Signed-off-by: John Garry <john.garry(a)huawei.com>
+> > [Shameer: Modified msi-parent retrieval logic]
+> > Signed-off-by: Shameer Kolothum <shameerali.kolothum.thodi(a)huawei.com>
+> > ---
+> >  drivers/iommu/of_iommu.c | 95 ++++++++++++++++++++++++++++++++++++++++=
+++++++++
+> >  include/linux/of_iommu.h | 10 +++++
+> >  2 files changed, 105 insertions(+)
+> > =
+
+> > diff --git a/drivers/iommu/of_iommu.c b/drivers/iommu/of_iommu.c
+> > index e60e3db..ffd7fb7 100644
+> > --- a/drivers/iommu/of_iommu.c
+> > +++ b/drivers/iommu/of_iommu.c
+> > @@ -21,6 +21,7 @@
+> >  #include <linux/iommu.h>
+> >  #include <linux/limits.h>
+> >  #include <linux/of.h>
+> > +#include <linux/of_address.h>
+> >  #include <linux/of_iommu.h>
+> >  #include <linux/of_pci.h>
+> >  #include <linux/slab.h>
+> > @@ -138,6 +139,14 @@ static int of_iommu_xlate(struct device *dev,
+> >  	return ops->of_xlate(dev, iommu_spec);
+> >  }
+> >  =
+
+> > +static int __get_pci_rid(struct pci_dev *pdev, u16 alias, void *data)
+> > +{
+> > +	u32 *rid =3D data;
+> > +
+> > +	*rid =3D alias;
+> > +	return 0;
+> > +}
+> > +
+> >  struct of_pci_iommu_alias_info {
+> >  	struct device *dev;
+> >  	struct device_node *np;
+> > @@ -163,6 +172,73 @@ static int of_pci_iommu_init(struct pci_dev *pdev,=
+ u16 alias, void *data)
+> >  	return info->np =3D=3D pdev->bus->dev.of_node;
+> >  }
+> >  =
+
+> > +static int of_iommu_alloc_resv_region(struct device_node *np,
+> > +				      struct list_head *head)
+> > +{
+> > +	int prot =3D IOMMU_WRITE | IOMMU_NOEXEC | IOMMU_MMIO;
+> > +	struct iommu_resv_region *region;
+> > +	struct resource res;
+> > +	int err;
+> > +
+> > +	err =3D of_address_to_resource(np, 0, &res);
 > =
 
-> On some platforms msi-controller address regions have to be excluded
-> from normal IOVA allocation in that they are detected and decoded in
-> a HW specific way by system components and so they cannot be considered
-> normal IOVA address space.
+> What is the rational for registering the first region only? Surely you
+> can have more than one region in an MSI controller (yes, your particular
+> case is the ITS which has only one, but we're trying to do something
+> generic here).
 > =
 
-> Add a helper function that retrieves msi address regions through device
-> tree msi mapping, so that these regions will not be translated by IOMMU
-> and will be excluded from IOVA allocations.
+> Another issue I have with this code is that it inserts all of the ITS
+> MMIO in the RESV_MSI range. As long as we don't generate any page tables
+> for this, we're fine. But if we ever change this, we'll end-up with the
+> ITS programming interface being exposed to a device, which wouldn't be
+> acceptable.
 > =
 
-> Signed-off-by: John Garry <john.garry(a)huawei.com>
-> [Shameer: Modified msi-parent retrieval logic]
-> Signed-off-by: Shameer Kolothum <shameerali.kolothum.thodi(a)huawei.com>
-> ---
->  drivers/iommu/of_iommu.c | 95 ++++++++++++++++++++++++++++++++++++++++++=
-++++++
->  include/linux/of_iommu.h | 10 +++++
->  2 files changed, 105 insertions(+)
-> =
+> Why can't we have some generic property instead, that would describe the
+> actual ranges that cannot be translated? That way, no random insertion
+> of a random range, and relatively future proof.
 
-> diff --git a/drivers/iommu/of_iommu.c b/drivers/iommu/of_iommu.c
-> index e60e3db..ffd7fb7 100644
-> --- a/drivers/iommu/of_iommu.c
-> +++ b/drivers/iommu/of_iommu.c
-> @@ -21,6 +21,7 @@
->  #include <linux/iommu.h>
->  #include <linux/limits.h>
->  #include <linux/of.h>
-> +#include <linux/of_address.h>
->  #include <linux/of_iommu.h>
->  #include <linux/of_pci.h>
->  #include <linux/slab.h>
-> @@ -138,6 +139,14 @@ static int of_iommu_xlate(struct device *dev,
->  	return ops->of_xlate(dev, iommu_spec);
->  }
->  =
+IORT code has the same issue (ie it reserves all ITS regions) and I do
+not know where a property can be added to describe those ranges (IORT
+specs ? I'd rather not) in ACPI other than the IORT tables entries
+themselves.
 
-> +static int __get_pci_rid(struct pci_dev *pdev, u16 alias, void *data)
-> +{
-> +	u32 *rid =3D data;
-> +
-> +	*rid =3D alias;
-> +	return 0;
-> +}
-> +
->  struct of_pci_iommu_alias_info {
->  	struct device *dev;
->  	struct device_node *np;
-> @@ -163,6 +172,73 @@ static int of_pci_iommu_init(struct pci_dev *pdev, u=
-16 alias, void *data)
->  	return info->np =3D=3D pdev->bus->dev.of_node;
->  }
->  =
+> I'm not sure where to declare it (PCIe node? IOMMU node?), but it'd feel
+> like a much nicer and simpler solution to this problem.
 
-> +static int of_iommu_alloc_resv_region(struct device_node *np,
-> +				      struct list_head *head)
-> +{
-> +	int prot =3D IOMMU_WRITE | IOMMU_NOEXEC | IOMMU_MMIO;
-> +	struct iommu_resv_region *region;
-> +	struct resource res;
-> +	int err;
-> +
-> +	err =3D of_address_to_resource(np, 0, &res);
+It could be but if we throw ACPI into the picture we have to knock
+together Hisilicon specific namespace bindings to handle this and
+quickly.
 
-What is the rational for registering the first region only? Surely you
-can have more than one region in an MSI controller (yes, your particular
-case is the ITS which has only one, but we're trying to do something
-generic here).
+Lorenzo
 
-Another issue I have with this code is that it inserts all of the ITS
-MMIO in the RESV_MSI range. As long as we don't generate any page tables
-for this, we're fine. But if we ever change this, we'll end-up with the
-ITS programming interface being exposed to a device, which wouldn't be
-acceptable.
-
-Why can't we have some generic property instead, that would describe the
-actual ranges that cannot be translated? That way, no random insertion
-of a random range, and relatively future proof.
-
-I'm not sure where to declare it (PCIe node? IOMMU node?), but it'd feel
-like a much nicer and simpler solution to this problem.
-
-Thoughts?
-
-	M.
--- =
-
-Jazz is not dead. It just smells funny...
-
---===============2286802196617536658==--
+--===============5903424105133471850==--
 
