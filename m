@@ -1,252 +1,227 @@
-Content-Type: multipart/mixed; boundary="===============2692872992333698646=="
+Content-Type: multipart/mixed; boundary="===============3890575862039771373=="
 MIME-Version: 1.0
-From: Robin Murphy <robin.murphy at arm.com>
-Subject: Re: [Devel] [PATCH v8 3/5] iommu/of: Add msi address regions
+From: Shameerali Kolothum Thodi <shameerali.kolothum.thodi at huawei.com>
+Subject: Re: [Devel] [PATCH v8 2/5] ACPI/IORT: Add msi address regions
  reservation helper
-Date: Thu, 05 Oct 2017 15:05:41 +0100
-Message-ID: <6f8e27fc-3f16-7f66-5443-2be64ce9e464@arm.com>
-In-Reply-To: 82272c18-717d-bbaf-b8c3-61785af496bd@huawei.com
+Date: Fri, 06 Oct 2017 10:17:17 +0000
+Message-ID: <5FC3163CFD30C246ABAA99954A238FA83841DB56@FRAEML521-MBX.china.huawei.com>
+In-Reply-To: 001729e8-7b34-0bb4-8af6-8af100661906@arm.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2692872992333698646==
+--===============3890575862039771373==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On 05/10/17 14:08, John Garry wrote:
-> On 05/10/2017 13:44, Robin Murphy wrote:
->> On 05/10/17 13:37, John Garry wrote:
->>> On 05/10/2017 12:07, Robin Murphy wrote:
->>>> On 04/10/17 14:50, Lorenzo Pieralisi wrote:
->>>>> On Wed, Oct 04, 2017 at 12:22:04PM +0100, Marc Zyngier wrote:
->>>>>> On 27/09/17 14:32, Shameer Kolothum wrote:
->>>>>>> From: John Garry <john.garry(a)huawei.com>
->>>>>>>
->>>>>>> On some platforms msi-controller address regions have to be excluded
->>>>>>> from normal IOVA allocation in that they are detected and decoded in
->>>>>>> a HW specific way by system components and so they cannot be
->>>>>>> considered
->>>>>>> normal IOVA address space.
->>>>>>>
->>>>>>> Add a helper function that retrieves msi address regions through
->>>>>>> device
->>>>>>> tree msi mapping, so that these regions will not be translated by
->>>>>>> IOMMU
->>>>>>> and will be excluded from IOVA allocations.
->>>>>>>
->>>>>>> Signed-off-by: John Garry <john.garry(a)huawei.com>
->>>>>>> [Shameer: Modified msi-parent retrieval logic]
->>>>>>> Signed-off-by: Shameer Kolothum
->>>>>>> <shameerali.kolothum.thodi(a)huawei.com>
->>>>>>> ---
->>>>>>> =C2=A0drivers/iommu/of_iommu.c | 95
->>>>>>> ++++++++++++++++++++++++++++++++++++++++++++++++
->>>>>>> =C2=A0include/linux/of_iommu.h | 10 +++++
->>>>>>> =C2=A02 files changed, 105 insertions(+)
->>>>>>>
->>>>>>> diff --git a/drivers/iommu/of_iommu.c b/drivers/iommu/of_iommu.c
->>>>>>> index e60e3db..ffd7fb7 100644
->>>>>>> --- a/drivers/iommu/of_iommu.c
->>>>>>> +++ b/drivers/iommu/of_iommu.c
->>>>>>> @@ -21,6 +21,7 @@
->>>>>>> =C2=A0#include <linux/iommu.h>
->>>>>>> =C2=A0#include <linux/limits.h>
->>>>>>> =C2=A0#include <linux/of.h>
->>>>>>> +#include <linux/of_address.h>
->>>>>>> =C2=A0#include <linux/of_iommu.h>
->>>>>>> =C2=A0#include <linux/of_pci.h>
->>>>>>> =C2=A0#include <linux/slab.h>
->>>>>>> @@ -138,6 +139,14 @@ static int of_iommu_xlate(struct device *dev,
->>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0 return ops->of_xlate(dev, iommu_spec);
->>>>>>> =C2=A0}
->>>>>>>
->>>>>>> +static int __get_pci_rid(struct pci_dev *pdev, u16 alias, void
->>>>>>> *data)
->>>>>>> +{
->>>>>>> +=C2=A0=C2=A0=C2=A0 u32 *rid =3D data;
->>>>>>> +
->>>>>>> +=C2=A0=C2=A0=C2=A0 *rid =3D alias;
->>>>>>> +=C2=A0=C2=A0=C2=A0 return 0;
->>>>>>> +}
->>>>>>> +
->>>>>>> =C2=A0struct of_pci_iommu_alias_info {
->>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0 struct device *dev;
->>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0 struct device_node *np;
->>>>>>> @@ -163,6 +172,73 @@ static int of_pci_iommu_init(struct pci_dev
->>>>>>> *pdev, u16 alias, void *data)
->>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0 return info->np =3D=3D pdev->bus->dev.of_n=
-ode;
->>>>>>> =C2=A0}
->>>>>>>
->>>>>>> +static int of_iommu_alloc_resv_region(struct device_node *np,
->>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct list_he=
-ad *head)
->>>>>>> +{
->>>>>>> +=C2=A0=C2=A0=C2=A0 int prot =3D IOMMU_WRITE | IOMMU_NOEXEC | IOMMU=
-_MMIO;
->>>>>>> +=C2=A0=C2=A0=C2=A0 struct iommu_resv_region *region;
->>>>>>> +=C2=A0=C2=A0=C2=A0 struct resource res;
->>>>>>> +=C2=A0=C2=A0=C2=A0 int err;
->>>>>>> +
->>>>>>> +=C2=A0=C2=A0=C2=A0 err =3D of_address_to_resource(np, 0, &res);
->>>>>>
->>>>>> What is the rational for registering the first region only? Surely
->>>>>> you
->>>>>> can have more than one region in an MSI controller (yes, your
->>>>>> particular
->>>>>> case is the ITS which has only one, but we're trying to do something
->>>>>> generic here).
->>>>>>
->>>>>> Another issue I have with this code is that it inserts all of the ITS
->>>>>> MMIO in the RESV_MSI range. As long as we don't generate any page
->>>>>> tables
->>>>>> for this, we're fine. But if we ever change this, we'll end-up
->>>>>> with the
->>>>>> ITS programming interface being exposed to a device, which
->>>>>> wouldn't be
->>>>>> acceptable.
->>>>>>
->>>>>> Why can't we have some generic property instead, that would describe
->>>>>> the
->>>>>> actual ranges that cannot be translated? That way, no random
->>>>>> insertion
->>>>>> of a random range, and relatively future proof.
->>>>
->>>> Indeed. Furthermore, IORT has the advantage of being limited to a few
->>>> distinct device types and SBSA-compliant system topologies, so the
->>>> ITS-chasing is reasonable there (modulo only reserving
->>>> GITS_TRANSLATER).
->>>> The scope of DT covers more embedded things as well like PCI host
->>>> controllers with internal MSI doorbells, and potentially even
->>>> direct-mapped memory regions for things like bootloader framebuffers to
->>>> prevent display glitches - a generic address/size/flags description
->>>> of a
->>>> region could work for just about everything.
->>>>
->>>>> IORT code has the same issue (ie it reserves all ITS regions) and I do
->>>>> not know where a property can be added to describe those ranges (IORT
->>>>> specs ? I'd rather not) in ACPI other than the IORT tables entries
->>>>> themselves.
->>>>>
->>>>>> I'm not sure where to declare it (PCIe node? IOMMU node?), but it'd
->>>>>> feel
->>>>>> like a much nicer and simpler solution to this problem.
->>>>>
->>>>> It could be but if we throw ACPI into the picture we have to knock
->>>>> together Hisilicon specific namespace bindings to handle this and
->>>>> quickly.
->>>>
->>>> As above I'm happy with the ITS-specific solution for ACPI given the
->>>> limits of IORT. What I had in mind for DT was something tied in with
->>>> the
->>>> generic IOMMU bindings. Something like this is probably easiest to
->>>> handle, but does rather spread the information around:
->>>>
->>>>
->>>> =C2=A0 pci {
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 iommu-map =3D <0 0 &iommu1 0x10000>;
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 iommu-reserved-ranges =3D <0x12340000 0=
-x1000 IOMMU_MSI>,
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 <0x34560000 0x1000 IOMMU_MSI>;
->>>> =C2=A0 };
->>>>
->>>> =C2=A0 display {
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 iommus =3D <&iommu1 0x20000>;
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* simplefb region */
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 iommu-reserved-ranges =3D <0x80080000 0=
-x80000 IOMMU_DIRECT>,
->>>> =C2=A0 };
->>>>
->>>>
->>>> Alternatively, something inspired by reserved-memory might perhaps be
->>>> conceptually neater, at the risk of being more complicated:
->>>>
->>>>
->>>> =C2=A0 iommu1: iommu(a)acbd0000 {
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 #iommu-cells =3D <1>;
->>>>
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 iommu-reserved-ranges {
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 #address-cells =
-=3D <1>;
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 #size-cells =3D=
- <1>;
->>>>
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 its0_resv: msi(a)12340000 {
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 compatible =3D "iommu-msi-region";
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 reg =3D <0x12340000 0x1000>;
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 };
->>>>
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 its1_resv: msi(a)34560000 {
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 compatible =3D "iommu-msi-region";
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 reg =3D <0x34560000 0x1000>;
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 };
->>>>
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fb_resv: direct(a)12340000 {
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 compatible =3D "iommu-direct-region";
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 reg =3D <0x80080000 0x80000>;
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 };
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 };
->>>> =C2=A0 };
->>>>
->>>>
->>>
->>> If we did this, wouldn't it be easier to create dangerous reserved
->>> regions, like our ITS region which Marc was concerned by? It's not so
->>> hard to get dts changes into the kernel.
->>
->> Well, yeah. It's also equally easy to add some peripheral register
->> region to the /memory node and watch hilarity ensue. The solution to
->> both is "don't put bogus crap in your DT".
->>
+
+
+> -----Original Message-----
+> From: Marc Zyngier [mailto:marc.zyngier(a)arm.com]
+> Sent: Wednesday, October 04, 2017 3:18 PM
+> To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi(a)huawei.com>;
+> lorenzo.pieralisi(a)arm.com; sudeep.holla(a)arm.com; will.deacon(a)arm.co=
+m;
+> robin.murphy(a)arm.com; joro(a)8bytes.org; mark.rutland(a)arm.com;
+> robh(a)kernel.org
+> Cc: Gabriele Paoloni <gabriele.paoloni(a)huawei.com>; John Garry
+> <john.garry(a)huawei.com>; iommu(a)lists.linux-foundation.org; linux-arm-
+> kernel(a)lists.infradead.org; linux-acpi(a)vger.kernel.org;
+> devicetree(a)vger.kernel.org; devel(a)acpica.org; Linuxarm
+> <linuxarm(a)huawei.com>; Wangzhou (B) <wangzhou1(a)hisilicon.com>;
+> Guohanjun (Hanjun Guo) <guohanjun(a)huawei.com>
+> Subject: Re: [PATCH v8 2/5] ACPI/IORT: Add msi address regions reservation
+> helper
 > =
 
-> Sure, but people make mistakes and often a lot more subtle than your
-> example.
-
-I wanted to write a response to that but since it was too easy to hit
-the wrong keys on my keyboard, I didn't.
-
-I don't see a proposal for some alternate method of describing
-restricted IOVA regions which scales beyond HiSilicon Hip07 and would be
-entirely immune to bugs, so I'm really not sure what your argument is
-here :/
-
-Robin.
-
-> Only one person spotted the problem with our approach to the ITS
-> problem. I'm pretty confident it would not have been spotted if it was
-> submitted as a dts change.
+> On 27/09/17 14:32, Shameer Kolothum wrote:
+> > On some platforms msi parent address regions have to be excluded from
+> > normal IOVA allocation in that they are detected and decoded in a HW
+> > specific way by system components and so they cannot be considered
+> > normal IOVA address space.
+> >
+> > Add a helper function that retrieves ITS address regions - the msi
+> > parent - through IORT device <-> ITS mappings and reserves it so that
+> > these regions will not be translated by IOMMU and will be excluded
+> > from IOVA allocations.
+> >
+> > Signed-off-by: Shameer Kolothum
+> <shameerali.kolothum.thodi(a)huawei.com>
+> > [lorenzo.pieralisi(a)arm.com: updated commit log/added comments]
+> > Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi(a)arm.com>
+> > ---
+> >  drivers/acpi/arm64/iort.c        | 96
+> ++++++++++++++++++++++++++++++++++++++--
+> >  drivers/irqchip/irq-gic-v3-its.c |  3 +-
+> >  include/linux/acpi_iort.h        |  7 ++-
+> >  3 files changed, 101 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
+> > index 9565d57..14efa9d 100644
+> > --- a/drivers/acpi/arm64/iort.c
+> > +++ b/drivers/acpi/arm64/iort.c
+> > @@ -39,6 +39,7 @@
+> >  struct iort_its_msi_chip {
+> >  	struct list_head	list;
+> >  	struct fwnode_handle	*fw_node;
+> > +	phys_addr_t		base_addr;
+> >  	u32			translation_id;
+> >  };
+> >
+> > @@ -136,14 +137,16 @@ typedef acpi_status (*iort_find_node_callback)
+> > static DEFINE_SPINLOCK(iort_msi_chip_lock);
+> >
+> >  /**
+> > - * iort_register_domain_token() - register domain token and related
+> > ITS ID
+> > - * to the list from where we can get it back later on.
+> > + * iort_register_domain_token() - register domain token along with
+> > + related
+> > + * ITS ID and base address to the list from where we can get it back l=
+ater
+> on.
+> >   * @trans_id: ITS ID.
+> > + * @base: ITS base address.
+> >   * @fw_node: Domain token.
+> >   *
+> >   * Returns: 0 on success, -ENOMEM if no memory when allocating list
+> element
+> >   */
+> > -int iort_register_domain_token(int trans_id, struct fwnode_handle
+> > *fw_node)
+> > +int iort_register_domain_token(int trans_id, phys_addr_t base,
+> > +			       struct fwnode_handle *fw_node)
+> >  {
+> >  	struct iort_its_msi_chip *its_msi_chip;
+> >
+> > @@ -153,6 +156,7 @@ int iort_register_domain_token(int trans_id,
+> > struct fwnode_handle *fw_node)
+> >
+> >  	its_msi_chip->fw_node =3D fw_node;
+> >  	its_msi_chip->translation_id =3D trans_id;
+> > +	its_msi_chip->base_addr =3D base;
+> >
+> >  	spin_lock(&iort_msi_chip_lock);
+> >  	list_add(&its_msi_chip->list, &iort_msi_chip_list); @@ -481,6
+> > +485,24 @@ int iort_pmsi_get_dev_id(struct device *dev, u32 *dev_id)
+> >  	return -ENODEV;
+> >  }
+> >
+> > +static int __maybe_unused iort_find_its_base(u32 its_id, phys_addr_t
+> > +*base) {
+> > +	struct iort_its_msi_chip *its_msi_chip;
+> > +	bool match =3D false;
+> > +
+> > +	spin_lock(&iort_msi_chip_lock);
+> > +	list_for_each_entry(its_msi_chip, &iort_msi_chip_list, list) {
+> > +		if (its_msi_chip->translation_id =3D=3D its_id) {
+> > +			*base =3D its_msi_chip->base_addr;
+> > +			match =3D true;
+> > +			break;
+> > +		}
+> > +	}
+> > +	spin_unlock(&iort_msi_chip_lock);
+> > +
+> > +	return match ? 0 : -ENODEV;
+> > +}
+> > +
+> >  /**
+> >   * iort_dev_find_its_id() - Find the ITS identifier for a device
+> >   * @dev: The device.
+> > @@ -639,6 +661,72 @@ int iort_add_device_replay(const struct
+> iommu_ops
+> > *ops, struct device *dev)
+> >
+> >  	return err;
+> >  }
+> > +
+> > +/**
+> > + * iort_iommu_msi_get_resv_regions - Reserved region driver helper
+> > + * @dev: Device from iommu_get_resv_regions()
+> > + * @head: Reserved region list from iommu_get_resv_regions()
+> > + *
+> > + * Returns: Number of reserved regions on success (0 if no associated =
+msi
+> > + *          regions), appropriate error value otherwise. The ITS regio=
+ns
+> > + *          associated with the device are the msi reserved regions.
+> > + */
+> > +int iort_iommu_msi_get_resv_regions(struct device *dev, struct
+> > +list_head *head) {
+> > +	struct acpi_iort_its_group *its;
+> > +	struct acpi_iort_node *node, *its_node =3D NULL;
+> > +	int i, resv =3D 0;
+> > +
+> > +	node =3D iort_find_dev_node(dev);
+> > +	if (!node)
+> > +		return -ENODEV;
+> > +
+> > +	/*
+> > +	 * Current logic to reserve ITS regions relies on HW topologies
+> > +	 * where a given PCI or named component maps its IDs to only one
+> > +	 * ITS group; if a PCI or named component can map its IDs to
+> > +	 * different ITS groups through IORT mappings this function has
+> > +	 * to be reworked to ensure we reserve regions for all ITS groups
+> > +	 * a given PCI or named component may map IDs to.
+> > +	 */
+> > +	if (dev_is_pci(dev)) {
+> > +		u32 rid;
+> > +
+> > +		pci_for_each_dma_alias(to_pci_dev(dev), __get_pci_rid,
+> &rid);
+> > +		its_node =3D iort_node_map_id(node, rid, NULL,
+> IORT_MSI_TYPE);
+> > +	} else {
+> > +		for (i =3D 0; i < node->mapping_count; i++) {
+> > +			its_node =3D iort_node_map_platform_id(node, NULL,
+> > +							 IORT_MSI_TYPE, i);
+> > +			if (its_node)
+> > +				break;
+> > +		}
+> > +	}
+> > +
+> > +	if (!its_node)
+> > +		return 0;
+> > +
+> > +	/* Move to ITS specific data */
+> > +	its =3D (struct acpi_iort_its_group *)its_node->node_data;
+> > +
+> > +	for (i =3D 0; i < its->its_count; i++) {
+> > +		phys_addr_t base;
+> > +
+> > +		if (!iort_find_its_base(its->identifiers[i], &base)) {
+> > +			int prot =3D IOMMU_WRITE | IOMMU_NOEXEC |
+> IOMMU_MMIO;
+> > +			struct iommu_resv_region *region;
+> > +
+> > +			region =3D iommu_alloc_resv_region(base, SZ_128K,
+> prot,
+> > +							 IOMMU_RESV_MSI);
 > =
 
-> Much appreciated,
-> John
-> =
+> Same as the OF part: I strongly object to reserving the whole 128kB range.
+> What we really care about is the second 64kB page, and that is what should
+> get reserved.
 
->> There's a big difference between wilfully misdescribing your platform
->> requirements vs. having the kernel automatically infer something but
->> leave a hole open in the process.
->>
->> Robin.
->>
->> .
->>
-> =
+Thanks Marc. I will make the changes in next revision.
 
-> =
+Also as we are still discussing about the DT approach for this, I am thinki=
+ng
+of sending out the v9 with the above fix and blacklisting the HiSilicon PCIe
+controllers on DT based hip06/hip07 systems when SMMUv3 is enabled.
+
+Hi Will,
+
+Hope that will address your concerns with respect to only having ACPI quirk
+for this. =
+
+
+Thanks,
+Shameer
 
 
 
---===============2692872992333698646==--
+
+
+--===============3890575862039771373==--
 
