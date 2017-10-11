@@ -1,93 +1,85 @@
-Content-Type: multipart/mixed; boundary="===============4381233676222056777=="
+Content-Type: multipart/mixed; boundary="===============8883891914042320660=="
 MIME-Version: 1.0
-From: Lorenzo Pieralisi <lorenzo.pieralisi at arm.com>
-Subject: Re: [Devel] [PATCH v9 4/4] PCI: hisi: blacklist hip06/hip07
- controllers behind SMMUv3
-Date: Tue, 10 Oct 2017 11:06:30 +0100
-Message-ID: <20171010100630.GA764@red-moon>
-In-Reply-To: 5FC3163CFD30C246ABAA99954A238FA838421875@FRAEML521-MBX.china.huawei.com
+From: George Cherian <george.cherian at cavium.com>
+Subject: [Devel] [PATCH v5 0/2] Make cppc acpi driver aware of pcc subspace ids
+Date: Wed, 11 Oct 2017 08:54:56 +0000
+Message-ID: <1507712098-13035-1-git-send-email-george.cherian@cavium.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4381233676222056777==
+--===============8883891914042320660==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Oct 10, 2017 at 09:42:30AM +0000, Shameerali Kolothum Thodi wrote:
+The current cppc acpi driver works with only one pcc subspace id.
+It maintains and registers only one pcc channel even if the acpi table has =
 
-[...]
+different pcc subspace ids. =
 
-> > > diff --git a/drivers/pci/dwc/pcie-hisi.c b/drivers/pci/dwc/pcie-hisi.c
-> > > index a201791..6800747 100644
-> > > --- a/drivers/pci/dwc/pcie-hisi.c
-> > > +++ b/drivers/pci/dwc/pcie-hisi.c
-> > > @@ -270,6 +270,12 @@ static int hisi_pcie_probe(struct platform_device
-> > *pdev)
-> > >  	struct resource *reg;
-> > >  	int ret;
-> > >
-> > > +	if ((IS_BUILTIN(CONFIG_ARM_SMMU_V3)) &&
-> > > +			of_property_read_bool(dev->of_node, "iommu-
-> > map")) {
-> > =
 
-> > Does the presence of "iommu-map" tell you this is an SMMUv3?  Could it
-> > have a different type of IOMMU?  I can't tell from reading
-> > Documentation/devicetree/bindings/pci/pci-iommu.txt.
-> =
+As per ACPI 6.2 spec  all PCC registers, for all processors in the same =
 
-> Only if the SMMUv3 driver is loaded and iommu-map binding property presen=
-t,
-> the pcie devices will use SMMU translated iova for MSI doorbell addresses.
+performance domain (as defined by _PSD), must be defined to be in the same
+subspace. The series tries to address the same by making cppc acpi driver =
 
-And the iommu-map property _actually_ points at an OF node with an
-SMMUv3 compatible string - the sheer fact that the SMMUv3 driver
-is compiled in is not sufficient IIUC.
+aware of multiple possible pcc subspace ids.
 
-Lorenzo
+Patch 1 : In preparation to share the MAX_PCC_SUBSPACE definition with cppc=
+ acpi
+          driver
+Patch 2 : Make the cppc acpi driver aware of multiple pcc subspace ids.
 
-> > Why do you care whether CONFIG_ARM_SMMU_V3 is set?  Does MSI work
-> > correctly if SMMUv3 is present but not used?
-> =
+Changes from v4:
+  - Addressed Prashath's comments on
+   * Remove pcc_subspace_idx member from struct cppc_pcc_data
+   * Eliminate the loop and directly increment the refcoun in pcc_data_allo=
+c()
+   * pcc_data_alloc to be called once per CPU.
+   * Retain the earlier check PCC registers within same _CPC is under same
+     subspace.
 
-> Yes. MSI will work if no SMMUv3 is used.
-> =
+Changes from v3:
+  - Address Issue reported by kbuild-robot.
 
-> > Is it really necessary to ignore the PCIe controller completely?
-> > Could you use the devices below it as long as you disable MSI for them?=
-  I
-> > know there are probably devices that require MSI, so maybe it's easier =
-to
-> > just ignore everything than to respond to reports of "my device doesn't=
- work
-> > because it requires MSI."
-> =
+Changes from v2:
+  - Addressed Prashanth's comments on
+    * Not to use local variables to update mpar_count, last_mpar_reset and =
 
-> We are blacklisting MSI for PCIe only if the kernel is using DT and is co=
-nfigured
-> to use SMMUv3. Otherwise it is fine. And as I said above DT is not offici=
-ally
-> supported on these platforms.
-> =
+      last_cmd_cmpl_time
+    * Add check for kzalloc failure in pcc_data_alloc()
+    * Initialize pcc_subspace_id to -1 in acpi_cppc_processor_probe()
+    * Check for pcc_subspace_id validity before registering pcc_channel
 
-> Thanks,
-> Shameer
-> =
+Changes from v1:
+  - Add last_cmd_cmpl_time, last_mpar_reset, mpar_count to the cppc_pcc_dat=
+a to
+make it per subspace.
+  - PCC per subspace dynamic allocation support added instead of static
+allocation
+  - Added a new function pcc_data_alloc, In instances where CPU's with SMT
+support same PCC subspace would be used for all CPU's belonging to same =
 
-> 1. [PATCH v6 3/3] iommu/arm-smmu-v3:Enable ACPI based HiSilicon erratum 1=
-61010801
-> https://www.spinics.net/lists/arm-kernel/msg602873.html
-> 2. [PATCH v8 3/5] iommu/of: Add msi address regions reservation helper
-> https://www.spinics.net/lists/arm-kernel/msg609431.html
-> =
+physical core. This function adds the pcc_subspace refcounting and allocates
+the cppc_pcc_data per unique subspace idx.
+  - Added cleanup in acpi_cppc_processor_exit. Free the mbox channel and fr=
+ee
+the cppc_pcc_data in case refcount is zero.
 
-> =
+George Cherian (2):
+  mailbox: PCC: Move the MAX_PCC_SUBSPACES definition to header file
+  ACPI / CPPC: Make cppc acpi driver aware of pcc subspace ids
 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel(a)lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+ drivers/acpi/cppc_acpi.c | 240 +++++++++++++++++++++++++++++--------------=
+----
+ drivers/mailbox/pcc.c    |   1 -
+ include/acpi/pcc.h       |   1 +
+ 3 files changed, 152 insertions(+), 90 deletions(-)
 
---===============4381233676222056777==--
+-- =
+
+2.1.4
+
+
+--===============8883891914042320660==--
 
