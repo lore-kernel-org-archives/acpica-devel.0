@@ -1,33 +1,61 @@
-Content-Type: multipart/mixed; boundary="===============0836145769541769610=="
+Content-Type: multipart/mixed; boundary="===============3722702811834468335=="
 MIME-Version: 1.0
-From: gengdongjiu <gengdongjiu at huawei.com>
+From: James Morse <james.morse at arm.com>
 Subject: Re: [Devel] [PATCH v5 2/2] acpi: apei: Add SEI notification type
  support for ARMv8
-Date: Wed, 18 Oct 2017 17:17:27 +0800
-Message-ID: <4b51bd4e-2bf7-3aed-f17c-565b49781009@huawei.com>
-In-Reply-To: 20171018090649.e7qgdf2dwmr7yxc3@pd.tnic
+Date: Wed, 18 Oct 2017 10:44:48 +0100
+Message-ID: <59E72290.6060604@arm.com>
+In-Reply-To: 20171018092547.guf54e6aqbzzfxrq@pd.tnic
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0836145769541769610==
+--===============3722702811834468335==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
+Hi Borislav!
 
-On 2017/10/18 17:06, Borislav Petkov wrote:
-> On Wed, Oct 18, 2017 at 01:00:44PM +0800, gengdongjiu wrote:
->> SError is System Error, which is a asynchronous exception in the Interna=
-l CPU.
->>
->> In the ARM RAS Extension, there are mainly two type abort for CPU:
->> SEA(Synchronous External Abort)
->> SEI(SError Interrupt)
-> And you're not writing it out as "System Error" because ...?
+On 18/10/17 10:25, Borislav Petkov wrote:
+> On Wed, Oct 18, 2017 at 05:17:27PM +0800, gengdongjiu wrote:
+>> Thanks Borislav, can I write it as asynchronous exception or
+>> asynchronous abort?
+> =
 
-Thanks Borislav, can I write it as asynchronous exception or asynchronous a=
-bort?
+> WTF?!
+
+Yup.
 
 
---===============0836145769541769610==--
+> The thing is abbreviated as "SEI" and apparently means "System Error
+> Interrupt". Nothing else.
+
+ARM has 'external abort', which are either synchronous or asynchronous, bot=
+h are
+delivered as different types of exception.
+
+Asynchronous external abort is treated as a special kind of interrupt, 'SEr=
+ror
+Interrupt', (where SError stands for System Error, but its rarely written l=
+ike
+that). 'SEI' is a relatively new abbreviation for SError interrupt.
+
+
+What should we call this thing? In the ACPI code I'd prefer 'SEI' as that is
+what the ACPI spec calls it. Here we are talking about an GHES notification.
+
+But in the arm64 arch code this should be called SError Interrupt as this is
+what the ARM-ARM calls it. This code cares about exception routing and inte=
+rrupt
+masking.
+
+
+But, I don't really care.
+
+
+Thanks,
+
+James
+
+--===============3722702811834468335==--
 
