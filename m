@@ -1,61 +1,61 @@
-Content-Type: multipart/mixed; boundary="===============3722702811834468335=="
+Content-Type: multipart/mixed; boundary="===============4895128586282049238=="
 MIME-Version: 1.0
-From: James Morse <james.morse at arm.com>
+From: gengdongjiu <gengdongjiu at huawei.com>
 Subject: Re: [Devel] [PATCH v5 2/2] acpi: apei: Add SEI notification type
  support for ARMv8
-Date: Wed, 18 Oct 2017 10:44:48 +0100
-Message-ID: <59E72290.6060604@arm.com>
-In-Reply-To: 20171018092547.guf54e6aqbzzfxrq@pd.tnic
+Date: Wed, 18 Oct 2017 18:21:38 +0800
+Message-ID: <cdbf7880-a515-6394-fc24-6a4498cace2c@huawei.com>
+In-Reply-To: 59E72290.6060604@arm.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3722702811834468335==
+--===============4895128586282049238==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi Borislav!
-
-On 18/10/17 10:25, Borislav Petkov wrote:
-> On Wed, Oct 18, 2017 at 05:17:27PM +0800, gengdongjiu wrote:
->> Thanks Borislav, can I write it as asynchronous exception or
->> asynchronous abort?
+On 2017/10/18 17:44, James Morse wrote:
+>> The thing is abbreviated as "SEI" and apparently means "System Error
+>> Interrupt". Nothing else.
+> ARM has 'external abort', which are either synchronous or asynchronous, b=
+oth are
+> delivered as different types of exception.
 > =
 
-> WTF?!
+> Asynchronous external abort is treated as a special kind of interrupt, 'S=
+Error
+> Interrupt', (where SError stands for System Error, but its rarely written=
+ like
+> that). 'SEI' is a relatively new abbreviation for SError interrupt.
+> =
 
-Yup.
+> =
+
+> What should we call this thing? In the ACPI code I'd prefer 'SEI' as that=
+ is
+> what the ACPI spec calls it. Here we are talking about an GHES notificati=
+on.
+> =
+
+> But in the arm64 arch code this should be called SError Interrupt as this=
+ is
+> what the ARM-ARM calls it. This code cares about exception routing and in=
+terrupt
+> masking.
+> =
+
+> =
+
+> But, I don't really care.
+
+Thanks very much James's clear explanation.
+I agree with James.
+
+In the ACPI sepc, we usually call SEI as SError Interrupt, we rarely call S=
+Error to System Error,
+Anyway I will explain clearly about the abbreviations in my next version pa=
+tch.
 
 
-> The thing is abbreviated as "SEI" and apparently means "System Error
-> Interrupt". Nothing else.
-
-ARM has 'external abort', which are either synchronous or asynchronous, bot=
-h are
-delivered as different types of exception.
-
-Asynchronous external abort is treated as a special kind of interrupt, 'SEr=
-ror
-Interrupt', (where SError stands for System Error, but its rarely written l=
-ike
-that). 'SEI' is a relatively new abbreviation for SError interrupt.
-
-
-What should we call this thing? In the ACPI code I'd prefer 'SEI' as that is
-what the ACPI spec calls it. Here we are talking about an GHES notification.
-
-But in the arm64 arch code this should be called SError Interrupt as this is
-what the ARM-ARM calls it. This code cares about exception routing and inte=
-rrupt
-masking.
-
-
-But, I don't really care.
-
-
-Thanks,
-
-James
-
---===============3722702811834468335==--
+--===============4895128586282049238==--
 
