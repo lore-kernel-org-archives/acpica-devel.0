@@ -1,40 +1,171 @@
-Content-Type: multipart/mixed; boundary="===============0397964950187177146=="
+Content-Type: multipart/mixed; boundary="===============6618388341192814494=="
 MIME-Version: 1.0
-From: gengdongjiu <gengdongjiu at huawei.com>
-Subject: Re: [Devel] [PATCH v5 1/2] acpi: apei: remove the unused dead-code
- for SEA/NMI notification type
-Date: Wed, 18 Oct 2017 20:27:00 +0800
-Message-ID: <577d79ad-9357-ea40-63eb-1d2988642710@huawei.com>
-In-Reply-To: 20171018101722.kce2tcvpd7xdpo46@pd.tnic
+From: Robin Murphy <robin.murphy at arm.com>
+Subject: Re: [Devel] [PATCH v9 2/4] iommu/dma: Add a helper function to
+ reserve HW MSI address regions for IOMMU drivers
+Date: Wed, 18 Oct 2017 13:34:25 +0100
+Message-ID: <1d49243a-4746-f189-7c5d-4b98937115fb@arm.com>
+In-Reply-To: 5FC3163CFD30C246ABAA99954A238FA83844672A@FRAEML521-MBX.china.huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0397964950187177146==
+--===============6618388341192814494==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-
-On 2017/10/18 18:17, Borislav Petkov wrote:
-> On Wed, Oct 18, 2017 at 11:04:28AM +0800, gengdongjiu wrote:
->> ARM does not have ACPI_HEST_NOTIFY_NMI notification, which should only
->> used by x86. In the code, I see those guards are never used.
-> Yeah, I see it now.
-
-Borislav/Rafael,
-  For this patch(the first one), whether it can be firstly applied?
-This patch is code clean and not related with the second one.
-For the second, I may discuss more with James.
-Thanks so much in advance.
-
+On 16/10/17 17:09, Shameerali Kolothum Thodi wrote:
+> Hi Robin,
 > =
 
-> Thx.
+>> -----Original Message-----
+>> From: Will Deacon [mailto:will.deacon(a)arm.com]
+>> Sent: Friday, October 13, 2017 8:24 PM
+>> To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi(a)huawei.com>
+>> Cc: lorenzo.pieralisi(a)arm.com; marc.zyngier(a)arm.com;
+>> sudeep.holla(a)arm.com; robin.murphy(a)arm.com; joro(a)8bytes.org;
+>> bhelgaas(a)google.com; Gabriele Paoloni <gabriele.paoloni(a)huawei.com>;
+>> John Garry <john.garry(a)huawei.com>; iommu(a)lists.linux-foundation.org;
+>> linux-arm-kernel(a)lists.infradead.org; linux-acpi(a)vger.kernel.org; li=
+nux-
+>> pci(a)vger.kernel.org; devel(a)acpica.org; Linuxarm <linuxarm(a)huawei.c=
+om>;
+>> Wangzhou (B) <wangzhou1(a)hisilicon.com>; Guohanjun (Hanjun Guo)
+>> <guohanjun(a)huawei.com>
+>> Subject: Re: [PATCH v9 2/4] iommu/dma: Add a helper function to reserve =
+HW
+>> MSI address regions for IOMMU drivers
+>>
+>> On Fri, Oct 06, 2017 at 03:04:48PM +0100, Shameer Kolothum wrote:
+>>> IOMMU drivers can use this to implement their .get_resv_regions callback
+>>> for HW MSI specific reservations(e.g. ARM GICv3 ITS MSI region).
+>>>
+>>> Signed-off-by: Shameer Kolothum <shameerali.kolothum.thodi(a)huawei.com>
+>>> ---
+>>>  drivers/iommu/dma-iommu.c | 20 ++++++++++++++++++++
+>>>  include/linux/dma-iommu.h |  7 +++++++
+>>>  2 files changed, 27 insertions(+)
+>>
+>> I'd like to see Robin's Ack on this, because this is his code and he had
+>> ideas on ways to solve this problem properly.
 > =
 
-> -- =
+> Please let us know if it is ok to go ahead with ACPI support for now.
+> It will help our customers to start using pass-through for PCIe.
+> =
+
+> Thanks,
+> Shameer
+> =
+
+>>
+>> Will
+>>
+>>> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+>>> index 9d1cebe..bae677e 100644
+>>> --- a/drivers/iommu/dma-iommu.c
+>>> +++ b/drivers/iommu/dma-iommu.c
+>>> @@ -19,6 +19,7 @@
+>>>   * along with this program.  If not, see <http://www.gnu.org/licenses/=
+>.
+>>>   */
+>>>
+>>> +#include <linux/acpi_iort.h>
+>>>  #include <linux/device.h>
+>>>  #include <linux/dma-iommu.h>
+>>>  #include <linux/gfp.h>
+>>> @@ -27,6 +28,7 @@
+>>>  #include <linux/iova.h>
+>>>  #include <linux/irq.h>
+>>>  #include <linux/mm.h>
+>>> +#include <linux/of_iommu.h>
+>>>  #include <linux/pci.h>
+>>>  #include <linux/scatterlist.h>
+>>>  #include <linux/vmalloc.h>
+>>> @@ -198,6 +200,24 @@ void iommu_dma_get_resv_regions(struct device
+>> *dev, struct list_head *list)
+>>>  }
+>>>  EXPORT_SYMBOL(iommu_dma_get_resv_regions);
+>>>
+>>> +/**
+>>> + * iommu_dma_get_msi_resv_regions - Reserved region driver helper
+>>> + * @dev: Device from iommu_get_resv_regions()
+>>> + * @list: Reserved region list from iommu_get_resv_regions()
+>>> + *
+>>> + * IOMMU drivers can use this to implement their .get_resv_regions
+>>> + * callback for HW MSI specific reservations. For now, this only
+
+This doesn't make an awful lot of sense - there's only one reserved
+region callback, so iommu-dma shouldn't be offering two separate and
+non-overlapping implementations.
+
+>>> + * covers ITS MSI region reservation using ACPI IORT helper function.
+>>> + */
+>>> +int iommu_dma_get_msi_resv_regions(struct device *dev, struct list_head
+>> *list)
+>>> +{
+>>> +	if (!is_of_node(dev->iommu_fwspec->iommu_fwnode))
+>>> +		return iort_iommu_msi_get_resv_regions(dev, list);
+
+Either this call knows how to do the right thing for any platform and
+should be made from iommu_dma_get_reserved_regions() directly, or it's
+tightly coupled to the HiSilicon quirk in the SMMUv3 driver and
+iommu-dma doesn't need to know - the middle ground presented here is
+surely the worst of both worlds.
+
+Robin.
+
+>>> +
+>>> +	return -ENODEV;
+>>> +}
+>>> +EXPORT_SYMBOL(iommu_dma_get_msi_resv_regions);
+>>> +
+>>>  static int cookie_init_hw_msi_region(struct iommu_dma_cookie *cookie,
+>>>  		phys_addr_t start, phys_addr_t end)
+>>>  {
+>>> diff --git a/include/linux/dma-iommu.h b/include/linux/dma-iommu.h
+>>> index 92f2083..6062ef0 100644
+>>> --- a/include/linux/dma-iommu.h
+>>> +++ b/include/linux/dma-iommu.h
+>>> @@ -74,6 +74,8 @@ void iommu_dma_unmap_resource(struct device *dev,
+>> dma_addr_t handle,
+>>>  void iommu_dma_map_msi_msg(int irq, struct msi_msg *msg);
+>>>  void iommu_dma_get_resv_regions(struct device *dev, struct list_head
+>> *list);
+>>>
+>>> +int iommu_dma_get_msi_resv_regions(struct device *dev, struct list_head
+>> *list);
+>>> +
+>>>  #else
+>>>
+>>>  struct iommu_domain;
+>>> @@ -107,6 +109,11 @@ static inline void
+>> iommu_dma_get_resv_regions(struct device *dev, struct list_he
+>>>  {
+>>>  }
+>>>
+>>> +static inline int iommu_dma_get_msi_resv_regions(struct device *dev,
+>> struct list_head *list)
+>>> +{
+>>> +	return -ENODEV;
+>>> +}
+>>> +
+>>>  #endif	/* CONFIG_IOMMU_DMA */
+>>>  #endif	/* __KERNEL__ */
+>>>  #endif	/* __DMA_IOMMU_H */
+>>> --
+>>> 1.9.1
+>>>
+>>>
+> =
+
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel(a)lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> =
 
 
 
---===============0397964950187177146==--
+--===============6618388341192814494==--
 
