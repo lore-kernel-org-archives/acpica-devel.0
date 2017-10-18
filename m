@@ -1,426 +1,295 @@
-Content-Type: multipart/mixed; boundary="===============5820913023711028860=="
+Content-Type: multipart/mixed; boundary="===============0154652136340362828=="
 MIME-Version: 1.0
-From: gengdongjiu <gengdongjiu at huawei.com>
-Subject: Re: [Devel] [PATCH v5 2/2] acpi: apei: Add SEI notification type
- support for ARMv8
-Date: Wed, 18 Oct 2017 19:39:28 +0800
-Message-ID: <9411bb3a-e8e6-eb02-3838-3cf2063fb2f5@huawei.com>
-In-Reply-To: 59E72C48.1060002@arm.com
+From: Shameerali Kolothum Thodi <shameerali.kolothum.thodi at huawei.com>
+Subject: Re: [Devel] [PATCH v9 4/4] PCI: hisi: blacklist hip06/hip07
+ controllers behind SMMUv3
+Date: Wed, 18 Oct 2017 12:25:09 +0000
+Message-ID: <5FC3163CFD30C246ABAA99954A238FA838448830@FRAEML521-MBX.china.huawei.com>
+In-Reply-To: 20171018105145.GC11669@arm.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5820913023711028860==
+--===============0154652136340362828==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi james,
+Hi Will,
 
-On 2017/10/18 18:26, James Morse wrote:
-> Hi Dongjiu Geng,
+> -----Original Message-----
+> From: Will Deacon [mailto:will.deacon(a)arm.com]
+> Sent: Wednesday, October 18, 2017 11:52 AM
+> To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi(a)huawei.com>
+> Cc: lorenzo.pieralisi(a)arm.com; marc.zyngier(a)arm.com;
+> sudeep.holla(a)arm.com; robin.murphy(a)arm.com; joro(a)8bytes.org;
+> bhelgaas(a)google.com; Gabriele Paoloni <gabriele.paoloni(a)huawei.com>;
+> John Garry <john.garry(a)huawei.com>; iommu(a)lists.linux-foundation.org;
+> linux-arm-kernel(a)lists.infradead.org; linux-acpi(a)vger.kernel.org; lin=
+ux-
+> pci(a)vger.kernel.org; devel(a)acpica.org; Linuxarm <linuxarm(a)huawei.co=
+m>;
+> Wangzhou (B) <wangzhou1(a)hisilicon.com>; Guohanjun (Hanjun Guo)
+> <guohanjun(a)huawei.com>
+> Subject: Re: [PATCH v9 4/4] PCI: hisi: blacklist hip06/hip07 controllers =
+behind
+> SMMUv3
 > =
 
-> On 17/10/17 09:02, Dongjiu Geng wrote:
->> ARMv8.2 requires implementation of the RAS extension, in
->> this extension it adds SEI(SError Interrupt) notification
->> type, this patch adds new GHES error source SEI handling
->> functions.
+> On Sun, Oct 15, 2017 at 07:46:34AM +0000, Shameerali Kolothum Thodi wrote:
+> >
+> >
+> > > -----Original Message-----
+> > > From: Will Deacon [mailto:will.deacon(a)arm.com]
+> > > Sent: Friday, October 13, 2017 8:22 PM
+> > > To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi(a)huawei.com>
+> > > Cc: lorenzo.pieralisi(a)arm.com; marc.zyngier(a)arm.com;
+> > > sudeep.holla(a)arm.com; robin.murphy(a)arm.com; joro(a)8bytes.org;
+> > > bhelgaas(a)google.com; Gabriele Paoloni <gabriele.paoloni(a)huawei.co=
+m>;
+> > > John Garry <john.garry(a)huawei.com>; iommu(a)lists.linux-foundation.=
+org;
+> > > linux-arm-kernel(a)lists.infradead.org; linux-acpi(a)vger.kernel.org;=
+ linux-
+> > > pci(a)vger.kernel.org; devel(a)acpica.org; Linuxarm
+> <linuxarm(a)huawei.com>;
+> > > Wangzhou (B) <wangzhou1(a)hisilicon.com>; Guohanjun (Hanjun Guo)
+> > > <guohanjun(a)huawei.com>
+> > > Subject: Re: [PATCH v9 4/4] PCI: hisi: blacklist hip06/hip07 controll=
+ers
+> behind
+> > > SMMUv3
+> > >
+> > > On Fri, Oct 06, 2017 at 03:04:50PM +0100, Shameer Kolothum wrote:
+> > > > The HiSilicon erratum 161010801 describes the limitation of HiSilic=
+on
+> > > > platforms hip06/hip07 to support the SMMUv3 mappings for MSI
+> > > > transactions.
+> > > >
+> > > > PCIe controller on these platforms has to differentiate the MSI
+> > > > payload against other DMA payload and has to modify the MSI payload.
+> > > > This basically makes it difficult for this platforms to have a SMMU
+> > > > translation for MSI. In order to workaround this, ARM
+> > > > SMMUv3 driver requires a quirk to treat the MSI regions separately.
+> > > > Such a quirk is currently missing for DT based systems and therefore
+> > > > we need to blacklist the hip06/hip07 PCIe controllers.
+> > > >
+> > > > Signed-off-by: Shameer Kolothum
+> > > <shameerali.kolothum.thodi(a)huawei.com>
+> > > > ---
+> > > >  drivers/pci/dwc/pcie-hisi.c | 12 ++++++++++++
+> > > >  1 file changed, 12 insertions(+)
+> > > >
+> > > > diff --git a/drivers/pci/dwc/pcie-hisi.c b/drivers/pci/dwc/pcie-his=
+i.c
+> > > > index a201791..6800747 100644
+> > > > --- a/drivers/pci/dwc/pcie-hisi.c
+> > > > +++ b/drivers/pci/dwc/pcie-hisi.c
+> > > > @@ -270,6 +270,12 @@ static int hisi_pcie_probe(struct platform_dev=
+ice
+> > > *pdev)
+> > > >  	struct resource *reg;
+> > > >  	int ret;
+> > > >
+> > > > +	if ((IS_BUILTIN(CONFIG_ARM_SMMU_V3)) &&
+> > > > +			of_property_read_bool(dev->of_node, "iommu-
+> > > map")) {
+> > > > +		dev_warn(dev, "HiSilicon erratum 161010801: blacklisting
+> > > PCIe controllers behind SMMUv3\n");
+> > > > +		return -ENODEV;
+> > > > +	}
+> > > > +
+> > > >  	hisi_pcie =3D devm_kzalloc(dev, sizeof(*hisi_pcie), GFP_KERNEL);
+> > > >  	if (!hisi_pcie)
+> > > >  		return -ENOMEM;
+> > > > @@ -340,6 +346,12 @@ static int hisi_pcie_almost_ecam_probe(struct
+> > > platform_device *pdev)
+> > > >  	struct device *dev =3D &pdev->dev;
+> > > >  	struct pci_ecam_ops *ops;
+> > > >
+> > > > +	if ((IS_BUILTIN(CONFIG_ARM_SMMU_V3)) &&
+> > > > +			of_property_read_bool(dev->of_node, "iommu-
+> > > map")) {
+> > > > +		dev_warn(dev, "HiSilicon erratum 161010801: blacklisting
+> > > PCIe controllers behind SMMUv3\n");
+> > > > +		return -ENODEV;
+> > > > +	}
+> > >
+> > > This isn't the right way to solve this problem. I was really hoping y=
+ou'd
+> come
+> > > up with a solution for DT, and I know you've been trying, so I suppos=
+e for
+> > > now we'll just have to go with the ACPI workaround you have and leave=
+ DT
+> in
+> > > the balance. I'm not at all happy with that, but I don't think this p=
+atch really
+> > > improves things.
+> >
+> > Yes Will, this is to get the ACPI support enabled for now.
+> >
+> > > What I think you should do is remove the relevant smmu/iommu-map
+> > > entries from the .dts files that are available for these platforms (i=
+.e.
+> > > comment them out with a description as to why).
+> >
+> > We don't have any smmu/iommu-map entries for these platforms in the
+> > .dts files [1][2]. We are not aiming for any official DT support for th=
+ese
+> platforms.
+> > This patch is to enforce the non-support.
 > =
 
-> This paragraph is merging two things that aren't related.
-> The 'ARM v8.2 architecture extensions' have some RAS bits, which if your =
-CPU
-> implements v8.2 are required.
-> =
+> Understood, but this has dragged on for a while and I don't think this pa=
+tch
+> is the right way to enforce things. The best approach might actually be to
+> add the SMMU to the DTs, but commented out with a comment explaining why
+> it's not a good idea to enable it.
 
-> ACPIv6.1 added NOTIFY_SEI as a notification type for ARMv8 systems.
-> =
+Ok. Just to clarify, you would like to replace this patch with another =
 
-> This patch adds a GHES function for NOTIFY_SEI. Please leave the CPU RAS
-> extensions out of it.
-Ok, thanks
+one with smmu entries in dts and commenting/disabling them with explanation.
+Or you would like to have that in addition to this one?
 
-> =
+Please take a look at below snippet where I have added the smmu dts nodes
+and disabled them with comments.
 
-> =
+If this looks ok, I can sent it out soon. Please let me know.
 
->> Because this error source parsing and handling
->> methods are similar with the SEA. So share some SEA handling
->> functions with the SEI
->>
->> Expose one API ghes_notify_abort() to external users. External
->> modules can call this exposed API to parse and handle the
->> SEA or SEI.
-> =
+Many Thanks,
+Shameer
 
-> This series doesn't add a caller/user for this new API, so why do we need=
- to do
-> this now?
- there is caller and user, it is in another series(RAS virtualization serie=
-s), not included in this series
-
-As shown:
-
-+int handle_guest_sei(unsigned int esr)
-+{
-+	int ret =3D -ENOENT;
+-- >8 --
+diff --git a/arch/arm64/boot/dts/hisilicon/hip06.dtsi b/arch/arm64/boot/dts=
+/hisilicon/hip06.dtsi
+index a049b64..b561ac6 100644
+--- a/arch/arm64/boot/dts/hisilicon/hip06.dtsi
++++ b/arch/arm64/boot/dts/hisilicon/hip06.dtsi
+@@ -291,6 +291,20 @@
+ 			#interrupt-cells =3D <2>;
+ 			num-pins =3D <128>;
+ 		};
 +
-+	if (IS_ENABLED(CONFIG_ACPI_APEI_SEI))
-+		ret =3D ghes_notify_abort(ACPI_HEST_NOTIFY_SEI);
++		mbigen_pcie0: intc_pcie0 {
++			msi-parent =3D <&its_dsa 0x40085>;
++			interrupt-controller;
++			#interrupt-cells =3D <2>;
++			num-pins =3D <10>;
++		};
 +
-+	return ret;
-+}
-
-> =
-
-> (I still haven't had a usable answer for 'what does your firmware do when=
- SError
-> is masked', but I'll go beat that drum on the other thread).
-sorry for my late response due to resent busy, I will answer your question =
-in another thread.
-
-May be tomorrow.
-
-
-in short, regardless the physical SError is masked or unmasked, firmware wi=
-ll jump to
-the corresponding SEA/SEI exception vector entry. there is only one PSTATE.=
-DAIF which will be shared by different EL,
-regardless EL1,EL2, EL3.
-
-> =
-
-> =
-
-> More important for the APEI code is: How do SEA and SEI interact?
-> =
-
-> As far as I can see they can both interrupt each other, which isn't somet=
-hing
-> the single in_nmi() path in APEI can handle. I thinks we should fix this =
-first.
-> (I'll try and polish my RFC that had a stab at that...)
-if you have fix patch, you CC me. thanks.
-
-> =
-
-> =
-
-> SEA gets away with a lot of things because its synchronous. SEI isn't. Xi=
-e XiuQi
-> pointed to the memory_failure_queue() code. We can use this directly from=
- SEA,
-> but not SEI. (what happens if an SError arrives while we are queueing
-> memory_failure work from an IRQ).
-do you mean SError can interrupt memory_failure work from an IRQ?
-memory_failure is in an process context, and in a work queue, not IRQ conte=
-xt.
-
-
-> =
-
-> The one that scares me is the trace-point reporting stuff. What happens i=
-f an
-> SError arrives while we are enabling a trace point? (these are static-key=
-s right?)
-For the trace-point issue, may be we can consider it in the next step.
-Now I am not consider the trace-point issue.
-
-
-> =
-
-> =
-
-> I don't think we can just plumb SEI in like this and be done with it.
-> (I'm looking at teasing out the estatus cache code from being x86:NMI onl=
-y. This
-> way we solve the same 'cant do this from NMI context' with the same code'=
-.)
-> =
-
-> =
-
-> Thanks,
-> =
-
-> James
-> =
-
-> =
-
-> =
-
-> boring nits below:
-> =
-
->> Note: For the SEI(SError Interrupt), it is asynchronous external
->> abort, the error address recorded by firmware may be not accurate.
->> If not accurate, EL3 firmware needs to identify the address to a
->> invalid value.
-> =
-
-> This paragraph keeps cropping up. Who expects an address with an SError?
-> We don't get one for IRQs, but that never needs stating.
-> =
-
-> =
-
->> Cc: Borislav Petkov <bp(a)suse.de>
->> Cc: James Morse <james.morse(a)arm.com>
->> Signed-off-by: Dongjiu Geng <gengdongjiu(a)huawei.com>
->> Tested-by: Tyler Baicar <tbaicar(a)codeaurora.org>
-> =
-
->> Tested-by: Dongjiu Geng <gengdongjiu(a)huawei.com>
-> (It's expected you test your own code)
-
-Ok
-
-> =
-
-> =
-
-> =
-
->> diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
->> index 2509e4f..c98c1b3 100644
->> --- a/arch/arm64/mm/fault.c
->> +++ b/arch/arm64/mm/fault.c
->> @@ -585,7 +585,7 @@ static int do_sea(unsigned long addr, unsigned int e=
-sr, struct pt_regs *regs)
->>  		if (interrupts_enabled(regs))
->>  			nmi_enter();
->>  =
-
->> -		ret =3D ghes_notify_sea();
->> +		ret =3D ghes_notify_abort(ACPI_HEST_NOTIFY_SEA);
->>  =
-
->>  		if (interrupts_enabled(regs))
->>  			nmi_exit();
->> @@ -682,7 +682,7 @@ int handle_guest_sea(phys_addr_t addr, unsigned int =
-esr)
->>  	int ret =3D -ENOENT;
->>  =
-
->>  	if (IS_ENABLED(CONFIG_ACPI_APEI_SEA))
->> -		ret =3D ghes_notify_sea();
->> +		ret =3D ghes_notify_abort(ACPI_HEST_NOTIFY_SEA);
->>  =
-
->>  	return ret;
->>  }
->> diff --git a/drivers/acpi/apei/Kconfig b/drivers/acpi/apei/Kconfig
->> index de14d49..47fcb0c 100644
->> --- a/drivers/acpi/apei/Kconfig
->> +++ b/drivers/acpi/apei/Kconfig
->> @@ -54,6 +54,21 @@ config ACPI_APEI_SEA
->>  	  option allows the OS to look for such hardware error record, and
->>  	  take appropriate action.
->>  =
-
->> +config ACPI_APEI_SEI
->> +	bool "APEI Asynchronous SError Interrupt logging/recovering support"
->> +	depends on ARM64 && ACPI_APEI_GHES
->> +	default y
->> +	help
->> +	  This option should be enabled if the system supports
->> +	  firmware first handling of SEI (asynchronous SError interrupt).
->> +
->> +	  SEI happens with asynchronous external abort for errors on device
->> +	  memory reads on ARMv8 systems. If a system supports firmware first
->> +	  handling of SEI, the platform analyzes and handles hardware error
->> +	  notifications from SEI, and it may then form a HW error record for
->> +	  the OS to parse and handle. This option allows the OS to look for
->> +	  such hardware error record, and take appropriate action.
->> +
->>  config ACPI_APEI_MEMORY_FAILURE
->>  	bool "APEI memory error recovering support"
->>  	depends on ACPI_APEI && MEMORY_FAILURE
->> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
->> index 3eee30a..24b4233 100644
->> --- a/drivers/acpi/apei/ghes.c
->> +++ b/drivers/acpi/apei/ghes.c
->> @@ -815,43 +815,67 @@ static struct notifier_block ghes_notifier_hed =3D=
- {
->>  =
-
->>  #ifdef CONFIG_ACPI_APEI_SEA
->>  static LIST_HEAD(ghes_sea);
->> +#endif
->> +
->> +#ifdef CONFIG_ACPI_APEI_SEI
->> +static LIST_HEAD(ghes_sei);
->> +#endif
->>  =
-
->> +#if defined(CONFIG_ACPI_APEI_SEA) || defined(CONFIG_ACPI_APEI_SEI)
->>  /*
->> - * Return 0 only if one of the SEA error sources successfully reported =
-an error
->> - * record sent from the firmware.
->> + * Return 0 only if one of the SEA or SEI error sources successfully
->> + * reported an error record sent from the firmware.
->>   */
->> -int ghes_notify_sea(void)
->> +int ghes_notify_abort(u8 type)
->>  {
->>  	struct ghes *ghes;
->> +	struct list_head *head =3D NULL;
->>  	int ret =3D -ENOENT;
->>  =
-
->> -	rcu_read_lock();
->> -	list_for_each_entry_rcu(ghes, &ghes_sea, list) {
->> -		if (!ghes_proc(ghes))
->> -			ret =3D 0;
-> =
-
->> +	if (type =3D=3D ACPI_HEST_NOTIFY_SEA)
->> +		head =3D &ghes_sea;
->> +	else if (type =3D=3D ACPI_HEST_NOTIFY_SEI)
->> +		head =3D &ghes_sei;
-> =
-
-> Surely if I only have one of CONFIG_ACPI_APEI_SE{A,I} this can't be compi=
-led.
-  No, it can be compiled, it is "||" not "&&"
-> =
-
-> =
-
->> +
->> +	if (head) {
->> +		rcu_read_lock();
->> +		list_for_each_entry_rcu(ghes, head, list) {
->> +			if (!ghes_proc(ghes))
->> +				ret =3D 0;
->> +		}
->> +		rcu_read_unlock();
->>  	}
->> -	rcu_read_unlock();
->>  	return ret;
->>  }
->>  =
-
->> -static void ghes_sea_add(struct ghes *ghes)
->> +static void ghes_abort_add(struct ghes *ghes)
->>  {
->> -	mutex_lock(&ghes_list_mutex);
->> -	list_add_rcu(&ghes->list, &ghes_sea);
->> -	mutex_unlock(&ghes_list_mutex);
->> +	struct list_head *head =3D NULL;
->> +	u8 notify_type =3D ghes->generic->notify.type;
->> +
-> =
-
->> +	if (notify_type =3D=3D ACPI_HEST_NOTIFY_SEA)
->> +		head =3D &ghes_sea;
->> +	else if (notify_type =3D=3D ACPI_HEST_NOTIFY_SEI)
->> +		head =3D &ghes_sei;
-> =
-
-> And here.
-No, same above.
-
-> =
-
-> =
-
->> +
->> +	if (head) {
->> +		mutex_lock(&ghes_list_mutex);
->> +		list_add_rcu(&ghes->list, head);
->> +		mutex_unlock(&ghes_list_mutex);
->> +	}
->>  }
->>  =
-
->> -static void ghes_sea_remove(struct ghes *ghes)
->> +static void ghes_abort_remove(struct ghes *ghes)
->>  {
->>  	mutex_lock(&ghes_list_mutex);
->>  	list_del_rcu(&ghes->list);
->>  	mutex_unlock(&ghes_list_mutex);
->>  	synchronize_rcu();
->>  }
->> -#else /* CONFIG_ACPI_APEI_SEA */
->> -static inline void ghes_sea_add(struct ghes *ghes) { }
->> -static inline void ghes_sea_remove(struct ghes *ghes) { }
->> -#endif /* CONFIG_ACPI_APEI_SEA */
->> +#else
->> +static inline void ghes_abort_add(struct ghes *ghes) { }
->> +static inline void ghes_abort_remove(struct ghes *ghes) { }
->> +#endif
->>  =
-
->>  #ifdef CONFIG_HAVE_ACPI_APEI_NMI
->>  /*
->> @@ -1084,6 +1108,13 @@ static int ghes_probe(struct platform_device *ghe=
-s_dev)
->>  			goto err;
->>  		}
->>  		break;
->> +	case ACPI_HEST_NOTIFY_SEI:
->> +		if (!IS_ENABLED(CONFIG_ACPI_APEI_SEI)) {
->> +			pr_warn(GHES_PFX "Generic hardware error source: %d notified via SEI=
- is not supported!\n",
->> +				generic->header.source_id);
->> +		goto err;
->> +	}
->> +	break;
->>  	case ACPI_HEST_NOTIFY_NMI:
->>  		if (!IS_ENABLED(CONFIG_HAVE_ACPI_APEI_NMI)) {
->>  			pr_warn(GHES_PFX "Generic hardware error source: %d notified via NMI=
- interrupt is not supported!\n",
->> @@ -1153,7 +1184,8 @@ static int ghes_probe(struct platform_device *ghes=
-_dev)
->>  		break;
->>  =
-
->>  	case ACPI_HEST_NOTIFY_SEA:
->> -		ghes_sea_add(ghes);
->> +	case ACPI_HEST_NOTIFY_SEI:
->> +		ghes_abort_add(ghes);
->>  		break;
->>  	case ACPI_HEST_NOTIFY_NMI:
->>  		ghes_nmi_add(ghes);
->> @@ -1206,7 +1238,8 @@ static int ghes_remove(struct platform_device *ghe=
-s_dev)
->>  		break;
->>  =
-
->>  	case ACPI_HEST_NOTIFY_SEA:
->> -		ghes_sea_remove(ghes);
->> +	case ACPI_HEST_NOTIFY_SEI:
->> +		ghes_abort_remove(ghes);
->>  		break;
->>  	case ACPI_HEST_NOTIFY_NMI:
->>  		ghes_nmi_remove(ghes);
->> diff --git a/include/acpi/ghes.h b/include/acpi/ghes.h
->> index 9061c5c..ec6f4ba 100644
->> --- a/include/acpi/ghes.h
->> +++ b/include/acpi/ghes.h
->> @@ -118,6 +118,6 @@ static inline void *acpi_hest_get_next(struct acpi_h=
-est_generic_data *gdata)
->>  	     (void *)section - (void *)(estatus + 1) < estatus->data_length; \
->>  	     section =3D acpi_hest_get_next(section))
->>  =
-
->> -int ghes_notify_sea(void);
->> +int ghes_notify_abort(u8 type);
->>  =
-
->>  #endif /* GHES_H */
->>
-> =
-
-> =
-
-> .
-> =
-
-
-
---===============5820913023711028860==--
++		mbigen_smmu_pcie_intc: intc_smmu_pcie {
++			msi-parent =3D <&its_dsa 0x40b0c>;
++			interrupt-controller;
++			#interrupt-cells =3D <2>;
++			num-pins =3D <3>;
++		};
+ 	};
+ =
+
+ 	mbigen_dsa(a)c0080000 {
+@@ -312,6 +326,27 @@
+ 		};
+ 	};
+ =
+
++	/** HiSilicon erratum 161010801: Please make sure that
++	 *  the smmu (pcie) node on hip06 is disabled as this will
++	 *  break the PCIe functionality when iommu-map entry
++	 *  is used along with the PCIe node.
++	 */
++	smmu0: smmu_pcie {
++		compatible =3D "arm,smmu-v3";
++		reg =3D <0x0 0xa0040000 0x0 0x20000>;
++		interrupt-parent  =3D <&mbigen_smmu_pcie_intc>;
++		interrupts =3D <871 1>,
++			<872 1>,
++			<873 1>;
++
++		interrupt-names =3D "eventq", "gerror", "cmdq-sync";
++		#iommu-cells =3D <1>;
++		dma-coherent;
++		smmu-cb-memtype =3D <0x0 0x1>;
++		hisilicon,broken-prefetch-cmd;
++		status =3D "disabled";
++	};
++
+ 	soc {
+ 		compatible =3D "simple-bus";
+ 		#address-cells =3D <2>;
+@@ -676,6 +711,29 @@
+ 				     <637 1>,<638 1>,<639 1>;
+ 			status =3D "disabled";
+ 		};
++
++		pcie0: pcie(a)a0090000 {
++			compatible =3D "hisilicon,pcie-almost-ecam";
++			reg =3D <0 0xb0000000 0 0x2000000>, <0 0xa0090000 0 0x10000>;
++			bus-range =3D <0  31>;
++			msi-map =3D <0x0000 &its_dsa 0x0000 0x2000>;
++			msi-map-mask =3D <0xffff>;
++			#address-cells =3D <3>;
++			#size-cells =3D <2>;
++			device_type =3D "pci";
++			dma-coherent;
++			/*iommu-map =3D <0x0 &smmu0 0x0 0x10000>;*/
++			ranges =3D <0x02000000 0 0xb2000000 0x0 0xb2000000 0 0x5ff0000
++				  0x01000000 0 0 0 0xb7ff0000 0 0x10000>;
++			#interrupt-cells =3D <1>;
++                        interrupt-map-mask =3D <0xf800 0 0 7>;
++                        interrupt-map =3D <0x0 0 0 1 &mbigen_pcie0 650 4
++                                         0x0 0 0 2 &mbigen_pcie0 650 4
++                                         0x0 0 0 3 &mbigen_pcie0 650 4
++                                         0x0 0 0 4 &mbigen_pcie0 650 4>;
++			status =3D "disabled";
++		};
++
+ 	};
+ =
+
+ };
+diff --git a/arch/arm64/boot/dts/hisilicon/hip07.dtsi b/arch/arm64/boot/dts=
+/hisilicon/hip07.dtsi
+index 2c01a21..a483325 100644
+--- a/arch/arm64/boot/dts/hisilicon/hip07.dtsi
++++ b/arch/arm64/boot/dts/hisilicon/hip07.dtsi
+@@ -1083,6 +1083,26 @@
+ 		};
+ 	};
+ =
+
++	/** HiSilicon erratum 161010801: Please make sure that
++	 *  the smmu (pcie) node on hip07 is disabled as this will
++	 *  break the PCIe functionality when iommu-map entry
++	 *  is used along with the PCIe node.
++	 */
++	smmu0: smmu_pcie {
++		compatible =3D "arm,smmu-v3";
++		reg =3D <0x0 0xa0040000 0x0 0x20000>;
++		interrupt-parent  =3D <&mbigen_smmu_pcie>;
++		interrupts =3D <871 1>,
++			<872 1>,
++			<873 1>;
++		interrupt-names =3D "eventq", "gerror", "cmdq-sync";
++		#iommu-cells =3D <1>;
++		dma-coherent;
++		smmu-cb-memtype =3D <0x0 0x1>;
++		hisilicon,broken-prefetch-cmd;
++		status =3D "disabled";
++	};
++
+ 	soc {
+ 		compatible =3D "simple-bus";
+ 		#address-cells =3D <2>;
+@@ -1546,6 +1566,7 @@
+ 			#size-cells =3D <2>;
+ 			device_type =3D "pci";
+ 			dma-coherent;
++			/*iommu-map =3D <0x0 &smmu0 0x20000 0x10000>;*/
+ 			ranges =3D <0x02000000 0 0xa8000000 0 0xa8000000 0 0x77f0000
+ 				  0x01000000 0 0 0 0xaf7f0000 0 0x10000>;
+ 			#interrupt-cells =3D <1>;
+-- >8 --
+
+
+--===============0154652136340362828==--
 
