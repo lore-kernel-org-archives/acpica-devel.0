@@ -1,182 +1,179 @@
-Content-Type: multipart/mixed; boundary="===============8628500276815298703=="
+Content-Type: multipart/mixed; boundary="===============7963818207119544413=="
 MIME-Version: 1.0
-From: Will Deacon <will.deacon at arm.com>
-Subject: Re: [Devel] [PATCH v9 4/4] PCI: hisi: blacklist hip06/hip07
- controllers behind SMMUv3
-Date: Wed, 18 Oct 2017 14:45:16 +0100
-Message-ID: <20171018134515.GC21820@arm.com>
-In-Reply-To: 5FC3163CFD30C246ABAA99954A238FA838448830@FRAEML521-MBX.china.huawei.com
+From: Shameerali Kolothum Thodi <shameerali.kolothum.thodi at huawei.com>
+Subject: Re: [Devel] [PATCH v9 2/4] iommu/dma: Add a helper function to
+ reserve HW MSI address regions for IOMMU drivers
+Date: Wed, 18 Oct 2017 14:23:31 +0000
+Message-ID: <5FC3163CFD30C246ABAA99954A238FA838448A48@FRAEML521-MBX.china.huawei.com>
+In-Reply-To: 1d49243a-4746-f189-7c5d-4b98937115fb@arm.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8628500276815298703==
+--===============7963818207119544413==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Oct 18, 2017 at 12:25:09PM +0000, Shameerali Kolothum Thodi wrote:
-> Hi Will,
+
+
+> -----Original Message-----
+> From: Robin Murphy [mailto:robin.murphy(a)arm.com]
+> Sent: Wednesday, October 18, 2017 1:34 PM
+> To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi(a)huawei.com>;
+> Will Deacon <will.deacon(a)arm.com>
+> Cc: lorenzo.pieralisi(a)arm.com; Gabriele Paoloni
+> <gabriele.paoloni(a)huawei.com>; marc.zyngier(a)arm.com; linux-
+> pci(a)vger.kernel.org; joro(a)8bytes.org; John Garry <john.garry(a)huawei=
+.com>;
+> Guohanjun (Hanjun Guo) <guohanjun(a)huawei.com>; Linuxarm
+> <linuxarm(a)huawei.com>; linux-acpi(a)vger.kernel.org; iommu(a)lists.linu=
+x-
+> foundation.org; Wangzhou (B) <wangzhou1(a)hisilicon.com>;
+> sudeep.holla(a)arm.com; bhelgaas(a)google.com; linux-arm-
+> kernel(a)lists.infradead.org; devel(a)acpica.org
+> Subject: Re: [PATCH v9 2/4] iommu/dma: Add a helper function to reserve HW
+> MSI address regions for IOMMU drivers
 > =
 
-> > -----Original Message-----
-> > From: Will Deacon [mailto:will.deacon(a)arm.com]
-> > Sent: Wednesday, October 18, 2017 11:52 AM
-> > To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi(a)huawei.com>
-> > Cc: lorenzo.pieralisi(a)arm.com; marc.zyngier(a)arm.com;
-> > sudeep.holla(a)arm.com; robin.murphy(a)arm.com; joro(a)8bytes.org;
-> > bhelgaas(a)google.com; Gabriele Paoloni <gabriele.paoloni(a)huawei.com>;
-> > John Garry <john.garry(a)huawei.com>; iommu(a)lists.linux-foundation.or=
-g;
-> > linux-arm-kernel(a)lists.infradead.org; linux-acpi(a)vger.kernel.org; l=
-inux-
-> > pci(a)vger.kernel.org; devel(a)acpica.org; Linuxarm <linuxarm(a)huawei.=
-com>;
-> > Wangzhou (B) <wangzhou1(a)hisilicon.com>; Guohanjun (Hanjun Guo)
-> > <guohanjun(a)huawei.com>
-> > Subject: Re: [PATCH v9 4/4] PCI: hisi: blacklist hip06/hip07 controller=
-s behind
-> > SMMUv3
-> > =
-
-> > On Sun, Oct 15, 2017 at 07:46:34AM +0000, Shameerali Kolothum Thodi wro=
-te:
-> > >
-> > >
-> > > > -----Original Message-----
-> > > > From: Will Deacon [mailto:will.deacon(a)arm.com]
-> > > > Sent: Friday, October 13, 2017 8:22 PM
-> > > > To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi(a)huawei.c=
-om>
-> > > > Cc: lorenzo.pieralisi(a)arm.com; marc.zyngier(a)arm.com;
-> > > > sudeep.holla(a)arm.com; robin.murphy(a)arm.com; joro(a)8bytes.org;
-> > > > bhelgaas(a)google.com; Gabriele Paoloni <gabriele.paoloni(a)huawei.=
-com>;
-> > > > John Garry <john.garry(a)huawei.com>; iommu(a)lists.linux-foundatio=
-n.org;
-> > > > linux-arm-kernel(a)lists.infradead.org; linux-acpi(a)vger.kernel.or=
-g; linux-
-> > > > pci(a)vger.kernel.org; devel(a)acpica.org; Linuxarm
-> > <linuxarm(a)huawei.com>;
-> > > > Wangzhou (B) <wangzhou1(a)hisilicon.com>; Guohanjun (Hanjun Guo)
-> > > > <guohanjun(a)huawei.com>
-> > > > Subject: Re: [PATCH v9 4/4] PCI: hisi: blacklist hip06/hip07 contro=
-llers
-> > behind
-> > > > SMMUv3
-> > > >
-> > > > On Fri, Oct 06, 2017 at 03:04:50PM +0100, Shameer Kolothum wrote:
-> > > > > The HiSilicon erratum 161010801 describes the limitation of HiSil=
-icon
-> > > > > platforms hip06/hip07 to support the SMMUv3 mappings for MSI
-> > > > > transactions.
-> > > > >
-> > > > > PCIe controller on these platforms has to differentiate the MSI
-> > > > > payload against other DMA payload and has to modify the MSI paylo=
-ad.
-> > > > > This basically makes it difficult for this platforms to have a SM=
-MU
-> > > > > translation for MSI. In order to workaround this, ARM
-> > > > > SMMUv3 driver requires a quirk to treat the MSI regions separatel=
-y.
-> > > > > Such a quirk is currently missing for DT based systems and theref=
-ore
-> > > > > we need to blacklist the hip06/hip07 PCIe controllers.
-> > > > >
-> > > > > Signed-off-by: Shameer Kolothum
-> > > > <shameerali.kolothum.thodi(a)huawei.com>
-> > > > > ---
-> > > > >  drivers/pci/dwc/pcie-hisi.c | 12 ++++++++++++
-> > > > >  1 file changed, 12 insertions(+)
-> > > > >
-> > > > > diff --git a/drivers/pci/dwc/pcie-hisi.c b/drivers/pci/dwc/pcie-h=
-isi.c
-> > > > > index a201791..6800747 100644
-> > > > > --- a/drivers/pci/dwc/pcie-hisi.c
-> > > > > +++ b/drivers/pci/dwc/pcie-hisi.c
-> > > > > @@ -270,6 +270,12 @@ static int hisi_pcie_probe(struct platform_d=
-evice
-> > > > *pdev)
-> > > > >  	struct resource *reg;
-> > > > >  	int ret;
-> > > > >
-> > > > > +	if ((IS_BUILTIN(CONFIG_ARM_SMMU_V3)) &&
-> > > > > +			of_property_read_bool(dev->of_node, "iommu-
-> > > > map")) {
-> > > > > +		dev_warn(dev, "HiSilicon erratum 161010801: blacklisting
-> > > > PCIe controllers behind SMMUv3\n");
-> > > > > +		return -ENODEV;
-> > > > > +	}
-> > > > > +
-> > > > >  	hisi_pcie =3D devm_kzalloc(dev, sizeof(*hisi_pcie), GFP_KERNEL);
-> > > > >  	if (!hisi_pcie)
-> > > > >  		return -ENOMEM;
-> > > > > @@ -340,6 +346,12 @@ static int hisi_pcie_almost_ecam_probe(struct
-> > > > platform_device *pdev)
-> > > > >  	struct device *dev =3D &pdev->dev;
-> > > > >  	struct pci_ecam_ops *ops;
-> > > > >
-> > > > > +	if ((IS_BUILTIN(CONFIG_ARM_SMMU_V3)) &&
-> > > > > +			of_property_read_bool(dev->of_node, "iommu-
-> > > > map")) {
-> > > > > +		dev_warn(dev, "HiSilicon erratum 161010801: blacklisting
-> > > > PCIe controllers behind SMMUv3\n");
-> > > > > +		return -ENODEV;
-> > > > > +	}
-> > > >
-> > > > This isn't the right way to solve this problem. I was really hoping=
- you'd
-> > come
-> > > > up with a solution for DT, and I know you've been trying, so I supp=
-ose for
-> > > > now we'll just have to go with the ACPI workaround you have and lea=
-ve DT
-> > in
-> > > > the balance. I'm not at all happy with that, but I don't think this=
- patch really
-> > > > improves things.
-> > >
-> > > Yes Will, this is to get the ACPI support enabled for now.
-> > >
-> > > > What I think you should do is remove the relevant smmu/iommu-map
-> > > > entries from the .dts files that are available for these platforms =
-(i.e.
-> > > > comment them out with a description as to why).
-> > >
-> > > We don't have any smmu/iommu-map entries for these platforms in the
-> > > .dts files [1][2]. We are not aiming for any official DT support for =
-these
-> > platforms.
-> > > This patch is to enforce the non-support.
-> > =
-
-> > Understood, but this has dragged on for a while and I don't think this =
-patch
-> > is the right way to enforce things. The best approach might actually be=
- to
-> > add the SMMU to the DTs, but commented out with a comment explaining why
-> > it's not a good idea to enable it.
+> On 16/10/17 17:09, Shameerali Kolothum Thodi wrote:
+> > Hi Robin,
+> >
+> >> -----Original Message-----
+> >> From: Will Deacon [mailto:will.deacon(a)arm.com]
+> >> Sent: Friday, October 13, 2017 8:24 PM
+> >> To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi(a)huawei.com>
+> >> Cc: lorenzo.pieralisi(a)arm.com; marc.zyngier(a)arm.com;
+> >> sudeep.holla(a)arm.com; robin.murphy(a)arm.com; joro(a)8bytes.org;
+> >> bhelgaas(a)google.com; Gabriele Paoloni <gabriele.paoloni(a)huawei.com=
+>;
+> >> John Garry <john.garry(a)huawei.com>; iommu(a)lists.linux-foundation.o=
+rg;
+> >> linux-arm-kernel(a)lists.infradead.org; linux-acpi(a)vger.kernel.org; =
+linux-
+> >> pci(a)vger.kernel.org; devel(a)acpica.org; Linuxarm
+> <linuxarm(a)huawei.com>;
+> >> Wangzhou (B) <wangzhou1(a)hisilicon.com>; Guohanjun (Hanjun Guo)
+> >> <guohanjun(a)huawei.com>
+> >> Subject: Re: [PATCH v9 2/4] iommu/dma: Add a helper function to reserve
+> HW
+> >> MSI address regions for IOMMU drivers
+> >>
+> >> On Fri, Oct 06, 2017 at 03:04:48PM +0100, Shameer Kolothum wrote:
+> >>> IOMMU drivers can use this to implement their .get_resv_regions callb=
+ack
+> >>> for HW MSI specific reservations(e.g. ARM GICv3 ITS MSI region).
+> >>>
+> >>> Signed-off-by: Shameer Kolothum
+> <shameerali.kolothum.thodi(a)huawei.com>
+> >>> ---
+> >>>  drivers/iommu/dma-iommu.c | 20 ++++++++++++++++++++
+> >>>  include/linux/dma-iommu.h |  7 +++++++
+> >>>  2 files changed, 27 insertions(+)
+> >>
+> >> I'd like to see Robin's Ack on this, because this is his code and he h=
+ad
+> >> ideas on ways to solve this problem properly.
+> >
+> > Please let us know if it is ok to go ahead with ACPI support for now.
+> > It will help our customers to start using pass-through for PCIe.
+> >
+> > Thanks,
+> > Shameer
+> >
+> >>
+> >> Will
+> >>
+> >>> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+> >>> index 9d1cebe..bae677e 100644
+> >>> --- a/drivers/iommu/dma-iommu.c
+> >>> +++ b/drivers/iommu/dma-iommu.c
+> >>> @@ -19,6 +19,7 @@
+> >>>   * along with this program.  If not, see <http://www.gnu.org/license=
+s/>.
+> >>>   */
+> >>>
+> >>> +#include <linux/acpi_iort.h>
+> >>>  #include <linux/device.h>
+> >>>  #include <linux/dma-iommu.h>
+> >>>  #include <linux/gfp.h>
+> >>> @@ -27,6 +28,7 @@
+> >>>  #include <linux/iova.h>
+> >>>  #include <linux/irq.h>
+> >>>  #include <linux/mm.h>
+> >>> +#include <linux/of_iommu.h>
+> >>>  #include <linux/pci.h>
+> >>>  #include <linux/scatterlist.h>
+> >>>  #include <linux/vmalloc.h>
+> >>> @@ -198,6 +200,24 @@ void iommu_dma_get_resv_regions(struct device
+> >> *dev, struct list_head *list)
+> >>>  }
+> >>>  EXPORT_SYMBOL(iommu_dma_get_resv_regions);
+> >>>
+> >>> +/**
+> >>> + * iommu_dma_get_msi_resv_regions - Reserved region driver helper
+> >>> + * @dev: Device from iommu_get_resv_regions()
+> >>> + * @list: Reserved region list from iommu_get_resv_regions()
+> >>> + *
+> >>> + * IOMMU drivers can use this to implement their .get_resv_regions
+> >>> + * callback for HW MSI specific reservations. For now, this only
 > =
 
-> Ok. Just to clarify, you would like to replace this patch with another =
+> This doesn't make an awful lot of sense - there's only one reserved
+> region callback, so iommu-dma shouldn't be offering two separate and
+> non-overlapping implementations.
+> =
 
-> one with smmu entries in dts and commenting/disabling them with explanati=
-on.
-> Or you would like to have that in addition to this one?
+> >>> + * covers ITS MSI region reservation using ACPI IORT helper function.
+> >>> + */
+> >>> +int iommu_dma_get_msi_resv_regions(struct device *dev, struct
+> list_head
+> >> *list)
+> >>> +{
+> >>> +	if (!is_of_node(dev->iommu_fwspec->iommu_fwnode))
+> >>> +		return iort_iommu_msi_get_resv_regions(dev, list);
+> =
 
-Yes, I'm saying let's do that instead. My preference is still that we would
-have all of this working for DT, but it's clear that isn't going to happen
-and so I'm trying to unblock the ACPI bits whilst not having subtle breakage
-with DT.
+> Either this call knows how to do the right thing for any platform and
+> should be made from iommu_dma_get_reserved_regions() directly, or it's
+> tightly coupled to the HiSilicon quirk in the SMMUv3 driver and
+> iommu-dma doesn't need to know - the middle ground presented here is
+> surely the worst of both worlds.
 
-> +	/** HiSilicon erratum 161010801: Please make sure that
-> +	 *  the smmu (pcie) node on hip06 is disabled as this will
-> +	 *  break the PCIe functionality when iommu-map entry
-> +	 *  is used along with the PCIe node.
+Right. I think we have discussed this earlier[1] and had a v4 based on invo=
+king
+the iort_iommu_its_get_resv_regions() within the iommu_dma_get_resv_regions=
+().
+But later as you rightly pointed out, we were not checking for platforms wh=
+ich
+requires this quirk inside the iort code and that will break the platforms =
+which are =
 
-It would be good to have a better description of what is broken and why,
-along with a link to the mailing link discussion.
+happy with MSI translations. Hence moved to the current implementation in v6
+after this discussion here[2]
+ =
 
-Will
+And earlier I think in the v3 version we had the function called from smmu =
+driver
+directly and the feedback was that it should be abstracted from the driver.
 
---===============8628500276815298703==--
+May be it is still possible to move the function call inside the =
+
+iommu_dma_get_resv_regions() and do the smmu model check inside
+ the iort helper function and selectively apply the HW MSI reservations.
+
+But I think it is much neater if we can invoke the iort_get_msi_regions() d=
+irectly
+from SMMUv3 based on the model.
+
+Thoughts?
+
+Thanks,
+Shameer
+1. https://patches.linaro.org/patch/106268/
+2. https://www.spinics.net/lists/arm-kernel/msg599162.html
+
+
+
+
+--===============7963818207119544413==--
 
