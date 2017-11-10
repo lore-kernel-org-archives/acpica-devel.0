@@ -1,47 +1,98 @@
-Content-Type: multipart/mixed; boundary="===============5037140512541482994=="
+Content-Type: multipart/mixed; boundary="===============4240476664880922485=="
 MIME-Version: 1.0
-From: Jeremy Linton <jeremy.linton at arm.com>
-Subject: [Devel] [PATCH v4 9/9] ACPI: Add PPTT to injectable table list
-Date: Thu, 09 Nov 2017 15:03:11 -0600
-Message-ID: <20171109210311.25655-10-jeremy.linton@arm.com>
-In-Reply-To: 20171109210311.25655-1-jeremy.linton@arm.com
+From: Dongjiu Geng <gengdongjiu at huawei.com>
+Subject: [Devel] [PATCH v8 0/7] Support RAS virtualization in KVM
+Date: Sat, 11 Nov 2017 03:54:03 +0800
+Message-ID: <1510343650-23659-1-git-send-email-gengdongjiu@huawei.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5037140512541482994==
+--===============4240476664880922485==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Add ACPI_SIG_PPTT to the table so initrd's can override the
-system topology.
+This series patches mainly do below things:
 
-Signed-off-by: Geoffrey Blake <geoffrey.blake(a)arm.com>
-Signed-off-by: Jeremy Linton <jeremy.linton(a)arm.com>
----
- drivers/acpi/tables.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+1. Trap RAS ERR* registers Accesses to EL2 from Non-secure EL1,
+   KVM will will do a minimum simulation, there registers are simulated
+   to RAZ/WI in KVM.
+2. Route synchronous External Abort exceptions from Non-secure EL0
+   and EL1 to EL2. When exception EL3 routing is enabled by firmware,
+   system will trap to EL3 firmware instead of EL2 KVM, then firmware
+   judges whether El2 routing is enabled, if enabled, jump to EL2 KVM, =
 
-diff --git a/drivers/acpi/tables.c b/drivers/acpi/tables.c
-index 80ce2a7d224b..6d254450115b 100644
---- a/drivers/acpi/tables.c
-+++ b/drivers/acpi/tables.c
-@@ -456,7 +456,8 @@ static const char * const table_sigs[] =3D {
- 	ACPI_SIG_SLIC, ACPI_SIG_SPCR, ACPI_SIG_SPMI, ACPI_SIG_TCPA,
- 	ACPI_SIG_UEFI, ACPI_SIG_WAET, ACPI_SIG_WDAT, ACPI_SIG_WDDT,
- 	ACPI_SIG_WDRT, ACPI_SIG_DSDT, ACPI_SIG_FADT, ACPI_SIG_PSDT,
--	ACPI_SIG_RSDT, ACPI_SIG_XSDT, ACPI_SIG_SSDT, NULL };
-+	ACPI_SIG_RSDT, ACPI_SIG_XSDT, ACPI_SIG_SSDT, ACPI_SIG_PPTT,
-+	NULL };
- =
+   otherwise jump to EL1 host kernel.
+3. Enable APEI ARv8 SEI notification to parse the CPER records for SError
+   in the ACPI GHES driver, KVM will call handle_guest_sei() to let ACPI
+   driver to parse the CPER record for SError which happened in the guest
+4. Although we can use APEI driver to handle the guest SError, but not all
+   system support SEI notification, such as kernel-first. So here KVM will
+   also classify the Error through Exception Syndrome Register and do diffe=
+rent
+   approaches according to Asynchronous Error Type
+5. If the guest SError error is not propagated and not consumed, then KVM r=
+eturn
+   recoverable error status to user-space, user-space will specify the gues=
+t ESR
+   and inject a virtual SError. For other Asynchronous Error Type, KVM dire=
+ctly
+   injects virtual SError with IMPLEMENTATION DEFINED ESR or KVM is panic i=
+f the
+   error is fatal. In the RAS extension, guest virtual ESR must be set, bec=
+ause
+   all-zero  means 'RAS error: Uncategorized' instead of 'no valid ISS', so=
+ set
+   this ESR to IMPLEMENTATION DEFINED by default if user space does not spe=
+cify it.
 
- #define ACPI_HEADER_SIZE sizeof(struct acpi_table_header)
- =
+Dongjiu Geng (5):
+  acpi: apei: Add SEI notification type support for ARMv8
+  KVM: arm64: Trap RAS error registers and set HCR_EL2's TERR & TEA
+  arm64: kvm: Introduce KVM_ARM_SET_SERROR_ESR ioctl
+  arm64: kvm: Set Virtual SError Exception Syndrome for guest
+  arm64: kvm: handle SError Interrupt by categorization
+
+James Morse (1):
+  KVM: arm64: Save ESR_EL2 on guest SError
+
+Xie XiuQi (1):
+  arm64: cpufeature: Detect CPU RAS Extentions
+
+ Documentation/virtual/kvm/api.txt    | 11 ++++++
+ arch/arm/include/asm/kvm_host.h      |  1 +
+ arch/arm/kvm/guest.c                 |  9 +++++
+ arch/arm64/Kconfig                   | 16 +++++++++
+ arch/arm64/include/asm/barrier.h     |  1 +
+ arch/arm64/include/asm/cpucaps.h     |  3 +-
+ arch/arm64/include/asm/esr.h         | 15 ++++++++
+ arch/arm64/include/asm/kvm_arm.h     |  2 ++
+ arch/arm64/include/asm/kvm_asm.h     |  3 ++
+ arch/arm64/include/asm/kvm_emulate.h | 17 +++++++++
+ arch/arm64/include/asm/kvm_host.h    |  2 ++
+ arch/arm64/include/asm/sysreg.h      | 15 ++++++++
+ arch/arm64/include/asm/system_misc.h |  1 +
+ arch/arm64/kernel/cpufeature.c       | 13 +++++++
+ arch/arm64/kernel/process.c          |  3 ++
+ arch/arm64/kvm/guest.c               | 14 ++++++++
+ arch/arm64/kvm/handle_exit.c         | 67 ++++++++++++++++++++++++++++++++=
++---
+ arch/arm64/kvm/hyp/switch.c          | 31 +++++++++++++++--
+ arch/arm64/kvm/inject_fault.c        | 13 ++++++-
+ arch/arm64/kvm/reset.c               |  3 ++
+ arch/arm64/kvm/sys_regs.c            | 10 ++++++
+ arch/arm64/mm/fault.c                | 16 +++++++++
+ drivers/acpi/apei/Kconfig            | 15 ++++++++
+ drivers/acpi/apei/ghes.c             | 53 ++++++++++++++++++++++++++++
+ include/acpi/ghes.h                  |  1 +
+ include/uapi/linux/kvm.h             |  3 ++
+ virt/kvm/arm/arm.c                   |  7 ++++
+ 27 files changed, 336 insertions(+), 9 deletions(-)
 
 -- =
 
-2.13.5
+1.9.1
 
 
---===============5037140512541482994==--
+--===============4240476664880922485==--
 
