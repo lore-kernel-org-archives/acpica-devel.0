@@ -1,70 +1,91 @@
-Content-Type: multipart/mixed; boundary="===============0518874937156286048=="
+Content-Type: multipart/mixed; boundary="===============3732375484579837956=="
 MIME-Version: 1.0
 From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] ACPICA version 20171110 released
-Date: Fri, 10 Nov 2017 17:05:34 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E618D7F@ORSMSX110.amr.corp.intel.com>
+Subject: Re: [Devel] [PATCH v4 1/9] ACPICA: Add additional PPTT flags for
+ cache properties
+Date: Fri, 10 Nov 2017 17:13:19 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E618DB4@ORSMSX110.amr.corp.intel.com>
+In-Reply-To: 20171109210311.25655-2-jeremy.linton@arm.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0518874937156286048==
+--===============3732375484579837956==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-10 November 2017. Summary of changes for version 20171110:
-
-This release is available at https://acpica.org/downloads
+Included in ACPICA version 20171110
 
 
-1) ACPICA kernel-resident subsystem:
+> -----Original Message-----
+> From: Jeremy Linton [mailto:jeremy.linton(a)arm.com]
+> Sent: Thursday, November 9, 2017 1:03 PM
+> To: linux-acpi(a)vger.kernel.org
+> Cc: linux-arm-kernel(a)lists.infradead.org; sudeep.holla(a)arm.com;
+> hanjun.guo(a)linaro.org; lorenzo.pieralisi(a)arm.com; rjw(a)rjwysocki.net;
+> will.deacon(a)arm.com; catalin.marinas(a)arm.com;
+> gregkh(a)linuxfoundation.org; viresh.kumar(a)linaro.org;
+> mark.rutland(a)arm.com; linux-kernel(a)vger.kernel.org; linux-
+> pm(a)vger.kernel.org; jhugo(a)codeaurora.org; wangxiongfeng2(a)huawei.com;
+> Jonathan.Zhang(a)cavium.com; ahs3(a)redhat.com;
+> Jayachandran.Nair(a)cavium.com; austinwc(a)codeaurora.org; lenb(a)kernel.=
+org;
+> Moore, Robert <robert.moore(a)intel.com>; Zheng, Lv <lv.zheng(a)intel.com=
+>;
+> devel(a)acpica.org; Jeremy Linton <jeremy.linton(a)arm.com>
+> Subject: [PATCH v4 1/9] ACPICA: Add additional PPTT flags for cache
+> properties
+> =
 
-This release implements full support for ACPI 6.2A:
-    NFIT - Added a new subtable, "Platform Capabilities Structure"
-No other changes to ACPICA were required, since ACPI 6.2A is primarily an e=
-rrata release of the specification.
+> The PPTT table has a number of flags that can be set to describe whether
+> the cache is I/D/U and the allocation and write policies. Add these
+> flags.
+> =
 
-Other ACPI table changes:
-    IORT: Added the SMMUv3 Device ID mapping index. Hanjun Guo
-    PPTT: Added cache attribute flag definitions to actbl1.h. Jeremy Linton
+> Signed-off-by: Jeremy Linton <jeremy.linton(a)arm.com>
+> ---
+>  include/acpi/actbl1.h | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+> =
 
-Utilities: Modified the string/integer conversion functions to use internal=
- 64-bit divide support instead of a native divide. On 32-bit platforms, a 6=
-4-bit divide typically requires a library function which may not be present=
- in the build (kernel or otherwise).
+> diff --git a/include/acpi/actbl1.h b/include/acpi/actbl1.h index
+> 6b8714a428b6..71f874e2790d 100644
+> --- a/include/acpi/actbl1.h
+> +++ b/include/acpi/actbl1.h
+> @@ -1346,6 +1346,20 @@ struct acpi_pptt_cache {
+>  #define ACPI_PPTT_MASK_CACHE_TYPE           (0x0C)	/* Cache type */
+>  #define ACPI_PPTT_MASK_WRITE_POLICY         (0x10)	/* Write policy */
+> =
 
-Implemented a targeted error message for timeouts returned from the Embedde=
-d Controller device driver. This is seen frequently enough to special-case =
-an AE_TIME returned from an EC operation region access:
-    "Timeout from EC hardware or EC device driver"
+> +/* Attributes describing cache */
+> +#define ACPI_PPTT_CACHE_READ_ALLOCATE	    (0x0)   /* Cache line is
+> allocated on read */
+> +#define ACPI_PPTT_CACHE_WRITE_ALLOCATE	    (0x01)  /* Cache line is
+> allocated on write */
+> +#define ACPI_PPTT_CACHE_RW_ALLOCATE	    (0x02)  /* Cache line is
+> allocated on read and write */
+> +#define ACPI_PPTT_CACHE_RW_ALLOCATE_ALT	    (0x03)  /* Alternate
+> representation of above */
+> +
+> +#define ACPI_PPTT_CACHE_TYPE_DATA	    (0x0)   /* Data cache */
+> +#define ACPI_PPTT_CACHE_TYPE_INSTR	    (1<<2)  /* Instruction cache */
+> +#define ACPI_PPTT_CACHE_TYPE_UNIFIED	    (2<<2)  /* Unified I & D cache
+> */
+> +#define ACPI_PPTT_CACHE_TYPE_UNIFIED_ALT    (3<<2)  /* Alternate
+> representation of above */
+> +
+> +#define ACPI_PPTT_CACHE_POLICY_WB	    (0x0)   /* Cache is write back
+> */
+> +#define ACPI_PPTT_CACHE_POLICY_WT	    (1<<4)  /* Cache is write
+> through */
+> +
+>  /* 2: ID Structure */
+> =
 
-Changed the "ACPI Exception" message prefix to "ACPI Error" so that all run=
-time error messages have the identical prefix.
-
-
-2) iASL Compiler/Disassembler and Tools:
-
-AcpiXtract: Fixed a problem with table header detection within the acpidump=
- file. Processing a table could be ended early if a 0x40 (@) appears in the=
- original binary table, resulting in the @ symbol appearing in the decoded =
-ASCII field at the end of the acpidump text line. The symbol caused acpixtr=
-act to incorrectly think it had reached the end of the current table and th=
-e beginning of a new table.
-
-AcpiXtract: Added an option (-f) to ignore some errors during table extract=
-ion. This initial implementation ignores non-ASCII and non-printable charac=
-ters found in the acpidump text file.
-
-TestSuite(ASLTS)/AcpiExec: Fixed and restored the memory usage statistics f=
-or ASLTS. This feature is used to track memory allocations from different m=
-emory caches within the ACPICA code. At the end of an ASLTS run, these memo=
-ry statistics are recorded and stored in a log file.
-
-Debugger (user-space version): Implemented a simple "Background" command. C=
-reates a new thread to execute a control method in the background, while co=
-ntrol returns to the debugger prompt to allow additional commands.
-    Syntax: Background <Namepath> [Arguments]
+>  struct acpi_pptt_id {
+> --
+> 2.13.5
 
 
---===============0518874937156286048==--
+--===============3732375484579837956==--
 
