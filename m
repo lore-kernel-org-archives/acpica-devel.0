@@ -1,98 +1,79 @@
-Content-Type: multipart/mixed; boundary="===============4240476664880922485=="
+Content-Type: multipart/mixed; boundary="===============1412543896912571329=="
 MIME-Version: 1.0
 From: Dongjiu Geng <gengdongjiu at huawei.com>
-Subject: [Devel] [PATCH v8 0/7] Support RAS virtualization in KVM
-Date: Sat, 11 Nov 2017 03:54:03 +0800
-Message-ID: <1510343650-23659-1-git-send-email-gengdongjiu@huawei.com>
+Subject: [Devel] [PATCH v8 2/7] KVM: arm64: Save ESR_EL2 on guest SError
+Date: Sat, 11 Nov 2017 03:54:05 +0800
+Message-ID: <1510343650-23659-3-git-send-email-gengdongjiu@huawei.com>
+In-Reply-To: 1510343650-23659-1-git-send-email-gengdongjiu@huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4240476664880922485==
+--===============1412543896912571329==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-This series patches mainly do below things:
+From: James Morse <james.morse(a)arm.com>
 
-1. Trap RAS ERR* registers Accesses to EL2 from Non-secure EL1,
-   KVM will will do a minimum simulation, there registers are simulated
-   to RAZ/WI in KVM.
-2. Route synchronous External Abort exceptions from Non-secure EL0
-   and EL1 to EL2. When exception EL3 routing is enabled by firmware,
-   system will trap to EL3 firmware instead of EL2 KVM, then firmware
-   judges whether El2 routing is enabled, if enabled, jump to EL2 KVM, =
+When we exit a guest due to an SError the vcpu fault info isn't updated
+with the ESR. Today this is only done for traps.
 
-   otherwise jump to EL1 host kernel.
-3. Enable APEI ARv8 SEI notification to parse the CPER records for SError
-   in the ACPI GHES driver, KVM will call handle_guest_sei() to let ACPI
-   driver to parse the CPER record for SError which happened in the guest
-4. Although we can use APEI driver to handle the guest SError, but not all
-   system support SEI notification, such as kernel-first. So here KVM will
-   also classify the Error through Exception Syndrome Register and do diffe=
-rent
-   approaches according to Asynchronous Error Type
-5. If the guest SError error is not propagated and not consumed, then KVM r=
-eturn
-   recoverable error status to user-space, user-space will specify the gues=
-t ESR
-   and inject a virtual SError. For other Asynchronous Error Type, KVM dire=
-ctly
-   injects virtual SError with IMPLEMENTATION DEFINED ESR or KVM is panic i=
-f the
-   error is fatal. In the RAS extension, guest virtual ESR must be set, bec=
-ause
-   all-zero  means 'RAS error: Uncategorized' instead of 'no valid ISS', so=
- set
-   this ESR to IMPLEMENTATION DEFINED by default if user space does not spe=
-cify it.
+The v8.2 RAS Extensions define ISS values for SError. Update the vcpu's
+fault_info with the ESR on SError so that handle_exit() can determine
+if this was a RAS SError and decode its severity.
 
-Dongjiu Geng (5):
-  acpi: apei: Add SEI notification type support for ARMv8
-  KVM: arm64: Trap RAS error registers and set HCR_EL2's TERR & TEA
-  arm64: kvm: Introduce KVM_ARM_SET_SERROR_ESR ioctl
-  arm64: kvm: Set Virtual SError Exception Syndrome for guest
-  arm64: kvm: handle SError Interrupt by categorization
+Signed-off-by: James Morse <james.morse(a)arm.com>
+Signed-off-by: Dongjiu Geng <gengdongjiu(a)huawei.com>
+---
+ arch/arm64/kvm/hyp/switch.c | 15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
 
-James Morse (1):
-  KVM: arm64: Save ESR_EL2 on guest SError
+diff --git a/arch/arm64/kvm/hyp/switch.c b/arch/arm64/kvm/hyp/switch.c
+index 945e79c..c6f17c7 100644
+--- a/arch/arm64/kvm/hyp/switch.c
++++ b/arch/arm64/kvm/hyp/switch.c
+@@ -226,13 +226,20 @@ static bool __hyp_text __translate_far_to_hpfar(u64 f=
+ar, u64 *hpfar)
+ 	return true;
+ }
+ =
 
-Xie XiuQi (1):
-  arm64: cpufeature: Detect CPU RAS Extentions
++static void __hyp_text __populate_fault_info_esr(struct kvm_vcpu *vcpu)
++{
++	vcpu->arch.fault.esr_el2 =3D read_sysreg_el2(esr);
++}
++
+ static bool __hyp_text __populate_fault_info(struct kvm_vcpu *vcpu)
+ {
+-	u64 esr =3D read_sysreg_el2(esr);
+-	u8 ec =3D ESR_ELx_EC(esr);
++	u8 ec;
++	u64 esr;
+ 	u64 hpfar, far;
+ =
 
- Documentation/virtual/kvm/api.txt    | 11 ++++++
- arch/arm/include/asm/kvm_host.h      |  1 +
- arch/arm/kvm/guest.c                 |  9 +++++
- arch/arm64/Kconfig                   | 16 +++++++++
- arch/arm64/include/asm/barrier.h     |  1 +
- arch/arm64/include/asm/cpucaps.h     |  3 +-
- arch/arm64/include/asm/esr.h         | 15 ++++++++
- arch/arm64/include/asm/kvm_arm.h     |  2 ++
- arch/arm64/include/asm/kvm_asm.h     |  3 ++
- arch/arm64/include/asm/kvm_emulate.h | 17 +++++++++
- arch/arm64/include/asm/kvm_host.h    |  2 ++
- arch/arm64/include/asm/sysreg.h      | 15 ++++++++
- arch/arm64/include/asm/system_misc.h |  1 +
- arch/arm64/kernel/cpufeature.c       | 13 +++++++
- arch/arm64/kernel/process.c          |  3 ++
- arch/arm64/kvm/guest.c               | 14 ++++++++
- arch/arm64/kvm/handle_exit.c         | 67 ++++++++++++++++++++++++++++++++=
-+---
- arch/arm64/kvm/hyp/switch.c          | 31 +++++++++++++++--
- arch/arm64/kvm/inject_fault.c        | 13 ++++++-
- arch/arm64/kvm/reset.c               |  3 ++
- arch/arm64/kvm/sys_regs.c            | 10 ++++++
- arch/arm64/mm/fault.c                | 16 +++++++++
- drivers/acpi/apei/Kconfig            | 15 ++++++++
- drivers/acpi/apei/ghes.c             | 53 ++++++++++++++++++++++++++++
- include/acpi/ghes.h                  |  1 +
- include/uapi/linux/kvm.h             |  3 ++
- virt/kvm/arm/arm.c                   |  7 ++++
- 27 files changed, 336 insertions(+), 9 deletions(-)
+-	vcpu->arch.fault.esr_el2 =3D esr;
++	__populate_fault_info_esr(vcpu);
++	esr =3D vcpu->arch.fault.esr_el2;
++	ec =3D ESR_ELx_EC(esr);
+ =
 
+ 	if (ec !=3D ESR_ELx_EC_DABT_LOW && ec !=3D ESR_ELx_EC_IABT_LOW)
+ 		return true;
+@@ -321,6 +328,8 @@ int __hyp_text __kvm_vcpu_run(struct kvm_vcpu *vcpu)
+ 	 */
+ 	if (exit_code =3D=3D ARM_EXCEPTION_TRAP && !__populate_fault_info(vcpu))
+ 		goto again;
++	else if (ARM_EXCEPTION_CODE(exit_code) =3D=3D ARM_EXCEPTION_EL1_SERROR)
++		__populate_fault_info_esr(vcpu);
+ =
+
+ 	if (static_branch_unlikely(&vgic_v2_cpuif_trap) &&
+ 	    exit_code =3D=3D ARM_EXCEPTION_TRAP) {
 -- =
 
 1.9.1
 
 
---===============4240476664880922485==--
+--===============1412543896912571329==--
 
