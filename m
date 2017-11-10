@@ -1,253 +1,70 @@
-Content-Type: multipart/mixed; boundary="===============4280155716416508232=="
+Content-Type: multipart/mixed; boundary="===============0518874937156286048=="
 MIME-Version: 1.0
-From: Dongjiu Geng <gengdongjiu at huawei.com>
-Subject: [Devel] [PATCH v8 7/7] arm64: kvm: handle SError Interrupt by
- categorization
-Date: Sat, 11 Nov 2017 03:54:10 +0800
-Message-ID: <1510343650-23659-8-git-send-email-gengdongjiu@huawei.com>
-In-Reply-To: 1510343650-23659-1-git-send-email-gengdongjiu@huawei.com
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] ACPICA version 20171110 released
+Date: Fri, 10 Nov 2017 17:05:34 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E37E618D7F@ORSMSX110.amr.corp.intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4280155716416508232==
+--===============0518874937156286048==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-If it is not RAS SError, directly inject virtual SError,
-which will keep the old way. If it is RAS SError, firstly
-let host ACPI module to handle it. For the ACPI handling,
-if the error address is invalid, APEI driver will not
-identify the address to hwpoison memory and can not notify
-guest to do the recovery. In order to safe, KVM continues
-categorizing errors and handle it separately.
+10 November 2017. Summary of changes for version 20171110:
 
-If the RAS error is not propagated, let host user space to
-handle it. The reason is that sometimes we can only kill the
-guest effected application instead of panic whose guest OS.
-Host user space specifies a valid ESR and inject virtual
-SError, guest can just kill the current application if the
-non-consumed error coming from guest application.
-
-Signed-off-by: Dongjiu Geng <gengdongjiu(a)huawei.com>
-Signed-off-by: Quanming Wu <wuquanming(a)huawei.com>
----
- arch/arm64/include/asm/esr.h         | 15 ++++++++
- arch/arm64/include/asm/kvm_asm.h     |  3 ++
- arch/arm64/include/asm/system_misc.h |  1 +
- arch/arm64/kvm/handle_exit.c         | 67 ++++++++++++++++++++++++++++++++=
-+---
- arch/arm64/mm/fault.c                | 16 +++++++++
- 5 files changed, 98 insertions(+), 4 deletions(-)
-
-diff --git a/arch/arm64/include/asm/esr.h b/arch/arm64/include/asm/esr.h
-index 66ed8b6..aca7eee 100644
---- a/arch/arm64/include/asm/esr.h
-+++ b/arch/arm64/include/asm/esr.h
-@@ -102,6 +102,7 @@
- #define ESR_ELx_FSC_ACCESS	(0x08)
- #define ESR_ELx_FSC_FAULT	(0x04)
- #define ESR_ELx_FSC_PERM	(0x0C)
-+#define ESR_ELx_FSC_SERROR	(0x11)
- =
-
- /* ISS field definitions for Data Aborts */
- #define ESR_ELx_ISV_SHIFT	(24)
-@@ -119,6 +120,20 @@
- #define ESR_ELx_CM_SHIFT	(8)
- #define ESR_ELx_CM 		(UL(1) << ESR_ELx_CM_SHIFT)
- =
-
-+/* ISS field definitions for SError interrupt */
-+#define ESR_ELx_AET_SHIFT	(10)
-+#define ESR_ELx_AET		(UL(0x7) << ESR_ELx_AET_SHIFT)
-+/* Uncontainable error */
-+#define ESR_ELx_AET_UC		(UL(0) << ESR_ELx_AET_SHIFT)
-+/* Unrecoverable error */
-+#define ESR_ELx_AET_UEU		(UL(1) << ESR_ELx_AET_SHIFT)
-+/* Restartable error */
-+#define ESR_ELx_AET_UEO		(UL(2) << ESR_ELx_AET_SHIFT)
-+/* Recoverable error */
-+#define ESR_ELx_AET_UER		(UL(3) << ESR_ELx_AET_SHIFT)
-+/* Corrected */
-+#define ESR_ELx_AET_CE		(UL(6) << ESR_ELx_AET_SHIFT)
-+
- /* ISS field definitions for exceptions taken in to Hyp */
- #define ESR_ELx_CV		(UL(1) << 24)
- #define ESR_ELx_COND_SHIFT	(20)
-diff --git a/arch/arm64/include/asm/kvm_asm.h b/arch/arm64/include/asm/kvm_=
-asm.h
-index 26a64d0..884f723 100644
---- a/arch/arm64/include/asm/kvm_asm.h
-+++ b/arch/arm64/include/asm/kvm_asm.h
-@@ -27,6 +27,9 @@
- #define ARM_EXCEPTION_IRQ	  0
- #define ARM_EXCEPTION_EL1_SERROR  1
- #define ARM_EXCEPTION_TRAP	  2
-+/* Error code for SError Interrupt (SEI) exception */
-+#define KVM_SEI_SEV_RECOVERABLE	  1
-+
- /* The hyp-stub will return this for any kvm_call_hyp() call */
- #define ARM_EXCEPTION_HYP_GONE	  HVC_STUB_ERR
- =
-
-diff --git a/arch/arm64/include/asm/system_misc.h b/arch/arm64/include/asm/=
-system_misc.h
-index 07aa8e3..9ee13ad 100644
---- a/arch/arm64/include/asm/system_misc.h
-+++ b/arch/arm64/include/asm/system_misc.h
-@@ -57,6 +57,7 @@ void hook_debug_fault_code(int nr, int (*fn)(unsigned lon=
-g, unsigned int,
- })
- =
-
- int handle_guest_sea(phys_addr_t addr, unsigned int esr);
-+int handle_guest_sei(void);
- =
-
- #endif	/* __ASSEMBLY__ */
- =
-
-diff --git a/arch/arm64/kvm/handle_exit.c b/arch/arm64/kvm/handle_exit.c
-index 7debb74..1afdc87 100644
---- a/arch/arm64/kvm/handle_exit.c
-+++ b/arch/arm64/kvm/handle_exit.c
-@@ -28,6 +28,7 @@
- #include <asm/kvm_emulate.h>
- #include <asm/kvm_mmu.h>
- #include <asm/kvm_psci.h>
-+#include <asm/system_misc.h>
- =
-
- #define CREATE_TRACE_POINTS
- #include "trace.h"
-@@ -178,6 +179,66 @@ static exit_handle_fn kvm_get_exit_handler(struct kvm_=
-vcpu *vcpu)
- 	return arm_exit_handlers[hsr_ec];
- }
- =
-
-+/**
-+ * kvm_handle_guest_sei - handles SError interrupt or asynchronous aborts
-+ * @vcpu:	the VCPU pointer
-+ *
-+ * For RAS SError interrupt, firstly let host kernel handle it.
-+ * If the AET is [ESR_ELx_AET_UER], then let user space handle it,
-+ */
-+static int kvm_handle_guest_sei(struct kvm_vcpu *vcpu, struct kvm_run *run)
-+{
-+	unsigned int esr =3D kvm_vcpu_get_hsr(vcpu);
-+	bool impdef_syndrome =3D  esr & ESR_ELx_ISV;	/* aka IDS */
-+	unsigned int aet =3D esr & ESR_ELx_AET;
-+
-+	/*
-+	 * This is not RAS SError
-+	 */
-+	if (!cpus_have_const_cap(ARM64_HAS_RAS_EXTN)) {
-+		kvm_inject_vabt(vcpu);
-+		return 1;
-+	}
-+
-+	/* The host kernel may handle this abort. */
-+	handle_guest_sei();
-+
-+	/*
-+	 * In below two conditions, it will directly inject the
-+	 * virtual SError:
-+	 * 1. The Syndrome is IMPLEMENTATION DEFINED
-+	 * 2. It is Uncategorized SEI
-+	 */
-+	if (impdef_syndrome ||
-+		((esr & ESR_ELx_FSC) !=3D ESR_ELx_FSC_SERROR)) {
-+		kvm_inject_vabt(vcpu);
-+		return 1;
-+	}
-+
-+	switch (aet) {
-+	case ESR_ELx_AET_CE:	/* corrected error */
-+	case ESR_ELx_AET_UEO:	/* restartable error, not yet consumed */
-+		return 1;	/* continue processing the guest exit */
-+	case ESR_ELx_AET_UER:	/* The error has not been propagated */
-+		/*
-+		 * Userspace only handle the guest SError Interrupt(SEI) if the
-+		 * error has not been propagated
-+		 */
-+		run->exit_reason =3D KVM_EXIT_EXCEPTION;
-+		run->ex.exception =3D ESR_ELx_EC_SERROR;
-+		run->ex.error_code =3D KVM_SEI_SEV_RECOVERABLE;
-+		return 0;
-+	default:
-+		/*
-+		 * Until now, the CPU supports RAS and SEI is fatal, or host
-+		 * does not support to handle the SError.
-+		 */
-+		panic("This Asynchronous SError interrupt is dangerous, panic");
-+	}
-+
-+	return 0;
-+}
-+
- /*
-  * Return > 0 to return to guest, < 0 on error, 0 (and set exit_reason) on
-  * proper exit to userspace.
-@@ -201,8 +262,7 @@ int handle_exit(struct kvm_vcpu *vcpu, struct kvm_run *=
-run,
- 			*vcpu_pc(vcpu) -=3D adj;
- 		}
- =
-
--		kvm_inject_vabt(vcpu);
--		return 1;
-+		return kvm_handle_guest_sei(vcpu, run);
- 	}
- =
-
- 	exception_index =3D ARM_EXCEPTION_CODE(exception_index);
-@@ -211,8 +271,7 @@ int handle_exit(struct kvm_vcpu *vcpu, struct kvm_run *=
-run,
- 	case ARM_EXCEPTION_IRQ:
- 		return 1;
- 	case ARM_EXCEPTION_EL1_SERROR:
--		kvm_inject_vabt(vcpu);
--		return 1;
-+		return kvm_handle_guest_sei(vcpu, run);
- 	case ARM_EXCEPTION_TRAP:
- 		/*
- 		 * See ARM ARM B1.14.1: "Hyp traps on instructions
-diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
-index b64958b..8560672 100644
---- a/arch/arm64/mm/fault.c
-+++ b/arch/arm64/mm/fault.c
-@@ -728,6 +728,22 @@ int handle_guest_sea(phys_addr_t addr, unsigned int es=
-r)
- }
- =
-
- /*
-+ * Handle SError interrupt that occurred in guest OS.
-+ *
-+ * The return value will be zero if the SEI was successfully handled
-+ * and non-zero if handling is failed.
-+ */
-+int handle_guest_sei(void)
-+{
-+	int ret =3D -ENOENT;
-+
-+	if (IS_ENABLED(CONFIG_ACPI_APEI_SEI))
-+		ret =3D ghes_notify_sei();
-+
-+	return ret;
-+}
-+
-+/*
-  * Dispatch a data abort to the relevant handler.
-  */
- asmlinkage void __exception do_mem_abort(unsigned long addr, unsigned int =
-esr,
--- =
-
-1.9.1
+This release is available at https://acpica.org/downloads
 
 
---===============4280155716416508232==--
+1) ACPICA kernel-resident subsystem:
+
+This release implements full support for ACPI 6.2A:
+    NFIT - Added a new subtable, "Platform Capabilities Structure"
+No other changes to ACPICA were required, since ACPI 6.2A is primarily an e=
+rrata release of the specification.
+
+Other ACPI table changes:
+    IORT: Added the SMMUv3 Device ID mapping index. Hanjun Guo
+    PPTT: Added cache attribute flag definitions to actbl1.h. Jeremy Linton
+
+Utilities: Modified the string/integer conversion functions to use internal=
+ 64-bit divide support instead of a native divide. On 32-bit platforms, a 6=
+4-bit divide typically requires a library function which may not be present=
+ in the build (kernel or otherwise).
+
+Implemented a targeted error message for timeouts returned from the Embedde=
+d Controller device driver. This is seen frequently enough to special-case =
+an AE_TIME returned from an EC operation region access:
+    "Timeout from EC hardware or EC device driver"
+
+Changed the "ACPI Exception" message prefix to "ACPI Error" so that all run=
+time error messages have the identical prefix.
+
+
+2) iASL Compiler/Disassembler and Tools:
+
+AcpiXtract: Fixed a problem with table header detection within the acpidump=
+ file. Processing a table could be ended early if a 0x40 (@) appears in the=
+ original binary table, resulting in the @ symbol appearing in the decoded =
+ASCII field at the end of the acpidump text line. The symbol caused acpixtr=
+act to incorrectly think it had reached the end of the current table and th=
+e beginning of a new table.
+
+AcpiXtract: Added an option (-f) to ignore some errors during table extract=
+ion. This initial implementation ignores non-ASCII and non-printable charac=
+ters found in the acpidump text file.
+
+TestSuite(ASLTS)/AcpiExec: Fixed and restored the memory usage statistics f=
+or ASLTS. This feature is used to track memory allocations from different m=
+emory caches within the ACPICA code. At the end of an ASLTS run, these memo=
+ry statistics are recorded and stored in a log file.
+
+Debugger (user-space version): Implemented a simple "Background" command. C=
+reates a new thread to execute a control method in the background, while co=
+ntrol returns to the debugger prompt to allow additional commands.
+    Syntax: Background <Namepath> [Arguments]
+
+
+--===============0518874937156286048==--
 
