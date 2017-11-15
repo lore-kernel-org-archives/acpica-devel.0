@@ -1,251 +1,593 @@
-Content-Type: multipart/mixed; boundary="===============3062481845482996293=="
+Content-Type: multipart/mixed; boundary="===============5375894492455138743=="
 MIME-Version: 1.0
-From: gengdongjiu <gengdongjiu at huawei.com>
-Subject: Re: [Devel] [PATCH v8 7/7] arm64: kvm: handle SError Interrupt by
- categorization
-Date: Wed, 15 Nov 2017 19:29:18 +0800
-Message-ID: <3995cbd7-f631-605f-bdc4-0259e3650d02@huawei.com>
-In-Reply-To: 5A0B1334.7060500@arm.com
+From: Jeremy Linton <jeremy.linton at arm.com>
+Subject: Re: [Devel] [PATCH v4 2/9] ACPI/PPTT: Add Processor Properties
+ Topology Table parsing
+Date: Wed, 15 Nov 2017 09:50:17 -0600
+Message-ID: <c0d51518-9906-fe32-83db-e8f197a1b38d@arm.com>
+In-Reply-To: 53555e1c-8bed-cfaf-21e5-1d2954428c04@huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3062481845482996293==
+--===============5375894492455138743==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi James,
+Hi,
 
-   Thanks a lot for the review.
-
-On 2017/11/15 0:00, James Morse wrote:
-> Hi Dongjiu Geng,
+On 11/15/2017 03:27 AM, Xiongfeng Wang wrote:
+> Hi Jeremy,
 > =
 
-> On 10/11/17 19:54, Dongjiu Geng wrote:
->> If it is not RAS SError, directly inject virtual SError,
->> which will keep the old way. If it is RAS SError, firstly
->> let host ACPI module to handle it.
-> =
-
->> For the ACPI handling,
->> if the error address is invalid, APEI driver will not
->> identify the address to hwpoison memory and can not notify
->> guest to do the recovery.
-> =
-
-> The guest can't do any recover either. There is no recovery you can do wi=
-thout
-> some information about what the error is.
-> =
-
-> This is your memory corruption at an unknown address? We should reboot.
-> =
-
-> (I agree memory_failure.c's::me_kernel() is ignoring kernel errors, we sh=
-ould
-> try and fix this. It makes some sense for polled or irq notifications, bu=
-t not
-> SEA/SEI).
-> =
-
-> =
-
->> In order to safe, KVM continues
->> categorizing errors and handle it separately.
-> =
-
->> If the RAS error is not propagated, let host user space to
->> handle it. =
-
-> =
-
-> No. Host user space should not know anything about the kernel or platform=
- RAS
-> support. Doing so creates an ABI link between EL3 firmware and Qemu. This=
- is
-> totally unmaintainable.
-
-Here I have two question:
-(1) If the AET(Asynchronous Error Type) is Recoverable error (UER), do you =
-mean we also reboot or panic?
-(2) what is the chance to set guest ESR for Qemu?  here I return a error co=
-de to Qemu. when Qemu get this error return,
-    it will specify guest ESR and inject the abort. here if KVM does not re=
-turn error to Qemu, Qemu will do
-    not know when to set the guest ESR value and inject abort.
-
-
-> =
-
-> This thing needs to be portable. The kernel should handle the error, and =
-report
-> any symptoms to user-space. e.g. 'this memory is gone'.
-> =
-
-> We shouldn't special case KVM.
-> =
-
-> =
-
->> The reason is that sometimes we can only kill the
->> guest effected application instead of panic whose guest OS.
->> Host user space specifies a valid ESR and inject virtual
->> SError, guest can just kill the current application if the
->> non-consumed error coming from guest application.
+> On 2017/11/10 5:03, Jeremy Linton wrote:
+>> ACPI 6.2 adds a new table, which describes how processing units
+>> are related to each other in tree like fashion. Caches are
+>> also sprinkled throughout the tree and describe the properties
+>> of the caches in relation to other caches and processing units.
 >>
->> Signed-off-by: Dongjiu Geng <gengdongjiu(a)huawei.com>
->> Signed-off-by: Quanming Wu <wuquanming(a)huawei.com>
-> =
-
-> The last Signed-off-by should match the person posting the patch. It's a =
-chain
-> of custody for GPL-signoff purposes, not a 'partially-written-by'. If you=
- want
-> to credit Quanming Wu you can add CC and they can Ack/Review your patch.
-
-Ok, got it. thanks a lot for your suggestion.
-
-
-> =
-
-> =
-
->> diff --git a/arch/arm64/kvm/handle_exit.c b/arch/arm64/kvm/handle_exit.c
->> index 7debb74..1afdc87 100644
->> --- a/arch/arm64/kvm/handle_exit.c
->> +++ b/arch/arm64/kvm/handle_exit.c
->> @@ -178,6 +179,66 @@ static exit_handle_fn kvm_get_exit_handler(struct k=
-vm_vcpu *vcpu)
->>  	return arm_exit_handlers[hsr_ec];
->>  }
->>  =
-
->> +/**
->> + * kvm_handle_guest_sei - handles SError interrupt or asynchronous abor=
-ts
->> + * @vcpu:	the VCPU pointer
+>> Add the code to parse the cache hierarchy and report the total
+>> number of levels of cache for a given core using
+>> acpi_find_last_cache_level() as well as fill out the individual
+>> cores cache information with cache_setup_acpi() once the
+>> cpu_cacheinfo structure has been populated by the arch specific
+>> code.
+>>
+>> Further, report peers in the topology using setup_acpi_cpu_topology()
+>> to report a unique ID for each processing unit at a given level
+>> in the tree. These unique id's can then be used to match related
+>> processing units which exist as threads, COD (clusters
+>> on die), within a given package, etc.
+>>
+>> Signed-off-by: Jeremy Linton <jeremy.linton(a)arm.com>
+>> ---
+>>   drivers/acpi/pptt.c | 452 ++++++++++++++++++++++++++++++++++++++++++++=
+++++++++
+>>   1 file changed, 452 insertions(+)
+>>   create mode 100644 drivers/acpi/pptt.c
+>>
+>> diff --git a/drivers/acpi/pptt.c b/drivers/acpi/pptt.c
+>> new file mode 100644
+>> index 000000000000..9c9b8b4660e0
+>> --- /dev/null
+>> +++ b/drivers/acpi/pptt.c
+>> @@ -0,0 +1,452 @@
+>> +/*
+>> + * Copyright (C) 2017, ARM
 >> + *
->> + * For RAS SError interrupt, firstly let host kernel handle it.
->> + * If the AET is [ESR_ELx_AET_UER], then let user space handle it,
+>> + * This program is free software; you can redistribute it and/or modify=
+ it
+>> + * under the terms and conditions of the GNU General Public License,
+>> + * version 2, as published by the Free Software Foundation.
+>> + *
+>> + * This program is distributed in the hope it will be useful, but WITHO=
+UT
+>> + * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+>> + * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public Licens=
+e for
+>> + * more details.
+>> + *
+>> + * This file implements parsing of Processor Properties Topology Table =
+(PPTT)
+>> + * which is optionally used to describe the processor and cache topolog=
+y.
+>> + * Due to the relative pointers used throughout the table, this doesn't
+>> + * leverage the existing subtable parsing in the kernel.
+>> + *
+>> + * The PPTT structure is an inverted tree, with each node potentially
+>> + * holding one or two inverted tree data structures describing
+>> + * the caches available at that level. Each cache structure optionally
+>> + * contains properties describing the cache at that level which can be
+>> + * used to override hardware/probed values.
 >> + */
->> +static int kvm_handle_guest_sei(struct kvm_vcpu *vcpu, struct kvm_run *=
-run)
+>> +#define pr_fmt(fmt) "ACPI PPTT: " fmt
+>> +
+>> +#include <linux/acpi.h>
+>> +#include <linux/cacheinfo.h>
+>> +#include <acpi/processor.h>
+>> +
+>> +/*
+>> + * Given the PPTT table, find and verify that the subtable entry
+>> + * is located within the table
+>> + */
+>> +static struct acpi_subtable_header *fetch_pptt_subtable(
+>> +	struct acpi_table_header *table_hdr, u32 pptt_ref)
 >> +{
->> +	unsigned int esr =3D kvm_vcpu_get_hsr(vcpu);
->> +	bool impdef_syndrome =3D  esr & ESR_ELx_ISV;	/* aka IDS */
->> +	unsigned int aet =3D esr & ESR_ELx_AET;
+>> +	struct acpi_subtable_header *entry;
 >> +
->> +	/*
->> +	 * This is not RAS SError
->> +	 */
->> +	if (!cpus_have_const_cap(ARM64_HAS_RAS_EXTN)) {
->> +		kvm_inject_vabt(vcpu);
->> +		return 1;
->> +	}
-> =
-
->> +	/* The host kernel may handle this abort. */
->> +	handle_guest_sei();
-> =
-
-> This has to claim the SError as a notification. If APEI claims the error,=
- KVM
-> doesn't need to do anything more. You ignore its return code.
-
-Thanks for the pointing out.
-I will check the return code, if it return success, KVM doesn't need to do =
-anything more,
-otherwise, continue run.
-
-> =
-
-> =
-
+>> +	/* there isn't a subtable at reference 0 */
+>> +	if (pptt_ref < sizeof(struct acpi_subtable_header))
+>> +		return NULL;
 >> +
->> +	/*
->> +	 * In below two conditions, it will directly inject the
->> +	 * virtual SError:
->> +	 * 1. The Syndrome is IMPLEMENTATION DEFINED
->> +	 * 2. It is Uncategorized SEI
->> +	 */
->> +	if (impdef_syndrome ||
->> +		((esr & ESR_ELx_FSC) !=3D ESR_ELx_FSC_SERROR)) {
->> +		kvm_inject_vabt(vcpu);
->> +		return 1;
->> +	}
+>> +	if (pptt_ref + sizeof(struct acpi_subtable_header) > table_hdr->length)
+>> +		return NULL;
 >> +
->> +	switch (aet) {
->> +	case ESR_ELx_AET_CE:	/* corrected error */
->> +	case ESR_ELx_AET_UEO:	/* restartable error, not yet consumed */
->> +		return 1;	/* continue processing the guest exit */
-> =
-
->> +	case ESR_ELx_AET_UER:	/* The error has not been propagated */
->> +		/*
->> +		 * Userspace only handle the guest SError Interrupt(SEI) if the
->> +		 * error has not been propagated
->> +		 */
->> +		run->exit_reason =3D KVM_EXIT_EXCEPTION;
->> +		run->ex.exception =3D ESR_ELx_EC_SERROR;
->> +		run->ex.error_code =3D KVM_SEI_SEV_RECOVERABLE;
->> +		return 0;
-> =
-
-> We should not pass RAS notifications to user space. The kernel either han=
-dles
-> them, or it panics(). User space shouldn't even know if the kernel suppor=
-ts RAS
-> until it gets an MCEERR signal.
-
-Now I rely on this error return to let Qemu set guest ESR, otherwise user s=
-pace will do not know when to set the guest ESR.
-If so, how and when we told user space(Qemu) to set the guest ESR and injec=
-t abort?
-
-
-> =
-
-> You're making your firmware-first notification an EL3->EL0 signal, bypass=
-ing the OS.
-> =
-
-> If we get a RAS SError and there are no CPER records or values in the ERR=
- nodes,
-> we should panic as it looks like the CPU/firmware is broken. (spurious RA=
-S errors)
-> =
-
-> =
-
->> +	default:
->> +		/*
->> +		 * Until now, the CPU supports RAS and SEI is fatal, or host
->> +		 * does not support to handle the SError.
->> +		 */
->> +		panic("This Asynchronous SError interrupt is dangerous, panic");
->> +	}
+>> +	entry =3D ACPI_ADD_PTR(struct acpi_subtable_header, table_hdr, pptt_re=
+f);
 >> +
->> +	return 0;
+>> +	if (pptt_ref + entry->length > table_hdr->length)
+>> +		return NULL;
+>> +
+>> +	return entry;
 >> +}
 >> +
->>  /*
->>   * Return > 0 to return to guest, < 0 on error, 0 (and set exit_reason)=
- on
->>   * proper exit to userspace.
+>> +static struct acpi_pptt_processor *fetch_pptt_node(
+>> +	struct acpi_table_header *table_hdr, u32 pptt_ref)
+>> +{
+>> +	return (struct acpi_pptt_processor *)fetch_pptt_subtable(table_hdr,
+>> +								 pptt_ref);
+>> +}
+>> +
+>> +static struct acpi_pptt_cache *fetch_pptt_cache(
+>> +	struct acpi_table_header *table_hdr, u32 pptt_ref)
+>> +{
+>> +	return (struct acpi_pptt_cache *)fetch_pptt_subtable(table_hdr,
+>> +							     pptt_ref);
+>> +}
+>> +
+>> +static struct acpi_subtable_header *acpi_get_pptt_resource(
+>> +	struct acpi_table_header *table_hdr,
+>> +	struct acpi_pptt_processor *node, int resource)
+>> +{
+>> +	u32 *ref;
+>> +
+>> +	if (resource >=3D node->number_of_priv_resources)
+>> +		return NULL;
+>> +
+>> +	ref =3D ACPI_ADD_PTR(u32, node, sizeof(struct acpi_pptt_processor));
+>> +	ref +=3D resource;
+>> +
+>> +	return fetch_pptt_subtable(table_hdr, *ref);
+>> +}
+>> +
+>> +/*
+>> + * Attempt to find a given cache level, while counting the max number
+>> + * of cache levels for the cache node.
+>> + *
+>> + * Given a pptt resource, verify that it is a cache node, then walk
+>> + * down each level of caches, counting how many levels are found
+>> + * as well as checking the cache type (icache, dcache, unified). If a
+>> + * level & type match, then we set found, and continue the search.
+>> + * Once the entire cache branch has been walked return its max
+>> + * depth.
+>> + */
+>> +static int acpi_pptt_walk_cache(struct acpi_table_header *table_hdr,
+>> +				int local_level,
+>> +				struct acpi_subtable_header *res,
+>> +				struct acpi_pptt_cache **found,
+>> +				int level, int type)
+>> +{
+>> +	struct acpi_pptt_cache *cache;
+>> +
+>> +	if (res->type !=3D ACPI_PPTT_TYPE_CACHE)
+>> +		return 0;
+>> +
+>> +	cache =3D (struct acpi_pptt_cache *) res;
+>> +	while (cache) {
+>> +		local_level++;
+>> +
+>> +		if ((local_level =3D=3D level) &&
+>> +		    (cache->flags & ACPI_PPTT_CACHE_TYPE_VALID) &&
+>> +		    ((cache->attributes & ACPI_PPTT_MASK_CACHE_TYPE) =3D=3D type)) {
+>> +			if ((*found !=3D NULL) && (cache !=3D *found))
+>> +				pr_err("Found duplicate cache level/type unable to determine unique=
+ness\n");
+>> +
+>> +			pr_debug("Found cache @ level %d\n", level);
+>> +			*found =3D cache;
+>> +			/*
+>> +			 * continue looking at this node's resource list
+>> +			 * to verify that we don't find a duplicate
+>> +			 * cache node.
+>> +			 */
+>> +		}
+>> +		cache =3D fetch_pptt_cache(table_hdr, cache->next_level_of_cache);
+>> +	}
+>> +	return local_level;
+>> +}
+>> +
+>> +/*
+>> + * Given a CPU node look for cache levels that exist at this level, and=
+ then
+>> + * for each cache node, count how many levels exist below (logically ab=
+ove) it.
+>> + * If a level and type are specified, and we find that level/type, abort
+>> + * processing and return the acpi_pptt_cache structure.
+>> + */
+>> +static struct acpi_pptt_cache *acpi_find_cache_level(
+>> +	struct acpi_table_header *table_hdr,
+>> +	struct acpi_pptt_processor *cpu_node,
+>> +	int *starting_level, int level, int type)
+>> +{
+>> +	struct acpi_subtable_header *res;
+>> +	int number_of_levels =3D *starting_level;
+>> +	int resource =3D 0;
+>> +	struct acpi_pptt_cache *ret =3D NULL;
+>> +	int local_level;
+>> +
+>> +	/* walk down from processor node */
+>> +	while ((res =3D acpi_get_pptt_resource(table_hdr, cpu_node, resource))=
+) {
+>> +		resource++;
+>> +
+>> +		local_level =3D acpi_pptt_walk_cache(table_hdr, *starting_level,
+>> +						   res, &ret, level, type);
+>> +		/*
+>> +		 * we are looking for the max depth. Since its potentially
+>> +		 * possible for a given node to have resources with differing
+>> +		 * depths verify that the depth we have found is the largest.
+>> +		 */
+>> +		if (number_of_levels < local_level)
+>> +			number_of_levels =3D local_level;
+>> +	}
+>> +	if (number_of_levels > *starting_level)
+>> +		*starting_level =3D number_of_levels;
+>> +
+>> +	return ret;
+>> +}
+>> +
+>> +/*
+>> + * Given a processor node containing a processing unit, walk into it an=
+d count
+>> + * how many levels exist solely for it, and then walk up each level unt=
+il we hit
+>> + * the root node (ignore the package level because it may be possible t=
+o have
+>> + * caches that exist across packages). Count the number of cache levels=
+ that
+>> + * exist at each level on the way up.
+>> + */
+>> +static int acpi_process_node(struct acpi_table_header *table_hdr,
+>> +			     struct acpi_pptt_processor *cpu_node)
+>> +{
+>> +	int total_levels =3D 0;
+>> +
+>> +	do {
+>> +		acpi_find_cache_level(table_hdr, cpu_node, &total_levels, 0, 0);
+>> +		cpu_node =3D fetch_pptt_node(table_hdr, cpu_node->parent);
+>> +	} while (cpu_node);
+>> +
+>> +	return total_levels;
+>> +}
+>> +
+>> +/*
+>> + * Determine if the *node parameter is a leaf node by iterating the
+>> + * PPTT table, looking for nodes which reference it.
+>> + * Return 0 if we find a node refrencing the passed node,
+>> + * or 1 if we don't.
+>> + */
+>> +static int acpi_pptt_leaf_node(struct acpi_table_header *table_hdr,
+>> +			       struct acpi_pptt_processor *node)
+>> +{
+>> +	struct acpi_subtable_header *entry;
+>> +	unsigned long table_end;
+>> +	u32 node_entry;
+>> +	struct acpi_pptt_processor *cpu_node;
+>> +
+>> +	table_end =3D (unsigned long)table_hdr + table_hdr->length;
+>> +	node_entry =3D ACPI_PTR_DIFF(node, table_hdr);
+>> +	entry =3D ACPI_ADD_PTR(struct acpi_subtable_header, table_hdr,
+>> +			     sizeof(struct acpi_table_pptt));
+>> +
+>> +	while ((unsigned long)(entry + 1) < table_end) {
+>> +		cpu_node =3D (struct acpi_pptt_processor *)entry;
+>> +		if ((entry->type =3D=3D ACPI_PPTT_TYPE_PROCESSOR) &&
+>> +		    (cpu_node->parent =3D=3D node_entry))
+>> +			return 0;
+>> +		entry =3D ACPI_ADD_PTR(struct acpi_subtable_header, entry,
+>> +				     entry->length);
+>> +	}
+>> +	return 1;
+>> +}
+>> +
+>> +/*
+>> + * Find the subtable entry describing the provided processor.
+>> + * This is done by iterating the PPTT table looking for processor nodes
+>> + * which have an acpi_processor_id that matches the acpi_cpu_id paramet=
+er
+>> + * passed into the function. If we find a node that matches this criter=
+ia
+>> + * we verify that its a leaf node in the topology rather than depending
+>> + * on the valid flag, which doesn't need to be set for leaf nodes.
+>> + */
+>> +static struct acpi_pptt_processor *acpi_find_processor_node(
+>> +	struct acpi_table_header *table_hdr,
+>> +	u32 acpi_cpu_id)
+>> +{
+>> +	struct acpi_subtable_header *entry;
+>> +	unsigned long table_end;
+>> +	struct acpi_pptt_processor *cpu_node;
+>> +
+>> +	table_end =3D (unsigned long)table_hdr + table_hdr->length;
+>> +	entry =3D ACPI_ADD_PTR(struct acpi_subtable_header, table_hdr,
+>> +			     sizeof(struct acpi_table_pptt));
+>> +
+>> +	/* find the processor structure associated with this cpuid */
+>> +	while ((unsigned long)(entry + 1) < table_end) {
+>> +		cpu_node =3D (struct acpi_pptt_processor *)entry;
+>> +
+>> +		if (entry->length =3D=3D 0) {
+>> +			pr_err("Invalid zero length subtable\n");
+>> +			break;
+>> +		}
+>> +		if ((entry->type =3D=3D ACPI_PPTT_TYPE_PROCESSOR) &&
+>> +		    (acpi_cpu_id =3D=3D cpu_node->acpi_processor_id) &&
+>> +		     acpi_pptt_leaf_node(table_hdr, cpu_node)) {
+>> +			return (struct acpi_pptt_processor *)entry;
+>> +		}
+>> +
+>> +		entry =3D ACPI_ADD_PTR(struct acpi_subtable_header, entry,
+>> +				     entry->length);
+>> +	}
+>> +
+>> +	return NULL;
+>> +}
+>> +
+>> +static int acpi_find_cache_levels(struct acpi_table_header *table_hdr,
+>> +				  u32 acpi_cpu_id)
+>> +{
+>> +	int number_of_levels =3D 0;
+>> +	struct acpi_pptt_processor *cpu;
+>> +
+>> +	cpu =3D acpi_find_processor_node(table_hdr, acpi_cpu_id);
+>> +	if (cpu)
+>> +		number_of_levels =3D acpi_process_node(table_hdr, cpu);
+>> +
+>> +	return number_of_levels;
+>> +}
+>> +
+>> +/* Convert the linux cache_type to a ACPI PPTT cache type value */
+>> +static u8 acpi_cache_type(enum cache_type type)
+>> +{
+>> +	switch (type) {
+>> +	case CACHE_TYPE_DATA:
+>> +		pr_debug("Looking for data cache\n");
+>> +		return ACPI_PPTT_CACHE_TYPE_DATA;
+>> +	case CACHE_TYPE_INST:
+>> +		pr_debug("Looking for instruction cache\n");
+>> +		return ACPI_PPTT_CACHE_TYPE_INSTR;
+>> +	default:
+>> +	case CACHE_TYPE_UNIFIED:
+>> +		pr_debug("Looking for unified cache\n");
+>> +		/*
+>> +		 * It is important that ACPI_PPTT_CACHE_TYPE_UNIFIED
+>> +		 * contains the bit pattern that will match both
+>> +		 * ACPI unified bit patterns because we use it later
+>> +		 * to match both cases.
+>> +		 */
+>> +		return ACPI_PPTT_CACHE_TYPE_UNIFIED;
+>> +	}
+>> +}
+>> +
+>> +/* find the ACPI node describing the cache type/level for the given CPU=
+ */
+>> +static struct acpi_pptt_cache *acpi_find_cache_node(
+>> +	struct acpi_table_header *table_hdr, u32 acpi_cpu_id,
+>> +	enum cache_type type, unsigned int level,
+>> +	struct acpi_pptt_processor **node)
+>> +{
+>> +	int total_levels =3D 0;
+>> +	struct acpi_pptt_cache *found =3D NULL;
+>> +	struct acpi_pptt_processor *cpu_node;
+>> +	u8 acpi_type =3D acpi_cache_type(type);
+>> +
+>> +	pr_debug("Looking for CPU %d's level %d cache type %d\n",
+>> +		 acpi_cpu_id, level, acpi_type);
+>> +
+>> +	cpu_node =3D acpi_find_processor_node(table_hdr, acpi_cpu_id);
+>> +
+>> +	while ((cpu_node) && (!found)) {
+>> +		found =3D acpi_find_cache_level(table_hdr, cpu_node,
+>> +					      &total_levels, level, acpi_type);
+>> +		*node =3D cpu_node;
+>> +		cpu_node =3D fetch_pptt_node(table_hdr, cpu_node->parent);
+>> +	}
+>> +
+>> +	return found;
+>> +}
+>> +
+>> +/*
+>> + * The ACPI spec implies that the fields in the cache structures are us=
+ed to
+>> + * extend and correct the information probed from the hardware. In the =
+case
+>> + * of arm64 the CCSIDR probing has been removed because it might be inc=
+orrect.
+>> + */
+>> +static void update_cache_properties(struct cacheinfo *this_leaf,
+>> +				    struct acpi_pptt_cache *found_cache,
+>> +				    struct acpi_pptt_processor *cpu_node)
+>> +{
+>> +	if (found_cache->flags & ACPI_PPTT_SIZE_PROPERTY_VALID)
+>> +		this_leaf->size =3D found_cache->size;
+>> +	if (found_cache->flags & ACPI_PPTT_LINE_SIZE_VALID)
+>> +		this_leaf->coherency_line_size =3D found_cache->line_size;
+>> +	if (found_cache->flags & ACPI_PPTT_NUMBER_OF_SETS_VALID)
+>> +		this_leaf->number_of_sets =3D found_cache->number_of_sets;
+>> +	if (found_cache->flags & ACPI_PPTT_ASSOCIATIVITY_VALID)
+>> +		this_leaf->ways_of_associativity =3D found_cache->associativity;
+>> +	if (found_cache->flags & ACPI_PPTT_WRITE_POLICY_VALID)
+>> +		switch (found_cache->attributes & ACPI_PPTT_MASK_WRITE_POLICY) {
+>> +		case ACPI_PPTT_CACHE_POLICY_WT:
+>> +			this_leaf->attributes =3D CACHE_WRITE_THROUGH;
+>> +			break;
+>> +		case ACPI_PPTT_CACHE_POLICY_WB:
+>> +			this_leaf->attributes =3D CACHE_WRITE_BACK;
+>> +			break;
+>> +		}
+>> +	if (found_cache->flags & ACPI_PPTT_ALLOCATION_TYPE_VALID)
+>> +		switch (found_cache->attributes & ACPI_PPTT_MASK_ALLOCATION_TYPE) {
+>> +		case ACPI_PPTT_CACHE_READ_ALLOCATE:
+>> +			this_leaf->attributes |=3D CACHE_READ_ALLOCATE;
+>> +			break;
+>> +		case ACPI_PPTT_CACHE_WRITE_ALLOCATE:
+>> +			this_leaf->attributes |=3D CACHE_WRITE_ALLOCATE;
+>> +			break;
+>> +		case ACPI_PPTT_CACHE_RW_ALLOCATE:
+>> +		case ACPI_PPTT_CACHE_RW_ALLOCATE_ALT:
+>> +			this_leaf->attributes |=3D
+>> +				CACHE_READ_ALLOCATE | CACHE_WRITE_ALLOCATE;
+>> +			break;
+>> +		}
+>> +}
+>> +
+> =
+
+
+First, thanks for testing this!
+
+> I test this patch on our platform, and the result is that 'type' property=
+ of L3Cache
+> is not displayed.
+> =
+
+> So I add some print to debug, and found out that ARM64 __populate_cache_l=
+eaves()
+> set this_cpu_ci->info_list[L3Cache_level].type to 0, bacause we can't get=
+ the type of
+> L3Cache from CLIDR.
+> =
+
+> Then cache_setup_acpi_cpu() try to find L3Cache from PPTT.  Because L3Cac=
+he type read from
+> CLIDR is 0, so branch in acpi_cache_type falls into default: ACPI_PPTT_CA=
+CHE_TYPE_UNIFIED.
+> So we can find L3Cache in PPTT, then use update_cache_properties() to upd=
+ate L3Cache property.
+> But update_cache_properties() doesn't update the cache type, so this_cpu_=
+ci->info_list[L3Cache_level].type
+> is still 0, cache_default_attrs_is_visible() returns 0, and 'type' proper=
+ty of L3Cache won't be displayed in sysfs.
+
+Oh, right! The other implication is that you can't add caches which =
+
+aren't unified if they aren't detected by the cache description registers.
+
+> =
+
+> Can we set this_cpu_ci->info_list[level].type to CACHE_TYPE_UNIFIED in __=
+populate_cache_leaves() when level >=3D 3 ?
+> Or can we update cache type property in update_cache_properties() ?
+
+Sure, I think maybe updating it here in update_cache_properties is a =
+
+better plan if we can assure that enough of the fields are valid that we =
+
+aren't just displaying a zero size cache in sysfs..
+
 > =
 
 > =
 
+> Thanks,
+> Xiongfeng Wang
 > =
 
-> James
 > =
 
-> .
+>> +/*
+>> + * Update the kernel cache information for each level of cache
+>> + * associated with the given acpi cpu.
+>> + */
+>> +static void cache_setup_acpi_cpu(struct acpi_table_header *table,
+>> +				 unsigned int cpu)
+>> +{
+>> +	struct acpi_pptt_cache *found_cache;
+>> +	struct cpu_cacheinfo *this_cpu_ci =3D get_cpu_cacheinfo(cpu);
+>> +	u32 acpi_cpu_id =3D get_acpi_id_for_cpu(cpu);
+>> +	struct cacheinfo *this_leaf;
+>> +	unsigned int index =3D 0;
+>> +	struct acpi_pptt_processor *cpu_node =3D NULL;
+>> +
+>> +	while (index < get_cpu_cacheinfo(cpu)->num_leaves) {
+>> +		this_leaf =3D this_cpu_ci->info_list + index;
+>> +		found_cache =3D acpi_find_cache_node(table, acpi_cpu_id,
+>> +						   this_leaf->type,
+>> +						   this_leaf->level,
+>> +						   &cpu_node);
+>> +		pr_debug("found =3D %p %p\n", found_cache, cpu_node);
+>> +		if (found_cache)
+>> +			update_cache_properties(this_leaf,
+>> +						found_cache,
+>> +						cpu_node);
+>> +
+>> +		index++;
+>> +	}
+>> +}
+>> +
+>> +/**
+>> + * acpi_find_last_cache_level() - Determines the number of cache levels=
+ for a PE
+>> + * @cpu: Kernel logical cpu number
+>> + *
+>> + * Given a logical cpu number, returns the number of levels of cache re=
+presented
+>> + * in the PPTT. Errors caused by lack of a PPTT table, or otherwise, re=
+turn 0
+>> + * indicating we didn't find any cache levels.
+>> + *
+>> + * Return: Cache levels visible to this core.
+>> + */
+>> +int acpi_find_last_cache_level(unsigned int cpu)
+>> +{
+>> +	u32 acpi_cpu_id;
+>> +	struct acpi_table_header *table;
+>> +	int number_of_levels =3D 0;
+>> +	acpi_status status;
+>> +
+>> +	pr_debug("Cache Setup find last level cpu=3D%d\n", cpu);
+>> +
+>> +	acpi_cpu_id =3D get_acpi_id_for_cpu(cpu);
+>> +	status =3D acpi_get_table(ACPI_SIG_PPTT, 0, &table);
+>> +	if (ACPI_FAILURE(status)) {
+>> +		pr_err_once("No PPTT table found, cache topology may be inaccurate\n"=
+);
+>> +	} else {
+>> +		number_of_levels =3D acpi_find_cache_levels(table, acpi_cpu_id);
+>> +		acpi_put_table(table);
+>> +	}
+>> +	pr_debug("Cache Setup find last level level=3D%d\n", number_of_levels);
+>> +
+>> +	return number_of_levels;
+>> +}
+>> +
+>> +/**
+>> + * cache_setup_acpi() - Override CPU cache topology with data from the =
+PPTT
+>> + * @cpu: Kernel logical cpu number
+>> + *
+>> + * Updates the global cache info provided by cpu_get_cacheinfo()
+>> + * when there are valid properties in the acpi_pptt_cache nodes. A
+>> + * successful parse may not result in any updates if none of the
+>> + * cache levels have any valid flags set.  Futher, a unique value is
+>> + * associated with each known CPU cache entry. This unique value
+>> + * can be used to determine whether caches are shared between cpus.
+>> + *
+>> + * Return: -ENOENT on failure to find table, or 0 on success
+>> + */
+>> +int cache_setup_acpi(unsigned int cpu)
+>> +{
+>> +	struct acpi_table_header *table;
+>> +	acpi_status status;
+>> +
+>> +	pr_debug("Cache Setup ACPI cpu %d\n", cpu);
+>> +
+>> +	status =3D acpi_get_table(ACPI_SIG_PPTT, 0, &table);
+>> +	if (ACPI_FAILURE(status)) {
+>> +		pr_err_once("No PPTT table found, cache topology may be inaccurate\n"=
+);
+>> +		return -ENOENT;
+>> +	}
+>> +
+>> +	cache_setup_acpi_cpu(table, cpu);
+>> +	acpi_put_table(table);
+>> +
+>> +	return status;
+>> +}
+>>
 > =
 
 
 
---===============3062481845482996293==--
+--===============5375894492455138743==--
 
