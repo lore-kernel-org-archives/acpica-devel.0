@@ -1,64 +1,105 @@
-Content-Type: multipart/mixed; boundary="===============6181856079835280388=="
+Content-Type: multipart/mixed; boundary="===============1943944513134461408=="
 MIME-Version: 1.0
-From: Sudeep Holla <sudeep.holla at arm.com>
-Subject: Re: [Devel] [PATCH v4 3/9] arm64/acpi: Create arch specific cpu to
- acpi id helper
-Date: Mon, 20 Nov 2017 17:14:29 +0000
-Message-ID: <20171120171429.GC31395@e107155-lin>
-In-Reply-To: 7a435753-7058-7941-6c83-b21df54fa9de@arm.com
+From: Jeremy Linton <jeremy.linton at arm.com>
+Subject: Re: [Devel] [PATCH v4 5/9] drivers: base: cacheinfo: arm64: Add
+ support for ACPI based firmware tables
+Date: Mon, 20 Nov 2017 12:02:00 -0600
+Message-ID: <e1f2bdcc-e0fa-67d5-d4fe-7077b166988f@arm.com>
+In-Reply-To: 20171120165642.GA31395@e107155-lin
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6181856079835280388==
+--===============1943944513134461408==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Nov 20, 2017 at 11:09:47AM -0600, Jeremy Linton wrote:
-> Hi,
+On 11/20/2017 10:56 AM, Sudeep Holla wrote:
+
+(trimming)
+
+>>    *	case there's no explicit cache node or the cache node itself in the
+>>    *	device tree
+>> + * @firmware_node: Shared with of_node. When not using DT, this may con=
+tain
+>> + *	pointers to other firmware based values. Particularly ACPI/PPTT
+>> + *	unique values.
+>>    * @disable_sysfs: indicates whether this node is visible to the user =
+via
+>>    *	sysfs or not
+>>    * @priv: pointer to any private data structure specific to particular
+>> @@ -64,8 +67,10 @@ struct cacheinfo {
+>>   #define CACHE_ALLOCATE_POLICY_MASK	\
+>>   	(CACHE_READ_ALLOCATE | CACHE_WRITE_ALLOCATE)
+>>   #define CACHE_ID		BIT(4)
+>> -
+>> -	struct device_node *of_node;
+>> +	union {
+>> +		struct device_node *of_node;
+>> +		void *firmware_node;
+>> +	};
 > =
 
-> On 11/20/2017 11:06 AM, Sudeep Holla wrote:
-> >On Thu, Nov 09, 2017 at 03:03:05PM -0600, Jeremy Linton wrote:
-> >>Its helpful to be able to lookup the acpi_processor_id
-> >>associated with a logical cpu. Provide an arm64
-> >>helper to do this.
-> >>
-> >>Signed-off-by: Jeremy Linton <jeremy.linton(a)arm.com>
-> >>---
-> >>  arch/arm64/include/asm/acpi.h | 4 ++++
-> >>  1 file changed, 4 insertions(+)
-> >>
-> >>diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acp=
-i.h
-> >>index 59cca1d6ec54..408e7989d3a2 100644
-> >>--- a/arch/arm64/include/asm/acpi.h
-> >>+++ b/arch/arm64/include/asm/acpi.h
-> >>@@ -86,6 +86,10 @@ static inline bool acpi_has_cpu_in_madt(void)
-> >>  }
-> >>  struct acpi_madt_generic_interrupt *acpi_cpu_get_madt_gicc(int cpu);
-> >>+static inline u32 get_acpi_id_for_cpu(unsigned int cpu)
-> >>+{
-> >>+	return	acpi_cpu_get_madt_gicc(cpu)->uid;
-> >>+}
-> >
-> >If I followed the series correctly, this function is used in 2/9 already.
-> >So this needs to be moved down in the series to avoid build failure duri=
-ng
-> >bisection.
+> I would prefer
+> 	struct device_node *of_node;
+> changed to
+> 	struct fwnode_handle *fwnode;
 > =
 
-> I don't believe there is a bisection failure here because the code using
-> this routine is not yet being compiled until the 4/9.
+> You can then have
+> 	struct pptt_fwnode {
+> 		<.....>
+> 		/*below fwnode  allocated using acpi_alloc_fwnode_static */
+> 		struct fwnode_handle *fwnode;
+> 	};
 > =
 
+> This gives a good starting point to abstract DT and ACPI.
+> =
 
-OK, I see. It's good to have definition ready before you use generally,
-up to you.
+> If not now, we can later implement fwnode.ops=3Dpptt_cache_ops and then
+> use get property for both DT and ACPI.
 
---
-Regards,
-Sudeep
 
---===============6181856079835280388==--
+I'm obviously confused why this keeps coming up. On the surface it =
+
+sounds like a good idea. But then, given that I've actually implemented =
+
+a portion of it, what becomes clear is that the PPTT isn't a good match. =
+
+Converting the OF routines to use the fwnode is fairly straightforward, =
+
+but that doesn't help the ACPI situation other than to create a lot of =
+
+misleading code (and the possibility of creating nonstandard DSDT =
+
+entries). The fact that this hasn't been done for other tables =
+
+MADT/SLIT/SRAT/etc makes me wonder why we should do it for the PPTT?
+
+Particularly, when one considers fwnode is more a DSDT<->DT abstraction =
+
+and thus has a lot of API surface that simply doesn't make any sense =
+
+given the PPTT binary tree structure. Given that most of the fwnode =
+
+routines are translating string properties (for example =
+
+fwnode_property_read_string()) it might be possible to build a =
+
+translator of some form which takes DT style properties and attempts to =
+
+map them to the ACPI PPTT tree. What this adds I can't fathom, beyond =
+
+the fact that suddenly the fwnode interface is a partial/brittle =
+
+implementation where a large subset of the fwnode_operations will tend =
+
+to be degenerate cases. The result likely will be a poorly implemented =
+
+translator which breaks or is meaningless over a large part of the =
+
+fwnode API surface.
+
+--===============1943944513134461408==--
 
