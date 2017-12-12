@@ -1,87 +1,53 @@
-Content-Type: multipart/mixed; boundary="===============1621668450243965659=="
+Content-Type: multipart/mixed; boundary="===============0148024803881194818=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] [PATCH] acpi: acpica: add acpi status check prior walking
- through namespace
-Date: Tue, 12 Dec 2017 21:52:21 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E3B74FBD84@ORSMSX110.amr.corp.intel.com>
-In-Reply-To: 1513094360-1414-2-git-send-email-Vadim.Lomovtsev@caviumnetworks.com
+From: Rafael J. Wysocki <rjw at rjwysocki.net>
+Subject: Re: [Devel] [BUG] acpica: ltp_acpi test case causes kernel crash at
+ acpi_ns_walk_namespace
+Date: Wed, 13 Dec 2017 00:45:50 +0100
+Message-ID: <9523980.S2jPabPoO5@aspire.rjw.lan>
+In-Reply-To: 1513094360-1414-1-git-send-email-Vadim.Lomovtsev@caviumnetworks.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1621668450243965659==
+--===============0148024803881194818==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Another way to look at this is that the kernel should not be calling ACPI i=
-nterfaces if ACPI is disabled.
-
-> -----Original Message-----
-> From: Vadim Lomovtsev [mailto:Vadim.Lomovtsev(a)caviumnetworks.com]
-> Sent: Tuesday, December 12, 2017 7:59 AM
-> To: Moore, Robert <robert.moore(a)intel.com>; Zheng, Lv
-> <lv.zheng(a)intel.com>; Wysocki, Rafael J <rafael.j.wysocki(a)intel.com>;
-> lenb(a)kernel.org; linux-acpi(a)vger.kernel.org; devel(a)acpica.org; linu=
-x-
-> kernel(a)vger.kernel.org
-> Cc: vadim.lomovtsev(a)cavium.com
-> Subject: [PATCH] acpi: acpica: add acpi status check prior walking
-> through namespace
+On Tuesday, December 12, 2017 4:59:19 PM CET Vadim Lomovtsev wrote:
+> Hi guys,
 > =
 
-> From: Vadim Lomovtsev <vadim.lomovtsev(a)cavium.com>
+> While running LTP tests I've faced kernel crash caused by ltp_acpi test c=
+ase.
+> I have ACPI support enabled in kernel but kernel is boot with FDT having =
+ACPI
+> disabled. The ltp_acpi test case application is built along with ltp_acpi=
+_cmds
+> module to run ACPI tests.
 > =
 
-> While having kernel built with ACPI support enabled and booted over FDT,
-> the ltp_acpi test from LTP suite causes kernel crash while calling
-> acpi_ns_walk_namespace(). The acpi_get_devices is high level wrapper for
-> it, so we need to protect kernel from crashes by adding acpi status
-> check before walking through namespace which is not loaded because of
-> acpi is disabled.
-> =
+> So my question is - should we update acpica implementation at kernel side=
+ by
+> adding 'acpi_disabled' variable checking to the 'acpi_get_devices' functi=
+on (see
+> patch next to this email, maybe not a good approach) or this should be fi=
+xed at LTP
+> side so the ltp_acpi_cmds should be updated in order to check if acpi is =
+enabled
+> before running tests ?
 
-> Signed-off-by: Vadim Lomovtsev <vadim.lomovtsev(a)cavium.com>
-> ---
->  drivers/acpi/acpica/nsxfeval.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> =
+There should be a check preventing acpi_get_devices() from being called in =
+the
+acpi_disabled case.
 
-> diff --git a/drivers/acpi/acpica/nsxfeval.c
-> b/drivers/acpi/acpica/nsxfeval.c index 783f4c8..e0eb9ae 100644
-> --- a/drivers/acpi/acpica/nsxfeval.c
-> +++ b/drivers/acpi/acpica/nsxfeval.c
-> @@ -52,6 +52,8 @@
->  #define _COMPONENT          ACPI_NAMESPACE
->  ACPI_MODULE_NAME("nsxfeval")
-> =
+acpi_disabled is Linux-specific and the ACPICA code isn't, so the code call=
+ing
+ACPICA functions should check acpi_disabled when necessary.
 
-> +extern int acpi_disabled;
-> +
->  /* Local prototypes */
->  static void acpi_ns_resolve_references(struct acpi_evaluate_info
-> *info);
-> =
-
-> @@ -812,6 +814,11 @@ static void acpi_ns_resolve_references(struct
-> acpi_evaluate_info *info)
-> =
-
->  	ACPI_FUNCTION_TRACE(acpi_get_devices);
-> =
-
-> +	/* check if ACPI disabled to prevent kernel crash later */
-> +	if (acpi_disabled) {
-> +		return_ACPI_STATUS(AE_NOT_CONFIGURED);
-> +	}
-> +
->  	/* Parameter validation */
-> =
-
->  	if (!user_function) {
-> --
-> 1.8.3.1
+Thanks,
+Rafael
 
 
---===============1621668450243965659==--
+--===============0148024803881194818==--
 
