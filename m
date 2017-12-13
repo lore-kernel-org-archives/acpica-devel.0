@@ -1,69 +1,78 @@
-Content-Type: multipart/mixed; boundary="===============8575389427804845965=="
+Content-Type: multipart/mixed; boundary="===============8505101965212468912=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: Re: [Devel] [BUG] acpica: ltp_acpi test case causes kernel crash at
- acpi_ns_walk_namespace
-Date: Wed, 13 Dec 2017 17:52:38 +0100
-Message-ID: <CAJZ5v0iKWMBZXqGcpJqhdLLqPTY02yQOFJtn8zuCvsXd902nYQ@mail.gmail.com>
-In-Reply-To: 20171213145547.GB6692@localhost.localdomain
+From: Schmauss, Erik <erik.schmauss at intel.com>
+Subject: Re: [Devel] [PATCH] ACPICA: Fix indentation
+Date: Wed, 13 Dec 2017 21:53:35 +0000
+Message-ID: <CF6A88132359CE47947DB4C6E1709ED539668D71@ORSMSX110.amr.corp.intel.com>
+In-Reply-To: CAJZ5v0hgt8MLkxSHeN1A49p4g6VCr-r8x7RGun9eVmtx0PZKgg@mail.gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8575389427804845965==
+--===============8505101965212468912==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 13, 2017 at 3:55 PM, Vadim Lomovtsev
-<Vadim.Lomovtsev(a)caviumnetworks.com> wrote:
-> On Wed, Dec 13, 2017 at 12:45:50AM +0100, Rafael J. Wysocki wrote:
->> On Tuesday, December 12, 2017 4:59:19 PM CET Vadim Lomovtsev wrote:
->> > Hi guys,
->> >
->> > While running LTP tests I've faced kernel crash caused by ltp_acpi tes=
-t case.
->> > I have ACPI support enabled in kernel but kernel is boot with FDT havi=
-ng ACPI
->> > disabled. The ltp_acpi test case application is built along with ltp_a=
-cpi_cmds
->> > module to run ACPI tests.
->> >
->> > So my question is - should we update acpica implementation at kernel s=
-ide by
->> > adding 'acpi_disabled' variable checking to the 'acpi_get_devices' fun=
-ction (see
->> > patch next to this email, maybe not a good approach) or this should be=
- fixed at LTP
->> > side so the ltp_acpi_cmds should be updated in order to check if acpi =
-is enabled
->> > before running tests ?
->>
->> There should be a check preventing acpi_get_devices() from being called =
-in the
->> acpi_disabled case.
->
-> In my case I have to update ltp_acpi code then.
 
-RIght.
+> -----Original Message-----
+> From: rjwysocki(a)gmail.com [mailto:rjwysocki(a)gmail.com] On Behalf Of R=
+afael
+> J. Wysocki
+> Sent: Friday, December 8, 2017 9:06 AM
+> To: Vasyl Gomonovych <gomonovych(a)gmail.com>
+> Cc: Moore, Robert <robert.moore(a)intel.com>; Zheng, Lv
+> <lv.zheng(a)intel.com>; Wysocki, Rafael J <rafael.j.wysocki(a)intel.com>;=
+ Len
+> Brown <lenb(a)kernel.org>; ACPI Devel Maling List <linux-acpi(a)vger.kern=
+el.org>;
+> devel(a)acpica.org; Linux Kernel Mailing List <linux-kernel(a)vger.kernel=
+.org>;
+> Schmauss, Erik <erik.schmauss(a)intel.com>
+> Subject: Re: [PATCH] ACPICA: Fix indentation
+> =
 
->>
->> acpi_disabled is Linux-specific and the ACPICA code isn't, so the code c=
-alling
->> ACPICA functions should check acpi_disabled when necessary.
->
-> Agree. However getting back to LTP tests it looks like such calls were im=
-plemented
-> intentionally without checking of aspi_disabled value.
->
-> Don't we have any self-testing stuff in acpica to prevent such scenarious=
- ?
+> On Fri, Dec 8, 2017 at 5:29 PM, Vasyl Gomonovych <gomonovych(a)gmail.com>
+> wrote:
+> > This patch avoids that smatch reports the following:
+> > drivers/acpi/acpica/exdump.c:623 acpi_ex_dump_operand() warn:
+> > inconsistent indenting
+> >
+> > Signed-off-by: Vasyl Gomonovych <gomonovych(a)gmail.com>
+> =
 
-ACPICA doesn't know anything about acpi_disabled as I said already.
+> This is ACPICA code, so changes like this should go in via the upstream.
+> =
 
-I would argue that testing unsupported use cases in LTP is not very useful.
 
-Thanks,
-Rafael
+Hi,
+> Erik may want to pick this up, however.
+> =
 
---===============8575389427804845965==--
+
+Thanks for pointing this out. I found  solution to fix the indentation issu=
+e. It will be in the next release.
+Erik
+> > ---
+> >  drivers/acpi/acpica/exdump.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/acpi/acpica/exdump.c
+> > b/drivers/acpi/acpica/exdump.c index 83398dc..f43d3d7 100644
+> > --- a/drivers/acpi/acpica/exdump.c
+> > +++ b/drivers/acpi/acpica/exdump.c
+> > @@ -619,8 +619,8 @@ void acpi_ex_dump_operand(union
+> > acpi_operand_object *obj_desc, u32 depth)
+> >
+> >         ACPI_FUNCTION_NAME(ex_dump_operand)
+> >
+> > -           /* Check if debug output enabled */
+> > -           if (!ACPI_IS_DEBUG_ENABLED(ACPI_LV_EXEC, _COMPONENT)) {
+> > +       /* Check if debug output enabled */
+> > +       if (!ACPI_IS_DEBUG_ENABLED(ACPI_LV_EXEC, _COMPONENT)) {
+> >                 return;
+> >         }
+> >
+> > --
+
+--===============8505101965212468912==--
 
