@@ -1,159 +1,155 @@
-Content-Type: multipart/mixed; boundary="===============4662067833069427618=="
+Content-Type: multipart/mixed; boundary="===============0506665950026634990=="
 MIME-Version: 1.0
 From: Ross Zwisler <ross.zwisler at linux.intel.com>
-Subject: [Devel] [PATCH v3 0/3] create sysfs representation of ACPI HMAT
-Date: Wed, 13 Dec 2017 19:10:16 -0700
-Message-ID: <20171214021019.13579-1-ross.zwisler@linux.intel.com>
+Subject: [Devel] [PATCH v3 1/3] acpi: HMAT support in
+ acpi_parse_entries_array()
+Date: Wed, 13 Dec 2017 19:10:17 -0700
+Message-ID: <20171214021019.13579-2-ross.zwisler@linux.intel.com>
+In-Reply-To: 20171214021019.13579-1-ross.zwisler@linux.intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4662067833069427618==
+--===============0506665950026634990==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-This is the third revision of my patches adding a sysfs representation
-of the ACPI Heterogeneous Memory Attribute Table (HMAT).  These patches
-are based on v4.15-rc3 and a working tree can be found here:
+The current implementation of acpi_parse_entries_array() assumes that each
+subtable has a standard ACPI subtable entry of type struct
+acpi_subtable_header.  This standard subtable header has a one byte length
+followed by a one byte type.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/zwisler/linux.git/log/?h=3D=
-hmat_v3
+The HMAT subtables have to allow for a longer length so they have subtable
+headers of type struct acpi_hmat_structure which has a 2 byte type and a 4
+byte length.
 
-My goal is to get these patches merged for v4.16.
+Enhance the subtable parsing in acpi_parse_entries_array() so that it can
+handle these new HMAT subtables.
 
-Changes from previous version (https://lkml.org/lkml/2017/7/6/749):
-
- - Changed "HMEM" to "HMAT" and "hmem" to "hmat" throughout to make sure
-   that this effort doesn't get confused with Jerome's HMM work and to
-   make it clear that this enabling is tightly tied to the ACPI HMAT
-   table.  (John Hubbard)
-
- - Moved the link in the initiator (i.e. mem_init0/mem_tgt2) from
-   pointing to the "mem_tgt2/local_init" attribute group to instead
-   point at the mem_tgt2 target itself.  (Brice Goglin)
-
- - Simplified the contents of both the initiators and the targets so
-   that we just symlink to the NUMA node and don't duplicate
-   information.  For initiators this means that we no longer enumerate
-   CPUs, and for targets this means that we don't provide physical
-   address start and length information.  All of this is already
-   available in the NUMA node directory itself (i.e.
-   /sys/devices/system/node/node0), and it already accounts for the fact
-   that both multiple CPUs and multiple memory regions can be owned by a
-   given NUMA node.  Also removed some extra attributes (is_enabled,
-   is_isolated) which I don't think are useful at this point in time.
-
-I have tested this against many different configs that I implemented
-using qemu.
-
+Signed-off-by: Ross Zwisler <ross.zwisler(a)linux.intel.com>
 ---
+ drivers/acpi/tables.c | 52 ++++++++++++++++++++++++++++++++++++++++-------=
+----
+ 1 file changed, 41 insertions(+), 11 deletions(-)
 
-=3D=3D=3D=3D Quick Summary =3D=3D=3D=3D
+diff --git a/drivers/acpi/tables.c b/drivers/acpi/tables.c
+index 80ce2a7d224b..f777b94c234a 100644
+--- a/drivers/acpi/tables.c
++++ b/drivers/acpi/tables.c
+@@ -218,6 +218,33 @@ void acpi_table_print_madt_entry(struct acpi_subtable_=
+header *header)
+ 	}
+ }
+ =
 
-Platforms exist today which have multiple types of memory attached to a
-single CPU.  These disparate memory ranges have some characteristics in
-common, such as CPU cache coherence, but they can have wide ranges of
-performance both in terms of latency and bandwidth.
++static unsigned long __init
++acpi_get_entry_type(char *id, void *entry)
++{
++	if (strncmp(id, ACPI_SIG_HMAT, 4) =3D=3D 0)
++		return ((struct acpi_hmat_structure *)entry)->type;
++	else
++		return ((struct acpi_subtable_header *)entry)->type;
++}
++
++static unsigned long __init
++acpi_get_entry_length(char *id, void *entry)
++{
++	if (strncmp(id, ACPI_SIG_HMAT, 4) =3D=3D 0)
++		return ((struct acpi_hmat_structure *)entry)->length;
++	else
++		return ((struct acpi_subtable_header *)entry)->length;
++}
++
++static unsigned long __init
++acpi_get_subtable_header_length(char *id)
++{
++	if (strncmp(id, ACPI_SIG_HMAT, 4) =3D=3D 0)
++		return sizeof(struct acpi_hmat_structure);
++	else
++		return sizeof(struct acpi_subtable_header);
++}
++
+ /**
+  * acpi_parse_entries_array - for each proc_num find a suitable subtable
+  *
+@@ -242,10 +269,10 @@ acpi_parse_entries_array(char *id, unsigned long tabl=
+e_size,
+ 		struct acpi_subtable_proc *proc, int proc_num,
+ 		unsigned int max_entries)
+ {
+-	struct acpi_subtable_header *entry;
+-	unsigned long table_end;
++	unsigned long table_end, subtable_header_length;
+ 	int count =3D 0;
+ 	int errs =3D 0;
++	void *entry;
+ 	int i;
+ =
 
-For example, consider a system that contains persistent memory, standard
-DDR memory and High Bandwidth Memory (HBM), all attached to the same CPU.
-There could potentially be an order of magnitude or more difference in
-performance between the slowest and fastest memory attached to that CPU.
+ 	if (acpi_disabled)
+@@ -263,19 +290,23 @@ acpi_parse_entries_array(char *id, unsigned long tabl=
+e_size,
+ 	}
+ =
 
-With the current Linux code NUMA nodes are CPU-centric, so all the memory
-attached to a given CPU will be lumped into the same NUMA node.  This makes
-it very difficult for userspace applications to understand the performance
-of different memory ranges on a given CPU.
+ 	table_end =3D (unsigned long)table_header + table_header->length;
++	subtable_header_length =3D acpi_get_subtable_header_length(id);
+ =
 
-We solve this issue by providing userspace with performance information on
-individual memory ranges.  This performance information is exposed via
-sysfs:
+ 	/* Parse all entries looking for a match. */
+ =
 
-  # grep . mem_tgt2/* mem_tgt2/local_init/* 2>/dev/null
-  mem_tgt2/firmware_id:1
-  mem_tgt2/is_cached:0
-  mem_tgt2/local_init/read_bw_MBps:40960
-  mem_tgt2/local_init/read_lat_nsec:50
-  mem_tgt2/local_init/write_bw_MBps:40960
-  mem_tgt2/local_init/write_lat_nsec:50
+-	entry =3D (struct acpi_subtable_header *)
+-	    ((unsigned long)table_header + table_size);
++	entry =3D (void *)table_header + table_size;
++
++	while (((unsigned long)entry) + subtable_header_length  < table_end) {
++		unsigned long entry_type, entry_length;
+ =
 
-This allows applications to easily find the memory that they want to use.
-We expect that the existing NUMA APIs will be enhanced to use this new
-information so that applications can continue to use them to select their
-desired memory.
+-	while (((unsigned long)entry) + sizeof(struct acpi_subtable_header) <
+-	       table_end) {
+ 		if (max_entries && count >=3D max_entries)
+ 			break;
+ =
 
-=3D=3D=3D=3D Lots of Details =3D=3D=3D=3D
++		entry_type =3D acpi_get_entry_type(id, entry);
++		entry_length =3D acpi_get_entry_length(id, entry);
++
+ 		for (i =3D 0; i < proc_num; i++) {
+-			if (entry->type !=3D proc[i].id)
++			if (entry_type !=3D proc[i].id)
+ 				continue;
+ 			if (!proc[i].handler ||
+ 			     (!errs && proc[i].handler(entry, table_end))) {
+@@ -290,16 +321,15 @@ acpi_parse_entries_array(char *id, unsigned long tabl=
+e_size,
+ 			count++;
+ =
 
-This patch set provides a sysfs representation of parts of the
-Heterogeneous Memory Attribute Table (HMAT), newly defined in ACPI 6.2.
-One major conceptual change in ACPI 6.2 related to this work is that
-proximity domains no longer need to contain a processor.  We can now
-have memory-only proximity domains, which means that we can now have
-memory-only Linux NUMA nodes.
+ 		/*
+-		 * If entry->length is 0, break from this loop to avoid
++		 * If entry_length is 0, break from this loop to avoid
+ 		 * infinite loop.
+ 		 */
+-		if (entry->length =3D=3D 0) {
++		if (entry_length =3D=3D 0) {
+ 			pr_err("[%4.4s:0x%02x] Invalid zero length\n", id, proc->id);
+ 			return -EINVAL;
+ 		}
+ =
 
-Here is an example configuration where we have a single processor, one
-range of regular memory and one range of HBM:
+-		entry =3D (struct acpi_subtable_header *)
+-		    ((unsigned long)entry + entry->length);
++		entry +=3D entry_length;
+ 	}
+ =
 
-  +---------------+   +----------------+
-  | Processor     |   | Memory         |
-  | prox domain 0 +---+ prox domain 1  |
-  | NUMA node 1   |   | NUMA node 2    |
-  +-------+-------+   +----------------+
-          |
-  +-------+----------+
-  | HBM              |
-  | prox domain 2    |
-  | NUMA node 0      |
-  +------------------+
-
-This gives us one initiator (the processor) and two targets (the two memory
-ranges).  Each of these three has its own ACPI proximity domain and
-associated Linux NUMA node.  Note also that while there is a 1:1 mapping
-from each proximity domain to each NUMA node, the numbers don't necessarily
-match up.  Additionally we can have extra NUMA nodes that don't map back to
-ACPI proximity domains.
-
-The above configuration could also have the processor and one of the two
-memory ranges sharing a proximity domain and NUMA node, but for the
-purposes of the HMAT the two memory ranges will need to be separated.
-
-The overall goal of this series and of the HMAT is to allow users to
-identify memory using its performance characteristics.  This is
-complicated by the amount of HMAT data that could be present in very
-large systems, so in this series we only surface performance information
-for local (initiator,target) pairings.  The changelog for patch 5
-discusses this in detail.
-
-Ross Zwisler (3):
-  acpi: HMAT support in acpi_parse_entries_array()
-  hmat: add heterogeneous memory sysfs support
-  hmat: add performance attributes
-
- MAINTAINERS                         |   6 +
- drivers/acpi/Kconfig                |   1 +
- drivers/acpi/Makefile               |   1 +
- drivers/acpi/hmat/Kconfig           |   7 +
- drivers/acpi/hmat/Makefile          |   2 +
- drivers/acpi/hmat/core.c            | 797 ++++++++++++++++++++++++++++++++=
-++++
- drivers/acpi/hmat/hmat.h            |  64 +++
- drivers/acpi/hmat/initiator.c       |  43 ++
- drivers/acpi/hmat/perf_attributes.c |  56 +++
- drivers/acpi/hmat/target.c          |  55 +++
- drivers/acpi/tables.c               |  52 ++-
- 11 files changed, 1073 insertions(+), 11 deletions(-)
- create mode 100644 drivers/acpi/hmat/Kconfig
- create mode 100644 drivers/acpi/hmat/Makefile
- create mode 100644 drivers/acpi/hmat/core.c
- create mode 100644 drivers/acpi/hmat/hmat.h
- create mode 100644 drivers/acpi/hmat/initiator.c
- create mode 100644 drivers/acpi/hmat/perf_attributes.c
- create mode 100644 drivers/acpi/hmat/target.c
-
+ 	if (max_entries && count > max_entries) {
 -- =
 
 2.14.3
 
 
---===============4662067833069427618==--
+--===============0506665950026634990==--
 
