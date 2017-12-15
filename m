@@ -1,94 +1,171 @@
-Content-Type: multipart/mixed; boundary="===============3056557250735456259=="
+Content-Type: multipart/mixed; boundary="===============1539097219953786456=="
 MIME-Version: 1.0
-From: gengdongjiu <gengdongjiu at huawei.com>
-Subject: Re: [Devel] [PATCH v8 7/7] arm64: kvm: handle SError Interrupt by
- categorization
-Date: Fri, 15 Dec 2017 11:30:57 +0800
-Message-ID: <506cd212-3d16-ba2a-518f-34982bc162fc@huawei.com>
-In-Reply-To: 4b37e86d-eee3-c51e-eceb-5d0c7ad12886@huawei.com
+From: Moore, Robert <robert.moore at intel.com>
+Subject: Re: [Devel] ACPICA version 20171214 released
+Date: Fri, 15 Dec 2017 17:10:25 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E3B74FD9A3@ORSMSX110.amr.corp.intel.com>
+In-Reply-To: 22f43a2b-2c63-6a1f-d422-ef5ccf4a9ea8@canonical.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3056557250735456259==
+--===============1539097219953786456==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi James,
+Fixed
 
-On 2017/12/7 14:37, gengdongjiu wrote:
->> We need to tackle (1) and (3) separately. For (3) we need some API that =
-lets
->> Qemu _trigger_ an SError in the guest, with a specified ESR. But, we don=
-'t have
->> a way of migrating pending SError yet... which is where I got stuck last=
- time I
->> was looking at this.
-> I understand you most idea.
+
+> -----Original Message-----
+> From: Alex Hung [mailto:alex.hung(a)canonical.com]
+> Sent: Thursday, December 14, 2017 6:14 PM
+> To: Moore, Robert <robert.moore(a)intel.com>; acpica.org list
+> <devel(a)acpica.org>
+> Subject: Re: [Devel] ACPICA version 20171214 released
 > =
 
-> But In the Qemu one signal type can only correspond to one behavior, can =
-not correspond to two behaviors,
-> otherwise Qemu will do not know how to do.
+> On 2017-12-15 06:13 AM, Moore, Robert wrote:
+> > 14 December 2017. Summary of changes for version 20171214:
+> >
+> > This release is available at https://acpica.org/downloads
+> >
+> >
+> > 1) ACPICA kernel-resident subsystem:
+> >
+> > Fixed a regression in the external (public) AcpiEvaluateObjectTyped
+> interface where the optional "pathname" argument had inadvertently
+> become a required argument returning an error if omitted (NULL pointer
+> argument).
+> >
+> > Fixed two possible memory leaks related to the recently developed
+> "late resolution" of reference objects within ASL Package Object
+> definitions.
+> >
+> > Added two recently defined _OSI strings: "Windows 2016" and "Windows
+> 2017". Mario Limonciello.
+> >
+> > Implemented and deployed a safer version of the C library function
+> strncpy:  AcpiUtSafeStrncpy. The intent is to at least prevent the
+> creation of unterminated strings as a possible result of a standard
+> strncpy.
 > =
-
-> For the Qemu, if it receives the SIGBUS_MCEERR_AR signal, it will populat=
-e the CPER
-> records and inject a SEA to guest through KVM IOCTL "KVM_SET_ONE_REG"; if=
- receives the SIGBUS_MCEERR_AO
-> signal, it will record the CPER and trigger a IRQ to notify guest, as sho=
-wn below:
-> =
-
-> SIGBUS_MCEERR_AR trigger Synchronous External Abort.
-> SIGBUS_MCEERR_AO trigger GPIO IRQ.
-> =
-
-> For the SIGBUS_MCEERR_AO and SIGBUS_MCEERR_AR, we have already specify tr=
-igger method, which all
-> =
-
-> not involve _trigger_ an SError.
-> =
-
-> so there is no chance for Qemu to trigger the SError when gets the SIGBUS=
-_MCEERR_A{O,R}.
-
-As I explained above:
-
-If Qemu received SIGBUS_MCEERR_AR, it will record CPER and trigger Synchron=
-ous External Abort;
-If Qemu received SIGBUS_MCEERR_AO, it will record CPER and trigger GPIO IRQ;
-So Qemu does not know when to _trigger_ an SError.
-
-so here I "return a error" to Qemu if ghes_notify_sei() return failure in [=
-1], if you opposed KVM "return error",
-do you have a better idea about it? thanks
-
-About the way of migrating pending SError, I think it is a separate case, b=
-ecause Qemu still does not know
-how and when to trigger the SError.
-
-[1]:
-static int kvm_handle_guest_sei(struct kvm_vcpu *vcpu, struct kvm_run *run)
-{
-        .......................
-+       case ESR_ELx_AET_UER:   /* The error has not been propagated */
-+               /*
-+                * Userspace only handle the guest SError Interrupt(SEI) if=
- the
-+                * error has not been propagated
-+                */
-+               run->exit_reason =3D KVM_EXIT_EXCEPTION;
-+               run->ex.exception =3D ESR_ELx_EC_SERROR;
-+               run->ex.error_code =3D KVM_SEI_SEV_RECOVERABLE;
-+               return 0;
-        .......................
-}
 
 > =
 
+> Hi Robert,
+> =
 
+> I downloaded the source code by "git clone
+> https://github.com/acpica/acpica", and installed utility by "make
+> install" but the acpixtract does not work properly as below:
+> =
 
---===============3056557250735456259==--
+> Note: this also affects source code from https://acpica.org/downloads
+> =
+
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> $ iasl -v
+> =
+
+> Intel ACPI Component Architecture
+> ASL+ Optimizing Compiler/Disassembler version 20171214
+> Copyright (c) 2000 - 2017 Intel Corporation
+> =
+
+> $ acpixtract acpi.log
+> =
+
+> Intel ACPI Component Architecture
+> ACPI Binary Table Extraction Utility version 20171214 Copyright (c) 2000
+> - 2017 Intel Corporation
+> =
+
+> Table [DSD] was not found in acpi.log
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> =
+
+> "git bisect" points to the following commit:
+> =
+
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> $ git bisect good
+> 64ad9c69a1bd534a466e060a33c0bbf5fc9e189c is the first bad commit commit
+> 64ad9c69a1bd534a466e060a33c0bbf5fc9e189c
+> Author: Robert Moore <Robert.Moore(a)intel.com>
+> Date:   Fri Dec 8 07:35:29 2017 -0800
+> =
+
+>      Create and deploy safe version of strncpy. No functional change
+> =
+
+>      AcpiUtSafeStrncpy - copy and terminate string. Strncpy is not
+>      guaranteed to terminate the copied string if the input is longer
+>      than the length of the target.
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> =
+
+> Especially, it is the following change that causes problems:
+> =
+
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> diff --git a/source/tools/acpixtract/acpixtract.c
+> b/source/tools/acpixtract/acpixtract.c
+> index ea78846..fe1ace9 100644
+> --- a/source/tools/acpixtract/acpixtract.c
+> +++ b/source/tools/acpixtract/acpixtract.c
+> @@ -204,8 +204,7 @@ AxExtractTables (
+> =
+
+>       if (Signature)
+>       {
+> -        strncpy (UpperSignature, Signature, 4);
+> -        UpperSignature[4] =3D 0;
+> +        AcpiUtSafeStrncpy (UpperSignature, Signature, ACPI_NAME_SIZE);
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> =
+
+> and it can fixed by adding +1 after ACPI_NAME_SIZE such as
+> AcpiUtSafeStrncpy (UpperSignature, Signature, ACPI_NAME_SIZE + 1);
+> =
+
+> >
+> > Cleaned up and restructured the global variable file (acglobal.h).
+> There are many changes, but no functional changes.
+> >
+> >
+> > 2) iASL Compiler/Disassembler and Tools:
+> >
+> > iASL Table Compiler: Fixed a problem with the DBG2 ACPI table where
+> the optional OemData field at the end of the table was incorrectly
+> required for proper compilation. It is now correctly an optional field.
+> >
+> > ASLTS: The entire suite was converted from standard ASL to the ASL+
+> language, using the ASL-to-ASL+ converter which is integrated into the
+> iASL compiler. A binary compare of all output files has verified the
+> correctness of the conversion.
+> >
+> > iASL: Fixed the source code build for platforms where "char" is
+> unsigned. This affected the iASL lexer only. Jung-uk Kim.
+> >
+> >
+> > _______________________________________________
+> > Devel mailing list
+> > Devel(a)acpica.org
+> > https://lists.acpica.org/mailman/listinfo/devel
+> >
+> =
+
+> =
+
+> --
+> Cheers,
+> Alex Hung
+
+--===============1539097219953786456==--
 
