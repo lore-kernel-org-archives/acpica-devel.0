@@ -1,17 +1,29 @@
-Content-Type: multipart/mixed; boundary="===============5884225786182540775=="
+Content-Type: multipart/mixed; boundary="===============3524578124336104373=="
 MIME-Version: 1.0
-From: Alex Hung <alex.hung at canonical.com>
+From: Moore, Robert <robert.moore at intel.com>
 Subject: Re: [Devel] ACPICA version 20171214 released
-Date: Fri, 15 Dec 2017 10:13:53 +0800
-Message-ID: <22f43a2b-2c63-6a1f-d422-ef5ccf4a9ea8@canonical.com>
-In-Reply-To: 94F2FBAB4432B54E8AACC7DFDE6C92E3B74FC7D7@ORSMSX110.amr.corp.intel.com
+Date: Fri, 15 Dec 2017 02:54:22 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E3B74FD8C5@ORSMSX110.amr.corp.intel.com>
+In-Reply-To: 22f43a2b-2c63-6a1f-d422-ef5ccf4a9ea8@canonical.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5884225786182540775==
+--===============3524578124336104373==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+
+This should not have been converted toAcpiUtSafeStrncpy
+Thanks for finding this.
+
+
+-----Original Message-----
+From: Alex Hung [mailto:alex.hung(a)canonical.com] =
+
+Sent: Thursday, December 14, 2017 6:14 PM
+To: Moore, Robert <robert.moore(a)intel.com>; acpica.org list <devel(a)acpi=
+ca.org>
+Subject: Re: [Devel] ACPICA version 20171214 released
 
 On 2017-12-15 06:13 AM, Moore, Robert wrote:
 > 14 December 2017. Summary of changes for version 20171214:
@@ -45,11 +57,9 @@ terminated strings as a possible result of a standard strncpy.
 
 Hi Robert,
 
-I downloaded the source code by "git clone =
-
-https://github.com/acpica/acpica", and installed utility by "make =
-
-install" but the acpixtract does not work properly as below:
+I downloaded the source code by "git clone https://github.com/acpica/acpica=
+", and installed utility by "make install" but the acpixtract does not work=
+ properly as below:
 
 Note: this also affects source code from https://acpica.org/downloads
 
@@ -64,8 +74,8 @@ Copyright (c) 2000 - 2017 Intel Corporation
 $ acpixtract acpi.log
 
 Intel ACPI Component Architecture
-ACPI Binary Table Extraction Utility version 20171214
-Copyright (c) 2000 - 2017 Intel Corporation
+ACPI Binary Table Extraction Utility version 20171214 Copyright (c) 2000 - =
+2017 Intel Corporation
 
 Table [DSD] was not found in acpi.log
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
@@ -76,8 +86,8 @@ Table [DSD] was not found in acpi.log
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 $ git bisect good
-64ad9c69a1bd534a466e060a33c0bbf5fc9e189c is the first bad commit
-commit 64ad9c69a1bd534a466e060a33c0bbf5fc9e189c
+64ad9c69a1bd534a466e060a33c0bbf5fc9e189c is the first bad commit commit 64a=
+d9c69a1bd534a466e060a33c0bbf5fc9e189c
 Author: Robert Moore <Robert.Moore(a)intel.com>
 Date:   Fri Dec 8 07:35:29 2017 -0800
 
@@ -93,8 +103,7 @@ Especially, it is the following change that causes problems:
 
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-diff --git a/source/tools/acpixtract/acpixtract.c =
-
+diff --git a/source/tools/acpixtract/acpixtract.c
 b/source/tools/acpixtract/acpixtract.c
 index ea78846..fe1ace9 100644
 --- a/source/tools/acpixtract/acpixtract.c
@@ -109,9 +118,8 @@ index ea78846..fe1ace9 100644
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-and it can fixed by adding +1 after ACPI_NAME_SIZE such as =
-
-AcpiUtSafeStrncpy (UpperSignature, Signature, ACPI_NAME_SIZE + 1);
+and it can fixed by adding +1 after ACPI_NAME_SIZE such as AcpiUtSafeStrncp=
+y (UpperSignature, Signature, ACPI_NAME_SIZE + 1);
 
 > =
 
@@ -149,10 +157,9 @@ the conversion.
 
 
 
--- =
-
+--
 Cheers,
 Alex Hung
 
---===============5884225786182540775==--
+--===============3524578124336104373==--
 
