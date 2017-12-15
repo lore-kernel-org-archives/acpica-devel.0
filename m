@@ -1,109 +1,52 @@
-Content-Type: multipart/mixed; boundary="===============6690441240589260777=="
+Content-Type: multipart/mixed; boundary="===============1980700080847774726=="
 MIME-Version: 1.0
-From: James Morse <james.morse at arm.com>
-Subject: Re: [Devel] [PATCH v8 7/7] arm64: kvm: handle SError Interrupt by
- categorization
-Date: Fri, 15 Dec 2017 18:52:47 +0000
-Message-ID: <5A3419FF.30101@arm.com>
-In-Reply-To: 4b37e86d-eee3-c51e-eceb-5d0c7ad12886@huawei.com
+From: Ross Zwisler <ross.zwisler at linux.intel.com>
+Subject: Re: [Devel] [PATCH v3 2/3] hmat: add heterogeneous memory sysfs
+ support
+Date: Fri, 15 Dec 2017 13:53:36 -0700
+Message-ID: <20171215205336.GB5454@linux.intel.com>
+In-Reply-To: CAJZ5v0h8=mh9BKa2eZzqbc12T6saB+q19yqSfRLYKOiUjS2Cjg@mail.gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6690441240589260777==
+--===============1980700080847774726==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi gengdongjiu,
-
-On 07/12/17 06:37, gengdongjiu wrote:
-> I understand you most idea.
+On Fri, Dec 15, 2017 at 01:52:03AM +0100, Rafael J. Wysocki wrote:
+<>
+> > diff --git a/drivers/acpi/hmat/core.c b/drivers/acpi/hmat/core.c
+> > new file mode 100644
+> > index 000000000000..61b90dadf84b
+> > --- /dev/null
+> > +++ b/drivers/acpi/hmat/core.c
+> > @@ -0,0 +1,536 @@
+> > +/*
+> > + * Heterogeneous Memory Attributes Table (HMAT) representation in sysfs
+> > + *
+> > + * Copyright (c) 2017, Intel Corporation.
+> > + *
+> > + * This program is free software; you can redistribute it and/or modif=
+y it
+> > + * under the terms and conditions of the GNU General Public License,
+> > + * version 2, as published by the Free Software Foundation.
+> > + *
+> > + * This program is distributed in the hope it will be useful, but WITH=
+OUT
+> > + * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY =
+or
+> > + * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public Licen=
+se for
+> > + * more details.
+> > + */
 > =
 
-> But In the Qemu one signal type can only correspond to one behavior, can =
-not correspond to two behaviors,
-> otherwise Qemu will do not know how to do.
-> =
+> Minor nit for starters: you should use SPDX license indentifiers in
+> new files and if you do so, the license boilerplace is not necessary
+> any more.
 
-> For the Qemu, if it receives the SIGBUS_MCEERR_AR signal, it will populat=
-e the CPER
-> records and inject a SEA to guest through KVM IOCTL "KVM_SET_ONE_REG"; if=
- receives the SIGBUS_MCEERR_AO
-> signal, it will record the CPER and trigger a IRQ to notify guest, as sho=
-wn below:
-> =
+Okay, I'll fix that up.
 
-> SIGBUS_MCEERR_AR trigger Synchronous External Abort.
-> SIGBUS_MCEERR_AO trigger GPIO IRQ.
-> =
-
-> For the SIGBUS_MCEERR_AO and SIGBUS_MCEERR_AR, we have already specify tr=
-igger method, which all
-> =
-
-> not involve _trigger_ an SError.
-
-It's a policy choice. How does your virtual CPU notify RAS errors to its vi=
-rtual
-software? You could use SError for SIGBUS_MCEERR_AR, it depends on what typ=
-e of
-CPU you are trying to emulate.
-
-I'd suggest using NOTIFY_SEA for SIGBUS_MCEERR_AR as it avoids problems whe=
-re
-the guest doesn't take the SError immediately, instead tries to re-execute =
-the
-code KVM has unmapped from stage2 because its corrupt. (You could detect th=
-is
-happening in Qemu and try something else)
-
-
-Synchronous/asynchronous external abort matters to the CPU, but once the er=
-ror
-has been notified to software the reasons for this distinction disappear. O=
-nce
-the error has been handled, all trace of this distinction is gone.
-
-CPER records only describe component failures. You are trying to re-create =
-some
-state that disappeared with one of the firmware-first abstractions. Trying =
-to
-re-create this information isn't worth the effort as the distinction doesn't
-matter to linux, only to the CPU.
-
-
-> so there is no chance for Qemu to trigger the SError when gets the SIGBUS=
-_MCEERR_A{O,R}.
-
-You mean there is no reason for Qemu to trigger an SError when it gets a si=
-gnal
-from the kernel.
-
-The reasons the CPU might have to generate an SError don't apply to linux a=
-nd
-KVM user space. User-space will never get a signal for an uncontained error=
-, we
-will always panic(). We can't give user-space a signal for imprecise except=
-ions,
-as it can't return from the signal. The classes of error that are left are
-covered by polled/irq and NOTIFY_SEA.
-
-Qemu can decide to generate RAS SErrors for SIGBUS_MCEERR_AR if it really w=
-ants
-to, (but I don't think you should, the kernel may have unmapped the page at=
- PC
-from stage2 due to corruption).
-
-
-I think the problem here is you're applying the CPU->software behaviour and
-choices to software->software. By the time user-space gets the error, the
-behaviour is different.
-
-
-
-Thanks,
-
-James
-
---===============6690441240589260777==--
+--===============1980700080847774726==--
 
