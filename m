@@ -1,57 +1,36 @@
-Content-Type: multipart/mixed; boundary="===============0518216747824234959=="
+Content-Type: multipart/mixed; boundary="===============6663376947423626187=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] ACPICA version 20171214 released
-Date: Thu, 14 Dec 2017 22:13:59 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E3B74FC7D7@ORSMSX110.amr.corp.intel.com>
+From: Rafael J. Wysocki <rafael at kernel.org>
+Subject: Re: [Devel] [PATCH v3 1/3] acpi: HMAT support in
+ acpi_parse_entries_array()
+Date: Fri, 15 Dec 2017 01:49:47 +0100
+Message-ID: <CAJZ5v0iBoUpUK-RFq6Hn7OrJY+ZaVk7qnXpntwUjTo15KmTtZg@mail.gmail.com>
+In-Reply-To: 20171214021019.13579-2-ross.zwisler@linux.intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0518216747824234959==
+--===============6663376947423626187==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-14 December 2017. Summary of changes for version 20171214:
+On Thu, Dec 14, 2017 at 3:10 AM, Ross Zwisler
+<ross.zwisler(a)linux.intel.com> wrote:
+> The current implementation of acpi_parse_entries_array() assumes that each
+> subtable has a standard ACPI subtable entry of type struct
+> acpi_subtable_header.  This standard subtable header has a one byte length
+> followed by a one byte type.
+>
+> The HMAT subtables have to allow for a longer length so they have subtable
+> headers of type struct acpi_hmat_structure which has a 2 byte type and a 4
+> byte length.
+>
+> Enhance the subtable parsing in acpi_parse_entries_array() so that it can
+> handle these new HMAT subtables.
+>
+> Signed-off-by: Ross Zwisler <ross.zwisler(a)linux.intel.com>
 
-This release is available at https://acpica.org/downloads
+This one is fine by me.
 
-
-1) ACPICA kernel-resident subsystem:
-
-Fixed a regression in the external (public) AcpiEvaluateObjectTyped interfa=
-ce where the optional "pathname" argument had inadvertently become a requir=
-ed argument returning an error if omitted (NULL pointer argument).
-
-Fixed two possible memory leaks related to the recently developed "late res=
-olution" of reference objects within ASL Package Object definitions.
-
-Added two recently defined _OSI strings: "Windows 2016" and "Windows 2017".=
- Mario Limonciello.
-
-Implemented and deployed a safer version of the C library function strncpy:=
-  AcpiUtSafeStrncpy. The intent is to at least prevent the creation of unte=
-rminated strings as a possible result of a standard strncpy.
-
-Cleaned up and restructured the global variable file (acglobal.h). There ar=
-e many changes, but no functional changes.
-
-
-2) iASL Compiler/Disassembler and Tools:
-
-iASL Table Compiler: Fixed a problem with the DBG2 ACPI table where the opt=
-ional OemData field at the end of the table was incorrectly required for pr=
-oper compilation. It is now correctly an optional field.
-
-ASLTS: The entire suite was converted from standard ASL to the ASL+ languag=
-e, using the ASL-to-ASL+ converter which is integrated into the iASL compil=
-er. A binary compare of all output files has verified the correctness of th=
-e conversion.
-
-iASL: Fixed the source code build for platforms where "char" is unsigned. T=
-his affected the iASL lexer only. Jung-uk Kim.
-
-
-
---===============0518216747824234959==--
+--===============6663376947423626187==--
 
