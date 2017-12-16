@@ -1,52 +1,112 @@
-Content-Type: multipart/mixed; boundary="===============1980700080847774726=="
+Content-Type: multipart/mixed; boundary="===============7233246368520272956=="
 MIME-Version: 1.0
-From: Ross Zwisler <ross.zwisler at linux.intel.com>
-Subject: Re: [Devel] [PATCH v3 2/3] hmat: add heterogeneous memory sysfs
- support
-Date: Fri, 15 Dec 2017 13:53:36 -0700
-Message-ID: <20171215205336.GB5454@linux.intel.com>
-In-Reply-To: CAJZ5v0h8=mh9BKa2eZzqbc12T6saB+q19yqSfRLYKOiUjS2Cjg@mail.gmail.com
+From: Rafael J. Wysocki <rafael at kernel.org>
+Subject: Re: [Devel] [PATCH 2/3 v6] battery: Add the ThinkPad "Not Charging"
+ quirk
+Date: Sat, 16 Dec 2017 01:33:55 +0100
+Message-ID: <CAJZ5v0ida0RTUBdtpCK4rAXfdukadpTyxD0Rpp4R=kKcukyjKA@mail.gmail.com>
+In-Reply-To: 20171215165750.GA6282@thinkpad
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1980700080847774726==
+--===============7233246368520272956==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 15, 2017 at 01:52:03AM +0100, Rafael J. Wysocki wrote:
-<>
-> > diff --git a/drivers/acpi/hmat/core.c b/drivers/acpi/hmat/core.c
-> > new file mode 100644
-> > index 000000000000..61b90dadf84b
-> > --- /dev/null
-> > +++ b/drivers/acpi/hmat/core.c
-> > @@ -0,0 +1,536 @@
-> > +/*
-> > + * Heterogeneous Memory Attributes Table (HMAT) representation in sysfs
-> > + *
-> > + * Copyright (c) 2017, Intel Corporation.
-> > + *
-> > + * This program is free software; you can redistribute it and/or modif=
-y it
-> > + * under the terms and conditions of the GNU General Public License,
-> > + * version 2, as published by the Free Software Foundation.
-> > + *
-> > + * This program is distributed in the hope it will be useful, but WITH=
-OUT
-> > + * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY =
-or
-> > + * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public Licen=
-se for
-> > + * more details.
-> > + */
-> =
+On Fri, Dec 15, 2017 at 5:57 PM, Ognjen Galic <smclt30p(a)gmail.com> wrote:
+> The EC/ACPI firmware on Lenovo ThinkPads used to report a status
+> of "Unknown" when the battery is between the charge start and
+> charge stop thresholds. On Windows, it reports "Not Charging"
+> so the quirk has been added to also report correctly.
+>
+> Now the "status" attribute returns "Not Charging" when the
+> battery on ThinkPads is not physicaly charging.
+>
+> Tested-by: Kevin Locke <kevin(a)kevinlocke.name>
+> Tested-by: Christoph B=C3=B6hmwalder <christoph(a)boehmwalder.at>
+> Signed-off-by: Ognjen Galic <smclt30p(a)gmail.com>
 
-> Minor nit for starters: you should use SPDX license indentifiers in
-> new files and if you do so, the license boilerplace is not necessary
-> any more.
+It doesn't look like this is related to the [1/3] and [3/3], so why do
+you make it part of the series?
 
-Okay, I'll fix that up.
+> ---
+>  drivers/acpi/battery.c | 23 +++++++++++++++++++++++
+>  1 file changed, 23 insertions(+)
+>
+> diff --git a/drivers/acpi/battery.c b/drivers/acpi/battery.c
+> index 2951d07..81e9b4e 100644
+> --- a/drivers/acpi/battery.c
+> +++ b/drivers/acpi/battery.c
+> @@ -71,6 +71,7 @@ static async_cookie_t async_cookie;
+>  static bool battery_driver_registered;
+>  static int battery_bix_broken_package;
+>  static int battery_notification_delay_ms;
+> +static int battery_quirk_thinkpad_notcharging;
 
---===============1980700080847774726==--
+Drop "thinkpad" from this name as somebody may need to use the quirk
+for a machine from a different vendor in the future.
+
+>  static unsigned int cache_time =3D 1000;
+>  module_param(cache_time, uint, 0644);
+>  MODULE_PARM_DESC(cache_time, "cache time in milliseconds");
+> @@ -222,6 +223,13 @@ static int acpi_battery_get_property(struct power_su=
+pply *psy,
+>                         val->intval =3D POWER_SUPPLY_STATUS_CHARGING;
+>                 else if (acpi_battery_is_charged(battery))
+>                         val->intval =3D POWER_SUPPLY_STATUS_FULL;
+> +               /*
+> +                * On the Lenovo ThinkPad ACPI implementation, when
+> +                * neither bits 0 or 1 are set, that state is
+> +                * considered as "Not Charging".
+> +                */
+> +               else if (battery_quirk_thinkpad_notcharging)
+> +                       val->intval =3D POWER_SUPPLY_STATUS_NOT_CHARGING;
+>                 else
+>                         val->intval =3D POWER_SUPPLY_STATUS_UNKNOWN;
+>                 break;
+> @@ -1301,6 +1309,13 @@ battery_notification_delay_quirk(const struct dmi_=
+system_id *d)
+>         return 0;
+>  }
+>
+> +static int __init
+> +battery_quirk_not_charging(const struct dmi_system_id *d)
+
+Don't break the above line (it will be over 80 chars long, but that's fine).
+
+> +{
+> +       battery_quirk_thinkpad_notcharging =3D 1;
+> +       return 0;
+> +}
+> +
+>  static const struct dmi_system_id bat_dmi_table[] __initconst =3D {
+>         {
+>                 .callback =3D battery_bix_broken_package_quirk,
+> @@ -1318,6 +1333,14 @@ static const struct dmi_system_id bat_dmi_table[] =
+__initconst =3D {
+>                         DMI_MATCH(DMI_PRODUCT_NAME, "Aspire V5-573G"),
+>                 },
+>         },
+> +       {
+
+Add a comment to describe this quirk (which it is needed in the first place=
+).
+
+> +               .callback =3D battery_quirk_not_charging,
+> +               .ident =3D "Lenovo ThinkPad",
+> +               .matches =3D {
+> +                       DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
+> +                       DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad"),
+> +               },
+> +       },
+>         {},
+>  };
+>
+> --
+
+Thanks,
+Rafael
+
+--===============7233246368520272956==--
 
