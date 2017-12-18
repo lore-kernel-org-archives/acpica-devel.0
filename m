@@ -1,268 +1,202 @@
-Content-Type: multipart/mixed; boundary="===============6636291621631015694=="
+Content-Type: multipart/mixed; boundary="===============0082118466637582757=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: Re: [Devel] [PATCH 1/3 v6] battery: Add the battery hooking API
-Date: Mon, 18 Dec 2017 19:04:07 +0100
-Message-ID: <CAJZ5v0icKSOsxFTRonW8xEt7=oXBvCsO84FMx4ECQHTYd0_SGw@mail.gmail.com>
-In-Reply-To: 20171215165654.GA6209@thinkpad
+From: Ross Zwisler <ross.zwisler at linux.intel.com>
+Subject: Re: [Devel] [PATCH v3 0/3] create sysfs representation of ACPI HMAT
+Date: Mon, 18 Dec 2017 13:35:47 -0700
+Message-ID: <20171218203547.GA2366@linux.intel.com>
+In-Reply-To: 20171214130032.GK16951@dhcp22.suse.cz
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6636291621631015694==
+--===============0082118466637582757==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 15, 2017 at 5:56 PM, Ognjen Galic <smclt30p(a)gmail.com> wrote:
-> This is a patch that implements a generic hooking API for the
-> generic ACPI battery driver.
->
-> With this new generic API, drivers can expose platform specific
-> behaviour via sysfs attributes in /sys/class/power_supply/BATn/
-> in a generic way.
->
-> A perfect example of the need for this API are Lenovo ThinkPads.
->
-> Lenovo ThinkPads have a ACPI extension that allows the setting of
-> start and stop charge thresholds in the EC and battery firmware
-> via ACPI. The thinkpad_acpi module can use this API to expose
-> sysfs attributes that it controls inside the ACPI battery driver
-> sysfs tree, under /sys/class/power_supply/BATN/.
->
-> The file drivers/acpi/battery.h has been moved to
-> include/acpi/battery.h and the includes inside ac.c, sbs.c, and
-> battery.c have been adjusted to reflect that.
->
-> When drivers hooks into the API, the API calls add_battery() for
-> each battery in the system that passes it a acpi_battery
-> struct. Then, the drivers can use device_create_file() to create
-> new sysfs attributes with that struct and identify the batteries
-> for per-battery attributes.
->
-> Tested-by: Kevin Locke <kevin(a)kevinlocke.name>
-> Tested-by: Christoph B=C3=B6hmwalder <christoph(a)boehmwalder.at>
-> Signed-off-by: Ognjen Galic <smclt30p(a)gmail.com>
-> ---
->  drivers/acpi/ac.c      |   2 +-
->  drivers/acpi/battery.c | 139 +++++++++++++++++++++++++++++++++++++++++++=
-+++++-
->  drivers/acpi/battery.h |  11 ----
->  drivers/acpi/sbs.c     |   2 +-
->  include/acpi/battery.h |  21 ++++++++
->  5 files changed, 160 insertions(+), 15 deletions(-)
->  delete mode 100644 drivers/acpi/battery.h
->  create mode 100644 include/acpi/battery.h
->
-> diff --git a/drivers/acpi/ac.c b/drivers/acpi/ac.c
-> index 47a7ed5..2d8de2f 100644
-> --- a/drivers/acpi/ac.c
-> +++ b/drivers/acpi/ac.c
-> @@ -33,7 +33,7 @@
->  #include <linux/platform_device.h>
->  #include <linux/power_supply.h>
->  #include <linux/acpi.h>
-> -#include "battery.h"
-> +#include <acpi/battery.h>
->
->  #define PREFIX "ACPI: "
->
-> diff --git a/drivers/acpi/battery.c b/drivers/acpi/battery.c
-> index 13e7b56..2951d07 100644
-> --- a/drivers/acpi/battery.c
-> +++ b/drivers/acpi/battery.c
-> @@ -30,6 +30,7 @@
->  #include <linux/dmi.h>
->  #include <linux/delay.h>
->  #include <linux/slab.h>
-> +#include <linux/list.h>
->  #include <linux/suspend.h>
->  #include <asm/unaligned.h>
->
-> @@ -42,7 +43,7 @@
->  #include <linux/acpi.h>
->  #include <linux/power_supply.h>
->
-> -#include "battery.h"
-> +#include <acpi/battery.h>
->
->  #define PREFIX "ACPI: "
->
-> @@ -124,6 +125,7 @@ struct acpi_battery {
->         struct power_supply_desc bat_desc;
->         struct acpi_device *device;
->         struct notifier_block pm_nb;
-> +       struct list_head list;
->         unsigned long update_time;
->         int revision;
->         int rate_now;
-> @@ -626,6 +628,137 @@ static const struct device_attribute alarm_attr =3D=
- {
->         .store =3D acpi_battery_alarm_store,
->  };
->
-> +/*
-> + * The Battery Hooking API
-> + *
-> + * This API is used inside other drivers that need to expose
-> + * platform-specific behaviour within the generic driver in a
-> + * generic way.
-> + *
-> + */
-> +
-> +LIST_HEAD(acpi_battery_list);
-> +LIST_HEAD(battery_hook_list);
-> +
-> +void battery_hook_unregister(struct acpi_battery_hook *hook)
-> +{
-> +
-> +       struct list_head *position;
-> +       struct acpi_battery *battery;
-> +
-> +       /*
-> +        * In order to remove a hook, we first need to
-> +        * de-register all the batteries that are registered.
-> +        */
-> +
-> +       list_for_each(position, &acpi_battery_list) {
-> +               battery =3D list_entry(position, struct acpi_battery, lis=
-t);
-> +               hook->remove_battery(battery->bat);
-> +       }
-> +
-> +       /* Then, just remove the hook */
-> +
-> +       list_del(&hook->list);
-> +       pr_info("battery: extension unregistered: %s\n", hook->name);
-> +
-> +}
-> +EXPORT_SYMBOL_GPL(battery_hook_unregister);
-> +
-> +void battery_hook_register(struct acpi_battery_hook *hook)
-> +{
-> +       struct list_head *position;
-> +       struct acpi_battery *battery;
-> +
-> +       INIT_LIST_HEAD(&hook->list);
-> +       list_add(&hook->list, &battery_hook_list);
-> +
-> +       /*
-> +        * Now that the driver is registered, we need
-> +        * to notify the hook that a battery is available
-> +        * for each battery, so that the driver may add
-> +        * its attributes.
-> +        */
-> +       list_for_each(position, &acpi_battery_list) {
-> +               battery =3D list_entry(position, struct acpi_battery, lis=
-t);
-> +               if (hook->add_battery(battery->bat)) {
-> +
-> +                       /*
-> +                        * If a add-battery returns non-zero,
-> +                        * the registration of the extension has failed,
-> +                        * we will unload it.
-> +                        */
-> +                       pr_err("battery: extension failed to load: %s",
-> +                                       hook->name);
-> +                       battery_hook_unregister(hook);
-> +                       return;
-> +
-> +               }
-> +       }
-> +
-> +       pr_info("battery: new extension: %s\n", hook->name);
-> +
-> +}
-> +EXPORT_SYMBOL_GPL(battery_hook_register);
-> +
-> +static void battery_hook_add_battery(struct acpi_battery *battery)
-> +{
-> +
-> +       /*
-> +        * This function gets called right after the battery sysfs
-> +        * attributes have been added, so that the drivers that
-> +        * define custom sysfs attributes can add their own.
-> +        */
-> +
-> +       struct list_head *position;
-> +       struct acpi_battery_hook *hook_node;
-> +
-> +       INIT_LIST_HEAD(&battery->list);
-> +       list_add(&battery->list, &acpi_battery_list);
-> +
-> +       /*
-> +        * Since we added a new battery to the list, we need to
-> +        * iterate over the hooks and call add_battery for each
-> +        * hook that was registered. This usually happens
-> +        * when a battery gets hotplugged or initialized
-> +        * during the battery module initialization.
-> +        */
-> +
-> +       list_for_each(position, &battery_hook_list) {
-> +               hook_node =3D list_entry(position, struct acpi_battery_ho=
-ok, list);
-> +               if (hook_node->add_battery(battery->bat)) {
-> +
-> +                       /*
-> +                        * The notification of the extensions has failed,=
- to
-> +                        * prevent further errors we will unload the exte=
-nsion.
-> +                        */
-> +                       battery_hook_unregister(hook_node);
-> +                       pr_err("battery: error in extension, unloading: %=
-s",
-> +                                       hook_node->name);
-> +               }
-> +       }
-> +
-> +}
-> +
-> +static void battery_hook_remove_battery(struct acpi_battery *battery)
-> +{
-> +       struct list_head *position;
-> +       struct acpi_battery_hook *hook;
-> +
-> +       /*
-> +        * Before removing the hook, we need to remove all
-> +        * custom attributes from the battery.
-> +        */
-> +       list_for_each(position, &battery_hook_list) {
-> +               hook =3D list_entry(position, struct acpi_battery_hook, l=
-ist);
-> +               hook->remove_battery(battery->bat);
-> +       }
-> +
-> +       /* Then, just remove the battery from the list */
-> +
-> +       list_del(&battery->list);
-> +
-> +}
-> +
->  static int sysfs_add_battery(struct acpi_battery *battery)
->  {
->         struct power_supply_config psy_cfg =3D { .drv_data =3D battery, };
-> @@ -647,6 +780,8 @@ static int sysfs_add_battery(struct acpi_battery *bat=
-tery)
->         battery->bat =3D power_supply_register_no_ws(&battery->device->de=
-v,
->                                 &battery->bat_desc, &psy_cfg);
->
-> +       battery_hook_add_battery(battery);
+On Thu, Dec 14, 2017 at 02:00:32PM +0100, Michal Hocko wrote:
+> [CC linix-api]
 
-What if a module registering the hook is loaded after
-sysfs_add_battery() has run for the battery object in question?
+Oh, thanks.  I'll add them to my CC list for sysfs related changes in the
+future.
 
-What if it attempts to register a hook while this code is running?
+> On Wed 13-12-17 19:10:16, Ross Zwisler wrote:
+> > This is the third revision of my patches adding a sysfs representation
+> > of the ACPI Heterogeneous Memory Attribute Table (HMAT).  These patches
+> > are based on v4.15-rc3 and a working tree can be found here:
+> > =
 
-What if two entities try to add or remove hooks simultaneously?
+> > https://git.kernel.org/pub/scm/linux/kernel/git/zwisler/linux.git/log/?=
+h=3Dhmat_v3
+> > =
 
-Don't you think any locking or other synchronization is necessary?
+> > My goal is to get these patches merged for v4.16.
+> =
 
-Also, what if someone attempts to add a hook when the ACPI battery
-module is not loaded?  Will that still work?
+> Has actually reviewed the overal design already for this to be 4.16
+> thing? I do not see any acks/reviewed-bys in any of the patches...
+> =
 
-Thanks,
-Rafael
+> > Changes from previous version (https://lkml.org/lkml/2017/7/6/749):
+> =
 
---===============6636291621631015694==--
+> ... comments on this last posting are touching the surface rather than
+> really discuss the overal design.
+
+Yep, that's a fair assessment.  I would love a more in-depth review of the
+code so far. :)
+
+What I'm hoping to do with this series is to just provide a sysfs
+representation of the HMAT so that applications can know which NUMA nodes to
+select with existing utilities like numactl.  This series does not currently
+alter any kernel behavior, it only provides a sysfs interface.
+
+Say for example you had a system with some high bandwidth memory (HBM), and
+you wanted to use it for a specific application.  You could use the sysfs
+representation of the HMAT to figure out which memory target held your HBM.
+You could do this by looking at the local bandwidth values for the various
+memory targets, so:
+
+	# grep . /sys/devices/system/hmat/mem_tgt*/local_init/write_bw_MBps
+	/sys/devices/system/hmat/mem_tgt2/local_init/write_bw_MBps:81920
+	/sys/devices/system/hmat/mem_tgt3/local_init/write_bw_MBps:40960
+	/sys/devices/system/hmat/mem_tgt4/local_init/write_bw_MBps:40960
+	/sys/devices/system/hmat/mem_tgt5/local_init/write_bw_MBps:40960
+
+and look for the one that corresponds to your HBM speed. (These numbers are
+made up, but you get the idea.)
+
+Alternatively if you knew the physical addresses of your HBM you could look
+for it by finding the numa node that owns the appropriate memory sections, =
+so:
+
+	# ls -d /sys/devices/system/hmat/mem_tgt2/node2/memory*
+	/sys/devices/system/hmat/mem_tgt2/node2/memory0
+	/sys/devices/system/hmat/mem_tgt2/node2/memory1
+etc.
+
+Once you know the NUMA node of your HBM, you can figure out the NUMA node of
+it's local initiator:
+
+	# ls -d /sys/devices/system/hmat/mem_tgt2/local_init/mem_init*
+	/sys/devices/system/hmat/mem_tgt2/local_init/mem_init0
+
+So, in our made-up example our HBM is located in numa node 2, and the local
+CPU for that HBM is at numa node 0.
+
+You would then use numactl to bind your app to those numa nodes:
+
+	numactl --membind=3D2 --cpunodebind=3D0 ./my_application
+
+Does that make sense?
+
+Eventually we can enhance numactl so it can automatically choose memory with
+higher bandwidth, etc., but I think just this bit of kernel enabling gets us
+started in the right direction.
+
+> >  - Changed "HMEM" to "HMAT" and "hmem" to "hmat" throughout to make sure
+> >    that this effort doesn't get confused with Jerome's HMM work and to
+> >    make it clear that this enabling is tightly tied to the ACPI HMAT
+> >    table.  (John Hubbard)
+> > =
+
+> >  - Moved the link in the initiator (i.e. mem_init0/mem_tgt2) from
+> >    pointing to the "mem_tgt2/local_init" attribute group to instead
+> >    point at the mem_tgt2 target itself.  (Brice Goglin)
+> > =
+
+> >  - Simplified the contents of both the initiators and the targets so
+> >    that we just symlink to the NUMA node and don't duplicate
+> >    information.  For initiators this means that we no longer enumerate
+> >    CPUs, and for targets this means that we don't provide physical
+> >    address start and length information.  All of this is already
+> >    available in the NUMA node directory itself (i.e.
+> >    /sys/devices/system/node/node0), and it already accounts for the fact
+> >    that both multiple CPUs and multiple memory regions can be owned by a
+> >    given NUMA node.  Also removed some extra attributes (is_enabled,
+> >    is_isolated) which I don't think are useful at this point in time.
+> > =
+
+> > I have tested this against many different configs that I implemented
+> > using qemu.
+> =
+
+> What is the testing procedure? How can I setup qemu to simlate such HW?
+
+Well, the QEMU table simulation is gross, so I'd rather not get everyone
+testing with that.  Injecting custom HMAT and SRAT tables via initrd/initra=
+mfs
+is a much better way:
+
+https://www.kernel.org/doc/Documentation/acpi/initrd_table_override.txt
+
+Dan recently posted a patch that lets this happen for the HMAT:
+
+https://lists.01.org/pipermail/linux-nvdimm/2017-December/013545.html
+
+I'm working right now on getting an easier way to generate HMAT tables - I'=
+ll
+let you know when I have something working.
+
+> [Keeping the rest of the email for linux-api reference]
+> =
+
+> > ---
+> > =
+
+> > =3D=3D=3D=3D Quick Summary =3D=3D=3D=3D
+> > =
+
+> > Platforms exist today which have multiple types of memory attached to a
+> > single CPU.  These disparate memory ranges have some characteristics in
+> > common, such as CPU cache coherence, but they can have wide ranges of
+> > performance both in terms of latency and bandwidth.
+> > =
+
+> > For example, consider a system that contains persistent memory, standard
+> > DDR memory and High Bandwidth Memory (HBM), all attached to the same CP=
+U.
+> > There could potentially be an order of magnitude or more difference in
+> > performance between the slowest and fastest memory attached to that CPU.
+> > =
+
+> > With the current Linux code NUMA nodes are CPU-centric, so all the memo=
+ry
+> > attached to a given CPU will be lumped into the same NUMA node.  This m=
+akes
+> > it very difficult for userspace applications to understand the performa=
+nce
+> > of different memory ranges on a given CPU.
+> > =
+
+> > We solve this issue by providing userspace with performance information=
+ on
+> > individual memory ranges.  This performance information is exposed via
+> > sysfs:
+> > =
+
+> >   # grep . mem_tgt2/* mem_tgt2/local_init/* 2>/dev/null
+> >   mem_tgt2/firmware_id:1
+> >   mem_tgt2/is_cached:0
+> >   mem_tgt2/local_init/read_bw_MBps:40960
+> >   mem_tgt2/local_init/read_lat_nsec:50
+> >   mem_tgt2/local_init/write_bw_MBps:40960
+> >   mem_tgt2/local_init/write_lat_nsec:50
+> > =
+
+> > This allows applications to easily find the memory that they want to us=
+e.
+> > We expect that the existing NUMA APIs will be enhanced to use this new
+> > information so that applications can continue to use them to select the=
+ir
+> > desired memory.
+> =
+
+> How? Could you provide some examples?
+
+I think I answered this above, but please let me know if you still have
+questions or have any ideas for improvement.
+
+Thank you for the review!
+
+--===============0082118466637582757==--
 
