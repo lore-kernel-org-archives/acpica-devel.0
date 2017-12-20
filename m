@@ -1,139 +1,64 @@
-Content-Type: multipart/mixed; boundary="===============9134330909207175583=="
+Content-Type: multipart/mixed; boundary="===============8916537948969189897=="
 MIME-Version: 1.0
 From: Ross Zwisler <ross.zwisler at linux.intel.com>
 Subject: Re: [Devel] [PATCH v3 0/3] create sysfs representation of ACPI HMAT
-Date: Wed, 20 Dec 2017 14:13:50 -0700
-Message-ID: <20171220211350.GA2688@linux.intel.com>
-In-Reply-To: 20171220181937.GB12236@bombadil.infradead.org
+Date: Wed, 20 Dec 2017 14:24:08 -0700
+Message-ID: <20171220212408.GA8308@linux.intel.com>
+In-Reply-To: 20171220211649.GA32200@bombadil.infradead.org
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============9134330909207175583==
+--===============8916537948969189897==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 20, 2017 at 10:19:37AM -0800, Matthew Wilcox wrote:
-> On Mon, Dec 18, 2017 at 01:35:47PM -0700, Ross Zwisler wrote:
-> > What I'm hoping to do with this series is to just provide a sysfs
-> > representation of the HMAT so that applications can know which NUMA nod=
-es to
-> > select with existing utilities like numactl.  This series does not curr=
-ently
-> > alter any kernel behavior, it only provides a sysfs interface.
+On Wed, Dec 20, 2017 at 01:16:49PM -0800, Matthew Wilcox wrote:
+> On Wed, Dec 20, 2017 at 12:22:21PM -0800, Dave Hansen wrote:
+> > On 12/20/2017 10:19 AM, Matthew Wilcox wrote:
+> > > I don't know what the right interface is, but my laptop has a set of
+> > > /sys/devices/system/memory/memoryN/ directories.  Perhaps this is the
+> > > right place to expose write_bw (etc).
 > > =
 
-> > Say for example you had a system with some high bandwidth memory (HBM),=
- and
-> > you wanted to use it for a specific application.  You could use the sys=
-fs
-> > representation of the HMAT to figure out which memory target held your =
-HBM.
-> > You could do this by looking at the local bandwidth values for the vari=
-ous
-> > memory targets, so:
+> > Those directories are already too redundant and wasteful.  I think we'd
+> > really rather not add to them.  In addition, it's technically possible
+> > to have a memory section span NUMA nodes and have different performance
+> > properties, which make it impossible to represent there.
 > > =
 
-> > 	# grep . /sys/devices/system/hmat/mem_tgt*/local_init/write_bw_MBps
-> > 	/sys/devices/system/hmat/mem_tgt2/local_init/write_bw_MBps:81920
-> > 	/sys/devices/system/hmat/mem_tgt3/local_init/write_bw_MBps:40960
-> > 	/sys/devices/system/hmat/mem_tgt4/local_init/write_bw_MBps:40960
-> > 	/sys/devices/system/hmat/mem_tgt5/local_init/write_bw_MBps:40960
-> > =
-
-> > and look for the one that corresponds to your HBM speed. (These numbers=
- are
-> > made up, but you get the idea.)
+> > In any case, ACPI PXM's (Proximity Domains) are guaranteed to have
+> > uniform performance properties in the HMAT, and we just so happen to
+> > always create one NUMA node per PXM.  So, NUMA nodes really are a good =
+fit.
 > =
 
-> Presumably ACPI-based platforms will not be the only ones who have the
-> ability to expose different bandwidth memories in the future.  I think
-> we need a platform-agnostic way ... right, PowerPC people?
-
-Hey Matthew,
-
-Yep, this is where I started as well.  My plan with my initial implementati=
-on
-was to try and make the sysfs representation as platform agnostic as possib=
-le,
-and just have the ACPI HMAT as one of the many places to gather the data
-needed to populate sysfs.
-
-However, as I began coding the implementation became very specific to the
-HMAT, probably because I don't know of way that this type of info is
-represented on another platform.  John Hubbard noticed the same thing and
-asked me to s/HMEM/HMAT/ everywhere and just make it HMAT specific, and to
-prevent it from being confused with the HMM work:
-
-https://lkml.org/lkml/2017/7/7/33
-https://lkml.org/lkml/2017/7/7/442
-
-I'm open to making it more platform agnostic if I can get my hands on a
-parallel effort in another platform and tease out the commonality, but tryi=
-ng
-to do that without a second example hasn't worked out.  If we don't have a
-good second example right now I think maybe we should put this in and then
-merge it with the second example when it comes along.
-
-> I don't know what the right interface is, but my laptop has a set of
-> /sys/devices/system/memory/memoryN/ directories.  Perhaps this is the
-> right place to expose write_bw (etc).
+> I think you're missing my larger point which is that I don't think this
+> should be exposed to userspace as an ACPI feature.  Because if you do,
+> then it'll also be exposed to userspace as an openfirmware feature.
+> And sooner or later a devicetree feature.  And then writing a portable
+> program becomes an exercise in suffering.
 > =
 
-> > Once you know the NUMA node of your HBM, you can figure out the NUMA no=
-de of
-> > it's local initiator:
-> > =
+> So, what's the right place in sysfs that isn't tied to ACPI?  A new
+> directory or set of directories under /sys/devices/system/memory/ ?
 
-> > 	# ls -d /sys/devices/system/hmat/mem_tgt2/local_init/mem_init*
-> > 	/sys/devices/system/hmat/mem_tgt2/local_init/mem_init0
-> > =
+Oh, the current location isn't at all tied to acpi except that it happens to
+be named 'hmat'.  When it was all named 'hmem' it was just:
 
-> > So, in our made-up example our HBM is located in numa node 2, and the l=
-ocal
-> > CPU for that HBM is at numa node 0.
-> =
+/sys/devices/system/hmem
 
-> initiator is a CPU?  I'd have expected you to expose a memory controller
-> abstraction rather than re-use storage terminology.
+Which has no ACPI-isms at all.  I'm happy to move it under
+/sys/devices/system/memory/hmat if that's helpful, but I think we still have
+the issue that the data represented therein is still pulled right from the
+HMAT, and I don't know how to abstract it into something more platform
+agnostic until I know what data is provided by those other platforms.
 
-Yea, I agree that at first blush it seems weird.  It turns out that looking=
- at
-it in sort of a storage initiator/target way is beneficial, though, because=
- it
-allows us to cut down on the number of data values we need to represent.
+For example, the HMAT provides latency information and bandwidth information
+for both reads and writes.  Will the devicetree/openfirmware/etc version ha=
+ve
+this same info, or will it be just different enough that it won't translate
+into whatever I choose to stick in sysfs?
 
-For example the SLIT, which doesn't differentiate between initiator and tar=
-get
-proximity domains (and thus nodes) always represents a system with N proxim=
-ity
-domains using a NxN distance table.  This makes sense if every node contains
-both CPUs and memory.
-
-With the introduction of the HMAT, though, we can have memory-only initiator
-nodes and we can explicitly associate them with their local CPU.  This is
-necessary so that we can separate memory with different performance
-characteristics (HBM vs normal memory vs persistent memory, for example) th=
-at
-are all attached to the same CPU.
-
-So, say we now have a system with 4 CPUs, and each of those CPUs has 3
-different types of memory attached to it.  We now have 16 total proximity
-domains, 4 CPU and 12 memory.
-
-If we represent this with the SLIT we end up with a 16 X 16 distance table
-(256 entries), most of which don't matter because they are memory-to-memory
-distances which don't make sense.
-
-In the HMAT, though, we separate out the initiators and the targets and put
-them into separate lists.  (See 5.2.27.4 System Locality Latency and Bandwi=
-dth
-Information Structure in ACPI 6.2 for details.)  So, this same config in the
-HMAT only has 4*12=3D48 performance values of each type, all of which convey
-meaningful information.
-
-The HMAT indeed even uses the storage "initiator" and "target" terminology.=
- :)
-
---===============9134330909207175583==--
+--===============8916537948969189897==--
 
