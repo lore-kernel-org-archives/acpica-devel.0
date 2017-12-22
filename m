@@ -1,116 +1,140 @@
-Content-Type: multipart/mixed; boundary="===============5372898679763930488=="
+Content-Type: multipart/mixed; boundary="===============6983878818481652475=="
 MIME-Version: 1.0
 From: Ross Zwisler <ross.zwisler at linux.intel.com>
 Subject: Re: [Devel] [PATCH v3 0/3] create sysfs representation of ACPI HMAT
-Date: Fri, 22 Dec 2017 14:46:13 -0700
-Message-ID: <20171222214613.GA25711@linux.intel.com>
-In-Reply-To: AT5PR8401MB0387011EAD8858CC99548ED2AB0D0@AT5PR8401MB0387.NAMPRD84.PROD.OUTLOOK.COM
+Date: Fri, 22 Dec 2017 15:13:30 -0700
+Message-ID: <20171222221330.GB25711@linux.intel.com>
+In-Reply-To: 2d6420f7-0a95-adfe-7390-a2aea4385ab2@linux.vnet.ibm.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5372898679763930488==
+--===============6983878818481652475==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 21, 2017 at 01:41:15AM +0000, Elliott, Robert (Persistent Memor=
-y) wrote:
+On Fri, Dec 22, 2017 at 08:39:41AM +0530, Anshuman Khandual wrote:
+> On 12/14/2017 07:40 AM, Ross Zwisler wrote:
+> > =3D=3D=3D=3D Quick Summary =3D=3D=3D=3D
+> > =
+
+> > Platforms exist today which have multiple types of memory attached to a
+> > single CPU.  These disparate memory ranges have some characteristics in
+> > common, such as CPU cache coherence, but they can have wide ranges of
+> > performance both in terms of latency and bandwidth.
 > =
 
+> Right.
 > =
 
-> > -----Original Message-----
-> > From: Linux-nvdimm [mailto:linux-nvdimm-bounces(a)lists.01.org] On Beha=
-lf Of
-> > Ross Zwisler
-> ...
 > > =
 
-> > On Wed, Dec 20, 2017 at 10:19:37AM -0800, Matthew Wilcox wrote:
-> ...
-> > > initiator is a CPU?  I'd have expected you to expose a memory control=
-ler
-> > > abstraction rather than re-use storage terminology.
-> > =
-
-> > Yea, I agree that at first blush it seems weird.  It turns out that
-> > looking at it in sort of a storage initiator/target way is beneficial,
-> > though, because it allows us to cut down on the number of data values
-> > we need to represent.
-> > =
-
-> > For example the SLIT, which doesn't differentiate between initiator and
-> > target proximity domains (and thus nodes) always represents a system
-> > with N proximity domains using a NxN distance table.  This makes sense
-> > if every node contains both CPUs and memory.
-> > =
-
-> > With the introduction of the HMAT, though, we can have memory-only
-> > initiator nodes and we can explicitly associate them with their local =
-
-> > CPU.  This is necessary so that we can separate memory with different
-> > performance characteristics (HBM vs normal memory vs persistent memory,
-> > for example) that are all attached to the same CPU.
-> > =
-
-> > So, say we now have a system with 4 CPUs, and each of those CPUs has 3
-> > different types of memory attached to it.  We now have 16 total proximi=
-ty
-> > domains, 4 CPU and 12 memory.
+> > For example, consider a system that contains persistent memory, standard
+> > DDR memory and High Bandwidth Memory (HBM), all attached to the same CP=
+U.
+> > There could potentially be an order of magnitude or more difference in
+> > performance between the slowest and fastest memory attached to that CPU.
 > =
 
-> The CPU cores that make up a node can have performance restrictions of
-> their own; for example, they might max out at 10 GB/s even though the
-> memory controller supports 120 GB/s (meaning you need to use 12 cores
-> on the node to fully exercise memory).  It'd be helpful to report this,
-> so software can decide how many cores to use for bandwidth-intensive work.
+> Right.
 > =
 
-> > If we represent this with the SLIT we end up with a 16 X 16 distance ta=
-ble
-> > (256 entries), most of which don't matter because they are memory-to-
-> > memory distances which don't make sense.
 > > =
 
-> > In the HMAT, though, we separate out the initiators and the targets and
-> > put them into separate lists.  (See 5.2.27.4 System Locality Latency and
-> > Bandwidth Information Structure in ACPI 6.2 for details.)  So, this same
-> > config in the HMAT only has 4*12=3D48 performance values of each type, =
-all
-> > of which convey meaningful information.
-> > =
-
-> > The HMAT indeed even uses the storage "initiator" and "target"
-> > terminology. :)
+> > With the current Linux code NUMA nodes are CPU-centric, so all the memo=
+ry
+> > attached to a given CPU will be lumped into the same NUMA node.  This m=
+akes
+> > it very difficult for userspace applications to understand the performa=
+nce
+> > of different memory ranges on a given CPU.
 > =
 
-> Centralized DMA engines (e.g., as used by the "DMA based blk-mq pmem
-> driver") have performance differences too.  A CPU might include
-> CPU cores that reach 10 GB/s, DMA engines that reach 60 GB/s, and
-> memory controllers that reach 120 GB/s.  I guess these would be
-> represented as extra initiators on the node?
+> Right but that might require fundamental changes to the NUMA representati=
+on.
+> Plugging those memory as separate NUMA nodes, identify them through sysfs
+> and try allocating from it through mbind() seems like a short term soluti=
+on.
+> =
 
-For both of your comments I think all of this comes down to how you want to
-represent your platform in the HMAT.  The sysfs representation just shows y=
-ou
-what is in the HMAT.
+> Though if we decide to go in this direction, sysfs interface or something
+> similar is required to enumerate memory properties.
 
-Each initiator node is just a single NUMA node (think of it as a NUMA node
-which has the characteristic that it can initiate memory requests), so I do=
-n't
-think there is a way to have "extra initiators on the node".  I think what
-you're talking about is separating the DMA engines and CPU cores into separ=
-ate
-NUMA nodes, both of which are initiators.  I think this is probably fine as=
- it
-conveys useful info.
+Yep, and this patch series is trying to be the sysfs interface that is
+required to the memory properties.  :)  It's a certainty that we will have
+memory-only NUMA nodes, at least on platforms that support ACPI.  Supporting
+memory-only proximity domains (which Linux turns in to memory-only NUMA nod=
+es)
+is explicitly supported with the introduction of the HMAT in ACPI 6.2.
 
-I don't think the HMAT has a concept of increasing bandwidth for number of =
-CPU
-cores used - it just has a single bandwidth number (well, one for read and =
-one
-for write) per initiator/target pair.  I don't think we want to add this,
-either - the HMAT is already very complex.
+It also turns out that the existing memory management code already deals wi=
+th
+them just fine - you see this with my hmat_examples setup:
 
---===============5372898679763930488==--
+https://github.com/rzwisler/hmat_examples
+
+Both configurations created by this repo create memory-only NUMA nodes, even
+with upstream kernels.  My patches don't change that, they just provide a
+sysfs representation of the HMAT so users can discover the memory that exis=
+ts
+in the system.
+
+> > We solve this issue by providing userspace with performance information=
+ on
+> > individual memory ranges.  This performance information is exposed via
+> > sysfs:
+> > =
+
+> >   # grep . mem_tgt2/* mem_tgt2/local_init/* 2>/dev/null
+> >   mem_tgt2/firmware_id:1
+> >   mem_tgt2/is_cached:0
+> >   mem_tgt2/local_init/read_bw_MBps:40960
+> >   mem_tgt2/local_init/read_lat_nsec:50
+> >   mem_tgt2/local_init/write_bw_MBps:40960
+> >   mem_tgt2/local_init/write_lat_nsec:50
+> =
+
+> I might have missed discussions from earlier versions, why we have this
+> kind of a "source --> target" model ? We will enlist properties for all
+> possible "source --> target" on the system ? Right now it shows only
+> bandwidth and latency properties, can it accommodate other properties
+> as well in future ?
+
+The initiator/target model is useful in preventing us from needing a
+MAX_NUMA_NODES x MAX_NUMA_NODES sized table for each performance attribute.=
+  I
+talked about it a little more here:
+
+https://lists.01.org/pipermail/linux-nvdimm/2017-December/013654.html
+
+> > This allows applications to easily find the memory that they want to us=
+e.
+> > We expect that the existing NUMA APIs will be enhanced to use this new
+> > information so that applications can continue to use them to select the=
+ir
+> > desired memory.
+> =
+
+> I had presented a proposal for NUMA redesign in the Plumbers Conference t=
+his
+> year where various memory devices with different kind of memory attributes
+> can be represented in the kernel and be used explicitly from the user spa=
+ce.
+> Here is the link to the proposal if you feel interested. The proposal is
+> very intrusive and also I dont have a RFC for it yet for discussion here.
+> =
+
+> https://linuxplumbersconf.org/2017/ocw//system/presentations/4656/origina=
+l/Hierarchical_NUMA_Design_Plumbers_2017.pdf
+
+I'll take a look, but my first reaction is that I agree with Dave that it
+seems hard to re-teach systems a new NUMA scheme.  This patch series doesn't
+attempt to do that - it is very unintrusive and only informs users about the
+memory-only NUMA nodes that will already exist in their ACPI-based systems.
+
+> Problem is, designing the sysfs interface for memory attribute detection
+> from user space without first thinking about redesigning the NUMA for
+> heterogeneous memory may not be a good idea. Will look into this further.
+
+--===============6983878818481652475==--
 
