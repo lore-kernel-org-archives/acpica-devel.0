@@ -1,84 +1,21 @@
-Content-Type: multipart/mixed; boundary="===============6983878818481652475=="
+Content-Type: multipart/mixed; boundary="===============3584464407775001216=="
 MIME-Version: 1.0
 From: Ross Zwisler <ross.zwisler at linux.intel.com>
 Subject: Re: [Devel] [PATCH v3 0/3] create sysfs representation of ACPI HMAT
-Date: Fri, 22 Dec 2017 15:13:30 -0700
-Message-ID: <20171222221330.GB25711@linux.intel.com>
+Date: Fri, 22 Dec 2017 15:31:54 -0700
+Message-ID: <20171222223154.GC25711@linux.intel.com>
 In-Reply-To: 2d6420f7-0a95-adfe-7390-a2aea4385ab2@linux.vnet.ibm.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6983878818481652475==
+--===============3584464407775001216==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
 On Fri, Dec 22, 2017 at 08:39:41AM +0530, Anshuman Khandual wrote:
 > On 12/14/2017 07:40 AM, Ross Zwisler wrote:
-> > =3D=3D=3D=3D Quick Summary =3D=3D=3D=3D
-> > =
-
-> > Platforms exist today which have multiple types of memory attached to a
-> > single CPU.  These disparate memory ranges have some characteristics in
-> > common, such as CPU cache coherence, but they can have wide ranges of
-> > performance both in terms of latency and bandwidth.
-> =
-
-> Right.
-> =
-
-> > =
-
-> > For example, consider a system that contains persistent memory, standard
-> > DDR memory and High Bandwidth Memory (HBM), all attached to the same CP=
-U.
-> > There could potentially be an order of magnitude or more difference in
-> > performance between the slowest and fastest memory attached to that CPU.
-> =
-
-> Right.
-> =
-
-> > =
-
-> > With the current Linux code NUMA nodes are CPU-centric, so all the memo=
-ry
-> > attached to a given CPU will be lumped into the same NUMA node.  This m=
-akes
-> > it very difficult for userspace applications to understand the performa=
-nce
-> > of different memory ranges on a given CPU.
-> =
-
-> Right but that might require fundamental changes to the NUMA representati=
-on.
-> Plugging those memory as separate NUMA nodes, identify them through sysfs
-> and try allocating from it through mbind() seems like a short term soluti=
-on.
-> =
-
-> Though if we decide to go in this direction, sysfs interface or something
-> similar is required to enumerate memory properties.
-
-Yep, and this patch series is trying to be the sysfs interface that is
-required to the memory properties.  :)  It's a certainty that we will have
-memory-only NUMA nodes, at least on platforms that support ACPI.  Supporting
-memory-only proximity domains (which Linux turns in to memory-only NUMA nod=
-es)
-is explicitly supported with the introduction of the HMAT in ACPI 6.2.
-
-It also turns out that the existing memory management code already deals wi=
-th
-them just fine - you see this with my hmat_examples setup:
-
-https://github.com/rzwisler/hmat_examples
-
-Both configurations created by this repo create memory-only NUMA nodes, even
-with upstream kernels.  My patches don't change that, they just provide a
-sysfs representation of the HMAT so users can discover the memory that exis=
-ts
-in the system.
-
+<>
 > > We solve this issue by providing userspace with performance information=
  on
 > > individual memory ranges.  This performance information is exposed via
@@ -92,20 +29,34 @@ in the system.
 > >   mem_tgt2/local_init/read_lat_nsec:50
 > >   mem_tgt2/local_init/write_bw_MBps:40960
 > >   mem_tgt2/local_init/write_lat_nsec:50
-> =
+<>
+> We will enlist properties for all possible "source --> target" on the sys=
+tem?
 
-> I might have missed discussions from earlier versions, why we have this
-> kind of a "source --> target" model ? We will enlist properties for all
-> possible "source --> target" on the system ? Right now it shows only
-> bandwidth and latency properties, can it accommodate other properties
-> as well in future ?
+Nope, just 'local' initiator/target pairs.  I talk about the reasoning for
+this in the cover letter for patch 3:
 
-The initiator/target model is useful in preventing us from needing a
-MAX_NUMA_NODES x MAX_NUMA_NODES sized table for each performance attribute.=
-  I
-talked about it a little more here:
+https://lists.01.org/pipermail/linux-nvdimm/2017-December/013574.html
 
-https://lists.01.org/pipermail/linux-nvdimm/2017-December/013654.html
+> Right now it shows only bandwidth and latency properties, can it accommod=
+ate
+> other properties as well in future ?
+
+We also have an 'is_cached' attribute for the memory targets if they are
+involved in a caching hierarchy, but right now those are all the things we
+expose.  We can potentially expose whatever we want that is present in the
+HMAT, but those seemed like a good start.
+
+I noticed that in your presentation you had some other examples of attribut=
+es
+you cared about:
+
+ * reliability
+ * power consumption
+ * density
+
+The HMAT doesn't provide this sort of information at present, but we
+could/would add them to sysfs if the HMAT ever grew support for them.
 
 > > This allows applications to easily find the memory that they want to us=
 e.
@@ -126,15 +77,21 @@ ce.
 
 > https://linuxplumbersconf.org/2017/ocw//system/presentations/4656/origina=
 l/Hierarchical_NUMA_Design_Plumbers_2017.pdf
-
-I'll take a look, but my first reaction is that I agree with Dave that it
-seems hard to re-teach systems a new NUMA scheme.  This patch series doesn't
-attempt to do that - it is very unintrusive and only informs users about the
-memory-only NUMA nodes that will already exist in their ACPI-based systems.
+> =
 
 > Problem is, designing the sysfs interface for memory attribute detection
 > from user space without first thinking about redesigning the NUMA for
 > heterogeneous memory may not be a good idea. Will look into this further.
 
---===============6983878818481652475==--
+I took another look at your presentation, and overall I think that if/when a
+NUMA redesign like this takes place ACPI systems with HMAT tables will be a=
+ble
+to participate.  But I think we are probably a ways away from that, and lik=
+e I
+said in my previous mail ACPI systems with memory-only NUMA nodes are going=
+ to
+exist and need to be supported with the current NUMA scheme.  Hence I don't
+think that this patch series conflicts with your proposal.
+
+--===============3584464407775001216==--
 
