@@ -1,56 +1,35 @@
-Content-Type: multipart/mixed; boundary="===============4317996973143062701=="
+Content-Type: multipart/mixed; boundary="===============2142399120455138986=="
 MIME-Version: 1.0
 From: Andy Shevchenko <andy.shevchenko at gmail.com>
-Subject: Re: [Devel] [PATCH v11 2/5] pm: add to_power_supply macro to the API
-Date: Mon, 01 Jan 2018 11:56:17 +0200
-Message-ID: <CAHp75VeBLaes42NN1L4ujfvkYAUOW9h9Q26mfsj7e7a86OC_Yg@mail.gmail.com>
-In-Reply-To: 20171231141700.GA4612@thinkpad
+Subject: Re: [Devel] [PATCH v11 5/5] pm: Remove to_power_supply impl in ds278*
+Date: Mon, 01 Jan 2018 11:56:59 +0200
+Message-ID: <CAHp75VczqpO93aYec+dzJCZ1Nkcfi1Vx=7oVc3YBSFf6mkkQPQ@mail.gmail.com>
+In-Reply-To: 20171231141757.GA4674@thinkpad
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4317996973143062701==
+--===============2142399120455138986==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
 On Sun, Dec 31, 2017 at 4:17 PM, Ognjen Galic <smclt30p(a)gmail.com> wrote:
-> This patch adds the to_power_supply macro to upcast
-> a device to a power_supply struct.
+> This patch fixes a issue introduced by patch:
+> pm: add to_power_supply macro to the API
 >
-> This is needed because the same piece of code using
-> container_of is used in various other places, so we
-> abstract away such low-level operations via a macro.
-
-The patch 5 must be folded into this one. I told you that.
-Otherwise you will leave bisectability issue.
-
-> Suggested-by: Andy Shevchenko <andriy.shevchenko(a)linux.intel.com>
-> Signed-off-by: Ognjen Galic <smclt30p(a)gmail.com>
+> In that patch a new macro has been defined in the
+> power_supply.h header with the same name as the private
+> function name in the ds278* battery modules that does the
+> same thing, thus clashing and producing build errors.
 >
+> This patch removes that private implementation.
 
-> v9:
-> * Split the pm changes from the thinkpad_acpi patch
-> into its own patch
->
-> v10:
-> * No changes in this patch in v10
->
-> v11:
-> * Fix changelog formatting
-
-Changelog should go *after* --- line...
-
-> ---
-
-...to here.
-
->  drivers/power/supply/power_supply_core.c | 2 +-
->  include/linux/power_supply.h             | 2 ++
+Must be folded into patch 2.
 
 -- =
 
 With Best Regards,
 Andy Shevchenko
 
---===============4317996973143062701==--
+--===============2142399120455138986==--
 
