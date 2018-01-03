@@ -1,87 +1,173 @@
-Content-Type: multipart/mixed; boundary="===============2550044235015221867=="
+Content-Type: multipart/mixed; boundary="===============4208670313435309167=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rjw at rjwysocki.net>
-Subject: Re: [Devel] [PATCH v11 3/5] thinkpad_acpi: Add support for battery
- thresholds
-Date: Wed, 03 Jan 2018 12:24:53 +0100
-Message-ID: <7475117.k4QWeGOQkJ@aspire.rjw.lan>
-In-Reply-To: 20180103103455.GA17803@thinkpad
+From: Andy Shevchenko <andy.shevchenko at gmail.com>
+Subject: Re: [Devel] [PATCH v12 1/4] battery: Add the battery hooking API
+Date: Wed, 03 Jan 2018 16:25:42 +0200
+Message-ID: <CAHp75Vdj2rasWqdmBKGxNs9Y+Rap=UycoFdOcbG6QgA48Afq5w@mail.gmail.com>
+In-Reply-To: 20180103115847.GA10092@thinkpad
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2550044235015221867==
+--===============4208670313435309167==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Wednesday, January 3, 2018 11:34:55 AM CET Ognjen Gali=C4=87 wrote:
-> On Mon, Jan 01, 2018 at 12:24:39PM +0200, Andy Shevchenko wrote:
-> > On Sun, Dec 31, 2017 at 4:17 PM, Ognjen Galic <smclt30p(a)gmail.com> wr=
-ote:
-> > > thinkpad_acpi registers two new attributes for each battery:
-> > >
-> > > 1) Charge start threshold
-> > > /sys/class/power_supply/BATN/charge_start_threshold
-> > >
-> > > Valid values are [0, 99]. A value of 0 turns off the
-> > > start threshold wear control.
-> > >
-> > > 2) Charge stop threshold
-> > > /sys/class/power_supply/BATN/charge_stop_threshold
-> > >
-> > > Valid values are [1, 100]. A value of 100 turns off
-> > > the stop threshold wear control. This must be
-> > > configured first.
-> > >
-> > =
+On Wed, Jan 3, 2018 at 1:58 PM, Ognjen Galic <smclt30p(a)gmail.com> wrote:
+> This is a patch that implements a generic hooking API for the
+> generic ACPI battery driver.
+>
+> With this new generic API, drivers can expose platform specific
+> behaviour via sysfs attributes in /sys/class/power_supply/BATn/
+> in a generic way.
+>
+> A perfect example of the need for this API are Lenovo ThinkPads.
+>
+> Lenovo ThinkPads have a ACPI extension that allows the setting of
+> start and stop charge thresholds in the EC and battery firmware
+> via ACPI. The thinkpad_acpi module can use this API to expose
+> sysfs attributes that it controls inside the ACPI battery driver
+> sysfs tree, under /sys/class/power_supply/BATN/.
+>
+> The file drivers/acpi/battery.h has been moved to
+> include/acpi/battery.h and the includes inside ac.c, sbs.c, and
+> battery.c have been adjusted to reflect that.
+>
+> When drivers hooks into the API, the API calls add_battery() for
+> each battery in the system that passes it a acpi_battery
+> struct. Then, the drivers can use device_create_file() to create
+> new sysfs attributes with that struct and identify the batteries
+> for per-battery attributes.
 
-> > > This patch depends on the following patches:
-> > >
-> > > "battery: Add the battery hooking API"
-> > =
+Thanks for an update. I have couple of minors. Otherwise look pretty much g=
+ood!
 
-> > Since this is series, no need to put above into changelog.
-> > =
+>  drivers/acpi/battery.h |  11 ----
+>  include/acpi/battery.h |  21 +++++++
 
-> > AFAICS it's not going to be backported either.
-> > =
+There are -M and -C command line parameters to git format-patch.
+They can take an optional argument (percentage) of threshold.
 
-> > =
+Playing with those numbers you can achieve
 
-> > > +/**
-> > > + * This evaluates a ACPI method call specific to the battery
-> > > + * ACPI extension. The specifics are that an error is marked
-> > > + * in the 32rd bit of the response, so we just check that here.
-> > > + *
-> > > + * Returns 0 on success
-> > > + */
-> > > +static int tpacpi_battery_acpi_eval(char *method, int *ret, int para=
-m)
-> > > +{
-> > =
+rename ...
 
-> > One problem and one trick you may do.
-> > =
+line and see actual diff.
 
-> > A problem: you return ACPI status as int. We have special type for
-> > that. So, be consistent with it.
-> > Looking to acpi_evalf() which is private to the module, I think you
-> > need to get rid of ACPI return codes here.
-> > =
+No need to resend because of this. Just an explanation for the future Git w=
+ork.
 
-> > A trick: since you are using only least significant byte of the
-> > response, you can declare it as u8 *value (yeah, ret is not best name
-> > here I think).
-> =
+> +void __battery_hook_unregister(struct acpi_battery_hook *hook, int lock)
+> +{
+> +       struct list_head *position;
+> +       struct acpi_battery *battery;
 
-> Not really. In one place I need bit #9, so that will stay a int.
-> I have changed the acpi return value to acpi_status tho.
+Missed empty line?
 
-OK, you can resend the updated series when you're ready.
+> +       /*
+> +        * In order to remove a hook, we first need to
+> +        * de-register all the batteries that are registered.
+> +        */
+> +       if (lock)
+> +               mutex_lock(&hook_mutex);
 
-Thanks,
-Rafael
+> +       list_for_each(position, &acpi_battery_list) {
+> +               battery =3D list_entry(position, struct acpi_battery, lis=
+t);
+
+list_for_each_enrty() ?
+
+Or I'm missing something why it can't be used?
+
+> +               hook->remove_battery(battery->bat);
+> +       }
+
+> +void battery_hook_register(struct acpi_battery_hook *hook)
+> +{
+> +       struct acpi_battery *battery;
+
+> +       list_for_each_entry(battery, &acpi_battery_list, list) {
+> +               if (hook->add_battery(battery->bat)) {
+> +                       /*
+> +                        * If a add-battery returns non-zero,
+> +                        * the registration of the extension has failed,
+> +                        * and we will not add it to the list of loaded
+> +                        * hooks.
+> +                        */
+
+> +                       pr_err("extension failed to load: %s",
+> +                                       hook->name);
+
+Can it fit 80 characters?
+I mean if it would be one line...
+
+> +                       __battery_hook_unregister(hook, 0);
+> +                       return;
+> +               }
+> +       }
+> +       pr_info("new extension: %s\n", hook->name);
+> +       mutex_unlock(&hook_mutex);
+> +}
+
+> +static void battery_hook_add_battery(struct acpi_battery *battery)
+> +{
+
+> +       /*
+> +        * This function gets called right after the battery sysfs
+> +        * attributes have been added, so that the drivers that
+> +        * define custom sysfs attributes can add their own.
+> +        */
+
+Perhaps it should go before function definition.
+
+> +       struct acpi_battery_hook *hook_node;
+
+> +}
 
 
---===============2550044235015221867==--
+> +static void __exit battery_hook_exit(void)
+> +{
+> +       struct acpi_battery_hook *hook;
+> +       struct acpi_battery_hook *ptr;
+
+Missed empty line?
+
+> +       /*
+> +        * At this point, the acpi_bus_unregister_driver
+> +        * has called remove for all batteries. We just
+> +        * need to remove the hooks.
+> +        */
+
+A common pattern to use func() [note parens] when refer to function.
+
+> +       list_for_each_entry_safe(hook, ptr, &battery_hook_list, list) {
+> +               __battery_hook_unregister(hook, 1);
+> +       }
+> +       mutex_destroy(&hook_mutex);
+> +}
+
+>         battery->bat =3D power_supply_register_no_ws(&battery->device->de=
+v,
+>                                 &battery->bat_desc, &psy_cfg);
+>
+> +       battery_hook_add_battery(battery);
+> +
+>         if (IS_ERR(battery->bat)) {
+>                 int result =3D PTR_ERR(battery->bat);
+
+I'm not sure why you need to add hook when power_supply_register_no_ws() fa=
+iled.
+
+>         }
+> -
+> +       battery_hook_remove_battery(battery);
+
+No need to remove an empty line.
+
+-- =
+
+With Best Regards,
+Andy Shevchenko
+
+--===============4208670313435309167==--
 
