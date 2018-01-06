@@ -1,51 +1,174 @@
-Content-Type: multipart/mixed; boundary="===============2399799367182009000=="
+Content-Type: multipart/mixed; boundary="===============8770036406175953390=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] ACPICA version 20180105 released
-Date: Fri, 05 Jan 2018 17:00:39 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E3B7502010@ORSMSX110.amr.corp.intel.com>
+From: Dongjiu Geng <gengdongjiu at huawei.com>
+Subject: [Devel] [PATCH v9 3/7] acpi: apei: Add SEI notification type support
+ for ARMv8
+Date: Sun, 07 Jan 2018 00:02:53 +0800
+Message-ID: <1515254577-6460-4-git-send-email-gengdongjiu@huawei.com>
+In-Reply-To: 1515254577-6460-1-git-send-email-gengdongjiu@huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2399799367182009000==
+--===============8770036406175953390==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-05 January 2018. Summary of changes for version 20180105:
+ARMv8.2 requires implementation of the RAS extension. In
+this extension, it adds SEI(SError Interrupt) notification
+type, this patch adds new GHES error source SEI handling
+functions. This error source parsing and handling method
+is similar with the SEA.
 
-This release is available at https://acpica.org/downloads
+Expose API ghes_notify_sei() to external users. External
+modules can call this exposed API to parse APEI table and
+handle the SEI notification.
+
+Signed-off-by: Dongjiu Geng <gengdongjiu(a)huawei.com>
+---
+ drivers/acpi/apei/Kconfig | 15 ++++++++++++++
+ drivers/acpi/apei/ghes.c  | 53 +++++++++++++++++++++++++++++++++++++++++++=
+++++
+ include/acpi/ghes.h       |  1 +
+ 3 files changed, 69 insertions(+)
+
+diff --git a/drivers/acpi/apei/Kconfig b/drivers/acpi/apei/Kconfig
+index 52ae543..ff4afc3 100644
+--- a/drivers/acpi/apei/Kconfig
++++ b/drivers/acpi/apei/Kconfig
+@@ -55,6 +55,21 @@ config ACPI_APEI_SEA
+ 	  option allows the OS to look for such hardware error record, and
+ 	  take appropriate action.
+ =
+
++config ACPI_APEI_SEI
++	bool "APEI SError(System Error) Interrupt logging/recovering support"
++	depends on ARM64 && ACPI_APEI_GHES
++	default y
++	help
++	  This option should be enabled if the system supports
++	  firmware first handling of SEI (SError interrupt).
++
++	  SEI happens with asynchronous external abort for errors on device
++	  memory reads on ARMv8 systems. If a system supports firmware first
++	  handling of SEI, the platform analyzes and handles hardware error
++	  notifications from SEI, and it may then form a hardware error record for
++	  the OS to parse and handle. This option allows the OS to look for
++	  such hardware error record, and take appropriate action.
++
+ config ACPI_APEI_MEMORY_FAILURE
+ 	bool "APEI memory error recovering support"
+ 	depends on ACPI_APEI && MEMORY_FAILURE
+diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
+index 6a3f824..67cd3a7 100644
+--- a/drivers/acpi/apei/ghes.c
++++ b/drivers/acpi/apei/ghes.c
+@@ -855,6 +855,46 @@ static inline void ghes_sea_add(struct ghes *ghes) { }
+ static inline void ghes_sea_remove(struct ghes *ghes) { }
+ #endif /* CONFIG_ACPI_APEI_SEA */
+ =
+
++#ifdef CONFIG_ACPI_APEI_SEI
++static LIST_HEAD(ghes_sei);
++
++/*
++ * Return 0 only if one of the SEI error sources successfully reported an =
+error
++ * record sent from the firmware.
++ */
++int ghes_notify_sei(void)
++{
++	struct ghes *ghes;
++	int ret =3D -ENOENT;
++
++	rcu_read_lock();
++	list_for_each_entry_rcu(ghes, &ghes_sei, list) {
++		if (!ghes_proc(ghes))
++			ret =3D 0;
++	}
++	rcu_read_unlock();
++	return ret;
++}
++
++static void ghes_sei_add(struct ghes *ghes)
++{
++	mutex_lock(&ghes_list_mutex);
++	list_add_rcu(&ghes->list, &ghes_sei);
++	mutex_unlock(&ghes_list_mutex);
++}
++
++static void ghes_sei_remove(struct ghes *ghes)
++{
++	mutex_lock(&ghes_list_mutex);
++	list_del_rcu(&ghes->list);
++	mutex_unlock(&ghes_list_mutex);
++	synchronize_rcu();
++}
++#else /* CONFIG_ACPI_APEI_SEI */
++static inline void ghes_sei_add(struct ghes *ghes) { }
++static inline void ghes_sei_remove(struct ghes *ghes) { }
++#endif /* CONFIG_ACPI_APEI_SEI */
++
+ #ifdef CONFIG_HAVE_ACPI_APEI_NMI
+ /*
+  * printk is not safe in NMI context.  So in NMI handler, we allocate
+@@ -1086,6 +1126,13 @@ static int ghes_probe(struct platform_device *ghes_d=
+ev)
+ 			goto err;
+ 		}
+ 		break;
++	case ACPI_HEST_NOTIFY_SEI:
++		if (!IS_ENABLED(CONFIG_ACPI_APEI_SEI)) {
++			pr_warn(GHES_PFX "Generic hardware error source: %d notified via SEI is=
+ not supported!\n",
++				generic->header.source_id);
++		goto err;
++	}
++	break;
+ 	case ACPI_HEST_NOTIFY_NMI:
+ 		if (!IS_ENABLED(CONFIG_HAVE_ACPI_APEI_NMI)) {
+ 			pr_warn(GHES_PFX "Generic hardware error source: %d notified via NMI in=
+terrupt is not supported!\n",
+@@ -1158,6 +1205,9 @@ static int ghes_probe(struct platform_device *ghes_de=
+v)
+ 	case ACPI_HEST_NOTIFY_SEA:
+ 		ghes_sea_add(ghes);
+ 		break;
++	case ACPI_HEST_NOTIFY_SEI:
++		ghes_sei_add(ghes);
++		break;
+ 	case ACPI_HEST_NOTIFY_NMI:
+ 		ghes_nmi_add(ghes);
+ 		break;
+@@ -1211,6 +1261,9 @@ static int ghes_remove(struct platform_device *ghes_d=
+ev)
+ 	case ACPI_HEST_NOTIFY_SEA:
+ 		ghes_sea_remove(ghes);
+ 		break;
++	case ACPI_HEST_NOTIFY_SEI:
++		ghes_sei_remove(ghes);
++		break;
+ 	case ACPI_HEST_NOTIFY_NMI:
+ 		ghes_nmi_remove(ghes);
+ 		break;
+diff --git a/include/acpi/ghes.h b/include/acpi/ghes.h
+index 8feb0c8..9ba59e2 100644
+--- a/include/acpi/ghes.h
++++ b/include/acpi/ghes.h
+@@ -120,5 +120,6 @@ static inline void *acpi_hest_get_next(struct acpi_hest=
+_generic_data *gdata)
+ 	     section =3D acpi_hest_get_next(section))
+ =
+
+ int ghes_notify_sea(void);
++int ghes_notify_sei(void);
+ =
+
+ #endif /* GHES_H */
+-- =
+
+1.9.1
 
 
-1) ACPICA kernel-resident subsystem:
-
-Updated all copyrights to 2018. This affects all source code modules.
-
-Fixed a possible build error caused by an unresolved reference to the AcpiU=
-tSafeStrncpy function.
-
-Removed NULL pointer arithmetic in the various pointer manipulation macros.=
- All "(void *) NULL" constructs are converted to "(void *) 0". This elimina=
-tes warnings/errors in newer C compilers. Jung-uk Kim.
-
-Added support for A32 ABI compilation, which uses the ILP32 model. Anuj Mit=
-tal.
-
-
-2) iASL Compiler/Disassembler and Tools:
-
-ASLTS: Updated all copyrights to 2018.
-
-Tools: Updated all signon copyrights to 2018.
-
-AcpiXtract: Fixed a regression related to ACPI table signatures where the s=
-ignature was truncated to 3 characters (instead of 4).
-
-AcpiExec: Restore the original terminal mode after the use of the -v and -v=
-d options.
-
-ASLTS: Deployed the iASL __METHOD__ macro across the test suite.
-
-
---===============2399799367182009000==--
+--===============8770036406175953390==--
 
