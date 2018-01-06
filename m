@@ -1,118 +1,148 @@
-Content-Type: multipart/mixed; boundary="===============4179584884285242312=="
+Content-Type: multipart/mixed; boundary="===============4296893457545566451=="
 MIME-Version: 1.0
 From: Dongjiu Geng <gengdongjiu at huawei.com>
-Subject: [Devel] [PATCH v9 4/7] KVM: arm64: Trap RAS error registers and set
- HCR_EL2's TERR & TEA
-Date: Sun, 07 Jan 2018 00:02:54 +0800
-Message-ID: <1515254577-6460-5-git-send-email-gengdongjiu@huawei.com>
+Subject: [Devel] [PATCH v9 1/7] arm64: cpufeature: Detect CPU RAS Extentions
+Date: Sun, 07 Jan 2018 00:02:51 +0800
+Message-ID: <1515254577-6460-2-git-send-email-gengdongjiu@huawei.com>
 In-Reply-To: 1515254577-6460-1-git-send-email-gengdongjiu@huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4179584884285242312==
+--===============4296893457545566451==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-ARMv8.2 adds a new bit HCR_EL2.TEA which routes synchronous external
-aborts to EL2, and adds a trap control bit HCR_EL2.TERR which traps
-all Non-secure EL1&0 error record accesses to EL2.
+From: Xie XiuQi <xiexiuqi(a)huawei.com>
 
-This patch enables the two bits for the guest OS, guaranteeing that
-KVM takes external aborts and traps attempts to access the physical
-error registers.
+ARM's v8.2 Extentions add support for Reliability, Availability and
+Serviceability (RAS). On CPUs with these extensions system software
+can use additional barriers to isolate errors and determine if faults
+are pending.
 
-ERRIDR_EL1 advertises the number of error records, we return
-zero meaning we can treat all the other registers as RAZ/WI too.
+Add cpufeature detection and a barrier in the context-switch code.
+There is no need to use alternatives for this as CPUs that don't
+support this feature will treat the instruction as a nop.
 
-Signed-off-by: Dongjiu Geng <gengdongjiu(a)huawei.com>
-[removed specific emulation, use trap_raz_wi() directly for everything,
- rephrased parts of the commit message]
+Platform level RAS support may require additional firmware support.
+
+Signed-off-by: Xie XiuQi <xiexiuqi(a)huawei.com>
+[Rebased added config option, reworded commit message]
 Signed-off-by: James Morse <james.morse(a)arm.com>
+Signed-off-by: Dongjiu Geng <gengdongjiu(a)huawei.com>
+Reviewed-by: Catalin Marinas <catalin.marinas(a)arm.com>
 ---
- arch/arm64/include/asm/kvm_arm.h     |  2 ++
- arch/arm64/include/asm/kvm_emulate.h |  7 +++++++
- arch/arm64/include/asm/sysreg.h      | 10 ++++++++++
- arch/arm64/kvm/sys_regs.c            | 10 ++++++++++
- 4 files changed, 29 insertions(+)
+ arch/arm64/Kconfig               | 16 ++++++++++++++++
+ arch/arm64/include/asm/cpucaps.h |  3 ++-
+ arch/arm64/include/asm/sysreg.h  |  2 ++
+ arch/arm64/kernel/cpufeature.c   | 13 +++++++++++++
+ 4 files changed, 33 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/include/asm/kvm_arm.h b/arch/arm64/include/asm/kvm_=
-arm.h
-index 61d694c..1188272 100644
---- a/arch/arm64/include/asm/kvm_arm.h
-+++ b/arch/arm64/include/asm/kvm_arm.h
-@@ -23,6 +23,8 @@
- #include <asm/types.h>
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 0df64a6..cc00d10 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -973,6 +973,22 @@ config ARM64_PMEM
+ 	  operations if DC CVAP is not supported (following the behaviour of
+ 	  DC CVAP itself if the system does not define a point of persistence).
  =
 
- /* Hyp Configuration Register (HCR) bits */
-+#define HCR_TEA		(UL(1) << 37)
-+#define HCR_TERR	(UL(1) << 36)
- #define HCR_E2H		(UL(1) << 34)
- #define HCR_ID		(UL(1) << 33)
- #define HCR_CD		(UL(1) << 32)
-diff --git a/arch/arm64/include/asm/kvm_emulate.h b/arch/arm64/include/asm/=
-kvm_emulate.h
-index e5df3fc..555b28b 100644
---- a/arch/arm64/include/asm/kvm_emulate.h
-+++ b/arch/arm64/include/asm/kvm_emulate.h
-@@ -47,6 +47,13 @@ static inline void vcpu_reset_hcr(struct kvm_vcpu *vcpu)
- 	vcpu->arch.hcr_el2 =3D HCR_GUEST_FLAGS;
- 	if (is_kernel_in_hyp_mode())
- 		vcpu->arch.hcr_el2 |=3D HCR_E2H;
-+	if (cpus_have_const_cap(ARM64_HAS_RAS_EXTN)) {
-+		/* route synchronous external abort exceptions to EL2 */
-+		vcpu->arch.hcr_el2 |=3D HCR_TEA;
-+		/* trap error record accesses */
-+		vcpu->arch.hcr_el2 |=3D HCR_TERR;
-+	}
++config ARM64_RAS_EXTN
++	bool "Enable support for RAS CPU Extensions"
++	default y
++	help
++	  CPUs that support the Reliability, Availability and Serviceability
++	  (RAS) Extensions, part of ARMv8.2 are able to track faults and
++	  errors, classify them and report them to software.
 +
- 	if (test_bit(KVM_ARM_VCPU_EL1_32BIT, vcpu->arch.features))
- 		vcpu->arch.hcr_el2 &=3D ~HCR_RW;
- }
++	  On CPUs with these extensions system software can use additional
++	  barriers to determine if faults are pending and read the
++	  classification from a new set of registers.
++
++	  Selecting this feature will allow the kernel to use these barriers
++	  and access the new registers if the system supports the extension.
++	  Platform RAS features may additionally depend on firmware support.
++
+ endmenu
+ =
+
+ config ARM64_MODULE_CMODEL_LARGE
+diff --git a/arch/arm64/include/asm/cpucaps.h b/arch/arm64/include/asm/cpuc=
+aps.h
+index 8da6216..4820d44 100644
+--- a/arch/arm64/include/asm/cpucaps.h
++++ b/arch/arm64/include/asm/cpucaps.h
+@@ -40,7 +40,8 @@
+ #define ARM64_WORKAROUND_858921			19
+ #define ARM64_WORKAROUND_CAVIUM_30115		20
+ #define ARM64_HAS_DCPOP				21
++#define ARM64_HAS_RAS_EXTN			22
+ =
+
+-#define ARM64_NCAPS				22
++#define ARM64_NCAPS				23
+ =
+
+ #endif /* __ASM_CPUCAPS_H */
 diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysre=
 g.h
-index 64e2a80..47b967d 100644
+index f707fed..64e2a80 100644
 --- a/arch/arm64/include/asm/sysreg.h
 +++ b/arch/arm64/include/asm/sysreg.h
-@@ -169,6 +169,16 @@
- #define SYS_AFSR0_EL1			sys_reg(3, 0, 5, 1, 0)
- #define SYS_AFSR1_EL1			sys_reg(3, 0, 5, 1, 1)
- #define SYS_ESR_EL1			sys_reg(3, 0, 5, 2, 0)
-+
-+#define SYS_ERRIDR_EL1			sys_reg(3, 0, 5, 3, 0)
-+#define SYS_ERRSELR_EL1			sys_reg(3, 0, 5, 3, 1)
-+#define SYS_ERXFR_EL1			sys_reg(3, 0, 5, 4, 0)
-+#define SYS_ERXCTLR_EL1			sys_reg(3, 0, 5, 4, 1)
-+#define SYS_ERXSTATUS_EL1		sys_reg(3, 0, 5, 4, 2)
-+#define SYS_ERXADDR_EL1			sys_reg(3, 0, 5, 4, 3)
-+#define SYS_ERXMISC0_EL1		sys_reg(3, 0, 5, 5, 0)
-+#define SYS_ERXMISC1_EL1		sys_reg(3, 0, 5, 5, 1)
-+
- #define SYS_FAR_EL1			sys_reg(3, 0, 6, 0, 0)
- #define SYS_PAR_EL1			sys_reg(3, 0, 7, 4, 0)
+@@ -332,6 +332,7 @@
+ #define ID_AA64ISAR1_DPB_SHIFT		0
  =
 
-diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
-index 2e070d3..2b1fafa 100644
---- a/arch/arm64/kvm/sys_regs.c
-+++ b/arch/arm64/kvm/sys_regs.c
-@@ -953,6 +953,16 @@ static bool access_cntp_cval(struct kvm_vcpu *vcpu,
- 	{ SYS_DESC(SYS_AFSR0_EL1), access_vm_reg, reset_unknown, AFSR0_EL1 },
- 	{ SYS_DESC(SYS_AFSR1_EL1), access_vm_reg, reset_unknown, AFSR1_EL1 },
- 	{ SYS_DESC(SYS_ESR_EL1), access_vm_reg, reset_unknown, ESR_EL1 },
-+
-+	{ SYS_DESC(SYS_ERRIDR_EL1), trap_raz_wi },
-+	{ SYS_DESC(SYS_ERRSELR_EL1), trap_raz_wi },
-+	{ SYS_DESC(SYS_ERXFR_EL1), trap_raz_wi },
-+	{ SYS_DESC(SYS_ERXCTLR_EL1), trap_raz_wi },
-+	{ SYS_DESC(SYS_ERXSTATUS_EL1), trap_raz_wi },
-+	{ SYS_DESC(SYS_ERXADDR_EL1), trap_raz_wi },
-+	{ SYS_DESC(SYS_ERXMISC0_EL1), trap_raz_wi },
-+	{ SYS_DESC(SYS_ERXMISC1_EL1), trap_raz_wi },
-+
- 	{ SYS_DESC(SYS_FAR_EL1), access_vm_reg, reset_unknown, FAR_EL1 },
- 	{ SYS_DESC(SYS_PAR_EL1), NULL, reset_unknown, PAR_EL1 },
+ /* id_aa64pfr0 */
++#define ID_AA64PFR0_RAS_SHIFT		28
+ #define ID_AA64PFR0_GIC_SHIFT		24
+ #define ID_AA64PFR0_ASIMD_SHIFT		20
+ #define ID_AA64PFR0_FP_SHIFT		16
+@@ -340,6 +341,7 @@
+ #define ID_AA64PFR0_EL1_SHIFT		4
+ #define ID_AA64PFR0_EL0_SHIFT		0
+ =
+
++#define ID_AA64PFR0_RAS_V1		0x1
+ #define ID_AA64PFR0_FP_NI		0xf
+ #define ID_AA64PFR0_FP_SUPPORTED	0x0
+ #define ID_AA64PFR0_ASIMD_NI		0xf
+diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+index 21e2c95..4846974 100644
+--- a/arch/arm64/kernel/cpufeature.c
++++ b/arch/arm64/kernel/cpufeature.c
+@@ -125,6 +125,7 @@ static int __init register_cpu_hwcaps_dumper(void)
+ };
+ =
+
+ static const struct arm64_ftr_bits ftr_id_aa64pfr0[] =3D {
++	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_EXACT, ID_AA64PFR0_RAS_SHIFT, =
+4, 0),
+ 	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_EXACT, ID_AA64PFR0_GIC_SHIFT, =
+4, 0),
+ 	S_ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64PFR0_ASI=
+MD_SHIFT, 4, ID_AA64PFR0_ASIMD_NI),
+ 	S_ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64PFR0_FP_=
+SHIFT, 4, ID_AA64PFR0_FP_NI),
+@@ -900,6 +901,18 @@ static bool has_no_fpsimd(const struct arm64_cpu_capab=
+ilities *entry, int __unus
+ 		.min_field_value =3D 1,
+ 	},
+ #endif
++#ifdef CONFIG_ARM64_RAS_EXTN
++	{
++		.desc =3D "RAS Extension Support",
++		.capability =3D ARM64_HAS_RAS_EXTN,
++		.def_scope =3D SCOPE_SYSTEM,
++		.matches =3D has_cpuid_feature,
++		.sys_reg =3D SYS_ID_AA64PFR0_EL1,
++		.sign =3D FTR_UNSIGNED,
++		.field_pos =3D ID_AA64PFR0_RAS_SHIFT,
++		.min_field_value =3D ID_AA64PFR0_RAS_V1,
++	},
++#endif /* CONFIG_ARM64_RAS_EXTN */
+ 	{},
+ };
  =
 
 -- =
@@ -120,5 +150,5 @@ index 2e070d3..2b1fafa 100644
 1.9.1
 
 
---===============4179584884285242312==--
+--===============4296893457545566451==--
 
