@@ -1,63 +1,150 @@
-Content-Type: multipart/mixed; boundary="===============7832912835398410436=="
+Content-Type: multipart/mixed; boundary="===============0993540228060794340=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] ACPICA team
-Date: Thu, 11 Jan 2018 20:41:09 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E3B7503CC3@ORSMSX110.amr.corp.intel.com>
+From: James Morse <james.morse at arm.com>
+Subject: Re: [Devel] [PATCH v8 7/7] arm64: kvm: handle SError Interrupt by
+ categorization
+Date: Fri, 12 Jan 2018 18:05:23 +0000
+Message-ID: <5A58F8E3.5060002@arm.com>
+In-Reply-To: 506cd212-3d16-ba2a-518f-34982bc162fc@huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7832912835398410436==
+--===============0993540228060794340==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-We'll be offline for a couple of days, back on Tuesday.
-So, we won't be able to respond to questions, etc. until then.
-Bob
+Hi gengdongjiu,
+
+On 15/12/17 03:30, gengdongjiu wrote:
+> On 2017/12/7 14:37, gengdongjiu wrote:
+>>> We need to tackle (1) and (3) separately. For (3) we need some API that=
+ lets
+>>> Qemu _trigger_ an SError in the guest, with a specified ESR. But, we do=
+n't have
+>>> a way of migrating pending SError yet... which is where I got stuck las=
+t time I
+>>> was looking at this.
+>> I understand you most idea.
+>>
+>> But In the Qemu one signal type can only correspond to one behavior, can=
+ not correspond to two behaviors,
+>> otherwise Qemu will do not know how to do.
+>>
+>> For the Qemu, if it receives the SIGBUS_MCEERR_AR signal, it will popula=
+te the CPER
+>> records and inject a SEA to guest through KVM IOCTL "KVM_SET_ONE_REG"; i=
+f receives the SIGBUS_MCEERR_AO
+>> signal, it will record the CPER and trigger a IRQ to notify guest, as sh=
+own below:
+>>
+>> SIGBUS_MCEERR_AR trigger Synchronous External Abort.
+>> SIGBUS_MCEERR_AO trigger GPIO IRQ.
+>>
+>> For the SIGBUS_MCEERR_AO and SIGBUS_MCEERR_AR, we have already specify t=
+rigger method, which all
+>>
+>> not involve _trigger_ an SError.
+>>
+>> so there is no chance for Qemu to trigger the SError when gets the SIGBU=
+S_MCEERR_A{O,R}.
+> =
+
+> As I explained above:
+> =
+
+> If Qemu received SIGBUS_MCEERR_AR, it will record CPER and trigger Synchr=
+onous External Abort;
+> If Qemu received SIGBUS_MCEERR_AO, it will record CPER and trigger GPIO I=
+RQ;
+
+> So Qemu does not know when to _trigger_ an SError.
+
+There is no answer to this. How the CPU decides is specific to the CPU desi=
+gn.
+How Qemu decides is going to be specific to the machine it emulates.
+
+My understanding is there is some overlap for which RAS errors are reported=
+ as
+synchronous external abort, and which use SError. (Obviously the imprecise =
+ones
+are all SError). Which one the CPU uses depends on how the CPU is designed.
+
+When you take an SIGBUS_MCEERR_AR from KVM, its because KVM can't complete a
+stage2 fault because the page is marked with PG_poisoned. These started out=
+ as a
+synchronous exception, but you could still report these with SError.
+
+We don't have a way to signal user-space about imprecise exceptions, this i=
+sn't
+a KVM specific problem.
 
 
+> so here I "return a error" to Qemu if ghes_notify_sei() return failure in=
+ [1], if you opposed KVM "return error",
+> do you have a better idea about it? thanks
 
---===============7832912835398410436==
-Content-Type: text/html
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="attachment.html"
+If ghes_notify_sei() fails to claim the error, we should drop through to
+kernel-first-handling. We don't have that yet, just the stub that ignores e=
+rrors
+where we can make progress.
 
-PGh0bWwgeG1sbnM6dj0idXJuOnNjaGVtYXMtbWljcm9zb2Z0LWNvbTp2bWwiIHhtbG5zOm89InVy
-bjpzY2hlbWFzLW1pY3Jvc29mdC1jb206b2ZmaWNlOm9mZmljZSIgeG1sbnM6dz0idXJuOnNjaGVt
-YXMtbWljcm9zb2Z0LWNvbTpvZmZpY2U6d29yZCIgeG1sbnM6bT0iaHR0cDovL3NjaGVtYXMubWlj
-cm9zb2Z0LmNvbS9vZmZpY2UvMjAwNC8xMi9vbW1sIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcv
-VFIvUkVDLWh0bWw0MCI+CjxoZWFkPgo8bWV0YSBodHRwLWVxdWl2PSJDb250ZW50LVR5cGUiIGNv
-bnRlbnQ9InRleHQvaHRtbDsgY2hhcnNldD11cy1hc2NpaSI+CjxtZXRhIG5hbWU9IkdlbmVyYXRv
-ciIgY29udGVudD0iTWljcm9zb2Z0IFdvcmQgMTUgKGZpbHRlcmVkIG1lZGl1bSkiPgo8c3R5bGU+
-PCEtLQovKiBGb250IERlZmluaXRpb25zICovCkBmb250LWZhY2UKCXtmb250LWZhbWlseToiQ2Ft
-YnJpYSBNYXRoIjsKCXBhbm9zZS0xOjIgNCA1IDMgNSA0IDYgMyAyIDQ7fQpAZm9udC1mYWNlCgl7
-Zm9udC1mYW1pbHk6Q2FsaWJyaTsKCXBhbm9zZS0xOjIgMTUgNSAyIDIgMiA0IDMgMiA0O30KLyog
-U3R5bGUgRGVmaW5pdGlvbnMgKi8KcC5Nc29Ob3JtYWwsIGxpLk1zb05vcm1hbCwgZGl2Lk1zb05v
-cm1hbAoJe21hcmdpbjowaW47CgltYXJnaW4tYm90dG9tOi4wMDAxcHQ7Cglmb250LXNpemU6MTEu
-MHB0OwoJZm9udC1mYW1pbHk6IkNhbGlicmkiLHNhbnMtc2VyaWY7fQphOmxpbmssIHNwYW4uTXNv
-SHlwZXJsaW5rCgl7bXNvLXN0eWxlLXByaW9yaXR5Ojk5OwoJY29sb3I6IzA1NjNDMTsKCXRleHQt
-ZGVjb3JhdGlvbjp1bmRlcmxpbmU7fQphOnZpc2l0ZWQsIHNwYW4uTXNvSHlwZXJsaW5rRm9sbG93
-ZWQKCXttc28tc3R5bGUtcHJpb3JpdHk6OTk7Cgljb2xvcjojOTU0RjcyOwoJdGV4dC1kZWNvcmF0
-aW9uOnVuZGVybGluZTt9CnNwYW4uRW1haWxTdHlsZTE3Cgl7bXNvLXN0eWxlLXR5cGU6cGVyc29u
-YWwtY29tcG9zZTsKCWZvbnQtZmFtaWx5OiJDYWxpYnJpIixzYW5zLXNlcmlmOwoJY29sb3I6d2lu
-ZG93dGV4dDt9Ci5Nc29DaHBEZWZhdWx0Cgl7bXNvLXN0eWxlLXR5cGU6ZXhwb3J0LW9ubHk7Cglm
-b250LWZhbWlseToiQ2FsaWJyaSIsc2Fucy1zZXJpZjt9CkBwYWdlIFdvcmRTZWN0aW9uMQoJe3Np
-emU6OC41aW4gMTEuMGluOwoJbWFyZ2luOjEuMGluIDEuMGluIDEuMGluIDEuMGluO30KZGl2Lldv
-cmRTZWN0aW9uMQoJe3BhZ2U6V29yZFNlY3Rpb24xO30KLS0+PC9zdHlsZT48IS0tW2lmIGd0ZSBt
-c28gOV0+PHhtbD4KPG86c2hhcGVkZWZhdWx0cyB2OmV4dD0iZWRpdCIgc3BpZG1heD0iMTAyNiIg
-Lz4KPC94bWw+PCFbZW5kaWZdLS0+PCEtLVtpZiBndGUgbXNvIDldPjx4bWw+CjxvOnNoYXBlbGF5
-b3V0IHY6ZXh0PSJlZGl0Ij4KPG86aWRtYXAgdjpleHQ9ImVkaXQiIGRhdGE9IjEiIC8+Cjwvbzpz
-aGFwZWxheW91dD48L3htbD48IVtlbmRpZl0tLT4KPC9oZWFkPgo8Ym9keSBsYW5nPSJFTi1VUyIg
-bGluaz0iIzA1NjNDMSIgdmxpbms9IiM5NTRGNzIiPgo8ZGl2IGNsYXNzPSJXb3JkU2VjdGlvbjEi
-Pgo8cCBjbGFzcz0iTXNvTm9ybWFsIj5XZSYjODIxNztsbCBiZSBvZmZsaW5lIGZvciBhIGNvdXBs
-ZSBvZiBkYXlzLCBiYWNrIG9uIFR1ZXNkYXkuPG86cD48L286cD48L3A+CjxwIGNsYXNzPSJNc29O
-b3JtYWwiPlNvLCB3ZSB3b24mIzgyMTc7dCBiZSBhYmxlIHRvIHJlc3BvbmQgdG8gcXVlc3Rpb25z
-LCBldGMuIHVudGlsIHRoZW4uPG86cD48L286cD48L3A+CjxwIGNsYXNzPSJNc29Ob3JtYWwiPkJv
-YjxvOnA+PC9vOnA+PC9wPgo8cCBjbGFzcz0iTXNvTm9ybWFsIj48bzpwPiZuYnNwOzwvbzpwPjwv
-cD4KPHAgY2xhc3M9Ik1zb05vcm1hbCI+PG86cD4mbmJzcDs8L286cD48L3A+CjwvZGl2Pgo8L2Jv
-ZHk+CjwvaHRtbD4K
+If neither firmware-first nor kernel-first claim a RAS error, we're in trou=
+ble.
+I'd like to panic() as we got a RAS notification but no description of the
+error. We can't do this until we have kernel-first support, hence that stub.
 
---===============7832912835398410436==--
+
+> About the way of migrating pending SError, I think it is a separate case,=
+ because Qemu still does not know
+> how and when to trigger the SError.
+
+I agree, but I think we should fix this first before we add another user of=
+ this
+unmigratable hypervisor state.
+
+(I recall someone saying migration is needed for any new KVM/cpu features, =
+but I
+can't find the thread)
+
+
+> [1]:
+> static int kvm_handle_guest_sei(struct kvm_vcpu *vcpu, struct kvm_run *ru=
+n)
+> {
+>         .......................
+> +       case ESR_ELx_AET_UER:   /* The error has not been propagated */
+> +               /*
+> +                * Userspace only handle the guest SError Interrupt(SEI) =
+if the
+> +                * error has not been propagated
+> +                */
+> +               run->exit_reason =3D KVM_EXIT_EXCEPTION;
+> +               run->ex.exception =3D ESR_ELx_EC_SERROR;
+
+I'm against telling user space RAS errors ever happened, only the final
+user-visible error when the kernel can't fix it.
+
+This is inventing something new for RAS errors not claimed by firmware-firs=
+t.
+If we have kernel-first too, this will never happen. (unless your system is
+losing the error description).
+
+
+Your system has firmware-first, why isn't it claiming the notification?
+If its not finding CPER records written by firmware, check firmware and the=
+ UEFI
+memory map agree on the attributes to be used when read/writing that area.
+
+
+> +               run->ex.error_code =3D KVM_SEI_SEV_RECOVERABLE;
+> +               return 0;
+
+
+Thanks,
+
+James
+
+
+--===============0993540228060794340==--
 
