@@ -1,119 +1,90 @@
-Content-Type: multipart/mixed; boundary="===============7107551112451600228=="
+Content-Type: multipart/mixed; boundary="===============4612597763387112506=="
 MIME-Version: 1.0
-From: Schmauss, Erik <erik.schmauss at intel.com>
-Subject: Re: [Devel] ACPI: Do not call _STA on battery devices with unmet
- dependencies
-Date: Fri, 19 Jan 2018 21:03:43 +0000
-Message-ID: <CF6A88132359CE47947DB4C6E1709ED5396D2A4C@ORSMSX110.amr.corp.intel.com>
-In-Reply-To: 20180118191112.GI53542@bhelgaas-glaptop.roam.corp.google.com
+From: James Morse <james.morse at arm.com>
+Subject: Re: [Devel] [PATCH v8 7/7] arm64: kvm: handle SError Interrupt by
+ categorization
+Date: Mon, 22 Jan 2018 19:32:12 +0000
+Message-ID: <5A663C3C.7040904@arm.com>
+In-Reply-To: CAMj-D2C5Bz3r-w9v3QasZKK-W2JBY7Mx9W=yCDBnPYyk99gGzA@mail.gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7107551112451600228==
+--===============4612597763387112506==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
+Hi gengdongjiu,
 
-> -----Original Message-----
-> From: linux-acpi-owner(a)vger.kernel.org [mailto:linux-acpi-
-> owner(a)vger.kernel.org] On Behalf Of Bjorn Helgaas
-> Sent: Thursday, January 18, 2018 11:11 AM
-> To: Hans de Goede <hdegoede(a)redhat.com>
-> Cc: Rafael J . Wysocki <rjw(a)rjwysocki.net>; Len Brown <lenb(a)kernel.or=
-g>;
-> Bjorn Helgaas <bhelgaas(a)google.com>; Moore, Robert
-> <robert.moore(a)intel.com>; Zheng, Lv <lv.zheng(a)intel.com>; linux-
-> acpi(a)vger.kernel.org; linux-pci(a)vger.kernel.org; devel(a)acpica.org
-> Subject: Re: ACPI: Do not call _STA on battery devices with unmet depende=
-ncies
-> =
+On 21/01/18 02:45, gengdongjiu wrote:
+> For the ESR_ELx_AET_UER, this exception is precise, closing the VM may
+> be better[1].
+> But if you think panic is better until we support kernel-first, it is
+> also OK to me.
 
-> On Thu, Jan 18, 2018 at 05:03:55PM +0100, Hans de Goede wrote:
+I'm not convinced SError while a guest was running means only guest memory =
+could
+be affected. Mechanisms like KSM means the error could affect multiple gues=
+ts.
 
-Hi Hans,
+Both firmware-fist and kernel-first will give us the address, with which we=
+ can
+know which processes are affected, isolated the memory and signal affected
+processes.
 
-> > Hi All,
-> >
-> > The ACPI code already contains quite a bit of code to not bind the
-> > ACPI-battery until all deps for an ACPI battery device have been met,
-> > but on some devices calling _STA before all deps are met is a problem
-> > too because the _STA method uses an i2c OpRegion there.
+Until we have one of these panic() is the only way we have to contain an er=
+ror,
+but its an interim fix.
+Not panic()ing the host for an error that should be contained to the guest =
+is a
+fudge, we don't actually know its safe (KSM, page-table etc). I want to imp=
+rove
+on this with {firmware, kernel}-first support (or both!), I don't want to e=
+xpose
+that this is happening to user-space, as once we have one of {firmware,
+kernel}-first, it shouldn't happen.
 
-Could you explain why _STA method using an I2C OpRegion is problematic?
+
+>> This is inventing something new for RAS errors not claimed by firmware-f=
+irst.
+>> If we have kernel-first too, this will never happen. (unless your system=
+ is
+>> losing the error description).
+
+> In fact, if we have kernel-first, I think we still need to judge the
+> error type by ESR, right?
+
+The kernel-first mechanism should consider the ESR/FAR, yes, but once the e=
+rror
+has been claimed and handled, KVM shouldn't care about any of these values.
+(maybe we'll sanity check for uncontained errors, just in case the error es=
+caped
+to the RAS code...)
+
+My point here was exposing 'unhandled' (ignored) RAS errors to user-space
+creates an ABI: someone will complain once we start handling the error, and=
+ they
+no longer get a notification via this 'unhandled' interface. Code written t=
+o use
+this interface becomes useless/untested.
+
+
+> If the handle_guest_sei() , may be the system does not support firmware-f=
+irst,
+> so we judge the ESR value,
+
+...and panic()/ignore as appropriate.
+
+I agree not all systems will support firmware-first, (big-endian is the obv=
+ious
+example), but if we get kernel-first support this ESR guessing can disappea=
+r,
+I'm against exposing it to user-space in the meantime.
+
 
 Thanks,
-Erik
 
-> >
-> > Here is the DSDT of the device I'm seeing this on:
-> > https://fedorapeople.org/~jwrdegoede/toshiba-click-mini-dsdt.dsl
-> =
+James
 
-> This looks like interesting info, but (a) this link isn't mentioned in th=
-e actual
-> patches, and (b) it's conceivable that fedorapeople.org could go away som=
-eday.
-> If this were a PCI series, I would suggest opening a report at bugzilla.k=
-ernel.org,
-> attaching the DSL there, and including the link in the patch changelog.
-> =
-
-> > This series modifies the kernel to not call _STA until all deps are
-> > met, mirroring the binding behavior of the battery driver.
-> >
-> > Without this series a total of 32 ACPI errors get printend to the
-> > console on boot, there are 4 errors per _STA call, 2 battery devices
-> > on this system and 4 _STA calls per battery device.
-> >
-> > The first commit is a preparation commit for making the ACPICA changes
-> > in the 4th commit, this commit is necessary to not break things after
-> > the ACPICA changes.
-> >
-> > The second commit modifies acpi_bus_get_status to not call _STA on
-> > battery devices until all deps are met. This fixes 2 of the 4 too
-> > early _STA calls triggering these errors.
-> >
-> > The third commit makes the device instantiation code use
-> > acpi_bus_get_status instead of acpi_bus_get_status_handle so that the
-> > code to get the initial status also does not makes 1 too early _STA cal=
-l.
-> >
-> > The fourth commit changes the ACPICA acpi_get_object_info function to
-> > not call _STA. Only 1 user (which is fixed in the first commit) cares
-> > about acpi_device_info.current_status. And the ACPICA code has this
-> comment:
-> >
-> >  * Note: This interface is intended to be used during the initial
-> > device
-> >  * discovery namespace traversal. Therefore, no complex methods can be
-> >  * executed, especially those that access operation regions.
-> > Therefore, do
-> >  * not add any additional methods that could cause problems in this are=
-a.
-> >  * Because of this reason support for the following methods has been
-> removed:
-> >  * this was the fate of the _SUB method which was found to cause such
-> >  * problems and was removed (11/2015).
-> >
-> > The described problems with the _SUB method clearly also apply to the
-> > _STA method, so removing it from acpi_get_object_info seems like it is
-> > the right thing to do here. This too fixes 1 too early _STA call, so
-> > that with all
-> > 4 patches in place we've fixed all 4 too early _STA calls.
-> >
-> > Regards,
-> >
-> > Hans
-> > --
-> > To unsubscribe from this list: send the line "unsubscribe linux-acpi"
-> > in the body of a message to majordomo(a)vger.kernel.org More majordomo
-> > info at  http://vger.kernel.org/majordomo-info.html
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-acpi" in =
-the body of
-> a message to majordomo(a)vger.kernel.org More majordomo info at
-> http://vger.kernel.org/majordomo-info.html
-
---===============7107551112451600228==--
+--===============4612597763387112506==--
 
