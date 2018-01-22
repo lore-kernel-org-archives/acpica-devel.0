@@ -1,90 +1,98 @@
-Content-Type: multipart/mixed; boundary="===============4612597763387112506=="
+Content-Type: multipart/mixed; boundary="===============5674752254498498985=="
 MIME-Version: 1.0
 From: James Morse <james.morse at arm.com>
-Subject: Re: [Devel] [PATCH v8 7/7] arm64: kvm: handle SError Interrupt by
- categorization
-Date: Mon, 22 Jan 2018 19:32:12 +0000
-Message-ID: <5A663C3C.7040904@arm.com>
-In-Reply-To: CAMj-D2C5Bz3r-w9v3QasZKK-W2JBY7Mx9W=yCDBnPYyk99gGzA@mail.gmail.com
+Subject: Re: [Devel] [PATCH v9 3/7] acpi: apei: Add SEI notification type
+ support for ARMv8
+Date: Mon, 22 Jan 2018 19:39:24 +0000
+Message-ID: <5A663DEC.8080804@arm.com>
+In-Reply-To: 1515254577-6460-4-git-send-email-gengdongjiu@huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4612597763387112506==
+--===============5674752254498498985==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi gengdongjiu,
+Hi Dongjiu Geng,
 
-On 21/01/18 02:45, gengdongjiu wrote:
-> For the ESR_ELx_AET_UER, this exception is precise, closing the VM may
-> be better[1].
-> But if you think panic is better until we support kernel-first, it is
-> also OK to me.
+(versions of patches 1,2 and 4 have been queued by Catalin)
 
-I'm not convinced SError while a guest was running means only guest memory =
-could
-be affected. Mechanisms like KSM means the error could affect multiple gues=
-ts.
+(Nit 'ACPI / APEI:' is the normal subject prefix for ghes.c, this helps the
+maintainers know which patches they need to pay attention to when you are
+touching multiple trees)
 
-Both firmware-fist and kernel-first will give us the address, with which we=
- can
-know which processes are affected, isolated the memory and signal affected
-processes.
+On 06/01/18 16:02, Dongjiu Geng wrote:
+> ARMv8.2 requires implementation of the RAS extension.
 
-Until we have one of these panic() is the only way we have to contain an er=
-ror,
-but its an interim fix.
-Not panic()ing the host for an error that should be contained to the guest =
-is a
-fudge, we don't actually know its safe (KSM, page-table etc). I want to imp=
-rove
-on this with {firmware, kernel}-first support (or both!), I don't want to e=
-xpose
-that this is happening to user-space, as once we have one of {firmware,
-kernel}-first, it shouldn't happen.
+> In
+> this extension, it adds SEI(SError Interrupt) notification
+> type, this patch adds new GHES error source SEI handling
+> functions. =
 
 
->> This is inventing something new for RAS errors not claimed by firmware-f=
-irst.
->> If we have kernel-first too, this will never happen. (unless your system=
- is
->> losing the error description).
+This reads as if this patch is handling SError RAS notifications generated =
+by a
+CPU with the RAS extensions. These are about CPU->Software notifications. A=
+PEI
+and GHES are a firmware first mechanism which is Software->Software.
+Reading the v8.2 documents won't help anyone with the APEI/GHES code.
 
-> In fact, if we have kernel-first, I think we still need to judge the
-> error type by ESR, right?
-
-The kernel-first mechanism should consider the ESR/FAR, yes, but once the e=
-rror
-has been claimed and handled, KVM shouldn't care about any of these values.
-(maybe we'll sanity check for uncontained errors, just in case the error es=
-caped
-to the RAS code...)
-
-My point here was exposing 'unhandled' (ignored) RAS errors to user-space
-creates an ABI: someone will complain once we start handling the error, and=
- they
-no longer get a notification via this 'unhandled' interface. Code written t=
-o use
-this interface becomes useless/untested.
+Please describe this from the ACPI view, "ACPI 6.x adds support for NOTIFY_=
+SEI
+as a GHES notification mechanism... ",  its up to the arch code to spot a v=
+8.2
+RAS Error based on the cpu caps.
 
 
-> If the handle_guest_sei() , may be the system does not support firmware-f=
-irst,
-> so we judge the ESR value,
+> This error source parsing and handling method
+> is similar with the SEA.
 
-...and panic()/ignore as appropriate.
+There are problems with doing this:
 
-I agree not all systems will support firmware-first, (big-endian is the obv=
-ious
-example), but if we get kernel-first support this ESR guessing can disappea=
-r,
-I'm against exposing it to user-space in the meantime.
+Oct. 18, 2017, 10:26 a.m. James Morse wrote:
+| How do SEA and SEI interact?
+|
+| As far as I can see they can both interrupt each other, which isn't somet=
+hing
+| the single in_nmi() path in APEI can handle. I thinks we should fix this
+| first.
+
+[..]
+
+| SEA gets away with a lot of things because its synchronous. SEI isn't. Xie
+| XiuQi pointed to the memory_failure_queue() code. We can use this directly
+| from SEA, but not SEI. (what happens if an SError arrives while we are
+| queueing memory_failure work from an IRQ).
+|
+| The one that scares me is the trace-point reporting stuff. What happens i=
+f an
+| SError arrives while we are enabling a trace point? (these are static-keys
+| right?)
+|
+|  I don't think we can just plumb SEI in like this and be done with it.
+|  (I'm looking at teasing out the estatus cache code from being x86:NMI on=
+ly.
+|  This way we solve the same 'cant do this from NMI context' with the same
+|  code'.)
+
+
+I will post what I've got for this estatus-cache thing as an RFC, its not r=
+eady
+to be considered yet.
+
+
+> Expose API ghes_notify_sei() to external users. External
+> modules can call this exposed API to parse APEI table and
+> handle the SEI notification.
+
+external modules? You mean called by the arch code when it gets this NOTIFY=
+_SEI?
 
 
 Thanks,
 
 James
 
---===============4612597763387112506==--
+--===============5674752254498498985==--
 
