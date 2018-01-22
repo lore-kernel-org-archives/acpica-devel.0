@@ -1,98 +1,47 @@
-Content-Type: multipart/mixed; boundary="===============5674752254498498985=="
+Content-Type: multipart/mixed; boundary="===============7990633617450307140=="
 MIME-Version: 1.0
-From: James Morse <james.morse at arm.com>
-Subject: Re: [Devel] [PATCH v9 3/7] acpi: apei: Add SEI notification type
- support for ARMv8
-Date: Mon, 22 Jan 2018 19:39:24 +0000
-Message-ID: <5A663DEC.8080804@arm.com>
-In-Reply-To: 1515254577-6460-4-git-send-email-gengdongjiu@huawei.com
+From: Rafael J. Wysocki <rafael at kernel.org>
+Subject: Re: [Devel] [PATCH v2 1/5] ACPI: export acpi_bus_get_status_handle()
+Date: Tue, 23 Jan 2018 00:55:33 +0100
+Message-ID: <CAJZ5v0g7KppXpk_jRWjKz8-ncdJQHg-QU7oGrgPiBtczgf+gfQ@mail.gmail.com>
+In-Reply-To: 20180122085135.16732-2-hdegoede@redhat.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5674752254498498985==
+--===============7990633617450307140==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi Dongjiu Geng,
+On Mon, Jan 22, 2018 at 9:51 AM, Hans de Goede <hdegoede(a)redhat.com> wrot=
+e:
+> Some modular drivers need this, export it.
+>
+> Signed-off-by: Hans de Goede <hdegoede(a)redhat.com>
+> ---
+> Changes in v2:
+> -This is a new patch in v2 of this patch-set
+> ---
+>  drivers/acpi/bus.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c
+> index 4d0979e02a28..db0c05997cc2 100644
+> --- a/drivers/acpi/bus.c
+> +++ b/drivers/acpi/bus.c
+> @@ -108,6 +108,7 @@ acpi_status acpi_bus_get_status_handle(acpi_handle ha=
+ndle,
+>         }
+>         return status;
+>  }
+> +EXPORT_SYMBOL(acpi_bus_get_status_handle);
 
-(versions of patches 1,2 and 4 have been queued by Catalin)
+EXPORT_SYMBOL_GPL(), please.
 
-(Nit 'ACPI / APEI:' is the normal subject prefix for ghes.c, this helps the
-maintainers know which patches they need to pay attention to when you are
-touching multiple trees)
+>
+>  int acpi_bus_get_status(struct acpi_device *device)
+>  {
+> --
 
-On 06/01/18 16:02, Dongjiu Geng wrote:
-> ARMv8.2 requires implementation of the RAS extension.
-
-> In
-> this extension, it adds SEI(SError Interrupt) notification
-> type, this patch adds new GHES error source SEI handling
-> functions. =
-
-
-This reads as if this patch is handling SError RAS notifications generated =
-by a
-CPU with the RAS extensions. These are about CPU->Software notifications. A=
-PEI
-and GHES are a firmware first mechanism which is Software->Software.
-Reading the v8.2 documents won't help anyone with the APEI/GHES code.
-
-Please describe this from the ACPI view, "ACPI 6.x adds support for NOTIFY_=
-SEI
-as a GHES notification mechanism... ",  its up to the arch code to spot a v=
-8.2
-RAS Error based on the cpu caps.
-
-
-> This error source parsing and handling method
-> is similar with the SEA.
-
-There are problems with doing this:
-
-Oct. 18, 2017, 10:26 a.m. James Morse wrote:
-| How do SEA and SEI interact?
-|
-| As far as I can see they can both interrupt each other, which isn't somet=
-hing
-| the single in_nmi() path in APEI can handle. I thinks we should fix this
-| first.
-
-[..]
-
-| SEA gets away with a lot of things because its synchronous. SEI isn't. Xie
-| XiuQi pointed to the memory_failure_queue() code. We can use this directly
-| from SEA, but not SEI. (what happens if an SError arrives while we are
-| queueing memory_failure work from an IRQ).
-|
-| The one that scares me is the trace-point reporting stuff. What happens i=
-f an
-| SError arrives while we are enabling a trace point? (these are static-keys
-| right?)
-|
-|  I don't think we can just plumb SEI in like this and be done with it.
-|  (I'm looking at teasing out the estatus cache code from being x86:NMI on=
-ly.
-|  This way we solve the same 'cant do this from NMI context' with the same
-|  code'.)
-
-
-I will post what I've got for this estatus-cache thing as an RFC, its not r=
-eady
-to be considered yet.
-
-
-> Expose API ghes_notify_sei() to external users. External
-> modules can call this exposed API to parse APEI table and
-> handle the SEI notification.
-
-external modules? You mean called by the arch code when it gets this NOTIFY=
-_SEI?
-
-
-Thanks,
-
-James
-
---===============5674752254498498985==--
+--===============7990633617450307140==--
 
