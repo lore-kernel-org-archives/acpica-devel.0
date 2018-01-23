@@ -1,168 +1,157 @@
-Content-Type: multipart/mixed; boundary="===============7994207243201891044=="
+Content-Type: multipart/mixed; boundary="===============6624037823598127972=="
 MIME-Version: 1.0
-From: Schmauss, Erik <erik.schmauss at intel.com>
-Subject: Re: [Devel] ACPI: Do not call _STA on battery devices with unmet
- dependencies
-Date: Tue, 23 Jan 2018 00:24:32 +0000
-Message-ID: <CF6A88132359CE47947DB4C6E1709ED5396D7178@ORSMSX110.amr.corp.intel.com>
-In-Reply-To: 03b11c2d-0c17-89d2-daa2-d48f4ea656d5@redhat.com
+From: gengdongjiu <gengdongjiu at huawei.com>
+Subject: Re: [Devel] [PATCH v9 3/7] acpi: apei: Add SEI notification type
+ support for ARMv8
+Date: Tue, 23 Jan 2018 17:23:29 +0800
+Message-ID: <168c3f61-0d11-13a4-c383-1f6a97d0ef37@huawei.com>
+In-Reply-To: 5A663DEC.8080804@arm.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7994207243201891044==
+--===============6624037823598127972==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
-> -----Original Message-----
-> From: Hans de Goede [mailto:hdegoede(a)redhat.com]
-> Sent: Saturday, January 20, 2018 4:48 AM
-> To: Schmauss, Erik <erik.schmauss(a)intel.com>
-> Cc: Rafael J . Wysocki <rjw(a)rjwysocki.net>; Len Brown <lenb(a)kernel.or=
-g>;
-> Bjorn Helgaas <bhelgaas(a)google.com>; Moore, Robert
-> <robert.moore(a)intel.com>; Zheng, Lv <lv.zheng(a)intel.com>; linux-
-> acpi(a)vger.kernel.org; linux-pci(a)vger.kernel.org; devel(a)acpica.org
-> Subject: Re: ACPI: Do not call _STA on battery devices with unmet depende=
-ncies
+Hi James,
+
+On 2018/1/23 3:39, James Morse wrote:
+> Hi Dongjiu Geng,
 > =
 
-> Hi,
+> (versions of patches 1,2 and 4 have been queued by Catalin)
 > =
 
-> On 19-01-18 22:03, Schmauss, Erik wrote:
-> >
-> >> -----Original Message-----
-> >> From: linux-acpi-owner(a)vger.kernel.org [mailto:linux-acpi-
-> >> owner(a)vger.kernel.org] On Behalf Of Bjorn Helgaas
-> >> Sent: Thursday, January 18, 2018 11:11 AM
-> >> To: Hans de Goede <hdegoede(a)redhat.com>
-> >> Cc: Rafael J . Wysocki <rjw(a)rjwysocki.net>; Len Brown
-> >> <lenb(a)kernel.org>; Bjorn Helgaas <bhelgaas(a)google.com>; Moore, Rob=
-ert
-> >> <robert.moore(a)intel.com>; Zheng, Lv <lv.zheng(a)intel.com>; linux-
-> >> acpi(a)vger.kernel.org; linux-pci(a)vger.kernel.org; devel(a)acpica.org
-> >> Subject: Re: ACPI: Do not call _STA on battery devices with unmet
-> >> dependencies
-> >>
-> >> On Thu, Jan 18, 2018 at 05:03:55PM +0100, Hans de Goede wrote:
-> >
-> > Hi Hans,
-> >
-> >>> Hi All,
-> >>>
-> >>> The ACPI code already contains quite a bit of code to not bind the
-> >>> ACPI-battery until all deps for an ACPI battery device have been
-> >>> met, but on some devices calling _STA before all deps are met is a
-> >>> problem too because the _STA method uses an i2c OpRegion there.
-> >
-> > Could you explain why _STA method using an I2C OpRegion is problematic?
+> (Nit 'ACPI / APEI:' is the normal subject prefix for ghes.c, this helps t=
+he
+> maintainers know which patches they need to pay attention to when you are
+> touching multiple trees)
 > =
 
-> It is problematic if we call the _STA method before the handler for the O=
-pRegion
-> has been installed, this series delays / avoids calling _STA before the O=
-pRegion
-> has been installed.
-
-Thanks for the explanation.
-I'm looking at the ACPI spec and from what it said about _STA, I gathered t=
-hat _STA is allowed to have side-effects to named objects within the AML na=
-mespace. So removing _STA from acpi_get_object_info seems a little dangerou=
-s... Is there a reason why you cannot remove or delay the call to acpi_get_=
-object_info instead? Chapter 6 section 1 of the ACPI spec also states that =
-it's possible for _HID and _ADR to read from operation regions as well. Is =
-it common convention that these _HID and _ADR objects do not access operati=
-on regions?
-
-Thanks,
-
-Erik
+> On 06/01/18 16:02, Dongjiu Geng wrote:
+>> ARMv8.2 requires implementation of the RAS extension.
 > =
 
-> Regards,
+>> In
+>> this extension, it adds SEI(SError Interrupt) notification
+>> type, this patch adds new GHES error source SEI handling
+>> functions. =
+
 > =
 
-> Hans
+> This reads as if this patch is handling SError RAS notifications generate=
+d by a
+> CPU with the RAS extensions. These are about CPU->Software notifications.=
+ APEI
+> and GHES are a firmware first mechanism which is Software->Software.
+> Reading the v8.2 documents won't help anyone with the APEI/GHES code.
+> =
+
+> Please describe this from the ACPI view, "ACPI 6.x adds support for NOTIF=
+Y_SEI
+> as a GHES notification mechanism... ",  its up to the arch code to spot a=
+ v8.2
+> RAS Error based on the cpu caps.Ok, I will modify it.
+
 > =
 
 > =
 
-> >
-> > Thanks,
-> > Erik
-> >
-> >>>
-> >>> Here is the DSDT of the device I'm seeing this on:
-> >>> https://fedorapeople.org/~jwrdegoede/toshiba-click-mini-dsdt.dsl
-> >>
-> >> This looks like interesting info, but (a) this link isn't mentioned
-> >> in the actual patches, and (b) it's conceivable that fedorapeople.org =
-could go
-> away someday.
-> >> If this were a PCI series, I would suggest opening a report at
-> >> bugzilla.kernel.org, attaching the DSL there, and including the link i=
-n the
-> patch changelog.
-> >>
-> >>> This series modifies the kernel to not call _STA until all deps are
-> >>> met, mirroring the binding behavior of the battery driver.
-> >>>
-> >>> Without this series a total of 32 ACPI errors get printend to the
-> >>> console on boot, there are 4 errors per _STA call, 2 battery devices
-> >>> on this system and 4 _STA calls per battery device.
-> >>>
-> >>> The first commit is a preparation commit for making the ACPICA
-> >>> changes in the 4th commit, this commit is necessary to not break
-> >>> things after the ACPICA changes.
-> >>>
-> >>> The second commit modifies acpi_bus_get_status to not call _STA on
-> >>> battery devices until all deps are met. This fixes 2 of the 4 too
-> >>> early _STA calls triggering these errors.
-> >>>
-> >>> The third commit makes the device instantiation code use
-> >>> acpi_bus_get_status instead of acpi_bus_get_status_handle so that
-> >>> the code to get the initial status also does not makes 1 too early _S=
-TA call.
-> >>>
-> >>> The fourth commit changes the ACPICA acpi_get_object_info function
-> >>> to not call _STA. Only 1 user (which is fixed in the first commit)
-> >>> cares about acpi_device_info.current_status. And the ACPICA code has
-> >>> this
-> >> comment:
-> >>>
-> >>>   * Note: This interface is intended to be used during the initial
-> >>> device
-> >>>   * discovery namespace traversal. Therefore, no complex methods can =
-be
-> >>>   * executed, especially those that access operation regions.
-> >>> Therefore, do
-> >>>   * not add any additional methods that could cause problems in this =
-area.
-> >>>   * Because of this reason support for the following methods has
-> >>> been
-> >> removed:
-> >>>   * this was the fate of the _SUB method which was found to cause such
-> >>>   * problems and was removed (11/2015).
-> >>>
-> >>> The described problems with the _SUB method clearly also apply to
-> >>> the _STA method, so removing it from acpi_get_object_info seems like
-> >>> it is the right thing to do here. This too fixes 1 too early _STA
-> >>> call, so that with all
-> >>> 4 patches in place we've fixed all 4 too early _STA calls.
-> >>>
-> >>> Regards,
-> >>>
-> >>> Hans
-> >>> --
-> >>> To unsubscribe from this list: send the line "unsubscribe linux-acpi"
-> >>> in the body of a message to majordomo(a)vger.kernel.org More majordomo
-> >>> info at  http://vger.kernel.org/majordomo-info.html
-> >> --
-> >> To unsubscribe from this list: send the line "unsubscribe linux-acpi"
-> >> in the body of a message to majordomo(a)vger.kernel.org More majordomo
-> >> info at http://vger.kernel.org/majordomo-info.html
+>> This error source parsing and handling method
+>> is similar with the SEA.
+> =
 
---===============7994207243201891044==--
+> There are problems with doing this:
+> =
+
+> Oct. 18, 2017, 10:26 a.m. James Morse wrote:
+> | How do SEA and SEI interact?
+> |
+> | As far as I can see they can both interrupt each other, which isn't som=
+ething
+> | the single in_nmi() path in APEI can handle. I thinks we should fix this
+> | first.
+> =
+
+> [..]
+> =
+
+> | SEA gets away with a lot of things because its synchronous. SEI isn't. =
+Xie
+> | XiuQi pointed to the memory_failure_queue() code. We can use this direc=
+tly
+> | from SEA, but not SEI. (what happens if an SError arrives while we are
+> | queueing memory_failure work from an IRQ).
+> |
+> | The one that scares me is the trace-point reporting stuff. What happens=
+ if an
+> | SError arrives while we are enabling a trace point? (these are static-k=
+eys
+> | right?)
+> |
+> |  I don't think we can just plumb SEI in like this and be done with it.
+> |  (I'm looking at teasing out the estatus cache code from being x86:NMI =
+only.
+> |  This way we solve the same 'cant do this from NMI context' with the sa=
+me
+> |  code'.)
+> =
+
+> =
+
+> I will post what I've got for this estatus-cache thing as an RFC, its not=
+ ready
+> to be considered yet.Yes, I know you are dong that. Your serial's patch w=
+ill consider all above things, right?
+If your patch can be consider that, this patch can based on your patchset. =
+thanks.
+
+> =
+
+> =
+
+>> Expose API ghes_notify_sei() to external users. External
+>> modules can call this exposed API to parse APEI table and
+>> handle the SEI notification.
+> =
+
+> external modules? You mean called by the arch code when it gets this NOTI=
+FY_SEI?
+yes, called by kernel ARCH code, such as below, I remember I have discussed=
+ with you.
+
+ asmlinkage void do_serror(struct pt_regs *regs, unsigned int esr)
+ {
+ 	nmi_enter();
+
+
+	if (!ghes_notify_sei())
+		return;
+
+
+
+ 	/* non-RAS errors are not containable */
+ 	if (!arm64_is_ras_serror(esr) || arm64_is_fatal_ras_serror(regs, esr))
+ 		arm64_serror_panic(regs, esr);
+
+	nmi_exit();
+}
+
+> =
+
+> =
+
+> Thanks,
+> =
+
+> James
+> =
+
+> .
+> =
+
+
+
+--===============6624037823598127972==--
 
