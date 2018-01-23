@@ -1,15 +1,15 @@
-Content-Type: multipart/mixed; boundary="===============6167070492975428710=="
+Content-Type: multipart/mixed; boundary="===============2740753468534352087=="
 MIME-Version: 1.0
 From: James Morse <james.morse at arm.com>
-Subject: Re: [Devel] [PATCH v9 5/7] arm64: kvm: Introduce
- KVM_ARM_SET_SERROR_ESR ioctl
-Date: Tue, 23 Jan 2018 19:06:33 +0000
-Message-ID: <5A6787B9.3080906@arm.com>
-In-Reply-To: 1515254577-6460-6-git-send-email-gengdongjiu@huawei.com
+Subject: Re: [Devel] [PATCH v9 6/7] arm64: kvm: Set Virtual SError Exception
+ Syndrome for guest
+Date: Tue, 23 Jan 2018 19:07:50 +0000
+Message-ID: <5A678806.8030108@arm.com>
+In-Reply-To: 1515254577-6460-7-git-send-email-gengdongjiu@huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6167070492975428710==
+--===============2740753468534352087==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
@@ -17,35 +17,28 @@ Content-Transfer-Encoding: quoted-printable
 Hi Dongjiu Geng,
 
 On 06/01/18 16:02, Dongjiu Geng wrote:
-> The ARM64 RAS SError Interrupt(SEI) syndrome value is specific to the
-> guest and user space needs a way to tell KVM this value. So we add a
-> new ioctl. Before user space specifies the Exception Syndrome Register
-> ESR(ESR), it firstly checks that whether KVM has the capability to
-> set the guest ESR, If has, will set it. Otherwise, nothing to do.
+> RAS Extension add a VSESR_EL2 register which can provide
+> the syndrome value reported to software on taking a virtual
+> SError interrupt exception. This patch supports to specify
+> this Syndrome.
 > =
 
-> For this ESR specifying, Only support for AArch64, not support AArch32.
+> In the RAS Extensions we can not set all-zero syndrome value
+> for SError, which means 'RAS error: Uncategorized' instead of
+> 'no valid ISS'. So set it to IMPLEMENTATION DEFINED syndrome
+> by default.
+> =
 
-After this patch user-space can trigger an SError in the guest. If it wants=
- to
-migrate the guest, how does the pending SError get migrated?
+> We also need to support userspace to specify a valid syndrome
+> value, Because in some case, the recovery is driven by userspace.
+> This patch can support that userspace specify it.
+> =
 
-I think we need to fix migration first. Andrew Jones suggested using
-KVM_GET/SET_VCPU_EVENTS:
-https://www.spinics.net/lists/arm-kernel/msg616846.html
+> In the guest/host world switch, restore this value to VSESR_EL2
+> only when HCR_EL2.VSE is set. This value no need to be saved
+> because it is stale vale when guest exit.
 
-Given KVM uses kvm_inject_vabt() on v8.0 hardware too, we should cover syst=
-ems
-without the v8.2 RAS Extensions with the same API. I think this means a bit=
- to
-read/write whether SError is pending, and another to indicate the ESR shoul=
-d be
-set/read.
-CPUs without the v8.2 RAS Extensions can reject pending-SError that had an =
-ESR.
-
-user-space can then use the 'for migration' calls to make a 'new' SError pe=
-nding.
+A version of this patch has been queued by Catalin.
 
 Now that the cpufeature bits are queued, I think this can be split up into =
 two
@@ -53,29 +46,102 @@ separate series for v4.16-rc1, one to tackle NOTIFY_SEI and the associated
 plumbing. The second for the KVM 'make SError pending' API.
 
 
+> Signed-off-by: Dongjiu Geng <gengdongjiu(a)huawei.com>
+> [Set an impdef ESR for Virtual-SError]
+> Signed-off-by: James Morse <james.morse(a)arm.com>
+
+I didn't sign-off this patch. If you pick some bits from another version and
+want to credit someone else you can 'CC:' them or just mention it in the
+commit-message.
+
+
+> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sys=
+reg.h
+> index 47b967d..3b035cc 100644
+> --- a/arch/arm64/include/asm/sysreg.h
+> +++ b/arch/arm64/include/asm/sysreg.h
+> @@ -86,6 +86,9 @@
+>  #define REG_PSTATE_PAN_IMM		sys_reg(0, 0, 4, 0, 4)
+>  #define REG_PSTATE_UAO_IMM		sys_reg(0, 0, 4, 0, 3)
+>  =
+
+> +/* virtual SError exception syndrome register */
+> +#define REG_VSESR_EL2                  sys_reg(3, 4, 5, 2, 3)
+
+Irrelevant-Nit: sys-regs usually have a 'SYS_' prefix, and are in instructi=
+on
+encoding order lower down the file.
+
+(These PSTATE PAN things are a bit odd as they were used to generate and
+instruction before the fancy {read,write}_sysreg() helpers were added).
+
+
+>  #define SET_PSTATE_PAN(x) __emit_inst(0xd5000000 | REG_PSTATE_PAN_IMM |	\
+>  				      (!!x)<<8 | 0x1f)
+>  #define SET_PSTATE_UAO(x) __emit_inst(0xd5000000 | REG_PSTATE_UAO_IMM |	\
 > diff --git a/arch/arm64/kvm/guest.c b/arch/arm64/kvm/guest.c
-> index 5c7f657..738ae90 100644
+> index 738ae90..ffad42b 100644
 > --- a/arch/arm64/kvm/guest.c
 > +++ b/arch/arm64/kvm/guest.c
-> @@ -277,6 +277,11 @@ int kvm_arch_vcpu_ioctl_set_sregs(struct kvm_vcpu *v=
+> @@ -279,7 +279,16 @@ int kvm_arch_vcpu_ioctl_set_sregs(struct kvm_vcpu *v=
 cpu,
->  	return -EINVAL;
+>  =
+
+>  int kvm_arm_set_sei_esr(struct kvm_vcpu *vcpu, u32 *syndrome)
+
+Bits of this are spread between patches 5 and 6. If you put them in the oth=
+er
+order this wouldn't happen.
+
+(but after a rebase most of this patch should disappear)
+
+>  {
+> -	return -EINVAL;
+> +	u64 reg =3D *syndrome;
+> +
+> +	/* inject virtual system Error or asynchronous abort */
+> +	kvm_inject_vabt(vcpu);
+
+So this writes an impdef ESR, because its the existing code-path in KVM.
+
+
+> +	if (reg)
+> +		/* set vsesr_el2[24:0] with value that user space specified */
+> +		kvm_vcpu_set_vsesr(vcpu, reg & ESR_ELx_ISS_MASK);
+
+And then you overwrite it. Which is a bit odd as there is a helper to do bo=
+th in
+one go:
+
+
+> +
+> +	return 0;
+>  }
+
+>  int __attribute_const__ kvm_target_cpu(void)
+
+> diff --git a/arch/arm64/kvm/inject_fault.c b/arch/arm64/kvm/inject_fault.c
+> index 3556715..fb94b5e 100644
+> --- a/arch/arm64/kvm/inject_fault.c
+> +++ b/arch/arm64/kvm/inject_fault.c
+> @@ -246,14 +246,25 @@ void kvm_inject_undefined(struct kvm_vcpu *vcpu)
+>  		inject_undef64(vcpu);
 >  }
 >  =
 
-> +int kvm_arm_set_sei_esr(struct kvm_vcpu *vcpu, u32 *syndrome)
+> +static void pend_guest_serror(struct kvm_vcpu *vcpu, u64 esr)
 > +{
-> +	return -EINVAL;
+> +	kvm_vcpu_set_vsesr(vcpu, esr);
+> +	vcpu_set_hcr(vcpu, vcpu_get_hcr(vcpu) | HCR_VSE);
 > +}
 
-Does nothing in the patch that adds the support? This is a bit odd.
-(oh, its hiding in patch 6...)
+How come you don't use this in kvm_arm_set_sei_esr()?
+
 
 
 Thanks,
 
 James
 
-
---===============6167070492975428710==--
+--===============2740753468534352087==--
 
