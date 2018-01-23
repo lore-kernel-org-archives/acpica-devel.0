@@ -1,69 +1,81 @@
-Content-Type: multipart/mixed; boundary="===============2246285509612809445=="
+Content-Type: multipart/mixed; boundary="===============6167070492975428710=="
 MIME-Version: 1.0
-From: gengdongjiu <gengdongjiu at huawei.com>
-Subject: Re: [Devel] [PATCH v9 3/7] acpi: apei: Add SEI notification type
- support for ARMv8
-Date: Tue, 23 Jan 2018 18:07:52 +0800
-Message-ID: <53566b7c-d686-66be-ee84-a6a6257b526a@huawei.com>
-In-Reply-To: 168c3f61-0d11-13a4-c383-1f6a97d0ef37@huawei.com
+From: James Morse <james.morse at arm.com>
+Subject: Re: [Devel] [PATCH v9 5/7] arm64: kvm: Introduce
+ KVM_ARM_SET_SERROR_ESR ioctl
+Date: Tue, 23 Jan 2018 19:06:33 +0000
+Message-ID: <5A6787B9.3080906@arm.com>
+In-Reply-To: 1515254577-6460-6-git-send-email-gengdongjiu@huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2246285509612809445==
+--===============6167070492975428710==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-sorry fix a typo.
+Hi Dongjiu Geng,
 
-On 2018/1/23 17:23, gengdongjiu wrote:
->> There are problems with doing this:
->>
->> Oct. 18, 2017, 10:26 a.m. James Morse wrote:
->> | How do SEA and SEI interact?
->> |
->> | As far as I can see they can both interrupt each other, which isn't so=
-mething
->> | the single in_nmi() path in APEI can handle. I thinks we should fix th=
-is
->> | first.
->>
->> [..]
->>
->> | SEA gets away with a lot of things because its synchronous. SEI isn't.=
- Xie
->> | XiuQi pointed to the memory_failure_queue() code. We can use this dire=
-ctly
->> | from SEA, but not SEI. (what happens if an SError arrives while we are
->> | queueing memory_failure work from an IRQ).
->> |
->> | The one that scares me is the trace-point reporting stuff. What happen=
-s if an
->> | SError arrives while we are enabling a trace point? (these are static-=
-keys
->> | right?)
->> |
->> |  I don't think we can just plumb SEI in like this and be done with it.
->> |  (I'm looking at teasing out the estatus cache code from being x86:NMI=
- only.
->> |  This way we solve the same 'cant do this from NMI context' with the s=
-ame
->> |  code'.)
->>
->>
->> I will post what I've got for this estatus-cache thing as an RFC, its no=
-t ready
->> to be considered yet.
-
-Yes, I know you are dong that. Your serial's patch will consider all above =
-things, right?
-If your patch can be consider that, this patch can based on your patchset. =
-thanks.
-
+On 06/01/18 16:02, Dongjiu Geng wrote:
+> The ARM64 RAS SError Interrupt(SEI) syndrome value is specific to the
+> guest and user space needs a way to tell KVM this value. So we add a
+> new ioctl. Before user space specifies the Exception Syndrome Register
+> ESR(ESR), it firstly checks that whether KVM has the capability to
+> set the guest ESR, If has, will set it. Otherwise, nothing to do.
 > =
 
->>
+> For this ESR specifying, Only support for AArch64, not support AArch32.
+
+After this patch user-space can trigger an SError in the guest. If it wants=
+ to
+migrate the guest, how does the pending SError get migrated?
+
+I think we need to fix migration first. Andrew Jones suggested using
+KVM_GET/SET_VCPU_EVENTS:
+https://www.spinics.net/lists/arm-kernel/msg616846.html
+
+Given KVM uses kvm_inject_vabt() on v8.0 hardware too, we should cover syst=
+ems
+without the v8.2 RAS Extensions with the same API. I think this means a bit=
+ to
+read/write whether SError is pending, and another to indicate the ESR shoul=
+d be
+set/read.
+CPUs without the v8.2 RAS Extensions can reject pending-SError that had an =
+ESR.
+
+user-space can then use the 'for migration' calls to make a 'new' SError pe=
+nding.
+
+Now that the cpufeature bits are queued, I think this can be split up into =
+two
+separate series for v4.16-rc1, one to tackle NOTIFY_SEI and the associated
+plumbing. The second for the KVM 'make SError pending' API.
 
 
---===============2246285509612809445==--
+> diff --git a/arch/arm64/kvm/guest.c b/arch/arm64/kvm/guest.c
+> index 5c7f657..738ae90 100644
+> --- a/arch/arm64/kvm/guest.c
+> +++ b/arch/arm64/kvm/guest.c
+> @@ -277,6 +277,11 @@ int kvm_arch_vcpu_ioctl_set_sregs(struct kvm_vcpu *v=
+cpu,
+>  	return -EINVAL;
+>  }
+>  =
+
+> +int kvm_arm_set_sei_esr(struct kvm_vcpu *vcpu, u32 *syndrome)
+> +{
+> +	return -EINVAL;
+> +}
+
+Does nothing in the patch that adds the support? This is a bit odd.
+(oh, its hiding in patch 6...)
+
+
+Thanks,
+
+James
+
+
+--===============6167070492975428710==--
 
