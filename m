@@ -1,200 +1,202 @@
-Content-Type: multipart/mixed; boundary="===============6912458234672311648=="
+Content-Type: multipart/mixed; boundary="===============7540669419000675594=="
 MIME-Version: 1.0
-From: gengdongjiu <gengdongjiu at huawei.com>
-Subject: Re: [Devel] [PATCH v9 6/7] arm64: kvm: Set Virtual SError Exception
- Syndrome for guest
-Date: Thu, 25 Jan 2018 16:21:47 +0800
-Message-ID: <3f699ce3-a552-0c6c-3425-d45d0d788406@huawei.com>
-In-Reply-To: 5A678806.8030108@arm.com
+From: Moore, Robert <robert.moore at intel.com>
+Subject: Re: [Devel] [PATCH v3 5/5] ACPICA: Remove calling of _STA from
+ acpi_get_object_info
+Date: Fri, 26 Jan 2018 20:42:30 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E3B75696BC@ORSMSX110.amr.corp.intel.com>
+In-Reply-To: 20180126150300.9691-5-hdegoede@redhat.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6912458234672311648==
+--===============7540669419000675594==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi James,
-  thanks for the review.
+For ACPICA, this is a change to a published public interface. A change to t=
+his will potentially affect many operating systems, so we would be very hes=
+itant to change it in the core ACPICA code.
 
-On 2018/1/24 3:07, James Morse wrote:
-> Hi Dongjiu Geng,
+Bob
+
+
+> -----Original Message-----
+> From: Hans de Goede [mailto:hdegoede(a)redhat.com]
+> Sent: Friday, January 26, 2018 7:03 AM
+> To: Rafael J . Wysocki <rjw(a)rjwysocki.net>; Len Brown <lenb(a)kernel.or=
+g>;
+> Moore, Robert <robert.moore(a)intel.com>; Schmauss, Erik
+> <erik.schmauss(a)intel.com>; Bjorn Helgaas <bhelgaas(a)google.com>
+> Cc: Hans de Goede <hdegoede(a)redhat.com>; linux-acpi(a)vger.kernel.org;
+> devel(a)acpica.org; linux-pci(a)vger.kernel.org
+> Subject: [PATCH v3 5/5] ACPICA: Remove calling of _STA from
+> acpi_get_object_info
 > =
 
-> On 06/01/18 16:02, Dongjiu Geng wrote:
->> RAS Extension add a VSESR_EL2 register which can provide
->> the syndrome value reported to software on taking a virtual
->> SError interrupt exception. This patch supports to specify
->> this Syndrome.
->>
->> In the RAS Extensions we can not set all-zero syndrome value
->> for SError, which means 'RAS error: Uncategorized' instead of
->> 'no valid ISS'. So set it to IMPLEMENTATION DEFINED syndrome
->> by default.
->>
->> We also need to support userspace to specify a valid syndrome
->> value, Because in some case, the recovery is driven by userspace.
->> This patch can support that userspace specify it.
->>
->> In the guest/host world switch, restore this value to VSESR_EL2
->> only when HCR_EL2.VSE is set. This value no need to be saved
->> because it is stale vale when guest exit.
+> As the comment above it indicates, acpi_get_object_info is intended for
+> early probe usage and as such should not call any methods which may rely
+> on OpRegions, before this commit it was also calling _STA, which on some
+> systems does rely on OpRegions.
 > =
 
-> A version of this patch has been queued by Catalin.
-yeah, I have seen that.
-
+> Calling _STA before things are ready leads to errors such as these:
 > =
 
-> Now that the cpufeature bits are queued, I think this can be split up int=
-o two
-> separate series for v4.16-rc1, one to tackle NOTIFY_SEI and the associated
-> plumbing. The second for the KVM 'make SError pending' API.
+> [    0.123579] ACPI Error: No handler for Region [ECRM]
+> (00000000ba9edc4c)
+>                [GenericSerialBus] (20170831/evregion-166)
+> [    0.123601] ACPI Error: Region GenericSerialBus (ID=3D9) has no handler
+>                (20170831/exfldio-299)
+> [    0.123618] ACPI Error: Method parse/execution failed
+>                \_SB.I2C1.BAT1._STA, AE_NOT_EXIST (20170831/psparse-550)
 > =
 
+> End 2015 support for the _SUB method was removed for exactly the same
+> reason. Removing current_status from struct acpi_device_info only has a
+> limit impact. Within ACPICA it is only used by 2 debug messages, both of
+> which are modified to no longer print it with this commit.
 > =
 
->> Signed-off-by: Dongjiu Geng <gengdongjiu(a)huawei.com>
->> [Set an impdef ESR for Virtual-SError]
->> Signed-off-by: James Morse <james.morse(a)arm.com>
+> Outside of ACPICA, for Linux there is only one user. For which a patch
+> to remove the dependency on the current_status field is available.
 > =
 
-> I didn't sign-off this patch. If you pick some bits from another version =
-and
-> want to credit someone else you can 'CC:' them or just mention it in the
-> commit-message.
-
-I pick your modification of setting an impdef ESR for Virtual-SError, so ad=
-d your name,
-I change it to 'CC'
-
+> Signed-off-by: Hans de Goede <hdegoede(a)redhat.com>
+> ---
+>  drivers/acpi/acpica/dbdisply.c |  5 ++---
+> drivers/acpi/acpica/nsdumpdv.c |  5 ++---
+> drivers/acpi/acpica/nsxfname.c | 19 ++++---------------
+>  include/acpi/actypes.h         |  2 --
+>  4 files changed, 8 insertions(+), 23 deletions(-)
 > =
 
+> diff --git a/drivers/acpi/acpica/dbdisply.c
+> b/drivers/acpi/acpica/dbdisply.c index 5a606eac0c22..7b5eb33fe962 100644
+> --- a/drivers/acpi/acpica/dbdisply.c
+> +++ b/drivers/acpi/acpica/dbdisply.c
+> @@ -642,9 +642,8 @@ void acpi_db_display_object_type(char *object_arg)
+>  		return;
+>  	}
 > =
 
->> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sy=
-sreg.h
->> index 47b967d..3b035cc 100644
->> --- a/arch/arm64/include/asm/sysreg.h
->> +++ b/arch/arm64/include/asm/sysreg.h
->> @@ -86,6 +86,9 @@
->>  #define REG_PSTATE_PAN_IMM		sys_reg(0, 0, 4, 0, 4)
->>  #define REG_PSTATE_UAO_IMM		sys_reg(0, 0, 4, 0, 3)
->>  =
-
->> +/* virtual SError exception syndrome register */
->> +#define REG_VSESR_EL2                  sys_reg(3, 4, 5, 2, 3)
+> -	acpi_os_printf("ADR: %8.8X%8.8X, STA: %8.8X, Flags: %X\n",
+> -		       ACPI_FORMAT_UINT64(info->address),
+> -		       info->current_status, info->flags);
+> +	acpi_os_printf("ADR: %8.8X%8.8X, Flags: %X\n",
+> +		       ACPI_FORMAT_UINT64(info->address), info->flags);
 > =
 
-> Irrelevant-Nit: sys-regs usually have a 'SYS_' prefix, and are in instruc=
-tion
-> encoding order lower down the file.
-will follow that.
-
+>  	acpi_os_printf("S1D-%2.2X S2D-%2.2X S3D-%2.2X S4D-%2.2X\n",
+>  		       info->highest_dstates[0], info->highest_dstates[1],
+> diff --git a/drivers/acpi/acpica/nsdumpdv.c
+> b/drivers/acpi/acpica/nsdumpdv.c index 5026594763ea..573a5f36f01a 100644
+> --- a/drivers/acpi/acpica/nsdumpdv.c
+> +++ b/drivers/acpi/acpica/nsdumpdv.c
+> @@ -88,10 +88,9 @@ acpi_ns_dump_one_device(acpi_handle obj_handle,
+>  		}
 > =
 
-> (These PSTATE PAN things are a bit odd as they were used to generate and
-> instruction before the fancy {read,write}_sysreg() helpers were added).>
+>  		ACPI_DEBUG_PRINT_RAW((ACPI_DB_TABLES,
+> -				      "    HID: %s, ADR: %8.8X%8.8X, Status: %X\n",
+> +				      "    HID: %s, ADR: %8.8X%8.8X\n",
+>  				      info->hardware_id.value,
+> -				      ACPI_FORMAT_UINT64(info->address),
+> -				      info->current_status));
+> +				      ACPI_FORMAT_UINT64(info->address));
+>  		ACPI_FREE(info);
+>  	}
 > =
 
->>  #define SET_PSTATE_PAN(x) __emit_inst(0xd5000000 | REG_PSTATE_PAN_IMM |=
-	\
->>  				      (!!x)<<8 | 0x1f)
->>  #define SET_PSTATE_UAO(x) __emit_inst(0xd5000000 | REG_PSTATE_UAO_IMM |=
-	\
->> diff --git a/arch/arm64/kvm/guest.c b/arch/arm64/kvm/guest.c
->> index 738ae90..ffad42b 100644
->> --- a/arch/arm64/kvm/guest.c
->> +++ b/arch/arm64/kvm/guest.c
->> @@ -279,7 +279,16 @@ int kvm_arch_vcpu_ioctl_set_sregs(struct kvm_vcpu *=
-vcpu,
->>  =
-
->>  int kvm_arm_set_sei_esr(struct kvm_vcpu *vcpu, u32 *syndrome)
+> diff --git a/drivers/acpi/acpica/nsxfname.c
+> b/drivers/acpi/acpica/nsxfname.c index 106966235805..0a9c600c2599 100644
+> --- a/drivers/acpi/acpica/nsxfname.c
+> +++ b/drivers/acpi/acpica/nsxfname.c
+> @@ -241,7 +241,7 @@ static char *acpi_ns_copy_device_id(struct
+> acpi_pnp_device_id *dest,
+>   *              namespace node and possibly by running several standard
+>   *              control methods (Such as in the case of a device.)
+>   *
+> - * For Device and Processor objects, run the Device _HID, _UID, _CID,
+> _STA,
+> + * For Device and Processor objects, run the Device _HID, _UID, _CID,
+>   * _CLS, _ADR, _sx_w, and _sx_d methods.
+>   *
+>   * Note: Allocates the return buffer, must be freed by the caller.
+> @@ -250,8 +250,9 @@ static char *acpi_ns_copy_device_id(struct
+> acpi_pnp_device_id *dest,
+>   * discovery namespace traversal. Therefore, no complex methods can be
+>   * executed, especially those that access operation regions. Therefore,
+> do
+>   * not add any additional methods that could cause problems in this
+> area.
+> - * this was the fate of the _SUB method which was found to cause such
+> - * problems and was removed (11/2015).
+> + * Because of this reason support for the following methods has been
+> removed:
+> + * 1) _SUB method was removed (11/2015)
+> + * 2) _STA method was removed (01/2018)
+>   *
 > =
 
-> Bits of this are spread between patches 5 and 6. If you put them in the o=
-ther
-> order this wouldn't happen.
-
-Ok, I will adjust that.
-
+> ************************************************************************
+> ******/
 > =
 
-> (but after a rebase most of this patch should disappear)
+> @@ -374,20 +375,8 @@ acpi_get_object_info(acpi_handle handle,
+>  		 * Notes: none of these methods are required, so they may or
+> may
+>  		 * not be present for this device. The Info->Valid bitfield
+> is used
+>  		 * to indicate which methods were found and run successfully.
+> -		 *
+> -		 * For _STA, if the method does not exist, then (as per the
+> ACPI
+> -		 * specification), the returned current_status flags will
+> indicate
+> -		 * that the device is present/functional/enabled. Otherwise,
+> the
+> -		 * current_status flags reflect the value returned from _STA.
+>  		 */
 > =
 
->>  {
->> -	return -EINVAL;
->> +	u64 reg =3D *syndrome;
->> +
->> +	/* inject virtual system Error or asynchronous abort */
->> +	kvm_inject_vabt(vcpu);
+> -		/* Execute the Device._STA method */
+> -
+> -		status =3D acpi_ut_execute_STA(node, &info->current_status);
+> -		if (ACPI_SUCCESS(status)) {
+> -			valid |=3D ACPI_VALID_STA;
+> -		}
+> -
+>  		/* Execute the Device._ADR method */
 > =
 
-> So this writes an impdef ESR, because its the existing code-path in KVM.
+>  		status =3D acpi_ut_evaluate_numeric_object(METHOD_NAME__ADR,
+> node, diff --git a/include/acpi/actypes.h b/include/acpi/actypes.h index
+> 4f077edb9b81..220ef8674763 100644
+> --- a/include/acpi/actypes.h
+> +++ b/include/acpi/actypes.h
+> @@ -1191,7 +1191,6 @@ struct acpi_device_info {
+>  	u8 flags;		/* Miscellaneous info */
+>  	u8 highest_dstates[4];	/* _sx_d values: 0xFF indicates not
+> valid */
+>  	u8 lowest_dstates[5];	/* _sx_w values: 0xFF indicates not valid */
+> -	u32 current_status;	/* _STA value */
+>  	u64 address;	/* _ADR value */
+>  	struct acpi_pnp_device_id hardware_id;	/* _HID value */
+>  	struct acpi_pnp_device_id unique_id;	/* _UID value */
+> @@ -1205,7 +1204,6 @@ struct acpi_device_info {
 > =
 
+>  /* Flags for Valid field above (acpi_get_object_info) */
 > =
 
->> +	if (reg)
->> +		/* set vsesr_el2[24:0] with value that user space specified */
->> +		kvm_vcpu_set_vsesr(vcpu, reg & ESR_ELx_ISS_MASK);
-> =
-
-> And then you overwrite it. Which is a bit odd as there is a helper to do =
-both in
-> one go:
-thanks, I will directly call pend_guest_serror() in this function.
-
-> =
-
-> =
-
->> +
->> +	return 0;
->>  }
-> =
-
->>  int __attribute_const__ kvm_target_cpu(void)
-> =
-
->> diff --git a/arch/arm64/kvm/inject_fault.c b/arch/arm64/kvm/inject_fault=
-.c
->> index 3556715..fb94b5e 100644
->> --- a/arch/arm64/kvm/inject_fault.c
->> +++ b/arch/arm64/kvm/inject_fault.c
->> @@ -246,14 +246,25 @@ void kvm_inject_undefined(struct kvm_vcpu *vcpu)
->>  		inject_undef64(vcpu);
->>  }
->>  =
-
->> +static void pend_guest_serror(struct kvm_vcpu *vcpu, u64 esr)
->> +{
->> +	kvm_vcpu_set_vsesr(vcpu, esr);
->> +	vcpu_set_hcr(vcpu, vcpu_get_hcr(vcpu) | HCR_VSE);
->> +}
-> =
-
-> How come you don't use this in kvm_arm_set_sei_esr()?
-thanks, I will call pend_guest_serror() in the kvm_arm_set_sei_esr().
-
-> =
-
-> =
-
-> =
-
-> Thanks,
-> =
-
-> James
-> =
-
-> .
-> =
+> -#define ACPI_VALID_STA                  0x0001
+>  #define ACPI_VALID_ADR                  0x0002
+>  #define ACPI_VALID_HID                  0x0004
+>  #define ACPI_VALID_UID                  0x0008
+> --
+> 2.14.3
 
 
-
---===============6912458234672311648==--
+--===============7540669419000675594==--
 
