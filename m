@@ -1,60 +1,108 @@
-Content-Type: multipart/mixed; boundary="===============8731050721376487883=="
+Content-Type: multipart/mixed; boundary="===============3250793875591774559=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: Re: [Devel] [PATCH v3 5/5] ACPICA: Remove calling of _STA from
- acpi_get_object_info
-Date: Mon, 29 Jan 2018 04:07:30 +0100
-Message-ID: <CAJZ5v0gDLrDtgFKo5mUBuGWfAmv_3n1HEUTjnE3J8DSrRUbTCQ@mail.gmail.com>
-In-Reply-To: 08f2a8aa-1510-3b78-4fa7-bf0ae194ccb0@redhat.com
+From: James Morse <james.morse at arm.com>
+Subject: Re: [Devel] [PATCH v9 5/7] arm64: kvm: Introduce
+ KVM_ARM_SET_SERROR_ESR ioctl
+Date: Tue, 30 Jan 2018 19:21:04 +0000
+Message-ID: <5A70C5A0.1050600@arm.com>
+In-Reply-To: 0184EA26B2509940AA629AE1405DD7F201A9E8EA@DGGEMA503-MBS.china.huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8731050721376487883==
+--===============3250793875591774559==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Jan 27, 2018 at 3:02 PM, Hans de Goede <hdegoede(a)redhat.com> wrot=
-e:
-> Hi,
->
-> On 26-01-18 21:42, Moore, Robert wrote:
->>
->> For ACPICA, this is a change to a published public interface. A change to
->> this will potentially affect many operating systems, so we would be very
->> hesitant to change it in the core ACPICA code.
->
->
-> From the acpi_get_object_info() documentation in
-> drivers/acpi/acpica/nsxfname.c:
->
->  * Note: This interface is intended to be used during the initial device
->  * discovery namespace traversal. Therefore, no complex methods can be
->  * executed, especially those that access operation regions.
->
-> Since _STA can call Opregions, IMHO it does not belong in
-> acpi_get_object_info()
-> and as Erik mentioned _STA can have side-effects then that seems like
-> another
-> reason to NOT call it from acpi_get_object_info().
->
-> But I can understand that you don't want to outright change the behavior =
-of
-> acpi_get_object_info() to call _STA since it has always done this, still
-> calling _STA can be a problem in some cases.
->
-> Perhaps we can give acpi_get_object_info() a flags argument, or if you wa=
-nt
-> to
-> preserve the current interface ad a new acpi_get_object_info_no_sta() call
-> (and
-> use flags under the hood so that we still have only 1 implementation) ?
+Hi gengdongjiu,
 
-Let's first get the [1-4/5] from this series in (as the last patch
-depends on them AFAICS) and then we'll see.
+On 24/01/18 20:06, gengdongjiu wrote:
+>> On 06/01/18 16:02, Dongjiu Geng wrote:
+>>> The ARM64 RAS SError Interrupt(SEI) syndrome value is specific to the
+>>> guest and user space needs a way to tell KVM this value. So we add a
+>>> new ioctl. Before user space specifies the Exception Syndrome Register
+>>> ESR(ESR), it firstly checks that whether KVM has the capability to set
+>>> the guest ESR, If has, will set it. Otherwise, nothing to do.
+>>>
+>>> For this ESR specifying, Only support for AArch64, not support AArch32.
+>>
+>> After this patch user-space can trigger an SError in the guest. If it wa=
+nts to migrate the guest, how does the pending SError get migrated?
+>>
+>> I think we need to fix migration first. Andrew Jones suggested using
+>> KVM_GET/SET_VCPU_EVENTS:
+>> https://www.spinics.net/lists/arm-kernel/msg616846.html
+>>
+>> Given KVM uses kvm_inject_vabt() on v8.0 hardware too, we should cover s=
+ystems without the v8.2 RAS Extensions with the same API. I
+>> think this means a bit to read/write whether SError is pending, and anot=
+her to indicate the ESR should be set/read.
+>> CPUs without the v8.2 RAS Extensions can reject pending-SError that had =
+an ESR.
+> =
+
+> For the CPUs without the v8.2 RAS Extensions, its ESR is always 0, =
+
+> we only can inject a SError with ESR 0 to guest, cannot set its ESR.
+
+0? It's always implementation-defined. On Juno it seems to be always-0, but
+other systems may behave differently. (Juno may generate another ESR value =
+when
+I'm not watching it...)
+
+Just because we can't control the ESR doesn't mean injecting an SError isn't
+something user-space may want to do.
+If we tackle migration of pending-SError first, I think that will give us t=
+he
+API to create a new pending SError with/without an ESR as appropriate.
+
+
+> About how about to use the KVM_GET/SET_VCPU_EVENTS, I will check the code=
+, and
+> consider your suggestion at the same time.
+
+(Not my suggestion, It was Andrew Jones idea.)
+
+> The IOCTL KVM_GET/SET_VCPU_EVENTS has been used by X86.
+
+We would be re-using the struct to have values with slightly different mean=
+ings.
+But for migration the upshot is the same, call KVM_GET_VCPU_EVENTS on one
+system, and pass the struct to KVM_SET_VCPU_EVENTS on the new system. If we=
+'re
+lucky Qemu may be able to do this in shared x86/arm64 code.
+
+
+>>> diff --git a/arch/arm64/kvm/guest.c b/arch/arm64/kvm/guest.c index
+>>> 5c7f657..738ae90 100644
+>>> --- a/arch/arm64/kvm/guest.c
+>>> +++ b/arch/arm64/kvm/guest.c
+>>> @@ -277,6 +277,11 @@ int kvm_arch_vcpu_ioctl_set_sregs(struct kvm_vcpu =
+*vcpu,
+>>>  	return -EINVAL;
+>>>  }
+>>>
+>>> +int kvm_arm_set_sei_esr(struct kvm_vcpu *vcpu, u32 *syndrome) {
+>>> +	return -EINVAL;
+>>> +}
+>>
+>> Does nothing in the patch that adds the support? This is a bit odd.
+>> (oh, its hiding in patch 6...)
+> =
+
+> To make this patch simple and small, I add it in patch 6.
+
+But that made the functionality of this patch: A new API to return -EINVAL =
+from
+the kernel.
+
+Swapping the patches round would have avoided this.
+Regardless, I think this will fold out in a rebase.
+
 
 Thanks,
-Rafael
 
---===============8731050721376487883==--
+James
+
+--===============3250793875591774559==--
 
