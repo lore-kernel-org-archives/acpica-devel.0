@@ -1,311 +1,192 @@
-Content-Type: multipart/mixed; boundary="===============8799252782317845889=="
+Content-Type: multipart/mixed; boundary="===============4063369066722375403=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rjw at rjwysocki.net>
-Subject: Re: [Devel] [PATCH v12 1/4] battery: Add the battery hooking API
-Date: Sun, 04 Feb 2018 09:52:33 +0100
-Message-ID: <5709554.PD1OuOmgsS@aspire.rjw.lan>
-In-Reply-To: 20180103115847.GA10092@thinkpad
+From: gengdongjiu <gengdongjiu at huawei.com>
+Subject: Re: [Devel] [PATCH v9 5/7] arm64: kvm: Introduce
+ KVM_ARM_SET_SERROR_ESR ioctl
+Date: Mon, 05 Feb 2018 14:19:56 +0800
+Message-ID: <d1b17dae-9d9c-970a-d164-a41c618d449b@huawei.com>
+In-Reply-To: 5A70C5A0.1050600@arm.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8799252782317845889==
+--===============4063369066722375403==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Wednesday, January 3, 2018 12:58:47 PM CET Ognjen Galic wrote:
-> This is a patch that implements a generic hooking API for the
-> generic ACPI battery driver.
+James,
+   Thank you for your time to reply me.
+
+On 2018/1/31 3:21, James Morse wrote:
+> Hi gengdongjiu,
 > =
 
-> With this new generic API, drivers can expose platform specific
-> behaviour via sysfs attributes in /sys/class/power_supply/BATn/
-> in a generic way.
+> On 24/01/18 20:06, gengdongjiu wrote:
+>>> On 06/01/18 16:02, Dongjiu Geng wrote:
+>>>> The ARM64 RAS SError Interrupt(SEI) syndrome value is specific to the
+>>>> guest and user space needs a way to tell KVM this value. So we add a
+>>>> new ioctl. Before user space specifies the Exception Syndrome Register
+>>>> ESR(ESR), it firstly checks that whether KVM has the capability to set
+>>>> the guest ESR, If has, will set it. Otherwise, nothing to do.
+>>>>
+>>>> For this ESR specifying, Only support for AArch64, not support AArch32.
+>>>
+>>> After this patch user-space can trigger an SError in the guest. If it w=
+ants to migrate the guest, how does the pending SError get migrated?
+>>>
+>>> I think we need to fix migration first. Andrew Jones suggested using
+>>> KVM_GET/SET_VCPU_EVENTS:
+>>> https://www.spinics.net/lists/arm-kernel/msg616846.html
+>>>
+>>> Given KVM uses kvm_inject_vabt() on v8.0 hardware too, we should cover =
+systems without the v8.2 RAS Extensions with the same API. I
+>>> think this means a bit to read/write whether SError is pending, and ano=
+ther to indicate the ESR should be set/read.
+>>> CPUs without the v8.2 RAS Extensions can reject pending-SError that had=
+ an ESR.
+>>
+>> For the CPUs without the v8.2 RAS Extensions, its ESR is always 0, =
+
+>> we only can inject a SError with ESR 0 to guest, cannot set its ESR.
 > =
 
-> A perfect example of the need for this API are Lenovo ThinkPads.
+> 0? It's always implementation-defined. On Juno it seems to be always-0, b=
+ut
+> other systems may behave differently. (Juno may generate another ESR valu=
+e when
+> I'm not watching it...)
+For the armv8.0 cpu without RAS Extensions, it does not have vsesr_el2, so =
+when guest take a virtual SError,
+its ESR is 0, can not control the virtual SError's syndrom value, it does n=
+ot have such registers to control that.
+
+Does Juno not have RAS Extension? if yes, I think we can only inject an SEr=
+ror, but can not change its ESR value, because it does not have vsesr_el2.
+
 > =
 
-> Lenovo ThinkPads have a ACPI extension that allows the setting of
-> start and stop charge thresholds in the EC and battery firmware
-> via ACPI. The thinkpad_acpi module can use this API to expose
-> sysfs attributes that it controls inside the ACPI battery driver
-> sysfs tree, under /sys/class/power_supply/BATN/.
+> Just because we can't control the ESR doesn't mean injecting an SError is=
+n't
+> something user-space may want to do.
+yes, we may need to support user-space injects an SError even through CPU d=
+oes not have RAS Extension.
+
+> If we tackle migration of pending-SError first, I think that will give us=
+ the
+> API to create a new pending SError with/without an ESR as appropriate.
+
+sure, we should. Last week, I checked the KVM_GET/SET_VCPU_EVENTS IOCTL, it=
+ should meet our migration requirements
+
 > =
 
-> The file drivers/acpi/battery.h has been moved to
-> include/acpi/battery.h and the includes inside ac.c, sbs.c, and
-> battery.c have been adjusted to reflect that.
 > =
 
-> When drivers hooks into the API, the API calls add_battery() for
-> each battery in the system that passes it a acpi_battery
-> struct. Then, the drivers can use device_create_file() to create
-> new sysfs attributes with that struct and identify the batteries
-> for per-battery attributes.
+>> About how about to use the KVM_GET/SET_VCPU_EVENTS, I will check the cod=
+e, and
+>> consider your suggestion at the same time.
 > =
 
-> Signed-off-by: Ognjen Galic <smclt30p(a)gmail.com>
-> ---
+> (Not my suggestion, It was Andrew Jones idea.)
+Got it.
+
 > =
 
-> Notes:
->     v7:
->     * Implemented mutual exclusion for hooking methods and battery
->     callbacks
->     * Fixed a BUG where errors in other modules would occur when the
->     modules that depend on battery get unloaded
->     =
-
->     v8:
->     * Use list_for_each_safe instead of list_for_each for the module
->     exit function where deletion of nodes occurs
->     =
-
->     v9:
->     * No changes in this patch in v9
->     =
-
->     v10:
->     * Fix compiler warnings in Intel's 0-day CI
->     =
-
->     v11:
->     * Fix changelog formatting
->     * Make lists and mutex static
->     =
-
->     v12:
->     * Change all applicable list_for_each to list_for_each_entry
->     * Define pr_fmt to include module name for pr_*
+>> The IOCTL KVM_GET/SET_VCPU_EVENTS has been used by X86.
 > =
 
->  drivers/acpi/ac.c      |   2 +-
->  drivers/acpi/battery.c | 151 +++++++++++++++++++++++++++++++++++++++++++=
-+++++-
->  drivers/acpi/battery.h |  11 ----
->  drivers/acpi/sbs.c     |   2 +-
->  include/acpi/battery.h |  21 +++++++
->  5 files changed, 171 insertions(+), 16 deletions(-)
->  delete mode 100644 drivers/acpi/battery.h
->  create mode 100644 include/acpi/battery.h
+> We would be re-using the struct to have values with slightly different me=
+anings.
+> But for migration the upshot is the same, call KVM_GET_VCPU_EVENTS on one
+> system, and pass the struct to KVM_SET_VCPU_EVENTS on the new system. If =
+we're
+> lucky Qemu may be able to do this in shared x86/arm64 code.
 > =
 
-> diff --git a/drivers/acpi/ac.c b/drivers/acpi/ac.c
-> index 47a7ed5..2d8de2f 100644
-> --- a/drivers/acpi/ac.c
-> +++ b/drivers/acpi/ac.c
-> @@ -33,7 +33,7 @@
->  #include <linux/platform_device.h>
->  #include <linux/power_supply.h>
->  #include <linux/acpi.h>
-> -#include "battery.h"
-> +#include <acpi/battery.h>
->  =
-
->  #define PREFIX "ACPI: "
->  =
-
-> diff --git a/drivers/acpi/battery.c b/drivers/acpi/battery.c
-> index 13e7b56..7089e31 100644
-> --- a/drivers/acpi/battery.c
-> +++ b/drivers/acpi/battery.c
-> @@ -21,8 +21,12 @@
->   * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
-~~~~~
->   */
->  =
-
-> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> +
->  #include <linux/kernel.h>
-> +#include <linux/list.h>
->  #include <linux/module.h>
-> +#include <linux/mutex.h>
->  #include <linux/init.h>
->  #include <linux/types.h>
->  #include <linux/jiffies.h>
-> @@ -42,7 +46,7 @@
->  #include <linux/acpi.h>
->  #include <linux/power_supply.h>
->  =
-
-> -#include "battery.h"
-> +#include <acpi/battery.h>
->  =
-
->  #define PREFIX "ACPI: "
->  =
-
-> @@ -124,6 +128,7 @@ struct acpi_battery {
->  	struct power_supply_desc bat_desc;
->  	struct acpi_device *device;
->  	struct notifier_block pm_nb;
-> +	struct list_head list;
->  	unsigned long update_time;
->  	int revision;
->  	int rate_now;
-> @@ -626,6 +631,142 @@ static const struct device_attribute alarm_attr =3D=
- {
->  	.store =3D acpi_battery_alarm_store,
->  };
->  =
-
-> +/*
-> + * The Battery Hooking API
-> + *
-> + * This API is used inside other drivers that need to expose
-> + * platform-specific behaviour within the generic driver in a
-> + * generic way.
-> + *
-> + */
-> +
-> +static LIST_HEAD(acpi_battery_list);
-> +static LIST_HEAD(battery_hook_list);
-> +static DEFINE_MUTEX(hook_mutex);
-> +
-> +void __battery_hook_unregister(struct acpi_battery_hook *hook, int lock)
-> +{
-> +	struct list_head *position;
-> +	struct acpi_battery *battery;
-> +	/*
-> +	 * In order to remove a hook, we first need to
-> +	 * de-register all the batteries that are registered.
-> +	 */
-> +	if (lock)
-> +		mutex_lock(&hook_mutex);
-> +	list_for_each(position, &acpi_battery_list) {
-> +		battery =3D list_entry(position, struct acpi_battery, list);
-> +		hook->remove_battery(battery->bat);
-> +	}
-> +	list_del(&hook->list);
-> +	if (lock)
-> +		mutex_unlock(&hook_mutex);
-> +	pr_info("extension unregistered: %s\n", hook->name);
-> +}
-> +
-> +void battery_hook_unregister(struct acpi_battery_hook *hook)
-> +{
-> +	__battery_hook_unregister(hook, 1);
-> +}
-> +EXPORT_SYMBOL_GPL(battery_hook_unregister);
-> +
-> +void battery_hook_register(struct acpi_battery_hook *hook)
-> +{
-> +	struct acpi_battery *battery;
-> +
-> +	mutex_lock(&hook_mutex);
-> +	INIT_LIST_HEAD(&hook->list);
-> +	list_add(&hook->list, &battery_hook_list);
-> +	/*
-> +	 * Now that the driver is registered, we need
-> +	 * to notify the hook that a battery is available
-> +	 * for each battery, so that the driver may add
-> +	 * its attributes.
-> +	 */
-> +	list_for_each_entry(battery, &acpi_battery_list, list) {
-> +		if (hook->add_battery(battery->bat)) {
-> +			/*
-> +			 * If a add-battery returns non-zero,
-> +			 * the registration of the extension has failed,
-> +			 * and we will not add it to the list of loaded
-> +			 * hooks.
-> +			 */
-> +			pr_err("extension failed to load: %s",
-> +					hook->name);
-> +			__battery_hook_unregister(hook, 0);
-> +			return;
-> +		}
-> +	}
-> +	pr_info("new extension: %s\n", hook->name);
-> +	mutex_unlock(&hook_mutex);
-> +}
-> +EXPORT_SYMBOL_GPL(battery_hook_register);
-> +
-> +static void battery_hook_add_battery(struct acpi_battery *battery)
-> +{
-> +	/*
-> +	 * This function gets called right after the battery sysfs
-> +	 * attributes have been added, so that the drivers that
-> +	 * define custom sysfs attributes can add their own.
-> +	 */
-> +	struct acpi_battery_hook *hook_node;
-> +
-> +	mutex_lock(&hook_mutex);
-> +	INIT_LIST_HEAD(&battery->list);
-> +	list_add(&battery->list, &acpi_battery_list);
-> +	/*
-> +	 * Since we added a new battery to the list, we need to
-> +	 * iterate over the hooks and call add_battery for each
-> +	 * hook that was registered. This usually happens
-> +	 * when a battery gets hotplugged or initialized
-> +	 * during the battery module initialization.
-> +	 */
-> +	list_for_each_entry(hook_node, &battery_hook_list, list) {
-> +		if (hook_node->add_battery(battery->bat)) {
-> +			/*
-> +			 * The notification of the extensions has failed, to
-> +			 * prevent further errors we will unload the extension.
-> +			 */
-> +			__battery_hook_unregister(hook_node, 0);
-> +			pr_err("error in extension, unloading: %s",
-> +					hook_node->name);
-> +		}
-> +	}
-> +	mutex_unlock(&hook_mutex);
-> +}
-> +
-> +static void battery_hook_remove_battery(struct acpi_battery *battery)
-> +{
-> +	struct acpi_battery_hook *hook;
-> +
-> +	mutex_lock(&hook_mutex);
-> +	/*
-> +	 * Before removing the hook, we need to remove all
-> +	 * custom attributes from the battery.
-> +	 */
-> +	list_for_each_entry(hook, &battery_hook_list, list) {
-> +		hook->remove_battery(battery->bat);
-> +	}
-> +	/* Then, just remove the battery from the list */
-> +	list_del(&battery->list);
-> +	mutex_unlock(&hook_mutex);
-> +}
-> +
-> +static void __exit battery_hook_exit(void)
-> +{
-> +	struct acpi_battery_hook *hook;
-> +	struct acpi_battery_hook *ptr;
-> +	/*
-> +	 * At this point, the acpi_bus_unregister_driver
-> +	 * has called remove for all batteries. We just
-> +	 * need to remove the hooks.
-> +	 */
-> +	list_for_each_entry_safe(hook, ptr, &battery_hook_list, list) {
-> +		__battery_hook_unregister(hook, 1);
-> +	}
-> +	mutex_destroy(&hook_mutex);
-> +}
-> +
->  static int sysfs_add_battery(struct acpi_battery *battery)
->  {
->  	struct power_supply_config psy_cfg =3D { .drv_data =3D battery, };
-> @@ -647,6 +788,8 @@ static int sysfs_add_battery(struct acpi_battery *bat=
-tery)
->  	battery->bat =3D power_supply_register_no_ws(&battery->device->dev,
->  				&battery->bat_desc, &psy_cfg);
->  =
-
-> +	battery_hook_add_battery(battery);
-
-I seem to see a problem here, as this may be called before
-battery_hook_register() in some cases if I'm not mistaken and there seems to
-be nothing to ensure that the "hook" code will actually see the battery the=
-n.
-
-Thanks,
-Rafael
+Thanks for the reminder, I know your meaning.
+In the x86, the kvm_vcpu_events includes exception/interrupt/nmi/smi. For t=
+he RAS, we
+only involves the exception, so Qemu handling logic is different. Anyway, I=
+ will try to
+share code for the two platform in Qemu.
 
 
---===============8799252782317845889==--
+/* for KVM_GET/SET_VCPU_EVENTS */
+struct kvm_vcpu_events {
+	struct {
+		__u8 injected;
+		__u8 nr;
+		__u8 has_error_code;
+		__u8 pad;
+		__u32 error_code;
+	} exception;
+	struct {
+		__u8 injected;
+		__u8 nr;
+		__u8 soft;
+		__u8 shadow;
+	} interrupt;
+	struct {
+		__u8 injected;
+		__u8 pending;
+		__u8 masked;
+		__u8 pad;
+	} nmi;
+	__u32 sipi_vector;
+	__u32 flags;
+	struct {
+		__u8 smm;
+		__u8 pending;
+		__u8 smm_inside_nmi;
+		__u8 latched_init;
+	} smi;
+	__u32 reserved[9];
+};
+
+> =
+
+>>>> diff --git a/arch/arm64/kvm/guest.c b/arch/arm64/kvm/guest.c index
+>>>> 5c7f657..738ae90 100644
+>>>> --- a/arch/arm64/kvm/guest.c
+>>>> +++ b/arch/arm64/kvm/guest.c
+>>>> @@ -277,6 +277,11 @@ int kvm_arch_vcpu_ioctl_set_sregs(struct kvm_vcpu=
+ *vcpu,
+>>>>  	return -EINVAL;
+>>>>  }
+>>>>
+>>>> +int kvm_arm_set_sei_esr(struct kvm_vcpu *vcpu, u32 *syndrome) {
+>>>> +	return -EINVAL;
+>>>> +}
+>>>
+>>> Does nothing in the patch that adds the support? This is a bit odd.
+>>> (oh, its hiding in patch 6...)
+>>
+>> To make this patch simple and small, I add it in patch 6.
+> =
+
+> But that made the functionality of this patch: A new API to return -EINVA=
+L from
+> the kernel.
+> =
+
+> Swapping the patches round would have avoided this.
+> Regardless, I think this will fold out in a rebase.
+yes, I will, thanks for your kind suggestion.
+
+> =
+
+> =
+
+> Thanks,
+> =
+
+> James
+> =
+
+> .
+> =
+
+
+
+--===============4063369066722375403==--
 
