@@ -1,177 +1,111 @@
-Content-Type: multipart/mixed; boundary="===============4063369066722375403=="
+Content-Type: multipart/mixed; boundary="===============4576852335476914870=="
 MIME-Version: 1.0
 From: gengdongjiu <gengdongjiu at huawei.com>
-Subject: Re: [Devel] [PATCH v9 5/7] arm64: kvm: Introduce
- KVM_ARM_SET_SERROR_ESR ioctl
-Date: Mon, 05 Feb 2018 14:19:56 +0800
-Message-ID: <d1b17dae-9d9c-970a-d164-a41c618d449b@huawei.com>
-In-Reply-To: 5A70C5A0.1050600@arm.com
+Subject: Re: [Devel] [PATCH v9 3/7] acpi: apei: Add SEI notification type
+ support for ARMv8
+Date: Mon, 05 Feb 2018 11:24:26 +0000
+Message-ID: <0184EA26B2509940AA629AE1405DD7F201AC71DE@DGGEMA503-MBS.china.huawei.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4063369066722375403==
+--===============4576852335476914870==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-James,
-   Thank you for your time to reply me.
-
-On 2018/1/31 3:21, James Morse wrote:
-> Hi gengdongjiu,
+[...]
 > =
 
-> On 24/01/18 20:06, gengdongjiu wrote:
->>> On 06/01/18 16:02, Dongjiu Geng wrote:
->>>> The ARM64 RAS SError Interrupt(SEI) syndrome value is specific to the
->>>> guest and user space needs a way to tell KVM this value. So we add a
->>>> new ioctl. Before user space specifies the Exception Syndrome Register
->>>> ESR(ESR), it firstly checks that whether KVM has the capability to set
->>>> the guest ESR, If has, will set it. Otherwise, nothing to do.
->>>>
->>>> For this ESR specifying, Only support for AArch64, not support AArch32.
->>>
->>> After this patch user-space can trigger an SError in the guest. If it w=
-ants to migrate the guest, how does the pending SError get migrated?
->>>
->>> I think we need to fix migration first. Andrew Jones suggested using
->>> KVM_GET/SET_VCPU_EVENTS:
->>> https://www.spinics.net/lists/arm-kernel/msg616846.html
->>>
->>> Given KVM uses kvm_inject_vabt() on v8.0 hardware too, we should cover =
-systems without the v8.2 RAS Extensions with the same API. I
->>> think this means a bit to read/write whether SError is pending, and ano=
-ther to indicate the ESR should be set/read.
->>> CPUs without the v8.2 RAS Extensions can reject pending-SError that had=
- an ESR.
->>
->> For the CPUs without the v8.2 RAS Extensions, its ESR is always 0, =
-
->> we only can inject a SError with ESR 0 to guest, cannot set its ESR.
+> > Yes, I know you are dong that. Your serial's patch will consider all ab=
+ove
+> things, right?
 > =
 
-> 0? It's always implementation-defined. On Juno it seems to be always-0, b=
-ut
-> other systems may behave differently. (Juno may generate another ESR valu=
-e when
-> I'm not watching it...)
-For the armv8.0 cpu without RAS Extensions, it does not have vsesr_el2, so =
-when guest take a virtual SError,
-its ESR is 0, can not control the virtual SError's syndrom value, it does n=
-ot have such registers to control that.
+> Assuming I got it right, yes. It currently makes the race Xie XiuQi spott=
+ed worse,
+> which I want to fix too. (details on the cover letter)
 
-Does Juno not have RAS Extension? if yes, I think we can only inject an SEr=
-ror, but can not change its ESR value, because it does not have vsesr_el2.
-
-> =
-
-> Just because we can't control the ESR doesn't mean injecting an SError is=
-n't
-> something user-space may want to do.
-yes, we may need to support user-space injects an SError even through CPU d=
-oes not have RAS Extension.
-
-> If we tackle migration of pending-SError first, I think that will give us=
- the
-> API to create a new pending SError with/without an ESR as appropriate.
-
-sure, we should. Last week, I checked the KVM_GET/SET_VCPU_EVENTS IOCTL, it=
- should meet our migration requirements
+Ok.
 
 > =
 
 > =
 
->> About how about to use the KVM_GET/SET_VCPU_EVENTS, I will check the cod=
-e, and
->> consider your suggestion at the same time.
+> > If your patch can be consider that, this patch can based on your patchs=
+et.
+> thanks.
 > =
 
-> (Not my suggestion, It was Andrew Jones idea.)
-Got it.
-
+> I'd like to pick these patches onto the end of that series, but first I w=
+ant to
+> know what NOTIFY_SEI means for any OS. The ACPI spec doesn't say, and
+> because its asynchronous, route-able and mask-able, there are many more
+> corners than NOTFIY_SEA.
 > =
 
->> The IOCTL KVM_GET/SET_VCPU_EVENTS has been used by X86.
+> This thing is a notification using an emulated SError exception. (emulated
+> because physical-SError must be routed to EL3 for firmware-first, and
+> virtual-SError belongs to EL2).
 > =
 
-> We would be re-using the struct to have values with slightly different me=
-anings.
-> But for migration the upshot is the same, call KVM_GET_VCPU_EVENTS on one
-> system, and pass the struct to KVM_SET_VCPU_EVENTS on the new system. If =
-we're
-> lucky Qemu may be able to do this in shared x86/arm64 code.
-> =
+> Does your firmware emulate SError exactly as the TakeException() pseudo c=
+ode
+> in the Arm-Arm?
 
-Thanks for the reminder, I know your meaning.
-In the x86, the kvm_vcpu_events includes exception/interrupt/nmi/smi. For t=
-he RAS, we
-only involves the exception, so Qemu handling logic is different. Anyway, I=
- will try to
-share code for the two platform in Qemu.
+Yes, it is.
 
+> Is the emulated SError routed following the routing rules for HCR_EL2.{AM=
+O,
+> TGE}?
 
-/* for KVM_GET/SET_VCPU_EVENTS */
-struct kvm_vcpu_events {
-	struct {
-		__u8 injected;
-		__u8 nr;
-		__u8 has_error_code;
-		__u8 pad;
-		__u32 error_code;
-	} exception;
-	struct {
-		__u8 injected;
-		__u8 nr;
-		__u8 soft;
-		__u8 shadow;
-	} interrupt;
-	struct {
-		__u8 injected;
-		__u8 pending;
-		__u8 masked;
-		__u8 pad;
-	} nmi;
-	__u32 sipi_vector;
-	__u32 flags;
-	struct {
-		__u8 smm;
-		__u8 pending;
-		__u8 smm_inside_nmi;
-		__u8 latched_init;
-	} smi;
-	__u32 reserved[9];
-};
+Yes, it is.
+
+> What does your firmware do when it wants to emulate SError but its masked?
+> (e.g.1: The physical-SError interrupted EL2 and the SPSR shows EL2 had
+> PSTATE.A  set.
+>  e.g.2: The physical-SError interrupted EL2 but HCR_EL2 indicates the
+> emulated  SError should go to EL1. This effectively masks SError.)
+
+Currently we does not consider much about the mask status(SPSR).
+I remember that you ever suggested firmware should reboot if the mask statu=
+s is set(SPSR), right?
+I ever suggest our firmware team to evaluate that, but there is no response.
+
+I CC "liu jun" <liujun88(a)hisilicon.com> who is our UEFI firmware Architec=
+t, if you have firmware requirements, you can
+raise again.
 
 > =
 
->>>> diff --git a/arch/arm64/kvm/guest.c b/arch/arm64/kvm/guest.c index
->>>> 5c7f657..738ae90 100644
->>>> --- a/arch/arm64/kvm/guest.c
->>>> +++ b/arch/arm64/kvm/guest.c
->>>> @@ -277,6 +277,11 @@ int kvm_arch_vcpu_ioctl_set_sregs(struct kvm_vcpu=
- *vcpu,
->>>>  	return -EINVAL;
->>>>  }
->>>>
->>>> +int kvm_arm_set_sei_esr(struct kvm_vcpu *vcpu, u32 *syndrome) {
->>>> +	return -EINVAL;
->>>> +}
->>>
->>> Does nothing in the patch that adds the support? This is a bit odd.
->>> (oh, its hiding in patch 6...)
->>
->> To make this patch simple and small, I add it in patch 6.
+> Answers to these let us determine whether a bug is in the firmware or the
+> kernel. If firmware is expecting the OS to do something special, I'd like=
+ to know
+> about it from the beginning!
+
+I know your meaning, thanks for raising it again.
+
 > =
 
-> But that made the functionality of this patch: A new API to return -EINVA=
-L from
-> the kernel.
 > =
 
-> Swapping the patches round would have avoided this.
-> Regardless, I think this will fold out in a rebase.
-yes, I will, thanks for your kind suggestion.
+> >>> Expose API ghes_notify_sei() to external users. External modules can
+> >>> call this exposed API to parse APEI table and handle the SEI
+> >>> notification.
+> >>
+> >> external modules? You mean called by the arch code when it gets this
+> NOTIFY_SEI?
+> =
+
+> > yes, called by kernel ARCH code, such as below, I remember I have discu=
+ssed
+> with you.
+> =
+
+> Sure. The phrase 'external modules' usually means the '.ko' files that li=
+ve in
+> /lib/modules, nothing outside the kernel tree should be doing this stuff.
+
+I will rename 'external modules' to other name. Thanks.
 
 > =
 
@@ -181,12 +115,7 @@ yes, I will, thanks for your kind suggestion.
 > =
 
 > James
-> =
-
-> .
-> =
 
 
-
---===============4063369066722375403==--
+--===============4576852335476914870==--
 
