@@ -1,121 +1,306 @@
-Content-Type: multipart/mixed; boundary="===============4576852335476914870=="
+Content-Type: multipart/mixed; boundary="===============8741424473976541595=="
 MIME-Version: 1.0
-From: gengdongjiu <gengdongjiu at huawei.com>
-Subject: Re: [Devel] [PATCH v9 3/7] acpi: apei: Add SEI notification type
- support for ARMv8
-Date: Mon, 05 Feb 2018 11:24:26 +0000
-Message-ID: <0184EA26B2509940AA629AE1405DD7F201AC71DE@DGGEMA503-MBS.china.huawei.com>
+From: Rafael J. Wysocki <rafael at kernel.org>
+Subject: Re: [Devel] [PATCH v12 1/4] battery: Add the battery hooking API
+Date: Wed, 07 Feb 2018 11:12:13 +0100
+Message-ID: <CAJZ5v0iGA+zQ1yt7hvSOr+2WHeCyqYcygV6p6t_7O0zqxaaAPw@mail.gmail.com>
+In-Reply-To: 20180204091138.fi4s6665iybcj3hu@thinkpad
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4576852335476914870==
+--===============8741424473976541595==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-[...]
-> =
+On Sun, Feb 4, 2018 at 10:11 AM, Ognjen Gali=C4=87 <smclt30p(a)gmail.com> w=
+rote:
+> On Sun, Feb 04, 2018 at 09:52:33AM +0100, Rafael J. Wysocki wrote:
+>> On Wednesday, January 3, 2018 12:58:47 PM CET Ognjen Galic wrote:
+>> > This is a patch that implements a generic hooking API for the
+>> > generic ACPI battery driver.
+>> >
+>> > With this new generic API, drivers can expose platform specific
+>> > behaviour via sysfs attributes in /sys/class/power_supply/BATn/
+>> > in a generic way.
+>> >
+>> > A perfect example of the need for this API are Lenovo ThinkPads.
+>> >
+>> > Lenovo ThinkPads have a ACPI extension that allows the setting of
+>> > start and stop charge thresholds in the EC and battery firmware
+>> > via ACPI. The thinkpad_acpi module can use this API to expose
+>> > sysfs attributes that it controls inside the ACPI battery driver
+>> > sysfs tree, under /sys/class/power_supply/BATN/.
+>> >
+>> > The file drivers/acpi/battery.h has been moved to
+>> > include/acpi/battery.h and the includes inside ac.c, sbs.c, and
+>> > battery.c have been adjusted to reflect that.
+>> >
+>> > When drivers hooks into the API, the API calls add_battery() for
+>> > each battery in the system that passes it a acpi_battery
+>> > struct. Then, the drivers can use device_create_file() to create
+>> > new sysfs attributes with that struct and identify the batteries
+>> > for per-battery attributes.
+>> >
+>> > Signed-off-by: Ognjen Galic <smclt30p(a)gmail.com>
+>> > ---
+>> >
+>> > Notes:
+>> >     v7:
+>> >     * Implemented mutual exclusion for hooking methods and battery
+>> >     callbacks
+>> >     * Fixed a BUG where errors in other modules would occur when the
+>> >     modules that depend on battery get unloaded
+>> >
+>> >     v8:
+>> >     * Use list_for_each_safe instead of list_for_each for the module
+>> >     exit function where deletion of nodes occurs
+>> >
+>> >     v9:
+>> >     * No changes in this patch in v9
+>> >
+>> >     v10:
+>> >     * Fix compiler warnings in Intel's 0-day CI
+>> >
+>> >     v11:
+>> >     * Fix changelog formatting
+>> >     * Make lists and mutex static
+>> >
+>> >     v12:
+>> >     * Change all applicable list_for_each to list_for_each_entry
+>> >     * Define pr_fmt to include module name for pr_*
+>> >
+>> >  drivers/acpi/ac.c      |   2 +-
+>> >  drivers/acpi/battery.c | 151 ++++++++++++++++++++++++++++++++++++++++=
+++++++++-
+>> >  drivers/acpi/battery.h |  11 ----
+>> >  drivers/acpi/sbs.c     |   2 +-
+>> >  include/acpi/battery.h |  21 +++++++
+>> >  5 files changed, 171 insertions(+), 16 deletions(-)
+>> >  delete mode 100644 drivers/acpi/battery.h
+>> >  create mode 100644 include/acpi/battery.h
+>> >
+>> > diff --git a/drivers/acpi/ac.c b/drivers/acpi/ac.c
+>> > index 47a7ed5..2d8de2f 100644
+>> > --- a/drivers/acpi/ac.c
+>> > +++ b/drivers/acpi/ac.c
+>> > @@ -33,7 +33,7 @@
+>> >  #include <linux/platform_device.h>
+>> >  #include <linux/power_supply.h>
+>> >  #include <linux/acpi.h>
+>> > -#include "battery.h"
+>> > +#include <acpi/battery.h>
+>> >
+>> >  #define PREFIX "ACPI: "
+>> >
+>> > diff --git a/drivers/acpi/battery.c b/drivers/acpi/battery.c
+>> > index 13e7b56..7089e31 100644
+>> > --- a/drivers/acpi/battery.c
+>> > +++ b/drivers/acpi/battery.c
+>> > @@ -21,8 +21,12 @@
+>> >   * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
+~~~~~~~~
+>> >   */
+>> >
+>> > +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+>> > +
+>> >  #include <linux/kernel.h>
+>> > +#include <linux/list.h>
+>> >  #include <linux/module.h>
+>> > +#include <linux/mutex.h>
+>> >  #include <linux/init.h>
+>> >  #include <linux/types.h>
+>> >  #include <linux/jiffies.h>
+>> > @@ -42,7 +46,7 @@
+>> >  #include <linux/acpi.h>
+>> >  #include <linux/power_supply.h>
+>> >
+>> > -#include "battery.h"
+>> > +#include <acpi/battery.h>
+>> >
+>> >  #define PREFIX "ACPI: "
+>> >
+>> > @@ -124,6 +128,7 @@ struct acpi_battery {
+>> >     struct power_supply_desc bat_desc;
+>> >     struct acpi_device *device;
+>> >     struct notifier_block pm_nb;
+>> > +   struct list_head list;
+>> >     unsigned long update_time;
+>> >     int revision;
+>> >     int rate_now;
+>> > @@ -626,6 +631,142 @@ static const struct device_attribute alarm_attr =
+=3D {
+>> >     .store =3D acpi_battery_alarm_store,
+>> >  };
+>> >
+>> > +/*
+>> > + * The Battery Hooking API
+>> > + *
+>> > + * This API is used inside other drivers that need to expose
+>> > + * platform-specific behaviour within the generic driver in a
+>> > + * generic way.
+>> > + *
+>> > + */
+>> > +
+>> > +static LIST_HEAD(acpi_battery_list);
+>> > +static LIST_HEAD(battery_hook_list);
+>> > +static DEFINE_MUTEX(hook_mutex);
+>> > +
+>> > +void __battery_hook_unregister(struct acpi_battery_hook *hook, int lo=
+ck)
+>> > +{
+>> > +   struct list_head *position;
+>> > +   struct acpi_battery *battery;
+>> > +   /*
+>> > +    * In order to remove a hook, we first need to
+>> > +    * de-register all the batteries that are registered.
+>> > +    */
+>> > +   if (lock)
+>> > +           mutex_lock(&hook_mutex);
+>> > +   list_for_each(position, &acpi_battery_list) {
+>> > +           battery =3D list_entry(position, struct acpi_battery, list=
+);
+>> > +           hook->remove_battery(battery->bat);
+>> > +   }
+>> > +   list_del(&hook->list);
+>> > +   if (lock)
+>> > +           mutex_unlock(&hook_mutex);
+>> > +   pr_info("extension unregistered: %s\n", hook->name);
+>> > +}
+>> > +
+>> > +void battery_hook_unregister(struct acpi_battery_hook *hook)
+>> > +{
+>> > +   __battery_hook_unregister(hook, 1);
+>> > +}
+>> > +EXPORT_SYMBOL_GPL(battery_hook_unregister);
+>> > +
+>> > +void battery_hook_register(struct acpi_battery_hook *hook)
+>> > +{
+>> > +   struct acpi_battery *battery;
+>> > +
+>> > +   mutex_lock(&hook_mutex);
+>> > +   INIT_LIST_HEAD(&hook->list);
+>> > +   list_add(&hook->list, &battery_hook_list);
+>> > +   /*
+>> > +    * Now that the driver is registered, we need
+>> > +    * to notify the hook that a battery is available
+>> > +    * for each battery, so that the driver may add
+>> > +    * its attributes.
+>> > +    */
+>> > +   list_for_each_entry(battery, &acpi_battery_list, list) {
+>> > +           if (hook->add_battery(battery->bat)) {
+>> > +                   /*
+>> > +                    * If a add-battery returns non-zero,
+>> > +                    * the registration of the extension has failed,
+>> > +                    * and we will not add it to the list of loaded
+>> > +                    * hooks.
+>> > +                    */
+>> > +                   pr_err("extension failed to load: %s",
+>> > +                                   hook->name);
+>> > +                   __battery_hook_unregister(hook, 0);
+>> > +                   return;
+>> > +           }
+>> > +   }
+>> > +   pr_info("new extension: %s\n", hook->name);
+>> > +   mutex_unlock(&hook_mutex);
+>> > +}
+>> > +EXPORT_SYMBOL_GPL(battery_hook_register);
+>> > +
+>> > +static void battery_hook_add_battery(struct acpi_battery *battery)
+>> > +{
+>> > +   /*
+>> > +    * This function gets called right after the battery sysfs
+>> > +    * attributes have been added, so that the drivers that
+>> > +    * define custom sysfs attributes can add their own.
+>> > +    */
+>> > +   struct acpi_battery_hook *hook_node;
+>> > +
+>> > +   mutex_lock(&hook_mutex);
+>> > +   INIT_LIST_HEAD(&battery->list);
+>> > +   list_add(&battery->list, &acpi_battery_list);
+>> > +   /*
+>> > +    * Since we added a new battery to the list, we need to
+>> > +    * iterate over the hooks and call add_battery for each
+>> > +    * hook that was registered. This usually happens
+>> > +    * when a battery gets hotplugged or initialized
+>> > +    * during the battery module initialization.
+>> > +    */
+>> > +   list_for_each_entry(hook_node, &battery_hook_list, list) {
+>> > +           if (hook_node->add_battery(battery->bat)) {
+>> > +                   /*
+>> > +                    * The notification of the extensions has failed, =
+to
+>> > +                    * prevent further errors we will unload the exten=
+sion.
+>> > +                    */
+>> > +                   __battery_hook_unregister(hook_node, 0);
+>> > +                   pr_err("error in extension, unloading: %s",
+>> > +                                   hook_node->name);
+>> > +           }
+>> > +   }
+>> > +   mutex_unlock(&hook_mutex);
+>> > +}
+>> > +
+>> > +static void battery_hook_remove_battery(struct acpi_battery *battery)
+>> > +{
+>> > +   struct acpi_battery_hook *hook;
+>> > +
+>> > +   mutex_lock(&hook_mutex);
+>> > +   /*
+>> > +    * Before removing the hook, we need to remove all
+>> > +    * custom attributes from the battery.
+>> > +    */
+>> > +   list_for_each_entry(hook, &battery_hook_list, list) {
+>> > +           hook->remove_battery(battery->bat);
+>> > +   }
+>> > +   /* Then, just remove the battery from the list */
+>> > +   list_del(&battery->list);
+>> > +   mutex_unlock(&hook_mutex);
+>> > +}
+>> > +
+>> > +static void __exit battery_hook_exit(void)
+>> > +{
+>> > +   struct acpi_battery_hook *hook;
+>> > +   struct acpi_battery_hook *ptr;
+>> > +   /*
+>> > +    * At this point, the acpi_bus_unregister_driver
+>> > +    * has called remove for all batteries. We just
+>> > +    * need to remove the hooks.
+>> > +    */
+>> > +   list_for_each_entry_safe(hook, ptr, &battery_hook_list, list) {
+>> > +           __battery_hook_unregister(hook, 1);
+>> > +   }
+>> > +   mutex_destroy(&hook_mutex);
+>> > +}
+>> > +
+>> >  static int sysfs_add_battery(struct acpi_battery *battery)
+>> >  {
+>> >     struct power_supply_config psy_cfg =3D { .drv_data =3D battery, };
+>> > @@ -647,6 +788,8 @@ static int sysfs_add_battery(struct acpi_battery *=
+battery)
+>> >     battery->bat =3D power_supply_register_no_ws(&battery->device->dev,
+>> >                             &battery->bat_desc, &psy_cfg);
+>> >
+>> > +   battery_hook_add_battery(battery);
+>>
+>> I seem to see a problem here, as this may be called before
+>> battery_hook_register() in some cases if I'm not mistaken and there seem=
+s to
+>> be nothing to ensure that the "hook" code will actually see the battery =
+then.
+>
+> There is a mechanism for late-loading of modules.
+> battery_hook_add_battery adds each battery to a list of batteries:
+>
+>> static LIST_HEAD(acpi_battery_list);
 
-> > Yes, I know you are dong that. Your serial's patch will consider all ab=
-ove
-> things, right?
-> =
+OK, that should be fine then.
 
-> Assuming I got it right, yes. It currently makes the race Xie XiuQi spott=
-ed worse,
-> which I want to fix too. (details on the cover letter)
+Please respin the series with the comments from Andy addressed and I
+will queue it up.
 
-Ok.
+Thanks,
+Rafael
 
-> =
-
-> =
-
-> > If your patch can be consider that, this patch can based on your patchs=
-et.
-> thanks.
-> =
-
-> I'd like to pick these patches onto the end of that series, but first I w=
-ant to
-> know what NOTIFY_SEI means for any OS. The ACPI spec doesn't say, and
-> because its asynchronous, route-able and mask-able, there are many more
-> corners than NOTFIY_SEA.
-> =
-
-> This thing is a notification using an emulated SError exception. (emulated
-> because physical-SError must be routed to EL3 for firmware-first, and
-> virtual-SError belongs to EL2).
-> =
-
-> Does your firmware emulate SError exactly as the TakeException() pseudo c=
-ode
-> in the Arm-Arm?
-
-Yes, it is.
-
-> Is the emulated SError routed following the routing rules for HCR_EL2.{AM=
-O,
-> TGE}?
-
-Yes, it is.
-
-> What does your firmware do when it wants to emulate SError but its masked?
-> (e.g.1: The physical-SError interrupted EL2 and the SPSR shows EL2 had
-> PSTATE.A  set.
->  e.g.2: The physical-SError interrupted EL2 but HCR_EL2 indicates the
-> emulated  SError should go to EL1. This effectively masks SError.)
-
-Currently we does not consider much about the mask status(SPSR).
-I remember that you ever suggested firmware should reboot if the mask statu=
-s is set(SPSR), right?
-I ever suggest our firmware team to evaluate that, but there is no response.
-
-I CC "liu jun" <liujun88(a)hisilicon.com> who is our UEFI firmware Architec=
-t, if you have firmware requirements, you can
-raise again.
-
-> =
-
-> Answers to these let us determine whether a bug is in the firmware or the
-> kernel. If firmware is expecting the OS to do something special, I'd like=
- to know
-> about it from the beginning!
-
-I know your meaning, thanks for raising it again.
-
-> =
-
-> =
-
-> >>> Expose API ghes_notify_sei() to external users. External modules can
-> >>> call this exposed API to parse APEI table and handle the SEI
-> >>> notification.
-> >>
-> >> external modules? You mean called by the arch code when it gets this
-> NOTIFY_SEI?
-> =
-
-> > yes, called by kernel ARCH code, such as below, I remember I have discu=
-ssed
-> with you.
-> =
-
-> Sure. The phrase 'external modules' usually means the '.ko' files that li=
-ve in
-> /lib/modules, nothing outside the kernel tree should be doing this stuff.
-
-I will rename 'external modules' to other name. Thanks.
-
-> =
-
-> =
-
-> Thanks,
-> =
-
-> James
-
-
---===============4576852335476914870==--
+--===============8741424473976541595==--
 
