@@ -1,17 +1,21 @@
-Content-Type: multipart/mixed; boundary="===============4786546248698127586=="
+Content-Type: multipart/mixed; boundary="===============3446556545235753570=="
 MIME-Version: 1.0
 From: kbuild test robot <fengguang.wu at intel.com>
 Subject: [Devel] [pm:linux-next 23/25] drivers/acpi/ec.c:1936:12: error:
  redefinition of 'acpi_ec_suspend_noirq'
-Date: Thu, 08 Feb 2018 00:14:53 +0800
-Message-ID: <201802080051.FW6lumI7%fengguang.wu@intel.com>
+Date: Thu, 08 Feb 2018 03:45:21 +0800
+Message-ID: <201802080318.h0Bpvm4P%fengguang.wu@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4786546248698127586==
+--===============3446556545235753570==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+
+Hi Rafael,
+
+FYI, the error/warning still remains.
 
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git=
  linux-next
@@ -111,13 +115,13 @@ er
 https://lists.01.org/pipermail/kbuild-all                   Intel Corporati=
 on
 
---===============4786546248698127586==
+--===============3446556545235753570==
 Content-Type: application/gzip
 MIME-Version: 1.0
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="config.gz"
 
-H4sICMMge1oAAy5jb25maWcAlDzbdtw2ku/5ij7OPsw8JJZsR+s5e/QAkmA33CTBAGDr8sKj2O1E
+H4sICMtOe1oAAy5jb25maWcAlDzbdtw2ku/5ij7OPsw8JJZsR+s5e/QAkmA33CTBAGDr8sKj2O1E
 Z2wpK8mzyd9vVYEXACx2Zvxgm1WFW6FQNxT6++++34hvL49f717uP959+fLn5tfjw/Hp7uX4afP5
 /svxfzaF3jTabWSh3I9AXN0/fPvj9R/vL/qLd5t3P57/9OPZZn98ejh+2eSPD5/vf/0Gje8fH777
 /rtcN6XaAl2m3OWf4+c1NY2+5w/VWGe63Cnd9IXMdSHNjNSdazvXl9rUwl2+On75fPHuB5jJDxfv
@@ -828,5 +832,5 @@ gVWLzD6w5HVZp7k8ufGIF8xxEMHI7Lz0QWBw5hmXg31i6WiTwPK6quvGj0DsEMD9HAlRrBxuCesA
 yV5A8G3IwYCeAg5mEG7ihVv7Nipqx7gTfs8dD1XhhUkq7sFIxwLIb5k7uSOzjHrLAmfipgQtm1wF
 N7SYYm+YdZ6BV4HkFm2nnT5tz7Rh9ARc1iCTCdOnApyM/gz017+uvRquf+E9NXGt4Jta5KRFFKR3
 qa0BjTdjCzMH8dlCFGQdcR/mkx2tjveMVpMmlqVpS5lnOz1TluHU3P0f/UMes9iEAgA=
---===============4786546248698127586==--
+--===============3446556545235753570==--
 
