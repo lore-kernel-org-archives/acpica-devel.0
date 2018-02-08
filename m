@@ -1,93 +1,53 @@
-Content-Type: multipart/mixed; boundary="===============2774130948135026443=="
+Content-Type: multipart/mixed; boundary="===============8185729144399540736=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rjw at rjwysocki.net>
-Subject: Re: [Devel] [PATCH v2 0/5] ACPI: Do not call _STA on battery devices
- with unmet dependencies
-Date: Thu, 08 Feb 2018 10:57:24 +0100
-Message-ID: <3281375.11fh90aaLK@aspire.rjw.lan>
-In-Reply-To: 20180122085135.16732-1-hdegoede@redhat.com
+From: Rafael J. Wysocki <rafael at kernel.org>
+Subject: Re: [Devel] [PATCH v13 1/4] battery: Add the battery hooking API
+Date: Thu, 08 Feb 2018 16:18:55 +0100
+Message-ID: <CAJZ5v0jvz2CNRdbTf=yC5g3H4tEJNRGogyradWFYzF9vgkr_Vg@mail.gmail.com>
+In-Reply-To: 20180207145813.icmv6rwemyejhxbk@thinkpad
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2774130948135026443==
+--===============8185729144399540736==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Monday, January 22, 2018 9:51:30 AM CET Hans de Goede wrote:
-> Hi All,
-> =
+On Wed, Feb 7, 2018 at 3:58 PM, Ognjen Galic <smclt30p(a)gmail.com> wrote:
+> This is a patch that implements a generic hooking API for the
+> generic ACPI battery driver.
+>
+> With this new generic API, drivers can expose platform specific
+> behaviour via sysfs attributes in /sys/class/power_supply/BATn/
+> in a generic way.
+>
+> A perfect example of the need for this API are Lenovo ThinkPads.
+>
+> Lenovo ThinkPads have a ACPI extension that allows the setting of
+> start and stop charge thresholds in the EC and battery firmware
+> via ACPI. The thinkpad_acpi module can use this API to expose
+> sysfs attributes that it controls inside the ACPI battery driver
+> sysfs tree, under /sys/class/power_supply/BATN/.
+>
+> The file drivers/acpi/battery.h has been moved to
+> include/acpi/battery.h and the includes inside ac.c, sbs.c, and
+> battery.c have been adjusted to reflect that.
+>
+> When drivers hooks into the API, the API calls add_battery() for
+> each battery in the system that passes it a acpi_battery
+> struct. Then, the drivers can use device_create_file() to create
+> new sysfs attributes with that struct and identify the batteries
+> for per-battery attributes.
+>
+> Signed-off-by: Ognjen Galic <smclt30p(a)gmail.com>
 
-> Here is v2 of this set, new in v2 is the addressing of Bjorn's comments
-> to the "PCI: acpiphp_ibm: prepare for acpi_get_object_info no longer
-> returning status" patch and a new patch (the first patch in v2) which
-> exports acpi_bus_get_status_handle() for use in modules as acpiphp_ibm
-> will now depend on it.
-> =
+This is a major update and for timing reasons I'd rather not try to
+rush it into 4.16-rc.
 
-> Here is the old coverletter from v1 (adjusted for the new patch):
-> =
+If that's not a big issue, I'll queue it up for 4.17.
 
-> The ACPI code already contains quite a bit of code to not bind the
-> ACPI-battery until all deps for an ACPI battery device have been met,
-> but on some devices calling _STA before all deps are met is a problem
-> too because the _STA method uses an i2c OpRegion there.
-> =
+Thanks,
+Rafael
 
-> Here is the DSDT of the device I'm seeing this on:
-> https://fedorapeople.org/~jwrdegoede/toshiba-click-mini-dsdt.dsl
-> =
-
-> This series modifies the kernel to not call _STA until all deps are met,
-> mirroring the binding behavior of the battery driver.
-> =
-
-> Without this series a total of 32 ACPI errors get printend to the console
-> on boot, there are 4 errors per _STA call, 2 battery devices on this
-> system and 4 _STA calls per battery device.
-> =
-
-> The first 2 commits are preparation commits for making the ACPICA changes
-> in the 4th commit, these commits are necessary to not break things after
-> the ACPICA changes.
-> =
-
-> The 3th commit modifies acpi_bus_get_status to not call _STA on
-> battery devices until all deps are met. This fixes 2 of the 4 too early
-> _STA calls triggering these errors.
-> =
-
-> The 4th commit makes the device instantiation code use
-> acpi_bus_get_status instead of acpi_bus_get_status_handle so that the
-> code to get the initial status also does not makes 1 too early _STA call.
-> =
-
-> The 5th commit changes the ACPICA acpi_get_object_info function to not
-> call _STA. Only 1 user (which is fixed in the first commit) cares about
-> acpi_device_info.current_status. And the ACPICA code has this comment:
-> =
-
->  * Note: This interface is intended to be used during the initial device
->  * discovery namespace traversal. Therefore, no complex methods can be
->  * executed, especially those that access operation regions. Therefore, do
->  * not add any additional methods that could cause problems in this area.
->  * Because of this reason support for the following methods has been remo=
-ved:
->  * this was the fate of the _SUB method which was found to cause such
->  * problems and was removed (11/2015).
-> =
-
-> The described problems with the _SUB method clearly also apply to the _STA
-> method, so removing it from acpi_get_object_info seems like it is the rig=
-ht
-> thing to do here. This too fixes 1 too early _STA call, so that with all
-> 5 patches in place we've fixed all 4 too early _STA calls.
-
-I've applied [1-4/5] from this series.
-
-The last one needs to go in via ACPICA anyway or we'll need to carry
-a Linux-specific replacement for acpi_get_object_info().
-
-
---===============2774130948135026443==--
+--===============8185729144399540736==--
 
