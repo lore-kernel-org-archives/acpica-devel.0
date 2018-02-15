@@ -1,98 +1,130 @@
-Content-Type: multipart/mixed; boundary="===============7333250683336162067=="
+Content-Type: multipart/mixed; boundary="===============4144093525745453159=="
 MIME-Version: 1.0
 From: James Morse <james.morse at arm.com>
-Subject: Re: [Devel] [PATCH v9 5/7] arm64: kvm: Introduce
- KVM_ARM_SET_SERROR_ESR ioctl
-Date: Thu, 15 Feb 2018 17:55:00 +0000
-Message-ID: <5A85C974.70500@arm.com>
-In-Reply-To: 93d07d3e-8388-7814-d674-538071d84e2a@huawei.com
+Subject: Re: [Devel] [PATCH v9 3/7] acpi: apei: Add SEI notification type
+ support for ARMv8
+Date: Thu, 15 Feb 2018 17:55:08 +0000
+Message-ID: <5A85C97C.5080605@arm.com>
+In-Reply-To: 0184EA26B2509940AA629AE1405DD7F201AC71DE@DGGEMA503-MBS.china.huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7333250683336162067==
+--===============4144093525745453159==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi gengdongjiu,
+Hi gengdongjiu, liu jun
 
-On 12/02/18 10:19, gengdongjiu wrote:
-> On 2018/2/10 1:44, James Morse wrote:
->> The point? We can't know what a CPU without the RAS extensions puts in t=
-here.
+On 05/02/18 11:24, gengdongjiu wrote:
+> James Morse wrote:
+>> I'd like to pick these patches onto the end of that series, but first I =
+want to
+>> know what NOTIFY_SEI means for any OS. The ACPI spec doesn't say, and
+>> because its asynchronous, route-able and mask-able, there are many more
+>> corners than NOTFIY_SEA.
 >>
->> Why Does this matter? When migrating a pending SError we have to know the
->> difference between 'use this 64bit value', and 'the CPU will generate it=
-'.
->> If I make an SError pending with ESR=3D0 on a CPU with VSESR, I can't mi=
-grated to
->> a system that generates an impdef SError-ESR, because I can't know it wi=
-ll be 0.
+>> This thing is a notification using an emulated SError exception. (emulat=
+ed
+>> because physical-SError must be routed to EL3 for firmware-first, and
+>> virtual-SError belongs to EL2).
+>>
+>> Does your firmware emulate SError exactly as the TakeException() pseudo =
+code
+>> in the Arm-Arm?
+> =
 
-> For the target system, before taking the SError, no one can know whether =
-its syndrome value
-> is IMPLEMENTATION DEFINED or architecturally defined.
+> Yes, it is.
+> =
 
-For a virtual-SError, the hypervisor knows what it generated. (do I have
-VSESR_EL2? What did I put in there?).
+>> Is the emulated SError routed following the routing rules for HCR_EL2.{A=
+MO,
+>> TGE}?
+> =
 
+> Yes, it is.
 
-> when the virtual SError is taken, the ESR_ELx.IDS will be updated, then w=
-e can know
-> whether the ESR value is impdef or architecturally defined.
-
-True, the guest can't know anything about a pending virtual SError until it
-takes it. Why is this a problem?
+... and yet ...
 
 
-> It seems migration is only allowed only when target system and source sys=
-tem all support
-> RAS extension, because we do not know whether its syndrome is IMPLEMENTAT=
-ION DEFINED or
-> architecturally defined.
+>> What does your firmware do when it wants to emulate SError but its maske=
+d?
+>> (e.g.1: The physical-SError interrupted EL2 and the SPSR shows EL2 had
+>> PSTATE.A  set.
+>>  e.g.2: The physical-SError interrupted EL2 but HCR_EL2 indicates the
+>> emulated  SError should go to EL1. This effectively masks SError.)
+> =
 
-I don't think Qemu allows migration between hosts with differing guest-ID
-registers. But we shouldn't depend on this, and we may want to hide the v8.=
-2 RAS
-features from the guest's ID register, but still use them from the host.
+> Currently we does not consider much about the mask status(SPSR).
 
-The way I imagined it working was we would pack the following information i=
-nto
-that events struct:
-{
-	bool serror_pending;
-	bool serror_has_esr;
-	u64  serror_esr;
-}
+.. this is a problem.
 
-The problem I was trying to describe is because there is no value of serror=
-_esr
-we can use to mean 'Ignore this, I'm a v8.0 CPU'. VSESR_EL2 is a 64bit regi=
-ster,
-any bits we abuse may get a meaning we want to use in the future.
+If you ignore SPSR_EL3 you may deliver an SError to EL1 when the exception
+interrupted EL2. Even if you setup the EL1 register correctly, EL1 can't er=
+et to
+EL2. This should never happen, SError is effectively masked if you are runn=
+ing
+at an EL higher than the one its routed to.
 
-When it comes to migration, v8.{0,1} systems can only GET/SET events where
-serror_has_esr =3D=3D false, they can't use the serror_esr. On v8.2 systems=
- we
-should require serror_has_esr to be true.
+More obviously: if the exception came from the EL that SError should be rou=
+ted
+to, but PSTATE.A was set, you can't deliver SError. Masking SError is the o=
+nly
+way the OS has to indicate it can't take an exception right now. VBAR_EL1 m=
+ay be
+'wrong' if we're doing some power-management, the FAR/ELR/ESR/SPSR register=
+s may
+contain live values that the OS would lose if you deliver another exception=
+ over
+the top.
 
-If we need to support migration from v8.{0,1} to v8.2, we can make up an im=
-pdef
-serror_esr.
+If you deliver an emulated-SError as the OS eret's, your new ELR will point=
+ at
+the eret instruction and the CPU will spin on this instruction forever.
 
-We will need to decide what KVM does when SET is called but an SError was
-already pending. 2.5.3 "Multiple SError interrupts" of [0] has something to=
- say.
+You have to honour the masking and routing rules for SError, otherwise no O=
+S can
+run safely with this firmware.
+
+
+> I remember that you ever suggested firmware should reboot if the mask sta=
+tus
+> is set(SPSR), right?
+
+Yes, this is my suggestion of what to do if you can't deliver an SError: st=
+ore
+the RAS error in the BERT and 'reboot'.
+
+
+> I CC "liu jun" <liujun88(a)hisilicon.com> who is our UEFI firmware Archit=
+ect,
+> if you have firmware requirements, you can raise again.
+
+(UEFI? I didn't think there was any of that at EL3, but I'm not familiar wi=
+th
+all the 'PI' bits).
+
+The requirement is your emulated-SError from EL3 looks exactly like a
+physical-SError as if EL3 wasn't implemented.
+Your CPU has to handle cases where it can't deliver an SError, your emulati=
+on
+has to do the same.
+
+This is not something any OS can work around.
+
+
+>> Answers to these let us determine whether a bug is in the firmware or the
+>> kernel. If firmware is expecting the OS to do something special, I'd lik=
+e to know
+>> about it from the beginning!
+> =
+
+> I know your meaning, thanks for raising it again.
 
 
 Happy new year,
 
 James
 
-
-[0]
-https://static.docs.arm.com/ddi0587/a/RAS%20Extension-release%20candidate_m=
-arch_29.pdf
-
---===============7333250683336162067==--
+--===============4144093525745453159==--
 
