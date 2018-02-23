@@ -1,36 +1,33 @@
-Content-Type: multipart/mixed; boundary="===============5400852783612764159=="
+Content-Type: multipart/mixed; boundary="===============2159739125976559920=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: Re: [Devel] [PATCH 2/2] acpi: Avoid that acpi_ns_evaluate() triggers
- a soft lockup complaint
-Date: Fri, 23 Feb 2018 11:17:07 +0100
-Message-ID: <CAJZ5v0j_OKWFSyfiHpm_-pXqxC08eb9M5bdgdpqXBghQZD5PtA@mail.gmail.com>
-In-Reply-To: CAJZ5v0i8TZ7BRh0-sxPDd5iCkaDfqZbGSXrKHkj6XUcN0sDQjw@mail.gmail.com
+From: Andy Shevchenko <andy.shevchenko at gmail.com>
+Subject: Re: [Devel] [PATCH v13 3/4] thinkpad_acpi: Add support for battery
+ thresholds
+Date: Fri, 23 Feb 2018 19:21:11 +0200
+Message-ID: <CAHp75Vej+EjOd-fHjM9R45E0M_qttGsEBOQrwp7WdJ16X6qxXQ@mail.gmail.com>
+In-Reply-To: 20180210084859.dtpydh5gkvoywoju@thinkpad
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5400852783612764159==
+--===============2159739125976559920==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 23, 2018 at 11:08 AM, Rafael J. Wysocki <rafael(a)kernel.org> w=
-rote:
-> On Fri, Feb 23, 2018 at 1:22 AM, Bart Van Assche <bart.vanassche(a)wdc.co=
-m> wrote:
->> This patch avoids that the following is reported during boot with
->> kmemleak and other kernel debugging options enabled:
->
-> Again, it would be sort of nice to explain why you want to fix the
-> issue this particular way.
->
-> We actually can't add cond_resched() to these code paths directly,
-> because the code in question comes from an external project, so we
-> need to understand the issue and see if it can be fixed differently.
+On Sat, Feb 10, 2018 at 10:48 AM, Ognjen Gali=C4=87 <smclt30p(a)gmail.com> =
+wrote:
 
-And BTW, the fact that it happens in Linux indicates that it very well
-may happen in the other OSes using ACPICA, so ideally we'd need to fix
-it in a more general fashion.
+> Do you guys want me to send in another revision of the patch with some
+> documentation on the sysfs API?
 
---===============5400852783612764159==--
+I noticed I didn't apply it because of some pending changes discussed,
+perhaps this one above.
+So, definitely please send a new version which addresses comments.
+
+-- =
+
+With Best Regards,
+Andy Shevchenko
+
+--===============2159739125976559920==--
 
