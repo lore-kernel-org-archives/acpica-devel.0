@@ -1,130 +1,88 @@
-Content-Type: multipart/mixed; boundary="===============4144093525745453159=="
+Content-Type: multipart/mixed; boundary="===============2894730496781992367=="
 MIME-Version: 1.0
-From: James Morse <james.morse at arm.com>
-Subject: Re: [Devel] [PATCH v9 3/7] acpi: apei: Add SEI notification type
- support for ARMv8
-Date: Thu, 15 Feb 2018 17:55:08 +0000
-Message-ID: <5A85C97C.5080605@arm.com>
-In-Reply-To: 0184EA26B2509940AA629AE1405DD7F201AC71DE@DGGEMA503-MBS.china.huawei.com
+From: Rafael J. Wysocki <rafael at kernel.org>
+Subject: Re: [Devel] [PATCH 1/2] acpi: Avoid soft lockup complaints during boot
+Date: Fri, 23 Feb 2018 11:05:47 +0100
+Message-ID: <CAJZ5v0g+4JzFVQTxkNagbYMvQ6X5=aGUVg1BsmUGB4b4m2Xuog@mail.gmail.com>
+In-Reply-To: 20180223002219.21266-2-bart.vanassche@wdc.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4144093525745453159==
+--===============2894730496781992367==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi gengdongjiu, liu jun
+On Fri, Feb 23, 2018 at 1:22 AM, Bart Van Assche <bart.vanassche(a)wdc.com>=
+ wrote:
+> Avoid that the following is reported during boot with kmemleak
+> enabled:
 
-On 05/02/18 11:24, gengdongjiu wrote:
-> James Morse wrote:
->> I'd like to pick these patches onto the end of that series, but first I =
-want to
->> know what NOTIFY_SEI means for any OS. The ACPI spec doesn't say, and
->> because its asynchronous, route-able and mask-able, there are many more
->> corners than NOTFIY_SEA.
->>
->> This thing is a notification using an emulated SError exception. (emulat=
-ed
->> because physical-SError must be routed to EL3 for firmware-first, and
->> virtual-SError belongs to EL2).
->>
->> Does your firmware emulate SError exactly as the TakeException() pseudo =
-code
->> in the Arm-Arm?
-> =
+OK, so why is this fix the right one in your view?
 
-> Yes, it is.
-> =
+> NMI watchdog: BUG: soft lockup - CPU#0 stuck for 21s! [swapper/0:1]
+> Modules linked in:
+> irq event stamp: 18944138
+> hardirqs last  enabled at (18944137): [<ffffffff810ac8ac>] __raw_spin_loc=
+k_init+0x1c/0x50
+> hardirqs last disabled at (18944138): [<ffffffff815b2fe4>] apic_timer_int=
+errupt+0x84/0x90
+> softirqs last  enabled at (18940166): [<ffffffff8105e59b>] __do_softirq+0=
+x1cb/0x230
+> softirqs last disabled at (18940161): [<ffffffff8105e788>] irq_exit+0xa8/=
+0xb0
+> RIP: print_context_stack+0x7b/0xc0
+> Call Trace:
+>  [<ffffffff8101ccb6>] dump_trace+0x116/0x300
+>  [<ffffffff81028726>] save_stack_trace+0x26/0x50
+>  [<ffffffff811939f7>] create_object+0x137/0x2d0
+>  [<ffffffff815a7509>] kmemleak_alloc+0x49/0xa0
+>  [<ffffffff811789c5>] kmem_cache_alloc+0xd5/0x190
+>  [<ffffffff8137d204>] acpi_ut_allocate_object_desc_dbg+0x57/0x101
+>  [<ffffffff8137d399>] acpi_ut_create_internal_object_dbg+0x4e/0x10f
+>  [<ffffffff8134f2df>] acpi_ds_build_internal_object+0x201/0x2b3
+>  [<ffffffff8134f4fa>] acpi_ds_build_internal_package_obj+0x169/0x281
+>  [<ffffffff81350043>] acpi_ds_eval_data_object_operands+0x13d/0x1db
+>  [<ffffffff81351877>] acpi_ds_exec_end_op+0x41f/0x6be
+>  [<ffffffff81371876>] acpi_ps_parse_loop+0x7e8/0x884
+>  [<ffffffff81372ade>] acpi_ps_parse_aml+0x1ab/0x48e
+>  [<ffffffff8134b762>] acpi_ds_execute_arguments+0x183/0x1ca
+>  [<ffffffff8134bbf6>] acpi_ds_get_package_arguments+0xf3/0x11c
+>  [<ffffffff8136b142>] acpi_ns_init_one_object+0xb0/0xfc
+>  [<ffffffff8136f140>] acpi_ns_walk_namespace+0x120/0x271
+>  [<ffffffff8136fa20>] acpi_walk_namespace+0xf4/0x13f
+>  [<ffffffff8136b4fa>] acpi_ns_initialize_objects+0x103/0x1f0
+>  [<ffffffff81af548a>] acpi_load_tables+0xa5/0xf4
+>  [<ffffffff81af3ec0>] acpi_init+0x7e/0x29c
+>  [<ffffffff81000418>] do_one_initcall+0x38/0x150
+>  [<ffffffff81ac7076>] kernel_init_freeable+0x1b1/0x239
+>  [<ffffffff815a4c39>] kernel_init+0x9/0x100
+>  [<ffffffff815b25ef>] ret_from_fork+0x1f/0x40
+>
+> Signed-off-by: Bart Van Assche <bart.vanassche(a)sandisk.com>
+> ---
+>  drivers/acpi/acpica/nswalk.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/acpi/acpica/nswalk.c b/drivers/acpi/acpica/nswalk.c
+> index dd7ae1bc8af8..358969f5afe1 100644
+> --- a/drivers/acpi/acpica/nswalk.c
+> +++ b/drivers/acpi/acpica/nswalk.c
+> @@ -350,6 +350,7 @@ acpi_ns_walk_namespace(acpi_object_type type,
+>
+>                         node_previously_visited =3D TRUE;
+>                 }
+> +               cond_resched();
+>         }
+>
+>         /* Complete walk, not terminated by user function */
+> --
+> 2.16.2
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-acpi" in
+> the body of a message to majordomo(a)vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
->> Is the emulated SError routed following the routing rules for HCR_EL2.{A=
-MO,
->> TGE}?
-> =
-
-> Yes, it is.
-
-... and yet ...
-
-
->> What does your firmware do when it wants to emulate SError but its maske=
-d?
->> (e.g.1: The physical-SError interrupted EL2 and the SPSR shows EL2 had
->> PSTATE.A  set.
->>  e.g.2: The physical-SError interrupted EL2 but HCR_EL2 indicates the
->> emulated  SError should go to EL1. This effectively masks SError.)
-> =
-
-> Currently we does not consider much about the mask status(SPSR).
-
-.. this is a problem.
-
-If you ignore SPSR_EL3 you may deliver an SError to EL1 when the exception
-interrupted EL2. Even if you setup the EL1 register correctly, EL1 can't er=
-et to
-EL2. This should never happen, SError is effectively masked if you are runn=
-ing
-at an EL higher than the one its routed to.
-
-More obviously: if the exception came from the EL that SError should be rou=
-ted
-to, but PSTATE.A was set, you can't deliver SError. Masking SError is the o=
-nly
-way the OS has to indicate it can't take an exception right now. VBAR_EL1 m=
-ay be
-'wrong' if we're doing some power-management, the FAR/ELR/ESR/SPSR register=
-s may
-contain live values that the OS would lose if you deliver another exception=
- over
-the top.
-
-If you deliver an emulated-SError as the OS eret's, your new ELR will point=
- at
-the eret instruction and the CPU will spin on this instruction forever.
-
-You have to honour the masking and routing rules for SError, otherwise no O=
-S can
-run safely with this firmware.
-
-
-> I remember that you ever suggested firmware should reboot if the mask sta=
-tus
-> is set(SPSR), right?
-
-Yes, this is my suggestion of what to do if you can't deliver an SError: st=
-ore
-the RAS error in the BERT and 'reboot'.
-
-
-> I CC "liu jun" <liujun88(a)hisilicon.com> who is our UEFI firmware Archit=
-ect,
-> if you have firmware requirements, you can raise again.
-
-(UEFI? I didn't think there was any of that at EL3, but I'm not familiar wi=
-th
-all the 'PI' bits).
-
-The requirement is your emulated-SError from EL3 looks exactly like a
-physical-SError as if EL3 wasn't implemented.
-Your CPU has to handle cases where it can't deliver an SError, your emulati=
-on
-has to do the same.
-
-This is not something any OS can work around.
-
-
->> Answers to these let us determine whether a bug is in the firmware or the
->> kernel. If firmware is expecting the OS to do something special, I'd lik=
-e to know
->> about it from the beginning!
-> =
-
-> I know your meaning, thanks for raising it again.
-
-
-Happy new year,
-
-James
-
---===============4144093525745453159==--
+--===============2894730496781992367==--
 
