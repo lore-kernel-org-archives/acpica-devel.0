@@ -1,46 +1,43 @@
-Content-Type: multipart/mixed; boundary="===============2055084222628884108=="
+Content-Type: multipart/mixed; boundary="===============7007116123359897424=="
 MIME-Version: 1.0
 From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: Re: [Devel] [PATCH 1/2] acpi: Avoid soft lockup complaints during boot
-Date: Mon, 26 Feb 2018 10:51:06 +0100
-Message-ID: <CAJZ5v0gP2_mTmS4GBMETj+yxFH76eth1V63adgYkqoeiMW7ErA@mail.gmail.com>
-In-Reply-To: 1519402695.2904.10.camel@wdc.com
+Subject: Re: [Devel] [PATCH] ACPICA: Silent warnings about empty body in
+ if/else statement
+Date: Mon, 26 Feb 2018 23:11:37 +0100
+Message-ID: <CAJZ5v0gkswV4xxB11FzyRD1DnnNKXGG-nyJ83fFwRfU9x9BBLQ@mail.gmail.com>
+In-Reply-To: 20180226113431.3e43a032@endymion
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2055084222628884108==
+--===============7007116123359897424==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 23, 2018 at 5:18 PM, Bart Van Assche <Bart.VanAssche(a)wdc.com>=
- wrote:
-> On Fri, 2018-02-23 at 11:05 +0100, Rafael J. Wysocki wrote:
->> On Fri, Feb 23, 2018 at 1:22 AM, Bart Van Assche <bart.vanassche(a)wdc.c=
-om> wrote:
->> > Avoid that the following is reported during boot with kmemleak
->> > enabled:
->>
->> OK, so why is this fix the right one in your view?
+On Mon, Feb 26, 2018 at 11:34 AM, Jean Delvare <jdelvare(a)suse.de> wrote:
+> When ACPI debugging is disabled, I see warnings like this one:
 >
-> No Linux kernel code should keep running for multiple seconds without giv=
-ing
-> the scheduler a chance to schedule another thread. Hence the insertion of=
- the
-> cond_resched() call.
+> drivers/i2c/busses/i2c-scmi.c: In function "acpi_smbus_cmi_add_cap":
+> drivers/i2c/busses/i2c-scmi.c:328:39: warning: suggest braces around empt=
+y body in an "else" statement [-Wempty-body]
+> drivers/i2c/busses/i2c-scmi.c:338:12: warning: suggest braces around empt=
+y body in an "else" statement [-Wempty-body]
+>
+> It is caused by ACPI_DEBUG_PRINT (or other similar macros) resolving
+> to nothing. Make them resolve to the classic "do {} while (0)"
+> construct instead if the compiler likes that, or just {} if not, to
+> silent all such warnings.
 
-I see.
+So first of all, acpi_smbus_cmi_add_cap() shouldn't really use
+ACPI_DEBUG_PRINT() and similar.  They belong to ACPICA and their use
+should be limited to it.
 
-> It is very well possible that the fact that this code keeps the CPU for
-> itself so long is a bug by itself. However, I'm not familiar enough with =
-the
-> ACPI code to figure out whether any alternative solutions exist that woul=
-d be
-> better than the patch I posted.
+I know that they are used in the other parts of the ACPI subsystem,
+but they really should be replaced with the kernel's proper debug
+statements in there.
 
-OK, we'll look at the code and see how it can be improved upstream.
+Thanks,
+Rafael
 
-Thanks a lot for letting us know about this issue!
-
---===============2055084222628884108==--
+--===============7007116123359897424==--
 
