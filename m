@@ -1,58 +1,92 @@
-Content-Type: multipart/mixed; boundary="===============3393681704967430328=="
+Content-Type: multipart/mixed; boundary="===============3055688411880977706=="
 MIME-Version: 1.0
 From: Dongjiu Geng <gengdongjiu at huawei.com>
-Subject: [Devel] [PATCH v10 0/5] set VSESR_EL2 by user space and support
- NOTIFY_SEI notification
-Date: Sun, 04 Mar 2018 00:09:35 +0800
-Message-ID: <1520093380-42577-1-git-send-email-gengdongjiu@huawei.com>
+Subject: [Devel] [PATCH v10 5/5] arm64: handle NOTIFY_SEI notification by the
+ APEI driver
+Date: Sun, 04 Mar 2018 00:09:40 +0800
+Message-ID: <1520093380-42577-6-git-send-email-gengdongjiu@huawei.com>
+In-Reply-To: 1520093380-42577-1-git-send-email-gengdongjiu@huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3393681704967430328==
+--===============3055688411880977706==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-1. Detect whether KVM can set set guest SError syndrome
-2. Support to Set VSESR_EL2 and inject SError by user space.
-3. Support live migration to keep SError pending state and VSESR_EL2 value.
-4. ACPI 6.1 adds support for NOTIFY_SEI as a GHES notification mechanism, s=
-o support this
-   notification in software, KVM or kernel ARCH code call handle_guest_sei(=
-) to let ACP driver
-   to handle this notification.
+Add a helper to handle the NOTIFY_SEI notification, when kernel
+gets the NOTIFY_SEI notification, call this helper and let APEI
+driver to handle this notification.
 
-Dongjiu Geng (5):
-  arm64: KVM: Prepare set virtual SEI syndrome value
-  arm64: KVM: export the capability to set guest SError syndrome
-  arm/arm64: KVM: Introduce set and get per-vcpu event
-  ACPI / APEI: Add SEI notification type support for ARMv8
-  arm64: handle NOTIFY_SEI notification by the APEI driver
-
- Documentation/virtual/kvm/api.txt    | 37 +++++++++++++++++++++++--
- arch/arm/include/asm/kvm_host.h      |  6 ++++
- arch/arm/kvm/guest.c                 | 12 ++++++++
- arch/arm64/include/asm/kvm_emulate.h |  5 ++++
- arch/arm64/include/asm/kvm_host.h    |  7 +++++
+Signed-off-by: Dongjiu Geng <gengdongjiu(a)huawei.com>
+---
  arch/arm64/include/asm/system_misc.h |  1 +
- arch/arm64/include/uapi/asm/kvm.h    | 10 +++++++
- arch/arm64/kernel/traps.c            |  4 +++
- arch/arm64/kvm/guest.c               | 26 ++++++++++++++++++
- arch/arm64/kvm/inject_fault.c        |  5 ++++
- arch/arm64/kvm/reset.c               |  4 +++
- arch/arm64/mm/fault.c                | 10 +++++++
- drivers/acpi/apei/Kconfig            | 15 ++++++++++
- drivers/acpi/apei/ghes.c             | 53 ++++++++++++++++++++++++++++++++=
-++++
- include/acpi/ghes.h                  |  1 +
- include/uapi/linux/kvm.h             |  1 +
- virt/kvm/arm/arm.c                   | 18 ++++++++++++
- 17 files changed, 213 insertions(+), 2 deletions(-)
+ arch/arm64/kernel/traps.c            |  4 ++++
+ arch/arm64/mm/fault.c                | 10 ++++++++++
+ 3 files changed, 15 insertions(+)
 
+diff --git a/arch/arm64/include/asm/system_misc.h b/arch/arm64/include/asm/=
+system_misc.h
+index 07aa8e3..9ee13ad 100644
+--- a/arch/arm64/include/asm/system_misc.h
++++ b/arch/arm64/include/asm/system_misc.h
+@@ -57,6 +57,7 @@ void hook_debug_fault_code(int nr, int (*fn)(unsigned lon=
+g, unsigned int,
+ })
+ =
+
+ int handle_guest_sea(phys_addr_t addr, unsigned int esr);
++int handle_guest_sei(void);
+ =
+
+ #endif	/* __ASSEMBLY__ */
+ =
+
+diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
+index e88096a..6cb280f 100644
+--- a/arch/arm64/kernel/traps.c
++++ b/arch/arm64/kernel/traps.c
+@@ -681,6 +681,10 @@ bool arm64_is_fatal_ras_serror(struct pt_regs *regs, u=
+nsigned int esr)
+ {
+ 	u32 aet =3D arm64_ras_serror_get_severity(esr);
+ =
+
++	/* The APEI driver may handle this RAS error. */
++	if (!handle_guest_sei())
++		return false;
++
+ 	switch (aet) {
+ 	case ESR_ELx_AET_CE:	/* corrected error */
+ 	case ESR_ELx_AET_UEO:	/* restartable, not yet consumed */
+diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
+index f76bb2c..8f29bd8 100644
+--- a/arch/arm64/mm/fault.c
++++ b/arch/arm64/mm/fault.c
+@@ -683,6 +683,16 @@ int handle_guest_sea(phys_addr_t addr, unsigned int es=
+r)
+ 	return ret;
+ }
+ =
+
++int handle_guest_sei(void)
++{
++	int ret =3D -ENOENT;
++
++	if (IS_ENABLED(CONFIG_ACPI_APEI_SEI))
++		ret =3D ghes_notify_sei();
++
++	return ret;
++}
++
+ asmlinkage void __exception do_mem_abort(unsigned long addr, unsigned int =
+esr,
+ 					 struct pt_regs *regs)
+ {
 -- =
 
 1.9.1
 
 
---===============3393681704967430328==--
+--===============3055688411880977706==--
 
