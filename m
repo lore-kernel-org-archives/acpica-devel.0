@@ -1,319 +1,108 @@
-Content-Type: multipart/mixed; boundary="===============6786329424762414449=="
+Content-Type: multipart/mixed; boundary="===============2859756309848473239=="
 MIME-Version: 1.0
 From: gengdongjiu <gengdongjiu at huawei.com>
-Subject: Re: [Devel] [PATCH v10 3/5] arm/arm64: KVM: Introduce set and get
- per-vcpu event
-Date: Sun, 18 Mar 2018 06:42:13 +0000
-Message-ID: <0184EA26B2509940AA629AE1405DD7F201B6C22A@DGGEMA503-MBS.china.huawei.com>
+Subject: Re: [Devel] [PATCH v10 2/5] arm64: KVM: export the capability to set
+ guest SError syndrome
+Date: Sun, 18 Mar 2018 07:33:59 +0000
+Message-ID: <0184EA26B2509940AA629AE1405DD7F201B6C27D@DGGEMA503-MBS.china.huawei.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6786329424762414449==
+--===============2859756309848473239==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
 Hi James,
-   Thanks for your review and good suggestion.
+   Thanks for your time to review and give comments.
 
-> =
-
-> Hi Dongjiu Geng,
-> =
-
-> On 03/03/18 16:09, Dongjiu Geng wrote:
-> > RAS Extension provides VSESR_EL2 register to specify virtual SError
-> > syndrome value, this patch adds a new IOCTL to export user-invisible
-> > states related to SError exceptions. User space can setup the
-> > kvm_vcpu_events to inject specified SError, also it can support live
-> > migration.
-> =
-
-> > diff --git a/Documentation/virtual/kvm/api.txt
-> > b/Documentation/virtual/kvm/api.txt
-> > index 8a3d708..26ae151 100644
-> > --- a/Documentation/virtual/kvm/api.txt
-> > +++ b/Documentation/virtual/kvm/api.txt
-> > @@ -819,11 +819,13 @@ struct kvm_clock_data {
-> >
-> >  Capability: KVM_CAP_VCPU_EVENTS
-> >  Extended by: KVM_CAP_INTR_SHADOW
-> > -Architectures: x86
-> > +Architectures: x86, arm, arm64
-> >  Type: vm ioctl
-> >  Parameters: struct kvm_vcpu_event (out)
-> >  Returns: 0 on success, -1 on error
-> >
-> > +X86:
+[...]
 > > +
-> >  Gets currently pending exceptions, interrupts, and NMIs as well as
-> > related  states of the vcpu.
-> >
-> > @@ -865,15 +867,29 @@ Only two fields are defined in the flags field:
-> >  - KVM_VCPUEVENT_VALID_SMM may be set in the flags field to signal that
-> >    smi contains a valid state.
-> >
-> > +ARM, ARM64:
+> > +8.14 KVM_CAP_ARM_SET_SERROR_ESR
 > > +
-> > +Gets currently pending SError exceptions as well as related states of =
-the vcpu.
+> > +Architectures: arm, arm64
 > > +
-> > +struct kvm_vcpu_events {
-> > +       struct {
-> > +               bool serror_pending;
-> > +               bool serror_has_esr;
-> > +               u64 serror_esr;
-> > +       } exception;
-> > +};
+> > +This capability indicates that userspace can specify syndrome value
+> > +reported to guest OS when guest takes a virtual SError interrupt excep=
+tion.
 > =
 
-> Don't put bool in an ABI struct. The encoding is up to the compiler.
-> The compiler will insert padding in this struct to make serror_esr natura=
-lly aligned. Different compilers may do it differently. You'll see that
-> the existing struct kvm_vcpu_events has 'pad' fields to ensure each eleme=
-nt in the struct is naturally aligned.
+> "when userspace triggers a virtual SError"... how?
 
-I checked the exited x86 strut kvm_vcpu_events definition, it aligned to 32=
- bits, so how about using below kvm_vcpu_events struct definition for arm64?
-struct kvm_vcpu_events {
-       struct {
-               __u8_8 serror_pending;
-               __u8 serror_has_esr;
-               __u8 pad[2];
-               __u64 serror_esr;
-       } exception;
-};
+In the user space(QEMU), it will call kvm_arch_put_registers() or kvm_arch_=
+get_registers() to set or get KVM registers through KVM_SET_ONE_REG/ KVM_GE=
+T_ONE_REG IOCTL, at the same time the two functions will separately call kv=
+m_arm_vcpu_get_events() and kvm_arm_vcpu_set_events() to get/set vcpu event=
+s. If user space want to trigger a virtual SError with specified ESR, it on=
+ly need to setup the kvm_vcpu_events struct(exception.serror_pending =3D 1;=
+ exception.serror_has_esr=3D1; serror_esr=3Dxxxxx), then KVM will trigger t=
+his virtual SError.
 
-> =
-
-> serror_pending and serror_has_esr need to be in a flags field.
-How about this definition?
-struct kvm_vcpu_events {
-       struct {
-               __u8_8 serror_pending;
-               __u8 serror_has_esr;
-               __u8 pad[2];
-               __u64 serror_esr;
-       } exception;
-};
-
-> =
-
-> I thought the logic for re-using the CAP was so user-space could re-use s=
-ave/restore code to transfer whatever we put in here during
-> migration. If the struct is a different size the code has to be different=
- anyway.
-> My understanding of Drew and Christoffer's comments was that we should re=
--use the existing struct. (but now that I look at it, its not so
-> clear).
-> =
-
-> (If we reuse the struct, we can put the esr in exception.error_code, if w=
-e can get away with it: It would be good to union exception up with
-> a u64, then use that. This would let us transfer anything we need in thos=
-e RES0 bits of the 64bit VSESR_EL2).
-
-It seems Drew and Christoffer's comments suggested to use the KVM_GET/SET_V=
-CPU_EVENTS ABI, not suggested arm64 must use the same struct
-kvm_vcpu_events definition with x86. =
+userspace can trigger it at any time, for example, for debug purpose.  Or s=
+imulate a SError after recording a CPER for guest. But before triggering a =
+virtual SError, it needs to know whether KVM has such capability, so KVM ne=
+eds to export this capability to user space. If has this capability, User s=
+pace will call kvm_arm_vcpu_set_events() to trigger a virtual SError.
 
 > =
 
 > =
 
-> >  4.32 KVM_SET_VCPU_EVENTS
-> >
-> >  Capability: KVM_CAP_VCPU_EVENTS
-> >  Extended by: KVM_CAP_INTR_SHADOW
-> > -Architectures: x86
-> > +Architectures: x86, arm, arm64
-> >  Type: vm ioctl
-> >  Parameters: struct kvm_vcpu_event (in)
-> >  Returns: 0 on success, -1 on error
-> >
-> > +X86:
-> > +
-> >  Set pending exceptions, interrupts, and NMIs as well as related
-> > states of the  vcpu.
-> >
-> > @@ -894,6 +910,12 @@ shall be written into the VCPU.
-> >
-> >  KVM_VCPUEVENT_VALID_SMM can only be set if KVM_CAP_X86_SMM is availabl=
-e.
-> >
-> > +ARM, ARM64:
-> > +
-> > +Set pending SError exceptions as well as related states of the vcpu.
-> > +
-> > +See KVM_GET_VCPU_EVENTS for the data structure.
-> > +
-> >
-> >  4.33 KVM_GET_DEBUGREGS
-> >
+> > +If KVM has this capability, userspace can only specify the ISS field
+> > +for the ESR syndrome, can not specify the EC field which is not under =
+control by KVM.
 > =
 
-> > diff --git a/arch/arm64/include/uapi/asm/kvm.h
-> > b/arch/arm64/include/uapi/asm/kvm.h
-> > index 9abbf30..32c0eae 100644
-> > --- a/arch/arm64/include/uapi/asm/kvm.h
-> > +++ b/arch/arm64/include/uapi/asm/kvm.h
-> > @@ -39,6 +39,7 @@
-> >  #define __KVM_HAVE_GUEST_DEBUG
-> >  #define __KVM_HAVE_IRQ_LINE
-> >  #define __KVM_HAVE_READONLY_MEM
-> > +#define __KVM_HAVE_VCPU_EVENTS
-> >
-> >  #define KVM_COALESCED_MMIO_PAGE_OFFSET 1
-> >
-> > @@ -153,6 +154,15 @@ struct kvm_sync_regs {  struct
-> > kvm_arch_memory_slot {  };
-> >
-> > +/* for KVM_GET/SET_VCPU_EVENTS */
-> > +struct kvm_vcpu_events {
-> > +	struct {
-> > +		bool serror_pending;
-> > +		bool serror_has_esr;
-> > +		u64 serror_esr;
-> > +	} exception;
-> > +};
-> > +
-> =
+> Where do I put the ESR?
+> If you re-order this after the patch that adds the API, you can describe =
+how this can be used.
 
-> >  /* If you need to interpret the index values, here is the key: */
-> >  #define KVM_REG_ARM_COPROC_MASK		0x000000000FFF0000
-> >  #define KVM_REG_ARM_COPROC_SHIFT	16
-> > diff --git a/arch/arm64/kvm/guest.c b/arch/arm64/kvm/guest.c index
-> > 5c7f657..62d49c2 100644
-> > --- a/arch/arm64/kvm/guest.c
-> > +++ b/arch/arm64/kvm/guest.c
-> > @@ -277,6 +277,32 @@ int kvm_arch_vcpu_ioctl_set_sregs(struct kvm_vcpu =
-*vcpu,
-> >  	return -EINVAL;
-> >  }
-> >
-> > +int kvm_arm_vcpu_get_events(struct kvm_vcpu *vcpu,
-> > +			struct kvm_vcpu_events *events)
-> > +{
-> > +	events->exception.serror_pending =3D (vcpu_get_hcr(vcpu) & HCR_VSE);
-> > +	events->exception.serror_has_esr =3D
-> > +			cpus_have_const_cap(ARM64_HAS_RAS_EXTN) &&
-> > +					(!!vcpu_get_vsesr(vcpu));
-> > +	events->exception.serror_esr =3D vcpu_get_vsesr(vcpu);
-> > +
-> > +	return 0;
-> =
-
-> Nothing checks the return value. Why is it here?
-
-"return 0" means it is always successful, I do not know in which condition =
-it needs to "return false" for kvm_arm_vcpu_get_events()
-So I let it always "return 0".
-Now this function caller does not check this function return value, I can r=
-emove "return 0".
+Ok, thank a lot for your suggestion.
 
 > =
 
-> > +}
-> > +
-> > +int kvm_arm_vcpu_set_events(struct kvm_vcpu *vcpu,
-> > +			struct kvm_vcpu_events *events)
-> > +{
-> > +	bool injected =3D events->exception.serror_pending;
-> > +	bool has_esr =3D events->exception.serror_has_esr;
-> =
-
-> Could you validate 'events' describes something we support. What if
-> cpus_have_const_cap(ARM64_HAS_RAS_EXTN) is false, we still call kvm_set_s=
-ei_esr().
-> =
-
-> Please check any parts of the struct that should be zero, are zero. This =
-lets us add new features, and reject attempts to migrate them
-> (instead of silently ignoring them).
-
-Sure, it needs, how about something like below?
-
-If(!cpus_have_const_cap(ARM64_HAS_RAS_EXTN))
-   return -EINVAL;
-
-if(!injected || !has_esr)
-   return -EINVAL;
-
-> =
-
-> =
-
-> > +	if (injected && has_esr)
-> > +		kvm_set_sei_esr(vcpu, events->exception.serror_esr);
-> > +	else if (injected)
-> > +		kvm_inject_vabt(vcpu);
-> > +
-> > +	return 0;
-> =
-
-> Nothing checks the return value. Why is it here?
-
-kvm_arch_vcpu_ioctl() will check the return value.
-
-> =
-
-> =
-
-> > +}
-> > +
-> >  int __attribute_const__ kvm_target_cpu(void)  {
-> >  	unsigned long implementor =3D read_cpuid_implementor();
-> =
-
-> =
-
-> > diff --git a/virt/kvm/arm/arm.c b/virt/kvm/arm/arm.c index
-> > 7e3941f..30c56e0 100644
-> > --- a/virt/kvm/arm/arm.c
-> > +++ b/virt/kvm/arm/arm.c
-> > @@ -1051,6 +1051,24 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
-> >  			return -EFAULT;
-> >  		return kvm_arm_vcpu_has_attr(vcpu, &attr);
-> >  	}
-> > +	case KVM_GET_VCPU_EVENTS: {
-> > +		struct kvm_vcpu_events events;
-> =
-
-> Please initialise events to 0 so that padding transferred to user-space d=
-oesn't contain kernel stack.
-
-OK, thanks a lot for the good suggestion.
-
-> =
-
-> =
-
-> > +		kvm_arm_vcpu_get_events(vcpu, &events);
-> > +
-> > +		if (copy_to_user(argp, &events, sizeof(struct kvm_vcpu_events)))
-> > +			return -EFAULT;
-> > +
-> > +		return 0;
-> > +	}
-> > +	case KVM_SET_VCPU_EVENTS: {
-> > +		struct kvm_vcpu_events events;
-> > +
-> > +		if (copy_from_user(&events, argp, sizeof(struct kvm_vcpu_events)))
-> > +			return -EFAULT;
-> > +
-> > +		return kvm_arm_vcpu_set_events(vcpu, &events);
-> > +	}
-> >  	default:
-> >  		return -EINVAL;
-> >  	}
-> >
 > =
 
 > Thanks,
 > =
 
 > James
+> =
+
+> =
+
+> =
+
+> > +If this virtual SError is taken to EL1 using AArch64, this value will
+> > +be reported into ISS filed of ESR_EL1.
+> > diff --git a/arch/arm64/kvm/reset.c b/arch/arm64/kvm/reset.c index
+> > 3256b92..38c8a64 100644
+> > --- a/arch/arm64/kvm/reset.c
+> > +++ b/arch/arm64/kvm/reset.c
+> > @@ -77,6 +77,9 @@ int kvm_arch_dev_ioctl_check_extension(struct kvm *kv=
+m, long ext)
+> >  	case KVM_CAP_ARM_PMU_V3:
+> >  		r =3D kvm_arm_support_pmu_v3();
+> >  		break;
+> > +	case KVM_CAP_ARM_INJECT_SERROR_ESR:
+> > +		r =3D cpus_have_const_cap(ARM64_HAS_RAS_EXTN);
+> > +		break;
+> >  	case KVM_CAP_SET_GUEST_DEBUG:
+> >  	case KVM_CAP_VCPU_ATTRIBUTES:
+> >  		r =3D 1;
+> > diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h index
+> > 8fb90a0..3587b33 100644
+> > --- a/include/uapi/linux/kvm.h
+> > +++ b/include/uapi/linux/kvm.h
+> > @@ -934,6 +934,7 @@ struct kvm_ppc_resize_hpt {  #define
+> > KVM_CAP_S390_AIS_MIGRATION 150  #define KVM_CAP_PPC_GET_CPU_CHAR 151
+> > #define KVM_CAP_S390_BPB 152
+> > +#define KVM_CAP_ARM_INJECT_SERROR_ESR 153
+> >
+> >  #ifdef KVM_CAP_IRQ_ROUTING
+> >
+> >
 
 
---===============6786329424762414449==--
+--===============2859756309848473239==--
 
