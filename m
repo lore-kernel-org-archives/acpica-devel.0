@@ -1,92 +1,86 @@
-Content-Type: multipart/mixed; boundary="===============5607332573621351136=="
+Content-Type: multipart/mixed; boundary="===============1071068120711083800=="
 MIME-Version: 1.0
 From: Dongjiu Geng <gengdongjiu at huawei.com>
-Subject: [Devel] [PATCH v11 4/4] arm64: handle NOTIFY_SEI notification by the
- APEI driver
-Date: Tue, 10 Apr 2018 05:36:36 +0800
-Message-ID: <1523309796-36423-5-git-send-email-gengdongjiu@huawei.com>
+Subject: [Devel] [PATCH v11 1/4] arm64: KVM: export the capability to set
+ guest SError syndrome
+Date: Tue, 10 Apr 2018 05:36:33 +0800
+Message-ID: <1523309796-36423-2-git-send-email-gengdongjiu@huawei.com>
 In-Reply-To: 1523309796-36423-1-git-send-email-gengdongjiu@huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5607332573621351136==
+--===============1071068120711083800==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Add a helper to handle the NOTIFY_SEI notification, when kernel
-gets the NOTIFY_SEI notification, call this helper and let APEI
-driver to handle this notification.
+Before user space injects a SError, it needs to know whether it can
+specify the guest Exception Syndrome, so KVM should tell user space
+whether it has such capability.
 
 Signed-off-by: Dongjiu Geng <gengdongjiu(a)huawei.com>
 ---
- arch/arm64/include/asm/system_misc.h |  1 +
- arch/arm64/kernel/traps.c            |  4 ++++
- arch/arm64/mm/fault.c                | 10 ++++++++++
+ Documentation/virtual/kvm/api.txt | 11 +++++++++++
+ arch/arm64/kvm/reset.c            |  3 +++
+ include/uapi/linux/kvm.h          |  1 +
  3 files changed, 15 insertions(+)
 
-diff --git a/arch/arm64/include/asm/system_misc.h b/arch/arm64/include/asm/=
-system_misc.h
-index 07aa8e3..9ee13ad 100644
---- a/arch/arm64/include/asm/system_misc.h
-+++ b/arch/arm64/include/asm/system_misc.h
-@@ -57,6 +57,7 @@ void hook_debug_fault_code(int nr, int (*fn)(unsigned lon=
-g, unsigned int,
- })
- =
-
- int handle_guest_sea(phys_addr_t addr, unsigned int esr);
-+int handle_guest_sei(void);
- =
-
- #endif	/* __ASSEMBLY__ */
- =
-
-diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
-index bbb0fde..d888eb2 100644
---- a/arch/arm64/kernel/traps.c
-+++ b/arch/arm64/kernel/traps.c
-@@ -681,6 +681,10 @@ bool arm64_is_fatal_ras_serror(struct pt_regs *regs, u=
-nsigned int esr)
- {
- 	u32 aet =3D arm64_ras_serror_get_severity(esr);
- =
-
-+	/* The APEI driver may handle this RAS error. */
-+	if (!handle_guest_sei())
-+		return false;
+diff --git a/Documentation/virtual/kvm/api.txt b/Documentation/virtual/kvm/=
+api.txt
+index fc3ae95..8a3d708 100644
+--- a/Documentation/virtual/kvm/api.txt
++++ b/Documentation/virtual/kvm/api.txt
+@@ -4415,3 +4415,14 @@ Parameters: none
+ This capability indicates if the flic device will be able to get/set the
+ AIS states for migration via the KVM_DEV_FLIC_AISM_ALL attribute and allows
+ to discover this without having to create a flic device.
 +
- 	switch (aet) {
- 	case ESR_ELx_AET_CE:	/* corrected error */
- 	case ESR_ELx_AET_UEO:	/* restartable, not yet consumed */
-diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
-index f76bb2c..8f29bd8 100644
---- a/arch/arm64/mm/fault.c
-+++ b/arch/arm64/mm/fault.c
-@@ -683,6 +683,16 @@ int handle_guest_sea(phys_addr_t addr, unsigned int es=
-r)
- 	return ret;
- }
++8.14 KVM_CAP_ARM_SET_SERROR_ESR
++
++Architectures: arm, arm64
++
++This capability indicates that userspace can specify syndrome value report=
+ed to
++guest OS when guest takes a virtual SError interrupt exception.
++If KVM has this capability, userspace can only specify the ISS field for t=
+he ESR
++syndrome, can not specify the EC field which is not under control by KVM.
++If this virtual SError is taken to EL1 using AArch64, this value will be r=
+eported
++into ISS filed of ESR_EL1.
+diff --git a/arch/arm64/kvm/reset.c b/arch/arm64/kvm/reset.c
+index 3256b92..38c8a64 100644
+--- a/arch/arm64/kvm/reset.c
++++ b/arch/arm64/kvm/reset.c
+@@ -77,6 +77,9 @@ int kvm_arch_dev_ioctl_check_extension(struct kvm *kvm, l=
+ong ext)
+ 	case KVM_CAP_ARM_PMU_V3:
+ 		r =3D kvm_arm_support_pmu_v3();
+ 		break;
++	case KVM_CAP_ARM_INJECT_SERROR_ESR:
++		r =3D cpus_have_const_cap(ARM64_HAS_RAS_EXTN);
++		break;
+ 	case KVM_CAP_SET_GUEST_DEBUG:
+ 	case KVM_CAP_VCPU_ATTRIBUTES:
+ 		r =3D 1;
+diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+index 8fb90a0..3587b33 100644
+--- a/include/uapi/linux/kvm.h
++++ b/include/uapi/linux/kvm.h
+@@ -934,6 +934,7 @@ struct kvm_ppc_resize_hpt {
+ #define KVM_CAP_S390_AIS_MIGRATION 150
+ #define KVM_CAP_PPC_GET_CPU_CHAR 151
+ #define KVM_CAP_S390_BPB 152
++#define KVM_CAP_ARM_INJECT_SERROR_ESR 153
  =
 
-+int handle_guest_sei(void)
-+{
-+	int ret =3D -ENOENT;
-+
-+	if (IS_ENABLED(CONFIG_ACPI_APEI_SEI))
-+		ret =3D ghes_notify_sei();
-+
-+	return ret;
-+}
-+
- asmlinkage void __exception do_mem_abort(unsigned long addr, unsigned int =
-esr,
- 					 struct pt_regs *regs)
- {
+ #ifdef KVM_CAP_IRQ_ROUTING
+ =
+
 -- =
 
 1.9.1
 
 
---===============5607332573621351136==--
+--===============1071068120711083800==--
 
