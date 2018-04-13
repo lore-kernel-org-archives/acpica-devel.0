@@ -1,105 +1,270 @@
-Content-Type: multipart/mixed; boundary="===============5847282430297625025=="
+Content-Type: multipart/mixed; boundary="===============4533222284334912746=="
 MIME-Version: 1.0
-From: James Morse <james.morse at arm.com>
-Subject: Re: [Devel] [PATCH v11 0/4] set VSESR_EL2 by user space and support
- NOTIFY_SEI notification
-Date: Thu, 12 Apr 2018 17:14:48 +0100
-Message-ID: <eb65baf4-abb0-570f-f3af-61f505c9de10@arm.com>
-In-Reply-To: 5161fb31-e5bb-872c-3e12-d7d38326aaca@huawei.com
+From: gengdongjiu <gengdongjiu at huawei.com>
+Subject: Re: [Devel] [PATCH v9 3/7] acpi: apei: Add SEI notification type
+ support for ARMv8
+Date: Fri, 13 Apr 2018 21:50:30 +0800
+Message-ID: <c3cc260b-ed4f-c77c-2fac-36a68eb50c8a@huawei.com>
+In-Reply-To: 649fa2f6-1823-116e-fe69-aeaaa6a508af@arm.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5847282430297625025==
+--===============4533222284334912746==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi gengdongjiu,
+James,
+   Thanks for this mail.
 
-On 12/04/18 07:09, gengdongjiu wrote:
-> On 2018/4/10 22:15, James Morse wrote:
->> On 09/04/18 22:36, Dongjiu Geng wrote:
->>> 1. Detect whether KVM can set set guest SError syndrome
->>> 2. Support to Set VSESR_EL2 and inject SError by user space.
->>> 3. Support live migration to keep SError pending state and VSESR_EL2 va=
-lue.
->>> 4. ACPI 6.1 adds support for NOTIFY_SEI as a GHES notification mechanis=
-m, so support this
->>>    notification in software, KVM or kernel ARCH code call handle_guest_=
-sei() to let ACP driver
->>>    to handle this notification.
->>
->> Please don't post code during the merge-window, will this apply to v4.17=
--rc1? We
->> can't know until its tagged.
-
-Posting code during the merge-window isn't helpful as the kernel is a moving
-target, its better to wait for an 'rc' to base it on.
-
-> I do not know when it is merge-window. About the apply version, it does n=
-ot have limited.
-
-'git fetch' Linus' tree and look at the tags. 'v4.16' lost its '-rc' suffix=
-es,
-and there isn't a 'v4.17-rc1' yet, so we are still in the merge window.
-
-Linus sends a message to LKML. eg:
-https://lkml.org/lkml/2018/4/1/175
-
-net-next closes shortly before the merge window, and re-opens afterwards. T=
-here
-is a handy web page:
-http://vger.kernel.org/~davem/net-next.html
-
-
->> This series is doing two separate things, please split it into two serie=
-s.
-> OK, thanks!
+On 2018/4/13 0:14, James Morse wrote:
+> Hi gengdongjiu,
 > =
 
->>
->> But on the ACPI front: I don't see how any OS can support your NOTIFY_SE=
-I when
->> firmware is ignoring the normal world's PSTATE.A.
->>
->> The latest lobe of that discussion was on the list here:
->> https://www.mail-archive.com/linux-kernel(a)vger.kernel.org/msg1611496.h=
-tml
-> I have replied the mail.
-> I still have some questions that need to clarify with you.
-> After clarification, we will follow that.
-> The question is in the reply of this mail "https://www.mail-archive.com/l=
-inux-kernel(a)vger.kernel.org/msg1611496.html"
+> On 12/04/18 06:00, gengdongjiu wrote:
+>> 2018-02-16 1:55 GMT+08:00 James Morse <james.morse(a)arm.com>:
+>>> On 05/02/18 11:24, gengdongjiu wrote:
+>>>>> Is the emulated SError routed following the routing rules for HCR_EL2=
+.{AMO,
+>>>>> TGE}?
+>>>>
+>>>> Yes, it is.
+>>>
+>>> ... and yet ...
+>>>
+>>>
+>>>>> What does your firmware do when it wants to emulate SError but its ma=
+sked?
+>>>>> (e.g.1: The physical-SError interrupted EL2 and the SPSR shows EL2 had
+>>>>> PSTATE.A  set.
+>>>>>  e.g.2: The physical-SError interrupted EL2 but HCR_EL2 indicates the
+>>>>> emulated  SError should go to EL1. This effectively masks SError.)
+>>>>
+>>>> Currently we does not consider much about the mask status(SPSR).
+>>>
+>>> .. this is a problem.
+>>>
+>>> If you ignore SPSR_EL3 you may deliver an SError to EL1 when the except=
+ion
+>>> interrupted EL2. Even if you setup the EL1 register correctly, EL1 can'=
+t eret to
+>>> EL2. This should never happen, SError is effectively masked if you are =
+running
+>>> at an EL higher than the one its routed to.
+>>>
+>>> More obviously: if the exception came from the EL that SError should be=
+ routed
+>>> to, but PSTATE.A was set, you can't deliver SError. Masking SError is t=
+he only
+> =
 
-Lets keep that discussion on v9 then.
+>> James, I  summarized the masking and routing rules for SError to
+>> confirm with you for the firmware first solution,
+> =
+
+> You also said "Currently we does not consider much about the mask status(=
+SPSR)."
+Yes, we currently do not consider much it. After clarification with you, we=
+ want to modify the EL3 firmware to follow this rule.
+
+> =
+
+> =
+
+>> 1. If the HCR_EL2.{AMO,TGE} is set,
+> =
+
+> If one or the other of these bits is set: (AMO=3D=3D1 || TGE=3D=3D1)
+> =
+
+>> which means the SError should route to EL2,
+>> When system happens SError and trap to EL3,   If EL3 find
+>> HCR_EL2.{AMO,TGE} and SPSR_EL3.A are both set,
+>> and find this SError come from EL2, it will not deliver an SError:
+>> store the RAS error in the BERT and 'reboot'; but if
+>> it find that this SError come from EL1 or EL0, it also need to deliver
+>> an SError, right?
+> =
+
+> Yes.
+> =
+
+> =
+
+>> 2. If the HCR_EL2.{AMO,TGE} is not set,
+> =
+
+> If neither of these bits is set: (AMO=3D=3D0 && TGE =3D=3D 0)
+> =
+
+>> which means the SError should route to EL1,
+>> When system happens SError and trap to EL3, If EL3 find
+>> HCR_EL2.{AMO,TGE} and SPSR_EL3.A are both not set,
+> =
+
+> (I'm reading this as all three of these bits are clear)
+sorry, it is a typo issue.
+it should be HCR_EL2.AMO and HCR_EL2.TGE are both clear, but SPSR_EL3.A is =
+set.
+
+> =
+
+>> and find this SError come from EL1, it will not deliver an SError:
+>> store the RAS error in the BERT and 'reboot'; =
+
+> =
+
+> No, (AMO=3D=3D0 && TGE =3D=3D 0) means SError is routed to EL1, this exce=
+ption
+> interrupted EL1 and the A bit was clear, so EL1 can take an SError.
+
+Agree.
+
+> =
+
+> The two cases here are:
+> AMO=3D=3D0,TGE=3D=3D0 means SError should be routed to EL1. If SPSR_EL3 s=
+ays the
+> exception interrupted EL1 and the A bit was set, you need to do the BERT =
+trick.
+
+> =
+
+> If SPSR_EL3 says the exception interrupted EL2, you need to do the BERT t=
+rick
+"BERT trick" is storing the RAS error in the BERT and 'reboot, right?
+
+> regardless of the A bit, as SError is implicitly masked by running at a h=
+igher
+> exception level than it was routed to.
 
 
->> As it is, we would need to spot SError being delivered while SError is m=
-asked,
->> spray nasty messages about firmware being horrifically buggy, then panic=
-(). For
->> a corrected error, this looks bad, but its preferable to letting firmware
->> silently overwrite the exception registers, causing linux to spin throug=
-h the
->> vectors 'eret' with all exceptions masked.
->> I still think its best to wait for firmware that does the right thing.
+> =
 
-> Let us  discuss that in another mail.
-> In a summary, I think firmware follow below rule can be OK, right?
-> 1. The exception came from the EL that SError should be routed to(accordi=
-ng to hcr_EL2.{AMO, TGE}),but PSTATE.A was set, EL3 firmware can't deliver =
-SError;
+> =
 
-> 2. The exception came from the EL that SError should not be routed to(acc=
-ording to hcr_EL2.{AMO, TGE}),even though the PSTATE.A was set,EL3 firmware=
- still deliver SError
+>>From your v11 reply:
+>> 2. The exception came from the EL that SError should not be routed
+>> to(according to hcr_EL2.{AMO, TGE}),even though the PSTATE.A was set,EL3
+>> firmware still deliver SError
+> =
 
-Problem here, more on v9.
+> (this is re-iterating the two-cases above:)
+> 'not be routed to' is one of two things: Route-to-EL2+interruted-EL1, or
+> Route-to-EL1+interrupted-EL2.
+> =
+
+> Route-to-EL2+interrupted-EL1 is fine, regardless of SPSR_EL3.A the emulat=
+ed
+> SError can be delivered to EL2, as EL2 can't mask SError when executing a=
+t a
+> lower EL.
+Agree.
+
+> =
+
+> Route-to-EL1+interrupted-EL2 is the problem. SError is implicitly masked =
+by
+> running at a higher EL. Regardless of SPSR_EL3.A, the emulated SError can=
+ not be
+> delivered.
+"can not be delivered" means storing the RAS error in the BERT and 'reboot,=
+ right?
+In the Table D1-15 in "D1.14.2 Asynchronous exception masking", for the cas=
+e, it is "C"
+"C"means SError is not taken regardless of the value of the Process state i=
+nterrupt mask.
+for this case, whether it will be unsafe if  BIOS directly reboot?
 
 
-Thanks,
+> KVM does this on the way out of a guest, if an SError occurs during this =
+time
+> the CPU will wait until execution returns to EL1 before delivering the SE=
+rror.
+> Your firmware has to do the same.
+> =
 
-James
+> Table D1-15 in "D1.14.2 Asynchronous exception masking" has a table with =
+all the
+> combinations. The ARM-ARM is what we need to match with this behaviour.
+> =
 
---===============5847282430297625025==--
+> =
+
+>> but if it find that this SError come from EL0, it also need to deliver an
+>> SError, right?
+> =
+
+> I thought interrupted-EL0 could always be delivered: but re-reading the
+> ARM-ARM's "D1.14.2 Asynchronous exception masking", if asynchronous excep=
+tions
+> are routed to EL1 then EL0&EL1 are treated the same.
+> So if SError is routed to EL1, the exception interrupted EL0, and SPSR_EL=
+3.A was
+> set, you still can't deliver the emulated-SError you have to do the BERT-=
+trick.
+> Linux doesn't do this today, but another OS might (e.g. UEFI), and we mig=
+ht do
+> this in the future.
+For this case, whether it will be unsafe if  BIOS directly reboot?
+For example, for some test purpose, EL0 set PSTATE.A, just right happen SEr=
+ror, then BIOS will reboot system.
+I am afraid that system will become unsafe because BIOS will reboot system.
+
+> =
+
+> This is really tricky for firmware to get right. Another alternative woul=
+d be to
+> put the CPER records in a Polled buffer, unless something needs doing rig=
+ht now,
+> in which case a BERT-reboot is probably best.
+
+In summary:
+
+[1]:
+Route-to-EL1 + interrupted-EL1, if SPSR_EL3.A is set, EL3 firmware can't de=
+liver the emulated-SError, store the RAS error in the BERT and 'reboot.
+Route-to-EL2 + interrupted-EL2, if SPSR_EL3.A is set, EL3 firmware can't de=
+liver the emulated-SError, store the RAS error in the BERT and 'reboot.
+
+I agree above two cases, but maybe we need to ensure that only in EL2 SErro=
+r handler and EL1 SError exception handler the PSTATE.A is set, for other p=
+laces, the PSTATE.A is not set.
+then BIOS can know this is nested-SError when find the SPSR_EL3.A is set, c=
+an we ensure that in the Linux kernel code and KVM code?
+
+[2]:
+Route-to-EL2 + interrupted-EL1, regardless of SPSR_EL3.A the emulated SErro=
+r can be delivered to EL2.
+Route-to-EL2 + interrupted-EL0, regardless of SPSR_EL3.A the emulated SErro=
+r can be delivered to EL2.
+
+I agree above two cases.
+
+[3]:
+Route-to-EL1+interrupted-EL0, if SPSR_EL3.A is set, EL3 firmware can't deli=
+ver the emulated-SError, store the RAS error in the BERT and 'reboot
+Route-to-EL1+interrupted-EL2, EL3 firmware store the RAS error in the BERT =
+and 'reboot regardless of SPSR_EL3.A.
+
+For above two cases, I am worried system will become unsafe because BIOS wi=
+ll reboot system.
+
+
+> =
+
+> =
+
+> Thanks,
+> =
+
+> James
+> =
+
+> .
+> =
+
+
+
+--===============4533222284334912746==--
 
