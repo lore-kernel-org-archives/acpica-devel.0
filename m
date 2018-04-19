@@ -1,43 +1,45 @@
-Content-Type: multipart/mixed; boundary="===============8385315966711147513=="
+Content-Type: multipart/mixed; boundary="===============6987471829963825637=="
 MIME-Version: 1.0
-From: gengdongjiu <gengdongjiu at huawei.com>
-Subject: Re: [Devel] [PATCH v11 0/4] set VSESR_EL2 by user space and support
- NOTIFY_SEI notification
-Date: Thu, 19 Apr 2018 12:09:30 +0800
-Message-ID: <ebfea154-eceb-b2d2-d038-f27687d2bc01@huawei.com>
-In-Reply-To: eb65baf4-abb0-570f-f3af-61f505c9de10@arm.com
+From: James Morse <james.morse at arm.com>
+Subject: Re: [Devel] [RFC PATCH v2 3/4] acpi: apei: Do not panic() when
+ correctable errors are marked as fatal.
+Date: Thu, 19 Apr 2018 16:35:52 +0100
+Message-ID: <e5e107e7-e18e-725a-8f9b-95e6f033ab45@arm.com>
+In-Reply-To: bdc1d19b-3cc1-3f90-d276-414aaacdbd3a@gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8385315966711147513==
+--===============6987471829963825637==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-James,
+Hi Alex,
 
-> =
+(I haven't read through all this yet, just on this one:)
 
->> I do not know when it is merge-window. About the apply version, it does =
-not have limited.
-> =
+On 04/19/2018 03:57 PM, Alex G. wrote:
+ > Maybe it's better move the AER handling to NMI/IRQ context, since
+ > ghes_handle_aer() is only scheduling the real AER andler, and is irq
+ > safe. I'm scratching my head about why we're messing with IRQ work from
+ > NMI context, instead of just scheduling a regular handler to take care
+ > of things.
 
-> 'git fetch' Linus' tree and look at the tags. 'v4.16' lost its '-rc' suff=
-ixes,
-> and there isn't a 'v4.17-rc1' yet, so we are still in the merge window.
-> =
+We can't touch schedule_work_on() from NMI context as it takes spinlocks and
+disables interrupts. (see __queue_work()) The NMI may have interrupted =
 
-> Linus sends a message to LKML. eg:
-> https://lkml.org/lkml/2018/4/1/175
-> =
+IRQ-context code
+that was already holding the same locks.
 
-> net-next closes shortly before the merge window, and re-opens afterwards.=
- There
-> is a handy web page:
-> http://vger.kernel.org/~davem/net-next.html
+IRQ-work behaves differently, it uses an llist for the work and an arch =
 
- Thanks for this information, got it.
+code hook
+to raise a self-IPI.
 
 
---===============8385315966711147513==--
+Thanks,
+
+James
+
+--===============6987471829963825637==--
 
