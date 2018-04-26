@@ -1,58 +1,163 @@
-Content-Type: multipart/mixed; boundary="===============2590987861519642477=="
+Content-Type: multipart/mixed; boundary="===============5360933341382269657=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rjw at rjwysocki.net>
-Subject: Re: [Devel] [RFC PATCH] ACPICA: Convert acpi_gbl_hardware lock back
- to a raw_spinlock_t
-Date: Wed, 25 Apr 2018 11:11:08 +0200
-Message-ID: <6547480.he27n6xWXc@aspire.rjw.lan>
-In-Reply-To: 20180425085758.qkud5krf2xg3bfpr@linutronix.de
+From: Rafael J. Wysocki <rafael at kernel.org>
+Subject: Re: [Devel] [PATCH 1/2] ACPICA: provide abstraction for raw_spinlock_t
+Date: Thu, 26 Apr 2018 08:44:36 +0200
+Message-ID: <CAJZ5v0hQsbXsH9+b+vuQ5QTqkT8RDPJMiRh_tji4k_AhN7sS6Q@mail.gmail.com>
+In-Reply-To: 20180425142827.22202-1-bigeasy@linutronix.de
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2590987861519642477==
+--===============5360933341382269657==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Wednesday, April 25, 2018 10:57:58 AM CEST Sebastian Andrzej Siewior wro=
-te:
-> On 2018-04-24 22:55:20 [+0200], Rafael J. Wysocki wrote:
-> > > diff --git a/include/acpi/platform/aclinux.h b/include/acpi/platform/=
-aclinux.h
-> > > index a0b232703302..38eaa3235210 100644
-> > > --- a/include/acpi/platform/aclinux.h
-> > > +++ b/include/acpi/platform/aclinux.h
-> > > @@ -102,6 +102,7 @@
-> > >
-> > >  #define acpi_cache_t                        struct kmem_cache
-> > >  #define acpi_spinlock                       spinlock_t *
-> > > +#define acpi_raw_spinlock              raw_spinlock_t *
-> > =
+On Wed, Apr 25, 2018 at 4:28 PM, Sebastian Andrzej Siewior
+<bigeasy(a)linutronix.de> wrote:
+> Provide a new lock type acpi_raw_spinlock which is implemented as
+> raw_spinlock_t on Linux. This type should be used in code which covers
+> small areas of code and disables interrupts only for short time even on
+> a realtime OS.
+> There is a fallback to spinlock_t if an OS does not provide an
+> implementation for acpi_raw_spinlock.
+>
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy(a)linutronix.de>
 
-> > I would prefer to redefine acpi_spinlock as raw_spinlock_t and then
-> > acpi_os_acquire/release_lock() as
-> > raw_spin_lock_irqsave/unlock_irqrestore(), respectively.
-> =
+Thanks for the update!
 
-> I would rather not convert all current ACPI spinlock_t into
-> raw_spinlock_t. Only those which are required to.
+I think I can apply this series, but first I need to discuss sorting
+it out upstream with Bob and Erik.
 
-I'm actually not 100% sure right now (as a rule things like this come up
-when you are not expecting them :-)), but IIRC there are assumptions
-regarding at least some of the ACPICA locks as being real spinlocks.
+> ---
+>  include/acpi/acpiosxf.h           | 21 +++++++++++++++++++++
+>  include/acpi/actypes.h            |  4 ++++
+>  include/acpi/platform/aclinux.h   |  5 +++++
+>  include/acpi/platform/aclinuxex.h | 30 ++++++++++++++++++++++++++++++
+>  4 files changed, 60 insertions(+)
+>
+> diff --git a/include/acpi/acpiosxf.h b/include/acpi/acpiosxf.h
+> index 540d35f06ad6..eb1f21af7556 100644
+> --- a/include/acpi/acpiosxf.h
+> +++ b/include/acpi/acpiosxf.h
+> @@ -97,6 +97,27 @@ acpi_cpu_flags acpi_os_acquire_lock(acpi_spinlock hand=
+le);
+>  void acpi_os_release_lock(acpi_spinlock handle, acpi_cpu_flags flags);
+>  #endif
+>
+> +/*
+> + * RAW spinlock primitives. If the OS does not provide them, fallback to
+> + * spinlock primitives
+> + */
+> +#ifndef ACPI_USE_ALTERNATE_PROTOTYPE_acpi_os_create_raw_lock
+> +# define acpi_os_create_raw_lock(out_handle)   acpi_os_create_lock(out_h=
+andle)
+> +#endif
+> +
+> +#ifndef ACPI_USE_ALTERNATE_PROTOTYPE_acpi_os_delete_raw_lock
+> +# define acpi_os_delete_raw_lock(handle)       acpi_os_delete_lock(handl=
+e)
+> +#endif
+> +
+> +#ifndef ACPI_USE_ALTERNATE_PROTOTYPE_acpi_os_acquire_raw_lock
+> +# define acpi_os_acquire_raw_lock(handle)      acpi_os_acquire_lock(hand=
+le)
+> +#endif
+> +
+> +#ifndef ACPI_USE_ALTERNATE_PROTOTYPE_acpi_os_release_raw_lock
+> +# define acpi_os_release_raw_lock(handle, flags)       \
+> +       acpi_os_release_lock(handle, flags)
+> +#endif
+> +
+>  /*
+>   * Semaphore primitives
+>   */
+> diff --git a/include/acpi/actypes.h b/include/acpi/actypes.h
+> index 1c530f95dc34..2b1bafa197c0 100644
+> --- a/include/acpi/actypes.h
+> +++ b/include/acpi/actypes.h
+> @@ -245,6 +245,10 @@ typedef u64 acpi_physical_address;
+>  #define acpi_spinlock                   void *
+>  #endif
+>
+> +#ifndef acpi_raw_spinlock
+> +#define acpi_raw_spinlock              acpi_spinlock
+> +#endif
+> +
+>  #ifndef acpi_semaphore
+>  #define acpi_semaphore                  void *
+>  #endif
+> diff --git a/include/acpi/platform/aclinux.h b/include/acpi/platform/acli=
+nux.h
+> index a0b232703302..7451b3bca83a 100644
+> --- a/include/acpi/platform/aclinux.h
+> +++ b/include/acpi/platform/aclinux.h
+> @@ -102,6 +102,7 @@
+>
+>  #define acpi_cache_t                        struct kmem_cache
+>  #define acpi_spinlock                       spinlock_t *
+> +#define acpi_raw_spinlock                   raw_spinlock_t *
+>  #define acpi_cpu_flags                      unsigned long
+>
+>  /* Use native linux version of acpi_os_allocate_zeroed */
+> @@ -119,6 +120,10 @@
+>  #define ACPI_USE_ALTERNATE_PROTOTYPE_acpi_os_acquire_object
+>  #define ACPI_USE_ALTERNATE_PROTOTYPE_acpi_os_get_thread_id
+>  #define ACPI_USE_ALTERNATE_PROTOTYPE_acpi_os_create_lock
+> +#define ACPI_USE_ALTERNATE_PROTOTYPE_acpi_os_create_raw_lock
+> +#define ACPI_USE_ALTERNATE_PROTOTYPE_acpi_os_delete_raw_lock
+> +#define ACPI_USE_ALTERNATE_PROTOTYPE_acpi_os_acquire_raw_lock
+> +#define ACPI_USE_ALTERNATE_PROTOTYPE_acpi_os_release_raw_lock
+>
+>  /*
+>   * OSL interfaces used by debugger/disassembler
+> diff --git a/include/acpi/platform/aclinuxex.h b/include/acpi/platform/ac=
+linuxex.h
+> index 7e81475fe034..d754a1b12721 100644
+> --- a/include/acpi/platform/aclinuxex.h
+> +++ b/include/acpi/platform/aclinuxex.h
+> @@ -90,6 +90,36 @@ static inline acpi_thread_id acpi_os_get_thread_id(voi=
+d)
+>                 lock ? AE_OK : AE_NO_MEMORY; \
+>         })
+>
+> +
+> +#define acpi_os_create_raw_lock(__handle) \
+> +       ({ \
+> +               raw_spinlock_t *lock =3D ACPI_ALLOCATE(sizeof(*lock)); \
+> +               if (lock) { \
+> +                       *(__handle) =3D lock; \
+> +                       raw_spin_lock_init(*(__handle)); \
+> +               } \
+> +               lock ? AE_OK : AE_NO_MEMORY; \
+> +       })
+> +
+> +static inline acpi_cpu_flags acpi_os_acquire_raw_lock(acpi_raw_spinlock =
+lockp)
+> +{
+> +       acpi_cpu_flags flags;
+> +
+> +       raw_spin_lock_irqsave(lockp, flags);
+> +       return flags;
+> +}
+> +
+> +static inline void acpi_os_release_raw_lock(acpi_raw_spinlock lockp,
+> +                                           acpi_cpu_flags flags)
+> +{
+> +       raw_spin_unlock_irqrestore(lockp, flags);
+> +}
+> +
+> +static inline void acpi_os_delete_raw_lock(acpi_raw_spinlock handle)
+> +{
+> +       ACPI_FREE(handle);
+> +}
+> +
+>  static inline u8 acpi_os_readable(void *pointer, acpi_size length)
+>  {
+>         return TRUE;
+> --
+> 2.17.0
+>
 
-They need to be reviewed from this angle and the code in question is
-far from straightforward.
-
-> I don't know if there is anything special about acpi_gbl_hardware_lock
-> but we have other raw locks already (like erst_lock or c3_lock).
-> I could come up with something like acpi_os_acquire_rawlock() if you
-> prefer this instead.
-
-That might work, but the other OSes using ACPICA don't actually have a "raw
-spinlock" concept, so this should just fall back to acpi_os_acquire_lock()
-if the OS doesn't implement the "raw" thing separately.
-
-
---===============2590987861519642477==--
+--===============5360933341382269657==--
 
