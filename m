@@ -1,74 +1,61 @@
-Content-Type: multipart/mixed; boundary="===============4388311676153975781=="
+Content-Type: multipart/mixed; boundary="===============4175079505453222849=="
 MIME-Version: 1.0
 From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] [RFC PATCH v3 3/3] acpi: apei: Warn when GHES marks
- correctable errors as "fatal"
-Date: Fri, 27 Apr 2018 16:25:50 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E3B75CE9B1@ORSMSX110.amr.corp.intel.com>
-In-Reply-To: e58482cf-37f6-808b-4382-fcf24c6f8db8@gmail.com
+Subject: [Devel] ACPICA version 20180427 released
+Date: Fri, 27 Apr 2018 20:03:02 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E3B75D0A96@ORSMSX110.amr.corp.intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4388311676153975781==
+--===============4175079505453222849==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
+27 April 2018. Summary of changes for version 20180427:
+
+This release is available at https://acpica.org/downloads
 
 
-> -----Original Message-----
-> From: Alex G. [mailto:mr.nuke.me(a)gmail.com]
-> Sent: Thursday, April 26, 2018 10:48 AM
-> To: Borislav Petkov <bp(a)alien8.de>
-> Cc: linux-acpi(a)vger.kernel.org; linux-edac(a)vger.kernel.org; Rafael J.
-> Wysocki <rjw(a)rjwysocki.net>; Len Brown <lenb(a)kernel.org>; Luck, Tony
-> <tony.luck(a)intel.com>; Mauro Carvalho Chehab <mchehab(a)kernel.org>;
-> Moore, Robert <robert.moore(a)intel.com>; Schmauss, Erik
-> <erik.schmauss(a)intel.com>; Tyler Baicar <tbaicar(a)codeaurora.org>; Will
-> Deacon <will.deacon(a)arm.com>; James Morse <james.morse(a)arm.com>; Shiju
-> Jose <shiju.jose(a)huawei.com>; Jonathan (Zhixiong) Zhang
-> <zjzhang(a)codeaurora.org>; Dongjiu Geng <gengdongjiu(a)huawei.com>; linu=
-x-
-> kernel(a)vger.kernel.org; devel(a)acpica.org
-> Subject: Re: [RFC PATCH v3 3/3] acpi: apei: Warn when GHES marks
-> correctable errors as "fatal"
-> =
+1) ACPICA kernel-resident subsystem:
 
-> On 04/26/2018 06:20 AM, Borislav Petkov wrote:
-> > Pasting the same comment from last time since you missed it:
-> >
-> > "No, I don't want any of that crap issuing stuff in dmesg and then
-> > people opening bugs and running around and trying to replace hardware.
-> >
-> > We either can handle the error and log a normal record somewhere
+Debugger: Added support for Package objects in the "Test Objects" command. =
+This command walks the entire namespace and evaluates all named data object=
+s (Integers, Strings, Buffers, and now Packages).
+
+Improved error messages for the namespace root node. Originally, the root w=
+as referred to by the confusing string "\___". This has been replaced by "N=
+amespace Root" for clarification.
+
+Fixed a potential infinite loop in the AcpiRsDumpByteList function. Colin I=
+an King <colin.king(a)canonical.com>.
 
 
-Usually nobody looks at these, it seems to me. On windows, ACPI errors just=
- go into the bit bucket.
+2) iASL Compiler/Disassembler and Tools:
 
- or we
-> > cannot and explode.
+iASL: Implemented support to detect and flag illegal forward references. Fo=
+r compatibility with other ACPI implementations, these references are now i=
+llegal at the root level of the DSDT or SSDTs. Forward references have alwa=
+ys been illegal within control methods. This change should not affect exist=
+ing ASL/AML code because of the fact that these references have always been=
+ illegal in the other ACPI implementation.
 
+iASL: Added error messages for the case where a table OEM ID and OEM TABLE =
+ID strings are longer than the ACPI-defined length. Previously, these strin=
+gs were simply silently truncated.
 
-This of course would be more windows behavior.
+iASL: Enhanced the -tc option (which creates an AML hex file in C, suitable=
+ for import into a firmware project):
+  1) Create a unique name for the table, to simplify use of multiple SSDTs.
+  2) Add a protection #ifdef in the file, similar to a .h header file.
+With assistance from Sami Mujawar, sami.mujawar(a)arm.com and Evan Lloyd, e=
+van.lloyd(a)arm.com
 
-
-> > The complaining about the FW doesn't bring shit."
-
-
-We seem to get down to more of a philosophical problem. Basically, just ign=
-ore errors or report them somewhere where they will be actually seen. Or, j=
-ust crash.
+AcpiExec: Added a new option, -df, to disable the local fault handler. This=
+ is useful during debugging, where it may be desired to drop into a debugge=
+r on a fault.
 
 
 
-> =
-
-> " Borislav, if you don't like the third patch in the series, feel free
-> to leave it out. THings will work beautifully with or without it."
-> =
-
-> :)
-
---===============4388311676153975781==--
+--===============4175079505453222849==--
 
