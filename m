@@ -1,61 +1,64 @@
-Content-Type: multipart/mixed; boundary="===============4175079505453222849=="
+Content-Type: multipart/mixed; boundary="===============2905858946992362974=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] ACPICA version 20180427 released
-Date: Fri, 27 Apr 2018 20:03:02 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E3B75D0A96@ORSMSX110.amr.corp.intel.com>
+From: Rafael J. Wysocki <rjw at rjwysocki.net>
+Subject: Re: [Devel] [PATCH 1/1] tools: power/acpi, revert to LD = gcc
+Date: Mon, 30 Apr 2018 10:00:54 +0200
+Message-ID: <6842093.byeXVzAmGC@aspire.rjw.lan>
+In-Reply-To: 20180424074344.23029-1-jslaby@suse.cz
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4175079505453222849==
+--===============2905858946992362974==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-27 April 2018. Summary of changes for version 20180427:
+On Tuesday, April 24, 2018 9:43:44 AM CEST Jiri Slaby wrote:
+> Commit 7ed1c1901fe5 (tools: fix cross-compile var clobbering) removed
+> setting of LD to $(CROSS_COMPILE)gcc. This broke build of acpica
+> (acpidump) in power/acpi:
+>  ld: unrecognized option '-D_LINUX'
+> =
 
-This release is available at https://acpica.org/downloads
+> The tools pass CFLAGS to the linker (incl. -D_LINUX), so revert this
+> particular change and let LD be $(CC) again. Note that the old behaviour
+> was a bit different, it used $(CROSS_COMPILE)gcc which was eliminated by
+> the commit 7ed1c1901fe5. We use $(CC) for that reason.
+> =
 
+> Signed-off-by: Jiri Slaby <jslaby(a)suse.cz>
+> Cc: Martin Kelly <martin(a)martingkelly.com>
+> Cc: "Rafael J. Wysocki" <rjw(a)rjwysocki.net>
+> Cc: Len Brown <lenb(a)kernel.org>
+> Cc: Robert Moore <robert.moore(a)intel.com>
+> Cc: Erik Schmauss <erik.schmauss(a)intel.com>
+> Cc: linux-acpi(a)vger.kernel.org
+> Cc: devel(a)acpica.org
+> ---
+>  tools/power/acpi/Makefile.config | 1 +
+>  1 file changed, 1 insertion(+)
+> =
 
-1) ACPICA kernel-resident subsystem:
+> diff --git a/tools/power/acpi/Makefile.config b/tools/power/acpi/Makefile=
+.config
+> index 2cccbba64418..f304be71c278 100644
+> --- a/tools/power/acpi/Makefile.config
+> +++ b/tools/power/acpi/Makefile.config
+> @@ -56,6 +56,7 @@ INSTALL_SCRIPT =3D ${INSTALL_PROGRAM}
+>  # to compile vs uClibc, that can be done here as well.
+>  CROSS =3D #/usr/i386-linux-uclibc/usr/bin/i386-uclibc-
+>  CROSS_COMPILE ?=3D $(CROSS)
+> +LD =3D $(CC)
+>  HOSTCC =3D gcc
+>  =
 
-Debugger: Added support for Package objects in the "Test Objects" command. =
-This command walks the entire namespace and evaluates all named data object=
-s (Integers, Strings, Buffers, and now Packages).
-
-Improved error messages for the namespace root node. Originally, the root w=
-as referred to by the confusing string "\___". This has been replaced by "N=
-amespace Root" for clarification.
-
-Fixed a potential infinite loop in the AcpiRsDumpByteList function. Colin I=
-an King <colin.king(a)canonical.com>.
-
-
-2) iASL Compiler/Disassembler and Tools:
-
-iASL: Implemented support to detect and flag illegal forward references. Fo=
-r compatibility with other ACPI implementations, these references are now i=
-llegal at the root level of the DSDT or SSDTs. Forward references have alwa=
-ys been illegal within control methods. This change should not affect exist=
-ing ASL/AML code because of the fact that these references have always been=
- illegal in the other ACPI implementation.
-
-iASL: Added error messages for the case where a table OEM ID and OEM TABLE =
-ID strings are longer than the ACPI-defined length. Previously, these strin=
-gs were simply silently truncated.
-
-iASL: Enhanced the -tc option (which creates an AML hex file in C, suitable=
- for import into a firmware project):
-  1) Create a unique name for the table, to simplify use of multiple SSDTs.
-  2) Add a protection #ifdef in the file, similar to a .h header file.
-With assistance from Sami Mujawar, sami.mujawar(a)arm.com and Evan Lloyd, e=
-van.lloyd(a)arm.com
-
-AcpiExec: Added a new option, -df, to disable the local fault handler. This=
- is useful during debugging, where it may be desired to drop into a debugge=
-r on a fault.
-
+>  # check if compiler option is supported
+> =
 
 
---===============4175079505453222849==--
+Applied, thanks!
+
+
+
+--===============2905858946992362974==--
 
