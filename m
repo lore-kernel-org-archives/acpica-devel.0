@@ -1,64 +1,47 @@
-Content-Type: multipart/mixed; boundary="===============2905858946992362974=="
+Content-Type: multipart/mixed; boundary="===============3501562865918812637=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rjw at rjwysocki.net>
-Subject: Re: [Devel] [PATCH 1/1] tools: power/acpi, revert to LD = gcc
-Date: Mon, 30 Apr 2018 10:00:54 +0200
-Message-ID: <6842093.byeXVzAmGC@aspire.rjw.lan>
-In-Reply-To: 20180424074344.23029-1-jslaby@suse.cz
+From: Alex Hung <alex.hung at canonical.com>
+Subject: [Devel] [PATCH] Tools: remove missing options in acpibin tool
+Date: Wed, 02 May 2018 22:49:27 -0700
+Message-ID: <1525326567-30528-1-git-send-email-alex.hung@canonical.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2905858946992362974==
+--===============3501562865918812637==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Tuesday, April 24, 2018 9:43:44 AM CEST Jiri Slaby wrote:
-> Commit 7ed1c1901fe5 (tools: fix cross-compile var clobbering) removed
-> setting of LD to $(CROSS_COMPILE)gcc. This broke build of acpica
-> (acpidump) in power/acpi:
->  ld: unrecognized option '-D_LINUX'
-> =
+The -e option is no longer avaiable in acpibin tool.
 
-> The tools pass CFLAGS to the linker (incl. -D_LINUX), so revert this
-> particular change and let LD be $(CC) again. Note that the old behaviour
-> was a bit different, it used $(CROSS_COMPILE)gcc which was eliminated by
-> the commit 7ed1c1901fe5. We use $(CC) for that reason.
-> =
+Signed-off-by: Alex Hung <alex.hung(a)canonical.com>
+---
+ source/tools/acpibin/abmain.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-> Signed-off-by: Jiri Slaby <jslaby(a)suse.cz>
-> Cc: Martin Kelly <martin(a)martingkelly.com>
-> Cc: "Rafael J. Wysocki" <rjw(a)rjwysocki.net>
-> Cc: Len Brown <lenb(a)kernel.org>
-> Cc: Robert Moore <robert.moore(a)intel.com>
-> Cc: Erik Schmauss <erik.schmauss(a)intel.com>
-> Cc: linux-acpi(a)vger.kernel.org
-> Cc: devel(a)acpica.org
-> ---
->  tools/power/acpi/Makefile.config | 1 +
->  1 file changed, 1 insertion(+)
-> =
+diff --git a/source/tools/acpibin/abmain.c b/source/tools/acpibin/abmain.c
+index 35e533c..1cf18c6 100644
+--- a/source/tools/acpibin/abmain.c
++++ b/source/tools/acpibin/abmain.c
+@@ -186,7 +186,6 @@ AbDisplayUsage (
+     ACPI_OPTION ("-a <File1> <File2>",      "Compare two binary AML files,=
+ dump all mismatches");
+     ACPI_OPTION ("-c <File1> <File2>",      "Compare two binary AML files,=
+ dump first 100 mismatches");
+     ACPI_OPTION ("-d <In> <Out>",           "Dump AML binary to text file"=
+);
+-    ACPI_OPTION ("-e <Sig> <In> <Out>",     "Extract binary AML table from=
+ acpidump file");
+     ACPI_OPTION ("-o <Value>",              "Start comparison at this offs=
+et into second file");
+     ACPI_OPTION ("-h <File>",               "Display table header for bina=
+ry AML file");
+     ACPI_OPTION ("-s <File>",               "Update checksum for binary AM=
+L file");
+-- =
 
-> diff --git a/tools/power/acpi/Makefile.config b/tools/power/acpi/Makefile=
-.config
-> index 2cccbba64418..f304be71c278 100644
-> --- a/tools/power/acpi/Makefile.config
-> +++ b/tools/power/acpi/Makefile.config
-> @@ -56,6 +56,7 @@ INSTALL_SCRIPT =3D ${INSTALL_PROGRAM}
->  # to compile vs uClibc, that can be done here as well.
->  CROSS =3D #/usr/i386-linux-uclibc/usr/bin/i386-uclibc-
->  CROSS_COMPILE ?=3D $(CROSS)
-> +LD =3D $(CC)
->  HOSTCC =3D gcc
->  =
-
->  # check if compiler option is supported
-> =
+2.7.4
 
 
-Applied, thanks!
-
-
-
---===============2905858946992362974==--
+--===============3501562865918812637==--
 
