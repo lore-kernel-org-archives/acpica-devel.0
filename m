@@ -1,122 +1,54 @@
-Content-Type: multipart/mixed; boundary="===============8358527228975168498=="
+Content-Type: multipart/mixed; boundary="===============2656347439644193420=="
 MIME-Version: 1.0
 From: Andy Shevchenko <andy.shevchenko at gmail.com>
-Subject: Re: [Devel] PROBLEM: "ACPI Error: Method parse/execution failed" and
- "ACPI BIOS Error (bug): Failure looking up" related
-Date: Mon, 14 May 2018 01:34:53 +0300
-Message-ID: <CAHp75Vc4FhSOfyN=UG=xXNOH6C4JUpnfMh9+Mp1_FiM44F0FtA@mail.gmail.com>
-In-Reply-To: CAG=yYwkWt9bbKVWD93YT2S3jFQCt7s5yV7gxOw=JScFJtgO0NA@mail.gmail.com
+Subject: Re: [Devel] [PATCH 1/3] thinkpad_acpi: add support for inhibit_charge
+Date: Mon, 14 May 2018 13:41:33 +0300
+Message-ID: <CAHp75VdPOH7J1X4ZXmRsQ1yrB5n5RRmhPneWOnu7TFOAysgE6Q@mail.gmail.com>
+In-Reply-To: 20180514094620.wfoom4mwwyqb7qe5@localhost
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8358527228975168498==
+--===============2656347439644193420==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, May 13, 2018 at 5:20 PM, Jeffrin Thalakkottoor
-<jeffrin(a)rajagiritech.edu.in> wrote:
-> hello ,
->
-> the error from "dmesg -l err"  related ...
->
-> -------------------------------------------------------------------------=
------------------------->
->
-> [    1.709950] ACPI BIOS Error (bug): Failure looking up
-> [\_SB.PCI0.LPCB.HEC.ECWT], AE_NOT_FOUND (20180313/psargs-330)
-> [    1.710045] ACPI Error: Method parse/execution failed
-> \_TZ.FN00._ON, AE_NOT_FOUND (20180313/psparse-516)
-> [    1.710208] ACPI BIOS Error (bug): Failure looking up
-> [\_SB.PCI0.LPCB.HEC.ECWT], AE_NOT_FOUND (20180313/psargs-330)
-> [    1.710267] ACPI Error: Method parse/execution failed
-> \_TZ.FN00._ON, AE_NOT_FOUND (20180313/psparse-516)
-> [    1.710338] acpi PNP0C0B:00: Failed to set initial power state
-> [    1.710846] ACPI BIOS Error (bug): Failure looking up
-> [\_SB.PCI0.LPCB.HEC.ECRD], AE_NOT_FOUND (20180313/psargs-330)
-> [    1.710938] ACPI Error: Method parse/execution failed
-> \_TZ.TZ00._TMP, AE_NOT_FOUND (20180313/psparse-516)
-> [    1.711588] ACPI BIOS Error (bug): Failure looking up
-> [\_SB.PCI0.LPCB.HEC.ECRD], AE_NOT_FOUND (20180313/psargs-330)
-> [    1.711681] ACPI Error: Method parse/execution failed
-> \_TZ.TZ00._TMP, AE_NOT_FOUND (20180313/psparse-516)
-> [    1.711960] ACPI BIOS Error (bug): Failure looking up
-> [\_SB.PCI0.LPCB.HEC.ECRD], AE_NOT_FOUND (20180313/psargs-330)
-> [    1.712054] ACPI Error: Method parse/execution failed
-> \_TZ.TZ01._TMP, AE_NOT_FOUND (20180313/psparse-516)
-> [    1.712471] ACPI BIOS Error (bug): Failure looking up
-> [\_SB.PCI0.LPCB.HEC.ECRD], AE_NOT_FOUND (20180313/psargs-330)
-> [    1.712552] ACPI Error: Method parse/execution failed
-> \_TZ.TZ01._TMP, AE_NOT_FOUND (20180313/psparse-516)
->
-> -------------------------------------------------------------------------=
----------------------------->
->
+On Mon, May 14, 2018 at 12:46 PM, Christoph B=C3=B6hmwalder
+<christoph(a)boehmwalder.at> wrote:
+> On Sun, May 13, 2018 at 05:29:37PM +0200, Ognjen Galic wrote:
+>> Lenovo ThinkPad systems support the prevention of
+>> battery charging via a manual override called Inhibit Charge.
+>>
+>> This patch adds support for that attribute and exposes it via the
+>> battery ACPI driver in the generic location:
+>>
+>> /sys/class/power_supply/BATX/inhibit_charge
 
-Is there any regressions or change in behaviour due to which these
-messages are printed out? If so, which regressions you are pointing
-out?
+>> +             /* When setting inhbitit charge, we set a default vaulue of
+>
+> This comment does not adhere to the Linux coding style
 
->
->
-> $awk -f scripts/ver_linux
-> If some fields are empty or look unusual you may have an old version.
-> Compare to the current minimal requirements in Documentation/Changes.
->
-> Linux debian 4.17.0-rc4+ #24 SMP Sat May 12 19:26:27 IST 2018 x86_64 GNU/=
-Linux
->
-> GNU Make            4.2.1
-> Binutils            2.30
-> Util-linux          2.31.1
-> Mount                2.31.1
-> Linux C Library      2.27
-> Dynamic linker (ldd) 2.27
-> readlink: missing operand
-> Try 'readlink --help' for more information.
-> Procps              3.3.14
-> Kbd                  2.0.4
-> Console-tools        2.0.4
-> Sh-utils            8.28
-> Udev                238
-> Modules Loaded      ac acpi_pad acpi_thermal_rel ahci autofs4 battery
-> binfmt_misc bluetooth bnep btbcm btintel btrfs btrtl btusb button
-> cdrom cfg80211 cmac coretemp cpuid crc32c_intel crc32_pclmul
-> crct10dif_pclmul cryptd drm drm_kms_helper ecdh_generic efi_pstore
-> efivarfs efivars ehci_hcd ehci_pci evdev fan fat fuse
-> ghash_clmulni_intel hid hp_wireless hp_wmi i2c_algo_bit i2c_hid
-> i2c_i801 i915 int3400_thermal int340x_thermal_zone intel_cstate
-> intel_pch_thermal intel_powerclamp intel_rapl intel_rapl_perf
-> intel_soc_dts_iosf intel_uncore ip_tables irqbypass
-> iTCO_vendor_support iTCO_wdt joydev kvm kvm_intel libahci libata
-> libcrc32c loop lp lpc_ich media mei mei_me mfd_core mii nls_ascii
-> nls_cp437 parport parport_pc pcspkr ppdev processor_thermal_device
-> psmouse r8169 raid6_pq rfcomm rfkill scsi_mod sd_mod serio_raw sg
-> shpchp snd snd_hda_codec snd_hda_codec_generic snd_hda_codec_hdmi
-> snd_hda_codec_realtek snd_hda_core snd_hda_intel snd_hwdep snd_pcm
-> snd_timer soundcore sparse_keymap sr_mod sunrpc thermal usbcore
-> uvcvideo vfat video videobuf2_common videobuf2_memops videobuf2_v4l2
-> videobuf2_vmalloc videodev wl wmi wmi_bmof x86_pkg_temp_thermal xfs
-> xhci_hcd xhci_pci xor x_tables xxhash zstd_compress zstd_decompress
->
->
-> $uname -a
-> Linux debian 4.17.0-rc4+ #24 SMP Sat May 12 19:26:27 IST 2018 x86_64 GNU/=
-Linux
-> $
->
-> Reported-by: Jeffrin Jose T  <jeffrin(a)rajagiritech.edu.in>
->
-> --
-> software engineer
-> rajagiri school of engineering and technology
+While you are right in principle, the whole driver is so old and uses
+this style. So, for such cases we, as maintainers, prefer less
+deviation work, i.e. keeping the
+style is a good thing to do.
 
+>> +             /* The only valid values are 1 and 0 */
+>> +             if (value !=3D 0 && value !=3D 1)
+>
+> I'm not sure, but maybe `if (value < 2)` is better here?
 
+Since it's about integer-as-a-boolean, test for bit 0 would be
+sufficient, i.e. ~BIT(0). Though, I find this form not so readable
+since the input comes actually from the user.
+It would be nice to have just kstrtobool() called instead for such
+options, but see above. It would need a (huge) refactoring of the
+driver first.
 
 -- =
 
 With Best Regards,
 Andy Shevchenko
 
---===============8358527228975168498==--
+--===============2656347439644193420==--
 
