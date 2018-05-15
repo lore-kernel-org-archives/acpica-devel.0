@@ -1,54 +1,95 @@
-Content-Type: multipart/mixed; boundary="===============2656347439644193420=="
+Content-Type: multipart/mixed; boundary="===============1195981108391209212=="
 MIME-Version: 1.0
-From: Andy Shevchenko <andy.shevchenko at gmail.com>
-Subject: Re: [Devel] [PATCH 1/3] thinkpad_acpi: add support for inhibit_charge
-Date: Mon, 14 May 2018 13:41:33 +0300
-Message-ID: <CAHp75VdPOH7J1X4ZXmRsQ1yrB5n5RRmhPneWOnu7TFOAysgE6Q@mail.gmail.com>
-In-Reply-To: 20180514094620.wfoom4mwwyqb7qe5@localhost
+From: Dongjiu Geng <gengdongjiu at huawei.com>
+Subject: [Devel] [PATCH v12 1/4] arm64: KVM: export the capability to set
+ guest SError syndrome
+Date: Wed, 16 May 2018 04:58:04 +0800
+Message-ID: <1526417887-25843-2-git-send-email-gengdongjiu@huawei.com>
+In-Reply-To: 1526417887-25843-1-git-send-email-gengdongjiu@huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2656347439644193420==
+--===============1195981108391209212==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, May 14, 2018 at 12:46 PM, Christoph B=C3=B6hmwalder
-<christoph(a)boehmwalder.at> wrote:
-> On Sun, May 13, 2018 at 05:29:37PM +0200, Ognjen Galic wrote:
->> Lenovo ThinkPad systems support the prevention of
->> battery charging via a manual override called Inhibit Charge.
->>
->> This patch adds support for that attribute and exposes it via the
->> battery ACPI driver in the generic location:
->>
->> /sys/class/power_supply/BATX/inhibit_charge
+For the arm64 RAS Extension, user space can inject a virtual-SError
+with specified ESR. So user space needs to know whether KVM support
+to inject such SError, this interface adds this query for this capability.
 
->> +             /* When setting inhbitit charge, we set a default vaulue of
->
-> This comment does not adhere to the Linux coding style
+KVM will check whether system support RAS Extension, if supported, KVM
+returns true to user space, otherwise returns false.
 
-While you are right in principle, the whole driver is so old and uses
-this style. So, for such cases we, as maintainers, prefer less
-deviation work, i.e. keeping the
-style is a good thing to do.
+Signed-off-by: Dongjiu Geng <gengdongjiu(a)huawei.com>
+Reviewed-by: James Morse <james.morse(a)arm.com>
 
->> +             /* The only valid values are 1 and 0 */
->> +             if (value !=3D 0 && value !=3D 1)
->
-> I'm not sure, but maybe `if (value < 2)` is better here?
+Change from V11:
+1. Change the commit message
+2. Update the Documentation/virtual/kvm/api.tx
+---
+ Documentation/virtual/kvm/api.txt | 11 +++++++++++
+ arch/arm64/kvm/reset.c            |  3 +++
+ include/uapi/linux/kvm.h          |  1 +
+ 3 files changed, 15 insertions(+)
 
-Since it's about integer-as-a-boolean, test for bit 0 would be
-sufficient, i.e. ~BIT(0). Though, I find this form not so readable
-since the input comes actually from the user.
-It would be nice to have just kstrtobool() called instead for such
-options, but see above. It would need a (huge) refactoring of the
-driver first.
+diff --git a/Documentation/virtual/kvm/api.txt b/Documentation/virtual/kvm/=
+api.txt
+index fc3ae95..66494a5 100644
+--- a/Documentation/virtual/kvm/api.txt
++++ b/Documentation/virtual/kvm/api.txt
+@@ -4415,3 +4415,14 @@ Parameters: none
+ This capability indicates if the flic device will be able to get/set the
+ AIS states for migration via the KVM_DEV_FLIC_AISM_ALL attribute and allows
+ to discover this without having to create a flic device.
++
++8.14 KVM_CAP_ARM_SET_SERROR_ESR
++
++Architectures: arm, arm64
++
++This capability indicates that userspace can specify the syndrome value re=
+ported
++to the guest OS when guest takes a virtual SError interrupt exception.
++If KVM has this capability, userspace can only specify the ISS field for t=
+he ESR
++syndrome, it can not specify the EC field which is not under control by KV=
+M.
++If this virtual SError is taken to EL1 using AArch64, this value will be r=
+eported
++in ISS filed of ESR_EL1.
+diff --git a/arch/arm64/kvm/reset.c b/arch/arm64/kvm/reset.c
+index 3256b92..38c8a64 100644
+--- a/arch/arm64/kvm/reset.c
++++ b/arch/arm64/kvm/reset.c
+@@ -77,6 +77,9 @@ int kvm_arch_dev_ioctl_check_extension(struct kvm *kvm, l=
+ong ext)
+ 	case KVM_CAP_ARM_PMU_V3:
+ 		r =3D kvm_arm_support_pmu_v3();
+ 		break;
++	case KVM_CAP_ARM_INJECT_SERROR_ESR:
++		r =3D cpus_have_const_cap(ARM64_HAS_RAS_EXTN);
++		break;
+ 	case KVM_CAP_SET_GUEST_DEBUG:
+ 	case KVM_CAP_VCPU_ATTRIBUTES:
+ 		r =3D 1;
+diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+index 8fb90a0..3587b33 100644
+--- a/include/uapi/linux/kvm.h
++++ b/include/uapi/linux/kvm.h
+@@ -934,6 +934,7 @@ struct kvm_ppc_resize_hpt {
+ #define KVM_CAP_S390_AIS_MIGRATION 150
+ #define KVM_CAP_PPC_GET_CPU_CHAR 151
+ #define KVM_CAP_S390_BPB 152
++#define KVM_CAP_ARM_INJECT_SERROR_ESR 153
+ =
+
+ #ifdef KVM_CAP_IRQ_ROUTING
+ =
 
 -- =
 
-With Best Regards,
-Andy Shevchenko
+1.9.1
 
---===============2656347439644193420==--
+
+--===============1195981108391209212==--
 
