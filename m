@@ -1,173 +1,80 @@
-Content-Type: multipart/mixed; boundary="===============0999319290649907584=="
+Content-Type: multipart/mixed; boundary="===============2929035386517844190=="
 MIME-Version: 1.0
 From: Dongjiu Geng <gengdongjiu at huawei.com>
-Subject: [Devel] [PATCH v12 3/4] ACPI / APEI: Add SEI notification type
- support for ARMv8
-Date: Wed, 16 May 2018 04:58:06 +0800
-Message-ID: <1526417887-25843-4-git-send-email-gengdongjiu@huawei.com>
-In-Reply-To: 1526417887-25843-1-git-send-email-gengdongjiu@huawei.com
+Subject: [Devel] [PATCH v12 0/4] set VSESR_EL2 by user space and support
+ NOTIFY_SEI notification
+Date: Wed, 16 May 2018 04:58:03 +0800
+Message-ID: <1526417887-25843-1-git-send-email-gengdongjiu@huawei.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0999319290649907584==
+--===============2929035386517844190==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-ACPI 6.x adds support for NOTIFY_SEI as a GHES notification
-mechanism, so add new GHES notification handling functions.
-Expose API ghes_notify_sei() to arch code, arch code will call
-this API when it gets this NOTIFY_SEI.
+1. Detect whether KVM can set set guest SError syndrome
+2. Support to Set VSESR_EL2 and inject SError by user space.
+3. Support live migration to keep SError pending state and VSESR_EL2 value.
+4. ACPI 6.1 adds support for NOTIFY_SEI as a GHES notification mechanism, s=
+o support this
+   notification in software, KVM or kernel ARCH code call handle_guest_sei(=
+) to let ACP driver
+   to handle this notification.
 
-Signed-off-by: Dongjiu Geng <gengdongjiu(a)huawei.com>
+Change since V11:
+Address James's comments, thanks James
+1. Align the struct of kvm_vcpu_events to 64 bytes
+2. Avoid exposing the stale ESR value in the kvm_arm_vcpu_get_events()
+3. Change variables 'injected' name to 'serror_pending' in the kvm_arm_vcpu=
+_set_events()
+4. Change to sizeof(events) from sizeof(struct kvm_vcpu_events) in kvm_arch=
+_vcpu_ioctl()
+5. Update the patches commit message and document description
 
-Note:
-Firmware will follow the SError mask rule, if the SError is masked,
-the firmware will not deliver NOTIFY_SEI notification.
----
- drivers/acpi/apei/Kconfig | 15 ++++++++++++++
- drivers/acpi/apei/ghes.c  | 53 +++++++++++++++++++++++++++++++++++++++++++=
+
+Change since V10:
+Address James's comments, thanks James
+1. Merge the helper function with the user.
+2. Move the ISS_MASK into pend_guest_serror() to clear top bits
+3. Make kvm_vcpu_events struct align to 4 bytes
+4. Add something check in the kvm_arm_vcpu_set_events()
+5. Check kvm_arm_vcpu_get/set_events()'s return value.
+6. Initialise kvm_vcpu_events to 0 so that padding transferred to user-spac=
+e doesn't
+    contain kernel stack.
+
+
+Dongjiu Geng (4):
+  arm64: KVM: export the capability to set guest SError syndrome
+  arm/arm64: KVM: Add KVM_GET/SET_VCPU_EVENTS
+  ACPI / APEI: Add SEI notification type support for ARMv8
+  arm64: handle NOTIFY_SEI notification by the APEI driver
+
+ Documentation/virtual/kvm/api.txt    | 42 ++++++++++++++++++++++++++--
+ arch/arm/include/asm/kvm_host.h      |  6 ++++
+ arch/arm/kvm/guest.c                 | 12 ++++++++
+ arch/arm64/include/asm/kvm_emulate.h |  5 ++++
+ arch/arm64/include/asm/kvm_host.h    |  7 +++++
+ arch/arm64/include/asm/system_misc.h |  1 +
+ arch/arm64/include/uapi/asm/kvm.h    | 13 +++++++++
+ arch/arm64/kernel/traps.c            |  4 +++
+ arch/arm64/kvm/guest.c               | 36 ++++++++++++++++++++++++
+ arch/arm64/kvm/inject_fault.c        |  7 ++++-
+ arch/arm64/kvm/reset.c               |  4 +++
+ arch/arm64/mm/fault.c                | 10 +++++++
+ drivers/acpi/apei/Kconfig            | 15 ++++++++++
+ drivers/acpi/apei/ghes.c             | 53 ++++++++++++++++++++++++++++++++=
 ++++
- include/acpi/ghes.h       |  1 +
- 3 files changed, 69 insertions(+)
+ include/acpi/ghes.h                  |  1 +
+ include/uapi/linux/kvm.h             |  1 +
+ virt/kvm/arm/arm.c                   | 21 ++++++++++++++
+ 17 files changed, 234 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/acpi/apei/Kconfig b/drivers/acpi/apei/Kconfig
-index 52ae543..ff4afc3 100644
---- a/drivers/acpi/apei/Kconfig
-+++ b/drivers/acpi/apei/Kconfig
-@@ -55,6 +55,21 @@ config ACPI_APEI_SEA
- 	  option allows the OS to look for such hardware error record, and
- 	  take appropriate action.
- =
-
-+config ACPI_APEI_SEI
-+	bool "APEI SError(System Error) Interrupt logging/recovering support"
-+	depends on ARM64 && ACPI_APEI_GHES
-+	default y
-+	help
-+	  This option should be enabled if the system supports
-+	  firmware first handling of SEI (SError interrupt).
-+
-+	  SEI happens with asynchronous external abort for errors on device
-+	  memory reads on ARMv8 systems. If a system supports firmware first
-+	  handling of SEI, the platform analyzes and handles hardware error
-+	  notifications from SEI, and it may then form a hardware error record for
-+	  the OS to parse and handle. This option allows the OS to look for
-+	  such hardware error record, and take appropriate action.
-+
- config ACPI_APEI_MEMORY_FAILURE
- 	bool "APEI memory error recovering support"
- 	depends on ACPI_APEI && MEMORY_FAILURE
-diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
-index 1efefe9..33f77ae 100644
---- a/drivers/acpi/apei/ghes.c
-+++ b/drivers/acpi/apei/ghes.c
-@@ -827,6 +827,46 @@ static inline void ghes_sea_add(struct ghes *ghes) { }
- static inline void ghes_sea_remove(struct ghes *ghes) { }
- #endif /* CONFIG_ACPI_APEI_SEA */
- =
-
-+#ifdef CONFIG_ACPI_APEI_SEI
-+static LIST_HEAD(ghes_sei);
-+
-+/*
-+ * Return 0 only if one of the SEI error sources successfully reported an =
-error
-+ * record sent from the firmware.
-+ */
-+int ghes_notify_sei(void)
-+{
-+	struct ghes *ghes;
-+	int ret =3D -ENOENT;
-+
-+	rcu_read_lock();
-+	list_for_each_entry_rcu(ghes, &ghes_sei, list) {
-+		if (!ghes_proc(ghes))
-+			ret =3D 0;
-+	}
-+	rcu_read_unlock();
-+	return ret;
-+}
-+
-+static void ghes_sei_add(struct ghes *ghes)
-+{
-+	mutex_lock(&ghes_list_mutex);
-+	list_add_rcu(&ghes->list, &ghes_sei);
-+	mutex_unlock(&ghes_list_mutex);
-+}
-+
-+static void ghes_sei_remove(struct ghes *ghes)
-+{
-+	mutex_lock(&ghes_list_mutex);
-+	list_del_rcu(&ghes->list);
-+	mutex_unlock(&ghes_list_mutex);
-+	synchronize_rcu();
-+}
-+#else /* CONFIG_ACPI_APEI_SEI */
-+static inline void ghes_sei_add(struct ghes *ghes) { }
-+static inline void ghes_sei_remove(struct ghes *ghes) { }
-+#endif /* CONFIG_ACPI_APEI_SEI */
-+
- #ifdef CONFIG_HAVE_ACPI_APEI_NMI
- /*
-  * printk is not safe in NMI context.  So in NMI handler, we allocate
-@@ -1055,6 +1095,13 @@ static int ghes_probe(struct platform_device *ghes_d=
-ev)
- 			goto err;
- 		}
- 		break;
-+	case ACPI_HEST_NOTIFY_SEI:
-+		if (!IS_ENABLED(CONFIG_ACPI_APEI_SEI)) {
-+			pr_warn(GHES_PFX "Generic hardware error source: %d notified via SEI is=
- not supported!\n",
-+				generic->header.source_id);
-+		goto err;
-+	}
-+	break;
- 	case ACPI_HEST_NOTIFY_NMI:
- 		if (!IS_ENABLED(CONFIG_HAVE_ACPI_APEI_NMI)) {
- 			pr_warn(GHES_PFX "Generic hardware error source: %d notified via NMI in=
-terrupt is not supported!\n",
-@@ -1126,6 +1173,9 @@ static int ghes_probe(struct platform_device *ghes_de=
-v)
- 	case ACPI_HEST_NOTIFY_SEA:
- 		ghes_sea_add(ghes);
- 		break;
-+	case ACPI_HEST_NOTIFY_SEI:
-+		ghes_sei_add(ghes);
-+		break;
- 	case ACPI_HEST_NOTIFY_NMI:
- 		ghes_nmi_add(ghes);
- 		break;
-@@ -1179,6 +1229,9 @@ static int ghes_remove(struct platform_device *ghes_d=
-ev)
- 	case ACPI_HEST_NOTIFY_SEA:
- 		ghes_sea_remove(ghes);
- 		break;
-+	case ACPI_HEST_NOTIFY_SEI:
-+		ghes_sei_remove(ghes);
-+		break;
- 	case ACPI_HEST_NOTIFY_NMI:
- 		ghes_nmi_remove(ghes);
- 		break;
-diff --git a/include/acpi/ghes.h b/include/acpi/ghes.h
-index 8feb0c8..9ba59e2 100644
---- a/include/acpi/ghes.h
-+++ b/include/acpi/ghes.h
-@@ -120,5 +120,6 @@ static inline void *acpi_hest_get_next(struct acpi_hest=
-_generic_data *gdata)
- 	     section =3D acpi_hest_get_next(section))
- =
-
- int ghes_notify_sea(void);
-+int ghes_notify_sei(void);
- =
-
- #endif /* GHES_H */
 -- =
 
 1.9.1
 
 
---===============0999319290649907584==--
+--===============2929035386517844190==--
 
