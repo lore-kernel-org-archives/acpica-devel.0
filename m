@@ -1,92 +1,173 @@
-Content-Type: multipart/mixed; boundary="===============8021816182140114360=="
+Content-Type: multipart/mixed; boundary="===============0999319290649907584=="
 MIME-Version: 1.0
 From: Dongjiu Geng <gengdongjiu at huawei.com>
-Subject: [Devel] [PATCH v12 4/4] arm64: handle NOTIFY_SEI notification by the
- APEI driver
-Date: Wed, 16 May 2018 04:58:07 +0800
-Message-ID: <1526417887-25843-5-git-send-email-gengdongjiu@huawei.com>
+Subject: [Devel] [PATCH v12 3/4] ACPI / APEI: Add SEI notification type
+ support for ARMv8
+Date: Wed, 16 May 2018 04:58:06 +0800
+Message-ID: <1526417887-25843-4-git-send-email-gengdongjiu@huawei.com>
 In-Reply-To: 1526417887-25843-1-git-send-email-gengdongjiu@huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8021816182140114360==
+--===============0999319290649907584==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Add a helper to handle the NOTIFY_SEI notification, when kernel
-gets the NOTIFY_SEI notification, call this helper and let APEI
-driver to handle this notification.
+ACPI 6.x adds support for NOTIFY_SEI as a GHES notification
+mechanism, so add new GHES notification handling functions.
+Expose API ghes_notify_sei() to arch code, arch code will call
+this API when it gets this NOTIFY_SEI.
 
 Signed-off-by: Dongjiu Geng <gengdongjiu(a)huawei.com>
+
+Note:
+Firmware will follow the SError mask rule, if the SError is masked,
+the firmware will not deliver NOTIFY_SEI notification.
 ---
- arch/arm64/include/asm/system_misc.h |  1 +
- arch/arm64/kernel/traps.c            |  4 ++++
- arch/arm64/mm/fault.c                | 10 ++++++++++
- 3 files changed, 15 insertions(+)
+ drivers/acpi/apei/Kconfig | 15 ++++++++++++++
+ drivers/acpi/apei/ghes.c  | 53 +++++++++++++++++++++++++++++++++++++++++++=
+++++
+ include/acpi/ghes.h       |  1 +
+ 3 files changed, 69 insertions(+)
 
-diff --git a/arch/arm64/include/asm/system_misc.h b/arch/arm64/include/asm/=
-system_misc.h
-index 07aa8e3..9ee13ad 100644
---- a/arch/arm64/include/asm/system_misc.h
-+++ b/arch/arm64/include/asm/system_misc.h
-@@ -57,6 +57,7 @@ void hook_debug_fault_code(int nr, int (*fn)(unsigned lon=
-g, unsigned int,
- })
+diff --git a/drivers/acpi/apei/Kconfig b/drivers/acpi/apei/Kconfig
+index 52ae543..ff4afc3 100644
+--- a/drivers/acpi/apei/Kconfig
++++ b/drivers/acpi/apei/Kconfig
+@@ -55,6 +55,21 @@ config ACPI_APEI_SEA
+ 	  option allows the OS to look for such hardware error record, and
+ 	  take appropriate action.
  =
 
- int handle_guest_sea(phys_addr_t addr, unsigned int esr);
-+int handle_guest_sei(void);
- =
-
- #endif	/* __ASSEMBLY__ */
- =
-
-diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
-index bbb0fde..d888eb2 100644
---- a/arch/arm64/kernel/traps.c
-+++ b/arch/arm64/kernel/traps.c
-@@ -681,6 +681,10 @@ bool arm64_is_fatal_ras_serror(struct pt_regs *regs, u=
-nsigned int esr)
- {
- 	u32 aet =3D arm64_ras_serror_get_severity(esr);
- =
-
-+	/* The APEI driver may handle this RAS error. */
-+	if (!handle_guest_sei())
-+		return false;
++config ACPI_APEI_SEI
++	bool "APEI SError(System Error) Interrupt logging/recovering support"
++	depends on ARM64 && ACPI_APEI_GHES
++	default y
++	help
++	  This option should be enabled if the system supports
++	  firmware first handling of SEI (SError interrupt).
 +
- 	switch (aet) {
- 	case ESR_ELx_AET_CE:	/* corrected error */
- 	case ESR_ELx_AET_UEO:	/* restartable, not yet consumed */
-diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
-index f76bb2c..8f29bd8 100644
---- a/arch/arm64/mm/fault.c
-+++ b/arch/arm64/mm/fault.c
-@@ -683,6 +683,16 @@ int handle_guest_sea(phys_addr_t addr, unsigned int es=
-r)
- 	return ret;
- }
++	  SEI happens with asynchronous external abort for errors on device
++	  memory reads on ARMv8 systems. If a system supports firmware first
++	  handling of SEI, the platform analyzes and handles hardware error
++	  notifications from SEI, and it may then form a hardware error record for
++	  the OS to parse and handle. This option allows the OS to look for
++	  such hardware error record, and take appropriate action.
++
+ config ACPI_APEI_MEMORY_FAILURE
+ 	bool "APEI memory error recovering support"
+ 	depends on ACPI_APEI && MEMORY_FAILURE
+diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
+index 1efefe9..33f77ae 100644
+--- a/drivers/acpi/apei/ghes.c
++++ b/drivers/acpi/apei/ghes.c
+@@ -827,6 +827,46 @@ static inline void ghes_sea_add(struct ghes *ghes) { }
+ static inline void ghes_sea_remove(struct ghes *ghes) { }
+ #endif /* CONFIG_ACPI_APEI_SEA */
  =
 
-+int handle_guest_sei(void)
++#ifdef CONFIG_ACPI_APEI_SEI
++static LIST_HEAD(ghes_sei);
++
++/*
++ * Return 0 only if one of the SEI error sources successfully reported an =
+error
++ * record sent from the firmware.
++ */
++int ghes_notify_sei(void)
 +{
++	struct ghes *ghes;
 +	int ret =3D -ENOENT;
 +
-+	if (IS_ENABLED(CONFIG_ACPI_APEI_SEI))
-+		ret =3D ghes_notify_sei();
-+
++	rcu_read_lock();
++	list_for_each_entry_rcu(ghes, &ghes_sei, list) {
++		if (!ghes_proc(ghes))
++			ret =3D 0;
++	}
++	rcu_read_unlock();
 +	return ret;
 +}
 +
- asmlinkage void __exception do_mem_abort(unsigned long addr, unsigned int =
-esr,
- 					 struct pt_regs *regs)
- {
++static void ghes_sei_add(struct ghes *ghes)
++{
++	mutex_lock(&ghes_list_mutex);
++	list_add_rcu(&ghes->list, &ghes_sei);
++	mutex_unlock(&ghes_list_mutex);
++}
++
++static void ghes_sei_remove(struct ghes *ghes)
++{
++	mutex_lock(&ghes_list_mutex);
++	list_del_rcu(&ghes->list);
++	mutex_unlock(&ghes_list_mutex);
++	synchronize_rcu();
++}
++#else /* CONFIG_ACPI_APEI_SEI */
++static inline void ghes_sei_add(struct ghes *ghes) { }
++static inline void ghes_sei_remove(struct ghes *ghes) { }
++#endif /* CONFIG_ACPI_APEI_SEI */
++
+ #ifdef CONFIG_HAVE_ACPI_APEI_NMI
+ /*
+  * printk is not safe in NMI context.  So in NMI handler, we allocate
+@@ -1055,6 +1095,13 @@ static int ghes_probe(struct platform_device *ghes_d=
+ev)
+ 			goto err;
+ 		}
+ 		break;
++	case ACPI_HEST_NOTIFY_SEI:
++		if (!IS_ENABLED(CONFIG_ACPI_APEI_SEI)) {
++			pr_warn(GHES_PFX "Generic hardware error source: %d notified via SEI is=
+ not supported!\n",
++				generic->header.source_id);
++		goto err;
++	}
++	break;
+ 	case ACPI_HEST_NOTIFY_NMI:
+ 		if (!IS_ENABLED(CONFIG_HAVE_ACPI_APEI_NMI)) {
+ 			pr_warn(GHES_PFX "Generic hardware error source: %d notified via NMI in=
+terrupt is not supported!\n",
+@@ -1126,6 +1173,9 @@ static int ghes_probe(struct platform_device *ghes_de=
+v)
+ 	case ACPI_HEST_NOTIFY_SEA:
+ 		ghes_sea_add(ghes);
+ 		break;
++	case ACPI_HEST_NOTIFY_SEI:
++		ghes_sei_add(ghes);
++		break;
+ 	case ACPI_HEST_NOTIFY_NMI:
+ 		ghes_nmi_add(ghes);
+ 		break;
+@@ -1179,6 +1229,9 @@ static int ghes_remove(struct platform_device *ghes_d=
+ev)
+ 	case ACPI_HEST_NOTIFY_SEA:
+ 		ghes_sea_remove(ghes);
+ 		break;
++	case ACPI_HEST_NOTIFY_SEI:
++		ghes_sei_remove(ghes);
++		break;
+ 	case ACPI_HEST_NOTIFY_NMI:
+ 		ghes_nmi_remove(ghes);
+ 		break;
+diff --git a/include/acpi/ghes.h b/include/acpi/ghes.h
+index 8feb0c8..9ba59e2 100644
+--- a/include/acpi/ghes.h
++++ b/include/acpi/ghes.h
+@@ -120,5 +120,6 @@ static inline void *acpi_hest_get_next(struct acpi_hest=
+_generic_data *gdata)
+ 	     section =3D acpi_hest_get_next(section))
+ =
+
+ int ghes_notify_sea(void);
++int ghes_notify_sei(void);
+ =
+
+ #endif /* GHES_H */
 -- =
 
 1.9.1
 
 
---===============8021816182140114360==--
+--===============0999319290649907584==--
 
