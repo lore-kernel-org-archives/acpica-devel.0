@@ -1,55 +1,45 @@
-Content-Type: multipart/mixed; boundary="===============1907073954411145685=="
+Content-Type: multipart/mixed; boundary="===============7253034444953712858=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rjw at rjwysocki.net>
-Subject: Re: [Devel] [pm:bleeding-edge 126/127]
- drivers/base/power/domain.c:2434:47: warning: format '%d' expects argument of
- type 'int', but argument 3 has type 'long int'
-Date: Fri, 25 May 2018 12:09:58 +0200
-Message-ID: <2463340.b3LbXslx6h@aspire.rjw.lan>
-In-Reply-To: 20180524103315.rpo4a23h4c26fg6y@vireshk-i7
+From: Rafael J. Wysocki <rafael at kernel.org>
+Subject: Re: [Devel] [PATCH v7 0/3] acpi: apei: Drop panic() on fatal errors
+ policy
+Date: Sun, 27 May 2018 11:36:49 +0200
+Message-ID: <CAJZ5v0g_wQ0zhjbohQaU1GNxpri_Nkm=bOXyMQ8zi8dOGTxmYA@mail.gmail.com>
+In-Reply-To: 20180525155352.22350-1-mr.nuke.me@gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1907073954411145685==
+--===============7253034444953712858==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Thursday, May 24, 2018 12:33:15 PM CEST Viresh Kumar wrote:
-> On 24-05-18, 18:25, kbuild test robot wrote:
-> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm=
-.git bleeding-edge
-> > head:   34ae5d53ec5963e3f2967fcd12bae44decbfc4c0
-> > commit: 07cebb5e726d519b7de0373ade62465c2ebdd355 [126/127] PM / domains=
-: Return 0 on error from of_genpd_opp_to_performance_state()
-> > config: x86_64-randconfig-x019-201820 (attached as .config)
-> > compiler: gcc-7 (Debian 7.3.0-16) 7.3.0
-> > reproduce:
-> >         git checkout 07cebb5e726d519b7de0373ade62465c2ebdd355
-> >         # save the attached .config to linux build tree
-> >         make ARCH=3Dx86_64 =
+On Fri, May 25, 2018 at 5:53 PM, Alexandru Gagniuc <mr.nuke.me(a)gmail.com>=
+ wrote:
+> FFS (firmware-first) handling through APEI seems to have developed a
+> policy to panic() on any fatal errors. This policy is completely
+> independent of the non-FFS case. It is also inconsistent with how the
+> native error handlers, a number of which will recover the system from
+> fatal errors.
+>
+> The purpose of this series is to obsolete this idiotic policy, with
+> the motivation to enable identical handling of PCIe errors to native
+> reporting.
+>
+>
+> Rafael, this is copypaste from the previous patch series. I suspect
+> you might have missed it last time, because you asked questions which
+> were answered here. I've included it so you don't have to go digging
+> old emails:
 
-> > =
+I didn't miss it, but I didn't like your answers.
 
-> > All warnings (new ones prefixed by >>):
-> > =
+Anyway, as a rule, no GHES/APEI patches are applied without an ACK
+from either Boris or Tony, so you need to talk to them about the
+patches.
 
-> >    drivers/base/power/domain.c: In function 'of_genpd_opp_to_performanc=
-e_state':
-> > >> drivers/base/power/domain.c:2434:47: warning: format '%d' expects ar=
-gument of type 'int', but argument 3 has type 'long int' [-Wformat=3D]
-> >       dev_err(dev, "Failed to find required OPP: %d\n", PTR_ERR(opp));
-> >                                                  ~^     ~~~~~~~~~~~~
-> >                                                  %ld
-> > =
+Thanks,
+Rafael
 
-> > vim +2434 drivers/base/power/domain.c
-> =
-
-> Sent a fix for that. Thanks.
-
-I've replaced the original with this, thanks!
-
-
---===============1907073954411145685==--
+--===============7253034444953712858==--
 
