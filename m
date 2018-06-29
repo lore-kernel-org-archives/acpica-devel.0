@@ -1,63 +1,75 @@
-Content-Type: multipart/mixed; boundary="===============0722194512006021687=="
+Content-Type: multipart/mixed; boundary="===============6483877890619625475=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rjw at rjwysocki.net>
-Subject: Re: [Devel] [PATCH] ACPI / processor: Finish making
- acpi_processor_ppc_has_changed() void
-Date: Thu, 21 Jun 2018 15:15:24 +0200
-Message-ID: <2790550.zlpsS0gzWJ@aspire.rjw.lan>
-In-Reply-To: 20180619170201.36531-1-briannorris@chromium.org
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] ACPICA version 20180629 released
+Date: Fri, 29 Jun 2018 15:42:55 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E3B94BCE45@ORSMSX110.amr.corp.intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0722194512006021687==
+--===============6483877890619625475==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Tuesday, June 19, 2018 7:02:01 PM CEST Brian Norris wrote:
-> Commit bca5f557dcea ("ACPI / processor: Make
-> acpi_processor_ppc_has_changed() void") changed one of the declarations
-> of acpi_processor_ppc_has_changed() to return void, but the !CPU_FREQ
-> version still return int. Let's return void to be consistent.
-> =
+29 June 2018. Summary of changes for version 20180629:
 
-> Signed-off-by: Brian Norris <briannorris(a)chromium.org>
-> ---
->  include/acpi/processor.h | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> =
-
-> diff --git a/include/acpi/processor.h b/include/acpi/processor.h
-> index 40a916efd7c0..1194a4c78d55 100644
-> --- a/include/acpi/processor.h
-> +++ b/include/acpi/processor.h
-> @@ -309,7 +309,7 @@ static inline void acpi_processor_ppc_exit(void)
->  {
->  	return;
->  }
-> -static inline int acpi_processor_ppc_has_changed(struct acpi_processor *=
-pr,
-> +static inline void acpi_processor_ppc_has_changed(struct acpi_processor =
-*pr,
->  								int event_flag)
->  {
->  	static unsigned int printout =3D 1;
-> @@ -320,7 +320,6 @@ static inline int acpi_processor_ppc_has_changed(stru=
-ct acpi_processor *pr,
->  		       "Consider compiling CPUfreq support into your kernel.\n");
->  		printout =3D 0;
->  	}
-> -	return 0;
->  }
->  static inline int acpi_processor_get_bios_limit(int cpu, unsigned int *l=
-imit)
->  {
-> =
+This release is available at https://acpica.org/downloads
 
 
-Applied, thanks!
+1) iASL Compiler/Disassembler and Tools:
+
+iASL: Fixed a regression related to the use of the ASL External statement. =
+Error checking for the use of the External() statement has been relaxed. Pr=
+eviously, a restriction on the use of External meant that the referenced na=
+med object was required to be defined in a different table (an SSDT). Thus =
+it would be an error to declare an object as an external and then define th=
+e same named object in the same table. For example:
+    DefinitionBlock (...)
+    {
+        External (DEV1)
+        Device (DEV1){...} // This was an error
+    }
+However, this behavior has caused regressions in some existing ASL code, be=
+cause there is code that depends on named objects and externals (with the s=
+ame name) being declared in the same table. This change will allow the ASL =
+code above to compile without errors or warnings.
+
+iASL: Implemented ASL language extensions for four operators to make some o=
+f their arguments optional instead of required:
+    1) Field (RegionName, AccessType, LockRule, UpdateRule)
+    2) BankField (RegionName, BankName, BankValue,
+                AccessType, LockRule, UpdateRule)
+    3) IndexField (IndexName, DataName,
+                AccessType, LockRule, UpdateRule)
+For the Field operators above, the AccessType, LockRule, and UpdateRule are=
+ now optional arguments. The default values are:
+        AccessType: AnyAcc
+        LockRule:   NoLock
+        UpdateRule: Preserve
+    4) Mutex (MutexName, SyncLevel)
+For this operator, the SyncLevel argument is now optional. This argument is=
+ rarely used in any meaningful way by ASL code, and thus it makes sense to =
+make it optional. The default value is:
+        SyncLevel:  0
+
+iASL: Attempted use of the ASL Unload() operator now results in the followi=
+ng warning:
+    "Unload is not supported by all operating systems"
+This is in fact very true, and the Unload operator may be completely deprec=
+ated in the near future.
+
+AcpiExec: Fixed a regression for the -fi option (Namespace initialization f=
+ile. Recent changes in the ACPICA module-level code support altered the tab=
+le load/initialization sequence . This means that the table load has become=
+ a large method execution of the table itself. If Operation Region Fields a=
+re used within any module-level code and the -fi option was specified, the =
+initialization values were populated only after the table had completely fi=
+nished loading (and thus the module-level code had already been executed). =
+This change moves the initialization of objects listed in the initializatio=
+n file to before the table is executed as a method. Field unit values are n=
+ow initialized before the table execution is performed.
 
 
-
---===============0722194512006021687==--
+--===============6483877890619625475==--
 
