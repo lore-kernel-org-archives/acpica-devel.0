@@ -1,14 +1,14 @@
-Content-Type: multipart/mixed; boundary="===============0537630914454408094=="
+Content-Type: multipart/mixed; boundary="===============6971737458178516680=="
 MIME-Version: 1.0
 From: Dongjiu Geng <gengdongjiu at huawei.com>
 Subject: [Devel] [PATCH] arm64: clean the additional checks before calling
  ghes_notify_sea()
-Date: Thu, 26 Jul 2018 17:01:25 -0400
-Message-ID: <1532638885-45708-1-git-send-email-gengdongjiu@huawei.com>
+Date: Thu, 26 Jul 2018 17:01:47 -0400
+Message-ID: <1532638907-46129-1-git-send-email-gengdongjiu@huawei.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0537630914454408094==
+--===============6971737458178516680==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
@@ -73,5 +73,5 @@ t_generic_data *gdata)
 1.9.1
 
 
---===============0537630914454408094==--
+--===============6971737458178516680==--
 
