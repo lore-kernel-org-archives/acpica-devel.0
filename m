@@ -1,33 +1,133 @@
-Content-Type: multipart/mixed; boundary="===============6851339471163461756=="
+Content-Type: multipart/mixed; boundary="===============4642426960898044345=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] ACPICA version 20181003 released
-Date: Wed, 03 Oct 2018 14:31:18 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E3B9507B9C@ORSMSX108.amr.corp.intel.com>
+From: Rafael J. Wysocki <rafael at kernel.org>
+Subject: Re: [Devel] [RESEND][PATCH] ACPI / CPPC: Add support for guaranteed
+ performance
+Date: Tue, 09 Oct 2018 09:35:17 +0200
+Message-ID: <CAJZ5v0h1ir+vU7xzQ15edSO6uNwXzmqXRFkbhPGpUY8gSz+gVg@mail.gmail.com>
+In-Reply-To: 20181008165136.9288-1-srinivas.pandruvada@linux.intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6851339471163461756==
+--===============4642426960898044345==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-03 October 2018. Summary of changes for version 20181003:
+On Mon, Oct 8, 2018 at 6:55 PM Srinivas Pandruvada
+<srinivas.pandruvada(a)linux.intel.com> wrote:
+>
+> The Continuous Performance Control Package can have guaranteed performance
+> field. Add support to read guaranteed performance.
 
-This release is available at https://acpica.org/downloads
+The spec says that it is optional, but you seem to assume that it
+always will be there.
 
+What happens if it is not there?
 
-2) iASL Compiler/Disassembler and Tools:
+> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada(a)linux.intel.com>
+> ---
+> No changes. But adding CC to mailing lists.
+>
+>  Documentation/acpi/cppc_sysfs.txt |  2 ++
+>  drivers/acpi/cppc_acpi.c          | 10 ++++++++--
+>  include/acpi/cppc_acpi.h          |  1 +
+>  3 files changed, 11 insertions(+), 2 deletions(-)
+>
+> diff --git a/Documentation/acpi/cppc_sysfs.txt b/Documentation/acpi/cppc_=
+sysfs.txt
+> index f20fb445135d..812574d30717 100644
+> --- a/Documentation/acpi/cppc_sysfs.txt
+> +++ b/Documentation/acpi/cppc_sysfs.txt
+> @@ -22,6 +22,7 @@ $ ls -lR  /sys/devices/system/cpu/cpu0/acpi_cppc/
+>  /sys/devices/system/cpu/cpu0/acpi_cppc/:
+>  total 0
+>  -r--r--r-- 1 root root 65536 Mar  5 19:38 feedback_ctrs
+> +-r--r--r-- 1 root root 65536 Mar  5 19:38 guaranteed_perf
+>  -r--r--r-- 1 root root 65536 Mar  5 19:38 highest_perf
+>  -r--r--r-- 1 root root 65536 Mar  5 19:38 lowest_freq
+>  -r--r--r-- 1 root root 65536 Mar  5 19:38 lowest_nonlinear_perf
+> @@ -33,6 +34,7 @@ total 0
+>
+>  ------------------------------------------------------------------------=
+--------
+>
+> +* guaranteed_perf : Guaranteed performance of this processor (abstract s=
+cale).
+>  * highest_perf : Highest performance of this processor (abstract scale).
+>  * nominal_perf : Highest sustained performance of this processor (abstra=
+ct scale).
+>  * lowest_nonlinear_perf : Lowest performance of this processor with nonl=
+inear
+> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+> index d9ce4b162e2c..5babb9402f11 100644
+> --- a/drivers/acpi/cppc_acpi.c
+> +++ b/drivers/acpi/cppc_acpi.c
+> @@ -153,6 +153,7 @@ __ATTR(_name, 0444, show_##_name, NULL)
+>         }                                                               \
+>         define_one_cppc_ro(member_name)
+>
+> +show_cppc_data(cppc_get_perf_caps, cppc_perf_caps, guaranteed_perf);
+>  show_cppc_data(cppc_get_perf_caps, cppc_perf_caps, highest_perf);
+>  show_cppc_data(cppc_get_perf_caps, cppc_perf_caps, lowest_perf);
+>  show_cppc_data(cppc_get_perf_caps, cppc_perf_caps, nominal_perf);
+> @@ -189,6 +190,7 @@ static struct attribute *cppc_attrs[] =3D {
+>         &nominal_perf.attr,
+>         &nominal_freq.attr,
+>         &lowest_freq.attr,
+> +       &guaranteed_perf.attr,
+>         NULL
+>  };
+>
+> @@ -1061,9 +1063,9 @@ int cppc_get_perf_caps(int cpunum, struct cppc_perf=
+_caps *perf_caps)
+>  {
+>         struct cpc_desc *cpc_desc =3D per_cpu(cpc_desc_ptr, cpunum);
+>         struct cpc_register_resource *highest_reg, *lowest_reg,
+> -               *lowest_non_linear_reg, *nominal_reg,
+> +               *lowest_non_linear_reg, *nominal_reg, *guaranteed_reg,
+>                 *low_freq_reg =3D NULL, *nom_freq_reg =3D NULL;
+> -       u64 high, low, nom, min_nonlinear, low_f =3D 0, nom_f =3D 0;
+> +       u64 high, low, guaranteed, nom, min_nonlinear, low_f =3D 0, nom_f=
+ =3D 0;
+>         int pcc_ss_id =3D per_cpu(cpu_pcc_subspace_idx, cpunum);
+>         struct cppc_pcc_data *pcc_ss_data =3D NULL;
+>         int ret =3D 0, regs_in_pcc =3D 0;
+> @@ -1079,6 +1081,7 @@ int cppc_get_perf_caps(int cpunum, struct cppc_perf=
+_caps *perf_caps)
+>         nominal_reg =3D &cpc_desc->cpc_regs[NOMINAL_PERF];
+>         low_freq_reg =3D &cpc_desc->cpc_regs[LOWEST_FREQ];
+>         nom_freq_reg =3D &cpc_desc->cpc_regs[NOMINAL_FREQ];
+> +       guaranteed_reg =3D &cpc_desc->cpc_regs[GUARANTEED_PERF];
+>
+>         /* Are any of the regs PCC ?*/
+>         if (CPC_IN_PCC(highest_reg) || CPC_IN_PCC(lowest_reg) ||
+> @@ -1107,6 +1110,9 @@ int cppc_get_perf_caps(int cpunum, struct cppc_perf=
+_caps *perf_caps)
+>         cpc_read(cpunum, nominal_reg, &nom);
+>         perf_caps->nominal_perf =3D nom;
+>
+> +       cpc_read(cpunum, guaranteed_reg, &guaranteed);
+> +       perf_caps->guaranteed_perf =3D guaranteed;
+> +
+>         cpc_read(cpunum, lowest_non_linear_reg, &min_nonlinear);
+>         perf_caps->lowest_nonlinear_perf =3D min_nonlinear;
+>
+> diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
+> index 8e0b8250a139..cf59e6210d27 100644
+> --- a/include/acpi/cppc_acpi.h
+> +++ b/include/acpi/cppc_acpi.h
+> @@ -104,6 +104,7 @@ enum cppc_regs {
+>   * today.
+>   */
+>  struct cppc_perf_caps {
+> +       u32 guaranteed_perf;
+>         u32 highest_perf;
+>         u32 nominal_perf;
+>         u32 lowest_perf;
+> --
+> 2.17.1
+>
 
-Fixed a regression introduced in version 20180927 that could cause the comp=
-iler to fault, especially with NamePaths containing one or more carats (^).=
- Such as: ^^_SB_PCI0
-
-Added a new remark for the Sleep() operator when the sleep time operand is =
-larger than one second. This is a very long time for the ASL/BIOS code and =
-may not be what was intended by the ASL writer.
-
-
-
---===============6851339471163461756==--
+--===============4642426960898044345==--
 
