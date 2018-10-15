@@ -1,35 +1,64 @@
-Content-Type: multipart/mixed; boundary="===============1910896640521966493=="
+Content-Type: multipart/mixed; boundary="===============8088320207779116858=="
 MIME-Version: 1.0
 From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: Re: [Devel] [PATCH v2 0/2] cpufreq: intel_pstate: Base frequency
- attribute
-Date: Fri, 12 Oct 2018 10:20:13 +0200
-Message-ID: <CAJZ5v0i3_2pxX48iZOwm+AyuU12E2g-bEnxNEaFURUsXyJpX3w@mail.gmail.com>
-In-Reply-To: 20181009214633.16390-1-srinivas.pandruvada@linux.intel.com
+Subject: Re: [Devel] [PATCH v3 3/3] Documentation: intel_pstate: Add
+ base_frequency information
+Date: Mon, 15 Oct 2018 10:53:25 +0200
+Message-ID: <CAJZ5v0iXOtcNSqPU7NYwG=S_JCdoTFzLRD1qZocWMnFnVJ-oMQ@mail.gmail.com>
+In-Reply-To: 20181012164400.3479-4-srinivas.pandruvada@linux.intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1910896640521966493==
+--===============8088320207779116858==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Oct 9, 2018 at 11:46 PM Srinivas Pandruvada
+On Fri, Oct 12, 2018 at 6:44 PM Srinivas Pandruvada
 <srinivas.pandruvada(a)linux.intel.com> wrote:
 >
-> This series presents base frequency to cpufreq sysfs when intel_pstate
-> is in use in HWP mode.
+> Updated documentation to explain base_frequency attribute.
 >
-> Changes:
-> v2
-> - Removed guaranteed attribute addition to acpi_cppc sysfs
-> - Using the cppc_acpi interface to get base frequency and present
+> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada(a)linux.intel.com>
+> ---
+>  Documentation/admin-guide/pm/intel_pstate.rst | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/Documentation/admin-guide/pm/intel_pstate.rst b/Documentatio=
+n/admin-guide/pm/intel_pstate.rst
+> index 8f1d3de449b5..14a5505e073e 100644
+> --- a/Documentation/admin-guide/pm/intel_pstate.rst
+> +++ b/Documentation/admin-guide/pm/intel_pstate.rst
+> @@ -465,6 +465,10 @@ Next, the following policy attributes have special m=
+eaning if
+>         policy for the time interval between the last two invocations of =
+the
+>         driver's utilization update callback by the CPU scheduler for tha=
+t CPU.
+>
+> +``base_frequency``
+> +       When present, shows the base frequency of the CPU. Any frequency =
+above
+> +       this will be in the turbo frequency range.
+> +
 
-The code changes are fine by me, but what about documenting the new sysfs a=
-ttr?
+This isn't entirely correct, because base_frequency is not present in
+the passive mode (and it is not present for the other drivers for that
+matter).
+
+>  The meaning of these attributes in the `passive mode <Passive Mode_>`_ i=
+s the
+>  same as for other scaling drivers.
+
+Instead, I would say:
+
+"One more policy attribute is present if the `HWP feature is enabled
+in the processor <Active Mode With HWP_>`_:"
+
+here and I would add the description of the attribute below.
 
 Thanks,
 Rafael
 
---===============1910896640521966493==--
+--===============8088320207779116858==--
 
