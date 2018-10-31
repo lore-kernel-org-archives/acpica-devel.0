@@ -1,55 +1,65 @@
-Content-Type: multipart/mixed; boundary="===============7149566020770233630=="
+Content-Type: multipart/mixed; boundary="===============7432559232290648015=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rjw at rjwysocki.net>
-Subject: Re: [Devel] [PATCH v4 0/3] cpufreq: intel_pstate: Base frequency
- attribute
-Date: Fri, 19 Oct 2018 12:17:24 +0200
-Message-ID: <2009466.qjoMG8mNOh@aspire.rjw.lan>
-In-Reply-To: 20181015173721.66147-1-srinivas.pandruvada@linux.intel.com
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] ACPICA version 20181031 released
+Date: Wed, 31 Oct 2018 19:57:56 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E3B95194FF@ORSMSX110.amr.corp.intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7149566020770233630==
+--===============7432559232290648015==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Monday, October 15, 2018 7:37:18 PM CEST Srinivas Pandruvada wrote:
-> This series presents base frequency to cpufreq sysfs when intel_pstate
-> is in use in HWP mode.
-> =
+31 October 2018. Summary of changes for version 20181031:
 
-> Changes:
-> v4:
-> - Documentation update only as suggested by Rafael
-> =
-
-> v3:
-> - Update documentation
-> v2
-> - Removed guaranteed attribute addition to acpi_cppc sysfs
-> - Using the cppc_acpi interface to get base frequency and present
-> =
-
-> Srinivas Pandruvada (3):
->   ACPI / CPPC: Add support for guaranteed performance
->   cpufreq: intel_pstate: Add base_frequency attribute
->   Documentation: intel_pstate: Add base_frequency information
-> =
-
->  Documentation/admin-guide/pm/intel_pstate.rst |  7 ++++
->  drivers/acpi/cppc_acpi.c                      |  8 +++-
->  drivers/cpufreq/intel_pstate.c                | 38 +++++++++++++++++++
->  include/acpi/cppc_acpi.h                      |  1 +
->  4 files changed, 52 insertions(+), 2 deletions(-)
-> =
-
-> =
+This release is available at https://acpica.org/downloads
 
 
-All three applied, thanks!
+An Operation Region regression was fixed by properly adding address ranges =
+to a global list during initialization. This allows OS to accurately check =
+for overlapping regions between native devices (such as PCI) and Operation =
+regions as well as checking for region conflicts between two Operation Regi=
+ons.
+
+Added support for the 2-byte extended opcodes in the code/feature that atte=
+mpts to continue parsing during the table load phase. Skip parsing Device d=
+eclarations (and other extended opcodes) when an error occurs during parsin=
+g. Previously, only single-byte opcodes were supported.
+
+Cleanup: Simplified the module-level code support by eliminating a useless =
+global variable (AcpiGbl_GroupModuleLeveCode).
+
+
+2) iASL Compiler/Disassembler and Tools:
+
+iASL/Preprocessor: Fixed a regression where an incorrect use of ACPI_FREE c=
+ould cause a fault in the preprocessor. This was an inadvertent side-effect=
+ from moving more allocations/frees to the local cache/memory mechanism.
+
+iASL: Enhanced error detection by validating that all NameSeg elements with=
+in a NamePatch actually exist. The previous behavior was spotty at best, an=
+d such errors could be improperly ignored at compiler time (never at runtim=
+e, however. There are two new error messages, as shown in the examples belo=
+w:
+
+dsdt.asl     33:     CreateByteField (TTTT.BXXX, 1, CBF1)
+Error    6161 -                              ^ One or more objects within t=
+he Pathname do not exist (TTTT.BXXX)
+
+dsdt.asl     34:     CreateByteField (BUF1, UUUU.INT1, BBBB.CBF1)
+Error    6160 -        One or more prefix Scopes do not exist ^  (BBBB.CBF1)
+
+iASL: Disassembler/table-compiler: Added support for the static data table =
+TPM2 revision 3 (an older version of TPM2). The support has been added for =
+the compiler and the disassembler.
+
+Fixed compilation of DOS format data table file on Unix/Linux systems. iASL=
+ now properly detects line continuations (\) for DOS format data table defi=
+nition language files on when executing on Unix/Linux.
 
 
 
---===============7149566020770233630==--
+--===============7432559232290648015==--
 
