@@ -1,41 +1,40 @@
-Content-Type: multipart/mixed; boundary="===============8528135899557864040=="
+Content-Type: multipart/mixed; boundary="===============8240579666854729545=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] ACPICA version 20190108 released
-Date: Tue, 08 Jan 2019 21:33:58 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E3B9545760@ORSMSX110.amr.corp.intel.com>
+From: Hetao Su <suhetao at gmail.com>
+Subject: [Devel] finding the older released versions
+Date: Wed, 16 Jan 2019 04:34:12 +0800
+Message-ID: <CAC_72KP7f3yTXLam_x0VEMekx1-AzdzHnNdz8Gy=KOsbHAPCUg@mail.gmail.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8528135899557864040==
+--===============8240579666854729545==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-08 January 2019. Summary of changes for version 20190108:
+could you please provide download links for the earlier versions. such as
+iasl-win-20091112 and iasl-win-20100331.
 
-This release is available at https://acpica.org/downloads
+I had already spend a couple of days with internet search engine(e.g.
+google) but I can't find none of them.
 
+help please!!
 
-1) ACPICA kernel-resident subsystem:
+best wishes
 
-Updated all copyrights to 2019. This affects all source code modules.
+--===============8240579666854729545==
+Content-Type: text/html
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="attachment.html"
 
+PGRpdiBkaXI9Imx0ciI+PGRpdiBkaXI9Imx0ciI+PGRpdj5jb3VsZCB5b3UgcGxlYXNlIHByb3Zp
+ZGUgZG93bmxvYWQgbGlua3MgZm9yIHRoZSBlYXJsaWVyIHZlcnNpb25zLiBzdWNoIGFzIGlhc2wt
+d2luLTIwMDkxMTEyIGFuZCBpYXNsLXdpbi0yMDEwMDMzMS48L2Rpdj48ZGl2Pjxicj48L2Rpdj48
+ZGl2PkkgaGFkIGFscmVhZHkgc3BlbmQgYSBjb3VwbGUgb2YgZGF5cyB3aXRoIGludGVybmV0IHNl
+YXJjaCBlbmdpbmUoZS5nLiBnb29nbGUpIGJ1dCBJIGNhbiYjMzk7dCBmaW5kIG5vbmUgb2YgdGhl
+bS48L2Rpdj48ZGl2Pjxicj48L2Rpdj48ZGl2PmhlbHAgcGxlYXNlISE8L2Rpdj48ZGl2Pjxicj48
+L2Rpdj48ZGl2PmJlc3Qgd2lzaGVzPC9kaXY+PC9kaXY+PC9kaXY+Cg==
 
-2) iASL Compiler/Disassembler and Tools:
-
-ASL test suite (ASLTS): Updated all copyrights to 2019.
-
-Tools: Updated all signon copyrights to 2019.
-
-AcpiExec: Added a new option to dump extra information concerning any memor=
-y leaks detected by the internal object/cache tracking mechanism. -va
-
-iASL: Updated the table template for the TPM2 table to the newest version o=
-f the table (Revision 4)
-
-
-
-
---===============8528135899557864040==--
+--===============8240579666854729545==--
 
