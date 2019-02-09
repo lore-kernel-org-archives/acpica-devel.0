@@ -1,138 +1,70 @@
-Content-Type: multipart/mixed; boundary="===============7610632588446227184=="
+Content-Type: multipart/mixed; boundary="===============7654873555478440459=="
 MIME-Version: 1.0
 From: Jeremy Linton <jeremy.linton at arm.com>
-Subject: [Devel] [RFC 2/3] arm_pmu: acpi: spe: Add initial MADT/SPE probing
-Date: Fri, 08 Feb 2019 18:47:17 -0600
-Message-ID: <20190209004718.3292087-3-jeremy.linton@arm.com>
+Subject: [Devel] [RFC 3/3] perf: arm_spe: Enable ACPI/Platform automatic
+ module loading
+Date: Fri, 08 Feb 2019 18:47:18 -0600
+Message-ID: <20190209004718.3292087-4-jeremy.linton@arm.com>
 In-Reply-To: 20190209004718.3292087-1-jeremy.linton@arm.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7610632588446227184==
+--===============7654873555478440459==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-ACPI 6.3 adds additional fields to the MADT GICC
-structure to describe SPE PPI's. We pick these out
-of the cached reference to the madt_gicc structure
-similarly to the core PMU code. We then create a platform
-device referring to the IRQ and let the user/module loader
-decide whether to load the SPE driver.
+Lets add the MODULE_TABLE and platform id_table entries so that
+the SPE driver can attach to the ACPI platform device created by
+the core pmu code.
 
 Signed-off-by: Jeremy Linton <jeremy.linton(a)arm.com>
 ---
- arch/arm64/include/asm/acpi.h |  3 ++
- drivers/perf/arm_pmu_acpi.c   | 67 +++++++++++++++++++++++++++++++++++
- 2 files changed, 70 insertions(+)
+ drivers/perf/arm_spe_pmu.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
-index 2def77ec14be..f9f9f2eb5d54 100644
---- a/arch/arm64/include/asm/acpi.h
-+++ b/arch/arm64/include/asm/acpi.h
-@@ -40,6 +40,9 @@
- 	(!(entry) || (entry)->header.length < ACPI_MADT_GICC_MIN_LENGTH || \
- 	(unsigned long)(entry) + (entry)->header.length > (end))
+diff --git a/drivers/perf/arm_spe_pmu.c b/drivers/perf/arm_spe_pmu.c
+index 8e46a9dad2fa..9be11d814fa5 100644
+--- a/drivers/perf/arm_spe_pmu.c
++++ b/drivers/perf/arm_spe_pmu.c
+@@ -1176,7 +1176,13 @@ static const struct of_device_id arm_spe_pmu_of_matc=
+h[] =3D {
+ };
+ MODULE_DEVICE_TABLE(of, arm_spe_pmu_of_match);
  =
 
-+#define ACPI_MADT_GICC_SPE  (ACPI_OFFSET(struct acpi_madt_generic_interrup=
-t, \
-+	spe_overflow_interrupt) + sizeof(u16))
+-static int arm_spe_pmu_device_dt_probe(struct platform_device *pdev)
++static const struct platform_device_id arm_spe_match[] =3D {
++	{ "arm,spe-v1", 0},
++	{ }
++};
++MODULE_DEVICE_TABLE(platform, arm_spe_match);
 +
- /* Basic configuration for ACPI */
- #ifdef	CONFIG_ACPI
- pgprot_t __acpi_get_mem_attribute(phys_addr_t addr);
-diff --git a/drivers/perf/arm_pmu_acpi.c b/drivers/perf/arm_pmu_acpi.c
-index 0f197516d708..725d413b47dc 100644
---- a/drivers/perf/arm_pmu_acpi.c
-+++ b/drivers/perf/arm_pmu_acpi.c
-@@ -74,6 +74,71 @@ static void arm_pmu_acpi_unregister_irq(int cpu)
- 	acpi_unregister_gsi(gsi);
++static int arm_spe_pmu_device_probe(struct platform_device *pdev)
+ {
+ 	int ret;
+ 	struct arm_spe_pmu *spe_pmu;
+@@ -1236,11 +1242,12 @@ static int arm_spe_pmu_device_remove(struct platfor=
+m_device *pdev)
  }
  =
 
-+static struct resource spe_resources[] =3D {
-+	{
-+		/* irq */
-+		.flags          =3D IORESOURCE_IRQ,
-+	}
-+};
-+
-+static struct platform_device spe_dev =3D {
-+	.name =3D "arm,spe-v1",
-+	.id =3D -1,
-+	.resource =3D spe_resources,
-+	.num_resources =3D ARRAY_SIZE(spe_resources)
-+};
-+
-+/*
-+ * For lack of a better place, hook the normal PMU MADT walk
-+ * and create a SPE device if we detect a recent MADT with
-+ * a homogeneous PPI mapping.
-+ */
-+static int arm_spe_acpi_parse_irqs(void)
-+{
-+	int cpu, ret, irq;
-+	u16 gsi =3D 0;
-+	bool first =3D true;
-+
-+	struct acpi_madt_generic_interrupt *gicc;
-+
-+	/*
-+	 * sanity check all the GICC tables for the same interrupt number
-+	 * for now we only support homogeneous ACPI/SPE machines.
-+	 */
-+	for_each_possible_cpu(cpu) {
-+		gicc =3D acpi_cpu_get_madt_gicc(cpu);
-+
-+		if (gicc->header.length < ACPI_MADT_GICC_SPE)
-+			return -ENODEV;
-+
-+		if (first) {
-+			gsi =3D gicc->spe_overflow_interrupt;
-+			if (!gsi)
-+				return -ENODEV;
-+			first =3D false;
-+		} else if (gsi !=3D gicc->spe_overflow_interrupt) {
-+			pr_warn("ACPI: SPE must have homogeneous interrupts\n");
-+			return -EINVAL;
-+		}
-+	}
-+
-+	irq =3D acpi_register_gsi(NULL, gsi, ACPI_LEVEL_SENSITIVE,
-+				ACPI_ACTIVE_HIGH);
-+	if (irq < 0) {
-+		pr_warn("ACPI: SPE Unable to register interrupt: %d\n", gsi);
-+		return irq;
-+	}
-+
-+	spe_resources[0].start =3D irq;
-+	ret =3D platform_device_register(&spe_dev);
-+	if (ret < 0) {
-+		pr_warn("ACPI: SPE: Unable to register device\n");
-+		acpi_unregister_gsi(gsi);
-+	}
-+
-+	return ret;
-+}
-+
- static int arm_pmu_acpi_parse_irqs(void)
- {
- 	int irq, cpu, irq_cpu, err;
-@@ -279,6 +344,8 @@ static int arm_pmu_acpi_init(void)
- 	if (acpi_disabled)
- 		return 0;
+ static struct platform_driver arm_spe_pmu_driver =3D {
++	.id_table =3D arm_spe_match,
+ 	.driver	=3D {
+ 		.name		=3D DRVNAME,
+ 		.of_match_table	=3D of_match_ptr(arm_spe_pmu_of_match),
+ 	},
+-	.probe	=3D arm_spe_pmu_device_dt_probe,
++	.probe	=3D arm_spe_pmu_device_probe,
+ 	.remove	=3D arm_spe_pmu_device_remove,
+ };
  =
 
-+	arm_spe_acpi_parse_irqs(); /* failures are expected */
-+
- 	ret =3D arm_pmu_acpi_parse_irqs();
- 	if (ret)
- 		return ret;
 -- =
 
 2.17.2
 
 
---===============7610632588446227184==--
+--===============7654873555478440459==--
 
