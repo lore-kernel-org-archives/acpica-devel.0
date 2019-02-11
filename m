@@ -1,70 +1,57 @@
-Content-Type: multipart/mixed; boundary="===============7654873555478440459=="
+Content-Type: multipart/mixed; boundary="===============8656697511374392905=="
 MIME-Version: 1.0
-From: Jeremy Linton <jeremy.linton at arm.com>
-Subject: [Devel] [RFC 3/3] perf: arm_spe: Enable ACPI/Platform automatic
- module loading
-Date: Fri, 08 Feb 2019 18:47:18 -0600
-Message-ID: <20190209004718.3292087-4-jeremy.linton@arm.com>
-In-Reply-To: 20190209004718.3292087-1-jeremy.linton@arm.com
+From: Sudeep Holla <sudeep.holla at arm.com>
+Subject: Re: [Devel] [RFC 2/3] arm_pmu: acpi: spe: Add initial MADT/SPE probing
+Date: Mon, 11 Feb 2019 15:34:42 +0000
+Message-ID: <20190211153442.GA4792@e107155-lin>
+In-Reply-To: 20190209004718.3292087-3-jeremy.linton@arm.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7654873555478440459==
+--===============8656697511374392905==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Lets add the MODULE_TABLE and platform id_table entries so that
-the SPE driver can attach to the ACPI platform device created by
-the core pmu code.
+On Fri, Feb 08, 2019 at 06:47:17PM -0600, Jeremy Linton wrote:
+> ACPI 6.3 adds additional fields to the MADT GICC
+> structure to describe SPE PPI's. We pick these out
+> of the cached reference to the madt_gicc structure
+> similarly to the core PMU code. We then create a platform
+> device referring to the IRQ and let the user/module loader
+> decide whether to load the SPE driver.
+> =
 
-Signed-off-by: Jeremy Linton <jeremy.linton(a)arm.com>
----
- drivers/perf/arm_spe_pmu.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+> Signed-off-by: Jeremy Linton <jeremy.linton(a)arm.com>
+> ---
+>  arch/arm64/include/asm/acpi.h |  3 ++
+>  drivers/perf/arm_pmu_acpi.c   | 67 +++++++++++++++++++++++++++++++++++
+>  2 files changed, 70 insertions(+)
+> =
 
-diff --git a/drivers/perf/arm_spe_pmu.c b/drivers/perf/arm_spe_pmu.c
-index 8e46a9dad2fa..9be11d814fa5 100644
---- a/drivers/perf/arm_spe_pmu.c
-+++ b/drivers/perf/arm_spe_pmu.c
-@@ -1176,7 +1176,13 @@ static const struct of_device_id arm_spe_pmu_of_matc=
-h[] =3D {
- };
- MODULE_DEVICE_TABLE(of, arm_spe_pmu_of_match);
- =
+> diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
+> index 2def77ec14be..f9f9f2eb5d54 100644
+> --- a/arch/arm64/include/asm/acpi.h
+> +++ b/arch/arm64/include/asm/acpi.h
+> @@ -40,6 +40,9 @@
+>  	(!(entry) || (entry)->header.length < ACPI_MADT_GICC_MIN_LENGTH || \
+>  	(unsigned long)(entry) + (entry)->header.length > (end))
+>  =
 
--static int arm_spe_pmu_device_dt_probe(struct platform_device *pdev)
-+static const struct platform_device_id arm_spe_match[] =3D {
-+	{ "arm,spe-v1", 0},
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(platform, arm_spe_match);
-+
-+static int arm_spe_pmu_device_probe(struct platform_device *pdev)
- {
- 	int ret;
- 	struct arm_spe_pmu *spe_pmu;
-@@ -1236,11 +1242,12 @@ static int arm_spe_pmu_device_remove(struct platfor=
-m_device *pdev)
- }
- =
+> +#define ACPI_MADT_GICC_SPE  (ACPI_OFFSET(struct acpi_madt_generic_interr=
+upt, \
+> +	spe_overflow_interrupt) + sizeof(u16))
+> +
 
- static struct platform_driver arm_spe_pmu_driver =3D {
-+	.id_table =3D arm_spe_match,
- 	.driver	=3D {
- 		.name		=3D DRVNAME,
- 		.of_match_table	=3D of_match_ptr(arm_spe_pmu_of_match),
- 	},
--	.probe	=3D arm_spe_pmu_device_dt_probe,
-+	.probe	=3D arm_spe_pmu_device_probe,
- 	.remove	=3D arm_spe_pmu_device_remove,
- };
- =
+[Nit] Does it make sense to add _OFFSET in the name ? Otherwise it may
+sound like the actual interrupt number than the offset.
 
--- =
+Other than that, this looks good to me:
 
-2.17.2
+Reviewed-by: Sudeep Holla <sudeep.holla(a)arm.com>
 
+Regards,
+Sudeep
 
---===============7654873555478440459==--
+--===============8656697511374392905==--
 
