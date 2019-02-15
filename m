@@ -1,86 +1,136 @@
-Content-Type: multipart/mixed; boundary="===============7039105749439330523=="
+Content-Type: multipart/mixed; boundary="===============3232666108812977727=="
 MIME-Version: 1.0
-From: Jeremy Linton <jeremy.linton at arm.com>
-Subject: Re: [Devel] [RFC 2/3] arm_pmu: acpi: spe: Add initial MADT/SPE probing
-Date: Fri, 15 Feb 2019 10:04:54 -0600
-Message-ID: <09cbaf45-d514-3cb3-4bab-744491462338@arm.com>
-In-Reply-To: 20190215150015.GA6803@fuggles.cambridge.arm.com
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] ACPICA version 20190215 released
+Date: Fri, 15 Feb 2019 18:31:20 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E3B955DC97@ORSMSX110.amr.corp.intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7039105749439330523==
+--===============3232666108812977727==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+15 February 2019. Summary of changes for version 20190215:
 
-On 2/15/19 9:00 AM, Will Deacon wrote:
-> On Thu, Feb 14, 2019 at 12:03:57PM -0600, Jeremy Linton wrote:
->> On 2/14/19 11:11 AM, Will Deacon wrote:
->>> On Fri, Feb 08, 2019 at 06:47:17PM -0600, Jeremy Linton wrote:
->>>> +/*
->>>> + * For lack of a better place, hook the normal PMU MADT walk
->>>> + * and create a SPE device if we detect a recent MADT with
->>>> + * a homogeneous PPI mapping.
->>>> + */
->>>> +static int arm_spe_acpi_parse_irqs(void)
->>>> +{
->>>> +	int cpu, ret, irq;
->>>> +	u16 gsi =3D 0;
->>>> +	bool first =3D true;
->>>> +
->>>> +	struct acpi_madt_generic_interrupt *gicc;
->>>> +
->>>> +	/*
->>>> +	 * sanity check all the GICC tables for the same interrupt number
->>>> +	 * for now we only support homogeneous ACPI/SPE machines.
->>>> +	 */
->>>> +	for_each_possible_cpu(cpu) {
->>>> +		gicc =3D acpi_cpu_get_madt_gicc(cpu);
->>>> +
->>>> +		if (gicc->header.length < ACPI_MADT_GICC_SPE)
->>>> +			return -ENODEV;
->>>> +
->>>> +		if (first) {
->>>> +			gsi =3D gicc->spe_overflow_interrupt;
->>>> +			if (!gsi)
->>>> +				return -ENODEV;
->>>> +			first =3D false;
->>>> +		} else if (gsi !=3D gicc->spe_overflow_interrupt) {
->>>> +			pr_warn("ACPI: SPE must have homogeneous interrupts\n");
->>>> +			return -EINVAL;
->>>> +		}
->>>
->>> Unfortunately, I don't think this is sufficient to detect a homogeneous
->>> system: we'll have to check the MIDRs instead, which is nasty. I would
->>> personally be in favour of enforcing homogeneity for ACPI systems when =
-we
->>> bring up secondary CPUs, but I suspect others would disagree.
->>
->> Given that all the SPE capable machines i'm aware of at the moment are
->> homogeneous, are we ok with just doing an online CPU MIDR check for now,=
- and
->> cleaning that up if/when someone builds a machine and complains?
-> =
-
-> Yeah, I think we added a new bit to the PPTT to tell you that the machine=
- is
-> homogenous, so just check that first and bail if it's not set.
-
-Yes of course, 100% better plan. Although its probably going to have to =
-
-be more of a case of walking all the possible cores and assuring they =
-
-have the same flag level (similar to how the socket flag is handled). Of =
-
-course that information is useful enough it should probably just be done =
-
-as part of the normal cpu topology walk. Then the people who have to =
-
-back port these patches end up with a big dependent set... <chuckle>
+This release is available at https://acpica.org/downloads
 
 
+0) Support for ACPI specification version 6.3:
 
---===============7039105749439330523==--
+Add PCC operation region support for the AML interpreter. This adds PCC =
+
+operation region support in the AML interpreter and a default handler for =
+
+acpiexec. The change also renames the PCC region address space keyword to =
+
+PlatformCommChannel.
+
+Support for new predefined methods _NBS, _NCH, _NIC, _NIH, and _NIG. =
+
+These methods provide OSPM with health information and device boot =
+
+status.
+
+PDTT: Add TriggerOrder to the PCC Identifier structure. The field value =
+
+defines if the trigger needs to be invoked by OSPM before or at the end =
+
+of kernel crash dump processing/handling operation.
+
+SRAT: Add Generic Affinity Structure subtable. This subtable in the SRAT =
+
+is used for describing devices such as heterogeneous processors, =
+
+accelerators, GPUs, and IO devices with integrated compute or DMA =
+
+engines.
+
+MADT: Add support for statistical profiling in GICC. Statistical =
+
+profiling extension (SPE) is an architecture-specific feature for ARM.
+
+MADT: Add online capable flag. If this bit is set, system hardware =
+
+supports enabling this processor during OS runtime.
+
+New Error Disconnect Recover Notification value. There are a number of =
+
+scenarios where system Firmware in collaboration with hardware may =
+
+disconnect one or more devices from the rest of the system for purposes =
+
+of error containment. Firmware can use this new notification value to =
+
+alert OSPM of such a removal.
+
+PPTT: New additional fields in Processor Structure Flags. These flags =
+
+provide more information about processor topology.
+
+NFIT/Disassembler: Change a field name from "Address Range" to "Region =
+
+Type".
+
+HMAT updates: make several existing fields to be reserved as well as =
+
+rename subtable 0 to "memory proximity domain attributes".
+
+GTDT: Add support for new GTDT Revision 3. This revision adds information =
+
+for the EL2 timer.
+
+iASL: Update the HMAT example template for new fields.
+
+iASL: Add support for the new revision of the GTDT (Rev 3).
+
+
+1) ACPICA kernel-resident subsystem:
+
+AML Parser: fix the main AML parse loop to correctly skip erroneous =
+
+extended opcodes. AML opcodes come in two lengths: 1-byte opcodes and 2-
+byte extended opcodes. If an error occurs during an AML table load, the =
+
+AML parser will continue loading the table by skipping the offending =
+
+opcode. This implements a "load table at any cost" philosophy.
+
+
+2) iASL Compiler/Disassembler and Tools:
+
+iASL: Add checks for illegal object references, such as a reference =
+
+outside of method to an object within a method. Such an object is only =
+
+temporary.
+
+iASL: Emit error for creation of a zero-length operation region. Such a =
+
+region is rather pointless. If encountered, a runtime error is also =
+
+implemented in the interpeter.
+
+Debugger: Fix a possible fault with the "test objects" command.
+
+iASL: Makefile: support parent directory filenames containing embedded =
+
+spaces.
+
+iASL: Update the TPM2 template to revision 4.
+
+iASL: Add the ability to report specific warnings or remarks as errors.
+
+Disassembler: Disassemble OEMx tables as actual AML byte code. =
+
+Previously, these tables were treated as "unknown table".
+
+iASL: Add definition and disassembly for TPM2 revision 3.
+
+iASL: Add support for TPM2 rev 3 compilation.
+
+
+
+--===============3232666108812977727==--
 
