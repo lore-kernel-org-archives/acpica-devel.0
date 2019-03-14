@@ -1,136 +1,180 @@
-Content-Type: multipart/mixed; boundary="===============3232666108812977727=="
+Content-Type: multipart/mixed; boundary="===============1335501473547764119=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] ACPICA version 20190215 released
-Date: Fri, 15 Feb 2019 18:31:20 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E3B955DC97@ORSMSX110.amr.corp.intel.com>
+From: Schmauss, Erik <erik.schmauss at intel.com>
+Subject: Re: [Devel] PROBLEM: Calling ObjectType on buffer field reports type
+ integer
+Date: Thu, 14 Mar 2019 17:19:07 +0000
+Message-ID: <CF6A88132359CE47947DB4C6E1709ED53C592D47@ORSMSX122.amr.corp.intel.com>
+In-Reply-To: 3ef42aa1-196d-f3db-0e5d-2fd84c198242@gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3232666108812977727==
+--===============1335501473547764119==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-15 February 2019. Summary of changes for version 20190215:
-
-This release is available at https://acpica.org/downloads
 
 
-0) Support for ACPI specification version 6.3:
+> -----Original Message-----
+> From: Maximilian Luz [mailto:luzmaximilian(a)gmail.com]
+> Sent: Thursday, March 14, 2019 7:24 AM
+> To: Moore, Robert <robert.moore(a)intel.com>; Schmauss, Erik
+> <erik.schmauss(a)intel.com>; Wysocki, Rafael J
+> <rafael.j.wysocki(a)intel.com>
+> Cc: linux-acpi(a)vger.kernel.org; devel(a)acpica.org
+> Subject: PROBLEM: Calling ObjectType on buffer field reports type
+> integer
+> =
 
-Add PCC operation region support for the AML interpreter. This adds PCC =
+> Hi all,
+> =
 
-operation region support in the AML interpreter and a default handler for =
+> it seems that buffer fields (created via CreateField) are incorrectly
+> reported as being of type integer (via ObjectType) when they are small
+> enough to allow for that.
+> =
 
-acpiexec. The change also renames the PCC region address space keyword to =
+> As far as I know all kernel versions are affected by this, I have
+> specifically checked 5.0 (5.0.2), 4.20, 4.19 and 4.18.
+> =
 
-PlatformCommChannel.
+> In more detail: On the Microsoft Surface Book 2, Surface Pro (2017),
+> Surface Pro 6, Surface Laptop and Surface Laptop 2 devices there is the
+> following piece of AML code:
+> =
 
-Support for new predefined methods _NBS, _NCH, _NIC, _NIH, and _NIG. =
+>      Local0 =3D ^^_SAN.RQST (0x02, One, One, Zero, One)
+>      If ((ObjectType (Local0) !=3D 0x03))
+>      {
+>          // Error path
+>      }
+>      Else
+>      {
+>          // Success path
+>      }
+> =
 
-These methods provide OSPM with health information and device boot =
+> Which executes a command (RQST) and then checks the type of the
+> returned field to determine if that command was successful (i.e.
+> returned a buffer object) or failed (i.e. returned any other type,
+> including integer). The buffer field that is being returned by RQST is
+> crated as
+> follows:
+> =
 
-status.
+>      CreateField (RQBF, 0x20, Local3, ARB)
+>      Local4 =3D ARB /* \_SB_._SAN.RQSX.ARB_ */
+>      ...
+>      Return (Local4)
+> =
 
-PDTT: Add TriggerOrder to the PCC Identifier structure. The field value =
+> If the returned buffer field is small enough (smaller than
+> acpi_gbl_integer_byte_width), the error-path will always be executed.
+> =
 
-defines if the trigger needs to be invoked by OSPM before or at the end =
+> The full DSDT for the Surface Book 2 can be found here:
+> https://github.com/qzed/surfacebook2-
+> dsdt/blob/fa0ca7c7cba8fb0da1e79c282f9a9f4a12eaaa17/dsdt.dsl#L153
+> 96
+> =
 
-of kernel crash dump processing/handling operation.
+> I have attached a patch (for 5.0) that fixes this issue and has been in
+> use on the affected devices for a few months now via
+> =
 
-SRAT: Add Generic Affinity Structure subtable. This subtable in the SRAT =
+>      https://github.com/qzed/linux-surfacegen5-acpi and
+>      https://github.com/jakeday/linux-surface/
+> =
 
-is used for describing devices such as heterogeneous processors, =
+> I'm not aware of any issues regarding the patch, but then again this
+> has, to my knowledge, only been tested on Microsoft Surface devices.
 
-accelerators, GPUs, and IO devices with integrated compute or DMA =
+I'll take a look at this and test the behavior on windows OS. Surface lapto=
+ps
+tend to have interesting firmware that expose these differences.
 
-engines.
+Erik
+> =
 
-MADT: Add support for statistical profiling in GICC. Statistical =
+> Maximilian
+> =
 
-profiling extension (SPE) is an architecture-specific feature for ARM.
+> Signed-off-by: Maximilian Luz <luzmaximilian(a)gmail.com>
+> ---
+>   drivers/acpi/acpica/dsopcode.c |  2 +-
+>   drivers/acpi/acpica/exfield.c  | 12 +++++++++---
+>   2 files changed, 10 insertions(+), 4 deletions(-)
+> =
 
-MADT: Add online capable flag. If this bit is set, system hardware =
+> diff --git a/drivers/acpi/acpica/dsopcode.c
+> b/drivers/acpi/acpica/dsopcode.c index 78f9de260d5f..0cd858520f5b
+> 100644
+> --- a/drivers/acpi/acpica/dsopcode.c
+> +++ b/drivers/acpi/acpica/dsopcode.c
+> @@ -123,7 +123,7 @@ acpi_ds_init_buffer_field(u16 aml_opcode,
+> =
 
-supports enabling this processor during OS runtime.
+>   		/* Offset is in bits, count is in bits */
+> =
 
-New Error Disconnect Recover Notification value. There are a number of =
+> -		field_flags =3D AML_FIELD_ACCESS_BYTE;
+> +		field_flags =3D AML_FIELD_ACCESS_BUFFER;
+>   		bit_offset =3D offset;
+>   		bit_count =3D (u32) length_desc->integer.value;
+> =
 
-scenarios where system Firmware in collaboration with hardware may =
+> diff --git a/drivers/acpi/acpica/exfield.c b/drivers/acpi/acpica/exfield.c
+> index e5798f15793a..55abd9e035a0 100644
+> --- a/drivers/acpi/acpica/exfield.c
+> +++ b/drivers/acpi/acpica/exfield.c
+> @@ -98,6 +98,7 @@ acpi_ex_read_data_from_field(struct
+> acpi_walk_state *walk_state,
+>   	union acpi_operand_object *buffer_desc;
+>   	void *buffer;
+>   	u32 buffer_length;
+> +	u8 field_flags;
+> =
 
-disconnect one or more devices from the rest of the system for purposes =
+>   	ACPI_FUNCTION_TRACE_PTR(ex_read_data_from_field,
+> obj_desc);
+> =
 
-of error containment. Firmware can use this new notification value to =
+> @@ -146,11 +147,16 @@ acpi_ex_read_data_from_field(struct
+> acpi_walk_state *walk_state,
+>   	 * Note: Field.length is in bits.
+>   	 */
+>   	buffer_length =3D
+> -	    (acpi_size)ACPI_ROUND_BITS_UP_TO_BYTES(obj_desc-
+> >field.bit_length);
+> +	    (acpi_size)ACPI_ROUND_BITS_UP_TO_BYTES(obj_desc-
+> >common_field.bit_length);
+> +	field_flags =3D obj_desc->common_field.field_flags;
+> =
 
-alert OSPM of such a removal.
+> -	if (buffer_length > acpi_gbl_integer_byte_width) {
+> +	if (buffer_length > acpi_gbl_integer_byte_width ||
+> +	    (field_flags & AML_FIELD_ACCESS_TYPE_MASK) =3D=3D
+> +AML_FIELD_ACCESS_BUFFER) {
+> =
 
-PPTT: New additional fields in Processor Structure Flags. These flags =
+> -		/* Field is too large for an Integer, create a Buffer
+> instead */
+> +		/*
+> +		 * Field is either too large for an Integer, or a actually of
+> type
+> +		 * buffer, so create a Buffer.
+> +		 */
+> =
 
-provide more information about processor topology.
-
-NFIT/Disassembler: Change a field name from "Address Range" to "Region =
-
-Type".
-
-HMAT updates: make several existing fields to be reserved as well as =
-
-rename subtable 0 to "memory proximity domain attributes".
-
-GTDT: Add support for new GTDT Revision 3. This revision adds information =
-
-for the EL2 timer.
-
-iASL: Update the HMAT example template for new fields.
-
-iASL: Add support for the new revision of the GTDT (Rev 3).
-
-
-1) ACPICA kernel-resident subsystem:
-
-AML Parser: fix the main AML parse loop to correctly skip erroneous =
-
-extended opcodes. AML opcodes come in two lengths: 1-byte opcodes and 2-
-byte extended opcodes. If an error occurs during an AML table load, the =
-
-AML parser will continue loading the table by skipping the offending =
-
-opcode. This implements a "load table at any cost" philosophy.
-
-
-2) iASL Compiler/Disassembler and Tools:
-
-iASL: Add checks for illegal object references, such as a reference =
-
-outside of method to an object within a method. Such an object is only =
-
-temporary.
-
-iASL: Emit error for creation of a zero-length operation region. Such a =
-
-region is rather pointless. If encountered, a runtime error is also =
-
-implemented in the interpeter.
-
-Debugger: Fix a possible fault with the "test objects" command.
-
-iASL: Makefile: support parent directory filenames containing embedded =
-
-spaces.
-
-iASL: Update the TPM2 template to revision 4.
-
-iASL: Add the ability to report specific warnings or remarks as errors.
-
-Disassembler: Disassemble OEMx tables as actual AML byte code. =
-
-Previously, these tables were treated as "unknown table".
-
-iASL: Add definition and disassembly for TPM2 revision 3.
-
-iASL: Add support for TPM2 rev 3 compilation.
+>   		buffer_desc =3D
+> acpi_ut_create_buffer_object(buffer_length);
+>   		if (!buffer_desc) {
+> --
+> 2.20.1
+> =
 
 
 
---===============3232666108812977727==--
+--===============1335501473547764119==--
 
