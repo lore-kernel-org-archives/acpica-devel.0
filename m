@@ -1,86 +1,79 @@
-Content-Type: multipart/mixed; boundary="===============8074104321986595369=="
+Content-Type: multipart/mixed; boundary="===============0325866019717906625=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] ACPICA version 20190329 released
-Date: Fri, 29 Mar 2019 15:41:30 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E3B957657E@ORSMSX110.amr.corp.intel.com>
+From: Rafael J. Wysocki <rjw at rjwysocki.net>
+Subject: Re: [Devel] [PATCH 5/6] acpi/cppc: Add support for optional CPPC
+ registers
+Date: Sat, 30 Mar 2019 00:02:12 +0100
+Message-ID: <1774302.IF6vfKfJ7U@aspire.rjw.lan>
+In-Reply-To: SN6PR12MB26399489011DD026910B6049F85A0@SN6PR12MB2639.namprd12.prod.outlook.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8074104321986595369==
+--===============0325866019717906625==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-29 March 2019. Summary of changes for version 20190329:
+On Friday, March 29, 2019 9:18:04 PM CET Ghannam, Yazen wrote:
+> > -----Original Message-----
+> > From: linux-acpi-owner(a)vger.kernel.org <linux-acpi-owner(a)vger.kerne=
+l.org> On Behalf Of Pandruvada, Srinivas
+> > Sent: Wednesday, March 27, 2019 10:48 AM
+> > To: linux-kernel(a)vger.kernel.org; devel(a)acpica.org; Natarajan, Jana=
+karajan <Janakarajan.Natarajan(a)amd.com>; linux-
+> > acpi(a)vger.kernel.org; linux-pm(a)vger.kernel.org
+> > Cc: Ghannam, Yazen <Yazen.Ghannam(a)amd.com>; lenb(a)kernel.org; viresh=
+.kumar(a)linaro.org; Moore, Robert
+> > <robert.moore(a)intel.com>; Schmauss, Erik <erik.schmauss(a)intel.com>;=
+ rjw(a)rjwysocki.net
+> > Subject: Re: [PATCH 5/6] acpi/cppc: Add support for optional CPPC regis=
+ters
+> > =
 
-This release is available at https://acpica.org/downloads
+> > On Fri, 2019-03-22 at 20:26 +0000, Natarajan, Janakarajan wrote:
+> > > From: Yazen Ghannam <Yazen.Ghannam(a)amd.com>
+> > >
+> > > Newer AMD processors support a subset of the optional CPPC registers.
+> > > Create show, store and helper routines for supported CPPC registers.
+> > >
+> > > Signed-off-by: Yazen Ghannam <Yazen.Ghannam(a)amd.com>
+> > > [ carved out into a patch, cleaned up, productized ]
+> > > Signed-off-by: Janakarajan Natarajan <Janakarajan.Natarajan(a)amd.com>
+> > >
+> > =
 
+> > [..]
+> > =
 
-1) ACPICA kernel-resident subsystem:
+> > > +	/* desired_perf is the only mandatory value in perf_ctrls */
+> > > +	if (cpc_read(cpu, desired_reg, &desired))
+> > > +		ret =3D -EFAULT;
+> > > +
+> > > +	if (CPC_SUPPORTED(max_reg) && cpc_read(cpu, max_reg, &max))
+> > > +		ret =3D -EFAULT;
+> > > +
+> > We should create and use different macro other than CPPC_SUPPORTED.
+> > CPC_SUPPORTED doesn't validate the correctness of object type for a
+> > field. For example "Maximum Performance Register" can only be buffer
+> > not integer. In this way invalid field definitions can be ignored.
+> > =
 
-Namespace support: Remove the address nodes from global list after method t=
-ermination. The global address list contains pointers to namespace nodes th=
-at represent Operation Regions. This change properly removes Operation Regi=
-on namespace nodes that are declared dynamically during method execution.
+> =
 
-Linux: Use a different debug default than ACPICA. There was a divergence be=
-tween Linux and the ACPICA codebases. In order to resolve this divergence, =
-Linux now declares its own debug default in aclinux.h
+> So create something like "CPPC_SUPPORTED_BUFFER" for buffer-only register=
+s?
+> =
 
-Renamed some internal macros to improve code understanding and maintenance.=
- The macros below all operate on single 4-character ACPI NameSegs, not gene=
-ric strings (old -> new):
-    ACPI_NAME_SIZE    -> ACPI_NAMESEG_SIZE
-    ACPI_COMPARE_NAME -> ACPI_COMPARE_NAMESEG
-    ACPI_MOVE_NAME    -> ACPI_COPY_NAMESEG
+> And then buffer/integer registers will continue to use "CPPC_SUPPORTED".
+> =
 
-Fix for missing comma in array declaration for the AcpiGbl_GenericNotify ta=
-ble.
+> These seem to be the only two cases at this time. Is this okay?
 
-Test suite: Update makefiles, add PCC operation region support
+Yes, something like that.
 
-
-2) iASL Compiler/Disassembler and Tools:
-
-iASL: Implemented additional illegal forward reference detection. Now detec=
-t and emit an error upon detection of a forward reference from a Field to a=
-n Operation Region. This will fail at runtime if allowed to pass the compil=
-er.
-
-AcpiExec: Add an address list check for dynamic Operation Regions. This fea=
-ture performs a sanity test for each node the global address list. This is =
-done in order to ensure that all dynamic operation regions are properly rem=
-oved from the global address list and no dangling pointers are left behind.
-
-Disassembler: Improved generation of resource pathnames. This change improv=
-es the code that generates resource descriptor and resource tag pathnames. =
-The original code used a bunch of str* C library functions that caused warn=
-ings on some compilers.
-
-iASL: Removed some uses of strncpy and replaced with memmove. The strncpy f=
-unction can overwrite buffers if the calling code is not very careful. In t=
-he case of generating a module/table header, use of memmove is a better imp=
-lementation.
-
-
-3) Status of new features that have not been completed at this time:
-
-iASL: Implementing an enhanced multiple file compilation into a single name=
-space feature (Status): This feature will be released soon, and allows mult=
-iple ASL files to be compiled into the same single namespace. By doing so, =
-any unresolved external declarations as well as duplicate named object decl=
-arations can be detected during compilation (rather than later during runti=
-me). The following commands are examples that utilize this feature:
-    iasl dsdt.asl ssdt.asl
-    iasl dsdt.asl ssdt1.asl ssdt2.asl
-    iasl dsdt.asl ssdt*.asl
-
-ASL tutorial status: Feedback is being gathered internally and the current =
-plan is to publish this tutorial on the ACPICA website after a final review=
- by a tech writer.
+Thanks,
+Rafael
 
 
-
---===============8074104321986595369==--
+--===============0325866019717906625==--
 
