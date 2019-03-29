@@ -1,90 +1,86 @@
-Content-Type: multipart/mixed; boundary="===============2643796050352613176=="
+Content-Type: multipart/mixed; boundary="===============8074104321986595369=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: Re: [Devel] [PATCH] drivers/acpi: Clear status of an event before
- enabling it
-Date: Thu, 28 Mar 2019 09:57:18 +0100
-Message-ID: <CAJZ5v0jPJYM6n0OWBM17d3MF5h5B+an+LSRiXTHqboXZuXkcvw@mail.gmail.com>
-In-Reply-To: CAEGmHFHaFk6v=vcciU3QNaQfLriWSJtQ5QUjciY+O8dLh3DhJA@mail.gmail.com
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] ACPICA version 20190329 released
+Date: Fri, 29 Mar 2019 15:41:30 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E3B957657E@ORSMSX110.amr.corp.intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2643796050352613176==
+--===============8074104321986595369==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 28, 2019 at 1:46 AM Furquan Shaikh <furquan(a)google.com> wrote:
->
-> On Wed, Mar 27, 2019 at 5:24 AM Rafael J. Wysocki <rafael(a)kernel.org> w=
-rote:
-> >
-> > On Thu, Mar 21, 2019 at 3:16 AM Furquan Shaikh <furquan(a)google.com> w=
-rote:
-> > >
-> > > On Wed, Mar 20, 2019 at 5:11 PM Rafael J. Wysocki <rafael(a)kernel.or=
-g> wrote:
-> > > >
-> > > > On Wed, Mar 20, 2019 at 11:34 PM Furquan Shaikh <furquan(a)google.c=
-om> wrote:
-> > > > >
-> > > > > Commit 18996f2db918 ("ACPICA: Events: Stop unconditionally
-> > > > > clearing ACPI IRQs during suspend/resume") was added to stop clea=
-ring
-> > > > > of event status bits unconditionally on suspend and resume paths.=
- This
-> > > > > was done because of an issue
-> > > > > reported (https://bugzilla.kernel.org/show_bug.cgi?id=3D196249) w=
-here
-> > > > > lid status stays closed even on resume (which happens because eve=
-nt
-> > > > > status bits are cleared unconditionally on resume). Though this c=
-hange
-> > > > > fixed the issue on suspend path, it introduced regressions on sev=
-eral
-> > > > > resume paths.
-> > > > >
-> > > > > First regression was reported and fixed on S5 path by the followi=
-ng
-> > > > > change: commit fa85015c0d95 ("ACPICA: Clear status of all events =
-when
-> > > > > entering S5"). Next regression was reported and fixed on all lega=
-cy
-> > > > > sleep paths by the commit f317c7dc12b7 ("ACPICA: Clear status of =
-all
-> > > > > events when entering sleep states"). However, regression still ex=
-ists
-> > > > > on S0ix sleep path since it does not follow the legacy sleep path.
-> > > >
-> > > > What exactly is failing?
-> > >
-> > > Here is the failure scenario:
-> > >
-> > > 1. Consider the case of trackpad which acts as a wake source.
-> > > 2. Since the pad is configured for SCI, GPE_STS gets set for that pad
-> > > during normal interrupts as well (i.e. during probe at boot or when
-> > > using the trackpad)
-> >
-> > I don't quite understand this.
-> >
-> > Is the same GPE used for signaling trackpad events in the system
-> > working state and for wakeup?
->
-> Yes. The same pad is being configured for interrupts (i.e. routed to
-> APIC) during S0 as well as configured for GPE (i.e. routed for SCI) to
-> cause wakes when in S0ix/S3. This pad is externally connected to
-> trackpad interrupt line.
+29 March 2019. Summary of changes for version 20190329:
 
-And the way the system is wired up causes the GPE status to be set
-when it is enabled, I suppose?
+This release is available at https://acpica.org/downloads
 
-So effectively, you need to disable the active-state IRQ, then clear
-the GPE status and enable it for wakeup.
 
-OK, I'll queue up the patch (and talk to the upstream ACPICA people
-about taking it in there).
+1) ACPICA kernel-resident subsystem:
 
-Thanks!
+Namespace support: Remove the address nodes from global list after method t=
+ermination. The global address list contains pointers to namespace nodes th=
+at represent Operation Regions. This change properly removes Operation Regi=
+on namespace nodes that are declared dynamically during method execution.
 
---===============2643796050352613176==--
+Linux: Use a different debug default than ACPICA. There was a divergence be=
+tween Linux and the ACPICA codebases. In order to resolve this divergence, =
+Linux now declares its own debug default in aclinux.h
+
+Renamed some internal macros to improve code understanding and maintenance.=
+ The macros below all operate on single 4-character ACPI NameSegs, not gene=
+ric strings (old -> new):
+    ACPI_NAME_SIZE    -> ACPI_NAMESEG_SIZE
+    ACPI_COMPARE_NAME -> ACPI_COMPARE_NAMESEG
+    ACPI_MOVE_NAME    -> ACPI_COPY_NAMESEG
+
+Fix for missing comma in array declaration for the AcpiGbl_GenericNotify ta=
+ble.
+
+Test suite: Update makefiles, add PCC operation region support
+
+
+2) iASL Compiler/Disassembler and Tools:
+
+iASL: Implemented additional illegal forward reference detection. Now detec=
+t and emit an error upon detection of a forward reference from a Field to a=
+n Operation Region. This will fail at runtime if allowed to pass the compil=
+er.
+
+AcpiExec: Add an address list check for dynamic Operation Regions. This fea=
+ture performs a sanity test for each node the global address list. This is =
+done in order to ensure that all dynamic operation regions are properly rem=
+oved from the global address list and no dangling pointers are left behind.
+
+Disassembler: Improved generation of resource pathnames. This change improv=
+es the code that generates resource descriptor and resource tag pathnames. =
+The original code used a bunch of str* C library functions that caused warn=
+ings on some compilers.
+
+iASL: Removed some uses of strncpy and replaced with memmove. The strncpy f=
+unction can overwrite buffers if the calling code is not very careful. In t=
+he case of generating a module/table header, use of memmove is a better imp=
+lementation.
+
+
+3) Status of new features that have not been completed at this time:
+
+iASL: Implementing an enhanced multiple file compilation into a single name=
+space feature (Status): This feature will be released soon, and allows mult=
+iple ASL files to be compiled into the same single namespace. By doing so, =
+any unresolved external declarations as well as duplicate named object decl=
+arations can be detected during compilation (rather than later during runti=
+me). The following commands are examples that utilize this feature:
+    iasl dsdt.asl ssdt.asl
+    iasl dsdt.asl ssdt1.asl ssdt2.asl
+    iasl dsdt.asl ssdt*.asl
+
+ASL tutorial status: Feedback is being gathered internally and the current =
+plan is to publish this tutorial on the ACPICA website after a final review=
+ by a tech writer.
+
+
+
+--===============8074104321986595369==--
 
