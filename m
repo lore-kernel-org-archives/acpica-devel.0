@@ -1,88 +1,38 @@
-Content-Type: multipart/mixed; boundary="===============1353175800401827099=="
+Content-Type: multipart/mixed; boundary="===============1843887574083014142=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: Re: [Devel] [PATCH v2 0/7] CPPC optional registers AMD support
-Date: Tue, 16 Apr 2019 11:34:07 +0200
-Message-ID: <CAJZ5v0jh0Yn1fy5bO3wett5AsjBA55_Z-8L_M8eRyy5cePqwaw@mail.gmail.com>
-In-Reply-To: d44f4893-0b67-4993-2942-6e03d29dffa1@amd.com
+From: kbuild test robot <lkp at intel.com>
+Subject: [Devel] [pm:bleeding-edge 80/85]
+ drivers/platform/x86/intel_cht_int33fe.c:98:1-3: WARNING: PTR_ERR_OR_ZERO can
+ be used
+Date: Wed, 17 Apr 2019 08:52:13 +0800
+Message-ID: <201904170807.nArPTXtw%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1353175800401827099==
+--===============1843887574083014142==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 16, 2019 at 12:35 AM Janakarajan Natarajan <jnataraj(a)amd.com>=
- wrote:
->
-> On 4/4/19 4:25 PM, Natarajan, Janakarajan wrote:
-> > CPPC (Collaborative Processor Performance Control) offers optional
-> > registers which can be used to tune the system based on energy and/or
-> > performance requirements.
-> >
-> > Newer AMD processors add support for a subset of these optional CPPC
-> > registers, based on ACPI v6.1.
-> >
-> > The following are the supported CPPC registers for which sysfs entries
-> > are created:
-> > * enable                (NEW)
-> > * max_perf              (NEW)
-> > * min_perf              (NEW)
-> > * energy_perf
-> > * lowest_perf
-> > * nominal_perf
-> > * desired_perf          (NEW)
-> > * feedback_ctrs
-> > * auto_sel_enable       (NEW)
-> > * lowest_nonlinear_perf
-> >
-> > The CPPC driver is updated to enable the OSPM and the userspace to
-> > access
-> > the newly supported registers.
-> >
-> > The purpose of exposing the registers via the sysfs entries is to allow
-> > the userspace to:
-> > * Tweak the values to fit its workload.
-> > * Apply a profile from AMD's optimization guides.
-> >
-> > Profiles will be documented in the performance/optimization guides.
-> >
-> > Note:
-> > * AMD systems will not have a policy applied in the kernel at this time.
-> > * By default, acpi_cpufreq will still be used.
-> >
-> > TODO:
-> > * Create a linux userspace tool that will help users generate a CPPC
-> > * profile
-> >    for their target workload.
-> > * Create or update a driver to apply a general CPPC policy in the
-> > * kernel.
-> >
-> > v1->v2:
-> > * Add macro to ensure BUFFER only registers have BUFFER type.
-> > * Add support macro to make the right check based on register type.
-> > * Remove support checks for registers which are mandatory.
->
->
-> Are there any concerns regarding this patchset?
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git=
+ bleeding-edge
+head:   98438d88cbe65037744bdc071720389797f9c575
+commit: 7ea0bcd165658c84544d5f241126b782d14fbb7f [80/85] platform/x86: inte=
+l_cht_int33fe: Register max17047 in its own function
 
-Yes, there are.
 
-Unfortunately, it is generally problematic.
+coccinelle warnings: (new ones prefixed by >>)
 
-First off, the behavior of existing sysfs files cannot be changed at
-will, as there may be users of them out there already depending on the
-current behavior.
+>> drivers/platform/x86/intel_cht_int33fe.c:98:1-3: WARNING: PTR_ERR_OR_ZER=
+O can be used
 
-Second, at least some CPPC control registers are used by cpufreq
-drivers (cppc_cpufreq and intel_pstate), so modifying them behind the
-drivers' backs is not a good idea in general.  For this reason, adding
-new sysfs attributes to allow user space to do that is quite
-questionable.
+Please review and possibly fold the followup patch.
 
-Thanks,
-Rafael
+---
+0-DAY kernel test infrastructure                Open Source Technology Cent=
+er
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporati=
+on
 
---===============1353175800401827099==--
+--===============1843887574083014142==--
 
