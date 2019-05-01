@@ -1,98 +1,65 @@
-Content-Type: multipart/mixed; boundary="===============4678912708117388727=="
+Content-Type: multipart/mixed; boundary="===============2776731011739206256=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] Update to acpica (20190405 broke VirtualBox, patch avail)
-Date: Thu, 25 Apr 2019 20:17:00 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E3B9589BF0@ORSMSX110.amr.corp.intel.com>
-In-Reply-To: 1784526.72sEhOmWi1@house
+From: Rafael J. Wysocki <rafael at kernel.org>
+Subject: Re: [Devel] [alsa-devel] [PATCH] ACPI / device_sysfs: change _ADR
+ representation to 64 bits
+Date: Wed, 01 May 2019 09:59:25 +0200
+Message-ID: <CAJZ5v0iwm5tLRy2mLX6_uTk2wh+1Y4VaEcqDx5Z1WDLZHMnpEg@mail.gmail.com>
+In-Reply-To: eda0ed4e-fc36-a53a-225f-e7d54bb73413@linux.intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4678912708117388727==
+--===============2776731011739206256==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-We are still finishing this up and testing it. There are quite a few cases =
-to be considered and tested.
-
-Bob
-
-
-> -----Original Message-----
-> From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of Thomas
-> Renninger
-> Sent: Thursday, April 25, 2019 2:41 AM
-> To: Larry Finger <Larry.Finger(a)lwfinger.net>
-> Cc: Devel(a)lists.acpica.org
-> Subject: Re: [Devel] Update to acpica (20190405 broke VirtualBox, patch
-> avail)
-> =
-
-> Hi Larry,
-> =
-
-> + acpica list
-> + Erik, author of the patch
-> =
-
-> while there is a tested patch, there has not been a pull request or a
-> mail patch submission on the acpcia mailing list to get the fix
-> mainline.
-> =
-
-> I like to wait until the patch is submitted and reviewed, best accepted.
-> =
-
-> Once this has happened, I can grab it.
-> Or better, if the patch is unmodified, you may want to create a submit
-> request via the Open SUSE Build Servcie (OBS) with a tiny changelog
-> mentioning the patch and I can simply accept it.
-> =
-
-> Thanks Larry for the bug identifying, testing and all the details!
-> =
-
->      Thomas
-> =
-
-> Background:
-> =
-
-> =
-
-> On Monday, April 22, 2019 11:03:09 PM CEST Larry Finger wrote:
-> > Thomas,
+On Tue, Apr 30, 2019 at 8:23 PM Pierre-Louis Bossart
+<pierre-louis.bossart(a)linux.intel.com> wrote:
+>
+>
+>
+> On 4/16/19 3:09 AM, Rafael J. Wysocki wrote:
+> > On Tue, Apr 16, 2019 at 5:29 AM Vinod Koul <vkoul(a)kernel.org> wrote:
+> >>
+> >> On 15-04-19, 10:18, Pierre-Louis Bossart wrote:
+> >>> Standards such as the MIPI DisCo for SoundWire 1.0 specification
+> >>> assume the _ADR field is 64 bits.
+> >>>
+> >>> _ADR is defined as an "Integer" represented as 64 bits since ACPI 2.0
+> >>> released in 2002. The low levels already use _ADR as 64 bits, e.g. in
+> >>> struct acpi_device_info.
+> >>>
+> >>> This patch bumps the representation used for sysfs to 64 bits.
+> >>>
+> >>> Example with a SoundWire device, the results show the complete
+> >>> vendorID and linkID which were omitted before:
+> >>>
+> >>> Before:
+> >>> $ more /sys/bus/acpi/devices/device\:38/adr
+> >>> 0x5d070000
+> >>> After:
+> >>> $ more /sys/bus/acpi/devices/device\:38/adr
+> >>> 0x000010025d070000
+> >>
+> >> This looks fine but the sysfs file is an ABI. Not sure if we can modify
+> >> the value returned this way.. Though it should not cause userspace
+> >> reading 32bits to break...
 > >
-> > I am writing to you as the maintainer of the acpica package.
-> >
-> > The recent update to acpica-20190405 broke iASL for the VirtualBox
-> package.
-> > With it, Windows 7 VM's fail with a Blue Screen complaining about the
-> BIOS.
-> > As far as I know, no other OS fails. The bug was posted as
-> > bsc#1132941, which has been assigned to me.
-> >
-> > There is a discussion of this bug at
-> > https://github.com/acpica/acpica/issues/462, where a patch was posted.
-> > I checked out the package at
-> > home:lwfinger:branches:openSUSE:Factory/acpica,
-> > added the patch, and built the package locally using osc. I then
-> > applied that package to a rebuild of VB. Once I did that, then Windows
-> > 7 VM's work again.
-> >
-> > I have committed my changes to my copy of acpica. How do you want to
-> > proceed from here? Should I send an MR on that project? Please advise.
-> >
-> > Larry
-> =
+> > Well, IIRC using "08" instead of "016" in the format field would
+> > preserve the existing behavior for 32-bit values, wouldn't it?
+>
+> yes, but it makes the 64-bit address not aligned depending on the number
+> of leading zeroes, see below. I get a migraine just looking at the result=
+s.
 
-> =
+Well, scripts reading them won't get that, but fair enough.
 
-> _______________________________________________
-> Devel mailing list
-> Devel(a)acpica.org
-> https://lists.acpica.org/mailman/listinfo/devel
+> Maybe add a test to use 08 for values that are below 0xFFFFFFFF and 16
+> for addresses who really need the full range, typically because of an
+> encoding?
 
---===============4678912708117388727==--
+That would be fine by me.
+
+--===============2776731011739206256==--
 
