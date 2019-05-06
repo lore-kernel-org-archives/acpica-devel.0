@@ -1,70 +1,68 @@
-Content-Type: multipart/mixed; boundary="===============1360720507517074123=="
+Content-Type: multipart/mixed; boundary="===============8814847839770365408=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: Re: [Devel] [PATCH v2] ACPI / device_sysfs: change _ADR
- representation to 64 bits
-Date: Mon, 06 May 2019 10:36:22 +0200
-Message-ID: <CAJZ5v0i+M8y3ddr+Z5o5af8OatMXq3xqCF5CUg5PjnANrTOSHw@mail.gmail.com>
-In-Reply-To: 20190502045817.GZ3845@vkoul-mobl.Dlink
+From: Anthony Jenkins <Scoobi_doo at yahoo.com>
+Subject: [Devel] iasl -d and duplicate symbols (ACPI Error: AE_ALREADY_EXISTS)
+Date: Mon, 06 May 2019 09:45:28 -0400
+Message-ID: <1e3328ab-0b00-7abf-7182-b4291f18f197@yahoo.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1360720507517074123==
+--===============8814847839770365408==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, May 2, 2019 at 6:58 AM Vinod Koul <vkoul(a)kernel.org> wrote:
->
-> On 01-05-19, 07:53, Pierre-Louis Bossart wrote:
-> > Standards such as the MIPI DisCo for SoundWire 1.0 specification
-> > assume the _ADR field is 64 bits.
-> >
-> > _ADR is defined as an "Integer" represented as 64 bits since ACPI 2.0
-> > released in 2002. The low levels already use _ADR as 64 bits, e.g. in
-> > struct acpi_device_info.
-> >
-> > This patch bumps the representation used for sysfs to 64 bits. To
-> > avoid any compatibility/ABI issues, the printf format is only extended
-> > to 16 characters when the actual _ADR value exceeds the 32 bit
-> > maximum.
-> >
-> > Example with a SoundWire device, the results show the complete
-> > vendorID and linkID which were omitted before:
-> >
-> > Before:
-> > $ more /sys/bus/acpi/devices/device\:38/adr
-> > 0x5d070000
-> > After:
-> > $ more /sys/bus/acpi/devices/device\:38/adr
-> > 0x000010025d070000
-> >
-> > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart(a)linux.intel=
-.com>
-> > ---
-> > v2: only use 64 bits when required to avoid compatibility issues
-> > (feedback from Vinod and Rafael)
-> >
-> >  drivers/acpi/device_sysfs.c | 6 ++++--
-> >  include/acpi/acpi_bus.h     | 2 +-
-> >  2 files changed, 5 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
-> > index 8940054d6250..7dda0ee05cd1 100644
-> > --- a/drivers/acpi/device_sysfs.c
-> > +++ b/drivers/acpi/device_sysfs.c
-> > @@ -428,8 +428,10 @@ static ssize_t acpi_device_adr_show(struct device =
-*dev,
-> >  {
-> >       struct acpi_device *acpi_dev =3D to_acpi_device(dev);
-> >
-> > -     return sprintf(buf, "0x%08x\n",
-> > -                    (unsigned int)(acpi_dev->pnp.bus_address));
-> > +     if (acpi_dev->pnp.bus_address > 0xFFFFFFFF)
->
-> Would prefer to use U32_MAX instead of 0xFFFFFFFF
+Hi all,
 
-I would.
+I am trying to patch the ACPI tables on my Dell XPS 15 9570 running =
 
---===============1360720507517074123==--
+FreeBSD 13.0-CURRENT @ git commit 68c8581f772. 'acpidump -d -t' gives =
+
+error AE_ALREADY_EXISTS when trying to add symbol =
+
+\_SB.PCI0.XHC.RHUB.HS01._UPC.?? Google says this is because my BIOS' set =
+
+of ACPI tables contains two duplicate tables, and it fails to add =
+
+symbols from the 2nd table because they already exist from the 1st.
+
+Q: By "duplicate table", does this mean the entire body of the table =
+
+(excluding its header) is duplicated?
+
+What's the standard practice for handling this error? I assume I have to:
+
+ 1. Identify the two duplicate tables
+ 2. Tell 'iasl -d' (which is what 'acpidump' calls to do the
+    disassembly) to exclude one of the two tables
+
+I have no idea how to do either of these two tasks with the set of =
+
+acpica tools I have (iasl version 20190108)...anyone have any pointers?
+
+Is there a way to extract (using acpica tools) the body of a single =
+
+named ACPI table?
+
+I have some ideas for patches to acpica to help with this increasingly =
+
+common issue:
+
+  * Patch iasl(1) to emit more information about the origins of the
+    symbols it parses, such that an AE_ALREADY_EXISTS error would also
+    emit the origin (table name) of the existing symbol and that of the
+    current table it's trying to add.
+  * Patch iasl(1) to add a user option (flag) to ignore tables with
+    duplicate symbols, possibly adding a parameter indicating number of
+    duplicates or percentage of duplication before dropping that table.
+
+Would any/all of these patches be useful/considered for acceptance into =
+
+acpica?
+
+Thanks in advance,
+Anthony Jenkins
+
+
+--===============8814847839770365408==--
 
