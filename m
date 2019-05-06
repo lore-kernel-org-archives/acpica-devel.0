@@ -1,122 +1,70 @@
-Content-Type: multipart/mixed; boundary="===============1246169689888116654=="
+Content-Type: multipart/mixed; boundary="===============1360720507517074123=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
+From: Rafael J. Wysocki <rafael at kernel.org>
 Subject: Re: [Devel] [PATCH v2] ACPI / device_sysfs: change _ADR
  representation to 64 bits
-Date: Fri, 03 May 2019 19:54:57 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E3B958C7AE@ORSMSX110.amr.corp.intel.com>
-In-Reply-To: 20190501125322.23791-1-pierre-louis.bossart@linux.intel.com
+Date: Mon, 06 May 2019 10:36:22 +0200
+Message-ID: <CAJZ5v0i+M8y3ddr+Z5o5af8OatMXq3xqCF5CUg5PjnANrTOSHw@mail.gmail.com>
+In-Reply-To: 20190502045817.GZ3845@vkoul-mobl.Dlink
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1246169689888116654==
+--===============1360720507517074123==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
+On Thu, May 2, 2019 at 6:58 AM Vinod Koul <vkoul(a)kernel.org> wrote:
+>
+> On 01-05-19, 07:53, Pierre-Louis Bossart wrote:
+> > Standards such as the MIPI DisCo for SoundWire 1.0 specification
+> > assume the _ADR field is 64 bits.
+> >
+> > _ADR is defined as an "Integer" represented as 64 bits since ACPI 2.0
+> > released in 2002. The low levels already use _ADR as 64 bits, e.g. in
+> > struct acpi_device_info.
+> >
+> > This patch bumps the representation used for sysfs to 64 bits. To
+> > avoid any compatibility/ABI issues, the printf format is only extended
+> > to 16 characters when the actual _ADR value exceeds the 32 bit
+> > maximum.
+> >
+> > Example with a SoundWire device, the results show the complete
+> > vendorID and linkID which were omitted before:
+> >
+> > Before:
+> > $ more /sys/bus/acpi/devices/device\:38/adr
+> > 0x5d070000
+> > After:
+> > $ more /sys/bus/acpi/devices/device\:38/adr
+> > 0x000010025d070000
+> >
+> > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart(a)linux.intel=
+.com>
+> > ---
+> > v2: only use 64 bits when required to avoid compatibility issues
+> > (feedback from Vinod and Rafael)
+> >
+> >  drivers/acpi/device_sysfs.c | 6 ++++--
+> >  include/acpi/acpi_bus.h     | 2 +-
+> >  2 files changed, 5 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
+> > index 8940054d6250..7dda0ee05cd1 100644
+> > --- a/drivers/acpi/device_sysfs.c
+> > +++ b/drivers/acpi/device_sysfs.c
+> > @@ -428,8 +428,10 @@ static ssize_t acpi_device_adr_show(struct device =
+*dev,
+> >  {
+> >       struct acpi_device *acpi_dev =3D to_acpi_device(dev);
+> >
+> > -     return sprintf(buf, "0x%08x\n",
+> > -                    (unsigned int)(acpi_dev->pnp.bus_address));
+> > +     if (acpi_dev->pnp.bus_address > 0xFFFFFFFF)
+>
+> Would prefer to use U32_MAX instead of 0xFFFFFFFF
 
+I would.
 
-> -----Original Message-----
-> From: Pierre-Louis Bossart [mailto:pierre-louis.bossart(a)linux.intel.com]
-> Sent: Wednesday, May 1, 2019 5:53 AM
-> To: alsa-devel(a)alsa-project.org
-> Cc: linux-kernel(a)vger.kernel.org; tiwai(a)suse.de; broonie(a)kernel.org;
-> vkoul(a)kernel.org; gregkh(a)linuxfoundation.org;
-> liam.r.girdwood(a)linux.intel.com; jank(a)cadence.com; joe(a)perches.com;
-> srinivas.kandagatla(a)linaro.org; Pierre-Louis Bossart <pierre-
-> louis.bossart(a)linux.intel.com>; Rafael J. Wysocki <rjw(a)rjwysocki.net>;
-> Len Brown <lenb(a)kernel.org>; Moore, Robert <robert.moore(a)intel.com>;
-> Schmauss, Erik <erik.schmauss(a)intel.com>; open list:ACPI <linux-
-> acpi(a)vger.kernel.org>; open list:ACPI COMPONENT ARCHITECTURE (ACPICA)
-> <devel(a)acpica.org>
-> Subject: [PATCH v2] ACPI / device_sysfs: change _ADR representation to
-> 64 bits
-> =
-
-> Standards such as the MIPI DisCo for SoundWire 1.0 specification assume
-> the _ADR field is 64 bits.
-> =
-
-> _ADR is defined as an "Integer" represented as 64 bits since ACPI 2.0
-> released in 2002. The low levels already use _ADR as 64 bits, e.g. in
-> struct acpi_device_info.
-> =
-
-[Moore, Robert] =
-
-
-Just to be precise: since acpi 2.0 the integer width is either 32 bits or 6=
-4 bits, depending on the version number of the DSDT (1-->32, 2 or greater -=
--> 64).
-
-
-> This patch bumps the representation used for sysfs to 64 bits. To avoid
-> any compatibility/ABI issues, the printf format is only extended to 16
-> characters when the actual _ADR value exceeds the 32 bit maximum.
-> =
-
-> Example with a SoundWire device, the results show the complete vendorID
-> and linkID which were omitted before:
-> =
-
-> Before:
-> $ more /sys/bus/acpi/devices/device\:38/adr
-> 0x5d070000
-> After:
-> $ more /sys/bus/acpi/devices/device\:38/adr
-> 0x000010025d070000
-> =
-
-> Signed-off-by: Pierre-Louis Bossart <pierre-
-> louis.bossart(a)linux.intel.com>
-> ---
-> v2: only use 64 bits when required to avoid compatibility issues
-> (feedback from Vinod and Rafael)
-> =
-
->  drivers/acpi/device_sysfs.c | 6 ++++--
->  include/acpi/acpi_bus.h     | 2 +-
->  2 files changed, 5 insertions(+), 3 deletions(-)
-> =
-
-> diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
-> index 8940054d6250..7dda0ee05cd1 100644
-> --- a/drivers/acpi/device_sysfs.c
-> +++ b/drivers/acpi/device_sysfs.c
-> @@ -428,8 +428,10 @@ static ssize_t acpi_device_adr_show(struct device
-> *dev,  {
->  	struct acpi_device *acpi_dev =3D to_acpi_device(dev);
-> =
-
-> -	return sprintf(buf, "0x%08x\n",
-> -		       (unsigned int)(acpi_dev->pnp.bus_address));
-> +	if (acpi_dev->pnp.bus_address > 0xFFFFFFFF)
-> +		return sprintf(buf, "0x%016llx\n", acpi_dev-
-> >pnp.bus_address);
-> +	else
-> +		return sprintf(buf, "0x%08llx\n", acpi_dev->pnp.bus_address);
->  }
->  static DEVICE_ATTR(adr, 0444, acpi_device_adr_show, NULL);
-> =
-
-> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h index
-> f7981751ac77..9075e28ea60a 100644
-> --- a/include/acpi/acpi_bus.h
-> +++ b/include/acpi/acpi_bus.h
-> @@ -230,7 +230,7 @@ struct acpi_device_dir {
->  /* Plug and Play */
-> =
-
->  typedef char acpi_bus_id[8];
-> -typedef unsigned long acpi_bus_address;
-> +typedef u64 acpi_bus_address;
->  typedef char acpi_device_name[40];
->  typedef char acpi_device_class[20];
-> =
-
-> --
-> 2.17.1
-
-
---===============1246169689888116654==--
+--===============1360720507517074123==--
 
