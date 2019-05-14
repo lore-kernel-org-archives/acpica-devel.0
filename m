@@ -1,107 +1,81 @@
-Content-Type: multipart/mixed; boundary="===============5454242201873834287=="
+Content-Type: multipart/mixed; boundary="===============3020749630260029577=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] ACPICA version 20190509 released
-Date: Thu, 09 May 2019 22:25:49 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E3B958D1E9@ORSMSX110.amr.corp.intel.com>
+From: Rafael J. Wysocki <rjw at rjwysocki.net>
+Subject: Re: [Devel] [PATCH v2] ACPI / device_sysfs: change _ADR
+ representation to 64 bits
+Date: Tue, 14 May 2019 23:29:18 +0200
+Message-ID: <1683867.ro8ObbCUgW@kreacher>
+In-Reply-To: CAJZ5v0i+M8y3ddr+Z5o5af8OatMXq3xqCF5CUg5PjnANrTOSHw@mail.gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5454242201873834287==
+--===============3020749630260029577==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-09 May 2019. Summary of changes for version 20190509:
+On Monday, May 6, 2019 10:36:22 AM CEST Rafael J. Wysocki wrote:
+> On Thu, May 2, 2019 at 6:58 AM Vinod Koul <vkoul(a)kernel.org> wrote:
+> >
+> > On 01-05-19, 07:53, Pierre-Louis Bossart wrote:
+> > > Standards such as the MIPI DisCo for SoundWire 1.0 specification
+> > > assume the _ADR field is 64 bits.
+> > >
+> > > _ADR is defined as an "Integer" represented as 64 bits since ACPI 2.0
+> > > released in 2002. The low levels already use _ADR as 64 bits, e.g. in
+> > > struct acpi_device_info.
+> > >
+> > > This patch bumps the representation used for sysfs to 64 bits. To
+> > > avoid any compatibility/ABI issues, the printf format is only extended
+> > > to 16 characters when the actual _ADR value exceeds the 32 bit
+> > > maximum.
+> > >
+> > > Example with a SoundWire device, the results show the complete
+> > > vendorID and linkID which were omitted before:
+> > >
+> > > Before:
+> > > $ more /sys/bus/acpi/devices/device\:38/adr
+> > > 0x5d070000
+> > > After:
+> > > $ more /sys/bus/acpi/devices/device\:38/adr
+> > > 0x000010025d070000
+> > >
+> > > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart(a)linux.int=
+el.com>
+> > > ---
+> > > v2: only use 64 bits when required to avoid compatibility issues
+> > > (feedback from Vinod and Rafael)
+> > >
+> > >  drivers/acpi/device_sysfs.c | 6 ++++--
+> > >  include/acpi/acpi_bus.h     | 2 +-
+> > >  2 files changed, 5 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
+> > > index 8940054d6250..7dda0ee05cd1 100644
+> > > --- a/drivers/acpi/device_sysfs.c
+> > > +++ b/drivers/acpi/device_sysfs.c
+> > > @@ -428,8 +428,10 @@ static ssize_t acpi_device_adr_show(struct devic=
+e *dev,
+> > >  {
+> > >       struct acpi_device *acpi_dev =3D to_acpi_device(dev);
+> > >
+> > > -     return sprintf(buf, "0x%08x\n",
+> > > -                    (unsigned int)(acpi_dev->pnp.bus_address));
+> > > +     if (acpi_dev->pnp.bus_address > 0xFFFFFFFF)
+> >
+> > Would prefer to use U32_MAX instead of 0xFFFFFFFF
+> =
 
-This release is available at https://acpica.org/downloads
+> I would.
+> =
 
 
-1) ACPICA kernel-resident subsystem:
+I have made that change manually and applied the patch.
 
-Revert commit  6c43e1a ("ACPICA: Clear status of GPEs before enabling them"=
-) that causes problems with Thunderbolt controllers to occur if a dock devi=
-ce is connected at init time (the xhci_hcd and thunderbolt modules crash wh=
-ich prevents peripherals connected through them from working). Commit 6c43e=
-1a effectively causes commit ecc1165b8b74 ("ACPICA: Dispatch active GPEs at=
- init time") to get undone, so the problem addressed by commit ecc1165b8b74=
- appears again as a result of it.
-
-
-2) iASL Compiler/Disassembler and ACPICA tools:
-
-Reverted iASL: Additional forward reference detection. This change reverts =
-forward reference detection for field declarations. The feature unintention=
-ally emitted AML bytecode with incorrect package lengths for some ASL code =
-related to Fields and OperationRegions. This malformed AML can cause system=
-s to crash
-during boot. The malformed AML bytecode is emitted in iASL version 20190329=
- and 20190405.
-
-iASL: improve forward reference detection. This change improves forward ref=
-erence detection for named objects inside of scopes. If a parse object has =
-the OP_NOT_FOUND_DURING_LOAD set, it means that Op is a reference to a name=
-d object that is declared later in the AML bytecode. This is allowed if the=
- reference is inside of a method and the declaration is outside of a method=
- like so:
-
-DefinitionBlock(...)
-{
-    Method (TEST)
-    {
-        Return (NUM0)
-    }
-    Name (NUM0,0)
-}
-
-However, if the declaration and reference are both in the same method or ou=
-tside any methods, this is a forward reference and should be marked as an e=
-rror because it would result in runtime errors.
-
-DefinitionBlock(...)
-{
-    Name (BUFF, Buffer (NUM0) {}) // Forward reference
-    Name (NUM0, 0x0)
-
-    Method (TEST)
-    {
-        Local0 =3D NUM1
-        Name (NUM1, 0x1) // Forward reference
-        return (Local0)
-    }
-}
-
-iASL: Implemented additional buffer overflow analysis for BufferField decla=
-rations. Check if a buffer index argument to a create buffer field operatio=
-n is beyond the end of the target buffer.
-
-This affects these AML operators:
- =
-
-   AML_CREATE_FIELD_OP
-   AML_CREATE_BIT_FIELD_OP
-   AML_CREATE_BYTE_FIELD_OP
-   AML_CREATE_WORD_FIELD_OP
-   AML_CREATE_DWORD_FIELD_OP
-   AML_CREATE_QWORD_FIELD_OP
-
- There are three conditions that must be satisfied in order to allow this v=
-alidation at compile time:
- =
-
-   1) The length of the target buffer must be an integer constant
-   2) The index specified in the create* must be an integer constant
-   3) For CreateField, the bit length argument must be non-zero.
-
-Example:
-    Name (BUF1, Buffer() {1,2})
-    CreateField (BUF1, 7, 9, CF03)  // 3: ERR
-
-dsdt.asl     14:     CreateField (BUF1, 7, 9, CF03)  // 3: ERR
-Error    6165 -                           ^ Buffer index beyond end of targ=
-et buffer
+Thanks!
 
 
 
---===============5454242201873834287==--
+
+--===============3020749630260029577==--
 
