@@ -1,81 +1,29 @@
-Content-Type: multipart/mixed; boundary="===============3020749630260029577=="
+Content-Type: multipart/mixed; boundary="===============5822183137251364208=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rjw at rjwysocki.net>
-Subject: Re: [Devel] [PATCH v2] ACPI / device_sysfs: change _ADR
- representation to 64 bits
-Date: Tue, 14 May 2019 23:29:18 +0200
-Message-ID: <1683867.ro8ObbCUgW@kreacher>
-In-Reply-To: CAJZ5v0i+M8y3ddr+Z5o5af8OatMXq3xqCF5CUg5PjnANrTOSHw@mail.gmail.com
+From: Rafael J. Wysocki <rafael at kernel.org>
+Subject: Re: [Devel] [PATCH 10/10] docs: fix broken documentation links
+Date: Mon, 27 May 2019 10:43:39 +0200
+Message-ID: <CAJZ5v0iiSo=yoyZTt6ddf5fBRGy1wSvzmA-ZaHH33nivkSp22Q@mail.gmail.com>
+In-Reply-To: 4fd1182b4a41feb2447c7ccde4d7f0a6b3c92686.1558362030.git.mchehab+samsung@kernel.org
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3020749630260029577==
+--===============5822183137251364208==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Monday, May 6, 2019 10:36:22 AM CEST Rafael J. Wysocki wrote:
-> On Thu, May 2, 2019 at 6:58 AM Vinod Koul <vkoul(a)kernel.org> wrote:
-> >
-> > On 01-05-19, 07:53, Pierre-Louis Bossart wrote:
-> > > Standards such as the MIPI DisCo for SoundWire 1.0 specification
-> > > assume the _ADR field is 64 bits.
-> > >
-> > > _ADR is defined as an "Integer" represented as 64 bits since ACPI 2.0
-> > > released in 2002. The low levels already use _ADR as 64 bits, e.g. in
-> > > struct acpi_device_info.
-> > >
-> > > This patch bumps the representation used for sysfs to 64 bits. To
-> > > avoid any compatibility/ABI issues, the printf format is only extended
-> > > to 16 characters when the actual _ADR value exceeds the 32 bit
-> > > maximum.
-> > >
-> > > Example with a SoundWire device, the results show the complete
-> > > vendorID and linkID which were omitted before:
-> > >
-> > > Before:
-> > > $ more /sys/bus/acpi/devices/device\:38/adr
-> > > 0x5d070000
-> > > After:
-> > > $ more /sys/bus/acpi/devices/device\:38/adr
-> > > 0x000010025d070000
-> > >
-> > > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart(a)linux.int=
-el.com>
-> > > ---
-> > > v2: only use 64 bits when required to avoid compatibility issues
-> > > (feedback from Vinod and Rafael)
-> > >
-> > >  drivers/acpi/device_sysfs.c | 6 ++++--
-> > >  include/acpi/acpi_bus.h     | 2 +-
-> > >  2 files changed, 5 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
-> > > index 8940054d6250..7dda0ee05cd1 100644
-> > > --- a/drivers/acpi/device_sysfs.c
-> > > +++ b/drivers/acpi/device_sysfs.c
-> > > @@ -428,8 +428,10 @@ static ssize_t acpi_device_adr_show(struct devic=
-e *dev,
-> > >  {
-> > >       struct acpi_device *acpi_dev =3D to_acpi_device(dev);
-> > >
-> > > -     return sprintf(buf, "0x%08x\n",
-> > > -                    (unsigned int)(acpi_dev->pnp.bus_address));
-> > > +     if (acpi_dev->pnp.bus_address > 0xFFFFFFFF)
-> >
-> > Would prefer to use U32_MAX instead of 0xFFFFFFFF
-> =
+On Mon, May 20, 2019 at 4:48 PM Mauro Carvalho Chehab
+<mchehab+samsung(a)kernel.org> wrote:
+>
+> Mostly due to x86 and acpi conversion, several documentation
+> links are still pointing to the old file. Fix them.
+>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung(a)kernel.org>
 
-> I would.
-> =
+For the ACPI part:
 
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki(a)intel.com>
 
-I have made that change manually and applied the patch.
-
-Thanks!
-
-
-
-
---===============3020749630260029577==--
+--===============5822183137251364208==--
 
