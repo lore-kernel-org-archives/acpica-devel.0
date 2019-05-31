@@ -1,20 +1,20 @@
-Content-Type: multipart/mixed; boundary="===============9184428560723510545=="
+Content-Type: multipart/mixed; boundary="===============0432524936605552398=="
 MIME-Version: 1.0
 From: Rafael J. Wysocki <rjw at rjwysocki.net>
-Subject: Re: [Devel] [PATCH] tools/power/acpi: exclude tools/* from .gitignore
- pattern
-Date: Fri, 31 May 2019 11:23:57 +0200
-Message-ID: <7038880.DppijN9Y0u@kreacher>
-In-Reply-To: 1556549106-16119-1-git-send-email-yamada.masahiro@socionext.com
+Subject: Re: [Devel] [PATCH v2] tools/power/acpi: exclude tools/* from
+ .gitignore pattern
+Date: Fri, 31 May 2019 11:24:47 +0200
+Message-ID: <67810452.HO43NzBsMe@kreacher>
+In-Reply-To: 1556718785-4417-1-git-send-email-yamada.masahiro@socionext.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============9184428560723510545==
+--===============0432524936605552398==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Monday, April 29, 2019 4:45:06 PM CEST Masahiro Yamada wrote:
+On Wednesday, May 1, 2019 3:53:05 PM CEST Masahiro Yamada wrote:
 > tools/power/acpi/.gitignore has the following entries:
 > =
 
@@ -35,7 +35,8 @@ On Monday, April 29, 2019 4:45:06 PM CEST Masahiro Yamada wrote:
 > current directory, but also for any sub-directories.
 > =
 
-> So, the following directories are also considered to be ignored:
+> So, from the point of .gitignore grammar, the following check-in
+> directories are also considered to be ignored:
 > =
 
 >   tools/power/acpi/tools/acpidbg
@@ -43,20 +44,36 @@ On Monday, April 29, 2019 4:45:06 PM CEST Masahiro Yamada wrote:
 >   tools/power/acpi/tools/ec
 > =
 
-> They are obviously version-controlled, so should be excluded from the
-> .gitignore patterns.
+> As the manual gitignore(5) says "Files already tracked by Git are not
+> affected", this is not a problem as far as Git is concerned.
 > =
 
-> You can fix it by prefixing the patterns with '/', which means they
-> are only effective in the current directory.
+> However, Git is not the only program that parses .gitignore because
+> .gitignore is useful to distinguish build artifacts from source files.
 > =
 
-> I also prefixed the "include" consistently. IMHO, '/' prefixing is
-> safer when you intend to ignore specific files or directories.
+> For example, tar(1) supports the --exclude-vcs-ignore option. As of
+> writing, this option does not work perfectly, but it intends to create
+> a tarball excluding files specified by .gitignore.
+> =
+
+> So, I believe it is better to fix this issue.
+> =
+
+> You can fix it by prefixing the pattern with a slash; the leading slash
+> means the specified pattern is relative to the current directory.
+> =
+
+> I also prefixed the "include" consistently. IMHO, it is safer when you
+> intend to ignore specific files or directories.
 > =
 
 > Signed-off-by: Masahiro Yamada <yamada.masahiro(a)socionext.com>
 > ---
+> =
+
+> Changes in v2:
+>   - Add more information to the commit log to clarify my main motivation
 > =
 
 >  tools/power/acpi/.gitignore | 8 ++++----
@@ -79,11 +96,11 @@ On Monday, April 29, 2019 4:45:06 PM CEST Masahiro Yamada wrote:
 > =
 
 
-Applied, thanks!
+I actually have applied this one, not the v1, sorry for the confusion.
 
 
 
 
 
---===============9184428560723510545==--
+--===============0432524936605552398==--
 
