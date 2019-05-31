@@ -1,29 +1,89 @@
-Content-Type: multipart/mixed; boundary="===============5822183137251364208=="
+Content-Type: multipart/mixed; boundary="===============9184428560723510545=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: Re: [Devel] [PATCH 10/10] docs: fix broken documentation links
-Date: Mon, 27 May 2019 10:43:39 +0200
-Message-ID: <CAJZ5v0iiSo=yoyZTt6ddf5fBRGy1wSvzmA-ZaHH33nivkSp22Q@mail.gmail.com>
-In-Reply-To: 4fd1182b4a41feb2447c7ccde4d7f0a6b3c92686.1558362030.git.mchehab+samsung@kernel.org
+From: Rafael J. Wysocki <rjw at rjwysocki.net>
+Subject: Re: [Devel] [PATCH] tools/power/acpi: exclude tools/* from .gitignore
+ pattern
+Date: Fri, 31 May 2019 11:23:57 +0200
+Message-ID: <7038880.DppijN9Y0u@kreacher>
+In-Reply-To: 1556549106-16119-1-git-send-email-yamada.masahiro@socionext.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5822183137251364208==
+--===============9184428560723510545==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, May 20, 2019 at 4:48 PM Mauro Carvalho Chehab
-<mchehab+samsung(a)kernel.org> wrote:
->
-> Mostly due to x86 and acpi conversion, several documentation
-> links are still pointing to the old file. Fix them.
->
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung(a)kernel.org>
+On Monday, April 29, 2019 4:45:06 PM CEST Masahiro Yamada wrote:
+> tools/power/acpi/.gitignore has the following entries:
+> =
 
-For the ACPI part:
+>   acpidbg
+>   acpidump
+>   ec
+> =
 
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki(a)intel.com>
+> They are intended to ignore the following build artifacts:
+> =
 
---===============5822183137251364208==--
+>   tools/power/acpi/acpidbg
+>   tools/power/acpi/acpidump
+>   tools/power/acpi/ec
+> =
+
+> However, those .gitignore entries are effective not only for the
+> current directory, but also for any sub-directories.
+> =
+
+> So, the following directories are also considered to be ignored:
+> =
+
+>   tools/power/acpi/tools/acpidbg
+>   tools/power/acpi/tools/acpidump
+>   tools/power/acpi/tools/ec
+> =
+
+> They are obviously version-controlled, so should be excluded from the
+> .gitignore patterns.
+> =
+
+> You can fix it by prefixing the patterns with '/', which means they
+> are only effective in the current directory.
+> =
+
+> I also prefixed the "include" consistently. IMHO, '/' prefixing is
+> safer when you intend to ignore specific files or directories.
+> =
+
+> Signed-off-by: Masahiro Yamada <yamada.masahiro(a)socionext.com>
+> ---
+> =
+
+>  tools/power/acpi/.gitignore | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> =
+
+> diff --git a/tools/power/acpi/.gitignore b/tools/power/acpi/.gitignore
+> index cba3d99..f698a0e 100644
+> --- a/tools/power/acpi/.gitignore
+> +++ b/tools/power/acpi/.gitignore
+> @@ -1,4 +1,4 @@
+> -acpidbg
+> -acpidump
+> -ec
+> -include
+> +/acpidbg
+> +/acpidump
+> +/ec
+> +/include/
+> =
+
+
+Applied, thanks!
+
+
+
+
+
+--===============9184428560723510545==--
 
