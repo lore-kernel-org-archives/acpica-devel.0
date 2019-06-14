@@ -1,96 +1,78 @@
-Content-Type: multipart/mixed; boundary="===============5344645163964926220=="
+Content-Type: multipart/mixed; boundary="===============6746778389048444867=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
+From: Moore, Robert <robert.moore at intel.com>
 Subject: Re: [Devel] [PATCH v2 1/3] ACPI: Resolve objects on host-directed
  table loads
-Date: Fri, 14 Jun 2019 11:12:53 +0200
-Message-ID: <CAJZ5v0jqxWs=PPik-TCDqQiyxCSyRP7HTue1WsdWP9e-nik2eA@mail.gmail.com>
-In-Reply-To: e2a4ddfd93a904b50b7ccc074e00e14dc4661963.1560327219.git.nikolaus.voss@loewensteinmedical.de
+Date: Fri, 14 Jun 2019 15:35:36 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E3B95EFB26@ORSMSX110.amr.corp.intel.com>
+In-Reply-To: alpine.DEB.2.20.1906141114490.6579@fox.voss.local
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5344645163964926220==
+--===============6746778389048444867==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jun 12, 2019 at 10:36 AM Nikolaus Voss
-<nikolaus.voss(a)loewensteinmedical.de> wrote:
->
-> If an ACPI SSDT overlay is loaded after built-in tables
-> have been loaded e.g. via configfs or efivar_ssdt_load()
-> it is necessary to rewalk the namespace to resolve
-> references. Without this, relative and absolute paths
-> like ^PCI0.SBUS or \_SB.PCI0.SBUS are not resolved
-> correctly.
->
-> Make configfs load use the same method as efivar_ssdt_load().
->
-> Signed-off-by: Nikolaus Voss <nikolaus.voss(a)loewensteinmedical.de>
 
-This is fine by me, so
 
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki(a)intel.com>
+-----Original Message-----
+From: Nikolaus Voss [mailto:nv(a)vosn.de] =
 
-Or if you want me to take this patch (without the other two in the
-series), please let me know.
+Sent: Friday, June 14, 2019 2:26 AM
+To: Rafael J. Wysocki <rafael(a)kernel.org>
+Cc: Rafael J. Wysocki <rjw(a)rjwysocki.net>; Len Brown <lenb(a)kernel.org>;=
+ Moore, Robert <robert.moore(a)intel.com>; Schmauss, Erik <erik.schmauss(a)=
+intel.com>; Jacek Anaszewski <jacek.anaszewski(a)gmail.com>; Pavel Machek <=
+pavel(a)ucw.cz>; Dan Murphy <dmurphy(a)ti.com>; Thierry Reding <thierry.red=
+ing(a)gmail.com>; ACPI Devel Maling List <linux-acpi(a)vger.kernel.org>; op=
+en list:ACPI COMPONENT ARCHITECTURE (ACPICA) <devel(a)acpica.org>; linux-le=
+ds(a)vger.kernel.org; Linux PWM List <linux-pwm(a)vger.kernel.org>; Linux K=
+ernel Mailing List <linux-kernel(a)vger.kernel.org>
+Subject: Re: [PATCH v2 1/3] ACPI: Resolve objects on host-directed table lo=
+ads
 
-As for the other two patches, someone else needs to review them for
-you as I'm not particularly familiar with the PWM subsystem.
+Hi Rafael,
 
-> ---
->  drivers/acpi/acpi_configfs.c   |  6 +-----
->  drivers/acpi/acpica/tbxfload.c | 11 +++++++++++
->  2 files changed, 12 insertions(+), 5 deletions(-)
+On Fri, 14 Jun 2019, Rafael J. Wysocki wrote:
+> On Wed, Jun 12, 2019 at 10:36 AM Nikolaus Voss =
+
+> <nikolaus.voss(a)loewensteinmedical.de> wrote:
+>>
+>> If an ACPI SSDT overlay is loaded after built-in tables have been =
+
+>> loaded e.g. via configfs or efivar_ssdt_load() it is necessary to =
+
+>> rewalk the namespace to resolve references. Without this, relative =
+
+>> and absolute paths like ^PCI0.SBUS or \_SB.PCI0.SBUS are not resolved =
+
+>> correctly.
+>>
+>> Make configfs load use the same method as efivar_ssdt_load().
+>>
+>> Signed-off-by: Nikolaus Voss <nikolaus.voss(a)loewensteinmedical.de>
 >
-> diff --git a/drivers/acpi/acpi_configfs.c b/drivers/acpi/acpi_configfs.c
-> index f92033661239..663f0d88f912 100644
-> --- a/drivers/acpi/acpi_configfs.c
-> +++ b/drivers/acpi/acpi_configfs.c
-> @@ -56,11 +56,7 @@ static ssize_t acpi_table_aml_write(struct config_item=
- *cfg,
->         if (!table->header)
->                 return -ENOMEM;
+> This is fine by me, so
 >
-> -       ACPI_INFO(("Host-directed Dynamic ACPI Table Load:"));
-> -       ret =3D acpi_tb_install_and_load_table(
-> -                       ACPI_PTR_TO_PHYSADDR(table->header),
-> -                       ACPI_TABLE_ORIGIN_EXTERNAL_VIRTUAL, FALSE,
-> -                       &table->index);
-> +       ret =3D acpi_load_table(table->header);
->         if (ret) {
->                 kfree(table->header);
->                 table->header =3D NULL;
-> diff --git a/drivers/acpi/acpica/tbxfload.c b/drivers/acpi/acpica/tbxfloa=
-d.c
-> index 4f30f06a6f78..ef8f8a9f3c9c 100644
-> --- a/drivers/acpi/acpica/tbxfload.c
-> +++ b/drivers/acpi/acpica/tbxfload.c
-> @@ -297,6 +297,17 @@ acpi_status acpi_load_table(struct acpi_table_header=
- *table)
->         status =3D acpi_tb_install_and_load_table(ACPI_PTR_TO_PHYSADDR(ta=
-ble),
->                                                 ACPI_TABLE_ORIGIN_EXTERNA=
-L_VIRTUAL,
->                                                 FALSE, &table_index);
-> +
-> +       if (ACPI_SUCCESS(status)) {
-> +               /* Complete the initialization/resolution of package obje=
-cts */
-> +
-> +               status =3D acpi_ns_walk_namespace(ACPI_TYPE_PACKAGE,
-> +                                               ACPI_ROOT_OBJECT,
-> +                                               ACPI_UINT32_MAX, 0,
-> +                                               acpi_ns_init_one_package,
-> +                                               NULL, NULL, NULL);
-> +       }
-> +
->         return_ACPI_STATUS(status);
->  }
+> Acked-by: Rafael J. Wysocki <rafael.j.wysocki(a)intel.com>
 >
-> --
-> 2.17.1
->
+> Or if you want me to take this patch (without the other two in the =
 
---===============5344645163964926220==--
+> series), please let me know.
+
+thanks. I think it would be the best if you take up this patch as it is an =
+independent topic. In retrospect it wasn't a good idea to put it into this =
+series.
+
+Kind regards,
+Niko
+
+I would have to ask, why is additional code needed for package initializati=
+on/resolution? It already happens elsewhere in acpica.
+Bob
+
+[...]
+
+--===============6746778389048444867==--
 
