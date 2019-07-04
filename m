@@ -1,14 +1,14 @@
-Content-Type: multipart/mixed; boundary="===============9083219661083366352=="
+Content-Type: multipart/mixed; boundary="===============1958348332834476520=="
 MIME-Version: 1.0
 From: kbuild test robot <lkp at intel.com>
-Subject: [Devel] [pm:linux-next 89/102] include/linux/pm_qos.h:209:4: error:
- expected identifier or '(' before '{' token
-Date: Thu, 04 Jul 2019 08:52:22 +0800
-Message-ID: <201907040847.xfwo8JCv%lkp@intel.com>
+Subject: [Devel] [pm:linux-next 91/102] include/linux/pm_qos.h:197:9: error:
+ expected '(' before 'type'
+Date: Thu, 04 Jul 2019 09:04:00 +0800
+Message-ID: <201907040956.ywZASIcA%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============9083219661083366352==
+--===============1958348332834476520==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
@@ -16,15 +16,15 @@ Content-Transfer-Encoding: quoted-printable
 tree:   https://kernel.googlesource.com/pub/scm/linux/kernel/git/rafael/lin=
 ux-pm.git linux-next
 head:   267eacd79cadd5e2d6307320497d66119907c411
-commit: 024a47a2732d5f9cd9c039c52074912c6982d786 [89/102] PM / QOS: Pass re=
-quest type to dev_pm_qos_{add|remove}_notifier()
+commit: 57fa6137402b98327d1247c5aaf3d4f0595a73fe [91/102] PM / QOS: Pass re=
+quest type to dev_pm_qos_read_value()
 config: riscv-allnoconfig (attached as .config)
 compiler: riscv64-linux-gcc (GCC) 7.4.0
 reproduce:
         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/=
 make.cross -O ~/bin/make.cross
         chmod +x ~/bin/make.cross
-        git checkout 024a47a2732d5f9cd9c039c52074912c6982d786
+        git checkout 57fa6137402b98327d1247c5aaf3d4f0595a73fe
         # save the attached .config to linux build tree
         GCC_VERSION=3D7.4.0 make.cross ARCH=3Driscv =
 
@@ -32,134 +32,63 @@ make.cross -O ~/bin/make.cross
 If you fix the issue, kindly add following tag
 Reported-by: kbuild test robot <lkp(a)intel.com>
 
-All errors (new ones prefixed by >>):
+All error/warnings (new ones prefixed by >>):
 
    In file included from kernel//power/qos.c:33:0:
->> include/linux/pm_qos.h:209:4: error: expected identifier or '(' before '=
+   include/linux/pm_qos.h: In function 'dev_pm_qos_read_value':
+>> include/linux/pm_qos.h:197:9: error: expected '(' before 'type'
+     switch type {
+            ^~~~
+   include/linux/pm_qos.h:197:9: warning: statement with no effect [-Wunuse=
+d-value]
+>> include/linux/pm_qos.h:204:1: warning: no return statement in function r=
+eturning non-void [-Wreturn-type]
+    }
+    ^
+   include/linux/pm_qos.h: At top level:
+   include/linux/pm_qos.h:219:4: error: expected identifier or '(' before '=
 {' token
        { return 0; }
        ^
-   include/linux/pm_qos.h:206:19: warning: 'dev_pm_qos_add_notifier' declar=
+   include/linux/pm_qos.h:216:19: warning: 'dev_pm_qos_add_notifier' declar=
 ed 'static' but never defined [-Wunused-function]
     static inline int dev_pm_qos_add_notifier(struct device *dev,
                       ^~~~~~~~~~~~~~~~~~~~~~~
 
-vim +209 include/linux/pm_qos.h
+vim +197 include/linux/pm_qos.h
 
-6dbf5cea Rafael J. Wysocki 2017-02-24  178  =
+   178	=
 
-6dbf5cea Rafael J. Wysocki 2017-02-24  179  static inline s32 dev_pm_qos_ra=
-w_read_value(struct device *dev)
-6dbf5cea Rafael J. Wysocki 2017-02-24  180  {
-6dbf5cea Rafael J. Wysocki 2017-02-24  181  	return IS_ERR_OR_NULL(dev->pow=
-er.qos) ?
-0759e80b Rafael J. Wysocki 2017-11-07  182  		PM_QOS_RESUME_LATENCY_NO_CONS=
-TRAINT :
-0759e80b Rafael J. Wysocki 2017-11-07  183  		pm_qos_read_value(&dev->power=
-.qos->resume_latency);
-6dbf5cea Rafael J. Wysocki 2017-02-24  184  }
-e8db0be1 Jean Pihet        2011-08-25  185  #else
-ae0fb4b7 Rafael J. Wysocki 2012-10-23  186  static inline enum pm_qos_flags=
-_status __dev_pm_qos_flags(struct device *dev,
-ae0fb4b7 Rafael J. Wysocki 2012-10-23  187  							  s32 mask)
-ae0fb4b7 Rafael J. Wysocki 2012-10-23  188  			{ return PM_QOS_FLAGS_UNDEFI=
-NED; }
-ae0fb4b7 Rafael J. Wysocki 2012-10-23  189  static inline enum pm_qos_flags=
-_status dev_pm_qos_flags(struct device *dev,
-ae0fb4b7 Rafael J. Wysocki 2012-10-23  190  							s32 mask)
-ae0fb4b7 Rafael J. Wysocki 2012-10-23  191  			{ return PM_QOS_FLAGS_UNDEFI=
-NED; }
-00dc9ad1 Rafael J. Wysocki 2011-12-01  192  static inline s32 __dev_pm_qos_=
-read_value(struct device *dev)
-0759e80b Rafael J. Wysocki 2017-11-07  193  			{ return PM_QOS_RESUME_LATEN=
-CY_NO_CONSTRAINT; }
-1a9a9152 Rafael J. Wysocki 2011-09-29  194  static inline s32 dev_pm_qos_re=
-ad_value(struct device *dev)
-0759e80b Rafael J. Wysocki 2017-11-07  195  			{ return PM_QOS_RESUME_LATEN=
-CY_NO_CONSTRAINT; }
-91ff4cb8 Jean Pihet        2011-08-25  196  static inline int dev_pm_qos_ad=
-d_request(struct device *dev,
-91ff4cb8 Jean Pihet        2011-08-25  197  					 struct dev_pm_qos_request=
- *req,
-ae0fb4b7 Rafael J. Wysocki 2012-10-23  198  					 enum dev_pm_qos_req_type =
-type,
-91ff4cb8 Jean Pihet        2011-08-25  199  					 s32 value)
-91ff4cb8 Jean Pihet        2011-08-25  200  			{ return 0; }
-91ff4cb8 Jean Pihet        2011-08-25  201  static inline int dev_pm_qos_up=
-date_request(struct dev_pm_qos_request *req,
-91ff4cb8 Jean Pihet        2011-08-25  202  					    s32 new_value)
-91ff4cb8 Jean Pihet        2011-08-25  203  			{ return 0; }
-91ff4cb8 Jean Pihet        2011-08-25  204  static inline int dev_pm_qos_re=
-move_request(struct dev_pm_qos_request *req)
-91ff4cb8 Jean Pihet        2011-08-25  205  			{ return 0; }
-91ff4cb8 Jean Pihet        2011-08-25  206  static inline int dev_pm_qos_ad=
-d_notifier(struct device *dev,
-024a47a2 Viresh Kumar      2019-07-01  207  					  struct notifier_block *n=
-otifier,
-024a47a2 Viresh Kumar      2019-07-01  208  					  enum dev_pm_qos_req_type=
- type);
-91ff4cb8 Jean Pihet        2011-08-25 @209  			{ return 0; }
-91ff4cb8 Jean Pihet        2011-08-25  210  static inline int dev_pm_qos_re=
-move_notifier(struct device *dev,
-024a47a2 Viresh Kumar      2019-07-01  211  					     struct notifier_block=
- *notifier,
-024a47a2 Viresh Kumar      2019-07-01  212  					     enum dev_pm_qos_req_t=
-ype type)
-91ff4cb8 Jean Pihet        2011-08-25  213  			{ return 0; }
-91ff4cb8 Jean Pihet        2011-08-25  214  static inline void dev_pm_qos_c=
-onstraints_init(struct device *dev)
-1a9a9152 Rafael J. Wysocki 2011-09-29  215  {
-1a9a9152 Rafael J. Wysocki 2011-09-29  216  	dev->power.power_state =3D PMS=
-G_ON;
-1a9a9152 Rafael J. Wysocki 2011-09-29  217  }
-91ff4cb8 Jean Pihet        2011-08-25  218  static inline void dev_pm_qos_c=
-onstraints_destroy(struct device *dev)
-1a9a9152 Rafael J. Wysocki 2011-09-29  219  {
-1a9a9152 Rafael J. Wysocki 2011-09-29  220  	dev->power.power_state =3D PMS=
-G_INVALID;
-1a9a9152 Rafael J. Wysocki 2011-09-29  221  }
-40a5f8be Rafael J. Wysocki 2011-12-23  222  static inline int dev_pm_qos_ad=
-d_ancestor_request(struct device *dev,
-71d821fd Rafael J. Wysocki 2014-02-11  223  						  struct dev_pm_qos_reque=
-st *req,
-71d821fd Rafael J. Wysocki 2014-02-11  224  						  enum dev_pm_qos_req_typ=
-e type,
-71d821fd Rafael J. Wysocki 2014-02-11  225  						  s32 value)
-40a5f8be Rafael J. Wysocki 2011-12-23  226  			{ return 0; }
-85dc0b8a Rafael J. Wysocki 2012-03-13  227  static inline int dev_pm_qos_ex=
-pose_latency_limit(struct device *dev, s32 value)
-85dc0b8a Rafael J. Wysocki 2012-03-13  228  			{ return 0; }
-85dc0b8a Rafael J. Wysocki 2012-03-13  229  static inline void dev_pm_qos_h=
-ide_latency_limit(struct device *dev) {}
-e39473d0 Rafael J. Wysocki 2012-10-24  230  static inline int dev_pm_qos_ex=
-pose_flags(struct device *dev, s32 value)
-e39473d0 Rafael J. Wysocki 2012-10-24  231  			{ return 0; }
-e39473d0 Rafael J. Wysocki 2012-10-24  232  static inline void dev_pm_qos_h=
-ide_flags(struct device *dev) {}
-e39473d0 Rafael J. Wysocki 2012-10-24  233  static inline int dev_pm_qos_up=
-date_flags(struct device *dev, s32 m, bool set)
-e39473d0 Rafael J. Wysocki 2012-10-24  234  			{ return 0; }
-2d984ad1 Rafael J. Wysocki 2014-02-11  235  static inline s32 dev_pm_qos_ge=
-t_user_latency_tolerance(struct device *dev)
-2d984ad1 Rafael J. Wysocki 2014-02-11  236  			{ return PM_QOS_LATENCY_TOLE=
-RANCE_NO_CONSTRAINT; }
-2d984ad1 Rafael J. Wysocki 2014-02-11  237  static inline int dev_pm_qos_up=
-date_user_latency_tolerance(struct device *dev, s32 val)
-2d984ad1 Rafael J. Wysocki 2014-02-11  238  			{ return 0; }
-13b2c4a0 Mika Westerberg   2015-07-27  239  static inline int dev_pm_qos_ex=
-pose_latency_tolerance(struct device *dev)
-13b2c4a0 Mika Westerberg   2015-07-27  240  			{ return 0; }
-13b2c4a0 Mika Westerberg   2015-07-27  241  static inline void dev_pm_qos_h=
-ide_latency_tolerance(struct device *dev) {}
-e39473d0 Rafael J. Wysocki 2012-10-24  242  =
+   179	static inline s32 dev_pm_qos_raw_resume_latency(struct device *dev)
+   180	{
+   181		return IS_ERR_OR_NULL(dev->power.qos) ?
+   182			PM_QOS_RESUME_LATENCY_NO_CONSTRAINT :
+   183			pm_qos_read_value(&dev->power.qos->resume_latency);
+   184	}
+   185	#else
+   186	static inline enum pm_qos_flags_status __dev_pm_qos_flags(struct dev=
+ice *dev,
+   187								  s32 mask)
+   188				{ return PM_QOS_FLAGS_UNDEFINED; }
+   189	static inline enum pm_qos_flags_status dev_pm_qos_flags(struct devic=
+e *dev,
+   190								s32 mask)
+   191				{ return PM_QOS_FLAGS_UNDEFINED; }
+   192	static inline s32 __dev_pm_qos_resume_latency(struct device *dev)
+   193				{ return PM_QOS_RESUME_LATENCY_NO_CONSTRAINT; }
+   194	static inline s32 dev_pm_qos_read_value(struct device *dev,
+   195						enum dev_pm_qos_req_type type)
+   196	{
+ > 197		switch type {
+   198		case DEV_PM_QOS_RESUME_LATENCY:
+   199			return PM_QOS_RESUME_LATENCY_NO_CONSTRAINT;
+   200		default:
+   201			WARN_ON(1);
+   202			return 0;
+   203		}
+ > 204	}
+   205	=
 
-
-:::::: The code at line 209 was first introduced by commit
-:::::: 91ff4cb803df6de9114351b9f2f0f39f397ee03e PM QoS: Implement per-devic=
-e PM QoS constraints
-
-:::::: TO: Jean Pihet <j-pihet(a)ti.com>
-:::::: CC: Rafael J. Wysocki <rjw(a)sisk.pl>
 
 ---
 0-DAY kernel test infrastructure                Open Source Technology Cent=
@@ -167,13 +96,13 @@ er
 https://lists.01.org/pipermail/kbuild-all                   Intel Corporati=
 on
 
---===============9083219661083366352==
+--===============1958348332834476520==
 Content-Type: application/gzip
 MIME-Version: 1.0
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="config.gz"
 
-H4sICAtMHV0AAy5jb25maWcAnTxtc9s2k9+fX8FJZ26SeZrUsZ00vRt/gEhQQkUQNAFKcr5wVJl2
+H4sICM5PHV0AAy5jb25maWcAnTxtc9s2k9+fX8FJZ26SeZrUsZ00vRt/gEhQQkUQNAFKcr5wVJl2
 NLEln17a5H79LQBSBMmFkrtO29jYxXKxWOwbFvnlX78E5HjYPi8P69Xy6el78Fhtqt3yUN0HD+un
 6r+CSASpUAGNmHoHyMl6c/z22269X/0dfHh3+e7i7W71IZhWu031FITbzcP68QjT19vNv375F/z7
 Cww+vwCl3X8GZtbH67dPmsbbx9UqeD0OwzfB7++u310AbijSmI3LMCyZLAFy870Zgl/KGc0lE+nN
@@ -263,5 +192,5 @@ KJjvCs/ihDmsJNV/+8OwbqAfeqP2Vr8gN48yvdukMX64lwbJK27zTP1WYtGe8xDdMVa9lYEZsO4t
 RxxbE73WEippnoscjOmfdPDmwan46KQXxXFT8rhIw/bZdt67kTxBxznJJjhOdJcSfbbi3sNvBFjO
 mdJ/K8K4/zSrBnP7fCmnOh/sodTPgC0PJlZwiOhBEwWfWhNaOZzZM/3mitst17P798PulYJXLYwL
 TcuIKP2ALM8LfwVPEp75HjUVI/BXyCaZcfuujduMY1gVsPH7/wILeuBnG0YAAA==
---===============9083219661083366352==--
+--===============1958348332834476520==--
 
