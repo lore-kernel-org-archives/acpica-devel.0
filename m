@@ -1,92 +1,68 @@
-Content-Type: multipart/mixed; boundary="===============2386430569989191369=="
+Content-Type: multipart/mixed; boundary="===============1182464781573746296=="
 MIME-Version: 1.0
-From: Al Stone <ahs3 at redhat.com>
-Subject: Re: [Devel] 20190703 release?
-Date: Mon, 08 Jul 2019 11:32:35 -0600
-Message-ID: <4076c2f2-f156-2afb-0a2a-5cc94f28ba8f@redhat.com>
-In-Reply-To: CF6A88132359CE47947DB4C6E1709ED53C609601@ORSMSX122.amr.corp.intel.com
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] ACPICA version 20190703 released
+Date: Tue, 09 Jul 2019 14:55:48 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E3B960BDFB@ORSMSX110.amr.corp.intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2386430569989191369==
+--===============1182464781573746296==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On 7/8/19 10:59 AM, Schmauss, Erik wrote:
->> -----Original Message-----
->> From: Devel [mailto:devel-bounces(a)acpica.org] On Behalf Of Al Stone
->> Sent: Monday, July 8, 2019 7:52 AM
->> To: devel(a)acpica.org
->> Subject: [Devel] 20190703 release?
->>
->> Howdy.
-> =
+03 July 2019. Summary of changes for version 20190703:
 
-> Hi Al,
-> =
-
-> I hope things are going well for you.
-
-Hey, Erik!  Yup, doing pretty well.  Hope you all are, too.
-
->>
->> It appears that the acpica.org site has not been updated correctly.
->>
->> The current revision on the downloads page still shows 20190509, and
->> 20190703 is listed as a Previous Release.
->>
->> Since most work is now showing up on github, would it make sense to start
->> consolidating the two (acpica.org and github) to keep things simple
-> =
-
-> There were updates being performed on our servers that host our content m=
-anagement system last week.
-> There were some hiccups in the process and we couldn't upload some files =
-due to configurations that were not properly migrated during the update...
-> We're currently working on resolving these issues and we will send out re=
-lease notes when we're able to upload all files..
-> =
-
-> I hope this didn't cause too much confusion
-> =
-
-> Erik
-
-No worries.  I saw the FWTS update to 20190703, but neither the Debian
-watcher nor the Fedora watcher saw a release come out so it got to be
-a bit of a puzzle to solve.
-
-Still, it may (or may not) make things simpler for you all to have just
-one location to update in the future.  I'm just lazy enough that I would
-definitely consider it :).
-
->>
->> --
->> ciao,
->> al
->> -----------------------------------
->> Al Stone
->> Software Engineer
->> Red Hat, Inc.
->> ahs3(a)redhat.com
->> -----------------------------------
->> _______________________________________________
->> Devel mailing list
->> Devel(a)acpica.org
->> https://lists.acpica.org/mailman/listinfo/devel
+This release is available at https://acpica.org/downloads
 
 
--- =
+1) ACPICA kernel-resident subsystem:
 
-ciao,
-al
------------------------------------
-Al Stone
-Software Engineer
-Red Hat, Inc.
-ahs3(a)redhat.com
------------------------------------
+Remove legacy module-level support code. There were still some remnants of =
+the legacy module-level code executions. Since we no longer support this op=
+tion, this is essentially dead code and has been removed from the ACPICA so=
+urce.
 
---===============2386430569989191369==--
+iASL: ensure that _WAK, _PTS, _TTS, and _Sx are declared only at the root s=
+cope. If these named objects are declared outside the root scope, they will=
+ not be invoked by any host Operating System.
+
+Clear status of GPEs on first direct enable. ACPI GPEs (other than the EC o=
+ne) can be enabled in two situations. First, the GPEs with existing _Lxx an=
+d _Exx methods are enabled implicitly by ACPICA during system initializatio=
+n.  Second, the GPEs without these methods (like GPEs listed by _PRW object=
+s for wakeup devices) need to be enabled directly by the code that is going=
+ to use them (e.g. ACPI power management or device drivers).
+
+In the former case, if the status of a given GPE is set to start with, its =
+handler method (either _Lxx or _Exx) needs to be invoked to take care of th=
+e events (possibly) signaled before the GPE was enabled. In the latter case=
+, however, the first caller of AcpiEnableGpe() for a given GPE should not b=
+e expected to care about any events that might be signaled through it earli=
+er.  In that case, it is better to clear the status of the GPE before enabl=
+ing it, to prevent stale events from triggering unwanted actions (like spur=
+ious system resume, for example).
+
+For this reason, modify AcpiEvAddGpeReference() to take an additional boole=
+an argument indicating whether or not the GPE status needs to be cleared wh=
+en its reference counter changes from zero to one and make AcpiEnableGpe() =
+pass TRUE to it through that new argument.
+
+
+2) iASL Compiler/Disassembler and ACPICA tools:
+
+The tool generation process has been migrated to MSVC 2017, and all project=
+ files have been upgraded. The new project files appear in the directory \a=
+cpica\generate\msvc2017. This change effectively deprecates the older proje=
+ct files in \acpica\generate\msvc9.
+
+iASL: ensure that _WAK, _PTS, _TTS, and _Sx are declared only at the root s=
+cope. If these named objects are declared outside the root scope, they will=
+ not be invoked by any host Operating System.
+
+
+
+
+--===============1182464781573746296==--
 
