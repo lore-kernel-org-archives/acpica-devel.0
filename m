@@ -1,29 +1,46 @@
-Content-Type: multipart/mixed; boundary="===============6523675307608331663=="
+Content-Type: multipart/mixed; boundary="===============3899719519523513122=="
 MIME-Version: 1.0
-From: Schmauss, Erik <erik.schmauss at intel.com>
+From: Moore, Robert <robert.moore at intel.com>
 Subject: Re: [Devel] [PATCH v2] acpica: fix -Wnull-pointer-arithmetic warnings
-Date: Thu, 01 Aug 2019 20:17:55 +0000
-Message-ID: <CF6A88132359CE47947DB4C6E1709ED53C618109@ORSMSX122.amr.corp.intel.com>
-In-Reply-To: 1564686979.11067.48.camel@lca.pw
+Date: Thu, 01 Aug 2019 20:28:51 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E3B96643D0@ORSMSX110.amr.corp.intel.com>
+In-Reply-To: CF6A88132359CE47947DB4C6E1709ED53C618109@ORSMSX122.amr.corp.intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6523675307608331663==
+--===============3899719519523513122==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
 
 
+-----Original Message-----
+From: Schmauss, Erik =
+
+Sent: Thursday, August 01, 2019 1:18 PM
+To: Qian Cai <cai(a)lca.pw>; Moore, Robert <robert.moore(a)intel.com>; Wyso=
+cki, Rafael J <rafael.j.wysocki(a)intel.com>
+Cc: jkim(a)FreeBSD.org; lenb(a)kernel.org; ndesaulniers(a)google.com; linux=
+-acpi(a)vger.kernel.org; devel(a)acpica.org; clang-built-linux(a)googlegrou=
+ps.com; linux-kernel(a)vger.kernel.org
+Subject: RE: [PATCH v2] acpica: fix -Wnull-pointer-arithmetic warnings
+
+
+
 > -----Original Message-----
 > From: Qian Cai [mailto:cai(a)lca.pw]
 > Sent: Thursday, August 1, 2019 12:16 PM
-> To: Moore, Robert <robert.moore(a)intel.com>; Wysocki, Rafael J
+> To: Moore, Robert <robert.moore(a)intel.com>; Wysocki, Rafael J =
+
 > <rafael.j.wysocki(a)intel.com>
-> Cc: Schmauss, Erik <erik.schmauss(a)intel.com>; jkim(a)FreeBSD.org;
+> Cc: Schmauss, Erik <erik.schmauss(a)intel.com>; jkim(a)FreeBSD.org; =
+
 > lenb(a)kernel.org; ndesaulniers(a)google.com; linux-acpi(a)vger.kernel.or=
-g;
-> devel(a)acpica.org; clang-built-linux(a)googlegroups.com; linux-
+g; =
+
+> devel(a)acpica.org; clang-built-linux(a)googlegroups.com; linux- =
+
 > kernel(a)vger.kernel.org
 > Subject: Re: [PATCH v2] acpica: fix -Wnull-pointer-arithmetic warnings
 > =
@@ -39,13 +56,15 @@ g;
 > eb8a082d797
 > =
 
-> but how does that change will go into the linux kernel? Suppose Rafael wi=
-ll
-> need to pick it up manually?
+> but how does that change will go into the linux kernel? Suppose Rafael =
 
-I do that after every ACPICA release
+> will need to pick it up manually?
 
-Erik
+>I do that after every ACPICA release
+
+Which happens about once per month.
+
+>Erik
 > =
 
 > >
@@ -54,18 +73,24 @@ Erik
 > > From: Qian Cai [mailto:cai(a)lca.pw]
 > > Sent: Thursday, July 18, 2019 12:49 PM
 > > To: Wysocki, Rafael J <rafael.j.wysocki(a)intel.com>
-> > Cc: Moore, Robert <robert.moore(a)intel.com>; Schmauss, Erik
-> > <erik.schmauss(a)inte l.com>; jkim(a)FreeBSD.org; lenb(a)kernel.org;
-> > ndesaulniers(a)google.com; linux-acpi @vger.kernel.org;
-> > devel(a)acpica.org; clang-built-linux(a)googlegroups.com; linux-
+> > Cc: Moore, Robert <robert.moore(a)intel.com>; Schmauss, Erik =
+
+> > <erik.schmauss(a)inte l.com>; jkim(a)FreeBSD.org; lenb(a)kernel.org; =
+
+> > ndesaulniers(a)google.com; linux-acpi @vger.kernel.org; =
+
+> > devel(a)acpica.org; clang-built-linux(a)googlegroups.com; linux- =
+
 > > kernel(a)vger.kernel.org; Qian Cai <cai(a)lca.pw>
 > > Subject: [PATCH v2] acpica: fix -Wnull-pointer-arithmetic warnings
 > >
 > > Clang generate quite a few of those warnings.
 > >
-> > drivers/acpi/scan.c:759:28: warning: arithmetic on a null pointer
-> > treated as a cast from integer to pointer is a GNU extension [-Wnull-po=
-inter-
+> > drivers/acpi/scan.c:759:28: warning: arithmetic on a null pointer =
+
+> > treated as a cast from integer to pointer is a GNU extension =
+
+> > [-Wnull-pointer-
 > arithmetic]
 > > 		status =3D acpi_get_handle(ACPI_ROOT_OBJECT,
 > > obj->string.pointer,
@@ -76,22 +101,25 @@ inter-
 > > ./include/acpi/actypes.h:458:56: note: expanded from macro
 > 'ACPI_ROOT_OBJECT'
 > > =C2=A0#define ACPI_ROOT_OBJECT=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0((acpi_handle)
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0((acpi_handle) =
+
 > > ACPI_TO_POINTER
 > > (ACPI_MAX_PTR))
 > > 							^~~~~~~~~~~~~~~
 > > ./include/acpi/actypes.h:509:41: note: expanded from macro
 > 'ACPI_TO_POINTER'
 > > =C2=A0#define ACPI_TO_POINTER(i)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ACPI_ADD_PTR (void, (void *)
-> > 0,
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ACPI_ADD_PTR (void, (void =
+
+> > *) 0,
 > > (acpi_size) (i))
 > >
 > > ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 > > ./include/acpi/actypes.h:503:84: note: expanded from macro 'ACPI_ADD_PT=
 R'
 > > =C2=A0#define ACPI_ADD_PTR(t, a, b)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ACPI_CAST_PTR (t,
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ACPI_CAST_PTR (t, =
+
 > > (ACPI_CAST_PTR (u8, (a)) + (acpi_size)(b)))
 > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
 =A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
@@ -100,17 +128,23 @@ R'
 > > ./include/acpi/actypes.h:501:66: note: expanded from macro
 > 'ACPI_CAST_PTR'
 > > =C2=A0#define ACPI_CAST_PTR(t, p)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0((t *) (acpi_uintptr_t) (p))
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0((t *) (acpi_uintptr_t) =
+
+> > (p))
 > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
 =A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
 =A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0^
-> > This is because pointer arithmetic on a pointer not pointing to an
-> > array is an undefined behavior (C11 6.5.6, constraint 8). Fix it by
-> > just casting the corresponding pointers using ACPI_CAST_PTR() and skip
-> > the arithmetic. Also, fix a checkpatch warning together.
+=A0=C2=A0=C2=A0=C2=A0^ =
+
+> > This is because pointer arithmetic on a pointer not pointing to an =
+
+> > array is an undefined behavior (C11 6.5.6, constraint 8). Fix it by =
+
+> > just casting the corresponding pointers using ACPI_CAST_PTR() and =
+
+> > skip the arithmetic. Also, fix a checkpatch warning together.
 > >
 > > ERROR: Macros with complex values should be enclosed in parentheses
 > > =C2=A0#45: FILE: include/acpi/actypes.h:509:
@@ -135,15 +169,19 @@ R'
 > > =C2=A0/* Pointer/Integer type conversions */
 > >
 > > -#define ACPI_TO_POINTER(i)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ACPI_ADD_PTR (void, (void *)
-> > 0,
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ACPI_ADD_PTR (void, (void =
+
+> > *) 0,
 > > (acpi_size) (i))
 > > +#define ACPI_TO_POINTER(i)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0(ACPI_CAST_PTR (void, i))
 > > =C2=A0#define ACPI_TO_INTEGER(p)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ACPI_PTR_DIFF (p, (void *) 0)
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ACPI_PTR_DIFF (p, (void *) =
+
+> > 0)
 > > =C2=A0#define ACPI_OFFSET(d, f)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ACPI_PTR_DIFF (&(((d *)
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ACPI_PTR_DIFF (&(((d *) =
+
 > > 0)->f), (void
 > > *) 0)
 > > =C2=A0#define ACPI_PHYSADDR_TO_PTR(i)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
@@ -152,5 +190,5 @@ R'
 > > 2.20.1 (Apple Git-117)
 > >
 
---===============6523675307608331663==--
+--===============3899719519523513122==--
 
