@@ -1,194 +1,570 @@
-Content-Type: multipart/mixed; boundary="===============3899719519523513122=="
+Content-Type: multipart/mixed; boundary="===============6736346664175081518=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: Re: [Devel] [PATCH v2] acpica: fix -Wnull-pointer-arithmetic warnings
-Date: Thu, 01 Aug 2019 20:28:51 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E3B96643D0@ORSMSX110.amr.corp.intel.com>
-In-Reply-To: CF6A88132359CE47947DB4C6E1709ED53C618109@ORSMSX122.amr.corp.intel.com
+From: Rafael J. Wysocki <rjw at rjwysocki.net>
+Subject: Re: [Devel] [PATCH V2 05/10] ACPI: cpufreq: Switch to QoS requests
+ instead of cpufreq notifier
+Date: Mon, 05 Aug 2019 11:42:56 +0200
+Message-ID: <1782403.O7LH3UnqfR@kreacher>
+In-Reply-To: 86dc4a082ea00c278c0e1d7f3fcbdc4ab9af2eec.1563862014.git.viresh.kumar@linaro.org
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3899719519523513122==
+--===============6736346664175081518==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-
-
------Original Message-----
-From: Schmauss, Erik =
-
-Sent: Thursday, August 01, 2019 1:18 PM
-To: Qian Cai <cai(a)lca.pw>; Moore, Robert <robert.moore(a)intel.com>; Wyso=
-cki, Rafael J <rafael.j.wysocki(a)intel.com>
-Cc: jkim(a)FreeBSD.org; lenb(a)kernel.org; ndesaulniers(a)google.com; linux=
--acpi(a)vger.kernel.org; devel(a)acpica.org; clang-built-linux(a)googlegrou=
-ps.com; linux-kernel(a)vger.kernel.org
-Subject: RE: [PATCH v2] acpica: fix -Wnull-pointer-arithmetic warnings
-
-
-
-> -----Original Message-----
-> From: Qian Cai [mailto:cai(a)lca.pw]
-> Sent: Thursday, August 1, 2019 12:16 PM
-> To: Moore, Robert <robert.moore(a)intel.com>; Wysocki, Rafael J =
-
-> <rafael.j.wysocki(a)intel.com>
-> Cc: Schmauss, Erik <erik.schmauss(a)intel.com>; jkim(a)FreeBSD.org; =
-
-> lenb(a)kernel.org; ndesaulniers(a)google.com; linux-acpi(a)vger.kernel.or=
-g; =
-
-> devel(a)acpica.org; clang-built-linux(a)googlegroups.com; linux- =
-
-> kernel(a)vger.kernel.org
-> Subject: Re: [PATCH v2] acpica: fix -Wnull-pointer-arithmetic warnings
+On Tuesday, July 23, 2019 8:14:05 AM CEST Viresh Kumar wrote:
+> The cpufreq core now takes the min/max frequency constraints via QoS
+> requests and the CPUFREQ_ADJUST notifier shall get removed later on.
 > =
 
-> On Fri, 2019-07-26 at 19:35 +0000, Moore, Robert wrote:
-> > We've taken the change to ACPI_TO_POINTER.
+> Switch over to using the QoS request for maximum frequency constraint
+> for acpi driver.
 > =
 
-> I am a bit confused here. I saw the commit in the acpia repo.
+> Signed-off-by: Viresh Kumar <viresh.kumar(a)linaro.org>
+> ---
+>  drivers/acpi/processor_driver.c  |  44 +++++++++++--
+>  drivers/acpi/processor_perflib.c | 106 +++++++++++++------------------
+>  drivers/acpi/processor_thermal.c |  81 ++++++++++++-----------
+>  include/acpi/processor.h         |  22 ++++---
+>  4 files changed, 137 insertions(+), 116 deletions(-)
 > =
 
-> https://github.com/acpica/acpica/commit/02bbca5070e42d298c9b824300aa0
-> eb8a082d797
+> diff --git a/drivers/acpi/processor_driver.c b/drivers/acpi/processor_dri=
+ver.c
+> index aea8d674a33d..e7a3f07e9879 100644
+> --- a/drivers/acpi/processor_driver.c
+> +++ b/drivers/acpi/processor_driver.c
+> @@ -284,6 +284,35 @@ static int acpi_processor_stop(struct device *dev)
+>  	return 0;
+>  }
+>  =
+
+> +bool acpi_processor_cpufreq_init;
+> +
+> +static int acpi_processor_notifier(struct notifier_block *nb,
+> +				   unsigned long event, void *data)
+> +{
+> +	struct cpufreq_policy *policy =3D data;
+> +	int cpu;
+> +
+> +	if (event =3D=3D CPUFREQ_CREATE_POLICY) {
+> +		for_each_cpu(cpu, policy->cpus)
+> +			per_cpu(processors, cpu)->policy =3D policy;
+> +
+> +		acpi_thermal_cpufreq_init(policy);
+> +		acpi_processor_ppc_init(policy);
+> +	} else if (event =3D=3D CPUFREQ_REMOVE_POLICY) {
+> +		acpi_processor_ppc_exit(policy);
+> +		acpi_thermal_cpufreq_exit(policy);
+> +
+> +		for_each_cpu(cpu, policy->cpus)
+> +			per_cpu(processors, cpu)->policy =3D NULL;
+> +	}
+
+It doesn't look like it is necessary to pass policy to the
+functions here, just the CPU number.
+
+Also I don't think it is necessary to squirrel the policy pointer.
+
+> +
+> +	return 0;
+> +}
+> +
+> +static struct notifier_block acpi_processor_notifier_block =3D {
+> +	.notifier_call =3D acpi_processor_notifier,
+> +};
+> +
+>  /*
+>   * We keep the driver loaded even when ACPI is not running.
+>   * This is needed for the powernow-k8 driver, that works even without
+> @@ -310,8 +339,11 @@ static int __init acpi_processor_driver_init(void)
+>  	cpuhp_setup_state_nocalls(CPUHP_ACPI_CPUDRV_DEAD, "acpi/cpu-drv:dead",
+>  				  NULL, acpi_soft_cpu_dead);
+>  =
+
+> -	acpi_thermal_cpufreq_init();
+> -	acpi_processor_ppc_init();
+> +	if (!cpufreq_register_notifier(&acpi_processor_notifier_block,
+> +				       CPUFREQ_POLICY_NOTIFIER)) {
+> +		acpi_processor_cpufreq_init =3D true;
+
+Can't that be set/cleared by acpi_processor_notifier() itself?
+
+> +	}
+
+Redundant braces.
+
+> +
+>  	acpi_processor_throttling_init();
+>  	return 0;
+>  err:
+> @@ -324,8 +356,12 @@ static void __exit acpi_processor_driver_exit(void)
+>  	if (acpi_disabled)
+>  		return;
+>  =
+
+> -	acpi_processor_ppc_exit();
+> -	acpi_thermal_cpufreq_exit();
+> +	if (acpi_processor_cpufreq_init) {
+> +		cpufreq_unregister_notifier(&acpi_processor_notifier_block,
+> +					    CPUFREQ_POLICY_NOTIFIER);
+> +		acpi_processor_cpufreq_init =3D false;
+> +	}
+> +
+>  	cpuhp_remove_state_nocalls(hp_online);
+>  	cpuhp_remove_state_nocalls(CPUHP_ACPI_CPUDRV_DEAD);
+>  	driver_unregister(&acpi_processor_driver);
+> diff --git a/drivers/acpi/processor_perflib.c b/drivers/acpi/processor_pe=
+rflib.c
+> index ee87cb6f6e59..1a22b2415a8b 100644
+> --- a/drivers/acpi/processor_perflib.c
+> +++ b/drivers/acpi/processor_perflib.c
+> @@ -50,57 +50,13 @@ module_param(ignore_ppc, int, 0644);
+>  MODULE_PARM_DESC(ignore_ppc, "If the frequency of your machine gets wron=
+gly" \
+>  		 "limited by BIOS, this should help");
+>  =
+
+> -#define PPC_REGISTERED   1
+> -#define PPC_IN_USE       2
+> -
+> -static int acpi_processor_ppc_status;
+> -
+> -static int acpi_processor_ppc_notifier(struct notifier_block *nb,
+> -				       unsigned long event, void *data)
+> -{
+> -	struct cpufreq_policy *policy =3D data;
+> -	struct acpi_processor *pr;
+> -	unsigned int ppc =3D 0;
+> -
+> -	if (ignore_ppc < 0)
+> -		ignore_ppc =3D 0;
+> -
+> -	if (ignore_ppc)
+> -		return 0;
+> -
+> -	if (event !=3D CPUFREQ_ADJUST)
+> -		return 0;
+> -
+> -	mutex_lock(&performance_mutex);
+> -
+> -	pr =3D per_cpu(processors, policy->cpu);
+> -	if (!pr || !pr->performance)
+> -		goto out;
+> -
+> -	ppc =3D (unsigned int)pr->performance_platform_limit;
+> -
+> -	if (ppc >=3D pr->performance->state_count)
+> -		goto out;
+> -
+> -	cpufreq_verify_within_limits(policy, 0,
+> -				     pr->performance->states[ppc].
+> -				     core_frequency * 1000);
+> -
+> -      out:
+> -	mutex_unlock(&performance_mutex);
+> -
+> -	return 0;
+> -}
+> -
+> -static struct notifier_block acpi_ppc_notifier_block =3D {
+> -	.notifier_call =3D acpi_processor_ppc_notifier,
+> -};
+> +static int acpi_processor_ppc_in_use;
+
+Why not bool?
+
+>  =
+
+>  static int acpi_processor_get_platform_limit(struct acpi_processor *pr)
+>  {
+>  	acpi_status status =3D 0;
+>  	unsigned long long ppc =3D 0;
+> -
+> +	int ret;
+>  =
+
+>  	if (!pr)
+>  		return -EINVAL;
+> @@ -112,7 +68,7 @@ static int acpi_processor_get_platform_limit(struct ac=
+pi_processor *pr)
+>  	status =3D acpi_evaluate_integer(pr->handle, "_PPC", NULL, &ppc);
+>  =
+
+>  	if (status !=3D AE_NOT_FOUND)
+> -		acpi_processor_ppc_status |=3D PPC_IN_USE;
+> +		acpi_processor_ppc_in_use =3D 1;
+>  =
+
+>  	if (ACPI_FAILURE(status) && status !=3D AE_NOT_FOUND) {
+>  		ACPI_EXCEPTION((AE_INFO, status, "Evaluating _PPC"));
+> @@ -124,6 +80,16 @@ static int acpi_processor_get_platform_limit(struct a=
+cpi_processor *pr)
+>  =
+
+>  	pr->performance_platform_limit =3D (int)ppc;
+>  =
+
+> +	if (ignore_ppc || ppc >=3D pr->performance->state_count)
+> +		return 0;
+> +
+> +	ret =3D dev_pm_qos_update_request(pr->perflib_req,
+> +			pr->performance->states[ppc].core_frequency * 1000);
+> +	if (ret) {
+> +		pr_warn("Failed to update perflib freq constraint: cpu%d (%d)\n",
+> +			pr->id, ret);
+> +	}
+> +
+>  	return 0;
+>  }
+>  =
+
+> @@ -184,23 +150,39 @@ int acpi_processor_get_bios_limit(int cpu, unsigned=
+ int *limit)
+>  }
+>  EXPORT_SYMBOL(acpi_processor_get_bios_limit);
+>  =
+
+> -void acpi_processor_ppc_init(void)
+> +void acpi_processor_ppc_init(struct cpufreq_policy *policy)
+>  {
+> -	if (!cpufreq_register_notifier
+> -	    (&acpi_ppc_notifier_block, CPUFREQ_POLICY_NOTIFIER))
+> -		acpi_processor_ppc_status |=3D PPC_REGISTERED;
+> -	else
+> -		printk(KERN_DEBUG
+> -		       "Warning: Processor Platform Limit not supported.\n");
+> +	struct acpi_processor *pr =3D per_cpu(processors, policy->cpu);
+> +	struct dev_pm_qos_request *req;
+> +	int ret;
+> +
+> +	req =3D kzalloc(sizeof(*req), GFP_KERNEL);
+> +	if (!req)
+> +		return;
+
+The above wouldn't be necessary if the request struct was part of struct ac=
+pi_processor.
+
+> +
+> +	ret =3D dev_pm_qos_add_request(get_cpu_device(policy->cpu),
+> +				     req, DEV_PM_QOS_MAX_FREQUENCY,
+> +				     policy->cpuinfo.max_freq);
+
+The last argument doesn't need to be policy->cpuinfo.max_freq AFAICS.  It m=
+ight as well
+be a large constant ("infinity"), so the function doesn't seem to need a po=
+licy pointer,
+just the CPU number.
+
+> +	if (ret < 0) {
+> +		pr_err("Failed to add freq constraint for cpu%d (%d)\n",
+> +		       policy->cpu, ret);
+> +		kfree(req);
+> +		return;
+> +	}
+> +
+> +	pr->perflib_req =3D req;
+> +
+> +	if (ignore_ppc < 0)
+> +		ignore_ppc =3D 0;
+>  }
+>  =
+
+> -void acpi_processor_ppc_exit(void)
+> +void acpi_processor_ppc_exit(struct cpufreq_policy *policy)
+>  {
+> -	if (acpi_processor_ppc_status & PPC_REGISTERED)
+> -		cpufreq_unregister_notifier(&acpi_ppc_notifier_block,
+> -					    CPUFREQ_POLICY_NOTIFIER);
+> +	struct acpi_processor *pr =3D per_cpu(processors, policy->cpu);
+>  =
+
+> -	acpi_processor_ppc_status &=3D ~PPC_REGISTERED;
+> +	dev_pm_qos_remove_request(pr->perflib_req);
+> +	kfree(pr->perflib_req);
+> +	pr->perflib_req =3D NULL;
+>  }
+>  =
+
+>  static int acpi_processor_get_performance_control(struct acpi_processor =
+*pr)
+> @@ -477,7 +459,7 @@ int acpi_processor_notify_smm(struct module *calling_=
+module)
+>  	static int is_done =3D 0;
+>  	int result;
+>  =
+
+> -	if (!(acpi_processor_ppc_status & PPC_REGISTERED))
+> +	if (!acpi_processor_cpufreq_init)
+>  		return -EBUSY;
+>  =
+
+>  	if (!try_module_get(calling_module))
+> @@ -513,7 +495,7 @@ int acpi_processor_notify_smm(struct module *calling_=
+module)
+>  	 * we can allow the cpufreq driver to be rmmod'ed. */
+>  	is_done =3D 1;
+>  =
+
+> -	if (!(acpi_processor_ppc_status & PPC_IN_USE))
+> +	if (!acpi_processor_ppc_in_use)
+>  		module_put(calling_module);
+>  =
+
+>  	return 0;
+> @@ -742,7 +724,7 @@ acpi_processor_register_performance(struct acpi_proce=
+ssor_performance
+>  {
+>  	struct acpi_processor *pr;
+>  =
+
+> -	if (!(acpi_processor_ppc_status & PPC_REGISTERED))
+> +	if (!acpi_processor_cpufreq_init)
+>  		return -EINVAL;
+>  =
+
+>  	mutex_lock(&performance_mutex);
+> diff --git a/drivers/acpi/processor_thermal.c b/drivers/acpi/processor_th=
+ermal.c
+> index 50fb0107375e..02407b33b874 100644
+> --- a/drivers/acpi/processor_thermal.c
+> +++ b/drivers/acpi/processor_thermal.c
+> @@ -35,7 +35,6 @@ ACPI_MODULE_NAME("processor_thermal");
+>  #define CPUFREQ_THERMAL_MAX_STEP 3
+>  =
+
+>  static DEFINE_PER_CPU(unsigned int, cpufreq_thermal_reduction_pctg);
+> -static unsigned int acpi_thermal_cpufreq_is_init =3D 0;
+>  =
+
+>  #define reduction_pctg(cpu) \
+>  	per_cpu(cpufreq_thermal_reduction_pctg, phys_package_first_cpu(cpu))
+> @@ -61,35 +60,11 @@ static int phys_package_first_cpu(int cpu)
+>  static int cpu_has_cpufreq(unsigned int cpu)
+>  {
+>  	struct cpufreq_policy policy;
+> -	if (!acpi_thermal_cpufreq_is_init || cpufreq_get_policy(&policy, cpu))
+> +	if (!acpi_processor_cpufreq_init || cpufreq_get_policy(&policy, cpu))
+>  		return 0;
+>  	return 1;
+>  }
+>  =
+
+> -static int acpi_thermal_cpufreq_notifier(struct notifier_block *nb,
+> -					 unsigned long event, void *data)
+> -{
+> -	struct cpufreq_policy *policy =3D data;
+> -	unsigned long max_freq =3D 0;
+> -
+> -	if (event !=3D CPUFREQ_ADJUST)
+> -		goto out;
+> -
+> -	max_freq =3D (
+> -	    policy->cpuinfo.max_freq *
+> -	    (100 - reduction_pctg(policy->cpu) * 20)
+> -	) / 100;
+> -
+> -	cpufreq_verify_within_limits(policy, 0, max_freq);
+> -
+> -      out:
+> -	return 0;
+> -}
+> -
+> -static struct notifier_block acpi_thermal_cpufreq_notifier_block =3D {
+> -	.notifier_call =3D acpi_thermal_cpufreq_notifier,
+> -};
+> -
+>  static int cpufreq_get_max_state(unsigned int cpu)
+>  {
+>  	if (!cpu_has_cpufreq(cpu))
+> @@ -108,7 +83,9 @@ static int cpufreq_get_cur_state(unsigned int cpu)
+>  =
+
+>  static int cpufreq_set_cur_state(unsigned int cpu, int state)
+>  {
+> -	int i;
+> +	struct acpi_processor *pr;
+> +	unsigned long max_freq;
+> +	int i, ret;
+>  =
+
+>  	if (!cpu_has_cpufreq(cpu))
+>  		return 0;
+> @@ -121,33 +98,53 @@ static int cpufreq_set_cur_state(unsigned int cpu, i=
+nt state)
+>  	 * frequency.
+>  	 */
+>  	for_each_online_cpu(i) {
+> -		if (topology_physical_package_id(i) =3D=3D
+> +		if (topology_physical_package_id(i) !=3D
+>  		    topology_physical_package_id(cpu))
+> -			cpufreq_update_policy(i);
+> +			continue;
+> +
+> +		pr =3D per_cpu(processors, i);
+
+This could use cpufreq_cpu_get() to get to the policy (given the CPU number=
+).
+
+> +		max_freq =3D (pr->policy->cpuinfo.max_freq * (100 - reduction_pctg(i) =
+* 20)) / 100;
+> +
+> +		ret =3D dev_pm_qos_update_request(pr->thermal_req, max_freq);
+> +		if (ret) {
+> +			pr_warn("Failed to update thermal freq constraint: cpu%d (%d)\n",
+> +				pr->id, ret);
+
+Please spell CPU in capitals in messages.
+
+> +		}
+>  	}
+>  	return 0;
+>  }
+>  =
+
+> -void acpi_thermal_cpufreq_init(void)
+> +void acpi_thermal_cpufreq_init(struct cpufreq_policy *policy)
+>  {
+> -	int i;
+> +	struct acpi_processor *pr =3D per_cpu(processors, policy->cpu);
+> +	struct dev_pm_qos_request *req;
+> +	int ret;
+> +
+> +	req =3D kzalloc(sizeof(*req), GFP_KERNEL);
+> +	if (!req)
+> +		return;
+
+Again, the request struct could be part of struct acpi_processor and the co=
+de
+would be simpler then.
+
+> +
+> +	ret =3D dev_pm_qos_add_request(get_cpu_device(policy->cpu),
+> +				     req, DEV_PM_QOS_MAX_FREQUENCY,
+> +				     policy->cpuinfo.max_freq);
+
+And again, the last argument here could be a large ("inifinity") constant h=
+ere, so
+no need to take the policy pointer.
+
+> +	if (ret < 0) {
+> +		pr_err("Failed to add freq constraint for cpu%d (%d)\n",
+> +		       policy->cpu, ret);
+> +		kfree(req);
+> +		return;
+> +	}
+>  =
+
+> -	i =3D cpufreq_register_notifier(&acpi_thermal_cpufreq_notifier_block,
+> -				      CPUFREQ_POLICY_NOTIFIER);
+> -	if (!i)
+> -		acpi_thermal_cpufreq_is_init =3D 1;
+> +	pr->thermal_req =3D req;
+>  }
+>  =
+
+> -void acpi_thermal_cpufreq_exit(void)
+> +void acpi_thermal_cpufreq_exit(struct cpufreq_policy *policy)
+>  {
+> -	if (acpi_thermal_cpufreq_is_init)
+> -		cpufreq_unregister_notifier
+> -		    (&acpi_thermal_cpufreq_notifier_block,
+> -		     CPUFREQ_POLICY_NOTIFIER);
+> +	struct acpi_processor *pr =3D per_cpu(processors, policy->cpu);
+>  =
+
+> -	acpi_thermal_cpufreq_is_init =3D 0;
+> +	dev_pm_qos_remove_request(pr->thermal_req);
+> +	kfree(pr->thermal_req);
+> +	pr->thermal_req =3D NULL;
+>  }
+> -
+>  #else				/* ! CONFIG_CPU_FREQ */
+>  static int cpufreq_get_max_state(unsigned int cpu)
+>  {
+> diff --git a/include/acpi/processor.h b/include/acpi/processor.h
+> index 1194a4c78d55..a1a7966bb755 100644
+> --- a/include/acpi/processor.h
+> +++ b/include/acpi/processor.h
+> @@ -4,6 +4,8 @@
+>  =
+
+>  #include <linux/kernel.h>
+>  #include <linux/cpu.h>
+> +#include <linux/cpufreq.h>
+> +#include <linux/pm_qos.h>
+>  #include <linux/thermal.h>
+>  #include <asm/acpi.h>
+>  =
+
+> @@ -230,6 +232,9 @@ struct acpi_processor {
+>  	struct acpi_processor_limit limit;
+>  	struct thermal_cooling_device *cdev;
+>  	struct device *dev; /* Processor device. */
+> +	struct cpufreq_policy *policy;
+> +	struct dev_pm_qos_request *perflib_req;
+> +	struct dev_pm_qos_request *thermal_req;
+>  };
+>  =
+
+>  struct acpi_processor_errata {
+> @@ -296,16 +301,17 @@ static inline void acpi_processor_ffh_cstate_enter(=
+struct acpi_processor_cx
+>  /* in processor_perflib.c */
+>  =
+
+>  #ifdef CONFIG_CPU_FREQ
+> -void acpi_processor_ppc_init(void);
+> -void acpi_processor_ppc_exit(void);
+> +extern bool acpi_processor_cpufreq_init;
+> +void acpi_processor_ppc_init(struct cpufreq_policy *policy);
+> +void acpi_processor_ppc_exit(struct cpufreq_policy *policy);
+>  void acpi_processor_ppc_has_changed(struct acpi_processor *pr, int event=
+_flag);
+>  extern int acpi_processor_get_bios_limit(int cpu, unsigned int *limit);
+>  #else
+> -static inline void acpi_processor_ppc_init(void)
+> +static inline void acpi_processor_ppc_init(struct cpufreq_policy *policy)
+>  {
+>  	return;
+>  }
+> -static inline void acpi_processor_ppc_exit(void)
+> +static inline void acpi_processor_ppc_exit(struct cpufreq_policy *policy)
+>  {
+>  	return;
+>  }
+> @@ -421,14 +427,14 @@ static inline int acpi_processor_hotplug(struct acp=
+i_processor *pr)
+>  int acpi_processor_get_limit_info(struct acpi_processor *pr);
+>  extern const struct thermal_cooling_device_ops processor_cooling_ops;
+>  #if defined(CONFIG_ACPI_CPU_FREQ_PSS) & defined(CONFIG_CPU_FREQ)
+> -void acpi_thermal_cpufreq_init(void);
+> -void acpi_thermal_cpufreq_exit(void);
+> +void acpi_thermal_cpufreq_init(struct cpufreq_policy *policy);
+> +void acpi_thermal_cpufreq_exit(struct cpufreq_policy *policy);
+>  #else
+> -static inline void acpi_thermal_cpufreq_init(void)
+> +static inline void acpi_thermal_cpufreq_init(struct cpufreq_policy *poli=
+cy)
+>  {
+>  	return;
+>  }
+> -static inline void acpi_thermal_cpufreq_exit(void)
+> +static inline void acpi_thermal_cpufreq_exit(struct cpufreq_policy *poli=
+cy)
+>  {
+>  	return;
+>  }
 > =
 
-> but how does that change will go into the linux kernel? Suppose Rafael =
 
-> will need to pick it up manually?
+Thanks!
 
->I do that after every ACPICA release
 
-Which happens about once per month.
 
->Erik
-> =
 
-> >
-> >
-> > -----Original Message-----
-> > From: Qian Cai [mailto:cai(a)lca.pw]
-> > Sent: Thursday, July 18, 2019 12:49 PM
-> > To: Wysocki, Rafael J <rafael.j.wysocki(a)intel.com>
-> > Cc: Moore, Robert <robert.moore(a)intel.com>; Schmauss, Erik =
-
-> > <erik.schmauss(a)inte l.com>; jkim(a)FreeBSD.org; lenb(a)kernel.org; =
-
-> > ndesaulniers(a)google.com; linux-acpi @vger.kernel.org; =
-
-> > devel(a)acpica.org; clang-built-linux(a)googlegroups.com; linux- =
-
-> > kernel(a)vger.kernel.org; Qian Cai <cai(a)lca.pw>
-> > Subject: [PATCH v2] acpica: fix -Wnull-pointer-arithmetic warnings
-> >
-> > Clang generate quite a few of those warnings.
-> >
-> > drivers/acpi/scan.c:759:28: warning: arithmetic on a null pointer =
-
-> > treated as a cast from integer to pointer is a GNU extension =
-
-> > [-Wnull-pointer-
-> arithmetic]
-> > 		status =3D acpi_get_handle(ACPI_ROOT_OBJECT,
-> > obj->string.pointer,
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0^~~~~~~~~~~~~~~~
-> > ./include/acpi/actypes.h:458:56: note: expanded from macro
-> 'ACPI_ROOT_OBJECT'
-> > =C2=A0#define ACPI_ROOT_OBJECT=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0((acpi_handle) =
-
-> > ACPI_TO_POINTER
-> > (ACPI_MAX_PTR))
-> > 							^~~~~~~~~~~~~~~
-> > ./include/acpi/actypes.h:509:41: note: expanded from macro
-> 'ACPI_TO_POINTER'
-> > =C2=A0#define ACPI_TO_POINTER(i)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ACPI_ADD_PTR (void, (void =
-
-> > *) 0,
-> > (acpi_size) (i))
-> >
-> > ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > ./include/acpi/actypes.h:503:84: note: expanded from macro 'ACPI_ADD_PT=
-R'
-> > =C2=A0#define ACPI_ADD_PTR(t, a, b)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ACPI_CAST_PTR (t, =
-
-> > (ACPI_CAST_PTR (u8, (a)) + (acpi_size)(b)))
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0^~~~~~~~~~~~~~~~~
-> > ./include/acpi/actypes.h:501:66: note: expanded from macro
-> 'ACPI_CAST_PTR'
-> > =C2=A0#define ACPI_CAST_PTR(t, p)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0((t *) (acpi_uintptr_t) =
-
-> > (p))
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0^ =
-
-> > This is because pointer arithmetic on a pointer not pointing to an =
-
-> > array is an undefined behavior (C11 6.5.6, constraint 8). Fix it by =
-
-> > just casting the corresponding pointers using ACPI_CAST_PTR() and =
-
-> > skip the arithmetic. Also, fix a checkpatch warning together.
-> >
-> > ERROR: Macros with complex values should be enclosed in parentheses
-> > =C2=A0#45: FILE: include/acpi/actypes.h:509:
-> > +#define ACPI_TO_POINTER(i)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ACPI_CAST_PTR (void, i)
-> >
-> > Signed-off-by: Qian Cai <cai(a)lca.pw>
-> > ---
-> >
-> > v2: Use ACPI_CAST_PTR() in ACPI_TO_POINTER() directly without
-> > =C2=A0=C2=A0=C2=A0=C2=A0arithmetic.
-> >
-> > =C2=A0include/acpi/actypes.h | 2 +-
-> > =C2=A01 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/include/acpi/actypes.h b/include/acpi/actypes.h index
-> > ad6892a24015..163181e2d884 100644
-> > --- a/include/acpi/actypes.h
-> > +++ b/include/acpi/actypes.h
-> > @@ -506,7 +506,7 @@ typedef u64 acpi_integer;
-> >
-> > =C2=A0/* Pointer/Integer type conversions */
-> >
-> > -#define ACPI_TO_POINTER(i)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ACPI_ADD_PTR (void, (void =
-
-> > *) 0,
-> > (acpi_size) (i))
-> > +#define ACPI_TO_POINTER(i)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0(ACPI_CAST_PTR (void, i))
-> > =C2=A0#define ACPI_TO_INTEGER(p)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ACPI_PTR_DIFF (p, (void *) =
-
-> > 0)
-> > =C2=A0#define ACPI_OFFSET(d, f)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ACPI_PTR_DIFF (&(((d *) =
-
-> > 0)->f), (void
-> > *) 0)
-> > =C2=A0#define ACPI_PHYSADDR_TO_PTR(i)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0ACPI_TO_POINTER(i)
-> > --
-> > 2.20.1 (Apple Git-117)
-> >
-
---===============3899719519523513122==--
+--===============6736346664175081518==--
 
