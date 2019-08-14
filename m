@@ -1,503 +1,128 @@
-Content-Type: multipart/mixed; boundary="===============0413798849101473018=="
+Content-Type: multipart/mixed; boundary="===============8335706859502703683=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: Re: [Devel] [PATCH V2 05/10] ACPI: cpufreq: Switch to QoS requests
- instead of cpufreq notifier
-Date: Sat, 10 Aug 2019 14:13:44 +0200
-Message-ID: <CAJZ5v0hfxZfcb7GriEkC=hnJ45b7BcMs3-kAu_wZpt55jsBbuQ@mail.gmail.com>
-In-Reply-To: 20190809023345.ax5zdcfsei4ijdeo@vireshk-i7
+From: Schmauss, Erik <erik.schmauss at intel.com>
+Subject: Re: [Devel] [PATCH 1/3] ACPI: Resolve objects on host-directed table
+ loads
+Date: Wed, 14 Aug 2019 20:27:35 +0000
+Message-ID: <CF6A88132359CE47947DB4C6E1709ED53C61A211@ORSMSX122.amr.corp.intel.com>
+In-Reply-To: 20190814185055.GZ30120@smile.fi.intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0413798849101473018==
+--===============8335706859502703683==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Aug 9, 2019 at 4:33 AM Viresh Kumar <viresh.kumar(a)linaro.org> wro=
-te:
->
-> On 06-08-19, 14:17, Viresh Kumar wrote:
-> > On 06-08-19, 10:01, Rafael J. Wysocki wrote:
-> > > Yes, it does, thanks!
-> > >
-> > > [No need to resend, I'll take it from this message.]
+
+
+> -----Original Message-----
+> From: Shevchenko, Andriy
+> Sent: Wednesday, August 14, 2019 11:51 AM
+> To: Nikolaus Voss <nikolaus.voss(a)loewensteinmedical.de>
+> Cc: Rafael J. Wysocki <rjw(a)rjwysocki.net>; Len Brown <lenb(a)kernel.org=
+>;
+> Moore, Robert <robert.moore(a)intel.com>; Schmauss, Erik
+> <erik.schmauss(a)intel.com>; Jacek Anaszewski <jacek.anaszewski(a)gmail.c=
+om>;
+> Pavel Machek <pavel(a)ucw.cz>; Dan Murphy <dmurphy(a)ti.com>; Thierry
+> Reding <thierry.reding(a)gmail.com>; linux-acpi(a)vger.kernel.org;
+> devel(a)acpica.org; linux-leds(a)vger.kernel.org; linux-pwm(a)vger.kernel=
+.org
+> Subject: Re: [PATCH 1/3] ACPI: Resolve objects on host-directed table loa=
+ds
+> =
+
+> On Wed, May 29, 2019 at 02:18:20PM +0200, Nikolaus Voss wrote:
+> > If an ACPI SSDT overlay is loaded after built-in tables have been
+> > loaded e.g. via configfs or efivar_ssdt_load() it is necessary to
+> > rewalk the namespace to resolve references. Without this, relative and
+> > absolute paths like ^PCI0.SBUS or \_SB.PCI0.SBUS are not resolved
+> > correctly.
 > >
-> > Forgot to write CPU in caps in print messages, updated now.
->
-> And here is another version.
+> > Make configfs load use the same method as efivar_ssdt_load().
+> =
 
-Queuing up for v5.4, thanks!
+> This patch brought a regression (bisect log below).
+> Now I'm unable to unload the table which was working before.
+> =
 
->
-> -------------------------8<-------------------------
-> From 6d2c1e8034562043a758524d6078e2dd1624195c Mon Sep 17 00:00:00 2001
-> Message-Id: <6d2c1e8034562043a758524d6078e2dd1624195c.1565317925.git.vire=
-sh.kumar(a)linaro.org>
-> From: Viresh Kumar <viresh.kumar(a)linaro.org>
-> Date: Mon, 15 Jul 2019 15:06:02 +0530
-> Subject: [PATCH] ACPI: cpufreq: Switch to QoS requests instead of cpufreq
->  notifier
->
-> The cpufreq core now takes the min/max frequency constraints via QoS
-> requests and the CPUFREQ_ADJUST notifier shall get removed later on.
->
-> Switch over to using the QoS request for maximum frequency constraint
-> for acpi driver.
->
-> Signed-off-by: Viresh Kumar <viresh.kumar(a)linaro.org>
-> ---
-> - dev_pm_qos_update_request() can return 1 on success
->
->  drivers/acpi/processor_driver.c  | 37 ++++++++++--
->  drivers/acpi/processor_perflib.c | 96 +++++++++++---------------------
->  drivers/acpi/processor_thermal.c | 81 +++++++++++++--------------
->  include/acpi/processor.h         | 21 ++++---
->  4 files changed, 118 insertions(+), 117 deletions(-)
->
-> diff --git a/drivers/acpi/processor_driver.c b/drivers/acpi/processor_dri=
-ver.c
-> index aea8d674a33d..2c911fcaa4b4 100644
-> --- a/drivers/acpi/processor_driver.c
-> +++ b/drivers/acpi/processor_driver.c
-> @@ -284,6 +284,29 @@ static int acpi_processor_stop(struct device *dev)
->         return 0;
->  }
->
-> +bool acpi_processor_cpufreq_init;
-> +
-> +static int acpi_processor_notifier(struct notifier_block *nb,
-> +                                  unsigned long event, void *data)
-> +{
-> +       struct cpufreq_policy *policy =3D data;
-> +       int cpu =3D policy->cpu;
-> +
-> +       if (event =3D=3D CPUFREQ_CREATE_POLICY) {
-> +               acpi_thermal_cpufreq_init(cpu);
-> +               acpi_processor_ppc_init(cpu);
-> +       } else if (event =3D=3D CPUFREQ_REMOVE_POLICY) {
-> +               acpi_processor_ppc_exit(cpu);
-> +               acpi_thermal_cpufreq_exit(cpu);
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static struct notifier_block acpi_processor_notifier_block =3D {
-> +       .notifier_call =3D acpi_processor_notifier,
-> +};
-> +
->  /*
->   * We keep the driver loaded even when ACPI is not running.
->   * This is needed for the powernow-k8 driver, that works even without
-> @@ -310,8 +333,10 @@ static int __init acpi_processor_driver_init(void)
->         cpuhp_setup_state_nocalls(CPUHP_ACPI_CPUDRV_DEAD, "acpi/cpu-drv:d=
-ead",
->                                   NULL, acpi_soft_cpu_dead);
->
-> -       acpi_thermal_cpufreq_init();
-> -       acpi_processor_ppc_init();
-> +       if (!cpufreq_register_notifier(&acpi_processor_notifier_block,
-> +                                      CPUFREQ_POLICY_NOTIFIER))
-> +               acpi_processor_cpufreq_init =3D true;
-> +
->         acpi_processor_throttling_init();
->         return 0;
->  err:
-> @@ -324,8 +349,12 @@ static void __exit acpi_processor_driver_exit(void)
->         if (acpi_disabled)
->                 return;
->
-> -       acpi_processor_ppc_exit();
-> -       acpi_thermal_cpufreq_exit();
-> +       if (acpi_processor_cpufreq_init) {
-> +               cpufreq_unregister_notifier(&acpi_processor_notifier_bloc=
-k,
-> +                                           CPUFREQ_POLICY_NOTIFIER);
-> +               acpi_processor_cpufreq_init =3D false;
-> +       }
-> +
->         cpuhp_remove_state_nocalls(hp_online);
->         cpuhp_remove_state_nocalls(CPUHP_ACPI_CPUDRV_DEAD);
->         driver_unregister(&acpi_processor_driver);
-> diff --git a/drivers/acpi/processor_perflib.c b/drivers/acpi/processor_pe=
-rflib.c
-> index ee87cb6f6e59..277fcbbe3be4 100644
-> --- a/drivers/acpi/processor_perflib.c
-> +++ b/drivers/acpi/processor_perflib.c
-> @@ -50,57 +50,13 @@ module_param(ignore_ppc, int, 0644);
->  MODULE_PARM_DESC(ignore_ppc, "If the frequency of your machine gets wron=
-gly" \
->                  "limited by BIOS, this should help");
->
-> -#define PPC_REGISTERED   1
-> -#define PPC_IN_USE       2
-> -
-> -static int acpi_processor_ppc_status;
-> -
-> -static int acpi_processor_ppc_notifier(struct notifier_block *nb,
-> -                                      unsigned long event, void *data)
-> -{
-> -       struct cpufreq_policy *policy =3D data;
-> -       struct acpi_processor *pr;
-> -       unsigned int ppc =3D 0;
-> -
-> -       if (ignore_ppc < 0)
-> -               ignore_ppc =3D 0;
-> -
-> -       if (ignore_ppc)
-> -               return 0;
-> -
-> -       if (event !=3D CPUFREQ_ADJUST)
-> -               return 0;
-> -
-> -       mutex_lock(&performance_mutex);
-> -
-> -       pr =3D per_cpu(processors, policy->cpu);
-> -       if (!pr || !pr->performance)
-> -               goto out;
-> -
-> -       ppc =3D (unsigned int)pr->performance_platform_limit;
-> -
-> -       if (ppc >=3D pr->performance->state_count)
-> -               goto out;
-> -
-> -       cpufreq_verify_within_limits(policy, 0,
-> -                                    pr->performance->states[ppc].
-> -                                    core_frequency * 1000);
-> -
-> -      out:
-> -       mutex_unlock(&performance_mutex);
-> -
-> -       return 0;
-> -}
-> -
-> -static struct notifier_block acpi_ppc_notifier_block =3D {
-> -       .notifier_call =3D acpi_processor_ppc_notifier,
-> -};
-> +static bool acpi_processor_ppc_in_use;
->
->  static int acpi_processor_get_platform_limit(struct acpi_processor *pr)
->  {
->         acpi_status status =3D 0;
->         unsigned long long ppc =3D 0;
-> -
-> +       int ret;
->
->         if (!pr)
->                 return -EINVAL;
-> @@ -112,7 +68,7 @@ static int acpi_processor_get_platform_limit(struct ac=
-pi_processor *pr)
->         status =3D acpi_evaluate_integer(pr->handle, "_PPC", NULL, &ppc);
->
->         if (status !=3D AE_NOT_FOUND)
-> -               acpi_processor_ppc_status |=3D PPC_IN_USE;
-> +               acpi_processor_ppc_in_use =3D true;
->
->         if (ACPI_FAILURE(status) && status !=3D AE_NOT_FOUND) {
->                 ACPI_EXCEPTION((AE_INFO, status, "Evaluating _PPC"));
-> @@ -124,6 +80,16 @@ static int acpi_processor_get_platform_limit(struct a=
-cpi_processor *pr)
->
->         pr->performance_platform_limit =3D (int)ppc;
->
-> +       if (ignore_ppc || ppc >=3D pr->performance->state_count)
-> +               return 0;
-> +
-> +       ret =3D dev_pm_qos_update_request(&pr->perflib_req,
-> +                       pr->performance->states[ppc].core_frequency * 100=
-0);
-> +       if (ret < 0) {
-> +               pr_warn("Failed to update perflib freq constraint: CPU%d =
-(%d)\n",
-> +                       pr->id, ret);
-> +       }
-> +
->         return 0;
->  }
->
-> @@ -184,23 +150,29 @@ int acpi_processor_get_bios_limit(int cpu, unsigned=
- int *limit)
->  }
->  EXPORT_SYMBOL(acpi_processor_get_bios_limit);
->
-> -void acpi_processor_ppc_init(void)
-> +void acpi_processor_ppc_init(int cpu)
->  {
-> -       if (!cpufreq_register_notifier
-> -           (&acpi_ppc_notifier_block, CPUFREQ_POLICY_NOTIFIER))
-> -               acpi_processor_ppc_status |=3D PPC_REGISTERED;
-> -       else
-> -               printk(KERN_DEBUG
-> -                      "Warning: Processor Platform Limit not supported.\=
-n");
-> +       struct acpi_processor *pr =3D per_cpu(processors, cpu);
-> +       int ret;
-> +
-> +       ret =3D dev_pm_qos_add_request(get_cpu_device(cpu),
-> +                                    &pr->perflib_req, DEV_PM_QOS_MAX_FRE=
-QUENCY,
-> +                                    INT_MAX);
-> +       if (ret < 0) {
-> +               pr_err("Failed to add freq constraint for CPU%d (%d)\n", =
-cpu,
-> +                      ret);
-> +               return;
-> +       }
-> +
-> +       if (ignore_ppc < 0)
-> +               ignore_ppc =3D 0;
->  }
->
-> -void acpi_processor_ppc_exit(void)
-> +void acpi_processor_ppc_exit(int cpu)
->  {
-> -       if (acpi_processor_ppc_status & PPC_REGISTERED)
-> -               cpufreq_unregister_notifier(&acpi_ppc_notifier_block,
-> -                                           CPUFREQ_POLICY_NOTIFIER);
-> +       struct acpi_processor *pr =3D per_cpu(processors, cpu);
->
-> -       acpi_processor_ppc_status &=3D ~PPC_REGISTERED;
-> +       dev_pm_qos_remove_request(&pr->perflib_req);
->  }
->
->  static int acpi_processor_get_performance_control(struct acpi_processor =
-*pr)
-> @@ -477,7 +449,7 @@ int acpi_processor_notify_smm(struct module *calling_=
-module)
->         static int is_done =3D 0;
->         int result;
->
-> -       if (!(acpi_processor_ppc_status & PPC_REGISTERED))
-> +       if (!acpi_processor_cpufreq_init)
->                 return -EBUSY;
->
->         if (!try_module_get(calling_module))
-> @@ -513,7 +485,7 @@ int acpi_processor_notify_smm(struct module *calling_=
-module)
->          * we can allow the cpufreq driver to be rmmod'ed. */
->         is_done =3D 1;
->
-> -       if (!(acpi_processor_ppc_status & PPC_IN_USE))
-> +       if (!acpi_processor_ppc_in_use)
->                 module_put(calling_module);
->
->         return 0;
-> @@ -742,7 +714,7 @@ acpi_processor_register_performance(struct acpi_proce=
-ssor_performance
->  {
->         struct acpi_processor *pr;
->
-> -       if (!(acpi_processor_ppc_status & PPC_REGISTERED))
-> +       if (!acpi_processor_cpufreq_init)
->                 return -EINVAL;
->
->         mutex_lock(&performance_mutex);
-> diff --git a/drivers/acpi/processor_thermal.c b/drivers/acpi/processor_th=
-ermal.c
-> index 50fb0107375e..eb552ee086ad 100644
-> --- a/drivers/acpi/processor_thermal.c
-> +++ b/drivers/acpi/processor_thermal.c
-> @@ -35,7 +35,6 @@ ACPI_MODULE_NAME("processor_thermal");
->  #define CPUFREQ_THERMAL_MAX_STEP 3
->
->  static DEFINE_PER_CPU(unsigned int, cpufreq_thermal_reduction_pctg);
-> -static unsigned int acpi_thermal_cpufreq_is_init =3D 0;
->
->  #define reduction_pctg(cpu) \
->         per_cpu(cpufreq_thermal_reduction_pctg, phys_package_first_cpu(cp=
-u))
-> @@ -61,35 +60,11 @@ static int phys_package_first_cpu(int cpu)
->  static int cpu_has_cpufreq(unsigned int cpu)
->  {
->         struct cpufreq_policy policy;
-> -       if (!acpi_thermal_cpufreq_is_init || cpufreq_get_policy(&policy, =
-cpu))
-> +       if (!acpi_processor_cpufreq_init || cpufreq_get_policy(&policy, c=
-pu))
->                 return 0;
->         return 1;
->  }
->
-> -static int acpi_thermal_cpufreq_notifier(struct notifier_block *nb,
-> -                                        unsigned long event, void *data)
-> -{
-> -       struct cpufreq_policy *policy =3D data;
-> -       unsigned long max_freq =3D 0;
-> -
-> -       if (event !=3D CPUFREQ_ADJUST)
-> -               goto out;
-> -
-> -       max_freq =3D (
-> -           policy->cpuinfo.max_freq *
-> -           (100 - reduction_pctg(policy->cpu) * 20)
-> -       ) / 100;
-> -
-> -       cpufreq_verify_within_limits(policy, 0, max_freq);
-> -
-> -      out:
-> -       return 0;
-> -}
-> -
-> -static struct notifier_block acpi_thermal_cpufreq_notifier_block =3D {
-> -       .notifier_call =3D acpi_thermal_cpufreq_notifier,
-> -};
-> -
->  static int cpufreq_get_max_state(unsigned int cpu)
->  {
->         if (!cpu_has_cpufreq(cpu))
-> @@ -108,7 +83,10 @@ static int cpufreq_get_cur_state(unsigned int cpu)
->
->  static int cpufreq_set_cur_state(unsigned int cpu, int state)
->  {
-> -       int i;
-> +       struct cpufreq_policy *policy;
-> +       struct acpi_processor *pr;
-> +       unsigned long max_freq;
-> +       int i, ret;
->
->         if (!cpu_has_cpufreq(cpu))
->                 return 0;
-> @@ -121,33 +99,50 @@ static int cpufreq_set_cur_state(unsigned int cpu, i=
-nt state)
->          * frequency.
->          */
->         for_each_online_cpu(i) {
-> -               if (topology_physical_package_id(i) =3D=3D
-> +               if (topology_physical_package_id(i) !=3D
->                     topology_physical_package_id(cpu))
-> -                       cpufreq_update_policy(i);
-> +                       continue;
-> +
-> +               pr =3D per_cpu(processors, i);
-> +
-> +               policy =3D cpufreq_cpu_get(i);
-> +               if (!policy)
-> +                       return -EINVAL;
-> +
-> +               max_freq =3D (policy->cpuinfo.max_freq * (100 - reduction=
-_pctg(i) * 20)) / 100;
-> +
-> +               cpufreq_cpu_put(policy);
-> +
-> +               ret =3D dev_pm_qos_update_request(&pr->thermal_req, max_f=
-req);
-> +               if (ret < 0) {
-> +                       pr_warn("Failed to update thermal freq constraint=
-: CPU%d (%d)\n",
-> +                               pr->id, ret);
-> +               }
->         }
->         return 0;
->  }
->
-> -void acpi_thermal_cpufreq_init(void)
-> +void acpi_thermal_cpufreq_init(int cpu)
->  {
-> -       int i;
-> -
-> -       i =3D cpufreq_register_notifier(&acpi_thermal_cpufreq_notifier_bl=
-ock,
-> -                                     CPUFREQ_POLICY_NOTIFIER);
-> -       if (!i)
-> -               acpi_thermal_cpufreq_is_init =3D 1;
-> +       struct acpi_processor *pr =3D per_cpu(processors, cpu);
-> +       int ret;
-> +
-> +       ret =3D dev_pm_qos_add_request(get_cpu_device(cpu),
-> +                                    &pr->thermal_req, DEV_PM_QOS_MAX_FRE=
-QUENCY,
-> +                                    INT_MAX);
-> +       if (ret < 0) {
-> +               pr_err("Failed to add freq constraint for CPU%d (%d)\n", =
-cpu,
-> +                      ret);
-> +               return;
-> +       }
->  }
->
-> -void acpi_thermal_cpufreq_exit(void)
-> +void acpi_thermal_cpufreq_exit(int cpu)
->  {
-> -       if (acpi_thermal_cpufreq_is_init)
-> -               cpufreq_unregister_notifier
-> -                   (&acpi_thermal_cpufreq_notifier_block,
-> -                    CPUFREQ_POLICY_NOTIFIER);
-> +       struct acpi_processor *pr =3D per_cpu(processors, cpu);
->
-> -       acpi_thermal_cpufreq_is_init =3D 0;
-> +       dev_pm_qos_remove_request(&pr->thermal_req);
->  }
-> -
->  #else                          /* ! CONFIG_CPU_FREQ */
->  static int cpufreq_get_max_state(unsigned int cpu)
->  {
-> diff --git a/include/acpi/processor.h b/include/acpi/processor.h
-> index 1194a4c78d55..ea21a6d20da7 100644
-> --- a/include/acpi/processor.h
-> +++ b/include/acpi/processor.h
-> @@ -4,6 +4,8 @@
->
->  #include <linux/kernel.h>
->  #include <linux/cpu.h>
-> +#include <linux/cpufreq.h>
-> +#include <linux/pm_qos.h>
->  #include <linux/thermal.h>
->  #include <asm/acpi.h>
->
-> @@ -230,6 +232,8 @@ struct acpi_processor {
->         struct acpi_processor_limit limit;
->         struct thermal_cooling_device *cdev;
->         struct device *dev; /* Processor device. */
-> +       struct dev_pm_qos_request perflib_req;
-> +       struct dev_pm_qos_request thermal_req;
->  };
->
->  struct acpi_processor_errata {
-> @@ -296,16 +300,17 @@ static inline void acpi_processor_ffh_cstate_enter(=
-struct acpi_processor_cx
->  /* in processor_perflib.c */
->
->  #ifdef CONFIG_CPU_FREQ
-> -void acpi_processor_ppc_init(void);
-> -void acpi_processor_ppc_exit(void);
-> +extern bool acpi_processor_cpufreq_init;
-> +void acpi_processor_ppc_init(int cpu);
-> +void acpi_processor_ppc_exit(int cpu);
->  void acpi_processor_ppc_has_changed(struct acpi_processor *pr, int event=
-_flag);
->  extern int acpi_processor_get_bios_limit(int cpu, unsigned int *limit);
->  #else
-> -static inline void acpi_processor_ppc_init(void)
-> +static inline void acpi_processor_ppc_init(int cpu)
->  {
->         return;
->  }
-> -static inline void acpi_processor_ppc_exit(void)
-> +static inline void acpi_processor_ppc_exit(int cpu)
->  {
->         return;
->  }
-> @@ -421,14 +426,14 @@ static inline int acpi_processor_hotplug(struct acp=
-i_processor *pr)
->  int acpi_processor_get_limit_info(struct acpi_processor *pr);
->  extern const struct thermal_cooling_device_ops processor_cooling_ops;
->  #if defined(CONFIG_ACPI_CPU_FREQ_PSS) & defined(CONFIG_CPU_FREQ)
-> -void acpi_thermal_cpufreq_init(void);
-> -void acpi_thermal_cpufreq_exit(void);
-> +void acpi_thermal_cpufreq_init(int cpu);
-> +void acpi_thermal_cpufreq_exit(int cpu);
->  #else
-> -static inline void acpi_thermal_cpufreq_init(void)
-> +static inline void acpi_thermal_cpufreq_init(int cpu)
->  {
->         return;
->  }
-> -static inline void acpi_thermal_cpufreq_exit(void)
-> +static inline void acpi_thermal_cpufreq_exit(int cpu)
->  {
->         return;
->  }
+> Reverting (manual, due to ACPICA changes) helps.
+> =
 
---===============0413798849101473018==--
+> Please, consider to revert for this cycle, or fix. I will be glad to test=
+ any
+> proposed fix.
+
+We submitted a patch (d1fb5b2f623b1af5a0d2a83d205df1b61f430dc6)
+in response to this suggestion and I was not aware that this had been appli=
+ed.
+
+Rafael, please revert at least the ACPICA portion of this patch.
+
+Thanks,
+Erik
+> =
+
+> =
+
+> git bisect start
+> # good: [0ecfebd2b52404ae0c54a878c872bb93363ada36] Linux 5.2 git bisect
+> good 0ecfebd2b52404ae0c54a878c872bb93363ada36
+> # bad: [5f9e832c137075045d15cd6899ab0505cfb2ca4b] Linus 5.3-rc1 git
+> bisect bad 5f9e832c137075045d15cd6899ab0505cfb2ca4b
+> # bad: [e786741ff1b52769b044b7f4407f39cd13ee5d2d] Merge tag 'staging-
+> 5.3-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging
+> git bisect bad e786741ff1b52769b044b7f4407f39cd13ee5d2d
+> # bad: [8f6ccf6159aed1f04c6d179f61f6fb2691261e84] Merge tag 'clone3-v5.3'
+> of git://git.kernel.org/pub/scm/linux/kernel/git/brauner/linux
+> git bisect bad 8f6ccf6159aed1f04c6d179f61f6fb2691261e84
+> # good: [ed63b9c873601ca113da5c7b1745e3946493e9f3] Merge tag
+> 'media/v5.3-1' of git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/l=
+inux-
+> media
+> git bisect good ed63b9c873601ca113da5c7b1745e3946493e9f3
+> # bad: [4b4704520d97b74e045154fc3b844b73ae4e7ebd] Merge tag 'acpi-5.3-
+> rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm
+> git bisect bad 4b4704520d97b74e045154fc3b844b73ae4e7ebd
+> # good: [e3303268f9cfa4eb7c2217df471417d4327109fd] ASoC: soc-core: don't
+> use soc_find_component() at snd_soc_find_dai() git bisect good
+> e3303268f9cfa4eb7c2217df471417d4327109fd
+> # good: [3c53c6255d598db7084c5c3d7553d7200e857818] Merge tag 'asoc-
+> v5.3' of https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound in=
+to for-
+> linus git bisect good 3c53c6255d598db7084c5c3d7553d7200e857818
+> # good: [4cdd5f9186bbe80306e76f11da7ecb0b9720433c] Merge tag 'sound-
+> 5.3-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound
+> git bisect good 4cdd5f9186bbe80306e76f11da7ecb0b9720433c
+> # good: [13b06b78c772d64e2207e4a5a5329856fe2bf241] Merge branches
+> 'pm-opp', 'pm-misc', 'pm-avs' and 'pm-tools'
+> git bisect good 13b06b78c772d64e2207e4a5a5329856fe2bf241
+> # good: [cf2d213e49fdf47e4c10dc629a3659e0026a54b8] Merge tag 'pm-5.3-
+> rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm
+> git bisect good cf2d213e49fdf47e4c10dc629a3659e0026a54b8
+> # bad: [02a93f35f57fe5d4d1bac0ac8496884235e2fd2e] ACPICA: Update
+> version to 20190703 git bisect bad
+> 02a93f35f57fe5d4d1bac0ac8496884235e2fd2e
+> # bad: [d4ca763eed3bcc227f220beb11ff4eb2fa548755] Merge ACPI tables
+> handling changes for v5.3.
+> git bisect bad d4ca763eed3bcc227f220beb11ff4eb2fa548755
+> # bad: [d06c47e3dd07fdf3f07e8fc45f2ce655e9b295c5] ACPI: configfs: Resolve
+> objects on host-directed table loads git bisect bad
+> d06c47e3dd07fdf3f07e8fc45f2ce655e9b295c5
+> # good: [c78fea61f0c1f8568fbbb36ac3d1e1c85a903ae4] ACPI: tables: Allow
+> BGRT to be overridden git bisect good
+> c78fea61f0c1f8568fbbb36ac3d1e1c85a903ae4
+> # first bad commit: [d06c47e3dd07fdf3f07e8fc45f2ce655e9b295c5] ACPI:
+> configfs: Resolve objects on host-directed table loads
+> =
+
+> --
+> With Best Regards,
+> Andy Shevchenko
+> =
+
+
+
+--===============8335706859502703683==--
 
