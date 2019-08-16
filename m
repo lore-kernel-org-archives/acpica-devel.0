@@ -1,128 +1,78 @@
-Content-Type: multipart/mixed; boundary="===============8335706859502703683=="
+Content-Type: multipart/mixed; boundary="===============1759943432227339792=="
 MIME-Version: 1.0
-From: Schmauss, Erik <erik.schmauss at intel.com>
-Subject: Re: [Devel] [PATCH 1/3] ACPI: Resolve objects on host-directed table
- loads
-Date: Wed, 14 Aug 2019 20:27:35 +0000
-Message-ID: <CF6A88132359CE47947DB4C6E1709ED53C61A211@ORSMSX122.amr.corp.intel.com>
-In-Reply-To: 20190814185055.GZ30120@smile.fi.intel.com
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] ACPICA version 20190816 released
+Date: Fri, 16 Aug 2019 15:28:10 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E3B96655A9@ORSMSX110.amr.corp.intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8335706859502703683==
+--===============1759943432227339792==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
+16 August 2019. Summary of changes for version 20190816:
+
+This release is available at https://acpica.org/downloads
 
 
-> -----Original Message-----
-> From: Shevchenko, Andriy
-> Sent: Wednesday, August 14, 2019 11:51 AM
-> To: Nikolaus Voss <nikolaus.voss(a)loewensteinmedical.de>
-> Cc: Rafael J. Wysocki <rjw(a)rjwysocki.net>; Len Brown <lenb(a)kernel.org=
->;
-> Moore, Robert <robert.moore(a)intel.com>; Schmauss, Erik
-> <erik.schmauss(a)intel.com>; Jacek Anaszewski <jacek.anaszewski(a)gmail.c=
-om>;
-> Pavel Machek <pavel(a)ucw.cz>; Dan Murphy <dmurphy(a)ti.com>; Thierry
-> Reding <thierry.reding(a)gmail.com>; linux-acpi(a)vger.kernel.org;
-> devel(a)acpica.org; linux-leds(a)vger.kernel.org; linux-pwm(a)vger.kernel=
-.org
-> Subject: Re: [PATCH 1/3] ACPI: Resolve objects on host-directed table loa=
-ds
-> =
+1) ACPICA kernel-resident subsystem:
 
-> On Wed, May 29, 2019 at 02:18:20PM +0200, Nikolaus Voss wrote:
-> > If an ACPI SSDT overlay is loaded after built-in tables have been
-> > loaded e.g. via configfs or efivar_ssdt_load() it is necessary to
-> > rewalk the namespace to resolve references. Without this, relative and
-> > absolute paths like ^PCI0.SBUS or \_SB.PCI0.SBUS are not resolved
-> > correctly.
-> >
-> > Make configfs load use the same method as efivar_ssdt_load().
-> =
+Modified the OwnerId mechanism to allow for more Owner Ids. The previous li=
+mit was 256 Ids, now it is 4096 Ids. This prevents OWNER_ID_LIMIT exception=
+s on machines with a large number of initialization threads, many CPU cores=
+ and nested initialization control methods.
 
-> This patch brought a regression (bisect log below).
-> Now I'm unable to unload the table which was working before.
-> =
+Introduced acpi_dispatch_gpe() as a wrapper around AcpiEvDetectGpe() for ch=
+ecking if the given GPE (as represented by a GPE device handle and a GPE nu=
+mber) is currently active and dispatching it (if that's the case) outside o=
+f interrupt context.
 
-> Reverting (manual, due to ACPICA changes) helps.
-> =
+Table load: exit the interpreter before initializing objects within the new=
+ table This prevents re-acquiring the interpreter lock when loading tables
 
-> Please, consider to revert for this cycle, or fix. I will be glad to test=
- any
-> proposed fix.
+Added the "Windows 2019" string to the _OSI support (version 1903).
 
-We submitted a patch (d1fb5b2f623b1af5a0d2a83d205df1b61f430dc6)
-in response to this suggestion and I was not aware that this had been appli=
-ed.
+Macros: removed pointer math on a null pointer. Causes warnings on some com=
+pilers and/or tools. Changed ACPI_TO_POINTER to use ACPI_CAST_PTR instead o=
+f using arithmetic.
 
-Rafael, please revert at least the ACPICA portion of this patch.
-
-Thanks,
-Erik
-> =
-
-> =
-
-> git bisect start
-> # good: [0ecfebd2b52404ae0c54a878c872bb93363ada36] Linux 5.2 git bisect
-> good 0ecfebd2b52404ae0c54a878c872bb93363ada36
-> # bad: [5f9e832c137075045d15cd6899ab0505cfb2ca4b] Linus 5.3-rc1 git
-> bisect bad 5f9e832c137075045d15cd6899ab0505cfb2ca4b
-> # bad: [e786741ff1b52769b044b7f4407f39cd13ee5d2d] Merge tag 'staging-
-> 5.3-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging
-> git bisect bad e786741ff1b52769b044b7f4407f39cd13ee5d2d
-> # bad: [8f6ccf6159aed1f04c6d179f61f6fb2691261e84] Merge tag 'clone3-v5.3'
-> of git://git.kernel.org/pub/scm/linux/kernel/git/brauner/linux
-> git bisect bad 8f6ccf6159aed1f04c6d179f61f6fb2691261e84
-> # good: [ed63b9c873601ca113da5c7b1745e3946493e9f3] Merge tag
-> 'media/v5.3-1' of git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/l=
-inux-
-> media
-> git bisect good ed63b9c873601ca113da5c7b1745e3946493e9f3
-> # bad: [4b4704520d97b74e045154fc3b844b73ae4e7ebd] Merge tag 'acpi-5.3-
-> rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm
-> git bisect bad 4b4704520d97b74e045154fc3b844b73ae4e7ebd
-> # good: [e3303268f9cfa4eb7c2217df471417d4327109fd] ASoC: soc-core: don't
-> use soc_find_component() at snd_soc_find_dai() git bisect good
-> e3303268f9cfa4eb7c2217df471417d4327109fd
-> # good: [3c53c6255d598db7084c5c3d7553d7200e857818] Merge tag 'asoc-
-> v5.3' of https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound in=
-to for-
-> linus git bisect good 3c53c6255d598db7084c5c3d7553d7200e857818
-> # good: [4cdd5f9186bbe80306e76f11da7ecb0b9720433c] Merge tag 'sound-
-> 5.3-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound
-> git bisect good 4cdd5f9186bbe80306e76f11da7ecb0b9720433c
-> # good: [13b06b78c772d64e2207e4a5a5329856fe2bf241] Merge branches
-> 'pm-opp', 'pm-misc', 'pm-avs' and 'pm-tools'
-> git bisect good 13b06b78c772d64e2207e4a5a5329856fe2bf241
-> # good: [cf2d213e49fdf47e4c10dc629a3659e0026a54b8] Merge tag 'pm-5.3-
-> rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm
-> git bisect good cf2d213e49fdf47e4c10dc629a3659e0026a54b8
-> # bad: [02a93f35f57fe5d4d1bac0ac8496884235e2fd2e] ACPICA: Update
-> version to 20190703 git bisect bad
-> 02a93f35f57fe5d4d1bac0ac8496884235e2fd2e
-> # bad: [d4ca763eed3bcc227f220beb11ff4eb2fa548755] Merge ACPI tables
-> handling changes for v5.3.
-> git bisect bad d4ca763eed3bcc227f220beb11ff4eb2fa548755
-> # bad: [d06c47e3dd07fdf3f07e8fc45f2ce655e9b295c5] ACPI: configfs: Resolve
-> objects on host-directed table loads git bisect bad
-> d06c47e3dd07fdf3f07e8fc45f2ce655e9b295c5
-> # good: [c78fea61f0c1f8568fbbb36ac3d1e1c85a903ae4] ACPI: tables: Allow
-> BGRT to be overridden git bisect good
-> c78fea61f0c1f8568fbbb36ac3d1e1c85a903ae4
-> # first bad commit: [d06c47e3dd07fdf3f07e8fc45f2ce655e9b295c5] ACPI:
-> configfs: Resolve objects on host-directed table loads
-> =
-
-> --
-> With Best Regards,
-> Andy Shevchenko
-> =
+Fully deployed the ACPI_PRINTF_LIKE macro. This macro was not being used ac=
+ross all "printf-like" internal functions. Also, cleanup all calls to such =
+functions (both in 32-bit mode and 64-bit mode) now that they are analyzed =
+by the gcc compiler via ACPI_PRINTF_LIKE.
 
 
+2) iASL Compiler/Disassembler and ACPICA tools:
 
---===============8335706859502703683==--
+iASL: implemented a new data table compiler flex/bison front-end. This chan=
+ge is internal and is not intended to result in changes to the compiled cod=
+e. This new compiler front-end can be invoked using the -tp option for now,=
+ until the old mechanism is removed.
+
+ASLTS: Implemented a new data table compiler test suite. This test suite ge=
+nerates all table templates and compile/disassemble/re-compile/binary-compa=
+re each file.
+
+iASL: return -1 if AML files were not generated due to compiler errors
+
+iASL: added a warning on use of the now-legacy ASL Processor () keyword.
+
+iASL: added an error on _UID object declaration that returns a String withi=
+n a Processor () declaration. A _UID for a processor must be an Integer.
+
+iASL: added a null terminator to name strings that consist only of multiple=
+ parent prefixes (^)
+
+iASL: added support to compile both ASL and data table files in a single co=
+mmand.
+
+Updated the tool generation project files that were recently migrated to MS=
+VC 2017 to eliminate all new warnings. The new project files appear in the =
+directory \acpica\generate\msvc2017. This change effectively deprecates the=
+ older project files in \acpica\generate\msvc9.
+
+
+--===============1759943432227339792==--
 
