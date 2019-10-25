@@ -1,15 +1,14 @@
-Content-Type: multipart/mixed; boundary="===============4607730443340505917=="
+Content-Type: multipart/mixed; boundary="===============8451028480871214494=="
 MIME-Version: 1.0
 From: kbuild test robot <lkp at intel.com>
-Subject: [Devel] [pm:bleeding-edge 55/72] drivers/acpi/acpica/dbnames.c:523:2:
- error: unknown type name 'ACPI_REGION_WALK_INFO';
- did you mean 'ACPI_REGION_ACTIVATE'?
-Date: Fri, 25 Oct 2019 20:04:23 +0800
-Message-ID: <201910252018.v7AsPWLh%lkp@intel.com>
+Subject: [Devel] [pm:bleeding-edge 57/72] drivers/acpi/acpica/dbinput.c:514:7:
+ warning: multi-character character constant
+Date: Fri, 25 Oct 2019 22:32:24 +0800
+Message-ID: <201910252218.jR63NPNA%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4607730443340505917==
+--===============8451028480871214494==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
@@ -17,12 +16,12 @@ Content-Transfer-Encoding: quoted-printable
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git=
  bleeding-edge
 head:   1cf26ab470eb62bb4f239eb0d9410f8c174bed6b
-commit: fb30d8ee0e4f99ce7dccaea7d1e7476692292ebf [55/72] ACPICA: Debugger: =
-add command to dump all fields of a particular subtype
+commit: 72ad7b25e6357468b3f5306f2c716313a7664d39 [57/72] ACPICA: debugger: =
+add field unit support for acpi_db_get_next_token
 config: x86_64-allyesconfig (attached as .config)
 compiler: gcc-7 (Debian 7.4.0-14) 7.4.0
 reproduce:
-        git checkout fb30d8ee0e4f99ce7dccaea7d1e7476692292ebf
+        git checkout 72ad7b25e6357468b3f5306f2c716313a7664d39
         # save the attached .config to linux build tree
         make ARCH=3Dx86_64 =
 
@@ -30,361 +29,206 @@ reproduce:
 If you fix the issue, kindly add following tag
 Reported-by: kbuild test robot <lkp(a)intel.com>
 
-All errors (new ones prefixed by >>):
+All warnings (new ones prefixed by >>):
 
-   drivers/acpi/acpica/dbnames.c: In function 'acpi_db_walk_for_fields':
->> drivers/acpi/acpica/dbnames.c:523:2: error: unknown type name 'ACPI_REGI=
-ON_WALK_INFO'; did you mean 'ACPI_REGION_ACTIVATE'?
-     ACPI_REGION_WALK_INFO *info =3D (ACPI_REGION_WALK_INFO *) context;
-     ^~~~~~~~~~~~~~~~~~~~~
-     ACPI_REGION_ACTIVATE
->> drivers/acpi/acpica/dbnames.c:523:33: error: 'ACPI_REGION_WALK_INFO' und=
-eclared (first use in this function); did you mean 'ACPI_REGION_ACTIVATE'?
-     ACPI_REGION_WALK_INFO *info =3D (ACPI_REGION_WALK_INFO *) context;
-                                    ^~~~~~~~~~~~~~~~~~~~~
-                                    ACPI_REGION_ACTIVATE
-   drivers/acpi/acpica/dbnames.c:523:33: note: each undeclared identifier i=
-s reported only once for each function it appears in
->> drivers/acpi/acpica/dbnames.c:523:56: error: expected expression before =
-')' token
-     ACPI_REGION_WALK_INFO *info =3D (ACPI_REGION_WALK_INFO *) context;
-                                                           ^
->> drivers/acpi/acpica/dbnames.c:532:10: error: request for member 'address=
-_space_id' in something not a structure or union
-         info->address_space_id) {
-             ^~
->> drivers/acpi/acpica/dbnames.c:536:6: error: request for member 'count' i=
-n something not a structure or union
-     info->count++;
-         ^~
-   drivers/acpi/acpica/dbnames.c: In function 'acpi_db_display_fields':
-   drivers/acpi/acpica/dbnames.c:721:2: error: unknown type name 'ACPI_REGI=
-ON_WALK_INFO'; did you mean 'ACPI_REGION_ACTIVATE'?
-     ACPI_REGION_WALK_INFO info;
-     ^~~~~~~~~~~~~~~~~~~~~
-     ACPI_REGION_ACTIVATE
-   drivers/acpi/acpica/dbnames.c:723:6: error: request for member 'count' i=
-n something not a structure or union
-     info.count =3D 0;
-         ^
->> drivers/acpi/acpica/dbnames.c:724:6: error: request for member 'owner_id=
-' in something not a structure or union
-     info.owner_id =3D ACPI_OWNER_ID_MAX;
-         ^
->> drivers/acpi/acpica/dbnames.c:725:6: error: request for member 'debug_le=
-vel' in something not a structure or union
-     info.debug_level =3D ACPI_UINT32_MAX;
-         ^
->> drivers/acpi/acpica/dbnames.c:726:6: error: request for member 'display_=
-type' in something not a structure or union
-     info.display_type =3D ACPI_DISPLAY_SUMMARY | ACPI_DISPLAY_SHORT;
-         ^
-   drivers/acpi/acpica/dbnames.c:727:6: error: request for member 'address_=
-space_id' in something not a structure or union
-     info.address_space_id =3D address_space_id;
-         ^
+   drivers/acpi/acpica/dbinput.c: In function 'acpi_db_get_next_token':
+>> drivers/acpi/acpica/dbinput.c:514:7: warning: multi-character character =
+constant [-Wmultichar]
+     case ' {':
+          ^~~~
+>> drivers/acpi/acpica/dbinput.c:514:2: warning: case label value exceeds m=
+aximum value for type
+     case ' {':
+     ^~~~
 
-vim +523 drivers/acpi/acpica/dbnames.c
+vim +514 drivers/acpi/acpica/dbinput.c
 
-   505	=
+   444	=
 
-   506	/*******************************************************************=
+   445	/*******************************************************************=
 ************
-   507	 *
-   508	 * FUNCTION:    acpi_db_walk_for_fields
-   509	 *
-   510	 * PARAMETERS:  Callback from walk_namespace
-   511	 *
-   512	 * RETURN:      Status
-   513	 *
-   514	 * DESCRIPTION: Display short info about objects in the namespace
-   515	 *
-   516	 *******************************************************************=
+   446	 *
+   447	 * FUNCTION:    acpi_db_get_next_token
+   448	 *
+   449	 * PARAMETERS:  string          - Command buffer
+   450	 *              next            - Return value, end of next token
+   451	 *
+   452	 * RETURN:      Pointer to the start of the next token.
+   453	 *
+   454	 * DESCRIPTION: Command line parsing. Get the next token on the comm=
+and line
+   455	 *
+   456	 *******************************************************************=
 ***********/
+   457	=
+
+   458	char *acpi_db_get_next_token(char *string,
+   459				     char **next, acpi_object_type *return_type)
+   460	{
+   461		char *start;
+   462		u32 depth;
+   463		acpi_object_type type =3D ACPI_TYPE_INTEGER;
+   464	=
+
+   465		/* At end of buffer? */
+   466	=
+
+   467		if (!string || !(*string)) {
+   468			return (NULL);
+   469		}
+   470	=
+
+   471		/* Remove any spaces at the beginning */
+   472	=
+
+   473		if (*string =3D=3D ' ') {
+   474			while (*string && (*string =3D=3D ' ')) {
+   475				string++;
+   476			}
+   477	=
+
+   478			if (!(*string)) {
+   479				return (NULL);
+   480			}
+   481		}
+   482	=
+
+   483		switch (*string) {
+   484		case '"':
+   485	=
+
+   486			/* This is a quoted string, scan until closing quote */
+   487	=
+
+   488			string++;
+   489			start =3D string;
+   490			type =3D ACPI_TYPE_STRING;
+   491	=
+
+   492			/* Find end of string */
+   493	=
+
+   494			while (*string && (*string !=3D '"')) {
+   495				string++;
+   496			}
+   497			break;
+   498	=
+
+   499		case '(':
+   500	=
+
+   501			/* This is the start of a buffer, scan until closing paren */
+   502	=
+
+   503			string++;
+   504			start =3D string;
+   505			type =3D ACPI_TYPE_BUFFER;
+   506	=
+
+   507			/* Find end of buffer */
+   508	=
+
+   509			while (*string && (*string !=3D ')')) {
+   510				string++;
+   511			}
+   512			break;
+   513	=
+
+ > 514		case ' {':
+   515	=
+
+   516			/* This is the start of a field unit, scan until closing brace */
    517	=
 
-   518	static acpi_status
-   519	acpi_db_walk_for_fields(acpi_handle obj_handle,
-   520				u32 nesting_level, void *context, void **return_value)
-   521	{
-   522		union acpi_object *ret_value;
- > 523		ACPI_REGION_WALK_INFO *info =3D (ACPI_REGION_WALK_INFO *) context;
-   524		struct acpi_buffer buffer;
-   525		acpi_status status;
-   526		struct acpi_namespace_node *node =3D acpi_ns_validate_handle(obj_ha=
-ndle);
-   527	=
+   518			string++;
+   519			start =3D string;
+   520			type =3D ACPI_TYPE_FIELD_UNIT;
+   521	=
 
-   528		if (!node) {
-   529			return (AE_OK);
-   530		}
-   531		if (node->object->field.region_obj->region.space_id !=3D
- > 532		    info->address_space_id) {
-   533			return (AE_OK);
-   534		}
-   535	=
+   522			/* Find end of buffer */
+   523	=
 
- > 536		info->count++;
+   524			while (*string && (*string !=3D '}')) {
+   525				string++;
+   526			}
+   527			break;
+   528	=
+
+   529		case '[':
+   530	=
+
+   531			/* This is the start of a package, scan until closing bracket */
+   532	=
+
+   533			string++;
+   534			depth =3D 1;
+   535			start =3D string;
+   536			type =3D ACPI_TYPE_PACKAGE;
    537	=
 
-   538		/* Get and display the full pathname to this object */
+   538			/* Find end of package (closing bracket) */
    539	=
 
-   540		buffer.length =3D ACPI_ALLOCATE_LOCAL_BUFFER;
-   541		status =3D acpi_ns_handle_to_pathname(obj_handle, &buffer, TRUE);
-   542		if (ACPI_FAILURE(status)) {
-   543			acpi_os_printf("Could Not get pathname for object %p\n",
-   544				       obj_handle);
-   545			return (AE_OK);
-   546		}
-   547	=
+   540			while (*string) {
+   541	=
 
-   548		acpi_os_printf("%s ", (char *)buffer.pointer);
-   549		ACPI_FREE(buffer.pointer);
-   550	=
+   542				/* Handle String package elements */
+   543	=
 
-   551		buffer.length =3D ACPI_ALLOCATE_LOCAL_BUFFER;
-   552		acpi_evaluate_object(obj_handle, NULL, NULL, &buffer);
-   553	=
+   544				if (*string =3D=3D '"') {
+   545					/* Find end of string */
+   546	=
 
-   554		ret_value =3D (union acpi_object *)buffer.pointer;
-   555		switch (ret_value->type) {
-   556		case ACPI_TYPE_INTEGER:
-   557	=
+   547					string++;
+   548					while (*string && (*string !=3D '"')) {
+   549						string++;
+   550					}
+   551					if (!(*string)) {
+   552						break;
+   553					}
+   554				} else if (*string =3D=3D '[') {
+   555					depth++;	/* A nested package declaration */
+   556				} else if (*string =3D=3D ']') {
+   557					depth--;
+   558					if (depth =3D=3D 0) {	/* Found final package closing bracket */
+   559						break;
+   560					}
+   561				}
+   562	=
 
-   558			acpi_os_printf("%8.8X%8.8X",
-   559				       ACPI_FORMAT_UINT64(ret_value->integer.value));
-   560			break;
-   561	=
+   563				string++;
+   564			}
+   565			break;
+   566	=
 
-   562		case ACPI_TYPE_BUFFER:
-   563	=
-
-   564			acpi_ut_dump_buffer(ret_value->buffer.pointer,
-   565					    ret_value->buffer.length,
-   566					    DB_DISPLAY_DATA_ONLY | DB_BYTE_DISPLAY, 0);
-   567			break;
+   567		default:
    568	=
 
-   569		default:
+   569			start =3D string;
    570	=
 
-   571			break;
-   572		}
-   573	=
+   571			/* Find end of token */
+   572	=
 
-   574		acpi_os_printf("\n");
-   575	=
+   573			while (*string && (*string !=3D ' ')) {
+   574				string++;
+   575			}
+   576			break;
+   577		}
+   578	=
 
-   576		ACPI_FREE(buffer.pointer);
-   577		return (AE_OK);
-   578	}
-   579	=
+   579		if (!(*string)) {
+   580			*next =3D NULL;
+   581		} else {
+   582			*string =3D 0;
+   583			*next =3D string + 1;
+   584		}
+   585	=
 
-   580	/*******************************************************************=
-************
-   581	 *
-   582	 * FUNCTION:    acpi_db_walk_for_specific_objects
-   583	 *
-   584	 * PARAMETERS:  Callback from walk_namespace
-   585	 *
-   586	 * RETURN:      Status
-   587	 *
-   588	 * DESCRIPTION: Display short info about objects in the namespace
-   589	 *
-   590	 *******************************************************************=
-***********/
-   591	=
-
-   592	static acpi_status
-   593	acpi_db_walk_for_specific_objects(acpi_handle obj_handle,
-   594					  u32 nesting_level,
-   595					  void *context, void **return_value)
-   596	{
-   597		struct acpi_walk_info *info =3D (struct acpi_walk_info *)context;
-   598		struct acpi_buffer buffer;
-   599		acpi_status status;
-   600	=
-
-   601		info->count++;
-   602	=
-
-   603		/* Get and display the full pathname to this object */
-   604	=
-
-   605		buffer.length =3D ACPI_ALLOCATE_LOCAL_BUFFER;
-   606		status =3D acpi_ns_handle_to_pathname(obj_handle, &buffer, TRUE);
-   607		if (ACPI_FAILURE(status)) {
-   608			acpi_os_printf("Could Not get pathname for object %p\n",
-   609				       obj_handle);
-   610			return (AE_OK);
-   611		}
-   612	=
-
-   613		acpi_os_printf("%32s", (char *)buffer.pointer);
-   614		ACPI_FREE(buffer.pointer);
-   615	=
-
-   616		/* Dump short info about the object */
-   617	=
-
-   618		(void)acpi_ns_dump_one_object(obj_handle, nesting_level, info, NULL=
-);
-   619		return (AE_OK);
-   620	}
-   621	=
-
-   622	/*******************************************************************=
-************
-   623	 *
-   624	 * FUNCTION:    acpi_db_display_objects
-   625	 *
-   626	 * PARAMETERS:  obj_type_arg        - Type of object to display
-   627	 *              display_count_arg   - Max depth to display
-   628	 *
-   629	 * RETURN:      None
-   630	 *
-   631	 * DESCRIPTION: Display objects in the namespace of the requested ty=
-pe
-   632	 *
-   633	 *******************************************************************=
-***********/
-   634	=
-
-   635	acpi_status acpi_db_display_objects(char *obj_type_arg, char *displa=
-y_count_arg)
-   636	{
-   637		struct acpi_walk_info info;
-   638		acpi_object_type type;
-   639		struct acpi_object_info *object_info;
-   640		u32 i;
-   641		u32 total_objects =3D 0;
-   642	=
-
-   643		/* No argument means display summary/count of all object types */
-   644	=
-
-   645		if (!obj_type_arg) {
-   646			object_info =3D
-   647			    ACPI_ALLOCATE_ZEROED(sizeof(struct acpi_object_info));
-   648	=
-
-   649			/* Walk the namespace from the root */
-   650	=
-
-   651			(void)acpi_walk_namespace(ACPI_TYPE_ANY, ACPI_ROOT_OBJECT,
-   652						  ACPI_UINT32_MAX,
-   653						  acpi_db_walk_for_object_counts, NULL,
-   654						  (void *)object_info, NULL);
-   655	=
-
-   656			acpi_os_printf("\nSummary of namespace objects:\n\n");
-   657	=
-
-   658			for (i =3D 0; i < ACPI_TOTAL_TYPES; i++) {
-   659				acpi_os_printf("%8u %s\n", object_info->types[i],
-   660					       acpi_ut_get_type_name(i));
-   661	=
-
-   662				total_objects +=3D object_info->types[i];
-   663			}
-   664	=
-
-   665			acpi_os_printf("\n%8u Total namespace objects\n\n",
-   666				       total_objects);
-   667	=
-
-   668			ACPI_FREE(object_info);
-   669			return (AE_OK);
-   670		}
-   671	=
-
-   672		/* Get the object type */
-   673	=
-
-   674		type =3D acpi_db_match_argument(obj_type_arg, acpi_db_object_types);
-   675		if (type =3D=3D ACPI_TYPE_NOT_FOUND) {
-   676			acpi_os_printf("Invalid or unsupported argument\n");
-   677			return (AE_OK);
-   678		}
-   679	=
-
-   680		acpi_db_set_output_destination(ACPI_DB_DUPLICATE_OUTPUT);
-   681		acpi_os_printf
-   682		    ("Objects of type [%s] defined in the current ACPI Namespace:\n=
-",
-   683		     acpi_ut_get_type_name(type));
-   684	=
-
-   685		acpi_db_set_output_destination(ACPI_DB_REDIRECTABLE_OUTPUT);
-   686	=
-
-   687		info.count =3D 0;
-   688		info.owner_id =3D ACPI_OWNER_ID_MAX;
-   689		info.debug_level =3D ACPI_UINT32_MAX;
-   690		info.display_type =3D ACPI_DISPLAY_SUMMARY | ACPI_DISPLAY_SHORT;
-   691	=
-
-   692		/* Walk the namespace from the root */
-   693	=
-
-   694		(void)acpi_walk_namespace(type, ACPI_ROOT_OBJECT, ACPI_UINT32_MAX,
-   695					  acpi_db_walk_for_specific_objects, NULL,
-   696					  (void *)&info, NULL);
-   697	=
-
-   698		acpi_os_printf
-   699		    ("\nFound %u objects of type [%s] in the current ACPI Namespace=
-\n",
-   700		     info.count, acpi_ut_get_type_name(type));
-   701	=
-
-   702		acpi_db_set_output_destination(ACPI_DB_CONSOLE_OUTPUT);
-   703		return (AE_OK);
-   704	}
-   705	=
-
-   706	/*******************************************************************=
-************
-   707	 *
-   708	 * FUNCTION:    acpi_db_display_fields
-   709	 *
-   710	 * PARAMETERS:  obj_type_arg        - Type of object to display
-   711	 *              display_count_arg   - Max depth to display
-   712	 *
-   713	 * RETURN:      None
-   714	 *
-   715	 * DESCRIPTION: Display objects in the namespace of the requested ty=
-pe
-   716	 *
-   717	 *******************************************************************=
-***********/
-   718	=
-
-   719	acpi_status acpi_db_display_fields(u32 address_space_id)
-   720	{
- > 721		ACPI_REGION_WALK_INFO info;
-   722	=
-
-   723		info.count =3D 0;
-   724		info.owner_id =3D ACPI_OWNER_ID_MAX;
-   725		info.debug_level =3D ACPI_UINT32_MAX;
-   726		info.display_type =3D ACPI_DISPLAY_SUMMARY | ACPI_DISPLAY_SHORT;
-   727		info.address_space_id =3D address_space_id;
-   728	=
-
-   729		/* Walk the namespace from the root */
-   730	=
-
-   731		(void)acpi_walk_namespace(ACPI_TYPE_LOCAL_REGION_FIELD,
-   732					  ACPI_ROOT_OBJECT, ACPI_UINT32_MAX,
-   733					  acpi_db_walk_for_fields, NULL, (void *)&info,
-   734					  NULL);
-   735	=
-
-   736		return (AE_OK);
-   737	}
-   738	=
+   586		*return_type =3D type;
+   587		return (start);
+   588	}
+   589	=
 
 
 ---
@@ -393,13 +237,13 @@ er
 https://lists.01.org/pipermail/kbuild-all                   Intel Corporati=
 on
 
---===============4607730443340505917==
+--===============8451028480871214494==
 Content-Type: application/gzip
 MIME-Version: 1.0
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="config.gz"
 
-H4sICO7csl0AAy5jb25maWcAlDzbcty2ku/5iinnJXlIIsmy7N0tP4AkyIGHJBgAHM34haXIY0e1
+H4sICB/wsl0AAy5jb25maWcAlDzbcty2ku/5iinnJXlIIsmy7N0tP4AkyIGHJBgAHM34haXIY0e1
 tuTV5Rz777cb4KVxGcUndepY7G7cG33H/PzTzyv29Hj35erx5vrq8+fvq0+H28P91ePhw+rjzefD
 /6wKuWqlWfFCmN+BuL65ffr2x7c3F8PF+erV7+e/n/x2f32+2hzubw+fV/nd7cebT0/Q/ubu9qef
 f4L//QzAL1+hq/v/Xn26vv7t9eqX4vDXzdXt6rVtfXr+q/sLaHPZlqIa8nwQeqjy/O33CQQfw5Yr
@@ -1631,5 +1475,5 @@ LrX8904eMD9M0PTB7zLTpjFeGgcOItqWPgq/hXHlbuNhbHzU7RqqwXZ22g/XJqaDqLM8+pUnrWi1
 vxOZmTKLVU6DpuUg8hzuzw7ZjjwTYn0LmTjclcvl8YTvGS5YzEs93l1T04HKiQJoucUZdbjfylNF
 4MX+GO4L6LVO1aFnGhQXZA5dcYFR9Oq+rEPaGhNuX+2NKBoLx0TSZw3XADd3hiZ0IjouKUPzAILV
 /f+gRK74QXgEAA==
---===============4607730443340505917==--
+--===============8451028480871214494==--
 
