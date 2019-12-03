@@ -1,145 +1,139 @@
-Content-Type: multipart/mixed; boundary="===============0977078109011716490=="
+Content-Type: multipart/mixed; boundary="===============0453113851845301222=="
 MIME-Version: 1.0
-From: Schmauss, Erik <erik.schmauss at intel.com>
-Subject: [Devel] Re: PROBLEM: Calling ObjectType on buffer field reports type
- integer
-Date: Wed, 27 Nov 2019 00:25:51 +0000
-Message-ID: <CF6A88132359CE47947DB4C6E1709ED53C688D60@ORSMSX122.amr.corp.intel.com>
-In-Reply-To: 20f023a8-67f2-71dd-266d-700012c05b39@gmail.com
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] Re: [PATCH] ACPICA: Use ARRAY_SIZE for 'fadt_info_table',
+ 'fadt_pm_info_table'
+Date: Tue, 03 Dec 2019 15:23:20 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E3B96B311D@ORSMSX110.amr.corp.intel.com>
+In-Reply-To: CF6A88132359CE47947DB4C6E1709ED53C688958@ORSMSX122.amr.corp.intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0977078109011716490==
+--===============0453113851845301222==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
+However, ACPICA has an "ACPI_ARRAY_LENGTH" macro which could possibly be us=
+ed. It's defined like this:
+
+#define ACPI_ARRAY_LENGTH(x)            (sizeof(x) / sizeof((x)[0]))
+
+
+-----Original Message-----
+From: Schmauss, Erik <erik.schmauss(a)intel.com> =
+
+Sent: Monday, November 25, 2019 10:11 AM
+To: Colin Ian King <colin.king(a)canonical.com>; Moore, Robert <robert.moor=
+e(a)intel.com>; zhengbin <zhengbin13(a)huawei.com>; Wysocki, Rafael J <rafa=
+el.j.wysocki(a)intel.com>; lenb(a)kernel.org; linux-acpi(a)vger.kernel.org;=
+ devel(a)acpica.org
+Subject: RE: [Devel] Re: [PATCH] ACPICA: Use ARRAY_SIZE for 'fadt_info_tabl=
+e','fadt_pm_info_table'
+
+
+
+> -----Original Message-----
+> From: linux-acpi-owner(a)vger.kernel.org =
+
+> <linux-acpi-owner(a)vger.kernel.org>
+> On Behalf Of Colin Ian King
+> Sent: Friday, November 22, 2019 2:36 PM
+> To: Moore, Robert <robert.moore(a)intel.com>; zhengbin =
+
+> <zhengbin13(a)huawei.com>; Schmauss, Erik <erik.schmauss(a)intel.com>; =
+
+> Wysocki, Rafael J <rafael.j.wysocki(a)intel.com>; lenb(a)kernel.org; =
+
+> linux- acpi(a)vger.kernel.org; devel(a)acpica.org
+> Subject: Re: [Devel] Re: [PATCH] ACPICA: Use ARRAY_SIZE for =
+
+> 'fadt_info_table','fadt_pm_info_table'
 > =
 
-> This looks like a separate problem to me. On the SB2 there is this piece =
-of code,
-> simplified:
+> On 22/11/2019 21:49, Moore, Robert wrote:
+> > Where does "ARRAY_SIZE" come from? It's not a part of ACPICA.
+> > Bob
 > =
 
->      Name(RQBF, Buffer (0xFF) {})
->      CreateByteField (RQBF, 0x03, ALEN)
-> =
+> It's definitely not part of ACPICA, it's defined in linux/kernel.h
 
->      // ...
->      // GenericSerialBus/AttribRawProcessBytes access to fill RQBF
->      // ...
-> =
+ACPICA codebase must work across multiple operating systems. Since ARRAY_SI=
+ZE macro is specific to linux, we cannot take this change as it stands..
 
->      If (/* success and everything is valid */)
->      {
->          Local3 =3D (ALEN * 0x08)
->          CreateField (RQBF, 0x20, Local3, ARB)
->          Local4 =3D ARB /* \_SB_._SAN.RQSX.ARB_ */
->      }
->      Else
->      {
->          Local4 =3D 0x01   // or some other error code as integer
->      }
-> =
-
->      // ...
->      // some more stuff
->      // ...
-> =
-
->      If ((ObjectType (Local4) =3D=3D One /* Integer */))
->      {
->          // notify that an error has occurred
->      }
->      Else
->      {
->          // success and actually use data from Local4
->      }
-> =
-
-> The code in question basically unpacks a payload from some other
-> management stuff sent over the OperationRegion.
-> =
-
-> Here, ALEN is the length of a dynamically sized payload in bytes, which is
-> obtained from the data returned by the OperationRegion access. This can f=
-or
-> example be 4, making the field length 32 bit. So this is not an issue of =
-the field
-> length being larger than intmax bits, it actually is sometimes only 32 bi=
-ts, or 8
-> bits, depending on the response of the driver connected to the
-> OperationRegion. Also the DSDT depends on that, see the example below.
-> =
-
-> Just to reiterate, the code works fine for payloads with ALEN > 8 (so mor=
-e than
-> 8 bytes), but fails for anything less.
-
-Forget what I said in the previous email. You are correct.
-
-They treat bufferfields that are small enough to fit inside of an integer a=
-s a buffer or bufferfield.
-
-I did a bunch of testing on windows and determined that, objects created by=
- Create(Bit|Byte|Word|DWord|Qword)Field
-work the same way on both interpreters. They get converted to Integers as o=
-utlined in the spec.
-
-We simply need to stop perform the BufferField->Integer conversion for buff=
-er fields created by the ASL CreateField() operators.
-I'll get a solution hopefully sometime next week..
-
-Thanks,
 Erik
-
 > =
 
-> Also note that this is not something that can be fixed by just telling the
-> GenericSerialBus/OperationRegion driver to just return 9 bytes
-> instead: There are length-checks on Local4 further down the line to valid=
-ate it
-> actually contains what was requested.
-> =
+> >
+> >
+> > -----Original Message-----
+> > From: zhengbin <zhengbin13(a)huawei.com>
+> > Sent: Friday, November 22, 2019 1:33 AM
+> > To: Moore, Robert <robert.moore(a)intel.com>; Schmauss, Erik =
 
-> An example of how this piece of code is actually used, if that helps (aga=
-in
-> simplified):
-> =
+> > <erik.schmauss(a)intel.com>; Wysocki, Rafael J =
 
->      Method (RQST, 1)
->      {
->          // pretty much the code above
->          Return (Local4)     // either payload or integer error code
->      }
-> =
+> > <rafael.j.wysocki(a)intel.com>; lenb(a)kernel.org; =
 
->      Scope (_SB.BAT1)
->      {
->          Method (_STA, 0)
->          {
->              Local0 =3D RQST(0x01)     // request battery status
-> =
+> > linux-acpi(a)vger.kernel.org; devel(a)acpica.org
+> > Cc: zhengbin13(a)huawei.com
+> > Subject: [PATCH] ACPICA: Use ARRAY_SIZE for
+> 'fadt_info_table','fadt_pm_info_table'
+> >
+> > Fixes coccicheck warning:
+> >
+> > drivers/acpi/acpica/tbfadt.c:107:27-28: WARNING: Use ARRAY_SIZE
+> > drivers/acpi/acpica/tbfadt.c:137:30-31: WARNING: Use ARRAY_SIZE
+> >
+> > Reported-by: Hulk Robot <hulkci(a)huawei.com>
+> > Signed-off-by: zhengbin <zhengbin13(a)huawei.com>
+> > ---
+> >  drivers/acpi/acpica/tbfadt.c | 6 ++----
+> >  1 file changed, 2 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/acpi/acpica/tbfadt.c =
 
->              If ((ObjectType (Local0) =3D=3D 0x03))      // is buffer type
->              {
->                  If ((SizeOf (Local0) =3D=3D 0x04))      // has length 4
->                  {
->                      CreateDWordField (Local0, 0, BAST)
->                      Return (BAST)
->                  }
->              }
-> =
+> > b/drivers/acpi/acpica/tbfadt.c index 0041bfb..324a804 100644
+> > --- a/drivers/acpi/acpica/tbfadt.c
+> > +++ b/drivers/acpi/acpica/tbfadt.c
+> > @@ -103,8 +103,7 @@ static struct acpi_fadt_info fadt_info_table[] =3D {
+> >  	 ACPI_FADT_SEPARATE_LENGTH | ACPI_FADT_GPE_REGISTER}  };
+> >
+> > -#define ACPI_FADT_INFO_ENTRIES \
+> > -			(sizeof (fadt_info_table) / sizeof (struct
+> acpi_fadt_info))
+> > +#define ACPI_FADT_INFO_ENTRIES (ARRAY_SIZE(fadt_info_table))
+> >
+> >  /* Table used to split Event Blocks into separate status/enable =
 
->              Return (0x00)           // return default value
->          }
->      }
-> =
+> > registers */
+> >
+> > @@ -133,8 +132,7 @@ static struct acpi_fadt_pm_info =
 
-> =
+> > fadt_pm_info_table[]
+> =3D {
+> >  	 1}
+> >  };
+> >
+> > -#define ACPI_FADT_PM_INFO_ENTRIES \
+> > -			(sizeof (fadt_pm_info_table) / sizeof (struct
+> acpi_fadt_pm_info))
+> > +#define ACPI_FADT_PM_INFO_ENTRIES (ARRAY_SIZE(fadt_pm_info_table))
+> >
+> >
+> /******************************************************************
+> *************
+> >   *
+> > --
+> > 2.7.4
+> > _______________________________________________
+> > Devel mailing list -- devel(a)acpica.org To unsubscribe send an email =
 
-> Regards,
-> Maximilian
+> > to devel-leave(a)acpica.org =
 
---===============0977078109011716490==--
+> > %(web_page_url)slistinfo%(cgiext)s/%(_internal_name)s
+> >
+
+
+--===============0453113851845301222==--
 
