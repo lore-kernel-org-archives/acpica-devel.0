@@ -1,43 +1,109 @@
-Content-Type: multipart/mixed; boundary="===============4407522386121044963=="
+Content-Type: multipart/mixed; boundary="===============9118118239722074641=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [kbuild-all] Re: [pm:intel_idle+acpi 4/10]
- acpi_processor.c:undefined reference to `acpi_processor_ffh_cstate_probe'
-Date: Tue, 17 Dec 2019 09:23:14 +0100
-Message-ID: <CAJZ5v0gFbjbqTOD845RjzpJQXQY=ko=9GxwVxoqw0fPccfig4w@mail.gmail.com>
-In-Reply-To: 831EE4E5E37DCC428EB295A351E66249522A215D@shsmsx102.ccr.corp.intel.com
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] Re: [PATCH] ACPICA: Fix compilation with bare-metal toolchian
+Date: Wed, 18 Dec 2019 18:09:59 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E3B96C2505@ORSMSX110.amr.corp.intel.com>
+In-Reply-To: 8ee4ecbe-f451-112e-677a-87a4d73ccdfc@FreeBSD.org
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4407522386121044963==
+--===============9118118239722074641==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 17, 2019 at 1:31 AM Li, Philip <philip.li(a)intel.com> wrote:
->
-> > Subject: [kbuild-all] Re: [pm:intel_idle+acpi 4/10] acpi_processor.c:un=
-defined
-> > reference to `acpi_processor_ffh_cstate_probe'
-> >
-> > On Mon, Dec 16, 2019 at 2:26 PM kbuild test robot <lkp(a)intel.com> wro=
-te:
-> > >
-> > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-=
-pm.git
-> > intel_idle+acpi
-> > > head:   dcedc03145600b929a32acb85b212131b079bc46
-> > > commit: 0300cf31f061e6287810c894337f29df2e200e2d [4/10] ACPI: process=
-or:
-> > Export acpi_processor_evaluate_cst()
-> >
-> > Outdated.  Please stop sending these.
-> thanks for the input Rafael, we will ignore the following tests on it.
 
-Well, the branch has been rebased since then and effectively it is a new on=
-e.
 
-My point is that if something like that happens, the script should
-discard the old branch and pull the new one from scratch.
---===============4407522386121044963==--
+-----Original Message-----
+From: Jung-uk Kim <jkim(a)FreeBSD.org> =
+
+Sent: Friday, December 13, 2019 7:05 AM
+To: Moore, Robert <robert.moore(a)intel.com>; Rafael J. Wysocki <rjw(a)rjwy=
+socki.net>; Kaneda, Erik <erik.kaneda(a)intel.com>
+Cc: Laster K. <officiallazerl0rd(a)gmail.com>; Wysocki, Rafael J <rafael.j.=
+wysocki(a)intel.com>; linux-acpi(a)vger.kernel.org; devel(a)acpica.org
+Subject: Re: [Devel] Re: [PATCH] ACPICA: Fix compilation with bare-metal to=
+olchian
+
+On 19. 12. 12., Moore, Robert wrote:
+>> -----Original Message-----
+>> From: Rafael J. Wysocki [mailto:rjw(a)rjwysocki.net]
+>> Sent: Friday, July 5, 2019 2:44 AM
+>> To: Moore, Robert <robert.moore(a)intel.com>; Schmauss, Erik =
+
+>> <erik.schmauss(a)intel.com>
+>> Cc: Laster K. <officiallazerl0rd(a)gmail.com>; Wysocki, Rafael J =
+
+>> <rafael.j.wysocki(a)intel.com>; lenb(a)kernel.org; linux- =
+
+>> acpi(a)vger.kernel.org; devel(a)acpica.org
+>> Subject: Re: [PATCH] ACPICA: Fix compilation with bare-metal =
+
+>> toolchian
+>>
+>> On Saturday, June 22, 2019 11:03:54 PM CEST Laster K. wrote:
+>>> An ifdef expects to be compiled with full-fledged Linux toolchain, =
+
+>>> but it's common to compile kernel with just bare-metal toolchain =
+
+>>> which doesn't define __linux__. So, also add __KERNEL__ check.
+>>>
+> [Moore, Robert]
+> This sounds OK, as long as no other supported hosts define __KERNEL__.
+
+FreeBSD defines _KERNEL for kernel source.
+
+I'd have to say that this sounds a bit dangerous. Is there another symbol t=
+hat we can AND into an expression?
+
+JK
+
+>>> Signed-off-by: Laster K. (lazerl0rd) <officiallazerl0rd(a)gmail.com>
+>>> ---
+>>> Apologies for the multiple/spammed e-mails, I was having mail client
+>> issues.
+>>>
+>>>  include/acpi/platform/acenv.h   | 2 +-
+>>>  include/acpi/platform/acenvex.h | 2 +-
+>>>  2 files changed, 2 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/include/acpi/platform/acenv.h =
+
+>>> b/include/acpi/platform/acenv.h index 35ab3f87cc29..b69319198cb8
+>>> 100644
+>>> --- a/include/acpi/platform/acenv.h
+>>> +++ b/include/acpi/platform/acenv.h
+>>> @@ -148,7 +148,7 @@
+>>>
+>>>  #endif
+>>>
+>>> -#if defined(_LINUX) || defined(__linux__)
+>>> +#if defined(_LINUX) || defined(__KERNEL__) || defined(__linux__)
+>>>  #include <acpi/platform/aclinux.h>
+>>>
+>>>  #elif defined(_APPLE) || defined(__APPLE__) diff --git =
+
+>>> a/include/acpi/platform/acenvex.h b/include/acpi/platform/acenvex.h =
+
+>>> index 2e36c8344897..c7697a47e33f 100644
+>>> --- a/include/acpi/platform/acenvex.h
+>>> +++ b/include/acpi/platform/acenvex.h
+>>> @@ -19,7 +19,7 @@
+>>>   *
+>>>
+>>> ********************************************************************
+>>> **
+>>> *******/
+>>>
+>>> -#if defined(_LINUX) || defined(__linux__)
+>>> +#if defined(_LINUX) || defined(__KERNEL__) || defined(__linux__)
+>>>  #include <acpi/platform/aclinuxex.h>
+>>>
+>>>  #elif defined(__DragonFly__)
+>>>
+>>
+>> Erik, Bob, any input here?
+
+--===============9118118239722074641==--
 
