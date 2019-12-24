@@ -1,46 +1,43 @@
-Content-Type: multipart/mixed; boundary="===============3679071386274485402=="
+Content-Type: multipart/mixed; boundary="===============1311584596971169507=="
 MIME-Version: 1.0
 From: kbuild test robot <lkp at intel.com>
-Subject: [Devel] [pm:bleeding-edge 59/60]
- drivers/power/avs/qcom-cpr.c:1081:15: sparse: sparse: symbol
- 'cpr_get_opp_hz_for_req' was not declared. Should it be static?
-Date: Wed, 25 Dec 2019 06:18:33 +0800
-Message-ID: <201912250622.SScsrif7%lkp@intel.com>
+Subject: [Devel] [RFC PATCH pm] power: avs: cpr_get_opp_hz_for_req() can be
+ static
+Date: Wed, 25 Dec 2019 06:18:34 +0800
+Message-ID: <20191224221834.qtzuikxnnfh7twji@4978f4969bb8>
+In-Reply-To: 201912250622.SScsrif7%lkp@intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3679071386274485402==
+--===============1311584596971169507==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git=
- bleeding-edge
-head:   89eba9e38dc4ed4576eaf7711c60403568663291
-commit: bf6910abf54871b0e976e52f56fb3b3dd1b90e48 [59/60] power: avs: Add su=
-pport for CPR (Core Power Reduction)
-reproduce:
-        # apt-get install sparse
-        # sparse version: v0.6.1-129-g341daf20-dirty
-        git checkout bf6910abf54871b0e976e52f56fb3b3dd1b90e48
-        make ARCH=3Dx86_64 allmodconfig
-        make C=3D1 CF=3D'-fdiagnostic-prefix -D__CHECK_ENDIAN__'
 
-If you fix the issue, kindly add following tag
-Reported-by: kbuild test robot <lkp(a)intel.com>
-
-
-sparse warnings: (new ones prefixed by >>)
-
->> drivers/power/avs/qcom-cpr.c:1081:15: sparse: sparse: symbol 'cpr_get_op=
-p_hz_for_req' was not declared. Should it be static?
-
-Please review and possibly fold the followup patch.
-
+Fixes: bf6910abf548 ("power: avs: Add support for CPR (Core Power Reduction=
+)")
+Signed-off-by: kbuild test robot <lkp(a)intel.com>
 ---
-0-DAY kernel test infrastructure                 Open Source Technology Cen=
-ter
-https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org Intel Corpor=
-ation
---===============3679071386274485402==--
+ qcom-cpr.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/power/avs/qcom-cpr.c b/drivers/power/avs/qcom-cpr.c
+index a3187973bbb5fd..98c9ee4075ae9d 100644
+--- a/drivers/power/avs/qcom-cpr.c
++++ b/drivers/power/avs/qcom-cpr.c
+@@ -1078,8 +1078,8 @@ static unsigned int cpr_get_fuse_corner(struct dev_pm=
+_opp *opp)
+ 	return fuse_corner;
+ }
+ =
+
+-unsigned long cpr_get_opp_hz_for_req(struct dev_pm_opp *ref,
+-				     struct device *cpu_dev)
++static unsigned long cpr_get_opp_hz_for_req(struct dev_pm_opp *ref,
++					    struct device *cpu_dev)
+ {
+ 	u64 rate =3D 0;
+ 	struct device_node *ref_np;
+--===============1311584596971169507==--
 
