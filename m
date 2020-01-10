@@ -1,43 +1,44 @@
-Content-Type: multipart/mixed; boundary="===============1311584596971169507=="
+Content-Type: multipart/mixed; boundary="===============1936471463749770590=="
 MIME-Version: 1.0
-From: kbuild test robot <lkp at intel.com>
-Subject: [Devel] [RFC PATCH pm] power: avs: cpr_get_opp_hz_for_req() can be
- static
-Date: Wed, 25 Dec 2019 06:18:34 +0800
-Message-ID: <20191224221834.qtzuikxnnfh7twji@4978f4969bb8>
-In-Reply-To: 201912250622.SScsrif7%lkp@intel.com
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] ACPICA version 20200110 released
+Date: Fri, 10 Jan 2020 18:18:16 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E3B96C58CC@ORSMSX110.amr.corp.intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1311584596971169507==
+--===============1936471463749770590==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
+10 January 2020. Summary of changes for version 20200110:
 
-Fixes: bf6910abf548 ("power: avs: Add support for CPR (Core Power Reduction=
-)")
-Signed-off-by: kbuild test robot <lkp(a)intel.com>
----
- qcom-cpr.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+This release is available at https://acpica.org/downloads
 
-diff --git a/drivers/power/avs/qcom-cpr.c b/drivers/power/avs/qcom-cpr.c
-index a3187973bbb5fd..98c9ee4075ae9d 100644
---- a/drivers/power/avs/qcom-cpr.c
-+++ b/drivers/power/avs/qcom-cpr.c
-@@ -1078,8 +1078,8 @@ static unsigned int cpr_get_fuse_corner(struct dev_pm=
-_opp *opp)
- 	return fuse_corner;
- }
- =
 
--unsigned long cpr_get_opp_hz_for_req(struct dev_pm_opp *ref,
--				     struct device *cpu_dev)
-+static unsigned long cpr_get_opp_hz_for_req(struct dev_pm_opp *ref,
-+					    struct device *cpu_dev)
- {
- 	u64 rate =3D 0;
- 	struct device_node *ref_np;
---===============1311584596971169507==--
+1) ACPICA kernel-resident subsystem:
+
+Updated all copyrights to 2020. This affects all ACPICA source code modules.
+
+
+2) iASL Compiler/Disassembler and ACPICA tools:
+
+ASL test suite (ASLTS): Updated all copyrights to 2020.
+
+Tools and utilities: Updated all signon copyrights to 2020.
+
+iASL: fix forward reference analysis for field declarations. Fixes forward =
+reference analysis for field declarations by searching the parent scope for=
+ the named object when the object is not present in the current scope.
+
+iASL: Improved the error output for ALREADY_EXISTS errors. Now, the full pa=
+thname of the name that already exists is printed.
+
+iASL: Enhance duplicate Case() detection for buffers. Add check for buffers=
+ with no initializer list (these buffers will be filled with zeros at runti=
+me.)
+
+
+--===============1936471463749770590==--
 
