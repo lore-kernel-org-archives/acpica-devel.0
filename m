@@ -1,199 +1,164 @@
-Content-Type: multipart/mixed; boundary="===============5350141335936612229=="
+Content-Type: multipart/mixed; boundary="===============1166200026851148481=="
 MIME-Version: 1.0
-From: kbuild test robot <lkp at intel.com>
-Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
- 971a12f8e68bf3b19eb1161e1fcefdf3b0573907
-Date: Tue, 21 Jan 2020 02:13:35 +0800
-Message-ID: <5e25edcf.kO1auxAqDHJDghhQ%lkp@intel.com>
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] Re: [PATCH] ACPICA: Fix compilation with bare-metal toolchian
+Date: Wed, 22 Jan 2020 17:07:21 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E3B96D2270@ORSMSX110.amr.corp.intel.com>
+In-Reply-To: MWHPR11MB1984CF11768CEF6C90C6516DF00D0@MWHPR11MB1984.namprd11.prod.outlook.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5350141335936612229==
+--===============1166200026851148481==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
-m.git  bleeding-edge
-branch HEAD: 971a12f8e68bf3b19eb1161e1fcefdf3b0573907  Merge branch 'pm-cpu=
-idle-next' into testing
 
-elapsed time: 400m
 
-configs tested: 163
-configs skipped: 1
+-----Original Message-----
+From: Kaneda, Erik <erik.kaneda(a)intel.com> =
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Sent: Tuesday, January 21, 2020 1:46 PM
+To: Moore, Robert <robert.moore(a)intel.com>
+Subject: FW: [Devel] Re: [PATCH] ACPICA: Fix compilation with bare-metal to=
+olchian
 
-parisc                            allnoconfig
-parisc                            allyesonfig
-parisc                         b180_defconfig
-parisc                        c3000_defconfig
-parisc                              defconfig
-x86_64               randconfig-e001-20200120
-x86_64               randconfig-e002-20200120
-x86_64               randconfig-e003-20200120
-i386                 randconfig-e001-20200120
-i386                 randconfig-e002-20200120
-i386                 randconfig-e003-20200120
-i386                             alldefconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                                defconfig
-alpha                               defconfig
-csky                                defconfig
-nds32                             allnoconfig
-nds32                               defconfig
-arc                              allyesconfig
-arc                                 defconfig
-microblaze                      mmu_defconfig
-microblaze                    nommu_defconfig
-powerpc                           allnoconfig
-powerpc                             defconfig
-powerpc                       ppc64_defconfig
-powerpc                          rhel-kconfig
-arm                              allmodconfig
-arm                               allnoconfig
-arm                              allyesconfig
-arm                         at91_dt_defconfig
-arm                           efm32_defconfig
-arm                          exynos_defconfig
-arm                        multi_v5_defconfig
-arm                        multi_v7_defconfig
-arm                        shmobile_defconfig
-arm                           sunxi_defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-arm64                            allyesconfig
-arm64                               defconfig
-csky                 randconfig-a001-20200120
-openrisc             randconfig-a001-20200120
-s390                 randconfig-a001-20200120
-sh                   randconfig-a001-20200120
-xtensa               randconfig-a001-20200120
-xtensa                       common_defconfig
-openrisc                    or1ksim_defconfig
-nios2                         3c120_defconfig
-xtensa                          iss_defconfig
-c6x                        evmc6678_defconfig
-c6x                              allyesconfig
-nios2                         10m50_defconfig
-openrisc                 simple_smp_defconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-um                                  defconfig
-s390                             alldefconfig
-s390                             allmodconfig
-s390                              allnoconfig
-s390                             allyesconfig
-s390                          debug_defconfig
-s390                                defconfig
-s390                       zfcpdump_defconfig
-x86_64               randconfig-g001-20200120
-x86_64               randconfig-g002-20200120
-x86_64               randconfig-g003-20200120
-i386                 randconfig-g001-20200120
-i386                 randconfig-g002-20200120
-i386                 randconfig-g003-20200120
-h8300                     edosk2674_defconfig
-h8300                    h8300h-sim_defconfig
-h8300                       h8s-sim_defconfig
-m68k                             allmodconfig
-m68k                       m5475evb_defconfig
-m68k                          multi_defconfig
-m68k                           sun3_defconfig
-x86_64               randconfig-d001-20200120
-x86_64               randconfig-d002-20200120
-x86_64               randconfig-d003-20200120
-i386                 randconfig-d001-20200120
-i386                 randconfig-d002-20200120
-i386                 randconfig-d003-20200120
-x86_64                              fedora-25
-x86_64                                  kexec
-x86_64                                    lkp
-x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64               randconfig-c001-20200120
-x86_64               randconfig-c002-20200120
-x86_64               randconfig-c003-20200120
-i386                 randconfig-c001-20200120
-i386                 randconfig-c002-20200120
-i386                 randconfig-c003-20200120
-x86_64               randconfig-f001-20200120
-x86_64               randconfig-f002-20200120
-x86_64               randconfig-f003-20200120
-i386                 randconfig-f001-20200120
-i386                 randconfig-f002-20200120
-i386                 randconfig-f003-20200120
-ia64                                defconfig
-sh                               allmodconfig
-sh                                allnoconfig
-sh                          rsk7269_defconfig
-sh                  sh7785lcr_32bit_defconfig
-sh                            titan_defconfig
-mips                           32r2_defconfig
-mips                         64r6el_defconfig
-mips                             allmodconfig
-mips                              allnoconfig
-mips                             allyesconfig
-mips                      fuloong2e_defconfig
-mips                      malta_kvm_defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-sparc64                          allmodconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                             defconfig
-c6x                  randconfig-a001-20200120
-h8300                randconfig-a001-20200120
-microblaze           randconfig-a001-20200120
-nios2                randconfig-a001-20200120
-sparc64              randconfig-a001-20200120
-x86_64               randconfig-a001-20200120
-x86_64               randconfig-a002-20200120
-x86_64               randconfig-a003-20200120
-i386                 randconfig-a001-20200120
-i386                 randconfig-a002-20200120
-i386                 randconfig-a003-20200120
-riscv                            allmodconfig
-riscv                             allnoconfig
-riscv                            allyesconfig
-riscv                               defconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-ia64                             alldefconfig
-ia64                             allmodconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-arc                  randconfig-a001-20200120
-arm                  randconfig-a001-20200120
-arm64                randconfig-a001-20200120
-ia64                 randconfig-a001-20200120
-powerpc              randconfig-a001-20200120
-sparc                randconfig-a001-20200120
-x86_64               randconfig-b001-20200120
-x86_64               randconfig-b002-20200120
-x86_64               randconfig-b003-20200120
-i386                 randconfig-b001-20200120
-i386                 randconfig-b002-20200120
-i386                 randconfig-b003-20200120
-x86_64               randconfig-h001-20200120
-x86_64               randconfig-h002-20200120
-x86_64               randconfig-h003-20200120
-i386                 randconfig-h001-20200120
-i386                 randconfig-h002-20200120
-i386                 randconfig-h003-20200120
-c6x                  randconfig-a001-20200121
-h8300                randconfig-a001-20200121
-microblaze           randconfig-a001-20200121
-nios2                randconfig-a001-20200121
-sparc64              randconfig-a001-20200121
 
----
-0-DAY kernel test infrastructure                 Open Source Technology Cen=
-ter
-https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org Intel Corpor=
-ation
---===============5350141335936612229==--
+
+> -----Original Message-----
+> From: Moore, Robert <robert.moore(a)intel.com>
+> Sent: Wednesday, December 18, 2019 10:10 AM
+> To: Jung-uk Kim <jkim(a)FreeBSD.org>; Rafael J. Wysocki =
+
+> <rjw(a)rjwysocki.net>; Kaneda, Erik <erik.kaneda(a)intel.com>
+> Cc: Laster K. <officiallazerl0rd(a)gmail.com>; Wysocki, Rafael J =
+
+> <rafael.j.wysocki(a)intel.com>; linux-acpi(a)vger.kernel.org; =
+
+> devel(a)acpica.org
+> Subject: RE: [Devel] Re: [PATCH] ACPICA: Fix compilation with =
+
+> bare-metal toolchian
+> =
+
+> =
+
+> =
+
+> -----Original Message-----
+> From: Jung-uk Kim <jkim(a)FreeBSD.org>
+> Sent: Friday, December 13, 2019 7:05 AM
+> To: Moore, Robert <robert.moore(a)intel.com>; Rafael J. Wysocki =
+
+> <rjw(a)rjwysocki.net>; Kaneda, Erik <erik.kaneda(a)intel.com>
+> Cc: Laster K. <officiallazerl0rd(a)gmail.com>; Wysocki, Rafael J =
+
+> <rafael.j.wysocki(a)intel.com>; linux-acpi(a)vger.kernel.org; =
+
+> devel(a)acpica.org
+> Subject: Re: [Devel] Re: [PATCH] ACPICA: Fix compilation with =
+
+> bare-metal toolchian
+> =
+
+> On 19. 12. 12., Moore, Robert wrote:
+> >> -----Original Message-----
+> >> From: Rafael J. Wysocki [mailto:rjw(a)rjwysocki.net]
+> >> Sent: Friday, July 5, 2019 2:44 AM
+> >> To: Moore, Robert <robert.moore(a)intel.com>; Schmauss, Erik =
+
+> >> <erik.schmauss(a)intel.com>
+> >> Cc: Laster K. <officiallazerl0rd(a)gmail.com>; Wysocki, Rafael J =
+
+> >> <rafael.j.wysocki(a)intel.com>; lenb(a)kernel.org; linux- =
+
+> >> acpi(a)vger.kernel.org; devel(a)acpica.org
+> >> Subject: Re: [PATCH] ACPICA: Fix compilation with bare-metal =
+
+> >> toolchian
+> >>
+> >> On Saturday, June 22, 2019 11:03:54 PM CEST Laster K. wrote:
+> >>> An ifdef expects to be compiled with full-fledged Linux toolchain, =
+
+> >>> but it's common to compile kernel with just bare-metal toolchain =
+
+> >>> which doesn't define __linux__. So, also add __KERNEL__ check.
+> >>>
+> > [Moore, Robert]
+> > This sounds OK, as long as no other supported hosts define __KERNEL__.
+> =
+
+> FreeBSD defines _KERNEL for kernel source.
+> =
+
+> I'd have to say that this sounds a bit dangerous. Is there another =
+
+> symbol that we can AND into an expression?
+> =
+
+> JK
+> =
+
+I agree, this sounds dangerous due to other hosts possibly using __KERNEL__=
+. If __KERNEL__ is defined as well as _LINUX or __linux__, this would elimi=
+nate the danger.
+
+Bob
+
+
+> >>> Signed-off-by: Laster K. (lazerl0rd) <officiallazerl0rd(a)gmail.com>
+> >>> ---
+> >>> Apologies for the multiple/spammed e-mails, I was having mail =
+
+> >>> client
+> >> issues.
+> >>>
+> >>>  include/acpi/platform/acenv.h   | 2 +-
+> >>>  include/acpi/platform/acenvex.h | 2 +-
+> >>>  2 files changed, 2 insertions(+), 2 deletions(-)
+> >>>
+> >>> diff --git a/include/acpi/platform/acenv.h =
+
+> >>> b/include/acpi/platform/acenv.h index 35ab3f87cc29..b69319198cb8
+> >>> 100644
+> >>> --- a/include/acpi/platform/acenv.h
+> >>> +++ b/include/acpi/platform/acenv.h
+> >>> @@ -148,7 +148,7 @@
+> >>>
+> >>>  #endif
+> >>>
+> >>> -#if defined(_LINUX) || defined(__linux__)
+> >>> +#if defined(_LINUX) || defined(__KERNEL__) || defined(__linux__)
+> >>>  #include <acpi/platform/aclinux.h>
+> >>>
+> >>>  #elif defined(_APPLE) || defined(__APPLE__) diff --git =
+
+> >>> a/include/acpi/platform/acenvex.h =
+
+> >>> b/include/acpi/platform/acenvex.h index 2e36c8344897..c7697a47e33f =
+
+> >>> 100644
+> >>> --- a/include/acpi/platform/acenvex.h
+> >>> +++ b/include/acpi/platform/acenvex.h
+> >>> @@ -19,7 +19,7 @@
+> >>>   *
+> >>>
+> >>>
+> **********************************************************
+> **********
+> >>> **
+> >>> *******/
+> >>>
+> >>> -#if defined(_LINUX) || defined(__linux__)
+> >>> +#if defined(_LINUX) || defined(__KERNEL__) || defined(__linux__)
+> >>>  #include <acpi/platform/aclinuxex.h>
+> >>>
+> >>>  #elif defined(__DragonFly__)
+> >>>
+> >>
+> >> Erik, Bob, any input here?
+
+
+
+--===============1166200026851148481==--
 
