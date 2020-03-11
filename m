@@ -1,125 +1,220 @@
-Content-Type: multipart/mixed; boundary="===============4575207420683739884=="
+Content-Type: multipart/mixed; boundary="===============4928659497061627482=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [LKP] Re: [cpufreq] 909c0e9cc1: fwq.fwq.med 210.0%
- improvement
-Date: Tue, 10 Mar 2020 09:45:57 +0100
-Message-ID: <CAJZ5v0hdAnN-mu8b9g19cM8AqYGXDbs1qVxLu-qE-3P6fP1=XA@mail.gmail.com>
-In-Reply-To: 87imjez5rl.fsf@yhuang-dev.intel.com
+From: kbuild test robot <lkp at intel.com>
+Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
+ abcd59902c6467999041971af4ab14f30a2b3780
+Date: Wed, 11 Mar 2020 17:06:07 +0800
+Message-ID: <5e68a9ff.Ch2jRY2Uj0OWxrsE%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4575207420683739884==
+--===============4928659497061627482==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 9, 2020 at 2:17 AM Huang, Ying <ying.huang(a)intel.com> wrote:
->
-> "Rafael J. Wysocki" <rafael(a)kernel.org> writes:
->
-> > On Fri, Mar 6, 2020 at 4:29 AM Huang, Ying <ying.huang(a)intel.com> wro=
-te:
-> >>
-> >> Hi, Rafael,
-> >>
-> >> "Rafael J. Wysocki" <rafael(a)kernel.org> writes:
-> >>
-> >> > On Thu, Mar 5, 2020 at 9:18 AM Rong Chen <rong.a.chen(a)intel.com> w=
-rote:
-> >> >>
-> >> >>
-> >> >>
-> >> >> On 3/5/20 3:50 PM, Rafael J. Wysocki wrote:
-> >> >> > On 3/5/2020 2:35 AM, kernel test robot wrote:
-> >> >> >> Greeting,
-> >> >> >>
-> >> >> >> FYI, we noticed a 210.0% improvement of fwq.fwq.med due to commi=
-t:
-> >> >> >
-> >> >> > Well, that sounds impressive. :-)
-> >> >> >
-> >> >> >
-> >> >> >>
-> >> >> >> commit: 909c0e9cc11ba39fa5a660583b25c2431cf54deb ("cpufreq:
-> >> >> >> intel_pstate: Use passive mode by default without HWP")
-> >> >> >> https://git.kernel.org/cgit/linux/kernel/git/rafael/linux-pm.git
-> >> >> >> intel_pstate-passive
-> >> >> >>
-> >> >> >> in testcase: fwq
-> >> >> >> on test machine: 16 threads Intel(R) Xeon(R) CPU D-1541 @ 2.10GHz
-> >> >> >> with 48G memory
-> >> >> >> with following parameters:
-> >> >> >>
-> >> >> >>     nr_task: 100%
-> >> >> >>     samples: 100000ss
-> >> >> >>     iterations: 18x
-> >> >> >>     cpufreq_governor: powersave
-> >> >> >
-> >> >> > The governor should be schedutil, though, unless it is explicitly=
- set
-> >> >> > to powersave in the test environment.
-> >> >> >
-> >> >> > Is that the case?
-> >> >> >
-> >> >> >
-> >> >>
-> >> >> Hi Rafael,
-> >> >>
-> >> >> Yes, we set to powersave for this test.
-> >> >
-> >> > I wonder why this is done?  Is there any particular technical reason
-> >> > for doing that?
-> >>
-> >> fwq is a noise benchmark to measure the hardware and software noise
-> >> level.  More information could be found in the following document.
-> >>
-> >> https://asc.llnl.gov/sequoia/benchmarks/FTQ_summary_v1.1.pdf
-> >>
-> >> In 0day, to measure the noise introduced by power management, we will
-> >> run fwq with the performance and powersave governors.  Do you think th=
-is
-> >> is reasonable?  Or we should use some other governors?
-> >
-> > I think that the schedutil governor should be tested too if present.
-> >
-> > Also note that for the intel_pstate driver "powersave" may mean
-> > different things depending on the current operation mode of the
-> > driver.  If scaling_driver is "intel_pstate", then "powersave" is the
-> > driver's built-in algorithm.  If scaling_driver is "intel_cpufreq",
-> > though, "powersave" means running at the minimum frequency all the
-> > time.
->
-> Thanks for your guidance.  We will test schedutil governor in the future
-> too.
->
-> As for powersave, should we stop testing it?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git  bleeding-edge
+branch HEAD: abcd59902c6467999041971af4ab14f30a2b3780  Merge branch 'acpi-e=
+c' into testing
 
-You cannot stop testing it, because it is the default governor
-algorithm for intel_pstate working in the active mode.
+elapsed time: 1449m
 
->  Or just pay attention to the possible issue you pointed out?
+configs tested: 186
+configs skipped: 0
 
-Yes, please!
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Basically, I would recommend to test the following configurations by defaul=
-t:
+arm                              allmodconfig
+arm                               allnoconfig
+arm                              allyesconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm64                            allyesconfig
+arm                         at91_dt_defconfig
+arm                           efm32_defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+arm                        multi_v7_defconfig
+arm                        shmobile_defconfig
+arm                           sunxi_defconfig
+arm64                               defconfig
+sparc                            allyesconfig
+i386                                defconfig
+xtensa                       common_defconfig
+m68k                             allmodconfig
+nds32                             allnoconfig
+alpha                               defconfig
+nds32                               defconfig
+parisc                generic-64bit_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sparc64                             defconfig
+ia64                             alldefconfig
+arc                                 defconfig
+sparc64                           allnoconfig
+um                           x86_64_defconfig
+sh                                allnoconfig
+sparc64                          allmodconfig
+i386                              allnoconfig
+i386                             alldefconfig
+i386                             allyesconfig
+ia64                             allmodconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+ia64                                defconfig
+c6x                              allyesconfig
+c6x                        evmc6678_defconfig
+nios2                         10m50_defconfig
+nios2                         3c120_defconfig
+openrisc                    or1ksim_defconfig
+openrisc                 simple_smp_defconfig
+xtensa                          iss_defconfig
+csky                                defconfig
+h8300                     edosk2674_defconfig
+h8300                    h8300h-sim_defconfig
+h8300                       h8s-sim_defconfig
+m68k                       m5475evb_defconfig
+m68k                          multi_defconfig
+m68k                           sun3_defconfig
+arc                              allyesconfig
+microblaze                      mmu_defconfig
+microblaze                    nommu_defconfig
+powerpc                           allnoconfig
+powerpc                             defconfig
+powerpc                       ppc64_defconfig
+powerpc                          rhel-kconfig
+mips                           32r2_defconfig
+mips                         64r6el_defconfig
+mips                             allmodconfig
+mips                              allnoconfig
+mips                             allyesconfig
+mips                      fuloong2e_defconfig
+mips                      malta_kvm_defconfig
+parisc                            allnoconfig
+parisc                           allyesconfig
+parisc                generic-32bit_defconfig
+alpha                randconfig-a001-20200311
+m68k                 randconfig-a001-20200311
+mips                 randconfig-a001-20200311
+nds32                randconfig-a001-20200311
+parisc               randconfig-a001-20200311
+riscv                randconfig-a001-20200311
+alpha                randconfig-a001-20200309
+m68k                 randconfig-a001-20200309
+mips                 randconfig-a001-20200309
+nds32                randconfig-a001-20200309
+parisc               randconfig-a001-20200309
+riscv                randconfig-a001-20200309
+h8300                randconfig-a001-20200311
+sparc64              randconfig-a001-20200311
+c6x                  randconfig-a001-20200311
+nios2                randconfig-a001-20200311
+csky                 randconfig-a001-20200311
+openrisc             randconfig-a001-20200311
+s390                 randconfig-a001-20200311
+sh                   randconfig-a001-20200311
+xtensa               randconfig-a001-20200311
+csky                 randconfig-a001-20200310
+openrisc             randconfig-a001-20200310
+s390                 randconfig-a001-20200310
+sh                   randconfig-a001-20200310
+xtensa               randconfig-a001-20200310
+x86_64               randconfig-b001-20200311
+x86_64               randconfig-b002-20200311
+x86_64               randconfig-b003-20200311
+i386                 randconfig-b001-20200311
+x86_64               randconfig-b001-20200309
+x86_64               randconfig-b002-20200309
+x86_64               randconfig-b003-20200309
+i386                 randconfig-b001-20200309
+i386                 randconfig-b002-20200309
+i386                 randconfig-b003-20200309
+i386                 randconfig-b002-20200311
+i386                 randconfig-b003-20200311
+x86_64               randconfig-c001-20200311
+x86_64               randconfig-c002-20200311
+x86_64               randconfig-c003-20200311
+i386                 randconfig-c001-20200311
+i386                 randconfig-c002-20200311
+i386                 randconfig-c003-20200311
+x86_64               randconfig-c001-20200310
+x86_64               randconfig-c002-20200310
+x86_64               randconfig-c003-20200310
+i386                 randconfig-c001-20200310
+i386                 randconfig-c002-20200310
+i386                 randconfig-c003-20200310
+x86_64               randconfig-d001-20200311
+x86_64               randconfig-d002-20200311
+x86_64               randconfig-d003-20200311
+i386                 randconfig-d001-20200311
+i386                 randconfig-d002-20200311
+i386                 randconfig-d003-20200311
+x86_64               randconfig-e001-20200310
+x86_64               randconfig-e002-20200310
+x86_64               randconfig-e003-20200310
+i386                 randconfig-e001-20200310
+i386                 randconfig-e002-20200310
+i386                 randconfig-e003-20200310
+x86_64               randconfig-f001-20200311
+x86_64               randconfig-f002-20200311
+x86_64               randconfig-f003-20200311
+i386                 randconfig-f001-20200311
+i386                 randconfig-f002-20200311
+i386                 randconfig-f003-20200311
+x86_64               randconfig-g003-20200309
+i386                 randconfig-g001-20200309
+i386                 randconfig-g003-20200309
+x86_64               randconfig-g001-20200309
+x86_64               randconfig-g002-20200309
+i386                 randconfig-g002-20200309
+x86_64               randconfig-g001-20200311
+x86_64               randconfig-g002-20200311
+x86_64               randconfig-g003-20200311
+i386                 randconfig-g001-20200311
+i386                 randconfig-g002-20200311
+i386                 randconfig-g003-20200311
+x86_64               randconfig-h001-20200311
+x86_64               randconfig-h002-20200311
+x86_64               randconfig-h003-20200311
+i386                 randconfig-h001-20200311
+i386                 randconfig-h002-20200311
+i386                 randconfig-h003-20200311
+arc                  randconfig-a001-20200311
+arm                  randconfig-a001-20200311
+arm64                randconfig-a001-20200311
+ia64                 randconfig-a001-20200311
+powerpc              randconfig-a001-20200311
+sparc                randconfig-a001-20200311
+riscv                            allmodconfig
+riscv                             allnoconfig
+riscv                            allyesconfig
+riscv                               defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+s390                             alldefconfig
+s390                             allmodconfig
+s390                              allnoconfig
+s390                             allyesconfig
+s390                          debug_defconfig
+s390                                defconfig
+s390                       zfcpdump_defconfig
+sh                               allmodconfig
+sh                          rsk7269_defconfig
+sh                            titan_defconfig
+sparc                               defconfig
+sparc64                          allyesconfig
+um                                  defconfig
+um                             i386_defconfig
+x86_64                              fedora-25
+x86_64                                  kexec
+x86_64                                    lkp
+x86_64                                   rhel
+x86_64                         rhel-7.2-clear
+x86_64                               rhel-7.6
 
-(1) scaling_driver =3D intel_pstate + scaling_governor =3D powersave
-
-(2) scaling_driver =3D intel_cpufreq + scaling_governor =3D schedutil
-
-The other ones are kind of less interesting.
-
-[Note that in order to switch over from intel_pstate to intel_cpufreq,
-you need to write "passive" into
-/sys/devices/system/cpu/intel_pstate/status and if that write fails,
-configuration (2) is not available and may be skipped.]
-
-> Should we add ondemand governor?
-
-Not necessarily, maybe as a reference only if you have spare cycles.
-
-Thanks!
---===============4575207420683739884==--
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
+--===============4928659497061627482==--
 
