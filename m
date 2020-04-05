@@ -1,14 +1,14 @@
-Content-Type: multipart/mixed; boundary="===============6971359312111580748=="
+Content-Type: multipart/mixed; boundary="===============4190465628360223577=="
 MIME-Version: 1.0
 From: kbuild test robot <lkp at intel.com>
-Subject: [Devel] [pm:pm-sleep-core 2/3] drivers/base/power/main.c:588:31:
- warning: initialization makes pointer from integer without a cast
-Date: Sun, 05 Apr 2020 19:24:58 +0800
-Message-ID: <202004051951.LR72d0pW%lkp@intel.com>
+Subject: [Devel] [pm:pm-sleep-core 3/3] drivers/base/power/main.c:582:3:
+ error: 'state' undeclared; did you mean 'statx'?
+Date: Sun, 05 Apr 2020 19:34:37 +0800
+Message-ID: <202004051933.OTMBppfJ%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6971359312111580748==
+--===============4190465628360223577==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
@@ -16,12 +16,12 @@ Content-Transfer-Encoding: quoted-printable
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git=
  pm-sleep-core
 head:   3aa654e1e731ad8f8aff1a937e09fae14380b6e5
-commit: f31f24f5fef92e6b50dffdd2c53d2d4c4c8c2fc9 [2/3] PM: sleep: core: Fol=
-d functions into their callers
+commit: 3aa654e1e731ad8f8aff1a937e09fae14380b6e5 [3/3] PM: sleep: core: Do =
+not skip callbacks in the resume phase
 config: x86_64-defconfig (attached as .config)
 compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
 reproduce:
-        git checkout f31f24f5fef92e6b50dffdd2c53d2d4c4c8c2fc9
+        git checkout 3aa654e1e731ad8f8aff1a937e09fae14380b6e5
         # save the attached .config to linux build tree
         make ARCH=3Dx86_64 =
 
@@ -29,12 +29,20 @@ reproduce:
 If you fix the issue, kindly add following tag as appropriate
 Reported-by: kbuild test robot <lkp(a)intel.com>
 
-All warnings (new ones prefixed by >>):
+All error/warnings (new ones prefixed by >>):
 
+   drivers/base/power/main.c: In function 'dev_pm_may_skip_resume':
+>> drivers/base/power/main.c:582:3: error: 'state' undeclared (first use in=
+ this function); did you mean 'statx'?
+      state.event =3D=3D PM_EVENT_THAW);
+      ^~~~~
+      statx
+   drivers/base/power/main.c:582:3: note: each undeclared identifier is rep=
+orted only once for each function it appears in
    In file included from include/linux/compiler_types.h:68:0,
                     from <command-line>:0:
    drivers/base/power/main.c: In function 'device_resume_noirq':
->> drivers/base/power/main.c:588:31: warning: initialization makes pointer =
+   drivers/base/power/main.c:597:31: warning: initialization makes pointer =
 from integer without a cast [-Wint-conversion]
      const char uninitialized_var(*info);
                                   ^
@@ -43,7 +51,7 @@ ialized_var'
     #define uninitialized_var(x) x =3D x
                                      ^
    drivers/base/power/main.c: In function 'device_resume_early':
-   drivers/base/power/main.c:779:31: warning: initialization makes pointer =
+   drivers/base/power/main.c:765:31: warning: initialization makes pointer =
 from integer without a cast [-Wint-conversion]
      const char uninitialized_var(*info);
                                   ^
@@ -52,7 +60,7 @@ ialized_var'
     #define uninitialized_var(x) x =3D x
                                      ^
    drivers/base/power/main.c: In function '__device_suspend_noirq':
-   drivers/base/power/main.c:1196:31: warning: initialization makes pointer=
+   drivers/base/power/main.c:1192:31: warning: initialization makes pointer=
  from integer without a cast [-Wint-conversion]
      const char uninitialized_var(*info);
                                   ^
@@ -61,7 +69,7 @@ ialized_var'
     #define uninitialized_var(x) x =3D x
                                      ^
    drivers/base/power/main.c: In function '__device_suspend_late':
-   drivers/base/power/main.c:1381:31: warning: initialization makes pointer=
+   drivers/base/power/main.c:1377:31: warning: initialization makes pointer=
  from integer without a cast [-Wint-conversion]
      const char uninitialized_var(*info);
                                   ^
@@ -69,164 +77,58 @@ ialized_var'
 ialized_var'
     #define uninitialized_var(x) x =3D x
                                      ^
-   drivers/base/power/main.c: In function 'device_resume_early':
-   drivers/base/power/main.c:779:31: warning: 'info' is used uninitialized =
-in this function [-Wuninitialized]
-     const char uninitialized_var(*info);
-                                  ^
-   drivers/base/power/main.c: In function 'device_resume_noirq':
-   drivers/base/power/main.c:588:31: warning: 'info' is used uninitialized =
-in this function [-Wuninitialized]
-     const char uninitialized_var(*info);
-                                  ^
-   drivers/base/power/main.c: In function '__device_suspend_noirq':
-   drivers/base/power/main.c:1196:31: warning: 'info' is used uninitialized=
- in this function [-Wuninitialized]
-     const char uninitialized_var(*info);
-                                  ^
-   drivers/base/power/main.c: In function '__device_suspend_late':
-   drivers/base/power/main.c:1381:31: warning: 'info' is used uninitialized=
- in this function [-Wuninitialized]
-     const char uninitialized_var(*info);
-                                  ^
+   drivers/base/power/main.c: In function 'dev_pm_may_skip_resume':
+>> drivers/base/power/main.c:583:1: warning: control reaches end of non-voi=
+d function [-Wreturn-type]
+    }
+    ^
 
-vim +588 drivers/base/power/main.c
+vim +582 drivers/base/power/main.c
 
-   575	=
+   563	=
 
-   576	/**
-   577	 * device_resume_noirq - Execute a "noirq resume" callback for given=
- device.
-   578	 * @dev: Device to handle.
-   579	 * @state: PM transition of the system being carried out.
-   580	 * @async: If true, the device is being resumed asynchronously.
-   581	 *
-   582	 * The driver of @dev will not receive interrupts while this functio=
-n is being
-   583	 * executed.
-   584	 */
-   585	static int device_resume_noirq(struct device *dev, pm_message_t stat=
-e, bool async)
-   586	{
-   587		pm_callback_t callback =3D NULL;
- > 588		const char uninitialized_var(*info);
-   589		bool skip_resume;
-   590		int error =3D 0;
-   591	=
-
-   592		TRACE_DEVICE(dev);
-   593		TRACE_RESUME(0);
-   594	=
-
-   595		if (dev->power.syscore || dev->power.direct_complete)
-   596			goto Out;
-   597	=
-
-   598		if (!dev->power.is_noirq_suspended)
-   599			goto Out;
-   600	=
-
-   601		if (!dpm_wait_for_superior(dev, async))
-   602			goto Out;
-   603	=
-
-   604		if (dev->pm_domain) {
-   605			info =3D "noirq power domain ";
-   606			callback =3D pm_noirq_op(&dev->pm_domain->ops, state);
-   607		} else if (dev->type && dev->type->pm) {
-   608			info =3D "noirq type ";
-   609			callback =3D pm_noirq_op(dev->type->pm, state);
-   610		} else if (dev->class && dev->class->pm) {
-   611			info =3D "noirq class ";
-   612			callback =3D pm_noirq_op(dev->class->pm, state);
-   613		} else if (dev->bus && dev->bus->pm) {
-   614			info =3D "noirq bus ";
-   615			callback =3D pm_noirq_op(dev->bus->pm, state);
-   616		}
-   617		if (callback) {
-   618			skip_resume =3D false;
-   619			goto Run;
-   620		}
-   621	=
-
-   622		skip_resume =3D dev_pm_may_skip_resume(dev);
-   623		if (skip_resume)
-   624			goto Skip;
-   625	=
-
-   626		/*
-   627		 * If "freeze" driver callbacks have been skipped during hibernatio=
-n,
-   628		 * because the device was runtime-suspended in __device_suspend_lat=
-e(),
-   629		 * the corresponding "thaw" callbacks must be skipped too, because
-   630		 * running them for a runtime-suspended device may not be valid.
-   631		 */
-   632		if (dev_pm_smart_suspend_and_suspended(dev) &&
-   633		    state.event =3D=3D PM_EVENT_THAW) {
-   634			skip_resume =3D true;
-   635			goto Skip;
-   636		}
-   637	=
-
-   638		if (dev->driver && dev->driver->pm) {
-   639			info =3D "noirq driver ";
-   640			callback =3D pm_noirq_op(dev->driver->pm, state);
-   641		}
-   642	=
-
-   643		/*
-   644		 * The device is going to be resumed, so set its PM-runtime status =
-to
-   645		 * "active" (that can be done for all devices regardless of whether=
- or
-   646		 * not PM-runtime is enabled for them).
-   647		 */
-   648		pm_runtime_set_active(dev);
-   649	=
-
-   650	Run:
-   651		error =3D dpm_run_callback(callback, dev, state, info);
-   652	=
-
-   653	Skip:
-   654		dev->power.is_noirq_suspended =3D false;
-   655	=
-
-   656		if (skip_resume) {
-   657			/* Make the next phases of resume skip the device. */
-   658			dev->power.is_late_suspended =3D false;
-   659			dev->power.is_suspended =3D false;
-   660			/*
-   661			 * The device is going to be left in suspend, but it might not
-   662			 * have been in runtime suspend before the system suspended, so
-   663			 * its runtime PM status needs to be updated to avoid confusing
-   664			 * the runtime PM framework when runtime PM is enabled for the
-   665			 * device again.
-   666			 */
-   667			pm_runtime_set_suspended(dev);
-   668		}
-   669	=
-
-   670	Out:
-   671		complete_all(&dev->power.completion);
-   672		TRACE_RESUME(error);
-   673		return error;
-   674	}
-   675	=
+   564	/**
+   565	 * dev_pm_may_skip_resume - System-wide device resume optimization c=
+heck.
+   566	 * @dev: Target device.
+   567	 *
+   568	 * Driver-level resume callbacks can be skipped for @dev if its conf=
+iguration is
+   569	 * suitable for that (power.must_resume is not set) and the current =
+transition
+   570	 * is not the hibernation-related "restore" one (in which case all d=
+evices must
+   571	 * be resumed) or the current transition is hibernation-related "tha=
+w" one and
+   572	 * the driver-level callbacks were skipped for @dev during the corre=
+sponding
+   573	 * "freeze" transition (which happens when DPM_FLAG_SMART_SUSPEND is=
+ set and the
+   574	 * device remains in runtime suspend), so running the "thaw" callbac=
+ks for it
+   575	 * may be invalid.
+   576	 */
+   577	bool dev_pm_may_skip_resume(struct device *dev)
+   578	{
+   579		return (!dev->power.must_resume &&
+   580			pm_transition.event !=3D PM_EVENT_RESTORE) ||
+   581		       (dev_pm_smart_suspend_and_suspended(dev) &&
+ > 582			state.event =3D=3D PM_EVENT_THAW);
+ > 583	}
+   584	=
 
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
 https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
 
---===============6971359312111580748==
+--===============4190465628360223577==
 Content-Type: application/gzip
 MIME-Version: 1.0
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="config.gz"
 
-H4sICOG+iV4AAy5jb25maWcAlDzbctw2su/5iinnJaktO5ItKz7nlB5AEpxBhiRoAJyLXliKNHJU
+H4sICJXBiV4AAy5jb25maWcAlDzbctw2su/5iinnJaktO5ItKz7nlB5AEpxBhiRoAJyLXliKNHJU
 a0vekbRr//3pBnhpgKDWSaVsD7px73s3+PNPPy/Y89PDl6unu+urz5+/Lz4d7g/Hq6fDzeL27vPh
 /xaZXFTSLHgmzBtALu7un7/99u3DeXt+tnj/5vzNyWJ9ON4fPi/Sh/vbu0/P0Pfu4f6nn3+C/3+G
 xi9fYZjj/y4+XV+//n3xS/Pn8/3T8+L3N+/fnLw+f7a/3v7qfkOPVFa5WLZp2grdLtP04nvfBD/a
@@ -736,5 +638,5 @@ wdt/1rvV81qVeWfYPme/peCOav+saDlo7AxE323WBlS7dBLhCQdq6fjELMhUXzCh/SlhB8ru2nWd
 E0DYGPF0cZk4SIfVkLhZGCHqmok6QNQl3dbzdIyMOjaSUOmIAo1hKRTIwIBztrxEjUMuxjXO99nA
 Ymh1sgOdx5MeG8xDjGA+NPxoWzbFC08uHz0ZWsFXOCZ7YW3juJgvPCbcoJhQFCR0oD/8XtROSIo9
 wsacEZNyng3MCJBmAjg0DK4OMndjGLSshAUAjdVaDW4PVlgBcSn+P3tbOv4d6AEA
---===============6971359312111580748==--
+--===============4190465628360223577==--
 
