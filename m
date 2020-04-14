@@ -1,184 +1,83 @@
-Content-Type: multipart/mixed; boundary="===============5611937344968620533=="
+Content-Type: multipart/mixed; boundary="===============3495796886349836955=="
 MIME-Version: 1.0
-From: kbuild test robot <lkp at intel.com>
-Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
- 1846b08e7d4fe43b7e158c56783e347ec0b1fd5f
-Date: Sat, 11 Apr 2020 15:28:53 +0800
-Message-ID: <5e9171b5.okvHPrlnV4+qJ0+Q%lkp@intel.com>
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] Re: [PATCH] ACPICA: Use ARRAY_SIZE instead of hardcoded siz
+Date: Tue, 14 Apr 2020 20:22:40 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E3C68A849E@ORSMSX108.amr.corp.intel.com>
+In-Reply-To: 20200413143156.22633-1-yanaijie@huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5611937344968620533==
+--===============3495796886349836955==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
-m.git  bleeding-edge
-branch HEAD: 1846b08e7d4fe43b7e158c56783e347ec0b1fd5f  Merge branch 'intel_=
-pstate-passive' into bleeding-edge
+I think we've discussed this in the past. ARRAY_SIZE is not standard, and w=
+ill get in the way of portability:
 
-elapsed time: 484m
+On gcc v7.4.0:
+../../../source/components/resources/rsdumpinfo.c:335:25: note: in expansio=
+n of macro 'ACPI_RSD_TABLE_SIZE'
+     {ACPI_RSD_TITLE,    ACPI_RSD_TABLE_SIZE (AcpiRsDumpGenericReg),       =
+  "Generic Register",         NULL},
 
-configs tested: 150
-configs skipped: 0
+../../../source/components/resources/rsdumpinfo.c:166:37: error: initialize=
+r element is not constant
+ #define ACPI_RSD_TABLE_SIZE(name)   ARRAY_SIZE (name)
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
 
-arm64                            allyesconfig
-arm                              allyesconfig
-arm64                             allnoconfig
-arm                               allnoconfig
-arm                           efm32_defconfig
-arm                         at91_dt_defconfig
-arm                        shmobile_defconfig
-arm64                               defconfig
-arm                          exynos_defconfig
-arm                        multi_v5_defconfig
-arm                           sunxi_defconfig
-arm                        multi_v7_defconfig
-sparc                            allyesconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                             alldefconfig
-i386                                defconfig
-i386                              debian-10.3
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-ia64                             alldefconfig
-arm64                            allmodconfig
-arm                              allmodconfig
-nios2                         3c120_defconfig
-nios2                         10m50_defconfig
-c6x                        evmc6678_defconfig
-xtensa                          iss_defconfig
-c6x                              allyesconfig
-xtensa                       common_defconfig
-openrisc                 simple_smp_defconfig
-openrisc                    or1ksim_defconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                                defconfig
-alpha                               defconfig
-h8300                       h8s-sim_defconfig
-h8300                     edosk2674_defconfig
-m68k                       m5475evb_defconfig
-m68k                             allmodconfig
-h8300                    h8300h-sim_defconfig
-m68k                           sun3_defconfig
-m68k                          multi_defconfig
-arc                                 defconfig
-arc                              allyesconfig
-powerpc                             defconfig
-powerpc                       ppc64_defconfig
-powerpc                          rhel-kconfig
-microblaze                      mmu_defconfig
-microblaze                    nommu_defconfig
-powerpc                           allnoconfig
-mips                      fuloong2e_defconfig
-mips                      malta_kvm_defconfig
-mips                             allyesconfig
-mips                         64r6el_defconfig
-mips                              allnoconfig
-mips                           32r2_defconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                generic-64bit_defconfig
-parisc                generic-32bit_defconfig
-parisc                           allyesconfig
-i386                 randconfig-a002-20200410
-x86_64               randconfig-a001-20200410
-x86_64               randconfig-a002-20200410
-i386                 randconfig-a003-20200410
-x86_64               randconfig-a003-20200410
-i386                 randconfig-a001-20200410
-mips                 randconfig-a001-20200410
-nds32                randconfig-a001-20200410
-m68k                 randconfig-a001-20200410
-riscv                randconfig-a001-20200410
-alpha                randconfig-a001-20200410
-parisc               randconfig-a001-20200410
-h8300                randconfig-a001-20200411
-nios2                randconfig-a001-20200411
-c6x                  randconfig-a001-20200411
-microblaze           randconfig-a001-20200411
-sparc64              randconfig-a001-20200411
-x86_64               randconfig-b002-20200410
-i386                 randconfig-b001-20200410
-x86_64               randconfig-b001-20200410
-x86_64               randconfig-b003-20200410
-i386                 randconfig-b003-20200410
-i386                 randconfig-b002-20200410
-i386                 randconfig-d002-20200410
-x86_64               randconfig-d003-20200410
-x86_64               randconfig-d001-20200410
-i386                 randconfig-d003-20200410
-i386                 randconfig-d001-20200410
-x86_64               randconfig-d002-20200410
-i386                 randconfig-e001-20200410
-i386                 randconfig-e002-20200410
-x86_64               randconfig-e002-20200410
-i386                 randconfig-e003-20200410
-x86_64               randconfig-e003-20200410
-i386                 randconfig-f003-20200411
-i386                 randconfig-f002-20200411
-x86_64               randconfig-f003-20200411
-x86_64               randconfig-f001-20200411
-x86_64               randconfig-f002-20200411
-i386                 randconfig-f001-20200411
-x86_64               randconfig-g003-20200410
-i386                 randconfig-g003-20200410
-x86_64               randconfig-g002-20200410
-x86_64               randconfig-g001-20200410
-i386                 randconfig-g002-20200410
-i386                 randconfig-g001-20200410
-i386                 randconfig-h003-20200411
-i386                 randconfig-h002-20200411
-i386                 randconfig-h001-20200411
-x86_64               randconfig-h002-20200411
-arm64                randconfig-a001-20200410
-ia64                 randconfig-a001-20200410
-arc                  randconfig-a001-20200410
-sparc                randconfig-a001-20200410
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-s390                       zfcpdump_defconfig
-s390                          debug_defconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                             alldefconfig
-s390                                defconfig
-sh                          rsk7269_defconfig
-sh                               allmodconfig
-sh                            titan_defconfig
-sh                  sh7785lcr_32bit_defconfig
-sh                                allnoconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-um                                  defconfig
-x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-x86_64                                  kexec
+And, on MSVC 2017:
+Severity	Code	Description	Project	File	Line	Suppression State
+Warning	C4013	'ARRAY_SIZE' undefined; assuming extern returning int	AcpiExe=
+c	c:\acpica\source\components\resources\rsdumpinfo.c	179	=
 
+-----Original Message-----
+From: Jason Yan <yanaijie(a)huawei.com> =
+
+Sent: Monday, April 13, 2020 7:32 AM
+To: Moore, Robert <robert.moore(a)intel.com>; Kaneda, Erik <erik.kaneda(a)i=
+ntel.com>; Wysocki, Rafael J <rafael.j.wysocki(a)intel.com>; lenb(a)kernel.=
+org; linux-acpi(a)vger.kernel.org; devel(a)acpica.org; linux-kernel(a)vger.=
+kernel.org
+Cc: Jason Yan <yanaijie(a)huawei.com>
+Subject: [PATCH] ACPICA: Use ARRAY_SIZE instead of hardcoded siz
+
+Fix the following coccicheck warning:
+
+./drivers/acpi/acpica/rsdumpinfo.c:18:48-49: WARNING: Use ARRAY_SIZE
+./drivers/acpi/acpica/rsdumpinfo.c:18:48-49: WARNING: Use ARRAY_SIZE
+./drivers/acpi/acpica/rsdumpinfo.c:18:48-49: WARNING: Use ARRAY_SIZE
+./drivers/acpi/acpica/rsdumpinfo.c:18:48-49: WARNING: Use ARRAY_SIZE
+./drivers/acpi/acpica/rsdumpinfo.c:18:48-49: WARNING: Use ARRAY_SIZE
+./drivers/acpi/acpica/rsdumpinfo.c:18:48-49: WARNING: Use ARRAY_SIZE
+./drivers/acpi/acpica/rsdumpinfo.c:18:48-49: WARNING: Use ARRAY_SIZE
+
+Signed-off-by: Jason Yan <yanaijie(a)huawei.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============5611937344968620533==--
+ drivers/acpi/acpica/rsdumpinfo.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/acpi/acpica/rsdumpinfo.c b/drivers/acpi/acpica/rsdumpi=
+nfo.c
+index cafa8134b4c6..f1ba4cd8080f 100644
+--- a/drivers/acpi/acpica/rsdumpinfo.c
++++ b/drivers/acpi/acpica/rsdumpinfo.c
+@@ -15,7 +15,7 @@ ACPI_MODULE_NAME("rsdumpinfo")  #if defined(ACPI_DEBUG_OU=
+TPUT) || defined(ACPI_DISASSEMBLER) || defined(ACPI_DEBUGGER)
+ #define ACPI_RSD_OFFSET(f)          (u8) ACPI_OFFSET (union acpi_resource_=
+data,f)
+ #define ACPI_PRT_OFFSET(f)          (u8) ACPI_OFFSET (struct acpi_pci_rout=
+ing_table,f)
+-#define ACPI_RSD_TABLE_SIZE(name)   (sizeof(name) / sizeof (struct acpi_rs=
+dump_info))
++#define ACPI_RSD_TABLE_SIZE(name)   ARRAY_SIZE(name)
+ /*************************************************************************=
+******
+  *
+  * Resource Descriptor info tables
+--
+2.21.1
+
+--===============3495796886349836955==--
 
