@@ -1,24 +1,24 @@
-Content-Type: multipart/mixed; boundary="===============5338944361554966786=="
+Content-Type: multipart/mixed; boundary="===============5918235821007699770=="
 MIME-Version: 1.0
 From: kbuild test robot <lkp at intel.com>
 Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
- 6df1213fbae91c875034ec8888404aa30022dad7
-Date: Sun, 10 May 2020 01:49:17 +0800
-Message-ID: <5eb6ed1d.E3VWSpltXspfcw18%lkp@intel.com>
+ 6a6044584305b1d608cd3b6d42c01fd4ac35cabf
+Date: Mon, 11 May 2020 01:26:52 +0800
+Message-ID: <5eb8395c.ysD0ybywpyDl62/p%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5338944361554966786==
+--===============5918235821007699770==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
 tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
 m.git  bleeding-edge
-branch HEAD: 6df1213fbae91c875034ec8888404aa30022dad7  Merge branch 'acpi-p=
-ci' into bleeding-edge
+branch HEAD: 6a6044584305b1d608cd3b6d42c01fd4ac35cabf  Merge branch 'pm-acp=
+i' into bleeding-edge
 
-elapsed time: 480m
+elapsed time: 482m
 
 configs tested: 101
 configs skipped: 1
@@ -26,18 +26,20 @@ configs skipped: 1
 The following configs have been built successfully.
 More configs may be tested in the coming days.
 
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
 arm                                 defconfig
 arm                              allyesconfig
 arm                              allmodconfig
 arm                               allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+sparc                            allyesconfig
+m68k                             allyesconfig
+i386                              allnoconfig
 i386                             allyesconfig
 i386                                defconfig
 i386                              debian-10.3
-i386                              allnoconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                              allnoconfig
@@ -46,7 +48,12 @@ m68k                             allmodconfig
 m68k                              allnoconfig
 m68k                           sun3_defconfig
 m68k                                defconfig
-m68k                             allyesconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
 nds32                               defconfig
 nds32                             allnoconfig
 csky                             allyesconfig
@@ -63,12 +70,6 @@ microblaze                       allyesconfig
 sh                               allmodconfig
 sh                                allnoconfig
 microblaze                        allnoconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                              allyesconfig
-c6x                               allnoconfig
-openrisc                         allyesconfig
 mips                             allyesconfig
 mips                              allnoconfig
 mips                             allmodconfig
@@ -81,27 +82,27 @@ powerpc                          allyesconfig
 powerpc                          rhel-kconfig
 powerpc                          allmodconfig
 powerpc                           allnoconfig
-x86_64               randconfig-a005-20200509
-x86_64               randconfig-a003-20200509
-x86_64               randconfig-a001-20200509
-i386                 randconfig-a005-20200509
-i386                 randconfig-a004-20200509
-i386                 randconfig-a003-20200509
-i386                 randconfig-a002-20200509
-i386                 randconfig-a001-20200509
-i386                 randconfig-a006-20200509
-x86_64               randconfig-a015-20200509
-x86_64               randconfig-a014-20200509
-x86_64               randconfig-a011-20200509
-x86_64               randconfig-a013-20200509
-x86_64               randconfig-a012-20200509
-x86_64               randconfig-a016-20200509
-i386                 randconfig-a012-20200509
-i386                 randconfig-a014-20200509
-i386                 randconfig-a016-20200509
-i386                 randconfig-a011-20200509
-i386                 randconfig-a013-20200509
-i386                 randconfig-a015-20200509
+i386                 randconfig-a006-20200510
+i386                 randconfig-a005-20200510
+i386                 randconfig-a003-20200510
+i386                 randconfig-a001-20200510
+i386                 randconfig-a004-20200510
+i386                 randconfig-a002-20200510
+x86_64               randconfig-a016-20200510
+x86_64               randconfig-a012-20200510
+x86_64               randconfig-a015-20200510
+x86_64               randconfig-a013-20200510
+x86_64               randconfig-a014-20200510
+x86_64               randconfig-a011-20200510
+i386                 randconfig-a012-20200510
+i386                 randconfig-a016-20200510
+i386                 randconfig-a014-20200510
+i386                 randconfig-a011-20200510
+i386                 randconfig-a013-20200510
+i386                 randconfig-a015-20200510
+x86_64               randconfig-a005-20200510
+x86_64               randconfig-a003-20200510
+x86_64               randconfig-a001-20200510
 riscv                            allyesconfig
 riscv                             allnoconfig
 riscv                               defconfig
@@ -110,7 +111,6 @@ s390                             allyesconfig
 s390                              allnoconfig
 s390                             allmodconfig
 s390                                defconfig
-sparc                            allyesconfig
 sparc                               defconfig
 sparc64                             defconfig
 sparc64                           allnoconfig
@@ -131,5 +131,5 @@ x86_64                                  kexec
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
 https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============5338944361554966786==--
+--===============5918235821007699770==--
 
