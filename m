@@ -1,43 +1,55 @@
-Content-Type: multipart/mixed; boundary="===============5708846102261369479=="
+Content-Type: multipart/mixed; boundary="===============6947887053057186504=="
 MIME-Version: 1.0
 From: kernel test robot <lkp at intel.com>
 Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
- 869e6a63587372b60fed9580bf908cf2a5c820bd
-Date: Thu, 25 Jun 2020 14:00:58 +0800
-Message-ID: <5ef43d9a.HNFjRxd4+yHxU4qI%lkp@intel.com>
+ b3cad17e9253db657cacf38bedf70bbac8b542c3
+Date: Fri, 26 Jun 2020 13:31:20 +0800
+Message-ID: <5ef58828.3ocdG/pko47b5Xk2%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5708846102261369479==
+--===============6947887053057186504==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
 tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
 m.git  bleeding-edge
-branch HEAD: 869e6a63587372b60fed9580bf908cf2a5c820bd  Merge branch 'acpi-t=
-ables' into bleeding-edge
+branch HEAD: b3cad17e9253db657cacf38bedf70bbac8b542c3  Merge branch 'acpi-d=
+ptf' into bleeding-edge
 
-elapsed time: 722m
+elapsed time: 723m
 
-configs tested: 98
+configs tested: 109
 configs skipped: 1
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
 
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
 arm                                 defconfig
 arm                              allyesconfig
 arm                              allmodconfig
 arm                               allnoconfig
-i386                              allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm                       mainstone_defconfig
+arm                          moxart_defconfig
+m68k                            q40_defconfig
+sh                          sdk7786_defconfig
+s390                              allnoconfig
+arm                            mps2_defconfig
+powerpc                  mpc885_ads_defconfig
+sh                        sh7763rdp_defconfig
+c6x                        evmc6472_defconfig
+riscv                          rv32_defconfig
+arm                            lart_defconfig
+mips                      loongson3_defconfig
 i386                             allyesconfig
 i386                                defconfig
 i386                              debian-10.3
+i386                              allnoconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                              allnoconfig
@@ -103,7 +115,6 @@ riscv                             allnoconfig
 riscv                               defconfig
 riscv                            allmodconfig
 s390                             allyesconfig
-s390                              allnoconfig
 s390                             allmodconfig
 s390                                defconfig
 sparc                            allyesconfig
@@ -128,5 +139,5 @@ x86_64                              fedora-25
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
 https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============5708846102261369479==--
+--===============6947887053057186504==--
 
