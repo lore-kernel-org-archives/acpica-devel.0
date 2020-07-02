@@ -1,27 +1,27 @@
-Content-Type: multipart/mixed; boundary="===============3957445701952568164=="
+Content-Type: multipart/mixed; boundary="===============4044753781120203409=="
 MIME-Version: 1.0
 From: kernel test robot <lkp at intel.com>
 Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
- 9697297c9e498f9fee49b455dd88275fcc30a6ba
-Date: Wed, 01 Jul 2020 15:49:21 +0800
-Message-ID: <5efc4001.t6RbOJ2pPKBy6txX%lkp@intel.com>
+ db104109575551b9d477167284d674fd31047baf
+Date: Thu, 02 Jul 2020 11:52:10 +0800
+Message-ID: <5efd59ea.PRARoJz0adbcB+sv%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3957445701952568164==
+--===============4044753781120203409==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
 tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
 m.git  bleeding-edge
-branch HEAD: 9697297c9e498f9fee49b455dd88275fcc30a6ba  Merge branch 'powerc=
-ap' into bleeding-edge
+branch HEAD: db104109575551b9d477167284d674fd31047baf  Merge branches 'pm-c=
+pufreq' and 'powercap' into linux-next
 
-elapsed time: 720m
+elapsed time: 721m
 
-configs tested: 92
-configs skipped: 1
+configs tested: 102
+configs skipped: 2
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -34,16 +34,14 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm64                            allmodconfig
 arm64                             allnoconfig
-arm                    vt8500_v6_v7_defconfig
-arm                           corgi_defconfig
-m68k                        m5307c3_defconfig
-powerpc                          g5_defconfig
-arm                           u8500_defconfig
-sparc                       sparc32_defconfig
-i386                              allnoconfig
+arm                          pxa3xx_defconfig
+arm                       imx_v6_v7_defconfig
+powerpc                      ppc6xx_defconfig
+mips                          ath25_defconfig
 i386                             allyesconfig
 i386                                defconfig
 i386                              debian-10.3
+i386                              allnoconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                              allnoconfig
@@ -53,6 +51,12 @@ m68k                              allnoconfig
 m68k                           sun3_defconfig
 m68k                                defconfig
 m68k                             allyesconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
 nds32                               defconfig
 nds32                             allnoconfig
 csky                             allyesconfig
@@ -68,12 +72,6 @@ arc                              allyesconfig
 sh                               allmodconfig
 sh                                allnoconfig
 microblaze                        allnoconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                              allyesconfig
-c6x                               allnoconfig
-openrisc                         allyesconfig
 mips                             allyesconfig
 mips                              allnoconfig
 mips                             allmodconfig
@@ -86,6 +84,18 @@ powerpc                          allyesconfig
 powerpc                          rhel-kconfig
 powerpc                          allmodconfig
 powerpc                           allnoconfig
+i386                 randconfig-a002-20200701
+i386                 randconfig-a001-20200701
+i386                 randconfig-a006-20200701
+i386                 randconfig-a005-20200701
+i386                 randconfig-a004-20200701
+i386                 randconfig-a003-20200701
+x86_64               randconfig-a012-20200701
+x86_64               randconfig-a016-20200701
+x86_64               randconfig-a014-20200701
+x86_64               randconfig-a011-20200701
+x86_64               randconfig-a015-20200701
+x86_64               randconfig-a013-20200701
 i386                 randconfig-a011-20200701
 i386                 randconfig-a015-20200701
 i386                 randconfig-a014-20200701
@@ -122,5 +132,5 @@ x86_64                              fedora-25
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
 https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============3957445701952568164==--
+--===============4044753781120203409==--
 
