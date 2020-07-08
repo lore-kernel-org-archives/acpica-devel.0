@@ -1,169 +1,260 @@
-Content-Type: multipart/mixed; boundary="===============5610209737303531677=="
+Content-Type: multipart/mixed; boundary="===============5178542215336816431=="
 MIME-Version: 1.0
-From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS WITH WARNING
- 97987ea7f86a35284fd54efc7412db246f178666
-Date: Fri, 31 Jul 2020 15:31:54 +0800
-Message-ID: <5f23c8ea.PWJ3lFt9FGpnoBxp%lkp@intel.com>
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] Re: [PATCH][next] ACPICA: Use fallthrough pseudo-keyword
+Date: Wed, 08 Jul 2020 14:17:27 +0000
+Message-ID: <BYAPR11MB325602EDA2D2ACC2B28EAF4687670@BYAPR11MB3256.namprd11.prod.outlook.com>
+In-Reply-To: CAJZ5v0iDz_EsrpdMQQDfaVC2orMQkEcubmR6-J6mvtrXmKXbRg@mail.gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5610209737303531677==
+--===============5178542215336816431==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
-m.git  bleeding-edge
-branch HEAD: 97987ea7f86a35284fd54efc7412db246f178666  Merge branch 'pm-dev=
-freq' into linux-next
+It looks like this attribute is not supported by msvc 2017 (and perhaps oth=
+er compilers) -- it is apparently a GCC extension -- meaning that it cannot=
+ be used in the ACPICA compiler-independent code.
 
-Warning in current branch:
+Bob
 
-drivers/acpi/processor_idle.c:666:4: warning: 'return' with no value, in fu=
-nction returning non-void [-Wreturn-type]
 
-Warning ids grouped by kconfigs:
+-----Original Message-----
+From: Rafael J. Wysocki <rafael(a)kernel.org> =
 
-recent_errors
-|-- i386-allyesconfig
-|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
-ion-returning-non-void
-|-- i386-defconfig
-|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
-ion-returning-non-void
-|-- i386-randconfig-a011-20200731
-|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
-ion-returning-non-void
-|-- i386-randconfig-a012-20200731
-|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
-ion-returning-non-void
-|-- i386-randconfig-a013-20200731
-|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
-ion-returning-non-void
-|-- i386-randconfig-a014-20200731
-|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
-ion-returning-non-void
-|-- i386-randconfig-a015-20200731
-|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
-ion-returning-non-void
-|-- i386-randconfig-a016-20200731
-|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
-ion-returning-non-void
-|-- i386-randconfig-c001-20200730
-|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
-ion-returning-non-void
-|-- i386-randconfig-r003-20200730
-|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
-ion-returning-non-void
-|-- ia64-allmodconfig
-|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
-ion-returning-non-void
-|-- ia64-allyesconfig
-|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
-ion-returning-non-void
-|-- ia64-defconfig
-|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
-ion-returning-non-void
-|-- ia64-randconfig-r025-20200730
-|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
-ion-returning-non-void
-|-- x86_64-allmodconfig
-|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
-ion-returning-non-void
-|-- x86_64-allyesconfig
-|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
-ion-returning-non-void
-|-- x86_64-defconfig
-|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
-ion-returning-non-void
-|-- x86_64-kexec
-|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
-ion-returning-non-void
-|-- x86_64-rhel
-|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
-ion-returning-non-void
-|-- x86_64-rhel-7.6-kselftests
-|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
-ion-returning-non-void
-`-- x86_64-rhel-8.3
-    `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
-ion-returning-non-void
+Sent: Wednesday, July 08, 2020 3:59 AM
+To: Gustavo A. R. Silva <gustavoars(a)kernel.org>
+Cc: Moore, Robert <robert.moore(a)intel.com>; Kaneda, Erik <erik.kaneda(a)i=
+ntel.com>; Wysocki, Rafael J <rafael.j.wysocki(a)intel.com>; Len Brown <len=
+b(a)kernel.org>; ACPI Devel Maling List <linux-acpi(a)vger.kernel.org>; ope=
+n list:ACPI COMPONENT ARCHITECTURE (ACPICA) <devel(a)acpica.org>; Linux Ker=
+nel Mailing List <linux-kernel(a)vger.kernel.org>
+Subject: Re: [PATCH][next] ACPICA: Use fallthrough pseudo-keyword
 
-elapsed time: 840m
+On Tue, Jul 7, 2020 at 10:01 PM Gustavo A. R. Silva <gustavoars(a)kernel.or=
+g> wrote:
+>
+> Replace the existing /* fall through */ comments and its variants with =
 
-configs tested: 66
-configs skipped: 1
+> the new pseudo-keyword macro fallthrough[1]. Also, remove unnecessary =
 
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20200731
-i386                 randconfig-a004-20200731
-i386                 randconfig-a006-20200731
-i386                 randconfig-a002-20200731
-i386                 randconfig-a001-20200731
-i386                 randconfig-a003-20200731
-x86_64               randconfig-a015-20200731
-x86_64               randconfig-a014-20200731
-x86_64               randconfig-a016-20200731
-x86_64               randconfig-a012-20200731
-x86_64               randconfig-a013-20200731
-x86_64               randconfig-a011-20200731
-i386                 randconfig-a016-20200731
-i386                 randconfig-a012-20200731
-i386                 randconfig-a014-20200731
-i386                 randconfig-a015-20200731
-i386                 randconfig-a011-20200731
-i386                 randconfig-a013-20200731
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+> fall-through markings when it is the case.
+>
+> [1] =
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============5610209737303531677==--
+> https://www.kernel.org/doc/html/latest/process/deprecated.html?highlig
+> ht=3Dfallthrough#implicit-switch-case-fall-through
+>
+> Signed-off-by: Gustavo A. R. Silva <gustavoars(a)kernel.org>
+
+I need to talk to Erik and Bob about this one.
+
+> ---
+>  drivers/acpi/acpica/dscontrol.c |    2 +-
+>  drivers/acpi/acpica/dswexec.c   |    3 +--
+>  drivers/acpi/acpica/dswload.c   |    2 +-
+>  drivers/acpi/acpica/dswload2.c  |    4 +---
+>  drivers/acpi/acpica/exfldio.c   |    2 +-
+>  drivers/acpi/acpica/exresop.c   |    4 ++--
+>  drivers/acpi/acpica/exstore.c   |    4 ++--
+>  drivers/acpi/acpica/hwgpe.c     |    3 +--
+>  drivers/acpi/acpica/utdelete.c  |    3 +--
+>  drivers/acpi/acpica/utprint.c   |    2 +-
+>  10 files changed, 12 insertions(+), 17 deletions(-)
+>
+> diff --git a/drivers/acpi/acpica/dscontrol.c =
+
+> b/drivers/acpi/acpica/dscontrol.c index 4b5b6e859f62..134d53380663 =
+
+> 100644
+> --- a/drivers/acpi/acpica/dscontrol.c
+> +++ b/drivers/acpi/acpica/dscontrol.c
+> @@ -62,7 +62,7 @@ acpi_ds_exec_begin_control_op(struct acpi_walk_state *w=
+alk_state,
+>                         }
+>                 }
+>
+> -               /*lint -fallthrough */
+> +               fallthrough;
+>
+>         case AML_IF_OP:
+>                 /*
+> diff --git a/drivers/acpi/acpica/dswexec.c =
+
+> b/drivers/acpi/acpica/dswexec.c index 1d4f8c81028c..41f6cb61778a =
+
+> 100644
+> --- a/drivers/acpi/acpica/dswexec.c
+> +++ b/drivers/acpi/acpica/dswexec.c
+> @@ -598,8 +598,7 @@ acpi_status acpi_ds_exec_end_op(struct acpi_walk_stat=
+e *walk_state)
+>                                         break;
+>                                 }
+>
+> -                               /* Fall through */
+> -                               /*lint -fallthrough */
+> +                               fallthrough;
+>
+>                         case AML_INT_EVAL_SUBTREE_OP:
+>
+> diff --git a/drivers/acpi/acpica/dswload.c =
+
+> b/drivers/acpi/acpica/dswload.c index 27069325b6de..1d8789869dda =
+
+> 100644
+> --- a/drivers/acpi/acpica/dswload.c
+> +++ b/drivers/acpi/acpica/dswload.c
+> @@ -224,7 +224,7 @@ acpi_ds_load1_begin_op(struct acpi_walk_state *walk_s=
+tate,
+>                                 break;
+>                         }
+>
+> -                       /*lint -fallthrough */
+> +                       fallthrough;
+>
+>                 default:
+>
+> diff --git a/drivers/acpi/acpica/dswload2.c =
+
+> b/drivers/acpi/acpica/dswload2.c index edadbe146506..de367e8e4cf4 =
+
+> 100644
+> --- a/drivers/acpi/acpica/dswload2.c
+> +++ b/drivers/acpi/acpica/dswload2.c
+> @@ -213,9 +213,7 @@ acpi_ds_load2_begin_op(struct acpi_walk_state *walk_s=
+tate,
+>                              parse_flags & ACPI_PARSE_MODULE_LEVEL)) {
+>                                 break;
+>                         }
+> -
+> -                       /*lint -fallthrough */
+> -
+> +                       fallthrough;
+>                 default:
+>
+>                         /* All other types are an error */ diff --git =
+
+> a/drivers/acpi/acpica/exfldio.c b/drivers/acpi/acpica/exfldio.c index =
+
+> ade35ff1c7ba..677ba3ab1482 100644
+> --- a/drivers/acpi/acpica/exfldio.c
+> +++ b/drivers/acpi/acpica/exfldio.c
+> @@ -434,7 +434,7 @@ acpi_ex_field_datum_io(union acpi_operand_object *obj=
+_desc,
+>                  * region_field case and write the datum to the Operation=
+ Region
+>                  */
+>
+> -               /*lint -fallthrough */
+> +               fallthrough;
+>
+>         case ACPI_TYPE_LOCAL_REGION_FIELD:
+>                 /*
+> diff --git a/drivers/acpi/acpica/exresop.c =
+
+> b/drivers/acpi/acpica/exresop.c index 4d1b22971d58..7c8676adcf43 =
+
+> 100644
+> --- a/drivers/acpi/acpica/exresop.c
+> +++ b/drivers/acpi/acpica/exresop.c
+> @@ -198,7 +198,7 @@ acpi_ex_resolve_operands(u16 opcode,
+>
+>                                         target_op =3D AML_DEBUG_OP;
+>
+> -                                       /*lint -fallthrough */
+> +                                       fallthrough;
+>
+>                                 case ACPI_REFCLASS_ARG:
+>                                 case ACPI_REFCLASS_LOCAL:
+> @@ -264,7 +264,7 @@ acpi_ex_resolve_operands(u16 opcode,
+>                          * Else not a string - fall through to the normal=
+ Reference
+>                          * case below
+>                          */
+> -                       /*lint -fallthrough */
+> +                       fallthrough;
+>
+>                 case ARGI_REFERENCE:    /* References: */
+>                 case ARGI_INTEGER_REF:
+> diff --git a/drivers/acpi/acpica/exstore.c =
+
+> b/drivers/acpi/acpica/exstore.c index 3adc0a29d890..fcf8dff56c5b =
+
+> 100644
+> --- a/drivers/acpi/acpica/exstore.c
+> +++ b/drivers/acpi/acpica/exstore.c
+> @@ -96,7 +96,7 @@ acpi_ex_store(union acpi_operand_object *source_desc,
+>                         return_ACPI_STATUS(AE_OK);
+>                 }
+>
+> -               /*lint -fallthrough */
+> +               fallthrough;
+>
+>         default:
+>
+> @@ -422,7 +422,7 @@ acpi_ex_store_object_to_node(union acpi_operand_objec=
+t *source_desc,
+>                                 break;
+>                         }
+>
+> -                       /* Fallthrough */
+> +                       fallthrough;
+>
+>                 case ACPI_TYPE_DEVICE:
+>                 case ACPI_TYPE_EVENT:
+> diff --git a/drivers/acpi/acpica/hwgpe.c b/drivers/acpi/acpica/hwgpe.c =
+
+> index 49c46d4dd070..19d574f64c78 100644
+> --- a/drivers/acpi/acpica/hwgpe.c
+> +++ b/drivers/acpi/acpica/hwgpe.c
+> @@ -95,8 +95,7 @@ acpi_hw_low_set_gpe(struct acpi_gpe_event_info *gpe_eve=
+nt_info, u32 action)
+>                 if (!(register_bit & gpe_register_info->enable_mask)) {
+>                         return (AE_BAD_PARAMETER);
+>                 }
+> -
+> -               /*lint -fallthrough */
+> +               fallthrough;
+>
+>         case ACPI_GPE_ENABLE:
+>
+> diff --git a/drivers/acpi/acpica/utdelete.c =
+
+> b/drivers/acpi/acpica/utdelete.c index c365faf4e6cd..6db09eb9d257 =
+
+> 100644
+> --- a/drivers/acpi/acpica/utdelete.c
+> +++ b/drivers/acpi/acpica/utdelete.c
+> @@ -111,8 +111,7 @@ static void acpi_ut_delete_internal_obj(union acpi_op=
+erand_object *object)
+>                         (void)acpi_ev_delete_gpe_block(object->device.
+>                                                        gpe_block);
+>                 }
+> -
+> -               /*lint -fallthrough */
+> +               fallthrough;
+>
+>         case ACPI_TYPE_PROCESSOR:
+>         case ACPI_TYPE_THERMAL:
+> diff --git a/drivers/acpi/acpica/utprint.c =
+
+> b/drivers/acpi/acpica/utprint.c index 681c11f4af4e..f7e43baf5ff2 =
+
+> 100644
+> --- a/drivers/acpi/acpica/utprint.c
+> +++ b/drivers/acpi/acpica/utprint.c
+> @@ -475,7 +475,7 @@ int vsnprintf(char *string, acpi_size size, const cha=
+r *format, va_list args)
+>                 case 'X':
+>
+>                         type |=3D ACPI_FORMAT_UPPER;
+> -                       /* FALLTHROUGH */
+> +                       fallthrough;
+>
+>                 case 'x':
+>
+>
+
+--===============5178542215336816431==--
 
