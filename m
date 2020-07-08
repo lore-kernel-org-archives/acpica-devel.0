@@ -1,146 +1,212 @@
-Content-Type: multipart/mixed; boundary="===============3845133917396591608=="
+Content-Type: multipart/mixed; boundary="===============7226002561161274544=="
 MIME-Version: 1.0
-From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
- 676d4e00924541f08e01c361b75d67d5d8de01cd
-Date: Tue, 07 Jul 2020 11:52:23 +0800
-Message-ID: <5f03f177.LV42zFZYK5Z+70po%lkp@intel.com>
+From: Rafael J. Wysocki <rafael at kernel.org>
+Subject: [Devel] Re: [PATCH][next] ACPICA: Use fallthrough pseudo-keyword
+Date: Wed, 08 Jul 2020 12:58:44 +0200
+Message-ID: <CAJZ5v0iDz_EsrpdMQQDfaVC2orMQkEcubmR6-J6mvtrXmKXbRg@mail.gmail.com>
+In-Reply-To: 20200707200716.GA4920@embeddedor
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3845133917396591608==
+--===============7226002561161274544==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
-m.git  bleeding-edge
-branch HEAD: 676d4e00924541f08e01c361b75d67d5d8de01cd  Merge branch 'acpi-m=
-m' into bleeding-edge
+On Tue, Jul 7, 2020 at 10:01 PM Gustavo A. R. Silva
+<gustavoars(a)kernel.org> wrote:
+>
+> Replace the existing /* fall through */ comments and its variants with
+> the new pseudo-keyword macro fallthrough[1]. Also, remove unnecessary
+> fall-through markings when it is the case.
+>
+> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highli=
+ght=3Dfallthrough#implicit-switch-case-fall-through
+>
+> Signed-off-by: Gustavo A. R. Silva <gustavoars(a)kernel.org>
 
-elapsed time: 725m
+I need to talk to Erik and Bob about this one.
 
-configs tested: 112
-configs skipped: 3
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                               allnoconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-sh                                  defconfig
-arm                      tct_hammer_defconfig
-powerpc64                           defconfig
-sh                        dreamcast_defconfig
-arm                         orion5x_defconfig
-mips                           ip22_defconfig
-s390                          debug_defconfig
-c6x                        evmc6457_defconfig
-arm                          gemini_defconfig
-arm                         bcm2835_defconfig
-mips                          ath79_defconfig
-mips                 decstation_r4k_defconfig
-sh                           se7705_defconfig
-xtensa                          iss_defconfig
-i386                             allyesconfig
-i386                                defconfig
-i386                              debian-10.3
-i386                              allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                              allnoconfig
-m68k                           sun3_defconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                             allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-xtensa                              defconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                              allyesconfig
-c6x                               allnoconfig
-openrisc                         allyesconfig
-arc                                 defconfig
-arc                              allyesconfig
-sh                               allmodconfig
-sh                                allnoconfig
-microblaze                        allnoconfig
-mips                             allyesconfig
-mips                              allnoconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                              defconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          rhel-kconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a001-20200706
-i386                 randconfig-a002-20200706
-i386                 randconfig-a006-20200706
-i386                 randconfig-a004-20200706
-i386                 randconfig-a005-20200706
-i386                 randconfig-a003-20200706
-i386                 randconfig-a011-20200707
-i386                 randconfig-a014-20200707
-i386                 randconfig-a015-20200707
-i386                 randconfig-a016-20200707
-i386                 randconfig-a012-20200707
-i386                 randconfig-a013-20200707
-x86_64               randconfig-a001-20200706
-x86_64               randconfig-a006-20200706
-x86_64               randconfig-a002-20200706
-x86_64               randconfig-a003-20200706
-x86_64               randconfig-a004-20200706
-x86_64               randconfig-a005-20200706
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                                   rhel
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============3845133917396591608==--
+> ---
+>  drivers/acpi/acpica/dscontrol.c |    2 +-
+>  drivers/acpi/acpica/dswexec.c   |    3 +--
+>  drivers/acpi/acpica/dswload.c   |    2 +-
+>  drivers/acpi/acpica/dswload2.c  |    4 +---
+>  drivers/acpi/acpica/exfldio.c   |    2 +-
+>  drivers/acpi/acpica/exresop.c   |    4 ++--
+>  drivers/acpi/acpica/exstore.c   |    4 ++--
+>  drivers/acpi/acpica/hwgpe.c     |    3 +--
+>  drivers/acpi/acpica/utdelete.c  |    3 +--
+>  drivers/acpi/acpica/utprint.c   |    2 +-
+>  10 files changed, 12 insertions(+), 17 deletions(-)
+>
+> diff --git a/drivers/acpi/acpica/dscontrol.c b/drivers/acpi/acpica/dscont=
+rol.c
+> index 4b5b6e859f62..134d53380663 100644
+> --- a/drivers/acpi/acpica/dscontrol.c
+> +++ b/drivers/acpi/acpica/dscontrol.c
+> @@ -62,7 +62,7 @@ acpi_ds_exec_begin_control_op(struct acpi_walk_state *w=
+alk_state,
+>                         }
+>                 }
+>
+> -               /*lint -fallthrough */
+> +               fallthrough;
+>
+>         case AML_IF_OP:
+>                 /*
+> diff --git a/drivers/acpi/acpica/dswexec.c b/drivers/acpi/acpica/dswexec.c
+> index 1d4f8c81028c..41f6cb61778a 100644
+> --- a/drivers/acpi/acpica/dswexec.c
+> +++ b/drivers/acpi/acpica/dswexec.c
+> @@ -598,8 +598,7 @@ acpi_status acpi_ds_exec_end_op(struct acpi_walk_stat=
+e *walk_state)
+>                                         break;
+>                                 }
+>
+> -                               /* Fall through */
+> -                               /*lint -fallthrough */
+> +                               fallthrough;
+>
+>                         case AML_INT_EVAL_SUBTREE_OP:
+>
+> diff --git a/drivers/acpi/acpica/dswload.c b/drivers/acpi/acpica/dswload.c
+> index 27069325b6de..1d8789869dda 100644
+> --- a/drivers/acpi/acpica/dswload.c
+> +++ b/drivers/acpi/acpica/dswload.c
+> @@ -224,7 +224,7 @@ acpi_ds_load1_begin_op(struct acpi_walk_state *walk_s=
+tate,
+>                                 break;
+>                         }
+>
+> -                       /*lint -fallthrough */
+> +                       fallthrough;
+>
+>                 default:
+>
+> diff --git a/drivers/acpi/acpica/dswload2.c b/drivers/acpi/acpica/dswload=
+2.c
+> index edadbe146506..de367e8e4cf4 100644
+> --- a/drivers/acpi/acpica/dswload2.c
+> +++ b/drivers/acpi/acpica/dswload2.c
+> @@ -213,9 +213,7 @@ acpi_ds_load2_begin_op(struct acpi_walk_state *walk_s=
+tate,
+>                              parse_flags & ACPI_PARSE_MODULE_LEVEL)) {
+>                                 break;
+>                         }
+> -
+> -                       /*lint -fallthrough */
+> -
+> +                       fallthrough;
+>                 default:
+>
+>                         /* All other types are an error */
+> diff --git a/drivers/acpi/acpica/exfldio.c b/drivers/acpi/acpica/exfldio.c
+> index ade35ff1c7ba..677ba3ab1482 100644
+> --- a/drivers/acpi/acpica/exfldio.c
+> +++ b/drivers/acpi/acpica/exfldio.c
+> @@ -434,7 +434,7 @@ acpi_ex_field_datum_io(union acpi_operand_object *obj=
+_desc,
+>                  * region_field case and write the datum to the Operation=
+ Region
+>                  */
+>
+> -               /*lint -fallthrough */
+> +               fallthrough;
+>
+>         case ACPI_TYPE_LOCAL_REGION_FIELD:
+>                 /*
+> diff --git a/drivers/acpi/acpica/exresop.c b/drivers/acpi/acpica/exresop.c
+> index 4d1b22971d58..7c8676adcf43 100644
+> --- a/drivers/acpi/acpica/exresop.c
+> +++ b/drivers/acpi/acpica/exresop.c
+> @@ -198,7 +198,7 @@ acpi_ex_resolve_operands(u16 opcode,
+>
+>                                         target_op =3D AML_DEBUG_OP;
+>
+> -                                       /*lint -fallthrough */
+> +                                       fallthrough;
+>
+>                                 case ACPI_REFCLASS_ARG:
+>                                 case ACPI_REFCLASS_LOCAL:
+> @@ -264,7 +264,7 @@ acpi_ex_resolve_operands(u16 opcode,
+>                          * Else not a string - fall through to the normal=
+ Reference
+>                          * case below
+>                          */
+> -                       /*lint -fallthrough */
+> +                       fallthrough;
+>
+>                 case ARGI_REFERENCE:    /* References: */
+>                 case ARGI_INTEGER_REF:
+> diff --git a/drivers/acpi/acpica/exstore.c b/drivers/acpi/acpica/exstore.c
+> index 3adc0a29d890..fcf8dff56c5b 100644
+> --- a/drivers/acpi/acpica/exstore.c
+> +++ b/drivers/acpi/acpica/exstore.c
+> @@ -96,7 +96,7 @@ acpi_ex_store(union acpi_operand_object *source_desc,
+>                         return_ACPI_STATUS(AE_OK);
+>                 }
+>
+> -               /*lint -fallthrough */
+> +               fallthrough;
+>
+>         default:
+>
+> @@ -422,7 +422,7 @@ acpi_ex_store_object_to_node(union acpi_operand_objec=
+t *source_desc,
+>                                 break;
+>                         }
+>
+> -                       /* Fallthrough */
+> +                       fallthrough;
+>
+>                 case ACPI_TYPE_DEVICE:
+>                 case ACPI_TYPE_EVENT:
+> diff --git a/drivers/acpi/acpica/hwgpe.c b/drivers/acpi/acpica/hwgpe.c
+> index 49c46d4dd070..19d574f64c78 100644
+> --- a/drivers/acpi/acpica/hwgpe.c
+> +++ b/drivers/acpi/acpica/hwgpe.c
+> @@ -95,8 +95,7 @@ acpi_hw_low_set_gpe(struct acpi_gpe_event_info *gpe_eve=
+nt_info, u32 action)
+>                 if (!(register_bit & gpe_register_info->enable_mask)) {
+>                         return (AE_BAD_PARAMETER);
+>                 }
+> -
+> -               /*lint -fallthrough */
+> +               fallthrough;
+>
+>         case ACPI_GPE_ENABLE:
+>
+> diff --git a/drivers/acpi/acpica/utdelete.c b/drivers/acpi/acpica/utdelet=
+e.c
+> index c365faf4e6cd..6db09eb9d257 100644
+> --- a/drivers/acpi/acpica/utdelete.c
+> +++ b/drivers/acpi/acpica/utdelete.c
+> @@ -111,8 +111,7 @@ static void acpi_ut_delete_internal_obj(union acpi_op=
+erand_object *object)
+>                         (void)acpi_ev_delete_gpe_block(object->device.
+>                                                        gpe_block);
+>                 }
+> -
+> -               /*lint -fallthrough */
+> +               fallthrough;
+>
+>         case ACPI_TYPE_PROCESSOR:
+>         case ACPI_TYPE_THERMAL:
+> diff --git a/drivers/acpi/acpica/utprint.c b/drivers/acpi/acpica/utprint.c
+> index 681c11f4af4e..f7e43baf5ff2 100644
+> --- a/drivers/acpi/acpica/utprint.c
+> +++ b/drivers/acpi/acpica/utprint.c
+> @@ -475,7 +475,7 @@ int vsnprintf(char *string, acpi_size size, const cha=
+r *format, va_list args)
+>                 case 'X':
+>
+>                         type |=3D ACPI_FORMAT_UPPER;
+> -                       /* FALLTHROUGH */
+> +                       fallthrough;
+>
+>                 case 'x':
+>
+>
+--===============7226002561161274544==--
 
