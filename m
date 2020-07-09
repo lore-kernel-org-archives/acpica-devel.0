@@ -1,212 +1,73 @@
-Content-Type: multipart/mixed; boundary="===============7226002561161274544=="
+Content-Type: multipart/mixed; boundary="===============8476398081455659472=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [PATCH][next] ACPICA: Use fallthrough pseudo-keyword
-Date: Wed, 08 Jul 2020 12:58:44 +0200
-Message-ID: <CAJZ5v0iDz_EsrpdMQQDfaVC2orMQkEcubmR6-J6mvtrXmKXbRg@mail.gmail.com>
-In-Reply-To: 20200707200716.GA4920@embeddedor
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] Re: [PATCH] service_layers: osunixmap: Remove unnecessary
+ brackets in acpi_os_map_memory()
+Date: Thu, 09 Jul 2020 14:49:17 +0000
+Message-ID: <BYAPR11MB3256999B714C7F5598E3213687640@BYAPR11MB3256.namprd11.prod.outlook.com>
+In-Reply-To: 20200709080806.14328-1-vulab@iscas.ac.cn
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7226002561161274544==
+--===============8476398081455659472==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jul 7, 2020 at 10:01 PM Gustavo A. R. Silva
-<gustavoars(a)kernel.org> wrote:
->
-> Replace the existing /* fall through */ comments and its variants with
-> the new pseudo-keyword macro fallthrough[1]. Also, remove unnecessary
-> fall-through markings when it is the case.
->
-> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highli=
-ght=3Dfallthrough#implicit-switch-case-fall-through
->
-> Signed-off-by: Gustavo A. R. Silva <gustavoars(a)kernel.org>
+-		return (NULL);
++		return NULL;
 
-I need to talk to Erik and Bob about this one.
+This is the ACPICA coding standard, and it does not affect anything.
+Bob
 
-> ---
->  drivers/acpi/acpica/dscontrol.c |    2 +-
->  drivers/acpi/acpica/dswexec.c   |    3 +--
->  drivers/acpi/acpica/dswload.c   |    2 +-
->  drivers/acpi/acpica/dswload2.c  |    4 +---
->  drivers/acpi/acpica/exfldio.c   |    2 +-
->  drivers/acpi/acpica/exresop.c   |    4 ++--
->  drivers/acpi/acpica/exstore.c   |    4 ++--
->  drivers/acpi/acpica/hwgpe.c     |    3 +--
->  drivers/acpi/acpica/utdelete.c  |    3 +--
->  drivers/acpi/acpica/utprint.c   |    2 +-
->  10 files changed, 12 insertions(+), 17 deletions(-)
->
-> diff --git a/drivers/acpi/acpica/dscontrol.c b/drivers/acpi/acpica/dscont=
-rol.c
-> index 4b5b6e859f62..134d53380663 100644
-> --- a/drivers/acpi/acpica/dscontrol.c
-> +++ b/drivers/acpi/acpica/dscontrol.c
-> @@ -62,7 +62,7 @@ acpi_ds_exec_begin_control_op(struct acpi_walk_state *w=
-alk_state,
->                         }
->                 }
->
-> -               /*lint -fallthrough */
-> +               fallthrough;
->
->         case AML_IF_OP:
->                 /*
-> diff --git a/drivers/acpi/acpica/dswexec.c b/drivers/acpi/acpica/dswexec.c
-> index 1d4f8c81028c..41f6cb61778a 100644
-> --- a/drivers/acpi/acpica/dswexec.c
-> +++ b/drivers/acpi/acpica/dswexec.c
-> @@ -598,8 +598,7 @@ acpi_status acpi_ds_exec_end_op(struct acpi_walk_stat=
-e *walk_state)
->                                         break;
->                                 }
->
-> -                               /* Fall through */
-> -                               /*lint -fallthrough */
-> +                               fallthrough;
->
->                         case AML_INT_EVAL_SUBTREE_OP:
->
-> diff --git a/drivers/acpi/acpica/dswload.c b/drivers/acpi/acpica/dswload.c
-> index 27069325b6de..1d8789869dda 100644
-> --- a/drivers/acpi/acpica/dswload.c
-> +++ b/drivers/acpi/acpica/dswload.c
-> @@ -224,7 +224,7 @@ acpi_ds_load1_begin_op(struct acpi_walk_state *walk_s=
-tate,
->                                 break;
->                         }
->
-> -                       /*lint -fallthrough */
-> +                       fallthrough;
->
->                 default:
->
-> diff --git a/drivers/acpi/acpica/dswload2.c b/drivers/acpi/acpica/dswload=
-2.c
-> index edadbe146506..de367e8e4cf4 100644
-> --- a/drivers/acpi/acpica/dswload2.c
-> +++ b/drivers/acpi/acpica/dswload2.c
-> @@ -213,9 +213,7 @@ acpi_ds_load2_begin_op(struct acpi_walk_state *walk_s=
-tate,
->                              parse_flags & ACPI_PARSE_MODULE_LEVEL)) {
->                                 break;
->                         }
-> -
-> -                       /*lint -fallthrough */
-> -
-> +                       fallthrough;
->                 default:
->
->                         /* All other types are an error */
-> diff --git a/drivers/acpi/acpica/exfldio.c b/drivers/acpi/acpica/exfldio.c
-> index ade35ff1c7ba..677ba3ab1482 100644
-> --- a/drivers/acpi/acpica/exfldio.c
-> +++ b/drivers/acpi/acpica/exfldio.c
-> @@ -434,7 +434,7 @@ acpi_ex_field_datum_io(union acpi_operand_object *obj=
-_desc,
->                  * region_field case and write the datum to the Operation=
- Region
->                  */
->
-> -               /*lint -fallthrough */
-> +               fallthrough;
->
->         case ACPI_TYPE_LOCAL_REGION_FIELD:
->                 /*
-> diff --git a/drivers/acpi/acpica/exresop.c b/drivers/acpi/acpica/exresop.c
-> index 4d1b22971d58..7c8676adcf43 100644
-> --- a/drivers/acpi/acpica/exresop.c
-> +++ b/drivers/acpi/acpica/exresop.c
-> @@ -198,7 +198,7 @@ acpi_ex_resolve_operands(u16 opcode,
->
->                                         target_op =3D AML_DEBUG_OP;
->
-> -                                       /*lint -fallthrough */
-> +                                       fallthrough;
->
->                                 case ACPI_REFCLASS_ARG:
->                                 case ACPI_REFCLASS_LOCAL:
-> @@ -264,7 +264,7 @@ acpi_ex_resolve_operands(u16 opcode,
->                          * Else not a string - fall through to the normal=
- Reference
->                          * case below
->                          */
-> -                       /*lint -fallthrough */
-> +                       fallthrough;
->
->                 case ARGI_REFERENCE:    /* References: */
->                 case ARGI_INTEGER_REF:
-> diff --git a/drivers/acpi/acpica/exstore.c b/drivers/acpi/acpica/exstore.c
-> index 3adc0a29d890..fcf8dff56c5b 100644
-> --- a/drivers/acpi/acpica/exstore.c
-> +++ b/drivers/acpi/acpica/exstore.c
-> @@ -96,7 +96,7 @@ acpi_ex_store(union acpi_operand_object *source_desc,
->                         return_ACPI_STATUS(AE_OK);
->                 }
->
-> -               /*lint -fallthrough */
-> +               fallthrough;
->
->         default:
->
-> @@ -422,7 +422,7 @@ acpi_ex_store_object_to_node(union acpi_operand_objec=
-t *source_desc,
->                                 break;
->                         }
->
-> -                       /* Fallthrough */
-> +                       fallthrough;
->
->                 case ACPI_TYPE_DEVICE:
->                 case ACPI_TYPE_EVENT:
-> diff --git a/drivers/acpi/acpica/hwgpe.c b/drivers/acpi/acpica/hwgpe.c
-> index 49c46d4dd070..19d574f64c78 100644
-> --- a/drivers/acpi/acpica/hwgpe.c
-> +++ b/drivers/acpi/acpica/hwgpe.c
-> @@ -95,8 +95,7 @@ acpi_hw_low_set_gpe(struct acpi_gpe_event_info *gpe_eve=
-nt_info, u32 action)
->                 if (!(register_bit & gpe_register_info->enable_mask)) {
->                         return (AE_BAD_PARAMETER);
->                 }
-> -
-> -               /*lint -fallthrough */
-> +               fallthrough;
->
->         case ACPI_GPE_ENABLE:
->
-> diff --git a/drivers/acpi/acpica/utdelete.c b/drivers/acpi/acpica/utdelet=
-e.c
-> index c365faf4e6cd..6db09eb9d257 100644
-> --- a/drivers/acpi/acpica/utdelete.c
-> +++ b/drivers/acpi/acpica/utdelete.c
-> @@ -111,8 +111,7 @@ static void acpi_ut_delete_internal_obj(union acpi_op=
-erand_object *object)
->                         (void)acpi_ev_delete_gpe_block(object->device.
->                                                        gpe_block);
->                 }
-> -
-> -               /*lint -fallthrough */
-> +               fallthrough;
->
->         case ACPI_TYPE_PROCESSOR:
->         case ACPI_TYPE_THERMAL:
-> diff --git a/drivers/acpi/acpica/utprint.c b/drivers/acpi/acpica/utprint.c
-> index 681c11f4af4e..f7e43baf5ff2 100644
-> --- a/drivers/acpi/acpica/utprint.c
-> +++ b/drivers/acpi/acpica/utprint.c
-> @@ -475,7 +475,7 @@ int vsnprintf(char *string, acpi_size size, const cha=
-r *format, va_list args)
->                 case 'X':
->
->                         type |=3D ACPI_FORMAT_UPPER;
-> -                       /* FALLTHROUGH */
-> +                       fallthrough;
->
->                 case 'x':
->
->
---===============7226002561161274544==--
+-----Original Message-----
+From: Xu Wang <vulab(a)iscas.ac.cn> =
+
+Sent: Thursday, July 09, 2020 1:08 AM
+To: Moore, Robert <robert.moore(a)intel.com>; Kaneda, Erik <erik.kaneda(a)i=
+ntel.com>; Wysocki, Rafael J <rafael.j.wysocki(a)intel.com>; lenb(a)kernel.=
+org; vulab(a)iscas.ac.cn; linux-acpi(a)vger.kernel.org; devel(a)acpica.org
+Cc: linux-kernel(a)vger.kernel.org
+Subject: [PATCH] service_layers: osunixmap: Remove unnecessary brackets in =
+acpi_os_map_memory()
+
+Remove extra brackets.
+
+Signed-off-by: Xu Wang <vulab(a)iscas.ac.cn>
+---
+ tools/power/acpi/os_specific/service_layers/osunixmap.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tools/power/acpi/os_specific/service_layers/osunixmap.c b/tool=
+s/power/acpi/os_specific/service_layers/osunixmap.c
+index c565546e85bc..52f3e70b5c81 100644
+--- a/tools/power/acpi/os_specific/service_layers/osunixmap.c
++++ b/tools/power/acpi/os_specific/service_layers/osunixmap.c
+@@ -70,7 +70,7 @@ void *acpi_os_map_memory(acpi_physical_address where, acp=
+i_size length)
+ 	fd =3D open(SYSTEM_MEMORY, O_RDONLY | O_BINARY);
+ 	if (fd < 0) {
+ 		fprintf(stderr, "Cannot open %s\n", SYSTEM_MEMORY);
+-		return (NULL);
++		return NULL;
+ 	}
+ =
+
+ 	/* Align the offset to use mmap */
+@@ -85,7 +85,7 @@ void *acpi_os_map_memory(acpi_physical_address where, acp=
+i_size length)
+ 	if (mapped_memory =3D=3D MAP_FAILED) {
+ 		fprintf(stderr, "Cannot map %s\n", SYSTEM_MEMORY);
+ 		close(fd);
+-		return (NULL);
++		return NULL;
+ 	}
+ =
+
+ 	close(fd);
+-- =
+
+2.17.1
+
+--===============8476398081455659472==--
 
