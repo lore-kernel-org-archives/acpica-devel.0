@@ -1,73 +1,141 @@
-Content-Type: multipart/mixed; boundary="===============8476398081455659472=="
+Content-Type: multipart/mixed; boundary="===============1117951763841080922=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] Re: [PATCH] service_layers: osunixmap: Remove unnecessary
- brackets in acpi_os_map_memory()
-Date: Thu, 09 Jul 2020 14:49:17 +0000
-Message-ID: <BYAPR11MB3256999B714C7F5598E3213687640@BYAPR11MB3256.namprd11.prod.outlook.com>
-In-Reply-To: 20200709080806.14328-1-vulab@iscas.ac.cn
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
+ 9d981feccfcf0782dbb65652bab5c757dd562dc6
+Date: Fri, 10 Jul 2020 10:03:23 +0800
+Message-ID: <5f07cc6b.kX/LcFO0yrxzk81m%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8476398081455659472==
+--===============1117951763841080922==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
--		return (NULL);
-+		return NULL;
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git  bleeding-edge
+branch HEAD: 9d981feccfcf0782dbb65652bab5c757dd562dc6  Merge branch 'powerc=
+ap' into bleeding-edge
 
-This is the ACPICA coding standard, and it does not affect anything.
-Bob
+elapsed time: 741m
 
------Original Message-----
-From: Xu Wang <vulab(a)iscas.ac.cn> =
+configs tested: 107
+configs skipped: 1
 
-Sent: Thursday, July 09, 2020 1:08 AM
-To: Moore, Robert <robert.moore(a)intel.com>; Kaneda, Erik <erik.kaneda(a)i=
-ntel.com>; Wysocki, Rafael J <rafael.j.wysocki(a)intel.com>; lenb(a)kernel.=
-org; vulab(a)iscas.ac.cn; linux-acpi(a)vger.kernel.org; devel(a)acpica.org
-Cc: linux-kernel(a)vger.kernel.org
-Subject: [PATCH] service_layers: osunixmap: Remove unnecessary brackets in =
-acpi_os_map_memory()
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Remove extra brackets.
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+parisc                generic-64bit_defconfig
+arm                      footbridge_defconfig
+mips                    maltaup_xpa_defconfig
+powerpc                    gamecube_defconfig
+m68k                          hp300_defconfig
+powerpc                  mpc866_ads_defconfig
+powerpc64                           defconfig
+um                             i386_defconfig
+openrisc                         allyesconfig
+sh                        edosk7705_defconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a002-20200709
+i386                 randconfig-a001-20200709
+i386                 randconfig-a006-20200709
+i386                 randconfig-a005-20200709
+i386                 randconfig-a004-20200709
+i386                 randconfig-a003-20200709
+x86_64               randconfig-a012-20200709
+x86_64               randconfig-a016-20200709
+x86_64               randconfig-a011-20200709
+x86_64               randconfig-a014-20200709
+x86_64               randconfig-a013-20200709
+x86_64               randconfig-a015-20200709
+i386                 randconfig-a011-20200709
+i386                 randconfig-a015-20200709
+i386                 randconfig-a014-20200709
+i386                 randconfig-a016-20200709
+i386                 randconfig-a012-20200709
+i386                 randconfig-a013-20200709
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                                   rhel
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
 
-Signed-off-by: Xu Wang <vulab(a)iscas.ac.cn>
 ---
- tools/power/acpi/os_specific/service_layers/osunixmap.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/tools/power/acpi/os_specific/service_layers/osunixmap.c b/tool=
-s/power/acpi/os_specific/service_layers/osunixmap.c
-index c565546e85bc..52f3e70b5c81 100644
---- a/tools/power/acpi/os_specific/service_layers/osunixmap.c
-+++ b/tools/power/acpi/os_specific/service_layers/osunixmap.c
-@@ -70,7 +70,7 @@ void *acpi_os_map_memory(acpi_physical_address where, acp=
-i_size length)
- 	fd =3D open(SYSTEM_MEMORY, O_RDONLY | O_BINARY);
- 	if (fd < 0) {
- 		fprintf(stderr, "Cannot open %s\n", SYSTEM_MEMORY);
--		return (NULL);
-+		return NULL;
- 	}
- =
-
- 	/* Align the offset to use mmap */
-@@ -85,7 +85,7 @@ void *acpi_os_map_memory(acpi_physical_address where, acp=
-i_size length)
- 	if (mapped_memory =3D=3D MAP_FAILED) {
- 		fprintf(stderr, "Cannot map %s\n", SYSTEM_MEMORY);
- 		close(fd);
--		return (NULL);
-+		return NULL;
- 	}
- =
-
- 	close(fd);
--- =
-
-2.17.1
-
---===============8476398081455659472==--
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
+--===============1117951763841080922==--
 
