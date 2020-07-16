@@ -1,72 +1,118 @@
-Content-Type: multipart/mixed; boundary="===============6371276915606350189=="
+Content-Type: multipart/mixed; boundary="===============2242891446917605032=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: power-off delay/hang due to commit 6d25be57 (mainline)
-Date: Tue, 14 Jul 2020 17:53:15 +0200
-Message-ID: <CAJZ5v0iogereapmhcFi=iXHsjnzmC26mewUSTY3+5O3ei5kfDQ@mail.gmail.com>
-In-Reply-To: 20200714141135.47adndrsdgpiqfy4@linutronix.de
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
+ 75322f96d2ba1936cd2409565f89ee9bdf58d01d
+Date: Thu, 16 Jul 2020 13:17:05 +0800
+Message-ID: <5f0fe2d1.8uipoVa1w5uJvZLV%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6371276915606350189==
+--===============2242891446917605032==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jul 14, 2020 at 4:11 PM Sebastian Andrzej Siewior
-<bigeasy(a)linutronix.de> wrote:
->
-> On 2020-07-14 15:54:57 [+0200], Rafael J. Wysocki wrote:
-> > On Tue, Jul 14, 2020 at 3:44 PM Sebastian Andrzej Siewior
-> > <bigeasy(a)linutronix.de> wrote:>
-> > > On 2020-06-24 23:49:52 [+0200], Stephen Berman wrote:
-> > >
-> > > Let me summarize the thread here:
-> > >
-> > > On Stephen's system, ACPI informs the thermal zone driver to poll the
-> > > temperature every second and the driver does so.
-> > > The driver queries the temperature by invoking acpi_evaluate_integer()
-> > > which invokes (at some point) acpi_ev_queue_notify_request().
-> >
-> > Well, I don't quite see how acpi_ev_queue_notify_request() can be
-> > invoked from the acpi_evaluate_integer() code path.
-> >
-> > Do you have a call trace showing that?
->
-> So the trace in
->      https://lore.kernel.org/linux-acpi/87o8pjh1i0.fsf(a)gmx.net/
->
-> shows the pattern and we nailed it down that it comes from
-> thermal_get_temp().
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git  bleeding-edge
+branch HEAD: 75322f96d2ba1936cd2409565f89ee9bdf58d01d  Merge branch 'pm-cpu=
+idle' into bleeding-edge
 
-acpi_evaluate_integer() doesn't show up in the trace, though, AFAICS.
+elapsed time: 725m
 
-> I assumed acpi_ex_opcode_2A_0T_0R() since the other
-> candidate was acpi_ev_asynch_execute_gpe_method().
+configs tested: 84
+configs skipped: 2
 
-Which probably is the case.  Specifically
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-acpi_ev_asynch_execute_gpe_method: Evaluate _L66
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm                             pxa_defconfig
+arm                         palmz72_defconfig
+arm                      integrator_defconfig
+arm                          imote2_defconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a016-20200715
+i386                 randconfig-a011-20200715
+i386                 randconfig-a015-20200715
+i386                 randconfig-a012-20200715
+i386                 randconfig-a013-20200715
+i386                 randconfig-a014-20200715
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                                   rhel
+x86_64                                    lkp
+x86_64                              fedora-25
 
-is likely to cause the Notify() to be dispatched.
-
-> Stephen, the patch attached adds a WARN_ON() statement which will
-> produce a stack trace (4 or so). Could please run 'dmesg' after a while
-> and send it back. There should be a
->     "WARNING in drivers/acpi/acpica/evmisc.c"
->
-> statement or something along the lines.
->
-> Rafael, are you also interested in an ACPI dump?
-
-That might help a bit.
-
-So what probably happens is that poking at the TZ causes a GPE to
-trigger and a Notify() to be dispatched which then goes into the
-workqueue for execution.
-
-Now, I'm not sure what happens to those Notify() items, though.  They
-each should cause a handler (in the thermal driver) to be executed,
-but does that happen?
---===============6371276915606350189==--
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
+--===============2242891446917605032==--
 
