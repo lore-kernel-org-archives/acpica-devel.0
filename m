@@ -1,114 +1,60 @@
-Content-Type: multipart/mixed; boundary="===============6310042182692908366=="
+Content-Type: multipart/mixed; boundary="===============8294406596080892150=="
 MIME-Version: 1.0
-From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
- 6aeb52cce12f3e09ec1af28bc4836406f0267483
-Date: Fri, 17 Jul 2020 12:52:14 +0800
-Message-ID: <5f112e7e.nslKklNjCuNgtsKy%lkp@intel.com>
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] ACPICA version 20200717 released
+Date: Fri, 17 Jul 2020 20:48:07 +0000
+Message-ID: <BYAPR11MB325601E850986788A8D59E12877C0@BYAPR11MB3256.namprd11.prod.outlook.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6310042182692908366==
+--===============8294406596080892150==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
-m.git  bleeding-edge
-branch HEAD: 6aeb52cce12f3e09ec1af28bc4836406f0267483  Merge branch 'pm-cpu=
-freq' into bleeding-edge
+17 July 2020. Summary of changes for version 20200717:
 
-elapsed time: 722m
+This release is available at https://acpica.org/downloads
 
-configs tested: 80
-configs skipped: 1
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+1) ACPICA kernel-resident subsystem:
 
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                               allnoconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-i386                             allyesconfig
-i386                                defconfig
-i386                              debian-10.3
-i386                              allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                              allnoconfig
-m68k                           sun3_defconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                              allyesconfig
-c6x                               allnoconfig
-openrisc                         allyesconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                             allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-xtensa                              defconfig
-arc                                 defconfig
-arc                              allyesconfig
-sh                               allmodconfig
-sh                                allnoconfig
-microblaze                        allnoconfig
-mips                             allyesconfig
-mips                              allnoconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                              defconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          rhel-kconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a016-20200716
-i386                 randconfig-a011-20200716
-i386                 randconfig-a015-20200716
-i386                 randconfig-a012-20200716
-i386                 randconfig-a013-20200716
-i386                 randconfig-a014-20200716
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-x86_64                                   rhel
-x86_64                                    lkp
-x86_64                              fedora-25
-x86_64                    rhel-7.6-kselftests
-x86_64                               rhel-8.3
-x86_64                                  kexec
+Do not increment OperationRegion reference counts for field units. Recent s=
+erver firmware has revealed that this reference count can overflow on large=
+ servers that declare many field units (thousands) under the same Operation=
+Region. This occurs because each field unit declaration will add a referenc=
+e count to the source OperationRegion. This release solves the reference co=
+unt overflow for OperationRegion objects by preventing fieldUnits from incr=
+ementing their parent OperationRegion's reference count.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============6310042182692908366==--
+Replaced one-element arrays with flexible-arrays, which were introduced in =
+C99.
+
+Restored the readme file containing the directions for generation of ACPICA=
+ from source on MSVC 2017. Updated the file for MSVC 2017. File is located =
+at: generate/msvc2017/readme.txt
+
+2) iASL Compiler/Disassembler and ACPICA tools: =
+
+
+iASL: Fixed a regression found in version 20200214. Prevent iASL from emitt=
+ing an extra byte of garbage data when control methods declared a single pa=
+rameter type without using braces. This extra byte is known to cause a blue=
+ screen on the Windows AML interpreter.
+
+iASL: Made a change to allow external declarations to specify the type of a=
+ named object even when some name segments are not defined.
+This change allows the following ASL code to compile (When DEV0 is not defi=
+ned or not defined yet):
+
+    External (\_SB.DEV0.OBJ1, IntObj)
+    External (\_SB.DEV0, DeviceObj)
+
+iASL: Fixed a problem where method names in "Alias ()" statement could be m=
+isinterpreted. They are now interpreted correctly as method invocations.
+
+iASL: capture a method parameter count (Within the Method info segment, as =
+well as the argument node) when using parameter type lists.
+
+--===============8294406596080892150==--
 
