@@ -1,47 +1,43 @@
-Content-Type: multipart/mixed; boundary="===============2242891446917605032=="
+Content-Type: multipart/mixed; boundary="===============6310042182692908366=="
 MIME-Version: 1.0
 From: kernel test robot <lkp at intel.com>
 Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
- 75322f96d2ba1936cd2409565f89ee9bdf58d01d
-Date: Thu, 16 Jul 2020 13:17:05 +0800
-Message-ID: <5f0fe2d1.8uipoVa1w5uJvZLV%lkp@intel.com>
+ 6aeb52cce12f3e09ec1af28bc4836406f0267483
+Date: Fri, 17 Jul 2020 12:52:14 +0800
+Message-ID: <5f112e7e.nslKklNjCuNgtsKy%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2242891446917605032==
+--===============6310042182692908366==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
 tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
 m.git  bleeding-edge
-branch HEAD: 75322f96d2ba1936cd2409565f89ee9bdf58d01d  Merge branch 'pm-cpu=
-idle' into bleeding-edge
+branch HEAD: 6aeb52cce12f3e09ec1af28bc4836406f0267483  Merge branch 'pm-cpu=
+freq' into bleeding-edge
 
-elapsed time: 725m
+elapsed time: 722m
 
-configs tested: 84
-configs skipped: 2
+configs tested: 80
+configs skipped: 1
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
 
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
 arm                                 defconfig
 arm                              allyesconfig
 arm                              allmodconfig
 arm                               allnoconfig
-arm                             pxa_defconfig
-arm                         palmz72_defconfig
-arm                      integrator_defconfig
-arm                          imote2_defconfig
-i386                              allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
 i386                             allyesconfig
 i386                                defconfig
 i386                              debian-10.3
+i386                              allnoconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                              allnoconfig
@@ -84,12 +80,12 @@ powerpc                          allyesconfig
 powerpc                          rhel-kconfig
 powerpc                          allmodconfig
 powerpc                           allnoconfig
-i386                 randconfig-a016-20200715
-i386                 randconfig-a011-20200715
-i386                 randconfig-a015-20200715
-i386                 randconfig-a012-20200715
-i386                 randconfig-a013-20200715
-i386                 randconfig-a014-20200715
+i386                 randconfig-a016-20200716
+i386                 randconfig-a011-20200716
+i386                 randconfig-a015-20200716
+i386                 randconfig-a012-20200716
+i386                 randconfig-a013-20200716
+i386                 randconfig-a014-20200716
 riscv                            allyesconfig
 riscv                             allnoconfig
 riscv                               defconfig
@@ -104,15 +100,15 @@ sparc64                             defconfig
 sparc64                           allnoconfig
 sparc64                          allyesconfig
 sparc64                          allmodconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                               rhel-8.3
-x86_64                                  kexec
 x86_64                                   rhel
 x86_64                                    lkp
 x86_64                              fedora-25
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
 https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============2242891446917605032==--
+--===============6310042182692908366==--
 
