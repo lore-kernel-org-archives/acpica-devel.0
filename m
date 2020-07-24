@@ -1,60 +1,120 @@
-Content-Type: multipart/mixed; boundary="===============8294406596080892150=="
+Content-Type: multipart/mixed; boundary="===============3290512074701990461=="
 MIME-Version: 1.0
 From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] ACPICA version 20200717 released
-Date: Fri, 17 Jul 2020 20:48:07 +0000
-Message-ID: <BYAPR11MB325601E850986788A8D59E12877C0@BYAPR11MB3256.namprd11.prod.outlook.com>
+Subject: [Devel] Re: [PATCH] trivial: acpi: replace some bitshifts with BIT
+ macro
+Date: Fri, 24 Jul 2020 16:29:14 +0000
+Message-ID: <BYAPR11MB325604ACC5F3BCCEB89A58AA87770@BYAPR11MB3256.namprd11.prod.outlook.com>
+In-Reply-To: 20200724162050.18077-2-garritfranke@gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8294406596080892150==
+--===============3290512074701990461==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-17 July 2020. Summary of changes for version 20200717:
-
-This release is available at https://acpica.org/downloads
+Where is "BIT" defined?
 
 
-1) ACPICA kernel-resident subsystem:
+-----Original Message-----
+From: Garrit Franke <garritfranke(a)gmail.com> =
 
-Do not increment OperationRegion reference counts for field units. Recent s=
-erver firmware has revealed that this reference count can overflow on large=
- servers that declare many field units (thousands) under the same Operation=
-Region. This occurs because each field unit declaration will add a referenc=
-e count to the source OperationRegion. This release solves the reference co=
-unt overflow for OperationRegion objects by preventing fieldUnits from incr=
-ementing their parent OperationRegion's reference count.
+Sent: Friday, July 24, 2020 9:21 AM
+To: Moore, Robert <robert.moore(a)intel.com>; Wysocki, Rafael J <rafael.j.w=
+ysocki(a)intel.com>; lenb(a)kernel.org; trivial(a)kernel.org; linux-acpi(a)=
+vger.kernel.org; devel(a)acpica.org; kernel-janitors(a)vger.kernel.org
+Cc: Garrit Franke <garritfranke(a)gmail.com>
+Subject: [PATCH] trivial: acpi: replace some bitshifts with BIT macro
 
-Replaced one-element arrays with flexible-arrays, which were introduced in =
-C99.
+Signed-off-by: Garrit Franke <garritfranke(a)gmail.com>
+---
+ drivers/acpi/acpica/exfldio.c   | 2 +-
+ drivers/acpi/acpica/utownerid.c | 6 +++---
+ drivers/acpi/bus.c              | 2 +-
+ drivers/acpi/sleep.c            | 2 +-
+ 4 files changed, 6 insertions(+), 6 deletions(-)
 
-Restored the readme file containing the directions for generation of ACPICA=
- from source on MSVC 2017. Updated the file for MSVC 2017. File is located =
-at: generate/msvc2017/readme.txt
+diff --git a/drivers/acpi/acpica/exfldio.c b/drivers/acpi/acpica/exfldio.c =
+index ade35ff1c7..92fc702456 100644
+--- a/drivers/acpi/acpica/exfldio.c
++++ b/drivers/acpi/acpica/exfldio.c
+@@ -298,7 +298,7 @@ acpi_ex_register_overflow(union acpi_operand_object *ob=
+j_desc, u64 value)
+ 		return (FALSE);
+ 	}
+ =
 
-2) iASL Compiler/Disassembler and ACPICA tools: =
+-	if (value >=3D ((u64) 1 << obj_desc->common_field.bit_length)) {
++	if (value >=3D ((u64) BIT(obj_desc->common_field.bit_length))) {
+ 		/*
+ 		 * The Value is larger than the maximum value that can fit into
+ 		 * the register.
+diff --git a/drivers/acpi/acpica/utownerid.c b/drivers/acpi/acpica/utowneri=
+d.c index d3525ef8ed..c4e2db2f54 100644
+--- a/drivers/acpi/acpica/utownerid.c
++++ b/drivers/acpi/acpica/utownerid.c
+@@ -74,13 +74,13 @@ acpi_status acpi_ut_allocate_owner_id(acpi_owner_id *ow=
+ner_id)
+ 			 * int. Some compilers or runtime error detection may flag this as
+ 			 * an error.
+ 			 */
+-			if (!(acpi_gbl_owner_id_mask[j] & ((u32)1 << k))) {
++			if (!(acpi_gbl_owner_id_mask[j] & (u32)BIT(k))) {
+ 				/*
+ 				 * Found a free ID. The actual ID is the bit index plus one,
+ 				 * making zero an invalid Owner ID. Save this as the last ID
+ 				 * allocated and update the global ID mask.
+ 				 */
+-				acpi_gbl_owner_id_mask[j] |=3D ((u32)1 << k);
++				acpi_gbl_owner_id_mask[j] |=3D (u32)BIT(k);
+ =
 
+ 				acpi_gbl_last_owner_id_index =3D (u8)j;
+ 				acpi_gbl_next_owner_id_offset =3D (u8)(k + 1); @@ -171,7 +171,7 @@ voi=
+d acpi_ut_release_owner_id(acpi_owner_id *owner_id_ptr)
+ 	/* Decode ID to index/offset pair */
+ =
 
-iASL: Fixed a regression found in version 20200214. Prevent iASL from emitt=
-ing an extra byte of garbage data when control methods declared a single pa=
-rameter type without using braces. This extra byte is known to cause a blue=
- screen on the Windows AML interpreter.
+ 	index =3D ACPI_DIV_32(owner_id);
+-	bit =3D (u32)1 << ACPI_MOD_32(owner_id);
++	bit =3D (u32)BIT(ACPI_MOD_32(owner_id));
+ =
 
-iASL: Made a change to allow external declarations to specify the type of a=
- named object even when some name segments are not defined.
-This change allows the following ASL code to compile (When DEV0 is not defi=
-ned or not defined yet):
+ 	/* Free the owner ID only if it is valid */
+ =
 
-    External (\_SB.DEV0.OBJ1, IntObj)
-    External (\_SB.DEV0, DeviceObj)
+diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c index 54002670cb..39ea=
+d80c45 100644
+--- a/drivers/acpi/bus.c
++++ b/drivers/acpi/bus.c
+@@ -233,7 +233,7 @@ acpi_status acpi_run_osc(acpi_handle handle, struct acp=
+i_osc_context *context)
+ 		goto out_kfree;
+ 	}
+ 	/* Need to ignore the bit0 in result code */
+-	errors =3D *((u32 *)out_obj->buffer.pointer) & ~(1 << 0);
++	errors =3D *((u32 *)out_obj->buffer.pointer) & BIT(0);
+ 	if (errors) {
+ 		if (errors & OSC_REQUEST_ERROR)
+ 			acpi_print_osc_error(handle, context, diff --git a/drivers/acpi/sleep.c=
+ b/drivers/acpi/sleep.c index aff13bf4d9..38f5210313 100644
+--- a/drivers/acpi/sleep.c
++++ b/drivers/acpi/sleep.c
+@@ -880,7 +880,7 @@ static void acpi_sleep_run_lps0_dsm(unsigned int func) =
+ {
+ 	union acpi_object *out_obj;
+ =
 
-iASL: Fixed a problem where method names in "Alias ()" statement could be m=
-isinterpreted. They are now interpreted correctly as method invocations.
+-	if (!(lps0_dsm_func_mask & (1 << func)))
++	if (!(lps0_dsm_func_mask & BIT(func)))
+ 		return;
+ =
 
-iASL: capture a method parameter count (Within the Method info segment, as =
-well as the argument node) when using parameter type lists.
+ 	out_obj =3D acpi_evaluate_dsm(lps0_device_handle, &lps0_dsm_guid, 1, func=
+, NULL);
+--
+2.25.1
 
---===============8294406596080892150==--
+--===============3290512074701990461==--
 
