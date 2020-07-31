@@ -1,38 +1,98 @@
-Content-Type: multipart/mixed; boundary="===============3301988780710012237=="
+Content-Type: multipart/mixed; boundary="===============5610209737303531677=="
 MIME-Version: 1.0
 From: kernel test robot <lkp at intel.com>
 Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS WITH WARNING
- 5bff8c754ebfc08b9cead967f38ebc0152d2076f
-Date: Thu, 30 Jul 2020 13:40:49 +0800
-Message-ID: <5f225d61.YfXWCartLr/vi0w8%lkp@intel.com>
+ 97987ea7f86a35284fd54efc7412db246f178666
+Date: Fri, 31 Jul 2020 15:31:54 +0800
+Message-ID: <5f23c8ea.PWJ3lFt9FGpnoBxp%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3301988780710012237==
+--===============5610209737303531677==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
 tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
 m.git  bleeding-edge
-branch HEAD: 5bff8c754ebfc08b9cead967f38ebc0152d2076f  Merge branch 'pm-cpu=
-freq' into bleeding-edge
+branch HEAD: 97987ea7f86a35284fd54efc7412db246f178666  Merge branch 'pm-dev=
+freq' into linux-next
 
 Warning in current branch:
 
-drivers/acpi/processor_idle.c:667:4: warning: 'return' with no value, in fu=
+drivers/acpi/processor_idle.c:666:4: warning: 'return' with no value, in fu=
 nction returning non-void [-Wreturn-type]
 
 Warning ids grouped by kconfigs:
 
 recent_errors
-`-- ia64-randconfig-r024-20200729
+|-- i386-allyesconfig
+|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
+ion-returning-non-void
+|-- i386-defconfig
+|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
+ion-returning-non-void
+|-- i386-randconfig-a011-20200731
+|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
+ion-returning-non-void
+|-- i386-randconfig-a012-20200731
+|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
+ion-returning-non-void
+|-- i386-randconfig-a013-20200731
+|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
+ion-returning-non-void
+|-- i386-randconfig-a014-20200731
+|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
+ion-returning-non-void
+|-- i386-randconfig-a015-20200731
+|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
+ion-returning-non-void
+|-- i386-randconfig-a016-20200731
+|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
+ion-returning-non-void
+|-- i386-randconfig-c001-20200730
+|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
+ion-returning-non-void
+|-- i386-randconfig-r003-20200730
+|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
+ion-returning-non-void
+|-- ia64-allmodconfig
+|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
+ion-returning-non-void
+|-- ia64-allyesconfig
+|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
+ion-returning-non-void
+|-- ia64-defconfig
+|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
+ion-returning-non-void
+|-- ia64-randconfig-r025-20200730
+|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
+ion-returning-non-void
+|-- x86_64-allmodconfig
+|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
+ion-returning-non-void
+|-- x86_64-allyesconfig
+|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
+ion-returning-non-void
+|-- x86_64-defconfig
+|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
+ion-returning-non-void
+|-- x86_64-kexec
+|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
+ion-returning-non-void
+|-- x86_64-rhel
+|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
+ion-returning-non-void
+|-- x86_64-rhel-7.6-kselftests
+|   `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
+ion-returning-non-void
+`-- x86_64-rhel-8.3
     `-- drivers-acpi-processor_idle.c:warning:return-with-no-value-in-funct=
 ion-returning-non-void
 
-elapsed time: 722m
+elapsed time: 840m
 
-configs tested: 48
+configs tested: 66
 configs skipped: 1
 
 arm                                 defconfig
@@ -73,6 +133,24 @@ powerpc                             defconfig
 powerpc                          allyesconfig
 powerpc                          allmodconfig
 powerpc                           allnoconfig
+i386                 randconfig-a005-20200731
+i386                 randconfig-a004-20200731
+i386                 randconfig-a006-20200731
+i386                 randconfig-a002-20200731
+i386                 randconfig-a001-20200731
+i386                 randconfig-a003-20200731
+x86_64               randconfig-a015-20200731
+x86_64               randconfig-a014-20200731
+x86_64               randconfig-a016-20200731
+x86_64               randconfig-a012-20200731
+x86_64               randconfig-a013-20200731
+x86_64               randconfig-a011-20200731
+i386                 randconfig-a016-20200731
+i386                 randconfig-a012-20200731
+i386                 randconfig-a014-20200731
+i386                 randconfig-a015-20200731
+i386                 randconfig-a011-20200731
+i386                 randconfig-a013-20200731
 riscv                            allyesconfig
 riscv                             allnoconfig
 riscv                               defconfig
@@ -87,5 +165,5 @@ x86_64                                  kexec
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
 https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============3301988780710012237==--
+--===============5610209737303531677==--
 
