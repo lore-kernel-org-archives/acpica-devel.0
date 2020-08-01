@@ -1,73 +1,100 @@
-Content-Type: multipart/mixed; boundary="===============0262085985363617656=="
+Content-Type: multipart/mixed; boundary="===============8711642684797253477=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] Re: [PATCH][next] ACPICA: Use fallthrough pseudo-keyword
-Date: Tue, 28 Jul 2020 15:10:23 +0000
-Message-ID: <BYAPR11MB3256C443C13A51B8B82C6D5E87730@BYAPR11MB3256.namprd11.prod.outlook.com>
-In-Reply-To: ae54364041b99b89f818812d957d4a4bb4efdc25.camel@perches.com
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
+ 86ed8b05f59717b20b75cd2a4a17cbd26788183a
+Date: Sat, 01 Aug 2020 17:57:28 +0800
+Message-ID: <5f253c88.I1tbN4ApJNdJ1Hl3%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0262085985363617656==
+--===============8711642684797253477==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Yes, but:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git  bleeding-edge
+branch HEAD: 86ed8b05f59717b20b75cd2a4a17cbd26788183a  Merge branch 'pm-cpu=
+idle' into linux-next
 
-include/linux/compiler_attributes.h
+elapsed time: 1261m
 
-This file is linux-specific and cannot be used with ACPICA.
-Bob
+configs tested: 66
+configs skipped: 1
 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
------Original Message-----
-From: Joe Perches <joe(a)perches.com> =
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a005-20200731
+i386                 randconfig-a004-20200731
+i386                 randconfig-a006-20200731
+i386                 randconfig-a002-20200731
+i386                 randconfig-a001-20200731
+i386                 randconfig-a003-20200731
+x86_64               randconfig-a015-20200731
+x86_64               randconfig-a014-20200731
+x86_64               randconfig-a016-20200731
+x86_64               randconfig-a012-20200731
+x86_64               randconfig-a013-20200731
+x86_64               randconfig-a011-20200731
+i386                 randconfig-a016-20200731
+i386                 randconfig-a012-20200731
+i386                 randconfig-a014-20200731
+i386                 randconfig-a015-20200731
+i386                 randconfig-a013-20200731
+i386                 randconfig-a011-20200731
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-Sent: Monday, July 27, 2020 7:22 PM
-To: Gustavo A. R. Silva <gustavo(a)embeddedor.com>; Moore, Robert <robert.m=
-oore(a)intel.com>; Rafael J. Wysocki <rafael(a)kernel.org>; Gustavo A. R. S=
-ilva <gustavoars(a)kernel.org>
-Cc: Kaneda, Erik <erik.kaneda(a)intel.com>; Wysocki, Rafael J <rafael.j.wys=
-ocki(a)intel.com>; Len Brown <lenb(a)kernel.org>; ACPI Devel Maling List <l=
-inux-acpi(a)vger.kernel.org>; open list:ACPI COMPONENT ARCHITECTURE (ACPICA=
-) <devel(a)acpica.org>; Linux Kernel Mailing List <linux-kernel(a)vger.kern=
-el.org>
-Subject: Re: [PATCH][next] ACPICA: Use fallthrough pseudo-keyword
-
-On Mon, 2020-07-27 at 17:23 -0500, Gustavo A. R. Silva wrote:
-> Hi,
-> =
-
-> =
-
-> This is a macro pseudo-keyword, which expands to /* fallthrough */ for =
-
-> compilers that don't support the attribute __fallthrough__. See:
-
-Not really.
-
-It expands to
-	do {} while (0)
-for compilers that do not support the __fallthrough__ attribute.
-
-The /* fallthrough */ after that is for the human reader and is stripped be=
-fore compilation.
-
-> include/linux/compiler_attributes.h:213:
-> 213 #if __has_attribute(__fallthrough__)
-> 214 # define fallthrough                    __attribute__((__fallthrough_=
-_))
-> 215 #else
-> 216 # define fallthrough                    do {} while (0)  /* fallthrou=
-gh */
-> 217 #endif
-> =
-
-> So, any compiler (older or new) will be fine with it.
-
-But old compilers should not emit warnings for these uses.
-
-
---===============0262085985363617656==--
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
+--===============8711642684797253477==--
 
