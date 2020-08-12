@@ -1,43 +1,118 @@
-Content-Type: multipart/mixed; boundary="===============5594531024892429027=="
+Content-Type: multipart/mixed; boundary="===============2474978972170064540=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: power-off delay/hang due to commit 6d25be57 (mainline)
-Date: Tue, 11 Aug 2020 16:34:09 +0200
-Message-ID: <CAJZ5v0h+n9VCz5=VixVbe_b=ZbTU3D=46stGhE9z7Y7yaUMJzw@mail.gmail.com>
-In-Reply-To: 20200811132955.wbt55ns7bu5mxouq@linutronix.de
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
+ 395313eda1534576fc2440ea8907fb8ff9097485
+Date: Wed, 12 Aug 2020 11:39:25 +0800
+Message-ID: <5f33646d.7huDtKfgZy6XYDCZ%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5594531024892429027==
+--===============2474978972170064540==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Aug 11, 2020 at 3:29 PM Sebastian Andrzej Siewior
-<bigeasy(a)linutronix.de> wrote:
->
-> On 2020-08-11 13:58:39 [+0200], Stephen Berman wrote:
-> > him about your workaround of adding 'thermal.tzp=3D300' to the kernel
-> > commandline, and he replied that this works for him too.  And it turns
-> > out we have similar motherboards: I have a Gigabyte Z390 M Gaming
-> > Rev. 1001 board and he has Gigabyte Z390 Designare rev 1.0.
->
-> Yes. Based on latest dmesg, the ACPI tables contain code which schedules
-> the worker and takes so long. It is possible / likely that his board
-> contains the same tables which leads to the same effect. After all those
-> two boards are very similar from the naming part :)
-> Would you mind to dump the ACPI tables and send them? There might be
-> some hints.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git  bleeding-edge
+branch HEAD: 395313eda1534576fc2440ea8907fb8ff9097485  Merge branches 'acpi=
+-soc' and 'pm-cpufreq' into linux-next
 
-Do we have a BZ for this?  It would be useful to open one if not.
+elapsed time: 725m
 
-> It might be possible that a BIOS update fixes the problem but I would
-> prefer very much to fix this in kernel to ensure that such a BIOS does
-> not lead to this problem again.
+configs tested: 84
+configs skipped: 2
 
-I agree.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-It looks like one way to address this issue might be to add a rate
-limit for thermal notifications on a given zone.
---===============5594531024892429027==--
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                            xcep_defconfig
+mips                          ath25_defconfig
+sh                           se7619_defconfig
+powerpc                        cell_defconfig
+m68k                          multi_defconfig
+i386                             alldefconfig
+c6x                         dsk6455_defconfig
+mips                          malta_defconfig
+m68k                       bvme6000_defconfig
+arm                          iop32x_defconfig
+powerpc                       maple_defconfig
+sh                          urquell_defconfig
+arc                    vdk_hs38_smp_defconfig
+powerpc                         wii_defconfig
+sh                         ecovec24_defconfig
+m68k                          hp300_defconfig
+sh                           se7206_defconfig
+arm                           stm32_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                            allyesconfig
+nds32                               defconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20200811
+x86_64               randconfig-a005-20200811
+x86_64               randconfig-a001-20200811
+x86_64               randconfig-a003-20200811
+x86_64               randconfig-a004-20200811
+x86_64               randconfig-a002-20200811
+i386                 randconfig-a005-20200811
+i386                 randconfig-a001-20200811
+i386                 randconfig-a002-20200811
+i386                 randconfig-a003-20200811
+i386                 randconfig-a006-20200811
+i386                 randconfig-a004-20200811
+i386                 randconfig-a016-20200811
+i386                 randconfig-a011-20200811
+i386                 randconfig-a015-20200811
+i386                 randconfig-a013-20200811
+i386                 randconfig-a012-20200811
+i386                 randconfig-a014-20200811
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                                  kexec
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
+--===============2474978972170064540==--
 
