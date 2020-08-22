@@ -1,24 +1,24 @@
-Content-Type: multipart/mixed; boundary="===============5676653133308964269=="
+Content-Type: multipart/mixed; boundary="===============1129270938915089872=="
 MIME-Version: 1.0
 From: kernel test robot <lkp at intel.com>
 Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
- 0e2db525c08af6c8f0298ca8e35d3717cd5c4b23
-Date: Fri, 21 Aug 2020 15:47:57 +0800
-Message-ID: <5f3f7c2d.XKHUoIq6GBm6l3I1%lkp@intel.com>
+ ccad8c4a8d37a8a6c5b01b180e52eb1ba7f9f295
+Date: Sat, 22 Aug 2020 19:05:58 +0800
+Message-ID: <5f40fc16.qFzs3PMTJKiWmkS1%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5676653133308964269==
+--===============1129270938915089872==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
 tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
 m.git  bleeding-edge
-branch HEAD: 0e2db525c08af6c8f0298ca8e35d3717cd5c4b23  Merge branch 'intel_=
-pstate-testing' into bleeding-edge
+branch HEAD: ccad8c4a8d37a8a6c5b01b180e52eb1ba7f9f295  Merge branch 'devpro=
+p' into bleeding-edge
 
-elapsed time: 722m
+elapsed time: 721m
 
 configs tested: 66
 configs skipped: 1
@@ -37,6 +37,10 @@ ia64                             allyesconfig
 m68k                             allmodconfig
 m68k                                defconfig
 m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
 nds32                               defconfig
 nios2                            allyesconfig
 csky                                defconfig
@@ -54,10 +58,6 @@ i386                             allyesconfig
 sparc                            allyesconfig
 sparc                               defconfig
 i386                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
 mips                             allyesconfig
 mips                             allmodconfig
 powerpc                             defconfig
@@ -96,5 +96,5 @@ x86_64                                  kexec
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
 https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============5676653133308964269==--
+--===============1129270938915089872==--
 
