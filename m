@@ -1,14 +1,14 @@
-Content-Type: multipart/mixed; boundary="===============5797008438440626585=="
+Content-Type: multipart/mixed; boundary="===============2876500774362987293=="
 MIME-Version: 1.0
 From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [pm:acpica-osl 5/6] drivers/acpi/osl.c:1756:20: sparse:
+Subject: [Devel] [pm:acpica-osl 6/6] drivers/acpi/osl.c:1748:46: sparse:
  sparse: incorrect type in assignment (different address spaces)
-Date: Sun, 06 Sep 2020 01:15:04 +0800
-Message-ID: <202009060155.IPQz8yCe%lkp@intel.com>
+Date: Sun, 06 Sep 2020 02:33:46 +0800
+Message-ID: <202009060245.jmydrp7B%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5797008438440626585==
+--===============2876500774362987293==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
@@ -16,14 +16,14 @@ Content-Transfer-Encoding: quoted-printable
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git=
  acpica-osl
 head:   c32c3c4079f8a62616413abbead45b6622fb7602
-commit: 39192732c7bbd4e54968acde6fb8dd999246aef9 [5/6] ACPI: OSL: Change th=
-e type of acpi_os_map_generic_address() return value
+commit: c32c3c4079f8a62616413abbead45b6622fb7602 [6/6] ACPI: OSL: Make ACPI=
+CA use logical addresses of GPE blocks
 config: x86_64-randconfig-s022-20200904 (attached as .config)
 compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
 reproduce:
         # apt-get install sparse
         # sparse version: v0.6.2-191-g10164920-dirty
-        git checkout 39192732c7bbd4e54968acde6fb8dd999246aef9
+        git checkout c32c3c4079f8a62616413abbead45b6622fb7602
         # save the attached .config to linux build tree
         make W=3D1 C=3D1 CF=3D'-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=
 =3Dx86_64 =
@@ -37,82 +37,83 @@ sparse warnings: (new ones prefixed by >>)
 
    drivers/acpi/osl.c:376:17: sparse: sparse: cast removes address space '_=
 _iomem' of expression
->> drivers/acpi/osl.c:1756:20: sparse: sparse: incorrect type in assignment=
+>> drivers/acpi/osl.c:1748:46: sparse: sparse: incorrect type in assignment=
+ (different address spaces) @@     expected void *extern [addressable] [top=
+level] acpi_gbl_xgpe0_block_logical_address @@     got void [noderef] __iom=
+em * @@
+>> drivers/acpi/osl.c:1748:46: sparse:     expected void *extern [addressab=
+le] [toplevel] acpi_gbl_xgpe0_block_logical_address
+   drivers/acpi/osl.c:1748:46: sparse:     got void [noderef] __iomem *
+>> drivers/acpi/osl.c:1750:46: sparse: sparse: incorrect type in assignment=
+ (different address spaces) @@     expected void *extern [addressable] [top=
+level] acpi_gbl_xgpe1_block_logical_address @@     got void [noderef] __iom=
+em * @@
+>> drivers/acpi/osl.c:1750:46: sparse:     expected void *extern [addressab=
+le] [toplevel] acpi_gbl_xgpe1_block_logical_address
+   drivers/acpi/osl.c:1750:46: sparse:     got void [noderef] __iomem *
+   drivers/acpi/osl.c:1760:20: sparse: sparse: incorrect type in assignment=
  (different address spaces) @@     expected void *rv @@     got void [noder=
 ef] __iomem * @@
->> drivers/acpi/osl.c:1756:20: sparse:     expected void *rv
->> drivers/acpi/osl.c:1756:20: sparse:     got void [noderef] __iomem *
+   drivers/acpi/osl.c:1760:20: sparse:     expected void *rv
+   drivers/acpi/osl.c:1760:20: sparse:     got void [noderef] __iomem *
    drivers/acpi/osl.c:708:1: sparse: sparse: context imbalance in 'acpi_os_=
 read_memory' - wrong count at exit
    drivers/acpi/osl.c:741:1: sparse: sparse: context imbalance in 'acpi_os_=
 write_memory' - wrong count at exit
 
 # https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git/commi=
-t/?id=3D39192732c7bbd4e54968acde6fb8dd999246aef9
+t/?id=3Dc32c3c4079f8a62616413abbead45b6622fb7602
 git remote add pm https://git.kernel.org/pub/scm/linux/kernel/git/rafael/li=
 nux-pm.git
 git fetch --no-tags pm acpica-osl
-git checkout 39192732c7bbd4e54968acde6fb8dd999246aef9
-vim +1756 drivers/acpi/osl.c
+git checkout c32c3c4079f8a62616413abbead45b6622fb7602
+vim +1748 drivers/acpi/osl.c
 
-4dde507fc19844 Lv Zheng          2014-02-11  1742  =
+  1742	=
 
-d362edaf5386ac Myron Stowe       2010-10-21  1743  acpi_status __init acpi_=
-os_initialize(void)
-d362edaf5386ac Myron Stowe       2010-10-21  1744  {
-d362edaf5386ac Myron Stowe       2010-10-21  1745  	acpi_os_map_generic_add=
-ress(&acpi_gbl_FADT.xpm1a_event_block);
-d362edaf5386ac Myron Stowe       2010-10-21  1746  	acpi_os_map_generic_add=
-ress(&acpi_gbl_FADT.xpm1b_event_block);
-d362edaf5386ac Myron Stowe       2010-10-21  1747  	acpi_os_map_generic_add=
-ress(&acpi_gbl_FADT.xgpe0_block);
-d362edaf5386ac Myron Stowe       2010-10-21  1748  	acpi_os_map_generic_add=
-ress(&acpi_gbl_FADT.xgpe1_block);
-a4714a898e8520 Randy Wright      2014-06-04  1749  	if (acpi_gbl_FADT.flags=
- & ACPI_FADT_RESET_REGISTER) {
-a4714a898e8520 Randy Wright      2014-06-04  1750  		/*
-a4714a898e8520 Randy Wright      2014-06-04  1751  		 * Use acpi_os_map_gen=
-eric_address to pre-map the reset
-a4714a898e8520 Randy Wright      2014-06-04  1752  		 * register if it's in=
- system memory.
-a4714a898e8520 Randy Wright      2014-06-04  1753  		 */
-39192732c7bbd4 Rafael J. Wysocki 2020-09-04  1754  		void *rv;
-a4714a898e8520 Randy Wright      2014-06-04  1755  =
+  1743	acpi_status __init acpi_os_initialize(void)
+  1744	{
+  1745		acpi_os_map_generic_address(&acpi_gbl_FADT.xpm1a_event_block);
+  1746		acpi_os_map_generic_address(&acpi_gbl_FADT.xpm1b_event_block);
+  1747	=
 
-a4714a898e8520 Randy Wright      2014-06-04 @1756  		rv =3D acpi_os_map_gen=
-eric_address(&acpi_gbl_FADT.reset_register);
-39192732c7bbd4 Rafael J. Wysocki 2020-09-04  1757  		pr_debug(PREFIX "%s: m=
-ap reset_reg %s\n", __func__,
-39192732c7bbd4 Rafael J. Wysocki 2020-09-04  1758  			 rv ? "successful" : =
-"failed");
-a4714a898e8520 Randy Wright      2014-06-04  1759  	}
-7901a052a98169 Lv Zheng          2015-08-05  1760  	acpi_os_initialized =3D=
- true;
-d362edaf5386ac Myron Stowe       2010-10-21  1761  =
+> 1748		acpi_gbl_xgpe0_block_logical_address =3D
+  1749			acpi_os_map_generic_address(&acpi_gbl_FADT.xgpe0_block);
+> 1750		acpi_gbl_xgpe1_block_logical_address =3D
+  1751			acpi_os_map_generic_address(&acpi_gbl_FADT.xgpe1_block);
+  1752	=
 
-d362edaf5386ac Myron Stowe       2010-10-21  1762  	return AE_OK;
-d362edaf5386ac Myron Stowe       2010-10-21  1763  }
-d362edaf5386ac Myron Stowe       2010-10-21  1764  =
+  1753		if (acpi_gbl_FADT.flags & ACPI_FADT_RESET_REGISTER) {
+  1754			/*
+  1755			 * Use acpi_os_map_generic_address to pre-map the reset
+  1756			 * register if it's in system memory.
+  1757			 */
+  1758			void *rv;
+  1759	=
 
+  1760			rv =3D acpi_os_map_generic_address(&acpi_gbl_FADT.reset_register);
+  1761			pr_debug(PREFIX "%s: map reset_reg %s\n", __func__,
+  1762				 rv ? "successful" : "failed");
+  1763		}
+  1764		acpi_os_initialized =3D true;
+  1765	=
 
-:::::: The code at line 1756 was first introduced by commit
-:::::: a4714a898e85205e1118ec923cde43d88eb105f6 ACPI: Fix bug when ACPI res=
-et register is implemented in system memory
+  1766		return AE_OK;
+  1767	}
+  1768	=
 
-:::::: TO: Randy Wright <rwright(a)hp.com>
-:::::: CC: Rafael J. Wysocki <rafael.j.wysocki(a)intel.com>
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
 https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
 
---===============5797008438440626585==
+--===============2876500774362987293==
 Content-Type: application/gzip
 MIME-Version: 1.0
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="config.gz"
 
-H4sICM+qU18AAy5jb25maWcAjBzLctw28p6vmHIuycFZSbZVdm3pAJLgDDIkQQPgPHRhKfLYq4os
+H4sICL/NU18AAy5jb25maWcAjBzLctw28p6vmHIuycFZSbZVdm3pAJLgDDIkQQPgPHRhKfLYq4os
 eUfSJv777Qb4AMDmxD4kmu7Gu99o8Oeffl6wl+fHrzfPd7c39/ffF18OD4fjzfPh0+Lz3f3h34tM
 LippFjwT5jcgLu4eXv7+19/vL9vLt4t3v3347ez18fbNYn04PhzuF+njw+e7Ly/Q/u7x4aeff0pl
 lYtlm6bthistZNUavjNXr77c3r7+sPglO/xxd/Ow+PDbG+jm/N2v7q9XXjOh22WaXn3vQcuxq6sP
@@ -858,5 +859,5 @@ VZQx3ZiMmshE5fEldRAOXTxlfnj4ep6Ucabu6JPQYaAiyhTRjytdtckrnGngoY7dxcC1nVGd5Ugx
 FHcr20b0dvfyijIFyrj88d+75+s7pyzLuqOVWXPnogUZtIgxl5vln1LSRFb6wEwxlXh71veetNXp
 U2mqiefEM8v5nGGNsZK+ogxMBMDDGbaTq7jU+MtYflWWMYnGIDeQGUnQOCu7UjkCkzZaTSXPoVsp
 65UX34fvWArK0nskMFz8XoS7DFktep0STQEL8+XGg2schLfqryn/D3Ql2p4LnwIA
---===============5797008438440626585==--
+--===============2876500774362987293==--
 
