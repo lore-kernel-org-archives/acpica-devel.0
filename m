@@ -1,26 +1,26 @@
-Content-Type: multipart/mixed; boundary="===============8710752259866963419=="
+Content-Type: multipart/mixed; boundary="===============6860813202553011433=="
 MIME-Version: 1.0
 From: kernel test robot <lkp at intel.com>
 Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
- e7c1299a01a05159cf7702e019ff910d8996a1dc
-Date: Sat, 19 Sep 2020 16:38:50 +0800
-Message-ID: <5f65c39a.QSLKQ8dJlMfnUISE%lkp@intel.com>
+ 0078cdb523a50aea96c5aa587f0f6092c1fa60f6
+Date: Tue, 22 Sep 2020 16:22:50 +0800
+Message-ID: <5f69b45a.DwkiPJTl8BOdZ40j%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8710752259866963419==
+--===============6860813202553011433==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
 tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
 m.git  bleeding-edge
-branch HEAD: e7c1299a01a05159cf7702e019ff910d8996a1dc  Merge branch 'pm-cpu=
-freq' into bleeding-edge
+branch HEAD: 0078cdb523a50aea96c5aa587f0f6092c1fa60f6  Merge branch 'pm-cpu=
+idle-next' into bleeding-edge
 
-elapsed time: 723m
+elapsed time: 721m
 
-configs tested: 86
+configs tested: 94
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -32,28 +32,32 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
-arm                          pxa3xx_defconfig
-powerpc                      mgcoge_defconfig
-parisc                generic-32bit_defconfig
-m68k                        m5272c3_defconfig
+h8300                       h8s-sim_defconfig
+c6x                        evmc6457_defconfig
+sh                               j2_defconfig
+arm                          ep93xx_defconfig
+arm                          tango4_defconfig
+c6x                        evmc6472_defconfig
+m68k                             alldefconfig
+arm                            pleb_defconfig
+arm                      footbridge_defconfig
+mips                        nlm_xlr_defconfig
+c6x                        evmc6474_defconfig
+s390                          debug_defconfig
+c6x                         dsk6455_defconfig
+arm                          pxa910_defconfig
+mips                        vocore2_defconfig
+sh                           se7721_defconfig
+sh                        edosk7760_defconfig
+powerpc                       eiger_defconfig
+mips                 decstation_r4k_defconfig
 sh                     magicpanelr2_defconfig
-arm                         nhk8815_defconfig
-nios2                         3c120_defconfig
-powerpc                      pcm030_defconfig
-sh                        sh7763rdp_defconfig
-arm                  colibri_pxa300_defconfig
-mips                  maltasmvp_eva_defconfig
-sh                         microdev_defconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
 m68k                             allmodconfig
 m68k                                defconfig
 m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
 nds32                               defconfig
 nios2                            allyesconfig
 csky                                defconfig
@@ -67,6 +71,10 @@ parisc                              defconfig
 s390                             allyesconfig
 parisc                           allyesconfig
 s390                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
 i386                             allyesconfig
 sparc                            allyesconfig
 sparc                               defconfig
@@ -76,24 +84,24 @@ mips                             allmodconfig
 powerpc                          allyesconfig
 powerpc                          allmodconfig
 powerpc                           allnoconfig
-i386                 randconfig-a004-20200917
-i386                 randconfig-a006-20200917
-i386                 randconfig-a003-20200917
-i386                 randconfig-a001-20200917
-i386                 randconfig-a002-20200917
-i386                 randconfig-a005-20200917
-x86_64               randconfig-a014-20200917
-x86_64               randconfig-a011-20200917
-x86_64               randconfig-a016-20200917
-x86_64               randconfig-a012-20200917
-x86_64               randconfig-a015-20200917
-x86_64               randconfig-a013-20200917
-i386                 randconfig-a015-20200917
-i386                 randconfig-a014-20200917
-i386                 randconfig-a011-20200917
-i386                 randconfig-a013-20200917
-i386                 randconfig-a016-20200917
-i386                 randconfig-a012-20200917
+i386                 randconfig-a002-20200921
+i386                 randconfig-a006-20200921
+i386                 randconfig-a003-20200921
+i386                 randconfig-a004-20200921
+i386                 randconfig-a005-20200921
+i386                 randconfig-a001-20200921
+x86_64               randconfig-a011-20200921
+x86_64               randconfig-a013-20200921
+x86_64               randconfig-a014-20200921
+x86_64               randconfig-a015-20200921
+x86_64               randconfig-a012-20200921
+x86_64               randconfig-a016-20200921
+i386                 randconfig-a012-20200921
+i386                 randconfig-a014-20200921
+i386                 randconfig-a016-20200921
+i386                 randconfig-a013-20200921
+i386                 randconfig-a011-20200921
+i386                 randconfig-a015-20200921
 riscv                    nommu_k210_defconfig
 riscv                            allyesconfig
 riscv                    nommu_virt_defconfig
@@ -109,15 +117,15 @@ x86_64                               rhel-8.3
 x86_64                                  kexec
 
 clang tested configs:
-x86_64               randconfig-a006-20200917
-x86_64               randconfig-a004-20200917
-x86_64               randconfig-a003-20200917
-x86_64               randconfig-a002-20200917
-x86_64               randconfig-a001-20200917
-x86_64               randconfig-a005-20200917
+x86_64               randconfig-a005-20200921
+x86_64               randconfig-a003-20200921
+x86_64               randconfig-a004-20200921
+x86_64               randconfig-a002-20200921
+x86_64               randconfig-a006-20200921
+x86_64               randconfig-a001-20200921
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
 https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============8710752259866963419==--
+--===============6860813202553011433==--
 
