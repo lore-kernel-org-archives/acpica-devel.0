@@ -1,116 +1,60 @@
-Content-Type: multipart/mixed; boundary="===============1613866283435152063=="
+Content-Type: multipart/mixed; boundary="===============6699257901018566505=="
 MIME-Version: 1.0
 From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] Re: Automatic dereference when reading from ArgX
-Date: Wed, 23 Sep 2020 16:38:08 +0000
-Message-ID: <BYAPR11MB3256F56601FD2F961B268C5F87380@BYAPR11MB3256.namprd11.prod.outlook.com>
-In-Reply-To: 20200922224728.2835.56590@ml01.vlan13.01.org
+Subject: [Devel] Re: [PATCH -next] ACPICA: Remove unneeded semicolon
+Date: Wed, 23 Sep 2020 17:03:42 +0000
+Message-ID: <BYAPR11MB325605CF9CC0C660510F0BE687380@BYAPR11MB3256.namprd11.prod.outlook.com>
+In-Reply-To: 1600760929-102547-1-git-send-email-zou_wei@huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1613866283435152063==
+--===============6699257901018566505==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-This seems to make things work (Because taking a DeRefOf on an Arg is the s=
-ame as taking a DeRefOf on the base object (An integer in this case). Which=
- causes an error.
-
-    Method (DRFA, 1) {
-        //printf("Arg0: %o", DeRefOf(Arg0))
-        printf("Arg0: %o", Arg0)
-        //Store (DeRefOf(Arg0), INTX)
-        Store (Arg0, INTX)       // <- line 10
-        Debug =3D INTX
-    }
-
-    Method (MAIN, 0)
-    {
-        DRFA(INT5) //RefOf(INT5))
-    }
-}
-
-- ev main
-Evaluating \MAIN
-ACPI Debug:  "Arg0: 0000000000000005"
-ACPI Debug:  0x0000000000000005
-No object was returned from evaluation of \MAIN
+Got it, thanks.
+Bob
 
 
 -----Original Message-----
-From: dunkaist(a)gmail.com <dunkaist(a)gmail.com> =
+From: Zou Wei <zou_wei(a)huawei.com> =
 
-Sent: Tuesday, September 22, 2020 3:47 PM
-To: devel(a)acpica.org
-Subject: [Devel] Automatic dereference when reading from ArgX
+Sent: Tuesday, September 22, 2020 12:49 AM
+To: Moore, Robert <robert.moore(a)intel.com>; Kaneda, Erik <erik.kaneda(a)i=
+ntel.com>; Wysocki, Rafael J <rafael.j.wysocki(a)intel.com>; lenb(a)kernel.=
+org
+Cc: linux-acpi(a)vger.kernel.org; devel(a)acpica.org; linux-kernel(a)vger.k=
+ernel.org; Zou Wei <zou_wei(a)huawei.com>
+Subject: [PATCH -next] ACPICA: Remove unneeded semicolon
 
-Hello,
+Fixes coccicheck warning:
 
-I've been struggling to find out how acpiexec behavior corresponds to what =
-ACPI spec says.
+./drivers/acpi/acpica/nsalloc.c:297:2-3: Unneeded semicolon
 
+Signed-off-by: Zou Wei <zou_wei(a)huawei.com>
+---
+ drivers/acpi/acpica/nsalloc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-ACPI 6.3 spec, Chapter 19.3.5.9.1 ArgX Objects, 1. Read from ArgX parameter=
-s:
-> ObjectReference - Automatic dereference, return the target of the referen=
-ce. Use of DeRefOf returns the same.
+diff --git a/drivers/acpi/acpica/nsalloc.c b/drivers/acpi/acpica/nsalloc.c =
+index fe9b363..83d26ab 100644
+--- a/drivers/acpi/acpica/nsalloc.c
++++ b/drivers/acpi/acpica/nsalloc.c
+@@ -294,7 +294,7 @@ void acpi_ns_delete_children(struct acpi_namespace_node=
+ *parent_node)
+ 		node_to_delete =3D next_node;
+ 		next_node =3D next_node->peer;
+ 		acpi_ns_delete_node(node_to_delete);
+-	};
++	}
+ =
 
-ACPI spec, Table 19-421 Reading from ArgX Objects:
-> Parameter: RefOf(Obj)
-> MTHD ArgX Type: Reference to object Obj Read operation on ArgX: =
+ 	/* Clear the parent's child pointer */
+ =
 
-> Store(Arg0, ...) Result of read: Obj
+--
+2.6.2
 
-
-Then, here is a table I've written (argx_deref.asl):
-
-DefinitionBlock ("", "DSDT", 1, "BLAH", "BLAHDSDT", 0x00000001)
-{
-    Name (INT5, 5)
-    Name (INTX, 0)
-
-    Method (DRFA, 1) {
-        printf("Arg0: %o", DeRefOf(Arg0))
-        printf("Arg0: %o", Arg0)
-        Store (DeRefOf(Arg0), INTX)
-        Store (Arg0, INTX)       // <- line 10
-        Debug =3D INTX
-    }
-
-    Method (MAIN, 0)
-    {
-        DRFA(RefOf(INT5))
-    }
-}
-
-
-Finally, the output of `acpiexec -m -eo argx_deref.aml':
-
-> Intel ACPI Component Architecture
-> AML Execution/Debug Utility version 20200717
-> ...
->    Nested method call     :     DRFA
-> ACPI Debug:  "Arg0: 00000005"
-> ACPI Debug:  "Arg0: [Reference Object]"
-> ACPI Error: Cannot assign type [Reference] to [Integer] (must be type Int=
-/Str/Buf) (20200717/exstoren-239)
-> Failed at AML Offset 00024, Opcode 0070: Store (Arg0, INTX) /* External r=
-eference */
-> ...
-
-
-So, it turnes out (or at least seems to me) that Store(Arg0, ...) at line 1=
-0 reads a Reference object, not an Integer one as the spec says.
-I.e. there is no automatic dereference.
-
-Do I miss something? Could you elaborate on this, please?
-
-Thank you,
-Ivan
-_______________________________________________
-Devel mailing list -- devel(a)acpica.org
-To unsubscribe send an email to devel-leave(a)acpica.org
-%(web_page_url)slistinfo%(cgiext)s/%(_internal_name)s
---===============1613866283435152063==--
+--===============6699257901018566505==--
 
