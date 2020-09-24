@@ -1,26 +1,26 @@
-Content-Type: multipart/mixed; boundary="===============1580666678400798843=="
+Content-Type: multipart/mixed; boundary="===============3579174121182842134=="
 MIME-Version: 1.0
 From: kernel test robot <lkp at intel.com>
 Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
- fbcfd124b895172288ce3a0faafd9e54f8f15a7b
-Date: Thu, 24 Sep 2020 08:21:20 +0800
-Message-ID: <5f6be680.juSJmP5YBporn4lW%lkp@intel.com>
+ c6fdc99d71f335046a3cf4014097576e9907b94b
+Date: Fri, 25 Sep 2020 07:29:55 +0800
+Message-ID: <5f6d2bf3.eUzt5WRZn90nkRFo%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1580666678400798843==
+--===============3579174121182842134==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
 tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
 m.git  bleeding-edge
-branch HEAD: fbcfd124b895172288ce3a0faafd9e54f8f15a7b  Merge branch 'pm-cpu=
-idle-next' into bleeding-edge
+branch HEAD: c6fdc99d71f335046a3cf4014097576e9907b94b  Merge branch 'acpi-n=
+uma' into bleeding-edge
 
-elapsed time: 725m
+elapsed time: 720m
 
-configs tested: 89
+configs tested: 90
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -32,21 +32,22 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
-h8300                     edosk2674_defconfig
-powerpc                 xes_mpc85xx_defconfig
-arm                            lart_defconfig
-powerpc                        warp_defconfig
-powerpc                     ep8248e_defconfig
-sh                   secureedge5410_defconfig
-powerpc                      ppc6xx_defconfig
-sh                           se7619_defconfig
-sh                           se7722_defconfig
-arc                     haps_hs_smp_defconfig
-powerpc                        fsp2_defconfig
-mips                  maltasmvp_eva_defconfig
-arm                       cns3420vb_defconfig
-arc                             nps_defconfig
-arm                         orion5x_defconfig
+sh                          rsk7203_defconfig
+powerpc                 mpc8313_rdb_defconfig
+sparc                            alldefconfig
+arm                           h5000_defconfig
+m68k                           sun3_defconfig
+arm                          ixp4xx_defconfig
+powerpc                      arches_defconfig
+um                             i386_defconfig
+sh                            shmin_defconfig
+xtensa                  cadence_csp_defconfig
+mips                   sb1250_swarm_defconfig
+sh                           se7705_defconfig
+powerpc                    amigaone_defconfig
+arc                        nsim_700_defconfig
+sh                      rts7751r2d1_defconfig
+sh                        sh7757lcr_defconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
@@ -122,5 +123,5 @@ x86_64               randconfig-a001-20200923
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
 https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============1580666678400798843==--
+--===============3579174121182842134==--
 
