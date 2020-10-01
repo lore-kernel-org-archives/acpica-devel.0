@@ -1,78 +1,164 @@
-Content-Type: multipart/mixed; boundary="===============7132387673799002659=="
+Content-Type: multipart/mixed; boundary="===============0569542632122971700=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [PATCH] ACPI / NUMA: Add stub function for pxm_to_node
-Date: Wed, 30 Sep 2020 17:49:33 +0200
-Message-ID: <CAJZ5v0hno=F9yuJHRQNix7eiLzP=WtY1rB3xxmmBzLYxW62-tg@mail.gmail.com>
-In-Reply-To: a39af625-6e2e-3cb2-ece5-ea2b2dbb7c21@huawei.com
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
+ 027a0d093137cac9655d241a1ace1b36ed1f455d
+Date: Thu, 01 Oct 2020 13:41:35 +0800
+Message-ID: <5f756c0f.9PnjvYfpKblFa61t%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7132387673799002659==
+--===============0569542632122971700==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Sep 30, 2020 at 11:07 AM Hanjun Guo <guohanjun(a)huawei.com> wrote:
->
-> On 2020/9/29 3:45, Nathan Chancellor wrote:
-> > After commit 01feba590cd6 ("ACPI: Do not create new NUMA domains from
-> > ACPI static tables that are not SRAT"):
-> >
-> > $ scripts/config --file arch/x86/configs/x86_64_defconfig -d NUMA -e AC=
-PI_NFIT
-> >
-> > $ make -skj"$(nproc)" distclean defconfig drivers/acpi/nfit/
-> > drivers/acpi/nfit/core.c: In function =E2=80=98acpi_nfit_register_regio=
-n=E2=80=99:
-> > drivers/acpi/nfit/core.c:3010:27: error: implicit declaration of
-> > function =E2=80=98pxm_to_node=E2=80=99; did you mean =E2=80=98xa_to_nod=
-e=E2=80=99?
-> > [-Werror=3Dimplicit-function-declaration]
-> >   3010 |   ndr_desc->target_node =3D pxm_to_node(spa->proximity_domain);
-> >        |                           ^~~~~~~~~~~
-> >        |                           xa_to_node
-> > cc1: some warnings being treated as errors
-> > ...
-> >
-> > Add a stub function like acpi_map_pxm_to_node had so that the build
-> > continues to work.
-> >
-> > Fixes: 01feba590cd6 ("ACPI: Do not create new NUMA domains from ACPI st=
-atic tables that are not SRAT")
-> > Signed-off-by: Nathan Chancellor <natechancellor(a)gmail.com>
-> > ---
-> >
-> > I am not sure if this is the right place or value for this. It looks
-> > like there is going to be another stub function added here, which is
-> > going through -mm:
-> >
-> > https://lkml.kernel.org/r/159643094925.4062302.14979872973043772305.stg=
-it(a)dwillia2-desk3.amr.corp.intel.com
-> >
-> >   include/acpi/acpi_numa.h | 5 +++++
-> >   1 file changed, 5 insertions(+)
-> >
-> > diff --git a/include/acpi/acpi_numa.h b/include/acpi/acpi_numa.h
-> > index fdebcfc6c8df..09eb3bc20ff5 100644
-> > --- a/include/acpi/acpi_numa.h
-> > +++ b/include/acpi/acpi_numa.h
-> > @@ -22,5 +22,10 @@ extern int acpi_numa __initdata;
-> >   extern void bad_srat(void);
-> >   extern int srat_disabled(void);
-> >
-> > +#else                                /* CONFIG_ACPI_NUMA */
-> > +static inline int pxm_to_node(int pxm)
-> > +{
-> > +     return 0;
-> > +}
-> >   #endif                              /* CONFIG_ACPI_NUMA */
-> >   #endif                              /* __ACP_NUMA_H */
->
-> Looks good to me,
->
-> Reviewed-by: Hanjun Guo <guohanjun(a)huawei.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git  bleeding-edge
+branch HEAD: 027a0d093137cac9655d241a1ace1b36ed1f455d  Merge branch 'acpi-n=
+uma' into linux-next
 
-Patch applied, thanks!
---===============7132387673799002659==--
+elapsed time: 720m
+
+configs tested: 127
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                         shannon_defconfig
+arm                  colibri_pxa300_defconfig
+mips                          ath25_defconfig
+sh                        edosk7705_defconfig
+h8300                            allyesconfig
+powerpc                 mpc8540_ads_defconfig
+powerpc                 linkstation_defconfig
+c6x                         dsk6455_defconfig
+powerpc64                        alldefconfig
+c6x                        evmc6457_defconfig
+powerpc                     asp8347_defconfig
+arm                         mv78xx0_defconfig
+arm                           tegra_defconfig
+sh                           se7619_defconfig
+mips                        bcm63xx_defconfig
+nds32                            alldefconfig
+nios2                         10m50_defconfig
+powerpc                     rainier_defconfig
+xtensa                       common_defconfig
+sh                           sh2007_defconfig
+powerpc                  iss476-smp_defconfig
+powerpc                 mpc832x_rdb_defconfig
+sparc                            allyesconfig
+arm                          simpad_defconfig
+microblaze                    nommu_defconfig
+powerpc                   motionpro_defconfig
+arm                          gemini_defconfig
+powerpc                 mpc837x_mds_defconfig
+xtensa                           alldefconfig
+arm                         nhk8815_defconfig
+arm                         bcm2835_defconfig
+powerpc                      mgcoge_defconfig
+powerpc                  storcenter_defconfig
+microblaze                      mmu_defconfig
+sh                           se7750_defconfig
+m68k                            q40_defconfig
+arm                        multi_v5_defconfig
+arm                          lpd270_defconfig
+arm                        trizeps4_defconfig
+powerpc                      chrp32_defconfig
+arm                           stm32_defconfig
+mips                      loongson3_defconfig
+powerpc                      makalu_defconfig
+m68k                         apollo_defconfig
+arm                              zx_defconfig
+sh                           se7343_defconfig
+arm                            dove_defconfig
+mips                        nlm_xlr_defconfig
+mips                        jmr3927_defconfig
+powerpc                      katmai_defconfig
+sh                          rsk7203_defconfig
+sh                   sh7724_generic_defconfig
+sh                             espt_defconfig
+csky                                defconfig
+arm                          iop32x_defconfig
+powerpc                 mpc837x_rdb_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a003-20200930
+i386                 randconfig-a002-20200930
+i386                 randconfig-a006-20200930
+i386                 randconfig-a005-20200930
+i386                 randconfig-a004-20200930
+i386                 randconfig-a001-20200930
+x86_64               randconfig-a015-20200930
+x86_64               randconfig-a013-20200930
+x86_64               randconfig-a012-20200930
+x86_64               randconfig-a016-20200930
+x86_64               randconfig-a014-20200930
+x86_64               randconfig-a011-20200930
+i386                 randconfig-a011-20200930
+i386                 randconfig-a015-20200930
+i386                 randconfig-a012-20200930
+i386                 randconfig-a014-20200930
+i386                 randconfig-a016-20200930
+i386                 randconfig-a013-20200930
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a001-20200930
+x86_64               randconfig-a005-20200930
+x86_64               randconfig-a003-20200930
+x86_64               randconfig-a004-20200930
+x86_64               randconfig-a002-20200930
+x86_64               randconfig-a006-20200930
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
+--===============0569542632122971700==--
 
