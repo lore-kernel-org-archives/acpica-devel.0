@@ -1,126 +1,85 @@
-Content-Type: multipart/mixed; boundary="===============7410641508034266172=="
+Content-Type: multipart/mixed; boundary="===============9068580508809334088=="
 MIME-Version: 1.0
-From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
- 11f230e5015f5e7df85c2e72aa92281b7f8d6b34
-Date: Wed, 07 Oct 2020 08:23:27 +0800
-Message-ID: <5f7d0a7f.jqKvfVVsmrSBmREm%lkp@intel.com>
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] ACPICA version 20200925 released
+Date: Thu, 08 Oct 2020 15:34:24 +0000
+Message-ID: <BYAPR11MB325657C5753F6466D6BC48C1870B0@BYAPR11MB3256.namprd11.prod.outlook.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7410641508034266172==
+--===============9068580508809334088==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
-m.git  bleeding-edge
-branch HEAD: 11f230e5015f5e7df85c2e72aa92281b7f8d6b34  Merge branch 'pm-sle=
-ep' into bleeding-edge
+25 September 2020. Summary of changes for version 20200925:
 
-elapsed time: 720m
+This release is available at https://acpica.org/downloads
 
-configs tested: 91
-configs skipped: 2
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+1) ACPICA kernel-resident subsystem:
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                  maltasmvp_eva_defconfig
-m68k                        mvme16x_defconfig
-sh                ecovec24-romimage_defconfig
-ia64                        generic_defconfig
-powerpc                      acadia_defconfig
-mips                       bmips_be_defconfig
-powerpc                 mpc8272_ads_defconfig
-arm                        magician_defconfig
-alpha                               defconfig
-arm                         lpc32xx_defconfig
-sh                           se7722_defconfig
-sh                   secureedge5410_defconfig
-m68k                        m5272c3_defconfig
-powerpc                 mpc85xx_cds_defconfig
-arm                             pxa_defconfig
-sh                         ap325rxa_defconfig
-powerpc                     powernv_defconfig
-mips                     loongson1c_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20201006
-x86_64               randconfig-a002-20201006
-x86_64               randconfig-a001-20201006
-x86_64               randconfig-a005-20201006
-x86_64               randconfig-a003-20201006
-x86_64               randconfig-a006-20201006
-i386                 randconfig-a006-20201005
-i386                 randconfig-a005-20201005
-i386                 randconfig-a001-20201005
-i386                 randconfig-a004-20201005
-i386                 randconfig-a003-20201005
-i386                 randconfig-a002-20201005
-x86_64               randconfig-a012-20201005
-x86_64               randconfig-a015-20201005
-x86_64               randconfig-a014-20201005
-x86_64               randconfig-a013-20201005
-x86_64               randconfig-a011-20201005
-x86_64               randconfig-a016-20201005
-i386                 randconfig-a014-20201005
-i386                 randconfig-a015-20201005
-i386                 randconfig-a013-20201005
-i386                 randconfig-a016-20201005
-i386                 randconfig-a011-20201005
-i386                 randconfig-a012-20201005
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+Preserve memory opregion mappings. The ACPICA's strategy with respect to th=
+e handling of memory mappings associated with memory operation regions is t=
+o avoid mapping the entire region at once which may be problematic at least=
+ in principle (for example, it may lead to conflicts with overlapping mappi=
+ngs having different attributes created by drivers).  It may also be wastef=
+ul, because memory opregions on some systems take up vastchunks of address =
+space while the fields in those regions actually accessed by AML are sparse=
+ly distributed.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============7410641508034266172==--
+For this reason, a one-page "window" is mapped for a given opregion on the =
+first memory access through it and if that "window" does not cover an addre=
+ss range accessed through that opregion subsequently, it is unmapped and a =
+new "window" is mapped to replace it.  Next, if the new "window" is not suf=
+ficient to access memory through the opregion in question in the future, it=
+ will be replaced with yet another "window" and so on.  That may lead to a =
+suboptimal sequence of memory mapping and unmapping operations, for example=
+ if two fields in one opregion separated from each other by a sufficiently =
+wide chunk of unused address space are accessed in an alternating pattern.
+
+Added support for 64 bit risc-v compilation.  Useful for acpica tools and i=
+ncorporating ACPICA into the Firmware Test Suite. Colin Ian King <colin.kin=
+g(a)canonical.com>.
+
+Added support for SMBus predefined names (from SMBus Control Method Interfa=
+ce Specification, Version 1.0, December 10, 1999. New predefined names:
+    _SBA
+    _SBI
+    _SBR
+    _SBT
+    _SBW
+
+AML Disassembler: Added a new command, "All <NameSeg". This command will ev=
+aluate all objects in the current namespace whose NameString contains the i=
+nput NameSeg as the last element of the NameString. Useful for debugging.
+
+
+2) iASL Compiler/Disassembler and ACPICA tools: =
+
+
+iASL: fixed a crash that occurred when predefined objects return packages w=
+ith lengths that exceed the initializer list.
+
+iASL: added more detail to external resolution error message when compiling=
+ multiple definition blocks.
+
+iASL: improve alias analysis by saving object type. If the alias is a metho=
+d type, the parameter count is also recorded.
+
+AcpiExec: Increase the default loop timeout value. Was 1 second, is now 10 =
+seconds. Prevents unnecessary timeouts when executing control methods from =
+the command line.
+
+AcpiHelp/disassembler: Added a bunch of "known" UUIDs to the internal list.=
+ Includes:
+    Memory Device
+    Generic Buttons Device
+    NVDIMM Root Device
+    Control Method Battery
+    Device Graphs for _DSD method
+    Hierarchical Data Extension
+....ARM CoreSight Graph
+
+--===============9068580508809334088==--
 
