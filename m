@@ -1,215 +1,171 @@
-Content-Type: multipart/mixed; boundary="===============4140807953200884061=="
+Content-Type: multipart/mixed; boundary="===============5027520974609875159=="
 MIME-Version: 1.0
-From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
- 91e0225c546b542d828011feef9fb155e18b7941
-Date: Tue, 13 Oct 2020 09:34:40 +0800
-Message-ID: <5f850430.JehQN60BoOCjEESB%lkp@intel.com>
+From: devinsteffler at gmail.com
+Subject: [Devel] Wake On LAN steps for QNX from S5
+Date: Wed, 14 Oct 2020 16:02:42 +0000
+Message-ID: <20201014160242.2619.13006@ml01.vlan13.01.org>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4140807953200884061==
+--===============5027520974609875159==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
-m.git  bleeding-edge
-branch HEAD: 91e0225c546b542d828011feef9fb155e18b7941  Merge branch 'pm-cpu=
-freq' into linux-next
+Hello,
 
-elapsed time: 721m
+I raised a case with QNX about this last week but I haven't heard back from=
+ them yet. In the meantime, I'm wondering if the kind folks at ACPICA might=
+ be able to help with this. I'm hoping that I'm not missing anything obviou=
+s.
 
-configs tested: 178
-configs skipped: 3
+I'm using an Intel based x86_64 PC with QNX on it (an Intel NUC NUC7i5DNB t=
+o be precise). QNX does not have ACPI support built-in. As an example, QNX =
+does not have a way to read battery status or power down (soft off, S5) an =
+x86 based PC.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+So I'm making my own ACPI driver for QNX based off of the ACPICA code base.=
+ I've done this previously with success for reading AC power/battery inform=
+ation on laptops using things like _PSR from a ACPI0003 device as well as _=
+STA, _BIF, and _BST from PNP0C0A devices.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm64                               defconfig
-arm                     eseries_pxa_defconfig
-sh                             shx3_defconfig
-mips                            e55_defconfig
-arm                       spear13xx_defconfig
-arm                          imote2_defconfig
-arc                          axs101_defconfig
-arm                      tct_hammer_defconfig
-m68k                        mvme16x_defconfig
-mips                          rm200_defconfig
-mips                           jazz_defconfig
-sh                   sh7770_generic_defconfig
-powerpc                    sam440ep_defconfig
-sh                          rsk7264_defconfig
-powerpc                       ebony_defconfig
-arm                            mmp2_defconfig
-arm                           spitz_defconfig
-powerpc                  iss476-smp_defconfig
-s390                          debug_defconfig
-ia64                                defconfig
-powerpc                      cm5200_defconfig
-sh                          rsk7201_defconfig
-h8300                            allyesconfig
-arm                       mainstone_defconfig
-openrisc                 simple_smp_defconfig
-powerpc                 mpc832x_mds_defconfig
-powerpc                     asp8347_defconfig
-arm                  colibri_pxa270_defconfig
-mips                      loongson3_defconfig
-powerpc                     kilauea_defconfig
-arc                 nsimosci_hs_smp_defconfig
-arm                         palmz72_defconfig
-arm                      integrator_defconfig
-arm                        multi_v7_defconfig
-arm                              alldefconfig
-sh                             espt_defconfig
-c6x                         dsk6455_defconfig
-arm                      footbridge_defconfig
-mips                         mpc30x_defconfig
-sh                        dreamcast_defconfig
-mips                         db1xxx_defconfig
-arm                        realview_defconfig
-mips                           ip32_defconfig
-powerpc                 mpc834x_mds_defconfig
-xtensa                    xip_kc705_defconfig
-sh                   secureedge5410_defconfig
-arm                          iop32x_defconfig
-mips                      pistachio_defconfig
-openrisc                    or1ksim_defconfig
-powerpc                 mpc85xx_cds_defconfig
-arc                        vdk_hs38_defconfig
-powerpc                    amigaone_defconfig
-powerpc                    mvme5100_defconfig
-sh                              ul2_defconfig
-arm                            qcom_defconfig
-sh                        sh7785lcr_defconfig
-m68k                        stmark2_defconfig
-xtensa                  cadence_csp_defconfig
-x86_64                           allyesconfig
-mips                      fuloong2e_defconfig
-mips                           xway_defconfig
-arm                            xcep_defconfig
-powerpc                     tqm8548_defconfig
-parisc                              defconfig
-arc                              allyesconfig
-powerpc                 mpc8313_rdb_defconfig
-openrisc                            defconfig
-ia64                         bigsur_defconfig
-powerpc                 mpc836x_mds_defconfig
-powerpc                       maple_defconfig
-powerpc                     powernv_defconfig
-sh                           se7712_defconfig
-arm                         lubbock_defconfig
-sh                     sh7710voipgw_defconfig
-um                           x86_64_defconfig
-nios2                            allyesconfig
-powerpc                          g5_defconfig
-arc                             nps_defconfig
-m68k                        m5272c3_defconfig
-mips                           ip28_defconfig
-arm                         socfpga_defconfig
-sh                          urquell_defconfig
-arc                            hsdk_defconfig
-openrisc                         alldefconfig
-arm                           h3600_defconfig
-sh                             sh03_defconfig
-powerpc                      ppc40x_defconfig
-powerpc                 mpc836x_rdk_defconfig
-arm                       omap2plus_defconfig
-mips                       lemote2f_defconfig
-mips                         cobalt_defconfig
-arm                           corgi_defconfig
-m68k                        m5307c3_defconfig
-sh                          sdk7780_defconfig
-um                            kunit_defconfig
-arm                      jornada720_defconfig
-h8300                     edosk2674_defconfig
-powerpc                      pcm030_defconfig
-arm64                            alldefconfig
-arm                             rpc_defconfig
-powerpc                     tqm8555_defconfig
-arm                       multi_v4t_defconfig
-powerpc                   motionpro_defconfig
-mips                        workpad_defconfig
-sh                   rts7751r2dplus_defconfig
-powerpc                  mpc885_ads_defconfig
-arc                           tb10x_defconfig
-mips                          ath25_defconfig
-parisc                           allyesconfig
-nios2                         3c120_defconfig
-mips                           ip27_defconfig
-powerpc                     pq2fads_defconfig
-m68k                             allmodconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-s390                             allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20201012
-i386                 randconfig-a006-20201012
-i386                 randconfig-a001-20201012
-i386                 randconfig-a003-20201012
-i386                 randconfig-a004-20201012
-i386                 randconfig-a002-20201012
-x86_64               randconfig-a016-20201012
-x86_64               randconfig-a015-20201012
-x86_64               randconfig-a012-20201012
-x86_64               randconfig-a013-20201012
-x86_64               randconfig-a014-20201012
-x86_64               randconfig-a011-20201012
-i386                 randconfig-a016-20201012
-i386                 randconfig-a015-20201012
-i386                 randconfig-a013-20201012
-i386                 randconfig-a012-20201012
-i386                 randconfig-a011-20201012
-i386                 randconfig-a014-20201012
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+Now I would like to try and get Wake On LAN working from a soft off (S5) st=
+ate.
 
-clang tested configs:
-x86_64               randconfig-a004-20201012
-x86_64               randconfig-a002-20201012
-x86_64               randconfig-a006-20201012
-x86_64               randconfig-a001-20201012
-x86_64               randconfig-a003-20201012
-x86_64               randconfig-a005-20201012
+I'm able to enter S5 via the following code:
+-----------------------------------------------
+	AcpiEnterSleepStatePrep(5);
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============4140807953200884061==--
+	// disable interrupts, optional?
+	ThreadCtl( _NTO_TCTL_IO, 0 );
+	InterruptDisable();
+
+	AcpiEnterSleepState(5);
+-----------------------------------------------
+
+Unfortunately, when I enter S5 using that code, then Wake On LAN no longer =
+works when powered off. Although as you'll see below, Wake On LAN no longer=
+ works if I go to S5 after having used the QNX e1000 driver. If I don't use=
+ the e1000 driver then Wake On LAN works. Although, I need the QNX e1000 dr=
+iver to have networking when running.
+
+I've made the following observations:
+- When I boot my device with Linux and power it off using software, then I'=
+m able to Wake On LAN just fine.
+  - in this case, the NIC LEDs blink while powered off
+- If I boot into QNX and hold the power button for 10 seconds or so, it pow=
+ers off and Wake On LAN works (whether the QNX e1000 driver is loaded or no=
+t).
+  - in this case, the NIC LEDs blink while powered off
+- If I boot into QNX and use software (the code above) to power down, then =
+Wake On LAN does not work.
+  - in this case, the NIC LEDs remain off while powered off
+- If I boot into QNX but do not start their networking stack (or their e100=
+0 driver) and use software (the code above) to power down, then Wake On LAN=
+ does work.
+  - in this case, the NIC LEDs blink while powered off (they momentarily st=
+op blinking, but then blink again shortly afterwards)
+
+QNX has a pci-tool (similar to Linux's lspci tool). I can use it to see the=
+ following:
+---------------------------------------------------------------------------=
+-------
+# pci-tool -vvvv -d0:31:6
+
+B000:D31:F06 @ idx 0
+        vid/did: 8086/156f
+                Intel Corporation, <device id - unknown>
+        class/subclass/reg: 02/00/00
+                Ethernet Network Controller
+<snip>
+        PMI Capability Details
+                PMI supported states: D0 D3hot D3cold *
+                PMI current state: D0
+                PME's supported from states: D0 D3hot D3cold *
+                PME's are disabled
+                PMI data: [idx] val scale
+                        [00]  00  01  [01]  --  --  [02]  --  --  [03]  00 =
+ 01
+                        [04]  00  01  [05]  --  --  [06]  --  --  [07]  00 =
+ 01
+                        [08]  --  --  [09]  --  --  [10]  --  --  [11]  -- =
+ --
+                        [12]  --  --  [13]  --  --  [14]  --  --  [15]  -- =
+ --
+---------------------------------------------------------------------------=
+-------
+
+I can use this method in ACPI to get "PME's are enabled" output:
+\_SB.PCI0.GLAN._DSW
+
+i.e.
+---------------------------------------------------------------------------=
+-------
+# pci-tool -vvvv -d0:31:6
+
+B000:D31:F06 @ idx 0
+<snip>
+        PMI Capability Details
+                PMI supported states: D0 D3hot D3cold *
+                PMI current state: D0
+                PME's supported from states: D0 D3hot D3cold *
+                PME's are enabled
+                PMI data: [idx] val scale
+                        [00]  00  01  [01]  --  --  [02]  --  --  [03]  00 =
+ 01
+                        [04]  00  01  [05]  --  --  [06]  --  --  [07]  00 =
+ 01
+                        [08]  --  --  [09]  --  --  [10]  --  --  [11]  -- =
+ --
+                        [12]  --  --  [13]  --  --  [14]  --  --  [15]  -- =
+ --
+---------------------------------------------------------------------------=
+-------
+
+Although that doesn't help.
+
+Do I need to get the PMI current state to be D3hot prior to entering S5 in =
+order for Wake On LAN to work?
+
+However, I noticed that if I boot without the QNX e1000 driver, then Wake O=
+n LAN works by just going to S5 alone, without _DSW. In this case:
+---------------------------------------------------------------------------=
+-------
+# pci-tool -vvvv -d0:31:6
+
+B000:D31:F06 @ idx 0
+<snip>
+        PMI Capability Details
+                PMI supported states: D0 D3hot D3cold *
+                PMI current state: D0
+                PME's supported from states: D0 D3hot D3cold *
+                PME's are disabled
+                PMI data: [idx] val scale
+                        [00]  00  01  [01]  --  --  [02]  --  --  [03]  00 =
+ 01
+                        [04]  00  01  [05]  --  --  [06]  --  --  [07]  00 =
+ 01
+                        [08]  --  --  [09]  --  --  [10]  --  --  [11]  -- =
+ --
+                        [12]  --  --  [13]  --  --  [14]  --  --  [15]  -- =
+ --
+---------------------------------------------------------------------------=
+-------
+
+It's almost like the QNX e1000 driver is putting the NIC into some state th=
+at EFI does not recover from when transitioning to S5. Maybe the PHY is bei=
+ng turned off. If this is the case, then should calls to things like _DSW, =
+_PRW (and enabling GPE it returns), or even the LPI function 5 put the PHY =
+back on? The NIC LEDs shut off at the same time as the power LED when enter=
+ing S5 and do not come back on.
+
+For LPI I'm referring to this:
+https://www.uefi.org/sites/default/files/resources/Intel_ACPI_Low_Power_S0_=
+Idle.pdf
+
+Any help is appreciated.
+
+Thanks,
+Devin
+--===============5027520974609875159==--
 
