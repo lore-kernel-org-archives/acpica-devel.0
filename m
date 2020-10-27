@@ -1,173 +1,197 @@
-Content-Type: multipart/mixed; boundary="===============2456640079384474533=="
+Content-Type: multipart/mixed; boundary="===============9168678410575893663=="
 MIME-Version: 1.0
-From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
- 54e1ca2a19234787050e494833aad6800f8ee645
-Date: Fri, 23 Oct 2020 15:19:15 +0800
-Message-ID: <5f9283f3.us5z+Md+hkmv4U8n%lkp@intel.com>
+From: Shameer Kolothum <shameerali.kolothum.thodi at huawei.com>
+Subject: [Devel] [RFC PATCH 0/4] ACPI/IORT: Support for IORT RMR node
+Date: Tue, 27 Oct 2020 11:26:42 +0000
+Message-ID: <20201027112646.44680-1-shameerali.kolothum.thodi@huawei.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2456640079384474533==
+--===============9168678410575893663==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
-m.git  bleeding-edge
-branch HEAD: 54e1ca2a19234787050e494833aad6800f8ee645  Merge branch 'acpi-u=
-tils' into linux-next
+The series adds support to IORT RMR nodes specified in IORT
+Revision E -ARM DEN 0049E[0]. RMR nodes are=C2=A0used to=C2=A0describe memo=
+ry
+ranges that are used by endpoints and require a unity mapping
+in SMMU.
 
-elapsed time: 720m
+We have faced issues with 3408iMR RAID controller cards=C2=A0which
+fail to boot when SMMU is enabled. This is because these controllers
+make use of host memory for various caching related purposes and when
+SMMU is enabled=C2=A0the iMR firmware=C2=A0fails to access these memory reg=
+ions
+as there is no mapping for them. IORT RMR provides a way for UEFI to
+describe and report these memory regions=C2=A0so that the kernel can make
+a unity mapping for these in SMMU.
 
-configs tested: 136
-configs skipped: 2
+RFC because, Patch #1 is to update the actbl2.h and should be done
+through acpica update. I have send out a pull request[1] for that.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Tests:
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                         lpc18xx_defconfig
-arc                        vdk_hs38_defconfig
-mips                      bmips_stb_defconfig
-powerpc                      katmai_defconfig
-mips                         cobalt_defconfig
-powerpc                 mpc837x_mds_defconfig
-mips                          ath79_defconfig
-um                            kunit_defconfig
-powerpc                     ppa8548_defconfig
-powerpc                     akebono_defconfig
-powerpc                     tqm8541_defconfig
-sh                          kfr2r09_defconfig
-powerpc                     tqm8555_defconfig
-powerpc                      ppc40x_defconfig
-mips                      malta_kvm_defconfig
-arm                             mxs_defconfig
-arc                        nsim_700_defconfig
-powerpc                      ppc44x_defconfig
-mips                         db1xxx_defconfig
-sparc64                             defconfig
-sh                           se7343_defconfig
-h8300                               defconfig
-sh                           se7780_defconfig
-arm                            zeus_defconfig
-sh                           se7722_defconfig
-mips                     decstation_defconfig
-arm                      jornada720_defconfig
-sh                          lboxre2_defconfig
-arm                           efm32_defconfig
-sh                      rts7751r2d1_defconfig
-i386                             alldefconfig
-powerpc                    klondike_defconfig
-arm                            pleb_defconfig
-xtensa                              defconfig
-arm                    vt8500_v6_v7_defconfig
-powerpc                     redwood_defconfig
-sh                             sh03_defconfig
-sparc64                          alldefconfig
-sh                     magicpanelr2_defconfig
-arm                       aspeed_g4_defconfig
-arm                          moxart_defconfig
-mips                           jazz_defconfig
-arm                          lpd270_defconfig
-mips                            ar7_defconfig
-riscv                    nommu_virt_defconfig
-powerpc                      acadia_defconfig
-sh                              ul2_defconfig
-mips                  cavium_octeon_defconfig
-xtensa                    xip_kc705_defconfig
-m68k                        m5407c3_defconfig
-sh                             espt_defconfig
-arm                        realview_defconfig
-arm                           spitz_defconfig
-sh                               alldefconfig
-m68k                        mvme16x_defconfig
-mips                           rs90_defconfig
-powerpc                     mpc512x_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a002-20201023
-i386                 randconfig-a005-20201023
-i386                 randconfig-a003-20201023
-i386                 randconfig-a001-20201023
-i386                 randconfig-a006-20201023
-i386                 randconfig-a004-20201023
-i386                 randconfig-a002-20201022
-i386                 randconfig-a005-20201022
-i386                 randconfig-a003-20201022
-i386                 randconfig-a001-20201022
-i386                 randconfig-a006-20201022
-i386                 randconfig-a004-20201022
-x86_64               randconfig-a011-20201022
-x86_64               randconfig-a013-20201022
-x86_64               randconfig-a016-20201022
-x86_64               randconfig-a015-20201022
-x86_64               randconfig-a012-20201022
-x86_64               randconfig-a014-20201022
-i386                 randconfig-a016-20201022
-i386                 randconfig-a014-20201022
-i386                 randconfig-a015-20201022
-i386                 randconfig-a012-20201022
-i386                 randconfig-a013-20201022
-i386                 randconfig-a011-20201022
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+With a UEFI, that reports the RMR for the dev,
+....
+[16F0h 5872   1]                         Type : 06
+[16F1h 5873   2]                       Length : 007C
+[16F3h 5875   1]                     Revision : 00
+[1038h 0056   2]                     Reserved : 00000000
+[1038h 0056   2]                   Identifier : 00000000
+[16F8h 5880   4]                Mapping Count : 00000001
+[16FCh 5884   4]               Mapping Offset : 00000040
 
-clang tested configs:
-x86_64               randconfig-a001-20201022
-x86_64               randconfig-a002-20201022
-x86_64               randconfig-a003-20201022
-x86_64               randconfig-a006-20201022
-x86_64               randconfig-a004-20201022
-x86_64               randconfig-a005-20201022
+[1700h 5888   4]    Number of RMR Descriptors : 00000002
+[1704h 5892   4]        RMR Descriptor Offset : 00000018
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============2456640079384474533==--
+[1708h 5896   8]          Base Address of RMR : 0000E6400000
+[1710h 5904   8]                Length of RMR : 000000100000
+[1718h 5912   4]                     Reserved : 00000000
+
+[171Ch 5916   8]          Base Address of RMR : 0000000027B00000
+[1724h 5924   8]                Length of RMR : 0000000000C00000
+[172Ch 5932   4]                     Reserved : 00000000
+
+[1730h 5936   4]                   Input base : 00000000
+[1734h 5940   4]                     ID Count : 00000001
+[1738h 5944   4]                  Output Base : 00000003
+[173Ch 5948   4]             Output Reference : 00000064
+[1740h 5952   4]        Flags (decoded below) : 00000001
+                               Single Mapping : 1
+...
+
+Without the series the RAID controller initilization fails as
+below,
+
+...
+[   12.631117] megaraid_sas 0000:03:00.0: FW supports sync cache        : Y=
+es   =
+
+[   12.637360] megaraid_sas 0000:03:00.0: megasas_disable_intr_fusion is ca=
+lled outbound_intr_mask:0x40000009                                         =
+          =
+
+[   18.776377] megaraid_sas 0000:03:00.0: Init cmd return status FAILED for=
+ SCSI host 0                                                               =
+          =
+
+[   23.019383] megaraid_sas 0000:03:00.0: Waiting for FW to come to ready s=
+tate =
+
+[  106.684281] megaraid_sas 0000:03:00.0: FW in FAULT state, Fault code:0x1=
+0000 subcode:0x0 func:megasas_transition_to_ready                          =
+          =
+
+[  106.695186] megaraid_sas 0000:03:00.0: System Register set:             =
+     =
+
+[  106.889787] megaraid_sas 0000:03:00.0: Failed to transition controller t=
+o ready for scsi0.                                                         =
+          =
+
+[  106.910475] megaraid_sas 0000:03:00.0: Failed from megasas_init_fw 6407 =
+     =
+
+estuary:/$
+
+With the series, now the kernel has direct mapping for the dev as
+below,
+
+estuary:/$ cat /sys/kernel/iommu_groups/0/reserved_regions                 =
+     =
+
+0x0000000008000000 0x00000000080fffff msi                                  =
+     =
+
+0x0000000027b00000 0x00000000286fffff direct                               =
+     =
+
+0x00000000e6400000 0x00000000e64fffff direct                               =
+     =
+
+estuary:/$
+
+....
+[   12.254318] megaraid_sas 0000:03:00.0: megasas_disable_intr_fusion is ca=
+lled outbound_intr_mask:0x40000009                                         =
+          =
+
+[   12.739089] megaraid_sas 0000:03:00.0: FW provided supportMaxExtLDs: 0  =
+    max_lds: 32                                                            =
+          =
+
+[   12.746628] megaraid_sas 0000:03:00.0: controller type       : iMR(0MB) =
+     =
+
+[   12.752694] megaraid_sas 0000:03:00.0: Online Controller Reset(OCR)  : E=
+nabled                                                                     =
+          =
+
+[   12.759798] megaraid_sas 0000:03:00.0: Secure JBOD support   : Yes      =
+     =
+
+[   12.765778] megaraid_sas 0000:03:00.0: NVMe passthru support : Yes      =
+     =
+
+[   12.771931] megaraid_sas 0000:03:00.0: FW provided TM TaskAbort/Reset ti=
+meou: 6 secs/60 secs                                                       =
+          =
+
+[   12.780503] megaraid_sas 0000:03:00.0: JBOD sequence map support     : Y=
+es   =
+
+[   12.787000] megaraid_sas 0000:03:00.0: PCI Lane Margining support    : N=
+o    =
+
+[   12.819179] megaraid_sas 0000:03:00.0: NVME page size        : (4096)   =
+     =
+
+[   12.825672] megaraid_sas 0000:03:00.0: megasas_enable_intr_fusion is cal=
+led outbound_intr_mask:0x40000000                                          =
+          =
+
+[   12.835199] megaraid_sas 0000:03:00.0: INIT adapter done                =
+     =
+
+[   12.873932] megaraid_sas 0000:03:00.0: pci id                : (0x1000)/=
+(0x0017)/(0x19e5)/(0xd213)                                                 =
+          =
+
+[   12.881644] megaraid_sas 0000:03:00.0: unevenspan support    : no       =
+     =
+
+[   12.887451] megaraid_sas 0000:03:00.0: firmware crash dump   : no       =
+     =
+
+[   12.893344] megaraid_sas 0000:03:00.0: JBOD sequence map     : enabled  =
+     =
+
+
+RAID controller init is now success and can detect the drives
+attached as well.
+
+Thanks,
+Shameer
+
+[0].=C2=A0https://developer.arm.com/documentation/den0049/latest/
+[1].=C2=A0https://github.com/acpica/acpica/pull/638
+
+Shameer Kolothum (4):
+  ACPICA: IORT: Update for revision E
+  ACPI/IORT: Add support for RMR node parsing
+  ACPI/IORT: Add RMR memory regions reservation helper
+  iommu/dma: Reserve any RMR regions associated with a dev
+
+ drivers/acpi/arm64/iort.c | 175 +++++++++++++++++++++++++++++++++++++-
+ drivers/iommu/dma-iommu.c |  12 ++-
+ include/acpi/actbl2.h     |  25 ++++--
+ include/linux/acpi_iort.h |   4 +
+ 4 files changed, 205 insertions(+), 11 deletions(-)
+
+-- =
+
+2.17.1
+
+--===============9168678410575893663==--
 
