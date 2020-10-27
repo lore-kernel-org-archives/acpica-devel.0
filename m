@@ -1,119 +1,189 @@
-Content-Type: multipart/mixed; boundary="===============6133605588352597336=="
+Content-Type: multipart/mixed; boundary="===============1864590040481421154=="
 MIME-Version: 1.0
 From: Shameer Kolothum <shameerali.kolothum.thodi at huawei.com>
-Subject: [Devel] [RFC PATCH 1/4] ACPICA: IORT: Update for revision E
-Date: Tue, 27 Oct 2020 11:26:43 +0000
-Message-ID: <20201027112646.44680-2-shameerali.kolothum.thodi@huawei.com>
+Subject: [Devel] [RFC PATCH 2/4] ACPI/IORT: Add support for RMR node parsing
+Date: Tue, 27 Oct 2020 11:26:44 +0000
+Message-ID: <20201027112646.44680-3-shameerali.kolothum.thodi@huawei.com>
 In-Reply-To: 20201027112646.44680-1-shameerali.kolothum.thodi@huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6133605588352597336==
+--===============1864590040481421154==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-IORT revision E contains a few additions like,
-=C2=A0 =C2=A0 -Added an identifier field in the node descriptors to aid tab=
-le
-=C2=A0 =C2=A0 =C2=A0cross-referencing.
-=C2=A0 =C2=A0 -Introduced the Reserved Memory Range(RMR) node. This is used
- =C2=A0 =C2=A0 to describe memory ranges that are used by endpoints and req=
-uires
- =C2=A0 =C2=A0 a unity mapping in SMMU.
-    -Introduced a flag in the RC node to express support for PRI.
+Add support for parsing RMR node information from ACPI.
+Find associated stream ids and smmu node=C2=A0info from the
+RMR node and populate a linked list with RMR memory
+descriptors.
 
 Signed-off-by: Shameer Kolothum <shameerali.kolothum.thodi(a)huawei.com>
 ---
- -This should be updated through acpica git. I have sent out a pull
-  request for the same here,
-  https://github.com/acpica/acpica/pull/638
+ drivers/acpi/arm64/iort.c | 119 +++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 118 insertions(+), 1 deletion(-)
 
-Please help to review.
----
- include/acpi/actbl2.h | 25 +++++++++++++++++++------
- 1 file changed, 19 insertions(+), 6 deletions(-)
-
-diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
-index ec66779cb193..274fce7b5c01 100644
---- a/include/acpi/actbl2.h
-+++ b/include/acpi/actbl2.h
-@@ -68,7 +68,7 @@
-  * IORT - IO Remapping Table
-  *
-  * Conforms to "IO Remapping Table System Software on ARM Platforms",
-- * Document number: ARM DEN 0049D, March 2018
-+ * Document number: ARM DEN 0049E, June 2020
-  *
-  *************************************************************************=
-*****/
+diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
+index 9929ff50c0c0..b32cd53cca08 100644
+--- a/drivers/acpi/arm64/iort.c
++++ b/drivers/acpi/arm64/iort.c
+@@ -40,6 +40,25 @@ struct iort_fwnode {
+ static LIST_HEAD(iort_fwnode_list);
+ static DEFINE_SPINLOCK(iort_fwnode_lock);
  =
 
-@@ -86,7 +86,8 @@ struct acpi_iort_node {
- 	u8 type;
- 	u16 length;
- 	u8 revision;
--	u32 reserved;
-+	u16 reserved;
-+	u16 identifier;
- 	u32 mapping_count;
- 	u32 mapping_offset;
- 	char node_data[1];
-@@ -100,7 +101,8 @@ enum acpi_iort_node_type {
- 	ACPI_IORT_NODE_PCI_ROOT_COMPLEX =3D 0x02,
- 	ACPI_IORT_NODE_SMMU =3D 0x03,
- 	ACPI_IORT_NODE_SMMU_V3 =3D 0x04,
--	ACPI_IORT_NODE_PMCG =3D 0x05
-+	ACPI_IORT_NODE_PMCG =3D 0x05,
-+	ACPI_IORT_NODE_RMR =3D 0x06,
- };
- =
-
- struct acpi_iort_id_mapping {
-@@ -167,10 +169,10 @@ struct acpi_iort_root_complex {
- 	u8 reserved[3];		/* Reserved, must be zero */
- };
- =
-
--/* Values for ats_attribute field above */
-+/* Masks for ats_attribute field above */
- =
-
--#define ACPI_IORT_ATS_SUPPORTED         0x00000001	/* The root complex sup=
-ports ATS */
--#define ACPI_IORT_ATS_UNSUPPORTED       0x00000000	/* The root complex doe=
-sn't support ATS */
-+#define ACPI_IORT_ATS_SUPPORTED         (1)	/* The root complex supports A=
-TS */
-+#define ACPI_IORT_PRI_SUPPORTED         (1<<1)	/* The root complex support=
-s PRI */
- =
-
- struct acpi_iort_smmu {
- 	u64 base_address;	/* SMMU base address */
-@@ -241,6 +243,17 @@ struct acpi_iort_pmcg {
- 	u64 page1_base_address;
- };
- =
-
-+struct acpi_iort_rmr {
-+	u32 rmr_count;
-+	u32 rmr_offset;
++struct iort_rmr_id {
++	u32  sid;
++	struct acpi_iort_node *smmu;
 +};
 +
-+struct acpi_iort_rmr_desc {
-+	u64 base_address;
-+	u64 length;
-+	u32 reserved;
++/*
++ * One entry for IORT RMR.
++ */
++struct iort_rmr_entry {
++	struct list_head list;
++
++	unsigned int rmr_ids_num;
++	struct iort_rmr_id *rmr_ids;
++
++	struct acpi_iort_rmr_desc *rmr_desc;
 +};
 +
- /*************************************************************************=
-******
-  *
-  * IVRS - I/O Virtualization Reporting Structure
++static LIST_HEAD(iort_rmr_list);         /* list of RMR regions from ACPI =
+*/
++
+ /**
+  * iort_set_fwnode() - Create iort_fwnode and use it to register
+  *		       iommu data in the iort_fwnode_list
+@@ -393,7 +412,8 @@ static struct acpi_iort_node *iort_node_get_id(struct a=
+cpi_iort_node *node,
+ 		if (node->type =3D=3D ACPI_IORT_NODE_NAMED_COMPONENT ||
+ 		    node->type =3D=3D ACPI_IORT_NODE_PCI_ROOT_COMPLEX ||
+ 		    node->type =3D=3D ACPI_IORT_NODE_SMMU_V3 ||
+-		    node->type =3D=3D ACPI_IORT_NODE_PMCG) {
++		    node->type =3D=3D ACPI_IORT_NODE_PMCG ||
++		    node->type =3D=3D ACPI_IORT_NODE_RMR) {
+ 			*id_out =3D map->output_base;
+ 			return parent;
+ 		}
+@@ -1647,6 +1667,100 @@ static void __init iort_enable_acs(struct acpi_iort=
+_node *iort_node)
+ #else
+ static inline void iort_enable_acs(struct acpi_iort_node *iort_node) { }
+ #endif
++static int iort_rmr_desc_valid(struct acpi_iort_rmr_desc *desc)
++{
++	struct iort_rmr_entry *e;
++	u64 end, start =3D desc->base_address, length =3D desc->length;
++
++	if ((!IS_ALIGNED(start, SZ_64K)) || (length % SZ_64K !=3D 0))
++		return -EINVAL;
++
++	end =3D start + length - 1;
++
++	/* Check for address overlap */
++	list_for_each_entry(e, &iort_rmr_list, list) {
++		u64 e_start =3D e->rmr_desc->base_address;
++		u64 e_end =3D e_start + e->rmr_desc->length - 1;
++
++		if (start <=3D e_end && end >=3D e_start)
++			return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int __init iort_parse_rmr(struct acpi_iort_node *iort_node)
++{
++	struct iort_rmr_id *rmr_ids, *ids;
++	struct iort_rmr_entry *e;
++	struct acpi_iort_rmr *rmr;
++	struct acpi_iort_rmr_desc *rmr_desc;
++	u32 map_count =3D iort_node->mapping_count;
++	int i, ret =3D 0, desc_count =3D 0;
++
++	if (iort_node->type !=3D ACPI_IORT_NODE_RMR)
++		return 0;
++
++	if (!iort_node->mapping_offset || !map_count) {
++		pr_err(FW_BUG "Invalid ID mapping, skipping RMR node %p\n",
++		       iort_node);
++		return -EINVAL;
++	}
++
++	rmr_ids =3D kmalloc(sizeof(*rmr_ids) * map_count, GFP_KERNEL);
++	if (!rmr_ids)
++		return -ENOMEM;
++
++	/* Retrieve associated smmu and stream id */
++	ids =3D rmr_ids;
++	for (i =3D 0; i < map_count; i++, ids++) {
++		ids->smmu =3D iort_node_get_id(iort_node, &ids->sid, i);
++		if (!ids->smmu) {
++			pr_err(FW_BUG "Invalid SMMU reference, skipping RMR node %p\n",
++			       iort_node);
++			ret =3D -EINVAL;
++			goto out;
++		}
++	}
++
++	/* Retrieve RMR data */
++	rmr =3D (struct acpi_iort_rmr *)iort_node->node_data;
++	if (!rmr->rmr_offset || !rmr->rmr_count) {
++		pr_err(FW_BUG "Invalid RMR descriptor array, skipping RMR node %p\n",
++		       iort_node);
++		ret =3D -EINVAL;
++		goto out;
++	}
++
++	rmr_desc =3D ACPI_ADD_PTR(struct acpi_iort_rmr_desc, iort_node,
++				rmr->rmr_offset);
++
++	for (i =3D 0; i < rmr->rmr_count; i++, rmr_desc++) {
++		ret =3D iort_rmr_desc_valid(rmr_desc);
++		if (ret) {
++			pr_err(FW_BUG "Invalid RMR descriptor[%d] for node %p, skipping...\n",
++			       i, iort_node);
++			goto out;
++		}
++
++		e =3D kmalloc(sizeof(*e), GFP_KERNEL);
++		if (!e)
++			goto out;
++		e->rmr_ids_num =3D map_count;
++		e->rmr_ids =3D rmr_ids;
++		e->rmr_desc =3D rmr_desc;
++
++		list_add_tail(&e->list, &iort_rmr_list);
++		desc_count++;
++	}
++
++	return 0;
++
++out:
++	if (!desc_count)
++		kfree(rmr_ids);
++	return ret;
++}
+ =
+
+ static void __init iort_init_platform_devices(void)
+ {
+@@ -1676,6 +1790,9 @@ static void __init iort_init_platform_devices(void)
+ =
+
+ 		iort_enable_acs(iort_node);
+ =
+
++		if (iort_table->revision =3D=3D 1)
++			iort_parse_rmr(iort_node);
++
+ 		ops =3D iort_get_dev_cfg(iort_node);
+ 		if (ops) {
+ 			fwnode =3D acpi_alloc_fwnode_static();
 -- =
 
 2.17.1
 
---===============6133605588352597336==--
+--===============1864590040481421154==--
 
