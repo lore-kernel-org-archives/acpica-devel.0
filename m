@@ -1,187 +1,160 @@
-Content-Type: multipart/mixed; boundary="===============3504403764071745710=="
+Content-Type: multipart/mixed; boundary="===============7993247874210798044=="
 MIME-Version: 1.0
-From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
- dddc237beebb79a67a6e2cc18b6a0a29a3a7a89c
-Date: Thu, 05 Nov 2020 12:58:02 +0800
-Message-ID: <5fa3865a.NzIx0xFnIiHyCtua%lkp@intel.com>
+From: Robin Murphy <robin.murphy at arm.com>
+Subject: [Devel] Re: [RFC PATCH 3/4] ACPI/IORT: Add RMR memory regions
+ reservation helper
+Date: Thu, 05 Nov 2020 18:03:58 +0000
+Message-ID: <327e6475-eb48-33a1-ef38-fae9df3bf0cb@arm.com>
+In-Reply-To: 20201027112646.44680-4-shameerali.kolothum.thodi@huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3504403764071745710==
+--===============7993247874210798044==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
-m.git  bleeding-edge
-branch HEAD: dddc237beebb79a67a6e2cc18b6a0a29a3a7a89c  Merge branch 'pm-cpu=
-freq-next' into linux-next
+On 2020-10-27 11:26, Shameer Kolothum wrote:
+> Add a helper function that retrieves RMR memory descriptors
+> associated with a given endpoint dev. These memory regions
+> should have a unity=C2=A0mapping in the SMMU. So reserve them as
+> IOMMU_RESV_DIRECT.
 
-elapsed time: 725m
+As a general observation, we also need a way into this that isn't from =
 
-configs tested: 150
-configs skipped: 2
+the perspective of endpoint devices. With SMMUv3 we need to know all the =
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+active stream IDs relevant to a given SMMU instance at probe time, so =
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                      bmips_stb_defconfig
-powerpc                  storcenter_defconfig
-sh                             shx3_defconfig
-powerpc                      makalu_defconfig
-arm                      pxa255-idp_defconfig
-arm                        shmobile_defconfig
-sh                           se7751_defconfig
-arm                        vexpress_defconfig
-arm                            u300_defconfig
-mips                          ath25_defconfig
-sh                          rsk7269_defconfig
-sh                   secureedge5410_defconfig
-mips                        maltaup_defconfig
-arm                          tango4_defconfig
-parisc                           alldefconfig
-powerpc               mpc834x_itxgp_defconfig
-arm                           tegra_defconfig
-mips                         cobalt_defconfig
-openrisc                            defconfig
-mips                         tb0226_defconfig
-xtensa                              defconfig
-alpha                            allyesconfig
-powerpc                    sam440ep_defconfig
-mips                         db1xxx_defconfig
-arm                            pleb_defconfig
-arm                        mvebu_v7_defconfig
-sh                        sh7785lcr_defconfig
-arm                        spear3xx_defconfig
-powerpc                 mpc834x_itx_defconfig
-ia64                                defconfig
-mips                       capcella_defconfig
-mips                       rbtx49xx_defconfig
-arc                              alldefconfig
-um                            kunit_defconfig
-powerpc                    ge_imp3a_defconfig
-mips                     loongson1c_defconfig
-arm                        multi_v5_defconfig
-powerpc                      cm5200_defconfig
-arc                            hsdk_defconfig
-mips                        jmr3927_defconfig
-powerpc                      ppc6xx_defconfig
-arm                      integrator_defconfig
-powerpc                 mpc837x_rdb_defconfig
-arm                        clps711x_defconfig
-sh                        edosk7760_defconfig
-parisc                generic-64bit_defconfig
-powerpc                     tqm8555_defconfig
-i386                             allyesconfig
-i386                             alldefconfig
-sh                           se7722_defconfig
-powerpc                       holly_defconfig
-mips                        bcm47xx_defconfig
-mips                            gpr_defconfig
-powerpc                     taishan_defconfig
-arm                          ep93xx_defconfig
-powerpc                      katmai_defconfig
-m68k                       bvme6000_defconfig
-sh                     sh7710voipgw_defconfig
-arm                         orion5x_defconfig
-riscv                    nommu_virt_defconfig
-arm                     davinci_all_defconfig
-sh                   sh7724_generic_defconfig
-powerpc                    klondike_defconfig
-mips                       lemote2f_defconfig
-riscv                            allmodconfig
-mips                            ar7_defconfig
-powerpc                        cell_defconfig
-sh                  sh7785lcr_32bit_defconfig
-powerpc                  iss476-smp_defconfig
-arm                          gemini_defconfig
-powerpc                     asp8347_defconfig
-powerpc                      ppc64e_defconfig
-powerpc                     tqm8548_defconfig
-powerpc                     ksi8560_defconfig
-arc                     nsimosci_hs_defconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20201104
-i386                 randconfig-a006-20201104
-i386                 randconfig-a005-20201104
-i386                 randconfig-a001-20201104
-i386                 randconfig-a002-20201104
-i386                 randconfig-a003-20201104
-i386                 randconfig-a004-20201105
-i386                 randconfig-a006-20201105
-i386                 randconfig-a005-20201105
-i386                 randconfig-a001-20201105
-i386                 randconfig-a002-20201105
-i386                 randconfig-a003-20201105
-x86_64               randconfig-a012-20201104
-x86_64               randconfig-a015-20201104
-x86_64               randconfig-a013-20201104
-x86_64               randconfig-a011-20201104
-x86_64               randconfig-a014-20201104
-x86_64               randconfig-a016-20201104
-i386                 randconfig-a015-20201104
-i386                 randconfig-a013-20201104
-i386                 randconfig-a014-20201104
-i386                 randconfig-a016-20201104
-i386                 randconfig-a011-20201104
-i386                 randconfig-a012-20201104
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+that we can set up some kind of valid stream table entries *before* =
 
-clang tested configs:
-x86_64               randconfig-a004-20201104
-x86_64               randconfig-a003-20201104
-x86_64               randconfig-a005-20201104
-x86_64               randconfig-a002-20201104
-x86_64               randconfig-a006-20201104
-x86_64               randconfig-a001-20201104
+enabling the SMMU in the reset routine. Otherwise we're just going to =
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============3504403764071745710==--
+kill ongoing traffic (e.g. EFI GOP) with C_BAD_STE long before we ever =
+
+start adding devices and worrying about reserved regions for them. =
+
+Similarly for the initial SMR/S2CR state on SMMUv2 with disable_bypass.
+
+Robin.
+
+> Signed-off-by: Shameer Kolothum <shameerali.kolothum.thodi(a)huawei.com>
+> ---
+>   drivers/acpi/arm64/iort.c | 56 +++++++++++++++++++++++++++++++++++++++
+>   include/linux/acpi_iort.h |  4 +++
+>   2 files changed, 60 insertions(+)
+> =
+
+> diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
+> index b32cd53cca08..c0700149e60b 100644
+> --- a/drivers/acpi/arm64/iort.c
+> +++ b/drivers/acpi/arm64/iort.c
+> @@ -842,6 +842,60 @@ static inline int iort_add_device_replay(struct devi=
+ce *dev)
+>   	return err;
+>   }
+>   =
+
+> +static bool iort_dev_has_rmr(struct device *dev, struct iort_rmr_entry *=
+e)
+> +{
+> +	struct iommu_fwspec *fwspec =3D dev_iommu_fwspec_get(dev);
+> +	struct acpi_iort_node *iommu;
+> +	struct iort_rmr_id *rmr_ids =3D e->rmr_ids;
+> +	int i, j;
+> +
+> +	iommu =3D iort_get_iort_node(fwspec->iommu_fwnode);
+> +
+> +	for (i =3D 0; i < e->rmr_ids_num; i++, rmr_ids++) {
+> +		for (j =3D 0; j < fwspec->num_ids; j++) {
+> +			if (rmr_ids->sid =3D=3D fwspec->ids[j] &&
+> +			    rmr_ids->smmu =3D=3D iommu)
+> +				return true;
+> +		}
+> +	}
+> +
+> +	return false;
+> +}
+> +
+> +/**
+> + * iort_dev_rmr_get_resv_regions - RMR Reserved region driver helper
+> + * @dev: Device from iommu_get_resv_regions()
+> + * @head: Reserved region list from iommu_get_resv_regions()
+> + *
+> + * Returns: 0 on success, <0 failure
+> + */
+> +int iort_dev_rmr_get_resv_regions(struct device *dev, struct list_head *=
+head)
+> +{
+> +	struct iort_rmr_entry *e;
+> +
+> +	list_for_each_entry(e, &iort_rmr_list, list) {
+> +		struct iommu_resv_region *region;
+> +		struct acpi_iort_rmr_desc *rmr;
+> +		int prot =3D IOMMU_READ | IOMMU_WRITE |
+> +			   IOMMU_NOEXEC | IOMMU_MMIO;
+> +
+> +		if (!iort_dev_has_rmr(dev, e))
+> +			continue;
+> +
+> +		rmr =3D e->rmr_desc;
+> +		region =3D iommu_alloc_resv_region(rmr->base_address,
+> +						 rmr->length, prot,
+> +						 IOMMU_RESV_DIRECT);
+> +		if (!region) {
+> +			dev_err(dev, "Out of memory allocating RMR regions\n");
+> +			return -ENOMEM;
+> +		}
+> +		list_add_tail(&region->list, head);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>   /**
+>    * iort_iommu_msi_get_resv_regions - Reserved region driver helper
+>    * @dev: Device from iommu_get_resv_regions()
+> @@ -1112,6 +1166,8 @@ int iort_iommu_msi_get_resv_regions(struct device *=
+dev, struct list_head *head)
+>   const struct iommu_ops *iort_iommu_configure_id(struct device *dev,
+>   						const u32 *input_id)
+>   { return NULL; }
+> +int iort_dev_rmr_get_resv_regions(struct device *dev, struct list_head *=
+head)
+> +{ return 0; }
+>   #endif
+>   =
+
+>   static int nc_dma_get_range(struct device *dev, u64 *size)
+> diff --git a/include/linux/acpi_iort.h b/include/linux/acpi_iort.h
+> index 20a32120bb88..6dd89faf340c 100644
+> --- a/include/linux/acpi_iort.h
+> +++ b/include/linux/acpi_iort.h
+> @@ -38,6 +38,7 @@ void iort_dma_setup(struct device *dev, u64 *dma_addr, =
+u64 *size);
+>   const struct iommu_ops *iort_iommu_configure_id(struct device *dev,
+>   						const u32 *id_in);
+>   int iort_iommu_msi_get_resv_regions(struct device *dev, struct list_hea=
+d *head);
+> +int iort_dev_rmr_get_resv_regions(struct device *dev, struct list_head *=
+head);
+>   #else
+>   static inline void acpi_iort_init(void) { }
+>   static inline u32 iort_msi_map_id(struct device *dev, u32 id)
+> @@ -55,6 +56,9 @@ static inline const struct iommu_ops *iort_iommu_config=
+ure_id(
+>   static inline
+>   int iort_iommu_msi_get_resv_regions(struct device *dev, struct list_hea=
+d *head)
+>   { return 0; }
+> +static inline
+> +int iort_dev_rmr_get_resv_regions(struct device *dev, struct list_head *=
+head)
+> +{ return 0; }
+>   #endif
+>   =
+
+>   #endif /* __ACPI_IORT_H__ */
+>=20
+--===============7993247874210798044==--
 
