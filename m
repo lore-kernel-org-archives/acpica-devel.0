@@ -1,386 +1,187 @@
-Content-Type: multipart/mixed; boundary="===============5937332777737679994=="
+Content-Type: multipart/mixed; boundary="===============3504403764071745710=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] Re: [PATCH] ACPICA: Also handle "orphan" _REG methods for
- GPIO OpRegions
-Date: Wed, 04 Nov 2020 22:08:20 +0000
-Message-ID: <BYAPR11MB3256373BEB72B694044D29A987EF0@BYAPR11MB3256.namprd11.prod.outlook.com>
-In-Reply-To: MWHPR11MB1599E899E45EF55CB70A89A3F0170@MWHPR11MB1599.namprd11.prod.outlook.com
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
+ dddc237beebb79a67a6e2cc18b6a0a29a3a7a89c
+Date: Thu, 05 Nov 2020 12:58:02 +0800
+Message-ID: <5fa3865a.NzIx0xFnIiHyCtua%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5937332777737679994==
+--===============3504403764071745710==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-I've merged this one.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git  bleeding-edge
+branch HEAD: dddc237beebb79a67a6e2cc18b6a0a29a3a7a89c  Merge branch 'pm-cpu=
+freq-next' into linux-next
 
+elapsed time: 725m
 
------Original Message-----
-From: Kaneda, Erik <erik.kaneda(a)intel.com> =
+configs tested: 150
+configs skipped: 2
 
-Sent: Wednesday, October 28, 2020 3:34 PM
-To: Hans de Goede <hdegoede(a)redhat.com>; Moore, Robert <robert.moore(a)in=
-tel.com>; Rafael J . Wysocki <rjw(a)rjwysocki.net>; Len Brown <lenb(a)kerne=
-l.org>
-Cc: linux-acpi(a)vger.kernel.org; devel(a)acpica.org
-Subject: RE: [PATCH] ACPICA: Also handle "orphan" _REG methods for GPIO OpR=
-egions
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+mips                      bmips_stb_defconfig
+powerpc                  storcenter_defconfig
+sh                             shx3_defconfig
+powerpc                      makalu_defconfig
+arm                      pxa255-idp_defconfig
+arm                        shmobile_defconfig
+sh                           se7751_defconfig
+arm                        vexpress_defconfig
+arm                            u300_defconfig
+mips                          ath25_defconfig
+sh                          rsk7269_defconfig
+sh                   secureedge5410_defconfig
+mips                        maltaup_defconfig
+arm                          tango4_defconfig
+parisc                           alldefconfig
+powerpc               mpc834x_itxgp_defconfig
+arm                           tegra_defconfig
+mips                         cobalt_defconfig
+openrisc                            defconfig
+mips                         tb0226_defconfig
+xtensa                              defconfig
+alpha                            allyesconfig
+powerpc                    sam440ep_defconfig
+mips                         db1xxx_defconfig
+arm                            pleb_defconfig
+arm                        mvebu_v7_defconfig
+sh                        sh7785lcr_defconfig
+arm                        spear3xx_defconfig
+powerpc                 mpc834x_itx_defconfig
+ia64                                defconfig
+mips                       capcella_defconfig
+mips                       rbtx49xx_defconfig
+arc                              alldefconfig
+um                            kunit_defconfig
+powerpc                    ge_imp3a_defconfig
+mips                     loongson1c_defconfig
+arm                        multi_v5_defconfig
+powerpc                      cm5200_defconfig
+arc                            hsdk_defconfig
+mips                        jmr3927_defconfig
+powerpc                      ppc6xx_defconfig
+arm                      integrator_defconfig
+powerpc                 mpc837x_rdb_defconfig
+arm                        clps711x_defconfig
+sh                        edosk7760_defconfig
+parisc                generic-64bit_defconfig
+powerpc                     tqm8555_defconfig
+i386                             allyesconfig
+i386                             alldefconfig
+sh                           se7722_defconfig
+powerpc                       holly_defconfig
+mips                        bcm47xx_defconfig
+mips                            gpr_defconfig
+powerpc                     taishan_defconfig
+arm                          ep93xx_defconfig
+powerpc                      katmai_defconfig
+m68k                       bvme6000_defconfig
+sh                     sh7710voipgw_defconfig
+arm                         orion5x_defconfig
+riscv                    nommu_virt_defconfig
+arm                     davinci_all_defconfig
+sh                   sh7724_generic_defconfig
+powerpc                    klondike_defconfig
+mips                       lemote2f_defconfig
+riscv                            allmodconfig
+mips                            ar7_defconfig
+powerpc                        cell_defconfig
+sh                  sh7785lcr_32bit_defconfig
+powerpc                  iss476-smp_defconfig
+arm                          gemini_defconfig
+powerpc                     asp8347_defconfig
+powerpc                      ppc64e_defconfig
+powerpc                     tqm8548_defconfig
+powerpc                     ksi8560_defconfig
+arc                     nsimosci_hs_defconfig
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20201104
+i386                 randconfig-a006-20201104
+i386                 randconfig-a005-20201104
+i386                 randconfig-a001-20201104
+i386                 randconfig-a002-20201104
+i386                 randconfig-a003-20201104
+i386                 randconfig-a004-20201105
+i386                 randconfig-a006-20201105
+i386                 randconfig-a005-20201105
+i386                 randconfig-a001-20201105
+i386                 randconfig-a002-20201105
+i386                 randconfig-a003-20201105
+x86_64               randconfig-a012-20201104
+x86_64               randconfig-a015-20201104
+x86_64               randconfig-a013-20201104
+x86_64               randconfig-a011-20201104
+x86_64               randconfig-a014-20201104
+x86_64               randconfig-a016-20201104
+i386                 randconfig-a015-20201104
+i386                 randconfig-a013-20201104
+i386                 randconfig-a014-20201104
+i386                 randconfig-a016-20201104
+i386                 randconfig-a011-20201104
+i386                 randconfig-a012-20201104
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
+clang tested configs:
+x86_64               randconfig-a004-20201104
+x86_64               randconfig-a003-20201104
+x86_64               randconfig-a005-20201104
+x86_64               randconfig-a002-20201104
+x86_64               randconfig-a006-20201104
+x86_64               randconfig-a001-20201104
 
-> -----Original Message-----
-> From: Hans de Goede <hdegoede(a)redhat.com>
-> Sent: Tuesday, October 27, 2020 12:00 PM
-> To: Kaneda, Erik <erik.kaneda(a)intel.com>; Moore, Robert =
-
-> <robert.moore(a)intel.com>; Rafael J . Wysocki <rjw(a)rjwysocki.net>; Len =
-
-> Brown <lenb(a)kernel.org>
-> Cc: linux-acpi(a)vger.kernel.org; devel(a)acpica.org
-> Subject: Re: [PATCH] ACPICA: Also handle "orphan" _REG methods for =
-
-> GPIO OpRegions
-> =
-
-> Hi,
-> =
-
-> On 10/27/20 6:43 PM, Kaneda, Erik wrote:
-> >
-> >
-> >> -----Original Message-----
-> >> From: Moore, Robert <robert.moore(a)intel.com>
-> >> Sent: Tuesday, October 27, 2020 7:17 AM
-> >> To: Kaneda, Erik <erik.kaneda(a)intel.com>; Hans de Goede =
-
-> >> <hdegoede(a)redhat.com>; Rafael J . Wysocki <rjw(a)rjwysocki.net>; Len =
-
-> >> Brown <lenb(a)kernel.org>
-> >> Cc: linux-acpi(a)vger.kernel.org; devel(a)acpica.org
-> >> Subject: RE: [PATCH] ACPICA: Also handle "orphan" _REG methods for
-> GPIO
-> >> OpRegions
-> >>
-> >> Looks OK to me.
-> >
-> > Ok, I'll make a pull request of this to ACPICA on behalf of Hans and =
-
-> > it will be
-> in the next ACPICA release.
-> =
-
-> Great, thank you.
-
-Pull request is available here: https://github.com/acpica/acpica/pull/644
-
-Once it's merged, it'll be a part of the next ACPICA release.
-
-Thanks,
-Erik
-> =
-
-> Regards,
-> =
-
-> Hans
-> =
-
-> =
-
-> =
-
-> >> -----Original Message-----
-> >> From: Kaneda, Erik <erik.kaneda(a)intel.com>
-> >> Sent: Monday, October 26, 2020 1:56 PM
-> >> To: Hans de Goede <hdegoede(a)redhat.com>; Rafael J . Wysocki =
-
-> >> <rjw(a)rjwysocki.net>; Len Brown <lenb(a)kernel.org>; Moore, Robert =
-
-> >> <robert.moore(a)intel.com>
-> >> Cc: linux-acpi(a)vger.kernel.org; devel(a)acpica.org
-> >> Subject: RE: [PATCH] ACPICA: Also handle "orphan" _REG methods for
-> GPIO
-> >> OpRegions
-> >>
-> >>
-> >>
-> >>> -----Original Message-----
-> >>> From: Hans de Goede <hdegoede(a)redhat.com>
-> >>> Sent: Sunday, October 25, 2020 2:46 AM
-> >>> To: Rafael J . Wysocki <rjw(a)rjwysocki.net>; Len Brown =
-
-> >>> <lenb(a)kernel.org>; Moore, Robert <robert.moore(a)intel.com>; Kaneda=
-, =
-
-> >>> Erik <erik.kaneda(a)intel.com>
-> >>> Cc: Hans de Goede <hdegoede(a)redhat.com>; linux-
-> acpi(a)vger.kernel.org;
-> >>> devel(a)acpica.org
-> >>> Subject: [PATCH] ACPICA: Also handle "orphan" _REG methods for =
-
-> >>> GPIO OpRegions
-> >>>
-> >>> Before this commit acpi_ev_execute_reg_methods() had special
-> handling
-> >>> to handle "orphan" (no matching OpRegion declared) _REG methods =
-
-> >>> for
-> EC
-> >>> nodes.
-> >>>
-> >>> On Intel Cherry Trail devices there are 2 possible ACPI OpRegions =
-
-> >>> for accessing GPIOs. The standard GeneralPurposeIo OpRegion and =
-
-> >>> the
-> Cherry
-> >>> Trail specific UserDefined 0x9X OpRegions.
-> >>>
-> >>> Having 2 different types of OpRegions leads to potential issues =
-
-> >>> with checks for OpRegion availability, or in other words checks if =
-
-> >>> _REG has been called for the OpRegion which the ACPI code wants to us=
-e.
-> >>>
-> >>> Except for the "orphan" EC handling, ACPICA core does not call =
-
-> >>> _REG on an ACPI node which does not define an OpRegion matching =
-
-> >>> the type
-> being
-> >>> registered; and the reference design DSDT, from which most Cherry =
-
-> >>> Trail DSDTs are derived, does not define GeneralPurposeIo, nor
-> >>> UserDefined(0x93)
-> >>> OpRegions for the GPO2 (UID 3) device, because no pins were =
-
-> >>> assigned ACPI controlled functions in the reference design.
-> >>>
-> >>> Together this leads to the perfect storm, at least on the Cherry =
-
-> >>> Trail based Medion Akayo E1239T. This design does use a GPO2 pin =
-
-> >>> from its ACPI code and has added the Cherry Trail specific =
-
-> >>> UserDefined(0x93) opregion to its GPO2 ACPI node to access this pin.
-> >>>
-> >>> But it uses a has _REG been called availability check for the =
-
-> >>> standard GeneralPurposeIo OpRegion. This clearly is a bug in the =
-
-> >>> DSDT, but this does work under Windows. This issue leads to the =
-
-> >>> intel_vbtn driver reporting the device always being in tablet-mode =
-
-> >>> at boot, even if it is in laptop mode. Which in turn causes =
-
-> >>> userspace to ignore touchpad events. So iow this issues causes the to=
-uchpad to not work at boot.
-> >>>
-> >>> This commit fixes this by extending the "orphan" _REG method =
-
-> >>> handling to also apply to GPIO address-space handlers.
-> >>>
-> >>> Note it seems that Windows always calls "orphan" _REG methods so =
-
-> >>> me may want to consider dropping the space-id check and always do =
-
-> >>> "orphan" _REG method handling.
-> >>>
-> >>> Signed-off-by: Hans de Goede <hdegoede(a)redhat.com>
-> >>> ---
-> >>>  drivers/acpi/acpica/evregion.c | 54
-> >>> +++++++++++++++++-----------------
-> >>>  1 file changed, 27 insertions(+), 27 deletions(-)
-> >>>
-> >>> diff --git a/drivers/acpi/acpica/evregion.c =
-
-> >>> b/drivers/acpi/acpica/evregion.c index 738d4b231f34..21ff341e34a4
-> >>> 100644
-> >>> --- a/drivers/acpi/acpica/evregion.c
-> >>> +++ b/drivers/acpi/acpica/evregion.c
-> >>> @@ -21,7 +21,8 @@ extern u8 acpi_gbl_default_address_spaces[];
-> >>>  /* Local prototypes */
-> >>>
-> >>>  static void
-> >>> -acpi_ev_orphan_ec_reg_method(struct acpi_namespace_node =
-
-> >>> *ec_device_node);
-> >>> +acpi_ev_execute_orphan_reg_method(struct acpi_namespace_node
-> >>> *device_node,
-> >>> +				  acpi_adr_space_type space_id);
-> >>>
-> >>>  static acpi_status
-> >>>  acpi_ev_reg_run(acpi_handle obj_handle, @@ -684,10 +685,12 @@ =
-
-> >>> acpi_ev_execute_reg_methods(struct
-> >>> acpi_namespace_node *node,
-> >>>  				     ACPI_NS_WALK_UNLOCK,
-> >>> acpi_ev_reg_run, NULL,
-> >>>  				     &info, NULL);
-> >>>
-> >>> -	/* Special case for EC: handle "orphan" _REG methods with no region
-> >>> */
-> >>> -
-> >>> -	if (space_id =3D=3D ACPI_ADR_SPACE_EC) {
-> >>> -		acpi_ev_orphan_ec_reg_method(node);
-> >>> +	/*
-> >>> +	 * Special case for EC and GPIO: handle "orphan" _REG methods with
-> >>> +	 * no region.
-> >>> +	 */
-> >>> +	if (space_id =3D=3D ACPI_ADR_SPACE_EC || space_id =3D=3D
-> >>> ACPI_ADR_SPACE_GPIO) {
-> >>> +		acpi_ev_execute_orphan_reg_method(node, space_id);
-> >>>  	}
-> >>>
-> >>>  	ACPI_DEBUG_PRINT_RAW((ACPI_DB_NAMES,
-> >>> @@ -760,31 +763,28 @@ acpi_ev_reg_run(acpi_handle obj_handle,
-> >>>
-> >>>
-> >>>
-> >>
-> /**********************************************************
-> >>> *********************
-> >>>   *
-> >>> - * FUNCTION:    acpi_ev_orphan_ec_reg_method
-> >>> + * FUNCTION:    acpi_ev_execute_orphan_reg_method
-> >>>   *
-> >>> - * PARAMETERS:  ec_device_node      - Namespace node for an EC
-> device
-> >>> + * PARAMETERS:  device_node     - Namespace node for an ACPI device
-> >>> + *              space_id        - The address space ID
-> >>>   *
-> >>>   * RETURN:      None
-> >>>   *
-> >>> - * DESCRIPTION: Execute an "orphan" _REG method that appears =
-
-> >>> under the EC
-> >>> + * DESCRIPTION: Execute an "orphan" _REG method that appears
-> under
-> >> an
-> >>> ACPI
-> >>>   *              device. This is a _REG method that has no correspond=
-ing region
-> >>> - *              within the EC device scope. The orphan _REG method a=
-ppears
-> to
-> >>> - *              have been enabled by the description of the ECDT in =
-the ACPI
-> >>> - *              specification: "The availability of the region space=
- can be
-> >>> - *              detected by providing a _REG method object underneat=
-h the
-> >>> - *              Embedded Controller device."
-> >>> - *
-> >>> - *              To quickly access the EC device, we use the ec_devic=
-e_node
-> used
-> >>> - *              during EC handler installation. Otherwise, we would =
-need to
-> >>> - *              perform a time consuming namespace walk, executing _=
-HID
-> >>> - *              methods to find the EC device.
-> >>> + *              within the device's scope. ACPI tables depending on =
-these
-> >>> + *              "orphan" _REG methods have been seen for both EC and
-> GPIO
-> >>> + *              Operation Regions. Presumably the Windows ACPI
-> >> implementation
-> >>> + *              always calls the _REG method independent of the pres=
-ence of
-> >>> + *              an actual Operation Region with the correct address =
-space ID.
-> >>>   *
-> >>>   *  MUTEX:      Assumes the namespace is locked
-> >>>   *
-> >>>
-> >>>
-> >>
-> **********************************************************
-> >>> ********************/
-> >>>
-> >>>  static void
-> >>> -acpi_ev_orphan_ec_reg_method(struct acpi_namespace_node
-> >>> *ec_device_node)
-> >>> +acpi_ev_execute_orphan_reg_method(struct acpi_namespace_node
-> >>> *device_node,
-> >>> +				  acpi_adr_space_type space_id)
-> >>>  {
-> >>>  	acpi_handle reg_method;
-> >>>  	struct acpi_namespace_node *next_node; @@ -792,9 +792,9 @@ =
-
-> >>> acpi_ev_orphan_ec_reg_method(struct
-> >>> acpi_namespace_node *ec_device_node)
-> >>>  	struct acpi_object_list args;
-> >>>  	union acpi_object objects[2];
-> >>>
-> >>> -	ACPI_FUNCTION_TRACE(ev_orphan_ec_reg_method);
-> >>> +	ACPI_FUNCTION_TRACE(ev_execute_orphan_reg_method);
-> >>>
-> >>> -	if (!ec_device_node) {
-> >>> +	if (!device_node) {
-> >>>  		return_VOID;
-> >>>  	}
-> >>>
-> >>> @@ -804,7 +804,7 @@ acpi_ev_orphan_ec_reg_method(struct
-> >>> acpi_namespace_node *ec_device_node)
-> >>>
-> >>>  	/* Get a handle to a _REG method immediately under the EC device
-> >> */
-> >>>
-> >>> -	status =3D acpi_get_handle(ec_device_node, METHOD_NAME__REG,
-> >>> &reg_method);
-> >>> +	status =3D acpi_get_handle(device_node, METHOD_NAME__REG,
-> >>> &reg_method);
-> >>>  	if (ACPI_FAILURE(status)) {
-> >>>  		goto exit;	/* There is no _REG method present */
-> >>>  	}
-> >>> @@ -816,23 +816,23 @@ acpi_ev_orphan_ec_reg_method(struct
-> >>> acpi_namespace_node *ec_device_node)
-> >>>  	 * with other space IDs to be present; but the code below will then
-> >>>  	 * execute the _REG method with the embedded_control space_ID =
-
-> >>> argument.
-> >>>  	 */
-> >>> -	next_node =3D acpi_ns_get_next_node(ec_device_node, NULL);
-> >>> +	next_node =3D acpi_ns_get_next_node(device_node, NULL);
-> >>>  	while (next_node) {
-> >>>  		if ((next_node->type =3D=3D ACPI_TYPE_REGION) &&
-> >>>  		    (next_node->object) &&
-> >>> -		    (next_node->object->region.space_id =3D=3D
-> >>> ACPI_ADR_SPACE_EC)) {
-> >>> +		    (next_node->object->region.space_id =3D=3D space_id)) {
-> >>>  			goto exit;	/* Do not execute the _REG */
-> >>>  		}
-> >>>
-> >>> -		next_node =3D acpi_ns_get_next_node(ec_device_node,
-> >>> next_node);
-> >>> +		next_node =3D acpi_ns_get_next_node(device_node,
-> >>> next_node);
-> >>>  	}
-> >>>
-> >>> -	/* Evaluate the _REG(embedded_control,Connect) method */
-> >>> +	/* Evaluate the _REG(space_id, Connect) method */
-> >>>
-> >>>  	args.count =3D 2;
-> >>>  	args.pointer =3D objects;
-> >>>  	objects[0].type =3D ACPI_TYPE_INTEGER;
-> >>> -	objects[0].integer.value =3D ACPI_ADR_SPACE_EC;
-> >>> +	objects[0].integer.value =3D space_id;
-> >>>  	objects[1].type =3D ACPI_TYPE_INTEGER;
-> >>>  	objects[1].integer.value =3D ACPI_REG_CONNECT;
-> >>>
-> >>> --
-> >>> 2.28.0
-> >>
-> >> This looks good to me. Bob, any thoughts?
-> >>
-> >> Erik
-> >
-
-
---===============5937332777737679994==--
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
+--===============3504403764071745710==--
 
