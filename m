@@ -1,14 +1,14 @@
-Content-Type: multipart/mixed; boundary="===============0182329187075027151=="
+Content-Type: multipart/mixed; boundary="===============6823325117330637741=="
 MIME-Version: 1.0
 From: Moore, Robert <robert.moore at intel.com>
 Subject: [Devel] Re: [PATCH] ACPICA: fix -Wfallthrough
-Date: Fri, 13 Nov 2020 21:42:15 +0000
-Message-ID: <BYAPR11MB32564DD5B9D140AFE8C3D1EB87E60@BYAPR11MB3256.namprd11.prod.outlook.com>
-In-Reply-To: CAKwvOd=qDNnOu1oTeEN+chvfJcQSS5dxREo0JQHC=W0zhpYeLw@mail.gmail.com
+Date: Fri, 13 Nov 2020 21:43:50 +0000
+Message-ID: <BYAPR11MB3256E6E37618702C5EA761A087E60@BYAPR11MB3256.namprd11.prod.outlook.com>
+In-Reply-To: BYAPR11MB32564DD5B9D140AFE8C3D1EB87E60@BYAPR11MB3256.namprd11.prod.outlook.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0182329187075027151==
+--===============6823325117330637741==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
@@ -16,8 +16,20 @@ Content-Transfer-Encoding: quoted-printable
 
 
 -----Original Message-----
-From: Nick Desaulniers <ndesaulniers(a)google.com> =
+From: Moore, Robert =
 
+Sent: Friday, November 13, 2020 1:42 PM
+To: Nick Desaulniers <ndesaulniers(a)google.com>
+Cc: Kaneda, Erik <erik.kaneda(a)intel.com>; Wysocki, Rafael J <rafael.j.wys=
+ocki(a)intel.com>; Gustavo A . R . Silva <gustavoars(a)kernel.org>; clang-b=
+uilt-linux(a)googlegroups.com; Len Brown <lenb(a)kernel.org>; linux-acpi(a)=
+vger.kernel.org; devel(a)acpica.org; linux-kernel(a)vger.kernel.org
+Subject: RE: [PATCH] ACPICA: fix -Wfallthrough
+
+
+
+-----Original Message-----
+From: Nick Desaulniers <ndesaulniers(a)google.com>
 Sent: Friday, November 13, 2020 1:33 PM
 To: Moore, Robert <robert.moore(a)intel.com>
 Cc: Kaneda, Erik <erik.kaneda(a)intel.com>; Wysocki, Rafael J <rafael.j.wys=
@@ -32,8 +44,7 @@ ote:
 >
 >
 > -----Original Message-----
-> From: ndesaulniers via sendgmr =
-
+> From: ndesaulniers via sendgmr
 > <ndesaulniers(a)ndesaulniers1.mtv.corp.google.com> On Behalf Of Nick =
 
 > Desaulniers
@@ -74,6 +85,9 @@ ther we're going to have an issue between compilers and linters as to which=
 
 It's an old version of PC-Lint, which we don't use anymore.
 
+So, you can get rid of the lint markers.
+
+
 
 >
 > BTW, what version of gcc added -Wfallthrough?
@@ -98,8 +112,7 @@ GCC 7.1 added -Wimplicit-fallthrough.
 >
 > diff --git a/drivers/acpi/acpica/dscontrol.c =
 
-> b/drivers/acpi/acpica/dscontrol.c index 4b5b6e859f62..1e75e5fbfd19 =
-
+> b/drivers/acpi/acpica/dscontrol.c index 4b5b6e859f62..1e75e5fbfd19
 > 100644
 > --- a/drivers/acpi/acpica/dscontrol.c
 > +++ b/drivers/acpi/acpica/dscontrol.c
@@ -116,8 +129,7 @@ alk_state,
 >                 /*
 > diff --git a/drivers/acpi/acpica/dswexec.c =
 
-> b/drivers/acpi/acpica/dswexec.c index 1d4f8c81028c..e8c32d4fe55f =
-
+> b/drivers/acpi/acpica/dswexec.c index 1d4f8c81028c..e8c32d4fe55f
 > 100644
 > --- a/drivers/acpi/acpica/dswexec.c
 > +++ b/drivers/acpi/acpica/dswexec.c
@@ -135,8 +147,7 @@ e *walk_state)
 >
 > diff --git a/drivers/acpi/acpica/dswload.c =
 
-> b/drivers/acpi/acpica/dswload.c index 27069325b6de..afc663c3742d =
-
+> b/drivers/acpi/acpica/dswload.c index 27069325b6de..afc663c3742d
 > 100644
 > --- a/drivers/acpi/acpica/dswload.c
 > +++ b/drivers/acpi/acpica/dswload.c
@@ -153,8 +164,7 @@ tate,
 >
 > diff --git a/drivers/acpi/acpica/dswload2.c =
 
-> b/drivers/acpi/acpica/dswload2.c index edadbe146506..1b794b6ba072 =
-
+> b/drivers/acpi/acpica/dswload2.c index edadbe146506..1b794b6ba072
 > 100644
 > --- a/drivers/acpi/acpica/dswload2.c
 > +++ b/drivers/acpi/acpica/dswload2.c
@@ -171,8 +181,7 @@ tate,
 >
 > diff --git a/drivers/acpi/acpica/exfldio.c =
 
-> b/drivers/acpi/acpica/exfldio.c index ade35ff1c7ba..9d1cabe0fed9 =
-
+> b/drivers/acpi/acpica/exfldio.c index ade35ff1c7ba..9d1cabe0fed9
 > 100644
 > --- a/drivers/acpi/acpica/exfldio.c
 > +++ b/drivers/acpi/acpica/exfldio.c
@@ -191,8 +200,7 @@ he
 >                 /*
 > diff --git a/drivers/acpi/acpica/exresop.c =
 
-> b/drivers/acpi/acpica/exresop.c index 4d1b22971d58..df48faa9a551 =
-
+> b/drivers/acpi/acpica/exresop.c index 4d1b22971d58..df48faa9a551
 > 100644
 > --- a/drivers/acpi/acpica/exresop.c
 > +++ b/drivers/acpi/acpica/exresop.c
@@ -218,8 +226,7 @@ he
 >                 case ARGI_INTEGER_REF:
 > diff --git a/drivers/acpi/acpica/exstore.c =
 
-> b/drivers/acpi/acpica/exstore.c index 3adc0a29d890..2067baa7c120 =
-
+> b/drivers/acpi/acpica/exstore.c index 3adc0a29d890..2067baa7c120
 > 100644
 > --- a/drivers/acpi/acpica/exstore.c
 > +++ b/drivers/acpi/acpica/exstore.c
@@ -262,8 +269,7 @@ vent_info, u32 action)
 >
 > diff --git a/drivers/acpi/acpica/utdelete.c =
 
-> b/drivers/acpi/acpica/utdelete.c index 4c0d4e434196..8076e7947585 =
-
+> b/drivers/acpi/acpica/utdelete.c index 4c0d4e434196..8076e7947585
 > 100644
 > --- a/drivers/acpi/acpica/utdelete.c
 > +++ b/drivers/acpi/acpica/utdelete.c
@@ -280,8 +286,7 @@ erand_object *object)
 >         case ACPI_TYPE_THERMAL:
 > diff --git a/drivers/acpi/acpica/utprint.c =
 
-> b/drivers/acpi/acpica/utprint.c index 681c11f4af4e..f7e43baf5ff2 =
-
+> b/drivers/acpi/acpica/utprint.c index 681c11f4af4e..f7e43baf5ff2
 > 100644
 > --- a/drivers/acpi/acpica/utprint.c
 > +++ b/drivers/acpi/acpica/utprint.c
@@ -304,5 +309,5 @@ r *format, va_list args)
 Thanks,
 ~Nick Desaulniers
 
---===============0182329187075027151==--
+--===============6823325117330637741==--
 
