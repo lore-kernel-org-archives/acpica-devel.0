@@ -1,249 +1,99 @@
-Content-Type: multipart/mixed; boundary="===============0801606111415112244=="
+Content-Type: multipart/mixed; boundary="===============9036281271103762663=="
 MIME-Version: 1.0
-From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
- 52d108cd060dea3403c01d460c2ffbc7eaaf4a9c
-Date: Fri, 13 Nov 2020 11:51:19 +0800
-Message-ID: <5fae02b7.TOue6GAJlIifEnop%lkp@intel.com>
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] ACPICA version 20201113 released
+Date: Fri, 13 Nov 2020 17:58:34 +0000
+Message-ID: <BYAPR11MB325623E70C833C82CB2892FE87E60@BYAPR11MB3256.namprd11.prod.outlook.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0801606111415112244==
+--===============9036281271103762663==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
-m.git  bleeding-edge
-branch HEAD: 52d108cd060dea3403c01d460c2ffbc7eaaf4a9c  Merge branch 'powerc=
-ap' into linux-next
+13 November 2020. Summary of changes for version 20201113:
 
-elapsed time: 727m
+This release is available at https://acpica.org/downloads
 
-configs tested: 212
-configs skipped: 4
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+1) ACPICA kernel-resident subsystem:
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                         bcm2835_defconfig
-arm                        shmobile_defconfig
-arm                        spear6xx_defconfig
-arm                       aspeed_g5_defconfig
-ia64                        generic_defconfig
-sh                   rts7751r2dplus_defconfig
-sh                         microdev_defconfig
-powerpc                      katmai_defconfig
-sh                   sh7770_generic_defconfig
-sh                            hp6xx_defconfig
-riscv                            allmodconfig
-powerpc                    ge_imp3a_defconfig
-sparc                               defconfig
-sparc64                          alldefconfig
-sh                        dreamcast_defconfig
-powerpc                       maple_defconfig
-openrisc                            defconfig
-powerpc                      acadia_defconfig
-sh                          rsk7201_defconfig
-mips                        workpad_defconfig
-m68k                         apollo_defconfig
-sh                ecovec24-romimage_defconfig
-riscv                            alldefconfig
-arm                          pxa3xx_defconfig
-powerpc                     pq2fads_defconfig
-m68k                         amcore_defconfig
-arm                           tegra_defconfig
-powerpc                 mpc8315_rdb_defconfig
-xtensa                         virt_defconfig
-arm                         at91_dt_defconfig
-sh                             espt_defconfig
-sparc                       sparc64_defconfig
-arm                          collie_defconfig
-mips                             allyesconfig
-sh                           se7722_defconfig
-powerpc                        warp_defconfig
-arm                  colibri_pxa270_defconfig
-arm                              alldefconfig
-arm                           h3600_defconfig
-m68k                        m5407c3_defconfig
-m68k                        mvme16x_defconfig
-sh                          rsk7203_defconfig
-mips                     loongson1b_defconfig
-arm                             mxs_defconfig
-powerpc                    mvme5100_defconfig
-sh                          sdk7786_defconfig
-mips                       bmips_be_defconfig
-powerpc                     pseries_defconfig
-mips                           rs90_defconfig
-arm                          exynos_defconfig
-m68k                           sun3_defconfig
-nds32                            alldefconfig
-powerpc64                           defconfig
-arm                       imx_v6_v7_defconfig
-arm                        cerfcube_defconfig
-m68k                        mvme147_defconfig
-powerpc                    adder875_defconfig
-powerpc                       ebony_defconfig
-xtensa                    smp_lx200_defconfig
-microblaze                      mmu_defconfig
-arm                        trizeps4_defconfig
-arc                          axs101_defconfig
-mips                           ip28_defconfig
-powerpc                     powernv_defconfig
-powerpc                     tqm8555_defconfig
-ia64                         bigsur_defconfig
-ia64                             alldefconfig
-powerpc                  mpc885_ads_defconfig
-sh                      rts7751r2d1_defconfig
-h8300                     edosk2674_defconfig
-arm                         shannon_defconfig
-powerpc                     asp8347_defconfig
-powerpc                         wii_defconfig
-sh                           sh2007_defconfig
-mips                malta_kvm_guest_defconfig
-i386                             alldefconfig
-mips                        maltaup_defconfig
-arm                         mv78xx0_defconfig
-mips                          malta_defconfig
-arm                      footbridge_defconfig
-xtensa                              defconfig
-mips                 decstation_r4k_defconfig
-arm                         nhk8815_defconfig
-arm                             pxa_defconfig
-nios2                            alldefconfig
-xtensa                    xip_kc705_defconfig
-arm                          ep93xx_defconfig
-arm                       multi_v4t_defconfig
-arm                            u300_defconfig
-c6x                        evmc6457_defconfig
-powerpc                    socrates_defconfig
-powerpc                 mpc832x_rdb_defconfig
-powerpc                   lite5200b_defconfig
-mips                       lemote2f_defconfig
-powerpc                 mpc832x_mds_defconfig
-arm                         assabet_defconfig
-arm                          pxa168_defconfig
-microblaze                          defconfig
-powerpc                      ppc6xx_defconfig
-powerpc                   currituck_defconfig
-powerpc                     tqm8548_defconfig
-s390                          debug_defconfig
-arm                         socfpga_defconfig
-m68k                        m5307c3_defconfig
-ia64                      gensparse_defconfig
-m68k                        stmark2_defconfig
-m68k                             alldefconfig
-powerpc                      ep88xc_defconfig
-arc                         haps_hs_defconfig
-arm                      jornada720_defconfig
-sh                               allmodconfig
-arm                           spitz_defconfig
-powerpc                      pmac32_defconfig
-arm                           viper_defconfig
-powerpc                      obs600_defconfig
-arm64                            alldefconfig
-sh                        sh7785lcr_defconfig
-arm                         orion5x_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-i386                                defconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a006-20201112
-i386                 randconfig-a005-20201112
-i386                 randconfig-a002-20201112
-i386                 randconfig-a001-20201112
-i386                 randconfig-a003-20201112
-i386                 randconfig-a004-20201112
-i386                 randconfig-a006-20201111
-i386                 randconfig-a005-20201111
-i386                 randconfig-a002-20201111
-i386                 randconfig-a001-20201111
-i386                 randconfig-a003-20201111
-i386                 randconfig-a004-20201111
-i386                 randconfig-a006-20201113
-i386                 randconfig-a005-20201113
-i386                 randconfig-a002-20201113
-i386                 randconfig-a001-20201113
-i386                 randconfig-a003-20201113
-i386                 randconfig-a004-20201113
-x86_64               randconfig-a015-20201111
-x86_64               randconfig-a011-20201111
-x86_64               randconfig-a014-20201111
-x86_64               randconfig-a013-20201111
-x86_64               randconfig-a016-20201111
-x86_64               randconfig-a012-20201111
-i386                 randconfig-a012-20201113
-i386                 randconfig-a014-20201113
-i386                 randconfig-a016-20201113
-i386                 randconfig-a011-20201113
-i386                 randconfig-a015-20201113
-i386                 randconfig-a013-20201113
-i386                 randconfig-a012-20201111
-i386                 randconfig-a014-20201111
-i386                 randconfig-a016-20201111
-i386                 randconfig-a011-20201111
-i386                 randconfig-a015-20201111
-i386                 randconfig-a013-20201111
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+Interpreter: fixed a memory leak by using use existing buffer in _HID repai=
+r. There was a memory leak that occurred when a _CID object is defined as a=
+ package containing string objects. When _CID is checked for any possible r=
+epairs, it calls a helper function to repair _HID (because _CID basically c=
+ontains multiple _HID entries). The _HID repair function assumes that strin=
+g objects are standalone objects that are not contained inside of any packa=
+ges. The _HID repair function replaced the string object with a brand new o=
+bject and attempted to delete the old object by decrementing the reference =
+count of the old object. Strings inside of packages have a reference count =
+of 2 so the _HID repair function leaves this object in a dangling state and=
+ causes a memory leak. Instead of allocating a brand new object and removin=
+g the old object, use the existing object when repairing the _HID object.
 
-clang tested configs:
-x86_64               randconfig-a003-20201111
-x86_64               randconfig-a005-20201111
-x86_64               randconfig-a004-20201111
-x86_64               randconfig-a002-20201111
-x86_64               randconfig-a006-20201111
-x86_64               randconfig-a001-20201111
-x86_64               randconfig-a003-20201113
-x86_64               randconfig-a005-20201113
-x86_64               randconfig-a004-20201113
-x86_64               randconfig-a002-20201113
-x86_64               randconfig-a006-20201113
-x86_64               randconfig-a001-20201113
+Added function trace macros to improve namespace debugging. The namespace r=
+epair mechanism does not have function tracing macros. Add several trace ma=
+cros to improve debuggability.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============0801606111415112244==--
+Handle "orphan" _REG methods for GPIO OpRegions. Before this change AcpiEvE=
+xecuteRegMethods() had special handling to handle "orphan" (no matching OpR=
+egion declared) _REG methods for EC nodes. On Intel Cherry Trail devices th=
+ere are 2 possible ACPI OpRegions for accessing GPIOs. The standard General=
+PurposeIo OpRegion and the Cherry Trail - specific UserDefined 0x9X OpRegio=
+ns. Having 2 different types of OpRegions leads to potential issues with ch=
+ecks for OpRegion availability, or in other words checks if _REG has been c=
+alled for the OpRegion which the ACPI code wants to use. Except for the "or=
+phan" EC handling, ACPICA core does not call _REG on an ACPI node which doe=
+s not define an OpRegion matching the type being registered; and the refere=
+nce design DSDT, from which most Cherry Trail DSDTs are derived, does not d=
+efine GeneralPurposeIo, nor UserDefined(0x93) OpRegions for the GPO2 (UID 3=
+) device, because no pins were assigned ACPI controlled functions in the re=
+ference design. Together this leads to the perfect storm, at least on the C=
+herry Trail based Medion Akayo E1239T. This design does use a GPO2 pin from=
+ its ACPI code and has added the Cherry Trail specific UserDefined(0x93) op=
+region to its GPO2 ACPI node to access this pin. But it uses a "has _REG be=
+en called" availability check for the standard GeneralPurposeIo OpRegion. T=
+his clearly is a bug in the DSDT, but this does work under Windows. This is=
+sue leads to the intel vbtn driver reporting the device always being in tab=
+let-mode at boot, even if it is in laptop mode. Which in turn causes usersp=
+ace to ignore touchpad events. So in other words, this issue causes the tou=
+chpad to not work at boot. This change fixes this by extending the "orphan"=
+ _REG method handling to also apply to GPIO address-space handlers.
+
+
+2) iASL Compiler/Disassembler and ACPICA tools: =
+
+
+iASL: Added more info to namespace dump file (-ln option). In a separate se=
+ction of the dump file (after the main namespace dump), emit the full pathn=
+ame for each namespace node, its type, and the ASL filename and line number=
+ where it is declared.
+
+AcpiHelp: Added an option to display/decode iASL exceptions. Option is: -x =
+[Hex Value] where "Hex Value" is the iASL exception code. If Hex Value is o=
+mitted, all iASL exceptions are displayed.
+
+iASL: Use StringLiteral instead of StringData for some ASL macros. The use =
+of the stringData rule allows for some "string" oriented opcodes (Such as T=
+oString, ToHexString, etc.) None of which make sense with the macros in que=
+stion. This change modifies the StringData part of the rule for these macro=
+s to a simple string  literal - thus disallowing the use of ToString, ToHex=
+String, etc.
+The following ASL operators (macros) are affected:
+EisaId
+Fprintf
+Printf
+ToUuid
+Unicode
+Note: The MS compiler requires the use of string literals for these operato=
+rs also.
+
+iASL: Added a remark for an unknown UUID: ASL_MSG_UUID_NOT_FOUND. Search th=
+e list of "known" UUIDs for the input to the ToUUID macro.
+
+Added 5 new UUIDs to the known UUID table. All related to NVDIMM and the NF=
+IT table.
+
+--===============9036281271103762663==--
 
