@@ -1,17 +1,32 @@
-Content-Type: multipart/mixed; boundary="===============6823325117330637741=="
+Content-Type: multipart/mixed; boundary="===============4089623794946071488=="
 MIME-Version: 1.0
 From: Moore, Robert <robert.moore at intel.com>
 Subject: [Devel] Re: [PATCH] ACPICA: fix -Wfallthrough
-Date: Fri, 13 Nov 2020 21:43:50 +0000
-Message-ID: <BYAPR11MB3256E6E37618702C5EA761A087E60@BYAPR11MB3256.namprd11.prod.outlook.com>
-In-Reply-To: BYAPR11MB32564DD5B9D140AFE8C3D1EB87E60@BYAPR11MB3256.namprd11.prod.outlook.com
+Date: Fri, 13 Nov 2020 21:45:19 +0000
+Message-ID: <BYAPR11MB3256DD34C3DABD2CB4FE347D87E60@BYAPR11MB3256.namprd11.prod.outlook.com>
+In-Reply-To: BYAPR11MB3256E6E37618702C5EA761A087E60@BYAPR11MB3256.namprd11.prod.outlook.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6823325117330637741==
+--===============4089623794946071488==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+
+BTW, if you can make a pull request for the patch up on github, that would =
+help.
+
+
+-----Original Message-----
+From: Moore, Robert =
+
+Sent: Friday, November 13, 2020 1:44 PM
+To: Nick Desaulniers <ndesaulniers(a)google.com>
+Cc: Kaneda, Erik <erik.kaneda(a)intel.com>; Wysocki, Rafael J <rafael.j.wys=
+ocki(a)intel.com>; Gustavo A . R . Silva <gustavoars(a)kernel.org>; clang-b=
+uilt-linux(a)googlegroups.com; Len Brown <lenb(a)kernel.org>; linux-acpi(a)=
+vger.kernel.org; devel(a)acpica.org; linux-kernel(a)vger.kernel.org
+Subject: RE: [PATCH] ACPICA: fix -Wfallthrough
 
 
 
@@ -309,5 +324,5 @@ r *format, va_list args)
 Thanks,
 ~Nick Desaulniers
 
---===============6823325117330637741==--
+--===============4089623794946071488==--
 
