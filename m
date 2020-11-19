@@ -1,112 +1,92 @@
-Content-Type: multipart/mixed; boundary="===============0309938490093114416=="
+Content-Type: multipart/mixed; boundary="===============9113646612469162909=="
 MIME-Version: 1.0
 From: Shameer Kolothum <shameerali.kolothum.thodi at huawei.com>
-Subject: [Devel] [RFC PATCH v2 7/8] iommu/arm-smmu-v3: Get associated RMR info
- and install bypass STE
-Date: Thu, 19 Nov 2020 12:11:49 +0000
-Message-ID: <20201119121150.3316-8-shameerali.kolothum.thodi@huawei.com>
+Subject: =?utf-8?q?=5BDevel=5D__=5BRFC_PATCH_v2_8/8=5D_iommu/arm-smmu-v3=3A_Reserv?=
+ =?utf-8?q?e_any_RMR_regions_associated_with_a=C2=A0dev?=
+Date: Thu, 19 Nov 2020 12:11:50 +0000
+Message-ID: <20201119121150.3316-9-shameerali.kolothum.thodi@huawei.com>
 In-Reply-To: 20201119121150.3316-1-shameerali.kolothum.thodi@huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0309938490093114416==
+--===============9113646612469162909==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Check if there is any RMR info associated=C2=A0with the devices behind
-the SMMUv3 and if any, install bypass STEs for them. This is to
-keep any ongoing traffic associated with these devices alive
-when we enable/reset SMMUv3 during probe().
+Get RMR regions associated with a dev=C2=A0reserved so that there is
+a unity mapping for them in=C2=A0SMMU.
 
 Signed-off-by: Shameer Kolothum <shameerali.kolothum.thodi(a)huawei.com>
 ---
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 40 +++++++++++++++++++++
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  2 ++
- 2 files changed, 42 insertions(+)
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 38 +++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
 
 diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/ar=
 m/arm-smmu-v3/arm-smmu-v3.c
-index 5f366d5a9ebf..97df1df001c9 100644
+index 97df1df001c9..174a9bcfd627 100644
 --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
 +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -3486,6 +3486,42 @@ static void __iomem *arm_smmu_ioremap(struct device =
-*dev, resource_size_t start,
- 	return devm_ioremap_resource(dev, &res);
+@@ -2492,6 +2492,43 @@ static int arm_smmu_of_xlate(struct device *dev, str=
+uct of_phandle_args *args)
+ 	return iommu_fwspec_add_ids(dev, args->args, 1);
  }
  =
 
-+static void arm_smmu_rmr_install_bypass_ste(struct arm_smmu_device *smmu)
++static bool arm_smmu_dev_has_rmr(struct arm_smmu_master *master,
++				 struct iommu_rmr *e)
 +{
-+	struct iommu_rmr *e;
-+	int i, ret;
++	int i, j;
 +
-+	/*
-+	 * Since, we don't have a mechanism to differentiate the RMR
-+	 * SIDs that has an ongoing live stream, install bypass STEs
-+	 * for all the reported ones.=C2=A0
-+	 * FixMe: Avoid duplicate SIDs in the list as one sid may
-+	 *        associate with multiple RMRs.
-+	 */
-+	list_for_each_entry(e, &smmu->rmr_list, list) {
-+		for (i =3D 0; i < e->num_ids; i++) {
-+			__le64 *step;
-+			u32 sid =3D e->ids[i];
-+
-+			ret =3D arm_smmu_init_sid_strtab(smmu, sid);
-+			if (ret) {
-+				dev_err(smmu->dev, "RMR bypass(0x%x) failed\n",
-+					sid);
-+				continue;
-+			}
-+
-+			step =3D arm_smmu_get_step_for_sid(smmu, sid);
-+			arm_smmu_write_strtab_ent(NULL, sid, step, true);
++	for (i =3D 0; i < master->num_sids; i++) {
++		for (j =3D 0; j < e->num_ids; j++) {
++			if (e->ids[j] =3D=3D master->sids[i])
++				return true;
 +		}
 +	}
++
++	return false;
 +}
 +
-+static int arm_smmu_get_rmr(struct arm_smmu_device *smmu)
++static void arm_smmu_rmr_get_resv_regions(struct device *dev,
++					  struct list_head *head)
 +{
-+	INIT_LIST_HEAD(&smmu->rmr_list);
-+	return iommu_dma_get_rmrs(dev_fwnode(smmu->dev), &smmu->rmr_list);
++	struct arm_smmu_master *master =3D dev_iommu_priv_get(dev);
++	struct arm_smmu_device *smmu =3D master->smmu;
++	struct iommu_rmr *rmr;
++
++	list_for_each_entry(rmr, &smmu->rmr_list, list) {
++		struct iommu_resv_region *region;
++		int prot =3D IOMMU_READ | IOMMU_WRITE | IOMMU_NOEXEC | IOMMU_MMIO;
++
++		if (!arm_smmu_dev_has_rmr(master, rmr))
++			continue;
++		region =3D iommu_alloc_resv_region(rmr->base_address,
++						 rmr->length, prot,
++						 IOMMU_RESV_DIRECT);
++		if (!region)
++			return;
++
++		list_add_tail(&region->list, head);
++	}
 +}
-+
- static int arm_smmu_device_probe(struct platform_device *pdev)
+ static void arm_smmu_get_resv_regions(struct device *dev,
+ 				      struct list_head *head)
  {
- 	int irq, ret;
-@@ -3569,6 +3605,10 @@ static int arm_smmu_device_probe(struct platform_dev=
-ice *pdev)
- 	/* Record our private device structure */
- 	platform_set_drvdata(pdev, smmu);
+@@ -2506,6 +2543,7 @@ static void arm_smmu_get_resv_regions(struct device *=
+dev,
+ 	list_add_tail(&region->list, head);
  =
 
-+	/* Check for RMRs and install bypass STEs if any */
-+	if (!arm_smmu_get_rmr(smmu))
-+		arm_smmu_rmr_install_bypass_ste(smmu);
-+
- 	/* Reset the device */
- 	ret =3D arm_smmu_device_reset(smmu, bypass);
- 	if (ret)
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/ar=
-m/arm-smmu-v3/arm-smmu-v3.h
-index d4b7f40ccb02..17b517ddecee 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-@@ -636,6 +636,8 @@ struct arm_smmu_device {
+ 	iommu_dma_get_resv_regions(dev, head);
++	arm_smmu_rmr_get_resv_regions(dev, head);
+ }
  =
 
- 	/* IOMMU core code handle */
- 	struct iommu_device		iommu;
-+
-+	struct list_head		rmr_list;
- };
- =
-
- /* SMMU private data for each master */
+ static bool arm_smmu_dev_has_feature(struct device *dev,
 -- =
 
 2.17.1
 
---===============0309938490093114416==--
+--===============9113646612469162909==--
 
