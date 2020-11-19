@@ -1,239 +1,103 @@
-Content-Type: multipart/mixed; boundary="===============5160399588377695509=="
+Content-Type: multipart/mixed; boundary="===============3920713414079075291=="
 MIME-Version: 1.0
-From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
- e98c22d0368879136786ad5a500791d1846ab754
-Date: Thu, 19 Nov 2020 12:32:31 +0800
-Message-ID: <5fb5f55f.shZdKr2N8+FrAMy9%lkp@intel.com>
+From: Shameerali Kolothum Thodi <shameerali.kolothum.thodi at huawei.com>
+Subject: [Devel] Re: [RFC PATCH 2/4] ACPI/IORT: Add support for RMR node
+ parsing
+Date: Thu, 19 Nov 2020 12:07:07 +0000
+Message-ID: <735edb5c4da842609c1d2a0eed73b06c@huawei.com>
+In-Reply-To: DB7PR08MB3097062CEEDB4635BF3F694784EA0@DB7PR08MB3097.eurprd08.prod.outlook.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5160399588377695509==
+--===============3920713414079075291==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
-m.git  bleeding-edge
-branch HEAD: e98c22d0368879136786ad5a500791d1846ab754  Merge branches 'acpi=
--misc' and 'acpi-resources' into linux-next
 
-elapsed time: 726m
 
-configs tested: 202
-configs skipped: 2
+> -----Original Message-----
+> From: Sami Mujawar [mailto:Sami.Mujawar(a)arm.com]
+> Sent: 09 November 2020 12:30
+> To: david.e.box(a)linux.intel.com; Shameerali Kolothum Thodi
+> <shameerali.kolothum.thodi(a)huawei.com>;
+> linux-arm-kernel(a)lists.infradead.org; linux-acpi(a)vger.kernel.org;
+> iommu(a)lists.linux-foundation.org; devel(a)acpica.org
+> Cc: Linuxarm <linuxarm(a)huawei.com>; Lorenzo Pieralisi
+> <Lorenzo.Pieralisi(a)arm.com>; joro(a)8bytes.org; Robin Murphy
+> <Robin.Murphy(a)arm.com>; wanghuiqiang <wanghuiqiang(a)huawei.com>;
+> Jonathan Cameron <jonathan.cameron(a)huawei.com>; nd <nd(a)arm.com>
+> Subject: RE: [Devel] Re: [RFC PATCH 2/4] ACPI/IORT: Add support for RMR n=
+ode
+> parsing
+> =
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> Hi,
+> =
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-sh                         ap325rxa_defconfig
-mips                  maltasmvp_eva_defconfig
-mips                      pic32mzda_defconfig
-powerpc                      bamboo_defconfig
-powerpc                     tqm8560_defconfig
-m68k                          sun3x_defconfig
-arc                        nsim_700_defconfig
-mips                      loongson3_defconfig
-arm                           sunxi_defconfig
-nios2                               defconfig
-powerpc                    socrates_defconfig
-um                           x86_64_defconfig
-powerpc                        fsp2_defconfig
-powerpc                      ppc6xx_defconfig
-arm                            mps2_defconfig
-powerpc                 xes_mpc85xx_defconfig
-powerpc                      arches_defconfig
-powerpc                     tqm8555_defconfig
-sh                        apsh4ad0a_defconfig
-arm                         hackkit_defconfig
-powerpc                     redwood_defconfig
-m68k                         apollo_defconfig
-mips                         bigsur_defconfig
-xtensa                           alldefconfig
-mips                        workpad_defconfig
-powerpc                 mpc8560_ads_defconfig
-powerpc                    adder875_defconfig
-sh                ecovec24-romimage_defconfig
-m68k                            mac_defconfig
-sh                           sh2007_defconfig
-sh                          polaris_defconfig
-arm                       aspeed_g5_defconfig
-arm                           stm32_defconfig
-powerpc                     sbc8548_defconfig
-arm                   milbeaut_m10v_defconfig
-arm                         shannon_defconfig
-arc                          axs101_defconfig
-mips                         db1xxx_defconfig
-m68k                          amiga_defconfig
-arm                            zeus_defconfig
-powerpc                      ep88xc_defconfig
-arm                           sama5_defconfig
-powerpc                      cm5200_defconfig
-arm                        realview_defconfig
-s390                          debug_defconfig
-mips                            e55_defconfig
-sh                     sh7710voipgw_defconfig
-mips                 decstation_r4k_defconfig
-sh                           se7206_defconfig
-powerpc                   lite5200b_defconfig
-powerpc                          g5_defconfig
-arm                           omap1_defconfig
-arm                       versatile_defconfig
-sh                            hp6xx_defconfig
-sh                          urquell_defconfig
-powerpc                      obs600_defconfig
-arm                             mxs_defconfig
-sh                   sh7770_generic_defconfig
-powerpc                     pq2fads_defconfig
-parisc                generic-64bit_defconfig
-arm                             rpc_defconfig
-powerpc                      katmai_defconfig
-powerpc                     mpc5200_defconfig
-powerpc                 mpc8272_ads_defconfig
-m68k                           sun3_defconfig
-powerpc                    sam440ep_defconfig
-xtensa                    xip_kc705_defconfig
-powerpc                     tqm5200_defconfig
-m68k                        m5407c3_defconfig
-powerpc                     kilauea_defconfig
-arm                        clps711x_defconfig
-mips                malta_qemu_32r6_defconfig
-mips                        nlm_xlr_defconfig
-powerpc                      chrp32_defconfig
-powerpc               mpc834x_itxgp_defconfig
-c6x                         dsk6455_defconfig
-arm                         lpc32xx_defconfig
-powerpc                  iss476-smp_defconfig
-riscv                    nommu_k210_defconfig
-powerpc                    ge_imp3a_defconfig
-m68k                        mvme16x_defconfig
-sh                        sh7757lcr_defconfig
-powerpc                      pcm030_defconfig
-sparc                            allyesconfig
-powerpc                      ppc64e_defconfig
-powerpc                     skiroot_defconfig
-sh                         ecovec24_defconfig
-sh                           se7722_defconfig
-arc                        vdk_hs38_defconfig
-sh                          kfr2r09_defconfig
-arm                     am200epdkit_defconfig
-arm                           efm32_defconfig
-arm                           corgi_defconfig
-powerpc                 mpc837x_rdb_defconfig
-mips                         rt305x_defconfig
-sh                               alldefconfig
-arm                      tct_hammer_defconfig
-sh                             sh03_defconfig
-arm                         axm55xx_defconfig
-powerpc                       ebony_defconfig
-sparc                       sparc32_defconfig
-arc                                 defconfig
-riscv                    nommu_virt_defconfig
-powerpc                mpc7448_hpc2_defconfig
-mips                           ip32_defconfig
-arm                       spear13xx_defconfig
-sh                           se7705_defconfig
-arm                         cm_x300_defconfig
-sh                          r7780mp_defconfig
-arc                              alldefconfig
-powerpc                     mpc83xx_defconfig
-powerpc                     tqm8540_defconfig
-powerpc                   motionpro_defconfig
-powerpc                         wii_defconfig
-powerpc                     kmeter1_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a005-20201118
-x86_64               randconfig-a003-20201118
-x86_64               randconfig-a004-20201118
-x86_64               randconfig-a002-20201118
-x86_64               randconfig-a006-20201118
-x86_64               randconfig-a001-20201118
-i386                 randconfig-a006-20201119
-i386                 randconfig-a005-20201119
-i386                 randconfig-a002-20201119
-i386                 randconfig-a001-20201119
-i386                 randconfig-a003-20201119
-i386                 randconfig-a004-20201119
-i386                 randconfig-a006-20201118
-i386                 randconfig-a005-20201118
-i386                 randconfig-a002-20201118
-i386                 randconfig-a001-20201118
-i386                 randconfig-a003-20201118
-i386                 randconfig-a004-20201118
-i386                 randconfig-a012-20201118
-i386                 randconfig-a014-20201118
-i386                 randconfig-a016-20201118
-i386                 randconfig-a011-20201118
-i386                 randconfig-a013-20201118
-i386                 randconfig-a015-20201118
-i386                 randconfig-a012-20201119
-i386                 randconfig-a014-20201119
-i386                 randconfig-a016-20201119
-i386                 randconfig-a011-20201119
-i386                 randconfig-a013-20201119
-i386                 randconfig-a015-20201119
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+> -----Original Message-----
+> From: David E. Box <david.e.box(a)linux.intel.com>
+> Sent: 28 October 2020 06:44 PM
+> To: Shameer Kolothum <shameerali.kolothum.thodi(a)huawei.com>;
+> linux-arm-kernel(a)lists.infradead.org; linux-acpi(a)vger.kernel.org;
+> iommu(a)lists.linux-foundation.org; devel(a)acpica.org
+> Cc: linuxarm(a)huawei.com; Lorenzo Pieralisi <Lorenzo.Pieralisi(a)arm.com=
+>;
+> joro(a)8bytes.org; Robin Murphy <Robin.Murphy(a)arm.com>;
+> wanghuiqiang(a)huawei.com; jonathan.cameron(a)huawei.com
+> Subject: [Devel] Re: [RFC PATCH 2/4] ACPI/IORT: Add support for RMR node
+> parsing
+> =
 
-clang tested configs:
-x86_64               randconfig-a015-20201118
-x86_64               randconfig-a014-20201118
-x86_64               randconfig-a011-20201118
-x86_64               randconfig-a013-20201118
-x86_64               randconfig-a016-20201118
-x86_64               randconfig-a012-20201118
-x86_64               randconfig-a005-20201119
-x86_64               randconfig-a003-20201119
-x86_64               randconfig-a004-20201119
-x86_64               randconfig-a002-20201119
-x86_64               randconfig-a006-20201119
-x86_64               randconfig-a001-20201119
+> Hi,
+> =
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============5160399588377695509==--
+> On Tue, 2020-10-27 at 11:26 +0000, Shameer Kolothum wrote:
+> =
+
+> ...
+> =
+
+> > @@ -1647,6 +1667,100 @@ static void __init iort_enable_acs(struct
+> > acpi_iort_node *iort_node)
+> >  #else
+> >  static inline void iort_enable_acs(struct acpi_iort_node *iort_node)
+> > { }
+> >  #endif
+> > +static int iort_rmr_desc_valid(struct acpi_iort_rmr_desc *desc)
+> > +{
+> > +	struct iort_rmr_entry *e;
+> > +	u64 end, start =3D desc->base_address, length =3D desc->length;
+> > +
+> > +	if ((!IS_ALIGNED(start, SZ_64K)) || (length % SZ_64K !=3D 0))
+> =
+
+> You could just do:
+> =
+
+> if ((!IS_ALIGNED(start, SZ_64K)) || (length % SZ_64K))
+> =
+
+> [SAMI] In my opinion, the following may be better:
+> 	if (!IS_ALIGNED(start, SZ_64K) || !IS_ALIGNED(length, SZ_64K))
+> [/SAMI]
+
+Thanks for your suggestions. I don't have a strong opinion on either
+of those, but will change it with the latter one for now.
+
+Thanks,
+Shameer
+
+> Regards,
+> =
+
+> Sami Mujawar
+> =
+
+> David
+> _______________________________________________
+> Devel mailing list -- devel(a)acpica.org
+> To unsubscribe send an email to devel-leave(a)acpica.org
+> %(web_page_url)slistinfo%(cgiext)s/%(_internal_name)s
+--===============3920713414079075291==--
 
