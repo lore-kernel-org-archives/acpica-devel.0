@@ -1,92 +1,131 @@
-Content-Type: multipart/mixed; boundary="===============9113646612469162909=="
+Content-Type: multipart/mixed; boundary="===============1590116371743565236=="
 MIME-Version: 1.0
-From: Shameer Kolothum <shameerali.kolothum.thodi at huawei.com>
-Subject: =?utf-8?q?=5BDevel=5D__=5BRFC_PATCH_v2_8/8=5D_iommu/arm-smmu-v3=3A_Reserv?=
- =?utf-8?q?e_any_RMR_regions_associated_with_a=C2=A0dev?=
-Date: Thu, 19 Nov 2020 12:11:50 +0000
-Message-ID: <20201119121150.3316-9-shameerali.kolothum.thodi@huawei.com>
-In-Reply-To: 20201119121150.3316-1-shameerali.kolothum.thodi@huawei.com
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
+ 0a94f3d0100bc7c20ce09d014a9e7dd3cc29e5c9
+Date: Tue, 24 Nov 2020 13:45:36 +0800
+Message-ID: <5fbc9e00.idUAeXu/AgjkU5Mn%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============9113646612469162909==
+--===============1590116371743565236==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Get RMR regions associated with a dev=C2=A0reserved so that there is
-a unity mapping for them in=C2=A0SMMU.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git  bleeding-edge
+branch HEAD: 0a94f3d0100bc7c20ce09d014a9e7dd3cc29e5c9  Merge branch 'pm-dom=
+ains' into bleeding-edge
 
-Signed-off-by: Shameer Kolothum <shameerali.kolothum.thodi(a)huawei.com>
+elapsed time: 720m
+
+configs tested: 94
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                      tqm8xx_defconfig
+m68k                        mvme16x_defconfig
+powerpc                  storcenter_defconfig
+powerpc                      acadia_defconfig
+powerpc                     mpc512x_defconfig
+mips                        vocore2_defconfig
+mips                           ip27_defconfig
+powerpc                    mvme5100_defconfig
+arm                  colibri_pxa270_defconfig
+m68k                           sun3_defconfig
+nds32                            alldefconfig
+arm                         cm_x300_defconfig
+arm                        shmobile_defconfig
+mips                        jmr3927_defconfig
+ia64                      gensparse_defconfig
+arm                           corgi_defconfig
+powerpc                       ppc64_defconfig
+powerpc                     taishan_defconfig
+mips                           ci20_defconfig
+arc                     nsimosci_hs_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20201123
+i386                 randconfig-a003-20201123
+i386                 randconfig-a002-20201123
+i386                 randconfig-a005-20201123
+i386                 randconfig-a001-20201123
+i386                 randconfig-a006-20201123
+x86_64               randconfig-a015-20201123
+x86_64               randconfig-a011-20201123
+x86_64               randconfig-a014-20201123
+x86_64               randconfig-a016-20201123
+x86_64               randconfig-a012-20201123
+x86_64               randconfig-a013-20201123
+i386                 randconfig-a012-20201123
+i386                 randconfig-a013-20201123
+i386                 randconfig-a011-20201123
+i386                 randconfig-a016-20201123
+i386                 randconfig-a014-20201123
+i386                 randconfig-a015-20201123
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a006-20201123
+x86_64               randconfig-a003-20201123
+x86_64               randconfig-a004-20201123
+x86_64               randconfig-a005-20201123
+x86_64               randconfig-a002-20201123
+x86_64               randconfig-a001-20201123
+
 ---
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 38 +++++++++++++++++++++
- 1 file changed, 38 insertions(+)
-
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/ar=
-m/arm-smmu-v3/arm-smmu-v3.c
-index 97df1df001c9..174a9bcfd627 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -2492,6 +2492,43 @@ static int arm_smmu_of_xlate(struct device *dev, str=
-uct of_phandle_args *args)
- 	return iommu_fwspec_add_ids(dev, args->args, 1);
- }
- =
-
-+static bool arm_smmu_dev_has_rmr(struct arm_smmu_master *master,
-+				 struct iommu_rmr *e)
-+{
-+	int i, j;
-+
-+	for (i =3D 0; i < master->num_sids; i++) {
-+		for (j =3D 0; j < e->num_ids; j++) {
-+			if (e->ids[j] =3D=3D master->sids[i])
-+				return true;
-+		}
-+	}
-+
-+	return false;
-+}
-+
-+static void arm_smmu_rmr_get_resv_regions(struct device *dev,
-+					  struct list_head *head)
-+{
-+	struct arm_smmu_master *master =3D dev_iommu_priv_get(dev);
-+	struct arm_smmu_device *smmu =3D master->smmu;
-+	struct iommu_rmr *rmr;
-+
-+	list_for_each_entry(rmr, &smmu->rmr_list, list) {
-+		struct iommu_resv_region *region;
-+		int prot =3D IOMMU_READ | IOMMU_WRITE | IOMMU_NOEXEC | IOMMU_MMIO;
-+
-+		if (!arm_smmu_dev_has_rmr(master, rmr))
-+			continue;
-+		region =3D iommu_alloc_resv_region(rmr->base_address,
-+						 rmr->length, prot,
-+						 IOMMU_RESV_DIRECT);
-+		if (!region)
-+			return;
-+
-+		list_add_tail(&region->list, head);
-+	}
-+}
- static void arm_smmu_get_resv_regions(struct device *dev,
- 				      struct list_head *head)
- {
-@@ -2506,6 +2543,7 @@ static void arm_smmu_get_resv_regions(struct device *=
-dev,
- 	list_add_tail(&region->list, head);
- =
-
- 	iommu_dma_get_resv_regions(dev, head);
-+	arm_smmu_rmr_get_resv_regions(dev, head);
- }
- =
-
- static bool arm_smmu_dev_has_feature(struct device *dev,
--- =
-
-2.17.1
-
---===============9113646612469162909==--
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
+--===============1590116371743565236==--
 
