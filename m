@@ -1,111 +1,118 @@
-Content-Type: multipart/mixed; boundary="===============0442202544182555277=="
+Content-Type: multipart/mixed; boundary="===============0040518803121814856=="
 MIME-Version: 1.0
 From: Andy Shevchenko <andy.shevchenko at gmail.com>
-Subject: [Devel] Re: [PATCH v3 13/14] include: media: v4l2-fwnode: Include
- v4l2_fwnode_bus_type
-Date: Thu, 24 Dec 2020 14:32:21 +0200
-Message-ID: <CAHp75VdSyNv3M9T0_nQKsZfO-nxd5A3Z6o0mrRKrpHm282wsjQ@mail.gmail.com>
-In-Reply-To: 20201224010907.263125-14-djrscally@gmail.com
+Subject: [Devel] Re: [PATCH 18/18] ipu3: Add driver for dummy INT3472 ACPI
+ device
+Date: Tue, 01 Dec 2020 20:45:25 +0000
+Message-ID: <CAHp75Vfq1zPxt5RpdD16rKiLOSfda7FwfHsot5JCTd98tXxPdQ@mail.gmail.com>
+In-Reply-To: 4831d44a-5bcc-8cf3-964c-c7dca6827458@redhat.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0442202544182555277==
+--===============0040518803121814856==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 24, 2020 at 3:13 AM Daniel Scally <djrscally(a)gmail.com> wrote:
->
-> V4L2 fwnode bus types are enumerated in v4l2-fwnode.c, meaning they aren't
-> available to the rest of the kernel. Move the enum to the corresponding
-> header so that I can use the label to refer to those values.
+On Tue, Dec 1, 2020 at 10:39 PM Hans de Goede <hdegoede(a)redhat.com> wrote:
+> On 12/1/20 8:21 PM, Andy Shevchenko wrote:
+> > On Tue, Dec 01, 2020 at 09:06:38PM +0200, Laurent Pinchart wrote:
+> >> On Tue, Dec 01, 2020 at 09:05:23PM +0200, Andy Shevchenko wrote:
+> >>> On Tue, Dec 01, 2020 at 08:55:48PM +0200, Laurent Pinchart wrote:
+> >>>> On Tue, Dec 01, 2020 at 08:54:17PM +0200, Andy Shevchenko wrote:
+> >>>>> On Tue, Dec 01, 2020 at 08:30:03AM +0000, Dan Scally wrote:
+> >>>>>> On 30/11/2020 20:07, Andy Shevchenko wrote:
 
-Reviewed-by: Andy Shevchenko <andy.shevchenko(a)gmail.com>
-One nitpick below, though.
+...
 
-> Suggested-by: Andy Shevchenko <andriy.shevchenko(a)linux.intel.com>
-> Signed-off-by: Daniel Scally <djrscally(a)gmail.com>
-> ---
-> Changes in v3
->         - Patch introduced
+> >>>>>>>> +static struct int3472_sensor_regulator_map int3472_sensor_regul=
+ator_maps[] =3D {
+> >>>>>>>> +      { "GNDF140809R", 2, miix_510_ov2680 },
+> >>>>>>>> +      { "YHCU", 2, surface_go2_ov5693 },
+> >>>>>>>> +      { "MSHW0070", 2, surface_book_ov5693 },
+> >>>>>>>> +};
+> >>>>>>>
+> >>>>>>> Hmm... Usual way is to use DMI for that. I'm not sure above will =
+not give us
+> >>>>>>> false positive matches.
+> >>>>>>
+> >>>>>> I considered DMI too, no problem to switch to that if it's a bette=
+r choice.
+> >>>>>
+> >>>>> I prefer DMI as it's a standard way to describe platform quirks in =
+x86 world.
+> >>>>
+> >>>> Do you think the Windows driver would use DMI ?
+> >>>
+> >>> Linux is using DMI for quirks.
+> >>>
+> >>>> That seems quite
+> >>>> unlikely to me, given how they would have to release a new driver bi=
+nary
+> >>>> for every machine. I'm pretty sure that a different mechanism is use=
+d to
+> >>>> identify camera integration, and I think it would make sense to foll=
+ow
+> >>>> the same approach. That would allow us to avoid large tables of DMI
+> >>>> identifiers that would need to be constently updated, potentially ma=
+king
+> >>>> user experience better.
+> >>>
+> >>> All Surface family can be matched in a way as Apple machines [1].
+> >>>
+> >>> [1]: https://lkml.org/lkml/2020/4/15/1198
+> >>
+> >> But not all Surface machines necessarily have the same camera
+> >> architecture. My point is that there seems to be identifiers reported =
+in
+> >> ACPI for the exact purpose of identifying the camera architecture. If =
+we
+> >> used DMI instead, we would have to handle each machine individually.
+> >
+> > With help of DMI we may narrow down the search.
+> >
+> > But again, we are talking about uncertainity. It may be your way (a lot=
+ of
+> > platforms that have different settings), or mine (only a few with more =
+or less
+> > standard sets of settings).
+> >
+> > DMI is simply standard in Linux (people usually easier can grep for qui=
+rks for
+> > a specific platform).
+> >
+> > I would rather ask Hans' opinion since he has quite an expertise with D=
+MI for
+> > good and bad.
 >
->  drivers/media/v4l2-core/v4l2-fwnode.c | 11 -----------
->  include/media/v4l2-fwnode.h           | 22 ++++++++++++++++++++++
->  2 files changed, 22 insertions(+), 11 deletions(-)
+> So generally there are 2 ways how things like this can go:
 >
-> diff --git a/drivers/media/v4l2-core/v4l2-fwnode.c b/drivers/media/v4l2-c=
-ore/v4l2-fwnode.c
-> index 5353e37eb950..c1c2b3060532 100644
-> --- a/drivers/media/v4l2-core/v4l2-fwnode.c
-> +++ b/drivers/media/v4l2-core/v4l2-fwnode.c
-> @@ -28,17 +28,6 @@
->  #include <media/v4l2-fwnode.h>
->  #include <media/v4l2-subdev.h>
+> 1) There is sufficient information in the ACPI table and we use data from=
+ the
+> ACPI tables
 >
-> -enum v4l2_fwnode_bus_type {
-> -       V4L2_FWNODE_BUS_TYPE_GUESS =3D 0,
-> -       V4L2_FWNODE_BUS_TYPE_CSI2_CPHY,
-> -       V4L2_FWNODE_BUS_TYPE_CSI1,
-> -       V4L2_FWNODE_BUS_TYPE_CCP2,
-> -       V4L2_FWNODE_BUS_TYPE_CSI2_DPHY,
-> -       V4L2_FWNODE_BUS_TYPE_PARALLEL,
-> -       V4L2_FWNODE_BUS_TYPE_BT656,
-> -       NR_OF_V4L2_FWNODE_BUS_TYPE,
-> -};
-> -
->  static const struct v4l2_fwnode_bus_conv {
->         enum v4l2_fwnode_bus_type fwnode_bus_type;
->         enum v4l2_mbus_type mbus_type;
-> diff --git a/include/media/v4l2-fwnode.h b/include/media/v4l2-fwnode.h
-> index 4365430eea6f..d306a28bda96 100644
-> --- a/include/media/v4l2-fwnode.h
-> +++ b/include/media/v4l2-fwnode.h
-> @@ -213,6 +213,28 @@ struct v4l2_fwnode_connector {
->         } connector;
->  };
+> 2) There is unsufficient info in the ACPI tables (or we don't know how to
+> get / interpret the data) and we use DMI quirks
 >
-> +/**
-> + * enum v4l2_fwnode_bus_type - Video bus types defined by firmware prope=
-rties
-> + * @V4L2_FWNODE_BUS_TYPE_GUESS: Default value if no bus-type fwnode prop=
-erty
-> + * @V4L2_FWNODE_BUS_TYPE_CSI2_CPHY: MIPI CSI-2 bus, C-PHY physical layer
-> + * @V4L2_FWNODE_BUS_TYPE_CSI1: MIPI CSI-1 bus
-> + * @V4L2_FWNODE_BUS_TYPE_CCP2: SMIA Compact Camera Port 2 bus
-> + * @V4L2_FWNODE_BUS_TYPE_CSI2_DPHY: MIPI CSI-2 bus, D-PHY physical layer
-> + * @V4L2_FWNODE_BUS_TYPE_PARALLEL: Camera Parallel Interface bus
-> + * @V4L2_FWNODE_BUS_TYPE_BT656: BT656 video format bus-type
-> + * @NR_OF_V4L2_FWNODE_BUS_TYPE: Number of bus-types
-> + */
-> +enum v4l2_fwnode_bus_type {
-> +       V4L2_FWNODE_BUS_TYPE_GUESS =3D 0,
-> +       V4L2_FWNODE_BUS_TYPE_CSI2_CPHY,
-> +       V4L2_FWNODE_BUS_TYPE_CSI1,
-> +       V4L2_FWNODE_BUS_TYPE_CCP2,
-> +       V4L2_FWNODE_BUS_TYPE_CSI2_DPHY,
-> +       V4L2_FWNODE_BUS_TYPE_PARALLEL,
-> +       V4L2_FWNODE_BUS_TYPE_BT656,
+> Although we do often also use a combination, getting what we can from ACP=
+I,
+> combined with a set of defaults for what we cannot get from ACPI
+> based on what reference designs use (IOW what most devices seem to have
+> copy and pasted). Combined with DMI quirks for when the defaults do not
+> work (which is quite often).
+>
+> Depending on if "not working because of wrong defaults" has bad side effe=
+cts,
+> another option is also to only allow the driver to load on devices which
+> have the necessary info provided through a DMI match.
+>
+> I hope this helps.
 
-> +       NR_OF_V4L2_FWNODE_BUS_TYPE,
-
-I see that comma is in the original line, but I think it's a good time
-to remove it from this line. Since it's a terminator line we might
-prevent potential issues during review (by a different diff look) and
-at compile time (if anything comes after it).
-
-> +};
-> +
->  /**
->   * v4l2_fwnode_endpoint_parse() - parse all fwnode node properties
->   * @fwnode: pointer to the endpoint's fwnode handle
-> --
-> 2.25.1
->
-
+Thanks! Yes, it sounds to me as a useful input!
 
 -- =
 
 With Best Regards,
 Andy Shevchenko
---===============0442202544182555277==--
+--===============0040518803121814856==--
 
