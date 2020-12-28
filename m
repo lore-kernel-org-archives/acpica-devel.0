@@ -1,108 +1,54 @@
-Content-Type: multipart/mixed; boundary="===============3546156925221493732=="
+Content-Type: multipart/mixed; boundary="===============8414934072970835306=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rjw at rjwysocki.net>
-Subject: [Devel] Re: power-off delay/hang due to commit 6d25be57 (mainline)
-Date: Thu, 31 Dec 2020 21:46:11 +0100
-Message-ID: <9709109.MH8tSaV5v9@kreacher>
-In-Reply-To: CAJZ5v0j7i86twMS+csYMaetUkvqjof4FD2GRNoZ_AN=SBF7F1w@mail.gmail.com
+From: Andy Shevchenko <andy.shevchenko at gmail.com>
+Subject: [Devel] Re: [PATCH v3 14/14] ipu3-cio2: Add cio2-bridge to ipu3-cio2
+ driver
+Date: Mon, 28 Dec 2020 22:54:51 +0000
+Message-ID: <20201228225544.GH4077@smile.fi.intel.com>
+In-Reply-To: 2d37df3d-f04c-6679-6e27-6c7f82e9b158@gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3546156925221493732==
+--===============8414934072970835306==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Wednesday, December 2, 2020 8:13:38 PM CET Rafael J. Wysocki wrote:
-> On Wed, Dec 2, 2020 at 7:31 PM Rafael J. Wysocki <rafael(a)kernel.org> wr=
-ote:
-> >
-> > On Wed, Dec 2, 2020 at 7:03 PM Sebastian Andrzej Siewior
-> > <bigeasy(a)linutronix.de> wrote:
-> > >
-> > > On 2020-10-26 18:20:59 [+0100], To Rafael J. Wysocki wrote:
-> > > > > > > > Done as Bug 208877.
-> > > > > > Rafael, do you have any suggestions?
-> > > > >
-> > > > > I've lost track of this sorry.
-> > > > >
-> > > > > I have ideas, let me get back to this next week.
-> > > >
-> > > > :)
-> > >
-> > > Rafael, any update? If you outline an idea or so then I may be able to
-> > > form a patch out of it. Otherwise I have no idea how to fix this - ot=
-her
-> > > than telling the driver to not poll in smaller intervals than
-> > > 30secs.
-> >
-> > The idea, roughly speaking, is to limit the number of outstanding work
-> > items in the queue (basically, if there's a notification occurring
-> > before the previous one can be handled, there is no need to queue up
-> > another work item for it).
+On Mon, Dec 28, 2020 at 10:37:38PM +0000, Daniel Scally wrote:
+> On 28/12/2020 17:05, Sakari Ailus wrote:
+> > On Thu, Dec 24, 2020 at 02:54:44PM +0200, Andy Shevchenko wrote:
+
+...
+
+> >>> +#include <linux/property.h>
+> >>> +
+> >>> +#define CIO2_HID                               "INT343E"
+> >>> +#define CIO2_NUM_PORTS                         4
+> > =
+
+> > This is already defined in ipu3-cio2.h. Could you include that instead?
 > =
 
-> That's easier said than done, though, because of the way the work item
-> queue-up is hooked up into the ACPICA code.
+> Yes; but I'd need to also include media/v4l2-device.h and
+> media/videobuf2-dma-sg.h (they're included in ipu3-cio2-main.c at the
+> moment). It didn't seem worth it; but I can move those two includes from
+> the .c to the .h and then include ipu3-cio2.h in cio2-bridge.h
+> =
 
-So scratch this and it wouldn't work in general anyway AFAICS.
+> Which do you prefer?
 
-ATM, I'm tempted to do something like the patch below (with the rationale
-that it shouldn't be necessary to read the temperature right after updating
-the trip points if polling is in use, because the next update through polli=
-ng
-will cause it to be read anyway and it will trigger trip point actions as
-needed).
+Actually ipu3-cio2.h misses a lot of inclusions (like mutex.h which I
+immediately noticed when scrolled over data types). I think here should be a
+compromise variant, split out something like ipu3-cio2-defs.h which can be
+included in both ipu3-cio2.h and cio2-bridge.h.
 
-Stephen, can you give it a go, please?
+And cio2-bridge.h needs more inclusions like types.h.
 
----
- drivers/acpi/thermal.c |   17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+-- =
 
-Index: linux-pm/drivers/acpi/thermal.c
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
---- linux-pm.orig/drivers/acpi/thermal.c
-+++ linux-pm/drivers/acpi/thermal.c
-@@ -911,24 +911,25 @@ static void acpi_thermal_notify(struct a
- 	switch (event) {
- 	case ACPI_THERMAL_NOTIFY_TEMPERATURE:
- 		acpi_thermal_check(tz);
--		break;
-+		return;
- 	case ACPI_THERMAL_NOTIFY_THRESHOLDS:
- 		acpi_thermal_trips_update(tz, ACPI_TRIPS_REFRESH_THRESHOLDS);
--		acpi_thermal_check(tz);
--		acpi_bus_generate_netlink_event(device->pnp.device_class,
--						  dev_name(&device->dev), event, 0);
- 		break;
- 	case ACPI_THERMAL_NOTIFY_DEVICES:
- 		acpi_thermal_trips_update(tz, ACPI_TRIPS_REFRESH_DEVICES);
--		acpi_thermal_check(tz);
--		acpi_bus_generate_netlink_event(device->pnp.device_class,
--						  dev_name(&device->dev), event, 0);
- 		break;
- 	default:
- 		ACPI_DEBUG_PRINT((ACPI_DB_INFO,
- 				  "Unsupported event [0x%x]\n", event));
--		break;
-+		return;
- 	}
-+
-+	/* Trigger an update of the thermal zone unless polling is in use. */
-+	if (!tz->polling_frequency)
-+		acpi_thermal_check(tz);
-+
-+	acpi_bus_generate_netlink_event(device->pnp.device_class,
-+					dev_name(&device->dev), event, 0);
- }
- =
-
- /*
+With Best Regards,
+Andy Shevchenko
 
 
-
---===============3546156925221493732==--
+--===============8414934072970835306==--
 
