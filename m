@@ -1,106 +1,208 @@
-Content-Type: multipart/mixed; boundary="===============8085971806373591375=="
+Content-Type: multipart/mixed; boundary="===============5298432511728593041=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [External] Re: [pm:bleeding-edge 8612/8615]
- drivers/acpi/platform_profile.c:147:24: warning: address of array
- 'pprof->choices' will always evaluate to 'true'
-Date: Tue, 29 Dec 2020 16:46:38 +0100
-Message-ID: <CAJZ5v0gyAXmbbjbW=sh9UzZRaJMuc0_Btx4V+4DhrSQOPrt3Mg@mail.gmail.com>
-In-Reply-To: 22e7ec14-faab-bddd-fff2-303ab3bff01e@lenovo.com
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [pm:bleeding-edge] BUILD REGRESSION
+ 0c7a6fd3a0e835b0158a1f52176f5d3858fac110
+Date: Wed, 30 Dec 2020 13:17:58 +0800
+Message-ID: <5fec0d86.i0RjnNeExICZGSu7%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8085971806373591375==
+--===============5298432511728593041==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 29, 2020 at 4:36 PM Mark Pearson <markpearson(a)lenovo.com> wro=
-te:
->
-> Hi Rafael
->
-> On 29/12/2020 10:23, Rafael J. Wysocki wrote:
-> > On Tue, Dec 29, 2020 at 12:18 AM Mark Pearson <markpearson(a)lenovo.com=
-> wrote:
-> >>
-> >> Hi Hans
-> >>
-> >> On 27/12/2020 06:56, Hans de Goede wrote:
-> >>> Hi,
-> >>>
-> >>> On 12/27/20 6:11 AM, kernel test robot wrote:
-> >>>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux=
--pm.git bleeding-edge
-> >>>> head:   a33520709645543f108361fe21fa9434a351c4e9
-> >>>> commit: 8c9b909fb1282e43792433e6c1cba125ccfc6201 [8612/8615] ACPI: p=
-latform-profile: Add platform profile support
-> >>>> config: x86_64-randconfig-a015-20201221 (attached as .config)
-> >>>> compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project=
- cee1e7d14f4628d6174b33640d502bff3b54ae45)
-> >>>> reproduce (this is a W=3D1 build):
-> >>>>         wget https://raw.githubusercontent.com/intel/lkp-tests/maste=
-r/sbin/make.cross -O ~/bin/make.cross
-> >>>>         chmod +x ~/bin/make.cross
-> >>>>         # install x86_64 cross compiling tool for clang build
-> >>>>         # apt-get install binutils-x86-64-linux-gnu
-> >>>>         # https://git.kernel.org/pub/scm/linux/kernel/git/rafael/lin=
-ux-pm.git/commit/?id=3D8c9b909fb1282e43792433e6c1cba125ccfc6201
-> >>>>         git remote add pm https://git.kernel.org/pub/scm/linux/kerne=
-l/git/rafael/linux-pm.git
-> >>>>         git fetch --no-tags pm bleeding-edge
-> >>>>         git checkout 8c9b909fb1282e43792433e6c1cba125ccfc6201
-> >>>>         # save the attached .config to linux build tree
-> >>>>         COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dclang make.cro=
-ss ARCH=3Dx86_64
-> >>>>
-> >>>> If you fix the issue, kindly add following tag as appropriate
-> >>>> Reported-by: kernel test robot <lkp(a)intel.com>
-> >>>>
-> >>>> All warnings (new ones prefixed by >>):
-> >>>>
-> >>>>>> drivers/acpi/platform_profile.c:147:24: warning: address of array =
-'pprof->choices' will always evaluate to 'true' [-Wpointer-bool-conversion]
-> >>>>            if (!pprof || !pprof->choices || !pprof->profile_set ||
-> >>>>                          ~~~~~~~~^~~~~~~
-> >>>>    1 warning generated.
-> >>>
-> >>>
-> >>> Ah, this is caused by changing choices from a single long to:
-> >>>
-> >>>       unsigned long choices[BITS_TO_LONGS(PLATFORM_PROFILE_LAST)];
-> >>>
-> >>> So that we can use for_each_set_bit and are future proof for more then
-> >>> 32 profiles.
-> >>>
-> >>> To fix this the check should be changed into this (untested):
-> >>>
-> >>> #include <linux/bitmap.h>
-> >>>
-> >>>       if (!pprof || bitmap_empty(pprof->choices, PLATFORM_PROFILE_LAS=
-T) ||
-> >>>           !pprof->profile_set || !pprof->profile_get) {
-> >>>               mutex_unlock(&profile_lock);
-> >>>               return -EINVAL;
-> >>>       }
-> >>>
-> >>> Mark can you provide a (tested) patch for this?
-> >>>
-> >>> Regards,
-> >>>
-> >>> Hans
-> >>>
-> >> Will do!
-> >
-> > Please note that I'm not going to push the material to Linus with this
-> > warning, so if you want it to go into 5.11, that needs to be addressed
-> > timely.
-> >
-> > Thanks!
-> >
-> Understood :) I tested this last night and it looks good. Do I push this
-> as a v8 patch on the current series or as a new standalone patch?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git  bleeding-edge
+branch HEAD: 0c7a6fd3a0e835b0158a1f52176f5d3858fac110  Merge branch 'pm-cpu=
+idle-next' into bleeding-edge
 
-An incremental patch to fix the issue, please.
---===============8085971806373591375==--
+Error/Warning reports:
+
+https://lore.kernel.org/linux-acpi/202012180806.uUcdy2LC-lkp(a)intel.com
+https://lore.kernel.org/linux-acpi/202012271352.JvNDF17O-lkp(a)intel.com
+https://lore.kernel.org/linux-acpi/202012280239.stlWMtr3-lkp(a)intel.com
+https://lore.kernel.org/linux-acpi/202012280249.nrNm8Jn3-lkp(a)intel.com
+
+Error/Warning in current branch:
+
+drivers/acpi/platform_profile.c:147:24: warning: address of array 'pprof->c=
+hoices' will always evaluate to 'true' [-Wpointer-bool-conversion]
+drivers/acpi/x86/s2idle.c:108:30: warning: variable 'info' set but not used=
+ [-Wunused-but-set-variable]
+drivers/acpi/x86/s2idle.c:138:25: warning: variable 'obj_new' set but not u=
+sed [-Wunused-but-set-variable]
+dtpm.c:(.text+0x24c): undefined reference to `__udivdi3'
+dtpm.c:(.text+0x2a4): undefined reference to `__udivdi3'
+dtpm.c:(.text+0x3bc): undefined reference to `__udivdi3'
+dtpm.c:(.text+0x514): undefined reference to `__aeabi_uldivmod'
+dtpm.c:(.text+0x52d): undefined reference to `__udivdi3'
+
+Error/Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+|-- arm-allmodconfig
+|   `-- dtpm.c:(.text):undefined-reference-to-__aeabi_uldivmod
+|-- arm-allyesconfig
+|   `-- dtpm.c:(.text):undefined-reference-to-__aeabi_uldivmod
+|-- h8300-allmodconfig
+|   `-- dtpm.c:(.text):undefined-reference-to-__udivdi3
+|-- h8300-allyesconfig
+|   `-- dtpm.c:(.text):undefined-reference-to-__udivdi3
+|-- i386-allyesconfig
+|   `-- dtpm.c:(.text):undefined-reference-to-__udivdi3
+|-- i386-randconfig-a006-20201229
+|   |-- drivers-acpi-x86-s2idle.c:warning:variable-info-set-but-not-used
+|   `-- drivers-acpi-x86-s2idle.c:warning:variable-obj_new-set-but-not-used
+|-- i386-randconfig-r002-20201229
+|   |-- drivers-acpi-x86-s2idle.c:warning:variable-info-set-but-not-used
+|   `-- drivers-acpi-x86-s2idle.c:warning:variable-obj_new-set-but-not-used
+|-- i386-randconfig-s001-20201229
+|   |-- drivers-acpi-x86-s2idle.c:warning:variable-info-set-but-not-used
+|   `-- drivers-acpi-x86-s2idle.c:warning:variable-obj_new-set-but-not-used
+|-- m68k-allmodconfig
+|   `-- dtpm.c:(.text):undefined-reference-to-__udivdi3
+|-- m68k-allyesconfig
+|   `-- dtpm.c:(.text):undefined-reference-to-__udivdi3
+|-- sh-allmodconfig
+|   `-- dtpm.c:(.text):undefined-reference-to-__udivdi3
+|-- x86_64-randconfig-a002-20201229
+|   |-- drivers-acpi-x86-s2idle.c:warning:variable-info-set-but-not-used
+|   `-- drivers-acpi-x86-s2idle.c:warning:variable-obj_new-set-but-not-used
+|-- x86_64-randconfig-a004-20201229
+|   |-- drivers-acpi-x86-s2idle.c:warning:variable-info-set-but-not-used
+|   `-- drivers-acpi-x86-s2idle.c:warning:variable-obj_new-set-but-not-used
+`-- x86_64-randconfig-s021-20201229
+    |-- drivers-acpi-x86-s2idle.c:warning:variable-info-set-but-not-used
+    `-- drivers-acpi-x86-s2idle.c:warning:variable-obj_new-set-but-not-used
+
+clang_recent_errors
+|-- x86_64-randconfig-a011-20201229
+|   `-- drivers-acpi-platform_profile.c:warning:address-of-array-pprof-choi=
+ces-will-always-evaluate-to-true
+|-- x86_64-randconfig-a012-20201229
+|   `-- drivers-acpi-platform_profile.c:warning:address-of-array-pprof-choi=
+ces-will-always-evaluate-to-true
+|-- x86_64-randconfig-a013-20201229
+|   `-- drivers-acpi-platform_profile.c:warning:address-of-array-pprof-choi=
+ces-will-always-evaluate-to-true
+|-- x86_64-randconfig-a014-20201229
+|   `-- drivers-acpi-platform_profile.c:warning:address-of-array-pprof-choi=
+ces-will-always-evaluate-to-true
+|-- x86_64-randconfig-a015-20201229
+|   `-- drivers-acpi-platform_profile.c:warning:address-of-array-pprof-choi=
+ces-will-always-evaluate-to-true
+`-- x86_64-randconfig-a016-20201229
+    `-- drivers-acpi-platform_profile.c:warning:address-of-array-pprof-choi=
+ces-will-always-evaluate-to-true
+
+elapsed time: 724m
+
+configs tested: 95
+configs skipped: 2
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                           se7619_defconfig
+sh                        sh7785lcr_defconfig
+arm                        trizeps4_defconfig
+mips                        workpad_defconfig
+um                           x86_64_defconfig
+mips                     cu1000-neo_defconfig
+m68k                          sun3x_defconfig
+mips                        bcm47xx_defconfig
+arm                            mps2_defconfig
+mips                         tb0287_defconfig
+s390                          debug_defconfig
+arm                           sama5_defconfig
+arm                         s3c2410_defconfig
+arm                         lpc18xx_defconfig
+sh                         microdev_defconfig
+arm                         s5pv210_defconfig
+mips                         tb0226_defconfig
+arm                          pxa910_defconfig
+c6x                        evmc6474_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a001-20201229
+x86_64               randconfig-a006-20201229
+x86_64               randconfig-a002-20201229
+x86_64               randconfig-a004-20201229
+x86_64               randconfig-a003-20201229
+x86_64               randconfig-a005-20201229
+i386                 randconfig-a002-20201229
+i386                 randconfig-a005-20201229
+i386                 randconfig-a004-20201229
+i386                 randconfig-a006-20201229
+i386                 randconfig-a003-20201229
+i386                 randconfig-a001-20201229
+i386                 randconfig-a014-20201229
+i386                 randconfig-a012-20201229
+i386                 randconfig-a011-20201229
+i386                 randconfig-a016-20201229
+i386                 randconfig-a015-20201229
+i386                 randconfig-a013-20201229
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a014-20201229
+x86_64               randconfig-a015-20201229
+x86_64               randconfig-a016-20201229
+x86_64               randconfig-a012-20201229
+x86_64               randconfig-a011-20201229
+x86_64               randconfig-a013-20201229
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
+--===============5298432511728593041==--
 
