@@ -1,58 +1,136 @@
-Content-Type: multipart/mixed; boundary="===============6186935708824645347=="
+Content-Type: multipart/mixed; boundary="===============9184711103468985447=="
 MIME-Version: 1.0
-From: Andy Shevchenko <andy.shevchenko at gmail.com>
-Subject: [Devel] Re: [PATCH v3 14/14] ipu3-cio2: Add cio2-bridge to ipu3-cio2
- driver
-Date: Wed, 30 Dec 2020 20:48:08 +0000
-Message-ID: <CAHp75Vf18sse_QQGSy+E2qK-N_B=ky83x36HiNfmUKmya_CS9Q@mail.gmail.com>
-In-Reply-To: X+pzKDNWpiQWenHy@pendragon.ideasonboard.com
+From: Rafael J. Wysocki <rjw at rjwysocki.net>
+Subject: [Devel] Re: power-off delay/hang due to commit 6d25be57 (mainline)
+Date: Sat, 02 Jan 2021 12:03:17 +0100
+Message-ID: <1744807.WFtog62eDp@kreacher>
+In-Reply-To: 9709109.MH8tSaV5v9@kreacher
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6186935708824645347==
+--===============9184711103468985447==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 29, 2020 at 2:07 AM Laurent Pinchart
-<laurent.pinchart(a)ideasonboard.com> wrote:
-> On Tue, Dec 29, 2020 at 01:54:59AM +0200, Andy Shevchenko wrote:
-> > On Tue, Dec 29, 2020 at 1:08 AM Laurent Pinchart wrote:
+On Thursday, December 31, 2020 9:46:11 PM CET Rafael J. Wysocki wrote:
+> On Wednesday, December 2, 2020 8:13:38 PM CET Rafael J. Wysocki wrote:
+> > On Wed, Dec 2, 2020 at 7:31 PM Rafael J. Wysocki <rafael(a)kernel.org> =
+wrote:
+> > >
+> > > On Wed, Dec 2, 2020 at 7:03 PM Sebastian Andrzej Siewior
+> > > <bigeasy(a)linutronix.de> wrote:
+> > > >
+> > > > On 2020-10-26 18:20:59 [+0100], To Rafael J. Wysocki wrote:
+> > > > > > > > > Done as Bug 208877.
+> > > > > > > Rafael, do you have any suggestions?
+> > > > > >
+> > > > > > I've lost track of this sorry.
+> > > > > >
+> > > > > > I have ideas, let me get back to this next week.
+> > > > >
+> > > > > :)
+> > > >
+> > > > Rafael, any update? If you outline an idea or so then I may be able=
+ to
+> > > > form a patch out of it. Otherwise I have no idea how to fix this - =
+other
+> > > > than telling the driver to not poll in smaller intervals than
+> > > > 30secs.
+> > >
+> > > The idea, roughly speaking, is to limit the number of outstanding work
+> > > items in the queue (basically, if there's a notification occurring
+> > > before the previous one can be handled, there is no need to queue up
+> > > another work item for it).
+> > =
 
-...
+> > That's easier said than done, though, because of the way the work item
+> > queue-up is hooked up into the ACPICA code.
+> =
 
-> > +#include <linux/videodev2.h>
->
-> I think this can be dropped.
+> So scratch this and it wouldn't work in general anyway AFAICS.
+> =
 
-I dropped above (I noticed it's included by a half of the headers listed be=
-low.
+> ATM, I'm tempted to do something like the patch below (with the rationale
+> that it shouldn't be necessary to read the temperature right after updati=
+ng
+> the trip points if polling is in use, because the next update through pol=
+ling
+> will cause it to be read anyway and it will trigger trip point actions as
+> needed).
 
-> > +#include <media/media-device.h>
-> > +#include <media/media-entity.h>
-> > +#include <media/v4l2-async.h>
-> > +#include <media/v4l2-dev.h>
-> > +#include <media/v4l2-device.h>
-> > +#include <media/v4l2-subdev.h>
-> > +#include <media/videobuf2-core.h>
-> > +#include <media/videobuf2-v4l2.h>
+There is one more way to address this, probably better: instead of checking=
+ the
+temperature right away in acpi_thermal_notify(), queue that on acpi_thermal=
+_pm_queue
+and so only if another thermal check is not pending.
 
-...
+This way there will be at most one temperature check coming from
+acpi_thermal_notify() queued up at any time which should prevent the
+build-up of work items from taking place.
 
-> How about grouping all forward declarations at the top ?
+So something like this:
 
-Done.
+---
+ drivers/acpi/thermal.c |   14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
-> Otherwise this looks good,
->
-> Reviewed-by: Laurent Pinchart <laurent.pinchart(a)ideasonboard.com>
+Index: linux-pm/drivers/acpi/thermal.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+--- linux-pm.orig/drivers/acpi/thermal.c
++++ linux-pm/drivers/acpi/thermal.c
+@@ -900,6 +900,12 @@ static void acpi_thermal_unregister_ther
+                                  Driver Interface
+    -----------------------------------------------------------------------=
+--- */
+ =
 
-Thanks!
-I just sent a formal patch with your tag included.
++static void acpi_queue_thermal_check(struct acpi_thermal *tz)
++{
++	if (!work_pending(&tz->thermal_check_work))
++		queue_work(acpi_thermal_pm_queue, &tz->thermal_check_work);
++}
++
+ static void acpi_thermal_notify(struct acpi_device *device, u32 event)
+ {
+ 	struct acpi_thermal *tz =3D acpi_driver_data(device);
+@@ -910,17 +916,17 @@ static void acpi_thermal_notify(struct a
+ =
 
--- =
+ 	switch (event) {
+ 	case ACPI_THERMAL_NOTIFY_TEMPERATURE:
+-		acpi_thermal_check(tz);
++		acpi_queue_thermal_check(tz);
+ 		break;
+ 	case ACPI_THERMAL_NOTIFY_THRESHOLDS:
+ 		acpi_thermal_trips_update(tz, ACPI_TRIPS_REFRESH_THRESHOLDS);
+-		acpi_thermal_check(tz);
++		acpi_queue_thermal_check(tz);
+ 		acpi_bus_generate_netlink_event(device->pnp.device_class,
+ 						  dev_name(&device->dev), event, 0);
+ 		break;
+ 	case ACPI_THERMAL_NOTIFY_DEVICES:
+ 		acpi_thermal_trips_update(tz, ACPI_TRIPS_REFRESH_DEVICES);
+-		acpi_thermal_check(tz);
++		acpi_queue_thermal_check(tz);
+ 		acpi_bus_generate_netlink_event(device->pnp.device_class,
+ 						  dev_name(&device->dev), event, 0);
+ 		break;
+@@ -1117,7 +1123,7 @@ static int acpi_thermal_resume(struct de
+ 		tz->state.active |=3D tz->trips.active[i].flags.enabled;
+ 	}
+ =
 
-With Best Regards,
-Andy Shevchenko
---===============6186935708824645347==--
+-	queue_work(acpi_thermal_pm_queue, &tz->thermal_check_work);
++	acpi_queue_thermal_check(tz);
+ =
+
+ 	return AE_OK;
+ }
+
+
+
+--===============9184711103468985447==--
 
