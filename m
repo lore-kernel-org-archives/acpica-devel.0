@@ -1,63 +1,140 @@
-Content-Type: multipart/mixed; boundary="===============7507765912151238806=="
+Content-Type: multipart/mixed; boundary="===============3486332645824852166=="
 MIME-Version: 1.0
 From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [pm:bleeding-edge 20/29]
- drivers/acpi/platform_profile.c:67:33: error: passing 'const struct
- platform_profile_handler to parameter of type 'struct
- platform_profile_handler discards qualifiers
-Date: Tue, 12 Jan 2021 14:49:46 +0100
-Message-ID: <CAJZ5v0hUrNd9HCY66mw6_Vab0JrgNwJYV_PgaT6fkd1+j8UBtw@mail.gmail.com>
-In-Reply-To: 01442a77-7d87-5a12-d7b8-4fe397a37464@redhat.com
+Subject: [Devel] Re: [PATCH v5 13/15] ACPI / bus: Add
+ acpi_dev_get_next_match_dev() and helper macro
+Date: Tue, 12 Jan 2021 20:25:02 +0100
+Message-ID: <CAJZ5v0jWCT6koRvW8AGMs3ODX_10b-fCaQgMXG7kfq1DoDfeBA@mail.gmail.com>
+In-Reply-To: 20210107132838.396641-14-djrscally@gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7507765912151238806==
+--===============3486332645824852166==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 12, 2021 at 1:11 PM Hans de Goede <hdegoede(a)redhat.com> wrote:
+On Thu, Jan 7, 2021 at 2:31 PM Daniel Scally <djrscally(a)gmail.com> wrote:
 >
-> Hi,
+> To ensure we handle situations in which multiple sensors of the same
+> model (and therefore _HID) are present in a system, we need to be able
+> to iterate over devices matching a known _HID but unknown _UID and _HRV
+>  - add acpi_dev_get_next_match_dev() to accommodate that possibility and
+> change acpi_dev_get_first_match_dev() to simply call the new function
+> with a NULL starting point. Add an iterator macro for convenience.
 >
-> On 1/12/21 1:07 PM, Jiaxun Yang wrote:
-> > =E5=9C=A8 2021/1/12 =E4=B8=8B=E5=8D=886:42, Hans de Goede =E5=86=99=E9=
-=81=93:
-> >> Hi,
-> >>
-> >> On 1/8/21 9:52 AM, kernel test robot wrote:
-> > [...]
-> >>
-> >> If you fix the issue, kindly add following tag as appropriate
-> >> Reported-by: kernel test robot <lkp(a)intel.com>
-> >>
-> >> All errors (new ones prefixed by >>):
-> >>
-> > [...]
-> >>>     2 errors generated.
-> >
-> > Oops, thanks for the reminder, I should exclude 0day CI from mail filte=
-r.
-> > It's wired that GCC didn't say anything about it.
-> >
-> >> Ugh, so that means that the current version of the
-> >> "ACPI: platform-profile: Pass profile pointer to driver callbacks"
-> >> patch is no good. Since this is causing compile errors I assume
-> >> that it will be dropped from the bleeding-edge branch.
-> >> Is that right Rafael?
-> >
-> > I'm not familiar with x86pdx and ACPI workflow.
-> > Should I resend the patch or send a fixup patch?
->
-> I believe a new version of the patch is best, then Rafael can
-> replace the broken patch. We want to avoid having a commit in
-> git history which does not compile in some cases, because that
-> creates problems when git bisecting.
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko(a)linux.intel.com>
+> Reviewed-by: Sakari Ailus <sakari.ailus(a)linux.intel.com>
+> Suggested-by: Andy Shevchenko <andriy.shevchenko(a)linux.intel.com>
+> Signed-off-by: Daniel Scally <djrscally(a)gmail.com>
 
-That's right.
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki(a)intel.com>
 
-If the plan is to drop the "const" everywhere, I would appreciate an
-additional patch to do that on top of the two from Mark and a new
-patch adding a new callback on top of that.
---===============7507765912151238806==--
+> ---
+> Changes in v5:
+>
+>         - Changed commit subject
+>
+>  drivers/acpi/utils.c    | 30 ++++++++++++++++++++++++++----
+>  include/acpi/acpi_bus.h |  7 +++++++
+>  2 files changed, 33 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/acpi/utils.c b/drivers/acpi/utils.c
+> index d5411a166685..ddca1550cce6 100644
+> --- a/drivers/acpi/utils.c
+> +++ b/drivers/acpi/utils.c
+> @@ -843,12 +843,13 @@ bool acpi_dev_present(const char *hid, const char *=
+uid, s64 hrv)
+>  EXPORT_SYMBOL(acpi_dev_present);
+>
+>  /**
+> - * acpi_dev_get_first_match_dev - Return the first match of ACPI device
+> + * acpi_dev_get_next_match_dev - Return the next match of ACPI device
+> + * @adev: Pointer to the previous acpi_device matching this @hid, @uid a=
+nd @hrv
+>   * @hid: Hardware ID of the device.
+>   * @uid: Unique ID of the device, pass NULL to not check _UID
+>   * @hrv: Hardware Revision of the device, pass -1 to not check _HRV
+>   *
+> - * Return the first match of ACPI device if a matching device was present
+> + * Return the next match of ACPI device if another matching device was p=
+resent
+>   * at the moment of invocation, or NULL otherwise.
+>   *
+>   * The caller is responsible to call put_device() on the returned device.
+> @@ -856,8 +857,9 @@ EXPORT_SYMBOL(acpi_dev_present);
+>   * See additional information in acpi_dev_present() as well.
+>   */
+>  struct acpi_device *
+> -acpi_dev_get_first_match_dev(const char *hid, const char *uid, s64 hrv)
+> +acpi_dev_get_next_match_dev(struct acpi_device *adev, const char *hid, c=
+onst char *uid, s64 hrv)
+>  {
+> +       struct device *start =3D adev ? &adev->dev : NULL;
+>         struct acpi_dev_match_info match =3D {};
+>         struct device *dev;
+>
+> @@ -865,9 +867,29 @@ acpi_dev_get_first_match_dev(const char *hid, const =
+char *uid, s64 hrv)
+>         match.uid =3D uid;
+>         match.hrv =3D hrv;
+>
+> -       dev =3D bus_find_device(&acpi_bus_type, NULL, &match, acpi_dev_ma=
+tch_cb);
+> +       dev =3D bus_find_device(&acpi_bus_type, start, &match, acpi_dev_m=
+atch_cb);
+>         return dev ? to_acpi_device(dev) : NULL;
+>  }
+> +EXPORT_SYMBOL(acpi_dev_get_next_match_dev);
+> +
+> +/**
+> + * acpi_dev_get_first_match_dev - Return the first match of ACPI device
+> + * @hid: Hardware ID of the device.
+> + * @uid: Unique ID of the device, pass NULL to not check _UID
+> + * @hrv: Hardware Revision of the device, pass -1 to not check _HRV
+> + *
+> + * Return the first match of ACPI device if a matching device was present
+> + * at the moment of invocation, or NULL otherwise.
+> + *
+> + * The caller is responsible to call put_device() on the returned device.
+> + *
+> + * See additional information in acpi_dev_present() as well.
+> + */
+> +struct acpi_device *
+> +acpi_dev_get_first_match_dev(const char *hid, const char *uid, s64 hrv)
+> +{
+> +       return acpi_dev_get_next_match_dev(NULL, hid, uid, hrv);
+> +}
+>  EXPORT_SYMBOL(acpi_dev_get_first_match_dev);
+>
+>  /*
+> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+> index 6d1879bf9440..02a716a0af5d 100644
+> --- a/include/acpi/acpi_bus.h
+> +++ b/include/acpi/acpi_bus.h
+> @@ -683,9 +683,16 @@ static inline bool acpi_device_can_poweroff(struct a=
+cpi_device *adev)
+>
+>  bool acpi_dev_hid_uid_match(struct acpi_device *adev, const char *hid2, =
+const char *uid2);
+>
+> +struct acpi_device *
+> +acpi_dev_get_next_match_dev(struct acpi_device *adev, const char *hid, c=
+onst char *uid, s64 hrv);
+>  struct acpi_device *
+>  acpi_dev_get_first_match_dev(const char *hid, const char *uid, s64 hrv);
+>
+> +#define for_each_acpi_dev_match(adev, hid, uid, hrv)                   \
+> +       for (adev =3D acpi_dev_get_first_match_dev(hid, uid, hrv);       =
+ \
+> +            adev;                                                      \
+> +            adev =3D acpi_dev_get_next_match_dev(adev, hid, uid, hrv))
+> +
+>  static inline void acpi_dev_put(struct acpi_device *adev)
+>  {
+>         put_device(&adev->dev);
+> --
+> 2.25.1
+>
+--===============3486332645824852166==--
 
