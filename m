@@ -1,131 +1,63 @@
-Content-Type: multipart/mixed; boundary="===============4775109808800496262=="
+Content-Type: multipart/mixed; boundary="===============7507765912151238806=="
 MIME-Version: 1.0
-From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
- e286f24a2dd220eef9fc28349fbc054279ef712e
-Date: Tue, 12 Jan 2021 16:19:34 +0800
-Message-ID: <5ffd5b96.jmsqyxS9F/ubTXNq%lkp@intel.com>
+From: Rafael J. Wysocki <rafael at kernel.org>
+Subject: [Devel] Re: [pm:bleeding-edge 20/29]
+ drivers/acpi/platform_profile.c:67:33: error: passing 'const struct
+ platform_profile_handler to parameter of type 'struct
+ platform_profile_handler discards qualifiers
+Date: Tue, 12 Jan 2021 14:49:46 +0100
+Message-ID: <CAJZ5v0hUrNd9HCY66mw6_Vab0JrgNwJYV_PgaT6fkd1+j8UBtw@mail.gmail.com>
+In-Reply-To: 01442a77-7d87-5a12-d7b8-4fe397a37464@redhat.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4775109808800496262==
+--===============7507765912151238806==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
-m.git  bleeding-edge
-branch HEAD: e286f24a2dd220eef9fc28349fbc054279ef712e  Merge branch 'acpi-p=
-latform' into bleeding-edge
+On Tue, Jan 12, 2021 at 1:11 PM Hans de Goede <hdegoede(a)redhat.com> wrote:
+>
+> Hi,
+>
+> On 1/12/21 1:07 PM, Jiaxun Yang wrote:
+> > =E5=9C=A8 2021/1/12 =E4=B8=8B=E5=8D=886:42, Hans de Goede =E5=86=99=E9=
+=81=93:
+> >> Hi,
+> >>
+> >> On 1/8/21 9:52 AM, kernel test robot wrote:
+> > [...]
+> >>
+> >> If you fix the issue, kindly add following tag as appropriate
+> >> Reported-by: kernel test robot <lkp(a)intel.com>
+> >>
+> >> All errors (new ones prefixed by >>):
+> >>
+> > [...]
+> >>>     2 errors generated.
+> >
+> > Oops, thanks for the reminder, I should exclude 0day CI from mail filte=
+r.
+> > It's wired that GCC didn't say anything about it.
+> >
+> >> Ugh, so that means that the current version of the
+> >> "ACPI: platform-profile: Pass profile pointer to driver callbacks"
+> >> patch is no good. Since this is causing compile errors I assume
+> >> that it will be dropped from the bleeding-edge branch.
+> >> Is that right Rafael?
+> >
+> > I'm not familiar with x86pdx and ACPI workflow.
+> > Should I resend the patch or send a fixup patch?
+>
+> I believe a new version of the patch is best, then Rafael can
+> replace the broken patch. We want to avoid having a commit in
+> git history which does not compile in some cases, because that
+> creates problems when git bisecting.
 
-elapsed time: 726m
+That's right.
 
-configs tested: 96
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                  cavium_octeon_defconfig
-sh                           se7206_defconfig
-powerpc                  storcenter_defconfig
-arm                          ep93xx_defconfig
-powerpc                  iss476-smp_defconfig
-h8300                     edosk2674_defconfig
-arm                           h5000_defconfig
-sh                  sh7785lcr_32bit_defconfig
-mips                        bcm63xx_defconfig
-mips                malta_kvm_guest_defconfig
-mips                         rt305x_defconfig
-powerpc                      ppc64e_defconfig
-arm                         vf610m4_defconfig
-m68k                           sun3_defconfig
-arm                           efm32_defconfig
-nios2                            alldefconfig
-mips                  maltasmvp_eva_defconfig
-powerpc                     sbc8548_defconfig
-arm                         palmz72_defconfig
-arm                        mvebu_v7_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a002-20210111
-i386                 randconfig-a005-20210111
-i386                 randconfig-a006-20210111
-i386                 randconfig-a001-20210111
-i386                 randconfig-a003-20210111
-i386                 randconfig-a004-20210111
-x86_64               randconfig-a015-20210110
-x86_64               randconfig-a012-20210110
-x86_64               randconfig-a013-20210110
-x86_64               randconfig-a016-20210110
-x86_64               randconfig-a014-20210110
-x86_64               randconfig-a011-20210110
-i386                 randconfig-a012-20210111
-i386                 randconfig-a011-20210111
-i386                 randconfig-a016-20210111
-i386                 randconfig-a015-20210111
-i386                 randconfig-a013-20210111
-i386                 randconfig-a014-20210111
-x86_64               randconfig-a004-20210111
-x86_64               randconfig-a006-20210111
-x86_64               randconfig-a001-20210111
-x86_64               randconfig-a003-20210111
-x86_64               randconfig-a005-20210111
-x86_64               randconfig-a002-20210111
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============4775109808800496262==--
+If the plan is to drop the "const" everywhere, I would appreciate an
+additional patch to do that on top of the two from Mark and a new
+patch adding a new callback on top of that.
+--===============7507765912151238806==--
 
