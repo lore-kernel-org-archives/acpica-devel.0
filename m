@@ -1,137 +1,121 @@
-Content-Type: multipart/mixed; boundary="===============0659116345087726152=="
+Content-Type: multipart/mixed; boundary="===============2322269728198900397=="
 MIME-Version: 1.0
 From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [PATCH v2 1/7] acpi: utils: move acpi_lpss_dep() to utils
-Date: Mon, 18 Jan 2021 17:06:30 +0100
-Message-ID: <CAJZ5v0hihFa=M658GE2LtoKCnPkMQznXBtq9_+g0_4gFnw6qAg@mail.gmail.com>
-In-Reply-To: 20210118122852.GD4077@smile.fi.intel.com
+Subject: [Devel] Re: [PATCH v2 2/7] acpi: utils: Add function to fetch
+ dependent acpi_devices
+Date: Mon, 18 Jan 2021 17:14:17 +0100
+Message-ID: <CAJZ5v0gVQsZ4rxXW8uMidW9zfY_S50zpfrL-Gq0J3Z4-qqBiww@mail.gmail.com>
+In-Reply-To: 20210118003428.568892-3-djrscally@gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0659116345087726152==
+--===============2322269728198900397==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 18, 2021 at 1:30 PM Andy Shevchenko
-<andriy.shevchenko(a)linux.intel.com> wrote:
+On Mon, Jan 18, 2021 at 1:37 AM Daniel Scally <djrscally(a)gmail.com> wrote:
 >
-> On Mon, Jan 18, 2021 at 12:34:22AM +0000, Daniel Scally wrote:
-> > I need to be able to identify devices which declare themselves to be
-> > dependent on other devices through _DEP; add this function to utils.c
-> > and export it to the rest of the ACPI layer.
->
-> Prefix -> "ACPI / utils: "
+> In some ACPI tables we encounter, devices use the _DEP method to assert
+> a dependence on other ACPI devices as opposed to the OpRegions that the
+> specification intends. We need to be able to find those devices "from"
+> the dependee, so add a function to parse all ACPI Devices and check if
+> the include the handle of the dependee device in their _DEP buffer.
 
-Preferably "ACPI: utils: " for that matter and yes, please rename the
-function while moving it.
+What exactly do you need this for?
 
-> Otherwise good to me
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko(a)linux.intel.com>
+Would it be practical to look up the suppliers in acpi_dep_list instead?
+
+Note that supplier drivers may remove entries from there, but does
+that matter for your use case?
+
+> Signed-off-by: Daniel Scally <djrscally(a)gmail.com>
+> ---
+> Changes in v2:
+>         - Used acpi_lpss_dep() as Andy suggested.
 >
-> > Suggested-by: Andy Shevchenko <andriy.shevchenko(a)linux.intel.com>
-> > Signed-off-by: Daniel Scally <djrscally(a)gmail.com>
-> > ---
-> > Changes in v2:
-> >       - Introduced
-> >
-> >  drivers/acpi/acpi_lpss.c | 24 ------------------------
-> >  drivers/acpi/internal.h  |  1 +
-> >  drivers/acpi/utils.c     | 24 ++++++++++++++++++++++++
-> >  3 files changed, 25 insertions(+), 24 deletions(-)
-> >
-> > diff --git a/drivers/acpi/acpi_lpss.c b/drivers/acpi/acpi_lpss.c
-> > index be73974ce449..70c7d9a3f715 100644
-> > --- a/drivers/acpi/acpi_lpss.c
-> > +++ b/drivers/acpi/acpi_lpss.c
-> > @@ -543,30 +543,6 @@ static struct device *acpi_lpss_find_device(const =
-char *hid, const char *uid)
-> >       return bus_find_device(&pci_bus_type, NULL, &data, match_hid_uid);
-> >  }
-> >
-> > -static bool acpi_lpss_dep(struct acpi_device *adev, acpi_handle handle)
-> > -{
-> > -     struct acpi_handle_list dep_devices;
-> > -     acpi_status status;
-> > -     int i;
-> > -
-> > -     if (!acpi_has_method(adev->handle, "_DEP"))
-> > -             return false;
-> > -
-> > -     status =3D acpi_evaluate_reference(adev->handle, "_DEP", NULL,
-> > -                                      &dep_devices);
-> > -     if (ACPI_FAILURE(status)) {
-> > -             dev_dbg(&adev->dev, "Failed to evaluate _DEP.\n");
-> > -             return false;
-> > -     }
-> > -
-> > -     for (i =3D 0; i < dep_devices.count; i++) {
-> > -             if (dep_devices.handles[i] =3D=3D handle)
-> > -                     return true;
-> > -     }
-> > -
-> > -     return false;
-> > -}
-> > -
-> >  static void acpi_lpss_link_consumer(struct device *dev1,
-> >                                   const struct lpss_device_links *link)
-> >  {
-> > diff --git a/drivers/acpi/internal.h b/drivers/acpi/internal.h
-> > index cb229e24c563..ee62c0973576 100644
-> > --- a/drivers/acpi/internal.h
-> > +++ b/drivers/acpi/internal.h
-> > @@ -79,6 +79,7 @@ static inline void acpi_lpss_init(void) {}
-> >  #endif
-> >
-> >  void acpi_apd_init(void);
-> > +bool acpi_lpss_dep(struct acpi_device *adev, acpi_handle handle);
-> >
-> >  acpi_status acpi_hotplug_schedule(struct acpi_device *adev, u32 src);
-> >  bool acpi_queue_hotplug_work(struct work_struct *work);
-> > diff --git a/drivers/acpi/utils.c b/drivers/acpi/utils.c
-> > index ddca1550cce6..78b38775f18b 100644
-> > --- a/drivers/acpi/utils.c
-> > +++ b/drivers/acpi/utils.c
-> > @@ -807,6 +807,30 @@ static int acpi_dev_match_cb(struct device *dev, c=
-onst void *data)
-> >       return hrv =3D=3D match->hrv;
-> >  }
-> >
-> > +bool acpi_lpss_dep(struct acpi_device *adev, acpi_handle handle)
-> > +{
-> > +     struct acpi_handle_list dep_devices;
-> > +     acpi_status status;
-> > +     int i;
-> > +
-> > +     if (!acpi_has_method(adev->handle, "_DEP"))
-> > +             return false;
-> > +
-> > +     status =3D acpi_evaluate_reference(adev->handle, "_DEP", NULL,
-> > +                                      &dep_devices);
-> > +     if (ACPI_FAILURE(status)) {
-> > +             dev_dbg(&adev->dev, "Failed to evaluate _DEP.\n");
-> > +             return false;
-> > +     }
-> > +
-> > +     for (i =3D 0; i < dep_devices.count; i++) {
-> > +             if (dep_devices.handles[i] =3D=3D handle)
-> > +                     return true;
-> > +     }
-> > +
-> > +     return false;
-> > +}
-> > +
-> >  /**
-> >   * acpi_dev_present - Detect that a given ACPI device is present
-> >   * @hid: Hardware ID of the device.
-> > --
-> > 2.25.1
-> >
+>  drivers/acpi/utils.c    | 34 ++++++++++++++++++++++++++++++++++
+>  include/acpi/acpi_bus.h |  2 ++
+>  2 files changed, 36 insertions(+)
 >
+> diff --git a/drivers/acpi/utils.c b/drivers/acpi/utils.c
+> index 78b38775f18b..ec6a2406a886 100644
+> --- a/drivers/acpi/utils.c
+> +++ b/drivers/acpi/utils.c
+> @@ -831,6 +831,18 @@ bool acpi_lpss_dep(struct acpi_device *adev, acpi_ha=
+ndle handle)
+>         return false;
+>  }
+>
+> +static int acpi_dev_match_by_dep(struct device *dev, const void *data)
+> +{
+> +       struct acpi_device *adev =3D to_acpi_device(dev);
+> +       const struct acpi_device *dependee =3D data;
+> +       acpi_handle handle =3D dependee->handle;
+> +
+> +       if (acpi_lpss_dep(adev, handle))
+> +               return 1;
+> +
+> +       return 0;
+> +}
+> +
+>  /**
+>   * acpi_dev_present - Detect that a given ACPI device is present
+>   * @hid: Hardware ID of the device.
+> @@ -866,6 +878,28 @@ bool acpi_dev_present(const char *hid, const char *u=
+id, s64 hrv)
+>  }
+>  EXPORT_SYMBOL(acpi_dev_present);
+>
+> +/**
+> + * acpi_dev_get_next_dep_dev - Return next ACPI device dependent on inpu=
+t dev
+> + * @adev: Pointer to the dependee device
+> + * @prev: Pointer to the previous dependent device (or NULL for first ma=
+tch)
+> + *
+> + * Return the next ACPI device which declares itself dependent on @adev =
+in
+> + * the _DEP buffer.
+> + *
+> + * The caller is responsible to call put_device() on the returned device.
+> + */
+> +struct acpi_device *acpi_dev_get_next_dep_dev(struct acpi_device *adev,
+> +                                             struct acpi_device *prev)
+> +{
+> +       struct device *start =3D prev ? &prev->dev : NULL;
+> +       struct device *dev;
+> +
+> +       dev =3D bus_find_device(&acpi_bus_type, start, adev, acpi_dev_mat=
+ch_by_dep);
+> +
+> +       return dev ? to_acpi_device(dev) : NULL;
+> +}
+> +EXPORT_SYMBOL(acpi_dev_get_next_dep_dev);
+> +
+>  /**
+>   * acpi_dev_get_next_match_dev - Return the next match of ACPI device
+>   * @adev: Pointer to the previous acpi_device matching this @hid, @uid a=
+nd @hrv
+> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+> index 02a716a0af5d..33deb22294f2 100644
+> --- a/include/acpi/acpi_bus.h
+> +++ b/include/acpi/acpi_bus.h
+> @@ -683,6 +683,8 @@ static inline bool acpi_device_can_poweroff(struct ac=
+pi_device *adev)
+>
+>  bool acpi_dev_hid_uid_match(struct acpi_device *adev, const char *hid2, =
+const char *uid2);
+>
+> +struct acpi_device *
+> +acpi_dev_get_next_dep_dev(struct acpi_device *adev, struct acpi_device *=
+prev);
+>  struct acpi_device *
+>  acpi_dev_get_next_match_dev(struct acpi_device *adev, const char *hid, c=
+onst char *uid, s64 hrv);
+>  struct acpi_device *
 > --
-> With Best Regards,
-> Andy Shevchenko
+> 2.25.1
 >
->
---===============0659116345087726152==--
+--===============2322269728198900397==--
 
