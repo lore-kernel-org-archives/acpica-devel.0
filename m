@@ -1,121 +1,131 @@
-Content-Type: multipart/mixed; boundary="===============2322269728198900397=="
+Content-Type: multipart/mixed; boundary="===============2288976430237685616=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [PATCH v2 2/7] acpi: utils: Add function to fetch
- dependent acpi_devices
-Date: Mon, 18 Jan 2021 17:14:17 +0100
-Message-ID: <CAJZ5v0gVQsZ4rxXW8uMidW9zfY_S50zpfrL-Gq0J3Z4-qqBiww@mail.gmail.com>
-In-Reply-To: 20210118003428.568892-3-djrscally@gmail.com
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
+ c01c98292221ca24fe5fcd2c95c73cdd998d3692
+Date: Tue, 19 Jan 2021 11:28:11 +0800
+Message-ID: <600651cb.THkGy8gyuSV4g+x3%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2322269728198900397==
+--===============2288976430237685616==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 18, 2021 at 1:37 AM Daniel Scally <djrscally(a)gmail.com> wrote:
->
-> In some ACPI tables we encounter, devices use the _DEP method to assert
-> a dependence on other ACPI devices as opposed to the OpRegions that the
-> specification intends. We need to be able to find those devices "from"
-> the dependee, so add a function to parse all ACPI Devices and check if
-> the include the handle of the dependee device in their _DEP buffer.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git bleeding-edge
+branch HEAD: c01c98292221ca24fe5fcd2c95c73cdd998d3692  Merge branch 'acpica=
+' into bleeding-edge
 
-What exactly do you need this for?
+elapsed time: 721m
 
-Would it be practical to look up the suppliers in acpi_dep_list instead?
+configs tested: 94
+configs skipped: 2
 
-Note that supplier drivers may remove entries from there, but does
-that matter for your use case?
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> Signed-off-by: Daniel Scally <djrscally(a)gmail.com>
-> ---
-> Changes in v2:
->         - Used acpi_lpss_dep() as Andy suggested.
->
->  drivers/acpi/utils.c    | 34 ++++++++++++++++++++++++++++++++++
->  include/acpi/acpi_bus.h |  2 ++
->  2 files changed, 36 insertions(+)
->
-> diff --git a/drivers/acpi/utils.c b/drivers/acpi/utils.c
-> index 78b38775f18b..ec6a2406a886 100644
-> --- a/drivers/acpi/utils.c
-> +++ b/drivers/acpi/utils.c
-> @@ -831,6 +831,18 @@ bool acpi_lpss_dep(struct acpi_device *adev, acpi_ha=
-ndle handle)
->         return false;
->  }
->
-> +static int acpi_dev_match_by_dep(struct device *dev, const void *data)
-> +{
-> +       struct acpi_device *adev =3D to_acpi_device(dev);
-> +       const struct acpi_device *dependee =3D data;
-> +       acpi_handle handle =3D dependee->handle;
-> +
-> +       if (acpi_lpss_dep(adev, handle))
-> +               return 1;
-> +
-> +       return 0;
-> +}
-> +
->  /**
->   * acpi_dev_present - Detect that a given ACPI device is present
->   * @hid: Hardware ID of the device.
-> @@ -866,6 +878,28 @@ bool acpi_dev_present(const char *hid, const char *u=
-id, s64 hrv)
->  }
->  EXPORT_SYMBOL(acpi_dev_present);
->
-> +/**
-> + * acpi_dev_get_next_dep_dev - Return next ACPI device dependent on inpu=
-t dev
-> + * @adev: Pointer to the dependee device
-> + * @prev: Pointer to the previous dependent device (or NULL for first ma=
-tch)
-> + *
-> + * Return the next ACPI device which declares itself dependent on @adev =
-in
-> + * the _DEP buffer.
-> + *
-> + * The caller is responsible to call put_device() on the returned device.
-> + */
-> +struct acpi_device *acpi_dev_get_next_dep_dev(struct acpi_device *adev,
-> +                                             struct acpi_device *prev)
-> +{
-> +       struct device *start =3D prev ? &prev->dev : NULL;
-> +       struct device *dev;
-> +
-> +       dev =3D bus_find_device(&acpi_bus_type, start, adev, acpi_dev_mat=
-ch_by_dep);
-> +
-> +       return dev ? to_acpi_device(dev) : NULL;
-> +}
-> +EXPORT_SYMBOL(acpi_dev_get_next_dep_dev);
-> +
->  /**
->   * acpi_dev_get_next_match_dev - Return the next match of ACPI device
->   * @adev: Pointer to the previous acpi_device matching this @hid, @uid a=
-nd @hrv
-> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-> index 02a716a0af5d..33deb22294f2 100644
-> --- a/include/acpi/acpi_bus.h
-> +++ b/include/acpi/acpi_bus.h
-> @@ -683,6 +683,8 @@ static inline bool acpi_device_can_poweroff(struct ac=
-pi_device *adev)
->
->  bool acpi_dev_hid_uid_match(struct acpi_device *adev, const char *hid2, =
-const char *uid2);
->
-> +struct acpi_device *
-> +acpi_dev_get_next_dep_dev(struct acpi_device *adev, struct acpi_device *=
-prev);
->  struct acpi_device *
->  acpi_dev_get_next_match_dev(struct acpi_device *adev, const char *hid, c=
-onst char *uid, s64 hrv);
->  struct acpi_device *
-> --
-> 2.25.1
->
---===============2322269728198900397==--
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                         ps3_defconfig
+arm                     am200epdkit_defconfig
+mips                      loongson3_defconfig
+ia64                             alldefconfig
+h8300                     edosk2674_defconfig
+mips                     decstation_defconfig
+mips                malta_qemu_32r6_defconfig
+arm                         s3c2410_defconfig
+sh                              ul2_defconfig
+m68k                          multi_defconfig
+arm                            zeus_defconfig
+mips                      bmips_stb_defconfig
+arm                            hisi_defconfig
+arm                         vf610m4_defconfig
+i386                             alldefconfig
+m68k                            q40_defconfig
+powerpc                 mpc8560_ads_defconfig
+mips                    maltaup_xpa_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a002-20210118
+i386                 randconfig-a005-20210118
+i386                 randconfig-a006-20210118
+i386                 randconfig-a001-20210118
+i386                 randconfig-a003-20210118
+i386                 randconfig-a004-20210118
+x86_64               randconfig-a015-20210118
+x86_64               randconfig-a013-20210118
+x86_64               randconfig-a012-20210118
+x86_64               randconfig-a016-20210118
+x86_64               randconfig-a011-20210118
+x86_64               randconfig-a014-20210118
+i386                 randconfig-a011-20210118
+i386                 randconfig-a012-20210118
+i386                 randconfig-a016-20210118
+i386                 randconfig-a015-20210118
+i386                 randconfig-a013-20210118
+i386                 randconfig-a014-20210118
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a004-20210118
+x86_64               randconfig-a006-20210118
+x86_64               randconfig-a001-20210118
+x86_64               randconfig-a003-20210118
+x86_64               randconfig-a005-20210118
+x86_64               randconfig-a002-20210118
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
+--===============2288976430237685616==--
 
