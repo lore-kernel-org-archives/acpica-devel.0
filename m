@@ -1,51 +1,76 @@
-Content-Type: multipart/mixed; boundary="===============1681123291381053073=="
+Content-Type: multipart/mixed; boundary="===============6750867403799048956=="
 MIME-Version: 1.0
 From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [PATCH v2 2/7] acpi: utils: Add function to fetch
- dependent acpi_devices
-Date: Tue, 19 Jan 2021 14:15:21 +0100
-Message-ID: <CAJZ5v0iU2m4Hs6APuauQ645DwbjYaB8nJFjYH0+7yQnR-FPZBQ@mail.gmail.com>
-In-Reply-To: b381b48e-1bf2-f3e7-10a6-e51cd261f43c@gmail.com
+Subject: [Devel] Re: [PATCH v2 4/7] i2c: i2c-core-acpi: Add i2c_acpi_dev_name()
+Date: Tue, 19 Jan 2021 14:19:16 +0100
+Message-ID: <CAJZ5v0hUELtKc9CK=z47XQvSAAx=wTWvoVwP-PaMqugaXaCgZQ@mail.gmail.com>
+In-Reply-To: YAVSf7+iTPNYf5XS@pendragon.ideasonboard.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1681123291381053073==
+--===============6750867403799048956==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 18, 2021 at 9:51 PM Daniel Scally <djrscally(a)gmail.com> wrote:
+On Mon, Jan 18, 2021 at 9:55 PM Laurent Pinchart
+<laurent.pinchart(a)ideasonboard.com> wrote:
 >
-> On 18/01/2021 16:14, Rafael J. Wysocki wrote:
-> > On Mon, Jan 18, 2021 at 1:37 AM Daniel Scally <djrscally(a)gmail.com> w=
-rote:
-> >> In some ACPI tables we encounter, devices use the _DEP method to assert
-> >> a dependence on other ACPI devices as opposed to the OpRegions that the
-> >> specification intends. We need to be able to find those devices "from"
-> >> the dependee, so add a function to parse all ACPI Devices and check if
-> >> the include the handle of the dependee device in their _DEP buffer.
-> > What exactly do you need this for?
+> Hi Daniel,
 >
-> So, in our DSDT we have devices with _HID INT3472, plus sensors which
-> refer to those INT3472's in their _DEP method. The driver binds to the
-> INT3472 device, we need to find the sensors dependent on them.
+> Thank you for the patch.
 >
-
-Well, this is an interesting concept. :-)
-
-Why does _DEP need to be used for that?  Isn't there any other way to
-look up the dependent sensors?
-
+> On Mon, Jan 18, 2021 at 12:34:25AM +0000, Daniel Scally wrote:
+> > We want to refer to an i2c device by name before it has been
 >
-> > Would it be practical to look up the suppliers in acpi_dep_list instead?
+> s/i2c device/acpi i2c device/ ?
+>
+> > created by the kernel; add a function that constructs the name
+> > from the acpi device instead.
 > >
-> > Note that supplier drivers may remove entries from there, but does
-> > that matter for your use case?
+> > Signed-off-by: Daniel Scally <djrscally(a)gmail.com>
+> > ---
+> > Changes in v2:
+> >
+> >       - Stopped using devm_kasprintf()
+> >
+> >  drivers/i2c/i2c-core-acpi.c | 16 ++++++++++++++++
+> >  include/linux/i2c.h         |  5 +++++
+> >  2 files changed, 21 insertions(+)
+> >
+> > diff --git a/drivers/i2c/i2c-core-acpi.c b/drivers/i2c/i2c-core-acpi.c
+> > index 37c510d9347a..98c3ba9a2350 100644
+> > --- a/drivers/i2c/i2c-core-acpi.c
+> > +++ b/drivers/i2c/i2c-core-acpi.c
+> > @@ -497,6 +497,22 @@ struct i2c_client *i2c_acpi_new_device(struct devi=
+ce *dev, int index,
+> >  }
+> >  EXPORT_SYMBOL_GPL(i2c_acpi_new_device);
+> >
+> > +/**
+> > + * i2c_acpi_dev_name - Construct i2c device name for devs sourced from=
+ ACPI
+> > + * @adev:     ACPI device to construct the name for
+> > + *
+> > + * Constructs the name of an i2c device matching the format used by
+> > + * i2c_dev_set_name() to allow users to refer to an i2c device by name=
+ even
+> > + * before they have been instantiated.
+> > + *
+> > + * The caller is responsible for freeing the returned pointer.
+> > + */
+> > +char *i2c_acpi_dev_name(struct acpi_device *adev)
+> > +{
+> > +     return kasprintf(GFP_KERNEL, I2C_DEV_NAME_FORMAT, acpi_dev_name(a=
+dev));
 >
-> Ah - that may work, yes. Thank you, let me test that.
+> There's a real danger of a memory leak, as the function name sounds very
+> similar to dev_name() or acpi_dev_name() and those don't allocate
+> memory. I'm not sure what a better name would be, but given that this
+> function is only used in patch 6/7 and not in the I2C subsystem itself,
+> I wonder if we should inline this kasprintf() call in the caller and
+> drop this patch.
 
-Even if that doesn't work right away, but it can be made work, I would
-very much prefer that to the driver parsing _DEP for every device in
-the namespace by itself.
---===============1681123291381053073==--
+IMO if this is a one-off usage, it's better to open-code it.
+--===============6750867403799048956==--
 
