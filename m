@@ -1,76 +1,134 @@
-Content-Type: multipart/mixed; boundary="===============6750867403799048956=="
+Content-Type: multipart/mixed; boundary="===============2473541646490070786=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [PATCH v2 4/7] i2c: i2c-core-acpi: Add i2c_acpi_dev_name()
-Date: Tue, 19 Jan 2021 14:19:16 +0100
-Message-ID: <CAJZ5v0hUELtKc9CK=z47XQvSAAx=wTWvoVwP-PaMqugaXaCgZQ@mail.gmail.com>
-In-Reply-To: YAVSf7+iTPNYf5XS@pendragon.ideasonboard.com
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
+ f2d717f48fb25785d65f740bf2425bb3ce5cce44
+Date: Wed, 20 Jan 2021 16:31:30 +0800
+Message-ID: <6007ea62.jSePxiLME1D20RPZ%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6750867403799048956==
+--===============2473541646490070786==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 18, 2021 at 9:55 PM Laurent Pinchart
-<laurent.pinchart(a)ideasonboard.com> wrote:
->
-> Hi Daniel,
->
-> Thank you for the patch.
->
-> On Mon, Jan 18, 2021 at 12:34:25AM +0000, Daniel Scally wrote:
-> > We want to refer to an i2c device by name before it has been
->
-> s/i2c device/acpi i2c device/ ?
->
-> > created by the kernel; add a function that constructs the name
-> > from the acpi device instead.
-> >
-> > Signed-off-by: Daniel Scally <djrscally(a)gmail.com>
-> > ---
-> > Changes in v2:
-> >
-> >       - Stopped using devm_kasprintf()
-> >
-> >  drivers/i2c/i2c-core-acpi.c | 16 ++++++++++++++++
-> >  include/linux/i2c.h         |  5 +++++
-> >  2 files changed, 21 insertions(+)
-> >
-> > diff --git a/drivers/i2c/i2c-core-acpi.c b/drivers/i2c/i2c-core-acpi.c
-> > index 37c510d9347a..98c3ba9a2350 100644
-> > --- a/drivers/i2c/i2c-core-acpi.c
-> > +++ b/drivers/i2c/i2c-core-acpi.c
-> > @@ -497,6 +497,22 @@ struct i2c_client *i2c_acpi_new_device(struct devi=
-ce *dev, int index,
-> >  }
-> >  EXPORT_SYMBOL_GPL(i2c_acpi_new_device);
-> >
-> > +/**
-> > + * i2c_acpi_dev_name - Construct i2c device name for devs sourced from=
- ACPI
-> > + * @adev:     ACPI device to construct the name for
-> > + *
-> > + * Constructs the name of an i2c device matching the format used by
-> > + * i2c_dev_set_name() to allow users to refer to an i2c device by name=
- even
-> > + * before they have been instantiated.
-> > + *
-> > + * The caller is responsible for freeing the returned pointer.
-> > + */
-> > +char *i2c_acpi_dev_name(struct acpi_device *adev)
-> > +{
-> > +     return kasprintf(GFP_KERNEL, I2C_DEV_NAME_FORMAT, acpi_dev_name(a=
-dev));
->
-> There's a real danger of a memory leak, as the function name sounds very
-> similar to dev_name() or acpi_dev_name() and those don't allocate
-> memory. I'm not sure what a better name would be, but given that this
-> function is only used in patch 6/7 and not in the I2C subsystem itself,
-> I wonder if we should inline this kasprintf() call in the caller and
-> drop this patch.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git bleeding-edge
+branch HEAD: f2d717f48fb25785d65f740bf2425bb3ce5cce44  Merge branch 'pm-clk=
+' into bleeding-edge
 
-IMO if this is a one-off usage, it's better to open-code it.
---===============6750867403799048956==--
+elapsed time: 726m
+
+configs tested: 97
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                      pmac32_defconfig
+mips                           ci20_defconfig
+arm                           sunxi_defconfig
+mips                        bcm63xx_defconfig
+powerpc                  iss476-smp_defconfig
+mips                malta_kvm_guest_defconfig
+m68k                         amcore_defconfig
+mips                  decstation_64_defconfig
+ia64                            zx1_defconfig
+sh                              ul2_defconfig
+sh                           se7721_defconfig
+mips                     loongson1b_defconfig
+mips                           jazz_defconfig
+mips                        omega2p_defconfig
+powerpc                 canyonlands_defconfig
+nds32                            alldefconfig
+xtensa                    xip_kc705_defconfig
+sh                           se7724_defconfig
+arm                          pcm027_defconfig
+sh                   secureedge5410_defconfig
+mips                       lemote2f_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a001-20210120
+i386                 randconfig-a002-20210120
+i386                 randconfig-a004-20210120
+i386                 randconfig-a006-20210120
+i386                 randconfig-a005-20210120
+i386                 randconfig-a003-20210120
+x86_64               randconfig-a012-20210120
+x86_64               randconfig-a015-20210120
+x86_64               randconfig-a016-20210120
+x86_64               randconfig-a011-20210120
+x86_64               randconfig-a013-20210120
+x86_64               randconfig-a014-20210120
+i386                 randconfig-a013-20210120
+i386                 randconfig-a011-20210120
+i386                 randconfig-a012-20210120
+i386                 randconfig-a014-20210120
+i386                 randconfig-a015-20210120
+i386                 randconfig-a016-20210120
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a002-20210120
+x86_64               randconfig-a003-20210120
+x86_64               randconfig-a001-20210120
+x86_64               randconfig-a005-20210120
+x86_64               randconfig-a006-20210120
+x86_64               randconfig-a004-20210120
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
+--===============2473541646490070786==--
 
