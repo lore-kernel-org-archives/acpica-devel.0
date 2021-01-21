@@ -1,137 +1,68 @@
-Content-Type: multipart/mixed; boundary="===============6332430577134268760=="
+Content-Type: multipart/mixed; boundary="===============1602649827718542646=="
 MIME-Version: 1.0
-From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS WITH WARNING
- 693e119601907f923bcf08aca03793a0d1cf4416
-Date: Thu, 21 Jan 2021 14:25:38 +0800
-Message-ID: <60091e62.ARJpxQVSwHfZKZ/b%lkp@intel.com>
+From: Rafael J. Wysocki <rafael at kernel.org>
+Subject: [Devel] Re: [PATCH v2 2/7] acpi: utils: Add function to fetch
+ dependent acpi_devices
+Date: Thu, 21 Jan 2021 12:58:43 +0100
+Message-ID: <CAJZ5v0gg5oXG3yOO9iDvPKSsadYrFojW6JcKfZcQbFFpO78zAQ@mail.gmail.com>
+In-Reply-To: e2d7e5e9-920f-7227-76a6-b166e30e11e5@gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6332430577134268760==
+--===============1602649827718542646==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
-m.git bleeding-edge
-branch HEAD: 693e119601907f923bcf08aca03793a0d1cf4416  Merge branch 'acpi-p=
-latform' into bleeding-edge
+On Thu, Jan 21, 2021 at 10:47 AM Daniel Scally <djrscally(a)gmail.com> wrot=
+e:
+>
+> Hi Rafael
+>
+> On 19/01/2021 13:15, Rafael J. Wysocki wrote:
+> > On Mon, Jan 18, 2021 at 9:51 PM Daniel Scally <djrscally(a)gmail.com> w=
+rote:
+> >> On 18/01/2021 16:14, Rafael J. Wysocki wrote:
+> >>> On Mon, Jan 18, 2021 at 1:37 AM Daniel Scally <djrscally(a)gmail.com>=
+ wrote:
+> >>>> In some ACPI tables we encounter, devices use the _DEP method to ass=
+ert
+> >>>> a dependence on other ACPI devices as opposed to the OpRegions that =
+the
+> >>>> specification intends. We need to be able to find those devices "fro=
+m"
+> >>>> the dependee, so add a function to parse all ACPI Devices and check =
+if
+> >>>> the include the handle of the dependee device in their _DEP buffer.
+> >>> What exactly do you need this for?
+> >> So, in our DSDT we have devices with _HID INT3472, plus sensors which
+> >> refer to those INT3472's in their _DEP method. The driver binds to the
+> >> INT3472 device, we need to find the sensors dependent on them.
+> >>
+> > Well, this is an interesting concept. :-)
+> >
+> > Why does _DEP need to be used for that?  Isn't there any other way to
+> > look up the dependent sensors?
+> >
+> >>> Would it be practical to look up the suppliers in acpi_dep_list inste=
+ad?
+> >>>
+> >>> Note that supplier drivers may remove entries from there, but does
+> >>> that matter for your use case?
+> >> Ah - that may work, yes. Thank you, let me test that.
+> > Even if that doesn't work right away, but it can be made work, I would
+> > very much prefer that to the driver parsing _DEP for every device in
+> > the namespace by itself.
+>
+>
+> This does work; do you prefer it in scan.c, or in utils.c (in which case
+> with acpi_dep_list declared as external var in internal.h)?
 
-Warning ids grouped by kconfigs:
+Let's put it in scan.c for now, because there is the lock protecting
+the list in there too.
 
-gcc_recent_errors
-`-- i386-randconfig-s002-20210119
-    `-- include-linux-spinlock.h:sparse:sparse:context-imbalance-in-pm_clk_=
-list_lock-wrong-count-at-exit
-
-elapsed time: 722m
-
-configs tested: 96
-configs skipped: 2
-
-gcc tested configs:
-arm64                            allyesconfig
-arm64                               defconfig
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                        workpad_defconfig
-sh                                  defconfig
-arm                          gemini_defconfig
-mips                           jazz_defconfig
-arm                           spitz_defconfig
-mips                  cavium_octeon_defconfig
-powerpc                 xes_mpc85xx_defconfig
-powerpc                     redwood_defconfig
-mips                          rm200_defconfig
-ia64                          tiger_defconfig
-m68k                       bvme6000_defconfig
-powerpc                    klondike_defconfig
-sh                            titan_defconfig
-powerpc                     rainier_defconfig
-powerpc                  storcenter_defconfig
-arm                         axm55xx_defconfig
-arm                           h3600_defconfig
-c6x                                 defconfig
-xtensa                       common_defconfig
-m68k                          multi_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a001-20210120
-i386                 randconfig-a002-20210120
-i386                 randconfig-a004-20210120
-i386                 randconfig-a006-20210120
-i386                 randconfig-a005-20210120
-i386                 randconfig-a003-20210120
-i386                 randconfig-a013-20210120
-i386                 randconfig-a011-20210120
-i386                 randconfig-a012-20210120
-i386                 randconfig-a014-20210120
-i386                 randconfig-a015-20210120
-i386                 randconfig-a016-20210120
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a002-20210120
-x86_64               randconfig-a003-20210120
-x86_64               randconfig-a001-20210120
-x86_64               randconfig-a005-20210120
-x86_64               randconfig-a006-20210120
-x86_64               randconfig-a004-20210120
-x86_64               randconfig-a015-20210119
-x86_64               randconfig-a013-20210119
-x86_64               randconfig-a012-20210119
-x86_64               randconfig-a016-20210119
-x86_64               randconfig-a011-20210119
-x86_64               randconfig-a014-20210119
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============6332430577134268760==--
+How do you want to implement this?  Something like "walk the list and
+run a callback for the matching entries" or do you have something else
+in mind?
+--===============1602649827718542646==--
 
