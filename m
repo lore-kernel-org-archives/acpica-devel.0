@@ -1,62 +1,128 @@
-Content-Type: multipart/mixed; boundary="===============9136718890398816150=="
+Content-Type: multipart/mixed; boundary="===============0886201201963704623=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [PATCH] ACPICA: fix -Wfallthrough
-Date: Thu, 21 Jan 2021 20:03:23 +0100
-Message-ID: <CAJZ5v0it3KfdNo7kwq-7__C+Kvr4Eo7x8-3rBi09B5rHfNv-hQ@mail.gmail.com>
-In-Reply-To: 031790d7-ee26-f919-9338-b135e9b94635@nvidia.com
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS WITH WARNING
+ 33b4fa8533186db3c463120ced43b1c12ecba18d
+Date: Fri, 22 Jan 2021 15:30:36 +0800
+Message-ID: <600a7f1c.IUhAMURl7o4IVqMl%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============9136718890398816150==
+--===============0886201201963704623==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 21, 2021 at 11:08 AM Jon Hunter <jonathanh(a)nvidia.com> wrote:
->
->
-> On 11/11/2020 02:11, Nick Desaulniers wrote:
-> > The "fallthrough" pseudo-keyword was added as a portable way to denote
-> > intentional fallthrough. This code seemed to be using a mix of
-> > fallthrough comments that GCC recognizes, and some kind of lint marker.
-> > I'm guessing that linter hasn't been run in a while from the mixed use
-> > of the marker vs comments.
-> >
-> > Signed-off-by: Nick Desaulniers <ndesaulniers(a)google.com>
->
->
-> I know this is not the exact version that was merged, I can't find it on
-> the list, but looks like the version that was merged [0],
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git bleeding-edge
+branch HEAD: 33b4fa8533186db3c463120ced43b1c12ecba18d  Merge branch 'acpi-p=
+latform' into bleeding-edge
 
-It would be this patch:
+Warning ids grouped by kconfigs:
 
-https://patchwork.kernel.org/project/linux-acpi/patch/20210115184826.2250-4=
--erik.kaneda(a)intel.com/
+gcc_recent_errors
+`-- x86_64-randconfig-s022-20210122
+    `-- include-linux-spinlock.h:sparse:sparse:context-imbalance-in-pm_clk_=
+list_lock-wrong-count-at-exit
 
-Nick, Erik?
+elapsed time: 722m
 
-> is causing build errors with older toolchains (GCC v6) ...
->
-> /dvs/git/dirty/git-master_l4t-upstream/kernel/drivers/acpi/acpica/dscontr=
-ol.c: In function =E2=80=98acpi_ds_exec_begin_control_op=E2=80=99:
-> /dvs/git/dirty/git-master_l4t-upstream/kernel/drivers/acpi/acpica/dscontr=
-ol.c:65:3: error: =E2=80=98ACPI_FALLTHROUGH=E2=80=99 undeclared (first use =
-in this function)
->    ACPI_FALLTHROUGH;
->    ^~~~~~~~~~~~~~~~
-> /dvs/git/dirty/git-master_l4t-upstream/kernel/drivers/acpi/acpica/dscontr=
-ol.c:65:3: note: each undeclared identifier is reported only once for each =
-function it appears in
-> /dvs/git/dirty/git-master_l4t-upstream/kernel/scripts/Makefile.build:287:=
- recipe for target 'drivers/acpi/acpica/dscontrol.o' failed
->
-> Cheers
-> Jon
->
-> [0] https://github.com/acpica/acpica/commit/4b9135f5
->
-> --
-> nvpublic
---===============9136718890398816150==--
+configs tested: 89
+configs skipped: 2
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                   motionpro_defconfig
+c6x                        evmc6457_defconfig
+mips                         tb0226_defconfig
+mips                           ip22_defconfig
+powerpc                        icon_defconfig
+mips                        nlm_xlp_defconfig
+xtensa                generic_kc705_defconfig
+powerpc                    socrates_defconfig
+m68k                          atari_defconfig
+arm                             mxs_defconfig
+powerpc                   currituck_defconfig
+arm                        trizeps4_defconfig
+powerpc                 mpc834x_itx_defconfig
+arm                        shmobile_defconfig
+um                           x86_64_defconfig
+arc                        nsimosci_defconfig
+m68k                       m5208evb_defconfig
+arm                         lpc32xx_defconfig
+sh                           se7780_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a001-20210121
+i386                 randconfig-a002-20210121
+i386                 randconfig-a004-20210121
+i386                 randconfig-a006-20210121
+i386                 randconfig-a005-20210121
+i386                 randconfig-a003-20210121
+i386                 randconfig-a013-20210121
+i386                 randconfig-a011-20210121
+i386                 randconfig-a012-20210121
+i386                 randconfig-a014-20210121
+i386                 randconfig-a015-20210121
+i386                 randconfig-a016-20210121
+x86_64               randconfig-a002-20210121
+x86_64               randconfig-a003-20210121
+x86_64               randconfig-a001-20210121
+x86_64               randconfig-a005-20210121
+x86_64               randconfig-a006-20210121
+x86_64               randconfig-a004-20210121
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
+--===============0886201201963704623==--
 
