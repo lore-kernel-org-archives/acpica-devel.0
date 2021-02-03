@@ -1,192 +1,192 @@
-Content-Type: multipart/mixed; boundary="===============0752881003684848427=="
+Content-Type: multipart/mixed; boundary="===============3385123418298263160=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [PATCH v2 2/7] acpi: utils: Add function to fetch
- dependent acpi_devices
-Date: Tue, 02 Feb 2021 15:02:39 +0100
-Message-ID: <CAJZ5v0j7U=e+GHLqpivqfvOKCyCZWm4VK3___4tTfcxD==vcHA@mail.gmail.com>
-In-Reply-To: d9ec0439-4323-51a2-70e7-c258fe63cd86@gmail.com
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
+ c42187278fc107ad17fdaa2def70c451bcfdb6be
+Date: Wed, 03 Feb 2021 15:31:58 +0800
+Message-ID: <601a516e.9kydFKsx8s1Ahqhn%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0752881003684848427==
+--===============3385123418298263160==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 2, 2021 at 10:58 AM Daniel Scally <djrscally(a)gmail.com> wrote:
->
-> Hi Rafael
->
-> On 21/01/2021 21:06, Daniel Scally wrote:
-> >
-> > On 21/01/2021 18:08, Rafael J. Wysocki wrote:
-> >> On Thu, Jan 21, 2021 at 5:34 PM Daniel Scally <djrscally(a)gmail.com> =
-wrote:
-> >>>
-> >>> On 21/01/2021 14:39, Rafael J. Wysocki wrote:
-> >>>> On Thu, Jan 21, 2021 at 1:04 PM Daniel Scally <djrscally(a)gmail.com=
-> wrote:
-> >>>>> On 21/01/2021 11:58, Rafael J. Wysocki wrote:
-> >>>>>> On Thu, Jan 21, 2021 at 10:47 AM Daniel Scally <djrscally(a)gmail.=
-com> wrote:
-> >>>>>>> Hi Rafael
-> >>>>>>>
-> >>>>>>> On 19/01/2021 13:15, Rafael J. Wysocki wrote:
-> >>>>>>>> On Mon, Jan 18, 2021 at 9:51 PM Daniel Scally <djrscally(a)gmail=
-.com> wrote:
-> >>>>>>>>> On 18/01/2021 16:14, Rafael J. Wysocki wrote:
-> >>>>>>>>>> On Mon, Jan 18, 2021 at 1:37 AM Daniel Scally <djrscally(a)gma=
-il.com> wrote:
-> >>>>>>>>>>> In some ACPI tables we encounter, devices use the _DEP method=
- to assert
-> >>>>>>>>>>> a dependence on other ACPI devices as opposed to the OpRegion=
-s that the
-> >>>>>>>>>>> specification intends. We need to be able to find those devic=
-es "from"
-> >>>>>>>>>>> the dependee, so add a function to parse all ACPI Devices and=
- check if
-> >>>>>>>>>>> the include the handle of the dependee device in their _DEP b=
-uffer.
-> >>>>>>>>>> What exactly do you need this for?
-> >>>>>>>>> So, in our DSDT we have devices with _HID INT3472, plus sensors=
- which
-> >>>>>>>>> refer to those INT3472's in their _DEP method. The driver binds=
- to the
-> >>>>>>>>> INT3472 device, we need to find the sensors dependent on them.
-> >>>>>>>>>
-> >>>>>>>> Well, this is an interesting concept. :-)
-> >>>>>>>>
-> >>>>>>>> Why does _DEP need to be used for that?  Isn't there any other w=
-ay to
-> >>>>>>>> look up the dependent sensors?
-> >>>>>>>>
-> >>>>>>>>>> Would it be practical to look up the suppliers in acpi_dep_lis=
-t instead?
-> >>>>>>>>>>
-> >>>>>>>>>> Note that supplier drivers may remove entries from there, but =
-does
-> >>>>>>>>>> that matter for your use case?
-> >>>>>>>>> Ah - that may work, yes. Thank you, let me test that.
-> >>>>>>>> Even if that doesn't work right away, but it can be made work, I=
- would
-> >>>>>>>> very much prefer that to the driver parsing _DEP for every devic=
-e in
-> >>>>>>>> the namespace by itself.
-> >>>>>>> This does work; do you prefer it in scan.c, or in utils.c (in whi=
-ch case
-> >>>>>>> with acpi_dep_list declared as external var in internal.h)?
-> >>>>>> Let's put it in scan.c for now, because there is the lock protecti=
-ng
-> >>>>>> the list in there too.
-> >>>>>>
-> >>>>>> How do you want to implement this?  Something like "walk the list =
-and
-> >>>>>> run a callback for the matching entries" or do you have something =
-else
-> >>>>>> in mind?
-> >>>>> Something like this (though with a mutex_lock()). It could be simpl=
-ified
-> >>>>> by dropping the prev stuff, but we have seen INT3472 devices with
-> >>>>> multiple sensors declaring themselves dependent on the same device
-> >>>>>
-> >>>>>
-> >>>>> struct acpi_device *
-> >>>>> acpi_dev_get_next_dependent_dev(struct acpi_device *supplier,
-> >>>>>                 struct acpi_device *prev)
-> >>>>> {
-> >>>>>     struct acpi_dep_data *dep;
-> >>>>>     struct acpi_device *adev;
-> >>>>>     int ret;
-> >>>>>
-> >>>>>     if (!supplier)
-> >>>>>         return ERR_PTR(-EINVAL);
-> >>>>>
-> >>>>>     if (prev) {
-> >>>>>         /*
-> >>>>>          * We need to find the previous device in the list, so we k=
-now
-> >>>>>          * where to start iterating from.
-> >>>>>          */
-> >>>>>         list_for_each_entry(dep, &acpi_dep_list, node)
-> >>>>>             if (dep->consumer =3D=3D prev->handle &&
-> >>>>>                 dep->supplier =3D=3D supplier->handle)
-> >>>>>                 break;
-> >>>>>
-> >>>>>         dep =3D list_next_entry(dep, node);
-> >>>>>     } else {
-> >>>>>         dep =3D list_first_entry(&acpi_dep_list, struct acpi_dep_da=
-ta,
-> >>>>>                        node);
-> >>>>>     }
-> >>>>>
-> >>>>>
-> >>>>>     list_for_each_entry_from(dep, &acpi_dep_list, node) {
-> >>>>>         if (dep->supplier =3D=3D supplier->handle) {
-> >>>>>             ret =3D acpi_bus_get_device(dep->consumer, &adev);
-> >>>>>             if (ret)
-> >>>>>                 return ERR_PTR(ret);
-> >>>>>
-> >>>>>             return adev;
-> >>>>>         }
-> >>>>>     }
-> >>>>>
-> >>>>>     return NULL;
-> >>>>> }
-> >>>> That would work I think, but would it be practical to modify
-> >>>> acpi_walk_dep_device_list() so that it runs a callback for every
-> >>>> consumer found instead of or in addition to the "delete from the list
-> >>>> and free the entry" operation?
-> >>>
-> >>> I think that this would work fine, if that's the way you want to go.
-> >>> We'd just need to move everything inside the if (dep->supplier =3D=3D
-> >>> handle) block to a new callback, and for my purposes I think also add=
- a
-> >>> way to stop parsing the list from the callback (so like have the
-> >>> callbacks return int and stop parsing on a non-zero return). Do you w=
-ant
-> >>> to expose that ability to pass a callback outside of ACPI?
-> >> Yes.
-> >>
-> >>> Or just export helpers to call each of the callbacks (one to fetch th=
-e next
-> >>> dependent device, one to decrement the unmet dependencies counter)
-> >> If you can run a callback for every matching entry, you don't really
-> >> need to have a callback to return the next matching entry.  You can do
-> >> stuff for all of them in one go
-> >
-> > Well it my case it's more to return a pointer to the dep->consumer's
-> > acpi_device for a matching entry, so my idea was where there's multiple
-> > dependents you could use this as an iterator...but it could just be
-> > extended to that if needed later; I don't actually need to do it right =
-now.
-> >
-> >
-> >> note that it probably is not a good
-> >> idea to run the callback under the lock, so the for loop currently in
-> >> there is not really suitable for that
-> >
-> > No problem;  I'll tweak that then
->
-> Slightly walking back my "No problem" here; as I understand this there's
-> kinda two options:
->
-> 1. Walk over the (locked) list, when a match is found unlock, run the
-> callback and re-lock.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git bleeding-edge
+branch HEAD: c42187278fc107ad17fdaa2def70c451bcfdb6be  Merge branch 'pm-dom=
+ains' into linux-next
 
-That's what I was thinking about.
+elapsed time: 726m
 
-> The problem with that idea is unless I'm mistaken there's no guarantee
-> that the .next pointer is still valid then (even using the *_safe()
-> methods) because either the next or the next + 1 entry could have been
-> removed whilst the list was unlocked and the callback was being ran, so
-> this seems a little unsafe.
+configs tested: 155
+configs skipped: 3
 
-This can be addressed by rotating the list while walking it, but that
-becomes problematic if there are concurrent walkers.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-OK, I guess running the callback under the lock is not really a big
-deal (and for the deletion case this is actually necessary), so let's
-do that.
---===============0752881003684848427==--
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                       omap2plus_defconfig
+h8300                     edosk2674_defconfig
+arm                          ep93xx_defconfig
+h8300                               defconfig
+arm                           viper_defconfig
+c6x                        evmc6457_defconfig
+powerpc                      mgcoge_defconfig
+mips                        qi_lb60_defconfig
+mips                        nlm_xlr_defconfig
+powerpc                     kilauea_defconfig
+arm                         socfpga_defconfig
+mips                      malta_kvm_defconfig
+powerpc                    klondike_defconfig
+powerpc                     ep8248e_defconfig
+parisc                generic-32bit_defconfig
+riscv                               defconfig
+powerpc                     mpc5200_defconfig
+arm                             pxa_defconfig
+powerpc                      acadia_defconfig
+m68k                        m5272c3_defconfig
+arm                        neponset_defconfig
+mips                     loongson1c_defconfig
+mips                          malta_defconfig
+sh                        apsh4ad0a_defconfig
+alpha                            allyesconfig
+powerpc                    ge_imp3a_defconfig
+xtensa                    xip_kc705_defconfig
+m68k                        mvme16x_defconfig
+arm                          collie_defconfig
+arm                         cm_x300_defconfig
+sh                           se7206_defconfig
+powerpc                     pq2fads_defconfig
+mips                             allyesconfig
+arm                      integrator_defconfig
+mips                        bcm63xx_defconfig
+sh                          landisk_defconfig
+m68k                            q40_defconfig
+arc                    vdk_hs38_smp_defconfig
+arc                           tb10x_defconfig
+c6x                        evmc6474_defconfig
+powerpc                    adder875_defconfig
+powerpc                 mpc8313_rdb_defconfig
+mips                           mtx1_defconfig
+riscv                            allyesconfig
+arm                        keystone_defconfig
+powerpc                 mpc85xx_cds_defconfig
+m68k                       m5208evb_defconfig
+powerpc                        warp_defconfig
+xtensa                  audio_kc705_defconfig
+sh                     magicpanelr2_defconfig
+sh                         ap325rxa_defconfig
+arc                         haps_hs_defconfig
+powerpc                      katmai_defconfig
+arm                           h5000_defconfig
+arm                        multi_v7_defconfig
+powerpc                     tqm8560_defconfig
+nios2                         3c120_defconfig
+arm                            pleb_defconfig
+sh                           se7343_defconfig
+arm                          badge4_defconfig
+sh                             espt_defconfig
+arm                           stm32_defconfig
+powerpc                     tqm8555_defconfig
+c6x                        evmc6472_defconfig
+c6x                              alldefconfig
+microblaze                      mmu_defconfig
+m68k                          hp300_defconfig
+powerpc                      pasemi_defconfig
+m68k                          amiga_defconfig
+arm                          pcm027_defconfig
+sh                   secureedge5410_defconfig
+um                             i386_defconfig
+powerpc                  storcenter_defconfig
+mips                    maltaup_xpa_defconfig
+mips                       lemote2f_defconfig
+mips                      bmips_stb_defconfig
+powerpc                      cm5200_defconfig
+powerpc                     skiroot_defconfig
+microblaze                          defconfig
+powerpc                          allyesconfig
+powerpc                 mpc832x_rdb_defconfig
+powerpc                        fsp2_defconfig
+powerpc                      ppc40x_defconfig
+sh                            migor_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allmodconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a001-20210202
+i386                 randconfig-a005-20210202
+i386                 randconfig-a003-20210202
+i386                 randconfig-a006-20210202
+i386                 randconfig-a002-20210202
+i386                 randconfig-a004-20210202
+x86_64               randconfig-a013-20210202
+x86_64               randconfig-a014-20210202
+x86_64               randconfig-a015-20210202
+x86_64               randconfig-a016-20210202
+x86_64               randconfig-a011-20210202
+x86_64               randconfig-a012-20210202
+i386                 randconfig-a013-20210202
+i386                 randconfig-a016-20210202
+i386                 randconfig-a014-20210202
+i386                 randconfig-a012-20210202
+i386                 randconfig-a015-20210202
+i386                 randconfig-a011-20210202
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a006-20210202
+x86_64               randconfig-a001-20210202
+x86_64               randconfig-a005-20210202
+x86_64               randconfig-a002-20210202
+x86_64               randconfig-a004-20210202
+x86_64               randconfig-a003-20210202
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
+--===============3385123418298263160==--
 
