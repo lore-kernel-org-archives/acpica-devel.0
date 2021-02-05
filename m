@@ -1,61 +1,46 @@
-Content-Type: multipart/mixed; boundary="===============1547994686336718591=="
+Content-Type: multipart/mixed; boundary="===============4687502943221958675=="
 MIME-Version: 1.0
 From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [PATCH v6 08/16] ACPI / NUMA: add a stub function for
- node_to_pxm()
-Date: Thu, 04 Feb 2021 19:45:25 +0100
-Message-ID: <CAJZ5v0gJD1B92FsSo9xMrdFWYEh5DHqAQQ4TiFbHV=a2XpBEbg@mail.gmail.com>
-In-Reply-To: 20210204183841.y4fgwjuggtbrnere@liuwe-devbox-debian-v2
+Subject: [Devel] Re: [PATCH] include: acpi: Correct spelling in the file
+ acoutput.h is optimzation to optimization
+Date: Fri, 05 Feb 2021 13:49:11 +0100
+Message-ID: <CAJZ5v0i63RqvJNT1xfeX2yRvLkraj+89DW8z0XUZ2jHp0Bt40w@mail.gmail.com>
+In-Reply-To: 20210203154437.15949-1-unixbhaskar@gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1547994686336718591==
+--===============4687502943221958675==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 4, 2021 at 7:41 PM Wei Liu <wei.liu(a)kernel.org> wrote:
+On Wed, Feb 3, 2021 at 4:45 PM Bhaskar Chowdhury <unixbhaskar(a)gmail.com> =
+wrote:
 >
-> On Wed, Feb 03, 2021 at 03:04:27PM +0000, Wei Liu wrote:
-> > There is already a stub function for pxm_to_node but conversion to the
-> > other direction is missing.
-> >
-> > It will be used by Microsoft Hypervisor code later.
-> >
-> > Signed-off-by: Wei Liu <wei.liu(a)kernel.org>
 >
-> Hi ACPI maintainers, if you're happy with this patch I can take it via
-> the hyperv-next tree, given the issue is discovered when pxm_to_node is
-> called in our code.
-
-Yes, you can.
-
-Thanks!
-
+> s/optimzation/optimization/
 >
-> > ---
-> > v6: new
-> > ---
-> >  include/acpi/acpi_numa.h | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> >
-> > diff --git a/include/acpi/acpi_numa.h b/include/acpi/acpi_numa.h
-> > index a4c6ef809e27..40a91ce87e04 100644
-> > --- a/include/acpi/acpi_numa.h
-> > +++ b/include/acpi/acpi_numa.h
-> > @@ -30,6 +30,10 @@ static inline int pxm_to_node(int pxm)
-> >  {
-> >       return 0;
-> >  }
-> > +static inline int node_to_pxm(int node)
-> > +{
-> > +     return 0;
-> > +}
-> >  #endif                               /* CONFIG_ACPI_NUMA */
-> >
-> >  #ifdef CONFIG_ACPI_HMAT
-> > --
-> > 2.20.1
-> >
---===============1547994686336718591==--
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar(a)gmail.com>
+> ---
+>  include/acpi/acoutput.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/include/acpi/acoutput.h b/include/acpi/acoutput.h
+> index c5d900c0ecda..1ba212372e79 100644
+> --- a/include/acpi/acoutput.h
+> +++ b/include/acpi/acoutput.h
+> @@ -362,7 +362,7 @@
+>   *
+>   * A less-safe version of the macros is provided for optional use if the
+>   * compiler uses excessive CPU stack (for example, this may happen in the
+> - * debug case if code optimzation is disabled.)
+> + * debug case if code optimization is disabled.)
+>   */
+>
+>  /* Exit trace helper macro */
+> --
+
+The file being updated is part of ACPICA, so I'm leaving this to Erik
+& Bob, thanks!
+--===============4687502943221958675==--
 
