@@ -1,46 +1,47 @@
-Content-Type: multipart/mixed; boundary="===============4687502943221958675=="
+Content-Type: multipart/mixed; boundary="===============0030835519964701190=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [PATCH] include: acpi: Correct spelling in the file
- acoutput.h is optimzation to optimization
-Date: Fri, 05 Feb 2021 13:49:11 +0100
-Message-ID: <CAJZ5v0i63RqvJNT1xfeX2yRvLkraj+89DW8z0XUZ2jHp0Bt40w@mail.gmail.com>
-In-Reply-To: 20210203154437.15949-1-unixbhaskar@gmail.com
+From: Andy Shevchenko <andy.shevchenko at gmail.com>
+Subject: [Devel] Re: [PATCH v2 6/7] platform: x86: Add intel_skl_int3472 driver
+Date: Sun, 07 Feb 2021 13:56:27 +0200
+Message-ID: <CAHp75VeF_tZdi8+fMYGtuzMH_jWit4cHy6kHM2OVuBkDA4+=uA@mail.gmail.com>
+In-Reply-To: 2f85ec6d-b47e-6d86-02bc-5563cff7576d@gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4687502943221958675==
+--===============0030835519964701190==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 3, 2021 at 4:45 PM Bhaskar Chowdhury <unixbhaskar(a)gmail.com> =
-wrote:
->
->
-> s/optimzation/optimization/
->
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar(a)gmail.com>
-> ---
->  include/acpi/acoutput.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/include/acpi/acoutput.h b/include/acpi/acoutput.h
-> index c5d900c0ecda..1ba212372e79 100644
-> --- a/include/acpi/acoutput.h
-> +++ b/include/acpi/acoutput.h
-> @@ -362,7 +362,7 @@
->   *
->   * A less-safe version of the macros is provided for optional use if the
->   * compiler uses excessive CPU stack (for example, this may happen in the
-> - * debug case if code optimzation is disabled.)
-> + * debug case if code optimization is disabled.)
->   */
->
->  /* Exit trace helper macro */
-> --
+On Sun, Feb 7, 2021 at 1:00 PM Daniel Scally <djrscally(a)gmail.com> wrote:
+> On 21/01/2021 00:18, Daniel Scally wrote:
+> > On 20/01/2021 12:57, Andy Shevchenko wrote:
 
-The file being updated is part of ACPICA, so I'm leaving this to Erik
-& Bob, thanks!
---===============4687502943221958675==--
+...
+
+> > I'm not sure that one's better than the other, to be honest. Either the
+> > multi-function device functionality lives in the conventional place, or
+> > else _all_ of the int3472 handling code lives together in one module.
+> Can we come to a consensus on this? I would rather be in agreement than
+> leave it hanging...I do see the argument that it's better not to rebirth
+> the MFD driver away from that subsystem, but at the moment I lean
+> towards the view that having all the code handling this particular _HID
+> in one place is probably preferable, if only to make it easier for
+> anyone coming in the future to understand what's happening. That said;
+> I'm not particularly precious about it, I'd just like to agree an
+> approach so I can move forward with the next version
+
+So, my priorities of rejection (first is higher)
+- open-coding MFD subsystem (that said, if you shuffle the code, at
+least leave it as an MFD driver)
+- moving out from MFD (although I understand intentions)
+
+Summarize, go ahead with your view (leaving it as an MFD driver) and
+look forward to what maintainer(s) will say.
+
+-- =
+
+With Best Regards,
+Andy Shevchenko
+--===============0030835519964701190==--
 
