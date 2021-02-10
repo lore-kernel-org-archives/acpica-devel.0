@@ -1,64 +1,133 @@
-Content-Type: multipart/mixed; boundary="===============1201879373567332219=="
+Content-Type: multipart/mixed; boundary="===============5364030066000983643=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [PATCH] Enable ACPI_ADR_SPACE_PCI_CONFIG in
- acpi_gbl_default_address_spaces only when ACPI_PCI_CONFIGURED is defined
-Date: Tue, 09 Feb 2021 15:35:14 +0100
-Message-ID: <CAJZ5v0ifzqR90BJY3u6NGvMLuVn8YApLZH=oA5COcmjs_GKFqQ@mail.gmail.com>
-In-Reply-To: 20210209031744.26474-1-weidongcui@gmail.com
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
+ a252d5aadd29535c832752b6815b4a890b4ef44c
+Date: Wed, 10 Feb 2021 12:04:31 +0800
+Message-ID: <60235b4f.suwIpvTtA8+JdXwN%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1201879373567332219==
+--===============5364030066000983643==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 9, 2021 at 4:22 AM Weidong Cui <weidongcui(a)gmail.com> wrote:
->
-> Signed-off-by: Weidong Cui <weidongcui(a)gmail.com>
-> Signed-off-by: Xinyang Ge <aegiryy(a)gmail.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git bleeding-edge
+branch HEAD: a252d5aadd29535c832752b6815b4a890b4ef44c  Merge branch 'pm-dev=
+freq' into bleeding-edge
 
-ACPICA material, left to Erik & Bob, thanks!
+elapsed time: 728m
 
-> ---
->  drivers/acpi/acpica/evhandler.c | 2 ++
->  include/acpi/acconfig.h         | 4 ++++
->  2 files changed, 6 insertions(+)
->
-> diff --git a/drivers/acpi/acpica/evhandler.c b/drivers/acpi/acpica/evhand=
-ler.c
-> index 5884eba04..4c25ad433 100644
-> --- a/drivers/acpi/acpica/evhandler.c
-> +++ b/drivers/acpi/acpica/evhandler.c
-> @@ -26,7 +26,9 @@ acpi_ev_install_handler(acpi_handle obj_handle,
->  u8 acpi_gbl_default_address_spaces[ACPI_NUM_DEFAULT_SPACES] =3D {
->         ACPI_ADR_SPACE_SYSTEM_MEMORY,
->         ACPI_ADR_SPACE_SYSTEM_IO,
-> +#ifdef ACPI_PCI_CONFIGURED
->         ACPI_ADR_SPACE_PCI_CONFIG,
-> +#endif
->         ACPI_ADR_SPACE_DATA_TABLE
->  };
->
-> diff --git a/include/acpi/acconfig.h b/include/acpi/acconfig.h
-> index a225eff49..790999028 100644
-> --- a/include/acpi/acconfig.h
-> +++ b/include/acpi/acconfig.h
-> @@ -162,7 +162,11 @@
->  /* Maximum space_ids for Operation Regions */
->
->  #define ACPI_MAX_ADDRESS_SPACE          255
-> +#ifdef ACPI_PCI_CONFIGURED
->  #define ACPI_NUM_DEFAULT_SPACES         4
-> +#else
-> +#define ACPI_NUM_DEFAULT_SPACES         3
-> +#endif
->
->  /* Array sizes.  Used for range checking also */
->
-> --
-> 2.24.3 (Apple Git-128)
->
---===============1201879373567332219==--
+configs tested: 96
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                          r7785rp_defconfig
+sparc64                             defconfig
+sh                            shmin_defconfig
+powerpc                     tqm8540_defconfig
+mips                           ci20_defconfig
+xtensa                         virt_defconfig
+sh                 kfr2r09-romimage_defconfig
+powerpc                 mpc8560_ads_defconfig
+mips                           rs90_defconfig
+arm                         s5pv210_defconfig
+arc                              allyesconfig
+m68k                       m5475evb_defconfig
+arm                           stm32_defconfig
+mips                          malta_defconfig
+m68k                        mvme147_defconfig
+arm                       imx_v4_v5_defconfig
+arm                     am200epdkit_defconfig
+powerpc                        cell_defconfig
+microblaze                      mmu_defconfig
+sh                  sh7785lcr_32bit_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+nios2                               defconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20210209
+x86_64               randconfig-a001-20210209
+x86_64               randconfig-a005-20210209
+x86_64               randconfig-a004-20210209
+x86_64               randconfig-a002-20210209
+x86_64               randconfig-a003-20210209
+i386                 randconfig-a001-20210209
+i386                 randconfig-a005-20210209
+i386                 randconfig-a003-20210209
+i386                 randconfig-a002-20210209
+i386                 randconfig-a006-20210209
+i386                 randconfig-a004-20210209
+i386                 randconfig-a016-20210209
+i386                 randconfig-a013-20210209
+i386                 randconfig-a012-20210209
+i386                 randconfig-a014-20210209
+i386                 randconfig-a011-20210209
+i386                 randconfig-a015-20210209
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a013-20210209
+x86_64               randconfig-a014-20210209
+x86_64               randconfig-a015-20210209
+x86_64               randconfig-a012-20210209
+x86_64               randconfig-a016-20210209
+x86_64               randconfig-a011-20210209
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
+--===============5364030066000983643==--
 
