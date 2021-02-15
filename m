@@ -1,134 +1,77 @@
-Content-Type: multipart/mixed; boundary="===============7731824901201927431=="
+Content-Type: multipart/mixed; boundary="===============8882135814056150612=="
 MIME-Version: 1.0
-From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
- 95abaaccf8453a965f85402a03848cd82489e7a6
-Date: Sat, 13 Feb 2021 13:19:56 +0800
-Message-ID: <6027617c.nGthyZv+GpWotTIg%lkp@intel.com>
+From: Rafael J. Wysocki <rafael at kernel.org>
+Subject: [Devel] Re: [PATCH 0/2] ACPICA: Fix a race in GenericSerialBus (I2C)
+ and GPIO handling
+Date: Mon, 15 Feb 2021 19:25:41 +0100
+Message-ID: <CAJZ5v0g2mhrw56aAjafYAsRnOWjZTATyHyfi57ekuQyGs6O-MA@mail.gmail.com>
+In-Reply-To: ced43570-1e76-6f96-f9ab-83473b4adfb7@redhat.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7731824901201927431==
+--===============8882135814056150612==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
-m.git bleeding-edge
-branch HEAD: 95abaaccf8453a965f85402a03848cd82489e7a6  Merge branch 'pm-cpu=
-idle' into bleeding-edge
+On Mon, Feb 15, 2021 at 6:52 PM Hans de Goede <hdegoede(a)redhat.com> wrote:
+>
+> Hi,
+>
+> On 12/26/20 3:28 PM, Hans de Goede wrote:
+> > Hi All,
+> >
+> > On one of my machines I noticed the following errors being logged:
+> >
+> > [   52.892807] i2c i2c-0: adapter quirk: no zero length (addr 0x0078, s=
+ize 0, read)
+> > [   52.893037] i2c i2c-0: i2c read 0 bytes from client(a)0x78 starting =
+at reg 0x0 failed, error: -95
+> >
+> > The second line is coming from the Linux I2C ACPI OpRegion handling and
+> > after a bunch of debugging I've found out that there is a rather obvious
+> > (once you see it) and nasty race condition in the handling of I2C and G=
+PIO
+> > opregions in acpi_ev_address_space_dispatch(). See the first patch in t=
+his
+> > series (the second patch is a follow-up cleanup patch removing some code
+> > duplication).
+> >
+> > TBH I'm surprised that this issue has gone unnoticed as long as it has,
+> > but I guess that it mostly leads to unreproducable sporadic problems
+> > making it hard to debug and I got lucky that I had a machine where the
+> > race seems to trigger about once every 20 seconds.
+> >
+> > I know that ACPICA patches are normally merged through the ACPICA upstr=
+eam
+> > but given that this is a serious bug, I believe that in this case it mi=
+ght
+> > be best to add the fix directly to Linux and then port it to ACPICA from
+> > there.
+>
+> ping ?
+>
+> This was submitted 2 full months ago; and despite this:
+>
+> 1. Fixing a serious bug in ACPICA
+> 2. The fix being pretty simple (and AFAICT obviously correct)
+>
+> This is still awaiting review upstream:
+> https://github.com/acpica/acpica/pull/658
+>
+> I must say that it feels to me that the upstream ACPICA process is broken=
+ here.
+>
+> I submitted a pull-req for this, as requested and after that there has
+> been zero progress.
+>
+> The pull-req even has a 26 day old "this looks good to me" comment from E=
+rik,
+> followed by silence... ?
+>
+> Rafael, can you please consider just directly picking these 2 fixes into
+> your acpi branch, so that we can get this nasty race condition fixed ?
 
-elapsed time: 723m
-
-configs tested: 97
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                         axm55xx_defconfig
-arm                        clps711x_defconfig
-sh                          landisk_defconfig
-sh                        edosk7760_defconfig
-arm                        realview_defconfig
-arm                      integrator_defconfig
-powerpc64                           defconfig
-arc                              alldefconfig
-microblaze                      mmu_defconfig
-powerpc                 mpc834x_mds_defconfig
-mips                        nlm_xlp_defconfig
-mips                           jazz_defconfig
-arm                             rpc_defconfig
-arm                         lpc32xx_defconfig
-arm                          badge4_defconfig
-mips                      maltaaprp_defconfig
-openrisc                            defconfig
-powerpc                      ppc6xx_defconfig
-powerpc                     mpc83xx_defconfig
-h8300                               defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a006-20210209
-x86_64               randconfig-a001-20210209
-x86_64               randconfig-a005-20210209
-x86_64               randconfig-a004-20210209
-x86_64               randconfig-a002-20210209
-x86_64               randconfig-a003-20210209
-i386                 randconfig-a003-20210212
-i386                 randconfig-a005-20210212
-i386                 randconfig-a002-20210212
-i386                 randconfig-a001-20210212
-i386                 randconfig-a004-20210212
-i386                 randconfig-a006-20210212
-i386                 randconfig-a016-20210209
-i386                 randconfig-a013-20210209
-i386                 randconfig-a012-20210209
-i386                 randconfig-a014-20210209
-i386                 randconfig-a011-20210209
-i386                 randconfig-a015-20210209
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a013-20210209
-x86_64               randconfig-a014-20210209
-x86_64               randconfig-a015-20210209
-x86_64               randconfig-a012-20210209
-x86_64               randconfig-a016-20210209
-x86_64               randconfig-a011-20210209
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============7731824901201927431==--
+I will do that later this week, thanks!
+--===============8882135814056150612==--
 
