@@ -1,27 +1,27 @@
-Content-Type: multipart/mixed; boundary="===============7703795716377786986=="
+Content-Type: multipart/mixed; boundary="===============7068319333836385545=="
 MIME-Version: 1.0
 From: kernel test robot <lkp at intel.com>
 Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
- 8b72d3aa065ce33df4f042840078542b1e5d2c45
-Date: Sat, 20 Feb 2021 06:19:55 +0800
-Message-ID: <6030398b.B2E7yyx8RuCeVTwN%lkp@intel.com>
+ fa7998ffaad0ed13479fe7026ef814b8a5bd8925
+Date: Sat, 20 Feb 2021 21:38:52 +0800
+Message-ID: <603110ec.tBR5K6lisbTTdnBv%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7703795716377786986==
+--===============7068319333836385545==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
 tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
 m.git bleeding-edge
-branch HEAD: 8b72d3aa065ce33df4f042840078542b1e5d2c45  Merge branches 'pm-c=
-pufreq-fixes' and 'pm-opp-fixes' into linux-next
+branch HEAD: fa7998ffaad0ed13479fe7026ef814b8a5bd8925  Merge branch 'pm-cpu=
+freq-fixes' into bleeding-edge
 
-elapsed time: 723m
+elapsed time: 721m
 
-configs tested: 130
-configs skipped: 4
+configs tested: 98
+configs skipped: 2
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -32,61 +32,28 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
-powerpc                      cm5200_defconfig
-mips                       rbtx49xx_defconfig
-powerpc                     stx_gp3_defconfig
-sh                           se7780_defconfig
-arm                        mvebu_v5_defconfig
-powerpc                     sequoia_defconfig
-ia64                             alldefconfig
-sh                             espt_defconfig
-arm                          pcm027_defconfig
-mips                      pistachio_defconfig
-arm                  colibri_pxa270_defconfig
-sh                            migor_defconfig
-arm                          pxa910_defconfig
-arc                    vdk_hs38_smp_defconfig
-powerpc                  storcenter_defconfig
-mips                       bmips_be_defconfig
-arm                            u300_defconfig
-powerpc                  iss476-smp_defconfig
-arm                        spear3xx_defconfig
-powerpc                   motionpro_defconfig
-arm                             pxa_defconfig
-sh                          polaris_defconfig
-arm                         at91_dt_defconfig
-sh                        edosk7760_defconfig
+sh                          landisk_defconfig
+powerpc                     tqm5200_defconfig
+xtensa                       common_defconfig
+h8300                               defconfig
+sh                           se7619_defconfig
 powerpc                 mpc834x_mds_defconfig
-arm                         bcm2835_defconfig
-arm                         s5pv210_defconfig
-powerpc                 canyonlands_defconfig
-sh                     sh7710voipgw_defconfig
-powerpc                      ppc44x_defconfig
-mips                         rt305x_defconfig
-arm                       omap2plus_defconfig
-powerpc                    amigaone_defconfig
-sparc64                          alldefconfig
-mips                          rb532_defconfig
-mips                           jazz_defconfig
-powerpc                 mpc832x_mds_defconfig
-powerpc                     sbc8548_defconfig
-arm                         hackkit_defconfig
-powerpc                    adder875_defconfig
-sh                           se7724_defconfig
-arm                           stm32_defconfig
-arm                          imote2_defconfig
-xtensa                         virt_defconfig
-arm                           corgi_defconfig
-m68k                        mvme16x_defconfig
-sh                   sh7770_generic_defconfig
-arm                            hisi_defconfig
-ia64                            zx1_defconfig
-sh                                  defconfig
+sh                           se7206_defconfig
+arm                       imx_v6_v7_defconfig
+sh                         microdev_defconfig
+powerpc                     rainier_defconfig
+arc                        nsim_700_defconfig
+sh                   rts7751r2dplus_defconfig
+arc                      axs103_smp_defconfig
+powerpc                    klondike_defconfig
+sh                           se7712_defconfig
+arm                           h5000_defconfig
+xtensa                  nommu_kc705_defconfig
+sh                           se7705_defconfig
 mips                     cu1830-neo_defconfig
-sparc                               defconfig
-arc                         haps_hs_defconfig
-powerpc                       ppc64_defconfig
-sh                          rsk7201_defconfig
+arm                        mvebu_v5_defconfig
+powerpc                     pseries_defconfig
+arm                        multi_v7_defconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
@@ -113,6 +80,7 @@ parisc                           allyesconfig
 s390                                defconfig
 i386                             allyesconfig
 sparc                            allyesconfig
+sparc                               defconfig
 i386                               tinyconfig
 i386                                defconfig
 mips                             allyesconfig
@@ -163,5 +131,5 @@ x86_64               randconfig-a006-20210219
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
 https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============7703795716377786986==--
+--===============7068319333836385545==--
 
