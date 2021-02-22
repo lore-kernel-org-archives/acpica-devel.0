@@ -1,216 +1,141 @@
-Content-Type: multipart/mixed; boundary="===============8838415647702917570=="
+Content-Type: multipart/mixed; boundary="===============5796649342169857855=="
 MIME-Version: 1.0
 From: Andy Shevchenko <andy.shevchenko at gmail.com>
-Subject: [Devel] Re: [PATCH v3 6/6] mfd: tps68470: Remove tps68470 MFD driver
-Date: Mon, 22 Feb 2021 16:12:35 +0200
-Message-ID: <CAHp75Veb=0OOE=iyt5ua46HkMuG6_Xu1bWAxzZX5d3378CrfNg@mail.gmail.com>
-In-Reply-To: 20210222130735.1313443-7-djrscally@gmail.com
+Subject: [Devel] Re: [PATCH v3 0/6] Introduce intel_skl_int3472 module
+Date: Mon, 22 Feb 2021 16:15:48 +0200
+Message-ID: <CAHp75Vfu678RQ1-p4rXOkp5UPDuxgW4ctm1w+uEFhumcfGXf1g@mail.gmail.com>
+In-Reply-To: 20210222130735.1313443-1-djrscally@gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8838415647702917570==
+--===============5796649342169857855==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 22, 2021 at 3:12 PM Daniel Scally <djrscally(a)gmail.com> wrote:
+On Mon, Feb 22, 2021 at 3:11 PM Daniel Scally <djrscally(a)gmail.com> wrote:
 >
-> This driver only covered one scenario in which ACPI devices with _HID
-> INT3472 are found, and its functionality has been taken over by the
-> intel-skl-int3472 module, so remove it.
-
-As long as patch 5 accepted
-Acked-by: Andy Shevchenko <andy.shevchenko(a)gmail.com>
-
-> Reviewed-by: Laurent Pinchart <laurent.pinchart(a)ideasonboard.com>
-> Signed-off-by: Daniel Scally <djrscally(a)gmail.com>
-> ---
-> Changes in v3:
->         - Replaced Kconfig dependencies with INTEL_SKL_INT3472 for the tp=
-s68470
->           OpRegion and GPIO drivers.
+> v1 for this series was originally 14-18 of this series:
+> https://lore.kernel.org/linux-media/20201130133129.1024662-1-djrscally(a)=
+gmail.com/T/#m91934e12e3d033da2e768e952ea3b4a125ee3e67
 >
->  drivers/acpi/pmic/Kconfig |  2 +-
->  drivers/gpio/Kconfig      |  2 +-
->  drivers/mfd/Kconfig       | 18 --------
->  drivers/mfd/Makefile      |  1 -
->  drivers/mfd/tps68470.c    | 97 ---------------------------------------
->  5 files changed, 2 insertions(+), 118 deletions(-)
+> v2 was here:
+> https://lore.kernel.org/platform-driver-x86/20210118003428.568892-1-djrsc=
+ally(a)gmail.com/
+>
+> Series level changelog:
+>
+>         - Dropped the patch moving acpi_lpss_dep() to utils since it's no=
+t used
+>         in acpi_dev_get_dependent_dev() anymore.
+>         - Replaced it with a patch extending acpi_walk_dep_device_list() =
+to be
+>         able to apply a given callback against each device in acpi_dep_li=
+st
+>         - Dropped the patch creating acpi_i2c_dev_name() and simply open =
+coded
+>         that functionality.
+>
+> This has been tested on a number of devices, but currently **not** on a d=
+evice
+> designed for ChromeOS, which we ideally need to do to ensure no regression
+> caused by replacing the tps68470 MFD driver. Sakari / Tomasz, is there an=
+y way
+> you could help with that? Unfortunately, I don't have a device to test it=
+ on
+> myself.
+
++Cc: Dmitry and Guenter. Guys, do you know by a chance who can help
+with the above request from Daniel?
+
+
+> Original cover letter:
+>
+> At the moment in the kernel the ACPI _HID INT3472 is taken by the tps68470
+> MFD driver, but that driver can only handle some of the cases of that _HID
+> that we see. There are at least these three possibilities:
+>
+> 1. INT3472 devices that provide GPIOs through the usual framework and run
+>    power and clocks through an operation region; this is the situation th=
+at
+>    the current module handles and is seen on ChromeOS devices
+> 2. INT3472 devices that provide GPIOs, plus clocks and regulators that are
+>    meant to be driven through the usual frameworks, usually seen on devic=
+es
+>    designed to run Windows
+> 3. INT3472 devices that don't actually represent a physical tps68470, but
+>    are being used as a convenient way of grouping a bunch of system GPIO
+>    lines that are intended to enable power and clocks for sensors which
+>    are called out as dependent on them. Also seen on devices designed to
+>    run Windows.
+>
+> This series introduces a new module which registers:
+>
+> 1. An i2c driver that determines which scenario (#1 or #2) applies to the
+>    machine and registers platform devices to be bound to GPIO, OpRegion,
+>    clock and regulator drivers as appropriate.
+> 2. A platform driver that binds to the dummy INT3472 devices described in
+>    #3
+>
+> The platform driver for the dummy device registers the GPIO lines that
+> enable the clocks and regulators to the sensors via those frameworks so
+> that sensor drivers can consume them in the usual fashion. The existing
+> GPIO and OpRegion tps68470 drivers will work with the i2c driver that's
+> registered. Clock and regulator drivers are available but have not so far=
+ been
+> tested, so aren't part of this series.
+>
+> The existing mfd/tps68470.c driver being thus superseded, it is removed.
+>
+> Thanks
+> Dan
+>
+> Daniel Scally (6):
+>   ACPI: scan: Extend acpi_walk_dep_device_list()
+>   ACPI: scan: Add function to fetch dependent of acpi device
+>   i2c: core: Add a format macro for I2C device names
+>   gpiolib: acpi: Export acpi_get_gpiod()
+>   platform/x86: Add intel_skl_int3472 driver
+>   mfd: tps68470: Remove tps68470 MFD driver
+>
+>  MAINTAINERS                                   |   5 +
+>  drivers/acpi/ec.c                             |   2 +-
+>  drivers/acpi/pmic/Kconfig                     |   2 +-
+>  drivers/acpi/pmic/intel_pmic_chtdc_ti.c       |   2 +-
+>  drivers/acpi/scan.c                           |  92 ++-
+>  drivers/gpio/Kconfig                          |   2 +-
+>  drivers/gpio/gpiolib-acpi.c                   |  38 +-
+>  drivers/i2c/i2c-core-acpi.c                   |   2 +-
+>  drivers/i2c/i2c-core-base.c                   |   4 +-
+>  drivers/mfd/Kconfig                           |  18 -
+>  drivers/mfd/Makefile                          |   1 -
+>  drivers/mfd/tps68470.c                        |  97 ---
+>  drivers/platform/surface/surface3_power.c     |   2 +-
+>  drivers/platform/x86/Kconfig                  |   2 +
+>  drivers/platform/x86/Makefile                 |   1 +
+>  drivers/platform/x86/intel-int3472/Kconfig    |  31 +
+>  drivers/platform/x86/intel-int3472/Makefile   |   4 +
+>  .../intel-int3472/intel_skl_int3472_common.c  | 106 ++++
+>  .../intel-int3472/intel_skl_int3472_common.h  | 110 ++++
+>  .../intel_skl_int3472_discrete.c              | 592 ++++++++++++++++++
+>  .../intel_skl_int3472_tps68470.c              | 113 ++++
+>  include/acpi/acpi_bus.h                       |   8 +
+>  include/linux/acpi.h                          |   4 +-
+>  include/linux/gpio/consumer.h                 |   7 +
+>  include/linux/i2c.h                           |   3 +
+>  25 files changed, 1100 insertions(+), 148 deletions(-)
 >  delete mode 100644 drivers/mfd/tps68470.c
+>  create mode 100644 drivers/platform/x86/intel-int3472/Kconfig
+>  create mode 100644 drivers/platform/x86/intel-int3472/Makefile
+>  create mode 100644 drivers/platform/x86/intel-int3472/intel_skl_int3472_=
+common.c
+>  create mode 100644 drivers/platform/x86/intel-int3472/intel_skl_int3472_=
+common.h
+>  create mode 100644 drivers/platform/x86/intel-int3472/intel_skl_int3472_=
+discrete.c
+>  create mode 100644 drivers/platform/x86/intel-int3472/intel_skl_int3472_=
+tps68470.c
 >
-> diff --git a/drivers/acpi/pmic/Kconfig b/drivers/acpi/pmic/Kconfig
-> index 56bbcb2ce61b..f84b8f6038dc 100644
-> --- a/drivers/acpi/pmic/Kconfig
-> +++ b/drivers/acpi/pmic/Kconfig
-> @@ -52,7 +52,7 @@ endif # PMIC_OPREGION
->
->  config TPS68470_PMIC_OPREGION
->         bool "ACPI operation region support for TPS68470 PMIC"
-> -       depends on MFD_TPS68470
-> +       depends on INTEL_SKL_INT3472
->         help
->           This config adds ACPI operation region support for TI TPS68470 =
-PMIC.
->           TPS68470 device is an advanced power management unit that powers
-> diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-> index c70f46e80a3b..998898c72af8 100644
-> --- a/drivers/gpio/Kconfig
-> +++ b/drivers/gpio/Kconfig
-> @@ -1343,7 +1343,7 @@ config GPIO_TPS65912
->
->  config GPIO_TPS68470
->         bool "TPS68470 GPIO"
-> -       depends on MFD_TPS68470
-> +       depends on INTEL_SKL_INT3472
->         help
->           Select this option to enable GPIO driver for the TPS68470
->           chip family.
-> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-> index bdfce7b15621..9a1f648efde0 100644
-> --- a/drivers/mfd/Kconfig
-> +++ b/drivers/mfd/Kconfig
-> @@ -1520,24 +1520,6 @@ config MFD_TPS65217
->           This driver can also be built as a module.  If so, the module
->           will be called tps65217.
->
-> -config MFD_TPS68470
-> -       bool "TI TPS68470 Power Management / LED chips"
-> -       depends on ACPI && PCI && I2C=3Dy
-> -       depends on I2C_DESIGNWARE_PLATFORM=3Dy
-> -       select MFD_CORE
-> -       select REGMAP_I2C
-> -       help
-> -         If you say yes here you get support for the TPS68470 series of
-> -         Power Management / LED chips.
-> -
-> -         These include voltage regulators, LEDs and other features
-> -         that are often used in portable devices.
-> -
-> -         This option is a bool as it provides an ACPI operation
-> -         region, which must be available before any of the devices
-> -         using this are probed. This option also configures the
-> -         designware-i2c driver to be built-in, for the same reason.
-> -
->  config MFD_TI_LP873X
->         tristate "TI LP873X Power Management IC"
->         depends on I2C
-> diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-> index 14fdb188af02..5994e812f479 100644
-> --- a/drivers/mfd/Makefile
-> +++ b/drivers/mfd/Makefile
-> @@ -105,7 +105,6 @@ obj-$(CONFIG_MFD_TPS65910)  +=3D tps65910.o
->  obj-$(CONFIG_MFD_TPS65912)     +=3D tps65912-core.o
->  obj-$(CONFIG_MFD_TPS65912_I2C) +=3D tps65912-i2c.o
->  obj-$(CONFIG_MFD_TPS65912_SPI)  +=3D tps65912-spi.o
-> -obj-$(CONFIG_MFD_TPS68470)     +=3D tps68470.o
->  obj-$(CONFIG_MFD_TPS80031)     +=3D tps80031.o
->  obj-$(CONFIG_MENELAUS)         +=3D menelaus.o
->
-> diff --git a/drivers/mfd/tps68470.c b/drivers/mfd/tps68470.c
-> deleted file mode 100644
-> index 4a4df4ffd18c..000000000000
-> --- a/drivers/mfd/tps68470.c
-> +++ /dev/null
-> @@ -1,97 +0,0 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> -/*
-> - * TPS68470 chip Parent driver
-> - *
-> - * Copyright (C) 2017 Intel Corporation
-> - *
-> - * Authors:
-> - *     Rajmohan Mani <rajmohan.mani(a)intel.com>
-> - *     Tianshu Qiu <tian.shu.qiu(a)intel.com>
-> - *     Jian Xu Zheng <jian.xu.zheng(a)intel.com>
-> - *     Yuning Pu <yuning.pu(a)intel.com>
-> - */
-> -
-> -#include <linux/acpi.h>
-> -#include <linux/delay.h>
-> -#include <linux/i2c.h>
-> -#include <linux/init.h>
-> -#include <linux/mfd/core.h>
-> -#include <linux/mfd/tps68470.h>
-> -#include <linux/regmap.h>
-> -
-> -static const struct mfd_cell tps68470s[] =3D {
-> -       { .name =3D "tps68470-gpio" },
-> -       { .name =3D "tps68470_pmic_opregion" },
-> -};
-> -
-> -static const struct regmap_config tps68470_regmap_config =3D {
-> -       .reg_bits =3D 8,
-> -       .val_bits =3D 8,
-> -       .max_register =3D TPS68470_REG_MAX,
-> -};
-> -
-> -static int tps68470_chip_init(struct device *dev, struct regmap *regmap)
-> -{
-> -       unsigned int version;
-> -       int ret;
-> -
-> -       /* Force software reset */
-> -       ret =3D regmap_write(regmap, TPS68470_REG_RESET, TPS68470_REG_RES=
-ET_MASK);
-> -       if (ret)
-> -               return ret;
-> -
-> -       ret =3D regmap_read(regmap, TPS68470_REG_REVID, &version);
-> -       if (ret) {
-> -               dev_err(dev, "Failed to read revision register: %d\n", re=
-t);
-> -               return ret;
-> -       }
-> -
-> -       dev_info(dev, "TPS68470 REVID: 0x%x\n", version);
-> -
-> -       return 0;
-> -}
-> -
-> -static int tps68470_probe(struct i2c_client *client)
-> -{
-> -       struct device *dev =3D &client->dev;
-> -       struct regmap *regmap;
-> -       int ret;
-> -
-> -       regmap =3D devm_regmap_init_i2c(client, &tps68470_regmap_config);
-> -       if (IS_ERR(regmap)) {
-> -               dev_err(dev, "devm_regmap_init_i2c Error %ld\n",
-> -                       PTR_ERR(regmap));
-> -               return PTR_ERR(regmap);
-> -       }
-> -
-> -       i2c_set_clientdata(client, regmap);
-> -
-> -       ret =3D tps68470_chip_init(dev, regmap);
-> -       if (ret < 0) {
-> -               dev_err(dev, "TPS68470 Init Error %d\n", ret);
-> -               return ret;
-> -       }
-> -
-> -       ret =3D devm_mfd_add_devices(dev, PLATFORM_DEVID_NONE, tps68470s,
-> -                             ARRAY_SIZE(tps68470s), NULL, 0, NULL);
-> -       if (ret < 0) {
-> -               dev_err(dev, "devm_mfd_add_devices failed: %d\n", ret);
-> -               return ret;
-> -       }
-> -
-> -       return 0;
-> -}
-> -
-> -static const struct acpi_device_id tps68470_acpi_ids[] =3D {
-> -       {"INT3472"},
-> -       {},
-> -};
-> -
-> -static struct i2c_driver tps68470_driver =3D {
-> -       .driver =3D {
-> -                  .name =3D "tps68470",
-> -                  .acpi_match_table =3D tps68470_acpi_ids,
-> -       },
-> -       .probe_new =3D tps68470_probe,
-> -};
-> -builtin_i2c_driver(tps68470_driver);
 > --
 > 2.25.1
 >
@@ -220,5 +145,5 @@ t);
 
 With Best Regards,
 Andy Shevchenko
---===============8838415647702917570==--
+--===============5796649342169857855==--
 
