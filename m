@@ -1,171 +1,67 @@
-Content-Type: multipart/mixed; boundary="===============0922160150672855463=="
+Content-Type: multipart/mixed; boundary="===============3915790917844610174=="
 MIME-Version: 1.0
-From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
- aa22459146987c639004f1fe5a30fe95743c1a1c
-Date: Thu, 25 Feb 2021 13:05:40 +0800
-Message-ID: <60373024.wiSJ29Hw53lVyzbJ%lkp@intel.com>
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] Re: [PATCH] [ACPICA] IORT: Fix HTTU Override mask for the
+ SMMUv3 subtable
+Date: Thu, 25 Feb 2021 20:45:54 +0000
+Message-ID: <BYAPR11MB3256E28FD567C5FEB0EDCA94879E9@BYAPR11MB3256.namprd11.prod.outlook.com>
+In-Reply-To: 20210225112620.1827-1-yuzenghui@huawei.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0922160150672855463==
+--===============3915790917844610174==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
-m.git bleeding-edge
-branch HEAD: aa22459146987c639004f1fe5a30fe95743c1a1c  Merge branches 'acpi=
--platform' and 'acpi-tables' into linux-next
+If the field is two bits, I think the ACPI_DMT_* symbol should be ACPI_DMT_=
+FLAGS2, not ACPI_DMT_FLAGS1
 
-elapsed time: 728m
+-----Original Message-----
+From: Zenghui Yu <yuzenghui(a)huawei.com> =
 
-configs tested: 134
-configs skipped: 2
+Sent: Thursday, February 25, 2021 3:26 AM
+To: devel(a)acpica.org; linux-acpi(a)vger.kernel.org
+Cc: Moore, Robert <robert.moore(a)intel.com>; Kaneda, Erik <erik.kaneda(a)i=
+ntel.com>; robin.murphy(a)arm.com; Wysocki, Rafael J <rafael.j.wysocki(a)in=
+tel.com>; guohanjun(a)huawei.com; wanghaibin.wang(a)huawei.com; Zenghui Yu =
+<yuzenghui(a)huawei.com>; Kunkun Jiang <jiangkunkun(a)huawei.com>
+Subject: [PATCH] [ACPICA] IORT: Fix HTTU Override mask for the SMMUv3 subta=
+ble
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+As per the IORT spec, this field overrides the value in SMMU_IRD0.HTTU whic=
+h should always have been 2 bits.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                     tqm5200_defconfig
-mips                         db1xxx_defconfig
-arm                          pcm027_defconfig
-ia64                            zx1_defconfig
-sh                            migor_defconfig
-powerpc                     ppa8548_defconfig
-xtensa                generic_kc705_defconfig
-sh                          urquell_defconfig
-arm                         s3c6400_defconfig
-arm                        magician_defconfig
-mips                        bcm47xx_defconfig
-sh                            shmin_defconfig
-arm                        clps711x_defconfig
-arm                          moxart_defconfig
-powerpc                     skiroot_defconfig
-arm                      jornada720_defconfig
-nios2                            allyesconfig
-arc                        nsim_700_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-powerpc                     stx_gp3_defconfig
-um                            kunit_defconfig
-x86_64                           allyesconfig
-powerpc                      cm5200_defconfig
-arm                         s3c2410_defconfig
-arc                        nsimosci_defconfig
-powerpc                    adder875_defconfig
-sh                            titan_defconfig
-sparc                       sparc64_defconfig
-arm                             ezx_defconfig
-sh                          rsk7201_defconfig
-arm                           corgi_defconfig
-mips                           ip27_defconfig
-arm                           u8500_defconfig
-mips                        jmr3927_defconfig
-powerpc                      acadia_defconfig
-mips                  decstation_64_defconfig
-sh                           se7750_defconfig
-m68k                       m5475evb_defconfig
-arm                           sama5_defconfig
-nios2                               defconfig
-mips                            ar7_defconfig
-arm                        multi_v7_defconfig
-sh                           se7780_defconfig
-sh                               allmodconfig
-parisc                generic-64bit_defconfig
-arm                           tegra_defconfig
-xtensa                              defconfig
-arm                         cm_x300_defconfig
-powerpc                    ge_imp3a_defconfig
-arm                             mxs_defconfig
-arm                            mmp2_defconfig
-arm                          lpd270_defconfig
-mips                           ci20_defconfig
-arm                      tct_hammer_defconfig
-c6x                                 defconfig
-powerpc                     taishan_defconfig
-powerpc                       eiger_defconfig
-powerpc                     mpc83xx_defconfig
-mips                           ip28_defconfig
-arc                        vdk_hs38_defconfig
-mips                         tb0219_defconfig
-arm                        realview_defconfig
-mips                 decstation_r4k_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20210223
-i386                 randconfig-a006-20210223
-i386                 randconfig-a004-20210223
-i386                 randconfig-a003-20210223
-i386                 randconfig-a001-20210223
-i386                 randconfig-a002-20210223
-x86_64               randconfig-a015-20210223
-x86_64               randconfig-a011-20210223
-x86_64               randconfig-a012-20210223
-x86_64               randconfig-a016-20210223
-x86_64               randconfig-a014-20210223
-x86_64               randconfig-a013-20210223
-i386                 randconfig-a013-20210223
-i386                 randconfig-a012-20210223
-i386                 randconfig-a011-20210223
-i386                 randconfig-a014-20210223
-i386                 randconfig-a016-20210223
-i386                 randconfig-a015-20210223
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a001-20210223
-x86_64               randconfig-a002-20210223
-x86_64               randconfig-a003-20210223
-x86_64               randconfig-a005-20210223
-x86_64               randconfig-a006-20210223
-x86_64               randconfig-a004-20210223
-
+Fixes: 9f7c3e148f44 ("IORT: Add in support for the SMMUv3 subtable")
+Reported-by: Kunkun Jiang <jiangkunkun(a)huawei.com>
+Signed-off-by: Zenghui Yu <yuzenghui(a)huawei.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============0922160150672855463==--
+ source/common/dmtbinfo2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/source/common/dmtbinfo2.c b/source/common/dmtbinfo2.c index 17=
+a80ba21..321f106fa 100644
+--- a/source/common/dmtbinfo2.c
++++ b/source/common/dmtbinfo2.c
+@@ -343,7 +343,7 @@ ACPI_DMTABLE_INFO           AcpiDmTableInfoIort4[] =3D
+     {ACPI_DMT_UINT64,   ACPI_IORT4_OFFSET (BaseAddress),            "Base =
+Address", 0},
+     {ACPI_DMT_UINT32,   ACPI_IORT4_OFFSET (Flags),                  "Flags=
+ (decoded below)", 0},
+     {ACPI_DMT_FLAG0,    ACPI_IORT4_FLAG_OFFSET (Flags, 0),          "COHAC=
+C Override", 0},
+-    {ACPI_DMT_FLAG1,    ACPI_IORT4_FLAG_OFFSET (Flags, 0),          "HTTU =
+Override", 0},
++    {ACPI_DMT_FLAGS1,   ACPI_IORT4_FLAG_OFFSET (Flags, 0),          "HTTU =
+Override", 0},
+     {ACPI_DMT_FLAG3,    ACPI_IORT4_FLAG_OFFSET (Flags, 0),          "Proxi=
+mity Domain Valid", 0},
+     {ACPI_DMT_UINT32,   ACPI_IORT4_OFFSET (Reserved),               "Reser=
+ved", 0},
+     {ACPI_DMT_UINT64,   ACPI_IORT4_OFFSET (VatosAddress),           "VATOS=
+ Address", 0},
+--
+2.19.1
+
+--===============3915790917844610174==--
 
