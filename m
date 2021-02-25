@@ -1,45 +1,171 @@
-Content-Type: multipart/mixed; boundary="===============7997101440062586156=="
+Content-Type: multipart/mixed; boundary="===============0922160150672855463=="
 MIME-Version: 1.0
-From: Andy Shevchenko <andy.shevchenko at gmail.com>
-Subject: [Devel] Re: [PATCH v3 5/6] platform/x86: Add intel_skl_int3472 driver
-Date: Wed, 24 Feb 2021 12:18:43 +0200
-Message-ID: <CAHp75VcKUjnwh4fi-mofooBuBYiqXjXOspU4twKg6-Lfvzf=QA@mail.gmail.com>
-In-Reply-To: YDYmv0PpSndAlnDC@pendragon.ideasonboard.com
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
+ aa22459146987c639004f1fe5a30fe95743c1a1c
+Date: Thu, 25 Feb 2021 13:05:40 +0800
+Message-ID: <60373024.wiSJ29Hw53lVyzbJ%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7997101440062586156==
+--===============0922160150672855463==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 24, 2021 at 12:16 PM Laurent Pinchart
-<laurent.pinchart(a)ideasonboard.com> wrote:
-> On Tue, Feb 23, 2021 at 10:36:18PM +0000, Daniel Scally wrote:
-> > On 23/02/2021 20:04, Laurent Pinchart wrote:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git bleeding-edge
+branch HEAD: aa22459146987c639004f1fe5a30fe95743c1a1c  Merge branches 'acpi=
+-platform' and 'acpi-tables' into linux-next
 
-...
+elapsed time: 728m
 
-> > >> +  get_device(&int3472->sensor->dev);
-> > >
-> > > I see no corresponding put_device(), am I missing something ? I'm also
-> > > not sure why this is needed.
-> >
-> > The put is acpi_dev_put() in skl_int3472_discrete_remove(); there seems
-> > to be no acpi_dev_get() for some reason. We use the sensor acpi_device
-> > to get the clock frequency, and to fetch the sensor module string, so I
-> > thought it ought to hold a reference on those grounds.
->
-> Shouldn't acpi_dev_get_dependent_dev() increase the reference count
-> then, instead of doing it manually here ?
+configs tested: 134
+configs skipped: 2
 
-That's what I expected as well.
-We have plenty of acpi_dev_get_*() and they do increase the reference
-counter one way or the other.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
--- =
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                     tqm5200_defconfig
+mips                         db1xxx_defconfig
+arm                          pcm027_defconfig
+ia64                            zx1_defconfig
+sh                            migor_defconfig
+powerpc                     ppa8548_defconfig
+xtensa                generic_kc705_defconfig
+sh                          urquell_defconfig
+arm                         s3c6400_defconfig
+arm                        magician_defconfig
+mips                        bcm47xx_defconfig
+sh                            shmin_defconfig
+arm                        clps711x_defconfig
+arm                          moxart_defconfig
+powerpc                     skiroot_defconfig
+arm                      jornada720_defconfig
+nios2                            allyesconfig
+arc                        nsim_700_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+powerpc                     stx_gp3_defconfig
+um                            kunit_defconfig
+x86_64                           allyesconfig
+powerpc                      cm5200_defconfig
+arm                         s3c2410_defconfig
+arc                        nsimosci_defconfig
+powerpc                    adder875_defconfig
+sh                            titan_defconfig
+sparc                       sparc64_defconfig
+arm                             ezx_defconfig
+sh                          rsk7201_defconfig
+arm                           corgi_defconfig
+mips                           ip27_defconfig
+arm                           u8500_defconfig
+mips                        jmr3927_defconfig
+powerpc                      acadia_defconfig
+mips                  decstation_64_defconfig
+sh                           se7750_defconfig
+m68k                       m5475evb_defconfig
+arm                           sama5_defconfig
+nios2                               defconfig
+mips                            ar7_defconfig
+arm                        multi_v7_defconfig
+sh                           se7780_defconfig
+sh                               allmodconfig
+parisc                generic-64bit_defconfig
+arm                           tegra_defconfig
+xtensa                              defconfig
+arm                         cm_x300_defconfig
+powerpc                    ge_imp3a_defconfig
+arm                             mxs_defconfig
+arm                            mmp2_defconfig
+arm                          lpd270_defconfig
+mips                           ci20_defconfig
+arm                      tct_hammer_defconfig
+c6x                                 defconfig
+powerpc                     taishan_defconfig
+powerpc                       eiger_defconfig
+powerpc                     mpc83xx_defconfig
+mips                           ip28_defconfig
+arc                        vdk_hs38_defconfig
+mips                         tb0219_defconfig
+arm                        realview_defconfig
+mips                 decstation_r4k_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a005-20210223
+i386                 randconfig-a006-20210223
+i386                 randconfig-a004-20210223
+i386                 randconfig-a003-20210223
+i386                 randconfig-a001-20210223
+i386                 randconfig-a002-20210223
+x86_64               randconfig-a015-20210223
+x86_64               randconfig-a011-20210223
+x86_64               randconfig-a012-20210223
+x86_64               randconfig-a016-20210223
+x86_64               randconfig-a014-20210223
+x86_64               randconfig-a013-20210223
+i386                 randconfig-a013-20210223
+i386                 randconfig-a012-20210223
+i386                 randconfig-a011-20210223
+i386                 randconfig-a014-20210223
+i386                 randconfig-a016-20210223
+i386                 randconfig-a015-20210223
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-With Best Regards,
-Andy Shevchenko
---===============7997101440062586156==--
+clang tested configs:
+x86_64               randconfig-a001-20210223
+x86_64               randconfig-a002-20210223
+x86_64               randconfig-a003-20210223
+x86_64               randconfig-a005-20210223
+x86_64               randconfig-a006-20210223
+x86_64               randconfig-a004-20210223
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
+--===============0922160150672855463==--
 
