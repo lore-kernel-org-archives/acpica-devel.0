@@ -1,109 +1,109 @@
-Content-Type: multipart/mixed; boundary="===============2710870628584630326=="
+Content-Type: multipart/mixed; boundary="===============7150180090989110591=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [PATCH 1/1] ACPI: fix acpi table use after free
-Date: Thu, 04 Mar 2021 13:14:49 +0100
-Message-ID: <CAJZ5v0j3=82x1hV9SCdinJQPkDXmJd9BFoqvNxNHSb6iS8PHVQ@mail.gmail.com>
-In-Reply-To: 1614802160-29362-1-git-send-email-george.kennedy@oracle.com
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] Re: [PATCH] Enable ACPI_ADR_SPACE_PCI_CONFIG in
+ acpi_gbl_default_address_spaces only when ACPI_PCI_CONFIGURED is defined
+Date: Thu, 04 Mar 2021 16:56:26 +0000
+Message-ID: <BYAPR11MB325658379DB73F6EEDD6C76F87979@BYAPR11MB3256.namprd11.prod.outlook.com>
+In-Reply-To: MWHPR11MB1599D81078925FFD128E954EF0989@MWHPR11MB1599.namprd11.prod.outlook.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2710870628584630326==
+--===============7150180090989110591==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 4, 2021 at 2:22 AM George Kennedy <george.kennedy(a)oracle.com>=
- wrote:
->
-> Since commit 7fef431be9c9 ("mm/page_alloc: place pages to tail
-> in __free_pages_core()") the following use after free occurs
-> intermittently when acpi tables are accessed.
->
-> BUG: KASAN: use-after-free in ibft_init+0x134/0xc49
-> Read of size 4 at addr ffff8880be453004 by task swapper/0/1
-> CPU: 3 PID: 1 Comm: swapper/0 Not tainted 5.12.0-rc1-7a7fd0d #1
-> Call Trace:
->  dump_stack+0xf6/0x158
->  print_address_description.constprop.9+0x41/0x60
->  kasan_report.cold.14+0x7b/0xd4
->  __asan_report_load_n_noabort+0xf/0x20
->  ibft_init+0x134/0xc49
->  do_one_initcall+0xc4/0x3e0
->  kernel_init_freeable+0x5af/0x66b
->  kernel_init+0x16/0x1d0
->  ret_from_fork+0x22/0x30
->
-> ACPI tables mapped via kmap() do not have their mapped pages
-> reserved and the pages can be "stolen" by the buddy allocator.
+Well, I don't like the fact that PCI_CONFIGURED would have to be defined by=
+ each current host:
 
-What do you mean by this?
+> +#ifdef ACPI_PCI_CONFIGURED
 
-> Use memblock_reserve() to reserve all the ACPI table pages.
+I would rather the logic be reversed:
 
-How is this going to help?
+> +#ifdef ACPI_PCI_NOT_CONFIGURED
 
-> Signed-off-by: George Kennedy <george.kennedy(a)oracle.com>
+-----Original Message-----
+From: Kaneda, Erik <erik.kaneda(a)intel.com> =
+
+Sent: Wednesday, March 03, 2021 10:29 AM
+To: Weidong Cui <weidongcui(a)gmail.com>; Moore, Robert <robert.moore(a)int=
+el.com>; Wysocki, Rafael J <rafael.j.wysocki(a)intel.com>
+Cc: Xinyang Ge <aegiryy(a)gmail.com>; linux-acpi(a)vger.kernel.org; devel(a=
+)acpica.org; linux-kernel(a)vger.kernel.org; Len Brown <lenb(a)kernel.org>
+Subject: RE: [PATCH] Enable ACPI_ADR_SPACE_PCI_CONFIG in acpi_gbl_default_a=
+ddress_spaces only when ACPI_PCI_CONFIGURED is defined
+
+This looks good to me. Bob, do you have any comments?
+
+Erik
+
+> -----Original Message-----
+> From: Weidong Cui <weidongcui(a)gmail.com>
+> Sent: Monday, February 8, 2021 7:18 PM
+> To: Moore, Robert <robert.moore(a)intel.com>; Kaneda, Erik =
+
+> <erik.kaneda(a)intel.com>; Wysocki, Rafael J =
+
+> <rafael.j.wysocki(a)intel.com>; Len Brown <lenb(a)kernel.org>
+> Cc: Weidong Cui <weidongcui(a)gmail.com>; Xinyang Ge =
+
+> <aegiryy(a)gmail.com>; linux-acpi(a)vger.kernel.org; devel(a)acpica.org; =
+
+> linux- kernel(a)vger.kernel.org
+> Subject: [PATCH] Enable ACPI_ADR_SPACE_PCI_CONFIG in =
+
+> acpi_gbl_default_address_spaces only when ACPI_PCI_CONFIGURED is =
+
+> defined
+> =
+
+> Signed-off-by: Weidong Cui <weidongcui(a)gmail.com>
+> Signed-off-by: Xinyang Ge <aegiryy(a)gmail.com>
 > ---
->  arch/x86/kernel/setup.c        | 3 +--
->  drivers/acpi/acpica/tbinstal.c | 4 ++++
->  2 files changed, 5 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-> index d883176..97deea3 100644
-> --- a/arch/x86/kernel/setup.c
-> +++ b/arch/x86/kernel/setup.c
-> @@ -1046,6 +1046,7 @@ void __init setup_arch(char **cmdline_p)
->         cleanup_highmap();
->
->         memblock_set_current_limit(ISA_END_ADDRESS);
-> +       acpi_boot_table_init();
+>  drivers/acpi/acpica/evhandler.c | 2 ++
+>  include/acpi/acconfig.h         | 4 ++++
+>  2 files changed, 6 insertions(+)
+> =
 
-This cannot be moved before the acpi_table_upgrade() invocation AFAICS.
+> diff --git a/drivers/acpi/acpica/evhandler.c =
 
-Why exactly do you want to move it?
+> b/drivers/acpi/acpica/evhandler.c index 5884eba04..4c25ad433 100644
+> --- a/drivers/acpi/acpica/evhandler.c
+> +++ b/drivers/acpi/acpica/evhandler.c
+> @@ -26,7 +26,9 @@ acpi_ev_install_handler(acpi_handle obj_handle,
+>  u8 acpi_gbl_default_address_spaces[ACPI_NUM_DEFAULT_SPACES] =3D {
+>  	ACPI_ADR_SPACE_SYSTEM_MEMORY,
+>  	ACPI_ADR_SPACE_SYSTEM_IO,
+> +#ifdef ACPI_PCI_CONFIGURED
+>  	ACPI_ADR_SPACE_PCI_CONFIG,
+> +#endif
+>  	ACPI_ADR_SPACE_DATA_TABLE
+>  };
+> =
 
->         e820__memblock_setup();
->
->         /*
-> @@ -1139,8 +1140,6 @@ void __init setup_arch(char **cmdline_p)
->         /*
->          * Parse the ACPI tables for possible boot-time SMP configuration.
->          */
-> -       acpi_boot_table_init();
-> -
->         early_acpi_boot_init();
->
->         initmem_init();
-> diff --git a/drivers/acpi/acpica/tbinstal.c b/drivers/acpi/acpica/tbinsta=
-l.c
-> index 8d1e5b5..4e32b22 100644
-> --- a/drivers/acpi/acpica/tbinstal.c
-> +++ b/drivers/acpi/acpica/tbinstal.c
-> @@ -8,6 +8,7 @@
->   ***********************************************************************=
-******/
->
->  #include <acpi/acpi.h>
-> +#include <linux/memblock.h>
->  #include "accommon.h"
->  #include "actables.h"
->
-> @@ -58,6 +59,9 @@
->                                       new_table_desc->flags,
->                                       new_table_desc->pointer);
->
-> +       memblock_reserve(new_table_desc->address,
-> +                        PAGE_ALIGN(new_table_desc->pointer->length));
-> +
+> diff --git a/include/acpi/acconfig.h b/include/acpi/acconfig.h index =
 
-Why do you want to do this here in the first place?
+> a225eff49..790999028 100644
+> --- a/include/acpi/acconfig.h
+> +++ b/include/acpi/acconfig.h
+> @@ -162,7 +162,11 @@
+>  /* Maximum space_ids for Operation Regions */
+> =
 
-Things like that cannot be done in the ACPICA code in general.
+>  #define ACPI_MAX_ADDRESS_SPACE          255
+> +#ifdef ACPI_PCI_CONFIGURED
+>  #define ACPI_NUM_DEFAULT_SPACES         4
+> +#else
+> +#define ACPI_NUM_DEFAULT_SPACES         3
+> +#endif
+> =
 
->         acpi_tb_print_table_header(new_table_desc->address,
->                                    new_table_desc->pointer);
->
+>  /* Array sizes.  Used for range checking also */
+> =
+
 > --
---===============2710870628584630326==--
+> 2.24.3 (Apple Git-128)
+
+--===============7150180090989110591==--
 
