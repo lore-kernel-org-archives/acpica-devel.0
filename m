@@ -1,161 +1,177 @@
-Content-Type: multipart/mixed; boundary="===============5169515182590186662=="
+Content-Type: multipart/mixed; boundary="===============8053655574627782311=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] Re: [PATCH] Enable ACPI_ADR_SPACE_PCI_CONFIG in
- acpi_gbl_default_address_spaces only when ACPI_PCI_CONFIGURED is defined
-Date: Fri, 05 Mar 2021 20:46:14 +0000
-Message-ID: <BYAPR11MB3256B80EC10AF4965083CCD087969@BYAPR11MB3256.namprd11.prod.outlook.com>
-In-Reply-To: BYAPR11MB3256FD804E3F3CE584B6D3B387979@BYAPR11MB3256.namprd11.prod.outlook.com
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
+ 5c476073a9df062a501edf9ea7b11ccc53c27bf7
+Date: Sun, 07 Mar 2021 22:22:06 +0800
+Message-ID: <6044e18e.bJjTnUBj+uJ5MB4v%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5169515182590186662==
+--===============8053655574627782311==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-After giving this some thought, I think we can #define ACPI_PCI_CONFIGURED =
-in the global configuration file (I think it is acconfig.h) - and document =
-why and when it should be removed.
-Bob
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git bleeding-edge
+branch HEAD: 5c476073a9df062a501edf9ea7b11ccc53c27bf7  Merge branches 'acpi=
+-drivers' and 'acpi-bus' into linux-next
 
+elapsed time: 721m
 
------Original Message-----
-From: Moore, Robert <robert.moore(a)intel.com> =
+configs tested: 140
+configs skipped: 2
 
-Sent: Thursday, March 04, 2021 9:37 AM
-To: weidongcui(a)gmail.com
-Cc: Kaneda, Erik <erik.kaneda(a)intel.com>; Wysocki, Rafael J <rafael.j.wys=
-ocki(a)intel.com>; Xinyang Ge <aegiryy(a)gmail.com>; linux-acpi(a)vger.kern=
-el.org; devel(a)acpica.org; linux-kernel(a)vger.kernel.org
-Subject: [Devel] Re: [PATCH] Enable ACPI_ADR_SPACE_PCI_CONFIG in acpi_gbl_d=
-efault_address_spaces only when ACPI_PCI_CONFIGURED is defined
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                        sh7763rdp_defconfig
+powerpc                          g5_defconfig
+xtensa                    smp_lx200_defconfig
+csky                             alldefconfig
+arm                         orion5x_defconfig
+powerpc                      pasemi_defconfig
+arc                              allyesconfig
+powerpc                    klondike_defconfig
+sh                            titan_defconfig
+arm                       aspeed_g4_defconfig
+mips                      malta_kvm_defconfig
+arm                         lubbock_defconfig
+mips                            e55_defconfig
+powerpc                      ppc44x_defconfig
+powerpc                    ge_imp3a_defconfig
+arm                         hackkit_defconfig
+arc                 nsimosci_hs_smp_defconfig
+arc                         haps_hs_defconfig
+powerpc                      arches_defconfig
+sh                          rsk7264_defconfig
+arm                         bcm2835_defconfig
+mips                     decstation_defconfig
+powerpc                 mpc8560_ads_defconfig
+arm                          pcm027_defconfig
+arm                          lpd270_defconfig
+riscv                    nommu_k210_defconfig
+sparc                            allyesconfig
+mips                        maltaup_defconfig
+sh                        sh7785lcr_defconfig
+mips                  maltasmvp_eva_defconfig
+powerpc                     ep8248e_defconfig
+powerpc                     sbc8548_defconfig
+parisc                generic-32bit_defconfig
+powerpc                     tqm8555_defconfig
+sh                          r7780mp_defconfig
+powerpc                      bamboo_defconfig
+parisc                generic-64bit_defconfig
+arc                           tb10x_defconfig
+ia64                                defconfig
+sparc                       sparc64_defconfig
+mips                           ci20_defconfig
+s390                       zfcpdump_defconfig
+mips                     cu1000-neo_defconfig
+arm                        keystone_defconfig
+sh                           se7705_defconfig
+nios2                            alldefconfig
+sh                   sh7724_generic_defconfig
+xtensa                    xip_kc705_defconfig
+m68k                            q40_defconfig
+mips                           rs90_defconfig
+arm                          pxa3xx_defconfig
+arc                      axs103_smp_defconfig
+mips                  decstation_64_defconfig
+powerpc                     tqm8560_defconfig
+microblaze                          defconfig
+mips                         tb0287_defconfig
+powerpc                     tqm8541_defconfig
+sh                          landisk_defconfig
+mips                       rbtx49xx_defconfig
+arm                       versatile_defconfig
+arm                          pxa910_defconfig
+mips                 decstation_r4k_defconfig
+mips                         tb0219_defconfig
+powerpc                     redwood_defconfig
+m68k                          sun3x_defconfig
+sh                        apsh4ad0a_defconfig
+arm                        shmobile_defconfig
+sh                           se7724_defconfig
+powerpc                       holly_defconfig
+powerpc                          allmodconfig
+ia64                             allyesconfig
+ia64                             allmodconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                           allnoconfig
+i386                 randconfig-a005-20210307
+i386                 randconfig-a003-20210307
+i386                 randconfig-a002-20210307
+i386                 randconfig-a004-20210307
+i386                 randconfig-a006-20210307
+i386                 randconfig-a001-20210307
+x86_64               randconfig-a013-20210307
+x86_64               randconfig-a016-20210307
+x86_64               randconfig-a015-20210307
+x86_64               randconfig-a014-20210307
+x86_64               randconfig-a012-20210307
+x86_64               randconfig-a011-20210307
+i386                 randconfig-a016-20210307
+i386                 randconfig-a012-20210307
+i386                 randconfig-a013-20210307
+i386                 randconfig-a011-20210307
+i386                 randconfig-a015-20210307
+i386                 randconfig-a014-20210307
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
+clang tested configs:
+x86_64               randconfig-a006-20210307
+x86_64               randconfig-a001-20210307
+x86_64               randconfig-a004-20210307
+x86_64               randconfig-a005-20210307
+x86_64               randconfig-a002-20210307
+x86_64               randconfig-a003-20210307
 
------Original Message-----
-From: Weidong Cui <weidongcui(a)gmail.com>
-Sent: Thursday, March 04, 2021 9:06 AM
-To: Moore, Robert <robert.moore(a)intel.com>
-Cc: Kaneda, Erik <erik.kaneda(a)intel.com>; Wysocki, Rafael J <rafael.j.wys=
-ocki(a)intel.com>; Xinyang Ge <aegiryy(a)gmail.com>; linux-acpi(a)vger.kern=
-el.org; devel(a)acpica.org; linux-kernel(a)vger.kernel.org; Len Brown <lenb=
-(a)kernel.org>
-Subject: Re: [PATCH] Enable ACPI_ADR_SPACE_PCI_CONFIG in acpi_gbl_default_a=
-ddress_spaces only when ACPI_PCI_CONFIGURED is defined
-
-> Well, I don't like the fact that PCI_CONFIGURED would have to be defined =
-by each current host:
->
-> > +#ifdef ACPI_PCI_CONFIGURED
->
-> I would rather the logic be reversed:
->
-> > +#ifdef ACPI_PCI_NOT_CONFIGURED
-
-Thank you for the comments, Erik and Bob!
-
-ACPI_PCI_CONFIGURED is defined in aclinux.h (see below) and used in several=
- places in evhandler.c and exregion.c.
-I'm not sure why we want to introduce ACPI_PCI_NOT_CONFIGURED.  Bob, I don'=
-t understand your concerns about "have to be defined by each current host".=
-  Can you please shed some light on it?
-
-It is required in aclinux.h, and thus it is required in every host-dependen=
-t configuration file (acfreebsd.h, acmacosx.h, acnetbsd.h, achaiku.h, etc.)=
- I would rather not force these host-specific header files to change.
-Bob
-
-
-#ifdef CONFIG_PCI
-#define ACPI_PCI_CONFIGURED
-#endif
-
-> -----Original Message-----
-> From: Kaneda, Erik <erik.kaneda(a)intel.com>
-> Sent: Wednesday, March 03, 2021 10:29 AM
-> To: Weidong Cui <weidongcui(a)gmail.com>; Moore, Robert =
-
-> <robert.moore(a)intel.com>; Wysocki, Rafael J =
-
-> <rafael.j.wysocki(a)intel.com>
-> Cc: Xinyang Ge <aegiryy(a)gmail.com>; linux-acpi(a)vger.kernel.org; =
-
-> devel(a)acpica.org; linux-kernel(a)vger.kernel.org; Len Brown =
-
-> <lenb(a)kernel.org>
-> Subject: RE: [PATCH] Enable ACPI_ADR_SPACE_PCI_CONFIG in =
-
-> acpi_gbl_default_address_spaces only when ACPI_PCI_CONFIGURED is =
-
-> defined
->
-> This looks good to me. Bob, do you have any comments?
->
-> Erik
->
-> > -----Original Message-----
-> > From: Weidong Cui <weidongcui(a)gmail.com>
-> > Sent: Monday, February 8, 2021 7:18 PM
-> > To: Moore, Robert <robert.moore(a)intel.com>; Kaneda, Erik =
-
-> > <erik.kaneda(a)intel.com>; Wysocki, Rafael J =
-
-> > <rafael.j.wysocki(a)intel.com>; Len Brown <lenb(a)kernel.org>
-> > Cc: Weidong Cui <weidongcui(a)gmail.com>; Xinyang Ge =
-
-> > <aegiryy(a)gmail.com>; linux-acpi(a)vger.kernel.org; devel(a)acpica.org;
-> > linux- kernel(a)vger.kernel.org
-> > Subject: [PATCH] Enable ACPI_ADR_SPACE_PCI_CONFIG in =
-
-> > acpi_gbl_default_address_spaces only when ACPI_PCI_CONFIGURED is =
-
-> > defined
-> >
-> > Signed-off-by: Weidong Cui <weidongcui(a)gmail.com>
-> > Signed-off-by: Xinyang Ge <aegiryy(a)gmail.com>
-> > ---
-> >  drivers/acpi/acpica/evhandler.c | 2 ++
-> >  include/acpi/acconfig.h         | 4 ++++
-> >  2 files changed, 6 insertions(+)
-> >
-> > diff --git a/drivers/acpi/acpica/evhandler.c =
-
-> > b/drivers/acpi/acpica/evhandler.c index 5884eba04..4c25ad433 100644
-> > --- a/drivers/acpi/acpica/evhandler.c
-> > +++ b/drivers/acpi/acpica/evhandler.c
-> > @@ -26,7 +26,9 @@ acpi_ev_install_handler(acpi_handle obj_handle,
-> >  u8 acpi_gbl_default_address_spaces[ACPI_NUM_DEFAULT_SPACES] =3D {
-> >       ACPI_ADR_SPACE_SYSTEM_MEMORY,
-> >       ACPI_ADR_SPACE_SYSTEM_IO,
-> > +#ifdef ACPI_PCI_CONFIGURED
-> >       ACPI_ADR_SPACE_PCI_CONFIG,
-> > +#endif
-> >       ACPI_ADR_SPACE_DATA_TABLE
-> >  };
-> >
-> > diff --git a/include/acpi/acconfig.h b/include/acpi/acconfig.h index
-> > a225eff49..790999028 100644
-> > --- a/include/acpi/acconfig.h
-> > +++ b/include/acpi/acconfig.h
-> > @@ -162,7 +162,11 @@
-> >  /* Maximum space_ids for Operation Regions */
-> >
-> >  #define ACPI_MAX_ADDRESS_SPACE          255
-> > +#ifdef ACPI_PCI_CONFIGURED
-> >  #define ACPI_NUM_DEFAULT_SPACES         4
-> > +#else
-> > +#define ACPI_NUM_DEFAULT_SPACES         3
-> > +#endif
-> >
-> >  /* Array sizes.  Used for range checking also */
-> >
-> > --
-> > 2.24.3 (Apple Git-128)
->
-_______________________________________________
-Devel mailing list -- devel(a)acpica.org
-To unsubscribe send an email to devel-leave(a)acpica.org %(web_page_url)sli=
-stinfo%(cgiext)s/%(_internal_name)s
---===============5169515182590186662==--
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
+--===============8053655574627782311==--
 
