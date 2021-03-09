@@ -1,132 +1,62 @@
-Content-Type: multipart/mixed; boundary="===============4460041030252982815=="
+Content-Type: multipart/mixed; boundary="===============2560049941921458032=="
 MIME-Version: 1.0
-From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
- 4612c104e41532886aeae80f37d15e14fdad6cbf
-Date: Tue, 09 Mar 2021 16:36:59 +0800
-Message-ID: <604733ab.66tA4ShyV6xeUbpG%lkp@intel.com>
+From: Jakub Czapiga <jacz at semihalf.com>
+Subject: [Devel] ACPI table testing with ACPICA
+Date: Tue, 09 Mar 2021 19:25:57 +0100
+Message-ID: <CAFyd4VbFdF0hyPm60w+AT1KO=TzxQS+oE-j2TiQDsuL7=B+Q8g@mail.gmail.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4460041030252982815==
+--===============2560049941921458032==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
-m.git bleeding-edge
-branch HEAD: 4612c104e41532886aeae80f37d15e14fdad6cbf  Merge branch 'acpi-m=
-essages' into bleeding-edge
+Hello everyone,
 
-elapsed time: 723m
+I am working on a system for AML testing. Basically I want to create some
+kind of unit-testing environment allowing to load generated ACPI tables
+(preferably from memory buffer) and check methods' behavior, check
+variables, check if all required objects are present etc.
 
-configs tested: 95
-configs skipped: 2
+My first idea was to dump generated ACPI tables into files, load them into
+AcpiExec process and communicate with it using Python. I wonder if it is
+possible to use provided source code as a library and write tests in C
+instead of Python with a custom framework.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Could you please guide me in the right direction?
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                        workpad_defconfig
-sh                           se7724_defconfig
-mips                         bigsur_defconfig
-mips                          ath25_defconfig
-m68k                           sun3_defconfig
-sh                         ap325rxa_defconfig
-m68k                       m5208evb_defconfig
-powerpc                       ppc64_defconfig
-riscv             nommu_k210_sdcard_defconfig
-mips                           ci20_defconfig
-sh                          rsk7201_defconfig
-powerpc                     tqm8541_defconfig
-powerpc                     pq2fads_defconfig
-arm                           stm32_defconfig
-mips                 decstation_r4k_defconfig
-powerpc                    ge_imp3a_defconfig
-powerpc                      pcm030_defconfig
-um                           x86_64_defconfig
-mips                       rbtx49xx_defconfig
-arm                      integrator_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20210308
-i386                 randconfig-a003-20210308
-i386                 randconfig-a002-20210308
-i386                 randconfig-a006-20210308
-i386                 randconfig-a004-20210308
-i386                 randconfig-a001-20210308
-i386                 randconfig-a016-20210308
-i386                 randconfig-a012-20210308
-i386                 randconfig-a014-20210308
-i386                 randconfig-a013-20210308
-i386                 randconfig-a011-20210308
-i386                 randconfig-a015-20210308
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+P.S.
+https://acpica.org/contact does not work. Captcha is empty.
 
-clang tested configs:
-x86_64               randconfig-a006-20210309
-x86_64               randconfig-a001-20210309
-x86_64               randconfig-a004-20210309
-x86_64               randconfig-a002-20210309
-x86_64               randconfig-a005-20210309
-x86_64               randconfig-a003-20210309
-x86_64               randconfig-a013-20210308
-x86_64               randconfig-a016-20210308
-x86_64               randconfig-a015-20210308
-x86_64               randconfig-a014-20210308
-x86_64               randconfig-a011-20210308
-x86_64               randconfig-a012-20210308
+Regards,
+Jakub Czapiga
+jacz(a)semihalf.com
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============4460041030252982815==--
+--===============2560049941921458032==
+Content-Type: text/html
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="attachment.htm"
+
+PGRpdiBkaXI9Imx0ciI+PGRpdj5IZWxsbyBldmVyeW9uZSw8L2Rpdj48ZGl2Pjxicj48L2Rpdj48
+ZGl2PkkgYW0gd29ya2luZyBvbiBhIHN5c3RlbSBmb3IgQU1MIHRlc3RpbmcuIApCYXNpY2FsbHkg
+SSB3YW50IHRvIGNyZWF0ZSBzb21lIGtpbmQgb2YgdW5pdC10ZXN0aW5nIGVudmlyb25tZW50IAph
+bGxvd2luZyB0byBsb2FkIGdlbmVyYXRlZCBBQ1BJIHRhYmxlcyAocHJlZmVyYWJseSBmcm9tIG1l
+bW9yeSBidWZmZXIpIAphbmQgY2hlY2sgbWV0aG9kcyYjMzk7IGJlaGF2aW9yLCBjaGVjayB2YXJp
+YWJsZXMsIGNoZWNrIGlmIGFsbCByZXF1aXJlZCAKb2JqZWN0cyBhcmUgcHJlc2VudCBldGMuIDxi
+cj48L2Rpdj48ZGl2Pjxicj48L2Rpdj48ZGl2Pk15IGZpcnN0IGlkZWEgd2FzIHRvIGR1bXAgZ2Vu
+ZXJhdGVkIEFDUEkgdGFibGVzIGludG8gZmlsZXMsIGxvYWQgdGhlbSAKaW50byBBY3BpRXhlYyBw
+cm9jZXNzIGFuZCBjb21tdW5pY2F0ZSB3aXRoIGl0IHVzaW5nIFB5dGhvbi4gSSB3b25kZXIgaWYg
+Cml0IGlzIHBvc3NpYmxlIHRvIHVzZSBwcm92aWRlZCBzb3VyY2UgY29kZSBhcyBhIGxpYnJhcnkg
+YW5kIHdyaXRlIHRlc3RzIAppbiBDIGluc3RlYWQgb2YgUHl0aG9uIHdpdGggYSBjdXN0b20gZnJh
+bWV3b3JrLiA8YnI+PC9kaXY+PGRpdj48YnI+PC9kaXY+PGRpdj5Db3VsZCB5b3UgcGxlYXNlIGd1
+aWRlIG1lIGluIHRoZSByaWdodCBkaXJlY3Rpb24/PC9kaXY+PGRpdj48YnI+PC9kaXY+PGRpdj5Q
+LlMuPC9kaXY+PGRpdj48YSBocmVmPSJodHRwczovL2FjcGljYS5vcmcvY29udGFjdCI+aHR0cHM6
+Ly9hY3BpY2Eub3JnL2NvbnRhY3Q8L2E+IGRvZXMgbm90IHdvcmsuIENhcHRjaGEgaXMgZW1wdHku
+PGJyPjwvZGl2PjxkaXY+PGJyPjwvZGl2PjxkaXY+UmVnYXJkcyw8L2Rpdj48ZGl2Pkpha3ViIEN6
+YXBpZ2E8L2Rpdj48ZGl2PjxhIGhyZWY9Im1haWx0bzpqYWN6QHNlbWloYWxmLmNvbSI+amFjekBz
+ZW1paGFsZi5jb208L2E+PGJyPjwvZGl2PjwvZGl2Pgo=
+
+--===============2560049941921458032==--
 
