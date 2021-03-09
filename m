@@ -1,62 +1,54 @@
-Content-Type: multipart/mixed; boundary="===============2560049941921458032=="
+Content-Type: multipart/mixed; boundary="===============5405947666641590165=="
 MIME-Version: 1.0
-From: Jakub Czapiga <jacz at semihalf.com>
-Subject: [Devel] ACPI table testing with ACPICA
-Date: Tue, 09 Mar 2021 19:25:57 +0100
-Message-ID: <CAFyd4VbFdF0hyPm60w+AT1KO=TzxQS+oE-j2TiQDsuL7=B+Q8g@mail.gmail.com>
+From: Rafael J. Wysocki <rafael at kernel.org>
+Subject: [Devel] Re: [PATCH 1/1] ACPI: fix acpi table use after free
+Date: Tue, 09 Mar 2021 19:29:51 +0100
+Message-ID: <CAJZ5v0hAQo7+3bthoC8K7n7qyhQFMuOd8U3BhZWSREjPmq0-7w@mail.gmail.com>
+In-Reply-To: YEe2SAESEaEak+HB@linux.ibm.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2560049941921458032==
+--===============5405947666641590165==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hello everyone,
+On Tue, Mar 9, 2021 at 6:54 PM Mike Rapoport <rppt(a)linux.ibm.com> wrote:
+>
+> On Sun, Mar 07, 2021 at 09:46:22AM +0200, Mike Rapoport wrote:
+> > Hello Rafael,
+> >
+> > On Fri, Mar 05, 2021 at 02:30:07PM +0100, Rafael J. Wysocki wrote:
+> > > On Fri, Mar 5, 2021 at 12:14 AM George Kennedy <george.kennedy(a)orac=
+le.com> wrote:
+> > >
+> > > > The ibft table, for example, is mapped in via acpi_map() and kmap()=
+. The
+> > > > page for the ibft table is not reserved, so it can end up on the fr=
+eelist.
+> > >
+> > > You appear to be saying that it is not sufficient to kmap() a page in
+> > > order to use it safely.  It is also necessary to reserve it upfront,
+> > > for example with the help of memblock_reserve().  Is that correct?  If
+> > > so, is there an alternative way to reserve a page frame?
+> >
+> > Like David said in the other reply, if a BIOS does not mark the memory =
+that
+> > contains an ACPI table as used (e.g. reserved or ACPI data), we need to
+> > make sure the kernel knows that such memory is in use and an early call=
+ to
+> > memblock_reserve() is exactly what we need here.
+> > George had this issue with iBFT, but in general this could be any table
+> > that a buggy BIOS forgot to mark as ACPI data.
+>
+> BTW, I wonder is there a fundamental reason to use ioremap() to access AC=
+PI
+> tables at all?
+> In the end, they reside in RAM and, apparently, they live at the same DIMM
+> as neighboring "normal memory" so why cannot we just map them normally as
+> read-only not executable?
 
-I am working on a system for AML testing. Basically I want to create some
-kind of unit-testing environment allowing to load generated ACPI tables
-(preferably from memory buffer) and check methods' behavior, check
-variables, check if all required objects are present etc.
-
-My first idea was to dump generated ACPI tables into files, load them into
-AcpiExec process and communicate with it using Python. I wonder if it is
-possible to use provided source code as a library and write tests in C
-instead of Python with a custom framework.
-
-Could you please guide me in the right direction?
-
-P.S.
-https://acpica.org/contact does not work. Captcha is empty.
-
-Regards,
-Jakub Czapiga
-jacz(a)semihalf.com
-
---===============2560049941921458032==
-Content-Type: text/html
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="attachment.htm"
-
-PGRpdiBkaXI9Imx0ciI+PGRpdj5IZWxsbyBldmVyeW9uZSw8L2Rpdj48ZGl2Pjxicj48L2Rpdj48
-ZGl2PkkgYW0gd29ya2luZyBvbiBhIHN5c3RlbSBmb3IgQU1MIHRlc3RpbmcuIApCYXNpY2FsbHkg
-SSB3YW50IHRvIGNyZWF0ZSBzb21lIGtpbmQgb2YgdW5pdC10ZXN0aW5nIGVudmlyb25tZW50IAph
-bGxvd2luZyB0byBsb2FkIGdlbmVyYXRlZCBBQ1BJIHRhYmxlcyAocHJlZmVyYWJseSBmcm9tIG1l
-bW9yeSBidWZmZXIpIAphbmQgY2hlY2sgbWV0aG9kcyYjMzk7IGJlaGF2aW9yLCBjaGVjayB2YXJp
-YWJsZXMsIGNoZWNrIGlmIGFsbCByZXF1aXJlZCAKb2JqZWN0cyBhcmUgcHJlc2VudCBldGMuIDxi
-cj48L2Rpdj48ZGl2Pjxicj48L2Rpdj48ZGl2Pk15IGZpcnN0IGlkZWEgd2FzIHRvIGR1bXAgZ2Vu
-ZXJhdGVkIEFDUEkgdGFibGVzIGludG8gZmlsZXMsIGxvYWQgdGhlbSAKaW50byBBY3BpRXhlYyBw
-cm9jZXNzIGFuZCBjb21tdW5pY2F0ZSB3aXRoIGl0IHVzaW5nIFB5dGhvbi4gSSB3b25kZXIgaWYg
-Cml0IGlzIHBvc3NpYmxlIHRvIHVzZSBwcm92aWRlZCBzb3VyY2UgY29kZSBhcyBhIGxpYnJhcnkg
-YW5kIHdyaXRlIHRlc3RzIAppbiBDIGluc3RlYWQgb2YgUHl0aG9uIHdpdGggYSBjdXN0b20gZnJh
-bWV3b3JrLiA8YnI+PC9kaXY+PGRpdj48YnI+PC9kaXY+PGRpdj5Db3VsZCB5b3UgcGxlYXNlIGd1
-aWRlIG1lIGluIHRoZSByaWdodCBkaXJlY3Rpb24/PC9kaXY+PGRpdj48YnI+PC9kaXY+PGRpdj5Q
-LlMuPC9kaXY+PGRpdj48YSBocmVmPSJodHRwczovL2FjcGljYS5vcmcvY29udGFjdCI+aHR0cHM6
-Ly9hY3BpY2Eub3JnL2NvbnRhY3Q8L2E+IGRvZXMgbm90IHdvcmsuIENhcHRjaGEgaXMgZW1wdHku
-PGJyPjwvZGl2PjxkaXY+PGJyPjwvZGl2PjxkaXY+UmVnYXJkcyw8L2Rpdj48ZGl2Pkpha3ViIEN6
-YXBpZ2E8L2Rpdj48ZGl2PjxhIGhyZWY9Im1haWx0bzpqYWN6QHNlbWloYWxmLmNvbSI+amFjekBz
-ZW1paGFsZi5jb208L2E+PGJyPjwvZGl2PjwvZGl2Pgo=
-
---===============2560049941921458032==--
+This may be NVS memory (depending on the configuration of the system)
+which isn't "normal" RAM AFAICS.
+--===============5405947666641590165==--
 
