@@ -1,93 +1,178 @@
-Content-Type: multipart/mixed; boundary="===============1154711311462724315=="
+Content-Type: multipart/mixed; boundary="===============0432641623373253069=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [PATCH 1/1] ACPI: fix acpi table use after free
-Date: Wed, 10 Mar 2021 19:54:37 +0100
-Message-ID: <CAJZ5v0g_ztenDY-ER6A0fKD-ZHhLfF3zQdRYYxQb5jSXudd8xQ@mail.gmail.com>
-In-Reply-To: CAJZ5v0gC+60n0-UkMw8h5JPBc6grQtD1ambSOCAHV2HLm886yQ@mail.gmail.com
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
+ 8608bdeb4cdb5608b4073077e6e5d7bdedefd169
+Date: Thu, 11 Mar 2021 11:16:59 +0800
+Message-ID: <60498bab.jUzETAn78mtsiRfa%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1154711311462724315==
+--===============0432641623373253069==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 10, 2021 at 7:39 PM Rafael J. Wysocki <rafael(a)kernel.org> wro=
-te:
->
-> On Fri, Mar 5, 2021 at 2:40 PM David Hildenbrand <david(a)redhat.com> wro=
-te:
-> >
-> > >> The ibft table, for example, is mapped in via acpi_map() and kmap().=
- The
-> > >> page for the ibft table is not reserved, so it can end up on the fre=
-elist.
-> > >
-> > > You appear to be saying that it is not sufficient to kmap() a page in
-> > > order to use it safely.  It is also necessary to reserve it upfront,
-> > > for example with the help of memblock_reserve().  Is that correct?  If
-> > > so, is there an alternative way to reserve a page frame?
-> >
-> > If the memory is indicated by the BIOS/firmware as valid memory
-> > (!reserved) but contains actual tables that have to remain untouched
-> > what happens is:
-> >
-> > 1) Memblock thinks the memory should be given to the buddy, because it
-> >     is valid memory and was not reserved by anyone (i.e., the bios, ear=
-ly
-> >     allocations).
-> >
-> > 2) Memblock will expose the pages to the buddy, adding them to the free
-> >     page list.
-> >
-> > 3) Anybody can allocate them, e.g., via alloc_pages().
-> >
-> > The root issue is that pages that should not get exposed to the buddy as
-> > free pages get exposed to the buddy as free pages. We have to teach
-> > memblock that these pages are not actually to be used, but instead, area
-> > reserved.
-> >
-> > >
-> > >>>
-> > >>>> Use memblock_reserve() to reserve all the ACPI table pages.
-> > >>> How is this going to help?
-> > >> If the ibft table page is not reserved, it will end up on the freeli=
-st
-> > >> and potentially be allocated before ibft_init() is called.
-> > >>
-> > >> I believe this is the call that causes the ibft table page (in this =
-case
-> > >> pfn=3D0xbe453) to end up on the freelist:
-> > >>
-> > >> memmap_init_range: size=3Dbd49b, nid=3D0, zone=3D1, start_pfn=3D1000,
-> > >> zone_end_pfn=3D100000
-> > >
-> > > David, is commit 7fef431be9c9 related to this and if so, then how?
-> > >
-> >
-> > Memory gets allocated and used in a different order, which seems to have
-> > exposed (yet another) latent BUG.
->
-> Well, you can call it that, or you can say that things worked under
-> certain assumptions regarding the memory allocation order which are
-> not met any more.
->
-> > The same could be reproduced via zone shuffling with a little luck.
->
-> But nobody does that in practice.
->
-> This would be relatively straightforward to address if ACPICA was not
-> involved in it, but unfortunately that's not the case.
->
-> Changing this part of ACPICA is risky, because such changes may affect
-> other OSes using it, so that requires some serious consideration.
-> Alternatively, the previous memory allocation order in Linux could be
-> restored.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git bleeding-edge
+branch HEAD: 8608bdeb4cdb5608b4073077e6e5d7bdedefd169  Merge branch 'devpro=
+p' into linux-next
 
-Of course, long-term this needs to be addressed in the ACPI
-initialization code, because it clearly is not robust enough, but in
-the meantime there's practical breakage observable in the field, so
-what can be done about that?
---===============1154711311462724315==--
+elapsed time: 725m
+
+configs tested: 141
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sparc                            allyesconfig
+mips                         db1xxx_defconfig
+powerpc                     tqm8540_defconfig
+powerpc                      ppc44x_defconfig
+powerpc                 xes_mpc85xx_defconfig
+arm                         lubbock_defconfig
+m68k                       bvme6000_defconfig
+arc                          axs103_defconfig
+arm                       imx_v4_v5_defconfig
+csky                                defconfig
+arm                         s5pv210_defconfig
+arm                           h5000_defconfig
+ia64                         bigsur_defconfig
+powerpc                   motionpro_defconfig
+nios2                            alldefconfig
+arm                     eseries_pxa_defconfig
+powerpc                     sbc8548_defconfig
+sh                        dreamcast_defconfig
+parisc                           alldefconfig
+arm                             mxs_defconfig
+sh                          r7785rp_defconfig
+sh                            titan_defconfig
+sh                           se7712_defconfig
+powerpc                mpc7448_hpc2_defconfig
+powerpc                    sam440ep_defconfig
+powerpc                     akebono_defconfig
+mips                        jmr3927_defconfig
+mips                        nlm_xlp_defconfig
+sh                                  defconfig
+powerpc                 mpc832x_rdb_defconfig
+arm                       cns3420vb_defconfig
+m68k                       m5275evb_defconfig
+h8300                               defconfig
+mips                        bcm63xx_defconfig
+s390                          debug_defconfig
+mips                     loongson1c_defconfig
+arm                         mv78xx0_defconfig
+powerpc                     tqm8548_defconfig
+m68k                           sun3_defconfig
+ia64                             allyesconfig
+h8300                       h8s-sim_defconfig
+arm                          moxart_defconfig
+arm                           tegra_defconfig
+sh                              ul2_defconfig
+arm                        multi_v7_defconfig
+arm                        mvebu_v7_defconfig
+sh                            hp6xx_defconfig
+openrisc                 simple_smp_defconfig
+powerpc                 mpc8540_ads_defconfig
+arc                         haps_hs_defconfig
+powerpc                     skiroot_defconfig
+powerpc                      ep88xc_defconfig
+mips                           jazz_defconfig
+powerpc                  storcenter_defconfig
+arm                       versatile_defconfig
+mips                        bcm47xx_defconfig
+powerpc                      pmac32_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a005-20210308
+i386                 randconfig-a003-20210308
+i386                 randconfig-a002-20210308
+i386                 randconfig-a006-20210308
+i386                 randconfig-a004-20210308
+i386                 randconfig-a001-20210308
+i386                 randconfig-a005-20210309
+i386                 randconfig-a003-20210309
+i386                 randconfig-a002-20210309
+i386                 randconfig-a006-20210309
+i386                 randconfig-a004-20210309
+i386                 randconfig-a001-20210309
+x86_64               randconfig-a013-20210309
+x86_64               randconfig-a016-20210309
+x86_64               randconfig-a015-20210309
+x86_64               randconfig-a014-20210309
+x86_64               randconfig-a011-20210309
+x86_64               randconfig-a012-20210309
+i386                 randconfig-a016-20210309
+i386                 randconfig-a012-20210309
+i386                 randconfig-a014-20210309
+i386                 randconfig-a013-20210309
+i386                 randconfig-a011-20210309
+i386                 randconfig-a015-20210309
+i386                 randconfig-a013-20210310
+i386                 randconfig-a016-20210310
+i386                 randconfig-a011-20210310
+i386                 randconfig-a014-20210310
+i386                 randconfig-a015-20210310
+i386                 randconfig-a012-20210310
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a006-20210309
+x86_64               randconfig-a001-20210309
+x86_64               randconfig-a004-20210309
+x86_64               randconfig-a002-20210309
+x86_64               randconfig-a005-20210309
+x86_64               randconfig-a003-20210309
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
+--===============0432641623373253069==--
 
