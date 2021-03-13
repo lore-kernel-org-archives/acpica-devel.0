@@ -1,119 +1,162 @@
-Content-Type: multipart/mixed; boundary="===============8092596597581144744=="
+Content-Type: multipart/mixed; boundary="===============4077578771068780478=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [PATCH 1/1] ACPI: fix acpi table use after free
-Date: Thu, 11 Mar 2021 16:36:31 +0100
-Message-ID: <CAJZ5v0jOpNJrOt5xn-1YkSB9Q15NZS2cxmsGKAU945YNbs+hOw@mail.gmail.com>
-In-Reply-To: 0d05364c-4881-d78a-9721-bd15f5eb822b@redhat.com
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
+ 42326a293954f11eadf31161b8315bf6dc2279da
+Date: Sat, 13 Mar 2021 15:15:12 +0800
+Message-ID: <604c6680.9ASwrqJeUl3Ji5mc%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8092596597581144744==
+--===============4077578771068780478==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 10, 2021 at 8:47 PM David Hildenbrand <david(a)redhat.com> wrot=
-e:
->
-> >>>>> The same could be reproduced via zone shuffling with a little luck.
-> >>>>
-> >>>> But nobody does that in practice.
-> >>>>
-> >>
-> >> Dan will most certainly object. And I don't know what makes you speak =
-in
-> >> absolute words here.
-> >>
-> >>>> This would be relatively straightforward to address if ACPICA was not
-> >>>> involved in it, but unfortunately that's not the case.
-> >>>>
-> >>>> Changing this part of ACPICA is risky, because such changes may affe=
-ct
-> >>>> other OSes using it, so that requires some serious consideration.
-> >>>> Alternatively, the previous memory allocation order in Linux could be
-> >>>> restored.
-> >>>
-> >>> Of course, long-term this needs to be addressed in the ACPI
-> >>> initialization code, because it clearly is not robust enough, but in
-> >>> the meantime there's practical breakage observable in the field, so
-> >>> what can be done about that?
-> >>
-> >> *joke* enable zone shuffling.
-> >>
-> >> No seriously, fix the latent BUG. What again is problematic about excl=
-uding
-> >> these pages from the page allcoator, for example, via memblock_reserve=
-()?
-> >>
-> >> @Mike?
-> >
-> > There is some care that should be taken to make sure we get the order
-> > right, but I don't see a fundamental issue here.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git bleeding-edge
+branch HEAD: 42326a293954f11eadf31161b8315bf6dc2279da  Merge branch 'pm-opp=
+' into linux-next
 
-Me neither.
+elapsed time: 722m
 
-> > If I understand correctly, Rafael's concern is about changing the parts=
- of
-> > ACPICA that should be OS agnostic, so I think we just need another plac=
-e to
-> > call memblock_reserve() rather than acpi_tb_install_table_with_override=
-().
+configs tested: 125
+configs skipped: 2
 
-Something like this.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-There is also the problem that memblock_reserve() needs to be called
-for all of the tables early enough, which will require some reordering
-of the early init code.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+h8300                       h8s-sim_defconfig
+arm                       imx_v4_v5_defconfig
+powerpc                     tqm8541_defconfig
+m68k                       m5475evb_defconfig
+powerpc64                        alldefconfig
+arm                             mxs_defconfig
+h8300                     edosk2674_defconfig
+sh                 kfr2r09-romimage_defconfig
+arm                          iop32x_defconfig
+arm                          badge4_defconfig
+arc                    vdk_hs38_smp_defconfig
+riscv                             allnoconfig
+powerpc                 mpc85xx_cds_defconfig
+sh                                  defconfig
+powerpc64                           defconfig
+xtensa                          iss_defconfig
+sh                            hp6xx_defconfig
+sh                     sh7710voipgw_defconfig
+xtensa                         virt_defconfig
+m68k                        m5407c3_defconfig
+csky                             alldefconfig
+sh                           sh2007_defconfig
+sh                          r7785rp_defconfig
+mips                    maltaup_xpa_defconfig
+arm                         assabet_defconfig
+arm                          ixp4xx_defconfig
+arm                          pxa168_defconfig
+m68k                          hp300_defconfig
+powerpc                 linkstation_defconfig
+powerpc                      walnut_defconfig
+csky                                defconfig
+powerpc                         ps3_defconfig
+arm                         axm55xx_defconfig
+arm                          moxart_defconfig
+sh                             shx3_defconfig
+mips                           gcw0_defconfig
+m68k                             alldefconfig
+sh                             espt_defconfig
+powerpc                       eiger_defconfig
+arm                          simpad_defconfig
+xtensa                  cadence_csp_defconfig
+arm                       imx_v6_v7_defconfig
+mips                          malta_defconfig
+mips                        jmr3927_defconfig
+mips                       capcella_defconfig
+m68k                       bvme6000_defconfig
+nios2                         10m50_defconfig
+sparc                       sparc64_defconfig
+arc                           tb10x_defconfig
+mips                         tb0226_defconfig
+mips                     cu1830-neo_defconfig
+riscv                            allyesconfig
+sh                        edosk7705_defconfig
+m68k                                defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a001-20210312
+i386                 randconfig-a005-20210312
+i386                 randconfig-a002-20210312
+i386                 randconfig-a003-20210312
+i386                 randconfig-a004-20210312
+i386                 randconfig-a006-20210312
+x86_64               randconfig-a011-20210312
+x86_64               randconfig-a016-20210312
+x86_64               randconfig-a013-20210312
+x86_64               randconfig-a014-20210312
+x86_64               randconfig-a015-20210312
+x86_64               randconfig-a012-20210312
+i386                 randconfig-a013-20210312
+i386                 randconfig-a016-20210312
+i386                 randconfig-a011-20210312
+i386                 randconfig-a015-20210312
+i386                 randconfig-a014-20210312
+i386                 randconfig-a012-20210312
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-> > Since the reservation should be done early in x86::setup_arch() (and
-> > probably in arm64::setup_arch()) we might just have a function that par=
-ses
-> > table headers and reserves them, similarly to how we parse the tables
-> > during KASLR setup.
+clang tested configs:
+x86_64               randconfig-a001-20210312
+x86_64               randconfig-a003-20210312
+x86_64               randconfig-a002-20210312
+x86_64               randconfig-a004-20210312
+x86_64               randconfig-a006-20210312
+x86_64               randconfig-a005-20210312
 
-Right.
-
->
-> FWIW, something like below would hide our latent BUG again properly (lol).
-> But I guess I don't have to express how ugly and wrong that is. Not to me=
-ntion
-> what happens if memblock decides to allocate that memory area earlier
-> for some other user (including CMA, ...).
-
-Fair enough.
-
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 3e4b29ee2b1e..ec71b7c63dbe 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -1566,6 +1566,21 @@ void __free_pages_core(struct page *page, unsigned=
- int order)
->
->          atomic_long_add(nr_pages, &page_zone(page)->managed_pages);
->
-> +       /*
-> +        * BUG ALERT: x86-64 ACPI code has latent BUGs where ACPI tables
-> +        * that must not get allocated/modified will get exposed to the b=
-uddy
-> +        * as free pages; anybody can allocate and use them once in the f=
-ree
-> +        * lists.
-> +        *
-> +        * Instead of fixing the BUG, revert the change to the
-> +        * freeing/allocation order during boot that revealed it and cross
-> +        * fingers that everything will be fine.
-> +        */
-> +       if (system_state < SYSTEM_RUNNING) {
-> +               __free_pages_ok(page, order, FPI_NONE);
-> +               return;
-> +       }
-> +
->          /*
->           * Bypass PCP and place fresh pages right to the tail, primarily
->           * relevant for memory onlining.
->
->
-> --
---===============8092596597581144744==--
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
+--===============4077578771068780478==--
 
