@@ -1,162 +1,100 @@
-Content-Type: multipart/mixed; boundary="===============4077578771068780478=="
+Content-Type: multipart/mixed; boundary="===============7306062270906545187=="
 MIME-Version: 1.0
-From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
- 42326a293954f11eadf31161b8315bf6dc2279da
-Date: Sat, 13 Mar 2021 15:15:12 +0800
-Message-ID: <604c6680.9ASwrqJeUl3Ji5mc%lkp@intel.com>
+From: Rafael J. Wysocki <rafael at kernel.org>
+Subject: [Devel] Re: [PATCH 1/1] ACPI: fix acpi table use after free
+Date: Mon, 15 Mar 2021 17:19:29 +0100
+Message-ID: <CAJZ5v0g1H6hCVbAAFajhn0AYRMU4GkZOqggOB6LVdgFx_vfwOA@mail.gmail.com>
+In-Reply-To: YE5dJ6U3nPWsXY4D@linux.ibm.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4077578771068780478==
+--===============7306062270906545187==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
-m.git bleeding-edge
-branch HEAD: 42326a293954f11eadf31161b8315bf6dc2279da  Merge branch 'pm-opp=
-' into linux-next
+On Sun, Mar 14, 2021 at 8:00 PM Mike Rapoport <rppt(a)linux.ibm.com> wrote:
+>
+> On Thu, Mar 11, 2021 at 04:36:31PM +0100, Rafael J. Wysocki wrote:
+> > On Wed, Mar 10, 2021 at 8:47 PM David Hildenbrand <david(a)redhat.com> =
+wrote:
+> > > >
+> > > > There is some care that should be taken to make sure we get the ord=
+er
+> > > > right, but I don't see a fundamental issue here.
+> >
+> > Me neither.
+> >
+> > > > If I understand correctly, Rafael's concern is about changing the p=
+arts of
+> > > > ACPICA that should be OS agnostic, so I think we just need another =
+place to
+> > > > call memblock_reserve() rather than acpi_tb_install_table_with_over=
+ride().
+> >
+> > Something like this.
+> >
+> > There is also the problem that memblock_reserve() needs to be called
+> > for all of the tables early enough, which will require some reordering
+> > of the early init code.
+> >
+> > > > Since the reservation should be done early in x86::setup_arch() (and
+> > > > probably in arm64::setup_arch()) we might just have a function that=
+ parses
+> > > > table headers and reserves them, similarly to how we parse the tabl=
+es
+> > > > during KASLR setup.
+> >
+> > Right.
+>
+> I've looked at it a bit more and we do something like the patch below that
+> nearly duplicates acpi_tb_parse_root_table() which is not very nice.
 
-elapsed time: 722m
+It looks to me that the code need not be duplicated (see below).
 
-configs tested: 125
-configs skipped: 2
+> Besides, reserving ACPI tables early and then calling acpi_table_init()
+> (and acpi_tb_parse_root_table() again would mean doing the dance with
+> early_memremap() twice for no good reason.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+That'd be simply inefficient which is kind of acceptable to me to start wit=
+h.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-h8300                       h8s-sim_defconfig
-arm                       imx_v4_v5_defconfig
-powerpc                     tqm8541_defconfig
-m68k                       m5475evb_defconfig
-powerpc64                        alldefconfig
-arm                             mxs_defconfig
-h8300                     edosk2674_defconfig
-sh                 kfr2r09-romimage_defconfig
-arm                          iop32x_defconfig
-arm                          badge4_defconfig
-arc                    vdk_hs38_smp_defconfig
-riscv                             allnoconfig
-powerpc                 mpc85xx_cds_defconfig
-sh                                  defconfig
-powerpc64                           defconfig
-xtensa                          iss_defconfig
-sh                            hp6xx_defconfig
-sh                     sh7710voipgw_defconfig
-xtensa                         virt_defconfig
-m68k                        m5407c3_defconfig
-csky                             alldefconfig
-sh                           sh2007_defconfig
-sh                          r7785rp_defconfig
-mips                    maltaup_xpa_defconfig
-arm                         assabet_defconfig
-arm                          ixp4xx_defconfig
-arm                          pxa168_defconfig
-m68k                          hp300_defconfig
-powerpc                 linkstation_defconfig
-powerpc                      walnut_defconfig
-csky                                defconfig
-powerpc                         ps3_defconfig
-arm                         axm55xx_defconfig
-arm                          moxart_defconfig
-sh                             shx3_defconfig
-mips                           gcw0_defconfig
-m68k                             alldefconfig
-sh                             espt_defconfig
-powerpc                       eiger_defconfig
-arm                          simpad_defconfig
-xtensa                  cadence_csp_defconfig
-arm                       imx_v6_v7_defconfig
-mips                          malta_defconfig
-mips                        jmr3927_defconfig
-mips                       capcella_defconfig
-m68k                       bvme6000_defconfig
-nios2                         10m50_defconfig
-sparc                       sparc64_defconfig
-arc                           tb10x_defconfig
-mips                         tb0226_defconfig
-mips                     cu1830-neo_defconfig
-riscv                            allyesconfig
-sh                        edosk7705_defconfig
-m68k                                defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a001-20210312
-i386                 randconfig-a005-20210312
-i386                 randconfig-a002-20210312
-i386                 randconfig-a003-20210312
-i386                 randconfig-a004-20210312
-i386                 randconfig-a006-20210312
-x86_64               randconfig-a011-20210312
-x86_64               randconfig-a016-20210312
-x86_64               randconfig-a013-20210312
-x86_64               randconfig-a014-20210312
-x86_64               randconfig-a015-20210312
-x86_64               randconfig-a012-20210312
-i386                 randconfig-a013-20210312
-i386                 randconfig-a016-20210312
-i386                 randconfig-a011-20210312
-i386                 randconfig-a015-20210312
-i386                 randconfig-a014-20210312
-i386                 randconfig-a012-20210312
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+And I changing the ACPICA code can be avoided at least initially, it
+by itself would be a good enough reason.
 
-clang tested configs:
-x86_64               randconfig-a001-20210312
-x86_64               randconfig-a003-20210312
-x86_64               randconfig-a002-20210312
-x86_64               randconfig-a004-20210312
-x86_64               randconfig-a006-20210312
-x86_64               randconfig-a005-20210312
+> I believe the most effective way to deal with this would be to have a
+> function that does parsing, reservation and installs the tables supplied =
+by
+> the firmware which can be called really early and then another function
+> that overrides tables if needed a some later point.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============4077578771068780478==--
+I agree that this should be the direction to go into.
+
+However, it looks to me that something like the following could be
+done to start with:
+
+(a) Make __acpi_map_table() call memblock_reserve() in addition to
+early_memremap().
+
+My assumption here is that the memblock_reserve() will simply be
+ignored if it is called too late.
+
+(b) Introduce acpi_reserve_tables() as something like
+
+void __init acpi_table_reserve(void)
+{
+        acpi_initialize_tables(initial_tables, ACPI_MAX_TABLES, 0);
+}
+
+Because initial_tables is passed to acpi_initialize_tables() above and
+allow_resize is 0, the array used by it will simply get overwritten
+when acpi_table_init() gets called.
+
+(c) Make setup_arch() call acpi_table_reserve() like in the original
+patch from George.
+
+Would that work?
+
+If so, I'll cut a patch along these lines.
+--===============7306062270906545187==--
 
