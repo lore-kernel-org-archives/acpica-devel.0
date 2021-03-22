@@ -1,167 +1,112 @@
-Content-Type: multipart/mixed; boundary="===============7368045493684514529=="
+Content-Type: multipart/mixed; boundary="===============1006460229984528415=="
 MIME-Version: 1.0
-From: Shameerali Kolothum Thodi <shameerali.kolothum.thodi at huawei.com>
-Subject: [Devel] Re: [RFC PATCH v2 1/8] ACPICA: IORT: Update for revision E
-Date: Mon, 22 Mar 2021 10:36:04 +0000
-Message-ID: <b7a2424941214b33803e34ba3e532440@huawei.com>
-In-Reply-To: 20201119121150.3316-2-shameerali.kolothum.thodi@huawei.com
+From: Rafael J. Wysocki <rafael at kernel.org>
+Subject: [Devel] Re: [PATCH] acpi: avoid -Wempty-body warnings
+Date: Mon, 22 Mar 2021 14:27:23 +0100
+Message-ID: <CAJZ5v0jbKmkWxV0CFpQ+3q5GOJVVx5QfzLVu-Mvo-subYdjuPA@mail.gmail.com>
+In-Reply-To: 20210322105805.1498602-1-arnd@kernel.org
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7368045493684514529==
+--===============1006460229984528415==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-[+]
+On Mon, Mar 22, 2021 at 11:59 AM Arnd Bergmann <arnd(a)kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd(a)arndb.de>
+>
+> The acpi drivers produce a number of avoidable warnings for empty macros
+> when building with 'make W=3D1':
+>
+> drivers/acpi/acpi_processor.c: In function 'acpi_processor_errata_piix4':
+> drivers/acpi/acpi_processor.c:133:95: error: suggest braces around empty =
+body in an 'if' statement [-Werror=3Dempty-body]
+>   133 |                                   "Bus master activity detection =
+(BM-IDE) erratum enabled\n"));
+>       |                                                                  =
+                             ^
+> drivers/acpi/acpi_processor.c:136:82: error: suggest braces around empty =
+body in an 'if' statement [-Werror=3Dempty-body]
+>   136 |                                   "Type-F DMA livelock erratum (C=
+3 disabled)\n"));
+>       |                                                                  =
+                ^
+> drivers/acpi/acpi_processor.c: In function 'acpi_processor_get_info':
+> drivers/acpi/acpi_processor.c:251:77: error: suggest braces around empty =
+body in an 'else' statement [-Werror=3Dempty-body]
+>   251 |                                   "No bus mastering arbitration c=
+ontrol\n"));
+>       |                                                                  =
+           ^
+> drivers/acpi/processor_pdc.c: In function 'acpi_processor_eval_pdc':
+> drivers/acpi/processor_pdc.c:136:79: error: suggest braces around empty b=
+ody in an 'if' statement [-Werror=3Dempty-body]
+>   136 |                     "Could not evaluate _PDC, using legacy perf. =
+control.\n"));
+>       |                                                                  =
+             ^
+>
+> I tried making these call no_printk() instead, which would add proper
+> format string checking, but that turned out to be a rather invasive
+> change, so just shut up the warning by turning the macros into empty
+> "do {} while (0)" statements.
 
-Hi Erik,
+This is part of ACPICA, so handing it to Erik and Bob.
 
-As this is now just merged ino acpica-master and based on the discussion we=
- had here,
 
-https://github.com/acpica/acpica/pull/638
-
-I had a discussion with ARM folks(Lorenzo) in the linaro-open-discussions c=
-all and
-can confirm that the IORT Revision E is not the final specification and has=
- some issues
-which is now corrected in the latest E.b revision[1]. Also there are no cur=
-rent users
-for the Rev E and it may not be a good idea to push this version into the L=
-inux kernel
-or elsewhere.
-
-So could you please revert the merge and I am planning to work on the E.b s=
-oon.
-Please let me know if I need to explicitly send a revert pull request or no=
-t.
-
-Thanks,
-Shameer
-
-1. https://developer.arm.com/documentation/den0049/latest/
-
-> -----Original Message-----
-> From: iommu [mailto:iommu-bounces(a)lists.linux-foundation.org] On Behalf=
- Of
-> Shameer Kolothum
-> Sent: 19 November 2020 12:12
-> To: linux-arm-kernel(a)lists.infradead.org; linux-acpi(a)vger.kernel.org;
-> iommu(a)lists.linux-foundation.org; devel(a)acpica.org
-> Cc: Linuxarm <linuxarm(a)huawei.com>; steven.price(a)arm.com; Guohanjun
-> (Hanjun Guo) <guohanjun(a)huawei.com>; Sami.Mujawar(a)arm.com;
-> robin.murphy(a)arm.com; wanghuiqiang <wanghuiqiang(a)huawei.com>
-> Subject: [RFC PATCH v2 1/8] ACPICA: IORT: Update for revision E
-> =
-
-> IORT revision E contains a few additions like,
-> =C2=A0 =C2=A0 -Added an identifier field in the node descriptors to aid t=
-able
-> =C2=A0 =C2=A0 =C2=A0cross-referencing.
-> =C2=A0 =C2=A0 -Introduced the Reserved Memory Range(RMR) node. This is us=
-ed
->  =C2=A0 =C2=A0 to describe memory ranges that are used by endpoints and r=
-equires
->  =C2=A0 =C2=A0 a unity mapping in SMMU.
->     -Introduced a flag in the RC node to express support for PRI.
-> =
-
-> Signed-off-by: Shameer Kolothum <shameerali.kolothum.thodi(a)huawei.com>
+> Signed-off-by: Arnd Bergmann <arnd(a)arndb.de>
 > ---
->  include/acpi/actbl2.h | 25 +++++++++++++++++++------
->  1 file changed, 19 insertions(+), 6 deletions(-)
-> =
-
-> diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h index
-> ec66779cb193..274fce7b5c01 100644
-> --- a/include/acpi/actbl2.h
-> +++ b/include/acpi/actbl2.h
-> @@ -68,7 +68,7 @@
->   * IORT - IO Remapping Table
->   *
->   * Conforms to "IO Remapping Table System Software on ARM Platforms",
-> - * Document number: ARM DEN 0049D, March 2018
-> + * Document number: ARM DEN 0049E, June 2020
->   *
-> =
-
-> ****************************************************************
-> **************/
-> =
-
-> @@ -86,7 +86,8 @@ struct acpi_iort_node {
->  	u8 type;
->  	u16 length;
->  	u8 revision;
-> -	u32 reserved;
-> +	u16 reserved;
-> +	u16 identifier;
->  	u32 mapping_count;
->  	u32 mapping_offset;
->  	char node_data[1];
-> @@ -100,7 +101,8 @@ enum acpi_iort_node_type {
->  	ACPI_IORT_NODE_PCI_ROOT_COMPLEX =3D 0x02,
->  	ACPI_IORT_NODE_SMMU =3D 0x03,
->  	ACPI_IORT_NODE_SMMU_V3 =3D 0x04,
-> -	ACPI_IORT_NODE_PMCG =3D 0x05
-> +	ACPI_IORT_NODE_PMCG =3D 0x05,
-> +	ACPI_IORT_NODE_RMR =3D 0x06,
->  };
-> =
-
->  struct acpi_iort_id_mapping {
-> @@ -167,10 +169,10 @@ struct acpi_iort_root_complex {
->  	u8 reserved[3];		/* Reserved, must be zero */
->  };
-> =
-
-> -/* Values for ats_attribute field above */
-> +/* Masks for ats_attribute field above */
-> =
-
-> -#define ACPI_IORT_ATS_SUPPORTED         0x00000001	/* The root
-> complex supports ATS */
-> -#define ACPI_IORT_ATS_UNSUPPORTED       0x00000000	/* The root
-> complex doesn't support ATS */
-> +#define ACPI_IORT_ATS_SUPPORTED         (1)	/* The root complex
-> supports ATS */
-> +#define ACPI_IORT_PRI_SUPPORTED         (1<<1)	/* The root complex
-> supports PRI */
-> =
-
->  struct acpi_iort_smmu {
->  	u64 base_address;	/* SMMU base address */
-> @@ -241,6 +243,17 @@ struct acpi_iort_pmcg {
->  	u64 page1_base_address;
->  };
-> =
-
-> +struct acpi_iort_rmr {
-> +	u32 rmr_count;
-> +	u32 rmr_offset;
-> +};
-> +
-> +struct acpi_iort_rmr_desc {
-> +	u64 base_address;
-> +	u64 length;
-> +	u32 reserved;
-> +};
-> +
-> =
-
-> /***************************************************************
-> ****************
->   *
->   * IVRS - I/O Virtualization Reporting Structure
+>  include/acpi/acoutput.h | 32 ++++++++++++++++----------------
+>  1 file changed, 16 insertions(+), 16 deletions(-)
+>
+> diff --git a/include/acpi/acoutput.h b/include/acpi/acoutput.h
+> index 1538a6853822..b5484ef31f27 100644
+> --- a/include/acpi/acoutput.h
+> +++ b/include/acpi/acoutput.h
+> @@ -433,23 +433,23 @@
+>   * This is the non-debug case -- make everything go away,
+>   * leaving no executable debug code!
+>   */
+> -#define ACPI_DEBUG_PRINT(pl)
+> -#define ACPI_DEBUG_PRINT_RAW(pl)
+> -#define ACPI_DEBUG_EXEC(a)
+> -#define ACPI_DEBUG_ONLY_MEMBERS(a)
+> -#define ACPI_FUNCTION_NAME(a)
+> -#define ACPI_FUNCTION_TRACE(a)
+> -#define ACPI_FUNCTION_TRACE_PTR(a, b)
+> -#define ACPI_FUNCTION_TRACE_U32(a, b)
+> -#define ACPI_FUNCTION_TRACE_STR(a, b)
+> -#define ACPI_FUNCTION_ENTRY()
+> -#define ACPI_DUMP_STACK_ENTRY(a)
+> -#define ACPI_DUMP_OPERANDS(a, b, c)
+> -#define ACPI_DUMP_ENTRY(a, b)
+> -#define ACPI_DUMP_PATHNAME(a, b, c, d)
+> -#define ACPI_DUMP_BUFFER(a, b)
+> +#define ACPI_DEBUG_PRINT(pl)                   do { } while (0)
+> +#define ACPI_DEBUG_PRINT_RAW(pl)               do { } while (0)
+> +#define ACPI_DEBUG_EXEC(a)                     do { } while (0)
+> +#define ACPI_DEBUG_ONLY_MEMBERS(a)             do { } while (0)
+> +#define ACPI_FUNCTION_NAME(a)                  do { } while (0)
+> +#define ACPI_FUNCTION_TRACE(a)                 do { } while (0)
+> +#define ACPI_FUNCTION_TRACE_PTR(a, b)          do { } while (0)
+> +#define ACPI_FUNCTION_TRACE_U32(a, b)          do { } while (0)
+> +#define ACPI_FUNCTION_TRACE_STR(a, b)          do { } while (0)
+> +#define ACPI_FUNCTION_ENTRY()                  do { } while (0)
+> +#define ACPI_DUMP_STACK_ENTRY(a)               do { } while (0)
+> +#define ACPI_DUMP_OPERANDS(a, b, c)            do { } while (0)
+> +#define ACPI_DUMP_ENTRY(a, b)                  do { } while (0)
+> +#define ACPI_DUMP_PATHNAME(a, b, c, d)         do { } while (0)
+> +#define ACPI_DUMP_BUFFER(a, b)                 do { } while (0)
+>  #define ACPI_IS_DEBUG_ENABLED(level, component) 0
+> -#define ACPI_TRACE_POINT(a, b, c, d)
+> +#define ACPI_TRACE_POINT(a, b, c, d)           do { } while (0)
+>
+>  /* Return macros must have a return statement at the minimum */
+>
 > --
-> 2.17.1
-> =
-
-> _______________________________________________
-> iommu mailing list
-> iommu(a)lists.linux-foundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/iommu
-
---===============7368045493684514529==--
+> 2.29.2
+>
+--===============1006460229984528415==--
 
