@@ -1,167 +1,131 @@
-Content-Type: multipart/mixed; boundary="===============1687352105109971316=="
+Content-Type: multipart/mixed; boundary="===============1564576894238320285=="
 MIME-Version: 1.0
 From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [PATCH v4 1/1] ACPI: scan: Use unique number for
- instance_no
-Date: Mon, 22 Mar 2021 17:47:07 +0100
-Message-ID: <CAJZ5v0hpNzCVf76npq_z+H-kBa0BurDnUDJdK5jqkpooHmTmJg@mail.gmail.com>
-In-Reply-To: 20210322163100.42617-1-andriy.shevchenko@linux.intel.com
+Subject: [Devel] Re: [PATCH 1/1] ACPI: fix acpi table use after free
+Date: Mon, 22 Mar 2021 17:57:27 +0100
+Message-ID: <CAJZ5v0jEeBxtaAz+w2SZdAud077FJBR+AfkyEYR-eM7gY4050g@mail.gmail.com>
+In-Reply-To: YFWxbzN92XcXNl95@linux.ibm.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1687352105109971316==
+--===============1564576894238320285==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 22, 2021 at 5:31 PM Andy Shevchenko
-<andriy.shevchenko(a)linux.intel.com> wrote:
+On Sat, Mar 20, 2021 at 9:25 AM Mike Rapoport <rppt(a)linux.ibm.com> wrote:
 >
-> The decrementation of acpi_device_bus_id->instance_no
-> in acpi_device_del() is incorrect, because it may cause
-> a duplicate instance number to be allocated next time
-> a device with the same acpi_device_bus_id is added.
+> On Thu, Mar 18, 2021 at 04:22:37PM +0100, Rafael J. Wysocki wrote:
+> > On Thu, Mar 18, 2021 at 11:50 AM Rafael J. Wysocki <rafael(a)kernel.org=
+> wrote:
+> > >
+> > > On Thu, Mar 18, 2021 at 8:25 AM Mike Rapoport <rppt(a)linux.ibm.com> =
+wrote:
+> > > >
+> > > > On Wed, Mar 17, 2021 at 09:14:37PM +0100, Rafael J. Wysocki wrote:
+> > > > > On Monday, March 15, 2021 5:19:29 PM CET Rafael J. Wysocki wrote:
+> > > > > > On Sun, Mar 14, 2021 at 8:00 PM Mike Rapoport <rppt(a)linux.ibm=
+.com> wrote:
+> > > > > > >
+> > > > > > > On Thu, Mar 11, 2021 at 04:36:31PM +0100, Rafael J. Wysocki w=
+rote:
+> > > > > > > > On Wed, Mar 10, 2021 at 8:47 PM David Hildenbrand <david(a)=
+redhat.com> wrote:
+> > > > > > > > > >
+> > > > > > > > > > There is some care that should be taken to make sure we=
+ get the order
+> > > > > > > > > > right, but I don't see a fundamental issue here.
+> > > > > > > >
+> > > > > > > > Me neither.
+> > > > > > > >
+> > > > > > > > > > If I understand correctly, Rafael's concern is about ch=
+anging the parts of
+> > > > > > > > > > ACPICA that should be OS agnostic, so I think we just n=
+eed another place to
+> > > > > > > > > > call memblock_reserve() rather than acpi_tb_install_tab=
+le_with_override().
+> > > > > > > >
+> > > > > > > > Something like this.
+> > > > > > > >
+> > > > > > > > There is also the problem that memblock_reserve() needs to =
+be called
+> > > > > > > > for all of the tables early enough, which will require some=
+ reordering
+> > > > > > > > of the early init code.
+> > > > > > > >
+> > > > > > > > > > Since the reservation should be done early in x86::setu=
+p_arch() (and
+> > > > > > > > > > probably in arm64::setup_arch()) we might just have a f=
+unction that parses
+> > > > > > > > > > table headers and reserves them, similarly to how we pa=
+rse the tables
+> > > > > > > > > > during KASLR setup.
+> > > > > > > >
+> > > > > > > > Right.
+> > > > > > >
+> > > > > > > I've looked at it a bit more and we do something like the pat=
+ch below that
+> > > > > > > nearly duplicates acpi_tb_parse_root_table() which is not ver=
+y nice.
+> > > > > >
+> > > > > > It looks to me that the code need not be duplicated (see below).
+> > > > > >
+> > > > > > > Besides, reserving ACPI tables early and then calling acpi_ta=
+ble_init()
+> > > > > > > (and acpi_tb_parse_root_table() again would mean doing the da=
+nce with
+> > > > > > > early_memremap() twice for no good reason.
+> > > > > >
+> > > > > > That'd be simply inefficient which is kind of acceptable to me =
+to start with.
+> > > > > >
+> > > > > > And I changing the ACPICA code can be avoided at least initiall=
+y, it
+> > > > > > by itself would be a good enough reason.
+> > > > > >
+> > > > > > > I believe the most effective way to deal with this would be t=
+o have a
+> > > > > > > function that does parsing, reservation and installs the tabl=
+es supplied by
+> > > > > > > the firmware which can be called really early and then anothe=
+r function
+> > > > > > > that overrides tables if needed a some later point.
+> > > > > >
+> > > > > > I agree that this should be the direction to go into.
+> > > > >
+> > > > > So maybe something like the patch below?
+> > > > >
+> > > > > I'm not sure if acpi_boot_table_prepare() gets called early enoug=
+h, though.
+> > > >
+> > > > To be 100% safe it should be called before e820__memblock_setup().
+> > >
+> > > OK
+> >
+> > Well, that said, reserve_bios_regions() doesn't seem to have concerns
+> > like this and I'm not sure why ACPI tables should be reserved before
+> > this runs.  That applies to efi_reserve_boot_services() too.
+> >
+> > I can put the new call before e820__memblock_alloc_reserved_mpc_new(),
+> > but I'm not sure why to put it before efi_reserve_boot_services(),
+> > say?
 >
-> Replace above mentioned approach by using IDA framework.
->
-> While at it, define the instance range to be [0, 4096).
->
-> Fixes: e49bd2dd5a50 ("ACPI: use PNPID:instance_no as bus_id of ACPI devic=
-e")
-> Fixes: ca9dc8d42b30 ("ACPI / scan: Fix acpi_bus_id_list bookkeeping")
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko(a)linux.intel.com>
+> The general idea is to reserve all the memory used by the firmware before
+> memblock allocations are possible, i.e. before e820__memblock_setup().
+> Currently this is not the case, but it does not make it more correct.
 
-Applied as 5.12-rc material, thanks!
+I see.
 
-> ---
-> v4: defined instance range [0, 4096) (Rafael)
->  drivers/acpi/internal.h |  6 +++++-
->  drivers/acpi/scan.c     | 33 ++++++++++++++++++++++++++++-----
->  include/acpi/acpi_bus.h |  1 +
->  3 files changed, 34 insertions(+), 6 deletions(-)
+> Theoretically, it is possible that reserve_bios_regions() will cause a
+> memory allocation and the allocated memory will be exactly at the area
+> where ACPI tables reside.
 >
-> diff --git a/drivers/acpi/internal.h b/drivers/acpi/internal.h
-> index e6a5d997241c..cb8f70842249 100644
-> --- a/drivers/acpi/internal.h
-> +++ b/drivers/acpi/internal.h
-> @@ -9,6 +9,8 @@
->  #ifndef _ACPI_INTERNAL_H_
->  #define _ACPI_INTERNAL_H_
+> In practice I believe this is very unlikely, but who knows.
 >
-> +#include <linux/idr.h>
-> +
->  #define PREFIX "ACPI: "
->
->  int early_acpi_osi_init(void);
-> @@ -96,9 +98,11 @@ void acpi_scan_table_handler(u32 event, void *table, v=
-oid *context);
->
->  extern struct list_head acpi_bus_id_list;
->
-> +#define ACPI_MAX_DEVICE_INSTANCES      4096
-> +
->  struct acpi_device_bus_id {
->         const char *bus_id;
-> -       unsigned int instance_no;
-> +       struct ida instance_ida;
->         struct list_head node;
->  };
->
-> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-> index a184529d8fa4..84bb7c1929f1 100644
-> --- a/drivers/acpi/scan.c
-> +++ b/drivers/acpi/scan.c
-> @@ -479,9 +479,8 @@ static void acpi_device_del(struct acpi_device *devic=
-e)
->         list_for_each_entry(acpi_device_bus_id, &acpi_bus_id_list, node)
->                 if (!strcmp(acpi_device_bus_id->bus_id,
->                             acpi_device_hid(device))) {
-> -                       if (acpi_device_bus_id->instance_no > 0)
-> -                               acpi_device_bus_id->instance_no--;
-> -                       else {
-> +                       ida_simple_remove(&acpi_device_bus_id->instance_i=
-da, device->pnp.instance_no);
-> +                       if (ida_is_empty(&acpi_device_bus_id->instance_id=
-a)) {
->                                 list_del(&acpi_device_bus_id->node);
->                                 kfree_const(acpi_device_bus_id->bus_id);
->                                 kfree(acpi_device_bus_id);
-> @@ -631,6 +630,21 @@ static struct acpi_device_bus_id *acpi_device_bus_id=
-_match(const char *dev_id)
->         return NULL;
->  }
->
-> +static int acpi_device_set_name(struct acpi_device *device,
-> +                               struct acpi_device_bus_id *acpi_device_bu=
-s_id)
-> +{
-> +       struct ida *instance_ida =3D &acpi_device_bus_id->instance_ida;
-> +       int result;
-> +
-> +       result =3D ida_simple_get(instance_ida, 0, ACPI_MAX_DEVICE_INSTAN=
-CES, GFP_KERNEL);
-> +       if (result < 0)
-> +               return result;
-> +
-> +       device->pnp.instance_no =3D result;
-> +       dev_set_name(&device->dev, "%s:%02x", acpi_device_bus_id->bus_id,=
- result);
-> +       return 0;
-> +}
-> +
->  int acpi_device_add(struct acpi_device *device,
->                     void (*release)(struct device *))
->  {
-> @@ -665,7 +679,9 @@ int acpi_device_add(struct acpi_device *device,
->
->         acpi_device_bus_id =3D acpi_device_bus_id_match(acpi_device_hid(d=
-evice));
->         if (acpi_device_bus_id) {
-> -               acpi_device_bus_id->instance_no++;
-> +               result =3D acpi_device_set_name(device, acpi_device_bus_i=
-d);
-> +               if (result)
-> +                       goto err_unlock;
->         } else {
->                 acpi_device_bus_id =3D kzalloc(sizeof(*acpi_device_bus_id=
-),
->                                              GFP_KERNEL);
-> @@ -681,9 +697,16 @@ int acpi_device_add(struct acpi_device *device,
->                         goto err_unlock;
->                 }
->
-> +               ida_init(&acpi_device_bus_id->instance_ida);
-> +
-> +               result =3D acpi_device_set_name(device, acpi_device_bus_i=
-d);
-> +               if (result) {
-> +                       kfree(acpi_device_bus_id);
-> +                       goto err_unlock;
-> +               }
-> +
->                 list_add_tail(&acpi_device_bus_id->node, &acpi_bus_id_lis=
-t);
->         }
-> -       dev_set_name(&device->dev, "%s:%02x", acpi_device_bus_id->bus_id,=
- acpi_device_bus_id->instance_no);
->
->         if (device->parent)
->                 list_add_tail(&device->node, &device->parent->children);
-> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-> index 02a716a0af5d..f28b097c658f 100644
-> --- a/include/acpi/acpi_bus.h
-> +++ b/include/acpi/acpi_bus.h
-> @@ -233,6 +233,7 @@ struct acpi_pnp_type {
->
->  struct acpi_device_pnp {
->         acpi_bus_id bus_id;             /* Object name */
-> +       int instance_no;                /* Instance number of this object=
- */
->         struct acpi_pnp_type type;      /* ID type */
->         acpi_bus_address bus_address;   /* _ADR */
->         char *unique_id;                /* _UID */
-> --
-> 2.30.2
->
---===============1687352105109971316==--
+> Another advantage of having ACPI tables handy by the time we do the memory
+> detection is that we will be able to SRAT earlier and simplify NUMA
+> initialization.
+
+OK, fair enough.
+--===============1564576894238320285==--
 
