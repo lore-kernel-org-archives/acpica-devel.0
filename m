@@ -1,130 +1,74 @@
-Content-Type: multipart/mixed; boundary="===============4670130417884186912=="
+Content-Type: multipart/mixed; boundary="===============7014175998890571468=="
 MIME-Version: 1.0
-From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
- 4418cf015150057d48231fa98b51cb962bae7767
-Date: Thu, 25 Mar 2021 12:44:52 +0800
-Message-ID: <605c1544.KELa9kI6bnyujFUr%lkp@intel.com>
+From: Shameerali Kolothum Thodi <shameerali.kolothum.thodi at huawei.com>
+Subject: [Devel] Re: [RFC PATCH v2 1/8] ACPICA: IORT: Update for revision E
+Date: Thu, 25 Mar 2021 15:54:51 +0000
+Message-ID: <acfab98e75434a59910cf56336c54ba2@huawei.com>
+In-Reply-To: CABdtJHtZPyWpXN9JZbgdu=HswreTc2o2pRhrwHFzQJqz-kFSBw@mail.gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4670130417884186912==
+--===============7014175998890571468==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
-m.git bleeding-edge
-branch HEAD: 4418cf015150057d48231fa98b51cb962bae7767  Merge branch 'acpi-t=
-ables' into bleeding-edge
 
-elapsed time: 755m
 
-configs tested: 93
-configs skipped: 2
+> -----Original Message-----
+> From: Jon Nettleton [mailto:jon(a)solid-run.com]
+> Sent: 25 March 2021 08:40
+> To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi(a)huawei.com>
+> Cc: erik.kaneda(a)intel.com; linux-arm-kernel(a)lists.infradead.org;
+> linux-acpi(a)vger.kernel.org; iommu(a)lists.linux-foundation.org;
+> devel(a)acpica.org; Lorenzo Pieralisi <lorenzo.pieralisi(a)arm.com>;
+> robert.moore(a)intel.com; Linuxarm <linuxarm(a)huawei.com>;
+> steven.price(a)arm.com; Guohanjun (Hanjun Guo) <guohanjun(a)huawei.com>;
+> Sami.Mujawar(a)arm.com; robin.murphy(a)arm.com; wanghuiqiang
+> <wanghuiqiang(a)huawei.com>
+> Subject: Re: [RFC PATCH v2 1/8] ACPICA: IORT: Update for revision E
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+[...]
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-i386                             allyesconfig
-riscv                            allyesconfig
-arm                      tct_hammer_defconfig
-arm                             mxs_defconfig
-sh                            titan_defconfig
-arc                    vdk_hs38_smp_defconfig
-mips                 decstation_r4k_defconfig
-powerpc                     pseries_defconfig
-mips                        jmr3927_defconfig
-powerpc                     taishan_defconfig
-powerpc                 mpc834x_mds_defconfig
-m68k                          multi_defconfig
-arc                     haps_hs_smp_defconfig
-m68k                       m5475evb_defconfig
-powerpc                    klondike_defconfig
-arm                     am200epdkit_defconfig
-mips                       bmips_be_defconfig
-arm                           h5000_defconfig
-mips                     cu1000-neo_defconfig
-arm                          pxa168_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20210324
-i386                 randconfig-a003-20210324
-i386                 randconfig-a001-20210324
-i386                 randconfig-a002-20210324
-i386                 randconfig-a006-20210324
-i386                 randconfig-a005-20210324
-x86_64               randconfig-a012-20210324
-x86_64               randconfig-a015-20210324
-x86_64               randconfig-a014-20210324
-x86_64               randconfig-a013-20210324
-x86_64               randconfig-a016-20210324
-x86_64               randconfig-a011-20210324
-i386                 randconfig-a014-20210324
-i386                 randconfig-a011-20210324
-i386                 randconfig-a015-20210324
-i386                 randconfig-a016-20210324
-i386                 randconfig-a013-20210324
-i386                 randconfig-a012-20210324
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-x86_64                    rhel-8.3-kselftests
+> Well it was a released revision, although it was found to have issues.
+> Currently
+> HoneyComb Systems Ready certified firmware does include support for this
+> table,
+> although incomplete.  Without agreement on mainline support I am fine to
+> update
+> to the latest spec bump.
 
-clang tested configs:
-x86_64               randconfig-a002-20210324
-x86_64               randconfig-a003-20210324
-x86_64               randconfig-a001-20210324
-x86_64               randconfig-a006-20210324
-x86_64               randconfig-a005-20210324
-x86_64               randconfig-a004-20210324
+Ok. Sorry didn=E2=80=99t know that you already had a firmware with that rev=
+ision.
+Thanks for agreeing to update to latest.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============4670130417884186912==--
+> >
+> > So could you please revert the merge and I am planning to work on the E=
+.b
+> soon.
+> > Please let me know if I need to explicitly send a revert pull request o=
+r not.
+> =
+
+> Can you please CC. me on your next release.  I was planning on spending t=
+ime
+> on this regardless.  I already have a patchset for the fsl-mc-bus driver =
+that
+> needs to change in order to function properly with RMR support.
+
+Sure. Will CC you.
+
+Hi All,
+
+I have send pull requests to acpica git for reverting rev E and to update i=
+t with E.b,
+
+https://github.com/acpica/acpica/pull/682
+
+Please take a look and let me know.
+
+Thanks,
+Shameer
+
+--===============7014175998890571468==--
 
