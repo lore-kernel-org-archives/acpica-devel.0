@@ -1,74 +1,57 @@
-Content-Type: multipart/mixed; boundary="===============7014175998890571468=="
+Content-Type: multipart/mixed; boundary="===============4791404056101521770=="
 MIME-Version: 1.0
-From: Shameerali Kolothum Thodi <shameerali.kolothum.thodi at huawei.com>
-Subject: [Devel] Re: [RFC PATCH v2 1/8] ACPICA: IORT: Update for revision E
-Date: Thu, 25 Mar 2021 15:54:51 +0000
-Message-ID: <acfab98e75434a59910cf56336c54ba2@huawei.com>
-In-Reply-To: CABdtJHtZPyWpXN9JZbgdu=HswreTc2o2pRhrwHFzQJqz-kFSBw@mail.gmail.com
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] Re: [PATCH] ACPICA: Fix a typo
+Date: Fri, 26 Mar 2021 14:56:46 +0000
+Message-ID: <BYAPR11MB325648858A1C06D2E80DF7AE87619@BYAPR11MB3256.namprd11.prod.outlook.com>
+In-Reply-To: 20210326001922.4767-1-unixbhaskar@gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7014175998890571468==
+--===============4791404056101521770==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-
-
-> -----Original Message-----
-> From: Jon Nettleton [mailto:jon(a)solid-run.com]
-> Sent: 25 March 2021 08:40
-> To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi(a)huawei.com>
-> Cc: erik.kaneda(a)intel.com; linux-arm-kernel(a)lists.infradead.org;
-> linux-acpi(a)vger.kernel.org; iommu(a)lists.linux-foundation.org;
-> devel(a)acpica.org; Lorenzo Pieralisi <lorenzo.pieralisi(a)arm.com>;
-> robert.moore(a)intel.com; Linuxarm <linuxarm(a)huawei.com>;
-> steven.price(a)arm.com; Guohanjun (Hanjun Guo) <guohanjun(a)huawei.com>;
-> Sami.Mujawar(a)arm.com; robin.murphy(a)arm.com; wanghuiqiang
-> <wanghuiqiang(a)huawei.com>
-> Subject: Re: [RFC PATCH v2 1/8] ACPICA: IORT: Update for revision E
-
-[...]
-
-> Well it was a released revision, although it was found to have issues.
-> Currently
-> HoneyComb Systems Ready certified firmware does include support for this
-> table,
-> although incomplete.  Without agreement on mainline support I am fine to
-> update
-> to the latest spec bump.
-
-Ok. Sorry didn=E2=80=99t know that you already had a firmware with that rev=
-ision.
-Thanks for agreeing to update to latest.
-
-> >
-> > So could you please revert the merge and I am planning to work on the E=
-.b
-> soon.
-> > Please let me know if I need to explicitly send a revert pull request o=
-r not.
-> =
-
-> Can you please CC. me on your next release.  I was planning on spending t=
-ime
-> on this regardless.  I already have a patchset for the fsl-mc-bus driver =
-that
-> needs to change in order to function properly with RMR support.
-
-Sure. Will CC you.
-
-Hi All,
-
-I have send pull requests to acpica git for reverting rev E and to update i=
-t with E.b,
-
-https://github.com/acpica/acpica/pull/682
-
-Please take a look and let me know.
-
+Please make a pull request for this on our github.
 Thanks,
-Shameer
+Bob
 
---===============7014175998890571468==--
+
+-----Original Message-----
+From: Bhaskar Chowdhury <unixbhaskar(a)gmail.com> =
+
+Sent: Thursday, March 25, 2021 5:19 PM
+To: Moore, Robert <robert.moore(a)intel.com>; Kaneda, Erik <erik.kaneda(a)i=
+ntel.com>; Wysocki, Rafael J <rafael.j.wysocki(a)intel.com>; lenb(a)kernel.=
+org; linux-acpi(a)vger.kernel.org; devel(a)acpica.org; linux-kernel(a)vger.=
+kernel.org
+Cc: rdunlap(a)infradead.org; Bhaskar Chowdhury <unixbhaskar(a)gmail.com>
+Subject: [PATCH] ACPICA: Fix a typo
+
+
+s/optimzation/optimization/
+
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar(a)gmail.com>
+---
+ include/acpi/acoutput.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/acpi/acoutput.h b/include/acpi/acoutput.h index 1538a6=
+853822..1b4c45815695 100644
+--- a/include/acpi/acoutput.h
++++ b/include/acpi/acoutput.h
+@@ -362,7 +362,7 @@
+  *
+  * A less-safe version of the macros is provided for optional use if the
+  * compiler uses excessive CPU stack (for example, this may happen in the
+- * debug case if code optimzation is disabled.)
++ * debug case if code optimization is disabled.)
+  */
+
+ /* Exit trace helper macro */
+--
+2.26.2
+
+--===============4791404056101521770==--
 
