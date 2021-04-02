@@ -1,126 +1,255 @@
-Content-Type: multipart/mixed; boundary="===============0010730157654490913=="
+Content-Type: multipart/mixed; boundary="===============4375847756510233955=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] Re: [PATCH] ACPICA: Events: support fixed pcie wake event
-Date: Thu, 01 Apr 2021 20:56:32 +0000
-Message-ID: <BYAPR11MB3256C7F3C17D14C1DF544430877B9@BYAPR11MB3256.namprd11.prod.outlook.com>
-In-Reply-To: 1617278736-7400-1-git-send-email-lvjianmin@loongson.cn
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
+ 85f34ae663986081df77a1df26e08fd1978573a3
+Date: Fri, 02 Apr 2021 08:32:21 +0800
+Message-ID: <60666615.oPGdrOaZwSnTidEZ%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0010730157654490913==
+--===============4375847756510233955==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Can you send/point us to the spec that this change is based upon?
-Thanks,
-Bob
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git bleeding-edge
+branch HEAD: 85f34ae663986081df77a1df26e08fd1978573a3  Merge branches 'acpi=
+-scan' and 'acpi-processor-fixes' into linux-next
 
+elapsed time: 721m
 
------Original Message-----
-From: Jianmin Lv <lvjianmin(a)loongson.cn> =
+configs tested: 218
+configs skipped: 2
 
-Sent: Thursday, April 01, 2021 5:06 AM
-To: Moore, Robert <robert.moore(a)intel.com>; Kaneda, Erik <erik.kaneda(a)i=
-ntel.com>; Wysocki, Rafael J <rafael.j.wysocki(a)intel.com>; Len Brown <len=
-b(a)kernel.org>
-Cc: linux-acpi(a)vger.kernel.org; devel(a)acpica.org; linux-kernel(a)vger.k=
-ernel.org; lvjianmin <lvjianmin(a)loongson.cn>
-Subject: [PATCH] ACPICA: Events: support fixed pcie wake event
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-From: lvjianmin <lvjianmin(a)loongson.cn>
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+x86_64                           allyesconfig
+riscv                            allmodconfig
+i386                             allyesconfig
+riscv                            allyesconfig
+sh                          rsk7203_defconfig
+arc                    vdk_hs38_smp_defconfig
+s390                             allmodconfig
+arm                           h5000_defconfig
+m68k                         amcore_defconfig
+arm                       spear13xx_defconfig
+arm                           viper_defconfig
+um                            kunit_defconfig
+xtensa                  cadence_csp_defconfig
+xtensa                generic_kc705_defconfig
+sh                            titan_defconfig
+arm                      footbridge_defconfig
+arm                             ezx_defconfig
+arm                        trizeps4_defconfig
+alpha                            alldefconfig
+arm                           sama5_defconfig
+sh                         apsh4a3a_defconfig
+arm                           omap1_defconfig
+m68k                            q40_defconfig
+arm                       netwinder_defconfig
+powerpc                       ppc64_defconfig
+xtensa                       common_defconfig
+mips                 decstation_r4k_defconfig
+powerpc                   bluestone_defconfig
+sh                          rsk7264_defconfig
+powerpc                      ppc64e_defconfig
+mips                         tb0226_defconfig
+powerpc                     tqm8548_defconfig
+sh                           se7619_defconfig
+m68k                             alldefconfig
+powerpc                 mpc8560_ads_defconfig
+sh                          r7785rp_defconfig
+xtensa                  audio_kc705_defconfig
+arm                        vexpress_defconfig
+mips                     cu1830-neo_defconfig
+mips                     cu1000-neo_defconfig
+mips                      pistachio_defconfig
+powerpc                 mpc836x_mds_defconfig
+mips                             allmodconfig
+riscv                          rv32_defconfig
+mips                malta_kvm_guest_defconfig
+sh                        edosk7760_defconfig
+sh                  sh7785lcr_32bit_defconfig
+powerpc                     redwood_defconfig
+parisc                generic-32bit_defconfig
+mips                            gpr_defconfig
+powerpc                     tqm8540_defconfig
+sh                     magicpanelr2_defconfig
+arm                       omap2plus_defconfig
+arm                        spear6xx_defconfig
+arm                          pcm027_defconfig
+arm                        oxnas_v6_defconfig
+m68k                         apollo_defconfig
+arc                           tb10x_defconfig
+arm                            dove_defconfig
+arm                        multi_v7_defconfig
+powerpc                  mpc866_ads_defconfig
+powerpc               mpc834x_itxgp_defconfig
+m68k                          atari_defconfig
+x86_64                           alldefconfig
+arm                          exynos_defconfig
+mips                        nlm_xlp_defconfig
+arm                         shannon_defconfig
+powerpc                      acadia_defconfig
+powerpc                     mpc512x_defconfig
+sh                   rts7751r2dplus_defconfig
+arm                             pxa_defconfig
+mips                        workpad_defconfig
+nios2                         10m50_defconfig
+arm                          iop32x_defconfig
+ia64                             alldefconfig
+sh                          r7780mp_defconfig
+m68k                          sun3x_defconfig
+ia64                         bigsur_defconfig
+h8300                            alldefconfig
+arm                         nhk8815_defconfig
+m68k                          hp300_defconfig
+powerpc                 mpc8540_ads_defconfig
+m68k                        mvme16x_defconfig
+arc                        nsim_700_defconfig
+arm                         lpc32xx_defconfig
+powerpc                     tqm8560_defconfig
+sh                          landisk_defconfig
+arm                      integrator_defconfig
+powerpc                 mpc836x_rdk_defconfig
+sh                                  defconfig
+arm                           corgi_defconfig
+arm                            pleb_defconfig
+mips                          malta_defconfig
+arm                        magician_defconfig
+ia64                      gensparse_defconfig
+arm                         cm_x300_defconfig
+sh                   sh7724_generic_defconfig
+powerpc                   lite5200b_defconfig
+arm                          imote2_defconfig
+arm                     eseries_pxa_defconfig
+arm                     am200epdkit_defconfig
+h8300                    h8300h-sim_defconfig
+sh                          lboxre2_defconfig
+powerpc                    ge_imp3a_defconfig
+sh                         ap325rxa_defconfig
+powerpc                     ep8248e_defconfig
+arm                         orion5x_defconfig
+mips                        qi_lb60_defconfig
+mips                       rbtx49xx_defconfig
+arm                           tegra_defconfig
+powerpc                       maple_defconfig
+powerpc                     rainier_defconfig
+sh                        dreamcast_defconfig
+mips                            e55_defconfig
+mips                        vocore2_defconfig
+powerpc                 mpc8315_rdb_defconfig
+riscv                               defconfig
+s390                                defconfig
+arm                         socfpga_defconfig
+powerpc                 linkstation_defconfig
+m68k                           sun3_defconfig
+ia64                            zx1_defconfig
+powerpc                       eiger_defconfig
+arm                          ixp4xx_defconfig
+arm                       cns3420vb_defconfig
+m68k                        mvme147_defconfig
+arm                              alldefconfig
+mips                         tb0219_defconfig
+mips                malta_qemu_32r6_defconfig
+m68k                       m5208evb_defconfig
+mips                       capcella_defconfig
+powerpc                 mpc837x_rdb_defconfig
+sh                           se7751_defconfig
+sh                             sh03_defconfig
+riscv             nommu_k210_sdcard_defconfig
+sh                            shmin_defconfig
+arm                          lpd270_defconfig
+sh                           se7750_defconfig
+riscv                    nommu_k210_defconfig
+arm                         lpc18xx_defconfig
+arm                          moxart_defconfig
+s390                             allyesconfig
+sh                              ul2_defconfig
+powerpc64                        alldefconfig
+arc                        nsimosci_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+parisc                           allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a006-20210401
+i386                 randconfig-a003-20210401
+i386                 randconfig-a001-20210401
+i386                 randconfig-a004-20210401
+i386                 randconfig-a002-20210401
+i386                 randconfig-a005-20210401
+i386                 randconfig-a006-20210402
+i386                 randconfig-a003-20210402
+i386                 randconfig-a001-20210402
+i386                 randconfig-a004-20210402
+i386                 randconfig-a005-20210402
+i386                 randconfig-a002-20210402
+x86_64               randconfig-a014-20210401
+x86_64               randconfig-a015-20210401
+x86_64               randconfig-a011-20210401
+x86_64               randconfig-a013-20210401
+x86_64               randconfig-a012-20210401
+x86_64               randconfig-a016-20210401
+i386                 randconfig-a014-20210401
+i386                 randconfig-a011-20210401
+i386                 randconfig-a016-20210401
+i386                 randconfig-a012-20210401
+i386                 randconfig-a013-20210401
+i386                 randconfig-a015-20210401
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-Some chipsets support fixed pcie wake event which is defined in the PM1 blo=
-ck, such as LS7A1000 of Loongson company, so we add code to handle it.
+clang tested configs:
+x86_64               randconfig-a004-20210401
+x86_64               randconfig-a005-20210401
+x86_64               randconfig-a003-20210401
+x86_64               randconfig-a001-20210401
+x86_64               randconfig-a002-20210401
+x86_64               randconfig-a006-20210401
 
-Signed-off-by: lvjianmin <lvjianmin(a)loongson.cn>
-
-diff --git a/drivers/acpi/acpica/evevent.c b/drivers/acpi/acpica/evevent.c =
-index 35385148fedb..08ba368beb2d 100644
---- a/drivers/acpi/acpica/evevent.c
-+++ b/drivers/acpi/acpica/evevent.c
-@@ -185,6 +185,10 @@ u32 acpi_ev_fixed_event_detect(void)
- 		return (int_status);
- 	}
- =
-
-+	if (fixed_enable & ACPI_BITMASK_PCIEXP_WAKE_DISABLE)
-+		fixed_enable &=3D ~ACPI_BITMASK_PCIEXP_WAKE_DISABLE;
-+	else
-+		fixed_enable |=3D ACPI_BITMASK_PCIEXP_WAKE_DISABLE;
- 	ACPI_DEBUG_PRINT((ACPI_DB_INTERRUPTS,
- 			  "Fixed Event Block: Enable %08X Status %08X\n",
- 			  fixed_enable, fixed_status));
-@@ -250,8 +254,8 @@ static u32 acpi_ev_fixed_event_dispatch(u32 event)
- 	if (!acpi_gbl_fixed_event_handlers[event].handler) {
- 		(void)acpi_write_bit_register(acpi_gbl_fixed_event_info[event].
- 					      enable_register_id,
--					      ACPI_DISABLE_EVENT);
--
-+						event =3D=3D ACPI_EVENT_PCIE_WAKE ?
-+						ACPI_ENABLE_EVENT : ACPI_DISABLE_EVENT);
- 		ACPI_ERROR((AE_INFO,
- 			    "No installed handler for fixed event - %s (%u), disabling",
- 			    acpi_ut_get_event_name(event), event)); diff --git a/drivers/acpi/a=
-cpica/hwsleep.c b/drivers/acpi/acpica/hwsleep.c index 14baa13bf848..7e7ea4c=
-2e914 100644
---- a/drivers/acpi/acpica/hwsleep.c
-+++ b/drivers/acpi/acpica/hwsleep.c
-@@ -312,6 +312,18 @@ acpi_status acpi_hw_legacy_wake(u8 sleep_state)
- 				    [ACPI_EVENT_SLEEP_BUTTON].
- 				    status_register_id, ACPI_CLEAR_STATUS);
- =
-
-+	/* Enable pcie wake event if support */
-+	if ((acpi_gbl_FADT.flags & ACPI_FADT_PCI_EXPRESS_WAKE)) {
-+		(void)
-+		acpi_write_bit_register(acpi_gbl_fixed_event_info
-+				[ACPI_EVENT_PCIE_WAKE].
-+				enable_register_id, ACPI_DISABLE_EVENT);
-+		(void)
-+		acpi_write_bit_register(acpi_gbl_fixed_event_info
-+				[ACPI_EVENT_PCIE_WAKE].
-+				status_register_id, ACPI_CLEAR_STATUS);
-+	}
-+
- 	acpi_hw_execute_sleep_method(METHOD_PATHNAME__SST, ACPI_SST_WORKING);
- 	return_ACPI_STATUS(status);
- }
-diff --git a/drivers/acpi/acpica/utglobal.c b/drivers/acpi/acpica/utglobal.=
-c index 59a48371a7bc..68baf16d8a02 100644
---- a/drivers/acpi/acpica/utglobal.c
-+++ b/drivers/acpi/acpica/utglobal.c
-@@ -186,6 +186,10 @@ struct acpi_fixed_event_info acpi_gbl_fixed_event_info=
-[ACPI_NUM_FIXED_EVENTS] =3D
- 					ACPI_BITREG_RT_CLOCK_ENABLE,
- 					ACPI_BITMASK_RT_CLOCK_STATUS,
- 					ACPI_BITMASK_RT_CLOCK_ENABLE},
-+	/* ACPI_EVENT_PCIE_WAKE		*/ {ACPI_BITREG_PCIEXP_WAKE_STATUS,
-+					ACPI_BITREG_PCIEXP_WAKE_DISABLE,
-+					ACPI_BITMASK_PCIEXP_WAKE_STATUS,
-+					ACPI_BITMASK_PCIEXP_WAKE_DISABLE},
- };
- #endif				/* !ACPI_REDUCED_HARDWARE */
- =
-
-diff --git a/include/acpi/actypes.h b/include/acpi/actypes.h index 92c71dfc=
-e0d5..0b6c72033487 100644
---- a/include/acpi/actypes.h
-+++ b/include/acpi/actypes.h
-@@ -714,7 +714,8 @@ typedef u32 acpi_event_type;
- #define ACPI_EVENT_POWER_BUTTON         2
- #define ACPI_EVENT_SLEEP_BUTTON         3
- #define ACPI_EVENT_RTC                  4
--#define ACPI_EVENT_MAX                  4
-+#define ACPI_EVENT_PCIE_WAKE            5
-+#define ACPI_EVENT_MAX                  5
- #define ACPI_NUM_FIXED_EVENTS           ACPI_EVENT_MAX + 1
- =
-
- /*
---
-2.27.0
-
---===============0010730157654490913==--
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
+--===============4375847756510233955==--
 
