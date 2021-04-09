@@ -1,26 +1,26 @@
-Content-Type: multipart/mixed; boundary="===============5324464442613022881=="
+Content-Type: multipart/mixed; boundary="===============2316800406236745865=="
 MIME-Version: 1.0
 From: kernel test robot <lkp at intel.com>
 Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
- d68e242804c977189801d2675b53d3eddfd7d818
-Date: Thu, 08 Apr 2021 13:37:56 +0800
-Message-ID: <606e96b4.d5MT9yrSH5aMrs0V%lkp@intel.com>
+ d632b6ec9bc410cf46b6e4b0c142c93f6a7713f4
+Date: Fri, 09 Apr 2021 14:54:32 +0800
+Message-ID: <606ffa28.ovHX0V7D09apt73R%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5324464442613022881==
+--===============2316800406236745865==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
 tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
 m.git bleeding-edge
-branch HEAD: d68e242804c977189801d2675b53d3eddfd7d818  Merge branch 'pm-cpu=
+branch HEAD: d632b6ec9bc410cf46b6e4b0c142c93f6a7713f4  Merge branch 'pm-cpu=
 idle' into bleeding-edge
 
-elapsed time: 729m
+elapsed time: 727m
 
-configs tested: 91
+configs tested: 85
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -32,35 +32,20 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
-x86_64                           allyesconfig
-mips                           ip28_defconfig
-arm                         lpc18xx_defconfig
-sh                               alldefconfig
-powerpc               mpc834x_itxgp_defconfig
-sh                             espt_defconfig
-powerpc                     mpc5200_defconfig
-arm                       omap2plus_defconfig
-arm                        mvebu_v7_defconfig
-arm                        neponset_defconfig
-powerpc                      chrp32_defconfig
-arm                         axm55xx_defconfig
-sh                          kfr2r09_defconfig
-mips                      fuloong2e_defconfig
-arm                            pleb_defconfig
-sh                        sh7757lcr_defconfig
-powerpc                       maple_defconfig
-arm                        shmobile_defconfig
-mips                        maltaup_defconfig
-riscv             nommu_k210_sdcard_defconfig
+s390                          debug_defconfig
+arm                          pxa3xx_defconfig
+um                           x86_64_defconfig
+mips                         rt305x_defconfig
+arm                            xcep_defconfig
+riscv                               defconfig
+ia64                            zx1_defconfig
+sh                  sh7785lcr_32bit_defconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
 m68k                             allmodconfig
 m68k                                defconfig
 m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
 nds32                               defconfig
 nios2                            allyesconfig
 csky                                defconfig
@@ -70,6 +55,9 @@ xtensa                           allyesconfig
 h8300                            allyesconfig
 arc                                 defconfig
 sh                               allmodconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
 parisc                              defconfig
 s390                             allyesconfig
 s390                             allmodconfig
@@ -84,43 +72,51 @@ mips                             allmodconfig
 powerpc                          allyesconfig
 powerpc                          allmodconfig
 powerpc                           allnoconfig
-i386                 randconfig-a006-20210407
-i386                 randconfig-a003-20210407
-i386                 randconfig-a001-20210407
-i386                 randconfig-a004-20210407
-i386                 randconfig-a002-20210407
-i386                 randconfig-a005-20210407
-x86_64               randconfig-a014-20210407
-x86_64               randconfig-a015-20210407
-x86_64               randconfig-a013-20210407
-x86_64               randconfig-a011-20210407
-x86_64               randconfig-a012-20210407
-x86_64               randconfig-a016-20210407
-i386                 randconfig-a014-20210407
-i386                 randconfig-a011-20210407
-i386                 randconfig-a016-20210407
-i386                 randconfig-a012-20210407
-i386                 randconfig-a015-20210407
-i386                 randconfig-a013-20210407
+x86_64               randconfig-a004-20210408
+x86_64               randconfig-a005-20210408
+x86_64               randconfig-a003-20210408
+x86_64               randconfig-a001-20210408
+x86_64               randconfig-a002-20210408
+x86_64               randconfig-a006-20210408
+i386                 randconfig-a006-20210408
+i386                 randconfig-a003-20210408
+i386                 randconfig-a001-20210408
+i386                 randconfig-a004-20210408
+i386                 randconfig-a005-20210408
+i386                 randconfig-a002-20210408
+i386                 randconfig-a014-20210408
+i386                 randconfig-a016-20210408
+i386                 randconfig-a011-20210408
+i386                 randconfig-a012-20210408
+i386                 randconfig-a013-20210408
+i386                 randconfig-a015-20210408
 riscv                    nommu_k210_defconfig
 riscv                            allyesconfig
 riscv                    nommu_virt_defconfig
 riscv                             allnoconfig
-riscv                               defconfig
 riscv                          rv32_defconfig
 riscv                            allmodconfig
 um                               allmodconfig
 um                                allnoconfig
 um                               allyesconfig
 um                                  defconfig
+x86_64                           allyesconfig
 x86_64                    rhel-8.3-kselftests
 x86_64                              defconfig
 x86_64                               rhel-8.3
 x86_64                      rhel-8.3-kbuiltin
 x86_64                                  kexec
 
+clang tested configs:
+x86_64               randconfig-a014-20210408
+x86_64               randconfig-a015-20210408
+x86_64               randconfig-a012-20210408
+x86_64               randconfig-a011-20210408
+x86_64               randconfig-a013-20210408
+x86_64               randconfig-a016-20210408
+
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
 https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============5324464442613022881==--
+--===============2316800406236745865==--
 
