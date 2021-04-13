@@ -1,56 +1,136 @@
-Content-Type: multipart/mixed; boundary="===============8752178714286369323=="
+Content-Type: multipart/mixed; boundary="===============0509563070191680158=="
 MIME-Version: 1.0
-From: Andy Shevchenko <andy.shevchenko at gmail.com>
-Subject: [Devel] [PATCH v2 2/2] ACPI: utils: Capitalize abbreviations in the
- comments
-Date: Tue, 13 Apr 2021 02:20:52 +0300
-Message-ID: <20210412232052.2162107-2-andy.shevchenko@gmail.com>
-In-Reply-To: 20210412232052.2162107-1-andy.shevchenko@gmail.com
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
+ bca172fee41f4efa5357ea8e70e5d57f4191798c
+Date: Tue, 13 Apr 2021 14:14:16 +0800
+Message-ID: <607536b8.cRKpwrfMvcEGurIm%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8752178714286369323==
+--===============0509563070191680158==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-The DSDT and ACPI should be capitalized.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git bleeding-edge
+branch HEAD: bca172fee41f4efa5357ea8e70e5d57f4191798c  Merge branch 'acpi-s=
+can' into bleeding-edge
 
-Signed-off-by: Andy Shevchenko <andy.shevchenko(a)gmail.com>
+elapsed time: 724m
+
+configs tested: 99
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+mips                         tb0219_defconfig
+mips                           mtx1_defconfig
+m68k                       m5249evb_defconfig
+mips                          malta_defconfig
+arm                          pxa168_defconfig
+arc                          axs103_defconfig
+arm                           sama5_defconfig
+sh                        edosk7760_defconfig
+sparc64                             defconfig
+powerpc                     tqm8548_defconfig
+powerpc                        cell_defconfig
+sh                          rsk7201_defconfig
+powerpc                     powernv_defconfig
+sh                          r7785rp_defconfig
+powerpc                      arches_defconfig
+powerpc                      makalu_defconfig
+powerpc                     mpc5200_defconfig
+arm                       mainstone_defconfig
+powerpc                     ep8248e_defconfig
+mips                        maltaup_defconfig
+arm                           sunxi_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a003-20210412
+i386                 randconfig-a001-20210412
+i386                 randconfig-a006-20210412
+i386                 randconfig-a005-20210412
+i386                 randconfig-a004-20210412
+i386                 randconfig-a002-20210412
+x86_64               randconfig-a014-20210412
+x86_64               randconfig-a015-20210412
+x86_64               randconfig-a011-20210412
+x86_64               randconfig-a013-20210412
+x86_64               randconfig-a012-20210412
+x86_64               randconfig-a016-20210412
+i386                 randconfig-a015-20210412
+i386                 randconfig-a014-20210412
+i386                 randconfig-a013-20210412
+i386                 randconfig-a012-20210412
+i386                 randconfig-a016-20210412
+i386                 randconfig-a011-20210412
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a003-20210412
+x86_64               randconfig-a002-20210412
+x86_64               randconfig-a001-20210412
+x86_64               randconfig-a005-20210412
+x86_64               randconfig-a006-20210412
+x86_64               randconfig-a004-20210412
+
 ---
-v2: split from patch 1 as per Rafael's request
- drivers/acpi/utils.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/acpi/utils.c b/drivers/acpi/utils.c
-index 60e46efc1bc8..3b54b8fd7396 100644
---- a/drivers/acpi/utils.c
-+++ b/drivers/acpi/utils.c
-@@ -811,7 +811,7 @@ static int acpi_dev_match_cb(struct device *dev, const =
-void *data)
-  * Note that if the device is pluggable, it may since have disappeared.
-  *
-  * Note that unlike acpi_dev_found() this function checks the status
-- * of the device. So for devices which are present in the dsdt, but
-+ * of the device. So for devices which are present in the DSDT, but
-  * which are disabled (their _STA callback returns 0) this function
-  * will return false.
-  *
-@@ -838,7 +838,7 @@ EXPORT_SYMBOL(acpi_dev_present);
- =
-
- /**
-  * acpi_dev_get_next_match_dev - Return the next match of ACPI device
-- * @adev: Pointer to the previous acpi_device matching this @hid, @uid and=
- @hrv
-+ * @adev: Pointer to the previous ACPI device matching this @hid, @uid and=
- @hrv
-  * @hid: Hardware ID of the device.
-  * @uid: Unique ID of the device, pass NULL to not check _UID
-  * @hrv: Hardware Revision of the device, pass -1 to not check _HRV
--- =
-
-2.31.1
-
---===============8752178714286369323==--
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
+--===============0509563070191680158==--
 
