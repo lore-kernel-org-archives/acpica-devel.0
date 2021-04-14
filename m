@@ -1,135 +1,57 @@
-Content-Type: multipart/mixed; boundary="===============7098276035492820386=="
+Content-Type: multipart/mixed; boundary="===============5654654324962697714=="
 MIME-Version: 1.0
-From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
- 04a799cddbf75e5202a44c2e4aefc0b608a45a1a
-Date: Wed, 14 Apr 2021 10:22:53 +0800
-Message-ID: <607651fd.8xjRy6NIQTeKvV0I%lkp@intel.com>
+From: Rafael J. Wysocki <rafael at kernel.org>
+Subject: [Devel] Re: [PATCH v3 1/2] ACPI: Add _PLD panel positions
+Date: Wed, 14 Apr 2021 15:50:53 +0200
+Message-ID: <CAJZ5v0ich7DA47ybP552MJJg6-TkShnJyGcrz0PpWYETHHREHQ@mail.gmail.com>
+In-Reply-To: 20210414083022.25453-2-me@fabwu.ch
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7098276035492820386==
+--===============5654654324962697714==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
-m.git bleeding-edge
-branch HEAD: 04a799cddbf75e5202a44c2e4aefc0b608a45a1a  Merge branch 'acpi-t=
-ables' into bleeding-edge
+On Wed, Apr 14, 2021 at 10:30 AM Fabian W=C3=BCthrich <me(a)fabwu.ch> wrote:
+>
+> The ACPI specification v6.3 defines the panel positions in chapter 6.1.8
+> "_PLD (Physical Location of Device)"
+>
+> Signed-off-by: Fabian W=C3=BCthrich <me(a)fabwu.ch>
+> Reviewed-by: Daniel Scally <djrscally(a)gmail.com>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko(a)gmail.com>
 
-elapsed time: 723m
+This is ACPICA material.
 
-configs tested: 98
-configs skipped: 2
+Erik, can you pick up this one, please?
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm64                               defconfig
-x86_64                           allyesconfig
-s390                       zfcpdump_defconfig
-arm                  colibri_pxa300_defconfig
-nios2                            alldefconfig
-sh                          kfr2r09_defconfig
-powerpc                     tqm5200_defconfig
-powerpc                      makalu_defconfig
-powerpc                    socrates_defconfig
-powerpc                   lite5200b_defconfig
-powerpc                      bamboo_defconfig
-arm                            xcep_defconfig
-mips                        nlm_xlp_defconfig
-powerpc                  iss476-smp_defconfig
-sh                               j2_defconfig
-arm                            mmp2_defconfig
-powerpc                         wii_defconfig
-arm                          pxa3xx_defconfig
-powerpc                      ep88xc_defconfig
-powerpc                     rainier_defconfig
-arm                          pxa168_defconfig
-mips                           ci20_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a003-20210413
-i386                 randconfig-a001-20210413
-i386                 randconfig-a006-20210413
-i386                 randconfig-a005-20210413
-i386                 randconfig-a004-20210413
-i386                 randconfig-a002-20210413
-i386                 randconfig-a015-20210413
-i386                 randconfig-a014-20210413
-i386                 randconfig-a013-20210413
-i386                 randconfig-a012-20210413
-i386                 randconfig-a016-20210413
-i386                 randconfig-a011-20210413
-x86_64               randconfig-a003-20210413
-x86_64               randconfig-a002-20210413
-x86_64               randconfig-a001-20210413
-x86_64               randconfig-a005-20210413
-x86_64               randconfig-a006-20210413
-x86_64               randconfig-a004-20210413
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a014-20210413
-x86_64               randconfig-a015-20210413
-x86_64               randconfig-a011-20210413
-x86_64               randconfig-a013-20210413
-x86_64               randconfig-a012-20210413
-x86_64               randconfig-a016-20210413
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============7098276035492820386==--
+> ---
+>  include/acpi/acbuffer.h | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+>
+> diff --git a/include/acpi/acbuffer.h b/include/acpi/acbuffer.h
+> index 18197c16149f..d42e82a82852 100644
+> --- a/include/acpi/acbuffer.h
+> +++ b/include/acpi/acbuffer.h
+> @@ -207,4 +207,13 @@ struct acpi_pld_info {
+>  #define ACPI_PLD_GET_HORIZ_OFFSET(dword)        ACPI_GET_BITS (dword, 16=
+, ACPI_16BIT_MASK)
+>  #define ACPI_PLD_SET_HORIZ_OFFSET(dword,value)  ACPI_SET_BITS (dword, 16=
+, ACPI_16BIT_MASK, value)      /* Offset 128+16=3D144, Len 16 */
+>
+> +/* Panel position defined in _PLD section of ACPI Specification 6.3 */
+> +#define ACPI_PLD_PANEL_TOP                     0
+> +#define ACPI_PLD_PANEL_BOTTOM                  1
+> +#define ACPI_PLD_PANEL_LEFT                    2
+> +#define ACPI_PLD_PANEL_RIGHT                   3
+> +#define ACPI_PLD_PANEL_FRONT                   4
+> +#define ACPI_PLD_PANEL_BACK                    5
+> +#define ACPI_PLD_PANEL_UNKNOWN                 6
+> +
+>  #endif                         /* ACBUFFER_H */
+> --
+> 2.31.1
+>
+--===============5654654324962697714==--
 
