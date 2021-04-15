@@ -1,230 +1,255 @@
-Content-Type: multipart/mixed; boundary="===============3106638688535968126=="
+Content-Type: multipart/mixed; boundary="===============2426308239295348301=="
 MIME-Version: 1.0
-From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
- a5b1c231c4a84cae19849db076b8a56ffbc8a079
-Date: Thu, 15 Apr 2021 09:48:16 +0800
-Message-ID: <60779b60.kwysEistnLZUV/r6%lkp@intel.com>
+From: Shameerali Kolothum Thodi <shameerali.kolothum.thodi at huawei.com>
+Subject: [Devel] Re: [RFC PATCH v2 2/8] ACPI/IORT: Add support for RMR node
+ parsing
+Date: Thu, 15 Apr 2021 10:30:03 +0000
+Message-ID: <0c5ef81c82984f6eaabdc9b27ee79070@huawei.com>
+In-Reply-To: a64025cd-3312-9621-1771-8e0430220ed8@redhat.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3106638688535968126==
+--===============2426308239295348301==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
-m.git bleeding-edge
-branch HEAD: a5b1c231c4a84cae19849db076b8a56ffbc8a079  Merge branches 'acpi=
--scan' and 'acpi-utils' into linux-next
+Hi Eric,
 
-elapsed time: 723m
+> -----Original Message-----
+> From: Auger Eric [mailto:eric.auger(a)redhat.com]
+> Sent: 15 April 2021 10:39
+> To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi(a)huawei.com>;
+> linux-arm-kernel(a)lists.infradead.org; linux-acpi(a)vger.kernel.org;
+> iommu(a)lists.linux-foundation.org; devel(a)acpica.org
+> Cc: Linuxarm <linuxarm(a)huawei.com>; steven.price(a)arm.com; Guohanjun
+> (Hanjun Guo) <guohanjun(a)huawei.com>; Sami.Mujawar(a)arm.com;
+> robin.murphy(a)arm.com; wanghuiqiang <wanghuiqiang(a)huawei.com>
+> Subject: Re: [RFC PATCH v2 2/8] ACPI/IORT: Add support for RMR node parsi=
+ng
+> =
 
-configs tested: 193
-configs skipped: 3
+> Hi Shameer,
+> On 11/19/20 1:11 PM, Shameer Kolothum wrote:
+> > Add support for parsing RMR node information from ACPI.
+> > Find associated stream ids and smmu node=C2=A0info from the
+> > RMR node and populate a linked list with RMR memory
+> > descriptors.
+> >
+> > Signed-off-by: Shameer Kolothum <shameerali.kolothum.thodi(a)huawei.com>
+> > ---
+> >  drivers/acpi/arm64/iort.c | 122
+> +++++++++++++++++++++++++++++++++++++-
+> >  1 file changed, 121 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
+> > index 9929ff50c0c0..a9705aa35028 100644
+> > --- a/drivers/acpi/arm64/iort.c
+> > +++ b/drivers/acpi/arm64/iort.c
+> > @@ -40,6 +40,25 @@ struct iort_fwnode {
+> >  static LIST_HEAD(iort_fwnode_list);
+> >  static DEFINE_SPINLOCK(iort_fwnode_lock);
+> >
+> > +struct iort_rmr_id {
+> > +	u32  sid;
+> > +	struct acpi_iort_node *smmu;
+> > +};
+> > +
+> > +/*
+> > + * One entry for IORT RMR.
+> > + */
+> > +struct iort_rmr_entry {
+> > +	struct list_head list;
+> > +
+> > +	unsigned int rmr_ids_num;
+> > +	struct iort_rmr_id *rmr_ids;
+> > +
+> > +	struct acpi_iort_rmr_desc *rmr_desc;
+> > +};
+> > +
+> > +static LIST_HEAD(iort_rmr_list);         /* list of RMR regions from A=
+CPI
+> */
+> > +
+> >  /**
+> >   * iort_set_fwnode() - Create iort_fwnode and use it to register
+> >   *		       iommu data in the iort_fwnode_list
+> > @@ -393,7 +412,8 @@ static struct acpi_iort_node
+> *iort_node_get_id(struct acpi_iort_node *node,
+> >  		if (node->type =3D=3D ACPI_IORT_NODE_NAMED_COMPONENT ||
+> >  		    node->type =3D=3D ACPI_IORT_NODE_PCI_ROOT_COMPLEX ||
+> >  		    node->type =3D=3D ACPI_IORT_NODE_SMMU_V3 ||
+> > -		    node->type =3D=3D ACPI_IORT_NODE_PMCG) {
+> > +		    node->type =3D=3D ACPI_IORT_NODE_PMCG ||
+> > +		    node->type =3D=3D ACPI_IORT_NODE_RMR) {
+> >  			*id_out =3D map->output_base;
+> >  			return parent;
+> >  		}
+> > @@ -1647,6 +1667,103 @@ static void __init iort_enable_acs(struct
+> acpi_iort_node *iort_node)
+> >  #else
+> >  static inline void iort_enable_acs(struct acpi_iort_node *iort_node) {=
+ }
+> >  #endif
+> > +static int iort_rmr_desc_valid(struct acpi_iort_rmr_desc *desc)
+> > +{
+> > +	struct iort_rmr_entry *e;
+> > +	u64 end, start =3D desc->base_address, length =3D desc->length;
+> > +
+> > +	if (!IS_ALIGNED(start, SZ_64K) || !IS_ALIGNED(length, SZ_64K))
+> > +		return -EINVAL;
+> > +
+> > +	end =3D start + length - 1;
+> > +
+> > +	/* Check for address overlap */
+> I don't get this check. What is the problem if you attach the same range
+> to different stream ids. Shouldn't you check there is no overlap for the
+> same sid?
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+That=E2=80=99s right. The check should be for memory descriptors within an =
+RMR.
+I got confused by the wordings in the IORT spec and that is now clarified
+with Lorenzo here,
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm64                               defconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-riscv                            allyesconfig
-i386                             allyesconfig
-mips                           ip28_defconfig
-arm                           corgi_defconfig
-powerpc                     asp8347_defconfig
-ia64                        generic_defconfig
-arm                       versatile_defconfig
-arc                     nsimosci_hs_defconfig
-m68k                          sun3x_defconfig
-mips                    maltaup_xpa_defconfig
-powerpc                     mpc83xx_defconfig
-ia64                         bigsur_defconfig
-arc                        vdk_hs38_defconfig
-sparc                            alldefconfig
-powerpc                 mpc8272_ads_defconfig
-arc                 nsimosci_hs_smp_defconfig
-powerpc                      cm5200_defconfig
-mips                        maltaup_defconfig
-xtensa                    smp_lx200_defconfig
-mips                           rs90_defconfig
-powerpc                       maple_defconfig
-arm                          ep93xx_defconfig
-mips                            e55_defconfig
-ia64                      gensparse_defconfig
-mips                           gcw0_defconfig
-sh                           se7724_defconfig
-powerpc                      obs600_defconfig
-arm                            mmp2_defconfig
-arc                        nsim_700_defconfig
-sh                          urquell_defconfig
-arm                       cns3420vb_defconfig
-powerpc                          g5_defconfig
-arm                         palmz72_defconfig
-sh                          rsk7269_defconfig
-mips                        bcm47xx_defconfig
-sh                        sh7757lcr_defconfig
-powerpc                        icon_defconfig
-powerpc                 mpc8315_rdb_defconfig
-mips                         tb0287_defconfig
-arm                          pxa3xx_defconfig
-sh                           se7722_defconfig
-powerpc                     ep8248e_defconfig
-nds32                            alldefconfig
-arm                         socfpga_defconfig
-sparc64                             defconfig
-powerpc                        warp_defconfig
-mips                        nlm_xlr_defconfig
-h8300                       h8s-sim_defconfig
-powerpc                       ebony_defconfig
-s390                             allyesconfig
-powerpc                      ppc6xx_defconfig
-mips                          rb532_defconfig
-sh                        sh7785lcr_defconfig
-sh                         ap325rxa_defconfig
-mips                      fuloong2e_defconfig
-mips                      malta_kvm_defconfig
-arm                         s3c2410_defconfig
-sh                          rsk7264_defconfig
-powerpc               mpc834x_itxgp_defconfig
-arm                        spear6xx_defconfig
-mips                      bmips_stb_defconfig
-mips                          malta_defconfig
-arm                            zeus_defconfig
-mips                     cu1830-neo_defconfig
-arm                          gemini_defconfig
-microblaze                          defconfig
-riscv                          rv32_defconfig
-m68k                             allmodconfig
-arm                           h3600_defconfig
-powerpc                 mpc837x_mds_defconfig
-xtensa                              defconfig
-sh                   rts7751r2dplus_defconfig
-arm                      jornada720_defconfig
-mips                         bigsur_defconfig
-arm                         vf610m4_defconfig
-powerpc                     tqm8548_defconfig
-powerpc                      ppc44x_defconfig
-alpha                            alldefconfig
-powerpc                   currituck_defconfig
-mips                          ath25_defconfig
-mips                            gpr_defconfig
-mips                           ci20_defconfig
-powerpc                 mpc836x_rdk_defconfig
-powerpc                    sam440ep_defconfig
-sh                          rsk7203_defconfig
-sh                            hp6xx_defconfig
-arm                         s3c6400_defconfig
-arm                          pcm027_defconfig
-arm                            mps2_defconfig
-arm                          simpad_defconfig
-powerpc64                           defconfig
-powerpc                      arches_defconfig
-h8300                            alldefconfig
-powerpc                 mpc837x_rdb_defconfig
-arm                         axm55xx_defconfig
-m68k                       m5475evb_defconfig
-mips                     decstation_defconfig
-openrisc                  or1klitex_defconfig
-powerpc                      ppc64e_defconfig
-arm                          badge4_defconfig
-arm                         at91_dt_defconfig
-arm                        realview_defconfig
-m68k                       m5275evb_defconfig
-arc                           tb10x_defconfig
-arc                          axs101_defconfig
-mips                           xway_defconfig
-sh                   secureedge5410_defconfig
-alpha                               defconfig
-powerpc                   motionpro_defconfig
-m68k                          hp300_defconfig
-sh                          landisk_defconfig
-mips                     loongson1b_defconfig
-powerpc                      acadia_defconfig
-powerpc                 mpc834x_itx_defconfig
-m68k                            q40_defconfig
-m68k                       m5249evb_defconfig
-powerpc                     tqm8555_defconfig
-powerpc                     tqm8540_defconfig
-powerpc                         ps3_defconfig
-powerpc                       eiger_defconfig
-powerpc                     mpc512x_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a003-20210414
-i386                 randconfig-a006-20210414
-i386                 randconfig-a001-20210414
-i386                 randconfig-a005-20210414
-i386                 randconfig-a004-20210414
-i386                 randconfig-a002-20210414
-x86_64               randconfig-a014-20210414
-x86_64               randconfig-a015-20210414
-x86_64               randconfig-a011-20210414
-x86_64               randconfig-a013-20210414
-x86_64               randconfig-a012-20210414
-x86_64               randconfig-a016-20210414
-i386                 randconfig-a015-20210414
-i386                 randconfig-a014-20210414
-i386                 randconfig-a013-20210414
-i386                 randconfig-a012-20210414
-i386                 randconfig-a016-20210414
-i386                 randconfig-a011-20210414
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+https://op-lists.linaro.org/pipermail/linaro-open-discussions/2021-April/00=
+0150.html
 
-clang tested configs:
-x86_64               randconfig-a003-20210414
-x86_64               randconfig-a002-20210414
-x86_64               randconfig-a005-20210414
-x86_64               randconfig-a001-20210414
-x86_64               randconfig-a006-20210414
-x86_64               randconfig-a004-20210414
+I will change this.
+> =
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============3106638688535968126==--
+> =
+
+> > +	list_for_each_entry(e, &iort_rmr_list, list) {
+> > +		u64 e_start =3D e->rmr_desc->base_address;
+> > +		u64 e_end =3D e_start + e->rmr_desc->length - 1;
+> > +
+> > +		if (start <=3D e_end && end >=3D e_start)
+> > +			return -EINVAL;
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int __init iort_parse_rmr(struct acpi_iort_node *iort_node)
+> > +{
+> > +	struct iort_rmr_id *rmr_ids, *ids;
+> > +	struct iort_rmr_entry *e;
+> > +	struct acpi_iort_rmr *rmr;
+> > +	struct acpi_iort_rmr_desc *rmr_desc;
+> > +	u32 map_count =3D iort_node->mapping_count;
+> > +	int i, ret =3D 0, desc_count =3D 0;
+> > +
+> > +	if (iort_node->type !=3D ACPI_IORT_NODE_RMR)
+> > +		return 0;
+> > +
+> > +	if (!iort_node->mapping_offset || !map_count) {
+> > +		pr_err(FW_BUG "Invalid ID mapping, skipping RMR node %p\n",
+> > +		       iort_node);
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	rmr_ids =3D kmalloc(sizeof(*rmr_ids) * map_count, GFP_KERNEL);
+> > +	if (!rmr_ids)
+> > +		return -ENOMEM;
+> > +
+> > +	/* Retrieve associated smmu and stream id */
+> > +	ids =3D rmr_ids;
+> nit: do you need both rmr_ids and ids?
+
+Not really as the spec says it is M:1 mapping. So we only will have one =
+
+single id here(also map_count for the node must be set to 1 as well).
+
+> > +	for (i =3D 0; i < map_count; i++, ids++) {
+> > +		ids->smmu =3D iort_node_get_id(iort_node, &ids->sid, i);
+> > +		if (!ids->smmu) {
+> > +			pr_err(FW_BUG "Invalid SMMU reference, skipping RMR
+> node %p\n",
+> > +			       iort_node);
+> > +			ret =3D -EINVAL;
+> > +			goto out;
+> > +		}
+> > +	}
+> > +
+> > +	/* Retrieve RMR data */
+> > +	rmr =3D (struct acpi_iort_rmr *)iort_node->node_data;
+> > +	if (!rmr->rmr_offset || !rmr->rmr_count) {
+> > +		pr_err(FW_BUG "Invalid RMR descriptor array, skipping RMR
+> node %p\n",
+> > +		       iort_node);
+> > +		ret =3D -EINVAL;
+> > +		goto out;
+> > +	}
+> > +
+> > +	rmr_desc =3D ACPI_ADD_PTR(struct acpi_iort_rmr_desc, iort_node,
+> > +				rmr->rmr_offset);
+> > +
+> > +	for (i =3D 0; i < rmr->rmr_count; i++, rmr_desc++) {
+> > +		ret =3D iort_rmr_desc_valid(rmr_desc);
+> > +		if (ret) {
+> > +			pr_err(FW_BUG "Invalid RMR descriptor[%d] for node %p,
+> skipping...\n",
+> > +			       i, iort_node);
+> > +			goto out;
+> so I understand you skip the whole node and not just that rmr desc,
+> otherwise you would continue. so in that case don't you need to free
+> both rmr_ids and already allocated 'e'?
+
+Agree. This needs to be changed.
+
+> > +		}
+> > +
+> > +		e =3D kmalloc(sizeof(*e), GFP_KERNEL);
+> > +		if (!e) {
+> > +			ret =3D -ENOMEM;
+> > +			goto out;
+> > +		}
+> > +
+> > +		e->rmr_ids_num =3D map_count;
+> > +		e->rmr_ids =3D rmr_ids;
+> > +		e->rmr_desc =3D rmr_desc;
+> > +
+> > +		list_add_tail(&e->list, &iort_rmr_list);
+> > +		desc_count++;
+> > +	}
+> > +
+> > +	return 0;
+> > +
+> > +out:
+> > +	if (!desc_count)
+> don't you want to test ret instead? see comment above. + free allocated '=
+'e'
+
+Right. I will change it next revision.
+
+Thanks for taking a look.
+
+Regards,
+Shameer
+
+> > +		kfree(rmr_ids);
+> > +	return ret;
+> > +}
+> >
+> >  static void __init iort_init_platform_devices(void)
+> >  {
+> > @@ -1676,6 +1793,9 @@ static void __init iort_init_platform_devices(voi=
+d)
+> >
+> >  		iort_enable_acs(iort_node);
+> >
+> > +		if (iort_table->revision =3D=3D 1)
+> > +			iort_parse_rmr(iort_node);
+> > +
+> >  		ops =3D iort_get_dev_cfg(iort_node);
+> >  		if (ops) {
+> >  			fwnode =3D acpi_alloc_fwnode_static();
+> >
+> Thanks
+> =
+
+> Eric
+
+
+--===============2426308239295348301==--
 
