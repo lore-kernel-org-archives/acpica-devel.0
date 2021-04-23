@@ -1,26 +1,26 @@
-Content-Type: multipart/mixed; boundary="===============4592588290867230998=="
+Content-Type: multipart/mixed; boundary="===============6886527816421392038=="
 MIME-Version: 1.0
 From: kernel test robot <lkp at intel.com>
 Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
- 6e7bc7ebb752591ddd10e8f935604885bdb9728b
-Date: Thu, 22 Apr 2021 13:20:59 +0800
-Message-ID: <608107bb.VJFb/zIzjmHTaoCT%lkp@intel.com>
+ 07ca763aa24938bc9d16edae9174df3edfe20ef0
+Date: Fri, 23 Apr 2021 09:55:24 +0800
+Message-ID: <6082290c.8tE3XiqQkHFyfVke%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4592588290867230998==
+--===============6886527816421392038==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
 tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
 m.git bleeding-edge
-branch HEAD: 6e7bc7ebb752591ddd10e8f935604885bdb9728b  Merge branch 'pm-sle=
+branch HEAD: 07ca763aa24938bc9d16edae9174df3edfe20ef0  Merge branch 'pm-sle=
 ep' into bleeding-edge
 
-elapsed time: 723m
+elapsed time: 724m
 
-configs tested: 94
+configs tested: 96
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -34,37 +34,40 @@ arm                              allyesconfig
 arm                              allmodconfig
 x86_64                           allyesconfig
 riscv                            allmodconfig
+i386                             allyesconfig
 riscv                            allyesconfig
-arm                       netwinder_defconfig
-mips                        bcm63xx_defconfig
-xtensa                  nommu_kc705_defconfig
-powerpc                 xes_mpc85xx_defconfig
-powerpc                      walnut_defconfig
-mips                           mtx1_defconfig
-sparc64                             defconfig
-powerpc                      acadia_defconfig
-ia64                            zx1_defconfig
-mips                        maltaup_defconfig
-powerpc                     skiroot_defconfig
-mips                      maltaaprp_defconfig
-i386                             alldefconfig
-arc                      axs103_smp_defconfig
-m68k                         apollo_defconfig
-sh                           sh2007_defconfig
+arm                      footbridge_defconfig
+h8300                    h8300h-sim_defconfig
+xtensa                              defconfig
+powerpc                  iss476-smp_defconfig
+powerpc                       maple_defconfig
+arm                       aspeed_g5_defconfig
+m68k                       m5275evb_defconfig
+xtensa                  audio_kc705_defconfig
+arc                     nsimosci_hs_defconfig
+sh                          kfr2r09_defconfig
+sh                        sh7763rdp_defconfig
+csky                             alldefconfig
+powerpc                     kmeter1_defconfig
+powerpc                         ps3_defconfig
+mips                            ar7_defconfig
+arm                           stm32_defconfig
+s390                             alldefconfig
+ia64                         bigsur_defconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
 m68k                             allmodconfig
 m68k                                defconfig
 m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
 nds32                               defconfig
 nios2                            allyesconfig
 csky                                defconfig
 alpha                               defconfig
 alpha                            allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
 xtensa                           allyesconfig
 h8300                            allyesconfig
 arc                                 defconfig
@@ -74,7 +77,6 @@ s390                             allyesconfig
 s390                             allmodconfig
 parisc                           allyesconfig
 s390                                defconfig
-i386                             allyesconfig
 sparc                            allyesconfig
 sparc                               defconfig
 i386                                defconfig
@@ -127,5 +129,5 @@ x86_64               randconfig-a012-20210421
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
 https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============4592588290867230998==--
+--===============6886527816421392038==--
 
