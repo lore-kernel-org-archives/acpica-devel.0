@@ -1,67 +1,109 @@
-Content-Type: multipart/mixed; boundary="===============7677215419009329585=="
+Content-Type: multipart/mixed; boundary="===============3672617087338609524=="
 MIME-Version: 1.0
 From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [PATCH v2 1/3] ACPICA: ACPI 6.4: MADT: add Multiprocessor
- Wakeup Mailbox Structure
-Date: Fri, 23 Apr 2021 14:33:53 +0200
-Message-ID: <CAJZ5v0itaKL58ieMB6ER47GVns7Ukvd_7VNBAxkktWB5cDv-SQ@mail.gmail.com>
-In-Reply-To: 20210422214708.716164-2-sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: [Devel] Re: [PATCH v2 1/1] ACPICA: Add SVKL table headers
+Date: Fri, 23 Apr 2021 14:36:38 +0200
+Message-ID: <CAJZ5v0gH-Zg7YZPf9joaMt1zfYfNkUGpo596=9QEJ1NKAw87qQ@mail.gmail.com>
+In-Reply-To: 20210422214930.716596-1-sathyanarayanan.kuppuswamy@linux.intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7677215419009329585==
+--===============3672617087338609524==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 22, 2021 at 11:47 PM Kuppuswamy Sathyanarayanan
+On Thu, Apr 22, 2021 at 11:49 PM Kuppuswamy Sathyanarayanan
 <sathyanarayanan.kuppuswamy(a)linux.intel.com> wrote:
 >
-> ACPICA commit f1ee04207a212f6c519441e7e25397649ebc4cea
+> ACPICA commit b5e6bcf69dbb9877481992d5ce86008cfb94f5b8
+
+Evidently, this is ACPICA material, so I'm expecting to receive this
+patch from Erik within the normal ACPICA development process, so I'm
+not sure what the purpose of this submission is.
+
+Has this patch been posted here for reference only?
+
+> SVKL (Storage Volume Key Location Table) is used by BIOS/Firmware
+> to share storage volume encryption key's with OS. It will be used
+> by userspace to decrypt and mount encrypted drives.
 >
-> Add Multiprocessor Wakeup Mailbox Structure definition. It is useful
-> in parsing MADT Wake table.
+> So add SVKL table signature and add it to known signatures array
+> support SVKL.
 >
-> Link: https://github.com/acpica/acpica/commit/f1ee0420
+> You can find details about the SVKL table in TDX specfication
+> titled "Guest-Host-Communication Interface (GHCI) for Intel
+> Trust Domain Extensions (Intel=C2=AE TDX)", sec 4.4 and in ACPI
+> specification r6.4, sec 5.2.6.
+>
+> https://software.intel.com/content/dam/develop/external/us/en/documents/i=
+ntel-tdx-guest-hypervisor-communication-interface.pdf
+>
+> Cc: Robert Moore <robert.moore(a)intel.com>
+> Cc: Erik Kaneda <erik.kaneda(a)intel.com>
+> Cc: Rafael J. Wysocki <rafael.j.wysocki(a)intel.com>
+> Link: https://github.com/acpica/acpica/commit/b5e6bcf6
 > Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy(a)l=
 inux.intel.com>
-
-I'm expecting to receive this patch from Erik at one point, so I'm
-guessing that it's been added to this series for reference.
-
 > ---
->  include/acpi/actbl2.h | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
+>  include/acpi/actbl2.h | 30 ++++++++++++++++++++++++++++++
+>  1 file changed, 30 insertions(+)
 >
 > diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
-> index b2362600b9ff..7dce422f6119 100644
+> index d6478c430c99..83a9d8b68e3a 100644
 > --- a/include/acpi/actbl2.h
 > +++ b/include/acpi/actbl2.h
-> @@ -733,6 +733,20 @@ struct acpi_madt_multiproc_wakeup {
->         u64 base_address;
+> @@ -43,6 +43,7 @@
+>  #define ACPI_SIG_SDEI           "SDEI" /* Software Delegated Exception I=
+nterface Table */
+>  #define ACPI_SIG_SDEV           "SDEV" /* Secure Devices table */
+>  #define ACPI_SIG_NHLT           "NHLT" /* Non-HDAudio Link Table */
+> +#define ACPI_SIG_SVKL           "SVKL" /* Storage Volume Key Location Ta=
+ble */
+>
+>  /*
+>   * All tables must be byte-packed to match the ACPI specification, since
+> @@ -1713,6 +1714,35 @@ struct acpi_sdev_pcie_path {
+>         u8 function;
 >  };
 >
-> +#define ACPI_MULTIPROC_WAKEUP_MB_OS_SIZE       2032
-> +#define ACPI_MULTIPROC_WAKEUP_MB_FIRMWARE_SIZE 2048
+> +/***********************************************************************=
+********
+> + *
+> + * SVKL - Storage Volume Key Location Table (ACPI 6.4)
+> + *        Version 1
+> + *
+> + ***********************************************************************=
+*******/
 > +
-> +struct acpi_madt_multiproc_wakeup_mailbox {
-> +       u16 command;
-> +       u16 reserved;           /* reserved - must be zero */
-> +       u32 apic_id;
-> +       u64 wakeup_vector;
-> +       u8 reserved_os[ACPI_MULTIPROC_WAKEUP_MB_OS_SIZE];       /* reserv=
-ed for OS use */
-> +       u8 reserved_firmware[ACPI_MULTIPROC_WAKEUP_MB_FIRMWARE_SIZE];   /=
-* reserved for firmware use */
+> +struct acpi_table_svkl {
+> +       struct acpi_table_header header;        /* Common ACPI table head=
+er */
+> +       u32 count;
 > +};
 > +
-> +#define ACPI_MP_WAKE_COMMAND_WAKEUP    1
+> +struct acpi_svkl_header {
+> +       u16 type;
+> +       u16 format;
+> +       u32 size;
+> +       u64 address;
+> +};
 > +
->  /*
->   * Common flags fields for MADT subtables
->   */
+> +enum acpi_svkl_type {
+> +       ACPI_SVKL_TYPE_MAIN_STORAGE =3D 0,
+> +       ACPI_SVKL_TYPE_RESERVED =3D 1     /* 1 and greater are reserved */
+> +};
+> +
+> +enum acpi_svkl_format {
+> +       ACPI_SVKL_FORMAT_RAW_BINARY =3D 0,
+> +       ACPI_SVKL_FORMAT_RESERVED =3D 1   /* 1 and greater are reserved */
+> +};
+> +
+>  /* Reset to default packing */
+>
+>  #pragma pack()
 > --
 > 2.25.1
 >
---===============7677215419009329585==--
+--===============3672617087338609524==--
 
