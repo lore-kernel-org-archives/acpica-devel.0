@@ -1,77 +1,102 @@
-Content-Type: multipart/mixed; boundary="===============0207458103000207030=="
+Content-Type: multipart/mixed; boundary="===============3646751174082213479=="
 MIME-Version: 1.0
 From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [PATCH 1/1] ACPICA: Add SVKL table headers
-Date: Tue, 11 May 2021 12:26:10 +0200
-Message-ID: <CAJZ5v0jFhX6Jy_Ws14BO3g35yCKnKncp5gBWCADTCdppbHQ55A@mail.gmail.com>
-In-Reply-To: MWHPR11MB1599AD69C50EE40EF625C837F0539@MWHPR11MB1599.namprd11.prod.outlook.com
+Subject: [Devel] Re: [PATCH v3 3/3] x86/acpi,
+ x86/boot: Add multiprocessor wake-up support
+Date: Tue, 11 May 2021 12:45:17 +0200
+Message-ID: <CAJZ5v0hFfVCm25wUCetOm4YdZKwt5h2jknN9ad1nnpxuR16KkQ@mail.gmail.com>
+In-Reply-To: bc14b461-6431-c5ce-7117-854af8454900@linux.intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0207458103000207030==
+--===============3646751174082213479==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, May 11, 2021 at 2:17 AM Kaneda, Erik <erik.kaneda(a)intel.com> wrot=
-e:
+On Mon, May 10, 2021 at 11:15 PM Kuppuswamy, Sathyanarayanan
+<sathyanarayanan.kuppuswamy(a)linux.intel.com> wrote:
 >
 >
 >
-> > -----Original Message-----
-> > From: Rafael J. Wysocki <rafael(a)kernel.org>
-> > Sent: Monday, May 10, 2021 9:58 AM
-> > To: Kuppuswamy Sathyanarayanan
-> > <sathyanarayanan.kuppuswamy(a)linux.intel.com>; Kaneda, Erik
-> > <erik.kaneda(a)intel.com>
-> > Cc: Rafael J Wysocki <rjw(a)rjwysocki.net>; Len Brown <lenb(a)kernel.or=
-g>;
-> > Moore, Robert <robert.moore(a)intel.com>; ACPI Devel Maling List <linux-
-> > acpi(a)vger.kernel.org>; open list:ACPI COMPONENT ARCHITECTURE
-> > (ACPICA) <devel(a)acpica.org>; Linux Kernel Mailing List <linux-
-> > kernel(a)vger.kernel.org>; Wysocki, Rafael J <rafael.j.wysocki(a)intel.=
-com>
-> > Subject: Re: [PATCH 1/1] ACPICA: Add SVKL table headers
-> >
-> > On Thu, Apr 22, 2021 at 9:29 PM Kuppuswamy Sathyanarayanan
-> > <sathyanarayanan.kuppuswamy(a)linux.intel.com> wrote:
-> > >
-> > > ACPICA commit b5e6bcf69dbb9877481992d5ce86008cfb94f5b8
-> > >
-> > > SVKL (Storage Volume Key Location Table) is used by BIOS/Firmware
-> > > to share storage volume encryption key's with OS. It will be used
-> > > by userspace to decrypt and mount encrypted drives.
-> > >
-> > > So add SVKL table signature and add it to known signatures array
-> > > support SVKL.
-> > >
-> > > You can find details about the SVKL table in TDX specfication
-> > > titled "Guest-Host-Communication Interface (GHCI) for Intel
-> > > Trust Domain Extensions (Intel=C2=AE TDX)", sec 4.4 and in ACPI
-> > > specification r6.4, sec 5.2.6.
-> > >
-> > >
-> > https://software.intel.com/content/dam/develop/external/us/en/documen
-> > ts/intel-tdx-guest-hypervisor-communication-interface.pdf
-> > >
-> > > Cc: Robert Moore <robert.moore(a)intel.com>
-> > > Cc: Erik Kaneda <erik.kaneda(a)intel.com>
-> > > Cc: Rafael J. Wysocki <rafael.j.wysocki(a)intel.com>
-> > >
-> > > Link: https://github.com/acpica/acpica/commit/b5e6bcf6
-> > > Signed-off-by: Kuppuswamy Sathyanarayanan
-> > <sathyanarayanan.kuppuswamy(a)linux.intel.com>
-> > > Signed-off-by: Bob Moore <robert.moore(a)intel.com>
-> > > Signed-off-by: Erik Kaneda <erik.kaneda(a)intel.com>
-> >
-> > Erik, what's the plan regarding this patch and the other ACPICA change
-> > requisite for this series?
-> >
-> > Are they going to be part of the next ACPICA release and am I going to
-> > receive them the usual way?
+> On 5/10/21 10:24 AM, Rafael J. Wysocki wrote:
+> > The wakeup function can return an error when it is called for the
+> > second time on the same CPU.
 >
-> Yes, we'll do this the usual way
+> To do this, we can only maintain the wakeup status of the CPUs. Can
+> you check whether following physid_mask based status maintenance is
+> acceptable?
 
-OK, thanks!
---===============0207458103000207030==--
+It would work for me except for a couple of nits below.
+
+> --- a/arch/x86/kernel/acpi/boot.c
+> +++ b/arch/x86/kernel/acpi/boot.c
+> @@ -67,6 +67,7 @@ static u64 acpi_lapic_addr __initdata =3D APIC_DEFAULT_=
+PHYS_BASE;
+>
+>   static struct acpi_madt_multiproc_wakeup_mailbox *acpi_mp_wake_mailbox;
+>   static u64 acpi_mp_wake_mailbox_paddr;
+> +static physid_mask_t apic_id_wakemap =3D PHYSID_MASK_NONE;
+>
+>   #ifdef CONFIG_X86_IO_APIC
+>   /*
+> @@ -347,6 +348,13 @@ static int acpi_wakeup_cpu(int apicid, unsigned long=
+ start_ip)
+>
+>          acpi_mp_wake_mailbox_init();
+>
+> +       /* Check if the given CPU (apicid) is already awake */
+
+The reason why is that the wakeup mechanism used here is only usable
+once per CPU by the spec, so I would add this information to the
+comment.  Maybe something like "According to the ACPI specification
+(ACPI 6.4, Section ...), the mailbox-based wakeup mechanism cannot be
+used more than once for the same CPU, so avoid doing that."
+
+> +       if (physid_isset(apicid, apic_id_wakemap)) {
+> +               pr_err("APIC ID %x is already awake, so failed to wakeup\=
+n",
+> +                               apicid);
+
+And I would reword the message like this "CPU already awake (APIC ID
+%x), skipping wakeup\n".
+
+> +               return -EINVAL;
+> +       }
+> +
+>          if (!acpi_mp_wake_mailbox)
+
+Note, though, that instead of having this additional flag, you may as
+well create a mask that is fully populated initially and clear the IDs
+of the woken-up CPUs in it.  Then, you'd only need one check here
+instead of two.
+
+>                  return -EINVAL;
+>
+> @@ -374,8 +382,18 @@ static int acpi_wakeup_cpu(int apicid, unsigned long=
+ start_ip)
+>          while (READ_ONCE(acpi_mp_wake_mailbox->command) && timeout--)
+>                  cpu_relax();
+>
+> -       /* If timedout, return error */
+> -       return timeout ? 0 : -EIO;
+> +       if (timeout) {
+> +               /*
+> +                * If the CPU wakeup process is successful, store the
+> +                * status in apic_id_wakemap to prevent re-wakeup
+> +                * requests.
+> +                */
+> +               physid_set(apicid, apic_id_wakemap);
+> +               return 0;
+> +       }
+> +
+> +       /* If timed out (timeout =3D=3D 0), return error */
+> +       return -EIO;
+>   }
+>
+>
+> --
+> Sathyanarayanan Kuppuswamy
+> Linux Kernel Developer
+--===============3646751174082213479==--
 
