@@ -1,102 +1,102 @@
-Content-Type: multipart/mixed; boundary="===============3646751174082213479=="
+Content-Type: multipart/mixed; boundary="===============2233859705268419639=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [PATCH v3 3/3] x86/acpi,
- x86/boot: Add multiprocessor wake-up support
-Date: Tue, 11 May 2021 12:45:17 +0200
-Message-ID: <CAJZ5v0hFfVCm25wUCetOm4YdZKwt5h2jknN9ad1nnpxuR16KkQ@mail.gmail.com>
-In-Reply-To: bc14b461-6431-c5ce-7117-854af8454900@linux.intel.com
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
+ 63ab1d0f590ff7fe3234589aa977b5777661d091
+Date: Thu, 13 May 2021 19:10:43 +0800
+Message-ID: <609d0933.In58xE9iaHXYBtos%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3646751174082213479==
+--===============2233859705268419639==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, May 10, 2021 at 11:15 PM Kuppuswamy, Sathyanarayanan
-<sathyanarayanan.kuppuswamy(a)linux.intel.com> wrote:
->
->
->
-> On 5/10/21 10:24 AM, Rafael J. Wysocki wrote:
-> > The wakeup function can return an error when it is called for the
-> > second time on the same CPU.
->
-> To do this, we can only maintain the wakeup status of the CPUs. Can
-> you check whether following physid_mask based status maintenance is
-> acceptable?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git bleeding-edge
+branch HEAD: 63ab1d0f590ff7fe3234589aa977b5777661d091  Merge branch 'acpi-d=
+ptf' into bleeding-edge
 
-It would work for me except for a couple of nits below.
+elapsed time: 1272m
 
-> --- a/arch/x86/kernel/acpi/boot.c
-> +++ b/arch/x86/kernel/acpi/boot.c
-> @@ -67,6 +67,7 @@ static u64 acpi_lapic_addr __initdata =3D APIC_DEFAULT_=
-PHYS_BASE;
->
->   static struct acpi_madt_multiproc_wakeup_mailbox *acpi_mp_wake_mailbox;
->   static u64 acpi_mp_wake_mailbox_paddr;
-> +static physid_mask_t apic_id_wakemap =3D PHYSID_MASK_NONE;
->
->   #ifdef CONFIG_X86_IO_APIC
->   /*
-> @@ -347,6 +348,13 @@ static int acpi_wakeup_cpu(int apicid, unsigned long=
- start_ip)
->
->          acpi_mp_wake_mailbox_init();
->
-> +       /* Check if the given CPU (apicid) is already awake */
+configs tested: 67
+configs skipped: 2
 
-The reason why is that the wakeup mechanism used here is only usable
-once per CPU by the spec, so I would add this information to the
-comment.  Maybe something like "According to the ACPI specification
-(ACPI 6.4, Section ...), the mailbox-based wakeup mechanism cannot be
-used more than once for the same CPU, so avoid doing that."
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> +       if (physid_isset(apicid, apic_id_wakemap)) {
-> +               pr_err("APIC ID %x is already awake, so failed to wakeup\=
-n",
-> +                               apicid);
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+x86_64                            allnoconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a003-20210512
+i386                 randconfig-a001-20210512
+i386                 randconfig-a005-20210512
+i386                 randconfig-a004-20210512
+i386                 randconfig-a002-20210512
+i386                 randconfig-a006-20210512
+i386                 randconfig-a016-20210512
+i386                 randconfig-a014-20210512
+i386                 randconfig-a011-20210512
+i386                 randconfig-a015-20210512
+i386                 randconfig-a012-20210512
+i386                 randconfig-a013-20210512
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-And I would reword the message like this "CPU already awake (APIC ID
-%x), skipping wakeup\n".
-
-> +               return -EINVAL;
-> +       }
-> +
->          if (!acpi_mp_wake_mailbox)
-
-Note, though, that instead of having this additional flag, you may as
-well create a mask that is fully populated initially and clear the IDs
-of the woken-up CPUs in it.  Then, you'd only need one check here
-instead of two.
-
->                  return -EINVAL;
->
-> @@ -374,8 +382,18 @@ static int acpi_wakeup_cpu(int apicid, unsigned long=
- start_ip)
->          while (READ_ONCE(acpi_mp_wake_mailbox->command) && timeout--)
->                  cpu_relax();
->
-> -       /* If timedout, return error */
-> -       return timeout ? 0 : -EIO;
-> +       if (timeout) {
-> +               /*
-> +                * If the CPU wakeup process is successful, store the
-> +                * status in apic_id_wakemap to prevent re-wakeup
-> +                * requests.
-> +                */
-> +               physid_set(apicid, apic_id_wakemap);
-> +               return 0;
-> +       }
-> +
-> +       /* If timed out (timeout =3D=3D 0), return error */
-> +       return -EIO;
->   }
->
->
-> --
-> Sathyanarayanan Kuppuswamy
-> Linux Kernel Developer
---===============3646751174082213479==--
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
+--===============2233859705268419639==--
 
