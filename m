@@ -1,142 +1,151 @@
-Content-Type: multipart/mixed; boundary="===============2114060720471221757=="
+Content-Type: multipart/mixed; boundary="===============3191778276736025128=="
 MIME-Version: 1.0
 From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [PATCH v4 2/8] ACPI: scan: Add function to fetch
- dependent of acpi device
-Date: Thu, 20 May 2021 20:55:14 +0200
-Message-ID: <CAJZ5v0hdSi4BcZvhkyrtcBQqRL8CHtOtwUeYW7EnWL2zvKhDZw@mail.gmail.com>
-In-Reply-To: CAJZ5v0hoDswjr+7r4uf6jZvV3t+-UDtEA0V7A_MvdT_34XrbJA@mail.gmail.com
+Subject: [Devel] Re: [PATCH v1 1/1] ACPI: utils: Fix reference counting in
+ for_each_acpi_dev_match()
+Date: Thu, 20 May 2021 21:13:36 +0200
+Message-ID: <CAJZ5v0in=qEtVULLF=RwBTiFqiRK-DyPfD4F6uUAqeUfPFB8QQ@mail.gmail.com>
+In-Reply-To: 20210519210253.3578025-1-andy.shevchenko@gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2114060720471221757==
+--===============3191778276736025128==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, May 20, 2021 at 8:33 PM Rafael J. Wysocki <rafael(a)kernel.org> wro=
-te:
+On Wed, May 19, 2021 at 11:19 PM Andy Shevchenko
+<andy.shevchenko(a)gmail.com> wrote:
 >
-> On Thu, May 20, 2021 at 4:11 PM Daniel Scally <djrscally(a)gmail.com> wro=
-te:
-> >
-> > In some ACPI tables we encounter, devices use the _DEP method to assert
-> > a dependence on other ACPI devices as opposed to the OpRegions that the
-> > specification intends. We need to be able to find those devices "from"
-> > the dependee, so add a callback and a wrapper to walk over the
-> > acpi_dep_list and return the dependent ACPI device.
-> >
-> > Reviewed-by: Andy Shevchenko <andy.shevchenko(a)gmail.com>
-> > Signed-off-by: Daniel Scally <djrscally(a)gmail.com>
-> > ---
-> > Changes since v3:
-> >
-> >         Both new functions were renamed.
-> >
-> >  drivers/acpi/scan.c     | 38 ++++++++++++++++++++++++++++++++++++++
-> >  include/acpi/acpi_bus.h |  1 +
-> >  2 files changed, 39 insertions(+)
-> >
-> > diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-> > index 195635c3462b..1a76fbdfa669 100644
-> > --- a/drivers/acpi/scan.c
-> > +++ b/drivers/acpi/scan.c
-> > @@ -2105,6 +2105,21 @@ static void acpi_bus_attach(struct acpi_device *=
-device, bool first_pass)
-> >                 device->handler->hotplug.notify_online(device);
-> >  }
-> >
-> > +static int acpi_return_dep_dev(struct acpi_dep_data *dep, void *data)
+> Currently it's possible to iterate over the dangling pointer in case the =
+device
+> suddenly disappears. This may happen becase callers put it at the end of =
+a loop.
 >
-> What about calling this acpi_get_first_consumer_cb()?
+> Instead, let's move that call inside acpi_dev_get_next_match_dev().
 
-Or acpi_dev_get_first_consumer_dev_cb() if you want to be super-precise?
+Not really.
 
+> Fixes: 803abec64ef9 ("media: ipu3-cio2: Add cio2-bridge to ipu3-cio2 driv=
+er")
+> Fixes: bf263f64e804 ("media: ACPI / bus: Add acpi_dev_get_next_match_dev(=
+) and helper macro")
+> Cc: Daniel Scally <djrscally(a)gmail.com>
+> Cc: Sakari Ailus <sakari.ailus(a)linux.intel.com>
+> Signed-off-by: Andy Shevchenko <andy.shevchenko(a)gmail.com>
+> ---
+>  drivers/acpi/utils.c                       | 5 +----
+>  drivers/media/pci/intel/ipu3/cio2-bridge.c | 8 +++-----
+>  include/acpi/acpi_bus.h                    | 5 -----
+>  3 files changed, 4 insertions(+), 14 deletions(-)
 >
-> > +{
-> > +       struct acpi_device *adev;
-> > +       int ret;
-> > +
-> > +       ret =3D acpi_bus_get_device(dep->consumer, &adev);
-> > +       if (ret)
-> > +               /* If we don't find an adev then we want to continue pa=
-rsing */
-> > +               return 0;
-> > +
-> > +       *(struct acpi_device **)data =3D adev;
+> diff --git a/drivers/acpi/utils.c b/drivers/acpi/utils.c
+> index 3b54b8fd7396..ccfc484dbffd 100644
+> --- a/drivers/acpi/utils.c
+> +++ b/drivers/acpi/utils.c
+> @@ -846,10 +846,6 @@ EXPORT_SYMBOL(acpi_dev_present);
+>   * Return the next match of ACPI device if another matching device was p=
+resent
+>   * at the moment of invocation, or NULL otherwise.
+>   *
+> - * FIXME: The function does not tolerate the sudden disappearance of @ad=
+ev, e.g.
+> - * in the case of a hotplug event. That said, the caller should ensure t=
+hat
+> - * this will never happen.
+> - *
+>   * The caller is responsible for invoking acpi_dev_put() on the returned=
+ device.
+>   *
+>   * See additional information in acpi_dev_present() as well.
+> @@ -866,6 +862,7 @@ acpi_dev_get_next_match_dev(struct acpi_device *adev,=
+ const char *hid, const cha
+>         match.hrv =3D hrv;
 >
-> And it can do the get_device() here, can't it?
->
-> So maybe use acpi_bus_get_acpi_device() instead of
-> acpi_bus_get_device()?  Would be simpler.
->
-> > +
-> > +       return 1;
-> > +}
-> > +
-> >  static int acpi_scan_clear_dep(struct acpi_dep_data *dep, void *data)
-> >  {
-> >         struct acpi_device *adev;
-> > @@ -2168,6 +2183,29 @@ void acpi_dev_clear_dependencies(struct acpi_dev=
-ice *supplier)
-> >  }
-> >  EXPORT_SYMBOL_GPL(acpi_dev_clear_dependencies);
-> >
-> > +/**
-> > + * acpi_dev_get_dependent_dev - Return ACPI device dependent on @suppl=
-ier
->
-> And what about calling this acpi_get_first_consumer() ?
+>         dev =3D bus_find_device(&acpi_bus_type, start, &match, acpi_dev_m=
+atch_cb);
+> +       acpi_dev_put(adev);
 
-Or acpi_dev_get_first_consumer_dev() (in analogy with the above)?
+What's the point?
 
-> > + * @supplier: Pointer to the dependee device
-> > + *
-> > + * Returns the first &struct acpi_device which declares itself depende=
-nt on
-> > + * @supplier via the _DEP buffer, parsed from the acpi_dep_list.
-> > + *
-> > + * The caller is responsible for putting the reference to adev when it=
- is no
-> > + * longer needed.
-> > + */
-> > +struct acpi_device *acpi_dev_get_dependent_dev(struct acpi_device *sup=
-plier)
-> > +{
-> > +       struct acpi_device *adev =3D NULL;
-> > +
-> > +       acpi_walk_dep_device_list(supplier->handle, acpi_return_dep_dev=
-, &adev);
-> > +
-> > +       if (adev)
-> > +               get_device(&adev->dev);
-> > +
-> > +       return adev;
-> > +}
-> > +EXPORT_SYMBOL_GPL(acpi_dev_get_dependent_dev);
-> > +
-> >  /**
-> >   * acpi_bus_scan - Add ACPI device node objects in a given namespace s=
-cope.
-> >   * @handle: Root of the namespace scope to scan.
-> > diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-> > index 0b2c4f170f4d..68d378207704 100644
-> > --- a/include/acpi/acpi_bus.h
-> > +++ b/include/acpi/acpi_bus.h
-> > @@ -692,6 +692,7 @@ static inline bool acpi_device_can_poweroff(struct =
-acpi_device *adev)
-> >  bool acpi_dev_hid_uid_match(struct acpi_device *adev, const char *hid2=
-, const char *uid2);
-> >
-> >  void acpi_dev_clear_dependencies(struct acpi_device *supplier);
-> > +struct acpi_device *acpi_dev_get_dependent_dev(struct acpi_device *sup=
-plier);
-> >  struct acpi_device *
-> >  acpi_dev_get_next_match_dev(struct acpi_device *adev, const char *hid,=
- const char *uid, s64 hrv);
-> >  struct acpi_device *
-> > --
-> > 2.25.1
-> >
---===============2114060720471221757==--
+The caller may as well put it after this returns, can't it?
+
+And what if the caller still wants to do something with adev after this ret=
+urns?
+
+>         return dev ? to_acpi_device(dev) : NULL;
+>  }
+>  EXPORT_SYMBOL(acpi_dev_get_next_match_dev);
+
+The original changelog is somewhat unclear.  It should say that it is
+required to reference-count the start-point device before passing it
+to this function, but beyond that I don't see a bug here.
+
+> diff --git a/drivers/media/pci/intel/ipu3/cio2-bridge.c b/drivers/media/p=
+ci/intel/ipu3/cio2-bridge.c
+> index e8511787c1e4..477417261b6e 100644
+> --- a/drivers/media/pci/intel/ipu3/cio2-bridge.c
+> +++ b/drivers/media/pci/intel/ipu3/cio2-bridge.c
+> @@ -178,13 +178,11 @@ static int cio2_bridge_connect_sensor(const struct =
+cio2_sensor_config *cfg,
+>
+>                 if (bridge->n_sensors >=3D CIO2_NUM_PORTS) {
+>                         dev_err(&cio2->dev, "Exceeded available CIO2 port=
+s\n");
+> -                       cio2_bridge_unregister_sensors(bridge);
+>                         ret =3D -EINVAL;
+> -                       goto err_out;
+> +                       goto err_put_adev;
+>                 }
+>
+>                 sensor =3D &bridge->sensors[bridge->n_sensors];
+> -               sensor->adev =3D adev;
+>                 strscpy(sensor->name, cfg->hid, sizeof(sensor->name));
+>
+>                 ret =3D cio2_bridge_read_acpi_buffer(adev, "SSDB",
+> @@ -214,6 +212,7 @@ static int cio2_bridge_connect_sensor(const struct ci=
+o2_sensor_config *cfg,
+>                         goto err_free_swnodes;
+>                 }
+>
+> +               sensor->adev =3D acpi_dev_get(adev);
+>                 adev->fwnode.secondary =3D fwnode;
+>
+>                 dev_info(&cio2->dev, "Found supported sensor %s\n",
+> @@ -227,8 +226,7 @@ static int cio2_bridge_connect_sensor(const struct ci=
+o2_sensor_config *cfg,
+>  err_free_swnodes:
+>         software_node_unregister_nodes(sensor->swnodes);
+>  err_put_adev:
+> -       acpi_dev_put(sensor->adev);
+> -err_out:
+> +       acpi_dev_put(adev);
+>         return ret;
+>  }
+>
+> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+> index 3a82faac5767..bff6a11bb21f 100644
+> --- a/include/acpi/acpi_bus.h
+> +++ b/include/acpi/acpi_bus.h
+> @@ -698,11 +698,6 @@ acpi_dev_get_first_match_dev(const char *hid, const =
+char *uid, s64 hrv);
+>   * @hrv: Hardware Revision of the device, pass -1 to not check _HRV
+>   *
+>   * The caller is responsible for invoking acpi_dev_put() on the returned=
+ device.
+> - *
+> - * FIXME: Due to above requirement there is a window that may invalidate=
+ @adev
+> - * and next iteration will use a dangling pointer, e.g. in the case of a
+> - * hotplug event. That said, the caller should ensure that this will nev=
+er
+> - * happen.
+>   */
+>  #define for_each_acpi_dev_match(adev, hid, uid, hrv)                   \
+>         for (adev =3D acpi_dev_get_first_match_dev(hid, uid, hrv);       =
+ \
+> --
+> 2.31.1
+>
+--===============3191778276736025128==--
 
