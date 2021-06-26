@@ -1,82 +1,198 @@
-Content-Type: multipart/mixed; boundary="===============8172987219470638635=="
+Content-Type: multipart/mixed; boundary="===============9108447126153997614=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [PATCH] ACPI: SPCR: Add new 16550-compatible Serial Port
- Subtype
-Date: Fri, 25 Jun 2021 19:20:23 +0200
-Message-ID: <CAJZ5v0j9eTL476N7FJ+-m0VpbCdtOQZkZBtgvQ__3U1Jvs_cPg@mail.gmail.com>
-In-Reply-To: CAPv3WKf=ufj-RbqOKm3cjOQcG1PDAEAkVLdLQUkRK94=_vtj9w@mail.gmail.com
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
+ 33842e66a789d1e4aa9d0379c1f5f43fd4cc4ae7
+Date: Sat, 26 Jun 2021 13:27:56 +0800
+Message-ID: <60d6badc.pqat5jqqO2/O9QRD%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8172987219470638635==
+--===============9108447126153997614==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jun 25, 2021 at 7:18 PM Marcin Wojtas <mw(a)semihalf.com> wrote:
->
-> Hi,
->
-> pon., 21 cze 2021 o 22:06 Marcin Wojtas <mw(a)semihalf.com> napisa=C5=82(=
-a):
-> >
-> > Apologies for the patch prefix, of course it's a first version and
-> > unrelated to the networking subsystem.
-> >
-> > Best regards,
-> > Marcin
-> >
-> >
-> > pon., 21 cze 2021 o 22:05 Marcin Wojtas <mw(a)semihalf.com> napisa=C5=
-=82(a):
-> > >
-> > > The Microsoft Debug Port Table 2 (DBG2) specification revision
-> > > May 31, 2017 adds support for 16550-compatible Serial Port
-> > > Subtype with parameters defined in Generic Address Structure (GAS) [1]
-> > >
-> > > Add its support in SPCR parsing routine.
-> > >
-> > > [1] https://docs.microsoft.com/en-us/windows-hardware/drivers/bringup=
-/acpi-debug-port-table
-> > >
-> > > Signed-off-by: Marcin Wojtas <mw(a)semihalf.com>
-> > > ---
-> > >  include/acpi/actbl1.h | 1 +
-> > >  drivers/acpi/spcr.c   | 1 +
-> > >  2 files changed, 2 insertions(+)
-> > >
-> > > diff --git a/include/acpi/actbl1.h b/include/acpi/actbl1.h
-> > > index ce59903c2695..f746012eba8d 100644
-> > > --- a/include/acpi/actbl1.h
-> > > +++ b/include/acpi/actbl1.h
-> > > @@ -498,6 +498,7 @@ struct acpi_dbg2_device {
-> > >  #define ACPI_DBG2_ARM_SBSA_GENERIC  0x000E
-> > >  #define ACPI_DBG2_ARM_DCC           0x000F
-> > >  #define ACPI_DBG2_BCM2835           0x0010
-> > > +#define ACPI_DBG2_16550_WITH_GAS    0x0012
-> > >
-> > >  #define ACPI_DBG2_1394_STANDARD     0x0000
-> > >
-> > > diff --git a/drivers/acpi/spcr.c b/drivers/acpi/spcr.c
-> > > index 88460bacd5ae..25c2d0be953e 100644
-> > > --- a/drivers/acpi/spcr.c
-> > > +++ b/drivers/acpi/spcr.c
-> > > @@ -136,6 +136,7 @@ int __init acpi_parse_spcr(bool enable_earlycon, =
-bool enable_console)
-> > >                 break;
-> > >         case ACPI_DBG2_16550_COMPATIBLE:
-> > >         case ACPI_DBG2_16550_SUBSET:
-> > > +       case ACPI_DBG2_16550_WITH_GAS:
-> > >                 uart =3D "uart";
-> > >                 break;
-> > >         default:
-> > > --
->
-> Do you have any comments / remarks to the patch?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git bleeding-edge
+branch HEAD: 33842e66a789d1e4aa9d0379c1f5f43fd4cc4ae7  Merge branch 'pm-dev=
+freq' into linux-next
 
-Yes, I do, but I will get back to you next week.
+elapsed time: 727m
 
-Thanks!
---===============8172987219470638635==--
+configs tested: 161
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+mips                  maltasmvp_eva_defconfig
+mips                         db1xxx_defconfig
+sh                        apsh4ad0a_defconfig
+mips                         tb0226_defconfig
+powerpc                           allnoconfig
+mips                        bcm47xx_defconfig
+powerpc                     skiroot_defconfig
+microblaze                          defconfig
+powerpc                 mpc836x_mds_defconfig
+sh                          rsk7201_defconfig
+s390                          debug_defconfig
+powerpc                 mpc832x_mds_defconfig
+arc                            hsdk_defconfig
+arc                           tb10x_defconfig
+ia64                            zx1_defconfig
+powerpc                         ps3_defconfig
+powerpc                      mgcoge_defconfig
+sh                        sh7785lcr_defconfig
+sh                           se7721_defconfig
+sh                        edosk7705_defconfig
+arm                          pxa3xx_defconfig
+arm                          moxart_defconfig
+arm                           u8500_defconfig
+arm                         palmz72_defconfig
+powerpc                 mpc834x_mds_defconfig
+i386                             alldefconfig
+x86_64                              defconfig
+arm                             ezx_defconfig
+arm                           sunxi_defconfig
+mips                        workpad_defconfig
+powerpc                    ge_imp3a_defconfig
+mips                         tb0219_defconfig
+powerpc                      pasemi_defconfig
+sh                             shx3_defconfig
+arm                            zeus_defconfig
+arc                          axs101_defconfig
+sh                          landisk_defconfig
+ia64                          tiger_defconfig
+sh                        dreamcast_defconfig
+arm                         s3c6400_defconfig
+mips                      pic32mzda_defconfig
+powerpc                mpc7448_hpc2_defconfig
+powerpc                     tqm8560_defconfig
+arc                     nsimosci_hs_defconfig
+arm                         hackkit_defconfig
+mips                     cu1830-neo_defconfig
+powerpc                 xes_mpc85xx_defconfig
+m68k                       m5275evb_defconfig
+powerpc                     pq2fads_defconfig
+arm                         vf610m4_defconfig
+m68k                            mac_defconfig
+microblaze                      mmu_defconfig
+arm                        trizeps4_defconfig
+arm                        cerfcube_defconfig
+riscv                          rv32_defconfig
+arm                             pxa_defconfig
+m68k                         amcore_defconfig
+sh                           sh2007_defconfig
+arm                           viper_defconfig
+powerpc                  mpc866_ads_defconfig
+powerpc                    adder875_defconfig
+mips                      malta_kvm_defconfig
+arm                         orion5x_defconfig
+mips                           ip27_defconfig
+sh                               j2_defconfig
+powerpc                     mpc83xx_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+x86_64               randconfig-a002-20210625
+x86_64               randconfig-a001-20210625
+x86_64               randconfig-a005-20210625
+x86_64               randconfig-a003-20210625
+x86_64               randconfig-a004-20210625
+x86_64               randconfig-a006-20210625
+i386                 randconfig-a002-20210625
+i386                 randconfig-a001-20210625
+i386                 randconfig-a003-20210625
+i386                 randconfig-a006-20210625
+i386                 randconfig-a005-20210625
+i386                 randconfig-a004-20210625
+x86_64               randconfig-a012-20210622
+x86_64               randconfig-a016-20210622
+x86_64               randconfig-a015-20210622
+x86_64               randconfig-a014-20210622
+x86_64               randconfig-a013-20210622
+x86_64               randconfig-a011-20210622
+i386                 randconfig-a011-20210625
+i386                 randconfig-a014-20210625
+i386                 randconfig-a013-20210625
+i386                 randconfig-a015-20210625
+i386                 randconfig-a012-20210625
+i386                 randconfig-a016-20210625
+i386                 randconfig-a011-20210622
+i386                 randconfig-a014-20210622
+i386                 randconfig-a013-20210622
+i386                 randconfig-a015-20210622
+i386                 randconfig-a012-20210622
+i386                 randconfig-a016-20210622
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                            kunit_defconfig
+x86_64                           allyesconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-b001-20210625
+x86_64               randconfig-b001-20210622
+x86_64               randconfig-a002-20210626
+x86_64               randconfig-a001-20210626
+x86_64               randconfig-a005-20210626
+x86_64               randconfig-a003-20210626
+x86_64               randconfig-a004-20210626
+x86_64               randconfig-a006-20210626
+x86_64               randconfig-a002-20210622
+x86_64               randconfig-a001-20210622
+x86_64               randconfig-a005-20210622
+x86_64               randconfig-a003-20210622
+x86_64               randconfig-a004-20210622
+x86_64               randconfig-a006-20210622
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
+--===============9108447126153997614==--
 
