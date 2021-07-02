@@ -1,27 +1,27 @@
-Content-Type: multipart/mixed; boundary="===============4645415354006904386=="
+Content-Type: multipart/mixed; boundary="===============1561765255922705662=="
 MIME-Version: 1.0
 From: kernel test robot <lkp at intel.com>
 Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
- 54e91db567d8a20a43770821fb3e61f29f82b625
-Date: Thu, 01 Jul 2021 14:13:39 +0800
-Message-ID: <60dd5d13.nPxop5C2CWI96YnH%lkp@intel.com>
+ b2c6ba264cd2dc1caa70bcb4c400f6c37c78c0a6
+Date: Fri, 02 Jul 2021 13:18:19 +0800
+Message-ID: <60dea19b.bfuKxohZaVw+vcmD%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4645415354006904386==
+--===============1561765255922705662==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
 tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
 m.git bleeding-edge
-branch HEAD: 54e91db567d8a20a43770821fb3e61f29f82b625  Merge branch 'acpi-v=
-ideo' into bleeding-edge
+branch HEAD: b2c6ba264cd2dc1caa70bcb4c400f6c37c78c0a6  Merge branch 'acpi-p=
+rm' into bleeding-edge
 
-elapsed time: 727m
+elapsed time: 728m
 
-configs tested: 91
-configs skipped: 3
+configs tested: 95
+configs skipped: 2
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -32,33 +32,37 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
-arm                    vt8500_v6_v7_defconfig
-powerpc                      tqm8xx_defconfig
 powerpc                  mpc866_ads_defconfig
-powerpc                     tqm8548_defconfig
-sh                           se7619_defconfig
-mips                           xway_defconfig
-powerpc                     sbc8548_defconfig
-arc                          axs103_defconfig
-m68k                        m5307c3_defconfig
-arm                        magician_defconfig
-ia64                         bigsur_defconfig
-mips                          ath25_defconfig
-x86_64                            allnoconfig
+xtensa                generic_kc705_defconfig
+sh                          sdk7780_defconfig
+sh                         microdev_defconfig
+arm                        cerfcube_defconfig
+arm                  colibri_pxa270_defconfig
+sh                          r7780mp_defconfig
+arc                        nsim_700_defconfig
+arm                            hisi_defconfig
+h8300                    h8300h-sim_defconfig
+arm                       aspeed_g4_defconfig
+sh                          rsk7269_defconfig
+powerpc                   lite5200b_defconfig
+mips                        qi_lb60_defconfig
+xtensa                              defconfig
+powerpc                     mpc512x_defconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
+x86_64                            allnoconfig
 m68k                             allmodconfig
 m68k                                defconfig
 m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
 nds32                               defconfig
 nios2                            allyesconfig
 csky                                defconfig
 alpha                               defconfig
 alpha                            allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
 xtensa                           allyesconfig
 h8300                            allyesconfig
 arc                                 defconfig
@@ -89,12 +93,12 @@ i386                 randconfig-a003-20210630
 i386                 randconfig-a002-20210630
 i386                 randconfig-a005-20210630
 i386                 randconfig-a006-20210630
-i386                 randconfig-a014-20210630
-i386                 randconfig-a011-20210630
-i386                 randconfig-a016-20210630
-i386                 randconfig-a012-20210630
-i386                 randconfig-a013-20210630
-i386                 randconfig-a015-20210630
+i386                 randconfig-a015-20210701
+i386                 randconfig-a016-20210701
+i386                 randconfig-a011-20210701
+i386                 randconfig-a012-20210701
+i386                 randconfig-a013-20210701
+i386                 randconfig-a014-20210701
 riscv                    nommu_k210_defconfig
 riscv                            allyesconfig
 riscv                    nommu_virt_defconfig
@@ -102,18 +106,18 @@ riscv                             allnoconfig
 riscv                               defconfig
 riscv                          rv32_defconfig
 riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
 um                           x86_64_defconfig
 um                             i386_defconfig
 um                            kunit_defconfig
 x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
 x86_64                              defconfig
 x86_64                               rhel-8.3
 x86_64                      rhel-8.3-kbuiltin
 x86_64                                  kexec
 
 clang tested configs:
-x86_64               randconfig-b001-20210630
+x86_64               randconfig-b001-20210701
 x86_64               randconfig-a012-20210630
 x86_64               randconfig-a015-20210630
 x86_64               randconfig-a016-20210630
@@ -124,5 +128,5 @@ x86_64               randconfig-a014-20210630
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
 https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============4645415354006904386==--
+--===============1561765255922705662==--
 
