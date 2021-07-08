@@ -1,184 +1,216 @@
-Content-Type: multipart/mixed; boundary="===============9130009520151227043=="
+Content-Type: multipart/mixed; boundary="===============8035933488607930416=="
 MIME-Version: 1.0
-From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
- 7570e1f151ada42f46d385c0e67940fe1e732804
-Date: Wed, 07 Jul 2021 09:09:49 +0800
-Message-ID: <60e4fedd.KeUF+gcntEGUCndG%lkp@intel.com>
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] Re: [PATCH 2/3] ACPICA: MADT: Add LoongArch APICs support
+Date: Thu, 08 Jul 2021 21:35:28 +0000
+Message-ID: <BYAPR11MB3256468A574CA349AB8D1F0087199@BYAPR11MB3256.namprd11.prod.outlook.com>
+In-Reply-To: 20210705124206.1228958-3-chenhuacai@loongson.cn
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============9130009520151227043==
+--===============8035933488607930416==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
-m.git bleeding-edge
-branch HEAD: 7570e1f151ada42f46d385c0e67940fe1e732804  Merge branch 'pm-dom=
-ains' into linux-next
+For legal reasons, we can't pre-release any upcoming ACPI spec changes in A=
+CPICA.
 
-elapsed time: 727m
+-----Original Message-----
+From: Huacai Chen <chenhuacai(a)loongson.cn> =
 
-configs tested: 147
-configs skipped: 3
+Sent: Monday, July 05, 2021 5:42 AM
+To: Rafael J . Wysocki <rjw(a)rjwysocki.net>; Len Brown <lenb(a)kernel.org>=
+; Moore, Robert <robert.moore(a)intel.com>; Erik Kaneda <erik.kaneda(a)inte=
+l.com>
+Cc: linux-acpi(a)vger.kernel.org; devel(a)acpica.org; Xuefeng Li <lixuefeng=
+(a)loongson.cn>; Jiaxun Yang <jiaxun.yang(a)flygoat.com>; Huacai Chen <chen=
+huacai(a)loongson.cn>; Jianmin Lv <lvjianmin(a)loongson.cn>
+Subject: [PATCH 2/3] ACPICA: MADT: Add LoongArch APICs support
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+LoongArch-specific interrupt controllers (similar to APIC) are added in the=
+ next revision of ACPI Specification (current revision is 6.4), which inclu=
+ding CORE_PIC (CPUINTC), LIO_PIC (LIOINTC), EIO_PIC (EIOINTC), HT_PIC (HTVE=
+CINTC), BIO_PIC (PCHINTC), LPC_PIC (PCHLPC) and MSI_PIC (PCHMSI). This patc=
+h add their definition and handlings.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-ia64                             allmodconfig
-x86_64                    rhel-8.3-kselftests
-ia64                             allyesconfig
-powerpc                      ppc6xx_defconfig
-mips                 decstation_r4k_defconfig
-sh                           se7206_defconfig
-m68k                       bvme6000_defconfig
-ia64                      gensparse_defconfig
-powerpc                     tqm8560_defconfig
-sh                        sh7757lcr_defconfig
-powerpc                 mpc85xx_cds_defconfig
-arm                         shannon_defconfig
-sh                          rsk7264_defconfig
-m68k                            q40_defconfig
-x86_64                           alldefconfig
-s390                       zfcpdump_defconfig
-powerpc                 xes_mpc85xx_defconfig
-powerpc                     tqm5200_defconfig
-mips                          ath25_defconfig
-sh                           se7619_defconfig
-arm                          pxa168_defconfig
-powerpc                    adder875_defconfig
-arc                    vdk_hs38_smp_defconfig
-powerpc                     pseries_defconfig
-mips                        bcm47xx_defconfig
-mips                           ip32_defconfig
-powerpc                     akebono_defconfig
-mips                     cu1830-neo_defconfig
-arc                              alldefconfig
-sh                     magicpanelr2_defconfig
-powerpc                    ge_imp3a_defconfig
-xtensa                       common_defconfig
-arm                      jornada720_defconfig
-arm                    vt8500_v6_v7_defconfig
-powerpc                 mpc8313_rdb_defconfig
-mips                      bmips_stb_defconfig
-arm                             rpc_defconfig
-s390                             alldefconfig
-sh                          kfr2r09_defconfig
-sh                   secureedge5410_defconfig
-sh                        apsh4ad0a_defconfig
-arm                            mps2_defconfig
-arm                             pxa_defconfig
-arm                       omap2plus_defconfig
-powerpc                 mpc832x_rdb_defconfig
-powerpc                     tqm8555_defconfig
-powerpc                      acadia_defconfig
-powerpc                      chrp32_defconfig
-m68k                          atari_defconfig
-mips                           xway_defconfig
-arm                      footbridge_defconfig
-sh                             sh03_defconfig
-xtensa                    smp_lx200_defconfig
-i386                                defconfig
-arm                        vexpress_defconfig
-mips                            e55_defconfig
-sh                            hp6xx_defconfig
-powerpc                   motionpro_defconfig
-sh                           se7750_defconfig
-microblaze                      mmu_defconfig
-m68k                        stmark2_defconfig
-arm                            lart_defconfig
-powerpc                    mvme5100_defconfig
-sh                         microdev_defconfig
-sh                           se7722_defconfig
-mips                       bmips_be_defconfig
-powerpc                     mpc5200_defconfig
-alpha                            alldefconfig
-powerpc                 linkstation_defconfig
-arm                           viper_defconfig
-ia64                          tiger_defconfig
-arm                            dove_defconfig
-x86_64                            allnoconfig
-ia64                                defconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20210706
-i386                 randconfig-a006-20210706
-i386                 randconfig-a001-20210706
-i386                 randconfig-a003-20210706
-i386                 randconfig-a005-20210706
-i386                 randconfig-a002-20210706
-x86_64               randconfig-a012-20210706
-x86_64               randconfig-a011-20210706
-x86_64               randconfig-a013-20210706
-x86_64               randconfig-a015-20210706
-x86_64               randconfig-a014-20210706
-x86_64               randconfig-a016-20210706
-i386                 randconfig-a012-20210706
-i386                 randconfig-a011-20210706
-i386                 randconfig-a015-20210706
-i386                 randconfig-a016-20210706
-i386                 randconfig-a014-20210706
-i386                 randconfig-a013-20210706
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-um                            kunit_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-b001-20210706
-x86_64               randconfig-a002-20210706
-x86_64               randconfig-a003-20210706
-x86_64               randconfig-a001-20210706
-x86_64               randconfig-a004-20210706
-x86_64               randconfig-a005-20210706
-x86_64               randconfig-a006-20210706
-
+Reference: https://mantis.uefi.org/mantis/view.php?id=3D2203
+Signed-off-by: Jianmin Lv <lvjianmin(a)loongson.cn>
+Signed-off-by: Huacai Chen <chenhuacai(a)loongson.cn>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============9130009520151227043==--
+ drivers/acpi/tables.c |  10 ++++
+ include/acpi/actbl2.h | 123 +++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 132 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/acpi/tables.c b/drivers/acpi/tables.c index a37a1532a5=
+75..5943ae4f76bb 100644
+--- a/drivers/acpi/tables.c
++++ b/drivers/acpi/tables.c
+@@ -208,6 +208,16 @@ void acpi_table_print_madt_entry(struct acpi_subtable_=
+header *header)
+ 		}
+ 		break;
+ =
+
++	case ACPI_MADT_TYPE_CORE_PIC:
++		{
++			struct acpi_madt_core_pic *p =3D
++			    (struct acpi_madt_core_pic *)header;
++			pr_debug("CORE PIC (processor_id[0x%02x] core_id[0x%02x] %s)\n",
++				 p->processor_id, p->core_id,
++				 (p->flags & ACPI_MADT_ENABLED) ? "enabled" : "disabled");
++		}
++		break;
++
+ 	default:
+ 		pr_warn("Found unsupported MADT entry (type =3D 0x%x)\n",
+ 			header->type);
+diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h index 2069ac38a4=
+e2..fd6d0b440c4b 100644
+--- a/include/acpi/actbl2.h
++++ b/include/acpi/actbl2.h
+@@ -571,7 +571,14 @@ enum acpi_madt_type {
+ 	ACPI_MADT_TYPE_GENERIC_REDISTRIBUTOR =3D 14,
+ 	ACPI_MADT_TYPE_GENERIC_TRANSLATOR =3D 15,
+ 	ACPI_MADT_TYPE_MULTIPROC_WAKEUP =3D 16,
+-	ACPI_MADT_TYPE_RESERVED =3D 17	/* 17 and greater are reserved */
++	ACPI_MADT_TYPE_CORE_PIC =3D 17,
++	ACPI_MADT_TYPE_LIO_PIC =3D 18,
++	ACPI_MADT_TYPE_HT_PIC =3D 19,
++	ACPI_MADT_TYPE_EIO_PIC =3D 20,
++	ACPI_MADT_TYPE_MSI_PIC =3D 21,
++	ACPI_MADT_TYPE_BIO_PIC =3D 22,
++	ACPI_MADT_TYPE_LPC_PIC =3D 23,
++	ACPI_MADT_TYPE_RESERVED =3D 24	/* 24 and greater are reserved */
+ };
+ =
+
+ /*
+@@ -801,6 +808,120 @@ struct acpi_madt_multiproc_wakeup_mailbox {
+ =
+
+ #define ACPI_MP_WAKE_COMMAND_WAKEUP    1
+ =
+
++/* Values for Version field above */
++
++enum acpi_madt_core_pic_version {
++	ACPI_MADT_CORE_PIC_VERSION_NONE =3D 0,
++	ACPI_MADT_CORE_PIC_VERSION_V1 =3D 1,
++	ACPI_MADT_CORE_PIC_VERSION_RESERVED =3D 2	/* 2 and greater are reserved */
++};
++
++enum acpi_madt_lio_pic_version {
++	ACPI_MADT_LIO_PIC_VERSION_NONE =3D 0,
++	ACPI_MADT_LIO_PIC_VERSION_V1 =3D 1,
++	ACPI_MADT_LIO_PIC_VERSION_RESERVED =3D 2	/* 2 and greater are reserved */
++};
++
++enum acpi_madt_eio_pic_version {
++	ACPI_MADT_EIO_PIC_VERSION_NONE =3D 0,
++	ACPI_MADT_EIO_PIC_VERSION_V1 =3D 1,
++	ACPI_MADT_EIO_PIC_VERSION_RESERVED =3D 2	/* 2 and greater are reserved */
++};
++
++enum acpi_madt_ht_pic_version {
++	ACPI_MADT_HT_PIC_VERSION_NONE =3D 0,
++	ACPI_MADT_HT_PIC_VERSION_V1 =3D 1,
++	ACPI_MADT_HT_PIC_VERSION_RESERVED =3D 2	/* 2 and greater are reserved */
++};
++
++enum acpi_madt_bio_pic_version {
++	ACPI_MADT_BIO_PIC_VERSION_NONE =3D 0,
++	ACPI_MADT_BIO_PIC_VERSION_V1 =3D 1,
++	ACPI_MADT_BIO_PIC_VERSION_RESERVED =3D 2	/* 2 and greater are reserved */
++};
++
++enum acpi_madt_msi_pic_version {
++	ACPI_MADT_MSI_PIC_VERSION_NONE =3D 0,
++	ACPI_MADT_MSI_PIC_VERSION_V1 =3D 1,
++	ACPI_MADT_MSI_PIC_VERSION_RESERVED =3D 2	/* 2 and greater are reserved */
++};
++
++enum acpi_madt_lpc_pic_version {
++	ACPI_MADT_LPC_PIC_VERSION_NONE =3D 0,
++	ACPI_MADT_LPC_PIC_VERSION_V1 =3D 1,
++	ACPI_MADT_LPC_PIC_VERSION_RESERVED =3D 2	/* 2 and greater are reserved */
++};
++
++/* Core Interrupt Controller */
++
++struct acpi_madt_core_pic {
++	struct acpi_subtable_header header;
++	u32 processor_id;
++	u32 core_id;
++	u32 flags;
++	u8 version;
++};
++
++/* Legacy I/O Interrupt Controller */
++
++struct acpi_madt_lio_pic {
++	struct acpi_subtable_header header;
++	u64 address;
++	u16 size;
++	u8 cascade[2];
++	u32 cascade_map[2];
++	u8 version;
++};
++
++/* Extend I/O Interrupt Controller */
++
++struct acpi_madt_eio_pic {
++	struct acpi_subtable_header header;
++	u8 cascade;
++	u8 version;
++};
++
++/* HT Interrupt Controller */
++
++struct acpi_madt_ht_pic {
++	struct acpi_subtable_header header;
++	u64 address;
++	u16 size;
++	u8 cascade[8];
++	u8 version;
++};
++
++/* Bridge I/O Interrupt Controller */
++
++struct acpi_madt_bio_pic {
++	struct acpi_subtable_header header;
++	u64 address;
++	u16 size;
++	u16 id;
++	u16 gsi_base;
++	u8 version;
++};
++
++/* MSI Interrupt Controller */
++
++struct acpi_madt_msi_pic {
++	struct acpi_subtable_header header;
++	u64 msg_address;
++	u32 start;
++	u32 count;
++	u8 version;
++};
++
++/* LPC Interrupt Controller */
++
++struct acpi_madt_lpc_pic {
++	struct acpi_subtable_header header;
++	u64 address;
++	u16 size;
++	u8 cascade;
++	u8 version;
++};
++
+ /*
+  * Common flags fields for MADT subtables
+  */
+--
+2.27.0
+
+--===============8035933488607930416==--
 
