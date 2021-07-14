@@ -1,58 +1,71 @@
-Content-Type: multipart/mixed; boundary="===============7154678714820284269=="
+Content-Type: multipart/mixed; boundary="===============1830815070989910145=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] Re: [PATCH] ACPICA: macros should not use a trailing semicolon
-Date: Tue, 13 Jul 2021 16:05:16 +0000
-Message-ID: <BYAPR11MB3256BFA3E0749F609239FF4587149@BYAPR11MB3256.namprd11.prod.outlook.com>
-In-Reply-To: 20210711064552.59735-1-denghuilong@cdjrlc.com
+From: Rafael J. Wysocki <rafael at kernel.org>
+Subject: [Devel] Re: [net-next: PATCH v3 1/1] ACPI: SPCR: Add new
+ 16550-compatible Serial Port Subtype
+Date: Wed, 14 Jul 2021 14:27:01 +0200
+Message-ID: <CAJZ5v0jegOF85Zvo8Oyio9cSvb_WfUCG0oNsXzWHSCTi151u0A@mail.gmail.com>
+In-Reply-To: 20210621200459.3558199-1-mw@semihalf.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7154678714820284269==
+--===============1830815070989910145==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Got it, thanks.
-Bob
+Sorry for the delay.
 
+On Mon, Jun 21, 2021 at 10:05 PM Marcin Wojtas <mw(a)semihalf.com> wrote:
+>
+> The Microsoft Debug Port Table 2 (DBG2) specification revision
+> May 31, 2017 adds support for 16550-compatible Serial Port
+> Subtype with parameters defined in Generic Address Structure (GAS) [1]
+>
+> Add its support in SPCR parsing routine.
+>
+> [1] https://docs.microsoft.com/en-us/windows-hardware/drivers/bringup/acp=
+i-debug-port-table
+>
+> Signed-off-by: Marcin Wojtas <mw(a)semihalf.com>
+> ---
+>  include/acpi/actbl1.h | 1 +
+>  drivers/acpi/spcr.c   | 1 +
+>  2 files changed, 2 insertions(+)
+>
+> diff --git a/include/acpi/actbl1.h b/include/acpi/actbl1.h
+> index ce59903c2695..f746012eba8d 100644
+> --- a/include/acpi/actbl1.h
+> +++ b/include/acpi/actbl1.h
 
------Original Message-----
-From: Huilong Deng <denghuilong(a)cdjrlc.com> =
+This is an ACPICA header, so the first part of the patch should go in
+via the ACPICA upstream repository.
 
-Sent: Saturday, July 10, 2021 11:46 PM
-To: Moore, Robert <robert.moore(a)intel.com>; erik.kaneda(a)intel.com; Wyso=
-cki, Rafael J <rafael.j.wysocki(a)intel.com>; lenb(a)kernel.org
-Cc: linux-acpi(a)vger.kernel.org; devel(a)acpica.org; linux-kernel(a)vger.k=
-ernel.org; Huilong Deng <denghuilong(a)cdjrlc.com>
-Subject: [PATCH] ACPICA: macros should not use a trailing semicolon
+Can you please resend this as two patches to make it easier to process it?
 
-Macros should not use a trailing semicolon.
-
-Signed-off-by: Huilong Deng <denghuilong(a)cdjrlc.com>
----
- include/acpi/acoutput.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/acpi/acoutput.h b/include/acpi/acoutput.h index 1b4c45=
-815695..5a3875744678 100644
---- a/include/acpi/acoutput.h
-+++ b/include/acpi/acoutput.h
-@@ -415,7 +415,7 @@
- /* Conditional execution */
- =
-
- #define ACPI_DEBUG_EXEC(a)              a
--#define ACPI_DEBUG_ONLY_MEMBERS(a)      a;
-+#define ACPI_DEBUG_ONLY_MEMBERS(a)      a
- #define _VERBOSE_STRUCTURES
- =
-
- /* Various object display routines for debug */
---
-2.32.0
-
-
-
---===============7154678714820284269==--
+> @@ -498,6 +498,7 @@ struct acpi_dbg2_device {
+>  #define ACPI_DBG2_ARM_SBSA_GENERIC  0x000E
+>  #define ACPI_DBG2_ARM_DCC           0x000F
+>  #define ACPI_DBG2_BCM2835           0x0010
+> +#define ACPI_DBG2_16550_WITH_GAS    0x0012
+>
+>  #define ACPI_DBG2_1394_STANDARD     0x0000
+>
+> diff --git a/drivers/acpi/spcr.c b/drivers/acpi/spcr.c
+> index 88460bacd5ae..25c2d0be953e 100644
+> --- a/drivers/acpi/spcr.c
+> +++ b/drivers/acpi/spcr.c
+> @@ -136,6 +136,7 @@ int __init acpi_parse_spcr(bool enable_earlycon, bool=
+ enable_console)
+>                 break;
+>         case ACPI_DBG2_16550_COMPATIBLE:
+>         case ACPI_DBG2_16550_SUBSET:
+> +       case ACPI_DBG2_16550_WITH_GAS:
+>                 uart =3D "uart";
+>                 break;
+>         default:
+> --
+> 2.29.0
+>
+--===============1830815070989910145==--
 
