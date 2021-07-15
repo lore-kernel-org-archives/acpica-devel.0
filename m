@@ -1,158 +1,95 @@
-Content-Type: multipart/mixed; boundary="===============8056758116738845577=="
+Content-Type: multipart/mixed; boundary="===============2409870846524423270=="
 MIME-Version: 1.0
 From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] Re: [PATCH 3/3] ACPICA: Events: Support fixed pcie wake event
-Date: Wed, 14 Jul 2021 14:51:40 +0000
-Message-ID: <BYAPR11MB3256FDB80037FF91B35B2A2587139@BYAPR11MB3256.namprd11.prod.outlook.com>
-In-Reply-To: 20210705130549.1232418-1-chenhuacai@loongson.cn
+Subject: [Devel] Re: [PATCH 1/2] ACPICA: Add new DBG2 Serial Port Subtypes
+Date: Thu, 15 Jul 2021 14:07:28 +0000
+Message-ID: <BYAPR11MB3256CACCFB4A08B5D450D3A087129@BYAPR11MB3256.namprd11.prod.outlook.com>
+In-Reply-To: 20210714214346.1397942-2-mw@semihalf.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8056758116738845577==
+--===============2409870846524423270==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-We'll probably take this patch.
-
-Rafael, does this look OK?
-thanks,
-Bob
-
+This was already reported (with a patch that we've already merged) by semih=
+alf-wojtas-marcin
 
 -----Original Message-----
-From: Huacai Chen <chenhuacai(a)loongson.cn> =
+From: Marcin Wojtas <mw(a)semihalf.com> =
 
-Sent: Monday, July 05, 2021 6:06 AM
-To: Rafael J . Wysocki <rjw(a)rjwysocki.net>; Len Brown <lenb(a)kernel.org>=
-; Moore, Robert <robert.moore(a)intel.com>; Erik Kaneda <erik.kaneda(a)inte=
-l.com>
-Cc: linux-acpi(a)vger.kernel.org; devel(a)acpica.org; Xuefeng Li <lixuefeng=
-(a)loongson.cn>; Jiaxun Yang <jiaxun.yang(a)flygoat.com>; Huacai Chen <chen=
-huacai(a)loongson.cn>; Jianmin Lv <lvjianmin(a)loongson.cn>
-Subject: [PATCH 3/3] ACPICA: Events: Support fixed pcie wake event
+Sent: Wednesday, July 14, 2021 2:44 PM
+To: linux-kernel(a)vger.kernel.org; linux-acpi(a)vger.kernel.org; devel(a)a=
+cpica.org
+Cc: jaz(a)semihalf.com; gjb(a)semihalf.com; upstream(a)semihalf.com; Samer.=
+El-Haj-Mahmoud(a)arm.com; jon(a)solid-run.com; tn(a)semihalf.com; rjw(a)rjw=
+ysocki.net; lenb(a)kernel.org; Moore, Robert <robert.moore(a)intel.com>; Ma=
+rcin Wojtas <mw(a)semihalf.com>
+Subject: [PATCH 1/2] ACPICA: Add new DBG2 Serial Port Subtypes
 
-Some chipsets (such as Loongson's LS7A) support fixed pcie wake event which=
- is defined in the PM1 block(related description can be found in
-4.8.4.1.1 PM1 Status Registers, 4.8.4.2.1 PM1 Control Registers and
-5.2.9 Fixed ACPI Description Table (FADT)), so we add code to handle it.
+ACPICA commit d95c7d206b5836c7770e8e9cd613859887fded8f
 
-ACPI Spec 6.4 link:
-https://uefi.org/specifications/ACPI/6.4/
+The Microsoft Debug Port Table 2 (DBG2) specification revision September 21=
+, 2020 comprises additional Serial Port Subtypes [1].
+Reflect that in the actbl1.h header file.
 
-Signed-off-by: Jianmin Lv <lvjianmin(a)loongson.cn>
-Signed-off-by: Huacai Chen <chenhuacai(a)loongson.cn>
+[1] https://docs.microsoft.com/en-us/windows-hardware/drivers/bringup/acpi-=
+debug-port-table
+
+Link: https://github.com/acpica/acpica/commit/d95c7d20
+Signed-off-by: Marcin Wojtas <mw(a)semihalf.com>
 ---
- drivers/acpi/acpica/evevent.c  | 17 +++++++++++------  drivers/acpi/acpica=
-/hwsleep.c  | 12 ++++++++++++  drivers/acpi/acpica/utglobal.c |  4 ++++
- include/acpi/actypes.h         |  3 ++-
- 4 files changed, 29 insertions(+), 7 deletions(-)
+ include/acpi/actbl1.h | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/acpi/acpica/evevent.c b/drivers/acpi/acpica/evevent.c =
-index 35385148fedb..2340986de37b 100644
---- a/drivers/acpi/acpica/evevent.c
-+++ b/drivers/acpi/acpica/evevent.c
-@@ -140,9 +140,9 @@ static acpi_status acpi_ev_fixed_event_initialize(void)
+diff --git a/include/acpi/actbl1.h b/include/acpi/actbl1.h index ef2872dea0=
+1c..7bbb3e2bd33f 100644
+--- a/include/acpi/actbl1.h
++++ b/include/acpi/actbl1.h
+@@ -482,7 +482,7 @@ struct acpi_csrt_descriptor {
+  * DBG2 - Debug Port Table 2
+  *        Version 0 (Both main table and subtables)
+  *
+- * Conforms to "Microsoft Debug Port Table 2 (DBG2)", December 10, 2015
++ * Conforms to "Microsoft Debug Port Table 2 (DBG2)", September 21, =
+
++ 2020
+  *
+  *************************************************************************=
+*****/
  =
 
- 		if (acpi_gbl_fixed_event_info[i].enable_register_id !=3D 0xFF) {
- 			status =3D
--			    acpi_write_bit_register(acpi_gbl_fixed_event_info
--						    [i].enable_register_id,
--						    ACPI_DISABLE_EVENT);
-+			    acpi_write_bit_register(acpi_gbl_fixed_event_info[i].enable_registe=
-r_id,
-+						    (i =3D=3D ACPI_EVENT_PCIE_WAKE) ?
-+						    ACPI_ENABLE_EVENT : ACPI_DISABLE_EVENT);
- 			if (ACPI_FAILURE(status)) {
- 				return (status);
- 			}
-@@ -185,6 +185,11 @@ u32 acpi_ev_fixed_event_detect(void)
- 		return (int_status);
- 	}
+@@ -532,11 +532,24 @@ struct acpi_dbg2_device {
  =
 
-+	if (fixed_enable & ACPI_BITMASK_PCIEXP_WAKE_DISABLE)
-+		fixed_enable &=3D ~ACPI_BITMASK_PCIEXP_WAKE_DISABLE;
-+	else
-+		fixed_enable |=3D ACPI_BITMASK_PCIEXP_WAKE_DISABLE;
-+
- 	ACPI_DEBUG_PRINT((ACPI_DB_INTERRUPTS,
- 			  "Fixed Event Block: Enable %08X Status %08X\n",
- 			  fixed_enable, fixed_status));
-@@ -248,9 +253,9 @@ static u32 acpi_ev_fixed_event_dispatch(u32 event)
- 	 * and disable the event to prevent further interrupts.
- 	 */
- 	if (!acpi_gbl_fixed_event_handlers[event].handler) {
--		(void)acpi_write_bit_register(acpi_gbl_fixed_event_info[event].
--					      enable_register_id,
--					      ACPI_DISABLE_EVENT);
-+		(void)acpi_write_bit_register(acpi_gbl_fixed_event_info[event].enable_re=
-gister_id,
-+					      event =3D=3D ACPI_EVENT_PCIE_WAKE ?
-+					      ACPI_ENABLE_EVENT : ACPI_DISABLE_EVENT);
+ #define ACPI_DBG2_16550_COMPATIBLE  0x0000
+ #define ACPI_DBG2_16550_SUBSET      0x0001
++#define ACPI_DBG2_MAX311XE_SPI      0x0002
+ #define ACPI_DBG2_ARM_PL011         0x0003
++#define ACPI_DBG2_MSM8X60           0x0004
++#define ACPI_DBG2_16550_NVIDIA      0x0005
++#define ACPI_DBG2_TI_OMAP           0x0006
++#define ACPI_DBG2_APM88XXXX         0x0008
++#define ACPI_DBG2_MSM8974           0x0009
++#define ACPI_DBG2_SAM5250           0x000A
++#define ACPI_DBG2_INTEL_USIF        0x000B
++#define ACPI_DBG2_IMX6              0x000C
+ #define ACPI_DBG2_ARM_SBSA_32BIT    0x000D
+ #define ACPI_DBG2_ARM_SBSA_GENERIC  0x000E
+ #define ACPI_DBG2_ARM_DCC           0x000F
+ #define ACPI_DBG2_BCM2835           0x0010
++#define ACPI_DBG2_SDM845_1_8432MHZ  0x0011
++#define ACPI_DBG2_16550_WITH_GAS    0x0012
++#define ACPI_DBG2_SDM845_7_372MHZ   0x0013
++#define ACPI_DBG2_INTEL_LPSS        0x0014
  =
 
- 		ACPI_ERROR((AE_INFO,
- 			    "No installed handler for fixed event - %s (%u), disabling", diff -=
--git a/drivers/acpi/acpica/hwsleep.c b/drivers/acpi/acpica/hwsleep.c index =
-14baa13bf848..7e7ea4c2e914 100644
---- a/drivers/acpi/acpica/hwsleep.c
-+++ b/drivers/acpi/acpica/hwsleep.c
-@@ -312,6 +312,18 @@ acpi_status acpi_hw_legacy_wake(u8 sleep_state)
- 				    [ACPI_EVENT_SLEEP_BUTTON].
- 				    status_register_id, ACPI_CLEAR_STATUS);
+ #define ACPI_DBG2_1394_STANDARD     0x0000
  =
 
-+	/* Enable pcie wake event if support */
-+	if ((acpi_gbl_FADT.flags & ACPI_FADT_PCI_EXPRESS_WAKE)) {
-+		(void)
-+		acpi_write_bit_register(acpi_gbl_fixed_event_info
-+				[ACPI_EVENT_PCIE_WAKE].
-+				enable_register_id, ACPI_DISABLE_EVENT);
-+		(void)
-+		acpi_write_bit_register(acpi_gbl_fixed_event_info
-+				[ACPI_EVENT_PCIE_WAKE].
-+				status_register_id, ACPI_CLEAR_STATUS);
-+	}
-+
- 	acpi_hw_execute_sleep_method(METHOD_PATHNAME__SST, ACPI_SST_WORKING);
- 	return_ACPI_STATUS(status);
- }
-diff --git a/drivers/acpi/acpica/utglobal.c b/drivers/acpi/acpica/utglobal.=
-c index 59a48371a7bc..16f7a206fc6d 100644
---- a/drivers/acpi/acpica/utglobal.c
-+++ b/drivers/acpi/acpica/utglobal.c
-@@ -186,6 +186,10 @@ struct acpi_fixed_event_info acpi_gbl_fixed_event_info=
-[ACPI_NUM_FIXED_EVENTS] =3D
- 					ACPI_BITREG_RT_CLOCK_ENABLE,
- 					ACPI_BITMASK_RT_CLOCK_STATUS,
- 					ACPI_BITMASK_RT_CLOCK_ENABLE},
-+	/* ACPI_EVENT_PCIE_WAKE	    */ {ACPI_BITREG_PCIEXP_WAKE_STATUS,
-+					ACPI_BITREG_PCIEXP_WAKE_DISABLE,
-+					ACPI_BITMASK_PCIEXP_WAKE_STATUS,
-+					ACPI_BITMASK_PCIEXP_WAKE_DISABLE},
- };
- #endif				/* !ACPI_REDUCED_HARDWARE */
- =
-
-diff --git a/include/acpi/actypes.h b/include/acpi/actypes.h index 92c71dfc=
-e0d5..0b6c72033487 100644
---- a/include/acpi/actypes.h
-+++ b/include/acpi/actypes.h
-@@ -714,7 +714,8 @@ typedef u32 acpi_event_type;
- #define ACPI_EVENT_POWER_BUTTON         2
- #define ACPI_EVENT_SLEEP_BUTTON         3
- #define ACPI_EVENT_RTC                  4
--#define ACPI_EVENT_MAX                  4
-+#define ACPI_EVENT_PCIE_WAKE            5
-+#define ACPI_EVENT_MAX                  5
- #define ACPI_NUM_FIXED_EVENTS           ACPI_EVENT_MAX + 1
- =
-
- /*
 --
-2.27.0
+2.29.0
 
---===============8056758116738845577==--
+--===============2409870846524423270==--
 
