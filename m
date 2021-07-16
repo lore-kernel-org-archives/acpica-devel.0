@@ -1,128 +1,161 @@
-Content-Type: multipart/mixed; boundary="===============0859417450989717103=="
+Content-Type: multipart/mixed; boundary="===============1138792162711681423=="
 MIME-Version: 1.0
 From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [PATCH 1/3] ACPI: Add LoongArch support for
- ACPI_PROCESSOR/ACPI_NUMA
-Date: Fri, 16 Jul 2021 19:11:25 +0200
-Message-ID: <CAJZ5v0juBC5USF_t-kF7Npk7onXF6SkKvwechuUYiM2jzFuN3Q@mail.gmail.com>
-In-Reply-To: 407870af.c1bf.17aa87f94db.Coremail.chenhuacai@loongson.cn
+Subject: [Devel] Re: [PATCH v2 1/1] ACPI: utils: Fix reference counting in
+ for_each_acpi_dev_match()
+Date: Fri, 16 Jul 2021 19:27:20 +0200
+Message-ID: <CAJZ5v0jR5T2+EHXz_RqzMDxb0i9pDhQTDZomWe3po91A7Bb-xg@mail.gmail.com>
+In-Reply-To: d542bc45-6e52-dc12-69bf-76fa6dcaaf5e@gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0859417450989717103==
+--===============1138792162711681423==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 15, 2021 at 6:49 AM =E9=99=88=E5=8D=8E=E6=89=8D <chenhuacai(a)l=
-oongson.cn> wrote:
+On Wed, Jul 14, 2021 at 12:32 AM Daniel Scally <djrscally(a)gmail.com> wrot=
+e:
 >
-> Hi, Rafael,
+> Hi Andy - thanks for fixing this
 >
+> On 12/07/2021 19:21, Andy Shevchenko wrote:
+> > Currently it's possible to iterate over the dangling pointer in case th=
+e device
+> > suddenly disappears. This may happen becase callers put it at the end o=
+f a loop.
+> >
+> > Instead, let's move that call inside acpi_dev_get_next_match_dev().
+> >
+> > Fixes: 803abec64ef9 ("media: ipu3-cio2: Add cio2-bridge to ipu3-cio2 dr=
+iver")
+> > Fixes: bf263f64e804 ("media: ACPI / bus: Add acpi_dev_get_next_match_de=
+v() and helper macro")
+> > Fixes: edbd1bc4951e ("efi/dev-path-parser: Switch to use for_each_acpi_=
+dev_match()")
+> > Signed-off-by: Andy Shevchenko <andy.shevchenko(a)gmail.com>
 >
-> &gt; -----=E5=8E=9F=E5=A7=8B=E9=82=AE=E4=BB=B6-----
-> &gt; =E5=8F=91=E4=BB=B6=E4=BA=BA: "Rafael J. Wysocki" <rafael(a)kernel.or=
-g>
-> &gt; =E5=8F=91=E9=80=81=E6=97=B6=E9=97=B4: 2021-07-14 20:30:33 (=E6=98=9F=
-=E6=9C=9F=E4=B8=89)
-> &gt; =E6=94=B6=E4=BB=B6=E4=BA=BA: "Huacai Chen" <chenhuacai(a)loongson.cn>
-> &gt; =E6=8A=84=E9=80=81: "Rafael J . Wysocki" <rjw(a)rjwysocki.net>, "Len=
- Brown" <lenb(a)kernel.org>, "Robert Moore" <robert.moore(a)intel.com>, "Er=
-ik Kaneda" <erik.kaneda(a)intel.com>, "ACPI Devel Maling List" <linux-acpi(=
-a)vger.kernel.org>, "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel=
-(a)acpica.org>, "Xuefeng Li" <lixuefeng(a)loongson.cn>, "Jiaxun Yang" <jiax=
-un.yang(a)flygoat.com>
-> &gt; =E4=B8=BB=E9=A2=98: Re: [PATCH 1/3] ACPI: Add LoongArch support for =
-ACPI_PROCESSOR/ACPI_NUMA
-> &gt;
-> &gt; On Mon, Jul 5, 2021 at 2:41 PM Huacai Chen <chenhuacai(a)loongson.cn=
-> wrote:
-> &gt; &gt;
-> &gt; &gt; We are preparing to add new Loongson (based on LoongArch, not M=
-IPS)
-> &gt; &gt; support. LoongArch use ACPI other than DT as its boot protocol,=
- so
-> &gt; &gt; add its support for ACPI_PROCESSOR/ACPI_NUMA.
-> &gt; &gt;
-> &gt; &gt; Signed-off-by: Huacai Chen <chenhuacai(a)loongson.cn>
-> &gt; &gt; ---
-> &gt; &gt;  drivers/acpi/Kconfig      | 4 ++--
-> &gt; &gt;  drivers/acpi/numa/Kconfig | 2 +-
-> &gt; &gt;  drivers/acpi/numa/srat.c  | 2 +-
-> &gt; &gt;  include/linux/acpi.h      | 2 +-
-> &gt; &gt;  4 files changed, 5 insertions(+), 5 deletions(-)
-> &gt; &gt;
-> &gt; &gt; diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
-> &gt; &gt; index fe0bb6277e4d..90afa44efcba 100644
-> &gt; &gt; --- a/drivers/acpi/Kconfig
-> &gt; &gt; +++ b/drivers/acpi/Kconfig
-> &gt; &gt; @@ -280,9 +280,9 @@ config ACPI_CPPC_LIB
-> &gt; &gt;
-> &gt; &gt;  config ACPI_PROCESSOR
-> &gt; &gt;         tristate "Processor"
-> &gt; &gt; -       depends on X86 || IA64 || ARM64
-> &gt; &gt; +       depends on X86 || IA64 || ARM64 || LOONGARCH
-> &gt; &gt;         select ACPI_PROCESSOR_IDLE
-> &gt; &gt; -       select ACPI_CPU_FREQ_PSS if X86 || IA64
-> &gt; &gt; +       select ACPI_CPU_FREQ_PSS if X86 || IA64 || LOONGARCH
-> &gt; &gt;         default y
-> &gt; &gt;         help
-> &gt; &gt;           This driver adds support for the ACPI Processor packa=
-ge. It is required
-> &gt; &gt; diff --git a/drivers/acpi/numa/Kconfig b/drivers/acpi/numa/Kcon=
-fig
-> &gt; &gt; index fcf2e556d69d..39b1f34c21df 100644
-> &gt; &gt; --- a/drivers/acpi/numa/Kconfig
-> &gt; &gt; +++ b/drivers/acpi/numa/Kconfig
-> &gt; &gt; @@ -2,7 +2,7 @@
-> &gt; &gt;  config ACPI_NUMA
-> &gt; &gt;         bool "NUMA support"
-> &gt; &gt;         depends on NUMA
-> &gt; &gt; -       depends on (X86 || IA64 || ARM64)
-> &gt; &gt; +       depends on (X86 || IA64 || ARM64 || LOONGARCH)
-> &gt; &gt;         default y if IA64 || ARM64
-> &gt; &gt;
-> &gt; &gt;  config ACPI_HMAT
-> &gt; &gt; diff --git a/drivers/acpi/numa/srat.c b/drivers/acpi/numa/srat.c
-> &gt; &gt; index 6021a1013442..b8795fc49097 100644
-> &gt; &gt; --- a/drivers/acpi/numa/srat.c
-> &gt; &gt; +++ b/drivers/acpi/numa/srat.c
-> &gt; &gt; @@ -206,7 +206,7 @@ int __init srat_disabled(void)
-> &gt; &gt;         return acpi_numa &lt; 0;
-> &gt; &gt;  }
-> &gt; &gt;
-> &gt; &gt; -#if defined(CONFIG_X86) || defined(CONFIG_ARM64)
-> &gt; &gt; +#if defined(CONFIG_X86) || defined(CONFIG_ARM64) || defined(CO=
-NFIG_LOONGARCH)
-> &gt; &gt;  /*
-> &gt; &gt;   * Callback for SLIT parsing.  pxm_to_node() returns NUMA_NO_N=
-ODE for
-> &gt; &gt;   * I/O localities since SRAT does not list them.  I/O localiti=
-es are
-> &gt; &gt; diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-> &gt; &gt; index 6bb36fd6ba31..3ba8511cbede 100644
-> &gt; &gt; --- a/include/linux/acpi.h
-> &gt; &gt; +++ b/include/linux/acpi.h
-> &gt; &gt; @@ -249,7 +249,7 @@ void acpi_table_print_madt_entry (struct ac=
-pi_subtable_header *madt);
-> &gt; &gt;  /* the following numa functions are architecture-dependent */
-> &gt; &gt;  void acpi_numa_slit_init (struct acpi_table_slit *slit);
-> &gt; &gt;
-> &gt; &gt; -#if defined(CONFIG_X86) || defined(CONFIG_IA64)
-> &gt; &gt; +#if defined(CONFIG_X86) || defined(CONFIG_IA64) || defined(CON=
-FIG_LOONGARCH)
-> &gt; &gt;  void acpi_numa_processor_affinity_init (struct acpi_srat_cpu_a=
-ffinity *pa);
-> &gt; &gt;  #else
-> &gt; &gt;  static inline void
-> &gt; &gt; --
-> &gt;
-> &gt; Does this patch alone make sense without the other two in the series?
-> &gt; If so, I can queue it up for 5.15, so please let me know.
-> Yes, this patch has no dependency with other two.
+> Reviewed-by: Daniel Scally <djrscally(a)gmail.com>
 
-OK, applied as 5.15 material.
+Applied as 5.14-rc material, thanks!
 
-Thanks!
---===============0859417450989717103==--
+> > ---
+> > v2:
+> > - rebased on top of v5.14-rc1 and hence added fix for EFI code
+> > - added kernel documentation update to point out that
+> >   acpi_dev_get_next_match_dev() drops a reference on the given
+> >   ACPI device (Rafael)
+> >
+> >  drivers/acpi/utils.c                       | 7 +++----
+> >  drivers/firmware/efi/dev-path-parser.c     | 1 -
+> >  drivers/media/pci/intel/ipu3/cio2-bridge.c | 6 ++----
+> >  include/acpi/acpi_bus.h                    | 5 -----
+> >  4 files changed, 5 insertions(+), 14 deletions(-)
+> >
+> > diff --git a/drivers/acpi/utils.c b/drivers/acpi/utils.c
+> > index e7ddd281afff..d5cedffeeff9 100644
+> > --- a/drivers/acpi/utils.c
+> > +++ b/drivers/acpi/utils.c
+> > @@ -860,11 +860,9 @@ EXPORT_SYMBOL(acpi_dev_present);
+> >   * Return the next match of ACPI device if another matching device was=
+ present
+> >   * at the moment of invocation, or NULL otherwise.
+> >   *
+> > - * FIXME: The function does not tolerate the sudden disappearance of @=
+adev, e.g.
+> > - * in the case of a hotplug event. That said, the caller should ensure=
+ that
+> > - * this will never happen.
+> > - *
+> >   * The caller is responsible for invoking acpi_dev_put() on the return=
+ed device.
+> > + * On the other hand the function invokes  acpi_dev_put() on the given=
+ @adev
+> > + * assuming that its reference counter had been increased beforehand.
+> >   *
+> >   * See additional information in acpi_dev_present() as well.
+> >   */
+> > @@ -880,6 +878,7 @@ acpi_dev_get_next_match_dev(struct acpi_device *ade=
+v, const char *hid, const cha
+> >       match.hrv =3D hrv;
+> >
+> >       dev =3D bus_find_device(&acpi_bus_type, start, &match, acpi_dev_m=
+atch_cb);
+> > +     acpi_dev_put(adev);
+> >       return dev ? to_acpi_device(dev) : NULL;
+> >  }
+> >  EXPORT_SYMBOL(acpi_dev_get_next_match_dev);
+> > diff --git a/drivers/firmware/efi/dev-path-parser.c b/drivers/firmware/=
+efi/dev-path-parser.c
+> > index 10d4457417a4..eb9c65f97841 100644
+> > --- a/drivers/firmware/efi/dev-path-parser.c
+> > +++ b/drivers/firmware/efi/dev-path-parser.c
+> > @@ -34,7 +34,6 @@ static long __init parse_acpi_path(const struct efi_d=
+ev_path *node,
+> >                       break;
+> >               if (!adev->pnp.unique_id && node->acpi.uid =3D=3D 0)
+> >                       break;
+> > -             acpi_dev_put(adev);
+> >       }
+> >       if (!adev)
+> >               return -ENODEV;
+> > diff --git a/drivers/media/pci/intel/ipu3/cio2-bridge.c b/drivers/media=
+/pci/intel/ipu3/cio2-bridge.c
+> > index 4657e99df033..59a36f922675 100644
+> > --- a/drivers/media/pci/intel/ipu3/cio2-bridge.c
+> > +++ b/drivers/media/pci/intel/ipu3/cio2-bridge.c
+> > @@ -173,10 +173,8 @@ static int cio2_bridge_connect_sensor(const struct=
+ cio2_sensor_config *cfg,
+> >       int ret;
+> >
+> >       for_each_acpi_dev_match(adev, cfg->hid, NULL, -1) {
+> > -             if (!adev->status.enabled) {
+> > -                     acpi_dev_put(adev);
+> > +             if (!adev->status.enabled)
+> >                       continue;
+> > -             }
+> >
+> >               if (bridge->n_sensors >=3D CIO2_NUM_PORTS) {
+> >                       acpi_dev_put(adev);
+> > @@ -185,7 +183,6 @@ static int cio2_bridge_connect_sensor(const struct =
+cio2_sensor_config *cfg,
+> >               }
+> >
+> >               sensor =3D &bridge->sensors[bridge->n_sensors];
+> > -             sensor->adev =3D adev;
+> >               strscpy(sensor->name, cfg->hid, sizeof(sensor->name));
+> >
+> >               ret =3D cio2_bridge_read_acpi_buffer(adev, "SSDB",
+> > @@ -215,6 +212,7 @@ static int cio2_bridge_connect_sensor(const struct =
+cio2_sensor_config *cfg,
+> >                       goto err_free_swnodes;
+> >               }
+> >
+> > +             sensor->adev =3D acpi_dev_get(adev);
+> >               adev->fwnode.secondary =3D fwnode;
+> >
+> >               dev_info(&cio2->dev, "Found supported sensor %s\n",
+> > diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+> > index 1ae993fee4a5..b9d434a93632 100644
+> > --- a/include/acpi/acpi_bus.h
+> > +++ b/include/acpi/acpi_bus.h
+> > @@ -707,11 +707,6 @@ acpi_dev_get_first_match_dev(const char *hid, cons=
+t char *uid, s64 hrv);
+> >   * @hrv: Hardware Revision of the device, pass -1 to not check _HRV
+> >   *
+> >   * The caller is responsible for invoking acpi_dev_put() on the return=
+ed device.
+> > - *
+> > - * FIXME: Due to above requirement there is a window that may invalida=
+te @adev
+> > - * and next iteration will use a dangling pointer, e.g. in the case of=
+ a
+> > - * hotplug event. That said, the caller should ensure that this will n=
+ever
+> > - * happen.
+> >   */
+> >  #define for_each_acpi_dev_match(adev, hid, uid, hrv)                 \
+> >       for (adev =3D acpi_dev_get_first_match_dev(hid, uid, hrv);       =
+ \
+--===============1138792162711681423==--
 
