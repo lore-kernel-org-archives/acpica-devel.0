@@ -1,164 +1,128 @@
-Content-Type: multipart/mixed; boundary="===============2438088250893243976=="
+Content-Type: multipart/mixed; boundary="===============0859417450989717103=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] Re: [PATCH 1/2] ACPICA: Add new DBG2 Serial Port Subtypes
-Date: Fri, 16 Jul 2021 14:08:56 +0000
-Message-ID: <BYAPR11MB3256747AF68B07DE102E2B4D87119@BYAPR11MB3256.namprd11.prod.outlook.com>
-In-Reply-To: CAPv3WKcBKNAD880Mpf8z4vpY=3wbyyd3PiQ=uzKupaw=P_JpQg@mail.gmail.com
+From: Rafael J. Wysocki <rafael at kernel.org>
+Subject: [Devel] Re: [PATCH 1/3] ACPI: Add LoongArch support for
+ ACPI_PROCESSOR/ACPI_NUMA
+Date: Fri, 16 Jul 2021 19:11:25 +0200
+Message-ID: <CAJZ5v0juBC5USF_t-kF7Npk7onXF6SkKvwechuUYiM2jzFuN3Q@mail.gmail.com>
+In-Reply-To: 407870af.c1bf.17aa87f94db.Coremail.chenhuacai@loongson.cn
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2438088250893243976==
+--===============0859417450989717103==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-
-
------Original Message-----
-From: Marcin Wojtas <mw(a)semihalf.com> =
-
-Sent: Thursday, July 15, 2021 8:47 AM
-To: Moore, Robert <robert.moore(a)intel.com>
-Cc: linux-kernel(a)vger.kernel.org; linux-acpi(a)vger.kernel.org; devel(a)a=
-cpica.org; jaz(a)semihalf.com; gjb(a)semihalf.com; upstream(a)semihalf.com;=
- Samer.El-Haj-Mahmoud(a)arm.com; jon(a)solid-run.com; tn(a)semihalf.com; rj=
-w(a)rjwysocki.net; lenb(a)kernel.org
-Subject: Re: [PATCH 1/2] ACPICA: Add new DBG2 Serial Port Subtypes
-
-czw., 15 lip 2021 o 17:44 Moore, Robert <robert.moore(a)intel.com> napisa=
-=C5=82(a):
+On Thu, Jul 15, 2021 at 6:49 AM =E9=99=88=E5=8D=8E=E6=89=8D <chenhuacai(a)l=
+oongson.cn> wrote:
 >
-> The patch was posted as a pull request on our github site.
->
-
-I'm aware of that, semihalf-wojtas-marcin is me :)
-
-> The merged patch will be released as part of the normal ACPICA release pr=
-ocess, which will then make it into Linux. You should then rebase.
-
-Ok, thanks for explanation. When approximately can this happen?
-
-About the end of the month
-Bob
-
-Best regards,
-Marcin
-
-> Bob
+> Hi, Rafael,
 >
 >
-> -----Original Message-----
-> From: Marcin Wojtas <mw(a)semihalf.com>
-> Sent: Thursday, July 15, 2021 7:17 AM
-> To: Moore, Robert <robert.moore(a)intel.com>
-> Cc: linux-kernel(a)vger.kernel.org; linux-acpi(a)vger.kernel.org; =
+> &gt; -----=E5=8E=9F=E5=A7=8B=E9=82=AE=E4=BB=B6-----
+> &gt; =E5=8F=91=E4=BB=B6=E4=BA=BA: "Rafael J. Wysocki" <rafael(a)kernel.or=
+g>
+> &gt; =E5=8F=91=E9=80=81=E6=97=B6=E9=97=B4: 2021-07-14 20:30:33 (=E6=98=9F=
+=E6=9C=9F=E4=B8=89)
+> &gt; =E6=94=B6=E4=BB=B6=E4=BA=BA: "Huacai Chen" <chenhuacai(a)loongson.cn>
+> &gt; =E6=8A=84=E9=80=81: "Rafael J . Wysocki" <rjw(a)rjwysocki.net>, "Len=
+ Brown" <lenb(a)kernel.org>, "Robert Moore" <robert.moore(a)intel.com>, "Er=
+ik Kaneda" <erik.kaneda(a)intel.com>, "ACPI Devel Maling List" <linux-acpi(=
+a)vger.kernel.org>, "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel=
+(a)acpica.org>, "Xuefeng Li" <lixuefeng(a)loongson.cn>, "Jiaxun Yang" <jiax=
+un.yang(a)flygoat.com>
+> &gt; =E4=B8=BB=E9=A2=98: Re: [PATCH 1/3] ACPI: Add LoongArch support for =
+ACPI_PROCESSOR/ACPI_NUMA
+> &gt;
+> &gt; On Mon, Jul 5, 2021 at 2:41 PM Huacai Chen <chenhuacai(a)loongson.cn=
+> wrote:
+> &gt; &gt;
+> &gt; &gt; We are preparing to add new Loongson (based on LoongArch, not M=
+IPS)
+> &gt; &gt; support. LoongArch use ACPI other than DT as its boot protocol,=
+ so
+> &gt; &gt; add its support for ACPI_PROCESSOR/ACPI_NUMA.
+> &gt; &gt;
+> &gt; &gt; Signed-off-by: Huacai Chen <chenhuacai(a)loongson.cn>
+> &gt; &gt; ---
+> &gt; &gt;  drivers/acpi/Kconfig      | 4 ++--
+> &gt; &gt;  drivers/acpi/numa/Kconfig | 2 +-
+> &gt; &gt;  drivers/acpi/numa/srat.c  | 2 +-
+> &gt; &gt;  include/linux/acpi.h      | 2 +-
+> &gt; &gt;  4 files changed, 5 insertions(+), 5 deletions(-)
+> &gt; &gt;
+> &gt; &gt; diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
+> &gt; &gt; index fe0bb6277e4d..90afa44efcba 100644
+> &gt; &gt; --- a/drivers/acpi/Kconfig
+> &gt; &gt; +++ b/drivers/acpi/Kconfig
+> &gt; &gt; @@ -280,9 +280,9 @@ config ACPI_CPPC_LIB
+> &gt; &gt;
+> &gt; &gt;  config ACPI_PROCESSOR
+> &gt; &gt;         tristate "Processor"
+> &gt; &gt; -       depends on X86 || IA64 || ARM64
+> &gt; &gt; +       depends on X86 || IA64 || ARM64 || LOONGARCH
+> &gt; &gt;         select ACPI_PROCESSOR_IDLE
+> &gt; &gt; -       select ACPI_CPU_FREQ_PSS if X86 || IA64
+> &gt; &gt; +       select ACPI_CPU_FREQ_PSS if X86 || IA64 || LOONGARCH
+> &gt; &gt;         default y
+> &gt; &gt;         help
+> &gt; &gt;           This driver adds support for the ACPI Processor packa=
+ge. It is required
+> &gt; &gt; diff --git a/drivers/acpi/numa/Kconfig b/drivers/acpi/numa/Kcon=
+fig
+> &gt; &gt; index fcf2e556d69d..39b1f34c21df 100644
+> &gt; &gt; --- a/drivers/acpi/numa/Kconfig
+> &gt; &gt; +++ b/drivers/acpi/numa/Kconfig
+> &gt; &gt; @@ -2,7 +2,7 @@
+> &gt; &gt;  config ACPI_NUMA
+> &gt; &gt;         bool "NUMA support"
+> &gt; &gt;         depends on NUMA
+> &gt; &gt; -       depends on (X86 || IA64 || ARM64)
+> &gt; &gt; +       depends on (X86 || IA64 || ARM64 || LOONGARCH)
+> &gt; &gt;         default y if IA64 || ARM64
+> &gt; &gt;
+> &gt; &gt;  config ACPI_HMAT
+> &gt; &gt; diff --git a/drivers/acpi/numa/srat.c b/drivers/acpi/numa/srat.c
+> &gt; &gt; index 6021a1013442..b8795fc49097 100644
+> &gt; &gt; --- a/drivers/acpi/numa/srat.c
+> &gt; &gt; +++ b/drivers/acpi/numa/srat.c
+> &gt; &gt; @@ -206,7 +206,7 @@ int __init srat_disabled(void)
+> &gt; &gt;         return acpi_numa &lt; 0;
+> &gt; &gt;  }
+> &gt; &gt;
+> &gt; &gt; -#if defined(CONFIG_X86) || defined(CONFIG_ARM64)
+> &gt; &gt; +#if defined(CONFIG_X86) || defined(CONFIG_ARM64) || defined(CO=
+NFIG_LOONGARCH)
+> &gt; &gt;  /*
+> &gt; &gt;   * Callback for SLIT parsing.  pxm_to_node() returns NUMA_NO_N=
+ODE for
+> &gt; &gt;   * I/O localities since SRAT does not list them.  I/O localiti=
+es are
+> &gt; &gt; diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+> &gt; &gt; index 6bb36fd6ba31..3ba8511cbede 100644
+> &gt; &gt; --- a/include/linux/acpi.h
+> &gt; &gt; +++ b/include/linux/acpi.h
+> &gt; &gt; @@ -249,7 +249,7 @@ void acpi_table_print_madt_entry (struct ac=
+pi_subtable_header *madt);
+> &gt; &gt;  /* the following numa functions are architecture-dependent */
+> &gt; &gt;  void acpi_numa_slit_init (struct acpi_table_slit *slit);
+> &gt; &gt;
+> &gt; &gt; -#if defined(CONFIG_X86) || defined(CONFIG_IA64)
+> &gt; &gt; +#if defined(CONFIG_X86) || defined(CONFIG_IA64) || defined(CON=
+FIG_LOONGARCH)
+> &gt; &gt;  void acpi_numa_processor_affinity_init (struct acpi_srat_cpu_a=
+ffinity *pa);
+> &gt; &gt;  #else
+> &gt; &gt;  static inline void
+> &gt; &gt; --
+> &gt;
+> &gt; Does this patch alone make sense without the other two in the series?
+> &gt; If so, I can queue it up for 5.15, so please let me know.
+> Yes, this patch has no dependency with other two.
 
-> devel(a)acpica.org; jaz(a)semihalf.com; gjb(a)semihalf.com; =
+OK, applied as 5.15 material.
 
-> upstream(a)semihalf.com; Samer.El-Haj-Mahmoud(a)arm.com; =
-
-> jon(a)solid-run.com; tn(a)semihalf.com; rjw(a)rjwysocki.net; lenb(a)kerne=
-l.org
-> Subject: Re: [PATCH 1/2] ACPICA: Add new DBG2 Serial Port Subtypes
->
-> Hi,
->
->
-> czw., 15 lip 2021 o 16:07 Moore, Robert <robert.moore(a)intel.com> napisa=
-=C5=82(a):
-> >
-> > This was already reported (with a patch that we've already merged) =
-
-> > by semihalf-wojtas-marcin
-> >
->
-> I'm not sure to be aware of the process. Reported where?
-> Are you planning to import the upstream patch on your own and I should re=
-base the SPCR driver change on top once it lands?
->
-> Best regards,
-> Marcin
->
-> > -----Original Message-----
-> > From: Marcin Wojtas <mw(a)semihalf.com>
-> > Sent: Wednesday, July 14, 2021 2:44 PM
-> > To: linux-kernel(a)vger.kernel.org; linux-acpi(a)vger.kernel.org; =
-
-> > devel(a)acpica.org
-> > Cc: jaz(a)semihalf.com; gjb(a)semihalf.com; upstream(a)semihalf.com; =
-
-> > Samer.El-Haj-Mahmoud(a)arm.com; jon(a)solid-run.com; tn(a)semihalf.com; =
-
-> > rjw(a)rjwysocki.net; lenb(a)kernel.org; Moore, Robert =
-
-> > <robert.moore(a)intel.com>; Marcin Wojtas <mw(a)semihalf.com>
-> > Subject: [PATCH 1/2] ACPICA: Add new DBG2 Serial Port Subtypes
-> >
-> > ACPICA commit d95c7d206b5836c7770e8e9cd613859887fded8f
-> >
-> > The Microsoft Debug Port Table 2 (DBG2) specification revision Septembe=
-r 21, 2020 comprises additional Serial Port Subtypes [1].
-> > Reflect that in the actbl1.h header file.
-> >
-> > [1]
-> > https://docs.microsoft.com/en-us/windows-hardware/drivers/bringup/ac
-> > pi
-> > -debug-port-table
-> >
-> > Link: https://github.com/acpica/acpica/commit/d95c7d20
-> > Signed-off-by: Marcin Wojtas <mw(a)semihalf.com>
-> > ---
-> >  include/acpi/actbl1.h | 15 ++++++++++++++-
-> >  1 file changed, 14 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/include/acpi/actbl1.h b/include/acpi/actbl1.h index =
-
-> > ef2872dea01c..7bbb3e2bd33f 100644
-> > --- a/include/acpi/actbl1.h
-> > +++ b/include/acpi/actbl1.h
-> > @@ -482,7 +482,7 @@ struct acpi_csrt_descriptor {
-> >   * DBG2 - Debug Port Table 2
-> >   *        Version 0 (Both main table and subtables)
-> >   *
-> > - * Conforms to "Microsoft Debug Port Table 2 (DBG2)", December 10,
-> > 2015
-> > + * Conforms to "Microsoft Debug Port Table 2 (DBG2)", September 21,
-> > + 2020
-> >   *
-> >
-> > ********************************************************************
-> > **
-> > ********/
-> >
-> > @@ -532,11 +532,24 @@ struct acpi_dbg2_device {
-> >
-> >  #define ACPI_DBG2_16550_COMPATIBLE  0x0000
-> >  #define ACPI_DBG2_16550_SUBSET      0x0001
-> > +#define ACPI_DBG2_MAX311XE_SPI      0x0002
-> >  #define ACPI_DBG2_ARM_PL011         0x0003
-> > +#define ACPI_DBG2_MSM8X60           0x0004
-> > +#define ACPI_DBG2_16550_NVIDIA      0x0005
-> > +#define ACPI_DBG2_TI_OMAP           0x0006
-> > +#define ACPI_DBG2_APM88XXXX         0x0008
-> > +#define ACPI_DBG2_MSM8974           0x0009
-> > +#define ACPI_DBG2_SAM5250           0x000A
-> > +#define ACPI_DBG2_INTEL_USIF        0x000B
-> > +#define ACPI_DBG2_IMX6              0x000C
-> >  #define ACPI_DBG2_ARM_SBSA_32BIT    0x000D
-> >  #define ACPI_DBG2_ARM_SBSA_GENERIC  0x000E
-> >  #define ACPI_DBG2_ARM_DCC           0x000F
-> >  #define ACPI_DBG2_BCM2835           0x0010
-> > +#define ACPI_DBG2_SDM845_1_8432MHZ  0x0011
-> > +#define ACPI_DBG2_16550_WITH_GAS    0x0012
-> > +#define ACPI_DBG2_SDM845_7_372MHZ   0x0013
-> > +#define ACPI_DBG2_INTEL_LPSS        0x0014
-> >
-> >  #define ACPI_DBG2_1394_STANDARD     0x0000
-> >
-> > --
-> > 2.29.0
-> >
-
---===============2438088250893243976==--
+Thanks!
+--===============0859417450989717103==--
 
