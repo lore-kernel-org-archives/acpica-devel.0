@@ -1,147 +1,56 @@
-Content-Type: multipart/mixed; boundary="===============2615032130603656532=="
+Content-Type: multipart/mixed; boundary="===============8893688727183600420=="
 MIME-Version: 1.0
-From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
- 604483c9d25283debe498a972c2b4565581e3aaa
-Date: Thu, 29 Jul 2021 18:54:52 +0800
-Message-ID: <610288fc./qagMLSQVR8tK3Jl%lkp@intel.com>
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] ACPICA version 20210730 released
+Date: Fri, 30 Jul 2021 15:57:50 +0000
+Message-ID: <BYAPR11MB3256B88F2E195AFC3B57837387EC9@BYAPR11MB3256.namprd11.prod.outlook.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2615032130603656532==
+--===============8893688727183600420==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
-m.git bleeding-edge
-branch HEAD: 604483c9d25283debe498a972c2b4565581e3aaa  Merge branch 'acpi-d=
-ptf' into linux-next
+30 July 2021. Summary of changes for version 20210730:
 
-elapsed time: 1076m
+This release is available at https://acpica.org/downloads
 
-configs tested: 110
-configs skipped: 3
+1) ACPICA kernel-resident subsystem:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+2) iASL Compiler/Disassembler and ACPICA tools:
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20210728
-powerpc                     kilauea_defconfig
-m68k                          multi_defconfig
-sh                          polaris_defconfig
-powerpc                 mpc8560_ads_defconfig
-powerpc                       holly_defconfig
-x86_64                              defconfig
-arm                       spear13xx_defconfig
-sh                   sh7724_generic_defconfig
-m68k                         apollo_defconfig
-arm                           u8500_defconfig
-powerpc                   currituck_defconfig
-mips                           ip32_defconfig
-mips                  cavium_octeon_defconfig
-ia64                             allmodconfig
-sh                          rsk7269_defconfig
-m68k                       m5249evb_defconfig
-sh                           sh2007_defconfig
-sh                     sh7710voipgw_defconfig
-powerpc                     mpc5200_defconfig
-powerpc                    adder875_defconfig
-sh                          r7780mp_defconfig
-mips                           mtx1_defconfig
-m68k                             allmodconfig
-arm                        vexpress_defconfig
-mips                     loongson2k_defconfig
-sh                          rsk7264_defconfig
-sh                   sh7770_generic_defconfig
-h8300                            alldefconfig
-openrisc                 simple_smp_defconfig
-x86_64                            allnoconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a006-20210728
-x86_64               randconfig-a003-20210728
-x86_64               randconfig-a001-20210728
-x86_64               randconfig-a004-20210728
-x86_64               randconfig-a005-20210728
-x86_64               randconfig-a002-20210728
-i386                 randconfig-a005-20210728
-i386                 randconfig-a003-20210728
-i386                 randconfig-a004-20210728
-i386                 randconfig-a002-20210728
-i386                 randconfig-a001-20210728
-i386                 randconfig-a006-20210728
-i386                 randconfig-a016-20210728
-i386                 randconfig-a012-20210728
-i386                 randconfig-a013-20210728
-i386                 randconfig-a014-20210728
-i386                 randconfig-a011-20210728
-i386                 randconfig-a015-20210728
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+iasl: Check usage of _CRS, _DIS, _PRS, and _SRS objects (July 2021).
+  Under the Device Object:
+  1) If _DIS is present, must have a _CRS and _SRS
+  2) If _PRS is present, must have a _CRS, _DIS, and _SRS
+  3) If _SRS is present, must have a _CRS and _DIS
+A warning will be issued for each of these cases.
+Note: For existing ASL/projects, these warnings may be disabled by specifyi=
+ng this on the command line:
+"-vw 3141"
 
-clang tested configs:
-x86_64               randconfig-c001-20210728
-x86_64               randconfig-a006-20210729
-x86_64               randconfig-a003-20210729
-x86_64               randconfig-a001-20210729
-x86_64               randconfig-a004-20210729
-x86_64               randconfig-a005-20210729
-x86_64               randconfig-a002-20210729
-x86_64               randconfig-a016-20210728
-x86_64               randconfig-a011-20210728
-x86_64               randconfig-a014-20210728
-x86_64               randconfig-a013-20210728
-x86_64               randconfig-a012-20210728
-x86_64               randconfig-a015-20210728
+iASL Table Disassembler/Table compiler: Fix for WPBT table with no
+command-line arguments. Handle the case where the Command-line
+Arguments table field does not exist (zero).
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============2615032130603656532==--
+Headers: Add new DBG2 Serial Port Subtypes
+The Microsoft Debug Port Table 2 (DBG2) specification revision
+September 21, 2020 comprises additional Serial Port Subtypes [1].
+Reflect that in the actbl1.h header file. Submitted by:
+semihalf-wojtas-marcin
+
+iASL: Add full support for the AEST table (data compiler)
+Includes support in the table compiler and the disassembler.
+
+Add PRMT module header to facilitate parsing.
+This structure is used in to parse PRMT in other Operating Systems
+that relies on using subtable headers in order to parse ACPI tables.
+Although the PRMT doesn't have "subtables" it has a list of module
+information structures that act as subtables.
+
+iASL: Table disassembler: Add missing strings to decode subtable types.
+Includes the MADT and CEDT tables.
+
+--===============8893688727183600420==--
 
