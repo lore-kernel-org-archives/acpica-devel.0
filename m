@@ -1,56 +1,124 @@
-Content-Type: multipart/mixed; boundary="===============8893688727183600420=="
+Content-Type: multipart/mixed; boundary="===============8673940625660991373=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] ACPICA version 20210730 released
-Date: Fri, 30 Jul 2021 15:57:50 +0000
-Message-ID: <BYAPR11MB3256B88F2E195AFC3B57837387EC9@BYAPR11MB3256.namprd11.prod.outlook.com>
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
+ 1c016eb02e4517ee1a985e4db117f2a6764d0f01
+Date: Wed, 04 Aug 2021 13:49:00 +0800
+Message-ID: <610a2a4c.6Cl0wJs0lSxruNZS%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8893688727183600420==
+--===============8673940625660991373==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-30 July 2021. Summary of changes for version 20210730:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git bleeding-edge
+branch HEAD: 1c016eb02e4517ee1a985e4db117f2a6764d0f01  Merge branch 'acpica=
+' into bleeding-edge
 
-This release is available at https://acpica.org/downloads
+elapsed time: 808m
 
-1) ACPICA kernel-resident subsystem:
+configs tested: 87
+configs skipped: 3
 
-2) iASL Compiler/Disassembler and ACPICA tools:
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-iasl: Check usage of _CRS, _DIS, _PRS, and _SRS objects (July 2021).
-  Under the Device Object:
-  1) If _DIS is present, must have a _CRS and _SRS
-  2) If _PRS is present, must have a _CRS, _DIS, and _SRS
-  3) If _SRS is present, must have a _CRS and _DIS
-A warning will be issued for each of these cases.
-Note: For existing ASL/projects, these warnings may be disabled by specifyi=
-ng this on the command line:
-"-vw 3141"
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                     tqm5200_defconfig
+powerpc                 mpc832x_mds_defconfig
+mips                        qi_lb60_defconfig
+arm                           u8500_defconfig
+arm                     am200epdkit_defconfig
+mips                        nlm_xlr_defconfig
+ia64                        generic_defconfig
+powerpc                      acadia_defconfig
+arm                        multi_v5_defconfig
+arm                            mps2_defconfig
+arc                          axs103_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+x86_64                            allnoconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20210803
+i386                 randconfig-a005-20210803
+i386                 randconfig-a002-20210803
+i386                 randconfig-a006-20210803
+i386                 randconfig-a001-20210803
+i386                 randconfig-a003-20210803
+i386                 randconfig-a012-20210803
+i386                 randconfig-a011-20210803
+i386                 randconfig-a015-20210803
+i386                 randconfig-a013-20210803
+i386                 randconfig-a014-20210803
+i386                 randconfig-a016-20210803
+x86_64               randconfig-a002-20210803
+x86_64               randconfig-a004-20210803
+x86_64               randconfig-a006-20210803
+x86_64               randconfig-a003-20210803
+x86_64               randconfig-a001-20210803
+x86_64               randconfig-a005-20210803
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-iASL Table Disassembler/Table compiler: Fix for WPBT table with no
-command-line arguments. Handle the case where the Command-line
-Arguments table field does not exist (zero).
+clang tested configs:
+x86_64               randconfig-a012-20210803
+x86_64               randconfig-a016-20210803
+x86_64               randconfig-a013-20210803
+x86_64               randconfig-a011-20210803
+x86_64               randconfig-a014-20210803
+x86_64               randconfig-a015-20210803
 
-Headers: Add new DBG2 Serial Port Subtypes
-The Microsoft Debug Port Table 2 (DBG2) specification revision
-September 21, 2020 comprises additional Serial Port Subtypes [1].
-Reflect that in the actbl1.h header file. Submitted by:
-semihalf-wojtas-marcin
-
-iASL: Add full support for the AEST table (data compiler)
-Includes support in the table compiler and the disassembler.
-
-Add PRMT module header to facilitate parsing.
-This structure is used in to parse PRMT in other Operating Systems
-that relies on using subtable headers in order to parse ACPI tables.
-Although the PRMT doesn't have "subtables" it has a list of module
-information structures that act as subtables.
-
-iASL: Table disassembler: Add missing strings to decode subtable types.
-Includes the MADT and CEDT tables.
-
---===============8893688727183600420==--
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
+--===============8673940625660991373==--
 
