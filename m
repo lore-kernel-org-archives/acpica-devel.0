@@ -1,135 +1,105 @@
-Content-Type: multipart/mixed; boundary="===============2598558087651042928=="
+Content-Type: multipart/mixed; boundary="===============4711374185894533962=="
 MIME-Version: 1.0
-From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
- 228706e6d423b9209b3f55f36cb34a95e7f1a153
-Date: Sun, 08 Aug 2021 10:02:05 +0800
-Message-ID: <610f3b1d.xEyyZPUgcwkMKDZk%lkp@intel.com>
+From: Rafael J. Wysocki <rafael at kernel.org>
+Subject: [Devel] Re: [PATCH v2] x86/acpi: Don't add CPUs that are not online
+ capable
+Date: Mon, 16 Aug 2021 16:04:57 +0200
+Message-ID: <CAJZ5v0jynpMMnMBQuyJPYfSG-6JSe5=a6wW0UtUnpGuh68CqkA@mail.gmail.com>
+In-Reply-To: 20210813161842.222414-1-mario.limonciello@amd.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2598558087651042928==
+--===============4711374185894533962==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
-m.git bleeding-edge
-branch HEAD: 228706e6d423b9209b3f55f36cb34a95e7f1a153  Merge branch 'pm-cpu=
-freq' into bleeding-edge
+On Fri, Aug 13, 2021 at 6:19 PM Mario Limonciello
+<mario.limonciello(a)amd.com> wrote:
+>
+> A number of systems are showing "hotplug capable" CPUs when they
+> are not really hotpluggable.  This is because the MADT has extra
+> CPU entries to support different CPUs that may be inserted into
+> the socket with different numbers of cores.
+>
+> Starting with ACPI 6.3 the spec has an Online Capable bit in the
+> MADT used to determine whether or not a CPU is hotplug capable
+> when the enabled bit is not set.
+>
+> Link: https://uefi.org/htmlspecs/ACPI_Spec_6_4_html/05_ACPI_Software_Prog=
+ramming_Model/ACPI_Software_Programming_Model.html?#local-apic-flags
+> Signed-off-by: Mario Limonciello <mario.limonciello(a)amd.com>
+> ---
+>  arch/x86/kernel/acpi/boot.c | 10 ++++++++++
+>  include/acpi/actbl2.h       |  1 +
+>  2 files changed, 11 insertions(+)
+>
+> Changes from v1->v2:
+>  * Check the revision field in MADT to determine if it matches the
+>    bump from ACPI 6.3 as suggested by Hanjun Guo
+>  * Update description
+>
+> diff --git a/arch/x86/kernel/acpi/boot.c b/arch/x86/kernel/acpi/boot.c
+> index e55e0c1fad8c..bfa69a5c9c0b 100644
+> --- a/arch/x86/kernel/acpi/boot.c
+> +++ b/arch/x86/kernel/acpi/boot.c
+> @@ -53,6 +53,8 @@ int acpi_ioapic;
+>  int acpi_strict;
+>  int acpi_disable_cmcff;
+>
+> +bool acpi_support_online_capable;
 
-elapsed time: 2139m
+Missing static?
 
-configs tested: 98
-configs skipped: 4
+> +
+>  /* ACPI SCI override configuration */
+>  u8 acpi_sci_flags __initdata;
+>  u32 acpi_sci_override_gsi __initdata =3D INVALID_ACPI_IRQ;
+> @@ -138,6 +140,8 @@ static int __init acpi_parse_madt(struct acpi_table_h=
+eader *table)
+>
+>                 pr_debug("Local APIC address 0x%08x\n", madt->address);
+>         }
+> +       if (madt->header.revision >=3D 5)
+> +               acpi_support_online_capable =3D true;
+>
+>         default_acpi_madt_oem_check(madt->header.oem_id,
+>                                     madt->header.oem_table_id);
+> @@ -239,6 +243,12 @@ acpi_parse_lapic(union acpi_subtable_headers * heade=
+r, const unsigned long end)
+>         if (processor->id =3D=3D 0xff)
+>                 return 0;
+>
+> +       /* don't register processors that can not be onlined */
+> +       if (acpi_support_online_capable &&
+> +           !(processor->lapic_flags & ACPI_MADT_ENABLED) &&
+> +           !(processor->lapic_flags & ACPI_MADT_ONLINE_CAPABLE))
+> +               return 0;
+> +
+>         /*
+>          * We need to register disabled CPU as well to permit
+>          * counting disabled CPUs. This allows us to size
+> diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
+> index 2069ac38a4e2..fae45e383987 100644
+> --- a/include/acpi/actbl2.h
+> +++ b/include/acpi/actbl2.h
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+The one below is an ACPICA change and I'd prefer it to be integrated
+via the upstream ACPICA.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20210804
-arc                     haps_hs_smp_defconfig
-arm                          pcm027_defconfig
-arm                         lpc32xx_defconfig
-sh                           sh2007_defconfig
-mips                        nlm_xlp_defconfig
-sh                          rsk7264_defconfig
-arm                       imx_v6_v7_defconfig
-ia64                        generic_defconfig
-powerpc                         wii_defconfig
-mips                        bcm47xx_defconfig
-sh                            migor_defconfig
-m68k                        m5307c3_defconfig
-powerpc                        fsp2_defconfig
-arm                      footbridge_defconfig
-arm                           spitz_defconfig
-powerpc                     stx_gp3_defconfig
-powerpc               mpc834x_itxgp_defconfig
-sh                        edosk7760_defconfig
-arm                           tegra_defconfig
-microblaze                          defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-x86_64                            allnoconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20210805
-i386                 randconfig-a004-20210805
-i386                 randconfig-a002-20210805
-i386                 randconfig-a006-20210805
-i386                 randconfig-a003-20210805
-i386                 randconfig-a001-20210805
-x86_64               randconfig-a012-20210804
-x86_64               randconfig-a016-20210804
-x86_64               randconfig-a011-20210804
-x86_64               randconfig-a013-20210804
-x86_64               randconfig-a014-20210804
-x86_64               randconfig-a015-20210804
-i386                 randconfig-a012-20210806
-i386                 randconfig-a011-20210806
-i386                 randconfig-a015-20210806
-i386                 randconfig-a013-20210806
-i386                 randconfig-a014-20210806
-i386                 randconfig-a016-20210806
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+Could you prepare an ACPICA pull request for just the bit below and
+send it via GitHub?
 
-clang tested configs:
-x86_64               randconfig-c001-20210806
-x86_64               randconfig-a002-20210804
-x86_64               randconfig-a006-20210804
-x86_64               randconfig-a004-20210804
-x86_64               randconfig-a003-20210804
-x86_64               randconfig-a001-20210804
-x86_64               randconfig-a005-20210804
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============2598558087651042928==--
+> @@ -808,6 +808,7 @@ struct acpi_madt_multiproc_wakeup_mailbox {
+>  /* MADT Local APIC flags */
+>
+>  #define ACPI_MADT_ENABLED           (1)        /* 00: Processor is usabl=
+e if set */
+> +#define ACPI_MADT_ONLINE_CAPABLE    (2)        /* 01: System HW supports=
+ enabling processor at runtime */
+>
+>  /* MADT MPS INTI flags (inti_flags) */
+>
+> --
+--===============4711374185894533962==--
 
