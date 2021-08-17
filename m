@@ -1,50 +1,132 @@
-Content-Type: multipart/mixed; boundary="===============2962052327326686862=="
+Content-Type: multipart/mixed; boundary="===============6347518701843904756=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [PATCH 2/2] ACPI: SPCR: Add support for the new
- 16550-compatible Serial Port Subtype
-Date: Mon, 16 Aug 2021 18:39:32 +0200
-Message-ID: <CAJZ5v0gAmajYYDhYhum-QbyreWYf-4R0ecrDL_hLXp=w4T1FBQ@mail.gmail.com>
-In-Reply-To: 20210714214346.1397942-3-mw@semihalf.com
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
+ d0eded4f9e450c928a018f5fd675b75e1b726803
+Date: Tue, 17 Aug 2021 17:18:55 +0800
+Message-ID: <611b7eff.IBmhgftfkYrWgNXY%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2962052327326686862==
+--===============6347518701843904756==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jul 14, 2021 at 11:46 PM Marcin Wojtas <mw(a)semihalf.com> wrote:
->
-> The Microsoft Debug Port Table 2 (DBG2) specification revision
-> May 31, 2017 added definition of the 16550-compatible Serial Port
-> Subtype with parameters defined in Generic Address Structure (GAS) [1]
->
-> Add its support in the SPCR table parsing routine.
->
-> [1] https://docs.microsoft.com/en-us/windows-hardware/drivers/bringup/acp=
-i-debug-port-table
->
-> Signed-off-by: Marcin Wojtas <mw(a)semihalf.com>
-> ---
->  drivers/acpi/spcr.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/acpi/spcr.c b/drivers/acpi/spcr.c
-> index 88460bacd5ae..25c2d0be953e 100644
-> --- a/drivers/acpi/spcr.c
-> +++ b/drivers/acpi/spcr.c
-> @@ -136,6 +136,7 @@ int __init acpi_parse_spcr(bool enable_earlycon, bool=
- enable_console)
->                 break;
->         case ACPI_DBG2_16550_COMPATIBLE:
->         case ACPI_DBG2_16550_SUBSET:
-> +       case ACPI_DBG2_16550_WITH_GAS:
->                 uart =3D "uart";
->                 break;
->         default:
-> --
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git bleeding-edge
+branch HEAD: d0eded4f9e450c928a018f5fd675b75e1b726803  Merge branch 'pm-cpu=
+' into bleeding-edge
 
-Applied as 5.15 material, thanks!
---===============2962052327326686862==--
+elapsed time: 931m
+
+configs tested: 95
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20210816
+mips                           gcw0_defconfig
+arm                        keystone_defconfig
+arm                           h5000_defconfig
+arm                  colibri_pxa270_defconfig
+sh                            hp6xx_defconfig
+arm                       mainstone_defconfig
+powerpc                      pasemi_defconfig
+arm                         lubbock_defconfig
+xtensa                          iss_defconfig
+sh                            shmin_defconfig
+m68k                           sun3_defconfig
+arc                          axs101_defconfig
+mips                     loongson2k_defconfig
+arm                        cerfcube_defconfig
+arm                       imx_v4_v5_defconfig
+powerpc                 xes_mpc85xx_defconfig
+mips                     decstation_defconfig
+arm                      jornada720_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+x86_64                            allnoconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20210816
+x86_64               randconfig-a004-20210816
+x86_64               randconfig-a003-20210816
+x86_64               randconfig-a001-20210816
+x86_64               randconfig-a005-20210816
+x86_64               randconfig-a002-20210816
+i386                 randconfig-a004-20210816
+i386                 randconfig-a003-20210816
+i386                 randconfig-a002-20210816
+i386                 randconfig-a001-20210816
+i386                 randconfig-a006-20210816
+i386                 randconfig-a005-20210816
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a011-20210816
+x86_64               randconfig-a013-20210816
+x86_64               randconfig-a016-20210816
+x86_64               randconfig-a012-20210816
+x86_64               randconfig-a015-20210816
+x86_64               randconfig-a014-20210816
+i386                 randconfig-a011-20210816
+i386                 randconfig-a015-20210816
+i386                 randconfig-a013-20210816
+i386                 randconfig-a014-20210816
+i386                 randconfig-a016-20210816
+i386                 randconfig-a012-20210816
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
+--===============6347518701843904756==--
 
