@@ -1,191 +1,73 @@
-Content-Type: multipart/mixed; boundary="===============7461916844980680300=="
+Content-Type: multipart/mixed; boundary="===============6094371019966658215=="
 MIME-Version: 1.0
-From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [pm:bleeding-edge] BUILD SUCCESS
- 10aed6c075d44bba5c62a13654041e54fc2acb13
-Date: Sat, 11 Sep 2021 14:00:43 +0800
-Message-ID: <613c460b.qfdB6kBxOinVhOzT%lkp@intel.com>
+From: Lorenzo Pieralisi <lorenzo.pieralisi at arm.com>
+Subject: [Devel] Re: [PATCH v2] Revert "ACPI: Add memory semantics to
+ acpi_os_map_memory()"
+Date: Sat, 11 Sep 2021 11:14:18 +0100
+Message-ID: <20210911101418.GA32028@lpieralisi>
+In-Reply-To: CAMj1kXG6Gu=g8P902NB2b+OvzqwJQPqQewYX5UwMiXALYAFkDw@mail.gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7461916844980680300==
+--===============6094371019966658215==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
-m.git bleeding-edge
-branch HEAD: 10aed6c075d44bba5c62a13654041e54fc2acb13  Merge branch 'pm-mis=
-c' into linux-next
+On Fri, Sep 10, 2021 at 07:28:49PM +0200, Ard Biesheuvel wrote:
+> On Fri, 10 Sept 2021 at 16:32, Jia He <justin.he(a)arm.com> wrote:
+> >
+> > This reverts commit 437b38c51162f8b87beb28a833c4d5dc85fa864e.
+> >
+> > After this commit, a boot panic is alway hit on an Ampere EMAG server
+> > with call trace as follows:
+> >  Internal error: synchronous external abort: 96000410 [#1] SMP
+> >  Modules linked in:
+> >  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0+ #462
+> >  Hardware name: MiTAC RAPTOR EV-883832-X3-0001/RAPTOR, BIOS 0.14 02/22/=
+2019
+> >  pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=3D--)
+> > [...snip...]
+> >  Call trace:
+> >   acpi_ex_system_memory_space_handler+0x26c/0x2c8
+> >   acpi_ev_address_space_dispatch+0x228/0x2c4
+> >   acpi_ex_access_region+0x114/0x268
+> >   acpi_ex_field_datum_io+0x128/0x1b8
+> >   acpi_ex_extract_from_field+0x14c/0x2ac
+> >   acpi_ex_read_data_from_field+0x190/0x1b8
+> >   acpi_ex_resolve_node_to_value+0x1ec/0x288
+> >   acpi_ex_resolve_to_value+0x250/0x274
+> >   acpi_ds_evaluate_name_path+0xac/0x124
+> >   acpi_ds_exec_end_op+0x90/0x410
+> >   acpi_ps_parse_loop+0x4ac/0x5d8
+> >   acpi_ps_parse_aml+0xe0/0x2c8
+> >   acpi_ps_execute_method+0x19c/0x1ac
+> >   acpi_ns_evaluate+0x1f8/0x26c
+> >   acpi_ns_init_one_device+0x104/0x140
+> >   acpi_ns_walk_namespace+0x158/0x1d0
+> >   acpi_ns_initialize_devices+0x194/0x218
+> >   acpi_initialize_objects+0x48/0x50
+> >   acpi_init+0xe0/0x498
+> >
+> > As mentioned by Lorenzo:
+> >   "We are forcing memory semantics mappings to PROT_NORMAL_NC, which
+> >   eMAG does not like at all and I'd need to understand why. It looks
+> >   like the issue happen in SystemMemory Opregion handler."
+> >
+> > Hence just revert it before everything is clear.
+> >
+> =
 
-elapsed time: 1024m
+> Can we try to find the root cause first? -rc1 is not even out yet, and
+> reverting it now means we can not resubmit it until the next merge
+> window.
 
-configs tested: 153
-configs skipped: 3
+Yes, absolutely. We need to understand where the problem is, because it
+looks like we can't map SystemMemory Opregion with NORMAL_NC if the PA
+is not in the EFI map, that's a problem (ie how can we determine the
+right memory attributes for SystemMemory Operation regions then) but
+let's not speculate and find what the issue is first.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20210910
-xtensa                    xip_kc705_defconfig
-mips                        bcm47xx_defconfig
-powerpc                     tqm8548_defconfig
-arm                      jornada720_defconfig
-arm                          imote2_defconfig
-powerpc                     akebono_defconfig
-nios2                         3c120_defconfig
-sh                         ap325rxa_defconfig
-m68k                          atari_defconfig
-h8300                    h8300h-sim_defconfig
-m68k                          multi_defconfig
-arm                         s3c6400_defconfig
-xtensa                    smp_lx200_defconfig
-powerpc                    gamecube_defconfig
-sh                            migor_defconfig
-microblaze                      mmu_defconfig
-arm                       mainstone_defconfig
-sh                          rsk7269_defconfig
-powerpc                     powernv_defconfig
-arm                      pxa255-idp_defconfig
-powerpc                         ps3_defconfig
-mips                        nlm_xlr_defconfig
-arc                    vdk_hs38_smp_defconfig
-arm                           stm32_defconfig
-arm                         assabet_defconfig
-mips                       rbtx49xx_defconfig
-sh                          rsk7264_defconfig
-mips                         tb0287_defconfig
-h8300                       h8s-sim_defconfig
-powerpc                   bluestone_defconfig
-mips                           ip27_defconfig
-powerpc                     ksi8560_defconfig
-powerpc                     tqm8541_defconfig
-m68k                             alldefconfig
-m68k                       m5475evb_defconfig
-powerpc                   microwatt_defconfig
-mips                          ath25_defconfig
-arm                            zeus_defconfig
-arm                      tct_hammer_defconfig
-arm                        magician_defconfig
-powerpc                     tqm8540_defconfig
-microblaze                          defconfig
-powerpc                     mpc5200_defconfig
-arm                  colibri_pxa300_defconfig
-arm                        clps711x_defconfig
-s390                             alldefconfig
-ia64                      gensparse_defconfig
-sh                           se7712_defconfig
-arm                          ixp4xx_defconfig
-ia64                             allyesconfig
-powerpc                      pmac32_defconfig
-arm                         lpc18xx_defconfig
-powerpc                      bamboo_defconfig
-um                                  defconfig
-m68k                       m5208evb_defconfig
-arm                          ep93xx_defconfig
-powerpc                 canyonlands_defconfig
-alpha                            alldefconfig
-powerpc                 mpc8560_ads_defconfig
-arm                         mv78xx0_defconfig
-powerpc                mpc7448_hpc2_defconfig
-powerpc                    adder875_defconfig
-parisc                              defconfig
-sh                          r7785rp_defconfig
-arm                           h5000_defconfig
-mips                        workpad_defconfig
-arm                         palmz72_defconfig
-arm                       versatile_defconfig
-x86_64               randconfig-c001-20210910
-arm                  randconfig-c002-20210910
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-m68k                                defconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-nios2                            allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-xtensa                           allyesconfig
-s390                                defconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                             allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-powerpc                          allyesconfig
-x86_64               randconfig-a013-20210910
-x86_64               randconfig-a016-20210910
-x86_64               randconfig-a012-20210910
-x86_64               randconfig-a011-20210910
-x86_64               randconfig-a014-20210910
-x86_64               randconfig-a015-20210910
-i386                 randconfig-a016-20210910
-i386                 randconfig-a011-20210910
-i386                 randconfig-a012-20210910
-i386                 randconfig-a013-20210910
-i386                 randconfig-a014-20210910
-riscv                randconfig-r042-20210910
-s390                 randconfig-r044-20210910
-arc                  randconfig-r043-20210910
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allyesconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-c007-20210910
-mips                 randconfig-c004-20210910
-powerpc              randconfig-c003-20210910
-i386                 randconfig-c001-20210910
-s390                 randconfig-c005-20210910
-x86_64               randconfig-a002-20210910
-x86_64               randconfig-a003-20210910
-x86_64               randconfig-a004-20210910
-x86_64               randconfig-a006-20210910
-x86_64               randconfig-a001-20210910
-x86_64               randconfig-a005-20210910
-i386                 randconfig-a004-20210910
-i386                 randconfig-a005-20210910
-i386                 randconfig-a002-20210910
-i386                 randconfig-a006-20210910
-i386                 randconfig-a001-20210910
-i386                 randconfig-a003-20210910
-hexagon              randconfig-r045-20210910
-hexagon              randconfig-r041-20210910
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============7461916844980680300==--
+Lorenzo
+--===============6094371019966658215==--
 
