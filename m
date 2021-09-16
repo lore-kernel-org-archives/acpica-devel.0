@@ -1,86 +1,103 @@
-Content-Type: multipart/mixed; boundary="===============8006494517392178825=="
+Content-Type: multipart/mixed; boundary="===============4509494788473265813=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [rafael-pm:bleeding-edge 6/11]
- drivers/base/swnode.c:1120:17: error: too many arguments to function
- 'software_node_notify'
-Date: Thu, 16 Sep 2021 12:04:12 +0200
-Message-ID: <CAJZ5v0idEO8LUvh+yWCV-f7Ha37thLo5fhnypMRSwEXLRd4EYQ@mail.gmail.com>
-In-Reply-To: YULrCIRyvuryjoGE@kuha.fi.intel.com
+From: Lorenzo Pieralisi <lorenzo.pieralisi at arm.com>
+Subject: [Devel] Re: [PATCH v2] Revert "ACPI: Add memory semantics to
+ acpi_os_map_memory()"
+Date: Thu, 16 Sep 2021 17:08:27 +0100
+Message-ID: <20210916160827.GA4525@lpieralisi>
+In-Reply-To: CAMj1kXG6Gu=g8P902NB2b+OvzqwJQPqQewYX5UwMiXALYAFkDw@mail.gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8006494517392178825==
+--===============4509494788473265813==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Sep 16, 2021 at 8:58 AM Heikki Krogerus
-<heikki.krogerus(a)linux.intel.com> wrote:
->
-> On Thu, Sep 16, 2021 at 08:13:24AM +0800, kernel test robot wrote:
-> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm=
-.git bleeding-edge
-> > head:   9808623e1bba7d929b50865d7e2d7042cd4e5e7b
-> > commit: 810fc8571f8b70a4263266d979f97edec2804574 [6/11] software node: =
-balance refcount for managed sw nodes
-> > config: arc-randconfig-r001-20210916 (attached as .config)
-> > compiler: arc-elf-gcc (GCC) 11.2.0
-> > reproduce (this is a W=3D1 build):
-> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/s=
-bin/make.cross -O ~/bin/make.cross
-> >         chmod +x ~/bin/make.cross
-> >         # https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-=
-pm.git/commit/?id=3D810fc8571f8b70a4263266d979f97edec2804574
-> >         git remote add rafael-pm https://git.kernel.org/pub/scm/linux/k=
-ernel/git/rafael/linux-pm.git
-> >         git fetch --no-tags rafael-pm bleeding-edge
-> >         git checkout 810fc8571f8b70a4263266d979f97edec2804574
-> >         # save the attached .config to linux build tree
-> >         mkdir build_dir
-> >         COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dgcc-11.2.0 make.c=
-ross O=3Dbuild_dir ARCH=3Darc SHELL=3D/bin/bash drivers/
+On Fri, Sep 10, 2021 at 07:28:49PM +0200, Ard Biesheuvel wrote:
+> On Fri, 10 Sept 2021 at 16:32, Jia He <justin.he(a)arm.com> wrote:
 > >
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kernel test robot <lkp(a)intel.com>
+> > This reverts commit 437b38c51162f8b87beb28a833c4d5dc85fa864e.
 > >
-> > All errors (new ones prefixed by >>):
+> > After this commit, a boot panic is alway hit on an Ampere EMAG server
+> > with call trace as follows:
+> >  Internal error: synchronous external abort: 96000410 [#1] SMP
+> >  Modules linked in:
+> >  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0+ #462
+> >  Hardware name: MiTAC RAPTOR EV-883832-X3-0001/RAPTOR, BIOS 0.14 02/22/=
+2019
+> >  pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=3D--)
+> > [...snip...]
+> >  Call trace:
+> >   acpi_ex_system_memory_space_handler+0x26c/0x2c8
+> >   acpi_ev_address_space_dispatch+0x228/0x2c4
+> >   acpi_ex_access_region+0x114/0x268
+> >   acpi_ex_field_datum_io+0x128/0x1b8
+> >   acpi_ex_extract_from_field+0x14c/0x2ac
+> >   acpi_ex_read_data_from_field+0x190/0x1b8
+> >   acpi_ex_resolve_node_to_value+0x1ec/0x288
+> >   acpi_ex_resolve_to_value+0x250/0x274
+> >   acpi_ds_evaluate_name_path+0xac/0x124
+> >   acpi_ds_exec_end_op+0x90/0x410
+> >   acpi_ps_parse_loop+0x4ac/0x5d8
+> >   acpi_ps_parse_aml+0xe0/0x2c8
+> >   acpi_ps_execute_method+0x19c/0x1ac
+> >   acpi_ns_evaluate+0x1f8/0x26c
+> >   acpi_ns_init_one_device+0x104/0x140
+> >   acpi_ns_walk_namespace+0x158/0x1d0
+> >   acpi_ns_initialize_devices+0x194/0x218
+> >   acpi_initialize_objects+0x48/0x50
+> >   acpi_init+0xe0/0x498
 > >
-> >    drivers/base/swnode.c: In function 'device_create_managed_software_n=
-ode':
-> > >> drivers/base/swnode.c:1120:17: error: too many arguments to function=
- 'software_node_notify'
-> >     1120 |                 software_node_notify(dev, KOBJ_ADD);
-> >          |                 ^~~~~~~~~~~~~~~~~~~~
-> >    In file included from drivers/base/swnode.c:14:
-> >    drivers/base/base.h:206:6: note: declared here
-> >      206 | void software_node_notify(struct device *dev);
-> >          |      ^~~~~~~~~~~~~~~~~~~~
->
-> Ah, that was modified in commit 384f5a857bae ("software nodes: Split
-> software_node_notify()").
->
-> So the patch is OK for stable, but for v5.15-rc1 it has to be changed:
->
-> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
-> index 7bd0f3cfb7eb4..c46f6a8e14d23 100644
-> --- a/drivers/base/swnode.c
-> +++ b/drivers/base/swnode.c
-> @@ -1116,6 +1116,9 @@ int device_create_managed_software_node(struct devi=
-ce *dev,
->         to_swnode(fwnode)->managed =3D true;
->         set_secondary_fwnode(dev, fwnode);
->
-> +       if (device_is_registered(dev))
-> +               software_node_notify(dev);
-> +
->         return 0;
->  }
->  EXPORT_SYMBOL_GPL(device_create_managed_software_node);
->
->
-> Rafael, how do want to handle this?
+> > As mentioned by Lorenzo:
+> >   "We are forcing memory semantics mappings to PROT_NORMAL_NC, which
+> >   eMAG does not like at all and I'd need to understand why. It looks
+> >   like the issue happen in SystemMemory Opregion handler."
+> >
+> > Hence just revert it before everything is clear.
+> >
+> =
 
-I'll fix up the commit, thanks!
---===============8006494517392178825==--
+> Can we try to find the root cause first? -rc1 is not even out yet, and
+> reverting it now means we can not resubmit it until the next merge
+> window.
+
+I am waiting to debug this on an eMAG but I noticed something that
+I wanted to bring up.
+
+SystemMemory Operation region handler - ie
+
+acpi_ex_system_memory_space_handler()
+
+maps the Operation Region (that AFAICS is MMIO, it is _not_ memory)
+with acpi_os_map_memory() and I believe that's what is causing this
+bug.
+
+On the other hand, acpi_os_map_generic_address(), to handle spaceid
+ACPI_ADR_SPACE_SYSTEM_MEMORY, uses acpi_os_map_iomem() that is more
+in line with my expectations.
+
+Question is: is the mapping in acpi_ex_system_memory_space_handler()
+wrong (and should be patched with acpi_os_map_iomem() ?)
+
+On x86 this should not change a thing, on ARM it would.
+
+I don't think it is right to map SystemMemory Operation regions with
+memory semantics but on the other hand, other than the EFI memory map,
+there is nothing we can do to determine what a SystemMemory Operation
+region address space actually represents.
+
+Thoughts ? Before embarking on patching
+
+acpi_ex_system_memory_space_handler()
+
+I want to make sure my understanding of the SystemMemory space is
+correct, comments welcome.
+
+I will pinpoint the trigger for this bug shortly and before doing
+anything else.
+
+Thanks,
+Lorenzo
+--===============4509494788473265813==--
 
