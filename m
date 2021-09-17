@@ -1,103 +1,144 @@
-Content-Type: multipart/mixed; boundary="===============4509494788473265813=="
+Content-Type: multipart/mixed; boundary="===============7786089001825136231=="
 MIME-Version: 1.0
-From: Lorenzo Pieralisi <lorenzo.pieralisi at arm.com>
-Subject: [Devel] Re: [PATCH v2] Revert "ACPI: Add memory semantics to
- acpi_os_map_memory()"
-Date: Thu, 16 Sep 2021 17:08:27 +0100
-Message-ID: <20210916160827.GA4525@lpieralisi>
-In-Reply-To: CAMj1kXG6Gu=g8P902NB2b+OvzqwJQPqQewYX5UwMiXALYAFkDw@mail.gmail.com
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [rafael-pm:bleeding-edge] BUILD SUCCESS
+ 668a3514b8a3dccf147a042777d1e569badca8fa
+Date: Fri, 17 Sep 2021 18:30:15 +0800
+Message-ID: <61446e37.+Rq0q4xx3L/VISYq%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4509494788473265813==
+--===============7786089001825136231==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Sep 10, 2021 at 07:28:49PM +0200, Ard Biesheuvel wrote:
-> On Fri, 10 Sept 2021 at 16:32, Jia He <justin.he(a)arm.com> wrote:
-> >
-> > This reverts commit 437b38c51162f8b87beb28a833c4d5dc85fa864e.
-> >
-> > After this commit, a boot panic is alway hit on an Ampere EMAG server
-> > with call trace as follows:
-> >  Internal error: synchronous external abort: 96000410 [#1] SMP
-> >  Modules linked in:
-> >  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0+ #462
-> >  Hardware name: MiTAC RAPTOR EV-883832-X3-0001/RAPTOR, BIOS 0.14 02/22/=
-2019
-> >  pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=3D--)
-> > [...snip...]
-> >  Call trace:
-> >   acpi_ex_system_memory_space_handler+0x26c/0x2c8
-> >   acpi_ev_address_space_dispatch+0x228/0x2c4
-> >   acpi_ex_access_region+0x114/0x268
-> >   acpi_ex_field_datum_io+0x128/0x1b8
-> >   acpi_ex_extract_from_field+0x14c/0x2ac
-> >   acpi_ex_read_data_from_field+0x190/0x1b8
-> >   acpi_ex_resolve_node_to_value+0x1ec/0x288
-> >   acpi_ex_resolve_to_value+0x250/0x274
-> >   acpi_ds_evaluate_name_path+0xac/0x124
-> >   acpi_ds_exec_end_op+0x90/0x410
-> >   acpi_ps_parse_loop+0x4ac/0x5d8
-> >   acpi_ps_parse_aml+0xe0/0x2c8
-> >   acpi_ps_execute_method+0x19c/0x1ac
-> >   acpi_ns_evaluate+0x1f8/0x26c
-> >   acpi_ns_init_one_device+0x104/0x140
-> >   acpi_ns_walk_namespace+0x158/0x1d0
-> >   acpi_ns_initialize_devices+0x194/0x218
-> >   acpi_initialize_objects+0x48/0x50
-> >   acpi_init+0xe0/0x498
-> >
-> > As mentioned by Lorenzo:
-> >   "We are forcing memory semantics mappings to PROT_NORMAL_NC, which
-> >   eMAG does not like at all and I'd need to understand why. It looks
-> >   like the issue happen in SystemMemory Opregion handler."
-> >
-> > Hence just revert it before everything is clear.
-> >
-> =
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git bleeding-edge
+branch HEAD: 668a3514b8a3dccf147a042777d1e569badca8fa  Merge branch 'devpro=
+p' into bleeding-edge
 
-> Can we try to find the root cause first? -rc1 is not even out yet, and
-> reverting it now means we can not resubmit it until the next merge
-> window.
+elapsed time: 1321m
 
-I am waiting to debug this on an eMAG but I noticed something that
-I wanted to bring up.
+configs tested: 105
+configs skipped: 4
 
-SystemMemory Operation region handler - ie
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-acpi_ex_system_memory_space_handler()
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20210916
+mips                     loongson1b_defconfig
+sh                           se7712_defconfig
+powerpc                        warp_defconfig
+arm                      integrator_defconfig
+powerpc                 mpc837x_rdb_defconfig
+s390                       zfcpdump_defconfig
+powerpc                      arches_defconfig
+m68k                       m5275evb_defconfig
+mips                        workpad_defconfig
+arm                     eseries_pxa_defconfig
+powerpc                    klondike_defconfig
+sh                           se7343_defconfig
+powerpc                 mpc837x_mds_defconfig
+mips                     loongson2k_defconfig
+powerpc                     tqm8560_defconfig
+xtensa                  cadence_csp_defconfig
+arm                        spear3xx_defconfig
+x86_64               randconfig-c001-20210916
+arm                  randconfig-c002-20210916
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a016-20210916
+x86_64               randconfig-a013-20210916
+x86_64               randconfig-a012-20210916
+x86_64               randconfig-a011-20210916
+x86_64               randconfig-a014-20210916
+x86_64               randconfig-a015-20210916
+i386                 randconfig-a016-20210916
+i386                 randconfig-a015-20210916
+i386                 randconfig-a011-20210916
+i386                 randconfig-a012-20210916
+i386                 randconfig-a013-20210916
+i386                 randconfig-a014-20210916
+riscv                randconfig-r042-20210916
+s390                 randconfig-r044-20210916
+arc                  randconfig-r043-20210916
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-maps the Operation Region (that AFAICS is MMIO, it is _not_ memory)
-with acpi_os_map_memory() and I believe that's what is causing this
-bug.
+clang tested configs:
+riscv                randconfig-c006-20210916
+x86_64               randconfig-c007-20210916
+mips                 randconfig-c004-20210916
+powerpc              randconfig-c003-20210916
+arm                  randconfig-c002-20210916
+i386                 randconfig-c001-20210916
+s390                 randconfig-c005-20210916
+x86_64               randconfig-a002-20210916
+x86_64               randconfig-a003-20210916
+x86_64               randconfig-a006-20210916
+x86_64               randconfig-a004-20210916
+x86_64               randconfig-a005-20210916
+x86_64               randconfig-a001-20210916
+i386                 randconfig-a004-20210916
+i386                 randconfig-a005-20210916
+i386                 randconfig-a006-20210916
+i386                 randconfig-a002-20210916
+i386                 randconfig-a003-20210916
+i386                 randconfig-a001-20210916
+hexagon              randconfig-r045-20210916
+hexagon              randconfig-r041-20210916
 
-On the other hand, acpi_os_map_generic_address(), to handle spaceid
-ACPI_ADR_SPACE_SYSTEM_MEMORY, uses acpi_os_map_iomem() that is more
-in line with my expectations.
-
-Question is: is the mapping in acpi_ex_system_memory_space_handler()
-wrong (and should be patched with acpi_os_map_iomem() ?)
-
-On x86 this should not change a thing, on ARM it would.
-
-I don't think it is right to map SystemMemory Operation regions with
-memory semantics but on the other hand, other than the EFI memory map,
-there is nothing we can do to determine what a SystemMemory Operation
-region address space actually represents.
-
-Thoughts ? Before embarking on patching
-
-acpi_ex_system_memory_space_handler()
-
-I want to make sure my understanding of the SystemMemory space is
-correct, comments welcome.
-
-I will pinpoint the trigger for this bug shortly and before doing
-anything else.
-
-Thanks,
-Lorenzo
---===============4509494788473265813==--
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
+--===============7786089001825136231==--
 
