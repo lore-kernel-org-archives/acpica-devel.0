@@ -1,144 +1,67 @@
-Content-Type: multipart/mixed; boundary="===============7786089001825136231=="
+Content-Type: multipart/mixed; boundary="===============4097534992101820119=="
 MIME-Version: 1.0
-From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [rafael-pm:bleeding-edge] BUILD SUCCESS
- 668a3514b8a3dccf147a042777d1e569badca8fa
-Date: Fri, 17 Sep 2021 18:30:15 +0800
-Message-ID: <61446e37.+Rq0q4xx3L/VISYq%lkp@intel.com>
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] Re: [PATCH AUTOSEL 4.4 24/35] ACPICA: iASL: Fix for WPBT
+ table with no command-line arguments
+Date: Fri, 17 Sep 2021 19:21:57 +0000
+Message-ID: <BYAPR11MB3256A989B8F75EE3A9C885F387DD9@BYAPR11MB3256.namprd11.prod.outlook.com>
+In-Reply-To: 20210910074535.GA454@amd
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7786089001825136231==
+--===============4097534992101820119==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
-m.git bleeding-edge
-branch HEAD: 668a3514b8a3dccf147a042777d1e569badca8fa  Merge branch 'devpro=
-p' into bleeding-edge
+This structure is used by the iASL data table disassembler.
+Bob
 
-elapsed time: 1321m
 
-configs tested: 105
-configs skipped: 4
+-----Original Message-----
+From: Pavel Machek <pavel(a)denx.de> =
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Sent: Friday, September 10, 2021 12:46 AM
+To: Sasha Levin <sashal(a)kernel.org>
+Cc: linux-kernel(a)vger.kernel.org; stable(a)vger.kernel.org; Moore, Robert=
+ <robert.moore(a)intel.com>; Wysocki, Rafael J <rafael.j.wysocki(a)intel.co=
+m>; linux-acpi(a)vger.kernel.org; devel(a)acpica.org
+Subject: Re: [PATCH AUTOSEL 4.4 24/35] ACPICA: iASL: Fix for WPBT table wit=
+h no command-line arguments
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20210916
-mips                     loongson1b_defconfig
-sh                           se7712_defconfig
-powerpc                        warp_defconfig
-arm                      integrator_defconfig
-powerpc                 mpc837x_rdb_defconfig
-s390                       zfcpdump_defconfig
-powerpc                      arches_defconfig
-m68k                       m5275evb_defconfig
-mips                        workpad_defconfig
-arm                     eseries_pxa_defconfig
-powerpc                    klondike_defconfig
-sh                           se7343_defconfig
-powerpc                 mpc837x_mds_defconfig
-mips                     loongson2k_defconfig
-powerpc                     tqm8560_defconfig
-xtensa                  cadence_csp_defconfig
-arm                        spear3xx_defconfig
-x86_64               randconfig-c001-20210916
-arm                  randconfig-c002-20210916
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a016-20210916
-x86_64               randconfig-a013-20210916
-x86_64               randconfig-a012-20210916
-x86_64               randconfig-a011-20210916
-x86_64               randconfig-a014-20210916
-x86_64               randconfig-a015-20210916
-i386                 randconfig-a016-20210916
-i386                 randconfig-a015-20210916
-i386                 randconfig-a011-20210916
-i386                 randconfig-a012-20210916
-i386                 randconfig-a013-20210916
-i386                 randconfig-a014-20210916
-riscv                randconfig-r042-20210916
-s390                 randconfig-r044-20210916
-arc                  randconfig-r043-20210916
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+Hi!
 
-clang tested configs:
-riscv                randconfig-c006-20210916
-x86_64               randconfig-c007-20210916
-mips                 randconfig-c004-20210916
-powerpc              randconfig-c003-20210916
-arm                  randconfig-c002-20210916
-i386                 randconfig-c001-20210916
-s390                 randconfig-c005-20210916
-x86_64               randconfig-a002-20210916
-x86_64               randconfig-a003-20210916
-x86_64               randconfig-a006-20210916
-x86_64               randconfig-a004-20210916
-x86_64               randconfig-a005-20210916
-x86_64               randconfig-a001-20210916
-i386                 randconfig-a004-20210916
-i386                 randconfig-a005-20210916
-i386                 randconfig-a006-20210916
-i386                 randconfig-a002-20210916
-i386                 randconfig-a003-20210916
-i386                 randconfig-a001-20210916
-hexagon              randconfig-r045-20210916
-hexagon              randconfig-r041-20210916
+> Handle the case where the Command-line Arguments table field does not =
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============7786089001825136231==--
+> exist.
+> =
+
+> ACPICA commit d6487164497fda170a1b1453c5d58f2be7c873d6
+
+I'm not sure what is going on here, but adding unused definition will not m=
+ake any difference for 4.4 users, so we don't need this in -stable...?
+
+Best regards,
+								Pavel
+
+> +++ b/include/acpi/actbl3.h
+> @@ -738,6 +738,10 @@ struct acpi_table_wpbt {
+>  	u16 arguments_length;
+>  };
+>  =
+
+> +struct acpi_wpbt_unicode {
+> +	u16 *unicode_string;
+> +};
+> +
+>  /***********************************************************************=
+********
+>   *
+>   * XENV - Xen Environment Table (ACPI 6.0)
+
+-- =
+
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+--===============4097534992101820119==--
 
