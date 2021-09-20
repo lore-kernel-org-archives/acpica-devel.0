@@ -1,67 +1,147 @@
-Content-Type: multipart/mixed; boundary="===============4097534992101820119=="
+Content-Type: multipart/mixed; boundary="===============5254789604640890393=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] Re: [PATCH AUTOSEL 4.4 24/35] ACPICA: iASL: Fix for WPBT
- table with no command-line arguments
-Date: Fri, 17 Sep 2021 19:21:57 +0000
-Message-ID: <BYAPR11MB3256A989B8F75EE3A9C885F387DD9@BYAPR11MB3256.namprd11.prod.outlook.com>
-In-Reply-To: 20210910074535.GA454@amd
+From: Lorenzo Pieralisi <lorenzo.pieralisi at arm.com>
+Subject: [Devel] Re: [PATCH v2] Revert "ACPI: Add memory semantics to
+ acpi_os_map_memory()"
+Date: Mon, 20 Sep 2021 18:00:55 +0100
+Message-ID: <20210920170055.GA13861@lpieralisi>
+In-Reply-To: 20210916160827.GA4525@lpieralisi
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4097534992101820119==
+--===============5254789604640890393==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-This structure is used by the iASL data table disassembler.
-Bob
+On Thu, Sep 16, 2021 at 05:08:27PM +0100, Lorenzo Pieralisi wrote:
+> On Fri, Sep 10, 2021 at 07:28:49PM +0200, Ard Biesheuvel wrote:
+> > On Fri, 10 Sept 2021 at 16:32, Jia He <justin.he(a)arm.com> wrote:
+> > >
+> > > This reverts commit 437b38c51162f8b87beb28a833c4d5dc85fa864e.
+> > >
+> > > After this commit, a boot panic is alway hit on an Ampere EMAG server
+> > > with call trace as follows:
+> > >  Internal error: synchronous external abort: 96000410 [#1] SMP
+> > >  Modules linked in:
+> > >  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0+ #462
+> > >  Hardware name: MiTAC RAPTOR EV-883832-X3-0001/RAPTOR, BIOS 0.14 02/2=
+2/2019
+> > >  pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=3D--)
+> > > [...snip...]
+> > >  Call trace:
+> > >   acpi_ex_system_memory_space_handler+0x26c/0x2c8
+> > >   acpi_ev_address_space_dispatch+0x228/0x2c4
+> > >   acpi_ex_access_region+0x114/0x268
+> > >   acpi_ex_field_datum_io+0x128/0x1b8
+> > >   acpi_ex_extract_from_field+0x14c/0x2ac
+> > >   acpi_ex_read_data_from_field+0x190/0x1b8
+> > >   acpi_ex_resolve_node_to_value+0x1ec/0x288
+> > >   acpi_ex_resolve_to_value+0x250/0x274
+> > >   acpi_ds_evaluate_name_path+0xac/0x124
+> > >   acpi_ds_exec_end_op+0x90/0x410
+> > >   acpi_ps_parse_loop+0x4ac/0x5d8
+> > >   acpi_ps_parse_aml+0xe0/0x2c8
+> > >   acpi_ps_execute_method+0x19c/0x1ac
+> > >   acpi_ns_evaluate+0x1f8/0x26c
+> > >   acpi_ns_init_one_device+0x104/0x140
+> > >   acpi_ns_walk_namespace+0x158/0x1d0
+> > >   acpi_ns_initialize_devices+0x194/0x218
+> > >   acpi_initialize_objects+0x48/0x50
+> > >   acpi_init+0xe0/0x498
+> > >
+> > > As mentioned by Lorenzo:
+> > >   "We are forcing memory semantics mappings to PROT_NORMAL_NC, which
+> > >   eMAG does not like at all and I'd need to understand why. It looks
+> > >   like the issue happen in SystemMemory Opregion handler."
+> > >
+> > > Hence just revert it before everything is clear.
+> > >
+> > =
 
-
------Original Message-----
-From: Pavel Machek <pavel(a)denx.de> =
-
-Sent: Friday, September 10, 2021 12:46 AM
-To: Sasha Levin <sashal(a)kernel.org>
-Cc: linux-kernel(a)vger.kernel.org; stable(a)vger.kernel.org; Moore, Robert=
- <robert.moore(a)intel.com>; Wysocki, Rafael J <rafael.j.wysocki(a)intel.co=
-m>; linux-acpi(a)vger.kernel.org; devel(a)acpica.org
-Subject: Re: [PATCH AUTOSEL 4.4 24/35] ACPICA: iASL: Fix for WPBT table wit=
-h no command-line arguments
-
-Hi!
-
-> Handle the case where the Command-line Arguments table field does not =
-
-> exist.
+> > Can we try to find the root cause first? -rc1 is not even out yet, and
+> > reverting it now means we can not resubmit it until the next merge
+> > window.
 > =
 
-> ACPICA commit d6487164497fda170a1b1453c5d58f2be7c873d6
+> I am waiting to debug this on an eMAG but I noticed something that
+> I wanted to bring up.
+> =
 
-I'm not sure what is going on here, but adding unused definition will not m=
-ake any difference for 4.4 users, so we don't need this in -stable...?
+> SystemMemory Operation region handler - ie
+> =
 
-Best regards,
-								Pavel
+> acpi_ex_system_memory_space_handler()
+> =
 
-> +++ b/include/acpi/actbl3.h
-> @@ -738,6 +738,10 @@ struct acpi_table_wpbt {
->  	u16 arguments_length;
->  };
->  =
+> maps the Operation Region (that AFAICS is MMIO, it is _not_ memory)
+> with acpi_os_map_memory() and I believe that's what is causing this
+> bug.
+> =
 
-> +struct acpi_wpbt_unicode {
-> +	u16 *unicode_string;
-> +};
-> +
->  /***********************************************************************=
-********
->   *
->   * XENV - Xen Environment Table (ACPI 6.0)
+> On the other hand, acpi_os_map_generic_address(), to handle spaceid
+> ACPI_ADR_SPACE_SYSTEM_MEMORY, uses acpi_os_map_iomem() that is more
+> in line with my expectations.
 
--- =
+Hi Rafael,
 
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
---===============4097534992101820119==--
+I wanted to ask please if you have any insights on why
+
+(1) acpi_ex_system_memory_space_handler()
+(2) acpi_os_map_generic_address()
+
+Use two different calls to map memory for the _same_ address space ID
+(SystemMemory).
+
+(3) acpi_os_map_memory()
+vs
+(4) acpi_os_map_iomem()
+
+I am struggling to understand why (1) uses (3) ("memory semantics") when
+(2) uses (4) - it is actually unclear how the distinction between
+the two mapping APIs is to be drawn and on what basis one should
+choose which one to use.
+
+I am still waiting to grab some HW to debug this report but the issue
+here is that we are mapping an OpRegion SystemMemory with (3) in the
+memory space handler and given the patch we are reverting we end up
+mapping the operation region with normal non-cacheable memory attributes
+that probably the physical address range behind the OpRegion does not
+support.
+
+Thanks a lot,
+Lorenzo
+
+> =
+
+> Question is: is the mapping in acpi_ex_system_memory_space_handler()
+> wrong (and should be patched with acpi_os_map_iomem() ?)
+> =
+
+> On x86 this should not change a thing, on ARM it would.
+> =
+
+> I don't think it is right to map SystemMemory Operation regions with
+> memory semantics but on the other hand, other than the EFI memory map,
+> there is nothing we can do to determine what a SystemMemory Operation
+> region address space actually represents.
+> =
+
+> Thoughts ? Before embarking on patching
+> =
+
+> acpi_ex_system_memory_space_handler()
+> =
+
+> I want to make sure my understanding of the SystemMemory space is
+> correct, comments welcome.
+> =
+
+> I will pinpoint the trigger for this bug shortly and before doing
+> anything else.
+> =
+
+> Thanks,
+> Lorenzo
+--===============5254789604640890393==--
 
