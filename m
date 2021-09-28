@@ -1,167 +1,102 @@
-Content-Type: multipart/mixed; boundary="===============6680775085957082901=="
+Content-Type: multipart/mixed; boundary="===============2687084783480941093=="
 MIME-Version: 1.0
-From: Lorenzo Pieralisi <lorenzo.pieralisi at arm.com>
-Subject: [Devel] Re: [PATCH v2] Revert "ACPI: Add memory semantics to
- acpi_os_map_memory()"
-Date: Fri, 24 Sep 2021 10:04:09 +0100
-Message-ID: <20210924090409.GA26089@lpieralisi>
-In-Reply-To: CAJZ5v0j7=EGbtGw+FOMwyNWoyRoaeT1cvu6si7nPVVFh307J0g@mail.gmail.com
+From: Devin Steffler <devinsteffler at gmail.com>
+Subject: [Devel] Question about ACPICA, QNX and making beeps
+Date: Tue, 28 Sep 2021 15:04:29 -0400
+Message-ID: <CAAuRk_jLAfxp7ryhuWPORetZaqMPoNmsHYP6Y=BtkCucAyp45w@mail.gmail.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6680775085957082901==
+--===============2687084783480941093==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Sep 23, 2021 at 02:54:52PM +0200, Rafael J. Wysocki wrote:
-> On Thu, Sep 23, 2021 at 2:26 PM Mark Kettenis <mark.kettenis(a)xs4all.nl>=
- wrote:
-> >
-> > > From: "Rafael J. Wysocki" <rafael(a)kernel.org>
-> > > Date: Thu, 23 Sep 2021 13:05:05 +0200
-> > >
-> > > On Thu, Sep 23, 2021 at 11:40 AM Lorenzo Pieralisi
-> > > <lorenzo.pieralisi(a)arm.com> wrote:
-> > > >
-> > > > On Thu, Sep 23, 2021 at 01:09:58AM +0200, Mark Kettenis wrote:
-> > > > > > Date: Wed, 22 Sep 2021 17:33:36 +0100
-> > > > > > From: Lorenzo Pieralisi <lorenzo.pieralisi(a)arm.com>
-> > > > > >
-> > > > > > On Fri, Sep 10, 2021 at 10:32:23PM +0800, Jia He wrote:
-> > > > > > > This reverts commit 437b38c51162f8b87beb28a833c4d5dc85fa864e.
-> > > > > > >
-> > > > > > > After this commit, a boot panic is alway hit on an Ampere EMA=
-G server
-> > > > > > > with call trace as follows:
-> > > > > > >  Internal error: synchronous external abort: 96000410 [#1] SMP
-> > > > > > >  Modules linked in:
-> > > > > > >  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0+ #462
-> > > > > > >  Hardware name: MiTAC RAPTOR EV-883832-X3-0001/RAPTOR, BIOS 0=
-.14 02/22/2019
-> > > > > > >  pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=
-=3D--)
-> > > > > > > [...snip...]
-> > > > > > >  Call trace:
-> > > > > > >   acpi_ex_system_memory_space_handler+0x26c/0x2c8
-> > > > > > >   acpi_ev_address_space_dispatch+0x228/0x2c4
-> > > > > > >   acpi_ex_access_region+0x114/0x268
-> > > > > > >   acpi_ex_field_datum_io+0x128/0x1b8
-> > > > > > >   acpi_ex_extract_from_field+0x14c/0x2ac
-> > > > > > >   acpi_ex_read_data_from_field+0x190/0x1b8
-> > > > > > >   acpi_ex_resolve_node_to_value+0x1ec/0x288
-> > > > > > >   acpi_ex_resolve_to_value+0x250/0x274
-> > > > > > >   acpi_ds_evaluate_name_path+0xac/0x124
-> > > > > > >   acpi_ds_exec_end_op+0x90/0x410
-> > > > > > >   acpi_ps_parse_loop+0x4ac/0x5d8
-> > > > > > >   acpi_ps_parse_aml+0xe0/0x2c8
-> > > > > > >   acpi_ps_execute_method+0x19c/0x1ac
-> > > > > > >   acpi_ns_evaluate+0x1f8/0x26c
-> > > > > > >   acpi_ns_init_one_device+0x104/0x140
-> > > > > > >   acpi_ns_walk_namespace+0x158/0x1d0
-> > > > > > >   acpi_ns_initialize_devices+0x194/0x218
-> > > > > > >   acpi_initialize_objects+0x48/0x50
-> > > > > > >   acpi_init+0xe0/0x498
-> > > > > > >
-> > > > > > > As mentioned by Lorenzo:
-> > > > > > >   "We are forcing memory semantics mappings to PROT_NORMAL_NC=
-, which
-> > > > > > >   eMAG does not like at all and I'd need to understand why. I=
-t looks
-> > > > > > >   like the issue happen in SystemMemory Opregion handler."
-> > > > > > >
-> > > > > > > Hence just revert it before everything is clear.
-> > > > > > >
-> > > > > > > Fixes: 437b38c51162 ("ACPI: Add memory semantics to acpi_os_m=
-ap_memory()")
-> > > > > > > Cc: Lorenzo Pieralisi <lorenzo.pieralisi(a)arm.com>
-> > > > > > > Cc: Ard Biesheuvel <ardb(a)kernel.org>
-> > > > > > > Cc: Hanjun Guo <guohanjun(a)huawei.com>
-> > > > > > > Cc: Catalin Marinas <catalin.marinas(a)arm.com>
-> > > > > > > Cc: Rafael J. Wysocki <rafael.j.wysocki(a)intel.com>
-> > > > > > > Cc: Harb Abdulhamid <harb(a)amperecomputing.com>
-> > > > > > >
-> > > > > > > Signed-off-by: Jia He <justin.he(a)arm.com>
-> > > > > >
-> > > > > > Rewrote the commit log, please take the patch below and repost
-> > > > > > it as a v3.
-> > > > > >
-> > > > > > It would still be great if Ampere can help us understand why
-> > > > > > the NormalNC attributes trigger a sync abort on the opregion
-> > > > > > before merging it.
-> > > > >
-> > > > > To be honest, I don't think you really need an explanation from A=
-mpere
-> > > > > here.  Mapping a part of the address space that doesn't provide m=
-emory
-> > > > > semantics with NormalNC attributes is wrong and triggering a sync
-> > > > > abort in that case is way better than silently ignoring the acces=
-s.
-> > > >
-> > > > That's understood and that's what I explained in the revert commit
-> > > > log, no question about it.
-> > > >
-> > > > I was just asking to confirm if that's what's actually happening.
-> > > >
-> > > > > Putting my OpenBSD hat on (where we have our own ACPI OSPM
-> > > > > implementation) I must say that we always interpreted SystemMemor=
-y as
-> > > > > memory mapped IO and I think that is a logical choice as SystemIO=
- is
-> > > > > used for (non-memory mapped) IO.  And I'd say that the ACPI OSPM =
-code
-> > > > > should make sure that it uses properly aligned access to any Field
-> > > > > object that doesn't use AnyAcc as its access type.  Even on x86! =
- And
-> > > > > I'd say that AML that uses AnyAcc fields for SystemMemory OpRegio=
-ns on
-> > > > > arm64 is buggy.
-> > > > >
-> > > > > But maybe relaxing this when the EFI memory map indicates that the
-> > > > > address space in question does provide memory semantics does make
-> > > > > sense.  That should defenitely be documented in the ACPI standard
-> > > > > though.
-> > > >
-> > > > Mapping SystemMemory Opregions as "memory" does not make sense
-> > > > at all to me. Still, that's what Linux ACPICA code does (*if*
-> > > > that's what acpi_os_map_memory() is supposed to mean).
-> > > >
-> > > > https://lore.kernel.org/linux-acpi/20210916160827.GA4525(a)lpierali=
-si
-> > >
-> > > It doesn't need to do that, though, if there are good enough arguments
-> > > to change the current behavior (and the argument here is that it may
-> > > be an MMIO region, so mapping it as memory doesn't really work, but it
-> > > also may be a region in memory - there is no rule in the spec by which
-> > > SystemMemory Opregions cannot be "memory" AFAICS) and if that change
-> > > doesn't introduce regressions in the installed base.
-> > >
-> > > > Where do we go from here, to be defined, we still have a bug
-> > > > to fix after the revert is applied.
-> > > >
-> > > > drivers/acpi/sysfs.c
-> > > >
-> > > > maps BERT error regions with acpi_os_map_memory().
-> > >
-> > > That mechanism is basically used for exporting ACPI tables to user
-> > > space and they are known to reside in memory.  Whether or not BERT
-> > > regions should be mapped in the same way is a good question.
-> >
-> > It is not inconceivable that BERT regions actually live in memory of
-> > the BMC that is exposed over a bus that doesn't implement memory
-> > semantics is it?
-> =
+Hello,
 
-> No, it isn't, which is why I think that mapping them as RAM may not be
-> a good idea in general.
+I am using ACPICA to read battery information in QNX. That part is working
+great so far. However, now some code that is being used to make beeps via
+the PC speaker stopped working.
 
-Should I patch acpi_data_show() to map BERT error regions (well, that's
-what acpi_data_show() is used on at the moment) as MMIO and use the
-related memcpy routine to read them then :) ?
+Strangely, this code stops working on a few devices only after ACPICA runs.
+It works fine if I don't start ACPICA. The code is using I/O ports 0x43,
+0x42, and 0x61 to generate beeps. This seems to be an industry standard way
+to make beeps on x86 based PCs using a Programmable Interval Timer (PIT).
 
-Lorenzo
+What could my ACPICA be doing (or failing to do) that could cause the beeps
+to stop working with the code below? Is the PIT being disabled somehow? I
+guess I'll need to learn more about the PIT and how to check its status to
+see if it's being disabled after ACPICA runs.
 
-> At the same time, mapping the ACPI tables like the DSDT etc. as RAM is
-> always valid.
---===============6680775085957082901==--
+Here's example code for QNX to generate a beep using the PC speaker:
+// -----------------------------------------------
+#include <sys/neutrino.h>
+#include <hw/inout.h>
+#include <unistd.h>
+
+int main(void) {
+    ThreadCtl( _NTO_TCTL_IO, 0 ); // get I/O permissions
+
+    // start a beep
+    int freq =3D 1000;
+    int scale =3D 1193046 / freq;
+    out8(0x43, 0xb6);
+    out8(0x42, scale & 0xff);
+    out8(0x42, scale >> 8);
+    out8(0x61, in8(0x61) | 3);
+
+    // let the beep play for a second
+    delay(1000);
+
+    // stop the beep
+    out8(0x61, in8(0x61) & ~3);
+
+    return 0;
+}
+// -----------------------------------------------
+
+Thanks,
+Devin
+
+--===============2687084783480941093==
+Content-Type: text/html
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="attachment.htm"
+
+PGRpdiBkaXI9Imx0ciI+PGRpdj5IZWxsbyw8L2Rpdj48ZGl2Pjxicj48L2Rpdj5JIGFtIHVzaW5n
+IEFDUElDQSB0byByZWFkIGJhdHRlcnkgaW5mb3JtYXRpb24gaW4gUU5YLiBUaGF0IHBhcnQgaXMg
+d29ya2luZyBncmVhdCBzbyBmYXIuIEhvd2V2ZXIsIG5vdyBzb21lIGNvZGUgdGhhdCBpcyBiZWlu
+ZyB1c2VkIHRvIG1ha2UgYmVlcHMgdmlhIHRoZSBQQyBzcGVha2VyIHN0b3BwZWQgd29ya2luZy48
+ZGl2Pjxicj48L2Rpdj48ZGl2PlN0cmFuZ2VseSwgdGhpcyBjb2RlIHN0b3BzIHdvcmtpbmcgb24g
+YSBmZXcgZGV2aWNlcyBvbmx5IGFmdGVyIEFDUElDQSBydW5zLiBJdCB3b3JrcyBmaW5lIGlmIEkg
+ZG9uJiMzOTt0IHN0YXJ0IEFDUElDQS4gVGhlIGNvZGUgaXMgdXNpbmcgSS9PIHBvcnRzIDB4NDMs
+IDB4NDIsIGFuZCAweDYxIHRvIGdlbmVyYXRlIGJlZXBzLiBUaGlzIHNlZW1zIHRvIGJlIGFuIGlu
+ZHVzdHJ5IHN0YW5kYXJkIHdheSB0byBtYWtlIGJlZXBzIG9uIHg4NiBiYXNlZCBQQ3MgdXNpbmcg
+YSBQcm9ncmFtbWFibGUgSW50ZXJ2YWwgVGltZXIgKFBJVCkuPC9kaXY+PGRpdj48YnI+PC9kaXY+
+PGRpdj5XaGF0IGNvdWxkIG15IEFDUElDQSBiZSBkb2luZyAob3IgZmFpbGluZyB0byBkbykgdGhh
+dCBjb3VsZCBjYXVzZSB0aGUgYmVlcHMgdG8gc3RvcCB3b3JraW5nIHdpdGggdGhlIGNvZGUgYmVs
+b3c/IElzIHRoZSBQSVQgYmVpbmcgZGlzYWJsZWQgc29tZWhvdz8gSSBndWVzcyBJJiMzOTtsbCBu
+ZWVkIHRvIGxlYXJuIG1vcmUgYWJvdXQgdGhlIFBJVCBhbmQgaG93IHRvIGNoZWNrIGl0cyBzdGF0
+dXMgdG8gc2VlIGlmIGl0JiMzOTtzIGJlaW5nIGRpc2FibGVkIGFmdGVyIEFDUElDQSBydW5zLjxi
+cj48L2Rpdj48ZGl2Pjxicj48L2Rpdj48ZGl2PkhlcmUmIzM5O3MgZXhhbXBsZSBjb2RlIGZvciBR
+TlggdG8gZ2VuZXJhdGUgYSBiZWVwIHVzaW5nIHRoZSBQQyBzcGVha2VyOjwvZGl2PjxkaXY+Ly8g
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS08YnI+PC9kaXY+
+PGRpdj4jaW5jbHVkZSAmbHQ7c3lzL25ldXRyaW5vLmgmZ3Q7PGJyPiNpbmNsdWRlICZsdDtody9p
+bm91dC5oJmd0Ozxicj4jaW5jbHVkZSAmbHQ7dW5pc3RkLmgmZ3Q7PGJyPjxicj5pbnQgbWFpbih2
+b2lkKSB7PGJyPsKgwqDCoCBUaHJlYWRDdGwoIF9OVE9fVENUTF9JTywgMCApOyAvLyBnZXQgSS9P
+IHBlcm1pc3Npb25zPGJyPjwvZGl2PjxkaXY+PGJyPjwvZGl2PjxkaXY+wqDCoMKgIC8vIHN0YXJ0
+IGEgYmVlcDxicj48L2Rpdj48ZGl2PsKgIMKgIGludCBmcmVxID0gMTAwMDs8YnI+wqAgwqAgaW50
+IHNjYWxlID0gMTE5MzA0NiAvIGZyZXE7PGJyPsKgIMKgIG91dDgoMHg0MywgMHhiNik7PGJyPsKg
+IMKgIG91dDgoMHg0Miwgc2NhbGUgJmFtcDsgMHhmZik7PGJyPsKgIMKgIG91dDgoMHg0Miwgc2Nh
+bGUgJmd0OyZndDsgOCk7PGJyPsKgIMKgIG91dDgoMHg2MSwgaW44KDB4NjEpIHwgMyk7PGJyPjwv
+ZGl2PjxkaXY+wqDCoMKgIDxicj48L2Rpdj48ZGl2PsKgwqDCoCAvLyBsZXQgdGhlIGJlZXAgcGxh
+eSBmb3IgYSBzZWNvbmQ8YnI+PC9kaXY+PGRpdj7CoMKgwqAgZGVsYXkoMTAwMCk7PGJyPjwvZGl2
+PjxkaXY+PGJyPjwvZGl2PjxkaXY+wqDCoMKgIC8vIHN0b3AgdGhlIGJlZXA8YnI+PC9kaXY+PGRp
+dj7CoCDCoCBvdXQ4KDB4NjEsIGluOCgweDYxKSAmYW1wOyB+Myk7PGJyPjxicj7CoMKgwqAgcmV0
+dXJuIDA7PGJyPn08L2Rpdj48ZGl2PgovLyAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLSA8YnI+PC9kaXY+PGRpdj48YnI+PC9kaXY+PGRpdj5UaGFua3MsPC9k
+aXY+PGRpdj5EZXZpbjxicj48L2Rpdj48L2Rpdj4K
+
+--===============2687084783480941093==--
 
