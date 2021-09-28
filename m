@@ -1,102 +1,101 @@
-Content-Type: multipart/mixed; boundary="===============2687084783480941093=="
+Content-Type: multipart/mixed; boundary="===============8510851698038111846=="
 MIME-Version: 1.0
-From: Devin Steffler <devinsteffler at gmail.com>
-Subject: [Devel] Question about ACPICA, QNX and making beeps
-Date: Tue, 28 Sep 2021 15:04:29 -0400
-Message-ID: <CAAuRk_jLAfxp7ryhuWPORetZaqMPoNmsHYP6Y=BtkCucAyp45w@mail.gmail.com>
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] Re: [PATCH] ACPI: avoid NULL pointer arithmetic
+Date: Tue, 28 Sep 2021 20:39:55 +0000
+Message-ID: <BYAPR11MB32560CEAC6CC3C2E93FBBF9387A89@BYAPR11MB3256.namprd11.prod.outlook.com>
+In-Reply-To: 92b02547-3aa5-537f-a782-7a25854d88fe@intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2687084783480941093==
+--===============8510851698038111846==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hello,
+I can take this patch as-is, I think. I'll try for the next acpica release =
+later this week.
 
-I am using ACPICA to read battery information in QNX. That part is working
-great so far. However, now some code that is being used to make beeps via
-the PC speaker stopped working.
 
-Strangely, this code stops working on a few devices only after ACPICA runs.
-It works fine if I don't start ACPICA. The code is using I/O ports 0x43,
-0x42, and 0x61 to generate beeps. This seems to be an industry standard way
-to make beeps on x86 based PCs using a Programmable Interval Timer (PIT).
+-----Original Message-----
+From: Wysocki, Rafael J <rafael.j.wysocki(a)intel.com> =
 
-What could my ACPICA be doing (or failing to do) that could cause the beeps
-to stop working with the code below? Is the PIT being disabled somehow? I
-guess I'll need to learn more about the PIT and how to check its status to
-see if it's being disabled after ACPICA runs.
+Sent: Tuesday, September 28, 2021 10:44 AM
+To: Arnd Bergmann <arnd(a)kernel.org>; Moore, Robert <robert.moore(a)intel.=
+com>
+Cc: Arnd Bergmann <arnd(a)arndb.de>; Nathan Chancellor <nathan(a)kernel.org=
+>; Nick Desaulniers <ndesaulniers(a)google.com>; Erik Kaneda <erik.kaneda(a=
+)intel.com>; linux-acpi(a)vger.kernel.org; devel(a)acpica.org; linux-kernel=
+(a)vger.kernel.org; llvm(a)lists.linux.dev; Len Brown <lenb(a)kernel.org>; =
+Rafael J. Wysocki <rafael(a)kernel.org>
+Subject: Re: [PATCH] ACPI: avoid NULL pointer arithmetic
 
-Here's example code for QNX to generate a beep using the PC speaker:
-// -----------------------------------------------
-#include <sys/neutrino.h>
-#include <hw/inout.h>
-#include <unistd.h>
+Bob, this is ACPICA material.
 
-int main(void) {
-    ThreadCtl( _NTO_TCTL_IO, 0 ); // get I/O permissions
+Would it be possible to apply this to the upstream from the patch or do you=
+ need=C2=A0 a PR for this?
 
-    // start a beep
-    int freq =3D 1000;
-    int scale =3D 1193046 / freq;
-    out8(0x43, 0xb6);
-    out8(0x42, scale & 0xff);
-    out8(0x42, scale >> 8);
-    out8(0x61, in8(0x61) | 3);
+On 9/27/2021 2:13 PM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd(a)arndb.de>
+>
+> There are some very old macros for doing an open-coded offsetof() and =
 
-    // let the beep play for a second
-    delay(1000);
+> cast between pointer and integer in ACPI headers. clang-14 now =
 
-    // stop the beep
-    out8(0x61, in8(0x61) & ~3);
+> complains about these:
+>
+> drivers/acpi/acpica/tbfadt.c:86:3: error: performing pointer subtraction =
+with a null pointer has undefined behavior [-Werror,-Wnull-pointer-subtract=
+ion]
+>           ACPI_FADT_OFFSET(pm_timer_block),
+>           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> include/acpi/actbl.h:376:47: note: expanded from macro 'ACPI_FADT_OFFSET'
+>   #define ACPI_FADT_OFFSET(f)             (u16) ACPI_OFFSET (struct acpi_=
+table_fadt, f)
+>                                                =
 
-    return 0;
-}
-// -----------------------------------------------
+> ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> include/acpi/actypes.h:511:41: note: expanded from macro 'ACPI_OFFSET'
+>   #define ACPI_OFFSET(d, f)               ACPI_PTR_DIFF (&(((d *) 0)->f),=
+ (void *) 0)
+>                                          =
 
-Thanks,
-Devin
+> ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> include/acpi/actypes.h:505:79: note: expanded from macro 'ACPI_PTR_DIFF'
+>   #define ACPI_PTR_DIFF(a, b)             ((acpi_size) (ACPI_CAST_PTR (u8=
+, (a)) - ACPI_CAST_PTR (u8, (b))))
+>                                                                          =
+      =
 
---===============2687084783480941093==
-Content-Type: text/html
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="attachment.htm"
+> ^ ~~~~~~~~~~~~~~~~~~~~~~~ Convert them to the modern equivalents.
+>
+> Signed-off-by: Arnd Bergmann <arnd(a)arndb.de>
+> ---
+>   include/acpi/actypes.h | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/include/acpi/actypes.h b/include/acpi/actypes.h index =
 
-PGRpdiBkaXI9Imx0ciI+PGRpdj5IZWxsbyw8L2Rpdj48ZGl2Pjxicj48L2Rpdj5JIGFtIHVzaW5n
-IEFDUElDQSB0byByZWFkIGJhdHRlcnkgaW5mb3JtYXRpb24gaW4gUU5YLiBUaGF0IHBhcnQgaXMg
-d29ya2luZyBncmVhdCBzbyBmYXIuIEhvd2V2ZXIsIG5vdyBzb21lIGNvZGUgdGhhdCBpcyBiZWlu
-ZyB1c2VkIHRvIG1ha2UgYmVlcHMgdmlhIHRoZSBQQyBzcGVha2VyIHN0b3BwZWQgd29ya2luZy48
-ZGl2Pjxicj48L2Rpdj48ZGl2PlN0cmFuZ2VseSwgdGhpcyBjb2RlIHN0b3BzIHdvcmtpbmcgb24g
-YSBmZXcgZGV2aWNlcyBvbmx5IGFmdGVyIEFDUElDQSBydW5zLiBJdCB3b3JrcyBmaW5lIGlmIEkg
-ZG9uJiMzOTt0IHN0YXJ0IEFDUElDQS4gVGhlIGNvZGUgaXMgdXNpbmcgSS9PIHBvcnRzIDB4NDMs
-IDB4NDIsIGFuZCAweDYxIHRvIGdlbmVyYXRlIGJlZXBzLiBUaGlzIHNlZW1zIHRvIGJlIGFuIGlu
-ZHVzdHJ5IHN0YW5kYXJkIHdheSB0byBtYWtlIGJlZXBzIG9uIHg4NiBiYXNlZCBQQ3MgdXNpbmcg
-YSBQcm9ncmFtbWFibGUgSW50ZXJ2YWwgVGltZXIgKFBJVCkuPC9kaXY+PGRpdj48YnI+PC9kaXY+
-PGRpdj5XaGF0IGNvdWxkIG15IEFDUElDQSBiZSBkb2luZyAob3IgZmFpbGluZyB0byBkbykgdGhh
-dCBjb3VsZCBjYXVzZSB0aGUgYmVlcHMgdG8gc3RvcCB3b3JraW5nIHdpdGggdGhlIGNvZGUgYmVs
-b3c/IElzIHRoZSBQSVQgYmVpbmcgZGlzYWJsZWQgc29tZWhvdz8gSSBndWVzcyBJJiMzOTtsbCBu
-ZWVkIHRvIGxlYXJuIG1vcmUgYWJvdXQgdGhlIFBJVCBhbmQgaG93IHRvIGNoZWNrIGl0cyBzdGF0
-dXMgdG8gc2VlIGlmIGl0JiMzOTtzIGJlaW5nIGRpc2FibGVkIGFmdGVyIEFDUElDQSBydW5zLjxi
-cj48L2Rpdj48ZGl2Pjxicj48L2Rpdj48ZGl2PkhlcmUmIzM5O3MgZXhhbXBsZSBjb2RlIGZvciBR
-TlggdG8gZ2VuZXJhdGUgYSBiZWVwIHVzaW5nIHRoZSBQQyBzcGVha2VyOjwvZGl2PjxkaXY+Ly8g
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS08YnI+PC9kaXY+
-PGRpdj4jaW5jbHVkZSAmbHQ7c3lzL25ldXRyaW5vLmgmZ3Q7PGJyPiNpbmNsdWRlICZsdDtody9p
-bm91dC5oJmd0Ozxicj4jaW5jbHVkZSAmbHQ7dW5pc3RkLmgmZ3Q7PGJyPjxicj5pbnQgbWFpbih2
-b2lkKSB7PGJyPsKgwqDCoCBUaHJlYWRDdGwoIF9OVE9fVENUTF9JTywgMCApOyAvLyBnZXQgSS9P
-IHBlcm1pc3Npb25zPGJyPjwvZGl2PjxkaXY+PGJyPjwvZGl2PjxkaXY+wqDCoMKgIC8vIHN0YXJ0
-IGEgYmVlcDxicj48L2Rpdj48ZGl2PsKgIMKgIGludCBmcmVxID0gMTAwMDs8YnI+wqAgwqAgaW50
-IHNjYWxlID0gMTE5MzA0NiAvIGZyZXE7PGJyPsKgIMKgIG91dDgoMHg0MywgMHhiNik7PGJyPsKg
-IMKgIG91dDgoMHg0Miwgc2NhbGUgJmFtcDsgMHhmZik7PGJyPsKgIMKgIG91dDgoMHg0Miwgc2Nh
-bGUgJmd0OyZndDsgOCk7PGJyPsKgIMKgIG91dDgoMHg2MSwgaW44KDB4NjEpIHwgMyk7PGJyPjwv
-ZGl2PjxkaXY+wqDCoMKgIDxicj48L2Rpdj48ZGl2PsKgwqDCoCAvLyBsZXQgdGhlIGJlZXAgcGxh
-eSBmb3IgYSBzZWNvbmQ8YnI+PC9kaXY+PGRpdj7CoMKgwqAgZGVsYXkoMTAwMCk7PGJyPjwvZGl2
-PjxkaXY+PGJyPjwvZGl2PjxkaXY+wqDCoMKgIC8vIHN0b3AgdGhlIGJlZXA8YnI+PC9kaXY+PGRp
-dj7CoCDCoCBvdXQ4KDB4NjEsIGluOCgweDYxKSAmYW1wOyB+Myk7PGJyPjxicj7CoMKgwqAgcmV0
-dXJuIDA7PGJyPn08L2Rpdj48ZGl2PgovLyAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLSA8YnI+PC9kaXY+PGRpdj48YnI+PC9kaXY+PGRpdj5UaGFua3MsPC9k
-aXY+PGRpdj5EZXZpbjxicj48L2Rpdj48L2Rpdj4K
+> 92c71dfce0d5..285bc7b73de3 100644
+> --- a/include/acpi/actypes.h
+> +++ b/include/acpi/actypes.h
+> @@ -507,8 +507,8 @@ typedef u64 acpi_integer;
+>   /* Pointer/Integer type conversions */
+>   =
 
---===============2687084783480941093==--
+>   #define ACPI_TO_POINTER(i)              ACPI_CAST_PTR (void, (acpi_size=
+) (i))
+> -#define ACPI_TO_INTEGER(p)              ACPI_PTR_DIFF (p, (void *) 0)
+> -#define ACPI_OFFSET(d, f)               ACPI_PTR_DIFF (&(((d *) 0)->f), =
+(void *) 0)
+> +#define ACPI_TO_INTEGER(p)              ((uintptr_t)(p))
+> +#define ACPI_OFFSET(d, f)               offsetof(d, f)
+>   #define ACPI_PHYSADDR_TO_PTR(i)         ACPI_TO_POINTER(i)
+>   #define ACPI_PTR_TO_PHYSADDR(i)         ACPI_TO_INTEGER(i)
+>   =
+
+
+
+
+--===============8510851698038111846==--
 
