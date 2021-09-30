@@ -1,121 +1,105 @@
-Content-Type: multipart/mixed; boundary="===============3332966708136061878=="
+Content-Type: multipart/mixed; boundary="===============4912623059172074808=="
 MIME-Version: 1.0
 From: Rudolf Marek <r.marek at assembler.cz>
 Subject: [Devel] Re: Question about ACPICA, QNX and making beeps
-Date: Thu, 30 Sep 2021 18:58:16 +0200
-Message-ID: <4e7c48bf-b39d-bf69-9f6e-1581f9b5d0f9@assembler.cz>
-In-Reply-To: CAAuRk_hhW+E0GhZY7TTKd8Q24u4j12thwW17G2gdxz1xCPYiyA@mail.gmail.com
+Date: Thu, 30 Sep 2021 19:12:20 +0200
+Message-ID: <d81ebcde-8de7-7b09-911a-ede29e78b80b@assembler.cz>
+In-Reply-To: CAAuRk_iKBx7Zmo60BDqFzmzqjz3q1vHPtNxje-KUcpixO_n+pg@mail.gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3332966708136061878==
+--===============4912623059172074808==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi Devin,
-
-On 30. 09. 21 14:56, Devin Steffler wrote:
-> Hi Rudolf,
+On 30. 09. 21 15:53, Devin Steffler wrote:
+> Hello,
 > =
 
-> I have the ACPI utilities working in QNX as well (i.e. acpidump, acpixtra=
-ct, iasl, etc). The problem is I don't know what to look for in the FADT.
+> Will Miles suggested that I monitor AcpiOsRead* and AcpiOsWrite* calls. I=
+ observed the following:
+> ./test_sound # it plays fine
+> ./acpica
+> AcpiOsReadPort: read 0x0 from 0x1804 with width 16
+> AcpiOsReadPort: read 0x0 from 0x1804 with width 16
+> AcpiOsWritePort: write 0xa0 to 0xb2 with width 8
 
-You need to look for SMI_CMD (likely ioport 0xb2) and ACPI_ENABLE fields.
+This is likely the SMI_CMD and ACPI_ENABLE see my other mail.
 
-> So far I have only seen this happen on Lenovo based x86 PCs. For example,=
- the one that I have on hand is a Lenovo ThinkBook 14 Gen 2 laptop. If I bo=
-ot the ThinkBook into QNX, then I can play a beep over the PC speaker just =
-fine. However, after running ACPICA, then I can no longer play a beep over =
-the PC speaker anymore on this device.
+> AcpiOsReadPort: read 0x1 from 0x1804 with width 16
+> ./test_sound # it stops working
+> =
 
-So Intels?
+> To check if that write to 0xb2 is related, I modified AcpiOsWritePort to =
+return AE_OK on all writes to Address 0xb2 without doing the actual write. =
+I also modified AcpiOsReadPort to do a "fake read" of 1 when reading from p=
+ort 0x1804 if there was a previous write to 0xb2. When I do this, then the =
+beep continues to work and reading battery information via ACPI also contin=
+ues to work (at least on this laptop, I haven't tested other devices yet).
 
-> How can I check for 8254 clock gating?
+Try vice versa, do not enable/use the ACPICA at all and write 0xa0 to 0xb2 =
+to see if it breaks it.
 
-In the datasheet of Intel, search the southbridge for "8254" + look for som=
-e "gating" around. It is quite badly documented and sometimes under NDA onl=
-y.
+> Looking at the PCH datasheet for the Intel i5 11357G CPU (what I'm using =
+at the moment), it looks like writing to 0xb2 will trigger an SMI and set "=
+APMC_EN =3D1" and is reported via APM_STS. Does this mean that it's suppose=
+d to activate power management and enable SMI interrupts for BIOS controlle=
+d power management (i.e. to be executed by ACPICA via SMI interrupt handler=
+s)? =
+
+
+It tells BIOS, hey I'm ACPI aware OS stop messing around. And basically BIO=
+S runs some unknown code in SMM when you just write to 0xb2 the 0xA0 comman=
+d.
+This unknown code can possibly enable the 8254 clock gating.
+
+>I'm not sure why that would break the PC speaker. Could it be that my OSL =
+interrupt handling is broken and BIOS was relying on it to re-enable the de=
+vices needed to use the PC speaker?
+
+The PC speaker does not do anything with IRQs. The PIT has no architectural=
+ly defined way to be disabled. I don't know what Intel smokes but lets not =
+inhale, intel invented the clock gating to make programers life more misera=
+ble (problem for TSC/lapic clock calibration when you have no HPET)
+
+> Or could APMC_EN=3D1 also "turn off some devices (that the PC speaker req=
+uires) to save power as they won't be used by this OS"? Should I instead be=
+ looking at the ACPI tables for this laptop to see if something is being tu=
+rned off to save power and figure out how to turn them back on via ACPI cal=
+ls?
+
+This is likely not the problem. The ACPI tables do not instruct the hardwar=
+e, because you commented out above write. Also most hardware for chipset is=
+ memory mapped, not IOport mapped. Try what I wrote above. If it breaks, it=
+ confirms that BIOS is doing something behind the scene which is not even A=
+CPICA related.
+
+> The same section (22.4.5 SMI#/SCI Generation) in the datasheet also state=
+s things like the following:
+> "The SCI is a level-mode interrupt that is typically handled by an ACPI-a=
+ware operating
+> system. In non-APIC systems (which is the default), the SCI IRQ is routed=
+ to one of
+> the 8259 interrupts (IRQ 9, 10, or 11). The 8259 interrupt controller mus=
+t be
+> programmed to level mode for that interrupt."
+
+I don't think it is problem with SCI. See above.
+
+The 8254 clock gating will slow down the PIT frequency 16x and it will stop=
+ legacy IRQ 0  (on PIC/IOAPIC) generation as a symptom of clock gating. Thi=
+s is not documented but it behaves like that. Yes again intel did not stop =
+the counter completely to detect it but slowed down. Sigh.
+
+Maybe it also affects PC speaker that it generates waveforms too slowly. Yo=
+u can also try to search BIOS option in setup menu for clock gating or try =
+to disable C11 power state in there.
+
+Yes it is mess.
 
 Thanks,
 Rudolf
 
-
-> delay is a QNX call to sleep for the specified time in ms.
-> =
-
-> Thanks,
-> Devin
-> =
-
-> On Wed, Sep 29, 2021 at 3:58 PM Rudolf Marek <r.marek(a)assembler.cz <mai=
-lto:r.marek(a)assembler.cz>> wrote:
-> =
-
->     Hi Devin,
-> =
-
->     Dne 28. 09. 21 v 21:04 Devin Steffler napsal(a):
->>     Hello, I am using ACPICA to read battery information in QNX. That pa=
-rt is working great so far. However, now some code that is being used to ma=
-ke beeps via the PC speaker stopped working. Strangely, this code stops wor=
-king on a few devices only after ACPICA runs.
-> =
-
->     You mean same device with same mainboard / BIOS version?
-> =
-
->     Maybe SMI and/or ACPI bytecode turns on 8254 clock gating? You can
-> =
-
->     try to disassemble the ACPI DSDT/SSDT bytecode and look for it.
-> =
-
->     What you can also do, is to try out to send ACPI enable SMI command w=
-ithout
-> =
-
->     enabling ACPICA and see if it breaks. You can read the I/O port addre=
-ss
-> =
-
->     and data enable command from FADT. To disassemble the ACPI tables
-> =
-
->     use acpidump acpixtract and iasl utillites in linux.
-> =
-
->>     What could my ACPICA be doing (or failing to do) that could cause th=
-e beeps to stop working with the code below? Is the PIT being disabled some=
-how? I guess I'll need to learn more about the PIT and how to check its sta=
-tus to see if it's being disabled after ACPICA runs. Here's example code fo=
-r QNX to generate a beep using the PC speaker: // -------------------------=
----------------------- #include <sys/neutrino.h> #include <hw/inout.h> #inc=
-lude <unistd.h> int main(void) { ThreadCtl( _NTO_TCTL_IO, 0 ); // get I/O p=
-ermissions // start a beep int freq =3D 1000; int scale =3D 1193046 / freq;=
- out8(0x43, 0xb6); out8(0x42, scale & 0xff); out8(0x42, scale >> 8); out8(0=
-x61, in8(0x61) | 3);
-> =
-
->     you can also try to see if your assembly for out8 is correct and mayb=
-e not re-ordered
-> =
-
->     by the compiler or that your asm clobber list is correct (same for in=
-8)
-> =
-
->>     // let the beep play for a second delay(1000);
-> =
-
->     delay is an OS service right?
-> =
-
->     Thanks,
-> =
-
->     Rudolf
->=20
---===============3332966708136061878==--
+--===============4912623059172074808==--
 
