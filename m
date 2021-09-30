@@ -1,60 +1,82 @@
-Content-Type: multipart/mixed; boundary="===============6689132325655058802=="
+Content-Type: multipart/mixed; boundary="===============4724817477337718939=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] ACPICA version 20210930 released
-Date: Thu, 30 Sep 2021 17:26:55 +0000
-Message-ID: <BYAPR11MB325660DA0DEC14731CC3161287AA9@BYAPR11MB3256.namprd11.prod.outlook.com>
+From: Rafael J. Wysocki <rafael at kernel.org>
+Subject: [Devel] Re: [PATCH] ACPI: avoid NULL pointer arithmetic
+Date: Thu, 30 Sep 2021 20:52:59 +0200
+Message-ID: <CAJZ5v0jDKK6ecsubVDv_=EUF3goiiDW28tvbKF9cesMphgKaug@mail.gmail.com>
+In-Reply-To: CAJZ5v0jJRYQPSfVV_hCD6uxch+vU6kvWV9-KAfqHckHgkFOeaA@mail.gmail.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6689132325655058802==
+--===============4724817477337718939==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-30 September 2021. Summary of changes for version 20210930:
+On Wed, Sep 29, 2021 at 8:47 PM Rafael J. Wysocki <rafael(a)kernel.org> wro=
+te:
+>
+> On Mon, Sep 27, 2021 at 2:13 PM Arnd Bergmann <arnd(a)kernel.org> wrote:
+> >
+> > From: Arnd Bergmann <arnd(a)arndb.de>
+> >
+> > There are some very old macros for doing an open-coded offsetof() and
+> > cast between pointer and integer in ACPI headers. clang-14 now complains
+> > about these:
+> >
+> > drivers/acpi/acpica/tbfadt.c:86:3: error: performing pointer subtractio=
+n with a null pointer has undefined behavior [-Werror,-Wnull-pointer-subtra=
+ction]
+> >          ACPI_FADT_OFFSET(pm_timer_block),
+> >          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > include/acpi/actbl.h:376:47: note: expanded from macro 'ACPI_FADT_OFFSE=
+T'
+> >  #define ACPI_FADT_OFFSET(f)             (u16) ACPI_OFFSET (struct acpi=
+_table_fadt, f)
+> >                                               ^~~~~~~~~~~~~~~~~~~~~~~~~=
+~~~~~~~~~~~~~~
+> > include/acpi/actypes.h:511:41: note: expanded from macro 'ACPI_OFFSET'
+> >  #define ACPI_OFFSET(d, f)               ACPI_PTR_DIFF (&(((d *) 0)->f)=
+, (void *) 0)
+> >                                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
+~~~~~~~~~~~~
+> > include/acpi/actypes.h:505:79: note: expanded from macro 'ACPI_PTR_DIFF'
+> >  #define ACPI_PTR_DIFF(a, b)             ((acpi_size) (ACPI_CAST_PTR (u=
+8, (a)) - ACPI_CAST_PTR (u8, (b))))
+> >                                                                        =
+       ^ ~~~~~~~~~~~~~~~~~~~~~~~
+> > Convert them to the modern equivalents.
+> >
+> > Signed-off-by: Arnd Bergmann <arnd(a)arndb.de>
+> > ---
+> >  include/acpi/actypes.h | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/include/acpi/actypes.h b/include/acpi/actypes.h
+> > index 92c71dfce0d5..285bc7b73de3 100644
+> > --- a/include/acpi/actypes.h
+> > +++ b/include/acpi/actypes.h
+> > @@ -507,8 +507,8 @@ typedef u64 acpi_integer;
+> >  /* Pointer/Integer type conversions */
+> >
+> >  #define ACPI_TO_POINTER(i)              ACPI_CAST_PTR (void, (acpi_siz=
+e) (i))
+> > -#define ACPI_TO_INTEGER(p)              ACPI_PTR_DIFF (p, (void *) 0)
+> > -#define ACPI_OFFSET(d, f)               ACPI_PTR_DIFF (&(((d *) 0)->f)=
+, (void *) 0)
+> > +#define ACPI_TO_INTEGER(p)              ((uintptr_t)(p))
+> > +#define ACPI_OFFSET(d, f)               offsetof(d, f)
+> >  #define ACPI_PHYSADDR_TO_PTR(i)         ACPI_TO_POINTER(i)
+> >  #define ACPI_PTR_TO_PHYSADDR(i)         ACPI_TO_INTEGER(i)
+> >
+> > --
+>
+> Queued up as 5.16 material, converted into an upstream ACPICA pull
+> request and submitted, thanks!
 
-This release is available at https://acpica.org/downloads
+And reverted from there, because it introduced build issues.
 
-1) ACPICA kernel-resident subsystem:
-
-Hardware: Avoid evaluating methods too early during system resume. During w=
-akeup from system-wide sleep states, AcpiGetSleepTypeData() is called and i=
-t tries to get memory from the OS in order to evaluate a control method, bu=
-t if KFENCE is enabled in the Linux kernel, the memory allocation attempt c=
-auses an IRQ work to be queued and a self-IPI to be sent to the CPU running=
- the code which requires the memory controller to be ready, so if that happ=
-ens too early in the wakeup path, it doesn't work.
-
-Prevent that from taking place by calling AcpiGetSleepTypeData() for S0 upf=
-ront, when preparing to enter a given sleep state, and saving the data obta=
-ined by it for later use during system wakeup.
-
-Added a new _OSI string, "Windows 2020". Posted by superm1.
-
-2) iASL Compiler/Disassembler and ACPICA tools:
-
-iASL compiler: Updated the check for usage of _CRS, _DIS, _PRS, and _SRS ob=
-jects:
-New/latest rules: Under a Device Object:
-         1) If _PRS is present, must have _CRS and _SRS
-         2) If _SRS is present, must have _PRS (_PRS requires _CRS and _SRS)
-         3) If _DIS is present, must have _SRS (_SRS requires _PRS, _PRS re=
-quires _CRS and _SRS)
-         4) If _SRS is present, probably should have a _DIS (Remark only)
-
-iASL table disassembler: Added disassembly support for the NHLT ACPI table.=
- Note: support for Vendor-defined microphone arrays and SNR extensions are =
-not supported at this time -- mostly due to a lack of example tables. Actua=
-l compiler support for NHLT is forthcoming.
-
-Added a new subtable type for ACPI 6.4 SRAT Generic Port Affinity. It uses =
-the same subtable structure as the existing Generic Initiator Affinity type.
-
-Added the flag for online capable in the MADT, introduced in ACPI 6.3. Post=
-ed by superm1.
-
-3) ACPICA documentation: Updated the legal info (that appears at the start =
-of the Documents) to clarify distribution rights that are granted.
---===============6689132325655058802==--
+Can we use alternative definitions that don't depend on uintptr_t and
+offsetof()?
+--===============4724817477337718939==--
 
