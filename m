@@ -1,82 +1,145 @@
-Content-Type: multipart/mixed; boundary="===============4724817477337718939=="
+Content-Type: multipart/mixed; boundary="===============4039985045821913004=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [PATCH] ACPI: avoid NULL pointer arithmetic
-Date: Thu, 30 Sep 2021 20:52:59 +0200
-Message-ID: <CAJZ5v0jDKK6ecsubVDv_=EUF3goiiDW28tvbKF9cesMphgKaug@mail.gmail.com>
-In-Reply-To: CAJZ5v0jJRYQPSfVV_hCD6uxch+vU6kvWV9-KAfqHckHgkFOeaA@mail.gmail.com
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [rafael-pm:bleeding-edge] BUILD SUCCESS
+ 28f08c3dc673d5c3f83fda3af11eab85d82842af
+Date: Fri, 01 Oct 2021 06:36:59 +0800
+Message-ID: <61563c0b./8hPbqmWX5n06sF1%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4724817477337718939==
+--===============4039985045821913004==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Sep 29, 2021 at 8:47 PM Rafael J. Wysocki <rafael(a)kernel.org> wro=
-te:
->
-> On Mon, Sep 27, 2021 at 2:13 PM Arnd Bergmann <arnd(a)kernel.org> wrote:
-> >
-> > From: Arnd Bergmann <arnd(a)arndb.de>
-> >
-> > There are some very old macros for doing an open-coded offsetof() and
-> > cast between pointer and integer in ACPI headers. clang-14 now complains
-> > about these:
-> >
-> > drivers/acpi/acpica/tbfadt.c:86:3: error: performing pointer subtractio=
-n with a null pointer has undefined behavior [-Werror,-Wnull-pointer-subtra=
-ction]
-> >          ACPI_FADT_OFFSET(pm_timer_block),
-> >          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > include/acpi/actbl.h:376:47: note: expanded from macro 'ACPI_FADT_OFFSE=
-T'
-> >  #define ACPI_FADT_OFFSET(f)             (u16) ACPI_OFFSET (struct acpi=
-_table_fadt, f)
-> >                                               ^~~~~~~~~~~~~~~~~~~~~~~~~=
-~~~~~~~~~~~~~~
-> > include/acpi/actypes.h:511:41: note: expanded from macro 'ACPI_OFFSET'
-> >  #define ACPI_OFFSET(d, f)               ACPI_PTR_DIFF (&(((d *) 0)->f)=
-, (void *) 0)
-> >                                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
-~~~~~~~~~~~~
-> > include/acpi/actypes.h:505:79: note: expanded from macro 'ACPI_PTR_DIFF'
-> >  #define ACPI_PTR_DIFF(a, b)             ((acpi_size) (ACPI_CAST_PTR (u=
-8, (a)) - ACPI_CAST_PTR (u8, (b))))
-> >                                                                        =
-       ^ ~~~~~~~~~~~~~~~~~~~~~~~
-> > Convert them to the modern equivalents.
-> >
-> > Signed-off-by: Arnd Bergmann <arnd(a)arndb.de>
-> > ---
-> >  include/acpi/actypes.h | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/include/acpi/actypes.h b/include/acpi/actypes.h
-> > index 92c71dfce0d5..285bc7b73de3 100644
-> > --- a/include/acpi/actypes.h
-> > +++ b/include/acpi/actypes.h
-> > @@ -507,8 +507,8 @@ typedef u64 acpi_integer;
-> >  /* Pointer/Integer type conversions */
-> >
-> >  #define ACPI_TO_POINTER(i)              ACPI_CAST_PTR (void, (acpi_siz=
-e) (i))
-> > -#define ACPI_TO_INTEGER(p)              ACPI_PTR_DIFF (p, (void *) 0)
-> > -#define ACPI_OFFSET(d, f)               ACPI_PTR_DIFF (&(((d *) 0)->f)=
-, (void *) 0)
-> > +#define ACPI_TO_INTEGER(p)              ((uintptr_t)(p))
-> > +#define ACPI_OFFSET(d, f)               offsetof(d, f)
-> >  #define ACPI_PHYSADDR_TO_PTR(i)         ACPI_TO_POINTER(i)
-> >  #define ACPI_PTR_TO_PHYSADDR(i)         ACPI_TO_INTEGER(i)
-> >
-> > --
->
-> Queued up as 5.16 material, converted into an upstream ACPICA pull
-> request and submitted, thanks!
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git bleeding-edge
+branch HEAD: 28f08c3dc673d5c3f83fda3af11eab85d82842af  Merge branch 'acpica=
+' into bleeding-edge
 
-And reverted from there, because it introduced build issues.
+elapsed time: 739m
 
-Can we use alternative definitions that don't depend on uintptr_t and
-offsetof()?
---===============4724817477337718939==--
+configs tested: 106
+configs skipped: 4
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20210930
+mips                           ip27_defconfig
+arm                       cns3420vb_defconfig
+arm                        realview_defconfig
+sparc                       sparc32_defconfig
+sh                              ul2_defconfig
+arm                           stm32_defconfig
+m68k                          sun3x_defconfig
+powerpc                         wii_defconfig
+powerpc                 canyonlands_defconfig
+powerpc                 mpc837x_mds_defconfig
+m68k                           sun3_defconfig
+ia64                             alldefconfig
+powerpc                 mpc8315_rdb_defconfig
+arm                      footbridge_defconfig
+powerpc                     sequoia_defconfig
+powerpc                     taishan_defconfig
+mips                          ath79_defconfig
+sh                          lboxre2_defconfig
+arm                  randconfig-c002-20210930
+x86_64               randconfig-c001-20210930
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a003-20210930
+i386                 randconfig-a001-20210930
+i386                 randconfig-a004-20210930
+i386                 randconfig-a002-20210930
+i386                 randconfig-a006-20210930
+i386                 randconfig-a005-20210930
+x86_64               randconfig-a004-20210930
+x86_64               randconfig-a001-20210930
+x86_64               randconfig-a002-20210930
+x86_64               randconfig-a005-20210930
+x86_64               randconfig-a006-20210930
+x86_64               randconfig-a003-20210930
+arc                  randconfig-r043-20210930
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+i386                 randconfig-c001-20210930
+arm                  randconfig-c002-20210930
+powerpc              randconfig-c003-20210930
+mips                 randconfig-c004-20210930
+s390                 randconfig-c005-20210930
+riscv                randconfig-c006-20210930
+x86_64               randconfig-c007-20210930
+x86_64               randconfig-a015-20210930
+x86_64               randconfig-a011-20210930
+x86_64               randconfig-a012-20210930
+x86_64               randconfig-a013-20210930
+x86_64               randconfig-a016-20210930
+x86_64               randconfig-a014-20210930
+i386                 randconfig-a014-20210930
+i386                 randconfig-a013-20210930
+i386                 randconfig-a011-20210930
+i386                 randconfig-a015-20210930
+i386                 randconfig-a016-20210930
+i386                 randconfig-a012-20210930
+riscv                randconfig-r042-20210930
+hexagon              randconfig-r041-20210930
+s390                 randconfig-r044-20210930
+hexagon              randconfig-r045-20210930
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
+--===============4039985045821913004==--
 
