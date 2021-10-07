@@ -1,52 +1,72 @@
-Content-Type: multipart/mixed; boundary="===============5933308346471185858=="
+Content-Type: multipart/mixed; boundary="===============4011094571327859299=="
 MIME-Version: 1.0
 From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [PATCH] ACPICA: drop unneeded initialization value
-Date: Thu, 07 Oct 2021 19:14:43 +0200
-Message-ID: <CAJZ5v0jzmGWR82zfpGjd2K_YfvzS_ktVeq6oX-p=tx9OXjOTxA@mail.gmail.com>
-In-Reply-To: 20211006113745.60186-1-sohaib.amhmd@gmail.com
+Subject: [Devel] Re: [PATCH] ACPI: tools: fix compilation error
+Date: Thu, 07 Oct 2021 19:19:53 +0200
+Message-ID: <CAJZ5v0h7OVzjJNP9BXw5XucL3JQ7tY9wHLD8TZXjAKx_gxiDtA@mail.gmail.com>
+In-Reply-To: 20211006051318.117094-1-miguel.bernal.marin@linux.intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5933308346471185858==
+--===============4011094571327859299==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Oct 6, 2021 at 1:37 PM Sohaib Mohamed <sohaib.amhmd(a)gmail.com> wr=
-ote:
+On Wed, Oct 6, 2021 at 7:13 AM Miguel Bernal Marin
+<miguel.bernal.marin(a)linux.intel.com> wrote:
 >
-> Do not initialise statics to 0
+> When acpi tools are compiled the following error is showed:
 >
-> Signed-off-by: Sohaib Mohamed <sohaib.amhmd(a)gmail.com>
+>    $ cd tools/power/acpi
+>    $ make
+>      DESCEND tools/acpidbg
+>      MKDIR    include
+>      CP       include
+>      CC       tools/acpidbg/acpidbg.o
+>    In file included from /home/linux/tools/power/acpi/include/acpi/platfo=
+rm/acenv.h:152,
+>                     from /home/linux/tools/power/acpi/include/acpi/acpi.h=
+:22,
+>                     from acpidbg.c:9:
+>    /home/linux/tools/power/acpi/include/acpi/platform/acgcc.h:25:10: fata=
+l error: linux/stdarg.h: No such file or directory
+>       29 | #include <linux/stdarg.h>
+>          |          ^~~~~~~~~~~~~~~~
+>    compilation terminated.
+>
+> Keep the same logic from ACPICA, just identify when is used inside kernel
+> or by acpi tool.
+>
+> Fixes: c0891ac15f04 ("isystem: ship and use stdarg.h")
+> Signed-off-by: Miguel Bernal Marin <miguel.bernal.marin(a)linux.intel.com>
 > ---
->  drivers/acpi/acpica/dbhistry.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+>  include/acpi/platform/acgcc.h | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
 >
-> diff --git a/drivers/acpi/acpica/dbhistry.c b/drivers/acpi/acpica/dbhistr=
-y.c
-> index fd813c5d3952..60b77b11c0f2 100644
-> --- a/drivers/acpi/acpica/dbhistry.c
-> +++ b/drivers/acpi/acpica/dbhistry.c
-> @@ -24,9 +24,9 @@ typedef struct history_info {
->  } HISTORY_INFO;
+> diff --git a/include/acpi/platform/acgcc.h b/include/acpi/platform/acgcc.h
+> index fb172a03a753..20ecb004f5a4 100644
+> --- a/include/acpi/platform/acgcc.h
+> +++ b/include/acpi/platform/acgcc.h
+> @@ -22,9 +22,14 @@ typedef __builtin_va_list va_list;
+>  #define va_arg(v, l)            __builtin_va_arg(v, l)
+>  #define va_copy(d, s)           __builtin_va_copy(d, s)
+>  #else
+> +#ifdef __KERNEL__
+>  #include <linux/stdarg.h>
+> -#endif
+> -#endif
+> +#else
+> +/* Used to build acpi tools */
+> +#include <stdarg.h>
+> +#endif /* __KERNEL__ */
+> +#endif /* ACPI_USE_BUILTIN_STDARG */
+> +#endif /* ! va_arg */
 >
->  static HISTORY_INFO acpi_gbl_history_buffer[HISTORY_SIZE];
-> -static u16 acpi_gbl_lo_history =3D 0;
-> -static u16 acpi_gbl_num_history =3D 0;
-> -static u16 acpi_gbl_next_history_index =3D 0;
-> +static u16 acpi_gbl_lo_history;
-> +static u16 acpi_gbl_num_history;
-> +static u16 acpi_gbl_next_history_index;
+>  #define ACPI_INLINE             __inline__
 >
->  /***********************************************************************=
-********
->   *
 > --
 
-Please submit ACPICA changes like this to the upstream ACPICA project
-as per MAINTANIERS.
-
-Thanks!
---===============5933308346471185858==--
+Applied as 5.16 material, thanks!
+--===============4011094571327859299==--
 
