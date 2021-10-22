@@ -1,139 +1,103 @@
-Content-Type: multipart/mixed; boundary="===============7331692033128295961=="
+Content-Type: multipart/mixed; boundary="===============5632975224021829758=="
 MIME-Version: 1.0
-From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [rafael-pm:bleeding-edge] BUILD SUCCESS
- c8fd83c6466b0acbea0d835e82344e6527aba7b6
-Date: Thu, 21 Oct 2021 13:34:32 +0800
-Message-ID: <6170fbe8.gC0IkaNjcDqQaz5X%lkp@intel.com>
+From: Sudeep Holla <sudeep.holla at arm.com>
+Subject: [Devel] [BUG REPORT][ACPICA] PCC Opregion: Wrong interpretation of
+ channel index as table subtype
+Date: Fri, 22 Oct 2021 19:36:12 +0100
+Message-ID: <20211022183612.jxhou2pzge6xkv2u@bogus>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7331692033128295961==
+--===============5632975224021829758==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
-m.git bleeding-edge
-branch HEAD: c8fd83c6466b0acbea0d835e82344e6527aba7b6  Merge branch 'pm-pci=
-' into bleeding-edge
+Hi,
 
-elapsed time: 726m
+I am trying to add PCC Opregion support in the kernel and am hitting a
+kernel crash when I add PCC Opregion in the ACPI ASL. Below is the
+snippet of the crash:
+-->8
 
-configs tested: 102
-configs skipped: 3
+Unable to handle kernel NULL pointer dereference at virtual address 0000000=
+000000010
+ Workqueue: pm pm_runtime_work
+ pstate: 80000005 (Nzcv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=3D--)
+ pc : __memcpy+0x54/0x260
+ lr : acpi_ex_write_data_to_field+0xb8/0x194
+ Call trace:
+  __memcpy+0x54/0x260
+  acpi_ex_store_object_to_node+0xa4/0x1d4
+  acpi_ex_store+0x44/0x164
+  acpi_ex_opcode_1A_1T_1R+0x25c/0x508
+  acpi_ds_exec_end_op+0x1b4/0x44c
+  acpi_ps_parse_loop+0x3a8/0x614
+  acpi_ps_parse_aml+0x90/0x2f4
+  acpi_ps_execute_method+0x11c/0x19c
+  acpi_ns_evaluate+0x1ec/0x2b0
+  acpi_evaluate_object+0x170/0x2b0
+  acpi_device_set_power+0x118/0x310
+  acpi_dev_suspend+0xd4/0x180
+  acpi_subsys_runtime_suspend+0x28/0x38
+  __rpm_callback+0x74/0x328
+  rpm_suspend+0x2d8/0x624
+  pm_runtime_work+0xa4/0xb8
+  process_one_work+0x194/0x25c
+  worker_thread+0x260/0x49c
+  kthread+0x14c/0x30c
+  ret_from_fork+0x10/0x20
+ Code: f9000006 f81f80a7 d65f03c0 361000c2 (b9400026)
+ ---[ end trace 24d8a032fa77b68a ]---
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+On debugging, I figured out that PCC channel index passed via region.address
+in acpi_ex_store_object_to_node is interpreted as the channel subtype.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20211019
-powerpc                      tqm8xx_defconfig
-arm                         s5pv210_defconfig
-powerpc                     taishan_defconfig
-powerpc                     kilauea_defconfig
-nios2                         3c120_defconfig
-sparc                            alldefconfig
-m68k                         amcore_defconfig
-arm                      pxa255-idp_defconfig
-arc                          axs103_defconfig
-arm                         shannon_defconfig
-csky                             alldefconfig
-m68k                          sun3x_defconfig
-powerpc                      ppc40x_defconfig
-sh                             shx3_defconfig
-sh                 kfr2r09-romimage_defconfig
-m68k                       bvme6000_defconfig
-arm                        keystone_defconfig
-h8300                               defconfig
-arm                  randconfig-c002-20211019
-x86_64               randconfig-c001-20211019
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-parisc                              defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                              debian-10.3
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20211020
-i386                 randconfig-a003-20211020
-i386                 randconfig-a002-20211020
-i386                 randconfig-a005-20211020
-i386                 randconfig-a006-20211020
-i386                 randconfig-a001-20211020
-x86_64               randconfig-a015-20211019
-x86_64               randconfig-a012-20211019
-x86_64               randconfig-a016-20211019
-x86_64               randconfig-a014-20211019
-x86_64               randconfig-a013-20211019
-x86_64               randconfig-a011-20211019
-i386                 randconfig-a014-20211019
-i386                 randconfig-a016-20211019
-i386                 randconfig-a011-20211019
-i386                 randconfig-a015-20211019
-i386                 randconfig-a012-20211019
-i386                 randconfig-a013-20211019
-arc                  randconfig-r043-20211020
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+To confirm, I just hacked assuming we don't need to support type 1/2 PCC
+with the change as below:
 
-clang tested configs:
-x86_64               randconfig-a004-20211019
-x86_64               randconfig-a006-20211019
-x86_64               randconfig-a005-20211019
-x86_64               randconfig-a001-20211019
-x86_64               randconfig-a002-20211019
-x86_64               randconfig-a003-20211019
-riscv                randconfig-r042-20211020
-s390                 randconfig-r044-20211020
-hexagon              randconfig-r045-20211020
-hexagon              randconfig-r041-20211020
+-->8
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============7331692033128295961==--
+diff --git i/drivers/acpi/acpica/exfield.c w/drivers/acpi/acpica/exfield.c
+index 06f3c9df1e22..8618500f23b3 100644
+--- i/drivers/acpi/acpica/exfield.c
++++ w/drivers/acpi/acpica/exfield.c
+@@ -330,12 +330,7 @@ acpi_ex_write_data_to_field(union acpi_operand_object =
+*source_desc,
+                       obj_desc->field.base_byte_offset,
+                       source_desc->buffer.pointer, data_length);
+
+-               if ((obj_desc->field.region_obj->region.address =3D=3D
+-                    PCC_MASTER_SUBSPACE
+-                    && MASTER_SUBSPACE_COMMAND(obj_desc->field.
+-                                               base_byte_offset))
+-                   || GENERIC_SUBSPACE_COMMAND(obj_desc->field.
+-                                               base_byte_offset)) {
++               if (MASTER_SUBSPACE_COMMAND(obj_desc->field.base_byte_offse=
+t)) {
+
+                        /* Perform the write */
+
+
+With the above change, the crash disappears and correctly complains about
+missing PCC Opregion handler(I have more questions on setting up one, will
+follow that up separately).
+
+-->8
+
+ACPI Error: No handler for Region [PFRM] ((____ptrval____)) [PCC] (20210730=
+/evregion-130)
+ACPI Error: Region PCC (ID=3D10) has no handler (20210730/exfldio-261)
+ACPI Error: Aborting method \_SB.ETH0._PS3 due to previous error (AE_NOT_EX=
+IST) (20210730/psparse-531)
+
+Not sure if my interpretation of the spec is incorrect or indeed this is
+a bug. IIUC only _REG has both PCC channel index/address + the subtable type
+embedded in the argument. The actual declaration of PCC Opregion just needs
+the channel index as the address.
+
+--
+Regards,
+Sudeep
+--===============5632975224021829758==--
 
