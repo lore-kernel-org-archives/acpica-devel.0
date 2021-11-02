@@ -1,98 +1,79 @@
-Content-Type: multipart/mixed; boundary="===============0529153306526645379=="
+Content-Type: multipart/mixed; boundary="===============3474322630338823293=="
 MIME-Version: 1.0
 From: Sudeep Holla <sudeep.holla at arm.com>
-Subject: [Devel] [PATCH 1/3] ACPICA: Fix wrong interpretation of PCC address
-Date: Tue, 02 Nov 2021 18:25:40 +0000
-Message-ID: <20211102182542.3460787-2-sudeep.holla@arm.com>
+Subject: [Devel] [PATCH 2/3] ACPICA: Add support for PCC Opregion special
+ context data
+Date: Tue, 02 Nov 2021 18:25:41 +0000
+Message-ID: <20211102182542.3460787-3-sudeep.holla@arm.com>
 In-Reply-To: 20211102182542.3460787-1-sudeep.holla@arm.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0529153306526645379==
+--===============3474322630338823293==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-With the PCC Opregion in the firmware and we are hitting below kernel crash:
+PCC Opregion added in ACPIC 6.3 requires special context data similar
+to GPIO and Generic Serial Bus as it needs to know the internal PCC
+buffer and its length as well as the PCC channel index when the opregion
+handler is being executed by the OSPM.
 
--->8
-Unable to handle kernel NULL pointer dereference at virtual address 0000000=
-000000010
- Workqueue: pm pm_runtime_work
- pstate: 80000005 (Nzcv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=3D--)
- pc : __memcpy+0x54/0x260
- lr : acpi_ex_write_data_to_field+0xb8/0x194
- Call trace:
-  __memcpy+0x54/0x260
-  acpi_ex_store_object_to_node+0xa4/0x1d4
-  acpi_ex_store+0x44/0x164
-  acpi_ex_opcode_1A_1T_1R+0x25c/0x508
-  acpi_ds_exec_end_op+0x1b4/0x44c
-  acpi_ps_parse_loop+0x3a8/0x614
-  acpi_ps_parse_aml+0x90/0x2f4
-  acpi_ps_execute_method+0x11c/0x19c
-  acpi_ns_evaluate+0x1ec/0x2b0
-  acpi_evaluate_object+0x170/0x2b0
-  acpi_device_set_power+0x118/0x310
-  acpi_dev_suspend+0xd4/0x180
-  acpi_subsys_runtime_suspend+0x28/0x38
-  __rpm_callback+0x74/0x328
-  rpm_suspend+0x2d8/0x624
-  pm_runtime_work+0xa4/0xb8
-  process_one_work+0x194/0x25c
-  worker_thread+0x260/0x49c
-  kthread+0x14c/0x30c
-  ret_from_fork+0x10/0x20
- Code: f9000006 f81f80a7 d65f03c0 361000c2 (b9400026)
- ---[ end trace 24d8a032fa77b68a ]---
-
-The reason for the crash is that the PCC channel index passed via region.ad=
-dress
-in acpi_ex_store_object_to_node is interpreted as the channel subtype
-incorrectly.
-
-Assuming the PCC OpRegion support is not used by any other type, let us
-remove the subtype check as the AML has no access to the subtype informatio=
-n.
-Once we remove it, the kernel crash disappears and correctly complains about
-missing PCC Opregion handler.
-
-ACPI Error: No handler for Region [PFRM] ((____ptrval____)) [PCC] (20210730=
-/evregion-130)
-ACPI Error: Region PCC (ID=3D10) has no handler (20210730/exfldio-261)
-ACPI Error: Aborting method \_SB.ETH0._PS3 due to previous error (AE_NOT_EX=
-IST) (20210730/psparse-531)
+Lets add support for the special context data needed by PCC Opregion.
 
 Signed-off-by: Sudeep Holla <sudeep.holla(a)arm.com>
 ---
- drivers/acpi/acpica/exfield.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ drivers/acpi/acpica/evregion.c | 11 +++++++++++
+ include/acpi/actypes.h         |  8 ++++++++
+ 2 files changed, 19 insertions(+)
 
-diff --git a/drivers/acpi/acpica/exfield.c b/drivers/acpi/acpica/exfield.c
-index 06f3c9df1e22..8618500f23b3 100644
---- a/drivers/acpi/acpica/exfield.c
-+++ b/drivers/acpi/acpica/exfield.c
-@@ -330,12 +330,7 @@ acpi_ex_write_data_to_field(union acpi_operand_object =
-*source_desc,
- 		       obj_desc->field.base_byte_offset,
- 		       source_desc->buffer.pointer, data_length);
+diff --git a/drivers/acpi/acpica/evregion.c b/drivers/acpi/acpica/evregion.c
+index 4ef43c8ef5e7..963cdf83372a 100644
+--- a/drivers/acpi/acpica/evregion.c
++++ b/drivers/acpi/acpica/evregion.c
+@@ -162,6 +162,17 @@ acpi_ev_address_space_dispatch(union acpi_operand_obje=
+ct *region_obj,
+ 			return_ACPI_STATUS(AE_NOT_EXIST);
+ 		}
  =
 
--		if ((obj_desc->field.region_obj->region.address =3D=3D
--		     PCC_MASTER_SUBSPACE
--		     && MASTER_SUBSPACE_COMMAND(obj_desc->field.
--						base_byte_offset))
--		    || GENERIC_SUBSPACE_COMMAND(obj_desc->field.
--						base_byte_offset)) {
-+		if (MASTER_SUBSPACE_COMMAND(obj_desc->field.base_byte_offset)) {
++		if (region_obj->region.space_id =3D=3D
++						ACPI_ADR_SPACE_PLATFORM_COMM) {
++			struct acpi_pcc_info *ctx =3D
++					handler_desc->address_space.context;
++
++			ctx->internal_buffer =3D
++					field_obj->field.internal_pcc_buffer;
++			ctx->length =3D region_obj->region.length;
++			ctx->subspace_id =3D region_obj->region.address;
++		}
++
+ 		/*
+ 		 * We must exit the interpreter because the region setup will
+ 		 * potentially execute control methods (for example, the _REG method
+diff --git a/include/acpi/actypes.h b/include/acpi/actypes.h
+index 92c71dfce0d5..ac2eb334f61b 100644
+--- a/include/acpi/actypes.h
++++ b/include/acpi/actypes.h
+@@ -1098,6 +1098,14 @@ struct acpi_connection_info {
+ 	u8 access_length;
+ };
  =
 
- 			/* Perform the write */
- =
-
++/* Special Context data for PCC Opregion (ACPI 6.3) */
++
++struct acpi_pcc_info {
++	u8 subspace_id;
++	u16 length;
++	u8 *internal_buffer;
++};
++
+ typedef
+ acpi_status (*acpi_adr_space_setup) (acpi_handle region_handle,
+ 				     u32 function,
 -- =
 
 2.25.1
 
---===============0529153306526645379==--
+--===============3474322630338823293==--
 
