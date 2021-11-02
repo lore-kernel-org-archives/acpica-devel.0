@@ -1,45 +1,98 @@
-Content-Type: multipart/mixed; boundary="===============4759486568256240276=="
+Content-Type: multipart/mixed; boundary="===============0529153306526645379=="
 MIME-Version: 1.0
 From: Sudeep Holla <sudeep.holla at arm.com>
-Subject: [Devel] [PATCH 0/3] ACPI: Add support for PCC Operation Region
-Date: Tue, 02 Nov 2021 18:25:39 +0000
-Message-ID: <20211102182542.3460787-1-sudeep.holla@arm.com>
+Subject: [Devel] [PATCH 1/3] ACPICA: Fix wrong interpretation of PCC address
+Date: Tue, 02 Nov 2021 18:25:40 +0000
+Message-ID: <20211102182542.3460787-2-sudeep.holla@arm.com>
+In-Reply-To: 20211102182542.3460787-1-sudeep.holla@arm.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4759486568256240276==
+--===============0529153306526645379==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+With the PCC Opregion in the firmware and we are hitting below kernel crash:
 
-This series adds support for ACPI PCC OpRegion added in ACPI 6.3
-I understand that the ACPICA changes need to go via different route,
-but I am posting it together to give complete narative/picture for
-the review/discussion.
+-->8
+Unable to handle kernel NULL pointer dereference at virtual address 0000000=
+000000010
+ Workqueue: pm pm_runtime_work
+ pstate: 80000005 (Nzcv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=3D--)
+ pc : __memcpy+0x54/0x260
+ lr : acpi_ex_write_data_to_field+0xb8/0x194
+ Call trace:
+  __memcpy+0x54/0x260
+  acpi_ex_store_object_to_node+0xa4/0x1d4
+  acpi_ex_store+0x44/0x164
+  acpi_ex_opcode_1A_1T_1R+0x25c/0x508
+  acpi_ds_exec_end_op+0x1b4/0x44c
+  acpi_ps_parse_loop+0x3a8/0x614
+  acpi_ps_parse_aml+0x90/0x2f4
+  acpi_ps_execute_method+0x11c/0x19c
+  acpi_ns_evaluate+0x1ec/0x2b0
+  acpi_evaluate_object+0x170/0x2b0
+  acpi_device_set_power+0x118/0x310
+  acpi_dev_suspend+0xd4/0x180
+  acpi_subsys_runtime_suspend+0x28/0x38
+  __rpm_callback+0x74/0x328
+  rpm_suspend+0x2d8/0x624
+  pm_runtime_work+0xa4/0xb8
+  process_one_work+0x194/0x25c
+  worker_thread+0x260/0x49c
+  kthread+0x14c/0x30c
+  ret_from_fork+0x10/0x20
+ Code: f9000006 f81f80a7 d65f03c0 361000c2 (b9400026)
+ ---[ end trace 24d8a032fa77b68a ]---
 
-Regards,
-Sudeep
+The reason for the crash is that the PCC channel index passed via region.ad=
+dress
+in acpi_ex_store_object_to_node is interpreted as the channel subtype
+incorrectly.
 
-Sudeep Holla (3):
-  ACPICA: Fix wrong interpretation of PCC address
-  ACPICA: Add support for PCC Opregion special context data
-  ACPI: PCC: Implement OperationRegion handler for the PCC Type 3 subtype
+Assuming the PCC OpRegion support is not used by any other type, let us
+remove the subtype check as the AML has no access to the subtype informatio=
+n.
+Once we remove it, the kernel crash disappears and correctly complains about
+missing PCC Opregion handler.
 
- drivers/acpi/Kconfig           |   5 ++
- drivers/acpi/Makefile          |   1 +
- drivers/acpi/acpica/evregion.c |  11 ++++
- drivers/acpi/acpica/exfield.c  |   7 +--
- drivers/acpi/bus.c             |   1 +
- drivers/acpi/pcc_opregion.c    | 111 +++++++++++++++++++++++++++++++++
- include/acpi/actypes.h         |   8 +++
- include/linux/acpi.h           |   6 ++
- 8 files changed, 144 insertions(+), 6 deletions(-)
- create mode 100644 drivers/acpi/pcc_opregion.c
+ACPI Error: No handler for Region [PFRM] ((____ptrval____)) [PCC] (20210730=
+/evregion-130)
+ACPI Error: Region PCC (ID=3D10) has no handler (20210730/exfldio-261)
+ACPI Error: Aborting method \_SB.ETH0._PS3 due to previous error (AE_NOT_EX=
+IST) (20210730/psparse-531)
 
---
+Signed-off-by: Sudeep Holla <sudeep.holla(a)arm.com>
+---
+ drivers/acpi/acpica/exfield.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
+
+diff --git a/drivers/acpi/acpica/exfield.c b/drivers/acpi/acpica/exfield.c
+index 06f3c9df1e22..8618500f23b3 100644
+--- a/drivers/acpi/acpica/exfield.c
++++ b/drivers/acpi/acpica/exfield.c
+@@ -330,12 +330,7 @@ acpi_ex_write_data_to_field(union acpi_operand_object =
+*source_desc,
+ 		       obj_desc->field.base_byte_offset,
+ 		       source_desc->buffer.pointer, data_length);
+ =
+
+-		if ((obj_desc->field.region_obj->region.address =3D=3D
+-		     PCC_MASTER_SUBSPACE
+-		     && MASTER_SUBSPACE_COMMAND(obj_desc->field.
+-						base_byte_offset))
+-		    || GENERIC_SUBSPACE_COMMAND(obj_desc->field.
+-						base_byte_offset)) {
++		if (MASTER_SUBSPACE_COMMAND(obj_desc->field.base_byte_offset)) {
+ =
+
+ 			/* Perform the write */
+ =
+
+-- =
+
 2.25.1
 
---===============4759486568256240276==--
+--===============0529153306526645379==--
 
