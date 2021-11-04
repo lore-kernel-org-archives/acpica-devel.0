@@ -1,85 +1,157 @@
-Content-Type: multipart/mixed; boundary="===============2091517294046336715=="
+Content-Type: multipart/mixed; boundary="===============5347524170745409942=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [PATCH] ACPI: Add AEST in ACPI Table Definitions
-Date: Thu, 04 Nov 2021 12:31:22 +0100
-Message-ID: <CAJZ5v0j4ZvbkdF2Az_5MLFY=Vt7835LA-U2N2qKbZVk9KDx7QA@mail.gmail.com>
-In-Reply-To: TYCPR01MB6160403C510AE93C1EC2635DE98D9@TYCPR01MB6160.jpnprd01.prod.outlook.com
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [rafael-pm:bleeding-edge] BUILD SUCCESS
+ c983c327442e1d67cccb9e2c73589d7cafd2514c
+Date: Thu, 04 Nov 2021 21:53:30 +0800
+Message-ID: <6183e5da.3b1O4twb/XE75+ep%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2091517294046336715==
+--===============5347524170745409942==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 4, 2021 at 8:14 AM ishii.shuuichir(a)fujitsu.com
-<ishii.shuuichir(a)fujitsu.com> wrote:
->
-> ping?
->
-> P.S.
-> We should have added the maintainer of ACPI FOR ARM64 (ACPI/arm64) first,
-> but since AEST is an arm-spec ACPI table, added the concerned persons
-> as new e-mail addresses.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git bleeding-edge
+branch HEAD: c983c327442e1d67cccb9e2c73589d7cafd2514c  Merge branch 'acpi-v=
+ideo' into bleeding-edge
 
-Please resend the patch, then, with all of the requisite addresses
-present in the CC list.
+elapsed time: 1154m
 
-> > -----Original Message-----
-> > From: Shuuichirou Ishii <ishii.shuuichir(a)fujitsu.com>
-> > Sent: Tuesday, October 26, 2021 4:53 PM
-> > To: rjw(a)rjwysocki.net; lenb(a)kernel.org; linux-acpi(a)vger.kernel.or=
-g;
-> > linux-kernel(a)vger.kernel.org; robert.moore(a)intel.com; erik.kaneda(a=
-)intel.com;
-> > rafael.j.wysocki(a)intel.com; devel(a)acpica.org
-> > Cc: Ishii, Shuuichirou/=E7=9F=B3=E4=BA=95 =E5=91=A8=E4=B8=80=E9=83=8E <=
-ishii.shuuichir(a)fujitsu.com>
-> > Subject: [PATCH] ACPI: Add AEST in ACPI Table Definitions
-> >
-> > When We added AEST using the Upgrading ACPI tables via initrd function,=
- the
-> > kernel could not recognize the AEST, so We added AEST the ACPI table de=
-finition.
-> >
-> > Signed-off-by: Shuuichirou Ishii <ishii.shuuichir(a)fujitsu.com>
-> > ---
-> >  drivers/acpi/tables.c | 2 +-
-> >  include/acpi/actbl2.h | 1 +
-> >  2 files changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/acpi/tables.c b/drivers/acpi/tables.c index
-> > f9383736fa0f..ab0fb4c33e07 100644
-> > --- a/drivers/acpi/tables.c
-> > +++ b/drivers/acpi/tables.c
-> > @@ -499,7 +499,7 @@ static const char table_sigs[][ACPI_NAMESEG_SIZE]
-> > __initconst =3D {
-> >       ACPI_SIG_WDDT, ACPI_SIG_WDRT, ACPI_SIG_DSDT, ACPI_SIG_FADT,
-> >       ACPI_SIG_PSDT, ACPI_SIG_RSDT, ACPI_SIG_XSDT, ACPI_SIG_SSDT,
-> >       ACPI_SIG_IORT, ACPI_SIG_NFIT, ACPI_SIG_HMAT, ACPI_SIG_PPTT,
-> > -     ACPI_SIG_NHLT };
-> > +     ACPI_SIG_NHLT, ACPI_SIG_AEST };
-> >
-> >  #define ACPI_HEADER_SIZE sizeof(struct acpi_table_header)
-> >
-> > diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h index
-> > a47b32a5cbde..b586e40d4b86 100644
-> > --- a/include/acpi/actbl2.h
-> > +++ b/include/acpi/actbl2.h
-> > @@ -48,6 +48,7 @@
-> >  #define ACPI_SIG_SDEV           "SDEV"       /* Secure Devices table */
-> >  #define ACPI_SIG_NHLT           "NHLT"       /* Non-HDAudio Link Table
-> > */
-> >  #define ACPI_SIG_SVKL           "SVKL"       /* Storage Volume Key
-> > Location Table */
-> > +#define ACPI_SIG_AEST           "AEST" /* Arm Error Source Table */
-> >
-> >  /*
-> >   * All tables must be byte-packed to match the ACPI specification, sin=
-ce
-> > --
-> > 2.27.0
->
---===============2091517294046336715==--
+configs tested: 118
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20211103
+mips                     loongson1b_defconfig
+powerpc                      cm5200_defconfig
+mips                         mpc30x_defconfig
+powerpc                        icon_defconfig
+sh                           se7721_defconfig
+powerpc                 mpc837x_rdb_defconfig
+nios2                         3c120_defconfig
+nds32                               defconfig
+powerpc                 mpc8540_ads_defconfig
+arm                        neponset_defconfig
+powerpc                     tqm8560_defconfig
+arm                          collie_defconfig
+sh                      rts7751r2d1_defconfig
+sh                 kfr2r09-romimage_defconfig
+m68k                       m5249evb_defconfig
+m68k                       bvme6000_defconfig
+sparc                       sparc32_defconfig
+powerpc                         ps3_defconfig
+mips                      bmips_stb_defconfig
+arm                        mvebu_v7_defconfig
+arm                            dove_defconfig
+arm                       multi_v4t_defconfig
+powerpc                     tqm8540_defconfig
+arm                  randconfig-c002-20211103
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a012-20211103
+x86_64               randconfig-a015-20211103
+i386                 randconfig-a014-20211103
+i386                 randconfig-a016-20211103
+i386                 randconfig-a013-20211103
+i386                 randconfig-a015-20211103
+i386                 randconfig-a011-20211103
+i386                 randconfig-a012-20211103
+arc                  randconfig-r043-20211103
+riscv                randconfig-r042-20211103
+s390                 randconfig-r044-20211103
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
+
+clang tested configs:
+mips                 randconfig-c004-20211103
+arm                  randconfig-c002-20211103
+i386                 randconfig-c001-20211103
+s390                 randconfig-c005-20211103
+powerpc              randconfig-c003-20211103
+mips                 randconfig-c004-20211104
+i386                 randconfig-c001-20211104
+arm                  randconfig-c002-20211104
+s390                 randconfig-c005-20211104
+riscv                randconfig-c006-20211104
+powerpc              randconfig-c003-20211104
+x86_64               randconfig-c007-20211104
+i386                 randconfig-a005-20211103
+i386                 randconfig-a003-20211103
+i386                 randconfig-a001-20211103
+i386                 randconfig-a004-20211103
+i386                 randconfig-a006-20211103
+i386                 randconfig-a002-20211103
+x86_64               randconfig-a012-20211104
+x86_64               randconfig-a016-20211104
+x86_64               randconfig-a015-20211104
+x86_64               randconfig-a013-20211104
+x86_64               randconfig-a011-20211104
+x86_64               randconfig-a014-20211104
+x86_64               randconfig-a006-20211103
+x86_64               randconfig-a004-20211103
+x86_64               randconfig-a001-20211103
+x86_64               randconfig-a002-20211103
+x86_64               randconfig-a005-20211103
+x86_64               randconfig-a003-20211103
+hexagon              randconfig-r041-20211103
+hexagon              randconfig-r045-20211103
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
+--===============5347524170745409942==--
 
