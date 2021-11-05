@@ -1,132 +1,46 @@
-Content-Type: multipart/mixed; boundary="===============3777552374161021412=="
+Content-Type: multipart/mixed; boundary="===============0292853616263530717=="
 MIME-Version: 1.0
-From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [rafael-pm:bleeding-edge] BUILD SUCCESS
- c00ddaa2e79ed178db8f6c06a77ddc41adc06d9e
-Date: Fri, 05 Nov 2021 19:55:09 +0800
-Message-ID: <61851b9d.8faa51Pnt3pJfROV%lkp@intel.com>
+From: Rafael J. Wysocki <rafael at kernel.org>
+Subject: [Devel] Re: [PATCH 0/3] ACPI: Add support for PCC Operation Region
+Date: Fri, 05 Nov 2021 15:58:14 +0100
+Message-ID: <CAJZ5v0jL2+1rzqB2aAJ0T6w3md2dyuHWZNKOk+AbioeD-4ccDA@mail.gmail.com>
+In-Reply-To: 20211102182542.3460787-1-sudeep.holla@arm.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3777552374161021412==
+--===============0292853616263530717==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
-m.git bleeding-edge
-branch HEAD: c00ddaa2e79ed178db8f6c06a77ddc41adc06d9e  Merge branch 'therma=
-l-int340x' into bleeding-edge
+Hi Sudeep,
 
-elapsed time: 924m
+On Tue, Nov 2, 2021 at 7:26 PM Sudeep Holla <sudeep.holla(a)arm.com> wrote:
+>
+> Hi,
+>
+> This series adds support for ACPI PCC OpRegion added in ACPI 6.3
+> I understand that the ACPICA changes need to go via different route,
+> but I am posting it together to give complete narative/picture for
+> the review/discussion.
+>
+> Regards,
+> Sudeep
+>
+> Sudeep Holla (3):
+>   ACPICA: Fix wrong interpretation of PCC address
+>   ACPICA: Add support for PCC Opregion special context data
 
-configs tested: 95
-configs skipped: 3
+The above two need to be submitted to the upstream project via GitHub
+at https://github.com/acpica/acpica
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+The will be applicable to the Linux code base only after they have
+been accepted by the upstream.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20211105
-m68k                          hp300_defconfig
-arm                            qcom_defconfig
-ia64                          tiger_defconfig
-s390                             allmodconfig
-arm                       versatile_defconfig
-mips                       lemote2f_defconfig
-powerpc                      walnut_defconfig
-riscv                            allyesconfig
-sh                           se7712_defconfig
-powerpc                     asp8347_defconfig
-arm                            mmp2_defconfig
-sh                   sh7770_generic_defconfig
-arm                        oxnas_v6_defconfig
-sh                        sh7757lcr_defconfig
-arm                    vt8500_v6_v7_defconfig
-sh                          r7785rp_defconfig
-arm                        cerfcube_defconfig
-mips                      maltasmvp_defconfig
-arm                  randconfig-c002-20211105
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                              debian-10.3
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a012-20211105
-x86_64               randconfig-a016-20211105
-x86_64               randconfig-a015-20211105
-x86_64               randconfig-a013-20211105
-x86_64               randconfig-a011-20211105
-x86_64               randconfig-a014-20211105
-i386                 randconfig-a016-20211105
-i386                 randconfig-a014-20211105
-i386                 randconfig-a015-20211105
-i386                 randconfig-a013-20211105
-i386                 randconfig-a011-20211105
-i386                 randconfig-a012-20211105
-arc                  randconfig-r043-20211105
-riscv                randconfig-r042-20211105
-s390                 randconfig-r044-20211105
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                                  kexec
+>   ACPI: PCC: Implement OperationRegion handler for the PCC Type 3 subtype
 
-clang tested configs:
-x86_64               randconfig-a004-20211105
-i386                 randconfig-a005-20211105
-i386                 randconfig-a001-20211105
-i386                 randconfig-a003-20211105
-i386                 randconfig-a004-20211105
-i386                 randconfig-a006-20211105
-i386                 randconfig-a002-20211105
-hexagon              randconfig-r041-20211105
-hexagon              randconfig-r045-20211105
+And this one will be applied when the above happens.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============3777552374161021412==--
+Thanks!
+--===============0292853616263530717==--
 
