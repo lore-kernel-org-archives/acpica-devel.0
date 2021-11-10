@@ -1,24 +1,24 @@
-Content-Type: multipart/mixed; boundary="===============7473670208370392240=="
+Content-Type: multipart/mixed; boundary="===============3803863316698711611=="
 MIME-Version: 1.0
 From: kernel test robot <lkp at intel.com>
 Subject: [Devel] [rafael-pm:bleeding-edge] BUILD SUCCESS
- 61ac432725e851b95d0e7e253816c2237c3f0295
-Date: Sat, 06 Nov 2021 13:56:00 +0800
-Message-ID: <618618f0.T13wxIjEivVYO3PB%lkp@intel.com>
+ 8158a90cbe6c549c0b816ac2d747b787f2bec5ef
+Date: Wed, 10 Nov 2021 13:53:33 +0800
+Message-ID: <618b5e5d.LIIA+YkluiYtLQNJ%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7473670208370392240==
+--===============3803863316698711611==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
 tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
 m.git bleeding-edge
-branch HEAD: 61ac432725e851b95d0e7e253816c2237c3f0295  Merge branch 'therma=
-l-core' into bleeding-edge
+branch HEAD: 8158a90cbe6c549c0b816ac2d747b787f2bec5ef  Merge branch 'therma=
+l-core' into linux-next
 
-elapsed time: 746m
+elapsed time: 728m
 
 configs tested: 53
 configs skipped: 3
@@ -52,14 +52,14 @@ s390                             allyesconfig
 s390                             allmodconfig
 parisc                           allyesconfig
 s390                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
 i386                             allyesconfig
 sparc                            allyesconfig
 sparc                               defconfig
 i386                                defconfig
 i386                              debian-10.3
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
 mips                             allyesconfig
 mips                             allmodconfig
 powerpc                          allyesconfig
@@ -84,5 +84,5 @@ x86_64                                  kexec
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
 https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============7473670208370392240==--
+--===============3803863316698711611==--
 
