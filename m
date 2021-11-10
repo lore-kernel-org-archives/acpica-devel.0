@@ -1,88 +1,173 @@
-Content-Type: multipart/mixed; boundary="===============3803863316698711611=="
+Content-Type: multipart/mixed; boundary="===============6303156658840285310=="
 MIME-Version: 1.0
-From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [rafael-pm:bleeding-edge] BUILD SUCCESS
- 8158a90cbe6c549c0b816ac2d747b787f2bec5ef
-Date: Wed, 10 Nov 2021 13:53:33 +0800
-Message-ID: <618b5e5d.LIIA+YkluiYtLQNJ%lkp@intel.com>
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] Re: [PATCH AUTOSEL 4.4 15/30] ACPICA: Avoid evaluating
+ methods too early during system resume
+Date: Wed, 10 Nov 2021 15:10:30 +0000
+Message-ID: <BYAPR11MB3256001FA32D50DE6F56425087939@BYAPR11MB3256.namprd11.prod.outlook.com>
+In-Reply-To: 20211109010918.1192063-15-sashal@kernel.org
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3803863316698711611==
+--===============6303156658840285310==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
-m.git bleeding-edge
-branch HEAD: 8158a90cbe6c549c0b816ac2d747b787f2bec5ef  Merge branch 'therma=
-l-core' into linux-next
+Sasha,
+Can you re-do this patch in native ACPICA format, then add a pull request t=
+o our github?
 
-elapsed time: 728m
+Thanks,
+Bob
 
-configs tested: 53
-configs skipped: 3
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+-----Original Message-----
+From: Sasha Levin <sashal(a)kernel.org> =
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                              debian-10.3
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                                  kexec
+Sent: Monday, November 08, 2021 5:09 PM
+To: linux-kernel(a)vger.kernel.org; stable(a)vger.kernel.org
+Cc: Wysocki, Rafael J <rafael.j.wysocki(a)intel.com>; Reik Keutterling <spi=
+elkind(a)gmail.com>; Sasha Levin <sashal(a)kernel.org>; Moore, Robert <robe=
+rt.moore(a)intel.com>; linux-acpi(a)vger.kernel.org; devel(a)acpica.org
+Subject: [PATCH AUTOSEL 4.4 15/30] ACPICA: Avoid evaluating methods too ear=
+ly during system resume
 
+From: "Rafael J. Wysocki" <rafael.j.wysocki(a)intel.com>
+
+[ Upstream commit d3c4b6f64ad356c0d9ddbcf73fa471e6a841cc5c ]
+
+ACPICA commit 0762982923f95eb652cf7ded27356b247c9774de
+
+During wakeup from system-wide sleep states, acpi_get_sleep_type_data() is =
+called and it tries to get memory from the slab allocator in order to evalu=
+ate a control method, but if KFENCE is enabled in the kernel, the memory al=
+location attempt causes an IRQ work to be queued and a self-IPI to be sent =
+to the CPU running the code which requires the memory controller to be read=
+y, so if that happens too early in the wakeup path, it doesn't work.
+
+Prevent that from taking place by calling acpi_get_sleep_type_data() for S0=
+ upfront, when preparing to enter a given sleep state, and saving the data =
+obtained by it for later use during system wakeup.
+
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=3D214271
+Reported-by: Reik Keutterling <spielkind(a)gmail.com>
+Tested-by: Reik Keutterling <spielkind(a)gmail.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki(a)intel.com>
+Signed-off-by: Sasha Levin <sashal(a)kernel.org>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============3803863316698711611==--
+ drivers/acpi/acpica/acglobal.h  |  2 ++  drivers/acpi/acpica/hwesleep.c  |=
+  8 ++------
+ drivers/acpi/acpica/hwsleep.c   | 11 ++++-------
+ drivers/acpi/acpica/hwxfsleep.c |  7 +++++++
+ 4 files changed, 15 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/acpi/acpica/acglobal.h b/drivers/acpi/acpica/acglobal.=
+h index faa97604d878e..f178d11597c09 100644
+--- a/drivers/acpi/acpica/acglobal.h
++++ b/drivers/acpi/acpica/acglobal.h
+@@ -256,6 +256,8 @@ extern struct acpi_bit_register_info
+ =
+
+ ACPI_GLOBAL(u8, acpi_gbl_sleep_type_a);  ACPI_GLOBAL(u8, acpi_gbl_sleep_ty=
+pe_b);
++ACPI_GLOBAL(u8, acpi_gbl_sleep_type_a_s0); ACPI_GLOBAL(u8, =
+
++acpi_gbl_sleep_type_b_s0);
+ =
+
+ /*************************************************************************=
+****
+  *
+diff --git a/drivers/acpi/acpica/hwesleep.c b/drivers/acpi/acpica/hwesleep.=
+c index e5599f6108083..e4998cc0ce283 100644
+--- a/drivers/acpi/acpica/hwesleep.c
++++ b/drivers/acpi/acpica/hwesleep.c
+@@ -184,17 +184,13 @@ acpi_status acpi_hw_extended_sleep(u8 sleep_state)
+ =
+
+ acpi_status acpi_hw_extended_wake_prep(u8 sleep_state)  {
+-	acpi_status status;
+ 	u8 sleep_type_value;
+ =
+
+ 	ACPI_FUNCTION_TRACE(hw_extended_wake_prep);
+ =
+
+-	status =3D acpi_get_sleep_type_data(ACPI_STATE_S0,
+-					  &acpi_gbl_sleep_type_a,
+-					  &acpi_gbl_sleep_type_b);
+-	if (ACPI_SUCCESS(status)) {
++	if (acpi_gbl_sleep_type_a_s0 !=3D ACPI_SLEEP_TYPE_INVALID) {
+ 		sleep_type_value =3D
+-		    ((acpi_gbl_sleep_type_a << ACPI_X_SLEEP_TYPE_POSITION) &
++		    ((acpi_gbl_sleep_type_a_s0 << ACPI_X_SLEEP_TYPE_POSITION) &
+ 		     ACPI_X_SLEEP_TYPE_MASK);
+ =
+
+ 		(void)acpi_write((u64)(sleep_type_value | ACPI_X_SLEEP_ENABLE), diff --g=
+it a/drivers/acpi/acpica/hwsleep.c b/drivers/acpi/acpica/hwsleep.c index 7d=
+21cae6d6028..7e44ba8c6a1ab 100644
+--- a/drivers/acpi/acpica/hwsleep.c
++++ b/drivers/acpi/acpica/hwsleep.c
+@@ -217,7 +217,7 @@ acpi_status acpi_hw_legacy_sleep(u8 sleep_state)
+ =
+
+ acpi_status acpi_hw_legacy_wake_prep(u8 sleep_state)  {
+-	acpi_status status;
++	acpi_status status =3D AE_OK;
+ 	struct acpi_bit_register_info *sleep_type_reg_info;
+ 	struct acpi_bit_register_info *sleep_enable_reg_info;
+ 	u32 pm1a_control;
+@@ -230,10 +230,7 @@ acpi_status acpi_hw_legacy_wake_prep(u8 sleep_state)
+ 	 * This is unclear from the ACPI Spec, but it is required
+ 	 * by some machines.
+ 	 */
+-	status =3D acpi_get_sleep_type_data(ACPI_STATE_S0,
+-					  &acpi_gbl_sleep_type_a,
+-					  &acpi_gbl_sleep_type_b);
+-	if (ACPI_SUCCESS(status)) {
++	if (acpi_gbl_sleep_type_a_s0 !=3D ACPI_SLEEP_TYPE_INVALID) {
+ 		sleep_type_reg_info =3D
+ 		    acpi_hw_get_bit_register_info(ACPI_BITREG_SLEEP_TYPE);
+ 		sleep_enable_reg_info =3D
+@@ -254,9 +251,9 @@ acpi_status acpi_hw_legacy_wake_prep(u8 sleep_state)
+ =
+
+ 			/* Insert the SLP_TYP bits */
+ =
+
+-			pm1a_control |=3D (acpi_gbl_sleep_type_a <<
++			pm1a_control |=3D (acpi_gbl_sleep_type_a_s0 <<
+ 					 sleep_type_reg_info->bit_position);
+-			pm1b_control |=3D (acpi_gbl_sleep_type_b <<
++			pm1b_control |=3D (acpi_gbl_sleep_type_b_s0 <<
+ 					 sleep_type_reg_info->bit_position);
+ =
+
+ 			/* Write the control registers and ignore any errors */ diff --git a/dr=
+ivers/acpi/acpica/hwxfsleep.c b/drivers/acpi/acpica/hwxfsleep.c index d62a6=
+1612b3f1..b04e2b0f62246 100644
+--- a/drivers/acpi/acpica/hwxfsleep.c
++++ b/drivers/acpi/acpica/hwxfsleep.c
+@@ -372,6 +372,13 @@ acpi_status acpi_enter_sleep_state_prep(u8 sleep_state)
+ 		return_ACPI_STATUS(status);
+ 	}
+ =
+
++	status =3D acpi_get_sleep_type_data(ACPI_STATE_S0,
++					  &acpi_gbl_sleep_type_a_s0,
++					  &acpi_gbl_sleep_type_b_s0);
++	if (ACPI_FAILURE(status)) {
++		acpi_gbl_sleep_type_a_s0 =3D ACPI_SLEEP_TYPE_INVALID;
++	}
++
+ 	/* Execute the _PTS method (Prepare To Sleep) */
+ =
+
+ 	arg_list.count =3D 1;
+--
+2.33.0
+
+--===============6303156658840285310==--
 
