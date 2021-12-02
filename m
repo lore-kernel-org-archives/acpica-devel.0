@@ -1,108 +1,137 @@
-Content-Type: multipart/mixed; boundary="===============2073799744428652298=="
+Content-Type: multipart/mixed; boundary="===============0307187313569130363=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] Re: [PATCH] ACPICA: fix swap.cocci warning
-Date: Sat, 27 Nov 2021 11:36:14 +0000
-Message-ID: <BYAPR11MB325677C8CDA89C5B5C5267A487649@BYAPR11MB3256.namprd11.prod.outlook.com>
-In-Reply-To: db9c50a4-dab7-4aba-1ebb-e38fda08cfe1@vivo.com
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [rafael-pm:bleeding-edge] BUILD SUCCESS
+ a20e72e31cb3c7a5e21e94f3a96d8c9e03163502
+Date: Thu, 02 Dec 2021 15:36:56 +0800
+Message-ID: <61a87798.wB3Fi6CtswGY5jFo%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2073799744428652298==
+--===============0307187313569130363==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git bleeding-edge
+branch HEAD: a20e72e31cb3c7a5e21e94f3a96d8c9e03163502  Merge branch 'acpi-e=
+c' into bleeding-edge
 
+elapsed time: 732m
 
------Original Message-----
-From: Guo Zhengkui <guozhengkui(a)vivo.com> =
+configs tested: 100
+configs skipped: 3
 
-Sent: Thursday, November 18, 2021 10:31 PM
-To: Rafael J. Wysocki <rafael(a)kernel.org>
-Cc: Moore, Robert <robert.moore(a)intel.com>; Wysocki, Rafael J <rafael.j.w=
-ysocki(a)intel.com>; Len Brown <lenb(a)kernel.org>; ACPI Devel Maling List =
-<linux-acpi(a)vger.kernel.org>; open list:ACPI COMPONENT ARCHITECTURE (ACPI=
-CA) <devel(a)acpica.org>; Linux Kernel Mailing List <linux-kernel(a)vger.ke=
-rnel.org>; kernel <kernel(a)vivo.com>
-Subject: Re: [PATCH] ACPICA: fix swap.cocci warning
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-On 2021/11/18 22:46, Rafael J. Wysocki wrote:
-> On Tue, Nov 9, 2021 at 2:47 PM Guo Zhengkui <guozhengkui(a)vivo.com> wrot=
-e:
->>
->> Fix following swap.cocci warning:
->> ./drivers/acpi/acpica/nsrepair2.c:896:33-34: WARNING opportunity for =
+gcc tested configs:
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm64                               defconfig
+arm64                            allyesconfig
+i386                 randconfig-c001-20211201
+ia64                          tiger_defconfig
+mips                        qi_lb60_defconfig
+mips                         mpc30x_defconfig
+s390                             alldefconfig
+mips                           ci20_defconfig
+mips                          rm200_defconfig
+powerpc                 mpc8540_ads_defconfig
+sh                          r7780mp_defconfig
+sh                         apsh4a3a_defconfig
+xtensa                    smp_lx200_defconfig
+arm                           sama5_defconfig
+arm                        spear3xx_defconfig
+m68k                          hp300_defconfig
+powerpc                   lite5200b_defconfig
+m68k                            q40_defconfig
+arm                  randconfig-c002-20211202
+ia64                                defconfig
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allyesconfig
+m68k                             allmodconfig
+nds32                             allnoconfig
+nios2                               defconfig
+arc                              allyesconfig
+csky                                defconfig
+alpha                               defconfig
+nds32                               defconfig
+alpha                            allyesconfig
+nios2                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+h8300                            allyesconfig
+xtensa                           allyesconfig
+parisc                              defconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+s390                             allyesconfig
+i386                                defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+mips                             allmodconfig
+mips                             allyesconfig
+powerpc                           allnoconfig
+powerpc                          allmodconfig
+powerpc                          allyesconfig
+i386                 randconfig-a002-20211130
+i386                 randconfig-a006-20211130
+i386                 randconfig-a004-20211130
+i386                 randconfig-a003-20211130
+i386                 randconfig-a001-20211130
+i386                 randconfig-a005-20211130
+x86_64               randconfig-a011-20211128
+x86_64               randconfig-a012-20211128
+x86_64               randconfig-a013-20211128
+x86_64               randconfig-a015-20211128
+x86_64               randconfig-a014-20211128
+x86_64               randconfig-a016-20211128
+arc                  randconfig-r043-20211128
+s390                 randconfig-r044-20211128
+riscv                randconfig-r042-20211128
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                          rhel-8.3-func
 
->> swap()
->>
->> Signed-off-by: Guo Zhengkui <guozhengkui(a)vivo.com>
-> =
+clang tested configs:
+x86_64               randconfig-a001-20211128
+x86_64               randconfig-a003-20211128
+x86_64               randconfig-a005-20211128
+x86_64               randconfig-a004-20211128
+x86_64               randconfig-a002-20211128
+x86_64               randconfig-a006-20211128
+i386                 randconfig-a015-20211129
+i386                 randconfig-a013-20211129
+i386                 randconfig-a012-20211129
+i386                 randconfig-a014-20211129
+i386                 randconfig-a011-20211129
+i386                 randconfig-a016-20211129
+hexagon              randconfig-r045-20211128
+hexagon              randconfig-r041-20211128
 
-> This change needs to be submitted to the upstream ACPICA project via =
-
-> https://github.com/acpica/acpica/
-> =
-
-> Thanks!
-
-So it means I need to submit this patch to upstream ACPICA project, not lin=
-ux-next?
-
-
-The answer is yes.
-Bob
-
-
-> =
-
->> ---
->>   drivers/acpi/acpica/nsrepair2.c | 6 ++----
->>   1 file changed, 2 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/acpi/acpica/nsrepair2.c =
-
->> b/drivers/acpi/acpica/nsrepair2.c index 14b71b41e845..02a904ca4caf =
-
->> 100644
->> --- a/drivers/acpi/acpica/nsrepair2.c
->> +++ b/drivers/acpi/acpica/nsrepair2.c
->> @@ -8,6 +8,7 @@
->>    *
->>    =
-
->> *********************************************************************
->> ********/
->>
->> +#include <linux/minmax.h>
->>   #include <acpi/acpi.h>
->>   #include "accommon.h"
->>   #include "acnamesp.h"
->> @@ -875,7 +876,6 @@ acpi_ns_sort_list(union acpi_operand_object **elemen=
-ts,
->>   {
->>          union acpi_operand_object *obj_desc1;
->>          union acpi_operand_object *obj_desc2;
->> -       union acpi_operand_object *temp_obj;
->>          u32 i;
->>          u32 j;
->>
->> @@ -892,9 +892,7 @@ acpi_ns_sort_list(union acpi_operand_object **elemen=
-ts,
->>                              || ((sort_direction =3D=3D ACPI_SORT_DESCEN=
-DING)
->>                                  && (obj_desc1->integer.value <
->>                                      obj_desc2->integer.value))) {
->> -                               temp_obj =3D elements[j - 1];
->> -                               elements[j - 1] =3D elements[j];
->> -                               elements[j] =3D temp_obj;
->> +                               swap(elements[j - 1], elements[j]);
->>                          }
->>                  }
->>          }
->> --
->> 2.20.1
->>
-
---===============2073799744428652298==--
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
+--===============0307187313569130363==--
 
