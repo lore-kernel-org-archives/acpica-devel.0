@@ -1,84 +1,140 @@
-Content-Type: multipart/mixed; boundary="===============3757105351064235743=="
+Content-Type: multipart/mixed; boundary="===============2163111726221320832=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [PATCH] tools/power/acpi: Fix the compile error when
- output directory is specified
-Date: Wed, 08 Dec 2021 15:12:49 +0100
-Message-ID: <CAJZ5v0h6Hka8P9Ba9cYrWSwzfWtH=-prLXjOKBe+1-vEU6rH0A@mail.gmail.com>
-In-Reply-To: 20211123132330.1008671-1-yu.c.chen@intel.com
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [rafael-pm:bleeding-edge] BUILD SUCCESS
+ 00824f47707e07b3f937d9a37fe7166d2174e4a1
+Date: Thu, 09 Dec 2021 22:14:37 +0800
+Message-ID: <61b20f4d.tuXteFo3I0VuFk0X%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3757105351064235743==
+--===============2163111726221320832==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Nov 23, 2021 at 2:24 PM Chen Yu <yu.c.chen(a)intel.com> wrote:
->
-> Compiling the tool when output directory parameter is specified would
-> trigger the following error:
->
-> make O=3D/data/test/tmp/ -C tools/power/acpi/
->
-> make: Entering directory '/data/src/kernel/linux/tools/power/acpi'
->   DESCEND tools/acpidbg
-> make[1]: Entering directory '/data/src/kernel/linux/tools/power/acpi/tool=
-s/acpidbg'
->   MKDIR    include
->   CP       include
->   CC       tools/acpidbg/acpidbg.o
-> Assembler messages:
-> Fatal error: can't create /data/test/tmp/tools/power/acpi/tools/acpidbg/a=
-cpidbg.o: No such file or directory
-> make[1]: *** [../../Makefile.rules:24: /data/test/tmp/tools/power/acpi/to=
-ols/acpidbg/acpidbg.o] Error 1
-> make[1]: Leaving directory '/data/src/kernel/linux/tools/power/acpi/tools=
-/acpidbg'
-> make: *** [Makefile:18: acpidbg] Error 2
-> make: Leaving directory '/data/src/kernel/linux/tools/power/acpi'
->
-> This is because the output directory has not been created yet. Fix this i=
-ssue by
-> creating the output directory before compiling.
->
-> Reported-by: Andy Shevchenko <andriy.shevchenko(a)intel.com>
-> Signed-off-by: Chen Yu <yu.c.chen(a)intel.com>
-> ---
->  tools/power/acpi/Makefile.config | 1 +
->  tools/power/acpi/Makefile.rules  | 1 +
->  2 files changed, 2 insertions(+)
->
-> diff --git a/tools/power/acpi/Makefile.config b/tools/power/acpi/Makefile=
-.config
-> index 331f6d30f472..cd7106876a5f 100644
-> --- a/tools/power/acpi/Makefile.config
-> +++ b/tools/power/acpi/Makefile.config
-> @@ -69,6 +69,7 @@ KERNEL_INCLUDE :=3D $(OUTPUT)include
->  ACPICA_INCLUDE :=3D $(srctree)/../../../drivers/acpi/acpica
->  CFLAGS +=3D -D_LINUX -I$(KERNEL_INCLUDE) -I$(ACPICA_INCLUDE)
->  CFLAGS +=3D $(WARNINGS)
-> +MKDIR =3D mkdir
->
->  ifeq ($(strip $(V)),false)
->         QUIET=3D@
-> diff --git a/tools/power/acpi/Makefile.rules b/tools/power/acpi/Makefile.=
-rules
-> index 2a6c170b57cd..1d7616f5d0ae 100644
-> --- a/tools/power/acpi/Makefile.rules
-> +++ b/tools/power/acpi/Makefile.rules
-> @@ -21,6 +21,7 @@ $(KERNEL_INCLUDE):
->
->  $(objdir)%.o: %.c $(KERNEL_INCLUDE)
->         $(ECHO) "  CC      " $(subst $(OUTPUT),,$@)
-> +       $(QUIET) $(MKDIR) -p $(objdir) 2>/dev/null
->         $(QUIET) $(CC) -c $(CFLAGS) -o $@ $<
->
->  all: $(OUTPUT)$(TOOL)
-> --
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git bleeding-edge
+branch HEAD: 00824f47707e07b3f937d9a37fe7166d2174e4a1  Merge branch 'acpi-p=
+m' into bleeding-edge
 
-Applied (with some edits in the subject and changelog) as 5.16-rc material.
+elapsed time: 1348m
 
-Thanks!
---===============3757105351064235743==--
+configs tested: 103
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm64                               defconfig
+arm64                            allyesconfig
+i386                 randconfig-c001-20211209
+sh                        edosk7760_defconfig
+sh                        sh7763rdp_defconfig
+csky                             alldefconfig
+arc                        nsim_700_defconfig
+mips                          rm200_defconfig
+arm                        keystone_defconfig
+mips                      loongson3_defconfig
+xtensa                  nommu_kc705_defconfig
+powerpc                       ebony_defconfig
+powerpc                        fsp2_defconfig
+powerpc                      ppc6xx_defconfig
+mips                       rbtx49xx_defconfig
+arc                              alldefconfig
+openrisc                 simple_smp_defconfig
+powerpc                 mpc8272_ads_defconfig
+powerpc                   lite5200b_defconfig
+parisc                generic-32bit_defconfig
+arm                  randconfig-c002-20211207
+ia64                                defconfig
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+m68k                                defconfig
+nds32                             allnoconfig
+nios2                               defconfig
+arc                              allyesconfig
+csky                                defconfig
+alpha                               defconfig
+nds32                               defconfig
+alpha                            allyesconfig
+nios2                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+h8300                            allyesconfig
+xtensa                           allyesconfig
+parisc                              defconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+s390                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+i386                   debian-10.3-kselftests
+sparc                            allyesconfig
+i386                             allyesconfig
+sparc                               defconfig
+mips                             allmodconfig
+mips                             allyesconfig
+powerpc                           allnoconfig
+powerpc                          allmodconfig
+powerpc                          allyesconfig
+i386                 randconfig-a001-20211207
+i386                 randconfig-a005-20211207
+i386                 randconfig-a002-20211207
+i386                 randconfig-a003-20211207
+i386                 randconfig-a006-20211207
+i386                 randconfig-a004-20211207
+x86_64               randconfig-a011-20211208
+arc                  randconfig-r043-20211207
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                              defconfig
+x86_64                                  kexec
+x86_64                               rhel-8.3
+x86_64                           allyesconfig
+x86_64                          rhel-8.3-func
+x86_64                    rhel-8.3-kselftests
+
+clang tested configs:
+x86_64               randconfig-a011-20211209
+x86_64               randconfig-a013-20211209
+x86_64               randconfig-a015-20211209
+x86_64               randconfig-a012-20211209
+x86_64               randconfig-a014-20211209
+x86_64               randconfig-a016-20211209
+i386                 randconfig-a013-20211207
+i386                 randconfig-a011-20211207
+i386                 randconfig-a014-20211207
+i386                 randconfig-a012-20211207
+i386                 randconfig-a015-20211207
+i386                 randconfig-a016-20211207
+hexagon              randconfig-r045-20211207
+s390                 randconfig-r044-20211207
+hexagon              randconfig-r041-20211207
+riscv                randconfig-r042-20211207
+x86_64               randconfig-a001-20211208
+x86_64               randconfig-a002-20211208
+x86_64               randconfig-a004-20211208
+x86_64               randconfig-a003-20211208
+x86_64               randconfig-a005-20211208
+x86_64               randconfig-a006-20211208
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
+--===============2163111726221320832==--
 
