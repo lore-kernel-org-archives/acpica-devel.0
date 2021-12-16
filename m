@@ -1,61 +1,140 @@
-Content-Type: multipart/mixed; boundary="===============6084717187990699895=="
+Content-Type: multipart/mixed; boundary="===============4276326039497094719=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [PATCH v2 1/2] ACPI: AGDI: Add AGDI tables to drivers/acpi
-Date: Wed, 15 Dec 2021 13:17:53 +0100
-Message-ID: <CAJZ5v0jiLfL0k12y5RZ+9LjLqiBMPqRHrqNQGqQ5Le2yOv7QWQ@mail.gmail.com>
-In-Reply-To: 20211214044036.48245-2-ilkka@os.amperecomputing.com
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [rafael-pm:bleeding-edge] BUILD SUCCESS
+ aaa3a53c4b473a78e8cc8682c22030674d48fe5f
+Date: Thu, 16 Dec 2021 13:58:55 +0800
+Message-ID: <61bad59f.DvT915NBPrMwrPVN%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6084717187990699895==
+--===============4276326039497094719==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 14, 2021 at 5:41 AM Ilkka Koskinen
-<ilkka(a)os.amperecomputing.com> wrote:
->
-> ACPI for Arm Components 1.1 Platform Design Document v1.1 [0] specifices
-> Arm Generic Diagnostic Device Interface (AGDI). It allows an admin to
-> issue diagnostic dump and reset via an SDEI event or an interrupt. This
-> patch adds support to ACPI/AGDI tables.
->
-> [0] https://developer.arm.com/documentation/den0093/latest/
->
-> Signed-off-by: Ilkka Koskinen <ilkka(a)os.amperecomputing.com>
-> ---
->  drivers/acpi/tables.c |  2 +-
->  include/acpi/actbl2.h | 20 ++++++++++++++++++++
->  2 files changed, 21 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/acpi/tables.c b/drivers/acpi/tables.c
-> index 71419eb16e09..5e3169bcb9fb 100644
-> --- a/drivers/acpi/tables.c
-> +++ b/drivers/acpi/tables.c
-> @@ -500,7 +500,7 @@ static const char table_sigs[][ACPI_NAMESEG_SIZE] __i=
-nitconst =3D {
->         ACPI_SIG_WDDT, ACPI_SIG_WDRT, ACPI_SIG_DSDT, ACPI_SIG_FADT,
->         ACPI_SIG_PSDT, ACPI_SIG_RSDT, ACPI_SIG_XSDT, ACPI_SIG_SSDT,
->         ACPI_SIG_IORT, ACPI_SIG_NFIT, ACPI_SIG_HMAT, ACPI_SIG_PPTT,
-> -       ACPI_SIG_NHLT };
-> +       ACPI_SIG_NHLT, ACPI_SIG_AGDI };
->
->  #define ACPI_HEADER_SIZE sizeof(struct acpi_table_header)
->
-> diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
-> index 71ca090fd61b..66ca85b9f5fe 100644
-> --- a/include/acpi/actbl2.h
-> +++ b/include/acpi/actbl2.h
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git bleeding-edge
+branch HEAD: aaa3a53c4b473a78e8cc8682c22030674d48fe5f  Merge branch 'acpi-t=
+ables' into bleeding-edge
 
-The changes in actbl2.h are ACPICA material and so they need to be
-routed through the upstream ACPICA project.
+elapsed time: 728m
 
-Moreover, you have already submitted a pull request with them to the
-upstream: https://github.com/acpica/acpica/pull/737/commits/cf36a6d658ca5aa=
-8c329c2edfc3322c095ffd844
+configs tested: 103
+configs skipped: 3
 
-Please wait until this gets integrated and repost the rest of the
-patches as incremental changes on top of that.
---===============6084717187990699895==--
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                              allyesconfig
+arm                              allmodconfig
+arm                                 defconfig
+arm64                               defconfig
+arm64                            allyesconfig
+powerpc                      pasemi_defconfig
+arm                          exynos_defconfig
+arm                          lpd270_defconfig
+powerpc                      cm5200_defconfig
+m68k                       m5275evb_defconfig
+arm                            dove_defconfig
+powerpc                        cell_defconfig
+m68k                        stmark2_defconfig
+sh                          lboxre2_defconfig
+m68k                        m5407c3_defconfig
+mips                           jazz_defconfig
+powerpc                     asp8347_defconfig
+m68k                        mvme147_defconfig
+xtensa                  nommu_kc705_defconfig
+arm                         shannon_defconfig
+sh                          landisk_defconfig
+powerpc                    adder875_defconfig
+mips                      pic32mzda_defconfig
+arm                            mmp2_defconfig
+arm                  randconfig-c002-20211214
+ia64                                defconfig
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+nios2                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+h8300                            allyesconfig
+xtensa                           allyesconfig
+parisc                              defconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+s390                             allyesconfig
+i386                             allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+sparc                            allyesconfig
+nds32                             allnoconfig
+nios2                               defconfig
+arc                              allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                           allnoconfig
+powerpc                          allmodconfig
+powerpc                          allyesconfig
+x86_64               randconfig-a001-20211214
+x86_64               randconfig-a002-20211214
+x86_64               randconfig-a003-20211214
+x86_64               randconfig-a004-20211214
+x86_64               randconfig-a006-20211214
+x86_64               randconfig-a005-20211214
+i386                 randconfig-a001-20211214
+i386                 randconfig-a002-20211214
+i386                 randconfig-a005-20211214
+i386                 randconfig-a003-20211214
+i386                 randconfig-a006-20211214
+i386                 randconfig-a004-20211214
+arc                  randconfig-r043-20211214
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+riscv                            allyesconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
+x86_64                    rhel-8.3-kselftests
+
+clang tested configs:
+x86_64               randconfig-a011-20211214
+x86_64               randconfig-a014-20211214
+x86_64               randconfig-a012-20211214
+x86_64               randconfig-a013-20211214
+x86_64               randconfig-a016-20211214
+x86_64               randconfig-a015-20211214
+i386                 randconfig-a013-20211214
+i386                 randconfig-a011-20211214
+i386                 randconfig-a016-20211214
+i386                 randconfig-a014-20211214
+i386                 randconfig-a015-20211214
+i386                 randconfig-a012-20211214
+hexagon              randconfig-r045-20211214
+s390                 randconfig-r044-20211214
+riscv                randconfig-r042-20211214
+hexagon              randconfig-r041-20211214
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
+--===============4276326039497094719==--
 
