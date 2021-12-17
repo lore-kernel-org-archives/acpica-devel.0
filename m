@@ -1,140 +1,63 @@
-Content-Type: multipart/mixed; boundary="===============4276326039497094719=="
+Content-Type: multipart/mixed; boundary="===============1458379499300489090=="
 MIME-Version: 1.0
-From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [rafael-pm:bleeding-edge] BUILD SUCCESS
- aaa3a53c4b473a78e8cc8682c22030674d48fe5f
-Date: Thu, 16 Dec 2021 13:58:55 +0800
-Message-ID: <61bad59f.DvT915NBPrMwrPVN%lkp@intel.com>
+From: Moore, Robert <robert.moore at intel.com>
+Subject: [Devel] ACPICA version 20211217 released
+Date: Fri, 17 Dec 2021 18:17:09 +0000
+Message-ID: <BYAPR11MB32561FA78CC3B7E5353BB43387789@BYAPR11MB3256.namprd11.prod.outlook.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4276326039497094719==
+--===============1458379499300489090==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
-m.git bleeding-edge
-branch HEAD: aaa3a53c4b473a78e8cc8682c22030674d48fe5f  Merge branch 'acpi-t=
-ables' into bleeding-edge
+17 December 2021. Summary of changes for version 20211217:
 
-elapsed time: 728m
+This release is available at https://acpica.org/downloads
 
-configs tested: 103
-configs skipped: 3
+1) ACPICA kernel-resident subsystem:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Hardware: Do not flush CPU cache when entering S4 and S5. According to ACPI=
+ 6.4, Section 16.2, the CPU cache flushing is required on entering to S1, S=
+2, and S3, but the ACPICA code flushes the CPU cache regardless of the slee=
+p state. Blind cache flush on entering S5 causes problems for TDX.
 
-gcc tested configs:
-arm                              allyesconfig
-arm                              allmodconfig
-arm                                 defconfig
-arm64                               defconfig
-arm64                            allyesconfig
-powerpc                      pasemi_defconfig
-arm                          exynos_defconfig
-arm                          lpd270_defconfig
-powerpc                      cm5200_defconfig
-m68k                       m5275evb_defconfig
-arm                            dove_defconfig
-powerpc                        cell_defconfig
-m68k                        stmark2_defconfig
-sh                          lboxre2_defconfig
-m68k                        m5407c3_defconfig
-mips                           jazz_defconfig
-powerpc                     asp8347_defconfig
-m68k                        mvme147_defconfig
-xtensa                  nommu_kc705_defconfig
-arm                         shannon_defconfig
-sh                          landisk_defconfig
-powerpc                    adder875_defconfig
-mips                      pic32mzda_defconfig
-arm                            mmp2_defconfig
-arm                  randconfig-c002-20211214
-ia64                                defconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-nios2                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-h8300                            allyesconfig
-xtensa                           allyesconfig
-parisc                              defconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-s390                             allyesconfig
-i386                             allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-sparc                            allyesconfig
-nds32                             allnoconfig
-nios2                               defconfig
-arc                              allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                           allnoconfig
-powerpc                          allmodconfig
-powerpc                          allyesconfig
-x86_64               randconfig-a001-20211214
-x86_64               randconfig-a002-20211214
-x86_64               randconfig-a003-20211214
-x86_64               randconfig-a004-20211214
-x86_64               randconfig-a006-20211214
-x86_64               randconfig-a005-20211214
-i386                 randconfig-a001-20211214
-i386                 randconfig-a002-20211214
-i386                 randconfig-a005-20211214
-i386                 randconfig-a003-20211214
-i386                 randconfig-a006-20211214
-i386                 randconfig-a004-20211214
-arc                  randconfig-r043-20211214
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-riscv                            allyesconfig
-um                             i386_defconfig
-um                           x86_64_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                                  kexec
-x86_64                    rhel-8.3-kselftests
+Avoid subobject buffer overflow when validating RSDP signature. Since the S=
+ignature member is accessed through an ACPI_TABLE_HEADER, the pointer to it=
+ is only to a 4-char array, and so trying to read past the 4th character, a=
+s will be done when it is an RSDP, reads beyond the bounds of the accessed =
+member. Contributed by jrtc27.
 
-clang tested configs:
-x86_64               randconfig-a011-20211214
-x86_64               randconfig-a014-20211214
-x86_64               randconfig-a012-20211214
-x86_64               randconfig-a013-20211214
-x86_64               randconfig-a016-20211214
-x86_64               randconfig-a015-20211214
-i386                 randconfig-a013-20211214
-i386                 randconfig-a011-20211214
-i386                 randconfig-a016-20211214
-i386                 randconfig-a014-20211214
-i386                 randconfig-a015-20211214
-i386                 randconfig-a012-20211214
-hexagon              randconfig-r045-20211214
-s390                 randconfig-r044-20211214
-riscv                randconfig-r042-20211214
-hexagon              randconfig-r041-20211214
+Add support for PCC Opregion special context data. PCC Opregion added in AC=
+PIC 6.3 requires special context data similar to GPIO and Generic Serial Bu=
+s as it needs to know the internal PCC buffer and its length as well as the=
+ PCC channel index when the opregion handler is being executed by the OSPM.=
+ Adds support for the special context data needed by PCC Opregion. Submitte=
+d by Sudeep Holla <sudeep.holla(a)arm.com>
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============4276326039497094719==--
+2) iASL Compiler/Disassembler and ACPICA tools:
+
+iASL: Completed compiler support for the NHLT ACPI table.
+
+iASL/NHLT table: Fixed a reported problem where a fault would occur during =
+disassembly of a "Linux-Specific" section if the "Specific Data" part was n=
+ot present.
+
+iASL: Added full support (compiler and disassembler) for the AGDI ACPI tabl=
+e. Contributed by: Ilkka Koskinen <ilkka(a)os.amperecomputing.com>.
+
+iASL: Added full support for the TDEL ACPI table.
+
+iASL table compiler: FADT support updates:
+1) Allow the 32-bit DSDT address to be zero.
+2) Issue error if both the 32-bit and 64-bit DSDT addresses are zero.
+
+iASL: Fix unaligned accesses to local cache allocations. Contributed by jrt=
+c27.
+
+iASL: Open binary input files in binary mode, not text mode Affects binary =
+input AML files, as well as binary data table files, for disassembly.
+
+--===============1458379499300489090==--
 
