@@ -1,133 +1,117 @@
-Content-Type: multipart/mixed; boundary="===============6310455945891283586=="
+Content-Type: multipart/mixed; boundary="===============6016027756407807390=="
 MIME-Version: 1.0
 From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [rafael-pm:bleeding-edge] BUILD SUCCESS
- 58d53ba537f27d9ddcf2c94f5f5bd52b63246b95
-Date: Thu, 23 Dec 2021 17:17:54 +0800
-Message-ID: <61c43ec2.2mtTOn0Hn5ex2OIE%lkp@intel.com>
+Subject: [Devel] [rafael-pm:bleeding-edge 97/119]
+ drivers/acpi/acpica/exregion.c:519:17: warning: performing pointer
+ subtraction with a null pointer has undefined behavior
+Date: Tue, 28 Dec 2021 09:56:38 +0800
+Message-ID: <202112280907.gTYYYuB4-lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6310455945891283586==
+--===============6016027756407807390==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
-m.git bleeding-edge
-branch HEAD: 58d53ba537f27d9ddcf2c94f5f5bd52b63246b95  Merge branch 'pm-cor=
-e' into bleeding-edge
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git=
+ bleeding-edge
+head:   86e4182dd2d1465f6446863dd26da97ea069c8a2
+commit: ca25f92b72d25457653dbf2a81f322235804fb05 [97/119] ACPICA: Use origi=
+nal data_table_region pointer for accesses
+config: i386-randconfig-a012-20211228 (https://download.01.org/0day-ci/arch=
+ive/20211228/202112280907.gTYYYuB4-lkp(a)intel.com/config)
+compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 7171af=
+744543433ac75b232eb7dfdaef7efd4d7a)
+reproduce (this is a W=3D1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/=
+make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.g=
+it/commit/?id=3Dca25f92b72d25457653dbf2a81f322235804fb05
+        git remote add rafael-pm https://git.kernel.org/pub/scm/linux/kerne=
+l/git/rafael/linux-pm.git
+        git fetch --no-tags rafael-pm bleeding-edge
+        git checkout ca25f92b72d25457653dbf2a81f322235804fb05
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dclang make.cross W=3D=
+1 O=3Dbuild_dir ARCH=3Di386 SHELL=3D/bin/bash drivers/acpi/acpica/
 
-elapsed time: 854m
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp(a)intel.com>
 
-configs tested: 96
-configs skipped: 3
+All warnings (new ones prefixed by >>):
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+>> drivers/acpi/acpica/exregion.c:519:17: warning: performing pointer subtr=
+action with a null pointer has undefined behavior [-Wnull-pointer-subtracti=
+on]
+               (address - ACPI_PTR_TO_PHYSADDR(mapping->pointer));
+                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/acpi/actypes.h:513:41: note: expanded from macro 'ACPI_PTR_TO_PH=
+YSADDR'
+   #define ACPI_PTR_TO_PHYSADDR(i)         ACPI_TO_INTEGER(i)
+                                           ^~~~~~~~~~~~~~~~~~
+   include/acpi/actypes.h:510:41: note: expanded from macro 'ACPI_TO_INTEGE=
+R'
+   #define ACPI_TO_INTEGER(p)              ACPI_PTR_DIFF (p, (void *) 0)
+                                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/acpi/actypes.h:505:79: note: expanded from macro 'ACPI_PTR_DIFF'
+   #define ACPI_PTR_DIFF(a, b)             ((acpi_size) (ACPI_CAST_PTR (u8,=
+ (a)) - ACPI_CAST_PTR (u8, (b))))
+                                                                           =
+      ^ ~~~~~~~~~~~~~~~~~~~~~~~
+   1 warning generated.
 
-gcc tested configs:
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm64                               defconfig
-arm64                            allyesconfig
-i386                 randconfig-c001-20211223
-arm                      pxa255-idp_defconfig
-arc                        nsimosci_defconfig
-sh                          sdk7786_defconfig
-mips                          ath25_defconfig
-mips                         tb0287_defconfig
-arm                       aspeed_g4_defconfig
-arm                          pxa3xx_defconfig
-sh                           se7722_defconfig
-mips                     cu1000-neo_defconfig
-powerpc                         wii_defconfig
-mips                            e55_defconfig
-arm                  randconfig-c002-20211223
-ia64                                defconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allyesconfig
-m68k                             allmodconfig
-nds32                             allnoconfig
-nios2                               defconfig
-arc                              allyesconfig
-csky                                defconfig
-alpha                               defconfig
-nds32                               defconfig
-alpha                            allyesconfig
-nios2                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-h8300                            allyesconfig
-xtensa                           allyesconfig
-parisc                              defconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-s390                             allyesconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-i386                                defconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-sparc                               defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                           allnoconfig
-powerpc                          allmodconfig
-powerpc                          allyesconfig
-x86_64               randconfig-a001-20211222
-x86_64               randconfig-a003-20211222
-x86_64               randconfig-a005-20211222
-x86_64               randconfig-a006-20211222
-x86_64               randconfig-a004-20211222
-x86_64               randconfig-a002-20211222
-i386                 randconfig-a002-20211222
-i386                 randconfig-a003-20211222
-i386                 randconfig-a001-20211222
-i386                 randconfig-a005-20211222
-i386                 randconfig-a006-20211222
-i386                 randconfig-a004-20211222
-x86_64               randconfig-a015-20211223
-x86_64               randconfig-a014-20211223
-x86_64               randconfig-a011-20211223
-x86_64               randconfig-a012-20211223
-x86_64               randconfig-a013-20211223
-x86_64               randconfig-a016-20211223
-i386                 randconfig-a012-20211223
-i386                 randconfig-a011-20211223
-i386                 randconfig-a013-20211223
-i386                 randconfig-a014-20211223
-i386                 randconfig-a015-20211223
-i386                 randconfig-a016-20211223
-arc                  randconfig-r043-20211222
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                                  kexec
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
 
-clang tested configs:
-hexagon              randconfig-r045-20211222
-riscv                randconfig-r042-20211222
-s390                 randconfig-r044-20211222
-hexagon              randconfig-r041-20211222
+vim +519 drivers/acpi/acpica/exregion.c
+
+   486	=
+
+   487	/*******************************************************************=
+************
+   488	 *
+   489	 * FUNCTION:    acpi_ex_data_table_space_handler
+   490	 *
+   491	 * PARAMETERS:  function            - Read or Write operation
+   492	 *              address             - Where in the space to read or =
+write
+   493	 *              bit_width           - Field width in bits (8, 16, or=
+ 32)
+   494	 *              value               - Pointer to in or out value
+   495	 *              handler_context     - Pointer to Handler's context
+   496	 *              region_context      - Pointer to context specific to=
+ the
+   497	 *                                    accessed region
+   498	 *
+   499	 * RETURN:      Status
+   500	 *
+   501	 * DESCRIPTION: Handler for the Data Table address space (Op Region)
+   502	 *
+   503	 *******************************************************************=
+***********/
+   504	=
+
+   505	acpi_status
+   506	acpi_ex_data_table_space_handler(u32 function,
+   507					 acpi_physical_address address,
+   508					 u32 bit_width,
+   509					 u64 *value,
+   510					 void *handler_context, void *region_context)
+   511	{
+   512		struct acpi_data_table_space_context *mapping;
+   513		char *pointer;
+   514	=
+
+   515		ACPI_FUNCTION_TRACE(ex_data_table_space_handler);
+   516	=
+
+   517		mapping =3D (struct acpi_data_table_space_context *) region_context;
+   518		pointer =3D ACPI_CAST_PTR(char, mapping->pointer) +
+ > 519		    (address - ACPI_PTR_TO_PHYSADDR(mapping->pointer));
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
 https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============6310455945891283586==--
+--===============6016027756407807390==--
 
