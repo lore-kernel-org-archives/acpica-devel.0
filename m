@@ -1,26 +1,44 @@
-Content-Type: multipart/mixed; boundary="===============6612128841777199780=="
+Content-Type: multipart/mixed; boundary="===============6627716949130839257=="
 MIME-Version: 1.0
 From: Moore, Robert <robert.moore at intel.com>
 Subject: [Devel] Re: [rafael-pm:bleeding-edge] BUILD SUCCESS WITH WARNING
  8d681a5245f0a5cfb20326b4f6578af1adb8676b
-Date: Tue, 04 Jan 2022 17:22:38 +0000
-Message-ID: <DM6PR11MB325976F1727198D80686D123874A9@DM6PR11MB3259.namprd11.prod.outlook.com>
-In-Reply-To: CAJZ5v0gx70huuZ7tj_iMZR3ViFfzX9F2Zt4BxqcHk_9OdioP1Q@mail.gmail.com
+Date: Tue, 04 Jan 2022 22:22:08 +0000
+Message-ID: <BYAPR11MB3256CD154ED1981DD70A97AF874A9@BYAPR11MB3256.namprd11.prod.outlook.com>
+In-Reply-To: DM6PR11MB325976F1727198D80686D123874A9@DM6PR11MB3259.namprd11.prod.outlook.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6612128841777199780==
+--===============6627716949130839257==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+
+However, we came up with a slight abstraction for compilers that don't supp=
+ort uintptr_t:
+
+/* Use C99 uintptr_t for pointer casting if available, "void *" otherwise */
+  C:\acpica\source\include\actypes.h(414):#ifndef ACPI_UINTPTR_T
+  C:\acpica\source\include\actypes.h(415):#define ACPI_UINTPTR_T           =
+       void *
+
+-----Original Message-----
+From: Moore, Robert =
+
+Sent: Tuesday, January 04, 2022 9:23 AM
+To: Rafael J. Wysocki <rafael(a)kernel.org>
+Cc: lkp <lkp(a)intel.com>; Rafael J. Wysocki <rjw(a)rjwysocki.net>; linux-p=
+m(a)vger.kernel.org; devel(a)acpica.org; linux-acpi(a)vger.kernel.org; Arnd=
+ Bergmann <arnd(a)kernel.org>
+Subject: RE: [Devel] [rafael-pm:bleeding-edge] BUILD SUCCESS WITH WARNING 8=
+d681a5245f0a5cfb20326b4f6578af1adb8676b
 
 Rafael,
 Yes, it looks like this patch may work OK.
 
 
 -----Original Message-----
-From: Rafael J. Wysocki <rafael(a)kernel.org> =
-
+From: Rafael J. Wysocki <rafael(a)kernel.org>
 Sent: Monday, January 03, 2022 8:49 AM
 To: Moore, Robert <robert.moore(a)intel.com>
 Cc: lkp <lkp(a)intel.com>; Rafael J. Wysocki <rjw(a)rjwysocki.net>; linux-p=
@@ -61,10 +79,8 @@ ad.
 >
 > tree/branch: =
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git =
-
-> bleeding-edge branch HEAD: 8d681a5245f0a5cfb20326b4f6578af1adb8676b  =
-
+> https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git
+> bleeding-edge branch HEAD: 8d681a5245f0a5cfb20326b4f6578af1adb8676b
 > Merge branch 'acpi-sysfs' into bleeding-edge
 >
 > Warning reports:
@@ -183,8 +199,7 @@ ad.
 > |drivers-acpi-acpica-exregion.c:warning:performing-pointer-subtraction
 > |-w ith-a-null-pointer-has-undefined-behavior
 > `-- x86_64-randconfig-r024-20211228
->     `-- =
-
+>     `--
 > drivers-acpi-acpica-exregion.c:warning:performing-pointer-subtraction-
 > with-a-null-pointer-has-undefined-behavior
 >
@@ -312,5 +327,5 @@ ad.
 
 > %(web_page_url)slistinfo%(cgiext)s/%(_internal_name)s
 
---===============6612128841777199780==--
+--===============6627716949130839257==--
 
