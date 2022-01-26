@@ -1,133 +1,74 @@
-Content-Type: multipart/mixed; boundary="===============7094842875601941037=="
+Content-Type: multipart/mixed; boundary="===============5864502689123253311=="
 MIME-Version: 1.0
 From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [rafael-pm:bleeding-edge] BUILD SUCCESS WITH WARNING
- fc720b592cc66f5903ee0bf4d17508e2b8614528
-Date: Tue, 18 Jan 2022 16:21:03 +0800
-Message-ID: <61e6786f.Nakrpo0qkrvtSyjB%lkp@intel.com>
+Subject: [Devel] [rafael-pm:bleeding-edge] BUILD SUCCESS
+ af8e84518513d168ae3bc299e761ce7fec1dcb89
+Date: Wed, 26 Jan 2022 16:10:40 +0800
+Message-ID: <61f10200.0PBUFzNDuN552Nk2%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7094842875601941037==
+--===============5864502689123253311==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
 tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
 m.git bleeding-edge
-branch HEAD: fc720b592cc66f5903ee0bf4d17508e2b8614528  Merge branch 'therma=
-l-int340x' into bleeding-edge
+branch HEAD: af8e84518513d168ae3bc299e761ce7fec1dcb89  Merge branch 'acpi-p=
+roperties' into bleeding-edge
 
-Warning reports:
+elapsed time: 737m
 
-https://lore.kernel.org/llvm/202112280907.gTYYYuB4-lkp(a)intel.com
-
-Warning in current branch:
-
-drivers/acpi/acpica/exregion.c:519:17: warning: performing pointer subtract=
-ion with a null pointer has undefined behavior [-Wnull-pointer-subtraction]
-
-Warning ids grouped by kconfigs:
-
-clang_recent_errors
-|-- arm64-allmodconfig
-|   `-- drivers-acpi-acpica-exregion.c:warning:performing-pointer-subtracti=
-on-with-a-null-pointer-has-undefined-behavior
-|-- i386-randconfig-a001-20220117
-|   `-- drivers-acpi-acpica-exregion.c:warning:performing-pointer-subtracti=
-on-with-a-null-pointer-has-undefined-behavior
-|-- i386-randconfig-a002-20220117
-|   `-- drivers-acpi-acpica-exregion.c:warning:performing-pointer-subtracti=
-on-with-a-null-pointer-has-undefined-behavior
-|-- i386-randconfig-a003-20220117
-|   `-- drivers-acpi-acpica-exregion.c:warning:performing-pointer-subtracti=
-on-with-a-null-pointer-has-undefined-behavior
-|-- i386-randconfig-a004-20220117
-|   `-- drivers-acpi-acpica-exregion.c:warning:performing-pointer-subtracti=
-on-with-a-null-pointer-has-undefined-behavior
-|-- i386-randconfig-a005-20220117
-|   `-- drivers-acpi-acpica-exregion.c:warning:performing-pointer-subtracti=
-on-with-a-null-pointer-has-undefined-behavior
-|-- i386-randconfig-a006-20220117
-|   `-- drivers-acpi-acpica-exregion.c:warning:performing-pointer-subtracti=
-on-with-a-null-pointer-has-undefined-behavior
-|-- i386-randconfig-c001
-|   `-- drivers-acpi-acpica-exregion.c:warning:performing-pointer-subtracti=
-on-with-a-null-pointer-has-undefined-behavior
-|-- x86_64-randconfig-a001-20220117
-|   `-- drivers-acpi-acpica-exregion.c:warning:performing-pointer-subtracti=
-on-with-a-null-pointer-has-undefined-behavior
-|-- x86_64-randconfig-a002-20220117
-|   `-- drivers-acpi-acpica-exregion.c:warning:performing-pointer-subtracti=
-on-with-a-null-pointer-has-undefined-behavior
-|-- x86_64-randconfig-a003-20220117
-|   `-- drivers-acpi-acpica-exregion.c:warning:performing-pointer-subtracti=
-on-with-a-null-pointer-has-undefined-behavior
-|-- x86_64-randconfig-a004-20220117
-|   `-- drivers-acpi-acpica-exregion.c:warning:performing-pointer-subtracti=
-on-with-a-null-pointer-has-undefined-behavior
-|-- x86_64-randconfig-a005-20220117
-|   `-- drivers-acpi-acpica-exregion.c:warning:performing-pointer-subtracti=
-on-with-a-null-pointer-has-undefined-behavior
-|-- x86_64-randconfig-a006-20220117
-|   `-- drivers-acpi-acpica-exregion.c:warning:performing-pointer-subtracti=
-on-with-a-null-pointer-has-undefined-behavior
-`-- x86_64-randconfig-c007
-    `-- drivers-acpi-acpica-exregion.c:warning:performing-pointer-subtracti=
-on-with-a-null-pointer-has-undefined-behavior
-
-elapsed time: 729m
-
-configs tested: 123
+configs tested: 107
 configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
 gcc tested configs:
 arm                                 defconfig
-arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
+arm64                               defconfig
 arm64                            allyesconfig
-i386                 randconfig-c001-20220117
-powerpc                      pasemi_defconfig
-powerpc                 mpc837x_rdb_defconfig
-mips                         tb0226_defconfig
-ia64                             alldefconfig
-sh                           se7721_defconfig
+i386                 randconfig-c001-20220124
+nios2                            alldefconfig
+sh                 kfr2r09-romimage_defconfig
+sh                          urquell_defconfig
+mips                         cobalt_defconfig
+powerpc                         ps3_defconfig
+powerpc                  storcenter_defconfig
+sh                            shmin_defconfig
+sh                           se7780_defconfig
+mips                         db1xxx_defconfig
+xtensa                  audio_kc705_defconfig
+s390                             allyesconfig
+arc                                 defconfig
+mips                            gpr_defconfig
 powerpc                       ppc64_defconfig
-powerpc                      mgcoge_defconfig
-powerpc                 canyonlands_defconfig
-mips                  decstation_64_defconfig
-m68k                          amiga_defconfig
-mips                          rb532_defconfig
-mips                           ip32_defconfig
-openrisc                 simple_smp_defconfig
-m68k                        stmark2_defconfig
-arm                  randconfig-c002-20220118
-arm                  randconfig-c002-20220116
-arm                  randconfig-c002-20220117
+arm                  randconfig-c002-20220124
 ia64                                defconfig
 ia64                             allmodconfig
 ia64                             allyesconfig
-m68k                                defconfig
 m68k                             allyesconfig
 m68k                             allmodconfig
+m68k                                defconfig
 nds32                             allnoconfig
 nios2                               defconfig
 arc                              allyesconfig
+nds32                               defconfig
 csky                                defconfig
 alpha                               defconfig
-nds32                               defconfig
 alpha                            allyesconfig
 nios2                            allyesconfig
-arc                                 defconfig
 sh                               allmodconfig
-h8300                            allyesconfig
 xtensa                           allyesconfig
+h8300                            allyesconfig
 parisc                              defconfig
-s390                             allmodconfig
 s390                                defconfig
+s390                             allmodconfig
 parisc                           allyesconfig
-s390                             allyesconfig
 i386                             allyesconfig
 sparc                               defconfig
 i386                                defconfig
@@ -139,78 +80,67 @@ mips                             allmodconfig
 powerpc                           allnoconfig
 powerpc                          allmodconfig
 powerpc                          allyesconfig
-x86_64               randconfig-a012-20220117
-x86_64               randconfig-a013-20220117
-x86_64               randconfig-a011-20220117
-x86_64               randconfig-a014-20220117
-x86_64               randconfig-a015-20220117
-x86_64               randconfig-a016-20220117
-i386                 randconfig-a012-20220117
-i386                 randconfig-a016-20220117
-i386                 randconfig-a014-20220117
-i386                 randconfig-a015-20220117
-i386                 randconfig-a011-20220117
-i386                 randconfig-a013-20220117
-riscv                randconfig-r042-20220117
-arc                  randconfig-r043-20220116
-arc                  randconfig-r043-20220117
-s390                 randconfig-r044-20220117
-arc                  randconfig-r043-20220118
+i386                          randconfig-a003
+i386                          randconfig-a001
+i386                          randconfig-a005
+arc                  randconfig-r043-20220124
+x86_64               randconfig-a002-20220124
+x86_64               randconfig-a003-20220124
+x86_64               randconfig-a001-20220124
+x86_64               randconfig-a004-20220124
+x86_64               randconfig-a005-20220124
+x86_64               randconfig-a006-20220124
+riscv                    nommu_k210_defconfig
 riscv                            allyesconfig
 riscv                    nommu_virt_defconfig
 riscv                             allnoconfig
 riscv                               defconfig
 riscv                          rv32_defconfig
 riscv                            allmodconfig
-riscv                    nommu_k210_defconfig
 um                             i386_defconfig
 um                           x86_64_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
 x86_64                              defconfig
 x86_64                               rhel-8.3
 x86_64                          rhel-8.3-func
 x86_64                                  kexec
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
 
 clang tested configs:
-x86_64                        randconfig-c007
-powerpc              randconfig-c003-20220116
-i386                          randconfig-c001
-mips                 randconfig-c004-20220116
-arm                  randconfig-c002-20220116
-riscv                randconfig-c006-20220116
-s390                 randconfig-c005-20220116
+arm                  randconfig-c002-20220124
+i386                 randconfig-c001-20220124
+powerpc              randconfig-c003-20220124
+mips                 randconfig-c004-20220124
+s390                 randconfig-c005-20220124
+x86_64               randconfig-c007-20220124
+riscv                randconfig-c006-20220124
+mips                      bmips_stb_defconfig
 powerpc                    socrates_defconfig
-arm                         s5pv210_defconfig
-arm                       mainstone_defconfig
-powerpc                       ebony_defconfig
-powerpc                  mpc866_ads_defconfig
-powerpc                      ppc44x_defconfig
-i386                 randconfig-a001-20220117
-i386                 randconfig-a004-20220117
-i386                 randconfig-a002-20220117
-i386                 randconfig-a003-20220117
-i386                 randconfig-a005-20220117
-i386                 randconfig-a006-20220117
-x86_64               randconfig-a004-20220117
-x86_64               randconfig-a001-20220117
-x86_64               randconfig-a006-20220117
-x86_64               randconfig-a002-20220117
-x86_64               randconfig-a003-20220117
-x86_64               randconfig-a005-20220117
-riscv                randconfig-r042-20220118
-hexagon              randconfig-r045-20220116
-hexagon              randconfig-r045-20220117
-hexagon              randconfig-r045-20220118
-riscv                randconfig-r042-20220116
-hexagon              randconfig-r041-20220118
-s390                 randconfig-r044-20220118
-s390                 randconfig-r044-20220116
-hexagon              randconfig-r041-20220116
-hexagon              randconfig-r041-20220117
+arm                         orion5x_defconfig
+powerpc                     skiroot_defconfig
+powerpc                        icon_defconfig
+i386                          randconfig-a002
+i386                          randconfig-a004
+i386                          randconfig-a006
+x86_64               randconfig-a011-20220124
+x86_64               randconfig-a013-20220124
+x86_64               randconfig-a014-20220124
+x86_64               randconfig-a012-20220124
+x86_64               randconfig-a015-20220124
+x86_64               randconfig-a016-20220124
+i386                 randconfig-a011-20220124
+i386                 randconfig-a013-20220124
+i386                 randconfig-a014-20220124
+i386                 randconfig-a015-20220124
+i386                 randconfig-a012-20220124
+i386                 randconfig-a016-20220124
+riscv                randconfig-r042-20220124
+hexagon              randconfig-r045-20220124
+hexagon              randconfig-r041-20220124
+s390                 randconfig-r044-20220124
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
 https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============7094842875601941037==--
+--===============5864502689123253311==--
 
