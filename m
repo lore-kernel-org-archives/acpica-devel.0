@@ -1,51 +1,153 @@
-Content-Type: multipart/mixed; boundary="===============9131251858795607177=="
+Content-Type: multipart/mixed; boundary="===============7872286107970550149=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [PATCH] ACPICA: cleanup double word in comment
-Date: Mon, 31 Jan 2022 19:51:00 +0100
-Message-ID: <CAJZ5v0g5Xxd9kBPUdsC6D4fVHfZafKiGgkTONo2mpqvfgoFDgw@mail.gmail.com>
-In-Reply-To: 20220131133337.1556355-1-trix@redhat.com
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [rafael-pm:bleeding-edge] BUILD SUCCESS
+ 0c1f0e2fe5907398408d24636c5e778275870df1
+Date: Tue, 01 Feb 2022 18:33:25 +0800
+Message-ID: <61f90c75.W+IltSI+gZKu+OWX%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============9131251858795607177==
+--===============7872286107970550149==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 31, 2022 at 2:33 PM <trix(a)redhat.com> wrote:
->
-> From: Tom Rix <trix(a)redhat.com>
->
-> Remove the second 'know'.
->
-> Signed-off-by: Tom Rix <trix(a)redhat.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git bleeding-edge
+branch HEAD: 0c1f0e2fe5907398408d24636c5e778275870df1  Merge branch 'acpi-s=
+can' into bleeding-edge
 
-This is ACPICA material, so it needs to be submitted to the upstream
-project via https://github.com/acpica/acpica/
+elapsed time: 732m
 
-Also, it would be good to combine all of the analogous changes in one patch.
+configs tested: 115
+configs skipped: 3
 
-> ---
->  drivers/acpi/acpica/exfldio.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/acpi/acpica/exfldio.c b/drivers/acpi/acpica/exfldio.c
-> index bdc7a30d1217c..b92605df3872c 100644
-> --- a/drivers/acpi/acpica/exfldio.c
-> +++ b/drivers/acpi/acpica/exfldio.c
-> @@ -104,7 +104,7 @@ acpi_ex_setup_region(union acpi_operand_object *obj_d=
-esc,
->  #ifdef ACPI_UNDER_DEVELOPMENT
->         /*
->          * If the Field access is any_acc, we can now compute the optimal
-> -        * access (because we know know the length of the parent region)
-> +        * access (because we know the length of the parent region)
->          */
->         if (!(obj_desc->common.flags & AOPOBJ_DATA_VALID)) {
->                 if (ACPI_FAILURE(status)) {
-> --
-> 2.26.3
->
---===============9131251858795607177==--
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm64                            allyesconfig
+arm64                               defconfig
+i386                 randconfig-c001-20220131
+m68k                       m5475evb_defconfig
+powerpc                mpc7448_hpc2_defconfig
+sh                          rsk7203_defconfig
+powerpc                    klondike_defconfig
+powerpc                      ppc40x_defconfig
+sh                          rsk7269_defconfig
+arm                           stm32_defconfig
+sh                  sh7785lcr_32bit_defconfig
+powerpc                 mpc837x_rdb_defconfig
+arc                                 defconfig
+m68k                          sun3x_defconfig
+mips                      maltasmvp_defconfig
+sh                               alldefconfig
+arm                  randconfig-c002-20220130
+arm                  randconfig-c002-20220131
+ia64                                defconfig
+ia64                             allyesconfig
+ia64                             allmodconfig
+m68k                                defconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nds32                             allnoconfig
+nios2                               defconfig
+arc                              allyesconfig
+csky                                defconfig
+alpha                               defconfig
+nds32                               defconfig
+alpha                            allyesconfig
+nios2                            allyesconfig
+sh                               allmodconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+parisc                              defconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+s390                             allyesconfig
+i386                             allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+sparc                            allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                           allnoconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+i386                 randconfig-a002-20220131
+i386                 randconfig-a001-20220131
+i386                 randconfig-a005-20220131
+i386                 randconfig-a003-20220131
+i386                 randconfig-a004-20220131
+i386                 randconfig-a006-20220131
+x86_64               randconfig-a004-20220131
+x86_64               randconfig-a003-20220131
+x86_64               randconfig-a001-20220131
+x86_64               randconfig-a006-20220131
+x86_64               randconfig-a005-20220131
+x86_64               randconfig-a002-20220131
+riscv                randconfig-r042-20220130
+arc                  randconfig-r043-20220130
+arc                  randconfig-r043-20220131
+s390                 randconfig-r044-20220130
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
+x86_64                    rhel-8.3-kselftests
+
+clang tested configs:
+x86_64                        randconfig-c007
+powerpc              randconfig-c003-20220201
+mips                 randconfig-c004-20220201
+i386                          randconfig-c001
+arm                  randconfig-c002-20220201
+s390                 randconfig-c005-20220201
+riscv                randconfig-c006-20220201
+arm                         shannon_defconfig
+riscv                    nommu_virt_defconfig
+powerpc                    mvme5100_defconfig
+powerpc                     kilauea_defconfig
+arm                       imx_v4_v5_defconfig
+powerpc                 xes_mpc85xx_defconfig
+x86_64               randconfig-a013-20220131
+x86_64               randconfig-a014-20220131
+x86_64               randconfig-a016-20220131
+x86_64               randconfig-a011-20220131
+x86_64               randconfig-a012-20220131
+x86_64               randconfig-a015-20220131
+i386                 randconfig-a013-20220131
+i386                 randconfig-a014-20220131
+i386                 randconfig-a012-20220131
+i386                 randconfig-a015-20220131
+i386                 randconfig-a016-20220131
+i386                 randconfig-a011-20220131
+riscv                randconfig-r042-20220131
+s390                 randconfig-r044-20220131
+hexagon              randconfig-r045-20220130
+hexagon              randconfig-r045-20220131
+hexagon              randconfig-r041-20220130
+hexagon              randconfig-r041-20220131
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
+--===============7872286107970550149==--
 
