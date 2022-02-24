@@ -1,81 +1,278 @@
-Content-Type: multipart/mixed; boundary="===============2663250030760992450=="
+Content-Type: multipart/mixed; boundary="===============5658632399288956134=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] Re: [PATCH 3/4] acpi: exsystem: Warn about sleeps greater
- than 50 ms
-Date: Thu, 24 Feb 2022 16:19:52 +0000
-Message-ID: <BYAPR11MB32563DC0413B8595D1339B37873D9@BYAPR11MB3256.namprd11.prod.outlook.com>
-In-Reply-To: 20220224113807.91771-3-pmenzel@molgen.mpg.de
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [rafael-pm:testing 54/57]
+ arch/x86/include/asm/pci_x86.h:97:8: error: unknown type name
+ 'raw_spinlock_t'
+Date: Fri, 25 Feb 2022 05:32:51 +0800
+Message-ID: <202202250514.JzetOofA-lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2663250030760992450==
+--===============5658632399288956134==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-So, this is the current implementation:
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git=
+ testing
+head:   fc4232749306d2fb9341c4c6d17c489ab657a67e
+commit: 62fabd56faafe033eb0be3ba24000b8db13d4c17 [54/57] x86/PCI: Disable e=
+xclusion of E820 reserved addresses in some cases
+config: i386-tinyconfig (https://download.01.org/0day-ci/archive/20220225/2=
+02202250514.JzetOofA-lkp(a)intel.com/config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+reproduce (this is a W=3D1 build):
+        # https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.g=
+it/commit/?id=3D62fabd56faafe033eb0be3ba24000b8db13d4c17
+        git remote add rafael-pm https://git.kernel.org/pub/scm/linux/kerne=
+l/git/rafael/linux-pm.git
+        git fetch --no-tags rafael-pm testing
+        git checkout 62fabd56faafe033eb0be3ba24000b8db13d4c17
+        # save the config file to linux build tree
+        mkdir build_dir
+        make W=3D1 O=3Dbuild_dir ARCH=3Di386 SHELL=3D/bin/bash arch/x86/ker=
+nel/
 
-    /*
-     * For compatibility with other ACPI implementations and to prevent
-     * accidental deep sleeps, limit the sleep time to something reasonable.
-     */
-    if (HowLong > ACPI_MAX_SLEEP)
-    {
-        HowLong =3D ACPI_MAX_SLEEP;
-    }
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp(a)intel.com>
 
-    AcpiOsSleep (HowLong);
+All errors (new ones prefixed by >>):
 
-Where ACPI_MAX_SLEEP is: =
+   In file included from arch/x86/kernel/resource.c:4:
+>> arch/x86/include/asm/pci_x86.h:97:8: error: unknown type name 'raw_spinl=
+ock_t'
+      97 | extern raw_spinlock_t pci_config_lock;
+         |        ^~~~~~~~~~~~~~
+>> arch/x86/include/asm/pci_x86.h:133:20: error: expected '=3D', ',', ';', =
+'asm' or '__attribute__' before 'dmi_check_pciprobe'
+     133 | extern void __init dmi_check_pciprobe(void);
+         |                    ^~~~~~~~~~~~~~~~~~
+>> arch/x86/include/asm/pci_x86.h:134:20: error: expected '=3D', ',', ';', =
+'asm' or '__attribute__' before 'dmi_check_skip_isa_align'
+     134 | extern void __init dmi_check_skip_isa_align(void);
+         |                    ^~~~~~~~~~~~~~~~~~~~~~~~
+>> arch/x86/include/asm/pci_x86.h:140:27: error: expected '=3D', ',', ';', =
+'asm' or '__attribute__' before 'pci_acpi_init'
+     140 | static inline int  __init pci_acpi_init(void)
+         |                           ^~~~~~~~~~~~~
+>> arch/x86/include/asm/pci_x86.h:145:20: error: expected '=3D', ',', ';', =
+'asm' or '__attribute__' before 'pcibios_irq_init'
+     145 | extern void __init pcibios_irq_init(void);
+         |                    ^~~~~~~~~~~~~~~~
+>> arch/x86/include/asm/pci_x86.h:146:19: error: expected '=3D', ',', ';', =
+'asm' or '__attribute__' before 'pcibios_init'
+     146 | extern int __init pcibios_init(void);
+         |                   ^~~~~~~~~~~~
+>> arch/x86/include/asm/pci_x86.h:166:19: error: expected '=3D', ',', ';', =
+'asm' or '__attribute__' before 'pci_mmcfg_arch_init'
+     166 | extern int __init pci_mmcfg_arch_init(void);
+         |                   ^~~~~~~~~~~~~~~~~~~
+>> arch/x86/include/asm/pci_x86.h:167:20: error: expected '=3D', ',', ';', =
+'asm' or '__attribute__' before 'pci_mmcfg_arch_free'
+     167 | extern void __init pci_mmcfg_arch_free(void);
+         |                    ^~~~~~~~~~~~~~~~~~~
+>> arch/x86/include/asm/pci_x86.h:174:40: error: expected '=3D', ',', ';', =
+'asm' or '__attribute__' before 'pci_mmconfig_add'
+     174 | extern struct pci_mmcfg_region *__init pci_mmconfig_add(int segm=
+ent, int start,
+         |                                        ^~~~~~~~~~~~~~~~
 
 
-#define ACPI_MAX_SLEEP                  2000    /* 2000 millisec =3D=3D two=
- seconds */
+vim +/raw_spinlock_t +97 arch/x86/include/asm/pci_x86.h
 
------Original Message-----
-From: Paul Menzel <pmenzel(a)molgen.mpg.de> =
+^1da177e4c3f41 arch/i386/pci/pci.h            Linus Torvalds     2005-04-16=
+   96  =
 
-Sent: Thursday, February 24, 2022 3:38 AM
-To: Moore, Robert <robert.moore(a)intel.com>; Wysocki, Rafael J <rafael.j.w=
-ysocki(a)intel.com>; Len Brown <lenb(a)kernel.org>
-Cc: Paul Menzel <pmenzel(a)molgen.mpg.de>; linux-acpi(a)vger.kernel.org; de=
-vel(a)acpica.org; linux-kernel(a)vger.kernel.org
-Subject: [PATCH 3/4] acpi: exsystem: Warn about sleeps greater than 50 ms
+d19f61f098ae93 arch/x86/include/asm/pci_x86.h Thomas Gleixner    2010-02-17=
+  @97  extern raw_spinlock_t pci_config_lock;
+^1da177e4c3f41 arch/i386/pci/pci.h            Linus Torvalds     2005-04-16=
+   98  =
 
-Quick boottime is important, so warn about sleeps greater than 50 ms in ACP=
-I.
+^1da177e4c3f41 arch/i386/pci/pci.h            Linus Torvalds     2005-04-16=
+   99  extern int (*pcibios_enable_irq)(struct pci_dev *dev);
+87bec66b969152 arch/i386/pci/pci.h            David Shaohua Li   2005-07-27=
+  100  extern void (*pcibios_disable_irq)(struct pci_dev *dev);
+928cf8c6276334 arch/i386/pci/pci.h            Andi Kleen         2005-12-12=
+  101  =
 
-50 ms is still long compared to distribution Linux kernels reaching initrd =
-in 350 ms, so should probably changed to 10 ms, so people are aware about t=
-his.
+6c777e8799a93e arch/x86/include/asm/pci_x86.h Bjorn Helgaas      2016-02-17=
+  102  extern bool mp_should_keep_irq(struct device *dev);
+6c777e8799a93e arch/x86/include/asm/pci_x86.h Bjorn Helgaas      2016-02-17=
+  103  =
 
-Signed-off-by: Paul Menzel <pmenzel(a)molgen.mpg.de>
+b6ce068a1285a2 arch/x86/pci/pci.h             Matthew Wilcox     2008-02-10=
+  104  struct pci_raw_ops {
+b6ce068a1285a2 arch/x86/pci/pci.h             Matthew Wilcox     2008-02-10=
+  105  	int (*read)(unsigned int domain, unsigned int bus, unsigned int dev=
+fn,
+b6ce068a1285a2 arch/x86/pci/pci.h             Matthew Wilcox     2008-02-10=
+  106  						int reg, int len, u32 *val);
+b6ce068a1285a2 arch/x86/pci/pci.h             Matthew Wilcox     2008-02-10=
+  107  	int (*write)(unsigned int domain, unsigned int bus, unsigned int de=
+vfn,
+b6ce068a1285a2 arch/x86/pci/pci.h             Matthew Wilcox     2008-02-10=
+  108  						int reg, int len, u32 val);
+b6ce068a1285a2 arch/x86/pci/pci.h             Matthew Wilcox     2008-02-10=
+  109  };
+b6ce068a1285a2 arch/x86/pci/pci.h             Matthew Wilcox     2008-02-10=
+  110  =
+
+72da0b07b1b497 arch/x86/include/asm/pci_x86.h Jan Beulich        2011-09-15=
+  111  extern const struct pci_raw_ops *raw_pci_ops;
+72da0b07b1b497 arch/x86/include/asm/pci_x86.h Jan Beulich        2011-09-15=
+  112  extern const struct pci_raw_ops *raw_pci_ext_ops;
+b6ce068a1285a2 arch/x86/pci/pci.h             Matthew Wilcox     2008-02-10=
+  113  =
+
+c0fa40784cce9c arch/x86/include/asm/pci_x86.h Jiang Liu          2012-06-22=
+  114  extern const struct pci_raw_ops pci_mmcfg;
+72da0b07b1b497 arch/x86/include/asm/pci_x86.h Jan Beulich        2011-09-15=
+  115  extern const struct pci_raw_ops pci_direct_conf1;
+14d7ca5c575853 arch/x86/pci/pci.h             H. Peter Anvin     2008-11-11=
+  116  extern bool port_cf9_safe;
+928cf8c6276334 arch/i386/pci/pci.h            Andi Kleen         2005-12-12=
+  117  =
+
+8dd779b19ce597 arch/x86/pci/pci.h             Robert Richter     2008-07-02=
+  118  /* arch_initcall level */
+445d3595ab290b arch/x86/include/asm/pci_x86.h Thomas Gleixner    2020-08-26=
+  119  #ifdef CONFIG_PCI_DIRECT
+5e544d618f0fb2 arch/i386/pci/pci.h            Andi Kleen         2006-09-26=
+  120  extern int pci_direct_probe(void);
+5e544d618f0fb2 arch/i386/pci/pci.h            Andi Kleen         2006-09-26=
+  121  extern void pci_direct_init(int type);
+445d3595ab290b arch/x86/include/asm/pci_x86.h Thomas Gleixner    2020-08-26=
+  122  #else
+445d3595ab290b arch/x86/include/asm/pci_x86.h Thomas Gleixner    2020-08-26=
+  123  static inline int pci_direct_probe(void) { return -1; }
+445d3595ab290b arch/x86/include/asm/pci_x86.h Thomas Gleixner    2020-08-26=
+  124  static inline  void pci_direct_init(int type) { }
+445d3595ab290b arch/x86/include/asm/pci_x86.h Thomas Gleixner    2020-08-26=
+  125  #endif
+445d3595ab290b arch/x86/include/asm/pci_x86.h Thomas Gleixner    2020-08-26=
+  126  =
+
+445d3595ab290b arch/x86/include/asm/pci_x86.h Thomas Gleixner    2020-08-26=
+  127  #ifdef CONFIG_PCI_BIOS
+92c05fc1a32e5c arch/i386/pci/pci.h            Andi Kleen         2006-03-23=
+  128  extern void pci_pcbios_init(void);
+445d3595ab290b arch/x86/include/asm/pci_x86.h Thomas Gleixner    2020-08-26=
+  129  #else
+445d3595ab290b arch/x86/include/asm/pci_x86.h Thomas Gleixner    2020-08-26=
+  130  static inline void pci_pcbios_init(void) { }
+445d3595ab290b arch/x86/include/asm/pci_x86.h Thomas Gleixner    2020-08-26=
+  131  #endif
+445d3595ab290b arch/x86/include/asm/pci_x86.h Thomas Gleixner    2020-08-26=
+  132  =
+
+8dd779b19ce597 arch/x86/pci/pci.h             Robert Richter     2008-07-02=
+ @133  extern void __init dmi_check_pciprobe(void);
+8dd779b19ce597 arch/x86/pci/pci.h             Robert Richter     2008-07-02=
+ @134  extern void __init dmi_check_skip_isa_align(void);
+8dd779b19ce597 arch/x86/pci/pci.h             Robert Richter     2008-07-02=
+  135  =
+
+8dd779b19ce597 arch/x86/pci/pci.h             Robert Richter     2008-07-02=
+  136  /* some common used subsys_initcalls */
+5d32a66541c468 arch/x86/include/asm/pci_x86.h Sinan Kaya         2018-12-19=
+  137  #ifdef CONFIG_PCI
+8dd779b19ce597 arch/x86/pci/pci.h             Robert Richter     2008-07-02=
+  138  extern int __init pci_acpi_init(void);
+5d32a66541c468 arch/x86/include/asm/pci_x86.h Sinan Kaya         2018-12-19=
+  139  #else
+5d32a66541c468 arch/x86/include/asm/pci_x86.h Sinan Kaya         2018-12-19=
+ @140  static inline int  __init pci_acpi_init(void)
+5d32a66541c468 arch/x86/include/asm/pci_x86.h Sinan Kaya         2018-12-19=
+  141  {
+5d32a66541c468 arch/x86/include/asm/pci_x86.h Sinan Kaya         2018-12-19=
+  142  	return -EINVAL;
+5d32a66541c468 arch/x86/include/asm/pci_x86.h Sinan Kaya         2018-12-19=
+  143  }
+5d32a66541c468 arch/x86/include/asm/pci_x86.h Sinan Kaya         2018-12-19=
+  144  #endif
+ab3b37937e8f4f arch/x86/include/asm/pci_x86.h Thomas Gleixner    2009-08-29=
+ @145  extern void __init pcibios_irq_init(void);
+8dd779b19ce597 arch/x86/pci/pci.h             Robert Richter     2008-07-02=
+ @146  extern int __init pcibios_init(void);
+b72d0db9dd41da arch/x86/include/asm/pci_x86.h Thomas Gleixner    2009-08-29=
+  147  extern int pci_legacy_init(void);
+9325a28ce2fa7c arch/x86/include/asm/pci_x86.h Thomas Gleixner    2009-08-29=
+  148  extern void pcibios_fixup_irqs(void);
+5e544d618f0fb2 arch/i386/pci/pci.h            Andi Kleen         2006-09-26=
+  149  =
+
+b78673944b22b6 arch/i386/pci/pci.h            Olivier Galibert   2007-02-13=
+  150  /* pci-mmconfig.c */
+b78673944b22b6 arch/i386/pci/pci.h            Olivier Galibert   2007-02-13=
+  151  =
+
+56ddf4d3cf04e8 arch/x86/include/asm/pci_x86.h Bjorn Helgaas      2009-11-13=
+  152  /* "PCI MMCONFIG %04x [bus %02x-%02x]" */
+56ddf4d3cf04e8 arch/x86/include/asm/pci_x86.h Bjorn Helgaas      2009-11-13=
+  153  #define PCI_MMCFG_RESOURCE_NAME_LEN (22 + 4 + 2 + 2)
+56ddf4d3cf04e8 arch/x86/include/asm/pci_x86.h Bjorn Helgaas      2009-11-13=
+  154  =
+
+d215a9c8b46e55 arch/x86/include/asm/pci_x86.h Bjorn Helgaas      2009-11-13=
+  155  struct pci_mmcfg_region {
+ff097ddd4aeac7 arch/x86/include/asm/pci_x86.h Bjorn Helgaas      2009-11-13=
+  156  	struct list_head list;
+56ddf4d3cf04e8 arch/x86/include/asm/pci_x86.h Bjorn Helgaas      2009-11-13=
+  157  	struct resource res;
+d215a9c8b46e55 arch/x86/include/asm/pci_x86.h Bjorn Helgaas      2009-11-13=
+  158  	u64 address;
+3f0f5503926f74 arch/x86/include/asm/pci_x86.h Bjorn Helgaas      2009-11-13=
+  159  	char __iomem *virt;
+d7e6b66fe87c9f arch/x86/include/asm/pci_x86.h Bjorn Helgaas      2009-11-13=
+  160  	u16 segment;
+d7e6b66fe87c9f arch/x86/include/asm/pci_x86.h Bjorn Helgaas      2009-11-13=
+  161  	u8 start_bus;
+d7e6b66fe87c9f arch/x86/include/asm/pci_x86.h Bjorn Helgaas      2009-11-13=
+  162  	u8 end_bus;
+56ddf4d3cf04e8 arch/x86/include/asm/pci_x86.h Bjorn Helgaas      2009-11-13=
+  163  	char name[PCI_MMCFG_RESOURCE_NAME_LEN];
+d215a9c8b46e55 arch/x86/include/asm/pci_x86.h Bjorn Helgaas      2009-11-13=
+  164  };
+d215a9c8b46e55 arch/x86/include/asm/pci_x86.h Bjorn Helgaas      2009-11-13=
+  165  =
+
+429d512e532ec9 arch/i386/pci/pci.h            OGAWA Hirofumi     2007-02-13=
+ @166  extern int __init pci_mmcfg_arch_init(void);
+0b64ad7123eb01 arch/x86/pci/pci.h             Yinghai Lu         2008-02-15=
+ @167  extern void __init pci_mmcfg_arch_free(void);
+a18e3690a52790 arch/x86/include/asm/pci_x86.h Greg Kroah-Hartman 2012-12-21=
+  168  extern int pci_mmcfg_arch_map(struct pci_mmcfg_region *cfg);
+9cf0105da5a315 arch/x86/include/asm/pci_x86.h Jiang Liu          2012-06-22=
+  169  extern void pci_mmcfg_arch_unmap(struct pci_mmcfg_region *cfg);
+a18e3690a52790 arch/x86/include/asm/pci_x86.h Greg Kroah-Hartman 2012-12-21=
+  170  extern int pci_mmconfig_insert(struct device *dev, u16 seg, u8 start=
+, u8 end,
+a18e3690a52790 arch/x86/include/asm/pci_x86.h Greg Kroah-Hartman 2012-12-21=
+  171  			       phys_addr_t addr);
+9c95111b330d2d arch/x86/include/asm/pci_x86.h Jiang Liu          2012-06-22=
+  172  extern int pci_mmconfig_delete(u16 seg, u8 start, u8 end);
+f6e1d8cc38b377 arch/x86/include/asm/pci_x86.h Bjorn Helgaas      2009-11-13=
+  173  extern struct pci_mmcfg_region *pci_mmconfig_lookup(int segment, int=
+ bus);
+6fa4a94e150be2 arch/x86/include/asm/pci_x86.h Otavio Pontes      2018-03-07=
+ @174  extern struct pci_mmcfg_region *__init pci_mmconfig_add(int segment,=
+ int start,
+6fa4a94e150be2 arch/x86/include/asm/pci_x86.h Otavio Pontes      2018-03-07=
+  175  							int end, u64 addr);
+3320ad994afb2c arch/i386/pci/pci.h            dean gaudet        2007-08-10=
+  176  =
+
+
+:::::: The code at line 97 was first introduced by commit
+:::::: d19f61f098ae9315b76a97962007f687683916d4 x86/PCI: Convert pci_config=
+_lock to raw_spinlock
+
+:::::: TO: Thomas Gleixner <tglx(a)linutronix.de>
+:::::: CC: Jesse Barnes <jbarnes(a)virtuousgeek.org>
+
 ---
- drivers/acpi/acpica/exsystem.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/acpi/acpica/exsystem.c b/drivers/acpi/acpica/exsystem.=
-c index 00f66af31ffa..bdffb8aac05c 100644
---- a/drivers/acpi/acpica/exsystem.c
-+++ b/drivers/acpi/acpica/exsystem.c
-@@ -167,6 +167,11 @@ acpi_status acpi_ex_system_do_sleep(u64 how_long_ms)
- =
-
- 	acpi_ex_exit_interpreter();
- =
-
-+	if (how_long_ms > 50) {
-+		ACPI_WARNING((AE_INFO,
-+		    "Time parameter %llu > 50 ms. Please contact firmware vendor for mor=
-e responsive system.", how_long_ms));
-+	}
-+
- 	/*
- 	 * For compatibility with other ACPI implementations and to prevent
- 	 * accidental deep sleeps, limit the sleep time to something reasonable.
---
-2.35.1
-
---===============2663250030760992450==--
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
+--===============5658632399288956134==--
 
