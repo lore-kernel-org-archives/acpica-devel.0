@@ -1,38 +1,42 @@
-Content-Type: multipart/mixed; boundary="===============5658632399288956134=="
+Content-Type: multipart/mixed; boundary="===============3223054791799821168=="
 MIME-Version: 1.0
 From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [rafael-pm:testing 54/57]
- arch/x86/include/asm/pci_x86.h:97:8: error: unknown type name
- 'raw_spinlock_t'
-Date: Fri, 25 Feb 2022 05:32:51 +0800
-Message-ID: <202202250514.JzetOofA-lkp@intel.com>
+Subject: [Devel] [rafael-pm:bleeding-edge 59/73]
+ arch/x86/include/asm/pci_x86.h:133:19: error: expected ';
+ ' after top level declarator
+Date: Fri, 25 Feb 2022 07:24:49 +0800
+Message-ID: <202202250758.oDiHyXAy-lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5658632399288956134==
+--===============3223054791799821168==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git=
- testing
-head:   fc4232749306d2fb9341c4c6d17c489ab657a67e
-commit: 62fabd56faafe033eb0be3ba24000b8db13d4c17 [54/57] x86/PCI: Disable e=
+ bleeding-edge
+head:   8276cbee5a52543c614a1e1bc2624188d5970848
+commit: 62fabd56faafe033eb0be3ba24000b8db13d4c17 [59/73] x86/PCI: Disable e=
 xclusion of E820 reserved addresses in some cases
-config: i386-tinyconfig (https://download.01.org/0day-ci/archive/20220225/2=
-02202250514.JzetOofA-lkp(a)intel.com/config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+config: x86_64-randconfig-a012 (https://download.01.org/0day-ci/archive/202=
+20225/202202250758.oDiHyXAy-lkp(a)intel.com/config)
+compiler: clang version 15.0.0 (https://github.com/llvm/llvm-project d271fc=
+04d5b97b12e6b797c6067d3c96a8d7470e)
 reproduce (this is a W=3D1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/=
+make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
         # https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.g=
 it/commit/?id=3D62fabd56faafe033eb0be3ba24000b8db13d4c17
         git remote add rafael-pm https://git.kernel.org/pub/scm/linux/kerne=
 l/git/rafael/linux-pm.git
-        git fetch --no-tags rafael-pm testing
+        git fetch --no-tags rafael-pm bleeding-edge
         git checkout 62fabd56faafe033eb0be3ba24000b8db13d4c17
         # save the config file to linux build tree
         mkdir build_dir
-        make W=3D1 O=3Dbuild_dir ARCH=3Di386 SHELL=3D/bin/bash arch/x86/ker=
-nel/
+        COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dclang make.cross W=3D=
+1 O=3Dbuild_dir ARCH=3Dx86_64 SHELL=3D/bin/bash
 
 If you fix the issue, kindly add following tag as appropriate
 Reported-by: kernel test robot <lkp(a)intel.com>
@@ -40,46 +44,84 @@ Reported-by: kernel test robot <lkp(a)intel.com>
 All errors (new ones prefixed by >>):
 
    In file included from arch/x86/kernel/resource.c:4:
->> arch/x86/include/asm/pci_x86.h:97:8: error: unknown type name 'raw_spinl=
+   arch/x86/include/asm/pci_x86.h:97:8: error: unknown type name 'raw_spinl=
 ock_t'
-      97 | extern raw_spinlock_t pci_config_lock;
-         |        ^~~~~~~~~~~~~~
->> arch/x86/include/asm/pci_x86.h:133:20: error: expected '=3D', ',', ';', =
-'asm' or '__attribute__' before 'dmi_check_pciprobe'
-     133 | extern void __init dmi_check_pciprobe(void);
-         |                    ^~~~~~~~~~~~~~~~~~
->> arch/x86/include/asm/pci_x86.h:134:20: error: expected '=3D', ',', ';', =
-'asm' or '__attribute__' before 'dmi_check_skip_isa_align'
-     134 | extern void __init dmi_check_skip_isa_align(void);
-         |                    ^~~~~~~~~~~~~~~~~~~~~~~~
->> arch/x86/include/asm/pci_x86.h:140:27: error: expected '=3D', ',', ';', =
-'asm' or '__attribute__' before 'pci_acpi_init'
-     140 | static inline int  __init pci_acpi_init(void)
-         |                           ^~~~~~~~~~~~~
->> arch/x86/include/asm/pci_x86.h:145:20: error: expected '=3D', ',', ';', =
-'asm' or '__attribute__' before 'pcibios_irq_init'
-     145 | extern void __init pcibios_irq_init(void);
-         |                    ^~~~~~~~~~~~~~~~
->> arch/x86/include/asm/pci_x86.h:146:19: error: expected '=3D', ',', ';', =
-'asm' or '__attribute__' before 'pcibios_init'
-     146 | extern int __init pcibios_init(void);
-         |                   ^~~~~~~~~~~~
->> arch/x86/include/asm/pci_x86.h:166:19: error: expected '=3D', ',', ';', =
-'asm' or '__attribute__' before 'pci_mmcfg_arch_init'
-     166 | extern int __init pci_mmcfg_arch_init(void);
-         |                   ^~~~~~~~~~~~~~~~~~~
->> arch/x86/include/asm/pci_x86.h:167:20: error: expected '=3D', ',', ';', =
-'asm' or '__attribute__' before 'pci_mmcfg_arch_free'
-     167 | extern void __init pci_mmcfg_arch_free(void);
-         |                    ^~~~~~~~~~~~~~~~~~~
->> arch/x86/include/asm/pci_x86.h:174:40: error: expected '=3D', ',', ';', =
-'asm' or '__attribute__' before 'pci_mmconfig_add'
-     174 | extern struct pci_mmcfg_region *__init pci_mmconfig_add(int segm=
-ent, int start,
-         |                                        ^~~~~~~~~~~~~~~~
+   extern raw_spinlock_t pci_config_lock;
+          ^
+>> arch/x86/include/asm/pci_x86.h:133:19: error: expected ';' after top lev=
+el declarator
+   extern void __init dmi_check_pciprobe(void);
+                     ^
+                     ;
+   arch/x86/include/asm/pci_x86.h:134:19: error: expected ';' after top lev=
+el declarator
+   extern void __init dmi_check_skip_isa_align(void);
+                     ^
+                     ;
+>> arch/x86/include/asm/pci_x86.h:138:12: error: redeclaration of '__init' =
+with a different type: 'int' vs 'void'
+   extern int __init pci_acpi_init(void);
+              ^
+   arch/x86/include/asm/pci_x86.h:134:13: note: previous declaration is here
+   extern void __init dmi_check_skip_isa_align(void);
+               ^
+   arch/x86/include/asm/pci_x86.h:138:18: error: expected ';' after top lev=
+el declarator
+   extern int __init pci_acpi_init(void);
+                    ^
+                    ;
+   arch/x86/include/asm/pci_x86.h:145:19: error: expected ';' after top lev=
+el declarator
+   extern void __init pcibios_irq_init(void);
+                     ^
+                     ;
+   arch/x86/include/asm/pci_x86.h:146:12: error: redeclaration of '__init' =
+with a different type: 'int' vs 'void'
+   extern int __init pcibios_init(void);
+              ^
+   arch/x86/include/asm/pci_x86.h:145:13: note: previous declaration is here
+   extern void __init pcibios_irq_init(void);
+               ^
+   arch/x86/include/asm/pci_x86.h:146:18: error: expected ';' after top lev=
+el declarator
+   extern int __init pcibios_init(void);
+                    ^
+                    ;
+   arch/x86/include/asm/pci_x86.h:166:12: error: redeclaration of '__init' =
+with a different type: 'int' vs 'void'
+   extern int __init pci_mmcfg_arch_init(void);
+              ^
+   arch/x86/include/asm/pci_x86.h:145:13: note: previous declaration is here
+   extern void __init pcibios_irq_init(void);
+               ^
+   arch/x86/include/asm/pci_x86.h:166:18: error: expected ';' after top lev=
+el declarator
+   extern int __init pci_mmcfg_arch_init(void);
+                    ^
+                    ;
+   arch/x86/include/asm/pci_x86.h:167:19: error: expected ';' after top lev=
+el declarator
+   extern void __init pci_mmcfg_arch_free(void);
+                     ^
+                     ;
+>> arch/x86/include/asm/pci_x86.h:174:33: error: redeclaration of '__init' =
+with a different type: 'struct pci_mmcfg_region *' vs 'void'
+   extern struct pci_mmcfg_region *__init pci_mmconfig_add(int segment, int=
+ start,
+                                   ^
+   arch/x86/include/asm/pci_x86.h:167:13: note: previous declaration is here
+   extern void __init pci_mmcfg_arch_free(void);
+               ^
+   arch/x86/include/asm/pci_x86.h:174:39: error: expected ';' after top lev=
+el declarator
+   extern struct pci_mmcfg_region *__init pci_mmconfig_add(int segment, int=
+ start,
+                                         ^
+                                         ;
+   13 errors generated.
 
 
-vim +/raw_spinlock_t +97 arch/x86/include/asm/pci_x86.h
+vim +133 arch/x86/include/asm/pci_x86.h
 
 ^1da177e4c3f41 arch/i386/pci/pci.h            Linus Torvalds     2005-04-16=
    96  =
@@ -169,7 +211,7 @@ c0fa40784cce9c arch/x86/include/asm/pci_x86.h Jiang Liu          2012-06-22=
 8dd779b19ce597 arch/x86/pci/pci.h             Robert Richter     2008-07-02=
  @133  extern void __init dmi_check_pciprobe(void);
 8dd779b19ce597 arch/x86/pci/pci.h             Robert Richter     2008-07-02=
- @134  extern void __init dmi_check_skip_isa_align(void);
+  134  extern void __init dmi_check_skip_isa_align(void);
 8dd779b19ce597 arch/x86/pci/pci.h             Robert Richter     2008-07-02=
   135  =
 
@@ -178,11 +220,11 @@ c0fa40784cce9c arch/x86/include/asm/pci_x86.h Jiang Liu          2012-06-22=
 5d32a66541c468 arch/x86/include/asm/pci_x86.h Sinan Kaya         2018-12-19=
   137  #ifdef CONFIG_PCI
 8dd779b19ce597 arch/x86/pci/pci.h             Robert Richter     2008-07-02=
-  138  extern int __init pci_acpi_init(void);
+ @138  extern int __init pci_acpi_init(void);
 5d32a66541c468 arch/x86/include/asm/pci_x86.h Sinan Kaya         2018-12-19=
   139  #else
 5d32a66541c468 arch/x86/include/asm/pci_x86.h Sinan Kaya         2018-12-19=
- @140  static inline int  __init pci_acpi_init(void)
+  140  static inline int  __init pci_acpi_init(void)
 5d32a66541c468 arch/x86/include/asm/pci_x86.h Sinan Kaya         2018-12-19=
   141  {
 5d32a66541c468 arch/x86/include/asm/pci_x86.h Sinan Kaya         2018-12-19=
@@ -192,9 +234,9 @@ c0fa40784cce9c arch/x86/include/asm/pci_x86.h Jiang Liu          2012-06-22=
 5d32a66541c468 arch/x86/include/asm/pci_x86.h Sinan Kaya         2018-12-19=
   144  #endif
 ab3b37937e8f4f arch/x86/include/asm/pci_x86.h Thomas Gleixner    2009-08-29=
- @145  extern void __init pcibios_irq_init(void);
+  145  extern void __init pcibios_irq_init(void);
 8dd779b19ce597 arch/x86/pci/pci.h             Robert Richter     2008-07-02=
- @146  extern int __init pcibios_init(void);
+  146  extern int __init pcibios_init(void);
 b72d0db9dd41da arch/x86/include/asm/pci_x86.h Thomas Gleixner    2009-08-29=
   147  extern int pci_legacy_init(void);
 9325a28ce2fa7c arch/x86/include/asm/pci_x86.h Thomas Gleixner    2009-08-29=
@@ -240,7 +282,7 @@ d215a9c8b46e55 arch/x86/include/asm/pci_x86.h Bjorn Helgaas      2009-11-13=
 429d512e532ec9 arch/i386/pci/pci.h            OGAWA Hirofumi     2007-02-13=
  @166  extern int __init pci_mmcfg_arch_init(void);
 0b64ad7123eb01 arch/x86/pci/pci.h             Yinghai Lu         2008-02-15=
- @167  extern void __init pci_mmcfg_arch_free(void);
+  167  extern void __init pci_mmcfg_arch_free(void);
 a18e3690a52790 arch/x86/include/asm/pci_x86.h Greg Kroah-Hartman 2012-12-21=
   168  extern int pci_mmcfg_arch_map(struct pci_mmcfg_region *cfg);
 9cf0105da5a315 arch/x86/include/asm/pci_x86.h Jiang Liu          2012-06-22=
@@ -264,15 +306,15 @@ f6e1d8cc38b377 arch/x86/include/asm/pci_x86.h Bjorn Helgaas      2009-11-13=
   176  =
 
 
-:::::: The code at line 97 was first introduced by commit
-:::::: d19f61f098ae9315b76a97962007f687683916d4 x86/PCI: Convert pci_config=
-_lock to raw_spinlock
+:::::: The code at line 133 was first introduced by commit
+:::::: 8dd779b19ce5972072ad2372a86c8acbae4da768 x86/pci: removing subsys_in=
+itcall ordering dependencies
 
-:::::: TO: Thomas Gleixner <tglx(a)linutronix.de>
-:::::: CC: Jesse Barnes <jbarnes(a)virtuousgeek.org>
+:::::: TO: Robert Richter <robert.richter(a)amd.com>
+:::::: CC: Ingo Molnar <mingo(a)elte.hu>
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
 https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============5658632399288956134==--
+--===============3223054791799821168==--
 
