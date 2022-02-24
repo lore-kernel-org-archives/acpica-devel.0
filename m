@@ -1,46 +1,81 @@
-Content-Type: multipart/mixed; boundary="===============7944159440074011713=="
+Content-Type: multipart/mixed; boundary="===============2663250030760992450=="
 MIME-Version: 1.0
 From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] Re: Contribution copyright question
-Date: Thu, 24 Feb 2022 16:16:02 +0000
-Message-ID: <BYAPR11MB32569275AA5F6836B1B3DD0B873D9@BYAPR11MB3256.namprd11.prod.outlook.com>
-In-Reply-To: 20220222205605.3802.2803@ml01.vlan13.01.org
+Subject: [Devel] Re: [PATCH 3/4] acpi: exsystem: Warn about sleeps greater
+ than 50 ms
+Date: Thu, 24 Feb 2022 16:19:52 +0000
+Message-ID: <BYAPR11MB32563DC0413B8595D1339B37873D9@BYAPR11MB3256.namprd11.prod.outlook.com>
+In-Reply-To: 20220224113807.91771-3-pmenzel@molgen.mpg.de
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7944159440074011713==
+--===============2663250030760992450==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-I assume you are talking about ACPICA.
+So, this is the current implementation:
 
-Yes, I don't believe you are allowed to add a copyright.
-Bob
+    /*
+     * For compatibility with other ACPI implementations and to prevent
+     * accidental deep sleeps, limit the sleep time to something reasonable.
+     */
+    if (HowLong > ACPI_MAX_SLEEP)
+    {
+        HowLong =3D ACPI_MAX_SLEEP;
+    }
 
+    AcpiOsSleep (HowLong);
+
+Where ACPI_MAX_SLEEP is: =
+
+
+#define ACPI_MAX_SLEEP                  2000    /* 2000 millisec =3D=3D two=
+ seconds */
 
 -----Original Message-----
-From: bwicaksono(a)nvidia.com <bwicaksono(a)nvidia.com> =
+From: Paul Menzel <pmenzel(a)molgen.mpg.de> =
 
-Sent: Tuesday, February 22, 2022 12:56 PM
-To: devel(a)acpica.org
-Subject: [Devel] Contribution copyright question
+Sent: Thursday, February 24, 2022 3:38 AM
+To: Moore, Robert <robert.moore(a)intel.com>; Wysocki, Rafael J <rafael.j.w=
+ysocki(a)intel.com>; Len Brown <lenb(a)kernel.org>
+Cc: Paul Menzel <pmenzel(a)molgen.mpg.de>; linux-acpi(a)vger.kernel.org; de=
+vel(a)acpica.org; linux-kernel(a)vger.kernel.org
+Subject: [PATCH 3/4] acpi: exsystem: Warn about sleeps greater than 50 ms
 
-To whom it may concern,
+Quick boottime is important, so warn about sleeps greater than 50 ms in ACP=
+I.
 
-What is the acceptable method to mark code contribution by organization out=
-side Intel ?
-Will it be fine to add a new copyright line under "Copyright (c) 2000 =E2=
-=80=93 2017 Intel Corp." ?
-I could not find such case from previous commits. So I assumed this is proh=
-ibited, but want to get confirmation.
+50 ms is still long compared to distribution Linux kernels reaching initrd =
+in 350 ms, so should probably changed to 10 ms, so people are aware about t=
+his.
 
-Regards,
-Besar
-_______________________________________________
-Devel mailing list -- devel(a)acpica.org
-To unsubscribe send an email to devel-leave(a)acpica.org %(web_page_url)sli=
-stinfo%(cgiext)s/%(_internal_name)s
+Signed-off-by: Paul Menzel <pmenzel(a)molgen.mpg.de>
+---
+ drivers/acpi/acpica/exsystem.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
---===============7944159440074011713==--
+diff --git a/drivers/acpi/acpica/exsystem.c b/drivers/acpi/acpica/exsystem.=
+c index 00f66af31ffa..bdffb8aac05c 100644
+--- a/drivers/acpi/acpica/exsystem.c
++++ b/drivers/acpi/acpica/exsystem.c
+@@ -167,6 +167,11 @@ acpi_status acpi_ex_system_do_sleep(u64 how_long_ms)
+ =
+
+ 	acpi_ex_exit_interpreter();
+ =
+
++	if (how_long_ms > 50) {
++		ACPI_WARNING((AE_INFO,
++		    "Time parameter %llu > 50 ms. Please contact firmware vendor for mor=
+e responsive system.", how_long_ms));
++	}
++
+ 	/*
+ 	 * For compatibility with other ACPI implementations and to prevent
+ 	 * accidental deep sleeps, limit the sleep time to something reasonable.
+--
+2.35.1
+
+--===============2663250030760992450==--
 
