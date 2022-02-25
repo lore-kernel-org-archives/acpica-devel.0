@@ -1,399 +1,97 @@
-Content-Type: multipart/mixed; boundary="===============5605555361279033096=="
+Content-Type: multipart/mixed; boundary="===============2437390939382443788=="
 MIME-Version: 1.0
-From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [rafael-pm:bleeding-edge] BUILD REGRESSION
- 8276cbee5a52543c614a1e1bc2624188d5970848
-Date: Fri, 25 Feb 2022 17:03:00 +0800
-Message-ID: <62189b44.QBrVbFGRLXJ9SScw%lkp@intel.com>
+From: Rafael J. Wysocki <rafael at kernel.org>
+Subject: [Devel] Re: [rafael-pm:bleeding-edge 59/73]
+ arch/x86/include/asm/pci_x86.h:133:19: error: expected ';
+ ' after top level declarator
+Date: Fri, 25 Feb 2022 16:10:17 +0100
+Message-ID: <CAJZ5v0jmFJMrKT5RsR+JEfJHaYFxHTi2xjS0UnkNUhSn7-r==A@mail.gmail.com>
+In-Reply-To: 0d4d70ca-a17f-b8de-53f7-a85a59304d36@redhat.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5605555361279033096==
+--===============2437390939382443788==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
-m.git bleeding-edge
-branch HEAD: 8276cbee5a52543c614a1e1bc2624188d5970848  Merge branch 'therma=
-l-int340x-fixes' into bleeding-edge
+On Fri, Feb 25, 2022 at 12:49 PM Hans de Goede <hdegoede(a)redhat.com> wrot=
+e:
+>
+> Hi Rafael,
+>
+> On 2/25/22 00:24, kernel test robot wrote:
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm=
+.git bleeding-edge
+> > head:   8276cbee5a52543c614a1e1bc2624188d5970848
+> > commit: 62fabd56faafe033eb0be3ba24000b8db13d4c17 [59/73] x86/PCI: Disab=
+le exclusion of E820 reserved addresses in some cases
+> > config: x86_64-randconfig-a012 (https://download.01.org/0day-ci/archive=
+/20220225/202202250758.oDiHyXAy-lkp(a)intel.com/config)
+> > compiler: clang version 15.0.0 (https://github.com/llvm/llvm-project d2=
+71fc04d5b97b12e6b797c6067d3c96a8d7470e)
+> > reproduce (this is a W=3D1 build):
+> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/s=
+bin/make.cross -O ~/bin/make.cross
+> >         chmod +x ~/bin/make.cross
+> >         # https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-=
+pm.git/commit/?id=3D62fabd56faafe033eb0be3ba24000b8db13d4c17
+> >         git remote add rafael-pm https://git.kernel.org/pub/scm/linux/k=
+ernel/git/rafael/linux-pm.git
+> >         git fetch --no-tags rafael-pm bleeding-edge
+> >         git checkout 62fabd56faafe033eb0be3ba24000b8db13d4c17
+> >         # save the config file to linux build tree
+> >         mkdir build_dir
+> >         COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dclang make.cross =
+W=3D1 O=3Dbuild_dir ARCH=3Dx86_64 SHELL=3D/bin/bash
+> >
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp(a)intel.com>
+> >
+> > All errors (new ones prefixed by >>):
+> >
+> >    In file included from arch/x86/kernel/resource.c:4:
+> >    arch/x86/include/asm/pci_x86.h:97:8: error: unknown type name 'raw_s=
+pinlock_t'
+> >    extern raw_spinlock_t pci_config_lock;
+> >           ^
+> >>> arch/x86/include/asm/pci_x86.h:133:19: error: expected ';' after top =
+level declarator
+> >    extern void __init dmi_check_pciprobe(void);
+> >                      ^
+> >                      ;
+> >    arch/x86/include/asm/pci_x86.h:134:19: error: expected ';' after top=
+ level declarator
+> >    extern void __init dmi_check_skip_isa_align(void);
+> >                      ^
+> >                      ;
+>
+> So the problem here seems to be that arch/x86/include/asm/pci_x86.h does =
+not include
+> all the headers which it relies on. Instead it release on the files which=
+ include it
+> to include those headers before hand.
+>
+> This should fix the errors reported here:
+>
+> --- a/arch/x86/include/asm/pci_x86.h
+> +++ b/arch/x86/include/asm/pci_x86.h
+> @@ -5,7 +5,9 @@
+>   *     (c) 1999 Martin Mares <mj(a)ucw.cz>
+>   */
+>
+> +#include <linux/init.h>
+>  #include <linux/ioport.h>
+> +#include <linux/spinlock.h>
+>
+>  #undef DEBUG
+>
+> I believe this is best squashed into the original commit,
 
-Error/Warning reports:
+Done, thanks!
 
-https://lore.kernel.org/llvm/202202250758.oDiHyXAy-lkp(a)intel.com
-
-Error/Warning in current branch:
-
-arch/x86/include/asm/pci_x86.h:133:19: error: expected ';' after top level =
-declarator
-arch/x86/include/asm/pci_x86.h:138:12: error: redeclaration of '__init' wit=
-h a different type: 'int' vs 'void'
-arch/x86/include/asm/pci_x86.h:174:33: error: redeclaration of '__init' wit=
-h a different type: 'struct pci_mmcfg_region *' vs 'void'
-
-possible Error/Warning in current branch (please contact us if interested):
-
-arch/x86/include/asm/pci_x86.h:133:20: error: expected '=3D', ',', ';', 'as=
-m' or '__attribute__' before 'dmi_check_pciprobe'
-arch/x86/include/asm/pci_x86.h:134:20: error: expected '=3D', ',', ';', 'as=
-m' or '__attribute__' before 'dmi_check_skip_isa_align'
-arch/x86/include/asm/pci_x86.h:138:19: error: expected '=3D', ',', ';', 'as=
-m' or '__attribute__' before 'pci_acpi_init'
-arch/x86/include/asm/pci_x86.h:145:20: error: expected '=3D', ',', ';', 'as=
-m' or '__attribute__' before 'pcibios_irq_init'
-arch/x86/include/asm/pci_x86.h:146:19: error: expected '=3D', ',', ';', 'as=
-m' or '__attribute__' before 'pcibios_init'
-arch/x86/include/asm/pci_x86.h:166:19: error: expected '=3D', ',', ';', 'as=
-m' or '__attribute__' before 'pci_mmcfg_arch_init'
-arch/x86/include/asm/pci_x86.h:167:20: error: expected '=3D', ',', ';', 'as=
-m' or '__attribute__' before 'pci_mmcfg_arch_free'
-arch/x86/include/asm/pci_x86.h:174:40: error: expected '=3D', ',', ';', 'as=
-m' or '__attribute__' before 'pci_mmconfig_add'
-arch/x86/include/asm/pci_x86.h:97:8: error: unknown type name 'raw_spinlock=
-_t'
-
-Error/Warning ids grouped by kconfigs:
-
-gcc_recent_errors
-|-- i386-randconfig-a003
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-dmi_check_pciprobe
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-dmi_check_skip_isa_align
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pci_acpi_init
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pci_mmcfg_arch_free
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pci_mmcfg_arch_init
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pci_mmconfig_add
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pcibios_init
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pcibios_irq_init
-|   `-- arch-x86-include-asm-pci_x86.h:error:unknown-type-name-raw_spinlock=
-_t
-|-- i386-randconfig-c001
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-dmi_check_pciprobe
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-dmi_check_skip_isa_align
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pci_acpi_init
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pci_mmcfg_arch_free
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pci_mmcfg_arch_init
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pci_mmconfig_add
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pcibios_init
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pcibios_irq_init
-|   `-- arch-x86-include-asm-pci_x86.h:error:unknown-type-name-raw_spinlock=
-_t
-|-- i386-randconfig-s001
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-dmi_check_pciprobe
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-dmi_check_skip_isa_align
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pci_acpi_init
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pci_mmcfg_arch_free
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pci_mmcfg_arch_init
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pci_mmconfig_add
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pcibios_init
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pcibios_irq_init
-|   `-- arch-x86-include-asm-pci_x86.h:error:unknown-type-name-raw_spinlock=
-_t
-|-- i386-randconfig-s002
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-dmi_check_pciprobe
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-dmi_check_skip_isa_align
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pci_acpi_init
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pci_mmcfg_arch_free
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pci_mmcfg_arch_init
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pci_mmconfig_add
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pcibios_init
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pcibios_irq_init
-|   `-- arch-x86-include-asm-pci_x86.h:error:unknown-type-name-raw_spinlock=
-_t
-|-- x86_64-alldefconfig
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-dmi_check_pciprobe
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-dmi_check_skip_isa_align
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pci_acpi_init
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pci_mmcfg_arch_free
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pci_mmcfg_arch_init
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pci_mmconfig_add
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pcibios_init
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pcibios_irq_init
-|   `-- arch-x86-include-asm-pci_x86.h:error:unknown-type-name-raw_spinlock=
-_t
-|-- x86_64-randconfig-c002
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-dmi_check_pciprobe
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-dmi_check_skip_isa_align
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pci_acpi_init
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pci_mmcfg_arch_free
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pci_mmcfg_arch_init
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pci_mmconfig_add
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pcibios_init
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pcibios_irq_init
-|   `-- arch-x86-include-asm-pci_x86.h:error:unknown-type-name-raw_spinlock=
-_t
-|-- x86_64-randconfig-s021
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-dmi_check_pciprobe
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-dmi_check_skip_isa_align
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pci_acpi_init
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pci_mmcfg_arch_free
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pci_mmcfg_arch_init
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pci_mmconfig_add
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pcibios_init
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pcibios_irq_init
-|   `-- arch-x86-include-asm-pci_x86.h:error:unknown-type-name-raw_spinlock=
-_t
-`-- x86_64-randconfig-s022
-    |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-dmi_check_pciprobe
-    |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-dmi_check_skip_isa_align
-    |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pci_acpi_init
-    |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pci_mmcfg_arch_free
-    |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pci_mmcfg_arch_init
-    |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pci_mmconfig_add
-    |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pcibios_init
-    |-- arch-x86-include-asm-pci_x86.h:error:expected-asm-or-__attribute__-=
-before-pcibios_irq_init
-    `-- arch-x86-include-asm-pci_x86.h:error:unknown-type-name-raw_spinlock=
-_t
-
-clang_recent_errors
-|-- i386-randconfig-a002
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-after-top-level-decla=
-rator
-|   |-- arch-x86-include-asm-pci_x86.h:error:redeclaration-of-__init-with-a=
--different-type:int-vs-void
-|   `-- arch-x86-include-asm-pci_x86.h:error:redeclaration-of-__init-with-a=
--different-type:struct-pci_mmcfg_region-vs-void
-|-- i386-randconfig-a004
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-after-top-level-decla=
-rator
-|   |-- arch-x86-include-asm-pci_x86.h:error:redeclaration-of-__init-with-a=
--different-type:int-vs-void
-|   `-- arch-x86-include-asm-pci_x86.h:error:redeclaration-of-__init-with-a=
--different-type:struct-pci_mmcfg_region-vs-void
-|-- i386-randconfig-a006
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-after-top-level-decla=
-rator
-|   |-- arch-x86-include-asm-pci_x86.h:error:redeclaration-of-__init-with-a=
--different-type:int-vs-void
-|   `-- arch-x86-include-asm-pci_x86.h:error:redeclaration-of-__init-with-a=
--different-type:struct-pci_mmcfg_region-vs-void
-|-- i386-randconfig-a011
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-after-top-level-decla=
-rator
-|   |-- arch-x86-include-asm-pci_x86.h:error:redeclaration-of-__init-with-a=
--different-type:int-vs-void
-|   `-- arch-x86-include-asm-pci_x86.h:error:redeclaration-of-__init-with-a=
--different-type:struct-pci_mmcfg_region-vs-void
-|-- i386-randconfig-a013
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-after-top-level-decla=
-rator
-|   |-- arch-x86-include-asm-pci_x86.h:error:redeclaration-of-__init-with-a=
--different-type:int-vs-void
-|   `-- arch-x86-include-asm-pci_x86.h:error:redeclaration-of-__init-with-a=
--different-type:struct-pci_mmcfg_region-vs-void
-|-- i386-randconfig-a015
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-after-top-level-decla=
-rator
-|   |-- arch-x86-include-asm-pci_x86.h:error:redeclaration-of-__init-with-a=
--different-type:int-vs-void
-|   `-- arch-x86-include-asm-pci_x86.h:error:redeclaration-of-__init-with-a=
--different-type:struct-pci_mmcfg_region-vs-void
-|-- x86_64-randconfig-a001
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-after-top-level-decla=
-rator
-|   |-- arch-x86-include-asm-pci_x86.h:error:redeclaration-of-__init-with-a=
--different-type:int-vs-void
-|   `-- arch-x86-include-asm-pci_x86.h:error:redeclaration-of-__init-with-a=
--different-type:struct-pci_mmcfg_region-vs-void
-|-- x86_64-randconfig-a005
-|   |-- arch-x86-include-asm-pci_x86.h:error:expected-after-top-level-decla=
-rator
-|   |-- arch-x86-include-asm-pci_x86.h:error:redeclaration-of-__init-with-a=
--different-type:int-vs-void
-|   `-- arch-x86-include-asm-pci_x86.h:error:redeclaration-of-__init-with-a=
--different-type:struct-pci_mmcfg_region-vs-void
-`-- x86_64-randconfig-a012
-    |-- arch-x86-include-asm-pci_x86.h:error:expected-after-top-level-decla=
-rator
-    |-- arch-x86-include-asm-pci_x86.h:error:redeclaration-of-__init-with-a=
--different-type:int-vs-void
-    `-- arch-x86-include-asm-pci_x86.h:error:redeclaration-of-__init-with-a=
--different-type:struct-pci_mmcfg_region-vs-void
-
-elapsed time: 731m
-
-configs tested: 110
-configs skipped: 3
-
-gcc tested configs:
-arm                                 defconfig
-arm64                               defconfig
-arm                              allmodconfig
-arm                              allyesconfig
-arm64                            allyesconfig
-i386                          randconfig-c001
-microblaze                      mmu_defconfig
-powerpc                     sequoia_defconfig
-arm                        spear6xx_defconfig
-powerpc                  iss476-smp_defconfig
-x86_64                           alldefconfig
-arc                      axs103_smp_defconfig
-m68k                          atari_defconfig
-arm                          iop32x_defconfig
-powerpc                       eiger_defconfig
-sh                   sh7724_generic_defconfig
-mips                       bmips_be_defconfig
-xtensa                       common_defconfig
-sh                          sdk7780_defconfig
-arm                  randconfig-c002-20220224
-ia64                                defconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allyesconfig
-m68k                             allmodconfig
-csky                                defconfig
-alpha                               defconfig
-nds32                               defconfig
-alpha                            allyesconfig
-nios2                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-parisc                              defconfig
-parisc64                            defconfig
-s390                             allmodconfig
-s390                                defconfig
-parisc                           allyesconfig
-s390                             allyesconfig
-i386                             allyesconfig
-i386                              debian-10.3
-i386                   debian-10.3-kselftests
-i386                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-nds32                             allnoconfig
-nios2                               defconfig
-arc                              allyesconfig
-mips                             allmodconfig
-mips                             allyesconfig
-powerpc                           allnoconfig
-powerpc                          allmodconfig
-powerpc                          allyesconfig
-i386                          randconfig-a003
-i386                          randconfig-a001
-i386                          randconfig-a005
-i386                          randconfig-a014
-i386                          randconfig-a012
-i386                          randconfig-a016
-x86_64                        randconfig-a002
-x86_64                        randconfig-a004
-x86_64                        randconfig-a006
-arc                  randconfig-r043-20220223
-s390                 randconfig-r044-20220224
-arc                  randconfig-r043-20220224
-riscv                randconfig-r042-20220224
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                             i386_defconfig
-um                           x86_64_defconfig
-x86_64                              defconfig
-x86_64                           allyesconfig
-x86_64                                  kexec
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                    rhel-8.3-kselftests
-
-clang tested configs:
-powerpc              randconfig-c003-20220225
-mips                 randconfig-c004-20220225
-arm                  randconfig-c002-20220225
-s390                 randconfig-c005-20220225
-riscv                randconfig-c006-20220225
-mips                        omega2p_defconfig
-mips                   sb1250_swarm_defconfig
-mips                           ip28_defconfig
-arm                          ixp4xx_defconfig
-powerpc                          g5_defconfig
-mips                          rm200_defconfig
-mips                          malta_defconfig
-i386                          randconfig-a002
-i386                          randconfig-a004
-i386                          randconfig-a006
-i386                          randconfig-a011
-i386                          randconfig-a013
-i386                          randconfig-a015
-x86_64                        randconfig-a001
-x86_64                        randconfig-a003
-x86_64                        randconfig-a005
-hexagon              randconfig-r045-20220223
-hexagon              randconfig-r045-20220224
-s390                 randconfig-r044-20220223
-riscv                randconfig-r042-20220223
-hexagon              randconfig-r041-20220224
-hexagon              randconfig-r041-20220223
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
---===============5605555361279033096==--
+> but let me know if
+> you want me to send this out as a proper follow up patch; or if you want a
+> new version of the troublesome commit to replace the original one.
+--===============2437390939382443788==--
 
