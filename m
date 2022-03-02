@@ -1,122 +1,160 @@
-Content-Type: multipart/mixed; boundary="===============6458649774726088249=="
+Content-Type: multipart/mixed; boundary="===============1746454761971003422=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [PATCH 1/4] acpi: exsystem: Add units to time variable
- names
-Date: Tue, 01 Mar 2022 20:40:26 +0100
-Message-ID: <CAJZ5v0iCwJ10gM0+LsOMU9X3X4ToN_OHBW=9vVsfEP3+cRpudQ@mail.gmail.com>
-In-Reply-To: 20220224113807.91771-1-pmenzel@molgen.mpg.de
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [rafael-pm:bleeding-edge 113/118]
+ arch/x86/kernel/acpi/boot.c:1476:8: warning: excess elements in array
+ initializer
+Date: Wed, 02 Mar 2022 10:51:19 +0800
+Message-ID: <202203020737.wa9uc4gW-lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6458649774726088249==
+--===============1746454761971003422==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 24, 2022 at 12:38 PM Paul Menzel <pmenzel(a)molgen.mpg.de> wrot=
-e:
->
-> `how_long` uses different units in both functions, so make it more
-> clear, what unit they expect.
->
-> Signed-off-by: Paul Menzel <pmenzel(a)molgen.mpg.de>
-> ---
->  drivers/acpi/acpica/exsystem.c | 20 ++++++++++----------
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git=
+ bleeding-edge
+head:   f7307721a01f4f14d21c699b270a870370cf34b9
+commit: ed00b2b8d737f87a2437d7bd7c7f90124b50da05 [113/118] x86 / ACPI: Work=
+ around broken XSDT on SEGA AALE board
+config: i386-randconfig-a011 (https://download.01.org/0day-ci/archive/20220=
+302/202203020737.wa9uc4gW-lkp(a)intel.com/config)
+compiler: clang version 15.0.0 (https://github.com/llvm/llvm-project d271fc=
+04d5b97b12e6b797c6067d3c96a8d7470e)
+reproduce (this is a W=3D1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/=
+make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.g=
+it/commit/?id=3Ded00b2b8d737f87a2437d7bd7c7f90124b50da05
+        git remote add rafael-pm https://git.kernel.org/pub/scm/linux/kerne=
+l/git/rafael/linux-pm.git
+        git fetch --no-tags rafael-pm bleeding-edge
+        git checkout ed00b2b8d737f87a2437d7bd7c7f90124b50da05
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dclang make.cross W=3D=
+1 O=3Dbuild_dir ARCH=3Di386 SHELL=3D/bin/bash arch/x86/kernel/acpi/
 
-As ACPICA material, this should be submitted to the upstream project
-via https://github.com/acpica/acpica/.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp(a)intel.com>
 
-This applies to the other patches in the series too.
+All warnings (new ones prefixed by >>):
 
->  1 file changed, 10 insertions(+), 10 deletions(-)
->
-> diff --git a/drivers/acpi/acpica/exsystem.c b/drivers/acpi/acpica/exsyste=
-m.c
-> index 1281c07112de..6bc5b46e6927 100644
-> --- a/drivers/acpi/acpica/exsystem.c
-> +++ b/drivers/acpi/acpica/exsystem.c
-> @@ -107,7 +107,7 @@ acpi_status acpi_ex_system_wait_mutex(acpi_mutex mute=
-x, u16 timeout)
->   *
->   * FUNCTION:    acpi_ex_system_do_stall
->   *
-> - * PARAMETERS:  how_long        - The amount of time to stall,
-> + * PARAMETERS:  how_long_us     - The amount of time to stall,
->   *                                in microseconds
->   *
->   * RETURN:      Status
-> @@ -120,13 +120,13 @@ acpi_status acpi_ex_system_wait_mutex(acpi_mutex mu=
-tex, u16 timeout)
->   *
->   ***********************************************************************=
-*******/
->
-> -acpi_status acpi_ex_system_do_stall(u32 how_long)
-> +acpi_status acpi_ex_system_do_stall(u32 how_long_us)
->  {
->         acpi_status status =3D AE_OK;
->
->         ACPI_FUNCTION_ENTRY();
->
-> -       if (how_long > 255) {   /* 255 microseconds */
-> +       if (how_long_us > 255) {        /* 255 microseconds */
->                 /*
->                  * Longer than 255 usec, this is an error
->                  *
-> @@ -134,10 +134,10 @@ acpi_status acpi_ex_system_do_stall(u32 how_long)
->                  * order to support existing BIOSs)
->                  */
->                 ACPI_ERROR((AE_INFO,
-> -                           "Time parameter is too large (%u)", how_long)=
-);
-> +                           "Time parameter is too large (%u)", how_long_=
-us));
->                 status =3D AE_AML_OPERAND_VALUE;
->         } else {
-> -               acpi_os_stall(how_long);
-> +               acpi_os_stall(how_long_us);
->         }
->
->         return (status);
-> @@ -147,7 +147,7 @@ acpi_status acpi_ex_system_do_stall(u32 how_long)
->   *
->   * FUNCTION:    acpi_ex_system_do_sleep
->   *
-> - * PARAMETERS:  how_long        - The amount of time to sleep,
-> + * PARAMETERS:  how_long_ms     - The amount of time to sleep,
->   *                                in milliseconds
->   *
->   * RETURN:      None
-> @@ -156,7 +156,7 @@ acpi_status acpi_ex_system_do_stall(u32 how_long)
->   *
->   ***********************************************************************=
-*******/
->
-> -acpi_status acpi_ex_system_do_sleep(u64 how_long)
-> +acpi_status acpi_ex_system_do_sleep(u64 how_long_ms)
->  {
->         ACPI_FUNCTION_ENTRY();
->
-> @@ -168,11 +168,11 @@ acpi_status acpi_ex_system_do_sleep(u64 how_long)
->          * For compatibility with other ACPI implementations and to preve=
-nt
->          * accidental deep sleeps, limit the sleep time to something reas=
-onable.
->          */
-> -       if (how_long > ACPI_MAX_SLEEP) {
-> -               how_long =3D ACPI_MAX_SLEEP;
-> +       if (how_long_ms > ACPI_MAX_SLEEP) {
-> +               how_long_ms =3D ACPI_MAX_SLEEP;
->         }
->
-> -       acpi_os_sleep(how_long);
-> +       acpi_os_sleep(how_long_ms);
->
->         /* And now we must get the interpreter again */
->
-> --
-> 2.35.1
->
---===============6458649774726088249==--
+>> arch/x86/kernel/acpi/boot.c:1476:8: warning: excess elements in array in=
+itializer [-Wexcess-initializers]
+                        DMI_MATCH(DMI_BIOS_DATE, "02/01/2011"),
+                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/mod_devicetable.h:587:25: note: expanded from macro 'DMI_M=
+ATCH'
+   #define DMI_MATCH(a, b) { .slot =3D a, .substr =3D b }
+                           ^~~~~~~~~~~~~~~~~~~~~~~~~~
+   1 warning generated.
+
+
+vim +1476 arch/x86/kernel/acpi/boot.c
+
+  1389	=
+
+  1390	/*
+  1391	 * If your system is blacklisted here, but you find that acpi=3Dforce
+  1392	 * works for you, please contact linux-acpi(a)vger.kernel.org
+  1393	 */
+  1394	static const struct dmi_system_id acpi_dmi_table[] __initconst =3D {
+  1395		/*
+  1396		 * Boxes that need ACPI disabled
+  1397		 */
+  1398		{
+  1399		 .callback =3D dmi_disable_acpi,
+  1400		 .ident =3D "IBM Thinkpad",
+  1401		 .matches =3D {
+  1402			     DMI_MATCH(DMI_BOARD_VENDOR, "IBM"),
+  1403			     DMI_MATCH(DMI_BOARD_NAME, "2629H1G"),
+  1404			     },
+  1405		 },
+  1406	=
+
+  1407		/*
+  1408		 * Boxes that need ACPI PCI IRQ routing disabled
+  1409		 */
+  1410		{
+  1411		 .callback =3D disable_acpi_irq,
+  1412		 .ident =3D "ASUS A7V",
+  1413		 .matches =3D {
+  1414			     DMI_MATCH(DMI_BOARD_VENDOR, "ASUSTeK Computer INC"),
+  1415			     DMI_MATCH(DMI_BOARD_NAME, "<A7V>"),
+  1416			     /* newer BIOS, Revision 1011, does work */
+  1417			     DMI_MATCH(DMI_BIOS_VERSION,
+  1418				       "ASUS A7V ACPI BIOS Revision 1007"),
+  1419			     },
+  1420		 },
+  1421		{
+  1422			/*
+  1423			 * Latest BIOS for IBM 600E (1.16) has bad pcinum
+  1424			 * for LPC bridge, which is needed for the PCI
+  1425			 * interrupt links to work. DSDT fix is in bug 5966.
+  1426			 * 2645, 2646 model numbers are shared with 600/600E/600X
+  1427			 */
+  1428		 .callback =3D disable_acpi_irq,
+  1429		 .ident =3D "IBM Thinkpad 600 Series 2645",
+  1430		 .matches =3D {
+  1431			     DMI_MATCH(DMI_BOARD_VENDOR, "IBM"),
+  1432			     DMI_MATCH(DMI_BOARD_NAME, "2645"),
+  1433			     },
+  1434		 },
+  1435		{
+  1436		 .callback =3D disable_acpi_irq,
+  1437		 .ident =3D "IBM Thinkpad 600 Series 2646",
+  1438		 .matches =3D {
+  1439			     DMI_MATCH(DMI_BOARD_VENDOR, "IBM"),
+  1440			     DMI_MATCH(DMI_BOARD_NAME, "2646"),
+  1441			     },
+  1442		 },
+  1443		/*
+  1444		 * Boxes that need ACPI PCI IRQ routing and PCI scan disabled
+  1445		 */
+  1446		{			/* _BBN 0 bug */
+  1447		 .callback =3D disable_acpi_pci,
+  1448		 .ident =3D "ASUS PR-DLS",
+  1449		 .matches =3D {
+  1450			     DMI_MATCH(DMI_BOARD_VENDOR, "ASUSTeK Computer INC."),
+  1451			     DMI_MATCH(DMI_BOARD_NAME, "PR-DLS"),
+  1452			     DMI_MATCH(DMI_BIOS_VERSION,
+  1453				       "ASUS PR-DLS ACPI BIOS Revision 1010"),
+  1454			     DMI_MATCH(DMI_BIOS_DATE, "03/21/2003")
+  1455			     },
+  1456		 },
+  1457		{
+  1458		 .callback =3D disable_acpi_pci,
+  1459		 .ident =3D "Acer TravelMate 36x Laptop",
+  1460		 .matches =3D {
+  1461			     DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
+  1462			     DMI_MATCH(DMI_PRODUCT_NAME, "TravelMate 360"),
+  1463			     },
+  1464		 },
+  1465		/*
+  1466		 * Boxes that need ACPI XSDT use disabled due to corrupted tables
+  1467		 */
+  1468		{
+  1469		 .callback =3D disable_acpi_xsdt,
+  1470		 .ident =3D "SEGA AALE",
+  1471		 .matches =3D {
+  1472			     DMI_MATCH(DMI_SYS_VENDOR, "NEC"),
+  1473			     DMI_MATCH(DMI_PRODUCT_NAME, "Bearlake CRB Board"),
+  1474			     DMI_MATCH(DMI_BIOS_VENDOR, "Phoenix Technologies LTD"),
+  1475			     DMI_MATCH(DMI_BIOS_VERSION, "V1.12"),
+> 1476			     DMI_MATCH(DMI_BIOS_DATE, "02/01/2011"),
+  1477			     },
+  1478		},
+  1479		{}
+  1480	};
+  1481	=
+
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
+--===============1746454761971003422==--
 
