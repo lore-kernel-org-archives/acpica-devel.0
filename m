@@ -1,117 +1,157 @@
-Content-Type: multipart/mixed; boundary="===============3772024166031812918=="
+Content-Type: multipart/mixed; boundary="===============1007829537087003422=="
 MIME-Version: 1.0
-From: Moore, Robert <robert.moore at intel.com>
-Subject: [Devel] Re: [PATCH V2 0/2] ACPI: Add LoongArch-related definitions
-Date: Fri, 11 Mar 2022 15:16:27 +0000
-Message-ID: <BYAPR11MB3256DACFEA49CBB8DBBC353C870C9@BYAPR11MB3256.namprd11.prod.outlook.com>
-In-Reply-To: CAAhV-H7oB9KMSEv-ea-qazSFw+zBowqufO=8mWsPPP7L9Gx9vQ@mail.gmail.com
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [rafael-pm:bleeding-edge] BUILD SUCCESS
+ bbc0e4dfa777cb722b27b3f36a839c0fc61f475b
+Date: Sat, 12 Mar 2022 20:39:29 +0800
+Message-ID: <622c9481.vhBMDgUD/HNLRZUL%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3772024166031812918==
+--===============1007829537087003422==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git bleeding-edge
+branch HEAD: bbc0e4dfa777cb722b27b3f36a839c0fc61f475b  Merge branch 'pm-doc=
+s-next' into bleeding-edge
 
+elapsed time: 903m
 
------Original Message-----
-From: Huacai Chen <chenhuacai(a)gmail.com> =
+configs tested: 118
+configs skipped: 3
 
-Sent: Tuesday, March 08, 2022 9:30 PM
-To: Rafael J. Wysocki <rafael(a)kernel.org>
-Cc: Huacai Chen <chenhuacai(a)loongson.cn>; Rafael J . Wysocki <rjw(a)rjwys=
-ocki.net>; Len Brown <lenb(a)kernel.org>; Moore, Robert <robert.moore(a)int=
-el.com>; Erik Kaneda <erik.kaneda(a)intel.com>; ACPI Devel Maling List <lin=
-ux-acpi(a)vger.kernel.org>; open list:ACPI COMPONENT ARCHITECTURE (ACPICA) =
-<devel(a)acpica.org>; Xuefeng Li <lixuefeng(a)loongson.cn>; Jiaxun Yang <ji=
-axun.yang(a)flygoat.com>; Jianmin Lv <lvjianmin(a)loongson.cn>
-Subject: Re: [PATCH V2 0/2] ACPI: Add LoongArch-related definitions
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Hi, Rafael,
+gcc tested configs:
+arm                              allmodconfig
+arm                                 defconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm64                            allyesconfig
+i386                          randconfig-c001
+mips                        vocore2_defconfig
+i386                             alldefconfig
+arm                            zeus_defconfig
+x86_64                           alldefconfig
+powerpc                      mgcoge_defconfig
+m68k                        mvme16x_defconfig
+sh                            migor_defconfig
+m68k                          amiga_defconfig
+sh                   sh7724_generic_defconfig
+ia64                      gensparse_defconfig
+powerpc                       ppc64_defconfig
+arm                  randconfig-c002-20220310
+ia64                             allmodconfig
+ia64                             allyesconfig
+ia64                                defconfig
+m68k                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+csky                                defconfig
+alpha                               defconfig
+nds32                               defconfig
+nios2                            allyesconfig
+alpha                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+h8300                            allyesconfig
+xtensa                           allyesconfig
+nds32                             allnoconfig
+nios2                               defconfig
+arc                              allyesconfig
+parisc                              defconfig
+parisc64                            defconfig
+s390                             allmodconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+i386                              debian-10.3
+i386                   debian-10.3-kselftests
+i386                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                           allnoconfig
+powerpc                          allmodconfig
+powerpc                          allyesconfig
+x86_64                        randconfig-a006
+x86_64                        randconfig-a002
+x86_64                        randconfig-a004
+i386                          randconfig-a003
+i386                          randconfig-a001
+i386                          randconfig-a005
+x86_64                        randconfig-a013
+x86_64                        randconfig-a011
+x86_64                        randconfig-a015
+i386                          randconfig-a014
+i386                          randconfig-a012
+i386                          randconfig-a016
+arc                  randconfig-r043-20220310
+arc                  randconfig-r043-20220312
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+riscv                    nommu_virt_defconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                              defconfig
+x86_64                           allyesconfig
+x86_64                                  kexec
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                         rhel-8.3-kunit
+x86_64                    rhel-8.3-kselftests
 
-On Wed, Mar 9, 2022 at 2:49 AM Rafael J. Wysocki <rafael(a)kernel.org> wrot=
-e:
->
-> On Sun, Mar 6, 2022 at 12:17 PM Huacai Chen <chenhuacai(a)loongson.cn> wr=
-ote:
-> >
-> > LoongArch is a new RISC ISA, which is a bit like MIPS or RISC-V.
-> > LoongArch includes a reduced 32-bit version (LA32R), a standard =
+clang tested configs:
+mips                 randconfig-c004-20220310
+x86_64                        randconfig-c007
+mips                 randconfig-c004-20220312
+riscv                randconfig-c006-20220312
+s390                 randconfig-c005-20220310
+s390                 randconfig-c005-20220312
+arm                  randconfig-c002-20220312
+powerpc              randconfig-c003-20220310
+i386                          randconfig-c001
+riscv                randconfig-c006-20220310
+powerpc              randconfig-c003-20220312
+arm                  randconfig-c002-20220310
+mips                       lemote2f_defconfig
+arm                   milbeaut_m10v_defconfig
+mips                     cu1000-neo_defconfig
+mips                  cavium_octeon_defconfig
+powerpc                          g5_defconfig
+x86_64                        randconfig-a001
+x86_64                        randconfig-a003
+x86_64                        randconfig-a005
+i386                          randconfig-a002
+i386                          randconfig-a006
+i386                          randconfig-a004
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
+i386                          randconfig-a013
+i386                          randconfig-a015
+i386                          randconfig-a011
+riscv                randconfig-r042-20220310
+s390                 randconfig-r044-20220312
+hexagon              randconfig-r045-20220312
+hexagon              randconfig-r041-20220310
+riscv                randconfig-r042-20220312
+hexagon              randconfig-r045-20220310
+s390                 randconfig-r044-20220310
+hexagon              randconfig-r041-20220312
 
-> > 32-bit version (LA32S) and a 64-bit version (LA64). LoongArch use =
-
-> > ACPI as its boot protocol LoongArch-specific interrupt controllers =
-
-> > (similar to APIC) are already added in the next revision of ACPI =
-
-> > Specification (current revision is 6.4).
-> >
-> > This patchset are preparing to add LoongArch support in mainline =
-
-> > kernel, we can see a snapshot here:
-> > https://github.com/loongson/linux/tree/loongarch-next
-> >
-> > Cross-compile tool chain to build kernel:
-> > https://github.com/loongson/build-tools/releases
-> >
-> > Loongson and LoongArch documentations:
-> > https://github.com/loongson/LoongArch-Documentation
-> >
-> > ECR for LoongArch-specific interrupt controllers:
-> > https://mantis.uefi.org/mantis/view.php?id=3D2203
-> > https://mantis.uefi.org/mantis/view.php?id=3D2313
-> >
-> > ACPI changes of LoongArch have been approved in the last year, but =
-
-> > the new version of ACPI SPEC hasn't been made public yet.
-> >
-> > V2: Remove merged patches and update commit messages.
-> >
-> > Huacai Chen and Jianmin Lv(2):
-> >  ACPICA: MADT: Add LoongArch APICs support.
-> >  ACPICA: Events: Support fixed pcie wake event.
->
-> Both patches in this series are mostly ACPICA material which needs to =
-
-> be submitted to the upstream ACPICA project via =
-
-> https://github.com/acpica/acpica
->
-> It will be pulled by the Linux kernel from there.
-I found that you are also a maintainer of the ACPICA project, do you mean I=
- should submit by github PR, not by maillist?
-
-Yes.
->
-> >
-> > Signed-off-by: Huacai Chen <chenhuacai(a)loongson.cn>
-> > Signed-off-by: Jianmin Lv <lvjianmin(a)loongson.cn>
-> > ---
-> >  drivers/acpi/acpica/evevent.c  |  17 ++++--  =
-
-> > drivers/acpi/acpica/hwsleep.c  |  12 ++++
-> >  drivers/acpi/acpica/utglobal.c |   4 ++
-> >  drivers/acpi/tables.c          |  10 ++++
->
-> This tables.c change can be submitted as a separate patch when the =
-
-> ACPICA changes get integrated.
-Do you mean split the first patch into .h parts and .c parts, then submit t=
-he .h parts and the second patch by github PR, then submit the .c parts of =
-the first patch by maillist?
-
-No, that is not necessary.
-
-Huacai
->
-> >  include/acpi/actbl2.h          | 125 +++++++++++++++++++++++++++++++++=
-+++++++-
-> >  include/acpi/actypes.h         |   3 +-
-> >  6 files changed, 163 insertions(+), 8 deletions(-)
-> > --
-> > 2.27.0
-> >
-
---===============3772024166031812918==--
+---
+0-DAY CI Kernel Test Service
+https://lists.01.org/hyperkitty/list/kbuild-all(a)lists.01.org
+--===============1007829537087003422==--
 
