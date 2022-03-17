@@ -1,55 +1,98 @@
-Content-Type: multipart/mixed; boundary="===============8843641652499904777=="
+Content-Type: multipart/mixed; boundary="===============6519160041529570991=="
 MIME-Version: 1.0
 From: Vit Kabele <vit at kabele.me>
-Subject: [Devel] [PATCH 0/3] platform/x86,
- apcica: Sanitize EBDA pointer from memory
-Date: Thu, 17 Mar 2022 15:03:40 +0100
-Message-ID: <YjM/vI268K+vH3jH@czspare1-lap.sysgo.cz>
+Subject: [Devel] [PATCH 1/3] platform/x86: Check validity of EBDA pointer in
+ mpparse.c
+Date: Thu, 17 Mar 2022 15:03:54 +0100
+Message-ID: <YjM/yphbAQHxJIxg@czspare1-lap.sysgo.cz>
+In-Reply-To: cover.1647525033.git.vit@kabele.me
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8843641652499904777==
+--===============6519160041529570991==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-When testing custom virtualization platform, we noticed that in cases
-where the memory is initialized with random pattern, the Linux guest
-tends to crash on EPT violation.
+The pointer to EBDA area is retrieved from a word at 0x40e in BDA.
+In case that the memory there is not initialized and contains garbage,
+it might happen that the kernel touches memory above 640K.
 
-It turns out that (at least two) codepaths during boot do not check the
-validity of EBDA pointer retrieved from BDA memory at address 0x40e.
-In case that the returned address is over 640K, the kernel happily
-touches the VGA memory (which was not present in our setup, hence the
-EPT violation).
+This may cause unwanted reads from VGA memory which may not be decoded,
+or even present when running under virtualization.
 
-This may be problematic in other virtualized environment too, but it can
-probably also happen on bare metal when booted with legacy free (e.g.
-UEFI without CSM) firmware, because the BDA may not be initialized and
-the VGA range might not be properly decoded.
+This patch adds sanity check for the EBDA pointer retrieved from the memory
+so that scanning EBDA does not leave the low memory.
 
-The third patch of the series adds workaround for the situation where
-EBDA is smaller than 1KiB and the ACPI code scanning for RSDP table
-bumps to the VGA memory.
-
-The two acpcia patches can eventually be squashed together, it's up to you.
-
-I tested these patches on my lenovo laptop (and in QEMU if that counts).
-
-Vit Kabele (3):
-  platform/x86: Check validity of EBDA pointer in mpparse.c
-  acpica: Check that the EBDA pointer is in valid range
-  acpica: Do not touch VGA memory when EBDA < 1KiB
-
+Signed-off-by: Vit Kabele <vit(a)kabele.me>
+Reviewed-by: Rudolf Marek <r.marek(a)assembler.cz>
+---
  arch/x86/include/asm/bios_ebda.h |  3 +++
  arch/x86/kernel/ebda.c           |  3 ---
  arch/x86/kernel/mpparse.c        | 12 +++++++++++-
- drivers/acpi/acpica/tbxfroot.c   | 25 ++++++++++++++++++-------
- 4 files changed, 32 insertions(+), 11 deletions(-)
+ 3 files changed, 14 insertions(+), 4 deletions(-)
+
+diff --git a/arch/x86/include/asm/bios_ebda.h b/arch/x86/include/asm/bios_e=
+bda.h
+index 4d5a17e2febe..c3133c01d5b7 100644
+--- a/arch/x86/include/asm/bios_ebda.h
++++ b/arch/x86/include/asm/bios_ebda.h
+@@ -4,6 +4,9 @@
+ =
+
+ #include <asm/io.h>
+ =
+
++#define BIOS_START_MIN		0x20000U	/* 128K, less than this is insane */
++#define BIOS_START_MAX		0x9f000U	/* 640K, absolute maximum */
++
+ /*
+  * Returns physical address of EBDA.  Returns 0 if there is no EBDA.
+  */
+diff --git a/arch/x86/kernel/ebda.c b/arch/x86/kernel/ebda.c
+index 38e7d597b660..86c0801fc3ce 100644
+--- a/arch/x86/kernel/ebda.c
++++ b/arch/x86/kernel/ebda.c
+@@ -50,9 +50,6 @@
+ =
+
+ #define BIOS_RAM_SIZE_KB_PTR	0x413
+ =
+
+-#define BIOS_START_MIN		0x20000U	/* 128K, less than this is insane */
+-#define BIOS_START_MAX		0x9f000U	/* 640K, absolute maximum */
+-
+ void __init reserve_bios_regions(void)
+ {
+ 	unsigned int bios_start, ebda_start;
+diff --git a/arch/x86/kernel/mpparse.c b/arch/x86/kernel/mpparse.c
+index fed721f90116..6bba0744d32d 100644
+--- a/arch/x86/kernel/mpparse.c
++++ b/arch/x86/kernel/mpparse.c
+@@ -633,7 +633,17 @@ void __init default_find_smp_config(void)
+ 	 */
+ =
+
+ 	address =3D get_bios_ebda();
+-	if (address)
++
++	/* Check that the EBDA address is sane and the get_bios_ebda() did not
++	 * return just garbage from memory.
++	 * The upper bound is considered valid if it points below 1K before
++	 * end of the lower memory (i.e. 639K). The EBDA can be smaller
++	 * than 1K in which case the pointer will point above 639K but that
++	 * case is handled in step 2) above, and we don't need to adjust scan
++	 * size to not bump into the memory above 640K.
++	 */
++	if (address >=3D BIOS_START_MIN &&
++	    address < 639 * 0x400)
+ 		smp_scan_config(address, 0x400);
+ }
+ =
 
 -- =
 
 2.30.2
 
---===============8843641652499904777==--
+--===============6519160041529570991==--
 
