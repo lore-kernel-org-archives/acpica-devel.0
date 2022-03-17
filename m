@@ -1,93 +1,57 @@
-Content-Type: multipart/mixed; boundary="===============7994942937731496486=="
+Content-Type: multipart/mixed; boundary="===============0374170806697039942=="
 MIME-Version: 1.0
 From: Vit Kabele <vit at kabele.me>
-Subject: [Devel] [PATCH 3/3] acpica: Do not touch VGA memory when EBDA < 1KiB
-Date: Thu, 17 Mar 2022 15:04:37 +0100
-Message-ID: <YjM/9UrYVIKs/LOl@czspare1-lap.sysgo.cz>
-In-Reply-To: cover.1647525033.git.vit@kabele.me
+Subject: [Devel] [PATCH 0/3 RESEND] platform/x86,
+ apcica: Sanitize EBDA pointer from memory
+Date: Thu, 17 Mar 2022 19:44:19 +0100
+Message-ID: <YjOBg4Oys3qV1dbe@czspare1-lap.sysgo.cz>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7994942937731496486==
+--===============0374170806697039942==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-The ACPICA code assumes that EBDA region must be at least 1KiB in size.
-Because this is not guaranteed, it might happen that while scanning the
-memory for RSDP pointer, the kernel touches memory above 640KiB.
+[Resend because I messed up the mailing list addresses]
 
-This is unwanted as the VGA memory range may not be decoded or
-even present when running under virtualization.
+When testing custom virtualization platform, we noticed that in cases
+where the memory is initialized with random pattern, the Linux guest
+tends to crash on EPT violation.
 
-Signed-off-by: Vit Kabele <vit(a)kabele.me>
-Reviewed-by: Rudolf Marek <r.marek(a)assembler.cz>
----
- drivers/acpi/acpica/tbxfroot.c | 20 ++++++++++++++------
- 1 file changed, 14 insertions(+), 6 deletions(-)
+It turns out that (at least two) codepaths during boot do not check the
+validity of EBDA pointer retrieved from BDA memory at address 0x40e.
+In case that the returned address is over 640K, the kernel happily
+touches the VGA memory (which was not present in our setup, hence the
+EPT violation).
 
-diff --git a/drivers/acpi/acpica/tbxfroot.c b/drivers/acpi/acpica/tbxfroot.c
-index 67b7df1c0520..b1f4a91044d9 100644
---- a/drivers/acpi/acpica/tbxfroot.c
-+++ b/drivers/acpi/acpica/tbxfroot.c
-@@ -114,6 +114,7 @@ acpi_find_root_pointer(acpi_physical_address *table_add=
-ress)
- 	u8 *table_ptr;
- 	u8 *mem_rover;
- 	u32 physical_address;
-+	u32 ebda_window_size;
- =
+This may be problematic in other virtualized environment too, but it can
+probably also happen on bare metal when booted with legacy free (e.g.
+UEFI without CSM) firmware, because the BDA may not be initialized and
+the VGA range might not be properly decoded.
 
- 	ACPI_FUNCTION_TRACE(acpi_find_root_pointer);
- =
+The third patch of the series adds workaround for the situation where
+EBDA is smaller than 1KiB and the ACPI code scanning for RSDP table
+bumps to the VGA memory.
 
-@@ -143,25 +144,32 @@ acpi_find_root_pointer(acpi_physical_address *table_a=
-ddress)
- 	 */
- 	if (physical_address > 0x400 &&
- 	    physical_address < 0xA0000) {
-+		/* Calculate the scan window size
-+		 * The EBDA is not guaranteed to be larger than a KiB
-+		 * and in case that it is smaller the scanning function would
-+		 * leave the low memory and continue to the VGA range.
-+		 */
-+		ebda_window_size =3D ACPI_MIN(ACPI_EBDA_WINDOW_SIZE,
-+					    0xA0000 - physical_address);
-+
- 		/*
--		 * 1b) Search EBDA paragraphs (EBDA is required to be a
--		 *     minimum of 1K length)
-+		 * 1b) Search EBDA paragraphs
- 		 */
- 		table_ptr =3D acpi_os_map_memory((acpi_physical_address)
- 					       physical_address,
--					       ACPI_EBDA_WINDOW_SIZE);
-+					       ebda_window_size);
- 		if (!table_ptr) {
- 			ACPI_ERROR((AE_INFO,
- 				    "Could not map memory at 0x%8.8X for length %u",
--				    physical_address, ACPI_EBDA_WINDOW_SIZE));
-+				    physical_address, ebda_window_size));
- =
+The two acpcia patches can eventually be squashed together, it's up to you.
 
- 			return_ACPI_STATUS(AE_NO_MEMORY);
- 		}
- =
+I tested these patches on my lenovo laptop (and in QEMU if that counts).
 
- 		mem_rover =3D
- 		    acpi_tb_scan_memory_for_rsdp(table_ptr,
--						 ACPI_EBDA_WINDOW_SIZE);
--		acpi_os_unmap_memory(table_ptr, ACPI_EBDA_WINDOW_SIZE);
-+						 ebda_window_size);
-+		acpi_os_unmap_memory(table_ptr, ebda_window_size);
- =
+Vit Kabele (3):
+  platform/x86: Check validity of EBDA pointer in mpparse.c
+  acpica: Check that the EBDA pointer is in valid range
+  acpica: Do not touch VGA memory when EBDA < 1KiB
 
- 		if (mem_rover) {
- =
+ arch/x86/include/asm/bios_ebda.h |  3 +++
+ arch/x86/kernel/ebda.c           |  3 ---
+ arch/x86/kernel/mpparse.c        | 12 +++++++++++-
+ drivers/acpi/acpica/tbxfroot.c   | 25 ++++++++++++++++++-------
+ 4 files changed, 32 insertions(+), 11 deletions(-)
 
 -- =
 
 2.30.2
 
---===============7994942937731496486==--
+--===============0374170806697039942==--
 
