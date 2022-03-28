@@ -1,244 +1,276 @@
-Content-Type: multipart/mixed; boundary="===============5037549907077783688=="
+Content-Type: multipart/mixed; boundary="===============8892647503231965771=="
 MIME-Version: 1.0
-From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [rafael-pm:bleeding-edge] BUILD SUCCESS
- 81bbf3bb3aecb62a539f57a1d81381f0f95ff6ec
-Date: Wed, 23 Mar 2022 08:01:07 +0800
-Message-ID: <623a6343.pZi+FzcShn3ZsUU6%lkp@intel.com>
+From: Rafael J. Wysocki <rafael at kernel.org>
+Subject: [Devel] Re: [PATCH 05/22] acpica: Replace comments with C99
+ initializers
+Date: Mon, 28 Mar 2022 14:33:29 +0200
+Message-ID: <CAJZ5v0iJ=t26mnxHx9B+_A3ue7tVjgATN=TTtNNf2UNfuySd7Q@mail.gmail.com>
+In-Reply-To: 20220326165909.506926-5-benni@stuerz.xyz
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5037549907077783688==
+--===============8892647503231965771==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
-m.git bleeding-edge
-branch HEAD: 81bbf3bb3aecb62a539f57a1d81381f0f95ff6ec  Merge branch 'pm-opp=
-' into linux-next
+On Sat, Mar 26, 2022 at 6:09 PM Benjamin St=C3=BCrz <benni(a)stuerz.xyz> wr=
+ote:
+>
+> This replaces comments with C99's designated
+> initializers because the kernel supports them now.
 
-elapsed time: 727m
+However, note that all of the ACPICA material should be submitted to
+the upstream ACPICA project via https://github.com/acpica/acpica
 
-configs tested: 200
-configs skipped: 3
+Also please note that the set of compilers that need to be supported
+by the ACPICA project is greater than the set of compilers that can
+build the Linux kernel.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                          randconfig-c001
-s390                             allmodconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-powerpc                          allmodconfig
-powerpc                          allyesconfig
-s390                             allyesconfig
-i386                 randconfig-c001-20220321
-mips                 randconfig-c004-20220320
-arm                        shmobile_defconfig
-ia64                          tiger_defconfig
-ia64                         bigsur_defconfig
-arm                         nhk8815_defconfig
-arm                        keystone_defconfig
-h8300                               defconfig
-powerpc                 mpc85xx_cds_defconfig
-sparc                       sparc32_defconfig
-sh                          polaris_defconfig
-i386                                defconfig
-sh                          rsk7201_defconfig
-h8300                     edosk2674_defconfig
-mips                       capcella_defconfig
-sh                             shx3_defconfig
-sh                        sh7757lcr_defconfig
-arm                        multi_v7_defconfig
-sh                           se7780_defconfig
-arm                             pxa_defconfig
-nios2                            alldefconfig
-arm                       aspeed_g5_defconfig
-sh                  sh7785lcr_32bit_defconfig
-arm                         at91_dt_defconfig
-xtensa                    xip_kc705_defconfig
-m68k                        m5407c3_defconfig
-mips                 decstation_r4k_defconfig
-h8300                            allyesconfig
-m68k                          sun3x_defconfig
-powerpc                     taishan_defconfig
-arc                          axs101_defconfig
-mips                     decstation_defconfig
-powerpc                     tqm8548_defconfig
-parisc                           allyesconfig
-mips                         tb0226_defconfig
-powerpc                 canyonlands_defconfig
-sh                            hp6xx_defconfig
-mips                      maltasmvp_defconfig
-powerpc                   motionpro_defconfig
-sh                        sh7763rdp_defconfig
-arc                           tb10x_defconfig
-parisc64                            defconfig
-arc                 nsimosci_hs_smp_defconfig
-sh                               j2_defconfig
-ia64                                defconfig
-powerpc                 mpc837x_rdb_defconfig
-powerpc64                           defconfig
-powerpc                       maple_defconfig
-arm                        clps711x_defconfig
-arm                            qcom_defconfig
-arc                      axs103_smp_defconfig
-xtensa                          iss_defconfig
-sh                         microdev_defconfig
-sh                              ul2_defconfig
-um                                  defconfig
-nios2                         3c120_defconfig
-arm                         lpc18xx_defconfig
-sparc                            alldefconfig
-m68k                        mvme16x_defconfig
-openrisc                 simple_smp_defconfig
-mips                         cobalt_defconfig
-powerpc                 mpc834x_itx_defconfig
-sh                             sh03_defconfig
-sh                        edosk7705_defconfig
-arm                         vf610m4_defconfig
-powerpc                     rainier_defconfig
-arm                         s3c6400_defconfig
-powerpc                  storcenter_defconfig
-sh                        sh7785lcr_defconfig
-arm                            hisi_defconfig
-arc                        nsimosci_defconfig
-nios2                            allyesconfig
-sh                            titan_defconfig
-arm                         assabet_defconfig
-sh                           se7619_defconfig
-arm                        trizeps4_defconfig
-arm                       omap2plus_defconfig
-mips                         db1xxx_defconfig
-mips                           xway_defconfig
-parisc                generic-64bit_defconfig
-arm                           viper_defconfig
-nds32                               defconfig
-m68k                        mvme147_defconfig
-powerpc                    sam440ep_defconfig
-sh                                  defconfig
-xtensa                       common_defconfig
-riscv                            allmodconfig
-arm                  randconfig-c002-20220321
-arm                  randconfig-c002-20220320
-arm                  randconfig-c002-20220322
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a016-20220321
-x86_64               randconfig-a011-20220321
-x86_64               randconfig-a012-20220321
-x86_64               randconfig-a013-20220321
-x86_64               randconfig-a014-20220321
-x86_64               randconfig-a015-20220321
-i386                 randconfig-a015-20220321
-i386                 randconfig-a016-20220321
-i386                 randconfig-a013-20220321
-i386                 randconfig-a012-20220321
-i386                 randconfig-a014-20220321
-i386                 randconfig-a011-20220321
-arc                  randconfig-r043-20220320
-riscv                randconfig-r042-20220321
-s390                 randconfig-r044-20220321
-arc                  randconfig-r043-20220321
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                           allyesconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                         rhel-8.3-kunit
-x86_64                                  kexec
-
-clang tested configs:
-x86_64                        randconfig-c007
-mips                 randconfig-c004-20220320
-arm                  randconfig-c002-20220320
-powerpc              randconfig-c003-20220320
-riscv                randconfig-c006-20220320
-i386                          randconfig-c001
-arm                  randconfig-c002-20220322
-powerpc              randconfig-c003-20220322
-riscv                randconfig-c006-20220322
-s390                 randconfig-c005-20220322
-mips                 randconfig-c004-20220322
-powerpc                    gamecube_defconfig
-mips                        maltaup_defconfig
-hexagon                          alldefconfig
-powerpc                     mpc5200_defconfig
-arm                         orion5x_defconfig
-powerpc                     akebono_defconfig
-arm                         lpc32xx_defconfig
-powerpc                          allyesconfig
-powerpc                 mpc8272_ads_defconfig
-arm                        neponset_defconfig
-arm                          moxart_defconfig
-arm64                            allyesconfig
-arm                        mvebu_v5_defconfig
-powerpc                        fsp2_defconfig
-arm                     am200epdkit_defconfig
-hexagon                             defconfig
-x86_64               randconfig-a001-20220321
-x86_64               randconfig-a003-20220321
-x86_64               randconfig-a005-20220321
-x86_64               randconfig-a004-20220321
-x86_64               randconfig-a002-20220321
-x86_64               randconfig-a006-20220321
-i386                 randconfig-a001-20220321
-i386                 randconfig-a006-20220321
-i386                 randconfig-a003-20220321
-i386                 randconfig-a005-20220321
-i386                 randconfig-a004-20220321
-i386                 randconfig-a002-20220321
-x86_64                        randconfig-a012
-x86_64                        randconfig-a014
-x86_64                        randconfig-a016
-riscv                randconfig-r042-20220320
-hexagon              randconfig-r045-20220321
-hexagon              randconfig-r045-20220320
-hexagon              randconfig-r041-20220321
-hexagon              randconfig-r041-20220320
-riscv                randconfig-r042-20220322
-hexagon              randconfig-r045-20220322
-hexagon              randconfig-r041-20220322
-s390                 randconfig-r044-20220320
-
--- =
-
-0-DAY CI Kernel Test Service
-https://01.org/lkp
---===============5037549907077783688==--
+> Signed-off-by: Benjamin St=C3=BCrz <benni(a)stuerz.xyz>
+> ---
+>  drivers/acpi/acpica/utdecode.c | 183 ++++++++++++++++-----------------
+>  1 file changed, 90 insertions(+), 93 deletions(-)
+>
+> diff --git a/drivers/acpi/acpica/utdecode.c b/drivers/acpi/acpica/utdecod=
+e.c
+> index bcd3871079d7..d19868d2ea46 100644
+> --- a/drivers/acpi/acpica/utdecode.c
+> +++ b/drivers/acpi/acpica/utdecode.c
+> @@ -156,37 +156,37 @@ static const char acpi_gbl_bad_type[] =3D "UNDEFINE=
+D";
+>  /* Printable names of the ACPI object types */
+>
+>  static const char *acpi_gbl_ns_type_names[] =3D {
+> -       /* 00 */ "Untyped",
+> -       /* 01 */ "Integer",
+> -       /* 02 */ "String",
+> -       /* 03 */ "Buffer",
+> -       /* 04 */ "Package",
+> -       /* 05 */ "FieldUnit",
+> -       /* 06 */ "Device",
+> -       /* 07 */ "Event",
+> -       /* 08 */ "Method",
+> -       /* 09 */ "Mutex",
+> -       /* 10 */ "Region",
+> -       /* 11 */ "Power",
+> -       /* 12 */ "Processor",
+> -       /* 13 */ "Thermal",
+> -       /* 14 */ "BufferField",
+> -       /* 15 */ "DdbHandle",
+> -       /* 16 */ "DebugObject",
+> -       /* 17 */ "RegionField",
+> -       /* 18 */ "BankField",
+> -       /* 19 */ "IndexField",
+> -       /* 20 */ "Reference",
+> -       /* 21 */ "Alias",
+> -       /* 22 */ "MethodAlias",
+> -       /* 23 */ "Notify",
+> -       /* 24 */ "AddrHandler",
+> -       /* 25 */ "ResourceDesc",
+> -       /* 26 */ "ResourceFld",
+> -       /* 27 */ "Scope",
+> -       /* 28 */ "Extra",
+> -       /* 29 */ "Data",
+> -       /* 30 */ "Invalid"
+> +       [0]  =3D "Untyped",
+> +       [1]  =3D "Integer",
+> +       [2]  =3D "String",
+> +       [3]  =3D "Buffer",
+> +       [4]  =3D "Package",
+> +       [5]  =3D "FieldUnit",
+> +       [6]  =3D "Device",
+> +       [7]  =3D "Event",
+> +       [8]  =3D "Method",
+> +       [9]  =3D "Mutex",
+> +       [10] =3D "Region",
+> +       [11] =3D "Power",
+> +       [12] =3D "Processor",
+> +       [13] =3D "Thermal",
+> +       [14] =3D "BufferField",
+> +       [15] =3D "DdbHandle",
+> +       [16] =3D "DebugObject",
+> +       [17] =3D "RegionField",
+> +       [18] =3D "BankField",
+> +       [19] =3D "IndexField",
+> +       [20] =3D "Reference",
+> +       [21] =3D "Alias",
+> +       [22] =3D "MethodAlias",
+> +       [23] =3D "Notify",
+> +       [24] =3D "AddrHandler",
+> +       [25] =3D "ResourceDesc",
+> +       [26] =3D "ResourceFld",
+> +       [27] =3D "Scope",
+> +       [28] =3D "Extra",
+> +       [29] =3D "Data",
+> +       [30] =3D "Invalid"
+>  };
+>
+>  const char *acpi_ut_get_type_name(acpi_object_type type)
+> @@ -284,22 +284,22 @@ const char *acpi_ut_get_node_name(void *object)
+>  /* Printable names of object descriptor types */
+>
+>  static const char *acpi_gbl_desc_type_names[] =3D {
+> -       /* 00 */ "Not a Descriptor",
+> -       /* 01 */ "Cached Object",
+> -       /* 02 */ "State-Generic",
+> -       /* 03 */ "State-Update",
+> -       /* 04 */ "State-Package",
+> -       /* 05 */ "State-Control",
+> -       /* 06 */ "State-RootParseScope",
+> -       /* 07 */ "State-ParseScope",
+> -       /* 08 */ "State-WalkScope",
+> -       /* 09 */ "State-Result",
+> -       /* 10 */ "State-Notify",
+> -       /* 11 */ "State-Thread",
+> -       /* 12 */ "Tree Walk State",
+> -       /* 13 */ "Parse Tree Op",
+> -       /* 14 */ "Operand Object",
+> -       /* 15 */ "Namespace Node"
+> +       [0]  =3D "Not a Descriptor",
+> +       [1]  =3D "Cached Object",
+> +       [2]  =3D "State-Generic",
+> +       [3]  =3D "State-Update",
+> +       [4]  =3D "State-Package",
+> +       [5]  =3D "State-Control",
+> +       [6]  =3D "State-RootParseScope",
+> +       [7]  =3D "State-ParseScope",
+> +       [8]  =3D "State-WalkScope",
+> +       [9]  =3D "State-Result",
+> +       [10] =3D "State-Notify",
+> +       [11] =3D "State-Thread",
+> +       [12] =3D "Tree Walk State",
+> +       [13] =3D "Parse Tree Op",
+> +       [14] =3D "Operand Object",
+> +       [15] =3D "Namespace Node"
+>  };
+>
+>  const char *acpi_ut_get_descriptor_name(void *object)
+> @@ -331,13 +331,13 @@ const char *acpi_ut_get_descriptor_name(void *objec=
+t)
+>  /* Printable names of reference object sub-types */
+>
+>  static const char *acpi_gbl_ref_class_names[] =3D {
+> -       /* 00 */ "Local",
+> -       /* 01 */ "Argument",
+> -       /* 02 */ "RefOf",
+> -       /* 03 */ "Index",
+> -       /* 04 */ "DdbHandle",
+> -       /* 05 */ "Named Object",
+> -       /* 06 */ "Debug"
+> +       [0] =3D "Local",
+> +       [1] =3D "Argument",
+> +       [2] =3D "RefOf",
+> +       [3] =3D "Index",
+> +       [4] =3D "DdbHandle",
+> +       [5] =3D "Named Object",
+> +       [6] =3D "Debug"
+>  };
+>
+>  const char *acpi_ut_get_reference_name(union acpi_operand_object *object)
+> @@ -416,25 +416,22 @@ const char *acpi_ut_get_mutex_name(u32 mutex_id)
+>  /* Names for Notify() values, used for debug output */
+>
+>  static const char *acpi_gbl_generic_notify[ACPI_GENERIC_NOTIFY_MAX + 1] =
+=3D {
+> -       /* 00 */ "Bus Check",
+> -       /* 01 */ "Device Check",
+> -       /* 02 */ "Device Wake",
+> -       /* 03 */ "Eject Request",
+> -       /* 04 */ "Device Check Light",
+> -       /* 05 */ "Frequency Mismatch",
+> -       /* 06 */ "Bus Mode Mismatch",
+> -       /* 07 */ "Power Fault",
+> -       /* 08 */ "Capabilities Check",
+> -       /* 09 */ "Device PLD Check",
+> -       /* 0A */ "Reserved",
+> -       /* 0B */ "System Locality Update",
+> -                                                               /* 0C */ =
+"Reserved (was previously Shutdown Request)",
+> -                                                               /* Reserv=
+ed in ACPI 6.0 */
+> -       /* 0D */ "System Resource Affinity Update",
+> -                                                               /* 0E */ =
+"Heterogeneous Memory Attributes Update",
+> -                                                               /* ACPI 6=
+.2 */
+> -                                               /* 0F */ "Error Disconnec=
+t Recover"
+> -                                               /* ACPI 6.3 */
+> +       [0]  =3D "Bus Check",
+> +       [1]  =3D "Device Check",
+> +       [2]  =3D "Device Wake",
+> +       [3]  =3D "Eject Request",
+> +       [4]  =3D "Device Check Light",
+> +       [5]  =3D "Frequency Mismatch",
+> +       [6]  =3D "Bus Mode Mismatch",
+> +       [7]  =3D "Power Fault",
+> +       [8]  =3D "Capabilities Check",
+> +       [9]  =3D "Device PLD Check",
+> +       [10] =3D "Reserved",
+> +       [11] =3D "System Locality Update",
+> +       [12] =3D "Reserved (was previously Shutdown Request)",  /* Reserv=
+ed in ACPI 6.0 */
+> +       [13] =3D "System Resource Affinity Update",
+> +       [14] =3D "Heterogeneous Memory Attributes Update",      /* ACPI 6=
+.2 */
+> +       [15] =3D "Error Disconnect Recover"                     /* ACPI 6=
+.3 */
+>  };
+>
+>  static const char *acpi_gbl_device_notify[5] =3D {
+> @@ -521,26 +518,26 @@ const char *acpi_ut_get_notify_name(u32 notify_valu=
+e, acpi_object_type type)
+>   ***********************************************************************=
+*******/
+>
+>  static const char *acpi_gbl_argument_type[20] =3D {
+> -       /* 00 */ "Unknown ARGP",
+> -       /* 01 */ "ByteData",
+> -       /* 02 */ "ByteList",
+> -       /* 03 */ "CharList",
+> -       /* 04 */ "DataObject",
+> -       /* 05 */ "DataObjectList",
+> -       /* 06 */ "DWordData",
+> -       /* 07 */ "FieldList",
+> -       /* 08 */ "Name",
+> -       /* 09 */ "NameString",
+> -       /* 0A */ "ObjectList",
+> -       /* 0B */ "PackageLength",
+> -       /* 0C */ "SuperName",
+> -       /* 0D */ "Target",
+> -       /* 0E */ "TermArg",
+> -       /* 0F */ "TermList",
+> -       /* 10 */ "WordData",
+> -       /* 11 */ "QWordData",
+> -       /* 12 */ "SimpleName",
+> -       /* 13 */ "NameOrRef"
+> +       [0x00] =3D "Unknown ARGP",
+> +       [0x01] =3D "ByteData",
+> +       [0x02] =3D "ByteList",
+> +       [0x03] =3D "CharList",
+> +       [0x04] =3D "DataObject",
+> +       [0x05] =3D "DataObjectList",
+> +       [0x06] =3D "DWordData",
+> +       [0x07] =3D "FieldList",
+> +       [0x08] =3D "Name",
+> +       [0x09] =3D "NameString",
+> +       [0x0A] =3D "ObjectList",
+> +       [0x0B] =3D "PackageLength",
+> +       [0x0C] =3D "SuperName",
+> +       [0x0D] =3D "Target",
+> +       [0x0E] =3D "TermArg",
+> +       [0x0F] =3D "TermList",
+> +       [0x10] =3D "WordData",
+> +       [0x11] =3D "QWordData",
+> +       [0x12] =3D "SimpleName",
+> +       [0x13] =3D "NameOrRef"
+>  };
+>
+>  const char *acpi_ut_get_argument_type_name(u32 arg_type)
+> --
+> 2.35.1
+>
+--===============8892647503231965771==--
 
