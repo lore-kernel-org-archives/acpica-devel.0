@@ -1,276 +1,241 @@
-Content-Type: multipart/mixed; boundary="===============8892647503231965771=="
+Content-Type: multipart/mixed; boundary="===============4458028718980696992=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [PATCH 05/22] acpica: Replace comments with C99
- initializers
-Date: Mon, 28 Mar 2022 14:33:29 +0200
-Message-ID: <CAJZ5v0iJ=t26mnxHx9B+_A3ue7tVjgATN=TTtNNf2UNfuySd7Q@mail.gmail.com>
-In-Reply-To: 20220326165909.506926-5-benni@stuerz.xyz
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [rafael-pm:bleeding-edge] BUILD SUCCESS
+ bd19672308663b45ebecd8010fa1c51515719dc4
+Date: Wed, 30 Mar 2022 17:59:12 +0800
+Message-ID: <624429f0.RenlGNGiIterGGxW%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8892647503231965771==
+--===============4458028718980696992==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Mar 26, 2022 at 6:09 PM Benjamin St=C3=BCrz <benni(a)stuerz.xyz> wr=
-ote:
->
-> This replaces comments with C99's designated
-> initializers because the kernel supports them now.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git bleeding-edge
+branch HEAD: bd19672308663b45ebecd8010fa1c51515719dc4  Merge branch 'pm-doc=
+s' into linux-next
 
-However, note that all of the ACPICA material should be submitted to
-the upstream ACPICA project via https://github.com/acpica/acpica
+elapsed time: 739m
 
-Also please note that the set of compilers that need to be supported
-by the ACPICA project is greater than the set of compilers that can
-build the Linux kernel.
+configs tested: 198
+configs skipped: 4
 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> Signed-off-by: Benjamin St=C3=BCrz <benni(a)stuerz.xyz>
-> ---
->  drivers/acpi/acpica/utdecode.c | 183 ++++++++++++++++-----------------
->  1 file changed, 90 insertions(+), 93 deletions(-)
->
-> diff --git a/drivers/acpi/acpica/utdecode.c b/drivers/acpi/acpica/utdecod=
-e.c
-> index bcd3871079d7..d19868d2ea46 100644
-> --- a/drivers/acpi/acpica/utdecode.c
-> +++ b/drivers/acpi/acpica/utdecode.c
-> @@ -156,37 +156,37 @@ static const char acpi_gbl_bad_type[] =3D "UNDEFINE=
-D";
->  /* Printable names of the ACPI object types */
->
->  static const char *acpi_gbl_ns_type_names[] =3D {
-> -       /* 00 */ "Untyped",
-> -       /* 01 */ "Integer",
-> -       /* 02 */ "String",
-> -       /* 03 */ "Buffer",
-> -       /* 04 */ "Package",
-> -       /* 05 */ "FieldUnit",
-> -       /* 06 */ "Device",
-> -       /* 07 */ "Event",
-> -       /* 08 */ "Method",
-> -       /* 09 */ "Mutex",
-> -       /* 10 */ "Region",
-> -       /* 11 */ "Power",
-> -       /* 12 */ "Processor",
-> -       /* 13 */ "Thermal",
-> -       /* 14 */ "BufferField",
-> -       /* 15 */ "DdbHandle",
-> -       /* 16 */ "DebugObject",
-> -       /* 17 */ "RegionField",
-> -       /* 18 */ "BankField",
-> -       /* 19 */ "IndexField",
-> -       /* 20 */ "Reference",
-> -       /* 21 */ "Alias",
-> -       /* 22 */ "MethodAlias",
-> -       /* 23 */ "Notify",
-> -       /* 24 */ "AddrHandler",
-> -       /* 25 */ "ResourceDesc",
-> -       /* 26 */ "ResourceFld",
-> -       /* 27 */ "Scope",
-> -       /* 28 */ "Extra",
-> -       /* 29 */ "Data",
-> -       /* 30 */ "Invalid"
-> +       [0]  =3D "Untyped",
-> +       [1]  =3D "Integer",
-> +       [2]  =3D "String",
-> +       [3]  =3D "Buffer",
-> +       [4]  =3D "Package",
-> +       [5]  =3D "FieldUnit",
-> +       [6]  =3D "Device",
-> +       [7]  =3D "Event",
-> +       [8]  =3D "Method",
-> +       [9]  =3D "Mutex",
-> +       [10] =3D "Region",
-> +       [11] =3D "Power",
-> +       [12] =3D "Processor",
-> +       [13] =3D "Thermal",
-> +       [14] =3D "BufferField",
-> +       [15] =3D "DdbHandle",
-> +       [16] =3D "DebugObject",
-> +       [17] =3D "RegionField",
-> +       [18] =3D "BankField",
-> +       [19] =3D "IndexField",
-> +       [20] =3D "Reference",
-> +       [21] =3D "Alias",
-> +       [22] =3D "MethodAlias",
-> +       [23] =3D "Notify",
-> +       [24] =3D "AddrHandler",
-> +       [25] =3D "ResourceDesc",
-> +       [26] =3D "ResourceFld",
-> +       [27] =3D "Scope",
-> +       [28] =3D "Extra",
-> +       [29] =3D "Data",
-> +       [30] =3D "Invalid"
->  };
->
->  const char *acpi_ut_get_type_name(acpi_object_type type)
-> @@ -284,22 +284,22 @@ const char *acpi_ut_get_node_name(void *object)
->  /* Printable names of object descriptor types */
->
->  static const char *acpi_gbl_desc_type_names[] =3D {
-> -       /* 00 */ "Not a Descriptor",
-> -       /* 01 */ "Cached Object",
-> -       /* 02 */ "State-Generic",
-> -       /* 03 */ "State-Update",
-> -       /* 04 */ "State-Package",
-> -       /* 05 */ "State-Control",
-> -       /* 06 */ "State-RootParseScope",
-> -       /* 07 */ "State-ParseScope",
-> -       /* 08 */ "State-WalkScope",
-> -       /* 09 */ "State-Result",
-> -       /* 10 */ "State-Notify",
-> -       /* 11 */ "State-Thread",
-> -       /* 12 */ "Tree Walk State",
-> -       /* 13 */ "Parse Tree Op",
-> -       /* 14 */ "Operand Object",
-> -       /* 15 */ "Namespace Node"
-> +       [0]  =3D "Not a Descriptor",
-> +       [1]  =3D "Cached Object",
-> +       [2]  =3D "State-Generic",
-> +       [3]  =3D "State-Update",
-> +       [4]  =3D "State-Package",
-> +       [5]  =3D "State-Control",
-> +       [6]  =3D "State-RootParseScope",
-> +       [7]  =3D "State-ParseScope",
-> +       [8]  =3D "State-WalkScope",
-> +       [9]  =3D "State-Result",
-> +       [10] =3D "State-Notify",
-> +       [11] =3D "State-Thread",
-> +       [12] =3D "Tree Walk State",
-> +       [13] =3D "Parse Tree Op",
-> +       [14] =3D "Operand Object",
-> +       [15] =3D "Namespace Node"
->  };
->
->  const char *acpi_ut_get_descriptor_name(void *object)
-> @@ -331,13 +331,13 @@ const char *acpi_ut_get_descriptor_name(void *objec=
-t)
->  /* Printable names of reference object sub-types */
->
->  static const char *acpi_gbl_ref_class_names[] =3D {
-> -       /* 00 */ "Local",
-> -       /* 01 */ "Argument",
-> -       /* 02 */ "RefOf",
-> -       /* 03 */ "Index",
-> -       /* 04 */ "DdbHandle",
-> -       /* 05 */ "Named Object",
-> -       /* 06 */ "Debug"
-> +       [0] =3D "Local",
-> +       [1] =3D "Argument",
-> +       [2] =3D "RefOf",
-> +       [3] =3D "Index",
-> +       [4] =3D "DdbHandle",
-> +       [5] =3D "Named Object",
-> +       [6] =3D "Debug"
->  };
->
->  const char *acpi_ut_get_reference_name(union acpi_operand_object *object)
-> @@ -416,25 +416,22 @@ const char *acpi_ut_get_mutex_name(u32 mutex_id)
->  /* Names for Notify() values, used for debug output */
->
->  static const char *acpi_gbl_generic_notify[ACPI_GENERIC_NOTIFY_MAX + 1] =
-=3D {
-> -       /* 00 */ "Bus Check",
-> -       /* 01 */ "Device Check",
-> -       /* 02 */ "Device Wake",
-> -       /* 03 */ "Eject Request",
-> -       /* 04 */ "Device Check Light",
-> -       /* 05 */ "Frequency Mismatch",
-> -       /* 06 */ "Bus Mode Mismatch",
-> -       /* 07 */ "Power Fault",
-> -       /* 08 */ "Capabilities Check",
-> -       /* 09 */ "Device PLD Check",
-> -       /* 0A */ "Reserved",
-> -       /* 0B */ "System Locality Update",
-> -                                                               /* 0C */ =
-"Reserved (was previously Shutdown Request)",
-> -                                                               /* Reserv=
-ed in ACPI 6.0 */
-> -       /* 0D */ "System Resource Affinity Update",
-> -                                                               /* 0E */ =
-"Heterogeneous Memory Attributes Update",
-> -                                                               /* ACPI 6=
-.2 */
-> -                                               /* 0F */ "Error Disconnec=
-t Recover"
-> -                                               /* ACPI 6.3 */
-> +       [0]  =3D "Bus Check",
-> +       [1]  =3D "Device Check",
-> +       [2]  =3D "Device Wake",
-> +       [3]  =3D "Eject Request",
-> +       [4]  =3D "Device Check Light",
-> +       [5]  =3D "Frequency Mismatch",
-> +       [6]  =3D "Bus Mode Mismatch",
-> +       [7]  =3D "Power Fault",
-> +       [8]  =3D "Capabilities Check",
-> +       [9]  =3D "Device PLD Check",
-> +       [10] =3D "Reserved",
-> +       [11] =3D "System Locality Update",
-> +       [12] =3D "Reserved (was previously Shutdown Request)",  /* Reserv=
-ed in ACPI 6.0 */
-> +       [13] =3D "System Resource Affinity Update",
-> +       [14] =3D "Heterogeneous Memory Attributes Update",      /* ACPI 6=
-.2 */
-> +       [15] =3D "Error Disconnect Recover"                     /* ACPI 6=
-.3 */
->  };
->
->  static const char *acpi_gbl_device_notify[5] =3D {
-> @@ -521,26 +518,26 @@ const char *acpi_ut_get_notify_name(u32 notify_valu=
-e, acpi_object_type type)
->   ***********************************************************************=
-*******/
->
->  static const char *acpi_gbl_argument_type[20] =3D {
-> -       /* 00 */ "Unknown ARGP",
-> -       /* 01 */ "ByteData",
-> -       /* 02 */ "ByteList",
-> -       /* 03 */ "CharList",
-> -       /* 04 */ "DataObject",
-> -       /* 05 */ "DataObjectList",
-> -       /* 06 */ "DWordData",
-> -       /* 07 */ "FieldList",
-> -       /* 08 */ "Name",
-> -       /* 09 */ "NameString",
-> -       /* 0A */ "ObjectList",
-> -       /* 0B */ "PackageLength",
-> -       /* 0C */ "SuperName",
-> -       /* 0D */ "Target",
-> -       /* 0E */ "TermArg",
-> -       /* 0F */ "TermList",
-> -       /* 10 */ "WordData",
-> -       /* 11 */ "QWordData",
-> -       /* 12 */ "SimpleName",
-> -       /* 13 */ "NameOrRef"
-> +       [0x00] =3D "Unknown ARGP",
-> +       [0x01] =3D "ByteData",
-> +       [0x02] =3D "ByteList",
-> +       [0x03] =3D "CharList",
-> +       [0x04] =3D "DataObject",
-> +       [0x05] =3D "DataObjectList",
-> +       [0x06] =3D "DWordData",
-> +       [0x07] =3D "FieldList",
-> +       [0x08] =3D "Name",
-> +       [0x09] =3D "NameString",
-> +       [0x0A] =3D "ObjectList",
-> +       [0x0B] =3D "PackageLength",
-> +       [0x0C] =3D "SuperName",
-> +       [0x0D] =3D "Target",
-> +       [0x0E] =3D "TermArg",
-> +       [0x0F] =3D "TermList",
-> +       [0x10] =3D "WordData",
-> +       [0x11] =3D "QWordData",
-> +       [0x12] =3D "SimpleName",
-> +       [0x13] =3D "NameOrRef"
->  };
->
->  const char *acpi_ut_get_argument_type_name(u32 arg_type)
-> --
-> 2.35.1
->
---===============8892647503231965771==--
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                          randconfig-c001
+mips                 randconfig-c004-20220329
+m68k                             allyesconfig
+m68k                             allmodconfig
+s390                             allmodconfig
+powerpc                          allmodconfig
+powerpc                          allyesconfig
+s390                             allyesconfig
+sh                          landisk_defconfig
+sh                        edosk7760_defconfig
+powerpc                     rainier_defconfig
+um                             i386_defconfig
+xtensa                    smp_lx200_defconfig
+arm                        mini2440_defconfig
+arm                      integrator_defconfig
+sh                           se7751_defconfig
+sh                            migor_defconfig
+arm                        clps711x_defconfig
+arm                            xcep_defconfig
+arm                          badge4_defconfig
+m68k                            q40_defconfig
+nios2                         10m50_defconfig
+mips                      fuloong2e_defconfig
+sh                         microdev_defconfig
+arc                        nsim_700_defconfig
+arm                         nhk8815_defconfig
+powerpc                    sam440ep_defconfig
+mips                            ar7_defconfig
+arm                            hisi_defconfig
+ia64                            zx1_defconfig
+sh                         ecovec24_defconfig
+arm                             pxa_defconfig
+arc                                 defconfig
+i386                                defconfig
+mips                           xway_defconfig
+xtensa                       common_defconfig
+sh                            hp6xx_defconfig
+arc                          axs101_defconfig
+sparc                       sparc32_defconfig
+parisc                           alldefconfig
+h8300                       h8s-sim_defconfig
+sh                     magicpanelr2_defconfig
+parisc                generic-32bit_defconfig
+m68k                       m5275evb_defconfig
+mips                         cobalt_defconfig
+arm                        trizeps4_defconfig
+sh                          lboxre2_defconfig
+sh                         ap325rxa_defconfig
+arm                            lart_defconfig
+arm                          lpd270_defconfig
+powerpc                      ppc40x_defconfig
+m68k                       m5249evb_defconfig
+arm                            pleb_defconfig
+arm                         s3c6400_defconfig
+mips                        vocore2_defconfig
+sh                   sh7724_generic_defconfig
+mips                         bigsur_defconfig
+sh                        sh7757lcr_defconfig
+arm                            qcom_defconfig
+mips                         db1xxx_defconfig
+sh                          sdk7786_defconfig
+powerpc                         wii_defconfig
+powerpc                 mpc85xx_cds_defconfig
+arm                  randconfig-c002-20220329
+arm                  randconfig-c002-20220327
+arm                  randconfig-c002-20220330
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+parisc64                            defconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                           allnoconfig
+x86_64                        randconfig-a006
+x86_64                        randconfig-a004
+x86_64                        randconfig-a002
+x86_64               randconfig-a001-20220328
+x86_64               randconfig-a003-20220328
+x86_64               randconfig-a004-20220328
+x86_64               randconfig-a002-20220328
+x86_64               randconfig-a005-20220328
+x86_64               randconfig-a006-20220328
+i386                          randconfig-a003
+i386                          randconfig-a001
+i386                          randconfig-a005
+i386                 randconfig-a001-20220328
+i386                 randconfig-a003-20220328
+i386                 randconfig-a006-20220328
+i386                 randconfig-a005-20220328
+i386                 randconfig-a004-20220328
+i386                 randconfig-a002-20220328
+x86_64                        randconfig-a013
+x86_64                        randconfig-a011
+x86_64                        randconfig-a015
+riscv                randconfig-r042-20220330
+s390                 randconfig-r044-20220330
+arc                  randconfig-r043-20220330
+arc                  randconfig-r043-20220329
+s390                 randconfig-r044-20220327
+arc                  randconfig-r043-20220328
+arc                  randconfig-r043-20220327
+riscv                randconfig-r042-20220329
+s390                 randconfig-r044-20220329
+riscv                randconfig-r042-20220327
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                         rhel-8.3-kunit
+x86_64                                  kexec
+
+clang tested configs:
+mips                 randconfig-c004-20220329
+x86_64                        randconfig-c007
+mips                 randconfig-c004-20220327
+arm                  randconfig-c002-20220327
+arm                  randconfig-c002-20220329
+riscv                randconfig-c006-20220327
+powerpc              randconfig-c003-20220327
+powerpc              randconfig-c003-20220329
+riscv                randconfig-c006-20220329
+i386                          randconfig-c001
+s390                 randconfig-c005-20220327
+s390                 randconfig-c005-20220329
+mips                 randconfig-c004-20220330
+powerpc              randconfig-c003-20220330
+riscv                randconfig-c006-20220330
+arm                  randconfig-c002-20220330
+powerpc                 mpc8313_rdb_defconfig
+mips                           mtx1_defconfig
+mips                     cu1830-neo_defconfig
+powerpc                    socrates_defconfig
+mips                           rs90_defconfig
+powerpc                     mpc5200_defconfig
+arm                     am200epdkit_defconfig
+mips                   sb1250_swarm_defconfig
+powerpc                   lite5200b_defconfig
+powerpc                     kilauea_defconfig
+riscv                            alldefconfig
+x86_64                        randconfig-a001
+x86_64                        randconfig-a003
+x86_64                        randconfig-a005
+i386                          randconfig-a002
+i386                          randconfig-a004
+i386                          randconfig-a006
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
+x86_64               randconfig-a016-20220328
+x86_64               randconfig-a012-20220328
+x86_64               randconfig-a011-20220328
+x86_64               randconfig-a014-20220328
+x86_64               randconfig-a013-20220328
+x86_64               randconfig-a015-20220328
+i386                 randconfig-a012-20220328
+i386                 randconfig-a016-20220328
+i386                 randconfig-a015-20220328
+i386                 randconfig-a011-20220328
+i386                 randconfig-a013-20220328
+i386                 randconfig-a014-20220328
+i386                          randconfig-a011
+i386                          randconfig-a013
+i386                          randconfig-a015
+riscv                randconfig-r042-20220328
+hexagon              randconfig-r045-20220329
+hexagon              randconfig-r045-20220328
+hexagon              randconfig-r045-20220327
+hexagon              randconfig-r041-20220327
+hexagon              randconfig-r045-20220330
+hexagon              randconfig-r041-20220329
+hexagon              randconfig-r041-20220328
+hexagon              randconfig-r041-20220330
+s390                 randconfig-r044-20220328
+
+-- =
+
+0-DAY CI Kernel Test Service
+https://01.org/lkp
+--===============4458028718980696992==--
 
