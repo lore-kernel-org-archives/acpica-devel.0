@@ -1,63 +1,131 @@
-Content-Type: multipart/mixed; boundary="===============5642572293765986031=="
+Content-Type: multipart/mixed; boundary="===============1723044337892341921=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [PATCH 2/3] acpica: Check that the EBDA pointer is in
- valid range
-Date: Tue, 05 Apr 2022 15:14:27 +0200
-Message-ID: <CAJZ5v0iSCrU3AeEaTxVkbma_0Wi9LPPRiP_NbmuAgDOeDS9c0g@mail.gmail.com>
-In-Reply-To: YjM/6rqxZN19en2I@czspare1-lap.sysgo.cz
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [rafael-pm:bleeding-edge] BUILD SUCCESS
+ bfb13c25fad240c3fd1601e8deff642389e903e8
+Date: Wed, 06 Apr 2022 18:51:39 +0800
+Message-ID: <624d70bb.IDPV7PFlNd1OW6GM%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5642572293765986031==
+--===============1723044337892341921==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 17, 2022 at 3:12 PM Vit Kabele <vit(a)kabele.me> wrote:
->
-> If the memory at 0x40e is uninitialized, the retrieved physical_memory
-> address of EBDA may be beyond the low memory (i.e. above 640K).
->
-> If so, the kernel may unintentionally access the VGA memory, that
-> might not be decoded or even present in case of virtualization.
->
-> Signed-off-by: Vit Kabele <vit(a)kabele.me>
-> Reviewed-by: Rudolf Marek <r.marek(a)assembler.cz>
-> ---
->  drivers/acpi/acpica/tbxfroot.c | 7 +++++--
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git bleeding-edge
+branch HEAD: bfb13c25fad240c3fd1601e8deff642389e903e8  Merge branch 'therma=
+l-int340x' into bleeding-edge
 
-Changes in the ACPICA code need to be submitted to the upstream ACPICA
-project via https://github.com/acpica/acpica and they are pulled from
-there into the kernel.
+elapsed time: 976m
 
-Of course, this applies to the next patch in the series too.
+configs tested: 93
+configs skipped: 4
 
->  1 file changed, 5 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/acpi/acpica/tbxfroot.c b/drivers/acpi/acpica/tbxfroo=
-t.c
-> index 9fec3df6c3ba..67b7df1c0520 100644
-> --- a/drivers/acpi/acpica/tbxfroot.c
-> +++ b/drivers/acpi/acpica/tbxfroot.c
-> @@ -138,8 +138,11 @@ acpi_find_root_pointer(acpi_physical_address *table_=
-address)
->         acpi_os_unmap_memory(table_ptr, ACPI_EBDA_PTR_LENGTH);
->
->         /* EBDA present? */
-> -
-> -       if (physical_address > 0x400) {
-> +       /* Check that the EBDA pointer from 0x40e is sane and does not po=
-int
-> +        * above valid low memory
-> +        */
-> +       if (physical_address > 0x400 &&
-> +           physical_address < 0xA0000) {
->                 /*
->                  * 1b) Search EBDA paragraphs (EBDA is required to be a
->                  *     minimum of 1K length)
-> --
-> 2.30.2
->
---===============5642572293765986031==--
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm64                               defconfig
+arm64                            allyesconfig
+arm                              allyesconfig
+arm                                 defconfig
+arm                              allmodconfig
+i386                          randconfig-c001
+sh                          sdk7786_defconfig
+arc                          axs101_defconfig
+m68k                        m5407c3_defconfig
+mips                         mpc30x_defconfig
+openrisc                  or1klitex_defconfig
+xtensa                  nommu_kc705_defconfig
+ia64                                defconfig
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allyesconfig
+m68k                             allmodconfig
+alpha                               defconfig
+csky                                defconfig
+alpha                            allyesconfig
+nios2                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+h8300                            allyesconfig
+xtensa                           allyesconfig
+parisc                              defconfig
+parisc64                            defconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+s390                             allyesconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+i386                                defconfig
+i386                             allyesconfig
+sparc                               defconfig
+sparc                            allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                           allnoconfig
+powerpc                          allmodconfig
+powerpc                          allyesconfig
+i386                          randconfig-a001
+i386                          randconfig-a003
+i386                          randconfig-a005
+x86_64                        randconfig-a015
+x86_64                        randconfig-a013
+x86_64                        randconfig-a011
+i386                          randconfig-a014
+i386                          randconfig-a012
+i386                          randconfig-a016
+x86_64                        randconfig-a004
+x86_64                        randconfig-a002
+x86_64                        randconfig-a006
+arc                  randconfig-r043-20220405
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+riscv                    nommu_k210_defconfig
+riscv                             allnoconfig
+riscv                            allyesconfig
+riscv                               defconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                              defconfig
+x86_64                           allyesconfig
+x86_64                                  kexec
+x86_64                          rhel-8.3-func
+x86_64                               rhel-8.3
+x86_64                         rhel-8.3-kunit
+x86_64                    rhel-8.3-kselftests
+
+clang tested configs:
+arm                          pcm027_defconfig
+mips                           mtx1_defconfig
+arm                        neponset_defconfig
+i386                          randconfig-a002
+i386                          randconfig-a004
+i386                          randconfig-a006
+x86_64                        randconfig-a014
+x86_64                        randconfig-a012
+x86_64                        randconfig-a016
+i386                          randconfig-a013
+i386                          randconfig-a011
+i386                          randconfig-a015
+x86_64                        randconfig-a001
+x86_64                        randconfig-a003
+x86_64                        randconfig-a005
+hexagon              randconfig-r041-20220405
+hexagon              randconfig-r045-20220405
+s390                 randconfig-r044-20220405
+riscv                randconfig-r042-20220405
+
+-- =
+
+0-DAY CI Kernel Test Service
+https://01.org/lkp
+--===============1723044337892341921==--
 
