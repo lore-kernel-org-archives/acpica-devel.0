@@ -1,159 +1,179 @@
-Content-Type: multipart/mixed; boundary="===============0028111184210186658=="
+Content-Type: multipart/mixed; boundary="===============8877865679706953256=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [PATCH 1/2] ACPICA: Add support for ARM Performance
- Monitoring Unit Table.
-Date: Wed, 20 Apr 2022 17:31:43 +0200
-Message-ID: <CAJZ5v0jUZSSvMGYhu44rSnEXmVve-wKXkUf-U_qy0ojn4v6kXA@mail.gmail.com>
-In-Reply-To: 20220419205432.46021-2-bwicaksono@nvidia.com
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [rafael-pm:bleeding-edge 7/20] WARNING: modpost:
+ vmlinux.o(.exit.text+0xe120): Section mismatch in reference from the function
+ hsr_netlink_exit() to the variable .init.text:.L0
+Date: Sun, 24 Apr 2022 02:32:14 +0800
+Message-ID: <202204240259.PyW8hsJz-lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0028111184210186658==
+--===============8877865679706953256==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 19, 2022 at 10:55 PM Besar Wicaksono <bwicaksono(a)nvidia.com> =
-wrote:
->
-> ACPICA commit 002165ecc0a3dc703bb24c789aaa02fdada01675
->
-> The specification of this table is described in
-> "ARM Performance Monitoring Unit Architecture 1.0 Platform Design Documen=
-t"
-> ARM DEN0117.
->
-> This patch adds the necessary types and support for
-> compiling/disassembling APMT.
->
-> Link: https://github.com/acpica/acpica/commit/002165ec
-> Signed-off-by: Besar Wicaksono <bwicaksono(a)nvidia.com>
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git=
+ bleeding-edge
+head:   f23bedef4354b1e8a69a25d8c9c1201e6d8e8762
+commit: 989108f9dfffcaebab87d8b37aa7d4d9d10d2745 [7/20] Merge branch 'devpr=
+op' into linux-next
+config: riscv-buildonly-randconfig-r002-20220421 (https://download.01.org/0=
+day-ci/archive/20220424/202204240259.PyW8hsJz-lkp(a)intel.com/config)
+compiler: riscv32-linux-gcc (GCC) 11.2.0
+reproduce (this is a W=3D1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/=
+make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.g=
+it/commit/?id=3D989108f9dfffcaebab87d8b37aa7d4d9d10d2745
+        git remote add rafael-pm https://git.kernel.org/pub/scm/linux/kerne=
+l/git/rafael/linux-pm.git
+        git fetch --no-tags rafael-pm bleeding-edge
+        git checkout 989108f9dfffcaebab87d8b37aa7d4d9d10d2745
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dgcc-11.2.0 make.cross=
+ W=3D1 O=3Dbuild_dir ARCH=3Driscv SHELL=3D/bin/bash
 
-It should be equivalent to this patch:
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp(a)intel.com>
 
-https://patchwork.kernel.org/project/linux-acpi/patch/3370028.QJadu78ljV(a)=
-kreacher/
+All warnings (new ones prefixed by >>, old ones prefixed by <<):
 
-present in linux-next.
+>> WARNING: modpost: vmlinux.o(.exit.text+0xe120): Section mismatch in refe=
+rence from the function hsr_netlink_exit() to the variable .init.text:.L0
+The function __exit hsr_netlink_exit() references
+a variable __init .L0 .
+This is often seen when error handling in the exit function
+uses functionality in the init path.
+The fix is often to remove the __init annotation of
+.L0 so it may be used outside an init section.
+--
+>> WARNING: modpost: vmlinux.o(__ex_table+0x1260): Section mismatch in refe=
+rence from the variable .L0 to the variable .rodata:_entry.30
+FATAL: modpost: extable_entry size hasn't been discovered!
+--
+>> WARNING: modpost: vmlinux.o(.text+0x1697378): Section mismatch in refere=
+nce from the function btintel_send_intel_reset() to the variable .exit.text=
+:.L0
+The function btintel_send_intel_reset() references a variable in an exit se=
+ction.
+Often the variable .L0 has valid usage outside the exit section
+and the fix is to remove the __exit annotation of .L0 .
+--
+>> WARNING: modpost: vmlinux.o(.text+0x1bf6234): Section mismatch in refere=
+nce from the function sctp_sched_ops_register() to the variable .init.text:=
+.L0
+The function sctp_sched_ops_register() references
+the variable __init .L0 .
+This is often because sctp_sched_ops_register lacks a __init
+annotation or the annotation of .L0 is wrong.
+--
+>> WARNING: modpost: vmlinux.o(.text+0x1bf627c): Section mismatch in refere=
+nce from the function sctp_sched_set_sched() to the variable .init.text:.L0
+The function sctp_sched_set_sched() references
+the variable __init .L0 .
+This is often because sctp_sched_set_sched lacks a __init
+annotation or the annotation of .L0 is wrong.
+--
+>> WARNING: modpost: vmlinux.o(.text+0x1bf640c): Section mismatch in refere=
+nce from the function sctp_sched_get_sched() to the variable .init.text:.L0
+The function sctp_sched_get_sched() references
+the variable __init .L0 .
+This is often because sctp_sched_get_sched lacks a __init
+annotation or the annotation of .L0 is wrong.
 
-If the other patch in the series is ACKed by the ARM64 ACPi people, I
-can take it too.
+Note: the below error/warnings can be found in parent commit:
+<< WARNING: modpost: vmlinux.o(.text+0x66d448): Section mismatch in referen=
+ce from the function nilfs_segbuf_free() to the variable .exit.text:.LVL12
+<< WARNING: modpost: vmlinux.o(.text+0x15a8b7c): Section mismatch in refere=
+nce from the function bch_keybuf_init() to the variable .init.text:.LVL52
+<< WARNING: modpost: vmlinux.o(.text+0x1aa0df0): Section mismatch in refere=
+nce from the function ping_seq_stop() to the variable .init.text:.L0
+<< WARNING: modpost: vmlinux.o(.text+0x1aa2298): Section mismatch in refere=
+nce from the function ping_common_sendmsg() to the variable .init.text:.L0
+<< WARNING: modpost: vmlinux.o(.text+0x1aa2e08): Section mismatch in refere=
+nce from the function ping_proc_exit() to the variable .init.text:.L0
+<< WARNING: modpost: vmlinux.o(.text+0x1aeca5c): Section mismatch in refere=
+nce from the function x25_limit_facilities() to the variable .init.text:.L0
+<< WARNING: modpost: vmlinux.o(__ex_table+0x1260): Section mismatch in refe=
+rence from the variable .L0 to the variable .debug_loc:.LLST136
+<< WARNING: modpost: vmlinux.o(.text+0x66d448): Section mismatch in referen=
+ce from the function nilfs_segbuf_free() to the variable .exit.text:.LVL12
+<< WARNING: modpost: vmlinux.o(.text+0x15a8b7c): Section mismatch in refere=
+nce from the function bch_keybuf_init() to the variable .init.text:.LVL52
+<< WARNING: modpost: vmlinux.o(.text+0x1aa0df0): Section mismatch in refere=
+nce from the function ping_seq_stop() to the variable .init.text:.L0
+<< WARNING: modpost: vmlinux.o(.text+0x1aa2298): Section mismatch in refere=
+nce from the function ping_common_sendmsg() to the variable .init.text:.L0
+<< WARNING: modpost: vmlinux.o(.text+0x1aa2e08): Section mismatch in refere=
+nce from the function ping_proc_exit() to the variable .init.text:.L0
+<< WARNING: modpost: vmlinux.o(.text+0x1aeca5c): Section mismatch in refere=
+nce from the function x25_limit_facilities() to the variable .init.text:.L0
+<< WARNING: modpost: vmlinux.o(__ex_table+0x1260): Section mismatch in refe=
+rence from the variable .L0 to the variable .debug_loc:.LLST136
+<< WARNING: modpost: vmlinux.o(.text+0x66d448): Section mismatch in referen=
+ce from the function nilfs_segbuf_free() to the variable .exit.text:.LVL12
+<< WARNING: modpost: vmlinux.o(.text+0x15a8b7c): Section mismatch in refere=
+nce from the function bch_keybuf_init() to the variable .init.text:.LVL52
+<< WARNING: modpost: vmlinux.o(.text+0x1aa0df0): Section mismatch in refere=
+nce from the function ping_seq_stop() to the variable .init.text:.L0
+<< WARNING: modpost: vmlinux.o(.text+0x1aa2298): Section mismatch in refere=
+nce from the function ping_common_sendmsg() to the variable .init.text:.L0
+<< WARNING: modpost: vmlinux.o(.text+0x1aa2e08): Section mismatch in refere=
+nce from the function ping_proc_exit() to the variable .init.text:.L0
+<< WARNING: modpost: vmlinux.o(.text+0x1aeca5c): Section mismatch in refere=
+nce from the function x25_limit_facilities() to the variable .init.text:.L0
+<< WARNING: modpost: vmlinux.o(__ex_table+0x1260): Section mismatch in refe=
+rence from the variable .L0 to the variable .debug_loc:.LLST136
+<< WARNING: modpost: vmlinux.o(.text+0x66d448): Section mismatch in referen=
+ce from the function nilfs_segbuf_free() to the variable .exit.text:.LVL12
+<< WARNING: modpost: vmlinux.o(.text+0x15a8b7c): Section mismatch in refere=
+nce from the function bch_keybuf_init() to the variable .init.text:.LVL52
+<< WARNING: modpost: vmlinux.o(.text+0x1aa0df0): Section mismatch in refere=
+nce from the function ping_seq_stop() to the variable .init.text:.L0
+<< WARNING: modpost: vmlinux.o(.text+0x1aa2298): Section mismatch in refere=
+nce from the function ping_common_sendmsg() to the variable .init.text:.L0
+<< WARNING: modpost: vmlinux.o(.text+0x1aa2e08): Section mismatch in refere=
+nce from the function ping_proc_exit() to the variable .init.text:.L0
+<< WARNING: modpost: vmlinux.o(.text+0x1aeca5c): Section mismatch in refere=
+nce from the function x25_limit_facilities() to the variable .init.text:.L0
+<< WARNING: modpost: vmlinux.o(__ex_table+0x1260): Section mismatch in refe=
+rence from the variable .L0 to the variable .debug_loc:.LLST136
+<< WARNING: modpost: vmlinux.o(.text+0x66d448): Section mismatch in referen=
+ce from the function nilfs_segbuf_free() to the variable .exit.text:.LVL12
+<< WARNING: modpost: vmlinux.o(.text+0x15a8b7c): Section mismatch in refere=
+nce from the function bch_keybuf_init() to the variable .init.text:.LVL52
+<< WARNING: modpost: vmlinux.o(.text+0x1aa0df0): Section mismatch in refere=
+nce from the function ping_seq_stop() to the variable .init.text:.L0
+<< WARNING: modpost: vmlinux.o(.text+0x1aa2298): Section mismatch in refere=
+nce from the function ping_common_sendmsg() to the variable .init.text:.L0
+<< WARNING: modpost: vmlinux.o(.text+0x1aa2e08): Section mismatch in refere=
+nce from the function ping_proc_exit() to the variable .init.text:.L0
+<< WARNING: modpost: vmlinux.o(.text+0x1aeca5c): Section mismatch in refere=
+nce from the function x25_limit_facilities() to the variable .init.text:.L0
+<< WARNING: modpost: vmlinux.o(__ex_table+0x1260): Section mismatch in refe=
+rence from the variable .L0 to the variable .debug_loc:.LLST136
+<< WARNING: modpost: vmlinux.o(.text+0x66d448): Section mismatch in referen=
+ce from the function nilfs_segbuf_free() to the variable .exit.text:.LVL12
+<< WARNING: modpost: vmlinux.o(.text+0x15a8b7c): Section mismatch in refere=
+nce from the function bch_keybuf_init() to the variable .init.text:.LVL52
+<< WARNING: modpost: vmlinux.o(.text+0x1aa0df0): Section mismatch in refere=
+nce from the function ping_seq_stop() to the variable .init.text:.L0
+<< WARNING: modpost: vmlinux.o(.text+0x1aa2298): Section mismatch in refere=
+nce from the function ping_common_sendmsg() to the variable .init.text:.L0
+<< WARNING: modpost: vmlinux.o(.text+0x1aa2e08): Section mismatch in refere=
+nce from the function ping_proc_exit() to the variable .init.text:.L0
+<< WARNING: modpost: vmlinux.o(.text+0x1aeca5c): Section mismatch in refere=
+nce from the function x25_limit_facilities() to the variable .init.text:.L0
+<< WARNING: modpost: vmlinux.o(__ex_table+0x1260): Section mismatch in refe=
+rence from the variable .L0 to the variable .debug_loc:.LLST136
 
-Thanks!
+-- =
 
-> ---
->  include/acpi/actbl2.h | 81 +++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 81 insertions(+)
->
-> diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
-> index 16847c8d9d5f..8fc5cf318c15 100644
-> --- a/include/acpi/actbl2.h
-> +++ b/include/acpi/actbl2.h
-> @@ -25,6 +25,7 @@
->   * the wrong signature.
->   */
->  #define ACPI_SIG_AGDI           "AGDI" /* Arm Generic Diagnostic Dump an=
-d Reset Device Interface */
-> +#define ACPI_SIG_APMT           "APMT" /* Arm Performance Monitoring Uni=
-t table */
->  #define ACPI_SIG_BDAT           "BDAT" /* BIOS Data ACPI Table */
->  #define ACPI_SIG_IORT           "IORT" /* IO Remapping Table */
->  #define ACPI_SIG_IVRS           "IVRS" /* I/O Virtualization Reporting S=
-tructure */
-> @@ -258,6 +259,86 @@ struct acpi_table_agdi {
->
->  #define ACPI_AGDI_SIGNALING_MODE (1)
->
-> +/***********************************************************************=
-********
-> + *
-> + * APMT - ARM Performance Monitoring Unit Table
-> + *
-> + * Conforms to:
-> + * ARM Performance Monitoring Unit Architecture 1.0 Platform Design Docu=
-ment
-> + * ARM DEN0117 v1.0 November 25, 2021
-> + *
-> + ***********************************************************************=
-*******/
-> +
-> +struct acpi_table_apmt {
-> +       struct acpi_table_header header;    /* Common ACPI table header */
-> +};
-> +
-> +#define ACPI_APMT_NODE_ID_LENGTH                4
-> +
-> +/*
-> + * APMT subtables
-> + */
-> +struct acpi_apmt_node {
-> +       u16                                  length;
-> +       u8                                   flags;
-> +       u8                                   type;
-> +       u32                                  id;
-> +       u64                                  inst_primary;
-> +       u32                                  inst_secondary;
-> +       u64                                  base_address0;
-> +       u64                                  base_address1;
-> +       u32                                  ovflw_irq;
-> +       u32                                  reserved;
-> +       u32                                  ovflw_irq_flags;
-> +       u32                                  proc_affinity;
-> +       u32                                  impl_id;
-> +};
-> +
-> +/* Masks for Flags field above */
-> +
-> +#define ACPI_APMT_FLAGS_DUAL_PAGE               (1<<0)
-> +#define ACPI_APMT_FLAGS_AFFINITY                (1<<1)
-> +#define ACPI_APMT_FLAGS_ATOMIC                  (1<<2)
-> +
-> +/* Values for Flags dual page field above */
-> +
-> +#define ACPI_APMT_FLAGS_DUAL_PAGE_NSUPP         (0<<0)
-> +#define ACPI_APMT_FLAGS_DUAL_PAGE_SUPP          (1<<0)
-> +
-> +/* Values for Flags processor affinity field above */
-> +#define ACPI_APMT_FLAGS_AFFINITY_PROC           (0<<1)
-> +#define ACPI_APMT_FLAGS_AFFINITY_PROC_CONTAINER (1<<1)
-> +
-> +/* Values for Flags 64-bit atomic field above */
-> +#define ACPI_APMT_FLAGS_ATOMIC_NSUPP            (0<<2)
-> +#define ACPI_APMT_FLAGS_ATOMIC_SUPP             (1<<2)
-> +
-> +/* Values for Type field above */
-> +
-> +enum acpi_apmt_node_type {
-> +       ACPI_APMT_NODE_TYPE_MC                      =3D 0x00,
-> +       ACPI_APMT_NODE_TYPE_SMMU                    =3D 0x01,
-> +       ACPI_APMT_NODE_TYPE_PCIE_ROOT               =3D 0x02,
-> +       ACPI_APMT_NODE_TYPE_ACPI                    =3D 0x03,
-> +       ACPI_APMT_NODE_TYPE_CACHE                   =3D 0x04,
-> +       ACPI_APMT_NODE_TYPE_COUNT
-> +};
-> +
-> +/* Masks for ovflw_irq_flags field above */
-> +
-> +#define ACPI_APMT_OVFLW_IRQ_FLAGS_MODE          (1<<0)
-> +#define ACPI_APMT_OVFLW_IRQ_FLAGS_TYPE          (1<<1)
-> +
-> +/* Values for ovflw_irq_flags mode field above */
-> +
-> +#define ACPI_APMT_OVFLW_IRQ_FLAGS_MODE_LEVEL    (0<<0)
-> +#define ACPI_APMT_OVFLW_IRQ_FLAGS_MODE_EDGE     (1<<0)
-> +
-> +/* Values for ovflw_irq_flags type field above */
-> +
-> +#define ACPI_APMT_OVFLW_IRQ_FLAGS_TYPE_WIRED    (0<<1)
-> +
-> +
->  /***********************************************************************=
-********
->   *
->   * BDAT - BIOS Data ACPI Table
-> --
-> 2.17.1
->
---===============0028111184210186658==--
+0-DAY CI Kernel Test Service
+https://01.org/lkp
+--===============8877865679706953256==--
 
