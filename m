@@ -1,121 +1,74 @@
-Content-Type: multipart/mixed; boundary="===============7303951146203815023=="
+Content-Type: multipart/mixed; boundary="===============4382419505907076551=="
 MIME-Version: 1.0
-From: Sudeep Holla <sudeep.holla at arm.com>
+From: Besar Wicaksono <bwicaksono at nvidia.com>
 Subject: [Devel] Re: [PATCH 2/2] ACPI: ARM Performance Monitoring Unit Table
  (APMT) initial support
-Date: Wed, 04 May 2022 19:26:33 +0100
-Message-ID: <20220504182633.a3mwuiohfqtjvpep@bogus>
-In-Reply-To: 20220419205432.46021-3-bwicaksono@nvidia.com
+Date: Wed, 04 May 2022 22:08:39 +0000
+Message-ID: <
+ <SN6PR12MB4719E05A6BC7CAA2C00F35EFA0C39@SN6PR12MB4719.namprd12.prod.outlook.com>>
+In-Reply-To: 20220504182633.a3mwuiohfqtjvpep@bogus
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7303951146203815023==
+--===============4382419505907076551==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi Besar, Rafael,
+Hi Sudeep,
 
-Sorry for the delayed response.
+> Any particular reason why you would like to rush and push this without
+> the actual driver to probe the device being added here ?
 
-On Tue, Apr 19, 2022 at 03:54:32PM -0500, Besar Wicaksono wrote:
-> ARM Performance Monitoring Unit Table describes the properties of PMU
-> support in ARM-based system. The APMT table contains a list of nodes,
-> each represents a PMU in the system that conforms to ARM CoreSight PMU
-> architecture. The properties of each node include information required
-> to access the PMU (e.g. MMIO base address, interrupt number) and also
-> identification. For more detailed information, please refer to the
-> specification below:
->  * APMT: https://developer.arm.com/documentation/den0117/latest
->  * ARM Coresight PMU:
->         https://developer.arm.com/documentation/ihi0091/latest
-> =
+I plan to have two patch series, one for ACPI patch (this patch) and one fo=
+r driver patch.
+My understanding is the driver patch will depend on this patch, but not the=
+ other way. So, I thought it would be better to get this patch approved fir=
+st.
+However, if it helps the review of this patch, I am hoping to post the driv=
+er patch by end of the week and will CC you on that one.
 
-> The initial support adds the detection of APMT table and generic
-> infrastructure to create platform devices for ARM CoreSight PMUs.
-> Similar to IORT the root pointer of APMT is preserved during runtime
-> and each PMU platform device is given a pointer to the corresponding
-> APMT node.
+> I really don't prefer this name:
+> 1. arm-coresight-pmu is much better than "csite". I see the short form
+>    used elsewhere in the kernel is just "cs" as in cs_etm,...etc
+> 2. Since APMT is more generic than just coresight(I understand coresight
+>    was the initial motivation for the generic specification) and also
+>    the type list seem to cover memory controller, SMMU,..etc, does
+>    it make sense to call it "arm-generic-pmu" or something similar.
+
+Between these two, I would prefer arm-coresight-pmu just to anticipate anot=
+her standard in the future from ARM.
+The APMT, to my understanding, is applicable only to CoreSight based PMUs. =
+Using "coresight" as part of the device name is reasonable.
+
+> Not sure if the same device name will be re-used or PMUs can be registered
+> with different name under perf subsystem, but the name matters for the us=
+er
+> space tools and decoders. They may use the name or type information to an=
+alyse
+> the data samples.
 >
-
-Hi Besar,
-
-This patch on its own looks fine and happy to ack. However I would like
-to know general process on such changes that add platform or any bus
-device but the driver itself is not upstream.
-
-Any particular reason why you would like to rush and push this without
-the actual driver to probe the device being added here ?
-
-> Signed-off-by: Besar Wicaksono <bwicaksono(a)nvidia.com>
-> ---
->  arch/arm64/Kconfig          |   1 +
->  drivers/acpi/arm64/Kconfig  |   3 +
->  drivers/acpi/arm64/Makefile |   1 +
->  drivers/acpi/arm64/apmt.c   | 176 ++++++++++++++++++++++++++++++++++++
->  drivers/acpi/bus.c          |   2 +
->  include/linux/acpi_apmt.h   |  19 ++++
->  6 files changed, 202 insertions(+)
->  create mode 100644 drivers/acpi/arm64/apmt.c
->  create mode 100644 include/linux/acpi_apmt.h
+> So it is better to wait for all those discussion as part of the driver
+> upstreaming before you use this device name unless we are absolutely sure
+> the PMUs can be registered with different names in the driver(which could
+> be possible, I just don't know)
 >
+> Apart from this name, I am OK with the changes here and happy to ack if it
+> is OK to merge this without any driver to probe this device yet.
 
-[...]
+I believe using a different name to register the PMU is possible.
+In the current driver patch, we use a different name format to register the=
+ PMU: arm_csite_pmu<numeric id>. Certainly the "csite" needs to change as w=
+ell =F0=9F=98=8A
+Another example like ARM CCI PMU uses device name "ARM-CCI PMU", but it is =
+registered to perf subsystem as "CCI_400" or "CCI_500".
 
-> diff --git a/drivers/acpi/arm64/apmt.c b/drivers/acpi/arm64/apmt.c
-> new file mode 100644
-> index 000000000000..8b8b9f480548
-> --- /dev/null
-> +++ b/drivers/acpi/arm64/apmt.c
-> @@ -0,0 +1,176 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * ARM APMT table support.
-> + * Design document number: ARM DEN0117.
-> + *
-> + * Copyright (c) 2022, NVIDIA CORPORATION & AFFILIATES.
-> + *
-> + */
-> +
-> +#define pr_fmt(fmt)	"ACPI: APMT: " fmt
-> +
-> +#include <linux/acpi.h>
-> +#include <linux/init.h>
-> +#include <linux/kernel.h>
-> +#include <linux/platform_device.h>
-> +
-> +#define DEV_NAME "arm-csite-pmu"
-> +
-
-I really don't prefer this name:
-1. arm-coresight-pmu is much better than "csite". I see the short form
-   used elsewhere in the kernel is just "cs" as in cs_etm,...etc
-2. Since APMT is more generic than just coresight(I understand coresight
-   was the initial motivation for the generic specification) and also
-   the type list seem to cover memory controller, SMMU,..etc, does
-   it make sense to call it "arm-generic-pmu" or something similar.
-
-Anyways, it can be part of the driver discussion as people might have
-opinion based on what and how the driver covers the variety of PMU
-types possible as described in APMT.
-
-Not sure if the same device name will be re-used or PMUs can be registered
-with different name under perf subsystem, but the name matters for the user
-space tools and decoders. They may use the name or type information to anal=
-yse
-the data samples.
-
-So it is better to wait for all those discussion as part of the driver
-upstreaming before you use this device name unless we are absolutely sure
-the PMUs can be registered with different names in the driver(which could
-be possible, I just don't know)
-
-Apart from this name, I am OK with the changes here and happy to ack if it
-is OK to merge this without any driver to probe this device yet.
-
--- =
+If there is no objection, I can post update to this patch and go ahead with=
+ "arm-coresight-pmu" for the device name.
 
 Regards,
-Sudeep
---===============7303951146203815023==--
+Besar
+
+
+--===============4382419505907076551==--
 
