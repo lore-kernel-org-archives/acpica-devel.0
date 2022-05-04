@@ -1,149 +1,121 @@
-Content-Type: multipart/mixed; boundary="===============5752680407735298206=="
+Content-Type: multipart/mixed; boundary="===============7303951146203815023=="
 MIME-Version: 1.0
-From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [rafael-pm:bleeding-edge] BUILD SUCCESS
- f2febeef358161ef4f8055451778e19fc78d429c
-Date: Sun, 01 May 2022 07:22:49 +0800
-Message-ID: <626dc4c9.OQFd63oOBHa9VwE6%lkp@intel.com>
+From: Sudeep Holla <sudeep.holla at arm.com>
+Subject: [Devel] Re: [PATCH 2/2] ACPI: ARM Performance Monitoring Unit Table
+ (APMT) initial support
+Date: Wed, 04 May 2022 19:26:33 +0100
+Message-ID: <20220504182633.a3mwuiohfqtjvpep@bogus>
+In-Reply-To: 20220419205432.46021-3-bwicaksono@nvidia.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5752680407735298206==
+--===============7303951146203815023==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
-m.git bleeding-edge
-branch HEAD: f2febeef358161ef4f8055451778e19fc78d429c  Merge branch 'acpi-o=
-sl' into bleeding-edge
+Hi Besar, Rafael,
 
-elapsed time: 3473m
+Sorry for the delayed response.
 
-configs tested: 109
-configs skipped: 3
+On Tue, Apr 19, 2022 at 03:54:32PM -0500, Besar Wicaksono wrote:
+> ARM Performance Monitoring Unit Table describes the properties of PMU
+> support in ARM-based system. The APMT table contains a list of nodes,
+> each represents a PMU in the system that conforms to ARM CoreSight PMU
+> architecture. The properties of each node include information required
+> to access the PMU (e.g. MMIO base address, interrupt number) and also
+> identification. For more detailed information, please refer to the
+> specification below:
+>  * APMT: https://developer.arm.com/documentation/den0117/latest
+>  * ARM Coresight PMU:
+>         https://developer.arm.com/documentation/ihi0091/latest
+> =
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> The initial support adds the detection of APMT table and generic
+> infrastructure to create platform devices for ARM CoreSight PMUs.
+> Similar to IORT the root pointer of APMT is preserved during runtime
+> and each PMU platform device is given a pointer to the corresponding
+> APMT node.
+>
 
-gcc tested configs:
-arm                              allmodconfig
-arm                              allyesconfig
-arm                                 defconfig
-arm64                               defconfig
-arm64                            allyesconfig
-i386                          randconfig-c001
-mips                           ci20_defconfig
-sh                        sh7763rdp_defconfig
-powerpc                        cell_defconfig
-parisc                generic-64bit_defconfig
-arm                         cm_x300_defconfig
-arm                         nhk8815_defconfig
-mips                         cobalt_defconfig
-ia64                             alldefconfig
-parisc                              defconfig
-sh                          lboxre2_defconfig
-arc                              alldefconfig
-sh                               j2_defconfig
-arm                        multi_v7_defconfig
-x86_64                        randconfig-c001
-arm                  randconfig-c002-20220428
-ia64                                defconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allyesconfig
-m68k                             allmodconfig
-alpha                               defconfig
-csky                                defconfig
-alpha                            allyesconfig
-nios2                            allyesconfig
-sh                               allmodconfig
-arc                                 defconfig
-h8300                            allyesconfig
-xtensa                           allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-parisc64                            defconfig
-s390                                defconfig
-s390                             allyesconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-i386                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-nios2                               defconfig
-arc                              allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                           allnoconfig
-powerpc                          allmodconfig
-powerpc                          allyesconfig
-x86_64                        randconfig-a002
-x86_64                        randconfig-a006
-x86_64                        randconfig-a004
-i386                          randconfig-a001
-i386                          randconfig-a003
-i386                          randconfig-a005
-x86_64                        randconfig-a013
-i386                          randconfig-a014
-i386                          randconfig-a012
-i386                          randconfig-a016
-arc                  randconfig-r043-20220428
-riscv                             allnoconfig
-riscv                            allyesconfig
-riscv                            allmodconfig
-riscv                    nommu_k210_defconfig
-riscv                          rv32_defconfig
-riscv                    nommu_virt_defconfig
-riscv                               defconfig
-um                             i386_defconfig
-um                           x86_64_defconfig
-x86_64                              defconfig
-x86_64                           allyesconfig
-x86_64                                  kexec
-x86_64                          rhel-8.3-func
-x86_64                               rhel-8.3
-x86_64                         rhel-8.3-kunit
-x86_64                    rhel-8.3-kselftests
-x86_64                           rhel-8.3-syz
+Hi Besar,
 
-clang tested configs:
-mips                 randconfig-c004-20220428
-x86_64                        randconfig-c007
-arm                  randconfig-c002-20220428
-i386                          randconfig-c001
-powerpc              randconfig-c003-20220428
-s390                 randconfig-c005-20220428
-riscv                randconfig-c006-20220428
-arm                       spear13xx_defconfig
-mips                        workpad_defconfig
-arm                          collie_defconfig
-mips                     loongson2k_defconfig
-powerpc                     tqm8540_defconfig
-arm                         orion5x_defconfig
-arm                         lpc32xx_defconfig
-arm                        magician_defconfig
-powerpc                 mpc8272_ads_defconfig
-x86_64                        randconfig-a001
-x86_64                        randconfig-a003
-x86_64                        randconfig-a005
-i386                          randconfig-a002
-i386                          randconfig-a004
-i386                          randconfig-a006
-x86_64                        randconfig-a014
-i386                          randconfig-a013
-i386                          randconfig-a011
-i386                          randconfig-a015
-hexagon              randconfig-r041-20220428
-hexagon              randconfig-r045-20220428
-riscv                randconfig-r042-20220428
-s390                 randconfig-r044-20220428
+This patch on its own looks fine and happy to ack. However I would like
+to know general process on such changes that add platform or any bus
+device but the driver itself is not upstream.
+
+Any particular reason why you would like to rush and push this without
+the actual driver to probe the device being added here ?
+
+> Signed-off-by: Besar Wicaksono <bwicaksono(a)nvidia.com>
+> ---
+>  arch/arm64/Kconfig          |   1 +
+>  drivers/acpi/arm64/Kconfig  |   3 +
+>  drivers/acpi/arm64/Makefile |   1 +
+>  drivers/acpi/arm64/apmt.c   | 176 ++++++++++++++++++++++++++++++++++++
+>  drivers/acpi/bus.c          |   2 +
+>  include/linux/acpi_apmt.h   |  19 ++++
+>  6 files changed, 202 insertions(+)
+>  create mode 100644 drivers/acpi/arm64/apmt.c
+>  create mode 100644 include/linux/acpi_apmt.h
+>
+
+[...]
+
+> diff --git a/drivers/acpi/arm64/apmt.c b/drivers/acpi/arm64/apmt.c
+> new file mode 100644
+> index 000000000000..8b8b9f480548
+> --- /dev/null
+> +++ b/drivers/acpi/arm64/apmt.c
+> @@ -0,0 +1,176 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * ARM APMT table support.
+> + * Design document number: ARM DEN0117.
+> + *
+> + * Copyright (c) 2022, NVIDIA CORPORATION & AFFILIATES.
+> + *
+> + */
+> +
+> +#define pr_fmt(fmt)	"ACPI: APMT: " fmt
+> +
+> +#include <linux/acpi.h>
+> +#include <linux/init.h>
+> +#include <linux/kernel.h>
+> +#include <linux/platform_device.h>
+> +
+> +#define DEV_NAME "arm-csite-pmu"
+> +
+
+I really don't prefer this name:
+1. arm-coresight-pmu is much better than "csite". I see the short form
+   used elsewhere in the kernel is just "cs" as in cs_etm,...etc
+2. Since APMT is more generic than just coresight(I understand coresight
+   was the initial motivation for the generic specification) and also
+   the type list seem to cover memory controller, SMMU,..etc, does
+   it make sense to call it "arm-generic-pmu" or something similar.
+
+Anyways, it can be part of the driver discussion as people might have
+opinion based on what and how the driver covers the variety of PMU
+types possible as described in APMT.
+
+Not sure if the same device name will be re-used or PMUs can be registered
+with different name under perf subsystem, but the name matters for the user
+space tools and decoders. They may use the name or type information to anal=
+yse
+the data samples.
+
+So it is better to wait for all those discussion as part of the driver
+upstreaming before you use this device name unless we are absolutely sure
+the PMUs can be registered with different names in the driver(which could
+be possible, I just don't know)
+
+Apart from this name, I am OK with the changes here and happy to ack if it
+is OK to merge this without any driver to probe this device yet.
 
 -- =
 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
---===============5752680407735298206==--
+Regards,
+Sudeep
+--===============7303951146203815023==--
 
