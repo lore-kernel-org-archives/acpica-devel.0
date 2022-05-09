@@ -1,76 +1,193 @@
-Content-Type: multipart/mixed; boundary="===============2708468625820585121=="
+Content-Type: multipart/mixed; boundary="===============6626050781420108280=="
 MIME-Version: 1.0
-From: Hanjun Guo <guohanjun at huawei.com>
-Subject: [Devel] Re: [PATCH 2/2] ACPI: ARM Performance Monitoring Unit Table
- (APMT) initial support
-Date: Sat, 07 May 2022 23:03:38 +0800
-Message-ID: <bf994eb0-0e6d-fd0b-3499-8c28d2c13cc9@huawei.com>
-In-Reply-To: 20220419205432.46021-3-bwicaksono@nvidia.com
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [rafael-pm:bleeding-edge 4/16] WARNING: modpost:
+ vmlinux.o(.text+0xae6ba8): Section mismatch in reference from the function
+ img_ir_isr_raw() to the variable .init.text:.LBB2360
+Date: Mon, 09 May 2022 19:47:08 +0800
+Message-ID: <202205091949.BeE39vLd-lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2708468625820585121==
+--===============6626050781420108280==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On 2022/4/20 4:54, Besar Wicaksono wrote:
-> ARM Performance Monitoring Unit Table describes the properties of PMU
-> support in ARM-based system. The APMT table contains a list of nodes,
-> each represents a PMU in the system that conforms to ARM CoreSight PMU
-> architecture. The properties of each node include information required
-> to access the PMU (e.g. MMIO base address, interrupt number) and also
-> identification. For more detailed information, please refer to the
-> specification below:
->   * APMT: https://developer.arm.com/documentation/den0117/latest
->   * ARM Coresight PMU:
->          https://developer.arm.com/documentation/ihi0091/latest
-> =
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git=
+ bleeding-edge
+head:   85595c9b5107be01157871392e1aa1ce065a7ca7
+commit: 8dd2434c1ab5239533382fe988c57e8269a0988c [4/16] Merge branch 'devpr=
+op' into linux-next
+config: riscv-randconfig-r042-20220509 (https://download.01.org/0day-ci/arc=
+hive/20220509/202205091949.BeE39vLd-lkp(a)intel.com/config)
+compiler: riscv32-linux-gcc (GCC) 11.3.0
+reproduce (this is a W=3D1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/=
+make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.g=
+it/commit/?id=3D8dd2434c1ab5239533382fe988c57e8269a0988c
+        git remote add rafael-pm https://git.kernel.org/pub/scm/linux/kerne=
+l/git/rafael/linux-pm.git
+        git fetch --no-tags rafael-pm bleeding-edge
+        git checkout 8dd2434c1ab5239533382fe988c57e8269a0988c
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dgcc-11.3.0 make.cross=
+ W=3D1 O=3Dbuild_dir ARCH=3Driscv SHELL=3D/bin/bash
 
-> The initial support adds the detection of APMT table and generic
-> infrastructure to create platform devices for ARM CoreSight PMUs.
-> Similar to IORT the root pointer of APMT is preserved during runtime
-> and each PMU platform device is given a pointer to the corresponding
-> APMT node.
-> =
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp(a)intel.com>
 
-> Signed-off-by: Besar Wicaksono <bwicaksono(a)nvidia.com>
-> ---
->   arch/arm64/Kconfig          |   1 +
->   drivers/acpi/arm64/Kconfig  |   3 +
->   drivers/acpi/arm64/Makefile |   1 +
->   drivers/acpi/arm64/apmt.c   | 176 ++++++++++++++++++++++++++++++++++++
->   drivers/acpi/bus.c          |   2 +
->   include/linux/acpi_apmt.h   |  19 ++++
->   6 files changed, 202 insertions(+)
->   create mode 100644 drivers/acpi/arm64/apmt.c
->   create mode 100644 include/linux/acpi_apmt.h
-> =
+All warnings (new ones prefixed by >>, old ones prefixed by <<):
 
-> +++ b/drivers/acpi/arm64/apmt.c
-> @@ -0,0 +1,176 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * ARM APMT table support.
-> + * Design document number: ARM DEN0117.
-> + *
-> + * Copyright (c) 2022, NVIDIA CORPORATION & AFFILIATES.
-> + *
-> + */
-> +
-> +#define pr_fmt(fmt)	"ACPI: APMT: " fmt
-> +
-> +#include <linux/acpi.h>
-> +#include <linux/init.h>
-> +#include <linux/kernel.h>
-> +#include <linux/platform_device.h>
+>> WARNING: modpost: vmlinux.o(.text+0xae6ba8): Section mismatch in referen=
+ce from the function img_ir_isr_raw() to the variable .init.text:.LBB2360
+The function img_ir_isr_raw() references
+the variable __init .LBB2360.
+This is often because img_ir_isr_raw lacks a __init
+annotation or the annotation of .LBB2360 is wrong.
+--
+>> WARNING: modpost: vmlinux.o(.text+0xae6bdc): Section mismatch in referen=
+ce from the function img_ir_setup_raw() to the variable .init.text:.LBE2360
+The function img_ir_setup_raw() references
+the variable __init .LBE2360.
+This is often because img_ir_setup_raw lacks a __init
+annotation or the annotation of .LBE2360 is wrong.
+--
+>> WARNING: modpost: vmlinux.o(.text+0xc031fe): Section mismatch in referen=
+ce from the function nvmem_cell_read_u32() to the variable .init.text:.L0
+The function nvmem_cell_read_u32() references
+the variable __init .L0 .
+This is often because nvmem_cell_read_u32 lacks a __init
+annotation or the annotation of .L0 is wrong.
+--
+>> WARNING: modpost: vmlinux.o(.text+0xc03208): Section mismatch in referen=
+ce from the function nvmem_cell_read_u64() to the variable .init.text:.L0
+The function nvmem_cell_read_u64() references
+the variable __init .L0 .
+This is often because nvmem_cell_read_u64 lacks a __init
+annotation or the annotation of .L0 is wrong.
+--
+>> WARNING: modpost: vmlinux.o(__ex_table+0x1434): Section mismatch in refe=
+rence from the variable .L0 to the variable .debug_str:.LASF1599
+FATAL: modpost: extable_entry size hasn't been discovered!
+--
+>> WARNING: modpost: vmlinux.o(.text+0xc02b22): Section mismatch in referen=
+ce from the function nvmem_device_find() to the variable .init.text:.L0
+The function nvmem_device_find() references
+the variable __init .L0 .
+This is often because nvmem_device_find lacks a __init
+annotation or the annotation of .L0 is wrong.
+--
+>> WARNING: modpost: vmlinux.o(.text+0xc031ea): Section mismatch in referen=
+ce from the function nvmem_cell_read_u8() to the variable .init.text:.L0
+The function nvmem_cell_read_u8() references
+the variable __init .L0 .
+This is often because nvmem_cell_read_u8 lacks a __init
+annotation or the annotation of .L0 is wrong.
+--
+>> WARNING: modpost: vmlinux.o(.text+0xc031f4): Section mismatch in referen=
+ce from the function nvmem_cell_read_u16() to the variable .init.text:.L0
+The function nvmem_cell_read_u16() references
+the variable __init .L0 .
+This is often because nvmem_cell_read_u16 lacks a __init
+annotation or the annotation of .L0 is wrong.
 
-Please include <linux/acpi_apmt.h>, here is the similar patch:
+Note: the below error/warnings can be found in parent commit:
+<< WARNING: modpost: vmlinux.o(.text+0xa740cc): Section mismatch in referen=
+ce from the function rtc_month_days() to the variable .init.text:.L0
+<< WARNING: modpost: vmlinux.o(.text+0xb34f2e): Section mismatch in referen=
+ce from the function btintel_enter_mfg() to the variable .init.text:.LBB186=
+32
+<< WARNING: modpost: vmlinux.o(.text+0xc2a6ce): Section mismatch in referen=
+ce from the function __sys_recvmsg_sock() to the variable .exit.text:.L0
+<< WARNING: modpost: vmlinux.o(.text+0xd02eec): Section mismatch in referen=
+ce from the function dn_fib_lookup() to the variable .init.text:.LBB1596
+<< WARNING: modpost: vmlinux.o(__ex_table+0x141c): Section mismatch in refe=
+rence from the variable .L0 to the variable .debug_str:.LASF864
+<< WARNING: modpost: vmlinux.o(.text+0xa740cc): Section mismatch in referen=
+ce from the function rtc_month_days() to the variable .init.text:.L0
+<< WARNING: modpost: vmlinux.o(.text+0xb34f2e): Section mismatch in referen=
+ce from the function btintel_enter_mfg() to the variable .init.text:.LBB186=
+32
+<< WARNING: modpost: vmlinux.o(.text+0xc2a6ce): Section mismatch in referen=
+ce from the function __sys_recvmsg_sock() to the variable .exit.text:.L0
+<< WARNING: modpost: vmlinux.o(.text+0xd02eec): Section mismatch in referen=
+ce from the function dn_fib_lookup() to the variable .init.text:.LBB1596
+<< WARNING: modpost: vmlinux.o(__ex_table+0x141c): Section mismatch in refe=
+rence from the variable .L0 to the variable .debug_str:.LASF864
+<< WARNING: modpost: vmlinux.o(.text+0xa740cc): Section mismatch in referen=
+ce from the function rtc_month_days() to the variable .init.text:.L0
+<< WARNING: modpost: vmlinux.o(.text+0xb34f2e): Section mismatch in referen=
+ce from the function btintel_enter_mfg() to the variable .init.text:.LBB186=
+32
+<< WARNING: modpost: vmlinux.o(.text+0xc2a6ce): Section mismatch in referen=
+ce from the function __sys_recvmsg_sock() to the variable .exit.text:.L0
+<< WARNING: modpost: vmlinux.o(.text+0xd02eec): Section mismatch in referen=
+ce from the function dn_fib_lookup() to the variable .init.text:.LBB1596
+<< WARNING: modpost: vmlinux.o(__ex_table+0x141c): Section mismatch in refe=
+rence from the variable .L0 to the variable .debug_str:.LASF864
+<< WARNING: modpost: vmlinux.o(.text+0xa740cc): Section mismatch in referen=
+ce from the function rtc_month_days() to the variable .init.text:.L0
+<< WARNING: modpost: vmlinux.o(.text+0xb34f2e): Section mismatch in referen=
+ce from the function btintel_enter_mfg() to the variable .init.text:.LBB186=
+32
+<< WARNING: modpost: vmlinux.o(.text+0xc2a6ce): Section mismatch in referen=
+ce from the function __sys_recvmsg_sock() to the variable .exit.text:.L0
+<< WARNING: modpost: vmlinux.o(.text+0xd02eec): Section mismatch in referen=
+ce from the function dn_fib_lookup() to the variable .init.text:.LBB1596
+<< WARNING: modpost: vmlinux.o(__ex_table+0x141c): Section mismatch in refe=
+rence from the variable .L0 to the variable .debug_str:.LASF864
+<< WARNING: modpost: vmlinux.o(.text+0xa740cc): Section mismatch in referen=
+ce from the function rtc_month_days() to the variable .init.text:.L0
+<< WARNING: modpost: vmlinux.o(.text+0xb34f2e): Section mismatch in referen=
+ce from the function btintel_enter_mfg() to the variable .init.text:.LBB186=
+32
+<< WARNING: modpost: vmlinux.o(.text+0xc2a6ce): Section mismatch in referen=
+ce from the function __sys_recvmsg_sock() to the variable .exit.text:.L0
+<< WARNING: modpost: vmlinux.o(.text+0xd02eec): Section mismatch in referen=
+ce from the function dn_fib_lookup() to the variable .init.text:.LBB1596
+<< WARNING: modpost: vmlinux.o(__ex_table+0x141c): Section mismatch in refe=
+rence from the variable .L0 to the variable .debug_str:.LASF864
+<< WARNING: modpost: vmlinux.o(.text+0xa740cc): Section mismatch in referen=
+ce from the function rtc_month_days() to the variable .init.text:.L0
+<< WARNING: modpost: vmlinux.o(.text+0xb34f2e): Section mismatch in referen=
+ce from the function btintel_enter_mfg() to the variable .init.text:.LBB186=
+32
+<< WARNING: modpost: vmlinux.o(.text+0xc2a6ce): Section mismatch in referen=
+ce from the function __sys_recvmsg_sock() to the variable .exit.text:.L0
+<< WARNING: modpost: vmlinux.o(.text+0xd02eec): Section mismatch in referen=
+ce from the function dn_fib_lookup() to the variable .init.text:.LBB1596
+<< WARNING: modpost: vmlinux.o(__ex_table+0x141c): Section mismatch in refe=
+rence from the variable .L0 to the variable .debug_str:.LASF864
+<< WARNING: modpost: vmlinux.o(.text+0xa740cc): Section mismatch in referen=
+ce from the function rtc_month_days() to the variable .init.text:.L0
+<< WARNING: modpost: vmlinux.o(.text+0xb34f2e): Section mismatch in referen=
+ce from the function btintel_enter_mfg() to the variable .init.text:.LBB186=
+32
+<< WARNING: modpost: vmlinux.o(.text+0xc2a6ce): Section mismatch in referen=
+ce from the function __sys_recvmsg_sock() to the variable .exit.text:.L0
+<< WARNING: modpost: vmlinux.o(.text+0xd02eec): Section mismatch in referen=
+ce from the function dn_fib_lookup() to the variable .init.text:.LBB1596
+<< WARNING: modpost: vmlinux.o(__ex_table+0x141c): Section mismatch in refe=
+rence from the variable .L0 to the variable .debug_str:.LASF864
+<< WARNING: modpost: vmlinux.o(.text+0xa740cc): Section mismatch in referen=
+ce from the function rtc_month_days() to the variable .init.text:.L0
+<< WARNING: modpost: vmlinux.o(.text+0xb34f2e): Section mismatch in referen=
+ce from the function btintel_enter_mfg() to the variable .init.text:.LBB186=
+32
+<< WARNING: modpost: vmlinux.o(.text+0xc2a6ce): Section mismatch in referen=
+ce from the function __sys_recvmsg_sock() to the variable .exit.text:.L0
+<< WARNING: modpost: vmlinux.o(.text+0xd02eec): Section mismatch in referen=
+ce from the function dn_fib_lookup() to the variable .init.text:.LBB1596
+<< WARNING: modpost: vmlinux.o(__ex_table+0x141c): Section mismatch in refe=
+rence from the variable .L0 to the variable .debug_str:.LASF864
 
-https://lore.kernel.org/lkml/CAJZ5v0gqr97AFuk855UZkcVpDnmj1Q6B2PE32zWmx4eKx=
-bNvCw(a)mail.gmail.com/T/
+-- =
 
-Thanks
-Hanjun
---===============2708468625820585121==--
+0-DAY CI Kernel Test Service
+https://01.org/lkp
+--===============6626050781420108280==--
 
