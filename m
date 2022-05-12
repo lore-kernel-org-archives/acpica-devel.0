@@ -1,63 +1,128 @@
-Content-Type: multipart/mixed; boundary="===============1563459219510359741=="
+Content-Type: multipart/mixed; boundary="===============6265198577714834571=="
 MIME-Version: 1.0
 From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [PATCH v1 1/5] ACPI: CPPC: Check _OSC for flexible
- address space
-Date: Thu, 12 May 2022 17:03:48 +0200
-Message-ID: <CAJZ5v0gvHO=2ZwdpQrgMufGFtkEcG-K9zEqoFBYys36qAhTE4Q@mail.gmail.com>
-In-Reply-To: 20220511141731.rjyjmgvux43lsj3x@bogus
+Subject: [Devel] Re: [PATCH v1 3/5] ACPI: CPPC: Assume no transition latency
+ if no PCCT
+Date: Thu, 12 May 2022 17:04:50 +0200
+Message-ID: <CAJZ5v0i5h+JYd=jXsgfcuA8_XnUV0RenqFZ0ALhCVt1eZtKnrQ@mail.gmail.com>
+In-Reply-To: 20220511143001.ewba7sovabinnajz@bogus
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1563459219510359741==
+--===============6265198577714834571==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, May 11, 2022 at 4:17 PM Sudeep Holla <sudeep.holla(a)arm.com> wrote:
+On Wed, May 11, 2022 at 4:30 PM Sudeep Holla <sudeep.holla(a)arm.com> wrote:
 >
-> On Wed, May 11, 2022 at 03:45:55PM +0200, Pierre Gondois wrote:
-> > ACPI 6.2 Section 6.2.11.2 'Platform-Wide OSPM Capabilities':
-> >   Starting with ACPI Specification 6.2, all _CPC registers can be in
-> >   PCC, System Memory, System IO, or Functional Fixed Hardware address
-> >   spaces. OSPM support for this more flexible register space scheme is
-> >   indicated by the =E2=80=9CFlexible Address Space for CPPC Registers=
-=E2=80=9D _OSC bit
+> On Wed, May 11, 2022 at 03:45:57PM +0200, Pierre Gondois wrote:
+> > From: Pierre Gondois <Pierre.Gondois(a)arm.com>
 > >
-> > Otherwise (cf ACPI 6.1, s8.4.7.1.1.X), _CPC registers must be in:
-> > - PCC or Functional Fixed Hardware address space if defined
-> > - SystemMemory address space (NULL register) if not defined
+> > The transition_delay_us (struct cpufreq_policy) is currently defined
+> > as:
+> >   Preferred average time interval between consecutive invocations of
+> >   the driver to set the frequency for this policy.  To be set by the
+> >   scaling driver (0, which is the default, means no preference).
+> > The transition_latency represents the amount of time necessary for a
+> > CPU to change its frequency.
 > >
-> > Add the corresponding _OSC bit and check it when parsing _CPC objects.
+> > A PCCT table advertises mutliple values:
+> > - pcc_nominal: Expected latency to process a command, in microseconds
+> > - pcc_mpar: The maximum number of periodic requests that the subspace
+> >   channel can support, reported in commands per minute. 0 indicates no
+> >   limitation.
+> > - pcc_mrtt: The minimum amount of time that OSPM must wait after the
+> >   completion of a command before issuing the next command,
+> >   in microseconds.
+> > cppc_get_transition_latency() allows to get the max of them.
 > >
->
-> Looks good, other than a minor nit below. Feel free to ignore that or
-> check what is Rafael's preference. Otherwise,
->
-> Reviewed-by: Sudeep Holla <sudeep.holla(a)arm.com>
->
+> > commit d4f3388afd48 ("cpufreq / CPPC: Set platform specific
+> > transition_delay_us") allows to select transition_delay_us based on
+> > the platform, and fallbacks to cppc_get_transition_latency()
+> > otherwise.
+> >
+> > If _CPC objects are not using PCC channels (no PPCT table), the
+> > transition_delay_us is set to CPUFREQ_ETERNAL, leading to really long
+> > periods between frequency updates (~4s).
+> >
+> > If the desired_reg, where performance requests are written, is in
+> > SystemMemory or SystemIo ACPI address space, there is no delay
+> > in requests. So return 0 instead of CPUFREQ_ETERNAL, leading to
+> > transition_delay_us being set to LATENCY_MULTIPLIER us (1000 us).
+> >
+> > This patch also adds two macros to check the address spaces.
+> >
 > > Signed-off-by: Pierre Gondois <pierre.gondois(a)arm.com>
 > > ---
-> >  drivers/acpi/bus.c       | 18 ++++++++++++++++++
-> >  drivers/acpi/cppc_acpi.c |  9 +++++++++
-> >  include/linux/acpi.h     |  2 ++
-> >  3 files changed, 29 insertions(+)
+> >  drivers/acpi/cppc_acpi.c | 17 ++++++++++++++++-
+> >  1 file changed, 16 insertions(+), 1 deletion(-)
 > >
-> [...]
+> > diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+> > index 6f09fe011544..cc932ec1b613 100644
+> > --- a/drivers/acpi/cppc_acpi.c
+> > +++ b/drivers/acpi/cppc_acpi.c
+> > @@ -100,6 +100,16 @@ static DEFINE_PER_CPU(struct cpc_desc *, cpc_desc_=
+ptr);
+> >                               (cpc)->cpc_entry.reg.space_id =3D=3D     =
+   \
+> >                               ACPI_ADR_SPACE_PLATFORM_COMM)
+> >
+> > +/* Check if a CPC register is in SystemMemory */
+> > +#define CPC_IN_SM(cpc) ((cpc)->type =3D=3D ACPI_TYPE_BUFFER &&        =
+   \
+> > +                             (cpc)->cpc_entry.reg.space_id =3D=3D     =
+   \
+> > +                             ACPI_ADR_SPACE_SYSTEM_MEMORY)
+> > +
 >
-> > diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-> > index d7136d13aa44..977d74d0465b 100644
-> > --- a/include/linux/acpi.h
-> > +++ b/include/linux/acpi.h
-> > @@ -574,6 +574,7 @@ acpi_status acpi_run_osc(acpi_handle handle, struct=
- acpi_osc_context *context);
-> >  #define OSC_SB_OSLPI_SUPPORT                 0x00000100
-> >  #define OSC_SB_CPC_DIVERSE_HIGH_SUPPORT              0x00001000
-> >  #define OSC_SB_GENERIC_INITIATOR_SUPPORT     0x00002000
-> > +#define OSC_SB_CPC_FLEXIBLE_ADR_SP           0x00004000
->
-> I would prefer ADR_SPACE instead of ADR_SP.
+> Again my taste or preference: s/SM/SYS_MEM or SYSTEM_MEM
 
-Yes, please make this change.
---===============1563459219510359741==--
+SYSTEM_MEMORY even.
+
+>
+> > +/* Check if a CPC register is in SystemIo */
+> > +#define CPC_IN_SIO(cpc) ((cpc)->type =3D=3D ACPI_TYPE_BUFFER &&       =
+   \
+> > +                             (cpc)->cpc_entry.reg.space_id =3D=3D     =
+   \
+> > +                             ACPI_ADR_SPACE_SYSTEM_IO)
+> > +
+>
+> Ditto, s/SM/SYS_IO or SYSTEM_IO
+>
+> I need not refer back to the macro when reading the code. SM/SIO is too
+> short and makes it hard to infer from the name in general.
+
+Right.
+
+> >  /* Evaluates to True if reg is a NULL register descriptor */
+> >  #define IS_NULL_REG(reg) ((reg)->space_id =3D=3D  ACPI_ADR_SPACE_SYSTE=
+M_MEMORY && \
+> >                               (reg)->address =3D=3D 0 &&               =
+   \
+> > @@ -1456,6 +1466,9 @@ EXPORT_SYMBOL_GPL(cppc_set_perf);
+> >   * transition latency for performance change requests. The closest we =
+have
+> >   * is the timing information from the PCCT tables which provides the i=
+nfo
+> >   * on the number and frequency of PCC commands the platform can handle.
+> > + *
+> > + * If desired_reg is in the SystemMemory or SystemIo ACPI address spac=
+e,
+> > + * then assume there is no latency.
+> >   */
+> >  unsigned int cppc_get_transition_latency(int cpu_num)
+> >  {
+> > @@ -1481,7 +1494,9 @@ unsigned int cppc_get_transition_latency(int cpu_=
+num)
+> >               return CPUFREQ_ETERNAL;
+> >
+> >       desired_reg =3D &cpc_desc->cpc_regs[DESIRED_PERF];
+> > -     if (!CPC_IN_PCC(desired_reg))
+> > +     if (CPC_IN_SM(desired_reg) || CPC_IN_SIO(desired_reg))
+> > +             return 0;
+> > +     else if (!CPC_IN_PCC(desired_reg))
+> >               return CPUFREQ_ETERNAL;
+--===============6265198577714834571==--
 
