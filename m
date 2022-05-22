@@ -1,152 +1,146 @@
-Content-Type: multipart/mixed; boundary="===============4410052075330611922=="
+Content-Type: multipart/mixed; boundary="===============5540169986079092524=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [PATCH v2 1/5] ACPI: CPPC: Check _OSC for flexible
- address space
-Date: Thu, 19 May 2022 19:47:24 +0200
-Message-ID: <CAJZ5v0iHMuw7Ap5edok38TjaTCqE5sBn2GYVPz2_z_tc09t-hw@mail.gmail.com>
-In-Reply-To: 20220518090901.2724518-1-pierre.gondois@arm.com
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [rafael-pm:bleeding-edge] BUILD SUCCESS
+ 3d22e39d225d7adb6c670065f4ae016e759171ed
+Date: Sun, 22 May 2022 14:42:31 +0800
+Message-ID: <6289db57.CKTfld2m2iPjA4xf%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4410052075330611922==
+--===============5540169986079092524==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, May 18, 2022 at 11:09 AM Pierre Gondois <pierre.gondois(a)arm.com> =
-wrote:
->
-> ACPI 6.2 Section 6.2.11.2 'Platform-Wide OSPM Capabilities':
->   Starting with ACPI Specification 6.2, all _CPC registers can be in
->   PCC, System Memory, System IO, or Functional Fixed Hardware address
->   spaces. OSPM support for this more flexible register space scheme is
->   indicated by the =E2=80=9CFlexible Address Space for CPPC Registers=E2=
-=80=9D _OSC bit
->
-> Otherwise (cf ACPI 6.1, s8.4.7.1.1.X), _CPC registers must be in:
-> - PCC or Functional Fixed Hardware address space if defined
-> - SystemMemory address space (NULL register) if not defined
->
-> Add the corresponding _OSC bit and check it when parsing _CPC objects.
->
-> Signed-off-by: Pierre Gondois <pierre.gondois(a)arm.com>
-> Reviewed-by: Sudeep Holla <sudeep.holla(a)arm.com>
-> ---
->  drivers/acpi/bus.c       | 18 ++++++++++++++++++
->  drivers/acpi/cppc_acpi.c |  9 +++++++++
->  include/linux/acpi.h     |  2 ++
->  3 files changed, 29 insertions(+)
->
-> diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c
-> index 3e58b613a2c4..9eca43d1d941 100644
-> --- a/drivers/acpi/bus.c
-> +++ b/drivers/acpi/bus.c
-> @@ -278,6 +278,20 @@ bool osc_sb_apei_support_acked;
->  bool osc_pc_lpi_support_confirmed;
->  EXPORT_SYMBOL_GPL(osc_pc_lpi_support_confirmed);
->
-> +/*
-> + * ACPI 6.2 Section 6.2.11.2 'Platform-Wide OSPM Capabilities':
-> + *   Starting with ACPI Specification 6.2, all _CPC registers can be in
-> + *   PCC, System Memory, System IO, or Functional Fixed Hardware address
-> + *   spaces. OSPM support for this more flexible register space scheme is
-> + *   indicated by the =E2=80=9CFlexible Address Space for CPPC Registers=
-=E2=80=9D _OSC bit.
-> + *
-> + * Otherwise (cf ACPI 6.1, s8.4.7.1.1.X), _CPC registers must be in:
-> + * - PCC or Functional Fixed Hardware address space if defined
-> + * - SystemMemory address space (NULL register) if not defined
-> + */
-> +bool osc_cpc_flexible_adr_space_confirmed;
-> +EXPORT_SYMBOL_GPL(osc_cpc_flexible_adr_space_confirmed);
-> +
->  /*
->   * ACPI 6.4 Operating System Capabilities for USB.
->   */
-> @@ -321,6 +335,8 @@ static void acpi_bus_osc_negotiate_platform_control(v=
-oid)
->         }
->  #endif
->
-> +       capbuf[OSC_SUPPORT_DWORD] |=3D OSC_SB_CPC_FLEXIBLE_ADR_SPACE;
-> +
->         if (IS_ENABLED(CONFIG_SCHED_MC_PRIO))
->                 capbuf[OSC_SUPPORT_DWORD] |=3D OSC_SB_CPC_DIVERSE_HIGH_SU=
-PPORT;
->
-> @@ -366,6 +382,8 @@ static void acpi_bus_osc_negotiate_platform_control(v=
-oid)
->                         capbuf_ret[OSC_SUPPORT_DWORD] & OSC_SB_PCLPI_SUPP=
-ORT;
->                 osc_sb_native_usb4_support_confirmed =3D
->                         capbuf_ret[OSC_SUPPORT_DWORD] & OSC_SB_NATIVE_USB=
-4_SUPPORT;
-> +               osc_cpc_flexible_adr_space_confirmed =3D
-> +                       capbuf_ret[OSC_SUPPORT_DWORD] & OSC_SB_CPC_FLEXIB=
-LE_ADR_SPACE;
->         }
->
->         kfree(context.ret.pointer);
-> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-> index bc1454789a06..6f09fe011544 100644
-> --- a/drivers/acpi/cppc_acpi.c
-> +++ b/drivers/acpi/cppc_acpi.c
-> @@ -736,6 +736,11 @@ int acpi_cppc_processor_probe(struct acpi_processor =
-*pr)
->                                 if (gas_t->address) {
->                                         void __iomem *addr;
->
-> +                                       if (!osc_cpc_flexible_adr_space_c=
-onfirmed) {
-> +                                               pr_debug("Flexible addres=
-s space capability not supported\n");
-> +                                               goto out_free;
-> +                                       }
-> +
->                                         addr =3D ioremap(gas_t->address, =
-gas_t->bit_width/8);
->                                         if (!addr)
->                                                 goto out_free;
-> @@ -758,6 +763,10 @@ int acpi_cppc_processor_probe(struct acpi_processor =
-*pr)
->                                                  gas_t->address);
->                                         goto out_free;
->                                 }
-> +                               if (!osc_cpc_flexible_adr_space_confirmed=
-) {
-> +                                       pr_debug("Flexible address space =
-capability not supported\n");
-> +                                       goto out_free;
-> +                               }
->                         } else {
->                                 if (gas_t->space_id !=3D ACPI_ADR_SPACE_F=
-IXED_HARDWARE || !cpc_ffh_supported()) {
->                                         /* Support only PCC, SystemMemory=
-, SystemIO, and FFH type regs. */
-> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-> index d7136d13aa44..03465db16b68 100644
-> --- a/include/linux/acpi.h
-> +++ b/include/linux/acpi.h
-> @@ -574,6 +574,7 @@ acpi_status acpi_run_osc(acpi_handle handle, struct a=
-cpi_osc_context *context);
->  #define OSC_SB_OSLPI_SUPPORT                   0x00000100
->  #define OSC_SB_CPC_DIVERSE_HIGH_SUPPORT                0x00001000
->  #define OSC_SB_GENERIC_INITIATOR_SUPPORT       0x00002000
-> +#define OSC_SB_CPC_FLEXIBLE_ADR_SPACE          0x00004000
->  #define OSC_SB_NATIVE_USB4_SUPPORT             0x00040000
->  #define OSC_SB_PRM_SUPPORT                     0x00200000
->
-> @@ -581,6 +582,7 @@ extern bool osc_sb_apei_support_acked;
->  extern bool osc_pc_lpi_support_confirmed;
->  extern bool osc_sb_native_usb4_support_confirmed;
->  extern bool osc_sb_cppc_not_supported;
-> +extern bool osc_cpc_flexible_adr_space_confirmed;
->
->  /* USB4 Capabilities */
->  #define OSC_USB_USB3_TUNNELING                 0x00000001
-> --
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git bleeding-edge
+branch HEAD: 3d22e39d225d7adb6c670065f4ae016e759171ed  Merge branch 'acpica=
+' into linux-next
 
-Applied as 5.19 material along with the rest of the series, thanks!
---===============4410052075330611922==--
+elapsed time: 829m
+
+configs tested: 108
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                              allmodconfig
+arm                                 defconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm64                            allyesconfig
+mips                             allyesconfig
+riscv                            allyesconfig
+um                           x86_64_defconfig
+riscv                            allmodconfig
+um                             i386_defconfig
+mips                             allmodconfig
+arc                              allyesconfig
+alpha                            allyesconfig
+nios2                            allyesconfig
+arm                           imxrt_defconfig
+arm                       imx_v6_v7_defconfig
+mips                     loongson1b_defconfig
+parisc                           alldefconfig
+arm                         assabet_defconfig
+xtensa                generic_kc705_defconfig
+s390                       zfcpdump_defconfig
+arm                       omap2plus_defconfig
+powerpc64                           defconfig
+mips                 decstation_r4k_defconfig
+arm                            qcom_defconfig
+arm                        realview_defconfig
+powerpc                     sequoia_defconfig
+arm                           sama5_defconfig
+arc                           tb10x_defconfig
+h8300                     edosk2674_defconfig
+nios2                            alldefconfig
+arm                           h5000_defconfig
+m68k                          multi_defconfig
+arc                          axs101_defconfig
+alpha                               defconfig
+ia64                                defconfig
+sh                         microdev_defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+m68k                             allmodconfig
+csky                                defconfig
+h8300                            allyesconfig
+xtensa                           allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+s390                                defconfig
+s390                             allmodconfig
+parisc                              defconfig
+parisc64                            defconfig
+parisc                           allyesconfig
+s390                             allyesconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+i386                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+nios2                               defconfig
+powerpc                          allyesconfig
+powerpc                           allnoconfig
+powerpc                          allmodconfig
+x86_64                        randconfig-a006
+x86_64                        randconfig-a004
+x86_64                        randconfig-a002
+i386                          randconfig-a001
+i386                          randconfig-a003
+i386                          randconfig-a005
+x86_64                        randconfig-a013
+x86_64                        randconfig-a011
+x86_64                        randconfig-a015
+i386                          randconfig-a014
+i386                          randconfig-a012
+i386                          randconfig-a016
+arc                  randconfig-r043-20220522
+s390                 randconfig-r044-20220522
+riscv                randconfig-r042-20220522
+riscv                               defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                    nommu_k210_defconfig
+riscv                             allnoconfig
+x86_64                                  kexec
+x86_64                              defconfig
+x86_64                           allyesconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                           rhel-8.3-syz
+x86_64                    rhel-8.3-kselftests
+x86_64                         rhel-8.3-kunit
+
+clang tested configs:
+arm                          ep93xx_defconfig
+powerpc                 mpc832x_rdb_defconfig
+powerpc                   lite5200b_defconfig
+powerpc                 mpc8560_ads_defconfig
+arm                           omap1_defconfig
+i386                          randconfig-a002
+i386                          randconfig-a006
+i386                          randconfig-a004
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
+i386                          randconfig-a013
+i386                          randconfig-a011
+i386                          randconfig-a015
+x86_64                        randconfig-a005
+x86_64                        randconfig-a003
+x86_64                        randconfig-a001
+hexagon              randconfig-r041-20220522
+hexagon              randconfig-r045-20220522
+
+-- =
+
+0-DAY CI Kernel Test Service
+https://01.org/lkp
+--===============5540169986079092524==--
 
