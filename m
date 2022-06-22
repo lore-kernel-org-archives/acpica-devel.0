@@ -1,100 +1,111 @@
-Content-Type: multipart/mixed; boundary="===============4758157135052517275=="
+Content-Type: multipart/mixed; boundary="===============0965342527572090722=="
 MIME-Version: 1.0
 From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [rafael-pm:bleeding-edge 20/24] drivers/acpi/scan.c:2449:5:
- warning: no previous prototype for function 'acpi_bus_trim_one'
-Date: Tue, 21 Jun 2022 16:18:43 +0800
-Message-ID: <202206211629.ncqadywd-lkp@intel.com>
+Subject: [Devel] [rafael-pm:bleeding-edge] BUILD SUCCESS
+ e99b82b65ff24df6e5c2d1403251e82ef9971ec6
+Date: Wed, 22 Jun 2022 20:17:49 +0800
+Message-ID: <62b3086d.odJv5l8iAlTSexUE%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4758157135052517275==
+--===============0965342527572090722==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git=
- bleeding-edge
-head:   ef9088c776e0c49411bfb413ad43d110a9de1519
-commit: e511ff6b4174fa81ca7ee16f8c17f7362c08fadf [20/24] ACPI: scan: Walk A=
-CPI device's children using driver core
-config: x86_64-randconfig-a013-20220620 (https://download.01.org/0day-ci/ar=
-chive/20220621/202206211629.ncqadywd-lkp(a)intel.com/config)
-compiler: clang version 15.0.0 (https://github.com/llvm/llvm-project af6d2a=
-0b6825e71965f3e2701a63c239fa0ad70f)
-reproduce (this is a W=3D1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/=
-make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.g=
-it/commit/?id=3De511ff6b4174fa81ca7ee16f8c17f7362c08fadf
-        git remote add rafael-pm https://git.kernel.org/pub/scm/linux/kerne=
-l/git/rafael/linux-pm.git
-        git fetch --no-tags rafael-pm bleeding-edge
-        git checkout e511ff6b4174fa81ca7ee16f8c17f7362c08fadf
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dclang make.cross W=3D=
-1 O=3Dbuild_dir ARCH=3Dx86_64 SHELL=3D/bin/bash drivers/acpi/
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git bleeding-edge
+branch HEAD: e99b82b65ff24df6e5c2d1403251e82ef9971ec6  Merge branch 'pm-sle=
+ep' into bleeding-edge
 
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp(a)intel.com>
+elapsed time: 990m
 
-All warnings (new ones prefixed by >>):
+configs tested: 73
+configs skipped: 2
 
->> drivers/acpi/scan.c:2449:5: warning: no previous prototype for function =
-'acpi_bus_trim_one' [-Wmissing-prototypes]
-   int acpi_bus_trim_one(struct acpi_device *adev, void *not_used)
-       ^
-   drivers/acpi/scan.c:2449:1: note: declare 'static' if the function is no=
-t intended to be used outside of this translation unit
-   int acpi_bus_trim_one(struct acpi_device *adev, void *not_used)
-   ^
-   static =
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-   1 warning generated.
+gcc tested configs:
+arm                                 defconfig
+arm                              allyesconfig
+arm64                            allyesconfig
+m68k                       m5249evb_defconfig
+ia64                         bigsur_defconfig
+openrisc                 simple_smp_defconfig
+powerpc                      bamboo_defconfig
+arm                           stm32_defconfig
+mips                            ar7_defconfig
+ia64                      gensparse_defconfig
+powerpc                      ppc6xx_defconfig
+riscv                               defconfig
+ia64                             allmodconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+arc                              allyesconfig
+alpha                            allyesconfig
+powerpc                           allnoconfig
+mips                             allyesconfig
+powerpc                          allmodconfig
+sh                               allmodconfig
+i386                              debian-10.3
+i386                             allyesconfig
+i386                                defconfig
+i386                   debian-10.3-kselftests
+x86_64                        randconfig-a004
+x86_64                        randconfig-a002
+x86_64                        randconfig-a006
+i386                          randconfig-a001
+i386                          randconfig-a003
+i386                          randconfig-a005
+x86_64                        randconfig-a013
+x86_64                        randconfig-a011
+x86_64                        randconfig-a015
+i386                          randconfig-a012
+i386                          randconfig-a014
+i386                          randconfig-a016
+arc                  randconfig-r043-20220622
+riscv                             allnoconfig
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                           allyesconfig
+x86_64                          rhel-8.3-func
+x86_64                         rhel-8.3-kunit
+x86_64                    rhel-8.3-kselftests
+x86_64                           rhel-8.3-syz
 
-
-vim +/acpi_bus_trim_one +2449 drivers/acpi/scan.c
-
-  2448	=
-
-> 2449	int acpi_bus_trim_one(struct acpi_device *adev, void *not_used)
-  2450	{
-  2451		struct acpi_scan_handler *handler =3D adev->handler;
-  2452	=
-
-  2453		acpi_dev_for_each_child_reverse(adev, acpi_bus_trim_one, NULL);
-  2454	=
-
-  2455		adev->flags.match_driver =3D false;
-  2456		if (handler) {
-  2457			if (handler->detach)
-  2458				handler->detach(adev);
-  2459	=
-
-  2460			adev->handler =3D NULL;
-  2461		} else {
-  2462			device_release_driver(&adev->dev);
-  2463		}
-  2464		/*
-  2465		 * Most likely, the device is going away, so put it into D3cold bef=
-ore
-  2466		 * that.
-  2467		 */
-  2468		acpi_device_set_power(adev, ACPI_STATE_D3_COLD);
-  2469		adev->flags.initialized =3D false;
-  2470		acpi_device_clear_enumerated(adev);
-  2471	=
-
-  2472		return 0;
-  2473	}
-  2474	=
-
+clang tested configs:
+arm                       cns3420vb_defconfig
+s390                             alldefconfig
+arm                           sama7_defconfig
+arm                          moxart_defconfig
+powerpc                  mpc885_ads_defconfig
+powerpc                      acadia_defconfig
+x86_64                        randconfig-a005
+x86_64                        randconfig-a001
+x86_64                        randconfig-a003
+i386                          randconfig-a002
+i386                          randconfig-a004
+i386                          randconfig-a006
+x86_64                        randconfig-a012
+x86_64                        randconfig-a016
+x86_64                        randconfig-a014
+i386                          randconfig-a013
+i386                          randconfig-a011
+i386                          randconfig-a015
+hexagon              randconfig-r041-20220622
+hexagon              randconfig-r045-20220622
+riscv                randconfig-r042-20220622
+s390                 randconfig-r044-20220622
 
 -- =
 
 0-DAY CI Kernel Test Service
 https://01.org/lkp
---===============4758157135052517275==--
+--===============0965342527572090722==--
 
