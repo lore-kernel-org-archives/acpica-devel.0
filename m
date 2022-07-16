@@ -1,37 +1,49 @@
-Content-Type: multipart/mixed; boundary="===============2495846763861079925=="
+Content-Type: multipart/mixed; boundary="===============7453400986975600698=="
 MIME-Version: 1.0
 From: kernel test robot <lkp at intel.com>
 Subject: [Devel] [rafael-pm:bleeding-edge] BUILD SUCCESS
- bab5a415e184710d01c37547f706a0e85873bb74
-Date: Fri, 15 Jul 2022 19:01:49 +0800
-Message-ID: <62d1491d.sEAKmtLmVIxvS4zB%lkp@intel.com>
+ 940a7197e7544d2c88df2826b84fc324dd54ba47
+Date: Sat, 16 Jul 2022 14:30:54 +0800
+Message-ID: <62d25b1e.6LLu6+/fikrj8XaM%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============2495846763861079925==
+--===============7453400986975600698==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
 tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
 m.git bleeding-edge
-branch HEAD: bab5a415e184710d01c37547f706a0e85873bb74  Merge branch 'pm-dom=
-ains' into bleeding-edge
+branch HEAD: 940a7197e7544d2c88df2826b84fc324dd54ba47  Merge branch 'acpi-v=
+ideo' into bleeding-edge
 
-elapsed time: 896m
+elapsed time: 721m
 
-configs tested: 48
-configs skipped: 3
+configs tested: 66
+configs skipped: 2
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
 
 gcc tested configs:
-m68k                       m5275evb_defconfig
-arm                        oxnas_v6_defconfig
-alpha                            allyesconfig
+arm                                 defconfig
+arm                              allyesconfig
+arm64                            allyesconfig
+powerpc                 mpc85xx_cds_defconfig
+arm                        mvebu_v7_defconfig
+parisc                generic-32bit_defconfig
+mips                           jazz_defconfig
+arm                          simpad_defconfig
+arm                       multi_v4t_defconfig
+ia64                             allmodconfig
+alpha                             allnoconfig
+arc                               allnoconfig
+riscv                             allnoconfig
+csky                              allnoconfig
 m68k                             allmodconfig
 arc                              allyesconfig
+alpha                            allyesconfig
 m68k                             allyesconfig
 powerpc                           allnoconfig
 powerpc                          allmodconfig
@@ -39,48 +51,54 @@ mips                             allyesconfig
 sh                               allmodconfig
 i386                                defconfig
 i386                             allyesconfig
-i386                          randconfig-a001
-i386                          randconfig-a003
-i386                          randconfig-a005
 x86_64                        randconfig-a004
 x86_64                        randconfig-a002
 x86_64                        randconfig-a006
+i386                          randconfig-a001
+i386                          randconfig-a003
+i386                          randconfig-a005
 x86_64                        randconfig-a013
 x86_64                        randconfig-a011
 x86_64                        randconfig-a015
 i386                          randconfig-a014
 i386                          randconfig-a012
 i386                          randconfig-a016
+arc                  randconfig-r043-20220715
 um                             i386_defconfig
 um                           x86_64_defconfig
+x86_64                          rhel-8.3-func
+x86_64                    rhel-8.3-kselftests
+x86_64                           rhel-8.3-syz
+x86_64                         rhel-8.3-kunit
 x86_64                              defconfig
 x86_64                               rhel-8.3
 x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                          rhel-8.3-func
-x86_64                         rhel-8.3-kunit
-x86_64                           rhel-8.3-syz
 
 clang tested configs:
-powerpc                 mpc8560_ads_defconfig
-i386                          randconfig-a002
-i386                          randconfig-a004
-i386                          randconfig-a006
+arm                       versatile_defconfig
+arm                          pcm027_defconfig
+powerpc                      acadia_defconfig
+powerpc                     mpc5200_defconfig
 x86_64                        randconfig-a001
 x86_64                        randconfig-a003
 x86_64                        randconfig-a005
+i386                          randconfig-a002
+i386                          randconfig-a006
+i386                          randconfig-a004
+x86_64                        randconfig-a016
 x86_64                        randconfig-a012
 x86_64                        randconfig-a014
-x86_64                        randconfig-a016
 i386                          randconfig-a013
 i386                          randconfig-a011
 i386                          randconfig-a015
-hexagon              randconfig-r045-20220714
-hexagon              randconfig-r041-20220714
+hexagon              randconfig-r045-20220715
+hexagon              randconfig-r041-20220715
+riscv                randconfig-r042-20220715
+s390                 randconfig-r044-20220715
 
 -- =
 
 0-DAY CI Kernel Test Service
 https://01.org/lkp
---===============2495846763861079925==--
+--===============7453400986975600698==--
 
