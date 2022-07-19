@@ -1,26 +1,26 @@
-Content-Type: multipart/mixed; boundary="===============7453400986975600698=="
+Content-Type: multipart/mixed; boundary="===============5209468356613918617=="
 MIME-Version: 1.0
 From: kernel test robot <lkp at intel.com>
 Subject: [Devel] [rafael-pm:bleeding-edge] BUILD SUCCESS
- 940a7197e7544d2c88df2826b84fc324dd54ba47
-Date: Sat, 16 Jul 2022 14:30:54 +0800
-Message-ID: <62d25b1e.6LLu6+/fikrj8XaM%lkp@intel.com>
+ 54ae2293921fc535ed38a0511bf2c96f7f28cf57
+Date: Tue, 19 Jul 2022 15:50:27 +0800
+Message-ID: <62d66243.bIOQls4SY8FBE0Wg%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7453400986975600698==
+--===============5209468356613918617==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
 tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
 m.git bleeding-edge
-branch HEAD: 940a7197e7544d2c88df2826b84fc324dd54ba47  Merge branch 'acpi-v=
-ideo' into bleeding-edge
+branch HEAD: 54ae2293921fc535ed38a0511bf2c96f7f28cf57  Merge branch 'acpi-c=
+ppc' into bleeding-edge
 
 elapsed time: 721m
 
-configs tested: 66
+configs tested: 54
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -28,77 +28,65 @@ More configs may be tested in the coming days.
 
 gcc tested configs:
 arm                                 defconfig
-arm                              allyesconfig
 arm64                            allyesconfig
-powerpc                 mpc85xx_cds_defconfig
-arm                        mvebu_v7_defconfig
-parisc                generic-32bit_defconfig
-mips                           jazz_defconfig
-arm                          simpad_defconfig
-arm                       multi_v4t_defconfig
+arm                              allyesconfig
 ia64                             allmodconfig
-alpha                             allnoconfig
 arc                               allnoconfig
+alpha                             allnoconfig
 riscv                             allnoconfig
 csky                              allnoconfig
+powerpc                           allnoconfig
+sh                               allmodconfig
+powerpc                          allmodconfig
+mips                             allyesconfig
 m68k                             allmodconfig
 arc                              allyesconfig
 alpha                            allyesconfig
 m68k                             allyesconfig
-powerpc                           allnoconfig
-powerpc                          allmodconfig
-mips                             allyesconfig
-sh                               allmodconfig
-i386                                defconfig
-i386                             allyesconfig
 x86_64                        randconfig-a004
 x86_64                        randconfig-a002
 x86_64                        randconfig-a006
-i386                          randconfig-a001
-i386                          randconfig-a003
-i386                          randconfig-a005
-x86_64                        randconfig-a013
-x86_64                        randconfig-a011
-x86_64                        randconfig-a015
-i386                          randconfig-a014
-i386                          randconfig-a012
-i386                          randconfig-a016
-arc                  randconfig-r043-20220715
-um                             i386_defconfig
+x86_64               randconfig-a013-20220718
+x86_64               randconfig-a012-20220718
+x86_64               randconfig-a014-20220718
+x86_64               randconfig-a011-20220718
+x86_64               randconfig-a015-20220718
+x86_64               randconfig-a016-20220718
+i386                 randconfig-a011-20220718
+i386                 randconfig-a013-20220718
+i386                 randconfig-a012-20220718
+i386                 randconfig-a016-20220718
+i386                 randconfig-a015-20220718
+i386                 randconfig-a014-20220718
+arc                  randconfig-r043-20220718
+riscv                randconfig-r042-20220718
+s390                 randconfig-r044-20220718
 um                           x86_64_defconfig
-x86_64                          rhel-8.3-func
-x86_64                    rhel-8.3-kselftests
-x86_64                           rhel-8.3-syz
-x86_64                         rhel-8.3-kunit
+um                             i386_defconfig
 x86_64                              defconfig
 x86_64                               rhel-8.3
 x86_64                           allyesconfig
+x86_64                         rhel-8.3-kunit
+x86_64                           rhel-8.3-syz
+x86_64                          rhel-8.3-func
+x86_64                    rhel-8.3-kselftests
 
 clang tested configs:
-arm                       versatile_defconfig
-arm                          pcm027_defconfig
-powerpc                      acadia_defconfig
-powerpc                     mpc5200_defconfig
 x86_64                        randconfig-a001
 x86_64                        randconfig-a003
 x86_64                        randconfig-a005
-i386                          randconfig-a002
-i386                          randconfig-a006
-i386                          randconfig-a004
-x86_64                        randconfig-a016
-x86_64                        randconfig-a012
-x86_64                        randconfig-a014
-i386                          randconfig-a013
-i386                          randconfig-a011
-i386                          randconfig-a015
-hexagon              randconfig-r045-20220715
-hexagon              randconfig-r041-20220715
-riscv                randconfig-r042-20220715
-s390                 randconfig-r044-20220715
+i386                 randconfig-a003-20220718
+i386                 randconfig-a001-20220718
+i386                 randconfig-a002-20220718
+i386                 randconfig-a006-20220718
+i386                 randconfig-a004-20220718
+i386                 randconfig-a005-20220718
+hexagon              randconfig-r041-20220718
+hexagon              randconfig-r045-20220718
 
 -- =
 
 0-DAY CI Kernel Test Service
 https://01.org/lkp
---===============7453400986975600698==--
+--===============5209468356613918617==--
 
