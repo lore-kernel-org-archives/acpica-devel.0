@@ -1,136 +1,189 @@
-Content-Type: multipart/mixed; boundary="===============7577084970262910019=="
+Content-Type: multipart/mixed; boundary="===============7427477696483949307=="
 MIME-Version: 1.0
-From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [rafael-pm:bleeding-edge] BUILD SUCCESS
- 66de314cd08fc4a7830333025d6a9c61ed12cd30
-Date: Wed, 20 Jul 2022 14:21:45 +0800
-Message-ID: <62d79ef9.PGF5BxVHQU6Ey7/c%lkp@intel.com>
+From: Jeremy Linton <jeremy.linton at arm.com>
+Subject: [Devel] [PATCH] ACPI: CPPC: Disable FIE if registers in PCC regions
+Date: Tue, 26 Jul 2022 09:59:48 -0500
+Message-ID: <20220726145948.2194684-1-jeremy.linton@arm.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7577084970262910019==
+--===============7427477696483949307==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
-m.git bleeding-edge
-branch HEAD: 66de314cd08fc4a7830333025d6a9c61ed12cd30  Merge branch 'pm-dev=
-freq' into linux-next
+PCC regions utilize a mailbox to set/retrieve register values used by
+the CPPC code. This is fine as long as the operations are
+infrequent. With the FIE code enabled though the overhead can range
+from 2-11% of system CPU overhead (ex: as measured by top) on Arm
+based machines.
 
-elapsed time: 722m
+So, before enabling FIE assure none of the registers used by
+cppc_get_perf_ctrs() are in the PCC region. Furthermore lets also
+enable a module parameter which can also disable it at boot or module
+reload.
 
-configs tested: 98
-configs skipped: 2
+Signed-off-by: Jeremy Linton <jeremy.linton(a)arm.com>
+---
+ drivers/acpi/cppc_acpi.c       | 31 +++++++++++++++++++++++++++++++
+ drivers/cpufreq/cppc_cpufreq.c | 19 +++++++++++++++----
+ include/acpi/cppc_acpi.h       |  5 +++++
+ 3 files changed, 51 insertions(+), 4 deletions(-)
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+index 3c6d4ef87be0..ad84c55b6409 100644
+--- a/drivers/acpi/cppc_acpi.c
++++ b/drivers/acpi/cppc_acpi.c
+@@ -1246,6 +1246,37 @@ int cppc_get_perf_caps(int cpunum, struct cppc_perf_=
+caps *perf_caps)
+ }
+ EXPORT_SYMBOL_GPL(cppc_get_perf_caps);
+ =
 
-gcc tested configs:
-arm64                            allyesconfig
-arm                                 defconfig
-arm                              allyesconfig
-i386                          randconfig-c001
-i386                 randconfig-c001-20220718
-arm                        realview_defconfig
-arm                             rpc_defconfig
-powerpc                     sequoia_defconfig
-powerpc                 mpc837x_rdb_defconfig
-powerpc                    sam440ep_defconfig
-xtensa                    smp_lx200_defconfig
-m68k                             alldefconfig
-arc                     haps_hs_smp_defconfig
-powerpc                     pq2fads_defconfig
-sh                         microdev_defconfig
-arc                     nsimosci_hs_defconfig
-powerpc                      ep88xc_defconfig
-arm                      footbridge_defconfig
-mips                      loongson3_defconfig
-sh                        dreamcast_defconfig
-xtensa                       common_defconfig
-mips                            gpr_defconfig
-sh                          lboxre2_defconfig
-loongarch                           defconfig
-loongarch                         allnoconfig
-ia64                             allmodconfig
-csky                              allnoconfig
-alpha                             allnoconfig
-arc                               allnoconfig
-riscv                             allnoconfig
-m68k                             allyesconfig
-m68k                             allmodconfig
-arc                              allyesconfig
-alpha                            allyesconfig
-powerpc                           allnoconfig
-powerpc                          allmodconfig
-mips                             allyesconfig
-sh                               allmodconfig
-i386                             allyesconfig
-i386                                defconfig
-x86_64                        randconfig-a006
-x86_64                        randconfig-a004
-x86_64                        randconfig-a002
-x86_64               randconfig-a014-20220718
-x86_64               randconfig-a016-20220718
-x86_64               randconfig-a012-20220718
-x86_64               randconfig-a013-20220718
-x86_64               randconfig-a015-20220718
-x86_64               randconfig-a011-20220718
-i386                 randconfig-a015-20220718
-i386                 randconfig-a011-20220718
-i386                 randconfig-a012-20220718
-i386                 randconfig-a014-20220718
-i386                 randconfig-a016-20220718
-i386                 randconfig-a013-20220718
-i386                          randconfig-a014
-i386                          randconfig-a012
-i386                          randconfig-a016
-arc                  randconfig-r043-20220718
-riscv                randconfig-r042-20220718
-s390                 randconfig-r044-20220718
-x86_64                    rhel-8.3-kselftests
-um                             i386_defconfig
-um                           x86_64_defconfig
-x86_64                              defconfig
-x86_64                           allyesconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                           rhel-8.3-syz
-x86_64                         rhel-8.3-kunit
++int cppc_perf_ctrs_in_pcc(void)
++{
++	int cpu;
++	struct cpc_desc *cpc_desc;
++	struct cpc_register_resource *delivered_reg, *reference_reg,
++		*ref_perf_reg, *ctr_wrap_reg;
++
++	for_each_present_cpu(cpu) {
++		cpc_desc =3D per_cpu(cpc_desc_ptr, cpu);
++		delivered_reg =3D &cpc_desc->cpc_regs[DELIVERED_CTR];
++		reference_reg =3D &cpc_desc->cpc_regs[REFERENCE_CTR];
++		ref_perf_reg =3D &cpc_desc->cpc_regs[REFERENCE_PERF];
++		ctr_wrap_reg =3D &cpc_desc->cpc_regs[CTR_WRAP_TIME];
++
++		/*
++		 * If reference perf register is not supported then we should
++		 * use the nominal perf value
++		 */
++		if (!CPC_SUPPORTED(ref_perf_reg))
++			ref_perf_reg =3D &cpc_desc->cpc_regs[NOMINAL_PERF];
++
++		/* Are any of the regs PCC ?*/
++		if (CPC_IN_PCC(delivered_reg) || CPC_IN_PCC(reference_reg) ||
++			CPC_IN_PCC(ctr_wrap_reg) || CPC_IN_PCC(ref_perf_reg)) {
++			return true;
++		}
++	}
++	return false;
++}
++EXPORT_SYMBOL_GPL(cppc_perf_ctrs_in_pcc);
++
+ /**
+  * cppc_get_perf_ctrs - Read a CPU's performance feedback counters.
+  * @cpunum: CPU from which to read counters.
+diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
+index 24eaf0ec344d..a66d3013d0f8 100644
+--- a/drivers/cpufreq/cppc_cpufreq.c
++++ b/drivers/cpufreq/cppc_cpufreq.c
+@@ -63,6 +63,10 @@ static struct cppc_workaround_oem_info wa_info[] =3D {
+ =
 
-clang tested configs:
-arm                     am200epdkit_defconfig
-riscv                            alldefconfig
-arm                        magician_defconfig
-mips                          malta_defconfig
-hexagon                          alldefconfig
-powerpc                    gamecube_defconfig
-mips                      maltaaprp_defconfig
-mips                        maltaup_defconfig
-powerpc                     mpc5200_defconfig
-mips                          ath25_defconfig
-x86_64                        randconfig-k001
-x86_64                        randconfig-a005
-x86_64                        randconfig-a003
-x86_64                        randconfig-a001
-i386                          randconfig-a002
-i386                          randconfig-a006
-i386                          randconfig-a004
-i386                 randconfig-a004-20220718
-i386                 randconfig-a001-20220718
-i386                 randconfig-a005-20220718
-i386                 randconfig-a006-20220718
-i386                 randconfig-a002-20220718
-i386                 randconfig-a003-20220718
-i386                          randconfig-a013
-i386                          randconfig-a011
-i386                          randconfig-a015
-hexagon              randconfig-r041-20220718
-hexagon              randconfig-r045-20220718
+ static struct cpufreq_driver cppc_cpufreq_driver;
+ =
 
++static bool fie_disabled;
++module_param(fie_disabled, bool, 0444);
++MODULE_PARM_DESC(fie_disabled, "Disable Frequency Invariance Engine (FIE)"=
+);
++
+ #ifdef CONFIG_ACPI_CPPC_CPUFREQ_FIE
+ =
+
+ /* Frequency invariance support */
+@@ -158,7 +162,7 @@ static void cppc_cpufreq_cpu_fie_init(struct cpufreq_po=
+licy *policy)
+ 	struct cppc_freq_invariance *cppc_fi;
+ 	int cpu, ret;
+ =
+
+-	if (cppc_cpufreq_driver.get =3D=3D hisi_cppc_cpufreq_get_rate)
++	if (fie_disabled)
+ 		return;
+ =
+
+ 	for_each_cpu(cpu, policy->cpus) {
+@@ -199,7 +203,7 @@ static void cppc_cpufreq_cpu_fie_exit(struct cpufreq_po=
+licy *policy)
+ 	struct cppc_freq_invariance *cppc_fi;
+ 	int cpu;
+ =
+
+-	if (cppc_cpufreq_driver.get =3D=3D hisi_cppc_cpufreq_get_rate)
++	if (fie_disabled)
+ 		return;
+ =
+
+ 	/* policy->cpus will be empty here, use related_cpus instead */
+@@ -229,7 +233,12 @@ static void __init cppc_freq_invariance_init(void)
+ 	};
+ 	int ret;
+ =
+
+-	if (cppc_cpufreq_driver.get =3D=3D hisi_cppc_cpufreq_get_rate)
++	if (cppc_perf_ctrs_in_pcc()) {
++		pr_debug("FIE not enabled on systems with registers in PCC\n");
++		fie_disabled =3D true;
++	}
++
++	if (fie_disabled)
+ 		return;
+ =
+
+ 	kworker_fie =3D kthread_create_worker(0, "cppc_fie");
+@@ -247,7 +256,7 @@ static void __init cppc_freq_invariance_init(void)
+ =
+
+ static void cppc_freq_invariance_exit(void)
+ {
+-	if (cppc_cpufreq_driver.get =3D=3D hisi_cppc_cpufreq_get_rate)
++	if (fie_disabled)
+ 		return;
+ =
+
+ 	kthread_destroy_worker(kworker_fie);
+@@ -940,6 +949,8 @@ static void cppc_check_hisi_workaround(void)
+ 		}
+ 	}
+ =
+
++	fie_disabled =3D true;
++
+ 	acpi_put_table(tbl);
+ }
+ =
+
+diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
+index d389bab54241..f4ff571fcdcb 100644
+--- a/include/acpi/cppc_acpi.h
++++ b/include/acpi/cppc_acpi.h
+@@ -140,6 +140,7 @@ extern int cppc_get_perf_ctrs(int cpu, struct cppc_perf=
+_fb_ctrs *perf_fb_ctrs);
+ extern int cppc_set_perf(int cpu, struct cppc_perf_ctrls *perf_ctrls);
+ extern int cppc_set_enable(int cpu, bool enable);
+ extern int cppc_get_perf_caps(int cpu, struct cppc_perf_caps *caps);
++extern int cppc_perf_ctrs_in_pcc(void);
+ extern bool acpi_cpc_valid(void);
+ extern bool cppc_allow_fast_switch(void);
+ extern int acpi_get_psd_map(unsigned int cpu, struct cppc_cpudata *cpu_dat=
+a);
+@@ -173,6 +174,10 @@ static inline int cppc_get_perf_caps(int cpu, struct c=
+ppc_perf_caps *caps)
+ {
+ 	return -ENOTSUPP;
+ }
++extern int cppc_perf_ctrs_in_pcc(void)
++{
++	return false;
++}
+ static inline bool acpi_cpc_valid(void)
+ {
+ 	return false;
 -- =
 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
---===============7577084970262910019==--
+2.37.1
+
+--===============7427477696483949307==--
 
