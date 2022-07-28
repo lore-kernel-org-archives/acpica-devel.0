@@ -1,95 +1,43 @@
-Content-Type: multipart/mixed; boundary="===============0472526743726935580=="
+Content-Type: multipart/mixed; boundary="===============1586246037710409950=="
 MIME-Version: 1.0
-From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [rafael-pm:bleeding-edge] BUILD SUCCESS
- f11001f2dd7ec311162f0faaa6c2839f313cda41
-Date: Wed, 27 Jul 2022 15:41:30 +0800
-Message-ID: <62e0ec2a.kV9Im9JHkpRPiLTo%lkp@intel.com>
+From: Jeremy Linton <jeremy.linton at arm.com>
+Subject: [Devel] [PATCH v2 0/1] Disable FIE on machines with slow counters
+Date: Thu, 28 Jul 2022 17:10:42 -0500
+Message-ID: <20220728221043.4161903-1-jeremy.linton@arm.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0472526743726935580==
+--===============1586246037710409950==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
-m.git bleeding-edge
-branch HEAD: f11001f2dd7ec311162f0faaa6c2839f313cda41  Merge branch 'powerc=
-ap' into bleeding-edge
+FIE assumes the delivered/relative perf registers are fast to read so
+it goes ahead and hits them quite frequently. On a couple Arm
+platforms though they end up in PCC regions which require mailbox
+handshaking with other parts of the platform.
 
-elapsed time: 724m
+This results in a lot of overhead in the cppc_fie task. As such lets
+runtime disable FIE if we detect it enabled on one of those platforms.
+Also allow the user to manually disable it via a module parameter.
 
-configs tested: 57
-configs skipped: 2
+v1->v2:
+	Apply Rafael's review comments.
+	Move the MODULE_PARAM into the ifdef
+	Fix compiler warning when ACPI_CPPC_LIB is disabled.
+	=
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Jeremy Linton (1):
+  ACPI: CPPC: Disable FIE if registers in PCC regions
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm                              allyesconfig
-ia64                             allmodconfig
-arc                               allnoconfig
-alpha                             allnoconfig
-riscv                             allnoconfig
-csky                              allnoconfig
-powerpc                          allmodconfig
-mips                             allyesconfig
-powerpc                           allnoconfig
-sh                               allmodconfig
-m68k                             allmodconfig
-arc                              allyesconfig
-alpha                            allyesconfig
-m68k                             allyesconfig
-i386                                defconfig
-i386                             allyesconfig
-i386                          randconfig-a001
-i386                          randconfig-a003
-i386                          randconfig-a005
-x86_64                        randconfig-a013
-x86_64                        randconfig-a011
-x86_64                        randconfig-a015
-i386                          randconfig-a014
-i386                          randconfig-a012
-i386                          randconfig-a016
-arc                  randconfig-r043-20220724
-riscv                randconfig-r042-20220724
-s390                 randconfig-r044-20220724
-x86_64                        randconfig-a002
-x86_64                        randconfig-a004
-x86_64                        randconfig-a006
-um                             i386_defconfig
-um                           x86_64_defconfig
-x86_64                           rhel-8.3-kvm
-x86_64                          rhel-8.3-func
-x86_64                         rhel-8.3-kunit
-x86_64                    rhel-8.3-kselftests
-x86_64                           rhel-8.3-syz
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                           allyesconfig
-
-clang tested configs:
-i386                          randconfig-a002
-i386                          randconfig-a004
-i386                          randconfig-a006
-x86_64                        randconfig-a014
-x86_64                        randconfig-a012
-x86_64                        randconfig-a016
-i386                          randconfig-a013
-i386                          randconfig-a011
-i386                          randconfig-a015
-hexagon              randconfig-r041-20220724
-hexagon              randconfig-r045-20220724
-x86_64                        randconfig-a001
-x86_64                        randconfig-a003
-x86_64                        randconfig-a005
+ drivers/acpi/cppc_acpi.c       | 41 ++++++++++++++++++++++++++++++++++
+ drivers/cpufreq/cppc_cpufreq.c | 19 ++++++++++++----
+ include/acpi/cppc_acpi.h       |  5 +++++
+ 3 files changed, 61 insertions(+), 4 deletions(-)
 
 -- =
 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
---===============0472526743726935580==--
+2.35.3
+
+--===============1586246037710409950==--
 
