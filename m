@@ -1,104 +1,98 @@
-Content-Type: multipart/mixed; boundary="===============0418706192110850048=="
+Content-Type: multipart/mixed; boundary="===============5580184954303992401=="
 MIME-Version: 1.0
-From: Jeremy Linton <jeremy.linton at arm.com>
-Subject: [Devel] Re: [PATCH v2 1/1] ACPI: CPPC: Disable FIE if registers in
- PCC regions
-Date: Fri, 29 Jul 2022 10:20:46 -0500
-Message-ID: <a0bdc45a-c5c6-65ba-1ab8-e52dd26652d7@arm.com>
-In-Reply-To: 871qu4krb4.fsf@stealth
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [rafael-pm:bleeding-edge] BUILD SUCCESS
+ c58a7ee9d020676ef0f04782cc0ca5d0b0889df9
+Date: Sat, 30 Jul 2022 14:45:56 +0800
+Message-ID: <62e4d3a4.gZtMY9Jhc1oCkQVv%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============0418706192110850048==
+--===============5580184954303992401==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git bleeding-edge
+branch HEAD: c58a7ee9d020676ef0f04782cc0ca5d0b0889df9  Merge branch 'pm-cpu=
+idle-next' into bleeding-edge
 
-On 7/29/22 07:59, Punit Agrawal wrote:
-> Hi Jeremy,
-> =
+elapsed time: 710m
 
-> One comment / query below.
-> =
+configs tested: 60
+configs skipped: 5
 
-> Jeremy Linton <jeremy.linton(a)arm.com> writes:
-> =
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
->> PCC regions utilize a mailbox to set/retrieve register values used by
->> the CPPC code. This is fine as long as the operations are
->> infrequent. With the FIE code enabled though the overhead can range
->> from 2-11% of system CPU overhead (ex: as measured by top) on Arm
->> based machines.
->>
->> So, before enabling FIE assure none of the registers used by
->> cppc_get_perf_ctrs() are in the PCC region. Furthermore lets also
->> enable a module parameter which can also disable it at boot or module
->> reload.
->>
->> Signed-off-by: Jeremy Linton <jeremy.linton(a)arm.com>
->> ---
->>   drivers/acpi/cppc_acpi.c       | 41 ++++++++++++++++++++++++++++++++++
->>   drivers/cpufreq/cppc_cpufreq.c | 19 ++++++++++++----
->>   include/acpi/cppc_acpi.h       |  5 +++++
->>   3 files changed, 61 insertions(+), 4 deletions(-)
->>
-> =
+gcc tested configs:
+um                             i386_defconfig
+um                           x86_64_defconfig
+arc                  randconfig-r043-20220729
+x86_64                              defconfig
+i386                                defconfig
+x86_64                               rhel-8.3
+x86_64                           allyesconfig
+i386                             allyesconfig
+x86_64                        randconfig-a004
+x86_64                        randconfig-a002
+arc                              allyesconfig
+powerpc                           allnoconfig
+alpha                            allyesconfig
+x86_64                        randconfig-a013
+x86_64                        randconfig-a006
+powerpc                          allmodconfig
+x86_64                        randconfig-a011
+m68k                             allyesconfig
+x86_64                        randconfig-a015
+mips                             allyesconfig
+sh                               allmodconfig
+i386                          randconfig-a014
+m68k                             allmodconfig
+i386                          randconfig-a012
+i386                          randconfig-a016
+x86_64                         rhel-8.3-kunit
+x86_64                           rhel-8.3-kvm
+x86_64                          rhel-8.3-func
+x86_64                    rhel-8.3-kselftests
+i386                          randconfig-a001
+i386                          randconfig-a003
+x86_64                           rhel-8.3-syz
+i386                          randconfig-a005
+arm                                 defconfig
+ia64                             allmodconfig
+arc                               allnoconfig
+alpha                             allnoconfig
+riscv                             allnoconfig
+csky                              allnoconfig
+arm                              allyesconfig
+arm64                            allyesconfig
+arm                           sunxi_defconfig
+sparc64                             defconfig
 
-> [...]
-> =
+clang tested configs:
+hexagon              randconfig-r041-20220729
+riscv                randconfig-r042-20220729
+hexagon              randconfig-r045-20220729
+s390                 randconfig-r044-20220729
+x86_64                        randconfig-a001
+x86_64                        randconfig-a003
+x86_64                        randconfig-a005
+x86_64                        randconfig-a012
+x86_64                        randconfig-a016
+i386                          randconfig-a011
+i386                          randconfig-a002
+i386                          randconfig-a006
+i386                          randconfig-a004
+mips                           mtx1_defconfig
+powerpc                          g5_defconfig
+mips                           ip28_defconfig
+powerpc                  mpc866_ads_defconfig
 
->> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufr=
-eq.c
->> index 24eaf0ec344d..ed607e27d6bb 100644
->> --- a/drivers/cpufreq/cppc_cpufreq.c
->> +++ b/drivers/cpufreq/cppc_cpufreq.c
-> =
+-- =
 
-> [...]
-> =
-
->> @@ -229,7 +233,12 @@ static void __init cppc_freq_invariance_init(void)
->>   	};
->>   	int ret;
->>   =
-
->> -	if (cppc_cpufreq_driver.get =3D=3D hisi_cppc_cpufreq_get_rate)
->> +	if (cppc_perf_ctrs_in_pcc()) {
->> +		pr_debug("FIE not enabled on systems with registers in PCC\n");
-> =
-
-> The message should probably be promoted to a pr_info() and exposed as
-> part of the kernel logs. It is a change in the default behaviour we've
-> had until now. The message will provide some hint about why it was
-> disabled.
-> =
-
-> Thoughts?
-
-I personally flip flopped between making it pr_info or pr_debug and =
-
-settled on debug because no one else was complaining about the cppc_fie =
-
-consumption. Which to me, meant that the users of platforms utilizing =
-
-PCC regions weren't sensitive to the problem, or weren't yet running a =
-
-distro/kernel with it enabled, or any number of other reasons why the =
-
-problem wasn't getting more attention. Mostly I concluded the FIE code =
-
-hadn't shown up in "enterprise" distros yet..
-
-
-But, yah, if no one is going to complain about the extra messages =
-
-pr_info() is a better plan.
-
-Thanks for looking at this!
-
-
-
---===============0418706192110850048==--
+0-DAY CI Kernel Test Service
+https://01.org/lkp
+--===============5580184954303992401==--
 
