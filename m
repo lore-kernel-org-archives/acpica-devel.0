@@ -1,15 +1,15 @@
-Content-Type: multipart/mixed; boundary="===============8811582470295423193=="
+Content-Type: multipart/mixed; boundary="===============2936316422839270420=="
 MIME-Version: 1.0
 From: Jeremy Linton <jeremy.linton at arm.com>
 Subject: [Devel] Re: [PATCH v2 1/1] ACPI: CPPC: Disable FIE if registers in
  PCC regions
-Date: Wed, 10 Aug 2022 09:08:14 -0500
-Message-ID: <6f565c2d-e7cb-f5a2-0b38-995c9cd2deec@arm.com>
+Date: Wed, 10 Aug 2022 09:30:51 -0500
+Message-ID: <4da7cd19-4b98-9360-922f-d625c4ec55e0@arm.com>
 In-Reply-To: 3a5e7abd-9361-11ba-978d-8e8bae00ea31@arm.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8811582470295423193==
+--===============2936316422839270420==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
@@ -60,13 +60,23 @@ On 8/10/22 07:29, Lukasz Luba wrote:
 >  =C2=A0=C2=A0 Do also more recent MHU have such issues, so we could block
 >  =C2=A0=C2=A0 them by default (like in your code)?
 
-Well, the mailbox nature of PCC pretty much assures its "slow", relative =
+I posted that other email before being awake and conflated MHU with AMU =
 
-the alternative of providing an actual register.  If a platform provides =
+(which could potentially expose the values directly). But the CPPC code =
 
-direct access to say MHU registers, then of course they won't actually =
+isn't aware of whether a MHU or some other mailbox is in use. Either =
 
-be in a PCC region and the FIE will remain on.
+way, its hard to imagine a general mailbox with a doorbell/wait for =
+
+completion handshake will ever be fast enough to consider running at the =
+
+granularity this code is running at. If there were a case like that, the =
+
+kernel would have to benchmark it at runtime to differentiate it from =
+
+something that is talking over a slow link to a slowly responding mgmt =
+
+processor.
 
 
 > =
@@ -77,18 +87,6 @@ be in a PCC region and the FIE will remain on.
 >  =C2=A0=C2=A0 We have probably introduce this overhead for older platform=
 s with
 >  =C2=A0=C2=A0 this commit:
-
-The problem here is that these ACPI kernels are being shipped as single =
-
-images in distro's which expect them to run on a wide range of platforms =
-
-(including x86/amd in this case), and preform optimally on all of them.
-
-So the 'n' option basically is saying that the latest FIE code doesn't =
-
-provide a befit anywhere?
-
-
 > =
 
 > commit 4c38f2df71c8e33c0b64865992d693f5022eeaad
@@ -126,5 +124,5 @@ provide a befit anywhere?
 > Regards,
 > Lukasz
 
---===============8811582470295423193==--
+--===============2936316422839270420==--
 
