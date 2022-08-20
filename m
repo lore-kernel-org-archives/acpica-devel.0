@@ -1,215 +1,389 @@
-Content-Type: multipart/mixed; boundary="===============3221609243358179654=="
+Content-Type: multipart/mixed; boundary="===============7428918893004907527=="
 MIME-Version: 1.0
-From: Jeremy Linton <jeremy.linton at arm.com>
-Subject: [Devel] [PATCH v4 1/2] ACPI: CPPC: Disable FIE if registers in PCC
- regions
-Date: Fri, 19 Aug 2022 11:25:46 -0500
-Message-ID: <20220819162547.141333-2-jeremy.linton@arm.com>
-In-Reply-To: 20220819162547.141333-1-jeremy.linton@arm.com
+From: Rafael J. Wysocki <rafael at kernel.org>
+Subject: [Devel] Re: Bug: Re: [PATCH v3] ACPI: Split out processor thermal
+ register from ACPI PSS
+Date: Sat, 20 Aug 2022 14:20:45 +0200
+Message-ID: <CAJZ5v0hzYbZR0p_O3u1d6BA05Zmkm-QvB+mjSCub6MMc6hqWJQ@mail.gmail.com>
+In-Reply-To: 6e61d429-9020-53f3-458e-bb265d47b8f4@arm.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============3221609243358179654==
+--===============7428918893004907527==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-PCC regions utilize a mailbox to set/retrieve register values used by
-the CPPC code. This is fine as long as the operations are
-infrequent. With the FIE code enabled though the overhead can range
-from 2-11% of system CPU overhead (ex: as measured by top) on Arm
-based machines.
+On Thu, Aug 18, 2022 at 10:23 PM Jeremy Linton <jeremy.linton(a)arm.com> wr=
+ote:
+>
+> Hi,
+>
+> On 6/16/22 21:51, Riwen Lu wrote:
+> > From: Riwen Lu <luriwen(a)kylinos.cn>
+> >
+> > Commit 239708a3af44 ("ACPI: Split out ACPI PSS from ACPI Processor
+> > driver"), moves processor thermal registration to acpi_pss_perf_init(),
+> > which doesn't get executed if ACPI_CPU_FREQ_PSS is not enabled.
+> >
+> > As ARM64 supports P-states using CPPC, it should be possible to also
+> > support processor passive cooling even if PSS is not enabled. Split
+> > out the processor thermal cooling register from ACPI PSS to support
+> > this, and move it into a separate function in processor_thermal.c.
+>
+> It appears this commit 7fdc74da940d ACPI: processor: Split out thermal
+> initialization from ACPI PSS
 
-So, before enabling FIE assure none of the registers used by
-cppc_get_perf_ctrs() are in the PCC region. Furthermore lets also
-enable a module parameter which can also disable it at boot or module
-reload.
+I've just reverted the above commit, thanks for the report!
 
-Signed-off-by: Jeremy Linton <jeremy.linton(a)arm.com>
----
- drivers/acpi/cppc_acpi.c       | 41 ++++++++++++++++++++++++++++++++++
- drivers/cpufreq/cppc_cpufreq.c | 31 +++++++++++++++++++++----
- include/acpi/cppc_acpi.h       |  5 +++++
- 3 files changed, 73 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-index 1e15a9f25ae9..c840bf606b30 100644
---- a/drivers/acpi/cppc_acpi.c
-+++ b/drivers/acpi/cppc_acpi.c
-@@ -1240,6 +1240,47 @@ int cppc_get_perf_caps(int cpunum, struct cppc_perf_=
-caps *perf_caps)
- }
- EXPORT_SYMBOL_GPL(cppc_get_perf_caps);
- =
-
-+/**
-+ * cppc_perf_ctrs_in_pcc - Check if any perf counters are in a PCC region.
-+ *
-+ * CPPC has flexibility about how counters describing CPU perf are deliver=
-ed.
-+ * One of the choices is PCC regions, which can have a high access latency=
-. This
-+ * routine allows callers of cppc_get_perf_ctrs() to know this ahead of ti=
-me.
-+ *
-+ * Return: true if any of the counters are in PCC regions, false otherwise
-+ */
-+bool cppc_perf_ctrs_in_pcc(void)
-+{
-+	int cpu;
-+
-+	for_each_present_cpu(cpu) {
-+		struct cpc_register_resource *ref_perf_reg;
-+		struct cpc_desc *cpc_desc;
-+
-+		cpc_desc =3D per_cpu(cpc_desc_ptr, cpu);
-+
-+		if (CPC_IN_PCC(&cpc_desc->cpc_regs[DELIVERED_CTR]) ||
-+		    CPC_IN_PCC(&cpc_desc->cpc_regs[REFERENCE_CTR]) ||
-+		    CPC_IN_PCC(&cpc_desc->cpc_regs[CTR_WRAP_TIME]))
-+			return true;
-+
-+
-+		ref_perf_reg =3D &cpc_desc->cpc_regs[REFERENCE_PERF];
-+
-+		/*
-+		 * If reference perf register is not supported then we should
-+		 * use the nominal perf value
-+		 */
-+		if (!CPC_SUPPORTED(ref_perf_reg))
-+			ref_perf_reg =3D &cpc_desc->cpc_regs[NOMINAL_PERF];
-+
-+		if (CPC_IN_PCC(ref_perf_reg))
-+			return true;
-+	}
-+	return false;
-+}
-+EXPORT_SYMBOL_GPL(cppc_perf_ctrs_in_pcc);
-+
- /**
-  * cppc_get_perf_ctrs - Read a CPU's performance feedback counters.
-  * @cpunum: CPU from which to read counters.
-diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
-index 24eaf0ec344d..32fcb0bf74a4 100644
---- a/drivers/cpufreq/cppc_cpufreq.c
-+++ b/drivers/cpufreq/cppc_cpufreq.c
-@@ -63,7 +63,15 @@ static struct cppc_workaround_oem_info wa_info[] =3D {
- =
-
- static struct cpufreq_driver cppc_cpufreq_driver;
- =
-
-+static enum {
-+	FIE_UNSET =3D -1,
-+	FIE_ENABLED,
-+	FIE_DISABLED
-+} fie_disabled =3D FIE_UNSET;
-+
- #ifdef CONFIG_ACPI_CPPC_CPUFREQ_FIE
-+module_param(fie_disabled, int, 0444);
-+MODULE_PARM_DESC(fie_disabled, "Disable Frequency Invariance Engine (FIE)"=
+> Is causing the following:
+>     41.341659] ------------[ cut here ]------------
+> [   41.346280] freq_qos_remove_request() called for unknown object
+> [   41.352251] WARNING: CPU: 3 PID: 1089 at kernel/power/qos.c:597
+> freq_qos_remove_request+0xa4/0xc4
+> [   41.361152] Modules linked in: nf_nat_tftp nft_objref
+> nf_conntrack_tftp nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 nft_fib
+> nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct
+> nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 ip_set
+> nf_tables nfnetlink qrtr bnep sunrpc vfat fat btsdio brcmfmac hci_uart
+> btqca cfg80211 bs
+> [   41.413245] CPU: 3 PID: 1089 Comm: rmmod Not tainted 6.0.0-rc1MINI+ #2=
+37
+> [   41.419951] Hardware name: Raspberry Pi Foundation Raspberry Pi 4
+> Model B/Raspberry Pi 4 Model B, BIOS EDK2-DEV 07/18/2022
+> [   41.430990] pstate: 40400005 (nZcv daif +PAN -UAO -TCO -DIT -SSBS
+> BTYPE=3D--)
+> [   41.437955] pc : freq_qos_remove_request+0xa4/0xc4
+> [   41.442752] lr : freq_qos_remove_request+0xa4/0xc4
+> [   41.447550] sp : ffff80000a4bbb60
+> [   41.450862] x29: ffff80000a4bbb60 x28: ffff07858798a1c0 x27:
+> 0000000000000000
+> [   41.458012] x26: 0000000000000000 x25: ffffdf6ade80f850 x24:
+> ffff07858b07d200
+> [   41.465158] x23: ffffdf6ade812cb0 x22: ffff07858b07d000 x21:
+> ffffdf6ade80f850
+> [   41.472303] x20: ffffdf6ade26b998 x19: ffff0785809ba5a8 x18:
+> ffffffffffffffff
+> [   41.479447] x17: 0000000000000000 x16: ffffdf6adcc25320 x15:
+> 0000000000000006
+> [   41.486592] x14: 0000000000000000 x13: 7463656a626f206e x12:
+> 776f6e6b6e752072
+> [   41.493736] x11: 00000000ffffdfff x10: ffffdf6ade8fd520 x9 :
+> ffffdf6adcae53ac
+> [   41.500881] x8 : 000000000002ffe8 x7 : c0000000ffffdfff x6 :
+> 0000000000000001
+> [   41.508026] x5 : 0000000000000000 x4 : ffff07863b7ac450 x3 :
+> ffff07863b7b8bb0
+> [   41.515170] x2 : 0000000000000001 x1 : ffff281b5d54f000 x0 :
+> 0000000000000033
+> [   41.522315] Call trace:
+> [   41.524759]  freq_qos_remove_request+0xa4/0xc4
+> [   41.529210]  acpi_thermal_cpufreq_exit+0x90/0xb0
+> [   41.533834]  acpi_processor_notifier+0x74/0x90
+> [   41.538281]  blocking_notifier_call_chain+0x78/0xb0
+> [   41.543161]  cpufreq_policy_free+0x154/0x1e0
+> [   41.547438]  cpufreq_remove_dev+0xc0/0x10c
+> [   41.551538]  subsys_interface_unregister+0xf0/0xfc
+> [   41.556335]  cpufreq_unregister_driver+0x54/0x120
+> [   41.561043]  cppc_cpufreq_exit+0x28/0xd2c [cppc_cpufreq]
+> [   41.566370]  __do_sys_delete_module.constprop.0+0x150/0x2bc
+> [   41.571947]  __arm64_sys_delete_module+0x20/0x30
+> [   41.576567]  invoke_syscall+0x50/0x120
+> [   41.580318]  el0_svc_common.constprop.0+0x4c/0xf4
+> [   41.585023]  do_el0_svc+0x38/0x4c
+> [   41.588338]  el0_svc+0x34/0xdc
+> [   41.591394]  el0t_64_sync_handler+0x11c/0x150
+> [   41.595752]  el0t_64_sync+0x190/0x194
+> [   41.599416] ---[ end trace 0000000000000000 ]---
+>
+> When the cppc_cpufreq driver is rmmod'ed from a running machine that has
+> both CPPC and a thermal zone. I reverted and bisected it, and in both
+> cases the splat above goes away.
+>
+>
+> Thanks,
+>
+> >
+> > Signed-off-by: Riwen Lu <luriwen(a)kylinos.cn>
+> >
+> > ---
+> > v1 -> v2:
+> >   - Reword the commit message.
+> >   - Update the signature of acpi_pss_perf_init() to void, and remove the
+> >     acpi_device parameter.
+> >   - Move the processor thermal register/remove into a separate function=
+ in
+> >     processor_thermal.c.
+> >
+> > v2 -> v3:
+> >   - Remove the "pr" NULL check in processor thermal init/exit fuction.
+> >   - Pass the acpi_device into processor thermal init/exit, and remove t=
+he
+> >     convert in it.
+> > ---
+> >   drivers/acpi/Kconfig             |  2 +-
+> >   drivers/acpi/Makefile            |  5 +--
+> >   drivers/acpi/processor_driver.c  | 72 ++++----------------------------
+> >   drivers/acpi/processor_thermal.c | 54 ++++++++++++++++++++++++
+> >   include/acpi/processor.h         |  8 +++-
+> >   5 files changed, 71 insertions(+), 70 deletions(-)
+> >
+> > diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
+> > index 1e34f846508f..2457ade3f82d 100644
+> > --- a/drivers/acpi/Kconfig
+> > +++ b/drivers/acpi/Kconfig
+> > @@ -255,7 +255,6 @@ config ACPI_DOCK
+> >
+> >   config ACPI_CPU_FREQ_PSS
+> >       bool
+> > -     select THERMAL
+> >
+> >   config ACPI_PROCESSOR_CSTATE
+> >       def_bool y
+> > @@ -287,6 +286,7 @@ config ACPI_PROCESSOR
+> >       depends on X86 || IA64 || ARM64 || LOONGARCH
+> >       select ACPI_PROCESSOR_IDLE
+> >       select ACPI_CPU_FREQ_PSS if X86 || IA64 || LOONGARCH
+> > +     select THERMAL
+> >       default y
+> >       help
+> >         This driver adds support for the ACPI Processor package. It is =
+required
+> > diff --git a/drivers/acpi/Makefile b/drivers/acpi/Makefile
+> > index b5a8d3e00a52..0002eecbf870 100644
+> > --- a/drivers/acpi/Makefile
+> > +++ b/drivers/acpi/Makefile
+> > @@ -109,10 +109,9 @@ obj-$(CONFIG_ACPI_PPTT)  +=3D pptt.o
+> >   obj-$(CONFIG_ACPI_PFRUT)    +=3D pfr_update.o pfr_telemetry.o
+> >
+> >   # processor has its own "processor." module_param namespace
+> > -processor-y                  :=3D processor_driver.o
+> > +processor-y                  :=3D processor_driver.o processor_thermal=
+.o
+> >   processor-$(CONFIG_ACPI_PROCESSOR_IDLE) +=3D processor_idle.o
+> > -processor-$(CONFIG_ACPI_CPU_FREQ_PSS)        +=3D processor_throttling=
+.o       \
+> > -     processor_thermal.o
+> > +processor-$(CONFIG_ACPI_CPU_FREQ_PSS)        +=3D processor_throttling=
+.o
+> >   processor-$(CONFIG_CPU_FREQ)        +=3D processor_perflib.o
+> >
+> >   obj-$(CONFIG_ACPI_PROCESSOR_AGGREGATOR) +=3D acpi_pad.o
+> > diff --git a/drivers/acpi/processor_driver.c b/drivers/acpi/processor_d=
+river.c
+> > index 368a9edefd0c..1278969eec1f 100644
+> > --- a/drivers/acpi/processor_driver.c
+> > +++ b/drivers/acpi/processor_driver.c
+> > @@ -139,75 +139,17 @@ static int acpi_soft_cpu_dead(unsigned int cpu)
+> >   }
+> >
+> >   #ifdef CONFIG_ACPI_CPU_FREQ_PSS
+> > -static int acpi_pss_perf_init(struct acpi_processor *pr,
+> > -             struct acpi_device *device)
+> > +static void acpi_pss_perf_init(struct acpi_processor *pr)
+> >   {
+> > -     int result =3D 0;
+> > -
+> >       acpi_processor_ppc_has_changed(pr, 0);
+> >
+> >       acpi_processor_get_throttling_info(pr);
+> >
+> >       if (pr->flags.throttling)
+> >               pr->flags.limit =3D 1;
+> > -
+> > -     pr->cdev =3D thermal_cooling_device_register("Processor", device,
+> > -                                                &processor_cooling_ops=
 );
- =
-
- /* Frequency invariance support */
- struct cppc_freq_invariance {
-@@ -158,7 +166,7 @@ static void cppc_cpufreq_cpu_fie_init(struct cpufreq_po=
-licy *policy)
- 	struct cppc_freq_invariance *cppc_fi;
- 	int cpu, ret;
- =
-
--	if (cppc_cpufreq_driver.get =3D=3D hisi_cppc_cpufreq_get_rate)
-+	if (fie_disabled)
- 		return;
- =
-
- 	for_each_cpu(cpu, policy->cpus) {
-@@ -199,7 +207,7 @@ static void cppc_cpufreq_cpu_fie_exit(struct cpufreq_po=
-licy *policy)
- 	struct cppc_freq_invariance *cppc_fi;
- 	int cpu;
- =
-
--	if (cppc_cpufreq_driver.get =3D=3D hisi_cppc_cpufreq_get_rate)
-+	if (fie_disabled)
- 		return;
- =
-
- 	/* policy->cpus will be empty here, use related_cpus instead */
-@@ -229,7 +237,21 @@ static void __init cppc_freq_invariance_init(void)
- 	};
- 	int ret;
- =
-
--	if (cppc_cpufreq_driver.get =3D=3D hisi_cppc_cpufreq_get_rate)
-+	switch (fie_disabled) {
-+	/* honor user request */
-+	case FIE_DISABLED:
-+	case FIE_ENABLED:
-+		break;
-+	case FIE_UNSET:
-+	default:
-+		fie_disabled =3D FIE_ENABLED;
-+		if (cppc_perf_ctrs_in_pcc()) {
-+			pr_info("FIE not enabled on systems with registers in PCC\n");
-+			fie_disabled =3D FIE_DISABLED;
-+		}
-+		break;
-+	}
-+	if (fie_disabled)
- 		return;
- =
-
- 	kworker_fie =3D kthread_create_worker(0, "cppc_fie");
-@@ -247,7 +269,7 @@ static void __init cppc_freq_invariance_init(void)
- =
-
- static void cppc_freq_invariance_exit(void)
- {
--	if (cppc_cpufreq_driver.get =3D=3D hisi_cppc_cpufreq_get_rate)
-+	if (fie_disabled)
- 		return;
- =
-
- 	kthread_destroy_worker(kworker_fie);
-@@ -936,6 +958,7 @@ static void cppc_check_hisi_workaround(void)
- 		    wa_info[i].oem_revision =3D=3D tbl->oem_revision) {
- 			/* Overwrite the get() callback */
- 			cppc_cpufreq_driver.get =3D hisi_cppc_cpufreq_get_rate;
-+			fie_disabled =3D FIE_DISABLED;
- 			break;
- 		}
- 	}
-diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
-index f73d357ecdf5..c5614444031f 100644
---- a/include/acpi/cppc_acpi.h
-+++ b/include/acpi/cppc_acpi.h
-@@ -140,6 +140,7 @@ extern int cppc_get_perf_ctrs(int cpu, struct cppc_perf=
-_fb_ctrs *perf_fb_ctrs);
- extern int cppc_set_perf(int cpu, struct cppc_perf_ctrls *perf_ctrls);
- extern int cppc_set_enable(int cpu, bool enable);
- extern int cppc_get_perf_caps(int cpu, struct cppc_perf_caps *caps);
-+extern bool cppc_perf_ctrs_in_pcc(void);
- extern bool acpi_cpc_valid(void);
- extern bool cppc_allow_fast_switch(void);
- extern int acpi_get_psd_map(unsigned int cpu, struct cppc_cpudata *cpu_dat=
-a);
-@@ -173,6 +174,10 @@ static inline int cppc_get_perf_caps(int cpu, struct c=
-ppc_perf_caps *caps)
- {
- 	return -ENOTSUPP;
- }
-+static inline bool cppc_perf_ctrs_in_pcc(void)
-+{
-+	return false;
-+}
- static inline bool acpi_cpc_valid(void)
- {
- 	return false;
--- =
-
-2.37.1
-
---===============3221609243358179654==--
+> > -     if (IS_ERR(pr->cdev)) {
+> > -             result =3D PTR_ERR(pr->cdev);
+> > -             return result;
+> > -     }
+> > -
+> > -     dev_dbg(&device->dev, "registered as cooling_device%d\n",
+> > -             pr->cdev->id);
+> > -
+> > -     result =3D sysfs_create_link(&device->dev.kobj,
+> > -                                &pr->cdev->device.kobj,
+> > -                                "thermal_cooling");
+> > -     if (result) {
+> > -             dev_err(&device->dev,
+> > -                     "Failed to create sysfs link 'thermal_cooling'\n"=
+);
+> > -             goto err_thermal_unregister;
+> > -     }
+> > -
+> > -     result =3D sysfs_create_link(&pr->cdev->device.kobj,
+> > -                                &device->dev.kobj,
+> > -                                "device");
+> > -     if (result) {
+> > -             dev_err(&pr->cdev->device,
+> > -                     "Failed to create sysfs link 'device'\n");
+> > -             goto err_remove_sysfs_thermal;
+> > -     }
+> > -
+> > -     return 0;
+> > -
+> > - err_remove_sysfs_thermal:
+> > -     sysfs_remove_link(&device->dev.kobj, "thermal_cooling");
+> > - err_thermal_unregister:
+> > -     thermal_cooling_device_unregister(pr->cdev);
+> > -
+> > -     return result;
+> > -}
+> > -
+> > -static void acpi_pss_perf_exit(struct acpi_processor *pr,
+> > -             struct acpi_device *device)
+> > -{
+> > -     if (pr->cdev) {
+> > -             sysfs_remove_link(&device->dev.kobj, "thermal_cooling");
+> > -             sysfs_remove_link(&pr->cdev->device.kobj, "device");
+> > -             thermal_cooling_device_unregister(pr->cdev);
+> > -             pr->cdev =3D NULL;
+> > -     }
+> >   }
+> >   #else
+> > -static inline int acpi_pss_perf_init(struct acpi_processor *pr,
+> > -             struct acpi_device *device)
+> > -{
+> > -     return 0;
+> > -}
+> > -
+> > -static inline void acpi_pss_perf_exit(struct acpi_processor *pr,
+> > -             struct acpi_device *device) {}
+> > +static inline void acpi_pss_perf_init(struct acpi_processor *pr) {}
+> >   #endif /* CONFIG_ACPI_CPU_FREQ_PSS */
+> >
+> >   static int __acpi_processor_start(struct acpi_device *device)
+> > @@ -229,7 +171,9 @@ static int __acpi_processor_start(struct acpi_devic=
+e *device)
+> >       if (!cpuidle_get_driver() || cpuidle_get_driver() =3D=3D &acpi_id=
+le_driver)
+> >               acpi_processor_power_init(pr);
+> >
+> > -     result =3D acpi_pss_perf_init(pr, device);
+> > +     acpi_pss_perf_init(pr);
+> > +
+> > +     result =3D acpi_processor_thermal_init(pr, device);
+> >       if (result)
+> >               goto err_power_exit;
+> >
+> > @@ -239,7 +183,7 @@ static int __acpi_processor_start(struct acpi_devic=
+e *device)
+> >               return 0;
+> >
+> >       result =3D -ENODEV;
+> > -     acpi_pss_perf_exit(pr, device);
+> > +     acpi_processor_thermal_exit(pr, device);
+> >
+> >   err_power_exit:
+> >       acpi_processor_power_exit(pr);
+> > @@ -277,10 +221,10 @@ static int acpi_processor_stop(struct device *dev)
+> >               return 0;
+> >       acpi_processor_power_exit(pr);
+> >
+> > -     acpi_pss_perf_exit(pr, device);
+> > -
+> >       acpi_cppc_processor_exit(pr);
+> >
+> > +     acpi_processor_thermal_exit(pr, device);
+> > +
+> >       return 0;
+> >   }
+> >
+> > diff --git a/drivers/acpi/processor_thermal.c b/drivers/acpi/processor_=
+thermal.c
+> > index d8b2dfcd59b5..db6ac540e924 100644
+> > --- a/drivers/acpi/processor_thermal.c
+> > +++ b/drivers/acpi/processor_thermal.c
+> > @@ -266,3 +266,57 @@ const struct thermal_cooling_device_ops processor_=
+cooling_ops =3D {
+> >       .get_cur_state =3D processor_get_cur_state,
+> >       .set_cur_state =3D processor_set_cur_state,
+> >   };
+> > +
+> > +int acpi_processor_thermal_init(struct acpi_processor *pr,
+> > +                             struct acpi_device *device)
+> > +{
+> > +     int result =3D 0;
+> > +
+> > +     pr->cdev =3D thermal_cooling_device_register("Processor", device,
+> > +                                                &processor_cooling_ops=
+);
+> > +     if (IS_ERR(pr->cdev)) {
+> > +             result =3D PTR_ERR(pr->cdev);
+> > +             return result;
+> > +     }
+> > +
+> > +     dev_dbg(&device->dev, "registered as cooling_device%d\n",
+> > +             pr->cdev->id);
+> > +
+> > +     result =3D sysfs_create_link(&device->dev.kobj,
+> > +                                &pr->cdev->device.kobj,
+> > +                                "thermal_cooling");
+> > +     if (result) {
+> > +             dev_err(&device->dev,
+> > +                     "Failed to create sysfs link 'thermal_cooling'\n"=
+);
+> > +             goto err_thermal_unregister;
+> > +     }
+> > +
+> > +     result =3D sysfs_create_link(&pr->cdev->device.kobj,
+> > +                                &device->dev.kobj,
+> > +                                "device");
+> > +     if (result) {
+> > +             dev_err(&pr->cdev->device,
+> > +                     "Failed to create sysfs link 'device'\n");
+> > +             goto err_remove_sysfs_thermal;
+> > +     }
+> > +
+> > +     return 0;
+> > +
+> > +err_remove_sysfs_thermal:
+> > +     sysfs_remove_link(&device->dev.kobj, "thermal_cooling");
+> > +err_thermal_unregister:
+> > +     thermal_cooling_device_unregister(pr->cdev);
+> > +
+> > +     return result;
+> > +}
+> > +
+> > +void acpi_processor_thermal_exit(struct acpi_processor *pr,
+> > +                              struct acpi_device *device)
+> > +{
+> > +     if (pr->cdev) {
+> > +             sysfs_remove_link(&device->dev.kobj, "thermal_cooling");
+> > +             sysfs_remove_link(&pr->cdev->device.kobj, "device");
+> > +             thermal_cooling_device_unregister(pr->cdev);
+> > +             pr->cdev =3D NULL;
+> > +     }
+> > +}
+> > diff --git a/include/acpi/processor.h b/include/acpi/processor.h
+> > index 194027371928..ba1e3ed98d3d 100644
+> > --- a/include/acpi/processor.h
+> > +++ b/include/acpi/processor.h
+> > @@ -442,8 +442,12 @@ static inline int acpi_processor_hotplug(struct ac=
+pi_processor *pr)
+> >
+> >   /* in processor_thermal.c */
+> >   int acpi_processor_get_limit_info(struct acpi_processor *pr);
+> > +int acpi_processor_thermal_init(struct acpi_processor *pr,
+> > +                             struct acpi_device *device);
+> > +void acpi_processor_thermal_exit(struct acpi_processor *pr,
+> > +                              struct acpi_device *device);
+> >   extern const struct thermal_cooling_device_ops processor_cooling_ops;
+> > -#if defined(CONFIG_ACPI_CPU_FREQ_PSS) & defined(CONFIG_CPU_FREQ)
+> > +#ifdef CONFIG_CPU_FREQ
+> >   void acpi_thermal_cpufreq_init(struct cpufreq_policy *policy);
+> >   void acpi_thermal_cpufreq_exit(struct cpufreq_policy *policy);
+> >   #else
+> > @@ -455,6 +459,6 @@ static inline void acpi_thermal_cpufreq_exit(struct=
+ cpufreq_policy *policy)
+> >   {
+> >       return;
+> >   }
+> > -#endif       /* CONFIG_ACPI_CPU_FREQ_PSS */
+> > +#endif       /* CONFIG_CPU_FREQ */
+> >
+> >   #endif
+>
+--===============7428918893004907527==--
 
