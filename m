@@ -1,166 +1,226 @@
-Content-Type: multipart/mixed; boundary="===============8749373849810636513=="
+Content-Type: multipart/mixed; boundary="===============1521048427029796369=="
 MIME-Version: 1.0
 From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: Bug: Re: [PATCH v3] ACPI: Split out processor thermal
- register from ACPI PSS
-Date: Tue, 23 Aug 2022 14:13:39 +0200
-Message-ID: <CAJZ5v0iV_J1=R0Dwku-MCcMiFu3VLTeSGO0djbqVsNZ41EmJ1Q@mail.gmail.com>
-In-Reply-To: TYWP286MB2601932308C37E9ABC224FB0B1709@TYWP286MB2601.JPNP286.PROD.OUTLOOK.COM
+Subject: [Devel] Re: [PATCH v3 1/2] ACPI: CPPC: Disable FIE if registers in
+ PCC regions
+Date: Tue, 23 Aug 2022 19:10:12 +0200
+Message-ID: <CAJZ5v0h7s0WnyBtwuQbTZXwq+jmYDF74gjc9-c-=Krt23KgF1w@mail.gmail.com>
+In-Reply-To: 20220818211619.4193362-2-jeremy.linton@arm.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8749373849810636513==
+--===============1521048427029796369==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Aug 23, 2022 at 6:33 AM Riwen Lu <luriwen(a)hotmail.com> wrote:
+On Thu, Aug 18, 2022 at 11:24 PM Jeremy Linton <jeremy.linton(a)arm.com> wr=
+ote:
 >
-> =E5=9C=A8 2022/8/23 09:15, Riwen Lu =E5=86=99=E9=81=93:
-> > =E5=9C=A8 2022/8/22 20:25, Rafael J. Wysocki =E5=86=99=E9=81=93:
-> >> On Mon, Aug 22, 2022 at 10:19 AM Riwen Lu <luriwen(a)hotmail.com> wrot=
-e:
-> >>>
-> >>> =E5=9C=A8 2022/8/19 04:23, Jeremy Linton =E5=86=99=E9=81=93:
-> >>>> Hi,
-> >>>>
-> >>>> On 6/16/22 21:51, Riwen Lu wrote:
-> >>>>> From: Riwen Lu <luriwen(a)kylinos.cn>
-> >>>>>
-> >>>>> Commit 239708a3af44 ("ACPI: Split out ACPI PSS from ACPI Processor
-> >>>>> driver"), moves processor thermal registration to
-> >>>>> acpi_pss_perf_init(),
-> >>>>> which doesn't get executed if ACPI_CPU_FREQ_PSS is not enabled.
-> >>>>>
-> >>>>> As ARM64 supports P-states using CPPC, it should be possible to also
-> >>>>> support processor passive cooling even if PSS is not enabled. Split
-> >>>>> out the processor thermal cooling register from ACPI PSS to support
-> >>>>> this, and move it into a separate function in processor_thermal.c.
-> >>>>
-> >>>> It appears this commit 7fdc74da940d ACPI: processor: Split out therm=
-al
-> >>>> initialization from ACPI PSS
-> >>>>
-> >>>> Is causing the following:
-> >>>>      41.341659] ------------[ cut here ]------------
-> >>>> [   41.346280] freq_qos_remove_request() called for unknown object
-> >>>> [   41.352251] WARNING: CPU: 3 PID: 1089 at kernel/power/qos.c:597
-> >>>> freq_qos_remove_request+0xa4/0xc4
-> >>>> [   41.361152] Modules linked in: nf_nat_tftp nft_objref
-> >>>> nf_conntrack_tftp nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 nft_fib
-> >>>> nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct
-> >>>> nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 ip_s=
-et
-> >>>> nf_tables nfnetlink qrtr bnep sunrpc vfat fat btsdio brcmfmac hci_ua=
-rt
-> >>>> btqca cfg80211 bs
-> >>>> [   41.413245] CPU: 3 PID: 1089 Comm: rmmod Not tainted
-> >>>> 6.0.0-rc1MINI+ #237
-> >>>> [   41.419951] Hardware name: Raspberry Pi Foundation Raspberry Pi 4
-> >>>> Model B/Raspberry Pi 4 Model B, BIOS EDK2-DEV 07/18/2022
-> >>>> [   41.430990] pstate: 40400005 (nZcv daif +PAN -UAO -TCO -DIT -SSBS
-> >>>> BTYPE=3D--)
-> >>>> [   41.437955] pc : freq_qos_remove_request+0xa4/0xc4
-> >>>> [   41.442752] lr : freq_qos_remove_request+0xa4/0xc4
-> >>>> [   41.447550] sp : ffff80000a4bbb60
-> >>>> [   41.450862] x29: ffff80000a4bbb60 x28: ffff07858798a1c0 x27:
-> >>>> 0000000000000000
-> >>>> [   41.458012] x26: 0000000000000000 x25: ffffdf6ade80f850 x24:
-> >>>> ffff07858b07d200
-> >>>> [   41.465158] x23: ffffdf6ade812cb0 x22: ffff07858b07d000 x21:
-> >>>> ffffdf6ade80f850
-> >>>> [   41.472303] x20: ffffdf6ade26b998 x19: ffff0785809ba5a8 x18:
-> >>>> ffffffffffffffff
-> >>>> [   41.479447] x17: 0000000000000000 x16: ffffdf6adcc25320 x15:
-> >>>> 0000000000000006
-> >>>> [   41.486592] x14: 0000000000000000 x13: 7463656a626f206e x12:
-> >>>> 776f6e6b6e752072
-> >>>> [   41.493736] x11: 00000000ffffdfff x10: ffffdf6ade8fd520 x9 :
-> >>>> ffffdf6adcae53ac
-> >>>> [   41.500881] x8 : 000000000002ffe8 x7 : c0000000ffffdfff x6 :
-> >>>> 0000000000000001
-> >>>> [   41.508026] x5 : 0000000000000000 x4 : ffff07863b7ac450 x3 :
-> >>>> ffff07863b7b8bb0
-> >>>> [   41.515170] x2 : 0000000000000001 x1 : ffff281b5d54f000 x0 :
-> >>>> 0000000000000033
-> >>>> [   41.522315] Call trace:
-> >>>> [   41.524759]  freq_qos_remove_request+0xa4/0xc4
-> >>>> [   41.529210]  acpi_thermal_cpufreq_exit+0x90/0xb0
-> >>>> [   41.533834]  acpi_processor_notifier+0x74/0x90
-> >>>> [   41.538281]  blocking_notifier_call_chain+0x78/0xb0
-> >>>> [   41.543161]  cpufreq_policy_free+0x154/0x1e0
-> >>>> [   41.547438]  cpufreq_remove_dev+0xc0/0x10c
-> >>>> [   41.551538]  subsys_interface_unregister+0xf0/0xfc
-> >>>> [   41.556335]  cpufreq_unregister_driver+0x54/0x120
-> >>>> [   41.561043]  cppc_cpufreq_exit+0x28/0xd2c [cppc_cpufreq]
-> >>>> [   41.566370]  __do_sys_delete_module.constprop.0+0x150/0x2bc
-> >>>> [   41.571947]  __arm64_sys_delete_module+0x20/0x30
-> >>>> [   41.576567]  invoke_syscall+0x50/0x120
-> >>>> [   41.580318]  el0_svc_common.constprop.0+0x4c/0xf4
-> >>>> [   41.585023]  do_el0_svc+0x38/0x4c
-> >>>> [   41.588338]  el0_svc+0x34/0xdc
-> >>>> [   41.591394]  el0t_64_sync_handler+0x11c/0x150
-> >>>> [   41.595752]  el0t_64_sync+0x190/0x194
-> >>>> [   41.599416] ---[ end trace 0000000000000000 ]---
-> >>>>
-> >>>> When the cppc_cpufreq driver is rmmod'ed from a running machine that
-> >>>> has
-> >>>> both CPPC and a thermal zone. I reverted and bisected it, and in both
-> >>>> cases the splat above goes away.
-> >>>
-> >>> Did you enable the option ACPI_CPU_FREQ_PSS ? When I reverted the com=
-mit
-> >>> 7fdc74da940d and enable ACPI_CPU_FREQ_PSS, the warning above also
-> >>> appears.
-> >>
-> >> AFAICS, this option is enabled automatically on all architectures
-> >> other than ARM64 when the ACPI processor driver is enabled, so I'm not
-> >> sure what you mean.
-> >
-> > I mean the commit 7fdc74da940d is not the real cause of the warning
-> > reported by Jeremy Linton. And Jeremy Linton=E2=80=98s hardware is Rasp=
-berry Pi
-> > 4, arm platform.
-> >
-> > I've debugged it in arm64 machine that has both CPPC and a thermal zone:
-> > If the processor thermal registered, and rmmod the cppc_cpufreq driver,
-> > the warning Jeremy Linton reported appears. Otherwise, there is no warn=
-ing.
-> >
-> > I'll continue to debug why it cause warnings.
-> >
-> > Thanks.
+> PCC regions utilize a mailbox to set/retrieve register values used by
+> the CPPC code. This is fine as long as the operations are
+> infrequent. With the FIE code enabled though the overhead can range
+> from 2-11% of system CPU overhead (ex: as measured by top) on Arm
+> based machines.
 >
-> Hi,
->      I've figured out why it happens.
+> So, before enabling FIE assure none of the registers used by
+> cppc_get_perf_ctrs() are in the PCC region. Furthermore lets also
+> enable a module parameter which can also disable it at boot or module
+> reload.
 >
->      In func acpi_thermal_cpufreq_exit, it get struct acpi_processor *pr
-> through policy->cpu, then the qos of it would be removed multi times if
-> the policy has related to multi cpus.
->      It seems commit a1bb46c36ce3 ("ACPI: processor: Add QoS requests
-> for all CPUs") forgot to change the code from policy->cpu to each cpu.
+> Signed-off-by: Jeremy Linton <jeremy.linton(a)arm.com>
+> ---
+>  drivers/acpi/cppc_acpi.c       | 41 ++++++++++++++++++++++++++++++++++
+>  drivers/cpufreq/cppc_cpufreq.c | 31 +++++++++++++++++++++----
+>  include/acpi/cppc_acpi.h       |  5 +++++
+>  3 files changed, 73 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+> index 1e15a9f25ae9..c840bf606b30 100644
+> --- a/drivers/acpi/cppc_acpi.c
+> +++ b/drivers/acpi/cppc_acpi.c
+> @@ -1240,6 +1240,47 @@ int cppc_get_perf_caps(int cpunum, struct cppc_per=
+f_caps *perf_caps)
+>  }
+>  EXPORT_SYMBOL_GPL(cppc_get_perf_caps);
+>
+> +/**
+> + * cppc_perf_ctrs_in_pcc - Check if any perf counters are in a PCC regio=
+n.
+> + *
+> + * CPPC has flexibility about how counters describing CPU perf are deliv=
+ered.
 
-Right.
+"CPU performance counters are accessed"
 
-> Apply the diff below, the warning disappears.
-> diff --git a/drivers/acpi/processor_thermal.c
-> b/drivers/acpi/processor_thermal.c
-> index db6ac540e924..e534fd49a67e 100644
-> --- a/drivers/acpi/processor_thermal.c
-> +++ b/drivers/acpi/processor_thermal.c
-> @@ -151,7 +151,7 @@ void acpi_thermal_cpufreq_exit(struct cpufreq_policy
-> *policy)
->          unsigned int cpu;
->
->          for_each_cpu(cpu, policy->related_cpus) {
-> -               struct acpi_processor *pr =3D per_cpu(processors,
-> policy->cpu);
-> +               struct acpi_processor *pr =3D per_cpu(processors, cpu);
->
->                  if (pr)
->                          freq_qos_remove_request(&pr->thermal_req);
->
 
-Yeah, good catch!
---===============8749373849810636513==--
+> + * One of the choices is PCC regions, which can have a high access laten=
+cy. This
+> + * routine allows callers of cppc_get_perf_ctrs() to know this ahead of =
+time.
+> + *
+> + * Return: true if any of the counters are in PCC regions, false otherwi=
+se
+> + */
+> +bool cppc_perf_ctrs_in_pcc(void)
+> +{
+> +       int cpu;
+> +
+> +       for_each_present_cpu(cpu) {
+> +               struct cpc_register_resource *ref_perf_reg;
+> +               struct cpc_desc *cpc_desc;
+> +
+> +               cpc_desc =3D per_cpu(cpc_desc_ptr, cpu);
+> +
+> +               if (CPC_IN_PCC(&cpc_desc->cpc_regs[DELIVERED_CTR]) ||
+> +                   CPC_IN_PCC(&cpc_desc->cpc_regs[REFERENCE_CTR]) ||
+> +                   CPC_IN_PCC(&cpc_desc->cpc_regs[CTR_WRAP_TIME]))
+> +                       return true;
+> +
+> +
+> +               ref_perf_reg =3D &cpc_desc->cpc_regs[REFERENCE_PERF];
+> +
+> +               /*
+> +                * If reference perf register is not supported then we sh=
+ould
+> +                * use the nominal perf value
+> +                */
+> +               if (!CPC_SUPPORTED(ref_perf_reg))
+> +                       ref_perf_reg =3D &cpc_desc->cpc_regs[NOMINAL_PERF=
+];
+> +
+> +               if (CPC_IN_PCC(ref_perf_reg))
+> +                       return true;
+> +       }
+> +       return false;
+> +}
+> +EXPORT_SYMBOL_GPL(cppc_perf_ctrs_in_pcc);
+> +
+>  /**
+>   * cppc_get_perf_ctrs - Read a CPU's performance feedback counters.
+>   * @cpunum: CPU from which to read counters.
+> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufre=
+q.c
+> index 24eaf0ec344d..32fcb0bf74a4 100644
+> --- a/drivers/cpufreq/cppc_cpufreq.c
+> +++ b/drivers/cpufreq/cppc_cpufreq.c
+> @@ -63,7 +63,15 @@ static struct cppc_workaround_oem_info wa_info[] =3D {
+>
+>  static struct cpufreq_driver cppc_cpufreq_driver;
+>
+> +static enum {
+> +       FIE_UNSET =3D -1,
+> +       FIE_ENABLED,
+> +       FIE_DISABLED
+> +} fie_disabled =3D FIE_UNSET;
+> +
+>  #ifdef CONFIG_ACPI_CPPC_CPUFREQ_FIE
+> +module_param(fie_disabled, int, 0444);
+> +MODULE_PARM_DESC(fie_disabled, "Disable Frequency Invariance Engine (FIE=
+)");
+>
+>  /* Frequency invariance support */
+>  struct cppc_freq_invariance {
+> @@ -158,7 +166,7 @@ static void cppc_cpufreq_cpu_fie_init(struct cpufreq_=
+policy *policy)
+>         struct cppc_freq_invariance *cppc_fi;
+>         int cpu, ret;
+>
+> -       if (cppc_cpufreq_driver.get =3D=3D hisi_cppc_cpufreq_get_rate)
+> +       if (fie_disabled)
+>                 return;
+>
+>         for_each_cpu(cpu, policy->cpus) {
+> @@ -199,7 +207,7 @@ static void cppc_cpufreq_cpu_fie_exit(struct cpufreq_=
+policy *policy)
+>         struct cppc_freq_invariance *cppc_fi;
+>         int cpu;
+>
+> -       if (cppc_cpufreq_driver.get =3D=3D hisi_cppc_cpufreq_get_rate)
+> +       if (fie_disabled)
+>                 return;
+>
+>         /* policy->cpus will be empty here, use related_cpus instead */
+> @@ -229,7 +237,21 @@ static void __init cppc_freq_invariance_init(void)
+>         };
+>         int ret;
+>
+> -       if (cppc_cpufreq_driver.get =3D=3D hisi_cppc_cpufreq_get_rate)
+> +       switch (fie_disabled) {
+> +       /* honor user request */
+> +       case FIE_DISABLED:
+> +       case FIE_ENABLED:
+> +               break;
+> +       case FIE_UNSET:
+> +       default:
+
+Would be more straightforward to do
+
+if (fie_disabled =3D=3D FIE_UNSET) {
+
+here.
+
+> +               fie_disabled =3D FIE_ENABLED;
+> +               if (cppc_perf_ctrs_in_pcc()) {
+> +                       pr_info("FIE not enabled on systems with register=
+s in PCC\n");
+> +                       fie_disabled =3D FIE_DISABLED;
+> +               }
+> +               break;
+> +       }
+> +       if (fie_disabled)
+>                 return;
+>
+>         kworker_fie =3D kthread_create_worker(0, "cppc_fie");
+> @@ -247,7 +269,7 @@ static void __init cppc_freq_invariance_init(void)
+>
+>  static void cppc_freq_invariance_exit(void)
+>  {
+> -       if (cppc_cpufreq_driver.get =3D=3D hisi_cppc_cpufreq_get_rate)
+> +       if (fie_disabled)
+>                 return;
+>
+>         kthread_destroy_worker(kworker_fie);
+> @@ -936,6 +958,7 @@ static void cppc_check_hisi_workaround(void)
+>                     wa_info[i].oem_revision =3D=3D tbl->oem_revision) {
+>                         /* Overwrite the get() callback */
+>                         cppc_cpufreq_driver.get =3D hisi_cppc_cpufreq_get=
+_rate;
+> +                       fie_disabled =3D FIE_DISABLED;
+>                         break;
+>                 }
+>         }
+> diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
+> index f73d357ecdf5..c5614444031f 100644
+> --- a/include/acpi/cppc_acpi.h
+> +++ b/include/acpi/cppc_acpi.h
+> @@ -140,6 +140,7 @@ extern int cppc_get_perf_ctrs(int cpu, struct cppc_pe=
+rf_fb_ctrs *perf_fb_ctrs);
+>  extern int cppc_set_perf(int cpu, struct cppc_perf_ctrls *perf_ctrls);
+>  extern int cppc_set_enable(int cpu, bool enable);
+>  extern int cppc_get_perf_caps(int cpu, struct cppc_perf_caps *caps);
+> +extern bool cppc_perf_ctrs_in_pcc(void);
+>  extern bool acpi_cpc_valid(void);
+>  extern bool cppc_allow_fast_switch(void);
+>  extern int acpi_get_psd_map(unsigned int cpu, struct cppc_cpudata *cpu_d=
+ata);
+> @@ -173,6 +174,10 @@ static inline int cppc_get_perf_caps(int cpu, struct=
+ cppc_perf_caps *caps)
+>  {
+>         return -ENOTSUPP;
+>  }
+> +static inline bool cppc_perf_ctrs_in_pcc(void)
+> +{
+> +       return false;
+> +}
+>  static inline bool acpi_cpc_valid(void)
+>  {
+>         return false;
+> --
+
+Apart from the above it looks fine to me, but I would like to get an
+ACK from Viresh on the second patch.
+
+Thanks!
+--===============1521048427029796369==--
 
