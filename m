@@ -1,271 +1,201 @@
-Content-Type: multipart/mixed; boundary="===============8648675014772021007=="
+Content-Type: multipart/mixed; boundary="===============1956141450001791886=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [PATCH v3 1/2] ACPI: CPPC: Disable FIE if registers in
- PCC regions
-Date: Wed, 24 Aug 2022 15:22:04 +0200
-Message-ID: <CAJZ5v0jXxUmCRbaWF3B7NmhMcOhgH_MgKbrsttF=RccJFjPaoQ@mail.gmail.com>
-In-Reply-To: cbbc3156-507c-9b88-06b9-c1e7bda50c32@arm.com
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [rafael-pm:bleeding-edge 12/27]
+ drivers/acpi/acpi_amba.c:100:17: error: 'struct acpi_device' has no member
+ named 'parent'
+Date: Wed, 24 Aug 2022 22:41:55 +0800
+Message-ID: <202208242233.FPqG2d3S-lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8648675014772021007==
+--===============1956141450001791886==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Aug 23, 2022 at 8:46 PM Jeremy Linton <jeremy.linton(a)arm.com> wro=
-te:
->
-> Hi,
->
-> On 8/23/22 12:10, Rafael J. Wysocki wrote:
-> > On Thu, Aug 18, 2022 at 11:24 PM Jeremy Linton <jeremy.linton(a)arm.com=
-> wrote:
-> >>
-> >> PCC regions utilize a mailbox to set/retrieve register values used by
-> >> the CPPC code. This is fine as long as the operations are
-> >> infrequent. With the FIE code enabled though the overhead can range
-> >> from 2-11% of system CPU overhead (ex: as measured by top) on Arm
-> >> based machines.
-> >>
-> >> So, before enabling FIE assure none of the registers used by
-> >> cppc_get_perf_ctrs() are in the PCC region. Furthermore lets also
-> >> enable a module parameter which can also disable it at boot or module
-> >> reload.
-> >>
-> >> Signed-off-by: Jeremy Linton <jeremy.linton(a)arm.com>
-> >> ---
-> >>   drivers/acpi/cppc_acpi.c       | 41 ++++++++++++++++++++++++++++++++=
-++
-> >>   drivers/cpufreq/cppc_cpufreq.c | 31 +++++++++++++++++++++----
-> >>   include/acpi/cppc_acpi.h       |  5 +++++
-> >>   3 files changed, 73 insertions(+), 4 deletions(-)
-> >>
-> >> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-> >> index 1e15a9f25ae9..c840bf606b30 100644
-> >> --- a/drivers/acpi/cppc_acpi.c
-> >> +++ b/drivers/acpi/cppc_acpi.c
-> >> @@ -1240,6 +1240,47 @@ int cppc_get_perf_caps(int cpunum, struct cppc_=
-perf_caps *perf_caps)
-> >>   }
-> >>   EXPORT_SYMBOL_GPL(cppc_get_perf_caps);
-> >>
-> >> +/**
-> >> + * cppc_perf_ctrs_in_pcc - Check if any perf counters are in a PCC re=
-gion.
-> >> + *
-> >> + * CPPC has flexibility about how counters describing CPU perf are de=
-livered.
-> >
-> > "CPU performance counters are accessed"
->
-> Sure,
->
-> >
-> >
-> >> + * One of the choices is PCC regions, which can have a high access la=
-tency. This
-> >> + * routine allows callers of cppc_get_perf_ctrs() to know this ahead =
-of time.
-> >> + *
-> >> + * Return: true if any of the counters are in PCC regions, false othe=
-rwise
-> >> + */
-> >> +bool cppc_perf_ctrs_in_pcc(void)
-> >> +{
-> >> +       int cpu;
-> >> +
-> >> +       for_each_present_cpu(cpu) {
-> >> +               struct cpc_register_resource *ref_perf_reg;
-> >> +               struct cpc_desc *cpc_desc;
-> >> +
-> >> +               cpc_desc =3D per_cpu(cpc_desc_ptr, cpu);
-> >> +
-> >> +               if (CPC_IN_PCC(&cpc_desc->cpc_regs[DELIVERED_CTR]) ||
-> >> +                   CPC_IN_PCC(&cpc_desc->cpc_regs[REFERENCE_CTR]) ||
-> >> +                   CPC_IN_PCC(&cpc_desc->cpc_regs[CTR_WRAP_TIME]))
-> >> +                       return true;
-> >> +
-> >> +
-> >> +               ref_perf_reg =3D &cpc_desc->cpc_regs[REFERENCE_PERF];
-> >> +
-> >> +               /*
-> >> +                * If reference perf register is not supported then we=
- should
-> >> +                * use the nominal perf value
-> >> +                */
-> >> +               if (!CPC_SUPPORTED(ref_perf_reg))
-> >> +                       ref_perf_reg =3D &cpc_desc->cpc_regs[NOMINAL_P=
-ERF];
-> >> +
-> >> +               if (CPC_IN_PCC(ref_perf_reg))
-> >> +                       return true;
-> >> +       }
-> >> +       return false;
-> >> +}
-> >> +EXPORT_SYMBOL_GPL(cppc_perf_ctrs_in_pcc);
-> >> +
-> >>   /**
-> >>    * cppc_get_perf_ctrs - Read a CPU's performance feedback counters.
-> >>    * @cpunum: CPU from which to read counters.
-> >> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpu=
-freq.c
-> >> index 24eaf0ec344d..32fcb0bf74a4 100644
-> >> --- a/drivers/cpufreq/cppc_cpufreq.c
-> >> +++ b/drivers/cpufreq/cppc_cpufreq.c
-> >> @@ -63,7 +63,15 @@ static struct cppc_workaround_oem_info wa_info[] =
-=3D {
-> >>
-> >>   static struct cpufreq_driver cppc_cpufreq_driver;
-> >>
-> >> +static enum {
-> >> +       FIE_UNSET =3D -1,
-> >> +       FIE_ENABLED,
-> >> +       FIE_DISABLED
-> >> +} fie_disabled =3D FIE_UNSET;
-> >> +
-> >>   #ifdef CONFIG_ACPI_CPPC_CPUFREQ_FIE
-> >> +module_param(fie_disabled, int, 0444);
-> >> +MODULE_PARM_DESC(fie_disabled, "Disable Frequency Invariance Engine (=
-FIE)");
-> >>
-> >>   /* Frequency invariance support */
-> >>   struct cppc_freq_invariance {
-> >> @@ -158,7 +166,7 @@ static void cppc_cpufreq_cpu_fie_init(struct cpufr=
-eq_policy *policy)
-> >>          struct cppc_freq_invariance *cppc_fi;
-> >>          int cpu, ret;
-> >>
-> >> -       if (cppc_cpufreq_driver.get =3D=3D hisi_cppc_cpufreq_get_rate)
-> >> +       if (fie_disabled)
-> >>                  return;
-> >>
-> >>          for_each_cpu(cpu, policy->cpus) {
-> >> @@ -199,7 +207,7 @@ static void cppc_cpufreq_cpu_fie_exit(struct cpufr=
-eq_policy *policy)
-> >>          struct cppc_freq_invariance *cppc_fi;
-> >>          int cpu;
-> >>
-> >> -       if (cppc_cpufreq_driver.get =3D=3D hisi_cppc_cpufreq_get_rate)
-> >> +       if (fie_disabled)
-> >>                  return;
-> >>
-> >>          /* policy->cpus will be empty here, use related_cpus instead =
-*/
-> >> @@ -229,7 +237,21 @@ static void __init cppc_freq_invariance_init(void)
-> >>          };
-> >>          int ret;
-> >>
-> >> -       if (cppc_cpufreq_driver.get =3D=3D hisi_cppc_cpufreq_get_rate)
-> >> +       switch (fie_disabled) {
-> >> +       /* honor user request */
-> >> +       case FIE_DISABLED:
-> >> +       case FIE_ENABLED:
-> >> +               break;
-> >> +       case FIE_UNSET:
-> >> +       default:
-> >
-> > Would be more straightforward to do
-> >
-> > if (fie_disabled =3D=3D FIE_UNSET) {
-> >
-> > here.
->
-> Right, but then it wouldn't catch the other billion+ values that are the
-> result of not being able to export a limit (AFAIK) on the module
-> parameter. I could use an if:
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git=
+ bleeding-edge
+head:   19c67c2579a54d65fea2ce802328ac3d0547b95c
+commit: c097c05812636fef5d73b8a68444e4d885559929 [12/27] ACPI: Drop parent =
+field from struct acpi_device
+config: arm64-allyesconfig (https://download.01.org/0day-ci/archive/2022082=
+4/202208242233.FPqG2d3S-lkp(a)intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 12.1.0
+reproduce (this is a W=3D1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/=
+make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.g=
+it/commit/?id=3Dc097c05812636fef5d73b8a68444e4d885559929
+        git remote add rafael-pm https://git.kernel.org/pub/scm/linux/kerne=
+l/git/rafael/linux-pm.git
+        git fetch --no-tags rafael-pm bleeding-edge
+        git checkout c097c05812636fef5d73b8a68444e4d885559929
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dgcc-12.1.0 make.cross=
+ W=3D1 O=3Dbuild_dir ARCH=3Darm64 SHELL=3D/bin/bash drivers/
 
-Hmm.
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp(a)intel.com>
 
-I've missed the module_param() part.
+All errors (new ones prefixed by >>):
 
-It doesn't even make sense to use enum for the variable type in that case.
+   drivers/acpi/acpi_amba.c: In function 'amba_handler_attach':
+>> drivers/acpi/acpi_amba.c:100:17: error: 'struct acpi_device' has no memb=
+er named 'parent'
+     100 |         if (adev->parent)
+         |                 ^~
+   drivers/acpi/acpi_amba.c:101:68: error: 'struct acpi_device' has no memb=
+er named 'parent'
+     101 |                 dev->dev.parent =3D acpi_get_first_physical_node=
+(adev->parent);
+         |                                                                 =
+   ^~
+--
+   drivers/perf/arm_dsu_pmu.c: In function 'dsu_pmu_acpi_get_cpus':
+>> drivers/perf/arm_dsu_pmu.c:657:33: error: 'struct acpi_device' has no me=
+mber named 'parent'
+     657 |                         acpi_dev->parent =3D=3D ACPI_COMPANION(d=
+ev)->parent)
+         |                                 ^~
+   drivers/perf/arm_dsu_pmu.c:657:64: error: 'struct acpi_device' has no me=
+mber named 'parent'
+     657 |                         acpi_dev->parent =3D=3D ACPI_COMPANION(d=
+ev)->parent)
+         |                                                                ^~
+--
+   drivers/perf/qcom_l3_pmu.c: In function 'qcom_l3_cache_pmu_probe':
+>> drivers/perf/qcom_l3_pmu.c:745:31: error: 'struct acpi_device' has no me=
+mber named 'parent'
+     745 |                       acpi_dev->parent->pnp.unique_id, acpi_dev-=
+>pnp.unique_id);
+         |                               ^~
 
-Also you can always do
 
-if (fie_disabled < 0) {
-...
-}
+vim +100 drivers/acpi/acpi_amba.c
 
-> if !((fie_disabled =3D=3D FIE_DISABLE) || (fie_disabled =3D=3D FIE_ENABLE=
-D)) {
->
-> }
->
->
-> if that is preferable. I thought the case with the explict default:
-> though made it clearer that it was treating all those other values as uns=
-et.
->
-> >
-> >> +               fie_disabled =3D FIE_ENABLED;
-> >> +               if (cppc_perf_ctrs_in_pcc()) {
-> >> +                       pr_info("FIE not enabled on systems with regis=
-ters in PCC\n");
-> >> +                       fie_disabled =3D FIE_DISABLED;
-> >> +               }
-> >> +               break;
-> >> +       }
-> >> +       if (fie_disabled)
-> >>                  return;
-> >>
-> >>          kworker_fie =3D kthread_create_worker(0, "cppc_fie");
-> >> @@ -247,7 +269,7 @@ static void __init cppc_freq_invariance_init(void)
-> >>
-> >>   static void cppc_freq_invariance_exit(void)
-> >>   {
-> >> -       if (cppc_cpufreq_driver.get =3D=3D hisi_cppc_cpufreq_get_rate)
-> >> +       if (fie_disabled)
-> >>                  return;
-> >>
-> >>          kthread_destroy_worker(kworker_fie);
-> >> @@ -936,6 +958,7 @@ static void cppc_check_hisi_workaround(void)
-> >>                      wa_info[i].oem_revision =3D=3D tbl->oem_revision)=
- {
-> >>                          /* Overwrite the get() callback */
-> >>                          cppc_cpufreq_driver.get =3D hisi_cppc_cpufreq=
-_get_rate;
-> >> +                       fie_disabled =3D FIE_DISABLED;
-> >>                          break;
-> >>                  }
-> >>          }
-> >> diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
-> >> index f73d357ecdf5..c5614444031f 100644
-> >> --- a/include/acpi/cppc_acpi.h
-> >> +++ b/include/acpi/cppc_acpi.h
-> >> @@ -140,6 +140,7 @@ extern int cppc_get_perf_ctrs(int cpu, struct cppc=
-_perf_fb_ctrs *perf_fb_ctrs);
-> >>   extern int cppc_set_perf(int cpu, struct cppc_perf_ctrls *perf_ctrls=
-);
-> >>   extern int cppc_set_enable(int cpu, bool enable);
-> >>   extern int cppc_get_perf_caps(int cpu, struct cppc_perf_caps *caps);
-> >> +extern bool cppc_perf_ctrs_in_pcc(void);
-> >>   extern bool acpi_cpc_valid(void);
-> >>   extern bool cppc_allow_fast_switch(void);
-> >>   extern int acpi_get_psd_map(unsigned int cpu, struct cppc_cpudata *c=
-pu_data);
-> >> @@ -173,6 +174,10 @@ static inline int cppc_get_perf_caps(int cpu, str=
-uct cppc_perf_caps *caps)
-> >>   {
-> >>          return -ENOTSUPP;
-> >>   }
-> >> +static inline bool cppc_perf_ctrs_in_pcc(void)
-> >> +{
-> >> +       return false;
-> >> +}
-> >>   static inline bool acpi_cpc_valid(void)
-> >>   {
-> >>          return false;
-> >> --
-> >
-> > Apart from the above it looks fine to me, but I would like to get an
-> > ACK from Viresh on the second patch.
-> >
-> > Thanks!
->
-> Thanks for looking at this.
->
->
---===============8648675014772021007==--
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   47  =
+
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   48  static int amba_handler_atta=
+ch(struct acpi_device *adev,
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   49  				const struct acpi_device=
+_id *id)
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   50  {
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   51  	struct amba_device *dev;
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   52  	struct resource_entry *rent=
+ry;
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   53  	struct list_head resource_l=
+ist;
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   54  	bool address_found =3D fals=
+e;
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   55  	int irq_no =3D 0;
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   56  	int ret;
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   57  =
+
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   58  	/* If the ACPI node already=
+ has a physical device attached, skip it. */
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   59  	if (adev->physical_node_cou=
+nt)
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   60  		return 0;
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   61  =
+
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   62  	dev =3D amba_device_alloc(d=
+ev_name(&adev->dev), 0, 0);
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   63  	if (!dev) {
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   64  		dev_err(&adev->dev, "%s():=
+ amba_device_alloc() failed\n",
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   65  			__func__);
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   66  		return -ENOMEM;
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   67  	}
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   68  =
+
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   69  	INIT_LIST_HEAD(&resource_li=
+st);
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   70  	ret =3D acpi_dev_get_resour=
+ces(adev, &resource_list, NULL, NULL);
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   71  	if (ret < 0)
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   72  		goto err_free;
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   73  =
+
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   74  	list_for_each_entry(rentry,=
+ &resource_list, node) {
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   75  		switch (resource_type(rent=
+ry->res)) {
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   76  		case IORESOURCE_MEM:
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   77  			if (!address_found) {
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   78  				dev->res =3D *rentry->re=
+s;
+7718629432676b Liguang Zhang  2021-06-29   79  				dev->res.name =3D dev_na=
+me(&dev->dev);
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   80  				address_found =3D true;
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   81  			}
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   82  			break;
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   83  		case IORESOURCE_IRQ:
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   84  			if (irq_no < AMBA_NR_IRQS)
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   85  				dev->irq[irq_no++] =3D r=
+entry->res->start;
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   86  			break;
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   87  		default:
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   88  			dev_warn(&adev->dev, "Inv=
+alid resource\n");
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   89  			break;
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   90  		}
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   91  	}
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   92  =
+
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   93  	acpi_dev_free_resource_list=
+(&resource_list);
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   94  =
+
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   95  	/*
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   96  	 * If the ACPI node has a p=
+arent and that parent has a physical device
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   97  	 * attached to it, that phy=
+sical device should be the parent of
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   98  	 * the amba device we are a=
+bout to create.
+6ce2e188a6ae33 Graeme Gregory 2016-01-20   99  	 */
+6ce2e188a6ae33 Graeme Gregory 2016-01-20 @100  	if (adev->parent)
+6ce2e188a6ae33 Graeme Gregory 2016-01-20  101  		dev->dev.parent =3D acpi_g=
+et_first_physical_node(adev->parent);
+6ce2e188a6ae33 Graeme Gregory 2016-01-20  102  =
+
+6ce2e188a6ae33 Graeme Gregory 2016-01-20  103  	ACPI_COMPANION_SET(&dev->de=
+v, adev);
+6ce2e188a6ae33 Graeme Gregory 2016-01-20  104  =
+
+6ce2e188a6ae33 Graeme Gregory 2016-01-20  105  	ret =3D amba_device_add(dev=
+, &iomem_resource);
+6ce2e188a6ae33 Graeme Gregory 2016-01-20  106  	if (ret) {
+6ce2e188a6ae33 Graeme Gregory 2016-01-20  107  		dev_err(&adev->dev, "%s():=
+ amba_device_add() failed (%d)\n",
+6ce2e188a6ae33 Graeme Gregory 2016-01-20  108  		       __func__, ret);
+6ce2e188a6ae33 Graeme Gregory 2016-01-20  109  		goto err_free;
+6ce2e188a6ae33 Graeme Gregory 2016-01-20  110  	}
+6ce2e188a6ae33 Graeme Gregory 2016-01-20  111  =
+
+6ce2e188a6ae33 Graeme Gregory 2016-01-20  112  	return 1;
+6ce2e188a6ae33 Graeme Gregory 2016-01-20  113  =
+
+6ce2e188a6ae33 Graeme Gregory 2016-01-20  114  err_free:
+6ce2e188a6ae33 Graeme Gregory 2016-01-20  115  	amba_device_put(dev);
+6ce2e188a6ae33 Graeme Gregory 2016-01-20  116  	return ret;
+6ce2e188a6ae33 Graeme Gregory 2016-01-20  117  }
+6ce2e188a6ae33 Graeme Gregory 2016-01-20  118  =
+
+
+:::::: The code at line 100 was first introduced by commit
+:::::: 6ce2e188a6ae339340d9bbf5bb0b81db20454353 ACPI / scan: AMBA bus probi=
+ng support
+
+:::::: TO: Graeme Gregory <graeme.gregory(a)linaro.org>
+:::::: CC: Rafael J. Wysocki <rafael.j.wysocki(a)intel.com>
+
+-- =
+
+0-DAY CI Kernel Test Service
+https://01.org/lkp
+--===============1956141450001791886==--
 
