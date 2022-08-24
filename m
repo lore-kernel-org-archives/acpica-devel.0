@@ -1,201 +1,276 @@
-Content-Type: multipart/mixed; boundary="===============1956141450001791886=="
+Content-Type: multipart/mixed; boundary="===============1644472214814560350=="
 MIME-Version: 1.0
-From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [rafael-pm:bleeding-edge 12/27]
- drivers/acpi/acpi_amba.c:100:17: error: 'struct acpi_device' has no member
- named 'parent'
-Date: Wed, 24 Aug 2022 22:41:55 +0800
-Message-ID: <202208242233.FPqG2d3S-lkp@intel.com>
+From: Jeremy Linton <jeremy.linton at arm.com>
+Subject: [Devel] Re: [PATCH v3 1/2] ACPI: CPPC: Disable FIE if registers in
+ PCC regions
+Date: Wed, 24 Aug 2022 11:11:09 -0500
+Message-ID: <2cfad670-9b3a-38c4-4d0f-45173da35d95@arm.com>
+In-Reply-To: 59f3ba6f-b657-2da2-cb2a-9736e1488908@arm.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============1956141450001791886==
+--===============1644472214814560350==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git=
- bleeding-edge
-head:   19c67c2579a54d65fea2ce802328ac3d0547b95c
-commit: c097c05812636fef5d73b8a68444e4d885559929 [12/27] ACPI: Drop parent =
-field from struct acpi_device
-config: arm64-allyesconfig (https://download.01.org/0day-ci/archive/2022082=
-4/202208242233.FPqG2d3S-lkp(a)intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 12.1.0
-reproduce (this is a W=3D1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/=
-make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.g=
-it/commit/?id=3Dc097c05812636fef5d73b8a68444e4d885559929
-        git remote add rafael-pm https://git.kernel.org/pub/scm/linux/kerne=
-l/git/rafael/linux-pm.git
-        git fetch --no-tags rafael-pm bleeding-edge
-        git checkout c097c05812636fef5d73b8a68444e4d885559929
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dgcc-12.1.0 make.cross=
- W=3D1 O=3Dbuild_dir ARCH=3Darm64 SHELL=3D/bin/bash drivers/
+Hi,
 
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp(a)intel.com>
+On 8/24/22 09:41, Lukasz Luba wrote:
+> Hi Jeremy,
+> =
 
-All errors (new ones prefixed by >>):
+> +CC Dietmar, Morten and Souvik
+> =
 
-   drivers/acpi/acpi_amba.c: In function 'amba_handler_attach':
->> drivers/acpi/acpi_amba.c:100:17: error: 'struct acpi_device' has no memb=
-er named 'parent'
-     100 |         if (adev->parent)
-         |                 ^~
-   drivers/acpi/acpi_amba.c:101:68: error: 'struct acpi_device' has no memb=
-er named 'parent'
-     101 |                 dev->dev.parent =3D acpi_get_first_physical_node=
-(adev->parent);
-         |                                                                 =
-   ^~
---
-   drivers/perf/arm_dsu_pmu.c: In function 'dsu_pmu_acpi_get_cpus':
->> drivers/perf/arm_dsu_pmu.c:657:33: error: 'struct acpi_device' has no me=
-mber named 'parent'
-     657 |                         acpi_dev->parent =3D=3D ACPI_COMPANION(d=
-ev)->parent)
-         |                                 ^~
-   drivers/perf/arm_dsu_pmu.c:657:64: error: 'struct acpi_device' has no me=
-mber named 'parent'
-     657 |                         acpi_dev->parent =3D=3D ACPI_COMPANION(d=
-ev)->parent)
-         |                                                                ^~
---
-   drivers/perf/qcom_l3_pmu.c: In function 'qcom_l3_cache_pmu_probe':
->> drivers/perf/qcom_l3_pmu.c:745:31: error: 'struct acpi_device' has no me=
-mber named 'parent'
-     745 |                       acpi_dev->parent->pnp.unique_id, acpi_dev-=
->pnp.unique_id);
-         |                               ^~
+> On 8/18/22 22:16, Jeremy Linton wrote:
+>> PCC regions utilize a mailbox to set/retrieve register values used by
+>> the CPPC code. This is fine as long as the operations are
+>> infrequent. With the FIE code enabled though the overhead can range
+>> from 2-11% of system CPU overhead (ex: as measured by top) on Arm
+>> based machines.
+>>
+>> So, before enabling FIE assure none of the registers used by
+>> cppc_get_perf_ctrs() are in the PCC region. Furthermore lets also
+>> enable a module parameter which can also disable it at boot or module
+>> reload.
+>>
+>> Signed-off-by: Jeremy Linton <jeremy.linton(a)arm.com>
+>> ---
+>> =C2=A0 drivers/acpi/cppc_acpi.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 41=
+ ++++++++++++++++++++++++++++++++++
+>> =C2=A0 drivers/cpufreq/cppc_cpufreq.c | 31 +++++++++++++++++++++----
+>> =C2=A0 include/acpi/cppc_acpi.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=
+=A0 5 +++++
+>> =C2=A0 3 files changed, 73 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+>> index 1e15a9f25ae9..c840bf606b30 100644
+>> --- a/drivers/acpi/cppc_acpi.c
+>> +++ b/drivers/acpi/cppc_acpi.c
+>> @@ -1240,6 +1240,47 @@ int cppc_get_perf_caps(int cpunum, struct =
 
+>> cppc_perf_caps *perf_caps)
+>> =C2=A0 }
+>> =C2=A0 EXPORT_SYMBOL_GPL(cppc_get_perf_caps);
+>> +/**
+>> + * cppc_perf_ctrs_in_pcc - Check if any perf counters are in a PCC =
 
-vim +100 drivers/acpi/acpi_amba.c
+>> region.
+>> + *
+>> + * CPPC has flexibility about how counters describing CPU perf are =
 
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   47  =
+>> delivered.
+>> + * One of the choices is PCC regions, which can have a high access =
 
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   48  static int amba_handler_atta=
-ch(struct acpi_device *adev,
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   49  				const struct acpi_device=
-_id *id)
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   50  {
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   51  	struct amba_device *dev;
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   52  	struct resource_entry *rent=
-ry;
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   53  	struct list_head resource_l=
-ist;
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   54  	bool address_found =3D fals=
-e;
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   55  	int irq_no =3D 0;
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   56  	int ret;
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   57  =
+>> latency. This
+>> + * routine allows callers of cppc_get_perf_ctrs() to know this ahead =
 
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   58  	/* If the ACPI node already=
- has a physical device attached, skip it. */
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   59  	if (adev->physical_node_cou=
-nt)
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   60  		return 0;
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   61  =
+>> of time.
+>> + *
+>> + * Return: true if any of the counters are in PCC regions, false =
 
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   62  	dev =3D amba_device_alloc(d=
-ev_name(&adev->dev), 0, 0);
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   63  	if (!dev) {
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   64  		dev_err(&adev->dev, "%s():=
- amba_device_alloc() failed\n",
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   65  			__func__);
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   66  		return -ENOMEM;
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   67  	}
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   68  =
+>> otherwise
+>> + */
+>> +bool cppc_perf_ctrs_in_pcc(void)
+>> +{
+>> +=C2=A0=C2=A0=C2=A0 int cpu;
+>> +
+>> +=C2=A0=C2=A0=C2=A0 for_each_present_cpu(cpu) {
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct cpc_register_resource=
+ *ref_perf_reg;
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct cpc_desc *cpc_desc;
+>> +
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cpc_desc =3D per_cpu(cpc_des=
+c_ptr, cpu);
+>> +
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (CPC_IN_PCC(&cpc_desc->cp=
+c_regs[DELIVERED_CTR]) ||
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 CPC_=
+IN_PCC(&cpc_desc->cpc_regs[REFERENCE_CTR]) ||
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 CPC_=
+IN_PCC(&cpc_desc->cpc_regs[CTR_WRAP_TIME]))
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 retu=
+rn true;
+>> +
+>> +
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ref_perf_reg =3D &cpc_desc->=
+cpc_regs[REFERENCE_PERF];
+>> +
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * If reference perf re=
+gister is not supported then we should
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * use the nominal perf=
+ value
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!CPC_SUPPORTED(ref_perf_=
+reg))
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ref_=
+perf_reg =3D &cpc_desc->cpc_regs[NOMINAL_PERF];
+>> +
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (CPC_IN_PCC(ref_perf_reg))
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 retu=
+rn true;
+>> +=C2=A0=C2=A0=C2=A0 }
+> =
 
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   69  	INIT_LIST_HEAD(&resource_li=
-st);
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   70  	ret =3D acpi_dev_get_resour=
-ces(adev, &resource_list, NULL, NULL);
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   71  	if (ret < 0)
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   72  		goto err_free;
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   73  =
+> Do we have a platform which returns false here?
 
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   74  	list_for_each_entry(rentry,=
- &resource_list, node) {
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   75  		switch (resource_type(rent=
-ry->res)) {
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   76  		case IORESOURCE_MEM:
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   77  			if (!address_found) {
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   78  				dev->res =3D *rentry->re=
-s;
-7718629432676b Liguang Zhang  2021-06-29   79  				dev->res.name =3D dev_na=
-me(&dev->dev);
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   80  				address_found =3D true;
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   81  			}
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   82  			break;
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   83  		case IORESOURCE_IRQ:
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   84  			if (irq_no < AMBA_NR_IRQS)
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   85  				dev->irq[irq_no++] =3D r=
-entry->res->start;
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   86  			break;
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   87  		default:
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   88  			dev_warn(&adev->dev, "Inv=
-alid resource\n");
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   89  			break;
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   90  		}
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   91  	}
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   92  =
-
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   93  	acpi_dev_free_resource_list=
-(&resource_list);
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   94  =
-
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   95  	/*
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   96  	 * If the ACPI node has a p=
-arent and that parent has a physical device
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   97  	 * attached to it, that phy=
-sical device should be the parent of
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   98  	 * the amba device we are a=
-bout to create.
-6ce2e188a6ae33 Graeme Gregory 2016-01-20   99  	 */
-6ce2e188a6ae33 Graeme Gregory 2016-01-20 @100  	if (adev->parent)
-6ce2e188a6ae33 Graeme Gregory 2016-01-20  101  		dev->dev.parent =3D acpi_g=
-et_first_physical_node(adev->parent);
-6ce2e188a6ae33 Graeme Gregory 2016-01-20  102  =
-
-6ce2e188a6ae33 Graeme Gregory 2016-01-20  103  	ACPI_COMPANION_SET(&dev->de=
-v, adev);
-6ce2e188a6ae33 Graeme Gregory 2016-01-20  104  =
-
-6ce2e188a6ae33 Graeme Gregory 2016-01-20  105  	ret =3D amba_device_add(dev=
-, &iomem_resource);
-6ce2e188a6ae33 Graeme Gregory 2016-01-20  106  	if (ret) {
-6ce2e188a6ae33 Graeme Gregory 2016-01-20  107  		dev_err(&adev->dev, "%s():=
- amba_device_add() failed (%d)\n",
-6ce2e188a6ae33 Graeme Gregory 2016-01-20  108  		       __func__, ret);
-6ce2e188a6ae33 Graeme Gregory 2016-01-20  109  		goto err_free;
-6ce2e188a6ae33 Graeme Gregory 2016-01-20  110  	}
-6ce2e188a6ae33 Graeme Gregory 2016-01-20  111  =
-
-6ce2e188a6ae33 Graeme Gregory 2016-01-20  112  	return 1;
-6ce2e188a6ae33 Graeme Gregory 2016-01-20  113  =
-
-6ce2e188a6ae33 Graeme Gregory 2016-01-20  114  err_free:
-6ce2e188a6ae33 Graeme Gregory 2016-01-20  115  	amba_device_put(dev);
-6ce2e188a6ae33 Graeme Gregory 2016-01-20  116  	return ret;
-6ce2e188a6ae33 Graeme Gregory 2016-01-20  117  }
-6ce2e188a6ae33 Graeme Gregory 2016-01-20  118  =
+I'm not aware of one, but I don't have access to every bit of HW either.
 
 
-:::::: The code at line 100 was first introduced by commit
-:::::: 6ce2e188a6ae339340d9bbf5bb0b81db20454353 ACPI / scan: AMBA bus probi=
-ng support
+> =
 
-:::::: TO: Graeme Gregory <graeme.gregory(a)linaro.org>
-:::::: CC: Rafael J. Wysocki <rafael.j.wysocki(a)intel.com>
+>> +=C2=A0=C2=A0=C2=A0 return false;
+>> +}
+>> +EXPORT_SYMBOL_GPL(cppc_perf_ctrs_in_pcc);
+>> +
+>> =C2=A0 /**
+>> =C2=A0=C2=A0 * cppc_get_perf_ctrs - Read a CPU's performance feedback co=
+unters.
+>> =C2=A0=C2=A0 * @cpunum: CPU from which to read counters.
+>> diff --git a/drivers/cpufreq/cppc_cpufreq.c =
 
--- =
+>> b/drivers/cpufreq/cppc_cpufreq.c
+>> index 24eaf0ec344d..32fcb0bf74a4 100644
+>> --- a/drivers/cpufreq/cppc_cpufreq.c
+>> +++ b/drivers/cpufreq/cppc_cpufreq.c
+>> @@ -63,7 +63,15 @@ static struct cppc_workaround_oem_info wa_info[] =3D {
+>> =C2=A0 static struct cpufreq_driver cppc_cpufreq_driver;
+>> +static enum {
+>> +=C2=A0=C2=A0=C2=A0 FIE_UNSET =3D -1,
+>> +=C2=A0=C2=A0=C2=A0 FIE_ENABLED,
+>> +=C2=A0=C2=A0=C2=A0 FIE_DISABLED
+>> +} fie_disabled =3D FIE_UNSET;
+>> +
+>> =C2=A0 #ifdef CONFIG_ACPI_CPPC_CPUFREQ_FIE
+>> +module_param(fie_disabled, int, 0444);
+>> +MODULE_PARM_DESC(fie_disabled, "Disable Frequency Invariance Engine =
 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
---===============1956141450001791886==--
+>> (FIE)");
+> =
+
+> Why we need the modules support?
+> I would drop this, since the fie_disabled would be set properly when
+> needed. The code would be cleaner (more below).
+
+Well the original version was simpler, but I tend to agree with Ionela =
+
+who proposed this version in a previous review. The module param at this =
+
+point is a debugging/testing statment since it allows the user to force =
+
+FIE on or off independent of the PCC decision. Until we have a clear =
+
+statment about how/when/where this feature is useful, having the ability =
+
+to make the choice dynamically at runtime is quite useful and less =
+
+intrusive than having multiple kernels/modules on the machine with the =
+
+config option flipped, and requiring a reboot.
+
+> =
+
+>> =C2=A0 /* Frequency invariance support */
+>> =C2=A0 struct cppc_freq_invariance {
+>> @@ -158,7 +166,7 @@ static void cppc_cpufreq_cpu_fie_init(struct =
+
+>> cpufreq_policy *policy)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct cppc_freq_invariance *cppc_fi;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int cpu, ret;
+>> -=C2=A0=C2=A0=C2=A0 if (cppc_cpufreq_driver.get =3D=3D hisi_cppc_cpufreq=
+_get_rate)
+>> +=C2=A0=C2=A0=C2=A0 if (fie_disabled)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 for_each_cpu(cpu, policy->cpus) {
+>> @@ -199,7 +207,7 @@ static void cppc_cpufreq_cpu_fie_exit(struct =
+
+>> cpufreq_policy *policy)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct cppc_freq_invariance *cppc_fi;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int cpu;
+>> -=C2=A0=C2=A0=C2=A0 if (cppc_cpufreq_driver.get =3D=3D hisi_cppc_cpufreq=
+_get_rate)
+>> +=C2=A0=C2=A0=C2=A0 if (fie_disabled)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* policy->cpus will be empty here, use r=
+elated_cpus instead */
+>> @@ -229,7 +237,21 @@ static void __init cppc_freq_invariance_init(void)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 };
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret;
+>> -=C2=A0=C2=A0=C2=A0 if (cppc_cpufreq_driver.get =3D=3D hisi_cppc_cpufreq=
+_get_rate)
+>> +=C2=A0=C2=A0=C2=A0 switch (fie_disabled) {
+>> +=C2=A0=C2=A0=C2=A0 /* honor user request */
+>> +=C2=A0=C2=A0=C2=A0 case FIE_DISABLED:
+>> +=C2=A0=C2=A0=C2=A0 case FIE_ENABLED:
+> =
+
+> This module's over-write doesn't look 'clean'.
+> Is it OK to allow a user to go with the poor performing
+> system (likely on many platforms)? Or we assume that there are
+> platforms which has a bit faster mailboxes and they already
+> have the FIE issue impacting task's utilization measurements.
+
+I think with this patch applied we aren't any worse than before, but =
+
+that is based on the fact that I've not seen a machine that has actual =
+
+CPPC hardware registers (rather than mailboxes).
+
+So I think your suggesting that we will then have to revisit the code =
+
+(to maybe avoid all the cppc_fie task/etc overhead) if a machine appears =
+
+with hardware registers. And I tend to sorta agree, but that is what the =
+
+second patch is for :) which will likely be what most distro's end up =
+
+applying on generic kernels.
+
+> =
+
+> It looks like we are not sure about the solution. On one hand
+> we implement those checks in the cppc_perf_ctrs_in_pcc()
+> which could set the flag, but on the other hand we allow user
+> to decide. IMO this creates diversity that we are not able to control.
+> It creates another tunable knob in the kernel, which then is forgotten
+> to check.
+
+Your average user will never turn this knob, and if they do, its likely =
+
+to solve a problem, or test for performace. The fact that we aren't 100% =
+
+sure of where/when this feature is useful is the argument for making it =
+
+a tunable.
+
+
+> =
+
+> I still haven't seen information that the old FIE was an issue on those
+> servers and had impact on task utilization measurements. This should be
+> a main requirement for this new feature. This would be after we proved
+> that the utilization problem was due to the FIE and not something else =
+
+> (like uArch variation or workload variation).
+> =
+
+> IMO let's revert the ACPI_CPPC_CPUFREQ_FIE. When we get data that
+> FIE is an issue on those servers we can come back to this topic.
+
+I don't really have an opinion about this, maybe someone else can =
+
+comment :)
+
+Although, with both of these patches applied we can kick the decision =
+
+down the road and revisit it in a couple years, and maybe have a clearer =
+
+view.
+
+
+
+
+--===============1644472214814560350==--
 
