@@ -1,118 +1,109 @@
-Content-Type: multipart/mixed; boundary="===============5769356649226464440=="
+Content-Type: multipart/mixed; boundary="===============8904067430704682604=="
 MIME-Version: 1.0
-From: kernel test robot <lkp at intel.com>
-Subject: [Devel] [rafael-pm:bleeding-edge] BUILD SUCCESS
- bbc77c8d9661c790806ca96ca01a356275b6a684
-Date: Sun, 04 Sep 2022 16:26:16 +0800
-Message-ID: <63146128.Wj6a7OWDbwzShZ3i%lkp@intel.com>
+From: tamy4 at oftenerey.com
+Subject: [Devel] Re: [rafael-pm:bleeding-edge] BUILD SUCCESS
+ f569faad1ef4d4f88432e6d5efba2562e0d1bc1f
+Date: Wed, 07 Sep 2022 10:23:39 +0000
+Message-ID: <20220907102339.6482.16199@ml01.vlan13.01.org>
+In-Reply-To: 631065a0.1f0caBq0YvTQRxgc%lkp@intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============5769356649226464440==
+--===============8904067430704682604==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
-m.git bleeding-edge
-branch HEAD: bbc77c8d9661c790806ca96ca01a356275b6a684  Merge branch 'acpi-p=
-roperties' into bleeding-edge
-
-elapsed time: 724m
-
-configs tested: 80
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-um                             i386_defconfig
-um                           x86_64_defconfig
-x86_64                              defconfig
-arm                                 defconfig
-i386                                defconfig
-powerpc                           allnoconfig
-x86_64                        randconfig-a013
-x86_64                               rhel-8.3
-x86_64                           rhel-8.3-kvm
-x86_64                           allyesconfig
-arc                              allyesconfig
-i386                          randconfig-a001
-i386                          randconfig-a003
-alpha                            allyesconfig
-x86_64                        randconfig-a011
-i386                          randconfig-a014
-x86_64                    rhel-8.3-kselftests
-arm                              allyesconfig
-i386                          randconfig-a005
-x86_64                        randconfig-a002
-x86_64                        randconfig-a015
-m68k                             allyesconfig
-arm64                            allyesconfig
-x86_64                           rhel-8.3-syz
-i386                          randconfig-a012
-m68k                             allmodconfig
-x86_64                          rhel-8.3-func
-i386                          randconfig-a016
-x86_64                         rhel-8.3-kunit
-arm                           u8500_defconfig
-x86_64                        randconfig-a006
-m68k                       m5475evb_defconfig
-mips                      fuloong2e_defconfig
-x86_64                        randconfig-a004
-csky                              allnoconfig
-i386                             allyesconfig
-sparc64                          alldefconfig
-arm                         assabet_defconfig
-sh                           se7722_defconfig
-ia64                             allmodconfig
-microblaze                      mmu_defconfig
-sh                           se7712_defconfig
-arm                         lpc18xx_defconfig
-mips                       bmips_be_defconfig
-sparc                               defconfig
-alpha                             allnoconfig
-arm                      integrator_defconfig
-riscv                             allnoconfig
-arc                  randconfig-r043-20220904
-parisc64                         alldefconfig
-sh                            shmin_defconfig
-ia64                      gensparse_defconfig
-arc                               allnoconfig
-riscv                randconfig-r042-20220904
-s390                 randconfig-r044-20220904
-loongarch                         allnoconfig
-sh                               allmodconfig
-mips                             allyesconfig
-powerpc                          allmodconfig
-loongarch                           defconfig
-i386                          randconfig-c001
-
-clang tested configs:
-x86_64                        randconfig-a014
-i386                          randconfig-a013
-x86_64                        randconfig-a016
-i386                          randconfig-a002
-x86_64                        randconfig-a012
-i386                          randconfig-a011
-i386                          randconfig-a006
-i386                          randconfig-a004
-x86_64                        randconfig-a001
-i386                          randconfig-a015
-x86_64                        randconfig-a003
-arm                   milbeaut_m10v_defconfig
-x86_64                        randconfig-a005
-powerpc                 mpc8272_ads_defconfig
-hexagon              randconfig-r045-20220904
-powerpc                          g5_defconfig
-hexagon              randconfig-r041-20220904
-riscv                          rv32_defconfig
-x86_64                        randconfig-k001
-
--- =
-
-0-DAY CI Kernel Test Service
-https://01.org/lkp
---===============5769356649226464440==--
+https://cse.google.co.id/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://maps.google.co.id/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://images.google.co.id/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://www.google.co.id/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://www.google.nl/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://cse.google.nl/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://maps.google.nl/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://images.google.nl/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://cse.google.com.tw/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://images.google.com.tw/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://www.google.com.tw/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://maps.google.com.tw/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://maps.google.pl/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://www.google.pl/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://images.google.pl/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://cse.google.pl/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://cse.google.be/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://images.google.be/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://maps.google.be/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://www.google.be/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://images.google.co.th/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://maps.google.co.th/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://cse.google.co.th/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://www.google.co.th/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://images.google.at/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://maps.google.at/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://www.google.at/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://cse.google.at/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://images.google.cz/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://www.google.cz/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://maps.google.cz/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://cse.google.cz/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://cse.google.se/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://maps.google.se/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://www.google.se/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://images.google.se/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://images.google.ch/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://www.google.ch/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://cse.google.ch/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://maps.google.ch/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://www.google.com/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://plus.google.com/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://maps.google.com/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://cse.google.de/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://images.google.de/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://maps.google.de/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://www.google.de/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://maps.google.es/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://images.google.es/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://cse.google.es/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://www.google.es/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://images.google.co.uk/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://maps.google.co.uk/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://www.google.co.uk/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://cse.google.co.uk/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://maps.google.co.jp/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://cse.google.co.jp/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://images.google.co.jp/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://www.google.co.jp/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://cse.google.fr/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://www.google.fr/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://images.google.fr/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://maps.google.fr/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://images.google.it/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://www.google.it/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://maps.google.it/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://cse.google.it/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://images.google.com.br/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://www.google.com.br/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://cse.google.com.br/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://maps.google.com.br/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://maps.google.co.in/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://images.google.co.in/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://www.google.co.in/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://cse.google.co.in/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://maps.google.ca/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://cse.google.ca/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://images.google.ca/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://www.google.ca/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://cse.google.ru/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://maps.google.ru/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://www.google.ru/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://images.google.ru/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://cse.google.com.hk/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://images.google.com.hk/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://www.google.com.hk/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://maps.google.com.hk/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://www.google.com.au/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://cse.google.com.au/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://maps.google.com.au/url?sa=3Dt&url=3Dhttps%3A%2F%2Fbs-to.de%2F
+https://www.youtube.com/redirect?q=3Dhttps%3A%2F%2Fbs-to.de%2F
+--===============8904067430704682604==--
 
