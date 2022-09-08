@@ -1,175 +1,179 @@
-Content-Type: multipart/mixed; boundary="===============7191040020975806666=="
+Content-Type: multipart/mixed; boundary="===============4241047423677920916=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [PATCH] ACPI: Wait for ACPI IRQ to be processed before
- disable GPE
-Date: Wed, 07 Sep 2022 22:26:39 +0200
-Message-ID: <CAJZ5v0hY05BzG=fL78BzyvxeJDZT+5D_ZeyCALt2+0JUDvHnew@mail.gmail.com>
-In-Reply-To: de1cf16c-54cb-316b-3fcb-2520e6bb152f@semihalf.com
+From: Jeremy Linton <jeremy.linton at arm.com>
+Subject: [Devel] Re: [PATCH v4 1/2] ACPI: CPPC: Disable FIE if registers in
+ PCC regions
+Date: Thu, 08 Sep 2022 13:42:12 -0500
+Message-ID: <641496a1-86f9-6d56-c22c-a77b38a4cf7c@arm.com>
+In-Reply-To: 87pmg6arx2.fsf@stealth
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============7191040020975806666==
+--===============4241047423677920916==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Sep 7, 2022 at 7:31 AM Marek Ma=C5=9Blanka <mm(a)semihalf.com> wrot=
-e:
->
-> On the wake-up, the ACPI GPE that are marked as a wakeup source are
-> turned off. Before turning off, the kernel waits for the currently
-> processing IRQ to finish and assumes that this is an ACPI interrupt that
-> triggered wake-up. In the case the first interrupt after wake-up is not
-> an ACPI interrupt, this might cause the ACPI GPE not to be processed
-> because it will be disabled.
->
-> The patch makes sure that an ACPI interrupt is processed before
-> disabling GPE that are wakeup sources.
->
-> This patch fix the issue that is seen on low-end Chromebooks with two
-> cores CPU when HPET IRQ is triggered while resuming the device and is
-> processed before the ACPI GPE interrupt on the same CPU core.
->
-> Signed-off-by: Marek Maslanka <mm(a)semihalf.com>
-> ---
->  drivers/acpi/internal.h |  2 ++
->  drivers/acpi/osl.c      | 18 ++++++++++++++++++
->  drivers/acpi/sleep.c    |  6 ++++++
->  include/linux/acpi.h    |  2 ++
->  4 files changed, 28 insertions(+)
->
-> diff --git a/drivers/acpi/internal.h b/drivers/acpi/internal.h
-> index 219c02df9a08..e4df1bf2963b 100644
-> --- a/drivers/acpi/internal.h
-> +++ b/drivers/acpi/internal.h
-> @@ -251,6 +251,8 @@ static inline bool force_storage_d3(void)
->  }
->  #endif
->
-> +extern bool acpi_resume_gpe_irq_handled;
-> +
->  /*----------------------------------------------------------------------=
-----
->                                 Device properties
->    ----------------------------------------------------------------------=
----- */
-> diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
-> index 3269a888fb7a..ea587ac4c68a 100644
-> --- a/drivers/acpi/osl.c
-> +++ b/drivers/acpi/osl.c
-> @@ -42,6 +42,8 @@
->  #define _COMPONENT             ACPI_OS_SERVICES
->  ACPI_MODULE_NAME("osl");
->
-> +#define ACPI_WAIT_FOR_RESUME_GPE_IRQ_MS 500
+Hi,
 
-This is a relatively large number.  Doesn't anything smaller work?
+On 9/8/22 08:59, Punit Agrawal wrote:
+> Hi Jeremy,
+> =
 
-> +
->  struct acpi_os_dpc {
->         acpi_osd_exec_callback function;
->         void *context;
-> @@ -69,6 +71,8 @@ static struct workqueue_struct *kacpi_hotplug_wq;
->  static bool acpi_os_initialized;
->  unsigned int acpi_sci_irq =3D INVALID_ACPI_IRQ;
->  bool acpi_permanent_mmap =3D false;
-> +bool acpi_resume_gpe_irq_handled;
-> +static DECLARE_WAIT_QUEUE_HEAD(acpi_irq_after_suspend_wait);
->
->  /*
->   * This list of permanent mappings is for memory that may be accessed fr=
-om
-> @@ -549,6 +553,10 @@ static irqreturn_t acpi_irq(int irq, void *dev_id)
->         handled =3D (*acpi_irq_handler) (acpi_irq_context);
->
->         if (handled) {
-> +               if (acpi_s2idle_wakeup()) {
-> +                       acpi_resume_gpe_irq_handled =3D true;
-> +                       wake_up(&acpi_irq_after_suspend_wait);
-> +               }
->                 acpi_irq_handled++;
->                 return IRQ_HANDLED;
->         } else {
-> @@ -1768,3 +1776,13 @@ acpi_status acpi_os_enter_sleep(u8 sleep_state,
->                                                reg_a_value, reg_b_value);
->         return status;
->  }
-> +
-> +int acpi_wait_for_resume_gpe_irq(void)
-> +{
-> +       int wait_ms =3D msecs_to_jiffies(ACPI_WAIT_FOR_RESUME_GPE_IRQ_MS);
-> +       int timeout =3D wait_event_timeout(acpi_irq_after_suspend_wait,
-> +                                        acpi_resume_gpe_irq_handled,
-> +                                        wait_ms);
-> +       return timeout;
+> I missed the previous version (holidays) but hopefully still in time for
+> this one. A query / comment below.
+> =
 
-So this will wait for the full timeout if there are no ACPI events to
-process, right?
+> Jeremy Linton <jeremy.linton(a)arm.com> writes:
+> =
 
-Isn't it a bit excessive?
+>> PCC regions utilize a mailbox to set/retrieve register values used by
+>> the CPPC code. This is fine as long as the operations are
+>> infrequent. With the FIE code enabled though the overhead can range
+>> from 2-11% of system CPU overhead (ex: as measured by top) on Arm
+>> based machines.
+>>
+>> So, before enabling FIE assure none of the registers used by
+>> cppc_get_perf_ctrs() are in the PCC region. Furthermore lets also
+>> enable a module parameter which can also disable it at boot or module
+>> reload.
+>>
+>> Signed-off-by: Jeremy Linton <jeremy.linton(a)arm.com>
+>> ---
+>>   drivers/acpi/cppc_acpi.c       | 41 ++++++++++++++++++++++++++++++++++
+>>   drivers/cpufreq/cppc_cpufreq.c | 31 +++++++++++++++++++++----
+>>   include/acpi/cppc_acpi.h       |  5 +++++
+>>   3 files changed, 73 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+>> index 1e15a9f25ae9..c840bf606b30 100644
+>> --- a/drivers/acpi/cppc_acpi.c
+>> +++ b/drivers/acpi/cppc_acpi.c
+>> @@ -1240,6 +1240,47 @@ int cppc_get_perf_caps(int cpunum, struct cppc_pe=
+rf_caps *perf_caps)
+>>   }
+>>   EXPORT_SYMBOL_GPL(cppc_get_perf_caps);
+>>   =
 
-Moreover, what if there is an ACPI event right after the wait has completed?
+>> +/**
+>> + * cppc_perf_ctrs_in_pcc - Check if any perf counters are in a PCC regi=
+on.
+>> + *
+>> + * CPPC has flexibility about how counters describing CPU perf are deli=
+vered.
+>> + * One of the choices is PCC regions, which can have a high access late=
+ncy. This
+>> + * routine allows callers of cppc_get_perf_ctrs() to know this ahead of=
+ time.
+>> + *
+>> + * Return: true if any of the counters are in PCC regions, false otherw=
+ise
+>> + */
+>> +bool cppc_perf_ctrs_in_pcc(void)
+>> +{
+>> +	int cpu;
+>> +
+>> +	for_each_present_cpu(cpu) {
+>> +		struct cpc_register_resource *ref_perf_reg;
+>> +		struct cpc_desc *cpc_desc;
+>> +
+>> +		cpc_desc =3D per_cpu(cpc_desc_ptr, cpu);
+>> +
+>> +		if (CPC_IN_PCC(&cpc_desc->cpc_regs[DELIVERED_CTR]) ||
+>> +		    CPC_IN_PCC(&cpc_desc->cpc_regs[REFERENCE_CTR]) ||
+>> +		    CPC_IN_PCC(&cpc_desc->cpc_regs[CTR_WRAP_TIME]))
+>> +			return true;
+>> +
+>> +
+>> +		ref_perf_reg =3D &cpc_desc->cpc_regs[REFERENCE_PERF];
+>> +
+>> +		/*
+>> +		 * If reference perf register is not supported then we should
+>> +		 * use the nominal perf value
+>> +		 */
+>> +		if (!CPC_SUPPORTED(ref_perf_reg))
+>> +			ref_perf_reg =3D &cpc_desc->cpc_regs[NOMINAL_PERF];
+>> +
+>> +		if (CPC_IN_PCC(ref_perf_reg))
+>> +			return true;
+>> +	}
+>> +	return false;
+>> +}
+>> +EXPORT_SYMBOL_GPL(cppc_perf_ctrs_in_pcc);
+>> +
+>>   /**
+>>    * cppc_get_perf_ctrs - Read a CPU's performance feedback counters.
+>>    * @cpunum: CPU from which to read counters.
+>> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufr=
+eq.c
+>> index 24eaf0ec344d..32fcb0bf74a4 100644
+>> --- a/drivers/cpufreq/cppc_cpufreq.c
+>> +++ b/drivers/cpufreq/cppc_cpufreq.c
+>> @@ -63,7 +63,15 @@ static struct cppc_workaround_oem_info wa_info[] =3D {
+>>   =
 
-> +}
-> +EXPORT_SYMBOL(acpi_wait_for_resume_gpe_irq);
-> diff --git a/drivers/acpi/sleep.c b/drivers/acpi/sleep.c
-> index ad4b2987b3d6..6ddf28067687 100644
-> --- a/drivers/acpi/sleep.c
-> +++ b/drivers/acpi/sleep.c
-> @@ -721,6 +721,7 @@ int acpi_s2idle_prepare(void)
->         acpi_os_wait_events_complete();
->
->         s2idle_wakeup =3D true;
-> +       acpi_resume_gpe_irq_handled =3D false;
->         return 0;
->  }
->
-> @@ -789,6 +790,7 @@ bool acpi_s2idle_wake(void)
->
->  void acpi_s2idle_restore(void)
->  {
-> +       int timeout;
->         /*
->          * Drain pending events before restoring the working-state config=
-uration
->          * of GPEs.
-> @@ -797,6 +799,10 @@ void acpi_s2idle_restore(void)
->         acpi_ec_flush_work(); /* flush the EC driver's workqueues */
->         acpi_os_wait_events_complete(); /* synchronize Notify handling */
->
-> +       timeout =3D acpi_wait_for_resume_gpe_irq();
-> +       if (timeout =3D=3D 0)
-> +               pr_warn("Failed to wait for ACPI interrupt after resume");
+>>   static struct cpufreq_driver cppc_cpufreq_driver;
+>>   =
 
-This is perfectly fine, for example if the system is woken up by a
-non-ACPI IRQ (eg. the keyboard one).
+>> +static enum {
+>> +	FIE_UNSET =3D -1,
+>> +	FIE_ENABLED,
+>> +	FIE_DISABLED
+>> +} fie_disabled =3D FIE_UNSET;
+>> +
+>>   #ifdef CONFIG_ACPI_CPPC_CPUFREQ_FIE
+>> +module_param(fie_disabled, int, 0444);
+>> +MODULE_PARM_DESC(fie_disabled, "Disable Frequency Invariance Engine (FI=
+E)");
+>>   =
 
-> +
->         s2idle_wakeup =3D false;
->
->         acpi_enable_all_runtime_gpes();
-> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-> index ed4aa395cc49..ef2ab7990f1c 100644
-> --- a/include/linux/acpi.h
-> +++ b/include/linux/acpi.h
-> @@ -1475,4 +1475,6 @@ static inline void acpi_device_notify(struct device=
- *dev) { }
->  static inline void acpi_device_notify_remove(struct device *dev) { }
->  #endif
->
-> +int acpi_wait_for_resume_gpe_irq(void);
-> +
->  #endif /*_LINUX_ACPI_H*/
-> --
+>>   /* Frequency invariance support */
+>>   struct cppc_freq_invariance {
+>> @@ -158,7 +166,7 @@ static void cppc_cpufreq_cpu_fie_init(struct cpufreq=
+_policy *policy)
+>>   	struct cppc_freq_invariance *cppc_fi;
+>>   	int cpu, ret;
+>>   =
 
-Overall, I'm not convinced about the approach.
+>> -	if (cppc_cpufreq_driver.get =3D=3D hisi_cppc_cpufreq_get_rate)
+>> +	if (fie_disabled)
+>>   		return;
+> =
 
-If the goal is to process all of the ACPI wakeup interrupts, this
-doesn't meet it.
+> With this change, if FIE is enabled, the rest of the function will run
+> even if the hisi workaround is enabled. Not sure if that is an
+> intentional change. The same applies to similar other changes in the
+> patch as well.
 
-AFAICS the only way to do that which is not racy is to dispatch every
-wakeup GPE in-line (from the ACPICA code) before disabling it in case
-it is active at that point.
---===============7191040020975806666==--
+Yah, I think its intentional, unless i'm missing something. The hisi =
+
+quirk detection path forces this off regardless of the user attempting =
+
+to force it on. Which is part of why I think the enum states must be as =
+
+above. The other reason is that the final result of whether FIE is =
+
+disabled ends up in /sys/modules/cppc_cpufreq/parameters/fie_disabled =
+
+which in this case may not reflect what the user requested.
+
+
+I have another patch that might be worth posting that I created while =
+
+implementing CPPC on a machine a year or so ago that removes this quirk =
+
+entirely. Instead it detects counters that aren't incrementing properly =
+
+and NULL's out the get routine so that cpupower/etc report that the =
+
+frequency is being retrieved from the kernel rather than the hardware. =
+
+Someone else will have to test it though, because I eventually figured =
+
+out how to synthesize both counters in a way that is generic enough to =
+
+work on most machines.
+
+
+--===============4241047423677920916==--
 
