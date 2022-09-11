@@ -1,40 +1,91 @@
-Content-Type: multipart/mixed; boundary="===============4740466888209883832=="
+Content-Type: multipart/mixed; boundary="===============0799864192329379278=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [PATCH v2 0/8] ACPI: unify _UID handling as integer
-Date: Sat, 10 Sep 2022 18:32:10 +0200
-Message-ID: <CAJZ5v0j5FO+OcX6VdiR-tuDCrHFwErquxzZGUu3ZLQ1G57T-+Q@mail.gmail.com>
-In-Reply-To: YxnwMLvgQAPOkeeK@smile.fi.intel.com
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [rafael-pm:bleeding-edge] BUILD SUCCESS
+ 58968b7be786652f48f712147e6f71831cfe684e
+Date: Sun, 11 Sep 2022 14:02:16 +0800
+Message-ID: <631d79e8.yiStyYaa6aEvt0eJ%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============4740466888209883832==
+--===============0799864192329379278==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Sep 8, 2022 at 3:38 PM Andy Shevchenko
-<andriy.shevchenko(a)linux.intel.com> wrote:
->
-> On Thu, Sep 08, 2022 at 04:29:02PM +0300, Andy Shevchenko wrote:
-> > This series is about unification on how we handle ACPI _UID when
-> > it's known to be an integer-in-the-string.
-> >
-> > The idea of merging either all via ACPI tree, or taking ACPI stuff
-> > for the v6.1 while the rest may be picked up later on by respective
-> > maintainers separately
->
-> >(currently all depends on Wolfram, other
-> > patches have got the tags from the maintainers).
->
-> I stand corrected, the perf patch is not tagged yet.
->
-> > Partially compile-tested (x86-64).
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git bleeding-edge
+branch HEAD: 58968b7be786652f48f712147e6f71831cfe684e  Merge branch 'pm-cpu=
+freq' into bleeding-edge
 
-Tentatively applied as 6.1 material.
+elapsed time: 723m
 
-If there are updates, we'll make changes as they go.
+configs tested: 53
+configs skipped: 2
 
-Thanks!
---===============4740466888209883832==--
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                        randconfig-a002
+i386                          randconfig-a001
+x86_64                        randconfig-a004
+i386                          randconfig-a003
+x86_64                        randconfig-a006
+i386                          randconfig-a005
+x86_64                           allyesconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+i386                                defconfig
+arc                              allyesconfig
+arc                  randconfig-r043-20220911
+alpha                            allyesconfig
+i386                          randconfig-a014
+s390                 randconfig-r044-20220911
+riscv                randconfig-r042-20220911
+i386                          randconfig-a012
+i386                          randconfig-a016
+i386                             allyesconfig
+x86_64                        randconfig-a013
+m68k                             allyesconfig
+powerpc                           allnoconfig
+x86_64                        randconfig-a011
+x86_64                          rhel-8.3-func
+x86_64                         rhel-8.3-kunit
+powerpc                          allmodconfig
+m68k                             allmodconfig
+x86_64                           rhel-8.3-kvm
+x86_64                        randconfig-a015
+x86_64                    rhel-8.3-kselftests
+arm                                 defconfig
+mips                             allyesconfig
+x86_64                           rhel-8.3-syz
+sh                               allmodconfig
+ia64                             allmodconfig
+arm                              allyesconfig
+arm64                            allyesconfig
+
+clang tested configs:
+x86_64                        randconfig-a001
+x86_64                        randconfig-a003
+i386                          randconfig-a002
+i386                          randconfig-a004
+x86_64                        randconfig-a005
+i386                          randconfig-a006
+hexagon              randconfig-r041-20220911
+i386                          randconfig-a013
+hexagon              randconfig-r045-20220911
+i386                          randconfig-a011
+i386                          randconfig-a015
+x86_64                        randconfig-a016
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+
+-- =
+
+0-DAY CI Kernel Test Service
+https://01.org/lkp
+--===============0799864192329379278==--
 
