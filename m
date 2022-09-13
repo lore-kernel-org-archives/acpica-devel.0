@@ -1,210 +1,116 @@
-Content-Type: multipart/mixed; boundary="===============8020687345704881692=="
+Content-Type: multipart/mixed; boundary="===============2785234238812930639=="
 MIME-Version: 1.0
-From: Jeremy Linton <jeremy.linton at arm.com>
-Subject: [Devel] [PATCH v5 1/1] ACPI: CPPC: Disable FIE if registers in PCC
- regions
-Date: Mon, 12 Sep 2022 15:37:22 -0500
-Message-ID: <20220912203722.205185-2-jeremy.linton@arm.com>
-In-Reply-To: 20220912203722.205185-1-jeremy.linton@arm.com
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] Re: [PATCH v2 7/8] spi: pxa2xx: Refactor _UID handling to use
+ acpi_dev_uid_to_integer()
+Date: Tue, 13 Sep 2022 09:00:06 +0800
+Message-ID: <202209130810.dgrshDMB-lkp@intel.com>
+In-Reply-To: 20220908132910.62122-8-andriy.shevchenko@linux.intel.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8020687345704881692==
+--===============2785234238812930639==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-PCC regions utilize a mailbox to set/retrieve register values used by
-the CPPC code. This is fine as long as the operations are
-infrequent. With the FIE code enabled though the overhead can range
-from 2-11% of system CPU overhead (ex: as measured by top) on Arm
-based machines.
+Hi Andy,
 
-So, before enabling FIE assure none of the registers used by
-cppc_get_perf_ctrs() are in the PCC region. Finally, add a module
-parameter which can override the PCC region detection at boot or
-module reload.
+I love your patch! Perhaps something to improve:
 
-Signed-off-by: Jeremy Linton <jeremy.linton(a)arm.com>
-Acked-by: Viresh Kumar <viresh.kumar(a)linaro.org>
----
- drivers/acpi/cppc_acpi.c       | 42 ++++++++++++++++++++++++++++++++++
- drivers/cpufreq/cppc_cpufreq.c | 25 ++++++++++++++++----
- include/acpi/cppc_acpi.h       |  5 ++++
- 3 files changed, 68 insertions(+), 4 deletions(-)
+[auto build test WARNING on rafael-pm/linux-next]
+[also build test WARNING on wsa/i2c/for-next broonie-spi/for-next efi/next =
+linus/master v6.0-rc5 next-20220912]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-index 1e15a9f25ae9..55693e6f7153 100644
---- a/drivers/acpi/cppc_acpi.c
-+++ b/drivers/acpi/cppc_acpi.c
-@@ -1240,6 +1240,48 @@ int cppc_get_perf_caps(int cpunum, struct cppc_perf_=
-caps *perf_caps)
- }
- EXPORT_SYMBOL_GPL(cppc_get_perf_caps);
- =
+url:    https://github.com/intel-lab-lkp/linux/commits/Andy-Shevchenko/ACPI=
+-unify-_UID-handling-as-integer/20220908-213543
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git=
+ linux-next
+config: x86_64-buildonly-randconfig-r006-20220912 (https://download.01.org/=
+0day-ci/archive/20220913/202209130810.dgrshDMB-lkp(a)intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-5) 11.3.0
+reproduce (this is a W=3D1 build):
+        # https://github.com/intel-lab-lkp/linux/commit/ea7999676bc9f75bb41=
+65358cda640b340fe34d0
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Andy-Shevchenko/ACPI-unify-_UID-ha=
+ndling-as-integer/20220908-213543
+        git checkout ea7999676bc9f75bb4165358cda640b340fe34d0
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        make W=3D1 O=3Dbuild_dir ARCH=3Dx86_64 SHELL=3D/bin/bash drivers/sp=
+i/
 
-+/**
-+ * cppc_perf_ctrs_in_pcc - Check if any perf counters are in a PCC region.
-+ *
-+ * CPPC has flexibility about how CPU performance counters are accessed.
-+ * One of the choices is PCC regions, which can have a high access latency=
-. This
-+ * routine allows callers of cppc_get_perf_ctrs() to know this ahead of ti=
-me.
-+ *
-+ * Return: true if any of the counters are in PCC regions, false otherwise
-+ */
-+bool cppc_perf_ctrs_in_pcc(void)
-+{
-+	int cpu;
-+
-+	for_each_present_cpu(cpu) {
-+		struct cpc_register_resource *ref_perf_reg;
-+		struct cpc_desc *cpc_desc;
-+
-+		cpc_desc =3D per_cpu(cpc_desc_ptr, cpu);
-+
-+		if (CPC_IN_PCC(&cpc_desc->cpc_regs[DELIVERED_CTR]) ||
-+		    CPC_IN_PCC(&cpc_desc->cpc_regs[REFERENCE_CTR]) ||
-+		    CPC_IN_PCC(&cpc_desc->cpc_regs[CTR_WRAP_TIME]))
-+			return true;
-+
-+
-+		ref_perf_reg =3D &cpc_desc->cpc_regs[REFERENCE_PERF];
-+
-+		/*
-+		 * If reference perf register is not supported then we should
-+		 * use the nominal perf value
-+		 */
-+		if (!CPC_SUPPORTED(ref_perf_reg))
-+			ref_perf_reg =3D &cpc_desc->cpc_regs[NOMINAL_PERF];
-+
-+		if (CPC_IN_PCC(ref_perf_reg))
-+			return true;
-+	}
-+
-+	return false;
-+}
-+EXPORT_SYMBOL_GPL(cppc_perf_ctrs_in_pcc);
-+
- /**
-  * cppc_get_perf_ctrs - Read a CPU's performance feedback counters.
-  * @cpunum: CPU from which to read counters.
-diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
-index 24eaf0ec344d..9e2a48ac5830 100644
---- a/drivers/cpufreq/cppc_cpufreq.c
-+++ b/drivers/cpufreq/cppc_cpufreq.c
-@@ -63,7 +63,15 @@ static struct cppc_workaround_oem_info wa_info[] =3D {
- =
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp(a)intel.com>
 
- static struct cpufreq_driver cppc_cpufreq_driver;
- =
+All warnings (new ones prefixed by >>):
 
-+static enum {
-+	FIE_UNSET =3D -1,
-+	FIE_ENABLED,
-+	FIE_DISABLED
-+} fie_disabled =3D FIE_UNSET;
-+
- #ifdef CONFIG_ACPI_CPPC_CPUFREQ_FIE
-+module_param(fie_disabled, int, 0444);
-+MODULE_PARM_DESC(fie_disabled, "Disable Frequency Invariance Engine (FIE)"=
-);
- =
+   drivers/spi/spi-pxa2xx.c: In function 'pxa2xx_spi_init_pdata':
+>> drivers/spi/spi-pxa2xx.c:1457:24: warning: unused variable 'dev' [-Wunus=
+ed-variable]
+    1457 |         struct device *dev =3D &pdev->dev;
+         |                        ^~~
 
- /* Frequency invariance support */
- struct cppc_freq_invariance {
-@@ -158,7 +166,7 @@ static void cppc_cpufreq_cpu_fie_init(struct cpufreq_po=
-licy *policy)
- 	struct cppc_freq_invariance *cppc_fi;
- 	int cpu, ret;
- =
 
--	if (cppc_cpufreq_driver.get =3D=3D hisi_cppc_cpufreq_get_rate)
-+	if (fie_disabled)
- 		return;
- =
+vim +/dev +1457 drivers/spi/spi-pxa2xx.c
 
- 	for_each_cpu(cpu, policy->cpus) {
-@@ -199,7 +207,7 @@ static void cppc_cpufreq_cpu_fie_exit(struct cpufreq_po=
-licy *policy)
- 	struct cppc_freq_invariance *cppc_fi;
- 	int cpu;
- =
+  1452	=
 
--	if (cppc_cpufreq_driver.get =3D=3D hisi_cppc_cpufreq_get_rate)
-+	if (fie_disabled)
- 		return;
- =
+  1453	static struct pxa2xx_spi_controller *
+  1454	pxa2xx_spi_init_pdata(struct platform_device *pdev)
+  1455	{
+  1456		struct pxa2xx_spi_controller *pdata;
+> 1457		struct device *dev =3D &pdev->dev;
+  1458		struct ssp_device *ssp;
+  1459		struct resource *res;
+  1460		struct device *parent =3D pdev->dev.parent;
+  1461		struct pci_dev *pcidev =3D dev_is_pci(parent) ? to_pci_dev(parent) =
+: NULL;
+  1462		const struct pci_device_id *pcidev_id =3D NULL;
+  1463		enum pxa_ssp_type type;
+  1464		const void *match;
+  1465		int status;
+  1466		u64 uid;
+  1467	=
 
- 	/* policy->cpus will be empty here, use related_cpus instead */
-@@ -229,7 +237,15 @@ static void __init cppc_freq_invariance_init(void)
- 	};
- 	int ret;
- =
+  1468		if (pcidev)
+  1469			pcidev_id =3D pci_match_id(pxa2xx_spi_pci_compound_match, pcidev);
+  1470	=
 
--	if (cppc_cpufreq_driver.get =3D=3D hisi_cppc_cpufreq_get_rate)
-+	if (fie_disabled !=3D FIE_ENABLED && fie_disabled !=3D FIE_DISABLED) {
-+		fie_disabled =3D FIE_ENABLED;
-+		if (cppc_perf_ctrs_in_pcc()) {
-+			pr_info("FIE not enabled on systems with registers in PCC\n");
-+			fie_disabled =3D FIE_DISABLED;
-+		}
-+	}
-+
-+	if (fie_disabled)
- 		return;
- =
+  1471		match =3D device_get_match_data(&pdev->dev);
+  1472		if (match)
+  1473			type =3D (enum pxa_ssp_type)match;
+  1474		else if (pcidev_id)
+  1475			type =3D (enum pxa_ssp_type)pcidev_id->driver_data;
+  1476		else
+  1477			return ERR_PTR(-EINVAL);
+  1478	=
 
- 	kworker_fie =3D kthread_create_worker(0, "cppc_fie");
-@@ -247,7 +263,7 @@ static void __init cppc_freq_invariance_init(void)
- =
+  1479		pdata =3D devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
+  1480		if (!pdata)
+  1481			return ERR_PTR(-ENOMEM);
+  1482	=
 
- static void cppc_freq_invariance_exit(void)
- {
--	if (cppc_cpufreq_driver.get =3D=3D hisi_cppc_cpufreq_get_rate)
-+	if (fie_disabled)
- 		return;
- =
+  1483		ssp =3D &pdata->ssp;
+  1484	=
 
- 	kthread_destroy_worker(kworker_fie);
-@@ -936,6 +952,7 @@ static void cppc_check_hisi_workaround(void)
- 		    wa_info[i].oem_revision =3D=3D tbl->oem_revision) {
- 			/* Overwrite the get() callback */
- 			cppc_cpufreq_driver.get =3D hisi_cppc_cpufreq_get_rate;
-+			fie_disabled =3D FIE_DISABLED;
- 			break;
- 		}
- 	}
-diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
-index f73d357ecdf5..c5614444031f 100644
---- a/include/acpi/cppc_acpi.h
-+++ b/include/acpi/cppc_acpi.h
-@@ -140,6 +140,7 @@ extern int cppc_get_perf_ctrs(int cpu, struct cppc_perf=
-_fb_ctrs *perf_fb_ctrs);
- extern int cppc_set_perf(int cpu, struct cppc_perf_ctrls *perf_ctrls);
- extern int cppc_set_enable(int cpu, bool enable);
- extern int cppc_get_perf_caps(int cpu, struct cppc_perf_caps *caps);
-+extern bool cppc_perf_ctrs_in_pcc(void);
- extern bool acpi_cpc_valid(void);
- extern bool cppc_allow_fast_switch(void);
- extern int acpi_get_psd_map(unsigned int cpu, struct cppc_cpudata *cpu_dat=
-a);
-@@ -173,6 +174,10 @@ static inline int cppc_get_perf_caps(int cpu, struct c=
-ppc_perf_caps *caps)
- {
- 	return -ENOTSUPP;
- }
-+static inline bool cppc_perf_ctrs_in_pcc(void)
-+{
-+	return false;
-+}
- static inline bool acpi_cpc_valid(void)
- {
- 	return false;
+  1485		res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+  1486		ssp->mmio_base =3D devm_ioremap_resource(&pdev->dev, res);
+  1487		if (IS_ERR(ssp->mmio_base))
+  1488			return ERR_CAST(ssp->mmio_base);
+  1489	=
+
+  1490		ssp->phys_base =3D res->start;
+  1491	=
+
+
 -- =
 
-2.37.1
-
---===============8020687345704881692==--
+0-DAY CI Kernel Test Service
+https://01.org/lkp
+--===============2785234238812930639==--
 
