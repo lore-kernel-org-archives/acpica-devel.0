@@ -1,24 +1,24 @@
-Content-Type: multipart/mixed; boundary="===============8831657272528701147=="
+Content-Type: multipart/mixed; boundary="===============6970167967565356658=="
 MIME-Version: 1.0
 From: kernel test robot <lkp at intel.com>
 Subject: [Devel] [rafael-pm:bleeding-edge] BUILD SUCCESS
- 8764db2bd7113df506f85a6dc6cbfb24459f241a
-Date: Tue, 20 Sep 2022 12:58:41 +0800
-Message-ID: <63294881.atNR2OrfynAXfdXb%lkp@intel.com>
+ 65dc2656226949bc594ef5367dd29b7cb8ca27eb
+Date: Thu, 22 Sep 2022 15:11:23 +0800
+Message-ID: <632c0a9b.Uy4+mGNx8fBFsycG%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============8831657272528701147==
+--===============6970167967565356658==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
 tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
 m.git bleeding-edge
-branch HEAD: 8764db2bd7113df506f85a6dc6cbfb24459f241a  Merge branch 'acpi-u=
-uid' into bleeding-edge
+branch HEAD: 65dc2656226949bc594ef5367dd29b7cb8ca27eb  Merge branch 'pm-cpu=
+idle' into bleeding-edge
 
-elapsed time: 726m
+elapsed time: 721m
 
 configs tested: 58
 configs skipped: 2
@@ -29,68 +29,68 @@ More configs may be tested in the coming days.
 gcc tested configs:
 um                             i386_defconfig
 um                           x86_64_defconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-i386                 randconfig-a011-20220919
-powerpc                           allnoconfig
-i386                 randconfig-a016-20220919
-i386                 randconfig-a015-20220919
-powerpc                          allmodconfig
-arc                              allyesconfig
+arc                                 defconfig
+alpha                               defconfig
+s390                             allmodconfig
+s390                                defconfig
 alpha                            allyesconfig
-i386                 randconfig-a013-20220919
+arc                              allyesconfig
+arc                  randconfig-r043-20220921
 m68k                             allyesconfig
+riscv                randconfig-r042-20220921
 m68k                             allmodconfig
-i386                 randconfig-a012-20220919
-arc                  randconfig-r043-20220919
-i386                 randconfig-a014-20220919
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
+s390                             allyesconfig
+powerpc                           allnoconfig
 mips                             allyesconfig
+i386                                defconfig
+powerpc                          allmodconfig
+s390                 randconfig-r044-20220921
+sh                               allmodconfig
+x86_64                        randconfig-a004
+x86_64                        randconfig-a002
+x86_64                        randconfig-a006
+x86_64                        randconfig-a013
+i386                          randconfig-a001
+x86_64                        randconfig-a011
+x86_64                              defconfig
 arm                                 defconfig
+i386                             allyesconfig
+i386                          randconfig-a003
+x86_64                        randconfig-a015
+x86_64                               rhel-8.3
+i386                          randconfig-a014
+x86_64                           allyesconfig
+i386                          randconfig-a005
+i386                          randconfig-a012
+i386                          randconfig-a016
+arm64                            allyesconfig
+arm                              allyesconfig
+ia64                             allmodconfig
 x86_64                          rhel-8.3-func
 x86_64                         rhel-8.3-kunit
-sh                               allmodconfig
+x86_64                    rhel-8.3-kselftests
 x86_64                           rhel-8.3-kvm
 x86_64                           rhel-8.3-syz
-i386                                defconfig
-s390                 randconfig-r044-20220919
-riscv                randconfig-r042-20220919
-x86_64               randconfig-a012-20220919
-arc                                 defconfig
-x86_64               randconfig-a011-20220919
-alpha                               defconfig
-arm                              allyesconfig
-x86_64               randconfig-a013-20220919
-arm64                            allyesconfig
-s390                             allmodconfig
-x86_64               randconfig-a014-20220919
-x86_64               randconfig-a015-20220919
-x86_64               randconfig-a016-20220919
-s390                                defconfig
-i386                             allyesconfig
-s390                             allyesconfig
-ia64                             allmodconfig
 
 clang tested configs:
-x86_64               randconfig-a003-20220919
-x86_64               randconfig-a001-20220919
-x86_64               randconfig-a002-20220919
-x86_64               randconfig-a004-20220919
-hexagon              randconfig-r041-20220919
-x86_64               randconfig-a006-20220919
-i386                 randconfig-a001-20220919
-hexagon              randconfig-r045-20220919
-i386                 randconfig-a002-20220919
-x86_64               randconfig-a005-20220919
-i386                 randconfig-a003-20220919
-i386                 randconfig-a004-20220919
-i386                 randconfig-a005-20220919
-i386                 randconfig-a006-20220919
+hexagon              randconfig-r041-20220921
+hexagon              randconfig-r045-20220921
+x86_64                        randconfig-a001
+x86_64                        randconfig-a003
+x86_64                        randconfig-a005
+x86_64                        randconfig-a016
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+i386                          randconfig-a002
+i386                          randconfig-a013
+i386                          randconfig-a004
+i386                          randconfig-a011
+i386                          randconfig-a006
+i386                          randconfig-a015
 
 -- =
 
 0-DAY CI Kernel Test Service
 https://01.org/lkp
---===============8831657272528701147==--
+--===============6970167967565356658==--
 
