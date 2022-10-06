@@ -1,33 +1,110 @@
-Content-Type: multipart/mixed; boundary="===============6636772780011332969=="
+Content-Type: multipart/mixed; boundary="===============7280161349499760897=="
 MIME-Version: 1.0
-From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [PATCH] ACPI: APEI: Fix num_ghes to unsigned int
-Date: Wed, 05 Oct 2022 17:49:40 +0200
-Message-ID: <CAJZ5v0jM8WrE1u1x5K26Lj0kEvRfQB=nk4vOXYEnoG-zeuywRw@mail.gmail.com>
-In-Reply-To: 20221005154105.454809-1-Ashish.Kalra@amd.com
+From: kernel test robot <lkp at intel.com>
+Subject: [Devel] [rafael-pm:bleeding-edge] BUILD SUCCESS
+ b4d88401f829fc76ec736ec9ce44cdf4820629cf
+Date: Thu, 06 Oct 2022 12:59:27 +0800
+Message-ID: <633e60af.oQiPOSi/yUwfHpaP%lkp@intel.com>
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6636772780011332969==
+--===============7280161349499760897==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Oct 5, 2022 at 5:41 PM Ashish Kalra <Ashish.Kalra(a)amd.com> wrote:
->
-> Yes, on one of our AMD EPYC processors, num_ghes is 32776 and we get the =
-following call trace due to vmalloc() failure beacuse of the overflow:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-p=
+m.git bleeding-edge
+branch HEAD: b4d88401f829fc76ec736ec9ce44cdf4820629cf  Merge branch 'acpi-t=
+hermal' into bleeding-edge
 
-But int should be more than sufficient to accommodate that number.
+elapsed time: 726m
 
-I think that the overflow takes place during the execution of this statemen=
-t:
+configs tested: 72
+configs skipped: 4
 
-len +=3D (num_ghes * GHES_ESOURCE_PREALLOC_MAX_SIZE);
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-because the right-hand side of it is of type int, because both
-multiplication operands are int.
+gcc tested configs:
+um                             i386_defconfig
+x86_64                              defconfig
+um                           x86_64_defconfig
+powerpc                           allnoconfig
+mips                             allyesconfig
+powerpc                          allmodconfig
+x86_64                               rhel-8.3
+sh                               allmodconfig
+x86_64                           allyesconfig
+m68k                             allmodconfig
+arc                              allyesconfig
+alpha                            allyesconfig
+m68k                             allyesconfig
+x86_64                          rhel-8.3-func
+x86_64                    rhel-8.3-kselftests
+i386                                defconfig
+arc                                 defconfig
+alpha                               defconfig
+s390                             allmodconfig
+x86_64               randconfig-a011-20221003
+s390                                defconfig
+x86_64                           rhel-8.3-syz
+x86_64               randconfig-a014-20221003
+x86_64                         rhel-8.3-kunit
+x86_64               randconfig-a012-20221003
+arc                  randconfig-r043-20221003
+arm                                 defconfig
+x86_64                           rhel-8.3-kvm
+i386                 randconfig-a011-20221003
+x86_64               randconfig-a013-20221003
+i386                 randconfig-a013-20221003
+i386                 randconfig-a012-20221003
+s390                             allyesconfig
+x86_64               randconfig-a015-20221003
+x86_64               randconfig-a016-20221003
+arc                  randconfig-r043-20221002
+i386                 randconfig-a015-20221003
+s390                 randconfig-r044-20221003
+i386                 randconfig-a016-20221003
+i386                             allyesconfig
+i386                 randconfig-a014-20221003
+arm64                            allyesconfig
+arm                              allyesconfig
+riscv                randconfig-r042-20221003
+ia64                             allmodconfig
+arc                               allnoconfig
+alpha                             allnoconfig
+riscv                             allnoconfig
+csky                              allnoconfig
+arm                           viper_defconfig
+powerpc                      cm5200_defconfig
 
-You should say that in the changelog.
---===============6636772780011332969==--
+clang tested configs:
+hexagon              randconfig-r041-20221003
+hexagon              randconfig-r041-20221002
+hexagon              randconfig-r045-20221002
+i386                 randconfig-a004-20221003
+i386                 randconfig-a003-20221003
+hexagon              randconfig-r045-20221003
+i386                 randconfig-a002-20221003
+i386                 randconfig-a001-20221003
+x86_64               randconfig-a003-20221003
+i386                 randconfig-a006-20221003
+x86_64               randconfig-a005-20221003
+riscv                randconfig-r042-20221002
+x86_64               randconfig-a002-20221003
+i386                 randconfig-a005-20221003
+s390                 randconfig-r044-20221002
+x86_64               randconfig-a001-20221003
+x86_64               randconfig-a004-20221003
+x86_64               randconfig-a006-20221003
+powerpc                    mvme5100_defconfig
+powerpc                     ppa8548_defconfig
+powerpc                     akebono_defconfig
+
+-- =
+
+0-DAY CI Kernel Test Service
+https://01.org/lkp
+--===============7280161349499760897==--
 
