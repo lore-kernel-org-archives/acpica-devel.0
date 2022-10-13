@@ -1,89 +1,98 @@
-Content-Type: multipart/mixed; boundary="===============6449219243909065471=="
+Content-Type: multipart/mixed; boundary="===============5118146507568421955=="
 MIME-Version: 1.0
 From: Rafael J. Wysocki <rafael at kernel.org>
-Subject: [Devel] Re: [RFC v3 0/4] ACPI[CA]: fix ECDT EC probe ordering issues
-Date: Thu, 13 Oct 2022 18:53:10 +0200
-Message-ID: <CAJZ5v0gaCYVTSk2wCBVEj9xXCMjtt=Ce8t88Me1kb_MCAuYfBw@mail.gmail.com>
-In-Reply-To: 20221003144214.345279-1-hdegoede@redhat.com
+Subject: [Devel] Re: [PATCH v2] ACPI: APEI: Fix num_ghes to unsigned int
+Date: Thu, 13 Oct 2022 20:45:48 +0200
+Message-ID: <CAJZ5v0gsnVTwPX+hrB4-hUtESsBC1dot3vFh_8qe4cb8ChDYtA@mail.gmail.com>
+In-Reply-To: 20221005163253.455910-1-Ashish.Kalra@amd.com
 List-ID: <devel@acpica.org>
 To: devel@acpica.org
 
---===============6449219243909065471==
+--===============5118146507568421955==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Hi Hans,
+On Wed, Oct 5, 2022 at 6:33 PM Ashish Kalra <Ashish.Kalra(a)amd.com> wrote:
+>
+> From: Ashish Kalra <ashish.kalra(a)amd.com>
+>
+> Change num_ghes from int to unsigned int, preventing an overflow
+> and causing subsequent vmalloc to fail.
+>
+> The overflow happens in the ghes_estatus_pool_init() when calculating
+> len during execution of the statement below as both multiplication
+> operands here are signed int :
+>
+> len +=3D (num_ghes * GHES_ESOURCE_PREALLOC_MAX_SIZE);
+>
+> The following call trace is observed because of this bug:
+>
+> [    9.317108] swapper/0: vmalloc error: size 18446744071562596352, excee=
+ds total pages, mode:0xcc0(GFP_KERNEL), nodemask=3D(null),cpuset=3D/,mems_a=
+llowed=3D0-1
+> [    9.317131] Call Trace:
+> [    9.317134]  <TASK>
+> [    9.317137]  dump_stack_lvl+0x49/0x5f
+> [    9.317145]  dump_stack+0x10/0x12
+> [    9.317146]  warn_alloc.cold+0x7b/0xdf
+> [    9.317150]  ? __device_attach+0x16a/0x1b0
+> [    9.317155]  __vmalloc_node_range+0x702/0x740
+> [    9.317160]  ? device_add+0x17f/0x920
+> [    9.317164]  ? dev_set_name+0x53/0x70
+> [    9.317166]  ? platform_device_add+0xf9/0x240
+> [    9.317168]  __vmalloc_node+0x49/0x50
+> [    9.317170]  ? ghes_estatus_pool_init+0x43/0xa0
+> [    9.317176]  vmalloc+0x21/0x30
+> [    9.317177]  ghes_estatus_pool_init+0x43/0xa0
+> [    9.317179]  acpi_hest_init+0x129/0x19c
+> [    9.317185]  acpi_init+0x434/0x4a4
+> [    9.317188]  ? acpi_sleep_proc_init+0x2a/0x2a
+> [    9.317190]  do_one_initcall+0x48/0x200
+> [    9.317195]  kernel_init_freeable+0x221/0x284
+> [    9.317200]  ? rest_init+0xe0/0xe0
+> [    9.317204]  kernel_init+0x1a/0x130
+> [    9.317205]  ret_from_fork+0x22/0x30
+> [    9.317208]  </TASK>
+>
+> Signed-off-by: Ashish Kalra <ashish.kalra(a)amd.com>
+> ---
+>  drivers/acpi/apei/ghes.c | 2 +-
+>  include/acpi/ghes.h      | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
+> index d91ad378c00d..6d7c202142a6 100644
+> --- a/drivers/acpi/apei/ghes.c
+> +++ b/drivers/acpi/apei/ghes.c
+> @@ -163,7 +163,7 @@ static void ghes_unmap(void __iomem *vaddr, enum fixe=
+d_addresses fixmap_idx)
+>         clear_fixmap(fixmap_idx);
+>  }
+>
+> -int ghes_estatus_pool_init(int num_ghes)
+> +int ghes_estatus_pool_init(unsigned int num_ghes)
+>  {
+>         unsigned long addr, len;
+>         int rc;
+> diff --git a/include/acpi/ghes.h b/include/acpi/ghes.h
+> index 34fb3431a8f3..292a5c40bd0c 100644
+> --- a/include/acpi/ghes.h
+> +++ b/include/acpi/ghes.h
+> @@ -71,7 +71,7 @@ int ghes_register_vendor_record_notifier(struct notifie=
+r_block *nb);
+>  void ghes_unregister_vendor_record_notifier(struct notifier_block *nb);
+>  #endif
+>
+> -int ghes_estatus_pool_init(int num_ghes);
+> +int ghes_estatus_pool_init(unsigned int num_ghes);
+>
+>  /* From drivers/edac/ghes_edac.c */
+>
+> --
 
-On Mon, Oct 3, 2022 at 4:42 PM Hans de Goede <hdegoede(a)redhat.com> wrote:
->
-> Hi All,
->
-> Here is v3 of my series fixing some ECDT EC probe ordering issues which
-> are causing issues om some laptops:
->
-> https://bugzilla.kernel.org/show_bug.cgi?id=3D214899
->
-> This is a RFC because fixing this requires some ACPICA changes which
-> obviously need to go upstream through the ACPICA project:
-> https://github.com/acpica/acpica/pull/786
-
-I've just approved your pull request.
-
-Also, as soon as it gets merged, you can resubmit the series with a
-proper ACPICA  commit ID and I will be able to apply the patches right
-away then.
-
-> The problem this fixed is best described by the commit message of patch 4:
->
-> ACPI-2.0 says that the EC OpRegion handler must be available immediately
-> (like the standard default OpRegion handlers):
->
-> Quoting from the ACPI spec version 6.3: "6.5.4 _REG (Region) ...
-> 2. OSPM must make Embedded Controller operation regions, accessed via
-> the Embedded Controllers described in ECDT, available before executing
-> any control method. These operation regions may become inaccessible
-> after OSPM runs _REG(EmbeddedControl, 0)."
->
-> So acpi_bus_init() calls acpi_ec_ecdt_probe(), which calls
-> acpi_install_address_space_handler() to install the EC's OpRegion
-> handler, early on.
->
-> This not only installs the OpRegion handler, but also calls the EC's
-> _REG method. The _REG method call is a problem because it may rely on
-> initialization done by the _INI methods of one of the PCI / _SB root devs,
-> see for example: https://bugzilla.kernel.org/show_bug.cgi?id=3D214899 .
->
-> Generally speaking _REG methods are executed when the ACPI-device they
-> are part of has a driver bound to it. Where as _INI methods must be
-> executed at table load time (according to the spec). The problem here
-> is that the early acpi_install_address_space_handler() call causes
-> the _REG handler to run too early.
->
-> To allow fixing this the ACPICA code now allows to split the OpRegion
-> handler installation and the executing of _REG into 2 separate steps.
->
-> This commit uses this ACPICA functionality to fix the EC probe ordering
-> by delaying the executing of _REG for ECDT described ECs till the matching
-> EC device in the DSDT gets parsed and acpi_ec_add() for it gets called.
-> This moves the calling of _REG for the EC on devices with an ECDT to
-> the same point in time where it is called on devices without an ECDT tabl=
-e.
->
-> Changes in v3:
-> - Add a prep patch to fix an indentation issue in Linux' acpixf.h to fix
->   the patch from ACPICA's script not applying
-> - Add 2 new functions to ACPICA for this instead of a flags argument
->   1. acpi_install_address_space_handler_no_reg()
->   2. acpi_execute_reg_methods()
-> - Add a patch to fix EC handler removal in the ECDT case
->
-> From my pov this series is ready for merging once the ACPICA changes
-> are accepted.
-
-I agree, please resubmit as soon as the upstream ACPICA pull request
-gets merged.
+Applied as 6.1 material with some edits in the subject and changelog.
 
 Thanks!
---===============6449219243909065471==--
+--===============5118146507568421955==--
 
