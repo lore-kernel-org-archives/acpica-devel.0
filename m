@@ -1,19 +1,18 @@
-Return-Path: <regressions@leemhuis.info>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 8AEA260E13
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org CEE1860BBC
-Message-ID: <57a944b3-6255-38bf-e53e-6a838e1f8ddf@leemhuis.info>
-MIME-Version: 1.0
-Content-Language: en-US, de-DE
+Return-Path: <lvjianmin@loongson.cn>
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 5F41E81D16
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 4EB8481D0B
 References: <e6aaddb9-afec-e77d-be33-570f9f10a9c2@leemhuis.info>
  <53e8b4db-e8dd-4dfa-f873-7dcbeac09149@leemhuis.info>
  <3089214d-292b-885d-9bc1-c81d0101d5f0@leemhuis.info>
  <CAAhV-H5j29CnCN+F8Oz0qh1UCqp+CmL=aQXCSjqgX8CZ5sXTtg@mail.gmail.com>
  <b39064e3-4f8b-f607-b270-1e0c8539d391@loongson.cn>
-From: "Linux regression tracking (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <b39064e3-4f8b-f607-b270-1e0c8539d391@loongson.cn>
-Content-Type: text/plain; charset="utf-8"
+ <57a944b3-6255-38bf-e53e-6a838e1f8ddf@leemhuis.info>
+From: Jianmin Lv <lvjianmin@loongson.cn>
+Message-ID: <c63b9aa6-df87-e4e3-c3b1-a46ed060b0a9@loongson.cn>
+MIME-Version: 1.0
+In-Reply-To: <57a944b3-6255-38bf-e53e-6a838e1f8ddf@leemhuis.info>
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Subject: Re: [Acpica-devel] [regression] Bug 217069 - Wake on Lan is broken
  on r8169 since 6.2
@@ -26,99 +25,109 @@ List-Post: <mailto:acpica-devel@lists.linuxfoundation.org>
 List-Help: <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=help>
 List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel>, 
  <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=subscribe>
-Date: Sat, 25 Mar 2023 13:31:22 -0000
-To: Jianmin Lv <lvjianmin@loongson.cn>, Huacai Chen <chenhuacai@kernel.org>, Linux regressions mailing list <regressions@lists.linux.dev>
+Date: Mon, 27 Mar 2023 07:56:29 -0000
+To: Linux regressions mailing list <regressions@lists.linux.dev>, Huacai Chen <chenhuacai@kernel.org>
 Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Bob Moore <robert.moore@intel.com>, LKML <linux-kernel@vger.kernel.org>, ACPI Devel Maling List <linux-acpi@vger.kernel.org>, acpica-devel@lists.linuxfoundation.org, Huacai Chen <chenhuacai@loongson.cn>
 
-On 24.03.23 11:09, Jianmin Lv wrote:
-> Please try the following patch:
-> https://github.com/acpica/acpica/pull/784/commits/0e66e6aae972dac3833bdcbd223aa6a8b1733176
 
-To interact with the reporters, please comment here:
-https://bugzilla.kernel.org/show_bug.cgi?id=217069
 
-Sorry, I wish it was different, but I can't CC the reporters here
-without their permission, because bugzilla.kernel.org tells users upon
-registration their "email address will never be displayed to logged out
-users".
+On 2023/3/25 下午9:31, Linux regression tracking (Thorsten Leemhuis) wrote:
+> On 24.03.23 11:09, Jianmin Lv wrote:
+>> Please try the following patch:
+>> https://github.com/acpica/acpica/pull/784/commits/0e66e6aae972dac3833bdcbd223aa6a8b1733176
+> 
+> To interact with the reporters, please comment here:
+> https://bugzilla.kernel.org/show_bug.cgi?id=217069
+> 
+> Sorry, I wish it was different, but I can't CC the reporters here
+> without their permission, because bugzilla.kernel.org tells users upon
+> registration their "email address will never be displayed to logged out
+> users".
+> 
+> FWIW, I forwarded your request yesterday and one reporter commented that
+> it didn't help. But having me as a man-in-the-middle is not a good idea.
+> 
 
-FWIW, I forwarded your request yesterday and one reporter commented that
-it didn't help. But having me as a man-in-the-middle is not a good idea.
+Ok, I has transformed and adjusted the patch from ACPICA and post it 
+into https://bugzilla.kernel.org/show_bug.cgi?id=217069.
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
+Thanks!
 
-> On 2023/3/24 下午5:50, Huacai Chen wrote:
->> Hi, Thorsten,
->>
->> I'm sorry I ignored this email, and Jianmin, could you please
->> investigate this problem? Thank you.
->>
->> Huacai
->>
->> On Fri, Mar 24, 2023 at 5:46 PM Thorsten Leemhuis
->> <regressions@leemhuis.info> wrote:
+> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+> --
+> Everything you wanna know about Linux kernel regression tracking:
+> https://linux-regtracking.leemhuis.info/about/#tldr
+> If I did something stupid, please tell me, as explained on that page.
+> 
+>> On 2023/3/24 下午5:50, Huacai Chen wrote:
+>>> Hi, Thorsten,
 >>>
->>> On 19.03.23 08:20, Linux regression tracking (Thorsten Leemhuis) wrote:
->>>> Hi, Thorsten here, the Linux kernel's regression tracker.
+>>> I'm sorry I ignored this email, and Jianmin, could you please
+>>> investigate this problem? Thank you.
+>>>
+>>> Huacai
+>>>
+>>> On Fri, Mar 24, 2023 at 5:46 PM Thorsten Leemhuis
+>>> <regressions@leemhuis.info> wrote:
 >>>>
->>>> On 22.02.23 08:57, Thorsten Leemhuis wrote:
+>>>> On 19.03.23 08:20, Linux regression tracking (Thorsten Leemhuis) wrote:
+>>>>> Hi, Thorsten here, the Linux kernel's regression tracker.
 >>>>>
->>>>> I noticed a regression report in bugzilla.kernel.org. As many (most?)
->>>>> kernel developer don't keep an eye on it, I decided to forward it by
->>>>> mail. Quoting from
->>>>> https://bugzilla.kernel.org/show_bug.cgi?id=217069 :
->>>>
->>>> An issue that looked like a network bug was now bisected and it turns
->>>> out it's cause by 5c62d5aab875 ("ACPICA: Events: Support fixed PCIe
->>>> wake
->>>> event") which Huacai Chen provided. Could you take a look at the ticket
->>>> linked above?
->>>
->>> Huacai Chen, did you look into this? Would be good to have this
->>> regression fixed rather sooner than later, as it seems to annoy quite a
->>> few people.
->>>
->>> Should we maybe simply revert the problematic change for now and reapply
->>> it later once the root-issue was found and fixed?
->>>
->>> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
->>> -- 
->>> Everything you wanna know about Linux kernel regression tracking:
->>> https://linux-regtracking.leemhuis.info/about/#tldr
->>> If I did something stupid, please tell me, as explained on that page.
->>>
->>> #regzbot poke
->>>
->>>> FWIW, the whole story started like this:
->>>>
->>>>>> Ivan Ivanich 2023-02-22 00:51:52 UTC
+>>>>> On 22.02.23 08:57, Thorsten Leemhuis wrote:
 >>>>>>
->>>>>> After upgrade to 6.2 having issues with wake on lan on 2 systems: -
->>>>>> first is an old lenovo laptop from 2012(Ivy Bridge) with realtek
->>>>>> network adapter - second is a PC(Haswell refresh) with PCIE realtek
->>>>>> network adapter
->>>>>>
->>>>>> Both uses r8169 driver for network.
->>>>>>
->>>>>> On laptop it's not possible to wake on lan after poweroff On PC it's
->>>>>> not possible to wake on lan up after hibernate but works after
->>>>>> poweroff
->>>>>>
->>>>>> In both cases downgrade to 6.1.x kernel fixes the issue.
+>>>>>> I noticed a regression report in bugzilla.kernel.org. As many (most?)
+>>>>>> kernel developer don't keep an eye on it, I decided to forward it by
+>>>>>> mail. Quoting from
+>>>>>> https://bugzilla.kernel.org/show_bug.cgi?id=217069 :
+>>>>>
+>>>>> An issue that looked like a network bug was now bisected and it turns
+>>>>> out it's cause by 5c62d5aab875 ("ACPICA: Events: Support fixed PCIe
+>>>>> wake
+>>>>> event") which Huacai Chen provided. Could you take a look at the ticket
+>>>>> linked above?
 >>>>
->>>> Meanwhile a few others that ran into the same problem with NICs from
->>>> different vendors joined the ticket
+>>>> Huacai Chen, did you look into this? Would be good to have this
+>>>> regression fixed rather sooner than later, as it seems to annoy quite a
+>>>> few people.
 >>>>
->>>> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker'
->>>> hat)
+>>>> Should we maybe simply revert the problematic change for now and reapply
+>>>> it later once the root-issue was found and fixed?
+>>>>
+>>>> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
 >>>> -- 
 >>>> Everything you wanna know about Linux kernel regression tracking:
 >>>> https://linux-regtracking.leemhuis.info/about/#tldr
 >>>> If I did something stupid, please tell me, as explained on that page.
-> 
-> 
-> 
+>>>>
+>>>> #regzbot poke
+>>>>
+>>>>> FWIW, the whole story started like this:
+>>>>>
+>>>>>>> Ivan Ivanich 2023-02-22 00:51:52 UTC
+>>>>>>>
+>>>>>>> After upgrade to 6.2 having issues with wake on lan on 2 systems: -
+>>>>>>> first is an old lenovo laptop from 2012(Ivy Bridge) with realtek
+>>>>>>> network adapter - second is a PC(Haswell refresh) with PCIE realtek
+>>>>>>> network adapter
+>>>>>>>
+>>>>>>> Both uses r8169 driver for network.
+>>>>>>>
+>>>>>>> On laptop it's not possible to wake on lan after poweroff On PC it's
+>>>>>>> not possible to wake on lan up after hibernate but works after
+>>>>>>> poweroff
+>>>>>>>
+>>>>>>> In both cases downgrade to 6.1.x kernel fixes the issue.
+>>>>>
+>>>>> Meanwhile a few others that ran into the same problem with NICs from
+>>>>> different vendors joined the ticket
+>>>>>
+>>>>> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker'
+>>>>> hat)
+>>>>> -- 
+>>>>> Everything you wanna know about Linux kernel regression tracking:
+>>>>> https://linux-regtracking.leemhuis.info/about/#tldr
+>>>>> If I did something stupid, please tell me, as explained on that page.
+>>
+>>
+>>
+
