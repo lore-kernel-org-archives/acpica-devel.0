@@ -1,24 +1,24 @@
 Return-Path: <sashal@kernel.org>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 2489560E78
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org CEFF3607B5
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org DE8F24060E
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org C85CE40134
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1682909921;
- bh=hRj1ydpVYptJsvNmiO59+UYPMUE4NUJHzAScAHy8VdI=;
+ s=k20201202; t=1682910089;
+ bh=Y/O9162IMq3Ry2QSMjHXQr8tMPfZrXeNgajqVcH+mb4=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=BdSYcF7OtH6QW2ljoSKHPbOjRBq99+vHdbwsxvDVHqpYePExM3RCLc9c0iAU0zNP7
- ysYMv4PVFXKX37ifMrl7mCHsmq6ml1FbGfKk+L1I9SN/ZJeRu7qqIViS6zEUCj+fMG
- X/VlF2WUM3jCquiavwbBqDgs+U3zOjdzWCRIljmVM3TXWe6kjRJhAxr1Kl4YCoNX7+
- G+tY+9nBxU26cK2zz5s3/QpuaHrs4Zn9Zu7J2meggOJ+9qrfC0rTVjFIYwyuqHLd+u
- t+Dsbu8Rvdxazi9pUuld+3eBCrIP48ym3sDjlIqcnoLHXHDoEckAuiBnkJAsL9mW2Z
- NehrDNOoNpyDA==
+ b=R3scCr9fJ1i/e3N5TnEe0s6WIRIJs7yFvEnpE41aKKnPyz2acLwTho0rRVHglnFGQ
+ TidJRaFNLjKjQe+kJ5G5XKabOIixpju7eM2KPLYHGe7p49o04R12Eg3QZl3nVdxQaP
+ tZkSpnqzs0EBfcHiC1I4HYfdVEoN4C7gXsnxrtnlJ1r06cvPVk1uAWC1QG1Lvzt1N5
+ ahvGY9OV9rnkXZXS4gwX+pEw+D7/T/Zvh6JJSMj3xDpCzYOxh41bn3nX+GALC7tf4W
+ bmCgj86zPWQvAqapT52h0+CZXZuVk3oA6dESPQV/NWbQX1y3Zwr1oprA17DkJ/OLu/
+ Mojte/9QLEl9Q==
 From: Sasha Levin <sashal@kernel.org>
-Message-Id: <20230501025632.3253067-30-sashal@kernel.org>
-In-Reply-To: <20230501025632.3253067-1-sashal@kernel.org>
-References: <20230501025632.3253067-1-sashal@kernel.org>
+Message-Id: <20230501025945.3253774-26-sashal@kernel.org>
+In-Reply-To: <20230501025945.3253774-1-sashal@kernel.org>
+References: <20230501025945.3253774-1-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: [Acpica-devel] [PATCH AUTOSEL 6.3 30/44] ACPICA: ACPICA: check null
-	return of ACPI_ALLOCATE_ZEROED in acpi_db_display_objects
+Subject: [Acpica-devel] [PATCH AUTOSEL 6.2 26/37] ACPICA: Avoid undefined
+	behavior: applying zero offset to null pointer
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -28,41 +28,69 @@ List-Post: <mailto:acpica-devel@lists.linuxfoundation.org>
 List-Help: <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=help>
 List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel>, 
  <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=subscribe>
-Date: Mon, 01 May 2023 02:58:44 -0000
+Date: Mon, 01 May 2023 03:01:32 -0000
 To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>, "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>, void0red <30990023+void0red@users.noreply.github.com>, Bob Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org, acpica-devel@lists.linuxfoundation.org
+Cc: Sasha Levin <sashal@kernel.org>, Tamir Duberstein <tamird@google.com>, "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>, Bob Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org, acpica-devel@lists.linuxfoundation.org
 
-From: void0red <30990023+void0red@users.noreply.github.com>
+From: Tamir Duberstein <tamird@google.com>
 
-[ Upstream commit ae5a0eccc85fc960834dd66e3befc2728284b86c ]
+[ Upstream commit 05bb0167c80b8f93c6a4e0451b7da9b96db990c2 ]
 
-ACPICA commit 0d5f467d6a0ba852ea3aad68663cbcbd43300fd4
+ACPICA commit 770653e3ba67c30a629ca7d12e352d83c2541b1e
 
-ACPI_ALLOCATE_ZEROED may fails, object_info might be null and will cause
-null pointer dereference later.
+Before this change we see the following UBSAN stack trace in Fuchsia:
 
-Link: https://github.com/acpica/acpica/commit/0d5f467d
+  #0    0x000021e4213b3302 in acpi_ds_init_aml_walk(struct acpi_walk_state*, union acpi_parse_object*, struct acpi_namespace_node*, u8*, u32, struct acpi_evaluate_info*, u8) ../../third_party/acpica/source/components/dispatcher/dswstate.c:682 <platform-bus-x86.so>+0x233302
+  #1.2  0x000020d0f660777f in ubsan_get_stack_trace() compiler-rt/lib/ubsan/ubsan_diag.cpp:41 <libclang_rt.asan.so>+0x3d77f
+  #1.1  0x000020d0f660777f in maybe_print_stack_trace() compiler-rt/lib/ubsan/ubsan_diag.cpp:51 <libclang_rt.asan.so>+0x3d77f
+  #1    0x000020d0f660777f in ~scoped_report() compiler-rt/lib/ubsan/ubsan_diag.cpp:387 <libclang_rt.asan.so>+0x3d77f
+  #2    0x000020d0f660b96d in handlepointer_overflow_impl() compiler-rt/lib/ubsan/ubsan_handlers.cpp:809 <libclang_rt.asan.so>+0x4196d
+  #3    0x000020d0f660b50d in compiler-rt/lib/ubsan/ubsan_handlers.cpp:815 <libclang_rt.asan.so>+0x4150d
+  #4    0x000021e4213b3302 in acpi_ds_init_aml_walk(struct acpi_walk_state*, union acpi_parse_object*, struct acpi_namespace_node*, u8*, u32, struct acpi_evaluate_info*, u8) ../../third_party/acpica/source/components/dispatcher/dswstate.c:682 <platform-bus-x86.so>+0x233302
+  #5    0x000021e4213e2369 in acpi_ds_call_control_method(struct acpi_thread_state*, struct acpi_walk_state*, union acpi_parse_object*) ../../third_party/acpica/source/components/dispatcher/dsmethod.c:605 <platform-bus-x86.so>+0x262369
+  #6    0x000021e421437fac in acpi_ps_parse_aml(struct acpi_walk_state*) ../../third_party/acpica/source/components/parser/psparse.c:550 <platform-bus-x86.so>+0x2b7fac
+  #7    0x000021e4214464d2 in acpi_ps_execute_method(struct acpi_evaluate_info*) ../../third_party/acpica/source/components/parser/psxface.c:244 <platform-bus-x86.so>+0x2c64d2
+  #8    0x000021e4213aa052 in acpi_ns_evaluate(struct acpi_evaluate_info*) ../../third_party/acpica/source/components/namespace/nseval.c:250 <platform-bus-x86.so>+0x22a052
+  #9    0x000021e421413dd8 in acpi_ns_init_one_device(acpi_handle, u32, void*, void**) ../../third_party/acpica/source/components/namespace/nsinit.c:735 <platform-bus-x86.so>+0x293dd8
+  #10   0x000021e421429e98 in acpi_ns_walk_namespace(acpi_object_type, acpi_handle, u32, u32, acpi_walk_callback, acpi_walk_callback, void*, void**) ../../third_party/acpica/source/components/namespace/nswalk.c:298 <platform-bus-x86.so>+0x2a9e98
+  #11   0x000021e4214131ac in acpi_ns_initialize_devices(u32) ../../third_party/acpica/source/components/namespace/nsinit.c:268 <platform-bus-x86.so>+0x2931ac
+  #12   0x000021e42147c40d in acpi_initialize_objects(u32) ../../third_party/acpica/source/components/utilities/utxfinit.c:304 <platform-bus-x86.so>+0x2fc40d
+  #13   0x000021e42126d603 in acpi::acpi_impl::initialize_acpi(acpi::acpi_impl*) ../../src/devices/board/lib/acpi/acpi-impl.cc:224 <platform-bus-x86.so>+0xed603
+
+Add a simple check that avoids incrementing a pointer by zero, but
+otherwise behaves as before. Note that our findings are against ACPICA
+20221020, but the same code exists on master.
+
+Link: https://github.com/acpica/acpica/commit/770653e3
 Signed-off-by: Bob Moore <robert.moore@intel.com>
 Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/acpica/dbnames.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/acpi/acpica/dswstate.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/acpi/acpica/dbnames.c b/drivers/acpi/acpica/dbnames.c
-index 3615e1a6efd8a..b91155ea9c343 100644
---- a/drivers/acpi/acpica/dbnames.c
-+++ b/drivers/acpi/acpica/dbnames.c
-@@ -652,6 +652,9 @@ acpi_status acpi_db_display_objects(char *obj_type_arg, char *display_count_arg)
- 		object_info =
- 		    ACPI_ALLOCATE_ZEROED(sizeof(struct acpi_object_info));
+diff --git a/drivers/acpi/acpica/dswstate.c b/drivers/acpi/acpica/dswstate.c
+index 0aa735d3b93cc..77076da2029d9 100644
+--- a/drivers/acpi/acpica/dswstate.c
++++ b/drivers/acpi/acpica/dswstate.c
+@@ -576,9 +576,14 @@ acpi_ds_init_aml_walk(struct acpi_walk_state *walk_state,
+ 	ACPI_FUNCTION_TRACE(ds_init_aml_walk);
  
-+		if (!object_info)
-+			return (AE_NO_MEMORY);
-+
- 		/* Walk the namespace from the root */
+ 	walk_state->parser_state.aml =
+-	    walk_state->parser_state.aml_start = aml_start;
+-	walk_state->parser_state.aml_end =
+-	    walk_state->parser_state.pkg_end = aml_start + aml_length;
++	    walk_state->parser_state.aml_start =
++	    walk_state->parser_state.aml_end =
++	    walk_state->parser_state.pkg_end = aml_start;
++	/* Avoid undefined behavior: applying zero offset to null pointer */
++	if (aml_length != 0) {
++		walk_state->parser_state.aml_end += aml_length;
++		walk_state->parser_state.pkg_end += aml_length;
++	}
  
- 		(void)acpi_walk_namespace(ACPI_TYPE_ANY, ACPI_ROOT_OBJECT,
+ 	/* The next_op of the next_walk will be the beginning of the method */
+ 
 -- 
 2.39.2
 
