@@ -1,24 +1,26 @@
 Return-Path: <ardb@kernel.org>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org D901683BD4
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 2DD2083BC6
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org D78E042544
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 9486E42537
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1685210647;
- bh=+2DbhJhzR6mabBBjwgNw5rSlRJnUbBZQeef15wiBopk=;
+ s=k20201202; t=1685212954;
+ bh=ILLm7sjS2AUbgX5ZU3V6OvdwznjKgFXN4a/oNoiqZNE=;
  h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
- b=gFJRY4ToEHKyLjvVmlgO5FefszpZZ86hBwg3vRKCuiWtAbtLHlt2bhg6XNvAv8Op1
- 8a3pVpOAeIaPYzO7BZdGtdWjoSq4EZJU9/lfVogOL2C77x1MNXdSJ/OIK7krB5djWi
- 0BkGrXOAVUGvF0wAwK9DWfC01qet5cQSvcxur9JhzTDoMKDqluC/SM+s/Hi0q6fBLt
- vwuSEc8CigkxLTprxWOgjS/jQjGeM98mndcoSEmcP4eUsN+TnIRk5TZJrpb1uRrb5o
- T+td+EMgfDDNxubj22cYrV1tvzPFQaMpfZ84TLhrgsKrF9zb9YiH5KTxMDXKZcKL0h
- sPB2Ux1BEyVPQ==
+ b=ko296JPYuVFKnFXg6zT/SBM2ETEQvnpXHE02ZJ5lj/jFgH1CQ/iscv3rUc+k6Gt7l
+ g4/041h0EKdaiOhCXmivi3jcZb9EoYv3wejv91mGvJWvhuJyBqTIOiw44pNcnGqlxg
+ XEvUgxSy2tLe4XHafjoQbwLoi7SmfTfWLrXPZMob3jzFx6xKV5jpUyUGX0qDwLpbU3
+ V84IHyfhIERxhybK/DEfB5Y744iPHcS51ioQmBlShhlLLEovoZq36h658eYcAewxBa
+ l66kwrTLq/9IghYfpWxutlQf7gRWaGIpohT/bqOJmCHxFFo+OsOWsGnPBJDuHrDiqY
+ yhVs4BcghCoYQ==
 MIME-Version: 1.0
 References: <efd6f2d4-547c-1378-1faa-53c044dbd297@gmail.com>
  <CAG8fp8SaHi0X-tZHnji_93wBADp1_=brjauWCVXuLaG7iP0p=A@mail.gmail.com>
  <CAG8fp8QXoEkndCzyaYZmg6+ZrszKOfh_YSi0o2_weV7y1_xYkQ@mail.gmail.com>
-In-Reply-To: <CAG8fp8QXoEkndCzyaYZmg6+ZrszKOfh_YSi0o2_weV7y1_xYkQ@mail.gmail.com>
+ <CAMj1kXGjkKK-oHm64Y9P-AbYQWd9jnEdsNucRbY_-7mgJ_4yAA@mail.gmail.com>
+ <CAG8fp8ReYLaNYO9LYE1WeeSDg1pO1hz3f-8_WPZkLVWbzzyCvg@mail.gmail.com>
+In-Reply-To: <CAG8fp8ReYLaNYO9LYE1WeeSDg1pO1hz3f-8_WPZkLVWbzzyCvg@mail.gmail.com>
 From: Ard Biesheuvel <ardb@kernel.org>
-Date: Sat, 27 May 2023 20:03:53 +0200
-Message-ID: <CAMj1kXGjkKK-oHm64Y9P-AbYQWd9jnEdsNucRbY_-7mgJ_4yAA@mail.gmail.com>
+Date: Sat, 27 May 2023 20:42:21 +0200
+Message-ID: <CAMj1kXEGTJufrrcrqjjKqeR-FN+nLsbzx8xGgO+gPfc2YPsy2w@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Subject: Re: [Acpica-devel] mix of ACPICA regression and EFISTUB regression
  (Was: kernel >= v6.2 no longer boots on Apple's Virtualization.framework
@@ -35,25 +37,38 @@ List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel
 To: Akihiro Suda <suda.kyoto@gmail.com>
 Cc: linux-efi@vger.kernel.org, Linux Regressions <regressions@lists.linux.dev>, Linux x86 <x86@kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Stable <stable@vger.kernel.org>, Robert Moore <robert.moore@intel.com>, Linux ACPI <linux-acpi@vger.kernel.org>, Jianmin Lv <lvjianmin@loongson.cn>, Bagas Sanjaya <bagasdotme@gmail.com>, Linux ACPICA <acpica-devel@lists.linuxfoundation.org>, Linus Torvalds <torvalds@linux-foundation.org>, Huacai Chen <chenhuacai@loongson.cn>
 
-On Sat, 27 May 2023 at 20:00, Akihiro Suda <suda.kyoto@gmail.com> wrote:
+On Sat, 27 May 2023 at 20:34, Akihiro Suda <suda.kyoto@gmail.com> wrote:
 >
-> [Resending as a plain text email]
+> > Are you using OVMF? Which versions of qemu and OVMF are you using?
 >
-> Turned out that this is a mixture of an ACPICA issue and an EFISTUB issue.
+> I'm using Apple's Virtualization.framework, not QEMU.
 >
-> Kernel v6.2 can boot by reverting the *both* of the following two commits:
-> - 5c62d5aab8752e5ee7bfbe75ed6060db1c787f98 "ACPICA: Events: Support
-> fixed PCIe wake event"
-> - e346bebbd36b1576a3335331fed61bb48c6d8823 "efi: libstub: Always
-> enable initrd command line loader and bump version"
+> It doesn't use UEFI when it directly loads bzImage.
+> ( dmesg: https://bugzilla.kernel.org/attachment.cgi?id=304323 )
 >
-> Kernel v6.3 can boot by just reverting e346bebb, as 5c62d5a has been
-> already reverted in 8e41e0a575664d26bb87e012c39435c4c3914ed9.
-> The situation is the same for v6.4-rc3 too.
->
-> Note that in my test I let Virtualization.framework directly load
-> bzImage without GRUB (akin to `qemu-system-x86_64 -kernel bzImage`).
-> Apparently, reverting e346bebb is not necessary for loading bzImage via GRUB.
+> Despite that, it still expects LINUX_EFISTUB_MINOR_VERSION
+> (include/linux/pe.h) referred from arch/x86/boot/header.S to be 0x0.
+> I confirmed that the kernel can boot by just setting
+> LINUX_EFISTUB_MINOR_VERSION to 0x0.
 >
 
-Are you using OVMF? Which versions of qemu and OVMF are you using?
+Thanks for checking that, that is very helpful/
+
+> Would it be possible to revert the LINUX_EFISTUB_MINOR_VERSION value
+> (not the actual code) to 0x0?
+> Or will it break something else?
+>
+> Anyway, I'll try to make a request to Apple to remove the
+> LINUX_EFISTUB_MINOR_VERSION check.
+>
+
+Yes, that makes the most sense. If the existing virtual machine BIOS
+has a hardcoded check that the EFI stub version is 1.0 even if it does
+not boot via EFI to begin with, I don't see how we can reasonably
+treat this as a regression that needs fixing on the Linux side.
+
+The version bump to PE image version v1.1 sets a baseline across all
+Linux archifectures that can boot via EFI that initrd loading is
+supported via the command line as well as via the LoadFile2 protocol.
+Reverting that would substantially reduce the value of having this
+identification embedded into the image.
