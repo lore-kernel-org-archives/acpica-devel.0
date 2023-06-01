@@ -1,23 +1,17 @@
-Return-Path: <christophe.jaillet@wanadoo.fr>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 777784179B
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org E034640469
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
- s=t20230301; t=1685373355;
- bh=BltMKT3kn+lp68ycQvoOpDcBVtIurMfM0OHRUsxk4vg=;
- h=From:To:Cc:Subject:Date;
- b=Je23+tjFXIoQFK7nljsPigyn8btd5HgWlTRRcug7vc0TAY6XIxdjphHuC107i9Mky
- CrseczmHneG/8QLu1s2ax/qTB5lMGB3duWGtHvm5igrbr/UH8fbaNUVyMyihdnUpvJ
- Y4A8LSAsFBEra+B75VdrSE5ze7VDe3hhhgcGkSGU6LyKX7TDtWqjDncTccYylX13sx
- PKx7dwpl72hW0MPGX2ba/P2H2yWsza8wPwHzBm/QKaESbgPVQo6jK3skPdAP9mbQ0E
- jvpm4ThqKDPoW1IyF3RCWf8NVybC0GtqCYlLVGwqMK0rBCy+SKKGm/xdk/bX4p4hSP
- NGuQg16efvztw==
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Date: Mon, 29 May 2023 17:15:52 +0200
-Message-Id: <1464371bc72147e10a392a18734e6c8dff330a9c.1685341309.git.christophe.jaillet@wanadoo.fr>
+Return-Path: <rjwysocki@gmail.com>
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 197244264B
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 04E8B42599
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: [Acpica-devel] [PATCH V2] ACPICA: Slightly simplify an error
-	message in acpi_ds_result_push()
+References: <20230523161815.3083-1-wyes.karny@amd.com>
+ <168563860014.2889935.9236369807138013890.b4-ty@chromium.org>
+In-Reply-To: <168563860014.2889935.9236369807138013890.b4-ty@chromium.org>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Thu, 1 Jun 2023 20:21:36 +0200
+Message-ID: <CAJZ5v0jpZQ-kMikEPUvuESxX+OMVyx97zDxavs9WhTiyu7ZA1g@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [Acpica-devel] [PATCH] acpi: Replace struct acpi_table_slit
+	1-element array with flex-array
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -27,36 +21,27 @@ List-Post: <mailto:acpica-devel@lists.linuxfoundation.org>
 List-Help: <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=help>
 List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel>, 
  <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=subscribe>
-To: Robert Moore <robert.moore@intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Len Brown <lenb@kernel.org>
-Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>, acpica-devel@lists.linuxfoundation.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org
+To: Kees Cook <keescook@chromium.org>
+Cc: linux-kernel@vger.kernel.org, robert.moore@intel.com, linux-acpi@vger.kernel.org, acpica-devel@lists.linuxfoundation.org, wyes.karny@amd.com, lenb@kernel.org
 
-'object' is known to be NULL at this point. There is little value to log
-it twice in the error message.
+On Thu, Jun 1, 2023 at 6:57=E2=80=AFPM Kees Cook <keescook@chromium.org> wr=
+ote:
+>
+> On Tue, 23 May 2023 16:18:15 +0000, Wyes Karny wrote:
+> > struct acpi_table_slit is used for copying System Locality Information
+> > Table data from ACPI tables. Here `entry` is a flex array but it was
+> > using ancient 1-element fake flexible array, which has been deprecated.
+> > Replace it with a C99 flexible array.
+> >
+> >
+>
+> Since this is a fix for -fstrict-flex-arrays=3D3, I can carry this in the
+> hardening tree until it shows up in upstream ACPICA.
+>
+> Applied to for-next/hardening, thanks!
+>
+> [1/1] acpi: Replace struct acpi_table_slit 1-element array with flex-arra=
+y
+>       https://git.kernel.org/kees/c/0233ca593eba
 
-Link: https://github.com/acpica/acpica/pull/875
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-v2: Add a link to the PR on github
-Patch below and in the PR are slightly different because if CamelCase.
-
- drivers/acpi/acpica/dswstate.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/acpi/acpica/dswstate.c b/drivers/acpi/acpica/dswstate.c
-index d3841ded3a81..75338a13c802 100644
---- a/drivers/acpi/acpica/dswstate.c
-+++ b/drivers/acpi/acpica/dswstate.c
-@@ -146,8 +146,8 @@ acpi_ds_result_push(union acpi_operand_object *object,
- 
- 	if (!object) {
- 		ACPI_ERROR((AE_INFO,
--			    "Null Object! Obj=%p State=%p Num=%u",
--			    object, walk_state, walk_state->result_count));
-+			    "Null Object! State=%p Num=%u",
-+			    walk_state, walk_state->result_count));
- 		return (AE_BAD_PARAMETER);
- 	}
- 
--- 
-2.34.1
-
+Works for me, thanks!
