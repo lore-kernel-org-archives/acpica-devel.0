@@ -1,16 +1,30 @@
-Return-Path: <rjw@rjwysocki.net>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 466B1427F9
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 857F2427B4
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Date: Fri, 02 Jun 2023 20:34:45 +0200
-Message-ID: <4500594.LvFx2qVVIh@kreacher>
-In-Reply-To: <20230601131719.300720-1-michal.wilczynski@intel.com>
+Return-Path: <michal.wilczynski@intel.com>
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 2A50960C1D
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org C66BB60803
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1685954690; x=1717490690;
+ h=message-id:date:subject:to:cc:references:from:
+ in-reply-to:content-transfer-encoding:mime-version;
+ bh=ySn0zqZhbKrPfR7xWycH04iY+MYbR6r8SKLRtGw479E=;
+ b=asZswFvBg98lnQA1L1AQdZpmrw6JcSLYTE7V2UlDn9E9nWPW0S3QUnJI
+ WrUZhR15GZYxJvnm2R3/Ie5QJiaGdR4ENCN8aryvL71/FslG3n7oUH35o
+ c8ZzcT7YsyI8WmKkyJSftEpBCxjJaQKpeM83KD5B1rS1ppXbBRKY9huCv
+ 5pkAQR4zKWbVpG+6nJCjKT5cuok+Fi3nSpF0gxGAmETtdalWtb6QPZ5RT
+ II8Axi4kXyKNH7xM4x3aK6EAxGLH3yUumrmgFZXOT3fYoCCq7s7QwAIfW
+ DO7y+Xy88Hvtj0nvWwzvGc6Y8FHfvqsha2BvgFx14jSq9H5cp7nWfsxkG g==;
+Message-ID: <eb5ed997-201a-ffc4-6181-b2f8a6d451a8@intel.com>
+Date: Mon, 5 Jun 2023 10:44:29 +0200
+Content-Language: en-US
 References: <20230601131719.300720-1-michal.wilczynski@intel.com>
+ <4500594.LvFx2qVVIh@kreacher>
+From: "Wilczynski, Michal" <michal.wilczynski@intel.com>
+In-Reply-To: <4500594.LvFx2qVVIh@kreacher>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
 Subject: Re: [Acpica-devel] [PATCH v4 01/35] acpi: Adjust functions
-	installing bus event handlers
+ installing bus event handlers
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -20,455 +34,475 @@ List-Post: <mailto:acpica-devel@lists.linuxfoundation.org>
 List-Help: <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=help>
 List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel>, 
  <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=subscribe>
-To: rafael@kernel.org, lenb@kernel.org, dan.j.williams@intel.com, vishal.l.verma@intel.com, dave.jiang@intel.com, ira.weiny@intel.com, rui.zhang@intel.com, jdelvare@suse.com, linux@roeck-us.net, jic23@kernel.org, lars@metafoo.de, bleung@chromium.org, yu.c.chen@intel.com, hdegoede@redhat.com, markgross@kernel.org, luzmaximilian@gmail.com, corentin.chary@gmail.com, jprvita@gmail.com, cascardo@holoscopio.com, don@syst.com.br, pali@kernel.org, jwoithe@just42.net, matan@svgalib.org, kenneth.t.chan@gmail.com, malattia@linux.it, jeremy@system76.com, productdev@system76.com, herton@canonical.com, coproscefalo@gmail.com, tytso@mit.edu, Jason@zx2c4.com, robert.moore@intel.com, Michal Wilczynski <michal.wilczynski@intel.com>
-Cc: linux-hwmon@vger.kernel.org, chrome-platform@lists.linux.dev, Michal Wilczynski <michal.wilczynski@intel.com>, nvdimm@lists.linux.dev, linux-iio@vger.kernel.org, acpi4asus-user@lists.sourceforge.net, platform-driver-x86@vger.kernel.org, linux-acpi@vger.kernel.org, acpica-devel@lists.linuxfoundation.org
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>, rafael@kernel.org, lenb@kernel.org, dan.j.williams@intel.com, vishal.l.verma@intel.com, dave.jiang@intel.com, ira.weiny@intel.com, rui.zhang@intel.com, jdelvare@suse.com, linux@roeck-us.net, jic23@kernel.org, lars@metafoo.de, bleung@chromium.org, yu.c.chen@intel.com, hdegoede@redhat.com, markgross@kernel.org, luzmaximilian@gmail.com, corentin.chary@gmail.com, jprvita@gmail.com, cascardo@holoscopio.com, don@syst.com.br, pali@kernel.org, jwoithe@just42.net, matan@svgalib.org, kenneth.t.chan@gmail.com, malattia@linux.it, jeremy@system76.com, productdev@system76.com, herton@canonical.com, coproscefalo@gmail.com, tytso@mit.edu, Jason@zx2c4.com, robert.moore@intel.com
+Cc: linux-hwmon@vger.kernel.org, chrome-platform@lists.linux.dev, nvdimm@lists.linux.dev, linux-iio@vger.kernel.org, acpi4asus-user@lists.sourceforge.net, platform-driver-x86@vger.kernel.org, linux-acpi@vger.kernel.org, acpica-devel@lists.linuxfoundation.org
 
-On Thursday, June 1, 2023 3:17:19 PM CEST Michal Wilczynski wrote:
-> Currently acpi_device_install_notify_handler() and
-> acpi_device_remove_notify_handler() always install acpi_notify_device()
-> as a function handler, and only then the real .notify callback gets
-> called. This is not efficient and doesn't provide any real advantage.
-> 
-> Introduce new acpi_device_install_event_handler() and
-> acpi_device_remove_event_handler(). Those functions are replacing old
-> installers, and after all drivers switch to the new model, old installers
-> will be removed at the end of the patchset.
-> 
-> Make new installer/removal function arguments to take function pointer as
-> an argument instead of using .notify callback. Introduce new variable in
-> struct acpi_device, as fixed events still needs to be handled by an
-> intermediary that would schedule them for later execution. This is due to
-> fixed hardware event handlers being executed in interrupt context.
-> 
-> Make acpi_device_install_event_handler() and
-> acpi_device_remove_event_handler() non-static, and export symbols. This
-> will allow the drivers to call them directly, instead of relying on
-> .notify callback.
-> 
-> Signed-off-by: Michal Wilczynski <michal.wilczynski@intel.com>
+
+
+On 6/2/2023 8:34 PM, Rafael J. Wysocki wrote:
+> On Thursday, June 1, 2023 3:17:19 PM CEST Michal Wilczynski wrote:
+>> Currently acpi_device_install_notify_handler() and
+>> acpi_device_remove_notify_handler() always install acpi_notify_device()
+>> as a function handler, and only then the real .notify callback gets
+>> called. This is not efficient and doesn't provide any real advantage.
+>>
+>> Introduce new acpi_device_install_event_handler() and
+>> acpi_device_remove_event_handler(). Those functions are replacing old
+>> installers, and after all drivers switch to the new model, old installers
+>> will be removed at the end of the patchset.
+>>
+>> Make new installer/removal function arguments to take function pointer as
+>> an argument instead of using .notify callback. Introduce new variable in
+>> struct acpi_device, as fixed events still needs to be handled by an
+>> intermediary that would schedule them for later execution. This is due to
+>> fixed hardware event handlers being executed in interrupt context.
+>>
+>> Make acpi_device_install_event_handler() and
+>> acpi_device_remove_event_handler() non-static, and export symbols. This
+>> will allow the drivers to call them directly, instead of relying on
+>> .notify callback.
+>>
+>> Signed-off-by: Michal Wilczynski <michal.wilczynski@intel.com>
+>> ---
+>>  drivers/acpi/bus.c      | 59 ++++++++++++++++++++++++++++++++++++++++-
+>>  include/acpi/acpi_bus.h |  7 +++++
+>>  2 files changed, 65 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c
+>> index d161ff707de4..cf2c2bfe29a0 100644
+>> --- a/drivers/acpi/bus.c
+>> +++ b/drivers/acpi/bus.c
+>> @@ -535,7 +535,7 @@ static void acpi_notify_device_fixed(void *data)
+>>  	struct acpi_device *device = data;
+>>  
+>>  	/* Fixed hardware devices have no handles */
+>> -	acpi_notify_device(NULL, ACPI_FIXED_HARDWARE_EVENT, device);
+>> +	device->fixed_event_notify(NULL, ACPI_FIXED_HARDWARE_EVENT, device);
+>>  }
+>>  
+>>  static u32 acpi_device_fixed_event(void *data)
+>> @@ -550,11 +550,13 @@ static int acpi_device_install_notify_handler(struct acpi_device *device,
+>>  	acpi_status status;
+>>  
+>>  	if (device->device_type == ACPI_BUS_TYPE_POWER_BUTTON) {
+>> +		device->fixed_event_notify = acpi_notify_device;
+>>  		status =
+>>  		    acpi_install_fixed_event_handler(ACPI_EVENT_POWER_BUTTON,
+>>  						     acpi_device_fixed_event,
+>>  						     device);
+>>  	} else if (device->device_type == ACPI_BUS_TYPE_SLEEP_BUTTON) {
+>> +		device->fixed_event_notify = acpi_notify_device;
+>>  		status =
+>>  		    acpi_install_fixed_event_handler(ACPI_EVENT_SLEEP_BUTTON,
+>>  						     acpi_device_fixed_event,
+>> @@ -579,9 +581,11 @@ static void acpi_device_remove_notify_handler(struct acpi_device *device,
+>>  	if (device->device_type == ACPI_BUS_TYPE_POWER_BUTTON) {
+>>  		acpi_remove_fixed_event_handler(ACPI_EVENT_POWER_BUTTON,
+>>  						acpi_device_fixed_event);
+>> +		device->fixed_event_notify = NULL;
+>>  	} else if (device->device_type == ACPI_BUS_TYPE_SLEEP_BUTTON) {
+>>  		acpi_remove_fixed_event_handler(ACPI_EVENT_SLEEP_BUTTON,
+>>  						acpi_device_fixed_event);
+>> +		device->fixed_event_notify = NULL;
+>>  	} else {
+>>  		u32 type = acpi_drv->flags & ACPI_DRIVER_ALL_NOTIFY_EVENTS ?
+>>  				ACPI_ALL_NOTIFY : ACPI_DEVICE_NOTIFY;
+>> @@ -592,6 +596,59 @@ static void acpi_device_remove_notify_handler(struct acpi_device *device,
+>>  	acpi_os_wait_events_complete();
+>>  }
+>>  
+>> +int acpi_device_install_event_handler(struct acpi_device *device,
+>> +				      u32 type,
+>> +				      void (*notify)(acpi_handle, u32, void*))
+>> +{
+>> +	acpi_status status;
+>> +
+>> +	if (!notify)
+>> +		return -EINVAL;
+>> +
+>> +	if (device->device_type == ACPI_BUS_TYPE_POWER_BUTTON) {
+>> +		device->fixed_event_notify = notify;
+>> +		status =
+>> +		    acpi_install_fixed_event_handler(ACPI_EVENT_POWER_BUTTON,
+>> +						     acpi_device_fixed_event,
+>> +						     device);
+>> +	} else if (device->device_type == ACPI_BUS_TYPE_SLEEP_BUTTON) {
+>> +		device->fixed_event_notify = notify;
+>> +		status =
+>> +		    acpi_install_fixed_event_handler(ACPI_EVENT_SLEEP_BUTTON,
+>> +						     acpi_device_fixed_event,
+>> +						     device);
+>> +	} else {
+>> +		status = acpi_install_notify_handler(device->handle, type,
+>> +						     notify,
+>> +						     device);
+>> +	}
+>> +
+>> +	if (ACPI_FAILURE(status))
+>> +		return -EINVAL;
+>> +	return 0;
+>> +}
+>> +EXPORT_SYMBOL(acpi_device_install_event_handler);
+>> +
+>> +void acpi_device_remove_event_handler(struct acpi_device *device,
+>> +				      u32 type,
+>> +				      void (*notify)(acpi_handle, u32, void*))
+>> +{
+>> +	if (device->device_type == ACPI_BUS_TYPE_POWER_BUTTON) {
+>> +		acpi_remove_fixed_event_handler(ACPI_EVENT_POWER_BUTTON,
+>> +						acpi_device_fixed_event);
+>> +		device->fixed_event_notify = NULL;
+>> +	} else if (device->device_type == ACPI_BUS_TYPE_SLEEP_BUTTON) {
+>> +		acpi_remove_fixed_event_handler(ACPI_EVENT_SLEEP_BUTTON,
+>> +						acpi_device_fixed_event);
+>> +		device->fixed_event_notify = NULL;
+>> +	} else {
+>> +		acpi_remove_notify_handler(device->handle, type,
+>> +					   notify);
+>> +	}
+>> +	acpi_os_wait_events_complete();
+>> +}
+>> +EXPORT_SYMBOL(acpi_device_remove_event_handler);
+>> +
+>>  /* Handle events targeting \_SB device (at present only graceful shutdown) */
+>>  
+>>  #define ACPI_SB_NOTIFY_SHUTDOWN_REQUEST 0x81
+>> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+>> index a6affc0550b0..7fb411438b6f 100644
+>> --- a/include/acpi/acpi_bus.h
+>> +++ b/include/acpi/acpi_bus.h
+>> @@ -387,6 +387,7 @@ struct acpi_device {
+>>  	struct list_head physical_node_list;
+>>  	struct mutex physical_node_lock;
+>>  	void (*remove)(struct acpi_device *);
+>> +	void (*fixed_event_notify)(acpi_handle handle, u32 type, void *data);
+
+
+Hi,
+Thank for you review,
+
+> This is a rather confusing change, because ->remove() above is not a driver
+> callback, whereas the new one would be.
+>
+> Moreover, it is rather wasteful, because the only devices needing it are
+> buttons, so for all of the other ACPI device objects the new callback pointer
+> would always be NULL.
+>
+> Finally, it is not necessary even.
+
+I was thinking about resolving this somehow in compile-time, but I guess was a bit
+afraid of refactoring too much code - didn't want to break anything.
+
+>
+> The key observation here is that there are only 2 drivers handling power and
+> sleep buttons that use ACPI fixed events: the ACPI button driver (button.c in
+> drivers/acpi) and the "tiny power button" driver (tiny-power-button.c in
+> drivers/acpi).  All of the other drivers don't need the "fixed event notify"
+> thing and these two can be modified to take care of all of it by themselves.
+>
+> So if something like the below is done prior to the rest of your series, the
+> rest will be about acpi_install/remove_notify_handler() only and you won't
+> even need the wrapper routines any more: driver may just be switched over
+> to using the ACPICA functions directly.
+
+Sure, will get your patch, apply it before my series and fix individual drivers to use acpica
+functions directly.
+
+Thank you for your help !
+Regards,
+Michał
+
+>
+> [This patch is untested and is really 3 patches in one, but since I've cut it
+> already, I'll send it properly next week after some button driver testing.]
+>
 > ---
->  drivers/acpi/bus.c      | 59 ++++++++++++++++++++++++++++++++++++++++-
->  include/acpi/acpi_bus.h |  7 +++++
->  2 files changed, 65 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c
-> index d161ff707de4..cf2c2bfe29a0 100644
-> --- a/drivers/acpi/bus.c
-> +++ b/drivers/acpi/bus.c
-> @@ -535,7 +535,7 @@ static void acpi_notify_device_fixed(void *data)
->  	struct acpi_device *device = data;
+>  drivers/acpi/bus.c               |   53 +++++-----------------------------
+>  drivers/acpi/button.c            |   60 +++++++++++++++++++++++++++++++++------
+>  drivers/acpi/tiny-power-button.c |   49 ++++++++++++++++++++++++++-----
+>  3 files changed, 101 insertions(+), 61 deletions(-)
+>
+> Index: linux-pm/drivers/acpi/tiny-power-button.c
+> ===================================================================
+> --- linux-pm.orig/drivers/acpi/tiny-power-button.c
+> +++ linux-pm/drivers/acpi/tiny-power-button.c
+> @@ -19,18 +19,52 @@ static const struct acpi_device_id tiny_
+>  };
+>  MODULE_DEVICE_TABLE(acpi, tiny_power_button_device_ids);
 >  
->  	/* Fixed hardware devices have no handles */
-> -	acpi_notify_device(NULL, ACPI_FIXED_HARDWARE_EVENT, device);
-> +	device->fixed_event_notify(NULL, ACPI_FIXED_HARDWARE_EVENT, device);
+> -static int acpi_noop_add(struct acpi_device *device)
+> +static void acpi_tiny_power_button_notify(acpi_handle handle, u32 event, void *data)
+>  {
+> -	return 0;
+> +	kill_cad_pid(power_signal, 1);
 >  }
 >  
->  static u32 acpi_device_fixed_event(void *data)
-> @@ -550,11 +550,13 @@ static int acpi_device_install_notify_handler(struct acpi_device *device,
->  	acpi_status status;
->  
->  	if (device->device_type == ACPI_BUS_TYPE_POWER_BUTTON) {
-> +		device->fixed_event_notify = acpi_notify_device;
->  		status =
->  		    acpi_install_fixed_event_handler(ACPI_EVENT_POWER_BUTTON,
->  						     acpi_device_fixed_event,
->  						     device);
->  	} else if (device->device_type == ACPI_BUS_TYPE_SLEEP_BUTTON) {
-> +		device->fixed_event_notify = acpi_notify_device;
->  		status =
->  		    acpi_install_fixed_event_handler(ACPI_EVENT_SLEEP_BUTTON,
->  						     acpi_device_fixed_event,
-> @@ -579,9 +581,11 @@ static void acpi_device_remove_notify_handler(struct acpi_device *device,
->  	if (device->device_type == ACPI_BUS_TYPE_POWER_BUTTON) {
->  		acpi_remove_fixed_event_handler(ACPI_EVENT_POWER_BUTTON,
->  						acpi_device_fixed_event);
-> +		device->fixed_event_notify = NULL;
->  	} else if (device->device_type == ACPI_BUS_TYPE_SLEEP_BUTTON) {
->  		acpi_remove_fixed_event_handler(ACPI_EVENT_SLEEP_BUTTON,
->  						acpi_device_fixed_event);
-> +		device->fixed_event_notify = NULL;
->  	} else {
->  		u32 type = acpi_drv->flags & ACPI_DRIVER_ALL_NOTIFY_EVENTS ?
->  				ACPI_ALL_NOTIFY : ACPI_DEVICE_NOTIFY;
-> @@ -592,6 +596,59 @@ static void acpi_device_remove_notify_handler(struct acpi_device *device,
->  	acpi_os_wait_events_complete();
+> -static void acpi_noop_remove(struct acpi_device *device)
+> +static void acpi_tiny_power_button_notify_run(void *not_used)
+>  {
+> +	acpi_tiny_power_button_notify(NULL, ACPI_FIXED_HARDWARE_EVENT, NULL);
 >  }
 >  
-> +int acpi_device_install_event_handler(struct acpi_device *device,
-> +				      u32 type,
-> +				      void (*notify)(acpi_handle, u32, void*))
+> -static void acpi_tiny_power_button_notify(struct acpi_device *device, u32 event)
+> +static u32 acpi_tiny_power_button_event(void *not_used)
+>  {
+> -	kill_cad_pid(power_signal, 1);
+> +	acpi_os_execute(OSL_NOTIFY_HANDLER, acpi_tiny_power_button_notify_run, NULL);
+> +	return ACPI_INTERRUPT_HANDLED;
+> +}
+> +
+> +static int acpi_tiny_power_button_add(struct acpi_device *device)
 > +{
 > +	acpi_status status;
 > +
-> +	if (!notify)
-> +		return -EINVAL;
-> +
 > +	if (device->device_type == ACPI_BUS_TYPE_POWER_BUTTON) {
-> +		device->fixed_event_notify = notify;
-> +		status =
-> +		    acpi_install_fixed_event_handler(ACPI_EVENT_POWER_BUTTON,
-> +						     acpi_device_fixed_event,
-> +						     device);
-> +	} else if (device->device_type == ACPI_BUS_TYPE_SLEEP_BUTTON) {
-> +		device->fixed_event_notify = notify;
-> +		status =
-> +		    acpi_install_fixed_event_handler(ACPI_EVENT_SLEEP_BUTTON,
-> +						     acpi_device_fixed_event,
-> +						     device);
+> +		status = acpi_install_fixed_event_handler(ACPI_EVENT_POWER_BUTTON,
+> +							  acpi_tiny_power_button_event,
+> +							  NULL);
 > +	} else {
-> +		status = acpi_install_notify_handler(device->handle, type,
-> +						     notify,
-> +						     device);
+> +		status = acpi_install_notify_handler(device->handle,
+> +						     ACPI_DEVICE_NOTIFY,
+> +						     acpi_tiny_power_button_notify,
+> +						     NULL);
 > +	}
-> +
 > +	if (ACPI_FAILURE(status))
-> +		return -EINVAL;
+> +		return -ENODEV;
+> +
 > +	return 0;
 > +}
-> +EXPORT_SYMBOL(acpi_device_install_event_handler);
 > +
-> +void acpi_device_remove_event_handler(struct acpi_device *device,
-> +				      u32 type,
-> +				      void (*notify)(acpi_handle, u32, void*))
+> +static void acpi_tiny_power_button_remove(struct acpi_device *device)
 > +{
 > +	if (device->device_type == ACPI_BUS_TYPE_POWER_BUTTON) {
 > +		acpi_remove_fixed_event_handler(ACPI_EVENT_POWER_BUTTON,
-> +						acpi_device_fixed_event);
-> +		device->fixed_event_notify = NULL;
-> +	} else if (device->device_type == ACPI_BUS_TYPE_SLEEP_BUTTON) {
-> +		acpi_remove_fixed_event_handler(ACPI_EVENT_SLEEP_BUTTON,
-> +						acpi_device_fixed_event);
-> +		device->fixed_event_notify = NULL;
+> +						acpi_tiny_power_button_event);
 > +	} else {
-> +		acpi_remove_notify_handler(device->handle, type,
-> +					   notify);
+> +		acpi_remove_notify_handler(device->handle, ACPI_DEVICE_NOTIFY,
+> +					   acpi_tiny_power_button_notify);
 > +	}
 > +	acpi_os_wait_events_complete();
-> +}
-> +EXPORT_SYMBOL(acpi_device_remove_event_handler);
-> +
->  /* Handle events targeting \_SB device (at present only graceful shutdown) */
+>  }
 >  
->  #define ACPI_SB_NOTIFY_SHUTDOWN_REQUEST 0x81
-> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-> index a6affc0550b0..7fb411438b6f 100644
-> --- a/include/acpi/acpi_bus.h
-> +++ b/include/acpi/acpi_bus.h
-> @@ -387,6 +387,7 @@ struct acpi_device {
->  	struct list_head physical_node_list;
->  	struct mutex physical_node_lock;
->  	void (*remove)(struct acpi_device *);
-> +	void (*fixed_event_notify)(acpi_handle handle, u32 type, void *data);
-
-This is a rather confusing change, because ->remove() above is not a driver
-callback, whereas the new one would be.
-
-Moreover, it is rather wasteful, because the only devices needing it are
-buttons, so for all of the other ACPI device objects the new callback pointer
-would always be NULL.
-
-Finally, it is not necessary even.
-
-The key observation here is that there are only 2 drivers handling power and
-sleep buttons that use ACPI fixed events: the ACPI button driver (button.c in
-drivers/acpi) and the "tiny power button" driver (tiny-power-button.c in
-drivers/acpi).  All of the other drivers don't need the "fixed event notify"
-thing and these two can be modified to take care of all of it by themselves.
-
-So if something like the below is done prior to the rest of your series, the
-rest will be about acpi_install/remove_notify_handler() only and you won't
-even need the wrapper routines any more: driver may just be switched over
-to using the ACPICA functions directly.
-
-[This patch is untested and is really 3 patches in one, but since I've cut it
-already, I'll send it properly next week after some button driver testing.]
-
----
- drivers/acpi/bus.c               |   53 +++++-----------------------------
- drivers/acpi/button.c            |   60 +++++++++++++++++++++++++++++++++------
- drivers/acpi/tiny-power-button.c |   49 ++++++++++++++++++++++++++-----
- 3 files changed, 101 insertions(+), 61 deletions(-)
-
-Index: linux-pm/drivers/acpi/tiny-power-button.c
-===================================================================
---- linux-pm.orig/drivers/acpi/tiny-power-button.c
-+++ linux-pm/drivers/acpi/tiny-power-button.c
-@@ -19,18 +19,52 @@ static const struct acpi_device_id tiny_
- };
- MODULE_DEVICE_TABLE(acpi, tiny_power_button_device_ids);
- 
--static int acpi_noop_add(struct acpi_device *device)
-+static void acpi_tiny_power_button_notify(acpi_handle handle, u32 event, void *data)
- {
--	return 0;
-+	kill_cad_pid(power_signal, 1);
- }
- 
--static void acpi_noop_remove(struct acpi_device *device)
-+static void acpi_tiny_power_button_notify_run(void *not_used)
- {
-+	acpi_tiny_power_button_notify(NULL, ACPI_FIXED_HARDWARE_EVENT, NULL);
- }
- 
--static void acpi_tiny_power_button_notify(struct acpi_device *device, u32 event)
-+static u32 acpi_tiny_power_button_event(void *not_used)
- {
--	kill_cad_pid(power_signal, 1);
-+	acpi_os_execute(OSL_NOTIFY_HANDLER, acpi_tiny_power_button_notify_run, NULL);
-+	return ACPI_INTERRUPT_HANDLED;
-+}
-+
-+static int acpi_tiny_power_button_add(struct acpi_device *device)
-+{
-+	acpi_status status;
-+
-+	if (device->device_type == ACPI_BUS_TYPE_POWER_BUTTON) {
-+		status = acpi_install_fixed_event_handler(ACPI_EVENT_POWER_BUTTON,
-+							  acpi_tiny_power_button_event,
-+							  NULL);
-+	} else {
-+		status = acpi_install_notify_handler(device->handle,
-+						     ACPI_DEVICE_NOTIFY,
-+						     acpi_tiny_power_button_notify,
-+						     NULL);
-+	}
-+	if (ACPI_FAILURE(status))
-+		return -ENODEV;
-+
-+	return 0;
-+}
-+
-+static void acpi_tiny_power_button_remove(struct acpi_device *device)
-+{
-+	if (device->device_type == ACPI_BUS_TYPE_POWER_BUTTON) {
-+		acpi_remove_fixed_event_handler(ACPI_EVENT_POWER_BUTTON,
-+						acpi_tiny_power_button_event);
-+	} else {
-+		acpi_remove_notify_handler(device->handle, ACPI_DEVICE_NOTIFY,
-+					   acpi_tiny_power_button_notify);
-+	}
-+	acpi_os_wait_events_complete();
- }
- 
- static struct acpi_driver acpi_tiny_power_button_driver = {
-@@ -38,9 +72,8 @@ static struct acpi_driver acpi_tiny_powe
- 	.class = "tiny-power-button",
- 	.ids = tiny_power_button_device_ids,
- 	.ops = {
--		.add = acpi_noop_add,
--		.remove = acpi_noop_remove,
--		.notify = acpi_tiny_power_button_notify,
-+		.add = acpi_tiny_power_button_add,
-+		.remove = acpi_tiny_power_button_remove,
- 	},
- };
- 
-Index: linux-pm/drivers/acpi/button.c
-===================================================================
---- linux-pm.orig/drivers/acpi/button.c
-+++ linux-pm/drivers/acpi/button.c
-@@ -135,7 +135,6 @@ static const struct dmi_system_id dmi_li
- 
- static int acpi_button_add(struct acpi_device *device);
- static void acpi_button_remove(struct acpi_device *device);
--static void acpi_button_notify(struct acpi_device *device, u32 event);
- 
- #ifdef CONFIG_PM_SLEEP
- static int acpi_button_suspend(struct device *dev);
-@@ -153,7 +152,6 @@ static struct acpi_driver acpi_button_dr
- 	.ops = {
- 		.add = acpi_button_add,
- 		.remove = acpi_button_remove,
--		.notify = acpi_button_notify,
- 	},
- 	.drv.pm = &acpi_button_pm,
- };
-@@ -409,15 +407,13 @@ static void acpi_lid_initialize_state(st
- 	button->lid_state_initialized = true;
- }
- 
--static void acpi_button_notify(struct acpi_device *device, u32 event)
-+static void acpi_button_notify(acpi_handle handle, u32 event, void *data)
- {
-+	struct acpi_device *device = data;
- 	struct acpi_button *button = acpi_driver_data(device);
- 	struct input_dev *input;
- 
- 	switch (event) {
--	case ACPI_FIXED_HARDWARE_EVENT:
--		event = ACPI_BUTTON_NOTIFY_STATUS;
--		fallthrough;
- 	case ACPI_BUTTON_NOTIFY_STATUS:
- 		input = button->input;
- 		if (button->type == ACPI_BUTTON_TYPE_LID) {
-@@ -450,6 +446,17 @@ static void acpi_button_notify(struct ac
- 	}
- }
- 
-+static void acpi_button_notify_run(void *data)
-+{
-+	acpi_button_notify(NULL, ACPI_BUTTON_NOTIFY_STATUS, data);
-+}
-+
-+static u32 acpi_button_event(void *data)
-+{
-+	acpi_os_execute(OSL_NOTIFY_HANDLER, acpi_button_notify_run, data);
-+	return ACPI_INTERRUPT_HANDLED;
-+}
-+
- #ifdef CONFIG_PM_SLEEP
- static int acpi_button_suspend(struct device *dev)
- {
-@@ -492,6 +499,7 @@ static int acpi_button_add(struct acpi_d
- 	struct acpi_button *button;
- 	struct input_dev *input;
- 	const char *hid = acpi_device_hid(device);
-+	acpi_status status;
- 	char *name, *class;
- 	int error;
- 
-@@ -568,6 +576,26 @@ static int acpi_button_add(struct acpi_d
- 	error = input_register_device(input);
- 	if (error)
- 		goto err_remove_fs;
-+
-+	if (device->device_type == ACPI_BUS_TYPE_POWER_BUTTON) {
-+		status = acpi_install_fixed_event_handler(ACPI_EVENT_POWER_BUTTON,
-+							  acpi_button_event,
-+							  device);
-+	} else if (device->device_type == ACPI_BUS_TYPE_SLEEP_BUTTON) {
-+		status = acpi_install_fixed_event_handler(ACPI_EVENT_SLEEP_BUTTON,
-+							  acpi_button_event,
-+							  device);
-+	} else {
-+		status = acpi_install_notify_handler(device->handle,
-+						     ACPI_DEVICE_NOTIFY,
-+						     acpi_button_notify,
-+						     device);
-+	}
-+	if (ACPI_FAILURE(status)) {
-+		error = -ENODEV;
-+		goto err_input_unregister;
-+	}
-+
- 	if (button->type == ACPI_BUTTON_TYPE_LID) {
- 		/*
- 		 * This assumes there's only one lid device, or if there are
-@@ -580,11 +608,13 @@ static int acpi_button_add(struct acpi_d
- 	pr_info("%s [%s]\n", name, acpi_device_bid(device));
- 	return 0;
- 
-- err_remove_fs:
-+err_input_unregister:
-+	input_unregister_device(input);
-+err_remove_fs:
- 	acpi_button_remove_fs(device);
-- err_free_input:
-+err_free_input:
- 	input_free_device(input);
-- err_free_button:
-+err_free_button:
- 	kfree(button);
- 	return error;
- }
-@@ -593,6 +623,18 @@ static void acpi_button_remove(struct ac
- {
- 	struct acpi_button *button = acpi_driver_data(device);
- 
-+	if (device->device_type == ACPI_BUS_TYPE_POWER_BUTTON) {
-+		acpi_remove_fixed_event_handler(ACPI_EVENT_POWER_BUTTON,
-+						acpi_button_event);
-+	} else if (device->device_type == ACPI_BUS_TYPE_SLEEP_BUTTON) {
-+		acpi_remove_fixed_event_handler(ACPI_EVENT_SLEEP_BUTTON,
-+						acpi_button_event);
-+	} else {
-+		acpi_remove_notify_handler(device->handle, ACPI_DEVICE_NOTIFY,
-+					   acpi_button_notify);
-+	}
-+	acpi_os_wait_events_complete();
-+
- 	acpi_button_remove_fs(device);
- 	input_unregister_device(button->input);
- 	kfree(button);
-Index: linux-pm/drivers/acpi/bus.c
-===================================================================
---- linux-pm.orig/drivers/acpi/bus.c
-+++ linux-pm/drivers/acpi/bus.c
-@@ -530,65 +530,30 @@ static void acpi_notify_device(acpi_hand
- 	acpi_drv->ops.notify(device, event);
- }
- 
--static void acpi_notify_device_fixed(void *data)
--{
--	struct acpi_device *device = data;
--
--	/* Fixed hardware devices have no handles */
--	acpi_notify_device(NULL, ACPI_FIXED_HARDWARE_EVENT, device);
--}
--
--static u32 acpi_device_fixed_event(void *data)
--{
--	acpi_os_execute(OSL_NOTIFY_HANDLER, acpi_notify_device_fixed, data);
--	return ACPI_INTERRUPT_HANDLED;
--}
--
- static int acpi_device_install_notify_handler(struct acpi_device *device,
- 					      struct acpi_driver *acpi_drv)
- {
--	acpi_status status;
--
--	if (device->device_type == ACPI_BUS_TYPE_POWER_BUTTON) {
--		status =
--		    acpi_install_fixed_event_handler(ACPI_EVENT_POWER_BUTTON,
--						     acpi_device_fixed_event,
--						     device);
--	} else if (device->device_type == ACPI_BUS_TYPE_SLEEP_BUTTON) {
--		status =
--		    acpi_install_fixed_event_handler(ACPI_EVENT_SLEEP_BUTTON,
--						     acpi_device_fixed_event,
--						     device);
--	} else {
--		u32 type = acpi_drv->flags & ACPI_DRIVER_ALL_NOTIFY_EVENTS ?
-+	u32 type = acpi_drv->flags & ACPI_DRIVER_ALL_NOTIFY_EVENTS ?
- 				ACPI_ALL_NOTIFY : ACPI_DEVICE_NOTIFY;
-+	acpi_status status;
- 
--		status = acpi_install_notify_handler(device->handle, type,
--						     acpi_notify_device,
--						     device);
--	}
--
-+	status = acpi_install_notify_handler(device->handle, type,
-+					     acpi_notify_device, device);
- 	if (ACPI_FAILURE(status))
- 		return -EINVAL;
-+
- 	return 0;
- }
- 
- static void acpi_device_remove_notify_handler(struct acpi_device *device,
- 					      struct acpi_driver *acpi_drv)
- {
--	if (device->device_type == ACPI_BUS_TYPE_POWER_BUTTON) {
--		acpi_remove_fixed_event_handler(ACPI_EVENT_POWER_BUTTON,
--						acpi_device_fixed_event);
--	} else if (device->device_type == ACPI_BUS_TYPE_SLEEP_BUTTON) {
--		acpi_remove_fixed_event_handler(ACPI_EVENT_SLEEP_BUTTON,
--						acpi_device_fixed_event);
--	} else {
--		u32 type = acpi_drv->flags & ACPI_DRIVER_ALL_NOTIFY_EVENTS ?
-+	u32 type = acpi_drv->flags & ACPI_DRIVER_ALL_NOTIFY_EVENTS ?
- 				ACPI_ALL_NOTIFY : ACPI_DEVICE_NOTIFY;
- 
--		acpi_remove_notify_handler(device->handle, type,
--					   acpi_notify_device);
--	}
-+	acpi_remove_notify_handler(device->handle, type,
-+				   acpi_notify_device);
-+
- 	acpi_os_wait_events_complete();
- }
- 
-
-
+>  static struct acpi_driver acpi_tiny_power_button_driver = {
+> @@ -38,9 +72,8 @@ static struct acpi_driver acpi_tiny_powe
+>  	.class = "tiny-power-button",
+>  	.ids = tiny_power_button_device_ids,
+>  	.ops = {
+> -		.add = acpi_noop_add,
+> -		.remove = acpi_noop_remove,
+> -		.notify = acpi_tiny_power_button_notify,
+> +		.add = acpi_tiny_power_button_add,
+> +		.remove = acpi_tiny_power_button_remove,
+>  	},
+>  };
+>  
+> Index: linux-pm/drivers/acpi/button.c
+> ===================================================================
+> --- linux-pm.orig/drivers/acpi/button.c
+> +++ linux-pm/drivers/acpi/button.c
+> @@ -135,7 +135,6 @@ static const struct dmi_system_id dmi_li
+>  
+>  static int acpi_button_add(struct acpi_device *device);
+>  static void acpi_button_remove(struct acpi_device *device);
+> -static void acpi_button_notify(struct acpi_device *device, u32 event);
+>  
+>  #ifdef CONFIG_PM_SLEEP
+>  static int acpi_button_suspend(struct device *dev);
+> @@ -153,7 +152,6 @@ static struct acpi_driver acpi_button_dr
+>  	.ops = {
+>  		.add = acpi_button_add,
+>  		.remove = acpi_button_remove,
+> -		.notify = acpi_button_notify,
+>  	},
+>  	.drv.pm = &acpi_button_pm,
+>  };
+> @@ -409,15 +407,13 @@ static void acpi_lid_initialize_state(st
+>  	button->lid_state_initialized = true;
+>  }
+>  
+> -static void acpi_button_notify(struct acpi_device *device, u32 event)
+> +static void acpi_button_notify(acpi_handle handle, u32 event, void *data)
+>  {
+> +	struct acpi_device *device = data;
+>  	struct acpi_button *button = acpi_driver_data(device);
+>  	struct input_dev *input;
+>  
+>  	switch (event) {
+> -	case ACPI_FIXED_HARDWARE_EVENT:
+> -		event = ACPI_BUTTON_NOTIFY_STATUS;
+> -		fallthrough;
+>  	case ACPI_BUTTON_NOTIFY_STATUS:
+>  		input = button->input;
+>  		if (button->type == ACPI_BUTTON_TYPE_LID) {
+> @@ -450,6 +446,17 @@ static void acpi_button_notify(struct ac
+>  	}
+>  }
+>  
+> +static void acpi_button_notify_run(void *data)
+> +{
+> +	acpi_button_notify(NULL, ACPI_BUTTON_NOTIFY_STATUS, data);
+> +}
+> +
+> +static u32 acpi_button_event(void *data)
+> +{
+> +	acpi_os_execute(OSL_NOTIFY_HANDLER, acpi_button_notify_run, data);
+> +	return ACPI_INTERRUPT_HANDLED;
+> +}
+> +
+>  #ifdef CONFIG_PM_SLEEP
+>  static int acpi_button_suspend(struct device *dev)
+>  {
+> @@ -492,6 +499,7 @@ static int acpi_button_add(struct acpi_d
+>  	struct acpi_button *button;
+>  	struct input_dev *input;
+>  	const char *hid = acpi_device_hid(device);
+> +	acpi_status status;
+>  	char *name, *class;
+>  	int error;
+>  
+> @@ -568,6 +576,26 @@ static int acpi_button_add(struct acpi_d
+>  	error = input_register_device(input);
+>  	if (error)
+>  		goto err_remove_fs;
+> +
+> +	if (device->device_type == ACPI_BUS_TYPE_POWER_BUTTON) {
+> +		status = acpi_install_fixed_event_handler(ACPI_EVENT_POWER_BUTTON,
+> +							  acpi_button_event,
+> +							  device);
+> +	} else if (device->device_type == ACPI_BUS_TYPE_SLEEP_BUTTON) {
+> +		status = acpi_install_fixed_event_handler(ACPI_EVENT_SLEEP_BUTTON,
+> +							  acpi_button_event,
+> +							  device);
+> +	} else {
+> +		status = acpi_install_notify_handler(device->handle,
+> +						     ACPI_DEVICE_NOTIFY,
+> +						     acpi_button_notify,
+> +						     device);
+> +	}
+> +	if (ACPI_FAILURE(status)) {
+> +		error = -ENODEV;
+> +		goto err_input_unregister;
+> +	}
+> +
+>  	if (button->type == ACPI_BUTTON_TYPE_LID) {
+>  		/*
+>  		 * This assumes there's only one lid device, or if there are
+> @@ -580,11 +608,13 @@ static int acpi_button_add(struct acpi_d
+>  	pr_info("%s [%s]\n", name, acpi_device_bid(device));
+>  	return 0;
+>  
+> - err_remove_fs:
+> +err_input_unregister:
+> +	input_unregister_device(input);
+> +err_remove_fs:
+>  	acpi_button_remove_fs(device);
+> - err_free_input:
+> +err_free_input:
+>  	input_free_device(input);
+> - err_free_button:
+> +err_free_button:
+>  	kfree(button);
+>  	return error;
+>  }
+> @@ -593,6 +623,18 @@ static void acpi_button_remove(struct ac
+>  {
+>  	struct acpi_button *button = acpi_driver_data(device);
+>  
+> +	if (device->device_type == ACPI_BUS_TYPE_POWER_BUTTON) {
+> +		acpi_remove_fixed_event_handler(ACPI_EVENT_POWER_BUTTON,
+> +						acpi_button_event);
+> +	} else if (device->device_type == ACPI_BUS_TYPE_SLEEP_BUTTON) {
+> +		acpi_remove_fixed_event_handler(ACPI_EVENT_SLEEP_BUTTON,
+> +						acpi_button_event);
+> +	} else {
+> +		acpi_remove_notify_handler(device->handle, ACPI_DEVICE_NOTIFY,
+> +					   acpi_button_notify);
+> +	}
+> +	acpi_os_wait_events_complete();
+> +
+>  	acpi_button_remove_fs(device);
+>  	input_unregister_device(button->input);
+>  	kfree(button);
+> Index: linux-pm/drivers/acpi/bus.c
+> ===================================================================
+> --- linux-pm.orig/drivers/acpi/bus.c
+> +++ linux-pm/drivers/acpi/bus.c
+> @@ -530,65 +530,30 @@ static void acpi_notify_device(acpi_hand
+>  	acpi_drv->ops.notify(device, event);
+>  }
+>  
+> -static void acpi_notify_device_fixed(void *data)
+> -{
+> -	struct acpi_device *device = data;
+> -
+> -	/* Fixed hardware devices have no handles */
+> -	acpi_notify_device(NULL, ACPI_FIXED_HARDWARE_EVENT, device);
+> -}
+> -
+> -static u32 acpi_device_fixed_event(void *data)
+> -{
+> -	acpi_os_execute(OSL_NOTIFY_HANDLER, acpi_notify_device_fixed, data);
+> -	return ACPI_INTERRUPT_HANDLED;
+> -}
+> -
+>  static int acpi_device_install_notify_handler(struct acpi_device *device,
+>  					      struct acpi_driver *acpi_drv)
+>  {
+> -	acpi_status status;
+> -
+> -	if (device->device_type == ACPI_BUS_TYPE_POWER_BUTTON) {
+> -		status =
+> -		    acpi_install_fixed_event_handler(ACPI_EVENT_POWER_BUTTON,
+> -						     acpi_device_fixed_event,
+> -						     device);
+> -	} else if (device->device_type == ACPI_BUS_TYPE_SLEEP_BUTTON) {
+> -		status =
+> -		    acpi_install_fixed_event_handler(ACPI_EVENT_SLEEP_BUTTON,
+> -						     acpi_device_fixed_event,
+> -						     device);
+> -	} else {
+> -		u32 type = acpi_drv->flags & ACPI_DRIVER_ALL_NOTIFY_EVENTS ?
+> +	u32 type = acpi_drv->flags & ACPI_DRIVER_ALL_NOTIFY_EVENTS ?
+>  				ACPI_ALL_NOTIFY : ACPI_DEVICE_NOTIFY;
+> +	acpi_status status;
+>  
+> -		status = acpi_install_notify_handler(device->handle, type,
+> -						     acpi_notify_device,
+> -						     device);
+> -	}
+> -
+> +	status = acpi_install_notify_handler(device->handle, type,
+> +					     acpi_notify_device, device);
+>  	if (ACPI_FAILURE(status))
+>  		return -EINVAL;
+> +
+>  	return 0;
+>  }
+>  
+>  static void acpi_device_remove_notify_handler(struct acpi_device *device,
+>  					      struct acpi_driver *acpi_drv)
+>  {
+> -	if (device->device_type == ACPI_BUS_TYPE_POWER_BUTTON) {
+> -		acpi_remove_fixed_event_handler(ACPI_EVENT_POWER_BUTTON,
+> -						acpi_device_fixed_event);
+> -	} else if (device->device_type == ACPI_BUS_TYPE_SLEEP_BUTTON) {
+> -		acpi_remove_fixed_event_handler(ACPI_EVENT_SLEEP_BUTTON,
+> -						acpi_device_fixed_event);
+> -	} else {
+> -		u32 type = acpi_drv->flags & ACPI_DRIVER_ALL_NOTIFY_EVENTS ?
+> +	u32 type = acpi_drv->flags & ACPI_DRIVER_ALL_NOTIFY_EVENTS ?
+>  				ACPI_ALL_NOTIFY : ACPI_DEVICE_NOTIFY;
+>  
+> -		acpi_remove_notify_handler(device->handle, type,
+> -					   acpi_notify_device);
+> -	}
+> +	acpi_remove_notify_handler(device->handle, type,
+> +				   acpi_notify_device);
+> +
+>  	acpi_os_wait_events_complete();
+>  }
+>  
+>
+>
+>
 
