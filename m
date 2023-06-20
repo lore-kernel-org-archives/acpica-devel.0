@@ -1,16 +1,24 @@
-Return-Path: <rjwysocki@gmail.com>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 5B26160B2E
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 0F4F360A5F
+Return-Path: <andriy.shevchenko@linux.intel.com>
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 33B7B4094E
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org D9E714187B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1687278940; x=1718814940;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=JK3tVYgPO813k37yyUcq4KAbO6r53M5gA1CD/W9gXN8=;
+ b=V3dHlwtj4cpx3B45KrYKdr5YF2sXNnNkRXkUuWnz/qdfQHbC9FVj2j3l
+ xYpV9A8nHuo1nQHyKUYkn78x21IqBB5D2S4F31CQc0a7Zu9TE1yfv7pf8
+ bkZGeVQT1C7ftWAgf451bRE83V7mRNaQqZR842qgI/i0u3bh7fVE4JKrT
+ Mv5Cj76YliYIX+uqelVnxaEDNMvdseUr+ViC+fxQhMVvxDQ4CqJB7Wtgx
+ PSQYttGj2KPr/pNeURLhcND81Bo/aFujSyllXfkYBXBlkS2YVsSSRF2cX
+ WXH0l6UDF3Gj96PPQScyfTwlHavSk9yt2jeJ3FLcEusz81Hu3EPOmorXK g==;
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Message-Id: <20230620163534.1042-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-References: <20230626220525.1654780-1-abmainkar@nvidia.com>
-In-Reply-To: <20230626220525.1654780-1-abmainkar@nvidia.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Thu, 29 Jun 2023 10:26:00 +0200
-Message-ID: <CAJZ5v0iE4MtjnBWwq0dS7x8B8AsZS0sJFfO6fRwtLJOfUhbEUg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [Acpica-devel] [Patch] acpica: Add AML_NO_OPERAND_RESOLVE flag
-	to Timer
+Content-Transfer-Encoding: 8bit
+Subject: [Acpica-devel] [PATCH v1 1/2] ACPI: platform: Ignore SMB0001 only
+	when it has resources
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -20,75 +28,91 @@ List-Post: <mailto:acpica-devel@lists.linuxfoundation.org>
 List-Help: <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=help>
 List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel>, 
  <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=subscribe>
-To: Abhishek Mainkar <abmainkar@nvidia.com>
-Cc: rafael.j.wysocki@intel.com, robert.moore@intel.com, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, acpica-devel@lists.linuxfoundation.org, lenb@kernel.org
+Date: Tue, 20 Jun 2023 16:35:42 -0000
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Wolfram Sang <wsa@kernel.org>, linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org, acpica-devel@lists.linuxfoundation.org
+Cc: Robert Moore <robert.moore@intel.com>, Len Brown <lenb@kernel.org>, Andi Shyti <andi.shyti@kernel.org>, Michael Brunner <michael.brunner@kontron.com>
 
-On Tue, Jun 27, 2023 at 12:10=E2=80=AFAM Abhishek Mainkar <abmainkar@nvidia=
-.com> wrote:
->
-> According to the ACPI specification 19.6.134, no argument is
-> required to be passed for ASL Timer instruction. For taking
-> care of no argument, AML_NO_OPERAND_RESOLVE flag is added to
-> ASL Timer instruction opcode.
->
-> When ASL timer instruction interpreted by ACPI interpreter,
-> getting error. After adding AML_NO_OPERAND_RESOLVE flag to
-> ASL Timer instruction opcode, issue is not observed.
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> UBSAN: array-index-out-of-bounds in acpica/dswexec.c:401:12
-> index -1 is out of range for type 'acpi_operand_object *[9]'
-> CPU: 37 PID: 1678 Comm: cat Not tainted
-> 6.0.0-dev-th500-6.0.y-1+bcf8c46459e407-generic-64k
-> HW name: NVIDIA BIOS v1.1.1-d7acbfc-dirty 12/19/2022 Call trace:
->  dump_backtrace+0xe0/0x130
->  show_stack+0x20/0x60
->  dump_stack_lvl+0x68/0x84
->  dump_stack+0x18/0x34
->  ubsan_epilogue+0x10/0x50
->  __ubsan_handle_out_of_bounds+0x80/0x90
->  acpi_ds_exec_end_op+0x1bc/0x6d8
->  acpi_ps_parse_loop+0x57c/0x618
->  acpi_ps_parse_aml+0x1e0/0x4b4
->  acpi_ps_execute_method+0x24c/0x2b8
->  acpi_ns_evaluate+0x3a8/0x4bc
->  acpi_evaluate_object+0x15c/0x37c
->  acpi_evaluate_integer+0x54/0x15c
->  show_power+0x8c/0x12c [acpi_power_meter]
->
-> Signed-off-by: Abhishek Mainkar <abmainkar@nvidia.com>
+After switchind i2c-scmi driver to be a plaform one it stopped
+being enumerated on number of Kontron platformsm, because it's
+listed in the forbidden_id_list.
 
-ACPICA changes need to be submitted as pull requests to the upstream
-ACPICA project on GitHub.
+To resolve the situation, split the list to generic one and
+another that holds devices that has to be skiped if and only if
+they have bogus resources attached (_CRS method returns some).
 
-Once you have submitted an ACPICA pull request, please resend the
-corresponding Linux patch with a Link: tag pointing to that pull
-request.
+Fixes: 03d4287add6e ("i2c: scmi: Convert to be a platform driver")
+Closes: https://lore.kernel.org/r/60c1756765b9a3f1eab0dcbd84f59f00fe1caf48.camel@kontron.com
+Reported-by: Michael Brunner <michael.brunner@kontron.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/acpi/acpi_platform.c | 27 +++++++++++++++++++++++++--
+ 1 file changed, 25 insertions(+), 2 deletions(-)
 
-Thanks!
+diff --git a/drivers/acpi/acpi_platform.c b/drivers/acpi/acpi_platform.c
+index fe00a5783f53..089a98bd18bf 100644
+--- a/drivers/acpi/acpi_platform.c
++++ b/drivers/acpi/acpi_platform.c
+@@ -19,13 +19,17 @@
+ 
+ #include "internal.h"
+ 
++static const struct acpi_device_id forbidden_id_with_resourses[] = {
++	{"SMB0001",  0},	/* ACPI SMBUS virtual device */
++	{ }
++};
++
+ static const struct acpi_device_id forbidden_id_list[] = {
+ 	{"ACPI0009", 0},	/* IOxAPIC */
+ 	{"ACPI000A", 0},	/* IOAPIC */
+ 	{"PNP0000",  0},	/* PIC */
+ 	{"PNP0100",  0},	/* Timer */
+ 	{"PNP0200",  0},	/* AT DMA Controller */
+-	{"SMB0001",  0},	/* ACPI SMBUS virtual device */
+ 	{ }
+ };
+ 
+@@ -83,6 +87,15 @@ static void acpi_platform_fill_resource(struct acpi_device *adev,
+ 		dest->parent = pci_find_resource(to_pci_dev(parent), dest);
+ }
+ 
++static int acpi_platform_resource_count(struct acpi_resource *ares, void *data)
++{
++	int *count = data;
++
++	*count = *count + 1;
++
++	return 1;
++}
++
+ /**
+  * acpi_create_platform_device - Create platform device for ACPI device node
+  * @adev: ACPI device node to create a platform device for.
+@@ -103,7 +116,8 @@ struct platform_device *acpi_create_platform_device(struct acpi_device *adev,
+ 	struct resource_entry *rentry;
+ 	struct list_head resource_list;
+ 	struct resource *resources = NULL;
+-	int count;
++	int count = 0;
++	int ret;
+ 
+ 	/* If the ACPI node already has a physical device attached, skip it. */
+ 	if (adev->physical_node_count)
+@@ -113,6 +127,15 @@ struct platform_device *acpi_create_platform_device(struct acpi_device *adev,
+ 		return ERR_PTR(-EINVAL);
+ 
+ 	INIT_LIST_HEAD(&resource_list);
++	ret = acpi_dev_get_resources(adev, &resource_list, acpi_platform_resource_count, &count);
++	if (ret < 0)
++		return ERR_PTR(ret);
++
++	acpi_dev_free_resource_list(&resource_list);
++
++	if (count > 0 && !acpi_match_device_ids(adev, forbidden_id_with_resourses))
++		return ERR_PTR(-EINVAL);
++
+ 	count = acpi_dev_get_resources(adev, &resource_list, NULL, NULL);
+ 	if (count < 0)
+ 		return NULL;
+-- 
+2.40.0.1.gaa8946217a0b
 
-> ---
->  drivers/acpi/acpica/psopcode.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/acpi/acpica/psopcode.c b/drivers/acpi/acpica/psopcod=
-e.c
-> index bef69e87a0a2..8c34c0ffb1d9 100644
-> --- a/drivers/acpi/acpica/psopcode.c
-> +++ b/drivers/acpi/acpica/psopcode.c
-> @@ -603,7 +603,7 @@ const struct acpi_opcode_info acpi_gbl_aml_op_info[AM=
-L_NUM_OPCODES] =3D {
->
->  /* 7E */ ACPI_OP("Timer", ARGP_TIMER_OP, ARGI_TIMER_OP, ACPI_TYPE_ANY,
->                          AML_CLASS_EXECUTE, AML_TYPE_EXEC_0A_0T_1R,
-> -                        AML_FLAGS_EXEC_0A_0T_1R),
-> +                        AML_FLAGS_EXEC_0A_0T_1R | AML_NO_OPERAND_RESOLVE=
-),
->
->  /* ACPI 5.0 opcodes */
->
-> --
-> 2.17.1
->
