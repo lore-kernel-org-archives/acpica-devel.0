@@ -1,20 +1,23 @@
-Return-Path: <michael.brunner@kontron.com>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org D770A831FB
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 86DE28321B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com; 
- s=selector2-mysnt-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4+gK5lxHggi6XM8QH7wGYCeRVtdvdEw/0UFE067mnhc=;
- b=bDGoYRentvxRc1kNjUA4GXwrZnm7/Tnxt3hoH4Q3rB1tjY16CbNOXTfiKi3LhVRcOhxFPNWyg9MzW/er0oEfVE/DoRFMIKO5lxc8h1LOo+ij6DF8yI2as1QaL/UtPczGePF7D3QMnUVHj0eIMjbuX2ig1se7gTkpa7hxcZqpAG8=
-From: Michael Brunner <michael.brunner@kontron.com>
-Message-ID: <b9af5a068cc0b5e785c8e2ddfc70d811fd5929cd.camel@kontron.com>
+Return-Path: <andi.shyti@kernel.org>
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 7A8AC40641
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 98A5E401CA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1687339815;
+ bh=18nRxiz3RzRU04UzjxaIi/UAFwMnex+OsDW6C9m9tzM=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=avWkxEB92WjPUZaa0OQAtoTDGZAonhUdcVlGDiAyztU1gbW9Ztm9Ou+/Z3QyTYFIa
+ 5Y67KG3ef56ckdI/9k479xJcWpjXht5jigCsC9KepP07J6/febDCKKG2x7luXsE2fr
+ b8/Z9nwE+g4Yrm41GnedvZTajj1Ty6dAWgbQb1IXioQi07bJN9qdwdeIbL2S4DR02j
+ iSL1bTYnpcK2TXHTCjotNKLlarnGh0TSfBzOMZEwpn5uIjzZZE2mMjVhuuuNX17eQT
+ qmLjSO1FnRx1EXA/5oEEokd/0FK1w2HHay7Rd/NhlxO4GGGyPPqUthwYa556LgmvZI
+ LQW4/DoTCPsKA==
+From: Andi Shyti <andi.shyti@kernel.org>
+Message-ID: <20230621093012.nmgrzzepm764kdfy@intel.intel>
 References: <20230620163534.1042-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20230620163534.1042-1-andriy.shevchenko@linux.intel.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-15"
-Content-ID: <9998B04AC020E84CAE51280A9DA4449A@EURPRD10.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230620163534.1042-1-andriy.shevchenko@linux.intel.com>
 Subject: Re: [Acpica-devel] [PATCH v1 1/2] ACPI: platform: Ignore SMB0001
  only when it has resources
 List-Id: "This is the central place for ACPICA developer discussions and
@@ -26,28 +29,111 @@ List-Post: <mailto:acpica-devel@lists.linuxfoundation.org>
 List-Help: <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=help>
 List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel>, 
  <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=subscribe>
-Date: Wed, 21 Jun 2023 07:46:48 -0000
-To: "andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>, "acpica-devel@lists.linuxfoundation.org" <acpica-devel@lists.linuxfoundation.org>, "rafael.j.wysocki@intel.com" <rafael.j.wysocki@intel.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>, "wsa@kernel.org" <wsa@kernel.org>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>
-Cc: "andi.shyti@kernel.org" <andi.shyti@kernel.org>, "lenb@kernel.org" <lenb@kernel.org>, "robert.moore@intel.com" <robert.moore@intel.com>
+Date: Wed, 21 Jun 2023 09:30:18 -0000
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, linux-kernel@vger.kernel.org, Michael Brunner <michael.brunner@kontron.com>, Robert Moore <robert.moore@intel.com>, Wolfram Sang <wsa@kernel.org>, linux-acpi@vger.kernel.org, linux-i2c@vger.kernel.org, acpica-devel@lists.linuxfoundation.org, Len Brown <lenb@kernel.org>
 
-On Tue, 2023-06-20 at 19:35 +0300, Andy Shevchenko wrote:
+Hi Andy,
+
+On Tue, Jun 20, 2023 at 07:35:33PM +0300, Andy Shevchenko wrote:
 > After switchind i2c-scmi driver to be a plaform one it stopped
+
+/switchind/switching/
+/one/one,/
+
 > being enumerated on number of Kontron platformsm, because it's
+
+/platformsm/platforms/
+
 > listed in the forbidden_id_list.
->=20
+> 
 > To resolve the situation, split the list to generic one and
 > another that holds devices that has to be skiped if and only if
+
+/skiped/skipped/
+
 > they have bogus resources attached (_CRS method returns some).
->=20
+> 
 > Fixes: 03d4287add6e ("i2c: scmi: Convert to be a platform driver")
-> Closes: https://lore.kernel.org/r/60c1756765b9a3f1eab0dcbd84f59f00fe1caf4=
-8.camel@kontron.com
+> Closes: https://lore.kernel.org/r/60c1756765b9a3f1eab0dcbd84f59f00fe1caf48.camel@kontron.com
 > Reported-by: Michael Brunner <michael.brunner@kontron.com>
 > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/acpi/acpi_platform.c | 27 +++++++++++++++++++++++++--
+>  1 file changed, 25 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/acpi/acpi_platform.c b/drivers/acpi/acpi_platform.c
+> index fe00a5783f53..089a98bd18bf 100644
+> --- a/drivers/acpi/acpi_platform.c
+> +++ b/drivers/acpi/acpi_platform.c
+> @@ -19,13 +19,17 @@
+>  
+>  #include "internal.h"
+>  
+> +static const struct acpi_device_id forbidden_id_with_resourses[] = {
+> +	{"SMB0001",  0},	/* ACPI SMBUS virtual device */
+> +	{ }
+> +};
+> +
+>  static const struct acpi_device_id forbidden_id_list[] = {
+>  	{"ACPI0009", 0},	/* IOxAPIC */
+>  	{"ACPI000A", 0},	/* IOAPIC */
+>  	{"PNP0000",  0},	/* PIC */
+>  	{"PNP0100",  0},	/* Timer */
+>  	{"PNP0200",  0},	/* AT DMA Controller */
+> -	{"SMB0001",  0},	/* ACPI SMBUS virtual device */
+>  	{ }
+>  };
+>  
+> @@ -83,6 +87,15 @@ static void acpi_platform_fill_resource(struct acpi_device *adev,
+>  		dest->parent = pci_find_resource(to_pci_dev(parent), dest);
+>  }
+>  
+> +static int acpi_platform_resource_count(struct acpi_resource *ares, void *data)
+> +{
+> +	int *count = data;
+> +
+> +	*count = *count + 1;
+> +
+> +	return 1;
+> +}
+> +
+>  /**
+>   * acpi_create_platform_device - Create platform device for ACPI device node
+>   * @adev: ACPI device node to create a platform device for.
+> @@ -103,7 +116,8 @@ struct platform_device *acpi_create_platform_device(struct acpi_device *adev,
+>  	struct resource_entry *rentry;
+>  	struct list_head resource_list;
+>  	struct resource *resources = NULL;
+> -	int count;
+> +	int count = 0;
+> +	int ret;
+>  
+>  	/* If the ACPI node already has a physical device attached, skip it. */
+>  	if (adev->physical_node_count)
+> @@ -113,6 +127,15 @@ struct platform_device *acpi_create_platform_device(struct acpi_device *adev,
+>  		return ERR_PTR(-EINVAL);
+>  
+>  	INIT_LIST_HEAD(&resource_list);
+> +	ret = acpi_dev_get_resources(adev, &resource_list, acpi_platform_resource_count, &count);
+> +	if (ret < 0)
+> +		return ERR_PTR(ret);
+> +
+> +	acpi_dev_free_resource_list(&resource_list);
+> +
+> +	if (count > 0 && !acpi_match_device_ids(adev, forbidden_id_with_resourses))
+> +		return ERR_PTR(-EINVAL);
 
-Works as expected - the SMB0001 device shows up as platform device and
-the i2c-scmi driver is enumerated again on the affected boards.
-Thanks a lot!
+... so that you rule out first the devices in this list.
 
-Best regards,
-  Michael Brunner
+Reviewed-by: Andi Shyti <andi.shyti@kernel.org> 
+
+Andi
+
+> +
+>  	count = acpi_dev_get_resources(adev, &resource_list, NULL, NULL);
+>  	if (count < 0)
+>  		return NULL;
+> -- 
+> 2.40.0.1.gaa8946217a0b
+> 
