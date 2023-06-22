@@ -1,27 +1,30 @@
 Return-Path: <andriy.shevchenko@linux.intel.com>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org DC56C41E8A
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org D4C0341DC8
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org E906660B97
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org B8B1260B24
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1687360614; x=1718896614;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=BZCM5lLaApqKK/yTbVaJKND0T8mjA20qNjOsA8/s5nU=;
- b=T7mYsaEuNsTo7mahOrwSqZ00fGTViTfqKN4RXrPaLtKQ23Q7bSzf0wj7
- WBkT5vIJaVQ4V5JJsK67XXTOc+Sv4gkuXgKNhAU7U+MBRnEBbfsxn7PKM
- wSg0R1DzHXqjGYoZ1nl7NoZd56P+Xh9FEt8K51CJmDBd2s2HMeLeV7s7q
- LgvLsaH8Ltm5yFtFxlbNGwfFjNH2RDR6ltGV/rEbF77PccMXwVUsrRw4V
- DDo9fYEiOqYZ0jA27Wb4cFQEju7JP5PJdpSX39PAFy1z5OpejF+rgMYSE
- cJQLfCwkU9S89rb/qMtilkuF31y3W1Wzxel6GuvfquniIp98Nb2cTvVRu g==;
+ t=1687457943; x=1718993943;
+ h=date:from:to:cc:subject:message-id:references:
+ mime-version:content-transfer-encoding:in-reply-to;
+ bh=lUTHnqqp11Qcu3wRI49BegX8QJeUiSLIGXhWdpB4hXE=;
+ b=DWYwvrMtpbcmC5l70OBkmiWwqWMWjP+1gavgTBxoBLRe8BzZjXaoq29v
+ Q7LV0IRXCtNo8GBsGm2pn9tuq1AaG6kiTzLGCvFm9mJ5zW5XwZN1dgyyG
+ WRETHY5c8HsE0R/eg2jywmrTAVwMj8Q5TmPQPiw+ITMRUkm/ip4hOuXNh
+ Xoi4Qz58mQjh5hKxpp0XukRJdTBfhSxdx3WZ+tSszbNLmM4UgcdwLLkUu
+ Rj79X8ULs7XF1Eg2/x/6vjIw6E+n8fwNECE+J0cc5kV1FYPmI3AUWxUUH
+ 06UkOE1cQt9MuVaTv1/WSKwk4lBQgtmhHdp5YHOZQVf47Pw8WSVJxS/BB g==;
+Date: Thu, 22 Jun 2023 21:18:39 +0300
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Date: Wed, 21 Jun 2023 18:16:52 +0300
-Message-Id: <20230621151652.79579-2-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20230621151652.79579-1-andriy.shevchenko@linux.intel.com>
+Message-ID: <ZJSQf07cO6qmNyCn@smile.fi.intel.com>
 References: <20230621151652.79579-1-andriy.shevchenko@linux.intel.com>
+ <CAJZ5v0jt8XCzUxQaBXLz0zXezih1Urq=dt-K9PWVY1JpN=Go6Q@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Subject: [Acpica-devel] [PATCH v2 2/2] ACPI: platform: Move SMB0001 HID to
-	the header and reuse
+In-Reply-To: <CAJZ5v0jt8XCzUxQaBXLz0zXezih1Urq=dt-K9PWVY1JpN=Go6Q@mail.gmail.com>
+Subject: Re: [Acpica-devel] [PATCH v2 1/2] ACPI: platform: Ignore SMB0001
+ only when it has resources
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -31,64 +34,88 @@ List-Post: <mailto:acpica-devel@lists.linuxfoundation.org>
 List-Help: <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=help>
 List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel>, 
  <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=subscribe>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org, acpica-devel@lists.linuxfoundation.org
-Cc: Robert Moore <robert.moore@intel.com>, Len Brown <lenb@kernel.org>, Andi Shyti <andi.shyti@kernel.org>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Andi Shyti <andi.shyti@kernel.org>, linux-kernel@vger.kernel.org, Michael Brunner <michael.brunner@kontron.com>, Robert Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org, linux-i2c@vger.kernel.org, acpica-devel@lists.linuxfoundation.org, Len Brown <lenb@kernel.org>
 
-There are at least two places in the kernel that are using
-the SMB0001 HID. Make it to be available via acpi_drivers.h
-header file. While at it, replace hard coded one with a
-definition.
+On Thu, Jun 22, 2023 at 05:53:13PM +0200, Rafael J. Wysocki wrote:
+> On Wed, Jun 21, 2023 at 5:16 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> >
+> > After switching i2c-scmi driver to be a plaform one, it stopped
+> 
+> "platform"
+> 
+> > being enumerated on number of Kontron platforms, because it's
+> > listed in the forbidden_id_list.
+> >
+> > To resolve the situation, split the list to generic one and
+> > another that holds devices that has to be skipped if and only
+> 
+> "have"
+> 
+> > if they have bogus resources attached (_CRS method returns some).
 
-Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
-Link: https://lore.kernel.org/r/20230620163534.1042-2-andriy.shevchenko@linux.intel.com
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
-v2: added tag (Andi)
- drivers/acpi/acpi_platform.c  | 2 +-
- drivers/i2c/busses/i2c-scmi.c | 3 ---
- include/acpi/acpi_drivers.h   | 2 ++
- 3 files changed, 3 insertions(+), 4 deletions(-)
+Thanks for the typo fixes!
 
-diff --git a/drivers/acpi/acpi_platform.c b/drivers/acpi/acpi_platform.c
-index 089a98bd18bf..e86f76ee3473 100644
---- a/drivers/acpi/acpi_platform.c
-+++ b/drivers/acpi/acpi_platform.c
-@@ -20,7 +20,7 @@
- #include "internal.h"
- 
- static const struct acpi_device_id forbidden_id_with_resourses[] = {
--	{"SMB0001",  0},	/* ACPI SMBUS virtual device */
-+	{ACPI_SMBUS_MS_HID,  0},	/* ACPI SMBUS virtual device */
- 	{ }
- };
- 
-diff --git a/drivers/i2c/busses/i2c-scmi.c b/drivers/i2c/busses/i2c-scmi.c
-index 104570292241..421735acfa14 100644
---- a/drivers/i2c/busses/i2c-scmi.c
-+++ b/drivers/i2c/busses/i2c-scmi.c
-@@ -13,9 +13,6 @@
- #include <linux/i2c.h>
- #include <linux/acpi.h>
- 
--/* SMBUS HID definition as supported by Microsoft Windows */
--#define ACPI_SMBUS_MS_HID		"SMB0001"
--
- struct smbus_methods_t {
- 	char *mt_info;
- 	char *mt_sbr;
-diff --git a/include/acpi/acpi_drivers.h b/include/acpi/acpi_drivers.h
-index 8372b0e7fd15..b14d165632e7 100644
---- a/include/acpi/acpi_drivers.h
-+++ b/include/acpi/acpi_drivers.h
-@@ -27,6 +27,8 @@
- #define ACPI_BAY_HID			"LNXIOBAY"
- #define ACPI_DOCK_HID			"LNXDOCK"
- #define ACPI_ECDT_HID			"LNXEC"
-+/* SMBUS HID definition as supported by Microsoft Windows */
-+#define ACPI_SMBUS_MS_HID		"SMB0001"
- /* Quirk for broken IBM BIOSes */
- #define ACPI_SMBUS_IBM_HID		"SMBUSIBM"
- 
+...
+
+> > +static const struct acpi_device_id forbidden_id_with_resourses[] = {
+> 
+> I don't quite like this name and the driver_data field could be used
+> to indicate the need to check the resources.
+
+Okay, something like
+
+/* Check if the device has resources provided by _CRS method */
+#define ACPI_PLATFORM_CHECK_RES		BIT(0)
+
+?
+
+> > +       {"SMB0001",  0},        /* ACPI SMBUS virtual device */
+> > +       { }
+> > +};
+
+...
+
+> > +static int acpi_platform_resource_count(struct acpi_resource *ares, void *data)
+> > +{
+> > +       int *count = data;
+> > +
+> > +       *count = *count + 1;
+> 
+> Why not (*count)++?
+
+Can be that way, I just copied'n'pasted from the existing code.
+
+> > +       return 1;
+> > +}
+
+...
+
+> >         INIT_LIST_HEAD(&resource_list);
+> > +       ret = acpi_dev_get_resources(adev, &resource_list, acpi_platform_resource_count, &count);
+> > +       if (ret < 0)
+> > +               return ERR_PTR(ret);
+> 
+> Why not use acpi_walk_resources() directly here?
+
+Can be done that way. Again, I just used a template (existing code in kernel)
+for similar functionality.
+
+> Also, this extra resources walk is only needed if the resources check
+> is needed to decide whether or not to skip the device, so what's the
+> benefit of doing it for every device that's not skipped?
+
+Ah, indeed. Makes sense to have done it conditionally.
+
+> > +       acpi_dev_free_resource_list(&resource_list);
+
+...
+
+Thank you for the review!
+
 -- 
-2.40.0.1.gaa8946217a0b
+With Best Regards,
+Andy Shevchenko
+
 
