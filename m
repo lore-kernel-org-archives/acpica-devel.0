@@ -1,17 +1,26 @@
-Return-Path: <rjwysocki@gmail.com>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 1A1B440500
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org AB64640193
+Return-Path: <andriy.shevchenko@linux.intel.com>
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 5990481E21
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 9377E81D68
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1687777220; x=1719313220;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=cfkHmvhL16siboX9Cx9flRIYjtdn8/awF8GL0BpfHpU=;
+ b=QW8LRpbZwgh3kd/uGMO7bsV14f87Jc0YdxR+yOr65slFLp1Uyyd+t3XT
+ 4kiicMrN1dDG5nJZ9diclvIEtCjwjP0Xv2qYi4bdf/HiHDI729fMrSERK
+ ncXXoMm70WzAKoUf27adEMTMvdEmjJTlo8X5Lysm7R9LF19uTDyFW6+mg
+ PfP5H5KV6N+3VsVvR/LVqC192OC6WNneayD7R0uU+lNgZ+W+/tbJuHZfs
+ iu/LNQR2sYoTie0cctUL9QcLM+ZZfJEISSUu6d1nuOgwahz92pWmf49du
+ ndIiUO8CAYpZhxFlvPrStoXX8T7YJEEPtiBDeEa5PSYX7fuZUaQ//iPav A==;
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Message-Id: <20230626110026.65825-3-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20230626110026.65825-1-andriy.shevchenko@linux.intel.com>
+References: <20230626110026.65825-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-References: <20230621151652.79579-1-andriy.shevchenko@linux.intel.com>
- <CAJZ5v0jt8XCzUxQaBXLz0zXezih1Urq=dt-K9PWVY1JpN=Go6Q@mail.gmail.com>
- <ZJSQf07cO6qmNyCn@smile.fi.intel.com>
-In-Reply-To: <ZJSQf07cO6qmNyCn@smile.fi.intel.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Message-ID: <CAJZ5v0iKLtQpUnhMqB6zgwbURXGFZkje5rNORS9MLqYN=13nWg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [Acpica-devel] [PATCH v2 1/2] ACPI: platform: Ignore SMB0001
-	only when it has resources
+Content-Transfer-Encoding: 8bit
+Subject: [Acpica-devel] [PATCH v3 2/4] ACPI: bus: Introduce
+	acpi_match_acpi_device() helper
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -21,71 +30,80 @@ List-Post: <mailto:acpica-devel@lists.linuxfoundation.org>
 List-Help: <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=help>
 List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel>, 
  <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=subscribe>
-Date: Fri, 23 Jun 2023 14:44:12 -0000
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Andi Shyti <andi.shyti@kernel.org>, linux-kernel@vger.kernel.org, Michael Brunner <michael.brunner@kontron.com>, Robert Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org, linux-i2c@vger.kernel.org, acpica-devel@lists.linuxfoundation.org, Len Brown <lenb@kernel.org>
+Date: Mon, 26 Jun 2023 11:00:22 -0000
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org, acpica-devel@lists.linuxfoundation.org
+Cc: Robert Moore <robert.moore@intel.com>, Michael Walle <michael@walle.cc>, Len Brown <lenb@kernel.org>, Andi Shyti <andi.shyti@kernel.org>
 
-On Thu, Jun 22, 2023 at 8:19=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Thu, Jun 22, 2023 at 05:53:13PM +0200, Rafael J. Wysocki wrote:
-> > On Wed, Jun 21, 2023 at 5:16=E2=80=AFPM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > >
-> > > After switching i2c-scmi driver to be a plaform one, it stopped
-> >
-> > "platform"
-> >
-> > > being enumerated on number of Kontron platforms, because it's
-> > > listed in the forbidden_id_list.
-> > >
-> > > To resolve the situation, split the list to generic one and
-> > > another that holds devices that has to be skipped if and only
-> >
-> > "have"
-> >
-> > > if they have bogus resources attached (_CRS method returns some).
->
-> Thanks for the typo fixes!
->
-> ...
->
-> > > +static const struct acpi_device_id forbidden_id_with_resourses[] =3D=
+In some cases we can't have a physical node associated with
+the ACPI device. Yet we want to match it against ID table and
+get respective driver data. Introduce the helper for that.
+
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/acpi/bus.c   | 15 +++++++++++----
+ include/linux/acpi.h |  9 +++++++++
+ 2 files changed, 20 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c
+index 20cdfb37da79..ee88bfb60ac2 100644
+--- a/drivers/acpi/bus.c
++++ b/drivers/acpi/bus.c
+@@ -850,6 +850,16 @@ static bool __acpi_match_device(const struct acpi_device *device,
+ 	return true;
+ }
+ 
++const struct acpi_device_id *acpi_match_acpi_device(const struct acpi_device_id *ids,
++						    const struct acpi_device *adev)
++{
++	const struct acpi_device_id *id = NULL;
++
++	__acpi_match_device(adev, ids, NULL, &id, NULL);
++	return id;
++}
++EXPORT_SYMBOL_GPL(acpi_match_acpi_device);
++
+ /**
+  * acpi_match_device - Match a struct device against a given list of ACPI IDs
+  * @ids: Array of struct acpi_device_id object to match against.
+@@ -864,10 +874,7 @@ static bool __acpi_match_device(const struct acpi_device *device,
+ const struct acpi_device_id *acpi_match_device(const struct acpi_device_id *ids,
+ 					       const struct device *dev)
  {
-> >
-> > I don't quite like this name and the driver_data field could be used
-> > to indicate the need to check the resources.
->
-> Okay, something like
->
-> /* Check if the device has resources provided by _CRS method */
-> #define ACPI_PLATFORM_CHECK_RES         BIT(0)
->
-> ?
+-	const struct acpi_device_id *id = NULL;
+-
+-	__acpi_match_device(acpi_companion_match(dev), ids, NULL, &id, NULL);
+-	return id;
++	return acpi_match_acpi_device(ids, acpi_companion_match(dev));
+ }
+ EXPORT_SYMBOL_GPL(acpi_match_device);
+ 
+diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+index 640f1c07c894..641dc4843987 100644
+--- a/include/linux/acpi.h
++++ b/include/linux/acpi.h
+@@ -707,6 +707,9 @@ extern int acpi_nvs_register(__u64 start, __u64 size);
+ extern int acpi_nvs_for_each_region(int (*func)(__u64, __u64, void *),
+ 				    void *data);
+ 
++const struct acpi_device_id *acpi_match_acpi_device(const struct acpi_device_id *ids,
++						    const struct acpi_device *adev);
++
+ const struct acpi_device_id *acpi_match_device(const struct acpi_device_id *ids,
+ 					       const struct device *dev);
+ 
+@@ -922,6 +925,12 @@ static inline int acpi_nvs_for_each_region(int (*func)(__u64, __u64, void *),
+ 
+ struct acpi_device_id;
+ 
++static inline const struct acpi_device_id *acpi_match_acpi_device(
++	const struct acpi_device_id *ids, const struct acpi_device *adev)
++{
++	return NULL;
++}
++
+ static inline const struct acpi_device_id *acpi_match_device(
+ 	const struct acpi_device_id *ids, const struct device *dev)
+ {
+-- 
+2.40.0.1.gaa8946217a0b
 
-Could be, but this is specific to forbidden_ids_list[].  Maybe
-ACPI_ALLOW_WO_RESOURCES or similar.
-
-> > > +       {"SMB0001",  0},        /* ACPI SMBUS virtual device */
-> > > +       { }
-> > > +};
->
-> ...
->
-> > > +static int acpi_platform_resource_count(struct acpi_resource *ares, =
-void *data)
-> > > +{
-> > > +       int *count =3D data;
-> > > +
-> > > +       *count =3D *count + 1;
-> >
-> > Why not (*count)++?
->
-> Can be that way, I just copied'n'pasted from the existing code.
->
-> > > +       return 1;
-> > > +}
-
-BTW, this doesn't need to increment the count even.  It could just
-terminate the walk on the first valid resource found and tell the
-caller to return true in that case.
