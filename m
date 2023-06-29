@@ -1,35 +1,16 @@
-Return-Path: <andriy.shevchenko@linux.intel.com>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 6F8FD409E7
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org E66C7409C3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1687786028; x=1719322028;
- h=date:from:to:cc:subject:message-id:references:
- mime-version:content-transfer-encoding:in-reply-to;
- bh=9ng5AnCmQfRGGBiaPFf18ARsNicr/v2JOScpItK0kq0=;
- b=O2Tcyp2W/uQKZBc6eRejg4VvihxJW3elYSewVfRdlEx6J2WOWBwZtOj8
- WdaP3ZOwo2/MdO2bedccreAu1FEl7zXzyYdlkUEG47TqDypviHHhNZsEl
- 3leI5t65nR/UBqtD9P+ctqe//0uappaJ1Qlw/03LBt13kUrFpSFsjIQ4S
- x2s0PhNz5PB0P35LdlCC1pOYXym/Xy42xv7NwZ8p2jXD8YuAup1hIG9+J
- y3UgEF6yHCjAAAJvvgoLY0CY+9m750qFt3NXUlzBsIQjvey6XWyobiljq
- vJ4knBuMNKfi2/6QkyY5s7TJptEAwQgYxBw5Ke7tPJ0T+2DJEF129By3p Q==;
-Date: Mon, 26 Jun 2023 16:27:03 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Message-ID: <ZJmSJ83Hvm+A9pK6@smile.fi.intel.com>
-References: <20230621151652.79579-1-andriy.shevchenko@linux.intel.com>
- <CAJZ5v0jt8XCzUxQaBXLz0zXezih1Urq=dt-K9PWVY1JpN=Go6Q@mail.gmail.com>
- <ZJSQf07cO6qmNyCn@smile.fi.intel.com>
- <CAJZ5v0iKLtQpUnhMqB6zgwbURXGFZkje5rNORS9MLqYN=13nWg@mail.gmail.com>
- <ZJlJFtsXoC6JyLxY@smile.fi.intel.com>
- <ZJlsEggaJZc9u15T@smile.fi.intel.com>
- <CAJZ5v0iU5LXcjG8j+S1VZbBmTWGdOdM2W4Yf8HMou2=HQW0-nA@mail.gmail.com>
+Return-Path: <rjwysocki@gmail.com>
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 5B26160B2E
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 0F4F360A5F
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0iU5LXcjG8j+S1VZbBmTWGdOdM2W4Yf8HMou2=HQW0-nA@mail.gmail.com>
-Subject: Re: [Acpica-devel] [PATCH v2 1/2] ACPI: platform: Ignore SMB0001
- only when it has resources
+References: <20230626220525.1654780-1-abmainkar@nvidia.com>
+In-Reply-To: <20230626220525.1654780-1-abmainkar@nvidia.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Thu, 29 Jun 2023 10:26:00 +0200
+Message-ID: <CAJZ5v0iE4MtjnBWwq0dS7x8B8AsZS0sJFfO6fRwtLJOfUhbEUg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [Acpica-devel] [Patch] acpica: Add AML_NO_OPERAND_RESOLVE flag
+	to Timer
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -39,44 +20,75 @@ List-Post: <mailto:acpica-devel@lists.linuxfoundation.org>
 List-Help: <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=help>
 List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel>, 
  <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=subscribe>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: Andi Shyti <andi.shyti@kernel.org>, linux-kernel@vger.kernel.org, Michael Brunner <michael.brunner@kontron.com>, Robert Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org, linux-i2c@vger.kernel.org, acpica-devel@lists.linuxfoundation.org, Len Brown <lenb@kernel.org>
+To: Abhishek Mainkar <abmainkar@nvidia.com>
+Cc: rafael.j.wysocki@intel.com, robert.moore@intel.com, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, acpica-devel@lists.linuxfoundation.org, lenb@kernel.org
 
-On Mon, Jun 26, 2023 at 02:11:10PM +0200, Rafael J. Wysocki wrote:
-> On Mon, Jun 26, 2023 at 12:44 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Mon, Jun 26, 2023 at 11:15:19AM +0300, Andy Shevchenko wrote:
-> > > On Fri, Jun 23, 2023 at 04:43:55PM +0200, Rafael J. Wysocki wrote:
-> > > > On Thu, Jun 22, 2023 at 8:19 PM Andy Shevchenko
-> > > > <andriy.shevchenko@linux.intel.com> wrote:
-> > > > > On Thu, Jun 22, 2023 at 05:53:13PM +0200, Rafael J. Wysocki wrote:
-> > > > > > On Wed, Jun 21, 2023 at 5:16 PM Andy Shevchenko
-> > > > > > <andriy.shevchenko@linux.intel.com> wrote:
+On Tue, Jun 27, 2023 at 12:10=E2=80=AFAM Abhishek Mainkar <abmainkar@nvidia=
+.com> wrote:
+>
+> According to the ACPI specification 19.6.134, no argument is
+> required to be passed for ASL Timer instruction. For taking
+> care of no argument, AML_NO_OPERAND_RESOLVE flag is added to
+> ASL Timer instruction opcode.
+>
+> When ASL timer instruction interpreted by ACPI interpreter,
+> getting error. After adding AML_NO_OPERAND_RESOLVE flag to
+> ASL Timer instruction opcode, issue is not observed.
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> UBSAN: array-index-out-of-bounds in acpica/dswexec.c:401:12
+> index -1 is out of range for type 'acpi_operand_object *[9]'
+> CPU: 37 PID: 1678 Comm: cat Not tainted
+> 6.0.0-dev-th500-6.0.y-1+bcf8c46459e407-generic-64k
+> HW name: NVIDIA BIOS v1.1.1-d7acbfc-dirty 12/19/2022 Call trace:
+>  dump_backtrace+0xe0/0x130
+>  show_stack+0x20/0x60
+>  dump_stack_lvl+0x68/0x84
+>  dump_stack+0x18/0x34
+>  ubsan_epilogue+0x10/0x50
+>  __ubsan_handle_out_of_bounds+0x80/0x90
+>  acpi_ds_exec_end_op+0x1bc/0x6d8
+>  acpi_ps_parse_loop+0x57c/0x618
+>  acpi_ps_parse_aml+0x1e0/0x4b4
+>  acpi_ps_execute_method+0x24c/0x2b8
+>  acpi_ns_evaluate+0x3a8/0x4bc
+>  acpi_evaluate_object+0x15c/0x37c
+>  acpi_evaluate_integer+0x54/0x15c
+>  show_power+0x8c/0x12c [acpi_power_meter]
+>
+> Signed-off-by: Abhishek Mainkar <abmainkar@nvidia.com>
 
-...
+ACPICA changes need to be submitted as pull requests to the upstream
+ACPICA project on GitHub.
 
-> > > > BTW, this doesn't need to increment the count even.  It could just
-> > > > terminate the walk on the first valid resource found and tell the
-> > > > caller to return true in that case.
-> > >
-> > > Indeed, thank you for the hint!
-> >
-> > Actually it's doesn't matter if we count them or not, we still must use the
-> > context of the call to set up a flag or whatever.
-> 
-> No, it is sufficient to pass a pointer to a bool variable.
-> 
-> > With the current code in mind I prefer to count resources and compare that
-> > to be non-zero. This will help to read and understand code better.
-> 
-> I'm not sure.  The condition is "if there is at least one valid
-> resource, skip the device".  Counting them all will make casual
-> readers wonder why IMO.
+Once you have submitted an ACPICA pull request, please resend the
+corresponding Linux patch with a Link: tag pointing to that pull
+request.
 
-Okay, Can you check v3 for the rest and I can send a v4 if nothing else there?
+Thanks!
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+> ---
+>  drivers/acpi/acpica/psopcode.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/acpi/acpica/psopcode.c b/drivers/acpi/acpica/psopcod=
+e.c
+> index bef69e87a0a2..8c34c0ffb1d9 100644
+> --- a/drivers/acpi/acpica/psopcode.c
+> +++ b/drivers/acpi/acpica/psopcode.c
+> @@ -603,7 +603,7 @@ const struct acpi_opcode_info acpi_gbl_aml_op_info[AM=
+L_NUM_OPCODES] =3D {
+>
+>  /* 7E */ ACPI_OP("Timer", ARGP_TIMER_OP, ARGI_TIMER_OP, ACPI_TYPE_ANY,
+>                          AML_CLASS_EXECUTE, AML_TYPE_EXEC_0A_0T_1R,
+> -                        AML_FLAGS_EXEC_0A_0T_1R),
+> +                        AML_FLAGS_EXEC_0A_0T_1R | AML_NO_OPERAND_RESOLVE=
+),
+>
+>  /* ACPI 5.0 opcodes */
+>
+> --
+> 2.17.1
+>
