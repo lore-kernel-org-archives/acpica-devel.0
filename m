@@ -1,17 +1,16 @@
-Return-Path: <abmainkar@nvidia.com>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 1273660B16
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org AA7D560AC4
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=i6AWKgJErSzUvCvVsgpQC7nwntbSSNupISuzTh2hUAY=;
- b=iStM06J20o0mYKopV+a6q3lDL5uRzpfDdsRZQrniFD6s+tV1qCCVgUrOAibF+4Qe5znEqNhzlmPxhB1ga6uOqiEsJxs04aEIFOb5PrcQfBVT3SoyswpxV0Fx+OtwL0OKTpwGVqEHlJCC3CcrsRHr49ocbm1nC6HyRa5Hqoye2A/rT87KxqJb80lUXUbYL2Qczg3lX+4Tt5tLeHQ/o1GGgjy6NGf45kKg+g/6NiCbWyw+imQ5UmfWug7rdoCBk5ljz/6Q3ri5MIxjfKscn4hPIrObtkOO8NAynD2eJeFhaaGdHnzm5OX5KFYrSReRLsFAih7u30DerG0kMQkM4wuxaw==
-From: Abhishek Mainkar <abmainkar@nvidia.com>
-Message-ID: <20230626220525.1654780-1-abmainkar@nvidia.com>
+Return-Path: <rjwysocki@gmail.com>
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 689B14015F
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 9CAB840586
 MIME-Version: 1.0
-Content-Type: text/plain
-Subject: [Acpica-devel] [Patch] acpica: Add AML_NO_OPERAND_RESOLVE flag to
-	Timer
+References: <20230626110026.65825-1-andriy.shevchenko@linux.intel.com>
+ <20230626110026.65825-3-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20230626110026.65825-3-andriy.shevchenko@linux.intel.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Message-ID: <CAJZ5v0jDO_ktnqg-2+iUt0UFRE-zYHdLHjWL3QfVD5syLF+d+w@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [Acpica-devel] [PATCH v3 2/4] ACPI: bus: Introduce
+	acpi_match_acpi_device() helper
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -21,58 +20,104 @@ List-Post: <mailto:acpica-devel@lists.linuxfoundation.org>
 List-Help: <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=help>
 List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel>, 
  <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=subscribe>
-Date: Mon, 26 Jun 2023 22:06:17 -0000
-To: robert.moore@intel.com, rafael.j.wysocki@intel.com, lenb@kernel.org
-Cc: linux-acpi@vger.kernel.org, acpica-devel@lists.linuxfoundation.org, abmainkar@nvidia.com, linux-kernel@vger.kernel.org
+Date: Thu, 29 Jun 2023 08:45:11 -0000
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Andi Shyti <andi.shyti@kernel.org>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, linux-kernel@vger.kernel.org, Robert Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org, Michael Walle <michael@walle.cc>, linux-i2c@vger.kernel.org, acpica-devel@lists.linuxfoundation.org, Len Brown <lenb@kernel.org>
 
-According to the ACPI specification 19.6.134, no argument is
-required to be passed for ASL Timer instruction. For taking
-care of no argument, AML_NO_OPERAND_RESOLVE flag is added to
-ASL Timer instruction opcode.
+On Mon, Jun 26, 2023 at 1:00=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> In some cases we can't have a physical node associated with
+> the ACPI device. Yet we want to match it against ID table and
+> get respective driver data. Introduce the helper for that.
 
-When ASL timer instruction interpreted by ACPI interpreter,
-getting error. After adding AML_NO_OPERAND_RESOLVE flag to
-ASL Timer instruction opcode, issue is not observed.
+I think that the problem is really to find a struct acpi_device_id in
+a given list matching a given struct acpi_device.
 
-=============================================================
-UBSAN: array-index-out-of-bounds in acpica/dswexec.c:401:12
-index -1 is out of range for type 'acpi_operand_object *[9]'
-CPU: 37 PID: 1678 Comm: cat Not tainted
-6.0.0-dev-th500-6.0.y-1+bcf8c46459e407-generic-64k
-HW name: NVIDIA BIOS v1.1.1-d7acbfc-dirty 12/19/2022 Call trace:
- dump_backtrace+0xe0/0x130
- show_stack+0x20/0x60
- dump_stack_lvl+0x68/0x84
- dump_stack+0x18/0x34
- ubsan_epilogue+0x10/0x50
- __ubsan_handle_out_of_bounds+0x80/0x90
- acpi_ds_exec_end_op+0x1bc/0x6d8
- acpi_ps_parse_loop+0x57c/0x618
- acpi_ps_parse_aml+0x1e0/0x4b4
- acpi_ps_execute_method+0x24c/0x2b8
- acpi_ns_evaluate+0x3a8/0x4bc
- acpi_evaluate_object+0x15c/0x37c
- acpi_evaluate_integer+0x54/0x15c
- show_power+0x8c/0x12c [acpi_power_meter]
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/acpi/bus.c   | 15 +++++++++++----
+>  include/linux/acpi.h |  9 +++++++++
+>  2 files changed, 20 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c
+> index 20cdfb37da79..ee88bfb60ac2 100644
+> --- a/drivers/acpi/bus.c
+> +++ b/drivers/acpi/bus.c
+> @@ -850,6 +850,16 @@ static bool __acpi_match_device(const struct acpi_de=
+vice *device,
+>         return true;
+>  }
+>
+> +const struct acpi_device_id *acpi_match_acpi_device(const struct acpi_de=
+vice_id *ids,
+> +                                                   const struct acpi_dev=
+ice *adev)
+> +{
+> +       const struct acpi_device_id *id =3D NULL;
+> +
+> +       __acpi_match_device(adev, ids, NULL, &id, NULL);
+> +       return id;
+> +}
+> +EXPORT_SYMBOL_GPL(acpi_match_acpi_device);
 
-Signed-off-by: Abhishek Mainkar <abmainkar@nvidia.com>
----
- drivers/acpi/acpica/psopcode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This is fine, but it requires a kerneldoc comment (as an exported function)=
+.
 
-diff --git a/drivers/acpi/acpica/psopcode.c b/drivers/acpi/acpica/psopcode.c
-index bef69e87a0a2..8c34c0ffb1d9 100644
---- a/drivers/acpi/acpica/psopcode.c
-+++ b/drivers/acpi/acpica/psopcode.c
-@@ -603,7 +603,7 @@ const struct acpi_opcode_info acpi_gbl_aml_op_info[AML_NUM_OPCODES] = {
- 
- /* 7E */ ACPI_OP("Timer", ARGP_TIMER_OP, ARGI_TIMER_OP, ACPI_TYPE_ANY,
- 			 AML_CLASS_EXECUTE, AML_TYPE_EXEC_0A_0T_1R,
--			 AML_FLAGS_EXEC_0A_0T_1R),
-+			 AML_FLAGS_EXEC_0A_0T_1R | AML_NO_OPERAND_RESOLVE),
- 
- /* ACPI 5.0 opcodes */
- 
--- 
-2.17.1
+Of course, the code in scan.c can use it even if it is not exported.
 
+> +
+>  /**
+>   * acpi_match_device - Match a struct device against a given list of ACP=
+I IDs
+>   * @ids: Array of struct acpi_device_id object to match against.
+> @@ -864,10 +874,7 @@ static bool __acpi_match_device(const struct acpi_de=
+vice *device,
+>  const struct acpi_device_id *acpi_match_device(const struct acpi_device_=
+id *ids,
+>                                                const struct device *dev)
+>  {
+> -       const struct acpi_device_id *id =3D NULL;
+> -
+> -       __acpi_match_device(acpi_companion_match(dev), ids, NULL, &id, NU=
+LL);
+> -       return id;
+> +       return acpi_match_acpi_device(ids, acpi_companion_match(dev));
+>  }
+>  EXPORT_SYMBOL_GPL(acpi_match_device);
+>
+> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+> index 640f1c07c894..641dc4843987 100644
+> --- a/include/linux/acpi.h
+> +++ b/include/linux/acpi.h
+> @@ -707,6 +707,9 @@ extern int acpi_nvs_register(__u64 start, __u64 size)=
+;
+>  extern int acpi_nvs_for_each_region(int (*func)(__u64, __u64, void *),
+>                                     void *data);
+>
+> +const struct acpi_device_id *acpi_match_acpi_device(const struct acpi_de=
+vice_id *ids,
+> +                                                   const struct acpi_dev=
+ice *adev);
+> +
+>  const struct acpi_device_id *acpi_match_device(const struct acpi_device_=
+id *ids,
+>                                                const struct device *dev);
+>
+> @@ -922,6 +925,12 @@ static inline int acpi_nvs_for_each_region(int (*fun=
+c)(__u64, __u64, void *),
+>
+>  struct acpi_device_id;
+>
+> +static inline const struct acpi_device_id *acpi_match_acpi_device(
+> +       const struct acpi_device_id *ids, const struct acpi_device *adev)
+> +{
+> +       return NULL;
+> +}
+> +
+>  static inline const struct acpi_device_id *acpi_match_device(
+>         const struct acpi_device_id *ids, const struct device *dev)
+>  {
+> --
+> 2.40.0.1.gaa8946217a0b
+>
