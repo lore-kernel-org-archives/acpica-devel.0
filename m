@@ -1,26 +1,17 @@
-Return-Path: <andi.shyti@kernel.org>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org C910E400D0
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 0A48C400D9
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1688054402;
- bh=jpUacgkdFeRsJ/MSUKrNSTCllv1J69DsiV760Rp2JOM=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=fxEmgF3yewTMhBXqSvl0K9ukMQUxWlxLqXrlEdXWH4ryN6ghLB3V4HZB91yVVfGtw
- mXOZAyeLNVR9gHdg1Vgn9PB/+vcvus1gJ36HCr5+M+VYHn4So5v74YFaSl4+3M/UBo
- GOkg8kvtD1dUyDDuxyEADMgx9Aox31w7TZXGpmwet3b+fu0EmGD+LFJyPist2zk3PV
- JB29vhOcT5mFja2zx4YO2vgtZQ1IavsEn3odKGU2GTEuAXKeJCZLI18XFnuTEQfg+K
- lNbiLp4uW2ixIAH/oHByTxFpCqN+UX4OfUJh2rffpcYNQWbsS0+gHQSJO8Tc6wfMXz
- UQZYLS31xn6dg==
-From: Andi Shyti <andi.shyti@kernel.org>
-Message-ID: <20230629155958.zeze2mirwbrb4ggy@intel.intel>
-References: <20230626110026.65825-1-andriy.shevchenko@linux.intel.com>
- <20230626110026.65825-4-andriy.shevchenko@linux.intel.com>
+Return-Path: <abmainkar@nvidia.com>
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org E719660D4C
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 9AB6E60B60
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J2VdafCqgjlIjfQcPApAq7OBBT127Sy+bPj65GIDT+4=;
+ b=edZyEJJu9EHemWh2Jv9fhvdyOaO3ASDgKTlqL4xfpK1mhIHxgAQ8F9Nf+Djofze4PqVV6xUS36uOutjW7fZRdQ3abkwz2Kw5vUWqO5Yi1wXgmCmYo/54VnN76cGHJU7QSAxWVvbnGhyhWe7tSHFKe08GqdsR759+0NkdcGZVagZ+i4q0txbfHugaVBjfGV31qE+eE294Et9+lKY45MHOyI3opJ1BnOM/u79YtGNwzbpFTKwlPl2U5bbmX8JrFHO1CEujWloaS6Yaatw4k8mnOIC/45iO4rVvva1VewNcO18W4kOrBq+4pzjTUrUMnsQGag2tyaDNGe+h06poVKaVdA==
+From: Abhishek Mainkar <abmainkar@nvidia.com>
+Message-ID: <20230630042419.1947389-1-abmainkar@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230626110026.65825-4-andriy.shevchenko@linux.intel.com>
-Subject: Re: [Acpica-devel] [PATCH v3 3/4] ACPI: platform: Ignore SMB0001
- only when it has resources
+Content-Type: text/plain
+Subject: [Acpica-devel] [PATCH] acpica: Add AML_NO_OPERAND_RESOLVE flag to
+	Timer
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -30,25 +21,59 @@ List-Post: <mailto:acpica-devel@lists.linuxfoundation.org>
 List-Help: <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=help>
 List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel>, 
  <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=subscribe>
-Date: Thu, 29 Jun 2023 16:00:05 -0000
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, linux-kernel@vger.kernel.org, Robert Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org, Michael Walle <michael@walle.cc>, linux-i2c@vger.kernel.org, acpica-devel@lists.linuxfoundation.org, Len Brown <lenb@kernel.org>
+Date: Fri, 30 Jun 2023 04:24:50 -0000
+To: robert.moore@intel.com, rafael.j.wysocki@intel.com, lenb@kernel.org
+Cc: linux-acpi@vger.kernel.org, acpica-devel@lists.linuxfoundation.org, abmainkar@nvidia.com, linux-kernel@vger.kernel.org
 
-Hi Andy,
+According to the ACPI specification 19.6.134, no argument is
+required to be passed for ASL Timer instruction. For taking
+care of no argument, AML_NO_OPERAND_RESOLVE flag is added to
+ASL Timer instruction opcode.
 
-On Mon, Jun 26, 2023 at 02:00:25PM +0300, Andy Shevchenko wrote:
-> After switching i2c-scmi driver to be a platform one, it stopped
-> being enumerated on number of Kontron platforms, because it's
-> listed in the forbidden_id_list.
-> 
-> To resolve the situation, add a flag to driver data to allow devices
-> with no resources in _CRS to be enumerated via platform bus.
-> 
-> Fixes: 03d4287add6e ("i2c: scmi: Convert to be a platform driver")
-> Closes: https://lore.kernel.org/r/60c1756765b9a3f1eab0dcbd84f59f00fe1caf48.camel@kontron.com
-> Link: https://lore.kernel.org/r/20230621151652.79579-1-andriy.shevchenko@linux.intel.com
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+When ASL timer instruction interpreted by ACPI interpreter,
+getting error. After adding AML_NO_OPERAND_RESOLVE flag to
+ASL Timer instruction opcode, issue is not observed.
 
-Reviewed-by: Andi Shyti <andi.shyti@kernel.org> 
+=============================================================
+UBSAN: array-index-out-of-bounds in acpica/dswexec.c:401:12
+index -1 is out of range for type 'acpi_operand_object *[9]'
+CPU: 37 PID: 1678 Comm: cat Not tainted
+6.0.0-dev-th500-6.0.y-1+bcf8c46459e407-generic-64k
+HW name: NVIDIA BIOS v1.1.1-d7acbfc-dirty 12/19/2022 Call trace:
+ dump_backtrace+0xe0/0x130
+ show_stack+0x20/0x60
+ dump_stack_lvl+0x68/0x84
+ dump_stack+0x18/0x34
+ ubsan_epilogue+0x10/0x50
+ __ubsan_handle_out_of_bounds+0x80/0x90
+ acpi_ds_exec_end_op+0x1bc/0x6d8
+ acpi_ps_parse_loop+0x57c/0x618
+ acpi_ps_parse_aml+0x1e0/0x4b4
+ acpi_ps_execute_method+0x24c/0x2b8
+ acpi_ns_evaluate+0x3a8/0x4bc
+ acpi_evaluate_object+0x15c/0x37c
+ acpi_evaluate_integer+0x54/0x15c
+ show_power+0x8c/0x12c [acpi_power_meter]
 
-Andi
+Link: https://github.com/acpica/acpica/commit/90310989
+Signed-off-by: Abhishek Mainkar <abmainkar@nvidia.com>
+---
+ drivers/acpi/acpica/psopcode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/acpi/acpica/psopcode.c b/drivers/acpi/acpica/psopcode.c
+index bef69e87a0a2..8c34c0ffb1d9 100644
+--- a/drivers/acpi/acpica/psopcode.c
++++ b/drivers/acpi/acpica/psopcode.c
+@@ -603,7 +603,7 @@ const struct acpi_opcode_info acpi_gbl_aml_op_info[AML_NUM_OPCODES] = {
+ 
+ /* 7E */ ACPI_OP("Timer", ARGP_TIMER_OP, ARGI_TIMER_OP, ACPI_TYPE_ANY,
+ 			 AML_CLASS_EXECUTE, AML_TYPE_EXEC_0A_0T_1R,
+-			 AML_FLAGS_EXEC_0A_0T_1R),
++			 AML_FLAGS_EXEC_0A_0T_1R | AML_NO_OPERAND_RESOLVE),
+ 
+ /* ACPI 5.0 opcodes */
+ 
+-- 
+2.17.1
+
