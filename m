@@ -1,26 +1,27 @@
 Return-Path: <andriy.shevchenko@linux.intel.com>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org D9BC340565
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 2C4BB40550
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 257F5408B6
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 9FD4240004
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1688386457; x=1719922457;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=6dRCLDNqHkkgOUVmba5HT205hg+Hl4f7VC7TUVOvuDs=;
- b=In5Upfr6C5gXiONAMV1wQ16x/2QH4eupis0ImI9fmQs/oIit5CGE3Vfu
- Yuf8spOZYtPt3pwy1PHuRLCsRnwy51aG16KSzHQvEEDJ614Ouj8EKsIcL
- zoL9c3KEFd5vT2dXtE9xjDRnGxic8/5fcYJUBDqy2+tETF03FA3MjL42c
- 45GXZCsbQQlU+yg21obn/mpfJqc6WiqaFNBPEv+NCBs2comcvyaB5V7Qn
- EAZWLJSSLlbJDYYm4EKCyNUvNc0IliaJvHF1gB0svq9HIBh4HSF4v8TyF
- x0La9plWQBrmJEVJExkH1mCqcNWu5HJ7547N8/SlKlGinEljTQgodHKtR Q==;
+ t=1688389789; x=1719925789;
+ h=date:from:to:cc:subject:message-id:references:
+ mime-version:in-reply-to;
+ bh=QZ/zCTxgUvgYpyM9lZeEIyhV+aOwlC3KMlPBTVwkteI=;
+ b=ZwjY7PIuL4SQS5ltb6/Z56ntKRjjkfl2DuPlK+36PwFe8VRtoghSLeQC
+ nhPVLvq+IseiwJZNdomn/LvDKsrDfc13zw4T4nOkZ5NKvrwK//v3hoJGC
+ sdCLX5zZt+ONYK5pyc3NRNnwc6ujlRrAhLCFx0i1fRPL8VPTowKp9rfy+
+ DJXbue7D2/y7zDrDbmK2z9D8OEYGFD4YT28MTLgCS9sPGUzyxCZzZm5gc
+ R3oNgfmHCB0L8T777Drw1Oq5vNhsov9SoFdF/4W8Ev7/d2ydYZYOhhc3A
+ od0SVDxjyYsqH/D1kaZg+JWhBvm3n5k9BD8ascqt5ZIxEFcZNuo2oIGLM A==;
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Message-Id: <20230703121411.69606-6-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20230703121411.69606-1-andriy.shevchenko@linux.intel.com>
+Message-ID: <ZKLIjAgJ5p/usyK3@smile.fi.intel.com>
 References: <20230703121411.69606-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: [Acpica-devel] [PATCH v4 5/5] ACPI: scan: Provide symbol
-	declarations
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230703121411.69606-1-andriy.shevchenko@linux.intel.com>
+Subject: Re: [Acpica-devel] [PATCH v4 0/5] ACPI: platform: Fix SMB0001
+ enumeration on Kontron devices
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -30,36 +31,37 @@ List-Post: <mailto:acpica-devel@lists.linuxfoundation.org>
 List-Help: <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=help>
 List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel>, 
  <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=subscribe>
-Date: Mon, 03 Jul 2023 12:14:18 -0000
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Wolfram Sang <wsa@kernel.org>, Andi Shyti <andi.shyti@kernel.org>, linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org, acpica-devel@lists.linuxfoundation.org
+Date: Mon, 03 Jul 2023 13:09:51 -0000
+To: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Wolfram Sang <wsa@kernel.org>, Andi Shyti <andi.shyti@kernel.org>, linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org, acpica-devel@lists.linuxfoundation.org
 Cc: Michael Walle <michael@walle.cc>, Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>
 
-Compiler is not happy about a couple of symbols that, it thinks,
-are not declared:
+On Mon, Jul 03, 2023 at 03:14:06PM +0300, Andy Shevchenko wrote:
+> After switching i2c-scmi driver to be a plaform one, it stopped
+> being enumerated on number of Kontron platforms, because it's
+> listed in the forbidden_id_list.
+> 
+> To resolve the situation, add a flag and check if there are resources
+> privided for the forbiden device. If it is the case, the device must
+> be skipped.
 
-  warning: symbol 'acpi_device_lock' was not declared. Should it be static?
-  warning: symbol 'acpi_wakeup_device_list' was not declared. Should it be static?
+...
 
-Include "sleep.h" to have them explicitly declared and make
-the compiler happy.
+> Changelog v4:
+> - dropped applied patch
+> - added kernel doc for new helper (Rafael)
+> - rewritten the commit message for the reason of a new helper (Rafael)
+> - added a couple of patches for ACPI scan.c that can be applied later on
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/acpi/scan.c | 1 +
- 1 file changed, 1 insertion(+)
+- converted to use boolean instead of integer (Rafael)
+- added tag (Andi)
 
-diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-index ec1c9bec8bae..5b145f1aaa1b 100644
---- a/drivers/acpi/scan.c
-+++ b/drivers/acpi/scan.c
-@@ -23,6 +23,7 @@
- #include <linux/dma-direct.h>
- 
- #include "internal.h"
-+#include "sleep.h"
- 
- #define ACPI_BUS_CLASS			"system_bus"
- #define ACPI_BUS_HID			"LNXSYBUS"
+> Changelog v3:
+> - provided completely rewritten solution (Rafael)
+> - due to above, added two new patches
+> - due to above, dropped tags from patch 3
+
 -- 
-2.40.0.1.gaa8946217a0b
+With Best Regards,
+Andy Shevchenko
+
 
