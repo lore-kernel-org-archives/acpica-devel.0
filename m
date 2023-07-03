@@ -1,16 +1,24 @@
-Return-Path: <rjwysocki@gmail.com>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 60693401CC
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 595BF400D9
+Return-Path: <andriy.shevchenko@linux.intel.com>
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 2A325405FA
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 6398640565
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1688386454; x=1719922454;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=B+0o99RwmPnmItgZGhKKF+qA0QI/Xs8dXHq+Uwdmz44=;
+ b=IOR+gha1pn9VnQd0SPSR1CY8yb2zoMzOSvJJiA/jrVYbJ+yg3SjcgyYt
+ nokOmOLKKOQhfSHsvau2rQQgRstoUFOItqVymoTMFnjK4SCaYUtgCzljN
+ AMuSn0u+ExDqt/h+qY96a9BnQBLXmAYi2rEmPPlmAsJ491Q2WsHskWZlZ
+ 2LK0G6WQrc/VPQvuPKkBZ22J+EhWTCJz9YPOmnXJPoofdBwziWt2VCpJf
+ P/g6Tm9hWQ9citFv+6Rlute523G8RH1r1EVvSdqbs5Zu2Fo3To2AkkFqF
+ 4SPnmTrt2I9W1nywgOWQ2Manml1ToJH+/z/3TyrKqm4aTfCUOZGVnL665 w==;
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Message-Id: <20230703121411.69606-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-References: <20230703130125.997208-1-ben.dooks@codethink.co.uk>
-In-Reply-To: <20230703130125.997208-1-ben.dooks@codethink.co.uk>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Tue, 4 Jul 2023 19:19:37 +0200
-Message-ID: <CAJZ5v0icycz_6=h40WP1Yxu0QWFZT7fqKezax=ekb2mrbx5j8A@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [Acpica-devel] [PATCH] ACPICA: actbl2: change to be16/be32
-	types for big endian data
+Content-Transfer-Encoding: 8bit
+Subject: [Acpica-devel] [PATCH v4 0/5] ACPI: platform: Fix SMB0001
+	enumeration on Kontron devices
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -20,144 +28,44 @@ List-Post: <mailto:acpica-devel@lists.linuxfoundation.org>
 List-Help: <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=help>
 List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel>, 
  <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=subscribe>
-To: Ben Dooks <ben.dooks@codethink.co.uk>
-Cc: nvdimm@lists.linux.dev, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, acpica-devel@lists.linuxfoundation.org, Dan Williams <dan.j.williams@intel.com>, lenb@kernel.org
+Date: Mon, 03 Jul 2023 12:14:15 -0000
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Wolfram Sang <wsa@kernel.org>, Andi Shyti <andi.shyti@kernel.org>, linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org, acpica-devel@lists.linuxfoundation.org
+Cc: Michael Walle <michael@walle.cc>, Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>
 
-On Mon, Jul 3, 2023 at 3:01=E2=80=AFPM Ben Dooks <ben.dooks@codethink.co.uk=
-> wrote:
->
-> Some of the fields in struct acpi_nfit_control_region are used in big
-> endian format, and thus are generatng warnings from spare where the
-> member is passed to one of the conversion functions.
->
-> Fix the following sparse warnings by changing the data types:
->
-> drivers/acpi/nfit/core.c:1403:41: warning: cast to restricted __be16
-> drivers/acpi/nfit/core.c:1403:41: warning: cast to restricted __be16
-> drivers/acpi/nfit/core.c:1403:41: warning: cast to restricted __be16
-> drivers/acpi/nfit/core.c:1403:41: warning: cast to restricted __be16
-> drivers/acpi/nfit/core.c:1412:41: warning: cast to restricted __be16
-> drivers/acpi/nfit/core.c:1412:41: warning: cast to restricted __be16
-> drivers/acpi/nfit/core.c:1412:41: warning: cast to restricted __be16
-> drivers/acpi/nfit/core.c:1412:41: warning: cast to restricted __be16
-> drivers/acpi/nfit/core.c:1421:41: warning: cast to restricted __be16
-> drivers/acpi/nfit/core.c:1421:41: warning: cast to restricted __be16
-> drivers/acpi/nfit/core.c:1421:41: warning: cast to restricted __be16
-> drivers/acpi/nfit/core.c:1421:41: warning: cast to restricted __be16
-> drivers/acpi/nfit/core.c:1430:41: warning: cast to restricted __be16
-> drivers/acpi/nfit/core.c:1430:41: warning: cast to restricted __be16
-> drivers/acpi/nfit/core.c:1430:41: warning: cast to restricted __be16
-> drivers/acpi/nfit/core.c:1430:41: warning: cast to restricted __be16
-> drivers/acpi/nfit/core.c:1440:25: warning: cast to restricted __be16
-> drivers/acpi/nfit/core.c:1440:25: warning: cast to restricted __be16
-> drivers/acpi/nfit/core.c:1440:25: warning: cast to restricted __be16
-> drivers/acpi/nfit/core.c:1440:25: warning: cast to restricted __be16
-> drivers/acpi/nfit/core.c:1449:41: warning: cast to restricted __be16
-> drivers/acpi/nfit/core.c:1449:41: warning: cast to restricted __be16
-> drivers/acpi/nfit/core.c:1449:41: warning: cast to restricted __be16
-> drivers/acpi/nfit/core.c:1449:41: warning: cast to restricted __be16
-> drivers/acpi/nfit/core.c:1468:41: warning: cast to restricted __le16
-> drivers/acpi/nfit/core.c:1502:41: warning: cast to restricted __le16
-> drivers/acpi/nfit/core.c:1527:41: warning: cast to restricted __be32
-> drivers/acpi/nfit/core.c:1527:41: warning: cast to restricted __be32
-> drivers/acpi/nfit/core.c:1527:41: warning: cast to restricted __be32
-> drivers/acpi/nfit/core.c:1527:41: warning: cast to restricted __be32
-> drivers/acpi/nfit/core.c:1527:41: warning: cast to restricted __be32
-> drivers/acpi/nfit/core.c:1527:41: warning: cast to restricted __be32
-> drivers/acpi/nfit/core.c:1792:33: warning: cast to restricted __be16
-> drivers/acpi/nfit/core.c:1792:33: warning: cast to restricted __be16
-> drivers/acpi/nfit/core.c:1792:33: warning: cast to restricted __be16
-> drivers/acpi/nfit/core.c:1792:33: warning: cast to restricted __be16
-> drivers/acpi/nfit/core.c:1794:33: warning: cast to restricted __be16
-> drivers/acpi/nfit/core.c:1794:33: warning: cast to restricted __be16
-> drivers/acpi/nfit/core.c:1794:33: warning: cast to restricted __be16
-> drivers/acpi/nfit/core.c:1794:33: warning: cast to restricted __be16
-> drivers/acpi/nfit/core.c:1795:33: warning: cast to restricted __be32
-> drivers/acpi/nfit/core.c:1795:33: warning: cast to restricted __be32
-> drivers/acpi/nfit/core.c:1795:33: warning: cast to restricted __be32
-> drivers/acpi/nfit/core.c:1795:33: warning: cast to restricted __be32
-> drivers/acpi/nfit/core.c:1795:33: warning: cast to restricted __be32
-> drivers/acpi/nfit/core.c:1795:33: warning: cast to restricted __be32
-> drivers/acpi/nfit/core.c:1798:33: warning: cast to restricted __be16
-> drivers/acpi/nfit/core.c:1798:33: warning: cast to restricted __be16
-> drivers/acpi/nfit/core.c:1798:33: warning: cast to restricted __be16
-> drivers/acpi/nfit/core.c:1798:33: warning: cast to restricted __be16
-> drivers/acpi/nfit/core.c:1799:33: warning: cast to restricted __be32
-> drivers/acpi/nfit/core.c:1799:33: warning: cast to restricted __be32
-> drivers/acpi/nfit/core.c:1799:33: warning: cast to restricted __be32
-> drivers/acpi/nfit/core.c:1799:33: warning: cast to restricted __be32
-> drivers/acpi/nfit/core.c:1799:33: warning: cast to restricted __be32
-> drivers/acpi/nfit/core.c:1799:33: warning: cast to restricted __be32
->
-> Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
+After switching i2c-scmi driver to be a plaform one, it stopped
+being enumerated on number of Kontron platforms, because it's
+listed in the forbidden_id_list.
 
-First off, this falls under the ACPICA rule mentioned before.
+To resolve the situation, add a flag and check if there are resources
+privided for the forbiden device. If it is the case, the device must
+be skipped.
 
-Second, all ACPI is little-endian by the spec, so I'm not sure what is
-going on here.
+Changelog v4:
+- dropped applied patch
+- added kernel doc for new helper (Rafael)
+- rewritten the commit message for the reason of a new helper (Rafael)
+- added a couple of patches for ACPI scan.c that can be applied later on
 
-> ---
->  drivers/acpi/nfit/core.c |  8 ++++----
->  include/acpi/actbl2.h    | 18 +++++++++---------
->  2 files changed, 13 insertions(+), 13 deletions(-)
->
-> diff --git a/drivers/acpi/nfit/core.c b/drivers/acpi/nfit/core.c
-> index 07204d482968..0fcc247fdfac 100644
-> --- a/drivers/acpi/nfit/core.c
-> +++ b/drivers/acpi/nfit/core.c
-> @@ -2194,15 +2194,15 @@ static const struct attribute_group *acpi_nfit_re=
-gion_attribute_groups[] =3D {
->  /* enough info to uniquely specify an interleave set */
->  struct nfit_set_info {
->         u64 region_offset;
-> -       u32 serial_number;
-> +       __be32 serial_number;
->         u32 pad;
->  };
->
->  struct nfit_set_info2 {
->         u64 region_offset;
-> -       u32 serial_number;
-> -       u16 vendor_id;
-> -       u16 manufacturing_date;
-> +       __be32 serial_number;
-> +       __be16 vendor_id;
-> +       __be16 manufacturing_date;
->         u8 manufacturing_location;
->         u8 reserved[31];
->  };
-> diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
-> index 0029336775a9..c1df59aa8855 100644
-> --- a/include/acpi/actbl2.h
-> +++ b/include/acpi/actbl2.h
-> @@ -1716,18 +1716,18 @@ struct acpi_nfit_smbios {
->  struct acpi_nfit_control_region {
->         struct acpi_nfit_header header;
->         u16 region_index;
-> -       u16 vendor_id;
-> -       u16 device_id;
-> -       u16 revision_id;
-> -       u16 subsystem_vendor_id;
-> -       u16 subsystem_device_id;
-> -       u16 subsystem_revision_id;
-> +       __be16 vendor_id;
-> +       __be16 device_id;
-> +       __be16  revision_id;
-> +       __be16 subsystem_vendor_id;
-> +       __be16 subsystem_device_id;
-> +       __be16 subsystem_revision_id;
->         u8 valid_fields;
->         u8 manufacturing_location;
-> -       u16 manufacturing_date;
-> +       __be16 manufacturing_date;
->         u8 reserved[2];         /* Reserved, must be zero */
-> -       u32 serial_number;
-> -       u16 code;
-> +       __be32 serial_number;
-> +       __le16 code;
->         u16 windows;
->         u64 window_size;
->         u64 command_offset;
-> --
-> 2.40.1
->
+Changelog v3:
+- provided completely rewritten solution (Rafael)
+- due to above, added two new patches
+- due to above, dropped tags from patch 3
+
+Andy Shevchenko (5):
+  ACPI: bus: Introduce acpi_match_acpi_device() helper
+  ACPI: platform: Ignore SMB0001 only when it has resources
+  ACPI: platform: Move SMB0001 HID to the header and reuse
+  ACPI: scan: Use the acpi_match_acpi_device() helper
+  ACPI: scan: Provide symbol declarations
+
+ drivers/acpi/acpi_platform.c  | 30 +++++++++++++++++++++++++++---
+ drivers/acpi/bus.c            | 25 +++++++++++++++++++++----
+ drivers/acpi/scan.c           | 22 +++++++++++++---------
+ drivers/i2c/busses/i2c-scmi.c |  3 ---
+ include/acpi/acpi_drivers.h   |  2 ++
+ include/linux/acpi.h          |  9 +++++++++
+ 6 files changed, 72 insertions(+), 19 deletions(-)
+
+-- 
+2.40.0.1.gaa8946217a0b
+
