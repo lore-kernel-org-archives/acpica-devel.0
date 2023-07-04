@@ -1,12 +1,16 @@
-Return-Path: <ben@codethink.co.uk>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 110A160AD6
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 847FC60ACC
-From: Ben Dooks <ben.dooks@codethink.co.uk>
-Message-Id: <20230703130125.997208-1-ben.dooks@codethink.co.uk>
+Return-Path: <rjwysocki@gmail.com>
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org A5F2060AB5
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 402D860739
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: [Acpica-devel] [PATCH] ACPICA: actbl2: change to be16/be32 types
-	for big endian data
+References: <20230703121411.69606-1-andriy.shevchenko@linux.intel.com>
+ <20230703121411.69606-6-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20230703121411.69606-6-andriy.shevchenko@linux.intel.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Message-ID: <CAJZ5v0hytwzAPBpnPZnvdU7GhK12P0PJbe9aD+eVrVJhkq1ayA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [Acpica-devel] [PATCH v4 5/5] ACPI: scan: Provide symbol
+	declarations
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -16,135 +20,42 @@ List-Post: <mailto:acpica-devel@lists.linuxfoundation.org>
 List-Help: <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=help>
 List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel>, 
  <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=subscribe>
-Date: Mon, 03 Jul 2023 14:08:53 -0000
-To: acpica-devel@lists.linuxfoundation.org
-Cc: linux-acpi@vger.kernel.org, Ben Dooks <ben.dooks@codethink.co.uk>, nvdimm@lists.linux.dev, linux-kernel@vger.kernel.org, lenb@kernel.org
+Date: Tue, 04 Jul 2023 17:21:56 -0000
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Andi Shyti <andi.shyti@kernel.org>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, linux-kernel@vger.kernel.org, Robert Moore <robert.moore@intel.com>, Wolfram Sang <wsa@kernel.org>, linux-acpi@vger.kernel.org, Michael Walle <michael@walle.cc>, linux-i2c@vger.kernel.org, acpica-devel@lists.linuxfoundation.org, Len Brown <lenb@kernel.org>
 
-Some of the fields in struct acpi_nfit_control_region are used in big
-endian format, and thus are generatng warnings from spare where the
-member is passed to one of the conversion functions.
+On Mon, Jul 3, 2023 at 2:14=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> Compiler is not happy about a couple of symbols that, it thinks,
+> are not declared:
+>
+>   warning: symbol 'acpi_device_lock' was not declared. Should it be stati=
+c?
+>   warning: symbol 'acpi_wakeup_device_list' was not declared. Should it b=
+e static?
+>
+> Include "sleep.h" to have them explicitly declared and make
+> the compiler happy.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Fix the following sparse warnings by changing the data types:
+I've just applied a patch from Ben Dooks making the exact same change.
 
-drivers/acpi/nfit/core.c:1403:41: warning: cast to restricted __be16
-drivers/acpi/nfit/core.c:1403:41: warning: cast to restricted __be16
-drivers/acpi/nfit/core.c:1403:41: warning: cast to restricted __be16
-drivers/acpi/nfit/core.c:1403:41: warning: cast to restricted __be16
-drivers/acpi/nfit/core.c:1412:41: warning: cast to restricted __be16
-drivers/acpi/nfit/core.c:1412:41: warning: cast to restricted __be16
-drivers/acpi/nfit/core.c:1412:41: warning: cast to restricted __be16
-drivers/acpi/nfit/core.c:1412:41: warning: cast to restricted __be16
-drivers/acpi/nfit/core.c:1421:41: warning: cast to restricted __be16
-drivers/acpi/nfit/core.c:1421:41: warning: cast to restricted __be16
-drivers/acpi/nfit/core.c:1421:41: warning: cast to restricted __be16
-drivers/acpi/nfit/core.c:1421:41: warning: cast to restricted __be16
-drivers/acpi/nfit/core.c:1430:41: warning: cast to restricted __be16
-drivers/acpi/nfit/core.c:1430:41: warning: cast to restricted __be16
-drivers/acpi/nfit/core.c:1430:41: warning: cast to restricted __be16
-drivers/acpi/nfit/core.c:1430:41: warning: cast to restricted __be16
-drivers/acpi/nfit/core.c:1440:25: warning: cast to restricted __be16
-drivers/acpi/nfit/core.c:1440:25: warning: cast to restricted __be16
-drivers/acpi/nfit/core.c:1440:25: warning: cast to restricted __be16
-drivers/acpi/nfit/core.c:1440:25: warning: cast to restricted __be16
-drivers/acpi/nfit/core.c:1449:41: warning: cast to restricted __be16
-drivers/acpi/nfit/core.c:1449:41: warning: cast to restricted __be16
-drivers/acpi/nfit/core.c:1449:41: warning: cast to restricted __be16
-drivers/acpi/nfit/core.c:1449:41: warning: cast to restricted __be16
-drivers/acpi/nfit/core.c:1468:41: warning: cast to restricted __le16
-drivers/acpi/nfit/core.c:1502:41: warning: cast to restricted __le16
-drivers/acpi/nfit/core.c:1527:41: warning: cast to restricted __be32
-drivers/acpi/nfit/core.c:1527:41: warning: cast to restricted __be32
-drivers/acpi/nfit/core.c:1527:41: warning: cast to restricted __be32
-drivers/acpi/nfit/core.c:1527:41: warning: cast to restricted __be32
-drivers/acpi/nfit/core.c:1527:41: warning: cast to restricted __be32
-drivers/acpi/nfit/core.c:1527:41: warning: cast to restricted __be32
-drivers/acpi/nfit/core.c:1792:33: warning: cast to restricted __be16
-drivers/acpi/nfit/core.c:1792:33: warning: cast to restricted __be16
-drivers/acpi/nfit/core.c:1792:33: warning: cast to restricted __be16
-drivers/acpi/nfit/core.c:1792:33: warning: cast to restricted __be16
-drivers/acpi/nfit/core.c:1794:33: warning: cast to restricted __be16
-drivers/acpi/nfit/core.c:1794:33: warning: cast to restricted __be16
-drivers/acpi/nfit/core.c:1794:33: warning: cast to restricted __be16
-drivers/acpi/nfit/core.c:1794:33: warning: cast to restricted __be16
-drivers/acpi/nfit/core.c:1795:33: warning: cast to restricted __be32
-drivers/acpi/nfit/core.c:1795:33: warning: cast to restricted __be32
-drivers/acpi/nfit/core.c:1795:33: warning: cast to restricted __be32
-drivers/acpi/nfit/core.c:1795:33: warning: cast to restricted __be32
-drivers/acpi/nfit/core.c:1795:33: warning: cast to restricted __be32
-drivers/acpi/nfit/core.c:1795:33: warning: cast to restricted __be32
-drivers/acpi/nfit/core.c:1798:33: warning: cast to restricted __be16
-drivers/acpi/nfit/core.c:1798:33: warning: cast to restricted __be16
-drivers/acpi/nfit/core.c:1798:33: warning: cast to restricted __be16
-drivers/acpi/nfit/core.c:1798:33: warning: cast to restricted __be16
-drivers/acpi/nfit/core.c:1799:33: warning: cast to restricted __be32
-drivers/acpi/nfit/core.c:1799:33: warning: cast to restricted __be32
-drivers/acpi/nfit/core.c:1799:33: warning: cast to restricted __be32
-drivers/acpi/nfit/core.c:1799:33: warning: cast to restricted __be32
-drivers/acpi/nfit/core.c:1799:33: warning: cast to restricted __be32
-drivers/acpi/nfit/core.c:1799:33: warning: cast to restricted __be32
-
-Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
----
- drivers/acpi/nfit/core.c |  8 ++++----
- include/acpi/actbl2.h    | 18 +++++++++---------
- 2 files changed, 13 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/acpi/nfit/core.c b/drivers/acpi/nfit/core.c
-index 07204d482968..0fcc247fdfac 100644
---- a/drivers/acpi/nfit/core.c
-+++ b/drivers/acpi/nfit/core.c
-@@ -2194,15 +2194,15 @@ static const struct attribute_group *acpi_nfit_region_attribute_groups[] = {
- /* enough info to uniquely specify an interleave set */
- struct nfit_set_info {
- 	u64 region_offset;
--	u32 serial_number;
-+	__be32 serial_number;
- 	u32 pad;
- };
- 
- struct nfit_set_info2 {
- 	u64 region_offset;
--	u32 serial_number;
--	u16 vendor_id;
--	u16 manufacturing_date;
-+	__be32 serial_number;
-+	__be16 vendor_id;
-+	__be16 manufacturing_date;
- 	u8 manufacturing_location;
- 	u8 reserved[31];
- };
-diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
-index 0029336775a9..c1df59aa8855 100644
---- a/include/acpi/actbl2.h
-+++ b/include/acpi/actbl2.h
-@@ -1716,18 +1716,18 @@ struct acpi_nfit_smbios {
- struct acpi_nfit_control_region {
- 	struct acpi_nfit_header header;
- 	u16 region_index;
--	u16 vendor_id;
--	u16 device_id;
--	u16 revision_id;
--	u16 subsystem_vendor_id;
--	u16 subsystem_device_id;
--	u16 subsystem_revision_id;
-+	__be16 vendor_id;
-+	__be16 device_id;
-+	__be16  revision_id;
-+	__be16 subsystem_vendor_id;
-+	__be16 subsystem_device_id;
-+	__be16 subsystem_revision_id;
- 	u8 valid_fields;
- 	u8 manufacturing_location;
--	u16 manufacturing_date;
-+	__be16 manufacturing_date;
- 	u8 reserved[2];		/* Reserved, must be zero */
--	u32 serial_number;
--	u16 code;
-+	__be32 serial_number;
-+	__le16 code;
- 	u16 windows;
- 	u64 window_size;
- 	u64 command_offset;
--- 
-2.40.1
-
+> ---
+>  drivers/acpi/scan.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+> index ec1c9bec8bae..5b145f1aaa1b 100644
+> --- a/drivers/acpi/scan.c
+> +++ b/drivers/acpi/scan.c
+> @@ -23,6 +23,7 @@
+>  #include <linux/dma-direct.h>
+>
+>  #include "internal.h"
+> +#include "sleep.h"
+>
+>  #define ACPI_BUS_CLASS                 "system_bus"
+>  #define ACPI_BUS_HID                   "LNXSYBUS"
+> --
