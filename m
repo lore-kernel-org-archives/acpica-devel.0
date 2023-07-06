@@ -1,27 +1,30 @@
 Return-Path: <andriy.shevchenko@linux.intel.com>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 257F5408B6
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 9FD4240004
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 8A316610A2
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org BED2D60B32
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1688389789; x=1719925789;
+ t=1688635662; x=1720171662;
  h=date:from:to:cc:subject:message-id:references:
- mime-version:in-reply-to;
- bh=QZ/zCTxgUvgYpyM9lZeEIyhV+aOwlC3KMlPBTVwkteI=;
- b=ZwjY7PIuL4SQS5ltb6/Z56ntKRjjkfl2DuPlK+36PwFe8VRtoghSLeQC
- nhPVLvq+IseiwJZNdomn/LvDKsrDfc13zw4T4nOkZ5NKvrwK//v3hoJGC
- sdCLX5zZt+ONYK5pyc3NRNnwc6ujlRrAhLCFx0i1fRPL8VPTowKp9rfy+
- DJXbue7D2/y7zDrDbmK2z9D8OEYGFD4YT28MTLgCS9sPGUzyxCZzZm5gc
- R3oNgfmHCB0L8T777Drw1Oq5vNhsov9SoFdF/4W8Ev7/d2ydYZYOhhc3A
- od0SVDxjyYsqH/D1kaZg+JWhBvm3n5k9BD8ascqt5ZIxEFcZNuo2oIGLM A==;
+ mime-version:content-transfer-encoding:in-reply-to;
+ bh=JArIM2HKqC9QBC+pTllM7eQ+KGMVlg+PycBfFpwwyJU=;
+ b=B8Dnw8lMzx14F4i7TmO0/UOqfFqdZ83gynZY8o3UTpHo9xS75fTiSATu
+ UmlWr5BKSOOOJ9P+JF9VaqQ7RvLMowUmJG3eStKQo+7m6Fpj/LOqsyilH
+ ZhLTXD3yDrqRa/cI203RCFpJ/6M1b1Ll0jreBQiJDRWxIk0htJE1AWtOa
+ XI0+SocvPFIJiDAuoX9q+uYnWRHeMjLk1VqHU7orZc4PIYysMJ6mk05Ad
+ 38LUdO3wOKm4JCvOP9vuMj2DyEhD55MQHwaZQUz5owXVcu59WBdW+w2hL
+ 0AhwMepokklIIt+BuxQGaTMchtNVHIbFv7ywKl43BXefODWAXpIJXI3LB Q==;
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Message-ID: <ZKLIjAgJ5p/usyK3@smile.fi.intel.com>
+Message-ID: <ZKaI+XeYZkdGyFxF@smile.fi.intel.com>
 References: <20230703121411.69606-1-andriy.shevchenko@linux.intel.com>
+ <20230703121411.69606-3-andriy.shevchenko@linux.intel.com>
+ <CAJZ5v0iZzvdkxe3NjHbiZzDjea=CoK-pGw3hjSoa9u8f87TLtg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-In-Reply-To: <20230703121411.69606-1-andriy.shevchenko@linux.intel.com>
-Subject: Re: [Acpica-devel] [PATCH v4 0/5] ACPI: platform: Fix SMB0001
- enumeration on Kontron devices
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0iZzvdkxe3NjHbiZzDjea=CoK-pGw3hjSoa9u8f87TLtg@mail.gmail.com>
+Subject: Re: [Acpica-devel] [PATCH v4 2/5] ACPI: platform: Ignore SMB0001
+ only when it has resources
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -31,34 +34,26 @@ List-Post: <mailto:acpica-devel@lists.linuxfoundation.org>
 List-Help: <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=help>
 List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel>, 
  <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=subscribe>
-Date: Mon, 03 Jul 2023 13:09:51 -0000
-To: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Wolfram Sang <wsa@kernel.org>, Andi Shyti <andi.shyti@kernel.org>, linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org, acpica-devel@lists.linuxfoundation.org
-Cc: Michael Walle <michael@walle.cc>, Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>
+Date: Thu, 06 Jul 2023 09:27:43 -0000
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Andi Shyti <andi.shyti@kernel.org>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, linux-kernel@vger.kernel.org, Robert Moore <robert.moore@intel.com>, Wolfram Sang <wsa@kernel.org>, linux-acpi@vger.kernel.org, Michael Walle <michael@walle.cc>, linux-i2c@vger.kernel.org, acpica-devel@lists.linuxfoundation.org, Len Brown <lenb@kernel.org>
 
-On Mon, Jul 03, 2023 at 03:14:06PM +0300, Andy Shevchenko wrote:
-> After switching i2c-scmi driver to be a plaform one, it stopped
-> being enumerated on number of Kontron platforms, because it's
-> listed in the forbidden_id_list.
-> 
-> To resolve the situation, add a flag and check if there are resources
-> privided for the forbiden device. If it is the case, the device must
-> be skipped.
+On Tue, Jul 04, 2023 at 07:32:43PM +0200, Rafael J. Wysocki wrote:
+> On Mon, Jul 3, 2023 at 2:14 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
 
 ...
 
-> Changelog v4:
-> - dropped applied patch
-> - added kernel doc for new helper (Rafael)
-> - rewritten the commit message for the reason of a new helper (Rafael)
-> - added a couple of patches for ACPI scan.c that can be applied later on
+> Applied as 6.5-rc material along with the rest of the series (except
+> for the last patch that has been superseded), but I moved the
+> has_resources definition to the block where it is used and added a
+> 'false' initial value to it. as the code might not work as expected
+> without initializing it.
+> 
+> Please double check the bleeding-edge branch of linux-pm.
 
-- converted to use boolean instead of integer (Rafael)
-- added tag (Andi)
-
-> Changelog v3:
-> - provided completely rewritten solution (Rafael)
-> - due to above, added two new patches
-> - due to above, dropped tags from patch 3
+Now it's in Linux Next and everything looks fine to me,
+thank you!
 
 -- 
 With Best Regards,
