@@ -1,37 +1,16 @@
-Return-Path: <rebecca@bsdio.com>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 8FDD7415F0
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org ECB614159D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bsdio.com; h=cc
- :content-transfer-encoding:content-type:content-type:date:date
- :from:from:in-reply-to:message-id:mime-version:reply-to:sender
- :subject:subject:to:to; s=fm1; t=1691501408; x=1691587808; bh=za
- e1CSgEKqxBn4L9ZDjH2GNUJPeOLwrNU8YJz1xSiCo=; b=JDdT4jGZgcjTPClTDi
- sL5+DCTTMpqeISeI2xs+xRzfGaoAxg3APGxWEDTMjLmt2AFJmVEhf06Ld48bUUq/
- kNaL9XjkPnbrCR/Cyjg7JCpEoi3QUMJLaBKhsH39VKCS5hm5QVPOwULpHItvs/0k
- l8jt4g52qHpeyyhqfmtrknSOgHHBLOyqD7HtnGrOI2B7BroqjhwfeWRQ+lk0R/BA
- 1WbVDwa1QoiIlA+jje+gylYEUd03VcfnxToJ7MoEBs7Bctn/T5951uma1e7OLmQa
- RJOZczio7C1eLBF/Sv22udebeMOzXaYojigJ3Qyz0FVClgE+y0TpXhxER3tm+h/i
- 680g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-transfer-encoding:content-type
- :content-type:date:date:feedback-id:feedback-id:from:from
- :in-reply-to:message-id:mime-version:reply-to:sender:subject
- :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
- :x-sasl-enc; s=fm3; t=1691501408; x=1691587808; bh=zae1CSgEKqxBn
- 4L9ZDjH2GNUJPeOLwrNU8YJz1xSiCo=; b=i/2glSfZM5FB2JyUmWVikD77ZsxUT
- 0Cyd9SCgDo+rSTTbEwnjbpdhvgVQX6LmLWqEG95GxwSehJJC772MMSCmKEf1h/3A
- MNAU6bDhDk+her1xfBCd+9zSwRh+Tab0OyNkl04UpFfBDwQrVT6K2bhFS2KKY6r/
- yYVocvhDSuuXhHkYHvPs9ooTBtQ/x5AZ8j+oMbwvH2T8j29RCThYLq3LdwL4Eqr0
- QynzLgwp+QURRfRIhSJpsG0AxYTR+ob2S8Rbfa3Oj1EwWfyrx/PjbgU1E/WYkdhG
- sDZSyS9Ny8g7zVwqsTBKdmikJk9vXD36yxpbT+enGAbLtYxFpc/pH8K7Q==
-Message-ID: <198e04f7-6283-11c5-c0fb-fe61adaa3512@bsdio.com>
-Date: Tue, 8 Aug 2023 07:29:56 -0600
+Return-Path: <rjwysocki@gmail.com>
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org BDCF28221A
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org F15C0821F7
 MIME-Version: 1.0
-Content-Language: en-US
-From: Rebecca Cran <rebecca@bsdio.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: [Acpica-devel] acpica website: Git Repository link is invalid
+References: <20230809094451.15473-1-ivan.hu@canonical.com>
+In-Reply-To: <20230809094451.15473-1-ivan.hu@canonical.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Wed, 9 Aug 2023 12:09:16 +0200
+Message-ID: <CAJZ5v0hh=AccmG12iE5Y5JHOjwtDrDbLSgwY8K+QwtfBZN3N2Q@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [Acpica-devel] [PATCH] ACPI: thermal: extend the acpi maximum
+	handles for _PSL method
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -41,23 +20,66 @@ List-Post: <mailto:acpica-devel@lists.linuxfoundation.org>
 List-Help: <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=help>
 List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel>, 
  <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=subscribe>
-To: acpica-devel@lists.linuxfoundation.org
+To: Ivan Hu <ivan.hu@canonical.com>
+Cc: rafael.j.wysocki@intel.com, robert.moore@intel.com, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, acpica-devel@lists.linuxfoundation.org, lenb@kernel.org
 
-I see that the old acpica.org website now redirects to 
-https://www.intel.com/content/www/us/en/developer/topic-technology/open/acpica/overview.html 
-.
+On Wed, Aug 9, 2023 at 11:44=E2=80=AFAM Ivan Hu <ivan.hu@canonical.com> wro=
+te:
+>
+> Several platforms encountered the following kernel message:
+> ACPI: \_TZ_.BATZ: Invalid passive threshold
+>
+> This issue arises due to the failure of the acpi_evaluate_reference funct=
+ion
+> in drivers/acpi/thermal.c while evaluating the ACPI _PSL method.
+>
+> status =3D acpi_evaluate_reference(tz->device->handle, "_PSL",
+>                          NULL, &devices);
+> if (ACPI_FAILURE(status)) {
+>         acpi_handle_info(tz->device->handle,
+>                          "Invalid passive threshold\n");
+>         tz->trips.passive.valid =3D false;
+> } else {
+>         tz->trips.passive.valid =3D true;
+> }
+>
+> However, the root cause lies in the _PSL method returning packages with a=
+ count
+> exceeding ACPI_MAX_HANDLES in acpi_evaluate_reference.
+>
+> As per the ACPI specification, the _PSL (Passive List) method is defined =
+under
+> a thermal zone and evaluates to a list of processor objects to be used fo=
+r
+> passive cooling. And it will return a variable-length Package containing =
+a list
+> of References to processor objects.
+>
+> Signed-off-by: Ivan Hu <ivan.hu@canonical.com>
 
-However, the Download page still has the same problem I noticed a while 
-ago. It says:
+Please check if this patch fixes the problem for you (it may need to
+be rebased):
 
+https://patchwork.kernel.org/project/linux-acpi/patch/20230330030446.246933=
+8-1-vi@endrift.com/
 
-The Git repository can be directly accessed via 
-git://github.com/acpica/acpica.git
-
-For example:
-
-|git clone git://github.com/acpica/acpica.git Github however disabled 
-git:// access back in 2021 
-(https://github.blog/2021-09-01-improving-git-protocol-security-github/), 
-so all references to git:// should be changed to https:// . -- Rebecca Cran |
-
+> ---
+>  include/acpi/acpi_bus.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+> index 23fbe4a16972..dc7b38826113 100644
+> --- a/include/acpi/acpi_bus.h
+> +++ b/include/acpi/acpi_bus.h
+> @@ -13,7 +13,7 @@
+>  #include <linux/property.h>
+>
+>  /* TBD: Make dynamic */
+> -#define ACPI_MAX_HANDLES       10
+> +#define ACPI_MAX_HANDLES       32
+>  struct acpi_handle_list {
+>         u32 count;
+>         acpi_handle handles[ACPI_MAX_HANDLES];
+> --
+> 2.34.1
+>
