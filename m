@@ -1,23 +1,25 @@
-Return-Path: <ivan.hu@canonical.com>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org ECCCB41864
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org CCEF041866
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1691574294;
- bh=hOaugecDmx8s0gF6A+lggXyk/CKpYFWeAHRtbZ38wmQ=;
- h=From:To:Subject:Date:Message-Id:MIME-Version;
- b=krEUXcKKWwLdM/4fRl825m892/v34MgmuwWro79QtqU8vpVBCmCF0NywZfAFHmF9N
- QkWBtzJjoQgbsnsA62vPlYe3buqGZVVjWJOowOzDHUu6Ca4oiaM3PKfELpUlTgco4p
- ax6sFCJNerT2298+r2rpbA05jEDvE8wTvyn0JYZFVJM1uHldg4vDG9JVk3NKyHoQOG
- QWQXYz9ahOiQatA0zoR8+IROgC3b8lGiyPCHVpbFfc3jBqJVC8px+KFSPOdnmN0xLG
- y+RqJYd341kMgcxEADfL/U922Ol4O0a5z0u4WrXSzJZpRnAHBHRV3KaZbpYvcktYj9
- X1/CGGxf2us4Q==
-From: Ivan Hu <ivan.hu@canonical.com>
-Date: Wed,  9 Aug 2023 17:44:51 +0800
-Message-Id: <20230809094451.15473-1-ivan.hu@canonical.com>
+Return-Path: <helgaas@kernel.org>
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 3991D83F4B
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 9FE5583BB6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1691709404;
+ bh=ZmrWlyLDwcmwi9hUwauGbIn2pC+uqr3wNk2fOa0Tmtc=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:From;
+ b=SAQglvG+C+UjhCWhv1P2LHig050JiUg/j9MWLFVK7hj/7mnBjMFPkSx3X1+Idlcyg
+ QIMjHYxCCTUwVrso10FiV0kAgIMUzJ42bV+ca6NDs7NdHwhxYGQj8x6iBfaFl2cRG1
+ XleuAEM/5LZlE7noiElqHs04GtNmocgk2R146bojaFK6ezYM5KXep2tZrdG/kenI6D
+ QXcD5JAT3G5jFgHAbLGmy7RZc/aAV7R98EntmgFz3xT2nGQLwtH+mJmPYcBMJt1t00
+ A0Wq9he4ONcMxtxl+6gmV7HNhz6pR8vAY73AyftNFcj2cVLf6cicQtJi6abjZdd6H9
+ ZpXHJtoll7FEQ==
+Date: Thu, 10 Aug 2023 18:16:42 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+Message-ID: <20230810231642.GA50403@bhelgaas>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: [Acpica-devel] [PATCH] ACPI: thermal: extend the acpi maximum
-	handles for _PSL method
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230704120530.1322257-1-LeoLiu-oc@zhaoxin.com>
+Subject: Re: [Acpica-devel] [PATCH v3 3/5] PCI: Add PCIe to PCI/PCI-X Bridge
+	AER fields
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -27,50 +29,45 @@ List-Post: <mailto:acpica-devel@lists.linuxfoundation.org>
 List-Help: <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=help>
 List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel>, 
  <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=subscribe>
-To: robert.moore@intel.com, rafael.j.wysocki@intel.com, lenb@kernel.org, linux-acpi@vger.kernel.org, acpica-devel@lists.linuxfoundation.org, linux-kernel@vger.kernel.org
+To: LeoLiu-oc <LeoLiu-oc@zhaoxin.com>
+Cc: tony.luck@intel.com, linux-pci@vger.kernel.org, robert.moore@intel.com, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, bp@alien8.de, bhelgaas@google.com, james.morse@arm.com, acpica-devel@lists.linuxfoundation.org, lenb@kernel.org
 
-Several platforms encountered the following kernel message:
-ACPI: \_TZ_.BATZ: Invalid passive threshold
+On Tue, Jul 04, 2023 at 08:05:30PM +0800, LeoLiu-oc wrote:
+> From: leoliu-oc <leoliu-oc@zhaoxin.com>
+> 
+> Define Secondary Uncorrectable Error Mask Register, Secondary
+> Uncorrectable Error Severity Register and Secondary Error Capabilities and
+> Control Register bits in AER capability for PCIe to PCI/PCI-X Bridge.
+> Please refer to PCIe to PCI/PCI-X Bridge Specification, sec 5.2.3.2,
+> 5.2.3.3 and 5.2.3.4.
+> 
+> Signed-off-by: leoliu-oc <leoliu-oc@zhaoxin.com>
+> ---
+>  include/uapi/linux/pci_regs.h | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
+> index e5f558d964939..28e20c4d0afc3 100644
+> --- a/include/uapi/linux/pci_regs.h
+> +++ b/include/uapi/linux/pci_regs.h
+> @@ -800,6 +800,9 @@
+>  #define  PCI_ERR_ROOT_FATAL_RCV		0x00000040 /* Fatal Received */
+>  #define  PCI_ERR_ROOT_AER_IRQ		0xf8000000 /* Advanced Error Interrupt Message Number */
+>  #define PCI_ERR_ROOT_ERR_SRC	0x34	/* Error Source Identification */
+> +#define PCI_ERR_UNCOR_MASK2		0x30	/* PCIe to PCI/PCI-X Bridge */
+> +#define PCI_ERR_UNCOR_SEVER2	0x34	/* PCIe to PCI/PCI-X Bridge */
+> +#define PCI_ERR_CAP2			0x38	/* PCIe to PCI/PCI-X Bridge */
 
-This issue arises due to the failure of the acpi_evaluate_reference function
-in drivers/acpi/thermal.c while evaluating the ACPI _PSL method.
+These need to line up with the offsets above, i.e.,
+PCI_ERR_ROOT_ERR_SRC.
 
-status = acpi_evaluate_reference(tz->device->handle, "_PSL",
-			 NULL, &devices);
-if (ACPI_FAILURE(status)) {
-	acpi_handle_info(tz->device->handle,
-			 "Invalid passive threshold\n");
-	tz->trips.passive.valid = false;
-} else {
-	tz->trips.passive.valid = true;
-}
+I think these should be named:
 
-However, the root cause lies in the _PSL method returning packages with a count
-exceeding ACPI_MAX_HANDLES in acpi_evaluate_reference.
+  PCI_ERR_SEC_UNCOR_MASK
+  PCI_ERR_SEC_UNCOR_SEVER
+  PCI_ERR_SEC_ERR_CAP
 
-As per the ACPI specification, the _PSL (Passive List) method is defined under
-a thermal zone and evaluates to a list of processor objects to be used for
-passive cooling. And it will return a variable-length Package containing a list
-of References to processor objects.
+because "Secondary" in this context doesn't have anything to do with
+"2"; it just means the secondary (downstream) interface of the bridge.
 
-Signed-off-by: Ivan Hu <ivan.hu@canonical.com>
----
- include/acpi/acpi_bus.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-index 23fbe4a16972..dc7b38826113 100644
---- a/include/acpi/acpi_bus.h
-+++ b/include/acpi/acpi_bus.h
-@@ -13,7 +13,7 @@
- #include <linux/property.h>
- 
- /* TBD: Make dynamic */
--#define ACPI_MAX_HANDLES	10
-+#define ACPI_MAX_HANDLES	32
- struct acpi_handle_list {
- 	u32 count;
- 	acpi_handle handles[ACPI_MAX_HANDLES];
--- 
-2.34.1
-
+Bjorn
