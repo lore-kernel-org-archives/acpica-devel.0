@@ -1,23 +1,12 @@
-Return-Path: <keescook@chromium.org>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org B70D1415C3
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 7EF1440018
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=chromium.org; s=google; t=1692919313; x=1693524113;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
- bh=8w5mv6lG3O3l4xUxVWDEcklkLQovn+KSfkFXrkAtd8o=;
- b=HUNbIF3SZFESQtWsYGw4ufoOPQfn0DMhz6J6tkXQyiqY0N4QCZMi+uH9lXx7i5V4JS
- WShu9Elj1MhAzOogVa/Zk7n3ucdznSw165k9gkqJc5lkHungrIP+gxo55QxUrPQoUgLX
- K4NXLnL4+wIUv0fIgiY8+1FVzP9yZ1K5RkeQY=
-From: Kees Cook <keescook@chromium.org>
-Message-ID: <202308241612.DFE4119@keescook>
-References: <20230824-strncpy-drivers-acpi-acpica-v1-1-d027ba183b66@google.com>
+Return-Path: <suhui@nfschina.com>
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 200A8813FE
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 57E13813FD
+From: Su Hui <suhui@nfschina.com>
+Message-Id: <20230831073432.1712904-1-suhui@nfschina.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230824-strncpy-drivers-acpi-acpica-v1-1-d027ba183b66@google.com>
-Subject: Re: [Acpica-devel] [PATCH RFC] ACPICA: remove acpi_ut_safe_strncpy
- in favor of strscpy
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Subject: [Acpica-devel] [PATCH 1/2] ACPICA: Use strscpy to replace strncpy
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -27,47 +16,38 @@ List-Post: <mailto:acpica-devel@lists.linuxfoundation.org>
 List-Help: <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=help>
 List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel>, 
  <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=subscribe>
-Date: Thu, 24 Aug 2023 23:21:55 -0000
-To: Justin Stitt <justinstitt@google.com>
-Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Nick Desaulniers <ndesaulniers@google.com>, Robert Moore <robert.moore@intel.com>, linux-kernel@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>, linux-acpi@vger.kernel.org, acpica-devel@lists.linuxfoundation.org, Len Brown <lenb@kernel.org>
+Date: Thu, 31 Aug 2023 07:41:39 -0000
+To: robert.moore@intel.com, rafael.j.wysocki@intel.com, lenb@kernel.org
+Cc: linux-acpi@vger.kernel.org, acpica-devel@lists.linuxfoundation.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Su Hui <suhui@nfschina.com>
 
-On Thu, Aug 24, 2023 at 10:02:02PM +0000, Justin Stitt wrote:
-> I wanted to gather some thoughts on removing `acpi_ut_safe_strncpy` (and
-> potentially other `acpi...safe...()` interfaces) in favor of
-> pre-existing interfaces in the kernel (like strscpy).
-> 
-> Running a git blame shows these functions were implemented 10 years ago
-> and their implementations generally mirror the _newer_ and more robust
-> stuff in lib/string.h -- Let's just use these, right?
-> 
-> I appreciate any comments and whether or not I should stop at just
-> `strncpy`.
+With gcc and W=1 option to compile kernel, warning happens:
 
-ACPICA is actually a separate upstream project, so changes are best made
-there[1]. However, this code base is shared with many OSes and
-compilers, so there won't be a common "strscpy" available. Perhaps the
-right thing to do here is to implement acpi_ut_safe_strncpy() in terms
-of strnlen(), memcpy(), and memset(). That would make the upstream
-project safe against "too long reads", etc, and would require no
-collateral changes:
+inlined from ‘acpi_tb_find_table’ at drivers/acpi/acpica/tbfind.c:60:2:
+include/linux/fortify-string.h:68:30: error: ‘__builtin_strncpy’ specified
+bound 6 equals destination size [-Werror=stringop-truncation]
 
-void acpi_ut_safe_strncpy(char *dest, char *source, acpi_size dest_size)
-{
-	/* Do not over-read the source string. */
-	acpi_size len = 0;
+Use strscpy to avoid this warning and is safer.
 
-	if (dest_size > 0)
-		len = strnlen(source, dest_size - 1);
-	if (len)
-		memcpy(dest, source, len)
-	/* Always terminate destination string and pad to dest_size. */
-	memset(dest + len, '\0', dest_size - len);
-}
+Signed-off-by: Su Hui <suhui@nfschina.com>
+---
+ drivers/acpi/acpica/tbfind.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
--Kees
-
-[1] https://github.com/acpica/acpica
-    e.g. https://github.com/acpica/acpica/pull/856
-
+diff --git a/drivers/acpi/acpica/tbfind.c b/drivers/acpi/acpica/tbfind.c
+index 1c1b2e284bd9..5536d1755188 100644
+--- a/drivers/acpi/acpica/tbfind.c
++++ b/drivers/acpi/acpica/tbfind.c
+@@ -57,8 +57,8 @@ acpi_tb_find_table(char *signature,
+ 
+ 	memset(&header, 0, sizeof(struct acpi_table_header));
+ 	ACPI_COPY_NAMESEG(header.signature, signature);
+-	strncpy(header.oem_id, oem_id, ACPI_OEM_ID_SIZE);
+-	strncpy(header.oem_table_id, oem_table_id, ACPI_OEM_TABLE_ID_SIZE);
++	strscpy(header.oem_id, oem_id, ACPI_OEM_ID_SIZE);
++	strscpy(header.oem_table_id, oem_table_id, ACPI_OEM_TABLE_ID_SIZE);
+ 
+ 	/* Search for the table */
+ 
 -- 
-Kees Cook
+2.30.2
+
