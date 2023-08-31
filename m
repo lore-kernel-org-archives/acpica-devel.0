@@ -1,15 +1,16 @@
 Return-Path: <rjwysocki@gmail.com>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 90ACD42563
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org ACD9F4250A
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org C529E408DD
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org DA581403AE
 MIME-Version: 1.0
-References: <20230814135623.23084-1-yuehaibing@huawei.com>
-In-Reply-To: <20230814135623.23084-1-yuehaibing@huawei.com>
+References: <20230831073432.1712904-1-suhui@nfschina.com>
+In-Reply-To: <20230831073432.1712904-1-suhui@nfschina.com>
 From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Thu, 17 Aug 2023 19:53:11 +0200
-Message-ID: <CAJZ5v0j6_YFXyf7m7EVp7qNoy4RRhefsM0-VENBfJtDg09j7Sg@mail.gmail.com>
+Date: Thu, 31 Aug 2023 11:35:24 +0200
+Message-ID: <CAJZ5v0iBZhz6oRgzU3_E+TFT244cgcWxS5ufo_8LnsgvrbbTJQ@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Subject: Re: [Acpica-devel] [PATCH -next] ACPI: Remove unused declarations
+Subject: Re: [Acpica-devel] [PATCH 1/2] ACPICA: Use strscpy to replace
+	strncpy
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -19,69 +20,48 @@ List-Post: <mailto:acpica-devel@lists.linuxfoundation.org>
 List-Help: <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=help>
 List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel>, 
  <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=subscribe>
-To: Yue Haibing <yuehaibing@huawei.com>
-Cc: linux-acpi@vger.kernel.org, robert.moore@intel.com, linux-kernel@vger.kernel.org, hdegoede@redhat.com, acpica-devel@lists.linuxfoundation.org, lenb@kernel.org
+To: Su Hui <suhui@nfschina.com>
+Cc: rafael.j.wysocki@intel.com, kernel-janitors@vger.kernel.org, robert.moore@intel.com, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, acpica-devel@lists.linuxfoundation.org, lenb@kernel.org
 
-On Mon, Aug 14, 2023 at 3:56=E2=80=AFPM Yue Haibing <yuehaibing@huawei.com>=
- wrote:
+On Thu, Aug 31, 2023 at 9:35=E2=80=AFAM Su Hui <suhui@nfschina.com> wrote:
 >
-> acpi_create_dir()/acpi_remove_dir() are never implemented since
-> the beginning of git history.
-> Commit f8d31489629c ("ACPICA: Debugger: Convert some mechanisms to OSPM s=
-pecific")
-> declared but never implemented acpi_run_debugger().
-> Commit 781d737c7466 ("ACPI: Drop power resources driver")
-> removed acpi_power_init() but not its declaration.
+> With gcc and W=3D1 option to compile kernel, warning happens:
 >
-> Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
+> inlined from =E2=80=98acpi_tb_find_table=E2=80=99 at drivers/acpi/acpica/=
+tbfind.c:60:2:
+> include/linux/fortify-string.h:68:30: error: =E2=80=98__builtin_strncpy=
+=E2=80=99 specified
+> bound 6 equals destination size [-Werror=3Dstringop-truncation]
+>
+> Use strscpy to avoid this warning and is safer.
+>
+> Signed-off-by: Su Hui <suhui@nfschina.com>
+
+Please see
+
+https://lore.kernel.org/linux-acpi/202308241612.DFE4119@keescook/
+
 > ---
->  drivers/acpi/internal.h | 1 -
->  include/acpi/acpi_bus.h | 2 --
->  include/acpi/acpixf.h   | 2 --
->  3 files changed, 5 deletions(-)
+>  drivers/acpi/acpica/tbfind.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> diff --git a/drivers/acpi/internal.h b/drivers/acpi/internal.h
-> index 5f5c3a159872..866c7c4ed233 100644
-> --- a/drivers/acpi/internal.h
-> +++ b/drivers/acpi/internal.h
-> @@ -123,7 +123,6 @@ int __acpi_device_uevent_modalias(const struct acpi_d=
-evice *adev,
->  /* ---------------------------------------------------------------------=
------
->                                    Power Resource
->     ---------------------------------------------------------------------=
------ */
-> -int acpi_power_init(void);
->  void acpi_power_resources_list_free(struct list_head *list);
->  int acpi_extract_power_resources(union acpi_object *package, unsigned in=
-t start,
->                                  struct list_head *list);
-> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-> index 23fbe4a16972..18203ee9096d 100644
-> --- a/include/acpi/acpi_bus.h
-> +++ b/include/acpi/acpi_bus.h
-> @@ -569,8 +569,6 @@ int acpi_match_device_ids(struct acpi_device *device,
->                           const struct acpi_device_id *ids);
->  void acpi_set_modalias(struct acpi_device *adev, const char *default_id,
->                        char *modalias, size_t len);
-> -int acpi_create_dir(struct acpi_device *);
-> -void acpi_remove_dir(struct acpi_device *);
+> diff --git a/drivers/acpi/acpica/tbfind.c b/drivers/acpi/acpica/tbfind.c
+> index 1c1b2e284bd9..5536d1755188 100644
+> --- a/drivers/acpi/acpica/tbfind.c
+> +++ b/drivers/acpi/acpica/tbfind.c
+> @@ -57,8 +57,8 @@ acpi_tb_find_table(char *signature,
 >
->  static inline bool acpi_device_enumerated(struct acpi_device *adev)
->  {
-> diff --git a/include/acpi/acpixf.h b/include/acpi/acpixf.h
-> index 0c1b69ad95d0..3d90716f9522 100644
-> --- a/include/acpi/acpixf.h
-> +++ b/include/acpi/acpixf.h
-> @@ -970,8 +970,6 @@ ACPI_EXTERNAL_RETURN_STATUS(acpi_status
->                                                void **data,
->                                                void (*callback)(void *)))
+>         memset(&header, 0, sizeof(struct acpi_table_header));
+>         ACPI_COPY_NAMESEG(header.signature, signature);
+> -       strncpy(header.oem_id, oem_id, ACPI_OEM_ID_SIZE);
+> -       strncpy(header.oem_table_id, oem_table_id, ACPI_OEM_TABLE_ID_SIZE=
+);
+> +       strscpy(header.oem_id, oem_id, ACPI_OEM_ID_SIZE);
+> +       strscpy(header.oem_table_id, oem_table_id, ACPI_OEM_TABLE_ID_SIZE=
+);
 >
-> -void acpi_run_debugger(char *batch_buffer);
-> -
->  void acpi_set_debugger_thread_id(acpi_thread_id thread_id);
+>         /* Search for the table */
 >
->  #endif                         /* __ACXFACE_H__ */
 > --
-
-Applied (under edited subject) as 6.6 material, thanks!
+> 2.30.2
+>
