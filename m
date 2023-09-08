@@ -1,21 +1,21 @@
 Return-Path: <sashal@kernel.org>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org AD75760A70
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org AD28E60A5C
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 142CC41E75
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org C056341E74
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1694196234;
- bh=vZl+8phB6IeWXFM113V7Mpk0D1HiT3O6dryRdte61GU=;
+ s=k20201202; t=1694196256;
+ bh=35Q2Pj5YB1E1f3JHqeseGKjiPMmRPGIE+6MOd+6dLjU=;
  h=From:To:Cc:Subject:Date:From;
- b=VucLscmHwDi3ap8Tma3joGowZGHNP/mS2DCxHJiGmpNj6mW91JQlguDxxtCtIZB5u
- B2AEu8EvtUfV5C1suzC5xvNkm/EtOGO+o9/63WY764X3L7H3Z9+M9A1PUEUifM4uBt
- 5S0IDXZda79rP9z1h8/4G2zpwZxAdkZykDnmYb1sEhPlNdevQ+aCvmVYqjEDAWZ8KT
- vyod5gQFCN06fx0agxxSN1eMvZJj3qAEZbfjY0wz+KO1NY5EIlhoFTUNgCSa/m02PH
- QoG2i4XV6Af1B5FL7ARmnspxWxBJOrQigUuo6eI1xI0rIBgN9HoSETMRRGPv+mM8uZ
- 8TUrqDKC6pjUA==
+ b=Q2Ea7L8sm9Zb5JV2levi2fgimcfjI5aRXAkJgRQQB9KyMpN2WCCB7/2EojdRhKjWm
+ 1IQRKS1kitN57PVN76ss6cCMtbo/8QUlXiU6+J8XpCJMDPAXEx62H0zV/3Klycdyoz
+ lGIdRhZwJkDPrbLy040/a9+ICRkK1KOKupFtegFpTzIoe6jINJC0pUSmfhWhXsyTTm
+ 8m9NQsfXvAgRi7uH1V0DLpeLqgBkZiriZhLXjngRu+5X6i09X0gr+YNKnIAVbbvVmE
+ yK5K+3C+2wrobclA7gUysHrRcYA29G40+UrQzZwQGnyH9tUdnl43Zje1NawJ86gobO
+ 4BZBHI++XVljA==
 From: Sasha Levin <sashal@kernel.org>
-Message-Id: <20230908180352.3458731-1-sashal@kernel.org>
+Message-Id: <20230908180413.3458812-1-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: [Acpica-devel] [PATCH AUTOSEL 5.4 1/5] ACPICA: Add
+Subject: [Acpica-devel] [PATCH AUTOSEL 4.19 1/3] ACPICA: Add
 	AML_NO_OPERAND_RESOLVE flag to Timer
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
@@ -26,7 +26,7 @@ List-Post: <mailto:acpica-devel@lists.linuxfoundation.org>
 List-Help: <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=help>
 List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel>, 
  <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=subscribe>
-Date: Fri, 08 Sep 2023 18:04:00 -0000
+Date: Fri, 08 Sep 2023 18:04:21 -0000
 To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc: Sasha Levin <sashal@kernel.org>, "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>, Bob Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org, acpica-devel@lists.linuxfoundation.org, Abhishek Mainkar <abmainkar@nvidia.com>
 
@@ -70,7 +70,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/acpi/acpica/psopcode.c b/drivers/acpi/acpica/psopcode.c
-index 43775c5ce17c5..2f9b226ec4f63 100644
+index 8d7dc98bad17b..ca01e02af9cba 100644
 --- a/drivers/acpi/acpica/psopcode.c
 +++ b/drivers/acpi/acpica/psopcode.c
 @@ -603,7 +603,7 @@ const struct acpi_opcode_info acpi_gbl_aml_op_info[AML_NUM_OPCODES] = {
