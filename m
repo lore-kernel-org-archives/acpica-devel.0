@@ -1,21 +1,21 @@
 Return-Path: <sashal@kernel.org>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 403FD60D6D
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 0C87260AF4
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org E72F060D6D
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 064F160AF4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1694195996;
+ s=k20201202; t=1694196063;
  bh=jAHtLt1B80Dvaw7l7CoJpQDseIGlrDLLCGLKy24S6gk=;
  h=From:To:Cc:Subject:Date:From;
- b=e2iZVOsXTfU41zmvtBZQL0BNHCLpfuwg+btal883F4WN04mWw/BSyF3jYrhTnT8Sh
- TNWBXAzZf0MhO7HHLOSM+VRjXSd+slrRRzMBcjordqDhpu/NXyEVcZ0Deq9H7Mr+ni
- wUqhwKvhoTDrGxuLCqTumifOIJeWfJ9kPmWSt8jtCuTkjoWFig2dzgpmsgU3yHnTuo
- 0zg8chTISx51uCk6O3HTApslLJj0hy7fprm/4zF5xWNAgNaB3UUh0an7Ru7vMXcxn+
- RWL/ZLi27pTw5kFDKTI3Wtqn+tX1D9FUrXVbhzZDV+mETA/jFZNHsRxbIwGpn5IBry
- XMNmcg/zVLYdg==
+ b=iNxMB+NWXTH/1vbu6Ndx6boP3IQtcIODPrRzc/ldHH5yoMY9XQGZ2UnEYbV0liAtC
+ 47rm7tSWG7LirwpvCPWUTdttENvHfX0ZHvH72NztlwdFWtzQWe+DMF1KrSDEOZNGA3
+ Xp96i+tXRJtYFmSUkGFyHF1r13wj6/P6/TY4tRnaK2otruK0KH/AM8QobOEMZCo5D1
+ Yiz41DWE1rrFvwMwxXlN7aA+64Xy9hLe49D1utw7Lx9m6OqSXbBbXy4iyqx/9+219k
+ O7+mx49ZFCzp6yIeewlPnpCPg2JCLCpbaMcwUO8/snKsxTZRVzV5mivXjqFyICT5tY
+ gPcWFK9Fp9ftw==
 From: Sasha Levin <sashal@kernel.org>
-Message-Id: <20230908175953.3457942-1-sashal@kernel.org>
+Message-Id: <20230908180100.3458151-1-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: [Acpica-devel] [PATCH AUTOSEL 6.5 01/16] ACPICA: Add
+Subject: [Acpica-devel] [PATCH AUTOSEL 6.4 01/13] ACPICA: Add
 	AML_NO_OPERAND_RESOLVE flag to Timer
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
@@ -26,7 +26,7 @@ List-Post: <mailto:acpica-devel@lists.linuxfoundation.org>
 List-Help: <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=help>
 List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel>, 
  <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=subscribe>
-Date: Fri, 08 Sep 2023 18:00:01 -0000
+Date: Fri, 08 Sep 2023 18:01:06 -0000
 To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc: Sasha Levin <sashal@kernel.org>, "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>, Bob Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org, acpica-devel@lists.linuxfoundation.org, Abhishek Mainkar <abmainkar@nvidia.com>
 
