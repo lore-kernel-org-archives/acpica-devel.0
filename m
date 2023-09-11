@@ -1,15 +1,15 @@
 Return-Path: <LeoLiu-oc@zhaoxin.com>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 698EF60FCC
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org BC0B960B0E
-Message-ID: <9e4fa680-f96e-4dfc-a047-37a2a5f8b779@zhaoxin.com>
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 985CC410EA
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org B85F7410E1
+Message-ID: <bb01b8f1-bb25-48e5-9445-63d40703e919@zhaoxin.com>
 MIME-Version: 1.0
-References: <20230810231718.GA49532@bhelgaas>
+References: <20230810233007.GA41830@bhelgaas>
 From: LeoLiu-oc <leoliu-oc@zhaoxin.com>
-In-Reply-To: <20230810231718.GA49532@bhelgaas>
+In-Reply-To: <20230810233007.GA41830@bhelgaas>
 Content-Type: text/plain; charset="utf-8"; format="flowed"
 Content-Transfer-Encoding: 8bit
-Subject: Re: [Acpica-devel] [PATCH v3 2/5] ACPI/APEI: Remove static from
-	apei_hest_parse()
+Subject: Re: [Acpica-devel] [PATCH v3 4/5] ACPI/PCI: Add
+	pci_acpi_program_hest_aer_params()
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -19,95 +19,190 @@ List-Post: <mailto:acpica-devel@lists.linuxfoundation.org>
 List-Help: <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=help>
 List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel>, 
  <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=subscribe>
-Date: Mon, 11 Sep 2023 09:55:10 -0000
+Date: Mon, 11 Sep 2023 10:17:05 -0000
 To: Bjorn Helgaas <helgaas@kernel.org>
 Cc: tony.luck@intel.com, linux-pci@vger.kernel.org, robert.moore@intel.com, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, ErosZhang@zhaoxin.com, bp@alien8.de, bhelgaas@google.com, james.morse@arm.com, acpica-devel@lists.linuxfoundation.org, lenb@kernel.org
 
 
 
-在 2023/8/11 7:17, Bjorn Helgaas 写道:
-> On Tue, Jul 04, 2023 at 08:05:17PM +0800, LeoLiu-oc wrote:
+在 2023/8/11 7:30, Bjorn Helgaas 写道:
+> On Tue, Jul 04, 2023 at 08:05:44PM +0800, LeoLiu-oc wrote:
 >> From: leoliu-oc <leoliu-oc@zhaoxin.com>
 >>
->> Each dev with AER capability needs to call the apei_hest_parse function to
->> match and extract register values from HEST PCIe AER structures.
->> Therefore, remove static from apei_hest_parse() so that it can be called
->> in another file.
+>> The extracted register values from HEST PCI Express AER structures are
+>> written to AER Capabilities.
 > 
-> Can you reword the subject line and commit log in the positive?
-> "Removing static" is a negative thing and it's semantically a bit too
-> low level -- it's clearly what the *code* does, but we can see that
-> from the patch, and what we want to know here is *why* it's important.
-> What this really does is expose apei_hest_parse() for use by other
-> subsystems.
+> In the subject, the prevailing style for this file is
+> (see "git log --oneline drivers/pci/pci-acpi.c"):
 > 
-> Browsing the drivers/acpi commit log history, I see that Rafael adds
-> "()" after function names, so please do the same here (you did do that
-> once above, but not in the first line).
+>    PCI/ACPI: ...
+> 
+> And I'd like the subject to tell users why they might want this patch.
+> It's obvious from the patch that this adds a function.  What's *not*
+> obvious is *why* we want this new function.  So the commit log should
+> tell us what the benefit is, and the subject line should be one-line
+> summary of that benefit.
+> 
+> This patch adds a function but no caller.  The next patch is one-liner
+> that adds the caller.  I think these two should be squashed so it's
+> easier to review (and easier to explain the benefit of *this* patch :))
 > 
 
-
-This function is required in patch v3 4/5 to traverse the HEST to find 
-the HEST AER structures, so changed the definition to be global.
-
-I will pay attention to this matter in the next version.
-
-LeoLiu-oc
+Ok, I will merge this patch with 5/5 in the next version.
 
 >> Signed-off-by: leoliu-oc <leoliu-oc@zhaoxin.com>
 >> ---
->>   drivers/acpi/apei/hest.c | 2 +-
->>   include/acpi/apei.h      | 5 +++++
->>   2 files changed, 6 insertions(+), 1 deletion(-)
+>>   drivers/pci/pci-acpi.c | 92 ++++++++++++++++++++++++++++++++++++++++++
+>>   drivers/pci/pci.h      |  5 +++
+>>   2 files changed, 97 insertions(+)
 >>
->> diff --git a/drivers/acpi/apei/hest.c b/drivers/acpi/apei/hest.c
->> index fb839a5c480ee..fd40c035c9b2e 100644
->> --- a/drivers/acpi/apei/hest.c
->> +++ b/drivers/acpi/apei/hest.c
->> @@ -132,7 +132,7 @@ static bool hest_match_pci(struct acpi_hest_header *hest_hdr,
->>   	return false;
+>> diff --git a/drivers/pci/pci-acpi.c b/drivers/pci/pci-acpi.c
+>> index a05350a4e49cb..cff54410e2427 100644
+>> --- a/drivers/pci/pci-acpi.c
+>> +++ b/drivers/pci/pci-acpi.c
+>> @@ -18,6 +18,7 @@
+>>   #include <linux/pm_runtime.h>
+>>   #include <linux/pm_qos.h>
+>>   #include <linux/rwsem.h>
+>> +#include <acpi/apei.h>
+>>   #include "pci.h"
+>>   
+>>   /*
+>> @@ -783,6 +784,97 @@ int pci_acpi_program_hp_params(struct pci_dev *dev)
+>>   	return -ENODEV;
 >>   }
 >>   
->> -static int apei_hest_parse(apei_hest_func_t func, void *data)
->> +int apei_hest_parse(apei_hest_func_t func, void *data)
+>> +/*
+>> + * program_aer_structure_to_aer_registers - Write the AER structure to
+>> + * the corresponding dev's AER registers.
+>> + *
+>> + * @info - the AER structure information
+>> + *
 > 
-> If this is going to exported to the PCI subsystem, I think it needs
-> some kernel-doc.  For example, it's important to know that it stops
-> parsing the HEST if func returns anything non-zero.  This is how
-> pci_acpi_program_hest_aer_params() knows that it got good data that
-> matches the device it wants.
-> 
-> Given the fact that apei_hest_parse_aer() fills in the struct
-> acpi_hest_parse_aer_info with pointers into the HEST table data, it's
-> also important to know that this HEST table data is persistent.
+> Remove the spurious blank comment line.
 >
-Thank you suggestion, and I will consider carefully.
+
+OK.
+
+>> + */
+>> +static void program_aer_structure_to_aer_registers(struct acpi_hest_parse_aer_info info)
+>> +{
+>> +	u32 uncorrectable_mask;
+>> +	u32 uncorrectable_severity;
+>> +	u32 correctable_mask;
+>> +	u32 advanced_capabilities;
+>> +	u32 root_error_command;
+>> +	u32 uncorrectable_mask2;
+>> +	u32 uncorrectable_severity2;
+>> +	u32 advanced_capabilities2;
+>> +	int port_type;
+>> +	int pos;
+>> +	struct pci_dev *dev;
+> 
+> Order these declarations in order of use.
+> 
+
+OK.
+
+>> +	dev = info.pci_dev;
+>> +	port_type = pci_pcie_type(dev);
+>> +
+>> +	pos = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_ERR);
+>> +	if (!pos)
+>> +		return;
+>> +
+>> +	if (port_type == PCI_EXP_TYPE_ROOT_PORT) {
+>> +		uncorrectable_mask = info.acpi_hest_aer_root_port->uncorrectable_mask;
+>> +		uncorrectable_severity = info.acpi_hest_aer_root_port->uncorrectable_severity;
+>> +		correctable_mask = info.acpi_hest_aer_root_port->correctable_mask;
+>> +		advanced_capabilities = info.acpi_hest_aer_root_port->advanced_capabilities;
+>> +		root_error_command = info.acpi_hest_aer_root_port->root_error_command;
+> 
+> Except for this new code, this file fits in 80 columns, so I'd like
+> the new code to match.
+>
+
+OK.
+
+>> +
+>> +		pci_write_config_dword(dev, pos + PCI_ERR_UNCOR_MASK, uncorrectable_mask);
+> 
+> I'm not sure we need to copy everything into local variables.  Maybe
+> this could be split into three helper functions, which would save a
+> level of indent and a level of struct traversal (e.g., "rp->" instead
+> of "info.acpi_hest_aer_root_port->".
+> 
+>    pci_write_config_dword(dev, pos + PCI_ERR_UNCOR_MASK, rp->uncorrectable_mask);
+> 
+> or
+> 
+>    pci_write_config_dword(dev, pos + PCI_ERR_UNCOR_MASK,
+>                           rp->uncorrectable_mask);
+> 
+> If you have to define a new struct acpi_hest_aer_root_port, you could
+> make the member names shorter.  But hopefully you *don't* have to do
+> that, so maybe we're stuck with the long existing member names in
+> acpi_hest_aer_common.
+> >> +int pci_acpi_program_hest_aer_params(struct pci_dev *dev)
+>> +{
+>> +	struct acpi_hest_parse_aer_info info = {
+>> +		.pci_dev	= dev,
+>> +		.hest_matched_with_dev	= 0,
+>> +		.acpi_hest_aer_endpoint = NULL,
+>> +		.acpi_hest_aer_root_port = NULL,
+>> +		.acpi_hest_aer_for_bridge = NULL,
+> 
+> Drop the tab from the .pci_dev initialization since the other members
+> aren't lined up anyway.  I think you can drop the other
+> initializations completely since they will be initialized to 0 or NULL
+> pointers by default.
+> 
+
+Thanks for your guidance, I will make changes to the code where it fits 
+and does not conform to the specification.
 
 Best Regards.
 LeoLiu-oc
 
->>   {
->>   	struct acpi_hest_header *hest_hdr;
->>   	int i, rc, len;
->> diff --git a/include/acpi/apei.h b/include/acpi/apei.h
->> index 8a0b2b9edbafe..f975e4fe78fcb 100644
->> --- a/include/acpi/apei.h
->> +++ b/include/acpi/apei.h
->> @@ -37,9 +37,14 @@ typedef int (*apei_hest_func_t)(struct acpi_hest_header *hest_hdr, void *data);
->>   
->>   #ifdef CONFIG_ACPI_APEI
->>   void __init acpi_hest_init(void);
->> +int apei_hest_parse(apei_hest_func_t func, void *data);
->>   int apei_hest_parse_aer(struct acpi_hest_header *hest_hdr, void *data);
->>   #else
->>   static inline void acpi_hest_init(void) { }
->> +static inline int apei_hest_parse(apei_hest_func_t func, void *data)
->> +{
->> +	return -EINVAL;
+>> +	};
+>> +
+>> +	if (!pci_is_pcie(dev))
+>> +		return -ENODEV;
+>> +
+>> +	apei_hest_parse(apei_hest_parse_aer, &info);
+>> +	if (info.hest_matched_with_dev == 1)
+>> +		program_aer_structure_to_aer_registers(info);
+>> +	else
+>> +		return -ENODEV;
+>> +	return 0;
 >> +}
->>   static inline int apei_hest_parse_aer(struct acpi_hest_header *hest_hdr, void *data)
+>> +
+>>   /**
+>>    * pciehp_is_native - Check whether a hotplug port is handled by the OS
+>>    * @bridge: Hotplug port to check
+>> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+>> index a4c3974340576..37aa4a33eeed2 100644
+>> --- a/drivers/pci/pci.h
+>> +++ b/drivers/pci/pci.h
+>> @@ -713,6 +713,7 @@ void acpi_pci_refresh_power_state(struct pci_dev *dev);
+>>   int acpi_pci_wakeup(struct pci_dev *dev, bool enable);
+>>   bool acpi_pci_need_resume(struct pci_dev *dev);
+>>   pci_power_t acpi_pci_choose_state(struct pci_dev *pdev);
+>> +int pci_acpi_program_hest_aer_params(struct pci_dev *dev);
+>>   #else
+>>   static inline int pci_dev_acpi_reset(struct pci_dev *dev, bool probe)
 >>   {
->>   	return -EINVAL;
+>> @@ -752,6 +753,10 @@ static inline pci_power_t acpi_pci_choose_state(struct pci_dev *pdev)
+>>   {
+>>   	return PCI_POWER_ERROR;
+>>   }
+>> +static inline int pci_acpi_program_hest_aer_params(struct pci_dev *dev)
+>> +{
+>> +	return -ENODEV;
+>> +}
+>>   #endif
+>>   
+>>   #ifdef CONFIG_PCIEASPM
 >> -- 
 >> 2.34.1
 >>
