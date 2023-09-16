@@ -1,22 +1,12 @@
-Return-Path: <sashal@kernel.org>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 83EF741704
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org AE8B0416E9
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1694196264;
- bh=lPZzbqdipeOQnA8se+cbLxe11ndVPLVanezzJSDWuYU=;
- h=From:To:Cc:Subject:Date:From;
- b=Vj8SkSO3WqbAzVhi7zeiClPI6OD69goh44kapZzmdWNMc5uu/3UW9DKIfU3kOYuRg
- HlvUu8wYJCh9B9HNaZl/qex0bxJf6VAcJFv6dITNG89J43PELeV8iUx9eYIXJpQuHI
- QdUv7IbENkG+TcvG4fuEaP+qBY8l4gPlCV5H4II1zAsIA7lVT4lVoS0Kdbz6mF7Lnv
- kTeSbKIcVShC7y8c/a5EgF7KAITMDvhmoYWYGDhSG23LzxRCmHvAhzPf+KEG9DxD5F
- fQ6kqxOqVMbDtFF/cOnbt2Nz3hkh3hP+y7hKKZAgd0DfOxp8EDQhYp2D8tkXlbobsl
- jPC254ekuZb/Q==
-From: Sasha Levin <sashal@kernel.org>
-Message-Id: <20230908180421.3458860-1-sashal@kernel.org>
+Return-Path: <xueshuai@linux.alibaba.com>
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 3552B4031F
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org DAA8240235
+From: Shuai Xue <xueshuai@linux.alibaba.com>
+Message-Id: <20230916130316.65815-1-xueshuai@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: [Acpica-devel] [PATCH AUTOSEL 4.14 1/3] ACPICA: Add
-	AML_NO_OPERAND_RESOLVE flag to Timer
+Subject: [Acpica-devel] [RFC PATCH 0/9] [RFC PATCH 0/9] Use ERST for
+	persistent storage of MCE and APEI errors
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -26,62 +16,65 @@ List-Post: <mailto:acpica-devel@lists.linuxfoundation.org>
 List-Help: <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=help>
 List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel>, 
  <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=subscribe>
-Date: Fri, 08 Sep 2023 18:04:26 -0000
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>, "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>, Bob Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org, acpica-devel@lists.linuxfoundation.org, Abhishek Mainkar <abmainkar@nvidia.com>
+Date: Sat, 16 Sep 2023 13:03:30 -0000
+To: keescook@chromium.org, tony.luck@intel.com, gpiccoli@igalia.com, rafael@kernel.org, lenb@kernel.org, james.morse@arm.com, bp@alien8.de, tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, ardb@kernel.org, robert.moore@intel.com
+Cc: linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, linux-hardening@vger.kernel.org, baolin.wang@linux.alibaba.com, xueshuai@linux.alibaba.com, acpica-devel@lists.linuxfoundation.org, linux-edac@vger.kernel.org
 
-From: Abhishek Mainkar <abmainkar@nvidia.com>
+In certain scenarios (ie. hosts/guests with root filesystems on NFS/iSCSI
+where networking software and/or hardware fails, and thus kdump fails), it
+is necessary to serialize hardware error information available for
+post-mortem debugging. Save the hardware error log into flash via ERST
+before go panic, the hardware error log can be gotten from the flash after
+system boot successful again, which is very useful in production.
 
-[ Upstream commit 3a21ffdbc825e0919db9da0e27ee5ff2cc8a863e ]
+On X86 platform, the kernel has supported to serialize and deserialize MCE
+error record by commit 482908b49ebf ("ACPI, APEI, Use ERST for persistent
+storage of MCE"). The process involves two steps:
 
-ACPICA commit 90310989a0790032f5a0140741ff09b545af4bc5
+- MCE Producer: When a hardware error is detected, MCE raised and its
+  handler writes MCE error record into flash via ERST before panic
+- MCE Consumor: After system reboot, /sbin/mcelog run, it reads /dev/mcelog
+  to check flash for error record of previous boot via ERST
 
-According to the ACPI specification 19.6.134, no argument is required to be passed for ASL Timer instruction. For taking care of no argument, AML_NO_OPERAND_RESOLVE flag is added to ASL Timer instruction opcode.
+After /dev/mcelog character device deprecated by commit 5de97c9f6d85
+("x86/mce: Factor out and deprecate the /dev/mcelog driver"), the
+serialized MCE error record, of previous boot in persistent storage is not
+collected via APEI ERST.
 
-When ASL timer instruction interpreted by ACPI interpreter, getting error. After adding AML_NO_OPERAND_RESOLVE flag to ASL Timer instruction opcode, issue is not observed.
+This patch set include two part:
 
-=============================================================
-UBSAN: array-index-out-of-bounds in acpica/dswexec.c:401:12 index -1 is out of range for type 'union acpi_operand_object *[9]'
-CPU: 37 PID: 1678 Comm: cat Not tainted
-6.0.0-dev-th500-6.0.y-1+bcf8c46459e407-generic-64k
-HW name: NVIDIA BIOS v1.1.1-d7acbfc-dirty 12/19/2022 Call trace:
- dump_backtrace+0xe0/0x130
- show_stack+0x20/0x60
- dump_stack_lvl+0x68/0x84
- dump_stack+0x18/0x34
- ubsan_epilogue+0x10/0x50
- __ubsan_handle_out_of_bounds+0x80/0x90
- acpi_ds_exec_end_op+0x1bc/0x6d8
- acpi_ps_parse_loop+0x57c/0x618
- acpi_ps_parse_aml+0x1e0/0x4b4
- acpi_ps_execute_method+0x24c/0x2b8
- acpi_ns_evaluate+0x3a8/0x4bc
- acpi_evaluate_object+0x15c/0x37c
- acpi_evaluate_integer+0x54/0x15c
- show_power+0x8c/0x12c [acpi_power_meter]
+- PATCH 1-3: rework apei_{read,write}_mce to use pstore data structure and emit
+  the mce_record tracepoint, enabling the collection of MCE records by the
+  rasdaemon tool.
+- PATCH 4-9: use ERST for persistent storage of APEI errors, and emit
+  tracepoints for CPER sections, enabling the collection of MCE records by the
+  rasdaemon tool.
 
-Link: https://github.com/acpica/acpica/commit/90310989
-Signed-off-by: Abhishek Mainkar <abmainkar@nvidia.com>
-Signed-off-by: Bob Moore <robert.moore@intel.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/acpi/acpica/psopcode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Shuai Xue (9):
+  pstore: move pstore creator id, section type and record struct to
+    common header
+  ACPI: APEI: Use common ERST struct to read/write serialized MCE record
+  ACPI: APEI: ERST: Emit the mce_record tracepoint
+  ACPI: tables: change section_type of generic error data as guid_t
+  ACPI: APEI: GHES: Use ERST to serialize APEI generic error before
+    panic
+  ACPI: APEI: GHES: export ghes_report_chain
+  ACPI: APEI: ESRT: kick ghes_report_chain notifier to report serialized
+    memory errors
+  ACPI: APEI: ESRT: print AER to report serialized PCIe errors
+  ACPI: APEI: ESRT: log ARM processor error
 
-diff --git a/drivers/acpi/acpica/psopcode.c b/drivers/acpi/acpica/psopcode.c
-index a402ad772a1e5..c561d35d441bb 100644
---- a/drivers/acpi/acpica/psopcode.c
-+++ b/drivers/acpi/acpica/psopcode.c
-@@ -637,7 +637,7 @@ const struct acpi_opcode_info acpi_gbl_aml_op_info[AML_NUM_OPCODES] = {
- 
- /* 7E */ ACPI_OP("Timer", ARGP_TIMER_OP, ARGI_TIMER_OP, ACPI_TYPE_ANY,
- 			 AML_CLASS_EXECUTE, AML_TYPE_EXEC_0A_0T_1R,
--			 AML_FLAGS_EXEC_0A_0T_1R),
-+			 AML_FLAGS_EXEC_0A_0T_1R | AML_NO_OPERAND_RESOLVE),
- 
- /* ACPI 5.0 opcodes */
- 
+ arch/x86/kernel/cpu/mce/apei.c | 82 +++++++++++++++-------------------
+ drivers/acpi/acpi_extlog.c     |  2 +-
+ drivers/acpi/apei/erst.c       | 51 ++++++++++++---------
+ drivers/acpi/apei/ghes.c       | 48 +++++++++++++++++++-
+ drivers/firmware/efi/cper.c    |  2 +-
+ fs/pstore/platform.c           |  3 ++
+ include/acpi/actbl1.h          |  5 ++-
+ include/acpi/ghes.h            |  2 +-
+ include/linux/pstore.h         | 29 ++++++++++++
+ 9 files changed, 150 insertions(+), 74 deletions(-)
+
 -- 
-2.40.1
+2.41.0
 
