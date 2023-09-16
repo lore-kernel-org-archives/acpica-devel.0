@@ -1,14 +1,14 @@
 Return-Path: <xueshuai@linux.alibaba.com>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org BC72A40331
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 27ED940277
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 88DAD4031F
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org B644E40235
 From: Shuai Xue <xueshuai@linux.alibaba.com>
-Message-Id: <20230916130316.65815-3-xueshuai@linux.alibaba.com>
+Message-Id: <20230916130316.65815-4-xueshuai@linux.alibaba.com>
 In-Reply-To: <20230916130316.65815-1-xueshuai@linux.alibaba.com>
 References: <20230916130316.65815-1-xueshuai@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: [Acpica-devel] [RFC PATCH 2/9] ACPI: APEI: Use common ERST struct
-	to read/write serialized MCE record
+Subject: [Acpica-devel] [RFC PATCH 3/9] ACPI: APEI: ERST: Emit the
+	mce_record tracepoint
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -18,140 +18,48 @@ List-Post: <mailto:acpica-devel@lists.linuxfoundation.org>
 List-Help: <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=help>
 List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel>, 
  <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=subscribe>
-Date: Sat, 16 Sep 2023 13:03:33 -0000
+Date: Sat, 16 Sep 2023 13:03:34 -0000
 To: keescook@chromium.org, tony.luck@intel.com, gpiccoli@igalia.com, rafael@kernel.org, lenb@kernel.org, james.morse@arm.com, bp@alien8.de, tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, ardb@kernel.org, robert.moore@intel.com
 Cc: linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, linux-hardening@vger.kernel.org, baolin.wang@linux.alibaba.com, xueshuai@linux.alibaba.com, acpica-devel@lists.linuxfoundation.org, linux-edac@vger.kernel.org
 
-It is confusing to define two creator IDs with the same GUID number, and
-unnecessary to define the same data structure twice.
+After /dev/mcelog character device deprecated by commit 5de97c9f6d85
+("x86/mce: Factor out and deprecate the /dev/mcelog driver"), the
+serialized hardware error log, a.k.a MCE record, of previous boot in
+persistent storage is not collected via APEI ERST.
 
-Use common ERST struct to read/write MCE record.
+Emit the mce_record tracepoint so that it can consumed by the new
+generation rasdaemon.
 
 Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
 ---
- arch/x86/kernel/cpu/mce/apei.c | 82 +++++++++++++++-------------------
- 1 file changed, 35 insertions(+), 47 deletions(-)
+ drivers/acpi/apei/erst.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/cpu/mce/apei.c b/arch/x86/kernel/cpu/mce/apei.c
-index 8ed341714686..f5739f13e583 100644
---- a/arch/x86/kernel/cpu/mce/apei.c
-+++ b/arch/x86/kernel/cpu/mce/apei.c
-@@ -20,6 +20,7 @@
- #include <linux/kernel.h>
- #include <linux/acpi.h>
- #include <linux/cper.h>
-+#include <linux/pstore.h>
+diff --git a/drivers/acpi/apei/erst.c b/drivers/acpi/apei/erst.c
+index 528ac5eb4871..f789e3df73a9 100644
+--- a/drivers/acpi/apei/erst.c
++++ b/drivers/acpi/apei/erst.c
+@@ -26,6 +26,8 @@
+ #include <linux/vmalloc.h>
+ #include <linux/mm.h> /* kvfree() */
  #include <acpi/apei.h>
- #include <acpi/ghes.h>
- #include <asm/mce.h>
-@@ -124,58 +125,45 @@ int apei_smca_report_x86_error(struct cper_ia_proc_ctx *ctx_info, u64 lapic_id)
- 	return 0;
- }
++/* only define CREATE_TRACE_POINTS once */
++#include <trace/events/mce.h>
  
--#define CPER_CREATOR_MCE						\
--	GUID_INIT(0x75a574e3, 0x5052, 0x4b29, 0x8a, 0x8e, 0xbe, 0x2c,	\
--		  0x64, 0x90, 0xb8, 0x9d)
--#define CPER_SECTION_TYPE_MCE						\
--	GUID_INIT(0xfe08ffbe, 0x95e4, 0x4be7, 0xbc, 0x73, 0x40, 0x96,	\
--		  0x04, 0x4a, 0x38, 0xfc)
--
--/*
-- * CPER specification (in UEFI specification 2.3 appendix N) requires
-- * byte-packed.
-- */
--struct cper_mce_record {
--	struct cper_record_header hdr;
--	struct cper_section_descriptor sec_hdr;
--	struct mce mce;
--} __packed;
--
- int apei_write_mce(struct mce *m)
- {
--	struct cper_mce_record rcd;
--
--	memset(&rcd, 0, sizeof(rcd));
--	memcpy(rcd.hdr.signature, CPER_SIG_RECORD, CPER_SIG_SIZE);
--	rcd.hdr.revision = CPER_RECORD_REV;
--	rcd.hdr.signature_end = CPER_SIG_END;
--	rcd.hdr.section_count = 1;
--	rcd.hdr.error_severity = CPER_SEV_FATAL;
-+	struct cper_pstore_record *rcd;
-+	int record_len = sizeof(*m) + sizeof(*rcd);
-+	int data_len = sizeof(*m);
-+
-+	rcd = kmalloc(record_len, GFP_KERNEL);
-+	memset(rcd, 0, sizeof(rcd));
-+
-+	memcpy(rcd->hdr.signature, CPER_SIG_RECORD, CPER_SIG_SIZE);
-+	rcd->hdr.revision = CPER_RECORD_REV;
-+	rcd->hdr.signature_end = CPER_SIG_END;
-+	rcd->hdr.section_count = 1;
-+	rcd->hdr.error_severity = CPER_SEV_FATAL;
- 	/* timestamp, platform_id, partition_id are all invalid */
--	rcd.hdr.validation_bits = 0;
--	rcd.hdr.record_length = sizeof(rcd);
--	rcd.hdr.creator_id = CPER_CREATOR_MCE;
--	rcd.hdr.notification_type = CPER_NOTIFY_MCE;
--	rcd.hdr.record_id = cper_next_record_id();
--	rcd.hdr.flags = CPER_HW_ERROR_FLAGS_PREVERR;
--
--	rcd.sec_hdr.section_offset = (void *)&rcd.mce - (void *)&rcd;
--	rcd.sec_hdr.section_length = sizeof(rcd.mce);
--	rcd.sec_hdr.revision = CPER_SEC_REV;
--	/* fru_id and fru_text is invalid */
--	rcd.sec_hdr.validation_bits = 0;
--	rcd.sec_hdr.flags = CPER_SEC_PRIMARY;
--	rcd.sec_hdr.section_type = CPER_SECTION_TYPE_MCE;
--	rcd.sec_hdr.section_severity = CPER_SEV_FATAL;
--
--	memcpy(&rcd.mce, m, sizeof(*m));
--
--	return erst_write(&rcd.hdr);
-+	rcd->hdr.validation_bits = 0;
-+	rcd->hdr.record_length = record_len;
-+	rcd->hdr.creator_id = CPER_CREATOR_PSTORE;
-+	rcd->hdr.notification_type = CPER_NOTIFY_MCE;
-+	rcd->hdr.record_id = cper_next_record_id();
-+	rcd->hdr.flags = CPER_HW_ERROR_FLAGS_PREVERR;
-+
-+	rcd->sec_hdr.section_offset = (void *)&rcd->data - (void *)&rcd;
-+	rcd->sec_hdr.section_length = data_len;
-+	rcd->sec_hdr.revision = CPER_SEC_REV;
-+	/* ->ru_id and fru_text is invalid */
-+	rcd->sec_hdr.validation_bits = 0;
-+	rcd->sec_hdr.flags = CPER_SEC_PRIMARY;
-+	rcd->sec_hdr.section_type = CPER_SECTION_TYPE_MCE;
-+	rcd->sec_hdr.section_severity = CPER_SEV_FATAL;
-+
-+	memcpy(rcd->data, m, data_len);
-+
-+	return erst_write(&rcd->hdr);
- }
+ #include "apei-internal.h"
  
- ssize_t apei_read_mce(struct mce *m, u64 *record_id)
- {
--	struct cper_mce_record rcd;
-+	struct cper_pstore_record rcd;
- 	int rc, pos;
+@@ -1063,8 +1065,10 @@ static ssize_t erst_reader(struct pstore_record *record)
+ 		record->compressed = true;
+ 	} else if (guid_equal(&rcd->sec_hdr.section_type, &CPER_SECTION_TYPE_DMESG))
+ 		record->type = PSTORE_TYPE_DMESG;
+-	else if (guid_equal(&rcd->sec_hdr.section_type, &CPER_SECTION_TYPE_MCE))
++	else if (guid_equal(&rcd->sec_hdr.section_type, &CPER_SECTION_TYPE_MCE)) {
++		trace_mce_record((struct mce *)rcd->data);
+ 		record->type = PSTORE_TYPE_MCE;
++	}
+ 	else
+ 		record->type = PSTORE_TYPE_MAX;
  
- 	rc = erst_get_record_id_begin(&pos);
-@@ -189,14 +177,14 @@ ssize_t apei_read_mce(struct mce *m, u64 *record_id)
- 	if (*record_id == APEI_ERST_INVALID_RECORD_ID)
- 		goto out;
- 	rc = erst_read_record(*record_id, &rcd.hdr, sizeof(rcd), sizeof(rcd),
--			&CPER_CREATOR_MCE);
-+			&CPER_CREATOR_PSTORE);
- 	/* someone else has cleared the record, try next one */
- 	if (rc == -ENOENT)
- 		goto retry;
- 	else if (rc < 0)
- 		goto out;
- 
--	memcpy(m, &rcd.mce, sizeof(*m));
-+	memcpy(m, &rcd.data, sizeof(*m));
- 	rc = sizeof(*m);
- out:
- 	erst_get_record_id_end();
 -- 
 2.41.0
 
