@@ -1,14 +1,30 @@
-Return-Path: <xueshuai@linux.alibaba.com>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 8CEE482218
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 15AB38217B
-From: Shuai Xue <xueshuai@linux.alibaba.com>
-Message-Id: <20230919022127.69732-3-xueshuai@linux.alibaba.com>
-In-Reply-To: <20221027042445.60108-1-xueshuai@linux.alibaba.com>
-References: <20221027042445.60108-1-xueshuai@linux.alibaba.com>
+Return-Path: <mirsad.todorovac@alu.unizg.hr>
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 3D5BC6124A
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 9360B60F39
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+ t=1695166449; bh=zaMLddCalyQnI1zjdeSAxREZqo19txmGC6/R4+XOaUY=;
+ h=From:To:Cc:Subject:Date:From;
+ b=ZVFVWdlZmCCHvCNhq27Htp9JVHD8RO3ejZHWuhnmkXEH3LNNkFuSZUO58zgmKaRZO
+ aTQMSKPF36m+F0OQlZLFt+x1/2Sdss+N1yYPRfkgKZtyASgqd397QLXOt+OghmtGlB
+ /2kKaDMYR1Qd1UjrI8KK3vMkJ2JaDoDysKQAfQJotaCDb+nmafU/KgtIGuoWqtiO75
+ DKB1YCM81iYig4ir5zBg6ZNzgnpQUaMKMQgHVcPBMwqomMLd9DL8PD32qLQPXNrgsq
+ P5c0cZe873lyfFq3QcDnPxZ9xLel4bgYFGIeFICWUtOAOa6tlRvnVOn9AKOrryAzNC
+ 5zIm5qwCmVMTQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+ t=1695166447; bh=zaMLddCalyQnI1zjdeSAxREZqo19txmGC6/R4+XOaUY=;
+ h=From:To:Cc:Subject:Date:From;
+ b=CZ66NEpRZc72ipqhL6eK/bKEOkxq8BYOvBkzgzxZVKGRxdiuGUKZEns84WitxJjkh
+ ZNsAWcKhwktBUlCAhJuMqcnxQ0l8V5As9KZ34KnKjsZbXFvlhxC4dWYaux2kEVWdkd
+ Bs0+hMjdUB2FKu7TMgzOHTrAy1W0pX+E12XMso3VInSQRJy6H6KCDCRgztOtwWwzSa
+ qzkj6ZA7K3oYwqzSheVXtgyshm1j3uNPFHXU/Xc4zEHVuIfGQux07jxDINyfYyktba
+ qeCvfK4qOgluH3cGe2yK/h8hpWT8dKcTxcRKdcgLKb+pD8JR8hlX1V78HXKxTCpppp
+ 1o4AYNj9nVXIQ==
+From: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+Message-Id: <20230919233316.11420-1-mirsad.todorovac@alu.unizg.hr>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: [Acpica-devel] [RESEND PATCH v8 2/2] ACPI: APEI: handle synchronous
-	exceptions in task work
+Subject: [Acpica-devel] [PATCH v1 1/1] acpica: use spinlocks to fix the
+	data-races reported by the KCSAN
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -18,286 +34,284 @@ List-Post: <mailto:acpica-devel@lists.linuxfoundation.org>
 List-Help: <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=help>
 List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel>, 
  <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=subscribe>
-Date: Tue, 19 Sep 2023 02:21:47 -0000
-To: rafael@kernel.org, wangkefeng.wang@huawei.com, tanxiaofei@huawei.com, mawupeng1@huawei.com, tony.luck@intel.com, linmiaohe@huawei.com, naoya.horiguchi@nec.com, james.morse@arm.com, gregkh@linuxfoundation.org, will@kernel.org
-Cc: dave.hansen@linux.intel.com, linux-mm@kvack.org, hpa@zytor.com, acpica-devel@lists.linuxfoundation.org, ardb@kernel.org, justin.he@arm.com, x86@kernel.org, robert.moore@intel.com, linux-acpi@vger.kernel.org, mingo@redhat.com, zhuo.song@linux.alibaba.com, ying.huang@intel.com, lenb@kernel.org, ashish.kalra@amd.com, xiexiuqi@huawei.com, bp@alien8.de, baolin.wang@linux.alibaba.com, tglx@linutronix.de, linux-edac@vger.kernel.org, lvying6@huawei.com, linux-kernel@vger.kernel.org, stable@vger.kernel.org, jarkko@kernel.org, xueshuai@linux.alibaba.com, akpm@linux-foundation.org
+Date: Tue, 19 Sep 2023 23:34:22 -0000
+To: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>, linux-acpi@vger.kernel.org, acpica-devel@lists.linuxfoundation.org, linux-kernel@vger.kernel.org
+Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Erik Kaneda <erik.kaneda@intel.com>, Robert Moore <robert.moore@intel.com>, Linus Torvalds <torvalds@linux-foundation.org>, Jung-uk Kim <jkim@FreeBSD.org>, Len Brown <lenb@kernel.org>
 
-Hardware errors could be signaled by synchronous interrupt, e.g.  when an
-error is detected by a background scrubber, or signaled by synchronous
-exception, e.g. when an uncorrected error is consumed. Both synchronous and
-asynchronous error are queued and handled by a dedicated kthread in
-workqueue.
+KCSAN reported hundreds of instances of data-races in ACPICA like this one:
 
-commit 7f17b4a121d0 ("ACPI: APEI: Kick the memory_failure() queue for
-synchronous errors") keep track of whether memory_failure() work was
-queued, and make task_work pending to flush out the workqueue so that the
-work for synchronous error is processed before returning to user-space.
-The trick ensures that the corrupted page is unmapped and poisoned. And
-after returning to user-space, the task starts at current instruction which
-triggering a page fault in which kernel will send SIGBUS to current process
-due to VM_FAULT_HWPOISON.
+[    6.994149] ==================================================================
+[    6.994443] BUG: KCSAN: data-race in acpi_ut_status_exit / acpi_ut_trace
 
-However, the memory failure recovery for hwpoison-aware mechanisms does not
-work as expected. For example, hwpoison-aware user-space processes like
-QEMU register their customized SIGBUS handler and enable early kill mode by
-seting PF_MCE_EARLY at initialization. Then the kernel will directy notify
-the process by sending a SIGBUS signal in memory failure with wrong
-si_code: the actual user-space process accessing the corrupt memory
-location, but its memory failure work is handled in a kthread context, so
-it will send SIGBUS with BUS_MCEERR_AO si_code to the actual user-space
-process instead of BUS_MCEERR_AR in kill_proc().
+[    6.994795] write to 0xffffffffbae5a884 of 4 bytes by task 0 on cpu 2:
+[    6.994944] acpi_ut_status_exit (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/utdebug.c:467)
+[    6.994957] acpi_hw_register_read (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:563)
+[    6.994968] acpi_read_bit_register (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwxface.c:171)
+[    6.994980] acpi_idle_bm_check (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:511)
+[    6.994990] acpi_idle_enter_bm (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:644 (discriminator 1))
+[    6.995000] acpi_idle_enter (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:695)
+[    6.995010] cpuidle_enter_state (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:267)
+[    6.995019] cpuidle_enter (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:390)
+[    6.995027] call_cpuidle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:135)
+[    6.995038] do_idle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:219 /home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:282)
+[    6.995046] cpu_startup_entry (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:378 (discriminator 1))
+[    6.995055] start_secondary (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:210 /home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:294)
+[    6.995066] secondary_startup_64_no_verify (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/head_64.S:433)
 
-To this end, separate synchronous and asynchronous error handling into
-different paths like X86 platform does:
+[    6.995121] read to 0xffffffffbae5a884 of 4 bytes by task 0 on cpu 9:
+[    6.995267] acpi_ut_trace (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/utdebug.c:263)
+[    6.995279] acpi_hw_validate_io_request (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwvalid.c:101)
+[    6.995291] acpi_hw_read_port (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwvalid.c:202)
+[    6.995303] acpi_hw_read (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:251)
+[    6.995313] acpi_hw_register_read (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:725 /home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwregs.c:499)
+[    6.995325] acpi_read_bit_register (/home/marvin/linux/kernel/torvalds2/drivers/acpi/acpica/hwxface.c:171)
+[    6.995336] acpi_idle_bm_check (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:511)
+[    6.995346] acpi_idle_enter_bm (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:644 (discriminator 1))
+[    6.995356] acpi_idle_enter (/home/marvin/linux/kernel/torvalds2/drivers/acpi/processor_idle.c:695)
+[    6.995366] cpuidle_enter_state (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:267)
+[    6.995375] cpuidle_enter (/home/marvin/linux/kernel/torvalds2/drivers/cpuidle/cpuidle.c:390)
+[    6.995383] call_cpuidle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:135)
+[    6.995394] do_idle (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:219 /home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:282)
+[    6.995402] cpu_startup_entry (/home/marvin/linux/kernel/torvalds2/kernel/sched/idle.c:378 (discriminator 1))
+[    6.995411] start_secondary (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:210 /home/marvin/linux/kernel/torvalds2/arch/x86/kernel/smpboot.c:294)
+[    6.995422] secondary_startup_64_no_verify (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/head_64.S:433)
 
-- valid synchronous errors: queue a task_work to synchronously send SIGBUS
-  before ret_to_user.
-- valid asynchronous errors: queue a work into workqueue to asynchronously
-  handle memory failure.
-- abnormal branches such as invalid PA, unexpected severity, no memory
-  failure config support, invalid GUID section, OOM, etc.
+[    6.995476] value changed: 0x00000004 -> 0x00000002
 
-Then for valid synchronous errors, the current context in memory failure is
-exactly belongs to the task consuming poison data and it will send SIBBUS
-with proper si_code.
+[    6.995629] Reported by Kernel Concurrency Sanitizer on:
+[    6.995748] CPU: 9 PID: 0 Comm: swapper/9 Not tainted 6.6.0-rc2-kcsan-00003-g16819584c239-dirty #21
+[    6.995758] Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
+[    6.995765] ==================================================================
 
-Fixes: 7f17b4a121d0 ("ACPI: APEI: Kick the memory_failure() queue for synchronous errors")
-Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
-Tested-by: Ma Wupeng <mawupeng1@huawei.com>
-Reviewed-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-Reviewed-by: Xiaofei Tan <tanxiaofei@huawei.com>
-Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+Please find the complete list at: https://domac.alu.unizg.hr/~mtodorov/linux/patches/acpica_utdebug/acpi_ut_status_exit.log.xz
+
+A number of unprotected increments:
+
+        acpi_gbl_nesting_level++;
+
+and conditional statements:
+
+        if (acpi_gbl_nesting_level) {
+                acpi_gbl_nesting_level--;
+        }
+
+no longer work in SMP environment.
+
+Proper locking like
+
+        spin_lock(&acpi_utdebug_lock);
+        acpi_gbl_nesting_level++;
+        spin_unlock(&acpi_utdebug_lock);
+
+and
+
+        spin_lock(&acpi_utdebug_lock);
+        if (acpi_gbl_nesting_level) {
+                acpi_gbl_nesting_level--;
+        }
+        spin_unlock(&acpi_utdebug_lock);
+
+makes these data-races go away.
+
+Additionally, READ_ONCE() or WRITE_ONCE() is required with the global variable
+acpi_gbl_nesting_level to prevent unwanted read or write reordering or other funny
+stuff the optmisers do.
+
+The patch eliminates KCSAN BUG warnings.
+
+Reported-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+Fixes: 6be2d72b18649 ("ACPICA: Update for a few debug output statements")
+Fixes: bf9b448ef8430 ("ACPICA: Debug output: Do not emit function nesting level for kernel build.")
+Fixes: 6e875fa0480c1 ("ACPICA: Debugger: fix slight indentation issue")
+Fixes: ^1da177e4c3f4 ("Initial git repository build.")
+Cc: Jung-uk Kim <jkim@FreeBSD.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Erik Kaneda <erik.kaneda@intel.com>
+Cc: Bob Moore <robert.moore@intel.com>
+Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Cc: Len Brown <lenb@kernel.org>
+Cc: linux-acpi@vger.kernel.org
+Cc: acpica-devel@lists.linuxfoundation.org
+Signed-off-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
 ---
- arch/x86/kernel/cpu/mce/core.c |  9 +---
- drivers/acpi/apei/ghes.c       | 84 +++++++++++++++++++++-------------
- include/acpi/ghes.h            |  3 --
- mm/memory-failure.c            | 17 ++-----
- 4 files changed, 56 insertions(+), 57 deletions(-)
+v1:
+ RFC for the patch.
 
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index 6f35f724cc14..1675ff77033d 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -1334,17 +1334,10 @@ static void kill_me_maybe(struct callback_head *cb)
- 		return;
+ drivers/acpi/acpica/utdebug.c | 40 ++++++++++++++++++++++++++++++-----
+ 1 file changed, 35 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/acpi/acpica/utdebug.c b/drivers/acpi/acpica/utdebug.c
+index c5f6c85a3a09..148f2b820c88 100644
+--- a/drivers/acpi/acpica/utdebug.c
++++ b/drivers/acpi/acpica/utdebug.c
+@@ -16,6 +16,8 @@
+ #define _COMPONENT          ACPI_UTILITIES
+ ACPI_MODULE_NAME("utdebug")
+ 
++static DEFINE_SPINLOCK(acpi_utdebug_lock);
++
+ #ifdef ACPI_DEBUG_OUTPUT
+ static acpi_thread_id acpi_gbl_previous_thread_id = (acpi_thread_id) 0xFFFFFFFF;
+ static const char *acpi_gbl_function_entry_prefix = "----Entry";
+@@ -60,13 +62,16 @@ void acpi_ut_init_stack_ptr_trace(void)
+ void acpi_ut_track_stack_ptr(void)
+ {
+ 	acpi_size current_sp;
++	u32 nesting_level;
+ 
+ 	if (&current_sp < acpi_gbl_lowest_stack_pointer) {
+ 		acpi_gbl_lowest_stack_pointer = &current_sp;
  	}
  
--	/*
--	 * -EHWPOISON from memory_failure() means that it already sent SIGBUS
--	 * to the current process with the proper error info,
--	 * -EOPNOTSUPP means hwpoison_filter() filtered the error event,
--	 *
--	 * In both cases, no further processing is required.
--	 */
- 	if (ret == -EHWPOISON || ret == -EOPNOTSUPP)
- 		return;
- 
--	pr_err("Memory error not recovered");
-+	pr_err("Sending SIGBUS to current task due to memory error not recovered");
- 	kill_me_now(cb);
- }
- 
-diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
-index 88178aa6222d..014401a65ed5 100644
---- a/drivers/acpi/apei/ghes.c
-+++ b/drivers/acpi/apei/ghes.c
-@@ -450,28 +450,41 @@ static void ghes_clear_estatus(struct ghes *ghes,
- }
- 
- /*
-- * Called as task_work before returning to user-space.
-- * Ensure any queued work has been done before we return to the context that
-- * triggered the notification.
-+ * struct sync_task_work - for synchronous RAS event
-+ *
-+ * @twork:                callback_head for task work
-+ * @pfn:                  page frame number of corrupted page
-+ * @flags:                fine tune action taken
-+ *
-+ * Structure to pass task work to be handled before
-+ * ret_to_user via task_work_add().
-  */
--static void ghes_kick_task_work(struct callback_head *head)
-+struct sync_task_work {
-+	struct callback_head twork;
-+	u64 pfn;
-+	int flags;
-+};
+-	if (acpi_gbl_nesting_level > acpi_gbl_deepest_nesting) {
+-		acpi_gbl_deepest_nesting = acpi_gbl_nesting_level;
++	nesting_level = READ_ONCE(acpi_gbl_nesting_level);
 +
-+static void memory_failure_cb(struct callback_head *twork)
- {
--	struct acpi_hest_generic_status *estatus;
--	struct ghes_estatus_node *estatus_node;
--	u32 node_len;
-+	int ret;
-+	struct sync_task_work *twcb =
-+		container_of(twork, struct sync_task_work, twork);
- 
--	estatus_node = container_of(head, struct ghes_estatus_node, task_work);
--	if (IS_ENABLED(CONFIG_ACPI_APEI_MEMORY_FAILURE))
--		memory_failure_queue_kick(estatus_node->task_work_cpu);
-+	ret = memory_failure(twcb->pfn, twcb->flags);
-+	kfree(twcb);
- 
--	estatus = GHES_ESTATUS_FROM_NODE(estatus_node);
--	node_len = GHES_ESTATUS_NODE_LEN(cper_estatus_len(estatus));
--	gen_pool_free(ghes_estatus_pool, (unsigned long)estatus_node, node_len);
-+	if (!ret || ret == -EHWPOISON || ret == -EOPNOTSUPP)
-+		return;
-+
-+	pr_err("Sending SIGBUS to current task due to memory error not recovered");
-+	force_sig(SIGBUS);
- }
- 
- static bool ghes_do_memory_failure(u64 physical_addr, int flags)
- {
- 	unsigned long pfn;
-+	struct sync_task_work *twcb;
- 
- 	if (!IS_ENABLED(CONFIG_ACPI_APEI_MEMORY_FAILURE))
- 		return false;
-@@ -484,6 +497,18 @@ static bool ghes_do_memory_failure(u64 physical_addr, int flags)
- 		return false;
++	if (nesting_level > acpi_gbl_deepest_nesting) {
++		acpi_gbl_deepest_nesting = nesting_level;
  	}
- 
-+	if (flags == MF_ACTION_REQUIRED && current->mm) {
-+		twcb = kmalloc(sizeof(*twcb), GFP_ATOMIC);
-+		if (!twcb)
-+			return false;
-+
-+		twcb->pfn = pfn;
-+		twcb->flags = flags;
-+		init_task_work(&twcb->twork, memory_failure_cb);
-+		task_work_add(current, &twcb->twork, TWA_RESUME);
-+		return true;
-+	}
-+
- 	memory_failure_queue(pfn, flags);
- 	return true;
- }
-@@ -652,7 +677,7 @@ static void ghes_defer_non_standard_event(struct acpi_hest_generic_data *gdata,
- 	schedule_work(&entry->work);
  }
  
--static bool ghes_do_proc(struct ghes *ghes,
-+static void ghes_do_proc(struct ghes *ghes,
- 			 const struct acpi_hest_generic_status *estatus)
- {
- 	int sev, sec_sev;
-@@ -696,7 +721,14 @@ static bool ghes_do_proc(struct ghes *ghes,
+@@ -137,6 +142,7 @@ acpi_debug_print(u32 requested_debug_level,
+ #ifdef ACPI_APPLICATION
+ 	int fill_count;
+ #endif
++	u32 nesting_level;
+ 
+ 	/* Check if debug output enabled */
+ 
+@@ -156,7 +162,7 @@ acpi_debug_print(u32 requested_debug_level,
  		}
+ 
+ 		acpi_gbl_previous_thread_id = thread_id;
+-		acpi_gbl_nesting_level = 0;
++		WRITE_ONCE(acpi_gbl_nesting_level, 0);
  	}
  
--	return queued;
-+	/*
-+	 * If no memory failure work is queued for abnormal synchronous
-+	 * errors, do a force kill.
-+	 */
-+	if (sync && !queued) {
-+		pr_err("Sending SIGBUS to current task due to memory error not recovered");
-+		force_sig(SIGBUS);
-+	}
- }
- 
- static void __ghes_print_estatus(const char *pfx,
-@@ -998,9 +1030,7 @@ static void ghes_proc_in_irq(struct irq_work *irq_work)
- 	struct ghes_estatus_node *estatus_node;
- 	struct acpi_hest_generic *generic;
- 	struct acpi_hest_generic_status *estatus;
--	bool task_work_pending;
- 	u32 len, node_len;
--	int ret;
- 
- 	llnode = llist_del_all(&ghes_estatus_llist);
  	/*
-@@ -1015,25 +1045,16 @@ static void ghes_proc_in_irq(struct irq_work *irq_work)
- 		estatus = GHES_ESTATUS_FROM_NODE(estatus_node);
- 		len = cper_estatus_len(estatus);
- 		node_len = GHES_ESTATUS_NODE_LEN(len);
--		task_work_pending = ghes_do_proc(estatus_node->ghes, estatus);
-+
-+		ghes_do_proc(estatus_node->ghes, estatus);
-+
- 		if (!ghes_estatus_cached(estatus)) {
- 			generic = estatus_node->generic;
- 			if (ghes_print_estatus(NULL, generic, estatus))
- 				ghes_estatus_cache_add(generic, estatus);
- 		}
--
--		if (task_work_pending && current->mm) {
--			estatus_node->task_work.func = ghes_kick_task_work;
--			estatus_node->task_work_cpu = smp_processor_id();
--			ret = task_work_add(current, &estatus_node->task_work,
--					    TWA_RESUME);
--			if (ret)
--				estatus_node->task_work.func = NULL;
--		}
--
--		if (!estatus_node->task_work.func)
--			gen_pool_free(ghes_estatus_pool,
--				      (unsigned long)estatus_node, node_len);
-+		gen_pool_free(ghes_estatus_pool, (unsigned long)estatus_node,
-+			      node_len);
- 
- 		llnode = next;
+@@ -176,14 +182,16 @@ acpi_debug_print(u32 requested_debug_level,
+ 		acpi_os_printf("[%u] ", (u32)thread_id);
  	}
-@@ -1094,7 +1115,6 @@ static int ghes_in_nmi_queue_one_entry(struct ghes *ghes,
  
- 	estatus_node->ghes = ghes;
- 	estatus_node->generic = ghes->generic;
--	estatus_node->task_work.func = NULL;
- 	estatus = GHES_ESTATUS_FROM_NODE(estatus_node);
+-	fill_count = 48 - acpi_gbl_nesting_level -
++	fill_count = 48 - READ_ONCE(acpi_gbl_nesting_level) -
+ 	    strlen(acpi_ut_trim_function_name(function_name));
+ 	if (fill_count < 0) {
+ 		fill_count = 0;
+ 	}
  
- 	if (__ghes_read_estatus(estatus, buf_paddr, fixmap_idx, len)) {
-diff --git a/include/acpi/ghes.h b/include/acpi/ghes.h
-index 3c8bba9f1114..e5e0c308d27f 100644
---- a/include/acpi/ghes.h
-+++ b/include/acpi/ghes.h
-@@ -35,9 +35,6 @@ struct ghes_estatus_node {
- 	struct llist_node llnode;
- 	struct acpi_hest_generic *generic;
- 	struct ghes *ghes;
--
--	int task_work_cpu;
--	struct callback_head task_work;
- };
- 
- struct ghes_estatus_cache {
-diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index 4d6e43c88489..80e1ea1cc56d 100644
---- a/mm/memory-failure.c
-+++ b/mm/memory-failure.c
-@@ -2163,7 +2163,9 @@ static int memory_failure_dev_pagemap(unsigned long pfn, int flags,
-  *
-  * Return: 0 for successfully handled the memory error,
-  *         -EOPNOTSUPP for hwpoison_filter() filtered the error event,
-- *         < 0(except -EOPNOTSUPP) on failure.
-+ *         -EHWPOISON for already sent SIGBUS to the current process with
-+ *         the proper error info,
-+ *         other negative error code on failure.
-  */
- int memory_failure(unsigned long pfn, int flags)
++	nesting_level = READ_ONCE(acpi_gbl_nesting_level);
++
+ 	acpi_os_printf("[%02d] %*s",
+-		       acpi_gbl_nesting_level, acpi_gbl_nesting_level + 1, " ");
++		       nesting_level, nesting_level + 1, " ");
+ 	acpi_os_printf("%s%*s: ",
+ 		       acpi_ut_trim_function_name(function_name), fill_count,
+ 		       " ");
+@@ -260,7 +268,10 @@ acpi_ut_trace(u32 line_number,
+ 	      const char *module_name, u32 component_id)
  {
-@@ -2445,19 +2447,6 @@ static void memory_failure_work_func(struct work_struct *work)
+ 
++	spin_lock(&acpi_utdebug_lock);
+ 	acpi_gbl_nesting_level++;
++	spin_unlock(&acpi_utdebug_lock);
++
+ 	acpi_ut_track_stack_ptr();
+ 
+ 	/* Check if enabled up-front for performance */
+@@ -298,7 +309,10 @@ acpi_ut_trace_ptr(u32 line_number,
+ 		  u32 component_id, const void *pointer)
+ {
+ 
++	spin_lock(&acpi_utdebug_lock);
+ 	acpi_gbl_nesting_level++;
++	spin_unlock(&acpi_utdebug_lock);
++
+ 	acpi_ut_track_stack_ptr();
+ 
+ 	/* Check if enabled up-front for performance */
+@@ -334,7 +348,10 @@ acpi_ut_trace_str(u32 line_number,
+ 		  const char *module_name, u32 component_id, const char *string)
+ {
+ 
++	spin_lock(&acpi_utdebug_lock);
+ 	acpi_gbl_nesting_level++;
++	spin_unlock(&acpi_utdebug_lock);
++
+ 	acpi_ut_track_stack_ptr();
+ 
+ 	/* Check if enabled up-front for performance */
+@@ -370,7 +387,10 @@ acpi_ut_trace_u32(u32 line_number,
+ 		  const char *module_name, u32 component_id, u32 integer)
+ {
+ 
++	spin_lock(&acpi_utdebug_lock);
+ 	acpi_gbl_nesting_level++;
++	spin_unlock(&acpi_utdebug_lock);
++
+ 	acpi_ut_track_stack_ptr();
+ 
+ 	/* Check if enabled up-front for performance */
+@@ -414,9 +434,11 @@ acpi_ut_exit(u32 line_number,
+ 				 acpi_gbl_function_exit_prefix);
  	}
+ 
++	spin_lock(&acpi_utdebug_lock);
+ 	if (acpi_gbl_nesting_level) {
+ 		acpi_gbl_nesting_level--;
+ 	}
++	spin_unlock(&acpi_utdebug_lock);
  }
  
--/*
-- * Process memory_failure work queued on the specified CPU.
-- * Used to avoid return-to-userspace racing with the memory_failure workqueue.
-- */
--void memory_failure_queue_kick(int cpu)
--{
--	struct memory_failure_cpu *mf_cpu;
--
--	mf_cpu = &per_cpu(memory_failure_cpu, cpu);
--	cancel_work_sync(&mf_cpu->work);
--	memory_failure_work_func(&mf_cpu->work);
--}
--
- static int __init memory_failure_init(void)
- {
- 	struct memory_failure_cpu *mf_cpu;
+ ACPI_EXPORT_SYMBOL(acpi_ut_exit)
+@@ -463,9 +485,11 @@ acpi_ut_status_exit(u32 line_number,
+ 		}
+ 	}
+ 
++	spin_lock(&acpi_utdebug_lock);
+ 	if (acpi_gbl_nesting_level) {
+ 		acpi_gbl_nesting_level--;
+ 	}
++	spin_unlock(&acpi_utdebug_lock);
+ }
+ 
+ ACPI_EXPORT_SYMBOL(acpi_ut_status_exit)
+@@ -502,9 +526,11 @@ acpi_ut_value_exit(u32 line_number,
+ 				 ACPI_FORMAT_UINT64(value));
+ 	}
+ 
++	spin_lock(&acpi_utdebug_lock);
+ 	if (acpi_gbl_nesting_level) {
+ 		acpi_gbl_nesting_level--;
+ 	}
++	spin_unlock(&acpi_utdebug_lock);
+ }
+ 
+ ACPI_EXPORT_SYMBOL(acpi_ut_value_exit)
+@@ -540,9 +566,11 @@ acpi_ut_ptr_exit(u32 line_number,
+ 				 acpi_gbl_function_exit_prefix, ptr);
+ 	}
+ 
++	spin_lock(&acpi_utdebug_lock);
+ 	if (acpi_gbl_nesting_level) {
+ 		acpi_gbl_nesting_level--;
+ 	}
++	spin_unlock(&acpi_utdebug_lock);
+ }
+ 
+ /*******************************************************************************
+@@ -577,9 +605,11 @@ acpi_ut_str_exit(u32 line_number,
+ 				 acpi_gbl_function_exit_prefix, string);
+ 	}
+ 
++	spin_lock(&acpi_utdebug_lock);
+ 	if (acpi_gbl_nesting_level) {
+ 		acpi_gbl_nesting_level--;
+ 	}
++	spin_unlock(&acpi_utdebug_lock);
+ }
+ 
+ /*******************************************************************************
 -- 
-2.39.3
+2.34.1
 
