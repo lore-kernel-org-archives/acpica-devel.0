@@ -1,26 +1,26 @@
 Return-Path: <mirsad.todorovac@alu.unizg.hr>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 3D5BC6124A
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 9360B60F39
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org A102360BB8
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 585C560B9F
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
- t=1695166449; bh=zaMLddCalyQnI1zjdeSAxREZqo19txmGC6/R4+XOaUY=;
+ t=1695168164; bh=utPA7n7Yd2xyMem/Et4OtLEbYxG/j95VNgIAsibOFp4=;
  h=From:To:Cc:Subject:Date:From;
- b=ZVFVWdlZmCCHvCNhq27Htp9JVHD8RO3ejZHWuhnmkXEH3LNNkFuSZUO58zgmKaRZO
- aTQMSKPF36m+F0OQlZLFt+x1/2Sdss+N1yYPRfkgKZtyASgqd397QLXOt+OghmtGlB
- /2kKaDMYR1Qd1UjrI8KK3vMkJ2JaDoDysKQAfQJotaCDb+nmafU/KgtIGuoWqtiO75
- DKB1YCM81iYig4ir5zBg6ZNzgnpQUaMKMQgHVcPBMwqomMLd9DL8PD32qLQPXNrgsq
- P5c0cZe873lyfFq3QcDnPxZ9xLel4bgYFGIeFICWUtOAOa6tlRvnVOn9AKOrryAzNC
- 5zIm5qwCmVMTQ==
+ b=gLn0Ja8cF2t3vVv0+mTfL/TZhVfVDiTO5V8+3Bp7fs9LrbvwBVBNVS1OkOV1tfSB1
+ O4tB3q626hPc8eCr/G426zfo0FkQ8m9GUoL0f4i6rBRoUb+eAJpsSHPb6ysYh/9IaN
+ Ao3Qn3a9GWQDLmoDEN4/OSiXSnl5rBjrbZDpVbpDmleWSEKFStfdm/Chaskean+QJ4
+ z3SmWfQfnKyo78zDg/wERcG+y7LrPCVe8DfElEj+TZbR3fBHneIJJVq+VMVf32oStp
+ 38Z2T4U2HvZ/RD+xDiIK9UHgqJPdSh0PLwmjDuIa7V1/oweByN79DdJ2qI6BVW6WHE
+ oCBRIKD0FLCmQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
- t=1695166447; bh=zaMLddCalyQnI1zjdeSAxREZqo19txmGC6/R4+XOaUY=;
+ t=1695168161; bh=utPA7n7Yd2xyMem/Et4OtLEbYxG/j95VNgIAsibOFp4=;
  h=From:To:Cc:Subject:Date:From;
- b=CZ66NEpRZc72ipqhL6eK/bKEOkxq8BYOvBkzgzxZVKGRxdiuGUKZEns84WitxJjkh
- ZNsAWcKhwktBUlCAhJuMqcnxQ0l8V5As9KZ34KnKjsZbXFvlhxC4dWYaux2kEVWdkd
- Bs0+hMjdUB2FKu7TMgzOHTrAy1W0pX+E12XMso3VInSQRJy6H6KCDCRgztOtwWwzSa
- qzkj6ZA7K3oYwqzSheVXtgyshm1j3uNPFHXU/Xc4zEHVuIfGQux07jxDINyfYyktba
- qeCvfK4qOgluH3cGe2yK/h8hpWT8dKcTxcRKdcgLKb+pD8JR8hlX1V78HXKxTCpppp
- 1o4AYNj9nVXIQ==
+ b=eFwQ5jINT4MhN7WjvnbnDTbQ2E7ivLLaGFZ3+aoNrCWdm/EQSLY4XeXDs/eRxTrlv
+ CwCq4AaROOF7VljeOWxpj0HEVqw+xmORSyK5mz+5Z9LVfLOW3+SsqSxhqsFeI1CqiG
+ pHiG6Iu04NQlD0iPbrTDPmqf4chW5GCULwpDVFzikRL+mbvZSCTOFMaqAdmbWGWXga
+ yrWU302jObOn4aiD1Mfi6z+S1mp7BX4AhS/mBerCbsrNbr0/Rv9cULlZaBC06WKnmy
+ yC2l51USwZ5YnV57pXu2UDB65cCFTob4FxtkCnnGJPFB3IOXMME2ztA9Io1yzpzyr6
+ RGJbR6pFLF40Q==
 From: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
-Message-Id: <20230919233316.11420-1-mirsad.todorovac@alu.unizg.hr>
+Message-Id: <20230920000139.15533-1-mirsad.todorovac@alu.unizg.hr>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Subject: [Acpica-devel] [PATCH v1 1/1] acpica: use spinlocks to fix the
@@ -34,7 +34,7 @@ List-Post: <mailto:acpica-devel@lists.linuxfoundation.org>
 List-Help: <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=help>
 List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel>, 
  <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=subscribe>
-Date: Tue, 19 Sep 2023 23:34:22 -0000
+Date: Wed, 20 Sep 2023 00:02:49 -0000
 To: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>, linux-acpi@vger.kernel.org, acpica-devel@lists.linuxfoundation.org, linux-kernel@vger.kernel.org
 Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Erik Kaneda <erik.kaneda@intel.com>, Robert Moore <robert.moore@intel.com>, Linus Torvalds <torvalds@linux-foundation.org>, Jung-uk Kim <jkim@FreeBSD.org>, Len Brown <lenb@kernel.org>
 
@@ -135,7 +135,7 @@ Cc: acpica-devel@lists.linuxfoundation.org
 Signed-off-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
 ---
 v1:
- RFC for the patch.
+ Preliminary RFC version of the patch.
 
  drivers/acpi/acpica/utdebug.c | 40 ++++++++++++++++++++++++++++++-----
  1 file changed, 35 insertions(+), 5 deletions(-)
