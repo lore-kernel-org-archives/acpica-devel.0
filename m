@@ -1,15 +1,26 @@
-Return-Path: <LeoLiu-oc@zhaoxin.com>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 985CC410EA
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org B85F7410E1
-Message-ID: <bb01b8f1-bb25-48e5-9445-63d40703e919@zhaoxin.com>
-MIME-Version: 1.0
-References: <20230810233007.GA41830@bhelgaas>
-From: LeoLiu-oc <leoliu-oc@zhaoxin.com>
-In-Reply-To: <20230810233007.GA41830@bhelgaas>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: 8bit
-Subject: Re: [Acpica-devel] [PATCH v3 4/5] ACPI/PCI: Add
-	pci_acpi_program_hest_aer_params()
+Return-Path: <jarkko@kernel.org>
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 4334781E58
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 20DD38196A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1695653004;
+ bh=zLu+VnRpIsjtnAXABy7BDzCTOqyINaVoPvsO++Hkwow=;
+ h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+ b=qw77X9fkt0hBOpDdvTU2WKmu46P3XwVZXqEmHv04wqXA/tZs4NgonJaHKf7T8MZAC
+ oPNae1MmhWZ3eOq+eqzdXMUr7j7oPNnBXePU3V/yvxGYt+LT2sEv94UA86N3ssa4p9
+ fz6Z0JVoPlrWpHUK4hmHg0rA8lKjUp3uYG452ywN2dkQxUZlpqN4ML0W/HvnTG/LnR
+ mQw58kFoNZmb/HPdqzWT0XPfhg/ijXT/GT5Lcx89pnr12GhQ1x5zAlOPlUT4HhfwTS
+ xy1RrnkmKut5d1yXF7k93DE2LrJT+5zXjmyv4CnjDdS+Abrr+nZp1g5CeFrS7FcnLD
+ QhF4td3R7tIOg==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Message-Id: <CVS2TK6J4193.2X0455FSP2MLQ@suppilovahvero>
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+References: <20221027042445.60108-1-xueshuai@linux.alibaba.com>
+ <20230919022127.69732-2-xueshuai@linux.alibaba.com>
+In-Reply-To: <20230919022127.69732-2-xueshuai@linux.alibaba.com>
+Subject: Re: [Acpica-devel] [RESEND PATCH v8 1/2] ACPI: APEI: set memory
+ failure flags as MF_ACTION_REQUIRED on synchronous events
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -19,190 +30,119 @@ List-Post: <mailto:acpica-devel@lists.linuxfoundation.org>
 List-Help: <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=help>
 List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel>, 
  <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=subscribe>
-Date: Mon, 11 Sep 2023 10:17:05 -0000
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: tony.luck@intel.com, linux-pci@vger.kernel.org, robert.moore@intel.com, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, ErosZhang@zhaoxin.com, bp@alien8.de, bhelgaas@google.com, james.morse@arm.com, acpica-devel@lists.linuxfoundation.org, lenb@kernel.org
+Date: Mon, 25 Sep 2023 14:43:30 -0000
+To: Shuai Xue <xueshuai@linux.alibaba.com>, rafael@kernel.org, wangkefeng.wang@huawei.com, tanxiaofei@huawei.com, mawupeng1@huawei.com, tony.luck@intel.com, linmiaohe@huawei.com, naoya.horiguchi@nec.com, james.morse@arm.com, gregkh@linuxfoundation.org, will@kernel.org
+Cc: dave.hansen@linux.intel.com, linux-mm@kvack.org, hpa@zytor.com, acpica-devel@lists.linuxfoundation.org, ardb@kernel.org, justin.he@arm.com, x86@kernel.org, robert.moore@intel.com, linux-acpi@vger.kernel.org, mingo@redhat.com, zhuo.song@linux.alibaba.com, ying.huang@intel.com, lenb@kernel.org, ashish.kalra@amd.com, xiexiuqi@huawei.com, bp@alien8.de, baolin.wang@linux.alibaba.com, tglx@linutronix.de, linux-edac@vger.kernel.org, lvying6@huawei.com, linux-kernel@vger.kernel.org, stable@vger.kernel.org, akpm@linux-foundation.org
 
-
-
-在 2023/8/11 7:30, Bjorn Helgaas 写道:
-> On Tue, Jul 04, 2023 at 08:05:44PM +0800, LeoLiu-oc wrote:
->> From: leoliu-oc <leoliu-oc@zhaoxin.com>
->>
->> The extracted register values from HEST PCI Express AER structures are
->> written to AER Capabilities.
-> 
-> In the subject, the prevailing style for this file is
-> (see "git log --oneline drivers/pci/pci-acpi.c"):
-> 
->    PCI/ACPI: ...
-> 
-> And I'd like the subject to tell users why they might want this patch.
-> It's obvious from the patch that this adds a function.  What's *not*
-> obvious is *why* we want this new function.  So the commit log should
-> tell us what the benefit is, and the subject line should be one-line
-> summary of that benefit.
-> 
-> This patch adds a function but no caller.  The next patch is one-liner
-> that adds the caller.  I think these two should be squashed so it's
-> easier to review (and easier to explain the benefit of *this* patch :))
-> 
-
-Ok, I will merge this patch with 5/5 in the next version.
-
->> Signed-off-by: leoliu-oc <leoliu-oc@zhaoxin.com>
->> ---
->>   drivers/pci/pci-acpi.c | 92 ++++++++++++++++++++++++++++++++++++++++++
->>   drivers/pci/pci.h      |  5 +++
->>   2 files changed, 97 insertions(+)
->>
->> diff --git a/drivers/pci/pci-acpi.c b/drivers/pci/pci-acpi.c
->> index a05350a4e49cb..cff54410e2427 100644
->> --- a/drivers/pci/pci-acpi.c
->> +++ b/drivers/pci/pci-acpi.c
->> @@ -18,6 +18,7 @@
->>   #include <linux/pm_runtime.h>
->>   #include <linux/pm_qos.h>
->>   #include <linux/rwsem.h>
->> +#include <acpi/apei.h>
->>   #include "pci.h"
->>   
->>   /*
->> @@ -783,6 +784,97 @@ int pci_acpi_program_hp_params(struct pci_dev *dev)
->>   	return -ENODEV;
->>   }
->>   
->> +/*
->> + * program_aer_structure_to_aer_registers - Write the AER structure to
->> + * the corresponding dev's AER registers.
->> + *
->> + * @info - the AER structure information
->> + *
-> 
-> Remove the spurious blank comment line.
+On Tue Sep 19, 2023 at 5:21 AM EEST, Shuai Xue wrote:
+> There are two major types of uncorrected recoverable (UCR) errors :
 >
-
-OK.
-
->> + */
->> +static void program_aer_structure_to_aer_registers(struct acpi_hest_parse_aer_info info)
->> +{
->> +	u32 uncorrectable_mask;
->> +	u32 uncorrectable_severity;
->> +	u32 correctable_mask;
->> +	u32 advanced_capabilities;
->> +	u32 root_error_command;
->> +	u32 uncorrectable_mask2;
->> +	u32 uncorrectable_severity2;
->> +	u32 advanced_capabilities2;
->> +	int port_type;
->> +	int pos;
->> +	struct pci_dev *dev;
-> 
-> Order these declarations in order of use.
-> 
-
-OK.
-
->> +	dev = info.pci_dev;
->> +	port_type = pci_pcie_type(dev);
->> +
->> +	pos = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_ERR);
->> +	if (!pos)
->> +		return;
->> +
->> +	if (port_type == PCI_EXP_TYPE_ROOT_PORT) {
->> +		uncorrectable_mask = info.acpi_hest_aer_root_port->uncorrectable_mask;
->> +		uncorrectable_severity = info.acpi_hest_aer_root_port->uncorrectable_severity;
->> +		correctable_mask = info.acpi_hest_aer_root_port->correctable_mask;
->> +		advanced_capabilities = info.acpi_hest_aer_root_port->advanced_capabilities;
->> +		root_error_command = info.acpi_hest_aer_root_port->root_error_command;
-> 
-> Except for this new code, this file fits in 80 columns, so I'd like
-> the new code to match.
+> - Action Required (AR): The error is detected and the processor already
+>   consumes the memory. OS requires to take action (for example, offline
+>   failure page/kill failure thread) to recover this uncorrectable error.
 >
+> - Action Optional (AO): The error is detected out of processor execution
+>   context. Some data in the memory are corrupted. But the data have not
+>   been consumed. OS is optional to take action to recover this
+>   uncorrectable error.
+>
+> The essential difference between AR and AO errors is that AR is a
+> synchronous event, while AO is an asynchronous event. The hardware will
+> signal a synchronous exception (Machine Check Exception on X86 and
+> Synchronous External Abort on Arm64) when an error is detected and the
+> memory access has been architecturally executed.
+>
+> When APEI firmware first is enabled, a platform may describe one error
+> source for the handling of synchronous errors (e.g. MCE or SEA notificati=
+on
+> ), or for handling asynchronous errors (e.g. SCI or External Interrupt
+> notification). In other words, we can distinguish synchronous errors by
+> APEI notification. For AR errors, kernel will kill current process
+> accessing the poisoned page by sending SIGBUS with BUS_MCEERR_AR. In
+> addition, for AO errors, kernel will notify the process who owns the
+> poisoned page by sending SIGBUS with BUS_MCEERR_AO in early kill mode.
+> However, the GHES driver always sets mf_flags to 0 so that all UCR errors
+> are handled as AO errors in memory failure.
+>
+> To this end, set memory failure flags as MF_ACTION_REQUIRED on synchronou=
+s
+> events.
+>
+> Fixes: ba61ca4aab47 ("ACPI, APEI, GHES: Add hardware memory error recover=
+y support")'
+> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
+> Tested-by: Ma Wupeng <mawupeng1@huawei.com>
+> Reviewed-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> Reviewed-by: Xiaofei Tan <tanxiaofei@huawei.com>
+> Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+> ---
+>  drivers/acpi/apei/ghes.c | 29 +++++++++++++++++++++++------
+>  1 file changed, 23 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
+> index ef59d6ea16da..88178aa6222d 100644
+> --- a/drivers/acpi/apei/ghes.c
+> +++ b/drivers/acpi/apei/ghes.c
+> @@ -101,6 +101,20 @@ static inline bool is_hest_type_generic_v2(struct gh=
+es *ghes)
+>  	return ghes->generic->header.type =3D=3D ACPI_HEST_TYPE_GENERIC_ERROR_V=
+2;
+>  }
+> =20
+> +/*
+> + * A platform may describe one error source for the handling of synchron=
+ous
+> + * errors (e.g. MCE or SEA), or for handling asynchronous errors (e.g. S=
+CI
+> + * or External Interrupt). On x86, the HEST notifications are always
+> + * asynchronous, so only SEA on ARM is delivered as a synchronous
+> + * notification.
+> + */
+> +static inline bool is_hest_sync_notify(struct ghes *ghes)
+> +{
+> +	u8 notify_type =3D ghes->generic->notify.type;
+> +
+> +	return notify_type =3D=3D ACPI_HEST_NOTIFY_SEA;
+> +}
+> +
+>  /*
+>   * This driver isn't really modular, however for the time being,
+>   * continuing to use module_param is the easiest way to remain
+> @@ -475,7 +489,7 @@ static bool ghes_do_memory_failure(u64 physical_addr,=
+ int flags)
+>  }
+> =20
+>  static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gd=
+ata,
+> -				       int sev)
+> +				       int sev, bool sync)
+>  {
+>  	int flags =3D -1;
+>  	int sec_sev =3D ghes_severity(gdata->error_severity);
+> @@ -489,7 +503,7 @@ static bool ghes_handle_memory_failure(struct acpi_he=
+st_generic_data *gdata,
+>  	    (gdata->flags & CPER_SEC_ERROR_THRESHOLD_EXCEEDED))
+>  		flags =3D MF_SOFT_OFFLINE;
+>  	if (sev =3D=3D GHES_SEV_RECOVERABLE && sec_sev =3D=3D GHES_SEV_RECOVERA=
+BLE)
+> -		flags =3D 0;
+> +		flags =3D sync ? MF_ACTION_REQUIRED : 0;
 
-OK.
+Not my territory but this branching looks a bit weird to my
+eyes so just in case putting a comment.
 
->> +
->> +		pci_write_config_dword(dev, pos + PCI_ERR_UNCOR_MASK, uncorrectable_mask);
-> 
-> I'm not sure we need to copy everything into local variables.  Maybe
-> this could be split into three helper functions, which would save a
-> level of indent and a level of struct traversal (e.g., "rp->" instead
-> of "info.acpi_hest_aer_root_port->".
-> 
->    pci_write_config_dword(dev, pos + PCI_ERR_UNCOR_MASK, rp->uncorrectable_mask);
-> 
-> or
-> 
->    pci_write_config_dword(dev, pos + PCI_ERR_UNCOR_MASK,
->                           rp->uncorrectable_mask);
-> 
-> If you have to define a new struct acpi_hest_aer_root_port, you could
-> make the member names shorter.  But hopefully you *don't* have to do
-> that, so maybe we're stuck with the long existing member names in
-> acpi_hest_aer_common.
-> >> +int pci_acpi_program_hest_aer_params(struct pci_dev *dev)
->> +{
->> +	struct acpi_hest_parse_aer_info info = {
->> +		.pci_dev	= dev,
->> +		.hest_matched_with_dev	= 0,
->> +		.acpi_hest_aer_endpoint = NULL,
->> +		.acpi_hest_aer_root_port = NULL,
->> +		.acpi_hest_aer_for_bridge = NULL,
-> 
-> Drop the tab from the .pci_dev initialization since the other members
-> aren't lined up anyway.  I think you can drop the other
-> initializations completely since they will be initialized to 0 or NULL
-> pointers by default.
-> 
+What *if* the previous condition sets MF_SOFT_OFFLINE and
+this condition overwrites the value?
 
-Thanks for your guidance, I will make changes to the code where it fits 
-and does not conform to the specification.
+I know that earlier it could have been overwritten by zero.
 
-Best Regards.
-LeoLiu-oc
+Neither the function comment has any explanation why it is
+ok overwrite like this.
 
->> +	};
->> +
->> +	if (!pci_is_pcie(dev))
->> +		return -ENODEV;
->> +
->> +	apei_hest_parse(apei_hest_parse_aer, &info);
->> +	if (info.hest_matched_with_dev == 1)
->> +		program_aer_structure_to_aer_registers(info);
->> +	else
->> +		return -ENODEV;
->> +	return 0;
->> +}
->> +
->>   /**
->>    * pciehp_is_native - Check whether a hotplug port is handled by the OS
->>    * @bridge: Hotplug port to check
->> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
->> index a4c3974340576..37aa4a33eeed2 100644
->> --- a/drivers/pci/pci.h
->> +++ b/drivers/pci/pci.h
->> @@ -713,6 +713,7 @@ void acpi_pci_refresh_power_state(struct pci_dev *dev);
->>   int acpi_pci_wakeup(struct pci_dev *dev, bool enable);
->>   bool acpi_pci_need_resume(struct pci_dev *dev);
->>   pci_power_t acpi_pci_choose_state(struct pci_dev *pdev);
->> +int pci_acpi_program_hest_aer_params(struct pci_dev *dev);
->>   #else
->>   static inline int pci_dev_acpi_reset(struct pci_dev *dev, bool probe)
->>   {
->> @@ -752,6 +753,10 @@ static inline pci_power_t acpi_pci_choose_state(struct pci_dev *pdev)
->>   {
->>   	return PCI_POWER_ERROR;
->>   }
->> +static inline int pci_acpi_program_hest_aer_params(struct pci_dev *dev)
->> +{
->> +	return -ENODEV;
->> +}
->>   #endif
->>   
->>   #ifdef CONFIG_PCIEASPM
->> -- 
->> 2.34.1
->>
+Or if these cannot happen simultaenously why there is not
+immediate return after settting MF_SOFT_OFFLINE?
+
+For someone like me the functions logic is tediously hard
+to understand tbh.
+
+BR, Jarkko
