@@ -1,23 +1,27 @@
 Return-Path: <vincent.guittot@linaro.org>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 623E74190B
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org F414540642
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 7C00C82280
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 95C6F82CA3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=linaro.org; s=google; t=1697646345; x=1698251145;
+ d=linaro.org; s=google; t=1697646347; x=1698251147;
  darn=lists.linuxfoundation.org; 
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=aBPvPoGvatc00L33SJsgf3xSxpMurf+haw6UVXLiWPI=;
- b=CADB3aldFT3ugpY5D5Lzite15jgRZDOrB5fg5QC69km8gytoeWEgnndMRBGnVTbKRg
- /kJqIqpWINyqYQ3BX/3pHaBiokqUJMlK1dNS0kYH98VKSKxc7tEdLP8S97jwkokK1P3D
- PHJ+HN86h5YSbk7/mLGm6WabTtdxUDqphou1Emr4Y/LGYzE6NHNQ0Iv/kBTqfjWvYy+q
- a6AVyId1WNJXKBWAjCMYyvyuQ9BeprLTiMJz/A8yqKluEk8y95COob+sfNDvYUoUK7ii
- fKq3Gld+Zu9oyJz7CRQK9Asj604K2YqY4bwtaeiq8/MFy8kiCJ5UJ1g9ooFpZhBXlojS
- h5dA==
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=fFOHFKmq1WrCMxE6F0StEJReCJz85aGc8CyzkJS5qLM=;
+ b=veaa3RdNghB4xyoXbN12NSHt1p8uis4f9RkjNjdl0uMI6+A15/77EV1yMV9fCPNKap
+ yGk4caoA7WWzVmjbrnapFt7dxKXCl+VbDjw+GgYSmkaNDVOxukWSuzLK/nP4lFD2pMxp
+ lXm4VmsTz6GJPKwmi4fMJWpf0LL1X/Dy+5rAqLMwRWs5hHJunybkTBkxq/xDCxGH5Ted
+ ZjUEwI+OS5ML7S65CDXrYVS2wYh+qDOwOJfSy5mYIagjf93KBuxtVtrWNZa+DyN3yGj/
+ +7PBVsOIjEfQgjT2U49OAQn/a26kYLHzCSmpn0eHCoy6jKFq1XjKJmd6AdAoNL1mMAmQ
+ +6/g==
 From: Vincent Guittot <vincent.guittot@linaro.org>
-Message-Id: <20231018162540.667646-1-vincent.guittot@linaro.org>
+Message-Id: <20231018162540.667646-2-vincent.guittot@linaro.org>
+In-Reply-To: <20231018162540.667646-1-vincent.guittot@linaro.org>
+References: <20231018162540.667646-1-vincent.guittot@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: [Acpica-devel] [PATCH v3 0/6] consolidate and cleanup CPU capacity
+Subject: [Acpica-devel] [PATCH v3 1/6] topology: add a new
+	arch_scale_freq_reference
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -31,67 +35,182 @@ Date: Wed, 18 Oct 2023 16:25:51 -0000
 To: linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, sudeep.holla@arm.com, gregkh@linuxfoundation.org, rafael@kernel.org, mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, viresh.kumar@linaro.org, lenb@kernel.org, robert.moore@intel.com, lukasz.luba@arm.com, ionela.voinescu@arm.com, pierre.gondois@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org, acpica-devel@lists.linuxfoundation.org
 Cc: suagrfillet@gmail.com, conor.dooley@microchip.com, lftan@kernel.org, ajones@ventanamicro.com
 
-This is the 1st part of consolidating how the max compute capacity is
-used in the scheduler and how we calculate the frequency for a level of
-utilization.
+Create a new method to get a unique and fixed max frequency. Currently
+cpuinfo.max_freq or the highest (or last) state of performance domain are
+used as the max frequency when computing the frequency for a level of
+utilization but:
+- cpuinfo_max_freq can change at runtime. boost is one example of
+  such change.
+- cpuinfo.max_freq and last item of the PD can be different leading to
+  different results between cpufreq and energy model.
 
-Fix some unconsistancy when computing frequency for an utilization. There
-can be a mismatch between energy model and schedutil.
+We need to save the reference frequency that has been used when computing
+the CPUs capacity and use this fixed and coherent value to convert between
+frequency and CPU's capacity.
 
-Next step will be to make a difference between the original
-max compute capacity of a CPU and what is currently available when
-there is a capping applying forever (i.e. seconds or more).
+In fact, we already save the frequency that has been used when computing
+the capacity of each CPU. We extend the precision to save khZ instead of
+Mhz currently and we modify the type to be aligned with other variables
+used when converting frequency to capacity and the other way.
 
+Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
+Tested-by: Lukasz Luba <lukasz.luba@arm.com>
 
-Changes since v2:
-- Remove the 1st patch which has been queued in tip
-- Rework how to initialize the reference frequency for cppc_cpufreq and
-  change topology_init_cpu_capacity_cppc() to also set capacity_ref_freq
-- Add a RFC to convert AMU to use arch_scale_freq_ref and move the config
-  of the AMU ratio to be done when intializing cpu capacity and
-  capacity_ref_freq
-- Added some tags
+---
+ arch/arm/include/asm/topology.h   |  1 +
+ arch/arm64/include/asm/topology.h |  1 +
+ arch/riscv/include/asm/topology.h |  1 +
+ drivers/base/arch_topology.c      | 29 ++++++++++++++---------------
+ include/linux/arch_topology.h     |  7 +++++++
+ 5 files changed, 24 insertions(+), 15 deletions(-)
 
-Changes since v1:
-- Fix typos
-- Added changes in cpufreq to use arch_scale_freq_ref() when calling
-  arch_set_freq_scale (patch 3).
-- arch_scale_freq_ref() is always defined and returns 0 (as proposed
-  by Ionela) when not defined by the arch. This simplifies the code with
-  the addition of patch 3.
-- Simplify Energy Model which always uses arch_scale_freq_ref(). The
-  latter returns 0 when not defined by arch instead of last item of the 
-  perf domain. This is not a problem because the function is only defined
-  for compilation purpose in this case and we don't care about the
-  returned value. (patch 5)
-- Added changes in cppc cpufreq to set capacity_ref_freq (patch 6)
-- Added reviewed tag for patch 1 which got a minor change but not for
-  others as I did some changes which could make previous reviewed tag
-  no more relevant.
-
-Vincent Guittot (6):
-  topology: add a new arch_scale_freq_reference
-  cpufreq: use the fixed and coherent frequency for scaling capacity
-  cpufreq/schedutil: use a fixed reference frequency
-  energy_model: use a fixed reference frequency
-  cpufreq/cppc: set the frequency used for computing the capacity
-  arm64/amu: use capacity_ref_freq to set AMU ratio
-
- arch/arm/include/asm/topology.h   |   1 +
- arch/arm64/include/asm/topology.h |   1 +
- arch/arm64/kernel/topology.c      |  18 ++--
- arch/riscv/include/asm/topology.h |   1 +
- drivers/acpi/cppc_acpi.c          |  93 ++++++++++++++++++++
- drivers/base/arch_topology.c      |  56 ++++++++----
- drivers/cpufreq/cppc_cpufreq.c    | 141 +++++-------------------------
- drivers/cpufreq/cpufreq.c         |   4 +-
- include/acpi/cppc_acpi.h          |   2 +
- include/linux/arch_topology.h     |   8 ++
- include/linux/cpufreq.h           |   9 ++
- include/linux/energy_model.h      |  14 ++-
- kernel/sched/cpufreq_schedutil.c  |  26 +++++-
- 13 files changed, 225 insertions(+), 149 deletions(-)
-
+diff --git a/arch/arm/include/asm/topology.h b/arch/arm/include/asm/topology.h
+index c7d2510e5a78..853c4f81ba4a 100644
+--- a/arch/arm/include/asm/topology.h
++++ b/arch/arm/include/asm/topology.h
+@@ -13,6 +13,7 @@
+ #define arch_set_freq_scale topology_set_freq_scale
+ #define arch_scale_freq_capacity topology_get_freq_scale
+ #define arch_scale_freq_invariant topology_scale_freq_invariant
++#define arch_scale_freq_ref topology_get_freq_ref
+ #endif
+ 
+ /* Replace task scheduler's default cpu-invariant accounting */
+diff --git a/arch/arm64/include/asm/topology.h b/arch/arm64/include/asm/topology.h
+index 9fab663dd2de..a323b109b9c4 100644
+--- a/arch/arm64/include/asm/topology.h
++++ b/arch/arm64/include/asm/topology.h
+@@ -23,6 +23,7 @@ void update_freq_counters_refs(void);
+ #define arch_set_freq_scale topology_set_freq_scale
+ #define arch_scale_freq_capacity topology_get_freq_scale
+ #define arch_scale_freq_invariant topology_scale_freq_invariant
++#define arch_scale_freq_ref topology_get_freq_ref
+ 
+ #ifdef CONFIG_ACPI_CPPC_LIB
+ #define arch_init_invariance_cppc topology_init_cpu_capacity_cppc
+diff --git a/arch/riscv/include/asm/topology.h b/arch/riscv/include/asm/topology.h
+index e316ab3b77f3..61183688bdd5 100644
+--- a/arch/riscv/include/asm/topology.h
++++ b/arch/riscv/include/asm/topology.h
+@@ -9,6 +9,7 @@
+ #define arch_set_freq_scale		topology_set_freq_scale
+ #define arch_scale_freq_capacity	topology_get_freq_scale
+ #define arch_scale_freq_invariant	topology_scale_freq_invariant
++#define arch_scale_freq_ref		topology_get_freq_ref
+ 
+ /* Replace task scheduler's default cpu-invariant accounting */
+ #define arch_scale_cpu_capacity	topology_get_cpu_scale
+diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+index b741b5ba82bd..9a073c2d2086 100644
+--- a/drivers/base/arch_topology.c
++++ b/drivers/base/arch_topology.c
+@@ -19,6 +19,7 @@
+ #include <linux/init.h>
+ #include <linux/rcupdate.h>
+ #include <linux/sched.h>
++#include <linux/units.h>
+ 
+ #define CREATE_TRACE_POINTS
+ #include <trace/events/thermal_pressure.h>
+@@ -26,7 +27,8 @@
+ static DEFINE_PER_CPU(struct scale_freq_data __rcu *, sft_data);
+ static struct cpumask scale_freq_counters_mask;
+ static bool scale_freq_invariant;
+-static DEFINE_PER_CPU(u32, freq_factor) = 1;
++DEFINE_PER_CPU(unsigned long, capacity_ref_freq) = 1;
++EXPORT_PER_CPU_SYMBOL_GPL(capacity_ref_freq);
+ 
+ static bool supports_scale_freq_counters(const struct cpumask *cpus)
+ {
+@@ -170,9 +172,9 @@ DEFINE_PER_CPU(unsigned long, thermal_pressure);
+  * operating on stale data when hot-plug is used for some CPUs. The
+  * @capped_freq reflects the currently allowed max CPUs frequency due to
+  * thermal capping. It might be also a boost frequency value, which is bigger
+- * than the internal 'freq_factor' max frequency. In such case the pressure
+- * value should simply be removed, since this is an indication that there is
+- * no thermal throttling. The @capped_freq must be provided in kHz.
++ * than the internal 'capacity_ref_freq' max frequency. In such case the
++ * pressure value should simply be removed, since this is an indication that
++ * there is no thermal throttling. The @capped_freq must be provided in kHz.
+  */
+ void topology_update_thermal_pressure(const struct cpumask *cpus,
+ 				      unsigned long capped_freq)
+@@ -183,10 +185,7 @@ void topology_update_thermal_pressure(const struct cpumask *cpus,
+ 
+ 	cpu = cpumask_first(cpus);
+ 	max_capacity = arch_scale_cpu_capacity(cpu);
+-	max_freq = per_cpu(freq_factor, cpu);
+-
+-	/* Convert to MHz scale which is used in 'freq_factor' */
+-	capped_freq /= 1000;
++	max_freq = arch_scale_freq_ref(cpu);
+ 
+ 	/*
+ 	 * Handle properly the boost frequencies, which should simply clean
+@@ -279,13 +278,13 @@ void topology_normalize_cpu_scale(void)
+ 
+ 	capacity_scale = 1;
+ 	for_each_possible_cpu(cpu) {
+-		capacity = raw_capacity[cpu] * per_cpu(freq_factor, cpu);
++		capacity = raw_capacity[cpu] * per_cpu(capacity_ref_freq, cpu);
+ 		capacity_scale = max(capacity, capacity_scale);
+ 	}
+ 
+ 	pr_debug("cpu_capacity: capacity_scale=%llu\n", capacity_scale);
+ 	for_each_possible_cpu(cpu) {
+-		capacity = raw_capacity[cpu] * per_cpu(freq_factor, cpu);
++		capacity = raw_capacity[cpu] * per_cpu(capacity_ref_freq, cpu);
+ 		capacity = div64_u64(capacity << SCHED_CAPACITY_SHIFT,
+ 			capacity_scale);
+ 		topology_set_cpu_scale(cpu, capacity);
+@@ -321,15 +320,15 @@ bool __init topology_parse_cpu_capacity(struct device_node *cpu_node, int cpu)
+ 			cpu_node, raw_capacity[cpu]);
+ 
+ 		/*
+-		 * Update freq_factor for calculating early boot cpu capacities.
++		 * Update capacity_ref_freq for calculating early boot cpu capacities.
+ 		 * For non-clk CPU DVFS mechanism, there's no way to get the
+ 		 * frequency value now, assuming they are running at the same
+-		 * frequency (by keeping the initial freq_factor value).
++		 * frequency (by keeping the initial capacity_ref_freq value).
+ 		 */
+ 		cpu_clk = of_clk_get(cpu_node, 0);
+ 		if (!PTR_ERR_OR_ZERO(cpu_clk)) {
+-			per_cpu(freq_factor, cpu) =
+-				clk_get_rate(cpu_clk) / 1000;
++			per_cpu(capacity_ref_freq, cpu) =
++				clk_get_rate(cpu_clk) / HZ_PER_KHZ;
+ 			clk_put(cpu_clk);
+ 		}
+ 	} else {
+@@ -411,7 +410,7 @@ init_cpu_capacity_callback(struct notifier_block *nb,
+ 	cpumask_andnot(cpus_to_visit, cpus_to_visit, policy->related_cpus);
+ 
+ 	for_each_cpu(cpu, policy->related_cpus)
+-		per_cpu(freq_factor, cpu) = policy->cpuinfo.max_freq / 1000;
++		per_cpu(capacity_ref_freq, cpu) = policy->cpuinfo.max_freq;
+ 
+ 	if (cpumask_empty(cpus_to_visit)) {
+ 		topology_normalize_cpu_scale();
+diff --git a/include/linux/arch_topology.h b/include/linux/arch_topology.h
+index a07b510e7dc5..38ca6c76af56 100644
+--- a/include/linux/arch_topology.h
++++ b/include/linux/arch_topology.h
+@@ -27,6 +27,13 @@ static inline unsigned long topology_get_cpu_scale(int cpu)
+ 
+ void topology_set_cpu_scale(unsigned int cpu, unsigned long capacity);
+ 
++DECLARE_PER_CPU(unsigned long, capacity_ref_freq);
++
++static inline unsigned long topology_get_freq_ref(int cpu)
++{
++	return per_cpu(capacity_ref_freq, cpu);
++}
++
+ DECLARE_PER_CPU(unsigned long, arch_freq_scale);
+ 
+ static inline unsigned long topology_get_freq_scale(int cpu)
 -- 
 2.34.1
 
