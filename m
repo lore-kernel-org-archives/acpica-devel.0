@@ -1,27 +1,27 @@
 Return-Path: <vincent.guittot@linaro.org>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org C64BD4090F
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 51D2B40982
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 8AC8682280
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 9404282C8E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=linaro.org; s=google; t=1697646348; x=1698251148;
+ d=linaro.org; s=google; t=1697646350; x=1698251150;
  darn=lists.linuxfoundation.org; 
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=/Z47rGwNrqDmeGZQL2+O4h6n0CW6ulSbmPrUuoIVrkg=;
- b=WYs0Hf4PFa7qgaDp123ALoSzrjmLFuhyl8WTwkyf2K/eLZNKmM5iHTi10YWcQNbTJ9
- nl0NvgoH0nTnhzyiU6lpfuZlP0fhvL9IgEqi6o9WCWRJsPLQcYXGSH15+BjGsq94VQvY
- ts0wYxH6fyvfGvlVhbkRI/Rg43RwqyyBvtBJ30qJgP1fod0cxrzNr7nSKo5hy7GPsnn9
- 4bc5pnpp2yNcO0hkEAj8ImVK2kiwkRkbcnS8LvDuX4syUaWKWVOim77HV/FRuWBTMwda
- 3O+yjIDMI0l7Cz70naLDPd2ttpAwYfbbz1Yh2wJDSs8Co5Xf6K76b02Ayt4vbORm2OgJ
- qMpw==
+ bh=Nf9NNvnyBz0qVw4ihr1xxMPaiT6voh2eHkh7WwYLcYs=;
+ b=lOrsi4TKTgVD37GWheiyqR+ATda/v7YVCpTV/ObV1MiQmHSLHnhkimerqlAM4T1sEs
+ T+5fmqvGDPEzz/t0MGE1Y63H5cQYI6OwxZuRMisB6pppmYfMXd5zXQfRlTbd7TsTcu7c
+ q1/i1OVk6vsek6mBm3pGZtpUOMs+mQYtFj9OO/5yFVanDIP3LMUrw2v58BylxvMdJcQS
+ wv/9tdim9xk8VH4jE3x64/JgX+WDYuTmmCDDYJMn38WFv0DuPOXsQAUcUoL3mo0zy7gD
+ ApoBmGy7HetEpl8mgQ3NG1ibP2sOk8SItdVW1FlcC6v8nf2S6M0G+m1PjxMGKZSBQpnY
+ tWDg==
 From: Vincent Guittot <vincent.guittot@linaro.org>
-Message-Id: <20231018162540.667646-3-vincent.guittot@linaro.org>
+Message-Id: <20231018162540.667646-4-vincent.guittot@linaro.org>
 In-Reply-To: <20231018162540.667646-1-vincent.guittot@linaro.org>
 References: <20231018162540.667646-1-vincent.guittot@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: [Acpica-devel] [PATCH v3 2/6] cpufreq: use the fixed and coherent
-	frequency for scaling capacity
+Subject: [Acpica-devel] [PATCH v3 3/6] cpufreq/schedutil: use a fixed
+	reference frequency
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -36,64 +36,69 @@ To: linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org, paul.walmsl
 Cc: suagrfillet@gmail.com, conor.dooley@microchip.com, lftan@kernel.org, ajones@ventanamicro.com
 
 cpuinfo.max_freq can change at runtime because of boost as an example. This
-implies that the value could be different from the frequency that has been
-used to compute the capacity of a CPU.
+implies that the value could be different than the one that has been
+used when computing the capacity of a CPU.
 
-The new arch_scale_freq_ref() returns a fixed and coherent frequency
-that can be used to compute the capacity for a given frequency.
+The new arch_scale_freq_ref() returns a fixed and coherent reference
+frequency that can be used when computing a frequency based on utilization.
+
+Use this arch_scale_freq_ref() when available and fallback to
+policy otherwise.
 
 Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
 Tested-by: Lukasz Luba <lukasz.luba@arm.com>
 
 ---
- drivers/cpufreq/cpufreq.c | 4 ++--
- include/linux/cpufreq.h   | 9 +++++++++
- 2 files changed, 11 insertions(+), 2 deletions(-)
+ kernel/sched/cpufreq_schedutil.c | 26 ++++++++++++++++++++++++--
+ 1 file changed, 24 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-index 60ed89000e82..8c4f9c2f9c44 100644
---- a/drivers/cpufreq/cpufreq.c
-+++ b/drivers/cpufreq/cpufreq.c
-@@ -454,7 +454,7 @@ void cpufreq_freq_transition_end(struct cpufreq_policy *policy,
- 
- 	arch_set_freq_scale(policy->related_cpus,
- 			    policy->cur,
--			    policy->cpuinfo.max_freq);
-+			    arch_scale_freq_ref(policy->cpu));
- 
- 	spin_lock(&policy->transition_lock);
- 	policy->transition_ongoing = false;
-@@ -2174,7 +2174,7 @@ unsigned int cpufreq_driver_fast_switch(struct cpufreq_policy *policy,
- 
- 	policy->cur = freq;
- 	arch_set_freq_scale(policy->related_cpus, freq,
--			    policy->cpuinfo.max_freq);
-+			    arch_scale_freq_ref(policy->cpu));
- 	cpufreq_stats_record_transition(policy, freq);
- 
- 	if (trace_cpu_frequency_enabled()) {
-diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
-index 71d186d6933a..bbc483b4b6e5 100644
---- a/include/linux/cpufreq.h
-+++ b/include/linux/cpufreq.h
-@@ -1211,6 +1211,15 @@ void arch_set_freq_scale(const struct cpumask *cpus,
- {
+diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
+index 458d359f5991..6e4030482ae8 100644
+--- a/kernel/sched/cpufreq_schedutil.c
++++ b/kernel/sched/cpufreq_schedutil.c
+@@ -114,6 +114,28 @@ static void sugov_deferred_update(struct sugov_policy *sg_policy)
+ 	}
  }
- #endif
-+
-+#ifndef arch_scale_freq_ref
+ 
++/**
++ * cpufreq_get_capacity_ref_freq - get the reference frequency of a given CPU that
++ * has been used to correlate frequency and compute capacity.
++ * @policy: the cpufreq policy of the CPU in question.
++ * @use_current: Fallback to current freq instead of policy->cpuinfo.max_freq.
++ *
++ * Return: the reference CPU frequency to compute a capacity.
++ */
 +static __always_inline
-+unsigned int arch_scale_freq_ref(int cpu)
++unsigned long get_capacity_ref_freq(struct cpufreq_policy *policy)
 +{
-+	return 0;
-+}
-+#endif
++	unsigned int freq = arch_scale_freq_ref(policy->cpu);
 +
- /* the following are really really optional */
- extern struct freq_attr cpufreq_freq_attr_scaling_available_freqs;
- extern struct freq_attr cpufreq_freq_attr_scaling_boost_freqs;
++	if (freq)
++		return freq;
++
++	if (arch_scale_freq_invariant())
++		return policy->cpuinfo.max_freq;
++
++	return policy->cur;
++}
++
+ /**
+  * get_next_freq - Compute a new frequency for a given cpufreq policy.
+  * @sg_policy: schedutil policy object to compute the new frequency for.
+@@ -140,10 +162,10 @@ static unsigned int get_next_freq(struct sugov_policy *sg_policy,
+ 				  unsigned long util, unsigned long max)
+ {
+ 	struct cpufreq_policy *policy = sg_policy->policy;
+-	unsigned int freq = arch_scale_freq_invariant() ?
+-				policy->cpuinfo.max_freq : policy->cur;
++	unsigned int freq;
+ 
+ 	util = map_util_perf(util);
++	freq = get_capacity_ref_freq(policy);
+ 	freq = map_util_freq(util, freq, max);
+ 
+ 	if (freq == sg_policy->cached_raw_freq && !sg_policy->need_freq_update)
 -- 
 2.34.1
 
