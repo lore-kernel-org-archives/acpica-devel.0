@@ -1,14 +1,23 @@
-Return-Path: <xueshuai@linux.alibaba.com>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 146C360BAE
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 9428260BAA
-From: Shuai Xue <xueshuai@linux.alibaba.com>
-Message-Id: <20231007072818.58951-3-xueshuai@linux.alibaba.com>
-In-Reply-To: <20221027042445.60108-1-xueshuai@linux.alibaba.com>
-References: <20221027042445.60108-1-xueshuai@linux.alibaba.com>
+Return-Path: <vincent.guittot@linaro.org>
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 623E74190B
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org F414540642
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=linaro.org; s=google; t=1697646345; x=1698251145;
+ darn=lists.linuxfoundation.org; 
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=aBPvPoGvatc00L33SJsgf3xSxpMurf+haw6UVXLiWPI=;
+ b=CADB3aldFT3ugpY5D5Lzite15jgRZDOrB5fg5QC69km8gytoeWEgnndMRBGnVTbKRg
+ /kJqIqpWINyqYQ3BX/3pHaBiokqUJMlK1dNS0kYH98VKSKxc7tEdLP8S97jwkokK1P3D
+ PHJ+HN86h5YSbk7/mLGm6WabTtdxUDqphou1Emr4Y/LGYzE6NHNQ0Iv/kBTqfjWvYy+q
+ a6AVyId1WNJXKBWAjCMYyvyuQ9BeprLTiMJz/A8yqKluEk8y95COob+sfNDvYUoUK7ii
+ fKq3Gld+Zu9oyJz7CRQK9Asj604K2YqY4bwtaeiq8/MFy8kiCJ5UJ1g9ooFpZhBXlojS
+ h5dA==
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Message-Id: <20231018162540.667646-1-vincent.guittot@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: [Acpica-devel] [PATCH v9 2/2] ACPI: APEI: handle synchronous
-	exceptions in task work
+Subject: [Acpica-devel] [PATCH v3 0/6] consolidate and cleanup CPU capacity
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -18,303 +27,71 @@ List-Post: <mailto:acpica-devel@lists.linuxfoundation.org>
 List-Help: <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=help>
 List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel>, 
  <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=subscribe>
-Date: Sat, 07 Oct 2023 07:28:45 -0000
-To: rafael@kernel.org, wangkefeng.wang@huawei.com, tanxiaofei@huawei.com, mawupeng1@huawei.com, tony.luck@intel.com, linmiaohe@huawei.com, naoya.horiguchi@nec.com, james.morse@arm.com, gregkh@linuxfoundation.org, will@kernel.org, jarkko@kernel.org
-Cc: dave.hansen@linux.intel.com, linux-mm@kvack.org, hpa@zytor.com, acpica-devel@lists.linuxfoundation.org, ardb@kernel.org, justin.he@arm.com, x86@kernel.org, robert.moore@intel.com, linux-acpi@vger.kernel.org, mingo@redhat.com, zhuo.song@linux.alibaba.com, ying.huang@intel.com, lenb@kernel.org, ashish.kalra@amd.com, xiexiuqi@huawei.com, bp@alien8.de, baolin.wang@linux.alibaba.com, tglx@linutronix.de, linux-edac@vger.kernel.org, lvying6@huawei.com, linux-kernel@vger.kernel.org, stable@vger.kernel.org, xueshuai@linux.alibaba.com, akpm@linux-foundation.org
+Date: Wed, 18 Oct 2023 16:25:51 -0000
+To: linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, sudeep.holla@arm.com, gregkh@linuxfoundation.org, rafael@kernel.org, mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, viresh.kumar@linaro.org, lenb@kernel.org, robert.moore@intel.com, lukasz.luba@arm.com, ionela.voinescu@arm.com, pierre.gondois@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org, acpica-devel@lists.linuxfoundation.org
+Cc: suagrfillet@gmail.com, conor.dooley@microchip.com, lftan@kernel.org, ajones@ventanamicro.com
 
-Hardware errors could be signaled by synchronous interrupt, e.g.  when an
-error is detected by a background scrubber, or signaled by synchronous
-exception, e.g. when an uncorrected error is consumed. Both synchronous and
-asynchronous error are queued and handled by a dedicated kthread in
-workqueue.
+This is the 1st part of consolidating how the max compute capacity is
+used in the scheduler and how we calculate the frequency for a level of
+utilization.
 
-commit 7f17b4a121d0 ("ACPI: APEI: Kick the memory_failure() queue for
-synchronous errors") keep track of whether memory_failure() work was
-queued, and make task_work pending to flush out the workqueue so that the
-work for synchronous error is processed before returning to user-space.
-The trick ensures that the corrupted page is unmapped and poisoned. And
-after returning to user-space, the task starts at current instruction which
-triggering a page fault in which kernel will send SIGBUS to current process
-due to VM_FAULT_HWPOISON.
+Fix some unconsistancy when computing frequency for an utilization. There
+can be a mismatch between energy model and schedutil.
 
-However, the memory failure recovery for hwpoison-aware mechanisms does not
-work as expected. For example, hwpoison-aware user-space processes like
-QEMU register their customized SIGBUS handler and enable early kill mode by
-seting PF_MCE_EARLY at initialization. Then the kernel will directy notify
-the process by sending a SIGBUS signal in memory failure with wrong
-si_code: the actual user-space process accessing the corrupt memory
-location, but its memory failure work is handled in a kthread context, so
-it will send SIGBUS with BUS_MCEERR_AO si_code to the actual user-space
-process instead of BUS_MCEERR_AR in kill_proc().
+Next step will be to make a difference between the original
+max compute capacity of a CPU and what is currently available when
+there is a capping applying forever (i.e. seconds or more).
 
-To this end, separate synchronous and asynchronous error handling into
-different paths like X86 platform does:
 
-- valid synchronous errors: queue a task_work to synchronously send SIGBUS
-  before ret_to_user.
-- valid asynchronous errors: queue a work into workqueue to asynchronously
-  handle memory failure.
-- abnormal branches such as invalid PA, unexpected severity, no memory
-  failure config support, invalid GUID section, OOM, etc.
+Changes since v2:
+- Remove the 1st patch which has been queued in tip
+- Rework how to initialize the reference frequency for cppc_cpufreq and
+  change topology_init_cpu_capacity_cppc() to also set capacity_ref_freq
+- Add a RFC to convert AMU to use arch_scale_freq_ref and move the config
+  of the AMU ratio to be done when intializing cpu capacity and
+  capacity_ref_freq
+- Added some tags
 
-Then for valid synchronous errors, the current context in memory failure is
-exactly belongs to the task consuming poison data and it will send SIBBUS
-with proper si_code.
+Changes since v1:
+- Fix typos
+- Added changes in cpufreq to use arch_scale_freq_ref() when calling
+  arch_set_freq_scale (patch 3).
+- arch_scale_freq_ref() is always defined and returns 0 (as proposed
+  by Ionela) when not defined by the arch. This simplifies the code with
+  the addition of patch 3.
+- Simplify Energy Model which always uses arch_scale_freq_ref(). The
+  latter returns 0 when not defined by arch instead of last item of the 
+  perf domain. This is not a problem because the function is only defined
+  for compilation purpose in this case and we don't care about the
+  returned value. (patch 5)
+- Added changes in cppc cpufreq to set capacity_ref_freq (patch 6)
+- Added reviewed tag for patch 1 which got a minor change but not for
+  others as I did some changes which could make previous reviewed tag
+  no more relevant.
 
-Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
-Tested-by: Ma Wupeng <mawupeng1@huawei.com>
-Reviewed-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-Reviewed-by: Xiaofei Tan <tanxiaofei@huawei.com>
-Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
----
- arch/x86/kernel/cpu/mce/core.c |  9 +---
- drivers/acpi/apei/ghes.c       | 84 +++++++++++++++++++++-------------
- include/acpi/ghes.h            |  3 --
- include/linux/mm.h             |  1 -
- mm/memory-failure.c            | 22 +++------
- 5 files changed, 59 insertions(+), 60 deletions(-)
+Vincent Guittot (6):
+  topology: add a new arch_scale_freq_reference
+  cpufreq: use the fixed and coherent frequency for scaling capacity
+  cpufreq/schedutil: use a fixed reference frequency
+  energy_model: use a fixed reference frequency
+  cpufreq/cppc: set the frequency used for computing the capacity
+  arm64/amu: use capacity_ref_freq to set AMU ratio
 
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index 6f35f724cc14..1675ff77033d 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -1334,17 +1334,10 @@ static void kill_me_maybe(struct callback_head *cb)
- 		return;
- 	}
- 
--	/*
--	 * -EHWPOISON from memory_failure() means that it already sent SIGBUS
--	 * to the current process with the proper error info,
--	 * -EOPNOTSUPP means hwpoison_filter() filtered the error event,
--	 *
--	 * In both cases, no further processing is required.
--	 */
- 	if (ret == -EHWPOISON || ret == -EOPNOTSUPP)
- 		return;
- 
--	pr_err("Memory error not recovered");
-+	pr_err("Sending SIGBUS to current task due to memory error not recovered");
- 	kill_me_now(cb);
- }
- 
-diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
-index 88178aa6222d..014401a65ed5 100644
---- a/drivers/acpi/apei/ghes.c
-+++ b/drivers/acpi/apei/ghes.c
-@@ -450,28 +450,41 @@ static void ghes_clear_estatus(struct ghes *ghes,
- }
- 
- /*
-- * Called as task_work before returning to user-space.
-- * Ensure any queued work has been done before we return to the context that
-- * triggered the notification.
-+ * struct sync_task_work - for synchronous RAS event
-+ *
-+ * @twork:                callback_head for task work
-+ * @pfn:                  page frame number of corrupted page
-+ * @flags:                fine tune action taken
-+ *
-+ * Structure to pass task work to be handled before
-+ * ret_to_user via task_work_add().
-  */
--static void ghes_kick_task_work(struct callback_head *head)
-+struct sync_task_work {
-+	struct callback_head twork;
-+	u64 pfn;
-+	int flags;
-+};
-+
-+static void memory_failure_cb(struct callback_head *twork)
- {
--	struct acpi_hest_generic_status *estatus;
--	struct ghes_estatus_node *estatus_node;
--	u32 node_len;
-+	int ret;
-+	struct sync_task_work *twcb =
-+		container_of(twork, struct sync_task_work, twork);
- 
--	estatus_node = container_of(head, struct ghes_estatus_node, task_work);
--	if (IS_ENABLED(CONFIG_ACPI_APEI_MEMORY_FAILURE))
--		memory_failure_queue_kick(estatus_node->task_work_cpu);
-+	ret = memory_failure(twcb->pfn, twcb->flags);
-+	kfree(twcb);
- 
--	estatus = GHES_ESTATUS_FROM_NODE(estatus_node);
--	node_len = GHES_ESTATUS_NODE_LEN(cper_estatus_len(estatus));
--	gen_pool_free(ghes_estatus_pool, (unsigned long)estatus_node, node_len);
-+	if (!ret || ret == -EHWPOISON || ret == -EOPNOTSUPP)
-+		return;
-+
-+	pr_err("Sending SIGBUS to current task due to memory error not recovered");
-+	force_sig(SIGBUS);
- }
- 
- static bool ghes_do_memory_failure(u64 physical_addr, int flags)
- {
- 	unsigned long pfn;
-+	struct sync_task_work *twcb;
- 
- 	if (!IS_ENABLED(CONFIG_ACPI_APEI_MEMORY_FAILURE))
- 		return false;
-@@ -484,6 +497,18 @@ static bool ghes_do_memory_failure(u64 physical_addr, int flags)
- 		return false;
- 	}
- 
-+	if (flags == MF_ACTION_REQUIRED && current->mm) {
-+		twcb = kmalloc(sizeof(*twcb), GFP_ATOMIC);
-+		if (!twcb)
-+			return false;
-+
-+		twcb->pfn = pfn;
-+		twcb->flags = flags;
-+		init_task_work(&twcb->twork, memory_failure_cb);
-+		task_work_add(current, &twcb->twork, TWA_RESUME);
-+		return true;
-+	}
-+
- 	memory_failure_queue(pfn, flags);
- 	return true;
- }
-@@ -652,7 +677,7 @@ static void ghes_defer_non_standard_event(struct acpi_hest_generic_data *gdata,
- 	schedule_work(&entry->work);
- }
- 
--static bool ghes_do_proc(struct ghes *ghes,
-+static void ghes_do_proc(struct ghes *ghes,
- 			 const struct acpi_hest_generic_status *estatus)
- {
- 	int sev, sec_sev;
-@@ -696,7 +721,14 @@ static bool ghes_do_proc(struct ghes *ghes,
- 		}
- 	}
- 
--	return queued;
-+	/*
-+	 * If no memory failure work is queued for abnormal synchronous
-+	 * errors, do a force kill.
-+	 */
-+	if (sync && !queued) {
-+		pr_err("Sending SIGBUS to current task due to memory error not recovered");
-+		force_sig(SIGBUS);
-+	}
- }
- 
- static void __ghes_print_estatus(const char *pfx,
-@@ -998,9 +1030,7 @@ static void ghes_proc_in_irq(struct irq_work *irq_work)
- 	struct ghes_estatus_node *estatus_node;
- 	struct acpi_hest_generic *generic;
- 	struct acpi_hest_generic_status *estatus;
--	bool task_work_pending;
- 	u32 len, node_len;
--	int ret;
- 
- 	llnode = llist_del_all(&ghes_estatus_llist);
- 	/*
-@@ -1015,25 +1045,16 @@ static void ghes_proc_in_irq(struct irq_work *irq_work)
- 		estatus = GHES_ESTATUS_FROM_NODE(estatus_node);
- 		len = cper_estatus_len(estatus);
- 		node_len = GHES_ESTATUS_NODE_LEN(len);
--		task_work_pending = ghes_do_proc(estatus_node->ghes, estatus);
-+
-+		ghes_do_proc(estatus_node->ghes, estatus);
-+
- 		if (!ghes_estatus_cached(estatus)) {
- 			generic = estatus_node->generic;
- 			if (ghes_print_estatus(NULL, generic, estatus))
- 				ghes_estatus_cache_add(generic, estatus);
- 		}
--
--		if (task_work_pending && current->mm) {
--			estatus_node->task_work.func = ghes_kick_task_work;
--			estatus_node->task_work_cpu = smp_processor_id();
--			ret = task_work_add(current, &estatus_node->task_work,
--					    TWA_RESUME);
--			if (ret)
--				estatus_node->task_work.func = NULL;
--		}
--
--		if (!estatus_node->task_work.func)
--			gen_pool_free(ghes_estatus_pool,
--				      (unsigned long)estatus_node, node_len);
-+		gen_pool_free(ghes_estatus_pool, (unsigned long)estatus_node,
-+			      node_len);
- 
- 		llnode = next;
- 	}
-@@ -1094,7 +1115,6 @@ static int ghes_in_nmi_queue_one_entry(struct ghes *ghes,
- 
- 	estatus_node->ghes = ghes;
- 	estatus_node->generic = ghes->generic;
--	estatus_node->task_work.func = NULL;
- 	estatus = GHES_ESTATUS_FROM_NODE(estatus_node);
- 
- 	if (__ghes_read_estatus(estatus, buf_paddr, fixmap_idx, len)) {
-diff --git a/include/acpi/ghes.h b/include/acpi/ghes.h
-index 3c8bba9f1114..e5e0c308d27f 100644
---- a/include/acpi/ghes.h
-+++ b/include/acpi/ghes.h
-@@ -35,9 +35,6 @@ struct ghes_estatus_node {
- 	struct llist_node llnode;
- 	struct acpi_hest_generic *generic;
- 	struct ghes *ghes;
--
--	int task_work_cpu;
--	struct callback_head task_work;
- };
- 
- struct ghes_estatus_cache {
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index bf5d0b1b16f4..3ce9e4371659 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -3835,7 +3835,6 @@ enum mf_flags {
- int mf_dax_kill_procs(struct address_space *mapping, pgoff_t index,
- 		      unsigned long count, int mf_flags);
- extern int memory_failure(unsigned long pfn, int flags);
--extern void memory_failure_queue_kick(int cpu);
- extern int unpoison_memory(unsigned long pfn);
- extern void shake_page(struct page *p);
- extern atomic_long_t num_poisoned_pages __read_mostly;
-diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index 4d6e43c88489..0d02f8a0b556 100644
---- a/mm/memory-failure.c
-+++ b/mm/memory-failure.c
-@@ -2161,9 +2161,12 @@ static int memory_failure_dev_pagemap(unsigned long pfn, int flags,
-  * Must run in process context (e.g. a work queue) with interrupts
-  * enabled and no spinlocks held.
-  *
-- * Return: 0 for successfully handled the memory error,
-- *         -EOPNOTSUPP for hwpoison_filter() filtered the error event,
-- *         < 0(except -EOPNOTSUPP) on failure.
-+ * Return values:
-+ *   0             - success
-+ *   -EOPNOTSUPP   - hwpoison_filter() filtered the error event.
-+ *   -EHWPOISON    - sent SIGBUS to the current process with the proper
-+ *                   error info by kill_accessing_process().
-+ *   other negative values - failure
-  */
- int memory_failure(unsigned long pfn, int flags)
- {
-@@ -2445,19 +2448,6 @@ static void memory_failure_work_func(struct work_struct *work)
- 	}
- }
- 
--/*
-- * Process memory_failure work queued on the specified CPU.
-- * Used to avoid return-to-userspace racing with the memory_failure workqueue.
-- */
--void memory_failure_queue_kick(int cpu)
--{
--	struct memory_failure_cpu *mf_cpu;
--
--	mf_cpu = &per_cpu(memory_failure_cpu, cpu);
--	cancel_work_sync(&mf_cpu->work);
--	memory_failure_work_func(&mf_cpu->work);
--}
--
- static int __init memory_failure_init(void)
- {
- 	struct memory_failure_cpu *mf_cpu;
+ arch/arm/include/asm/topology.h   |   1 +
+ arch/arm64/include/asm/topology.h |   1 +
+ arch/arm64/kernel/topology.c      |  18 ++--
+ arch/riscv/include/asm/topology.h |   1 +
+ drivers/acpi/cppc_acpi.c          |  93 ++++++++++++++++++++
+ drivers/base/arch_topology.c      |  56 ++++++++----
+ drivers/cpufreq/cppc_cpufreq.c    | 141 +++++-------------------------
+ drivers/cpufreq/cpufreq.c         |   4 +-
+ include/acpi/cppc_acpi.h          |   2 +
+ include/linux/arch_topology.h     |   8 ++
+ include/linux/cpufreq.h           |   9 ++
+ include/linux/energy_model.h      |  14 ++-
+ kernel/sched/cpufreq_schedutil.c  |  26 +++++-
+ 13 files changed, 225 insertions(+), 149 deletions(-)
+
 -- 
-2.39.3
+2.34.1
 
