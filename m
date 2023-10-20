@@ -1,17 +1,17 @@
 Return-Path: <rjwysocki@gmail.com>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 7939A84C1B
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org BD3FE84C17
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 8CEE7705E7
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 0267D705E6
 MIME-Version: 1.0
 References: <20231020084732.17130-1-raag.jadav@intel.com>
- <20231020084732.17130-4-raag.jadav@intel.com>
-In-Reply-To: <20231020084732.17130-4-raag.jadav@intel.com>
+ <20231020084732.17130-7-raag.jadav@intel.com>
+In-Reply-To: <20231020084732.17130-7-raag.jadav@intel.com>
 From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Fri, 20 Oct 2023 19:18:42 +0200
-Message-ID: <CAJZ5v0ibBZ0e4_7=2h9rEjrBXGgsmYxZBO91_VfSxhgD9xJ=tQ@mail.gmail.com>
+Date: Fri, 20 Oct 2023 19:22:28 +0200
+Message-ID: <CAJZ5v0g7kkFhk8tNp1PMxuKkS7jv5rp16X-jvK0kc1TO0NTwFQ@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Subject: Re: [Acpica-devel] [PATCH v1 3/8] ACPI: sysfs: use
-	acpi_device_uid() for fetching _UID
+Subject: Re: [Acpica-devel] [PATCH v1 6/8] perf: qcom: use acpi_device_uid()
+	for fetching _UID
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -31,41 +31,30 @@ wrote:
 >
 > Signed-off-by: Raag Jadav <raag.jadav@intel.com>
 > ---
->  drivers/acpi/device_sysfs.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+>  drivers/perf/qcom_l3_pmu.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
-> index b9bbf0746199..9d8e90744cb5 100644
-> --- a/drivers/acpi/device_sysfs.c
-> +++ b/drivers/acpi/device_sysfs.c
-> @@ -410,7 +410,7 @@ static ssize_t uid_show(struct device *dev,
->  {
->         struct acpi_device *acpi_dev =3D to_acpi_device(dev);
+> diff --git a/drivers/perf/qcom_l3_pmu.c b/drivers/perf/qcom_l3_pmu.c
+> index 2887edb4eb0b..f16783d03db7 100644
+> --- a/drivers/perf/qcom_l3_pmu.c
+> +++ b/drivers/perf/qcom_l3_pmu.c
+> @@ -742,8 +742,8 @@ static int qcom_l3_cache_pmu_probe(struct platform_de=
+vice *pdev)
 >
-> -       return sprintf(buf, "%s\n", acpi_dev->pnp.unique_id);
-> +       return sprintf(buf, "%s\n", acpi_device_uid(acpi_dev));
->  }
->  static DEVICE_ATTR_RO(uid);
+>         l3pmu =3D devm_kzalloc(&pdev->dev, sizeof(*l3pmu), GFP_KERNEL);
+>         name =3D devm_kasprintf(&pdev->dev, GFP_KERNEL, "l3cache_%s_%s",
+> -                     acpi_dev_parent(acpi_dev)->pnp.unique_id,
+> -                     acpi_dev->pnp.unique_id);
+> +                     acpi_device_uid(acpi_dev_parent(acpi_dev)),
+> +                     acpi_device_uid(acpi_dev));
+>         if (!l3pmu || !name)
+>                 return -ENOMEM;
 >
-> @@ -554,7 +554,7 @@ int acpi_device_setup_files(struct acpi_device *dev)
->
->         if (dev->pnp.type.bus_address)
->                 result =3D device_create_file(&dev->dev, &dev_attr_adr);
-> -       if (dev->pnp.unique_id)
-> +       if (acpi_device_uid(dev))
->                 result =3D device_create_file(&dev->dev, &dev_attr_uid);
->
->         if (acpi_has_method(dev->handle, "_SUN")) {
-> @@ -635,7 +635,7 @@ void acpi_device_remove_files(struct acpi_device *dev=
-)
->         if (acpi_has_method(dev->handle, "_HRV"))
->                 device_remove_file(&dev->dev, &dev_attr_hrv);
->
-> -       if (dev->pnp.unique_id)
-> +       if (acpi_device_uid(dev))
->                 device_remove_file(&dev->dev, &dev_attr_uid);
->         if (dev->pnp.type.bus_address)
->                 device_remove_file(&dev->dev, &dev_attr_adr);
 > --
 
-Applied as 6.7 material, thanks!
+Applied as 6.7 material.
+
+QCom perf maintainers, if you'd rather take this yourselves, please let me =
+know.
+
+Thanks!
