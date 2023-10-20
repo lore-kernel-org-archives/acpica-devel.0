@@ -1,24 +1,24 @@
 Return-Path: <raag.jadav@intel.com>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 497C860F1A
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 8F33661001
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 0FB5D43271
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 140B840122
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1697791692; x=1729327692;
+ t=1697791697; x=1729327697;
  h=from:to:cc:subject:date:message-id:in-reply-to: references;
- bh=ycYM//IBzYahr1OT+k/0SqcANs76449DXAt6/AuLX9M=;
- b=ARdQrFqB//2vOjdjXoHaG25KE4d1fN4NWe4Bfw2V9U1T2gubBCVjE+nd
- +YifldAit/ST1RwovqbwXqRU/V1hpiLb0zbThFhku15FdjUMLdsELqwYm
- KOrfzyyj0L2RswUUhfzIZaCP6IxZ0eUr10f4SgAOE0tuFWCz9Z0162xnY
- D5v6PZ2gRCMK6gJ2kr65p6xGYaNjBJK5zbAJJc7E/A0EGp+oCBeUt3Lcx
- P4BM6nDGYJ51zVLa1r6mrGHXRvdJI2QJXVEHOWPZHnjg5uI78nE3C4Zad
- PeuV6Zzcf1KKyxtCDIEVFErW/ZwIwDM5Lq3MqI3ZjI1SkoPi8L+eFqYch g==;
+ bh=rSipyHhM4gYIUQSn5eaLq9kVKKAAb0HFtJJ9r0gwffo=;
+ b=Q6AMTih+8TuDtvh6PRZu2ITQ9IZlMSzAKnYyJebVTa8f+9nkCkLuDCT5
+ vhLg+RAMcBZFSxHYKj/oYZDelq9PayCt4hdQJnh94jrgvwlqZkwvckVY2
+ Im0TEi3G9dwRPbegLlPDqzF13AiFEPkK+EqSXrgtguIOtaI4GErj5DJq/
+ LjjW4ryxn+UvPQWmg/oAzCGVRdb51V1hwmxGJmnHEmU859f00qU2gYDOa
+ mKk5Iv0uj5h53CE6XdB3dwUqjib8TKnvVs0EhEB244Fue6GUw6X/uydnO
+ YhlGJuJjHlM03Bpx3620LGjvVi4dR5XAH+8dbsVWt78i2PmgwZ1nc1PJu Q==;
 From: Raag Jadav <raag.jadav@intel.com>
-Date: Fri, 20 Oct 2023 14:17:28 +0530
-Message-Id: <20231020084732.17130-5-raag.jadav@intel.com>
+Date: Fri, 20 Oct 2023 14:17:30 +0530
+Message-Id: <20231020084732.17130-7-raag.jadav@intel.com>
 In-Reply-To: <20231020084732.17130-1-raag.jadav@intel.com>
 References: <20231020084732.17130-1-raag.jadav@intel.com>
-Subject: [Acpica-devel] [PATCH v1 4/8] ACPI: utils: use acpi_dev_uid_match()
-	for matching _UID
+Subject: [Acpica-devel] [PATCH v1 6/8] perf: qcom: use acpi_device_uid() for
+	fetching _UID
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -35,23 +35,24 @@ Convert manual _UID references to use standard ACPI helpers.
 
 Signed-off-by: Raag Jadav <raag.jadav@intel.com>
 ---
- drivers/acpi/utils.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/perf/qcom_l3_pmu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/acpi/utils.c b/drivers/acpi/utils.c
-index 664b9890b625..e3ba835e6590 100644
---- a/drivers/acpi/utils.c
-+++ b/drivers/acpi/utils.c
-@@ -889,8 +889,7 @@ static int acpi_dev_match_cb(struct device *dev, const void *data)
- 	if (acpi_match_device_ids(adev, match->hid))
- 		return 0;
+diff --git a/drivers/perf/qcom_l3_pmu.c b/drivers/perf/qcom_l3_pmu.c
+index 2887edb4eb0b..f16783d03db7 100644
+--- a/drivers/perf/qcom_l3_pmu.c
++++ b/drivers/perf/qcom_l3_pmu.c
+@@ -742,8 +742,8 @@ static int qcom_l3_cache_pmu_probe(struct platform_device *pdev)
  
--	if (match->uid && (!adev->pnp.unique_id ||
--	    strcmp(adev->pnp.unique_id, match->uid)))
-+	if (!acpi_dev_uid_match(adev, match->uid))
- 		return 0;
+ 	l3pmu = devm_kzalloc(&pdev->dev, sizeof(*l3pmu), GFP_KERNEL);
+ 	name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "l3cache_%s_%s",
+-		      acpi_dev_parent(acpi_dev)->pnp.unique_id,
+-		      acpi_dev->pnp.unique_id);
++		      acpi_device_uid(acpi_dev_parent(acpi_dev)),
++		      acpi_device_uid(acpi_dev));
+ 	if (!l3pmu || !name)
+ 		return -ENOMEM;
  
- 	if (match->hrv == -1)
 -- 
 2.17.1
 
