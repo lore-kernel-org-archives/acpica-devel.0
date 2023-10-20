@@ -1,24 +1,24 @@
 Return-Path: <raag.jadav@intel.com>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 9A3BF61037
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org D8AFF60F1A
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org D05687044C
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 2F09460F3E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1697791691; x=1729327691;
+ t=1697791692; x=1729327692;
  h=from:to:cc:subject:date:message-id:in-reply-to: references;
- bh=0WNKWxhqnOM7fF435JX3yfg+v0y6tyX67g7zORiWNpU=;
- b=BBfgcSJGVIJDLxO1TiGP+SFn2dONW6nG/gIds8I5xuaprFAZCAUl8AHY
- Gy8/BQhFla4tvVdGzDoT0Es9pSNef1HAFqcWtaygINnHyhckQgBORypR7
- ia7lPAegQvYgUvjkKkThQx2KkG7uTKTkEW2wodgjauk72gUqQwlOVk3JP
- I4Mcvdy18De1SO5KwSxAWdUKa9oN9O/fzWKG1Pw2mHroAQ8OSyKVC6ikY
- 5vpzCmsHSiOBBZYEigTBvgRfXrpN3kfIegwRE6vW9X1O9RNkHdWgmQHvB
- HDjgjQJrQNlpCQJYVg8Ff8ek7saD6oFr7Kyf0yo8XHhaYPlJ6BHAUEm3N Q==;
+ bh=1P08c+02XrBKccGcreruYeIgD28f7+s17ZZyX78daGc=;
+ b=CMEDCpUPJOswyAe6+vH3IfTQrD2FzFchFXSwCa591iFEzTBXlR3CDcem
+ 2a6ljM4MO4+iNwOAJVNZgrPWUKZQlDL+a04uWR7DL0EYYvlPvKIcy8m6z
+ bw5hW1HVBfTv5WlpgFa2Gg2RB2k1d4l8shW5WYSM42djjm+5prUOyT7hx
+ WxuH4NZnMUaK8iZwVQAAaJcc1taPBNWSi36wQrJnnzHiVHPBccfsQZBB0
+ WDT4Q8vb8aBEwY7TrDBf3KIZkJLHjLXCQi5U05fgoIE9EDxK4iiSS75Bn
+ U8+Kebjg6SA0yahw20UnMj6VPzJEQ3/LuoiHp7nkUNQw9lx+1PAsrr8th g==;
 From: Raag Jadav <raag.jadav@intel.com>
-Date: Fri, 20 Oct 2023 14:17:25 +0530
-Message-Id: <20231020084732.17130-2-raag.jadav@intel.com>
+Date: Fri, 20 Oct 2023 14:17:27 +0530
+Message-Id: <20231020084732.17130-4-raag.jadav@intel.com>
 In-Reply-To: <20231020084732.17130-1-raag.jadav@intel.com>
 References: <20231020084732.17130-1-raag.jadav@intel.com>
-Subject: [Acpica-devel] [PATCH v1 1/8] ACPI: utils: Introduce
-	acpi_dev_uid_match() for matching _UID
+Subject: [Acpica-devel] [PATCH v1 3/8] ACPI: sysfs: use acpi_device_uid()
+	for fetching _UID
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -31,112 +31,44 @@ List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel
 To: rafael@kernel.org, len.brown@intel.com, robert.moore@intel.com, mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com, mark.rutland@arm.com, will@kernel.org, linux@roeck-us.net
 Cc: linux-hwmon@vger.kernel.org, linux-gpio@vger.kernel.org, Raag Jadav <raag.jadav@intel.com>, mallikarjunappa.sangannavar@intel.com, linux-kernel@vger.kernel.org, bala.senthil@intel.com, linux-acpi@vger.kernel.org, acpica-devel@lists.linuxfoundation.org, linux-arm-kernel@lists.infradead.org
 
-Introduce acpi_dev_uid_match() helper that matches the device with
-supplied _UID string.
+Convert manual _UID references to use standard ACPI helpers.
 
-Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Raag Jadav <raag.jadav@intel.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/acpi/utils.c    | 40 +++++++++++++++++++++++++++++++++-------
- include/acpi/acpi_bus.h |  1 +
- include/linux/acpi.h    |  5 +++++
- 3 files changed, 39 insertions(+), 7 deletions(-)
+ drivers/acpi/device_sysfs.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/acpi/utils.c b/drivers/acpi/utils.c
-index 2ea14648a661..664b9890b625 100644
---- a/drivers/acpi/utils.c
-+++ b/drivers/acpi/utils.c
-@@ -768,28 +768,54 @@ bool acpi_check_dsm(acpi_handle handle, const guid_t *guid, u64 rev, u64 funcs)
- }
- EXPORT_SYMBOL(acpi_check_dsm);
- 
-+/**
-+ * acpi_dev_uid_match - Match device by supplied UID
-+ * @adev: ACPI device to match.
-+ * @uid2: Unique ID of the device, pass NULL to not check _UID.
-+ *
-+ * Matches UID in @adev with given @uid2. Absence of @uid2 will be treated as
-+ * a match. If user wants to validate @uid2, it should be done before calling
-+ * this function. This behaviour is as needed by most of its current users.
-+ *
-+ * Returns:
-+ *  - %true if matches or @uid2 is NULL.
-+ *  - %false otherwise.
-+ */
-+bool acpi_dev_uid_match(struct acpi_device *adev, const char *uid2)
-+{
-+	const char *uid1 = acpi_device_uid(adev);
-+
-+	if (!uid2)
-+		return true;
-+
-+	return uid1 && !strcmp(uid1, uid2);
-+}
-+EXPORT_SYMBOL_GPL(acpi_dev_uid_match);
-+
- /**
-  * acpi_dev_hid_uid_match - Match device by supplied HID and UID
-  * @adev: ACPI device to match.
-  * @hid2: Hardware ID of the device.
-  * @uid2: Unique ID of the device, pass NULL to not check _UID.
-  *
-- * Matches HID and UID in @adev with given @hid2 and @uid2.
-- * Returns true if matches.
-+ * Matches HID and UID in @adev with given @hid2 and @uid2. Absence of @uid2
-+ * will be treated as a match. If user wants to validate @uid2, it should be
-+ * done before calling this function. This behaviour is as needed by most of
-+ * its current users.
-+ *
-+ * Returns:
-+ *  - %true if matches or @uid2 is NULL.
-+ *  - %false otherwise.
-  */
- bool acpi_dev_hid_uid_match(struct acpi_device *adev,
- 			    const char *hid2, const char *uid2)
+diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
+index b9bbf0746199..9d8e90744cb5 100644
+--- a/drivers/acpi/device_sysfs.c
++++ b/drivers/acpi/device_sysfs.c
+@@ -410,7 +410,7 @@ static ssize_t uid_show(struct device *dev,
  {
- 	const char *hid1 = acpi_device_hid(adev);
--	const char *uid1 = acpi_device_uid(adev);
+ 	struct acpi_device *acpi_dev = to_acpi_device(dev);
  
- 	if (strcmp(hid1, hid2))
- 		return false;
- 
--	if (!uid2)
--		return true;
--
--	return uid1 && !strcmp(uid1, uid2);
-+	return acpi_dev_uid_match(adev, uid2);
+-	return sprintf(buf, "%s\n", acpi_dev->pnp.unique_id);
++	return sprintf(buf, "%s\n", acpi_device_uid(acpi_dev));
  }
- EXPORT_SYMBOL(acpi_dev_hid_uid_match);
+ static DEVICE_ATTR_RO(uid);
  
-diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-index 254685085c82..d1fe6446ffe0 100644
---- a/include/acpi/acpi_bus.h
-+++ b/include/acpi/acpi_bus.h
-@@ -760,6 +760,7 @@ static inline bool acpi_device_can_poweroff(struct acpi_device *adev)
- 		adev->power.states[ACPI_STATE_D3_HOT].flags.explicit_set);
- }
+@@ -554,7 +554,7 @@ int acpi_device_setup_files(struct acpi_device *dev)
  
-+bool acpi_dev_uid_match(struct acpi_device *adev, const char *uid2);
- bool acpi_dev_hid_uid_match(struct acpi_device *adev, const char *hid2, const char *uid2);
- int acpi_dev_uid_to_integer(struct acpi_device *adev, u64 *integer);
+ 	if (dev->pnp.type.bus_address)
+ 		result = device_create_file(&dev->dev, &dev_attr_adr);
+-	if (dev->pnp.unique_id)
++	if (acpi_device_uid(dev))
+ 		result = device_create_file(&dev->dev, &dev_attr_uid);
  
-diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-index afd94c9b8b8a..db3a33e19c97 100644
---- a/include/linux/acpi.h
-+++ b/include/linux/acpi.h
-@@ -787,6 +787,11 @@ static inline bool acpi_dev_present(const char *hid, const char *uid, s64 hrv)
+ 	if (acpi_has_method(dev->handle, "_SUN")) {
+@@ -635,7 +635,7 @@ void acpi_device_remove_files(struct acpi_device *dev)
+ 	if (acpi_has_method(dev->handle, "_HRV"))
+ 		device_remove_file(&dev->dev, &dev_attr_hrv);
  
- struct acpi_device;
- 
-+static inline bool acpi_dev_uid_match(struct acpi_device *adev, const char *uid2)
-+{
-+	return false;
-+}
-+
- static inline bool
- acpi_dev_hid_uid_match(struct acpi_device *adev, const char *hid2, const char *uid2)
- {
+-	if (dev->pnp.unique_id)
++	if (acpi_device_uid(dev))
+ 		device_remove_file(&dev->dev, &dev_attr_uid);
+ 	if (dev->pnp.type.bus_address)
+ 		device_remove_file(&dev->dev, &dev_attr_adr);
 -- 
 2.17.1
 
