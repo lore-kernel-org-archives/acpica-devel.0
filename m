@@ -1,23 +1,23 @@
 Return-Path: <raag.jadav@intel.com>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 13D6A43271
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 41FCF40122
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org AAD7143271
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org CFFD440122
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1697791701; x=1729327701;
+ t=1697791705; x=1729327705;
  h=from:to:cc:subject:date:message-id:in-reply-to: references;
- bh=VTxu+ilZT0ByPxEPyTKRaS8c0W/p+nQekrV/1V+4jQc=;
- b=OJJrz6hApE3sw6lDZqb8SB4GEC11s7v/9R+obMP2aEzczlg9uNzAIPSH
- H3pMB+a0CrRfIQL1lA4DqROiojZnyGBB4bZ33HYgdW/JKK3/scW0GJthy
- 6KJ/qeyPyziR8NZ4pULcMwT9E0ila2iHvm1NHEEH9wsEXJ6HgP3B6vjMv
- 5Tu7T20Z+XagQo7xp4D7PtmfPpvry9lCVmkWNKjkr5y1PRkyj2iFinB5W
- YKzs4HEV961WbhAI2nq2fMFsjNDMDQHI82ZQ9drhNAtWtUObSWzjEPSO/
- xnCiUi7LWmkJXe+EjeEHfK6QgjaOW0ryJ4xByqY+9SYtuk7+uCMmtJf12 A==;
+ bh=pUffY3rZpA/Ma3FQvoHxe1V6N2z+ycJPoTJ6FPj6xDw=;
+ b=mFNw4VWFCEKJxzxdn/4rHI+pg9qbQrr+bQ46f3focuCnMNRjviTjExV7
+ ZEBBgqxmuOppAVzSZ3r9W//s79JgHeyRWlH9tvg8FYxn+Ye8BtIpJnOTW
+ qXV8iZOC+4c90XjdOQBftd0suwRqs05Dc7qkHlZj3nZsCSc2o03Zi52RF
+ 4emVoD0luk2VR7IU6PE8FepiPndx15zxjGVqtfwiUcgJ9vxqvvRcfI2NV
+ H503ny4lOVfWFLX7AHLhwdqUtbxCR4lT5vR4o4IF92+C34kk3NS5496TE
+ QRLPj85d6cyQecYaOI2mvf5rm1ID5LQWFhE7LoRgstOfuUVBsz47zIIrD Q==;
 From: Raag Jadav <raag.jadav@intel.com>
-Date: Fri, 20 Oct 2023 14:17:31 +0530
-Message-Id: <20231020084732.17130-8-raag.jadav@intel.com>
+Date: Fri, 20 Oct 2023 14:17:32 +0530
+Message-Id: <20231020084732.17130-9-raag.jadav@intel.com>
 In-Reply-To: <20231020084732.17130-1-raag.jadav@intel.com>
 References: <20231020084732.17130-1-raag.jadav@intel.com>
-Subject: [Acpica-devel] [PATCH v1 7/8] hwmon: nct6775: use
+Subject: [Acpica-devel] [PATCH v1 8/8] perf: arm_cspmu: use
 	acpi_dev_hid_uid_match() for matching _HID and _UID
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
@@ -35,25 +35,35 @@ Convert manual _UID references to use standard ACPI helpers.
 
 Signed-off-by: Raag Jadav <raag.jadav@intel.com>
 ---
- drivers/hwmon/nct6775-platform.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/perf/arm_cspmu/arm_cspmu.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/hwmon/nct6775-platform.c b/drivers/hwmon/nct6775-platform.c
-index 81bf03dad6bb..0adeeab7ee03 100644
---- a/drivers/hwmon/nct6775-platform.c
-+++ b/drivers/hwmon/nct6775-platform.c
-@@ -1465,10 +1465,8 @@ static const char * const asus_msi_boards[] = {
- static int nct6775_asuswmi_device_match(struct device *dev, void *data)
- {
- 	struct acpi_device *adev = to_acpi_device(dev);
--	const char *uid = acpi_device_uid(adev);
--	const char *hid = acpi_device_hid(adev);
+diff --git a/drivers/perf/arm_cspmu/arm_cspmu.c b/drivers/perf/arm_cspmu/arm_cspmu.c
+index e2b7827c4563..f0e6d14281d6 100644
+--- a/drivers/perf/arm_cspmu/arm_cspmu.c
++++ b/drivers/perf/arm_cspmu/arm_cspmu.c
+@@ -1061,7 +1061,7 @@ static int arm_cspmu_request_irq(struct arm_cspmu *cspmu)
  
--	if (hid && !strcmp(hid, ASUSWMI_DEVICE_HID) && uid && !strcmp(uid, data)) {
-+	if (acpi_dev_hid_uid_match(adev, ASUSWMI_DEVICE_HID, data)) {
- 		asus_acpi_dev = adev;
- 		return 1;
- 	}
+ static inline int arm_cspmu_find_cpu_container(int cpu, u32 container_uid)
+ {
+-	u32 acpi_uid;
++	u64 acpi_uid;
+ 	struct device *cpu_dev;
+ 	struct acpi_device *acpi_dev;
+ 
+@@ -1071,10 +1071,8 @@ static inline int arm_cspmu_find_cpu_container(int cpu, u32 container_uid)
+ 
+ 	acpi_dev = ACPI_COMPANION(cpu_dev);
+ 	while (acpi_dev) {
+-		if (!strcmp(acpi_device_hid(acpi_dev),
+-			    ACPI_PROCESSOR_CONTAINER_HID) &&
+-		    !kstrtouint(acpi_device_uid(acpi_dev), 0, &acpi_uid) &&
+-		    acpi_uid == container_uid)
++		if (acpi_dev_hid_uid_match(acpi_dev, ACPI_PROCESSOR_CONTAINER_HID, NULL) &&
++		    !acpi_dev_uid_to_integer(acpi_dev, &acpi_uid) && acpi_uid == container_uid)
+ 			return 0;
+ 
+ 		acpi_dev = acpi_dev_parent(acpi_dev);
 -- 
 2.17.1
 
