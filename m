@@ -1,17 +1,21 @@
-Return-Path: <beata.michalska@arm.com>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 378E381409
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 8FEF5813EF
-Date: Wed, 1 Nov 2023 00:58:53 +0100
-From: Beata Michalska <beata.michalska@arm.com>
-Message-ID: <ZUGUvdjrpw9NHSex@e129154.nice.arm.com>
-References: <20231027080400.56703-1-vincent.guittot@linaro.org>
- <20231027080400.56703-8-vincent.guittot@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231027080400.56703-8-vincent.guittot@linaro.org>
-Subject: Re: [Acpica-devel] [PATCH v4 7/7] arm64/amu: use capacity_ref_freq
-	to set AMU ratio
+Return-Path: <raag.jadav@intel.com>
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 35F2161001
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 6DE8560EE4
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1697791691; x=1729327691;
+ h=from:to:cc:subject:date:message-id;
+ bh=55kFwQ1dJ+2JNO1s52sQQCyE+DnzabG8i8c9Ir2rEwI=;
+ b=VZ30RWDAkS7fYu6q6OSjIMWgi9LVUvJPkfAq0pbtGxSPsAoJoo84guA3
+ N3mqpN0RJXYtMBcbbG3DPgJTLilhdFt2fAGzTpPIk2uf0bIx5ka9ZaIjw
+ YgfUgqerV1mEIxppy2gcfzSI2FtiGZDoDAKfY1A8bxNPkhjfCAgpre8BW
+ tIYqd8yVSx1hfBalw5vBWSojnmL48dN2o9LD4RfZA5YA8LMIF1QY7xH3w
+ uqUQ+je+WD4EjEF+rvN0nbpgD9tepX5/M1hMm24Y7KYYnlw44mJJ2d2F6
+ SyCQ0sYSc2z82IYUQdNfw28CIIA1evboXbNNVYmf73X9dPI2GqeLl+3Qq Q==;
+From: Raag Jadav <raag.jadav@intel.com>
+Date: Fri, 20 Oct 2023 14:17:24 +0530
+Message-Id: <20231020084732.17130-1-raag.jadav@intel.com>
+Subject: [Acpica-devel] [PATCH v1 0/8] Refine _UID references across kernel
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -21,154 +25,41 @@ List-Post: <mailto:acpica-devel@lists.linuxfoundation.org>
 List-Help: <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=help>
 List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel>, 
  <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=subscribe>
-To: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: juri.lelli@redhat.com, peterz@infradead.org, catalin.marinas@arm.com, robert.moore@intel.com, bsegall@google.com, conor.dooley@microchip.com, pierre.gondois@arm.com, linux-riscv@lists.infradead.org, will@kernel.org, acpica-devel@lists.linuxfoundation.org, vschneid@redhat.com, linux@armlinux.org.uk, linux-acpi@vger.kernel.org, mingo@redhat.com, mgorman@suse.de, lftan@kernel.org, viresh.kumar@linaro.org, lenb@kernel.org, aou@eecs.berkeley.edu, ionela.voinescu@arm.com, linux-pm@vger.kernel.org, rostedt@goodmis.org, paul.walmsley@sifive.com, dietmar.eggemann@arm.com, linux-arm-kernel@lists.infradead.org, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, palmer@dabbelt.com, sudeep.holla@arm.com, suagrfillet@gmail.com, ajones@ventanamicro.com, bristot@redhat.com, lukasz.luba@arm.com
+To: rafael@kernel.org, len.brown@intel.com, robert.moore@intel.com, mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com, mark.rutland@arm.com, will@kernel.org, linux@roeck-us.net
+Cc: linux-hwmon@vger.kernel.org, linux-gpio@vger.kernel.org, Raag Jadav <raag.jadav@intel.com>, mallikarjunappa.sangannavar@intel.com, linux-kernel@vger.kernel.org, bala.senthil@intel.com, linux-acpi@vger.kernel.org, acpica-devel@lists.linuxfoundation.org, linux-arm-kernel@lists.infradead.org
 
-On Fri, Oct 27, 2023 at 10:04:00AM +0200, Vincent Guittot wrote:
-> Use the new capacity_ref_freq to set the ratio that is used by AMU for
-> computing the arch_scale_freq_capacity().
-> This helps to keep everything aligned using the same reference for
-> computing CPUs capacity.
-> 
-> The default value of the ratio (stored in per_cpu(arch_max_freq_scale)
-> ensures that arch_scale_freq_capacity() returns max capacity until it is
-> set to its correct value with the cpu capacity and capacity_ref_freq.
-> 
-> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-> ---
->  arch/arm64/kernel/topology.c  | 26 ++++++++++++++------------
->  drivers/base/arch_topology.c  | 12 +++++++++++-
->  include/linux/arch_topology.h |  1 +
->  3 files changed, 26 insertions(+), 13 deletions(-)
-> 
-> diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
-> index 817d788cd866..626031076b75 100644
-> --- a/arch/arm64/kernel/topology.c
-> +++ b/arch/arm64/kernel/topology.c
-> @@ -82,7 +82,12 @@ int __init parse_acpi_topology(void)
->  #undef pr_fmt
->  #define pr_fmt(fmt) "AMU: " fmt
->  
-> -static DEFINE_PER_CPU_READ_MOSTLY(unsigned long, arch_max_freq_scale);
-> +/*
-> + * Ensure that amu_scale_freq_tick() will return SCHED_CAPACITY_SCALE until
-> + * the CPU capacity and its assosciated frequency have been correctly
-> + * initialized.
-> + */
-> +static DEFINE_PER_CPU_READ_MOSTLY(unsigned long, arch_max_freq_scale) =  1UL << (2 * SCHED_CAPACITY_SHIFT);
->  static DEFINE_PER_CPU(u64, arch_const_cycles_prev);
->  static DEFINE_PER_CPU(u64, arch_core_cycles_prev);
->  static cpumask_var_t amu_fie_cpus;
-> @@ -112,14 +117,14 @@ static inline bool freq_counters_valid(int cpu)
->  	return true;
->  }
->  
-> -static int freq_inv_set_max_ratio(int cpu, u64 max_rate, u64 ref_rate)
-> +void freq_inv_set_max_ratio(int cpu, u64 max_rate)
->  {
-> -	u64 ratio;
-> +	u64 ratio, ref_rate = arch_timer_get_rate();
->  
->  	if (unlikely(!max_rate || !ref_rate)) {
-> -		pr_debug("CPU%d: invalid maximum or reference frequency.\n",
-> +		WARN_ONCE(1, "CPU%d: invalid maximum or reference frequency.\n",
->  			 cpu);
-> -		return -EINVAL;
-> +		return;
->  	}
->  
->  	/*
-> @@ -139,12 +144,12 @@ static int freq_inv_set_max_ratio(int cpu, u64 max_rate, u64 ref_rate)
->  	ratio = div64_u64(ratio, max_rate);
->  	if (!ratio) {
->  		WARN_ONCE(1, "Reference frequency too low.\n");
-> -		return -EINVAL;
-> +		return;
->  	}
->  
-> -	per_cpu(arch_max_freq_scale, cpu) = (unsigned long)ratio;
-> +	WRITE_ONCE(per_cpu(arch_max_freq_scale, cpu), (unsigned long)ratio);
->  
-> -	return 0;
-> +	return;
->  }
->  
->  static void amu_scale_freq_tick(void)
-> @@ -195,10 +200,7 @@ static void amu_fie_setup(const struct cpumask *cpus)
->  		return;
->  
->  	for_each_cpu(cpu, cpus) {
-> -		if (!freq_counters_valid(cpu) ||
-> -		    freq_inv_set_max_ratio(cpu,
-> -					   cpufreq_get_hw_max_freq(cpu) * 1000ULL,
-> -					   arch_timer_get_rate()))
-> +		if (!freq_counters_valid(cpu))
->  			return;
->  	}
->  
-> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
-> index d4bef370feb3..3cba7dc753b3 100644
-> --- a/drivers/base/arch_topology.c
-> +++ b/drivers/base/arch_topology.c
-> @@ -344,6 +344,10 @@ bool __init topology_parse_cpu_capacity(struct device_node *cpu_node, int cpu)
->  	return !ret;
->  }
->  
-> +void __weak freq_inv_set_max_ratio(int cpu, u64 max_rate)
-> +{
-> +}
-> +
->  #ifdef CONFIG_ACPI_CPPC_LIB
->  #include <acpi/cppc_acpi.h>
->  
-> @@ -381,6 +385,9 @@ void topology_init_cpu_capacity_cppc(void)
->  	}
->  
->  	for_each_possible_cpu(cpu) {
-> +		freq_inv_set_max_ratio(cpu,
-> +				       per_cpu(capacity_ref_freq, cpu) * HZ_PER_KHZ);
-> +
-The capacity_ref_freq set earlier will still lead to units mismatch,
-as at the point of calling topology_init_cpu_capacity_cppc the lowest & nominal
-frequencies will be provided in MHz (unless I have missed smth).
-This means that use of both, the capacity_ref_freq and the arch_freq_scale
-will generate unexpected results, so I guess this should get amended in the
-preceding patch (?) [1]
+This series refines _UID references across kernel by:
 
----
-BR
-B.
+- Extracting _UID matching functionality from acpi_dev_hid_uid_match()
+  helper and introducing it as a separate acpi_dev_uid_match() helper.
 
-[1] https://lore.kernel.org/linux-arm-kernel/20231027080400.56703-4-vincent.guittot@linaro.org/T/#m42daa167097edc190b1cfc05382c385ed801d909
+- Converting manual _UID references to use standard ACPI helpers.
 
->  		capacity = raw_capacity[cpu];
->  		capacity = div64_u64(capacity << SCHED_CAPACITY_SHIFT,
->  				     capacity_scale);
-> @@ -422,8 +429,11 @@ init_cpu_capacity_callback(struct notifier_block *nb,
->  
->  	cpumask_andnot(cpus_to_visit, cpus_to_visit, policy->related_cpus);
->  
-> -	for_each_cpu(cpu, policy->related_cpus)
-> +	for_each_cpu(cpu, policy->related_cpus) {
->  		per_cpu(capacity_ref_freq, cpu) = policy->cpuinfo.max_freq;
-> +		freq_inv_set_max_ratio(cpu,
-> +				       per_cpu(capacity_ref_freq, cpu) * HZ_PER_KHZ);
-> +	}
->  
->  	if (cpumask_empty(cpus_to_visit)) {
->  		topology_normalize_cpu_scale();
-> diff --git a/include/linux/arch_topology.h b/include/linux/arch_topology.h
-> index 38ca6c76af56..ffdf0b7c55fa 100644
-> --- a/include/linux/arch_topology.h
-> +++ b/include/linux/arch_topology.h
-> @@ -99,6 +99,7 @@ void update_siblings_masks(unsigned int cpu);
->  void remove_cpu_topology(unsigned int cpuid);
->  void reset_cpu_topology(void);
->  int parse_acpi_topology(void);
-> +void freq_inv_set_max_ratio(int cpu, u64 max_rate);
->  #endif
->  
->  #endif /* _LINUX_ARCH_TOPOLOGY_H_ */
-> -- 
-> 2.34.1
-> 
+Raag Jadav (8):
+  ACPI: utils: Introduce acpi_dev_uid_match() for matching _UID
+  pinctrl: intel: use acpi_dev_uid_match() for matching _UID
+  ACPI: sysfs: use acpi_device_uid() for fetching _UID
+  ACPI: utils: use acpi_dev_uid_match() for matching _UID
+  ACPI: x86: use acpi_dev_uid_match() for matching _UID
+  perf: qcom: use acpi_device_uid() for fetching _UID
+  hwmon: nct6775: use acpi_dev_hid_uid_match() for matching _HID and
+    _UID
+  perf: arm_cspmu: use acpi_dev_hid_uid_match() for matching _HID and
+    _UID
+
+ drivers/acpi/device_sysfs.c           |  6 ++--
+ drivers/acpi/utils.c                  | 43 +++++++++++++++++++++------
+ drivers/acpi/x86/utils.c              |  3 +-
+ drivers/hwmon/nct6775-platform.c      |  4 +--
+ drivers/perf/arm_cspmu/arm_cspmu.c    |  8 ++---
+ drivers/perf/qcom_l3_pmu.c            |  4 +--
+ drivers/pinctrl/intel/pinctrl-intel.c |  2 +-
+ include/acpi/acpi_bus.h               |  1 +
+ include/linux/acpi.h                  |  5 ++++
+ 9 files changed, 51 insertions(+), 25 deletions(-)
+
+
+base-commit: 9bc2fb9a7e41542a193658deff3df572fa24cb68
+-- 
+2.17.1
+
