@@ -1,24 +1,24 @@
 Return-Path: <raag.jadav@intel.com>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org D05687044C
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 2F09460F3E
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 2AD9160F3E
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 7026760EE4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
  t=1697791692; x=1729327692;
  h=from:to:cc:subject:date:message-id:in-reply-to: references;
- bh=1P08c+02XrBKccGcreruYeIgD28f7+s17ZZyX78daGc=;
- b=CMEDCpUPJOswyAe6+vH3IfTQrD2FzFchFXSwCa591iFEzTBXlR3CDcem
- 2a6ljM4MO4+iNwOAJVNZgrPWUKZQlDL+a04uWR7DL0EYYvlPvKIcy8m6z
- bw5hW1HVBfTv5WlpgFa2Gg2RB2k1d4l8shW5WYSM42djjm+5prUOyT7hx
- WxuH4NZnMUaK8iZwVQAAaJcc1taPBNWSi36wQrJnnzHiVHPBccfsQZBB0
- WDT4Q8vb8aBEwY7TrDBf3KIZkJLHjLXCQi5U05fgoIE9EDxK4iiSS75Bn
- U8+Kebjg6SA0yahw20UnMj6VPzJEQ3/LuoiHp7nkUNQw9lx+1PAsrr8th g==;
+ bh=yG6eK+7AGqw8L3P7iFJ1dEXh4HF5j+xoQ/khjB5EmKI=;
+ b=BSJLZM1kL0yCI+XBDqkEbVRCm1KB0yH25dFVYa6vgR7di2jIA7SjYxxE
+ CAOL75YRrjKIQUnwyp/d8HqZgniXFi6+dZLiLKtS8jQu3Y6k1li5tWSnf
+ +gACrB3Ubb8CjCRYZSNVA36Q5/r0Ydv/WeUDpU9oCQRClFtfRJ4z5jnNf
+ vAXqtQxszBlv62jcos2i5ucTA+0p53bISEqx5YfIucEjJa8eeRRksK6E3
+ oaSsRFqmW2P6tESp4XZmzgVhFdNlMF2GFpdM15i0lYz71sjCMteFascnX
+ khURU82wfdf14RE4qva6uUIIWHkrT7aZtTECShLkglaBAmJmqtQ7Q49Si A==;
 From: Raag Jadav <raag.jadav@intel.com>
-Date: Fri, 20 Oct 2023 14:17:27 +0530
-Message-Id: <20231020084732.17130-4-raag.jadav@intel.com>
+Date: Fri, 20 Oct 2023 14:17:26 +0530
+Message-Id: <20231020084732.17130-3-raag.jadav@intel.com>
 In-Reply-To: <20231020084732.17130-1-raag.jadav@intel.com>
 References: <20231020084732.17130-1-raag.jadav@intel.com>
-Subject: [Acpica-devel] [PATCH v1 3/8] ACPI: sysfs: use acpi_device_uid()
-	for fetching _UID
+Subject: [Acpica-devel] [PATCH v1 2/8] pinctrl: intel: use
+	acpi_dev_uid_match() for matching _UID
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -34,41 +34,24 @@ Cc: linux-hwmon@vger.kernel.org, linux-gpio@vger.kernel.org, Raag Jadav <raag.ja
 Convert manual _UID references to use standard ACPI helpers.
 
 Signed-off-by: Raag Jadav <raag.jadav@intel.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/acpi/device_sysfs.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/pinctrl/intel/pinctrl-intel.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
-index b9bbf0746199..9d8e90744cb5 100644
---- a/drivers/acpi/device_sysfs.c
-+++ b/drivers/acpi/device_sysfs.c
-@@ -410,7 +410,7 @@ static ssize_t uid_show(struct device *dev,
- {
- 	struct acpi_device *acpi_dev = to_acpi_device(dev);
+diff --git a/drivers/pinctrl/intel/pinctrl-intel.c b/drivers/pinctrl/intel/pinctrl-intel.c
+index 3be04ab760d3..999f453344d2 100644
+--- a/drivers/pinctrl/intel/pinctrl-intel.c
++++ b/drivers/pinctrl/intel/pinctrl-intel.c
+@@ -1694,7 +1694,7 @@ const struct intel_pinctrl_soc_data *intel_pinctrl_get_soc_data(struct platform_
+ 		unsigned int i;
  
--	return sprintf(buf, "%s\n", acpi_dev->pnp.unique_id);
-+	return sprintf(buf, "%s\n", acpi_device_uid(acpi_dev));
- }
- static DEVICE_ATTR_RO(uid);
- 
-@@ -554,7 +554,7 @@ int acpi_device_setup_files(struct acpi_device *dev)
- 
- 	if (dev->pnp.type.bus_address)
- 		result = device_create_file(&dev->dev, &dev_attr_adr);
--	if (dev->pnp.unique_id)
-+	if (acpi_device_uid(dev))
- 		result = device_create_file(&dev->dev, &dev_attr_uid);
- 
- 	if (acpi_has_method(dev->handle, "_SUN")) {
-@@ -635,7 +635,7 @@ void acpi_device_remove_files(struct acpi_device *dev)
- 	if (acpi_has_method(dev->handle, "_HRV"))
- 		device_remove_file(&dev->dev, &dev_attr_hrv);
- 
--	if (dev->pnp.unique_id)
-+	if (acpi_device_uid(dev))
- 		device_remove_file(&dev->dev, &dev_attr_uid);
- 	if (dev->pnp.type.bus_address)
- 		device_remove_file(&dev->dev, &dev_attr_adr);
+ 		for (i = 0; table[i]; i++) {
+-			if (!strcmp(adev->pnp.unique_id, table[i]->uid)) {
++			if (acpi_dev_uid_match(adev, table[i]->uid)) {
+ 				data = table[i];
+ 				break;
+ 			}
 -- 
 2.17.1
 
