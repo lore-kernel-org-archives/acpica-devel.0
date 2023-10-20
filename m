@@ -1,24 +1,24 @@
 Return-Path: <raag.jadav@intel.com>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 0FB5D43271
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 140B840122
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 13D6A43271
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 41FCF40122
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1697791697; x=1729327697;
+ t=1697791701; x=1729327701;
  h=from:to:cc:subject:date:message-id:in-reply-to: references;
- bh=rSipyHhM4gYIUQSn5eaLq9kVKKAAb0HFtJJ9r0gwffo=;
- b=Q6AMTih+8TuDtvh6PRZu2ITQ9IZlMSzAKnYyJebVTa8f+9nkCkLuDCT5
- vhLg+RAMcBZFSxHYKj/oYZDelq9PayCt4hdQJnh94jrgvwlqZkwvckVY2
- Im0TEi3G9dwRPbegLlPDqzF13AiFEPkK+EqSXrgtguIOtaI4GErj5DJq/
- LjjW4ryxn+UvPQWmg/oAzCGVRdb51V1hwmxGJmnHEmU859f00qU2gYDOa
- mKk5Iv0uj5h53CE6XdB3dwUqjib8TKnvVs0EhEB244Fue6GUw6X/uydnO
- YhlGJuJjHlM03Bpx3620LGjvVi4dR5XAH+8dbsVWt78i2PmgwZ1nc1PJu Q==;
+ bh=VTxu+ilZT0ByPxEPyTKRaS8c0W/p+nQekrV/1V+4jQc=;
+ b=OJJrz6hApE3sw6lDZqb8SB4GEC11s7v/9R+obMP2aEzczlg9uNzAIPSH
+ H3pMB+a0CrRfIQL1lA4DqROiojZnyGBB4bZ33HYgdW/JKK3/scW0GJthy
+ 6KJ/qeyPyziR8NZ4pULcMwT9E0ila2iHvm1NHEEH9wsEXJ6HgP3B6vjMv
+ 5Tu7T20Z+XagQo7xp4D7PtmfPpvry9lCVmkWNKjkr5y1PRkyj2iFinB5W
+ YKzs4HEV961WbhAI2nq2fMFsjNDMDQHI82ZQ9drhNAtWtUObSWzjEPSO/
+ xnCiUi7LWmkJXe+EjeEHfK6QgjaOW0ryJ4xByqY+9SYtuk7+uCMmtJf12 A==;
 From: Raag Jadav <raag.jadav@intel.com>
-Date: Fri, 20 Oct 2023 14:17:30 +0530
-Message-Id: <20231020084732.17130-7-raag.jadav@intel.com>
+Date: Fri, 20 Oct 2023 14:17:31 +0530
+Message-Id: <20231020084732.17130-8-raag.jadav@intel.com>
 In-Reply-To: <20231020084732.17130-1-raag.jadav@intel.com>
 References: <20231020084732.17130-1-raag.jadav@intel.com>
-Subject: [Acpica-devel] [PATCH v1 6/8] perf: qcom: use acpi_device_uid() for
-	fetching _UID
+Subject: [Acpica-devel] [PATCH v1 7/8] hwmon: nct6775: use
+	acpi_dev_hid_uid_match() for matching _HID and _UID
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -35,24 +35,25 @@ Convert manual _UID references to use standard ACPI helpers.
 
 Signed-off-by: Raag Jadav <raag.jadav@intel.com>
 ---
- drivers/perf/qcom_l3_pmu.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/hwmon/nct6775-platform.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/perf/qcom_l3_pmu.c b/drivers/perf/qcom_l3_pmu.c
-index 2887edb4eb0b..f16783d03db7 100644
---- a/drivers/perf/qcom_l3_pmu.c
-+++ b/drivers/perf/qcom_l3_pmu.c
-@@ -742,8 +742,8 @@ static int qcom_l3_cache_pmu_probe(struct platform_device *pdev)
+diff --git a/drivers/hwmon/nct6775-platform.c b/drivers/hwmon/nct6775-platform.c
+index 81bf03dad6bb..0adeeab7ee03 100644
+--- a/drivers/hwmon/nct6775-platform.c
++++ b/drivers/hwmon/nct6775-platform.c
+@@ -1465,10 +1465,8 @@ static const char * const asus_msi_boards[] = {
+ static int nct6775_asuswmi_device_match(struct device *dev, void *data)
+ {
+ 	struct acpi_device *adev = to_acpi_device(dev);
+-	const char *uid = acpi_device_uid(adev);
+-	const char *hid = acpi_device_hid(adev);
  
- 	l3pmu = devm_kzalloc(&pdev->dev, sizeof(*l3pmu), GFP_KERNEL);
- 	name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "l3cache_%s_%s",
--		      acpi_dev_parent(acpi_dev)->pnp.unique_id,
--		      acpi_dev->pnp.unique_id);
-+		      acpi_device_uid(acpi_dev_parent(acpi_dev)),
-+		      acpi_device_uid(acpi_dev));
- 	if (!l3pmu || !name)
- 		return -ENOMEM;
- 
+-	if (hid && !strcmp(hid, ASUSWMI_DEVICE_HID) && uid && !strcmp(uid, data)) {
++	if (acpi_dev_hid_uid_match(adev, ASUSWMI_DEVICE_HID, data)) {
+ 		asus_acpi_dev = adev;
+ 		return 1;
+ 	}
 -- 
 2.17.1
 
