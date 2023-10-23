@@ -1,24 +1,24 @@
 Return-Path: <raag.jadav@intel.com>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org A7D4B4020B
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org C86AC401C9
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org EDC9640273
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 30BA240146
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1698039385; x=1729575385;
+ t=1698039387; x=1729575387;
  h=from:to:cc:subject:date:message-id:in-reply-to: references;
- bh=kUk0ItiaVjzsfP94oC1IH39uZvUKoEr3WDbUZtzQLOo=;
- b=TqfhDOaeFBtb4wF2pLDQkFapff1OAkEtVjJNTsX3TfrbdnoFsYJYmAa8
- gqVe4RlsGh68HSlQCwoq6SFufOIJ9j/SJvhb31u5iFfYMTjx0IPIy2nDA
- gr9rYul8G/OqFfkPZd3Qv6nIYC6FVi0T/SSOhc3hGagkcps+fyLEGPgq0
- 3IGJIKwASfWkV8aQg6XQYy9CS68i2DjW2XscN/U7sj+MhZzfMgULAFAyW
- B08qaIKc4fTwIZYv175M2xBWwqikDlLgpdIf9mj75N2y+lQXsfELYeMfu
- 2GVNb2N85LhHAmd2Thr+885T0LU/t9PdGCNOmY5iwfr4B4Ie2dZPHPlA6 w==;
+ bh=ozdZnaBJZ2vqKdOuWyOWr4NX6JLrJWxExqsMlsM/PrM=;
+ b=OmdWhuBjXZMtXB4Xu8i5SrbCQdqF/gxDffg+OT2i7zn5l4+624JaGhIP
+ znziLKOsC3ic65uI4gnA9eLCVNfEoT8C7dQkpL9SYs+jdU8JwAWVq9OY3
+ 7FgN2bbMUzlmbTx42TblXmKD3k7egpp2CTT5D5W2ce4qKODRX3rgsSrkm
+ L52c1Xqt7ySa2Sb27yOnf1ejjCTZ6NJeCLCehDDHY63sJGLJ+qaGAYauC
+ 0K41QQcqa26hA1TJNV8rm+17ltsI5nTrHM7pmUNpw/GFdDfOibADnYwBd
+ ETcL3OpIZA9f3F4s7kOn56dlruRW5PGzPrwFcfT7/lwEh3Z6H/eGHX8fV w==;
 From: Raag Jadav <raag.jadav@intel.com>
-Date: Mon, 23 Oct 2023 11:05:26 +0530
-Message-Id: <20231023053530.5525-3-raag.jadav@intel.com>
+Date: Mon, 23 Oct 2023 11:05:27 +0530
+Message-Id: <20231023053530.5525-4-raag.jadav@intel.com>
 In-Reply-To: <20231023053530.5525-1-raag.jadav@intel.com>
 References: <20231023053530.5525-1-raag.jadav@intel.com>
-Subject: [Acpica-devel] [PATCH v2 2/6] pinctrl: intel: use
-	acpi_dev_uid_match() for matching _UID
+Subject: [Acpica-devel] [PATCH v2 3/6] ACPI: utils: use acpi_dev_uid_match()
+	for matching _UID
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -34,24 +34,24 @@ Cc: linux-hwmon@vger.kernel.org, linux-gpio@vger.kernel.org, Raag Jadav <raag.ja
 Convert manual _UID references to use the standard ACPI helper.
 
 Signed-off-by: Raag Jadav <raag.jadav@intel.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/pinctrl/intel/pinctrl-intel.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/acpi/utils.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/pinctrl/intel/pinctrl-intel.c b/drivers/pinctrl/intel/pinctrl-intel.c
-index 3be04ab760d3..999f453344d2 100644
---- a/drivers/pinctrl/intel/pinctrl-intel.c
-+++ b/drivers/pinctrl/intel/pinctrl-intel.c
-@@ -1694,7 +1694,7 @@ const struct intel_pinctrl_soc_data *intel_pinctrl_get_soc_data(struct platform_
- 		unsigned int i;
+diff --git a/drivers/acpi/utils.c b/drivers/acpi/utils.c
+index be21b77059af..28c75242fca9 100644
+--- a/drivers/acpi/utils.c
++++ b/drivers/acpi/utils.c
+@@ -942,8 +942,7 @@ static int acpi_dev_match_cb(struct device *dev, const void *data)
+ 	if (acpi_match_device_ids(adev, match->hid))
+ 		return 0;
  
- 		for (i = 0; table[i]; i++) {
--			if (!strcmp(adev->pnp.unique_id, table[i]->uid)) {
-+			if (acpi_dev_uid_match(adev, table[i]->uid)) {
- 				data = table[i];
- 				break;
- 			}
+-	if (match->uid && (!adev->pnp.unique_id ||
+-	    strcmp(adev->pnp.unique_id, match->uid)))
++	if (match->uid && !acpi_dev_uid_match(adev, match->uid))
+ 		return 0;
+ 
+ 	if (match->hrv == -1)
 -- 
 2.17.1
 
