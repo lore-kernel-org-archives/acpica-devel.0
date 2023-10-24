@@ -1,29 +1,16 @@
-Return-Path: <andriy.shevchenko@linux.intel.com>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org C9691430E7
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 0212A43059
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1698145267; x=1729681267;
- h=date:from:to:cc:subject:message-id:references:
- mime-version:in-reply-to;
- bh=75KjUTqZS/fnnT7oRhWogkQjn6g67+ZS64Oru9+MmVU=;
- b=OVTqXZ9pp95xjiBXRzhrbaV7HNWBCvOGuY24b7tfKXFGm1sCQWg9bzb7
- 2aooeQKN3o3ImrclTd9wZ5UT80sLLYDtWENwfFscV70fbyFSlNLI4HAbT
- nG3D21rVAlmfLhx364LaluN8VtE9NE3kNT+2jSZvwmWzjMkSJAJYUkyEf
- trwLe6qbVUBLpCUiu0be35wq5gN2Cd8WwQgKMgaOwvDEjFzBOpgb8mSkE
- REW8B7YLG8o/J17L/DOLfsuz9j1+erfv7Logx0vqXWGmiyiHkHa7kYHTB
- 56lykVIcR3Uud24GvGj/422LDaYNLTqSRv1X0BAb2Sq1sy6d5f/v9zp4O A==;
-Date: Tue, 24 Oct 2023 14:00:58 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Message-ID: <ZTej6hlCCYFRCNtl@smile.fi.intel.com>
-References: <20231024062018.23839-1-raag.jadav@intel.com>
- <20231024093010.GF3208943@black.fi.intel.com>
+Return-Path: <rjwysocki@gmail.com>
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 1CAA94B5BC
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 4AE884AAB4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231024093010.GF3208943@black.fi.intel.com>
-Subject: Re: [Acpica-devel] [PATCH v3 0/6] Refine _UID references across
-	kernel
+References: <ZTffkAdOqL2pI2la@shell.armlinux.org.uk>
+In-Reply-To: <ZTffkAdOqL2pI2la@shell.armlinux.org.uk>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Tue, 24 Oct 2023 20:26:58 +0200
+Message-ID: <CAJZ5v0j-73_+9U3ngDAf9w1ADDhBTKctJdWboqUk-okH2TQGyg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [Acpica-devel] [RFC PATCH v3 00/39] ACPI/arm64: add support for
+	virtual cpuhotplug
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -33,28 +20,75 @@ List-Post: <mailto:acpica-devel@lists.linuxfoundation.org>
 List-Help: <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=help>
 List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel>, 
  <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=subscribe>
-To: Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc: mark.rutland@arm.com, len.brown@intel.com, mallikarjunappa.sangannavar@intel.com, linux-gpio@vger.kernel.org, Raag Jadav <raag.jadav@intel.com>, robert.moore@intel.com, bala.senthil@intel.com, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Jonathan.Cameron@huawei.com, acpica-devel@lists.linuxfoundation.org, linux-hwmon@vger.kernel.org, will@kernel.org, linux@roeck-us.net
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc: linux-arch@vger.kernel.org, Jean-Philippe Brucker <jean-philippe@linaro.org>, Salil Mehta <salil.mehta@huawei.com>, jianyong.wu@arm.com, linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, x86@kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, linux-acpi@vger.kernel.org, James Morse <james.morse@arm.com>, loongarch@lists.linux.dev, kvmarm@lists.linux.dev, justin.he@arm.com, linux-riscv@lists.infradead.org, acpica-devel@lists.linuxfoundation.org, linux-arm-kernel@lists.infradead.org
 
-On Tue, Oct 24, 2023 at 12:30:10PM +0300, Mika Westerberg wrote:
-> On Tue, Oct 24, 2023 at 11:50:12AM +0530, Raag Jadav wrote:
-> > This series refines _UID references across kernel by:
+On Tue, Oct 24, 2023 at 5:15=E2=80=AFPM Russell King (Oracle)
+<linux@armlinux.org.uk> wrote:
+>
+> Hi,
+>
+> I'm posting James' patch set updated with most of the review comments
+> from his RFC v2 series back in September. Individual patches have a
+> changelog attached at the bottom of the commit message. Those which
+> I have finished updating have my S-o-b on them, those which still have
+> outstanding review comments from RFC v2 do not. In some of these cases
+> I've asked questions and am waiting for responses.
+>
+> I'm posting this as RFC v3 because there's still some unaddressed
+> comments and it's clearly not ready for merging. Even if it was ready
+> to be merged, it is too late in this development cycle to be taking
+> this change in, so there would be little point posting it non-RFC.
+> Also James stated that he's waiting for confirmation from the
+> Kubernetes/Kata folk - I have no idea what the status is there.
+>
+> I will be sending each patch individually to a wider audience
+> appropriate for that patch - apologies to those missing out on this
+> cover message. I have added more mailing lists to the series with the
+> exception of the acpica list in a hope of this cover message also
+> reaching those folk.
+>
+> The changes that aren't included are:
+>
+> 1. Updates for my patch that was merged via Thomas (thanks!):
+>    c4dd854f740c cpu-hotplug: Provide prototypes for arch CPU registration
+>    rather than having this change spread through James' patches.
+>
+> 2. New patch - simplification of PA-RISC's smp_prepare_boot_cpu()
+>
+> 3. Moved "ACPI: Use the acpi_device_is_present() helper in more places"
+>    and "ACPI: Rename acpi_scan_device_not_present() to be about
+>    enumeration" to the beginning of the series - these two patches are
+>    already queued up for merging into 6.7.
+>
+> 4. Moved "arm64, irqchip/gic-v3, ACPI: Move MADT GICC enabled check into
+>    a helper" to the beginning of the series, which has been submitted,
+>    but as yet the fate of that posting isn't known.
+>
+> The first four patches in this series are provided for completness only.
+>
+> There is an additional patch in James' git tree that isn't in the set
+> of patches that James posted: "ACPI: processor: Only call
+> arch_unregister_cpu() if HOTPLUG_CPU is selected" which looks to me to
+> be a workaround for arch_unregister_cpu() being under the ifdef. I've
+> commented on this on the RFC v2 posting making a suggestion, but as yet
+> haven't had any response.
+>
+> I've included almost all of James' original covering body below the
+> diffstat.
+>
+> The reason that I'm doing this is to help move this code forward so
+> hopefully it can be merged - which is why I have been keen to dig out
+> from James' patches anything that can be merged and submit it
+> separately, since this is a feature for which some users have a
+> definite need for.
 
-...
+I've gone through the series and there is at least one thing in it
+that concerns me a lot and some others that at least appear to be
+really questionable.
 
-> >  drivers/pinctrl/intel/pinctrl-intel.c |  2 +-
-> 
-> This pinctrl one is also fine by me so if Andy does not have objections,
-> feel free to add my,
+I need more time to send comments which I'm not going to do before the
+6.7 merge window (sorry), but from what I can say right now, this is
+not looking good.
 
-TL;DR: I had, but Rafael seems wanted your opinion. Whatever, I'm not
-preventing this from happening, but I still consider that the uid check
-for NULL in the helper should mimic the same logic as in
-acpi_dev_hid_uid_match(). That's why I asked to drop my tags from this
-series.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Thanks!
