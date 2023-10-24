@@ -1,18 +1,18 @@
 Return-Path: <rmk+acpica-devel=lists.linuxfoundation.org@armlinux.org.uk>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org ECB177039C
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 128356FBFE
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 2DBB26FBFE
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 7E22B6FC0B
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=armlinux.org.uk; s=pandora-2019; h=Date:Sender:Message-Id:Content-Type:
  Content-Transfer-Encoding:MIME-Version:Subject:Cc:To:From:References:
  In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
  Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
  List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=IJ7uYec08eqfuMxFZrHnSEcaft5KZu54sS7ZNCcryYs=; b=jYvWVqlCApkWNPfR6cAqR56m9Q
- q/uDG0++Gf1LKwvUATqH2/HHLsrgwdtJ+BeV/LcQUy3mgxTKjZMMBCasy377IlLdVDXBTutup20Bx
- AOHX+6RfU48ufAu5zcB7c+JBDj4iJugXUbd/X6bNVHKqnCmmg57lACiIs8euHoCBoxARM4DmumVWq
- hFbEk8A35olBO2FvYluxan0xYW5q81eExG6xzwEsoS7UksiGwOQzBQwIkut0ZB1E+f3olnozZwwr1
- W1q9gkoD44/mckOaqrqcVmwEeE8Q+bTfGfC7EfPQIexJLoqWTRu23M91wNstj743bbzWCtenM0PWp
- +v2LYvbg==;
+ bh=7mUed4j6JYeBkSblH2nqcvZsQbChg0c7FCSaYvctrZY=; b=RXKzMk8nxqLsHr4DrG64vwCDNl
+ L1dBvNRAboxbtvs9cSI1KCnV0hnPEd7IW2lznQwfui6jPeu3MJ5AAq2UCyu6FgD+8x2iGNf4iDs5W
+ Hw2gX7LecqKIJFAwAF1BKt8bxa1WBrvQMwLcjVSAzi89+ncVyvzw0koZvYsmjNUkGg+jRIE5r3U5x
+ orHxHls/n75Zzq/kBkYtZ0EOZfE8GldZzqesp2T03cpK4YGxXTcZiQmUuT5AYQwhg5tvCo9L0tXt9
+ NbmL3Te3xKJ1+ljcRqR+ihf1KD34wlPyBSMmb4jpyIB5r1SctfT0r+pSXWkYCf0HEW9QvzvWn9Ogc
+ wAFyW+YA==;
 In-Reply-To: <ZTffkAdOqL2pI2la@shell.armlinux.org.uk>
 References: <ZTffkAdOqL2pI2la@shell.armlinux.org.uk>
 From: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
@@ -20,11 +20,10 @@ MIME-Version: 1.0
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset="utf-8"
-Message-Id: <E1qvJAl-00AqRM-2s@rmk-PC.armlinux.org.uk>
+Message-Id: <E1qvJBA-00AqRq-QW@rmk-PC.armlinux.org.uk>
 Sender: Russell King <rmk@armlinux.org.uk>
-Date: Tue, 24 Oct 2023 16:18:23 +0100
-Subject: [Acpica-devel] [PATCH 26/39] ACPI: Add post_eject to struct
- acpi_scan_handler for cpu hotplug
+Date: Tue, 24 Oct 2023 16:18:48 +0100
+Subject: [Acpica-devel] [PATCH 31/39] ACPICA: Add new MADT GICC flags fields
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -39,171 +38,37 @@ Cc: Jean-Philippe Brucker <jean-philippe@linaro.org>, Salil Mehta <salil.mehta@h
 
 From: James Morse <james.morse@arm.com>
 
-struct acpi_scan_handler has a detach callback that is used to remove
-a driver when a bus is changed. When interacting with an eject-request,
-the detach callback is called before _EJ0.
+Add the new flag field to the MADT's GICC structure.
 
-This means the ACPI processor driver can't use _STA to determine if a
-CPU has been made not-present, or some of the other _STA bits have been
-changed. acpi_processor_remove() needs to know the value of _STA after
-_EJ0 has been called.
-
-Add a post_eject callback to struct acpi_scan_handler. This is called
-after acpi_scan_hot_remove() has successfully called _EJ0. Because
-acpi_bus_trim_one() also clears the handler pointer, it needs to be
-told if the caller will go on to call acpi_bus_post_eject(), so
-that acpi_device_clear_enumerated() and clearing the handler pointer
-can be deferred. The existing not-used pointer is used for this.
+'Online Capable' indicates a disabled CPU can be enabled later. See
+ACPI specification 6.5 Tabel 5.37: GICC CPU Interface Flags.
 
 Signed-off-by: James Morse <james.morse@arm.com>
-Reviewed-by: Joanthan Cameron <Jonathan.Cameron@huawei.com>
 ---
- drivers/acpi/acpi_processor.c |  4 +--
- drivers/acpi/scan.c           | 52 ++++++++++++++++++++++++++++++-----
- include/acpi/acpi_bus.h       |  1 +
- 3 files changed, 48 insertions(+), 9 deletions(-)
+This patch probably needs to go via the upstream acpica project,
+but is included here so the feature can be tested.
 
-diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
-index 26e3efb74614..b6f5005985c3 100644
---- a/drivers/acpi/acpi_processor.c
-+++ b/drivers/acpi/acpi_processor.c
-@@ -459,7 +459,7 @@ static int acpi_processor_add(struct acpi_device *device,
+If the ACPICA header files are updated before merging this patch set,
+this patch will need to be dropped.
+
+Changes since RFC v2:
+ * Add ACPI specification reference.
+---
+ include/acpi/actbl2.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
+index 3751ae69432f..c433a079d8e1 100644
+--- a/include/acpi/actbl2.h
++++ b/include/acpi/actbl2.h
+@@ -1046,6 +1046,7 @@ struct acpi_madt_generic_interrupt {
+ /* ACPI_MADT_ENABLED                    (1)      Processor is usable if set */
+ #define ACPI_MADT_PERFORMANCE_IRQ_MODE  (1<<1)	/* 01: Performance Interrupt Mode */
+ #define ACPI_MADT_VGIC_IRQ_MODE         (1<<2)	/* 02: VGIC Maintenance Interrupt mode */
++#define ACPI_MADT_GICC_CPU_CAPABLE      (1<<3)	/* 03: CPU is online capable */
  
- #ifdef CONFIG_ACPI_HOTPLUG_PRESENT_CPU
- /* Removal */
--static void acpi_processor_remove(struct acpi_device *device)
-+static void acpi_processor_post_eject(struct acpi_device *device)
- {
- 	struct acpi_processor *pr;
+ /* 12: Generic Distributor (ACPI 5.0 + ACPI 6.0 changes) */
  
-@@ -627,7 +627,7 @@ static struct acpi_scan_handler processor_handler = {
- 	.ids = processor_device_ids,
- 	.attach = acpi_processor_add,
- #ifdef CONFIG_ACPI_HOTPLUG_PRESENT_CPU
--	.detach = acpi_processor_remove,
-+	.post_eject = acpi_processor_post_eject,
- #endif
- 	.hotplug = {
- 		.enabled = true,
-diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-index 4343888c76d5..adfd24f4d00c 100644
---- a/drivers/acpi/scan.c
-+++ b/drivers/acpi/scan.c
-@@ -244,18 +244,28 @@ static int acpi_scan_try_to_offline(struct acpi_device *device)
- 	return 0;
- }
- 
--static int acpi_bus_trim_one(struct acpi_device *adev, void *not_used)
-+/**
-+ * acpi_bus_trim_one() - Detach scan handlers and drivers from ACPI device
-+ *                       objects.
-+ * @adev:       Root of the ACPI namespace scope to walk.
-+ * @eject:      Pointer to a bool that indicates if this was due to an
-+ *              eject-request.
-+ *
-+ * Must be called under acpi_scan_lock.
-+ * If @eject points to true, clearing the device enumeration is deferred until
-+ * acpi_bus_post_eject() is called.
-+ */
-+static int acpi_bus_trim_one(struct acpi_device *adev, void *eject)
- {
- 	struct acpi_scan_handler *handler = adev->handler;
-+	bool is_eject = *(bool *)eject;
- 
--	acpi_dev_for_each_child_reverse(adev, acpi_bus_trim_one, NULL);
-+	acpi_dev_for_each_child_reverse(adev, acpi_bus_trim_one, eject);
- 
- 	adev->flags.match_driver = false;
- 	if (handler) {
- 		if (handler->detach)
- 			handler->detach(adev);
--
--		adev->handler = NULL;
- 	} else {
- 		device_release_driver(&adev->dev);
- 	}
-@@ -265,7 +275,12 @@ static int acpi_bus_trim_one(struct acpi_device *adev, void *not_used)
- 	 */
- 	acpi_device_set_power(adev, ACPI_STATE_D3_COLD);
- 	adev->flags.initialized = false;
--	acpi_device_clear_enumerated(adev);
-+
-+	/* For eject this is deferred to acpi_bus_post_eject() */
-+	if (!is_eject) {
-+		adev->handler = NULL;
-+		acpi_device_clear_enumerated(adev);
-+	}
- 
- 	return 0;
- }
-@@ -278,15 +293,36 @@ static int acpi_bus_trim_one(struct acpi_device *adev, void *not_used)
-  */
- void acpi_bus_trim(struct acpi_device *adev)
- {
--	acpi_bus_trim_one(adev, NULL);
-+	bool eject = false;
-+
-+	acpi_bus_trim_one(adev, &eject);
- }
- EXPORT_SYMBOL_GPL(acpi_bus_trim);
- 
-+static int acpi_bus_post_eject(struct acpi_device *adev, void *not_used)
-+{
-+	struct acpi_scan_handler *handler = adev->handler;
-+
-+	acpi_dev_for_each_child_reverse(adev, acpi_bus_post_eject, NULL);
-+
-+	if (handler) {
-+		if (handler->post_eject)
-+			handler->post_eject(adev);
-+
-+		adev->handler = NULL;
-+	}
-+
-+	acpi_device_clear_enumerated(adev);
-+
-+	return 0;
-+}
-+
- static int acpi_scan_hot_remove(struct acpi_device *device)
- {
- 	acpi_handle handle = device->handle;
- 	unsigned long long sta;
- 	acpi_status status;
-+	bool eject = true;
- 
- 	if (device->handler && device->handler->hotplug.demand_offline) {
- 		if (!acpi_scan_is_offline(device, true))
-@@ -299,7 +335,7 @@ static int acpi_scan_hot_remove(struct acpi_device *device)
- 
- 	acpi_handle_debug(handle, "Ejecting\n");
- 
--	acpi_bus_trim(device);
-+	acpi_bus_trim_one(device, &eject);
- 
- 	acpi_evaluate_lck(handle, 0);
- 	/*
-@@ -322,6 +358,8 @@ static int acpi_scan_hot_remove(struct acpi_device *device)
- 	} else if (sta & ACPI_STA_DEVICE_ENABLED) {
- 		acpi_handle_warn(handle,
- 			"Eject incomplete - status 0x%llx\n", sta);
-+	} else {
-+		acpi_bus_post_eject(device, NULL);
- 	}
- 
- 	return 0;
-diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-index 254685085c82..1b7e1acf925b 100644
---- a/include/acpi/acpi_bus.h
-+++ b/include/acpi/acpi_bus.h
-@@ -127,6 +127,7 @@ struct acpi_scan_handler {
- 	bool (*match)(const char *idstr, const struct acpi_device_id **matchid);
- 	int (*attach)(struct acpi_device *dev, const struct acpi_device_id *id);
- 	void (*detach)(struct acpi_device *dev);
-+	void (*post_eject)(struct acpi_device *dev);
- 	void (*bind)(struct device *phys_dev);
- 	void (*unbind)(struct device *phys_dev);
- 	struct acpi_hotplug_profile hotplug;
 -- 
 2.30.2
 
