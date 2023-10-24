@@ -1,32 +1,29 @@
 Return-Path: <vincent.guittot@linaro.org>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 38C7D4EB95
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 29C254EB92
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org DDCC6405F5
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 554BA403E9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=linaro.org; s=google; t=1698141418; x=1698746218;
+ d=linaro.org; s=google; t=1698141494; x=1698746294;
  darn=lists.linuxfoundation.org; 
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:from:to:cc:subject:date
- :message-id:reply-to;
- bh=9ZmQw87wWu1ilebiZdLFiZTY4pr7HbiJ8vUC+a+GPRs=;
- b=a5hvPY4/mRwqwBEZ5GBLyr8TCjG4YMwg7vTkk11T/MSsZ5IAyRZ1WXzGRrMnV6JbDA
- IE7K7xBgUOxF2r/2jOcU05AsfkrapgHIaiK8DcTQUfxiiAAfP7VRsqmjp5ZEIM/hf5rW
- aVl5+yVYFFyghvTixAqbAEDvXTg41yvVqT0OqcXm0P8wfL81uBvZvYWMsONbTO+Y1Vxn
- MrAHHRffkp8sZApGZAJs5wY+aIzQl3ADNwfm4EJ4YZOtPdU5WKVUQ3gQso4LEV5rxs28
- brrFvRt5Me8gjs3ZV0bplGgZyFKF8mGME23rRV0zVCA+UmXMF1+rf3cJn9ICFo4vKB97
- nEyA==
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=BZADg+Sp3ExqHuirYv8+xin3LzD6ONTFW/tVjt2x+ao=;
+ b=Y/iGSFdOfF9l6om5q6gjKiRtbJegu5vqzfEpA+D0PQAAMyWfeOaOKbuNkdonkyhc1f
+ EJXHbOlkufuSp01O1kddbOZaDR58aHoB0CD+3qqvbrVOFHeBCeqpwDph9dIz5krVx0I+
+ LutPY+bSWjMEF8inN6onMPoAfL+Ea62uKOMenHcyHIoJmb7DhDPk99dmI801BCP+rFR+
+ nfX2hWFW9CjXQzTy07iyj7gkNjugVGIzDnOc9BsfplX3iQOaM80xKcDbyqnkrJspKxhx
+ raFIaEcSrEAkIrl75g4o2WhtnS5Y0mrMF44aQ9EFIujmDaACiPqNXRSh/ZVyRs1iW/5l
+ P3bw==
 MIME-Version: 1.0
 References: <20231018162540.667646-1-vincent.guittot@linaro.org>
- <20231018162540.667646-6-vincent.guittot@linaro.org>
- <CAJZ5v0hS7bdUv=-k4ut2Fw0LYfB7Hb1_rro7UOVTRq4=JLNchg@mail.gmail.com>
- <60497d6d-dfe3-4edc-9553-311fdd9c63d0@arm.com>
-In-Reply-To: <60497d6d-dfe3-4edc-9553-311fdd9c63d0@arm.com>
+ <20231018162540.667646-7-vincent.guittot@linaro.org>
+ <ZTbebQrK3K+JwWxR@arm.com>
+In-Reply-To: <ZTbebQrK3K+JwWxR@arm.com>
 From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Tue, 24 Oct 2023 11:56:46 +0200
-Message-ID: <CAKfTPtCogPYyfe2aoNQE4BLRM+++3ezdx-3NsVFFMBKnZNWfiw@mail.gmail.com>
+Date: Tue, 24 Oct 2023 11:58:02 +0200
+Message-ID: <CAKfTPtA0KBE8TFifOEXddF9d_wqDjb4QUvgK8c0DTtyLrX0atA@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [Acpica-devel] [PATCH v3 5/6] cpufreq/cppc: set the frequency
- used for computing the capacity
+Subject: Re: [Acpica-devel] [RFC v3 6/6] arm64/amu: use capacity_ref_freq to
+	set AMU ratio
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -36,141 +33,162 @@ List-Post: <mailto:acpica-devel@lists.linuxfoundation.org>
 List-Help: <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=help>
 List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel>, 
  <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=subscribe>
-To: Pierre Gondois <pierre.gondois@arm.com>
-Cc: juri.lelli@redhat.com, peterz@infradead.org, catalin.marinas@arm.com, robert.moore@intel.com, bsegall@google.com, conor.dooley@microchip.com, linux-riscv@lists.infradead.org, will@kernel.org, acpica-devel@lists.linuxfoundation.org, vschneid@redhat.com, ajones@ventanamicro.com, linux@armlinux.org.uk, linux-acpi@vger.kernel.org, mingo@redhat.com, bristot@redhat.com, lftan@kernel.org, viresh.kumar@linaro.org, mgorman@suse.de, aou@eecs.berkeley.edu, linux-pm@vger.kernel.org, rostedt@goodmis.org, paul.walmsley@sifive.com, dietmar.eggemann@arm.com, linux-arm-kernel@lists.infradead.org, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, palmer@dabbelt.com, sudeep.holla@arm.com, suagrfillet@gmail.com, lenb@kernel.org, ionela.voinescu@arm.com, lukasz.luba@arm.com
+To: Ionela Voinescu <ionela.voinescu@arm.com>
+Cc: juri.lelli@redhat.com, peterz@infradead.org, catalin.marinas@arm.com, robert.moore@intel.com, bsegall@google.com, conor.dooley@microchip.com, pierre.gondois@arm.com, linux-riscv@lists.infradead.org, will@kernel.org, acpica-devel@lists.linuxfoundation.org, vschneid@redhat.com, linux@armlinux.org.uk, linux-acpi@vger.kernel.org, mingo@redhat.com, mgorman@suse.de, lftan@kernel.org, viresh.kumar@linaro.org, lenb@kernel.org, aou@eecs.berkeley.edu, linux-pm@vger.kernel.org, rostedt@goodmis.org, paul.walmsley@sifive.com, dietmar.eggemann@arm.com, linux-arm-kernel@lists.infradead.org, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, palmer@dabbelt.com, sudeep.holla@arm.com, suagrfillet@gmail.com, ajones@ventanamicro.com, bristot@redhat.com, lukasz.luba@arm.com
 
-On Fri, 20 Oct 2023 at 18:05, Pierre Gondois <pierre.gondois@arm.com> wrote=
-:
+On Mon, 23 Oct 2023 at 22:58, Ionela Voinescu <ionela.voinescu@arm.com> wrote:
 >
-> Hello Vincent,
+> Hi,
 >
-> On 10/18/23 19:26, Rafael J. Wysocki wrote:
-> > On Wed, Oct 18, 2023 at 6:25=E2=80=AFPM Vincent Guittot
-> > <vincent.guittot@linaro.org> wrote:
-> >>
-> >> Save the frequency associated to the performance that has been used wh=
-en
-> >> initializing the capacity of CPUs.
-> >> Also, cppc cpufreq driver can register an artificial energy model. In =
-such
-> >> case, it needs the frequency for this compute capacity.
-> >> We moved and renamed cppc_perf_to_khz and cppc_perf_to_khz to use them
-> >> outside cppc_cpufreq in topology_init_cpu_capacity_cppc().
-> >>
-> >> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+> On Wednesday 18 Oct 2023 at 18:25:40 (+0200), Vincent Guittot wrote:
+> > Use the new capacity_ref_freq to set the ratio that is used by AMU for
+> > computing the arch_scale_freq_capacity().
+> > This helps to keep everything aligned using the same reference for
+> > computing CPUs capacity.
 > >
-> > For the changes in drivers/acpi/cppc_acpi.c :
+> > The default value of the ratio ensures that arch_scale_freq_capacity()
+> > returns max capacity until it is set to its correct value with the
+> > cpu capacity and capacity_ref_freq.
 > >
-> > Acked-by: Rafael J. Wysocki <rafael@kernel.org>
+> > Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+> > ---
+> >  arch/arm64/kernel/topology.c  | 18 ++++++++++--------
+> >  drivers/base/arch_topology.c  | 14 ++++++++++++--
+> >  include/linux/arch_topology.h |  1 +
+> >  3 files changed, 23 insertions(+), 10 deletions(-)
 > >
-> >> ---
-> >>   drivers/acpi/cppc_acpi.c       |  93 ++++++++++++++++++++++
-> >>   drivers/base/arch_topology.c   |  15 +++-
-> >>   drivers/cpufreq/cppc_cpufreq.c | 141 ++++++-------------------------=
---
-> >>   include/acpi/cppc_acpi.h       |   2 +
-> >>   4 files changed, 133 insertions(+), 118 deletions(-)
-> >>
+> > diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
+> > index 817d788cd866..0f8f6e90c46d 100644
+> > --- a/arch/arm64/kernel/topology.c
+> > +++ b/arch/arm64/kernel/topology.c
+> > @@ -82,7 +82,12 @@ int __init parse_acpi_topology(void)
+> >  #undef pr_fmt
+> >  #define pr_fmt(fmt) "AMU: " fmt
+> >
+> > -static DEFINE_PER_CPU_READ_MOSTLY(unsigned long, arch_max_freq_scale);
+> > +/*
+> > + * Ensure that amu_scale_freq_tick() will return SCHED_CAPACITY_SHIFT until
+> > + * the CPU capacity and its assosciated frequency have been correctly
+> > + * initialized.
 >
-> [snip]
+> s/SCHED_CAPACITY_SHIFT/SCHED_CAPACITY_SCALE
 >
-> >> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology=
-.c
-> >> index 9a073c2d2086..2372ce791bb4 100644
-> >> --- a/drivers/base/arch_topology.c
-> >> +++ b/drivers/base/arch_topology.c
-> >> @@ -350,6 +350,7 @@ bool __init topology_parse_cpu_capacity(struct dev=
-ice_node *cpu_node, int cpu)
-> >>   void topology_init_cpu_capacity_cppc(void)
-> >>   {
-> >>          struct cppc_perf_caps perf_caps;
-> >> +       u64 capacity, capacity_scale;
+> > + */
+> > +static DEFINE_PER_CPU_READ_MOSTLY(unsigned long, arch_max_freq_scale) = (2 * SCHED_CAPACITY_SHIFT);
 >
-> I think capacity_scale should be initialized to 0 here,
-> since it is used to find the max value of raw_capacity[cpu].
+> It should be 1UL << (2 * SCHED_CAPACITY_SHIFT).
 
 yes
 
 >
-> >>          int cpu;
-> >>
-> >>          if (likely(!acpi_cpc_valid()))
-> >> @@ -365,6 +366,10 @@ void topology_init_cpu_capacity_cppc(void)
-> >>                      (perf_caps.highest_perf >=3D perf_caps.nominal_pe=
-rf) &&
-> >>                      (perf_caps.highest_perf >=3D perf_caps.lowest_per=
-f)) {
-> >>                          raw_capacity[cpu] =3D perf_caps.highest_perf;
-> >> +                       capacity_scale =3D max_t(u64, capacity_scale, =
-raw_capacity[cpu]);
-> >> +
-> >> +                       per_cpu(capacity_ref_freq, cpu) =3D cppc_perf_=
-to_khz(&perf_caps, raw_capacity[cpu]);
+> >  static DEFINE_PER_CPU(u64, arch_const_cycles_prev);
+> >  static DEFINE_PER_CPU(u64, arch_core_cycles_prev);
+> >  static cpumask_var_t amu_fie_cpus;
+> > @@ -112,9 +117,9 @@ static inline bool freq_counters_valid(int cpu)
+> >       return true;
+> >  }
+> >
+> > -static int freq_inv_set_max_ratio(int cpu, u64 max_rate, u64 ref_rate)
+> > +int freq_inv_set_max_ratio(int cpu, u64 max_rate)
+> >  {
+> > -     u64 ratio;
+> > +     u64 ratio, ref_rate = arch_timer_get_rate();
+> >
+> >       if (unlikely(!max_rate || !ref_rate)) {
+> >               pr_debug("CPU%d: invalid maximum or reference frequency.\n",
+> > @@ -142,7 +147,7 @@ static int freq_inv_set_max_ratio(int cpu, u64 max_rate, u64 ref_rate)
+> >               return -EINVAL;
+> >       }
 >
-> I think capacity_ref_freq in in Hz, so the freq should be multiplied by 1=
-000 .
-
-yes, I forgot the *1000. I'm going to add * HZ_PER_KHZ
-
+> The return value is no longer used so it might be worth declaring it to
+> return void and WARN_ONCE for unlikely(!max_rate || !ref_rate).
 >
-> With these two modifications, the patches worked well on a cppc-based pla=
-tform.
+> >
+> > -     per_cpu(arch_max_freq_scale, cpu) = (unsigned long)ratio;
+> > +     WRITE_ONCE(per_cpu(arch_max_freq_scale, cpu), (unsigned long)ratio);
+> >
+> >       return 0;
+> >  }
+> > @@ -195,10 +200,7 @@ static void amu_fie_setup(const struct cpumask *cpus)
+> >               return;
+> >
+> >       for_each_cpu(cpu, cpus) {
+> > -             if (!freq_counters_valid(cpu) ||
+> > -                 freq_inv_set_max_ratio(cpu,
+> > -                                        cpufreq_get_hw_max_freq(cpu) * 1000ULL,
+> > -                                        arch_timer_get_rate()))
+> > +             if (!freq_counters_valid(cpu))
+> >                       return;
+> >       }
+> >
+> > diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+> > index 2372ce791bb4..3a604b77b12d 100644
+> > --- a/drivers/base/arch_topology.c
+> > +++ b/drivers/base/arch_topology.c
+> > @@ -344,6 +344,11 @@ bool __init topology_parse_cpu_capacity(struct device_node *cpu_node, int cpu)
+> >       return !ret;
+> >  }
+> >
+> > +int __weak freq_inv_set_max_ratio(int cpu, u64 max_rate)
+> > +{
+> > +     return 0;
+> > +}
+> > +
+> >  #ifdef CONFIG_ACPI_CPPC_LIB
+> >  #include <acpi/cppc_acpi.h>
+> >
+> > @@ -369,7 +374,6 @@ void topology_init_cpu_capacity_cppc(void)
+> >                       capacity_scale = max_t(u64, capacity_scale, raw_capacity[cpu]);
+> >
+> >                       per_cpu(capacity_ref_freq, cpu) = cppc_perf_to_khz(&perf_caps, raw_capacity[cpu]);
+> > -
+> >                       pr_debug("cpu_capacity: CPU%d cpu_capacity=%u (raw).\n",
+> >                                cpu, raw_capacity[cpu]);
+> >                       continue;
+> > @@ -381,6 +385,9 @@ void topology_init_cpu_capacity_cppc(void)
+> >       }
+> >
+> >       for_each_possible_cpu(cpu) {
+> > +             freq_inv_set_max_ratio(cpu,
+> > +                                    per_cpu(capacity_ref_freq, cpu));
+> > +
+> >               capacity = raw_capacity[cpu];
+> >               capacity = div64_u64(capacity << SCHED_CAPACITY_SHIFT,
+> >                                    capacity_scale);
+> > @@ -422,8 +429,11 @@ init_cpu_capacity_callback(struct notifier_block *nb,
+> >
+> >       cpumask_andnot(cpus_to_visit, cpus_to_visit, policy->related_cpus);
+> >
+> > -     for_each_cpu(cpu, policy->related_cpus)
+> > +     for_each_cpu(cpu, policy->related_cpus) {
+> >               per_cpu(capacity_ref_freq, cpu) = policy->cpuinfo.max_freq;
+> > +             freq_inv_set_max_ratio(cpu,
+> > +                                    per_cpu(capacity_ref_freq, cpu));
 >
-> Sorry I forgot to detail what it was. It's a modified Juno with CPPC enab=
-led. AMUs are not
-> enabled, so the CPPC performance counters are not handled correctly and F=
-IE cannot be enabled,
-> but it is possible to change frequencies.
+> capacity_ref_freq is in KHz while arch_timer_get_rate() is in Hz. One or
+> the other needs to be scaled.
 >
-> The _CPC objects are setup as:
-> little CPUs:
-> - lowest_freq =3D 450 (MHz)
-> - nominal_freq =3D 800 (MHz)
-> - highest_perf =3D 383 * 1000
-> - nominal_perf =3D 322 * 1000
-> - lowest_perf =3D 181 * 1000
-> - lowest_nonlinear_perf =3D 181 * 1000
+> The same in topology_init_cpu_capacity_cppc().
 >
-> big CPUs:
-> - lowest_freq =3D 600 (MHz)
-> - nominal_freq =3D 1200 (MHz)
-> - highest_perf =3D 1024 * 1000
-> - nominal_perf =3D 833 * 1000
-> - lowest_perf =3D 512 * 1000
-> - lowest_nonlinear_perf =3D 512 * 1000
+> Thanks,
+> Ionela.
 >
-> As a remainder, available frequencies are:
-> - little CPUs: 450, 800, 950 MHz
-> - big CPUs: 600, 1000, 1200 Mhz
-> So the platform is setup to have the last frequency as a boost frequency =
-(for testing).
->
-> ----
->
-> Just to make a note of 2 potential side-issues for later (independent fro=
-m these patches):
->
-> - When testing with boosted/non-bossted frequencies, it didn't seem that =
-cpu_overutilized()
->    was taking the maximum frequency into consideration. This might mean t=
-hat when lowering the
->    maximum frequency of a policy, the maximum capacity of the CPUs of thi=
-s policy is used
->    to detect over-utilization.
->    I would have thought that the over-utilization threshold would be lowe=
-red at the same time.
-
-No it's not, It will be part of a next step patchset. This patchset
-aims to consolidate and use the same reference so we can then easily
-propagate changes if needed
-
->
-> - Similarly for EAS, the energy computation doesn't take into account the=
- maximum frequency
->    of the policy. This should mean that EAS is taking into consideration =
-frequencies that
->    are not actually available.
->
->
-> Regards,
-> Pierre
+> > +     }
+> >
+> >       if (cpumask_empty(cpus_to_visit)) {
+> >               topology_normalize_cpu_scale();
+> > diff --git a/include/linux/arch_topology.h b/include/linux/arch_topology.h
+> > index 38ca6c76af56..b6e95d763279 100644
+> > --- a/include/linux/arch_topology.h
+> > +++ b/include/linux/arch_topology.h
+> > @@ -99,6 +99,7 @@ void update_siblings_masks(unsigned int cpu);
+> >  void remove_cpu_topology(unsigned int cpuid);
+> >  void reset_cpu_topology(void);
+> >  int parse_acpi_topology(void);
+> > +int freq_inv_set_max_ratio(int cpu, u64 max_rate);
+> >  #endif
+> >
+> >  #endif /* _LINUX_ARCH_TOPOLOGY_H_ */
+> > --
+> > 2.34.1
+> >
