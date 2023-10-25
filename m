@@ -1,19 +1,27 @@
-Return-Path: <rjwysocki@gmail.com>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 35F1B84844
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 69489847F3
+Return-Path: <peterz@infradead.org>
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 25314851EF
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 69EB2851E8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+ References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ Content-Transfer-Encoding:Content-ID:Content-Description;
+ bh=Iw+hAI2RZyKf3pkny9wI5k8uvYF1PKP6s1iFZu6PRHc=; b=X/M+QWAi63DcW2qYREzSvndZwt
+ 7X/GeKDC8gewFlEre7f8MPiHWzeV5zv0CdaZCAebgzUIbA8eplVsZ0IzgTNUe2Y2/CYgrCJKgvKfh
+ yul1Lx8JtKZwmk0bzufa6faCwQJ6nZb8kg6kdcf4cx45FHJ5JcaA6V7bwMnd4Z1SSaGgRbwmT5mGc
+ zZyhiIAv3k99+T1uE1JqCkX6I20Pga7G/rX+pIW76zuCiOPsEHyR7CnBK/cvRRCzvptNwSU1GXd6Q
+ 1qyuRg9+8ce32XB5Ht4ddRMmc+rvKQ7UkFGGMyp8cniRP6wklfpbEO7pD2cIsmwJf/tnACOgsauPi
+ 9KX6P0nQ==;
+Date: Wed, 25 Oct 2023 13:53:24 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+Message-ID: <20231025115324.GC31201@noisy.programming.kicks-ass.net>
+References: <20231018162540.667646-1-vincent.guittot@linaro.org>
+ <20231018162540.667646-4-vincent.guittot@linaro.org>
 MIME-Version: 1.0
-References: <20231024062018.23839-1-raag.jadav@intel.com>
- <20231024093010.GF3208943@black.fi.intel.com>
- <CAJZ5v0hLYcN_CxUOocKoN8EsQTwyL-sLbWENfFaQ+f3fjHRvqw@mail.gmail.com>
- <16cf6c19-20d2-4d11-80b1-b8e3c7e58803@roeck-us.net>
-In-Reply-To: <16cf6c19-20d2-4d11-80b1-b8e3c7e58803@roeck-us.net>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 25 Oct 2023 13:32:28 +0200
-Message-ID: <CAJZ5v0ge6_GK6DXcWM-OkjRszxBbPx+ArW76S8W9pf=YOzGyPQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [Acpica-devel] [PATCH v3 0/6] Refine _UID references across
-	kernel
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231018162540.667646-4-vincent.guittot@linaro.org>
+Subject: Re: [Acpica-devel] [PATCH v3 3/6] cpufreq/schedutil: use a fixed
+	reference frequency
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -23,75 +31,24 @@ List-Post: <mailto:acpica-devel@lists.linuxfoundation.org>
 List-Help: <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=help>
 List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel>, 
  <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=subscribe>
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: mark.rutland@arm.com, len.brown@intel.com, linux-hwmon@vger.kernel.org, will@kernel.org, linux-gpio@vger.kernel.org, Raag Jadav <raag.jadav@intel.com>, robert.moore@intel.com, bala.senthil@intel.com, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, Jonathan.Cameron@huawei.com, mallikarjunappa.sangannavar@intel.com, acpica-devel@lists.linuxfoundation.org, andriy.shevchenko@linux.intel.com, Mika Westerberg <mika.westerberg@linux.intel.com>, linux-arm-kernel@lists.infradead.org
+To: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: juri.lelli@redhat.com, catalin.marinas@arm.com, robert.moore@intel.com, bsegall@google.com, conor.dooley@microchip.com, pierre.gondois@arm.com, linux-riscv@lists.infradead.org, will@kernel.org, acpica-devel@lists.linuxfoundation.org, vschneid@redhat.com, ajones@ventanamicro.com, linux@armlinux.org.uk, linux-acpi@vger.kernel.org, mingo@redhat.com, bristot@redhat.com, lftan@kernel.org, viresh.kumar@linaro.org, mgorman@suse.de, aou@eecs.berkeley.edu, linux-pm@vger.kernel.org, rostedt@goodmis.org, paul.walmsley@sifive.com, dietmar.eggemann@arm.com, linux-arm-kernel@lists.infradead.org, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, palmer@dabbelt.com, sudeep.holla@arm.com, suagrfillet@gmail.com, lenb@kernel.org, ionela.voinescu@arm.com, lukasz.luba@arm.com
 
-On Wed, Oct 25, 2023 at 4:05=E2=80=AFAM Guenter Roeck <linux@roeck-us.net> =
-wrote:
->
-> On Tue, Oct 24, 2023 at 09:51:08PM +0200, Rafael J. Wysocki wrote:
-> > On Tue, Oct 24, 2023 at 11:30=E2=80=AFAM Mika Westerberg
-> > <mika.westerberg@linux.intel.com> wrote:
-> > >
-> > > On Tue, Oct 24, 2023 at 11:50:12AM +0530, Raag Jadav wrote:
-> > > > This series refines _UID references across kernel by:
-> > > >
-> > > > - Extracting _UID matching functionality from acpi_dev_hid_uid_matc=
-h()
-> > > >   helper and introducing it as a separate acpi_dev_uid_match() help=
-er.
-> > > >
-> > > > - Converting manual _UID references to use the standard ACPI helper=
-s.
-> > > >
-> > > > Changes since v2:
-> > > > - Drop review tags as suggested by Andy.
-> > > >
-> > > > Changes since v1:
-> > > > - Change acpi_dev_uid_match() to return false in case of NULL argum=
-ent.
-> > > > - Drop accepted patches.
-> > > >
-> > > > Raag Jadav (6):
-> > > >   ACPI: utils: Introduce acpi_dev_uid_match() for matching _UID
-> > > >   pinctrl: intel: use acpi_dev_uid_match() for matching _UID
-> > > >   ACPI: utils: use acpi_dev_uid_match() for matching _UID
-> > > >   ACPI: x86: use acpi_dev_uid_match() for matching _UID
-> > > >   hwmon: nct6775: use acpi_dev_hid_uid_match() for matching _HID an=
-d
-> > > >     _UID
-> > > >   perf: arm_cspmu: use acpi_dev_hid_uid_match() for matching _HID a=
-nd
-> > > >     _UID
-> > >
-> > > For the series,
-> > >
-> > > Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-> > >
-> > > >  drivers/acpi/utils.c                  | 34 ++++++++++++++++++++++-=
-----
-> > > >  drivers/acpi/x86/utils.c              |  3 +--
-> > > >  drivers/hwmon/nct6775-platform.c      |  4 +---
-> > > >  drivers/perf/arm_cspmu/arm_cspmu.c    |  8 +++----
-> > > >  drivers/pinctrl/intel/pinctrl-intel.c |  2 +-
-> > >
-> > > This pinctrl one is also fine by me so if Andy does not have objectio=
-ns,
-> > > feel free to add my,
-> > >
-> > > Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-> >
-> > Whole series applied as 6.7 material with tags as per the above, thanks=
-!
->
-> Ok, that means I will _not_ apply the hwmon patch through
-> the hwmon tree.
->
-> FWIW, please note that I would have very much preferred applying
-> it through the hwmon tree, and I did _not_ Ack it.
+On Wed, Oct 18, 2023 at 06:25:37PM +0200, Vincent Guittot wrote:
 
-OK, I'll drop it now and please feel free to pick it up (whenever it
-is convenient to do so), or if you'd rather let me carry it, please
-let me know.
+> +static __always_inline
+> +unsigned long get_capacity_ref_freq(struct cpufreq_policy *policy)
+> +{
+> +	unsigned int freq = arch_scale_freq_ref(policy->cpu);
+> +
+> +	if (freq)
+> +		return freq;
+> +
+> +	if (arch_scale_freq_invariant())
+> +		return policy->cpuinfo.max_freq;
+> +
+> +	return policy->cur;
+> +}
 
-It's only been in my bleeding-edge branch so far.
+Hmm, what should x86 do here? I know it mostly doesn't use these things,
+but would it make sense to stick the base frequency in ?
