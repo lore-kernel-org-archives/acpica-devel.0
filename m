@@ -1,18 +1,19 @@
-Return-Path: <dietmar.eggemann@arm.com>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 75C734048B
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 379B540111
-Message-ID: <f5e398f3-fbb7-4840-9084-14c8254b2118@arm.com>
-Date: Wed, 25 Oct 2023 22:13:12 +0200
+Return-Path: <xueshuai@linux.alibaba.com>
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org DFB5683330
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org D413A832C6
+Message-ID: <8093ceb3-0857-4c36-8856-72a158e47b6c@linux.alibaba.com>
+Date: Thu, 26 Oct 2023 18:21:19 +0800
 MIME-Version: 1.0
-References: <20231018162540.667646-1-vincent.guittot@linaro.org>
- <20231018162540.667646-4-vincent.guittot@linaro.org>
+From: Shuai Xue <xueshuai@linux.alibaba.com>
+References: <20230925074426.97856-1-xueshuai@linux.alibaba.com>
+ <20230928144345.GAZRWRIXH1Tfgn5EpO@fat_crate.local>
+ <f654be8f-aa98-1bed-117b-ebdf96d23df1@linux.alibaba.com>
 Content-Language: en-US
-From: Dietmar Eggemann <dietmar.eggemann@arm.com>
-In-Reply-To: <20231018162540.667646-4-vincent.guittot@linaro.org>
+In-Reply-To: <f654be8f-aa98-1bed-117b-ebdf96d23df1@linux.alibaba.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Subject: Re: [Acpica-devel] [PATCH v3 3/6] cpufreq/schedutil: use a fixed
-	reference frequency
+Subject: Re: [Acpica-devel] [RFC PATCH v2 0/9] Use ERST for persistent
+ storage of MCE and APEI errors
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -22,68 +23,100 @@ List-Post: <mailto:acpica-devel@lists.linuxfoundation.org>
 List-Help: <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=help>
 List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel>, 
  <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=subscribe>
-To: Vincent Guittot <vincent.guittot@linaro.org>, linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, sudeep.holla@arm.com, gregkh@linuxfoundation.org, rafael@kernel.org, mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, viresh.kumar@linaro.org, lenb@kernel.org, robert.moore@intel.com, lukasz.luba@arm.com, ionela.voinescu@arm.com, pierre.gondois@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org, acpica-devel@lists.linuxfoundation.org
-Cc: suagrfillet@gmail.com, conor.dooley@microchip.com, lftan@kernel.org, ajones@ventanamicro.com
+To: Borislav Petkov <bp@alien8.de>
+Cc: tony.luck@intel.com, keescook@chromium.org, linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org, dave.hansen@linux.intel.com, x86@kernel.org, robert.moore@intel.com, gpiccoli@igalia.com, mingo@redhat.com, james.morse@arm.com, linux-hardening@vger.kernel.org, baolin.wang@linux.alibaba.com, hpa@zytor.com, acpica-devel@lists.linuxfoundation.org, tglx@linutronix.de, linux-edac@vger.kernel.org, linux-acpi@vger.kernel.org, ardb@kernel.org, lenb@kernel.org
 
-On 18/10/2023 18:25, Vincent Guittot wrote:
-> cpuinfo.max_freq can change at runtime because of boost as an example. This
-> implies that the value could be different than the one that has been
-> used when computing the capacity of a CPU.
+
+
+On 2023/10/7 15:15, Shuai Xue wrote:
 > 
-> The new arch_scale_freq_ref() returns a fixed and coherent reference
-> frequency that can be used when computing a frequency based on utilization.
 > 
-> Use this arch_scale_freq_ref() when available and fallback to
-> policy otherwise.
+> On 2023/9/28 22:43, Borislav Petkov wrote:
+>> On Mon, Sep 25, 2023 at 03:44:17PM +0800, Shuai Xue wrote:
+>>> After /dev/mcelog character device deprecated by commit 5de97c9f6d85
+>>> ("x86/mce: Factor out and deprecate the /dev/mcelog driver"), the
+>>> serialized MCE error record, of previous boot in persistent storage is not
+>>> collected via APEI ERST.
+>>
+>> You lost me here. /dev/mcelog is deprecated but you can still use it and
+>> apei_write_mce() still happens.
 > 
-> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-> Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
-> Tested-by: Lukasz Luba <lukasz.luba@arm.com>
+> Yes, you are right. apei_write_mce() still happens so that MCE records are
+> written to persistent storage and the MCE records can be retrieved by
+> apei_read_mce(). Previously, the task was performed by the mcelog package.
+> However, it has been deprecated, some distributions like Arch kernels are
+> not even compiled with the necessary configuration option
+> CONFIG_X86_MCELOG_LEGACY.[1]
 > 
-> ---
->  kernel/sched/cpufreq_schedutil.c | 26 ++++++++++++++++++++++++--
->  1 file changed, 24 insertions(+), 2 deletions(-)
+> So, IMHO, it's better to add a way to retrieve MCE records through switching
+> to the new generation rasdaemon solution.
 > 
-> diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-> index 458d359f5991..6e4030482ae8 100644
-> --- a/kernel/sched/cpufreq_schedutil.c
-> +++ b/kernel/sched/cpufreq_schedutil.c
-> @@ -114,6 +114,28 @@ static void sugov_deferred_update(struct sugov_policy *sg_policy)
->  	}
->  }
->  
-> +/**
-> + * cpufreq_get_capacity_ref_freq - get the reference frequency of a given CPU that
+>>
+>> Looking at your patches, you're adding this to ghes so how about you sit
+>> down first and explain your exact use case and what exactly you wanna
+>> do?
+>>
+>> Thx.
+>>
+> 
+> Sorry for the poor cover letter. I hope the following response can clarify
+> the matter.
+> 
+> Q1: What is the exact problem?
+> 
+> Traditionally, fatal hardware errors will cause Linux print error log to
+> console, e.g. print_mce() or __ghes_print_estatus(), then reboot. With
+> Linux, the primary method for obtaining debugging information of a serious
+> error or fault is via the kdump mechanism. Kdump captures a wealth of
+> kernel and machine state and writes it to a file for post-mortem debugging.
+> 
+> In certain scenarios, ie. hosts/guests with root filesystems on NFS/iSCSI
+> where networking software and/or hardware fails, and thus kdump fails to
+> collect the hardware error context, leaving us unaware of what actually
+> occurred. In the public cloud scenario, multiple virtual machines run on a
+> single physical server, and if that server experiences a failure, it can
+> potentially impact multiple tenants. It is crucial for us to thoroughly
+> analyze the root causes of each instance failure in order to:
+> 
+> - Provide customers with a detailed explanation of the outage to reassure them.
+> - Collect the characteristics of the failures, such as ECC syndrome, to enable fault prediction.
+> - Explore potential solutions to prevent widespread outages.
+> 
+> In short, it is necessary to serialize hardware error information available
+> for post-mortem debugging.
+> 
+> Q2: What exactly I wanna do:
+> 
+> The MCE handler, do_machine_check(), saves the MCE record to persistent
+> storage and it is retrieved by mcelog. Mcelog has been deprecated when
+> kernel 4.12 released in 2017, and the help of the configuration option
+> CONFIG_X86_MCELOG_LEGACY suggest to consider switching to the new
+> generation rasdaemon solution. The GHES handler does not support APEI error
+> record now.
+> 
+> To serialize hardware error information available for post-mortem
+> debugging:
+> - add support to save APEI error record into flash via ERST before go panic,
+> - add support to retrieve MCE or APEI error record from the flash and emit
+> the related tracepoint after system boot successful again so that rasdaemon
+> can collect them
+> 
+> 
+> Best Regards,
+> Shuai
+> 
+> 
+> [1] https://wiki.archlinux.org/title/Machine-check_exception
 
-s/cpufreq_get_capacity_ref_freq/get_capacity_ref_freq
 
-s/of a given CPU/for a given cpufreq policy ? (of which the CPU managing
-it is used for the arch_scale_freq_ref() call in the function.
+Hi, Borislav,
 
-> + * has been used to correlate frequency and compute capacity.
-> + * @policy: the cpufreq policy of the CPU in question.
-> + * @use_current: Fallback to current freq instead of policy->cpuinfo.max_freq.
+I would like to inquire about your satisfaction with the motivation
+provided. If you have no objections, I am prepared to address Kees's
+comments, update the cover letter, and proceed with sending a new version.
 
-Looks like use_current does not exists as a parameter.
+Thank you.
 
-> + *
-> + * Return: the reference CPU frequency to compute a capacity.
-> + */
-> +static __always_inline
-> +unsigned long get_capacity_ref_freq(struct cpufreq_policy *policy)
-> +{
-> +	unsigned int freq = arch_scale_freq_ref(policy->cpu);
-> +
-> +	if (freq)
-> +		return freq;
-> +
-> +	if (arch_scale_freq_invariant())
-> +		return policy->cpuinfo.max_freq;
-> +
-> +	return policy->cur;
-> +}
-
-Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-
-
+Best Regards,
+Shuai
 
