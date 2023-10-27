@@ -1,30 +1,29 @@
 Return-Path: <mingo.kernel.org@gmail.com>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 876A084D15
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 354C084D14
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 754C284D21
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org ACD1F84D20
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20230601; t=1698399072; x=1699003872;
+ d=gmail.com; s=20230601; t=1698399149; x=1699003949;
  darn=lists.linuxfoundation.org; 
  h=in-reply-to:content-disposition:mime-version:references:message-id
  :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
- :reply-to; bh=N4F8FZ57kpr13z/xUt6ki2x46rIiQW8y2N6vuceQyfU=;
- b=LZsvcrNzi1C6MpYnjlWYWq0ietzZfT4wEa+PvML0/ewTe+IoR58hDLb07xKsbh6iOR
- WVNbFVD5e2joCPLt1V49YozGeuNYnjRLbKBiWMAKn//vr5parRx5P7UGW5y+/abtXKrd
- pGp5ayUpqiw/So6FHsAPpZ9pkE30rsV5tXiCkh+G5eFirdronYXh566lOHbrakeV+mQj
- RUu6+VNwZsjbc5dG0Wz6mSyDfOkkLvdSoNCzcm2TW19FJJWt0txKm3UuFFtRlArofgmC
- x+E4dd1Z5N4rZE2M8hLw/SBm/rlJiEOJEpWoB08b3l5dhImIiYaHJiSiJ9D+SnKhViFo
- utqw==
+ :reply-to; bh=4TGQezb/2UwSSANsvO0wTZNbBZ1J9wDNV1NfnwhXP5Y=;
+ b=Xjulyl3FpH2hDwaB6lpKPNbJHfqq/blhktEWtVPDKFq8qQWoBaxCi/7wOKciTbtYSX
+ NpoM3aIX4+XZIQ1b4vcgoxzxsg8Ehs2FbscIJrvluHk96ZOsAurEBAyDkR56bKhadziG
+ JAPzaupJt82g5j+LcLeDJu7GQl56rtzcEgrMgOhk5v57C1XxlGB3JpXO6W/R6yjtbEm9
+ Y6oQFrHjsGNoRsigEXuR/U7feBJG6cge0RvXBGTm2FcT+SXHqS2BnVzyO7XxZYA2LSlo
+ REAU24kbmtfnKfMnYa/6gyA8h4HoK53fjLNKzqr+KRaCPNzA2ldtVnlYchwJobiqy6IV
+ 2jjQ==
 Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Fri, 27 Oct 2023 11:31:07 +0200
+Date: Fri, 27 Oct 2023 11:32:24 +0200
 From: Ingo Molnar <mingo@kernel.org>
-Message-ID: <ZTuDW8lXZLQP1Ruq@gmail.com>
+Message-ID: <ZTuDqCFL6uM3tqDd@gmail.com>
 References: <20231027080400.56703-1-vincent.guittot@linaro.org>
- <20231027080400.56703-2-vincent.guittot@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231027080400.56703-2-vincent.guittot@linaro.org>
-Subject: Re: [Acpica-devel] [PATCH v4 1/7] topology: add a new
-	arch_scale_freq_reference
+In-Reply-To: <20231027080400.56703-1-vincent.guittot@linaro.org>
+Subject: Re: [Acpica-devel] [PATCH v4 0/7] consolidate and cleanup CPU
+	capacity
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -40,27 +39,18 @@ Cc: juri.lelli@redhat.com, peterz@infradead.org, catalin.marinas@arm.com, robert
 
 * Vincent Guittot <vincent.guittot@linaro.org> wrote:
 
-> --- a/include/linux/arch_topology.h
-> +++ b/include/linux/arch_topology.h
-> @@ -27,6 +27,13 @@ static inline unsigned long topology_get_cpu_scale(int cpu)
->  
->  void topology_set_cpu_scale(unsigned int cpu, unsigned long capacity);
->  
-> +DECLARE_PER_CPU(unsigned long, capacity_ref_freq);
-> +
-> +static inline unsigned long topology_get_freq_ref(int cpu)
-> +{
-> +	return per_cpu(capacity_ref_freq, cpu);
-> +}
-> +
->  DECLARE_PER_CPU(unsigned long, arch_freq_scale);
+> Vincent Guittot (7):
+>   topology: add a new arch_scale_freq_reference
+>   cpufreq: use the fixed and coherent frequency for scaling capacity
+>   cpufreq/schedutil: use a fixed reference frequency
+>   energy_model: use a fixed reference frequency
+>   cpufreq/cppc: move and rename cppc_cpufreq_{perf_to_khz|khz_to_perf}
+>   cpufreq/cppc: set the frequency used for computing the capacity
+>   arm64/amu: use capacity_ref_freq to set AMU ratio
 
-So mind naming it in a way that expresses that this is indeed a maximum 
-frequency? arch_scale_ref_freq_max or so?
-
-Also, is there any particular concept behind naming one new symbol 
-'freq_ref', the other 'ref_freq'? If not then please standardize on one 
-variant.
+Just a general comment wrt. titles: please capitalize the verb, as we'd do 
+in a proper sentence. Saves maintainers one more thing to fix when applying 
+patches.
 
 Thanks,
 
