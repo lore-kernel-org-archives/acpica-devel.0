@@ -1,28 +1,28 @@
 Return-Path: <vincent.guittot@linaro.org>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 7E8974330B
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 4208343302
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 938FE4EE92
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org A01C44EE8F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=linaro.org; s=google; t=1698393851; x=1698998651;
+ d=linaro.org; s=google; t=1698393853; x=1698998653;
  darn=lists.linuxfoundation.org; 
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=l8u+U/9u4ohr5MnGNG/ipD+T+tLh/PNcKnY6Yu8ixWw=;
- b=T9zTXd+zd2jSk4EJJUqOBQcbrbZD1ZivbyhzsqDZjoaKOVgBEgcm969mgGXt0yfu3s
- W2e0tqXINO97A7ceS2GTkpsYsYltASmxKo+VAoOmWZlubqr5velOqzmhXb8XQbQRfPs4
- OjHt9D56z3drmBTeBfJZyUyk6P55Ax8kcZriz/F/vjnfrrfBXqJ2E1ME2GVUZV6JuzzM
- h7a0e+qQSpZ8R77NxVXPWa96EqUQHWjSyuXD1/SYfjPlD/g/sVVvpsVE5spa6Fdr9zk7
- IOf5VSVTFrg29xvShgGVTWebhX6rShRtNvV6Z3ZsAHvcXZLBekFYN2PKEU6lekQksUC2
- 2yYA==
+ bh=HdB4lDzOqWgKx+jcR+6XZlgYVoJSXQa0m+FGwW4RKJM=;
+ b=wqdEUul9y8tCPfHG3tF22HBI77zH/+A4igUgv9ccZSUbKAUFhIc9jIjsK63paaa1V9
+ 8Wt+bbZMnUHMPo0nctIj/sFFOpqRo4TJWuSC1objhCQdqA+xhHVaYlXU9ZOnrwdH5Dpg
+ WB1XBRjDbNyz1EShFSydMlNifp6kXtW6a4jYR6SBzR9TVjXTRQxld/aB568HVAjmBZ8T
+ TSMX3arGEyh8Xry8wWNEcZDyhs17lLtGJa+DQcwhH/X+/5ZlzSaSAW2inR/hc9/mSShr
+ snV9ZZ87kJKZm19HO14cH3Pzlvp47z0NFMbRmqf005G0xCcacEiBHKXIJ6mgGdxqyLei
+ 0M1A==
 From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Fri, 27 Oct 2023 10:03:56 +0200
-Message-Id: <20231027080400.56703-4-vincent.guittot@linaro.org>
+Date: Fri, 27 Oct 2023 10:03:57 +0200
+Message-Id: <20231027080400.56703-5-vincent.guittot@linaro.org>
 In-Reply-To: <20231027080400.56703-1-vincent.guittot@linaro.org>
 References: <20231027080400.56703-1-vincent.guittot@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: [Acpica-devel] [PATCH v4 3/7] cpufreq/schedutil: use a fixed
-	reference frequency
+Subject: [Acpica-devel] [PATCH v4 4/7] energy_model: use a fixed reference
+	frequency
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -35,71 +35,69 @@ List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel
 To: linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, sudeep.holla@arm.com, gregkh@linuxfoundation.org, rafael@kernel.org, mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, viresh.kumar@linaro.org, lenb@kernel.org, robert.moore@intel.com, lukasz.luba@arm.com, ionela.voinescu@arm.com, pierre.gondois@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org, acpica-devel@lists.linuxfoundation.org
 Cc: suagrfillet@gmail.com, conor.dooley@microchip.com, lftan@kernel.org, ajones@ventanamicro.com
 
-cpuinfo.max_freq can change at runtime because of boost as an example. This
-implies that the value could be different than the one that has been
-used when computing the capacity of a CPU.
+The last item of a performance domain is not always the performance point
+that has been used to compute CPU's capacity. This can lead to different
+target frequency compared with other part of the system like schedutil and
+would result in wrong energy estimation.
 
-The new arch_scale_freq_ref() returns a fixed and coherent reference
-frequency that can be used when computing a frequency based on utilization.
+A new arch_scale_freq_ref() is available to return a fixed and coherent
+frequency reference that can be used when computing the CPU's frequency
+for an level of utilization. Use this function to get this reference
+frequency.
 
-Use this arch_scale_freq_ref() when available and fallback to
-policy otherwise.
+Energy model is never used without defining arch_scale_freq_ref() but
+can be compiled. Define a default arch_scale_freq_ref() returning 0
+in such case.
 
 Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
 Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
 Tested-by: Lukasz Luba <lukasz.luba@arm.com>
-Acked-by: Rafael J. Wysocki <rafael@kernel.org>
-Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
 ---
- kernel/sched/cpufreq_schedutil.c | 26 ++++++++++++++++++++++++--
- 1 file changed, 24 insertions(+), 2 deletions(-)
+ include/linux/energy_model.h | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-index 458d359f5991..f3a87fa16332 100644
---- a/kernel/sched/cpufreq_schedutil.c
-+++ b/kernel/sched/cpufreq_schedutil.c
-@@ -114,6 +114,28 @@ static void sugov_deferred_update(struct sugov_policy *sg_policy)
- 	}
+diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
+index b9caa01dfac4..1b0c8490d4bd 100644
+--- a/include/linux/energy_model.h
++++ b/include/linux/energy_model.h
+@@ -204,6 +204,14 @@ struct em_perf_state *em_pd_get_efficient_state(struct em_perf_domain *pd,
+ 	return ps;
  }
  
-+/**
-+ * get_capacity_ref_freq - get the reference frequency that has been used to
-+ * correlate frequency and compute capacity for a given cpufreq policy. We use
-+ * the CPU managing it for the arch_scale_freq_ref() call in the function.
-+ * @policy: the cpufreq policy of the CPU in question.
-+ *
-+ * Return: the reference CPU frequency to compute a capacity.
-+ */
++#ifndef arch_scale_freq_ref
 +static __always_inline
-+unsigned long get_capacity_ref_freq(struct cpufreq_policy *policy)
++unsigned int arch_scale_freq_ref(int cpu)
 +{
-+	unsigned int freq = arch_scale_freq_ref(policy->cpu);
-+
-+	if (freq)
-+		return freq;
-+
-+	if (arch_scale_freq_invariant())
-+		return policy->cpuinfo.max_freq;
-+
-+	return policy->cur;
++	return 0;
 +}
++#endif
 +
  /**
-  * get_next_freq - Compute a new frequency for a given cpufreq policy.
-  * @sg_policy: schedutil policy object to compute the new frequency for.
-@@ -140,10 +162,10 @@ static unsigned int get_next_freq(struct sugov_policy *sg_policy,
- 				  unsigned long util, unsigned long max)
+  * em_cpu_energy() - Estimates the energy consumed by the CPUs of a
+  *		performance domain
+@@ -224,7 +232,7 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
+ 				unsigned long max_util, unsigned long sum_util,
+ 				unsigned long allowed_cpu_cap)
  {
- 	struct cpufreq_policy *policy = sg_policy->policy;
--	unsigned int freq = arch_scale_freq_invariant() ?
--				policy->cpuinfo.max_freq : policy->cur;
-+	unsigned int freq;
+-	unsigned long freq, scale_cpu;
++	unsigned long freq, ref_freq, scale_cpu;
+ 	struct em_perf_state *ps;
+ 	int cpu;
  
- 	util = map_util_perf(util);
-+	freq = get_capacity_ref_freq(policy);
- 	freq = map_util_freq(util, freq, max);
+@@ -241,11 +249,11 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
+ 	 */
+ 	cpu = cpumask_first(to_cpumask(pd->cpus));
+ 	scale_cpu = arch_scale_cpu_capacity(cpu);
+-	ps = &pd->table[pd->nr_perf_states - 1];
++	ref_freq = arch_scale_freq_ref(cpu);
  
- 	if (freq == sg_policy->cached_raw_freq && !sg_policy->need_freq_update)
+ 	max_util = map_util_perf(max_util);
+ 	max_util = min(max_util, allowed_cpu_cap);
+-	freq = map_util_freq(max_util, ps->frequency, scale_cpu);
++	freq = map_util_freq(max_util, ref_freq, scale_cpu);
+ 
+ 	/*
+ 	 * Find the lowest performance state of the Energy Model above the
 -- 
 2.34.1
 
