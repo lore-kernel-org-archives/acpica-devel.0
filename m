@@ -1,29 +1,30 @@
 Return-Path: <mingo.kernel.org@gmail.com>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 754C284D21
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org ACD1F84D20
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 8808F4EF41
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org C4A744EF3E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20230601; t=1698399149; x=1699003949;
+ d=gmail.com; s=20230601; t=1698399497; x=1699004297;
  darn=lists.linuxfoundation.org; 
  h=in-reply-to:content-disposition:mime-version:references:message-id
  :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
- :reply-to; bh=4TGQezb/2UwSSANsvO0wTZNbBZ1J9wDNV1NfnwhXP5Y=;
- b=Xjulyl3FpH2hDwaB6lpKPNbJHfqq/blhktEWtVPDKFq8qQWoBaxCi/7wOKciTbtYSX
- NpoM3aIX4+XZIQ1b4vcgoxzxsg8Ehs2FbscIJrvluHk96ZOsAurEBAyDkR56bKhadziG
- JAPzaupJt82g5j+LcLeDJu7GQl56rtzcEgrMgOhk5v57C1XxlGB3JpXO6W/R6yjtbEm9
- Y6oQFrHjsGNoRsigEXuR/U7feBJG6cge0RvXBGTm2FcT+SXHqS2BnVzyO7XxZYA2LSlo
- REAU24kbmtfnKfMnYa/6gyA8h4HoK53fjLNKzqr+KRaCPNzA2ldtVnlYchwJobiqy6IV
- 2jjQ==
+ :reply-to; bh=Hp6XVPEWlKxTXMoDywd4XYa7dN3u7ZNoCSpHDxvreZE=;
+ b=SxNMC3GLhp+LPAGssjgFUzfl6E+XxQoXCE6tluc/OKTNBOXjEWStKzmwCTDTmI/1Sp
+ 5x2FsceJ6wf0pfmLTVrHwx23lzy+SthJTp+mFXPXSSGycp1Uu1A8tkLWzpvOeynmoLGa
+ BCjpEkme9cOnVVVYEezFTOLzKmAueMHTTu9ERQT9COJRl8bCCVIO3C2TUdhm2oOA1BKN
+ Vc1vt0AEzbICWDHT8WjC127pb5H58imc20c8vdglk07rJZZ9DPdhLrPrVbZKZjNcxIlH
+ yDHejVmYlwvyCK8odUEcitW/xP/jchA4JO4IQoy/sIfH2RjRWEeKu/DW241rOtvqjGi/
+ +dRQ==
 Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Fri, 27 Oct 2023 11:32:24 +0200
+Date: Fri, 27 Oct 2023 11:38:13 +0200
 From: Ingo Molnar <mingo@kernel.org>
-Message-ID: <ZTuDqCFL6uM3tqDd@gmail.com>
+Message-ID: <ZTuFBeVIjA2hjbPh@gmail.com>
 References: <20231027080400.56703-1-vincent.guittot@linaro.org>
+ <20231027080400.56703-6-vincent.guittot@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231027080400.56703-1-vincent.guittot@linaro.org>
-Subject: Re: [Acpica-devel] [PATCH v4 0/7] consolidate and cleanup CPU
-	capacity
+In-Reply-To: <20231027080400.56703-6-vincent.guittot@linaro.org>
+Subject: Re: [Acpica-devel] [PATCH v4 5/7] cpufreq/cppc: move and rename
+ cppc_cpufreq_{perf_to_khz|khz_to_perf}
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -39,18 +40,23 @@ Cc: juri.lelli@redhat.com, peterz@infradead.org, catalin.marinas@arm.com, robert
 
 * Vincent Guittot <vincent.guittot@linaro.org> wrote:
 
-> Vincent Guittot (7):
->   topology: add a new arch_scale_freq_reference
->   cpufreq: use the fixed and coherent frequency for scaling capacity
->   cpufreq/schedutil: use a fixed reference frequency
->   energy_model: use a fixed reference frequency
->   cpufreq/cppc: move and rename cppc_cpufreq_{perf_to_khz|khz_to_perf}
->   cpufreq/cppc: set the frequency used for computing the capacity
->   arm64/amu: use capacity_ref_freq to set AMU ratio
+> +/* Look up the max frequency in DMI */
+> +static u64 cppc_get_dmi_max_khz(void)
+> +{
+> +	u16 mhz = 0;
+> +
+> +	dmi_walk(cppc_find_dmi_mhz, &mhz);
+> +
+> +	/*
+> +	 * Real stupid fallback value, just in case there is no
+> +	 * actual value set.
+> +	 */
+> +	mhz = mhz ? mhz : 1;
+> +
+> +	return (1000 * mhz);
 
-Just a general comment wrt. titles: please capitalize the verb, as we'd do 
-in a proper sentence. Saves maintainers one more thing to fix when applying 
-patches.
+Nit, and I realize this is pre-existing code, but 'return' is a keyword, 
+not a function, so the parentheses are not needed.
 
 Thanks,
 
