@@ -1,21 +1,21 @@
 Return-Path: <jgg@nvidia.com>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 198ED4011A
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 597954012A
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 65AEF400AB
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 303274011A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+AB4XZWXesZljoZIzaAPOyY4SdYQcAv21kuxw4Ljpng=;
- b=Nlq80e3fwHFDsk8g9tjdXTGiXs1bV6/bh7NRGw7NL6dx00lj31zRihXGkIHGu4Oaf49f6Vaa16GPSO62S7x9VYB1fyXipHfxh70qK6U+rOQeKt9Qfy9bz7OR9BLl/SHyAqfekkADBYwJurjhD285F0JhfY3YM3edqPa4MbQXBHOuoHCb04FHKlrztgufmQkR1cUFXF71myBJWC9/YtTqvYL02IIc/I3sGACRIAFwaZ0yTvaTl2g+6bz0uX+h5vi4P4T+kOa32ZeBJz/pSxr2pe1JBAZXLBzxRHi3Aki6ysBsk72ywnlNbDR7w4UcX9Iak0n8v7l7c1DESGuJqxBUBw==
+ bh=uiuB3Wvk72iR9li9Kvdx0Wd/AMHJDjh4+qRdzb4+xX0=;
+ b=rSkGFmlM9ePXKxq5v/5VG4NOAO0EYDcXDGhGNhUFPgxeJx65+M3CGocihlI7kEktKbol+RTI/S2wEBrvFKfjs9utLP0x88SM4p6AcskQ6kOKcnFGk628AtCLChzL56LJBIvcSSUJVqDvqIf822Re3Q9TZElkzoX+sl5IUjwz+12xxzufBk0hR1j99nxAmwJfWrOMqbqttNbYsE4LRuSTvT3+qfdMON4q6MPHUOx+KfZ80Uf2v59EJlu1EMVmMCEAJ45L87V6zXbBdR8evsAGQ7gPtBZ+AYjgxlghj4R4KEDiUgSkPjqgK1v/7l1ed1lavhDF49zZ/9cG0u0pwDi0Hg==
 From: Jason Gunthorpe <jgg@nvidia.com>
-Date: Fri,  3 Nov 2023 13:44:46 -0300
-Message-ID: <1-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
+Date: Fri,  3 Nov 2023 13:44:54 -0300
+Message-ID: <9-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
 In-Reply-To: <0-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
 References: 
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 MIME-Version: 1.0
-Subject: [Acpica-devel] [PATCH RFC 01/17] iommu: Remove struct iommu_ops
-	*iommu from arch_setup_dma_ops()
+Subject: [Acpica-devel] [PATCH RFC 09/17] iommu: Add
+	iommu_fwspec_append_ids()
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -28,198 +28,65 @@ List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel
 To: acpica-devel@lists.linuxfoundation.org, Alyssa Rosenzweig <alyssa@rosenzweig.io>, Albert Ou <aou@eecs.berkeley.edu>, asahi@lists.linux.dev, Lu Baolu <baolu.lu@linux.intel.com>, Catalin Marinas <catalin.marinas@arm.com>, Dexuan Cui <decui@microsoft.com>, devicetree@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>, Frank Rowand <frowand.list@gmail.com>, Hanjun Guo <guohanjun@huawei.com>, Haiyang Zhang <haiyangz@microsoft.com>, Christoph Hellwig <hch@lst.de>, iommu@lists.linux.dev, Jean-Philippe Brucker <jean-philippe@linaro.org>, Jonathan Hunter <jonathanh@nvidia.com>, Joerg Roedel <joro@8bytes.org>, "K. Y. Srinivasan" <kys@microsoft.com>, Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org, linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org, linux-snps-arc@lists.infradead.org, linux-tegra@vger.kernel.org, Russell King <linux@armlinux.org.uk>, Lorenzo Pieralisi <lpieralisi@kernel.org>, Marek Szyprowski <m.szyprowski@samsung.com>, Hector Martin <marcan@marcan.st>, Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, "Rafael J. Wysocki" <rafael@kernel.org>, Robert Moore <robert.moore@intel.com>, Rob Herring <robh+dt@kernel.org>, Robin Murphy <robin.murphy@arm.com>, Sudeep Holla <sudeep.holla@arm.com>, Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>, Sven Peter <sven@svenpeter.dev>, Thierry Reding <thierry.reding@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Krishna Reddy <vdumpa@nvidia.com>, Vineet Gupta <vgupta@kernel.org>, virtualization@lists.linux-foundation.org, Wei Liu <wei.liu@kernel.org>, Will Deacon <will@kernel.org>
 Cc: Zhenhua Huang <quic_zhenhuah@quicinc.com>
 
-This is not being used to pass ops, it is just a way to tell if an
-iommu driver was probed. These days this can be detected directly via
-device_iommu_mapped(). Call device_iommu_mapped() in the two places that
-need to check it and remove the iommu parameter everywhere.
+This is a version of iommu_fwspec_add_ids() that takes in the fwspec as an
+argument instead of getting it through dev->iommu.
 
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 ---
- arch/arc/mm/dma.c               |  2 +-
- arch/arm/mm/dma-mapping-nommu.c |  2 +-
- arch/arm/mm/dma-mapping.c       | 10 +++++-----
- arch/arm64/mm/dma-mapping.c     |  4 ++--
- arch/mips/mm/dma-noncoherent.c  |  2 +-
- arch/riscv/mm/dma-noncoherent.c |  2 +-
- drivers/acpi/scan.c             |  3 +--
- drivers/hv/hv_common.c          |  2 +-
- drivers/of/device.c             |  2 +-
- include/linux/dma-map-ops.h     |  4 ++--
- 10 files changed, 16 insertions(+), 17 deletions(-)
+ drivers/iommu/iommu.c | 17 +++++++++++------
+ include/linux/iommu.h |  1 +
+ 2 files changed, 12 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arc/mm/dma.c b/arch/arc/mm/dma.c
-index 2a7fbbb83b7056..197707bc765889 100644
---- a/arch/arc/mm/dma.c
-+++ b/arch/arc/mm/dma.c
-@@ -91,7 +91,7 @@ void arch_sync_dma_for_cpu(phys_addr_t paddr, size_t size,
-  * Plug in direct dma map ops.
-  */
- void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
--			const struct iommu_ops *iommu, bool coherent)
-+			bool coherent)
- {
- 	/*
- 	 * IOC hardware snoops all DMA traffic keeping the caches consistent
-diff --git a/arch/arm/mm/dma-mapping-nommu.c b/arch/arm/mm/dma-mapping-nommu.c
-index cfd9c933d2f09c..b94850b579952a 100644
---- a/arch/arm/mm/dma-mapping-nommu.c
-+++ b/arch/arm/mm/dma-mapping-nommu.c
-@@ -34,7 +34,7 @@ void arch_sync_dma_for_cpu(phys_addr_t paddr, size_t size,
+diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+index ad2963d69a0538..15dbe2d9eb24c2 100644
+--- a/drivers/iommu/iommu.c
++++ b/drivers/iommu/iommu.c
+@@ -3067,15 +3067,10 @@ int iommu_fwspec_init(struct device *dev, struct fwnode_handle *iommu_fwnode,
  }
+ EXPORT_SYMBOL_GPL(iommu_fwspec_init);
  
- void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
--			const struct iommu_ops *iommu, bool coherent)
-+			bool coherent)
+-
+-int iommu_fwspec_add_ids(struct device *dev, u32 *ids, int num_ids)
++int iommu_fwspec_append_ids(struct iommu_fwspec *fwspec, u32 *ids, int num_ids)
  {
- 	if (IS_ENABLED(CONFIG_CPU_V7M)) {
- 		/*
-diff --git a/arch/arm/mm/dma-mapping.c b/arch/arm/mm/dma-mapping.c
-index 5409225b4abc06..6c359a3af8d9c7 100644
---- a/arch/arm/mm/dma-mapping.c
-+++ b/arch/arm/mm/dma-mapping.c
-@@ -1713,7 +1713,7 @@ void arm_iommu_detach_device(struct device *dev)
- EXPORT_SYMBOL_GPL(arm_iommu_detach_device);
+-	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
+ 	int i, new_num;
  
- static void arm_setup_iommu_dma_ops(struct device *dev, u64 dma_base, u64 size,
--				    const struct iommu_ops *iommu, bool coherent)
-+				    bool coherent)
- {
- 	struct dma_iommu_mapping *mapping;
- 
-@@ -1748,7 +1748,7 @@ static void arm_teardown_iommu_dma_ops(struct device *dev)
- #else
- 
- static void arm_setup_iommu_dma_ops(struct device *dev, u64 dma_base, u64 size,
--				    const struct iommu_ops *iommu, bool coherent)
-+				    bool coherent)
- {
- }
- 
-@@ -1757,7 +1757,7 @@ static void arm_teardown_iommu_dma_ops(struct device *dev) { }
- #endif	/* CONFIG_ARM_DMA_USE_IOMMU */
- 
- void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
--			const struct iommu_ops *iommu, bool coherent)
-+			bool coherent)
- {
- 	/*
- 	 * Due to legacy code that sets the ->dma_coherent flag from a bus
-@@ -1776,8 +1776,8 @@ void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
- 	if (dev->dma_ops)
- 		return;
- 
--	if (iommu)
--		arm_setup_iommu_dma_ops(dev, dma_base, size, iommu, coherent);
-+	if (device_iommu_mapped(dev))
-+		arm_setup_iommu_dma_ops(dev, dma_base, size, coherent);
- 
- 	xen_setup_dma_ops(dev);
- 	dev->archdata.dma_ops_setup = true;
-diff --git a/arch/arm64/mm/dma-mapping.c b/arch/arm64/mm/dma-mapping.c
-index 3cb101e8cb29ba..61886e43e3a10f 100644
---- a/arch/arm64/mm/dma-mapping.c
-+++ b/arch/arm64/mm/dma-mapping.c
-@@ -47,7 +47,7 @@ void arch_teardown_dma_ops(struct device *dev)
- #endif
- 
- void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
--			const struct iommu_ops *iommu, bool coherent)
-+			bool coherent)
- {
- 	int cls = cache_line_size_of_cpu();
- 
-@@ -58,7 +58,7 @@ void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
- 		   ARCH_DMA_MINALIGN, cls);
- 
- 	dev->dma_coherent = coherent;
--	if (iommu)
-+	if (device_iommu_mapped(dev))
- 		iommu_setup_dma_ops(dev, dma_base, dma_base + size - 1);
- 
- 	xen_setup_dma_ops(dev);
-diff --git a/arch/mips/mm/dma-noncoherent.c b/arch/mips/mm/dma-noncoherent.c
-index 3c4fc97b9f394b..0f3cec663a12cd 100644
---- a/arch/mips/mm/dma-noncoherent.c
-+++ b/arch/mips/mm/dma-noncoherent.c
-@@ -138,7 +138,7 @@ void arch_sync_dma_for_cpu(phys_addr_t paddr, size_t size,
- 
- #ifdef CONFIG_ARCH_HAS_SETUP_DMA_OPS
- void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
--		const struct iommu_ops *iommu, bool coherent)
-+		bool coherent)
- {
- 	dev->dma_coherent = coherent;
- }
-diff --git a/arch/riscv/mm/dma-noncoherent.c b/arch/riscv/mm/dma-noncoherent.c
-index b76e7e192eb183..f91fa741c41211 100644
---- a/arch/riscv/mm/dma-noncoherent.c
-+++ b/arch/riscv/mm/dma-noncoherent.c
-@@ -135,7 +135,7 @@ void arch_dma_prep_coherent(struct page *page, size_t size)
- }
- 
- void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
--		const struct iommu_ops *iommu, bool coherent)
-+			bool coherent)
- {
- 	WARN_TAINT(!coherent && riscv_cbom_block_size > ARCH_DMA_MINALIGN,
- 		   TAINT_CPU_OUT_OF_SPEC,
-diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-index 691d4b7686ee7e..a6891ad0ceee2c 100644
---- a/drivers/acpi/scan.c
-+++ b/drivers/acpi/scan.c
-@@ -1636,8 +1636,7 @@ int acpi_dma_configure_id(struct device *dev, enum dev_dma_attr attr,
- 	if (PTR_ERR(iommu) == -EPROBE_DEFER)
- 		return -EPROBE_DEFER;
- 
--	arch_setup_dma_ops(dev, 0, U64_MAX,
--				iommu, attr == DEV_DMA_COHERENT);
-+	arch_setup_dma_ops(dev, 0, U64_MAX, attr == DEV_DMA_COHERENT);
- 
+-	if (!fwspec)
+-		return -EINVAL;
+-
+ 	new_num = fwspec->num_ids + num_ids;
+ 	if (new_num <= 1) {
+ 		if (fwspec->ids != &fwspec->single_id)
+@@ -3097,6 +3092,16 @@ int iommu_fwspec_add_ids(struct device *dev, u32 *ids, int num_ids)
+ 	fwspec->num_ids = new_num;
  	return 0;
  }
-diff --git a/drivers/hv/hv_common.c b/drivers/hv/hv_common.c
-index ccad7bca3fd3da..fd938b6dfa7ed4 100644
---- a/drivers/hv/hv_common.c
-+++ b/drivers/hv/hv_common.c
-@@ -489,7 +489,7 @@ void hv_setup_dma_ops(struct device *dev, bool coherent)
- 	 * Hyper-V does not offer a vIOMMU in the guest
- 	 * VM, so pass 0/NULL for the IOMMU settings
- 	 */
--	arch_setup_dma_ops(dev, 0, 0, NULL, coherent);
-+	arch_setup_dma_ops(dev, 0, 0, coherent);
++EXPORT_SYMBOL_GPL(iommu_fwspec_append_ids);
++
++int iommu_fwspec_add_ids(struct device *dev, u32 *ids, int num_ids)
++{
++	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
++
++	if (!fwspec)
++		return -EINVAL;
++	return iommu_fwspec_append_ids(fwspec, ids, num_ids);
++}
+ EXPORT_SYMBOL_GPL(iommu_fwspec_add_ids);
+ 
+ /*
+diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+index 2644c61b572b8f..c5a5e2b5e2cc2a 100644
+--- a/include/linux/iommu.h
++++ b/include/linux/iommu.h
+@@ -700,6 +700,7 @@ static inline void iommu_fwspec_free(struct device *dev)
  }
- EXPORT_SYMBOL_GPL(hv_setup_dma_ops);
+ int iommu_fwspec_add_ids(struct device *dev, u32 *ids, int num_ids);
+ const struct iommu_ops *iommu_ops_from_fwnode(struct fwnode_handle *fwnode);
++int iommu_fwspec_append_ids(struct iommu_fwspec *fwspec, u32 *ids, int num_ids);
  
-diff --git a/drivers/of/device.c b/drivers/of/device.c
-index 1ca42ad9dd159d..65c71be71a8d45 100644
---- a/drivers/of/device.c
-+++ b/drivers/of/device.c
-@@ -193,7 +193,7 @@ int of_dma_configure_id(struct device *dev, struct device_node *np,
- 	dev_dbg(dev, "device is%sbehind an iommu\n",
- 		iommu ? " " : " not ");
- 
--	arch_setup_dma_ops(dev, dma_start, size, iommu, coherent);
-+	arch_setup_dma_ops(dev, dma_start, size, coherent);
- 
- 	if (!iommu)
- 		of_dma_set_restricted_buffer(dev, np);
-diff --git a/include/linux/dma-map-ops.h b/include/linux/dma-map-ops.h
-index f2fc203fb8a1a2..2cb98a12c50348 100644
---- a/include/linux/dma-map-ops.h
-+++ b/include/linux/dma-map-ops.h
-@@ -426,10 +426,10 @@ bool arch_dma_unmap_sg_direct(struct device *dev, struct scatterlist *sg,
- 
- #ifdef CONFIG_ARCH_HAS_SETUP_DMA_OPS
- void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
--		const struct iommu_ops *iommu, bool coherent);
-+		bool coherent);
- #else
- static inline void arch_setup_dma_ops(struct device *dev, u64 dma_base,
--		u64 size, const struct iommu_ops *iommu, bool coherent)
-+		u64 size, bool coherent)
+ static inline struct iommu_fwspec *dev_iommu_fwspec_get(struct device *dev)
  {
- }
- #endif /* CONFIG_ARCH_HAS_SETUP_DMA_OPS */
 -- 
 2.42.0
 
