@@ -1,20 +1,21 @@
 Return-Path: <jgg@nvidia.com>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org C83FE820EC
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org C4424820C9
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org C14CC40123
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 8B44540129
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fmE0NhIPVyfgk5oqoV569KUNfHY8bHemcOTponDtm+w=;
- b=L/OsCeKGNV/oDH+CnJPsnhvvLVq/l2ywYQbUZ3Q28jaMMKyVzG5LdPah6G+LR4z1WW6WzCMnb8uBN4JDbMKyCzeThgtG7v2rJuii1qbc1hoPY5Yqo5oJwM4cDyhKgSWtBm0qo7jdXfBWFR6irJ7QQAHbDqS9JUhY/B+h6UzZWjlOkqbOfMqu221KZKI2WDgQZk5dE+NQggXCUu45cDK6tCmqEp69n/KGZ3w0Xw2O17uDMLhs18YTlA/HiI+0WIsAosyKRno8FEzQCoZvj+FpZ2kMUz4FjLXlY8ZYTFVEOOe+hkuLNQ2Tcw8smJCQW8qarg3jR08WFk+lY0o5HOfoLg==
+ bh=0N3UjEeMLLLJeEcMRxl+2AVCyMLY2lxA+HXUiMeqqxY=;
+ b=nQ10BXo3foZ7VKHpk5Sd2L0jFiO6PuawDJImHvAosJlMPsMzKI4LitTjlbnebZ0pf23do2RZRbSMy6B5AaMk4RRppalAcLM0bqDPPCeQ1Ywm9UeZD9NEDN4LLkZ9RHj0+imwL/WCN0saTPErXTTIGHOW4Gj4RcNSsY+pnGZux5x0G5Hs7klcJCgChPLRAS16QUnuWSaeAot42/wPPQldk2AaTNTG1yC1vE+iQj4AFYiJDPkHCYM/SvEXkdcVeyhC7Pp63yg0IED1tJl+mEHtZWDYBGI9OnpsfGHwtx8PTqROxdBqJvpOOeJX+Uir7vnQFsbsgtbutXk9tm0fJbzcgw==
 From: Jason Gunthorpe <jgg@nvidia.com>
-Date: Fri,  3 Nov 2023 13:45:00 -0300
-Message-ID: <15-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
+Date: Fri,  3 Nov 2023 13:44:53 -0300
+Message-ID: <8-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
 In-Reply-To: <0-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
 References: 
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 MIME-Version: 1.0
-Subject: [Acpica-devel] [PATCH RFC 15/17] iommu: Add ops->of_xlate_fwspec()
+Subject: [Acpica-devel] [PATCH RFC 08/17] of: Do not use dev->iommu within
+	of_iommu_configure()
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -27,147 +28,253 @@ List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel
 To: acpica-devel@lists.linuxfoundation.org, Alyssa Rosenzweig <alyssa@rosenzweig.io>, Albert Ou <aou@eecs.berkeley.edu>, asahi@lists.linux.dev, Lu Baolu <baolu.lu@linux.intel.com>, Catalin Marinas <catalin.marinas@arm.com>, Dexuan Cui <decui@microsoft.com>, devicetree@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>, Frank Rowand <frowand.list@gmail.com>, Hanjun Guo <guohanjun@huawei.com>, Haiyang Zhang <haiyangz@microsoft.com>, Christoph Hellwig <hch@lst.de>, iommu@lists.linux.dev, Jean-Philippe Brucker <jean-philippe@linaro.org>, Jonathan Hunter <jonathanh@nvidia.com>, Joerg Roedel <joro@8bytes.org>, "K. Y. Srinivasan" <kys@microsoft.com>, Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org, linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org, linux-snps-arc@lists.infradead.org, linux-tegra@vger.kernel.org, Russell King <linux@armlinux.org.uk>, Lorenzo Pieralisi <lpieralisi@kernel.org>, Marek Szyprowski <m.szyprowski@samsung.com>, Hector Martin <marcan@marcan.st>, Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, "Rafael J. Wysocki" <rafael@kernel.org>, Robert Moore <robert.moore@intel.com>, Rob Herring <robh+dt@kernel.org>, Robin Murphy <robin.murphy@arm.com>, Sudeep Holla <sudeep.holla@arm.com>, Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>, Sven Peter <sven@svenpeter.dev>, Thierry Reding <thierry.reding@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Krishna Reddy <vdumpa@nvidia.com>, Vineet Gupta <vgupta@kernel.org>, virtualization@lists.linux-foundation.org, Wei Liu <wei.liu@kernel.org>, Will Deacon <will@kernel.org>
 Cc: Zhenhua Huang <quic_zhenhuah@quicinc.com>
 
-The new callback takes in the fwspec instead of retrieving it from the
-dev->iommu. Provide iommu_fwspec_append_ids() to work directly on the
-fwspec.
+This call chain is using dev->iommu->fwspec to pass around the fwspec
+between the three parts (of_iommu_configure(), of_iommu_xlate(),
+iommu_probe_device()).
 
-Convert SMMU, SMMUv3, and virtio to use iommu_fwspec_append_ids() and the
-new entry point.
+However there is no locking around the accesses to dev->iommu, so this is
+all racy.
 
-This avoids having to touch dev->iommu at all, and doesn't require the
-iommu_probe_device_lock.
+Allocate a clean, local, fwspec at the start of of_iommu_configure(), pass
+it through all functions on the stack to fill it with data, and finally
+pass it into iommu_probe_device_fwspec() which will load it into
+dev->iommu under a lock.
+
+Move the actual call to ops->of_xlate into the core code under
+iommu_fwspec_of_xlate().
 
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 ---
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 8 +++++---
- drivers/iommu/arm/arm-smmu/arm-smmu.c       | 8 +++++---
- drivers/iommu/iommu.c                       | 3 +++
- drivers/iommu/virtio-iommu.c                | 8 +++++---
- include/linux/iommu.h                       | 3 +++
- 5 files changed, 21 insertions(+), 9 deletions(-)
+ drivers/iommu/iommu.c    | 29 ++++++++++++++
+ drivers/iommu/of_iommu.c | 82 +++++++++++++++++-----------------------
+ include/linux/iommu.h    |  3 ++
+ 3 files changed, 67 insertions(+), 47 deletions(-)
 
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index 7445454c2af244..b1309f04ebc0d9 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -2748,9 +2748,11 @@ static int arm_smmu_enable_nesting(struct iommu_domain *domain)
- 	return ret;
- }
- 
--static int arm_smmu_of_xlate(struct device *dev, struct of_phandle_args *args)
-+static int arm_smmu_of_xlate_fwspec(struct iommu_fwspec *fwspec,
-+				    struct device *dev,
-+				    struct of_phandle_args *args)
- {
--	return iommu_fwspec_add_ids(dev, args->args, 1);
-+	return iommu_fwspec_append_ids(fwspec, args->args, 1);
- }
- 
- static void arm_smmu_get_resv_regions(struct device *dev,
-@@ -2858,7 +2860,7 @@ static struct iommu_ops arm_smmu_ops = {
- 	.probe_device		= arm_smmu_probe_device,
- 	.release_device		= arm_smmu_release_device,
- 	.device_group		= arm_smmu_device_group,
--	.of_xlate		= arm_smmu_of_xlate,
-+	.of_xlate_fwspec	= arm_smmu_of_xlate_fwspec,
- 	.get_resv_regions	= arm_smmu_get_resv_regions,
- 	.remove_dev_pasid	= arm_smmu_remove_dev_pasid,
- 	.dev_enable_feat	= arm_smmu_dev_enable_feature,
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-index 854efcb1b84ddf..8c4a60d8e5d522 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-@@ -1510,7 +1510,9 @@ static int arm_smmu_set_pgtable_quirks(struct iommu_domain *domain,
- 	return ret;
- }
- 
--static int arm_smmu_of_xlate(struct device *dev, struct of_phandle_args *args)
-+static int arm_smmu_of_xlate_fwspec(struct iommu_fwspec *fwspec,
-+				    struct device *dev,
-+				    struct of_phandle_args *args)
- {
- 	u32 mask, fwid = 0;
- 
-@@ -1522,7 +1524,7 @@ static int arm_smmu_of_xlate(struct device *dev, struct of_phandle_args *args)
- 	else if (!of_property_read_u32(args->np, "stream-match-mask", &mask))
- 		fwid |= FIELD_PREP(ARM_SMMU_SMR_MASK, mask);
- 
--	return iommu_fwspec_add_ids(dev, &fwid, 1);
-+	return iommu_fwspec_append_ids(fwspec, &fwid, 1);
- }
- 
- static void arm_smmu_get_resv_regions(struct device *dev,
-@@ -1562,7 +1564,7 @@ static struct iommu_ops arm_smmu_ops = {
- 	.release_device		= arm_smmu_release_device,
- 	.probe_finalize		= arm_smmu_probe_finalize,
- 	.device_group		= arm_smmu_device_group,
--	.of_xlate		= arm_smmu_of_xlate,
-+	.of_xlate_fwspec	= arm_smmu_of_xlate_fwspec,
- 	.get_resv_regions	= arm_smmu_get_resv_regions,
- 	.def_domain_type	= arm_smmu_def_domain_type,
- 	.pgsize_bitmap		= -1UL, /* Restricted during device attach */
 diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index d14438ffb0feb7..9f23e113f46bc7 100644
+index 36561c9fbf6859..ad2963d69a0538 100644
 --- a/drivers/iommu/iommu.c
 +++ b/drivers/iommu/iommu.c
-@@ -3000,6 +3000,9 @@ int iommu_fwspec_of_xlate(struct iommu_fwspec *fwspec, struct device *dev,
- 	if (ret)
- 		return ret;
+@@ -2990,6 +2990,35 @@ static int iommu_fwspec_assign_iommu(struct iommu_fwspec *fwspec,
+ 	return 0;
+ }
  
-+	if (fwspec->ops->of_xlate_fwspec)
-+		return fwspec->ops->of_xlate_fwspec(fwspec, dev, iommu_spec);
++int iommu_fwspec_of_xlate(struct iommu_fwspec *fwspec, struct device *dev,
++			  struct fwnode_handle *iommu_fwnode,
++			  struct of_phandle_args *iommu_spec)
++{
++	int ret;
 +
- 	if (!fwspec->ops->of_xlate)
++	ret = iommu_fwspec_assign_iommu(fwspec, dev, iommu_fwnode);
++	if (ret)
++		return ret;
++
++	if (!fwspec->ops->of_xlate)
++		return -ENODEV;
++
++	if (!dev_iommu_get(dev))
++		return -ENOMEM;
++
++	/*
++	 * ops->of_xlate() requires the fwspec to be passed through dev->iommu,
++	 * set it temporarily.
++	 */
++	if (dev->iommu->fwspec && dev->iommu->fwspec != fwspec)
++		iommu_fwspec_dealloc(dev->iommu->fwspec);
++	dev->iommu->fwspec = fwspec;
++	ret = fwspec->ops->of_xlate(dev, iommu_spec);
++	if (dev->iommu->fwspec == fwspec)
++		dev->iommu->fwspec = NULL;
++	return ret;
++}
++
+ struct iommu_fwspec *iommu_fwspec_alloc(void)
+ {
+ 	struct iommu_fwspec *fwspec;
+diff --git a/drivers/iommu/of_iommu.c b/drivers/iommu/of_iommu.c
+index 4f77495a2543ea..b232a6909e0d45 100644
+--- a/drivers/iommu/of_iommu.c
++++ b/drivers/iommu/of_iommu.c
+@@ -19,40 +19,19 @@
+ 
+ #define NO_IOMMU	-ENODEV
+ 
+-static int of_iommu_xlate(struct device *dev,
++static int of_iommu_xlate(struct iommu_fwspec *fwspec, struct device *dev,
+ 			  struct of_phandle_args *iommu_spec)
+ {
+-	const struct iommu_ops *ops;
+-	struct fwnode_handle *fwnode = &iommu_spec->np->fwnode;
+-	int ret;
+-
+-	ops = iommu_ops_from_fwnode(fwnode);
+-	if ((ops && !ops->of_xlate) ||
+-	    !of_device_is_available(iommu_spec->np))
++	if (!of_device_is_available(iommu_spec->np))
+ 		return NO_IOMMU;
+ 
+-	ret = iommu_fwspec_init(dev, &iommu_spec->np->fwnode, ops);
+-	if (ret)
+-		return ret;
+-	/*
+-	 * The otherwise-empty fwspec handily serves to indicate the specific
+-	 * IOMMU device we're waiting for, which will be useful if we ever get
+-	 * a proper probe-ordering dependency mechanism in future.
+-	 */
+-	if (!ops)
+-		return driver_deferred_probe_check_state(dev);
+-
+-	if (!try_module_get(ops->owner))
+-		return -ENODEV;
+-
+-	ret = ops->of_xlate(dev, iommu_spec);
+-	module_put(ops->owner);
+-	return ret;
++	return iommu_fwspec_of_xlate(fwspec, dev, &iommu_spec->np->fwnode,
++				     iommu_spec);
+ }
+ 
+-static int of_iommu_configure_dev_id(struct device_node *master_np,
+-				     struct device *dev,
+-				     const u32 *id)
++static int of_iommu_configure_dev_id(struct iommu_fwspec *fwspec,
++				     struct device_node *master_np,
++				     struct device *dev, const u32 *id)
+ {
+ 	struct of_phandle_args iommu_spec = { .args_count = 1 };
+ 	int err;
+@@ -63,12 +42,13 @@ static int of_iommu_configure_dev_id(struct device_node *master_np,
+ 	if (err)
+ 		return err == -ENODEV ? NO_IOMMU : err;
+ 
+-	err = of_iommu_xlate(dev, &iommu_spec);
++	err = of_iommu_xlate(fwspec, dev, &iommu_spec);
+ 	of_node_put(iommu_spec.np);
+ 	return err;
+ }
+ 
+-static int of_iommu_configure_dev(struct device_node *master_np,
++static int of_iommu_configure_dev(struct iommu_fwspec *fwspec,
++				  struct device_node *master_np,
+ 				  struct device *dev)
+ {
+ 	struct of_phandle_args iommu_spec;
+@@ -77,7 +57,7 @@ static int of_iommu_configure_dev(struct device_node *master_np,
+ 	while (!of_parse_phandle_with_args(master_np, "iommus",
+ 					   "#iommu-cells",
+ 					   idx, &iommu_spec)) {
+-		err = of_iommu_xlate(dev, &iommu_spec);
++		err = of_iommu_xlate(fwspec, dev, &iommu_spec);
+ 		of_node_put(iommu_spec.np);
+ 		idx++;
+ 		if (err)
+@@ -90,6 +70,7 @@ static int of_iommu_configure_dev(struct device_node *master_np,
+ struct of_pci_iommu_alias_info {
+ 	struct device *dev;
+ 	struct device_node *np;
++	struct iommu_fwspec *fwspec;
+ };
+ 
+ static int of_pci_iommu_init(struct pci_dev *pdev, u16 alias, void *data)
+@@ -97,14 +78,16 @@ static int of_pci_iommu_init(struct pci_dev *pdev, u16 alias, void *data)
+ 	struct of_pci_iommu_alias_info *info = data;
+ 	u32 input_id = alias;
+ 
+-	return of_iommu_configure_dev_id(info->np, info->dev, &input_id);
++	return of_iommu_configure_dev_id(info->fwspec, info->np, info->dev,
++					 &input_id);
+ }
+ 
+-static int of_iommu_configure_device(struct device_node *master_np,
++static int of_iommu_configure_device(struct iommu_fwspec *fwspec,
++				     struct device_node *master_np,
+ 				     struct device *dev, const u32 *id)
+ {
+-	return (id) ? of_iommu_configure_dev_id(master_np, dev, id) :
+-		      of_iommu_configure_dev(master_np, dev);
++	return (id) ? of_iommu_configure_dev_id(fwspec, master_np, dev, id) :
++		      of_iommu_configure_dev(fwspec, master_np, dev);
+ }
+ 
+ /*
+@@ -117,19 +100,15 @@ static int of_iommu_configure_device(struct device_node *master_np,
+ int of_iommu_configure(struct device *dev, struct device_node *master_np,
+ 		       const u32 *id)
+ {
+-	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
++	struct iommu_fwspec *fwspec;
+ 	int err;
+ 
+ 	if (!master_np)
  		return -ENODEV;
  
-diff --git a/drivers/iommu/virtio-iommu.c b/drivers/iommu/virtio-iommu.c
-index 379ebe03efb6d4..2283f1d1155981 100644
---- a/drivers/iommu/virtio-iommu.c
-+++ b/drivers/iommu/virtio-iommu.c
-@@ -1027,9 +1027,11 @@ static struct iommu_group *viommu_device_group(struct device *dev)
- 		return generic_device_group(dev);
+-	if (fwspec) {
+-		if (fwspec->ops)
+-			return 0;
+-
+-		/* In the deferred case, start again from scratch */
+-		iommu_fwspec_free(dev);
+-	}
++	fwspec = iommu_fwspec_alloc();
++	if (IS_ERR(fwspec))
++		return PTR_ERR(fwspec);
+ 
+ 	/*
+ 	 * We don't currently walk up the tree looking for a parent IOMMU.
+@@ -140,27 +119,36 @@ int of_iommu_configure(struct device *dev, struct device_node *master_np,
+ 		struct of_pci_iommu_alias_info info = {
+ 			.dev = dev,
+ 			.np = master_np,
++			.fwspec = fwspec,
+ 		};
+ 
+ 		pci_request_acs();
+ 		err = pci_for_each_dma_alias(to_pci_dev(dev),
+ 					     of_pci_iommu_init, &info);
+ 	} else {
+-		err = of_iommu_configure_device(master_np, dev, id);
++		err = of_iommu_configure_device(fwspec, master_np, dev, id);
+ 	}
+ 
+ 	if (err == -ENODEV || err == -EPROBE_DEFER)
+-		return err;
++		goto err_free;
+ 	if (err)
+ 		goto err_log;
+ 
+-	err = iommu_probe_device(dev);
+-	if (err)
++	err = iommu_probe_device_fwspec(dev, fwspec);
++	if (err) {
++		/*
++		 * Ownership for fwspec always passes into
++		 * iommu_probe_device_fwspec()
++		 */
++		fwspec = NULL;
+ 		goto err_log;
++	}
+ 	return 0;
+ 
+ err_log:
+ 	dev_dbg(dev, "Adding to IOMMU failed: %d\n", err);
++err_free:
++	iommu_fwspec_dealloc(fwspec);
+ 	return err;
  }
  
--static int viommu_of_xlate(struct device *dev, struct of_phandle_args *args)
-+static int viommu_of_xlate_fwspec(struct iommu_fwspec *fwspec,
-+				  struct device *dev,
-+				  struct of_phandle_args *args)
- {
--	return iommu_fwspec_add_ids(dev, args->args, 1);
-+	return iommu_fwspec_append_ids(fwspec, args->args, 1);
- }
- 
- static bool viommu_capable(struct device *dev, enum iommu_cap cap)
-@@ -1050,7 +1052,7 @@ static struct iommu_ops viommu_ops = {
- 	.release_device		= viommu_release_device,
- 	.device_group		= viommu_device_group,
- 	.get_resv_regions	= viommu_get_resv_regions,
--	.of_xlate		= viommu_of_xlate,
-+	.of_xlate_fwspec	= viommu_of_xlate_fwspec,
- 	.owner			= THIS_MODULE,
- 	.default_domain_ops = &(const struct iommu_domain_ops) {
- 		.attach_dev		= viommu_attach_dev,
 diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-index 5e1f9222bde856..2fac54a942af54 100644
+index 531382d692d71a..2644c61b572b8f 100644
 --- a/include/linux/iommu.h
 +++ b/include/linux/iommu.h
-@@ -41,6 +41,7 @@ struct notifier_block;
- struct iommu_sva;
- struct iommu_fault_event;
- struct iommu_dma_cookie;
-+struct iommu_fwspec;
+@@ -685,6 +685,9 @@ struct iommu_sva {
  
- /* iommu fault flags */
- #define IOMMU_FAULT_READ	0x0
-@@ -287,6 +288,8 @@ struct iommu_ops {
- 	/* Request/Free a list of reserved regions for a device */
- 	void (*get_resv_regions)(struct device *dev, struct list_head *list);
+ struct iommu_fwspec *iommu_fwspec_alloc(void);
+ void iommu_fwspec_dealloc(struct iommu_fwspec *fwspec);
++int iommu_fwspec_of_xlate(struct iommu_fwspec *fwspec, struct device *dev,
++			  struct fwnode_handle *iommu_fwnode,
++			  struct of_phandle_args *iommu_spec);
  
-+	int (*of_xlate_fwspec)(struct iommu_fwspec *fwspec, struct device *dev,
-+			       struct of_phandle_args *args);
- 	int (*of_xlate)(struct device *dev, struct of_phandle_args *args);
- 	bool (*is_attach_deferred)(struct device *dev);
- 
+ int iommu_fwspec_init(struct device *dev, struct fwnode_handle *iommu_fwnode,
+ 		      const struct iommu_ops *ops);
 -- 
 2.42.0
 
