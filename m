@@ -1,21 +1,19 @@
 Return-Path: <jgg@nvidia.com>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 13CF640123
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org D381C4011A
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 67D604011A
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 2773540124
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QP10aZ4Quqbs9zFZPRTR3Au32TdVHu3cIHkvtTh4E+8=;
- b=J9+NTAilQwoRv4xPnDjJGuV/J6siGnMvKC6xLsXvMQvWwAOaEunZ28w1bXLQ8fsWgE7jyie8ZWFtvvngPBzcyRP8bJvojqRLOB4YteOxL0pjjIwSZ5AT0HHrQKwGGtdQd5JPxYrfrbCRQLxWMGCSFq0qamfBYfrs+4ZgF2Hzpq40OGHdF67FFpIiPnrTPhz++7QpsxlnlUBhwuwbeC5e7bkAGGKQ8yGQl60YFnz+FF60HJL3WHCX4Ux+RLEbxkjsOhnZdi97Iw8HzlicFl0tAtu3SaMWuxC7HBNvVkZ+WRgyPQ84UfAKVJ48BS7oNTWi8EjBYTj8KM0qJtpBMbtlcQ==
+ bh=ywgd3HRS4oK39R26TqVY+MWvg9q8mZK2BdG9RN/u22A=;
+ b=SyL2cOUyv00dS5YEl5lQ+AlGwI79I69+//iQR3SQKxsCTstWRo34Iha1tXDLYwNmWK5uQygtbgwzZa4n336qItTqK7jgvmGDoVAjpq3vPnnhn2WJSRmmWjrkiln0z/qGACjcJtDcb76TKG2orePjsRqjZPe5NcuV1stvC91HKjlvMLdwpJ5LAdMWU5XyGYuYJertb4bpR4pBIGMHi7cJ+BJe9W6peMVHviqNNQt8jNcvFv+PCABcWAajUXHu4soYbBXFNp08BphGSLauS14jlrPpTqAQv6LPwoEPZjdDqnl9jK1zr8XllFxOOKLClK3wqwKIEl/PzZ7T5QVsFaDJdQ==
 From: Jason Gunthorpe <jgg@nvidia.com>
-Date: Fri,  3 Nov 2023 13:44:50 -0300
-Message-ID: <5-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
-In-Reply-To: <0-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
-References: 
+Date: Fri,  3 Nov 2023 13:44:45 -0300
+Message-ID: <0-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 MIME-Version: 1.0
-Subject: [Acpica-devel] [PATCH RFC 05/17] iommu: Make iommu_fwspec->ids a
-	distinct allocation
+Subject: [Acpica-devel] [PATCH RFC 00/17] Solve iommu probe races around
+	iommu_fwspec
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -28,72 +26,102 @@ List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel
 To: acpica-devel@lists.linuxfoundation.org, Alyssa Rosenzweig <alyssa@rosenzweig.io>, Albert Ou <aou@eecs.berkeley.edu>, asahi@lists.linux.dev, Lu Baolu <baolu.lu@linux.intel.com>, Catalin Marinas <catalin.marinas@arm.com>, Dexuan Cui <decui@microsoft.com>, devicetree@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>, Frank Rowand <frowand.list@gmail.com>, Hanjun Guo <guohanjun@huawei.com>, Haiyang Zhang <haiyangz@microsoft.com>, Christoph Hellwig <hch@lst.de>, iommu@lists.linux.dev, Jean-Philippe Brucker <jean-philippe@linaro.org>, Jonathan Hunter <jonathanh@nvidia.com>, Joerg Roedel <joro@8bytes.org>, "K. Y. Srinivasan" <kys@microsoft.com>, Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org, linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org, linux-snps-arc@lists.infradead.org, linux-tegra@vger.kernel.org, Russell King <linux@armlinux.org.uk>, Lorenzo Pieralisi <lpieralisi@kernel.org>, Marek Szyprowski <m.szyprowski@samsung.com>, Hector Martin <marcan@marcan.st>, Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, "Rafael J. Wysocki" <rafael@kernel.org>, Robert Moore <robert.moore@intel.com>, Rob Herring <robh+dt@kernel.org>, Robin Murphy <robin.murphy@arm.com>, Sudeep Holla <sudeep.holla@arm.com>, Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>, Sven Peter <sven@svenpeter.dev>, Thierry Reding <thierry.reding@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Krishna Reddy <vdumpa@nvidia.com>, Vineet Gupta <vgupta@kernel.org>, virtualization@lists.linux-foundation.org, Wei Liu <wei.liu@kernel.org>, Will Deacon <will@kernel.org>
 Cc: Zhenhua Huang <quic_zhenhuah@quicinc.com>
 
-The optimization of kreallocing the entire fwspec only works if the fwspec
-pointer is always stored in the dev->iommu. Since we want to change this
-remove the optimization and make the ids array a distinct allocation.
+This is a more complete solution that the first attempt here:
+https://lore.kernel.org/r/1698825902-10685-1-git-send-email-quic_zhenhuah@quicinc.com
 
-Allow a single id to be stored inside the iommu_fwspec as a common case
-optimization.
+I haven't been able to test this on any HW that touches these paths, so if
+some people with HW can help get it in shape it can become non-RFC.
 
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
----
- drivers/iommu/iommu.c | 20 ++++++++++++--------
- include/linux/iommu.h |  3 ++-
- 2 files changed, 14 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index c9a05bb49bfa17..d5e86985f6d363 100644
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -2948,8 +2948,7 @@ int iommu_fwspec_init(struct device *dev, struct fwnode_handle *iommu_fwnode,
- 	if (!dev_iommu_get(dev))
- 		return -ENOMEM;
- 
--	/* Preallocate for the overwhelmingly common case of 1 ID */
--	fwspec = kzalloc(struct_size(fwspec, ids, 1), GFP_KERNEL);
-+	fwspec = kzalloc(sizeof(*fwspec), GFP_KERNEL);
- 	if (!fwspec)
- 		return -ENOMEM;
- 
-@@ -2982,13 +2981,18 @@ int iommu_fwspec_add_ids(struct device *dev, u32 *ids, int num_ids)
- 		return -EINVAL;
- 
- 	new_num = fwspec->num_ids + num_ids;
--	if (new_num > 1) {
--		fwspec = krealloc(fwspec, struct_size(fwspec, ids, new_num),
--				  GFP_KERNEL);
--		if (!fwspec)
-+	if (new_num <= 1) {
-+		if (fwspec->ids != &fwspec->single_id)
-+			kfree(fwspec->ids);
-+		fwspec->ids = &fwspec->single_id;
-+	} else if (new_num > fwspec->num_ids) {
-+		ids = krealloc_array(
-+			fwspec->ids != &fwspec->single_id ? fwspec->ids : NULL,
-+			new_num, sizeof(fwspec->ids[0]),
-+			GFP_KERNEL | __GFP_ZERO);
-+		if (!ids)
- 			return -ENOMEM;
--
--		dev_iommu_fwspec_set(dev, fwspec);
-+		fwspec->ids = ids;
- 	}
- 
- 	for (i = 0; i < num_ids; i++)
-diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-index ddc25d2391063b..66ea1d08dc3f58 100644
---- a/include/linux/iommu.h
-+++ b/include/linux/iommu.h
-@@ -668,7 +668,8 @@ struct iommu_fwspec {
- 	struct fwnode_handle	*iommu_fwnode;
- 	u32			flags;
- 	unsigned int		num_ids;
--	u32			ids[];
-+	u32			single_id;
-+	u32			*ids;
- };
- 
- /* ATS is supported */
+The iommu subsystem uses dev->iommu to store bits of information about the
+attached iommu driver. This has been co-opted by the ACPI/OF code to also
+be a place to pass around the iommu_fwspec before a driver is probed.
+
+Since both are using the same pointers without any locking it triggers
+races if there is concurrent driver loading:
+
+     CPU0                                     CPU1
+of_iommu_configure()                iommu_device_register()
+ ..                                   bus_iommu_probe()
+  iommu_fwspec_of_xlate()              __iommu_probe_device()
+                                        iommu_init_device()
+   dev_iommu_get()
+                                          .. ops->probe fails, no fwspec ..
+                                          dev_iommu_free()
+   dev->iommu->fwspec    *crash*
+
+My first attempt get correct locking here was to use the device_lock to
+protect the entire *_iommu_configure() and iommu_probe() paths. This
+allowed safe use of dev->iommu within those paths. Unfortuately enough
+drivers abuse the of_iommu_configure() flow without proper locking and
+this approach failed.
+
+This approach removes touches of dev->iommu from the *_iommu_configure()
+code. The few remaining required touches are moved into iommu.c and
+protected with the existing iommu_probe_device_lock.
+
+To do this we change *_iommu_configure() to hold the iommu_fwspec on the
+stack while it is being built. Once it is fully formed the core code will
+install it into the dev->iommu when it calls probe.
+
+This also removes all the touches of iommu_ops from
+the *_iommu_configure() paths and makes that mechanism private to the
+iommu core.
+
+A few more lockdep assertions are added to discourage future mis-use.
+
+This is on github: https://github.com/jgunthorpe/linux/commits/iommu_fwspec
+
+Jason Gunthorpe (17):
+  iommu: Remove struct iommu_ops *iommu from arch_setup_dma_ops()
+  of: Do not return struct iommu_ops from of_iommu_configure()
+  of: Use -ENODEV consistently in of_iommu_configure()
+  acpi: Do not return struct iommu_ops from acpi_iommu_configure_id()
+  iommu: Make iommu_fwspec->ids a distinct allocation
+  iommu: Add iommu_fwspec_alloc/dealloc()
+  iommu: Add iommu_probe_device_fwspec()
+  of: Do not use dev->iommu within of_iommu_configure()
+  iommu: Add iommu_fwspec_append_ids()
+  acpi: Do not use dev->iommu within acpi_iommu_configure()
+  iommu: Hold iommu_probe_device_lock while calling ops->of_xlate
+  iommu: Make iommu_ops_from_fwnode() static
+  iommu: Remove dev_iommu_fwspec_set()
+  iommu: Remove pointless iommu_fwspec_free()
+  iommu: Add ops->of_xlate_fwspec()
+  iommu: Mark dev_iommu_get() with lockdep
+  iommu: Mark dev_iommu_priv_set() with a lockdep
+
+ arch/arc/mm/dma.c                           |   2 +-
+ arch/arm/mm/dma-mapping-nommu.c             |   2 +-
+ arch/arm/mm/dma-mapping.c                   |  10 +-
+ arch/arm64/mm/dma-mapping.c                 |   4 +-
+ arch/mips/mm/dma-noncoherent.c              |   2 +-
+ arch/riscv/mm/dma-noncoherent.c             |   2 +-
+ drivers/acpi/arm64/iort.c                   |  39 ++--
+ drivers/acpi/scan.c                         | 104 +++++----
+ drivers/acpi/viot.c                         |  44 ++--
+ drivers/hv/hv_common.c                      |   2 +-
+ drivers/iommu/amd/iommu.c                   |   2 -
+ drivers/iommu/apple-dart.c                  |   1 -
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c |   9 +-
+ drivers/iommu/arm/arm-smmu/arm-smmu.c       |  23 +-
+ drivers/iommu/intel/iommu.c                 |   2 -
+ drivers/iommu/iommu.c                       | 227 +++++++++++++++-----
+ drivers/iommu/of_iommu.c                    | 129 +++++------
+ drivers/iommu/omap-iommu.c                  |   1 -
+ drivers/iommu/tegra-smmu.c                  |   1 -
+ drivers/iommu/virtio-iommu.c                |   8 +-
+ drivers/of/device.c                         |  24 ++-
+ include/acpi/acpi_bus.h                     |   8 +-
+ include/linux/acpi_iort.h                   |   3 +-
+ include/linux/acpi_viot.h                   |   5 +-
+ include/linux/dma-map-ops.h                 |   4 +-
+ include/linux/iommu.h                       |  46 ++--
+ include/linux/of_iommu.h                    |  13 +-
+ 27 files changed, 417 insertions(+), 300 deletions(-)
+
+
+base-commit: ab41f1aafb43c2555b358147b14b4d7b8105b452
 -- 
 2.42.0
 
