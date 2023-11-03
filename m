@@ -1,32 +1,21 @@
-Return-Path: <vincent.guittot@linaro.org>
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org DAB8E84F27
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org C96A084F25
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=linaro.org; s=google; t=1698933055; x=1699537855;
- darn=lists.linuxfoundation.org; 
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date:message-id:reply-to;
- bh=vQsf0uxz+p9a7ZD7Gz0obekgX/RPQUCjSUYXjonlb9s=;
- b=nBWjbpqQg9cbAiZMkqeb8QfD7/8XVh7/W3trO46N5WpBpuenOxN0QbCTgfkA2R48ob
- jnKvEaDSbeg3mClOu53LOPib0frUQKCxD7opslvZNSexaheKmME0churonY/h9zwjTpB
- YYEZ5hN6KH7r2EdDHy0Boc8UkhodvFJDx3XUeIN/dASnsiDPQRF4PPf60NKlWxkZ5jfE
- 8Q5kWGJ0ctV4gLZvPi9Gwn68uBPXFGeak43OMTnCTGEIrOvR5kCZCdAWhvyo0aKzUDly
- QwntwefXoznEQEwhcwYkRMw5bNVxzpqL8PWQtL1YuHf3fVXxqx6ua5o0T4I831iwTJnw
- Vrww==
+Return-Path: <jgg@nvidia.com>
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org E8C7B4012A
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 98530400AB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TnoHHRW9wGxYObBfp5jd7EnMs8P21nURFY58S4rMak0=;
+ b=fgFyWL8y2hhCPeRB3QREn7Uuh58Tup5xgeQRI1TAYRqqv27pTe6tsY9S0SQc6yUa9BaQx/XIqo1k/RqOXF/+AkiFVPZSVYIfhdiDmnAsXFx81d2o5yCRGZ0a6eBPF8TqDMWkjqXR2m5GKehRjHva6egvNif895ewxMZ6rSmeSQfsj7TE67zwPQbQwJpD09DbSQNXLviiCBZOyBkzQYCuZ+O8TQXBG9Sf3FLGLauPLm7JLs5qbxF3RcIC+lmPk9MDwu0ZT6HhksJLU25EywFBSKDUL633ZfBYTLUkaZNI3Rm/tw2w8VkA7P4ibnDKT0koO6zlJrj0B+YCKVpj2JMqEA==
+From: Jason Gunthorpe <jgg@nvidia.com>
+Date: Fri,  3 Nov 2023 13:44:49 -0300
+Message-ID: <4-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
+In-Reply-To: <0-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
+References: 
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 MIME-Version: 1.0
-References: <20231027080400.56703-1-vincent.guittot@linaro.org>
- <20231027080400.56703-8-vincent.guittot@linaro.org>
- <ZUGUvdjrpw9NHSex@e129154.nice.arm.com>
- <CAKfTPtDDouduP57P8GH6J4qDjbKUasVRe-K0QUKcZHC2NZ+syQ@mail.gmail.com>
- <ZUN6K4d9FD31phbs@e129154.nice.arm.com>
- <CAKfTPtATBHyCvGkoKrN1Y9LpWX7nb3njY2zFPiJyj2bTSfbcNw@mail.gmail.com>
-In-Reply-To: <CAKfTPtATBHyCvGkoKrN1Y9LpWX7nb3njY2zFPiJyj2bTSfbcNw@mail.gmail.com>
-From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Thu, 2 Nov 2023 14:50:43 +0100
-Message-ID: <CAKfTPtCv1WUDr72eqWeJh6iakkn+d4rX1N0d=8G8TEdyeOxH3g@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Subject: Re: [Acpica-devel] [PATCH v4 7/7] arm64/amu: use capacity_ref_freq
-	to set AMU ratio
+Subject: [Acpica-devel] [PATCH RFC 04/17] acpi: Do not return struct
+	iommu_ops from acpi_iommu_configure_id()
 List-Id: "This is the central place for ACPICA developer discussions and
  issues." <acpica-devel.lists.linuxfoundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/acpica-devel>, 
@@ -36,123 +25,85 @@ List-Post: <mailto:acpica-devel@lists.linuxfoundation.org>
 List-Help: <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=help>
 List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/acpica-devel>, 
  <mailto:acpica-devel-request@lists.linuxfoundation.org?subject=subscribe>
-To: Beata Michalska <beata.michalska@arm.com>, pierre.gondois@arm.com
-Cc: juri.lelli@redhat.com, peterz@infradead.org, catalin.marinas@arm.com, robert.moore@intel.com, bsegall@google.com, conor.dooley@microchip.com, linux-riscv@lists.infradead.org, will@kernel.org, acpica-devel@lists.linuxfoundation.org, vschneid@redhat.com, linux@armlinux.org.uk, linux-acpi@vger.kernel.org, mingo@redhat.com, mgorman@suse.de, lftan@kernel.org, viresh.kumar@linaro.org, lenb@kernel.org, aou@eecs.berkeley.edu, ionela.voinescu@arm.com, linux-pm@vger.kernel.org, rostedt@goodmis.org, paul.walmsley@sifive.com, dietmar.eggemann@arm.com, linux-arm-kernel@lists.infradead.org, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, palmer@dabbelt.com, sudeep.holla@arm.com, suagrfillet@gmail.com, ajones@ventanamicro.com, bristot@redhat.com, lukasz.luba@arm.com
+To: acpica-devel@lists.linuxfoundation.org, Alyssa Rosenzweig <alyssa@rosenzweig.io>, Albert Ou <aou@eecs.berkeley.edu>, asahi@lists.linux.dev, Lu Baolu <baolu.lu@linux.intel.com>, Catalin Marinas <catalin.marinas@arm.com>, Dexuan Cui <decui@microsoft.com>, devicetree@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>, Frank Rowand <frowand.list@gmail.com>, Hanjun Guo <guohanjun@huawei.com>, Haiyang Zhang <haiyangz@microsoft.com>, Christoph Hellwig <hch@lst.de>, iommu@lists.linux.dev, Jean-Philippe Brucker <jean-philippe@linaro.org>, Jonathan Hunter <jonathanh@nvidia.com>, Joerg Roedel <joro@8bytes.org>, "K. Y. Srinivasan" <kys@microsoft.com>, Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org, linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org, linux-snps-arc@lists.infradead.org, linux-tegra@vger.kernel.org, Russell King <linux@armlinux.org.uk>, Lorenzo Pieralisi <lpieralisi@kernel.org>, Marek Szyprowski <m.szyprowski@samsung.com>, Hector Martin <marcan@marcan.st>, Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, "Rafael J. Wysocki" <rafael@kernel.org>, Robert Moore <robert.moore@intel.com>, Rob Herring <robh+dt@kernel.org>, Robin Murphy <robin.murphy@arm.com>, Sudeep Holla <sudeep.holla@arm.com>, Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>, Sven Peter <sven@svenpeter.dev>, Thierry Reding <thierry.reding@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Krishna Reddy <vdumpa@nvidia.com>, Vineet Gupta <vgupta@kernel.org>, virtualization@lists.linux-foundation.org, Wei Liu <wei.liu@kernel.org>, Will Deacon <will@kernel.org>
+Cc: Zhenhua Huang <quic_zhenhuah@quicinc.com>
 
-On Thu, 2 Nov 2023 at 11:40, Vincent Guittot <vincent.guittot@linaro.org> wrote:
->
-> On Thu, 2 Nov 2023 at 11:31, Beata Michalska <beata.michalska@arm.com> wrote:
-> >
-> > Hi Vincent,
-> >
-> > On Wed, Nov 01, 2023 at 10:04:27AM +0100, Vincent Guittot wrote:
-> > > Hi Beata,
-> > >
-> > > On Wed, 1 Nov 2023 at 00:59, Beata Michalska <beata.michalska@arm.com> wrote:
-> > > >
-> > > > On Fri, Oct 27, 2023 at 10:04:00AM +0200, Vincent Guittot wrote:
-> > > > > Use the new capacity_ref_freq to set the ratio that is used by AMU for
-> > > > > computing the arch_scale_freq_capacity().
-> > > > > This helps to keep everything aligned using the same reference for
-> > > > > computing CPUs capacity.
-> > > > >
-> > >
-> > > [..]
-> > >
-> > > > > @@ -381,6 +385,9 @@ void topology_init_cpu_capacity_cppc(void)
-> > > > >       }
-> > > > >
-> > > > >       for_each_possible_cpu(cpu) {
-> > > > > +             freq_inv_set_max_ratio(cpu,
-> > > > > +                                    per_cpu(capacity_ref_freq, cpu) * HZ_PER_KHZ);
-> > > > > +
-> > > > The capacity_ref_freq set earlier will still lead to units mismatch,
-> > > > as at the point of calling topology_init_cpu_capacity_cppc the lowest & nominal
-> > > > frequencies will be provided in MHz (unless I have missed smth).
-> > >
-> > > I don't get your point:
-> > > the unit of per_cpu(capacity_freq_ref, cpu) is Khz
-> > >
-> > > For cppc, we have
-> > > per_cpu(capacity_freq_ref, cpu) = cppc_perf_to_khz(&perf_caps,
-> > > raw_capacity[cpu]);
-> > >
-> > > freq_inv_set_max_ratio() uses
-> > > arch_timer_get_rate() which returns a freq in Hz
-> > > and
-> > > per_cpu(capacity_freq_ref, cpu) * HZ_PER_KHZ. to get a freq in Hz too.
-> > >
-> > Apologies, I should have been more verbose here.
-> > Before the change made in [1] the cppc_perf_to_khz was indeed operating on
-> > lowest & nominal frequency values expressed in kHZ, as those were appropriately
-> > amended:
-> > cppc_cpufreq_cpu_init
-> >         |__> cppc_cpufreq_get_cpu_data:
-> >                 |__>    ...
-> >                         /* Convert the lowest and nominal freq from MHz to KHz */
-> >                         cpu_data->perf_caps.lowest_freq *= 1000;
-> >                         cpu_data->perf_caps.nominal_freq *= 1000;
-> >
-> > So far cppc_perf_to_khz (previously cppc_cpufreq_perf_to_khz) was being called
-> > with the post-processed CPC data (through cppc_cpufreq_get_cpu_data) and thus
-> > guaranteed to be operating on values in kHz.
-> > With the new changes the cppc_perf_to_khz will operate on raw CPC data,
-> > which are expressed in MHz.(as per acpi spec)
->
-> Ok, thanks for the explanation. I haven't noticed that cppc_cpufreq
-> was processing the raw CPC data  (*1000) before using them. I'm going
-> to fix that.
+Nothing needs this pointer. Return a normal error code with the usual
+IOMMU semantic that ENODEV means 'there is no IOMMU driver'.
 
-With cppc_perf_to_khz() being moved into the generic cppc_acpi.c, we
-can't change perf_caps.nominal_freq and perf_caps.lowest_freq
-directly. So, I'm planning to add the conversion from MHz to kHz in
-the functions cppc_perf_to_khz() and cppc_khz_to_perf() and remove the
-2 conversions above in cppc_cpufreq_get_cpu_data().
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+---
+ drivers/acpi/scan.c | 24 +++++++++++++++---------
+ 1 file changed, 15 insertions(+), 9 deletions(-)
 
->
->
-> >
-> > ---
-> > Best Regards
-> > B.
-> > > > This means that use of both, the capacity_ref_freq and the arch_freq_scale
-> > > > will generate unexpected results, so I guess this should get amended in the
-> > > > preceding patch (?) [1]
-> > > >
-> > > > ---
-> > > > BR
-> > > > B.
-> > > >
-> > > > [1] https://lore.kernel.org/linux-arm-kernel/20231027080400.56703-4-vincent.guittot@linaro.org/T/#m42daa167097edc190b1cfc05382c385ed801d909
-> > > >
-> > > > >               capacity = raw_capacity[cpu];
-> > > > >               capacity = div64_u64(capacity << SCHED_CAPACITY_SHIFT,
-> > > > >                                    capacity_scale);
-> > > > > @@ -422,8 +429,11 @@ init_cpu_capacity_callback(struct notifier_block *nb,
-> > > > >
-> > > > >       cpumask_andnot(cpus_to_visit, cpus_to_visit, policy->related_cpus);
-> > > > >
-> > > > > -     for_each_cpu(cpu, policy->related_cpus)
-> > > > > +     for_each_cpu(cpu, policy->related_cpus) {
-> > > > >               per_cpu(capacity_ref_freq, cpu) = policy->cpuinfo.max_freq;
-> > > > > +             freq_inv_set_max_ratio(cpu,
-> > > > > +                                    per_cpu(capacity_ref_freq, cpu) * HZ_PER_KHZ);
-> > > > > +     }
-> > > > >
-> > > > >       if (cpumask_empty(cpus_to_visit)) {
-> > > > >               topology_normalize_cpu_scale();
-> > > > > diff --git a/include/linux/arch_topology.h b/include/linux/arch_topology.h
-> > > > > index 38ca6c76af56..ffdf0b7c55fa 100644
-> > > > > --- a/include/linux/arch_topology.h
-> > > > > +++ b/include/linux/arch_topology.h
-> > > > > @@ -99,6 +99,7 @@ void update_siblings_masks(unsigned int cpu);
-> > > > >  void remove_cpu_topology(unsigned int cpuid);
-> > > > >  void reset_cpu_topology(void);
-> > > > >  int parse_acpi_topology(void);
-> > > > > +void freq_inv_set_max_ratio(int cpu, u64 max_rate);
-> > > > >  #endif
-> > > > >
-> > > > >  #endif /* _LINUX_ARCH_TOPOLOGY_H_ */
-> > > > > --
-> > > > > 2.34.1
-> > > > >
+diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+index a6891ad0ceee2c..fbabde001a23a2 100644
+--- a/drivers/acpi/scan.c
++++ b/drivers/acpi/scan.c
+@@ -1562,8 +1562,7 @@ static inline const struct iommu_ops *acpi_iommu_fwspec_ops(struct device *dev)
+ 	return fwspec ? fwspec->ops : NULL;
+ }
+ 
+-static const struct iommu_ops *acpi_iommu_configure_id(struct device *dev,
+-						       const u32 *id_in)
++static int acpi_iommu_configure_id(struct device *dev, const u32 *id_in)
+ {
+ 	int err;
+ 	const struct iommu_ops *ops;
+@@ -1574,7 +1573,7 @@ static const struct iommu_ops *acpi_iommu_configure_id(struct device *dev,
+ 	 */
+ 	ops = acpi_iommu_fwspec_ops(dev);
+ 	if (ops)
+-		return ops;
++		return 0;
+ 
+ 	err = iort_iommu_configure_id(dev, id_in);
+ 	if (err && err != -EPROBE_DEFER)
+@@ -1589,12 +1588,14 @@ static const struct iommu_ops *acpi_iommu_configure_id(struct device *dev,
+ 
+ 	/* Ignore all other errors apart from EPROBE_DEFER */
+ 	if (err == -EPROBE_DEFER) {
+-		return ERR_PTR(err);
++		return err;
+ 	} else if (err) {
+ 		dev_dbg(dev, "Adding to IOMMU failed: %d\n", err);
+-		return NULL;
++		return -ENODEV;
+ 	}
+-	return acpi_iommu_fwspec_ops(dev);
++	if (!acpi_iommu_fwspec_ops(dev))
++		return -ENODEV;
++	return 0;
+ }
+ 
+ #else /* !CONFIG_IOMMU_API */
+@@ -1623,7 +1624,7 @@ static const struct iommu_ops *acpi_iommu_configure_id(struct device *dev,
+ int acpi_dma_configure_id(struct device *dev, enum dev_dma_attr attr,
+ 			  const u32 *input_id)
+ {
+-	const struct iommu_ops *iommu;
++	int ret;
+ 
+ 	if (attr == DEV_DMA_NOT_SUPPORTED) {
+ 		set_dma_ops(dev, &dma_dummy_ops);
+@@ -1632,10 +1633,15 @@ int acpi_dma_configure_id(struct device *dev, enum dev_dma_attr attr,
+ 
+ 	acpi_arch_dma_setup(dev);
+ 
+-	iommu = acpi_iommu_configure_id(dev, input_id);
+-	if (PTR_ERR(iommu) == -EPROBE_DEFER)
++	ret = acpi_iommu_configure_id(dev, input_id);
++	if (ret == -EPROBE_DEFER)
+ 		return -EPROBE_DEFER;
+ 
++	/*
++	 * Historically this routine doesn't fail driver probing due to errors
++	 * in acpi_iommu_configure()
++	 */
++
+ 	arch_setup_dma_ops(dev, 0, U64_MAX, attr == DEV_DMA_COHERENT);
+ 
+ 	return 0;
+-- 
+2.42.0
+
