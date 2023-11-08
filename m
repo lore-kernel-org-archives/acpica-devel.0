@@ -1,52 +1,52 @@
-Received: from smtp1.osuosl.org (smtp1.osuosl.org [140.211.166.138])
+Received: from smtp3.osuosl.org (smtp3.osuosl.org [140.211.166.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AE6530D15
-	for <acpica-devel@lists.linuxfoundation.org>; Wed,  8 Nov 2023 16:17:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEBE930D1E
+	for <acpica-devel@lists.linuxfoundation.org>; Wed,  8 Nov 2023 16:18:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 Received: from localhost (localhost [127.0.0.1])
-	by smtp1.osuosl.org (Postfix) with ESMTP id CA0FD8200C
-	for <acpica-devel@lists.linuxfoundation.org>; Wed,  8 Nov 2023 16:17:08 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org CA0FD8200C
+	by smtp3.osuosl.org (Postfix) with ESMTP id 0F78B60741
+	for <acpica-devel@lists.linuxfoundation.org>; Wed,  8 Nov 2023 16:18:27 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 0F78B60741
 X-Virus-Scanned: amavisd-new at osuosl.org
 X-Spam-Flag: NO
 X-Spam-Score: -1.148
 X-Spam-Level:
-Received: from smtp1.osuosl.org ([127.0.0.1])
-	by localhost (smtp1.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id CPsrDzGDEGPb
+Received: from smtp3.osuosl.org ([127.0.0.1])
+	by localhost (smtp3.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id zLRVFApm9BFv
 	for <acpica-devel@lists.linuxfoundation.org>;
-	Wed,  8 Nov 2023 16:17:07 +0000 (UTC)
-Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com [209.85.161.50])
-	by smtp1.osuosl.org (Postfix) with ESMTPS id 88E5981FEF
-	for <acpica-devel@lists.linuxfoundation.org>; Wed,  8 Nov 2023 16:17:07 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 88E5981FEF
-Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-5869914484fso3854515eaf.0
-        for <acpica-devel@lists.linuxfoundation.org>; Wed, 08 Nov 2023 08:17:07 -0800 (PST)
+	Wed,  8 Nov 2023 16:18:26 +0000 (UTC)
+Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
+	by smtp3.osuosl.org (Postfix) with ESMTPS id 6911B605AD
+	for <acpica-devel@lists.linuxfoundation.org>; Wed,  8 Nov 2023 16:18:26 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 6911B605AD
+Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6ce31c4a653so4325319a34.3
+        for <acpica-devel@lists.linuxfoundation.org>; Wed, 08 Nov 2023 08:18:26 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699460226; x=1700065026;
+        d=1e100.net; s=20230601; t=1699460305; x=1700065105;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BhueBKTq066e4mLfKHRgK40ZdUHgCtrKWznR5J+LNwA=;
-        b=IZLJkitD6Dcq9Hv/zEukJA9AgIbpdS33bRsUcvkJkPfpWt8NiEO2Hcc+9fgbPxc2fD
-         v5J8sXNxWuOmTlcP6sVS17qB0fzI2ku4Ds/wRpaAwsMwIxOFqA+jGMpCWW92/XT4nhT9
-         pnqsE8KQYHtMB+0yAjg3i7/cADyBYEfJ/JC88wmCOCByFVnn2gElJfqCWqlpFYXl9HEN
-         ilocqRTI8rFDGVShKDAA8N9K7SYBvdc96+eEFh9Y+1RfE4e5FE8cnPRczF1JPc5vV9MW
-         ruVjLK40ktWYbT5PA8AOYBtf1+Pe5LPEKtAP4hTE6r2mKN0dy/Br/L7dpgahfp0eHnzA
-         ZAmw==
-X-Gm-Message-State: AOJu0Yze66gOfi/wai4DzImPSQCNp/nynTLUA02Lpz8u+v7sGHdl1P7D
-	3W+TNCy83oZHtVKYmU25oQ==
-X-Google-Smtp-Source: AGHT+IFe/wqQx7jqSarQLsP5AynmlF1OwPY0v3LIXJSKefg7OTaZGlvutVeUSHDrZS8dzbY2HrAlbA==
-X-Received: by 2002:a4a:c208:0:b0:581:ff36:702b with SMTP id z8-20020a4ac208000000b00581ff36702bmr2227049oop.8.1699460225482;
-        Wed, 08 Nov 2023 08:17:05 -0800 (PST)
+        bh=EYkPle1MdHD/QkRy5uvWyvoGAuw8CDQwR9sXIE03ZSs=;
+        b=VXuvZHgp7jKpIuO+hWptZmJ/IMTAjU+N2bi5YnriVZx9Gpl6178T4utOluwS9VB+Gx
+         tK4Ro4W4a5ktxjNq99Th6wFjwSlIkosf0tVETOVlj1BX//siYrcIuzgBMs2O8BR7E6Qo
+         QE3Kqm/GmSMoEr5Zts6seMkZv3jXlkBEEAlBvhjT7vBsEbaR8j/MzLEEgL4ViyVsuExv
+         bXo7WYnNO7B/jOYA+zpEy16EcrgXU+ITEHddfAebz3vmR1WSxWxJdbNJGWnmBA9612Zg
+         vmUX8nrck1B1eGEa7UvC19LIb82VhdQUcV0Osg9wQRqb23hnT6Gr3k+THn/i36FHLo+Q
+         fkaA==
+X-Gm-Message-State: AOJu0YyucFGyp41OWfMh5MXFTnorI1b7lYjlpVSUZfAQxEeJ8e7YD01o
+	/zCdRr7RpMJZv/pbiiedSQ==
+X-Google-Smtp-Source: AGHT+IHdx3/gHf0uiMEsZF6g8NbonKAcCJCMoAU+4cEwM7tQNoaEke7MS1G/3+EpNqOeJUuZFsInWw==
+X-Received: by 2002:a05:6830:4394:b0:6d5:4daf:9894 with SMTP id s20-20020a056830439400b006d54daf9894mr2008363otv.7.1699460305289;
+        Wed, 08 Nov 2023 08:18:25 -0800 (PST)
 Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id b24-20020a9d6b98000000b006bf0f95f702sm1914773otq.64.2023.11.08.08.17.03
+        by smtp.gmail.com with ESMTPSA id ew20-20020a0568303d9400b006b89dafb721sm1939661otb.78.2023.11.08.08.18.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Nov 2023 08:17:04 -0800 (PST)
-Received: (nullmailer pid 2331961 invoked by uid 1000);
-	Wed, 08 Nov 2023 16:17:02 -0000
-Date: Wed, 8 Nov 2023 10:17:02 -0600
+        Wed, 08 Nov 2023 08:18:24 -0800 (PST)
+Received: (nullmailer pid 2333673 invoked by uid 1000);
+	Wed, 08 Nov 2023 16:18:22 -0000
+Date: Wed, 8 Nov 2023 10:18:22 -0600
 From: Rob Herring <robh@kernel.org>
 To: Jason Gunthorpe <jgg@nvidia.com>
 Cc: acpica-devel@lists.linuxfoundation.org, 
@@ -72,11 +72,11 @@ Cc: acpica-devel@lists.linuxfoundation.org,
 	Krishna Reddy <vdumpa@nvidia.com>, Vineet Gupta <vgupta@kernel.org>, 
 	virtualization@lists.linux-foundation.org, Wei Liu <wei.liu@kernel.org>, 
 	Will Deacon <will@kernel.org>, Zhenhua Huang <quic_zhenhuah@quicinc.com>
-Subject: Re: [PATCH RFC 02/17] of: Do not return struct iommu_ops from
- of_iommu_configure()
-Message-ID: <20231108161702.GB2254211-robh@kernel.org>
+Subject: Re: [PATCH RFC 01/17] iommu: Remove struct iommu_ops *iommu from
+ arch_setup_dma_ops()
+Message-ID: <20231108161822.GC2254211-robh@kernel.org>
 References: <0-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
- <2-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
+ <1-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -85,18 +85,27 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
+In-Reply-To: <1-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
 
-On Fri, Nov 03, 2023 at 01:44:47PM -0300, Jason Gunthorpe wrote:
-> Nothing needs this pointer. Return a normal error code with the usual
-> IOMMU semantic that ENODEV means 'there is no IOMMU driver'.
+On Fri, Nov 03, 2023 at 01:44:46PM -0300, Jason Gunthorpe wrote:
+> This is not being used to pass ops, it is just a way to tell if an
+> iommu driver was probed. These days this can be detected directly via
+> device_iommu_mapped(). Call device_iommu_mapped() in the two places that
+> need to check it and remove the iommu parameter everywhere.
 > 
 > Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 > ---
->  drivers/iommu/of_iommu.c | 29 ++++++++++++++++++-----------
->  drivers/of/device.c      | 22 +++++++++++++++-------
+>  arch/arc/mm/dma.c               |  2 +-
+>  arch/arm/mm/dma-mapping-nommu.c |  2 +-
+>  arch/arm/mm/dma-mapping.c       | 10 +++++-----
+>  arch/arm64/mm/dma-mapping.c     |  4 ++--
+>  arch/mips/mm/dma-noncoherent.c  |  2 +-
+>  arch/riscv/mm/dma-noncoherent.c |  2 +-
+>  drivers/acpi/scan.c             |  3 +--
+>  drivers/hv/hv_common.c          |  2 +-
+>  drivers/of/device.c             |  2 +-
 
 Acked-by: Rob Herring <robh@kernel.org>
 
->  include/linux/of_iommu.h | 13 ++++++-------
->  3 files changed, 39 insertions(+), 25 deletions(-)
+>  include/linux/dma-map-ops.h     |  4 ++--
+>  10 files changed, 16 insertions(+), 17 deletions(-)
