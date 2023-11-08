@@ -1,111 +1,173 @@
-Received: from smtp3.osuosl.org (smtp3.osuosl.org [140.211.166.136])
+Received: from smtp1.osuosl.org (smtp1.osuosl.org [140.211.166.138])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEBE930D1E
-	for <acpica-devel@lists.linuxfoundation.org>; Wed,  8 Nov 2023 16:18:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A04BB34CEC
+	for <acpica-devel@lists.linuxfoundation.org>; Wed,  8 Nov 2023 18:13:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cLUTk3vz"
 Received: from localhost (localhost [127.0.0.1])
-	by smtp3.osuosl.org (Postfix) with ESMTP id 0F78B60741
-	for <acpica-devel@lists.linuxfoundation.org>; Wed,  8 Nov 2023 16:18:27 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 0F78B60741
+	by smtp1.osuosl.org (Postfix) with ESMTP id 2118A81F1D
+	for <acpica-devel@lists.linuxfoundation.org>; Wed,  8 Nov 2023 18:13:03 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 2118A81F1D
+Authentication-Results: smtp1.osuosl.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256 header.s=google header.b=cLUTk3vz
 X-Virus-Scanned: amavisd-new at osuosl.org
 X-Spam-Flag: NO
-X-Spam-Score: -1.148
+X-Spam-Score: -2.1
 X-Spam-Level:
-Received: from smtp3.osuosl.org ([127.0.0.1])
-	by localhost (smtp3.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id zLRVFApm9BFv
+Received: from smtp1.osuosl.org ([127.0.0.1])
+	by localhost (smtp1.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id Uj0imF6321Ow
 	for <acpica-devel@lists.linuxfoundation.org>;
-	Wed,  8 Nov 2023 16:18:26 +0000 (UTC)
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
-	by smtp3.osuosl.org (Postfix) with ESMTPS id 6911B605AD
-	for <acpica-devel@lists.linuxfoundation.org>; Wed,  8 Nov 2023 16:18:26 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 6911B605AD
-Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6ce31c4a653so4325319a34.3
-        for <acpica-devel@lists.linuxfoundation.org>; Wed, 08 Nov 2023 08:18:26 -0800 (PST)
+	Wed,  8 Nov 2023 18:13:02 +0000 (UTC)
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+	by smtp1.osuosl.org (Postfix) with ESMTPS id EF71881F14
+	for <acpica-devel@lists.linuxfoundation.org>; Wed,  8 Nov 2023 18:13:01 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org EF71881F14
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2c5071165d5so95849421fa.0
+        for <acpica-devel@lists.linuxfoundation.org>; Wed, 08 Nov 2023 10:13:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699467180; x=1700071980; darn=lists.linuxfoundation.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=XyM6VQ+HEN7IzJJ5bMoPN5/yYHnG+EAx9sBxv2Z/Ai8=;
+        b=cLUTk3vz9yEVmFTjR7xtAhGKu2mg2PnUgdXuUh1BZfjmznzW8Iadvty5mpChvsIhxj
+         fbBuF8VVrXgPczXv8Ov2V/XFUuedN36ykKL6PFyR8Rq3LflTR+KmNT0RSmFZ3EdHqktC
+         w0kFHbZueccsV22Ib97BdVQEXmotZbui0PqGYkYcNmz9FFKO4YD8jqD8w41b1UD0ch+r
+         4w5kNU4MFHtyPArMvYh9Vdb+LMTz6/59p0LeUoL7cF5xb0wLU6nhBS66kBLycbiCBPT0
+         dtWIQ1ppQqtWHXcVTEX83y3+GRpJifb25buwMwBjJfpGY0Je+0Bry6UL9RsvYZ2cmC2V
+         q7iQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699460305; x=1700065105;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EYkPle1MdHD/QkRy5uvWyvoGAuw8CDQwR9sXIE03ZSs=;
-        b=VXuvZHgp7jKpIuO+hWptZmJ/IMTAjU+N2bi5YnriVZx9Gpl6178T4utOluwS9VB+Gx
-         tK4Ro4W4a5ktxjNq99Th6wFjwSlIkosf0tVETOVlj1BX//siYrcIuzgBMs2O8BR7E6Qo
-         QE3Kqm/GmSMoEr5Zts6seMkZv3jXlkBEEAlBvhjT7vBsEbaR8j/MzLEEgL4ViyVsuExv
-         bXo7WYnNO7B/jOYA+zpEy16EcrgXU+ITEHddfAebz3vmR1WSxWxJdbNJGWnmBA9612Zg
-         vmUX8nrck1B1eGEa7UvC19LIb82VhdQUcV0Osg9wQRqb23hnT6Gr3k+THn/i36FHLo+Q
-         fkaA==
-X-Gm-Message-State: AOJu0YyucFGyp41OWfMh5MXFTnorI1b7lYjlpVSUZfAQxEeJ8e7YD01o
-	/zCdRr7RpMJZv/pbiiedSQ==
-X-Google-Smtp-Source: AGHT+IHdx3/gHf0uiMEsZF6g8NbonKAcCJCMoAU+4cEwM7tQNoaEke7MS1G/3+EpNqOeJUuZFsInWw==
-X-Received: by 2002:a05:6830:4394:b0:6d5:4daf:9894 with SMTP id s20-20020a056830439400b006d54daf9894mr2008363otv.7.1699460305289;
-        Wed, 08 Nov 2023 08:18:25 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id ew20-20020a0568303d9400b006b89dafb721sm1939661otb.78.2023.11.08.08.18.22
+        d=1e100.net; s=20230601; t=1699467180; x=1700071980;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XyM6VQ+HEN7IzJJ5bMoPN5/yYHnG+EAx9sBxv2Z/Ai8=;
+        b=woqsWQ7s+NRLOrx1NOcbe8wKnPJRsQGP3fDbdMT11SqD7PXrv4qnOSFuHOHKTXXVds
+         iIvWXIZiLq7mVl/UHa63lHLjX60HHAbR1gGwKbg639dbs8U1LftcBcOADKPKjDwWY2GR
+         fl4rjhsgdwYZlW26L5ibwuY+GRq+wmF+BkZaQxaiNkhOv7mBbEEqpNOCzPsfJmxX2lzb
+         orGNc05A7bL17AwTmK0RzrSVwM/R6GeV0leflKwVTgqTwOS6w98qtTsA1FXt3y50xmDJ
+         uU9St2JulRehtbKo6kHip7ESPoWcxaBlTv0UBPgr8aJpC8NhwBrZevc1rymSRRR/8fAs
+         qL9w==
+X-Gm-Message-State: AOJu0YxS0dH+c+55jgA4TZEcOjv4UV1Yuus4rS31Xw2f3Cw6p2OqaTQC
+	ZJD6TjqiGdprrNebnsF/n1BA5w==
+X-Google-Smtp-Source: AGHT+IEAPIM/7orU2/kUz+9e+TY8CYDTNJKLdVzPi+Pze4e6FKjzPA1Tq2W37LpeXm1IyotL7oPMlg==
+X-Received: by 2002:a2e:8e7b:0:b0:2c5:582:fd8d with SMTP id t27-20020a2e8e7b000000b002c50582fd8dmr2179335ljk.30.1699467179768;
+        Wed, 08 Nov 2023 10:12:59 -0800 (PST)
+Received: from [10.1.1.118] ([80.111.64.44])
+        by smtp.gmail.com with ESMTPSA id d20-20020a05600c4c1400b003fd2d3462fcsm739766wmp.1.2023.11.08.10.12.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Nov 2023 08:18:24 -0800 (PST)
-Received: (nullmailer pid 2333673 invoked by uid 1000);
-	Wed, 08 Nov 2023 16:18:22 -0000
-Date: Wed, 8 Nov 2023 10:18:22 -0600
-From: Rob Herring <robh@kernel.org>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: acpica-devel@lists.linuxfoundation.org, 
-	Alyssa Rosenzweig <alyssa@rosenzweig.io>, Albert Ou <aou@eecs.berkeley.edu>, asahi@lists.linux.dev, 
-	Lu Baolu <baolu.lu@linux.intel.com>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Dexuan Cui <decui@microsoft.com>, devicetree@vger.kernel.org, 
-	David Woodhouse <dwmw2@infradead.org>, Frank Rowand <frowand.list@gmail.com>, 
-	Hanjun Guo <guohanjun@huawei.com>, Haiyang Zhang <haiyangz@microsoft.com>, 
-	Christoph Hellwig <hch@lst.de>, iommu@lists.linux.dev, 
-	Jean-Philippe Brucker <jean-philippe@linaro.org>, Jonathan Hunter <jonathanh@nvidia.com>, 
-	Joerg Roedel <joro@8bytes.org>, "K. Y. Srinivasan" <kys@microsoft.com>, Len Brown <lenb@kernel.org>, 
-	linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-hyperv@vger.kernel.org, linux-mips@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, linux-snps-arc@lists.infradead.org, 
-	linux-tegra@vger.kernel.org, Russell King <linux@armlinux.org.uk>, 
-	Lorenzo Pieralisi <lpieralisi@kernel.org>, Marek Szyprowski <m.szyprowski@samsung.com>, 
-	Hector Martin <marcan@marcan.st>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Robert Moore <robert.moore@intel.com>, Robin Murphy <robin.murphy@arm.com>, 
-	Sudeep Holla <sudeep.holla@arm.com>, 
-	Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>, Sven Peter <sven@svenpeter.dev>, 
-	Thierry Reding <thierry.reding@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	Krishna Reddy <vdumpa@nvidia.com>, Vineet Gupta <vgupta@kernel.org>, 
-	virtualization@lists.linux-foundation.org, Wei Liu <wei.liu@kernel.org>, 
-	Will Deacon <will@kernel.org>, Zhenhua Huang <quic_zhenhuah@quicinc.com>
-Subject: Re: [PATCH RFC 01/17] iommu: Remove struct iommu_ops *iommu from
- arch_setup_dma_ops()
-Message-ID: <20231108161822.GC2254211-robh@kernel.org>
-References: <0-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
- <1-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
+        Wed, 08 Nov 2023 10:12:58 -0800 (PST)
+Message-ID: <e57f11915745674521b8c73d88a198a0b9c32c21.camel@linaro.org>
+Subject: Re: [PATCH RFC 12/17] iommu: Make iommu_ops_from_fwnode() static
+From: =?ISO-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>
+To: Jason Gunthorpe <jgg@nvidia.com>,
+ acpica-devel@lists.linuxfoundation.org,  Alyssa Rosenzweig
+ <alyssa@rosenzweig.io>, Albert Ou <aou@eecs.berkeley.edu>,
+ asahi@lists.linux.dev, Lu Baolu <baolu.lu@linux.intel.com>, Catalin Marinas
+ <catalin.marinas@arm.com>,  Dexuan Cui <decui@microsoft.com>,
+ devicetree@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,  Frank
+ Rowand <frowand.list@gmail.com>, Hanjun Guo <guohanjun@huawei.com>, Haiyang
+ Zhang <haiyangz@microsoft.com>, Christoph Hellwig <hch@lst.de>,
+ iommu@lists.linux.dev,  Jean-Philippe Brucker <jean-philippe@linaro.org>,
+ Jonathan Hunter <jonathanh@nvidia.com>, Joerg Roedel <joro@8bytes.org>, 
+ "K. Y. Srinivasan" <kys@microsoft.com>, Len Brown <lenb@kernel.org>,
+ linux-acpi@vger.kernel.org,  linux-arm-kernel@lists.infradead.org,
+ linux-hyperv@vger.kernel.org,  linux-mips@vger.kernel.org,
+ linux-riscv@lists.infradead.org,  linux-snps-arc@lists.infradead.org,
+ linux-tegra@vger.kernel.org, Russell King <linux@armlinux.org.uk>, Lorenzo
+ Pieralisi <lpieralisi@kernel.org>, Marek Szyprowski
+ <m.szyprowski@samsung.com>, Hector Martin <marcan@marcan.st>, Palmer
+ Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, Robert Moore
+ <robert.moore@intel.com>, Rob Herring <robh+dt@kernel.org>,  Robin Murphy
+ <robin.murphy@arm.com>, Sudeep Holla <sudeep.holla@arm.com>, Suravee
+ Suthikulpanit <suravee.suthikulpanit@amd.com>, Sven Peter
+ <sven@svenpeter.dev>, Thierry Reding <thierry.reding@gmail.com>, Thomas
+ Bogendoerfer <tsbogend@alpha.franken.de>, Krishna Reddy
+ <vdumpa@nvidia.com>, Vineet Gupta <vgupta@kernel.org>, 
+ virtualization@lists.linux-foundation.org, Wei Liu <wei.liu@kernel.org>,
+ Will Deacon <will@kernel.org>
+Cc: Zhenhua Huang <quic_zhenhuah@quicinc.com>
+Date: Wed, 08 Nov 2023 18:12:56 +0000
+In-Reply-To: <12-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
+References: <12-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4-1 
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
 
-On Fri, Nov 03, 2023 at 01:44:46PM -0300, Jason Gunthorpe wrote:
-> This is not being used to pass ops, it is just a way to tell if an
-> iommu driver was probed. These days this can be detected directly via
-> device_iommu_mapped(). Call device_iommu_mapped() in the two places that
-> need to check it and remove the iommu parameter everywhere.
-> 
+Hi Jason,
+
+On Fri, 2023-11-03 at 13:44 -0300, Jason Gunthorpe wrote:
+> There are no external callers now.
+>=20
 > Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 > ---
->  arch/arc/mm/dma.c               |  2 +-
->  arch/arm/mm/dma-mapping-nommu.c |  2 +-
->  arch/arm/mm/dma-mapping.c       | 10 +++++-----
->  arch/arm64/mm/dma-mapping.c     |  4 ++--
->  arch/mips/mm/dma-noncoherent.c  |  2 +-
->  arch/riscv/mm/dma-noncoherent.c |  2 +-
->  drivers/acpi/scan.c             |  3 +--
->  drivers/hv/hv_common.c          |  2 +-
->  drivers/of/device.c             |  2 +-
+> =C2=A0drivers/iommu/iommu.c | 3 ++-
+> =C2=A0include/linux/iommu.h | 6 ------
+> =C2=A02 files changed, 2 insertions(+), 7 deletions(-)
+>=20
+> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+> index 62c82a28cd5db3..becd1b881e62dc 100644
+> --- a/drivers/iommu/iommu.c
+> +++ b/drivers/iommu/iommu.c
+> @@ -2945,7 +2945,8 @@ bool iommu_default_passthrough(void)
+> =C2=A0}
+> =C2=A0EXPORT_SYMBOL_GPL(iommu_default_passthrough);
+> =C2=A0
+> -const struct iommu_ops *iommu_ops_from_fwnode(struct fwnode_handle
+> *fwnode)
+> +static const struct iommu_ops *
+> +iommu_ops_from_fwnode(struct fwnode_handle *fwnode)
+> =C2=A0{
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0const struct iommu_ops *o=
+ps =3D NULL;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct iommu_device *iomm=
+u;
+> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+> index 27e4605d498850..37948eee8d7394 100644
+> --- a/include/linux/iommu.h
+> +++ b/include/linux/iommu.h
+> @@ -701,7 +701,6 @@ static inline void iommu_fwspec_free(struct
+> device *dev)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0dev->iommu->fwspec =3D NU=
+LL;
+> =C2=A0}
+> =C2=A0int iommu_fwspec_add_ids(struct device *dev, u32 *ids, int num_ids)=
+;
+> -const struct iommu_ops *iommu_ops_from_fwnode(struct fwnode_handle
+> *fwnode);
+> =C2=A0int iommu_fwspec_append_ids(struct iommu_fwspec *fwspec, u32 *ids,
+> int num_ids);
+> =C2=A0
+> =C2=A0static inline struct iommu_fwspec *dev_iommu_fwspec_get(struct
+> device *dev)
+> @@ -1044,11 +1043,6 @@ static inline int iommu_fwspec_add_ids(struct
+> device *dev, u32 *ids,
+> =C2=A0}
+> =C2=A0
+> =C2=A0static inline
+> -const struct iommu_ops *iommu_ops_from_fwnode(struct fwnode_handle
+> *fwnode)
+> -{
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return NULL;
+> -}
+> -
+> =C2=A0static inline int
+> =C2=A0iommu_dev_enable_feature(struct device *dev, enum iommu_dev_feature=
+s
+> feat)
 
-Acked-by: Rob Herring <robh@kernel.org>
+This leaves the extra line with 'static inline', it should also be
+removed.
 
->  include/linux/dma-map-ops.h     |  4 ++--
->  10 files changed, 16 insertions(+), 17 deletions(-)
+Cheers,
+Andre'
+
