@@ -1,302 +1,120 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtp4.osuosl.org (smtp4.osuosl.org [140.211.166.137])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0860636AED;
-	Tue,  7 Nov 2023 20:00:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6163BD51B
+	for <acpica-devel@lists.linuxfoundation.org>; Wed,  8 Nov 2023 08:01:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="qZA5iZzv"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B1B2C433C8;
-	Tue,  7 Nov 2023 20:00:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1699387250;
-	bh=feNeYN4M+KnMMa2vTaOcBUq0QN9COXR/sYWfCgmwGdw=;
-	h=From:Date:Subject:To:Cc:From;
-	b=qZA5iZzvdIgwSjYMgCCP5XSODokjRKdknHrVtGv5YUhsDtX01GnQi2SazE6O+5Rw+
-	 kcIz23IkiXdppRmO3ed8LmTsyrXAhYb3ZFkWKxh+ujS/kMdDKUeR2qCyuEGQVCvHVZ
-	 ITLdgh65WEgfz5x0fbISYZouadOeivIkhtQMuLho=
-From: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-Date: Tue, 07 Nov 2023 15:00:32 -0500
-Subject: [PATCH] MAINTAINERS: update lists.linuxfoundation.org migrated
- lists
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nhgobI02"
+Received: from localhost (localhost [127.0.0.1])
+	by smtp4.osuosl.org (Postfix) with ESMTP id BAB45410E6
+	for <acpica-devel@lists.linuxfoundation.org>; Wed,  8 Nov 2023 08:01:15 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org BAB45410E6
+Authentication-Results: smtp4.osuosl.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=nhgobI02
+X-Virus-Scanned: amavisd-new at osuosl.org
+X-Spam-Flag: NO
+X-Spam-Score: -4.299
+X-Spam-Level:
+Received: from smtp4.osuosl.org ([127.0.0.1])
+	by localhost (smtp4.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id iUQ4EH7epR3y
+	for <acpica-devel@lists.linuxfoundation.org>;
+	Wed,  8 Nov 2023 08:01:15 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+	by smtp4.osuosl.org (Postfix) with ESMTPS id 0D4E640942
+	for <acpica-devel@lists.linuxfoundation.org>; Wed,  8 Nov 2023 08:01:14 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 0D4E640942
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699430475; x=1730966475;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=waktInfzOKtDW0E1oxAKk3EhbspNu0YVHIgYOQNzgfM=;
+  b=nhgobI02NELjyDeeYprk7jdexSTuK1sET+Iue3s2JER4ytUTH4YbTqMf
+   1lT95v3WC1IT2UUgeC4+btBDDRrF41/eszP1fUfpC2I8WMNEQCZT0GDi+
+   LcOSaIJcPjcNAnVrI2L0RaPY6TcfvYnw0cmbJu/oumMgp/jW9W41W3pmK
+   DUysrCaROgf5qx2xfOi5inf+8B0+12XZoeO46qQkoSoWNp0O0anukltht
+   rMTS9QKERVBKaQu9lsH7exPLAeA+4SRslAwqUmQAt2JIcpUMuH2+jA1r3
+   cJbeMq7jGEoLGLVAf0HKmobgdxUVld1rUKYCeZ3KQE4ok/uAV+H9CjqcE
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="369050184"
+X-IronPort-AV: E=Sophos;i="6.03,285,1694761200"; 
+   d="scan'208";a="369050184"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 00:01:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="833411924"
+X-IronPort-AV: E=Sophos;i="6.03,285,1694761200"; 
+   d="scan'208";a="833411924"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.215.63]) ([10.254.215.63])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 00:01:01 -0800
+Message-ID: <99edf0cf-a570-43de-a79a-a040a403607e@linux.intel.com>
+Date: Wed, 8 Nov 2023 16:01:00 +0800
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Cc: baolu.lu@linux.intel.com, Zhenhua Huang <quic_zhenhuah@quicinc.com>
+Subject: Re: [PATCH RFC 01/17] iommu: Remove struct iommu_ops *iommu from
+ arch_setup_dma_ops()
+To: Jason Gunthorpe <jgg@nvidia.com>, acpica-devel@lists.linuxfoundation.org,
+ Alyssa Rosenzweig <alyssa@rosenzweig.io>, Albert Ou <aou@eecs.berkeley.edu>,
+ asahi@lists.linux.dev, Catalin Marinas <catalin.marinas@arm.com>,
+ Dexuan Cui <decui@microsoft.com>, devicetree@vger.kernel.org,
+ David Woodhouse <dwmw2@infradead.org>, Frank Rowand
+ <frowand.list@gmail.com>, Hanjun Guo <guohanjun@huawei.com>,
+ Haiyang Zhang <haiyangz@microsoft.com>, Christoph Hellwig <hch@lst.de>,
+ iommu@lists.linux.dev, Jean-Philippe Brucker <jean-philippe@linaro.org>,
+ Jonathan Hunter <jonathanh@nvidia.com>, Joerg Roedel <joro@8bytes.org>,
+ "K. Y. Srinivasan" <kys@microsoft.com>, Len Brown <lenb@kernel.org>,
+ linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-hyperv@vger.kernel.org, linux-mips@vger.kernel.org,
+ linux-riscv@lists.infradead.org, linux-snps-arc@lists.infradead.org,
+ linux-tegra@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ Marek Szyprowski <m.szyprowski@samsung.com>, Hector Martin
+ <marcan@marcan.st>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>,
+ "Rafael J. Wysocki" <rafael@kernel.org>,
+ Robert Moore <robert.moore@intel.com>, Rob Herring <robh+dt@kernel.org>,
+ Robin Murphy <robin.murphy@arm.com>, Sudeep Holla <sudeep.holla@arm.com>,
+ Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+ Sven Peter <sven@svenpeter.dev>, Thierry Reding <thierry.reding@gmail.com>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Krishna Reddy <vdumpa@nvidia.com>, Vineet Gupta <vgupta@kernel.org>,
+ virtualization@lists.linux-foundation.org, Wei Liu <wei.liu@kernel.org>,
+ Will Deacon <will@kernel.org>
+References: <1-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
+Content-Language: en-US
+From: Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <1-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231107-lists-lf-org-move-v1-1-b19b499a93fb@linuxfoundation.org>
-X-B4-Tracking: v=1; b=H4sIAF+XSmUC/x3MSwqAMAwA0auUrA3YKmq9irjwEzVQW2lEBPHuF
- pdvMfOAUGQSaNUDkS4WDj5BZwqmbfArIc/JYHJTaJ3X6FhOQbdgiCvu4SIc56KuLJmmKS2k7oi
- 08P0/u/59P9HFOM1jAAAA
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: virtualization@lists.linux.dev, acpica-devel@lists.linux.dev, 
- bridge@lists.linux.dev, linux-kernel@vger.kernel.org, 
- Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-X-Mailer: b4 0.13-dev-26615
-X-Developer-Signature: v=1; a=openpgp-sha256; l=9498;
- i=konstantin@linuxfoundation.org; h=from:subject:message-id;
- bh=feNeYN4M+KnMMa2vTaOcBUq0QN9COXR/sYWfCgmwGdw=;
- b=owGbwMvMwCW27YjM47CUmTmMp9WSGFK9phcazwztm/BIdBOLzhqfw/ufPm8tml/X+O3fwfl3L
- 8Wu/3B7akcpC4MYF4OsmCJL2b7YTUGFDz3k0ntMYeawMoEMYeDiFICJ9D9m+O+9d1V/l4SHRNME
- wy/izuqskz4L7poQl/e5zXCRV+dJAV6G3+wld64cPxkhtOeExLQMOeagn4sZvR9K3r43d/NbzzP
- x15gB
-X-Developer-Key: i=konstantin@linuxfoundation.org; a=openpgp;
- fpr=DE0E66E32F1FDD0902666B96E63EDCA9329DD07E
 
-The mailman-2 system behind lists.linux[-]foundation.org is being
-retired, so the lists are being migrated to lists.linux.dev. Since both
-domains belong to LF and setting up proper forwards is possible, the old
-addresses will continue to work for a while, but all new patches should
-be sent to the new canonical addresses for each list.
+On 2023/11/4 0:44, Jason Gunthorpe wrote:
+> This is not being used to pass ops, it is just a way to tell if an
+> iommu driver was probed. These days this can be detected directly via
+> device_iommu_mapped(). Call device_iommu_mapped() in the two places that
+> need to check it and remove the iommu parameter everywhere.
+> 
+> Signed-off-by: Jason Gunthorpe<jgg@nvidia.com>
+> ---
+>   arch/arc/mm/dma.c               |  2 +-
+>   arch/arm/mm/dma-mapping-nommu.c |  2 +-
+>   arch/arm/mm/dma-mapping.c       | 10 +++++-----
+>   arch/arm64/mm/dma-mapping.c     |  4 ++--
+>   arch/mips/mm/dma-noncoherent.c  |  2 +-
+>   arch/riscv/mm/dma-noncoherent.c |  2 +-
+>   drivers/acpi/scan.c             |  3 +--
+>   drivers/hv/hv_common.c          |  2 +-
+>   drivers/of/device.c             |  2 +-
+>   include/linux/dma-map-ops.h     |  4 ++--
+>   10 files changed, 16 insertions(+), 17 deletions(-)
 
-Signed-off-by: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
----
-Linus:
-
-Normally, these would go through individual subsystems, but it's one of
-those one-off changes that don't really bubble up in a natural way. If
-you would like to pull this in through someone else's tree, please let
-me know to whom I should send this instead.
----
- MAINTAINERS | 50 +++++++++++++++++++++++++-------------------------
- 1 file changed, 25 insertions(+), 25 deletions(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index dd5de540ec0b..9f155f96f0ca 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -309,7 +309,7 @@ ACPI COMPONENT ARCHITECTURE (ACPICA)
- M:	Robert Moore <robert.moore@intel.com>
- M:	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
- L:	linux-acpi@vger.kernel.org
--L:	acpica-devel@lists.linuxfoundation.org
-+L:	acpica-devel@lists.linux.dev
- S:	Supported
- W:	https://acpica.org/
- W:	https://github.com/acpica/acpica/
-@@ -6453,7 +6453,7 @@ F:	drivers/gpu/drm/ast/
- 
- DRM DRIVER FOR BOCHS VIRTUAL GPU
- M:	Gerd Hoffmann <kraxel@redhat.com>
--L:	virtualization@lists.linux-foundation.org
-+L:	virtualization@lists.linux.dev
- S:	Maintained
- T:	git git://anongit.freedesktop.org/drm/drm-misc
- F:	drivers/gpu/drm/tiny/bochs.c
-@@ -6699,7 +6699,7 @@ F:	drivers/gpu/drm/tiny/repaper.c
- DRM DRIVER FOR QEMU'S CIRRUS DEVICE
- M:	Dave Airlie <airlied@redhat.com>
- M:	Gerd Hoffmann <kraxel@redhat.com>
--L:	virtualization@lists.linux-foundation.org
-+L:	virtualization@lists.linux.dev
- S:	Obsolete
- W:	https://www.kraxel.org/blog/2014/10/qemu-using-cirrus-considered-harmful/
- T:	git git://anongit.freedesktop.org/drm/drm-misc
-@@ -6708,7 +6708,7 @@ F:	drivers/gpu/drm/tiny/cirrus.c
- DRM DRIVER FOR QXL VIRTUAL GPU
- M:	Dave Airlie <airlied@redhat.com>
- M:	Gerd Hoffmann <kraxel@redhat.com>
--L:	virtualization@lists.linux-foundation.org
-+L:	virtualization@lists.linux.dev
- L:	spice-devel@lists.freedesktop.org
- S:	Maintained
- T:	git git://anongit.freedesktop.org/drm/drm-misc
-@@ -7775,7 +7775,7 @@ F:	drivers/net/can/usb/etas_es58x/
- ETHERNET BRIDGE
- M:	Roopa Prabhu <roopa@nvidia.com>
- M:	Nikolay Aleksandrov <razor@blackwall.org>
--L:	bridge@lists.linux-foundation.org (moderated for non-subscribers)
-+L:	bridge@lists.linux.dev
- L:	netdev@vger.kernel.org
- S:	Maintained
- W:	http://www.linuxfoundation.org/en/Net:Bridge
-@@ -16194,7 +16194,7 @@ M:	Juergen Gross <jgross@suse.com>
- R:	Ajay Kaher <akaher@vmware.com>
- R:	Alexey Makhalov <amakhalov@vmware.com>
- R:	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>
--L:	virtualization@lists.linux-foundation.org
-+L:	virtualization@lists.linux.dev
- L:	x86@kernel.org
- S:	Supported
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/core
-@@ -22734,7 +22734,7 @@ VIRTIO AND VHOST VSOCK DRIVER
- M:	Stefan Hajnoczi <stefanha@redhat.com>
- M:	Stefano Garzarella <sgarzare@redhat.com>
- L:	kvm@vger.kernel.org
--L:	virtualization@lists.linux-foundation.org
-+L:	virtualization@lists.linux.dev
- L:	netdev@vger.kernel.org
- S:	Maintained
- F:	drivers/vhost/vsock.c
-@@ -22746,7 +22746,7 @@ F:	net/vmw_vsock/virtio_transport_common.c
- VIRTIO BALLOON
- M:	"Michael S. Tsirkin" <mst@redhat.com>
- M:	David Hildenbrand <david@redhat.com>
--L:	virtualization@lists.linux-foundation.org
-+L:	virtualization@lists.linux.dev
- S:	Maintained
- F:	drivers/virtio/virtio_balloon.c
- F:	include/linux/balloon_compaction.h
-@@ -22758,7 +22758,7 @@ M:	"Michael S. Tsirkin" <mst@redhat.com>
- M:	Jason Wang <jasowang@redhat.com>
- R:	Paolo Bonzini <pbonzini@redhat.com>
- R:	Stefan Hajnoczi <stefanha@redhat.com>
--L:	virtualization@lists.linux-foundation.org
-+L:	virtualization@lists.linux.dev
- S:	Maintained
- F:	drivers/block/virtio_blk.c
- F:	drivers/scsi/virtio_scsi.c
-@@ -22767,7 +22767,7 @@ F:	include/uapi/linux/virtio_scsi.h
- 
- VIRTIO CONSOLE DRIVER
- M:	Amit Shah <amit@kernel.org>
--L:	virtualization@lists.linux-foundation.org
-+L:	virtualization@lists.linux.dev
- S:	Maintained
- F:	drivers/char/virtio_console.c
- F:	include/linux/virtio_console.h
-@@ -22777,7 +22777,7 @@ VIRTIO CORE AND NET DRIVERS
- M:	"Michael S. Tsirkin" <mst@redhat.com>
- M:	Jason Wang <jasowang@redhat.com>
- R:	Xuan Zhuo <xuanzhuo@linux.alibaba.com>
--L:	virtualization@lists.linux-foundation.org
-+L:	virtualization@lists.linux.dev
- S:	Maintained
- F:	Documentation/ABI/testing/sysfs-bus-vdpa
- F:	Documentation/ABI/testing/sysfs-class-vduse
-@@ -22796,7 +22796,7 @@ F:	tools/virtio/
- 
- VIRTIO CRYPTO DRIVER
- M:	Gonglei <arei.gonglei@huawei.com>
--L:	virtualization@lists.linux-foundation.org
-+L:	virtualization@lists.linux.dev
- L:	linux-crypto@vger.kernel.org
- S:	Maintained
- F:	drivers/crypto/virtio/
-@@ -22807,7 +22807,7 @@ M:	Cornelia Huck <cohuck@redhat.com>
- M:	Halil Pasic <pasic@linux.ibm.com>
- M:	Eric Farman <farman@linux.ibm.com>
- L:	linux-s390@vger.kernel.org
--L:	virtualization@lists.linux-foundation.org
-+L:	virtualization@lists.linux.dev
- L:	kvm@vger.kernel.org
- S:	Supported
- F:	arch/s390/include/uapi/asm/virtio-ccw.h
-@@ -22817,7 +22817,7 @@ VIRTIO FILE SYSTEM
- M:	Vivek Goyal <vgoyal@redhat.com>
- M:	Stefan Hajnoczi <stefanha@redhat.com>
- M:	Miklos Szeredi <miklos@szeredi.hu>
--L:	virtualization@lists.linux-foundation.org
-+L:	virtualization@lists.linux.dev
- L:	linux-fsdevel@vger.kernel.org
- S:	Supported
- W:	https://virtio-fs.gitlab.io/
-@@ -22829,7 +22829,7 @@ VIRTIO GPIO DRIVER
- M:	Enrico Weigelt, metux IT consult <info@metux.net>
- M:	Viresh Kumar <vireshk@kernel.org>
- L:	linux-gpio@vger.kernel.org
--L:	virtualization@lists.linux-foundation.org
-+L:	virtualization@lists.linux.dev
- S:	Maintained
- F:	drivers/gpio/gpio-virtio.c
- F:	include/uapi/linux/virtio_gpio.h
-@@ -22840,7 +22840,7 @@ M:	Gerd Hoffmann <kraxel@redhat.com>
- R:	Gurchetan Singh <gurchetansingh@chromium.org>
- R:	Chia-I Wu <olvaffe@gmail.com>
- L:	dri-devel@lists.freedesktop.org
--L:	virtualization@lists.linux-foundation.org
-+L:	virtualization@lists.linux.dev
- S:	Maintained
- T:	git git://anongit.freedesktop.org/drm/drm-misc
- F:	drivers/gpu/drm/virtio/
-@@ -22850,7 +22850,7 @@ VIRTIO HOST (VHOST)
- M:	"Michael S. Tsirkin" <mst@redhat.com>
- M:	Jason Wang <jasowang@redhat.com>
- L:	kvm@vger.kernel.org
--L:	virtualization@lists.linux-foundation.org
-+L:	virtualization@lists.linux.dev
- L:	netdev@vger.kernel.org
- S:	Maintained
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git
-@@ -22866,7 +22866,7 @@ M:	Jason Wang <jasowang@redhat.com>
- M:	Mike Christie <michael.christie@oracle.com>
- R:	Paolo Bonzini <pbonzini@redhat.com>
- R:	Stefan Hajnoczi <stefanha@redhat.com>
--L:	virtualization@lists.linux-foundation.org
-+L:	virtualization@lists.linux.dev
- S:	Maintained
- F:	drivers/vhost/scsi.c
- 
-@@ -22874,7 +22874,7 @@ VIRTIO I2C DRIVER
- M:	Conghui Chen <conghui.chen@intel.com>
- M:	Viresh Kumar <viresh.kumar@linaro.org>
- L:	linux-i2c@vger.kernel.org
--L:	virtualization@lists.linux-foundation.org
-+L:	virtualization@lists.linux.dev
- S:	Maintained
- F:	drivers/i2c/busses/i2c-virtio.c
- F:	include/uapi/linux/virtio_i2c.h
-@@ -22887,14 +22887,14 @@ F:	include/uapi/linux/virtio_input.h
- 
- VIRTIO IOMMU DRIVER
- M:	Jean-Philippe Brucker <jean-philippe@linaro.org>
--L:	virtualization@lists.linux-foundation.org
-+L:	virtualization@lists.linux.dev
- S:	Maintained
- F:	drivers/iommu/virtio-iommu.c
- F:	include/uapi/linux/virtio_iommu.h
- 
- VIRTIO MEM DRIVER
- M:	David Hildenbrand <david@redhat.com>
--L:	virtualization@lists.linux-foundation.org
-+L:	virtualization@lists.linux.dev
- S:	Maintained
- W:	https://virtio-mem.gitlab.io/
- F:	drivers/virtio/virtio_mem.c
-@@ -22902,7 +22902,7 @@ F:	include/uapi/linux/virtio_mem.h
- 
- VIRTIO PMEM DRIVER
- M:	Pankaj Gupta <pankaj.gupta.linux@gmail.com>
--L:	virtualization@lists.linux-foundation.org
-+L:	virtualization@lists.linux.dev
- S:	Maintained
- F:	drivers/nvdimm/nd_virtio.c
- F:	drivers/nvdimm/virtio_pmem.c
-@@ -22910,7 +22910,7 @@ F:	drivers/nvdimm/virtio_pmem.c
- VIRTIO SOUND DRIVER
- M:	Anton Yakovlev <anton.yakovlev@opensynergy.com>
- M:	"Michael S. Tsirkin" <mst@redhat.com>
--L:	virtualization@lists.linux-foundation.org
-+L:	virtualization@lists.linux.dev
- L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
- S:	Maintained
- F:	include/uapi/linux/virtio_snd.h
-@@ -22968,7 +22968,7 @@ F:	include/linux/vlynq.h
- 
- VM SOCKETS (AF_VSOCK)
- M:	Stefano Garzarella <sgarzare@redhat.com>
--L:	virtualization@lists.linux-foundation.org
-+L:	virtualization@lists.linux.dev
- L:	netdev@vger.kernel.org
- S:	Maintained
- F:	drivers/net/vsockmon.c
-@@ -23012,7 +23012,7 @@ VMWARE HYPERVISOR INTERFACE
- M:	Ajay Kaher <akaher@vmware.com>
- M:	Alexey Makhalov <amakhalov@vmware.com>
- R:	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>
--L:	virtualization@lists.linux-foundation.org
-+L:	virtualization@lists.linux.dev
- L:	x86@kernel.org
- S:	Supported
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/vmware
-
----
-base-commit: ffc253263a1375a65fa6c9f62a893e9767fbebfa
-change-id: 20231107-lists-lf-org-move-bd3769e28849
+Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
 
 Best regards,
--- 
-Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-
+baolu
