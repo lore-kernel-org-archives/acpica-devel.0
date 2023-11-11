@@ -1,75 +1,74 @@
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp-relay-canonical-0.canonical.com (smtp-relay-canonical-0.canonical.com [185.125.188.120])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11A5C19449
-	for <acpica-devel@lists.linux.dev>; Wed,  8 Nov 2023 20:45:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78C8213AE0
+	for <acpica-devel@lists.linux.dev>; Sat, 11 Nov 2023 13:55:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Qw/yUedY"
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-9e213f198dfso26427166b.2
-        for <acpica-devel@lists.linux.dev>; Wed, 08 Nov 2023 12:45:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1699476335; x=1700081135; darn=lists.linux.dev;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=awG7Olb7pC1wEJXiajE9JdlOzQimXXsb3BWKke0OpeM=;
-        b=Qw/yUedYAugNsI1WZuodt+35O+g/usAZmLvC8VRaFlKdSLDbXwbQx1P/o6ZpvcjtoQ
-         WRvZyFbPqHva+/QzOoCkIkNGa3PD+6tMu2aag61myQhIxeEnL6YE0Vh9QI9huYuFmoHZ
-         wWwAMS4UGp3t/jJBIgSrWMDxDCLdfkhxOikfA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699476335; x=1700081135;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=awG7Olb7pC1wEJXiajE9JdlOzQimXXsb3BWKke0OpeM=;
-        b=COy3Mg2z2HZNy1Ekwb+gPTuP4zi46cLN0/8/6dOdZFPiwKCGppzWebEWyhEBJGNUgC
-         YjvjP/usqLsv50NOnhiUhqFa7spN7HvQvQD0BoYatQQaj3lAvXqFhBrv7lOnp6LglnSJ
-         gN1gaauK6/kYSnOVYnG6+smbh0biAHmvldburq8pduWDKKYY+eib2cTZcI/DidiNdkyL
-         A+X+1EuyixZzPjBSgvuwh+DDttfqLIzEWB0veJ0D0Y9tYhDzCNow4wIdvhIiO5MAOQ2q
-         Z7SWuM9/Y8t8o+HpXtd3nCiZUOtzWo6I2qgdsKiJT8cGFvdGSU0uHLOmGIPkQ2oERxrb
-         XbUA==
-X-Gm-Message-State: AOJu0Yzm74R3TudbCfSpOhJIf1TUv4dridbQN00bh0r63sudRNtlYU8/
-	otgjgeNhG4OXofHf/0FUETOIKj/qG9xwGGoZ6xI0Yg==
-X-Google-Smtp-Source: AGHT+IF1mnAo/U5yf+4PyOpvVC0/KpLQ+eMDMLyYwjsjQUuWe74zqnd8sU+oKNYrotwskTQvNQTciA==
-X-Received: by 2002:a17:906:4796:b0:9bf:10f3:e435 with SMTP id cw22-20020a170906479600b009bf10f3e435mr2789599ejc.1.1699476335242;
-        Wed, 08 Nov 2023 12:45:35 -0800 (PST)
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com. [209.85.218.46])
-        by smtp.gmail.com with ESMTPSA id pw11-20020a17090720ab00b009ade1a4f795sm1540613ejb.168.2023.11.08.12.45.34
-        for <acpica-devel@lists.linux.dev>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Nov 2023 12:45:34 -0800 (PST)
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-9d216597f64so26440866b.3
-        for <acpica-devel@lists.linux.dev>; Wed, 08 Nov 2023 12:45:34 -0800 (PST)
-X-Received: by 2002:a17:907:7247:b0:9b2:b152:b0f2 with SMTP id
- ds7-20020a170907724700b009b2b152b0f2mr2305890ejc.10.1699476334255; Wed, 08
- Nov 2023 12:45:34 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="jXlV0bfr"
+Received: from LT2ubnt.fritz.box (ip-178-202-040-247.um47.pools.vodafone-ip.de [178.202.40.247])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 81E533F66F;
+	Sat, 11 Nov 2023 13:48:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1699710509;
+	bh=lP4YnLK406Oh78dHgIFdBe0DQkFdIy6q256xnJqXUJg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+	b=jXlV0bfrtyG/viewh3F6JofLzBzG5iQNPrui0+u0dNvPV32UNht5POgl1n6pwoy2T
+	 KZB+4NDPNDrfCkpGqCNJsFWZdz6IyF5W6Bxae5oTTqKFaXZKfNhw6HFtZAyFxg58/a
+	 yVbbtRo8IgY2qbM3XRBgSkr6I5FMqHmFwDawOH7chRIPZkgFXn3xLQQsxQulm7kolk
+	 ZG/muAJK3GU4HLGYhcr970+/U+apNC4nFvkq7Kvc+VLlmzASZQXNU7yGACunxxVT5r
+	 NtUnesC2aOS2tWz7Kg/XLfZuBITM7Gpl44ND7kgdRBUDnrXUip6fgp4qNLDLje4JL0
+	 Z56S0NeRW0FKQ==
+From: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+To: Robert Moore <robert.moore@intel.com>,
+	"Rafael J . Wysocki" <rafael@kernel.org>
+Cc: Len Brown <lenb@kernel.org>,
+	linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+Subject: [PATCH 1/1] ACPI: XSDT: struct acpi_table_xsdt must be packed
+Date: Sat, 11 Nov 2023 14:48:27 +0100
+Message-Id: <20231111134827.174908-1-heinrich.schuchardt@canonical.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20231107-lists-lf-org-move-v1-1-b19b499a93fb@linuxfoundation.org>
-In-Reply-To: <20231107-lists-lf-org-move-v1-1-b19b499a93fb@linuxfoundation.org>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Wed, 8 Nov 2023 12:45:17 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wg7TrK=kb9ZTEh4Cd+AOkY+ZBvvARsPy-xHyugU5eKMiQ@mail.gmail.com>
-Message-ID: <CAHk-=wg7TrK=kb9ZTEh4Cd+AOkY+ZBvvARsPy-xHyugU5eKMiQ@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: update lists.linuxfoundation.org migrated lists
-To: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-Cc: virtualization@lists.linux.dev, acpica-devel@lists.linux.dev, 
-	bridge@lists.linux.dev, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Tue, 7 Nov 2023 at 12:00, Konstantin Ryabitsev
-<konstantin@linuxfoundation.org> wrote:
->
-> Normally, these would go through individual subsystems, but it's one of
-> those one-off changes that don't really bubble up in a natural way. If
-> you would like to pull this in through someone else's tree, please let
-> me know to whom I should send this instead.
+According to the ACPI 6.5 specification the component Entry starts at
+offset 36 in the XSDT table which is not a multiple of 8. Hence we must
+mark the structure as packed.
 
-Oh, I still take patches, and this is fine and makes sense. Applied,
+We did not see an error due to the incorrect packing yet as in
+acpi_tb_parse_root_table() we use ACPI_ADD_PTR() to find the address of
+Entry.
 
-                  Linus
+Signed-off-by: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+---
+ include/acpi/actbl.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/acpi/actbl.h b/include/acpi/actbl.h
+index 451f6276da49..1a37ac378765 100644
+--- a/include/acpi/actbl.h
++++ b/include/acpi/actbl.h
+@@ -148,7 +148,7 @@ struct acpi_table_rsdt {
+ struct acpi_table_xsdt {
+ 	struct acpi_table_header header;	/* Common ACPI table header */
+ 	u64 table_offset_entry[1];	/* Array of pointers to ACPI tables */
+-};
++} __packed;
+ 
+ #define ACPI_RSDT_ENTRY_SIZE        (sizeof (u32))
+ #define ACPI_XSDT_ENTRY_SIZE        (sizeof (u64))
+-- 
+2.40.1
+
