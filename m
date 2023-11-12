@@ -1,74 +1,299 @@
-Received: from smtp-relay-canonical-0.canonical.com (smtp-relay-canonical-0.canonical.com [185.125.188.120])
+Received: from smtp2.osuosl.org (smtp2.osuosl.org [140.211.166.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78C8213AE0
-	for <acpica-devel@lists.linux.dev>; Sat, 11 Nov 2023 13:55:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="jXlV0bfr"
-Received: from LT2ubnt.fritz.box (ip-178-202-040-247.um47.pools.vodafone-ip.de [178.202.40.247])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 81E533F66F;
-	Sat, 11 Nov 2023 13:48:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1699710509;
-	bh=lP4YnLK406Oh78dHgIFdBe0DQkFdIy6q256xnJqXUJg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-	b=jXlV0bfrtyG/viewh3F6JofLzBzG5iQNPrui0+u0dNvPV32UNht5POgl1n6pwoy2T
-	 KZB+4NDPNDrfCkpGqCNJsFWZdz6IyF5W6Bxae5oTTqKFaXZKfNhw6HFtZAyFxg58/a
-	 yVbbtRo8IgY2qbM3XRBgSkr6I5FMqHmFwDawOH7chRIPZkgFXn3xLQQsxQulm7kolk
-	 ZG/muAJK3GU4HLGYhcr970+/U+apNC4nFvkq7Kvc+VLlmzASZQXNU7yGACunxxVT5r
-	 NtUnesC2aOS2tWz7Kg/XLfZuBITM7Gpl44ND7kgdRBUDnrXUip6fgp4qNLDLje4JL0
-	 Z56S0NeRW0FKQ==
-From: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
-To: Robert Moore <robert.moore@intel.com>,
-	"Rafael J . Wysocki" <rafael@kernel.org>
-Cc: Len Brown <lenb@kernel.org>,
-	linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
-Subject: [PATCH 1/1] ACPI: XSDT: struct acpi_table_xsdt must be packed
-Date: Sat, 11 Nov 2023 14:48:27 +0100
-Message-Id: <20231111134827.174908-1-heinrich.schuchardt@canonical.com>
-X-Mailer: git-send-email 2.40.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2D681548E
+	for <acpica-devel@lists.linuxfoundation.org>; Sun, 12 Nov 2023 17:35:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
+Received: from localhost (localhost [127.0.0.1])
+	by smtp2.osuosl.org (Postfix) with ESMTP id 7157F40568
+	for <acpica-devel@lists.linuxfoundation.org>; Sun, 12 Nov 2023 17:35:26 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 7157F40568
+X-Virus-Scanned: amavisd-new at osuosl.org
+X-Spam-Flag: NO
+X-Spam-Score: -1.398
+X-Spam-Level:
+Received: from smtp2.osuosl.org ([127.0.0.1])
+	by localhost (smtp2.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id UeIZKOxcy835
+	for <acpica-devel@lists.linuxfoundation.org>;
+	Sun, 12 Nov 2023 17:35:25 +0000 (UTC)
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	by smtp2.osuosl.org (Postfix) with ESMTPS id 28A0F402E6
+	for <acpica-devel@lists.linuxfoundation.org>; Sun, 12 Nov 2023 17:35:25 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 28A0F402E6
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1ce28faa92dso1040595ad.2
+        for <acpica-devel@lists.linuxfoundation.org>; Sun, 12 Nov 2023 09:35:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699810524; x=1700415324;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WoHWK6gINi+EEwKTGP1Dg7yIjtZGVaNrtn4vb+1P0Pc=;
+        b=obn8ZffZtddRj7M2e1caGKhypHT1UADpYmlQWJJoGWSy5bQ/J7izS7l+3hFcJKGGHl
+         uKNgEDmKtPxW3l5x+yZo2MT0Ztt92hw4lBgft/qdEBBX/9MLnCPVB4m0LDkAC/26diOv
+         JH8JveJOJWGV24FUoVod5TaU4vu/POXg4imdjPC3s16invtd78kqczT1s8iKwg8kSOJQ
+         lUVJsEikz0PQxUECbREYAYqHr3mohIHC6vzuivGjJEXYdKP+il7OeD9Eq7NGIeJvvIKk
+         QKOwm+RCMLjqGqV31WJhkOXsXQAQRAk2JKKrrB7b7xQA67TrlS4NLDWZCP1QX9hrpc74
+         tNww==
+X-Gm-Message-State: AOJu0YxDGyf+wqjsBpq5VYx40ok+0BqGjn6Y9lLIxI3ABGt8G6cMLy9H
+	TiagrIvNchpf7UB/lAe5Miw=
+X-Google-Smtp-Source: AGHT+IFd+7BefBv/n/fSSGw7xmysLeuCAiNT7/refCQp1UZ16kLfECcyF3DpQcfnxFHM4Pm1w5+ajw==
+X-Received: by 2002:a17:902:b618:b0:1cc:138a:287b with SMTP id b24-20020a170902b61800b001cc138a287bmr2491072pls.3.1699810524296;
+        Sun, 12 Nov 2023 09:35:24 -0800 (PST)
+Received: from localhost ([156.39.10.100])
+        by smtp.gmail.com with ESMTPSA id b5-20020a170903228500b001cc32f46757sm2761359plh.107.2023.11.12.09.35.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 12 Nov 2023 09:35:23 -0800 (PST)
+Date: Sun, 12 Nov 2023 09:35:23 -0800
+From: Moritz Fischer <mdf@kernel.org>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: acpica-devel@lists.linuxfoundation.org,
+	Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+	Albert Ou <aou@eecs.berkeley.edu>, asahi@lists.linux.dev,
+	Lu Baolu <baolu.lu@linux.intel.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Dexuan Cui <decui@microsoft.com>, devicetree@vger.kernel.org,
+	David Woodhouse <dwmw2@infradead.org>,
+	Frank Rowand <frowand.list@gmail.com>,
+	Hanjun Guo <guohanjun@huawei.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Christoph Hellwig <hch@lst.de>, iommu@lists.linux.dev,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Joerg Roedel <joro@8bytes.org>,
+	"K. Y. Srinivasan" <kys@microsoft.com>, Len Brown <lenb@kernel.org>,
+	linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-hyperv@vger.kernel.org, linux-mips@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-snps-arc@lists.infradead.org,
+	linux-tegra@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Hector Martin <marcan@marcan.st>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Robert Moore <robert.moore@intel.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+	Sven Peter <sven@svenpeter.dev>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Krishna Reddy <vdumpa@nvidia.com>, Vineet Gupta <vgupta@kernel.org>,
+	virtualization@lists.linux-foundation.org,
+	Wei Liu <wei.liu@kernel.org>, Will Deacon <will@kernel.org>,
+	Zhenhua Huang <quic_zhenhuah@quicinc.com>
+Subject: Re: [PATCH RFC 01/17] iommu: Remove struct iommu_ops *iommu from
+ arch_setup_dma_ops()
+Message-ID: <ZVEM23qFzLnnXiEz@archbook>
+References: <0-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
+ <1-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
 
-According to the ACPI 6.5 specification the component Entry starts at
-offset 36 in the XSDT table which is not a multiple of 8. Hence we must
-mark the structure as packed.
+On Fri, Nov 03, 2023 at 01:44:46PM -0300, Jason Gunthorpe wrote:
+> This is not being used to pass ops, it is just a way to tell if an
+> iommu driver was probed. These days this can be detected directly via
+> device_iommu_mapped(). Call device_iommu_mapped() in the two places that
+> need to check it and remove the iommu parameter everywhere.
+> 
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 
-We did not see an error due to the incorrect packing yet as in
-acpi_tb_parse_root_table() we use ACPI_ADD_PTR() to find the address of
-Entry.
-
-Signed-off-by: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
----
- include/acpi/actbl.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/acpi/actbl.h b/include/acpi/actbl.h
-index 451f6276da49..1a37ac378765 100644
---- a/include/acpi/actbl.h
-+++ b/include/acpi/actbl.h
-@@ -148,7 +148,7 @@ struct acpi_table_rsdt {
- struct acpi_table_xsdt {
- 	struct acpi_table_header header;	/* Common ACPI table header */
- 	u64 table_offset_entry[1];	/* Array of pointers to ACPI tables */
--};
-+} __packed;
- 
- #define ACPI_RSDT_ENTRY_SIZE        (sizeof (u32))
- #define ACPI_XSDT_ENTRY_SIZE        (sizeof (u64))
--- 
-2.40.1
-
+Reviewed-by: Moritz Fischer <mdf@kernel.org>
+> ---
+>  arch/arc/mm/dma.c               |  2 +-
+>  arch/arm/mm/dma-mapping-nommu.c |  2 +-
+>  arch/arm/mm/dma-mapping.c       | 10 +++++-----
+>  arch/arm64/mm/dma-mapping.c     |  4 ++--
+>  arch/mips/mm/dma-noncoherent.c  |  2 +-
+>  arch/riscv/mm/dma-noncoherent.c |  2 +-
+>  drivers/acpi/scan.c             |  3 +--
+>  drivers/hv/hv_common.c          |  2 +-
+>  drivers/of/device.c             |  2 +-
+>  include/linux/dma-map-ops.h     |  4 ++--
+>  10 files changed, 16 insertions(+), 17 deletions(-)
+> 
+> diff --git a/arch/arc/mm/dma.c b/arch/arc/mm/dma.c
+> index 2a7fbbb83b7056..197707bc765889 100644
+> --- a/arch/arc/mm/dma.c
+> +++ b/arch/arc/mm/dma.c
+> @@ -91,7 +91,7 @@ void arch_sync_dma_for_cpu(phys_addr_t paddr, size_t size,
+>   * Plug in direct dma map ops.
+>   */
+>  void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
+> -			const struct iommu_ops *iommu, bool coherent)
+> +			bool coherent)
+>  {
+>  	/*
+>  	 * IOC hardware snoops all DMA traffic keeping the caches consistent
+> diff --git a/arch/arm/mm/dma-mapping-nommu.c b/arch/arm/mm/dma-mapping-nommu.c
+> index cfd9c933d2f09c..b94850b579952a 100644
+> --- a/arch/arm/mm/dma-mapping-nommu.c
+> +++ b/arch/arm/mm/dma-mapping-nommu.c
+> @@ -34,7 +34,7 @@ void arch_sync_dma_for_cpu(phys_addr_t paddr, size_t size,
+>  }
+>  
+>  void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
+> -			const struct iommu_ops *iommu, bool coherent)
+> +			bool coherent)
+>  {
+>  	if (IS_ENABLED(CONFIG_CPU_V7M)) {
+>  		/*
+> diff --git a/arch/arm/mm/dma-mapping.c b/arch/arm/mm/dma-mapping.c
+> index 5409225b4abc06..6c359a3af8d9c7 100644
+> --- a/arch/arm/mm/dma-mapping.c
+> +++ b/arch/arm/mm/dma-mapping.c
+> @@ -1713,7 +1713,7 @@ void arm_iommu_detach_device(struct device *dev)
+>  EXPORT_SYMBOL_GPL(arm_iommu_detach_device);
+>  
+>  static void arm_setup_iommu_dma_ops(struct device *dev, u64 dma_base, u64 size,
+> -				    const struct iommu_ops *iommu, bool coherent)
+> +				    bool coherent)
+>  {
+>  	struct dma_iommu_mapping *mapping;
+>  
+> @@ -1748,7 +1748,7 @@ static void arm_teardown_iommu_dma_ops(struct device *dev)
+>  #else
+>  
+>  static void arm_setup_iommu_dma_ops(struct device *dev, u64 dma_base, u64 size,
+> -				    const struct iommu_ops *iommu, bool coherent)
+> +				    bool coherent)
+>  {
+>  }
+>  
+> @@ -1757,7 +1757,7 @@ static void arm_teardown_iommu_dma_ops(struct device *dev) { }
+>  #endif	/* CONFIG_ARM_DMA_USE_IOMMU */
+>  
+>  void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
+> -			const struct iommu_ops *iommu, bool coherent)
+> +			bool coherent)
+>  {
+>  	/*
+>  	 * Due to legacy code that sets the ->dma_coherent flag from a bus
+> @@ -1776,8 +1776,8 @@ void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
+>  	if (dev->dma_ops)
+>  		return;
+>  
+> -	if (iommu)
+> -		arm_setup_iommu_dma_ops(dev, dma_base, size, iommu, coherent);
+> +	if (device_iommu_mapped(dev))
+> +		arm_setup_iommu_dma_ops(dev, dma_base, size, coherent);
+>  
+>  	xen_setup_dma_ops(dev);
+>  	dev->archdata.dma_ops_setup = true;
+> diff --git a/arch/arm64/mm/dma-mapping.c b/arch/arm64/mm/dma-mapping.c
+> index 3cb101e8cb29ba..61886e43e3a10f 100644
+> --- a/arch/arm64/mm/dma-mapping.c
+> +++ b/arch/arm64/mm/dma-mapping.c
+> @@ -47,7 +47,7 @@ void arch_teardown_dma_ops(struct device *dev)
+>  #endif
+>  
+>  void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
+> -			const struct iommu_ops *iommu, bool coherent)
+> +			bool coherent)
+>  {
+>  	int cls = cache_line_size_of_cpu();
+>  
+> @@ -58,7 +58,7 @@ void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
+>  		   ARCH_DMA_MINALIGN, cls);
+>  
+>  	dev->dma_coherent = coherent;
+> -	if (iommu)
+> +	if (device_iommu_mapped(dev))
+>  		iommu_setup_dma_ops(dev, dma_base, dma_base + size - 1);
+>  
+>  	xen_setup_dma_ops(dev);
+> diff --git a/arch/mips/mm/dma-noncoherent.c b/arch/mips/mm/dma-noncoherent.c
+> index 3c4fc97b9f394b..0f3cec663a12cd 100644
+> --- a/arch/mips/mm/dma-noncoherent.c
+> +++ b/arch/mips/mm/dma-noncoherent.c
+> @@ -138,7 +138,7 @@ void arch_sync_dma_for_cpu(phys_addr_t paddr, size_t size,
+>  
+>  #ifdef CONFIG_ARCH_HAS_SETUP_DMA_OPS
+>  void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
+> -		const struct iommu_ops *iommu, bool coherent)
+> +		bool coherent)
+>  {
+>  	dev->dma_coherent = coherent;
+>  }
+> diff --git a/arch/riscv/mm/dma-noncoherent.c b/arch/riscv/mm/dma-noncoherent.c
+> index b76e7e192eb183..f91fa741c41211 100644
+> --- a/arch/riscv/mm/dma-noncoherent.c
+> +++ b/arch/riscv/mm/dma-noncoherent.c
+> @@ -135,7 +135,7 @@ void arch_dma_prep_coherent(struct page *page, size_t size)
+>  }
+>  
+>  void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
+> -		const struct iommu_ops *iommu, bool coherent)
+> +			bool coherent)
+>  {
+>  	WARN_TAINT(!coherent && riscv_cbom_block_size > ARCH_DMA_MINALIGN,
+>  		   TAINT_CPU_OUT_OF_SPEC,
+> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+> index 691d4b7686ee7e..a6891ad0ceee2c 100644
+> --- a/drivers/acpi/scan.c
+> +++ b/drivers/acpi/scan.c
+> @@ -1636,8 +1636,7 @@ int acpi_dma_configure_id(struct device *dev, enum dev_dma_attr attr,
+>  	if (PTR_ERR(iommu) == -EPROBE_DEFER)
+>  		return -EPROBE_DEFER;
+>  
+> -	arch_setup_dma_ops(dev, 0, U64_MAX,
+> -				iommu, attr == DEV_DMA_COHERENT);
+> +	arch_setup_dma_ops(dev, 0, U64_MAX, attr == DEV_DMA_COHERENT);
+>  
+>  	return 0;
+>  }
+> diff --git a/drivers/hv/hv_common.c b/drivers/hv/hv_common.c
+> index ccad7bca3fd3da..fd938b6dfa7ed4 100644
+> --- a/drivers/hv/hv_common.c
+> +++ b/drivers/hv/hv_common.c
+> @@ -489,7 +489,7 @@ void hv_setup_dma_ops(struct device *dev, bool coherent)
+>  	 * Hyper-V does not offer a vIOMMU in the guest
+>  	 * VM, so pass 0/NULL for the IOMMU settings
+>  	 */
+> -	arch_setup_dma_ops(dev, 0, 0, NULL, coherent);
+> +	arch_setup_dma_ops(dev, 0, 0, coherent);
+>  }
+>  EXPORT_SYMBOL_GPL(hv_setup_dma_ops);
+>  
+> diff --git a/drivers/of/device.c b/drivers/of/device.c
+> index 1ca42ad9dd159d..65c71be71a8d45 100644
+> --- a/drivers/of/device.c
+> +++ b/drivers/of/device.c
+> @@ -193,7 +193,7 @@ int of_dma_configure_id(struct device *dev, struct device_node *np,
+>  	dev_dbg(dev, "device is%sbehind an iommu\n",
+>  		iommu ? " " : " not ");
+>  
+> -	arch_setup_dma_ops(dev, dma_start, size, iommu, coherent);
+> +	arch_setup_dma_ops(dev, dma_start, size, coherent);
+>  
+>  	if (!iommu)
+>  		of_dma_set_restricted_buffer(dev, np);
+> diff --git a/include/linux/dma-map-ops.h b/include/linux/dma-map-ops.h
+> index f2fc203fb8a1a2..2cb98a12c50348 100644
+> --- a/include/linux/dma-map-ops.h
+> +++ b/include/linux/dma-map-ops.h
+> @@ -426,10 +426,10 @@ bool arch_dma_unmap_sg_direct(struct device *dev, struct scatterlist *sg,
+>  
+>  #ifdef CONFIG_ARCH_HAS_SETUP_DMA_OPS
+>  void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
+> -		const struct iommu_ops *iommu, bool coherent);
+> +		bool coherent);
+>  #else
+>  static inline void arch_setup_dma_ops(struct device *dev, u64 dma_base,
+> -		u64 size, const struct iommu_ops *iommu, bool coherent)
+> +		u64 size, bool coherent)
+>  {
+>  }
+>  #endif /* CONFIG_ARCH_HAS_SETUP_DMA_OPS */
+> -- 
+> 2.42.0
+> 
