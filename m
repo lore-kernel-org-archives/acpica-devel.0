@@ -1,70 +1,70 @@
-Received: from smtp1.osuosl.org (smtp1.osuosl.org [140.211.166.138])
+Received: from smtp2.osuosl.org (smtp2.osuosl.org [140.211.166.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A75D24A03
-	for <acpica-devel@lists.linuxfoundation.org>; Mon, 13 Nov 2023 20:14:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AA2B24A11
+	for <acpica-devel@lists.linuxfoundation.org>; Mon, 13 Nov 2023 20:19:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Tzf7Yhg6"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="N5VtVlBd"
 Received: from localhost (localhost [127.0.0.1])
-	by smtp1.osuosl.org (Postfix) with ESMTP id 1D04481A23
-	for <acpica-devel@lists.linuxfoundation.org>; Mon, 13 Nov 2023 20:14:54 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 1D04481A23
-Authentication-Results: smtp1.osuosl.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=Tzf7Yhg6
+	by smtp2.osuosl.org (Postfix) with ESMTP id 2A61540124
+	for <acpica-devel@lists.linuxfoundation.org>; Mon, 13 Nov 2023 20:19:03 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 2A61540124
+Authentication-Results: smtp2.osuosl.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=N5VtVlBd
 X-Virus-Scanned: amavisd-new at osuosl.org
 X-Spam-Flag: NO
 X-Spam-Score: -2.099
 X-Spam-Level:
-Received: from smtp1.osuosl.org ([127.0.0.1])
-	by localhost (smtp1.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id 5BV9IIGyHBCV
+Received: from smtp2.osuosl.org ([127.0.0.1])
+	by localhost (smtp2.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id b2yPelh9-0WA
 	for <acpica-devel@lists.linuxfoundation.org>;
-	Mon, 13 Nov 2023 20:14:51 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by smtp1.osuosl.org (Postfix) with ESMTPS id 2B4EB8177A
-	for <acpica-devel@lists.linuxfoundation.org>; Mon, 13 Nov 2023 20:14:51 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 2B4EB8177A
+	Mon, 13 Nov 2023 20:19:02 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by smtp2.osuosl.org (Postfix) with ESMTPS id 417BC40015
+	for <acpica-devel@lists.linuxfoundation.org>; Mon, 13 Nov 2023 20:19:02 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 417BC40015
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1699906490;
+	s=mimecast20190719; t=1699906741;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
 	bh=sqWGwV812/CXYndzj2W50PA7KOMPm+tHC+e+xjD2/M0=;
-	b=Tzf7Yhg6Bq2BeMpQ5Xi8ymvsfnm3NlqXJsHQGY1U5Wq0JlPYuv5VbIp86+aIDx0sN3qqxi
-	Y+uVOdBseHHMtdMgKrShwiFxnLZpv0A8wZqI1+nofGfJTRgcxcFXxDyRV3SkftmGMFlQ9c
-	bUAkngv8+ZS7oAKNUOLWMLISZq2Dp5Q=
-Received: from mail-yb1-f200.google.com (mail-yb1-f200.google.com
- [209.85.219.200]) by relay.mimecast.com with ESMTP with STARTTLS
+	b=N5VtVlBdaqEHuY492h0JjSZZ1GoadmiXVvQacaWoxj2HA0hDf+7JoRGQmhSc6tMG8eHHxm
+	Y6pRHz+Ac3Wx+fw18gXjwFpsF2ut/krpKaI3duXVxjIyACFDCoSo8ypz5URFWFPcOBsIE5
+	OcHlYzvyTQZf9VYrtmBFr9xLFUuHqko=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-501-YcIlSpmRMACeluieYOupSA-1; Mon, 13 Nov 2023 15:14:48 -0500
-X-MC-Unique: YcIlSpmRMACeluieYOupSA-1
-Received: by mail-yb1-f200.google.com with SMTP id 3f1490d57ef6-d9cb10a5d44so3269173276.0
-        for <acpica-devel@lists.linuxfoundation.org>; Mon, 13 Nov 2023 12:14:48 -0800 (PST)
+ us-mta-528-jwxSV-OkMseN3Baw4g194g-1; Mon, 13 Nov 2023 15:18:59 -0500
+X-MC-Unique: jwxSV-OkMseN3Baw4g194g-1
+Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-41cdc542b56so58380501cf.0
+        for <acpica-devel@lists.linuxfoundation.org>; Mon, 13 Nov 2023 12:18:59 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699906488; x=1700511288;
+        d=1e100.net; s=20230601; t=1699906739; x=1700511539;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
         bh=sqWGwV812/CXYndzj2W50PA7KOMPm+tHC+e+xjD2/M0=;
-        b=KG8xg7aT53D8aHJXk+oK/pBOHYA2wj2b33zXrU2w45ehC4zoD2Q7lpF4riCWR+T1jx
-         T6saNjuvkOVqqBjyU6Y0gdLjIGM4CHKkRL2ReIxz4d8CeKnP3UjZVj1vwayTu/+R1Vsy
-         VUedy178d1AdOe1H+qce23KWmp1XF2ooRppHjhMQnYy578YP3CbCTabz3FG4NVvPqFbm
-         VzIxbsX/ThbyLLLWUOZQlWwHwTdEJmAqUQPXjn+0TSqcGAs3xU5k0CKEPTg5SCtfIwRv
-         C+FfJ/j5nat9OSMi9YqyWW0k+bHdYFF3uxn57QBwINuECEUATak7RjWW4D44k3QUgvSR
-         T/3g==
-X-Gm-Message-State: AOJu0YwCMAcKHEKdpJxP6ISTE+axxTUCdBJKDvvunEQAM4okIwMs+TXe
-	iNOlLhhqxDRl6xUIcDXy32BAyQyfeQ5StNlVg0BNAo9ZsIf0dQFgJsWPVMDi3AZ4W+IEOoHrGI9
-	VAnQpz0WKKz8qV+9CSrVXQ0kW7CipE5JgdQ4Uzw==
-X-Received: by 2002:a25:5:0:b0:da0:3510:d46b with SMTP id 5-20020a250005000000b00da03510d46bmr6598103yba.52.1699906487826;
-        Mon, 13 Nov 2023 12:14:47 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHtyhAPtrfBL5j0rs4OChIjX0J0MQ7pAdoQ6mY8g3IfqhpmTKneVz9ovn0oCERZBj6Wc4LsPQ==
-X-Received: by 2002:a25:5:0:b0:da0:3510:d46b with SMTP id 5-20020a250005000000b00da03510d46bmr6598052yba.52.1699906487554;
-        Mon, 13 Nov 2023 12:14:47 -0800 (PST)
+        b=vgKaBoQab8d9aSX6a6IFyyQnivWDeSH24mpfmhzoKWKN7LBqrASeiehLc+wN5DBatS
+         8qrg/mXYA4WY17YZtXdenoL3XztcXRKHVq3SzxB1OwUg2WnDqkUhPq/WUJPCwTElCRzG
+         9PUVz4acNz13IZGER1vV7/Dt10s8PGRn80oSnVUsFfB/OAaz+Db/EGFWpXePtq8EC3a0
+         JuMzysozESTJ9G6rd7QNE5nSIhZh7rrVi85oKSAtgTqTw478lNGvxpbiWvnAQS5RIL73
+         qaYTFRRpQFdKHUtEqgwyXUepaEyK2NcVkmFdqG9G/bnqe7ODc34N0Hb12Crsh5VgO4pM
+         bw9A==
+X-Gm-Message-State: AOJu0YwjcOsSKUNzrSVYkRn1QXbvrw44ebqLPLz3TPODFov36eWYSjoi
+	/Gwy5LH9M4pcE2LD4384aFChtkzm86fCb2O2egponDxjTWrjE1OqLlhsVTPwuWLheaZ4q4+wmrN
+	uX8H0WH1UAaXAqWGUGL+++2cQMBQKcVI/fImiew==
+X-Received: by 2002:a05:622a:1908:b0:41c:b6cf:a49e with SMTP id w8-20020a05622a190800b0041cb6cfa49emr292142qtc.10.1699906739314;
+        Mon, 13 Nov 2023 12:18:59 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGJ4aN/cKUvDweqjuNq1K11+iEyXGsjit6950JrTQD9aZT2d8xoiBctpmKNKw2vmVX7XqpdQA==
+X-Received: by 2002:a05:622a:1908:b0:41c:b6cf:a49e with SMTP id w8-20020a05622a190800b0041cb6cfa49emr292104qtc.10.1699906739106;
+        Mon, 13 Nov 2023 12:18:59 -0800 (PST)
 Received: from localhost (ip98-179-76-75.ph.ph.cox.net. [98.179.76.75])
-        by smtp.gmail.com with ESMTPSA id mg3-20020a056214560300b0065afcf19e23sm2297469qvb.62.2023.11.13.12.14.46
+        by smtp.gmail.com with ESMTPSA id j5-20020ac84f85000000b00405502aaf76sm2177375qtw.57.2023.11.13.12.18.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Nov 2023 12:14:47 -0800 (PST)
-Date: Mon, 13 Nov 2023 13:14:45 -0700
+        Mon, 13 Nov 2023 12:18:58 -0800 (PST)
+Date: Mon, 13 Nov 2023 13:18:57 -0700
 From: Jerry Snitselaar <jsnitsel@redhat.com>
 To: Jason Gunthorpe <jgg@nvidia.com>
 Cc: acpica-devel@lists.linuxfoundation.org, 
@@ -90,18 +90,17 @@ Cc: acpica-devel@lists.linuxfoundation.org,
 	Vineet Gupta <vgupta@kernel.org>, virtualization@lists.linux-foundation.org, 
 	Wei Liu <wei.liu@kernel.org>, Will Deacon <will@kernel.org>, 
 	Zhenhua Huang <quic_zhenhuah@quicinc.com>
-Subject: Re: [PATCH RFC 11/17] iommu: Hold iommu_probe_device_lock while
- calling ops->of_xlate
-Message-ID: <5qix66x7f4mgnnylgy4uv2g5oeqxkwvdkrbleyxxfw3hlrhsth@fsqukzhyal6r>
+Subject: Re: [PATCH RFC 14/17] iommu: Remove pointless iommu_fwspec_free()
+Message-ID: <22mlpmrdftubxzr46qci26p3aqojvv5p4ffroshlzubtwcw5cr@jwcl5scuttdi>
 References: <0-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
- <11-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
+ <14-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-In-Reply-To: <11-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
+In-Reply-To: <14-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
 Content-Type: text/plain; charset=us-ascii
