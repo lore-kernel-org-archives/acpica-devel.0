@@ -1,146 +1,131 @@
-Received: from smtp4.osuosl.org (smtp4.osuosl.org [140.211.166.137])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f178.google.com (mail-il1-f178.google.com [209.85.166.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D370ECA41;
-	Tue, 14 Nov 2023 05:35:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA0BC2C1B0
+	for <acpica-devel@lists.linux.dev>; Tue, 14 Nov 2023 18:09:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="P4U9JNsZ"
-Received: from localhost (localhost [127.0.0.1])
-	by smtp4.osuosl.org (Postfix) with ESMTP id 3DDF040338;
-	Tue, 14 Nov 2023 05:35:00 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 3DDF040338
-Authentication-Results: smtp4.osuosl.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256 header.s=qcppdkim1 header.b=P4U9JNsZ
-X-Virus-Scanned: amavisd-new at osuosl.org
-X-Spam-Flag: NO
-X-Spam-Score: -2.8
-X-Spam-Level:
-Received: from smtp4.osuosl.org ([127.0.0.1])
-	by localhost (smtp4.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id QECLIEarRHa4; Tue, 14 Nov 2023 05:34:59 +0000 (UTC)
-X-Greylist: delayed 2233 seconds by postgrey-1.37 at util1.osuosl.org; Tue, 14 Nov 2023 05:34:59 UTC
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 143D14030E
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	by smtp4.osuosl.org (Postfix) with ESMTPS id 143D14030E;
-	Tue, 14 Nov 2023 05:34:58 +0000 (UTC)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AE4dQxp015496;
-	Tue, 14 Nov 2023 04:57:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=Ut+LP/oQgS6AHmq27TArlkMKu8wbNEjr6zcLsTELHGU=;
- b=P4U9JNsZ9twinkAM6crKSroq7yTQNIGWmkH2jnosKDAz9K5IrD0KC+OFma4jfeDqxQq+
- Jios5YHkR/P1oDpeARKJM2+nQJAHIoy/AU39G733GUA7X/t+IfSA/Um81F8A6iCtQL26
- XG4dtUswJSuAwmlGjkGcZuNFHb330V24H5OqAeBwm6fW/02agttPnGwa8mYMhC8YNPDL
- TSKl5hj7Y9fOX8//4nAwpHHKR4ae/Pebp5Zv8rijSDAyEzEk9K9W2+AIslRM+tKCuR55
- lfIA8BS+uF4K4AD8r57Ipm+m83CMrPvY4hiFvL9PLI1Y49qIQrtqpSe+/TUS76UcnzFQ vA== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ubuswrmww-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 14 Nov 2023 04:57:04 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AE4v2nN010730
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 14 Nov 2023 04:57:02 GMT
-Received: from [10.239.132.245] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 13 Nov
- 2023 20:56:53 -0800
-Message-ID: <ee647939-3f47-4b82-b1e4-a0c9414a1e8e@quicinc.com>
-Date: Tue, 14 Nov 2023 12:56:43 +0800
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h8Xzr+Rl"
+Received: by mail-il1-f178.google.com with SMTP id e9e14a558f8ab-359d796abd6so152565ab.0
+        for <acpica-devel@lists.linux.dev>; Tue, 14 Nov 2023 10:09:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699985379; x=1700590179; darn=lists.linux.dev;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xxYwdpdF8JJ3J8eR5fcrs9vFQuvJKtKmfDNv9P4y+IA=;
+        b=h8Xzr+Rl9pdhFKBAq8khGr+wtE3+mT1gWpSLLKa/T7iYxjbeS5ypZtKUbcdW0fE+GF
+         IQEg9nrViOXofNjaJF1o6hq0EKIwRv4yHaDusrMMknRU/EprEcmdmUWzJC8WXLK3d2Fe
+         vqy8P5JCJ6V5ni+M4312Npsu2tnOYykyN6jPeN9z9/OTPFMvX2njFitOAngIt9yAEKIu
+         vyGyp0hmAcgOgdu5tQgICEGEYQl6W+Rs62N0IPx/MOwXoKFwiPggHss5wbv+hOWZurhY
+         E7ulil4HsAf2mihfIc6qtKMA8xfE3y4C1fKyYnRpJyfk8OzGfQ0Q5mqIhEl2/zuBPAJH
+         gAag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699985379; x=1700590179;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xxYwdpdF8JJ3J8eR5fcrs9vFQuvJKtKmfDNv9P4y+IA=;
+        b=Fn3KkWSQ9ctpmHLalglulsZRCMbCKIGQiW5CI3YHw1XfGFxxgIH8QeDlq4DYU2acVu
+         LAvya3iqbBbueUedLJqIiEGGqq0e+/2Lg8SiB3zFORnSXytHsx3i+zEYvrix1qcFtxlo
+         34hM+eLWg1DyBa5lY4yXBeMUMXCtaAemXvXhIsZjEzhs+jheRQgBNgOthWR5BVEtDrUo
+         3t9msv4n5MY6aaB0LAgR3UcwZC5NwzmGjISaFU747bb1DOVbB0F+94Nh+3wyqQ2hUviR
+         XaLlPOkDAXdBEzWqoHxybtYsXPyTsFO/SWH+g995Tq94Dm879dbE9mK+34mg2gkav47W
+         A4nA==
+X-Gm-Message-State: AOJu0Yx8sNxtGn6HT5wXf5aVPxlsoPTUMQrDM6pv5We02jebot3w5y6S
+	jnXR1ztUMuA4f+J7cuavZR4=
+X-Google-Smtp-Source: AGHT+IFRlkfEouch/0EEOLd8mbYLL0IWatZQFkhv2orilRN+MVYu2ZPc6Aiq2uW+RdzhcoQXU8703A==
+X-Received: by 2002:a05:6e02:1b05:b0:359:315c:368b with SMTP id i5-20020a056e021b0500b00359315c368bmr3551685ilv.4.1699985379589;
+        Tue, 14 Nov 2023 10:09:39 -0800 (PST)
+Received: from ?IPV6:2001:470:42c4:101:767d:e2ee:ed0:5f02? ([2001:470:42c4:101:767d:e2ee:ed0:5f02])
+        by smtp.gmail.com with ESMTPSA id i15-20020a056e021b0f00b0035acf801fe5sm347413ilv.64.2023.11.14.10.09.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Nov 2023 10:09:39 -0800 (PST)
+Message-ID: <b2354c21-3a1a-c446-fee0-db0c78d05c71@gmail.com>
+Date: Tue, 14 Nov 2023 11:09:37 -0700
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 00/17] Solve iommu probe races around iommu_fwspec
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] ACPI: acenv: Permit compilation from within the kernel
 Content-Language: en-US
-To: Jason Gunthorpe <jgg@nvidia.com>, <acpica-devel@lists.linuxfoundation.org>,
-        Alyssa Rosenzweig
-	<alyssa@rosenzweig.io>,
-        Albert Ou <aou@eecs.berkeley.edu>, <asahi@lists.linux.dev>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Catalin Marinas
-	<catalin.marinas@arm.com>,
-        Dexuan Cui <decui@microsoft.com>, <devicetree@vger.kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Frank
- Rowand <frowand.list@gmail.com>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Haiyang
- Zhang <haiyangz@microsoft.com>,
-        Christoph Hellwig <hch@lst.de>, <iommu@lists.linux.dev>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>, Joerg Roedel <joro@8bytes.org>,
-        "K.
- Y. Srinivasan" <kys@microsoft.com>, Len Brown <lenb@kernel.org>,
-        <linux-acpi@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-hyperv@vger.kernel.org>, <linux-mips@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>,
-        <linux-snps-arc@lists.infradead.org>, <linux-tegra@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Lorenzo
- Pieralisi <lpieralisi@kernel.org>,
-        Marek Szyprowski
-	<m.szyprowski@samsung.com>,
-        Hector Martin <marcan@marcan.st>, Palmer Dabbelt
-	<palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "Rafael J.
- Wysocki" <rafael@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Rob
- Herring <robh+dt@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Sudeep
- Holla <sudeep.holla@arm.com>,
-        Suravee Suthikulpanit
-	<suravee.suthikulpanit@amd.com>,
-        Sven Peter <sven@svenpeter.dev>,
-        Thierry
- Reding <thierry.reding@gmail.com>,
-        Thomas Bogendoerfer
-	<tsbogend@alpha.franken.de>,
-        Krishna Reddy <vdumpa@nvidia.com>, Vineet Gupta
-	<vgupta@kernel.org>,
-        <virtualization@lists.linux-foundation.org>,
-        Wei Liu
-	<wei.liu@kernel.org>, Will Deacon <will@kernel.org>
-References: <0-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
-From: Zhenhua Huang <quic_zhenhuah@quicinc.com>
-In-Reply-To: <0-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To: Linus Walleij <linus.walleij@linaro.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
+ Robert Moore <robert.moore@intel.com>, Dave Jiang <dave.jiang@intel.com>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ Dan Williams <dan.j.williams@intel.com>, Hanjun Guo <guohanjun@huawei.com>,
+ Arnd Bergmann <arnd@arndb.de>
+Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+ linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20231114-arm-build-bug-v1-1-458745fe32a4@linaro.org>
+From: Sam Edwards <cfsworks@gmail.com>
+In-Reply-To: <20231114-arm-build-bug-v1-1-458745fe32a4@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: W9mLspwTBqhYvV5ajR8gt_t_BuX4RknD
-X-Proofpoint-ORIG-GUID: W9mLspwTBqhYvV5ajR8gt_t_BuX4RknD
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-14_03,2023-11-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 clxscore=1011 mlxlogscore=917
- impostorscore=0 adultscore=0 spamscore=0 phishscore=0 lowpriorityscore=0
- mlxscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311140037
 
-Thanks Jason.
+On 11/13/23 16:08, Linus Walleij wrote:
+> After commit a103f46633fd the kernel stopped compiling for
+> several ARM32 platforms that I am building with a bare metal
+> compiler. Bare metal compilers (arm-none-eabi-) don't
+> define __linux__.
 
-On 2023/11/4 0:44, Jason Gunthorpe wrote:
-> This is a more complete solution that the first attempt here:
-> https://lore.kernel.org/r/1698825902-10685-1-git-send-email-quic_zhenhuah@quicinc.com
+Hi Linus,
+
+I saw the same baremetal-compiler error here on the ARM64 side of the 
+fence, and narrowed the problem to the same commit as you.
+
 > 
-> I haven't been able to test this on any HW that touches these paths, so if
-> some people with HW can help get it in shape it can become non-RFC.
+> This is because the header <acpi/platform/acenv.h> is now
+> in the include path for <linux/irq.h>:
 
-Thank you for addressing it quickly with a thorough way. I have 
-backported it to Android common kernel 6.1 and tested basic sanity well.
-I will share these to OEMs and see if they can reproduce further, thanks.
+More generally, I think it's because of this addition to linux/acpi.h:
++#include <linux/fw_table.h>
 
-Thanks,
-Zhenhua
+linux/acpi.h is supposed to ensure _LINUX is defined (if it isn't 
+already done by a non-baremetal compiler) before we start pulling in 
+ACPICA includes, so that ACPICA knows the platform. But because 
+fw_table.h contains:
+#include <linux/acpi.h>
+#include <acpi/acpi.h>
+
+...the circular include does nothing (linux/acpi.h's include guard stops 
+the include before _LINUX is defined) and we end up pulling in 
+acpi/acpi.h before we're ready.
+
+> 
+>    CC      arch/arm/kernel/irq.o
+>    CC      kernel/sysctl.o
+>    CC      crypto/api.o
+> In file included from ../include/acpi/acpi.h:22,
+>                   from ../include/linux/fw_table.h:29,
+>                   from ../include/linux/acpi.h:18,
+>                   from ../include/linux/irqchip.h:14,
+>                   from ../arch/arm/kernel/irq.c:25:
+> ../include/acpi/platform/acenv.h:218:2: error: #error Unknown target environment
+>    218 | #error Unknown target environment
+>        |  ^~~~~
+> 
+> One solution to make compilation with a bare metal compiler
+> work again is to say the file is used with Linux from within
+> the kernel if __KERNEL__ is defined so I did that.
+
+I am not an ACPI subsystem maintainer, but my understanding is that the 
+files in include/acpi/ are copied verbatim from ACPICA, so any change to 
+those files will have to be sent to the ACPICA project and wouldn't be 
+accepted here.
+
+More likely, we'd want to do something about the circular-include 
+situation between linux/fw_table.h<->linux/acpi.h. That may have further 
+consequences down the road than just our problem here. Perhaps just 
+dropping both #includes from fw_table.h, and lowering the fw_table.h 
+include from within linux/acpi.h to be below <acpi/acpi.h>, is the way 
+to go?
+
+Kind regards,
+Sam
