@@ -1,121 +1,146 @@
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp4.osuosl.org (smtp4.osuosl.org [140.211.166.137])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF8F020B28
-	for <acpica-devel@lists.linux.dev>; Mon, 13 Nov 2023 23:08:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D370ECA41;
+	Tue, 14 Nov 2023 05:35:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rPqoGPcn"
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-507a3b8b113so7013991e87.0
-        for <acpica-devel@lists.linux.dev>; Mon, 13 Nov 2023 15:08:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699916934; x=1700521734; darn=lists.linux.dev;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ACmx3TNz3KrSPf31LlnpB3IxofbprNijom9dYNvkSxs=;
-        b=rPqoGPcnUKkyVN/tYKZ46ACYLF1pcJ1PRx8OtSA4JUS9ENVGqp6J4LcUfmIIT0Iwtr
-         g/muzDSevL1Y4l2RVWYKlKp2PiYH9v20ZpGT98ffzfFjOOCiYzFH5vio1xpgfITADX3N
-         75qIXC006jjzFznJsmR6cFeHzeZCMnXhPjDzUZx84y7JLUj3W7jFRprUqzDGRRlycEIg
-         bVLFkphkUQ8w/cn4qQxNC5lzJOZFSmAEUn/ZuhWtvwCmcCzv93NXpgkTA4OafuejfxWj
-         muJ2ZZPuyk7/YcvK5b7ADey03Km6TO9JMePajqjUxnz02feZeMxrLMh0SNgpWMWWINpE
-         JdjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699916934; x=1700521734;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ACmx3TNz3KrSPf31LlnpB3IxofbprNijom9dYNvkSxs=;
-        b=ELQ4Ds2TrVvGOi7R3JsmRGZe+sB5Z8xXWkYx2KDLZMnoJ5AR1WfM3TOdfJeSLfCgfM
-         kWgaEwOa6cW9+vZk/jWTTJP4gfI2JLOAjV8YZ6uD36OGWUEVpDnxrnFJEcJJZ2nvMQYk
-         DQJ/kkRUTZPwPxgKLi6+RweUlHukQXEuqFHmFJeiHtb9oRknnBcWbl/BAMBJ5PRhjrMt
-         rRtKdcsdWpqz3aN+4Ry7ywgR7hcKxbsV6RdOIisnCiDv++kioqACcGdOmV2zx+W0iTtf
-         U+UWAEo99bpHEn5iTIKffU1ZOzs2pzoK458JhUBU1Ae9FCN1VdEZEjZexJfYhoXgXXrG
-         mGhQ==
-X-Gm-Message-State: AOJu0YwDBpqR+K6TD4J5Z+PyEJ5Ji1Dlqz5ee68DZyCKdlgzcysb6eGW
-	cAnMzlXcpMmIMzLrOY5PmJFhtA==
-X-Google-Smtp-Source: AGHT+IHTUId+0HJ4T45+iwtwHrEWqjSbHl2ub84wm4qF/7cvEBUNB/FCXGvBhq2OudQkog7DHYvxzQ==
-X-Received: by 2002:ac2:43a6:0:b0:509:38de:9917 with SMTP id t6-20020ac243a6000000b0050938de9917mr5282007lfl.21.1699916933673;
-        Mon, 13 Nov 2023 15:08:53 -0800 (PST)
-Received: from [127.0.1.1] ([85.235.12.238])
-        by smtp.gmail.com with ESMTPSA id m9-20020ac24ac9000000b0050307bf2bcdsm1114292lfp.247.2023.11.13.15.08.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Nov 2023 15:08:53 -0800 (PST)
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Tue, 14 Nov 2023 00:08:47 +0100
-Subject: [PATCH] ACPI: acenv: Permit compilation from within the kernel
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="P4U9JNsZ"
+Received: from localhost (localhost [127.0.0.1])
+	by smtp4.osuosl.org (Postfix) with ESMTP id 3DDF040338;
+	Tue, 14 Nov 2023 05:35:00 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 3DDF040338
+Authentication-Results: smtp4.osuosl.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256 header.s=qcppdkim1 header.b=P4U9JNsZ
+X-Virus-Scanned: amavisd-new at osuosl.org
+X-Spam-Flag: NO
+X-Spam-Score: -2.8
+X-Spam-Level:
+Received: from smtp4.osuosl.org ([127.0.0.1])
+	by localhost (smtp4.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id QECLIEarRHa4; Tue, 14 Nov 2023 05:34:59 +0000 (UTC)
+X-Greylist: delayed 2233 seconds by postgrey-1.37 at util1.osuosl.org; Tue, 14 Nov 2023 05:34:59 UTC
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 143D14030E
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	by smtp4.osuosl.org (Postfix) with ESMTPS id 143D14030E;
+	Tue, 14 Nov 2023 05:34:58 +0000 (UTC)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AE4dQxp015496;
+	Tue, 14 Nov 2023 04:57:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=Ut+LP/oQgS6AHmq27TArlkMKu8wbNEjr6zcLsTELHGU=;
+ b=P4U9JNsZ9twinkAM6crKSroq7yTQNIGWmkH2jnosKDAz9K5IrD0KC+OFma4jfeDqxQq+
+ Jios5YHkR/P1oDpeARKJM2+nQJAHIoy/AU39G733GUA7X/t+IfSA/Um81F8A6iCtQL26
+ XG4dtUswJSuAwmlGjkGcZuNFHb330V24H5OqAeBwm6fW/02agttPnGwa8mYMhC8YNPDL
+ TSKl5hj7Y9fOX8//4nAwpHHKR4ae/Pebp5Zv8rijSDAyEzEk9K9W2+AIslRM+tKCuR55
+ lfIA8BS+uF4K4AD8r57Ipm+m83CMrPvY4hiFvL9PLI1Y49qIQrtqpSe+/TUS76UcnzFQ vA== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ubuswrmww-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 14 Nov 2023 04:57:04 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AE4v2nN010730
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 14 Nov 2023 04:57:02 GMT
+Received: from [10.239.132.245] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 13 Nov
+ 2023 20:56:53 -0800
+Message-ID: <ee647939-3f47-4b82-b1e4-a0c9414a1e8e@quicinc.com>
+Date: Tue, 14 Nov 2023 12:56:43 +0800
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 00/17] Solve iommu probe races around iommu_fwspec
+Content-Language: en-US
+To: Jason Gunthorpe <jgg@nvidia.com>, <acpica-devel@lists.linuxfoundation.org>,
+        Alyssa Rosenzweig
+	<alyssa@rosenzweig.io>,
+        Albert Ou <aou@eecs.berkeley.edu>, <asahi@lists.linux.dev>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Catalin Marinas
+	<catalin.marinas@arm.com>,
+        Dexuan Cui <decui@microsoft.com>, <devicetree@vger.kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Frank
+ Rowand <frowand.list@gmail.com>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Haiyang
+ Zhang <haiyangz@microsoft.com>,
+        Christoph Hellwig <hch@lst.de>, <iommu@lists.linux.dev>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>, Joerg Roedel <joro@8bytes.org>,
+        "K.
+ Y. Srinivasan" <kys@microsoft.com>, Len Brown <lenb@kernel.org>,
+        <linux-acpi@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-hyperv@vger.kernel.org>, <linux-mips@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>,
+        <linux-snps-arc@lists.infradead.org>, <linux-tegra@vger.kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Lorenzo
+ Pieralisi <lpieralisi@kernel.org>,
+        Marek Szyprowski
+	<m.szyprowski@samsung.com>,
+        Hector Martin <marcan@marcan.st>, Palmer Dabbelt
+	<palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "Rafael J.
+ Wysocki" <rafael@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Rob
+ Herring <robh+dt@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Sudeep
+ Holla <sudeep.holla@arm.com>,
+        Suravee Suthikulpanit
+	<suravee.suthikulpanit@amd.com>,
+        Sven Peter <sven@svenpeter.dev>,
+        Thierry
+ Reding <thierry.reding@gmail.com>,
+        Thomas Bogendoerfer
+	<tsbogend@alpha.franken.de>,
+        Krishna Reddy <vdumpa@nvidia.com>, Vineet Gupta
+	<vgupta@kernel.org>,
+        <virtualization@lists.linux-foundation.org>,
+        Wei Liu
+	<wei.liu@kernel.org>, Will Deacon <will@kernel.org>
+References: <0-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
+From: Zhenhua Huang <quic_zhenhuah@quicinc.com>
+In-Reply-To: <0-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231114-arm-build-bug-v1-1-458745fe32a4@linaro.org>
-X-B4-Tracking: v=1; b=H4sIAH6sUmUC/x2MQQqAIBAAvxJ7Tmi1DvaV6GC52kJZKEUg/j3pM
- jCHmQyJIlOCsckQ6eHEZ6iCbQPrZoInwbY6yE4qRFTCxEMsN++20gtDQ6+clYhaQ22uSI7f/zf
- NpXyuNDVMXwAAAA==
-To: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
- Robert Moore <robert.moore@intel.com>, Dave Jiang <dave.jiang@intel.com>, 
- Jonathan Cameron <Jonathan.Cameron@huawei.com>, 
- Dan Williams <dan.j.williams@intel.com>, Hanjun Guo <guohanjun@huawei.com>, 
- Arnd Bergmann <arnd@arndb.de>
-Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, 
- linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, 
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- Linus Walleij <linus.walleij@linaro.org>
-X-Mailer: b4 0.12.4
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: W9mLspwTBqhYvV5ajR8gt_t_BuX4RknD
+X-Proofpoint-ORIG-GUID: W9mLspwTBqhYvV5ajR8gt_t_BuX4RknD
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-14_03,2023-11-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 clxscore=1011 mlxlogscore=917
+ impostorscore=0 adultscore=0 spamscore=0 phishscore=0 lowpriorityscore=0
+ mlxscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311140037
 
-After commit a103f46633fd the kernel stopped compiling for
-several ARM32 platforms that I am building with a bare metal
-compiler. Bare metal compilers (arm-none-eabi-) don't
-define __linux__.
+Thanks Jason.
 
-This is because the header <acpi/platform/acenv.h> is now
-in the include path for <linux/irq.h>:
+On 2023/11/4 0:44, Jason Gunthorpe wrote:
+> This is a more complete solution that the first attempt here:
+> https://lore.kernel.org/r/1698825902-10685-1-git-send-email-quic_zhenhuah@quicinc.com
+> 
+> I haven't been able to test this on any HW that touches these paths, so if
+> some people with HW can help get it in shape it can become non-RFC.
 
-  CC      arch/arm/kernel/irq.o
-  CC      kernel/sysctl.o
-  CC      crypto/api.o
-In file included from ../include/acpi/acpi.h:22,
-                 from ../include/linux/fw_table.h:29,
-                 from ../include/linux/acpi.h:18,
-                 from ../include/linux/irqchip.h:14,
-                 from ../arch/arm/kernel/irq.c:25:
-../include/acpi/platform/acenv.h:218:2: error: #error Unknown target environment
-  218 | #error Unknown target environment
-      |  ^~~~~
+Thank you for addressing it quickly with a thorough way. I have 
+backported it to Android common kernel 6.1 and tested basic sanity well.
+I will share these to OEMs and see if they can reproduce further, thanks.
 
-One solution to make compilation with a bare metal compiler
-work again is to say the file is used with Linux from within
-the kernel if __KERNEL__ is defined so I did that.
-
-Fixes: a103f46633fd ("acpi: Move common tables helper functions to common lib")
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
- include/acpi/platform/acenv.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/acpi/platform/acenv.h b/include/acpi/platform/acenv.h
-index 337ffa931ee8..76444ffdc549 100644
---- a/include/acpi/platform/acenv.h
-+++ b/include/acpi/platform/acenv.h
-@@ -156,7 +156,7 @@
- 
- #endif
- 
--#if defined(_LINUX) || defined(__linux__)
-+#if defined(_LINUX) || defined(__linux__) || defined(__KERNEL__)
- #include <acpi/platform/aclinux.h>
- 
- #elif defined(_APPLE) || defined(__APPLE__)
-
----
-base-commit: 9bacdd8996c77c42ca004440be610692275ff9d0
-change-id: 20231113-arm-build-bug-ae543fd21199
-
-Best regards,
--- 
-Linus Walleij <linus.walleij@linaro.org>
-
+Thanks,
+Zhenhua
