@@ -1,80 +1,93 @@
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx1.zhaoxin.com (MX1.ZHAOXIN.COM [210.0.225.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D495235F07
-	for <acpica-devel@lists.linux.dev>; Tue, 14 Nov 2023 20:20:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YKN3kG6k"
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-5af6c445e9eso70428837b3.0
-        for <acpica-devel@lists.linux.dev>; Tue, 14 Nov 2023 12:20:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699993225; x=1700598025; darn=lists.linux.dev;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LgIMZhFr5ANe/opk6rHwzR0Wea+pDhCr2RohibRDeJI=;
-        b=YKN3kG6kDd8VQn00hXchanfAhsW7Rx4YKizUL5zDYRQCfW/niF4fjhB3+HvGJVPZct
-         6hOlngtmjatHe28MdiTRCk3h4nuqKs/nls1vzkriNe4A6PChN0zjcHO9jnOwJ9yf61IA
-         hxR/bw8CxYLFJByKVefaxxhTbOklETpqjeu9Jmf35ft5P0onI2ylhocnWR/St5Ik2+mJ
-         pF8yexqTte8cn/qJEuqC6b6APnFO3GIQ1E4j0ot/jGo71/0KCG7TPdn8sCem9IC3psPJ
-         70w1XeqtTDp1Z82QtexbqTCDXxsICLnU10jq4SxrgYC51Q8vZtzX1kDEIF5cWUx0XTVb
-         2peg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699993226; x=1700598026;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LgIMZhFr5ANe/opk6rHwzR0Wea+pDhCr2RohibRDeJI=;
-        b=aVzeQPVHAmed2QIR0jghrH3aHEQwUpdhNQygQJu+8E3rshKgcG33dF34RT7OrEj9oN
-         s7sIHQIP167LVkLZe8ucT04pkso8M2vPMXdav3ZQYz+NHWBf+RJWjRod2BT8pie/6wVx
-         3EJpJ2dJVvzLLq3/4ol+aGW14haf04UBzKmpyNv8pQcgnOKZf2Yotv/RxTUg4dCbh6lo
-         2MSf954tEBfPMRtLRI0XteCLkblRC5vGVgyjKkllHlRd9Xg6WF9Ymbz8A/UdNt6EK6ci
-         ISnmZXb54Itf/eJ3MJF27RX/ziclWnZFe9G2BGS/Qv7AVHHUqbiuMTxnwsucyXv7HtnX
-         MbfA==
-X-Gm-Message-State: AOJu0Yx/DNlwUa2DCgwEgoqxx4/mA3CnTLC71fKTw8eO/97+gNbtA7mA
-	X8Qpoll/UGMBkpqT8/Ox9KKQYMT/zjLqiZy2pt5E5Q==
-X-Google-Smtp-Source: AGHT+IHDLBa3i08U+nLN0OG3yu/iiLd302obDuxMCccsocWSzYdESyvlcJkxV2yuKipJLTHkRfWr3hMnsJhJHv5hRTQ=
-X-Received: by 2002:a0d:c505:0:b0:5a7:ba00:6dd8 with SMTP id
- h5-20020a0dc505000000b005a7ba006dd8mr9813769ywd.8.1699993225750; Tue, 14 Nov
- 2023 12:20:25 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 887666AB3
+	for <acpica-devel@lists.linux.dev>; Wed, 15 Nov 2023 09:35:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zhaoxin.com
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
+X-ASG-Debug-ID: 1700039779-086e236ff01c390001-m47mSr
+Received: from ZXSHMBX3.zhaoxin.com (ZXSHMBX3.zhaoxin.com [10.28.252.165]) by mx1.zhaoxin.com with ESMTP id adf1zcuxyAIICG7K (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Wed, 15 Nov 2023 17:16:19 +0800 (CST)
+X-Barracuda-Envelope-From: LeoLiu-oc@zhaoxin.com
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.165
+Received: from ZXBJMBX03.zhaoxin.com (10.29.252.7) by ZXSHMBX3.zhaoxin.com
+ (10.28.252.165) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 15 Nov
+ 2023 17:16:18 +0800
+Received: from xin.lan (10.32.64.1) by ZXBJMBX03.zhaoxin.com (10.29.252.7)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 15 Nov
+ 2023 17:16:16 +0800
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.165
+From: LeoLiu-oc <LeoLiu-oc@zhaoxin.com>
+X-Barracuda-RBL-Trusted-Forwarder: 10.29.252.7
+To: <rafael@kernel.org>, <lenb@kernel.org>, <james.morse@arm.com>,
+	<tony.luck@intel.com>, <bp@alien8.de>, <bhelgaas@google.com>,
+	<robert.moore@intel.com>, <linux-acpi@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+	<acpica-devel@lists.linux.dev>
+CC: <CobeChen@zhaoxin.com>, <TonyWWang@zhaoxin.com>, <ErosZhang@zhaoxin.com>,
+	<LeoLiu@zhaoxin.com>, leoliu-oc <leoliu-oc@zhaoxin.com>
+Subject: [PATCH 2/3] PCI: Add AER bits #defines for PCIe to PCI/PCI-X Bridge
+Date: Wed, 15 Nov 2023 17:16:11 +0800
+X-ASG-Orig-Subj: [PATCH 2/3] PCI: Add AER bits #defines for PCIe to PCI/PCI-X Bridge
+Message-ID: <20231115091612.580685-3-LeoLiu-oc@zhaoxin.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231115091612.580685-1-LeoLiu-oc@zhaoxin.com>
+References: <20231115091612.580685-1-LeoLiu-oc@zhaoxin.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20231114-arm-build-bug-v1-1-458745fe32a4@linaro.org> <b2354c21-3a1a-c446-fee0-db0c78d05c71@gmail.com>
-In-Reply-To: <b2354c21-3a1a-c446-fee0-db0c78d05c71@gmail.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Tue, 14 Nov 2023 21:20:14 +0100
-Message-ID: <CACRpkdYUzYxV+NY=mymXP59mt9msTUvSXM__f+4qRM+_xjX0Nw@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: acenv: Permit compilation from within the kernel
-To: Sam Edwards <cfsworks@gmail.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
-	Robert Moore <robert.moore@intel.com>, Dave Jiang <dave.jiang@intel.com>, 
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>, Dan Williams <dan.j.williams@intel.com>, 
-	Hanjun Guo <guohanjun@huawei.com>, Arnd Bergmann <arnd@arndb.de>, 
-	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, linux-acpi@vger.kernel.org, 
-	acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.32.64.1]
+X-ClientProxiedBy: zxbjmbx1.zhaoxin.com (10.29.252.163) To
+ ZXBJMBX03.zhaoxin.com (10.29.252.7)
+X-Barracuda-Connect: ZXSHMBX3.zhaoxin.com[10.28.252.165]
+X-Barracuda-Start-Time: 1700039779
+X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
+X-Barracuda-URL: https://10.28.252.35:4443/cgi-mod/mark.cgi
+X-Virus-Scanned: by bsmtpd at zhaoxin.com
+X-Barracuda-Scan-Msg-Size: 1192
+X-Barracuda-BRTS-Status: 0
+X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
+X-Barracuda-Spam-Score: -2.02
+X-Barracuda-Spam-Status: No, SCORE=-2.02 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=
+X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.116772
+	Rule breakdown below
+	 pts rule name              description
+	---- ---------------------- --------------------------------------------------
 
-On Tue, Nov 14, 2023 at 7:09=E2=80=AFPM Sam Edwards <cfsworks@gmail.com> wr=
-ote:
+From: leoliu-oc <leoliu-oc@zhaoxin.com>
 
-> I am not an ACPI subsystem maintainer, but my understanding is that the
-> files in include/acpi/ are copied verbatim from ACPICA, so any change to
-> those files will have to be sent to the ACPICA project and wouldn't be
-> accepted here.
->
-> More likely, we'd want to do something about the circular-include
-> situation between linux/fw_table.h<->linux/acpi.h.
+Define secondary uncorrectable error mask register, secondary
+uncorrectable error severity register and secondary error capabilities and
+control register bits in AER capability for PCIe to PCI/PCI-X Bridge.
+Please refer to PCIe to PCI/PCI-X Bridge Specification, sec 5.2.3.2,
+5.2.3.3 and 5.2.3.4.
 
-I agree but I have no idea how to fix that really, should I just send
-a revert instead so the authors can get some time to figure it out?
+Signed-off-by: leoliu-oc <leoliu-oc@zhaoxin.com>
+---
+ include/uapi/linux/pci_regs.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Yours,
-Linus Walleij
+diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
+index a39193213ff2..987c513192e8 100644
+--- a/include/uapi/linux/pci_regs.h
++++ b/include/uapi/linux/pci_regs.h
+@@ -802,6 +802,9 @@
+ #define  PCI_ERR_ROOT_FATAL_RCV		0x00000040 /* Fatal Received */
+ #define  PCI_ERR_ROOT_AER_IRQ		0xf8000000 /* Advanced Error Interrupt Message Number */
+ #define PCI_ERR_ROOT_ERR_SRC	0x34	/* Error Source Identification */
++#define PCI_ERR_UNCOR_MASK2	0x30    /* PCIe to PCI/PCI-X Bridge */
++#define PCI_ERR_UNCOR_SEVER2	0x34    /* PCIe to PCI/PCI-X Bridge */
++#define PCI_ERR_CAP2	0x38    /* PCIe to PCI/PCI-X Bridge */
+ 
+ /* Virtual Channel */
+ #define PCI_VC_PORT_CAP1	0x04
+-- 
+2.34.1
+
