@@ -1,96 +1,145 @@
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp3.osuosl.org (smtp3.osuosl.org [140.211.166.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4F151C28B
-	for <acpica-devel@lists.linux.dev>; Mon, 20 Nov 2023 15:25:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 927051DDC3
+	for <acpica-devel@lists.linuxfoundation.org>; Mon, 20 Nov 2023 15:59:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="y83Nipqq"
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-28396793876so2622551a91.3
-        for <acpica-devel@lists.linux.dev>; Mon, 20 Nov 2023 07:25:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700493946; x=1701098746; darn=lists.linux.dev;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ST028Kw+5opFnctTC026fdT6iYVhh3htW2mHBCbv3rM=;
-        b=y83NipqqQkzQY+dsqfbVYRGjSB+avdFa1S0uTdUKGxcXUkArtiMlOiLCF6DAAfgsUb
-         zTr/gCPTrvOoeDUfMLJz4eD5Fwtcd69Keou8S6Sd/XIqQM6jM3mOQ1XKzzxVWRN91F1U
-         mqW+kMGOvg60iAfpdN1J/NQXdhsOI3ax3eXDxRTdWsEPSUgjxSh3RZFELQCQ02nRl6GU
-         pvFSJYrUkfAGdLS6fwCl5ZqsqG/aUDMQA/h2FBzXERPI+2eeW92BmrVNwt9rKA6f/aRe
-         1qTQfl2H/v52s9+RO/elZArIyMa17gw0F+Bhhesbn0WWCtiRsp/x8ipPLt3FXEZ10Nym
-         hPDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700493946; x=1701098746;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ST028Kw+5opFnctTC026fdT6iYVhh3htW2mHBCbv3rM=;
-        b=gLFyWvbOUsuNUqEDJAcGH0yqEla/kvMfwR9g7ex7eSXutQT7/iXLQaCdV2o2XC3MIs
-         qoGkhEuSyAQpJrZl4w7IsSFPZVg+P87CBBF7vQWWeKLU597lrZ8rhHYosGbw4SPaE8YS
-         yJPWMbTl2lfg46SDozmy2csG7huiqxEaO2fafI6e0R3Bp77cFSl+AkcSqggRSaJfJn15
-         x/9z0PB+hiYlBCIezlmLE/oMmFswo5KB3i1WP5POiS50Zgi9koNxLIIMeevvr1lg01mN
-         9EW3AERxKv7y5ceZGNxqyoAnRJ8KXD0QR8bUByZgdYVaalC2X6KF2SQuWGElEyeiyq/5
-         Tt3w==
-X-Gm-Message-State: AOJu0YztApPG1repzJLcxvK3mmJmDIYqFBJG67viY1bK9FuCzz7KOchX
-	geaRarWfVQTgpB9Y3p6WbNjhz1lHkJzWqx7lwIpEfg==
-X-Google-Smtp-Source: AGHT+IGZ24BmTxFlV8ARS0eiBOVZL6XuY7FDIhzbJcGWCamZieGWAK8UG+n6P3hSBpS7YfkOpYF8HB8uorYNx0Elgz8=
-X-Received: by 2002:a17:90b:4f81:b0:27d:d36:763b with SMTP id
- qe1-20020a17090b4f8100b0027d0d36763bmr5505892pjb.31.1700493946018; Mon, 20
- Nov 2023 07:25:46 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZYi81cPs"
+Received: from localhost (localhost [127.0.0.1])
+	by smtp3.osuosl.org (Postfix) with ESMTP id F242260E65
+	for <acpica-devel@lists.linuxfoundation.org>; Mon, 20 Nov 2023 15:59:42 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org F242260E65
+Authentication-Results: smtp3.osuosl.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=ZYi81cPs
+X-Virus-Scanned: amavisd-new at osuosl.org
+X-Spam-Flag: NO
+X-Spam-Score: -4.401
+X-Spam-Level:
+Received: from smtp3.osuosl.org ([127.0.0.1])
+	by localhost (smtp3.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id N1jclW66DJmx
+	for <acpica-devel@lists.linuxfoundation.org>;
+	Mon, 20 Nov 2023 15:59:42 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+	by smtp3.osuosl.org (Postfix) with ESMTPS id E9F6760E5D
+	for <acpica-devel@lists.linuxfoundation.org>; Mon, 20 Nov 2023 15:59:41 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org E9F6760E5D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700495981; x=1732031981;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=c37jWWF3YmwNSdX2aaWvfipjGhewd5sxL8oMjg89X1s=;
+  b=ZYi81cPslsFQBJeWSR30dxOG4u3D0h904i6lHOBn1NB3GSqH2LcUTJp/
+   EAhpvkQHeiFNi2KupGh/mQZMKU7o8s9NphRw6iDEnsEbaekdz9QlnyC6o
+   4tLb/sDjGpnBF8hlCzBm8wPKbWDaja8BaPAtNp4TuzwKuMyimaQZqibYV
+   Gusj2Tw9j1RXHtj7PjiQUwbV5C7TyC6vKEecx79LGq7cVsX3OYGAlg6P3
+   GShnFE+tdLgjarlXdiNYIC34X5IwWrdQf9OrRELk1yazXYjWCP4kl+Loc
+   k4dRJFWQPi6PazRs4bHXsDu8kynTbMYeXgOAltZ2D5KTYp6I9wYg80Qjl
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="455972518"
+X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
+   d="scan'208";a="455972518"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 07:59:20 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="759816709"
+X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
+   d="scan'208";a="759816709"
+Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 20 Nov 2023 07:59:16 -0800
+Received: from kbuild by b8de5498638e with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1r56g5-0006cK-32;
+	Mon, 20 Nov 2023 15:59:13 +0000
+Date: Mon, 20 Nov 2023 23:58:36 +0800
+From: kernel test robot <lkp@intel.com>
+To: Raag Jadav <raag.jadav@intel.com>, mika.westerberg@linux.intel.com,
+	andriy.shevchenko@linux.intel.com, rafael@kernel.org,
+	lenb@kernel.org, robert.moore@intel.com, ardb@kernel.org,
+	will@kernel.org, mark.rutland@arm.com
+Cc: oe-kbuild-all@lists.linux.dev, linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	acpica-devel@lists.linuxfoundation.org, linux-efi@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com,
+	Raag Jadav <raag.jadav@intel.com>
+Subject: Re: [PATCH v1 3/6] ACPI: bus: update acpi_dev_hid_uid_match() to
+ support multiple types
+Message-ID: <202311202353.O38sik0Y-lkp@intel.com>
+References: <20231120120837.3002-4-raag.jadav@intel.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20231114-arm-build-bug-v1-1-458745fe32a4@linaro.org>
- <b2354c21-3a1a-c446-fee0-db0c78d05c71@gmail.com> <CACRpkdYUzYxV+NY=mymXP59mt9msTUvSXM__f+4qRM+_xjX0Nw@mail.gmail.com>
-In-Reply-To: <CACRpkdYUzYxV+NY=mymXP59mt9msTUvSXM__f+4qRM+_xjX0Nw@mail.gmail.com>
-From: Sam Protsenko <semen.protsenko@linaro.org>
-Date: Mon, 20 Nov 2023 09:25:34 -0600
-Message-ID: <CAPLW+4mT5Qpo+B7fSfiG1qRVr4cSvuWhArpu-3kbFtSukSV8_w@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: acenv: Permit compilation from within the kernel
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Sam Edwards <cfsworks@gmail.com>, "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
-	Robert Moore <robert.moore@intel.com>, Dave Jiang <dave.jiang@intel.com>, 
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>, Dan Williams <dan.j.williams@intel.com>, 
-	Hanjun Guo <guohanjun@huawei.com>, Arnd Bergmann <arnd@arndb.de>, 
-	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, linux-acpi@vger.kernel.org, 
-	acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231120120837.3002-4-raag.jadav@intel.com>
 
-Hi Linus,
+Hi Raag,
 
-On Tue, Nov 14, 2023 at 2:20=E2=80=AFPM Linus Walleij <linus.walleij@linaro=
-.org> wrote:
->
-> On Tue, Nov 14, 2023 at 7:09=E2=80=AFPM Sam Edwards <cfsworks@gmail.com> =
-wrote:
->
-> > I am not an ACPI subsystem maintainer, but my understanding is that the
-> > files in include/acpi/ are copied verbatim from ACPICA, so any change t=
-o
-> > those files will have to be sent to the ACPICA project and wouldn't be
-> > accepted here.
-> >
-> > More likely, we'd want to do something about the circular-include
-> > situation between linux/fw_table.h<->linux/acpi.h.
->
-> I agree but I have no idea how to fix that really, should I just send
-> a revert instead so the authors can get some time to figure it out?
->
+kernel test robot noticed the following build warnings:
 
-Just want to confirm that linux-mainline and linux-next builds are
-broken for my ARM64 board as well, because of the commit you
-pin-pointed. I vote for reverting it and letting the author rework it
-properly. On a side note: I'm surprised there are no bots or automatic
-CI builds out there testing the kernel builds with baremetal
-toolchains. Can't believe everyone's using Linux toolchain, the kernel
-is supposed to be baremetal project.
+[auto build test WARNING on 5bd262f4820f2d5645d8ff1f251ef8e96715ef84]
 
-> Yours,
-> Linus Walleij
+url:    https://github.com/intel-lab-lkp/linux/commits/Raag-Jadav/compiler-h-Introduce-helpers-for-identifying-array-and-pointer-types/20231120-201140
+base:   5bd262f4820f2d5645d8ff1f251ef8e96715ef84
+patch link:    https://lore.kernel.org/r/20231120120837.3002-4-raag.jadav%40intel.com
+patch subject: [PATCH v1 3/6] ACPI: bus: update acpi_dev_hid_uid_match() to support multiple types
+config: x86_64-defconfig (https://download.01.org/0day-ci/archive/20231120/202311202353.O38sik0Y-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231120/202311202353.O38sik0Y-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311202353.O38sik0Y-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   In file included from include/linux/acpi.h:45,
+                    from drivers/iommu/amd/iommu.c:13:
+   drivers/iommu/amd/iommu.c: In function 'get_acpihid_device_id':
+>> drivers/iommu/amd/iommu.c:103:63: warning: pointer/integer type mismatch in conditional expression
+     103 |                                            p->uid[0] ? p->uid : NULL)) {
+         |                                                               ^
+   include/acpi/acpi_bus.h:915:46: note: in definition of macro 'acpi_dev_hid_uid_match'
+     915 |         (acpi_dev_hid_match(adev, hid2) && (!uid2 || acpi_dev_uid_match(adev, uid2)))
+         |                                              ^~~~
+
+
+vim +103 drivers/iommu/amd/iommu.c
+
+81cd07b9c92ad4 drivers/iommu/amd_iommu.c   Joerg Roedel    2016-07-07   85  
+15898bbcb48fc8 arch/x86/kernel/amd_iommu.c Joerg Roedel    2009-11-24   86  /****************************************************************************
+15898bbcb48fc8 arch/x86/kernel/amd_iommu.c Joerg Roedel    2009-11-24   87   *
+15898bbcb48fc8 arch/x86/kernel/amd_iommu.c Joerg Roedel    2009-11-24   88   * Helper functions
+15898bbcb48fc8 arch/x86/kernel/amd_iommu.c Joerg Roedel    2009-11-24   89   *
+15898bbcb48fc8 arch/x86/kernel/amd_iommu.c Joerg Roedel    2009-11-24   90   ****************************************************************************/
+15898bbcb48fc8 arch/x86/kernel/amd_iommu.c Joerg Roedel    2009-11-24   91  
+2bf9a0a12749b2 drivers/iommu/amd_iommu.c   Wan Zongshun    2016-04-01   92  static inline int get_acpihid_device_id(struct device *dev,
+2bf9a0a12749b2 drivers/iommu/amd_iommu.c   Wan Zongshun    2016-04-01   93  					struct acpihid_map_entry **entry)
+2bf9a0a12749b2 drivers/iommu/amd_iommu.c   Wan Zongshun    2016-04-01   94  {
+ae5e6c6439c3d0 drivers/iommu/amd_iommu.c   Andy Shevchenko 2019-10-01   95  	struct acpi_device *adev = ACPI_COMPANION(dev);
+2bf9a0a12749b2 drivers/iommu/amd_iommu.c   Wan Zongshun    2016-04-01   96  	struct acpihid_map_entry *p;
+2bf9a0a12749b2 drivers/iommu/amd_iommu.c   Wan Zongshun    2016-04-01   97  
+ae5e6c6439c3d0 drivers/iommu/amd_iommu.c   Andy Shevchenko 2019-10-01   98  	if (!adev)
+ae5e6c6439c3d0 drivers/iommu/amd_iommu.c   Andy Shevchenko 2019-10-01   99  		return -ENODEV;
+ae5e6c6439c3d0 drivers/iommu/amd_iommu.c   Andy Shevchenko 2019-10-01  100  
+2bf9a0a12749b2 drivers/iommu/amd_iommu.c   Wan Zongshun    2016-04-01  101  	list_for_each_entry(p, &acpihid_map, list) {
+ea90228c7b2ae6 drivers/iommu/amd_iommu.c   Raul E Rangel   2020-05-11  102  		if (acpi_dev_hid_uid_match(adev, p->hid,
+ea90228c7b2ae6 drivers/iommu/amd_iommu.c   Raul E Rangel   2020-05-11 @103  					   p->uid[0] ? p->uid : NULL)) {
+2bf9a0a12749b2 drivers/iommu/amd_iommu.c   Wan Zongshun    2016-04-01  104  			if (entry)
+2bf9a0a12749b2 drivers/iommu/amd_iommu.c   Wan Zongshun    2016-04-01  105  				*entry = p;
+2bf9a0a12749b2 drivers/iommu/amd_iommu.c   Wan Zongshun    2016-04-01  106  			return p->devid;
+2bf9a0a12749b2 drivers/iommu/amd_iommu.c   Wan Zongshun    2016-04-01  107  		}
+2bf9a0a12749b2 drivers/iommu/amd_iommu.c   Wan Zongshun    2016-04-01  108  	}
+2bf9a0a12749b2 drivers/iommu/amd_iommu.c   Wan Zongshun    2016-04-01  109  	return -EINVAL;
+2bf9a0a12749b2 drivers/iommu/amd_iommu.c   Wan Zongshun    2016-04-01  110  }
+2bf9a0a12749b2 drivers/iommu/amd_iommu.c   Wan Zongshun    2016-04-01  111  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
