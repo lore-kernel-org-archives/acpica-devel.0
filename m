@@ -1,114 +1,86 @@
 Received: from smtp3.osuosl.org (smtp3.osuosl.org [140.211.166.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B16DF5A0F3
-	for <acpica-devel@lists.linuxfoundation.org>; Tue, 21 Nov 2023 16:20:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25B241101
+	for <acpica-devel@lists.linuxfoundation.org>; Tue, 21 Nov 2023 16:50:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qQnYJ74n"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iqJNH/g7"
 Received: from localhost (localhost [127.0.0.1])
-	by smtp3.osuosl.org (Postfix) with ESMTP id 3D56D610E9
-	for <acpica-devel@lists.linuxfoundation.org>; Tue, 21 Nov 2023 16:20:03 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 3D56D610E9
+	by smtp3.osuosl.org (Postfix) with ESMTP id 91ED1610F3
+	for <acpica-devel@lists.linuxfoundation.org>; Tue, 21 Nov 2023 16:50:54 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 91ED1610F3
 Authentication-Results: smtp3.osuosl.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20201202 header.b=qQnYJ74n
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=iqJNH/g7
 X-Virus-Scanned: amavisd-new at osuosl.org
 X-Spam-Flag: NO
-X-Spam-Score: -4.401
+X-Spam-Score: -1.999
 X-Spam-Level:
 Received: from smtp3.osuosl.org ([127.0.0.1])
 	by localhost (smtp3.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id jHtRrZSkjEqR
+	with ESMTP id Es5l0_w7PI5w
 	for <acpica-devel@lists.linuxfoundation.org>;
-	Tue, 21 Nov 2023 16:20:02 +0000 (UTC)
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-	by smtp3.osuosl.org (Postfix) with ESMTPS id 459EB610E7
-	for <acpica-devel@lists.linuxfoundation.org>; Tue, 21 Nov 2023 16:20:02 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 459EB610E7
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id 6A34AB822A0
-	for <acpica-devel@lists.linuxfoundation.org>; Tue, 21 Nov 2023 16:20:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD339C433C7
-	for <acpica-devel@lists.linuxfoundation.org>; Tue, 21 Nov 2023 16:19:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1700583599;
-	bh=/ftsIOr6PtvXmwDXJG2lgHpbTRDyOZqNHqOkYX1msmg=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=qQnYJ74n8oQzVtLAxKlA0npDWvAXMG5BczCbtm8Q7r1U9tmCrT/NYDhrCDJgV4dxH
-	 FpzqPbjUjkeuZ1oqf8JbcXboxg0/5HF3aXuCOud2H9tRy3N1oeJO28yQVzyEPboON7
-	 tHv97fMIje/U8dP08iA6XHgtkk/cXHcezhCVMTdr2aJ0F/tAE2VrMR+7xF82QLBeUn
-	 ELAtG3qCN7qEO9ahwWMgIlGiuJby3jBl04eev+q+T54u5IjB0I2A3PEj3YfbuSFFmc
-	 05pobXOY9fPL66pCFy2QE3Tq5YI8vodE9OrSts1ygetRcZ6fP85P+BVaydWq75EdPz
-	 CeAb/VRx+JLbw==
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2c8880f14eeso20478311fa.3
-        for <acpica-devel@lists.linuxfoundation.org>; Tue, 21 Nov 2023 08:19:59 -0800 (PST)
-X-Gm-Message-State: AOJu0YyDseGL3iFFhOD7N0aQPNZMaukoH4vKtJxpeU/JxVSGfCcOPXyl
-	q6haB7W3OCHHnbexIp9kxE8v3gCK7LnE8oL+ecM=
-X-Google-Smtp-Source: AGHT+IEtMGQDvBsJOPcKtWdelsFIWrHMFFYwL5uPNIQYz3nN/aRSQXRn2eA7w9M9xQKYjfsRUgSQym1LFQCd9rSwY0M=
-X-Received: by 2002:a2e:9e1a:0:b0:2c5:1f92:b464 with SMTP id
- e26-20020a2e9e1a000000b002c51f92b464mr6822339ljk.10.1700583597994; Tue, 21
- Nov 2023 08:19:57 -0800 (PST)
+	Tue, 21 Nov 2023 16:50:52 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	by smtp3.osuosl.org (Postfix) with ESMTPS id 99C99610EB
+	for <acpica-devel@lists.linuxfoundation.org>; Tue, 21 Nov 2023 16:50:52 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 99C99610EB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700585453; x=1732121453;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=JTdRqF+yP9i6uEWuxlLEu23get1OZ+Y4sxPkDDh2+QM=;
+  b=iqJNH/g7ITYlXJ6u/xqgdCCqLOQhuM1Oho4BnE0JkxSyj5g61xtu2xyj
+   6YnekkhxX9r8qW9DgLFw7jkZwUtAs2Pplv7ro8oPNyd9JRMi2XbpObJ9C
+   B/TgHUMmBA/NJWe4ojIbGuVL1m6NokGcfWAtkjQySuY4BrOmq2W938dKY
+   /bMUXSxPCwJtLPdoqsORrwYp3PYeNY5fV9Ap3Og05+iKXSCs1iDvqmCpG
+   tXLHj3lEMM8OVp7H3/IFTAXmjOzyiHkOK1+O6zAyZBA5QrL90wMPyaKiI
+   wH9JN5Xn0H2Fd1NZ+QxX+6qaMuaY8Nv8nmPIyaHGYDEEnwyz9NJjjX1yV
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="13422926"
+X-IronPort-AV: E=Sophos;i="6.04,216,1695711600"; 
+   d="scan'208";a="13422926"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 08:50:51 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="795842221"
+X-IronPort-AV: E=Sophos;i="6.04,216,1695711600"; 
+   d="scan'208";a="795842221"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga008.jf.intel.com with ESMTP; 21 Nov 2023 08:50:46 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+	id A498513A; Tue, 21 Nov 2023 18:50:45 +0200 (EET)
+Date: Tue, 21 Nov 2023 18:50:45 +0200
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Raag Jadav <raag.jadav@intel.com>
+Cc: andriy.shevchenko@linux.intel.com, rafael@kernel.org, lenb@kernel.org,
+	robert.moore@intel.com, ardb@kernel.org, will@kernel.org,
+	mark.rutland@arm.com, linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	acpica-devel@lists.linuxfoundation.org, linux-efi@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com
+Subject: Re: [PATCH v2 2/6] ACPI: bus: update acpi_dev_uid_match() to support
+ multiple types
+Message-ID: <20231121165045.GQ1074920@black.fi.intel.com>
+References: <20231121103829.10027-1-raag.jadav@intel.com>
+ <20231121103829.10027-3-raag.jadav@intel.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20231121103829.10027-1-raag.jadav@intel.com> <20231121103829.10027-6-raag.jadav@intel.com>
-In-Reply-To: <20231121103829.10027-6-raag.jadav@intel.com>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Tue, 21 Nov 2023 11:19:46 -0500
-X-Gmail-Original-Message-ID: <CAMj1kXEr2O8LZNq1r0zr1ZHPhtpbNu0PmZBk=UQvp7m0=ETodA@mail.gmail.com>
-Message-ID: <CAMj1kXEr2O8LZNq1r0zr1ZHPhtpbNu0PmZBk=UQvp7m0=ETodA@mail.gmail.com>
-Subject: Re: [PATCH v2 5/6] efi: dev-path-parser: use acpi_dev_uid_match() for
- matching _UID
-To: Raag Jadav <raag.jadav@intel.com>
-Cc: mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com, 
-	rafael@kernel.org, lenb@kernel.org, robert.moore@intel.com, will@kernel.org, 
-	mark.rutland@arm.com, linux-acpi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, acpica-devel@lists.linuxfoundation.org, 
-	linux-efi@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231121103829.10027-3-raag.jadav@intel.com>
 
-On Tue, 21 Nov 2023 at 05:39, Raag Jadav <raag.jadav@intel.com> wrote:
->
-> Now that we have _UID matching support for integer types, we can use
-> acpi_dev_uid_match() for it.
->
-> Signed-off-by: Raag Jadav <raag.jadav@intel.com>
+On Tue, Nov 21, 2023 at 04:08:25PM +0530, Raag Jadav wrote:
+> According to ACPI specification, a _UID object can evaluate to either
+> a numeric value or a string. Update acpi_dev_uid_match() helper to
+> support _UID matching for both integer and string types.
+> 
+> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Suggested-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 
-Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
-
-> ---
->  drivers/firmware/efi/dev-path-parser.c | 7 ++-----
->  1 file changed, 2 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/firmware/efi/dev-path-parser.c b/drivers/firmware/efi/dev-path-parser.c
-> index f80d87c199c3..937be269fee8 100644
-> --- a/drivers/firmware/efi/dev-path-parser.c
-> +++ b/drivers/firmware/efi/dev-path-parser.c
-> @@ -18,8 +18,6 @@ static long __init parse_acpi_path(const struct efi_dev_path *node,
->         struct acpi_device *adev;
->         struct device *phys_dev;
->         char hid[ACPI_ID_LEN];
-> -       u64 uid;
-> -       int ret;
->
->         if (node->header.length != 12)
->                 return -EINVAL;
-> @@ -31,10 +29,9 @@ static long __init parse_acpi_path(const struct efi_dev_path *node,
->                         node->acpi.hid >> 16);
->
->         for_each_acpi_dev_match(adev, hid, NULL, -1) {
-> -               ret = acpi_dev_uid_to_integer(adev, &uid);
-> -               if (ret == 0 && node->acpi.uid == uid)
-> +               if (acpi_dev_uid_match(adev, node->acpi.uid))
->                         break;
-> -               if (ret == -ENODATA && node->acpi.uid == 0)
-> +               if (!acpi_device_uid(adev) && node->acpi.uid == 0)
->                         break;
->         }
->         if (!adev)
-> --
-> 2.17.1
->
+Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
