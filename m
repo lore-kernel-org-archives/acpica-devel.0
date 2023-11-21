@@ -1,32 +1,30 @@
-Received: from smtp2.osuosl.org (smtp2.osuosl.org [140.211.166.133])
+Received: from mail.marcansoft.com (marcansoft.com [212.63.210.85])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97D1E79D1
-	for <acpica-devel@lists.linuxfoundation.org>; Tue, 21 Nov 2023 01:48:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
-Received: from localhost (localhost [127.0.0.1])
-	by smtp2.osuosl.org (Postfix) with ESMTP id 252C740207
-	for <acpica-devel@lists.linuxfoundation.org>; Tue, 21 Nov 2023 01:48:44 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 252C740207
-X-Virus-Scanned: amavisd-new at osuosl.org
-X-Spam-Flag: NO
-X-Spam-Score: -9.899
-X-Spam-Level:
-Received: from smtp2.osuosl.org ([127.0.0.1])
-	by localhost (smtp2.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id pwqsW4EUtzLL
-	for <acpica-devel@lists.linuxfoundation.org>;
-	Tue, 21 Nov 2023 01:48:42 +0000 (UTC)
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
-	by smtp2.osuosl.org (Postfix) with ESMTPS id 9080640128
-	for <acpica-devel@lists.linuxfoundation.org>; Tue, 21 Nov 2023 01:48:40 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 9080640128
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=34;SR=0;TI=SMTPD_---0Vwqn1AR_1700531311;
-Received: from 30.240.112.71(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Vwqn1AR_1700531311)
-          by smtp.aliyun-inc.com;
-          Tue, 21 Nov 2023 09:48:33 +0800
-Message-ID: <57bd6874-35df-48b0-90d8-45077396b44f@linux.alibaba.com>
-Date: Tue, 21 Nov 2023 09:48:28 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 134E619BD6;
+	Tue, 21 Nov 2023 06:48:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=marcan.st
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marcan.st
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=marcan.st header.i=@marcan.st header.b="yBZ7Udel"
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	(No client certificate requested)
+	(Authenticated sender: marcan@marcan.st)
+	by mail.marcansoft.com (Postfix) with ESMTPSA id EDDAF42137;
+	Tue, 21 Nov 2023 06:47:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=marcan.st; s=default;
+	t=1700549281; bh=ujaYq3QQkb3U4N6JNFFQq4uH4QKQpO8RJp9aJVbB0w0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=yBZ7Udel893+M2pzDMgdTushmaUgXq0nIf/5xxASROF107adcyenfoQIJKpJop3QE
+	 1+yTIUhVbWxOP7swSXHE/1waIz+ytnfqIeOR+pXsrjnxJ9YDy9OcehudknnZZfDU0W
+	 yBoxtsLq/eITHB2A8C7zHMk/QpuQDhn54/ueeppNZr5bacp1NBly8id6vI/+HcZLF9
+	 Y3o89xan9Av9novKYwloiJeRxCXK4RdvbSm3KrREtUx62PnuC+h7WkJf1goRn4PDd/
+	 8BaauSYV42Ok4T8UBbrfnw8aItI789XfEb5enuqF6bZ2I7QNWWCAUkdCy2CTlvEfD+
+	 wJAB4I2ql495A==
+Message-ID: <90855bbf-e845-4e4d-a713-df71d1e477d2@marcan.st>
+Date: Tue, 21 Nov 2023 15:47:48 +0900
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -34,223 +32,139 @@ List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 0/2] ACPI: APEI: handle synchronous errors in task work
- with proper si_code
+Subject: Re: [PATCH v2 06/17] iommu: Add iommu_fwspec_alloc/dealloc()
 Content-Language: en-US
-To: rafael@kernel.org, wangkefeng.wang@huawei.com, tanxiaofei@huawei.com,
- mawupeng1@huawei.com, tony.luck@intel.com, linmiaohe@huawei.com,
- naoya.horiguchi@nec.com, james.morse@arm.com, gregkh@linuxfoundation.org,
- will@kernel.org, jarkko@kernel.org
-Cc: linux-acpi@vger.kernel.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
- linux-edac@vger.kernel.org, acpica-devel@lists.linuxfoundation.org,
- stable@vger.kernel.org, x86@kernel.org, justin.he@arm.com, ardb@kernel.org,
- ying.huang@intel.com, ashish.kalra@amd.com, baolin.wang@linux.alibaba.com,
- bp@alien8.de, tglx@linutronix.de, mingo@redhat.com,
- dave.hansen@linux.intel.com, lenb@kernel.org, hpa@zytor.com,
- robert.moore@intel.com, lvying6@huawei.com, xiexiuqi@huawei.com,
- zhuo.song@linux.alibaba.com
-References: <20221027042445.60108-1-xueshuai@linux.alibaba.com>
- <20231007072818.58951-1-xueshuai@linux.alibaba.com>
-From: Shuai Xue <xueshuai@linux.alibaba.com>
-In-Reply-To: <20231007072818.58951-1-xueshuai@linux.alibaba.com>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: acpica-devel@lists.linux.dev, Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+ Albert Ou <aou@eecs.berkeley.edu>, asahi@lists.linux.dev,
+ Catalin Marinas <catalin.marinas@arm.com>, Dexuan Cui <decui@microsoft.com>,
+ devicetree@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
+ Frank Rowand <frowand.list@gmail.com>, Hanjun Guo <guohanjun@huawei.com>,
+ Haiyang Zhang <haiyangz@microsoft.com>, iommu@lists.linux.dev,
+ Jean-Philippe Brucker <jean-philippe@linaro.org>,
+ Jonathan Hunter <jonathanh@nvidia.com>, Joerg Roedel <joro@8bytes.org>,
+ "K. Y. Srinivasan" <kys@microsoft.com>, Len Brown <lenb@kernel.org>,
+ linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-hyperv@vger.kernel.org, linux-mips@vger.kernel.org,
+ linux-riscv@lists.infradead.org, linux-snps-arc@lists.infradead.org,
+ linux-tegra@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ Marek Szyprowski <m.szyprowski@samsung.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>, patches@lists.linux.dev,
+ Paul Walmsley <paul.walmsley@sifive.com>,
+ "Rafael J. Wysocki" <rafael@kernel.org>,
+ Robert Moore <robert.moore@intel.com>, Rob Herring <robh+dt@kernel.org>,
+ Robin Murphy <robin.murphy@arm.com>, Sudeep Holla <sudeep.holla@arm.com>,
+ Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+ Sven Peter <sven@svenpeter.dev>, Thierry Reding <thierry.reding@gmail.com>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Krishna Reddy <vdumpa@nvidia.com>, Vineet Gupta <vgupta@kernel.org>,
+ virtualization@lists.linux.dev, Wei Liu <wei.liu@kernel.org>,
+ Will Deacon <will@kernel.org>
+References: <6-v2-36a0088ecaa7+22c6e-iommu_fwspec_jgg@nvidia.com>
+ <20a7ef6d-a8ca-4bd8-ad7e-11856db617a2@marcan.st>
+ <1eb12c35-e64e-4c32-af99-8743dc2ec266@marcan.st>
+ <20231119141329.GA6083@nvidia.com>
+From: Hector Martin <marcan@marcan.st>
+In-Reply-To: <20231119141329.GA6083@nvidia.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-Hi, ALL,
 
-Gentle ping.
 
-Best Regards,
-Shuai
+On 2023/11/19 23:13, Jason Gunthorpe wrote:
+> On Sun, Nov 19, 2023 at 06:19:43PM +0900, Hector Martin wrote:
+>>>> +static int iommu_fwspec_assign_iommu(struct iommu_fwspec *fwspec,
+>>>> +				     struct device *dev,
+>>>> +				     struct fwnode_handle *iommu_fwnode)
+>>>> +{
+>>>> +	const struct iommu_ops *ops;
+>>>> +
+>>>> +	if (fwspec->iommu_fwnode) {
+>>>> +		/*
+>>>> +		 * fwspec->iommu_fwnode is the first iommu's fwnode. In the rare
+>>>> +		 * case of multiple iommus for one device they must point to the
+>>>> +		 * same driver, checked via same ops.
+>>>> +		 */
+>>>> +		ops = iommu_ops_from_fwnode(iommu_fwnode);
+>>>
+>>> This carries over a related bug from the original code: If a device has
+>>> two IOMMUs and the first one probes but the second one defers, ops will
+>>> be NULL here and the check will fail with EINVAL.
+>>>
+>>> Adding a check for that case here fixes it:
+>>>
+>>> 		if (!ops)
+>>> 			return driver_deferred_probe_check_state(dev);
+> 
+> Yes!
+> 
+>>> With that, for the whole series:
+>>>
+>>> Tested-by: Hector Martin <marcan@marcan.st>
+>>>
+>>> I can't specifically test for the probe races the series intends to fix
+>>> though, since that bug we only hit extremely rarely. I'm just testing
+>>> that nothing breaks.
+>>
+>> Actually no, this fix is not sufficient. If the first IOMMU is ready
+>> then the xlate path allocates dev->iommu, which then
+>> __iommu_probe_device takes as a sign that all IOMMUs are ready and does
+>> the device init.
+> 
+> It doesn't.. The code there is:
+> 
+> 	if (!fwspec && dev->iommu)
+> 		fwspec = dev->iommu->fwspec;
+> 	if (fwspec)
+> 		ops = fwspec->ops;
+> 	else
+> 		ops = dev->bus->iommu_ops;
+> 	if (!ops) {
+> 		ret = -ENODEV;
+> 		goto out_unlock;
+> 	}
+> 
+> Which is sensitive only to !NULL fwspec, and if EPROBE_DEFER is
+> returned fwspec will be freed and dev->iommu->fwspec will be NULL
+> here.
+> 
+> In the NULL case it does a 'bus probe' with a NULL fwspec and all the
+> fwspec drivers return immediately from their probe functions.
+> 
+> Did I miss something?
 
-On 2023/10/7 15:28, Shuai Xue wrote:
-> Hi, ALL,
+apple_dart is not a fwspec driver and doesn't do that :-)
+
 > 
-> I have rewritten the cover letter with the hope that the maintainer will truly
-> understand the necessity of this patch. Both Alibaba and Huawei met the same
-> issue in products, and we hope it could be fixed ASAP.
+>> Then when the xlate comes along again after suceeding
+>> with the second IOMMU, __iommu_probe_device sees the device is already
+>> in a group and never initializes the second IOMMU, leaving the device
+>> with only one IOMMU.
 > 
-> ## Changes Log
+> This should be fixed by the first hunk to check every iommu and fail?
 > 
-> changes since v8:
-> - remove the bug fix tag of patch 2 (per Jarkko Sakkinen)
-> - remove the declaration of memory_failure_queue_kick (per Naoya Horiguchi)
-> - rewrite the return value comments of memory_failure (per Naoya Horiguchi)
+> BTW, do you have a systems with same device attached to multiple
+> iommus?
+
+Yes, Apple ARM64 machines all have multiple ganged IOMMUs for certain
+devices (USB and ISP). We also attach all display IOMMUs to the global
+virtual display-subsystem device to handle framebuffer mappings, instead
+of trying to dynamically map them to a bunch of individual display
+controllers (which is a lot more painful). That last one is what
+reliably reproduces this problem, display breaks without both previous
+patches ever since we started supporting more than one display output.
+The first one is not enough.
+
+> I've noticed another bug here, many drivers don't actually support
+> differing iommu instances and nothing seems to check it..
+
+apple-dart does (as long as all the IOMMUs are using that driver).
+
 > 
-> changes since v7:
-> - rebase to Linux v6.6-rc2 (no code changed)
-> - rewritten the cover letter to explain the motivation of this patchset
-> 
-> changes since v6:
-> - add more explicty error message suggested by Xiaofei
-> - pick up reviewed-by tag from Xiaofei
-> - pick up internal reviewed-by tag from Baolin
-> 
-> changes since v5 by addressing comments from Kefeng:
-> - document return value of memory_failure()
-> - drop redundant comments in call site of memory_failure() 
-> - make ghes_do_proc void and handle abnormal case within it
-> - pick up reviewed-by tag from Kefeng Wang 
-> 
-> changes since v4 by addressing comments from Xiaofei:
-> - do a force kill only for abnormal sync errors
-> 
-> changes since v3 by addressing comments from Xiaofei:
-> - do a force kill for abnormal memory failure error such as invalid PA,
-> unexpected severity, OOM, etc
-> - pcik up tested-by tag from Ma Wupeng
-> 
-> changes since v2 by addressing comments from Naoya:
-> - rename mce_task_work to sync_task_work
-> - drop ACPI_HEST_NOTIFY_MCE case in is_hest_sync_notify()
-> - add steps to reproduce this problem in cover letter
-> 
-> changes since v1:
-> - synchronous events by notify type
-> - Link: https://lore.kernel.org/lkml/20221206153354.92394-3-xueshuai@linux.alibaba.com/
+> Thanks,
+> Jason
 > 
 > 
-> ## Cover Letter
-> 
-> There are two major types of uncorrected recoverable (UCR) errors :
-> 
-> - Action Required (AR): The error is detected and the processor already
->   consumes the memory. OS requires to take action (for example, offline
->   failure page/kill failure thread) to recover this error.
-> 
-> - Action Optional (AO): The error is detected out of processor execution
->   context. Some data in the memory are corrupted. But the data have not
->   been consumed. OS is optional to take action to recover this error.
-> 
-> The main difference between AR and AO errors is that AR errors are synchronous
-> events, while AO errors are asynchronous events. Synchronous exceptions, such as
-> Machine Check Exception (MCE) on X86 and Synchronous External Abort (SEA) on
-> Arm64, are signaled by the hardware when an error is detected and the memory
-> access has architecturally been executed.
-> 
-> Currently, both synchronous and asynchronous errors are queued as AO errors and
-> handled by a dedicated kernel thread in a work queue on the ARM64 platform. For
-> synchronous errors, memory_failure() is synced using a cancel_work_sync trick to
-> ensure that the corrupted page is unmapped and poisoned. Upon returning to
-> user-space, the process resumes at the current instruction, triggering a page
-> fault. As a result, the kernel sends a SIGBUS signal to the current process due
-> to VM_FAULT_HWPOISON.
-> 
-> However, this trick is not always be effective, this patch set improves the
-> recovery process in three specific aspects:
-> 
-> 1. Handle synchronous exceptions with proper si_code
-> 
-> ghes_handle_memory_failure() queue both synchronous and asynchronous errors with
-> flag=0. Then the kernel will notify the process by sending a SIGBUS signal in
-> memory_failure() with wrong si_code: BUS_MCEERR_AO to the actual user-space
-> process instead of BUS_MCEERR_AR. The user-space processes rely on the si_code
-> to distinguish to handle memory failure.
-> 
-> For example, hwpoison-aware user-space processes use the si_code:
-> BUS_MCEERR_AO for 'action optional' early notifications, and BUS_MCEERR_AR
-> for 'action required' synchronous/late notifications. Specifically, when a
-> signal with SIGBUS_MCEERR_AR is delivered to QEMU, it will inject a vSEA to
-> Guest kernel. In contrast, a signal with SIGBUS_MCEERR_AO will be ignored
-> by QEMU.[1]
-> 
-> Fix it by seting memory failure flags as MF_ACTION_REQUIRED on synchronous events. (PATCH 1)
-> 
-> 2. Handle memory_failure() abnormal fails to avoid a unnecessary reboot
-> 
-> If process mapping fault page, but memory_failure() abnormal return before
-> try_to_unmap(), for example, the fault page process mapping is KSM page.
-> In this case, arm64 cannot use the page fault process to terminate the
-> synchronous exception loop.[4]
-> 
-> This loop can potentially exceed the platform firmware threshold or even trigger
-> a kernel hard lockup, leading to a system reboot. However, kernel has the
-> capability to recover from this error.
-> 
-> Fix it by performing a force kill when memory_failure() abnormal fails or when
-> other abnormal synchronous errors occur. These errors can include situations
-> such as invalid PA, unexpected severity, no memory failure config support,
-> invalid GUID section, OOM, etc. (PATCH 2)
-> 
-> 3. Handle memory_failure() in current process context which consuming poison
-> 
-> When synchronous errors occur, memory_failure() assume that current process
-> context is exactly that consuming poison synchronous error.
-> 
-> For example, kill_accessing_process() holds mmap locking of current->mm, does
-> pagetable walk to find the error virtual address, and sends SIGBUS to the
-> current process with error info. However, the mm of kworker is not valid,
-> resulting in a null-pointer dereference. I have fixed this in[3].
-> 
->     commit 77677cdbc2aa mm,hwpoison: check mm when killing accessing process
-> 
-> Another example is that collect_procs()/kill_procs() walk the task list, only
-> collect and send sigbus to task which consuming poison. But memory_failure() is
-> queued and handled by a dedicated kernel thread on arm64 platform.
-> 
-> Fix it by queuing memory_failure() as a task work which runs in current
-> execution context to synchronously send SIGBUS before ret_to_user. (PATCH 2)
-> 
-> ** In summary, this patch set handles synchronous errors in task work with
-> proper si_code so that hwpoison-aware process can recover from errors, and
-> fixes (potentially) abnormal cases. **
-> 
-> Lv Ying and XiuQi from Huawei also proposed to address similar problem[2][4].
-> Acknowledge to discussion with them.
-> 
-> ## Steps to Reproduce This Problem
-> 
-> To reproduce this problem:
-> 
-> 	# STEP1: enable early kill mode
-> 	#sysctl -w vm.memory_failure_early_kill=1
-> 	vm.memory_failure_early_kill = 1
-> 
-> 	# STEP2: inject an UCE error and consume it to trigger a synchronous error
-> 	#einj_mem_uc single
-> 	0: single   vaddr = 0xffffb0d75400 paddr = 4092d55b400
-> 	injecting ...
-> 	triggering ...
-> 	signal 7 code 5 addr 0xffffb0d75000
-> 	page not present
-> 	Test passed
-> 
-> The si_code (code 5) from einj_mem_uc indicates that it is BUS_MCEERR_AO error
-> and it is not fact.
-> 
-> After this patch set:
-> 
-> 	# STEP1: enable early kill mode
-> 	#sysctl -w vm.memory_failure_early_kill=1
-> 	vm.memory_failure_early_kill = 1
-> 
-> 	# STEP2: inject an UCE error and consume it to trigger a synchronous error
-> 	#einj_mem_uc single
-> 	0: single   vaddr = 0xffffb0d75400 paddr = 4092d55b400
-> 	injecting ...
-> 	triggering ...
-> 	signal 7 code 4 addr 0xffffb0d75000
-> 	page not present
-> 	Test passed
-> 
-> The si_code (code 4) from einj_mem_uc indicates that it is BUS_MCEERR_AR error
-> as we expected.
-> 
-> [1] Add ARMv8 RAS virtualization support in QEMU https://patchew.org/QEMU/20200512030609.19593-1-gengdongjiu@huawei.com/
-> [2] https://lore.kernel.org/lkml/20221205115111.131568-3-lvying6@huawei.com/
-> [3] https://lkml.kernel.org/r/20220914064935.7851-1-xueshuai@linux.alibaba.com
-> [4] https://lore.kernel.org/lkml/20221209095407.383211-1-lvying6@huawei.com/
-> 
-> Shuai Xue (2):
->   ACPI: APEI: set memory failure flags as MF_ACTION_REQUIRED on
->     synchronous events
->   ACPI: APEI: handle synchronous exceptions in task work
-> 
->  arch/x86/kernel/cpu/mce/core.c |   9 +--
->  drivers/acpi/apei/ghes.c       | 113 ++++++++++++++++++++++-----------
->  include/acpi/ghes.h            |   3 -
->  include/linux/mm.h             |   1 -
->  mm/memory-failure.c            |  22 ++-----
->  5 files changed, 82 insertions(+), 66 deletions(-)
-> 
+
+- Hector
