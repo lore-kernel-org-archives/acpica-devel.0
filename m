@@ -1,170 +1,103 @@
-Received: from mail.marcansoft.com (marcansoft.com [212.63.210.85])
+Received: from smtp3.osuosl.org (smtp3.osuosl.org [140.211.166.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 134E619BD6;
-	Tue, 21 Nov 2023 06:48:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=marcan.st
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marcan.st
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEC4D3C6A7
+	for <acpica-devel@lists.linuxfoundation.org>; Tue, 21 Nov 2023 10:38:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marcan.st header.i=@marcan.st header.b="yBZ7Udel"
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
-	(No client certificate requested)
-	(Authenticated sender: marcan@marcan.st)
-	by mail.marcansoft.com (Postfix) with ESMTPSA id EDDAF42137;
-	Tue, 21 Nov 2023 06:47:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=marcan.st; s=default;
-	t=1700549281; bh=ujaYq3QQkb3U4N6JNFFQq4uH4QKQpO8RJp9aJVbB0w0=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=yBZ7Udel893+M2pzDMgdTushmaUgXq0nIf/5xxASROF107adcyenfoQIJKpJop3QE
-	 1+yTIUhVbWxOP7swSXHE/1waIz+ytnfqIeOR+pXsrjnxJ9YDy9OcehudknnZZfDU0W
-	 yBoxtsLq/eITHB2A8C7zHMk/QpuQDhn54/ueeppNZr5bacp1NBly8id6vI/+HcZLF9
-	 Y3o89xan9Av9novKYwloiJeRxCXK4RdvbSm3KrREtUx62PnuC+h7WkJf1goRn4PDd/
-	 8BaauSYV42Ok4T8UBbrfnw8aItI789XfEb5enuqF6bZ2I7QNWWCAUkdCy2CTlvEfD+
-	 wJAB4I2ql495A==
-Message-ID: <90855bbf-e845-4e4d-a713-df71d1e477d2@marcan.st>
-Date: Tue, 21 Nov 2023 15:47:48 +0900
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="keJk8CZH"
+Received: from localhost (localhost [127.0.0.1])
+	by smtp3.osuosl.org (Postfix) with ESMTP id 39CB061007
+	for <acpica-devel@lists.linuxfoundation.org>; Tue, 21 Nov 2023 10:38:39 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 39CB061007
+Authentication-Results: smtp3.osuosl.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=keJk8CZH
+X-Virus-Scanned: amavisd-new at osuosl.org
+X-Spam-Flag: NO
+X-Spam-Score: -4.401
+X-Spam-Level:
+Received: from smtp3.osuosl.org ([127.0.0.1])
+	by localhost (smtp3.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id WExxunR_NJvK
+	for <acpica-devel@lists.linuxfoundation.org>;
+	Tue, 21 Nov 2023 10:38:38 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+	by smtp3.osuosl.org (Postfix) with ESMTPS id 7AD9660FCC
+	for <acpica-devel@lists.linuxfoundation.org>; Tue, 21 Nov 2023 10:38:38 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 7AD9660FCC
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700563118; x=1732099118;
+  h=from:to:cc:subject:date:message-id;
+  bh=bxtTVb3CSDkXZiM00Vj7mR/GNeU9U6TTLbrsPm7CyvU=;
+  b=keJk8CZH/UyyV9yZOw8fMTttimCpo3jOTpoWfeHcfkge6K8cI3sXNh4g
+   ykmuGpvYJH1cqoxGYuCp/A9mWcfN90Zpj3lMg3OOesQqIs1UkMLg8K6J+
+   spYZX1p8J8dZRLoaeZFE3jY9HC/dDsMmP2Igvh5ujYPZeJ1EkCfZtdZ13
+   9aI41aDMqlM7wt/4Amq1fKOxdfbuRA7GMXCLs/StITQWQlymhlbZOLRTp
+   DLO6q95VzdXikYErobos0Go25Zl8kAZWFfRU2/u+m6un86Cr0aDdVDUAo
+   rjKLYcPn/0ztdHBn2Y67oxMxQPwKqXvl4oh4Ae1xJbFjwy1dJkUmGUHsA
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="371986845"
+X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
+   d="scan'208";a="371986845"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 02:38:37 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
+   d="scan'208";a="14871909"
+Received: from inlubt0316.iind.intel.com ([10.191.20.213])
+  by fmviesa001.fm.intel.com with ESMTP; 21 Nov 2023 02:38:33 -0800
+From: Raag Jadav <raag.jadav@intel.com>
+To: mika.westerberg@linux.intel.com,
+	andriy.shevchenko@linux.intel.com,
+	rafael@kernel.org,
+	lenb@kernel.org,
+	robert.moore@intel.com,
+	ardb@kernel.org,
+	will@kernel.org,
+	mark.rutland@arm.com
+Cc: linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	acpica-devel@lists.linuxfoundation.org,
+	linux-efi@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	mallikarjunappa.sangannavar@intel.com,
+	bala.senthil@intel.com,
+	Raag Jadav <raag.jadav@intel.com>
+Subject: [PATCH v2 0/6] Support _UID matching for integer types
+Date: Tue, 21 Nov 2023 16:08:23 +0530
+Message-Id: <20231121103829.10027-1-raag.jadav@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 06/17] iommu: Add iommu_fwspec_alloc/dealloc()
-Content-Language: en-US
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: acpica-devel@lists.linux.dev, Alyssa Rosenzweig <alyssa@rosenzweig.io>,
- Albert Ou <aou@eecs.berkeley.edu>, asahi@lists.linux.dev,
- Catalin Marinas <catalin.marinas@arm.com>, Dexuan Cui <decui@microsoft.com>,
- devicetree@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
- Frank Rowand <frowand.list@gmail.com>, Hanjun Guo <guohanjun@huawei.com>,
- Haiyang Zhang <haiyangz@microsoft.com>, iommu@lists.linux.dev,
- Jean-Philippe Brucker <jean-philippe@linaro.org>,
- Jonathan Hunter <jonathanh@nvidia.com>, Joerg Roedel <joro@8bytes.org>,
- "K. Y. Srinivasan" <kys@microsoft.com>, Len Brown <lenb@kernel.org>,
- linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-hyperv@vger.kernel.org, linux-mips@vger.kernel.org,
- linux-riscv@lists.infradead.org, linux-snps-arc@lists.infradead.org,
- linux-tegra@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
- Lorenzo Pieralisi <lpieralisi@kernel.org>,
- Marek Szyprowski <m.szyprowski@samsung.com>,
- Palmer Dabbelt <palmer@dabbelt.com>, patches@lists.linux.dev,
- Paul Walmsley <paul.walmsley@sifive.com>,
- "Rafael J. Wysocki" <rafael@kernel.org>,
- Robert Moore <robert.moore@intel.com>, Rob Herring <robh+dt@kernel.org>,
- Robin Murphy <robin.murphy@arm.com>, Sudeep Holla <sudeep.holla@arm.com>,
- Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
- Sven Peter <sven@svenpeter.dev>, Thierry Reding <thierry.reding@gmail.com>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Krishna Reddy <vdumpa@nvidia.com>, Vineet Gupta <vgupta@kernel.org>,
- virtualization@lists.linux.dev, Wei Liu <wei.liu@kernel.org>,
- Will Deacon <will@kernel.org>
-References: <6-v2-36a0088ecaa7+22c6e-iommu_fwspec_jgg@nvidia.com>
- <20a7ef6d-a8ca-4bd8-ad7e-11856db617a2@marcan.st>
- <1eb12c35-e64e-4c32-af99-8743dc2ec266@marcan.st>
- <20231119141329.GA6083@nvidia.com>
-From: Hector Martin <marcan@marcan.st>
-In-Reply-To: <20231119141329.GA6083@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+
+This series updates the standard ACPI helpers to support _UID matching
+for both integer and string types, and uses them in a couple of places.
+
+Changes since v1:
+- Fix build errors
+
+Raag Jadav (6):
+  compiler.h: Introduce helpers for identifying array and pointer types
+  ACPI: bus: update acpi_dev_uid_match() to support multiple types
+  ACPI: bus: update acpi_dev_hid_uid_match() to support multiple types
+  ACPI: LPSS: use acpi_dev_uid_match() for matching _UID
+  efi: dev-path-parser: use acpi_dev_uid_match() for matching _UID
+  perf: arm_cspmu: drop redundant acpi_dev_uid_to_integer()
+
+ drivers/acpi/acpi_lpss.c               | 16 ++-----
+ drivers/acpi/utils.c                   | 48 ---------------------
+ drivers/firmware/efi/dev-path-parser.c |  7 +--
+ drivers/perf/arm_cspmu/arm_cspmu.c     |  4 +-
+ include/acpi/acpi_bus.h                | 59 +++++++++++++++++++++++++-
+ include/linux/acpi.h                   | 15 ++-----
+ include/linux/compiler.h               |  5 +++
+ 7 files changed, 73 insertions(+), 81 deletions(-)
 
 
+base-commit: f437a8d1debff5412e36a1c9454adee193b31950
+-- 
+2.17.1
 
-On 2023/11/19 23:13, Jason Gunthorpe wrote:
-> On Sun, Nov 19, 2023 at 06:19:43PM +0900, Hector Martin wrote:
->>>> +static int iommu_fwspec_assign_iommu(struct iommu_fwspec *fwspec,
->>>> +				     struct device *dev,
->>>> +				     struct fwnode_handle *iommu_fwnode)
->>>> +{
->>>> +	const struct iommu_ops *ops;
->>>> +
->>>> +	if (fwspec->iommu_fwnode) {
->>>> +		/*
->>>> +		 * fwspec->iommu_fwnode is the first iommu's fwnode. In the rare
->>>> +		 * case of multiple iommus for one device they must point to the
->>>> +		 * same driver, checked via same ops.
->>>> +		 */
->>>> +		ops = iommu_ops_from_fwnode(iommu_fwnode);
->>>
->>> This carries over a related bug from the original code: If a device has
->>> two IOMMUs and the first one probes but the second one defers, ops will
->>> be NULL here and the check will fail with EINVAL.
->>>
->>> Adding a check for that case here fixes it:
->>>
->>> 		if (!ops)
->>> 			return driver_deferred_probe_check_state(dev);
-> 
-> Yes!
-> 
->>> With that, for the whole series:
->>>
->>> Tested-by: Hector Martin <marcan@marcan.st>
->>>
->>> I can't specifically test for the probe races the series intends to fix
->>> though, since that bug we only hit extremely rarely. I'm just testing
->>> that nothing breaks.
->>
->> Actually no, this fix is not sufficient. If the first IOMMU is ready
->> then the xlate path allocates dev->iommu, which then
->> __iommu_probe_device takes as a sign that all IOMMUs are ready and does
->> the device init.
-> 
-> It doesn't.. The code there is:
-> 
-> 	if (!fwspec && dev->iommu)
-> 		fwspec = dev->iommu->fwspec;
-> 	if (fwspec)
-> 		ops = fwspec->ops;
-> 	else
-> 		ops = dev->bus->iommu_ops;
-> 	if (!ops) {
-> 		ret = -ENODEV;
-> 		goto out_unlock;
-> 	}
-> 
-> Which is sensitive only to !NULL fwspec, and if EPROBE_DEFER is
-> returned fwspec will be freed and dev->iommu->fwspec will be NULL
-> here.
-> 
-> In the NULL case it does a 'bus probe' with a NULL fwspec and all the
-> fwspec drivers return immediately from their probe functions.
-> 
-> Did I miss something?
-
-apple_dart is not a fwspec driver and doesn't do that :-)
-
-> 
->> Then when the xlate comes along again after suceeding
->> with the second IOMMU, __iommu_probe_device sees the device is already
->> in a group and never initializes the second IOMMU, leaving the device
->> with only one IOMMU.
-> 
-> This should be fixed by the first hunk to check every iommu and fail?
-> 
-> BTW, do you have a systems with same device attached to multiple
-> iommus?
-
-Yes, Apple ARM64 machines all have multiple ganged IOMMUs for certain
-devices (USB and ISP). We also attach all display IOMMUs to the global
-virtual display-subsystem device to handle framebuffer mappings, instead
-of trying to dynamically map them to a bunch of individual display
-controllers (which is a lot more painful). That last one is what
-reliably reproduces this problem, display breaks without both previous
-patches ever since we started supporting more than one display output.
-The first one is not enough.
-
-> I've noticed another bug here, many drivers don't actually support
-> differing iommu instances and nothing seems to check it..
-
-apple-dart does (as long as all the IOMMUs are using that driver).
-
-> 
-> Thanks,
-> Jason
-> 
-> 
-
-- Hector
