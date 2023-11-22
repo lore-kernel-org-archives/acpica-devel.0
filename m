@@ -1,31 +1,44 @@
-Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F19A25576
-	for <acpica-devel@lists.linux.dev>; Wed, 22 Nov 2023 13:14:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
-Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-6d7e6a08299so209113a34.0
-        for <acpica-devel@lists.linux.dev>; Wed, 22 Nov 2023 05:14:53 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAAEE3D969
+	for <acpica-devel@lists.linux.dev>; Wed, 22 Nov 2023 14:56:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="O8jYNfJm"
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-5cb8440a23cso21851377b3.3
+        for <acpica-devel@lists.linux.dev>; Wed, 22 Nov 2023 06:56:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700665000; x=1701269800; darn=lists.linux.dev;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DlRpn0YExbwmZYTM470D32GCVHZUUU3U4GDP0MEdp30=;
+        b=O8jYNfJm1MFw8VXBQivGazV/ANSObszP/laaRHUJ5qp/Fwa+TywUuQKas9bJz9Qun9
+         To1uGZovSGywLAm4AZ3PC9/5L9CG2iT2pLrO2EMXmwrr1j+tulyiyJ9HS8n60vGJgxRy
+         UINwnYddNvd2g3moNEe7IDpOqbaZ2zHJtmZq3BhzJ0S4v1cvRlMkZQrZw7F6gx/by6BY
+         PKQVbz+nKefG5jYHEVFBwVDegk2tRubio0diDMapmBTM26YNnkXUgYwXTbfDC2W9kDI8
+         Tdhj1tE88x+IJ6AnrDLneMFscYIvTgXqm1iOSNI0jV7qp7zWy8SoEjNG1Hi7sM+oCsLb
+         PjZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700658892; x=1701263692;
+        d=1e100.net; s=20230601; t=1700665000; x=1701269800;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=oYp1qA6Rj8R+cs9YseE9JWdxZsiJT+korOEyoXcPVv4=;
-        b=VldQhG3mFBR+yGYNFVl4wEkYlNYi8Xg3+0oUnQ73kRrxF2MFZrAXS+4BmNHMyorctw
-         a1zqTN3kyo9ySprWgREzfmrTpZLJYiiIbyqOAv7Ixvtw5NvXHMkZ/oiImxUxfFajk8Qg
-         71QXZszka6jOcAbpu/jz4+EVz/aKThpd+cMzjZ3wsbWBSFcK32KP/Jyj3g1FZDfZfZ6u
-         M7X7KaVu7zJgNaNUSRleE2usi3DNi/0PAebV3mVfemX8whb8nJmDqvnbUdXI1myshnAd
-         x/U30okM5Dns6ZpNoQy10d+1uaMwpXjUO9pM52hL6ed8JJM63ANvhHUh+5d78Uzh8V6s
-         lifA==
-X-Gm-Message-State: AOJu0YynKczECwTTIQhJZxXnAGUjEtc3WAWRiEG1NJw0bjXMWqxiEOHO
-	xIxTFglfqq3GZWWv+4+uLcgRvkdAU2Hykp93elc=
-X-Google-Smtp-Source: AGHT+IGLaqddtZJrV7cWRhrcczCAU1dJlp3v3FkD9l6DHotgDfOqpiCeWd08F8MrY56cvJDLtFQNUfFZGkEEJfDGWyo=
-X-Received: by 2002:a05:6870:2401:b0:1f9:5d11:cc7a with SMTP id
- n1-20020a056870240100b001f95d11cc7amr2688101oap.3.1700658892377; Wed, 22 Nov
- 2023 05:14:52 -0800 (PST)
+        bh=DlRpn0YExbwmZYTM470D32GCVHZUUU3U4GDP0MEdp30=;
+        b=Q+HalsuySfFonG7JtLrGbEW4GEsdegIugIS3njiOcb332JMo/fIMJtoy4YNijNGVSj
+         3KQlv8+aW4FrGiY2ZaDAaZzwVHestGF66Lat70i/s9GbxI+6njhVWaYcQFtYZYOkoDBg
+         m4Mk4aY/Un8gkq41NrPPJ8T00ieHMpfGFYNYRYIDKitcRE+jGtLr4fbaQ8XXABwP6jbP
+         34kFDMz2aLa6XMFGnDGIlccHzsn5cDVAW3IRWRuiN/yG22FakJqJMLEMdNyanwj9e+sc
+         VxrQTr77iWjFRglHK6rLkrqk/6/+sDgFValvneGK2ikHoHl6fEl06/rt1JQO9kWQJkux
+         dmxw==
+X-Gm-Message-State: AOJu0YxXJ8WzrQgQuB6nC84vbvjhc/O4ZJWgkOIGyUQl4syBuznRXNxZ
+	GaZ+MuhcazYqtURLRKFSn3LAkmHmnoQ3AiYAD1SrJQ==
+X-Google-Smtp-Source: AGHT+IETkyDkyc+qmERQdITDeir1SD3U7sHru8ZIboVSSWeeQw5dcf2O6tuEhcqqPh/BIaHsLICfH+aUOCCIoZE93wc=
+X-Received: by 2002:a0d:d692:0:b0:5c9:e98c:a6ae with SMTP id
+ y140-20020a0dd692000000b005c9e98ca6aemr2364566ywd.4.1700665000626; Wed, 22
+ Nov 2023 06:56:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -34,24 +47,23 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 References: <170060515641.2447486.11798332619205301829.stgit@djiang5-mobl3>
 In-Reply-To: <170060515641.2447486.11798332619205301829.stgit@djiang5-mobl3>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 22 Nov 2023 14:14:41 +0100
-Message-ID: <CAJZ5v0hkGfqzHwmhBKqwhcEchncM6kEgx_TJgJGgjiR5yMZkLg@mail.gmail.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Wed, 22 Nov 2023 15:56:28 +0100
+Message-ID: <CACRpkda-YFDH6JB=V5n4QXMAHyHc22pfhUfW97hj7WaHX7-mpg@mail.gmail.com>
 Subject: Re: [PATCH v2] acpi: Fix ARM32 platforms compile issue introduced by
  fw_table changes
 To: Dave Jiang <dave.jiang@intel.com>
-Cc: linus.walleij@linaro.org, rafael@kernel.org, 
-	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, lenb@kernel.org, robert.moore@intel.com, 
-	Jonathan.Cameron@huawei.com, dan.j.williams@intel.com, guohanjun@huawei.com, 
-	arnd@arndb.de, linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	cfsworks@gmail.com
+Cc: rafael@kernel.org, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, lenb@kernel.org, 
+	robert.moore@intel.com, Jonathan.Cameron@huawei.com, dan.j.williams@intel.com, 
+	guohanjun@huawei.com, arnd@arndb.de, linux-acpi@vger.kernel.org, 
+	acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, cfsworks@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 On Tue, Nov 21, 2023 at 11:19=E2=80=AFPM Dave Jiang <dave.jiang@intel.com> =
 wrote:
->
+
 > Linus reported that:
 > After commit a103f46633fd the kernel stopped compiling for
 > several ARM32 platforms that I am building with a bare metal
@@ -89,98 +101,9 @@ EdWR55rGYEoxh7R6N8kFQ@mail.gmail.com/
 > Reported-by: Linus Walleij <linus.walleij@linaro.org>
 > Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > Signed-off-by: Dave Jiang <dave.jiang@intel.com>
-> ---
-> v2:
-> - Remove linux/acpi.h include as well in fw_table.h. (Sam)
-> ---
->  include/linux/acpi.h     |   22 +++++++++++-----------
->  include/linux/fw_table.h |    3 ---
->  lib/fw_table.c           |    1 +
->  3 files changed, 12 insertions(+), 14 deletions(-)
->
-> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-> index 54189e0e5f41..4db54e928b36 100644
-> --- a/include/linux/acpi.h
-> +++ b/include/linux/acpi.h
-> @@ -15,7 +15,6 @@
->  #include <linux/mod_devicetable.h>
->  #include <linux/property.h>
->  #include <linux/uuid.h>
-> -#include <linux/fw_table.h>
->
->  struct irq_domain;
->  struct irq_domain_ops;
-> @@ -25,22 +24,13 @@ struct irq_domain_ops;
->  #endif
->  #include <acpi/acpi.h>
->
-> -#ifdef CONFIG_ACPI_TABLE_LIB
-> -#define EXPORT_SYMBOL_ACPI_LIB(x) EXPORT_SYMBOL_NS_GPL(x, ACPI)
-> -#define __init_or_acpilib
-> -#define __initdata_or_acpilib
-> -#else
-> -#define EXPORT_SYMBOL_ACPI_LIB(x)
-> -#define __init_or_acpilib __init
-> -#define __initdata_or_acpilib __initdata
-> -#endif
-> -
->  #ifdef CONFIG_ACPI
->
->  #include <linux/list.h>
->  #include <linux/dynamic_debug.h>
->  #include <linux/module.h>
->  #include <linux/mutex.h>
-> +#include <linux/fw_table.h>
->
->  #include <acpi/acpi_bus.h>
->  #include <acpi/acpi_drivers.h>
-> @@ -48,6 +38,16 @@ struct irq_domain_ops;
->  #include <acpi/acpi_io.h>
->  #include <asm/acpi.h>
->
-> +#ifdef CONFIG_ACPI_TABLE_LIB
-> +#define EXPORT_SYMBOL_ACPI_LIB(x) EXPORT_SYMBOL_NS_GPL(x, ACPI)
-> +#define __init_or_acpilib
-> +#define __initdata_or_acpilib
-> +#else
-> +#define EXPORT_SYMBOL_ACPI_LIB(x)
-> +#define __init_or_acpilib __init
-> +#define __initdata_or_acpilib __initdata
-> +#endif
-> +
->  static inline acpi_handle acpi_device_handle(struct acpi_device *adev)
->  {
->         return adev ? adev->handle : NULL;
-> diff --git a/include/linux/fw_table.h b/include/linux/fw_table.h
-> index ff8fa58d5818..ca49947f0a77 100644
-> --- a/include/linux/fw_table.h
-> +++ b/include/linux/fw_table.h
-> @@ -25,9 +25,6 @@ struct acpi_subtable_proc {
->         int count;
->  };
->
-> -#include <linux/acpi.h>
-> -#include <acpi/acpi.h>
-> -
->  union acpi_subtable_headers {
->         struct acpi_subtable_header common;
->         struct acpi_hmat_structure hmat;
-> diff --git a/lib/fw_table.c b/lib/fw_table.c
-> index b51f30a28e47..c4831f3378be 100644
-> --- a/lib/fw_table.c
-> +++ b/lib/fw_table.c
-> @@ -7,6 +7,7 @@
->   *  Copyright (C) 2023 Intel Corp.
->   */
->  #include <linux/errno.h>
-> +#include <linux/acpi.h>
->  #include <linux/fw_table.h>
 
-Because fw_table.h is included via acpi.h, do you still need to
-include it directly here?
+This works fine on my end.
+Tested-by: Linus Walleij <linus.walleij@linaro.org>
 
->  #include <linux/init.h>
->  #include <linux/kernel.h>
->
->
->
+Yours,
+Linus Walleij
