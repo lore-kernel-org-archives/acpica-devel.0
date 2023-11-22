@@ -1,95 +1,89 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACB904CDE0
-	for <acpica-devel@lists.linux.dev>; Wed, 22 Nov 2023 15:41:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D620E1C69B
+	for <acpica-devel@lists.linux.dev>; Wed, 22 Nov 2023 21:32:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FRlapj1v"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TgP7ZJbM"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700667702; x=1732203702;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=/q6Q4PmrOVS1ASyyP+sVyD6k5JNQQUzIbpg4c4+ZHi4=;
-  b=FRlapj1vCbt/RvmGu+lFWfmlDJrR5qvezblrRdcQZ0sM/0ZlDCVnTx4G
-   uDx3guZV/9r2gjF5zM721PpWyCL+rriLxFGUhoYYx366PN9KT3Gnlx5Jy
-   qj0mGtnuk7vwK/TDCFa3t7tSRV8P/hh2WD8ugNsqKnisTUQKfw3mjnMkx
-   dxn+YlWJFZ6J3WpyMBNS+Qp/NUQG29qJmzH7G7fCn8YSTj0hDmIyXui3m
-   dqbHnA3oGelY3q5yaStHprlTMJBzhC2qelBrYiIcaPvZ8IeYv2VSLWanv
-   22KDKKOMr6ZA0/T0i/mv7bt5GVSqrv9XIM/f2L3TlQ2B5p7SAFGP7L4/t
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="5277536"
+  t=1700688743; x=1732224743;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=H/Sr2PUsoitanwqIKc8J29ushpHKfdibDYkRT/pe11s=;
+  b=TgP7ZJbMyyL/hJ7F4DRHBjRe+FOcD92X69kGfsAU3kXrPszLTB09FHpz
+   QW0sba8VJg1QtbPHuy1t1d8XYUy9Qm75YCCLDuqO+iPNiWUiCmVZrHarf
+   RRzCBKPt4UuKaIVFFE1fa45V5lq+pV3RjCuY3z2CLqnn7HrSD+DAsZShO
+   tzp58dJkbKKsl/ptjCoLY6vorKpfba7/QJRBrlLq2TqtMIAIXMv8l1YKK
+   gz49r85akTpCXdgvt389TzlM2N0Aq2blt+EyaXXM6e8SD/4cpGsAzL+DO
+   buqTw9i2Xr5pUeGaIC4bYUV3y80MTNl6fRqC1JwtwLyAkSZu6f3JfCfGj
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="396062508"
 X-IronPort-AV: E=Sophos;i="6.04,219,1695711600"; 
-   d="scan'208";a="5277536"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 07:41:40 -0800
+   d="scan'208";a="396062508"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 13:32:23 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="1098459969"
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="833201708"
 X-IronPort-AV: E=Sophos;i="6.04,219,1695711600"; 
-   d="scan'208";a="1098459969"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmsmga005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 22 Nov 2023 07:41:40 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+   d="scan'208";a="833201708"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmsmga008.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 22 Nov 2023 13:32:22 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Wed, 22 Nov 2023 07:41:39 -0800
-Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ 15.1.2507.34; Wed, 22 Nov 2023 13:32:21 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Wed, 22 Nov 2023 07:41:39 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Wed, 22 Nov 2023 07:41:39 -0800
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.57.40) by
- edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ 15.1.2507.34 via Frontend Transport; Wed, 22 Nov 2023 13:32:21 -0800
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Wed, 22 Nov 2023 07:41:39 -0800
+ 15.1.2507.34; Wed, 22 Nov 2023 13:32:21 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oftBAyZHrBir5i1l/wO9DHLIqjNHKbvEk7BIvEaj+s8Pyzz9TFIuxgLjnCToDnITYfwII8JLjxZGec5jau28w4xe4KTvg2OGrzh0Rknq2x9GNip3r9St32e/SRUghWHqXlmJ5lO1EgenNbt72RvslcJtwJw1WN7L8lFMWQLS4HySTv9TkdZ4hx5BEGHCQJ+Z33RReEu1psoo35LW06oFEN3H3Qfj2Zvox3ZhVGA1ikJVBHG0qJmuVrE4Vq0/Netkf6x+UIH1hFLc1Lgt8IAixNzfur0hB9wE78GAxK80I0Jv4cxAbPaPynHlB79YRr70zmVnYmOdM11W2bDk0eLycg==
+ b=Mn011Ycj1Gym3D8GQmnm1ne+xT1KuMpdjgmVU+N7t4e8LBNHZAe/LA+CJc8nQI+WeMg4Wzx/5qHFZyqrXy3bGTe+eBCfYD5ESkSktlvW/PUtsmwW0+J1bYCS2iq8tpRSX5yn1S8+pOhHKOWLP755yCtOvKfUECZmR7Zk+jytiPb174t1uo0guc2PrR3ujgCxxKFFf3hPFCeGwajfpm5/4ESYsockKHmZ9jDHnh6577kNBrT3ZmWDogeWc2uj6XS4RPYt1bXpuO8KT0phvxokWFCzba7KtO6McKenEGIvG739ALQ+AmErNHachBuoV8SAsWplEHKyo/Lowyf0CaPLug==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WaOwZQOa/geNQxcOJQo6Vdtr45GugC5Y4YuBFrSAPCw=;
- b=B3S9ZtEw0sQ6r7bg31YvsKmnxa1yfYSinBMHyxe1emMZbIXNW3mofJW02nDxhg3li5WQz8JEBTGyshTVirdr5m9yrtA5RUZhYKuVAFyha7IxWXoq1xrnvxMF55Z1mW24Mh4+7mlfoKY/W6/0emV6y3kXxvbxWXuyGnCqYC6FcXQNNUR9aotr+d4UgjWAi6hH6X+RyyhrT0zV7qnsPQhSNi4InRVp7KrbeC3jIG50dKujEuLb1MUQMJ+/MPm3ufeQp9hCSN6d8j2I+Fhucw9gUD9USyZz6+MLT5yFX/ur8jNYnLM4w5CzAlrn4ohPQVXUfY1RdvEu4vLwb4lsrt/NNA==
+ bh=N1ey0hFO0QrTyK9JJA5qy64vPs+TGVTnAxssB1gMKbY=;
+ b=C2f6LHTSuN1sv5fkYx4NMHq1ArX6XKOFNKbQWuRpO082IGkwWeUja0uxnLoeBF1ntvsuX+CJHyxx4w57ynNC++iGi/ZXYCIAeEEufIehbEgCoRB0eGLDEZEApRjoEW+8TdIj58VHpzRZmulCTmlLY9wd/KxP0GCve71R//N2hlX80DlV+yuZTymfPkcI+VZpLbzSn1Bszss48kG8j8Gns2UIzRvmKliLkoBUMR8aLxykGZLIB2UDS9ZAd6Rqwx3u+ifBuYwtIn7mqermp/Sa/XS2nwKCZUJxfPL0k3diBQMmI5X8hpjnMDt2/LROmV5isYykB8IjEujtI7CThzJbXg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH7PR11MB5984.namprd11.prod.outlook.com (2603:10b6:510:1e3::15)
- by PH7PR11MB7074.namprd11.prod.outlook.com (2603:10b6:510:20d::7) with
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
+ by SJ0PR11MB5677.namprd11.prod.outlook.com (2603:10b6:a03:37e::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.26; Wed, 22 Nov
- 2023 15:41:36 +0000
-Received: from PH7PR11MB5984.namprd11.prod.outlook.com
- ([fe80::6f7b:337d:383c:7ad1]) by PH7PR11MB5984.namprd11.prod.outlook.com
- ([fe80::6f7b:337d:383c:7ad1%4]) with mapi id 15.20.7002.028; Wed, 22 Nov 2023
- 15:41:36 +0000
-Message-ID: <55523a34-cd9b-4324-b012-cdea24c4b810@intel.com>
-Date: Wed, 22 Nov 2023 08:41:32 -0700
-User-Agent: Betterbird (Linux)
-Subject: Re: [PATCH v3] acpi: Fix ARM32 platforms compile issue introduced by
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.19; Wed, 22 Nov
+ 2023 21:32:19 +0000
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6362:763e:f84b:4169]) by PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6362:763e:f84b:4169%5]) with mapi id 15.20.7025.019; Wed, 22 Nov 2023
+ 21:32:19 +0000
+Date: Wed, 22 Nov 2023 13:32:17 -0800
+From: Dan Williams <dan.j.williams@intel.com>
+To: Dave Jiang <dave.jiang@intel.com>, <linus.walleij@linaro.org>,
+	<rafael@kernel.org>
+CC: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, <lenb@kernel.org>,
+	<robert.moore@intel.com>, <Jonathan.Cameron@huawei.com>,
+	<dan.j.williams@intel.com>, <guohanjun@huawei.com>, <arnd@arndb.de>,
+	<linux-acpi@vger.kernel.org>, <acpica-devel@lists.linux.dev>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<cfsworks@gmail.com>
+Subject: RE: [PATCH v3] acpi: Fix ARM32 platforms compile issue introduced by
  fw_table changes
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-CC: <linus.walleij@linaro.org>, "Rafael J. Wysocki"
-	<rafael.j.wysocki@intel.com>, <lenb@kernel.org>, <robert.moore@intel.com>,
-	<Jonathan.Cameron@huawei.com>, <dan.j.williams@intel.com>,
-	<guohanjun@huawei.com>, <arnd@arndb.de>, <linux-acpi@vger.kernel.org>,
-	<acpica-devel@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <cfsworks@gmail.com>
+Message-ID: <655e7361d6ce_b2e8294b9@dwillia2-xfh.jf.intel.com.notmuch>
 References: <170066723324.2477261.2506149141979712937.stgit@djiang5-mobl3>
- <CAJZ5v0giyyhZdkXW7AvZtZZHFNaFxrYKtdZkvthtuB_bXGqt1A@mail.gmail.com>
-Content-Language: en-US
-From: Dave Jiang <dave.jiang@intel.com>
-In-Reply-To: <CAJZ5v0giyyhZdkXW7AvZtZZHFNaFxrYKtdZkvthtuB_bXGqt1A@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: BYAPR07CA0097.namprd07.prod.outlook.com
- (2603:10b6:a03:12b::38) To PH7PR11MB5984.namprd11.prod.outlook.com
- (2603:10b6:510:1e3::15)
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <170066723324.2477261.2506149141979712937.stgit@djiang5-mobl3>
+X-ClientProxiedBy: MW4PR03CA0290.namprd03.prod.outlook.com
+ (2603:10b6:303:b5::25) To PH8PR11MB8107.namprd11.prod.outlook.com
+ (2603:10b6:510:256::6)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -97,205 +91,95 @@ List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR11MB5984:EE_|PH7PR11MB7074:EE_
-X-MS-Office365-Filtering-Correlation-Id: e015263d-6ae5-4baf-0a84-08dbeb7182cc
+X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|SJ0PR11MB5677:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1b1133de-cf29-43df-c2fd-08dbeba28173
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: HTUT08+pseAn3mYZohhaNP+lNjsU8dy747pK/yctpdgkzlpmfCcAtqJHU04UXVuLsr7kaxRHDjbaCrSGmRt4EEIzaZpRBY16vuj2bI9X346GXNIt89bPOPyK6mBD6egnCAp50YrJtCU6RzMTERCJzeT8nsU5l5uV5FQIftU8w22tRXBwtnpfeGuNvnBx804v2nryzWpNl31nfnVvlsC0fmbMOSN45zKup7kX6qtMQec/hBDVI5KRD4ZazVUjbwSsVe+QoEVIoUQaVPrI+fFm0MN5qoz2bvsuu+fYMeMv4tys2k+7rURBevIFS3b+yw7x6FKrXrIWtJBaI0mO4fdAWpkAqeaaMIWAYcP+3RZyv1WvyRXCYUqGQ8paMpyT5Ovha0OaN3JGxaKCQOFG/js9MFkcemd1T4QaDsOM7yrcNZP9T++Q5d0jYLby363JQopqjtwIerh3T9A+mFSV7/LMtvqf3EjtI+7Y4WZw70PeqI+Ja8SqsomyGxPszvcuxe6Bkl5dC3mhMnCH1zFN0s5zlpryoiz224S9OZwWxDjQZMokQpT+/0LGPhOnhTLJ9bJqH1KBGyps5GDBoQIJKeTJ7FMxBYEdl5qz7hHkwZBYCLejHFCn6FI9Ct22MjJelQvSaDtLzOG08/RkhILzpZtDrg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB5984.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(346002)(396003)(136003)(39860400002)(230922051799003)(186009)(1800799012)(64100799003)(451199024)(5660300002)(41300700001)(7416002)(2906002)(44832011)(966005)(6486002)(82960400001)(6512007)(26005)(6506007)(31696002)(36756003)(83380400001)(86362001)(53546011)(2616005)(8676002)(478600001)(6666004)(8936002)(4326008)(66946007)(66556008)(6916009)(31686004)(38100700002)(66476007)(316002)(45980500001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: Yn7/ujIUv9awNIKLRYbDe7OTjDy5dGu4LPrMI7Zhtdsl2zgieAs4IEppvtJpPe7XgnJgek18+iCQz1hznffOWOAZJYIe0C8roSWmdeUL1Ou1Yjn1qs8IOzfWa1fXk+vRN4Dxh4og+2XzWWK/eKpFObjKVpwH4+PH/a13aIQXTgpuUK4RscLNIrzPz2C4S5/jU5C8CqGD3k8CG383dh6i+H/XCdIQWF97yTRyGxwdYXsdFF95yeJ8sHEWQZiQAAYgn18tW8rUDWoOB+MqGqs+RQtBsTWZuZvbBj7zHLFQzA7UiIFGHK0c/C5h8aG9YCM6DgxPvwJG8ZbutxrdcU/oDVuTpu3VGMa20tRC98zhoN+aLxUq+SaDD50iXpPDEqxgyrbyuRyVOAr6PLlVddZeFog9kOqdLlG4Czpm4+1C1R608AzSxKp3/jr+TaVzMZ93v/iofeMqXhamwDL51ggUGkWliOF7yIuUukROOT+Al3T5hM77tkny3TfSCSWIwv34Zk//YlEIMxi5Q+hQftgzcqtQrTVV0MTT/BbD5DLWKKmCNt33nUhpYH+XTAoezifIpmY8ls+WZD9Q7o3A9JMBQw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(39860400002)(376002)(136003)(346002)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(2906002)(41300700001)(7416002)(5660300002)(6512007)(9686003)(82960400001)(26005)(6506007)(4326008)(8936002)(8676002)(66946007)(83380400001)(6486002)(478600001)(86362001)(316002)(66556008)(66476007)(966005)(38100700002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SFlmMFMzL00rMEdrYTBCOXUzUlYzYkhkZVRZd3VjRFdsYjYwOU5GWjhCVGE1?=
- =?utf-8?B?TlNLWDZpNWR3cklPd3dYWWRTcU9NcmZ2SkdhK3JJaGZKNjNEQUVKWFd6REtp?=
- =?utf-8?B?M3dJd2R5dmJReGpMbXpiN2RkWXFmaklvemNsOFlHMEVqWnN4dU5BU0JuM3VY?=
- =?utf-8?B?TVowSVJ0a3ZTKzZFNktJWXJ6RU45WlRrOEY0WDd2VzRqbkk1eXNIeHo4WkVG?=
- =?utf-8?B?M09KR0ozYmxuT3UrU1FhdS95ZGF4a0RlZWx4NERwR1lmM0dKbktFUm1PNDRY?=
- =?utf-8?B?Y0FsOEpGbFdNMCsyU3lJYWk4Y3E0d1RzZyt6Y1o0N3RMT3FaUVpmNXhTOVFP?=
- =?utf-8?B?czhHblhNVTJjNjJ3YUhWTVJGaFBZLzlNOXpBTG1oY3YzUzBPUU14amxuUkYx?=
- =?utf-8?B?SDRDK3diVGQyaGltN0dCampidDNXSGJzOEpJdWNRaStINUc2dUJxNWhRZk9D?=
- =?utf-8?B?V0tHbG9pMm1vMTN6UlRFd2IzQ1ZjRzE3ZGM0ZlRWTFRLNVFjS2VMdElSY1Ux?=
- =?utf-8?B?YkswM2pQNlNoSXh5aUVTQy85eVVOZExaWnhMME9EQ3Z4d3ZERWNwU0ttakY5?=
- =?utf-8?B?OVN5VUJRTENDVkFKbnM4T054Mmw2dFo0SXlaSGdKRkwxcnJvcXlnR09QRGpY?=
- =?utf-8?B?Z0l5dUtnNUV6M2ZXampGV3RSUFkrNW1YWFlRRERadXV0YTh1RHlEVDVpNHJN?=
- =?utf-8?B?RlZ6VW13WlYwa1Ixem9IZ05CdkJxOWVBQTA1LzRWZnlVY3YyQnpNQ253UmZz?=
- =?utf-8?B?UXhPM2dsWkZjNU43UUFQYm5nTlRPK0p4WEVPaDNYNHQweThmTk5acmRua3A5?=
- =?utf-8?B?NkEzNjdpakdQdkM4azJRT2xyWmk4eCtwczRLRStzb1o3QjBObkxQYlpnT0JS?=
- =?utf-8?B?bHVaSTRrK2RreFFpY0k2OEFhazZWTHhpYUVVRzltYlF0KzJqZEJLbUVocTNs?=
- =?utf-8?B?VGF5RHJadXl1ckVpNEtiQmcxaDZZeU4wS1RaaHdOUXBMbkpwcmtQRlFEVytl?=
- =?utf-8?B?OWdrR0ZUOStJR1NoSGMrb1lRVVpSZXJheWpSc1l5NXRyRzVYcDZFMEh1SzJz?=
- =?utf-8?B?TGdNNFBLVTBDcUExaG9lVjhCS1JyWi9wdFVjOEp1ZWxJaGlWd1NNVVEyaFlm?=
- =?utf-8?B?NDE1dXcxN1VZT2lURnRmUDdKVDlxcVRTbU9lSEROOHBOZ0ZPWCt6ejFaVmlX?=
- =?utf-8?B?b21jaWR5MzBSZkllS1A0S1VTUTFpc0lMWloyMDZDeDh0KytsUjBERTZMNTlj?=
- =?utf-8?B?T2F0eFRxaGx1R1lBMlpLRGM5MFN5bUVKY0tqMEpPUk1Gemo1VnVuaDA1R1dC?=
- =?utf-8?B?NElZUmd5bDNHWS9wOFh3c1lJNDlIa0huZnE4aU12ZC8xMWVsUHFyVWRYTXl4?=
- =?utf-8?B?OFQ0c1RxY2FxWFlUVFJvTjc2SVN2ZWpLby84SXkxNmRwUEZsMmMvaEhMRWRC?=
- =?utf-8?B?eXoxcEF2RGhJeUloV282aS9TeHlFakd5aFdwYmQ2WnpreFlJMXcyN0FyUWow?=
- =?utf-8?B?dXhoWnFCNStwb1Fxc3huK2RZVFN6ZkJFdXFDakQvbzU1U1VQaFlmTXZsNVZa?=
- =?utf-8?B?aVpWeWJXQy9qd2p4U05XYVYyczJzbnh6dTdtTndWSnJJMWVEdURvMW45bHNN?=
- =?utf-8?B?Y0tOL0tJOXNQLzVLeUR3MTBKdUo5QitzVU0ySUY1K2M5K2haUXZzVUJRUzBu?=
- =?utf-8?B?T0kzdk9nS2FXS1Zud2hwYWRWZ21oMks4anpaeGlLMUpBVWpJdXVxU2JYQ1lZ?=
- =?utf-8?B?dGNReWd2NlVTK2hld1pSS2V1b2JZcFIxSFJwT0RxeVRZb2FENHhoaHcxdlNl?=
- =?utf-8?B?Mm43cm9pYXI3TU9QdzI4cTN1QXRGN3BpV3FCWVRSVDNBQUJnaFhBaUQ1MXdD?=
- =?utf-8?B?dHpsbTNCaCtWczJ3dE1HQnpncWd4bHlFOFFaZEU5TVZDUjBCdGFJZXJtTVB4?=
- =?utf-8?B?eE1KRWVBWTFyWTl3NVBsUE0yb3JiY1dHNVNtOU41ZG80aUhjaS94TGtJTnZr?=
- =?utf-8?B?aEJkVEgzR3YxS0MwVDBITDhxSGEyYzN0R2s4S2hROThlYmwvSHpLK1F3TnlJ?=
- =?utf-8?B?RS9DeVhEZGhGTVhoNkZ4Qzc1SHJ0TUJuUk40YkFYbUVsajhnS3BtVTN5SFpZ?=
- =?utf-8?Q?wrSbd/YE9G8xket9J5pLS61jE?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: e015263d-6ae5-4baf-0a84-08dbeb7182cc
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB5984.namprd11.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?09Gd9wU+uqX0jlocPTw4fY7I3N8JWJT5Y2EMb2AONELibiOFrzA3W3+aWOnb?=
+ =?us-ascii?Q?QziMJDak1k6jkOCG2l+HVeaGsAOwSfEPkAPRjYEz+glMRMiHZP19zFV0JGDV?=
+ =?us-ascii?Q?gTLLnQkDZlKkcGwZSRhkseLJbUIfYIRDNsBN6CQC2PBOQ/asMfFmrWbwawm/?=
+ =?us-ascii?Q?g0wo1GAlHR++ilR4e5S6fVD6EjeFk1Tszqbl8ieFrhK0A5yI4LOgUvu13LNi?=
+ =?us-ascii?Q?nF6R8qlkUT8yXgTBrrfV2LXB8Vf/is6Iv/OkA96LtuQYvUaPk4Wb0a+zHXZs?=
+ =?us-ascii?Q?LUbg+3ZRAdm9AiFLTMghmU0ODeDSBaiugwoBYskDMo53d5CYmEaTSZWU0zIK?=
+ =?us-ascii?Q?VInRw019jbmPskUNQKrIa8lW/MORzLWhp7SuV1W+PRkmhsWHUoGI3LQEMelA?=
+ =?us-ascii?Q?rePEXwM21HdSQaYbQP1DZoth0By7wdQtoTIV769x2P93EkQfwv1fNTCApz+v?=
+ =?us-ascii?Q?tWueLaIXduEGECfRBGosnBca4QOrEVtGoHLZuUdPKaOMPsx21rSrQ0Ff19tT?=
+ =?us-ascii?Q?hqOlUt2U+SOB64VpEtl0f/wvFOkeLu+smUVvP9HhoGvdFwzeW27s1OVH1Xaw?=
+ =?us-ascii?Q?07d/ijLV7Y51rbDMbDd9akVwweS3shahGW2kVXOMJzXA/HDx3OwQhSuLnAWc?=
+ =?us-ascii?Q?irNZw2FAQefelPgVqDhwqnkHQAcnHgoiquzcMW2ZpgZZiHnyixWEeOHVJgMg?=
+ =?us-ascii?Q?8fo88l7fbMv5jhI7NKoeqleP+D4tsYs8ADKfV9dug0spdQMuxro0Y80oMcvB?=
+ =?us-ascii?Q?12rR1pU4asyzUqLaOGgSbVRsaxyHobDx8kIMyD7nTWkLTF2pj9TfGEswUyBw?=
+ =?us-ascii?Q?rWOlvqXziL66CsV60a7h8La0ZcX23Ur+QHAfVrqLCtDAyja9K2dMXieIRc38?=
+ =?us-ascii?Q?erAwZj7Gb04tNStzLDXikXidpRe9O4BPGFl5z+Eaxiif28cP94WjspCQdMXP?=
+ =?us-ascii?Q?B2iqn3ha1UuJt65vhuB8Fbel/C4D97Ck9rRbCeD1NlebGnpxGAv+IkhRxfkA?=
+ =?us-ascii?Q?9b7qwjnNUCFo75+jYXVKvBPSJGVCgXdzY0lXXnFYvmxkGJq3QT0yde059KiA?=
+ =?us-ascii?Q?CgUMYlceh0vTA/pjVSFNPmQMXg9NyVUlXKs9RL+otDY0GJklJDlsTqXXhSek?=
+ =?us-ascii?Q?2r15JJnaO8ziHryHg8kqXSaN6RIO10NvATcqTUmxdYcPGKVp9xGRiP7y4tmM?=
+ =?us-ascii?Q?D2BEgD0/STkYqmg9UK2xDRoVjqaRMd8uNuoUu0iCCT7BMUPurCmV5Wr8TCRI?=
+ =?us-ascii?Q?8GnCYmmKd4aUrJOJb4gH2Bc5POKkxL8GMfNt42YMcMODJNYanKVC34QDBfje?=
+ =?us-ascii?Q?T/9zAqW5RZaoPptQPMgFcunn6gi7jSLAd/qOUqp4ggsAWJ89/y684IOIzsBp?=
+ =?us-ascii?Q?365xOnjeVCda3iQHs08OO3rywoq49xuGXsH6FCy1pcrzZFMwsRxezoAMjNhY?=
+ =?us-ascii?Q?0AFBxv54WQ/ZsYoBeCNIZQ1p1AP21azsOuHAkPRsHBP9EzzROoDUYPpnCODW?=
+ =?us-ascii?Q?FOJaiwI7XsaeLcUlJCtFG1s/TprnATkXuYCAaLMCsCw8TyzukelsVb3hGQZC?=
+ =?us-ascii?Q?ef7jSCmgDuM7mhjDYFVOa7EAnfYnsz1Z5DyJbJwwXGJNyHxLtu5Kw1tynxX/?=
+ =?us-ascii?Q?gw=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1b1133de-cf29-43df-c2fd-08dbeba28173
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2023 15:41:36.2703
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2023 21:32:19.3904
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Q9xZyp0PeO/12OzMIgrTboXCaEifGLP1JWFwBF6IuQMYsy52+CH3AVK3Lk27fIvUJzUn51ES3mBUd3YIU8/tmA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB7074
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4XAb1t8nV9Jt8nA1R5NjkP1tDOlBaDtI9V97UGmtfy9rJaV7i4+t/VTZjEifM6sZNHzAbt//Q2v1xR79uAfiZuLwEN4nJgn5QkRFoDzqMNw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5677
 X-OriginatorOrg: intel.com
 
+Dave Jiang wrote:
+> Linus reported that:
+> After commit a103f46633fd the kernel stopped compiling for
+> several ARM32 platforms that I am building with a bare metal
+> compiler. Bare metal compilers (arm-none-eabi-) don't
+> define __linux__.
+> 
+> This is because the header <acpi/platform/acenv.h> is now
+> in the include path for <linux/irq.h>:
+> 
+>   CC      arch/arm/kernel/irq.o
+>   CC      kernel/sysctl.o
+>   CC      crypto/api.o
+> In file included from ../include/acpi/acpi.h:22,
+>                  from ../include/linux/fw_table.h:29,
+>                  from ../include/linux/acpi.h:18,
+>                  from ../include/linux/irqchip.h:14,
+>                  from ../arch/arm/kernel/irq.c:25:
+> ../include/acpi/platform/acenv.h:218:2: error: #error Unknown target environment
+>   218 | #error Unknown target environment
+>       |  ^~~~~
+> 
+> The issue is caused by the introducing of splitting out the ACPI code to
+> support the new generic fw_table code.
+> 
+> Rafael suggested [1] moving the fw_table.h include in linux/acpi.h to below
+> the linux/mutex.h. Remove the two includes in fw_table.h. Replace
+> linux/fw_table.h include in fw_table.c with linux/acpi.h.
+> 
+> Link: https://lore.kernel.org/linux-acpi/CAJZ5v0idWdJq3JSqQWLG5q+b+b=zkEdWR55rGYEoxh7R6N8kFQ@mail.gmail.com/
+> Fixes: a103f46633fd ("acpi: Move common tables helper functions to common lib")
+> Closes: https://lore.kernel.org/linux-acpi/20231114-arm-build-bug-v1-1-458745fe32a4@linaro.org/
+> Reported-by: Linus Walleij <linus.walleij@linaro.org>
+> Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> Tested-by: Linus Walleij <linus.walleij@linaro.org>
+> Signed-off-by: Dave Jiang <dave.jiang@intel.com>
 
+Acked-by: Dan Williams <dan.j.williams@intel.com>
 
-On 11/22/23 08:37, Rafael J. Wysocki wrote:
-> On Wed, Nov 22, 2023 at 4:34 PM Dave Jiang <dave.jiang@intel.com> wrote:
->>
->> Linus reported that:
->> After commit a103f46633fd the kernel stopped compiling for
->> several ARM32 platforms that I am building with a bare metal
->> compiler. Bare metal compilers (arm-none-eabi-) don't
->> define __linux__.
->>
->> This is because the header <acpi/platform/acenv.h> is now
->> in the include path for <linux/irq.h>:
->>
->>   CC      arch/arm/kernel/irq.o
->>   CC      kernel/sysctl.o
->>   CC      crypto/api.o
->> In file included from ../include/acpi/acpi.h:22,
->>                  from ../include/linux/fw_table.h:29,
->>                  from ../include/linux/acpi.h:18,
->>                  from ../include/linux/irqchip.h:14,
->>                  from ../arch/arm/kernel/irq.c:25:
->> ../include/acpi/platform/acenv.h:218:2: error: #error Unknown target environment
->>   218 | #error Unknown target environment
->>       |  ^~~~~
->>
->> The issue is caused by the introducing of splitting out the ACPI code to
->> support the new generic fw_table code.
->>
->> Rafael suggested [1] moving the fw_table.h include in linux/acpi.h to below
->> the linux/mutex.h. Remove the two includes in fw_table.h. Replace
->> linux/fw_table.h include in fw_table.c with linux/acpi.h.
->>
->> Link: https://lore.kernel.org/linux-acpi/CAJZ5v0idWdJq3JSqQWLG5q+b+b=zkEdWR55rGYEoxh7R6N8kFQ@mail.gmail.com/
->> Fixes: a103f46633fd ("acpi: Move common tables helper functions to common lib")
->> Closes: https://lore.kernel.org/linux-acpi/20231114-arm-build-bug-v1-1-458745fe32a4@linaro.org/
->> Reported-by: Linus Walleij <linus.walleij@linaro.org>
->> Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->> Tested-by: Linus Walleij <linus.walleij@linaro.org>
->> Signed-off-by: Dave Jiang <dave.jiang@intel.com>
->> ---
->> v3:
->> - Drop fw_table.h in fw_table.c since acpi.h already included. (Rafael)
-> 
-> Do you want me to apply this, or do you prefer to route it in a different way?
+It concerns me that neither linux-next nor 0day robot exposure reported
+this problem.
 
-Please apply it. Thank you!
-
-> 
-> In the latter case, please feel free to add
-> 
-> Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> to it.
-> 
->> v2:
->> - Remove linux/acpi.h include as well in fw_table.h. (Sam)
->> ---
->>  include/linux/acpi.h     |   22 +++++++++++-----------
->>  include/linux/fw_table.h |    3 ---
->>  lib/fw_table.c           |    2 +-
->>  3 files changed, 12 insertions(+), 15 deletions(-)
->>
->> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
->> index 54189e0e5f41..4db54e928b36 100644
->> --- a/include/linux/acpi.h
->> +++ b/include/linux/acpi.h
->> @@ -15,7 +15,6 @@
->>  #include <linux/mod_devicetable.h>
->>  #include <linux/property.h>
->>  #include <linux/uuid.h>
->> -#include <linux/fw_table.h>
->>
->>  struct irq_domain;
->>  struct irq_domain_ops;
->> @@ -25,22 +24,13 @@ struct irq_domain_ops;
->>  #endif
->>  #include <acpi/acpi.h>
->>
->> -#ifdef CONFIG_ACPI_TABLE_LIB
->> -#define EXPORT_SYMBOL_ACPI_LIB(x) EXPORT_SYMBOL_NS_GPL(x, ACPI)
->> -#define __init_or_acpilib
->> -#define __initdata_or_acpilib
->> -#else
->> -#define EXPORT_SYMBOL_ACPI_LIB(x)
->> -#define __init_or_acpilib __init
->> -#define __initdata_or_acpilib __initdata
->> -#endif
->> -
->>  #ifdef CONFIG_ACPI
->>
->>  #include <linux/list.h>
->>  #include <linux/dynamic_debug.h>
->>  #include <linux/module.h>
->>  #include <linux/mutex.h>
->> +#include <linux/fw_table.h>
->>
->>  #include <acpi/acpi_bus.h>
->>  #include <acpi/acpi_drivers.h>
->> @@ -48,6 +38,16 @@ struct irq_domain_ops;
->>  #include <acpi/acpi_io.h>
->>  #include <asm/acpi.h>
->>
->> +#ifdef CONFIG_ACPI_TABLE_LIB
->> +#define EXPORT_SYMBOL_ACPI_LIB(x) EXPORT_SYMBOL_NS_GPL(x, ACPI)
->> +#define __init_or_acpilib
->> +#define __initdata_or_acpilib
->> +#else
->> +#define EXPORT_SYMBOL_ACPI_LIB(x)
->> +#define __init_or_acpilib __init
->> +#define __initdata_or_acpilib __initdata
->> +#endif
->> +
->>  static inline acpi_handle acpi_device_handle(struct acpi_device *adev)
->>  {
->>         return adev ? adev->handle : NULL;
->> diff --git a/include/linux/fw_table.h b/include/linux/fw_table.h
->> index ff8fa58d5818..ca49947f0a77 100644
->> --- a/include/linux/fw_table.h
->> +++ b/include/linux/fw_table.h
->> @@ -25,9 +25,6 @@ struct acpi_subtable_proc {
->>         int count;
->>  };
->>
->> -#include <linux/acpi.h>
->> -#include <acpi/acpi.h>
->> -
->>  union acpi_subtable_headers {
->>         struct acpi_subtable_header common;
->>         struct acpi_hmat_structure hmat;
->> diff --git a/lib/fw_table.c b/lib/fw_table.c
->> index b51f30a28e47..294df54e33b6 100644
->> --- a/lib/fw_table.c
->> +++ b/lib/fw_table.c
->> @@ -7,7 +7,7 @@
->>   *  Copyright (C) 2023 Intel Corp.
->>   */
->>  #include <linux/errno.h>
->> -#include <linux/fw_table.h>
->> +#include <linux/acpi.h>
->>  #include <linux/init.h>
->>  #include <linux/kernel.h>
->>  #include <linux/string.h>
->>
->>
->>
+Does ARM32 require manual compilation coverage these days or was this
+just a series of unfortunate events that the build bots missed this?
