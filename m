@@ -1,178 +1,234 @@
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+Received: from smtp1.osuosl.org (smtp1.osuosl.org [140.211.166.138])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD1BE20DFC
-	for <acpica-devel@lists.linux.dev>; Tue, 21 Nov 2023 22:19:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C62A5C2C2
+	for <acpica-devel@lists.linuxfoundation.org>; Wed, 22 Nov 2023 04:58:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JLYntSmD"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VZRT6429"
+Received: from localhost (localhost [127.0.0.1])
+	by smtp1.osuosl.org (Postfix) with ESMTP id 5831E8145F
+	for <acpica-devel@lists.linuxfoundation.org>; Wed, 22 Nov 2023 04:58:22 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 5831E8145F
+Authentication-Results: smtp1.osuosl.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=VZRT6429
+X-Virus-Scanned: amavisd-new at osuosl.org
+X-Spam-Flag: NO
+X-Spam-Score: -2.101
+X-Spam-Level:
+Received: from smtp1.osuosl.org ([127.0.0.1])
+	by localhost (smtp1.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id xGJVitIM1mSD
+	for <acpica-devel@lists.linuxfoundation.org>;
+	Wed, 22 Nov 2023 04:58:21 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	by smtp1.osuosl.org (Postfix) with ESMTPS id E4BE28145E
+	for <acpica-devel@lists.linuxfoundation.org>; Wed, 22 Nov 2023 04:58:19 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org E4BE28145E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700605158; x=1732141158;
-  h=subject:from:to:cc:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=80Z6V0+UFCndLA11Ha1TxeEnx/2m86v49AN9qelggW4=;
-  b=JLYntSmDgLG7/JaITcaawUq+K5YoajJyHX3zz6En1K8rlp1c3/wGiEiU
-   kwLdsLspF9mTqN2BHLGe8eUKTkeg/Crk5TzNCZAb3kAn1eQJtrpeM9gJx
-   um2U4WTY128uWkImvzlbSQt3XBFUt5bct4Z4eUQUdKhp7AkJqO4eZL5Wl
-   jVZbFwxXhS9JRqDwnpzSK8hV0ZQ6rjiyb2ybUt51/vdC99+URYBp2UxjO
-   N92lET3VxG9RtJGgQvBdbsM0O45ruLfxwMHxrxPrpt0QwgTICp028rfoB
-   uQXGQqhjUrVjb3Hou5o1oqCwFgs7+rNfdD4CnNTU1fSAzaeIHb/MBsO4T
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="395856502"
-X-IronPort-AV: E=Sophos;i="6.04,216,1695711600"; 
-   d="scan'208";a="395856502"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 14:19:17 -0800
+  t=1700629101; x=1732165101;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=6OOZDIt/V+EllWbRkUq5IJR0w5aDlkstgw6hwmoGvqE=;
+  b=VZRT6429afA2SChDjt50O7kpFm/xpqqryPMHKSxH0MHwntva5BG1en1V
+   ydLKzm+EQnvSR1NfhH3Hoj3cZ+DrYAjk6UGH0M/DpmMt4RWdjwyJL+4VT
+   0pwVra+03liAlZoggHjnn0p/qQEosuP7Kn+1hqEmAzEHcRf4Bl+wF44C8
+   B40vNC+i2skK5xK7DmbynLvBp2ptJ/gWWEwqnrPj18A8gRLPtUt2aa90M
+   rAF1aZTNqoJ50B2LMY1st1mqoockSQQXBV5aDV7wlzmP13DKMgsXDEIF9
+   rkwHWk9jDPpoKYFHFMArPqS8OAnglxgYsTTTO2LyFcDi+PkhszVfLBxWa
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="10650218"
+X-IronPort-AV: E=Sophos;i="6.04,217,1695711600"; 
+   d="scan'208";a="10650218"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 20:58:18 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="837183434"
-X-IronPort-AV: E=Sophos;i="6.04,216,1695711600"; 
-   d="scan'208";a="837183434"
-Received: from djiang5-mobl3.amr.corp.intel.com (HELO [192.168.1.177]) ([10.212.123.89])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 14:19:16 -0800
-Subject: [PATCH v2] acpi: Fix ARM32 platforms compile issue introduced by
- fw_table changes
-From: Dave Jiang <dave.jiang@intel.com>
-To: linus.walleij@linaro.org, rafael@kernel.org
-Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, lenb@kernel.org,
- robert.moore@intel.com, Jonathan.Cameron@huawei.com,
- dan.j.williams@intel.com, guohanjun@huawei.com, arnd@arndb.de,
- linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- cfsworks@gmail.com
-Date: Tue, 21 Nov 2023 15:19:16 -0700
-Message-ID: <170060515641.2447486.11798332619205301829.stgit@djiang5-mobl3>
-User-Agent: StGit/1.5
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="795971891"
+X-IronPort-AV: E=Sophos;i="6.04,217,1695711600"; 
+   d="scan'208";a="795971891"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 20:58:13 -0800
+Date: Wed, 22 Nov 2023 06:58:10 +0200
+From: Raag Jadav <raag.jadav@intel.com>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com,
+	lenb@kernel.org, robert.moore@intel.com, ardb@kernel.org,
+	will@kernel.org, mark.rutland@arm.com, linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	acpica-devel@lists.linuxfoundation.org, linux-efi@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com
+Subject: Re: [PATCH v2 2/6] ACPI: bus: update acpi_dev_uid_match() to support
+ multiple types
+Message-ID: <ZV2KYqah4FHH4tnz@black.fi.intel.com>
+References: <20231121103829.10027-1-raag.jadav@intel.com>
+ <20231121103829.10027-3-raag.jadav@intel.com>
+ <CAJZ5v0jmaRQWfO_mM4GZ8mEFftuSNgt36=tJ5vC2Uw7MAcpYJg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0jmaRQWfO_mM4GZ8mEFftuSNgt36=tJ5vC2Uw7MAcpYJg@mail.gmail.com>
 
-Linus reported that:
-After commit a103f46633fd the kernel stopped compiling for
-several ARM32 platforms that I am building with a bare metal
-compiler. Bare metal compilers (arm-none-eabi-) don't
-define __linux__.
+On Tue, Nov 21, 2023 at 08:25:20PM +0100, Rafael J. Wysocki wrote:
+> On Tue, Nov 21, 2023 at 11:38 AM Raag Jadav <raag.jadav@intel.com> wrote:
+> >
+> > According to ACPI specification, a _UID object can evaluate to either
+> > a numeric value or a string. Update acpi_dev_uid_match() helper to
+> > support _UID matching for both integer and string types.
+> >
+> > Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > Suggested-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+> > Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> You need to be careful with using this.  There are some things below
+> that go beyond what I have suggested.
 
-This is because the header <acpi/platform/acenv.h> is now
-in the include path for <linux/irq.h>:
+I think we all suggested some bits and pieces so I included everyone.
+We can drop if there are any objections.
 
-  CC      arch/arm/kernel/irq.o
-  CC      kernel/sysctl.o
-  CC      crypto/api.o
-In file included from ../include/acpi/acpi.h:22,
-                 from ../include/linux/fw_table.h:29,
-                 from ../include/linux/acpi.h:18,
-                 from ../include/linux/irqchip.h:14,
-                 from ../arch/arm/kernel/irq.c:25:
-../include/acpi/platform/acenv.h:218:2: error: #error Unknown target environment
-  218 | #error Unknown target environment
-      |  ^~~~~
+> > Signed-off-by: Raag Jadav <raag.jadav@intel.com>
+> > ---
+> >  drivers/acpi/utils.c    | 19 -------------------
+> >  include/acpi/acpi_bus.h | 35 ++++++++++++++++++++++++++++++++++-
+> >  include/linux/acpi.h    |  8 +++-----
+> >  3 files changed, 37 insertions(+), 25 deletions(-)
+> >
+> > diff --git a/drivers/acpi/utils.c b/drivers/acpi/utils.c
+> > index 28c75242fca9..fe7e850c6479 100644
+> > --- a/drivers/acpi/utils.c
+> > +++ b/drivers/acpi/utils.c
+> > @@ -824,25 +824,6 @@ bool acpi_check_dsm(acpi_handle handle, const guid_t *guid, u64 rev, u64 funcs)
+> >  }
+> >  EXPORT_SYMBOL(acpi_check_dsm);
+> >
+> > -/**
+> > - * acpi_dev_uid_match - Match device by supplied UID
+> > - * @adev: ACPI device to match.
+> > - * @uid2: Unique ID of the device.
+> > - *
+> > - * Matches UID in @adev with given @uid2.
+> > - *
+> > - * Returns:
+> > - *  - %true if matches.
+> > - *  - %false otherwise.
+> > - */
+> > -bool acpi_dev_uid_match(struct acpi_device *adev, const char *uid2)
+> > -{
+> > -       const char *uid1 = acpi_device_uid(adev);
+> > -
+> > -       return uid1 && uid2 && !strcmp(uid1, uid2);
+> > -}
+> > -EXPORT_SYMBOL_GPL(acpi_dev_uid_match);
+> > -
+> >  /**
+> >   * acpi_dev_hid_uid_match - Match device by supplied HID and UID
+> >   * @adev: ACPI device to match.
+> > diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+> > index ec6a673dcb95..bcd78939bab4 100644
+> > --- a/include/acpi/acpi_bus.h
+> > +++ b/include/acpi/acpi_bus.h
+> > @@ -9,6 +9,7 @@
+> >  #ifndef __ACPI_BUS_H__
+> >  #define __ACPI_BUS_H__
+> >
+> > +#include <linux/compiler.h>
+> >  #include <linux/device.h>
+> >  #include <linux/property.h>
+> >
+> > @@ -857,10 +858,42 @@ static inline bool acpi_device_can_poweroff(struct acpi_device *adev)
+> >                 adev->power.states[ACPI_STATE_D3_HOT].flags.explicit_set);
+> >  }
+> >
+> > -bool acpi_dev_uid_match(struct acpi_device *adev, const char *uid2);
+> >  bool acpi_dev_hid_uid_match(struct acpi_device *adev, const char *hid2, const char *uid2);
+> >  int acpi_dev_uid_to_integer(struct acpi_device *adev, u64 *integer);
+> >
+> > +static inline bool acpi_str_uid_match(struct acpi_device *adev, const char *uid2)
+> > +{
+> > +       const char *uid1 = acpi_device_uid(adev);
+> > +
+> > +       return uid1 && uid2 && !strcmp(uid1, uid2);
+> > +}
+> > +
+> > +static inline bool acpi_int_uid_match(struct acpi_device *adev, u64 uid2)
+> > +{
+> > +       u64 uid1;
+> > +
+> > +       return !acpi_dev_uid_to_integer(adev, &uid1) && uid1 == uid2;
+> > +}
+> > +
+> 
+> Up to this point it is all fine IMV.
+> 
+> > +/**
+> > + * acpi_dev_uid_match - Match device by supplied UID
+> > + * @adev: ACPI device to match.
+> > + * @uid2: Unique ID of the device.
+> > + *
+> > + * Matches UID in @adev with given @uid2.
+> > + *
+> > + * Returns: %true if matches, %false otherwise.
+> > + */
+> > +
+> > +/* Treat uid as a string for array and pointer types, treat as an integer otherwise */
+> > +#define get_uid_type(x) \
+> > +       (__builtin_choose_expr(is_array_or_pointer_type(x), (const char *)0, (u64)0))
+> 
+> But I wouldn't use the above.
+> 
+> It is far more elaborate than needed for this use case and may not
+> actually work as expected.  For instance, why would a pointer to a
+> random struct type be a good candidate for a string?
 
-The issue is caused by the introducing of splitting out the ACPI code to
-support the new generic fw_table code.
+Such case will not compile, since its data type will not match with
+acpi_str_uid_match() prototype. The compiler does a very good job of
+qualifing only the compatible string types here, which is exactly what
+we want.
 
-Rafael suggested [1] moving the fw_table.h include in linux/acpi.h to below
-the linux/mutex.h. Remove the two includes in fw_table.h. Add include of
-linux/acpi.h in fw_table.c before the fw_table.h include.
+error: passing argument 2 of 'acpi_str_uid_match' from incompatible pointer type [-Werror=incompatible-pointer-types]
+    if (acpi_dev_uid_match(adev, adev)) {
+                                 ^
+./include/acpi/acpi_bus.h:870:20: note: expected 'const char *' but argument is of type 'struct acpi_device *'
+ static inline bool acpi_str_uid_match(struct acpi_device *adev, const char *uid2)
 
-Link: https://lore.kernel.org/linux-acpi/CAJZ5v0idWdJq3JSqQWLG5q+b+b=zkEdWR55rGYEoxh7R6N8kFQ@mail.gmail.com/
-Fixes: a103f46633fd ("acpi: Move common tables helper functions to common lib")
-Reported-by: Linus Walleij <linus.walleij@linaro.org>
-Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Dave Jiang <dave.jiang@intel.com>
----
-v2:
-- Remove linux/acpi.h include as well in fw_table.h. (Sam)
----
- include/linux/acpi.h     |   22 +++++++++++-----------
- include/linux/fw_table.h |    3 ---
- lib/fw_table.c           |    1 +
- 3 files changed, 12 insertions(+), 14 deletions(-)
+> > +
+> > +#define acpi_dev_uid_match(adev, uid2)                         \
+> > +       _Generic(get_uid_type(uid2),                            \
+> > +                const char *: acpi_str_uid_match,              \
+> > +                u64: acpi_int_uid_match)(adev, uid2)
+> > +
+> 
+> Personally, I would just do something like the following
+> 
+> #define acpi_dev_uid_match(adev, uid2) \
+>         _Generic((uid2), \
+>                 const char *: acpi_str_uid_match, \
+>                 char *: acpi_str_uid_match, \
+>                 const void *: acpi_str_uid_match, \
+>                 void *: acpi_str_uid_match, \
+>                 default: acpi_int_uid_match)(adev, uid2)
+> 
+> which doesn't require compiler.h to be fiddled with and is rather
+> straightforward to follow.
+> 
+> If I'm to apply the patches, this is about the level of complexity you
+> need to target.
 
-diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-index 54189e0e5f41..4db54e928b36 100644
---- a/include/linux/acpi.h
-+++ b/include/linux/acpi.h
-@@ -15,7 +15,6 @@
- #include <linux/mod_devicetable.h>
- #include <linux/property.h>
- #include <linux/uuid.h>
--#include <linux/fw_table.h>
- 
- struct irq_domain;
- struct irq_domain_ops;
-@@ -25,22 +24,13 @@ struct irq_domain_ops;
- #endif
- #include <acpi/acpi.h>
- 
--#ifdef CONFIG_ACPI_TABLE_LIB
--#define EXPORT_SYMBOL_ACPI_LIB(x) EXPORT_SYMBOL_NS_GPL(x, ACPI)
--#define __init_or_acpilib
--#define __initdata_or_acpilib
--#else
--#define EXPORT_SYMBOL_ACPI_LIB(x)
--#define __init_or_acpilib __init
--#define __initdata_or_acpilib __initdata
--#endif
--
- #ifdef	CONFIG_ACPI
- 
- #include <linux/list.h>
- #include <linux/dynamic_debug.h>
- #include <linux/module.h>
- #include <linux/mutex.h>
-+#include <linux/fw_table.h>
- 
- #include <acpi/acpi_bus.h>
- #include <acpi/acpi_drivers.h>
-@@ -48,6 +38,16 @@ struct irq_domain_ops;
- #include <acpi/acpi_io.h>
- #include <asm/acpi.h>
- 
-+#ifdef CONFIG_ACPI_TABLE_LIB
-+#define EXPORT_SYMBOL_ACPI_LIB(x) EXPORT_SYMBOL_NS_GPL(x, ACPI)
-+#define __init_or_acpilib
-+#define __initdata_or_acpilib
-+#else
-+#define EXPORT_SYMBOL_ACPI_LIB(x)
-+#define __init_or_acpilib __init
-+#define __initdata_or_acpilib __initdata
-+#endif
-+
- static inline acpi_handle acpi_device_handle(struct acpi_device *adev)
- {
- 	return adev ? adev->handle : NULL;
-diff --git a/include/linux/fw_table.h b/include/linux/fw_table.h
-index ff8fa58d5818..ca49947f0a77 100644
---- a/include/linux/fw_table.h
-+++ b/include/linux/fw_table.h
-@@ -25,9 +25,6 @@ struct acpi_subtable_proc {
- 	int count;
- };
- 
--#include <linux/acpi.h>
--#include <acpi/acpi.h>
--
- union acpi_subtable_headers {
- 	struct acpi_subtable_header common;
- 	struct acpi_hmat_structure hmat;
-diff --git a/lib/fw_table.c b/lib/fw_table.c
-index b51f30a28e47..c4831f3378be 100644
---- a/lib/fw_table.c
-+++ b/lib/fw_table.c
-@@ -7,6 +7,7 @@
-  *  Copyright (C) 2023 Intel Corp.
-  */
- #include <linux/errno.h>
-+#include <linux/acpi.h>
- #include <linux/fw_table.h>
- #include <linux/init.h>
- #include <linux/kernel.h>
+Understood, however this will limit the type support to only a handful
+of types and will not satisfy a few of the existing users, which, for
+example are passing signed or unsigned pointer or an array of u8.
 
+Listing every possible type manually for _Generic() looks a bit verbose
+for something that can be simply achieved by __builtin functions in my
+opinion.
 
+I can still send out a v3 to see if it really works. However, I prefer the
+v2 approach, as it covers all possible scenarios without any corner cases.
+
+Raag
