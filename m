@@ -1,53 +1,53 @@
-Received: from smtp1.osuosl.org (smtp1.osuosl.org [140.211.166.138])
+Received: from smtp2.osuosl.org (smtp2.osuosl.org [140.211.166.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F9BD224CC
-	for <acpica-devel@lists.linuxfoundation.org>; Thu, 23 Nov 2023 10:07:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43D27224CC
+	for <acpica-devel@lists.linuxfoundation.org>; Thu, 23 Nov 2023 10:07:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fySHu95r"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Kq0gVa/R"
 Received: from localhost (localhost [127.0.0.1])
-	by smtp1.osuosl.org (Postfix) with ESMTP id D81F6813E3
-	for <acpica-devel@lists.linuxfoundation.org>; Thu, 23 Nov 2023 10:07:31 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org D81F6813E3
-Authentication-Results: smtp1.osuosl.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=fySHu95r
+	by smtp2.osuosl.org (Postfix) with ESMTP id 8433E40C01
+	for <acpica-devel@lists.linuxfoundation.org>; Thu, 23 Nov 2023 10:07:28 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 8433E40C01
+Authentication-Results: smtp2.osuosl.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=Kq0gVa/R
 X-Virus-Scanned: amavisd-new at osuosl.org
 X-Spam-Flag: NO
 X-Spam-Score: -4.401
 X-Spam-Level:
-Received: from smtp1.osuosl.org ([127.0.0.1])
-	by localhost (smtp1.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id ZpWMQOfQa4Hy
+Received: from smtp2.osuosl.org ([127.0.0.1])
+	by localhost (smtp2.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id aD088UZp8VJO
 	for <acpica-devel@lists.linuxfoundation.org>;
-	Thu, 23 Nov 2023 10:07:31 +0000 (UTC)
+	Thu, 23 Nov 2023 10:07:27 +0000 (UTC)
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-	by smtp1.osuosl.org (Postfix) with ESMTPS id 3996F8141F
-	for <acpica-devel@lists.linuxfoundation.org>; Thu, 23 Nov 2023 10:07:31 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 3996F8141F
+	by smtp2.osuosl.org (Postfix) with ESMTPS id 9870A403F8
+	for <acpica-devel@lists.linuxfoundation.org>; Thu, 23 Nov 2023 10:07:27 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 9870A403F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700734051; x=1732270051;
+  t=1700734047; x=1732270047;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references;
-  bh=eGrPJB71BQqPQgzBxdkMDsK/ebN3t2PqlY8XYy9ELos=;
-  b=fySHu95rX65pKTF/wNvbOZ170G5WL0GKZQKbQWukKyWG2dbMqd8TxFPR
-   gPQ2FtFwLy1Qmn0OkciwDjwcCQXBdpdZ7zofhQFLJSad9WvS+YdeG7IPp
-   KCXTH7b32BSbiejOu2MQREjp9eLz+Q4yO7Gh0r7PtJdJT+LIhoPyYVWEQ
-   8GVAb9Oiuuikd9Xcdye/JbXotxWItfhbhXPW9eVsQDmoDtxC6E632AiKg
-   gnezJnIRBTrjhv58ASiAis4Gl95xGSOV71xgOdDaFmO772acVp1lGiVhN
-   UttWsbHr3ls06V8NKSaIYrjCQtrid5/s9Qwuw1dzU5t/VvGuPieGSJG86
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="456576448"
+  bh=UiSJDgehd3ZmZrMiVJSfKgyDPoJmiX2ZPNSPqcXf4ys=;
+  b=Kq0gVa/Rbbqvwi9qHmf/ChbmHC0mx/iVDs8WcAdrWOJEA6tPpYCAQ6Xn
+   zwDOH11XAY0h4CcxTsLdjNJQYNgu78j+cLGshjp5f0BIgfJrLphmlzn7V
+   VCsQIKH2jR8NzTFq+K0b2ibIuiYWKwaSKPFCPwxR+uTC+Irr5rul0DAo/
+   dIoksejh0QIKcCiXpu7ofvISthm15FBosLlJGHlj62hZlKJ/U5dHaHIfZ
+   satVtOsvq5ipRh2xq3U+8G9qpc6nxnukCJytrfDlKzfV0kXRnx5SGmtyv
+   847sdFklD1NGXV1OXOHlrq3a4mbBf/VEaSME6/B5ylKyF3/m3AIZGD1az
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="456576416"
 X-IronPort-AV: E=Sophos;i="6.04,221,1695711600"; 
-   d="scan'208";a="456576448"
+   d="scan'208";a="456576416"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 02:07:30 -0800
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 02:07:21 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="767160544"
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="767160492"
 X-IronPort-AV: E=Sophos;i="6.04,221,1695711600"; 
-   d="scan'208";a="767160544"
+   d="scan'208";a="767160492"
 Received: from inlubt0316.iind.intel.com ([10.191.20.213])
-  by orsmga002.jf.intel.com with ESMTP; 23 Nov 2023 02:07:26 -0800
+  by orsmga002.jf.intel.com with ESMTP; 23 Nov 2023 02:07:16 -0800
 From: Raag Jadav <raag.jadav@intel.com>
 To: mika.westerberg@linux.intel.com,
 	andriy.shevchenko@linux.intel.com,
@@ -65,9 +65,9 @@ Cc: linux-acpi@vger.kernel.org,
 	mallikarjunappa.sangannavar@intel.com,
 	bala.senthil@intel.com,
 	Raag Jadav <raag.jadav@intel.com>
-Subject: [PATCH v3 5/5] perf: arm_cspmu: drop redundant acpi_dev_uid_to_integer()
-Date: Thu, 23 Nov 2023 15:36:17 +0530
-Message-Id: <20231123100617.28020-6-raag.jadav@intel.com>
+Subject: [PATCH v3 3/5] ACPI: LPSS: use acpi_dev_uid_match() for matching _UID
+Date: Thu, 23 Nov 2023 15:36:15 +0530
+Message-Id: <20231123100617.28020-4-raag.jadav@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20231123100617.28020-1-raag.jadav@intel.com>
 References: <20231123100617.28020-1-raag.jadav@intel.com>
@@ -78,36 +78,50 @@ List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 
 Now that we have _UID matching support for integer types, we can use
-acpi_dev_hid_uid_match() for it.
+acpi_dev_uid_match() for it.
 
 Signed-off-by: Raag Jadav <raag.jadav@intel.com>
-Acked-by: Will Deacon <will@kernel.org>
+Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 ---
- drivers/perf/arm_cspmu/arm_cspmu.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/acpi/acpi_lpss.c | 16 ++++------------
+ 1 file changed, 4 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/perf/arm_cspmu/arm_cspmu.c b/drivers/perf/arm_cspmu/arm_cspmu.c
-index 2cc35dded007..50b89b989ce7 100644
---- a/drivers/perf/arm_cspmu/arm_cspmu.c
-+++ b/drivers/perf/arm_cspmu/arm_cspmu.c
-@@ -1108,7 +1108,6 @@ static int arm_cspmu_request_irq(struct arm_cspmu *cspmu)
+diff --git a/drivers/acpi/acpi_lpss.c b/drivers/acpi/acpi_lpss.c
+index 875de44961bf..79f4fc7d6871 100644
+--- a/drivers/acpi/acpi_lpss.c
++++ b/drivers/acpi/acpi_lpss.c
+@@ -167,13 +167,9 @@ static struct pwm_lookup byt_pwm_lookup[] = {
  
- static inline int arm_cspmu_find_cpu_container(int cpu, u32 container_uid)
+ static void byt_pwm_setup(struct lpss_private_data *pdata)
  {
--	u64 acpi_uid;
- 	struct device *cpu_dev;
- 	struct acpi_device *acpi_dev;
+-	u64 uid;
+-
+ 	/* Only call pwm_add_table for the first PWM controller */
+-	if (acpi_dev_uid_to_integer(pdata->adev, &uid) || uid != 1)
+-		return;
+-
+-	pwm_add_table(byt_pwm_lookup, ARRAY_SIZE(byt_pwm_lookup));
++	if (acpi_dev_uid_match(pdata->adev, 1))
++		pwm_add_table(byt_pwm_lookup, ARRAY_SIZE(byt_pwm_lookup));
+ }
  
-@@ -1118,8 +1117,7 @@ static inline int arm_cspmu_find_cpu_container(int cpu, u32 container_uid)
+ #define LPSS_I2C_ENABLE			0x6c
+@@ -218,13 +214,9 @@ static struct pwm_lookup bsw_pwm_lookup[] = {
  
- 	acpi_dev = ACPI_COMPANION(cpu_dev);
- 	while (acpi_dev) {
--		if (acpi_dev_hid_uid_match(acpi_dev, ACPI_PROCESSOR_CONTAINER_HID, NULL) &&
--		    !acpi_dev_uid_to_integer(acpi_dev, &acpi_uid) && acpi_uid == container_uid)
-+		if (acpi_dev_hid_uid_match(acpi_dev, ACPI_PROCESSOR_CONTAINER_HID, container_uid))
- 			return 0;
+ static void bsw_pwm_setup(struct lpss_private_data *pdata)
+ {
+-	u64 uid;
+-
+ 	/* Only call pwm_add_table for the first PWM controller */
+-	if (acpi_dev_uid_to_integer(pdata->adev, &uid) || uid != 1)
+-		return;
+-
+-	pwm_add_table(bsw_pwm_lookup, ARRAY_SIZE(bsw_pwm_lookup));
++	if (acpi_dev_uid_match(pdata->adev, 1))
++		pwm_add_table(bsw_pwm_lookup, ARRAY_SIZE(bsw_pwm_lookup));
+ }
  
- 		acpi_dev = acpi_dev_parent(acpi_dev);
+ static const struct property_entry lpt_spi_properties[] = {
 -- 
 2.17.1
 
