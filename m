@@ -1,53 +1,53 @@
-Received: from smtp1.osuosl.org (smtp1.osuosl.org [140.211.166.138])
+Received: from smtp2.osuosl.org (smtp2.osuosl.org [140.211.166.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A907224D6
-	for <acpica-devel@lists.linuxfoundation.org>; Thu, 23 Nov 2023 10:07:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 398A6224D9
+	for <acpica-devel@lists.linuxfoundation.org>; Thu, 23 Nov 2023 10:07:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Uo+91kGo"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="g0/9uDb4"
 Received: from localhost (localhost [127.0.0.1])
-	by smtp1.osuosl.org (Postfix) with ESMTP id 9DC4C813E3
+	by smtp2.osuosl.org (Postfix) with ESMTP id 4E5D84116F
 	for <acpica-devel@lists.linuxfoundation.org>; Thu, 23 Nov 2023 10:07:28 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 9DC4C813E3
-Authentication-Results: smtp1.osuosl.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=Uo+91kGo
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 4E5D84116F
+Authentication-Results: smtp2.osuosl.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=g0/9uDb4
 X-Virus-Scanned: amavisd-new at osuosl.org
 X-Spam-Flag: NO
 X-Spam-Score: -4.401
 X-Spam-Level:
-Received: from smtp1.osuosl.org ([127.0.0.1])
-	by localhost (smtp1.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id h8Ur2GQUgITl
+Received: from smtp2.osuosl.org ([127.0.0.1])
+	by localhost (smtp2.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 4yCGyJoXCQXi
 	for <acpica-devel@lists.linuxfoundation.org>;
-	Thu, 23 Nov 2023 10:07:28 +0000 (UTC)
+	Thu, 23 Nov 2023 10:07:27 +0000 (UTC)
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-	by smtp1.osuosl.org (Postfix) with ESMTPS id E25C8813DC
-	for <acpica-devel@lists.linuxfoundation.org>; Thu, 23 Nov 2023 10:07:27 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org E25C8813DC
+	by smtp2.osuosl.org (Postfix) with ESMTPS id 1EDE840C01
+	for <acpica-devel@lists.linuxfoundation.org>; Thu, 23 Nov 2023 10:07:26 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 1EDE840C01
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1700734047; x=1732270047;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references;
-  bh=ibYMWWRd/P2AQAHicSo9ziPs651CklYQuIen4L+deis=;
-  b=Uo+91kGoZeAxR6jlEKJcpb5pyiBVTdmYASuH6rcwHjrBvzLCWipvpjyZ
-   wjU/VFYK7yJyqA3/f4VWj9/qQuEC9lkXb4XZAgX2th5xpUgO/xzBE1MXu
-   eiRDEcXnXer0vSoJpKKrqRACdneEKtyI8GhgrRchmetd1w4v4MAc4YQc5
-   3ndWsWJAMbxLvEcGmPb/kqfF3mbzzpabuxw739xwSEnwF5wx7XhJ0W4bL
-   LpKJwLcRLAFfsTDcVMOgi3oG5HX+T3YL8K5oVAJhIOr1KAmgcErHVW7o+
-   pxl87nfMPV09D4+s5KVjLbYxmcS6nM5zjV5Zzpk9pbwf3jp9tqiykx5bA
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="456576427"
+  bh=M17rtlGu3x0u3QSxZOF2OqZZLdquFjrEe7DlHL2uUIM=;
+  b=g0/9uDb4clB/q4HySwqyj4+a4xz+4oYB5oN4f81TZUrctuBwnBJmfnYS
+   3r5GAq732atzqh4QbLPiKo6Ez2NKAmtawuastxOtWrwsTJ8u5Vmd5KnYh
+   sFopdsJe4lO2/ugOo3Q0yhobwh/SHsIVhemVWOe9oXF+ug+qFLTrfzGXS
+   Lcc+qE33t9ysfgANmoPU/LaGlpqd/3RKoq1FyEeqr2quCJyNyfusQ4jDV
+   2CI17tcgWlE35z5/0iQsgwU2clQ1+Bqs1FlaDeCX3cAgiwRgulumCTiSY
+   lxdjC8qiOUXvfj0l0hb0D0ekdXaYRquIb7znNWhcZPv/Bbt/FGg/SWcaT
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="456576408"
 X-IronPort-AV: E=Sophos;i="6.04,221,1695711600"; 
-   d="scan'208";a="456576427"
+   d="scan'208";a="456576408"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 02:07:26 -0800
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 02:07:16 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="767160521"
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="767160473"
 X-IronPort-AV: E=Sophos;i="6.04,221,1695711600"; 
-   d="scan'208";a="767160521"
+   d="scan'208";a="767160473"
 Received: from inlubt0316.iind.intel.com ([10.191.20.213])
-  by orsmga002.jf.intel.com with ESMTP; 23 Nov 2023 02:07:21 -0800
+  by orsmga002.jf.intel.com with ESMTP; 23 Nov 2023 02:07:12 -0800
 From: Raag Jadav <raag.jadav@intel.com>
 To: mika.westerberg@linux.intel.com,
 	andriy.shevchenko@linux.intel.com,
@@ -65,9 +65,9 @@ Cc: linux-acpi@vger.kernel.org,
 	mallikarjunappa.sangannavar@intel.com,
 	bala.senthil@intel.com,
 	Raag Jadav <raag.jadav@intel.com>
-Subject: [PATCH v3 4/5] efi: dev-path-parser: use acpi_dev_uid_match() for matching _UID
-Date: Thu, 23 Nov 2023 15:36:16 +0530
-Message-Id: <20231123100617.28020-5-raag.jadav@intel.com>
+Subject: [PATCH v3 2/5] ACPI: bus: update acpi_dev_hid_uid_match() to support multiple types
+Date: Thu, 23 Nov 2023 15:36:14 +0530
+Message-Id: <20231123100617.28020-3-raag.jadav@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20231123100617.28020-1-raag.jadav@intel.com>
 References: <20231123100617.28020-1-raag.jadav@intel.com>
@@ -77,41 +77,126 @@ List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 
-Now that we have _UID matching support for integer types, we can use
-acpi_dev_uid_match() for it.
+Now that we have _UID matching support for both integer and string types,
+we can support them into acpi_dev_hid_uid_match() helper as well.
 
 Signed-off-by: Raag Jadav <raag.jadav@intel.com>
-Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
+Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 ---
- drivers/firmware/efi/dev-path-parser.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ drivers/acpi/utils.c    | 29 -----------------------------
+ include/acpi/acpi_bus.h | 24 +++++++++++++++++++++++-
+ include/linux/acpi.h    |  7 +------
+ 3 files changed, 24 insertions(+), 36 deletions(-)
 
-diff --git a/drivers/firmware/efi/dev-path-parser.c b/drivers/firmware/efi/dev-path-parser.c
-index f80d87c199c3..937be269fee8 100644
---- a/drivers/firmware/efi/dev-path-parser.c
-+++ b/drivers/firmware/efi/dev-path-parser.c
-@@ -18,8 +18,6 @@ static long __init parse_acpi_path(const struct efi_dev_path *node,
- 	struct acpi_device *adev;
- 	struct device *phys_dev;
- 	char hid[ACPI_ID_LEN];
--	u64 uid;
--	int ret;
+diff --git a/drivers/acpi/utils.c b/drivers/acpi/utils.c
+index fe7e850c6479..03f6de9a0807 100644
+--- a/drivers/acpi/utils.c
++++ b/drivers/acpi/utils.c
+@@ -824,35 +824,6 @@ bool acpi_check_dsm(acpi_handle handle, const guid_t *guid, u64 rev, u64 funcs)
+ }
+ EXPORT_SYMBOL(acpi_check_dsm);
  
- 	if (node->header.length != 12)
- 		return -EINVAL;
-@@ -31,10 +29,9 @@ static long __init parse_acpi_path(const struct efi_dev_path *node,
- 			node->acpi.hid >> 16);
+-/**
+- * acpi_dev_hid_uid_match - Match device by supplied HID and UID
+- * @adev: ACPI device to match.
+- * @hid2: Hardware ID of the device.
+- * @uid2: Unique ID of the device, pass NULL to not check _UID.
+- *
+- * Matches HID and UID in @adev with given @hid2 and @uid2. Absence of @uid2
+- * will be treated as a match. If user wants to validate @uid2, it should be
+- * done before calling this function.
+- *
+- * Returns:
+- *  - %true if matches or @uid2 is NULL.
+- *  - %false otherwise.
+- */
+-bool acpi_dev_hid_uid_match(struct acpi_device *adev,
+-			    const char *hid2, const char *uid2)
+-{
+-	const char *hid1 = acpi_device_hid(adev);
+-
+-	if (strcmp(hid1, hid2))
+-		return false;
+-
+-	if (!uid2)
+-		return true;
+-
+-	return acpi_dev_uid_match(adev, uid2);
+-}
+-EXPORT_SYMBOL(acpi_dev_hid_uid_match);
+-
+ /**
+  * acpi_dev_uid_to_integer - treat ACPI device _UID as integer
+  * @adev: ACPI device to get _UID from
+diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+index a4622d95a36d..e5b4c3f8d2be 100644
+--- a/include/acpi/acpi_bus.h
++++ b/include/acpi/acpi_bus.h
+@@ -857,9 +857,15 @@ static inline bool acpi_device_can_poweroff(struct acpi_device *adev)
+ 		adev->power.states[ACPI_STATE_D3_HOT].flags.explicit_set);
+ }
  
- 	for_each_acpi_dev_match(adev, hid, NULL, -1) {
--		ret = acpi_dev_uid_to_integer(adev, &uid);
--		if (ret == 0 && node->acpi.uid == uid)
-+		if (acpi_dev_uid_match(adev, node->acpi.uid))
- 			break;
--		if (ret == -ENODATA && node->acpi.uid == 0)
-+		if (!acpi_device_uid(adev) && node->acpi.uid == 0)
- 			break;
- 	}
- 	if (!adev)
+-bool acpi_dev_hid_uid_match(struct acpi_device *adev, const char *hid2, const char *uid2);
+ int acpi_dev_uid_to_integer(struct acpi_device *adev, u64 *integer);
+ 
++static inline bool acpi_dev_hid_match(struct acpi_device *adev, const char *hid2)
++{
++	const char *hid1 = acpi_device_hid(adev);
++
++	return hid1 && hid2 && !strcmp(hid1, hid2);
++}
++
+ static inline bool acpi_str_uid_match(struct acpi_device *adev, const char *uid2)
+ {
+ 	const char *uid1 = acpi_device_uid(adev);
+@@ -900,6 +906,22 @@ static inline bool acpi_int_uid_match(struct acpi_device *adev, u64 uid2)
+ 		 /* Treat as an integer otherwise */			\
+ 		 default: acpi_int_uid_match)(adev, uid2)
+ 
++/**
++ * acpi_dev_hid_uid_match - Match device by supplied HID and UID
++ * @adev: ACPI device to match.
++ * @hid2: Hardware ID of the device.
++ * @uid2: Unique ID of the device, pass 0 or NULL to not check _UID.
++ *
++ * Matches HID and UID in @adev with given @hid2 and @uid2. Absence of @uid2
++ * will be treated as a match. If user wants to validate @uid2, it should be
++ * done before calling this function.
++ *
++ * Returns: %true if matches or @uid2 is 0 or NULL, %false otherwise.
++ */
++#define acpi_dev_hid_uid_match(adev, hid2, uid2)			\
++	(acpi_dev_hid_match(adev, hid2) &&				\
++		(!(uid2) || acpi_dev_uid_match(adev, uid2)))
++
+ void acpi_dev_clear_dependencies(struct acpi_device *supplier);
+ bool acpi_dev_ready_for_enumeration(const struct acpi_device *device);
+ struct acpi_device *acpi_dev_get_next_consumer_dev(struct acpi_device *supplier,
+diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+index 6f1e9f98fa44..118a18b7ff84 100644
+--- a/include/linux/acpi.h
++++ b/include/linux/acpi.h
+@@ -765,6 +765,7 @@ const char *acpi_get_subsystem_id(acpi_handle handle);
+ 
+ /* Get rid of the -Wunused-variable for adev */
+ #define acpi_dev_uid_match(adev, uid2)			(adev && false)
++#define acpi_dev_hid_uid_match(adev, hid2, uid2)	(adev && false)
+ 
+ #include <acpi/acpi_numa.h>
+ 
+@@ -782,12 +783,6 @@ static inline bool acpi_dev_present(const char *hid, const char *uid, s64 hrv)
+ 
+ struct acpi_device;
+ 
+-static inline bool
+-acpi_dev_hid_uid_match(struct acpi_device *adev, const char *hid2, const char *uid2)
+-{
+-	return false;
+-}
+-
+ static inline int acpi_dev_uid_to_integer(struct acpi_device *adev, u64 *integer)
+ {
+ 	return -ENODEV;
 -- 
 2.17.1
 
