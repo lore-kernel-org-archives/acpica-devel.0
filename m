@@ -1,127 +1,163 @@
-Received: from smtp2.osuosl.org (smtp2.osuosl.org [140.211.166.133])
+Received: from smtp4.osuosl.org (smtp4.osuosl.org [140.211.166.137])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43D27224CC
-	for <acpica-devel@lists.linuxfoundation.org>; Thu, 23 Nov 2023 10:07:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FE3C2FC27
+	for <acpica-devel@lists.linuxfoundation.org>; Thu, 23 Nov 2023 15:07:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Kq0gVa/R"
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="SM/6TxLm"
 Received: from localhost (localhost [127.0.0.1])
-	by smtp2.osuosl.org (Postfix) with ESMTP id 8433E40C01
-	for <acpica-devel@lists.linuxfoundation.org>; Thu, 23 Nov 2023 10:07:28 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 8433E40C01
-Authentication-Results: smtp2.osuosl.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=Kq0gVa/R
+	by smtp4.osuosl.org (Postfix) with ESMTP id BB814401EB
+	for <acpica-devel@lists.linuxfoundation.org>; Thu, 23 Nov 2023 15:07:58 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org BB814401EB
+Authentication-Results: smtp4.osuosl.org;
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.a=rsa-sha256 header.s=alien8 header.b=SM/6TxLm
 X-Virus-Scanned: amavisd-new at osuosl.org
 X-Spam-Flag: NO
-X-Spam-Score: -4.401
+X-Spam-Score: -2.1
 X-Spam-Level:
-Received: from smtp2.osuosl.org ([127.0.0.1])
-	by localhost (smtp2.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id aD088UZp8VJO
+Received: from smtp4.osuosl.org ([127.0.0.1])
+	by localhost (smtp4.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id U2uh4GOF1OE5
 	for <acpica-devel@lists.linuxfoundation.org>;
-	Thu, 23 Nov 2023 10:07:27 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-	by smtp2.osuosl.org (Postfix) with ESMTPS id 9870A403F8
-	for <acpica-devel@lists.linuxfoundation.org>; Thu, 23 Nov 2023 10:07:27 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 9870A403F8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700734047; x=1732270047;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references;
-  bh=UiSJDgehd3ZmZrMiVJSfKgyDPoJmiX2ZPNSPqcXf4ys=;
-  b=Kq0gVa/Rbbqvwi9qHmf/ChbmHC0mx/iVDs8WcAdrWOJEA6tPpYCAQ6Xn
-   zwDOH11XAY0h4CcxTsLdjNJQYNgu78j+cLGshjp5f0BIgfJrLphmlzn7V
-   VCsQIKH2jR8NzTFq+K0b2ibIuiYWKwaSKPFCPwxR+uTC+Irr5rul0DAo/
-   dIoksejh0QIKcCiXpu7ofvISthm15FBosLlJGHlj62hZlKJ/U5dHaHIfZ
-   satVtOsvq5ipRh2xq3U+8G9qpc6nxnukCJytrfDlKzfV0kXRnx5SGmtyv
-   847sdFklD1NGXV1OXOHlrq3a4mbBf/VEaSME6/B5ylKyF3/m3AIZGD1az
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="456576416"
-X-IronPort-AV: E=Sophos;i="6.04,221,1695711600"; 
-   d="scan'208";a="456576416"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 02:07:21 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="767160492"
-X-IronPort-AV: E=Sophos;i="6.04,221,1695711600"; 
-   d="scan'208";a="767160492"
-Received: from inlubt0316.iind.intel.com ([10.191.20.213])
-  by orsmga002.jf.intel.com with ESMTP; 23 Nov 2023 02:07:16 -0800
-From: Raag Jadav <raag.jadav@intel.com>
-To: mika.westerberg@linux.intel.com,
-	andriy.shevchenko@linux.intel.com,
-	rafael@kernel.org,
-	lenb@kernel.org,
-	robert.moore@intel.com,
-	ardb@kernel.org,
-	will@kernel.org,
-	mark.rutland@arm.com
-Cc: linux-acpi@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	acpica-devel@lists.linuxfoundation.org,
-	linux-efi@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	mallikarjunappa.sangannavar@intel.com,
-	bala.senthil@intel.com,
-	Raag Jadav <raag.jadav@intel.com>
-Subject: [PATCH v3 3/5] ACPI: LPSS: use acpi_dev_uid_match() for matching _UID
-Date: Thu, 23 Nov 2023 15:36:15 +0530
-Message-Id: <20231123100617.28020-4-raag.jadav@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231123100617.28020-1-raag.jadav@intel.com>
-References: <20231123100617.28020-1-raag.jadav@intel.com>
+	Thu, 23 Nov 2023 15:07:56 +0000 (UTC)
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+	by smtp4.osuosl.org (Postfix) with ESMTPS id E1E2240199
+	for <acpica-devel@lists.linuxfoundation.org>; Thu, 23 Nov 2023 15:07:55 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org E1E2240199
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id F2CDC40E0257;
+	Thu, 23 Nov 2023 15:07:50 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id m5sjdodFMcPV; Thu, 23 Nov 2023 15:07:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1700752069; bh=GZioNhBqPoaVW6r9VNgUDTxDc/9WQFahtmtDcDv1jQk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=SM/6TxLmCLeeCMJ4E7eAn6aIauEZQYDF368OVQdaxtJMkCf3CvIxti5slID2BVG8T
+	 7vlw2LVVbk1bS3DnCn8J6Tm8te6+efi6FDcjzlIjoC5+f+QG27JxLjHfBHheYGcQut
+	 bcOXtX8ftoC4YUDrQFAKRPkmwTfJpRrkbI/0OTy7nU2hjzvU4t6tY69JbHucTrYPhW
+	 8wP8EdCI9dHTom0ATgsb5RTUjJiC/9JbjriV6R+OowpPSQCgBYWZzYiUbUXaXXGBTV
+	 Lnp1aVp6+K9DwYxKXo/kCkQMMAl0tSwCDo0vI+gV7IYDVnOj/tgn58Qmck734jvle8
+	 s1qX7K27uPhTo8tutx/KBwdLgam7VR46wBo204py/FLWXvyjkS5KbwYeqcRf4ds/vv
+	 189WaejXxC4zyMAngHPMVWdfiH/srNz8tUIUbyYdk5Sw02kWFghaX6yseQsJKvSDmy
+	 n7CbsMRUZtQ/55hbbKcNiSVnH6BwIDxaRfmIxV2EURLNtKr/8PjKsI4/oozYuoREDy
+	 WYRCFGP/z/hq+4RWfu0JFOyZywYRt0OoPMUhYmMyFHV0v7q+T4g8v19Ulkm8Kfu1Gn
+	 n5kP3VMwL0iPvOkOfUoEqDF875T1CllORUq1wJebvge1tYzhwHHP8sFcRsrR3YZ3oE
+	 ej22VW8rwDIqG1Ea0/a5GaHE=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9922540E0195;
+	Thu, 23 Nov 2023 15:07:14 +0000 (UTC)
+Date: Thu, 23 Nov 2023 16:07:10 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Shuai Xue <xueshuai@linux.alibaba.com>
+Cc: rafael@kernel.org, wangkefeng.wang@huawei.com, tanxiaofei@huawei.com,
+	mawupeng1@huawei.com, tony.luck@intel.com, linmiaohe@huawei.com,
+	naoya.horiguchi@nec.com, james.morse@arm.com,
+	gregkh@linuxfoundation.org, will@kernel.org, jarkko@kernel.org,
+	linux-acpi@vger.kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+	linux-edac@vger.kernel.org, acpica-devel@lists.linuxfoundation.org,
+	stable@vger.kernel.org, x86@kernel.org, justin.he@arm.com,
+	ardb@kernel.org, ying.huang@intel.com, ashish.kalra@amd.com,
+	baolin.wang@linux.alibaba.com, tglx@linutronix.de, mingo@redhat.com,
+	dave.hansen@linux.intel.com, lenb@kernel.org, hpa@zytor.com,
+	robert.moore@intel.com, lvying6@huawei.com, xiexiuqi@huawei.com,
+	zhuo.song@linux.alibaba.com
+Subject: Re: [PATCH v9 0/2] ACPI: APEI: handle synchronous errors in task
+ work with proper si_code
+Message-ID: <20231123150710.GEZV9qnkWMBWrggGc1@fat_crate.local>
+References: <20221027042445.60108-1-xueshuai@linux.alibaba.com>
+ <20231007072818.58951-1-xueshuai@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231007072818.58951-1-xueshuai@linux.alibaba.com>
 
-Now that we have _UID matching support for integer types, we can use
-acpi_dev_uid_match() for it.
+On Sat, Oct 07, 2023 at 03:28:16PM +0800, Shuai Xue wrote:
+> However, this trick is not always be effective
 
-Signed-off-by: Raag Jadav <raag.jadav@intel.com>
-Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+So far so good.
+
+What's missing here is why "this trick" is not always effective.
+
+Basically to explain what exactly the problem is.
+
+> For example, hwpoison-aware user-space processes use the si_code:
+> BUS_MCEERR_AO for 'action optional' early notifications, and BUS_MCEERR_AR
+> for 'action required' synchronous/late notifications. Specifically, when a
+> signal with SIGBUS_MCEERR_AR is delivered to QEMU, it will inject a vSEA to
+> Guest kernel. In contrast, a signal with SIGBUS_MCEERR_AO will be ignored
+> by QEMU.[1]
+> 
+> Fix it by seting memory failure flags as MF_ACTION_REQUIRED on synchronous events. (PATCH 1)
+
+So you're fixing qemu by "fixing" the kernel?
+
+This doesn't make any sense.
+
+Make errors which are ACPI_HEST_NOTIFY_SEA type return
+MF_ACTION_REQUIRED so that it *happens* to fix your use case.
+
+Sounds like a lot of nonsense to me.
+
+What is the issue here you're trying to solve?
+
+> 2. Handle memory_failure() abnormal fails to avoid a unnecessary reboot
+> 
+> If process mapping fault page, but memory_failure() abnormal return before
+> try_to_unmap(), for example, the fault page process mapping is KSM page.
+> In this case, arm64 cannot use the page fault process to terminate the
+> synchronous exception loop.[4]
+> 
+> This loop can potentially exceed the platform firmware threshold or even trigger
+> a kernel hard lockup, leading to a system reboot. However, kernel has the
+> capability to recover from this error.
+> 
+> Fix it by performing a force kill when memory_failure() abnormal fails or when
+> other abnormal synchronous errors occur.
+
+Just like that?
+
+Without giving the process the opportunity to even save its other data?
+
+So this all is still very confusing, patches definitely need splitting
+and this whole thing needs restraint.
+
+You go and do this: you split *each* issue you're addressing into
+a separate patch and explain it like this:
+
 ---
- drivers/acpi/acpi_lpss.c | 16 ++++------------
- 1 file changed, 4 insertions(+), 12 deletions(-)
+1. Prepare the context for the explanation briefly.
 
-diff --git a/drivers/acpi/acpi_lpss.c b/drivers/acpi/acpi_lpss.c
-index 875de44961bf..79f4fc7d6871 100644
---- a/drivers/acpi/acpi_lpss.c
-+++ b/drivers/acpi/acpi_lpss.c
-@@ -167,13 +167,9 @@ static struct pwm_lookup byt_pwm_lookup[] = {
- 
- static void byt_pwm_setup(struct lpss_private_data *pdata)
- {
--	u64 uid;
--
- 	/* Only call pwm_add_table for the first PWM controller */
--	if (acpi_dev_uid_to_integer(pdata->adev, &uid) || uid != 1)
--		return;
--
--	pwm_add_table(byt_pwm_lookup, ARRAY_SIZE(byt_pwm_lookup));
-+	if (acpi_dev_uid_match(pdata->adev, 1))
-+		pwm_add_table(byt_pwm_lookup, ARRAY_SIZE(byt_pwm_lookup));
- }
- 
- #define LPSS_I2C_ENABLE			0x6c
-@@ -218,13 +214,9 @@ static struct pwm_lookup bsw_pwm_lookup[] = {
- 
- static void bsw_pwm_setup(struct lpss_private_data *pdata)
- {
--	u64 uid;
--
- 	/* Only call pwm_add_table for the first PWM controller */
--	if (acpi_dev_uid_to_integer(pdata->adev, &uid) || uid != 1)
--		return;
--
--	pwm_add_table(bsw_pwm_lookup, ARRAY_SIZE(bsw_pwm_lookup));
-+	if (acpi_dev_uid_match(pdata->adev, 1))
-+		pwm_add_table(bsw_pwm_lookup, ARRAY_SIZE(bsw_pwm_lookup));
- }
- 
- static const struct property_entry lpt_spi_properties[] = {
+2. Explain the problem at hand.
+
+3. "It happens because of <...>"
+
+4. "Fix it by doing X"
+
+5. "(Potentially do Y)."
+---
+
+and each patch explains *exactly* *one* issue, what happens, why it
+happens and just the fix for it and *why* it is needed.
+
+Otherwise, this is unreviewable.
+
+Thx.
+
 -- 
-2.17.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
