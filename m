@@ -1,153 +1,260 @@
-Received: from smtp2.osuosl.org (smtp2.osuosl.org [140.211.166.133])
+Received: from smtp1.osuosl.org (smtp1.osuosl.org [140.211.166.138])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50FE8539F
-	for <acpica-devel@lists.linuxfoundation.org>; Sat, 25 Nov 2023 12:20:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="QVHMXdIM"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E9F86AD8
+	for <acpica-devel@lists.linuxfoundation.org>; Sun, 26 Nov 2023 12:25:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 Received: from localhost (localhost [127.0.0.1])
-	by smtp2.osuosl.org (Postfix) with ESMTP id C77E7400CF
-	for <acpica-devel@lists.linuxfoundation.org>; Sat, 25 Nov 2023 12:20:44 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org C77E7400CF
-Authentication-Results: smtp2.osuosl.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.a=rsa-sha256 header.s=alien8 header.b=QVHMXdIM
+	by smtp1.osuosl.org (Postfix) with ESMTP id 2940A812B4
+	for <acpica-devel@lists.linuxfoundation.org>; Sun, 26 Nov 2023 12:25:56 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 2940A812B4
 X-Virus-Scanned: amavisd-new at osuosl.org
 X-Spam-Flag: NO
-X-Spam-Score: -2.1
+X-Spam-Score: -9.899
 X-Spam-Level:
-Received: from smtp2.osuosl.org ([127.0.0.1])
-	by localhost (smtp2.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id L6i7pa-HEauC
+Received: from smtp1.osuosl.org ([127.0.0.1])
+	by localhost (smtp1.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id EXreyaMtnT1F
 	for <acpica-devel@lists.linuxfoundation.org>;
-	Sat, 25 Nov 2023 12:20:42 +0000 (UTC)
-X-Greylist: delayed 537 seconds by postgrey-1.37 at util1.osuosl.org; Sat, 25 Nov 2023 12:20:42 UTC
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 20FA540012
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	by smtp2.osuosl.org (Postfix) with ESMTPS id 20FA540012
-	for <acpica-devel@lists.linuxfoundation.org>; Sat, 25 Nov 2023 12:20:41 +0000 (UTC)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id D5AE540E0258;
-	Sat, 25 Nov 2023 12:11:40 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id EdH3TiqjZDCa; Sat, 25 Nov 2023 12:11:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1700914299; bh=lXipk2MsKuURRyBeamrn5qlUVJSdVw3qeIkGplBQFJ4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=QVHMXdIMPncOpYh8vp/Gt8sIPjBAhGxxgzfTsGMtNrIzT8wggTgyMqTzF2sMopuvJ
-	 fFocbJt5u7vYk1KWv2aXXVIr+ZlGQdemphn2IjeEZlMNX0WFHnavg4TVFKJX+y18ez
-	 cGcKjNKw5uyFoU8GV4dxNJitJcyu6bHt4Q3NL7Ub0RAmIgtZQFowBZ+9vs4E3mRv63
-	 j3kQtwGnNTtSQpMx3YZ2kgU5qWkTJue3GIaK522+AR1akEkGhSjE/IzPx/J739Dov3
-	 GKP34gBAwkG8NZmyP8EMPhRuXxjo8bwsBko/EnPpLtDzKrN2PpSn+6sTb3Isz3k+dc
-	 xiBoseG1C8zdPMi12qMElb25fLR3LiwuhduajcqG07p77ecV2hpEf8/RMEKNQOSb+q
-	 Fh5sKrg5PzV6wG/L87hZX7wthXNkMnLuqxroMgEt0endDC1W3e7q9o8LAD41eFhoFX
-	 NrczcQWH9c/CVIRiuviiNVgBODS68QaH4Z2D3BbMdQNIjHrpTiFjwFXREF2dv3Vdf3
-	 6X8CQd6plNpIxOXVhOPK2VJQ7TmE5frF/KYBOFrXbiiWjNtxFbJC0KR+PRRTMTyMXB
-	 LQ2SG6apkA4OeV23g3JZke+5tCvHsC6UZOPft/wPnNk7lgN5nU9iO1om3rcaxCvA3l
-	 Rbb6RjLody3WRP8nJoG+7R/Q=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7EDAB40E01A5;
-	Sat, 25 Nov 2023 12:11:04 +0000 (UTC)
-Date: Sat, 25 Nov 2023 13:10:59 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Shuai Xue <xueshuai@linux.alibaba.com>
-Cc: rafael@kernel.org, wangkefeng.wang@huawei.com, tanxiaofei@huawei.com,
-	mawupeng1@huawei.com, tony.luck@intel.com, linmiaohe@huawei.com,
-	naoya.horiguchi@nec.com, james.morse@arm.com,
-	gregkh@linuxfoundation.org, will@kernel.org, jarkko@kernel.org,
-	linux-acpi@vger.kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-	linux-edac@vger.kernel.org, acpica-devel@lists.linuxfoundation.org,
-	stable@vger.kernel.org, x86@kernel.org, justin.he@arm.com,
-	ardb@kernel.org, ying.huang@intel.com, ashish.kalra@amd.com,
-	baolin.wang@linux.alibaba.com, tglx@linutronix.de, mingo@redhat.com,
-	dave.hansen@linux.intel.com, lenb@kernel.org, hpa@zytor.com,
-	robert.moore@intel.com, lvying6@huawei.com, xiexiuqi@huawei.com,
-	zhuo.song@linux.alibaba.com
-Subject: Re: [PATCH v9 0/2] ACPI: APEI: handle synchronous errors in task
- work with proper si_code
-Message-ID: <20231125121059.GAZWHkU27odMLns7TZ@fat_crate.local>
-References: <20221027042445.60108-1-xueshuai@linux.alibaba.com>
- <20231007072818.58951-1-xueshuai@linux.alibaba.com>
- <20231123150710.GEZV9qnkWMBWrggGc1@fat_crate.local>
- <9e92e600-86a4-4456-9de4-b597854b107c@linux.alibaba.com>
+	Sun, 26 Nov 2023 12:25:54 +0000 (UTC)
+Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
+	by smtp1.osuosl.org (Postfix) with ESMTPS id 18186812A0
+	for <acpica-devel@lists.linuxfoundation.org>; Sun, 26 Nov 2023 12:25:53 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 18186812A0
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=34;SR=0;TI=SMTPD_---0Vx6Gb4W_1701001542;
+Received: from 30.27.123.85(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Vx6Gb4W_1701001542)
+          by smtp.aliyun-inc.com;
+          Sun, 26 Nov 2023 20:25:45 +0800
+Message-ID: <1048123e-b608-4db1-8d5f-456dd113d06f@linux.alibaba.com>
+Date: Sun, 26 Nov 2023 20:25:38 +0800
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <9e92e600-86a4-4456-9de4-b597854b107c@linux.alibaba.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 0/2] ACPI: APEI: handle synchronous errors in task work
+ with proper si_code
+Content-Language: en-US
+To: Borislav Petkov <bp@alien8.de>
+Cc: rafael@kernel.org, wangkefeng.wang@huawei.com, tanxiaofei@huawei.com,
+ mawupeng1@huawei.com, tony.luck@intel.com, linmiaohe@huawei.com,
+ naoya.horiguchi@nec.com, james.morse@arm.com, gregkh@linuxfoundation.org,
+ will@kernel.org, jarkko@kernel.org, linux-acpi@vger.kernel.org,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+ linux-edac@vger.kernel.org, acpica-devel@lists.linuxfoundation.org,
+ stable@vger.kernel.org, x86@kernel.org, justin.he@arm.com, ardb@kernel.org,
+ ying.huang@intel.com, ashish.kalra@amd.com, baolin.wang@linux.alibaba.com,
+ tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+ lenb@kernel.org, hpa@zytor.com, robert.moore@intel.com, lvying6@huawei.com,
+ xiexiuqi@huawei.com, zhuo.song@linux.alibaba.com
+References: <20221027042445.60108-1-xueshuai@linux.alibaba.com>
+ <20231007072818.58951-1-xueshuai@linux.alibaba.com>
+ <20231123150710.GEZV9qnkWMBWrggGc1@fat_crate.local>
+ <9e92e600-86a4-4456-9de4-b597854b107c@linux.alibaba.com>
+ <20231125121059.GAZWHkU27odMLns7TZ@fat_crate.local>
+From: Shuai Xue <xueshuai@linux.alibaba.com>
+In-Reply-To: <20231125121059.GAZWHkU27odMLns7TZ@fat_crate.local>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Sat, Nov 25, 2023 at 02:44:52PM +0800, Shuai Xue wrote:
-> - an AR error consumed by current process is deferred to handle in a
->   dedicated kernel thread, but memory_failure() assumes that it runs in the
->   current context
 
-On x86? ARM?
 
-Please point to the exact code flow.
+On 2023/11/25 20:10, Borislav Petkov wrote:
 
-> - another page fault is not unnecessary, we can send sigbus to current
->   process in the first Synchronous External Abort SEA on arm64 (analogy
->   Machine Check Exception on x86)
+Hi, Borislav,
 
-I have no clue what that means. What page fault?
+Thank you for your reply, and sorry for the confusion I made. Please see my rely
+inline.
 
-> I just give an example that the user space process *really* relys on the
-> si_code of signal to handle hardware errors
+Best Regards,
+Shuai
 
-No, don't give examples.
-
-Explain what the exact problem is you're seeing, in your use case, point
-to the code and then state how you think it should be fixed and why.
-
-Right now your text is "all over the place" and I have no clue what you
-even want.
-
-> The SIGBUS si_codes defined in include/uapi/asm-generic/siginfo.h says:
+> On Sat, Nov 25, 2023 at 02:44:52PM +0800, Shuai Xue wrote:
+>> - an AR error consumed by current process is deferred to handle in a
+>>   dedicated kernel thread, but memory_failure() assumes that it runs in the
+>>   current context
 > 
->     /* hardware memory error consumed on a machine check: action required */
->     #define BUS_MCEERR_AR	4
->     /* hardware memory error detected in process but not consumed: action optional*/
->     #define BUS_MCEERR_AO	5
+> On x86? ARM?
 > 
-> When a synchronous error is consumed by Guest, the kernel should send a
-> signal with BUS_MCEERR_AR instead of BUS_MCEERR_AO.
+> Pease point to the exact code flow.
 
-Can you drop this "synchronous" bla and concentrate on the error
-*severity*?
+An AR error consumed by current process is deferred to handle in a
+dedicated kernel thread on ARM platform. The AR error is handled in bellow
+flow:
 
-I think you want to say that there are some types of errors for which
-error handling needs to happen immediately and for some reason that
-doesn't happen.
+-----------------------------------------------------------------------------
+[usr space task einj_mem_uc consumd data poison, CPU 3]         STEP 0
 
-Which errors are those? Types?
+-----------------------------------------------------------------------------
+[ghes_sdei_critical_callback: current einj_mem_uc, CPU 3]		STEP 1
+ghes_sdei_critical_callback
+    => __ghes_sdei_callback
+        => ghes_in_nmi_queue_one_entry 		// peak and read estatus
+        => irq_work_queue(&ghes_proc_irq_work) <=> ghes_proc_in_irq // irq_work
+[ghes_sdei_critical_callback: return]
+-----------------------------------------------------------------------------
+[ghes_proc_in_irq: current einj_mem_uc, CPU 3]			        STEP 2
+            => ghes_do_proc
+                => ghes_handle_memory_failure
+                    => ghes_do_memory_failure
+                        => memory_failure_queue	 // put work task on current CPU
+                            => if (kfifo_put(&mf_cpu->fifo, entry))
+                                  schedule_work_on(smp_processor_id(), &mf_cpu->work);
+            => task_work_add(current, &estatus_node->task_work, TWA_RESUME);
+[ghes_proc_in_irq: return]
+-----------------------------------------------------------------------------
+// kworker preempts einj_mem_uc on CPU 3 due to RESCHED flag	STEP 3
+[memory_failure_work_func: current kworker, CPU 3]	
+     => memory_failure_work_func(&mf_cpu->work)
+        => while kfifo_get(&mf_cpu->fifo, &entry);	// until get no work
+            => memory_failure(entry.pfn, entry.flags);
+-----------------------------------------------------------------------------
+[ghes_kick_task_work: current einj_mem_uc, other cpu]           STEP 4
+                => memory_failure_queue_kick
+                    => cancel_work_sync - waiting memory_failure_work_func finish
+                    => memory_failure_work_func(&mf_cpu->work)
+                        => kfifo_get(&mf_cpu->fifo, &entry); // no work
+-----------------------------------------------------------------------------
+[einj_mem_uc resume at the same PC, trigger a page fault        STEP 5
 
-Why do you need them to be handled immediately?
+STEP 0: A user space task, named einj_mem_uc consume a poison. The firmware
+notifies hardware error to kernel through is SDEI
+(ACPI_HEST_NOTIFY_SOFTWARE_DELEGATED).
 
-> Exactly.
+STEP 1: The swapper running on CPU 3 is interrupted. irq_work_queue() rasie
+a irq_work to handle hardware errors in IRQ context
 
-No, not exactly. Why is it ok to do that? What are the implications of
-this?
+STEP2: In IRQ context, ghes_proc_in_irq() queues memory failure work on
+current CPU in workqueue and add task work to sync with the workqueue.
 
-Is immediate killing the right decision?
+STEP3: The kworker preempts the current running thread and get CPU 3. Then
+memory_failure() is processed in kworker.
 
-Is this ok for *every* possible kernel running out there - not only for
-your use case?
+STEP4: ghes_kick_task_work() is called as task_work to ensure any queued
+workqueue has been done before returning to user-space.
 
-And so on and so on...
+STEP5: Upon returning to user-space, the task einj_mem_uc resumes at the
+current instruction, because the poison page is unmapped by
+memory_failure() in step 3, so a page fault will be triggered.
 
--- 
-Regards/Gruss,
-    Boris.
+memory_failure() assumes that it runs in the current context on both x86
+and ARM platform.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+
+for example:
+	memory_failure() in mm/memory-failure.c:
+
+		if (flags & MF_ACTION_REQUIRED) {
+			folio = page_folio(p);
+			res = kill_accessing_process(current, folio_pfn(folio), flags);
+		}
+
+> 
+>> - another page fault is not unnecessary, we can send sigbus to current
+>>   process in the first Synchronous External Abort SEA on arm64 (analogy
+>>   Machine Check Exception on x86)
+> 
+> I have no clue what that means. What page fault?
+
+I mean page fault in step 5. We can simplify the above flow by queuing
+memory_failure() as a task work for AR errors in step 3 directly.
+
+> 
+>> I just give an example that the user space process *really* relys on the
+>> si_code of signal to handle hardware errors
+> 
+> No, don't give examples.
+> 
+> Explain what the exact problem is you're seeing, in your use case, point
+> to the code and then state how you think it should be fixed and why.
+> 
+> Right now your text is "all over the place" and I have no clue what you
+> even want.
+
+Ok, got it. Thank you.
+
+> 
+>> The SIGBUS si_codes defined in include/uapi/asm-generic/siginfo.h says:
+>>
+>>     /* hardware memory error consumed on a machine check: action required */
+>>     #define BUS_MCEERR_AR	4
+>>     /* hardware memory error detected in process but not consumed: action optional*/
+>>     #define BUS_MCEERR_AO	5
+>>
+>> When a synchronous error is consumed by Guest, the kernel should send a
+>> signal with BUS_MCEERR_AR instead of BUS_MCEERR_AO.
+> 
+> Can you drop this "synchronous" bla and concentrate on the error
+> *severity*?
+> 
+> I think you want to say that there are some types of errors for which
+> error handling needs to happen immediately and for some reason that
+> doesn't happen.
+> 
+> Which errors are those? Types?
+> 
+> Why do you need them to be handled immediately?
+
+Well, the severity defined on x86 and ARM platform is quite different. I
+guess you mean taxonomy of producer error types.
+
+- X86: Software recoverable action required (SRAR)
+
+    A UCR error that *requires* system software to take a recovery action on
+    this processor *before scheduling another stream of execution on this
+    processor*.
+    (15.6.3 UCR Error Classification in Intel® 64 and IA-32 Architectures
+    Software Developer’s Manual Volume 3)
+
+- ARM: Recoverable state (UER)
+
+    The PE determines that software *must* take action to locate and repair
+    the error to successfully recover execution. This might be because the
+    exception was taken before the error was architecturally consumed by
+    the PE, at the point when the PE was not be able to make correct
+    progress without either consuming the error or *otherwise making the
+    state of the PE unrecoverable*.
+    (2.3.2 PE error state classification in Arm RAS Supplement
+    https://documentation-service.arm.com/static/63185614f72fad1903828eda)
+
+I think above two types of error need to be handled immediately.
+
+> 
+>> Exactly.
+> 
+> No, not exactly. Why is it ok to do that? What are the implications of
+> this?
+> 
+> Is immediate killing the right decision?
+> 
+> Is this ok for *every* possible kernel running out there - not only for
+> your use case?
+> 
+> And so on and so on...
+> 
+
+I don't have a clear answer here. I guess the poison data only effects the
+user space task which triggers exception. A panic is not necessary.
+
+On x86 platform, the current error handling of memory_failure() in
+kill_me_maybe() is just send a sigbus forcely.
+
+    kill_me_maybe():
+
+        ret = memory_failure(pfn, flags);
+        if (ret == -EHWPOISON || ret == -EOPNOTSUPP)
+        return;
+
+        pr_err("Memory error not recovered");
+        kill_me_now(cb);
+
+Do you have any comments or suggestion about this? I don't change x86
+behavior.
+
+For arm64 platform, step 3 in above flow, memory_failure_work_func(), the
+call site of memory_failure(), does not handle the return code of
+memory_failure(). I just add the same behavior.
+
+
