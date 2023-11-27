@@ -1,260 +1,107 @@
-Received: from smtp1.osuosl.org (smtp1.osuosl.org [140.211.166.138])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E9F86AD8
-	for <acpica-devel@lists.linuxfoundation.org>; Sun, 26 Nov 2023 12:25:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
-Received: from localhost (localhost [127.0.0.1])
-	by smtp1.osuosl.org (Postfix) with ESMTP id 2940A812B4
-	for <acpica-devel@lists.linuxfoundation.org>; Sun, 26 Nov 2023 12:25:56 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 2940A812B4
-X-Virus-Scanned: amavisd-new at osuosl.org
-X-Spam-Flag: NO
-X-Spam-Score: -9.899
-X-Spam-Level:
-Received: from smtp1.osuosl.org ([127.0.0.1])
-	by localhost (smtp1.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id EXreyaMtnT1F
-	for <acpica-devel@lists.linuxfoundation.org>;
-	Sun, 26 Nov 2023 12:25:54 +0000 (UTC)
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
-	by smtp1.osuosl.org (Postfix) with ESMTPS id 18186812A0
-	for <acpica-devel@lists.linuxfoundation.org>; Sun, 26 Nov 2023 12:25:53 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 18186812A0
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=34;SR=0;TI=SMTPD_---0Vx6Gb4W_1701001542;
-Received: from 30.27.123.85(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Vx6Gb4W_1701001542)
-          by smtp.aliyun-inc.com;
-          Sun, 26 Nov 2023 20:25:45 +0800
-Message-ID: <1048123e-b608-4db1-8d5f-456dd113d06f@linux.alibaba.com>
-Date: Sun, 26 Nov 2023 20:25:38 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C15DA81C
+	for <acpica-devel@lists.linux.dev>; Mon, 27 Nov 2023 05:59:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jp20Miso"
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-285c3512f37so605672a91.3
+        for <acpica-devel@lists.linux.dev>; Sun, 26 Nov 2023 21:59:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701064763; x=1701669563; darn=lists.linux.dev;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=T+lkPxpcGV4ulENWtL8UIKN/+j2CNZhdMfJlWPRbNbU=;
+        b=jp20MisoJE8VKK1JlQUZF21fYMtSKREhm3yQNruFEU6QFrlLAK4rxvN2Ff7ylpaQ8j
+         XzOUjC7Lf9p7Fu4MQuNQKJ8QCnRJVW+q+rwqyOTw1nNea4UUk7ujcBzK9f1uFvpk/G9I
+         UyW/1ym7dEEAU4FedQnpYkH4Fe34yZ9FZayxdWxpqfRgC5CwVpBbVIUFrXriHrG+uZn8
+         3qEC708IwsgIO9nIeeLevk8ZFG1ULxLW4gVMvCXXsJzXc3CklPdiT/GkXXIlwDvcUKYv
+         Q8RNgpk16nqhkXVT8RA1MCS7YLEx5+/U0HM7kaRvYK92h/yDo8dlhygG/HpU+LYH75wd
+         sE3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701064763; x=1701669563;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=T+lkPxpcGV4ulENWtL8UIKN/+j2CNZhdMfJlWPRbNbU=;
+        b=eAJzoxJdpS+H588CWwxWjU2bs9f3vCSvVEF5E7IfFBRM5S3t60npYAKubS2YpWarG8
+         agwGiL94sbM/0ppuZGu1jav2T3R/tR2/5sbrwGWHCAqJSlF78V/LLqty5GzzREZR6hG+
+         WuiamNyhbXEOEnFf4zEsUzLa1Z1UtBfrmFhualLqitiWwRsQGp4JNB7ByBeQPScKE/hu
+         Y5nc76qdOyR8rehZdfo5Q3DS8KA+iOMhl5yfYfUMOxlQlSmK28ZhV8jplBrYdQJqazte
+         9Ffl8gt3MWTb1b4Tpkd5kcrRE5r+cGhcVZSoMdzPXsCCcQZGdV1Xfsf0RdJ1NE/JrtYX
+         LdOw==
+X-Gm-Message-State: AOJu0YwgZuH0BbUuEiypn+bHtO2iP2DDcaynlduuC1IUo+Q5KXgmIevX
+	6h5vksW0zqTqBBmO32NEg/M=
+X-Google-Smtp-Source: AGHT+IGHtZK0Vns6BWzZHgVZD1B5+jmOlfvtT8e9meE4tDaoDr2RuIg/boyy2Iqn/QGqgmbdATfAiA==
+X-Received: by 2002:a17:90a:1904:b0:27d:1f9f:a57f with SMTP id 4-20020a17090a190400b0027d1f9fa57fmr13232816pjg.32.1701064763065;
+        Sun, 26 Nov 2023 21:59:23 -0800 (PST)
+Received: from code.. ([144.202.108.46])
+        by smtp.gmail.com with ESMTPSA id gm3-20020a17090b100300b0026f39c90111sm6599692pjb.20.2023.11.26.21.59.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 26 Nov 2023 21:59:22 -0800 (PST)
+From: Yuntao Wang <ytcoode@gmail.com>
+To: Robert Moore <robert.moore@intel.com>,
+	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+	Len Brown <lenb@kernel.org>
+Cc: linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	Yuntao Wang <ytcoode@gmail.com>
+Subject: [PATCH] ACPICA: Remove unused struct field and incorrect comments
+Date: Mon, 27 Nov 2023 13:58:58 +0800
+Message-ID: <20231127055858.41004-1-ytcoode@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 0/2] ACPI: APEI: handle synchronous errors in task work
- with proper si_code
-Content-Language: en-US
-To: Borislav Petkov <bp@alien8.de>
-Cc: rafael@kernel.org, wangkefeng.wang@huawei.com, tanxiaofei@huawei.com,
- mawupeng1@huawei.com, tony.luck@intel.com, linmiaohe@huawei.com,
- naoya.horiguchi@nec.com, james.morse@arm.com, gregkh@linuxfoundation.org,
- will@kernel.org, jarkko@kernel.org, linux-acpi@vger.kernel.org,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
- linux-edac@vger.kernel.org, acpica-devel@lists.linuxfoundation.org,
- stable@vger.kernel.org, x86@kernel.org, justin.he@arm.com, ardb@kernel.org,
- ying.huang@intel.com, ashish.kalra@amd.com, baolin.wang@linux.alibaba.com,
- tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
- lenb@kernel.org, hpa@zytor.com, robert.moore@intel.com, lvying6@huawei.com,
- xiexiuqi@huawei.com, zhuo.song@linux.alibaba.com
-References: <20221027042445.60108-1-xueshuai@linux.alibaba.com>
- <20231007072818.58951-1-xueshuai@linux.alibaba.com>
- <20231123150710.GEZV9qnkWMBWrggGc1@fat_crate.local>
- <9e92e600-86a4-4456-9de4-b597854b107c@linux.alibaba.com>
- <20231125121059.GAZWHkU27odMLns7TZ@fat_crate.local>
-From: Shuai Xue <xueshuai@linux.alibaba.com>
-In-Reply-To: <20231125121059.GAZWHkU27odMLns7TZ@fat_crate.local>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
+The return_object_type field in `struct acpi_evaluate_info` is unused,
+so remove it.
 
+There are also some issues in the comments of acpi_ps_execute_method().
+First, the parameter_type field has already been removed from
+`struct acpi_evaluate_info`, so the corresponding field description in
+the comments should also be removed. Second, the return_object field
+description in the comments is duplicated. Remove these incorrect comments.
 
-On 2023/11/25 20:10, Borislav Petkov wrote:
+Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
+---
+ drivers/acpi/acpica/acstruct.h | 1 -
+ drivers/acpi/acpica/psxface.c  | 3 ---
+ 2 files changed, 4 deletions(-)
 
-Hi, Borislav,
-
-Thank you for your reply, and sorry for the confusion I made. Please see my rely
-inline.
-
-Best Regards,
-Shuai
-
-> On Sat, Nov 25, 2023 at 02:44:52PM +0800, Shuai Xue wrote:
->> - an AR error consumed by current process is deferred to handle in a
->>   dedicated kernel thread, but memory_failure() assumes that it runs in the
->>   current context
-> 
-> On x86? ARM?
-> 
-> Pease point to the exact code flow.
-
-An AR error consumed by current process is deferred to handle in a
-dedicated kernel thread on ARM platform. The AR error is handled in bellow
-flow:
-
------------------------------------------------------------------------------
-[usr space task einj_mem_uc consumd data poison, CPU 3]         STEP 0
-
------------------------------------------------------------------------------
-[ghes_sdei_critical_callback: current einj_mem_uc, CPU 3]		STEP 1
-ghes_sdei_critical_callback
-    => __ghes_sdei_callback
-        => ghes_in_nmi_queue_one_entry 		// peak and read estatus
-        => irq_work_queue(&ghes_proc_irq_work) <=> ghes_proc_in_irq // irq_work
-[ghes_sdei_critical_callback: return]
------------------------------------------------------------------------------
-[ghes_proc_in_irq: current einj_mem_uc, CPU 3]			        STEP 2
-            => ghes_do_proc
-                => ghes_handle_memory_failure
-                    => ghes_do_memory_failure
-                        => memory_failure_queue	 // put work task on current CPU
-                            => if (kfifo_put(&mf_cpu->fifo, entry))
-                                  schedule_work_on(smp_processor_id(), &mf_cpu->work);
-            => task_work_add(current, &estatus_node->task_work, TWA_RESUME);
-[ghes_proc_in_irq: return]
------------------------------------------------------------------------------
-// kworker preempts einj_mem_uc on CPU 3 due to RESCHED flag	STEP 3
-[memory_failure_work_func: current kworker, CPU 3]	
-     => memory_failure_work_func(&mf_cpu->work)
-        => while kfifo_get(&mf_cpu->fifo, &entry);	// until get no work
-            => memory_failure(entry.pfn, entry.flags);
------------------------------------------------------------------------------
-[ghes_kick_task_work: current einj_mem_uc, other cpu]           STEP 4
-                => memory_failure_queue_kick
-                    => cancel_work_sync - waiting memory_failure_work_func finish
-                    => memory_failure_work_func(&mf_cpu->work)
-                        => kfifo_get(&mf_cpu->fifo, &entry); // no work
------------------------------------------------------------------------------
-[einj_mem_uc resume at the same PC, trigger a page fault        STEP 5
-
-STEP 0: A user space task, named einj_mem_uc consume a poison. The firmware
-notifies hardware error to kernel through is SDEI
-(ACPI_HEST_NOTIFY_SOFTWARE_DELEGATED).
-
-STEP 1: The swapper running on CPU 3 is interrupted. irq_work_queue() rasie
-a irq_work to handle hardware errors in IRQ context
-
-STEP2: In IRQ context, ghes_proc_in_irq() queues memory failure work on
-current CPU in workqueue and add task work to sync with the workqueue.
-
-STEP3: The kworker preempts the current running thread and get CPU 3. Then
-memory_failure() is processed in kworker.
-
-STEP4: ghes_kick_task_work() is called as task_work to ensure any queued
-workqueue has been done before returning to user-space.
-
-STEP5: Upon returning to user-space, the task einj_mem_uc resumes at the
-current instruction, because the poison page is unmapped by
-memory_failure() in step 3, so a page fault will be triggered.
-
-memory_failure() assumes that it runs in the current context on both x86
-and ARM platform.
-
-
-for example:
-	memory_failure() in mm/memory-failure.c:
-
-		if (flags & MF_ACTION_REQUIRED) {
-			folio = page_folio(p);
-			res = kill_accessing_process(current, folio_pfn(folio), flags);
-		}
-
-> 
->> - another page fault is not unnecessary, we can send sigbus to current
->>   process in the first Synchronous External Abort SEA on arm64 (analogy
->>   Machine Check Exception on x86)
-> 
-> I have no clue what that means. What page fault?
-
-I mean page fault in step 5. We can simplify the above flow by queuing
-memory_failure() as a task work for AR errors in step 3 directly.
-
-> 
->> I just give an example that the user space process *really* relys on the
->> si_code of signal to handle hardware errors
-> 
-> No, don't give examples.
-> 
-> Explain what the exact problem is you're seeing, in your use case, point
-> to the code and then state how you think it should be fixed and why.
-> 
-> Right now your text is "all over the place" and I have no clue what you
-> even want.
-
-Ok, got it. Thank you.
-
-> 
->> The SIGBUS si_codes defined in include/uapi/asm-generic/siginfo.h says:
->>
->>     /* hardware memory error consumed on a machine check: action required */
->>     #define BUS_MCEERR_AR	4
->>     /* hardware memory error detected in process but not consumed: action optional*/
->>     #define BUS_MCEERR_AO	5
->>
->> When a synchronous error is consumed by Guest, the kernel should send a
->> signal with BUS_MCEERR_AR instead of BUS_MCEERR_AO.
-> 
-> Can you drop this "synchronous" bla and concentrate on the error
-> *severity*?
-> 
-> I think you want to say that there are some types of errors for which
-> error handling needs to happen immediately and for some reason that
-> doesn't happen.
-> 
-> Which errors are those? Types?
-> 
-> Why do you need them to be handled immediately?
-
-Well, the severity defined on x86 and ARM platform is quite different. I
-guess you mean taxonomy of producer error types.
-
-- X86: Software recoverable action required (SRAR)
-
-    A UCR error that *requires* system software to take a recovery action on
-    this processor *before scheduling another stream of execution on this
-    processor*.
-    (15.6.3 UCR Error Classification in Intel® 64 and IA-32 Architectures
-    Software Developer’s Manual Volume 3)
-
-- ARM: Recoverable state (UER)
-
-    The PE determines that software *must* take action to locate and repair
-    the error to successfully recover execution. This might be because the
-    exception was taken before the error was architecturally consumed by
-    the PE, at the point when the PE was not be able to make correct
-    progress without either consuming the error or *otherwise making the
-    state of the PE unrecoverable*.
-    (2.3.2 PE error state classification in Arm RAS Supplement
-    https://documentation-service.arm.com/static/63185614f72fad1903828eda)
-
-I think above two types of error need to be handled immediately.
-
-> 
->> Exactly.
-> 
-> No, not exactly. Why is it ok to do that? What are the implications of
-> this?
-> 
-> Is immediate killing the right decision?
-> 
-> Is this ok for *every* possible kernel running out there - not only for
-> your use case?
-> 
-> And so on and so on...
-> 
-
-I don't have a clear answer here. I guess the poison data only effects the
-user space task which triggers exception. A panic is not necessary.
-
-On x86 platform, the current error handling of memory_failure() in
-kill_me_maybe() is just send a sigbus forcely.
-
-    kill_me_maybe():
-
-        ret = memory_failure(pfn, flags);
-        if (ret == -EHWPOISON || ret == -EOPNOTSUPP)
-        return;
-
-        pr_err("Memory error not recovered");
-        kill_me_now(cb);
-
-Do you have any comments or suggestion about this? I don't change x86
-behavior.
-
-For arm64 platform, step 3 in above flow, memory_failure_work_func(), the
-call site of memory_failure(), does not handle the return code of
-memory_failure(). I just add the same behavior.
-
+diff --git a/drivers/acpi/acpica/acstruct.h b/drivers/acpi/acpica/acstruct.h
+index f8fee94ba708..fe57c3a16e59 100644
+--- a/drivers/acpi/acpica/acstruct.h
++++ b/drivers/acpi/acpica/acstruct.h
+@@ -169,7 +169,6 @@ struct acpi_evaluate_info {
+ 	u16 param_count;	/* Count of the input argument list */
+ 	u16 node_flags;		/* Same as Node->Flags */
+ 	u8 pass_number;		/* Parser pass number */
+-	u8 return_object_type;	/* Object type of the returned object */
+ 	u8 flags;		/* General flags */
+ };
+ 
+diff --git a/drivers/acpi/acpica/psxface.c b/drivers/acpi/acpica/psxface.c
+index 6f4eace0ba69..df5679bbc510 100644
+--- a/drivers/acpi/acpica/psxface.c
++++ b/drivers/acpi/acpica/psxface.c
+@@ -70,9 +70,6 @@ acpi_debug_trace(const char *name, u32 debug_level, u32 debug_layer, u32 flags)
+  *                                    NULL if no parameters are being passed.
+  *                  return_object   - Where to put method's return value (if
+  *                                    any). If NULL, no value is returned.
+- *                  parameter_type  - Type of Parameter list
+- *                  return_object   - Where to put method's return value (if
+- *                                    any). If NULL, no value is returned.
+  *                  pass_number     - Parse or execute pass
+  *
+  * RETURN:      Status
+-- 
+2.43.0
 
