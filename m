@@ -1,292 +1,317 @@
-Received: from smtp1.osuosl.org (smtp1.osuosl.org [140.211.166.138])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com [209.85.161.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 614F138C
-	for <acpica-devel@lists.linuxfoundation.org>; Thu, 30 Nov 2023 02:59:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15F5338F9E;
+	Thu, 30 Nov 2023 13:21:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
-Received: from localhost (localhost [127.0.0.1])
-	by smtp1.osuosl.org (Postfix) with ESMTP id 78C1D81FA6
-	for <acpica-devel@lists.linuxfoundation.org>; Thu, 30 Nov 2023 02:59:10 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 78C1D81FA6
-X-Virus-Scanned: amavisd-new at osuosl.org
-X-Spam-Flag: NO
-X-Spam-Score: -9.9
-X-Spam-Level:
-Received: from smtp1.osuosl.org ([127.0.0.1])
-	by localhost (smtp1.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id bCg4OQcCZ_Ao
-	for <acpica-devel@lists.linuxfoundation.org>;
-	Thu, 30 Nov 2023 02:59:08 +0000 (UTC)
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
-	by smtp1.osuosl.org (Postfix) with ESMTPS id 4F97480B49
-	for <acpica-devel@lists.linuxfoundation.org>; Thu, 30 Nov 2023 02:59:07 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 4F97480B49
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=34;SR=0;TI=SMTPD_---0VxQ.im6_1701313137;
-Received: from 30.240.112.131(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0VxQ.im6_1701313137)
-          by smtp.aliyun-inc.com;
-          Thu, 30 Nov 2023 10:59:00 +0800
-Message-ID: <a3cd9b79-4be5-4f77-b32a-51a624a65ec0@linux.alibaba.com>
-Date: Thu, 30 Nov 2023 10:58:53 +0800
+Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-58dc6afb526so27426eaf.1;
+        Thu, 30 Nov 2023 05:21:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701350513; x=1701955313;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZvNfFwEaJe35P7DHOxBfctgrV0f0ocDgk3MHXYzHo/M=;
+        b=HW4xfa6Zoq6mpuS9vS1M6I/SiDNf+AsWiIX8OJ/Fsy1U8Maqn4kEX08cLv9JeWV99R
+         MKy77HdLymsH5KOUsZ6vvVSsdLf1mmiV/QjtOBNanqe9BIs9sKDS5V+inQhqkssVdGwS
+         g9rzCdi3y0XJ5vLdxmJlhX+QN6Sro1ql5ySsazQ6b+CVrc/lD9IdHf3dkjbmEUuc+It/
+         mFvvYGuCxnlXRefSJfSMcRUde3ub5ehMWTguFWLNi60LHl6csSwZGgH0/pl5THR+Sinr
+         iG9x5yPLiuAxHj6sHM7wYdwaNoVblmbhwNHpqW542EMIWMA6+ADBnh5DwG4B2tJEs9Vk
+         e1lw==
+X-Gm-Message-State: AOJu0Yyu8ex642URecwK7GNaw/apca0ws22opmrUdAxV+01/yagPvhvr
+	XhSj4roZAzy5pRtMUINUMSTRqU3s0X82mQ75lfI=
+X-Google-Smtp-Source: AGHT+IHVXAHNIVex42KnwULFjGZK2tI3TPh5OlhmRjJZ4u6dNoVNOqThLGV/PQYjRCTwh4xYmS9IrHBLkf2HUiQDDjI=
+X-Received: by 2002:a4a:a2c8:0:b0:58d:ddcb:db1a with SMTP id
+ r8-20020a4aa2c8000000b0058dddcbdb1amr1875278ool.1.1701350513014; Thu, 30 Nov
+ 2023 05:21:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 0/2] ACPI: APEI: handle synchronous errors in task work
- with proper si_code
-To: Borislav Petkov <bp@alien8.de>, james.morse@arm.com
-Cc: rafael@kernel.org, wangkefeng.wang@huawei.com, tanxiaofei@huawei.com,
- mawupeng1@huawei.com, tony.luck@intel.com, linmiaohe@huawei.com,
- naoya.horiguchi@nec.com, gregkh@linuxfoundation.org, will@kernel.org,
- jarkko@kernel.org, linux-acpi@vger.kernel.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
- linux-edac@vger.kernel.org, acpica-devel@lists.linuxfoundation.org,
- stable@vger.kernel.org, x86@kernel.org, justin.he@arm.com, ardb@kernel.org,
- ying.huang@intel.com, ashish.kalra@amd.com, baolin.wang@linux.alibaba.com,
- tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
- lenb@kernel.org, hpa@zytor.com, robert.moore@intel.com, lvying6@huawei.com,
- xiexiuqi@huawei.com, zhuo.song@linux.alibaba.com
-References: <20221027042445.60108-1-xueshuai@linux.alibaba.com>
- <20231007072818.58951-1-xueshuai@linux.alibaba.com>
- <20231123150710.GEZV9qnkWMBWrggGc1@fat_crate.local>
- <9e92e600-86a4-4456-9de4-b597854b107c@linux.alibaba.com>
- <20231125121059.GAZWHkU27odMLns7TZ@fat_crate.local>
- <1048123e-b608-4db1-8d5f-456dd113d06f@linux.alibaba.com>
- <20231129185406.GBZWeIzqwgRQe7XDo/@fat_crate.local>
-Content-Language: en-US
-From: Shuai Xue <xueshuai@linux.alibaba.com>
-In-Reply-To: <20231129185406.GBZWeIzqwgRQe7XDo/@fat_crate.local>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <0-v1-f82a05539a64+5042-iommu_fwspec_p2_jgg@nvidia.com> <3-v1-f82a05539a64+5042-iommu_fwspec_p2_jgg@nvidia.com>
+In-Reply-To: <3-v1-f82a05539a64+5042-iommu_fwspec_p2_jgg@nvidia.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Thu, 30 Nov 2023 14:21:41 +0100
+Message-ID: <CAJZ5v0h2=qHgG8qV0Yjm_mZSKBZcYZMfQYiFZF18RcmHM-+oMA@mail.gmail.com>
+Subject: Re: [PATCH 03/30] ACPI: IORT: Make a iort_iommu_for_each_id()
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: acpica-devel@lists.linux.dev, Andy Gross <agross@kernel.org>, 
+	Alim Akhtar <alim.akhtar@samsung.com>, Alyssa Rosenzweig <alyssa@rosenzweig.io>, 
+	Bjorn Andersson <andersson@kernel.org>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, asahi@lists.linux.dev, 
+	Baolin Wang <baolin.wang@linux.alibaba.com>, devicetree@vger.kernel.org, 
+	Frank Rowand <frowand.list@gmail.com>, Hanjun Guo <guohanjun@huawei.com>, 
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>, Heiko Stuebner <heiko@sntech.de>, iommu@lists.linux.dev, 
+	Jean-Philippe Brucker <jean-philippe@linaro.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+	Jonathan Hunter <jonathanh@nvidia.com>, Joerg Roedel <joro@8bytes.org>, 
+	Kees Cook <keescook@chromium.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Len Brown <lenb@kernel.org>, 
+	linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-arm-msm@vger.kernel.org, linux-hardening@vger.kernel.org, 
+	linux-mediatek@lists.infradead.org, linux-rockchip@lists.infradead.org, 
+	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev, 
+	linux-tegra@vger.kernel.org, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+	Marek Szyprowski <m.szyprowski@samsung.com>, Hector Martin <marcan@marcan.st>, 
+	Matthias Brugger <matthias.bgg@gmail.com>, Orson Zhai <orsonzhai@gmail.com>, 
+	"Rafael J. Wysocki" <rafael@kernel.org>, Rob Clark <robdclark@gmail.com>, 
+	Robert Moore <robert.moore@intel.com>, Rob Herring <robh+dt@kernel.org>, 
+	Robin Murphy <robin.murphy@arm.com>, Samuel Holland <samuel@sholland.org>, 
+	Sudeep Holla <sudeep.holla@arm.com>, Sven Peter <sven@svenpeter.dev>, 
+	Thierry Reding <thierry.reding@gmail.com>, Krishna Reddy <vdumpa@nvidia.com>, 
+	virtualization@lists.linux.dev, Chen-Yu Tsai <wens@csie.org>, 
+	Will Deacon <will@kernel.org>, Yong Wu <yong.wu@mediatek.com>, 
+	Chunyan Zhang <zhang.lyra@gmail.com>, =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>, 
+	patches@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-
-On 2023/11/30 02:54, Borislav Petkov wrote:
-> Moving James to To:
-> 
-> On Sun, Nov 26, 2023 at 08:25:38PM +0800, Shuai Xue wrote:
->>> On Sat, Nov 25, 2023 at 02:44:52PM +0800, Shuai Xue wrote:
->>>> - an AR error consumed by current process is deferred to handle in a
->>>>   dedicated kernel thread, but memory_failure() assumes that it runs in the
->>>>   current context
->>>
->>> On x86? ARM?
->>>
->>> Pease point to the exact code flow.
->>
->> An AR error consumed by current process is deferred to handle in a
->> dedicated kernel thread on ARM platform. The AR error is handled in bellow
->> flow:
->>
->> -----------------------------------------------------------------------------
->> [usr space task einj_mem_uc consumd data poison, CPU 3]         STEP 0
->>
->> -----------------------------------------------------------------------------
->> [ghes_sdei_critical_callback: current einj_mem_uc, CPU 3]		STEP 1
->> ghes_sdei_critical_callback
->>     => __ghes_sdei_callback
->>         => ghes_in_nmi_queue_one_entry 		// peak and read estatus
->>         => irq_work_queue(&ghes_proc_irq_work) <=> ghes_proc_in_irq // irq_work
->> [ghes_sdei_critical_callback: return]
->> -----------------------------------------------------------------------------
->> [ghes_proc_in_irq: current einj_mem_uc, CPU 3]			        STEP 2
->>             => ghes_do_proc
->>                 => ghes_handle_memory_failure
->>                     => ghes_do_memory_failure
->>                         => memory_failure_queue	 // put work task on current CPU
->>                             => if (kfifo_put(&mf_cpu->fifo, entry))
->>                                   schedule_work_on(smp_processor_id(), &mf_cpu->work);
->>             => task_work_add(current, &estatus_node->task_work, TWA_RESUME);
->> [ghes_proc_in_irq: return]
->> -----------------------------------------------------------------------------
->> // kworker preempts einj_mem_uc on CPU 3 due to RESCHED flag	STEP 3
->> [memory_failure_work_func: current kworker, CPU 3]	
->>      => memory_failure_work_func(&mf_cpu->work)
->>         => while kfifo_get(&mf_cpu->fifo, &entry);	// until get no work
->>             => memory_failure(entry.pfn, entry.flags);
-> 
-> From the comment above that function:
-> 
->  * The function is primarily of use for corruptions that
->  * happen outside the current execution context (e.g. when
->  * detected by a background scrubber)
->  *
->  * Must run in process context (e.g. a work queue) with interrupts
->  * enabled and no spinlocks held.
-
-Hi, Borislav,
-
-Thank you for your comments.
-
-But we are talking about Action Required error, it does happen *inside the
-current execution context*.  The Action Required error does not meet the
-function comments.
-
-> 
->> -----------------------------------------------------------------------------
->> [ghes_kick_task_work: current einj_mem_uc, other cpu]           STEP 4
->>                 => memory_failure_queue_kick
->>                     => cancel_work_sync - waiting memory_failure_work_func finish
->>                     => memory_failure_work_func(&mf_cpu->work)
->>                         => kfifo_get(&mf_cpu->fifo, &entry); // no work
->> -----------------------------------------------------------------------------
->> [einj_mem_uc resume at the same PC, trigger a page fault        STEP 5
->>
->> STEP 0: A user space task, named einj_mem_uc consume a poison. The firmware
->> notifies hardware error to kernel through is SDEI
->> (ACPI_HEST_NOTIFY_SOFTWARE_DELEGATED).
->>
->> STEP 1: The swapper running on CPU 3 is interrupted. irq_work_queue() rasie
->> a irq_work to handle hardware errors in IRQ context
->>
->> STEP2: In IRQ context, ghes_proc_in_irq() queues memory failure work on
->> current CPU in workqueue and add task work to sync with the workqueue.
->>
->> STEP3: The kworker preempts the current running thread and get CPU 3. Then
->> memory_failure() is processed in kworker.
-> 
-> See above.
-> 
->> STEP4: ghes_kick_task_work() is called as task_work to ensure any queued
->> workqueue has been done before returning to user-space.
->>
->> STEP5: Upon returning to user-space, the task einj_mem_uc resumes at the
->> current instruction, because the poison page is unmapped by
->> memory_failure() in step 3, so a page fault will be triggered.
->>
->> memory_failure() assumes that it runs in the current context on both x86
->> and ARM platform.
->>
->>
->> for example:
->> 	memory_failure() in mm/memory-failure.c:
->>
->> 		if (flags & MF_ACTION_REQUIRED) {
->> 			folio = page_folio(p);
->> 			res = kill_accessing_process(current, folio_pfn(folio), flags);
->> 		}
-> 
-> And?
-> 
-> Do you see the check above it?
-> 
-> 	if (TestSetPageHWPoison(p)) {
-> 
-> test_and_set_bit() returns true only when the page was poisoned already.
-> 
->  * This function is intended to handle "Action Required" MCEs on already
->  * hardware poisoned pages. They could happen, for example, when
->  * memory_failure() failed to unmap the error page at the first call, or
->  * when multiple local machine checks happened on different CPUs.
-> 
-> And that's kill_accessing_process().
-> 
-> So AFAIU, the kworker running memory_failure() would only mark the page
-> as poison.
-> 
-> The killing happens when memory_failure() runs again and the process
-> touches the page again.
-
-When a Action Required error occurs, it triggers a MCE-like exception
-(SEA).  In the first call of memory_failure(), it will poison the page. If
-it failed to unmap the error page, the user space task resumes at the
-current PC and triggers another SEA exception, then the second call of
-memory_failure() will run into kill_accessing_process() which do nothing
-and just return -EFAULT. As a result, a third SEA exception will be
-triggered.  Finally, a exception loop happens resulting a hard lockup
-panic.
-
-> 
-> But I'd let James confirm here.
+On Thu, Nov 30, 2023 at 2:11=E2=80=AFAM Jason Gunthorpe <jgg@nvidia.com> wr=
+ote:
 >
-> 
-> I still don't know what you're fixing here.
+> Similar to of_iommu_for_each_id() this parses the IORT ACPI description
+> and invokes a function over each entry in the table.
+>
+> Have iort_iommu_configure_id() use the new function to call
+> iort_iommu_xlate().
+>
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 
-In ARM64 platform, when a Action Required error occurs, the kernel should
-send SIGBUS with si_code BUS_MCEERR_AR instead of BUS_MCEERR_AO. (It is
-also the subject of this thread)
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-> 
-> Is this something you're encountering on some machine or you simply
-> stared at code?
-
-I met the wrong si_code problem on Yitian 710 machine which is based on
-ARM64 platform. And I think it is gernel on ARM64 platfrom.
-
-To reproduce this problem:
-
-	# STEP1: enable early kill mode
-	#sysctl -w vm.memory_failure_early_kill=1
-	vm.memory_failure_early_kill = 1
-
-	# STEP2: inject an UCE error and consume it to trigger a synchronous error
-	#einj_mem_uc single
-	0: single   vaddr = 0xffffb0d75400 paddr = 4092d55b400
-	injecting ...
-	triggering ...
-	signal 7 code 5 addr 0xffffb0d75000
-	page not present
-	Test passed
-
-The si_code (code 5) from einj_mem_uc indicates that it is BUS_MCEERR_AO error
-and it is not fact.
-
-After this patch set:
-
-	# STEP1: enable early kill mode
-	#sysctl -w vm.memory_failure_early_kill=1
-	vm.memory_failure_early_kill = 1
-
-	# STEP2: inject an UCE error and consume it to trigger a synchronous error
-	#einj_mem_uc single
-	0: single   vaddr = 0xffffb0d75400 paddr = 4092d55b400
-	injecting ...
-	triggering ...
-	signal 7 code 4 addr 0xffffb0d75000
-	page not present
-	Test passed
-
-The si_code (code 4) from einj_mem_uc indicates that it is BUS_MCEERR_AR error
-as we expected.
-
-
-> 
-> What does that
-> 
-> "Both Alibaba and Huawei met the same issue in products, and we hope it
-> could be fixed ASAP."
-> 
-> mean?
-> 
-> What did you meet?
-> 
-> What was the problem?
-
-We both got wrong si_code of SIGBUS from kernel side on ARM64 platform.
-
-The VMM in our product relies on the si_code of SIGBUS to handle memory
-failure in userspace.
-
-- For BUS_MCEERR_AO, we regard that the corruptions happen *outside the
-  current execution context* e.g. detected by a background scrubber, the
-  VMM will ignore the error and the VM will not be killed immediately.
-- For BUS_MCEERR_AR, we regard that the corruptions happen *insdie the
-  current execution context*, e.g. when a data poison is consumed, the VMM
-  will kill the VM immediately to avoid any further potential data
-  propagation.
-
-> 
-> I still note that you're avoiding answering the question what the issue
-> is and if you keep avoiding it, I'll ignore this whole thread.
-> 
-
-Sorry, Borislav, thank you for your patient and time. I really appreciate
-that you are involving in to review this patchset. But I have to say it is
-not the truth, I am avoiding anything. I tried my best to answer every comments
-you raised, give the details of ARM RAS specific and code flow.
-
-Best Regards,
-Shuai
-
+> ---
+>  drivers/acpi/arm64/iort.c | 118 ++++++++++++++++++++++++--------------
+>  include/linux/acpi_iort.h |  12 ++++
+>  2 files changed, 86 insertions(+), 44 deletions(-)
+>
+> diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
+> index bdaf9256870d92..5c9b4c23f96a87 100644
+> --- a/drivers/acpi/arm64/iort.c
+> +++ b/drivers/acpi/arm64/iort.c
+> @@ -1218,9 +1218,10 @@ static bool iort_pci_rc_supports_ats(struct acpi_i=
+ort_node *node)
+>         return pci_rc->ats_attribute & ACPI_IORT_ATS_SUPPORTED;
+>  }
+>
+> -static int iort_iommu_xlate(struct device *dev, struct acpi_iort_node *n=
+ode,
+> -                           u32 streamid)
+> +static int iort_iommu_xlate(struct acpi_iort_node *node, u32 streamid,
+> +                           void *info)
+>  {
+> +       struct device *dev =3D info;
+>         const struct iommu_ops *ops;
+>         struct fwnode_handle *iort_fwnode;
+>
+> @@ -1250,9 +1251,11 @@ static int iort_iommu_xlate(struct device *dev, st=
+ruct acpi_iort_node *node,
+>  struct iort_pci_alias_info {
+>         struct device *dev;
+>         struct acpi_iort_node *node;
+> +       iort_for_each_fn fn;
+> +       void *info;
+>  };
+>
+> -static int iort_pci_iommu_init(struct pci_dev *pdev, u16 alias, void *da=
+ta)
+> +static int __for_each_pci_alias(struct pci_dev *pdev, u16 alias, void *d=
+ata)
+>  {
+>         struct iort_pci_alias_info *info =3D data;
+>         struct acpi_iort_node *parent;
+> @@ -1260,7 +1263,7 @@ static int iort_pci_iommu_init(struct pci_dev *pdev=
+, u16 alias, void *data)
+>
+>         parent =3D iort_node_map_id(info->node, alias, &streamid,
+>                                   IORT_IOMMU_TYPE);
+> -       return iort_iommu_xlate(info->dev, parent, streamid);
+> +       return info->fn(parent, streamid, info->info);
+>  }
+>
+>  static void iort_named_component_init(struct device *dev,
+> @@ -1280,7 +1283,8 @@ static void iort_named_component_init(struct device=
+ *dev,
+>                 dev_warn(dev, "Could not add device properties\n");
+>  }
+>
+> -static int iort_nc_iommu_map(struct device *dev, struct acpi_iort_node *=
+node)
+> +static int __for_each_platform(struct acpi_iort_node *node, iort_for_eac=
+h_fn fn,
+> +                              void *info)
+>  {
+>         struct acpi_iort_node *parent;
+>         int err =3D -ENODEV, i =3D 0;
+> @@ -1293,27 +1297,71 @@ static int iort_nc_iommu_map(struct device *dev, =
+struct acpi_iort_node *node)
+>                                                    i++);
+>
+>                 if (parent)
+> -                       err =3D iort_iommu_xlate(dev, parent, streamid);
+> +                       err =3D fn(parent, streamid, info);
+>         } while (parent && !err);
+>
+>         return err;
+>  }
+>
+> -static int iort_nc_iommu_map_id(struct device *dev,
+> -                               struct acpi_iort_node *node,
+> -                               const u32 *in_id)
+> +int iort_iommu_for_each_id(struct device *dev, const u32 *id_in,
+> +                          struct iort_params *params, iort_for_each_fn f=
+n,
+> +                          void *info)
+>  {
+> -       struct acpi_iort_node *parent;
+> -       u32 streamid;
+> +       struct acpi_iort_named_component *nc;
+> +       struct acpi_iort_node *node;
+> +       int err =3D -ENODEV;
+>
+> -       parent =3D iort_node_map_id(node, *in_id, &streamid, IORT_IOMMU_T=
+YPE);
+> -       if (parent)
+> -               return iort_iommu_xlate(dev, parent, streamid);
+> +       memset(params, 0, sizeof(*params));
+> +       if (dev_is_pci(dev)) {
+> +               struct pci_bus *bus =3D to_pci_dev(dev)->bus;
+> +               struct iort_pci_alias_info pci_info =3D { .dev =3D dev,
+> +                                                       .fn =3D fn,
+> +                                                       .info =3D info };
+>
+> -       return -ENODEV;
+> +               node =3D iort_scan_node(ACPI_IORT_NODE_PCI_ROOT_COMPLEX,
+> +                                     iort_match_node_callback, &bus->dev=
+);
+> +               if (!node)
+> +                       return -ENODEV;
+> +
+> +               pci_info.node =3D node;
+> +               err =3D pci_for_each_dma_alias(to_pci_dev(dev),
+> +                                            __for_each_pci_alias, &pci_i=
+nfo);
+> +
+> +               if (iort_pci_rc_supports_ats(node))
+> +                       params->pci_rc_ats =3D true;
+> +               return 0;
+> +       }
+> +
+> +       node =3D iort_scan_node(ACPI_IORT_NODE_NAMED_COMPONENT,
+> +                             iort_match_node_callback, dev);
+> +       if (!node)
+> +               return -ENODEV;
+> +
+> +       if (id_in) {
+> +               struct acpi_iort_node *parent;
+> +               u32 streamid;
+> +
+> +               parent =3D iort_node_map_id(node, *id_in, &streamid,
+> +                                         IORT_IOMMU_TYPE);
+> +               if (!parent)
+> +                       return -ENODEV;
+> +               err =3D fn(parent, streamid, info);
+> +       } else {
+> +               err =3D __for_each_platform(node, fn, info);
+> +       }
+> +       if (err)
+> +               return err;
+> +
+> +       nc =3D (struct acpi_iort_named_component *)node->node_data;
+> +       params->pasid_num_bits =3D FIELD_GET(ACPI_IORT_NC_PASID_BITS,
+> +                                               nc->node_flags);
+> +       if (nc->node_flags & ACPI_IORT_NC_STALL_SUPPORTED)
+> +               params->dma_can_stall =3D true;
+> +
+> +       iort_named_component_init(dev, node);
+> +       return 0;
+>  }
+>
+> -
+>  /**
+>   * iort_iommu_configure_id - Set-up IOMMU configuration for a device.
+>   *
+> @@ -1324,40 +1372,22 @@ static int iort_nc_iommu_map_id(struct device *de=
+v,
+>   */
+>  int iort_iommu_configure_id(struct device *dev, const u32 *id_in)
+>  {
+> -       struct acpi_iort_node *node;
+> -       int err =3D -ENODEV;
+> +       struct iort_params params;
+> +       int err;
+>
+> -       if (dev_is_pci(dev)) {
+> +       err =3D iort_iommu_for_each_id(dev, id_in, &params, &iort_iommu_x=
+late,
+> +                                    dev);
+> +       if (err)
+> +               return err;
+> +
+> +       if (params.pci_rc_ats) {
+>                 struct iommu_fwspec *fwspec;
+> -               struct pci_bus *bus =3D to_pci_dev(dev)->bus;
+> -               struct iort_pci_alias_info info =3D { .dev =3D dev };
+> -
+> -               node =3D iort_scan_node(ACPI_IORT_NODE_PCI_ROOT_COMPLEX,
+> -                                     iort_match_node_callback, &bus->dev=
+);
+> -               if (!node)
+> -                       return -ENODEV;
+> -
+> -               info.node =3D node;
+> -               err =3D pci_for_each_dma_alias(to_pci_dev(dev),
+> -                                            iort_pci_iommu_init, &info);
+>
+>                 fwspec =3D dev_iommu_fwspec_get(dev);
+> -               if (fwspec && iort_pci_rc_supports_ats(node))
+> +               if (fwspec)
+>                         fwspec->flags |=3D IOMMU_FWSPEC_PCI_RC_ATS;
+> -       } else {
+> -               node =3D iort_scan_node(ACPI_IORT_NODE_NAMED_COMPONENT,
+> -                                     iort_match_node_callback, dev);
+> -               if (!node)
+> -                       return -ENODEV;
+> -
+> -               err =3D id_in ? iort_nc_iommu_map_id(dev, node, id_in) :
+> -                             iort_nc_iommu_map(dev, node);
+> -
+> -               if (!err)
+> -                       iort_named_component_init(dev, node);
+>         }
+> -
+> -       return err;
+> +       return 0;
+>  }
+>
+>  #else
+> diff --git a/include/linux/acpi_iort.h b/include/linux/acpi_iort.h
+> index 1cb65592c95dd3..5423abff9b6b09 100644
+> --- a/include/linux/acpi_iort.h
+> +++ b/include/linux/acpi_iort.h
+> @@ -29,6 +29,18 @@ void iort_deregister_domain_token(int trans_id);
+>  struct fwnode_handle *iort_find_domain_token(int trans_id);
+>  int iort_pmsi_get_dev_id(struct device *dev, u32 *dev_id);
+>
+> +struct iort_params {
+> +       unsigned int pasid_num_bits;
+> +       bool dma_can_stall : 1;
+> +       bool pci_rc_ats : 1;
+> +};
+> +
+> +typedef int (*iort_for_each_fn)(struct acpi_iort_node *iommu, u32 stream=
+id,
+> +                               void *info);
+> +int iort_iommu_for_each_id(struct device *dev, const u32 *id_in,
+> +                          struct iort_params *params, iort_for_each_fn f=
+n,
+> +                          void *info);
+> +
+>  #ifdef CONFIG_ACPI_IORT
+>  u32 iort_msi_map_id(struct device *dev, u32 id);
+>  struct irq_domain *iort_get_device_domain(struct device *dev, u32 id,
+> --
+> 2.42.0
+>
