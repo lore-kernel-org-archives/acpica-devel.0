@@ -1,89 +1,113 @@
-Received: from smtp3.osuosl.org (smtp3.osuosl.org [140.211.166.136])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com [209.85.161.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 144FE47F65
-	for <acpica-devel@lists.linuxfoundation.org>; Wed,  6 Dec 2023 19:44:30 +0000 (UTC)
-Received: from localhost (localhost [127.0.0.1])
-	by smtp3.osuosl.org (Postfix) with ESMTP id 9BE0960B6A
-	for <acpica-devel@lists.linuxfoundation.org>; Wed,  6 Dec 2023 19:44:30 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 9BE0960B6A
-X-Virus-Scanned: amavisd-new at osuosl.org
-X-Spam-Flag: NO
-X-Spam-Score: -1.398
-X-Spam-Level:
-Received: from smtp3.osuosl.org ([127.0.0.1])
-	by localhost (smtp3.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id FWyBD4qXN0tI
-	for <acpica-devel@lists.linuxfoundation.org>;
-	Wed,  6 Dec 2023 19:44:30 +0000 (UTC)
-Received: from mail-oa1-f54.google.com (mail-oa1-f54.google.com [209.85.160.54])
-	by smtp3.osuosl.org (Postfix) with ESMTPS id 01B8360AE4
-	for <acpica-devel@lists.linuxfoundation.org>; Wed,  6 Dec 2023 19:44:29 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 01B8360AE4
-Received: by mail-oa1-f54.google.com with SMTP id 586e51a60fabf-1fae54afb66so26569fac.1
-        for <acpica-devel@lists.linuxfoundation.org>; Wed, 06 Dec 2023 11:44:29 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCD4447F49
+	for <acpica-devel@lists.linux.dev>; Wed,  6 Dec 2023 19:49:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-58dd5193db4so12109eaf.1
+        for <acpica-devel@lists.linux.dev>; Wed, 06 Dec 2023 11:49:42 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701891869; x=1702496669;
+        d=1e100.net; s=20230601; t=1701892182; x=1702496982;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=INtr6ESdMmvwrLweqn4CnFa4mFOayDNocnS5JvYQDSU=;
-        b=r0KqQWTRom9vNZgsY+G+o1u2kq17wxk4Mqf+mRx95yOWNAaxJRftSLorOJdLoPz+qI
-         Rk3d3HqDqe4lz2ZSp1jlCSxSgBkmKeTsJ82B1qH87CuzYYkjqsevUNn/6OJhfoskFoEb
-         2WYRsD/GITjFTBgRmxWSw1gotlAHHDUIVcxLQFp5qXnrr1ODg2nBQtVqDIkbrY6eN6rk
-         Sgc8oU+kVhT3md8+dN3XLDs9BZ78ec5+jxzLeIJOICapqlJNw0rV3whd4yPDeJb0E2YT
-         vxt2wO+pc5fYjq9TVx3bZd44nqpJUyp8pfnPiAnAy2de9XEkdIs+Q/mj3MTsRMTfeV05
-         CQfQ==
-X-Gm-Message-State: AOJu0YxYolpVYKCa1w8P7FQSoxASULckafXQwLTQJKMHHOeMGcLTzxR2
-	/b5ZuUEdXqOATPnfOnnExSsbCxOQVYW/hzhL0Uw=
-X-Google-Smtp-Source: AGHT+IGfcNJZtvj9DnCjBMcbliiTnXjZvfx3KHgLDpGuqa+yvHvI5/TJ3VSssAQcSufAtX868tsRqdDp0XR0PnA3RQE=
-X-Received: by 2002:a05:6871:d30c:b0:1fa:db26:78a6 with SMTP id
- pn12-20020a056871d30c00b001fadb2678a6mr2734246oac.1.1701891868973; Wed, 06
- Dec 2023 11:44:28 -0800 (PST)
+        bh=hp7+4/skeq3z1JjM3KigvsLSXGvrXr1gskXOMgpelSY=;
+        b=ioyztHC6pGoYakCt3/o4aTms3vmidR7t2laHFXOHRucjpqnvRGRIIkvbYP6LKHUVjd
+         3H4l4WWNi6rdJZZP6YW/2SmUPU+iArN11IEWKJB9mhhd71mKHdHVLhw014EvTnz6cye5
+         U3YIy8aMY2nBCtsrxxGEwQA+Vg04QBrnrNX3Q3YxNE9inCQRRpjWZhlk+wvVFz49Rd+Y
+         nsmOBQ5xwFb82AO6k1eK7RLw2V+CDHCL0HmGyXIcL8miaCrFq7QMjGjlZXmDO8nMAJ8B
+         h7lLXeKQDCwZaHT599k7rJrRvGtjQmpMzXLbo5RmFuDd4+6ukCb4rGuEIva3EYmfsXae
+         Gm0A==
+X-Gm-Message-State: AOJu0Yy3EgVFLB90RfbuhBxQFdq7wLwW2NyxQqs/bnTqWKl7ciX8NTjN
+	L748BmA21uOqf5CvHui2U8g02sr7cSqXetRm96E=
+X-Google-Smtp-Source: AGHT+IExIFz0Wd6u8xUoM+mJ2csD63ycuSkUyWPAXV3GY072wzEGAsU15EY9wikRo0era7uyehQBhU1ZBS4x7XKxo1M=
+X-Received: by 2002:a05:6870:b69a:b0:1fb:9b:3d4c with SMTP id
+ cy26-20020a056870b69a00b001fb009b3d4cmr2791355oab.0.1701892181729; Wed, 06
+ Dec 2023 11:49:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20231123100617.28020-1-raag.jadav@intel.com>
-In-Reply-To: <20231123100617.28020-1-raag.jadav@intel.com>
+References: <20231127055858.41004-1-ytcoode@gmail.com>
+In-Reply-To: <20231127055858.41004-1-ytcoode@gmail.com>
 From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 6 Dec 2023 20:44:18 +0100
-Message-ID: <CAJZ5v0h7rSY7cD18pGTy9GuNB5s5EvVCNWngPKBtCCXrrNNW5A@mail.gmail.com>
-Subject: Re: [PATCH v3 0/5] Support _UID matching for integer types
-To: Raag Jadav <raag.jadav@intel.com>
-Cc: mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com, 
-	rafael@kernel.org, lenb@kernel.org, robert.moore@intel.com, ardb@kernel.org, 
-	will@kernel.org, mark.rutland@arm.com, linux-acpi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, acpica-devel@lists.linuxfoundation.org, 
-	linux-efi@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com
+Date: Wed, 6 Dec 2023 20:49:30 +0100
+Message-ID: <CAJZ5v0h-7mhSP5BAig6fj-pax6V_m=u2ygjYU4DxMypJfqv5Cg@mail.gmail.com>
+Subject: Re: [PATCH] ACPICA: Remove unused struct field and incorrect comments
+To: Yuntao Wang <ytcoode@gmail.com>
+Cc: Robert Moore <robert.moore@intel.com>, 
+	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org, 
+	acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 23, 2023 at 11:07=E2=80=AFAM Raag Jadav <raag.jadav@intel.com> =
-wrote:
+On Mon, Nov 27, 2023 at 6:59=E2=80=AFAM Yuntao Wang <ytcoode@gmail.com> wro=
+te:
 >
-> This series updates the standard ACPI helpers to support _UID matching
-> for both integer and string types, and uses them in a couple of places.
+> The return_object_type field in `struct acpi_evaluate_info` is unused,
+> so remove it.
 >
-> Changes since v2:
-> - Drop __builtin functions to reduce complexity (Rafael)
-> - Update tags
+> There are also some issues in the comments of acpi_ps_execute_method().
+> First, the parameter_type field has already been removed from
+> `struct acpi_evaluate_info`, so the corresponding field description in
+> the comments should also be removed. Second, the return_object field
+> description in the comments is duplicated. Remove these incorrect comment=
+s.
 >
-> Changes since v1:
-> - Fix build errors
->
-> Raag Jadav (5):
->   ACPI: bus: update acpi_dev_uid_match() to support multiple types
->   ACPI: bus: update acpi_dev_hid_uid_match() to support multiple types
->   ACPI: LPSS: use acpi_dev_uid_match() for matching _UID
->   efi: dev-path-parser: use acpi_dev_uid_match() for matching _UID
->   perf: arm_cspmu: drop redundant acpi_dev_uid_to_integer()
+> Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
+> ---
+>  drivers/acpi/acpica/acstruct.h | 1 -
+>  drivers/acpi/acpica/psxface.c  | 3 ---
+>  2 files changed, 4 deletions(-)
 
-All applied as 6.8 material, but I renamed the auxiliary macros in the
-first patch and moved the kerneldoc comment below them.
+This is ACPICA code which comes from a separate project.
 
-TBH, I'm not entirely sure about the value of the second of those
-auxiliary macros, but then I don't particularly dislike it either.
+The way to change it is to submit a pull request with the desired change
+to the upstream ACPICA project on GitHub and add a Link tag pointing
+to the upstream PR to the corresponding Linux patch.  Then, the Linux
+patch can only be applied after the corresponding upstream PR has been
+merged.
+
+Thanks!
+
+> diff --git a/drivers/acpi/acpica/acstruct.h b/drivers/acpi/acpica/acstruc=
+t.h
+> index f8fee94ba708..fe57c3a16e59 100644
+> --- a/drivers/acpi/acpica/acstruct.h
+> +++ b/drivers/acpi/acpica/acstruct.h
+> @@ -169,7 +169,6 @@ struct acpi_evaluate_info {
+>         u16 param_count;        /* Count of the input argument list */
+>         u16 node_flags;         /* Same as Node->Flags */
+>         u8 pass_number;         /* Parser pass number */
+> -       u8 return_object_type;  /* Object type of the returned object */
+>         u8 flags;               /* General flags */
+>  };
+>
+> diff --git a/drivers/acpi/acpica/psxface.c b/drivers/acpi/acpica/psxface.=
+c
+> index 6f4eace0ba69..df5679bbc510 100644
+> --- a/drivers/acpi/acpica/psxface.c
+> +++ b/drivers/acpi/acpica/psxface.c
+> @@ -70,9 +70,6 @@ acpi_debug_trace(const char *name, u32 debug_level, u32=
+ debug_layer, u32 flags)
+>   *                                    NULL if no parameters are being pa=
+ssed.
+>   *                  return_object   - Where to put method's return value=
+ (if
+>   *                                    any). If NULL, no value is returne=
+d.
+> - *                  parameter_type  - Type of Parameter list
+> - *                  return_object   - Where to put method's return value=
+ (if
+> - *                                    any). If NULL, no value is returne=
+d.
+>   *                  pass_number     - Parse or execute pass
+>   *
+>   * RETURN:      Status
+> --
+> 2.43.0
+>
+>
