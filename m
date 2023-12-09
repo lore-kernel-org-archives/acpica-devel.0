@@ -1,33 +1,67 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtp4.osuosl.org (smtp4.osuosl.org [140.211.166.137])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09BFD7096A;
-	Wed,  6 Dec 2023 23:08:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2DE079EE
+	for <acpica-devel@lists.linuxfoundation.org>; Sat,  9 Dec 2023 08:48:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YeM3t9qF"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6A01C433C7;
-	Wed,  6 Dec 2023 23:08:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701904121;
-	bh=AO1ty7D6PaKp6YDUkB6GcaoW3ZWSgt+tWyq663+Pm1Y=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=YeM3t9qF4gO99MzKrXKOOaZSPdSn/RA80k5Anw846HM1ng+H7TvW6Ve27idk2Wcl7
-	 QkAxlobS+pcETYJbQSJF3epD1OzwL7IhBfgbyRsfsG+7pqfPgwRB3Lzt6mXP145rd1
-	 4omKqqli/+EuDT1yh/2YZT9p+LEVINP7aqySAzp2uwqubJCBolDIVQnXih1pn8z2Nm
-	 Py+n5MRhtqs2zPi5NVB3qWIbpGPjlPZvC6MpSmtFCvLWPnTD5hDZpvy39W8NHI7rrn
-	 J45fhSVhQtZWWq5HloDYZkuHBw4pWR9N1NHlrhuwT2Py9Zln+XS7nR/zP0Mnqcs9W/
-	 u3Cc7xlccykqg==
-Date: Wed, 6 Dec 2023 17:08:40 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: LeoLiu-oc <LeoLiu-oc@zhaoxin.com>
-Cc: rafael@kernel.org, lenb@kernel.org, james.morse@arm.com,
-	tony.luck@intel.com, bp@alien8.de, bhelgaas@google.com,
-	robert.moore@intel.com, linux-acpi@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	acpica-devel@lists.linux.dev, CobeChen@zhaoxin.com,
-	TonyWWang@zhaoxin.com, ErosZhang@zhaoxin.com, LeoLiu@zhaoxin.com
-Subject: Re: [PATCH 3/3] PCI/ACPI: Add pci_acpi_program_hest_aer_params()
-Message-ID: <20231206230840.GA733691@bhelgaas>
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OYjoR3u0"
+Received: from localhost (localhost [127.0.0.1])
+	by smtp4.osuosl.org (Postfix) with ESMTP id 7AE45424DE
+	for <acpica-devel@lists.linuxfoundation.org>; Sat,  9 Dec 2023 08:48:32 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 7AE45424DE
+Authentication-Results: smtp4.osuosl.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=OYjoR3u0
+X-Virus-Scanned: amavisd-new at osuosl.org
+X-Spam-Flag: NO
+X-Spam-Score: -2.101
+X-Spam-Level:
+Received: from smtp4.osuosl.org ([127.0.0.1])
+	by localhost (smtp4.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id vg2dTKi3Ug-g
+	for <acpica-devel@lists.linuxfoundation.org>;
+	Sat,  9 Dec 2023 08:48:31 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	by smtp4.osuosl.org (Postfix) with ESMTPS id 672A64149D
+	for <acpica-devel@lists.linuxfoundation.org>; Sat,  9 Dec 2023 08:48:31 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 672A64149D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702111711; x=1733647711;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=BArBMRz+Uu5UuNs6uA3RiQFC97rd4SqkRdb+dYG43vQ=;
+  b=OYjoR3u02cYbODohI4k+TGOe/sCWI3aRHtq+hYYuZPhEqLIGanrsTZ5k
+   FKsUkTnuC+Kf90bfnwUmvncpMmrurznmAp7iKzKkhxrUQcBemZELuRbTv
+   QxpFNyYs5d3fGnSFQisn1EAru9Mr1FYCLN7p1znDOZrHikI0QMjPoJVEU
+   b02DaZQQN8G675x5UG52gU94PhvagqK+5AoYjDmcfQg9ltDIpLL0g/ef7
+   3GXUfMuMh7IhPC3/2DeaDym1ymFd1niaJrnpGgvOo6hfEhhJ1Bp/cVb1H
+   faUK701spzedOc1rNgefU8yunHrnfLgGuNbXpp8skO3oC5T7idm1Rpxh7
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="1573876"
+X-IronPort-AV: E=Sophos;i="6.04,262,1695711600"; 
+   d="scan'208";a="1573876"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2023 00:48:30 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="863150723"
+X-IronPort-AV: E=Sophos;i="6.04,262,1695711600"; 
+   d="scan'208";a="863150723"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by FMSMGA003.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2023 00:48:26 -0800
+Date: Sat, 9 Dec 2023 10:48:23 +0200
+From: Raag Jadav <raag.jadav@intel.com>
+To: mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com,
+	rafael@kernel.org, lenb@kernel.org, robert.moore@intel.com,
+	ardb@kernel.org, will@kernel.org, mark.rutland@arm.com
+Cc: linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	acpica-devel@lists.linuxfoundation.org, linux-efi@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com
+Subject: Re: [PATCH v3 5/5] perf: arm_cspmu: drop redundant
+ acpi_dev_uid_to_integer()
+Message-ID: <ZXQp18e9IR5w41wW@black.fi.intel.com>
+References: <20231123100617.28020-1-raag.jadav@intel.com>
+ <20231123100617.28020-6-raag.jadav@intel.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -36,25 +70,43 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231115091612.580685-4-LeoLiu-oc@zhaoxin.com>
+In-Reply-To: <20231123100617.28020-6-raag.jadav@intel.com>
 
-On Wed, Nov 15, 2023 at 05:16:12PM +0800, LeoLiu-oc wrote:
-> From: leoliu-oc <leoliu-oc@zhaoxin.com>
+On Thu, Nov 23, 2023 at 03:36:17PM +0530, Raag Jadav wrote:
+> Now that we have _UID matching support for integer types, we can use
+> acpi_dev_hid_uid_match() for it.
 > 
-> Call the func pci_acpi_program_hest_aer_params() for every PCIe device.
-> Extracting register value from HEST PCIe AER structures and programming
-> them into AER Capabilities are implemented in this function.
-> The implementation of the function is an effective supplement to _HPP/_HPX
-> method when the Firmware does not support the _HPP/_HPX method and can be
-> specially configured for the AER register of the specific device.
+> Signed-off-by: Raag Jadav <raag.jadav@intel.com>
+> Acked-by: Will Deacon <will@kernel.org>
+> ---
+>  drivers/perf/arm_cspmu/arm_cspmu.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/perf/arm_cspmu/arm_cspmu.c b/drivers/perf/arm_cspmu/arm_cspmu.c
+> index 2cc35dded007..50b89b989ce7 100644
+> --- a/drivers/perf/arm_cspmu/arm_cspmu.c
+> +++ b/drivers/perf/arm_cspmu/arm_cspmu.c
+> @@ -1108,7 +1108,6 @@ static int arm_cspmu_request_irq(struct arm_cspmu *cspmu)
+>  
+>  static inline int arm_cspmu_find_cpu_container(int cpu, u32 container_uid)
+>  {
+> -	u64 acpi_uid;
+>  	struct device *cpu_dev;
+>  	struct acpi_device *acpi_dev;
+>  
+> @@ -1118,8 +1117,7 @@ static inline int arm_cspmu_find_cpu_container(int cpu, u32 container_uid)
+>  
+>  	acpi_dev = ACPI_COMPANION(cpu_dev);
+>  	while (acpi_dev) {
+> -		if (acpi_dev_hid_uid_match(acpi_dev, ACPI_PROCESSOR_CONTAINER_HID, NULL) &&
+> -		    !acpi_dev_uid_to_integer(acpi_dev, &acpi_uid) && acpi_uid == container_uid)
+> +		if (acpi_dev_hid_uid_match(acpi_dev, ACPI_PROCESSOR_CONTAINER_HID, container_uid))
+>  			return 0;
 
-Rewrap into a single paragraph or add blank lines between.
+On second thought, I just realized that this can cause false positive
+in case container_uid is integer 0.
 
-If this is needed to make some machine work correctly, please include
-that information here.
+I'm not aware if that's a valid value to match against in APMT.
+If it is, it's better to drop patches 2 and 5 for now.
 
-Based on Rafael's comment about getting the actbl1.h change merged via
-ACPICA first, I assume this entire series is will wait for that ACPICA
-update.
-
-Bjorn
+Raag
