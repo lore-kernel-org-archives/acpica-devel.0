@@ -1,112 +1,165 @@
 Received: from smtp4.osuosl.org (smtp4.osuosl.org [140.211.166.137])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2DE079EE
-	for <acpica-devel@lists.linuxfoundation.org>; Sat,  9 Dec 2023 08:48:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71BC452751
+	for <acpica-devel@lists.linuxfoundation.org>; Tue, 12 Dec 2023 19:59:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OYjoR3u0"
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="vw1L6XLY"
 Received: from localhost (localhost [127.0.0.1])
-	by smtp4.osuosl.org (Postfix) with ESMTP id 7AE45424DE
-	for <acpica-devel@lists.linuxfoundation.org>; Sat,  9 Dec 2023 08:48:32 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 7AE45424DE
+	by smtp4.osuosl.org (Postfix) with ESMTP id F2A0541713
+	for <acpica-devel@lists.linuxfoundation.org>; Tue, 12 Dec 2023 19:59:08 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org F2A0541713
 Authentication-Results: smtp4.osuosl.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=OYjoR3u0
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.a=rsa-sha256 header.s=pandora-2019 header.b=vw1L6XLY
 X-Virus-Scanned: amavisd-new at osuosl.org
 X-Spam-Flag: NO
-X-Spam-Score: -2.101
+X-Spam-Score: -2.098
 X-Spam-Level:
 Received: from smtp4.osuosl.org ([127.0.0.1])
 	by localhost (smtp4.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id vg2dTKi3Ug-g
+	with ESMTP id VY48jnSeziAO
 	for <acpica-devel@lists.linuxfoundation.org>;
-	Sat,  9 Dec 2023 08:48:31 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
-	by smtp4.osuosl.org (Postfix) with ESMTPS id 672A64149D
-	for <acpica-devel@lists.linuxfoundation.org>; Sat,  9 Dec 2023 08:48:31 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 672A64149D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702111711; x=1733647711;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=BArBMRz+Uu5UuNs6uA3RiQFC97rd4SqkRdb+dYG43vQ=;
-  b=OYjoR3u02cYbODohI4k+TGOe/sCWI3aRHtq+hYYuZPhEqLIGanrsTZ5k
-   FKsUkTnuC+Kf90bfnwUmvncpMmrurznmAp7iKzKkhxrUQcBemZELuRbTv
-   QxpFNyYs5d3fGnSFQisn1EAru9Mr1FYCLN7p1znDOZrHikI0QMjPoJVEU
-   b02DaZQQN8G675x5UG52gU94PhvagqK+5AoYjDmcfQg9ltDIpLL0g/ef7
-   3GXUfMuMh7IhPC3/2DeaDym1ymFd1niaJrnpGgvOo6hfEhhJ1Bp/cVb1H
-   faUK701spzedOc1rNgefU8yunHrnfLgGuNbXpp8skO3oC5T7idm1Rpxh7
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="1573876"
-X-IronPort-AV: E=Sophos;i="6.04,262,1695711600"; 
-   d="scan'208";a="1573876"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2023 00:48:30 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="863150723"
-X-IronPort-AV: E=Sophos;i="6.04,262,1695711600"; 
-   d="scan'208";a="863150723"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by FMSMGA003.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2023 00:48:26 -0800
-Date: Sat, 9 Dec 2023 10:48:23 +0200
-From: Raag Jadav <raag.jadav@intel.com>
-To: mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com,
-	rafael@kernel.org, lenb@kernel.org, robert.moore@intel.com,
-	ardb@kernel.org, will@kernel.org, mark.rutland@arm.com
-Cc: linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	acpica-devel@lists.linuxfoundation.org, linux-efi@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com
-Subject: Re: [PATCH v3 5/5] perf: arm_cspmu: drop redundant
- acpi_dev_uid_to_integer()
-Message-ID: <ZXQp18e9IR5w41wW@black.fi.intel.com>
-References: <20231123100617.28020-1-raag.jadav@intel.com>
- <20231123100617.28020-6-raag.jadav@intel.com>
+	Tue, 12 Dec 2023 19:59:06 +0000 (UTC)
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+	by smtp4.osuosl.org (Postfix) with ESMTPS id 40CA9415ED
+	for <acpica-devel@lists.linuxfoundation.org>; Tue, 12 Dec 2023 19:59:05 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 40CA9415ED
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=tzSIob+ZloljYLW+tLDyKC/69ft7pcQwsMOiIXpJIok=; b=vw1L6XLYMrjE3sFENIwANCt1v3
+	7cAzma3wPHfPcHoG9wwkMxGWUzWDApvWXx2iDNH1wm+zJnUto1Pm0srAC0ESTdJFqRhA5HgZkecv8
+	6ZxXy2SdOV32NspEw3waqQJesyFiNyElMKU1mfQ7hGyutNpt8Eu8Cl0dTo9npe2YUMHIcFLtUzR2U
+	r0CtlsCPasqY8qOEIs+t339Sv6zjT1PVHzSLP70GRefywlApYbHkmdsoRLcx9nXuUlWRQTuyIkVQH
+	vfIu2gbTC4MCO7Zmq8ZOWgZZVe6GhwFIl7d/pw5GgsMAFTOUidPZyLz8lj/YwebHDzhG7lGYuwBiP
+	2nXhXZXA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:33796)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rD8u0-0007MS-0Z;
+	Tue, 12 Dec 2023 19:58:48 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rD8ty-0000ih-JG; Tue, 12 Dec 2023 19:58:46 +0000
+Date: Tue, 12 Dec 2023 19:58:46 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+	x86@kernel.org, acpica-devel@lists.linuxfoundation.org,
+	linux-csky@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+	Salil Mehta <salil.mehta@huawei.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	jianyong.wu@arm.com, justin.he@arm.com,
+	James Morse <james.morse@arm.com>
+Subject: Re: [RFC PATCH v3 00/39] ACPI/arm64: add support for virtual
+ cpuhotplug
+Message-ID: <ZXi7do4mVfdsz/k0@shell.armlinux.org.uk>
+References: <ZTffkAdOqL2pI2la@shell.armlinux.org.uk>
+ <CAJZ5v0j-73_+9U3ngDAf9w1ADDhBTKctJdWboqUk-okH2TQGyg@mail.gmail.com>
+ <ZW4ZBkj2oCmxv55T@shell.armlinux.org.uk>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231123100617.28020-6-raag.jadav@intel.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZW4ZBkj2oCmxv55T@shell.armlinux.org.uk>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Thu, Nov 23, 2023 at 03:36:17PM +0530, Raag Jadav wrote:
-> Now that we have _UID matching support for integer types, we can use
-> acpi_dev_hid_uid_match() for it.
+On Mon, Dec 04, 2023 at 06:23:02PM +0000, Russell King (Oracle) wrote:
+> On Tue, Oct 24, 2023 at 08:26:58PM +0200, Rafael J. Wysocki wrote:
+> > On Tue, Oct 24, 2023 at 5:15 PM Russell King (Oracle)
+> > <linux@armlinux.org.uk> wrote:
+> > >
+> > > Hi,
+> > >
+> > > I'm posting James' patch set updated with most of the review comments
+> > > from his RFC v2 series back in September. Individual patches have a
+> > > changelog attached at the bottom of the commit message. Those which
+> > > I have finished updating have my S-o-b on them, those which still have
+> > > outstanding review comments from RFC v2 do not. In some of these cases
+> > > I've asked questions and am waiting for responses.
+> > >
+> > > I'm posting this as RFC v3 because there's still some unaddressed
+> > > comments and it's clearly not ready for merging. Even if it was ready
+> > > to be merged, it is too late in this development cycle to be taking
+> > > this change in, so there would be little point posting it non-RFC.
+> > > Also James stated that he's waiting for confirmation from the
+> > > Kubernetes/Kata folk - I have no idea what the status is there.
+> > >
+> > > I will be sending each patch individually to a wider audience
+> > > appropriate for that patch - apologies to those missing out on this
+> > > cover message. I have added more mailing lists to the series with the
+> > > exception of the acpica list in a hope of this cover message also
+> > > reaching those folk.
+> > >
+> > > The changes that aren't included are:
+> > >
+> > > 1. Updates for my patch that was merged via Thomas (thanks!):
+> > >    c4dd854f740c cpu-hotplug: Provide prototypes for arch CPU registration
+> > >    rather than having this change spread through James' patches.
+> > >
+> > > 2. New patch - simplification of PA-RISC's smp_prepare_boot_cpu()
+> > >
+> > > 3. Moved "ACPI: Use the acpi_device_is_present() helper in more places"
+> > >    and "ACPI: Rename acpi_scan_device_not_present() to be about
+> > >    enumeration" to the beginning of the series - these two patches are
+> > >    already queued up for merging into 6.7.
+> > >
+> > > 4. Moved "arm64, irqchip/gic-v3, ACPI: Move MADT GICC enabled check into
+> > >    a helper" to the beginning of the series, which has been submitted,
+> > >    but as yet the fate of that posting isn't known.
+> > >
+> > > The first four patches in this series are provided for completness only.
+> > >
+> > > There is an additional patch in James' git tree that isn't in the set
+> > > of patches that James posted: "ACPI: processor: Only call
+> > > arch_unregister_cpu() if HOTPLUG_CPU is selected" which looks to me to
+> > > be a workaround for arch_unregister_cpu() being under the ifdef. I've
+> > > commented on this on the RFC v2 posting making a suggestion, but as yet
+> > > haven't had any response.
+> > >
+> > > I've included almost all of James' original covering body below the
+> > > diffstat.
+> > >
+> > > The reason that I'm doing this is to help move this code forward so
+> > > hopefully it can be merged - which is why I have been keen to dig out
+> > > from James' patches anything that can be merged and submit it
+> > > separately, since this is a feature for which some users have a
+> > > definite need for.
+> > 
+> > I've gone through the series and there is at least one thing in it
+> > that concerns me a lot and some others that at least appear to be
+> > really questionable.
+> > 
+> > I need more time to send comments which I'm not going to do before the
+> > 6.7 merge window (sorry), but from what I can say right now, this is
+> > not looking good.
 > 
-> Signed-off-by: Raag Jadav <raag.jadav@intel.com>
-> Acked-by: Will Deacon <will@kernel.org>
-> ---
->  drivers/perf/arm_cspmu/arm_cspmu.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
+> Hi Rafael,
 > 
-> diff --git a/drivers/perf/arm_cspmu/arm_cspmu.c b/drivers/perf/arm_cspmu/arm_cspmu.c
-> index 2cc35dded007..50b89b989ce7 100644
-> --- a/drivers/perf/arm_cspmu/arm_cspmu.c
-> +++ b/drivers/perf/arm_cspmu/arm_cspmu.c
-> @@ -1108,7 +1108,6 @@ static int arm_cspmu_request_irq(struct arm_cspmu *cspmu)
->  
->  static inline int arm_cspmu_find_cpu_container(int cpu, u32 container_uid)
->  {
-> -	u64 acpi_uid;
->  	struct device *cpu_dev;
->  	struct acpi_device *acpi_dev;
->  
-> @@ -1118,8 +1117,7 @@ static inline int arm_cspmu_find_cpu_container(int cpu, u32 container_uid)
->  
->  	acpi_dev = ACPI_COMPANION(cpu_dev);
->  	while (acpi_dev) {
-> -		if (acpi_dev_hid_uid_match(acpi_dev, ACPI_PROCESSOR_CONTAINER_HID, NULL) &&
-> -		    !acpi_dev_uid_to_integer(acpi_dev, &acpi_uid) && acpi_uid == container_uid)
-> +		if (acpi_dev_hid_uid_match(acpi_dev, ACPI_PROCESSOR_CONTAINER_HID, container_uid))
->  			return 0;
+> Will you be able to send your comments, so that we can find out what
+> your other concerns are please? I'm getting questions from interested
+> parties who want to know what your concerns are.
+> 
+> Nothing much has changed to the ACPI changes, so I think it's still
+> valid to have the comments back for this.
 
-On second thought, I just realized that this can cause false positive
-in case container_uid is integer 0.
+Hi Rafael,
 
-I'm not aware if that's a valid value to match against in APMT.
-If it is, it's better to drop patches 2 and 5 for now.
+Another gentle prod on this...
 
-Raag
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
