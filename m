@@ -1,50 +1,50 @@
 Received: from smtp4.osuosl.org (smtp4.osuosl.org [140.211.166.137])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C38C29420
-	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:59:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D32C429420
+	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:59:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="rkyEttm/"
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="R6N7nL3H"
 Received: from localhost (localhost [127.0.0.1])
-	by smtp4.osuosl.org (Postfix) with ESMTP id B1F1441E75
-	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:34 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org B1F1441E75
+	by smtp4.osuosl.org (Postfix) with ESMTP id 2936F41E68
+	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:35 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 2936F41E68
 Authentication-Results: smtp4.osuosl.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.a=rsa-sha256 header.s=pandora-2019 header.b=rkyEttm/
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.a=rsa-sha256 header.s=pandora-2019 header.b=R6N7nL3H
 X-Virus-Scanned: amavisd-new at osuosl.org
 X-Spam-Flag: NO
 X-Spam-Score: -2.098
 X-Spam-Level:
 Received: from smtp4.osuosl.org ([127.0.0.1])
 	by localhost (smtp4.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id 46YVOpirRPmi
+	with ESMTP id FB_N0LygqeOI
 	for <acpica-devel@lists.linuxfoundation.org>;
-	Wed, 13 Dec 2023 12:58:33 +0000 (UTC)
+	Wed, 13 Dec 2023 12:58:34 +0000 (UTC)
 Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-	by smtp4.osuosl.org (Postfix) with ESMTPS id B40C141E68
-	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:33 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org B40C141E68
+	by smtp4.osuosl.org (Postfix) with ESMTPS id 3D08141E7A
+	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:34 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 3D08141E7A
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=armlinux.org.uk; s=pandora-2019; h=Date:Sender:Message-Id:Content-Type:
 	Content-Transfer-Encoding:MIME-Version:Subject:Cc:To:From:References:
 	In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
 	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=+T8kn3k9b5NRBjWSUweuCxqkK4fxT1FVGeJHMIqvr6c=; b=rkyEttm/kwtrIQTS1tSEUUuy10
-	b9f4MBsDpOC7fICaT9EKK+Erd3u3912ckPVBYTTp9qSDOl75HckFt2qX6y4YCvnlnnFH14GeyAlCD
-	Li+m9IPqogcUFaNQ7kQHxE4OpBhAZYtFI73RMlMLVN/fOwXSoM636lHWmCwWwcFfIS24kketvfMg0
-	EU7oxLVMKZRpauGDtcKWJQe8L2+C4eMsQ9rGXcJRTKtsWv+vOvGMNbx0tW/5qZx4LHU0G5Ov/QN7B
-	+CzbJp4H7r/dgAdh7yyBwxBVH4y/8nMxcj74KZ3bUuRotM59px0g35yT9z1oC88KgqotI5CkI10kd
-	HXtcF17Q==;
-Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:50928 helo=rmk-PC.armlinux.org.uk)
+	bh=7Aiu0hOT23ckQkcqYvFjFK3dZgn3o0k6iEaEs/f0wM4=; b=R6N7nL3Hj7r6PGZF3AQxR9xYGp
+	hz3VIljNGb8hg0+7xDjuT8525pBUgeBD+UIlhqsF/zdkVX1vEA4PMefDHWLw6eESWX/1AaRvJ2xvp
+	drQL6SkAjAlAaI2V+skWX+NQheiaNGiyFmbcghDlNq53IdbfD3RGfOI0sr2M81PLbH2+OjiOQSuF6
+	/Gyjb/SKH6KmE2xRrQzd43ITzOIHYT2giKcTbiBo+f70SVHRLq3gSmUv6s13SFY3S3PO1NASAJuRf
+	0QsynTB3Sjo9SskZetDQ+UgL519HLUw4PT5wxDx035hqiXN3EfAgIHCFhMU5KolSLXbJDE1D9hsuC
+	deJdumJQ==;
+Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:36776 helo=rmk-PC.armlinux.org.uk)
 	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <rmk@armlinux.org.uk>)
-	id 1rDOga-0008F6-2I;
-	Wed, 13 Dec 2023 12:50:01 +0000
+	id 1rDOfq-0008Cl-1H;
+	Wed, 13 Dec 2023 12:49:14 +0000
 Received: from rmk by rmk-PC.armlinux.org.uk with local (Exim 4.94.2)
 	(envelope-from <rmk@rmk-PC.armlinux.org.uk>)
-	id 1rDOgc-00DvkW-PZ; Wed, 13 Dec 2023 12:50:02 +0000
+	id 1rDOfs-00DvjY-HQ; Wed, 13 Dec 2023 12:49:16 +0000
 In-Reply-To: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
 References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
 From: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
@@ -67,8 +67,8 @@ Cc: Salil Mehta <salil.mehta@huawei.com>,
 	jianyong.wu@arm.com,
 	justin.he@arm.com,
 	James Morse <james.morse@arm.com>
-Subject: [PATCH RFC v3 10/21] ACPI: Check _STA present bit before making CPUs
- not present
+Subject: [PATCH RFC v3 01/21] ACPI: Only enumerate enabled (or functional)
+ devices
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -78,98 +78,165 @@ MIME-Version: 1.0
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset="utf-8"
-Message-Id: <E1rDOgc-00DvkW-PZ@rmk-PC.armlinux.org.uk>
+Message-Id: <E1rDOfs-00DvjY-HQ@rmk-PC.armlinux.org.uk>
 Sender: Russell King <rmk@armlinux.org.uk>
-Date: Wed, 13 Dec 2023 12:50:02 +0000
+Date: Wed, 13 Dec 2023 12:49:16 +0000
 
 From: James Morse <james.morse@arm.com>
 
-When called acpi_processor_post_eject() unconditionally make a CPU
-not-present and unregisters it.
+Today the ACPI enumeration code 'visits' all devices that are present.
 
-To add support for AML events where the CPU has become disabled, but
-remains present, the _STA method should be checked before calling
-acpi_processor_remove().
+This is a problem for arm64, where CPUs are always present, but not
+always enabled. When a device-check occurs because the firmware-policy
+has changed and a CPU is now enabled, the following error occurs:
+| acpi ACPI0007:48: Enumeration failure
 
-Rename acpi_processor_post_eject() acpi_processor_remove_possible(), and
-check the _STA before calling.
+This is ultimately because acpi_dev_ready_for_enumeration() returns
+true for a device that is not enabled. The ACPI Processor driver
+will not register such CPUs as they are not 'decoding their resources'.
 
-Adding the function prototype for arch_unregister_cpu() allows the
-preprocessor guards to be removed.
-
-After this change CPUs will remain registered and visible to
-user-space as offline if buggy firmware triggers an eject-request,
-but doesn't clear the corresponding _STA bits after _EJ0 has been
-called.
+Change acpi_dev_ready_for_enumeration() to also check the enabled bit.
+ACPI allows a device to be functional instead of maintaining the
+present and enabled bit. Make this behaviour an explicit check with
+a reference to the spec, and then check the present and enabled bits.
+This is needed to avoid enumerating present && functional devices that
+are not enabled.
 
 Signed-off-by: James Morse <james.morse@arm.com>
 Tested-by: Miguel Luis <miguel.luis@oracle.com>
 Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
 Tested-by: Jianyong Wu <jianyong.wu@arm.com>
+Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 ---
-Changes since RFC v3:
- * Move IS_ENABLED(CONFIG_ACPI_HOTPLUG_PRESENT_CPU) into separate patch.
-Outstanding comments:
- https://lore.kernel.org/r/20230914153110.00003e38@Huawei.com
- https://lore.kernel.org/r/518859b1-64a9-d723-963c-56c7f6fc2da1@redhat.com
-  This contains a repeat of the IS_ENABLED() issue which we don't think
-  is a problem - but there is another issue mentioned in that comment.
----
- drivers/acpi/acpi_processor.c | 28 ++++++++++++++++++++++++----
- 1 file changed, 24 insertions(+), 4 deletions(-)
+If this change causes problems on deployed hardware, I suggest an
+arch opt-in: ACPI_IGNORE_STA_ENABLED, that causes
+acpi_dev_ready_for_enumeration() to only check the present bit.
 
-diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
-index 01c460881662..19fceb3ec4e2 100644
---- a/drivers/acpi/acpi_processor.c
-+++ b/drivers/acpi/acpi_processor.c
-@@ -458,16 +458,13 @@ static int acpi_processor_add(struct acpi_device *device,
+Changes since RFC v2:
+ * Incorporate comment suggestion by Gavin Shan.
+Other review comments from Jonathan Cameron not yet addressed.
+---
+ drivers/acpi/device_pm.c    |  2 +-
+ drivers/acpi/device_sysfs.c |  2 +-
+ drivers/acpi/internal.h     |  1 -
+ drivers/acpi/property.c     |  2 +-
+ drivers/acpi/scan.c         | 24 ++++++++++++++----------
+ 5 files changed, 17 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/acpi/device_pm.c b/drivers/acpi/device_pm.c
+index 3b4d048c4941..e3c80f3b3b57 100644
+--- a/drivers/acpi/device_pm.c
++++ b/drivers/acpi/device_pm.c
+@@ -313,7 +313,7 @@ int acpi_bus_init_power(struct acpi_device *device)
+ 		return -EINVAL;
+ 
+ 	device->power.state = ACPI_STATE_UNKNOWN;
+-	if (!acpi_device_is_present(device)) {
++	if (!acpi_dev_ready_for_enumeration(device)) {
+ 		device->flags.initialized = false;
+ 		return -ENXIO;
+ 	}
+diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
+index 23373faa35ec..a0256d2493a7 100644
+--- a/drivers/acpi/device_sysfs.c
++++ b/drivers/acpi/device_sysfs.c
+@@ -141,7 +141,7 @@ static int create_pnp_modalias(const struct acpi_device *acpi_dev, char *modalia
+ 	struct acpi_hardware_id *id;
+ 
+ 	/* Avoid unnecessarily loading modules for non present devices. */
+-	if (!acpi_device_is_present(acpi_dev))
++	if (!acpi_dev_ready_for_enumeration(acpi_dev))
+ 		return 0;
+ 
+ 	/*
+diff --git a/drivers/acpi/internal.h b/drivers/acpi/internal.h
+index 866c7c4ed233..a1b45e345bcc 100644
+--- a/drivers/acpi/internal.h
++++ b/drivers/acpi/internal.h
+@@ -107,7 +107,6 @@ int acpi_device_setup_files(struct acpi_device *dev);
+ void acpi_device_remove_files(struct acpi_device *dev);
+ void acpi_device_add_finalize(struct acpi_device *device);
+ void acpi_free_pnp_ids(struct acpi_device_pnp *pnp);
+-bool acpi_device_is_present(const struct acpi_device *adev);
+ bool acpi_device_is_battery(struct acpi_device *adev);
+ bool acpi_device_is_first_physical_node(struct acpi_device *adev,
+ 					const struct device *dev);
+diff --git a/drivers/acpi/property.c b/drivers/acpi/property.c
+index 6979a3f9f90a..14d6948fd88a 100644
+--- a/drivers/acpi/property.c
++++ b/drivers/acpi/property.c
+@@ -1420,7 +1420,7 @@ static bool acpi_fwnode_device_is_available(const struct fwnode_handle *fwnode)
+ 	if (!is_acpi_device_node(fwnode))
+ 		return false;
+ 
+-	return acpi_device_is_present(to_acpi_device_node(fwnode));
++	return acpi_dev_ready_for_enumeration(to_acpi_device_node(fwnode));
  }
  
- /* Removal */
--static void acpi_processor_post_eject(struct acpi_device *device)
-+static void acpi_processor_make_not_present(struct acpi_device *device)
- {
- 	struct acpi_processor *pr;
+ static const void *
+diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+index 02bb2cce423f..728649a2a251 100644
+--- a/drivers/acpi/scan.c
++++ b/drivers/acpi/scan.c
+@@ -304,7 +304,7 @@ static int acpi_scan_device_check(struct acpi_device *adev)
+ 	int error;
  
- 	if (!IS_ENABLED(CONFIG_ACPI_HOTPLUG_PRESENT_CPU))
- 		return;
+ 	acpi_bus_get_status(adev);
+-	if (acpi_device_is_present(adev)) {
++	if (acpi_dev_ready_for_enumeration(adev)) {
+ 		/*
+ 		 * This function is only called for device objects for which
+ 		 * matching scan handlers exist.  The only situation in which
+@@ -338,7 +338,7 @@ static int acpi_scan_bus_check(struct acpi_device *adev, void *not_used)
+ 	int error;
  
--	if (!device || !acpi_driver_data(device))
--		return;
+ 	acpi_bus_get_status(adev);
+-	if (!acpi_device_is_present(adev)) {
++	if (!acpi_dev_ready_for_enumeration(adev)) {
+ 		acpi_scan_device_not_enumerated(adev);
+ 		return 0;
+ 	}
+@@ -1913,11 +1913,6 @@ static bool acpi_device_should_be_hidden(acpi_handle handle)
+ 	return true;
+ }
+ 
+-bool acpi_device_is_present(const struct acpi_device *adev)
+-{
+-	return adev->status.present || adev->status.functional;
+-}
 -
- 	pr = acpi_driver_data(device);
- 	if (pr->id >= nr_cpu_ids)
- 		goto out;
-@@ -504,6 +501,29 @@ static void acpi_processor_post_eject(struct acpi_device *device)
- 	kfree(pr);
- }
- 
-+static void acpi_processor_post_eject(struct acpi_device *device)
-+{
-+	struct acpi_processor *pr;
-+	unsigned long long sta;
-+	acpi_status status;
-+
-+	if (!device)
-+		return;
-+
-+	pr = acpi_driver_data(device);
-+	if (!pr || pr->id >= nr_cpu_ids || invalid_phys_cpuid(pr->phys_id))
-+		return;
-+
-+	status = acpi_evaluate_integer(pr->handle, "_STA", NULL, &sta);
-+	if (ACPI_FAILURE(status))
-+		return;
-+
-+	if (cpu_present(pr->id) && !(sta & ACPI_STA_DEVICE_PRESENT)) {
-+		acpi_processor_make_not_present(device);
-+		return;
-+	}
-+}
-+
- #ifdef CONFIG_ARCH_MIGHT_HAVE_ACPI_PDC
- bool __init processor_physically_present(acpi_handle handle)
+ static bool acpi_scan_handler_matching(struct acpi_scan_handler *handler,
+ 				       const char *idstr,
+ 				       const struct acpi_device_id **matchid)
+@@ -2381,16 +2376,25 @@ EXPORT_SYMBOL_GPL(acpi_dev_clear_dependencies);
+  * acpi_dev_ready_for_enumeration - Check if the ACPI device is ready for enumeration
+  * @device: Pointer to the &struct acpi_device to check
+  *
+- * Check if the device is present and has no unmet dependencies.
++ * Check if the device is functional or enabled and has no unmet dependencies.
+  *
+- * Return true if the device is ready for enumeratino. Otherwise, return false.
++ * Return true if the device is ready for enumeration. Otherwise, return false.
+  */
+ bool acpi_dev_ready_for_enumeration(const struct acpi_device *device)
  {
+ 	if (device->flags.honor_deps && device->dep_unmet)
+ 		return false;
+ 
+-	return acpi_device_is_present(device);
++	/*
++	 * ACPI 6.5's 6.3.7 "_STA (Device Status)" allows firmware to return
++	 * (!present && functional) for certain types of devices that should be
++	 * enumerated. Note that the enabled bit can't be sert until the present
++	 * bit is set.
++	 */
++	if (device->status.present)
++		return device->status.enabled;
++	else
++		return device->status.functional;
+ }
+ EXPORT_SYMBOL_GPL(acpi_dev_ready_for_enumeration);
+ 
 -- 
 2.30.2
 
