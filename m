@@ -1,50 +1,50 @@
 Received: from smtp4.osuosl.org (smtp4.osuosl.org [140.211.166.137])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8196329420
-	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA9AC29420
+	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="C8V6ZPDm"
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="FuF1YeT+"
 Received: from localhost (localhost [127.0.0.1])
-	by smtp4.osuosl.org (Postfix) with ESMTP id 590A9416C9
+	by smtp4.osuosl.org (Postfix) with ESMTP id C415841E48
 	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:29 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 590A9416C9
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org C415841E48
 Authentication-Results: smtp4.osuosl.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.a=rsa-sha256 header.s=pandora-2019 header.b=C8V6ZPDm
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.a=rsa-sha256 header.s=pandora-2019 header.b=FuF1YeT+
 X-Virus-Scanned: amavisd-new at osuosl.org
 X-Spam-Flag: NO
 X-Spam-Score: -2.098
 X-Spam-Level:
 Received: from smtp4.osuosl.org ([127.0.0.1])
 	by localhost (smtp4.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id N_AlIHQF7tTm
+	with ESMTP id CuipLDSBF2W1
 	for <acpica-devel@lists.linuxfoundation.org>;
-	Wed, 13 Dec 2023 12:58:28 +0000 (UTC)
+	Wed, 13 Dec 2023 12:58:29 +0000 (UTC)
 Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-	by smtp4.osuosl.org (Postfix) with ESMTPS id 7C6AD41E48
+	by smtp4.osuosl.org (Postfix) with ESMTPS id EB37341E4F
 	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:28 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 7C6AD41E48
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org EB37341E4F
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=armlinux.org.uk; s=pandora-2019; h=Date:Sender:Message-Id:Content-Type:
 	Content-Transfer-Encoding:MIME-Version:Subject:Cc:To:From:References:
 	In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
 	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=zH347rXIT/Wy1fT2AxJrWucdhRljJuHMrMKFDlPOdGs=; b=C8V6ZPDmidjU0rPM3MNO+Oz7/r
-	9Q4u3gedUI33lJ3NyGNwKUy257pNGfSyYof4TiYnY84kRmEo7Mjfg8LvEbcLtLDFgYbhhYPYk2DM6
-	qL91mkIsdsCL8QpgAEvD98lEcW9ZWUCCtXbaZRScR4ytVUzn0OSU3bWGhXZ0f+Zow2X/C+jtBjBCJ
-	8k7jFCMRILZ83BDKElnsNyxKh8EE1JHqMJBWe4q2OZIRUlrlhx2Gv/XPkllFPQS3+FndJm9Ov670Y
-	khCRzwlW2Se1hrI6UNoeQT7K33f2KTHrEpmLBpfwq30WM335VyRik2rw9Vls1PanX7hwhyv2vD+Cu
-	BIEJ2DIw==;
-Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:51442 helo=rmk-PC.armlinux.org.uk)
+	bh=toielIZHns+JJqGdwW2Er+9+wyZ/FNy7YC4xlMkof/0=; b=FuF1YeT++Jin3KgRrWcSzJupOG
+	0HOKnlnAn4rO5PAD2r+eXKtzTLzlJ4inML+s5IXIlItQJWuhjlEz05y1hwOH9KgLBRkHUkaSj+FPh
+	bBjtvh7/mb6icsbs5fcCAwZPVFhBfOKX1oN4jYsTJAAcVzS721QIS3SUDhrfMX9yqKiuEbC/rRB0Y
+	0tlbZv7aWhdUhiUOXkTBZ9zLDIg527ZWtteePC0ko4AohNoQgmh+g84wwZZcuLSgTicKULYz14oBA
+	C6zvXCmsCE/RFcNtXx9yCnXqfBYeKzKOWLRiQHcmU9zMy1efW24j7stwbuDgpj0vlSho/wQekkF8C
+	mw/KxqHQ==;
+Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:50064 helo=rmk-PC.armlinux.org.uk)
 	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <rmk@armlinux.org.uk>)
-	id 1rDOhA-0008HE-1e;
-	Wed, 13 Dec 2023 12:50:36 +0000
+	id 1rDOh0-0008GU-1Q;
+	Wed, 13 Dec 2023 12:50:26 +0000
 Received: from rmk by rmk-PC.armlinux.org.uk with local (Exim 4.94.2)
 	(envelope-from <rmk@rmk-PC.armlinux.org.uk>)
-	id 1rDOhC-00DvlI-Pp; Wed, 13 Dec 2023 12:50:38 +0000
+	id 1rDOh2-00Dvl1-H6; Wed, 13 Dec 2023 12:50:28 +0000
 In-Reply-To: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
 References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
 From: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
@@ -67,8 +67,8 @@ Cc: Salil Mehta <salil.mehta@huawei.com>,
 	jianyong.wu@arm.com,
 	justin.he@arm.com,
 	James Morse <james.morse@arm.com>
-Subject: [PATCH RFC v3 17/21] ACPI: add support to register CPUs based on the
- _STA enabled bit
+Subject: [PATCH RFC v3 15/21] irqchip/gic-v3: Add support for ACPI's disabled
+ but 'online capable' CPUs
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -78,96 +78,97 @@ MIME-Version: 1.0
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset="utf-8"
-Message-Id: <E1rDOhC-00DvlI-Pp@rmk-PC.armlinux.org.uk>
+Message-Id: <E1rDOh2-00Dvl1-H6@rmk-PC.armlinux.org.uk>
 Sender: Russell King <rmk@armlinux.org.uk>
-Date: Wed, 13 Dec 2023 12:50:38 +0000
+Date: Wed, 13 Dec 2023 12:50:28 +0000
 
 From: James Morse <james.morse@arm.com>
 
-acpi_processor_get_info() registers all present CPUs. Registering a
-CPU is what creates the sysfs entries and triggers the udev
-notifications.
+To support virtual CPU hotplug, ACPI has added an 'online capable' bit
+to the MADT GICC entries. This indicates a disabled CPU entry may not
+be possible to online via PSCI until firmware has set enabled bit in
+_STA.
 
-arm64 virtual machines that support 'virtual cpu hotplug' use the
-enabled bit to indicate whether the CPU can be brought online, as
-the existing ACPI tables require all hardware to be described and
-present.
+What about the redistributor in the GICC entry? ACPI doesn't want to say.
+Assume the worst: When a redistributor is described in the GICC entry,
+but the entry is marked as disabled at boot, assume the redistributor
+is inaccessible.
 
-If firmware describes a CPU as present, but disabled, skip the
-registration. Such CPUs are present, but can't be brought online for
-whatever reason. (e.g. firmware/hypervisor policy).
+The GICv3 driver doesn't support late online of redistributors, so this
+means the corresponding CPU can't be brought online either. Clear the
+possible and present bits.
 
-Once firmware sets the enabled bit, the CPU can be registered and
-brought online by user-space. Online CPUs, or CPUs that are missing
-an _STA method must always be registered.
+Systems that want CPU hotplug in a VM can ensure their redistributors
+are always-on, and describe them that way with a GICR entry in the MADT.
+
+When mapping redistributors found via GICC entries, handle the case
+where the arch code believes the CPU is present and possible, but it
+does not have an accessible redistributor. Print a warning and clear
+the present and possible bits.
 
 Signed-off-by: James Morse <james.morse@arm.com>
-Reviewed-by: Gavin Shan <gshan@redhat.com>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Tested-by: Miguel Luis <miguel.luis@oracle.com>
 Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
 Tested-by: Jianyong Wu <jianyong.wu@arm.com>
 Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
----
- drivers/acpi/acpi_processor.c | 31 ++++++++++++++++++++++++++++++-
- 1 file changed, 30 insertions(+), 1 deletion(-)
+----
+Disabled but online-capable CPUs cause this message to be printed
+if their redistributors are described via GICC:
+| GICv3: CPU 3's redistributor is inaccessible: this CPU can't be brought online
 
-diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
-index b7a94c1348b0..5dabb426481f 100644
---- a/drivers/acpi/acpi_processor.c
-+++ b/drivers/acpi/acpi_processor.c
-@@ -228,6 +228,32 @@ static int acpi_processor_make_present(struct acpi_processor *pr)
- 	return ret;
- }
+If ACPI's _STA tries to make the cpu present later, this message is printed:
+| Changing CPU present bit is not supported
+
+Changes since RFC v2:
+ * use gicc->flags & (ACPI_MADT_ENABLED | ACPI_MADT_GICC_CPU_CAPABLE)
+---
+ drivers/irqchip/irq-gic-v3.c | 14 ++++++++++++++
+ include/linux/acpi.h         |  2 +-
+ 2 files changed, 15 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+index ebecd4546830..6d0f98d3540e 100644
+--- a/drivers/irqchip/irq-gic-v3.c
++++ b/drivers/irqchip/irq-gic-v3.c
+@@ -2370,11 +2370,25 @@ gic_acpi_parse_madt_gicc(union acpi_subtable_headers *header,
+ 				(struct acpi_madt_generic_interrupt *)header;
+ 	u32 reg = readl_relaxed(acpi_data.dist_base + GICD_PIDR2) & GIC_PIDR2_ARCH_MASK;
+ 	u32 size = reg == GIC_PIDR2_ARCH_GICv4 ? SZ_64K * 4 : SZ_64K * 2;
++	int cpu = get_cpu_for_acpi_id(gicc->uid);
+ 	void __iomem *redist_base;
  
-+static int acpi_processor_make_enabled(struct acpi_processor *pr)
-+{
-+	unsigned long long sta;
-+	acpi_status status;
-+	bool present, enabled;
-+
-+	if (!acpi_has_method(pr->handle, "_STA"))
-+		return arch_register_cpu(pr->id);
-+
-+	status = acpi_evaluate_integer(pr->handle, "_STA", NULL, &sta);
-+	if (ACPI_FAILURE(status))
-+		return -ENODEV;
-+
-+	present = sta & ACPI_STA_DEVICE_PRESENT;
-+	enabled = sta & ACPI_STA_DEVICE_ENABLED;
-+
-+	if (cpu_online(pr->id) && (!present || !enabled)) {
-+		pr_err_once(FW_BUG "CPU %u is online, but described as not present or disabled!\n", pr->id);
-+		add_taint(TAINT_FIRMWARE_WORKAROUND, LOCKDEP_STILL_OK);
-+	} else if (!present || !enabled) {
-+		return -ENODEV;
+ 	if (!acpi_gicc_is_usable(gicc))
+ 		return 0;
+ 
++	/*
++	 * Capable but disabled CPUs can be brought online later. What about
++	 * the redistributor? ACPI doesn't want to say!
++	 * Virtual hotplug systems can use the MADT's "always-on" GICR entries.
++	 * Otherwise, prevent such CPUs from being brought online.
++	 */
++	if (!(gicc->flags & ACPI_MADT_ENABLED)) {
++		pr_warn_once("CPU %u's redistributor is inaccessible: this CPU can't be brought online\n", cpu);
++		set_cpu_present(cpu, false);
++		set_cpu_possible(cpu, false);
++		return 0;
 +	}
 +
-+	return arch_register_cpu(pr->id);
-+}
-+
- static int acpi_processor_get_info(struct acpi_device *device)
- {
- 	union acpi_object object = { 0 };
-@@ -318,7 +344,7 @@ static int acpi_processor_get_info(struct acpi_device *device)
- 	 */
- 	if (!invalid_logical_cpuid(pr->id) && cpu_present(pr->id) &&
- 	    !get_cpu_device(pr->id)) {
--		int ret = arch_register_cpu(pr->id);
-+		int ret = acpi_processor_make_enabled(pr);
+ 	redist_base = ioremap(gicc->gicr_base_address, size);
+ 	if (!redist_base)
+ 		return -ENOMEM;
+diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+index 19d009ca9e7a..00be66683505 100644
+--- a/include/linux/acpi.h
++++ b/include/linux/acpi.h
+@@ -238,7 +238,7 @@ void acpi_table_print_madt_entry (struct acpi_subtable_header *madt);
  
- 		if (ret)
- 			return ret;
-@@ -526,6 +552,9 @@ static void acpi_processor_post_eject(struct acpi_device *device)
- 		acpi_processor_make_not_present(device);
- 		return;
- 	}
-+
-+	if (cpu_present(pr->id) && !(sta & ACPI_STA_DEVICE_ENABLED))
-+		arch_unregister_cpu(pr->id);
+ static inline bool acpi_gicc_is_usable(struct acpi_madt_generic_interrupt *gicc)
+ {
+-	return gicc->flags & ACPI_MADT_ENABLED;
++	return gicc->flags & (ACPI_MADT_ENABLED | ACPI_MADT_GICC_CPU_CAPABLE);
  }
  
- #ifdef CONFIG_ARCH_MIGHT_HAVE_ACPI_PDC
+ /* the following numa functions are architecture-dependent */
 -- 
 2.30.2
 
