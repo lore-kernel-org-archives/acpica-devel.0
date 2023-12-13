@@ -1,50 +1,50 @@
 Received: from smtp4.osuosl.org (smtp4.osuosl.org [140.211.166.137])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E36A29420
-	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E668229420
+	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="p1cs2dYF"
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="sAvIu/Kf"
 Received: from localhost (localhost [127.0.0.1])
-	by smtp4.osuosl.org (Postfix) with ESMTP id DC9CF41E55
-	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:27 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org DC9CF41E55
+	by smtp4.osuosl.org (Postfix) with ESMTP id 3792941E49
+	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:28 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 3792941E49
 Authentication-Results: smtp4.osuosl.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.a=rsa-sha256 header.s=pandora-2019 header.b=p1cs2dYF
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.a=rsa-sha256 header.s=pandora-2019 header.b=sAvIu/Kf
 X-Virus-Scanned: amavisd-new at osuosl.org
 X-Spam-Flag: NO
 X-Spam-Score: -2.098
 X-Spam-Level:
 Received: from smtp4.osuosl.org ([127.0.0.1])
 	by localhost (smtp4.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id nTZHwWNw1urB
+	with ESMTP id 6GkPyDZUeUg3
 	for <acpica-devel@lists.linuxfoundation.org>;
-	Wed, 13 Dec 2023 12:58:26 +0000 (UTC)
+	Wed, 13 Dec 2023 12:58:27 +0000 (UTC)
 Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-	by smtp4.osuosl.org (Postfix) with ESMTPS id 1ABE141E4A
-	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:26 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 1ABE141E4A
+	by smtp4.osuosl.org (Postfix) with ESMTPS id 7F8DE41E4F
+	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:27 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 7F8DE41E4F
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=armlinux.org.uk; s=pandora-2019; h=Date:Sender:Message-Id:Content-Type:
 	Content-Transfer-Encoding:MIME-Version:Subject:Cc:To:From:References:
 	In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
 	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=jXw7/CfCQVwnxBpa8i2NRb554kmnX61q77srRq2J1d4=; b=p1cs2dYFtYjWzhMUHafGMe3bf1
-	IBGszah/noeMODL/i7ZYeX2VOMc7FXiwBSG7pcxRGnZhOfoDCxI20cu4EHlTIn9RlDwgMDixZ3m/W
-	rwugQO7CMEQOecDyhn/CJ/MLXhg800KnpCVEEGx9zbp7n6zUXRoD6JGkWIMi9pMjNlamBA+U1Gzri
-	Gb11IzoqcZb92O1w4McqB0jgsqoWOnqFEU2kuXTihTAJc2BgJdlp7fs1GqcH2PMD9FCkg2tIrQ6+t
-	siJvKs6TtiZMyskwe5oUUlQchHlfQghNqUo6mUQ1QXTbOGkS085OMTQBpEk+MrajgHTszve/RkHDM
-	QnuC3dTQ==;
-Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:34594 helo=rmk-PC.armlinux.org.uk)
+	bh=xRMKGWwlt+tDnJgmpjIjTzFwGAKGxwsQWsjqqxoBgt4=; b=sAvIu/KfdRhiVQLQAzi1pftBLD
+	AZtA0Hs5SOUW3Khxxl6f/hWMpFepsEJgQyGqVCXf2J6iqPGh1irYe61lsvzQauQCuuk+uH3FyHaw7
+	AvzGgWM+IPItC0K7GAs/xGD92ORf6Skc8i2iWAeY2h5KaO3CYUXJv5yEt7Urk6M+uQaQNv9JbUQDV
+	WhUE9WkIHa4o1Mu0hFaS70ASAxlzFvPz/G7aA7qW+OsLl7PvjXZFeIE6zhxGyqU2kqJAojzd1G5ES
+	+rzSzq86l+CfY2K8inR1g8Pu6l9z/cbz6RWLKJk+7kIqPgRBox16Ks375iUFf7Q9Q5zjcipcX2OP+
+	dwCo2UTw==;
+Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:57402 helo=rmk-PC.armlinux.org.uk)
 	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <rmk@armlinux.org.uk>)
-	id 1rDOgQ-0008EN-15;
-	Wed, 13 Dec 2023 12:49:50 +0000
+	id 1rDOgf-0008FI-2J;
+	Wed, 13 Dec 2023 12:50:06 +0000
 Received: from rmk by rmk-PC.armlinux.org.uk with local (Exim 4.94.2)
 	(envelope-from <rmk@rmk-PC.armlinux.org.uk>)
-	id 1rDOgS-00DvkK-HR; Wed, 13 Dec 2023 12:49:52 +0000
+	id 1rDOgh-00Dvkc-U3; Wed, 13 Dec 2023 12:50:07 +0000
 In-Reply-To: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
 References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
 From: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
@@ -67,8 +67,8 @@ Cc: Salil Mehta <salil.mehta@huawei.com>,
 	jianyong.wu@arm.com,
 	justin.he@arm.com,
 	James Morse <james.morse@arm.com>
-Subject: [PATCH RFC v3 08/21] ACPI: Add post_eject to struct acpi_scan_handler
- for cpu hotplug
+Subject: [PATCH RFC v3 11/21] ACPI: Warn when the present bit changes but the
+ feature is not enabled
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -78,185 +78,63 @@ MIME-Version: 1.0
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset="utf-8"
-Message-Id: <E1rDOgS-00DvkK-HR@rmk-PC.armlinux.org.uk>
+Message-Id: <E1rDOgh-00Dvkc-U3@rmk-PC.armlinux.org.uk>
 Sender: Russell King <rmk@armlinux.org.uk>
-Date: Wed, 13 Dec 2023 12:49:52 +0000
+Date: Wed, 13 Dec 2023 12:50:07 +0000
 
 From: James Morse <james.morse@arm.com>
 
-struct acpi_scan_handler has a detach callback that is used to remove
-a driver when a bus is changed. When interacting with an eject-request,
-the detach callback is called before _EJ0.
+ACPI firmware can trigger the events to add and remove CPUs, but the
+OS may not support this.
 
-This means the ACPI processor driver can't use _STA to determine if a
-CPU has been made not-present, or some of the other _STA bits have been
-changed. acpi_processor_remove() needs to know the value of _STA after
-_EJ0 has been called.
+Print an error message when this happens.
 
-Add a post_eject callback to struct acpi_scan_handler. This is called
-after acpi_scan_hot_remove() has successfully called _EJ0. Because
-acpi_bus_trim_one() also clears the handler pointer, it needs to be
-told if the caller will go on to call acpi_bus_post_eject(), so
-that acpi_device_clear_enumerated() and clearing the handler pointer
-can be deferred. The existing not-used pointer is used for this.
+This gives early warning on arm64 systems that don't support
+CONFIG_ACPI_HOTPLUG_PRESENT_CPU, as making CPUs not present has
+side effects for other parts of the system.
 
 Signed-off-by: James Morse <james.morse@arm.com>
-Reviewed-by: Joanthan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Reviewed-by: Gavin Shan <gshan@redhat.com>
 Tested-by: Miguel Luis <miguel.luis@oracle.com>
 Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
 Tested-by: Jianyong Wu <jianyong.wu@arm.com>
+Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 ---
-Outstanding comments:
- https://lore.kernel.org/r/20230914152809.00003152@Huawei.com
- https://lore.kernel.org/r/c3ef8123-1fcc-7289-c475-c753de44d564@redhat.com
+Changes since RFC v2:
+ * Update commit message with suggestion from Gavin Shan
 ---
- drivers/acpi/acpi_processor.c |  4 +--
- drivers/acpi/scan.c           | 52 ++++++++++++++++++++++++++++++-----
- include/acpi/acpi_bus.h       |  1 +
- 3 files changed, 48 insertions(+), 9 deletions(-)
+ drivers/acpi/acpi_processor.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
-index 26e3efb74614..b6f5005985c3 100644
+index 19fceb3ec4e2..b7a94c1348b0 100644
 --- a/drivers/acpi/acpi_processor.c
 +++ b/drivers/acpi/acpi_processor.c
-@@ -459,7 +459,7 @@ static int acpi_processor_add(struct acpi_device *device,
+@@ -189,8 +189,10 @@ static int acpi_processor_make_present(struct acpi_processor *pr)
+ 	acpi_status status;
+ 	int ret;
  
- #ifdef CONFIG_ACPI_HOTPLUG_PRESENT_CPU
- /* Removal */
--static void acpi_processor_remove(struct acpi_device *device)
-+static void acpi_processor_post_eject(struct acpi_device *device)
+-	if (!IS_ENABLED(CONFIG_ACPI_HOTPLUG_PRESENT_CPU))
++	if (!IS_ENABLED(CONFIG_ACPI_HOTPLUG_PRESENT_CPU)) {
++		pr_err_once("Changing CPU present bit is not supported\n");
+ 		return -ENODEV;
++	}
+ 
+ 	if (invalid_phys_cpuid(pr->phys_id))
+ 		return -ENODEV;
+@@ -462,8 +464,10 @@ static void acpi_processor_make_not_present(struct acpi_device *device)
  {
  	struct acpi_processor *pr;
  
-@@ -627,7 +627,7 @@ static struct acpi_scan_handler processor_handler = {
- 	.ids = processor_device_ids,
- 	.attach = acpi_processor_add,
- #ifdef CONFIG_ACPI_HOTPLUG_PRESENT_CPU
--	.detach = acpi_processor_remove,
-+	.post_eject = acpi_processor_post_eject,
- #endif
- 	.hotplug = {
- 		.enabled = true,
-diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-index ec42fe9d0611..6ffd65e9e512 100644
---- a/drivers/acpi/scan.c
-+++ b/drivers/acpi/scan.c
-@@ -244,18 +244,28 @@ static int acpi_scan_try_to_offline(struct acpi_device *device)
- 	return 0;
- }
- 
--static int acpi_bus_trim_one(struct acpi_device *adev, void *not_used)
-+/**
-+ * acpi_bus_trim_one() - Detach scan handlers and drivers from ACPI device
-+ *                       objects.
-+ * @adev:       Root of the ACPI namespace scope to walk.
-+ * @eject:      Pointer to a bool that indicates if this was due to an
-+ *              eject-request.
-+ *
-+ * Must be called under acpi_scan_lock.
-+ * If @eject points to true, clearing the device enumeration is deferred until
-+ * acpi_bus_post_eject() is called.
-+ */
-+static int acpi_bus_trim_one(struct acpi_device *adev, void *eject)
- {
- 	struct acpi_scan_handler *handler = adev->handler;
-+	bool is_eject = *(bool *)eject;
- 
--	acpi_dev_for_each_child_reverse(adev, acpi_bus_trim_one, NULL);
-+	acpi_dev_for_each_child_reverse(adev, acpi_bus_trim_one, eject);
- 
- 	adev->flags.match_driver = false;
- 	if (handler) {
- 		if (handler->detach)
- 			handler->detach(adev);
--
--		adev->handler = NULL;
- 	} else {
- 		device_release_driver(&adev->dev);
- 	}
-@@ -265,7 +275,12 @@ static int acpi_bus_trim_one(struct acpi_device *adev, void *not_used)
- 	 */
- 	acpi_device_set_power(adev, ACPI_STATE_D3_COLD);
- 	adev->flags.initialized = false;
--	acpi_device_clear_enumerated(adev);
-+
-+	/* For eject this is deferred to acpi_bus_post_eject() */
-+	if (!is_eject) {
-+		adev->handler = NULL;
-+		acpi_device_clear_enumerated(adev);
+-	if (!IS_ENABLED(CONFIG_ACPI_HOTPLUG_PRESENT_CPU))
++	if (!IS_ENABLED(CONFIG_ACPI_HOTPLUG_PRESENT_CPU)) {
++		pr_err_once("Changing CPU present bit is not supported");
+ 		return;
 +	}
  
- 	return 0;
- }
-@@ -278,15 +293,36 @@ static int acpi_bus_trim_one(struct acpi_device *adev, void *not_used)
-  */
- void acpi_bus_trim(struct acpi_device *adev)
- {
--	acpi_bus_trim_one(adev, NULL);
-+	bool eject = false;
-+
-+	acpi_bus_trim_one(adev, &eject);
- }
- EXPORT_SYMBOL_GPL(acpi_bus_trim);
- 
-+static int acpi_bus_post_eject(struct acpi_device *adev, void *not_used)
-+{
-+	struct acpi_scan_handler *handler = adev->handler;
-+
-+	acpi_dev_for_each_child_reverse(adev, acpi_bus_post_eject, NULL);
-+
-+	if (handler) {
-+		if (handler->post_eject)
-+			handler->post_eject(adev);
-+
-+		adev->handler = NULL;
-+	}
-+
-+	acpi_device_clear_enumerated(adev);
-+
-+	return 0;
-+}
-+
- static int acpi_scan_hot_remove(struct acpi_device *device)
- {
- 	acpi_handle handle = device->handle;
- 	unsigned long long sta;
- 	acpi_status status;
-+	bool eject = true;
- 
- 	if (device->handler && device->handler->hotplug.demand_offline) {
- 		if (!acpi_scan_is_offline(device, true))
-@@ -299,7 +335,7 @@ static int acpi_scan_hot_remove(struct acpi_device *device)
- 
- 	acpi_handle_debug(handle, "Ejecting\n");
- 
--	acpi_bus_trim(device);
-+	acpi_bus_trim_one(device, &eject);
- 
- 	acpi_evaluate_lck(handle, 0);
- 	/*
-@@ -322,6 +358,8 @@ static int acpi_scan_hot_remove(struct acpi_device *device)
- 	} else if (sta & ACPI_STA_DEVICE_ENABLED) {
- 		acpi_handle_warn(handle,
- 			"Eject incomplete - status 0x%llx\n", sta);
-+	} else {
-+		acpi_bus_post_eject(device, NULL);
- 	}
- 
- 	return 0;
-diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-index 1216d72c650f..c887c2dfc5b5 100644
---- a/include/acpi/acpi_bus.h
-+++ b/include/acpi/acpi_bus.h
-@@ -130,6 +130,7 @@ struct acpi_scan_handler {
- 	bool (*match)(const char *idstr, const struct acpi_device_id **matchid);
- 	int (*attach)(struct acpi_device *dev, const struct acpi_device_id *id);
- 	void (*detach)(struct acpi_device *dev);
-+	void (*post_eject)(struct acpi_device *dev);
- 	void (*bind)(struct device *phys_dev);
- 	void (*unbind)(struct device *phys_dev);
- 	struct acpi_hotplug_profile hotplug;
+ 	pr = acpi_driver_data(device);
+ 	if (pr->id >= nr_cpu_ids)
 -- 
 2.30.2
 
