@@ -1,50 +1,50 @@
 Received: from smtp4.osuosl.org (smtp4.osuosl.org [140.211.166.137])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6EBA29420
-	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:59:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8293229420
+	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:59:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="NxjT/a9l"
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="FTxlsm7n"
 Received: from localhost (localhost [127.0.0.1])
-	by smtp4.osuosl.org (Postfix) with ESMTP id 0CF0B41E4C
+	by smtp4.osuosl.org (Postfix) with ESMTP id 4398541E7E
 	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:34 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 0CF0B41E4C
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 4398541E7E
 Authentication-Results: smtp4.osuosl.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.a=rsa-sha256 header.s=pandora-2019 header.b=NxjT/a9l
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.a=rsa-sha256 header.s=pandora-2019 header.b=FTxlsm7n
 X-Virus-Scanned: amavisd-new at osuosl.org
 X-Spam-Flag: NO
 X-Spam-Score: -2.098
 X-Spam-Level:
 Received: from smtp4.osuosl.org ([127.0.0.1])
 	by localhost (smtp4.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id 5Ri78pBZIOGU
+	with ESMTP id TEWlTzq2bkKJ
 	for <acpica-devel@lists.linuxfoundation.org>;
-	Wed, 13 Dec 2023 12:58:33 +0000 (UTC)
+	Wed, 13 Dec 2023 12:58:32 +0000 (UTC)
 Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-	by smtp4.osuosl.org (Postfix) with ESMTPS id 40F8541E7A
-	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:33 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 40F8541E7A
+	by smtp4.osuosl.org (Postfix) with ESMTPS id 4A9F241E75
+	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:32 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 4A9F241E75
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=armlinux.org.uk; s=pandora-2019; h=Date:Sender:Message-Id:Content-Type:
 	Content-Transfer-Encoding:MIME-Version:Subject:Cc:To:From:References:
 	In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
 	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=nlbHQpsJ2mXYVNzTjHiHy20VvNm+xTIYOL47lOBS/vU=; b=NxjT/a9log1Qg2/QyYTC28lXRw
-	Nb9PdozexRLxTReLoLYO2nPm/U2CtaDlf+9iRFgmUhORHcWBDVCDEmOfIsZ/HBQqtNBv2syvGX9sV
-	vSB+ayP6h5pwY6jETJUNe3RmtaiNKcx8QfBN2h/Xh1IM03S0O5bhesS3qtkU2C567Y0tXYCzHjnoz
-	SKnotxGSCp10T9ulrc6Xvm96pwTBhdssvD2Zwqyl9X62ZMKA2SXgWyqpWB2ifAuwftFu6/bsM3ibG
-	Su6rLni7+lTJqAXf41O4K0yuwixYKidf/YEBvSwcuWzVz/QMW5sTleuqzkZF+ksNmUAYp2bFDclj4
-	OQBX60Zg==;
-Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:33740 helo=rmk-PC.armlinux.org.uk)
+	bh=4ff4rMpb4e8+j2FVzHVtwCCPXNpYraqqrJVEXYQ7zus=; b=FTxlsm7nMbZ2auwIoWztzjGrLr
+	eJ/+UAL4mRlb+xzpeos7afUrQbA793swTrEBkQs15e6/U2pZQzuZK+w+1AHJpkI3HfUJGZEjFm/Kp
+	W9jVCjZgcW9jZXNT7d7yYBD6uXj3FP+JGLZOMl2DiqfJobHMrn+f2Rn1YL+OviAx4TvVtCo8v3NhG
+	ha0rLs1UNyB4oOrGfMvPk8nj7AxLUehHcXG4csWrXQ+KZWl07iCkmqKO7r4ZhGqDaej9rOshtXdE9
+	mIEiNCaE7QZ92nAimpN8JuMZiod0x/DZEKdfe4Kl4qSvzrc78tI8xR7PubiPehT6ssECE39vdnOjp
+	zzmnovvQ==;
+Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:33330 helo=rmk-PC.armlinux.org.uk)
 	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <rmk@armlinux.org.uk>)
-	id 1rDOgv-0008G4-0b;
-	Wed, 13 Dec 2023 12:50:21 +0000
+	id 1rDOhV-0008IF-1A;
+	Wed, 13 Dec 2023 12:50:57 +0000
 Received: from rmk by rmk-PC.armlinux.org.uk with local (Exim 4.94.2)
 	(envelope-from <rmk@rmk-PC.armlinux.org.uk>)
-	id 1rDOgx-00Dvkv-Bb; Wed, 13 Dec 2023 12:50:23 +0000
+	id 1rDOhX-00Dvlg-Ci; Wed, 13 Dec 2023 12:50:59 +0000
 In-Reply-To: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
 References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
 From: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
@@ -67,8 +67,8 @@ Cc: Salil Mehta <salil.mehta@huawei.com>,
 	jianyong.wu@arm.com,
 	justin.he@arm.com,
 	James Morse <james.morse@arm.com>
-Subject: [PATCH RFC v3 14/21] irqchip/gic-v3: Don't return errors from
- gic_acpi_match_gicc()
+Subject: [PATCH RFC v3 21/21] cpumask: Add enabled cpumask for present CPUs
+ that can be brought online
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -78,74 +78,183 @@ MIME-Version: 1.0
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset="utf-8"
-Message-Id: <E1rDOgx-00Dvkv-Bb@rmk-PC.armlinux.org.uk>
+Message-Id: <E1rDOhX-00Dvlg-Ci@rmk-PC.armlinux.org.uk>
 Sender: Russell King <rmk@armlinux.org.uk>
-Date: Wed, 13 Dec 2023 12:50:23 +0000
+Date: Wed, 13 Dec 2023 12:50:59 +0000
 
 From: James Morse <james.morse@arm.com>
 
-gic_acpi_match_gicc() is only called via gic_acpi_count_gicr_regions().
-It should only count the number of enabled redistributors, but it
-also tries to sanity check the GICC entry, currently returning an
-error if the Enabled bit is set, but the gicr_base_address is zero.
+The 'offline' file in sysfs shows all offline CPUs, including those
+that aren't present. User-space is expected to remove not-present CPUs
+from this list to learn which CPUs could be brought online.
 
-Adding support for the online-capable bit to the sanity check
-complicates it, for no benefit. The existing check implicitly
-depends on gic_acpi_count_gicr_regions() previous failing to find
-any GICR regions (as it is valid to have gicr_base_address of zero if
-the redistributors are described via a GICR entry).
+CPUs can be present but not-enabled. These CPUs can't be brought online
+until the firmware policy changes, which comes with an ACPI notification
+that will register the CPUs.
 
-Instead of complicating the check, remove it. Failures that happen
-at this point cause the irqchip not to register, meaning no irqs
-can be requested. The kernel grinds to a panic() pretty quickly.
-
-Without the check, MADT tables that exhibit this problem are still
-caught by gic_populate_rdist(), which helpfully also prints what
-went wrong:
-| CPU4: mpidr 100 has no re-distributor!
+With only the offline and present files, user-space is unable to
+determine which CPUs it can try to bring online. Add a new CPU mask
+that shows this based on all the registered CPUs.
 
 Signed-off-by: James Morse <james.morse@arm.com>
-Reviewed-by: Gavin Shan <gshan@redhat.com>
 Tested-by: Miguel Luis <miguel.luis@oracle.com>
 Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
 Tested-by: Jianyong Wu <jianyong.wu@arm.com>
-Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 ---
- drivers/irqchip/irq-gic-v3.c | 18 ++++++------------
- 1 file changed, 6 insertions(+), 12 deletions(-)
+Outstanding comment:
+ https://lore.kernel.org/r/20230914175443.000038f6@Huawei.com
+---
+ drivers/base/cpu.c      | 10 ++++++++++
+ include/linux/cpumask.h | 25 +++++++++++++++++++++++++
+ kernel/cpu.c            |  3 +++
+ 3 files changed, 38 insertions(+)
 
-diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-index 98b0329b7154..ebecd4546830 100644
---- a/drivers/irqchip/irq-gic-v3.c
-+++ b/drivers/irqchip/irq-gic-v3.c
-@@ -2420,21 +2420,15 @@ static int __init gic_acpi_match_gicc(union acpi_subtable_headers *header,
+diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
+index 13d052bf13f4..a6e96a0a92b7 100644
+--- a/drivers/base/cpu.c
++++ b/drivers/base/cpu.c
+@@ -95,6 +95,7 @@ void unregister_cpu(struct cpu *cpu)
+ {
+ 	int logical_cpu = cpu->dev.id;
  
- 	/*
- 	 * If GICC is enabled and has valid gicr base address, then it means
--	 * GICR base is presented via GICC
-+	 * GICR base is presented via GICC. The redistributor is only known to
-+	 * be accessible if the GICC is marked as enabled. If this bit is not
-+	 * set, we'd need to add the redistributor at runtime, which isn't
-+	 * supported.
- 	 */
--	if (acpi_gicc_is_usable(gicc) && gicc->gicr_base_address) {
-+	if (gicc->flags & ACPI_MADT_ENABLED && gicc->gicr_base_address)
- 		acpi_data.enabled_rdists++;
--		return 0;
--	}
++	set_cpu_enabled(logical_cpu, false);
+ 	unregister_cpu_under_node(logical_cpu, cpu_to_node(logical_cpu));
  
--	/*
--	 * It's perfectly valid firmware can pass disabled GICC entry, driver
--	 * should not treat as errors, skip the entry instead of probe fail.
--	 */
--	if (!acpi_gicc_is_usable(gicc))
--		return 0;
--
--	return -ENODEV;
-+	return 0;
+ 	device_unregister(&cpu->dev);
+@@ -273,6 +274,13 @@ static ssize_t print_cpus_offline(struct device *dev,
+ }
+ static DEVICE_ATTR(offline, 0444, print_cpus_offline, NULL);
+ 
++static ssize_t print_cpus_enabled(struct device *dev,
++				  struct device_attribute *attr, char *buf)
++{
++	return sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(cpu_enabled_mask));
++}
++static DEVICE_ATTR(enabled, 0444, print_cpus_enabled, NULL);
++
+ static ssize_t print_cpus_isolated(struct device *dev,
+ 				  struct device_attribute *attr, char *buf)
+ {
+@@ -413,6 +421,7 @@ int register_cpu(struct cpu *cpu, int num)
+ 	register_cpu_under_node(num, cpu_to_node(num));
+ 	dev_pm_qos_expose_latency_limit(&cpu->dev,
+ 					PM_QOS_RESUME_LATENCY_NO_CONSTRAINT);
++	set_cpu_enabled(num, true);
+ 
+ 	return 0;
+ }
+@@ -494,6 +503,7 @@ static struct attribute *cpu_root_attrs[] = {
+ 	&cpu_attrs[2].attr.attr,
+ 	&dev_attr_kernel_max.attr,
+ 	&dev_attr_offline.attr,
++	&dev_attr_enabled.attr,
+ 	&dev_attr_isolated.attr,
+ #ifdef CONFIG_NO_HZ_FULL
+ 	&dev_attr_nohz_full.attr,
+diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
+index cfb545841a2c..cc72a0887f04 100644
+--- a/include/linux/cpumask.h
++++ b/include/linux/cpumask.h
+@@ -92,6 +92,7 @@ static inline void set_nr_cpu_ids(unsigned int nr)
+  *
+  *     cpu_possible_mask- has bit 'cpu' set iff cpu is populatable
+  *     cpu_present_mask - has bit 'cpu' set iff cpu is populated
++ *     cpu_enabled_mask  - has bit 'cpu' set iff cpu can be brought online
+  *     cpu_online_mask  - has bit 'cpu' set iff cpu available to scheduler
+  *     cpu_active_mask  - has bit 'cpu' set iff cpu available to migration
+  *
+@@ -124,11 +125,13 @@ static inline void set_nr_cpu_ids(unsigned int nr)
+ 
+ extern struct cpumask __cpu_possible_mask;
+ extern struct cpumask __cpu_online_mask;
++extern struct cpumask __cpu_enabled_mask;
+ extern struct cpumask __cpu_present_mask;
+ extern struct cpumask __cpu_active_mask;
+ extern struct cpumask __cpu_dying_mask;
+ #define cpu_possible_mask ((const struct cpumask *)&__cpu_possible_mask)
+ #define cpu_online_mask   ((const struct cpumask *)&__cpu_online_mask)
++#define cpu_enabled_mask   ((const struct cpumask *)&__cpu_enabled_mask)
+ #define cpu_present_mask  ((const struct cpumask *)&__cpu_present_mask)
+ #define cpu_active_mask   ((const struct cpumask *)&__cpu_active_mask)
+ #define cpu_dying_mask    ((const struct cpumask *)&__cpu_dying_mask)
+@@ -993,6 +996,7 @@ extern const DECLARE_BITMAP(cpu_all_bits, NR_CPUS);
+ #else
+ #define for_each_possible_cpu(cpu) for_each_cpu((cpu), cpu_possible_mask)
+ #define for_each_online_cpu(cpu)   for_each_cpu((cpu), cpu_online_mask)
++#define for_each_enabled_cpu(cpu)   for_each_cpu((cpu), cpu_enabled_mask)
+ #define for_each_present_cpu(cpu)  for_each_cpu((cpu), cpu_present_mask)
+ #endif
+ 
+@@ -1015,6 +1019,15 @@ set_cpu_possible(unsigned int cpu, bool possible)
+ 		cpumask_clear_cpu(cpu, &__cpu_possible_mask);
  }
  
- static int __init gic_acpi_count_gicr_regions(void)
++static inline void
++set_cpu_enabled(unsigned int cpu, bool can_be_onlined)
++{
++	if (can_be_onlined)
++		cpumask_set_cpu(cpu, &__cpu_enabled_mask);
++	else
++		cpumask_clear_cpu(cpu, &__cpu_enabled_mask);
++}
++
+ static inline void
+ set_cpu_present(unsigned int cpu, bool present)
+ {
+@@ -1096,6 +1109,7 @@ static __always_inline unsigned int num_online_cpus(void)
+ 	return raw_atomic_read(&__num_online_cpus);
+ }
+ #define num_possible_cpus()	cpumask_weight(cpu_possible_mask)
++#define num_enabled_cpus()	cpumask_weight(cpu_enabled_mask)
+ #define num_present_cpus()	cpumask_weight(cpu_present_mask)
+ #define num_active_cpus()	cpumask_weight(cpu_active_mask)
+ 
+@@ -1104,6 +1118,11 @@ static inline bool cpu_online(unsigned int cpu)
+ 	return cpumask_test_cpu(cpu, cpu_online_mask);
+ }
+ 
++static inline bool cpu_enabled(unsigned int cpu)
++{
++	return cpumask_test_cpu(cpu, cpu_enabled_mask);
++}
++
+ static inline bool cpu_possible(unsigned int cpu)
+ {
+ 	return cpumask_test_cpu(cpu, cpu_possible_mask);
+@@ -1128,6 +1147,7 @@ static inline bool cpu_dying(unsigned int cpu)
+ 
+ #define num_online_cpus()	1U
+ #define num_possible_cpus()	1U
++#define num_enabled_cpus()	1U
+ #define num_present_cpus()	1U
+ #define num_active_cpus()	1U
+ 
+@@ -1141,6 +1161,11 @@ static inline bool cpu_possible(unsigned int cpu)
+ 	return cpu == 0;
+ }
+ 
++static inline bool cpu_enabled(unsigned int cpu)
++{
++	return cpu == 0;
++}
++
+ static inline bool cpu_present(unsigned int cpu)
+ {
+ 	return cpu == 0;
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index a86972a91991..fe0a5189f8ae 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -3122,6 +3122,9 @@ EXPORT_SYMBOL(__cpu_possible_mask);
+ struct cpumask __cpu_online_mask __read_mostly;
+ EXPORT_SYMBOL(__cpu_online_mask);
+ 
++struct cpumask __cpu_enabled_mask __read_mostly;
++EXPORT_SYMBOL(__cpu_enabled_mask);
++
+ struct cpumask __cpu_present_mask __read_mostly;
+ EXPORT_SYMBOL(__cpu_present_mask);
+ 
 -- 
 2.30.2
 
