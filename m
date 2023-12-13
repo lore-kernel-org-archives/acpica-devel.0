@@ -1,50 +1,50 @@
 Received: from smtp4.osuosl.org (smtp4.osuosl.org [140.211.166.137])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA9AC29420
-	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 468D829420
+	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="FuF1YeT+"
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="GBHhS3at"
 Received: from localhost (localhost [127.0.0.1])
-	by smtp4.osuosl.org (Postfix) with ESMTP id C415841E48
-	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:29 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org C415841E48
+	by smtp4.osuosl.org (Postfix) with ESMTP id 7E54B41E73
+	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:30 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 7E54B41E73
 Authentication-Results: smtp4.osuosl.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.a=rsa-sha256 header.s=pandora-2019 header.b=FuF1YeT+
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.a=rsa-sha256 header.s=pandora-2019 header.b=GBHhS3at
 X-Virus-Scanned: amavisd-new at osuosl.org
 X-Spam-Flag: NO
 X-Spam-Score: -2.098
 X-Spam-Level:
 Received: from smtp4.osuosl.org ([127.0.0.1])
 	by localhost (smtp4.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id CuipLDSBF2W1
+	with ESMTP id hOmwp1OFq7W5
 	for <acpica-devel@lists.linuxfoundation.org>;
 	Wed, 13 Dec 2023 12:58:29 +0000 (UTC)
 Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-	by smtp4.osuosl.org (Postfix) with ESMTPS id EB37341E4F
-	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:28 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org EB37341E4F
+	by smtp4.osuosl.org (Postfix) with ESMTPS id 6382141E68
+	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:29 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 6382141E68
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=armlinux.org.uk; s=pandora-2019; h=Date:Sender:Message-Id:Content-Type:
 	Content-Transfer-Encoding:MIME-Version:Subject:Cc:To:From:References:
 	In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
 	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=toielIZHns+JJqGdwW2Er+9+wyZ/FNy7YC4xlMkof/0=; b=FuF1YeT++Jin3KgRrWcSzJupOG
-	0HOKnlnAn4rO5PAD2r+eXKtzTLzlJ4inML+s5IXIlItQJWuhjlEz05y1hwOH9KgLBRkHUkaSj+FPh
-	bBjtvh7/mb6icsbs5fcCAwZPVFhBfOKX1oN4jYsTJAAcVzS721QIS3SUDhrfMX9yqKiuEbC/rRB0Y
-	0tlbZv7aWhdUhiUOXkTBZ9zLDIg527ZWtteePC0ko4AohNoQgmh+g84wwZZcuLSgTicKULYz14oBA
-	C6zvXCmsCE/RFcNtXx9yCnXqfBYeKzKOWLRiQHcmU9zMy1efW24j7stwbuDgpj0vlSho/wQekkF8C
-	mw/KxqHQ==;
-Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:50064 helo=rmk-PC.armlinux.org.uk)
+	bh=GjL2kXTMd2i2PnTpLka9uYvIe3wh2ToEdTiKO8t/ZLs=; b=GBHhS3atcKbvYSZE+G7lr2xVSQ
+	J8Xru9Y54/v9+enWJoWXlcLkIb+UuCAY3g8d/K+IbsmOVNvLtIrmEMFHDoDdsXzBv06qv1y61z79P
+	BMxJ8FdjAQm2gM7JfKDvbfwGy4QHuIhxTSAaf0NOkDOS6ChYkW8Uf9bYIDcEVnVr1+Na7zNCxYm8L
+	YUxzIokMmeol0Thdj+nFdSCNSPrZTCTyqkGyqhPGFF06oijt4zU/TSoCSo2c0ysNpBZN3e00i+wJn
+	vFW+8Z6fY10dFz+JNi6Kg+JJM7xwb/1usJghBrUNHGADIPkPNmb9Nq50ZUdGkY2mjVKU8Os5ZpGni
+	bXfksiIw==;
+Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:44942 helo=rmk-PC.armlinux.org.uk)
 	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <rmk@armlinux.org.uk>)
-	id 1rDOh0-0008GU-1Q;
-	Wed, 13 Dec 2023 12:50:26 +0000
+	id 1rDOhP-0008Ht-3D;
+	Wed, 13 Dec 2023 12:50:52 +0000
 Received: from rmk by rmk-PC.armlinux.org.uk with local (Exim 4.94.2)
 	(envelope-from <rmk@rmk-PC.armlinux.org.uk>)
-	id 1rDOh2-00Dvl1-H6; Wed, 13 Dec 2023 12:50:28 +0000
+	id 1rDOhS-00Dvla-7i; Wed, 13 Dec 2023 12:50:54 +0000
 In-Reply-To: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
 References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
 From: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
@@ -67,8 +67,8 @@ Cc: Salil Mehta <salil.mehta@huawei.com>,
 	jianyong.wu@arm.com,
 	justin.he@arm.com,
 	James Morse <james.morse@arm.com>
-Subject: [PATCH RFC v3 15/21] irqchip/gic-v3: Add support for ACPI's disabled
- but 'online capable' CPUs
+Subject: [PATCH RFC v3 20/21] ACPI: Add _OSC bits to advertise OS support for
+ toggling CPU present/enabled
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -78,97 +78,175 @@ MIME-Version: 1.0
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset="utf-8"
-Message-Id: <E1rDOh2-00Dvl1-H6@rmk-PC.armlinux.org.uk>
+Message-Id: <E1rDOhS-00Dvla-7i@rmk-PC.armlinux.org.uk>
 Sender: Russell King <rmk@armlinux.org.uk>
-Date: Wed, 13 Dec 2023 12:50:28 +0000
+Date: Wed, 13 Dec 2023 12:50:54 +0000
 
 From: James Morse <james.morse@arm.com>
 
-To support virtual CPU hotplug, ACPI has added an 'online capable' bit
-to the MADT GICC entries. This indicates a disabled CPU entry may not
-be possible to online via PSCI until firmware has set enabled bit in
-_STA.
+Platform firmware can disabled a CPU, or make it not-present by making
+an eject-request notification, then waiting for the os to make it offline
+and call _EJx. After the firmware updates _STA with the new status.
 
-What about the redistributor in the GICC entry? ACPI doesn't want to say.
-Assume the worst: When a redistributor is described in the GICC entry,
-but the entry is marked as disabled at boot, assume the redistributor
-is inaccessible.
+Not all operating systems support this. For arm64 making CPUs not-present
+has never been supported. For all ACPI architectures, making CPUs disabled
+has recently been added. Firmware can't know what the OS has support for.
 
-The GICv3 driver doesn't support late online of redistributors, so this
-means the corresponding CPU can't be brought online either. Clear the
-possible and present bits.
+Add two new _OSC bits to advertise whether the OS supports the _STA enabled
+or present bits being toggled for CPUs. This will be important for arm64
+if systems that support physical CPU hotplug ever appear as arm64 linux
+doesn't currently support this, so firmware shouldn't try.
 
-Systems that want CPU hotplug in a VM can ensure their redistributors
-are always-on, and describe them that way with a GICR entry in the MADT.
-
-When mapping redistributors found via GICC entries, handle the case
-where the arch code believes the CPU is present and possible, but it
-does not have an accessible redistributor. Print a warning and clear
-the present and possible bits.
+Advertising this support to firmware is useful for cloud orchestrators
+to know whether they can scale a particular VM by adding CPUs.
 
 Signed-off-by: James Morse <james.morse@arm.com>
 Tested-by: Miguel Luis <miguel.luis@oracle.com>
 Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
 Tested-by: Jianyong Wu <jianyong.wu@arm.com>
-Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-----
-Disabled but online-capable CPUs cause this message to be printed
-if their redistributors are described via GICC:
-| GICv3: CPU 3's redistributor is inaccessible: this CPU can't be brought online
-
-If ACPI's _STA tries to make the cpu present later, this message is printed:
-| Changing CPU present bit is not supported
-
-Changes since RFC v2:
- * use gicc->flags & (ACPI_MADT_ENABLED | ACPI_MADT_GICC_CPU_CAPABLE)
 ---
- drivers/irqchip/irq-gic-v3.c | 14 ++++++++++++++
- include/linux/acpi.h         |  2 +-
- 2 files changed, 15 insertions(+), 1 deletion(-)
+I'm assuming Loongarch machines do not support physical CPU hotplug.
 
-diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-index ebecd4546830..6d0f98d3540e 100644
---- a/drivers/irqchip/irq-gic-v3.c
-+++ b/drivers/irqchip/irq-gic-v3.c
-@@ -2370,11 +2370,25 @@ gic_acpi_parse_madt_gicc(union acpi_subtable_headers *header,
- 				(struct acpi_madt_generic_interrupt *)header;
- 	u32 reg = readl_relaxed(acpi_data.dist_base + GICD_PIDR2) & GIC_PIDR2_ARCH_MASK;
- 	u32 size = reg == GIC_PIDR2_ARCH_GICv4 ? SZ_64K * 4 : SZ_64K * 2;
-+	int cpu = get_cpu_for_acpi_id(gicc->uid);
- 	void __iomem *redist_base;
+Changes since RFC v3:
+ * Drop ia64 changes
+ * Update James' comment below "---" to remove reference to ia64
+
+Outstanding comment:
+ https://lore.kernel.org/r/20230914175021.000018fd@Huawei.com
+---
+ arch/x86/Kconfig              |  1 +
+ drivers/acpi/Kconfig          |  9 +++++++++
+ drivers/acpi/acpi_processor.c | 14 +++++++++++++-
+ drivers/acpi/bus.c            | 16 ++++++++++++++++
+ include/linux/acpi.h          |  4 ++++
+ 5 files changed, 43 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 64fc7c475ab0..33fc4dcd950c 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -60,6 +60,7 @@ config X86
+ 	select ACPI_LEGACY_TABLES_LOOKUP	if ACPI
+ 	select ACPI_SYSTEM_POWER_STATES_SUPPORT	if ACPI
+ 	select ACPI_HOTPLUG_PRESENT_CPU		if ACPI_PROCESSOR && HOTPLUG_CPU
++	select ACPI_HOTPLUG_IGNORE_OSC		if ACPI && HOTPLUG_CPU
+ 	select ARCH_32BIT_OFF_T			if X86_32
+ 	select ARCH_CLOCKSOURCE_INIT
+ 	select ARCH_CORRECT_STACKTRACE_ON_KRETPROBE
+diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
+index 9c5a43d0aff4..020e7c0ab985 100644
+--- a/drivers/acpi/Kconfig
++++ b/drivers/acpi/Kconfig
+@@ -311,6 +311,15 @@ config ACPI_HOTPLUG_PRESENT_CPU
+ 	depends on ACPI_PROCESSOR && HOTPLUG_CPU
+ 	select ACPI_CONTAINER
  
- 	if (!acpi_gicc_is_usable(gicc))
- 		return 0;
- 
-+	/*
-+	 * Capable but disabled CPUs can be brought online later. What about
-+	 * the redistributor? ACPI doesn't want to say!
-+	 * Virtual hotplug systems can use the MADT's "always-on" GICR entries.
-+	 * Otherwise, prevent such CPUs from being brought online.
-+	 */
-+	if (!(gicc->flags & ACPI_MADT_ENABLED)) {
-+		pr_warn_once("CPU %u's redistributor is inaccessible: this CPU can't be brought online\n", cpu);
-+		set_cpu_present(cpu, false);
-+		set_cpu_possible(cpu, false);
-+		return 0;
-+	}
++config ACPI_HOTPLUG_IGNORE_OSC
++	bool
++	depends on ACPI_HOTPLUG_PRESENT_CPU
++	help
++	  Ignore whether firmware acknowledged support for toggling the CPU
++	  present bit in _STA. Some architectures predate the _OSC bits, so
++	  firmware doesn't know to do this.
 +
- 	redist_base = ioremap(gicc->gicr_base_address, size);
- 	if (!redist_base)
- 		return -ENOMEM;
++
+ config ACPI_PROCESSOR_AGGREGATOR
+ 	tristate "Processor Aggregator"
+ 	depends on ACPI_PROCESSOR
+diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
+index ea12e70dfd39..5bb207a7a1dd 100644
+--- a/drivers/acpi/acpi_processor.c
++++ b/drivers/acpi/acpi_processor.c
+@@ -182,6 +182,18 @@ static void __init acpi_pcc_cpufreq_init(void)
+ static void __init acpi_pcc_cpufreq_init(void) {}
+ #endif /* CONFIG_X86 */
+ 
++static bool acpi_processor_hotplug_present_supported(void)
++{
++	if (!IS_ENABLED(CONFIG_ACPI_HOTPLUG_PRESENT_CPU))
++		return false;
++
++	/* x86 systems pre-date the _OSC bit */
++	if (IS_ENABLED(CONFIG_ACPI_HOTPLUG_IGNORE_OSC))
++		return true;
++
++	return osc_sb_hotplug_present_support_acked;
++}
++
+ /* Initialization */
+ static int acpi_processor_make_present(struct acpi_processor *pr)
+ {
+@@ -189,7 +201,7 @@ static int acpi_processor_make_present(struct acpi_processor *pr)
+ 	acpi_status status;
+ 	int ret;
+ 
+-	if (!IS_ENABLED(CONFIG_ACPI_HOTPLUG_PRESENT_CPU)) {
++	if (!acpi_processor_hotplug_present_supported()) {
+ 		pr_err_once("Changing CPU present bit is not supported\n");
+ 		return -ENODEV;
+ 	}
+diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c
+index 72e64c0718c9..7122450739d6 100644
+--- a/drivers/acpi/bus.c
++++ b/drivers/acpi/bus.c
+@@ -298,6 +298,13 @@ EXPORT_SYMBOL_GPL(osc_sb_native_usb4_support_confirmed);
+ 
+ bool osc_sb_cppc2_support_acked;
+ 
++/*
++ * ACPI 6.? Proposed Operating System Capabilities for modifying CPU
++ * present/enable.
++ */
++bool osc_sb_hotplug_enabled_support_acked;
++bool osc_sb_hotplug_present_support_acked;
++
+ static u8 sb_uuid_str[] = "0811B06E-4A27-44F9-8D60-3CBBC22E7B48";
+ static void acpi_bus_osc_negotiate_platform_control(void)
+ {
+@@ -346,6 +353,11 @@ static void acpi_bus_osc_negotiate_platform_control(void)
+ 
+ 	if (!ghes_disable)
+ 		capbuf[OSC_SUPPORT_DWORD] |= OSC_SB_APEI_SUPPORT;
++
++	capbuf[OSC_SUPPORT_DWORD] |= OSC_SB_HOTPLUG_ENABLED_SUPPORT;
++	if (IS_ENABLED(CONFIG_ACPI_HOTPLUG_PRESENT_CPU))
++		capbuf[OSC_SUPPORT_DWORD] |= OSC_SB_HOTPLUG_PRESENT_SUPPORT;
++
+ 	if (ACPI_FAILURE(acpi_get_handle(NULL, "\\_SB", &handle)))
+ 		return;
+ 
+@@ -383,6 +395,10 @@ static void acpi_bus_osc_negotiate_platform_control(void)
+ 			capbuf_ret[OSC_SUPPORT_DWORD] & OSC_SB_NATIVE_USB4_SUPPORT;
+ 		osc_cpc_flexible_adr_space_confirmed =
+ 			capbuf_ret[OSC_SUPPORT_DWORD] & OSC_SB_CPC_FLEXIBLE_ADR_SPACE;
++		osc_sb_hotplug_enabled_support_acked =
++			capbuf_ret[OSC_SUPPORT_DWORD] & OSC_SB_HOTPLUG_ENABLED_SUPPORT;
++		osc_sb_hotplug_present_support_acked =
++			capbuf_ret[OSC_SUPPORT_DWORD] & OSC_SB_HOTPLUG_PRESENT_SUPPORT;
+ 	}
+ 
+ 	kfree(context.ret.pointer);
 diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-index 19d009ca9e7a..00be66683505 100644
+index 00be66683505..c572abac803c 100644
 --- a/include/linux/acpi.h
 +++ b/include/linux/acpi.h
-@@ -238,7 +238,7 @@ void acpi_table_print_madt_entry (struct acpi_subtable_header *madt);
+@@ -559,12 +559,16 @@ acpi_status acpi_run_osc(acpi_handle handle, struct acpi_osc_context *context);
+ #define OSC_SB_NATIVE_USB4_SUPPORT		0x00040000
+ #define OSC_SB_PRM_SUPPORT			0x00200000
+ #define OSC_SB_FFH_OPR_SUPPORT			0x00400000
++#define OSC_SB_HOTPLUG_ENABLED_SUPPORT		0x00800000
++#define OSC_SB_HOTPLUG_PRESENT_SUPPORT		0x01000000
  
- static inline bool acpi_gicc_is_usable(struct acpi_madt_generic_interrupt *gicc)
- {
--	return gicc->flags & ACPI_MADT_ENABLED;
-+	return gicc->flags & (ACPI_MADT_ENABLED | ACPI_MADT_GICC_CPU_CAPABLE);
- }
+ extern bool osc_sb_apei_support_acked;
+ extern bool osc_pc_lpi_support_confirmed;
+ extern bool osc_sb_native_usb4_support_confirmed;
+ extern bool osc_sb_cppc2_support_acked;
+ extern bool osc_cpc_flexible_adr_space_confirmed;
++extern bool osc_sb_hotplug_enabled_support_acked;
++extern bool osc_sb_hotplug_present_support_acked;
  
- /* the following numa functions are architecture-dependent */
+ /* USB4 Capabilities */
+ #define OSC_USB_USB3_TUNNELING			0x00000001
 -- 
 2.30.2
 
