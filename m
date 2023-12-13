@@ -1,50 +1,50 @@
 Received: from smtp4.osuosl.org (smtp4.osuosl.org [140.211.166.137])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 468D829420
-	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3962F29420
+	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:59:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="GBHhS3at"
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="ryyhQHuR"
 Received: from localhost (localhost [127.0.0.1])
-	by smtp4.osuosl.org (Postfix) with ESMTP id 7E54B41E73
+	by smtp4.osuosl.org (Postfix) with ESMTP id ED8C241E76
 	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:30 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 7E54B41E73
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org ED8C241E76
 Authentication-Results: smtp4.osuosl.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.a=rsa-sha256 header.s=pandora-2019 header.b=GBHhS3at
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.a=rsa-sha256 header.s=pandora-2019 header.b=ryyhQHuR
 X-Virus-Scanned: amavisd-new at osuosl.org
 X-Spam-Flag: NO
 X-Spam-Score: -2.098
 X-Spam-Level:
 Received: from smtp4.osuosl.org ([127.0.0.1])
 	by localhost (smtp4.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id hOmwp1OFq7W5
+	with ESMTP id kAMa1NlvEb1n
 	for <acpica-devel@lists.linuxfoundation.org>;
-	Wed, 13 Dec 2023 12:58:29 +0000 (UTC)
+	Wed, 13 Dec 2023 12:58:30 +0000 (UTC)
 Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-	by smtp4.osuosl.org (Postfix) with ESMTPS id 6382141E68
+	by smtp4.osuosl.org (Postfix) with ESMTPS id E129D41E4F
 	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:29 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 6382141E68
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org E129D41E4F
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=armlinux.org.uk; s=pandora-2019; h=Date:Sender:Message-Id:Content-Type:
 	Content-Transfer-Encoding:MIME-Version:Subject:Cc:To:From:References:
 	In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
 	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=GjL2kXTMd2i2PnTpLka9uYvIe3wh2ToEdTiKO8t/ZLs=; b=GBHhS3atcKbvYSZE+G7lr2xVSQ
-	J8Xru9Y54/v9+enWJoWXlcLkIb+UuCAY3g8d/K+IbsmOVNvLtIrmEMFHDoDdsXzBv06qv1y61z79P
-	BMxJ8FdjAQm2gM7JfKDvbfwGy4QHuIhxTSAaf0NOkDOS6ChYkW8Uf9bYIDcEVnVr1+Na7zNCxYm8L
-	YUxzIokMmeol0Thdj+nFdSCNSPrZTCTyqkGyqhPGFF06oijt4zU/TSoCSo2c0ysNpBZN3e00i+wJn
-	vFW+8Z6fY10dFz+JNi6Kg+JJM7xwb/1usJghBrUNHGADIPkPNmb9Nq50ZUdGkY2mjVKU8Os5ZpGni
-	bXfksiIw==;
-Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:44942 helo=rmk-PC.armlinux.org.uk)
+	bh=CzUDlXDbVRENX5I3t4jDtWhqIqX9ckshZ8M9DQwNtkI=; b=ryyhQHuRHb7agprV7SzAPCOWs7
+	+KSXGolWfQxBz68idh9LhxWZ4JzZ71clasxJMQDmclWim/lWLX+Gb1xqGHQ9n3UU4aTI4I9d13qgo
+	hj4BIus5sr1uZgPAKqSg5BR+qboNz0g2L0iDXYBeGJ7lvBRoed+H+5R2YFjK8ueU93g8YItCdFaeb
+	fxbImF1Xl0TwiBldiAdAMRv9Tgek/TNe6QoJrV9pJFFkVccAuQ3oipJY0EaPDNElQ4hd2UdXqoxdp
+	PQJmrKVqAhtuUZLhBMQbgjSydQTFhRQyXfg22Jx79LASfFaMpnGo14mdNGw9zQWMI8ZnrjSj92Dyh
+	1BXBKHfg==;
+Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:50070 helo=rmk-PC.armlinux.org.uk)
 	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <rmk@armlinux.org.uk>)
-	id 1rDOhP-0008Ht-3D;
-	Wed, 13 Dec 2023 12:50:52 +0000
+	id 1rDOh5-0008Gu-1L;
+	Wed, 13 Dec 2023 12:50:31 +0000
 Received: from rmk by rmk-PC.armlinux.org.uk with local (Exim 4.94.2)
 	(envelope-from <rmk@rmk-PC.armlinux.org.uk>)
-	id 1rDOhS-00Dvla-7i; Wed, 13 Dec 2023 12:50:54 +0000
+	id 1rDOh7-00Dvl7-LR; Wed, 13 Dec 2023 12:50:33 +0000
 In-Reply-To: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
 References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
 From: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
@@ -67,8 +67,7 @@ Cc: Salil Mehta <salil.mehta@huawei.com>,
 	jianyong.wu@arm.com,
 	justin.he@arm.com,
 	James Morse <james.morse@arm.com>
-Subject: [PATCH RFC v3 20/21] ACPI: Add _OSC bits to advertise OS support for
- toggling CPU present/enabled
+Subject: [PATCH RFC v3 16/21] arm64: psci: Ignore DENIED CPUs
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -78,175 +77,68 @@ MIME-Version: 1.0
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset="utf-8"
-Message-Id: <E1rDOhS-00Dvla-7i@rmk-PC.armlinux.org.uk>
+Message-Id: <E1rDOh7-00Dvl7-LR@rmk-PC.armlinux.org.uk>
 Sender: Russell King <rmk@armlinux.org.uk>
-Date: Wed, 13 Dec 2023 12:50:54 +0000
+Date: Wed, 13 Dec 2023 12:50:33 +0000
 
-From: James Morse <james.morse@arm.com>
+From: Jean-Philippe Brucker <jean-philippe@linaro.org>
 
-Platform firmware can disabled a CPU, or make it not-present by making
-an eject-request notification, then waiting for the os to make it offline
-and call _EJx. After the firmware updates _STA with the new status.
+When a CPU is marked as disabled, but online capable in the MADT, PSCI
+applies some firmware policy to control when it can be brought online.
+PSCI returns DENIED to a CPU_ON request if this is not currently
+permitted. The OS can learn the current policy from the _STA enabled bit.
 
-Not all operating systems support this. For arm64 making CPUs not-present
-has never been supported. For all ACPI architectures, making CPUs disabled
-has recently been added. Firmware can't know what the OS has support for.
+Handle the PSCI DENIED return code gracefully instead of printing an
+error.
 
-Add two new _OSC bits to advertise whether the OS supports the _STA enabled
-or present bits being toggled for CPUs. This will be important for arm64
-if systems that support physical CPU hotplug ever appear as arm64 linux
-doesn't currently support this, so firmware shouldn't try.
+See https://developer.arm.com/documentation/den0022/f/?lang=en page 58.
 
-Advertising this support to firmware is useful for cloud orchestrators
-to know whether they can scale a particular VM by adding CPUs.
-
+Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+[ morse: Rewrote commit message ]
 Signed-off-by: James Morse <james.morse@arm.com>
 Tested-by: Miguel Luis <miguel.luis@oracle.com>
 Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
 Tested-by: Jianyong Wu <jianyong.wu@arm.com>
+Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 ---
-I'm assuming Loongarch machines do not support physical CPU hotplug.
-
+Changes since RFC v2
+ * Add specification reference
+ * Use EPERM rather than EPROBE_DEFER
 Changes since RFC v3:
- * Drop ia64 changes
- * Update James' comment below "---" to remove reference to ia64
-
-Outstanding comment:
- https://lore.kernel.org/r/20230914175021.000018fd@Huawei.com
+ * Use EPERM everywhere
+ * Drop unnecessary changes to drivers/firmware/psci/psci.c
 ---
- arch/x86/Kconfig              |  1 +
- drivers/acpi/Kconfig          |  9 +++++++++
- drivers/acpi/acpi_processor.c | 14 +++++++++++++-
- drivers/acpi/bus.c            | 16 ++++++++++++++++
- include/linux/acpi.h          |  4 ++++
- 5 files changed, 43 insertions(+), 1 deletion(-)
+ arch/arm64/kernel/psci.c | 2 +-
+ arch/arm64/kernel/smp.c  | 3 ++-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 64fc7c475ab0..33fc4dcd950c 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -60,6 +60,7 @@ config X86
- 	select ACPI_LEGACY_TABLES_LOOKUP	if ACPI
- 	select ACPI_SYSTEM_POWER_STATES_SUPPORT	if ACPI
- 	select ACPI_HOTPLUG_PRESENT_CPU		if ACPI_PROCESSOR && HOTPLUG_CPU
-+	select ACPI_HOTPLUG_IGNORE_OSC		if ACPI && HOTPLUG_CPU
- 	select ARCH_32BIT_OFF_T			if X86_32
- 	select ARCH_CLOCKSOURCE_INIT
- 	select ARCH_CORRECT_STACKTRACE_ON_KRETPROBE
-diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
-index 9c5a43d0aff4..020e7c0ab985 100644
---- a/drivers/acpi/Kconfig
-+++ b/drivers/acpi/Kconfig
-@@ -311,6 +311,15 @@ config ACPI_HOTPLUG_PRESENT_CPU
- 	depends on ACPI_PROCESSOR && HOTPLUG_CPU
- 	select ACPI_CONTAINER
- 
-+config ACPI_HOTPLUG_IGNORE_OSC
-+	bool
-+	depends on ACPI_HOTPLUG_PRESENT_CPU
-+	help
-+	  Ignore whether firmware acknowledged support for toggling the CPU
-+	  present bit in _STA. Some architectures predate the _OSC bits, so
-+	  firmware doesn't know to do this.
-+
-+
- config ACPI_PROCESSOR_AGGREGATOR
- 	tristate "Processor Aggregator"
- 	depends on ACPI_PROCESSOR
-diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
-index ea12e70dfd39..5bb207a7a1dd 100644
---- a/drivers/acpi/acpi_processor.c
-+++ b/drivers/acpi/acpi_processor.c
-@@ -182,6 +182,18 @@ static void __init acpi_pcc_cpufreq_init(void)
- static void __init acpi_pcc_cpufreq_init(void) {}
- #endif /* CONFIG_X86 */
- 
-+static bool acpi_processor_hotplug_present_supported(void)
-+{
-+	if (!IS_ENABLED(CONFIG_ACPI_HOTPLUG_PRESENT_CPU))
-+		return false;
-+
-+	/* x86 systems pre-date the _OSC bit */
-+	if (IS_ENABLED(CONFIG_ACPI_HOTPLUG_IGNORE_OSC))
-+		return true;
-+
-+	return osc_sb_hotplug_present_support_acked;
-+}
-+
- /* Initialization */
- static int acpi_processor_make_present(struct acpi_processor *pr)
+diff --git a/arch/arm64/kernel/psci.c b/arch/arm64/kernel/psci.c
+index 29a8e444db83..fabd732d0a2d 100644
+--- a/arch/arm64/kernel/psci.c
++++ b/arch/arm64/kernel/psci.c
+@@ -40,7 +40,7 @@ static int cpu_psci_cpu_boot(unsigned int cpu)
  {
-@@ -189,7 +201,7 @@ static int acpi_processor_make_present(struct acpi_processor *pr)
- 	acpi_status status;
- 	int ret;
+ 	phys_addr_t pa_secondary_entry = __pa_symbol(secondary_entry);
+ 	int err = psci_ops.cpu_on(cpu_logical_map(cpu), pa_secondary_entry);
+-	if (err)
++	if (err && err != -EPERM)
+ 		pr_err("failed to boot CPU%d (%d)\n", cpu, err);
  
--	if (!IS_ENABLED(CONFIG_ACPI_HOTPLUG_PRESENT_CPU)) {
-+	if (!acpi_processor_hotplug_present_supported()) {
- 		pr_err_once("Changing CPU present bit is not supported\n");
- 		return -ENODEV;
- 	}
-diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c
-index 72e64c0718c9..7122450739d6 100644
---- a/drivers/acpi/bus.c
-+++ b/drivers/acpi/bus.c
-@@ -298,6 +298,13 @@ EXPORT_SYMBOL_GPL(osc_sb_native_usb4_support_confirmed);
- 
- bool osc_sb_cppc2_support_acked;
- 
-+/*
-+ * ACPI 6.? Proposed Operating System Capabilities for modifying CPU
-+ * present/enable.
-+ */
-+bool osc_sb_hotplug_enabled_support_acked;
-+bool osc_sb_hotplug_present_support_acked;
-+
- static u8 sb_uuid_str[] = "0811B06E-4A27-44F9-8D60-3CBBC22E7B48";
- static void acpi_bus_osc_negotiate_platform_control(void)
- {
-@@ -346,6 +353,11 @@ static void acpi_bus_osc_negotiate_platform_control(void)
- 
- 	if (!ghes_disable)
- 		capbuf[OSC_SUPPORT_DWORD] |= OSC_SB_APEI_SUPPORT;
-+
-+	capbuf[OSC_SUPPORT_DWORD] |= OSC_SB_HOTPLUG_ENABLED_SUPPORT;
-+	if (IS_ENABLED(CONFIG_ACPI_HOTPLUG_PRESENT_CPU))
-+		capbuf[OSC_SUPPORT_DWORD] |= OSC_SB_HOTPLUG_PRESENT_SUPPORT;
-+
- 	if (ACPI_FAILURE(acpi_get_handle(NULL, "\\_SB", &handle)))
- 		return;
- 
-@@ -383,6 +395,10 @@ static void acpi_bus_osc_negotiate_platform_control(void)
- 			capbuf_ret[OSC_SUPPORT_DWORD] & OSC_SB_NATIVE_USB4_SUPPORT;
- 		osc_cpc_flexible_adr_space_confirmed =
- 			capbuf_ret[OSC_SUPPORT_DWORD] & OSC_SB_CPC_FLEXIBLE_ADR_SPACE;
-+		osc_sb_hotplug_enabled_support_acked =
-+			capbuf_ret[OSC_SUPPORT_DWORD] & OSC_SB_HOTPLUG_ENABLED_SUPPORT;
-+		osc_sb_hotplug_present_support_acked =
-+			capbuf_ret[OSC_SUPPORT_DWORD] & OSC_SB_HOTPLUG_PRESENT_SUPPORT;
+ 	return err;
+diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
+index defbab84e9e5..6bc9094feb19 100644
+--- a/arch/arm64/kernel/smp.c
++++ b/arch/arm64/kernel/smp.c
+@@ -132,7 +132,8 @@ int __cpu_up(unsigned int cpu, struct task_struct *idle)
+ 	/* Now bring the CPU into our world */
+ 	ret = boot_secondary(cpu, idle);
+ 	if (ret) {
+-		pr_err("CPU%u: failed to boot: %d\n", cpu, ret);
++		if (ret != -EPERM)
++			pr_err("CPU%u: failed to boot: %d\n", cpu, ret);
+ 		return ret;
  	}
  
- 	kfree(context.ret.pointer);
-diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-index 00be66683505..c572abac803c 100644
---- a/include/linux/acpi.h
-+++ b/include/linux/acpi.h
-@@ -559,12 +559,16 @@ acpi_status acpi_run_osc(acpi_handle handle, struct acpi_osc_context *context);
- #define OSC_SB_NATIVE_USB4_SUPPORT		0x00040000
- #define OSC_SB_PRM_SUPPORT			0x00200000
- #define OSC_SB_FFH_OPR_SUPPORT			0x00400000
-+#define OSC_SB_HOTPLUG_ENABLED_SUPPORT		0x00800000
-+#define OSC_SB_HOTPLUG_PRESENT_SUPPORT		0x01000000
- 
- extern bool osc_sb_apei_support_acked;
- extern bool osc_pc_lpi_support_confirmed;
- extern bool osc_sb_native_usb4_support_confirmed;
- extern bool osc_sb_cppc2_support_acked;
- extern bool osc_cpc_flexible_adr_space_confirmed;
-+extern bool osc_sb_hotplug_enabled_support_acked;
-+extern bool osc_sb_hotplug_present_support_acked;
- 
- /* USB4 Capabilities */
- #define OSC_USB_USB3_TUNNELING			0x00000001
 -- 
 2.30.2
 
