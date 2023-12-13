@@ -1,50 +1,50 @@
 Received: from smtp4.osuosl.org (smtp4.osuosl.org [140.211.166.137])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83B3029420
-	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46BA529420
+	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="o2knhIkw"
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="AsjeyEgF"
 Received: from localhost (localhost [127.0.0.1])
-	by smtp4.osuosl.org (Postfix) with ESMTP id B783A41E4B
-	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:26 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org B783A41E4B
+	by smtp4.osuosl.org (Postfix) with ESMTP id 38D3541E4C
+	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:27 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 38D3541E4C
 Authentication-Results: smtp4.osuosl.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.a=rsa-sha256 header.s=pandora-2019 header.b=o2knhIkw
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.a=rsa-sha256 header.s=pandora-2019 header.b=AsjeyEgF
 X-Virus-Scanned: amavisd-new at osuosl.org
 X-Spam-Flag: NO
 X-Spam-Score: -2.098
 X-Spam-Level:
 Received: from smtp4.osuosl.org ([127.0.0.1])
 	by localhost (smtp4.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id I4_8DePb5BRB
+	with ESMTP id LZux2JLJY2Cp
 	for <acpica-devel@lists.linuxfoundation.org>;
-	Wed, 13 Dec 2023 12:58:25 +0000 (UTC)
+	Wed, 13 Dec 2023 12:58:26 +0000 (UTC)
 Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-	by smtp4.osuosl.org (Postfix) with ESMTPS id A4987416C9
-	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:25 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org A4987416C9
+	by smtp4.osuosl.org (Postfix) with ESMTPS id 897DD41E48
+	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:26 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 897DD41E48
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=armlinux.org.uk; s=pandora-2019; h=Date:Sender:Message-Id:Content-Type:
 	Content-Transfer-Encoding:MIME-Version:Subject:Cc:To:From:References:
 	In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
 	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=DDcdVazneM/u7wMj0E+j+LVt0/sG+/pUc+Ol6c0oUAM=; b=o2knhIkwo9iXzfmsPtqSYX3GtZ
-	82mkAYgR4tZL2XDDxQhWg2TXvFkydzxSO+QtMU6aght4+jecATwSJPaT6MOwZeS2Ar+iELpliTHfp
-	fCdlENl4Al65j5dZUj6eh5X8CVOib3wPeL8+uRxbxXBGCLYKKhg4H1igrdD98NeZssawKNbd44Y2Z
-	SL6LFSQIHbW0euxInaGWgMRpmE7cVcBK4FS/cpANOuJLiiRfLAbQJenZVhnVlS5Ce7og2+qK0NJpx
-	VrHNwjSHqRrWUHXwJj3/H/VjCIzjKpqQvhqJJPgpkfimj1TGxDLx4y3VzkfdM21OZAwUSFU/cnnPj
-	LT9Gj5Fg==;
-Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:58164 helo=rmk-PC.armlinux.org.uk)
+	bh=DnFY2Lrn3laRjR0dFD9DsIQAz620A4pU6zpNT78Use8=; b=AsjeyEgF6qrzJzab3wkGeZcEwz
+	rQbT8Tw9ttXnjWwBGSCpduVsdyCslNTtuX0uB4lOWLn2A4DQGf8kQ54y0eQssun1EYJVaEjWIl9+m
+	pSqtSsZYzlpMk6x1cEk4OonnO/nvQhZCTzAnt6bk8eG11xPN/bKHuFd3QTGhNZKj9fdYNDgvvT6j5
+	KjXoS4SJ3GKYkLPAF7X0EkDMoJdVgIbwj0bsR13/aGe4cetcTaI0cBPZMSGQ+V25Klu4Ppx6urvC/
+	eKcbFBSHX4L8zY9q6CIQ36XIHBJPW92Q1bOt1cleQ9a1mRdmlhqi3jF3ZqX8pqXPmBYM0zM3WXTb5
+	2ou+awpw==;
+Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:33732 helo=rmk-PC.armlinux.org.uk)
 	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <rmk@armlinux.org.uk>)
-	id 1rDOgA-0008Db-38;
-	Wed, 13 Dec 2023 12:49:35 +0000
+	id 1rDOgp-0008Fs-39;
+	Wed, 13 Dec 2023 12:50:16 +0000
 Received: from rmk by rmk-PC.armlinux.org.uk with local (Exim 4.94.2)
 	(envelope-from <rmk@rmk-PC.armlinux.org.uk>)
-	id 1rDOgD-00Dvk2-3h; Wed, 13 Dec 2023 12:49:37 +0000
+	id 1rDOgs-00Dvko-6t; Wed, 13 Dec 2023 12:50:18 +0000
 In-Reply-To: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
 References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
 From: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
@@ -67,8 +67,7 @@ Cc: Salil Mehta <salil.mehta@huawei.com>,
 	jianyong.wu@arm.com,
 	justin.he@arm.com,
 	James Morse <james.morse@arm.com>
-Subject: [PATCH RFC v3 05/21] ACPI: Rename ACPI_HOTPLUG_CPU to include
- 'present'
+Subject: [PATCH RFC v3 13/21] ACPICA: Add new MADT GICC flags fields
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -78,26 +77,16 @@ MIME-Version: 1.0
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset="utf-8"
-Message-Id: <E1rDOgD-00Dvk2-3h@rmk-PC.armlinux.org.uk>
+Message-Id: <E1rDOgs-00Dvko-6t@rmk-PC.armlinux.org.uk>
 Sender: Russell King <rmk@armlinux.org.uk>
-Date: Wed, 13 Dec 2023 12:49:37 +0000
+Date: Wed, 13 Dec 2023 12:50:18 +0000
 
 From: James Morse <james.morse@arm.com>
 
-The code behind ACPI_HOTPLUG_CPU allows a not-present CPU to become
-present. This isn't the only use of HOTPLUG_CPU. On arm64 and riscv
-CPUs can be taken offline as a power saving measure.
+Add the new flag field to the MADT's GICC structure.
 
-On arm64 an offline CPU may be disabled by firmware, preventing it from
-being brought back online, but it remains present throughout.
-
-Adding code to prevent user-space trying to online these disabled CPUs
-needs some additional terminology.
-
-Rename the Kconfig symbol CONFIG_ACPI_HOTPLUG_PRESENT_CPU to reflect
-that it makes possible CPUs present.
-
-HOTPLUG_CPU is untouched as this is only about the ACPI mechanism.
+'Online Capable' indicates a disabled CPU can be enabled later. See
+ACPI specification 6.5 Tabel 5.37: GICC CPU Interface Flags.
 
 Signed-off-by: James Morse <james.morse@arm.com>
 Tested-by: Miguel Luis <miguel.luis@oracle.com>
@@ -105,200 +94,30 @@ Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
 Tested-by: Jianyong Wu <jianyong.wu@arm.com>
 Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 ---
-Changes since RFC v2:
- * Add Loongarch update
-Changes since RFC v3:
- * Dropped ia64 changes
----
- arch/loongarch/Kconfig                     |  2 +-
- arch/loongarch/configs/loongson3_defconfig |  2 +-
- arch/loongarch/kernel/acpi.c               |  4 ++--
- arch/x86/Kconfig                           |  2 +-
- arch/x86/kernel/acpi/boot.c                |  4 ++--
- drivers/acpi/Kconfig                       |  4 ++--
- drivers/acpi/acpi_processor.c              | 10 +++++-----
- include/linux/acpi.h                       |  6 +++---
- 8 files changed, 17 insertions(+), 17 deletions(-)
+This patch probably needs to go via the upstream acpica project,
+but is included here so the feature can be tested.
 
-diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
-index 15d05dd2b7f3..b1e87b90468d 100644
---- a/arch/loongarch/Kconfig
-+++ b/arch/loongarch/Kconfig
-@@ -5,7 +5,7 @@ config LOONGARCH
- 	select ACPI
- 	select ACPI_GENERIC_GSI if ACPI
- 	select ACPI_MCFG if ACPI
--	select ACPI_HOTPLUG_CPU if ACPI_PROCESSOR && HOTPLUG_CPU
-+	select ACPI_HOTPLUG_PRESENT_CPU if ACPI_PROCESSOR && HOTPLUG_CPU
- 	select ACPI_PPTT if ACPI
- 	select ACPI_SYSTEM_POWER_STATES_SUPPORT	if ACPI
- 	select ARCH_BINFMT_ELF_STATE
-diff --git a/arch/loongarch/configs/loongson3_defconfig b/arch/loongarch/configs/loongson3_defconfig
-index 33795e4a5bd6..85d37b143077 100644
---- a/arch/loongarch/configs/loongson3_defconfig
-+++ b/arch/loongarch/configs/loongson3_defconfig
-@@ -59,7 +59,7 @@ CONFIG_ACPI_SPCR_TABLE=y
- CONFIG_ACPI_TAD=y
- CONFIG_ACPI_DOCK=y
- CONFIG_ACPI_IPMI=m
--CONFIG_ACPI_HOTPLUG_CPU=y
-+CONFIG_ACPI_HOTPLUG_PRESENT_CPU=y
- CONFIG_ACPI_PCI_SLOT=y
- CONFIG_ACPI_HOTPLUG_MEMORY=y
- CONFIG_EFI_ZBOOT=y
-diff --git a/arch/loongarch/kernel/acpi.c b/arch/loongarch/kernel/acpi.c
-index 8e00a754e548..dfa56119b56f 100644
---- a/arch/loongarch/kernel/acpi.c
-+++ b/arch/loongarch/kernel/acpi.c
-@@ -288,7 +288,7 @@ void __init arch_reserve_mem_area(acpi_physical_address addr, size_t size)
- 	memblock_reserve(addr, size);
- }
+If the ACPICA header files are updated before merging this patch set,
+this patch will need to be dropped.
+
+Changes since RFC v2:
+ * Add ACPI specification reference.
+---
+ include/acpi/actbl2.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
+index 3751ae69432f..c433a079d8e1 100644
+--- a/include/acpi/actbl2.h
++++ b/include/acpi/actbl2.h
+@@ -1046,6 +1046,7 @@ struct acpi_madt_generic_interrupt {
+ /* ACPI_MADT_ENABLED                    (1)      Processor is usable if set */
+ #define ACPI_MADT_PERFORMANCE_IRQ_MODE  (1<<1)	/* 01: Performance Interrupt Mode */
+ #define ACPI_MADT_VGIC_IRQ_MODE         (1<<2)	/* 02: VGIC Maintenance Interrupt mode */
++#define ACPI_MADT_GICC_CPU_CAPABLE      (1<<3)	/* 03: CPU is online capable */
  
--#ifdef CONFIG_ACPI_HOTPLUG_CPU
-+#ifdef CONFIG_ACPI_HOTPLUG_PRESENT_CPU
+ /* 12: Generic Distributor (ACPI 5.0 + ACPI 6.0 changes) */
  
- #include <acpi/processor.h>
- 
-@@ -340,4 +340,4 @@ int acpi_unmap_cpu(int cpu)
- }
- EXPORT_SYMBOL(acpi_unmap_cpu);
- 
--#endif /* CONFIG_ACPI_HOTPLUG_CPU */
-+#endif /* CONFIG_ACPI_HOTPLUG_PRESENT_CPU */
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 8330c4ac26b3..64fc7c475ab0 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -59,7 +59,7 @@ config X86
- 	#
- 	select ACPI_LEGACY_TABLES_LOOKUP	if ACPI
- 	select ACPI_SYSTEM_POWER_STATES_SUPPORT	if ACPI
--	select ACPI_HOTPLUG_CPU			if ACPI_PROCESSOR && HOTPLUG_CPU
-+	select ACPI_HOTPLUG_PRESENT_CPU		if ACPI_PROCESSOR && HOTPLUG_CPU
- 	select ARCH_32BIT_OFF_T			if X86_32
- 	select ARCH_CLOCKSOURCE_INIT
- 	select ARCH_CORRECT_STACKTRACE_ON_KRETPROBE
-diff --git a/arch/x86/kernel/acpi/boot.c b/arch/x86/kernel/acpi/boot.c
-index 1a0dd80d81ac..33d259ddd188 100644
---- a/arch/x86/kernel/acpi/boot.c
-+++ b/arch/x86/kernel/acpi/boot.c
-@@ -826,7 +826,7 @@ static void __init acpi_set_irq_model_ioapic(void)
- /*
-  *  ACPI based hotplug support for CPU
-  */
--#ifdef CONFIG_ACPI_HOTPLUG_CPU
-+#ifdef CONFIG_ACPI_HOTPLUG_PRESENT_CPU
- #include <acpi/processor.h>
- 
- static int acpi_map_cpu2node(acpi_handle handle, int cpu, int physid)
-@@ -875,7 +875,7 @@ int acpi_unmap_cpu(int cpu)
- 	return (0);
- }
- EXPORT_SYMBOL(acpi_unmap_cpu);
--#endif				/* CONFIG_ACPI_HOTPLUG_CPU */
-+#endif				/* CONFIG_ACPI_HOTPLUG_PRESENT_CPU */
- 
- int acpi_register_ioapic(acpi_handle handle, u64 phys_addr, u32 gsi_base)
- {
-diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
-index a3acfc750fce..9c5a43d0aff4 100644
---- a/drivers/acpi/Kconfig
-+++ b/drivers/acpi/Kconfig
-@@ -306,7 +306,7 @@ config ACPI_IPMI
- 	  To compile this driver as a module, choose M here:
- 	  the module will be called as acpi_ipmi.
- 
--config ACPI_HOTPLUG_CPU
-+config ACPI_HOTPLUG_PRESENT_CPU
- 	bool
- 	depends on ACPI_PROCESSOR && HOTPLUG_CPU
- 	select ACPI_CONTAINER
-@@ -400,7 +400,7 @@ config ACPI_PCI_SLOT
- 
- config ACPI_CONTAINER
- 	bool "Container and Module Devices"
--	default (ACPI_HOTPLUG_MEMORY || ACPI_HOTPLUG_CPU)
-+	default (ACPI_HOTPLUG_MEMORY || ACPI_HOTPLUG_PRESENT_CPU)
- 	help
- 	  This driver supports ACPI Container and Module devices (IDs
- 	  ACPI0004, PNP0A05, and PNP0A06).
-diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
-index e7ed4730cbbe..c8e960ff0aca 100644
---- a/drivers/acpi/acpi_processor.c
-+++ b/drivers/acpi/acpi_processor.c
-@@ -183,7 +183,7 @@ static void __init acpi_pcc_cpufreq_init(void) {}
- #endif /* CONFIG_X86 */
- 
- /* Initialization */
--#ifdef CONFIG_ACPI_HOTPLUG_CPU
-+#ifdef CONFIG_ACPI_HOTPLUG_PRESENT_CPU
- static int acpi_processor_hotadd_init(struct acpi_processor *pr)
- {
- 	unsigned long long sta;
-@@ -228,7 +228,7 @@ static inline int acpi_processor_hotadd_init(struct acpi_processor *pr)
- {
- 	return -ENODEV;
- }
--#endif /* CONFIG_ACPI_HOTPLUG_CPU */
-+#endif /* CONFIG_ACPI_HOTPLUG_PRESENT_CPU */
- 
- static int acpi_processor_get_info(struct acpi_device *device)
- {
-@@ -461,7 +461,7 @@ static int acpi_processor_add(struct acpi_device *device,
- 	return result;
- }
- 
--#ifdef CONFIG_ACPI_HOTPLUG_CPU
-+#ifdef CONFIG_ACPI_HOTPLUG_PRESENT_CPU
- /* Removal */
- static void acpi_processor_remove(struct acpi_device *device)
- {
-@@ -505,7 +505,7 @@ static void acpi_processor_remove(struct acpi_device *device)
- 	free_cpumask_var(pr->throttling.shared_cpu_map);
- 	kfree(pr);
- }
--#endif /* CONFIG_ACPI_HOTPLUG_CPU */
-+#endif /* CONFIG_ACPI_HOTPLUG_PRESENT_CPU */
- 
- #ifdef CONFIG_ARCH_MIGHT_HAVE_ACPI_PDC
- bool __init processor_physically_present(acpi_handle handle)
-@@ -630,7 +630,7 @@ static const struct acpi_device_id processor_device_ids[] = {
- static struct acpi_scan_handler processor_handler = {
- 	.ids = processor_device_ids,
- 	.attach = acpi_processor_add,
--#ifdef CONFIG_ACPI_HOTPLUG_CPU
-+#ifdef CONFIG_ACPI_HOTPLUG_PRESENT_CPU
- 	.detach = acpi_processor_remove,
- #endif
- 	.hotplug = {
-diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-index 4db54e928b36..36071bc11acd 100644
---- a/include/linux/acpi.h
-+++ b/include/linux/acpi.h
-@@ -301,12 +301,12 @@ static inline int acpi_processor_evaluate_cst(acpi_handle handle, u32 cpu,
- }
- #endif
- 
--#ifdef CONFIG_ACPI_HOTPLUG_CPU
-+#ifdef CONFIG_ACPI_HOTPLUG_PRESENT_CPU
- /* Arch dependent functions for cpu hotplug support */
- int acpi_map_cpu(acpi_handle handle, phys_cpuid_t physid, u32 acpi_id,
- 		 int *pcpu);
- int acpi_unmap_cpu(int cpu);
--#endif /* CONFIG_ACPI_HOTPLUG_CPU */
-+#endif /* CONFIG_ACPI_HOTPLUG_PRESENT_CPU */
- 
- #ifdef CONFIG_ACPI_HOTPLUG_IOAPIC
- int acpi_get_ioapic_id(acpi_handle handle, u32 gsi_base, u64 *phys_addr);
-@@ -629,7 +629,7 @@ static inline u32 acpi_osc_ctx_get_cxl_control(struct acpi_osc_context *context)
- #define ACPI_GSB_ACCESS_ATTRIB_RAW_PROCESS	0x0000000F
- 
- /* Enable _OST when all relevant hotplug operations are enabled */
--#if defined(CONFIG_ACPI_HOTPLUG_CPU) &&			\
-+#if defined(CONFIG_ACPI_HOTPLUG_PRESENT_CPU) &&			\
- 	defined(CONFIG_ACPI_HOTPLUG_MEMORY) &&		\
- 	defined(CONFIG_ACPI_CONTAINER)
- #define ACPI_HOTPLUG_OST
 -- 
 2.30.2
 
