@@ -1,50 +1,50 @@
 Received: from smtp4.osuosl.org (smtp4.osuosl.org [140.211.166.137])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72DE529420
-	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:59:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E05C29420
+	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:59:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="ksm1NKE0"
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="vjgZ5o4F"
 Received: from localhost (localhost [127.0.0.1])
-	by smtp4.osuosl.org (Postfix) with ESMTP id 9782A41E4F
-	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:32 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 9782A41E4F
+	by smtp4.osuosl.org (Postfix) with ESMTP id 72A8041E7C
+	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:33 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 72A8041E7C
 Authentication-Results: smtp4.osuosl.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.a=rsa-sha256 header.s=pandora-2019 header.b=ksm1NKE0
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.a=rsa-sha256 header.s=pandora-2019 header.b=vjgZ5o4F
 X-Virus-Scanned: amavisd-new at osuosl.org
 X-Spam-Flag: NO
 X-Spam-Score: -2.098
 X-Spam-Level:
 Received: from smtp4.osuosl.org ([127.0.0.1])
 	by localhost (smtp4.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id cM3lE14aqJhy
+	with ESMTP id X1bNZqxl6pC6
 	for <acpica-devel@lists.linuxfoundation.org>;
-	Wed, 13 Dec 2023 12:58:32 +0000 (UTC)
+	Wed, 13 Dec 2023 12:58:33 +0000 (UTC)
 Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-	by smtp4.osuosl.org (Postfix) with ESMTPS id CF6B141E68
-	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:31 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org CF6B141E68
+	by smtp4.osuosl.org (Postfix) with ESMTPS id C617841E68
+	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:32 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org C617841E68
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=armlinux.org.uk; s=pandora-2019; h=Date:Sender:Message-Id:Content-Type:
 	Content-Transfer-Encoding:MIME-Version:Subject:Cc:To:From:References:
 	In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
 	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=TBP+R/WnvXUfMyTGAeqg+zDZHJCc+YgTDDU9BjPnE9g=; b=ksm1NKE0scGCsyGD98yGeYXubr
-	hB68rislLCulb5Vrhre3UZbE0fxzcZ56LCzd5+Jx/UWiG25ops81IW195eVeI8hCQ5EANLwLRWDLA
-	BmC4J9EmHzrINYzT6DlHEOYKjkDSM0BA4JczIJo4NcTNxODYtV4qUZxAeg1J7TH+VUw4KpKxTHLPz
-	mpmzh+ajIEmyMMSsM4T56yj66lxMZNRqG8qaewbcE/l7g7lRVI3rtAua0Mp747FPjrkKFWvOHFqFD
-	2bv0xOQ5zwDWdKfZo9UeZUjaRSQLgY0cl+j0aJ56oPkOTkQW4csde5cwMAKUOpa9x8rBSwoAiid2c
-	Df8GEnuA==;
-Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:43366 helo=rmk-PC.armlinux.org.uk)
+	bh=lmtH59uo0RH6OWln4SWiUMu9ATT5+EWsaWDCzIDILMw=; b=vjgZ5o4FgP2eXJBezIZp2zJ0xr
+	t6xOqiS/tNc9Agtr4/gEtULHWFMdo+cMAqDbsj713CNHaHJh2E0IqnABMfHkAOf9zrsn8DfVcJDcA
+	WkPWWZdNLaXZYBdXwmXvxAT4XOzI7++DthIonECZ/hHPO8CCBoK7myVrtmg7BcHy9HoM5Z1D8HRRy
+	EeIGP/Kl3ObL1mjz6SIe0wNRspxRzY3s7YWxE88eF3Uk+9CSW1a2I7yhLMFjyPBF6Unn/nd9LnM7z
+	EhdbIpoz0zO5WdAFp06vz+2/m5mcxpTMeF2HPrsXAVjTO1hJ+KQySmSlpsrEjacXbVpeeo8+7e5uu
+	ck4N+yzw==;
+Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:51452 helo=rmk-PC.armlinux.org.uk)
 	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <rmk@armlinux.org.uk>)
-	id 1rDOg0-0008D5-24;
-	Wed, 13 Dec 2023 12:49:24 +0000
+	id 1rDOhF-0008HS-2A;
+	Wed, 13 Dec 2023 12:50:41 +0000
 Received: from rmk by rmk-PC.armlinux.org.uk with local (Exim 4.94.2)
 	(envelope-from <rmk@rmk-PC.armlinux.org.uk>)
-	id 1rDOg2-00Dvjk-RI; Wed, 13 Dec 2023 12:49:26 +0000
+	id 1rDOhH-00DvlO-UP; Wed, 13 Dec 2023 12:50:43 +0000
 In-Reply-To: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
 References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
 From: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
@@ -67,8 +67,8 @@ Cc: Salil Mehta <salil.mehta@huawei.com>,
 	jianyong.wu@arm.com,
 	justin.he@arm.com,
 	James Morse <james.morse@arm.com>
-Subject: [PATCH RFC v3 03/21] ACPI: processor: Register CPUs that are online,
- but not described in the DSDT
+Subject: [PATCH RFC v3 18/21] ACPI: processor: Only call arch_unregister_cpu()
+ if HOTPLUG_CPU is selected
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -78,73 +78,44 @@ MIME-Version: 1.0
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset="utf-8"
-Message-Id: <E1rDOg2-00Dvjk-RI@rmk-PC.armlinux.org.uk>
+Message-Id: <E1rDOhH-00DvlO-UP@rmk-PC.armlinux.org.uk>
 Sender: Russell King <rmk@armlinux.org.uk>
-Date: Wed, 13 Dec 2023 12:49:26 +0000
+Date: Wed, 13 Dec 2023 12:50:43 +0000
 
 From: James Morse <james.morse@arm.com>
 
-ACPI has two descriptions of CPUs, one in the MADT/APIC table, the other
-in the DSDT. Both are required. (ACPI 6.5's 8.4 "Declaring Processors"
-says "Each processor in the system must be declared in the ACPI
-namespace"). Having two descriptions allows firmware authors to get
-this wrong.
+The kbuild robot points out that configurations without HOTPLUG_CPU
+selected can try to build acpi_processor_post_eject() without success
+as arch_unregister_cpu() is not defined.
 
-If CPUs are described in the MADT/APIC, they will be brought online
-early during boot. Once the register_cpu() calls are moved to ACPI,
-they will be based on the DSDT description of the CPUs. When CPUs are
-missing from the DSDT description, they will end up online, but not
-registered.
+Check this explicitly. This will be merged into:
+| ACPI: Add post_eject to struct acpi_scan_handler for cpu hotplug
+for any subsequent posting.
 
-Add a helper that runs after acpi_init() has completed to register
-CPUs that are online, but weren't found in the DSDT. Any CPU that
-is registered by this code triggers a firmware-bug warning and kernel
-taint.
-
-Qemu TCG only describes the first CPU in the DSDT, unless cpu-hotplug
-is configured.
-
+Reported-by: kbuild test robot <lkp@intel.com>
 Signed-off-by: James Morse <james.morse@arm.com>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Gavin Shan <gshan@redhat.com>
 Tested-by: Miguel Luis <miguel.luis@oracle.com>
 Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
 Tested-by: Jianyong Wu <jianyong.wu@arm.com>
-Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 ---
- drivers/acpi/acpi_processor.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+This should probably be squashed into an earlier patch.
+---
+ drivers/acpi/acpi_processor.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
-index 6a542e0ce396..0511f2bc10bc 100644
+index 5dabb426481f..ea12e70dfd39 100644
 --- a/drivers/acpi/acpi_processor.c
 +++ b/drivers/acpi/acpi_processor.c
-@@ -791,6 +791,25 @@ void __init acpi_processor_init(void)
- 	acpi_pcc_cpufreq_init();
- }
+@@ -537,7 +537,7 @@ static void acpi_processor_post_eject(struct acpi_device *device)
+ 	unsigned long long sta;
+ 	acpi_status status;
  
-+static int __init acpi_processor_register_missing_cpus(void)
-+{
-+	int cpu;
-+
-+	if (acpi_disabled)
-+		return 0;
-+
-+	for_each_online_cpu(cpu) {
-+		if (!get_cpu_device(cpu)) {
-+			pr_err_once(FW_BUG "CPU %u has no ACPI namespace description!\n", cpu);
-+			add_taint(TAINT_FIRMWARE_WORKAROUND, LOCKDEP_STILL_OK);
-+			arch_register_cpu(cpu);
-+		}
-+	}
-+
-+	return 0;
-+}
-+subsys_initcall_sync(acpi_processor_register_missing_cpus);
-+
- #ifdef CONFIG_ACPI_PROCESSOR_CSTATE
- /**
-  * acpi_processor_claim_cst_control - Request _CST control from the platform.
+-	if (!device)
++	if (!IS_ENABLED(CONFIG_HOTPLUG_CPU) || !device)
+ 		return;
+ 
+ 	pr = acpi_driver_data(device);
 -- 
 2.30.2
 
