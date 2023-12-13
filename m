@@ -1,50 +1,50 @@
 Received: from smtp4.osuosl.org (smtp4.osuosl.org [140.211.166.137])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E668229420
-	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE51329420
+	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="sAvIu/Kf"
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="cohuG+LD"
 Received: from localhost (localhost [127.0.0.1])
-	by smtp4.osuosl.org (Postfix) with ESMTP id 3792941E49
-	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:28 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 3792941E49
+	by smtp4.osuosl.org (Postfix) with ESMTP id 0BE1B41E5B
+	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:29 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 0BE1B41E5B
 Authentication-Results: smtp4.osuosl.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.a=rsa-sha256 header.s=pandora-2019 header.b=sAvIu/Kf
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.a=rsa-sha256 header.s=pandora-2019 header.b=cohuG+LD
 X-Virus-Scanned: amavisd-new at osuosl.org
 X-Spam-Flag: NO
 X-Spam-Score: -2.098
 X-Spam-Level:
 Received: from smtp4.osuosl.org ([127.0.0.1])
 	by localhost (smtp4.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id 6GkPyDZUeUg3
+	with ESMTP id KkpSi6Cul_0j
 	for <acpica-devel@lists.linuxfoundation.org>;
-	Wed, 13 Dec 2023 12:58:27 +0000 (UTC)
+	Wed, 13 Dec 2023 12:58:28 +0000 (UTC)
 Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-	by smtp4.osuosl.org (Postfix) with ESMTPS id 7F8DE41E4F
+	by smtp4.osuosl.org (Postfix) with ESMTPS id F1DAD416C9
 	for <acpica-devel@lists.linuxfoundation.org>; Wed, 13 Dec 2023 12:58:27 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 7F8DE41E4F
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org F1DAD416C9
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=armlinux.org.uk; s=pandora-2019; h=Date:Sender:Message-Id:Content-Type:
 	Content-Transfer-Encoding:MIME-Version:Subject:Cc:To:From:References:
 	In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
 	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=xRMKGWwlt+tDnJgmpjIjTzFwGAKGxwsQWsjqqxoBgt4=; b=sAvIu/KfdRhiVQLQAzi1pftBLD
-	AZtA0Hs5SOUW3Khxxl6f/hWMpFepsEJgQyGqVCXf2J6iqPGh1irYe61lsvzQauQCuuk+uH3FyHaw7
-	AvzGgWM+IPItC0K7GAs/xGD92ORf6Skc8i2iWAeY2h5KaO3CYUXJv5yEt7Urk6M+uQaQNv9JbUQDV
-	WhUE9WkIHa4o1Mu0hFaS70ASAxlzFvPz/G7aA7qW+OsLl7PvjXZFeIE6zhxGyqU2kqJAojzd1G5ES
-	+rzSzq86l+CfY2K8inR1g8Pu6l9z/cbz6RWLKJk+7kIqPgRBox16Ks375iUFf7Q9Q5zjcipcX2OP+
-	dwCo2UTw==;
-Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:57402 helo=rmk-PC.armlinux.org.uk)
+	bh=+X6RbS8+FdE0yTZKPB4LhEuZYWtnagnPlrAoFbcwPjQ=; b=cohuG+LDvNgpd64HbLmHbpKUXp
+	wxNPAKD5TR46g/lZehPoGpq7YgfCZwNooh/ByyYfKpefpXR22aovnRqW+RA5WU39sX1qqLVh8BcUU
+	5Oyp825+gDNk6o9i4bApxpmqhlprYwzRvHWBe1G4qqjNvgDLrXmVxXNuL7tARCig7gykj6zvJRS3T
+	iY72a4kgPGGJk4roa71Dwqclee4H33OSkqc8KZf4fj1ho/agpVWByd5HmSjd90KLhZYN00hAE7TWu
+	qEDie8YSn6l6pEn0A/i2aDLiTck5BDTRfVj78USvT8+8H0wMV+gtHVoMS/AKx3eMft/2tK3i6xdSM
+	4U/yXaAg==;
+Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:36780 helo=rmk-PC.armlinux.org.uk)
 	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <rmk@armlinux.org.uk>)
-	id 1rDOgf-0008FI-2J;
-	Wed, 13 Dec 2023 12:50:06 +0000
+	id 1rDOfv-0008Cu-1l;
+	Wed, 13 Dec 2023 12:49:19 +0000
 Received: from rmk by rmk-PC.armlinux.org.uk with local (Exim 4.94.2)
 	(envelope-from <rmk@rmk-PC.armlinux.org.uk>)
-	id 1rDOgh-00Dvkc-U3; Wed, 13 Dec 2023 12:50:07 +0000
+	id 1rDOfx-00Dvje-MS; Wed, 13 Dec 2023 12:49:21 +0000
 In-Reply-To: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
 References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
 From: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
@@ -67,8 +67,8 @@ Cc: Salil Mehta <salil.mehta@huawei.com>,
 	jianyong.wu@arm.com,
 	justin.he@arm.com,
 	James Morse <james.morse@arm.com>
-Subject: [PATCH RFC v3 11/21] ACPI: Warn when the present bit changes but the
- feature is not enabled
+Subject: [PATCH RFC v3 02/21] ACPI: processor: Add support for processors
+ described as container packages
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -78,63 +78,94 @@ MIME-Version: 1.0
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset="utf-8"
-Message-Id: <E1rDOgh-00Dvkc-U3@rmk-PC.armlinux.org.uk>
+Message-Id: <E1rDOfx-00Dvje-MS@rmk-PC.armlinux.org.uk>
 Sender: Russell King <rmk@armlinux.org.uk>
-Date: Wed, 13 Dec 2023 12:50:07 +0000
+Date: Wed, 13 Dec 2023 12:49:21 +0000
 
 From: James Morse <james.morse@arm.com>
 
-ACPI firmware can trigger the events to add and remove CPUs, but the
-OS may not support this.
+ACPI has two ways of describing processors in the DSDT. From ACPI v6.5,
+5.2.12:
 
-Print an error message when this happens.
+"Starting with ACPI Specification 6.3, the use of the Processor() object
+was deprecated. Only legacy systems should continue with this usage. On
+the Itanium architecture only, a _UID is provided for the Processor()
+that is a string object. This usage of _UID is also deprecated since it
+can preclude an OSPM from being able to match a processor to a
+non-enumerable device, such as those defined in the MADT. From ACPI
+Specification 6.3 onward, all processor objects for all architectures
+except Itanium must now use Device() objects with an _HID of ACPI0007,
+and use only integer _UID values."
 
-This gives early warning on arm64 systems that don't support
-CONFIG_ACPI_HOTPLUG_PRESENT_CPU, as making CPUs not present has
-side effects for other parts of the system.
+Also see https://uefi.org/specs/ACPI/6.5/08_Processor_Configuration_and_Control.html#declaring-processors
+
+Duplicate descriptions are not allowed, the ACPI processor driver already
+parses the UID from both devices and containers. acpi_processor_get_info()
+returns an error if the UID exists twice in the DSDT.
+
+The missing probe for CPUs described as packages creates a problem for
+moving the cpu_register() calls into the acpi_processor driver, as CPUs
+described like this don't get registered, leading to errors from other
+subsystems when they try to add new sysfs entries to the CPU node.
+(e.g. topology_sysfs_init()'s use of topology_add_dev() via cpuhp)
+
+To fix this, parse the processor container and call acpi_processor_add()
+for each processor that is discovered like this. The processor container
+handler is added with acpi_scan_add_handler(), so no detach call will
+arrive.
+
+Qemu TCG describes CPUs using processor devices in a processor container.
+For more information, see build_cpus_aml() in Qemu hw/acpi/cpu.c and
+https://uefi.org/specs/ACPI/6.5/08_Processor_Configuration_and_Control.html#processor-container-device
 
 Signed-off-by: James Morse <james.morse@arm.com>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Gavin Shan <gshan@redhat.com>
 Tested-by: Miguel Luis <miguel.luis@oracle.com>
 Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
 Tested-by: Jianyong Wu <jianyong.wu@arm.com>
-Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 ---
-Changes since RFC v2:
- * Update commit message with suggestion from Gavin Shan
+Outstanding comments:
+ https://lore.kernel.org/r/20230914145353.000072e2@Huawei.com
+ https://lore.kernel.org/r/50571c2f-aa3c-baeb-3add-cd59e0eddc02@redhat.com
 ---
- drivers/acpi/acpi_processor.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/acpi/acpi_processor.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
 diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
-index 19fceb3ec4e2..b7a94c1348b0 100644
+index 4fe2ef54088c..6a542e0ce396 100644
 --- a/drivers/acpi/acpi_processor.c
 +++ b/drivers/acpi/acpi_processor.c
-@@ -189,8 +189,10 @@ static int acpi_processor_make_present(struct acpi_processor *pr)
- 	acpi_status status;
- 	int ret;
+@@ -626,9 +626,31 @@ static struct acpi_scan_handler processor_handler = {
+ 	},
+ };
  
--	if (!IS_ENABLED(CONFIG_ACPI_HOTPLUG_PRESENT_CPU))
-+	if (!IS_ENABLED(CONFIG_ACPI_HOTPLUG_PRESENT_CPU)) {
-+		pr_err_once("Changing CPU present bit is not supported\n");
- 		return -ENODEV;
-+	}
- 
- 	if (invalid_phys_cpuid(pr->phys_id))
- 		return -ENODEV;
-@@ -462,8 +464,10 @@ static void acpi_processor_make_not_present(struct acpi_device *device)
++static acpi_status acpi_processor_container_walk(acpi_handle handle,
++						 u32 lvl,
++						 void *context,
++						 void **rv)
++{
++	struct acpi_device *adev;
++	acpi_status status;
++
++	adev = acpi_get_acpi_dev(handle);
++	if (!adev)
++		return AE_ERROR;
++
++	status = acpi_processor_add(adev, &processor_device_ids[0]);
++	acpi_put_acpi_dev(adev);
++
++	return status;
++}
++
+ static int acpi_processor_container_attach(struct acpi_device *dev,
+ 					   const struct acpi_device_id *id)
  {
- 	struct acpi_processor *pr;
++	acpi_walk_namespace(ACPI_TYPE_PROCESSOR, dev->handle,
++			    ACPI_UINT32_MAX, acpi_processor_container_walk,
++			    NULL, NULL, NULL);
++
+ 	return 1;
+ }
  
--	if (!IS_ENABLED(CONFIG_ACPI_HOTPLUG_PRESENT_CPU))
-+	if (!IS_ENABLED(CONFIG_ACPI_HOTPLUG_PRESENT_CPU)) {
-+		pr_err_once("Changing CPU present bit is not supported");
- 		return;
-+	}
- 
- 	pr = acpi_driver_data(device);
- 	if (pr->id >= nr_cpu_ids)
 -- 
 2.30.2
 
