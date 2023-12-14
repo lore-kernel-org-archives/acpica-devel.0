@@ -1,238 +1,251 @@
-Received: from mx2.zhaoxin.com (mx2.zhaoxin.com [203.110.167.99])
+Received: from smtp4.osuosl.org (smtp4.osuosl.org [140.211.166.137])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 759AD393
-	for <acpica-devel@lists.linux.dev>; Thu, 14 Dec 2023 03:16:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zhaoxin.com
-X-ASG-Debug-ID: 1702522644-1eb14e538d33460001-m47mSr
-Received: from ZXSHMBX1.zhaoxin.com (ZXSHMBX1.zhaoxin.com [10.28.252.163]) by mx2.zhaoxin.com with ESMTP id SFcKvVzqjKyNY6SE (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Thu, 14 Dec 2023 10:57:24 +0800 (CST)
-X-Barracuda-Envelope-From: LeoLiu-oc@zhaoxin.com
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
-Received: from ZXBJMBX03.zhaoxin.com (10.29.252.7) by ZXSHMBX1.zhaoxin.com
- (10.28.252.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 14 Dec
- 2023 10:57:24 +0800
-Received: from [192.168.1.204] (125.76.214.122) by ZXBJMBX03.zhaoxin.com
- (10.29.252.7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 14 Dec
- 2023 10:57:22 +0800
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
-Message-ID: <1ba8036b-c010-4d02-9557-5b6333e4eff1@zhaoxin.com>
-X-Barracuda-RBL-Trusted-Forwarder: 192.168.1.204
-Date: Thu, 14 Dec 2023 10:57:21 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E42E65ECF
+	for <acpica-devel@lists.linuxfoundation.org>; Thu, 14 Dec 2023 17:32:48 +0000 (UTC)
+Received: from localhost (localhost [127.0.0.1])
+	by smtp4.osuosl.org (Postfix) with ESMTP id 843F941F82
+	for <acpica-devel@lists.linuxfoundation.org>; Thu, 14 Dec 2023 17:32:48 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 843F941F82
+X-Virus-Scanned: amavisd-new at osuosl.org
+X-Spam-Flag: NO
+X-Spam-Score: -4.198
+X-Spam-Level:
+Received: from smtp4.osuosl.org ([127.0.0.1])
+	by localhost (smtp4.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 2KhMFNUX4p68
+	for <acpica-devel@lists.linuxfoundation.org>;
+	Thu, 14 Dec 2023 17:32:47 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp4.osuosl.org (Postfix) with ESMTPS id DB69C41EAF
+	for <acpica-devel@lists.linuxfoundation.org>; Thu, 14 Dec 2023 17:32:46 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org DB69C41EAF
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SrfWp0gHJz67mnJ;
+	Fri, 15 Dec 2023 01:30:46 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 8C9211400CA;
+	Fri, 15 Dec 2023 01:32:43 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 14 Dec
+ 2023 17:32:42 +0000
+Date: Thu, 14 Dec 2023 17:32:41 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
+CC: <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
+	<linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+	<x86@kernel.org>, <acpica-devel@lists.linuxfoundation.org>,
+	<linux-csky@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+	<linux-ia64@vger.kernel.org>, <linux-parisc@vger.kernel.org>, Salil Mehta
+	<salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	<jianyong.wu@arm.com>, <justin.he@arm.com>, James Morse <james.morse@arm.com>
+Subject: Re: [PATCH RFC v3 01/21] ACPI: Only enumerate enabled (or
+ functional) devices
+Message-ID: <20231214173241.0000260f@Huawei.com>
+In-Reply-To: <E1rDOfs-00DvjY-HQ@rmk-PC.armlinux.org.uk>
+References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
+	<E1rDOfs-00DvjY-HQ@rmk-PC.armlinux.org.uk>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] ACPI/APEI: Add hest_parse_pcie_aer()
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-X-ASG-Orig-Subj: Re: [PATCH 1/3] ACPI/APEI: Add hest_parse_pcie_aer()
-CC: <lenb@kernel.org>, <james.morse@arm.com>, <tony.luck@intel.com>,
-	<bp@alien8.de>, <bhelgaas@google.com>, <robert.moore@intel.com>,
-	<linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-pci@vger.kernel.org>, <acpica-devel@lists.linux.dev>,
-	<CobeChen@zhaoxin.com>, <TonyWWang@zhaoxin.com>, <ErosZhang@zhaoxin.com>,
-	<LeoLiu@zhaoxin.com>
-References: <20231115091612.580685-1-LeoLiu-oc@zhaoxin.com>
- <20231115091612.580685-2-LeoLiu-oc@zhaoxin.com>
- <CAJZ5v0ig2+uv4kF0SjAByvcmBF9auhY_1OVrJvjKTVJK23=cSg@mail.gmail.com>
-From: LeoLiu-oc <leoliu-oc@zhaoxin.com>
-In-Reply-To: <CAJZ5v0ig2+uv4kF0SjAByvcmBF9auhY_1OVrJvjKTVJK23=cSg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: ZXSHCAS1.zhaoxin.com (10.28.252.161) To
- ZXBJMBX03.zhaoxin.com (10.29.252.7)
-X-Barracuda-Connect: ZXSHMBX1.zhaoxin.com[10.28.252.163]
-X-Barracuda-Start-Time: 1702522644
-X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
-X-Barracuda-URL: https://10.28.252.36:4443/cgi-mod/mark.cgi
-X-Virus-Scanned: by bsmtpd at zhaoxin.com
-X-Barracuda-Scan-Msg-Size: 6229
-X-Barracuda-BRTS-Status: 0
-X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
-X-Barracuda-Spam-Score: -2.02
-X-Barracuda-Spam-Status: No, SCORE=-2.02 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.118058
-	Rule breakdown below
-	 pts rule name              description
-	---- ---------------------- --------------------------------------------------
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
+On Wed, 13 Dec 2023 12:49:16 +0000
+Russell King (Oracle) <rmk+kernel@armlinux.org.uk> wrote:
 
-
-在 2023/12/7 0:35, Rafael J. Wysocki 写道:
-> On Wed, Nov 15, 2023 at 10:16 AM LeoLiu-oc <LeoLiu-oc@zhaoxin.com> wrote:
->>
->> From: leoliu-oc <leoliu-oc@zhaoxin.com>
->>
->> The purpose of the function apei_hest_parse_aer() is used to parse and
->> extract register value from HEST PCIe AER structures.
->>
->> Signed-off-by: leoliu-oc <leoliu-oc@zhaoxin.com>
->> ---
->>   drivers/acpi/apei/hest.c | 77 ++++++++++++++++++++++++++++++++++++++--
->>   include/acpi/actbl1.h    |  7 ++++
->>   include/acpi/apei.h      |  8 +++++
->>   3 files changed, 90 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/acpi/apei/hest.c b/drivers/acpi/apei/hest.c
->> index 6aef1ee5e1bd..7fb797fdc1b1 100644
->> --- a/drivers/acpi/apei/hest.c
->> +++ b/drivers/acpi/apei/hest.c
->> @@ -22,6 +22,7 @@
->>   #include <linux/kdebug.h>
->>   #include <linux/highmem.h>
->>   #include <linux/io.h>
->> +#include <linux/pci.h>
->>   #include <linux/platform_device.h>
->>   #include <acpi/apei.h>
->>   #include <acpi/ghes.h>
->> @@ -86,9 +87,81 @@ static int hest_esrc_len(struct acpi_hest_header *hest_hdr)
->>          return len;
->>   };
->>
->> -typedef int (*apei_hest_func_t)(struct acpi_hest_header *hest_hdr, void *data);
->> +#ifdef CONFIG_ACPI_APEI
->> +static bool hest_match_pci_devfn(struct acpi_hest_aer_common *p,
->> +                               struct pci_dev *dev)
->> +{
->> +       return ACPI_HEST_SEGMENT(p->bus) == pci_domain_nr(dev->bus) &&
->> +               ACPI_HEST_BUS(p->bus) == dev->bus->number &&
->> +               p->device == PCI_SLOT(dev->devfn) &&
->> +               p->function == PCI_FUNC(dev->devfn);
->> +}
->> +
->> +static bool hest_source_is_pcie_aer(struct acpi_hest_header *hest_hdr,
->> +                               struct pci_dev *dev)
->> +{
->> +       u16 hest_type = hest_hdr->type;
->> +       u8 pcie_type = pci_pcie_type(dev);
->> +       struct acpi_hest_aer_common *common;
->> +
->> +       common = (struct acpi_hest_aer_common *)(hest_hdr + 1);
->> +
->> +       switch (hest_type) {
->> +       case ACPI_HEST_TYPE_AER_ROOT_PORT:
->> +               if (pcie_type != PCI_EXP_TYPE_ROOT_PORT)
->> +                       return false;
->> +       break;
->> +       case ACPI_HEST_TYPE_AER_ENDPOINT:
->> +               if (pcie_type != PCI_EXP_TYPE_ENDPOINT)
->> +                       return false;
->> +       break;
->> +       case ACPI_HEST_TYPE_AER_BRIDGE:
->> +               if (pcie_type != PCI_EXP_TYPE_PCI_BRIDGE &&
->> +                   pcie_type != PCI_EXP_TYPE_PCIE_BRIDGE)
->> +                       return false;
->> +       break;
->> +       default:
->> +               return false;
->> +       break;
->> +       }
->> +
->> +       if (common->flags & ACPI_HEST_GLOBAL)
->> +               return true;
->> +
->> +       if (hest_match_pci_devfn(common, dev))
->> +               return true;
->> +
->> +       return false;
->> +}
->> +
->> +int hest_parse_pcie_aer(struct acpi_hest_header *hest_hdr, void *data)
->> +{
->> +       struct hest_parse_aer_info *info = data;
->> +
->> +       if (!hest_source_is_pcie_aer(hest_hdr, info->pci_dev))
->> +               return 0;
->> +
->> +       switch (hest_hdr->type) {
->> +       case ACPI_HEST_TYPE_AER_ROOT_PORT:
->> +               info->hest_aer_root_port = (struct acpi_hest_aer_root *)hest_hdr;
->> +               return 1;
->> +       break;
->> +       case ACPI_HEST_TYPE_AER_ENDPOINT:
->> +               info->hest_aer_endpoint = (struct acpi_hest_aer *)hest_hdr;
->> +               return 1;
->> +       break;
->> +       case ACPI_HEST_TYPE_AER_BRIDGE:
->> +               info->hest_aer_bridge = (struct acpi_hest_aer_bridge *)hest_hdr;
->> +               return 1;
->> +       break;
->> +       default:
->> +               return 0;
->> +       break;
->> +       }
->> +}
->> +#endif
->>
->> -static int apei_hest_parse(apei_hest_func_t func, void *data)
->> +int apei_hest_parse(apei_hest_func_t func, void *data)
->>   {
->>          struct acpi_hest_header *hest_hdr;
->>          int i, rc, len;
->> diff --git a/include/acpi/actbl1.h b/include/acpi/actbl1.h
->> index a33375e055ad..90c27dc5325f 100644
->> --- a/include/acpi/actbl1.h
->> +++ b/include/acpi/actbl1.h
+> From: James Morse <james.morse@arm.com>
 > 
-> This is an ACPICA header and it cannot be modified just like this.
+> Today the ACPI enumeration code 'visits' all devices that are present.
 > 
-> The way to do that is to submit a pull request with the desired change
-> to the upstream ACPICA project on GitHub and add a Link tag pointing
-> to the upstream PR to the corresponding Linux patch.  Then, the Linux
-> patch can only be applied after the corresponding upstream PR has been
-> merged.
+> This is a problem for arm64, where CPUs are always present, but not
+> always enabled. When a device-check occurs because the firmware-policy
+> has changed and a CPU is now enabled, the following error occurs:
+> | acpi ACPI0007:48: Enumeration failure
 > 
-> Thanks!
+> This is ultimately because acpi_dev_ready_for_enumeration() returns
+> true for a device that is not enabled. The ACPI Processor driver
+> will not register such CPUs as they are not 'decoding their resources'.
 > 
-the data structure "hest_parse_aer_info" is added to file actbl1.h, it 
-is not necessary to put this data structure in file actbl1.h. In the 
-next version, I will move this data structure to another file.
+> Change acpi_dev_ready_for_enumeration() to also check the enabled bit.
+> ACPI allows a device to be functional instead of maintaining the
+> present and enabled bit. Make this behaviour an explicit check with
+> a reference to the spec, and then check the present and enabled bits.
+> This is needed to avoid enumerating present && functional devices that
+> are not enabled.
+> 
+> Signed-off-by: James Morse <james.morse@arm.com>
+> Tested-by: Miguel Luis <miguel.luis@oracle.com>
+> Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
+> Tested-by: Jianyong Wu <jianyong.wu@arm.com>
+> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> ---
+> If this change causes problems on deployed hardware, I suggest an
+> arch opt-in: ACPI_IGNORE_STA_ENABLED, that causes
+> acpi_dev_ready_for_enumeration() to only check the present bit.
 
-Yours sincerely,
-Leoliu-oc
+My gut feeling (having made ACPI 'fixes' in the past that ran into
+horribly broken firmware and had to be reverted) is reduce the blast
+radius preemptively from the start. I'd love to live in a world were
+that wasn't necessary but I don't trust all the generators of ACPI tables.
+I'll leave it to Rafael and other ACPI experts suggest how narrow we should
+make it though - arch opt in might be narrow enough.
 
->> @@ -1629,6 +1629,13 @@ struct acpi_hest_generic_status {
->>          u32 error_severity;
->>   };
->>
->> +struct hest_parse_aer_info {
->> +       struct pci_dev *pci_dev;
->> +       struct acpi_hest_aer *hest_aer_endpoint;
->> +       struct acpi_hest_aer_root *hest_aer_root_port;
->> +       struct acpi_hest_aer_bridge *hest_aer_bridge;
->> +};
->> +
->>   /* Values for block_status flags above */
->>
->>   #define ACPI_HEST_UNCORRECTABLE             (1)
->> diff --git a/include/acpi/apei.h b/include/acpi/apei.h
->> index dc60f7db5524..d12e6b6c4546 100644
->> --- a/include/acpi/apei.h
->> +++ b/include/acpi/apei.h
->> @@ -33,10 +33,18 @@ void __init acpi_ghes_init(void);
->>   static inline void acpi_ghes_init(void) { }
->>   #endif
->>
->> +typedef int (*apei_hest_func_t)(struct acpi_hest_header *hest_hdr, void *data);
->> +int apei_hest_parse(apei_hest_func_t func, void *data);
->> +
->>   #ifdef CONFIG_ACPI_APEI
->>   void __init acpi_hest_init(void);
->> +int hest_parse_pcie_aer(struct acpi_hest_header *hest_hdr, void *data);
->>   #else
->>   static inline void acpi_hest_init(void) { }
->> +static inline int hest_parse_pcie_aer(struct acpi_hest_header *hest_hdr, void *data)
->> +{
->> +       return 0;
->> +}
->>   #endif
->>
->>   int erst_write(const struct cper_record_header *record);
->> --
->> 2.34.1
->>
+> 
+> Changes since RFC v2:
+>  * Incorporate comment suggestion by Gavin Shan.
+> Other review comments from Jonathan Cameron not yet addressed.
+
+Looking back, I think this was mainly a suggestion for a minor
+possible optimization by ignoring the case of !present && enabled
+when designing the logic because that's not allowed by the spec.
+
+You made that change in v3.
+
+Otherwise, comments were trivial comment clarifications that I'm not
+that worried about.
+
+One comment typo inline.
+
+With assumption others will comment on when this change should be
+chicken bit'd out.
+
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
+
+> ---
+>  drivers/acpi/device_pm.c    |  2 +-
+>  drivers/acpi/device_sysfs.c |  2 +-
+>  drivers/acpi/internal.h     |  1 -
+>  drivers/acpi/property.c     |  2 +-
+>  drivers/acpi/scan.c         | 24 ++++++++++++++----------
+>  5 files changed, 17 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/acpi/device_pm.c b/drivers/acpi/device_pm.c
+> index 3b4d048c4941..e3c80f3b3b57 100644
+> --- a/drivers/acpi/device_pm.c
+> +++ b/drivers/acpi/device_pm.c
+> @@ -313,7 +313,7 @@ int acpi_bus_init_power(struct acpi_device *device)
+>  		return -EINVAL;
+>  
+>  	device->power.state = ACPI_STATE_UNKNOWN;
+> -	if (!acpi_device_is_present(device)) {
+> +	if (!acpi_dev_ready_for_enumeration(device)) {
+>  		device->flags.initialized = false;
+>  		return -ENXIO;
+>  	}
+> diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
+> index 23373faa35ec..a0256d2493a7 100644
+> --- a/drivers/acpi/device_sysfs.c
+> +++ b/drivers/acpi/device_sysfs.c
+> @@ -141,7 +141,7 @@ static int create_pnp_modalias(const struct acpi_device *acpi_dev, char *modalia
+>  	struct acpi_hardware_id *id;
+>  
+>  	/* Avoid unnecessarily loading modules for non present devices. */
+> -	if (!acpi_device_is_present(acpi_dev))
+> +	if (!acpi_dev_ready_for_enumeration(acpi_dev))
+>  		return 0;
+>  
+>  	/*
+> diff --git a/drivers/acpi/internal.h b/drivers/acpi/internal.h
+> index 866c7c4ed233..a1b45e345bcc 100644
+> --- a/drivers/acpi/internal.h
+> +++ b/drivers/acpi/internal.h
+> @@ -107,7 +107,6 @@ int acpi_device_setup_files(struct acpi_device *dev);
+>  void acpi_device_remove_files(struct acpi_device *dev);
+>  void acpi_device_add_finalize(struct acpi_device *device);
+>  void acpi_free_pnp_ids(struct acpi_device_pnp *pnp);
+> -bool acpi_device_is_present(const struct acpi_device *adev);
+>  bool acpi_device_is_battery(struct acpi_device *adev);
+>  bool acpi_device_is_first_physical_node(struct acpi_device *adev,
+>  					const struct device *dev);
+> diff --git a/drivers/acpi/property.c b/drivers/acpi/property.c
+> index 6979a3f9f90a..14d6948fd88a 100644
+> --- a/drivers/acpi/property.c
+> +++ b/drivers/acpi/property.c
+> @@ -1420,7 +1420,7 @@ static bool acpi_fwnode_device_is_available(const struct fwnode_handle *fwnode)
+>  	if (!is_acpi_device_node(fwnode))
+>  		return false;
+>  
+> -	return acpi_device_is_present(to_acpi_device_node(fwnode));
+> +	return acpi_dev_ready_for_enumeration(to_acpi_device_node(fwnode));
+>  }
+>  
+>  static const void *
+> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+> index 02bb2cce423f..728649a2a251 100644
+> --- a/drivers/acpi/scan.c
+> +++ b/drivers/acpi/scan.c
+> @@ -304,7 +304,7 @@ static int acpi_scan_device_check(struct acpi_device *adev)
+>  	int error;
+>  
+>  	acpi_bus_get_status(adev);
+> -	if (acpi_device_is_present(adev)) {
+> +	if (acpi_dev_ready_for_enumeration(adev)) {
+>  		/*
+>  		 * This function is only called for device objects for which
+>  		 * matching scan handlers exist.  The only situation in which
+> @@ -338,7 +338,7 @@ static int acpi_scan_bus_check(struct acpi_device *adev, void *not_used)
+>  	int error;
+>  
+>  	acpi_bus_get_status(adev);
+> -	if (!acpi_device_is_present(adev)) {
+> +	if (!acpi_dev_ready_for_enumeration(adev)) {
+>  		acpi_scan_device_not_enumerated(adev);
+>  		return 0;
+>  	}
+> @@ -1913,11 +1913,6 @@ static bool acpi_device_should_be_hidden(acpi_handle handle)
+>  	return true;
+>  }
+>  
+> -bool acpi_device_is_present(const struct acpi_device *adev)
+> -{
+> -	return adev->status.present || adev->status.functional;
+> -}
+> -
+>  static bool acpi_scan_handler_matching(struct acpi_scan_handler *handler,
+>  				       const char *idstr,
+>  				       const struct acpi_device_id **matchid)
+> @@ -2381,16 +2376,25 @@ EXPORT_SYMBOL_GPL(acpi_dev_clear_dependencies);
+>   * acpi_dev_ready_for_enumeration - Check if the ACPI device is ready for enumeration
+>   * @device: Pointer to the &struct acpi_device to check
+>   *
+> - * Check if the device is present and has no unmet dependencies.
+> + * Check if the device is functional or enabled and has no unmet dependencies.
+>   *
+> - * Return true if the device is ready for enumeratino. Otherwise, return false.
+> + * Return true if the device is ready for enumeration. Otherwise, return false.
+>   */
+>  bool acpi_dev_ready_for_enumeration(const struct acpi_device *device)
+>  {
+>  	if (device->flags.honor_deps && device->dep_unmet)
+>  		return false;
+>  
+> -	return acpi_device_is_present(device);
+> +	/*
+> +	 * ACPI 6.5's 6.3.7 "_STA (Device Status)" allows firmware to return
+> +	 * (!present && functional) for certain types of devices that should be
+> +	 * enumerated. Note that the enabled bit can't be sert until the present
+
+set until
+
+> +	 * bit is set.
+> +	 */
+> +	if (device->status.present)
+> +		return device->status.enabled;
+> +	else
+> +		return device->status.functional;
+>  }
+>  EXPORT_SYMBOL_GPL(acpi_dev_ready_for_enumeration);
+>  
+
