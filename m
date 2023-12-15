@@ -1,76 +1,138 @@
-Received: from mail-pj1-f68.google.com (mail-pj1-f68.google.com [209.85.216.68])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp2.osuosl.org (smtp2.osuosl.org [140.211.166.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9734510948
-	for <acpica-devel@lists.linux.dev>; Fri, 15 Dec 2023 07:24:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f68.google.com with SMTP id 98e67ed59e1d1-28b14d02ab9so257385a91.1
-        for <acpica-devel@lists.linux.dev>; Thu, 14 Dec 2023 23:24:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702625053; x=1703229853;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jNpC7NFbJjbEn49G0H7MyhYXJbT+qig1neudpuf1zUA=;
-        b=nHSr73euCbHeew28bHoyjKitm6hpa/Q3hB5POaeH7Phkq3TCrqnsJztFedV5uPQrIo
-         nMqdd7nHHq7JdhAIq8MOEQ+l47I2r+qpAmPm9LAqX+8VFsA1N/QrjVOaqJRXo5NgMR7p
-         kGN0I9n9kUzHa47vqRXSUJRP2+gBkC0oL4hgAXV06p1OtWhv+xlbUCb7Fr+WyzVikn2q
-         vOuo+yZIzLfrG1UgSmhEIQwYepvUJx+QhYlEU33AkBXy+qIQb9ZzekFPa9Fdi/StHeUd
-         V47qMl3yqYCXeIaw3K9xUMBp3ayaP2+ptpXso38QRBCFvoAMBfr9RgBWUuyrNvsGS85X
-         SM4A==
-X-Gm-Message-State: AOJu0YzmEndEdtns/41W3C1nEot6IkStus3LWWSC6BBwx8kMxNt8802J
-	skx2R12WTtmK5IG7I0qPBsk=
-X-Google-Smtp-Source: AGHT+IE2GSUOcnc8CjzGsfrsEfmISwc8i0DZ/GUQE9BbbHhbu2/MUPr4aOlBN2D6ECmKIqOXhn1NQA==
-X-Received: by 2002:a17:90a:990f:b0:286:6cc1:3f1b with SMTP id b15-20020a17090a990f00b002866cc13f1bmr8637604pjp.82.1702625052825;
-        Thu, 14 Dec 2023 23:24:12 -0800 (PST)
-Received: from kylin-ThinkBook-15-G2-ITL.. ([111.48.58.12])
-        by smtp.gmail.com with ESMTPSA id in18-20020a17090b439200b0028b041cbef3sm2888719pjb.22.2023.12.14.23.24.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 23:24:12 -0800 (PST)
-From: xueqin Luo <luoxueqin@kylinos.cn>
-To: robert.moore@intel.com,
-	rafael.j.wysocki@intel.com,
-	lenb@kernel.org
-Cc: linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	xueqin Luo <luoxueqin@kylinos.cn>
-Subject: [PATCH -next] ACPICA: Replace strncpy() with strscpy_pad() for dest
-Date: Fri, 15 Dec 2023 15:24:05 +0800
-Message-Id: <20231215072405.65887-1-luoxueqin@kylinos.cn>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5606236AF3
+	for <acpica-devel@lists.linuxfoundation.org>; Fri, 15 Dec 2023 15:32:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="RR12zPsU"
+Received: from localhost (localhost [127.0.0.1])
+	by smtp2.osuosl.org (Postfix) with ESMTP id E269C41466
+	for <acpica-devel@lists.linuxfoundation.org>; Fri, 15 Dec 2023 15:32:19 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org E269C41466
+Authentication-Results: smtp2.osuosl.org;
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.a=rsa-sha256 header.s=pandora-2019 header.b=RR12zPsU
+X-Virus-Scanned: amavisd-new at osuosl.org
+X-Spam-Flag: NO
+X-Spam-Score: -2.098
+X-Spam-Level:
+Received: from smtp2.osuosl.org ([127.0.0.1])
+	by localhost (smtp2.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id eBKJvQP3DEmO
+	for <acpica-devel@lists.linuxfoundation.org>;
+	Fri, 15 Dec 2023 15:32:18 +0000 (UTC)
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+	by smtp2.osuosl.org (Postfix) with ESMTPS id 70B6F409B5
+	for <acpica-devel@lists.linuxfoundation.org>; Fri, 15 Dec 2023 15:32:18 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 70B6F409B5
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=nvVr24yJlTcKSpTw1UQi3U4632hdafX2X9T8yNVWb/s=; b=RR12zPsUj34Qy44F0kIaQPaAZB
+	nPc+zWXztM2JH+6eKjddRnEJOcP4lHMaZs0Ok+6Eho9xjDst2RRvXpsCCyoi7ja6CGEcydbSwFAla
+	53X4gkcQ8TpZWIlIRo/ThKhe3wdKOcfl7yUOyXTd80QhoYvEG1X1gzin5cMl7VuHRsiaoHUkm/vCF
+	PYV3ouDdMG+9zRwjqRNnemtSmGGjTl1pO8Bz5P4ZH+wXgC0S9oDcdiSR5YyOfn5ipO2ghRZtIMuIZ
+	6tcgCPy1Ngdj7NUdlCPMO+WdfmNzTDSJrQZBHAb7IAFs/jxP1GIaaGn85jf5fzZNPpucwpWFKdF2Q
+	MkpmY3mA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:48236)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rEAAQ-0002qa-0q;
+	Fri, 15 Dec 2023 15:31:58 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rEAAN-0003iY-2B; Fri, 15 Dec 2023 15:31:55 +0000
+Date: Fri, 15 Dec 2023 15:31:55 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+	x86@kernel.org, acpica-devel@lists.linuxfoundation.org,
+	linux-csky@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+	Salil Mehta <salil.mehta@huawei.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	jianyong.wu@arm.com, justin.he@arm.com,
+	James Morse <james.morse@arm.com>
+Subject: Re: [PATCH RFC v3 01/21] ACPI: Only enumerate enabled (or
+ functional) devices
+Message-ID: <ZXxxa+XZjPZtNfJ+@shell.armlinux.org.uk>
+References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
+ <E1rDOfs-00DvjY-HQ@rmk-PC.armlinux.org.uk>
+ <20231214173241.0000260f@Huawei.com>
+ <CAJZ5v0jymOtZ0y65K9wE8FJk+ZKwP+FoGm4AKHXcYVfQJL9MVw@mail.gmail.com>
+ <ZXtFBYJEX2RrFrwj@shell.armlinux.org.uk>
+ <CAJZ5v0h2Keyb-gFWFuPsKtwqjXvM2snyGpo6MMfFzaXKbfEpgw@mail.gmail.com>
+ <CAJZ5v0h3WWtvrbxRpaGfq6c756k+L1SzZ1Gv3A14JxXHNcUMKA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0h3WWtvrbxRpaGfq6c756k+L1SzZ1Gv3A14JxXHNcUMKA@mail.gmail.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-While it is safe to use strncpy in this case, the advice is to move to
-strscpy_pad[1].
+On Thu, Dec 14, 2023 at 07:37:10PM +0100, Rafael J. Wysocki wrote:
+> On Thu, Dec 14, 2023 at 7:16 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> >
+> > On Thu, Dec 14, 2023 at 7:10 PM Russell King (Oracle)
+> > <linux@armlinux.org.uk> wrote:
+> > > I guess we need something like:
+> > >
+> > >         if (device->status.present)
+> > >                 return device->device_type != ACPI_BUS_TYPE_PROCESSOR ||
+> > >                        device->status.enabled;
+> > >         else
+> > >                 return device->status.functional;
+> > >
+> > > so we only check device->status.enabled for processor-type devices?
+> >
+> > Yes, something like this.
+> 
+> However, that is not sufficient, because there are
+> ACPI_BUS_TYPE_DEVICE devices representing processors.
+> 
+> I'm not sure about a clean way to do it ATM.
 
-Link: https://www.kernel.org/doc/html/latest/process/deprec:qated.html#strncpy-on-nul-terminated-strings [1]
-Signed-off-by: xueqin Luo <luoxueqin@kylinos.cn>
----
- drivers/acpi/acpica/utnonansi.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Ok, how about:
 
-diff --git a/drivers/acpi/acpica/utnonansi.c b/drivers/acpi/acpica/utnonansi.c
-index ff0802ace19b..3a7952be6545 100644
---- a/drivers/acpi/acpica/utnonansi.c
-+++ b/drivers/acpi/acpica/utnonansi.c
-@@ -168,8 +168,7 @@ void acpi_ut_safe_strncpy(char *dest, char *source, acpi_size dest_size)
- {
- 	/* Always terminate destination string */
- 
--	strncpy(dest, source, dest_size);
--	dest[dest_size - 1] = 0;
-+	strscpy_pad(dest, source, dest_size);
- }
- 
- #endif
+static bool acpi_dev_is_processor(const struct acpi_device *device)
+{
+	struct acpi_hardware_id *hwid;
+
+	if (device->device_type == ACPI_BUS_TYPE_PROCESSOR)
+		return true;
+
+	if (device->device_type != ACPI_BUS_TYPE_DEVICE)
+		return false;
+
+	list_for_each_entry(hwid, &device->pnp.ids, list)
+		if (!strcmp(ACPI_PROCESSOR_OBJECT_HID, hwid->id) ||
+		    !strcmp(ACPI_PROCESSOR_DEVICE_HID, hwid->id))
+			return true;
+
+	return false;
+}
+
+and then:
+
+	if (device->status.present)
+		return !acpi_dev_is_processor(device) || device->status.enabled;
+	else
+		return device->status.functional;
+
+?
+
 -- 
-2.34.1
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
