@@ -1,158 +1,76 @@
-Received: from smtp1.osuosl.org (smtp1.osuosl.org [140.211.166.138])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f68.google.com (mail-pj1-f68.google.com [209.85.216.68])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 208914CE1C
-	for <acpica-devel@lists.linuxfoundation.org>; Thu, 14 Dec 2023 18:37:24 +0000 (UTC)
-Received: from localhost (localhost [127.0.0.1])
-	by smtp1.osuosl.org (Postfix) with ESMTP id A3D4D83D11
-	for <acpica-devel@lists.linuxfoundation.org>; Thu, 14 Dec 2023 18:37:24 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org A3D4D83D11
-X-Virus-Scanned: amavisd-new at osuosl.org
-X-Spam-Flag: NO
-X-Spam-Score: -1.398
-X-Spam-Level:
-Received: from smtp1.osuosl.org ([127.0.0.1])
-	by localhost (smtp1.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id 72CX6N2toPgT
-	for <acpica-devel@lists.linuxfoundation.org>;
-	Thu, 14 Dec 2023 18:37:23 +0000 (UTC)
-Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
-	by smtp1.osuosl.org (Postfix) with ESMTPS id 4D5E383D04
-	for <acpica-devel@lists.linuxfoundation.org>; Thu, 14 Dec 2023 18:37:23 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 4D5E383D04
-Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-6d9db2f1ddfso1362741a34.0
-        for <acpica-devel@lists.linuxfoundation.org>; Thu, 14 Dec 2023 10:37:23 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9734510948
+	for <acpica-devel@lists.linux.dev>; Fri, 15 Dec 2023 07:24:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f68.google.com with SMTP id 98e67ed59e1d1-28b14d02ab9so257385a91.1
+        for <acpica-devel@lists.linux.dev>; Thu, 14 Dec 2023 23:24:13 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702579042; x=1703183842;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VqDz+iAKQeDij2eq7OD06mj+eeeCJzCcbsR1GzAidN0=;
-        b=vWht41zE11vn41ENIxSNQ5Zu7cFBqhNcVfcCh4tA85E/C7asN583a/n+MJOKtl2uC2
-         +72ue3V4icVmS/bOGv2ocwvjBPXJju0NoZ+P88vLaMvrvwU5nVSz8e4rZ6QlSmXyaSn+
-         NUk1sM8ov+1kWiqyjcl/6rQZg/IbuyGKh3mXvBNI2dSXYbs4wwYR38L5pHeB8a2bTM9k
-         A/3JMDqvYDAZrZEdBrsikz1R1fFlX4F5ogclZ2sOTfusNAv7FaBz+DNkvBROc32EW/pQ
-         X8PIvjhNaAx2464539TJq3mNFogFcA/jaxVi6K7mM5lh8jFaj1GJhuwznx3bDHKVy0XL
-         Il/g==
-X-Gm-Message-State: AOJu0Yw8xcox7qp0+ps93zRqa0eJ9JA5KGoJRp7UzjsIlgWXrI5we7PS
-	UhaFKYZE/zY5wS19dv1iw4Pfqpe4ZDA7ypIv6j0=
-X-Google-Smtp-Source: AGHT+IH8dSvedIux9d+NZsh4BTm5s5Qcmw1364ii+UUrmzx3iZ4v2EO7x7vwseaBvGWSY8WP8bGNCshWcK/LSOMs+p0=
-X-Received: by 2002:a05:6871:2284:b0:1fb:648:5207 with SMTP id
- sd4-20020a056871228400b001fb06485207mr19135855oab.2.1702579042101; Thu, 14
- Dec 2023 10:37:22 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702625053; x=1703229853;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jNpC7NFbJjbEn49G0H7MyhYXJbT+qig1neudpuf1zUA=;
+        b=nHSr73euCbHeew28bHoyjKitm6hpa/Q3hB5POaeH7Phkq3TCrqnsJztFedV5uPQrIo
+         nMqdd7nHHq7JdhAIq8MOEQ+l47I2r+qpAmPm9LAqX+8VFsA1N/QrjVOaqJRXo5NgMR7p
+         kGN0I9n9kUzHa47vqRXSUJRP2+gBkC0oL4hgAXV06p1OtWhv+xlbUCb7Fr+WyzVikn2q
+         vOuo+yZIzLfrG1UgSmhEIQwYepvUJx+QhYlEU33AkBXy+qIQb9ZzekFPa9Fdi/StHeUd
+         V47qMl3yqYCXeIaw3K9xUMBp3ayaP2+ptpXso38QRBCFvoAMBfr9RgBWUuyrNvsGS85X
+         SM4A==
+X-Gm-Message-State: AOJu0YzmEndEdtns/41W3C1nEot6IkStus3LWWSC6BBwx8kMxNt8802J
+	skx2R12WTtmK5IG7I0qPBsk=
+X-Google-Smtp-Source: AGHT+IE2GSUOcnc8CjzGsfrsEfmISwc8i0DZ/GUQE9BbbHhbu2/MUPr4aOlBN2D6ECmKIqOXhn1NQA==
+X-Received: by 2002:a17:90a:990f:b0:286:6cc1:3f1b with SMTP id b15-20020a17090a990f00b002866cc13f1bmr8637604pjp.82.1702625052825;
+        Thu, 14 Dec 2023 23:24:12 -0800 (PST)
+Received: from kylin-ThinkBook-15-G2-ITL.. ([111.48.58.12])
+        by smtp.gmail.com with ESMTPSA id in18-20020a17090b439200b0028b041cbef3sm2888719pjb.22.2023.12.14.23.24.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 23:24:12 -0800 (PST)
+From: xueqin Luo <luoxueqin@kylinos.cn>
+To: robert.moore@intel.com,
+	rafael.j.wysocki@intel.com,
+	lenb@kernel.org
+Cc: linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	xueqin Luo <luoxueqin@kylinos.cn>
+Subject: [PATCH -next] ACPICA: Replace strncpy() with strscpy_pad() for dest
+Date: Fri, 15 Dec 2023 15:24:05 +0800
+Message-Id: <20231215072405.65887-1-luoxueqin@kylinos.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk> <E1rDOfs-00DvjY-HQ@rmk-PC.armlinux.org.uk>
- <20231214173241.0000260f@Huawei.com> <CAJZ5v0jymOtZ0y65K9wE8FJk+ZKwP+FoGm4AKHXcYVfQJL9MVw@mail.gmail.com>
- <ZXtFBYJEX2RrFrwj@shell.armlinux.org.uk> <CAJZ5v0h2Keyb-gFWFuPsKtwqjXvM2snyGpo6MMfFzaXKbfEpgw@mail.gmail.com>
-In-Reply-To: <CAJZ5v0h2Keyb-gFWFuPsKtwqjXvM2snyGpo6MMfFzaXKbfEpgw@mail.gmail.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Thu, 14 Dec 2023 19:37:10 +0100
-Message-ID: <CAJZ5v0h3WWtvrbxRpaGfq6c756k+L1SzZ1Gv3A14JxXHNcUMKA@mail.gmail.com>
-Subject: Re: [PATCH RFC v3 01/21] ACPI: Only enumerate enabled (or functional) devices
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Jonathan Cameron <Jonathan.Cameron@huawei.com>, 
-	linux-pm@vger.kernel.org, loongarch@lists.linux.dev, 
-	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev, x86@kernel.org, 
-	acpica-devel@lists.linuxfoundation.org, linux-csky@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, Salil Mehta <salil.mehta@huawei.com>, 
-	Jean-Philippe Brucker <jean-philippe@linaro.org>, jianyong.wu@arm.com, justin.he@arm.com, 
-	James Morse <james.morse@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, Dec 14, 2023 at 7:16=E2=80=AFPM Rafael J. Wysocki <rafael@kernel.or=
-g> wrote:
->
-> On Thu, Dec 14, 2023 at 7:10=E2=80=AFPM Russell King (Oracle)
-> <linux@armlinux.org.uk> wrote:
-> >
-> > On Thu, Dec 14, 2023 at 06:47:00PM +0100, Rafael J. Wysocki wrote:
-> > > On Thu, Dec 14, 2023 at 6:32=E2=80=AFPM Jonathan Cameron
-> > > <Jonathan.Cameron@huawei.com> wrote:
-> > > >
-> > > > On Wed, 13 Dec 2023 12:49:16 +0000
-> > > > Russell King (Oracle) <rmk+kernel@armlinux.org.uk> wrote:
-> > > >
-> > > > > From: James Morse <james.morse@arm.com>
-> > > > >
-> > > > > Today the ACPI enumeration code 'visits' all devices that are pre=
-sent.
-> > > > >
-> > > > > This is a problem for arm64, where CPUs are always present, but n=
-ot
-> > > > > always enabled. When a device-check occurs because the firmware-p=
-olicy
-> > > > > has changed and a CPU is now enabled, the following error occurs:
-> > > > > | acpi ACPI0007:48: Enumeration failure
-> > > > >
-> > > > > This is ultimately because acpi_dev_ready_for_enumeration() retur=
-ns
-> > > > > true for a device that is not enabled. The ACPI Processor driver
-> > > > > will not register such CPUs as they are not 'decoding their resou=
-rces'.
-> > > > >
-> > > > > Change acpi_dev_ready_for_enumeration() to also check the enabled=
- bit.
-> > > > > ACPI allows a device to be functional instead of maintaining the
-> > > > > present and enabled bit. Make this behaviour an explicit check wi=
-th
-> > > > > a reference to the spec, and then check the present and enabled b=
-its.
-> > > > > This is needed to avoid enumerating present && functional devices=
- that
-> > > > > are not enabled.
-> > > > >
-> > > > > Signed-off-by: James Morse <james.morse@arm.com>
-> > > > > Tested-by: Miguel Luis <miguel.luis@oracle.com>
-> > > > > Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
-> > > > > Tested-by: Jianyong Wu <jianyong.wu@arm.com>
-> > > > > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> > > > > ---
-> > > > > If this change causes problems on deployed hardware, I suggest an
-> > > > > arch opt-in: ACPI_IGNORE_STA_ENABLED, that causes
-> > > > > acpi_dev_ready_for_enumeration() to only check the present bit.
-> > > >
-> > > > My gut feeling (having made ACPI 'fixes' in the past that ran into
-> > > > horribly broken firmware and had to be reverted) is reduce the blas=
-t
-> > > > radius preemptively from the start. I'd love to live in a world wer=
-e
-> > > > that wasn't necessary but I don't trust all the generators of ACPI =
-tables.
-> > > > I'll leave it to Rafael and other ACPI experts suggest how narrow w=
-e should
-> > > > make it though - arch opt in might be narrow enough.
-> > >
-> > > A chicken bit wouldn't help much IMO, especially in the cases when
-> > > working setups get broken.
-> > >
-> > > I would very much prefer to limit the scope of it, say to processors
-> > > only, in the first place.
-> >
-> > Thanks for the feedback and the idea.
-> >
-> > I guess we need something like:
-> >
-> >         if (device->status.present)
-> >                 return device->device_type !=3D ACPI_BUS_TYPE_PROCESSOR=
- ||
-> >                        device->status.enabled;
-> >         else
-> >                 return device->status.functional;
-> >
-> > so we only check device->status.enabled for processor-type devices?
->
-> Yes, something like this.
+While it is safe to use strncpy in this case, the advice is to move to
+strscpy_pad[1].
 
-However, that is not sufficient, because there are
-ACPI_BUS_TYPE_DEVICE devices representing processors.
+Link: https://www.kernel.org/doc/html/latest/process/deprec:qated.html#strncpy-on-nul-terminated-strings [1]
+Signed-off-by: xueqin Luo <luoxueqin@kylinos.cn>
+---
+ drivers/acpi/acpica/utnonansi.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-I'm not sure about a clean way to do it ATM.
+diff --git a/drivers/acpi/acpica/utnonansi.c b/drivers/acpi/acpica/utnonansi.c
+index ff0802ace19b..3a7952be6545 100644
+--- a/drivers/acpi/acpica/utnonansi.c
++++ b/drivers/acpi/acpica/utnonansi.c
+@@ -168,8 +168,7 @@ void acpi_ut_safe_strncpy(char *dest, char *source, acpi_size dest_size)
+ {
+ 	/* Always terminate destination string */
+ 
+-	strncpy(dest, source, dest_size);
+-	dest[dest_size - 1] = 0;
++	strscpy_pad(dest, source, dest_size);
+ }
+ 
+ #endif
+-- 
+2.34.1
+
