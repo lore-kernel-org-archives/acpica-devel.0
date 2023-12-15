@@ -1,36 +1,36 @@
-Received: from smtp3.osuosl.org (smtp3.osuosl.org [140.211.166.136])
+Received: from smtp1.osuosl.org (smtp1.osuosl.org [140.211.166.138])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA3653DBA4
-	for <acpica-devel@lists.linuxfoundation.org>; Fri, 15 Dec 2023 16:40:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6888A3DB90
+	for <acpica-devel@lists.linuxfoundation.org>; Fri, 15 Dec 2023 16:50:16 +0000 (UTC)
 Received: from localhost (localhost [127.0.0.1])
-	by smtp3.osuosl.org (Postfix) with ESMTP id 47B886106F
-	for <acpica-devel@lists.linuxfoundation.org>; Fri, 15 Dec 2023 16:40:32 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 47B886106F
+	by smtp1.osuosl.org (Postfix) with ESMTP id D805383E42
+	for <acpica-devel@lists.linuxfoundation.org>; Fri, 15 Dec 2023 16:50:15 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org D805383E42
 X-Virus-Scanned: amavisd-new at osuosl.org
 X-Spam-Flag: NO
 X-Spam-Score: -4.198
 X-Spam-Level:
-Received: from smtp3.osuosl.org ([127.0.0.1])
-	by localhost (smtp3.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id R81jMkDtz4RE
+Received: from smtp1.osuosl.org ([127.0.0.1])
+	by localhost (smtp1.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id zeezIgQg-jBE
 	for <acpica-devel@lists.linuxfoundation.org>;
-	Fri, 15 Dec 2023 16:40:31 +0000 (UTC)
+	Fri, 15 Dec 2023 16:50:14 +0000 (UTC)
 Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-	by smtp3.osuosl.org (Postfix) with ESMTPS id 399886105F
-	for <acpica-devel@lists.linuxfoundation.org>; Fri, 15 Dec 2023 16:40:31 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 399886105F
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SsFK22kSLz6K8mZ;
-	Sat, 16 Dec 2023 00:38:30 +0800 (CST)
+	by smtp1.osuosl.org (Postfix) with ESMTPS id 6B40B83E40
+	for <acpica-devel@lists.linuxfoundation.org>; Fri, 15 Dec 2023 16:50:14 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 6B40B83E40
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SsFXD2Z30z6K6hC;
+	Sat, 16 Dec 2023 00:48:12 +0800 (CST)
 Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 403DB140133;
-	Sat, 16 Dec 2023 00:40:29 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 2D8D01400D4;
+	Sat, 16 Dec 2023 00:50:11 +0800 (CST)
 Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
  (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 15 Dec
- 2023 16:40:28 +0000
-Date: Fri, 15 Dec 2023 16:40:27 +0000
+ 2023 16:50:10 +0000
+Date: Fri, 15 Dec 2023 16:50:09 +0000
 From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
 To: "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
 CC: <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
@@ -42,11 +42,12 @@ CC: <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
 	<linux-ia64@vger.kernel.org>, <linux-parisc@vger.kernel.org>, Salil Mehta
 	<salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
 	<jianyong.wu@arm.com>, <justin.he@arm.com>, James Morse <james.morse@arm.com>
-Subject: Re: [PATCH RFC v3 16/21] arm64: psci: Ignore DENIED CPUs
-Message-ID: <20231215164027.00003609@Huawei.com>
-In-Reply-To: <E1rDOh7-00Dvl7-LR@rmk-PC.armlinux.org.uk>
+Subject: Re: [PATCH RFC v3 18/21] ACPI: processor: Only call
+ arch_unregister_cpu() if HOTPLUG_CPU is selected
+Message-ID: <20231215165009.000035f2@Huawei.com>
+In-Reply-To: <E1rDOhH-00DvlO-UP@rmk-PC.armlinux.org.uk>
 References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
-	<E1rDOh7-00Dvl7-LR@rmk-PC.armlinux.org.uk>
+	<E1rDOhH-00DvlO-UP@rmk-PC.armlinux.org.uk>
 Organization: Huawei Technologies Research and Development (UK) Ltd.
 X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
@@ -57,29 +58,31 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100001.china.huawei.com (7.191.160.183) To
+X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
  lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Wed, 13 Dec 2023 12:50:33 +0000
+On Wed, 13 Dec 2023 12:50:43 +0000
 Russell King (Oracle) <rmk+kernel@armlinux.org.uk> wrote:
 
-> From: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> From: James Morse <james.morse@arm.com>
 > 
-> When a CPU is marked as disabled, but online capable in the MADT, PSCI
-> applies some firmware policy to control when it can be brought online.
-> PSCI returns DENIED to a CPU_ON request if this is not currently
-> permitted. The OS can learn the current policy from the _STA enabled bit.
+> The kbuild robot points out that configurations without HOTPLUG_CPU
+> selected can try to build acpi_processor_post_eject() without success
+> as arch_unregister_cpu() is not defined.
 > 
-> Handle the PSCI DENIED return code gracefully instead of printing an
-> error.
+> Check this explicitly. This will be merged into:
+> | ACPI: Add post_eject to struct acpi_scan_handler for cpu hotplug
+> for any subsequent posting.
 > 
-> See https://developer.arm.com/documentation/den0022/f/?lang=en page 58.
-> 
-> Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
-> [ morse: Rewrote commit message ]
+> Reported-by: kbuild test robot <lkp@intel.com>
 > Signed-off-by: James Morse <james.morse@arm.com>
 > Tested-by: Miguel Luis <miguel.luis@oracle.com>
 > Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
 > Tested-by: Jianyong Wu <jianyong.wu@arm.com>
-> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> ---
+> This should probably be squashed into an earlier patch.
+
+Agreed. If not
 Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
+
