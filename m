@@ -1,224 +1,203 @@
-Received: from smtp3.osuosl.org (smtp3.osuosl.org [140.211.166.136])
+Received: from mx2.zhaoxin.com (mx2.zhaoxin.com [203.110.167.99])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90B51405F7
-	for <acpica-devel@lists.linuxfoundation.org>; Fri, 15 Dec 2023 19:54:16 +0000 (UTC)
-Received: from localhost (localhost [127.0.0.1])
-	by smtp3.osuosl.org (Postfix) with ESMTP id 0EC24610BC
-	for <acpica-devel@lists.linuxfoundation.org>; Fri, 15 Dec 2023 19:54:16 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 0EC24610BC
-X-Virus-Scanned: amavisd-new at osuosl.org
-X-Spam-Flag: NO
-X-Spam-Score: -1.9
-X-Spam-Level:
-Received: from smtp3.osuosl.org ([127.0.0.1])
-	by localhost (smtp3.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id iZt5L6bgtKCo
-	for <acpica-devel@lists.linuxfoundation.org>;
-	Fri, 15 Dec 2023 19:54:15 +0000 (UTC)
-X-Greylist: delayed 399 seconds by postgrey-1.37 at util1.osuosl.org; Fri, 15 Dec 2023 19:54:14 UTC
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 93FCD61052
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-	by smtp3.osuosl.org (Postfix) with ESMTPS id 93FCD61052
-	for <acpica-devel@lists.linuxfoundation.org>; Fri, 15 Dec 2023 19:54:14 +0000 (UTC)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
- id 2539e6c80012c5e6; Fri, 15 Dec 2023 20:47:32 +0100
-Received: from kreacher.localnet (unknown [195.136.19.94])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id C96C5668B59;
-	Fri, 15 Dec 2023 20:47:31 +0100 (CET)
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>, Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org, loongarch@lists.linux.dev, linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev, x86@kernel.org, acpica-devel@lists.linuxfoundation.org, linux-csky@vger.kernel.org, linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org, Salil Mehta <salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>, jianyong.wu@arm.com, justin.he@arm.com, James Morse <james.morse@arm.com>
-Subject: Re: [PATCH RFC v3 01/21] ACPI: Only enumerate enabled (or functional) devices
-Date: Fri, 15 Dec 2023 20:47:31 +0100
-Message-ID: <5760569.DvuYhMxLoT@kreacher>
-In-Reply-To: <20231215161539.00000940@Huawei.com>
-References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk> <ZXxxa+XZjPZtNfJ+@shell.armlinux.org.uk> <20231215161539.00000940@Huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C4A428F2
+	for <acpica-devel@lists.linux.dev>; Mon, 18 Dec 2023 03:04:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zhaoxin.com
+X-ASG-Debug-ID: 1702868676-1eb14e538c375a0001-m47mSr
+Received: from ZXSHMBX2.zhaoxin.com (ZXSHMBX2.zhaoxin.com [10.28.252.164]) by mx2.zhaoxin.com with ESMTP id W6OW1CkGYo5wxXUl (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Mon, 18 Dec 2023 11:04:36 +0800 (CST)
+X-Barracuda-Envelope-From: LeoLiu-oc@zhaoxin.com
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.164
+Received: from ZXBJMBX03.zhaoxin.com (10.29.252.7) by ZXSHMBX2.zhaoxin.com
+ (10.28.252.164) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 18 Dec
+ 2023 11:04:36 +0800
+Received: from xin.lan (10.32.64.1) by ZXBJMBX03.zhaoxin.com (10.29.252.7)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 18 Dec
+ 2023 11:04:34 +0800
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.164
+From: LeoLiu-oc <LeoLiu-oc@zhaoxin.com>
+X-Barracuda-RBL-Trusted-Forwarder: 10.29.252.7
+To: <rafael@kernel.org>, <lenb@kernel.org>, <james.morse@arm.com>,
+	<tony.luck@intel.com>, <bp@alien8.de>, <bhelgaas@google.com>,
+	<robert.moore@intel.com>, <linux-acpi@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+	<acpica-devel@lists.linux.dev>
+CC: <CobeChen@zhaoxin.com>, <TonyWWang@zhaoxin.com>, <ErosZhang@zhaoxin.com>,
+	<LeoLiu@zhaoxin.com>, LeoLiuoc <LeoLiu-oc@zhaoxin.com>
+Subject: [PATCH v2 1/3] ACPI/APEI: Add hest_parse_pcie_aer()
+Date: Mon, 18 Dec 2023 11:04:28 +0800
+X-ASG-Orig-Subj: [PATCH v2 1/3] ACPI/APEI: Add hest_parse_pcie_aer()
+Message-ID: <20231218030430.783495-2-LeoLiu-oc@zhaoxin.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231218030430.783495-1-LeoLiu-oc@zhaoxin.com>
+References: <20231115091612.580685-1-LeoLiu-oc@zhaoxin.com>
+ <20231218030430.783495-1-LeoLiu-oc@zhaoxin.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrvddtvddguddvkecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthhqredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedtvdefgeelvdefvdevveehvdetfeefhedvueeiudekieeltdetgfdviefhgfetteenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopedvvddprhgtphhtthhopehlihhnuhigsegrrhhmlhhinhhugidrohhrghdruhhkpdhrtghpthhtoheplfhonhgrthhhrghnrdevrghmvghrohhnsehhuhgrfigvihdrtghomhdprhgtphhtthhopehrrghfrggvlheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhoohhnghgrrhgt
- hheslhhishhtshdrlhhinhhugidruggvvhdprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=22 Fuz1=22 Fuz2=22
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: zxbjmbx1.zhaoxin.com (10.29.252.163) To
+ ZXBJMBX03.zhaoxin.com (10.29.252.7)
+X-Barracuda-Connect: ZXSHMBX2.zhaoxin.com[10.28.252.164]
+X-Barracuda-Start-Time: 1702868676
+X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
+X-Barracuda-URL: https://10.28.252.36:4443/cgi-mod/mark.cgi
+X-Virus-Scanned: by bsmtpd at zhaoxin.com
+X-Barracuda-Scan-Msg-Size: 4147
+X-Barracuda-BRTS-Status: 0
+X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
+X-Barracuda-Spam-Score: -2.02
+X-Barracuda-Spam-Status: No, SCORE=-2.02 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=
+X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.118228
+	Rule breakdown below
+	 pts rule name              description
+	---- ---------------------- --------------------------------------------------
 
-On Friday, December 15, 2023 5:15:39 PM CET Jonathan Cameron wrote:
-> On Fri, 15 Dec 2023 15:31:55 +0000
-> "Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
->=20
-> > On Thu, Dec 14, 2023 at 07:37:10PM +0100, Rafael J. Wysocki wrote:
-> > > On Thu, Dec 14, 2023 at 7:16=E2=80=AFPM Rafael J. Wysocki <rafael@ker=
-nel.org> wrote: =20
-> > > >
-> > > > On Thu, Dec 14, 2023 at 7:10=E2=80=AFPM Russell King (Oracle)
-> > > > <linux@armlinux.org.uk> wrote: =20
-> > > > > I guess we need something like:
-> > > > >
-> > > > >         if (device->status.present)
-> > > > >                 return device->device_type !=3D ACPI_BUS_TYPE_PRO=
-CESSOR ||
-> > > > >                        device->status.enabled;
-> > > > >         else
-> > > > >                 return device->status.functional;
-> > > > >
-> > > > > so we only check device->status.enabled for processor-type device=
-s? =20
-> > > >
-> > > > Yes, something like this. =20
-> > >=20
-> > > However, that is not sufficient, because there are
-> > > ACPI_BUS_TYPE_DEVICE devices representing processors.
-> > >=20
-> > > I'm not sure about a clean way to do it ATM. =20
-> >=20
-> > Ok, how about:
-> >=20
-> > static bool acpi_dev_is_processor(const struct acpi_device *device)
-> > {
-> > 	struct acpi_hardware_id *hwid;
-> >=20
-> > 	if (device->device_type =3D=3D ACPI_BUS_TYPE_PROCESSOR)
-> > 		return true;
-> >=20
-> > 	if (device->device_type !=3D ACPI_BUS_TYPE_DEVICE)
-> > 		return false;
-> >=20
-> > 	list_for_each_entry(hwid, &device->pnp.ids, list)
-> > 		if (!strcmp(ACPI_PROCESSOR_OBJECT_HID, hwid->id) ||
-> > 		    !strcmp(ACPI_PROCESSOR_DEVICE_HID, hwid->id))
-> > 			return true;
-> >=20
-> > 	return false;
-> > }
-> >=20
-> > and then:
-> >=20
-> > 	if (device->status.present)
-> > 		return !acpi_dev_is_processor(device) || device->status.enabled;
-> > 	else
-> > 		return device->status.functional;
-> >=20
-> > ?
-> >=20
-> Changing it to CPU only for now makes sense to me and I think this code s=
-nippet should do the
-> job.  Nice and simple.
+From: LeoLiuoc <LeoLiu-oc@zhaoxin.com>
 
-Well, except that it does checks that are done elsewhere slightly
-differently, which from the maintenance POV is not nice.
+The purpose of the function apei_hest_parse_aer() is used to parse and
+extract register value from HEST PCIe AER structures.
 
-Maybe something like the appended patch (untested).
+Signed-off-by: LeoLiuoc <LeoLiu-oc@zhaoxin.com>
+---
+ drivers/acpi/apei/hest.c | 69 ++++++++++++++++++++++++++++++++++++++--
+ include/acpi/apei.h      | 17 ++++++++++
+ 2 files changed, 84 insertions(+), 2 deletions(-)
 
-=2D--
- drivers/acpi/acpi_processor.c |   11 +++++++++++
- drivers/acpi/internal.h       |    3 +++
- drivers/acpi/scan.c           |   24 +++++++++++++++++++++++-
- 3 files changed, 37 insertions(+), 1 deletion(-)
-
-Index: linux-pm/drivers/acpi/acpi_processor.c
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-=2D-- linux-pm.orig/drivers/acpi/acpi_processor.c
-+++ linux-pm/drivers/acpi/acpi_processor.c
-@@ -644,6 +644,17 @@ static struct acpi_scan_handler processo
- 	},
+diff --git a/drivers/acpi/apei/hest.c b/drivers/acpi/apei/hest.c
+index 6aef1ee5e1bd..7e7026c0001b 100644
+--- a/drivers/acpi/apei/hest.c
++++ b/drivers/acpi/apei/hest.c
+@@ -22,6 +22,7 @@
+ #include <linux/kdebug.h>
+ #include <linux/highmem.h>
+ #include <linux/io.h>
++#include <linux/pci.h>
+ #include <linux/platform_device.h>
+ #include <acpi/apei.h>
+ #include <acpi/ghes.h>
+@@ -86,9 +87,73 @@ static int hest_esrc_len(struct acpi_hest_header *hest_hdr)
+ 	return len;
  };
-=20
-+bool acpi_device_is_processor(const struct acpi_device *adev)
+ 
+-typedef int (*apei_hest_func_t)(struct acpi_hest_header *hest_hdr, void *data);
++#ifdef CONFIG_ACPI_APEI
++static bool hest_match_pci_devfn(struct acpi_hest_aer_common *p, struct pci_dev *dev)
 +{
-+	if (adev->device_type =3D=3D ACPI_BUS_TYPE_PROCESSOR)
-+		return true;
-+
-+	if (adev->device_type !=3D ACPI_BUS_TYPE_DEVICE)
-+		return false;
-+
-+	return acpi_scan_check_handler(adev, &processor_handler);
++	return ACPI_HEST_SEGMENT(p->bus) == pci_domain_nr(dev->bus) &&
++		ACPI_HEST_BUS(p->bus) == dev->bus->number &&
++		p->device == PCI_SLOT(dev->devfn) &&
++		p->function == PCI_FUNC(dev->devfn);
 +}
 +
- static int acpi_processor_container_attach(struct acpi_device *dev,
- 					   const struct acpi_device_id *id)
- {
-Index: linux-pm/drivers/acpi/internal.h
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-=2D-- linux-pm.orig/drivers/acpi/internal.h
-+++ linux-pm/drivers/acpi/internal.h
-@@ -62,6 +62,8 @@ void acpi_sysfs_add_hotplug_profile(stru
- int acpi_scan_add_handler_with_hotplug(struct acpi_scan_handler *handler,
- 				       const char *hotplug_profile_name);
- void acpi_scan_hotplug_enabled(struct acpi_hotplug_profile *hotplug, bool =
-val);
-+bool acpi_scan_check_handler(const struct acpi_device *adev,
-+			     struct acpi_scan_handler *handler);
-=20
- #ifdef CONFIG_DEBUG_FS
- extern struct dentry *acpi_debugfs_dir;
-@@ -133,6 +135,7 @@ int acpi_bus_register_early_device(int t
- const struct acpi_device *acpi_companion_match(const struct device *dev);
- int __acpi_device_uevent_modalias(const struct acpi_device *adev,
- 				  struct kobj_uevent_env *env);
-+bool acpi_device_is_processor(const struct acpi_device *adev);
-=20
- /* -----------------------------------------------------------------------=
-=2D--
-                                   Power Resource
-Index: linux-pm/drivers/acpi/scan.c
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-=2D-- linux-pm.orig/drivers/acpi/scan.c
-+++ linux-pm/drivers/acpi/scan.c
-@@ -1938,6 +1938,19 @@ static bool acpi_scan_handler_matching(s
- 	return false;
- }
-=20
-+bool acpi_scan_check_handler(const struct acpi_device *adev,
-+			     struct acpi_scan_handler *handler)
++static bool hest_source_is_pcie_aer(struct acpi_hest_header *hest_hdr, struct pci_dev *dev)
 +{
-+	struct acpi_hardware_id *hwid;
++	u16 hest_type = hest_hdr->type;
++	u8 pcie_type = pci_pcie_type(dev);
++	struct acpi_hest_aer_common *common;
 +
-+	list_for_each_entry(hwid, &adev->pnp.ids, list) {
-+		if (acpi_scan_handler_matching(handler, hwid->id, NULL))
-+			return true;
++	switch (hest_type) {
++	case ACPI_HEST_TYPE_AER_ROOT_PORT:
++		if (pcie_type != PCI_EXP_TYPE_ROOT_PORT)
++			return false;
++		break;
++	case ACPI_HEST_TYPE_AER_ENDPOINT:
++		if (pcie_type != PCI_EXP_TYPE_ENDPOINT)
++			return false;
++		break;
++	case ACPI_HEST_TYPE_AER_BRIDGE:
++		if (pcie_type != PCI_EXP_TYPE_PCI_BRIDGE &&
++			pcie_type != PCI_EXP_TYPE_PCIE_BRIDGE)
++			return false;
++		break;
++	default:
++		return false;
 +	}
++
++	common = (struct acpi_hest_aer_common *)(hest_hdr + 1);
++	if (common->flags & ACPI_HEST_GLOBAL)
++		return true;
++
++	if (hest_match_pci_devfn(common, dev))
++		return true;
 +
 +	return false;
 +}
 +
- static struct acpi_scan_handler *acpi_scan_match_handler(const char *idstr,
- 					const struct acpi_device_id **matchid)
++int hest_parse_pcie_aer(struct acpi_hest_header *hest_hdr, void *data)
++{
++	struct hest_parse_aer_info *info = data;
++
++	if (!hest_source_is_pcie_aer(hest_hdr, info->pci_dev))
++		return 0;
++
++	switch (hest_hdr->type) {
++	case ACPI_HEST_TYPE_AER_ROOT_PORT:
++		info->hest_aer_root_port = (struct acpi_hest_aer_root *)hest_hdr;
++		return 1;
++	case ACPI_HEST_TYPE_AER_ENDPOINT:
++		info->hest_aer_endpoint = (struct acpi_hest_aer *)hest_hdr;
++		return 1;
++	case ACPI_HEST_TYPE_AER_BRIDGE:
++		info->hest_aer_bridge = (struct acpi_hest_aer_bridge *)hest_hdr;
++		return 1;
++	default:
++		return 0;
++	}
++}
++#endif
+ 
+-static int apei_hest_parse(apei_hest_func_t func, void *data)
++int apei_hest_parse(apei_hest_func_t func, void *data)
  {
-@@ -2410,7 +2423,16 @@ bool acpi_dev_ready_for_enumeration(cons
- 	if (device->flags.honor_deps && device->dep_unmet)
- 		return false;
-=20
-=2D	return acpi_device_is_present(device);
-+	if (device->status.functional)
-+		return true;
+ 	struct acpi_hest_header *hest_hdr;
+ 	int i, rc, len;
+diff --git a/include/acpi/apei.h b/include/acpi/apei.h
+index dc60f7db5524..82d3cdf53e22 100644
+--- a/include/acpi/apei.h
++++ b/include/acpi/apei.h
+@@ -23,6 +23,15 @@ enum hest_status {
+ 	HEST_NOT_FOUND,
+ };
+ 
++#ifdef CONFIG_ACPI_APEI
++struct hest_parse_aer_info {
++	struct pci_dev *pci_dev;
++	struct acpi_hest_aer *hest_aer_endpoint;
++	struct acpi_hest_aer_root *hest_aer_root_port;
++	struct acpi_hest_aer_bridge *hest_aer_bridge;
++};
++#endif
 +
-+	if (!device->status.present)
-+		return false;
+ extern int hest_disable;
+ extern int erst_disable;
+ #ifdef CONFIG_ACPI_APEI_GHES
+@@ -33,10 +42,18 @@ void __init acpi_ghes_init(void);
+ static inline void acpi_ghes_init(void) { }
+ #endif
+ 
++typedef int (*apei_hest_func_t)(struct acpi_hest_header *hest_hdr, void *data);
++int apei_hest_parse(apei_hest_func_t func, void *data);
 +
-+	if (device->status.enabled)
-+		return true; /* Fast path. */
-+
-+	return !acpi_device_is_processor(device);
- }
- EXPORT_SYMBOL_GPL(acpi_dev_ready_for_enumeration);
-=20
-
-
+ #ifdef CONFIG_ACPI_APEI
+ void __init acpi_hest_init(void);
++int hest_parse_pcie_aer(struct acpi_hest_header *hest_hdr, void *data);
+ #else
+ static inline void acpi_hest_init(void) { }
++static inline int hest_parse_pcie_aer(struct acpi_hest_header *hest_hdr, void *data)
++{
++	return 0;
++}
+ #endif
+ 
+ int erst_write(const struct cper_record_header *record);
+-- 
+2.34.1
 
