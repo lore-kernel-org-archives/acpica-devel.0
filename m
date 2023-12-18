@@ -1,49 +1,54 @@
 Received: from smtp3.osuosl.org (smtp3.osuosl.org [140.211.166.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAE34125C8
-	for <acpica-devel@lists.linuxfoundation.org>; Mon, 18 Dec 2023 09:23:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58DC74EB21
+	for <acpica-devel@lists.linuxfoundation.org>; Mon, 18 Dec 2023 12:14:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RJud1fJD"
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="C2KaLUoh"
 Received: from localhost (localhost [127.0.0.1])
-	by smtp3.osuosl.org (Postfix) with ESMTP id 5379360E47
-	for <acpica-devel@lists.linuxfoundation.org>; Mon, 18 Dec 2023 09:23:34 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 5379360E47
+	by smtp3.osuosl.org (Postfix) with ESMTP id D580860EEE
+	for <acpica-devel@lists.linuxfoundation.org>; Mon, 18 Dec 2023 12:14:41 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org D580860EEE
 Authentication-Results: smtp3.osuosl.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20201202 header.b=RJud1fJD
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.a=rsa-sha256 header.s=pandora-2019 header.b=C2KaLUoh
 X-Virus-Scanned: amavisd-new at osuosl.org
 X-Spam-Flag: NO
-X-Spam-Score: -4.401
+X-Spam-Score: -2.098
 X-Spam-Level:
 Received: from smtp3.osuosl.org ([127.0.0.1])
 	by localhost (smtp3.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id 2ia89C7zcLbG
+	with ESMTP id qGICPyRaCtrg
 	for <acpica-devel@lists.linuxfoundation.org>;
-	Mon, 18 Dec 2023 09:23:32 +0000 (UTC)
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-	by smtp3.osuosl.org (Postfix) with ESMTPS id C4E4560740
-	for <acpica-devel@lists.linuxfoundation.org>; Mon, 18 Dec 2023 09:23:31 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org C4E4560740
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id BB041CE0F52;
-	Mon, 18 Dec 2023 09:23:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17966C433C8;
-	Mon, 18 Dec 2023 09:23:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702891407;
-	bh=GHAwRyvzYMoO5t9DJy2L/vZFGZ5Dq9mWQeMLRWVKZx0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RJud1fJDL22h4rushErpJMmUrhO3xcrslPsqJRk6uc2IzcXDtSELA0otvbONR8FTW
-	 L6MBy2qAm1/d885aKTGZ52miElldnk4dux1oGBB7Qwie/Jstp0/xoF4pir4VX06dNl
-	 WBVzRRDgFKNRb1ghAyxl6IzWv7qEoMD3t69caobPE1s/iGljqRMHYLRBOTapLw3KLN
-	 qQ9il4M5nD24gxNHN3ub9/SXuLvIsqeY9z0yA+LkYmcU+y7TMSg6l78d29OVQGPo/H
-	 beQmrNVxT0E83mkzpMD1ZcGj9HNmeZcG2UZcZu57S7oyla7BogUN1qFgJvr6HKhaxE
-	 r6nP6bW7hsUFw==
-Date: Mon, 18 Dec 2023 10:23:18 +0100
-From: Lorenzo Pieralisi <lpieralisi@kernel.org>
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+	Mon, 18 Dec 2023 12:14:40 +0000 (UTC)
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+	by smtp3.osuosl.org (Postfix) with ESMTPS id A73AD60BFC
+	for <acpica-devel@lists.linuxfoundation.org>; Mon, 18 Dec 2023 12:14:39 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org A73AD60BFC
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=08SzGJH5lXG9BtLXnSCiZJkgfUYvZPRLdF1MiDN6maA=; b=C2KaLUoh/n1BgxKSf6SrAbqvai
+	JKrWWotA8ePs91dXAVLuwjEpSY5ePbNax2YRNGRaUBgp7XlJSEVD5M4TKEtLw4VeIHgs2tqfFO7aM
+	dxhfjGyheynixij5MnQ9UsD+vCLAUH1h1KZirAZWC8js4LRKy1n3PwI3uBnUi1JZVY2U7Ihv5/Mor
+	rJp5cRqch1rnSU/tEZFmu+buYl/SCLuuuxAXtVHXXphaJjFugXWAG6myDphxhCF2EwzotxfXC/uJ4
+	u6LnZqqFeEf53FdSsSiRJvxxjxBXV5gsbJXRjyqKyBk1ikWGT5yxqUY1944KT5NF09+Aqz0ttUPbl
+	JFeOLJUA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54580)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rFCVj-0005GR-2l;
+	Mon, 18 Dec 2023 12:14:15 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rFCVi-0006hJ-Np; Mon, 18 Dec 2023 12:14:14 +0000
+Date: Mon, 18 Dec 2023 12:14:14 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
 	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
 	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
 	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
@@ -54,12 +59,12 @@ Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>,
 	Jean-Philippe Brucker <jean-philippe@linaro.org>,
 	jianyong.wu@arm.com, justin.he@arm.com,
 	James Morse <james.morse@arm.com>
-Subject: Re: [PATCH RFC v3 13/21] ACPICA: Add new MADT GICC flags fields
-Message-ID: <ZYAPhlwPUT/7dN4n@lpieralisi>
+Subject: Re: [PATCH RFC v3 21/21] cpumask: Add enabled cpumask for present
+ CPUs that can be brought online
+Message-ID: <ZYA3lmPOwIOJq/iY@shell.armlinux.org.uk>
 References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
- <E1rDOgs-00Dvko-6t@rmk-PC.armlinux.org.uk>
- <20231215162322.00007391@Huawei.com>
- <ZXyEiHLFBsoUkfNI@shell.armlinux.org.uk>
+ <E1rDOhX-00Dvlg-Ci@rmk-PC.armlinux.org.uk>
+ <20231215171831.00004a19@Huawei.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -68,56 +73,41 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZXyEiHLFBsoUkfNI@shell.armlinux.org.uk>
+In-Reply-To: <20231215171831.00004a19@Huawei.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Fri, Dec 15, 2023 at 04:53:28PM +0000, Russell King (Oracle) wrote:
-> On Fri, Dec 15, 2023 at 04:23:22PM +0000, Jonathan Cameron wrote:
-> > On Wed, 13 Dec 2023 12:50:18 +0000
-> > Russell King (Oracle) <rmk+kernel@armlinux.org.uk> wrote:
-> > 
-> > > From: James Morse <james.morse@arm.com>
-> > > 
-> > > Add the new flag field to the MADT's GICC structure.
-> > > 
-> > > 'Online Capable' indicates a disabled CPU can be enabled later. See
-> > > ACPI specification 6.5 Tabel 5.37: GICC CPU Interface Flags.
-> > > 
-> > > Signed-off-by: James Morse <james.morse@arm.com>
-> > > Tested-by: Miguel Luis <miguel.luis@oracle.com>
-> > > Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
-> > > Tested-by: Jianyong Wu <jianyong.wu@arm.com>
-> > > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> > 
-> > I see there is an acpica pull request including this bit but with a different name
-> > For reference.
-> > https://github.com/acpica/acpica/pull/914/commits/453a5f67567786522021d5f6913f561f8b3cabf6
-> > 
-> > +CC Lorenzo who submitted that.
+On Fri, Dec 15, 2023 at 05:18:31PM +0000, Jonathan Cameron wrote:
+> On Wed, 13 Dec 2023 12:50:59 +0000
+> Russell King (Oracle) <rmk+kernel@armlinux.org.uk> wrote:
 > 
-> > > +#define ACPI_MADT_GICC_CPU_CAPABLE      (1<<3)	/* 03: CPU is online capable */
+> > From: James Morse <james.morse@arm.com>
 > > 
-> > ACPI_MADT_GICC_ONLINE_CAPABLE
+> > The 'offline' file in sysfs shows all offline CPUs, including those
+> > that aren't present. User-space is expected to remove not-present CPUs
+> > from this list to learn which CPUs could be brought online.
+> > 
+> > CPUs can be present but not-enabled. These CPUs can't be brought online
+> > until the firmware policy changes, which comes with an ACPI notification
+> > that will register the CPUs.
+> > 
+> > With only the offline and present files, user-space is unable to
+> > determine which CPUs it can try to bring online. Add a new CPU mask
+> > that shows this based on all the registered CPUs.
+> > 
+> > Signed-off-by: James Morse <james.morse@arm.com>
+> > Tested-by: Miguel Luis <miguel.luis@oracle.com>
+> > Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
+> > Tested-by: Jianyong Wu <jianyong.wu@arm.com>
+> > ---
 > 
-> It's somewhat disappointing, but no big deal. It's easy enough to change
-> "irqchip/gic-v3: Add support for ACPI's disabled but 'online capable' CPUs"
-> to use Lorenzo's name when that patch hits - and it becomes one less
-> patch in this patch set when Lorenzo's change eventually hits mainline.
-> 
-> Does anyone know how long it may take for Lorenzo's change to get into
-> mainline? Would it be by the 6.8 merge window or the following one?
+> Needs docs
+> Documentation/ABI/testing/sysfs-devices-system-cpu
+> seems to have the rest of the similar entries.
 
-I wish I knew. I submitted ACPICA changes for the online capable bit
-since I had to add additional flags on top (ie DMA coherent) and it
-would not make sense to submit the latter without the former.
+Any ideas what I put in there as "Date" ? It seems to me that we have
+little idea when this might be merged.. I could use the date of the
+commit (Nov 2022).
 
-I'd be great if the ACPICA headers can make it into Linux for the upcoming
-merge window, not sure what I can do to fasttrack the process though
-(I shall ping the maintainers).
-
-Lorenzo
-
-> Thanks.
-> 
-> -- 
-> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-> FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
