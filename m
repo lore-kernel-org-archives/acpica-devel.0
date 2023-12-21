@@ -1,240 +1,88 @@
-Received: from smtp2.osuosl.org (smtp2.osuosl.org [140.211.166.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC54336097
-	for <acpica-devel@lists.linuxfoundation.org>; Thu, 21 Dec 2023 13:55:47 +0000 (UTC)
-Received: from localhost (localhost [127.0.0.1])
-	by smtp2.osuosl.org (Postfix) with ESMTP id 3C46840382
-	for <acpica-devel@lists.linuxfoundation.org>; Thu, 21 Dec 2023 13:55:47 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 3C46840382
-X-Virus-Scanned: amavisd-new at osuosl.org
-X-Spam-Flag: NO
-X-Spam-Score: -1.398
-X-Spam-Level:
-Received: from smtp2.osuosl.org ([127.0.0.1])
-	by localhost (smtp2.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id yrlfwCQ1oNVh
-	for <acpica-devel@lists.linuxfoundation.org>;
-	Thu, 21 Dec 2023 13:55:46 +0000 (UTC)
-Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
-	by smtp2.osuosl.org (Postfix) with ESMTPS id 01AD040137
-	for <acpica-devel@lists.linuxfoundation.org>; Thu, 21 Dec 2023 13:55:45 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 01AD040137
-Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-6dbb9d03b5eso95559a34.1
-        for <acpica-devel@lists.linuxfoundation.org>; Thu, 21 Dec 2023 05:55:45 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA2086D6DB
+	for <acpica-devel@lists.linux.dev>; Thu, 21 Dec 2023 14:17:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6da09f8ce35so158305a34.0
+        for <acpica-devel@lists.linux.dev>; Thu, 21 Dec 2023 06:17:41 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703166945; x=1703771745;
+        d=1e100.net; s=20230601; t=1703168260; x=1703773060;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tn1YpB9RSUb3kYqtYjrWXVkua1HlT1atP73EUz1/0nY=;
-        b=BXRUcA7lEWggSfOorUeFLGUfQ3jnpkMcNhRpYL7MDb2Bl+gV8sLovrJPtG5AcXlZ3c
-         rTVs8wY2WUaFHtINUolCRYdf8wH32Qs4RNe3UD7BnuogoJtI6dinrBT0IZ1S5eLJfj2C
-         PM61eHv2D75sP4xuYNGB8NqJzSzS5jbZicG6bkA9mt7kOEyznQRwFc19PFnFlp/oTrkF
-         MWSVLFAXbugFGwCwftFjE87gdVGnqa3A2gVBaHHU/9H9RFo57m5RWj7+YZ4kyMAheesK
-         ZgHApj4ddSewi6TQdjdfdRIk5kTg/iwtFb3C7ex7qspKAKwr+otcOpjejKqWqsNk6lwK
-         qcGw==
-X-Gm-Message-State: AOJu0YwQNFbIb/2dlaM2+2cRly3qUbCI0YRenihRrzgV2eUFcu0IZE8v
-	L7noGofzUCBS2VhtdtrhoaG/r+srhBkTX3wzwyk=
-X-Google-Smtp-Source: AGHT+IGyDCjQzUrqeW1hQnA1vPHGjsH39gBljxA4HGmC4zmiOGkpax/gOnaTZ3Hp+uBUwVKFr9RB00v6d1OjIBF6qys=
-X-Received: by 2002:a4a:a581:0:b0:591:cdc0:f28d with SMTP id
- d1-20020a4aa581000000b00591cdc0f28dmr13283358oom.0.1703166944879; Thu, 21 Dec
- 2023 05:55:44 -0800 (PST)
+        bh=iBHSazj3p+MLo+y/uvsliBm5vLXGA+IDGINMZnlhLjU=;
+        b=cJFUIXR6CreINy7mUewD8JSOEAMzH4N6C5GJO6zVhaWO9LCctgbeWfgJqzJWTigVL/
+         81Qah/Jq15ak0yA27wZEfa9I88D9MaYBjy73lgfJ2lILo5t/MV26nPx9ubdXuHU1ng3g
+         cFtMXWVnnfG57gxnFpfJ+/sX6bqLyZLsiPqoxEvziEJRgzbj3fi5dmzDpficAjV80HnZ
+         icUAGygoDKcl8B2mZzB60Mtb7WqLENTsLV5g3+jpsq3MJMMg6qraglS688KE7GVWu51P
+         inI1on5XKdk3kTyVWi2iciNJkiIaemvXn8adcZhBnYvcwOyyAKBFvHS/WWcqCPwLc64w
+         89Qw==
+X-Gm-Message-State: AOJu0YwcGAjl4cmRe9TkJgGHvqMQ8RuZVl3YKP9RerYJCbsvzQWeSaq9
+	1R+5A9uqogkZhVuaHPJkG6luMXDJ2JVrFDObZjk=
+X-Google-Smtp-Source: AGHT+IEj20FBnmLZ/ARdh0C0RK0hJmU/LJkWL9Ggrx3TW+UsEGgW147R1BWJygWWzB9l/UjKt/sx9R3eMBp8DiHLGNY=
+X-Received: by 2002:a05:6820:258a:b0:593:e53b:2df1 with SMTP id
+ cs10-20020a056820258a00b00593e53b2df1mr7893445oob.1.1703168260730; Thu, 21
+ Dec 2023 06:17:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20221027042445.60108-1-xueshuai@linux.alibaba.com> <20231218064521.37324-2-xueshuai@linux.alibaba.com>
-In-Reply-To: <20231218064521.37324-2-xueshuai@linux.alibaba.com>
+References: <20231215072405.65887-1-luoxueqin@kylinos.cn>
+In-Reply-To: <20231215072405.65887-1-luoxueqin@kylinos.cn>
 From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Thu, 21 Dec 2023 14:55:33 +0100
-Message-ID: <CAJZ5v0hnKP9S+5PfuO1EzvpSdHM09s0HidGjfinf491xkdop3g@mail.gmail.com>
-Subject: Re: [PATCH v10 1/4] ACPI: APEI: set memory failure flags as
- MF_ACTION_REQUIRED on synchronous events
-To: Shuai Xue <xueshuai@linux.alibaba.com>
-Cc: bp@alien8.de, rafael@kernel.org, wangkefeng.wang@huawei.com, 
-	tanxiaofei@huawei.com, mawupeng1@huawei.com, tony.luck@intel.com, 
-	linmiaohe@huawei.com, naoya.horiguchi@nec.com, james.morse@arm.com, 
-	gregkh@linuxfoundation.org, will@kernel.org, jarkko@kernel.org, 
-	linux-acpi@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	akpm@linux-foundation.org, linux-edac@vger.kernel.org, 
-	acpica-devel@lists.linuxfoundation.org, stable@vger.kernel.org, 
-	x86@kernel.org, justin.he@arm.com, ardb@kernel.org, ying.huang@intel.com, 
-	ashish.kalra@amd.com, baolin.wang@linux.alibaba.com, tglx@linutronix.de, 
-	mingo@redhat.com, dave.hansen@linux.intel.com, lenb@kernel.org, hpa@zytor.com, 
-	robert.moore@intel.com, lvying6@huawei.com, xiexiuqi@huawei.com, 
-	zhuo.song@linux.alibaba.com
+Date: Thu, 21 Dec 2023 15:17:29 +0100
+Message-ID: <CAJZ5v0g5PdOiRVB08zvi1gBqFU5LKm4O0FaFdH-FC=eQKyNNGA@mail.gmail.com>
+Subject: Re: [PATCH -next] ACPICA: Replace strncpy() with strscpy_pad() for dest
+To: xueqin Luo <luoxueqin@kylinos.cn>
+Cc: robert.moore@intel.com, rafael.j.wysocki@intel.com, lenb@kernel.org, 
+	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 18, 2023 at 7:45=E2=80=AFAM Shuai Xue <xueshuai@linux.alibaba.c=
-om> wrote:
+On Fri, Dec 15, 2023 at 8:24=E2=80=AFAM xueqin Luo <luoxueqin@kylinos.cn> w=
+rote:
 >
-> There are two major types of uncorrected recoverable (UCR) errors :
+> While it is safe to use strncpy in this case, the advice is to move to
+> strscpy_pad[1].
 >
-> - Synchronous error: The error is detected and raised at the point of the
->   consumption in the execution flow, e.g. when a CPU tries to access
->   a poisoned cache line. The CPU will take a synchronous error exception
->   such as Synchronous External Abort (SEA) on Arm64 and Machine Check
->   Exception (MCE) on X86. OS requires to take action (for example, offlin=
-e
->   failure page/kill failure thread) to recover this uncorrectable error.
->
-> - Asynchronous error: The error is detected out of processor execution
->   context, e.g. when an error is detected by a background scrubber. Some =
-data
->   in the memory are corrupted. But the data have not been consumed. OS is
->   optional to take action to recover this uncorrectable error.
->
-> When APEI firmware first is enabled, a platform may describe one error
-> source for the handling of synchronous errors (e.g. MCE or SEA notificati=
-on
-> ), or for handling asynchronous errors (e.g. SCI or External Interrupt
-> notification). In other words, we can distinguish synchronous errors by
-> APEI notification. For synchronous errors, kernel will kill the current
-> process which accessing the poisoned page by sending SIGBUS with
-> BUS_MCEERR_AR. In addition, for asynchronous errors, kernel will notify t=
-he
-> process who owns the poisoned page by sending SIGBUS with BUS_MCEERR_AO i=
-n
-> early kill mode. However, the GHES driver always sets mf_flags to 0 so th=
-at
-> all synchronous errors are handled as asynchronous errors in memory failu=
-re.
->
-> To this end, set memory failure flags as MF_ACTION_REQUIRED on synchronou=
-s
-> events.
->
-> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
-> Tested-by: Ma Wupeng <mawupeng1@huawei.com>
-> Reviewed-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> Reviewed-by: Xiaofei Tan <tanxiaofei@huawei.com>
-> Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-> Reviewed-by: James Morse <james.morse@arm.com>
+> Link: https://www.kernel.org/doc/html/latest/process/deprec:qated.html#st=
+rncpy-on-nul-terminated-strings [1]
+> Signed-off-by: xueqin Luo <luoxueqin@kylinos.cn>
+> ---
+>  drivers/acpi/acpica/utnonansi.c | 3 +--
 
-Applied as 6.8 material.
-
-The other patches in the series still need to receive tags from the
-APEI designated reviewers (as per MAINTAINERS).
+ACPICA code comes from an external project.  The proper way of
+modifying it is to submit a pull request to the upstream ACPICA
+project on GitHub.  Once this pull request has been merged upstream, a
+Linux patch containing a Link: tag to the corresponding upstream pull
+request can be submitted.
 
 Thanks!
 
-
-> ---
->  drivers/acpi/apei/ghes.c | 29 +++++++++++++++++++++++------
->  1 file changed, 23 insertions(+), 6 deletions(-)
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 >
-> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
-> index 63ad0541db38..ab2a82cb1b0b 100644
-> --- a/drivers/acpi/apei/ghes.c
-> +++ b/drivers/acpi/apei/ghes.c
-> @@ -101,6 +101,20 @@ static inline bool is_hest_type_generic_v2(struct gh=
-es *ghes)
->         return ghes->generic->header.type =3D=3D ACPI_HEST_TYPE_GENERIC_E=
-RROR_V2;
->  }
->
-> +/*
-> + * A platform may describe one error source for the handling of synchron=
-ous
-> + * errors (e.g. MCE or SEA), or for handling asynchronous errors (e.g. S=
-CI
-> + * or External Interrupt). On x86, the HEST notifications are always
-> + * asynchronous, so only SEA on ARM is delivered as a synchronous
-> + * notification.
-> + */
-> +static inline bool is_hest_sync_notify(struct ghes *ghes)
-> +{
-> +       u8 notify_type =3D ghes->generic->notify.type;
-> +
-> +       return notify_type =3D=3D ACPI_HEST_NOTIFY_SEA;
-> +}
-> +
->  /*
->   * This driver isn't really modular, however for the time being,
->   * continuing to use module_param is the easiest way to remain
-> @@ -489,7 +503,7 @@ static bool ghes_do_memory_failure(u64 physical_addr,=
- int flags)
->  }
->
->  static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gd=
-ata,
-> -                                      int sev)
-> +                                      int sev, bool sync)
+> diff --git a/drivers/acpi/acpica/utnonansi.c b/drivers/acpi/acpica/utnona=
+nsi.c
+> index ff0802ace19b..3a7952be6545 100644
+> --- a/drivers/acpi/acpica/utnonansi.c
+> +++ b/drivers/acpi/acpica/utnonansi.c
+> @@ -168,8 +168,7 @@ void acpi_ut_safe_strncpy(char *dest, char *source, a=
+cpi_size dest_size)
 >  {
->         int flags =3D -1;
->         int sec_sev =3D ghes_severity(gdata->error_severity);
-> @@ -503,7 +517,7 @@ static bool ghes_handle_memory_failure(struct acpi_he=
-st_generic_data *gdata,
->             (gdata->flags & CPER_SEC_ERROR_THRESHOLD_EXCEEDED))
->                 flags =3D MF_SOFT_OFFLINE;
->         if (sev =3D=3D GHES_SEV_RECOVERABLE && sec_sev =3D=3D GHES_SEV_RE=
-COVERABLE)
-> -               flags =3D 0;
-> +               flags =3D sync ? MF_ACTION_REQUIRED : 0;
+>         /* Always terminate destination string */
 >
->         if (flags !=3D -1)
->                 return ghes_do_memory_failure(mem_err->physical_addr, fla=
-gs);
-> @@ -511,9 +525,11 @@ static bool ghes_handle_memory_failure(struct acpi_h=
-est_generic_data *gdata,
->         return false;
+> -       strncpy(dest, source, dest_size);
+> -       dest[dest_size - 1] =3D 0;
+> +       strscpy_pad(dest, source, dest_size);
 >  }
 >
-> -static bool ghes_handle_arm_hw_error(struct acpi_hest_generic_data *gdat=
-a, int sev)
-> +static bool ghes_handle_arm_hw_error(struct acpi_hest_generic_data *gdat=
-a,
-> +                                      int sev, bool sync)
->  {
->         struct cper_sec_proc_arm *err =3D acpi_hest_get_payload(gdata);
-> +       int flags =3D sync ? MF_ACTION_REQUIRED : 0;
->         bool queued =3D false;
->         int sec_sev, i;
->         char *p;
-> @@ -538,7 +554,7 @@ static bool ghes_handle_arm_hw_error(struct acpi_hest=
-_generic_data *gdata, int s
->                  * and don't filter out 'corrected' error here.
->                  */
->                 if (is_cache && has_pa) {
-> -                       queued =3D ghes_do_memory_failure(err_info->physi=
-cal_fault_addr, 0);
-> +                       queued =3D ghes_do_memory_failure(err_info->physi=
-cal_fault_addr, flags);
->                         p +=3D err_info->length;
->                         continue;
->                 }
-> @@ -666,6 +682,7 @@ static bool ghes_do_proc(struct ghes *ghes,
->         const guid_t *fru_id =3D &guid_null;
->         char *fru_text =3D "";
->         bool queued =3D false;
-> +       bool sync =3D is_hest_sync_notify(ghes);
->
->         sev =3D ghes_severity(estatus->error_severity);
->         apei_estatus_for_each_section(estatus, gdata) {
-> @@ -683,13 +700,13 @@ static bool ghes_do_proc(struct ghes *ghes,
->                         atomic_notifier_call_chain(&ghes_report_chain, se=
-v, mem_err);
->
->                         arch_apei_report_mem_error(sev, mem_err);
-> -                       queued =3D ghes_handle_memory_failure(gdata, sev)=
-;
-> +                       queued =3D ghes_handle_memory_failure(gdata, sev,=
- sync);
->                 }
->                 else if (guid_equal(sec_type, &CPER_SEC_PCIE)) {
->                         ghes_handle_aer(gdata);
->                 }
->                 else if (guid_equal(sec_type, &CPER_SEC_PROC_ARM)) {
-> -                       queued =3D ghes_handle_arm_hw_error(gdata, sev);
-> +                       queued =3D ghes_handle_arm_hw_error(gdata, sev, s=
-ync);
->                 } else {
->                         void *err =3D acpi_hest_get_payload(gdata);
->
+>  #endif
 > --
-> 2.39.3
+> 2.34.1
+>
 >
