@@ -1,88 +1,112 @@
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp1.osuosl.org (smtp1.osuosl.org [140.211.166.138])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA2086D6DB
-	for <acpica-devel@lists.linux.dev>; Thu, 21 Dec 2023 14:17:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6da09f8ce35so158305a34.0
-        for <acpica-devel@lists.linux.dev>; Thu, 21 Dec 2023 06:17:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703168260; x=1703773060;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iBHSazj3p+MLo+y/uvsliBm5vLXGA+IDGINMZnlhLjU=;
-        b=cJFUIXR6CreINy7mUewD8JSOEAMzH4N6C5GJO6zVhaWO9LCctgbeWfgJqzJWTigVL/
-         81Qah/Jq15ak0yA27wZEfa9I88D9MaYBjy73lgfJ2lILo5t/MV26nPx9ubdXuHU1ng3g
-         cFtMXWVnnfG57gxnFpfJ+/sX6bqLyZLsiPqoxEvziEJRgzbj3fi5dmzDpficAjV80HnZ
-         icUAGygoDKcl8B2mZzB60Mtb7WqLENTsLV5g3+jpsq3MJMMg6qraglS688KE7GVWu51P
-         inI1on5XKdk3kTyVWi2iciNJkiIaemvXn8adcZhBnYvcwOyyAKBFvHS/WWcqCPwLc64w
-         89Qw==
-X-Gm-Message-State: AOJu0YwcGAjl4cmRe9TkJgGHvqMQ8RuZVl3YKP9RerYJCbsvzQWeSaq9
-	1R+5A9uqogkZhVuaHPJkG6luMXDJ2JVrFDObZjk=
-X-Google-Smtp-Source: AGHT+IEj20FBnmLZ/ARdh0C0RK0hJmU/LJkWL9Ggrx3TW+UsEGgW147R1BWJygWWzB9l/UjKt/sx9R3eMBp8DiHLGNY=
-X-Received: by 2002:a05:6820:258a:b0:593:e53b:2df1 with SMTP id
- cs10-20020a056820258a00b00593e53b2df1mr7893445oob.1.1703168260730; Thu, 21
- Dec 2023 06:17:40 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0028E33CF
+	for <acpica-devel@lists.linuxfoundation.org>; Fri, 22 Dec 2023 01:08:03 +0000 (UTC)
+Received: from localhost (localhost [127.0.0.1])
+	by smtp1.osuosl.org (Postfix) with ESMTP id 8600083B8E
+	for <acpica-devel@lists.linuxfoundation.org>; Fri, 22 Dec 2023 01:08:03 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 8600083B8E
+X-Virus-Scanned: amavisd-new at osuosl.org
+X-Spam-Flag: NO
+X-Spam-Score: -9.899
+X-Spam-Level:
+Received: from smtp1.osuosl.org ([127.0.0.1])
+	by localhost (smtp1.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id x5Ki4zji7FmZ
+	for <acpica-devel@lists.linuxfoundation.org>;
+	Fri, 22 Dec 2023 01:08:02 +0000 (UTC)
+Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
+	by smtp1.osuosl.org (Postfix) with ESMTPS id C81B883B8D
+	for <acpica-devel@lists.linuxfoundation.org>; Fri, 22 Dec 2023 01:08:01 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org C81B883B8D
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=34;SR=0;TI=SMTPD_---0Vyz1YYc_1703207271;
+Received: from 30.240.112.165(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Vyz1YYc_1703207271)
+          by smtp.aliyun-inc.com;
+          Fri, 22 Dec 2023 09:07:54 +0800
+Message-ID: <f8bff25f-714a-40ab-b450-5dee8d964463@linux.alibaba.com>
+Date: Fri, 22 Dec 2023 09:07:50 +0800
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20231215072405.65887-1-luoxueqin@kylinos.cn>
-In-Reply-To: <20231215072405.65887-1-luoxueqin@kylinos.cn>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Thu, 21 Dec 2023 15:17:29 +0100
-Message-ID: <CAJZ5v0g5PdOiRVB08zvi1gBqFU5LKm4O0FaFdH-FC=eQKyNNGA@mail.gmail.com>
-Subject: Re: [PATCH -next] ACPICA: Replace strncpy() with strscpy_pad() for dest
-To: xueqin Luo <luoxueqin@kylinos.cn>
-Cc: robert.moore@intel.com, rafael.j.wysocki@intel.com, lenb@kernel.org, 
-	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v10 1/4] ACPI: APEI: set memory failure flags as
+ MF_ACTION_REQUIRED on synchronous events
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: bp@alien8.de, wangkefeng.wang@huawei.com, tanxiaofei@huawei.com,
+ mawupeng1@huawei.com, tony.luck@intel.com, linmiaohe@huawei.com,
+ naoya.horiguchi@nec.com, james.morse@arm.com, gregkh@linuxfoundation.org,
+ will@kernel.org, jarkko@kernel.org, linux-acpi@vger.kernel.org,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+ linux-edac@vger.kernel.org, acpica-devel@lists.linuxfoundation.org,
+ stable@vger.kernel.org, x86@kernel.org, justin.he@arm.com, ardb@kernel.org,
+ ying.huang@intel.com, ashish.kalra@amd.com, baolin.wang@linux.alibaba.com,
+ tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+ lenb@kernel.org, hpa@zytor.com, robert.moore@intel.com, lvying6@huawei.com,
+ xiexiuqi@huawei.com, zhuo.song@linux.alibaba.com
+References: <20221027042445.60108-1-xueshuai@linux.alibaba.com>
+ <20231218064521.37324-2-xueshuai@linux.alibaba.com>
+ <CAJZ5v0hnKP9S+5PfuO1EzvpSdHM09s0HidGjfinf491xkdop3g@mail.gmail.com>
+Content-Language: en-US
+From: Shuai Xue <xueshuai@linux.alibaba.com>
+In-Reply-To: <CAJZ5v0hnKP9S+5PfuO1EzvpSdHM09s0HidGjfinf491xkdop3g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, Dec 15, 2023 at 8:24=E2=80=AFAM xueqin Luo <luoxueqin@kylinos.cn> w=
-rote:
->
-> While it is safe to use strncpy in this case, the advice is to move to
-> strscpy_pad[1].
->
-> Link: https://www.kernel.org/doc/html/latest/process/deprec:qated.html#st=
-rncpy-on-nul-terminated-strings [1]
-> Signed-off-by: xueqin Luo <luoxueqin@kylinos.cn>
-> ---
->  drivers/acpi/acpica/utnonansi.c | 3 +--
 
-ACPICA code comes from an external project.  The proper way of
-modifying it is to submit a pull request to the upstream ACPICA
-project on GitHub.  Once this pull request has been merged upstream, a
-Linux patch containing a Link: tag to the corresponding upstream pull
-request can be submitted.
 
-Thanks!
+On 2023/12/21 21:55, Rafael J. Wysocki wrote:
+> On Mon, Dec 18, 2023 at 7:45 AM Shuai Xue <xueshuai@linux.alibaba.com> wrote:
+>>
+>> There are two major types of uncorrected recoverable (UCR) errors :
+>>
+>> - Synchronous error: The error is detected and raised at the point of the
+>>   consumption in the execution flow, e.g. when a CPU tries to access
+>>   a poisoned cache line. The CPU will take a synchronous error exception
+>>   such as Synchronous External Abort (SEA) on Arm64 and Machine Check
+>>   Exception (MCE) on X86. OS requires to take action (for example, offline
+>>   failure page/kill failure thread) to recover this uncorrectable error.
+>>
+>> - Asynchronous error: The error is detected out of processor execution
+>>   context, e.g. when an error is detected by a background scrubber. Some data
+>>   in the memory are corrupted. But the data have not been consumed. OS is
+>>   optional to take action to recover this uncorrectable error.
+>>
+>> When APEI firmware first is enabled, a platform may describe one error
+>> source for the handling of synchronous errors (e.g. MCE or SEA notification
+>> ), or for handling asynchronous errors (e.g. SCI or External Interrupt
+>> notification). In other words, we can distinguish synchronous errors by
+>> APEI notification. For synchronous errors, kernel will kill the current
+>> process which accessing the poisoned page by sending SIGBUS with
+>> BUS_MCEERR_AR. In addition, for asynchronous errors, kernel will notify the
+>> process who owns the poisoned page by sending SIGBUS with BUS_MCEERR_AO in
+>> early kill mode. However, the GHES driver always sets mf_flags to 0 so that
+>> all synchronous errors are handled as asynchronous errors in memory failure.
+>>
+>> To this end, set memory failure flags as MF_ACTION_REQUIRED on synchronous
+>> events.
+>>
+>> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
+>> Tested-by: Ma Wupeng <mawupeng1@huawei.com>
+>> Reviewed-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+>> Reviewed-by: Xiaofei Tan <tanxiaofei@huawei.com>
+>> Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+>> Reviewed-by: James Morse <james.morse@arm.com>
+> 
+> Applied as 6.8 material.
+> 
+> The other patches in the series still need to receive tags from the
+> APEI designated reviewers (as per MAINTAINERS).
+> 
+> Thanks!
+> 
 
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/drivers/acpi/acpica/utnonansi.c b/drivers/acpi/acpica/utnona=
-nsi.c
-> index ff0802ace19b..3a7952be6545 100644
-> --- a/drivers/acpi/acpica/utnonansi.c
-> +++ b/drivers/acpi/acpica/utnonansi.c
-> @@ -168,8 +168,7 @@ void acpi_ut_safe_strncpy(char *dest, char *source, a=
-cpi_size dest_size)
->  {
->         /* Always terminate destination string */
->
-> -       strncpy(dest, source, dest_size);
-> -       dest[dest_size - 1] =3D 0;
-> +       strscpy_pad(dest, source, dest_size);
->  }
->
->  #endif
-> --
-> 2.34.1
->
->
+Thank you :)
+
+I will wait more feedback of other patches from MAINTAINERS.
+
+Cheers,
+Shuai
