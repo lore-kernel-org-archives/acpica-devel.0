@@ -1,173 +1,212 @@
-Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C5B61B26E
-	for <acpica-devel@lists.linux.dev>; Wed,  3 Jan 2024 15:37:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-59614694ca2so61514eaf.1
-        for <acpica-devel@lists.linux.dev>; Wed, 03 Jan 2024 07:37:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704296266; x=1704901066;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=40j+IqysrfYQAUt1SJO3JpRmqTkW8BeHGoeDA+iZloI=;
-        b=MXxUyjq4C+a8IY/z/qbCylE5g+JbcNoI77vOXBfvUoeEE8s0wyezpLGJcXPk4vpm8h
-         9UStWcKHRPkkAKI9umFFQHHvTGQF8ZbphlCC8Gk5aXR27CdU7JKovvy0Ay/MNlaa9fvr
-         AOMn5eFeOYlnAoQ/elwtJuDqSeBks7P+Jigxr/niKZuANMWEViM1p0fgag/1UJ+MMp0r
-         tcKPgE7zOnnjMLP+xE8jBuHR1V9qr/rGuma4bJ6u709tuqEaxlcZG+HDzNFkeY0m7r9e
-         h2GZdxUOMAGrkCmV4I9KCJpCq1u+7Z4ojff6S+gNcs9AKSLItc/VzdUuBbE9+N7TasfV
-         8UJw==
-X-Gm-Message-State: AOJu0YwneSvxSgXWVcwoJoAimAAVyflvNaGtOqrUKu2v1Rqt9+N5cxq6
-	M0TRNii9cT5K7236rwsYCVtKMP/widDH3D8bneQ=
-X-Google-Smtp-Source: AGHT+IEQNWRFK5ZWxSqawWVegeMCE+VE1LW3uWj3cWaGWt2FsA5ZWT7ccUJrKWdr45QdTslurAf486vxU50F76ICkVM=
-X-Received: by 2002:a4a:b38c:0:b0:595:6024:c4f8 with SMTP id
- p12-20020a4ab38c000000b005956024c4f8mr8288888ooo.1.1704296266137; Wed, 03 Jan
- 2024 07:37:46 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BA551DA22;
+	Wed,  3 Jan 2024 21:24:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="bubHF3IK"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+	t=1704317027; x=1704921827; i=w_armin@gmx.de;
+	bh=yO7sUoFBz10D4BbdlI/Pa5souxOjv3EhM/T5i4KQEpc=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=bubHF3IKiJFzq5b+30WnnG2RvOv17jku/EFF7QrQoWrtoTGyGuaQdRVQrkWHf4vf
+	 +e6GR/PcHxkjYc27IiHiUwamshYnwMv/78MVrLs+j/tFfuvA0t4ADe3FfGmL8V5Aa
+	 LAJWsgUmnDiTbfJdtWHHEs9Nnu5yQwqtA2hq8S02AakuM8N2Lo944QUaHoNHl+ybd
+	 2dwJXXU4cgl1+Ax8HJiHBxaU65pydHrijgqj0hdWNoquSgVTfhm9xsPDi4gCFmoAU
+	 ewv8VLAF7ByKMV7w4W7nCUXmN64dvoU32Yd80kcaipWJArzH827+dy/2m3byCzLEe
+	 Rd3JbZtJK2K8dXgBzA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [141.30.226.129] ([141.30.226.129]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MwwZX-1r1P8y0gkF-00ySrw; Wed, 03
+ Jan 2024 22:23:47 +0100
+Message-ID: <430501f6-47fc-49c8-8db8-9cbdf2ba1ae5@gmx.de>
+Date: Wed, 3 Jan 2024 22:23:44 +0100
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20231228075705.26652-1-TonyWWang-oc@zhaoxin.com> <20231228075705.26652-4-TonyWWang-oc@zhaoxin.com>
-In-Reply-To: <20231228075705.26652-4-TonyWWang-oc@zhaoxin.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 3 Jan 2024 16:37:35 +0100
-Message-ID: <CAJZ5v0hEd-NV5WoRPOZgZwxNS6M=TKcw7DpDUM9MWFYAaa+1Mw@mail.gmail.com>
-Subject: Re: [PATCH 3/3] ACPI: cpufreq: Add ITMT support when CPPC enabled for
- Zhaoxin CPUs
-To: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
-Cc: rafael@kernel.org, lenb@kernel.org, robert.moore@intel.com, 
-	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	acpica-devel@lists.linux.dev, tglx@linutronix.de, mingo@redhat.com, 
-	bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
-	mcgrof@kernel.org, peterz@infradead.org, j.granados@samsung.com, 
-	ricardo.neri-calderon@linux.intel.com, viresh.kumar@linaro.org, 
-	linux-pm@vger.kernel.org, CobeChen@zhaoxin.com, TimGuo@zhaoxin.com, 
-	LeoLiu-oc@zhaoxin.com, LindaChai@zhaoxin.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] hwmon: (acpi_power_meter) Ensure IPMI space handler is
+ ready on Dell systems
+Content-Language: en-US
+To: Kai-Heng Feng <kai.heng.feng@canonical.com>, jdelvare@suse.com,
+ linux@roeck-us.net
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
+ Robert Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+ acpica-devel@lists.linux.dev
+References: <20231227040401.548977-1-kai.heng.feng@canonical.com>
+From: Armin Wolf <W_Armin@gmx.de>
+In-Reply-To: <20231227040401.548977-1-kai.heng.feng@canonical.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:oB8ghZbp5DNMxKkEt+cWRBNblI0o7wFwtVdXY8jsgybXH3fPfdq
+ aFZb2DMHX4kOG5LYxuCLWywDJSr0g7r8HZGB/Ur7y1AtdEJeLCDiNGLo8Fw4dtbMMdE5fyR
+ jjghZ2Wrfyu21joNtdqG9HUMeqqUQ/2If6i0KHHtK2PsJbVVQHFXD16KedbAqruqdMMyJKx
+ qsi4gYHCEwyy8wLSmgaCw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:jWNTYdIKL4k=;Fa7BTiBq3zDax/4BRvmo2KH5vrz
+ /yCgBJSzTB8wgOlP+Em2Bx9ExqMlAWF0MpgJyai3aS6ETaNa3rXO2aeEuySGdXqzblmIxKi2Y
+ Ktlb0Pavd819YcwaRORdJfxRfJV4+6Ivac0zBCtkMBEg6DeEQm6joGQXN20vJrqMAM8hDKLJg
+ Y9k4UJh2FHEmdsaDuk/P9NHXdfFJ559V4G04Ahot6BNIZeBqPOSuKmMVjPyFs+zWM5IrziaiU
+ NfC/2SJomw3Nn1zCiBK285gWlqyjQb+YtLC8pqN9o/7W4tHeH97mykcmAtXVCCvgrG9LMYfTp
+ h1EsI28Sd+uKeic/rSyJuNkg3mbdHSlEaE2KJ86jBOKQ+WfK2jHfUvqI7ibt/i2snphf7tSa9
+ dtTknPIN/JmuWdXb1B5saA8F+aNCrFGxRDIeiR+hFRbfLFUWUBdnpwjd5bW02sL/1v9mdow/Q
+ 0yL9At3mKYTOQ+onNnU+tGd5QDH//MQccqtHz82Ai8kGSQW4INAX0+qqXYC6dwVecNQ+uRHTq
+ IunZW7PHRw4Jb1pY5l3nnVuMLC0O4nV3LHU4nF0TbZ0ROCR84sP7fRVbbkJncy/R4hv9WlbE5
+ W6lidre87uJtmTtGw6yaQzvxlYcIpAuPk23wNNEXQX0pJHSD1i66fsmUjDXDqqUvPkUAr6TCp
+ BOjp+2IsgdguhzfnB+mtfAx6DYds4LLFj8bbZjiE3B90WcXIfDGY1SLEp3/8axHIOVE8xmury
+ VPeEQDkPhwJbX9xmZ6gjR8hntFUYD0a5D7bJqnD79qVo+xufPFBElAgdBNv9hlqcT7cA3Yd0b
+ RmJzPBsjvswA2dfXhDH82wMh2Q/360NzfAoHLwiRKqy5QEacjD8wzP/1yfv8/QLjYMef4E/Mx
+ BDXGa4YEOnWEN2X7dw3YIsZOVGqRb5XTecjIfvUU5vZD21XQ+rjsKPNYsO27U+iZVnospSm7O
+ tKkR5/Okt/3wM3zu8vVdiXEyPco=
 
-On Thu, Dec 28, 2023 at 8:57=E2=80=AFAM Tony W Wang-oc <TonyWWang-oc@zhaoxi=
-n.com> wrote:
+Am 27.12.23 um 05:04 schrieb Kai-Heng Feng:
+
+> The following error can be observed at boot:
+> [    3.717920] ACPI Error: No handler for Region [SYSI] (00000000ab9e62c=
+5) [IPMI] (20230628/evregion-130)
+> [    3.717928] ACPI Error: Region IPMI (ID=3D7) has no handler (20230628=
+/exfldio-261)
 >
-> For Zhaoxin CPUs, the cores' highest frequencies may be different, which
-> means that cores may run at different max frequencies,
+> [    3.717936] No Local Variables are initialized for Method [_GHL]
 >
-> According to ACPI-spec6 chapter 8.4.7, the per-core highest frequency
-> value can be obtained via cppc.
+> [    3.717938] No Arguments are initialized for method [_GHL]
 >
-> The core with the higher frequency have better performance, which can be
-> called as preferred core. And better performance can be achieved by
-> making the scheduler to run tasks on these preferred cores.
+> [    3.717940] ACPI Error: Aborting method \_SB.PMI0._GHL due to previou=
+s error (AE_NOT_EXIST) (20230628/psparse-529)
+> [    3.717949] ACPI Error: Aborting method \_SB.PMI0._PMC due to previou=
+s error (AE_NOT_EXIST) (20230628/psparse-529)
+> [    3.717957] ACPI: \_SB_.PMI0: _PMC evaluation failed: AE_NOT_EXIST
 >
-> The cpufreq driver can use the highest frequency value as the prioriy of
-> core to make the scheduler try to get better performace. More specificall=
-y,
-> in the acpi-cpufreq driver use cppc_get_highest_perf() to get highest
-> frequency value of each core, use sched_set_itmt_core_prio() to set
-> highest frequency value as core priority, and use sched_set_itmt_support(=
-)
-> provided by ITMT to tell the scheduler to favor on the preferred cores.
+> On Dell systems several methods of acpi_power_meter access variables in
+> IPMI region [0], so wait until IPMI space handler is installed by
+> acpi_ipmi and also wait until SMI is selected to make the space handler
+> fully functional.
+
+Hi,
+
+could it be that the ACPI firmware expects us to support the ACPI SPMI tab=
+le?
+The ACPI SPMI table contains a description of the IPMI interface used by t=
+he platform,
+and its purpose seems to be similar to the ACPI ECDT table in that it allo=
+ws the OS
+to access IPMI resources before all ACPI namespaces are enumerated.
+
+Adding support for this table would solve this problem without stalling th=
+e boot
+process by waiting for the ACPI IPMI device to probe. It would also avoid =
+any issues
+should the ACPI IPMI device be removed later.
+
+Armin Wolf
+
 >
-> Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+> [0] https://www.dell.com/support/manuals/en-us/redhat-enterprise-linux-v=
+8.0/rhel8_rn_pub/advanced-configuration-and-power-interface-acpi-error-mes=
+sages-displayed-in-dmesg?guid=3Dguid-0d5ae482-1977-42cf-b417-3ed5c3f5ee62
+>
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 > ---
->  drivers/cpufreq/acpi-cpufreq.c | 56 +++++++++++++++++++++++++++++++++-
->  1 file changed, 55 insertions(+), 1 deletion(-)
+> v2:
+>   - Use completion instead of request_module().
 >
-> diff --git a/drivers/cpufreq/acpi-cpufreq.c b/drivers/cpufreq/acpi-cpufre=
-q.c
-> index 37f1cdf46d29..f4c1ff9e4bb0 100644
-> --- a/drivers/cpufreq/acpi-cpufreq.c
-> +++ b/drivers/cpufreq/acpi-cpufreq.c
-> @@ -663,8 +663,56 @@ static u64 get_max_boost_ratio(unsigned int cpu)
+>   drivers/acpi/acpi_ipmi.c         | 13 ++++++++++++-
+>   drivers/hwmon/acpi_power_meter.c |  4 ++++
+>   include/acpi/acpi_bus.h          |  4 ++++
+>   3 files changed, 20 insertions(+), 1 deletion(-)
 >
->         return div_u64(highest_perf << SCHED_CAPACITY_SHIFT, nominal_perf=
-);
->  }
+> diff --git a/drivers/acpi/acpi_ipmi.c b/drivers/acpi/acpi_ipmi.c
+> index 0555f68c2dfd..2ea8b7e6cebf 100644
+> --- a/drivers/acpi/acpi_ipmi.c
+> +++ b/drivers/acpi/acpi_ipmi.c
+> @@ -23,6 +23,8 @@ MODULE_LICENSE("GPL");
+>   #define IPMI_TIMEOUT			(5000)
+>   #define ACPI_IPMI_MAX_MSG_LENGTH	64
+>
+> +static struct completion smi_selected;
 > +
-> +/* The work item is needed to avoid CPU hotplug locking issues */
-> +static void sched_itmt_work_fn(struct work_struct *work)
+>   struct acpi_ipmi_device {
+>   	/* the device list attached to driver_data.ipmi_devices */
+>   	struct list_head head;
+> @@ -463,8 +465,10 @@ static void ipmi_register_bmc(int iface, struct dev=
+ice *dev)
+>   		if (temp->handle =3D=3D handle)
+>   			goto err_lock;
+>   	}
+> -	if (!driver_data.selected_smi)
+> +	if (!driver_data.selected_smi) {
+>   		driver_data.selected_smi =3D ipmi_device;
+> +		complete(&smi_selected);
+> +	}
+>   	list_add_tail(&ipmi_device->head, &driver_data.ipmi_devices);
+>   	mutex_unlock(&driver_data.ipmi_lock);
+>
+> @@ -578,10 +582,17 @@ acpi_ipmi_space_handler(u32 function, acpi_physica=
+l_address address,
+>   	return status;
+>   }
+>
+> +void wait_for_acpi_ipmi(void)
 > +{
-> +       sched_set_itmt_support();
+> +	wait_for_completion_interruptible_timeout(&smi_selected, 2 * HZ);
 > +}
+> +EXPORT_SYMBOL_GPL(wait_for_acpi_ipmi);
 > +
-> +static DECLARE_WORK(sched_itmt_work, sched_itmt_work_fn);
+>   static int __init acpi_ipmi_init(void)
+>   {
+>   	int result;
+>   	acpi_status status;
+> +	init_completion(&smi_selected);
+>
+>   	if (acpi_disabled)
+>   		return 0;
+> diff --git a/drivers/hwmon/acpi_power_meter.c b/drivers/hwmon/acpi_power=
+_meter.c
+> index 703666b95bf4..acaf1ae68dc8 100644
+> --- a/drivers/hwmon/acpi_power_meter.c
+> +++ b/drivers/hwmon/acpi_power_meter.c
+> @@ -883,6 +883,10 @@ static int acpi_power_meter_add(struct acpi_device =
+*device)
+>   	strcpy(acpi_device_class(device), ACPI_POWER_METER_CLASS);
+>   	device->driver_data =3D resource;
+>
+> +	if (dmi_match(DMI_SYS_VENDOR, "Dell Inc.") &&
+> +	    acpi_dev_get_first_match_dev("IPI0001", NULL, -1))
+> +		wait_for_acpi_ipmi();
 > +
-> +static void set_itmt_prio(int cpu)
+>   	res =3D read_capabilities(resource);
+>   	if (res)
+>   		goto exit_free;
+> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+> index 1216d72c650f..ed59fb89721e 100644
+> --- a/include/acpi/acpi_bus.h
+> +++ b/include/acpi/acpi_bus.h
+> @@ -655,6 +655,7 @@ bool acpi_device_override_status(struct acpi_device =
+*adev, unsigned long long *s
+>   bool acpi_quirk_skip_acpi_ac_and_battery(void);
+>   int acpi_install_cmos_rtc_space_handler(acpi_handle handle);
+>   void acpi_remove_cmos_rtc_space_handler(acpi_handle handle);
+> +void wait_for_acpi_ipmi(void);
+>   #else
+>   static inline bool acpi_device_override_status(struct acpi_device *ade=
+v,
+>   					       unsigned long long *status)
+> @@ -672,6 +673,9 @@ static inline int acpi_install_cmos_rtc_space_handle=
+r(acpi_handle handle)
+>   static inline void acpi_remove_cmos_rtc_space_handler(acpi_handle hand=
+le)
+>   {
+>   }
+> +static inline void wait_for_acpi_ipmi(void)
 > +{
-> +       static bool cppc_highest_perf_diff;
-> +       static struct cpumask core_prior_mask;
-> +       u64 highest_perf;
-> +       static u64 max_highest_perf =3D 0, min_highest_perf =3D U64_MAX;
-> +       int ret;
-> +
-> +       ret =3D cppc_get_highest_perf(cpu, &highest_perf);
-> +       if (ret)
-> +               return;
-> +
-> +       sched_set_itmt_core_prio(highest_perf, cpu);
-> +       cpumask_set_cpu(cpu, &core_prior_mask);
-> +
-> +       if (max_highest_perf <=3D min_highest_perf) {
-> +               if (highest_perf > max_highest_perf)
-> +                       max_highest_perf =3D highest_perf;
-> +
-> +               if (highest_perf < min_highest_perf)
-> +                       min_highest_perf =3D highest_perf;
-> +
-> +               if (max_highest_perf > min_highest_perf) {
-> +                       /*
-> +                        * This code can be run during CPU online under t=
-he
-> +                        * CPU hotplug locks, so sched_set_itmt_support()
-> +                        * cannot be called from here.  Queue up a work i=
-tem
-> +                        * to invoke it.
-> +                        */
-> +                       cppc_highest_perf_diff =3D true;
-> +               }
-> +       }
-> +
-> +       if (cppc_highest_perf_diff && cpumask_equal(&core_prior_mask, cpu=
-_online_mask)) {
-> +               pr_debug("queue a work to set itmt enabled\n");
-> +               schedule_work(&sched_itmt_work);
-> +       }
 > +}
->  #else
->  static inline u64 get_max_boost_ratio(unsigned int cpu) { return 0; }
-> +static void set_itmt_prio(int cpu) { }
->  #endif
+>   #endif
 >
->  static int acpi_cpufreq_cpu_init(struct cpufreq_policy *policy)
-> @@ -677,7 +725,7 @@ static int acpi_cpufreq_cpu_init(struct cpufreq_polic=
-y *policy)
->         unsigned int valid_states =3D 0;
->         unsigned int result =3D 0;
->         u64 max_boost_ratio;
-> -       unsigned int i;
-> +       unsigned int i, j;
->  #ifdef CONFIG_SMP
->         static int blacklisted;
->  #endif
-> @@ -742,6 +790,12 @@ static int acpi_cpufreq_cpu_init(struct cpufreq_poli=
-cy *policy)
->         }
->  #endif
->
-> +       if (c->x86_vendor =3D=3D X86_VENDOR_CENTAUR || c->x86_vendor =3D=
-=3D X86_VENDOR_ZHAOXIN) {
-> +               for_each_cpu(j, policy->cpus) {
-> +                       set_itmt_prio(j);
-> +               }
-> +       }
-> +
->         /* capability check */
->         if (perf->state_count <=3D 1) {
->                 pr_debug("No P-States\n");
-> --
-
-Have you considered using the CPPC cpufreq driver on those platforms?
+>   #if IS_ENABLED(CONFIG_X86_ANDROID_TABLETS)
