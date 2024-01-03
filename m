@@ -1,231 +1,130 @@
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E60F314A80
-	for <acpica-devel@lists.linux.dev>; Wed,  3 Jan 2024 03:36:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="NOe2dazo"
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com [209.85.216.72])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 487B63F5A0
-	for <acpica-devel@lists.linux.dev>; Wed,  3 Jan 2024 03:36:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1704253006;
-	bh=X10895KQ3QE6ohq+NRMU0He1xRYscfKUHEWEvSElvJg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type;
-	b=NOe2dazotDTAPlbjKGwiTcfDzfmqjgbkOpqk4ddXfbTuy3i5OWLIb8ai5OQ3GgF6d
-	 T7shxfwOIPotWg5m10Lm5XUpUv9Y1U2xcMX7vC15wnccO/kzVevdur6V3wj0K5ljT3
-	 0saTS+4I37zmrPJaXJW2Km9v4EJaysHudFirEBEwy3omPJ0ti2ve6+WQ+qZ7JO7nPg
-	 pYNry3ulTRZfAop/+dd17c/88j18FgbqkfGaSIHpByPRj2HXlO5xbY1qV2He+S1VWx
-	 jIadi/kPa64T55EZBbtZpmqcvPKh/Qg7UARPSXXk6MskuQeLN8SY4GNT6maKQPHGN/
-	 c9Os7Kk8vr8dg==
-Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-28cb2ff8ef3so78823a91.0
-        for <acpica-devel@lists.linux.dev>; Tue, 02 Jan 2024 19:36:46 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 453F91A5AB
+	for <acpica-devel@lists.linux.dev>; Wed,  3 Jan 2024 13:43:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-59584f41f1eso328085eaf.1
+        for <acpica-devel@lists.linux.dev>; Wed, 03 Jan 2024 05:43:29 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704253005; x=1704857805;
+        d=1e100.net; s=20230601; t=1704289408; x=1704894208;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=X10895KQ3QE6ohq+NRMU0He1xRYscfKUHEWEvSElvJg=;
-        b=i9B3NKQBBMu70/P1vTQpvTrzC3sF5qhRzVsFWjTuTeaaIajAAlR36bX8AvEBIMisNQ
-         NRpPixKrtqMgbdiIchH1/AMmY2t6d+3VatoPUEApzNfMOsJyL6TCgScMEzCQ/piF7yuU
-         dgurNpebqapaWq8ak4UNYFMMS+mmE9CS765j3OvT1GOLEo31iJJmJA5SsUKlKXGsj3lD
-         lrTYbVkRGMZnSVv+QRgAoWW3XHdT8E2YHLG2Ohd6lUarhaiPtWoXbLA2R+g1X9syTHaF
-         0KxhDMzsIzg9cJSVEvRrXKupHsqgKHhhfTh2a528ic6/z1F1VkEzdIbZPlEH8TlDS7tz
-         4Tfw==
-X-Gm-Message-State: AOJu0YwPDDF3yrLg2HEpb9ZQno5piEQa2vmja7OtRV6yx1NcKzi/+hBt
-	m2Cnd0XA7tXCwl7JiQhls2Mpmw/gZ6WqobV2ZRQfthIvaO2RadcaGPUkmX1o5MLm5/LcDcf8RYu
-	5q0FU0jn+YgQhwH+X+08rMW6mKajL5TKjWwQO6cSleOeAY4dPXoMk0hz+38HRd2EM
-X-Received: by 2002:a17:90b:4a42:b0:28c:815e:e0f0 with SMTP id lb2-20020a17090b4a4200b0028c815ee0f0mr534074pjb.37.1704253004883;
-        Tue, 02 Jan 2024 19:36:44 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFoYAqyj4LBWZ9v5lFAuvCXUaw6N52xAk67xXO+bjEa0tmcamKwqzJCjnZCgB6ohabHot5P6WfI9R8vQVJ6qzs=
-X-Received: by 2002:a17:90b:4a42:b0:28c:815e:e0f0 with SMTP id
- lb2-20020a17090b4a4200b0028c815ee0f0mr534065pjb.37.1704253004518; Tue, 02 Jan
- 2024 19:36:44 -0800 (PST)
+        bh=iyL0U7ReWWKWObMLjmNTrzqgyVE7GbO/GB0G3IW1n/Q=;
+        b=eSPdoC/yQ67S6D/+oy1E2b0teucGIDYGyuirEXla3RtjiFBRTUbZU4yZdOVpv+FFIV
+         l9qXAZYrHHqMzl3wrWtWflxaJBQfUBiAwRdA6KcbLZyMoRKyHmoBY+oxWRXG6j7CgFb5
+         v6NHW45SyakqmiCUcSXPGxNhwUEvbgvIhGPzQvvdG6sYuggOfsKKxDOq8hwWyKIcQ6+Q
+         cwLB1J6ZJJXa0NonayGS77YcDIvxXAVtjhw/jo8H84Vs43oez1ABqHB68VQfCezN/NtJ
+         a4xdZcIYPC6aAeO6zxRzusNYnoiwxMIruzTEkRDYKiZp/j7mdiRGlip15noinMKE6SL8
+         K/tg==
+X-Gm-Message-State: AOJu0Yw+sZEbGmczODnu7zXXQoXmga3HG+Vt4hjYSf8AXZmGdkysNg7w
+	VeEJq2gdylu+YVtT0YDe3QxFfly74Jg8p50IX04=
+X-Google-Smtp-Source: AGHT+IEC6R6yy8QXkJ17hVm3ZlKs1VGTCfBHtP3fTfVqTVdvlug5pCsjHyh8OxZs1lUlkEBTccNYVshItdhlTm9euqM=
+X-Received: by 2002:a4a:dc96:0:b0:594:ad62:bab9 with SMTP id
+ g22-20020a4adc96000000b00594ad62bab9mr20085697oou.1.1704289408312; Wed, 03
+ Jan 2024 05:43:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20231227040401.548977-1-kai.heng.feng@canonical.com> <40694180-cc87-4ae2-9929-8451d43f428d@roeck-us.net>
-In-Reply-To: <40694180-cc87-4ae2-9929-8451d43f428d@roeck-us.net>
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date: Wed, 3 Jan 2024 11:36:32 +0800
-Message-ID: <CAAd53p6scYNAohvwBJ1gSk6of2xSPLVDpjCkMZ0t2tff2Oww5w@mail.gmail.com>
-Subject: Re: [PATCH v2] hwmon: (acpi_power_meter) Ensure IPMI space handler is
- ready on Dell systems
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: jdelvare@suse.com, "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
-	Robert Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org, 
-	acpica-devel@lists.linux.dev
+References: <20230905104721.52199-1-lpieralisi@kernel.org> <20231227110038.55453-1-lpieralisi@kernel.org>
+In-Reply-To: <20231227110038.55453-1-lpieralisi@kernel.org>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Wed, 3 Jan 2024 14:43:16 +0100
+Message-ID: <CAJZ5v0gUBU=VL8E34sjROssoGNbLnhmUQVHGWT60hgBG_ufTHw@mail.gmail.com>
+Subject: Re: [PATCH v4 0/3] irqchip/gic-v3: Enable non-coherent GIC designs probing
+To: Lorenzo Pieralisi <lpieralisi@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, 
+	Mark Rutland <mark.rutland@arm.com>, Robin Murphy <robin.murphy@arm.com>, 
+	"Rafael J. Wysocki" <rafael@kernel.org>, Fang Xiang <fangxiang3@xiaomi.com>, Marc Zyngier <maz@kernel.org>, 
+	Robert Moore <robert.moore@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 28, 2023 at 5:58=E2=80=AFAM Guenter Roeck <linux@roeck-us.net> =
-wrote:
+On Wed, Dec 27, 2023 at 12:00=E2=80=AFPM Lorenzo Pieralisi
+<lpieralisi@kernel.org> wrote:
 >
-> On Wed, Dec 27, 2023 at 12:04:00PM +0800, Kai-Heng Feng wrote:
-> > The following error can be observed at boot:
-> > [    3.717920] ACPI Error: No handler for Region [SYSI] (00000000ab9e62=
-c5) [IPMI] (20230628/evregion-130)
-> > [    3.717928] ACPI Error: Region IPMI (ID=3D7) has no handler (2023062=
-8/exfldio-261)
-> >
-> > [    3.717936] No Local Variables are initialized for Method [_GHL]
-> >
-> > [    3.717938] No Arguments are initialized for method [_GHL]
-> >
-> > [    3.717940] ACPI Error: Aborting method \_SB.PMI0._GHL due to previo=
-us error (AE_NOT_EXIST) (20230628/psparse-529)
-> > [    3.717949] ACPI Error: Aborting method \_SB.PMI0._PMC due to previo=
-us error (AE_NOT_EXIST) (20230628/psparse-529)
-> > [    3.717957] ACPI: \_SB_.PMI0: _PMC evaluation failed: AE_NOT_EXIST
-> >
-> > On Dell systems several methods of acpi_power_meter access variables in
-> > IPMI region [0], so wait until IPMI space handler is installed by
-> > acpi_ipmi and also wait until SMI is selected to make the space handler
-> > fully functional.
-> >
-> > [0] https://www.dell.com/support/manuals/en-us/redhat-enterprise-linux-=
-v8.0/rhel8_rn_pub/advanced-configuration-and-power-interface-acpi-error-mes=
-sages-displayed-in-dmesg?guid=3Dguid-0d5ae482-1977-42cf-b417-3ed5c3f5ee62
-> >
-> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> > ---
-> > v2:
-> >  - Use completion instead of request_module().
-> >
-> >  drivers/acpi/acpi_ipmi.c         | 13 ++++++++++++-
-> >  drivers/hwmon/acpi_power_meter.c |  4 ++++
-> >  include/acpi/acpi_bus.h          |  4 ++++
+> This series is v4 of previous series:
 >
-> This needs to be split into two patches.
-
-Will do.
-
+> v3: https://lore.kernel.org/all/20231006125929.48591-1-lpieralisi@kernel.=
+org
+> v2: https://lore.kernel.org/all/20230906094139.16032-1-lpieralisi@kernel.=
+org
+> v1: https://lore.kernel.org/all/20230905104721.52199-1-lpieralisi@kernel.=
+org
 >
-> >  3 files changed, 20 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/acpi/acpi_ipmi.c b/drivers/acpi/acpi_ipmi.c
-> > index 0555f68c2dfd..2ea8b7e6cebf 100644
-> > --- a/drivers/acpi/acpi_ipmi.c
-> > +++ b/drivers/acpi/acpi_ipmi.c
-> > @@ -23,6 +23,8 @@ MODULE_LICENSE("GPL");
-> >  #define IPMI_TIMEOUT                 (5000)
-> >  #define ACPI_IPMI_MAX_MSG_LENGTH     64
-> >
-> > +static struct completion smi_selected;
-> > +
-> >  struct acpi_ipmi_device {
-> >       /* the device list attached to driver_data.ipmi_devices */
-> >       struct list_head head;
-> > @@ -463,8 +465,10 @@ static void ipmi_register_bmc(int iface, struct de=
-vice *dev)
-> >               if (temp->handle =3D=3D handle)
-> >                       goto err_lock;
-> >       }
-> > -     if (!driver_data.selected_smi)
-> > +     if (!driver_data.selected_smi) {
-> >               driver_data.selected_smi =3D ipmi_device;
-> > +             complete(&smi_selected);
-> > +     }
-> >       list_add_tail(&ipmi_device->head, &driver_data.ipmi_devices);
-> >       mutex_unlock(&driver_data.ipmi_lock);
-> >
-> > @@ -578,10 +582,17 @@ acpi_ipmi_space_handler(u32 function, acpi_physic=
-al_address address,
-> >       return status;
-> >  }
-> >
-> > +void wait_for_acpi_ipmi(void)
-> > +{
-> > +     wait_for_completion_interruptible_timeout(&smi_selected, 2 * HZ);
+> v3 -> v4:
+>         - Dropped patches [1-3], already merged
+>         - Added Linuxized ACPICA changes accepted upstream
+>         - Rebased against v6.7-rc3
 >
-> wait_for_completion_interruptible_timeout) returns an error code which
-> should be returned to the caller.
-
-Will do in next revision.
-
+> v2 -> v3:
+>         - Added ACPICA temporary changes and ACPI changes to implement
+>           ECR https://bugzilla.tianocore.org/show_bug.cgi?id=3D4557
+>         - ACPI changes are for testing purposes - subject to ECR code
+>           first approval
 >
-> > +}
-> > +EXPORT_SYMBOL_GPL(wait_for_acpi_ipmi);
-> > +
-> >  static int __init acpi_ipmi_init(void)
-> >  {
-> >       int result;
-> >       acpi_status status;
-> > +     init_completion(&smi_selected);
-> >
-> >       if (acpi_disabled)
-> >               return 0;
-> > diff --git a/drivers/hwmon/acpi_power_meter.c b/drivers/hwmon/acpi_powe=
-r_meter.c
-> > index 703666b95bf4..acaf1ae68dc8 100644
-> > --- a/drivers/hwmon/acpi_power_meter.c
-> > +++ b/drivers/hwmon/acpi_power_meter.c
-> > @@ -883,6 +883,10 @@ static int acpi_power_meter_add(struct acpi_device=
- *device)
-> >       strcpy(acpi_device_class(device), ACPI_POWER_METER_CLASS);
-> >       device->driver_data =3D resource;
-> >
-> > +     if (dmi_match(DMI_SYS_VENDOR, "Dell Inc.") &&
-> > +         acpi_dev_get_first_match_dev("IPI0001", NULL, -1))
-> > +             wait_for_acpi_ipmi();
+> v1 -> v2:
+>         - Updated DT bindings as per feedback
+>         - Updated patch[2] to use GIC quirks infrastructure
 >
-> wait_for_acpi_ipmi() should return an error code which
-> should be handled here.
-
-OK, I think print an message should be informative.
-
+> Original cover letter
+> ---
+> The GICv3 architecture specifications provide a means for the
+> system programmer to set the shareability and cacheability
+> attributes the GIC components (redistributors and ITSes) use
+> to drive memory transactions.
 >
-> > +
-> >       res =3D read_capabilities(resource);
-> >       if (res)
-> >               goto exit_free;
-> > diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-> > index 1216d72c650f..ed59fb89721e 100644
-> > --- a/include/acpi/acpi_bus.h
-> > +++ b/include/acpi/acpi_bus.h
-> > @@ -655,6 +655,7 @@ bool acpi_device_override_status(struct acpi_device=
- *adev, unsigned long long *s
-> >  bool acpi_quirk_skip_acpi_ac_and_battery(void);
-> >  int acpi_install_cmos_rtc_space_handler(acpi_handle handle);
-> >  void acpi_remove_cmos_rtc_space_handler(acpi_handle handle);
-> > +void wait_for_acpi_ipmi(void);
-> >  #else
-> >  static inline bool acpi_device_override_status(struct acpi_device *ade=
-v,
-> >                                              unsigned long long *status=
-)
-> > @@ -672,6 +673,9 @@ static inline int acpi_install_cmos_rtc_space_handl=
-er(acpi_handle handle)
-> >  static inline void acpi_remove_cmos_rtc_space_handler(acpi_handle hand=
-le)
-> >  {
-> >  }
-> > +static inline void wait_for_acpi_ipmi(void)
-> > +{
-> > +}
+> Albeit the architecture give control over shareability/cacheability
+> memory transactions attributes (and barriers), it is allowed to
+> connect the GIC interconnect ports to non-coherent memory ports
+> on the interconnect, basically tying off shareability/cacheability
+> "wires" and de-facto making the redistributors and ITSes non-coherent
+> memory observers.
 >
-> Something with the conditional is wrong. See 0-day report.
-
-Will fix that in next revision.
-
-Kai-Heng
-
+> This series aims at starting a discussion over a possible solution
+> to this problem, by adding to the GIC device tree bindings the
+> standard dma-noncoherent property. The GIC driver uses the property
+> to force the redistributors and ITSes shareability attributes to
+> non-shareable, which consequently forces the driver to use CMOs
+> on GIC memory tables.
 >
-> Guenter
-> >  #endif
-> >
-> >  #if IS_ENABLED(CONFIG_X86_ANDROID_TABLETS)
-> > --
-> > 2.34.1
-> >
-> >
+> On ARM DT DMA is default non-coherent, so the GIC driver can't rely
+> on the generic DT dma-coherent/non-coherent property management layer
+> (of_dma_is_coherent()) which would default all GIC designs in the field
+> as non-coherent; it has to rely on ad-hoc dma-noncoherent property handli=
+ng.
+>
+> When a consistent approach is agreed upon for DT an equivalent binding wi=
+ll
+> be put forward for ACPI based systems.
+>
+> Lorenzo Pieralisi (3):
+>   ACPICA: MADT: Add GICC online capable bit handling
+>   ACPICA: MADT: Add new MADT GICC/GICR/ITS non-coherent flags handling
+>   irqchip/gic-v3: Enable non-coherent redistributors/ITSes ACPI probing
+>
+>  drivers/acpi/processor_core.c    | 21 +++++++++++++++++++++
+>  drivers/irqchip/irq-gic-common.h |  8 ++++++++
+>  drivers/irqchip/irq-gic-v3-its.c |  4 ++++
+>  drivers/irqchip/irq-gic-v3.c     |  9 +++++++++
+>  include/acpi/actbl2.h            | 12 ++++++++++--
+>  include/linux/acpi.h             |  3 +++
+>  6 files changed, 55 insertions(+), 2 deletions(-)
+>
+> --
+
+I can apply the first 2 patches, but I would need an ACK for the 3rd one.
+
+Alternatively, feel free to add
+
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+
+to the first 2 patches and route them via ARM64.
+
+Thanks!
