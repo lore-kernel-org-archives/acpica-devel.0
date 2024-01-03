@@ -1,130 +1,173 @@
-Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
+Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 453F91A5AB
-	for <acpica-devel@lists.linux.dev>; Wed,  3 Jan 2024 13:43:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C5B61B26E
+	for <acpica-devel@lists.linux.dev>; Wed,  3 Jan 2024 15:37:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-59584f41f1eso328085eaf.1
-        for <acpica-devel@lists.linux.dev>; Wed, 03 Jan 2024 05:43:29 -0800 (PST)
+Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-59614694ca2so61514eaf.1
+        for <acpica-devel@lists.linux.dev>; Wed, 03 Jan 2024 07:37:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704289408; x=1704894208;
+        d=1e100.net; s=20230601; t=1704296266; x=1704901066;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=iyL0U7ReWWKWObMLjmNTrzqgyVE7GbO/GB0G3IW1n/Q=;
-        b=eSPdoC/yQ67S6D/+oy1E2b0teucGIDYGyuirEXla3RtjiFBRTUbZU4yZdOVpv+FFIV
-         l9qXAZYrHHqMzl3wrWtWflxaJBQfUBiAwRdA6KcbLZyMoRKyHmoBY+oxWRXG6j7CgFb5
-         v6NHW45SyakqmiCUcSXPGxNhwUEvbgvIhGPzQvvdG6sYuggOfsKKxDOq8hwWyKIcQ6+Q
-         cwLB1J6ZJJXa0NonayGS77YcDIvxXAVtjhw/jo8H84Vs43oez1ABqHB68VQfCezN/NtJ
-         a4xdZcIYPC6aAeO6zxRzusNYnoiwxMIruzTEkRDYKiZp/j7mdiRGlip15noinMKE6SL8
-         K/tg==
-X-Gm-Message-State: AOJu0Yw+sZEbGmczODnu7zXXQoXmga3HG+Vt4hjYSf8AXZmGdkysNg7w
-	VeEJq2gdylu+YVtT0YDe3QxFfly74Jg8p50IX04=
-X-Google-Smtp-Source: AGHT+IEC6R6yy8QXkJ17hVm3ZlKs1VGTCfBHtP3fTfVqTVdvlug5pCsjHyh8OxZs1lUlkEBTccNYVshItdhlTm9euqM=
-X-Received: by 2002:a4a:dc96:0:b0:594:ad62:bab9 with SMTP id
- g22-20020a4adc96000000b00594ad62bab9mr20085697oou.1.1704289408312; Wed, 03
- Jan 2024 05:43:28 -0800 (PST)
+        bh=40j+IqysrfYQAUt1SJO3JpRmqTkW8BeHGoeDA+iZloI=;
+        b=MXxUyjq4C+a8IY/z/qbCylE5g+JbcNoI77vOXBfvUoeEE8s0wyezpLGJcXPk4vpm8h
+         9UStWcKHRPkkAKI9umFFQHHvTGQF8ZbphlCC8Gk5aXR27CdU7JKovvy0Ay/MNlaa9fvr
+         AOMn5eFeOYlnAoQ/elwtJuDqSeBks7P+Jigxr/niKZuANMWEViM1p0fgag/1UJ+MMp0r
+         tcKPgE7zOnnjMLP+xE8jBuHR1V9qr/rGuma4bJ6u709tuqEaxlcZG+HDzNFkeY0m7r9e
+         h2GZdxUOMAGrkCmV4I9KCJpCq1u+7Z4ojff6S+gNcs9AKSLItc/VzdUuBbE9+N7TasfV
+         8UJw==
+X-Gm-Message-State: AOJu0YwneSvxSgXWVcwoJoAimAAVyflvNaGtOqrUKu2v1Rqt9+N5cxq6
+	M0TRNii9cT5K7236rwsYCVtKMP/widDH3D8bneQ=
+X-Google-Smtp-Source: AGHT+IEQNWRFK5ZWxSqawWVegeMCE+VE1LW3uWj3cWaGWt2FsA5ZWT7ccUJrKWdr45QdTslurAf486vxU50F76ICkVM=
+X-Received: by 2002:a4a:b38c:0:b0:595:6024:c4f8 with SMTP id
+ p12-20020a4ab38c000000b005956024c4f8mr8288888ooo.1.1704296266137; Wed, 03 Jan
+ 2024 07:37:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20230905104721.52199-1-lpieralisi@kernel.org> <20231227110038.55453-1-lpieralisi@kernel.org>
-In-Reply-To: <20231227110038.55453-1-lpieralisi@kernel.org>
+References: <20231228075705.26652-1-TonyWWang-oc@zhaoxin.com> <20231228075705.26652-4-TonyWWang-oc@zhaoxin.com>
+In-Reply-To: <20231228075705.26652-4-TonyWWang-oc@zhaoxin.com>
 From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 3 Jan 2024 14:43:16 +0100
-Message-ID: <CAJZ5v0gUBU=VL8E34sjROssoGNbLnhmUQVHGWT60hgBG_ufTHw@mail.gmail.com>
-Subject: Re: [PATCH v4 0/3] irqchip/gic-v3: Enable non-coherent GIC designs probing
-To: Lorenzo Pieralisi <lpieralisi@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, 
-	Mark Rutland <mark.rutland@arm.com>, Robin Murphy <robin.murphy@arm.com>, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Fang Xiang <fangxiang3@xiaomi.com>, Marc Zyngier <maz@kernel.org>, 
-	Robert Moore <robert.moore@intel.com>
+Date: Wed, 3 Jan 2024 16:37:35 +0100
+Message-ID: <CAJZ5v0hEd-NV5WoRPOZgZwxNS6M=TKcw7DpDUM9MWFYAaa+1Mw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] ACPI: cpufreq: Add ITMT support when CPPC enabled for
+ Zhaoxin CPUs
+To: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+Cc: rafael@kernel.org, lenb@kernel.org, robert.moore@intel.com, 
+	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	acpica-devel@lists.linux.dev, tglx@linutronix.de, mingo@redhat.com, 
+	bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
+	mcgrof@kernel.org, peterz@infradead.org, j.granados@samsung.com, 
+	ricardo.neri-calderon@linux.intel.com, viresh.kumar@linaro.org, 
+	linux-pm@vger.kernel.org, CobeChen@zhaoxin.com, TimGuo@zhaoxin.com, 
+	LeoLiu-oc@zhaoxin.com, LindaChai@zhaoxin.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 27, 2023 at 12:00=E2=80=AFPM Lorenzo Pieralisi
-<lpieralisi@kernel.org> wrote:
+On Thu, Dec 28, 2023 at 8:57=E2=80=AFAM Tony W Wang-oc <TonyWWang-oc@zhaoxi=
+n.com> wrote:
 >
-> This series is v4 of previous series:
+> For Zhaoxin CPUs, the cores' highest frequencies may be different, which
+> means that cores may run at different max frequencies,
 >
-> v3: https://lore.kernel.org/all/20231006125929.48591-1-lpieralisi@kernel.=
-org
-> v2: https://lore.kernel.org/all/20230906094139.16032-1-lpieralisi@kernel.=
-org
-> v1: https://lore.kernel.org/all/20230905104721.52199-1-lpieralisi@kernel.=
-org
+> According to ACPI-spec6 chapter 8.4.7, the per-core highest frequency
+> value can be obtained via cppc.
 >
-> v3 -> v4:
->         - Dropped patches [1-3], already merged
->         - Added Linuxized ACPICA changes accepted upstream
->         - Rebased against v6.7-rc3
+> The core with the higher frequency have better performance, which can be
+> called as preferred core. And better performance can be achieved by
+> making the scheduler to run tasks on these preferred cores.
 >
-> v2 -> v3:
->         - Added ACPICA temporary changes and ACPI changes to implement
->           ECR https://bugzilla.tianocore.org/show_bug.cgi?id=3D4557
->         - ACPI changes are for testing purposes - subject to ECR code
->           first approval
+> The cpufreq driver can use the highest frequency value as the prioriy of
+> core to make the scheduler try to get better performace. More specificall=
+y,
+> in the acpi-cpufreq driver use cppc_get_highest_perf() to get highest
+> frequency value of each core, use sched_set_itmt_core_prio() to set
+> highest frequency value as core priority, and use sched_set_itmt_support(=
+)
+> provided by ITMT to tell the scheduler to favor on the preferred cores.
 >
-> v1 -> v2:
->         - Updated DT bindings as per feedback
->         - Updated patch[2] to use GIC quirks infrastructure
->
-> Original cover letter
+> Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
 > ---
-> The GICv3 architecture specifications provide a means for the
-> system programmer to set the shareability and cacheability
-> attributes the GIC components (redistributors and ITSes) use
-> to drive memory transactions.
+>  drivers/cpufreq/acpi-cpufreq.c | 56 +++++++++++++++++++++++++++++++++-
+>  1 file changed, 55 insertions(+), 1 deletion(-)
 >
-> Albeit the architecture give control over shareability/cacheability
-> memory transactions attributes (and barriers), it is allowed to
-> connect the GIC interconnect ports to non-coherent memory ports
-> on the interconnect, basically tying off shareability/cacheability
-> "wires" and de-facto making the redistributors and ITSes non-coherent
-> memory observers.
+> diff --git a/drivers/cpufreq/acpi-cpufreq.c b/drivers/cpufreq/acpi-cpufre=
+q.c
+> index 37f1cdf46d29..f4c1ff9e4bb0 100644
+> --- a/drivers/cpufreq/acpi-cpufreq.c
+> +++ b/drivers/cpufreq/acpi-cpufreq.c
+> @@ -663,8 +663,56 @@ static u64 get_max_boost_ratio(unsigned int cpu)
 >
-> This series aims at starting a discussion over a possible solution
-> to this problem, by adding to the GIC device tree bindings the
-> standard dma-noncoherent property. The GIC driver uses the property
-> to force the redistributors and ITSes shareability attributes to
-> non-shareable, which consequently forces the driver to use CMOs
-> on GIC memory tables.
+>         return div_u64(highest_perf << SCHED_CAPACITY_SHIFT, nominal_perf=
+);
+>  }
+> +
+> +/* The work item is needed to avoid CPU hotplug locking issues */
+> +static void sched_itmt_work_fn(struct work_struct *work)
+> +{
+> +       sched_set_itmt_support();
+> +}
+> +
+> +static DECLARE_WORK(sched_itmt_work, sched_itmt_work_fn);
+> +
+> +static void set_itmt_prio(int cpu)
+> +{
+> +       static bool cppc_highest_perf_diff;
+> +       static struct cpumask core_prior_mask;
+> +       u64 highest_perf;
+> +       static u64 max_highest_perf =3D 0, min_highest_perf =3D U64_MAX;
+> +       int ret;
+> +
+> +       ret =3D cppc_get_highest_perf(cpu, &highest_perf);
+> +       if (ret)
+> +               return;
+> +
+> +       sched_set_itmt_core_prio(highest_perf, cpu);
+> +       cpumask_set_cpu(cpu, &core_prior_mask);
+> +
+> +       if (max_highest_perf <=3D min_highest_perf) {
+> +               if (highest_perf > max_highest_perf)
+> +                       max_highest_perf =3D highest_perf;
+> +
+> +               if (highest_perf < min_highest_perf)
+> +                       min_highest_perf =3D highest_perf;
+> +
+> +               if (max_highest_perf > min_highest_perf) {
+> +                       /*
+> +                        * This code can be run during CPU online under t=
+he
+> +                        * CPU hotplug locks, so sched_set_itmt_support()
+> +                        * cannot be called from here.  Queue up a work i=
+tem
+> +                        * to invoke it.
+> +                        */
+> +                       cppc_highest_perf_diff =3D true;
+> +               }
+> +       }
+> +
+> +       if (cppc_highest_perf_diff && cpumask_equal(&core_prior_mask, cpu=
+_online_mask)) {
+> +               pr_debug("queue a work to set itmt enabled\n");
+> +               schedule_work(&sched_itmt_work);
+> +       }
+> +}
+>  #else
+>  static inline u64 get_max_boost_ratio(unsigned int cpu) { return 0; }
+> +static void set_itmt_prio(int cpu) { }
+>  #endif
 >
-> On ARM DT DMA is default non-coherent, so the GIC driver can't rely
-> on the generic DT dma-coherent/non-coherent property management layer
-> (of_dma_is_coherent()) which would default all GIC designs in the field
-> as non-coherent; it has to rely on ad-hoc dma-noncoherent property handli=
-ng.
+>  static int acpi_cpufreq_cpu_init(struct cpufreq_policy *policy)
+> @@ -677,7 +725,7 @@ static int acpi_cpufreq_cpu_init(struct cpufreq_polic=
+y *policy)
+>         unsigned int valid_states =3D 0;
+>         unsigned int result =3D 0;
+>         u64 max_boost_ratio;
+> -       unsigned int i;
+> +       unsigned int i, j;
+>  #ifdef CONFIG_SMP
+>         static int blacklisted;
+>  #endif
+> @@ -742,6 +790,12 @@ static int acpi_cpufreq_cpu_init(struct cpufreq_poli=
+cy *policy)
+>         }
+>  #endif
 >
-> When a consistent approach is agreed upon for DT an equivalent binding wi=
-ll
-> be put forward for ACPI based systems.
->
-> Lorenzo Pieralisi (3):
->   ACPICA: MADT: Add GICC online capable bit handling
->   ACPICA: MADT: Add new MADT GICC/GICR/ITS non-coherent flags handling
->   irqchip/gic-v3: Enable non-coherent redistributors/ITSes ACPI probing
->
->  drivers/acpi/processor_core.c    | 21 +++++++++++++++++++++
->  drivers/irqchip/irq-gic-common.h |  8 ++++++++
->  drivers/irqchip/irq-gic-v3-its.c |  4 ++++
->  drivers/irqchip/irq-gic-v3.c     |  9 +++++++++
->  include/acpi/actbl2.h            | 12 ++++++++++--
->  include/linux/acpi.h             |  3 +++
->  6 files changed, 55 insertions(+), 2 deletions(-)
->
+> +       if (c->x86_vendor =3D=3D X86_VENDOR_CENTAUR || c->x86_vendor =3D=
+=3D X86_VENDOR_ZHAOXIN) {
+> +               for_each_cpu(j, policy->cpus) {
+> +                       set_itmt_prio(j);
+> +               }
+> +       }
+> +
+>         /* capability check */
+>         if (perf->state_count <=3D 1) {
+>                 pr_debug("No P-States\n");
 > --
 
-I can apply the first 2 patches, but I would need an ACK for the 3rd one.
-
-Alternatively, feel free to add
-
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-
-to the first 2 patches and route them via ARM64.
-
-Thanks!
+Have you considered using the CPPC cpufreq driver on those platforms?
