@@ -1,53 +1,65 @@
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4369249E4
-	for <acpica-devel@lists.linux.dev>; Thu,  4 Jan 2024 13:47:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACB0A241F4
+	for <acpica-devel@lists.linux.dev>; Thu,  4 Jan 2024 15:42:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="kNGgoupT"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=F677DMlRFfuOUxBej40MkJ2lKltaDghuaAWCmf8gXQc=; b=kNGgoupTyPl+j4/PRccqDi2z3C
-	0o9MWQTpGOF9dHAykolfZqHfEiToZnpkRso5xbWtzkg3c6smypF6KVEQyXOIMJfZWaEIyU9B/t4Ez
-	Vc0KgQvROqJbwhRtmlZUZMcnagFha04mM+w+Cd4nmoPyIkpEAwuJnTyYYiSww9HBw6T6L8HUX3lxI
-	B601V+ybZhS3eYHpfc1n9k6wqjo2XYc0mPMLI2GTaOAgRdEm0z4OWIedwaLyMFPxoCgWmRu8t/A/D
-	d595mNaS9SnWqMG36YT9dxxDnBIBn3Cmutf5VkjtR8tSp+fjiY/3ClayKL14RMkEOBr5BFhdoj7ev
-	8RseZWLA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:48000)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rLO4W-00005k-1G;
-	Thu, 04 Jan 2024 13:47:44 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rLO4W-0007Tl-A0; Thu, 04 Jan 2024 13:47:44 +0000
-Date: Thu, 4 Jan 2024 13:47:44 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j/JKNvfA"
+Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-3bba0ac2e88so633392b6e.0
+        for <acpica-devel@lists.linux.dev>; Thu, 04 Jan 2024 07:42:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704382947; x=1704987747; darn=lists.linux.dev;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:reply-to:message-id:subject:cc:to:from:date
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=5oMiGZMowUzqMWGwhCBfkbKcvKR9HrULZLN+Y7bf4S0=;
+        b=j/JKNvfAk4LtDjTZG0XWTShlMWqaedgA9Ke7zxG50zQABGKPpkvkwodWmg0Ws2agg/
+         aTfCvbyWegcHD0vJMGNFgD4KRrr0gufm26aji8dFMRoI2QgP0uQ2fGP8W94IEjG5+2N5
+         KRpQhpoU1a0ckVmEnU1nKIzd6cCaGtYGijmB5uttLqXoNIBZFoDY6MPH3IPikuOyoK6v
+         Fs+tzk144YtLVjZAtqRopGUShL+IK/bUDeK5s2SbbSBiXW6zRgHIW/bc6OhwMCUZzQBC
+         rIYL7OYcbFgHnlN3cKTa4Vao1efPRkVjdROeSIIg8dhp2PyATsLnZzOqSwVp8ZkQKI+f
+         PR0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704382947; x=1704987747;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:reply-to:message-id:subject:cc:to:from:date
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5oMiGZMowUzqMWGwhCBfkbKcvKR9HrULZLN+Y7bf4S0=;
+        b=qWJnI/32u2jlMj1TdMs4ERdSHEN+ZFzkn2IlYyFazjO5ljZ2Dwhc/7STccTVZVpqzA
+         prscsogxuwDv4SWMagl8U1RN6qdpwQa6moJ2h7Z4WkzWoPX/TIr3QTns8ztVIg/VNE0k
+         T52oR6PCjvfCRAYGIo2hOohRcFKSO2NjsUhUeLy2MYsmHFmLt8ust7rBCWMrPdQbJIY7
+         RuWDl33jjxjQAp4Uhlb20fikzKWWjMfWpGrlV2/OUsE2Ph3485adok0z17CYBwT8NyFg
+         rvwzN7W/tnNG66dbckD0aem2cWF5PbZLSuNHWq8lSJYP/KjBarHL9voHUpCIRHqSeO39
+         rx4Q==
+X-Gm-Message-State: AOJu0Yx9bOqM0eDD3SY5rSOIXywj8lnT6sN09eD1lM9/HY7/wp6n+d8P
+	3iMuiAo5VmqZfUVkzHSrzg==
+X-Google-Smtp-Source: AGHT+IGBVcQOehWgZgtVkqUEVkpT4ymFf47CPxuZ3r/zwB3M65lL8wGjFXR+faDYn1CyfX3tGNuADA==
+X-Received: by 2002:a05:6808:1401:b0:3bc:23ca:b8f8 with SMTP id w1-20020a056808140100b003bc23cab8f8mr293904oiv.27.1704382947589;
+        Thu, 04 Jan 2024 07:42:27 -0800 (PST)
+Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
+        by smtp.gmail.com with ESMTPSA id ct6-20020a056808360600b003bbcc7ad593sm2208336oib.34.2024.01.04.07.42.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jan 2024 07:42:27 -0800 (PST)
+Sender: Corey Minyard <tcminyard@gmail.com>
+Received: from mail.minyard.net (unknown [IPv6:2001:470:b8f6:1b:8b39:45b4:3a91:698e])
+	by serve.minyard.net (Postfix) with ESMTPSA id 754301800BC;
+	Thu,  4 Jan 2024 15:42:26 +0000 (UTC)
+Date: Thu, 4 Jan 2024 09:42:25 -0600
+From: Corey Minyard <minyard@acm.org>
 To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: Marc Zyngier <maz@kernel.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
-	Mark Rutland <mark.rutland@arm.com>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Fang Xiang <fangxiang3@xiaomi.com>,
-	Robert Moore <robert.moore@intel.com>
-Subject: Re: [PATCH v4 0/3] irqchip/gic-v3: Enable non-coherent GIC designs
- probing
-Message-ID: <ZZa3AMRmWUfYCROl@shell.armlinux.org.uk>
-References: <20230905104721.52199-1-lpieralisi@kernel.org>
- <20231227110038.55453-1-lpieralisi@kernel.org>
- <CAJZ5v0gUBU=VL8E34sjROssoGNbLnhmUQVHGWT60hgBG_ufTHw@mail.gmail.com>
- <86h6jt9vs7.wl-maz@kernel.org>
- <ZZaeyBXn85AnsIk6@shell.armlinux.org.uk>
- <CAJZ5v0jcZ4WEiNUs3sAQUyy1uVJRNWmVJx2j0e3hLwi7heK1+A@mail.gmail.com>
+Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>, jdelvare@suse.com,
+	linux@roeck-us.net, Len Brown <lenb@kernel.org>,
+	Robert Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org, acpica-devel@lists.linux.dev
+Subject: Re: [PATCH v3 1/2] ACPI: IPMI: Add helper to wait for when SMI is
+ selected
+Message-ID: <ZZbR4X6z9wkSESzD@mail.minyard.net>
+Reply-To: minyard@acm.org
+References: <20240104024819.848979-1-kai.heng.feng@canonical.com>
+ <CAJZ5v0gNa7XvUo3B1srXaWBrWx+Bx=w=D7ddi-mqda8xBdWwCQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -57,106 +69,111 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0jcZ4WEiNUs3sAQUyy1uVJRNWmVJx2j0e3hLwi7heK1+A@mail.gmail.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <CAJZ5v0gNa7XvUo3B1srXaWBrWx+Bx=w=D7ddi-mqda8xBdWwCQ@mail.gmail.com>
 
-On Thu, Jan 04, 2024 at 02:21:44PM +0100, Rafael J. Wysocki wrote:
-> On Thu, Jan 4, 2024 at 1:04 PM Russell King (Oracle)
-> <linux@armlinux.org.uk> wrote:
+On Thu, Jan 04, 2024 at 02:34:52PM +0100, Rafael J. Wysocki wrote:
+> On Thu, Jan 4, 2024 at 3:48 AM Kai-Heng Feng
+> <kai.heng.feng@canonical.com> wrote:
 > >
-> > On Thu, Jan 04, 2024 at 11:34:48AM +0000, Marc Zyngier wrote:
-> > > On Wed, 03 Jan 2024 13:43:16 +0000,
-> > > "Rafael J. Wysocki" <rafael@kernel.org> wrote:
-> > > >
-> > > > On Wed, Dec 27, 2023 at 12:00 PM Lorenzo Pieralisi
-> > > > <lpieralisi@kernel.org> wrote:
-> > > > >
-> > > > > This series is v4 of previous series:
-> > > > >
-> > > > > v3: https://lore.kernel.org/all/20231006125929.48591-1-lpieralisi@kernel.org
-> > > > > v2: https://lore.kernel.org/all/20230906094139.16032-1-lpieralisi@kernel.org
-> > > > > v1: https://lore.kernel.org/all/20230905104721.52199-1-lpieralisi@kernel.org
-> > > > >
-> > > > > v3 -> v4:
-> > > > >         - Dropped patches [1-3], already merged
-> > > > >         - Added Linuxized ACPICA changes accepted upstream
-> > > > >         - Rebased against v6.7-rc3
-> > > > >
-> > > > > v2 -> v3:
-> > > > >         - Added ACPICA temporary changes and ACPI changes to implement
-> > > > >           ECR https://bugzilla.tianocore.org/show_bug.cgi?id=4557
-> > > > >         - ACPI changes are for testing purposes - subject to ECR code
-> > > > >           first approval
-> > > > >
-> > > > > v1 -> v2:
-> > > > >         - Updated DT bindings as per feedback
-> > > > >         - Updated patch[2] to use GIC quirks infrastructure
-> > > > >
-> > > > > Original cover letter
-> > > > > ---
-> > > > > The GICv3 architecture specifications provide a means for the
-> > > > > system programmer to set the shareability and cacheability
-> > > > > attributes the GIC components (redistributors and ITSes) use
-> > > > > to drive memory transactions.
-> > > > >
-> > > > > Albeit the architecture give control over shareability/cacheability
-> > > > > memory transactions attributes (and barriers), it is allowed to
-> > > > > connect the GIC interconnect ports to non-coherent memory ports
-> > > > > on the interconnect, basically tying off shareability/cacheability
-> > > > > "wires" and de-facto making the redistributors and ITSes non-coherent
-> > > > > memory observers.
-> > > > >
-> > > > > This series aims at starting a discussion over a possible solution
-> > > > > to this problem, by adding to the GIC device tree bindings the
-> > > > > standard dma-noncoherent property. The GIC driver uses the property
-> > > > > to force the redistributors and ITSes shareability attributes to
-> > > > > non-shareable, which consequently forces the driver to use CMOs
-> > > > > on GIC memory tables.
-> > > > >
-> > > > > On ARM DT DMA is default non-coherent, so the GIC driver can't rely
-> > > > > on the generic DT dma-coherent/non-coherent property management layer
-> > > > > (of_dma_is_coherent()) which would default all GIC designs in the field
-> > > > > as non-coherent; it has to rely on ad-hoc dma-noncoherent property handling.
-> > > > >
-> > > > > When a consistent approach is agreed upon for DT an equivalent binding will
-> > > > > be put forward for ACPI based systems.
-> > > > >
-> > > > > Lorenzo Pieralisi (3):
-> > > > >   ACPICA: MADT: Add GICC online capable bit handling
-> > > > >   ACPICA: MADT: Add new MADT GICC/GICR/ITS non-coherent flags handling
-> > > > >   irqchip/gic-v3: Enable non-coherent redistributors/ITSes ACPI probing
-> > > > >
-> > > > >  drivers/acpi/processor_core.c    | 21 +++++++++++++++++++++
-> > > > >  drivers/irqchip/irq-gic-common.h |  8 ++++++++
-> > > > >  drivers/irqchip/irq-gic-v3-its.c |  4 ++++
-> > > > >  drivers/irqchip/irq-gic-v3.c     |  9 +++++++++
-> > > > >  include/acpi/actbl2.h            | 12 ++++++++++--
-> > > > >  include/linux/acpi.h             |  3 +++
-> > > > >  6 files changed, 55 insertions(+), 2 deletions(-)
-> > > > >
-> > > > > --
-> > > >
-> > > > I can apply the first 2 patches, but I would need an ACK for the 3rd one.
-> > > >
-> > > > Alternatively, feel free to add
-> > > >
-> > > > Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > > >
-> > > > to the first 2 patches and route them via ARM64.
-> > >
-> > > Thanks for that. I have some comments on the third patch, which I'd
-> > > like to see addressed beforehand. This is probably all 6.9 material
-> > > anyway (nobody is affected by this so far).
-> >
-> > From a purely selfish point of view, it would be useful to have the
-> > first patch merged merely to reduce the burden of patches for vcpu
-> > hotplug.
+> > The function of acpi_power_meter module on Dell system requires IPMI
+> > handler is installed and SMI is selected.
 > 
-> OK, since there will be at least one more iteration of patch [3/3]
-> AFAICS, I'll queue up patches [1-2/3] for 6.8 (next week, though).
+> Does the firmware use _DEP to let the OS know about this dependency?
+> 
+> > So add a helper to let acpi_power_meter know when IPMI handler and SMI
+> > are ready.
+> >
+> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > ---
+> > v3:
+> >  - New patch.
+> >
+> >  drivers/acpi/acpi_ipmi.c | 17 ++++++++++++++++-
+> >  include/acpi/acpi_bus.h  |  5 +++++
+> >  2 files changed, 21 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/acpi/acpi_ipmi.c b/drivers/acpi/acpi_ipmi.c
+> > index 0555f68c2dfd..54862cab7171 100644
+> > --- a/drivers/acpi/acpi_ipmi.c
+> > +++ b/drivers/acpi/acpi_ipmi.c
+> > @@ -23,6 +23,8 @@ MODULE_LICENSE("GPL");
+> >  #define IPMI_TIMEOUT                   (5000)
+> >  #define ACPI_IPMI_MAX_MSG_LENGTH       64
+> >
+> > +static struct completion smi_selected;
+> > +
+> >  struct acpi_ipmi_device {
+> >         /* the device list attached to driver_data.ipmi_devices */
+> >         struct list_head head;
+> > @@ -463,8 +465,10 @@ static void ipmi_register_bmc(int iface, struct device *dev)
+> >                 if (temp->handle == handle)
+> >                         goto err_lock;
+> >         }
+> > -       if (!driver_data.selected_smi)
+> > +       if (!driver_data.selected_smi) {
+> >                 driver_data.selected_smi = ipmi_device;
+> > +               complete(&smi_selected);
+> > +       }
+> >         list_add_tail(&ipmi_device->head, &driver_data.ipmi_devices);
+> >         mutex_unlock(&driver_data.ipmi_lock);
+> >
+> > @@ -578,10 +582,21 @@ acpi_ipmi_space_handler(u32 function, acpi_physical_address address,
+> >         return status;
+> >  }
+> >
+> > +int acpi_wait_for_acpi_ipmi(void)
+> > +{
+> > +       long ret;
+> > +
+> > +       ret = wait_for_completion_interruptible_timeout(&smi_selected, 2 * HZ);
+> > +
+> > +       return ret > 0 ? 0 : -ETIMEDOUT;
+> 
+> What will happen if the IPMI driver is unloaded after this has returned 0?
 
-Thanks!
+The IPMI driver can't be unloaded if it has a user.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+I've been following this, but I know little about ACPI.  Beyond this
+solution, the only other solution I could come up with was to start the
+IPMI driver earlier.  But then you are in a chicken-and-egg situation
+(https://dictionary.cambridge.org/dictionary/english/chicken-and-egg-situation).
+Which was the reason for the SPMI table, but that's really kind of
+useless for this, even if the SPMI table existed.
+
+-corey
+
+> 
+> > +}
+> > +EXPORT_SYMBOL_GPL(acpi_wait_for_acpi_ipmi);
+> > +
+> >  static int __init acpi_ipmi_init(void)
+> >  {
+> >         int result;
+> >         acpi_status status;
+> > +       init_completion(&smi_selected);
+> >
+> >         if (acpi_disabled)
+> >                 return 0;
+> > diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+> > index 1216d72c650f..afa6e4d4bf46 100644
+> > --- a/include/acpi/acpi_bus.h
+> > +++ b/include/acpi/acpi_bus.h
+> > @@ -821,11 +821,16 @@ static inline void acpi_put_acpi_dev(struct acpi_device *adev)
+> >  {
+> >         acpi_dev_put(adev);
+> >  }
+> > +
+> > +int acpi_wait_for_acpi_ipmi(void);
+> > +
+> >  #else  /* CONFIG_ACPI */
+> >
+> >  static inline int register_acpi_bus_type(void *bus) { return 0; }
+> >  static inline int unregister_acpi_bus_type(void *bus) { return 0; }
+> >
+> > +static inline int acpi_wait_for_acpi_ipmi(void) { return 0; }
+> > +
+> >  #endif                         /* CONFIG_ACPI */
+> >
+> >  #endif /*__ACPI_BUS_H__*/
+> > --
+> 
