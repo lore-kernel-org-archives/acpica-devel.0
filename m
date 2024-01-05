@@ -1,159 +1,173 @@
-Received: from mail-oa1-f42.google.com (mail-oa1-f42.google.com [209.85.160.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D86D2556C
-	for <acpica-devel@lists.linux.dev>; Thu,  4 Jan 2024 17:30:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D1D65225
+	for <acpica-devel@lists.linux.dev>; Fri,  5 Jan 2024 04:24:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GDzmAap/"
-Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-2055f5ad1f2so280820fac.0
-        for <acpica-devel@lists.linux.dev>; Thu, 04 Jan 2024 09:30:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704389429; x=1704994229; darn=lists.linux.dev;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:reply-to:message-id:subject:cc:to:from:date
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=qrGoqq69nAGPfoa26Qn/jkUo5HX/E7e1DGuH6EcmXC8=;
-        b=GDzmAap/HPtSw0Pbn2IKqMjarFgMtGSaw2hdhWIP5L/qPrr8i2U369TmcsNEDj0iCh
-         YcfxfPFuSiqhaVSD6g0tJudwWoBpZcELV1ZXNpcr0dd5KiqgiTcbnYE8Nk598bLHD0m+
-         ek50reRyWw0jR6gSnaCDPRFpj0hTUGvVFdWQ/2kwsBu2De20CPLVaIvx4K6MUE21DMEA
-         gN2M+RkizGD/FZwAJ3stN1BYkBmepMteacbl7qqIT0HP/ugy+TzhHQGnqZl4/Lmi0RF4
-         eGmPQaFTLxLhUQxslaYZBvrlJ7xLeejpliglc1ElL834XTDfrQqcCDvEZcONjU04LQ6j
-         HXPA==
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="gcOAo5jb"
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com [209.85.216.69])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id A31E63F04D
+	for <acpica-devel@lists.linux.dev>; Fri,  5 Jan 2024 04:24:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1704428690;
+	bh=bMtR0jtLuxQl+BURO8iHeL6NPIGQ4o8OtXkryzx2uQQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type;
+	b=gcOAo5jbqf93v+RW/7kq+GY6i1BqPCBDw9aDMmfdBrRK7abWEYaQP08yeKZla8GSI
+	 xDWBFYl02+O6vvGu9C6IzvZZ8ZcE/CER6ilIsCBJuajbolUg+U1l0mT7irWyAzOHUM
+	 +RgBYcWxu95klnCLPkni6rAD62SGLJNKU4xjh3zSVBayOifK3WNMoHOjDQZt+N1NOS
+	 pr4r5DbdT0SjJEAp25xExKJDwHhTuB2iK3f1y09xPJR3CCvrPrsMUvv90iRpIxMH/Z
+	 FAB7skBv4ld88NxB+pYxY4wyiY+qFVRy947wjaoa1N/tjvUd9zF6dPDf7AJ5GicEjE
+	 5cfW+hV4ShXjg==
+Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-28c05e74e36so1253595a91.0
+        for <acpica-devel@lists.linux.dev>; Thu, 04 Jan 2024 20:24:50 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704389429; x=1704994229;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:reply-to:message-id:subject:cc:to:from:date
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qrGoqq69nAGPfoa26Qn/jkUo5HX/E7e1DGuH6EcmXC8=;
-        b=ps9c7y/EjyEog1lG9T4TcnN6aLhGzcDNhODkGoiQ2Kpi8yPsuElRk2L5yLhXUKZ56O
-         iJlzKnBqa4H93i0Lxy0uL8KKSlvhwDmkDN++CI5qQGWXG2eqX8HuWRw6SAams8aD6ehb
-         uDQdvCGubmqdPibNtHLfmg0B02P/92ncBuEzlZWuBTkd0juX9+lfdaXja5VrLHLU6Z1z
-         mQrzbdEmljVrAJd/sywy02omgJNy2bjxTlU+UV8Sfqc7TPjrCXvUF3zU3Qx1QRozCY/0
-         FWAIXTMuTUAomGolXaSSomXVf3ojlUZV1QH+iqyFZj+0Ml7zqhwQ0FQaYqiqRCs7BCwI
-         MR4A==
-X-Gm-Message-State: AOJu0YwNI9DMY/tIgUvM/V/Gjf9o30MqgI2TOlOyXWCTu1mbDw36UHxI
-	5iotW++c/oVIs946P3vtHw==
-X-Google-Smtp-Source: AGHT+IEP4Po9HwFEDbzt4f/VWghJJksiHmwCguUCk5PNdbJWSc40ISS3awY2vfQ84b2jCjkxwdvrDw==
-X-Received: by 2002:a05:6870:639f:b0:205:cf67:994c with SMTP id t31-20020a056870639f00b00205cf67994cmr355080oap.2.1704389428869;
-        Thu, 04 Jan 2024 09:30:28 -0800 (PST)
-Received: from serve.minyard.net ([47.184.128.73])
-        by smtp.gmail.com with ESMTPSA id xa20-20020a0568707f1400b00205024df99bsm3076500oab.39.2024.01.04.09.30.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jan 2024 09:30:28 -0800 (PST)
-Sender: Corey Minyard <tcminyard@gmail.com>
-Received: from mail.minyard.net (unknown [IPv6:2001:470:b8f6:1b:8b39:45b4:3a91:698e])
-	by serve.minyard.net (Postfix) with ESMTPSA id B74811800BC;
-	Thu,  4 Jan 2024 17:30:27 +0000 (UTC)
-Date: Thu, 4 Jan 2024 11:30:26 -0600
-From: Corey Minyard <minyard@acm.org>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>, jdelvare@suse.com,
-	linux@roeck-us.net, Len Brown <lenb@kernel.org>,
-	Robert Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org,
-	linux-kernel@vger.kernel.org, acpica-devel@lists.linux.dev
-Subject: Re: [PATCH v3 1/2] ACPI: IPMI: Add helper to wait for when SMI is
- selected
-Message-ID: <ZZbrMsI6m6RrltXQ@mail.minyard.net>
-Reply-To: minyard@acm.org
-References: <20240104024819.848979-1-kai.heng.feng@canonical.com>
- <CAJZ5v0gNa7XvUo3B1srXaWBrWx+Bx=w=D7ddi-mqda8xBdWwCQ@mail.gmail.com>
- <ZZbR4X6z9wkSESzD@mail.minyard.net>
- <CAJZ5v0ibP7Kn1SgY2QK+7Ky_d0UjKG3CpG+hH+cEaCRG4EdDVg@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1704428689; x=1705033489;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bMtR0jtLuxQl+BURO8iHeL6NPIGQ4o8OtXkryzx2uQQ=;
+        b=ROTBhYBJfdKbf27fpzDUfEImxiOnZ6ZfujX8cop28zH2Vbnbo4txqVdYK1GR5+RlFf
+         ycGZFkrDM77B93vwM842Ox/r+6JHmzCM/tjXxxaABAlvmOv+K5JsVhGcuABnWxcIsyCM
+         /I7Lwh+a7T/o+SUJyhhLO4LjpAH8LqrhCO8aaaFTrlgay2xtJkWOajyr/007psp9PkwB
+         1nDGKzEHk3VwSmsixBauuJDQfavoETBDirCpAIeVNeanWtbwSJ5aQC74FMc7AToR8tYw
+         J7MWciLQhflg5pO9F+8ehSP4vBcd/Owy2Ghi2vbZbZKZYw/+G+ajkKtFRlD20f9icAM/
+         BGAA==
+X-Gm-Message-State: AOJu0Yz0yr3vo3SDH3McS/F3Sn4PzbRTmp+250rhbx+BpJkhDV9lTDzx
+	UF9MDVgCvqkT9taDUIO0hfDj9t9QPur74AAXzl/MvFzmN3nbFS1Uzt1b3tr7A5rRL/w2IE2F6ne
+	beyr/3MltWjguT7GrQh0W0n62tAM3PlVIUtqjBcQ49P+VwDapqDUA6mtMrC7yrsc3
+X-Received: by 2002:a17:90b:a58:b0:28b:dfcb:f8dc with SMTP id gw24-20020a17090b0a5800b0028bdfcbf8dcmr1452366pjb.32.1704428689104;
+        Thu, 04 Jan 2024 20:24:49 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGmqabsvalmQhHK3ZGgFt4j7cQYL3oTcPzaAV73xTOZlKRXqu7eGb1RjuLiwJbVaIs3QK+4CjmGMuS+LjAsAUY=
+X-Received: by 2002:a17:90b:a58:b0:28b:dfcb:f8dc with SMTP id
+ gw24-20020a17090b0a5800b0028bdfcbf8dcmr1452361pjb.32.1704428688785; Thu, 04
+ Jan 2024 20:24:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0ibP7Kn1SgY2QK+7Ky_d0UjKG3CpG+hH+cEaCRG4EdDVg@mail.gmail.com>
+References: <20240104024819.848979-1-kai.heng.feng@canonical.com> <CAJZ5v0gNa7XvUo3B1srXaWBrWx+Bx=w=D7ddi-mqda8xBdWwCQ@mail.gmail.com>
+In-Reply-To: <CAJZ5v0gNa7XvUo3B1srXaWBrWx+Bx=w=D7ddi-mqda8xBdWwCQ@mail.gmail.com>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date: Fri, 5 Jan 2024 12:24:36 +0800
+Message-ID: <CAAd53p4yTYZw4x76Cz8qQhkZBa1T3Cg45Kds6288WN2ZsyF9pQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] ACPI: IPMI: Add helper to wait for when SMI is selected
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: jdelvare@suse.com, linux@roeck-us.net, Len Brown <lenb@kernel.org>, 
+	Robert Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, acpica-devel@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 04, 2024 at 06:11:29PM +0100, Rafael J. Wysocki wrote:
-> On Thu, Jan 4, 2024 at 4:42 PM Corey Minyard <minyard@acm.org> wrote:
+On Thu, Jan 4, 2024 at 9:35=E2=80=AFPM Rafael J. Wysocki <rafael@kernel.org=
+> wrote:
+>
+> On Thu, Jan 4, 2024 at 3:48=E2=80=AFAM Kai-Heng Feng
+> <kai.heng.feng@canonical.com> wrote:
 > >
-> > On Thu, Jan 04, 2024 at 02:34:52PM +0100, Rafael J. Wysocki wrote:
-> > > On Thu, Jan 4, 2024 at 3:48 AM Kai-Heng Feng
-> > > <kai.heng.feng@canonical.com> wrote:
-> > > >
-> > > > The function of acpi_power_meter module on Dell system requires IPMI
-> > > > handler is installed and SMI is selected.
-> > >
-> > > Does the firmware use _DEP to let the OS know about this dependency?
-> > >
-> > > > So add a helper to let acpi_power_meter know when IPMI handler and SMI
-> > > > are ready.
-> > > >
-> > > > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> > > > ---
-> > > > v3:
-> > > >  - New patch.
-> > > >
-> > > >  drivers/acpi/acpi_ipmi.c | 17 ++++++++++++++++-
-> > > >  include/acpi/acpi_bus.h  |  5 +++++
-> > > >  2 files changed, 21 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/drivers/acpi/acpi_ipmi.c b/drivers/acpi/acpi_ipmi.c
-> > > > index 0555f68c2dfd..54862cab7171 100644
-> > > > --- a/drivers/acpi/acpi_ipmi.c
-> > > > +++ b/drivers/acpi/acpi_ipmi.c
-> > > > @@ -23,6 +23,8 @@ MODULE_LICENSE("GPL");
-> > > >  #define IPMI_TIMEOUT                   (5000)
-> > > >  #define ACPI_IPMI_MAX_MSG_LENGTH       64
-> > > >
-> > > > +static struct completion smi_selected;
-> > > > +
-> > > >  struct acpi_ipmi_device {
-> > > >         /* the device list attached to driver_data.ipmi_devices */
-> > > >         struct list_head head;
-> > > > @@ -463,8 +465,10 @@ static void ipmi_register_bmc(int iface, struct device *dev)
-> > > >                 if (temp->handle == handle)
-> > > >                         goto err_lock;
-> > > >         }
-> > > > -       if (!driver_data.selected_smi)
-> > > > +       if (!driver_data.selected_smi) {
-> > > >                 driver_data.selected_smi = ipmi_device;
-> > > > +               complete(&smi_selected);
-> > > > +       }
-> > > >         list_add_tail(&ipmi_device->head, &driver_data.ipmi_devices);
-> > > >         mutex_unlock(&driver_data.ipmi_lock);
-> > > >
-> > > > @@ -578,10 +582,21 @@ acpi_ipmi_space_handler(u32 function, acpi_physical_address address,
-> > > >         return status;
-> > > >  }
-> > > >
-> > > > +int acpi_wait_for_acpi_ipmi(void)
-> > > > +{
-> > > > +       long ret;
-> > > > +
-> > > > +       ret = wait_for_completion_interruptible_timeout(&smi_selected, 2 * HZ);
-> > > > +
-> > > > +       return ret > 0 ? 0 : -ETIMEDOUT;
-> > >
-> > > What will happen if the IPMI driver is unloaded after this has returned 0?
+> > The function of acpi_power_meter module on Dell system requires IPMI
+> > handler is installed and SMI is selected.
+>
+> Does the firmware use _DEP to let the OS know about this dependency?
+
+No. _DEP is missing.
+
+Kai-Heng
+
+>
+> > So add a helper to let acpi_power_meter know when IPMI handler and SMI
+> > are ready.
 > >
-> > The IPMI driver can't be unloaded if it has a user.
-> 
-> Because of the use of the exported symbol, right?
-
-I wasn't thinking that, but yes, that would do it.  It also keep track
-of users and doesn't allow the driver to be unloaded if anything has
-registered as a user, either.
-
--corey
-
-> 
-> > I've been following this, but I know little about ACPI.  Beyond this
-> > solution, the only other solution I could come up with was to start the
-> > IPMI driver earlier.  But then you are in a chicken-and-egg situation
-> > (https://dictionary.cambridge.org/dictionary/english/chicken-and-egg-situation).
-> > Which was the reason for the SPMI table, but that's really kind of
-> > useless for this, even if the SPMI table existed.
-> 
-> Fine.
-> 
-> Let me reply to the patch with some more comments then.
+> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > ---
+> > v3:
+> >  - New patch.
+> >
+> >  drivers/acpi/acpi_ipmi.c | 17 ++++++++++++++++-
+> >  include/acpi/acpi_bus.h  |  5 +++++
+> >  2 files changed, 21 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/acpi/acpi_ipmi.c b/drivers/acpi/acpi_ipmi.c
+> > index 0555f68c2dfd..54862cab7171 100644
+> > --- a/drivers/acpi/acpi_ipmi.c
+> > +++ b/drivers/acpi/acpi_ipmi.c
+> > @@ -23,6 +23,8 @@ MODULE_LICENSE("GPL");
+> >  #define IPMI_TIMEOUT                   (5000)
+> >  #define ACPI_IPMI_MAX_MSG_LENGTH       64
+> >
+> > +static struct completion smi_selected;
+> > +
+> >  struct acpi_ipmi_device {
+> >         /* the device list attached to driver_data.ipmi_devices */
+> >         struct list_head head;
+> > @@ -463,8 +465,10 @@ static void ipmi_register_bmc(int iface, struct de=
+vice *dev)
+> >                 if (temp->handle =3D=3D handle)
+> >                         goto err_lock;
+> >         }
+> > -       if (!driver_data.selected_smi)
+> > +       if (!driver_data.selected_smi) {
+> >                 driver_data.selected_smi =3D ipmi_device;
+> > +               complete(&smi_selected);
+> > +       }
+> >         list_add_tail(&ipmi_device->head, &driver_data.ipmi_devices);
+> >         mutex_unlock(&driver_data.ipmi_lock);
+> >
+> > @@ -578,10 +582,21 @@ acpi_ipmi_space_handler(u32 function, acpi_physic=
+al_address address,
+> >         return status;
+> >  }
+> >
+> > +int acpi_wait_for_acpi_ipmi(void)
+> > +{
+> > +       long ret;
+> > +
+> > +       ret =3D wait_for_completion_interruptible_timeout(&smi_selected=
+, 2 * HZ);
+> > +
+> > +       return ret > 0 ? 0 : -ETIMEDOUT;
+>
+> What will happen if the IPMI driver is unloaded after this has returned 0=
+?
+>
+> > +}
+> > +EXPORT_SYMBOL_GPL(acpi_wait_for_acpi_ipmi);
+> > +
+> >  static int __init acpi_ipmi_init(void)
+> >  {
+> >         int result;
+> >         acpi_status status;
+> > +       init_completion(&smi_selected);
+> >
+> >         if (acpi_disabled)
+> >                 return 0;
+> > diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+> > index 1216d72c650f..afa6e4d4bf46 100644
+> > --- a/include/acpi/acpi_bus.h
+> > +++ b/include/acpi/acpi_bus.h
+> > @@ -821,11 +821,16 @@ static inline void acpi_put_acpi_dev(struct acpi_=
+device *adev)
+> >  {
+> >         acpi_dev_put(adev);
+> >  }
+> > +
+> > +int acpi_wait_for_acpi_ipmi(void);
+> > +
+> >  #else  /* CONFIG_ACPI */
+> >
+> >  static inline int register_acpi_bus_type(void *bus) { return 0; }
+> >  static inline int unregister_acpi_bus_type(void *bus) { return 0; }
+> >
+> > +static inline int acpi_wait_for_acpi_ipmi(void) { return 0; }
+> > +
+> >  #endif                         /* CONFIG_ACPI */
+> >
+> >  #endif /*__ACPI_BUS_H__*/
+> > --
