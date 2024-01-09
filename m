@@ -1,86 +1,144 @@
-Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp2.osuosl.org (smtp2.osuosl.org [140.211.166.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A29F39AEC
-	for <acpica-devel@lists.linux.dev>; Tue,  9 Jan 2024 14:27:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-3bbd9ce049fso343697b6e.1
-        for <acpica-devel@lists.linux.dev>; Tue, 09 Jan 2024 06:27:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704810471; x=1705415271;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=speyU9W4fgWPfDREd0VxrelBC2TKMQY2s8f/k65X9Vw=;
-        b=Ytrhdg9VZCMj0XwhP6g9eSqDazkBlEtXPZZwTwskeRSB9xPZ086oI6E491T3MOEmPt
-         1mGz2Wc6ny3zrPeTwZ9sW6Wqbh52Q5ckBbt5PwoL5SHcsFTE4VybcF8guZh6G9SUVlGp
-         90ymassGqeCGacELTSsrlmsqf2AuWV8RsGcr0qRtoAPS3afrQdpn1AGy0ae76Fh+ygJU
-         TF+0b7EqWBNbYT6cx66oSnL9pG7+6X9sPld4GeN2oIHO5eGJQV68iZgSKZVaHte4R239
-         d4A7xAY1pP+UgEvSoODK1oyo2R6+SrI4I3j9nvzoMUJ6JS6LuRZsc2sMSZ9HBhayFpbL
-         hhcw==
-X-Gm-Message-State: AOJu0YxJy4S7I8H7o4KYkBrSqSbyrh2ngWFEZEQTByW7a2E98xuONCIh
-	nGzVAGm/D+3KJrNZTKePK00BksO3K1ijWgnn8MM=
-X-Google-Smtp-Source: AGHT+IHY1jFISnsaNGMvSmCaJqgqyDbrcVYMQaLmXNN65Tot1RoyyJ/7Y1Qsx35HBWPmk/RBi3ZHclzvWQyOB3wOZ1s=
-X-Received: by 2002:a05:6808:30a2:b0:3bd:3bf4:8a0f with SMTP id
- bl34-20020a05680830a200b003bd3bf48a0fmr2316881oib.4.1704810471272; Tue, 09
- Jan 2024 06:27:51 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA4903B7A8
+	for <acpica-devel@lists.linuxfoundation.org>; Tue,  9 Jan 2024 15:49:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="nN/okoV4"
+Received: from localhost (localhost [127.0.0.1])
+	by smtp2.osuosl.org (Postfix) with ESMTP id 4BCA94357C
+	for <acpica-devel@lists.linuxfoundation.org>; Tue,  9 Jan 2024 15:49:36 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 4BCA94357C
+Authentication-Results: smtp2.osuosl.org;
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.a=rsa-sha256 header.s=pandora-2019 header.b=nN/okoV4
+X-Virus-Scanned: amavisd-new at osuosl.org
+X-Spam-Flag: NO
+X-Spam-Score: -2.098
+X-Spam-Level:
+Received: from smtp2.osuosl.org ([127.0.0.1])
+	by localhost (smtp2.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id ShCE0x3CwpDk
+	for <acpica-devel@lists.linuxfoundation.org>;
+	Tue,  9 Jan 2024 15:49:34 +0000 (UTC)
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+	by smtp2.osuosl.org (Postfix) with ESMTPS id D439D40320
+	for <acpica-devel@lists.linuxfoundation.org>; Tue,  9 Jan 2024 15:49:33 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org D439D40320
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=tZu+pKrUWqvj1u7XXOZ361qKXLT14yOTmWAUg/xb9K8=; b=nN/okoV4vFIiLWpy1C8jbd7tdw
+	Qv36Z2Gb+2ode/mlOC9FGuq844QXK7cH1QtvswvkKjPFNn3crE3ejxFH+peDwTmHOW4G/GWbH6Jpn
+	0qzKOvO75N3PC9BVsubbFulOPfcPT9peor+qGDaJvLE1hDNNoKtb0pRiolyX60ZvDTRC5WW3imUyZ
+	1xyVORTa/XshnAfR1BtvDgMDdHcKzUMxaBI9H8XnwA0OUVxFBs03HPJwS8ZWzD+a9pTAz9kjYXkvu
+	D81k2SVTALrUMdf78FrSRpsd/686oC+ZFg2iPb8F+4cDR8NoTEmsESKvjPSBSJuSGwKrJgRpTa/j3
+	34Jq5IPg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:53760)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rNELt-0004Hq-18;
+	Tue, 09 Jan 2024 15:49:17 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rNELr-0004Of-RO; Tue, 09 Jan 2024 15:49:15 +0000
+Date: Tue, 9 Jan 2024 15:49:15 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+	x86@kernel.org, acpica-devel@lists.linuxfoundation.org,
+	linux-csky@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+	Salil Mehta <salil.mehta@huawei.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	jianyong.wu@arm.com, justin.he@arm.com,
+	James Morse <james.morse@arm.com>
+Subject: Re: [PATCH RFC v3 02/21] ACPI: processor: Add support for processors
+ described as container packages
+Message-ID: <ZZ1q+7GXqnMMwKNR@shell.armlinux.org.uk>
+References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
+ <E1rDOfx-00Dvje-MS@rmk-PC.armlinux.org.uk>
+ <CAJZ5v0iB0bS6nmjQ++pV1zp5YSGuigbffK5VD3wsX+8bY9MA5w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20230905104721.52199-1-lpieralisi@kernel.org> <20231227110038.55453-1-lpieralisi@kernel.org>
- <20231227110038.55453-2-lpieralisi@kernel.org>
-In-Reply-To: <20231227110038.55453-2-lpieralisi@kernel.org>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Tue, 9 Jan 2024 15:27:40 +0100
-Message-ID: <CAJZ5v0ik38AkaK6UVkSg9gOOztVzhFotCWBPhvowvRvozoAUVg@mail.gmail.com>
-Subject: Re: [PATCH v4 1/3] ACPICA: MADT: Add GICC online capable bit handling
-To: Lorenzo Pieralisi <lpieralisi@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Robert Moore <robert.moore@intel.com>, 
-	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, linux-arm-kernel@lists.infradead.org, 
-	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, 
-	Mark Rutland <mark.rutland@arm.com>, Robin Murphy <robin.murphy@arm.com>, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Fang Xiang <fangxiang3@xiaomi.com>, Marc Zyngier <maz@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0iB0bS6nmjQ++pV1zp5YSGuigbffK5VD3wsX+8bY9MA5w@mail.gmail.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Wed, Dec 27, 2023 at 12:00=E2=80=AFPM Lorenzo Pieralisi
-<lpieralisi@kernel.org> wrote:
->
-> ACPICA commit 16f0befdeddf25756f317907798192bbaa417e5e
->
-> Implement code to handle the GICC online capable bit management
-> added into ACPI v6.5.
->
-> Link: https://github.com/acpica/acpica/commit/16f0befd
-> Signed-off-by: Lorenzo Pieralisi <lpieralisi@kernel.org>
-> Cc: Robert Moore <robert.moore@intel.com>
-> Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-> ---
->  include/acpi/actbl2.h | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
-> index 3751ae69432f..2b4dd2c3348f 100644
-> --- a/include/acpi/actbl2.h
-> +++ b/include/acpi/actbl2.h
-> @@ -1046,6 +1046,7 @@ struct acpi_madt_generic_interrupt {
->  /* ACPI_MADT_ENABLED                    (1)      Processor is usable if =
-set */
->  #define ACPI_MADT_PERFORMANCE_IRQ_MODE  (1<<1) /* 01: Performance Interr=
-upt Mode */
->  #define ACPI_MADT_VGIC_IRQ_MODE         (1<<2) /* 02: VGIC Maintenance I=
-nterrupt mode */
-> +#define ACPI_MADT_GICC_ONLINE_CAPABLE   (1<<3) /* 03: Processor is onlin=
-e capable  */
->
->  /* 12: Generic Distributor (ACPI 5.0 + ACPI 6.0 changes) */
->
-> --
+On Mon, Dec 18, 2023 at 09:17:34PM +0100, Rafael J. Wysocki wrote:
+> On Wed, Dec 13, 2023 at 1:49 PM Russell King <rmk+kernel@armlinux.org.uk> wrote:
+> >
+> > From: James Morse <james.morse@arm.com>
+> >
+> > ACPI has two ways of describing processors in the DSDT. From ACPI v6.5,
+> > 5.2.12:
+> >
+> > "Starting with ACPI Specification 6.3, the use of the Processor() object
+> > was deprecated. Only legacy systems should continue with this usage. On
+> > the Itanium architecture only, a _UID is provided for the Processor()
+> > that is a string object. This usage of _UID is also deprecated since it
+> > can preclude an OSPM from being able to match a processor to a
+> > non-enumerable device, such as those defined in the MADT. From ACPI
+> > Specification 6.3 onward, all processor objects for all architectures
+> > except Itanium must now use Device() objects with an _HID of ACPI0007,
+> > and use only integer _UID values."
+> >
+> > Also see https://uefi.org/specs/ACPI/6.5/08_Processor_Configuration_and_Control.html#declaring-processors
+> >
+> > Duplicate descriptions are not allowed, the ACPI processor driver already
+> > parses the UID from both devices and containers. acpi_processor_get_info()
+> > returns an error if the UID exists twice in the DSDT.
+> 
+> I'm not really sure how the above is related to the actual patch.
+> 
+> > The missing probe for CPUs described as packages
+> 
+> It is unclear what exactly is meant by "CPUs described as packages".
+> 
+> From the patch, it looks like those would be Processor() objects
+> defined under a processor container device.
+> 
+> > creates a problem for
+> > moving the cpu_register() calls into the acpi_processor driver, as CPUs
+> > described like this don't get registered, leading to errors from other
+> > subsystems when they try to add new sysfs entries to the CPU node.
+> > (e.g. topology_sysfs_init()'s use of topology_add_dev() via cpuhp)
+> >
+> > To fix this, parse the processor container and call acpi_processor_add()
+> > for each processor that is discovered like this.
+> 
+> Discovered like what?
+> 
+> > The processor container
+> > handler is added with acpi_scan_add_handler(), so no detach call will
+> > arrive.
+> 
+> The above requires clarification too.
 
-Applied as 6.8-rc1 material along with the [2/3].
+The above comments... yea. As I didn't write the commit description, but
+James did, and James has basically vanished, I don't think these can be
+answered, short of rewriting the entire commit message, with me spending
+a lot of time with the ACPI specification trying to get the terminology
+right - because at lot of the above on the face of it seems to be things
+to do with wrong terminology being used.
 
-Thanks!
+I wasn't expecting this level of issues with this patch set, and I now
+feel completely out of my depth with this series. I'm wondering whether
+I should even continue with it, since I don't have the ACPI knowledge
+to address a lot of these comments.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
