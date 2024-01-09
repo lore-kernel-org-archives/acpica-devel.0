@@ -1,51 +1,51 @@
-Received: from smtp2.osuosl.org (smtp2.osuosl.org [140.211.166.133])
+Received: from smtp1.osuosl.org (smtp1.osuosl.org [140.211.166.138])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA4903B7A8
-	for <acpica-devel@lists.linuxfoundation.org>; Tue,  9 Jan 2024 15:49:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9FC13A8CB
+	for <acpica-devel@lists.linuxfoundation.org>; Tue,  9 Jan 2024 16:13:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="nN/okoV4"
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="a1Ok5Tny"
 Received: from localhost (localhost [127.0.0.1])
-	by smtp2.osuosl.org (Postfix) with ESMTP id 4BCA94357C
-	for <acpica-devel@lists.linuxfoundation.org>; Tue,  9 Jan 2024 15:49:36 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 4BCA94357C
-Authentication-Results: smtp2.osuosl.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.a=rsa-sha256 header.s=pandora-2019 header.b=nN/okoV4
+	by smtp1.osuosl.org (Postfix) with ESMTP id 1AA8680C2B
+	for <acpica-devel@lists.linuxfoundation.org>; Tue,  9 Jan 2024 16:13:33 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 1AA8680C2B
+Authentication-Results: smtp1.osuosl.org;
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.a=rsa-sha256 header.s=pandora-2019 header.b=a1Ok5Tny
 X-Virus-Scanned: amavisd-new at osuosl.org
 X-Spam-Flag: NO
 X-Spam-Score: -2.098
 X-Spam-Level:
-Received: from smtp2.osuosl.org ([127.0.0.1])
-	by localhost (smtp2.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id ShCE0x3CwpDk
+Received: from smtp1.osuosl.org ([127.0.0.1])
+	by localhost (smtp1.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id GTl9LMVc1xcJ
 	for <acpica-devel@lists.linuxfoundation.org>;
-	Tue,  9 Jan 2024 15:49:34 +0000 (UTC)
+	Tue,  9 Jan 2024 16:13:32 +0000 (UTC)
 Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-	by smtp2.osuosl.org (Postfix) with ESMTPS id D439D40320
-	for <acpica-devel@lists.linuxfoundation.org>; Tue,  9 Jan 2024 15:49:33 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org D439D40320
+	by smtp1.osuosl.org (Postfix) with ESMTPS id DF24580C1A
+	for <acpica-devel@lists.linuxfoundation.org>; Tue,  9 Jan 2024 16:13:31 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org DF24580C1A
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
 	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
 	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=tZu+pKrUWqvj1u7XXOZ361qKXLT14yOTmWAUg/xb9K8=; b=nN/okoV4vFIiLWpy1C8jbd7tdw
-	Qv36Z2Gb+2ode/mlOC9FGuq844QXK7cH1QtvswvkKjPFNn3crE3ejxFH+peDwTmHOW4G/GWbH6Jpn
-	0qzKOvO75N3PC9BVsubbFulOPfcPT9peor+qGDaJvLE1hDNNoKtb0pRiolyX60ZvDTRC5WW3imUyZ
-	1xyVORTa/XshnAfR1BtvDgMDdHcKzUMxaBI9H8XnwA0OUVxFBs03HPJwS8ZWzD+a9pTAz9kjYXkvu
-	D81k2SVTALrUMdf78FrSRpsd/686oC+ZFg2iPb8F+4cDR8NoTEmsESKvjPSBSJuSGwKrJgRpTa/j3
-	34Jq5IPg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:53760)
+	bh=hjOpdiFLaU/rl9xnyUOLlrLmtfPs6+yF3otyUbGH/R4=; b=a1Ok5TnyDwwEPqkbOv/NhT9x7R
+	vsRGEpXQQuagE84o1GOKB+g5J/3SKZHiq7gO7CVhZ9MwbQLrdnXwckcxFgAGvnY9Nk4loJwUNfWTP
+	dmTT4AEb4pqk4eK2+PIhMHYIuLyFfMQgkCgMxXmxbzNgRuL29tI50v1rDgTaj2mHCxoPuAbNQPrUt
+	Km1OPWQBn9drrgdJHriccMuP6O1dmCKstC1QR2adWEFoMNzjxmXhZjSbPWilyBjDSoIpatoeKnAWZ
+	8VR9XluXAKu8zzZRWPmIvh+ZGCcd5RXc90I3qF8F9kbHPYQUINZIyz2P07nQPugKYvhC2BMDt30cD
+	fa7z7JPQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:35300)
 	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <linux@armlinux.org.uk>)
-	id 1rNELt-0004Hq-18;
-	Tue, 09 Jan 2024 15:49:17 +0000
+	id 1rNEj9-0004JK-0j;
+	Tue, 09 Jan 2024 16:13:19 +0000
 Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
 	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rNELr-0004Of-RO; Tue, 09 Jan 2024 15:49:15 +0000
-Date: Tue, 9 Jan 2024 15:49:15 +0000
+	id 1rNEjB-0004Pk-Ap; Tue, 09 Jan 2024 16:13:21 +0000
+Date: Tue, 9 Jan 2024 16:13:21 +0000
 From: "Russell King (Oracle)" <linux@armlinux.org.uk>
 To: "Rafael J. Wysocki" <rafael@kernel.org>
 Cc: linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
@@ -61,10 +61,12 @@ Cc: linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
 	James Morse <james.morse@arm.com>
 Subject: Re: [PATCH RFC v3 02/21] ACPI: processor: Add support for processors
  described as container packages
-Message-ID: <ZZ1q+7GXqnMMwKNR@shell.armlinux.org.uk>
+Message-ID: <ZZ1woQkpMMCWVnXc@shell.armlinux.org.uk>
 References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
  <E1rDOfx-00Dvje-MS@rmk-PC.armlinux.org.uk>
  <CAJZ5v0iB0bS6nmjQ++pV1zp5YSGuigbffK5VD3wsX+8bY9MA5w@mail.gmail.com>
+ <ZZ1q+7GXqnMMwKNR@shell.armlinux.org.uk>
+ <CAJZ5v0jvuTAMak-x=ekphwgNsUWABGRcDPb8D4QB=KhfyC76Sg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -74,70 +76,86 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0iB0bS6nmjQ++pV1zp5YSGuigbffK5VD3wsX+8bY9MA5w@mail.gmail.com>
+In-Reply-To: <CAJZ5v0jvuTAMak-x=ekphwgNsUWABGRcDPb8D4QB=KhfyC76Sg@mail.gmail.com>
 Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Mon, Dec 18, 2023 at 09:17:34PM +0100, Rafael J. Wysocki wrote:
-> On Wed, Dec 13, 2023 at 1:49 PM Russell King <rmk+kernel@armlinux.org.uk> wrote:
+On Tue, Jan 09, 2024 at 05:05:15PM +0100, Rafael J. Wysocki wrote:
+> On Tue, Jan 9, 2024 at 4:49 PM Russell King (Oracle)
+> <linux@armlinux.org.uk> wrote:
 > >
-> > From: James Morse <james.morse@arm.com>
+> > On Mon, Dec 18, 2023 at 09:17:34PM +0100, Rafael J. Wysocki wrote:
+> > > On Wed, Dec 13, 2023 at 1:49 PM Russell King <rmk+kernel@armlinux.org.uk> wrote:
+> > > >
+> > > > From: James Morse <james.morse@arm.com>
+> > > >
+> > > > ACPI has two ways of describing processors in the DSDT. From ACPI v6.5,
+> > > > 5.2.12:
+> > > >
+> > > > "Starting with ACPI Specification 6.3, the use of the Processor() object
+> > > > was deprecated. Only legacy systems should continue with this usage. On
+> > > > the Itanium architecture only, a _UID is provided for the Processor()
+> > > > that is a string object. This usage of _UID is also deprecated since it
+> > > > can preclude an OSPM from being able to match a processor to a
+> > > > non-enumerable device, such as those defined in the MADT. From ACPI
+> > > > Specification 6.3 onward, all processor objects for all architectures
+> > > > except Itanium must now use Device() objects with an _HID of ACPI0007,
+> > > > and use only integer _UID values."
+> > > >
+> > > > Also see https://uefi.org/specs/ACPI/6.5/08_Processor_Configuration_and_Control.html#declaring-processors
+> > > >
+> > > > Duplicate descriptions are not allowed, the ACPI processor driver already
+> > > > parses the UID from both devices and containers. acpi_processor_get_info()
+> > > > returns an error if the UID exists twice in the DSDT.
+> > >
+> > > I'm not really sure how the above is related to the actual patch.
+> > >
+> > > > The missing probe for CPUs described as packages
+> > >
+> > > It is unclear what exactly is meant by "CPUs described as packages".
+> > >
+> > > From the patch, it looks like those would be Processor() objects
+> > > defined under a processor container device.
+> > >
+> > > > creates a problem for
+> > > > moving the cpu_register() calls into the acpi_processor driver, as CPUs
+> > > > described like this don't get registered, leading to errors from other
+> > > > subsystems when they try to add new sysfs entries to the CPU node.
+> > > > (e.g. topology_sysfs_init()'s use of topology_add_dev() via cpuhp)
+> > > >
+> > > > To fix this, parse the processor container and call acpi_processor_add()
+> > > > for each processor that is discovered like this.
+> > >
+> > > Discovered like what?
+> > >
+> > > > The processor container
+> > > > handler is added with acpi_scan_add_handler(), so no detach call will
+> > > > arrive.
+> > >
+> > > The above requires clarification too.
 > >
-> > ACPI has two ways of describing processors in the DSDT. From ACPI v6.5,
-> > 5.2.12:
+> > The above comments... yea. As I didn't write the commit description, but
+> > James did, and James has basically vanished, I don't think these can be
+> > answered, short of rewriting the entire commit message, with me spending
+> > a lot of time with the ACPI specification trying to get the terminology
+> > right - because at lot of the above on the face of it seems to be things
+> > to do with wrong terminology being used.
 > >
-> > "Starting with ACPI Specification 6.3, the use of the Processor() object
-> > was deprecated. Only legacy systems should continue with this usage. On
-> > the Itanium architecture only, a _UID is provided for the Processor()
-> > that is a string object. This usage of _UID is also deprecated since it
-> > can preclude an OSPM from being able to match a processor to a
-> > non-enumerable device, such as those defined in the MADT. From ACPI
-> > Specification 6.3 onward, all processor objects for all architectures
-> > except Itanium must now use Device() objects with an _HID of ACPI0007,
-> > and use only integer _UID values."
-> >
-> > Also see https://uefi.org/specs/ACPI/6.5/08_Processor_Configuration_and_Control.html#declaring-processors
-> >
-> > Duplicate descriptions are not allowed, the ACPI processor driver already
-> > parses the UID from both devices and containers. acpi_processor_get_info()
-> > returns an error if the UID exists twice in the DSDT.
+> > I wasn't expecting this level of issues with this patch set, and I now
+> > feel completely out of my depth with this series. I'm wondering whether
+> > I should even continue with it, since I don't have the ACPI knowledge
+> > to address a lot of these comments.
 > 
-> I'm not really sure how the above is related to the actual patch.
+> Well, sorry about this.
 > 
-> > The missing probe for CPUs described as packages
-> 
-> It is unclear what exactly is meant by "CPUs described as packages".
-> 
-> From the patch, it looks like those would be Processor() objects
-> defined under a processor container device.
-> 
-> > creates a problem for
-> > moving the cpu_register() calls into the acpi_processor driver, as CPUs
-> > described like this don't get registered, leading to errors from other
-> > subsystems when they try to add new sysfs entries to the CPU node.
-> > (e.g. topology_sysfs_init()'s use of topology_add_dev() via cpuhp)
-> >
-> > To fix this, parse the processor container and call acpi_processor_add()
-> > for each processor that is discovered like this.
-> 
-> Discovered like what?
-> 
-> > The processor container
-> > handler is added with acpi_scan_add_handler(), so no detach call will
-> > arrive.
-> 
-> The above requires clarification too.
+> I met James at the LPC last year, so he seems to be still around, in
+> some way at least..
 
-The above comments... yea. As I didn't write the commit description, but
-James did, and James has basically vanished, I don't think these can be
-answered, short of rewriting the entire commit message, with me spending
-a lot of time with the ACPI specification trying to get the terminology
-right - because at lot of the above on the face of it seems to be things
-to do with wrong terminology being used.
+On the previous posting, I wanted James to comment on some of the
+feedback from Jonathan, and despite explicitly asking, there has been
+nothing but radio silence ever since James' last post of this series.
 
-I wasn't expecting this level of issues with this patch set, and I now
-feel completely out of my depth with this series. I'm wondering whether
-I should even continue with it, since I don't have the ACPI knowledge
-to address a lot of these comments.
+So, I now deem this work to be completely dead in the water, and not
+going to happen - not unless others can input on your comments.
 
 -- 
 RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
