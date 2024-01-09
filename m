@@ -1,170 +1,140 @@
-Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9856D3C694
-	for <acpica-devel@lists.linux.dev>; Tue,  9 Jan 2024 19:51:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF0653E472
+	for <acpica-devel@lists.linux.dev>; Tue,  9 Jan 2024 22:18:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-594363b4783so123014eaf.1
-        for <acpica-devel@lists.linux.dev>; Tue, 09 Jan 2024 11:51:08 -0800 (PST)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SJ4p4IFD"
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-5e7467eb93aso27388207b3.1
+        for <acpica-devel@lists.linux.dev>; Tue, 09 Jan 2024 14:18:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704838696; x=1705443496; darn=lists.linux.dev;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=v/5fHRZ3TTIgaikqWrDxvko86x0/5zJ9RLo/uHWIt/A=;
+        b=SJ4p4IFDlW1PpRQzygcPdbFqsMHAZ3RdV1WXqhoCAjV5lb/NisUiGgl1cNmYwPdfxZ
+         w58h+FTap9hUMLHMJJ4BJNeW2Jo1uQ24YMmHW26si0UqInUqNhSJenClKEzw2mntSM5l
+         sr3tNyMRtWRIIS2+RAPGPh1QVwOA5VzuBga8+zspwfkHFsQAwc4l2z10dM2JKBItDLfe
+         JnLpO5bepk1s2DveKRhw3pBCEwjbXk6euu8aSchlVCL18v+0EEVmO3K5fdybA637fLiA
+         LVQNcRQo+OsZi+ERFmXe/96bSHYK2QQ17oQ0uhE3Sx03DuIBvrPxqv6gik7LPMDMSRdB
+         +M6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704829867; x=1705434667;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=f9CfEyJdpI18457+5ji9bfNvEco0haGPdav5Z06RXJE=;
-        b=RZdv9pNwrL/mS2WwMWzUTNPoC7lL06rRaMFmPee7o4808znDyaFe1QrCggsbm32K2V
-         BsLb5HUstti6pnfH/TWOAzozmEqkQC8K/9mZ2g2tVHIeMzcdJE6PEvdEt/ZCjdSf45xQ
-         3QxZhyukXaU4lLEWP5LEeyO2Ea8PpOTmPblMXL0dllOy4ioicga7pCzWW/GEjEfVnb3u
-         ZDzWvdg6D8NxbyaWF96a4+sfG9dPlUcCPsjdWcRBVAP8oBFICWWgw1GqIfYc0uBCs3g6
-         +PWTE8GyPsmimU5USeSefqRZy9El0U48ZW8vGCaKqzHvtokMJpAW0u5Y7Rm4/CS/aj5N
-         WF8Q==
-X-Gm-Message-State: AOJu0YxE+LhWi85PER25ke7yZR2626CRJyKHx35eQU3jvK4vBWZA3BO8
-	OSgOaJfRCeddy73o5p/U7249DH2Z99Oui1SgWGs=
-X-Google-Smtp-Source: AGHT+IFQ5yvazC9v/FzYTn7OSLPSMqLku7H0Q6uYYWxIshHalCVuu3eysh1wH8tbatZynnzMVwZKOM7G9D3p2uiMfxI=
-X-Received: by 2002:a4a:c912:0:b0:598:81b7:4d25 with SMTP id
- v18-20020a4ac912000000b0059881b74d25mr2591740ooq.1.1704829867536; Tue, 09 Jan
- 2024 11:51:07 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704838696; x=1705443496;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=v/5fHRZ3TTIgaikqWrDxvko86x0/5zJ9RLo/uHWIt/A=;
+        b=Lz+CXUTxmprY5EuMx4sLqOk6XXAzNMofkVyo4BRGMf1RS+8mhVfvto8k54BR8XYCqF
+         GuHSIl9EC6Xp8CNy4ncHLfKzqUaqUMvypkxbl4VuM7+daStNKBLKxmSZaemAy2mJBveA
+         wvxrk6I8gKTEKcZiuL0KYOVHe0/jijIxZbM+VkR46yz1gCTw49fp9vKE7XcJ/gNjINgm
+         igOJchnyXYHanum+DOuXoTYYrlPlbbTb+HRla/R5Dca1qKggKioXLP1dcOJnOyEs4n8e
+         JXF0/1XvhwGCRACvaP9fZnrGGDlExEJMqYW/afD9k5lnKuG/1D/us5ECb8FYqK3XPcQK
+         OrWw==
+X-Gm-Message-State: AOJu0YxjcXEjC7MA8AXh7AdGyKiikMJcdzYAD/97wJwtEEXbi9/pKREX
+	zK9ObPBMW5cFSheFv5s6g5o=
+X-Google-Smtp-Source: AGHT+IE4ioHYsK8BrRCtioucpZLYJByHQF+hhkA6bdoAIejoNjkkeOSHea6O51p+qmcZCeTkErbKZQ==
+X-Received: by 2002:a81:4fd3:0:b0:5d7:1940:8dd7 with SMTP id d202-20020a814fd3000000b005d719408dd7mr142850ywb.62.1704838695631;
+        Tue, 09 Jan 2024 14:18:15 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id s84-20020a815e57000000b005e8991c1a69sm1072050ywb.140.2024.01.09.14.18.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Jan 2024 14:18:14 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <cea9dfbe-89a1-4832-a09f-10582cd034fb@roeck-us.net>
+Date: Tue, 9 Jan 2024 14:18:13 -0800
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/2] ACPI: IPMI: Add helper to wait for when SMI is
+ selected
+Content-Language: en-US
+To: "Rafael J. Wysocki" <rafael@kernel.org>,
+ Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc: jdelvare@suse.com, Len Brown <lenb@kernel.org>,
+ Robert Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org,
+ linux-kernel@vger.kernel.org, acpica-devel@lists.linux.dev
 References: <20240109041218.980674-1-kai.heng.feng@canonical.com>
-In-Reply-To: <20240109041218.980674-1-kai.heng.feng@canonical.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Tue, 9 Jan 2024 20:50:56 +0100
-Message-ID: <CAJZ5v0g4_5k-+_-ZPkm5LNOLsveJJqt2t60q_4a3wm+kAFCv_g@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] ACPI: IPMI: Add helper to wait for when SMI is selected
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc: jdelvare@suse.com, linux@roeck-us.net, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
-	Robert Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, acpica-devel@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+ <CAJZ5v0g4_5k-+_-ZPkm5LNOLsveJJqt2t60q_4a3wm+kAFCv_g@mail.gmail.com>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ xsFNBE6H1WcBEACu6jIcw5kZ5dGeJ7E7B2uweQR/4FGxH10/H1O1+ApmcQ9i87XdZQiB9cpN
+ RYHA7RCEK2dh6dDccykQk3bC90xXMPg+O3R+C/SkwcnUak1UZaeK/SwQbq/t0tkMzYDRxfJ7
+ nyFiKxUehbNF3r9qlJgPqONwX5vJy4/GvDHdddSCxV41P/ejsZ8PykxyJs98UWhF54tGRWFl
+ 7i1xvaDB9lN5WTLRKSO7wICuLiSz5WZHXMkyF4d+/O5ll7yz/o/JxK5vO/sduYDIlFTvBZDh
+ gzaEtNf5tQjsjG4io8E0Yq0ViobLkS2RTNZT8ICq/Jmvl0SpbHRvYwa2DhNsK0YjHFQBB0FX
+ IdhdUEzNefcNcYvqigJpdICoP2e4yJSyflHFO4dr0OrdnGLe1Zi/8Xo/2+M1dSSEt196rXaC
+ kwu2KgIgmkRBb3cp2vIBBIIowU8W3qC1+w+RdMUrZxKGWJ3juwcgveJlzMpMZNyM1jobSXZ0
+ VHGMNJ3MwXlrEFPXaYJgibcg6brM6wGfX/LBvc/haWw4yO24lT5eitm4UBdIy9pKkKmHHh7s
+ jfZJkB5fWKVdoCv/omy6UyH6ykLOPFugl+hVL2Prf8xrXuZe1CMS7ID9Lc8FaL1ROIN/W8Vk
+ BIsJMaWOhks//7d92Uf3EArDlDShwR2+D+AMon8NULuLBHiEUQARAQABzTJHdWVudGVyIFJv
+ ZWNrIChMaW51eCBhY2NvdW50KSA8bGludXhAcm9lY2stdXMubmV0PsLBgQQTAQIAKwIbAwYL
+ CQgHAwIGFQgCCQoLBBYCAwECHgECF4ACGQEFAlVcphcFCRmg06EACgkQyx8mb86fmYFg0RAA
+ nzXJzuPkLJaOmSIzPAqqnutACchT/meCOgMEpS5oLf6xn5ySZkl23OxuhpMZTVX+49c9pvBx
+ hpvl5bCWFu5qC1jC2eWRYU+aZZE4sxMaAGeWenQJsiG9lP8wkfCJP3ockNu0ZXXAXwIbY1O1
+ c+l11zQkZw89zNgWgKobKzrDMBFOYtAh0pAInZ9TSn7oA4Ctejouo5wUugmk8MrDtUVXmEA9
+ 7f9fgKYSwl/H7dfKKsS1bDOpyJlqhEAH94BHJdK/b1tzwJCFAXFhMlmlbYEk8kWjcxQgDWMu
+ GAthQzSuAyhqyZwFcOlMCNbAcTSQawSo3B9yM9mHJne5RrAbVz4TWLnEaX8gA5xK3uCNCeyI
+ sqYuzA4OzcMwnnTASvzsGZoYHTFP3DQwf2nzxD6yBGCfwNGIYfS0i8YN8XcBgEcDFMWpOQhT
+ Pu3HeztMnF3HXrc0t7e5rDW9zCh3k2PA6D2NV4fews9KDFhLlTfCVzf0PS1dRVVWM+4jVl6l
+ HRIAgWp+2/f8dx5vPc4Ycp4IsZN0l1h9uT7qm1KTwz+sSl1zOqKD/BpfGNZfLRRxrXthvvY8
+ BltcuZ4+PGFTcRkMytUbMDFMF9Cjd2W9dXD35PEtvj8wnEyzIos8bbgtLrGTv/SYhmPpahJA
+ l8hPhYvmAvpOmusUUyB30StsHIU2LLccUPPOwU0ETofVZwEQALlLbQeBDTDbwQYrj0gbx3bq
+ 7kpKABxN2MqeuqGr02DpS9883d/t7ontxasXoEz2GTioevvRmllJlPQERVxM8gQoNg22twF7
+ pB/zsrIjxkE9heE4wYfN1AyzT+AxgYN6f8hVQ7Nrc9XgZZe+8IkuW/Nf64KzNJXnSH4u6nJM
+ J2+Dt274YoFcXR1nG76Q259mKwzbCukKbd6piL+VsT/qBrLhZe9Ivbjq5WMdkQKnP7gYKCAi
+ pNVJC4enWfivZsYupMd9qn7Uv/oCZDYoBTdMSBUblaLMwlcjnPpOYK5rfHvC4opxl+P/Vzyz
+ 6WC2TLkPtKvYvXmdsI6rnEI4Uucg0Au/Ulg7aqqKhzGPIbVaL+U0Wk82nz6hz+WP2ggTrY1w
+ ZlPlRt8WM9w6WfLf2j+PuGklj37m+KvaOEfLsF1v464dSpy1tQVHhhp8LFTxh/6RWkRIR2uF
+ I4v3Xu/k5D0LhaZHpQ4C+xKsQxpTGuYh2tnRaRL14YMW1dlI3HfeB2gj7Yc8XdHh9vkpPyuT
+ nY/ZsFbnvBtiw7GchKKri2gDhRb2QNNDyBnQn5mRFw7CyuFclAksOdV/sdpQnYlYcRQWOUGY
+ HhQ5eqTRZjm9z+qQe/T0HQpmiPTqQcIaG/edgKVTUjITfA7AJMKLQHgp04Vylb+G6jocnQQX
+ JqvvP09whbqrABEBAAHCwWUEGAECAA8CGwwFAlVcpi8FCRmg08MACgkQyx8mb86fmYHNRQ/+
+ J0OZsBYP4leJvQF8lx9zif+v4ZY/6C9tTcUv/KNAE5leyrD4IKbnV4PnbrVhjq861it/zRQW
+ cFpWQszZyWRwNPWUUz7ejmm9lAwPbr8xWT4qMSA43VKQ7ZCeTQJ4TC8kjqtcbw41SjkjrcTG
+ wF52zFO4bOWyovVAPncvV9eGA/vtnd3xEZXQiSt91kBSqK28yjxAqK/c3G6i7IX2rg6pzgqh
+ hiH3/1qM2M/LSuqAv0Rwrt/k+pZXE+B4Ud42hwmMr0TfhNxG+X7YKvjKC+SjPjqp0CaztQ0H
+ nsDLSLElVROxCd9m8CAUuHplgmR3seYCOrT4jriMFBtKNPtj2EE4DNV4s7k0Zy+6iRQ8G8ng
+ QjsSqYJx8iAR8JRB7Gm2rQOMv8lSRdjva++GT0VLXtHULdlzg8VjDnFZ3lfz5PWEOeIMk7Rj
+ trjv82EZtrhLuLjHRCaG50OOm0hwPSk1J64R8O3HjSLdertmw7eyAYOo4RuWJguYMg5DRnBk
+ WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
+ HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <CAJZ5v0g4_5k-+_-ZPkm5LNOLsveJJqt2t60q_4a3wm+kAFCv_g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jan 9, 2024 at 5:12=E2=80=AFAM Kai-Heng Feng
-<kai.heng.feng@canonical.com> wrote:
->
-> On Dell servers, many APCI methods of acpi_power_meter module evaluate
-> variables inside IPMI region, so the region handler needs to be
-> installed. In addition to that, the handler needs to be fully
-> functional, and that depends on SMI being selected.
->
-> So add a helper to let acpi_power_meter know when the handler is
-> installed and ready to be used.
->
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+On 1/9/24 11:50, Rafael J. Wysocki wrote:
+> On Tue, Jan 9, 2024 at 5:12 AM Kai-Heng Feng
+> <kai.heng.feng@canonical.com> wrote:
+>>
+>> On Dell servers, many APCI methods of acpi_power_meter module evaluate
+>> variables inside IPMI region, so the region handler needs to be
+>> installed. In addition to that, the handler needs to be fully
+>> functional, and that depends on SMI being selected.
+>>
+>> So add a helper to let acpi_power_meter know when the handler is
+>> installed and ready to be used.
+>>
+>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> 
+> Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> and I'm expecting this to be routed along with patch [2/2] that has
+> been posted elsewhere.
+> 
 
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Note that linux-hwmon@ isn't copied on this patch and it therefore
+does not show up in hwmon patchwork. To me that indicates that the
+patch should _not_ be applied through hwmon. If hwmon is supposed
+to pick it up, please copy the hwmon mailing list.
 
-and I'm expecting this to be routed along with patch [2/2] that has
-been posted elsewhere.
+Guenter
 
-> ---
-> v4:
->  - Wording.
->  - Define and comment on timeout value.
->  - Move the completion to driver_data.
->  - Remove the tenary operator.
->
-> v3:
->  - New patch.
->
->  drivers/acpi/acpi_ipmi.c | 23 ++++++++++++++++++++++-
->  include/acpi/acpi_bus.h  |  5 +++++
->  2 files changed, 27 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/acpi/acpi_ipmi.c b/drivers/acpi/acpi_ipmi.c
-> index 0555f68c2dfd..5fba4dab5d08 100644
-> --- a/drivers/acpi/acpi_ipmi.c
-> +++ b/drivers/acpi/acpi_ipmi.c
-> @@ -22,6 +22,8 @@ MODULE_LICENSE("GPL");
->  /* the IPMI timeout is 5s */
->  #define IPMI_TIMEOUT                   (5000)
->  #define ACPI_IPMI_MAX_MSG_LENGTH       64
-> +/* 2s should be suffient for SMI being selected */
-> +#define ACPI_IPMI_SMI_SELECTION_TIMEOUT        (2 * HZ)
->
->  struct acpi_ipmi_device {
->         /* the device list attached to driver_data.ipmi_devices */
-> @@ -54,6 +56,7 @@ struct ipmi_driver_data {
->          * to this selected global IPMI system interface.
->          */
->         struct acpi_ipmi_device *selected_smi;
-> +       struct completion smi_selection_done;
->  };
->
->  struct acpi_ipmi_msg {
-> @@ -463,8 +466,10 @@ static void ipmi_register_bmc(int iface, struct devi=
-ce *dev)
->                 if (temp->handle =3D=3D handle)
->                         goto err_lock;
->         }
-> -       if (!driver_data.selected_smi)
-> +       if (!driver_data.selected_smi) {
->                 driver_data.selected_smi =3D ipmi_device;
-> +               complete(&driver_data.smi_selection_done);
-> +       }
->         list_add_tail(&ipmi_device->head, &driver_data.ipmi_devices);
->         mutex_unlock(&driver_data.ipmi_lock);
->
-> @@ -578,6 +583,20 @@ acpi_ipmi_space_handler(u32 function, acpi_physical_=
-address address,
->         return status;
->  }
->
-> +int acpi_wait_for_acpi_ipmi(void)
-> +{
-> +       long ret;
-> +
-> +       ret =3D wait_for_completion_interruptible_timeout(&driver_data.sm=
-i_selection_done,
-> +                                                       ACPI_IPMI_SMI_SEL=
-ECTION_TIMEOUT);
-> +
-> +       if (ret <=3D 0)
-> +               return -ETIMEDOUT;
-> +
-> +       return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(acpi_wait_for_acpi_ipmi);
-> +
->  static int __init acpi_ipmi_init(void)
->  {
->         int result;
-> @@ -586,6 +605,8 @@ static int __init acpi_ipmi_init(void)
->         if (acpi_disabled)
->                 return 0;
->
-> +       init_completion(&driver_data.smi_selection_done);
-> +
->         status =3D acpi_install_address_space_handler(ACPI_ROOT_OBJECT,
->                                                     ACPI_ADR_SPACE_IPMI,
->                                                     &acpi_ipmi_space_hand=
-ler,
-> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-> index 1216d72c650f..afa6e4d4bf46 100644
-> --- a/include/acpi/acpi_bus.h
-> +++ b/include/acpi/acpi_bus.h
-> @@ -821,11 +821,16 @@ static inline void acpi_put_acpi_dev(struct acpi_de=
-vice *adev)
->  {
->         acpi_dev_put(adev);
->  }
-> +
-> +int acpi_wait_for_acpi_ipmi(void);
-> +
->  #else  /* CONFIG_ACPI */
->
->  static inline int register_acpi_bus_type(void *bus) { return 0; }
->  static inline int unregister_acpi_bus_type(void *bus) { return 0; }
->
-> +static inline int acpi_wait_for_acpi_ipmi(void) { return 0; }
-> +
->  #endif                         /* CONFIG_ACPI */
->
->  #endif /*__ACPI_BUS_H__*/
-> --
