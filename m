@@ -1,140 +1,291 @@
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp2.osuosl.org (smtp2.osuosl.org [140.211.166.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF0653E472
-	for <acpica-devel@lists.linux.dev>; Tue,  9 Jan 2024 22:18:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SJ4p4IFD"
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-5e7467eb93aso27388207b3.1
-        for <acpica-devel@lists.linux.dev>; Tue, 09 Jan 2024 14:18:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704838696; x=1705443496; darn=lists.linux.dev;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=v/5fHRZ3TTIgaikqWrDxvko86x0/5zJ9RLo/uHWIt/A=;
-        b=SJ4p4IFDlW1PpRQzygcPdbFqsMHAZ3RdV1WXqhoCAjV5lb/NisUiGgl1cNmYwPdfxZ
-         w58h+FTap9hUMLHMJJ4BJNeW2Jo1uQ24YMmHW26si0UqInUqNhSJenClKEzw2mntSM5l
-         sr3tNyMRtWRIIS2+RAPGPh1QVwOA5VzuBga8+zspwfkHFsQAwc4l2z10dM2JKBItDLfe
-         JnLpO5bepk1s2DveKRhw3pBCEwjbXk6euu8aSchlVCL18v+0EEVmO3K5fdybA637fLiA
-         LVQNcRQo+OsZi+ERFmXe/96bSHYK2QQ17oQ0uhE3Sx03DuIBvrPxqv6gik7LPMDMSRdB
-         +M6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704838696; x=1705443496;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=v/5fHRZ3TTIgaikqWrDxvko86x0/5zJ9RLo/uHWIt/A=;
-        b=Lz+CXUTxmprY5EuMx4sLqOk6XXAzNMofkVyo4BRGMf1RS+8mhVfvto8k54BR8XYCqF
-         GuHSIl9EC6Xp8CNy4ncHLfKzqUaqUMvypkxbl4VuM7+daStNKBLKxmSZaemAy2mJBveA
-         wvxrk6I8gKTEKcZiuL0KYOVHe0/jijIxZbM+VkR46yz1gCTw49fp9vKE7XcJ/gNjINgm
-         igOJchnyXYHanum+DOuXoTYYrlPlbbTb+HRla/R5Dca1qKggKioXLP1dcOJnOyEs4n8e
-         JXF0/1XvhwGCRACvaP9fZnrGGDlExEJMqYW/afD9k5lnKuG/1D/us5ECb8FYqK3XPcQK
-         OrWw==
-X-Gm-Message-State: AOJu0YxjcXEjC7MA8AXh7AdGyKiikMJcdzYAD/97wJwtEEXbi9/pKREX
-	zK9ObPBMW5cFSheFv5s6g5o=
-X-Google-Smtp-Source: AGHT+IE4ioHYsK8BrRCtioucpZLYJByHQF+hhkA6bdoAIejoNjkkeOSHea6O51p+qmcZCeTkErbKZQ==
-X-Received: by 2002:a81:4fd3:0:b0:5d7:1940:8dd7 with SMTP id d202-20020a814fd3000000b005d719408dd7mr142850ywb.62.1704838695631;
-        Tue, 09 Jan 2024 14:18:15 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id s84-20020a815e57000000b005e8991c1a69sm1072050ywb.140.2024.01.09.14.18.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Jan 2024 14:18:14 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <cea9dfbe-89a1-4832-a09f-10582cd034fb@roeck-us.net>
-Date: Tue, 9 Jan 2024 14:18:13 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F40713FE2
+	for <acpica-devel@lists.linuxfoundation.org>; Thu, 11 Jan 2024 10:19:58 +0000 (UTC)
+Received: from localhost (localhost [127.0.0.1])
+	by smtp2.osuosl.org (Postfix) with ESMTP id DFA3E40354
+	for <acpica-devel@lists.linuxfoundation.org>; Thu, 11 Jan 2024 10:19:57 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org DFA3E40354
+X-Virus-Scanned: amavisd-new at osuosl.org
+X-Spam-Flag: NO
+X-Spam-Score: -4.198
+X-Spam-Level:
+Received: from smtp2.osuosl.org ([127.0.0.1])
+	by localhost (smtp2.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id y5Kt_to7jbLt
+	for <acpica-devel@lists.linuxfoundation.org>;
+	Thu, 11 Jan 2024 10:19:55 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp2.osuosl.org (Postfix) with ESMTPS id 1FB5B40139
+	for <acpica-devel@lists.linuxfoundation.org>; Thu, 11 Jan 2024 10:19:54 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 1FB5B40139
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4T9gZf0gDvz6K8Kq;
+	Thu, 11 Jan 2024 18:17:14 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 3C7501400CD;
+	Thu, 11 Jan 2024 18:19:51 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 11 Jan
+ 2024 10:19:50 +0000
+Date: Thu, 11 Jan 2024 10:19:49 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+CC: "Russell King (Oracle)" <linux@armlinux.org.uk>, "Rafael J. Wysocki"
+	<rafael@kernel.org>, <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
+	<linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+	<x86@kernel.org>, <acpica-devel@lists.linuxfoundation.org>,
+	<linux-csky@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+	<linux-ia64@vger.kernel.org>, <linux-parisc@vger.kernel.org>, Salil Mehta
+	<salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	<jianyong.wu@arm.com>, <justin.he@arm.com>, James Morse <james.morse@arm.com>
+Subject: Re: [PATCH RFC v3 01/21] ACPI: Only enumerate enabled (or
+ functional) devices
+Message-ID: <20240111101949.000075dc@Huawei.com>
+In-Reply-To: <20240102143925.00004361@Huawei.com>
+References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
+	<ZXxxa+XZjPZtNfJ+@shell.armlinux.org.uk>
+	<20231215161539.00000940@Huawei.com>
+	<5760569.DvuYhMxLoT@kreacher>
+	<20240102143925.00004361@Huawei.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/2] ACPI: IPMI: Add helper to wait for when SMI is
- selected
-Content-Language: en-US
-To: "Rafael J. Wysocki" <rafael@kernel.org>,
- Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc: jdelvare@suse.com, Len Brown <lenb@kernel.org>,
- Robert Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org,
- linux-kernel@vger.kernel.org, acpica-devel@lists.linux.dev
-References: <20240109041218.980674-1-kai.heng.feng@canonical.com>
- <CAJZ5v0g4_5k-+_-ZPkm5LNOLsveJJqt2t60q_4a3wm+kAFCv_g@mail.gmail.com>
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <CAJZ5v0g4_5k-+_-ZPkm5LNOLsveJJqt2t60q_4a3wm+kAFCv_g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On 1/9/24 11:50, Rafael J. Wysocki wrote:
-> On Tue, Jan 9, 2024 at 5:12 AM Kai-Heng Feng
-> <kai.heng.feng@canonical.com> wrote:
->>
->> On Dell servers, many APCI methods of acpi_power_meter module evaluate
->> variables inside IPMI region, so the region handler needs to be
->> installed. In addition to that, the handler needs to be fully
->> functional, and that depends on SMI being selected.
->>
->> So add a helper to let acpi_power_meter know when the handler is
->> installed and ready to be used.
->>
->> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> 
-> Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> and I'm expecting this to be routed along with patch [2/2] that has
-> been posted elsewhere.
-> 
+On Tue, 2 Jan 2024 14:39:25 +0000
+Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
 
-Note that linux-hwmon@ isn't copied on this patch and it therefore
-does not show up in hwmon patchwork. To me that indicates that the
-patch should _not_ be applied through hwmon. If hwmon is supposed
-to pick it up, please copy the hwmon mailing list.
+> On Fri, 15 Dec 2023 20:47:31 +0100
+> "Rafael J. Wysocki" <rjw@rjwysocki.net> wrote:
+>=20
+> > On Friday, December 15, 2023 5:15:39 PM CET Jonathan Cameron wrote: =20
+> > > On Fri, 15 Dec 2023 15:31:55 +0000
+> > > "Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
+> > >    =20
+> > > > On Thu, Dec 14, 2023 at 07:37:10PM +0100, Rafael J. Wysocki wrote: =
+  =20
+> > > > > On Thu, Dec 14, 2023 at 7:16=E2=80=AFPM Rafael J. Wysocki <rafael=
+@kernel.org> wrote:     =20
+> > > > > >
+> > > > > > On Thu, Dec 14, 2023 at 7:10=E2=80=AFPM Russell King (Oracle)
+> > > > > > <linux@armlinux.org.uk> wrote:     =20
+> > > > > > > I guess we need something like:
+> > > > > > >
+> > > > > > >         if (device->status.present)
+> > > > > > >                 return device->device_type !=3D ACPI_BUS_TYPE=
+_PROCESSOR ||
+> > > > > > >                        device->status.enabled;
+> > > > > > >         else
+> > > > > > >                 return device->status.functional;
+> > > > > > >
+> > > > > > > so we only check device->status.enabled for processor-type de=
+vices?     =20
+> > > > > >
+> > > > > > Yes, something like this.     =20
+> > > > >=20
+> > > > > However, that is not sufficient, because there are
+> > > > > ACPI_BUS_TYPE_DEVICE devices representing processors.
+> > > > >=20
+> > > > > I'm not sure about a clean way to do it ATM.     =20
+> > > >=20
+> > > > Ok, how about:
+> > > >=20
+> > > > static bool acpi_dev_is_processor(const struct acpi_device *device)
+> > > > {
+> > > > 	struct acpi_hardware_id *hwid;
+> > > >=20
+> > > > 	if (device->device_type =3D=3D ACPI_BUS_TYPE_PROCESSOR)
+> > > > 		return true;
+> > > >=20
+> > > > 	if (device->device_type !=3D ACPI_BUS_TYPE_DEVICE)
+> > > > 		return false;
+> > > >=20
+> > > > 	list_for_each_entry(hwid, &device->pnp.ids, list)
+> > > > 		if (!strcmp(ACPI_PROCESSOR_OBJECT_HID, hwid->id) ||
+> > > > 		    !strcmp(ACPI_PROCESSOR_DEVICE_HID, hwid->id))
+> > > > 			return true;
+> > > >=20
+> > > > 	return false;
+> > > > }
+> > > >=20
+> > > > and then:
+> > > >=20
+> > > > 	if (device->status.present)
+> > > > 		return !acpi_dev_is_processor(device) || device->status.enabled;
+> > > > 	else
+> > > > 		return device->status.functional;
+> > > >=20
+> > > > ?
+> > > >    =20
+> > > Changing it to CPU only for now makes sense to me and I think this co=
+de snippet should do the
+> > > job.  Nice and simple.   =20
+> >=20
+> > Well, except that it does checks that are done elsewhere slightly
+> > differently, which from the maintenance POV is not nice.
+> >=20
+> > Maybe something like the appended patch (untested). =20
+>=20
+> Hi Rafael,
+>=20
+> As far as I can see that's functionally equivalent, so looks good to me.
+> I'm not set up to test this today though, so will defer to Russell on whe=
+ther
+> there is anything missing
+>=20
+> Thanks for putting this together.
 
-Guenter
+This is rather embarrassing...
+
+I span this up on a QEMU instance with some prints to find out we need
+the !acpi_device_is_processor() restriction.
+On my 'random' test setup it fails on one device. ACPI0017 - which I
+happen to know rather well. It's the weird pseudo device that lets
+a CXL aware OS know there is a CEDT table to probe.
+
+Whilst I really don't like that hack (it is all about making software
+distribution of out of tree modules easier rather than something
+fundamental), I'm the CXL QEMU maintainer :(
+
+Will fix that, but it shows there is at least one broken firmware out
+there.
+
+On plus side, Rafael's code seems to work as expected and lets that
+buggy firwmare carry on working :) So lets pretend the bug in qemu
+is a deliberate test case!
+
+Jonathan
+
+p.s. My test setup blows up later for an unrelated reason with latest
+kernel, so I'll be off debugging that for a while :(
+
+
+>=20
+> Jonathan
+>=20
+> >=20
+> > ---
+> >  drivers/acpi/acpi_processor.c |   11 +++++++++++
+> >  drivers/acpi/internal.h       |    3 +++
+> >  drivers/acpi/scan.c           |   24 +++++++++++++++++++++++-
+> >  3 files changed, 37 insertions(+), 1 deletion(-)
+> >=20
+> > Index: linux-pm/drivers/acpi/acpi_processor.c
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > --- linux-pm.orig/drivers/acpi/acpi_processor.c
+> > +++ linux-pm/drivers/acpi/acpi_processor.c
+> > @@ -644,6 +644,17 @@ static struct acpi_scan_handler processo
+> >  	},
+> >  };
+> > =20
+> > +bool acpi_device_is_processor(const struct acpi_device *adev)
+> > +{
+> > +	if (adev->device_type =3D=3D ACPI_BUS_TYPE_PROCESSOR)
+> > +		return true;
+> > +
+> > +	if (adev->device_type !=3D ACPI_BUS_TYPE_DEVICE)
+> > +		return false;
+> > +
+> > +	return acpi_scan_check_handler(adev, &processor_handler);
+> > +}
+> > +
+> >  static int acpi_processor_container_attach(struct acpi_device *dev,
+> >  					   const struct acpi_device_id *id)
+> >  {
+> > Index: linux-pm/drivers/acpi/internal.h
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > --- linux-pm.orig/drivers/acpi/internal.h
+> > +++ linux-pm/drivers/acpi/internal.h
+> > @@ -62,6 +62,8 @@ void acpi_sysfs_add_hotplug_profile(stru
+> >  int acpi_scan_add_handler_with_hotplug(struct acpi_scan_handler *handl=
+er,
+> >  				       const char *hotplug_profile_name);
+> >  void acpi_scan_hotplug_enabled(struct acpi_hotplug_profile *hotplug, b=
+ool val);
+> > +bool acpi_scan_check_handler(const struct acpi_device *adev,
+> > +			     struct acpi_scan_handler *handler);
+> > =20
+> >  #ifdef CONFIG_DEBUG_FS
+> >  extern struct dentry *acpi_debugfs_dir;
+> > @@ -133,6 +135,7 @@ int acpi_bus_register_early_device(int t
+> >  const struct acpi_device *acpi_companion_match(const struct device *de=
+v);
+> >  int __acpi_device_uevent_modalias(const struct acpi_device *adev,
+> >  				  struct kobj_uevent_env *env);
+> > +bool acpi_device_is_processor(const struct acpi_device *adev);
+> > =20
+> >  /* -------------------------------------------------------------------=
+-------
+> >                                    Power Resource
+> > Index: linux-pm/drivers/acpi/scan.c
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > --- linux-pm.orig/drivers/acpi/scan.c
+> > +++ linux-pm/drivers/acpi/scan.c
+> > @@ -1938,6 +1938,19 @@ static bool acpi_scan_handler_matching(s
+> >  	return false;
+> >  }
+> > =20
+> > +bool acpi_scan_check_handler(const struct acpi_device *adev,
+> > +			     struct acpi_scan_handler *handler)
+> > +{
+> > +	struct acpi_hardware_id *hwid;
+> > +
+> > +	list_for_each_entry(hwid, &adev->pnp.ids, list) {
+> > +		if (acpi_scan_handler_matching(handler, hwid->id, NULL))
+> > +			return true;
+> > +	}
+> > +
+> > +	return false;
+> > +}
+> > +
+> >  static struct acpi_scan_handler *acpi_scan_match_handler(const char *i=
+dstr,
+> >  					const struct acpi_device_id **matchid)
+> >  {
+> > @@ -2410,7 +2423,16 @@ bool acpi_dev_ready_for_enumeration(cons
+> >  	if (device->flags.honor_deps && device->dep_unmet)
+> >  		return false;
+> > =20
+> > -	return acpi_device_is_present(device);
+> > +	if (device->status.functional)
+> > +		return true;
+> > +
+> > +	if (!device->status.present)
+> > +		return false;
+> > +
+> > +	if (device->status.enabled)
+> > +		return true; /* Fast path. */
+> > +
+> > +	return !acpi_device_is_processor(device);
+> >  }
+> >  EXPORT_SYMBOL_GPL(acpi_dev_ready_for_enumeration);
+> > =20
+> >=20
+> >=20
+> >  =20
+>=20
+>=20
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
