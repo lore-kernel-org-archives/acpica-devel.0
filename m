@@ -1,153 +1,148 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+Received: from smtp4.osuosl.org (smtp4.osuosl.org [140.211.166.137])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BACC1E885
-	for <acpica-devel@lists.linux.dev>; Wed, 17 Jan 2024 22:50:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.115
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705531834; cv=none; b=BNtV1zstOVpIjEJjIeVY0DbzfqWNtrGA7zQ21ye8CtYswZJtLOPVvUQpUSCJyWjgRm+oKIsX5YWM/dGinjyEIJxdkQ1PqiA+SMgY4FZUV9xbJwCC75K4p8wHrydTYNTj/A+dZdVVuhlHPkaxngwnVDn3bJqQPejg21yAN9Ysmz0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705531834; c=relaxed/simple;
-	bh=qguSOaKqDdDjb3/S9QpBOL7t0uNMFAuzVBe0jQZrzWk=;
-	h=DKIM-Signature:X-IronPort-AV:X-IronPort-AV:Received:X-ExtLoop1:
-	 X-IronPort-AV:X-IronPort-AV:Received:Date:From:To:Cc:Subject:
-	 Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To:User-Agent; b=FuLcJvupXw1IdnhSoSFe5+Xn9cUEsCzVC2ZpHLez+2BgGbc4YfgYwQfM8ATBHhaKp5ScMFuth0ExjODs0pYxs4cX7CJ4M10fOFRx+740qz+5j2Sk/QWZpwZfXar1B2bxA90E/X3Pcib7I9VkwIs3XbwpbVwWTZRwkcVPb/q4Lr8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=W9k2luvt; arc=none smtp.client-ip=192.55.52.115
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="W9k2luvt"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705531832; x=1737067832;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=qguSOaKqDdDjb3/S9QpBOL7t0uNMFAuzVBe0jQZrzWk=;
-  b=W9k2luvt3WV1+LyCaW1k9sXa82I/Z9gY8kQHb2ipvlgVz559+5x8J6WG
-   BQevgEhXKWI9DX8kRxR8VshVqfM6x4SGoluwyJzLokaKiCUI502JyQa6/
-   luZXAP6FJ8K03lEJCx5zP+27YWQui+Q2fs+VYxkabOicBiEixd3LxaQay
-   r+GKDprHPj96OK1ZiD2QJYUsviEzBUth4axF0ypdVCcrrp6mqH3I9xoOu
-   d+4WBIDPhH8rIGGSa1vxAwSvB47kCJILeP0jOkJrKhT2wQNybcrCDY7gn
-   4iWO1aVXaZlb1mseNA9/sfnLxrKVeeKlfV7u6pmtVjZlzgOnxR9JRDSMR
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="399955669"
-X-IronPort-AV: E=Sophos;i="6.05,201,1701158400"; 
-   d="scan'208";a="399955669"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2024 14:50:30 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10956"; a="760708067"
-X-IronPort-AV: E=Sophos;i="6.05,201,1701158400"; 
-   d="scan'208";a="760708067"
-Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
-  by orsmga006.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2024 14:50:28 -0800
-Date: Wed, 17 Jan 2024 14:51:58 -0800
-From: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-To: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
-Cc: rafael@kernel.org, lenb@kernel.org, robert.moore@intel.com,
-	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	acpica-devel@lists.linux.dev, tglx@linutronix.de, mingo@redhat.com,
-	bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-	hpa@zytor.com, mcgrof@kernel.org, peterz@infradead.org,
-	j.granados@samsung.com, viresh.kumar@linaro.org,
-	linux-pm@vger.kernel.org, CobeChen@zhaoxin.com, TimGuo@zhaoxin.com,
-	LeoLiu-oc@zhaoxin.com, LindaChai@zhaoxin.com
-Subject: Re: [PATCH 3/3] ACPI: cpufreq: Add ITMT support when CPPC enabled
- for Zhaoxin CPUs
-Message-ID: <20240117225158.GD13777@ranerica-svr.sc.intel.com>
-References: <20231228075705.26652-1-TonyWWang-oc@zhaoxin.com>
- <20231228075705.26652-4-TonyWWang-oc@zhaoxin.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29F525381
+	for <acpica-devel@lists.linuxfoundation.org>; Sat, 20 Jan 2024 06:50:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=140.211.166.137
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705733431; cv=pass; b=ccKfk2K0BW9yLRQqb6jnOqlVFnL82n03aLbS1oV/q/BwnPkXEMRoCsstVmOTZaxCczGr88w7KDr1wnd3lcTjgMb68j9RL06Y8FIVS0FrhgqIuSvNVpYSRvjYBv6KrjqhRyCevADT0K+IU+jTAdPnLe1jS8PKT99ng9pbMxgfpoE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705733431; c=relaxed/simple;
+	bh=qavK5bzSYxa1fVDNA3aTxIyj51S9VFOKVAmPMTZ5PzQ=;
+	h=Date:Subject:MIME-Version:Content-Type:From:To:Message-ID; b=LP0gDqmsOFeTxpjfDh831a5pet975fuvZgfAe71xYoPrUNdJ4VhKe8fRidmJWJZcSbNtOfbH7yrr7scBd5IMSCVf8V4W+FN5pAs3MOLEu0gPV4TTHh2mRfULbxs0cxCDe7PaPp5u2rELCRrriMmNPMwE783LLvT7TtkQAPhgGGo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; arc=pass smtp.client-ip=140.211.166.137
+Received: from localhost (localhost [127.0.0.1])
+	by smtp4.osuosl.org (Postfix) with ESMTP id A715842E69
+	for <acpica-devel@lists.linuxfoundation.org>; Sat, 20 Jan 2024 06:50:29 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org A715842E69
+X-Virus-Scanned: amavisd-new at osuosl.org
+X-Spam-Flag: NO
+X-Spam-Score: -1.902
+X-Spam-Level:
+Received: from smtp4.osuosl.org ([127.0.0.1])
+	by localhost (smtp4.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id EDmUn7KhsO8E
+	for <acpica-devel@lists.linuxfoundation.org>;
+	Sat, 20 Jan 2024 06:50:28 +0000 (UTC)
+X-Greylist: delayed 564 seconds by postgrey-1.37 at util1.osuosl.org; Sat, 20 Jan 2024 06:50:28 UTC
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 027C642E3F
+Received: from mail-200160.simplelogin.co (mail-200160.simplelogin.co [176.119.200.160])
+	by smtp4.osuosl.org (Postfix) with ESMTPS id 027C642E3F
+	for <acpica-devel@lists.linuxfoundation.org>; Sat, 20 Jan 2024 06:50:27 +0000 (UTC)
+ARC-Seal: i=1; a=rsa-sha256; d=simplelogin.co; s=arc-20230626; t=1705732862;
+	cv=none; b=CnqwA3e8YlnxPiEHV0lUeuz1grugFnmLu3knKp/I9yzCc8n3dYAzBsyO1ICupdrQQL6eTeUOquHnIeJEgoJ8x1K40SLjMfu8vGxIfI4cuKDiVViGE9jHuyAzNVEmJ17yE0O4yzf9v5X114TZnO30rn89WHwT65VOEGFFSg9qReTIx4mIihylSTVc/dKFzg0Ouw0+MB3o3R253uDqTrbpfgLzPc6YiV+mkE9oMjLdKPlB1UJ2YZ6FdgqS+JvvA+hrzlTxtd7ld7cMu4RmmDjLvaInDO+Wsg8hEt5wuT6xRfaRbnpOZk1jz/mKapp0jtA9NHoBWLzWMWro0P/2+GBEbg==
+ARC-Message-Signature: i=1; a=rsa-sha256; d=simplelogin.co; s=arc-20230626;
+	t=1705732862; c=relaxed/simple;
+	bh=qavK5bzSYxa1fVDNA3aTxIyj51S9VFOKVAmPMTZ5PzQ=;
+	h=Date:Subject:From:To; b=aTT1UTtBPbFSZXfR+/NP0bWYgrUgGekJBRlZhYHIWsBu8foVSzSd2T5kidLz1+Hh2GXjzOmdu6ss20j/9HB7DFOUCfqbr2bNYkE4FxxeR+mCpIOtpNFJHKrsg67rRxuS4t3JJmkjR/OMAkBWuOLWGfTy7Z3REp5WJJVAx6GPd/K/Qpn8KMSz1d9E6HfYInk4YWjdkSqcyoHeRBK3ZIqwO53ECVQ3JXlz0+4dUmbpvL3PyP5hn4VOpTUZX2YC1YklhSye9nLwwjGweiiP9NdpekpucfCxCenTLgpPnUiMn0Mixi1w7YdckOxNvytqboAZtxeqW4OdKcCarrk6+oqO1A==
+ARC-Authentication-Results: i=1; mail.protonmail.ch
+Date: Sat, 20 Jan 2024 06:40:55 +0000
+Subject: GCC 13.2.0 gives Werror=dangling-pointer= on
+ components/utilities/utdebug.c
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231228075705.26652-4-TonyWWang-oc@zhaoxin.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From: github826@4forl1st5.slmail.me
+To: acpica-devel@lists.linuxfoundation.org
+Message-ID: <170573286176.7.4536512995308409384.251813674@4forl1st5.slmail.me>
+X-SimpleLogin-Type: Reply
+X-SimpleLogin-EmailLog-ID: 251813674
 
-On Thu, Dec 28, 2023 at 03:57:05PM +0800, Tony W Wang-oc wrote:
-> For Zhaoxin CPUs, the cores' highest frequencies may be different, which
-> means that cores may run at different max frequencies,
-> 
-> According to ACPI-spec6 chapter 8.4.7, the per-core highest frequency
-> value can be obtained via cppc.
-> 
-> The core with the higher frequency have better performance, which can be
-> called as preferred core. And better performance can be achieved by
-> making the scheduler to run tasks on these preferred cores.
-> 
-> The cpufreq driver can use the highest frequency value as the prioriy of
-> core to make the scheduler try to get better performace. More specifically,
-> in the acpi-cpufreq driver use cppc_get_highest_perf() to get highest
-> frequency value of each core, use sched_set_itmt_core_prio() to set
-> highest frequency value as core priority, and use sched_set_itmt_support()
-> provided by ITMT to tell the scheduler to favor on the preferred cores.
-> 
-> Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
-> ---
->  drivers/cpufreq/acpi-cpufreq.c | 56 +++++++++++++++++++++++++++++++++-
->  1 file changed, 55 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/cpufreq/acpi-cpufreq.c b/drivers/cpufreq/acpi-cpufreq.c
-> index 37f1cdf46d29..f4c1ff9e4bb0 100644
-> --- a/drivers/cpufreq/acpi-cpufreq.c
-> +++ b/drivers/cpufreq/acpi-cpufreq.c
-> @@ -663,8 +663,56 @@ static u64 get_max_boost_ratio(unsigned int cpu)
->  
->  	return div_u64(highest_perf << SCHED_CAPACITY_SHIFT, nominal_perf);
->  }
-> +
-> +/* The work item is needed to avoid CPU hotplug locking issues */
-> +static void sched_itmt_work_fn(struct work_struct *work)
-> +{
-> +	sched_set_itmt_support();
-> +}
-> +
-> +static DECLARE_WORK(sched_itmt_work, sched_itmt_work_fn);
-> +
-> +static void set_itmt_prio(int cpu)
-> +{
-> +	static bool cppc_highest_perf_diff;
-> +	static struct cpumask core_prior_mask;
-> +	u64 highest_perf;
-> +	static u64 max_highest_perf = 0, min_highest_perf = U64_MAX;
-> +	int ret;
-> +
-> +	ret = cppc_get_highest_perf(cpu, &highest_perf);
-> +	if (ret)
-> +		return;
-> +
-> +	sched_set_itmt_core_prio(highest_perf, cpu);
-> +	cpumask_set_cpu(cpu, &core_prior_mask);
-> +
-> +	if (max_highest_perf <= min_highest_perf) {
-> +		if (highest_perf > max_highest_perf)
-> +			max_highest_perf = highest_perf;
-> +
-> +		if (highest_perf < min_highest_perf)
-> +			min_highest_perf = highest_perf;
-> +
-> +		if (max_highest_perf > min_highest_perf) {
-> +			/*
-> +			 * This code can be run during CPU online under the
-> +			 * CPU hotplug locks, so sched_set_itmt_support()
-> +			 * cannot be called from here.  Queue up a work item
-> +			 * to invoke it.
-> +			 */
-> +			cppc_highest_perf_diff = true;
-> +		}
-> +	}
-> +
-> +	if (cppc_highest_perf_diff && cpumask_equal(&core_prior_mask, cpu_online_mask)) {
-> +		pr_debug("queue a work to set itmt enabled\n");
-> +		schedule_work(&sched_itmt_work);
-> +	}
-> +}
+Apologies for the noise here, however, I tried to
+add the following as a comment into the GitHub issue
 
-sched_itmt_work and this function is a duplicate of what the intel_pstate
-driver already does. It might be good if consolidate in a single place
-if you are going to pursue this approach.
+ https://github.com/acpica/acpica/issues/806
+
+but I can't see that that comment has ever been added=20
+into the issue?
+
+So I thought join the list, and post my experince here,=20
+in case no-one has seen it.
+
+The text of my comment at GitHub was
+
+----8<--------8<--------8<--------8<--------8<----
+I just tried to build, against a gcc-13.2.0, from the acpica-unix-20230628 =
+tarball
+and see the same error, albeit at slightly different line numbers
+
+...
+obj/acpiexec ../../../source/components/utilities/utdebug.c
+../../../source/components/utilities/utdebug.c: In function 'AcpiUtTrackSta=
+ckPtr':
+../../../source/components/utilities/utdebug.c:110:36: error: storing the a=
+ddress of local variable 'CurrentSp' in 'AcpiGbl_LowestStackPointer' [-Werr=
+or=3Ddangling-pointer=3D]
+  110 |         AcpiGbl_LowestStackPointer =3D &CurrentSp;
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+../../../source/components/utilities/utdebug.c:105:29: note: 'CurrentSp' de=
+clared here
+  105 |     ACPI_SIZE               CurrentSp;
+      |                             ^~~~~~~~~
+In file included from ../../../source/include/acpi.h:65,
+                 from ../../../source/components/utilities/utdebug.c:46:
+../../../source/include/acglobal.h:229:41: note: 'AcpiGbl_LowestStackPointe=
+r' declared here
+  229 | ACPI_GLOBAL (ACPI_SIZE *,               AcpiGbl_LowestStackPointer)=
+;
+      |                                         ^~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../source/include/acpixf.h:80:17: note: in definition of macro 'ACPI_=
+GLOBAL'
+   80 |     extern type name
+
+      |                 ^~~~
+cc1: all warnings being treated as errors
+make[1]: *** [../Makefile.rules:20: obj/utdebug.o] Error 1
+make[1]: Leaving directory '/sources/acpica-unix2-20230628/generate/unix/ac=
+piexec'
+make: *** [Makefile.common:7: acpiexec] Error 2
+
+however I do note that the
+
+source/components/utilities/utdebug.c
+
+does have the pragma modification, as mentioned in the Jan 20, 2023 comment=
+,
+applied in the source
+
+void
+AcpiUtInitStackPtrTrace (
+    void)
+{
+    ACPI_SIZE               CurrentSp;
+
+
+#pragma GCC diagnostic push
+#if defined(__GNUC__) && __GNUC__ >=3D 12
+#pragma GCC diagnostic ignored "-Wdangling-pointer=3D"
+#endif
+    AcpiGbl_EntryStackPointer =3D &CurrentSp;
+#pragma GCC diagnostic pop
+}
+
+All I did after unpacking the tarball was
+
+cd generate/unix/
+make
+
+Have I missed something?
+----8<--------8<--------8<--------8<--------8<----
+
+
+although I have since realised that the error message I pasted
+came from when I was using the=20
+
+acpica-unix2-20230628
+
+tarball, not acpica-unix-20230628 as I originally wrote, although=20
+suffice it to say that I've seen the same message using the sources=20
+from either.
+
+
+
+
