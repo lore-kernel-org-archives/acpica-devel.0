@@ -1,97 +1,156 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtp3.osuosl.org (smtp3.osuosl.org [140.211.166.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5937B3F8D1;
-	Mon, 22 Jan 2024 16:18:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9797657AD
+	for <acpica-devel@lists.linuxfoundation.org>; Mon, 22 Jan 2024 17:28:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705940291; cv=none; b=V8wxdetAMijvwr78meH/LcWhnOwPqbyonzC0XjZaUljzaKEa9Mrb0n3hnaaQYlFbLllnepp3z3a7UL41VrcKVd9KF4Pr7OR0Fgew06m2ZaQx0rZLr7+R6OB3soFpw7Jgv0Zj2fZnGq1rZkv2dNXl3lIU66lRp1LQWJezBtMOSTw=
+	t=1705944492; cv=none; b=EKAYMUQJqJMBHIvNu/kNRRg1/f5mdqUcWMAeOYAKDGo4zrGxjGjltJhKur0aWGFk6/6F/W3pVcbhWzTRMTG0cjys3Hh67M/5/Mu2ntK+1d1nNYI1VlERfPJQjy7nELyjLpEz1ITJl8o5WExosWsieAtDb/ocYv5frEYc0mI0vqk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705940291; c=relaxed/simple;
-	bh=WDAnCV9Ra1LfdfiCu5KUZtV9r+eTg+bc/y0G1AdYs68=;
+	s=arc-20240116; t=1705944492; c=relaxed/simple;
+	bh=HxKy5Bibhf+2B00lsgPRKpJNJzyu7ueJfD16Tr2+GJg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rHRiNyndcFiZRYmhySFoSYiVjyTHRgXg7uGC9JmDvtXa7b3RvSxFGfLJ3VylLB8/eJfP5c16qB7bZkJ6lv4ZZbtMKrKdi4uOIyNp1pG8TBeqCNDnQpaqspLyYDYjmQWoFMLuAyiTQKl/ioDdulv9Z/DxghHOTPW1VyJgFUmtbGM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RS+FCjUH; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=tZpi0TToReKwfN1/iwbsg+JgcgivoTBn3lNUT2UCYm81Bo/obiO6A6DtYNzCRELUMtAvOyYX+h0LxA4o+BS7/UZXWUs4xKBZ/qQdwNE7Qw9/nrBGRU3mJMMFL7z5o0dr71J3JNWSlsY3RXsYO/nXL5+RRoGRaA1Mllm+YYqwz8s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=k2RTabvp; arc=none smtp.client-ip=140.211.166.136
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RS+FCjUH"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DF1EC433A6;
-	Mon, 22 Jan 2024 16:18:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705940290;
-	bh=WDAnCV9Ra1LfdfiCu5KUZtV9r+eTg+bc/y0G1AdYs68=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RS+FCjUHhg+ZtvA25siHP9vJuHFDG9pNT0ZYWi9BoJg1/RjWftZzKK/17uqQ/Tpx8
-	 WJVGnWUQXYyZ7pssaMJpxDdg0oAPCp3l/gD/yf9XD1Vj8ZTfm4Q7PTMBpDY3/5Ec9E
-	 UVMYUWswJfsZoai7e4TYHXtXrADib5wJRE0vcOGubW6v6HSQhey3/kX6+5SYFAmAv0
-	 qwT+07n2gsqHjAZJCO6LfjPqdiD0cX7rbF/QU7IwILpFkEGhfvpkbhwCm/UnCRi1lQ
-	 H3qSb5vGJy4zachG7xZN2IIxxiJm5UIA6a5DNVRInn7d0Gaxv4JBIVMZbPbF8K1yU+
-	 Gw05OJGYleqhQ==
-Date: Mon, 22 Jan 2024 17:18:04 +0100
-From: Lorenzo Pieralisi <lpieralisi@kernel.org>
-To: linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>
-Cc: Robin Murphy <robin.murphy@arm.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	linux-arm-kernel@lists.infradead.org, linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev, Fang Xiang <fangxiang3@xiaomi.com>,
-	Robert Moore <robert.moore@intel.com>
-Subject: Re: [PATCH v4 3/3] irqchip/gic-v3: Enable non-coherent
- redistributors/ITSes ACPI probing
-Message-ID: <Za6VPE76yiR+lb91@lpieralisi>
-References: <20230905104721.52199-1-lpieralisi@kernel.org>
- <20231227110038.55453-1-lpieralisi@kernel.org>
- <20231227110038.55453-4-lpieralisi@kernel.org>
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="k2RTabvp"
+Received: from localhost (localhost [127.0.0.1])
+	by smtp3.osuosl.org (Postfix) with ESMTP id 452C060E55
+	for <acpica-devel@lists.linuxfoundation.org>; Mon, 22 Jan 2024 17:28:10 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 452C060E55
+Authentication-Results: smtp3.osuosl.org;
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.a=rsa-sha256 header.s=pandora-2019 header.b=k2RTabvp
+X-Virus-Scanned: amavisd-new at osuosl.org
+X-Spam-Flag: NO
+X-Spam-Score: -2.098
+X-Spam-Level:
+Received: from smtp3.osuosl.org ([127.0.0.1])
+	by localhost (smtp3.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id hf5aFJmK-9E4
+	for <acpica-devel@lists.linuxfoundation.org>;
+	Mon, 22 Jan 2024 17:28:08 +0000 (UTC)
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+	by smtp3.osuosl.org (Postfix) with ESMTPS id AD0B3606EB
+	for <acpica-devel@lists.linuxfoundation.org>; Mon, 22 Jan 2024 17:28:07 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org AD0B3606EB
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=4s5ASXue467nLReommt3Qb/xh4/CleRrf7HABCgDhAc=; b=k2RTabvplP91YS/X8q/zqV21/0
+	qq9DgaiMgmZJiqO3jB55Q9chgwQ35eB1+eA7x7jhEHzaKdet6hSaC52CWHQUgwvG7gkDXSgFaHYat
+	F0fK7xJGkii9k+DKttPiUF0xErSZBLXj7z3pTPWSb7ke6hMhA8Q1+WfuHcA4kdmfF4+MTDeWJqrHn
+	DKxdjxQtMmdbZ+GjpYGGO2++xFou5Tg1sahLJn3m0tXgnSlLLVFyRoEFSuaMmiAwqWqCQ62AkNjs/
+	r8m/fC/O5qBwbiu03pbM8QcCyTyuegbDsHWC+bqv2hZ/QYcKy7OJpQoabZft8xMDIEc6qarES6VyY
+	n51mtm7A==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:60388)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rRy5I-0001Gc-2T;
+	Mon, 22 Jan 2024 17:27:44 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rRy5D-0001Bz-Ok; Mon, 22 Jan 2024 17:27:39 +0000
+Date: Mon, 22 Jan 2024 17:27:39 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
+	loongarch@lists.linux.dev, linux-acpi@vger.kernel.org,
+	linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+	x86@kernel.org, acpica-devel@lists.linuxfoundation.org,
+	linux-csky@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+	Salil Mehta <salil.mehta@huawei.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	jianyong.wu@arm.com, justin.he@arm.com,
+	James Morse <james.morse@arm.com>
+Subject: Re: [PATCH RFC v3 03/21] ACPI: processor: Register CPUs that are
+ online, but not described in the DSDT
+Message-ID: <Za6li4NhfvL6x6Vl@shell.armlinux.org.uk>
+References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
+ <E1rDOg2-00Dvjk-RI@rmk-PC.armlinux.org.uk>
+ <CAJZ5v0ju1JHgpjuFLHZVs4NZiARG6iBZN_wza6c2e0kDhZjK0w@mail.gmail.com>
+ <ZaURtUvWQyjYfiiO@shell.armlinux.org.uk>
+ <20240122160227.00002d83@Huawei.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231227110038.55453-4-lpieralisi@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240122160227.00002d83@Huawei.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Wed, Dec 27, 2023 at 12:00:38PM +0100, Lorenzo Pieralisi wrote:
-
-[...]
-
-> @@ -2380,6 +2385,10 @@ gic_acpi_parse_madt_gicc(union acpi_subtable_headers *header,
->  		return -ENOMEM;
->  	gic_request_region(gicc->gicr_base_address, size, "GICR");
->  
-> +	if (gic_acpi_non_coherent_flag(gicc->flags,
-> +				       ACPI_MADT_GICC_NON_COHERENT))
-> +		gic_data.rdists.flags |= RDIST_FLAGS_FORCE_NON_SHAREABLE;
-> +
-
-Quick question before reposting it. We run this function for
-every GICC entry, I didn't add a check to make sure all GICC
-entries have the same flag value, please let me know if that's
-OK.
-
-I don't think there is a point in keeping a live variable across
-calls to set the flag once for all either.
-
-Thanks,
-Lorenzo
-
->  	gic_acpi_register_redist(gicc->gicr_base_address, redist_base);
->  	return 0;
->  }
-> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-> index 54189e0e5f41..a292f2bdb693 100644
-> --- a/include/linux/acpi.h
-> +++ b/include/linux/acpi.h
-> @@ -283,6 +283,9 @@ static inline bool invalid_phys_cpuid(phys_cpuid_t phys_id)
->  	return phys_id == PHYS_CPUID_INVALID;
->  }
->  
-> +
-> +u8 __init acpi_get_madt_revision(void);
-> +
->  /* Validate the processor object's proc_id */
->  bool acpi_duplicate_processor_id(int proc_id);
->  /* Processor _CTS control */
-> -- 
-> 2.34.1
+On Mon, Jan 22, 2024 at 04:02:27PM +0000, Jonathan Cameron wrote:
+> On Mon, 15 Jan 2024 11:06:29 +0000
+> "Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
 > 
+> > On Mon, Dec 18, 2023 at 09:22:03PM +0100, Rafael J. Wysocki wrote:
+> > > On Wed, Dec 13, 2023 at 1:49 PM Russell King <rmk+kernel@armlinux.org.uk> wrote:  
+> > > >
+> > > > From: James Morse <james.morse@arm.com>
+> > > >
+> > > > ACPI has two descriptions of CPUs, one in the MADT/APIC table, the other
+> > > > in the DSDT. Both are required. (ACPI 6.5's 8.4 "Declaring Processors"
+> > > > says "Each processor in the system must be declared in the ACPI
+> > > > namespace"). Having two descriptions allows firmware authors to get
+> > > > this wrong.
+> > > >
+> > > > If CPUs are described in the MADT/APIC, they will be brought online
+> > > > early during boot. Once the register_cpu() calls are moved to ACPI,
+> > > > they will be based on the DSDT description of the CPUs. When CPUs are
+> > > > missing from the DSDT description, they will end up online, but not
+> > > > registered.
+> > > >
+> > > > Add a helper that runs after acpi_init() has completed to register
+> > > > CPUs that are online, but weren't found in the DSDT. Any CPU that
+> > > > is registered by this code triggers a firmware-bug warning and kernel
+> > > > taint.
+> > > >
+> > > > Qemu TCG only describes the first CPU in the DSDT, unless cpu-hotplug
+> > > > is configured.  
+> > > 
+> > > So why is this a kernel problem?  
+> > 
+> > So what are you proposing should be the behaviour here? What this
+> > statement seems to be saying is that QEMU as it exists today only
+> > describes the first CPU in DSDT.
+> 
+> This confuses me somewhat, because I'm far from sure which machines this
+> is true for in QEMU.  I'm guessing it's a legacy thing with
+> some old distro version of QEMU - so we'll have to paper over it anyway
+> but for current QEMU I'm not sure it's true.
+> 
+> Helpfully there are a bunch of ACPI table tests so I've been checking
+> through all the multi CPU cases.
+> 
+> CPU hotplug not enabled.
+> pc/DSDT.dimmpxm  - 4x Processor entries.  -smp 4
+> pc/DSDT.acpihmat - 2x Processor entries.  -smp 2
+> q35/DSDT.acpihmat - 2x Processor entries. -smp 2
+> virt/DSDT.acpihmatvirt - 4x ACPI0007 entries -smp 4
+> q35/DSDT.acpihmat-noinitiator - 4 x Processor () entries -smp 4 
+> virt/DSDT.topology - 8x ACPI0007 entries
+> 
+> I've also looked at the code and we have various types of
+> CPU hotplug on x86 but they all build appropriate numbers of
+> Processor() entries in DSDT.
+> Arm likewise seems to build the right number of ACPI0007 entries
+> (and doesn't yet have CPU HP support).
+> 
+> If anyone can add a reference on why this is needed that would be very
+> helpful.
+
+Maybe Salil can shed some light on this?
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
