@@ -1,115 +1,222 @@
-Received: from smtp4.osuosl.org (smtp4.osuosl.org [140.211.166.137])
+Received: from smtp3.osuosl.org (smtp3.osuosl.org [140.211.166.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A86B487A2
-	for <acpica-devel@lists.linuxfoundation.org>; Mon, 22 Jan 2024 21:56:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.137
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02DC05A11A
+	for <acpica-devel@lists.linuxfoundation.org>; Tue, 23 Jan 2024 10:08:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705960603; cv=none; b=bQbi2ughn7c/wIMQAIO0z1BdeoWMpRbC4oYIF4JuxtUWIm/ydrMNGol6WrWhhcv5lQLNMK1F9O8r0Ak8lbT8moidWbrimcfQo/eUqQwiQ2/LINz2Txo9LjIKfXwPu/3a2PBKQIskWrex2TAILJ3V2hM540DlLe3Wr4oYBfkfDUA=
+	t=1706004510; cv=none; b=KG6di8d6s1I9sDu1/tolZvbDjEr7qKbMVM5WEgnxG+xlpQQChKXDRWBkA8JSmamXUUUAsDbjir9QK8JQy+Bbxs8Fgq4ihTbaa7t7E0piBJR9LGzemyYunVgCuYI0PQjazqmFeDoLdT3u8zVq/9RCC5OOblT2u91Obc4uzYmkyyo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705960603; c=relaxed/simple;
-	bh=J8tuHVuaRf99BTjAxEXGtJuL5FiKMuM5URapCqBOWYg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=n5mAoQWvAmV5j+5UFAp8X/KVh9U2xN71CK2s82xonARuEW4KE4hgJf5CzJkgddy2KfPMVnns5qOAr0Rpp/GNh7WDFP0YATJD4wlovx2rJu3p4Sm+t5VKrBatnQOsnouIlD62IlKoDHbUrvjUgIkxXN71JMgxadeQy52d2O/eel0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=XtyKsMO6; arc=none smtp.client-ip=140.211.166.137
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="XtyKsMO6"
+	s=arc-20240116; t=1706004510; c=relaxed/simple;
+	bh=kxaW1bi7sX+liEnGkuJfF9UhGpIIxLkLIuBsEeev57w=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=XqgTXn0DOwHFz9EzqvwKiMRd8dfb+EkZ2s3l2nBl4aFyspW7vhwfx/78dfR4a+qsIaKPRuyBNMwxlBY/FZOA6fEJabuT+FJsFl/mWyFkcMF2J8LWhu8aGSahl73+9S5DbclwrgRF6U25J4fznKHkFhUF4PpcB467tOyKb0055kw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.136
 Received: from localhost (localhost [127.0.0.1])
-	by smtp4.osuosl.org (Postfix) with ESMTP id B49A34175C
-	for <acpica-devel@lists.linuxfoundation.org>; Mon, 22 Jan 2024 21:56:41 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org B49A34175C
-Authentication-Results: smtp4.osuosl.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.a=rsa-sha256 header.s=pandora-2019 header.b=XtyKsMO6
+	by smtp3.osuosl.org (Postfix) with ESMTP id 7AA19607E1
+	for <acpica-devel@lists.linuxfoundation.org>; Tue, 23 Jan 2024 10:08:28 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 7AA19607E1
 X-Virus-Scanned: amavisd-new at osuosl.org
 X-Spam-Flag: NO
-X-Spam-Score: -2.098
+X-Spam-Score: -4.198
 X-Spam-Level:
-Received: from smtp4.osuosl.org ([127.0.0.1])
-	by localhost (smtp4.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id Ka0-NUN2DESX
+Received: from smtp3.osuosl.org ([127.0.0.1])
+	by localhost (smtp3.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id zCFiqldpGL57
 	for <acpica-devel@lists.linuxfoundation.org>;
-	Mon, 22 Jan 2024 21:56:40 +0000 (UTC)
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-	by smtp4.osuosl.org (Postfix) with ESMTPS id 6C57A41748
-	for <acpica-devel@lists.linuxfoundation.org>; Mon, 22 Jan 2024 21:56:40 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 6C57A41748
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=DlkxdPo00vFXMtifZbwmiD3pZWcfGIoDSDnanNUdXxo=; b=XtyKsMO6Yn2dYk1lNRNde3BiDP
-	un+RAJyMR6k8+9e/yJl2r+Ov0qOcDIbhiz/y/7GX3fw87B0GNJ/3HmCLVJiLb2Ks1V96LgACams6f
-	cX+obUMvFpeX/Pmcl6RnUH2y50c9vxvFy0DDxefuB+2qrsso/uyXuGtyvj3A9FRQHRH/QBhxa5OTm
-	Zz/RSWt46rOm+BHPj4216FX8QXMjUNV0DnJe0jlcqUzpr7YBglGllncVFHK+j40azOzpeA1xvOtkS
-	tXvN5txsFycplH3UgwgXX380INC6PxDJ2P3HQ+KLP+EUK49pbp89QiATkRHw/56ttdlNvv/I2Oqdt
-	A0vRazAA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:50158)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rS2HI-0001cI-2Q;
-	Mon, 22 Jan 2024 21:56:24 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rS2HC-0001MW-T5; Mon, 22 Jan 2024 21:56:18 +0000
-Date: Mon, 22 Jan 2024 21:56:18 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
-	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
-	x86@kernel.org, acpica-devel@lists.linuxfoundation.org,
-	linux-csky@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-	Salil Mehta <salil.mehta@huawei.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	jianyong.wu@arm.com, justin.he@arm.com,
-	James Morse <james.morse@arm.com>
-Subject: Re: [PATCH RFC v3 04/21] ACPI: processor: Register all CPUs from
- acpi_processor_get_info()
-Message-ID: <Za7kglu6qO1n5ZCg@shell.armlinux.org.uk>
+	Tue, 23 Jan 2024 10:08:27 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp3.osuosl.org (Postfix) with ESMTPS id 9C4E7607D6
+	for <acpica-devel@lists.linuxfoundation.org>; Tue, 23 Jan 2024 10:08:26 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 9C4E7607D6
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TK2lV0mHxz67hqY;
+	Tue, 23 Jan 2024 18:05:26 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id DCC251404F5;
+	Tue, 23 Jan 2024 18:08:22 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 23 Jan
+ 2024 10:08:22 +0000
+Date: Tue, 23 Jan 2024 10:08:21 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+CC: <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
+	<linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+	<x86@kernel.org>, <acpica-devel@lists.linuxfoundation.org>,
+	<linux-csky@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+	<linux-ia64@vger.kernel.org>, <linux-parisc@vger.kernel.org>, Salil Mehta
+	<salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	<jianyong.wu@arm.com>, <justin.he@arm.com>, James Morse <james.morse@arm.com>
+Subject: Re: [PATCH RFC v3 14/21] irqchip/gic-v3: Don't return errors from
+ gic_acpi_match_gicc()
+Message-ID: <20240123100821.00000064@Huawei.com>
+In-Reply-To: <ZZ2eGLwlkqZrh0In@shell.armlinux.org.uk>
 References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
- <E1rDOg7-00Dvjq-VZ@rmk-PC.armlinux.org.uk>
- <CAJZ5v0je=-oVnSumZs=dzcyVuVUeVeTgO7yOnjGg1igyrS7EHQ@mail.gmail.com>
+	<E1rDOgx-00Dvkv-Bb@rmk-PC.armlinux.org.uk>
+	<20231215163301.0000183a@Huawei.com>
+	<ZZ2eGLwlkqZrh0In@shell.armlinux.org.uk>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0je=-oVnSumZs=dzcyVuVUeVeTgO7yOnjGg1igyrS7EHQ@mail.gmail.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500002.china.huawei.com (7.191.160.78) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Mon, Dec 18, 2023 at 09:30:50PM +0100, Rafael J. Wysocki wrote:
-> On Wed, Dec 13, 2023 at 1:49 PM Russell King <rmk+kernel@armlinux.org.uk> wrote:
-> > Systems can still be booted with 'acpi=off', or not include an
-> > ACPI description at all. For these, the CPUs continue to be
-> > registered by cpu_dev_register_generic().
-> >
-> > This moves the CPU register logic back to a subsys_initcall(),
-> > while the memory nodes will have been registered earlier.
+On Tue, 9 Jan 2024 19:27:20 +0000
+"Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
+
+> On Fri, Dec 15, 2023 at 04:33:01PM +0000, Jonathan Cameron wrote:
+> > On Wed, 13 Dec 2023 12:50:23 +0000
+> > Russell King (Oracle) <rmk+kernel@armlinux.org.uk> wrote:
+> >   
+> > > From: James Morse <james.morse@arm.com>
+> > > 
+> > > gic_acpi_match_gicc() is only called via gic_acpi_count_gicr_regions().
+> > > It should only count the number of enabled redistributors, but it
+> > > also tries to sanity check the GICC entry, currently returning an
+> > > error if the Enabled bit is set, but the gicr_base_address is zero.
+> > > 
+> > > Adding support for the online-capable bit to the sanity check
+> > > complicates it, for no benefit. The existing check implicitly
+> > > depends on gic_acpi_count_gicr_regions() previous failing to find
+> > > any GICR regions (as it is valid to have gicr_base_address of zero if
+> > > the redistributors are described via a GICR entry).
+> > > 
+> > > Instead of complicating the check, remove it. Failures that happen
+> > > at this point cause the irqchip not to register, meaning no irqs
+> > > can be requested. The kernel grinds to a panic() pretty quickly.
+> > > 
+> > > Without the check, MADT tables that exhibit this problem are still
+> > > caught by gic_populate_rdist(), which helpfully also prints what
+> > > went wrong:
+> > > | CPU4: mpidr 100 has no re-distributor!
+> > > 
+> > > Signed-off-by: James Morse <james.morse@arm.com>
+> > > Reviewed-by: Gavin Shan <gshan@redhat.com>
+> > > Tested-by: Miguel Luis <miguel.luis@oracle.com>
+> > > Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
+> > > Tested-by: Jianyong Wu <jianyong.wu@arm.com>
+> > > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> > > ---
+> > >  drivers/irqchip/irq-gic-v3.c | 18 ++++++------------
+> > >  1 file changed, 6 insertions(+), 12 deletions(-)
+> > > 
+> > > diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+> > > index 98b0329b7154..ebecd4546830 100644
+> > > --- a/drivers/irqchip/irq-gic-v3.c
+> > > +++ b/drivers/irqchip/irq-gic-v3.c
+> > > @@ -2420,21 +2420,15 @@ static int __init gic_acpi_match_gicc(union acpi_subtable_headers *header,
+> > >  
+> > >  	/*
+> > >  	 * If GICC is enabled and has valid gicr base address, then it means
+> > > -	 * GICR base is presented via GICC
+> > > +	 * GICR base is presented via GICC. The redistributor is only known to
+> > > +	 * be accessible if the GICC is marked as enabled. If this bit is not
+> > > +	 * set, we'd need to add the redistributor at runtime, which isn't
+> > > +	 * supported.
+> > >  	 */
+> > > -	if (acpi_gicc_is_usable(gicc) && gicc->gicr_base_address) {
+> > > +	if (gicc->flags & ACPI_MADT_ENABLED && gicc->gicr_base_address)  
+> > 
+> > I was very vague in previous review.  I think the reasons you are switching
+> > from acpi_gicc_is_useable(gicc) to the gicc->flags & ACPI_MADT_ENABLED
+> > needs calling out as I'm fairly sure that this point in the series at least
+> > acpi_gicc_is_usable is same as current upstream:
+> > 
+> > static inline bool acpi_gicc_is_usable(struct acpi_madt_generic_interrupt *gicc)
+> > {
+> > 	return gicc->flags & ACPI_MADT_ENABLED;
+> > }  
 > 
-> Isn't this somewhat risky?
+> In a previous patch adding acpi_gicc_is_usable() c54e52f84d7a ("arm64,
+> irqchip/gic-v3, ACPI: Move MADT GICC enabled check into a helper") this
+> was:
+> 
+> -       if ((gicc->flags & ACPI_MADT_ENABLED) && gicc->gicr_base_address) {
+> +       if (acpi_gicc_is_usable(gicc) && gicc->gicr_base_address) {
+> 
+> so effectively this is undoing that particular change, which raises in
+> my mind why the change was made in the first place if it's just going
+> to be reverted in a later patch (because in a following patch,
+> acpi_gicc_is_usable() has an additional condition added to it that
+> isn't applicable here.) which effectively makes acpi_gicc_is_usable()
+> return true if either ACPI_MADT_ENABLED _or_
+> ACPI_MADT_GICC_ONLINE_CAPABLE (as it is now known) are set.
 
-Not really. The earlier full series moved the registration of CPUs
-from subsys (by the various architecture specific code) into the
-driver core - thus moving it much earlier. This patch merely
-restores it back to the subsys initialisation stage.
+Ok. So maybe just calling out that we are about to change the meaning
+of acpi_gicc_is_usable() so need to partly revert that earlier patch
+to make use of it everywhere.
 
-There is a low chance that something _could_ have become reliant
-on that change - and the longer it takes for this change to be
-merged, the more risk there is that something could become reliant
-on CPUs being registered very early.
+Or perhaps introduce
+acpi_gicc_is_enabled() which is called by acpi_gicc_is_usable()
+along with the new conditions when they are added though as you
+say later, what does usable mean?
 
-Maybe this ought to be spelt out more explicitly that it's merely
-restoring the point at which CPUs are registered.
+> 
+> However, if ACPI_MADT_GICC_ONLINE_CAPABLE is set, does that actually
+> mean that the GICC is usable? I'm not sure it does. ACPI v6.5 says that
+> this bit indicates that the system supports enabling this processor
+> later. Is the GICC of a currently disabled processor "usable"...
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+I agree, this is confusing.
+
+acpi_gicc_may_be_usable()?
+
+Or invert it in all places to give a cleaner meaning
+!acpi_gicc_never_usable()
+
+Bit of a pain to change this throughout again, but maybe necessary
+to avoid confusion in future.
+
+> 
+> Clearly, the intention of this change is not to count this GICC entry
+> if it is marked ACPI_MADT_GICC_ONLINE_CAPABLE, but I feel that isn't
+> described in the commit message.
+
+Agreed, though that only happens in the next patch so easier to describe
+there or via a patch adding initially identical multiple helper functions
+that then diverge in following patch?
+
+Whilst a helper for this one location seems silly it would let us put
+the two helpers next to each other where the distinction is obvious.
+
+> 
+> Moreover, I am getting the feeling that there are _two_ changes going
+> on here - there's the change that's talked about in the commit message
+> (the complex validation that seems unnecessary) and then there's the
+> preparation for the change to acpi_gicc_is_usable() - which maybe
+> should be in the following patch where it would be less confusing.
+
+Agreed.
+
+> 
+> Would you agree?
+> 
+Yes, the move would help as then it's obvious why this needs to change
+and that is separate from the naming question.
+
+So in conclusion, I agree with everything you've called out on this one,
+up to you to pick which solution cleans this up. I think options are.
+1) Just move the change to the next patch where it's easier to describe.
+   Leaves the odd 'usable' behind.
+2) Rename the useable() to something else, maybe inverting logic as
+   !never is easier than now_or_maybe_later.
+3) Possibly add another helper for this new case which starts as matching
+   the existing one, but diverges in a later patch (Should still not be
+   in this patch which as you observer is doing something else and I think
+   is actually a bug fix anyway, be it one that has never mattered for
+   any shipping firmware).
+
+Jonathan
+
+
