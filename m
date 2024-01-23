@@ -1,60 +1,60 @@
-Received: from smtp2.osuosl.org (smtp2.osuosl.org [140.211.166.133])
+Received: from smtp4.osuosl.org (smtp4.osuosl.org [140.211.166.137])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1B027FBC4
-	for <acpica-devel@lists.linuxfoundation.org>; Tue, 23 Jan 2024 16:36:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5E2E81AA8
+	for <acpica-devel@lists.linuxfoundation.org>; Tue, 23 Jan 2024 18:20:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.137
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706027791; cv=none; b=RBM4shhK6TW5j/E+Nvom6F2xkGdFxAcOenOCLrQ5qXLMulhyzoQ9LHMMaNMDIZIuamRsFsNWZgISPd8AS8u01ZmOU1OxC9ad/3gq7WJe+wUdUmbINyeiJEkWEAQMCnoXg54CXf0vhtk7/SXrA98Cchzv4NxS0yC3A0iUj17CeDc=
+	t=1706034024; cv=none; b=FhvLdiYrot3vmeNTtA49cwO879hABxOIO7mzygW9LwXLqq19tRJKfAQa8u4S0yE1LRVsARXlJrKQ5ZKsaYqKt70a3ixr0TjLDB8esvuKUJ0kX914rfyOqM2DcjHNi7AYmwW/ghzHFmNI1/61aZ0oq0nmdU50rgqenntvHER+ySw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706027791; c=relaxed/simple;
-	bh=mg1lFDQ2Cc93Q00sMStqVpL8+TpnAXOykvzRqppkaQY=;
+	s=arc-20240116; t=1706034024; c=relaxed/simple;
+	bh=Kz6Sx2HwHUtMwThwQvcZ1SzVhfnaGraII0WfWtXei18=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=arH87lydGVlmkC+qFXD572Q3b9mu/IM/Og4V+wgVZ/qjZvNcwHojrmrqkMH9X1MtKsyAT+v6Qrs0mAmwpKM080DeoSSr2t3Y57CvVy/2SFuKJjTitSIcxop//3wBtSVn3utCA+f8ifXwx26EKHG5buKYXUHwSRcGduWCSmwqaoY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=aI5GPVMb; arc=none smtp.client-ip=140.211.166.133
+	 Content-Type:Content-Disposition:In-Reply-To; b=shGtdbVRS9R51mITYSZ2XvMrLwKIZl22iFjxaxjKstl97rdAaMZbxYyeFVYmcBuOhV7JKaaJ49jxzR2lnDaf6cfHSCKzU4fejI+T6lRf7y22yOD+LeqYa4uRPV6yYuhYnL8GlZRZQC9PnWVnca5fxv9JRScAhLWD0T22RC7Qyt0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=KfMZkqSB; arc=none smtp.client-ip=140.211.166.137
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="aI5GPVMb"
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="KfMZkqSB"
 Received: from localhost (localhost [127.0.0.1])
-	by smtp2.osuosl.org (Postfix) with ESMTP id 63EA4402C3
-	for <acpica-devel@lists.linuxfoundation.org>; Tue, 23 Jan 2024 16:36:29 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 63EA4402C3
-Authentication-Results: smtp2.osuosl.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.a=rsa-sha256 header.s=pandora-2019 header.b=aI5GPVMb
+	by smtp4.osuosl.org (Postfix) with ESMTP id 4E1824176D
+	for <acpica-devel@lists.linuxfoundation.org>; Tue, 23 Jan 2024 18:20:22 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 4E1824176D
+Authentication-Results: smtp4.osuosl.org;
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.a=rsa-sha256 header.s=pandora-2019 header.b=KfMZkqSB
 X-Virus-Scanned: amavisd-new at osuosl.org
 X-Spam-Flag: NO
 X-Spam-Score: -2.098
 X-Spam-Level:
-Received: from smtp2.osuosl.org ([127.0.0.1])
-	by localhost (smtp2.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id crezsfjeXNUj
+Received: from smtp4.osuosl.org ([127.0.0.1])
+	by localhost (smtp4.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id FWr58kZiz4ez
 	for <acpica-devel@lists.linuxfoundation.org>;
-	Tue, 23 Jan 2024 16:36:27 +0000 (UTC)
+	Tue, 23 Jan 2024 18:20:21 +0000 (UTC)
 Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-	by smtp2.osuosl.org (Postfix) with ESMTPS id 9102640217
-	for <acpica-devel@lists.linuxfoundation.org>; Tue, 23 Jan 2024 16:36:27 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 9102640217
+	by smtp4.osuosl.org (Postfix) with ESMTPS id 5EB4741754
+	for <acpica-devel@lists.linuxfoundation.org>; Tue, 23 Jan 2024 18:20:20 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 5EB4741754
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
 	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
 	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=l/85CMUwYvGkFstcoi4Kb56LZAx3H/rR4TH74ZR+ABU=; b=aI5GPVMbgrAMQLi/sxpdR2JIEB
-	lD7i+cyhbu5o25Cq3bZOXaKDk8cy0Gmn/iCiM5grQc/Lgv5UbI2usWWgflQ0WEMXvX/i374t61Sp8
-	JXyHiJfmV1B9tBrrumUkhF4+2QzxPqvR5LjPfK1GpAcTrn3pSCZ87oSUkCMmgZSbzgtfIgXTUbGZP
-	B5aJXDK7/UCVmXh2ORo8l0dcCzSBAvDFBXvN+X/ZZMVGJlp1VT7uYvVFvsMO6r3OCSG3dac52Kz7r
-	dhMY/wsZf7J+sYDfDey0TJCtGdPZSb8do/Sgu6OnmJ1nLj94n0+uoVuMExEsGDtLPU++QWS5/6er8
-	75aVPHTQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:33630)
+	bh=xJtDwsEzxC2wRkKiDTxPnJF7Bcyhg3afuw16GcINCwM=; b=KfMZkqSBpSMz1Up8pIHrEoOmK2
+	gS72067GJZOQOPUTd0wTWjKykok1kTE4dCcBEAtrgrvvb7VXsM9FqTwumi5Ntqb8yCVazVOZ6Wp0n
+	SWrK5q4QA2TOsTegfudAQLyRGgqxNF9QlzA33ibCCQrZVHvdeIFQQuCEl66Vo0dmF0OFYnFiMyhzF
+	heFGFU0q325UHEoWKsnoe/rL3eAw4o4e6t/0qFi5Zao5+PrxjeOs+vVIdYacZNE3H5wdKxLx6gUvX
+	ldr2VrwRpbatnDdYCIf9HvSw8Mjum3/eXOGXrGqv9MXGK0aslVEdvI8jm2wuMDfSjExEkTjy3Irtk
+	X7HVzNGQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:34546)
 	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <linux@armlinux.org.uk>)
-	id 1rSJkv-0002kH-2j;
-	Tue, 23 Jan 2024 16:36:09 +0000
+	id 1rSLNQ-0002u1-2h;
+	Tue, 23 Jan 2024 18:20:00 +0000
 Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
 	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rSJks-00025O-9V; Tue, 23 Jan 2024 16:36:06 +0000
-Date: Tue, 23 Jan 2024 16:36:06 +0000
+	id 1rSLNM-00029h-Kk; Tue, 23 Jan 2024 18:19:56 +0000
+Date: Tue, 23 Jan 2024 18:19:56 +0000
 From: "Russell King (Oracle)" <linux@armlinux.org.uk>
 To: "Rafael J. Wysocki" <rafael@kernel.org>
 Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>,
@@ -71,13 +71,15 @@ Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>,
 	James Morse <james.morse@arm.com>
 Subject: Re: [PATCH RFC v3 05/21] ACPI: Rename ACPI_HOTPLUG_CPU to include
  'present'
-Message-ID: <Za/q9jivG4OdZM0f@shell.armlinux.org.uk>
+Message-ID: <ZbADTBLDEFtdglho@shell.armlinux.org.uk>
 References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
  <E1rDOgD-00Dvk2-3h@rmk-PC.armlinux.org.uk>
  <CAJZ5v0g9nfLrEf9u4Ksw6BOWJQ9iv8Z-O8RsLU6jR5zk0ahxRw@mail.gmail.com>
  <20240122180013.000016d5@Huawei.com>
  <Za++/11n5KA1VS3p@shell.armlinux.org.uk>
  <CAJZ5v0h7wsLt8d3ZoLXsK1=crAx66T42WDKNoHcg8CiHpAjS8g@mail.gmail.com>
+ <Za/q9jivG4OdZM0f@shell.armlinux.org.uk>
+ <CAJZ5v0gwe02uzAQoX0QDHo35OTEozpbnqC6vukjM3aE6HMq9WQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -87,107 +89,128 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0h7wsLt8d3ZoLXsK1=crAx66T42WDKNoHcg8CiHpAjS8g@mail.gmail.com>
+In-Reply-To: <CAJZ5v0gwe02uzAQoX0QDHo35OTEozpbnqC6vukjM3aE6HMq9WQ@mail.gmail.com>
 Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Tue, Jan 23, 2024 at 05:15:54PM +0100, Rafael J. Wysocki wrote:
-> On Tue, Jan 23, 2024 at 2:28 PM Russell King (Oracle)
+On Tue, Jan 23, 2024 at 06:43:59PM +0100, Rafael J. Wysocki wrote:
+> On Tue, Jan 23, 2024 at 5:36 PM Russell King (Oracle)
 > <linux@armlinux.org.uk> wrote:
 > >
-> > On Mon, Jan 22, 2024 at 06:00:13PM +0000, Jonathan Cameron wrote:
-> > > On Mon, 18 Dec 2023 21:35:16 +0100
-> > > "Rafael J. Wysocki" <rafael@kernel.org> wrote:
-> > >
-> > > > On Wed, Dec 13, 2023 at 1:49 PM Russell King <rmk+kernel@armlinux.org.uk> wrote:
+> > On Tue, Jan 23, 2024 at 05:15:54PM +0100, Rafael J. Wysocki wrote:
+> > > On Tue, Jan 23, 2024 at 2:28 PM Russell King (Oracle)
+> > > <linux@armlinux.org.uk> wrote:
+> > > >
+> > > > On Mon, Jan 22, 2024 at 06:00:13PM +0000, Jonathan Cameron wrote:
+> > > > > On Mon, 18 Dec 2023 21:35:16 +0100
+> > > > > "Rafael J. Wysocki" <rafael@kernel.org> wrote:
 > > > > >
-> > > > > From: James Morse <james.morse@arm.com>
+> > > > > > On Wed, Dec 13, 2023 at 1:49 PM Russell King <rmk+kernel@armlinux.org.uk> wrote:
+> > > > > > >
+> > > > > > > From: James Morse <james.morse@arm.com>
+> > > > > > >
+> > > > > > > The code behind ACPI_HOTPLUG_CPU allows a not-present CPU to become
+> > > > > > > present.
+> > > > > >
+> > > > > > Right.
+> > > > > >
+> > > > > > > This isn't the only use of HOTPLUG_CPU. On arm64 and riscv
+> > > > > > > CPUs can be taken offline as a power saving measure.
+> > > > > >
+> > > > > > But still there is the case in which a non-present CPU can become
+> > > > > > present, isn't it there?
 > > > > >
-> > > > > The code behind ACPI_HOTPLUG_CPU allows a not-present CPU to become
-> > > > > present.
-> > > >
-> > > > Right.
-> > > >
-> > > > > This isn't the only use of HOTPLUG_CPU. On arm64 and riscv
-> > > > > CPUs can be taken offline as a power saving measure.
-> > > >
-> > > > But still there is the case in which a non-present CPU can become
-> > > > present, isn't it there?
-> > >
-> > > Not yet defined by the architectures (and I'm assuming it probably never will be).
-> > >
-> > > The original proposal we took to ARM was to do exactly that - they pushed
-> > > back hard on the basis there was no architecturally safe way to implement it.
-> > > Too much of the ARM arch has to exist from the start of time.
-> > >
-> > > https://lore.kernel.org/linux-arm-kernel/cbaa6d68-6143-e010-5f3c-ec62f879ad95@arm.com/
-> > > is one of the relevant threads of the kernel side of that discussion.
-> > >
-> > > Not to put specific words into the ARM architects mouths, but the
-> > > short description is that there is currently no demand for working
-> > > out how to make physical CPU hotplug possible, as such they will not
-> > > provide an architecturally compliant way to do it for virtual CPU hotplug and
-> > > another means is needed (which is why this series doesn't use the present bit
-> > > for that purpose and we have the Online capable bit in MADT/GICC)
-> > >
-> > > It was a 'fun' dance of several years to get to that clarification.
-> > > As another fun fact, the same is defined for x86, but I don't think
-> > > anyone has used it yet (GICC for ARM has an online capable bit in the flags to
-> > > enable this, which was remarkably similar to the online capable bit in the
-> > > flags of the Local APIC entries as added fairly recently).
-> > >
-> > > >
-> > > > > On arm64 an offline CPU may be disabled by firmware, preventing it from
-> > > > > being brought back online, but it remains present throughout.
+> > > > > Not yet defined by the architectures (and I'm assuming it probably never will be).
 > > > > >
-> > > > > Adding code to prevent user-space trying to online these disabled CPUs
-> > > > > needs some additional terminology.
+> > > > > The original proposal we took to ARM was to do exactly that - they pushed
+> > > > > back hard on the basis there was no architecturally safe way to implement it.
+> > > > > Too much of the ARM arch has to exist from the start of time.
 > > > > >
-> > > > > Rename the Kconfig symbol CONFIG_ACPI_HOTPLUG_PRESENT_CPU to reflect
-> > > > > that it makes possible CPUs present.
+> > > > > https://lore.kernel.org/linux-arm-kernel/cbaa6d68-6143-e010-5f3c-ec62f879ad95@arm.com/
+> > > > > is one of the relevant threads of the kernel side of that discussion.
+> > > > >
+> > > > > Not to put specific words into the ARM architects mouths, but the
+> > > > > short description is that there is currently no demand for working
+> > > > > out how to make physical CPU hotplug possible, as such they will not
+> > > > > provide an architecturally compliant way to do it for virtual CPU hotplug and
+> > > > > another means is needed (which is why this series doesn't use the present bit
+> > > > > for that purpose and we have the Online capable bit in MADT/GICC)
+> > > > >
+> > > > > It was a 'fun' dance of several years to get to that clarification.
+> > > > > As another fun fact, the same is defined for x86, but I don't think
+> > > > > anyone has used it yet (GICC for ARM has an online capable bit in the flags to
+> > > > > enable this, which was remarkably similar to the online capable bit in the
+> > > > > flags of the Local APIC entries as added fairly recently).
+> > > > >
+> > > > > >
+> > > > > > > On arm64 an offline CPU may be disabled by firmware, preventing it from
+> > > > > > > being brought back online, but it remains present throughout.
+> > > > > > >
+> > > > > > > Adding code to prevent user-space trying to online these disabled CPUs
+> > > > > > > needs some additional terminology.
+> > > > > > >
+> > > > > > > Rename the Kconfig symbol CONFIG_ACPI_HOTPLUG_PRESENT_CPU to reflect
+> > > > > > > that it makes possible CPUs present.
+> > > > > >
+> > > > > > Honestly, I don't think that this change is necessary or even useful.
+> > > > >
+> > > > > Whilst it's an attempt to avoid future confusion, the rename is
+> > > > > not something I really care about so my advice to Russell is drop
+> > > > > it unless you are attached to it!
 > > > >
-> > > > Honestly, I don't think that this change is necessary or even useful.
+> > > > While I agree that it isn't a necessity, I don't fully agree that it
+> > > > isn't useful.
+> > > >
+> > > > One of the issues will be that while Arm64 will support hotplug vCPU,
+> > > > it won't be setting ACPI_HOTPLUG_CPU because it doesn't support
+> > > > the present bit changing. So I can see why James decided to rename
+> > > > it - because with Arm64's hotplug vCPU, the idea that ACPI_HOTPLUG_CPU
+> > > > somehow enables hotplug CPU support is now no longer true.
+> > > >
+> > > > Keeping it as ACPI_HOTPLUG_CPU makes the code less obvious, because it
+> > > > leads one to assume that it ought to be enabled for Arm64's
+> > > > implementatinon, and that could well cause issues in the future if
+> > > > people make the assumption that "ACPI_HOTPLUG_CPU" means hotplug CPU
+> > > > is supported in ACPI. It doesn't anymore.
 > > >
-> > > Whilst it's an attempt to avoid future confusion, the rename is
-> > > not something I really care about so my advice to Russell is drop
-> > > it unless you are attached to it!
+> > > On x86 there is no confusion AFAICS.  It's always meant "as long as
+> > > the platform supports it".
 > >
-> > While I agree that it isn't a necessity, I don't fully agree that it
-> > isn't useful.
+> > That's x86, which supports physical CPU hotplug. We're introducing
+> > support for Arm64 here which doesn't support physical CPU hotplug.
 > >
-> > One of the issues will be that while Arm64 will support hotplug vCPU,
-> > it won't be setting ACPI_HOTPLUG_CPU because it doesn't support
-> > the present bit changing. So I can see why James decided to rename
-> > it - because with Arm64's hotplug vCPU, the idea that ACPI_HOTPLUG_CPU
-> > somehow enables hotplug CPU support is now no longer true.
+> >                                                 ACPI-based      Physical        Virtual
+> > Arch    HOTPLUG_CPU     ACPI_HOTPLUG_CPU        Hotplug         Hotplug         Hotplug
+> > Arm64   Y               N                       Y               N               Y
+> > x86     Y               Y                       Y               Y               Y
 > >
-> > Keeping it as ACPI_HOTPLUG_CPU makes the code less obvious, because it
-> > leads one to assume that it ought to be enabled for Arm64's
-> > implementatinon, and that could well cause issues in the future if
-> > people make the assumption that "ACPI_HOTPLUG_CPU" means hotplug CPU
-> > is supported in ACPI. It doesn't anymore.
+> > So ACPI_HOTPLUG_CPU becomes totally misnamed with the introduction
+> > of hotplug on Arm64.
+> >
+> > If we want to just look at stuff from an x86 perspective, then yes,
+> > it remains correct to call it ACPI_HOTPLUG_CPU. It isn't correct as
+> > soon as we add Arm64, as I already said.
 > 
-> On x86 there is no confusion AFAICS.  It's always meant "as long as
-> the platform supports it".
+> And if you rename it, it becomes less confusing for ARM64, but more
+> confusing for x86, which basically is my point.
+> 
+> IMO "hotplug" covers both cases well enough and "hotplug present" is
+> only accurate for one of them.
+> 
+> > And honestly, a two line quip to my reasoned argument is not IMHO
+> > an acceptable reply.
+> 
+> Well, I'm not even sure how to respond to this ...
 
-That's x86, which supports physical CPU hotplug. We're introducing
-support for Arm64 here which doesn't support physical CPU hotplug.
+The above explanation you give would have been useful...
 
-						ACPI-based	Physical	Virtual
-Arch	HOTPLUG_CPU	ACPI_HOTPLUG_CPU	Hotplug		Hotplug		Hotplug
-Arm64	Y		N			Y		N		Y
-x86	Y		Y			Y		Y		Y
-
-So ACPI_HOTPLUG_CPU becomes totally misnamed with the introduction
-of hotplug on Arm64.
-
-If we want to just look at stuff from an x86 perspective, then yes,
-it remains correct to call it ACPI_HOTPLUG_CPU. It isn't correct as
-soon as we add Arm64, as I already said.
-
-And honestly, a two line quip to my reasoned argument is not IMHO
-an acceptable reply.
-
-... getting close to throwing the rag in over this.
+I don't see how "hotplug" covers both cases. As I've tried to point
+out many times now, ACPI_HOTPLUG_CPU is N for Arm64, yet it supports
+ACPI based hotplug. How does ACPI_HOTPLUG_CPU cover Arm64 if it's
+N there? IMHO it totally doesn't, and moreover, it goes against what
+one would logically expect - and this is why I have a problem with
+your effective NAK for this change. I believe you are basically
+wrong on this for the reasons I've given - that ACPI_HOTPLUG_CPU
+will be N for Arm64 despite it supporting ACPI-based CPU hotplug.
 
 -- 
 RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
