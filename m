@@ -1,63 +1,64 @@
-Received: from smtp3.osuosl.org (smtp3.osuosl.org [140.211.166.136])
+Received: from smtp2.osuosl.org (smtp2.osuosl.org [140.211.166.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22B0E5FDA9
-	for <acpica-devel@lists.linuxfoundation.org>; Tue, 23 Jan 2024 15:00:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1B027FBC4
+	for <acpica-devel@lists.linuxfoundation.org>; Tue, 23 Jan 2024 16:36:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706022004; cv=none; b=b8bG/Ba9TFYI5DPidiSW1qHfhoUCSiRZNHS1eFPMWVkIlj5K1SeSIhG9DzjszhziIVOnmbM1S1uP/h6qsLZ+nBV/zXA1qzUi+vCHtGEuzL3qzoumSkK8/cj6h8L1c9o2GxsP1Iuja/df3v3iraPafZhMhYQ4cVsb90hqMo8KA0E=
+	t=1706027791; cv=none; b=RBM4shhK6TW5j/E+Nvom6F2xkGdFxAcOenOCLrQ5qXLMulhyzoQ9LHMMaNMDIZIuamRsFsNWZgISPd8AS8u01ZmOU1OxC9ad/3gq7WJe+wUdUmbINyeiJEkWEAQMCnoXg54CXf0vhtk7/SXrA98Cchzv4NxS0yC3A0iUj17CeDc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706022004; c=relaxed/simple;
-	bh=S2nNMUs1kL5gBban5RvYepp4KkT73O4GwescFEHu7M0=;
+	s=arc-20240116; t=1706027791; c=relaxed/simple;
+	bh=mg1lFDQ2Cc93Q00sMStqVpL8+TpnAXOykvzRqppkaQY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cdrRadN+6WaESmrUXSSDvGhtGRVfNe0CEWdoGNWH2QME+J0QQXDuMmTtLZOOKGnwp4djWz9YG4rwh63vSfh4kWXCAdpRTtLTOQRvMtYzo4QFLFuX4g2sPm5sHOJhCj70JHJcDaG/OIWoBz+tzsTg2cq9ZzGpuEorXgitXGxwIrg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=0uRCA6f6; arc=none smtp.client-ip=140.211.166.136
+	 Content-Type:Content-Disposition:In-Reply-To; b=arH87lydGVlmkC+qFXD572Q3b9mu/IM/Og4V+wgVZ/qjZvNcwHojrmrqkMH9X1MtKsyAT+v6Qrs0mAmwpKM080DeoSSr2t3Y57CvVy/2SFuKJjTitSIcxop//3wBtSVn3utCA+f8ifXwx26EKHG5buKYXUHwSRcGduWCSmwqaoY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=aI5GPVMb; arc=none smtp.client-ip=140.211.166.133
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="0uRCA6f6"
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="aI5GPVMb"
 Received: from localhost (localhost [127.0.0.1])
-	by smtp3.osuosl.org (Postfix) with ESMTP id 9E2B561038
-	for <acpica-devel@lists.linuxfoundation.org>; Tue, 23 Jan 2024 15:00:01 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 9E2B561038
-Authentication-Results: smtp3.osuosl.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.a=rsa-sha256 header.s=pandora-2019 header.b=0uRCA6f6
+	by smtp2.osuosl.org (Postfix) with ESMTP id 63EA4402C3
+	for <acpica-devel@lists.linuxfoundation.org>; Tue, 23 Jan 2024 16:36:29 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 63EA4402C3
+Authentication-Results: smtp2.osuosl.org;
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.a=rsa-sha256 header.s=pandora-2019 header.b=aI5GPVMb
 X-Virus-Scanned: amavisd-new at osuosl.org
 X-Spam-Flag: NO
 X-Spam-Score: -2.098
 X-Spam-Level:
-Received: from smtp3.osuosl.org ([127.0.0.1])
-	by localhost (smtp3.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id vdKItAnqzkxY
+Received: from smtp2.osuosl.org ([127.0.0.1])
+	by localhost (smtp2.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id crezsfjeXNUj
 	for <acpica-devel@lists.linuxfoundation.org>;
-	Tue, 23 Jan 2024 15:00:00 +0000 (UTC)
+	Tue, 23 Jan 2024 16:36:27 +0000 (UTC)
 Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-	by smtp3.osuosl.org (Postfix) with ESMTPS id 0E3796102C
-	for <acpica-devel@lists.linuxfoundation.org>; Tue, 23 Jan 2024 14:59:59 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 0E3796102C
+	by smtp2.osuosl.org (Postfix) with ESMTPS id 9102640217
+	for <acpica-devel@lists.linuxfoundation.org>; Tue, 23 Jan 2024 16:36:27 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org 9102640217
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
 	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=Cy6lkn4Op/3yUQXZQHShopdoVhncUbCOYHYdLrbNsOk=; b=0uRCA6f6dyL9b5hwe2V9zfJMeC
-	Jrj+tRumFPBYLz1UF5/gC/e/t3ePZ1VL74pK/4pT95ZLAGfYVli1V7VVnEWsiGBtvvncqzWkPz/3o
-	KxaRfyM+0nn25IsDtmaZXcik41iSTz1H484y8kqEt2ghmIlYNAriohtH5SgKnjpcJkIpvgzZX6O3Y
-	Fh4Tt7TAOh4nmmFn/3OqiXf4uHg445sgqaq8xBzjFnfZ7jF7Kou4Z3vqbx4SnPx8A4k8BGTU1n24O
-	04xzQ9lkqRIRvkgjGE3YSgYq4HeyaFAdEFnBPK6L17VdAliAhie1HUhdhMKXdEOx0lji/Djjv/lT3
-	MbcFnuCA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:37654)
+	bh=l/85CMUwYvGkFstcoi4Kb56LZAx3H/rR4TH74ZR+ABU=; b=aI5GPVMbgrAMQLi/sxpdR2JIEB
+	lD7i+cyhbu5o25Cq3bZOXaKDk8cy0Gmn/iCiM5grQc/Lgv5UbI2usWWgflQ0WEMXvX/i374t61Sp8
+	JXyHiJfmV1B9tBrrumUkhF4+2QzxPqvR5LjPfK1GpAcTrn3pSCZ87oSUkCMmgZSbzgtfIgXTUbGZP
+	B5aJXDK7/UCVmXh2ORo8l0dcCzSBAvDFBXvN+X/ZZMVGJlp1VT7uYvVFvsMO6r3OCSG3dac52Kz7r
+	dhMY/wsZf7J+sYDfDey0TJCtGdPZSb8do/Sgu6OnmJ1nLj94n0+uoVuMExEsGDtLPU++QWS5/6er8
+	75aVPHTQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:33630)
 	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <linux@armlinux.org.uk>)
-	id 1rSIFb-0002bC-2T;
-	Tue, 23 Jan 2024 14:59:43 +0000
+	id 1rSJkv-0002kH-2j;
+	Tue, 23 Jan 2024 16:36:09 +0000
 Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
 	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rSIFX-00021n-7b; Tue, 23 Jan 2024 14:59:39 +0000
-Date: Tue, 23 Jan 2024 14:59:39 +0000
+	id 1rSJks-00025O-9V; Tue, 23 Jan 2024 16:36:06 +0000
+Date: Tue, 23 Jan 2024 16:36:06 +0000
 From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
 	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
 	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
 	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
@@ -68,188 +69,125 @@ Cc: linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
 	Jean-Philippe Brucker <jean-philippe@linaro.org>,
 	jianyong.wu@arm.com, justin.he@arm.com,
 	James Morse <james.morse@arm.com>
-Subject: Re: [PATCH RFC v3 17/21] ACPI: add support to register CPUs based on
- the _STA enabled bit
-Message-ID: <Za/UWxAEnS5O/oY3@shell.armlinux.org.uk>
-References: <Za+61Jikkxh2BinY@shell.armlinux.org.uk>
- <20240123142218.00001a7b@Huawei.com>
+Subject: Re: [PATCH RFC v3 05/21] ACPI: Rename ACPI_HOTPLUG_CPU to include
+ 'present'
+Message-ID: <Za/q9jivG4OdZM0f@shell.armlinux.org.uk>
+References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
+ <E1rDOgD-00Dvk2-3h@rmk-PC.armlinux.org.uk>
+ <CAJZ5v0g9nfLrEf9u4Ksw6BOWJQ9iv8Z-O8RsLU6jR5zk0ahxRw@mail.gmail.com>
+ <20240122180013.000016d5@Huawei.com>
+ <Za++/11n5KA1VS3p@shell.armlinux.org.uk>
+ <CAJZ5v0h7wsLt8d3ZoLXsK1=crAx66T42WDKNoHcg8CiHpAjS8g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240123142218.00001a7b@Huawei.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0h7wsLt8d3ZoLXsK1=crAx66T42WDKNoHcg8CiHpAjS8g@mail.gmail.com>
 Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Tue, Jan 23, 2024 at 02:22:18PM +0000, Jonathan Cameron wrote:
-> On Tue, 23 Jan 2024 13:10:44 +0000
-> "Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
+On Tue, Jan 23, 2024 at 05:15:54PM +0100, Rafael J. Wysocki wrote:
+> On Tue, Jan 23, 2024 at 2:28 PM Russell King (Oracle)
+> <linux@armlinux.org.uk> wrote:
+> >
+> > On Mon, Jan 22, 2024 at 06:00:13PM +0000, Jonathan Cameron wrote:
+> > > On Mon, 18 Dec 2023 21:35:16 +0100
+> > > "Rafael J. Wysocki" <rafael@kernel.org> wrote:
+> > >
+> > > > On Wed, Dec 13, 2023 at 1:49 PM Russell King <rmk+kernel@armlinux.org.uk> wrote:
+> > > > >
+> > > > > From: James Morse <james.morse@arm.com>
+> > > > >
+> > > > > The code behind ACPI_HOTPLUG_CPU allows a not-present CPU to become
+> > > > > present.
+> > > >
+> > > > Right.
+> > > >
+> > > > > This isn't the only use of HOTPLUG_CPU. On arm64 and riscv
+> > > > > CPUs can be taken offline as a power saving measure.
+> > > >
+> > > > But still there is the case in which a non-present CPU can become
+> > > > present, isn't it there?
+> > >
+> > > Not yet defined by the architectures (and I'm assuming it probably never will be).
+> > >
+> > > The original proposal we took to ARM was to do exactly that - they pushed
+> > > back hard on the basis there was no architecturally safe way to implement it.
+> > > Too much of the ARM arch has to exist from the start of time.
+> > >
+> > > https://lore.kernel.org/linux-arm-kernel/cbaa6d68-6143-e010-5f3c-ec62f879ad95@arm.com/
+> > > is one of the relevant threads of the kernel side of that discussion.
+> > >
+> > > Not to put specific words into the ARM architects mouths, but the
+> > > short description is that there is currently no demand for working
+> > > out how to make physical CPU hotplug possible, as such they will not
+> > > provide an architecturally compliant way to do it for virtual CPU hotplug and
+> > > another means is needed (which is why this series doesn't use the present bit
+> > > for that purpose and we have the Online capable bit in MADT/GICC)
+> > >
+> > > It was a 'fun' dance of several years to get to that clarification.
+> > > As another fun fact, the same is defined for x86, but I don't think
+> > > anyone has used it yet (GICC for ARM has an online capable bit in the flags to
+> > > enable this, which was remarkably similar to the online capable bit in the
+> > > flags of the Local APIC entries as added fairly recently).
+> > >
+> > > >
+> > > > > On arm64 an offline CPU may be disabled by firmware, preventing it from
+> > > > > being brought back online, but it remains present throughout.
+> > > > >
+> > > > > Adding code to prevent user-space trying to online these disabled CPUs
+> > > > > needs some additional terminology.
+> > > > >
+> > > > > Rename the Kconfig symbol CONFIG_ACPI_HOTPLUG_PRESENT_CPU to reflect
+> > > > > that it makes possible CPUs present.
+> > > >
+> > > > Honestly, I don't think that this change is necessary or even useful.
+> > >
+> > > Whilst it's an attempt to avoid future confusion, the rename is
+> > > not something I really care about so my advice to Russell is drop
+> > > it unless you are attached to it!
+> >
+> > While I agree that it isn't a necessity, I don't fully agree that it
+> > isn't useful.
+> >
+> > One of the issues will be that while Arm64 will support hotplug vCPU,
+> > it won't be setting ACPI_HOTPLUG_CPU because it doesn't support
+> > the present bit changing. So I can see why James decided to rename
+> > it - because with Arm64's hotplug vCPU, the idea that ACPI_HOTPLUG_CPU
+> > somehow enables hotplug CPU support is now no longer true.
+> >
+> > Keeping it as ACPI_HOTPLUG_CPU makes the code less obvious, because it
+> > leads one to assume that it ought to be enabled for Arm64's
+> > implementatinon, and that could well cause issues in the future if
+> > people make the assumption that "ACPI_HOTPLUG_CPU" means hotplug CPU
+> > is supported in ACPI. It doesn't anymore.
 > 
-> > On Tue, Jan 23, 2024 at 10:26:03AM +0000, Jonathan Cameron wrote:
-> > > On Tue, 2 Jan 2024 14:53:20 +0000
-> > > Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
-> > >   
-> > > > On Mon, 18 Dec 2023 13:03:32 +0000
-> > > > "Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
-> > > >   
-> > > > > On Wed, Dec 13, 2023 at 12:50:38PM +0000, Russell King wrote:    
-> > > > > > From: James Morse <james.morse@arm.com>
-> > > > > > 
-> > > > > > acpi_processor_get_info() registers all present CPUs. Registering a
-> > > > > > CPU is what creates the sysfs entries and triggers the udev
-> > > > > > notifications.
-> > > > > > 
-> > > > > > arm64 virtual machines that support 'virtual cpu hotplug' use the
-> > > > > > enabled bit to indicate whether the CPU can be brought online, as
-> > > > > > the existing ACPI tables require all hardware to be described and
-> > > > > > present.
-> > > > > > 
-> > > > > > If firmware describes a CPU as present, but disabled, skip the
-> > > > > > registration. Such CPUs are present, but can't be brought online for
-> > > > > > whatever reason. (e.g. firmware/hypervisor policy).
-> > > > > > 
-> > > > > > Once firmware sets the enabled bit, the CPU can be registered and
-> > > > > > brought online by user-space. Online CPUs, or CPUs that are missing
-> > > > > > an _STA method must always be registered.      
-> > > > > 
-> > > > > ...
-> > > > >     
-> > > > > > @@ -526,6 +552,9 @@ static void acpi_processor_post_eject(struct acpi_device *device)
-> > > > > >  		acpi_processor_make_not_present(device);
-> > > > > >  		return;
-> > > > > >  	}
-> > > > > > +
-> > > > > > +	if (cpu_present(pr->id) && !(sta & ACPI_STA_DEVICE_ENABLED))
-> > > > > > +		arch_unregister_cpu(pr->id);      
-> > > > > 
-> > > > > This change isn't described in the commit log, but seems to be the cause
-> > > > > of the build error identified by the kernel build bot that is fixed
-> > > > > later in this series. I'm wondering whether this should be in a
-> > > > > different patch, maybe "ACPI: Check _STA present bit before making CPUs
-> > > > > not present" ?    
-> > > > 
-> > > > Would seem a bit odd to call arch_unregister_cpu() way before the code
-> > > > is added to call the matching arch_registers_cpu()
-> > > > 
-> > > > Mind you this eject doesn't just apply to those CPUs that are registered
-> > > > later I think, but instead to all.  So we run into the spec hole that
-> > > > there is no way to identify initially 'enabled' CPUs that might be disabled
-> > > > later.
-> > > >   
-> > > > > 
-> > > > > Or maybe my brain isn't working properly (due to being Covid positive.)
-> > > > > Any thoughts, Jonathan?    
-> > > > 
-> > > > I'll go with a resounding 'not sure' on where this change belongs.
-> > > > I blame my non existent start of the year hangover.
-> > > > Hope you have recovered!  
-> > > 
-> > > Looking again, I think you were right, move it to that earlier patch.  
-> > 
-> > I'm having second thoughts - because this patch introduces the
-> > arch_register_cpu() into the acpi_processor_add() path (via
-> > acpi_processor_get_info() and acpi_processor_make_enabled(), so isn't
-> > it also correct to add arch_unregister_cpu() to the detach/post_eject
-> > path as well? If we add one without the other, doesn't stuff become
-> > a bit asymetric?
-> > 
-> > Looking more deeply at these changes, I'm finding it isn't easy to
-> > keep track of everything that's going on here.
-> 
-> I can sympathize.
-> 
-> > 
-> > We had attach()/detach() callbacks that were nice and symetrical.
-> > How we have this post_eject() callback that makes things asymetrical.
-> > 
-> > We have the attach() method that registers the CPU, but no detach
-> > method, instead having the post_eject() method. On the face of it,
-> > arch_unregister_cpu() doesn't look symetric unless one goes digging
-> > more in the code - by that, I mean arch_register_cpu() only gets
-> > called of present=1 _and_ enabled=1. However, arch_unregister_cpu()
-> > gets called buried in acpi_processor_make_not_present(), called when
-> > present=0, and then we have this new one to handle the case where
-> > enabled=0. It is not obvious that arch_unregister_cpu() is the reverse
-> > of what happens with arch_register_cpu() here.
-> 
-> One option would be to pull the arch_unregister_cpu() out so it
-> happens in one place in both the present = 0 and enabled = 0 cases but
-> I'm not sure if it's safe to reorder the contents of 
-> acpi_processor_not_present() as it's followed by a bunch of things.
-> 
-> Would looks something like
-> 
-> if (cpu_present(pr->id)) {
-> 	if (!(sta & ACPI_STA_DEVICE_PRESENT)) {
-> 		acpi_processor_make_not_present(device); /* Remove arch_cpu_unregister() */
-> 	} else if (!(sta & ACPI_STA_DEVICE_ENABLED)) {
-> 		/* Nothing to do in this case */
-> 	} else {
-> 		return; /* Firmware did something silly - probably racing */
-> 	}
-> 	arch_unregister_cpu(pr->id);
-> 
-> 	return;
-> }
-> 
-> > 
-> > Then we have the add() method allocating pr->throttling.shared_cpu_map,
-> > and acpi_processor_make_not_present() freeing it. From what I read in
-> > ACPI v6.5, enabled is not allowed to be set without present. So, if
-> > _STA reports that a CPU that had present=1 enabled=1, but then is
-> > later reported to be enabled=0 (which we handle by calling only
-> > arch_unregister_cpu()) then what happens when _STA changes to
-> > enabled=1 later? Does add() get called? 
-> 
-> yes it does (I poked it to see) which indeed isn't good (unless I've
-> broken my setup in some obscure way).
+> On x86 there is no confusion AFAICS.  It's always meant "as long as
+> the platform supports it".
 
-Thanks for confirming - I haven't had a chance to do any testing (late
-lunch because of spending so long looking at this...)
+That's x86, which supports physical CPU hotplug. We're introducing
+support for Arm64 here which doesn't support physical CPU hotplug.
 
-> Seems we need a few more things than arch_unregister_cpu() pulled out
-> in the above code.
+						ACPI-based	Physical	Virtual
+Arch	HOTPLUG_CPU	ACPI_HOTPLUG_CPU	Hotplug		Hotplug		Hotplug
+Arm64	Y		N			Y		N		Y
+x86	Y		Y			Y		Y		Y
 
-Yes, and I also wonder whether we should be doing any of that
-unconditionally...
+So ACPI_HOTPLUG_CPU becomes totally misnamed with the introduction
+of hotplug on Arm64.
 
-> > If it does, this would cause
-> > a new acpi_processor structure to be allocated and the old one to be
-> > leaked... I hope I'm wrong about add() being called - but if it isn't,
-> > how does enabled going from 0->1 get handled... and if we are handling
-> > its 1->0 transition separately from present, then surely we should be
-> > handling that.
-> > 
-> > Maybe I'm just getting confused, but I've spent much of this morning
-> > trying to unravel all this... and I'm of the opinion that this isn't a
-> > sign of a good approach.
-> 
-> It's all annoyingly messy at the root of things, but indeed you've found
-> some issues in current implementation.  Feels like just ripping out
-> a bunch of stuff from acpi_processor_make_not_present() and calling it
-> for both paths will probably work, but I've not tested that yet.
+If we want to just look at stuff from an x86 perspective, then yes,
+it remains correct to call it ACPI_HOTPLUG_CPU. It isn't correct as
+soon as we add Arm64, as I already said.
 
-... since surely if we've already got to the point of issuing a
-post_eject() callback, the device has already been ejected
-and thus has gone - and if it is ever "replaced" we will get an
-attach() callback.
+And honestly, a two line quip to my reasoned argument is not IMHO
+an acceptable reply.
 
-Moreover, looking at acpi_scan_hot_remove(), if we are the device
-being ejected, then after ej0 is evaluated, _STA is checked, and
-acpi_bus_post_eject() called only if enabled=0. (This will also
-end up calling post_eject() for any children as well which won't
-have their _STA evaluated.)
-
-So this has got me wondering whether acpi_processor_post_eject()
-should be doing all the cleanup in acpi_processor_make_not_present()
-except if we believe the call is in error (e.g.
-!ACPI_HOTPLUG_PRESENT_CPU and present=0) - thus preparing the way
-for a future attach() callback.
-
-Hmm. I wonder if Rafael has any input on this.
+... getting close to throwing the rag in over this.
 
 -- 
 RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
