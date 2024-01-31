@@ -1,131 +1,120 @@
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+Received: from mx2.zhaoxin.com (mx2.zhaoxin.com [203.110.167.99])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEE7A67750
-	for <acpica-devel@lists.linux.dev>; Wed, 31 Jan 2024 09:33:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD793762D2
+	for <acpica-devel@lists.linux.dev>; Wed, 31 Jan 2024 10:52:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.110.167.99
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706693605; cv=none; b=JRafGwgYylfX/Ol+9H8qi0hHBFYbAlS9ZSmWbx0S1PLxCQ4d5E0k6st6JppSxVzf1XqgQBXutcksSswXoWr//sCZazsPzIPWjsA+u9Fm0qh/nIKhzlPJcpMY4SucBrEKxNYIeWIDzat25Mzt/sF2dIeRlcdikBM7fyN7PN70yGA=
+	t=1706698342; cv=none; b=banJJ3ZRnffCJWMWrSszEpncK12nCs7Xr2skUXCamOibjvzgbttuLWEi9EmlRDKtAuS8ISBm8e16dvCaLWRrClTtxMXqzVZ8pU133tpoPdeWLlhQGvha2sCzKgOcib3zngmxM7mctngqU8lKZNXQMSqBH/F9iVT9mDIMFt5TSJM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706693605; c=relaxed/simple;
-	bh=SAcxu58CKy8uuW+Xv3xqsXot/kKkgjf2e5FL6zSemnE=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=RouxrWlGSddoPzfctx1afx0G8LB5rzEFBnQMhWdb4quaz4quxNpVh1iMHcayB0Swp5QR9MwADqH4bCCFcM5sdOc1X4b1wmKSFist7jS9Fh+kSq9LLX8wuhe20HUcp69sa+hAnK1RklzXuxOyDitqeHfMQXOf/9OS50e3+aiuvwE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=bSn4THvb; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=oigmsgoI; arc=none smtp.client-ip=66.111.4.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="bSn4THvb";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="oigmsgoI"
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.nyi.internal (Postfix) with ESMTP id 04E625C00CE;
-	Wed, 31 Jan 2024 04:33:23 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Wed, 31 Jan 2024 04:33:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1706693602; x=1706780002; bh=zfFTIJuMke
-	XWXqP1X9CM0AfUVjTJrLkI22bHlsMbmtw=; b=bSn4THvb3TNzacAXhTziKRl5rh
-	em6ZTUsdUJUsNMIzHZAlPH/1xeZqsrJAi5uO+4udjh12g5xLfLgQYDe1mO2XxRtB
-	1TLw9nJgsgXCa6Ev2O9ki1haskqZrxDBf0aCheZRxM0Tfq/kC/l6rE4Uxp5V/mop
-	Uyc05OnShT3Ow1NJGsuVkNMx1l7NYmOx50NA+QID4bpVIGiPWD+dSe4zYGnijSYG
-	75hR5solZGQXgJKEUL4wKhqTMrinzElUNUPLcsj6Fjifv9uedR+hDdCuk8VTNfqq
-	h5C98oj021rWDFM5haCHo4IrDgXT/CRQv1fNSgbjJ4ho/6yffnKI1ArjyvrQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1706693602; x=1706780002; bh=zfFTIJuMkeXWXqP1X9CM0AfUVjTJ
-	rLkI22bHlsMbmtw=; b=oigmsgoIRcR/hClDiIcHKTJBEMKvbpFKKx6R3l8pRfdI
-	Vx74VCDzlM85cr2ridYUVdbvEsZ1NiVUeJGYBwjb/KQeIKieImcZgWJNTNoKdori
-	ZMW2efPJoF9tTfewUgPygwdom4VHTEmR3mMaGkFEr8i6TItuuYIrACXLT2xBzGKJ
-	rniO4Az8EBb5KRXnavAIh7qJSEQbqGFMx2TYgYmd8zoSOem22M6SlRrBVJCqpRia
-	TVK7v0RecAJOOLIXvuJOFk+AcsEjniiqZLBnHkSbD92jo2HYsjoDkwbVPwssYmzn
-	XwFUvCZzXE7X7zhYSWhCx74CzGgOXMIhh+ZDvah73g==
-X-ME-Sender: <xms:4hO6ZSDyts5aymwbcqXhOpRv0NxSxSa2UKeaCznOpdlSQVr4IJCxqQ>
-    <xme:4hO6Zcjz454H0hMy7oS-pS7TI1rnKjkNJ4UsVwOBJjIjr6EqnnZBz5WseBxtWDRXk
-    RmoDtpqmmRCmPSYfhA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedtledgtdefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:4hO6ZVnU1Je3RbLMfWXzYNYVf-vOuAmn3LwXu_JuyFMU2WcH8KegxA>
-    <xmx:4hO6ZQzMVRFHjHlgoA45o1frQlsonOJJIG8Hrr_yDlxoNc-Xz9HDvA>
-    <xmx:4hO6ZXRtLjYqwGq6bwLd4PgDubiIaysXdJ2KLX5fkULA2lJA-syrdQ>
-    <xmx:4hO6Za9ZjHmo9sg797cPxDJg4WV7uKUAbwDU7WfE4Ho3o2nuVuC0BA>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 08CC4B6008D; Wed, 31 Jan 2024 04:33:21 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-144-ge5821d614e-fm-20240125.002-ge5821d61
+	s=arc-20240116; t=1706698342; c=relaxed/simple;
+	bh=SuEx50UjR4mvtKc/+qIPahjt8xlsD0d8Sb1tSW2xFKI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=F9BPMAuXIqDWqlPzcyGWEEp4+LRJ0MjXoH9y1iUViRFB2kllmK0mlqZTR7QzTWrDHChuZACTQQzlH0ntdiUUDw5oIRCvzVyaYwYdrpEnINyn99nNX8g+3fRWYHpLTufJUGAwn7sWpRmm9Ga/qJKlngBPV0unBIfp7YXb+rmTs0Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com; spf=pass smtp.mailfrom=zhaoxin.com; arc=none smtp.client-ip=203.110.167.99
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zhaoxin.com
+X-ASG-Debug-ID: 1706698334-1eb14e0c7d326b0001-m47mSr
+Received: from ZXSHMBX2.zhaoxin.com (ZXSHMBX2.zhaoxin.com [10.28.252.164]) by mx2.zhaoxin.com with ESMTP id PwrBgcLIFe8NDdPk (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Wed, 31 Jan 2024 18:52:14 +0800 (CST)
+X-Barracuda-Envelope-From: TonyWWang-oc@zhaoxin.com
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.164
+Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHMBX2.zhaoxin.com
+ (10.28.252.164) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 31 Jan
+ 2024 18:52:13 +0800
+Received: from [10.32.57.248] (10.32.57.248) by zxbjmbx1.zhaoxin.com
+ (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 31 Jan
+ 2024 18:52:11 +0800
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.164
+Message-ID: <f635eae6-c411-4791-90b8-c26d0a37ef2d@zhaoxin.com>
+X-Barracuda-RBL-Trusted-Forwarder: 10.32.57.248
+Date: Wed, 31 Jan 2024 18:52:10 +0800
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Message-Id: <682f037e-0efe-4d73-b867-f1f86a244836@app.fastmail.com>
-In-Reply-To: 
- <0be49d4d7d7e43933534aad6f72b35d3380519fd.1706603678.git.haibo1.xu@intel.com>
-References: <cover.1706603678.git.haibo1.xu@intel.com>
- <0be49d4d7d7e43933534aad6f72b35d3380519fd.1706603678.git.haibo1.xu@intel.com>
-Date: Wed, 31 Jan 2024 10:33:01 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Haibo Xu" <haibo1.xu@intel.com>
-Cc: "Alison Schofield" <alison.schofield@intel.com>,
- "Rafael J . Wysocki" <rafael@kernel.org>,
- "Dave Hansen" <dave.hansen@linux.intel.com>,
- linux-kernel@vger.kernel.org,
- "Conor.Dooley" <conor.dooley@microchip.com>, guoren <guoren@kernel.org>,
- "Jisheng Zhang" <jszhang@kernel.org>,
- "James Morse" <james.morse@arm.com>, linux-riscv@lists.infradead.org,
- "Ard Biesheuvel" <ardb@kernel.org>, "Baoquan He" <bhe@redhat.com>,
- acpica-devel@lists.linux.dev, "Robert Moore" <robert.moore@intel.com>,
- linux-acpi@vger.kernel.org, "Sami Tolvanen" <samitolvanen@google.com>,
- "Greentime Hu" <greentime.hu@sifive.com>, "Len Brown" <lenb@kernel.org>,
- "Albert Ou" <aou@eecs.berkeley.edu>,
- "Alexandre Ghiti" <alexghiti@rivosinc.com>,
- "Dan Williams" <dan.j.williams@intel.com>,
- "Chen Jiahao" <chenjiahao16@huawei.com>,
- "Yuntao Wang" <ytcoode@gmail.com>,
- "Paul Walmsley" <paul.walmsley@sifive.com>,
- =?UTF-8?Q?Cl=C3=A9ment_L=C3=A9ger?= <cleger@rivosinc.com>,
- xiaobo55x@gmail.com, "Anup Patel" <apatel@ventanamicro.com>,
- "Tony Luck" <tony.luck@intel.com>,
- "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
- "Russell King" <rmk+kernel@armlinux.org.uk>,
- "Samuel Holland" <samuel.holland@sifive.com>,
- "Evan Green" <evan@rivosinc.com>, "Palmer Dabbelt" <palmer@dabbelt.com>,
- "Andrew Jones" <ajones@ventanamicro.com>
-Subject: Re: [PATCH 4/4] ACPI: RISCV: Enable ACPI based NUMA
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/3] ACPI: CPPC: Add get the highest perf register value
+ support
+Content-Language: en-US
+X-ASG-Orig-Subj: Re: [PATCH 1/3] ACPI: CPPC: Add get the highest perf register value
+ support
+To: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+CC: <rafael@kernel.org>, <lenb@kernel.org>, <robert.moore@intel.com>,
+	<linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<acpica-devel@lists.linux.dev>, <tglx@linutronix.de>, <mingo@redhat.com>,
+	<bp@alien8.de>, <dave.hansen@linux.intel.com>, <x86@kernel.org>,
+	<hpa@zytor.com>, <mcgrof@kernel.org>, <peterz@infradead.org>,
+	<j.granados@samsung.com>, <viresh.kumar@linaro.org>,
+	<linux-pm@vger.kernel.org>, <CobeChen@zhaoxin.com>, <TimGuo@zhaoxin.com>,
+	<LeoLiu-oc@zhaoxin.com>, <LindaChai@zhaoxin.com>
+References: <20231228075705.26652-1-TonyWWang-oc@zhaoxin.com>
+ <20231228075705.26652-2-TonyWWang-oc@zhaoxin.com>
+ <20240117220742.GC13777@ranerica-svr.sc.intel.com>
+From: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+In-Reply-To: <20240117220742.GC13777@ranerica-svr.sc.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: ZXSHCAS1.zhaoxin.com (10.28.252.161) To
+ zxbjmbx1.zhaoxin.com (10.29.252.163)
+X-Barracuda-Connect: ZXSHMBX2.zhaoxin.com[10.28.252.164]
+X-Barracuda-Start-Time: 1706698334
+X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
+X-Barracuda-URL: https://10.28.252.36:4443/cgi-mod/mark.cgi
+X-Virus-Scanned: by bsmtpd at zhaoxin.com
+X-Barracuda-Scan-Msg-Size: 1550
+X-Barracuda-BRTS-Status: 1
+X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
+X-Barracuda-Spam-Score: -2.02
+X-Barracuda-Spam-Status: No, SCORE=-2.02 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=
+X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.120187
+	Rule breakdown below
+	 pts rule name              description
+	---- ---------------------- --------------------------------------------------
 
-On Wed, Jan 31, 2024, at 03:32, Haibo Xu wrote:
-> diff --git a/drivers/acpi/numa/Kconfig b/drivers/acpi/numa/Kconfig
-> index 849c2bd820b9..525297c44250 100644
-> --- a/drivers/acpi/numa/Kconfig
-> +++ b/drivers/acpi/numa/Kconfig
-> @@ -2,7 +2,7 @@
->  config ACPI_NUMA
->  	bool "NUMA support"
->  	depends on NUMA
-> -	depends on (X86 || ARM64 || LOONGARCH)
-> +	depends on (X86 || ARM64 || LOONGARCH || RISCV)
 
-The dependency is no longer needed now since these are
-the four architectures that support ACPI now that IA64
-is gone.
+On 2024/1/18 06:07, Ricardo Neri wrote:
+>
+> [这封邮件来自外部发件人]
+>
+> On Thu, Dec 28, 2023 at 03:57:03PM +0800, Tony W Wang-oc wrote:
+>> Add function cppc_get_highest_perf in generic CPPC driver to get the
+>> highest perf register value for specified core.
+>>
+>> Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+>> ---
+>>   drivers/acpi/cppc_acpi.c | 13 +++++++++++++
+>>   include/acpi/cppc_acpi.h |  5 +++++
+>>   2 files changed, 18 insertions(+)
+>>
+>> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+>> index 7ff269a78c20..1a77c514d007 100644
+>> --- a/drivers/acpi/cppc_acpi.c
+>> +++ b/drivers/acpi/cppc_acpi.c
+>> @@ -1154,6 +1154,19 @@ int cppc_get_nominal_perf(int cpunum, u64 *nominal_perf)
+>>        return cppc_get_perf(cpunum, NOMINAL_PERF, nominal_perf);
+>>   }
+>>
+>> +/**
+>> + * cppc_get_highest_perf - Get the highest performance register value.
+>> + * @cpunum: CPU from which to get highest performance.
+>> + * @highest_perf: Return address.
+>> + *
+>> + * Return: 0 for success, -EIO otherwise.
+>> + */
+>> +int cppc_get_highest_perf(int cpunum, u64 *highest_perf)
+>> +{
+>> +     return cppc_get_perf(cpunum, HIGHEST_PERF, highest_perf);
+>> +}
+>> +EXPORT_SYMBOL_GPL(cppc_get_highest_perf);
+> The Intel P-State driver uses cppc_get_perf_caps(). You would not need to
+> export this function.
+>
+> Having said that, the Intel P-State driver could also use this new
+> function, IMO. AFAICS, it does not *have* to use cppc_get_perf_caps().
 
-All of them also 'select ACPI_NUMA' by default, though on
-x86 this can still be disabled by manually turning off
-CONFIG_X86_64_ACPI_NUMA. I suspect we don't actually ever
-want to turn it off on x86 either, so I guess the Kconfig
-option can just be removed entirely.
+Yes, you are right.
 
-     Arnd
