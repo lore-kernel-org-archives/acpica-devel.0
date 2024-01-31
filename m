@@ -1,59 +1,59 @@
-Received: from smtp4.osuosl.org (smtp4.osuosl.org [140.211.166.137])
+Received: from smtp1.osuosl.org (smtp1.osuosl.org [140.211.166.138])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F67112FF74
-	for <acpica-devel@lists.linuxfoundation.org>; Wed, 31 Jan 2024 16:57:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.137
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F00A18E03
+	for <acpica-devel@lists.linuxfoundation.org>; Wed, 31 Jan 2024 17:00:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.138
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706720232; cv=none; b=Es+vvksDaHJsCl9bp4O9i/4DFbayZv8p7GL++R1GUbwmUn0Tmz7w4gZf5aYOH+YI6qeKH0X9JtXQNseEo0bK9tGMEbfrVWbaSSs8vCfRZ27AfSIZ4oy7tnWEKaefpErGUaQ3Qd5KT0BqG4ogUFWVJaL/OsHw+TcBez0v4/5dFpo=
+	t=1706720451; cv=none; b=CFKFHpkGnV9K060e8TNy5SGjTGWU15QMkyR92vgFajXigXh6N+5I4IP2YzG/AyFNtA0uG0xgc1byJ2W0xVeUJeZ5QRUl2qiYRb2djXYfXIiI5Vhju/eXLLf2HDOmGsSJiH7jym4BNk/4+Ay7NobKvFERX46ZgNpqb1P23GpgU4w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706720232; c=relaxed/simple;
-	bh=P8UMP2I/3nZNlJyCrd8eERvIK1OiBSscwtDfKF/3DxE=;
+	s=arc-20240116; t=1706720451; c=relaxed/simple;
+	bh=LTKcInkLZgpAbNkbK0w8drlT6huu9tuFRYheHBlt1Jc=;
 	h=In-Reply-To:References:From:To:Cc:Subject:MIME-Version:
-	 Content-Disposition:Content-Type:Message-Id:Date; b=tp9r8Iczj3uU/3ipey5lPtCVWgZBB25qcDNRnH2vU/tSsDoqT/YggdhzYGD4bT+1YSb66XkK1wR2LUk7AHdsHn5ZqS8hXXvoGEw/PWFySuO+lx4MJBG5m4QAGmRPV+h7AfZYOIzmaJnpSgaNH/5QZM0S1f6QH/Zniw8arR+4SBY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=uqc+DCKw; arc=none smtp.client-ip=140.211.166.137
+	 Content-Disposition:Content-Type:Message-Id:Date; b=pzrmUMPz6aMep6ELj0Eq5z+lAowqHQ9O8SmCjHgP8tYQwjRHFoY40QGN5UQliIaLNLk0EctBcNwdgEwVFD89vZvzJ4Ce5FRVzuhXlK8A9xJY/cK8AsPt2Kx8uWLPD3WK5Q85hP9pDV4goO6ybN3u7LZmgB6MTeMbju5mSNbc3PM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=e402SKqu; arc=none smtp.client-ip=140.211.166.138
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="uqc+DCKw"
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="e402SKqu"
 Received: from localhost (localhost [127.0.0.1])
-	by smtp4.osuosl.org (Postfix) with ESMTP id 63E8C41F10
-	for <acpica-devel@lists.linuxfoundation.org>; Wed, 31 Jan 2024 16:57:03 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 63E8C41F10
-Authentication-Results: smtp4.osuosl.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.a=rsa-sha256 header.s=pandora-2019 header.b=uqc+DCKw
+	by smtp1.osuosl.org (Postfix) with ESMTP id 1D72783E1E
+	for <acpica-devel@lists.linuxfoundation.org>; Wed, 31 Jan 2024 17:00:50 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 1D72783E1E
+Authentication-Results: smtp1.osuosl.org;
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.a=rsa-sha256 header.s=pandora-2019 header.b=e402SKqu
 X-Virus-Scanned: amavisd-new at osuosl.org
 X-Spam-Flag: NO
 X-Spam-Score: -2.098
 X-Spam-Level:
-Received: from smtp4.osuosl.org ([127.0.0.1])
-	by localhost (smtp4.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id dRU8NClA05_Y
+Received: from smtp1.osuosl.org ([127.0.0.1])
+	by localhost (smtp1.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id mdOO92EcG4Jw
 	for <acpica-devel@lists.linuxfoundation.org>;
-	Wed, 31 Jan 2024 16:57:02 +0000 (UTC)
+	Wed, 31 Jan 2024 17:00:49 +0000 (UTC)
 Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-	by smtp4.osuosl.org (Postfix) with ESMTPS id 5562A41F0D
-	for <acpica-devel@lists.linuxfoundation.org>; Wed, 31 Jan 2024 16:57:02 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 5562A41F0D
+	by smtp1.osuosl.org (Postfix) with ESMTPS id 5A2F983DEC
+	for <acpica-devel@lists.linuxfoundation.org>; Wed, 31 Jan 2024 17:00:49 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 5A2F983DEC
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=armlinux.org.uk; s=pandora-2019; h=Date:Sender:Message-Id:Content-Type:
 	Content-Transfer-Encoding:MIME-Version:Subject:Cc:To:From:References:
 	In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
 	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=DnAkVWZfHdsfbPL7YZp73DdgOlGRvTL1dby6CU3CDrY=; b=uqc+DCKwG0ug+HapGtea8aoa5Y
-	g5EpcUoEzakHsQIsGgONCg7oIGC58rfToOozcFpjkAtAypAyfVF6fnnKgmvWj1DD2sxBspC6E4cHX
-	SSOa+qh6GVlBlisWfGKmtDac31tVsXttXF8jhZdqTIICwhAhlJbeSeb2bsTj3GlEuH4lquy25qowh
-	qE5bnPbzW5WKHaXBCE7AxlRmjJ5l1MQNXQtzwAGI2Ys1ulpvisOs2/egpL8YFDP4mHKVzHjGfq1D0
-	Qg7QH6oXlz1qOITAOO7AoN4aWjtI84rCd5gwtLz7YiKyArVIPBSPvrq3HXqSm/sQKSb30L71/nt+H
-	+wF0Ir0g==;
-Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:36100 helo=rmk-PC.armlinux.org.uk)
+	bh=mdSd4VjdwbsxcclalIflVyksZpCV5Xk/AHrd3gBtdjo=; b=e402SKqul6WttNElDpt+AMqLqX
+	x5jFKIDt16+QHzeRcqYmGOGubS8UMfgDN8bqP8nRmaTrvxRputq4yO6pL5OHcCuSqCXnfdOrjY3HL
+	rcFLlXSeAg091rFK4UF8JARMuJ9OJtXC1A900zRsHvmECXurcRfn5kFqlEG+gvWDEIdcvmLm6bxjb
+	4bKtCvb/89L8ei0lw2/3mQj1ZaTuf62+Hsakf63GllIIY5xxoC28hjayNYOZ/Ay5wPHUrOrElC9JE
+	agxW5DNqjrp0Fhvwl+8QXDUKNJiDOEC34v0aY4QKF6yMEXRzTzpzOQCd4jTFjspgERReOcVa20Mb/
+	bsPodYFQ==;
+Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:35774 helo=rmk-PC.armlinux.org.uk)
 	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <rmk@armlinux.org.uk>)
-	id 1rVDnM-0003W7-34;
-	Wed, 31 Jan 2024 16:50:41 +0000
+	id 1rVDn3-0003V0-2w;
+	Wed, 31 Jan 2024 16:50:22 +0000
 Received: from rmk by rmk-PC.armlinux.org.uk with local (Exim 4.94.2)
 	(envelope-from <rmk@rmk-PC.armlinux.org.uk>)
-	id 1rVDnK-0027ZN-40; Wed, 31 Jan 2024 16:50:38 +0000
+	id 1rVDmz-0027Yz-GE; Wed, 31 Jan 2024 16:50:17 +0000
 In-Reply-To: <Zbp5xzmFhKDAgHws@shell.armlinux.org.uk>
 References: <Zbp5xzmFhKDAgHws@shell.armlinux.org.uk>
 From: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
@@ -78,7 +78,8 @@ Cc: Salil Mehta <salil.mehta@huawei.com>,
 	 James Morse <james.morse@arm.com>,
 	 Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
 	 "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: [PATCH RFC v4 12/15] arm64: psci: Ignore DENIED CPUs
+Subject: [PATCH RFC v4 08/15] ACPI: Warn when the present bit changes but the
+ feature is not enabled
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -88,69 +89,63 @@ MIME-Version: 1.0
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset="utf-8"
-Message-Id: <E1rVDnK-0027ZN-40@rmk-PC.armlinux.org.uk>
+Message-Id: <E1rVDmz-0027Yz-GE@rmk-PC.armlinux.org.uk>
 Sender: Russell King <rmk@armlinux.org.uk>
-Date: Wed, 31 Jan 2024 16:50:38 +0000
+Date: Wed, 31 Jan 2024 16:50:17 +0000
 
-From: Jean-Philippe Brucker <jean-philippe@linaro.org>
+From: James Morse <james.morse@arm.com>
 
-When a CPU is marked as disabled, but online capable in the MADT, PSCI
-applies some firmware policy to control when it can be brought online.
-PSCI returns DENIED to a CPU_ON request if this is not currently
-permitted. The OS can learn the current policy from the _STA enabled bit.
+ACPI firmware can trigger the events to add and remove CPUs, but the
+OS may not support this.
 
-Handle the PSCI DENIED return code gracefully instead of printing an
-error.
+Print an error message when this happens.
 
-See https://developer.arm.com/documentation/den0022/f/?lang=en page 58.
+This gives early warning on arm64 systems that don't support
+CONFIG_ACPI_HOTPLUG_PRESENT_CPU, as making CPUs not present has
+side effects for other parts of the system.
 
-Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
-[ morse: Rewrote commit message ]
 Signed-off-by: James Morse <james.morse@arm.com>
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Gavin Shan <gshan@redhat.com>
 Tested-by: Miguel Luis <miguel.luis@oracle.com>
 Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
 Tested-by: Jianyong Wu <jianyong.wu@arm.com>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 ---
-Changes since RFC v2
- * Add specification reference
- * Use EPERM rather than EPROBE_DEFER
-Changes since RFC v3:
- * Use EPERM everywhere
- * Drop unnecessary changes to drivers/firmware/psci/psci.c
+Changes since RFC v2:
+ * Update commit message with suggestion from Gavin Shan
 ---
- arch/arm64/kernel/psci.c | 2 +-
- arch/arm64/kernel/smp.c  | 3 ++-
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ drivers/acpi/acpi_processor.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/kernel/psci.c b/arch/arm64/kernel/psci.c
-index 29a8e444db83..fabd732d0a2d 100644
---- a/arch/arm64/kernel/psci.c
-+++ b/arch/arm64/kernel/psci.c
-@@ -40,7 +40,7 @@ static int cpu_psci_cpu_boot(unsigned int cpu)
+diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
+index 77d47e6c2474..d1d33e74216c 100644
+--- a/drivers/acpi/acpi_processor.c
++++ b/drivers/acpi/acpi_processor.c
+@@ -189,8 +189,10 @@ static int acpi_processor_make_present(struct acpi_processor *pr)
+ 	acpi_status status;
+ 	int ret;
+ 
+-	if (!IS_ENABLED(CONFIG_ACPI_HOTPLUG_CPU))
++	if (!IS_ENABLED(CONFIG_ACPI_HOTPLUG_CPU)) {
++		pr_err_once("Changing CPU present bit is not supported\n");
+ 		return -ENODEV;
++	}
+ 
+ 	if (invalid_phys_cpuid(pr->phys_id))
+ 		return -ENODEV;
+@@ -462,8 +464,10 @@ static void acpi_processor_make_not_present(struct acpi_device *device)
  {
- 	phys_addr_t pa_secondary_entry = __pa_symbol(secondary_entry);
- 	int err = psci_ops.cpu_on(cpu_logical_map(cpu), pa_secondary_entry);
--	if (err)
-+	if (err && err != -EPERM)
- 		pr_err("failed to boot CPU%d (%d)\n", cpu, err);
+ 	struct acpi_processor *pr;
  
- 	return err;
-diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-index 4ced34f62dab..dc0e0b3ec2d4 100644
---- a/arch/arm64/kernel/smp.c
-+++ b/arch/arm64/kernel/smp.c
-@@ -132,7 +132,8 @@ int __cpu_up(unsigned int cpu, struct task_struct *idle)
- 	/* Now bring the CPU into our world */
- 	ret = boot_secondary(cpu, idle);
- 	if (ret) {
--		pr_err("CPU%u: failed to boot: %d\n", cpu, ret);
-+		if (ret != -EPERM)
-+			pr_err("CPU%u: failed to boot: %d\n", cpu, ret);
- 		return ret;
- 	}
+-	if (!IS_ENABLED(CONFIG_ACPI_HOTPLUG_CPU))
++	if (!IS_ENABLED(CONFIG_ACPI_HOTPLUG_CPU)) {
++		pr_err_once("Changing CPU present bit is not supported");
+ 		return;
++	}
  
+ 	pr = acpi_driver_data(device);
+ 	if (pr->id >= nr_cpu_ids)
 -- 
 2.30.2
 
