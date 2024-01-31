@@ -1,195 +1,173 @@
-Received: from smtp4.osuosl.org (smtp4.osuosl.org [140.211.166.137])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75C07154BE4
-	for <acpica-devel@lists.linuxfoundation.org>; Mon, 29 Jan 2024 15:35:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.137
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B8135667
+	for <acpica-devel@lists.linux.dev>; Wed, 31 Jan 2024 02:18:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706542512; cv=none; b=E2c6WFIdBY/K8cENQO+MyXvHPwhmpSloSSXkf8Md7cjXx/59oyRNg+CJ+uraLcXEGW/oyjTwsuMJuKeoin/NlmPAr32nfABDjkOi+nYkHPgjI5/aivtuBxbT8/Nrkdfh3Y1BgLQAXeD2JCEkm9dOow8YsRCJTBrzkXN1lTnGf9k=
+	t=1706667514; cv=none; b=rsR/ZUQogO3Xh0c+xSj79VKl62eKSeufbX2QJajOH7YIT252dVAIcZC19V+7h6AIrK5BhoNSM0yLmcj3n9ofiscMrJScFzzIDi5CzASIxeOe9Hi0bk6d2RVrPzq9hDgvwQ1BbdxcP0FyFgO4CUZg8S+W3wXv9xD5VzTwpmNCTY4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706542512; c=relaxed/simple;
-	bh=oqnGdtTv/k7O49UAKeLaHEMigeXSQOzpobeqbQwsRC0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ssOKd70V8wXouNaD0ss66a4L1cuMdg29Z1GsXH6EG9KgJs0vZTKTz01MBcPi0KZqfoKyI1zg3Ct8/XoKOrPeMhHBHDmlhu6MxmA5VLtW+dgxe6UFII8ZNAZQ+4o3ueLnxIVcWfcUkSBD++T61vEDROM51fXWpYdw1XNa66j6PSs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.137
-Received: from localhost (localhost [127.0.0.1])
-	by smtp4.osuosl.org (Postfix) with ESMTP id DAE8E414D1
-	for <acpica-devel@lists.linuxfoundation.org>; Mon, 29 Jan 2024 15:35:10 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org DAE8E414D1
-X-Virus-Scanned: amavisd-new at osuosl.org
-X-Spam-Flag: NO
-X-Spam-Score: -1.401
-X-Spam-Level:
-Received: from smtp4.osuosl.org ([127.0.0.1])
-	by localhost (smtp4.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id P3sQNvwZZcsF
-	for <acpica-devel@lists.linuxfoundation.org>;
-	Mon, 29 Jan 2024 15:35:09 +0000 (UTC)
-Received: from mail-oa1-f47.google.com (mail-oa1-f47.google.com [209.85.160.47])
-	by smtp4.osuosl.org (Postfix) with ESMTPS id BB814415FC
-	for <acpica-devel@lists.linuxfoundation.org>; Mon, 29 Jan 2024 15:35:09 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org BB814415FC
-Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-2148935ece3so23664fac.1
-        for <acpica-devel@lists.linuxfoundation.org>; Mon, 29 Jan 2024 07:35:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706542508; x=1707147308;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TG+8XeCHdsIlnW4L47AUTukqeea8Ay75J0VzHSz+j7A=;
-        b=IlCrS1pCzRrgR2KHZoMV5xs8zGEcSRCw49upuFKOzcj+dHsOPpKcGC4GxgL9TTL2t6
-         cmJfY4wKrFNQbFH72Z964oS+jxyozLI2DWDex184v7UdbxKRs6e+7K+wWupNP7OVVACy
-         X2kolliYL6HMIcED05AYcpmalstYKk1zH0oMYP6YqYIvF/H0xO03LV0QHlN3Q6Bo2A+2
-         5hvtQkTtE3V63MW9zOc7zrlXMVfE9pRscF5/v1YhE1ZIS7dSSZraAMb38xh61k195XKd
-         fnqR+H5GbKwtaiY8nOfc9yZrKVJjQSk/qVaLSrFvnIqoE1klTMRAMZaLlf65Wn9H0lYM
-         XsgA==
-X-Forwarded-Encrypted: i=0; AJvYcCUlAAFJTnPZzJQKyzxFy+4g75I8Asq/hdOZrOo8gbXAXwVnRHFVjPHYSpC3zlUx5zvKAoWfZBihLqYL4M1MX3ABlueBTCfNyLWMun/4QnAdlmEeHz0ibw==
-X-Gm-Message-State: AOJu0YxM4EW9LeJPqUzBcqhop2PpO30TWL8s5byVRbhOT3VyWHX8xbsn
-	xYakIqkbNH1e7Bwx90Ex1QS8YEXo5Vd7T3UMVl+4pjB3egtXqEiMSQMnDzFoyjGUKtrm7wud8f8
-	29Md9cBkDlg0HjvLOdZZhjg4mVgQ=
-X-Google-Smtp-Source: AGHT+IHhrTU6Vx9l5tJAOVsHqvjFv8owslRWENpfX2JETljBTVS4w/It4UoW1njjPVf/6maja2wtMQZ5MonYr2C+WRA=
-X-Received: by 2002:a05:6870:230d:b0:214:fddf:99f7 with SMTP id
- w13-20020a056870230d00b00214fddf99f7mr7432263oao.5.1706542508620; Mon, 29 Jan
- 2024 07:35:08 -0800 (PST)
+	s=arc-20240116; t=1706667514; c=relaxed/simple;
+	bh=plKPxBQ2jsb/v68hxkyJ/JuBYB+4x5Jxb3q+0BdUhZ0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=XG9HdqN+3FguGU3trE/nmoExnsOxMx8PpZOSaazdv6eUpB+3hx7bQikQEw2mNli+kxsjn0J8QjDxUKBUPsNJilrXvv+mtCeS7UlNtPtQ91P2rAtbFYkpj7AdBKxtDdjmV6U1vmIqZJLENZdn8jw7JZESeQ0gNTihHdBJs03h1dY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IxoCk8df; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IxoCk8df"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706667512; x=1738203512;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=plKPxBQ2jsb/v68hxkyJ/JuBYB+4x5Jxb3q+0BdUhZ0=;
+  b=IxoCk8dfjaUHbY6ZnFfSCYDdFc0d4dxs2Gh46gmLng4d0bCzhbVO5FCO
+   o3itjV5JeM59VRqrytXZyZdkE6Nj/K31EjfL0WfQFT38xnDBAhzoS6Qwq
+   zZCIrbW0xMYbgZXb6pMm7KZEXgtDsCXC9xlapwMKbpl934tEv8rUHv8nc
+   l1HH7xP27krysxEh1MwrtWhC+SQNyiZ17JQnmVLkXZZrSuPZgMOvGi1xc
+   7rwK7lLUIEPIlR3fiyEb8MsxSidP9WNeEeFsHmkhTPAQEbjBMcjfFNUjy
+   HjYEqlHAcCEoaaWqdIUg7nJ8LJ9xoQ7Vp/ZRlY8JN7UC9FC0Tu0sfWFjP
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="24938945"
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="24938945"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 18:18:31 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="907714690"
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="907714690"
+Received: from haibo-optiplex-7090.sh.intel.com ([10.239.159.132])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 18:18:23 -0800
+From: Haibo Xu <haibo1.xu@intel.com>
+To: 
+Cc: xiaobo55x@gmail.com,
+	ajones@ventanamicro.com,
+	sunilvl@ventanamicro.com,
+	Haibo Xu <haibo1.xu@intel.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>,
+	Robert Moore <robert.moore@intel.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Guo Ren <guoren@kernel.org>,
+	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Greentime Hu <greentime.hu@sifive.com>,
+	Anup Patel <apatel@ventanamicro.com>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Jisheng Zhang <jszhang@kernel.org>,
+	=?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
+	Baoquan He <bhe@redhat.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Chen Jiahao <chenjiahao16@huawei.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	James Morse <james.morse@arm.com>,
+	Evan Green <evan@rivosinc.com>,
+	Samuel Holland <samuel.holland@sifive.com>,
+	Yang Li <yang.lee@linux.alibaba.com>,
+	Tony Luck <tony.luck@intel.com>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Yuntao Wang <ytcoode@gmail.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Alison Schofield <alison.schofield@intel.com>,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev
+Subject: [PATCH 0/4] Add ACPI NUMA support for RISC-V
+Date: Wed, 31 Jan 2024 10:31:57 +0800
+Message-Id: <cover.1706603678.git.haibo1.xu@intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk> <ZXxxa+XZjPZtNfJ+@shell.armlinux.org.uk>
- <20231215161539.00000940@Huawei.com> <5760569.DvuYhMxLoT@kreacher>
- <20240102143925.00004361@Huawei.com> <20240111101949.000075dc@Huawei.com>
- <ZZ/CR/6Voec066DR@shell.armlinux.org.uk> <20240112115205.000043b0@Huawei.com>
- <Zbe8WQRASx6D6RaG@shell.armlinux.org.uk> <CAJZ5v0iba93EhQB2k3LMdb2YczndbRmF5WGRYHhnqCHq6TQJ0A@mail.gmail.com>
- <ZbfBYgdLzvEX/VjN@shell.armlinux.org.uk>
-In-Reply-To: <ZbfBYgdLzvEX/VjN@shell.armlinux.org.uk>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Mon, 29 Jan 2024 16:34:57 +0100
-Message-ID: <CAJZ5v0gr3ZmLY9m+rYGP36zQYNH4ohL=zbym4LS3Eq+Qt4nZLA@mail.gmail.com>
-Subject: Re: [PATCH RFC v3 01/21] ACPI: Only enumerate enabled (or functional) devices
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Jonathan Cameron <Jonathan.Cameron@huawei.com>, 
-	"Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org, loongarch@lists.linux.dev, 
-	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev, x86@kernel.org, 
-	acpica-devel@lists.linuxfoundation.org, linux-csky@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, Salil Mehta <salil.mehta@huawei.com>, 
-	Jean-Philippe Brucker <jean-philippe@linaro.org>, jianyong.wu@arm.com, justin.he@arm.com, 
-	James Morse <james.morse@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, Jan 29, 2024 at 4:17=E2=80=AFPM Russell King (Oracle)
-<linux@armlinux.org.uk> wrote:
->
-> On Mon, Jan 29, 2024 at 04:05:42PM +0100, Rafael J. Wysocki wrote:
-> > On Mon, Jan 29, 2024 at 3:55=E2=80=AFPM Russell King (Oracle)
-> > <linux@armlinux.org.uk> wrote:
-> > >
-> > > Hi Jonathan,
-> > >
-> > > On Fri, Jan 12, 2024 at 11:52:05AM +0000, Jonathan Cameron wrote:
-> > > > On Thu, 11 Jan 2024 10:26:15 +0000
-> > > > "Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
-> > > > > @@ -2381,16 +2388,38 @@ EXPORT_SYMBOL_GPL(acpi_dev_clear_dependen=
-cies);
-> > > > >   * acpi_dev_ready_for_enumeration - Check if the ACPI device is =
-ready for enumeration
-> > > > >   * @device: Pointer to the &struct acpi_device to check
-> > > > >   *
-> > > > > - * Check if the device is present and has no unmet dependencies.
-> > > > > + * Check if the device is functional or enabled and has no unmet=
- dependencies.
-> > > > >   *
-> > > > > - * Return true if the device is ready for enumeratino. Otherwise=
-, return false.
-> > > > > + * Return true if the device is ready for enumeration. Otherwise=
-, return false.
-> > > > >   */
-> > > > >  bool acpi_dev_ready_for_enumeration(const struct acpi_device *de=
-vice)
-> > > > >  {
-> > > > >     if (device->flags.honor_deps && device->dep_unmet)
-> > > > >             return false;
-> > > > >
-> > > > > -   return acpi_device_is_present(device);
-> > > > > +   /*
-> > > > > +    * ACPI 6.5's 6.3.7 "_STA (Device Status)" allows firmware to=
- return
-> > > > > +    * (!present && functional) for certain types of devices that=
- should be
-> > > > > +    * enumerated. Note that the enabled bit should not be set un=
-less the
-> > > > > +    * present bit is set.
-> > > > > +    *
-> > > > > +    * However, limit this only to processor devices to reduce po=
-ssible
-> > > > > +    * regressions with firmware.
-> > > > > +    */
-> > > > > +   if (device->status.functional)
-> > > > > +           return true;
-> > >
-> > > I have a report from within Oracle that this causes testing failures
-> > > with QEMU using -smp cpus=3D2,maxcpus=3D4. I think it needs to be:
-> > >
-> > >         if (!device->status.present)
-> > >                 return device->status.functional;
-> > >
-> > >         if (device->status.enabled)
-> > >                 return true;
-> > >
-> > >         return !acpi_device_is_processor(device);
-> >
-> > The above is fine by me.
-> >
-> > > So we can better understand the history here, let's list it as a
-> > > truth table. P=3Dpresent, F=3Dfunctional, E=3Denabled, Orig=3Dhow the=
- code
-> > > is in mainline, James=3DJames' original proposal, Rafael=3Dthe propos=
-ed
-> > > replacement but seems to be buggy, Rmk=3Dthe fixed version that passe=
-s
-> > > tests:
-> > >
-> > > P F E   Orig    James   Rafael          Rmk
-> > > 0 0 0   0       0       0               0
-> > > 0 0 1   0       0       0               0
-> > > 0 1 0   1       1       1               1
-> > > 0 1 1   1       0       1               1
-> > > 1 0 0   1       0       !processor      !processor
-> > > 1 0 1   1       1       1               1
-> > > 1 1 0   1       0       1               !processor
-> > > 1 1 1   1       1       1               1
-> > >
-> > > Any objections to this?
-> >
-> > So AFAIAC it can return false if not enabled, but present and
-> > functional.  [Side note: I'm wondering what "functional" means then,
-> > but whatever.]
->
-> From ACPI v6.5 (bit 3 is our "status.functional":
->
->  _STA may return bit 0 clear (not present) with bit [3] set (device is
->  functional). This case is used to indicate a valid device for which no
->  device driver should be loaded (for example, a bridge device.) Children
->  of this device may be present and valid. OSPM should continue
->  enumeration below a device whose _STA returns this bit combination.
->
-> So, for this case, acpi_dev_ready_for_enumeration() returning true for
-> this case is correct, since we're supposed to enumerate it and child
-> devices.
->
-> It's probably also worth pointing out that in the above table, the two
-> combinations with P=3D0 E=3D1 goes against the spec, but are included for
-> completness.
+This patch series enable RISC-V ACPI NUMA support which was based on
+the recently approved ACPI ECR[1].
 
-The difference between the last two columns is the present and
-functional, but not enabled combination AFAICS, for which my patch
-just returned true, but the firmware disagrees with that.
+Patch 1/4 is generated from the acpica PR[2] and should be merged through
+the acpica project. Due to this dependency, other 3 patches can only be
+merged after the corresponding ACPICA patch was pulled into linux.
 
-It is kind of analogous to the "not present and functional" case
-covered by the spec, which is why it is fine by me to return "false"
-then (for processors), but the spec is not crystal clear about it.
+Patch 2/4 add the common SRAT RINTC affinity structure handler.
+Patch 3/4 add RISC-V specific acpi_numa.c file to parse NUMA information
+from SRAT and SLIT ACPI tables.
+Patch 4/4 add corresponding ACPI_NUMA config for RISC-V Kconfig. 
+
+Based-on: https://github.com/linux-riscv/linux-riscv/tree/for-next
+
+[1] https://mantis.uefi.org/mantis/view.php?id=2433
+[2] https://github.com/acpica/acpica/pull/926
+
+Testing:
+Since the ACPI AIA/PLIC support patch set is still under upstream review,
+hence it is tested using the poll based HVC SBI console and RAM disk.
+1) Build latest Qemu with the following patch backported
+   https://lore.kernel.org/all/20240129094200.3581037-1-haibo1.xu@intel.com/
+   https://github.com/vlsunil/qemu/commit/42bd4eeefd5d4410a68f02d54fee406d8a1269b0
+
+2) Build latest EDK-II
+   https://github.com/tianocore/edk2/blob/master/OvmfPkg/RiscVVirt/README.md
+
+3) Build Linux with the following configs enabled
+   CONFIG_RISCV_SBI_V01=y
+   CONFIG_SERIAL_EARLYCON_RISCV_SBI=y
+   CONFIG_HVC_RISCV_SBI=y
+
+4) Build buildroot rootfs.cpio
+
+5) Launch the Qemu machine
+   qemu-system-riscv64 -nographic \
+   -machine virt,pflash0=pflash0,pflash1=pflash1 -smp 4 -m 8G \
+   -blockdev node-name=pflash0,driver=file,read-only=on,filename=RISCV_VIRT_CODE.fd \
+   -blockdev node-name=pflash1,driver=file,filename=RISCV_VIRT_VARS.fd \
+   -object memory-backend-ram,size=4G,id=m0 \
+   -object memory-backend-ram,size=4G,id=m1 \
+   -numa node,memdev=m0,cpus=0-1,nodeid=0 \
+   -numa node,memdev=m1,cpus=2-3,nodeid=1 \
+   -numa dist,src=0,dst=1,val=30 \
+   -kernel linux/arch/riscv/boot/Image \
+   -initrd buildroot/output/images/rootfs.cpio \
+   -append "root=/dev/ram ro console=hvc0 earlycon=sbi"
+
+[    0.000000] ACPI: SRAT: Node 0 PXM 0 [mem 0x80000000-0x17fffffff]
+[    0.000000] ACPI: SRAT: Node 1 PXM 1 [mem 0x180000000-0x27fffffff]
+[    0.000000] NUMA: NODE_DATA [mem 0x17fe3bc40-0x17fe3cfff]
+[    0.000000] NUMA: NODE_DATA [mem 0x27fff4c40-0x27fff5fff]
+...
+[    0.000000] ACPI: NUMA: SRAT: PXM 0 -> HARTID 0x0 -> Node 0
+[    0.000000] ACPI: NUMA: SRAT: PXM 0 -> HARTID 0x1 -> Node 0
+[    0.000000] ACPI: NUMA: SRAT: PXM 1 -> HARTID 0x2 -> Node 1
+[    0.000000] ACPI: NUMA: SRAT: PXM 1 -> HARTID 0x3 -> Node 1
+
+Haibo Xu (4):
+  ACPICA: SRAT: Add RISC-V RINTC affinity structure
+  ACPI: NUMA: Add handler for SRAT RINTC affinity structure
+  ACPI: RISCV: Add NUMA support based on SRAT and SLIT
+  ACPI: RISCV: Enable ACPI based NUMA
+
+ arch/riscv/Kconfig            |   1 +
+ arch/riscv/include/asm/acpi.h |  15 +++-
+ arch/riscv/kernel/Makefile    |   1 +
+ arch/riscv/kernel/acpi.c      |   5 --
+ arch/riscv/kernel/acpi_numa.c | 133 ++++++++++++++++++++++++++++++++++
+ arch/riscv/kernel/setup.c     |   4 +-
+ arch/riscv/kernel/smpboot.c   |   2 -
+ drivers/acpi/numa/Kconfig     |   2 +-
+ drivers/acpi/numa/srat.c      |  35 ++++++++-
+ include/acpi/actbl3.h         |  18 ++++-
+ include/linux/acpi.h          |   7 ++
+ 11 files changed, 209 insertions(+), 14 deletions(-)
+ create mode 100644 arch/riscv/kernel/acpi_numa.c
+
+-- 
+2.34.1
+
