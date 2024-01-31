@@ -1,59 +1,59 @@
 Received: from smtp1.osuosl.org (smtp1.osuosl.org [140.211.166.138])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F00A18E03
-	for <acpica-devel@lists.linuxfoundation.org>; Wed, 31 Jan 2024 17:00:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47D1218E03
+	for <acpica-devel@lists.linuxfoundation.org>; Wed, 31 Jan 2024 17:00:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.138
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706720451; cv=none; b=CFKFHpkGnV9K060e8TNy5SGjTGWU15QMkyR92vgFajXigXh6N+5I4IP2YzG/AyFNtA0uG0xgc1byJ2W0xVeUJeZ5QRUl2qiYRb2djXYfXIiI5Vhju/eXLLf2HDOmGsSJiH7jym4BNk/4+Ay7NobKvFERX46ZgNpqb1P23GpgU4w=
+	t=1706720453; cv=none; b=aVRboxiHizaiDjNiikbn2/nFI6FvQHqBFRF8cTubHmaOyr131ioUBOayob5hGUA0oywpcL1RlbZ8rFhjdIkciyWCw+P8jAIRY4yKaSpnJzJkVgMjoIyPt41oyYix5SKanCjU++kJSCskXBRWqQP3RS6AOLBKC/UvNqGQYz8T1jM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706720451; c=relaxed/simple;
-	bh=LTKcInkLZgpAbNkbK0w8drlT6huu9tuFRYheHBlt1Jc=;
+	s=arc-20240116; t=1706720453; c=relaxed/simple;
+	bh=KMF9eAGOkqi5sf2htsxoVtMvkUncKmjULA9ffc9z/Sw=;
 	h=In-Reply-To:References:From:To:Cc:Subject:MIME-Version:
-	 Content-Disposition:Content-Type:Message-Id:Date; b=pzrmUMPz6aMep6ELj0Eq5z+lAowqHQ9O8SmCjHgP8tYQwjRHFoY40QGN5UQliIaLNLk0EctBcNwdgEwVFD89vZvzJ4Ce5FRVzuhXlK8A9xJY/cK8AsPt2Kx8uWLPD3WK5Q85hP9pDV4goO6ybN3u7LZmgB6MTeMbju5mSNbc3PM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=e402SKqu; arc=none smtp.client-ip=140.211.166.138
+	 Content-Disposition:Content-Type:Message-Id:Date; b=BXvlkNepzeOC1hHNAJyXeJ0JbVK62tdD6N7po8dz0PyRe0oAxJLwa4KeGHeEqTLJoh1sAPbAOk8JAkZp3lM2EI/VHtm4ahRI1SYrXqT90MTq+V6/s4SuvK2OL+u7kpJRMNCIJ4B1SAZrOeYtReMS7tlo0ri6TtdFstA29+o03EI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=Vfg3ZyYu; arc=none smtp.client-ip=140.211.166.138
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="e402SKqu"
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="Vfg3ZyYu"
 Received: from localhost (localhost [127.0.0.1])
-	by smtp1.osuosl.org (Postfix) with ESMTP id 1D72783E1E
+	by smtp1.osuosl.org (Postfix) with ESMTP id E2D1683E5D
 	for <acpica-devel@lists.linuxfoundation.org>; Wed, 31 Jan 2024 17:00:50 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 1D72783E1E
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org E2D1683E5D
 Authentication-Results: smtp1.osuosl.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.a=rsa-sha256 header.s=pandora-2019 header.b=e402SKqu
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.a=rsa-sha256 header.s=pandora-2019 header.b=Vfg3ZyYu
 X-Virus-Scanned: amavisd-new at osuosl.org
 X-Spam-Flag: NO
 X-Spam-Score: -2.098
 X-Spam-Level:
 Received: from smtp1.osuosl.org ([127.0.0.1])
 	by localhost (smtp1.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id mdOO92EcG4Jw
+	with ESMTP id 4jO7kquPOo-C
 	for <acpica-devel@lists.linuxfoundation.org>;
-	Wed, 31 Jan 2024 17:00:49 +0000 (UTC)
+	Wed, 31 Jan 2024 17:00:50 +0000 (UTC)
 Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-	by smtp1.osuosl.org (Postfix) with ESMTPS id 5A2F983DEC
-	for <acpica-devel@lists.linuxfoundation.org>; Wed, 31 Jan 2024 17:00:49 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 5A2F983DEC
+	by smtp1.osuosl.org (Postfix) with ESMTPS id 1666183E52
+	for <acpica-devel@lists.linuxfoundation.org>; Wed, 31 Jan 2024 17:00:50 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 1666183E52
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=armlinux.org.uk; s=pandora-2019; h=Date:Sender:Message-Id:Content-Type:
 	Content-Transfer-Encoding:MIME-Version:Subject:Cc:To:From:References:
 	In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
 	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=mdSd4VjdwbsxcclalIflVyksZpCV5Xk/AHrd3gBtdjo=; b=e402SKqul6WttNElDpt+AMqLqX
-	x5jFKIDt16+QHzeRcqYmGOGubS8UMfgDN8bqP8nRmaTrvxRputq4yO6pL5OHcCuSqCXnfdOrjY3HL
-	rcFLlXSeAg091rFK4UF8JARMuJ9OJtXC1A900zRsHvmECXurcRfn5kFqlEG+gvWDEIdcvmLm6bxjb
-	4bKtCvb/89L8ei0lw2/3mQj1ZaTuf62+Hsakf63GllIIY5xxoC28hjayNYOZ/Ay5wPHUrOrElC9JE
-	agxW5DNqjrp0Fhvwl+8QXDUKNJiDOEC34v0aY4QKF6yMEXRzTzpzOQCd4jTFjspgERReOcVa20Mb/
-	bsPodYFQ==;
-Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:35774 helo=rmk-PC.armlinux.org.uk)
+	bh=GTt+zTRDJEWcpx9Xy5W4TT50pzwG/YUzwyuwhrcyZOM=; b=Vfg3ZyYuaYmNOkoqPCz1o+2zX1
+	CHnbf95wXJ8iNQiPXvhkhc71pS2lEmL0BjG7UDAkKM1AmeyI7Hw99+IZwxMqV5xfG1dQOVWjNSrxK
+	nI3mFn7sO8gfuf0xTZKKwsKxmf2IzsZb34MG2VsL+7+xdTfxL6cE2U68ZrM3R26CuzvWpwCvBd1t4
+	4Llyd4+LA4apOlJDyKGd1H/tl8vBYcuWS08mc9fxhgh51HY0tUVfcCaZaue37+yhtiShI5us6dzOo
+	5eYvo3a6Z1EG6k7xWrBQKjDSZHMvLwt1uMzkpqvdjlF4ZhHXWeNk5U3HIqxksMV1sDVaOFFu97D/L
+	iESmz7Pw==;
+Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:35968 helo=rmk-PC.armlinux.org.uk)
 	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <rmk@armlinux.org.uk>)
-	id 1rVDn3-0003V0-2w;
-	Wed, 31 Jan 2024 16:50:22 +0000
+	id 1rVDmg-0003U8-0E;
+	Wed, 31 Jan 2024 16:49:58 +0000
 Received: from rmk by rmk-PC.armlinux.org.uk with local (Exim 4.94.2)
 	(envelope-from <rmk@rmk-PC.armlinux.org.uk>)
-	id 1rVDmz-0027Yz-GE; Wed, 31 Jan 2024 16:50:17 +0000
+	id 1rVDme-0027Yb-Sj; Wed, 31 Jan 2024 16:49:56 +0000
 In-Reply-To: <Zbp5xzmFhKDAgHws@shell.armlinux.org.uk>
 References: <Zbp5xzmFhKDAgHws@shell.armlinux.org.uk>
 From: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
@@ -78,8 +78,8 @@ Cc: Salil Mehta <salil.mehta@huawei.com>,
 	 James Morse <james.morse@arm.com>,
 	 Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
 	 "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: [PATCH RFC v4 08/15] ACPI: Warn when the present bit changes but the
- feature is not enabled
+Subject: [PATCH RFC v4 04/15] ACPI: Rename acpi_processor_hotadd_init and
+ remove pre-processor guards
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -89,63 +89,100 @@ MIME-Version: 1.0
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset="utf-8"
-Message-Id: <E1rVDmz-0027Yz-GE@rmk-PC.armlinux.org.uk>
+Message-Id: <E1rVDme-0027Yb-Sj@rmk-PC.armlinux.org.uk>
 Sender: Russell King <rmk@armlinux.org.uk>
-Date: Wed, 31 Jan 2024 16:50:17 +0000
+Date: Wed, 31 Jan 2024 16:49:56 +0000
 
 From: James Morse <james.morse@arm.com>
 
-ACPI firmware can trigger the events to add and remove CPUs, but the
-OS may not support this.
+acpi_processor_hotadd_init() will make a CPU present by mapping it
+based on its hardware id.
 
-Print an error message when this happens.
+'hotadd_init' is ambiguous once there are two different behaviours
+for cpu hotplug. This is for toggling the _STA present bit. Subsequent
+patches will add support for toggling the _STA enabled bit, named
+acpi_processor_make_enabled().
 
-This gives early warning on arm64 systems that don't support
-CONFIG_ACPI_HOTPLUG_PRESENT_CPU, as making CPUs not present has
-side effects for other parts of the system.
+Rename it acpi_processor_make_present() to make it clear this is
+for CPUs that were not previously present.
+
+Expose the function prototypes it uses to allow the preprocessor
+guards to be removed. The IS_ENABLED() check will let the compiler
+dead-code elimination pass remove this if it isn't going to be
+used.
 
 Signed-off-by: James Morse <james.morse@arm.com>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Gavin Shan <gshan@redhat.com>
 Tested-by: Miguel Luis <miguel.luis@oracle.com>
 Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
 Tested-by: Jianyong Wu <jianyong.wu@arm.com>
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 ---
-Changes since RFC v2:
- * Update commit message with suggestion from Gavin Shan
----
- drivers/acpi/acpi_processor.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/acpi/acpi_processor.c | 14 +++++---------
+ include/linux/acpi.h          |  2 --
+ 2 files changed, 5 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
-index 77d47e6c2474..d1d33e74216c 100644
+index a68c475cdea5..fd8f3a0572cb 100644
 --- a/drivers/acpi/acpi_processor.c
 +++ b/drivers/acpi/acpi_processor.c
-@@ -189,8 +189,10 @@ static int acpi_processor_make_present(struct acpi_processor *pr)
+@@ -183,13 +183,15 @@ static void __init acpi_pcc_cpufreq_init(void) {}
+ #endif /* CONFIG_X86 */
+ 
+ /* Initialization */
+-#ifdef CONFIG_ACPI_HOTPLUG_CPU
+-static int acpi_processor_hotadd_init(struct acpi_processor *pr)
++static int acpi_processor_make_present(struct acpi_processor *pr)
+ {
+ 	unsigned long long sta;
  	acpi_status status;
  	int ret;
  
--	if (!IS_ENABLED(CONFIG_ACPI_HOTPLUG_CPU))
-+	if (!IS_ENABLED(CONFIG_ACPI_HOTPLUG_CPU)) {
-+		pr_err_once("Changing CPU present bit is not supported\n");
- 		return -ENODEV;
-+	}
- 
++	if (!IS_ENABLED(CONFIG_ACPI_HOTPLUG_CPU))
++		return -ENODEV;
++
  	if (invalid_phys_cpuid(pr->phys_id))
  		return -ENODEV;
-@@ -462,8 +464,10 @@ static void acpi_processor_make_not_present(struct acpi_device *device)
+ 
+@@ -223,12 +225,6 @@ static int acpi_processor_hotadd_init(struct acpi_processor *pr)
+ 	cpu_maps_update_done();
+ 	return ret;
+ }
+-#else
+-static inline int acpi_processor_hotadd_init(struct acpi_processor *pr)
+-{
+-	return -ENODEV;
+-}
+-#endif /* CONFIG_ACPI_HOTPLUG_CPU */
+ 
+ static int acpi_processor_get_info(struct acpi_device *device)
  {
- 	struct acpi_processor *pr;
+@@ -335,7 +331,7 @@ static int acpi_processor_get_info(struct acpi_device *device)
+ 	 *  because cpuid <-> apicid mapping is persistent now.
+ 	 */
+ 	if (invalid_logical_cpuid(pr->id) || !cpu_present(pr->id)) {
+-		int ret = acpi_processor_hotadd_init(pr);
++		int ret = acpi_processor_make_present(pr);
  
--	if (!IS_ENABLED(CONFIG_ACPI_HOTPLUG_CPU))
-+	if (!IS_ENABLED(CONFIG_ACPI_HOTPLUG_CPU)) {
-+		pr_err_once("Changing CPU present bit is not supported");
- 		return;
-+	}
+ 		if (ret)
+ 			return ret;
+diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+index b7165e52b3c6..76ad43f7860b 100644
+--- a/include/linux/acpi.h
++++ b/include/linux/acpi.h
+@@ -302,12 +302,10 @@ static inline int acpi_processor_evaluate_cst(acpi_handle handle, u32 cpu,
+ }
+ #endif
  
- 	pr = acpi_driver_data(device);
- 	if (pr->id >= nr_cpu_ids)
+-#ifdef CONFIG_ACPI_HOTPLUG_CPU
+ /* Arch dependent functions for cpu hotplug support */
+ int acpi_map_cpu(acpi_handle handle, phys_cpuid_t physid, u32 acpi_id,
+ 		 int *pcpu);
+ int acpi_unmap_cpu(int cpu);
+-#endif /* CONFIG_ACPI_HOTPLUG_CPU */
+ 
+ #ifdef CONFIG_ACPI_HOTPLUG_IOAPIC
+ int acpi_get_ioapic_id(acpi_handle handle, u32 gsi_base, u64 *phys_addr);
 -- 
 2.30.2
 
