@@ -1,59 +1,59 @@
-Received: from smtp1.osuosl.org (smtp1.osuosl.org [140.211.166.138])
+Received: from smtp4.osuosl.org (smtp4.osuosl.org [140.211.166.137])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF34412A141
-	for <acpica-devel@lists.linuxfoundation.org>; Wed, 31 Jan 2024 16:56:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.138
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CBB512A141
+	for <acpica-devel@lists.linuxfoundation.org>; Wed, 31 Jan 2024 16:56:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.137
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706720203; cv=none; b=NKqiuNGWvB6SPfkpN+E6W2xoGn0uEqRJXJHgXucjhtT5B0QxGU40qgqWp87wz98A6ssrKMrBDR9n4JAWmV64AIHtfNjTdMN1VX1Vm4HqdqV8cxFb0WFhvxpSUu1xUDP5ks1MmZhdDA0jPop/2rUruQF27f7iQCdc2pFLXKprVHo=
+	t=1706720205; cv=none; b=WB1Ayt6nEBoP+sFe98IFVURg/Ofm/kIE5xEdrTYh1O5jIAN9JZz3GT5k8p5n3EM8/pj4g7K2GXWgjAL5VklffRzxLQ5Nez6w0QXxhqZcYQ+KvocHmFmXu0snwozm17/3cOvOfXlbg2VxMQsFsqvYgLCC6MZhxlcs7akkwJ49ZSw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706720203; c=relaxed/simple;
-	bh=N3yfAwrXdbWnKEC7JEi6UMvlnhfTRzUgbGyHCjTjkv4=;
+	s=arc-20240116; t=1706720205; c=relaxed/simple;
+	bh=ZP11D8P/7O7D2C8VzXiubQDQkRY9I6FYqn0sWuW98rk=;
 	h=In-Reply-To:References:From:To:Cc:Subject:MIME-Version:
-	 Content-Disposition:Content-Type:Message-Id:Date; b=LNY+T3MKTNpuz6D3B9Zy37wV8vDrBp8ko5ShsvwLMlkrHp1c2ZZKA0CBKTyE2do/qTYzG95GzkROK9aE88/UzKWeNPsDvFRS3I0De8kJ+15QveOEA03VROaoKonzKZ8qbMdjNokCC26XqJY3uSmDau/qDKz3KgfiaOa3l/WAEZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=WST9ZT4I; arc=none smtp.client-ip=140.211.166.138
+	 Content-Disposition:Content-Type:Message-Id:Date; b=MmL1jIWuCE0fpW/ynG7Cwn3M7JLumLDHWc/duFT0KKhV9oElFTqaD4H1kda4kxUVl8RnWPdDYNnnxnob4jECgn7RkAedOnizDkLWobe8fTFyEbafe17z2n/sZa+DtCcLtVcyg+bYT0bFU4KmcqFu4Zep2JtN3XOFEcYhkS+iXIk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=ZoeUO890; arc=none smtp.client-ip=140.211.166.137
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="WST9ZT4I"
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="ZoeUO890"
 Received: from localhost (localhost [127.0.0.1])
-	by smtp1.osuosl.org (Postfix) with ESMTP id 476B883FC6
-	for <acpica-devel@lists.linuxfoundation.org>; Wed, 31 Jan 2024 16:56:39 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 476B883FC6
-Authentication-Results: smtp1.osuosl.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.a=rsa-sha256 header.s=pandora-2019 header.b=WST9ZT4I
+	by smtp4.osuosl.org (Postfix) with ESMTP id 9474141F10
+	for <acpica-devel@lists.linuxfoundation.org>; Wed, 31 Jan 2024 16:56:43 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 9474141F10
+Authentication-Results: smtp4.osuosl.org;
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.a=rsa-sha256 header.s=pandora-2019 header.b=ZoeUO890
 X-Virus-Scanned: amavisd-new at osuosl.org
 X-Spam-Flag: NO
 X-Spam-Score: -2.098
 X-Spam-Level:
-Received: from smtp1.osuosl.org ([127.0.0.1])
-	by localhost (smtp1.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id Zp_1jou39SP4
+Received: from smtp4.osuosl.org ([127.0.0.1])
+	by localhost (smtp4.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id bjozyK-qzKRM
 	for <acpica-devel@lists.linuxfoundation.org>;
-	Wed, 31 Jan 2024 16:56:38 +0000 (UTC)
+	Wed, 31 Jan 2024 16:56:42 +0000 (UTC)
 Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-	by smtp1.osuosl.org (Postfix) with ESMTPS id 22D4983FF0
-	for <acpica-devel@lists.linuxfoundation.org>; Wed, 31 Jan 2024 16:56:38 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 22D4983FF0
+	by smtp4.osuosl.org (Postfix) with ESMTPS id 8B23141F0D
+	for <acpica-devel@lists.linuxfoundation.org>; Wed, 31 Jan 2024 16:56:42 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 8B23141F0D
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=armlinux.org.uk; s=pandora-2019; h=Date:Sender:Message-Id:Content-Type:
 	Content-Transfer-Encoding:MIME-Version:Subject:Cc:To:From:References:
 	In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
 	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=HIKiEqJHlqAoHSTcyc1lunHTLLDGXtjVEHntkNIvOuo=; b=WST9ZT4I7jP51/eX2oNrvtrRHV
-	wU6QZFWeTQWW8sPeBCnuCuNC1AnDk7b9q70y/GrgnFJos9VC9y6U1i7FtUW43bUhkdevBQD3B4Oie
-	7+6onvsDFYPKmy3QA5Uxe6yNaNImJZhWZ74ovvo66fwxQGkwI7CUIa3DkIZZTR2B/lXKDC4MXuoAR
-	5XX9H7a4N8e5EFal5Z6bSGeGTU4LuoT+3WKxZkFeaWDgHuevPlNkEu2OcfBLzMTn2NoDZnOwEi3Z0
-	T9LEIjgG6QCSpsXhBR50vItfTtkNirOlL3gP99WuwKkfDU5fYW9lUsm4O+ZrTPKr5OMl5pdu+bEaC
-	XdNmy2SA==;
-Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:33600 helo=rmk-PC.armlinux.org.uk)
+	bh=/T3kjNeWvzXmlVnxkBE8aEZDeW8R1tHMrqvuxLBRlmM=; b=ZoeUO8903Gktf6St0tQFCkWzlo
+	MznV4trPHKx08E6cz/qahICue6k8edh/dET1kA1i1P6luIjLkKE2djlh0ZVUEaoDPpUgD2Y7f4K/o
+	EUCHO8r8YAl1TnLbfAP9AiduskbovwPAfJ3WN7K6jLcuW9Q8BLwzW0030d0qDlirRQad2yl/5kdKD
+	2Zf/wrzQq+buDwu2ZIfrD7VbSPkihHFhSjQaJ9SMDPC9FKJqBVFcT8kOUy9+nGKo4tIbFab0wrfJM
+	6ubbreyEPvnYX8mFSgm6R6NNhXGyBJHclWSWL0FI9cNAH2wKzwo+t82M+l8FjIeFFEkbltZ8toKzb
+	bjbEUVSQ==;
+Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:35954 helo=rmk-PC.armlinux.org.uk)
 	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <rmk@armlinux.org.uk>)
-	id 1rVDnW-0003Wh-1L;
-	Wed, 31 Jan 2024 16:50:50 +0000
+	id 1rVDma-0003Tt-31;
+	Wed, 31 Jan 2024 16:49:52 +0000
 Received: from rmk by rmk-PC.armlinux.org.uk with local (Exim 4.94.2)
 	(envelope-from <rmk@rmk-PC.armlinux.org.uk>)
-	id 1rVDnU-0027Zf-GF; Wed, 31 Jan 2024 16:50:48 +0000
+	id 1rVDmZ-0027YV-OU; Wed, 31 Jan 2024 16:49:51 +0000
 In-Reply-To: <Zbp5xzmFhKDAgHws@shell.armlinux.org.uk>
 References: <Zbp5xzmFhKDAgHws@shell.armlinux.org.uk>
 From: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
@@ -78,8 +78,8 @@ Cc: Salil Mehta <salil.mehta@huawei.com>,
 	 James Morse <james.morse@arm.com>,
 	 Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
 	 "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: [PATCH RFC v4 14/15] arm64: document virtual CPU hotplug's
- expectations
+Subject: [PATCH RFC v4 03/15] ACPI: Move acpi_bus_trim_one() before
+ acpi_scan_hot_remove()
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -89,126 +89,124 @@ MIME-Version: 1.0
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset="utf-8"
-Message-Id: <E1rVDnU-0027Zf-GF@rmk-PC.armlinux.org.uk>
+Message-Id: <E1rVDmZ-0027YV-OU@rmk-PC.armlinux.org.uk>
 Sender: Russell King <rmk@armlinux.org.uk>
-Date: Wed, 31 Jan 2024 16:50:48 +0000
+Date: Wed, 31 Jan 2024 16:49:51 +0000
 
 From: James Morse <james.morse@arm.com>
 
-Add a description of physical and virtual CPU hotplug, explain the
-differences and elaborate on what is required in ACPI for a working
-virtual hotplug system.
+A subsequent patch will change acpi_scan_hot_remove() to call
+acpi_bus_trim_one() instead of acpi_bus_trim(), meaning it can no longer
+rely on the prototype in the header file.
+
+Move these functions further up the file.
+No change in behaviour.
 
 Signed-off-by: James Morse <james.morse@arm.com>
 Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Gavin Shan <gshan@redhat.com>
+Tested-by: Miguel Luis <miguel.luis@oracle.com>
+Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
+Tested-by: Jianyong Wu <jianyong.wu@arm.com>
 Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 ---
-Outstanding comment:
- https://lore.kernel.org/r/20230914174137.00000a62@Huawei.com
- https://lore.kernel.org/r/20231215170428.00000d81@Huawei.com
----
- Documentation/arch/arm64/cpu-hotplug.rst | 79 ++++++++++++++++++++++++
- Documentation/arch/arm64/index.rst       |  1 +
- 2 files changed, 80 insertions(+)
- create mode 100644 Documentation/arch/arm64/cpu-hotplug.rst
+ drivers/acpi/scan.c | 76 ++++++++++++++++++++++-----------------------
+ 1 file changed, 38 insertions(+), 38 deletions(-)
 
-diff --git a/Documentation/arch/arm64/cpu-hotplug.rst b/Documentation/arch/arm64/cpu-hotplug.rst
-new file mode 100644
-index 000000000000..76ba8d932c72
---- /dev/null
-+++ b/Documentation/arch/arm64/cpu-hotplug.rst
-@@ -0,0 +1,79 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+.. _cpuhp_index:
+diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+index fd2e8b3a5749..2c8ba4526278 100644
+--- a/drivers/acpi/scan.c
++++ b/drivers/acpi/scan.c
+@@ -244,6 +244,44 @@ static int acpi_scan_try_to_offline(struct acpi_device *device)
+ 	return 0;
+ }
+ 
++static int acpi_bus_trim_one(struct acpi_device *adev, void *not_used)
++{
++	struct acpi_scan_handler *handler = adev->handler;
 +
-+====================
-+CPU Hotplug and ACPI
-+====================
++	acpi_dev_for_each_child_reverse(adev, acpi_bus_trim_one, NULL);
 +
-+CPU hotplug in the arm64 world is commonly used to describe the kernel taking
-+CPUs online/offline using PSCI. This document is about ACPI firmware allowing
-+CPUs that were not available during boot to be added to the system later.
++	adev->flags.match_driver = false;
++	if (handler) {
++		if (handler->detach)
++			handler->detach(adev);
 +
-+``possible`` and ``present`` refer to the state of the CPU as seen by linux.
++		adev->handler = NULL;
++	} else {
++		device_release_driver(&adev->dev);
++	}
++	/*
++	 * Most likely, the device is going away, so put it into D3cold before
++	 * that.
++	 */
++	acpi_device_set_power(adev, ACPI_STATE_D3_COLD);
++	adev->flags.initialized = false;
++	acpi_device_clear_enumerated(adev);
 +
++	return 0;
++}
 +
-+CPU Hotplug on physical systems - CPUs not present at boot
-+----------------------------------------------------------
++/**
++ * acpi_bus_trim - Detach scan handlers and drivers from ACPI device objects.
++ * @adev: Root of the ACPI namespace scope to walk.
++ *
++ * Must be called under acpi_scan_lock.
++ */
++void acpi_bus_trim(struct acpi_device *adev)
++{
++	acpi_bus_trim_one(adev, NULL);
++}
++EXPORT_SYMBOL_GPL(acpi_bus_trim);
 +
-+Physical systems need to mark a CPU that is ``possible`` but not ``present`` as
-+being ``present``. An example would be a dual socket machine, where the package
-+in one of the sockets can be replaced while the system is running.
-+
-+This is not supported.
-+
-+In the arm64 world CPUs are not a single device but a slice of the system.
-+There are no systems that support the physical addition (or removal) of CPUs
-+while the system is running, and ACPI is not able to sufficiently describe
-+them.
-+
-+e.g. New CPUs come with new caches, but the platform's cache toplogy is
-+described in a static table, the PPTT. How caches are shared between CPUs is
-+not discoverable, and must be described by firmware.
-+
-+e.g. The GIC redistributor for each CPU must be accessed by the driver during
-+boot to discover the system wide supported features. ACPI's MADT GICC
-+structures can describe a redistributor associated with a disabled CPU, but
-+can't describe whether the redistributor is accessible, only that it is not
-+'always on'.
-+
-+arm64's ACPI tables assume that everything described is ``present``.
-+
-+
-+CPU Hotplug on virtual systems - CPUs not enabled at boot
-+---------------------------------------------------------
-+
-+Virtual systems have the advantage that all the properties the system will
-+ever have can be described at boot. There are no power-domain considerations
-+as such devices are emulated.
-+
-+CPU Hotplug on virtual systems is supported. It is distinct from physical
-+CPU Hotplug as all resources are described as ``present``, but CPUs may be
-+marked as disabled by firmware. Only the CPU's online/offline behaviour is
-+influenced by firmware. An example is where a virtual machine boots with a
-+single CPU, and additional CPUs are added once a cloud orchestrator deploys
-+the workload.
-+
-+For a virtual machine, the VMM (e.g. Qemu) plays the part of firmware.
-+
-+Virtual hotplug is implemented as a firmware policy affecting which CPUs can be
-+brought online. Firmware can enforce its policy via PSCI's return codes. e.g.
-+``DENIED``.
-+
-+The ACPI tables must describe all the resources of the virtual machine. CPUs
-+that firmware wishes to disable either from boot (or later) should not be
-+``enabled`` in the MADT GICC structures, but should have the ``online capable``
-+bit set, to indicate they can be enabled later. The boot CPU must be marked as
-+``enabled``.  The 'always on' GICR structure must be used to describe the
-+redistributors.
-+
-+CPUs described as ``online capable`` but not ``enabled`` can be set to enabled
-+by the DSDT's Processor object's _STA method. On virtual systems the _STA method
-+must always report the CPU as ``present``. Changes to the firmware policy can
-+be notified to the OS via device-check or eject-request.
-+
-+CPUs described as ``enabled`` in the static table, should not have their _STA
-+modified dynamically by firmware. Soft-restart features such as kexec will
-+re-read the static properties of the system from these static tables, and
-+may malfunction if these no longer describe the running system. Linux will
-+re-discover the dynamic properties of the system from the _STA method later
-+during boot.
-diff --git a/Documentation/arch/arm64/index.rst b/Documentation/arch/arm64/index.rst
-index d08e924204bf..78544de0a8a9 100644
---- a/Documentation/arch/arm64/index.rst
-+++ b/Documentation/arch/arm64/index.rst
-@@ -13,6 +13,7 @@ ARM64 Architecture
-     asymmetric-32bit
-     booting
-     cpu-feature-registers
-+    cpu-hotplug
-     elf_hwcaps
-     hugetlbpage
-     kdump
+ static int acpi_scan_hot_remove(struct acpi_device *device)
+ {
+ 	acpi_handle handle = device->handle;
+@@ -2576,44 +2614,6 @@ int acpi_bus_scan(acpi_handle handle)
+ }
+ EXPORT_SYMBOL(acpi_bus_scan);
+ 
+-static int acpi_bus_trim_one(struct acpi_device *adev, void *not_used)
+-{
+-	struct acpi_scan_handler *handler = adev->handler;
+-
+-	acpi_dev_for_each_child_reverse(adev, acpi_bus_trim_one, NULL);
+-
+-	adev->flags.match_driver = false;
+-	if (handler) {
+-		if (handler->detach)
+-			handler->detach(adev);
+-
+-		adev->handler = NULL;
+-	} else {
+-		device_release_driver(&adev->dev);
+-	}
+-	/*
+-	 * Most likely, the device is going away, so put it into D3cold before
+-	 * that.
+-	 */
+-	acpi_device_set_power(adev, ACPI_STATE_D3_COLD);
+-	adev->flags.initialized = false;
+-	acpi_device_clear_enumerated(adev);
+-
+-	return 0;
+-}
+-
+-/**
+- * acpi_bus_trim - Detach scan handlers and drivers from ACPI device objects.
+- * @adev: Root of the ACPI namespace scope to walk.
+- *
+- * Must be called under acpi_scan_lock.
+- */
+-void acpi_bus_trim(struct acpi_device *adev)
+-{
+-	acpi_bus_trim_one(adev, NULL);
+-}
+-EXPORT_SYMBOL_GPL(acpi_bus_trim);
+-
+ int acpi_bus_register_early_device(int type)
+ {
+ 	struct acpi_device *device = NULL;
 -- 
 2.30.2
 
