@@ -1,207 +1,140 @@
-Received: from smtp3.osuosl.org (smtp3.osuosl.org [140.211.166.136])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0CE814AD13
-	for <acpica-devel@lists.linuxfoundation.org>; Fri,  2 Feb 2024 17:04:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FB815BAFE
+	for <acpica-devel@lists.linux.dev>; Sun, 11 Feb 2024 15:36:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706893465; cv=none; b=J4FDVydquZ8QuOgbhErPyPBvXQPRwwA/I2J6HWGQfyZZQ6T1bktG6gkf/rrtbEn0pnwm2DdYOR8U+LR9UjGSAAz0pV5aYnOb1GAf9uJXvfyZM02jAd3LMqxGjFg7KhE9ZACw81d4AfhGCYmrAwmLgiT22xijcBEiNaeksoPgzjU=
+	t=1707665806; cv=none; b=CWmroXet7kV26b0NgHG5KPbNDxpZbJKQmyexglr31CLkEeuOvNiDgtdaEmOQgqWEuic2FB+9ik3+fAg8l2alD3dAEJe/GZOmP3jPfcTc6yygMDlcIMjn/25iWryPwe0lYR4Pk1ImQcIfD+PEeFjrFKvwHZoDiQGDMJHEi6b2ScQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706893465; c=relaxed/simple;
-	bh=+6PX3jMjQrHTOGNXA5nPZT3qkryf5lBqoyw4ViAwdas=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=EGl1AsF7ItLRvQNWg7GayBsUZ2/E80zezna2Kh4v2ApptFJfFUXmLT7y5PTrI4y4mLbh65gtPBdKoQV+E2xR5Gc/EUe4KWVRNR1qNiMem07UnXA2tbBc3QDmnU609R0G9QTmbY7HIf28ndHcSWmx0QsLDE3FDoudWzGx8Lr6bjk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.136
-Received: from localhost (localhost [127.0.0.1])
-	by smtp3.osuosl.org (Postfix) with ESMTP id 6F11960C06
-	for <acpica-devel@lists.linuxfoundation.org>; Fri,  2 Feb 2024 17:04:23 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 6F11960C06
-X-Virus-Scanned: amavisd-new at osuosl.org
-X-Spam-Flag: NO
-X-Spam-Score: -4.198
-X-Spam-Level:
-Received: from smtp3.osuosl.org ([127.0.0.1])
-	by localhost (smtp3.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id 9wuKYQ_3AXYG
-	for <acpica-devel@lists.linuxfoundation.org>;
-	Fri,  2 Feb 2024 17:04:21 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-	by smtp3.osuosl.org (Postfix) with ESMTPS id 661DA60B44
-	for <acpica-devel@lists.linuxfoundation.org>; Fri,  2 Feb 2024 17:04:21 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 661DA60B44
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TRMV93hsYz6J9h8;
-	Sat,  3 Feb 2024 01:00:49 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 69A141400CD;
-	Sat,  3 Feb 2024 01:04:15 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 2 Feb
- 2024 17:04:14 +0000
-Date: Fri, 2 Feb 2024 17:04:13 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
-CC: <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
-	<linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
-	<x86@kernel.org>, <acpica-devel@lists.linuxfoundation.org>,
-	<linux-csky@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-	<linux-ia64@vger.kernel.org>, <linux-parisc@vger.kernel.org>, Salil Mehta
-	<salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	<jianyong.wu@arm.com>, <justin.he@arm.com>, James Morse
-	<james.morse@arm.com>, "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH RFC v4 14/15] arm64: document virtual CPU hotplug's
- expectations
-Message-ID: <20240202170413.0000154e@Huawei.com>
-In-Reply-To: <E1rVDnU-0027Zf-GF@rmk-PC.armlinux.org.uk>
-References: <Zbp5xzmFhKDAgHws@shell.armlinux.org.uk>
-	<E1rVDnU-0027Zf-GF@rmk-PC.armlinux.org.uk>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1707665806; c=relaxed/simple;
+	bh=jjSF6lq4krDwmprCM2e1i+Kdrar4fmP5e0LW+RJ2wmo=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=Tyt6R/ASI6lMloWXYnbblo82FIoIt/egVuRoCysNQ+QZMyiHXlNebsl7RVdnHoyLSpxFBFN3l9XeMLwFHsxSdytzD0WVi7R7Ew17h/AB7QPTh23aXZMG0zOGfPGDgEUvKvy912SS6B6eFa1QF9nxXCvVpwsphOvj0cSGxPpOZqg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=mhGl0oRL; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="mhGl0oRL"
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e06c06c0f6so2062353b3a.0
+        for <acpica-devel@lists.linux.dev>; Sun, 11 Feb 2024 07:36:44 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707665804; x=1708270604;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QsC71mnuXWG0q9Nl+o1OGuAQFLxgfL9XuHk4wUGOUJw=;
+        b=JibkBd1RIE5XV3fQvBvJJfjxa96paWINAOgx8bY6Sld5VEi59UobebWpQ6PFvpqDrN
+         BDpY3h3EW49T16r6Rq7oiiFSjHcfmuU8+9fN8hFw7+Qkkgzcgy/MfjD3erXZ+85oDgyD
+         8zOgkVEEI1OiXZrOU+P48IVuRaodn76Iw/EK/NYRk2BOiDkK4LcuCCgV3t10vi5hNbhO
+         /7wI6nmpsaf/YzFZH5sphaq7XQiX8di8pZYGP01S0QqwFwY9syiBojaVCYgQotWbrKTZ
+         pXwX63+79Axyhbsv/Dx4/5RGSUElFGSiQuZkT1dZmi85yitj+Mp16pcz4nC0FPgC6OR7
+         vshA==
+X-Forwarded-Encrypted: i=1; AJvYcCWaPvlWQxl60aQ4D3Kv5sQvcd2Zo8tT1sD53m3iY7VlXTmlyYWr6N0NddM7fX2P0YGC8GPps4cmMctmaPHiZJ52qKzs553qDbspzOdC
+X-Gm-Message-State: AOJu0Yx1BIkHBJ1sPE++nL6rVUeX8QB6YmYY0f/8v387djDKEA2XpNGD
+	IoN2E0BwBB5P3wwyXxu+UEbxoeRdNxHLvqfSM7v/8w1byRftU6mZ
+X-Google-Smtp-Source: AGHT+IF9T4IOjEmQvR4mlXkGYzVOri3d75tfp7kA4LF5NAeUZhtq71G2fXkvcG/DMNcCbiz326ixXg==
+X-Received: by 2002:a05:6a20:9f04:b0:19e:a873:9252 with SMTP id mk4-20020a056a209f0400b0019ea8739252mr6281323pzb.6.1707665803725;
+        Sun, 11 Feb 2024 07:36:43 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXbJklSaG0wLyxzy1wPY+FEUG5FIddlrEZ/6cqJ+FzwZJIOamHpPXWZm4iU3OK1TfRHdp1L0M+nvn6I9rw0xs/Ie71Oqe2pXbk8TKRMOLp7lDjsjEZ0F72+1Ew4LaKmz1Iw9fZVACLCgxwmEthy71HWsPQHOBKLK5V/aLO/4olMuR2bypWl9KRD3SnWup34+hz/PoyxZtVaIwwkZwyAqgoBA2oFw0xHIx+XOxw6e+du
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id u39-20020a056a0009a700b006e04a3a3df6sm3910899pfg.185.2024.02.11.07.36.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Feb 2024 07:36:43 -0800 (PST)
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2024; t=1707665802;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=QsC71mnuXWG0q9Nl+o1OGuAQFLxgfL9XuHk4wUGOUJw=;
+	b=mhGl0oRLqvgO3Km6MTeJsSLOqKrGO0Jfo7WGUSc4pzTkB91j+d+5UGnYXm5bogbwgLqtED
+	n5a8x4kZhbfdxOI7WdlCTQjytrAMYJ1ulUe89WKcXfSAQMH7kFyF1KOYqY8jbPBxi1OdMc
+	lqUC8ugu0Tig3Dg7nOZy7vmoce8Xl7bo2ufl+eFD+Y0z31eG2tS4sF7wHZsft6PKI6uOe6
+	wxEmwT/W/TLtaM4+5ltGUE8j57emxcuncTwOGN57yRIkKatCevw1Gjb6XRTESJ+fYuGFOh
+	2czDn93pA2VcmmEHgMN4fIm1Z1H1UPI8btNbrsg/lIow5txdTJcWNrptFqJArA==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+Date: Sun, 11 Feb 2024 12:37:11 -0300
+Subject: [PATCH] ACPI: bus: make acpi_bus_type const
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100006.china.huawei.com (7.191.160.224) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Message-Id: <20240211-bus_cleanup-acpi-v1-1-08540c6e9458@marliere.net>
+X-B4-Tracking: v=1; b=H4sIAKbpyGUC/x3MTQqAIBBA4avErBNUin6uEhE2TTUQJooRiHdPW
+ n6L9xIE8kwBxiqBp4cD37ZA1RXgaexBgrdi0FI3Uisl1hgWvMjY6IRBx6IzW4soG9kPCCVznnZ
+ +/+U05/wBp2rTfWIAAAA=
+To: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
+ Robert Moore <robert.moore@intel.com>
+Cc: linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ acpica-devel@lists.linux.dev, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ "Ricardo B. Marliere" <ricardo@marliere.net>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1667; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=jjSF6lq4krDwmprCM2e1i+Kdrar4fmP5e0LW+RJ2wmo=;
+ b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBlyOmvpeM1qgXf1S8oUZUteHpAa7F8/a4xwyTMs
+ T90cMh+DgGJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZcjprwAKCRDJC4p8Y4ZY
+ pi+/EACJDPSrtQQCZRcys2FN3LBfpgESKnhCHF/kSH+u6ZAyO6LG5doimpOofZNFe92tIb+UiSW
+ U/+SQOpd2WBzD1ayOceap+3NAXLDmunZFFKlXFtWipHz83B/Xb4Q4NHRUrTOFs+aOiWs3Ha8UoK
+ zOK44P52z49nRwhds1BuUfADr6lQ7wRqKHFk1SflwlwIntFaRa6WEInjlRFYUp06HZNI7wGvWWS
+ Rd2ndoMBwhTlOKtHEe6FKHRApBAYrE9v9zyTqQu/SGFwCr///OemlL1D9pv9wKbHL/KYrGYIR1l
+ Ohcb/IzY1xUUrpDn0Qd7tOUrP3vWGgiHV0yhZMDWFQGPXzA7q3Fe5rsj3ZJDIpe5+yPn8S7OqEV
+ d5UdBifwGyYie/FGrZAXP+zshScdvcRGcCxwSLhOZfNXD7LWGSy3cdMP0Tx4zp4QeBYwa31wL/5
+ 02A89hCSrp/Aog9beeIglI2gNGubfDQuzCtFUh9KGqCygpB/+g6r0Jfv99H5BlgkQZ1Zbynfbh7
+ 0q+o1RKApLxecOsdRHqErlMCF0c7/w87wbsZsQaCRmRP8TVI2kDsaqEXYPP0Lv/rZdhTkqJtfHt
+ KV2nRy9mDYN7LstncXMxNt3Bh2WH/Vwy/0h/gj1MR0OZogG8XYTooLGZDWoVEnDdM5H74A/BUmj
+ p7dU99AfmpjVYgg==
+X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
+ fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
-On Wed, 31 Jan 2024 16:50:48 +0000
-Russell King (Oracle) <rmk+kernel@armlinux.org.uk> wrote:
+Now that the driver core can properly handle constant struct bus_type,
+move the acpi_bus_type variable to be a constant structure as well,
+placing it into read-only memory which can not be modified at runtime.
 
-> From: James Morse <james.morse@arm.com>
-> 
-> Add a description of physical and virtual CPU hotplug, explain the
-> differences and elaborate on what is required in ACPI for a working
-> virtual hotplug system.
-> 
-> Signed-off-by: James Morse <james.morse@arm.com>
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> ---
-> Outstanding comment:
->  https://lore.kernel.org/r/20230914174137.00000a62@Huawei.com
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+---
+ drivers/acpi/bus.c      | 2 +-
+ include/acpi/acpi_bus.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Outstanding but an ACPI Spec question rather than one about this description.
-I've finally regained access to Mantis etc so can follow that up at some point.
+diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c
+index 569bd15f211b..d9fa730416f1 100644
+--- a/drivers/acpi/bus.c
++++ b/drivers/acpi/bus.c
+@@ -1097,7 +1097,7 @@ static void acpi_device_remove(struct device *dev)
+ 	put_device(dev);
+ }
+ 
+-struct bus_type acpi_bus_type = {
++const struct bus_type acpi_bus_type = {
+ 	.name		= "acpi",
+ 	.match		= acpi_bus_match,
+ 	.probe		= acpi_device_probe,
+diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+index e4d24d3f9abb..f67aa93ba53e 100644
+--- a/include/acpi/acpi_bus.h
++++ b/include/acpi/acpi_bus.h
+@@ -582,7 +582,7 @@ void acpi_initialize_hp_context(struct acpi_device *adev,
+ 				void (*uevent)(struct acpi_device *, u32));
+ 
+ /* acpi_device.dev.bus == &acpi_bus_type */
+-extern struct bus_type acpi_bus_type;
++extern const struct bus_type acpi_bus_type;
+ 
+ int acpi_bus_for_each_dev(int (*fn)(struct device *, void *), void *data);
+ int acpi_dev_for_each_child(struct acpi_device *adev,
 
-If we get clarify on how to tell that CPUs that are present and enabled at boot
-can be removed later we can relax this text to allow for that.
+---
+base-commit: c3c4923f2082353762e8f46dec6e3b0f165a1606
+change-id: 20240211-bus_cleanup-acpi-7ad5cc04089c
 
-
->  https://lore.kernel.org/r/20231215170428.00000d81@Huawei.com
-That's a comment on the above comment to say I'm fine with it as is :)
-
-This @Huawei guy is really annoying ;)
-
-Jonathan
-
-> ---
->  Documentation/arch/arm64/cpu-hotplug.rst | 79 ++++++++++++++++++++++++
->  Documentation/arch/arm64/index.rst       |  1 +
->  2 files changed, 80 insertions(+)
->  create mode 100644 Documentation/arch/arm64/cpu-hotplug.rst
-> 
-> diff --git a/Documentation/arch/arm64/cpu-hotplug.rst b/Documentation/arch/arm64/cpu-hotplug.rst
-> new file mode 100644
-> index 000000000000..76ba8d932c72
-> --- /dev/null
-> +++ b/Documentation/arch/arm64/cpu-hotplug.rst
-> @@ -0,0 +1,79 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +.. _cpuhp_index:
-> +
-> +====================
-> +CPU Hotplug and ACPI
-> +====================
-> +
-> +CPU hotplug in the arm64 world is commonly used to describe the kernel taking
-> +CPUs online/offline using PSCI. This document is about ACPI firmware allowing
-> +CPUs that were not available during boot to be added to the system later.
-> +
-> +``possible`` and ``present`` refer to the state of the CPU as seen by linux.
-> +
-> +
-> +CPU Hotplug on physical systems - CPUs not present at boot
-> +----------------------------------------------------------
-> +
-> +Physical systems need to mark a CPU that is ``possible`` but not ``present`` as
-> +being ``present``. An example would be a dual socket machine, where the package
-> +in one of the sockets can be replaced while the system is running.
-> +
-> +This is not supported.
-> +
-> +In the arm64 world CPUs are not a single device but a slice of the system.
-> +There are no systems that support the physical addition (or removal) of CPUs
-> +while the system is running, and ACPI is not able to sufficiently describe
-> +them.
-> +
-> +e.g. New CPUs come with new caches, but the platform's cache toplogy is
-> +described in a static table, the PPTT. How caches are shared between CPUs is
-> +not discoverable, and must be described by firmware.
-> +
-> +e.g. The GIC redistributor for each CPU must be accessed by the driver during
-> +boot to discover the system wide supported features. ACPI's MADT GICC
-> +structures can describe a redistributor associated with a disabled CPU, but
-> +can't describe whether the redistributor is accessible, only that it is not
-> +'always on'.
-> +
-> +arm64's ACPI tables assume that everything described is ``present``.
-> +
-> +
-> +CPU Hotplug on virtual systems - CPUs not enabled at boot
-> +---------------------------------------------------------
-> +
-> +Virtual systems have the advantage that all the properties the system will
-> +ever have can be described at boot. There are no power-domain considerations
-> +as such devices are emulated.
-> +
-> +CPU Hotplug on virtual systems is supported. It is distinct from physical
-> +CPU Hotplug as all resources are described as ``present``, but CPUs may be
-> +marked as disabled by firmware. Only the CPU's online/offline behaviour is
-> +influenced by firmware. An example is where a virtual machine boots with a
-> +single CPU, and additional CPUs are added once a cloud orchestrator deploys
-> +the workload.
-> +
-> +For a virtual machine, the VMM (e.g. Qemu) plays the part of firmware.
-> +
-> +Virtual hotplug is implemented as a firmware policy affecting which CPUs can be
-> +brought online. Firmware can enforce its policy via PSCI's return codes. e.g.
-> +``DENIED``.
-> +
-> +The ACPI tables must describe all the resources of the virtual machine. CPUs
-> +that firmware wishes to disable either from boot (or later) should not be
-> +``enabled`` in the MADT GICC structures, but should have the ``online capable``
-> +bit set, to indicate they can be enabled later. The boot CPU must be marked as
-> +``enabled``.  The 'always on' GICR structure must be used to describe the
-> +redistributors.
-> +
-> +CPUs described as ``online capable`` but not ``enabled`` can be set to enabled
-> +by the DSDT's Processor object's _STA method. On virtual systems the _STA method
-> +must always report the CPU as ``present``. Changes to the firmware policy can
-> +be notified to the OS via device-check or eject-request.
-> +
-> +CPUs described as ``enabled`` in the static table, should not have their _STA
-> +modified dynamically by firmware. Soft-restart features such as kexec will
-> +re-read the static properties of the system from these static tables, and
-> +may malfunction if these no longer describe the running system. Linux will
-> +re-discover the dynamic properties of the system from the _STA method later
-> +during boot.
-> diff --git a/Documentation/arch/arm64/index.rst b/Documentation/arch/arm64/index.rst
-> index d08e924204bf..78544de0a8a9 100644
-> --- a/Documentation/arch/arm64/index.rst
-> +++ b/Documentation/arch/arm64/index.rst
-> @@ -13,6 +13,7 @@ ARM64 Architecture
->      asymmetric-32bit
->      booting
->      cpu-feature-registers
-> +    cpu-hotplug
->      elf_hwcaps
->      hugetlbpage
->      kdump
+Best regards,
+-- 
+Ricardo B. Marliere <ricardo@marliere.net>
 
