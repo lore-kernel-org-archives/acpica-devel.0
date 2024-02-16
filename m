@@ -1,89 +1,100 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A710012EBDF
-	for <acpica-devel@lists.linux.dev>; Fri, 16 Feb 2024 14:46:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 416B8133439
+	for <acpica-devel@lists.linux.dev>; Fri, 16 Feb 2024 18:39:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708094776; cv=none; b=EMNmphKbnoe6DkXfRgwqO4OeQWpMnitrCtzrOf2HgmissJvGZKC90g4ZaXwR6UBKbMTam7y5q1S8uiXaZZM/kHdwWH4YCLB4rws09PkrvXMRCJBBZcl1V0+YX6IGTBJf/72a9b08+sW/yPTrWSCwPk09Wzlsw7LtUS3ayuYEZB8=
+	t=1708108768; cv=none; b=A1vNRZGfIB3QhCbhBOpirQINSp4zjKqfxNMEnTg2CeFyD8wId4acczDVP06VzmKnluQaZZd+SqDrTYJvMvAIirQ3PPAf/NR9dt/DST0zg7KXg1wIXo/cogXN465fCysjK7ZWvZZrosNNDLLGWh1Lh2R/UbwbTCKuz4x/lyfgxiI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708094776; c=relaxed/simple;
-	bh=bxKYslPcYW+TaBQvEunZG5ysjpvjubNejuY1nyhmKaY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eJIsYUCwrvCVLNyGu242i9hY3oLAicrmQqGWlKtKJIGJgCI9jllpctFMbIEwL2D5omodMVqDdJ69KYqZRyvb3uR3pWA4HYr0HGEYRFpk2nila1WLWaYdQHYqa39DnISoI52FPaMe3rnQLuMkWLRVu2ojE+UQR9mrI0MwLkGQ1lw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZbuzP3/d; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZbuzP3/d"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708094774; x=1739630774;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=bxKYslPcYW+TaBQvEunZG5ysjpvjubNejuY1nyhmKaY=;
-  b=ZbuzP3/dimLL/fpp+elHF4tW1f/9XGx5QzBGdBVUdiabI9B96voK17KA
-   FS/VrpfCxJtoCOs7Yc2DNZWjX+mdIDbEDiVeUAa9v0dbqc2VGlvkGgSPU
-   CtBRByPT7ptGIWrFz5mBnxv7UHRBAcqofT/4ZHLn9QFwedVolN90wtjDT
-   SXqZXNo/FN9TBRjMPgdIAa71pONxMA4tTzkhaBqmc4SVgvyyv2fw6ziRN
-   yu2u7lu7Tn5V4lgimnbkh3kyy6Z87Afe2cqreuFWXHEWcUxpyZ8ISv6XQ
-   lENGDTxnDJba/xKDgnpYY5rn3IhlmktIgLKyiDe4Ne7hSWzJhGWLva+25
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="6050860"
-X-IronPort-AV: E=Sophos;i="6.06,164,1705392000"; 
-   d="scan'208";a="6050860"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 06:46:14 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="935856529"
-X-IronPort-AV: E=Sophos;i="6.06,164,1705392000"; 
-   d="scan'208";a="935856529"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 16 Feb 2024 06:46:12 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1001)
-	id A6B9A2E9; Fri, 16 Feb 2024 16:46:10 +0200 (EET)
-Date: Fri, 16 Feb 2024 16:46:10 +0200
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
-To: aigilea <i@cpp.in>
-Cc: Robert Moore <robert.moore@intel.com>,
-	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: Kernel panic in ACPICA on HP Spectre X360 (Meteor Lake 155H)
- laptop
-Message-ID: <20240216144610.GS8454@black.fi.intel.com>
-References: <CABYkuAg3rcXT=0-=7EMX8NW3-mU0zYRvp+rOo5nq_7SHdb=cxA@mail.gmail.com>
- <20240216120211.GR8454@black.fi.intel.com>
- <CABYkuAhLYcLQp8PiBm-aTDC-AAV2NWVzN-79XLVcYvAfGtVhcQ@mail.gmail.com>
+	s=arc-20240116; t=1708108768; c=relaxed/simple;
+	bh=gXvmd4u6S1j4zmau92N9xY3+n48hIWCmkw374m2LDII=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BH+1OazqR2VZizT1k8NSSRcp6kp1zZkVNugmWpZklvrbqsDp8dRvzluunmyQLbNcsTGYTkC+GQIjpkm15JVNJj+iQddnuRek3HEVMnrIxBrEFtkTlao/bZq3RilGwFxnrs4i1vW0nzordYzxvZ+TSXwrZGk/O1iccmCedgDPJfE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-59a134e29d2so282342eaf.0
+        for <acpica-devel@lists.linux.dev>; Fri, 16 Feb 2024 10:39:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708108766; x=1708713566;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YWPnmj/LdKe3Uawh5Iayj+Gh5MbkrBOfFGQpz8gSZkA=;
+        b=WW3KjOCVBttmXpskItjhbnvk2J3iXhJuN9ffI7N7kTok9haTccOzuA+waIydCO+c+u
+         0qDKBaBu/a+eFJZs7ILMPTTIbv9RWLuogZ3r/R/maaGK0y0fnwCi/2AJJT3ryd/HcB7v
+         dNCWw4HZXG8wrWtajG3FTmRBAM/P5q9FCh1f+DEmfvCqiGvOMtBOBxTyr/OS9TmfLR6L
+         1qPrvq7lu1qG7NFcAE+nBJaxKuu7FxrJVkQd2wjCH6lRI+LKukv7sOQ5hwWSv8Vy2WJc
+         tK6PtjfddYrKzm0gHcp3nSFePKT4frfPGwyHqRSrFmfVF1IzmESEd74ZjivipAq5AMD5
+         4DYg==
+X-Forwarded-Encrypted: i=1; AJvYcCVdw2MuoNFr8bCJJtzm43Ebb/FQ8iWuVO5m/UTcsBnlFcT4EggCdWRRvSYoMC+ZExPzBxhIfyylid/uh6wS5VetJQUlbCOr0VqEuXJl
+X-Gm-Message-State: AOJu0YwWykp1CoNI9mpYuMu9z5X9fJARtNmoYOPLEFTn3TJKmqgNcTZ2
+	+mvmoROfJLsrsthNDZHGCv73KcjWNYCuwz+2aC0tWLjJZQK9Ldl+Y19D+UsYIGk7LOcKds2waWY
+	DcjBNHWulI8Jh9Gf4X4ppVewPEn/UMNf2
+X-Google-Smtp-Source: AGHT+IEWmmUvbZ48dKNHLJOKC/sVXLnlJsXyjMxNfSgPv9uxGEnKwXe6D3hhg3JHKQ+DwwQlc9UuPDIVmzeJl4Y8oX8=
+X-Received: by 2002:a4a:d12d:0:b0:59f:8466:16d6 with SMTP id
+ n13-20020a4ad12d000000b0059f846616d6mr3300825oor.0.1708108766254; Fri, 16 Feb
+ 2024 10:39:26 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CABYkuAhLYcLQp8PiBm-aTDC-AAV2NWVzN-79XLVcYvAfGtVhcQ@mail.gmail.com>
+References: <CGME20240216072906epcas2p407a2f85aca1b9b8677fb8aa458c53aa6@epcas2p4.samsung.com>
+ <20240216072931.34305-1-hj96.nam@samsung.com>
+In-Reply-To: <20240216072931.34305-1-hj96.nam@samsung.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Fri, 16 Feb 2024 19:39:15 +0100
+Message-ID: <CAJZ5v0gusbAKRQVCgbvK7A6G8KQ5piNdUS=Sm3H2tWiSp-beGQ@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: Fix CXL 3.0 structure (RDPAS) in the CEDT table
+To: hj96.nam@samsung.com
+Cc: Robert Moore <robert.moore@intel.com>, 
+	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>, Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org, 
+	acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	ks0204.kim@samsung.com, wj28.lee@samsung.com, alison.schofield@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Fri, Feb 16, 2024 at 8:29=E2=80=AFAM <hj96.nam@samsung.com> wrote:
+>
+> From: Hojin Nam <hj96.nam@samsung.com>
+>
+> struct acpi_cedt_rdpas does not match with CXL r3.0 9.17.1.5
+> Table 9-24. reserved1 and length fields are already added by
+> struct acpi_cedt_header.
+>
+> Signed-off-by: Hojin Nam <hj96.nam@samsung.com>
+> ---
+>  include/acpi/actbl1.h | 2 --
 
-On Fri, Feb 16, 2024 at 05:36:21PM +0300, aigilea wrote:
-> Hi.
-> 
-> Booting with "modprobe.blacklist=intel_lpss_pci" on the kernel command
-> line indeed works around this panic.
-> I will try to find out what hardware depends on this driver.
-> 
-> Two years ago there was a similar issue with broken soundwire devices
-> configuration in dsdt on tiger lake iteration of this laptop, it is
-> not fixed by HP to this day.
-> SOF guys in Intel ended up making a quirk for that case.
-> So if the quirk (or some additional checks in parser?) path is not
-> suitable for this issue I guess the most "proper" fix might be acpi
-> overlay?
+This file is part of ACPICA which is a separate project whose code is
+used by the Linux kernel.  In order to make changes in the ACPICA
+code, please submit a pull request to the upstream ACPICA project on
+GitHub.  Once this pull request is merged, you can send a
+corresponding Linux patch with a Link: tag pointing to it.  However,
+it is not necessary to do so, as the changes will be automatically
+included into the ACPICA code in the kernel once a new version of
+ACPICA is out.
 
-I understood HP did this fix to their BIOS but it might take some time
-to get the confirmation and the BIOS version (working on this).
-
-I will be out next week though, but adding Andy who will provide the
-details once we know them.
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/include/acpi/actbl1.h b/include/acpi/actbl1.h
+> index a33375e055ad..7aff8c39dbd6 100644
+> --- a/include/acpi/actbl1.h
+> +++ b/include/acpi/actbl1.h
+> @@ -571,8 +571,6 @@ struct acpi_cedt_cxims {
+>
+>  struct acpi_cedt_rdpas {
+>         struct acpi_cedt_header header;
+> -       u8 reserved1;
+> -       u16 length;
+>         u16 segment;
+>         u16 bdf;
+>         u8 protocol;
+>
+> base-commit: d37e1e4c52bc60578969f391fb81f947c3e83118
+> --
+> 2.34.1
+>
