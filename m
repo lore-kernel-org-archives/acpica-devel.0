@@ -1,100 +1,170 @@
-Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 416B8133439
-	for <acpica-devel@lists.linux.dev>; Fri, 16 Feb 2024 18:39:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB51C63A9
+	for <acpica-devel@lists.linux.dev>; Sun, 18 Feb 2024 07:18:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708108768; cv=none; b=A1vNRZGfIB3QhCbhBOpirQINSp4zjKqfxNMEnTg2CeFyD8wId4acczDVP06VzmKnluQaZZd+SqDrTYJvMvAIirQ3PPAf/NR9dt/DST0zg7KXg1wIXo/cogXN465fCysjK7ZWvZZrosNNDLLGWh1Lh2R/UbwbTCKuz4x/lyfgxiI=
+	t=1708240735; cv=none; b=mnIPJaztp95uEg2eL3RTREv85SgQr9PUfL2gsWkg/Gm/d9vuiiO8qsCauo3VvFAn05aeWGK/m4V8dmdo8qmJwp+YREwNVnoKRpBJfhmA38x6xtQkOhhsMdvIVE8o7fJ3Mjf+WV+jtjHkJetrLkB58TGl8+70ltAsoDFVrVrrPTQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708108768; c=relaxed/simple;
-	bh=gXvmd4u6S1j4zmau92N9xY3+n48hIWCmkw374m2LDII=;
+	s=arc-20240116; t=1708240735; c=relaxed/simple;
+	bh=LZqwQjxc3WNdVwQL0IszZ+L7hR2FgLuF54Fz0u8hoCU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BH+1OazqR2VZizT1k8NSSRcp6kp1zZkVNugmWpZklvrbqsDp8dRvzluunmyQLbNcsTGYTkC+GQIjpkm15JVNJj+iQddnuRek3HEVMnrIxBrEFtkTlao/bZq3RilGwFxnrs4i1vW0nzordYzxvZ+TSXwrZGk/O1iccmCedgDPJfE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	 To:Cc:Content-Type; b=H9Q6nUQ2KyRQExTv4V/5i1JgVRh1sNFecZdwaIq2MQ/17+7eiHZk8kWWr/q+F4vPbbGkgekMHvpS9P5XpZeobiisNlYhjm9Bl/G2tlJh+UAMcwk30oCygBJ+TmI7QPYVT4uqFAbNoIZVLj5LPXuW5WzPo3VNfKzFcSwqtLAnu10=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ebd0+jTS; arc=none smtp.client-ip=209.85.208.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-59a134e29d2so282342eaf.0
-        for <acpica-devel@lists.linux.dev>; Fri, 16 Feb 2024 10:39:26 -0800 (PST)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ebd0+jTS"
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d208be133bso26877281fa.2
+        for <acpica-devel@lists.linux.dev>; Sat, 17 Feb 2024 23:18:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708240732; x=1708845532; darn=lists.linux.dev;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uoMtWxcRWAYRMgAR64TH67exXWHzzjC76RrscHy/AZU=;
+        b=ebd0+jTSKM/xXPbyOUOyTP0CTkDSFlzYYA82oKLslJV1VmWnRfEkBSctlnZerQF/4R
+         JuZZ1Q/uf2fizPUTXGgfnxiink8pG1rPy+R+u6FVOQgaQ4k5X7zNygFyTnGs0t42wEoD
+         /SonOfnhKf3BB4DIh3Z/nIe3qlP1rEu/m62iVp6cuImUy882mjn20zBb7Y57QH+UFytn
+         /VPOzO59K1ezza2mHyV+c0wHq2u08g7ujUOdI37CJ7GSW24QFMCyVH1bD/KD84hETBI+
+         C+gK/Hlh+orUOPZxYNDYsLrBtty8IvqgIem3UYsYXQJ8yTctCh4zxTaUd8GuV+g9/O6l
+         lAmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708108766; x=1708713566;
+        d=1e100.net; s=20230601; t=1708240732; x=1708845532;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YWPnmj/LdKe3Uawh5Iayj+Gh5MbkrBOfFGQpz8gSZkA=;
-        b=WW3KjOCVBttmXpskItjhbnvk2J3iXhJuN9ffI7N7kTok9haTccOzuA+waIydCO+c+u
-         0qDKBaBu/a+eFJZs7ILMPTTIbv9RWLuogZ3r/R/maaGK0y0fnwCi/2AJJT3ryd/HcB7v
-         dNCWw4HZXG8wrWtajG3FTmRBAM/P5q9FCh1f+DEmfvCqiGvOMtBOBxTyr/OS9TmfLR6L
-         1qPrvq7lu1qG7NFcAE+nBJaxKuu7FxrJVkQd2wjCH6lRI+LKukv7sOQ5hwWSv8Vy2WJc
-         tK6PtjfddYrKzm0gHcp3nSFePKT4frfPGwyHqRSrFmfVF1IzmESEd74ZjivipAq5AMD5
-         4DYg==
-X-Forwarded-Encrypted: i=1; AJvYcCVdw2MuoNFr8bCJJtzm43Ebb/FQ8iWuVO5m/UTcsBnlFcT4EggCdWRRvSYoMC+ZExPzBxhIfyylid/uh6wS5VetJQUlbCOr0VqEuXJl
-X-Gm-Message-State: AOJu0YwWykp1CoNI9mpYuMu9z5X9fJARtNmoYOPLEFTn3TJKmqgNcTZ2
-	+mvmoROfJLsrsthNDZHGCv73KcjWNYCuwz+2aC0tWLjJZQK9Ldl+Y19D+UsYIGk7LOcKds2waWY
-	DcjBNHWulI8Jh9Gf4X4ppVewPEn/UMNf2
-X-Google-Smtp-Source: AGHT+IEWmmUvbZ48dKNHLJOKC/sVXLnlJsXyjMxNfSgPv9uxGEnKwXe6D3hhg3JHKQ+DwwQlc9UuPDIVmzeJl4Y8oX8=
-X-Received: by 2002:a4a:d12d:0:b0:59f:8466:16d6 with SMTP id
- n13-20020a4ad12d000000b0059f846616d6mr3300825oor.0.1708108766254; Fri, 16 Feb
- 2024 10:39:26 -0800 (PST)
+        bh=uoMtWxcRWAYRMgAR64TH67exXWHzzjC76RrscHy/AZU=;
+        b=MoRuRdYQfbMjOrh2SCTuETnGOw0xamqf+Goq1IxH+YALtNo5QfFus7CzLNLzI3lggU
+         FOxG1TtlaYqz3YHK9+xhpVBt1YfXsKdy0+Zoszw455oaWDyRZ81D0RoGa0bC4yHHmoqp
+         JTtP+5puKvtjGkPSBy8vfl4piLPM7bnzl66quLzLZXQ8Gd+UgB+vppvqo9y05rh5ymDh
+         5oNsNdH0pQKOmFs1RN2sfUiIEAeSkB1CJueYk4euOu5xnkVCul4LvIe+BaDBRKyehSic
+         ZWBRL+nIQXvDp24rY2ke9sGoMzgOxjk9HW1WZHPJzwjEBM/gegR8PxiuXfLgenOOn29S
+         Z0HQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVcB6rZiEqL9yKnd6w3SrrufLPtZ4VxIefudaor0+RTOJx8tMhbzvhj/Ii5svgqNumCfIKokUQCTB6BWuEZ26PO1Vc6+MaHzX8q5FRX
+X-Gm-Message-State: AOJu0YyQ+qU8GHLXAqQ5YzM5dkaBc7AamBA7xhMAbDP4l3x8iAqIlktK
+	AZTckRjhhbAfMV+ap3Gn8hI2PYZB/S8V7OG5WCOYK1DqWBiW5BAAvAOUflr5YE16ZCs08VaHnWu
+	lG+9iGKJbWzKdFGF8DTiFBOxKdE0=
+X-Google-Smtp-Source: AGHT+IHXsKbUAnLaswlubkUVSjxcVITALdr6/5cxflDhuJ4pVB97a4rXUaqRixc+Hik3Kiz0Skp1uw1ULPxi43uK5xw=
+X-Received: by 2002:a2e:a686:0:b0:2d0:9324:aab3 with SMTP id
+ q6-20020a2ea686000000b002d09324aab3mr5869682lje.30.1708240731756; Sat, 17 Feb
+ 2024 23:18:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <CGME20240216072906epcas2p407a2f85aca1b9b8677fb8aa458c53aa6@epcas2p4.samsung.com>
- <20240216072931.34305-1-hj96.nam@samsung.com>
-In-Reply-To: <20240216072931.34305-1-hj96.nam@samsung.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Fri, 16 Feb 2024 19:39:15 +0100
-Message-ID: <CAJZ5v0gusbAKRQVCgbvK7A6G8KQ5piNdUS=Sm3H2tWiSp-beGQ@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: Fix CXL 3.0 structure (RDPAS) in the CEDT table
-To: hj96.nam@samsung.com
-Cc: Robert Moore <robert.moore@intel.com>, 
-	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>, Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org, 
-	acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	ks0204.kim@samsung.com, wj28.lee@samsung.com, alison.schofield@intel.com
+References: <cover.1706603678.git.haibo1.xu@intel.com> <6473e0bb42524e4f29112290a92539d1a800eb69.1706603678.git.haibo1.xu@intel.com>
+ <CAJZ5v0hC7gxoJK0kszw9GgRjxjrKgh7q0sC1L1FdVfOb-TCSRw@mail.gmail.com>
+In-Reply-To: <CAJZ5v0hC7gxoJK0kszw9GgRjxjrKgh7q0sC1L1FdVfOb-TCSRw@mail.gmail.com>
+From: Haibo Xu <xiaobo55x@gmail.com>
+Date: Sun, 18 Feb 2024 15:18:40 +0800
+Message-ID: <CAJve8omH2NvqnTu2a2V=wwrQCiQrP=uzu3ttO1VkjJN0ZyRjMA@mail.gmail.com>
+Subject: Re: [PATCH 1/4] ACPICA: SRAT: Add RISC-V RINTC affinity structure
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Haibo Xu <haibo1.xu@intel.com>, ajones@ventanamicro.com, sunilvl@ventanamicro.com, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Len Brown <lenb@kernel.org>, 
+	Robert Moore <robert.moore@intel.com>, Conor Dooley <conor.dooley@microchip.com>, 
+	Guo Ren <guoren@kernel.org>, Anup Patel <apatel@ventanamicro.com>, 
+	Alexandre Ghiti <alexghiti@rivosinc.com>, Greentime Hu <greentime.hu@sifive.com>, 
+	Jisheng Zhang <jszhang@kernel.org>, Sami Tolvanen <samitolvanen@google.com>, 
+	=?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>, 
+	Baoquan He <bhe@redhat.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Chen Jiahao <chenjiahao16@huawei.com>, Arnd Bergmann <arnd@arndb.de>, 
+	James Morse <james.morse@arm.com>, Evan Green <evan@rivosinc.com>, 
+	Samuel Holland <samuel.holland@sifive.com>, Marc Zyngier <maz@kernel.org>, 
+	Tony Luck <tony.luck@intel.com>, Ard Biesheuvel <ardb@kernel.org>, Yuntao Wang <ytcoode@gmail.com>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, Alison Schofield <alison.schofield@intel.com>, 
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 16, 2024 at 8:29=E2=80=AFAM <hj96.nam@samsung.com> wrote:
+On Mon, Feb 12, 2024 at 9:31=E2=80=AFPM Rafael J. Wysocki <rafael@kernel.or=
+g> wrote:
 >
-> From: Hojin Nam <hj96.nam@samsung.com>
+> On Wed, Jan 31, 2024 at 3:18=E2=80=AFAM Haibo Xu <haibo1.xu@intel.com> wr=
+ote:
+> >
+> > ACPICA commit 93caddbf2f620769052c59ec471f018281dc3a24
 >
-> struct acpi_cedt_rdpas does not match with CXL r3.0 9.17.1.5
-> Table 9-24. reserved1 and length fields are already added by
-> struct acpi_cedt_header.
+> Not really.
 >
-> Signed-off-by: Hojin Nam <hj96.nam@samsung.com>
-> ---
->  include/acpi/actbl1.h | 2 --
+> > Add definition of RISC-V Interrupt Controller(RINTC)
+> > affinity structure which was approved by UEFI forum
+> > and will be part of next ACPI spec version(6.6).
+> >
+> > Link: https://github.com/acpica/acpica/commit/93caddbf
+>
+> And this doesn't point to an upstream ACPICA PR.
+>
 
-This file is part of ACPICA which is a separate project whose code is
-used by the Linux kernel.  In order to make changes in the ACPICA
-code, please submit a pull request to the upstream ACPICA project on
-GitHub.  Once this pull request is merged, you can send a
-corresponding Linux patch with a Link: tag pointing to it.  However,
-it is not necessary to do so, as the changes will be automatically
-included into the ACPICA code in the kernel once a new version of
-ACPICA is out.
+Hi Rafael,
 
->  1 file changed, 2 deletions(-)
->
-> diff --git a/include/acpi/actbl1.h b/include/acpi/actbl1.h
-> index a33375e055ad..7aff8c39dbd6 100644
-> --- a/include/acpi/actbl1.h
-> +++ b/include/acpi/actbl1.h
-> @@ -571,8 +571,6 @@ struct acpi_cedt_cxims {
->
->  struct acpi_cedt_rdpas {
->         struct acpi_cedt_header header;
-> -       u8 reserved1;
-> -       u16 length;
->         u16 segment;
->         u16 bdf;
->         u8 protocol;
->
-> base-commit: d37e1e4c52bc60578969f391fb81f947c3e83118
-> --
-> 2.34.1
->
+This patch was generated by the acpica/generate/linux/gen-patch.sh and
+should be merged
+through the ACPICA project. To include it in this series is just to
+serve as a reference.
+
+BTW, the corresponding ACPICA patch is still under review and please
+refer to the following
+link for the status.
+
+https://github.com/acpica/acpica/pull/926
+
+Regards,
+Haibo
+
+> > Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
+> > ---
+> >  include/acpi/actbl3.h | 18 +++++++++++++++++-
+> >  1 file changed, 17 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/include/acpi/actbl3.h b/include/acpi/actbl3.h
+> > index c080d579a546..5202e3fc9b41 100644
+> > --- a/include/acpi/actbl3.h
+> > +++ b/include/acpi/actbl3.h
+> > @@ -192,7 +192,8 @@ enum acpi_srat_type {
+> >         ACPI_SRAT_TYPE_GIC_ITS_AFFINITY =3D 4,    /* ACPI 6.2 */
+> >         ACPI_SRAT_TYPE_GENERIC_AFFINITY =3D 5,    /* ACPI 6.3 */
+> >         ACPI_SRAT_TYPE_GENERIC_PORT_AFFINITY =3D 6,       /* ACPI 6.4 *=
+/
+> > -       ACPI_SRAT_TYPE_RESERVED =3D 7     /* 7 and greater are reserved=
+ */
+> > +       ACPI_SRAT_TYPE_RINTC_AFFINITY =3D 7,      /* ACPI 6.6 */
+> > +       ACPI_SRAT_TYPE_RESERVED =3D 8     /* 8 and greater are reserved=
+ */
+> >  };
+> >
+> >  /*
+> > @@ -296,6 +297,21 @@ struct acpi_srat_generic_affinity {
+> >  #define ACPI_SRAT_GENERIC_AFFINITY_ENABLED     (1)     /* 00: Use affi=
+nity structure */
+> >  #define ACPI_SRAT_ARCHITECTURAL_TRANSACTIONS   (1<<1)  /* ACPI 6.4 */
+> >
+> > +/* 7: RINTC Affinity (ACPI 6.6) */
+> > +
+> > +struct acpi_srat_rintc_affinity {
+> > +       struct acpi_subtable_header header;
+> > +       u16 reserved;           /* Reserved, must be zero */
+> > +       u32 proximity_domain;
+> > +       u32 acpi_processor_uid;
+> > +       u32 flags;
+> > +       u32 clock_domain;
+> > +};
+> > +
+> > +/* Flags for struct acpi_srat_rintc_affinity */
+> > +
+> > +#define ACPI_SRAT_RINTC_ENABLED     (1)        /* 00: Use affinity str=
+ucture */
+> > +
+> >  /*********************************************************************=
+**********
+> >   *
+> >   * STAO - Status Override Table (_STA override) - ACPI 6.0
+> > --
+> > 2.34.1
+> >
