@@ -1,178 +1,364 @@
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+Received: from smtp2.osuosl.org (smtp2.osuosl.org [140.211.166.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A406E6AC2
-	for <acpica-devel@lists.linux.dev>; Mon, 19 Feb 2024 03:46:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0961A25114
+	for <acpica-devel@lists.linuxfoundation.org>; Mon, 19 Feb 2024 09:45:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708314373; cv=none; b=d0Xf807Bt3HiZRHzVYTJa1PXFCcUOVpWMEatHujrOV+KDnPhw3bq44ghhhiIsSUh78E2NOtmOwXrozQYkks9HPVs502ted/YyJndsKxq0VM/5CUaHjSdBwe5251I2gsHNaoRMs29S9L+4dhHYP5RrAkXezkBfwXzj+89JVAtB6E=
+	t=1708335921; cv=none; b=uslbIHW73ibVEb96clrfrVARllUgKIuGU4cA7eux4DJkm+fnCvcbi2fVb9QiHohm2awCtHN7BlQmo70O1INhJVKbpxaw+u+4OoVi9gm7fiB2lMIhNXnPT6tZM+u66m5vAWUTLeIV56FUOCBcSinYl6KG2YeWa5OetUszOpmWleA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708314373; c=relaxed/simple;
-	bh=CTeiRfrgWM0ByxLGTzu9SEF9wISQC+DJlWXuws2Y374=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:In-Reply-To:
-	 Content-Type:References; b=JIHnnhD+D7nxqZPdamRaXNYRd9mkJ7kZcpr3ZFNmb+X/Bk5HdR9TWoDqpJhsq+RMl4nG24Z+twnE8OubR4XiX2+nc554EmUTLS1hzTSkNQTvvQ3skXgT+9hdbdeCpR6jmQrluc6qatZ2fat+WXOggw1Y6M87EPis87/bhbsBx0k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=fK5FuTD1; arc=none smtp.client-ip=203.254.224.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="fK5FuTD1"
-Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
-	by mailout4.samsung.com (KnoxPortal) with ESMTP id 20240219034608epoutp04d202ac7febb16640b13f47166dcf3948~1Jt33I-y13052930529epoutp04E
-	for <acpica-devel@lists.linux.dev>; Mon, 19 Feb 2024 03:46:08 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20240219034608epoutp04d202ac7febb16640b13f47166dcf3948~1Jt33I-y13052930529epoutp04E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1708314368;
-	bh=ej5sTsbG7EG8qGJIYejeXO6eVpl5MOeHcT8Ydx697Fg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=fK5FuTD1+vEbOB8vFASPGsNTe8IfIAm7MxFIGrrkcTBGTcFUhk9g5jYh6jJlV9Ndm
-	 NWTrEV67nmIk1ulDHmpjW2T8nLKzuW1iW/UYfxv1FgyuIVGtb41S7UAadeM+r3i0Tr
-	 FX4kIx3AUAMKoCs0KlF25Xhh7kHeuK/2pKhmwV10=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-	epcas2p3.samsung.com (KnoxPortal) with ESMTP id
-	20240219034607epcas2p3b65fe3c873b66629b3068be28fda9ba3~1Jt3WD7aM1373713737epcas2p3X;
-	Mon, 19 Feb 2024 03:46:07 +0000 (GMT)
-Received: from epsmgec2p1-new.samsung.com (unknown [182.195.36.98]) by
-	epsnrtp4.localdomain (Postfix) with ESMTP id 4TdT3M3tDcz4x9Q2; Mon, 19 Feb
-	2024 03:46:07 +0000 (GMT)
-Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
-	epsmgec2p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	89.45.18994.FFEC2D56; Mon, 19 Feb 2024 12:46:07 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-	epcas2p4.samsung.com (KnoxPortal) with ESMTPA id
-	20240219034606epcas2p4f1cd412efcb12d3b0e6ea0377f8aceae~1Jt2Mb2ts0619106191epcas2p4d;
-	Mon, 19 Feb 2024 03:46:06 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-	epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20240219034606epsmtrp1998fd1b9a886d710b13e866a90809bc2~1Jt2LqBIO3033630336epsmtrp18;
-	Mon, 19 Feb 2024 03:46:06 +0000 (GMT)
-X-AuditID: b6c32a4d-743ff70000004a32-58-65d2ceff5061
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-	epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	A7.EC.08755.EFEC2D56; Mon, 19 Feb 2024 12:46:06 +0900 (KST)
-Received: from calab-Precision-7920-Tower (unknown [10.229.83.132]) by
-	epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-	20240219034606epsmtip1f0a54a78bb5d79170488dd60374071f2~1Jt1_n-SI1159511595epsmtip1q;
-	Mon, 19 Feb 2024 03:46:06 +0000 (GMT)
-Date: Mon, 19 Feb 2024 12:46:35 +0900
-From: Hojin Nam <hj96.nam@samsung.com>
+	s=arc-20240116; t=1708335921; c=relaxed/simple;
+	bh=QJM4j0j0pchCDOEJ6x+rLSknxQZs8Iclh87YDcHRPKc=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=f4PeW9d59gz8JKyDiFVOtwTfVPC1XNCSbXPP0TQ4UrRA2WeXhQjVE/KbRK/1mfz9ySQ0MMMjBaBtqXaMx+WXpHW0bkAwreTyh/r11ZDwkKD+xpBM2MmqfblwL3KoxxjYisrfjp3CE7VU4FJ5k6QxKlLLxaNiLuhf68LmHphTJAg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.133
+Received: from localhost (localhost [127.0.0.1])
+	by smtp2.osuosl.org (Postfix) with ESMTP id 767354063E
+	for <acpica-devel@lists.linuxfoundation.org>; Mon, 19 Feb 2024 09:45:19 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at osuosl.org
+X-Spam-Flag: NO
+X-Spam-Score: -4.198
+X-Spam-Level:
+Received: from smtp2.osuosl.org ([127.0.0.1])
+	by localhost (smtp2.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id vTDtLLqwziiv
+	for <acpica-devel@lists.linuxfoundation.org>;
+	Mon, 19 Feb 2024 09:45:17 +0000 (UTC)
+Received-SPF: Pass (mailfrom) identity=mailfrom; client-ip=185.176.79.56; helo=frasgout.his.huawei.com; envelope-from=jonathan.cameron@huawei.com; receiver=<UNKNOWN> 
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp2.osuosl.org C6C4D405F9
+Authentication-Results: smtp2.osuosl.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp2.osuosl.org C6C4D405F9
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp2.osuosl.org (Postfix) with ESMTPS id C6C4D405F9
+	for <acpica-devel@lists.linuxfoundation.org>; Mon, 19 Feb 2024 09:45:15 +0000 (UTC)
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TdcxZ6qlqz6K97K;
+	Mon, 19 Feb 2024 17:41:38 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id E8D83140DDB;
+	Mon, 19 Feb 2024 17:45:11 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 19 Feb
+ 2024 09:45:11 +0000
+Date: Mon, 19 Feb 2024 09:45:10 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
 To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: Robert Moore <robert.moore@intel.com>, "Rafael J . Wysocki"
-	<rafael.j.wysocki@intel.com>, Len Brown <lenb@kernel.org>,
-	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
-	linux-kernel@vger.kernel.org, ks0204.kim@samsung.com, wj28.lee@samsung.com,
-	alison.schofield@intel.com
-Subject: Re: [PATCH] ACPI: Fix CXL 3.0 structure (RDPAS) in the CEDT table
-Message-ID: <ZdLPG2J0jVgRo5/s@calab-Precision-7920-Tower>
+CC: Russell King <rmk+kernel@armlinux.org.uk>, <linux-pm@vger.kernel.org>,
+	<loongarch@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
+	<linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-riscv@lists.infradead.org>,
+	<kvmarm@lists.linux.dev>, <x86@kernel.org>,
+	<acpica-devel@lists.linuxfoundation.org>, <linux-csky@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>, <linux-ia64@vger.kernel.org>,
+	<linux-parisc@vger.kernel.org>, Salil Mehta <salil.mehta@huawei.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>, <jianyong.wu@arm.com>,
+	<justin.he@arm.com>, James Morse <james.morse@arm.com>
+Subject: Re: [PATCH RFC v4 01/15] ACPI: Only enumerate enabled (or
+ functional) processor devices
+Message-ID: <20240219094510.00004843@Huawei.com>
+In-Reply-To: <CAJZ5v0hY_LXp41WMVPhiLosPe7YVzF38Uz=EhmJqVwqFn==Upw@mail.gmail.com>
+References: <Zbp5xzmFhKDAgHws@shell.armlinux.org.uk>
+	<E1rVDmP-0027YJ-EW@rmk-PC.armlinux.org.uk>
+	<CAJZ5v0hY_LXp41WMVPhiLosPe7YVzF38Uz=EhmJqVwqFn==Upw@mail.gmail.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0gusbAKRQVCgbvK7A6G8KQ5piNdUS=Sm3H2tWiSp-beGQ@mail.gmail.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrKJsWRmVeSWpSXmKPExsWy7bCmqe7/c5dSDRbelbV4Nvcdi8XdxxfY
-	LI7u4bDY+fAtm8Xyff2MFpd3zWGzeLziLbvF3C9TmS1WfprCYrHx/js2By6PxXteMnlsWtXJ
-	5vFi80xGj74tqxg9Pm+SC2CNyrbJSE1MSS1SSM1Lzk/JzEu3VfIOjneONzUzMNQ1tLQwV1LI
-	S8xNtVVy8QnQdcvMATpKSaEsMacUKBSQWFyspG9nU5RfWpKqkJFfXGKrlFqQklNgXqBXnJhb
-	XJqXrpeXWmJlaGBgZApUmJCd0f4luuABf0XvsXPsDYxHeboYOTkkBEwkVq97zQhiCwnsYZR4
-	sVCli5ELyP7EKPHnw3UWCOcbo8TsSQfZuxg5wDqaOysg4nsZJaa8fMoK4fxglHj8awELyCgW
-	AVWJOe0PWUFsNgE1iYX3LzGD2CIC2hJLFl0Fs5kFFjNJdLdmgtjCAl4Sb3b3gPXyClhKPFvX
-	BGULSpyc+QTM5hQIlLhyfBs7yDIJgakcEvvuTmGE+MFF4sjKOcwQtrDEq+Nb2CFsKYmX/W1Q
-	V+dLfNrJAhEukJjVs5YJwjaWeHfzOSvEPRkS7yffYoIoV5Y4cosFIswn0XH4L9QUXomONiGI
-	TiWJ/R2tUEslJO6cuAx1jIfEgT9H2SFBcoVRonXZCsYJjHKzkHwzC8m2WUBjmQU0Jdbv0ocI
-	y0s0b53NDBGWllj+jwNJxQJGtlWMUqkFxbnpqclGBYa6eanl8MhOzs/dxAhOr1q+Oxhfr/+r
-	d4iRiYPxEKMEB7OSCK9704VUId6UxMqq1KL8+KLSnNTiQ4ymwJiayCwlmpwPTPB5JfGGJpYG
-	JmZmhuZGpgbmSuK891rnpggJpCeWpGanphakFsH0MXFwSjUwcfS9nB6UwV/PWnvqKNu2p7dM
-	Th/j8nVOifr7skV5geOih/nRXIumlV9477a2z7jqd9qfGb3HLY9cPvxTYsf5abUGB/6dLD8b
-	tifkPYND1invs7q7+BkSjj5mknts4LvuvlHaPiWLwtlenyseH5BdI7/7kLRhbyDXxXPKconT
-	97075qkd2W2ZsqdWi2Hif4/tz2/Za7MeWvVlXdWMPyX+8ufeVRyN+PxVvHLaotSHl1TLtp8S
-	EfiWkjNj0Z5o7mmKL++unPPY7QjX39VBq4MeNvSUbF5vaTS/17axpVra4+QPpYUZz9vMawJk
-	rnMEnX3HMe3nO7Nj1U+msPB0Kh8sWyoWsK535+Rbv5c/viTHUavEUpyRaKjFXFScCAAIgKL+
-	OAQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrOLMWRmVeSWpSXmKPExsWy7bCSnO6/c5dSDZbMU7B4Nvcdi8XdxxfY
-	LI7u4bDY+fAtm8Xyff2MFpd3zWGzeLziLbvF3C9TmS1WfprCYrHx/js2By6PxXteMnlsWtXJ
-	5vFi80xGj74tqxg9Pm+SC2CN4rJJSc3JLEst0rdL4MqYvGwzW0ETb8XxjzwNjM1cXYwcHBIC
-	JhLNnRVdjFwcQgK7GSVWbP3A3MXICRSXkFj8eCcThC0scb/lCCtE0TdGiUfbjjGCJFgEVCXm
-	tD9kBbHZBNQkFt6/BNYsIqAtsWTRVWaQBmaBpUwSvZfWgBUJC3hJvNndwwJi8wpYSjxb18QC
-	MfUKo0TLvCVQCUGJkzOfgNnMAuoSf+aBTOUAsqUllv/jgAjLSzRvnQ22jFMgUOLK8W3sExgF
-	ZyHpnoWkexZC9ywk3QsYWVYxSqYWFOem5xYbFhjmpZbrFSfmFpfmpesl5+duYgTHjZbmDsbt
-	qz7oHWJk4mA8xCjBwawkwuvedCFViDclsbIqtSg/vqg0J7X4EKM0B4uSOK/4i94UIYH0xJLU
-	7NTUgtQimCwTB6dUA1PS1MefE7gCAg8zmLnpH/vSFlCb6zsj/rkq55GH4WWlb8s2LDm43iDM
-	PfTyVlvjtysO/2EvmPzTXHHP6pOMHrMfPJ70hedVVbEV/78TMztCVj6vKZ9eacN6ft8Nn8qK
-	m90izpa+7998u8NgJn/gfEXQjbgltnzSMoeFnq5vsv/Rs+xhdHz/dI1FhnOvx/GfWKT/6uHG
-	TEW+lrO/t9a90H0qWf1LZeXNy4fkLXarqdX+C12zSyFMbZnknp9Och7lCgxlukF3XVVXTuEr
-	/c456+OdD5s9v27YN3Mtp9/OKM9iqQNzWMyeh0U488/KXHVlraLJQ9tPBg/PpsoHJnTOFRMt
-	uW/wJeGh7RqlJUt23lqmxFKckWioxVxUnAgAUvtKAgoDAAA=
-X-CMS-MailID: 20240219034606epcas2p4f1cd412efcb12d3b0e6ea0377f8aceae
-X-Msg-Generator: CA
-Content-Type: multipart/mixed;
-	boundary="----BUp_ENxb-nhquF.XJ9b44EtHNmvLAWOaNa9oXIBU2Tjzxkvf=_e9aa1_"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20240216072906epcas2p407a2f85aca1b9b8677fb8aa458c53aa6
-References: <CGME20240216072906epcas2p407a2f85aca1b9b8677fb8aa458c53aa6@epcas2p4.samsung.com>
-	<20240216072931.34305-1-hj96.nam@samsung.com>
-	<CAJZ5v0gusbAKRQVCgbvK7A6G8KQ5piNdUS=Sm3H2tWiSp-beGQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-------BUp_ENxb-nhquF.XJ9b44EtHNmvLAWOaNa9oXIBU2Tjzxkvf=_e9aa1_
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: inline
+On Thu, 15 Feb 2024 21:10:39 +0100
+"Rafael J. Wysocki" <rafael@kernel.org> wrote:
 
-On Fri, Feb 16, 2024 at 07:39:15PM +0100, Rafael J. Wysocki wrote:
-> On Fri, Feb 16, 2024 at 8:29 AM <hj96.nam@samsung.com> wrote:
+> On Wed, Jan 31, 2024 at 5:49=E2=80=AFPM Russell King <rmk+kernel@armlinux=
+.org.uk> wrote:
 > >
-> > From: Hojin Nam <hj96.nam@samsung.com>
+> > From: James Morse <james.morse@arm.com>
 > >
-> > struct acpi_cedt_rdpas does not match with CXL r3.0 9.17.1.5
-> > Table 9-24. reserved1 and length fields are already added by
-> > struct acpi_cedt_header.
+> > Today the ACPI enumeration code 'visits' all devices that are present.
 > >
-> > Signed-off-by: Hojin Nam <hj96.nam@samsung.com>
+> > This is a problem for arm64, where CPUs are always present, but not
+> > always enabled. When a device-check occurs because the firmware-policy
+> > has changed and a CPU is now enabled, the following error occurs:
+> > | acpi ACPI0007:48: Enumeration failure
+> >
+> > This is ultimately because acpi_dev_ready_for_enumeration() returns
+> > true for a device that is not enabled. The ACPI Processor driver
+> > will not register such CPUs as they are not 'decoding their resources'.
+> >
+> > ACPI allows a device to be functional instead of maintaining the
+> > present and enabled bit, but we can't simply check the enabled bit
+> > for all devices since firmware can be buggy.
+> >
+> > If ACPI indicates that the device is present and enabled, then all well
+> > and good, we can enumate it. However, if the device is present and not
+> > enabled, then we also check whether the device is a processor device
+> > to limit the impact of this new check to just processor devices.
+> >
+> > This avoids enumerating present && functional processor devices that
+> > are not enabled.
+> >
+> > Signed-off-by: James Morse <james.morse@arm.com>
+> > Co-developed-by: Rafael J. Wysocki <rjw@rjwysocki.net>
+> > Tested-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 > > ---
-> >  include/acpi/actbl1.h | 2 --
-> 
-> This file is part of ACPICA which is a separate project whose code is
-> used by the Linux kernel.  In order to make changes in the ACPICA
-> code, please submit a pull request to the upstream ACPICA project on
-> GitHub.  Once this pull request is merged, you can send a
-> corresponding Linux patch with a Link: tag pointing to it.  However,
-> it is not necessary to do so, as the changes will be automatically
-> included into the ACPICA code in the kernel once a new version of
-> ACPICA is out.
->
-
-I submitted PR to the ACPICA project on Github[1].
-Thanks for the guide!
-
-Link: https://github.com/acpica/acpica/pull/928 [1]
- 
-> >  1 file changed, 2 deletions(-)
+> > Changes since RFC v2:
+> >  * Incorporate comment suggestion by Gavin Shan.
+> > Changes since RFC v3:
+> >  * Fixed "sert" typo.
+> > Changes since RFC v3 (smaller series):
+> >  * Restrict checking the enabled bit to processor devices, update
+> >    commit comments.
+> >  * Use Rafael's suggestion in
+> >    https://lore.kernel.org/r/5760569.DvuYhMxLoT@kreacher
+> >  * Updated with a fix - see:
+> >    https://lore.kernel.org/all/Zbe8WQRASx6D6RaG@shell.armlinux.org.uk/
+> > ---
+> >  drivers/acpi/acpi_processor.c | 11 +++++++++
+> >  drivers/acpi/device_pm.c      |  2 +-
+> >  drivers/acpi/device_sysfs.c   |  2 +-
+> >  drivers/acpi/internal.h       |  4 ++-
+> >  drivers/acpi/property.c       |  2 +-
+> >  drivers/acpi/scan.c           | 46 +++++++++++++++++++++++++++--------
+> >  6 files changed, 53 insertions(+), 14 deletions(-)
 > >
-> > diff --git a/include/acpi/actbl1.h b/include/acpi/actbl1.h
-> > index a33375e055ad..7aff8c39dbd6 100644
-> > --- a/include/acpi/actbl1.h
-> > +++ b/include/acpi/actbl1.h
-> > @@ -571,8 +571,6 @@ struct acpi_cedt_cxims {
+> > diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processo=
+r.c
+> > index 4fe2ef54088c..cf7c1cca69dd 100644
+> > --- a/drivers/acpi/acpi_processor.c
+> > +++ b/drivers/acpi/acpi_processor.c
+> > @@ -626,6 +626,17 @@ static struct acpi_scan_handler processor_handler =
+=3D {
+> >         },
+> >  };
 > >
-> >  struct acpi_cedt_rdpas {
-> >         struct acpi_cedt_header header;
-> > -       u8 reserved1;
-> > -       u16 length;
-> >         u16 segment;
-> >         u16 bdf;
-> >         u8 protocol;
+> > +bool acpi_device_is_processor(const struct acpi_device *adev)
+> > +{
+> > +       if (adev->device_type =3D=3D ACPI_BUS_TYPE_PROCESSOR)
+> > +               return true;
+> > +
+> > +       if (adev->device_type !=3D ACPI_BUS_TYPE_DEVICE)
+> > +               return false;
+> > +
+> > +       return acpi_scan_check_handler(adev, &processor_handler);
+> > +}
+> > +
+> >  static int acpi_processor_container_attach(struct acpi_device *dev,
+> >                                            const struct acpi_device_id =
+*id)
+> >  {
+> > diff --git a/drivers/acpi/device_pm.c b/drivers/acpi/device_pm.c
+> > index 3b4d048c4941..e3c80f3b3b57 100644
+> > --- a/drivers/acpi/device_pm.c
+> > +++ b/drivers/acpi/device_pm.c
+> > @@ -313,7 +313,7 @@ int acpi_bus_init_power(struct acpi_device *device)
+> >                 return -EINVAL;
 > >
-> > base-commit: d37e1e4c52bc60578969f391fb81f947c3e83118
-> > --
-> > 2.34.1
+> >         device->power.state =3D ACPI_STATE_UNKNOWN;
+> > -       if (!acpi_device_is_present(device)) {
+> > +       if (!acpi_dev_ready_for_enumeration(device)) {
+> >                 device->flags.initialized =3D false;
+> >                 return -ENXIO;
+> >         }
+> > diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
+> > index 23373faa35ec..a0256d2493a7 100644
+> > --- a/drivers/acpi/device_sysfs.c
+> > +++ b/drivers/acpi/device_sysfs.c
+> > @@ -141,7 +141,7 @@ static int create_pnp_modalias(const struct acpi_de=
+vice *acpi_dev, char *modalia
+> >         struct acpi_hardware_id *id;
 > >
-> 
+> >         /* Avoid unnecessarily loading modules for non present devices.=
+ */
+> > -       if (!acpi_device_is_present(acpi_dev))
+> > +       if (!acpi_dev_ready_for_enumeration(acpi_dev))
+> >                 return 0;
+> >
+> >         /*
+> > diff --git a/drivers/acpi/internal.h b/drivers/acpi/internal.h
+> > index 6588525c45ef..1bc8b6db60c5 100644
+> > --- a/drivers/acpi/internal.h
+> > +++ b/drivers/acpi/internal.h
+> > @@ -62,6 +62,8 @@ void acpi_sysfs_add_hotplug_profile(struct acpi_hotpl=
+ug_profile *hotplug,
+> >  int acpi_scan_add_handler_with_hotplug(struct acpi_scan_handler *handl=
+er,
+> >                                        const char *hotplug_profile_name=
+);
+> >  void acpi_scan_hotplug_enabled(struct acpi_hotplug_profile *hotplug, b=
+ool val);
+> > +bool acpi_scan_check_handler(const struct acpi_device *adev,
+> > +                            struct acpi_scan_handler *handler);
+> >
+> >  #ifdef CONFIG_DEBUG_FS
+> >  extern struct dentry *acpi_debugfs_dir;
+> > @@ -121,7 +123,6 @@ int acpi_device_setup_files(struct acpi_device *dev=
+);
+> >  void acpi_device_remove_files(struct acpi_device *dev);
+> >  void acpi_device_add_finalize(struct acpi_device *device);
+> >  void acpi_free_pnp_ids(struct acpi_device_pnp *pnp);
+> > -bool acpi_device_is_present(const struct acpi_device *adev);
+> >  bool acpi_device_is_battery(struct acpi_device *adev);
+> >  bool acpi_device_is_first_physical_node(struct acpi_device *adev,
+> >                                         const struct device *dev);
+> > @@ -133,6 +134,7 @@ int acpi_bus_register_early_device(int type);
+> >  const struct acpi_device *acpi_companion_match(const struct device *de=
+v);
+> >  int __acpi_device_uevent_modalias(const struct acpi_device *adev,
+> >                                   struct kobj_uevent_env *env);
+> > +bool acpi_device_is_processor(const struct acpi_device *adev);
+> >
+> >  /* -------------------------------------------------------------------=
+-------
+> >                                    Power Resource
+> > diff --git a/drivers/acpi/property.c b/drivers/acpi/property.c
+> > index a6ead5204046..9f8d54038770 100644
+> > --- a/drivers/acpi/property.c
+> > +++ b/drivers/acpi/property.c
+> > @@ -1486,7 +1486,7 @@ static bool acpi_fwnode_device_is_available(const=
+ struct fwnode_handle *fwnode)
+> >         if (!is_acpi_device_node(fwnode))
+> >                 return false;
+> >
+> > -       return acpi_device_is_present(to_acpi_device_node(fwnode));
+> > +       return acpi_dev_ready_for_enumeration(to_acpi_device_node(fwnod=
+e));
+> >  }
+> >
+> >  static const void *
+> > diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+> > index e6ed1ba91e5c..fd2e8b3a5749 100644
+> > --- a/drivers/acpi/scan.c
+> > +++ b/drivers/acpi/scan.c
+> > @@ -304,7 +304,7 @@ static int acpi_scan_device_check(struct acpi_devic=
+e *adev)
+> >         int error;
+> >
+> >         acpi_bus_get_status(adev);
+> > -       if (acpi_device_is_present(adev)) {
+> > +       if (acpi_dev_ready_for_enumeration(adev)) {
+> >                 /*
+> >                  * This function is only called for device objects for =
+which
+> >                  * matching scan handlers exist.  The only situation in=
+ which
+> > @@ -338,7 +338,7 @@ static int acpi_scan_bus_check(struct acpi_device *=
+adev, void *not_used)
+> >         int error;
+> >
+> >         acpi_bus_get_status(adev);
+> > -       if (!acpi_device_is_present(adev)) {
+> > +       if (!acpi_dev_ready_for_enumeration(adev)) {
+> >                 acpi_scan_device_not_enumerated(adev);
+> >                 return 0;
+> >         }
+> > @@ -1917,11 +1917,6 @@ static bool acpi_device_should_be_hidden(acpi_ha=
+ndle handle)
+> >         return true;
+> >  }
+> >
+> > -bool acpi_device_is_present(const struct acpi_device *adev)
+> > -{
+> > -       return adev->status.present || adev->status.functional;
+> > -}
+> > -
+> >  static bool acpi_scan_handler_matching(struct acpi_scan_handler *handl=
+er,
+> >                                        const char *idstr,
+> >                                        const struct acpi_device_id **ma=
+tchid)
+> > @@ -1942,6 +1937,18 @@ static bool acpi_scan_handler_matching(struct ac=
+pi_scan_handler *handler,
+> >         return false;
+> >  }
+> >
+> > +bool acpi_scan_check_handler(const struct acpi_device *adev,
+> > +                            struct acpi_scan_handler *handler)
+> > +{
+> > +       struct acpi_hardware_id *hwid;
+> > +
+> > +       list_for_each_entry(hwid, &adev->pnp.ids, list)
+> > +               if (acpi_scan_handler_matching(handler, hwid->id, NULL))
+> > +                       return true;
+> > +
+> > +       return false;
+> > +}
+> > +
+> >  static struct acpi_scan_handler *acpi_scan_match_handler(const char *i=
+dstr,
+> >                                         const struct acpi_device_id **m=
+atchid)
+> >  {
+> > @@ -2405,16 +2412,35 @@ EXPORT_SYMBOL_GPL(acpi_dev_clear_dependencies);
+> >   * acpi_dev_ready_for_enumeration - Check if the ACPI device is ready =
+for enumeration
+> >   * @device: Pointer to the &struct acpi_device to check
+> >   *
+> > - * Check if the device is present and has no unmet dependencies.
+> > + * Check if the device is functional or enabled and has no unmet depen=
+dencies.
+> >   *
+> > - * Return true if the device is ready for enumeratino. Otherwise, retu=
+rn false.
+> > + * Return true if the device is ready for enumeration. Otherwise, retu=
+rn false.
+> >   */
+> >  bool acpi_dev_ready_for_enumeration(const struct acpi_device *device)
+> >  {
+> >         if (device->flags.honor_deps && device->dep_unmet)
+> >                 return false;
+> >
+> > -       return acpi_device_is_present(device);
+> > +       /*
+> > +        * ACPI 6.5's 6.3.7 "_STA (Device Status)" allows firmware to r=
+eturn
+> > +        * (!present && functional) for certain types of devices that s=
+hould be
+> > +        * enumerated. Note that the enabled bit should not be set unle=
+ss the
+> > +        * present bit is set.
+> > +        *
+> > +        * However, limit this only to processor devices to reduce poss=
+ible
+> > +        * regressions with firmware.
+> > +        */
+> > +       if (!device->status.present)
+> > +               return device->status.functional;
+> > +
+> > +       /*
+> > +        * Fast path - if enabled is set, avoid the more expensive test=
+ to
+> > +        * check whether this device is a processor.
+> > +        */
+> > +       if (device->status.enabled)
+> > +               return true;
+> > +
+> > +       return !acpi_device_is_processor(device);
+> >  }
+> >  EXPORT_SYMBOL_GPL(acpi_dev_ready_for_enumeration);
+> >
+> > -- =20
+>=20
+> I can queue this up for 6.9 as it looks like the rest of the series
+> will still need some work.  What do you think?
 
-------BUp_ENxb-nhquF.XJ9b44EtHNmvLAWOaNa9oXIBU2Tjzxkvf=_e9aa1_
-Content-Type: text/plain; charset="utf-8"
+The sooner this goes in the sooner we discover if some of the bios bug
+workarounds we have dropped form the series are in reality necessary
+(i.e. get it into big board test farms).
 
+So I'm definitely keen to see this go in for 6.9.
 
-------BUp_ENxb-nhquF.XJ9b44EtHNmvLAWOaNa9oXIBU2Tjzxkvf=_e9aa1_--
+Hopefully we can make rapid progress on the rest of the series and
+hammer out which of the remaining subtle differences between
+the two flows are real vs code evolution issues.
+
+Jonathan
