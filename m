@@ -1,254 +1,276 @@
-Received: from smtp3.osuosl.org (smtp3.osuosl.org [140.211.166.136])
+Received: from smtp4.osuosl.org (smtp4.osuosl.org [140.211.166.137])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CD6078B69
-	for <acpica-devel@lists.linuxfoundation.org>; Tue, 20 Feb 2024 16:24:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1502714AD11
+	for <acpica-devel@lists.linuxfoundation.org>; Tue, 20 Feb 2024 19:59:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.137
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708446257; cv=none; b=inZQmNpXTQNM4uqICUlhx0AOfiTRL9Fwoixj3zttdNx4XfCCLswbe6nUT6xNFaZ0jGGNaDfStB1nfw5h1djbtCvrRW/rlRvy0te/MMFVkmh3F+rY0aiUkRbbHRVr6aJnJlTfF6R10HjawH58tZCjKCRgRClV5+Jz1492f0bwsKc=
+	t=1708459166; cv=none; b=Sla14Bo4bgHIeTMqsp9pP91z8DNrQuks7mlLuD+96aaPFpqB9lM4LfC9wZG0PTjadb5DPS+1mx5A7NVB+P2KgmZ4ZOScivkAPnEcK5ghQ1qYe7iomqfiK9udZgGh1km5ePM+4EzygPC0Ub8QEb2T+MfSaIFx4vI4MtVg/dD6RuY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708446257; c=relaxed/simple;
-	bh=X1LmlBpp9/hB3Wl48tFmyVRbajeTNCx4reU1tnbF/qg=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Oo1kpJWlr/uMcYuO15Nlfltl3pDKwcGqLVlmHfnub/X3HeImkkg4gdc4yNEV+lU4PSq8pbUc2zV+/QhcdYPOR14QdEZfcf0IL+IdQg+4p4hoSu5tfML6hBQN+yCHtCPHGJvOMUCvM5oaBPKcAGfFacxZHMZH+4V9kFDysMWbXnQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.136
+	s=arc-20240116; t=1708459166; c=relaxed/simple;
+	bh=gTFvzomr2SRYgEzay2hZVATAf6NMiZMviM+Vp+HoWxw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BRSnsb2WAqR5VS5FXEN44MHiwJ0/vpFRXfuC1HrLvgz4vn0syscDA/bAxvHSMAEgilw+AyXp5Uc3KdJTwLCOYuzCsI9oEPS+ylpXUKd5q3Vn2fwPk7LU31lyYFyy2Rh8EqKTmdSLi2ZS/GzwPQbC4vuTk5UsztRjCWqf3bdyjMc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.137
 Received: from localhost (localhost [127.0.0.1])
-	by smtp3.osuosl.org (Postfix) with ESMTP id E703260684
-	for <acpica-devel@lists.linuxfoundation.org>; Tue, 20 Feb 2024 16:24:14 +0000 (UTC)
+	by smtp4.osuosl.org (Postfix) with ESMTP id A1B51416B4
+	for <acpica-devel@lists.linuxfoundation.org>; Tue, 20 Feb 2024 19:59:23 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at osuosl.org
 X-Spam-Flag: NO
-X-Spam-Score: -4.198
+X-Spam-Score: -1.398
 X-Spam-Level:
-Received: from smtp3.osuosl.org ([127.0.0.1])
-	by localhost (smtp3.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id aS8MHPHqZNWc
+Received: from smtp4.osuosl.org ([127.0.0.1])
+	by localhost (smtp4.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id pO6wnb1Hl1r9
 	for <acpica-devel@lists.linuxfoundation.org>;
-	Tue, 20 Feb 2024 16:24:13 +0000 (UTC)
-Received-SPF: Pass (mailfrom) identity=mailfrom; client-ip=185.176.79.56; helo=frasgout.his.huawei.com; envelope-from=jonathan.cameron@huawei.com; receiver=<UNKNOWN> 
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp3.osuosl.org 2624760666
-Authentication-Results: smtp3.osuosl.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 2624760666
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-	by smtp3.osuosl.org (Postfix) with ESMTPS id 2624760666
-	for <acpica-devel@lists.linuxfoundation.org>; Tue, 20 Feb 2024 16:24:11 +0000 (UTC)
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TfPkb0bShz6J9dD;
-	Wed, 21 Feb 2024 00:19:51 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 6B52E1400DD;
-	Wed, 21 Feb 2024 00:24:08 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 20 Feb
- 2024 16:24:07 +0000
-Date: Tue, 20 Feb 2024 16:24:06 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-CC: "Rafael J. Wysocki" <rafael@kernel.org>, <linux-pm@vger.kernel.org>,
-	<loongarch@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
-	<linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-riscv@lists.infradead.org>,
-	<kvmarm@lists.linux.dev>, <x86@kernel.org>,
-	<acpica-devel@lists.linuxfoundation.org>, <linux-csky@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>, <linux-ia64@vger.kernel.org>,
-	<linux-parisc@vger.kernel.org>, Salil Mehta <salil.mehta@huawei.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>, <jianyong.wu@arm.com>,
-	<justin.he@arm.com>, James Morse <james.morse@arm.com>
-Subject: Re: [PATCH RFC v4 02/15] ACPI: processor: Register all CPUs from
- acpi_processor_get_info()
-Message-ID: <20240220162406.00005b59@Huawei.com>
-In-Reply-To: <ZdTBtt0oR6Q1RcAB@shell.armlinux.org.uk>
-References: <Zbp5xzmFhKDAgHws@shell.armlinux.org.uk>
-	<E1rVDmU-0027YP-Jz@rmk-PC.armlinux.org.uk>
-	<CAJZ5v0iiJpUWq5GMSnKFWQTzn_bdwoQz9m=hDaXNg4Lj_ePF4g@mail.gmail.com>
-	<ZdSMk93c1I6x973h@shell.armlinux.org.uk>
-	<ZdTBtt0oR6Q1RcAB@shell.armlinux.org.uk>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	Tue, 20 Feb 2024 19:59:22 +0000 (UTC)
+Received-SPF: Pass (mailfrom) identity=mailfrom; client-ip=209.85.161.45; helo=mail-oo1-f45.google.com; envelope-from=rjwysocki@gmail.com; receiver=<UNKNOWN> 
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp4.osuosl.org 8B7BA416B1
+Authentication-Results: smtp4.osuosl.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 8B7BA416B1
+Received: from mail-oo1-f45.google.com (mail-oo1-f45.google.com [209.85.161.45])
+	by smtp4.osuosl.org (Postfix) with ESMTPS id 8B7BA416B1
+	for <acpica-devel@lists.linuxfoundation.org>; Tue, 20 Feb 2024 19:59:22 +0000 (UTC)
+Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-59a134e29d2so427379eaf.0
+        for <acpica-devel@lists.linuxfoundation.org>; Tue, 20 Feb 2024 11:59:22 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708459161; x=1709063961;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=c+V6DSEmqeSEaDPjDjO9NLLJHviZ8vUVb/gdG26wrMI=;
+        b=qQwVvLsyNnD8gD5mPcGQf82AzsAb/pHWLmAgLQb+E6OTKB2CIdXu1M6YIgQqZ4BGAI
+         YGUXMy+zGKxhgYVO4p+jiQ1D1T8zGj3P5ZoFjNxa1o4wPepUaCnl/J4o9ndRcOtEnGLb
+         vVKwe8PuKw24nYMz/GyrGqsob+HSq2I+tcU4yFO/CnVZUZriK/rK99MpL39YwqKr3nh1
+         +0ewPxImHwagLk56cnLI1lYLhwSY0h23IIC/ie646WoWr5TFnmRLJaORzv6at/mtoLD+
+         2RdJHJnzNyuCP/rijr5EPvE+58la9iTA3yaw9pj4Nh0i6TC2QfXVge8GvI/i82atIAnk
+         Pc2Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVrsoXsCDb9Agui/rsXerxY1Xaso6KTdudGulkRzj3VQKa/qG9njsCxpTjBU2+6bevTfPf7IlpQtdZmUVA4eeJlsviX03YCENgEAkNVTyVBYmGdqUCVgw==
+X-Gm-Message-State: AOJu0Yw6ZyTK1OujC9Vy+UtCHtQLk6gQ8U8KRoJf5EfR/9ljcFr/fG9g
+	HWOBuLCnpDvzS2e+JUwI1KaYjCcnVEAW6U/lkfPHUoFDu4qoFShJSgTm4l8rSFlo9aFCe5jRfEw
+	Ol4G0JtGudTnYmYomhdkcq/xsrwQ=
+X-Google-Smtp-Source: AGHT+IFEVWcuOTZaUbB0YtEa95vMeA6CLZt+FHpk+AcHJ2Mh/Pssv0ffdkJ0b+NvBNH99Q+SN4zocbYW2Cype01NQz0=
+X-Received: by 2002:a05:6820:1f8c:b0:59f:f650:61bb with SMTP id
+ eq12-20020a0568201f8c00b0059ff65061bbmr3732586oob.0.1708459161081; Tue, 20
+ Feb 2024 11:59:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+References: <Zbp5xzmFhKDAgHws@shell.armlinux.org.uk> <E1rVDmU-0027YP-Jz@rmk-PC.armlinux.org.uk>
+ <CAJZ5v0iiJpUWq5GMSnKFWQTzn_bdwoQz9m=hDaXNg4Lj_ePF4g@mail.gmail.com>
+ <ZdSMk93c1I6x973h@shell.armlinux.org.uk> <ZdTBtt0oR6Q1RcAB@shell.armlinux.org.uk>
+ <20240220162406.00005b59@Huawei.com>
+In-Reply-To: <20240220162406.00005b59@Huawei.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Tue, 20 Feb 2024 20:59:09 +0100
+Message-ID: <CAJZ5v0i0c3bg8E9yuRk00VAEW5isZ4N-mbnhRuTR8aiFLXo1_A@mail.gmail.com>
+Subject: Re: [PATCH RFC v4 02/15] ACPI: processor: Register all CPUs from acpi_processor_get_info()
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: "Russell King (Oracle)" <linux@armlinux.org.uk>, "Rafael J. Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org, 
+	loongarch@lists.linux.dev, linux-acpi@vger.kernel.org, 
+	linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-riscv@lists.infradead.org, 
+	kvmarm@lists.linux.dev, x86@kernel.org, 
+	acpica-devel@lists.linuxfoundation.org, linux-csky@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, Salil Mehta <salil.mehta@huawei.com>, 
+	Jean-Philippe Brucker <jean-philippe@linaro.org>, jianyong.wu@arm.com, justin.he@arm.com, 
+	James Morse <james.morse@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: lhrpeml100005.china.huawei.com (7.191.160.25) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Tue, 20 Feb 2024 15:13:58 +0000
-"Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
-
-> On Tue, Feb 20, 2024 at 11:27:15AM +0000, Russell King (Oracle) wrote:
-> > On Thu, Feb 15, 2024 at 08:22:29PM +0100, Rafael J. Wysocki wrote: =20
-> > > On Wed, Jan 31, 2024 at 5:50=E2=80=AFPM Russell King <rmk+kernel@arml=
-inux.org.uk> wrote: =20
-> > > > diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_proc=
-essor.c
-> > > > index cf7c1cca69dd..a68c475cdea5 100644
-> > > > --- a/drivers/acpi/acpi_processor.c
-> > > > +++ b/drivers/acpi/acpi_processor.c
-> > > > @@ -314,6 +314,18 @@ static int acpi_processor_get_info(struct acpi=
-_device *device)
-> > > >                         cpufreq_add_device("acpi-cpufreq");
-> > > >         }
+On Tue, Feb 20, 2024 at 5:24=E2=80=AFPM Jonathan Cameron
+<Jonathan.Cameron@huawei.com> wrote:
+>
+> On Tue, 20 Feb 2024 15:13:58 +0000
+> "Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
+>
+> > On Tue, Feb 20, 2024 at 11:27:15AM +0000, Russell King (Oracle) wrote:
+> > > On Thu, Feb 15, 2024 at 08:22:29PM +0100, Rafael J. Wysocki wrote:
+> > > > On Wed, Jan 31, 2024 at 5:50=E2=80=AFPM Russell King <rmk+kernel@ar=
+mlinux.org.uk> wrote:
+> > > > > diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_pr=
+ocessor.c
+> > > > > index cf7c1cca69dd..a68c475cdea5 100644
+> > > > > --- a/drivers/acpi/acpi_processor.c
+> > > > > +++ b/drivers/acpi/acpi_processor.c
+> > > > > @@ -314,6 +314,18 @@ static int acpi_processor_get_info(struct ac=
+pi_device *device)
+> > > > >                         cpufreq_add_device("acpi-cpufreq");
+> > > > >         }
+> > > > >
+> > > > > +       /*
+> > > > > +        * Register CPUs that are present. get_cpu_device() is us=
+ed to skip
+> > > > > +        * duplicate CPU descriptions from firmware.
+> > > > > +        */
+> > > > > +       if (!invalid_logical_cpuid(pr->id) && cpu_present(pr->id)=
+ &&
+> > > > > +           !get_cpu_device(pr->id)) {
+> > > > > +               int ret =3D arch_register_cpu(pr->id);
+> > > > > +
+> > > > > +               if (ret)
+> > > > > +                       return ret;
+> > > > > +       }
+> > > > > +
+> > > > >         /*
+> > > > >          *  Extra Processor objects may be enumerated on MP syste=
+ms with
+> > > > >          *  less than the max # of CPUs. They should be ignored _=
+iff
 > > > >
-> > > > +       /*
-> > > > +        * Register CPUs that are present. get_cpu_device() is used=
- to skip
-> > > > +        * duplicate CPU descriptions from firmware.
-> > > > +        */
-> > > > +       if (!invalid_logical_cpuid(pr->id) && cpu_present(pr->id) &&
-> > > > +           !get_cpu_device(pr->id)) {
-> > > > +               int ret =3D arch_register_cpu(pr->id);
-> > > > +
-> > > > +               if (ret)
-> > > > +                       return ret;
-> > > > +       }
-> > > > +
-> > > >         /*
-> > > >          *  Extra Processor objects may be enumerated on MP systems=
- with
-> > > >          *  less than the max # of CPUs. They should be ignored _if=
-f =20
-> > >=20
-> > > This is interesting, because right below there is the following code:
-> > >=20
-> > >     if (invalid_logical_cpuid(pr->id) || !cpu_present(pr->id)) {
-> > >         int ret =3D acpi_processor_hotadd_init(pr);
-> > >=20
-> > >         if (ret)
-> > >             return ret;
-> > >     }
-> > >=20
-> > > and acpi_processor_hotadd_init() essentially calls arch_register_cpu()
-> > > with some extra things around it (more about that below).
-> > >=20
-> > > I do realize that acpi_processor_hotadd_init() is defined under
-> > > CONFIG_ACPI_HOTPLUG_CPU, so for the sake of the argument let's
-> > > consider an architecture where CONFIG_ACPI_HOTPLUG_CPU is set.
-> > >=20
-> > > So why are the two conditionals that almost contradict each other both
-> > > needed?  It looks like the new code could be combined with
-> > > acpi_processor_hotadd_init() to do the right thing in all cases.
-> > >=20
-> > > Now, acpi_processor_hotadd_init() does some extra things that look
-> > > like they should be done by the new code too.
-> > >=20
-> > > 1. It checks invalid_phys_cpuid() which appears to be a good idea to =
-me.
-> > >=20
-> > > 2. It uses locking around arch_register_cpu() which doesn't seem
-> > > unreasonable either.
-> > >=20
-> > > 3. It calls acpi_map_cpu() and I'm not sure why this is not done by
-> > > the new code.
-> > >=20
-> > > The only thing that can be dropped from it is the _STA check AFAICS,
-> > > because acpi_processor_add() won't even be called if the CPU is not
-> > > present (and not enabled after the first patch).
-> > >=20
-> > > So why does the code not do 1 - 3 above? =20
-> >=20
-> > Honestly, I'm out of my depth with this and can't answer your
-> > questions - and I really don't want to try fiddling with this code
-> > because it's just too icky (even in its current form in mainline)
-> > to be understandable to anyone who hasn't gained a detailed knowledge
-> > of this code.
-> >=20
-> > It's going to require a lot of analysis - how acpi_map_cpuid() behaves
-> > in all circumstances, what this means for invalid_logical_cpuid() and
-> > invalid_phys_cpuid(), what paths will be taken in each case. This code
-> > is already just too hairy for someone who isn't an experienced ACPI
-> > hacker to be able to follow and I don't see an obvious way to make it
-> > more readable.
-> >=20
-> > James' additions make it even more complex and less readable. =20
->=20
-> As an illustration of the problems I'm having here, I was just writing
-> a reply to this with a suggestion of transforming this code ultimately
-> to:
->=20
-> 	if (!get_cpu_device(pr->id)) {
-> 		int ret;
->=20
-> 		if (!invalid_logical_cpuid(pr->id) && cpu_present(pr->id))
-> 			ret =3D acpi_processor_make_enabled(pr);
-> 		else
-> 			ret =3D acpi_processor_make_present(pr);
->=20
-> 		if (ret)
-> 			return ret;
-> 	}
->=20
-> (acpi_processor_make_present() would be acpi_processor_hotadd_init()
-> and acpi_processor_make_enabled() would be arch_register_cpu() at this
-> point.)
->=20
-> Then I realised that's a bad idea - because we really need to check
-> that pr->id is valid before calling get_cpu_device() on it, so this
-> won't work. That leaves us with:
->=20
-> 	int ret;
->=20
-> 	if (invalid_logical_cpuid(pr->id) || !cpu_present(pr->id)) {
-> 		/* x86 et.al. path */
-> 		ret =3D acpi_processor_make_present(pr);
-> 	} else if (!get_cpu_device(pr->id)) {
-> 		/* Arm64 path */
-> 		ret =3D acpi_processor_make_enabled(pr);
-> 	} else {
-> 		ret =3D 0;
-> 	}
->=20
-> 	if (ret)
-> 		return ret;
->=20
-> Now, the next transformation would be to move !get_cpu_device(pr->id)
-> into acpi_processor_make_enabled() which would eliminate one of those
-> if() legs.
->=20
-> Now, if we want to somehow make the call to arch_regster_cpu() common
-> in these two paths, the next question is what are the _precise_
-> semantics of acpi_map_cpu(), particularly with respect to it
-> modifying pr->id. Is it guaranteed to always give the same result
-> for the same processor described in ACPI? What acpi_map_cpu() anyway,
-> I can find no documentation for it.
->=20
-> Then there's the question whether calling acpi_unmap_cpu() should be
-> done on the failure path if arch_register_cpu() fails, which is done
-> for the x86 path but not the Arm64 path. Should it be done for the
-> Arm64 path? I've no idea, but as Arm64 doesn't implement either of
-> these two functions, I guess they could be stubbed out and thus be
-> no-ops - but then we open a hole where if pr->id is invalid, we
-> end up passing that invalid value to arch_register_cpu() which I'm
-> quite sure will explode with a negative CPU number.
->=20
-> So, to my mind, what you're effectively asking for is a total rewrite
-> of all the code in and called by acpi_processor_get_info()... and that
-> is not something I am willing to do (because it's too far outside of
-> my knowledge area.)
->=20
-> As I said in my reply to patch 1, I think your comments on patch 2
-> make Arm64 vcpu hotplug unachievable in a reasonable time frame, and
-> certainly outside the bounds of what I can do to progress this.
->=20
-> So, at this point I'm going to stand down from further participation
-> with this patch set as I believe I've reached the limit of what I can
-> do to progress it.
->=20
+> > > > This is interesting, because right below there is the following cod=
+e:
+> > > >
+> > > >     if (invalid_logical_cpuid(pr->id) || !cpu_present(pr->id)) {
+> > > >         int ret =3D acpi_processor_hotadd_init(pr);
+> > > >
+> > > >         if (ret)
+> > > >             return ret;
+> > > >     }
+> > > >
+> > > > and acpi_processor_hotadd_init() essentially calls arch_register_cp=
+u()
+> > > > with some extra things around it (more about that below).
+> > > >
+> > > > I do realize that acpi_processor_hotadd_init() is defined under
+> > > > CONFIG_ACPI_HOTPLUG_CPU, so for the sake of the argument let's
+> > > > consider an architecture where CONFIG_ACPI_HOTPLUG_CPU is set.
+> > > >
+> > > > So why are the two conditionals that almost contradict each other b=
+oth
+> > > > needed?  It looks like the new code could be combined with
+> > > > acpi_processor_hotadd_init() to do the right thing in all cases.
+> > > >
+> > > > Now, acpi_processor_hotadd_init() does some extra things that look
+> > > > like they should be done by the new code too.
+> > > >
+> > > > 1. It checks invalid_phys_cpuid() which appears to be a good idea t=
+o me.
+> > > >
+> > > > 2. It uses locking around arch_register_cpu() which doesn't seem
+> > > > unreasonable either.
+> > > >
+> > > > 3. It calls acpi_map_cpu() and I'm not sure why this is not done by
+> > > > the new code.
+> > > >
+> > > > The only thing that can be dropped from it is the _STA check AFAICS=
+,
+> > > > because acpi_processor_add() won't even be called if the CPU is not
+> > > > present (and not enabled after the first patch).
+> > > >
+> > > > So why does the code not do 1 - 3 above?
+> > >
+> > > Honestly, I'm out of my depth with this and can't answer your
+> > > questions - and I really don't want to try fiddling with this code
+> > > because it's just too icky (even in its current form in mainline)
+> > > to be understandable to anyone who hasn't gained a detailed knowledge
+> > > of this code.
+> > >
+> > > It's going to require a lot of analysis - how acpi_map_cpuid() behave=
+s
+> > > in all circumstances, what this means for invalid_logical_cpuid() and
+> > > invalid_phys_cpuid(), what paths will be taken in each case. This cod=
+e
+> > > is already just too hairy for someone who isn't an experienced ACPI
+> > > hacker to be able to follow and I don't see an obvious way to make it
+> > > more readable.
+> > >
+> > > James' additions make it even more complex and less readable.
+> >
+> > As an illustration of the problems I'm having here, I was just writing
+> > a reply to this with a suggestion of transforming this code ultimately
+> > to:
+> >
+> >       if (!get_cpu_device(pr->id)) {
+> >               int ret;
+> >
+> >               if (!invalid_logical_cpuid(pr->id) && cpu_present(pr->id)=
+)
+> >                       ret =3D acpi_processor_make_enabled(pr);
+> >               else
+> >                       ret =3D acpi_processor_make_present(pr);
+> >
+> >               if (ret)
+> >                       return ret;
+> >       }
+> >
+> > (acpi_processor_make_present() would be acpi_processor_hotadd_init()
+> > and acpi_processor_make_enabled() would be arch_register_cpu() at this
+> > point.)
+> >
+> > Then I realised that's a bad idea - because we really need to check
+> > that pr->id is valid before calling get_cpu_device() on it, so this
+> > won't work. That leaves us with:
+> >
+> >       int ret;
+> >
+> >       if (invalid_logical_cpuid(pr->id) || !cpu_present(pr->id)) {
+> >               /* x86 et.al. path */
+> >               ret =3D acpi_processor_make_present(pr);
+> >       } else if (!get_cpu_device(pr->id)) {
+> >               /* Arm64 path */
+> >               ret =3D acpi_processor_make_enabled(pr);
+> >       } else {
+> >               ret =3D 0;
+> >       }
+> >
+> >       if (ret)
+> >               return ret;
+> >
+> > Now, the next transformation would be to move !get_cpu_device(pr->id)
+> > into acpi_processor_make_enabled() which would eliminate one of those
+> > if() legs.
+> >
+> > Now, if we want to somehow make the call to arch_regster_cpu() common
+> > in these two paths, the next question is what are the _precise_
+> > semantics of acpi_map_cpu(), particularly with respect to it
+> > modifying pr->id. Is it guaranteed to always give the same result
+> > for the same processor described in ACPI? What acpi_map_cpu() anyway,
+> > I can find no documentation for it.
+> >
+> > Then there's the question whether calling acpi_unmap_cpu() should be
+> > done on the failure path if arch_register_cpu() fails, which is done
+> > for the x86 path but not the Arm64 path. Should it be done for the
+> > Arm64 path? I've no idea, but as Arm64 doesn't implement either of
+> > these two functions, I guess they could be stubbed out and thus be
+> > no-ops - but then we open a hole where if pr->id is invalid, we
+> > end up passing that invalid value to arch_register_cpu() which I'm
+> > quite sure will explode with a negative CPU number.
+> >
+> > So, to my mind, what you're effectively asking for is a total rewrite
+> > of all the code in and called by acpi_processor_get_info()... and that
+> > is not something I am willing to do (because it's too far outside of
+> > my knowledge area.)
+> >
+> > As I said in my reply to patch 1, I think your comments on patch 2
+> > make Arm64 vcpu hotplug unachievable in a reasonable time frame, and
+> > certainly outside the bounds of what I can do to progress this.
+> >
+> > So, at this point I'm going to stand down from further participation
+> > with this patch set as I believe I've reached the limit of what I can
+> > do to progress it.
+> >
+>
+> Thanks for your hard work on this Russell - we have moved forwards.
+>
+> Short of anyone else stepping up I'll pick this up with
+> the help of some my colleagues. As such I'm keen on getting patch
+> 1 upstream ASAP so that we can exclude the need for some of the
+> other workarounds from earlier versions of this series (the ones
+> dropped before now).
 
-Thanks for your hard work on this Russell - we have moved forwards.
+Applied (as 6.9 material).
 
-Short of anyone else stepping up I'll pick this up with
-the help of some my colleagues. As such I'm keen on getting patch
-1 upstream ASAP so that we can exclude the need for some of the
-other workarounds from earlier versions of this series (the ones
-dropped before now).
+> We will need a little time to get up to speed on the current status
+> and discussion points Russell raises above.
 
-We will need a little time to get up to speed on the current status
-and discussion points Russell raises above.
+Sure.
 
-Jonathan
+I'm planning to send comments for some other patches in the series this wee=
+k.
 
-
+Thanks!
