@@ -1,62 +1,62 @@
-Received: from smtp4.osuosl.org (smtp4.osuosl.org [140.211.166.137])
+Received: from smtp3.osuosl.org (smtp3.osuosl.org [140.211.166.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D041657DF
-	for <acpica-devel@lists.linuxfoundation.org>; Tue, 20 Feb 2024 11:27:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.137
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A888A66B4D
+	for <acpica-devel@lists.linuxfoundation.org>; Tue, 20 Feb 2024 11:30:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708428468; cv=none; b=BIJZ13ILlv0igwuBB5T4V9vAd1tzuyxl/+0coRJOPMgE5FipkTXEXd/uv3RWh99KcolCiVBHitxhOpvnBDaz+myJcrrI2wbJQfF5IoLh7yeKlOFA/tBAE+CrQ2w3XZQXb6ZcbLUEi+6o4qqtePGrvU9lYgIkSJgVJ2YYrwrwGlg=
+	t=1708428642; cv=none; b=IzHqeyWQNseMDQ02m0a/IEzF79GH5F9l33Ku8N1wiY45lOOgh/kHNNbzq+x3zsErfxsTyqKghSIdQ+yj6LLUAeSxc/DOvBTYmomC9824d/BHA4VyjvMB98IYwjaYaFGCGcZztNz9UZQiv+lIJT25yw9AmifvEgG6/YWmISDeZJc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708428468; c=relaxed/simple;
-	bh=Mipp2WNrLFK4BBvNJ8I27aEf24TMVYEu5ip2QcqVhxI=;
+	s=arc-20240116; t=1708428642; c=relaxed/simple;
+	bh=+DvpbPLBThjvTjdhN6hhOmNTy8Eu3RCG1WwHjSmI7lA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B/Oe59fMphj1MOTBbhlUmw49J/7OxcKL10QTFLLafUjIoO1AMi6+wLZ1Gq5wZs/9zDgf4Zp62Y+8B2J09hSTJ/wET/szOW7TqzFTAkHXsgCKXj3otYDSjwJbDyKKkXPsXUP/rxWz97GqLLThEPuck49fZ9Ec+HR087pWFsdLYRE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=O6lRSVZh; arc=none smtp.client-ip=140.211.166.137
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q7UswAEELYv+xCkVEVp6f/+EkPQdkegGJXl1Ki+28z25DYdRxSpNwFgJ5D7I+bC9IenNk1AtJLjF1SpmGakXxdraVwBrg+9Gci7wmq6iLjlvs+1kvZ93J/5pLt8eIThlGZQFPIl5yLgu35i1plj9eaZKmhUveQM5uBN6J1I1PEw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=fsSLVnDr; arc=none smtp.client-ip=140.211.166.136
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="O6lRSVZh"
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="fsSLVnDr"
 Received: from localhost (localhost [127.0.0.1])
-	by smtp4.osuosl.org (Postfix) with ESMTP id A789B403EC
-	for <acpica-devel@lists.linuxfoundation.org>; Tue, 20 Feb 2024 11:27:46 +0000 (UTC)
+	by smtp3.osuosl.org (Postfix) with ESMTP id 3E87660816
+	for <acpica-devel@lists.linuxfoundation.org>; Tue, 20 Feb 2024 11:30:41 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at osuosl.org
 X-Spam-Flag: NO
 X-Spam-Score: -2.098
 X-Spam-Level:
-Received: from smtp4.osuosl.org ([127.0.0.1])
-	by localhost (smtp4.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id ME0znmebxzhY
+Received: from smtp3.osuosl.org ([127.0.0.1])
+	by localhost (smtp3.osuosl.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id L6HNXuixZ6A6
 	for <acpica-devel@lists.linuxfoundation.org>;
-	Tue, 20 Feb 2024 11:27:45 +0000 (UTC)
+	Tue, 20 Feb 2024 11:30:40 +0000 (UTC)
 Received-SPF: None (mailfrom) identity=mailfrom; client-ip=2001:4d48:ad52:32c8:5054:ff:fe00:142; helo=pandora.armlinux.org.uk; envelope-from=linux+acpica-devel=lists.linuxfoundation.org@armlinux.org.uk; receiver=<UNKNOWN> 
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp4.osuosl.org 9A46940670
-Authentication-Results: smtp4.osuosl.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp4.osuosl.org 9A46940670
-Authentication-Results: smtp4.osuosl.org;
-	dkim=pass (2048-bit key, unprotected) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.a=rsa-sha256 header.s=pandora-2019 header.b=O6lRSVZh
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp3.osuosl.org 0F2AE6078C
+Authentication-Results: smtp3.osuosl.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp3.osuosl.org 0F2AE6078C
+Authentication-Results: smtp3.osuosl.org;
+	dkim=pass (2048-bit key, unprotected) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.a=rsa-sha256 header.s=pandora-2019 header.b=fsSLVnDr
 Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-	by smtp4.osuosl.org (Postfix) with ESMTPS id 9A46940670
-	for <acpica-devel@lists.linuxfoundation.org>; Tue, 20 Feb 2024 11:27:42 +0000 (UTC)
+	by smtp3.osuosl.org (Postfix) with ESMTPS id 0F2AE6078C
+	for <acpica-devel@lists.linuxfoundation.org>; Tue, 20 Feb 2024 11:30:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
 	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
 	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=YAbiUOeHNTOOtMQq3T2dYQUt8NBgKEvDfS/NrGbV6TI=; b=O6lRSVZhxbh5i6u+BH25w3f3Cm
-	1Vw7wxiDSgvtyuvUnEQCtl4LHsD0HzY1J+QnwBBfWvzYrZnw4ZdEKbmD4OvhU0znyUN2QW3v3TQK6
-	acFANS/gPds8L+eRUinfOfYI/5P5/HHW8+MaTKOwBEFBIXcdD2h/rAjy4+NEGoLQ4VhzrvLbGSILa
-	e4bVQ4JEXiZ5ggyFjiYKM2SMFHyueGtUiByprCY7LB4A0i9T5NoqAM9yDfSyA8mANNn7sjoowzKXf
-	gZg39Bgc4AYxKTEmwc/LOvXE0VrkkOYgYtUo08k1FAqXJPZDFh0Fdt9VSeb+Bh6zHM/C3MKPJvsVF
-	UW/+AtXw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54660)
+	bh=8IV/wZQmZmc4s7oLURGMbrTnuZsGulpwAe3ozx8f5sY=; b=fsSLVnDrrExhI/ODinstjQY7lP
+	HmvWm3h/RGYKlbPxL1A0a3vxKmj936BI7nB63cCc77mwlQtB7EkoPA6H14gi2c2p/E94vjc8iDvBG
+	sTYvRG6F3Jh/G9K03LitnZXPFDFStmjvubNkyGKrSSNOKoBdv7pX/cIa7f/wQ/uTRXxgtCGsX+Xd9
+	iNnRTbExTSaP+A26vWf8MLn40QWYwDxMJQpAEhTzYKM60BfWf5+Zlf6TMkgCCa9IB3sdf1E4sBH1y
+	44k/ZKPTxdYPW/5h1mZtb/SBW5Ce7+ZtjigBjo2MnUsRqUrJzu0YXrD8uzaVjFfif5eSByJylyZiq
+	gtWBI+NA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:39114)
 	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <linux@armlinux.org.uk>)
-	id 1rcOHQ-0002Id-2W;
-	Tue, 20 Feb 2024 11:27:20 +0000
+	id 1rcOKU-0002Jp-0v;
+	Tue, 20 Feb 2024 11:30:30 +0000
 Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
 	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rcOHM-0000pR-05; Tue, 20 Feb 2024 11:27:16 +0000
-Date: Tue, 20 Feb 2024 11:27:15 +0000
+	id 1rcOKT-0000pa-2v; Tue, 20 Feb 2024 11:30:29 +0000
+Date: Tue, 20 Feb 2024 11:30:28 +0000
 From: "Russell King (Oracle)" <linux@armlinux.org.uk>
 To: "Rafael J. Wysocki" <rafael@kernel.org>
 Cc: linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
@@ -71,12 +71,12 @@ Cc: linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
 	jianyong.wu@arm.com, justin.he@arm.com,
 	James Morse <james.morse@arm.com>,
 	Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: Re: [PATCH RFC v4 02/15] ACPI: processor: Register all CPUs from
- acpi_processor_get_info()
-Message-ID: <ZdSMk93c1I6x973h@shell.armlinux.org.uk>
+Subject: Re: [PATCH RFC v4 01/15] ACPI: Only enumerate enabled (or
+ functional) processor devices
+Message-ID: <ZdSNVPjsti7XKxCV@shell.armlinux.org.uk>
 References: <Zbp5xzmFhKDAgHws@shell.armlinux.org.uk>
- <E1rVDmU-0027YP-Jz@rmk-PC.armlinux.org.uk>
- <CAJZ5v0iiJpUWq5GMSnKFWQTzn_bdwoQz9m=hDaXNg4Lj_ePF4g@mail.gmail.com>
+ <E1rVDmP-0027YJ-EW@rmk-PC.armlinux.org.uk>
+ <CAJZ5v0hY_LXp41WMVPhiLosPe7YVzF38Uz=EhmJqVwqFn==Upw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -86,86 +86,49 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0iiJpUWq5GMSnKFWQTzn_bdwoQz9m=hDaXNg4Lj_ePF4g@mail.gmail.com>
+In-Reply-To: <CAJZ5v0hY_LXp41WMVPhiLosPe7YVzF38Uz=EhmJqVwqFn==Upw@mail.gmail.com>
 Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Thu, Feb 15, 2024 at 08:22:29PM +0100, Rafael J. Wysocki wrote:
-> On Wed, Jan 31, 2024 at 5:50 PM Russell King <rmk+kernel@armlinux.org.uk> wrote:
-> > diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
-> > index cf7c1cca69dd..a68c475cdea5 100644
-> > --- a/drivers/acpi/acpi_processor.c
-> > +++ b/drivers/acpi/acpi_processor.c
-> > @@ -314,6 +314,18 @@ static int acpi_processor_get_info(struct acpi_device *device)
-> >                         cpufreq_add_device("acpi-cpufreq");
-> >         }
+On Thu, Feb 15, 2024 at 09:10:39PM +0100, Rafael J. Wysocki wrote:
+> On Wed, Jan 31, 2024 at 5:49 PM Russell King <rmk+kernel@armlinux.org.uk> wrote:
 > >
-> > +       /*
-> > +        * Register CPUs that are present. get_cpu_device() is used to skip
-> > +        * duplicate CPU descriptions from firmware.
-> > +        */
-> > +       if (!invalid_logical_cpuid(pr->id) && cpu_present(pr->id) &&
-> > +           !get_cpu_device(pr->id)) {
-> > +               int ret = arch_register_cpu(pr->id);
-> > +
-> > +               if (ret)
-> > +                       return ret;
-> > +       }
-> > +
-> >         /*
-> >          *  Extra Processor objects may be enumerated on MP systems with
-> >          *  less than the max # of CPUs. They should be ignored _iff
+> > From: James Morse <james.morse@arm.com>
+> >
+> > Today the ACPI enumeration code 'visits' all devices that are present.
+> >
+> > This is a problem for arm64, where CPUs are always present, but not
+> > always enabled. When a device-check occurs because the firmware-policy
+> > has changed and a CPU is now enabled, the following error occurs:
+> > | acpi ACPI0007:48: Enumeration failure
+> >
+> > This is ultimately because acpi_dev_ready_for_enumeration() returns
+> > true for a device that is not enabled. The ACPI Processor driver
+> > will not register such CPUs as they are not 'decoding their resources'.
+> >
+> > ACPI allows a device to be functional instead of maintaining the
+> > present and enabled bit, but we can't simply check the enabled bit
+> > for all devices since firmware can be buggy.
+> >
+> > If ACPI indicates that the device is present and enabled, then all well
+> > and good, we can enumate it. However, if the device is present and not
+> > enabled, then we also check whether the device is a processor device
+> > to limit the impact of this new check to just processor devices.
+> >
+> > This avoids enumerating present && functional processor devices that
+> > are not enabled.
+> >
+> > Signed-off-by: James Morse <james.morse@arm.com>
+> > Co-developed-by: Rafael J. Wysocki <rjw@rjwysocki.net>
+> > Tested-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 > 
-> This is interesting, because right below there is the following code:
-> 
->     if (invalid_logical_cpuid(pr->id) || !cpu_present(pr->id)) {
->         int ret = acpi_processor_hotadd_init(pr);
-> 
->         if (ret)
->             return ret;
->     }
-> 
-> and acpi_processor_hotadd_init() essentially calls arch_register_cpu()
-> with some extra things around it (more about that below).
-> 
-> I do realize that acpi_processor_hotadd_init() is defined under
-> CONFIG_ACPI_HOTPLUG_CPU, so for the sake of the argument let's
-> consider an architecture where CONFIG_ACPI_HOTPLUG_CPU is set.
-> 
-> So why are the two conditionals that almost contradict each other both
-> needed?  It looks like the new code could be combined with
-> acpi_processor_hotadd_init() to do the right thing in all cases.
-> 
-> Now, acpi_processor_hotadd_init() does some extra things that look
-> like they should be done by the new code too.
-> 
-> 1. It checks invalid_phys_cpuid() which appears to be a good idea to me.
-> 
-> 2. It uses locking around arch_register_cpu() which doesn't seem
-> unreasonable either.
-> 
-> 3. It calls acpi_map_cpu() and I'm not sure why this is not done by
-> the new code.
-> 
-> The only thing that can be dropped from it is the _STA check AFAICS,
-> because acpi_processor_add() won't even be called if the CPU is not
-> present (and not enabled after the first patch).
-> 
-> So why does the code not do 1 - 3 above?
+> I can queue this up for 6.9 as it looks like the rest of the series
+> will still need some work.  What do you think?
 
-Honestly, I'm out of my depth with this and can't answer your
-questions - and I really don't want to try fiddling with this code
-because it's just too icky (even in its current form in mainline)
-to be understandable to anyone who hasn't gained a detailed knowledge
-of this code.
-
-It's going to require a lot of analysis - how acpi_map_cpuid() behaves
-in all circumstances, what this means for invalid_logical_cpuid() and
-invalid_phys_cpuid(), what paths will be taken in each case. This code
-is already just too hairy for someone who isn't an experienced ACPI
-hacker to be able to follow and I don't see an obvious way to make it
-more readable.
-
-James' additions make it even more complex and less readable.
+That seems to be the only way we can make some progress with this
+series. I've no idea how we progress from here because I can't answer
+your questions on patch 2.
 
 -- 
 RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
