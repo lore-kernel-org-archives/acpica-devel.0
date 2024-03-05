@@ -1,138 +1,119 @@
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C37EA3D0C1
-	for <acpica-devel@lists.linux.dev>; Tue,  5 Mar 2024 05:26:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C27787E0E8
+	for <acpica-devel@lists.linux.dev>; Tue,  5 Mar 2024 07:42:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709616409; cv=none; b=fhEVdy8478nHoJwTD1JXtvpMrOT63bgAPH7WfaUFixNFCM+lhDomWkb45lJKJXsTSnjKlEtXaVJlbNZLX2kBjDZzc/OOiu59Om9EGvsCFHLyLxMa33Hu+t9oU+eKGlB37iE7kDU5WP83BO/fzTjyNvlpfR+aUIlX5HPzyyNcz0k=
+	t=1709624568; cv=none; b=NmoYnOZ/tTQzq9tZVFm36bd6PY+l17UzwuFtnX0bJ2poQcG9qFvldPqLSJtf0olSGgIQhFzM3DyS9PqiCIfpvLGsJhGlN2GeJZXjhrOQ8EUqjHCKPNWYcMyEmhPQdfbXNt4o3AGXa2EztFq6y/5eRQzooRcmHQxvbHKPd/3ZH2Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709616409; c=relaxed/simple;
-	bh=IUUnXu41nv70y8HvfDJJUOOnZ7pf++QXfILZ3C80xAY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=COjM5FIWl3KspdV9ukWD4VlqgDzY08Bg/udzDPr6uw5PzMwD2MA1h5+8Y5Vanr5STdHGfQ1ah6Pyr7P7Du/jYFvwNPfyOWkzwCLYEW1kg1vYYZ0I5Am47SLDGk5AoTomFiY9kjP2f00BQCZBuP4GTJWkMn8TrBVUMNFFow9QWl0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=jSBCiSDg; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+	s=arc-20240116; t=1709624568; c=relaxed/simple;
+	bh=1yacK9hpiPuhyJxzTeAxFGss0ekxT9wkeTcOYVFT5O0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jcEdjm/GgziEzb6JEwKjeN8HEz/SCiE3GNEPKJZR86n25Veq2NRBOE5eejG/0m/tc/kf/ij7txgVuShomENobYBmWHLx8BLk3aYMGdVLrOnGtQEJGnytEIRs92f46py91j9y2tvx6v8pXrrBcrYy76jCfXq2qtenZmJPAs9Xmb4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RV9o0Oek; arc=none smtp.client-ip=209.85.208.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="jSBCiSDg"
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1dc9222b337so52238835ad.2
-        for <acpica-devel@lists.linux.dev>; Mon, 04 Mar 2024 21:26:46 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RV9o0Oek"
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d27184197cso73951841fa.1
+        for <acpica-devel@lists.linux.dev>; Mon, 04 Mar 2024 23:42:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1709616406; x=1710221206; darn=lists.linux.dev;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KMCvUOJfUJZd1FjH5xJXeLVB97fRCdKEGxvILGRlgeg=;
-        b=jSBCiSDgrXgmt1wBlFjjagJuZxleN9tWmf/AU4WGq/RqlVdtbZun5iqOMUfHqnGNjg
-         kX62xCRyfGVXSgxBHX+/VXrUSuCiNt2pkzMsIVfG3nEeGvxrq+Of7Bm3xXmd6PIaK3A2
-         HoCakEoi67WcHAasQaWJlX/pXN6c5m9hoqzb/qR7oLY6RNyg2wJ9nJw0TTQ+JMB0KBUv
-         d95GtNMqOct4nFdTJjVBrS1OfOOQMoW14n2e2J7LuCQzIOWYsk713Aq6wDrXwLNorFdK
-         fU8u4HP4htz6SWUW+tIlQ4wyZIgu6/oqaiT37H1reo5vk61pF3PIFhUULQXLoCm61Pln
-         naYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709616406; x=1710221206;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1709624565; x=1710229365; darn=lists.linux.dev;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KMCvUOJfUJZd1FjH5xJXeLVB97fRCdKEGxvILGRlgeg=;
-        b=a4UfW0wuRxs0Re56hLRZSYT7rLqonxRtfSsgOxGtE5yFzL2I94175Wuw95XBHlideO
-         8PdJAkHwfQb9TQXWcOlTUfGdjvQLq5gCVRR/XLZzV41EvY5WRf9FjPoIXNg5iSsggo7s
-         cIVYmOl05fmn3u7GXx3XrmF3L4FbYXRnF0Qkcd2YeIBqhO/ule96s0ERTJ3UrzvKvufo
-         Z7fvkFFP0WGLs7CbXa/oiW+HevbSsHvQtmpD69IoL2cfQ3vWF4cNdR/F4zfnY1izDUSd
-         ysY7+U5RXCoFbFXqInlMUhN0Nz5tsJQL+KPU8GRoXz0kwKCgnP0zWyr1DpVqRAwe/QXO
-         8IHA==
-X-Forwarded-Encrypted: i=1; AJvYcCUIcnTMnnNYG2H1DFb1E8NOBM4woAd3LCUD3sJLmMIH70Cqwg/TjfopBDsVh4HWyS3LKH/gfx1zzp3LYNaK2M0lCpQ1VaQ5lulsJJpt
-X-Gm-Message-State: AOJu0YxopmoIaQVbK8gQGSW9vOrTjP5c6FF5PfwMBVcs+vFz5Tx8jEwq
-	Sn38G04cgN7H/uJy1Qj7DGeh5OU7Zqm4Il8DtG045IPhXjvVQH+GppXW9E/3O88=
-X-Google-Smtp-Source: AGHT+IGs95PUoXAEeVYkFgLUnlTCMmRM9UBfrxIhvh57F9nTPhSjmTGyccBIiPgnhfiEPKqxoObiIA==
-X-Received: by 2002:a17:902:f552:b0:1dc:ce28:a47d with SMTP id h18-20020a170902f55200b001dcce28a47dmr929601plf.17.1709616406218;
-        Mon, 04 Mar 2024 21:26:46 -0800 (PST)
-Received: from sunil-laptop ([106.51.184.12])
-        by smtp.gmail.com with ESMTPSA id e8-20020a170902b78800b001dcc1597377sm9455663pls.230.2024.03.04.21.26.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Mar 2024 21:26:45 -0800 (PST)
-Date: Tue, 5 Mar 2024 10:56:32 +0530
-From: Sunil V L <sunilvl@ventanamicro.com>
-To: Haibo Xu <haibo1.xu@intel.com>
-Cc: xiaobo55x@gmail.com, ajones@ventanamicro.com,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Guo Ren <guoren@kernel.org>, Anup Patel <apatel@ventanamicro.com>,
-	Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Greentime Hu <greentime.hu@sifive.com>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	Jisheng Zhang <jszhang@kernel.org>,
-	=?utf-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>,
-	Baoquan He <bhe@redhat.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Chen Jiahao <chenjiahao16@huawei.com>,
-	Arnd Bergmann <arnd@arndb.de>, James Morse <james.morse@arm.com>,
-	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-	Evan Green <evan@rivosinc.com>,
-	Samuel Holland <samuel.holland@sifive.com>,
-	Ard Biesheuvel <ardb@kernel.org>, Tony Luck <tony.luck@intel.com>,
-	Yuntao Wang <ytcoode@gmail.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Alison Schofield <alison.schofield@intel.com>,
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev
-Subject: Re: [PATCH 4/4] ACPI: RISCV: Enable ACPI based NUMA
-Message-ID: <ZeatCIUZ/eJa1WHs@sunil-laptop>
-References: <cover.1706603678.git.haibo1.xu@intel.com>
- <0be49d4d7d7e43933534aad6f72b35d3380519fd.1706603678.git.haibo1.xu@intel.com>
+        bh=1yacK9hpiPuhyJxzTeAxFGss0ekxT9wkeTcOYVFT5O0=;
+        b=RV9o0OekxUatJ+22kUvYwDE+BgyWkF+UjwQGt1s55ZLdX/cm4NctgUuy8hi44ixqIV
+         1U47D2mEnmGRqCA6o2H6HJUBW0TnRJbVfdaiybyU8R60j22NSvxgiTnnm3ytkSvIah3O
+         lKoyEPj+T2rTIzZzfJRcrEf1UYO+AGykaPCTvqfwcxTWNb808L0wa9xPPuR0GMIDWr3H
+         pi+2wUjUT+30z8FWrW7hOYltEO02nQ7XJduNBMRsd/HVFYas37DRvgExQMcVkmgS0YrB
+         06WnBkJuaWUnfMpC2exB52dLPyRGqlaIW0nIWyPy0qr8OcnuGKFtevNKVGVP4ehiKmzZ
+         dHbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709624565; x=1710229365;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1yacK9hpiPuhyJxzTeAxFGss0ekxT9wkeTcOYVFT5O0=;
+        b=jJYZFsclMPWZ9oNewq+nXQnwE8s+vkJwiHMCZ+9fNDf2tFGLstFlIwgDNIJqeNuLAu
+         k5yhLgTGW2Yl8V/xdjnLys1sp0U+Dmqa90iUC8hDVlEDjC+Q1mJxts/P0IxSDfO2MLSf
+         iAht93z9U6TzFXmwTGhpbpQl0SaedifHyjgIhp2E0DyuoQaHCNlxA8W0tdY5wt1sZpxx
+         nHvZEAlpHMjoci+L2lTOaVXzgP044rFPNmMUsqFObMMDyHPLJu22NBFwn8zr6jo4qIHE
+         V9TVgAi8tZG9c7OuN+zEnGa5/LC1AdpU8PQyNOL73a8BMpdvwc3M9bp9wJqJSsN85J+d
+         G1gQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX3ZQiKW0lO31FDuL8IdzCo+xmFHwJpmtPR24YHg41Rqzbm2V0Nbwu2l12B1Mf58WT5Ny2mW5R3wPXy9w2t3bCYr9o2v8rJJD+YVDMv
+X-Gm-Message-State: AOJu0Ywepvew/XFM0GjlJm4VBE1OMgc4nDBRUJOVLE4HmBYKeAucZVAV
+	MFrsr+Y8zVGrhlHqgZNKo/CVvLeuE04zQjSJnEr76cfMx5xkkRYsErB/4EqH61+h9qa6PEUXiUW
+	RLRXoqjTiEmqLo0gbjeqFWCGSHBU=
+X-Google-Smtp-Source: AGHT+IH3ogEE3gS9kmBu6JCdtMvf/PW5rL/fmSyuLCQWSV1sV1Mmkgo71z6sH2+EquAbsW+oxtRPML/1nmNxh73v3b8=
+X-Received: by 2002:a05:651c:1683:b0:2d2:ef14:593e with SMTP id
+ bd3-20020a05651c168300b002d2ef14593emr506670ljb.48.1709624564715; Mon, 04 Mar
+ 2024 23:42:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0be49d4d7d7e43933534aad6f72b35d3380519fd.1706603678.git.haibo1.xu@intel.com>
+References: <cover.1706603678.git.haibo1.xu@intel.com> <ZeajHkn6dTQ3krsL@sunil-laptop>
+In-Reply-To: <ZeajHkn6dTQ3krsL@sunil-laptop>
+From: Haibo Xu <xiaobo55x@gmail.com>
+Date: Tue, 5 Mar 2024 15:42:32 +0800
+Message-ID: <CAJve8on1B7psLYX+Qei0Uxc=GbrGYq52OqV+ZFND9PkPMnyj=g@mail.gmail.com>
+Subject: Re: [PATCH 0/4] Add ACPI NUMA support for RISC-V
+To: Sunil V L <sunilvl@ventanamicro.com>
+Cc: Haibo Xu <haibo1.xu@intel.com>, ajones@ventanamicro.com, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
+	Robert Moore <robert.moore@intel.com>, Conor Dooley <conor.dooley@microchip.com>, 
+	Guo Ren <guoren@kernel.org>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>, 
+	Alexandre Ghiti <alexghiti@rivosinc.com>, Greentime Hu <greentime.hu@sifive.com>, 
+	Anup Patel <apatel@ventanamicro.com>, Sami Tolvanen <samitolvanen@google.com>, 
+	Jisheng Zhang <jszhang@kernel.org>, =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>, 
+	Baoquan He <bhe@redhat.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Arnd Bergmann <arnd@arndb.de>, James Morse <james.morse@arm.com>, Evan Green <evan@rivosinc.com>, 
+	Samuel Holland <samuel.holland@sifive.com>, Yang Li <yang.lee@linux.alibaba.com>, 
+	Tony Luck <tony.luck@intel.com>, Ard Biesheuvel <ardb@kernel.org>, Yuntao Wang <ytcoode@gmail.com>, 
+	Dan Williams <dan.j.williams@intel.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	Alison Schofield <alison.schofield@intel.com>, linux-riscv@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, 
+	acpica-devel@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 31, 2024 at 10:32:01AM +0800, Haibo Xu wrote:
-> Enable ACPI based NUMA for RISCV in Kconfig.
-> 
-> Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
-> ---
->  arch/riscv/Kconfig        | 1 +
->  drivers/acpi/numa/Kconfig | 2 +-
->  2 files changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index bffbd869a068..e586ab959f34 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -438,6 +438,7 @@ config NUMA
->  	select HAVE_SETUP_PER_CPU_AREA
->  	select NEED_PER_CPU_EMBED_FIRST_CHUNK
->  	select NEED_PER_CPU_PAGE_FIRST_CHUNK
-> +	select ACPI_NUMA if ACPI
->  	select OF_NUMA
->  	select USE_PERCPU_NUMA_NODE_ID
->  	help
-> diff --git a/drivers/acpi/numa/Kconfig b/drivers/acpi/numa/Kconfig
-> index 849c2bd820b9..525297c44250 100644
-> --- a/drivers/acpi/numa/Kconfig
-> +++ b/drivers/acpi/numa/Kconfig
-> @@ -2,7 +2,7 @@
->  config ACPI_NUMA
->  	bool "NUMA support"
->  	depends on NUMA
-> -	depends on (X86 || ARM64 || LOONGARCH)
-> +	depends on (X86 || ARM64 || LOONGARCH || RISCV)
-Is it possible to remove this if IA64 is removed now? 
+On Tue, Mar 5, 2024 at 12:44=E2=80=AFPM Sunil V L <sunilvl@ventanamicro.com=
+> wrote:
+>
+> Hi Haibo,
+> On Wed, Jan 31, 2024 at 10:31:57AM +0800, Haibo Xu wrote:
+> > This patch series enable RISC-V ACPI NUMA support which was based on
+> > the recently approved ACPI ECR[1].
+> >
+> > Patch 1/4 is generated from the acpica PR[2] and should be merged throu=
+gh
+> > the acpica project. Due to this dependency, other 3 patches can only be
+> > merged after the corresponding ACPICA patch was pulled into linux.
+> >
+> > Patch 2/4 add the common SRAT RINTC affinity structure handler.
+> > Patch 3/4 add RISC-V specific acpi_numa.c file to parse NUMA informatio=
+n
+> > from SRAT and SLIT ACPI tables.
+> > Patch 4/4 add corresponding ACPI_NUMA config for RISC-V Kconfig.
+> >
+> > Based-on: https://github.com/linux-riscv/linux-riscv/tree/for-next
+> >
+> > [1] https://mantis.uefi.org/mantis/view.php?id=3D2433
+>
+> Please avoid providing mantis link. It is not useful for people who are
+> not UEFI members. Better to provide the link to the PDF version of the
+> ECR approved.
+>
+
+Sure. Will update with a PDF link in v2.
 
 Thanks,
-Sunil
->  	default y if ARM64
->  
->  config ACPI_HMAT
-> -- 
-> 2.34.1
-> 
+Haibo
+
+> Thanks,
+> Sunil
