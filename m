@@ -1,132 +1,181 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96C6AF9D1
-	for <acpica-devel@lists.linux.dev>; Fri,  1 Mar 2024 17:33:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 510BB4C94
+	for <acpica-devel@lists.linux.dev>; Tue,  5 Mar 2024 02:30:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709314409; cv=none; b=StNuOahf6xHFTTwXMWva1i4/SiDwUNG3/9qT8pGi3nQVneIn7ZPPi8xHNHM2B+/yUjtbYyF0sqRv8iF66I/VjgI0uHceD7Eoo1r8tcV/FgWtNUidLcy9TdsP4IpMKXtEqLC1pi3Rd8LkblKm/Mns2sxuBg+CcMzdIfCm/Y9rmbw=
+	t=1709605862; cv=none; b=aL/IurGYaZeRk+NviTCsypkCxSkl/JfG883zVUJ4xN3fjE5DXOo+og9bt/XdVPc//OcEWv0DmuSKSa46uBvM5Z4No2i3Mo4gkcVpPEFWC57LxC9Iqmiyl9CiXlQPBzCpGbFXNRiq+E/TLZFejDG3r1vDrM1pZuM4WA6CLSLVw1Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709314409; c=relaxed/simple;
-	bh=g36zWqRNFBfmztbjuqYnJMX+rYyCgvPnWzA3RuKdmVs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TYeSZjPZaa0tI4haw9QVcFnnwj4AGbqrUzqjpOK482MsX28JuFru7duji8OgJME/t0tpzGDKFCGCDvVo3rxvj5PS7lDQDwYeYX1D2PzEXbwbuLOLcEjPSFypDCz1bLJ517up8VJPIY7suOzmWKmJTCBM0ds0A1AuTHyjjXBlQbM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OjSJbWVL; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+	s=arc-20240116; t=1709605862; c=relaxed/simple;
+	bh=pSsvsuUlut4jPJp7g2dGTj1A/pEOdbw7dEeVXx61AJw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HzxEaXZoFiKSrb/3bIprq78NSjH+SydhyZemaXnkBopAd9K1nkQA2acRlx5eFUSOHaDlWmqnpXht6ZhTN25RVn96Qbsv8uxArcPeXdFxkNM4hVTIs7d5bPE4HMIYN+M+b73qjBE/sOlt+FuPh1rwbjs/g8YDzfDeIbZXIZFPdmQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EGCOPyur; arc=none smtp.client-ip=209.85.167.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OjSJbWVL"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709314407; x=1740850407;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=g36zWqRNFBfmztbjuqYnJMX+rYyCgvPnWzA3RuKdmVs=;
-  b=OjSJbWVLorJmaPtPdxSnRuMBmzCNiWZtqIzld1x06M3VOQaCil7s48ye
-   /pmi9/cZyC3CqHlvCpQJ4L/U3R3BXjUw9+3QWFsukgDB+rL9d/U3cTO/S
-   2ROKwjn5+E09Lc/kDPl9tXlCNAB2QCWK0hBIRQbTrpl9hyGo4m1PH+ItI
-   wTh5M8dNV5lIb8x+fZBYRu/K3PgkBmtFu1LG+Z57OMt9Nu9CWFCDF45Qb
-   3Do27RlA/YDOPte5ALhEC/YwdesTSnxoPzDde1L2ww8vf3mkEAR1dy85z
-   qNezQ092QNWR9ycN5SALH1wyNjg7GLtEw0WrRNT8UlbFU5QSeDyvi3Udb
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11000"; a="15274098"
-X-IronPort-AV: E=Sophos;i="6.06,196,1705392000"; 
-   d="scan'208";a="15274098"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 09:33:27 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11000"; a="914021068"
-X-IronPort-AV: E=Sophos;i="6.06,196,1705392000"; 
-   d="scan'208";a="914021068"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 09:33:25 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rg6l8-0000000913e-3lG6;
-	Fri, 01 Mar 2024 19:33:22 +0200
-Date: Fri, 1 Mar 2024 19:33:22 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: aigilea <i@cpp.in>
-Cc: Mika Westerberg <mika.westerberg@linux.intel.com>,
-	Robert Moore <robert.moore@intel.com>,
-	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev
-Subject: Re: Kernel panic in ACPICA on HP Spectre X360 (Meteor Lake 155H)
- laptop
-Message-ID: <ZeIRYv0_Lxmggg4J@smile.fi.intel.com>
-References: <CABYkuAg3rcXT=0-=7EMX8NW3-mU0zYRvp+rOo5nq_7SHdb=cxA@mail.gmail.com>
- <20240216120211.GR8454@black.fi.intel.com>
- <CABYkuAhLYcLQp8PiBm-aTDC-AAV2NWVzN-79XLVcYvAfGtVhcQ@mail.gmail.com>
- <20240216144610.GS8454@black.fi.intel.com>
- <20240301074209.GM8454@black.fi.intel.com>
- <CABYkuAi_vCc-kN_DSW0kPGACQKo+7B9GBckFiUsqGqTts7xXuQ@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EGCOPyur"
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-512ed314881so4778927e87.2
+        for <acpica-devel@lists.linux.dev>; Mon, 04 Mar 2024 18:30:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709605857; x=1710210657; darn=lists.linux.dev;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FJxBJuXmvGHQUImyHIJdK0gOdBp3H9ixn+SkaIN8FCM=;
+        b=EGCOPyuro6Tf/Iu6Ft025Sl6Qbei+n+yRzDphhLXRfSlCWOc62l4Qt/jOOi/ON4B5A
+         g8C+o34FOL+1x6STwyv5IXFvGd0jDjvSLUyRuxlqMa9TkMcvrDITxHZiLaupst5f+YkC
+         J4BEmF7+upRn2kAtRrSVMFwWyoXsArTHkmeMDzTbjmsV+UZvZnfG+cdMHQI8ceMZ24uu
+         rdY57tfhUUCYCMab1wKU10EpW/OkBtQzjNY9HLTbb8GHtczo/uQ44b7vEf+tar1zfgGY
+         QZhjU8Nkrybe5v+/DA6+tiCVwTqpzTSWR3OsU1jjR3yCp8H5jC8dKlbVzCm6eNELfa7z
+         e6fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709605857; x=1710210657;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FJxBJuXmvGHQUImyHIJdK0gOdBp3H9ixn+SkaIN8FCM=;
+        b=ACDM/gIcx8PYOSrPZWvkbU0YKb57NiFhf0qXmltWaIFL48Ea0uT7OrBh3XNNKw35Em
+         OHQbIir3emDKiX8rZ9VwRFnjRaTFHsTqWw9cPJNN7L96o/IWU6MBkadlzrGw2qHY0Lw+
+         krLIIX/amvRY1ZSVexkwW3dxGMCXwlUzo0PSJ+LKxH4DqsX2lUt1DohIA2rtDRqPlmBO
+         Ctj/2w2YWlNn6xvjUu0o7WCiyPZj2816X95nIj50gVKdqDtWHRhp3xx7fxjPlNptRJJY
+         wmB/FgvBRy1NfiQJoxxYvR6vQ77LVv8cHTGhC5F/9GeMptZ8Lp/Ef7+oRcMef6gytMZu
+         j4Eg==
+X-Forwarded-Encrypted: i=1; AJvYcCXx2j5VgfG3cJUeykbexapqVWf1Nxdotg0lgEq3Qw1+sSehPC/oUPIIUqfeOorwWpsa/we9KpxPITrnS3htoWsztpHtGU460iT/zQYe
+X-Gm-Message-State: AOJu0YxsNLCprqXDLknfZEjCZ+Mhf171PlHcEQtb5PcCAyJdMjV/srUd
+	pZZKGhMjteHgxJdA7HTL3gsewwM0V5V3h5p/FblcgfQSkz1Gq6sp/rJgzzGtlVVVPz5M+GaofZi
+	sWlLT8e/RZQWFM1oniSjSOzUmEXQ=
+X-Google-Smtp-Source: AGHT+IGdw1R5rJC4pZeyLtaquozmyyYFWlB0fEy+eGf175BBa5M1tKyVDX4YV/pAnGtKDEywU6f1ZMxAAXweNheWd18=
+X-Received: by 2002:a05:6512:36d0:b0:512:e220:d3ab with SMTP id
+ e16-20020a05651236d000b00512e220d3abmr275796lfs.65.1709605857043; Mon, 04 Mar
+ 2024 18:30:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABYkuAi_vCc-kN_DSW0kPGACQKo+7B9GBckFiUsqGqTts7xXuQ@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <cover.1706603678.git.haibo1.xu@intel.com>
+In-Reply-To: <cover.1706603678.git.haibo1.xu@intel.com>
+From: Haibo Xu <xiaobo55x@gmail.com>
+Date: Tue, 5 Mar 2024 10:30:45 +0800
+Message-ID: <CAJve8o=H+VVyQH6crAvnTUSjRV2pFDmEpy4ykpFBYSB3pOeiZQ@mail.gmail.com>
+Subject: Re: [PATCH 0/4] Add ACPI NUMA support for RISC-V
+To: Haibo Xu <haibo1.xu@intel.com>
+Cc: ajones@ventanamicro.com, sunilvl@ventanamicro.com, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
+	Robert Moore <robert.moore@intel.com>, Conor Dooley <conor.dooley@microchip.com>, 
+	Guo Ren <guoren@kernel.org>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>, 
+	Alexandre Ghiti <alexghiti@rivosinc.com>, Greentime Hu <greentime.hu@sifive.com>, 
+	Anup Patel <apatel@ventanamicro.com>, Sami Tolvanen <samitolvanen@google.com>, 
+	Jisheng Zhang <jszhang@kernel.org>, =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>, 
+	Baoquan He <bhe@redhat.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Chen Jiahao <chenjiahao16@huawei.com>, Arnd Bergmann <arnd@arndb.de>, 
+	James Morse <james.morse@arm.com>, Evan Green <evan@rivosinc.com>, 
+	Samuel Holland <samuel.holland@sifive.com>, Yang Li <yang.lee@linux.alibaba.com>, 
+	Tony Luck <tony.luck@intel.com>, Ard Biesheuvel <ardb@kernel.org>, Yuntao Wang <ytcoode@gmail.com>, 
+	Dan Williams <dan.j.williams@intel.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	Alison Schofield <alison.schofield@intel.com>, linux-riscv@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, 
+	acpica-devel@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 01, 2024 at 05:38:00PM +0300, aigilea wrote:
-> Hello.
-> 
-> Renaming the IC03 variable to the closest unused IC08 in the DSDT
-> overlay indeed fixes the crash.
-> 
-> Renaming/removing the device (as it looks like its only purpose is to
-> trigger Windows update to install some HP software) might be a cleaner
-> way but I'm not sure how to do this with overlays as this device is
-> declared in one of SSDT tables under the widely used _SB_.PC00.
-> 
-> For me personally this is good enough, but I'm not sure if it's a good
-> solution for a general case.
-> 
-> HP's attitude is unfortunate to say the least as the bug is so clear
-> and the fix is so simple. We've only bought a trial batch of ten
-> units, we'll return the ones that are still packed and go with some
-> other vendor from now on.
+Hi Sunil,
 
-I hope PR department of HP has a chance to read this...^^^
+Could you help review this patch set?
 
-> On Fri, Mar 1, 2024 at 10:42 AM Mika Westerberg
-> <mika.westerberg@linux.intel.com> wrote:
-> > On Fri, Feb 16, 2024 at 04:46:10PM +0200, Mika Westerberg wrote:
-> > > On Fri, Feb 16, 2024 at 05:36:21PM +0300, aigilea wrote:
+Thanks,
+Haibo
 
-> > > > Booting with "modprobe.blacklist=intel_lpss_pci" on the kernel command
-> > > > line indeed works around this panic.
-> > > > I will try to find out what hardware depends on this driver.
-> > > >
-> > > > Two years ago there was a similar issue with broken soundwire devices
-> > > > configuration in dsdt on tiger lake iteration of this laptop, it is
-> > > > not fixed by HP to this day.
-> > > > SOF guys in Intel ended up making a quirk for that case.
-> > > > So if the quirk (or some additional checks in parser?) path is not
-> > > > suitable for this issue I guess the most "proper" fix might be acpi
-> > > > overlay?
-> > >
-> > > I understood HP did this fix to their BIOS but it might take some time
-> > > to get the confirmation and the BIOS version (working on this).
-> >
-> > Unfortunately it turns out that HP only applied this fix for their Omen
-> > Transcent system and apparently there is not going to be updates on any
-> > other system that has this issue if it is not shipping with Linux :(
-> >
-> > So we probably need to figure out an alternative. The root cause is that
-> > the HP BIOS accidentally a device and a variable with the same name IC03
-> > and that gets resolved to the device instead of the variable in the
-> > _PS3() method where it calls Add(IC03, 1, 1).
-> >
-> > This was fixed by renaming the device into something else but I'm not
-> > entirely sure how this could be fixed in the kernel side or ACPICA.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+On Wed, Jan 31, 2024 at 10:18=E2=80=AFAM Haibo Xu <haibo1.xu@intel.com> wro=
+te:
+>
+> This patch series enable RISC-V ACPI NUMA support which was based on
+> the recently approved ACPI ECR[1].
+>
+> Patch 1/4 is generated from the acpica PR[2] and should be merged through
+> the acpica project. Due to this dependency, other 3 patches can only be
+> merged after the corresponding ACPICA patch was pulled into linux.
+>
+> Patch 2/4 add the common SRAT RINTC affinity structure handler.
+> Patch 3/4 add RISC-V specific acpi_numa.c file to parse NUMA information
+> from SRAT and SLIT ACPI tables.
+> Patch 4/4 add corresponding ACPI_NUMA config for RISC-V Kconfig.
+>
+> Based-on: https://github.com/linux-riscv/linux-riscv/tree/for-next
+>
+> [1] https://mantis.uefi.org/mantis/view.php?id=3D2433
+> [2] https://github.com/acpica/acpica/pull/926
+>
+> Testing:
+> Since the ACPI AIA/PLIC support patch set is still under upstream review,
+> hence it is tested using the poll based HVC SBI console and RAM disk.
+> 1) Build latest Qemu with the following patch backported
+>    https://lore.kernel.org/all/20240129094200.3581037-1-haibo1.xu@intel.c=
+om/
+>    https://github.com/vlsunil/qemu/commit/42bd4eeefd5d4410a68f02d54fee406=
+d8a1269b0
+>
+> 2) Build latest EDK-II
+>    https://github.com/tianocore/edk2/blob/master/OvmfPkg/RiscVVirt/README=
+.md
+>
+> 3) Build Linux with the following configs enabled
+>    CONFIG_RISCV_SBI_V01=3Dy
+>    CONFIG_SERIAL_EARLYCON_RISCV_SBI=3Dy
+>    CONFIG_HVC_RISCV_SBI=3Dy
+>
+> 4) Build buildroot rootfs.cpio
+>
+> 5) Launch the Qemu machine
+>    qemu-system-riscv64 -nographic \
+>    -machine virt,pflash0=3Dpflash0,pflash1=3Dpflash1 -smp 4 -m 8G \
+>    -blockdev node-name=3Dpflash0,driver=3Dfile,read-only=3Don,filename=3D=
+RISCV_VIRT_CODE.fd \
+>    -blockdev node-name=3Dpflash1,driver=3Dfile,filename=3DRISCV_VIRT_VARS=
+.fd \
+>    -object memory-backend-ram,size=3D4G,id=3Dm0 \
+>    -object memory-backend-ram,size=3D4G,id=3Dm1 \
+>    -numa node,memdev=3Dm0,cpus=3D0-1,nodeid=3D0 \
+>    -numa node,memdev=3Dm1,cpus=3D2-3,nodeid=3D1 \
+>    -numa dist,src=3D0,dst=3D1,val=3D30 \
+>    -kernel linux/arch/riscv/boot/Image \
+>    -initrd buildroot/output/images/rootfs.cpio \
+>    -append "root=3D/dev/ram ro console=3Dhvc0 earlycon=3Dsbi"
+>
+> [    0.000000] ACPI: SRAT: Node 0 PXM 0 [mem 0x80000000-0x17fffffff]
+> [    0.000000] ACPI: SRAT: Node 1 PXM 1 [mem 0x180000000-0x27fffffff]
+> [    0.000000] NUMA: NODE_DATA [mem 0x17fe3bc40-0x17fe3cfff]
+> [    0.000000] NUMA: NODE_DATA [mem 0x27fff4c40-0x27fff5fff]
+> ...
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> HARTID 0x0 -> Node 0
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> HARTID 0x1 -> Node 0
+> [    0.000000] ACPI: NUMA: SRAT: PXM 1 -> HARTID 0x2 -> Node 1
+> [    0.000000] ACPI: NUMA: SRAT: PXM 1 -> HARTID 0x3 -> Node 1
+>
+> Haibo Xu (4):
+>   ACPICA: SRAT: Add RISC-V RINTC affinity structure
+>   ACPI: NUMA: Add handler for SRAT RINTC affinity structure
+>   ACPI: RISCV: Add NUMA support based on SRAT and SLIT
+>   ACPI: RISCV: Enable ACPI based NUMA
+>
+>  arch/riscv/Kconfig            |   1 +
+>  arch/riscv/include/asm/acpi.h |  15 +++-
+>  arch/riscv/kernel/Makefile    |   1 +
+>  arch/riscv/kernel/acpi.c      |   5 --
+>  arch/riscv/kernel/acpi_numa.c | 133 ++++++++++++++++++++++++++++++++++
+>  arch/riscv/kernel/setup.c     |   4 +-
+>  arch/riscv/kernel/smpboot.c   |   2 -
+>  drivers/acpi/numa/Kconfig     |   2 +-
+>  drivers/acpi/numa/srat.c      |  35 ++++++++-
+>  include/acpi/actbl3.h         |  18 ++++-
+>  include/linux/acpi.h          |   7 ++
+>  11 files changed, 209 insertions(+), 14 deletions(-)
+>  create mode 100644 arch/riscv/kernel/acpi_numa.c
+>
+> --
+> 2.34.1
+>
