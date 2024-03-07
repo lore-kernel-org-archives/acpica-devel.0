@@ -1,50 +1,51 @@
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 014A43611B
-	for <acpica-devel@lists.linux.dev>; Thu,  7 Mar 2024 08:35:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C7E95B1E3
+	for <acpica-devel@lists.linux.dev>; Thu,  7 Mar 2024 08:35:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709800541; cv=none; b=SWIZeYUuMqmlAjP1nUp7xt1tpg104Zp6LWxnzROL0JUKmzhRdtgSVKqpMD9PGpqwXVPzwkkEg+XxvCMxxAKpNxutkxGr870MVEzn0aRLHgr4DiB2vqo2ikEY8fPrklodXY4l5EVxDZpKMglEyEVZrhOxEwJSbQ1pICLbmANv06o=
+	t=1709800559; cv=none; b=BHCgpKNfNurhmeCju0u9QDvslSa64LaF/MLoll+lIshH+fihQw1H3stVAwiQOv4bpEa8osA5pUGuA6JWaaCkU4G70HVOMANntsgghvrfbd+vnUob0RwhnyjEaDoj6DCzuDa/91++XLxmJuWSpro2sO/MWrWsYaagTyrKYaui3nY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709800541; c=relaxed/simple;
-	bh=5KryanhO2TCSYIQImaXR38V4BObe+z/AOy3oiI3D08M=;
+	s=arc-20240116; t=1709800559; c=relaxed/simple;
+	bh=G2PxXHztRKQAfPknbFAyA05wr44/TwgHtP5gL+9Rl30=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=dv8njmng5tU2tQLh44pZgCyBxje5kEQbBYlGzleUaEpeHFPcUGd5N30bzoNH/XAIKPJ3I/z6jWpUYRsK9nOEn0uwIDLHA7INuDlRpKCWdo003QOIbnAobz85+f+jQ93PBj/lHQi0uf4ZMseSNSt1OML8MTsbPOm5HlAlWfWBG7s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FME5uagG; arc=none smtp.client-ip=198.175.65.17
+	 MIME-Version; b=jPNzR79niHrAKuceYUaEJWfsc0gbvDm0Gl9FAv2DcTnsmiMS5AKqwwSl1mNFb+oTKHipMlgjH+Ho5IBjGmyS7Z6OthBhg4Aa5+S0+ATDoCEK5ROidy8jjm8iS21Vs8f14DEX/yeJHY52smGM/Q9/q33X1vSJylB4ZyXo4tYw2uo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=K3CSW2Vp; arc=none smtp.client-ip=198.175.65.17
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FME5uagG"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="K3CSW2Vp"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709800540; x=1741336540;
+  t=1709800559; x=1741336559;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=5KryanhO2TCSYIQImaXR38V4BObe+z/AOy3oiI3D08M=;
-  b=FME5uagGse1FoU9KB81NMzNceBtS+ulTxukyKYbhyECd1gFtcwLQDmtm
-   6xybdezP1yE90zDNBo3xAj8KDTTyS6KIg73CNi7P3PjntTK6aNsZxH3wK
-   O9kPKGxA7F7KbDpuYLrFSIVevpv3Q3y+OnK1MySQdzR8T0qPvssWolzSz
-   k5Xm8Evv2pdSdK7u7n+EyiPsMrPCh/N0I6jXAQXXV5SU4r1qiq1bTh3Cx
-   FMTNUryDzhz+sBK9xZUgRtFOdsSZv/Up5fpwX8o3bNBpsyvZ+8PUTa8vk
-   yrnUheDVACIJWmdXVNCdgr6imW8SqvtpvUyQz8jUNWKfBiv83QLqc8iW3
+  bh=G2PxXHztRKQAfPknbFAyA05wr44/TwgHtP5gL+9Rl30=;
+  b=K3CSW2Vp4bK1VTJhG/UMITUv19oXwjEUO0igup2/BXFp6/WkQeBVhIm4
+   gomTEMeDddSffm9WOrcKRVLfsocBi2/SRKr4qt/VT7YAb2TQQACQnJNcU
+   hWpNs5qWwGz00kXLdR12rpmLlMmpfZB21G3DLO/M7dnuZxMk+ukqaizUC
+   8ZThGFP8As41mcRS1h1QUfJBH/BL/zA6mGcPVNyxUo1nJSvmS9BgtL0PG
+   Iu1e38PXj/tymTlL0atiR0NYc9/Vq/S3481uJPg3h2c+m3YNUhfl7gjej
+   3CmB+9U2f6UvFQSEBfG4dwQ0UXZ7rrM4NT1L7POmJkA0VgRwE5VoLnE+p
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11005"; a="4600495"
+X-IronPort-AV: E=McAfee;i="6600,9927,11005"; a="4600527"
 X-IronPort-AV: E=Sophos;i="6.06,210,1705392000"; 
-   d="scan'208";a="4600495"
+   d="scan'208";a="4600527"
 Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 00:35:40 -0800
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 00:35:58 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.06,210,1705392000"; 
-   d="scan'208";a="14699744"
+   d="scan'208";a="14699786"
 Received: from haibo-optiplex-7090.sh.intel.com ([10.239.159.132])
-  by orviesa004.jf.intel.com with ESMTP; 07 Mar 2024 00:35:30 -0800
+  by orviesa004.jf.intel.com with ESMTP; 07 Mar 2024 00:35:48 -0800
 From: Haibo Xu <haibo1.xu@intel.com>
 To: 
 Cc: xiaobo55x@gmail.com,
 	ajones@ventanamicro.com,
 	sunilvl@ventanamicro.com,
 	Haibo Xu <haibo1.xu@intel.com>,
+	Arnd Bergmann <arnd@arndb.de>,
 	Paul Walmsley <paul.walmsley@sifive.com>,
 	Palmer Dabbelt <palmer@dabbelt.com>,
 	Albert Ou <aou@eecs.berkeley.edu>,
@@ -53,33 +54,34 @@ Cc: xiaobo55x@gmail.com,
 	Robert Moore <robert.moore@intel.com>,
 	Conor Dooley <conor.dooley@microchip.com>,
 	Guo Ren <guoren@kernel.org>,
+	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>,
 	Alexandre Ghiti <alexghiti@rivosinc.com>,
 	Greentime Hu <greentime.hu@sifive.com>,
-	Anup Patel <apatel@ventanamicro.com>,
-	Zong Li <zong.li@sifive.com>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	Jisheng Zhang <jszhang@kernel.org>,
+	Charlie Jenkins <charlie@rivosinc.com>,
 	Baoquan He <bhe@redhat.com>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Zong Li <zong.li@sifive.com>,
+	Jisheng Zhang <jszhang@kernel.org>,
 	=?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Chen Jiahao <chenjiahao16@huawei.com>,
-	Arnd Bergmann <arnd@arndb.de>,
 	James Morse <james.morse@arm.com>,
 	Evan Green <evan@rivosinc.com>,
 	Samuel Holland <samuel.holland@sifive.com>,
-	Tony Luck <tony.luck@intel.com>,
+	Anup Patel <apatel@ventanamicro.com>,
 	Ard Biesheuvel <ardb@kernel.org>,
+	Tony Luck <tony.luck@intel.com>,
 	Yuntao Wang <ytcoode@gmail.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
 	Dan Williams <dan.j.williams@intel.com>,
 	Alison Schofield <alison.schofield@intel.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
 	linux-riscv@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	linux-acpi@vger.kernel.org,
 	acpica-devel@lists.linux.dev
-Subject: [PATCH v2 4/6] ACPI: NUMA: Make some NUMA related parse functions common
-Date: Thu,  7 Mar 2024 16:47:56 +0800
-Message-Id: <c8b86184d9e6d078e9b9949d4837bc6e392c3f52.1709780590.git.haibo1.xu@intel.com>
+Subject: [PATCH v2 5/6] ACPI: NUMA: Remove ARCH depends option in ACPI_NUMA Kconfig
+Date: Thu,  7 Mar 2024 16:47:57 +0800
+Message-Id: <f23da383a8fdbee15acd41fdcd38ef3a89045a43.1709780590.git.haibo1.xu@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1709780590.git.haibo1.xu@intel.com>
 References: <cover.1709780590.git.haibo1.xu@intel.com>
@@ -91,44 +93,29 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The acpi_numa_slit_init(), acpi_numa_memory_affinity_init()
-and acpi_parse_cfmws() functions are common enough to be used
-on platforms that support ACPI_NUMA(x86/arm64/loongarch).
-Remove the condition to avoid long defined(CONFIG_ARCH) check
-when new platform(riscv) support was enabled.
+x86/arm64/loongarch would select ACPI_NUMA by default and riscv
+would do the same thing, so the dependency is no longer needed
+since these are the four architectures that support ACPI.
 
+Suggested-by: Arnd Bergmann <arnd@arndb.de>
 Suggested-by: Sunil V L <sunilvl@ventanamicro.com>
 Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
 ---
- drivers/acpi/numa/srat.c | 8 --------
- 1 file changed, 8 deletions(-)
+ drivers/acpi/numa/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/acpi/numa/srat.c b/drivers/acpi/numa/srat.c
-index 1946431c0eef..938c4adb7ec4 100644
---- a/drivers/acpi/numa/srat.c
-+++ b/drivers/acpi/numa/srat.c
-@@ -219,7 +219,6 @@ int __init srat_disabled(void)
- 	return acpi_numa < 0;
- }
+diff --git a/drivers/acpi/numa/Kconfig b/drivers/acpi/numa/Kconfig
+index 849c2bd820b9..2bf47ad1ec9b 100644
+--- a/drivers/acpi/numa/Kconfig
++++ b/drivers/acpi/numa/Kconfig
+@@ -2,7 +2,6 @@
+ config ACPI_NUMA
+ 	bool "NUMA support"
+ 	depends on NUMA
+-	depends on (X86 || ARM64 || LOONGARCH)
+ 	default y if ARM64
  
--#if defined(CONFIG_X86) || defined(CONFIG_ARM64) || defined(CONFIG_LOONGARCH)
- /*
-  * Callback for SLIT parsing.  pxm_to_node() returns NUMA_NO_NODE for
-  * I/O localities since SRAT does not list them.  I/O localities are
-@@ -351,13 +350,6 @@ static int __init acpi_parse_cfmws(union acpi_subtable_headers *header,
- 	(*fake_pxm)++;
- 	return 0;
- }
--#else
--static int __init acpi_parse_cfmws(union acpi_subtable_headers *header,
--				   void *arg, const unsigned long table_end)
--{
--	return 0;
--}
--#endif /* defined(CONFIG_X86) || defined (CONFIG_ARM64) */
- 
- static int __init acpi_parse_slit(struct acpi_table_header *table)
- {
+ config ACPI_HMAT
 -- 
 2.34.1
 
