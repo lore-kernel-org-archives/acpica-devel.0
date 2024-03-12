@@ -1,136 +1,145 @@
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2099.outbound.protection.outlook.com [40.107.237.99])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BF995B1E1;
-	Tue, 12 Mar 2024 13:41:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710250918; cv=none; b=V3YH6NNAzbKvKuk5g1aitiffYsUhnpDydhYR+oRQZaXirwTXdBAiN0iG0zjcGL8FOZw63cUrkA8NwHpBnAd1JTyOxgfe2A+U7bhEtRz2LEhzIPWjY7wml6evVsP2pXIAutopfC9QuvwEX94wSmHCCUZf/UcqPvaVXwlXcLT4hf4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710250918; c=relaxed/simple;
-	bh=e0tD6pX6xwZoiwXkNmdHyZiDqoGTK5swzwTMQ0e4R40=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=oHkAKf+Pgaqv9M188Xu2INAnVKAR+9Zb57pmPO+nwIGXDREtvKMv67EbogPrHsTNCXsMu2TGWeugLcPytLL0FMcXYfZebFBbcLT7ymKwWmYq/+E6JiK6dT5VTG2HdvDA3Wu1q7a8tJMlubH7MmaHH5UrSwB1vRHZTC9RTLPWOZY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=desiato.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=AsFv99gt; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=desiato.srs.infradead.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E05614372B
+	for <acpica-devel@lists.linux.dev>; Tue, 12 Mar 2024 21:26:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.99
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710278804; cv=fail; b=eA6ju7zaFfiieZd0rJ/S071eMSI+5fde6Nhyc4fEN61+xqW0uYSr308gRoDRtoOkG1lQdW7WOF2JAPLQI9PUeyXNUBBshGWTCAqssnOC0GjnDBjfA6K9Byj+O/fl3UC4yCS49coKuoK/wpHnR3IVpjzowIVMqt93JqhSd4wRVCg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710278804; c=relaxed/simple;
+	bh=atTKGZFnCuytnqh37JXKaHxCrXdzCIKwxw7ffiODgm4=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=O46tJHxjkE5RLCuWN7QIKoXw137FMNtGTA4eRMioZoC4eZBGQ7zYxCKvWA6U5xr4AW7hz9zteZ6tCAm2bfSVYEljWTnhVT2SdlyOVwJfqv6ojXiJu5V5zbGp5YmWADsd3GqQKf475yPFv02ZpNwKfAIakMAPm08Iq1TPN2dFgf8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com; spf=pass smtp.mailfrom=os.amperecomputing.com; dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b=O0Mmk3Lm; arc=fail smtp.client-ip=40.107.237.99
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=os.amperecomputing.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="AsFv99gt"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:In-Reply-To:References;
-	bh=xa8JQ3KvRA3TOgaBHWeRGuMMjhi7suQa/WUm17VoCcg=; b=AsFv99gt9tiVB4IvPWpp0zhn/q
-	yAbrTW80SEAlzDGcnxg0eIauLDMd8Ueell+LxV1jgKPF6ZeEHtxE95I4up6xl7/iYxoR+E4PbscFS
-	+UKnA2/qIyCqV3MF1qK3cHd7Ga86D01o45mEWZJYrJCtP3dPc57wEz85CqU/DQ7FdAyoK2Xzr+xOA
-	lc08WumNg6hxdL2/7cf6dYDCvBqBGk5/WMCu2n4/5DIZhidooDV9qS9CdjA0WHKMGaYl8sZrPs1Al
-	9yNGbz6L5ql2Ubj5V3bvOM24V/9i7h58oz/wSqcZ5nkqkWPI2BQUaR0BzstRC23MOlPJRUqwNECAT
-	VAq7uKSw==;
-Received: from [2001:8b0:10b:1::ebe] (helo=i7.infradead.org)
-	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rk2O5-00000009UzB-2mNO;
-	Tue, 12 Mar 2024 13:41:49 +0000
-Received: from dwoodhou by i7.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rk2O4-000000033FJ-0PsV;
-	Tue, 12 Mar 2024 13:41:48 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-To: linux-arm-kernel@lists.infradead.org
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Robert Moore <robert.moore@intel.com>,
-	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-	Len Brown <lenb@kernel.org>,
-	mediou@amazon.de,
-	alisaidi@amazon.com,
+	dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b="O0Mmk3Lm"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Q/Gafd3gRVEOvcu4d1Uw8F1ACd3oL6a/yJ9pFnY/7SrmZhnsiVmlJc2AtBcxOc4eWI2Sh2Ze8Z74MzTzCot1N+ShPOc9Lc2L+iLbRt6EMOodT4wV0M0xIUbSJv4+fIMUgioRE8vXABaKgqAy8rQY8FkjQbxqwWx03+MCf+TqSy93Lzfpf/+QEfvliSuDEDguS+b9LvOj0vff06I6YHTZ6MOLpyCzuRL2u3lZ4lCOOqEj91+z8QpNlfB2LIeR2y6l1ZjtuUP5kejpunSuDUa4bkn6H2brAfrpcWdqftAo2ZePsku5xAvAeo8ZajyJrMNulbxsOH63MLphxJ7AfDxlHw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rrKzl69Ix9bn4DiOEmcSJeeLK0/mpL+pGhT0Jldhhbw=;
+ b=eXtgF/cdeCHP+5Gj86hvJ+fiFai/Gh6tk1MiTqQtOjjdUZwYrVEi0H6ON649xHta5GA3nM9aVwMO8xDeADzR4wmw1J3xpjB/f8QGa1kWTmxfb8+lc/aLb+nZKHWvDueO74FTo/PPYyiZ52aeD5VHTIqP9NsRcbqR5REk9tdOhdv9dsvvsb2ZJP/AM8EilrF0yJW+36MZ936eZbvxHmDzRTk+AxykFAgBB5l96iS3T+CSKJ27FraHPBftEeA57dSubtcVdVZGjQfXgBFF9oRTgXoqO9/K5hgYInyV6JsshV5l+MiravlF8hztKcke73qQ7JyFgcjZz0xFii0W/kNK6g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rrKzl69Ix9bn4DiOEmcSJeeLK0/mpL+pGhT0Jldhhbw=;
+ b=O0Mmk3LmL0ODdtDWBkVGsX9rQsp92Dit4ewGTPw9dHyeMWg3z6WL+H5C3NGlP7rK2rZOC7CHn36Kpz71MCx99EUEdydePp+9vyYiKkgLebn66qUSq0ufPWS0EN5qg2b4BnZYDRFbRlYCIBAcy6sgXmfKo0Eoz7EEQjW696nIMUs=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
+Received: from SN7PR01MB7903.prod.exchangelabs.com (2603:10b6:806:34f::17) by
+ SJ2PR01MB8102.prod.exchangelabs.com (2603:10b6:a03:4fd::17) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7386.18; Tue, 12 Mar 2024 21:26:37 +0000
+Received: from SN7PR01MB7903.prod.exchangelabs.com
+ ([fe80::32c0:d77c:f00b:bacd]) by SN7PR01MB7903.prod.exchangelabs.com
+ ([fe80::32c0:d77c:f00b:bacd%6]) with mapi id 15.20.7362.031; Tue, 12 Mar 2024
+ 21:26:37 +0000
+From: Zaid Alali <zaidal@os.amperecomputing.com>
+To: zaidal@os.amperecomputing.com,
+	lenb@kernel.org,
+	james.morse@arm.com,
+	tony.luck@intel.com,
+	bp@alien8.de,
+	robert.moore@intel.com,
+	Avadhut.Naik@amd.com,
+	xueshuai@linux.alibaba.com
+Cc: linux-acpi@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	linux-acpi@vger.kernel.org,
 	acpica-devel@lists.linux.dev
-Subject: [PATCH 1/2] ACPICA: Detect FACS even for hardware reduced platforms
-Date: Tue, 12 Mar 2024 13:41:46 +0000
-Message-ID: <20240312134148.727454-1-dwmw2@infradead.org>
-X-Mailer: git-send-email 2.44.0
+Subject: [RFC PATCH 0/5] Enable EINJv2 Support
+Date: Tue, 12 Mar 2024 14:26:21 -0700
+Message-Id: <20240312212626.29007-1-zaidal@os.amperecomputing.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: MW2PR16CA0005.namprd16.prod.outlook.com (2603:10b6:907::18)
+ To SN7PR01MB7903.prod.exchangelabs.com (2603:10b6:806:34f::17)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: David Woodhouse <dwmw2@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by desiato.infradead.org. See http://www.infradead.org/rpr.html
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN7PR01MB7903:EE_|SJ2PR01MB8102:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2f89ba97-2bf8-4a7f-fb7d-08dc42db1971
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	aZ+X1QIFV/6Sa3LWqjP2bro6MoSXlH46VGLQcZ0UVAaQO41SmK4uPAQSmRbOkSJi4wkRr+aDkJ0eL/ZgI1Y7pmDSkNLb76vEgjJMq+Qofu6LDCz44YXx1qFbjWMOmhdHdNa06+7t6gU07VTHRZCFlc17Y+7EG7l7EGMg88NujCh6+R1jEmUxb5HJOC/Up4GtQ7f9/byZWdQpU+hBSxCy2uh9+OOpsc8q6gFiMMwVEvUgyl5/wzI7Sbyeoz7K4raTOXbvx5+uvTnAUHEKXZTGa2twfmusYFcqMkhM3bgAfj3b8aH8AemWwoX9lRTommTL6ep1iMtAM77oT7EgQcu7920V6oNO+yT4aRkxE03mJ51fmYdKAP/xmg2ehpC/OAuj3DcNJ7AZWUQvssDmfcxuTCBWMklq2TuGuH95y4m2yp20T/C5BbVmiKlhPU03jFrjwE0bKZh0XfPAj/G+sAXTwn1vFblrSdTU/VcyhfTgKDoSgCG3r2s72yYxEvyRWb6s/JkHfaCn7n9tdzZcnaBiTFPMO748X6OlxC2UPg5bYOP+2KE6ATMbyyaoZICfTXak89snv5V6T+BhNZbh0ulqHHV1K74kGnNSPA4kQMlYQ4hM7/3qSXDVKcC0dcr5Kv28qRbeJ0dRwWWBSuSSzK3LPTB76aCUUgm0V2wh8XU2LmI=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR01MB7903.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(52116005)(376005)(38350700005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?9njomy+p0ihMW1KgaqVXJpte/SeOHw8lyda9S/GjyClzqwuy/CePVgsNd96f?=
+ =?us-ascii?Q?LdIKMAyOwIqq321tSuQo0Dhce0Qo5Kkd3U4LwZ/Jp2JoJLg1JnKAGG/CSKBC?=
+ =?us-ascii?Q?KPb5GuuBqlARPUJEgojuvILP6eUGQBv6rhpuhwpw//LQ/6DJOTge1eJ5Z5mt?=
+ =?us-ascii?Q?x+vL54L410KoC/HbE8Nkc3mI5I/+822BJSYhgvYSxfsEPDCh6s8H9HpGch2P?=
+ =?us-ascii?Q?i66m+Mn95myTHsNUTVPcXzqAO4+reDZMfrOVQ0QICItfac55l0GF4EnZ6d3Q?=
+ =?us-ascii?Q?jz7AfC6ddvxJKyjHbCYrvnFBhJTdrN+PQozRwHLoAy6Pj1y8UmzrGa7zIzG+?=
+ =?us-ascii?Q?TA+cEAG+ZeM01GhGA7dmwF4xAheugt7KLLO+jR1kdURuCkCz5Xub6XiK2rcg?=
+ =?us-ascii?Q?u/vG5Q8QyvDz1XWlM2sVHV8bYng9Dm+6q94Rwhexd+vUOzhjSh4TOlRcH9/N?=
+ =?us-ascii?Q?VoV7Jopl42NC0RUvClvAe+e6so1wfu0cfe0rvTbW4y8ST14ScChRtfypbfxq?=
+ =?us-ascii?Q?OON72SJxkMHicgNKpYCN4FTwpOQKy43UEew7pKDzYvhUcMFk9O6a3qOlmW63?=
+ =?us-ascii?Q?lhsXOY4Nq5Bxk36WIErcMW5sEBy7TQorP3sbsBCh7a4ju12SZ9tGxoINVqYV?=
+ =?us-ascii?Q?jLSS8B5CV3uCKUY8YuIjvWrezRYh49mx1kaYJPS4+HWxkot3TrPHHxCq1ypK?=
+ =?us-ascii?Q?dnaZGGScHshrnRnZNUuJMbqNkxV+rcuEbJfBC00QfYLFML0B28oTJAyhB1ox?=
+ =?us-ascii?Q?ottYLy66+adOPsvhnerPyrDGMp0yTXUVVOyFjrJFYxBISrTz5k/pshpben2m?=
+ =?us-ascii?Q?hVb3h10Wka9+giJHZLjCu1LkFiGl7EcfXm5PGAZ4PDUqGyRA6IZ7yATgPQqQ?=
+ =?us-ascii?Q?54heQ4mN17ONee4yfleAYdNga9VwWo/M09aKrVZykU3sRQM9eB8/xsj5RxwH?=
+ =?us-ascii?Q?x6+vM9QmeGoLJm9j+yTgYGmPFS2vfg6C/1hOtCh9ngR7AK5PIL1jvYhkYm//?=
+ =?us-ascii?Q?6LTPLQMAAvSpMP80zshNucltMI14PC7a7LfjpzIQ3597cPfVKPzCqoeeW0U/?=
+ =?us-ascii?Q?VsCEk0gQpfVcNRnpJGRPhflD/g4WDHiBeZr2h4ENB67V7IQFzHpubJbo6Jnc?=
+ =?us-ascii?Q?+ErkO7EX4cKRCfuMarzMc6H36jz9PAc3in+2Mg1eQif1aHqeK6XSGL4b0N70?=
+ =?us-ascii?Q?0F8hsO1p9PUdC6dHAhRIBsffYU9iylgh21/y2GRgHW1thgkGyPHhQ87MumfV?=
+ =?us-ascii?Q?YhqOGMgApg1JoMrgsT6Cw2IBhTCnT5j19F1+qPTqrCfxq0cGQMWANzVEYnT7?=
+ =?us-ascii?Q?bTu1/VfDhnV9kgdx4Fgtx3Dxyupb7aeON7E2phb4uh2UPs0RVX3yy/4YeRoc?=
+ =?us-ascii?Q?+yjhDA14PAwPk9cPW7FCIR92mfsE68be3Gs16KfqI6uRSBulu2J8jf0sA/L9?=
+ =?us-ascii?Q?ts0usxGnyH7IPiVF/qqaz5E1JTTZvs1Ygr4ynaZ/KkZ9EP/MsG4vFTXR7Cyn?=
+ =?us-ascii?Q?3w3cqMLGLxb/wIwgxQUc77EVar7QCVu+R3H65dAjTzrDLUZfgbVSMAin8UBN?=
+ =?us-ascii?Q?c9C3t8dX+PKOa1dkxxxa9BCr4dni2WQJl12qCQjzPUzyNuJdInwZ+xu7bEJj?=
+ =?us-ascii?Q?kz62fLo3mft8EJ3PQMhuht8=3D?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2f89ba97-2bf8-4a7f-fb7d-08dc42db1971
+X-MS-Exchange-CrossTenant-AuthSource: SN7PR01MB7903.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Mar 2024 21:26:37.3477
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: sOXfka6d0wb1xrCf0Z1XreyACC4DN2bmRRWDyZHxZDxCnqCe4HwE5PA0B1/irjGXzM+hJo0xxuISb2DbqzM/DsI4wrDEIMitVHreXa2eJjSv6iqjeFjQxBRGBITA7AHJ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR01MB8102
 
-From: David Woodhouse <dwmw@amazon.co.uk>
+This patch set intends to enable EINJv2 support. The goal of this
+update is to allow the driver to simultaneously support EINJ and EINJv2.
+The implementation follows a proposed ACPI specs(1)(2) that enables the
+driver to discover system capabilities through GET_ERROR_TYPE.
 
-ACPICA PR https://github.com/acpica/acpica/pull/933
+Proposed ACPI spces:
+(1) https://bugzilla.tianocore.org/show_bug.cgi?id=4615
+(2) https://bugzilla.tianocore.org/attachment.cgi?id=1446
 
-The FACS is optional even on hardware reduced platforms, and may exist
-for the purpose of communicating the hardware_signature field to provke
-a clean reboot instead of a resume from hibernation.
+Zaid Alali (5):
+  ACPI: APEI: EINJ: Enable the discovery of EINJv2 capabilities
+  ACPI: APEI: EINJ: Add einjv2 extension struct
+  ACPI: APEI: EINJ: Add debugfs files for EINJv2 support
+  ACPI: APEI: EINJ: Enable EINJv2 error injections
+  ACPI: APEI: EINJ: Update the documentation for EINJv2 support
 
-Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
----
- drivers/acpi/acpica/tbfadt.c  | 30 +++++++++++++-----------------
- drivers/acpi/acpica/tbutils.c |  7 +------
- 2 files changed, 14 insertions(+), 23 deletions(-)
+ .../firmware-guide/acpi/apei/einj.rst         |  44 ++++-
+ drivers/acpi/apei/einj.c                      | 178 ++++++++++++++++--
+ include/acpi/actbl1.h                         |   1 +
+ 3 files changed, 204 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/acpi/acpica/tbfadt.c b/drivers/acpi/acpica/tbfadt.c
-index 44267a92bce5..3c126c6d306b 100644
---- a/drivers/acpi/acpica/tbfadt.c
-+++ b/drivers/acpi/acpica/tbfadt.c
-@@ -315,23 +315,19 @@ void acpi_tb_parse_fadt(void)
- 				       ACPI_TABLE_ORIGIN_INTERNAL_PHYSICAL,
- 				       NULL, FALSE, TRUE, &acpi_gbl_dsdt_index);
- 
--	/* If Hardware Reduced flag is set, there is no FACS */
--
--	if (!acpi_gbl_reduced_hardware) {
--		if (acpi_gbl_FADT.facs) {
--			acpi_tb_install_standard_table((acpi_physical_address)
--						       acpi_gbl_FADT.facs,
--						       ACPI_TABLE_ORIGIN_INTERNAL_PHYSICAL,
--						       NULL, FALSE, TRUE,
--						       &acpi_gbl_facs_index);
--		}
--		if (acpi_gbl_FADT.Xfacs) {
--			acpi_tb_install_standard_table((acpi_physical_address)
--						       acpi_gbl_FADT.Xfacs,
--						       ACPI_TABLE_ORIGIN_INTERNAL_PHYSICAL,
--						       NULL, FALSE, TRUE,
--						       &acpi_gbl_xfacs_index);
--		}
-+	if (acpi_gbl_FADT.facs) {
-+		acpi_tb_install_standard_table((acpi_physical_address)
-+					       acpi_gbl_FADT.facs,
-+					       ACPI_TABLE_ORIGIN_INTERNAL_PHYSICAL,
-+					       NULL, FALSE, TRUE,
-+					       &acpi_gbl_facs_index);
-+	}
-+	if (acpi_gbl_FADT.Xfacs) {
-+		acpi_tb_install_standard_table((acpi_physical_address)
-+					       acpi_gbl_FADT.Xfacs,
-+					       ACPI_TABLE_ORIGIN_INTERNAL_PHYSICAL,
-+					       NULL, FALSE, TRUE,
-+					       &acpi_gbl_xfacs_index);
- 	}
- }
- 
-diff --git a/drivers/acpi/acpica/tbutils.c b/drivers/acpi/acpica/tbutils.c
-index bb4a56e5673a..15fa68a5ea6e 100644
---- a/drivers/acpi/acpica/tbutils.c
-+++ b/drivers/acpi/acpica/tbutils.c
-@@ -36,12 +36,7 @@ acpi_status acpi_tb_initialize_facs(void)
- {
- 	struct acpi_table_facs *facs;
- 
--	/* If Hardware Reduced flag is set, there is no FACS */
--
--	if (acpi_gbl_reduced_hardware) {
--		acpi_gbl_FACS = NULL;
--		return (AE_OK);
--	} else if (acpi_gbl_FADT.Xfacs &&
-+	if (acpi_gbl_FADT.Xfacs &&
- 		   (!acpi_gbl_FADT.facs
- 		    || !acpi_gbl_use32_bit_facs_addresses)) {
- 		(void)acpi_get_table_by_index(acpi_gbl_xfacs_index,
 -- 
-2.44.0
+2.34.1
 
