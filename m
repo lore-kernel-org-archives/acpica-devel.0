@@ -1,175 +1,107 @@
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FA1A15FA74
-	for <acpica-devel@lists.linux.dev>; Mon, 25 Mar 2024 14:40:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FC506F07E
+	for <acpica-devel@lists.linux.dev>; Tue, 26 Mar 2024 12:08:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711377607; cv=none; b=Gmt2KiLkVfskmGYPYwi489B7IT7uVq+BtGC7shZYs71v7LI1Ct9XXI7xrZiEKY3rCPgdE07rCt41/Wv/4vUM2Y3vZSf6QSMN7dyOw6NZo0IgdyuI/8fZVHAOV0W/IvOxIyf5sPSGjFUGy7rXBtNGTa0vzeh6iQuwECo2s4HR5bA=
+	t=1711454887; cv=none; b=lGvO87JXZStxjNqYnXydNvWPWo/55Vv69p8Hyr7gZ7QscucUEOse1ucxY5UsZ2XkvVMvYnOlbFBShsuKqMplbVPVsJxVVUBxngVICOOCsvOZKp44YvmqxHDiSFM97S3oEHazjbNK8KSwa5mIDxBVfvWjcQiYztxftxg8NadAAys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711377607; c=relaxed/simple;
-	bh=5KajiC+osgJB4I3bVGEuiXbOl9RztfBbyQcYRS3ZOGo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KuxxDeDeUpWmfQgMl68fHL/J6CbtfxiXPf60P1P8NtoDhuehvWNmTiPpcDCSRJxJM1HWTGrfD4QctaclTOuBDJV8zvedmdHbZbvyDxLfxMb0ZA3Ei7yIY2YClvx6Buu4lQMDIIMpkI1Av6J00UCDIPDa9Xx1yFAuabT1o6F9z34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g3hh1Vl/; arc=none smtp.client-ip=209.85.210.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1711454887; c=relaxed/simple;
+	bh=+JYnu5emNgwEhffD7wjz6RfzwF5VDV57vHflFSPkjQk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nw3VAW56+OELMDQ5kgwGQ1DGQicq1051Rgnix2Aokqsen34kZoUErySDHksNh+XqXjjdFpKN80Tww9tlWnFXAXo24KCDmw2n5IeaTaTBV5qHllAIcLAo8oqr2D2jqhfaLx4HnV6beSFu6SKosm35PhllJyZdUwJIs8PgNT5e0mg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tDKDmqtN; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g3hh1Vl/"
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6e740fff1d8so3026198b3a.1
-        for <acpica-devel@lists.linux.dev>; Mon, 25 Mar 2024 07:40:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711377605; x=1711982405; darn=lists.linux.dev;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=nHUz7ERnER6qEaRZS7LT8dYbIk6qkEmxqClzj66d21Y=;
-        b=g3hh1Vl/nBbINj2KgH6XU7mDPknET43yIgbpZqTAkGJdHZNVMohLVzw/IKDgaJNUYV
-         r22+ttslUYOyKb2fJ5kXwnVpGj2fqn/2Tso/ZR6BAQvgRE18oDxFFLBdhcr4IpzdhYUz
-         sXKjqrUSpOG2VKCw4sfJZOUcLiOTeSZW/+VrFVVpcFQAdHp5R1o+0OxNiBsJtp0Kb6I0
-         S3mpbLjAbtGXxaOncJBCNjdr7Cv+zikG0ZPeYuHBGLAaFuldXuXnOaSvSwug4E+QWe6b
-         Lp+koIhBuydc1varwJ+YN10fuVpx4gMIVj1vlW2RmcGZ32alZdM9gef6bhuG88C6uBqQ
-         zr/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711377605; x=1711982405;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nHUz7ERnER6qEaRZS7LT8dYbIk6qkEmxqClzj66d21Y=;
-        b=TTi/X0xHpU/TE7bvjf2yq8Lz9YwgPz16foeMCvtzJGJXNXqT55DWcRME+0Zg9/nmDe
-         ny8JpXnoANV9AdSNlUSEM8MhsGl0uwBiMLY6sof4BRBTWQneOgA20rqGMU9mpdeIN685
-         P5if006eD6Jjwr7mp139Vc/vrvAHKkK83hElQzsHhABv6/kxsss7Y4X7umZgfmfJ0k5P
-         lpoj+f911uYFT5SDjBAdSnLv6yqLeKQwWJN52hRA7cxvRNF/i8HuBxPivBUCfIdYue8w
-         GlcJSN4cxqOS5QEW775sAyXoBx+UPoNo7g4OCpYSeTzjKdM2QzXsqXed31x0nwlvv6Yh
-         ySkw==
-X-Forwarded-Encrypted: i=1; AJvYcCWP7z44jbPKnXrJ/PRA4AzmyArwe03JLDDSw1LhQBCJmbju5Q4D0/SO+yy/nwBukSno9kQpDo9dXIIUcby/Z+KuidcSvvv8ifN38PA+
-X-Gm-Message-State: AOJu0YzBCg5fSLRvrIxlBLCoL6cMorSJxM2VC1lt2KIDGfBIKrwzSCTc
-	He+MymRqpJ73FshnnLIDNSVowk866LY8SLs72mdL2qVWN+blH/3F
-X-Google-Smtp-Source: AGHT+IFWo2GkUXJyzZ7L1+gDoUWEBuoJTbu+tdbudCIopEmOO9e2o+n2Frek215C1rwfHinDZ9dJOw==
-X-Received: by 2002:a05:6a20:1994:b0:1a1:8899:a2b0 with SMTP id bz20-20020a056a20199400b001a18899a2b0mr5577979pzb.52.1711377604778;
-        Mon, 25 Mar 2024 07:40:04 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id q9-20020aa79829000000b006ea75a0e223sm4117349pfl.110.2024.03.25.07.40.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Mar 2024 07:40:04 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <4ac8a198-b0c9-418e-bcf8-1ee1a9660dad@roeck-us.net>
-Date: Mon, 25 Mar 2024 07:40:03 -0700
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tDKDmqtN"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 359D2C43390
+	for <acpica-devel@lists.linux.dev>; Tue, 26 Mar 2024 12:08:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711454887;
+	bh=+JYnu5emNgwEhffD7wjz6RfzwF5VDV57vHflFSPkjQk=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=tDKDmqtNz6pQZIugZvH6fEiUGmGcfgZc+0HcylzuD03kRmdgjSTMJjtPXgkooZqE4
+	 K75IvqV1VA0a6Fc7W59kkjN24unq0udazgM9ZJM4lsKgEwcg1GWrzJYz4AvIVzdjHG
+	 5+DBKk9tmA8mmxT1tOK6Kk3uMp+fMNI//GMZLEaWtC+6MyOb8cO476/vXiIkUL4XWq
+	 8a8ieQrIog3Jty7r+Zd0bufmrpaEIV4vUk7yrktrXGtpMLIQ6CdMKkr8CGFWkqyQP7
+	 RctvWgpzGN9L1OR0lJqrCY6wPBWYiq2oIQ30F4fo9DVBMn5J8ZR8YFQaPz0qjIxAYI
+	 sze2/6FdUAy9Q==
+Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-5a47680a806so1380454eaf.0
+        for <acpica-devel@lists.linux.dev>; Tue, 26 Mar 2024 05:08:07 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWARymY2ZX15kHktV2L9Y738ZQlDecuZf/WR+zqjv4eJLeT35gqSiCKIY78qHNuSYo/c/xTgYjk1GyScjiCJyfKSh5OvxIQcPBgsYhM
+X-Gm-Message-State: AOJu0Yw9sFRTj2T1gR8lHaPyvXWhDzeI17QaZq2p+cmXa8ccNTtW9SF9
+	D2Y2J8UjSHAaQISMec0HplHj/W7M7k/sWrdlOYLweCs5Fm+TE7ScYQIkvRV4I6tAXNP2mvU9RP9
+	KkJYEr9SXTEE4tDCwCdeWXGo4jPE=
+X-Google-Smtp-Source: AGHT+IEX7/3bqP2g4RhkkN03lYfLqGuaIjY5MPN5VZV2xraUgKf1Irx0etz7kkJgjwvEIwCKtzXzqfKw+8ET1f5pR10=
+X-Received: by 2002:a05:6820:820:b0:5a4:7300:b57f with SMTP id
+ bg32-20020a056820082000b005a47300b57fmr9614933oob.1.1711454886495; Tue, 26
+ Mar 2024 05:08:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 2/2] hwmon: (acpi_power_meter) Ensure IPMI space
- handler is ready on Dell systems
-Content-Language: en-US
-To: Andy Shevchenko <andy@black.fi.intel.com>,
- Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc: rafael@kernel.org, lenb@kernel.org, jdelvare@suse.com,
- robert.moore@intel.com, linux-acpi@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
- acpica-devel@lists.linux.dev
-References: <20240320084317.366853-1-kai.heng.feng@canonical.com>
- <20240320084317.366853-2-kai.heng.feng@canonical.com>
- <ZgFwLXzNG2aTL_BQ@black.fi.intel.com>
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <ZgFwLXzNG2aTL_BQ@black.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <CAJZ5v0i7LYzF13M0qdeYWXZ7uO6HUpAS7pE5RJnOAJtKB8o88A@mail.gmail.com>
+ <20240322180753.5612-1-kiryushin@ancud.ru>
+In-Reply-To: <20240322180753.5612-1-kiryushin@ancud.ru>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Tue, 26 Mar 2024 13:07:54 +0100
+X-Gmail-Original-Message-ID: <CAJZ5v0gmO8_cosZ5j6iLRFaBEscxTGtfb5JTmnDeRqTOS-6-JQ@mail.gmail.com>
+Message-ID: <CAJZ5v0gmO8_cosZ5j6iLRFaBEscxTGtfb5JTmnDeRqTOS-6-JQ@mail.gmail.com>
+Subject: Re: [PATCH v2] ACPICA: debugger: check status of acpi_evaluate_object
+ in acpi_db_walk_for_fields
+To: Nikita Kiryushin <kiryushin@ancud.ru>
+Cc: Robert Moore <robert.moore@intel.com>, 
+	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org, 
+	acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	lvc-project@linuxtesting.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 3/25/24 05:38, Andy Shevchenko wrote:
-> On Wed, Mar 20, 2024 at 04:43:17PM +0800, Kai-Heng Feng wrote:
->> The following error can be observed at boot:
->> [    3.717920] ACPI Error: No handler for Region [SYSI] (00000000ab9e62c5) [IPMI] (20230628/evregion-130)
->> [    3.717928] ACPI Error: Region IPMI (ID=7) has no handler (20230628/exfldio-261)
->>
->> [    3.717936] No Local Variables are initialized for Method [_GHL]
->>
->> [    3.717938] No Arguments are initialized for method [_GHL]
->>
->> [    3.717940] ACPI Error: Aborting method \_SB.PMI0._GHL due to previous error (AE_NOT_EXIST) (20230628/psparse-529)
->> [    3.717949] ACPI Error: Aborting method \_SB.PMI0._PMC due to previous error (AE_NOT_EXIST) (20230628/psparse-529)
->> [    3.717957] ACPI: \_SB_.PMI0: _PMC evaluation failed: AE_NOT_EXIST
->>
->> On Dell systems several methods of acpi_power_meter access variables in
->> IPMI region [0], so wait until IPMI space handler is installed by
->> acpi_ipmi and also wait until SMI is selected to make the space handler
->> fully functional.
->>
->> Since the dependency is inside BIOS's ASL code and it's not
->> discoverable, so use this fixup is a hack to workaround BIOS issue.
-> 
-> ...
-> 
->> +	if (dmi_match(DMI_SYS_VENDOR, "Dell Inc.")) {
->> +		ipi_device = acpi_dev_get_first_match_dev("IPI0001", NULL, -1);
->> +
->> +		if (ipi_device) {
->> +			if (acpi_wait_for_acpi_ipmi())
->> +				dev_warn(&device->dev, "Waiting for ACPI IPMI timeout");
->> +			acpi_dev_put(ipi_device);
->> +		}
-> 
-> Can be written as
-> 
-> 	if (dmi_match(DMI_SYS_VENDOR, "Dell Inc.")) {
-> 		ipi_device = acpi_dev_get_first_match_dev("IPI0001", NULL, -1);
-> 		if (ipi_device && acpi_wait_for_acpi_ipmi())
-> 			dev_warn(&device->dev, "Waiting for ACPI IPMI timeout");
-> 		acpi_dev_put(ipi_device);
-> 
->> +	}
-> 
+On Fri, Mar 22, 2024 at 7:23=E2=80=AFPM Nikita Kiryushin <kiryushin@ancud.r=
+u> wrote:
+>
+> ACPICA commit 9061cd9aa131205657c811a52a9f8325a040c6c9
+>
+> Errors in acpi_evaluate_object can lead to incorrect state of buffer.
+> This can lead to access to data in previously ACPI_FREEd buffer and
+> secondary ACPI_FREE to the same buffer later.
+>
+> Handle errors in acpi_evaluate_object the same way it is done earlier
+> with acpi_ns_handle_to_pathname.
+>
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+>
+> Link: https://github.com/acpica/acpica/commit/9061cd9a
+> Fixes: 5fd033288a86 ("ACPICA: debugger: add command to dump all fields of=
+ particular subtype")
+> Signed-off-by: Nikita Kiryushin <kiryushin@ancud.ru>
+> ---
+> v2: Add ACPICA project git links for corresponding changes
+>  drivers/acpi/acpica/dbnames.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/acpi/acpica/dbnames.c b/drivers/acpi/acpica/dbnames.=
+c
+> index b91155ea9c34..c9131259f717 100644
+> --- a/drivers/acpi/acpica/dbnames.c
+> +++ b/drivers/acpi/acpica/dbnames.c
+> @@ -550,8 +550,12 @@ acpi_db_walk_for_fields(acpi_handle obj_handle,
+>         ACPI_FREE(buffer.pointer);
+>
+>         buffer.length =3D ACPI_ALLOCATE_LOCAL_BUFFER;
+> -       acpi_evaluate_object(obj_handle, NULL, NULL, &buffer);
+> -
+> +       status =3D acpi_evaluate_object(obj_handle, NULL, NULL, &buffer);
+> +       if (ACPI_FAILURE(status)) {
+> +               acpi_os_printf("Could Not evaluate object %p\n",
+> +                              obj_handle);
+> +               return (AE_OK);
+> +       }
+>         /*
+>          * Since this is a field unit, surround the output in braces
+>          */
+> --
 
-Ah yes, acpi_dev_put() checks if the parameter is NULL. Good point.
-I'll make that change, no need to resend.
-
-Thanks,
-Guenter
-
+Applied as 6.10 material, thanks!
