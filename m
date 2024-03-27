@@ -1,140 +1,204 @@
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9191656756
-	for <acpica-devel@lists.linux.dev>; Wed, 27 Mar 2024 07:45:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 937A212EBC7
+	for <acpica-devel@lists.linux.dev>; Wed, 27 Mar 2024 12:37:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711525554; cv=none; b=VPJkbWrPbJvZ5qozEaB6rkGLQJzwiMtdQUcQIh6g+8owD0k8xMne24mZUpIC6mmGJ/eaJpaL9Wjm6gH9FtIkb9GjzACQ8USZo2uxCLfW1OEB6EXuxVmPIOS0YKgbzd/waRgbR41FNBy3Lz/ZaV016Q+qYE+Ffdp5wxQCPeNAvhc=
+	t=1711543082; cv=none; b=UNSYm2utc2Xc/VF8aFO6mrCVRvn1iGpaCuyvEEYjUtBOkvjeP/86FOmEN5YTxic+BnVqWPBwzY5xqHg2A9tg5WzjL3cLorsDss8dwKcl/Db7ceTwHuvdPCFUH2yBZxnhLlzIzM22F4lIS3oE8IPVrmVU8v3YwRBq0VKifeYTs9A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711525554; c=relaxed/simple;
-	bh=htKh4Jp4vM0zvCuX4KapTUnP1c1FqeWCRPv1BZ+Q/j8=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=ZVqTScBxfBHFr4BzhhmKfxx4BQJuVLv8C9v/MLK0DvZszcuDuObGfYy/3SQA7ZcjYTBspHaLgJpSZ5gIJ1REVQQCjLkdW1nDzGtnvXeuJWdO5oWGgeJt/aBGNPiZTKZ/JN7TqdSzSPxAg3+bfTvzB3l+feRF+dOlMFWn3KQOpdM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=GZTgnA8m; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+	s=arc-20240116; t=1711543082; c=relaxed/simple;
+	bh=w3PLZnikB5D6UTd4FpLoVA8ANIIdiv9ggsdwhf7gnt4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ocrcpeIKePHx0ISOI7skr/S0n9wFGw/kheAwUyh5DpW4kphVpkb84XGGZt71sITZrVmLdiVmlUciS8U/LTPmlzbHQ02RwmADm8S6FIilNaeq6Ip2+hqpskwcikuvvQE5QphqZE01qAjeeAnBZvrGHFASxROX/SKRef///7+jt94=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lM4sDph9; arc=none smtp.client-ip=209.85.167.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GZTgnA8m"
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a4a393b699fso93593666b.0
-        for <acpica-devel@lists.linux.dev>; Wed, 27 Mar 2024 00:45:52 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lM4sDph9"
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-513e89d0816so8240934e87.0
+        for <acpica-devel@lists.linux.dev>; Wed, 27 Mar 2024 05:37:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711525551; x=1712130351; darn=lists.linux.dev;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=N7K6idk2YeGVu0lxj/Ps3L084ba7NhsvfbgHIaF82R8=;
-        b=GZTgnA8m4klYkodzPNqPsT1+8ow2fZ1k7cgQ7jD1l1L3Ai++6kB+PeYf5y536BUU9n
-         0YhlZUDoR14ty/TZa6KAVcAwQ3X/j0TDvT4U+6kNI+fBFgW/DWqj5yizcvC59qI/exLd
-         EZrcfOy1JvX1vOWZFEVMKSi56TBMxtgpiSvu/4prTxR25y3O24BLLivJFTMvOSPQXf6i
-         JwWv4HBu/PAuAdbopCixCmPylbtPteXpQIJi/IFepd+MqPY89e2x9Mt1ZQiiKphGIbDH
-         bQSv1dtiAzfncoGAPcxBv8vBWn94hELoC/l9SsvHUiHzi5n35aVD+jObXZkzRrdfq3yS
-         X4Uw==
+        d=gmail.com; s=20230601; t=1711543078; x=1712147878; darn=lists.linux.dev;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0po7APVfo9kM+XbLWx6GEab2u7wM60kpsN8Mny+gdt4=;
+        b=lM4sDph9KWSRsShW48dFQ0w+8bDdGe3AokAP76HPWi+kUx1bQnGPMMSAQa9e8ZdpoU
+         Ynt2PwhSHO2q3hp6t+/idlXv24hxitBd+68Vl5x0KMNCk3lQahif2HjhV1YaEJHoYcQQ
+         dYKyEW5Owcq25Df8CjqoWtgmgf4i3UeL6zD1WY/Llq2MYeAPt4wfRxqiwcZNmZ1wTxU5
+         GDuMmqNLB1KWnIzoniyYYMn/G6n8rwSMaKPqlraLhuRZOAajRhLwxYfFyx2WaMCLOrG5
+         eGSKSzJaCV9dCScR+byd3bLX03MNKaNoUu+SwbyXBMM6SDqPuRuY91mXOlNQEGswV8ui
+         v/Rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711525551; x=1712130351;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1711543078; x=1712147878;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=N7K6idk2YeGVu0lxj/Ps3L084ba7NhsvfbgHIaF82R8=;
-        b=HpEfnIzCGUb/ExoD7i1fTKoHN5x3ZHQzRviza+oEBc8EoaWl5HSd2MMOPAMrDweAVe
-         SKSSnWLow+w3Dhx5vwraLJ4NijiZYk+AdkQmWYOcoXzRol1xLwWICJkzVLugOM+VEjNe
-         LJPShDZLsfijDEv9qk0+OX+E6dae6zU39ouZTsAbdMl3/VBa2pehD77+W/SHGRj7hm5Z
-         WV8Jgc2KjGaxMufexi2rHqncuctUSuk90sjGaIC1EFfAdFhGfySGtEiJmtlQ3XtiiAQB
-         FfQjXtsfSfUEmIrBjPHD9y/ClJQrP/khIRSdH8yrVdkCEQS7W4edXhiUp0Q/iSzGZjoI
-         y7oA==
-X-Forwarded-Encrypted: i=1; AJvYcCWaxR4E5C2TarjoAl2SsUsZJxvVy1r9r3vClWuA9h2KD5BQjWjRY21+mdiJRNvV34hWB2198iEpPgtyfG/qxyq54qps5/iOAbx8NGL7
-X-Gm-Message-State: AOJu0Yw8+yiUqfXdCrr3UANtbtoLWS9Tw4ZInSEcVQnza3ocRS/Unp8j
-	AX0HJ/FUgWL7nQSb5mBaxCHAYW0XoBH6GCLWT/jAWiKiLT+cnfuDrXkGqe9etRs=
-X-Google-Smtp-Source: AGHT+IFo1SVbUJhfk2D5dISc82f8C01XAvtK/9Ua8RHBqCpkGF1uNtl0N5fMsZ3xQ2K6OiUoagNCQg==
-X-Received: by 2002:a17:907:e8c:b0:a46:a3d1:679a with SMTP id ho12-20020a1709070e8c00b00a46a3d1679amr4106291ejc.14.1711525551050;
-        Wed, 27 Mar 2024 00:45:51 -0700 (PDT)
-Received: from [127.0.1.1] ([178.197.206.205])
-        by smtp.gmail.com with ESMTPSA id am11-20020a170906568b00b00a474690a946sm4671745ejc.48.2024.03.27.00.45.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Mar 2024 00:45:50 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Wed, 27 Mar 2024 08:44:06 +0100
-Subject: [PATCH 19/19] ACPI: drop redundant owner from acpi_driver
+        bh=0po7APVfo9kM+XbLWx6GEab2u7wM60kpsN8Mny+gdt4=;
+        b=VjAuCWpMt4eDjDBzYdTjatoLmKmqcknYy7I3IXh3piUKbfn3xGUj/GL/ycxjbgUHHy
+         kxsMXeoFo/uUXidcI0mAwlmxsWwMP1Ax5GdJXvynIzxJDsAJ4cRYVXENoOV/JACFgdr3
+         5neUvdqOEspJ9SzO5pTkZUYypKwaPzwyrCgb3axc5IgRNVCc91fwa9SKCBT1/PVJNJk2
+         ALBlAswqYzSaMMe7fpR8jeezPJiU7j8RyvDpS4qaIvnYHLkKIs+N+1vXZ8PfwIDhcpiN
+         X2XFMKYhzaJP6ZolsomVAPx/oC8VARH6U2oG1IukY66zQed8CXS/WT0TxDptAJPFZRDL
+         yenQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWlWZHf4osxBcAE2kbQeHJ7SDvLheXIceu37KkWJKtdkV4Wz7iXZwMbbTvx98YscMTag+PkLmh2RfWHM4HC3Bp/Tf5M5Nk2jvfwNwDG
+X-Gm-Message-State: AOJu0YzUd/fMWet+J+cAey+7mdxGCUfg/0w0zYxVHh+kAfer0f/AH9rA
+	2qqIzgfSHn5CKhz8B8w5NDgBttBFwszPRuBj0KyFU2Ev7WBjY13W6a+ARxFo98qeR+TLPBwwDU3
+	A2e0h4/N9zONB91pEvpvRnzpNp9g=
+X-Google-Smtp-Source: AGHT+IHIxVrFBKdjortdCaXll+rW/cxfYre9UbgLvzS6HpqyTBrl0+F2wyXvbhXRUqf/MzeIE2guDffkK63zJwVnRHA=
+X-Received: by 2002:a19:910f:0:b0:515:bf75:1b99 with SMTP id
+ t15-20020a19910f000000b00515bf751b99mr784393lfd.40.1711543077124; Wed, 27 Mar
+ 2024 05:37:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240327-b4-module-owner-acpi-v1-19-725241a2d224@linaro.org>
-References: <20240327-b4-module-owner-acpi-v1-0-725241a2d224@linaro.org>
-In-Reply-To: <20240327-b4-module-owner-acpi-v1-0-725241a2d224@linaro.org>
-To: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
- Robert Moore <robert.moore@intel.com>, 
- Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Benson Leung <bleung@chromium.org>, Tzung-Bi Shih <tzungbi@kernel.org>, 
- Corentin Chary <corentin.chary@gmail.com>, 
- "Luke D. Jones" <luke@ljones.dev>, Hans de Goede <hdegoede@redhat.com>, 
- =?utf-8?q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
- Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>, 
- Daniel Oliveira Nascimento <don@syst.com.br>, 
- =?utf-8?q?Pali_Roh=C3=A1r?= <pali@kernel.org>, 
- Matan Ziv-Av <matan@svgalib.org>, Mattia Dongili <malattia@linux.it>, 
- Azael Avalos <coproscefalo@gmail.com>, 
- Richard Cochran <richardcochran@gmail.com>, Jeff Sipek <jsipek@vmware.com>, 
- Ajay Kaher <akaher@vmware.com>, Alexey Makhalov <amakhalov@vmware.com>, 
- VMware PV-Drivers Reviewers <pv-drivers@vmware.com>, 
- Theodore Ts'o <tytso@mit.edu>, "Jason A. Donenfeld" <Jason@zx2c4.com>, 
- "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Cc: linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
- acpica-devel@lists.linux.dev, linux-input@vger.kernel.org, 
- netdev@vger.kernel.org, chrome-platform@lists.linux.dev, 
- platform-driver-x86@vger.kernel.org, 
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=674;
- i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=htKh4Jp4vM0zvCuX4KapTUnP1c1FqeWCRPv1BZ+Q/j8=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmA85bDmBUKGxLiw+IE8MXLih8uNdO+fOokRWlT
- TIm2uaEvyuJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZgPOWwAKCRDBN2bmhouD
- 1z6cD/oCytA+t0QmfxlLxr4zYP8tlK64yfX5UfqshoxKOm8kP+7fJ49TPWNAJ/2WOuldx1L8JZP
- GlN8xW/4GU+WN5dsD5vqU4gbr9Fuk5sFzeGpF1Wn+LAWc7Rzm6MSPsGY32bIeJfKiv6H4mha/ps
- 6iC3ilwowIllCYO/VS+7EUinaRgOc4gLWxeG5fsWst0/vaT/ppa+J0RqUaM65oxA2SVXfaGW29Z
- WfdVl9fZ4bIoKvmzM1u0QM8ugLZUVyqdYaaMqZb4oCV9JATh4I80NtpIfy6o4YaCRAmDwxiapUC
- HUHnluTQsUJdqX4wyUG5eukbNSJWoevYgQkyFge+T9YteFs9tbViIAwcMKZDN/XVEY76fDZjxCh
- V9t5i4PTRFJFOxxwQMv34S//WxQreKqDkMyo2m8nbCDEp0dHGXiYPbibrEXk286kkju9dqzQXFL
- SwWC13gJbV5ZXZoYT9ZtKUN7IgyenZ8Emo5hTx8uQQ0hP/r2vwR8uRfZZ2tbr1CEqFdpciqLfBo
- eWfMHiqnX05AtOftT8P6/W5u4JbGxibHOlzGY+SlIFixrIy9beGzWztoHO5v77lVosMNGQixCAH
- Brl8aSiMZnR5rKQUT7+dBC9lBBeAk761YLH+3wjtZoA4c8m63tKEgTknXO4Ny2XJQcxUiykSJaM
- p0b7ggN21hq0YrQ==
-X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
- fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
+References: <cover.1709780590.git.haibo1.xu@intel.com>
+In-Reply-To: <cover.1709780590.git.haibo1.xu@intel.com>
+From: Haibo Xu <xiaobo55x@gmail.com>
+Date: Wed, 27 Mar 2024 20:37:45 +0800
+Message-ID: <CAJve8onUQTL2C5m4WQqkvFcANEiv+gzMBfmmJnRA1REE5XFgbw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/6] Add ACPI NUMA support for RISC-V
+To: Haibo Xu <haibo1.xu@intel.com>
+Cc: ajones@ventanamicro.com, sunilvl@ventanamicro.com, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
+	Robert Moore <robert.moore@intel.com>, Conor Dooley <conor.dooley@microchip.com>, 
+	Guo Ren <guoren@kernel.org>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>, 
+	Alexandre Ghiti <alexghiti@rivosinc.com>, Greentime Hu <greentime.hu@sifive.com>, 
+	Baoquan He <bhe@redhat.com>, Evan Green <evan@rivosinc.com>, Zong Li <zong.li@sifive.com>, 
+	Sami Tolvanen <samitolvanen@google.com>, Jisheng Zhang <jszhang@kernel.org>, 
+	=?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Chen Jiahao <chenjiahao16@huawei.com>, 
+	Arnd Bergmann <arnd@arndb.de>, James Morse <james.morse@arm.com>, 
+	Samuel Holland <samuel.holland@sifive.com>, Anup Patel <apatel@ventanamicro.com>, 
+	Ard Biesheuvel <ardb@kernel.org>, Tony Luck <tony.luck@intel.com>, Yuntao Wang <ytcoode@gmail.com>, 
+	Dan Williams <dan.j.williams@intel.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	Alison Schofield <alison.schofield@intel.com>, linux-riscv@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, 
+	acpica-devel@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Once all .owner is removed from all acpi_driver instances, drop it from
-the structure.
+Hi @Sunil V L,
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Could you please have a review on this patch set?
 
----
+Thanks,
+Haibo
 
-This depends on all previous patches. It could go next cycle, after
-things got merged.
----
- include/acpi/acpi_bus.h | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-index 7453be56f855..32aae3ee99ac 100644
---- a/include/acpi/acpi_bus.h
-+++ b/include/acpi/acpi_bus.h
-@@ -170,7 +170,6 @@ struct acpi_driver {
- 	unsigned int flags;
- 	struct acpi_device_ops ops;
- 	struct device_driver drv;
--	struct module *owner;
- };
- 
- /*
-
--- 
-2.34.1
-
+On Thu, Mar 7, 2024 at 4:34=E2=80=AFPM Haibo Xu <haibo1.xu@intel.com> wrote=
+:
+>
+> This patch series enable RISC-V ACPI NUMA support which was based on
+> the recently approved ACPI ECR[1].
+>
+> Patch 1/6 is generated from the acpica PR[2] and should be merged through
+> the acpica project. Due to this dependency, other 5 patches can only be
+> merged after the corresponding ACPICA patch was pulled into linux.
+>
+> Patch 2/6 add RISC-V specific acpi_numa.c file to parse NUMA information
+> from SRAT and SLIT ACPI tables.
+> Patch 3/6 add the common SRAT RINTC affinity structure handler.
+> Patch 4/6 remove the '#if defined(CONFIG_ARCH)' condition to make some NU=
+MA
+> related parse functions common for all current architectures that support
+> ACPI_NUMA
+> Patch 5/6 remove ARCH depends option in ACPI_NUMA Kconfig which was no
+> longer needed since all the current architectures that support ACPI would
+> select ACPI_NUMA by default.
+> Patch 6/6 add corresponding ACPI_NUMA config for RISC-V Kconfig.
+>
+> Based-on: https://github.com/linux-riscv/linux-riscv/tree/for-next
+>
+> [1] https://drive.google.com/file/d/1YTdDx2IPm5IeZjAW932EYU-tUtgS08tX/vie=
+w?usp=3Dsharing
+> [2] https://github.com/acpica/acpica/pull/926
+>
+> Testing:
+> Since the ACPI AIA/PLIC support patch set is still under upstream review,
+> hence it is tested using the poll based HVC SBI console and RAM disk.
+> 1) Build latest Qemu with the following patch backported
+>    https://lore.kernel.org/all/20240129094200.3581037-1-haibo1.xu@intel.c=
+om/
+>    https://github.com/vlsunil/qemu/commit/42bd4eeefd5d4410a68f02d54fee406=
+d8a1269b0
+>
+> 2) Build latest EDK-II
+>    https://github.com/tianocore/edk2/blob/master/OvmfPkg/RiscVVirt/README=
+.md
+>
+> 3) Build Linux with the following configs enabled
+>    CONFIG_RISCV_SBI_V01=3Dy
+>    CONFIG_SERIAL_EARLYCON_RISCV_SBI=3Dy
+>    CONFIG_HVC_RISCV_SBI=3Dy
+>    CONFIG_NUMA=3Dy
+>    CONFIG_ACPI_NUMA=3Dy
+>
+> 4) Build buildroot rootfs.cpio
+>
+> 5) Launch the Qemu machine
+>    qemu-system-riscv64 -nographic \
+>    -machine virt,pflash0=3Dpflash0,pflash1=3Dpflash1 -smp 4 -m 8G \
+>    -blockdev node-name=3Dpflash0,driver=3Dfile,read-only=3Don,filename=3D=
+RISCV_VIRT_CODE.fd \
+>    -blockdev node-name=3Dpflash1,driver=3Dfile,filename=3DRISCV_VIRT_VARS=
+.fd \
+>    -object memory-backend-ram,size=3D4G,id=3Dm0 \
+>    -object memory-backend-ram,size=3D4G,id=3Dm1 \
+>    -numa node,memdev=3Dm0,cpus=3D0-1,nodeid=3D0 \
+>    -numa node,memdev=3Dm1,cpus=3D2-3,nodeid=3D1 \
+>    -numa dist,src=3D0,dst=3D1,val=3D30 \
+>    -kernel linux/arch/riscv/boot/Image \
+>    -initrd buildroot/output/images/rootfs.cpio \
+>    -append "root=3D/dev/ram ro console=3Dhvc0 earlycon=3Dsbi"
+>
+> [    0.000000] ACPI: SRAT: Node 0 PXM 0 [mem 0x80000000-0x17fffffff]
+> [    0.000000] ACPI: SRAT: Node 1 PXM 1 [mem 0x180000000-0x27fffffff]
+> [    0.000000] NUMA: NODE_DATA [mem 0x17fe3bc40-0x17fe3cfff]
+> [    0.000000] NUMA: NODE_DATA [mem 0x27fff4c40-0x27fff5fff]
+> ...
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> HARTID 0x0 -> Node 0
+> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> HARTID 0x1 -> Node 0
+> [    0.000000] ACPI: NUMA: SRAT: PXM 1 -> HARTID 0x2 -> Node 1
+> [    0.000000] ACPI: NUMA: SRAT: PXM 1 -> HARTID 0x3 -> Node 1
+>
+> ---
+> Changes since v1
+>   - Switch the order of patch 2/4 and 3/4 - Per Sunil's suggestion
+>   - Add a new patch 4/6 to make some NUMA related parse functions common
+>     for all the architectures that support ACPI NUMA - Per Sunil's sugges=
+tion
+>   - Add a new patch 5/6 to remove ARCH depends option in ACPI_NUMA
+>     Kconfig since all the current architectures that support ACPI
+>     would select ACPI_NUMA by default - Per Arnd and Sunil's suggestion
+>   - Other minor fix for code format - Per Sunil's comments
+>
+> Haibo Xu (6):
+>   ACPICA: SRAT: Add RISC-V RINTC affinity structure
+>   ACPI: RISCV: Add NUMA support based on SRAT and SLIT
+>   ACPI: NUMA: Add handler for SRAT RINTC affinity structure
+>   ACPI: NUMA: Make some NUMA related parse functions common
+>   ACPI: NUMA: Remove ARCH depends option in ACPI_NUMA Kconfig
+>   ACPI: RISCV: Enable ACPI based NUMA
+>
+>  arch/riscv/Kconfig            |   1 +
+>  arch/riscv/include/asm/acpi.h |  15 +++-
+>  arch/riscv/kernel/Makefile    |   1 +
+>  arch/riscv/kernel/acpi.c      |   5 --
+>  arch/riscv/kernel/acpi_numa.c | 131 ++++++++++++++++++++++++++++++++++
+>  arch/riscv/kernel/setup.c     |   4 +-
+>  arch/riscv/kernel/smpboot.c   |   2 -
+>  drivers/acpi/numa/Kconfig     |   1 -
+>  drivers/acpi/numa/srat.c      |  40 ++++++++---
+>  include/acpi/actbl3.h         |  18 ++++-
+>  include/linux/acpi.h          |   6 ++
+>  11 files changed, 203 insertions(+), 21 deletions(-)
+>  create mode 100644 arch/riscv/kernel/acpi_numa.c
+>
+> --
+> 2.34.1
+>
