@@ -1,197 +1,96 @@
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B727C23774
-	for <acpica-devel@lists.linux.dev>; Wed, 27 Mar 2024 03:45:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.119
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA6B71B813
+	for <acpica-devel@lists.linux.dev>; Wed, 27 Mar 2024 05:50:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711511121; cv=none; b=VenZvikNxdVz5nrF2NE6lqOp7XGYn59i/69JkJiXBp2PpRbLCudCa8v2ojtoSV5PIWiGjcTM1ZVqMgNjoT9YKbD31b6Lc+kdwzdBi4LjKGlZHdL0vm0vEeFnLUUjSXNevp/nYaDiY7Tl4qAmAd+VpLAC9uQGOfQYOZ6vVvUuE/8=
+	t=1711518604; cv=none; b=bl9+PCjkBE6q4UmsMj0t4NiEIzGCEEbO+pfVNCipLN9Vxj7PiSbAIVGsrBcrq/8i1jNyN2CpQXfDMTxGI0i1hpGn9kci+ywOQWOQDYFu9fqNYoxP2YGW3R0iOP6vnPX9pGWtq8pH4SD14QFuUxP6c4TChRGS8C3UhGmKBp7vVeA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711511121; c=relaxed/simple;
-	bh=KuhaToY0pnSer8l7LmdO1BYdg4X1cESqPqxsiTiWM9A=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=mB6ysMrldOovT1WsWtc3LHl16S+RpkO0QrQv9lGnKKQPdCF1JHosO/725bFBgBbmTO5DGcG3Tg+iTp/sh7/e9Ba5WfkI8AO5GnTIRTPgo5x1xbdpBSLhTw1pRoce0JwHwDGqFq6li13lMovw757TI2ncZ1tHHd1iPMPmdpMgt0g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=XeSquemE; arc=none smtp.client-ip=115.124.30.119
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+	s=arc-20240116; t=1711518604; c=relaxed/simple;
+	bh=NGhsAu+sz1EG8a0MGs6ihEvAoXlJ1KKzmRjwQND6aHU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=SVOFnYzEBGirMggmOTG4kjiV8/rorOalcJjw8iufXjglH46meHGX8m4kdIF9qhxM58Igxq1DibQwlcUxVf1sIplQWoBkLi01KbdeGUpkWPF56cyJf6/n4XV/qT7zhehCBHVGFDvfr5ks4p+iZEr3JxWLiwLbrg1rW/RX7OwRvqY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PT+Fg3NF; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="XeSquemE"
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1711511112; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=bufF6x1T2H32EvFgYBhPmQfSD25Igr+N5RI/zTUl+yE=;
-	b=XeSquemE4s3xAq0VXo+2EsoHc1L19LjjIXQDE7uCGK81oGWdjXylCLsTuLn0aBTck/ir7UlDWQgmTR2Ugtp634zWFDVD9bWHKVGaNANWROqC6dWVX3p1uw8o4Bq1wvqAtcVA7jM86onLPyF1zSBF7inDPbocAHYoKEliBg47/gI=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=tianruidong@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0W3NLs2o_1711511108;
-Received: from localhost(mailfrom:tianruidong@linux.alibaba.com fp:SMTPD_---0W3NLs2o_1711511108)
-          by smtp.aliyun-inc.com;
-          Wed, 27 Mar 2024 11:45:11 +0800
-From: Ruidong Tian <tianruidong@linux.alibaba.com>
-To: robert.moore@intel.com,
-	rafael.j.wysocki@intel.com,
-	lenb@kernel.org
-Cc: linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	tianruidond@linux.alibaba.com,
-	Ruidong Tian <tianruidong@linux.alibaba.com>
-Subject: [PATCH 1/2] ACPICA: AEST: Fix coding style at struct definition
-Date: Wed, 27 Mar 2024 11:44:59 +0800
-Message-Id: <20240327034500.95601-2-tianruidong@linux.alibaba.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20240327034500.95601-1-tianruidong@linux.alibaba.com>
-References: <20240327034500.95601-1-tianruidong@linux.alibaba.com>
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PT+Fg3NF"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711518602; x=1743054602;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=NGhsAu+sz1EG8a0MGs6ihEvAoXlJ1KKzmRjwQND6aHU=;
+  b=PT+Fg3NF0C7oH+QLXjD+oLG2Fngukc7N2cQ+dlTxE5VMxxep7qXstjQK
+   CEWTgDTOcrvW8t395o249MaTB0+IxEKntOAIQtcehK0eU985B1i+ktF2p
+   rBP+YnZRsn3+mJNXi1dAlrkFS9W9bfkjXN95if3qtinaxFEHPIF2RiZRP
+   nXyUA2a63aBJP92We17G+gs1279X9u/xqMadcL33laFi86I2Ue6oA8Je6
+   1h+D8Ty6QBiUvjqby3Kh8ZWSX5BrJGJDTucBHmOA4l1nZat2Nh2rVJ+2z
+   5zLpSOECZCKgJdjxTYjIdLdDvtJEbQ8PLuvxMnv/AXYDN0ArH+DSMOCSk
+   w==;
+X-CSE-ConnectionGUID: 1mJ6wZKnSsqvpmmfsiZsTg==
+X-CSE-MsgGUID: wGLKV8arRaWLiXO67iYv5g==
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="9563590"
+X-IronPort-AV: E=Sophos;i="6.07,157,1708416000"; 
+   d="scan'208";a="9563590"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 22:50:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,157,1708416000"; 
+   d="scan'208";a="16833210"
+Received: from xuezengd-mobl.amr.corp.intel.com (HELO [10.209.17.216]) ([10.209.17.216])
+  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 22:50:01 -0700
+Message-ID: <3cad4f7f-382e-4898-8867-d48340a2ed01@linux.intel.com>
+Date: Tue, 26 Mar 2024 22:50:00 -0700
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 0/7] ACPI: scan: A few ad-hoc cleanups
+Content-Language: en-US
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+ linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+ acpica-devel@lists.linux.dev
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
+ Robert Moore <robert.moore@intel.com>
+References: <20240325123444.3031851-1-andriy.shevchenko@linux.intel.com>
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20240325123444.3031851-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Delete unnecessary blank lines and typedef to follow Kernel coding
-style.
 
-Signed-off-by: Ruidong Tian <tianruidong@linux.alibaba.com>
----
- include/acpi/actbl2.h | 50 +++++++++++++++++--------------------------
- 1 file changed, 20 insertions(+), 30 deletions(-)
+On 3/25/24 5:32 AM, Andy Shevchenko wrote:
+> While looking for something else in the scan.c I noticed the room
+> of improvement. Hence this series. Also bus.c patches, which some
+> how were related to my research, but I think are independent from
+> the scan.c improvements.
 
-diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
-index 9775384d61c6..c32e97855031 100644
---- a/include/acpi/actbl2.h
-+++ b/include/acpi/actbl2.h
-@@ -116,15 +116,14 @@ struct acpi_aest_hdr {
- 
- /* 0: Processor Error */
- 
--typedef struct acpi_aest_processor {
-+struct acpi_aest_processor {
- 	u32 processor_id;
- 	u8 resource_type;
- 	u8 reserved;
- 	u8 flags;
- 	u8 revision;
- 	u64 processor_affinity;
--
--} acpi_aest_processor;
-+};
- 
- /* Values for resource_type above, related structs below */
- 
-@@ -135,11 +134,10 @@ typedef struct acpi_aest_processor {
- 
- /* 0R: Processor Cache Resource Substructure */
- 
--typedef struct acpi_aest_processor_cache {
-+struct acpi_aest_processor_cache {
- 	u32 cache_reference;
- 	u32 reserved;
--
--} acpi_aest_processor_cache;
-+};
- 
- /* Values for cache_type above */
- 
-@@ -150,50 +148,44 @@ typedef struct acpi_aest_processor_cache {
- 
- /* 1R: Processor TLB Resource Substructure */
- 
--typedef struct acpi_aest_processor_tlb {
-+struct acpi_aest_processor_tlb {
- 	u32 tlb_level;
- 	u32 reserved;
--
--} acpi_aest_processor_tlb;
-+};
- 
- /* 2R: Processor Generic Resource Substructure */
- 
--typedef struct acpi_aest_processor_generic {
-+struct acpi_aest_processor_generic {
- 	u32 resource;
--
--} acpi_aest_processor_generic;
-+};
- 
- /* 1: Memory Error */
- 
--typedef struct acpi_aest_memory {
-+struct acpi_aest_memory {
- 	u32 srat_proximity_domain;
--
--} acpi_aest_memory;
-+};
- 
- /* 2: Smmu Error */
- 
--typedef struct acpi_aest_smmu {
-+struct acpi_aest_smmu {
- 	u32 iort_node_reference;
- 	u32 subcomponent_reference;
--
--} acpi_aest_smmu;
-+};
- 
- /* 3: Vendor Defined */
- 
--typedef struct acpi_aest_vendor {
-+struct acpi_aest_vendor {
- 	u32 acpi_hid;
- 	u32 acpi_uid;
- 	u8 vendor_specific_data[16];
--
--} acpi_aest_vendor;
-+};
- 
- /* 4: Gic Error */
- 
--typedef struct acpi_aest_gic {
-+struct acpi_aest_gic {
- 	u32 interface_type;
- 	u32 instance_id;
--
--} acpi_aest_gic;
-+};
- 
- /* Values for interface_type above */
- 
-@@ -205,7 +197,7 @@ typedef struct acpi_aest_gic {
- 
- /* Node Interface Structure */
- 
--typedef struct acpi_aest_node_interface {
-+struct acpi_aest_node_interface {
- 	u8 type;
- 	u8 reserved[3];
- 	u32 flags;
-@@ -215,8 +207,7 @@ typedef struct acpi_aest_node_interface {
- 	u64 error_record_implemented;
- 	u64 error_status_reporting;
- 	u64 addressing_mode;
--
--} acpi_aest_node_interface;
-+};
- 
- /* Values for Type field above */
- 
-@@ -226,15 +217,14 @@ typedef struct acpi_aest_node_interface {
- 
- /* Node Interrupt Structure */
- 
--typedef struct acpi_aest_node_interrupt {
-+struct acpi_aest_node_interrupt {
- 	u8 type;
- 	u8 reserved[2];
- 	u8 flags;
- 	u32 gsiv;
- 	u8 iort_id;
- 	u8 reserved1[3];
--
--} acpi_aest_node_interrupt;
-+};
- 
- /* Values for Type field above */
- 
+Changes looks good to me.
+
+Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+>
+> Andy Shevchenko (7):
+>   ACPI: bus: Make container_of() no-op where it makes sense
+>   ACPI: bus: Don't use "proxy" headers
+>   ACPI: scan: Replace infinite for-loop with finite while-loop
+>   ACPI: scan: Use list_first_entry_or_null() in acpi_device_hid()
+>   ACPI: scan: Move misleading comment to acpi_dma_configure_id()
+>   ACPI: scan: Use standard error checking pattern
+>   ACPI: scan: Introduce typedef:s for struct acpi_hotplug_context
+>     members
+>
+>  drivers/acpi/dock.c     | 48 +++++++++++++++--------------------------
+>  drivers/acpi/scan.c     | 42 +++++++++++++++++-------------------
+>  include/acpi/acpi_bus.h | 28 +++++++++++++++---------
+>  3 files changed, 55 insertions(+), 63 deletions(-)
+>
 -- 
-2.33.1
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
 
