@@ -1,60 +1,61 @@
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD2422C1BA
-	for <acpica-devel@lists.linux.dev>; Wed, 27 Mar 2024 07:44:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 687632D04E
+	for <acpica-devel@lists.linux.dev>; Wed, 27 Mar 2024 07:44:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711525484; cv=none; b=cNfRBtq516b6yR+AJYvKBXa+1xKB2S0aOFKO/VlGDJ6uX19qRzvPRmv2DaiZ/+Mr0LfCIoaFvGefFP+/QxhD8N1LXCag/niRrofWInidWT0knzxZ6KrF0XBw+mmbEm33TJQk6uFdMvlcxZS7N6P8G/j+iDE7CubFsqF+tNGxBTY=
+	t=1711525490; cv=none; b=Vy35azJo4ss8X1UooZzueIAPfBDPMukn6KnGUllbIn5+BoTL6Xy9RrCaoiPzlTtLjQ/8rteqzbpOk8yaLM5gVq2postxmzD1bkMeaXSqRPMieOgxrw/DwQEf6MMUwWzU361A9zhSpdFwDwLOeCg9x2pAM6etJaqpfaR4TkRGzlY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711525484; c=relaxed/simple;
-	bh=meBEX830gRW4HXcwRaI98fQKaU/0vg8wDYKxDADJaXA=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=EH+s950bN8W3Z2DoTNOLFVJsMcEEvpybwwJm52LJCG6fACSil8Inhl2r0nzVAEofdmAZaT3h0ktZE6sY77oUu1dLadJegLFhuaSBOJAsX7CcAeG/pRtuULEGfE1r8qdR+UX3JJ68oA7r7ybyypHWlZVP/4A8FZocQC+ZL9O3Nd0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Eesx9XV0; arc=none smtp.client-ip=209.85.218.42
+	s=arc-20240116; t=1711525490; c=relaxed/simple;
+	bh=AfH7TD93nFAaXOkK7vrlKu3Cot997gVLIL4pGflb6fs=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=OH+M8vKfSPmDjuLBrR313b1Odn+cnqKxoQjS6QLiFY0Z16ar4qSGb+vB2mmu77ugHOJZMfK2lVUkVCcH58YblvqOT1dxBZYBaHGGd5rsnOTNN21YhRAUi1i126tJ95YAS4Yl25AIco3egDqZXNh7V3igAwrhJk5qJSN3DN3aYok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Q6yCtS7n; arc=none smtp.client-ip=209.85.218.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Eesx9XV0"
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a468004667aso860540866b.2
-        for <acpica-devel@lists.linux.dev>; Wed, 27 Mar 2024 00:44:41 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Q6yCtS7n"
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a474c4faf5eso398244566b.2
+        for <acpica-devel@lists.linux.dev>; Wed, 27 Mar 2024 00:44:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711525480; x=1712130280; darn=lists.linux.dev;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=cwJgbNd9Cb1xxQGP3U28yL2PzFi4V4xZap9Ru43Q/Mw=;
-        b=Eesx9XV09NoOM3rs0ZltsMdUlFEAdy8SrRs/84UAaGzXijptatnGJEgHRRw2llIdf2
-         PY4LJKpeffUUbbVbsK+PTX1LsuG2IQRpNBbQcy2J8UZgTDoUKxamC3l5oL38qOIvWGRH
-         d4BU6QZDRqEMXPPV2QZkfsCI0xQ2Y+xHBUggriAYHH7Tt7lIN3F0Xr9oA5QpLGbAEz/c
-         5VrRkXKpDYJ0+M96ET8geW+DPHKBDt5D0QYxnKJaauVL+mpw3Dhy8x8qXv3dZMPP/kGu
-         Bhcf5hHN/Xk66Zg01PdKjSZWq92yYS05wa4vnHLxjcBw2YRK6TcMC7DRDgOVKjzVYK1V
-         B1Uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711525480; x=1712130280;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=linaro.org; s=google; t=1711525487; x=1712130287; darn=lists.linux.dev;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=cwJgbNd9Cb1xxQGP3U28yL2PzFi4V4xZap9Ru43Q/Mw=;
-        b=xLMyYAdMK0iqnTtu9uNsRaMdosRGJx07QQqmGGGDAMSId75pKlaaPmGpYAV5Yx5xpx
-         42Ny67WrCPLYE7Nk9oTZruNqyImE+4yG9gXm2UQkmZyNymskq9zcTTgu/OhDBs4GtB+V
-         TXEe9AUb0gJuBtHX/7rV2ISSXk55OcnFtXyudEElB9uR158YzUw+kXusXkdyTOs8b+qu
-         g2i+J6wJA/QtgVcnnsVbZIcTmCWi+2bDT64/qVkkMxV/NFImBsgQOMjBd6sJkT1PXG+f
-         jMLqHtNPNhbLV5YD38o7a4KBvgXvfRRfCpZN9oaqmQCQrT18dsTX465bwxTq9S+H1Vm5
-         NwZw==
-X-Forwarded-Encrypted: i=1; AJvYcCVANbhJDLYTdOkNZzc0mbGkZ2tfbglSnyMFVf5xdb+g42oIN1JMrWOwqORODnZTOdrc9A2lvGY0gYn6nvv5AnfpJCGLtEj8Q6Q8DUET
-X-Gm-Message-State: AOJu0YywcUNz9FfZNHgM2obaCrDAnhd8sGvJGoQUfHsADzlHN112EQmR
-	XzA/avuIPk646qjyx/ftxK6LpwrE3/yez3EKLe2wlxGmtydCqX0nxBLunNYJp54=
-X-Google-Smtp-Source: AGHT+IGlvH7IOquxCns2fE0YzmhHeEjVjLkRMbV5aqG3+Bvmapd6+zXlFoC0J4tu34KlhV5VJ7nhhQ==
-X-Received: by 2002:a17:906:4112:b0:a46:930c:b793 with SMTP id j18-20020a170906411200b00a46930cb793mr2316193ejk.9.1711525480120;
-        Wed, 27 Mar 2024 00:44:40 -0700 (PDT)
+        bh=S0h8HJEMkZo/orl3TA6XTaCo4nQqMYHN9Ch6FJtW6jM=;
+        b=Q6yCtS7nw9JekenDtyukKIOOdLmFaLrElx34DQEcDarEffWJGrexSkaK97o/vpS3Ej
+         ryFJeuIxNufPJrpIjYJyvC5HcHrg5lDJXSTOPRDLFQJipdOp5Z9lsi7UAmG/uQdIdSZa
+         VDV3GDdFJ7TRfA1bIB6yizhZ4EICiNaQ+W/UCY4Lc0LOElRH8uHf38yF0CSrRnjp1qsr
+         aCXihOlXu7p7NnjkbkSNH3C4Qoef2IkhCwxpecDaijl6BT+Rj85b38OGWY+J0SSU/3AK
+         M7EWWuyEiVunoSOK9x3qWkGGr6X1ung3xWz0fJbWvMfk/14uof8xnfpWSj0gbkQS2HyE
+         b+qQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711525487; x=1712130287;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=S0h8HJEMkZo/orl3TA6XTaCo4nQqMYHN9Ch6FJtW6jM=;
+        b=iwHpSnWDMS9+iLWWUoss3Mv+8l7uMTUJ9Zqjmc2Clxp6gGELwbhajwGy0rGSZLZ0wV
+         zrY3FX4M3rgGokrHjTnGmddWeiBuI0DZW9VdvNSSCB4km52AV4oMQP0H9dtglQmJIUTp
+         FesI7LU0Emv7bC9tb+r2p4/mCJHcZHEWhZWV2KhWNTzx/CeLVAFRdAhxwUtYpubTWUkC
+         5Ezn+31fho9/AvFXUZIzJQoMv7av/xiKUFvcqS3N2hubP0AjvnouVH6oyeTPoWz2xHfs
+         emsMjuvhCK4wBLTJAeGIxqmUwquOIsr5hFbX4DJit4L0oSjJD0oup+TEPECUcWcxHf+k
+         iL9Q==
+X-Forwarded-Encrypted: i=1; AJvYcCU1SSXViXfMRVTheEJNlLiwUZbv9AR1hEw0dY9KMOh6tEgNMg6UhpSCi4HIFFmUXzi7mfCEQ5uPEBaxpnn/H192AdCB/bBTu7Qfr1tB
+X-Gm-Message-State: AOJu0YzyXPzQECjKTonv5EM128BHK5eDGDLu5vO9kf/kawh3gbDXGQCn
+	Q2QHMGPaxNlR5s6AaYYDRp8a7bqmzistjuRJolFYq0pz5ndciZdpaP2+q6qyxrI=
+X-Google-Smtp-Source: AGHT+IHRUaSEY2LgvM/wYcxNN2lH5xfqXQT6S4v31IsDX3dv8eFJ37Z52TqYNLsh6Z2pW/xKFizTdg==
+X-Received: by 2002:a17:906:8417:b0:a46:f869:3216 with SMTP id n23-20020a170906841700b00a46f8693216mr242827ejx.64.1711525486845;
+        Wed, 27 Mar 2024 00:44:46 -0700 (PDT)
 Received: from [127.0.1.1] ([178.197.206.205])
-        by smtp.gmail.com with ESMTPSA id am11-20020a170906568b00b00a474690a946sm4671745ejc.48.2024.03.27.00.44.29
+        by smtp.gmail.com with ESMTPSA id am11-20020a170906568b00b00a474690a946sm4671745ejc.48.2024.03.27.00.44.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Mar 2024 00:44:39 -0700 (PDT)
+        Wed, 27 Mar 2024 00:44:46 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 00/19] ACPI: store owner from modules with
+Date: Wed, 27 Mar 2024 08:43:48 +0100
+Subject: [PATCH 01/19] ACPI: store owner from modules with
  acpi_bus_register_driver()
-Date: Wed, 27 Mar 2024 08:43:47 +0100
-Message-Id: <20240327-b4-module-owner-acpi-v1-0-725241a2d224@linaro.org>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -63,9 +64,9 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIADPOA2YC/x3MSQqAMAxA0atI1gY0VhyuIi6qjRrQVlocQLy7x
- eVb/P9AYC8coE0e8HxKEGcj8jSBcdF2ZhQTDZSRygqqcFC4OXOsjO6y7FGPu6BRjap1Q1SUOcR
- 09zzJ/W+7/n0/4mos7mYAAAA=
+Message-Id: <20240327-b4-module-owner-acpi-v1-1-725241a2d224@linaro.org>
+References: <20240327-b4-module-owner-acpi-v1-0-725241a2d224@linaro.org>
+In-Reply-To: <20240327-b4-module-owner-acpi-v1-0-725241a2d224@linaro.org>
 To: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
  Robert Moore <robert.moore@intel.com>, 
  Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
@@ -91,89 +92,94 @@ Cc: linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
  platform-driver-x86@vger.kernel.org, 
  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2754;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2780;
  i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=meBEX830gRW4HXcwRaI98fQKaU/0vg8wDYKxDADJaXA=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmA85It2J1eYnVhuIuXN7MMCJqdE2fAF7WfeZ2j
- n2apL2796uJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZgPOSAAKCRDBN2bmhouD
- 1/SnEACOwWo91bl9rH3s5QXO4O8oEUXK1eW8eqIErfBujjd0mBVo1U62GGVdqCTwbnohFmGH8uS
- 0Hg0mT7Zeq81wweeJX6lhia/0ZXEq+ZS+N/VqqJ7A+7ylKAQBaJ/b12k4fTnfTvl8ROmcKTYwMO
- xzDw5Zk15EIcQqY7MGSWFtkoR4IrS2/djZzKQcElvc6wPnn9pAGHCnlsuqyNNfA0qKbLEKwbCZL
- ZHiY9SxWBdWl2HKHK8Mx9QC92FqorWxtdvlyyZbo8P3rLgNwOgKI/2iM2FL86OTTYm/I8h8K0uT
- 4zjFkXBSfJa5ZtEMyVYWaO/zJcCvsyANCUfmn+nApiQWih+qd2Bfgz7Gha5MiT/O9rP6SsOOlUM
- tbNEj8Cj8fPjz4pTITvXtRtmnxGIMv7j1sZ7b1tn1QCd0wj9ZTUDDh5LA2Wqr/EqqxRiP7yhmJx
- VlCIdsMAP0QRviCJeFZ/5IZsqoWkmPw48k2Jj1hAr4Y6e7OhxXXvGltn8sh7mvh4j0J5zpBJlM2
- fjx/dZOndwUdkjsJSP0MbGEgMKEUw3t1Q1gKfYe6exbD7qfbc0CGKaHnss5MMzmn9bJVCGnsroA
- wySn4govEwvO62oJtu9o8OUcuu12dPLodXlbGS6LxGJSnQfhXloYUEOlIsusrAiizfR4Vy/tLG2
- szuZE69hHAS2bhA==
+ bh=AfH7TD93nFAaXOkK7vrlKu3Cot997gVLIL4pGflb6fs=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmA85Ln15mHy/+MFVp10AE619hdOQmn023kKU+n
+ VJlMoJVEYGJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZgPOSwAKCRDBN2bmhouD
+ 1+/rD/99BcfHmnHUga4+/O9mIaAJmXx7ZQ2COoQmAL9yQSJWbDdvffVupiZB9Kb9+hnXrSQ5xIY
+ ggKqajxoO7hSls5UHkq+Y+lgewh/kJV8eq99aqzFOt1phiBqqIunhaWz+2hs1XPyCcqiMjnXWMW
+ y8iCNTvsKsUNKylCbYP15D4lsLnZ31rX2yZsksWvyKsA5s7+a1leMBLEjwoItHxvgsNxE0MyODU
+ ntSK/7yEz7rQdmr+yCrSRFXrKjBpoQYAAdUFvtzZADe+rFviymGQ6hCdZ7lZZ9rezsGeWe97IX+
+ Hz5s7T/345dgLpgx5QYu8F1uI3Nx5/NBnejp3xgBx3mVnj3qhAgD8jsPlY1nBBR79ZBHqsISBHb
+ figg/7S3tvP6YCCvmC9y4JcEUbZiG9pGkjovCVwC2wCwk5hVOGGQ9iMDCLQp39FzqZTtdQiV732
+ 0LE4/tZflMwZQ2dyTy8jbQeRg2J2Y44Blbx7qo0FAu7Jjz0Vual+lFq4YugV0Lw/QOLauWZALyK
+ trUaRiFr6/Xqia9GutyvSvwSkDyiL9h/tho2vebH9YGd8PFaFgA9O6oGIhblIFI6k5Sic47Uq1G
+ 2WYq7iVEG1TKRyccLgjMqJ0Koilm+tamc/I/DYIRQaxA7mpvOoe7WPVQOSiO7CN+llioF+uhjif
+ Sep+NfVSaThEJHw==
 X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
  fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
 
-Merging
-=======
-All further patches depend on the first amba patch, therefore please ack
-and this should go via one tree: ACPI?
-
-Description
-===========
 Modules registering driver with acpi_bus_register_driver() often forget to
-set .owner field.
+set .owner field.  The field is used by some of other kernel parts for
+reference counting (try_module_get()), so it is expected that drivers
+will set it.
 
 Solve the problem by moving this task away from the drivers to the core
-amba bus code, just like we did for platform_driver in commit
-9447057eaff8 ("platform_device: use a macro instead of
+ACPI bus code, just like we did for platform_driver in
+commit 9447057eaff8 ("platform_device: use a macro instead of
 platform_driver_register").
 
-Best regards,
-Krzysztof
-
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
-Krzysztof Kozlowski (19):
-      ACPI: store owner from modules with acpi_bus_register_driver()
-      Input: atlas: - drop owner assignment
-      net: fjes: drop owner assignment
-      platform: chrome: drop owner assignment
-      platform: asus-laptop: drop owner assignment
-      platform: classmate-laptop: drop owner assignment
-      platform/x86/dell: drop owner assignment
-      platform/x86/eeepc: drop owner assignment
-      platform/x86/intel/rst: drop owner assignment
-      platform/x86/intel/smartconnect: drop owner assignment
-      platform/x86/lg-laptop: drop owner assignment
-      platform/x86/sony-laptop: drop owner assignment
-      platform/x86/toshiba_acpi: drop owner assignment
-      platform/x86/toshiba_bluetooth: drop owner assignment
-      platform/x86/toshiba_haps: drop owner assignment
-      platform/x86/wireless-hotkey: drop owner assignment
-      ptp: vmw: drop owner assignment
-      virt: vmgenid: drop owner assignment
-      ACPI: drop redundant owner from acpi_driver
+ drivers/acpi/bus.c      | 9 +++++----
+ include/acpi/acpi_bus.h | 7 ++++++-
+ 2 files changed, 11 insertions(+), 5 deletions(-)
 
- drivers/acpi/bus.c                        | 9 +++++----
- drivers/input/misc/atlas_btns.c           | 1 -
- drivers/net/fjes/fjes_main.c              | 1 -
- drivers/platform/chrome/wilco_ec/event.c  | 1 -
- drivers/platform/x86/asus-laptop.c        | 1 -
- drivers/platform/x86/classmate-laptop.c   | 5 -----
- drivers/platform/x86/dell/dell-rbtn.c     | 1 -
- drivers/platform/x86/eeepc-laptop.c       | 1 -
- drivers/platform/x86/intel/rst.c          | 1 -
- drivers/platform/x86/intel/smartconnect.c | 1 -
- drivers/platform/x86/lg-laptop.c          | 1 -
- drivers/platform/x86/sony-laptop.c        | 2 --
- drivers/platform/x86/toshiba_acpi.c       | 1 -
- drivers/platform/x86/toshiba_bluetooth.c  | 1 -
- drivers/platform/x86/toshiba_haps.c       | 1 -
- drivers/platform/x86/wireless-hotkey.c    | 1 -
- drivers/ptp/ptp_vmw.c                     | 1 -
- drivers/virt/vmgenid.c                    | 1 -
- include/acpi/acpi_bus.h                   | 8 ++++++--
- 19 files changed, 11 insertions(+), 28 deletions(-)
----
-base-commit: 1fdad13606e104ff103ca19d2d660830cb36d43e
-change-id: 20240327-b4-module-owner-acpi-d4948a922351
+diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c
+index d9fa730416f1..eda951032f3c 100644
+--- a/drivers/acpi/bus.c
++++ b/drivers/acpi/bus.c
+@@ -990,25 +990,26 @@ EXPORT_SYMBOL_GPL(acpi_driver_match_device);
+    -------------------------------------------------------------------------- */
+ 
+ /**
+- * acpi_bus_register_driver - register a driver with the ACPI bus
++ * __acpi_bus_register_driver - register a driver with the ACPI bus
+  * @driver: driver being registered
++ * @owner: owning module/driver
+  *
+  * Registers a driver with the ACPI bus.  Searches the namespace for all
+  * devices that match the driver's criteria and binds.  Returns zero for
+  * success or a negative error status for failure.
+  */
+-int acpi_bus_register_driver(struct acpi_driver *driver)
++int __acpi_bus_register_driver(struct acpi_driver *driver, struct module *owner)
+ {
+ 	if (acpi_disabled)
+ 		return -ENODEV;
+ 	driver->drv.name = driver->name;
+ 	driver->drv.bus = &acpi_bus_type;
+-	driver->drv.owner = driver->owner;
++	driver->drv.owner = owner;
+ 
+ 	return driver_register(&driver->drv);
+ }
+ 
+-EXPORT_SYMBOL(acpi_bus_register_driver);
++EXPORT_SYMBOL(__acpi_bus_register_driver);
+ 
+ /**
+  * acpi_bus_unregister_driver - unregisters a driver with the ACPI bus
+diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+index 5de954e2b18a..7453be56f855 100644
+--- a/include/acpi/acpi_bus.h
++++ b/include/acpi/acpi_bus.h
+@@ -656,7 +656,12 @@ void acpi_scan_lock_release(void);
+ void acpi_lock_hp_context(void);
+ void acpi_unlock_hp_context(void);
+ int acpi_scan_add_handler(struct acpi_scan_handler *handler);
+-int acpi_bus_register_driver(struct acpi_driver *driver);
++/*
++ * use a macro to avoid include chaining to get THIS_MODULE
++ */
++#define acpi_bus_register_driver(drv) \
++	__acpi_bus_register_driver(drv, THIS_MODULE)
++int __acpi_bus_register_driver(struct acpi_driver *driver, struct module *owner);
+ void acpi_bus_unregister_driver(struct acpi_driver *driver);
+ int acpi_bus_scan(acpi_handle handle);
+ void acpi_bus_trim(struct acpi_device *start);
 
-Best regards,
 -- 
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+2.34.1
 
