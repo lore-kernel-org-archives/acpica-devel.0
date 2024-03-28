@@ -1,135 +1,160 @@
-Received: from grilo.cascardo.info (trem.minaslivre.org [195.201.110.149])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A44C946424;
-	Thu, 28 Mar 2024 10:25:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.201.110.149
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81B553D387;
+	Thu, 28 Mar 2024 14:05:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711621523; cv=none; b=uaMjtG11nYAlO+elDpz5Y3j4EH6gpFvGt3rNlrS7tjaWOGxh+BpOoBP4em/gxNWwUAE0HWSwbSZcG7Mou4hHO61x5TgWSmDH5Gai0/EtA0IIu+yvz6AVY9W6iG9yZ1f2e1NXj+PR2lOHRMJ+5HgZCoTjq8U8D2Nvxcu6pzUxWp0=
+	t=1711634730; cv=none; b=E+zMxlSPbsuLL5OX4zUG0+FOsWMO86pY6EujB3kXagcw414q2UQIfnV31G4nEc5yAbkl1JmEZ4imlljV4mknjnWMZfYOcSuqnfM7F+myMfUNTOEm5iuvgAFTpwtuTf31gGqpfm1HHyotu9gzH3XVhNbmoBKRNNUS213hb43wEwA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711621523; c=relaxed/simple;
-	bh=d8qZMuxobQ9NQ+uTJ8eeu7ofwq5oepk3x8NbHvHajl8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B5dMw1mHwvBGfhQhv8sOHImFGohZBrSxUw8zI9nN1dYJckRd+Z3cUxdZ7mBl1H/y2J5YbjzNPGtaDh9euOZcC9rV5W6UMDsLb9SHgmPGuTkKVSbAQdwZe/hCuORDkLcQrWDIQDmiqsyX198xAyYU/HbcYTLYUdXeADlyXNnzGcs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=holoscopio.com; spf=pass smtp.mailfrom=holoscopio.com; dkim=pass (2048-bit key) header.d=holoscopio.com header.i=@holoscopio.com header.b=VPL5dvFP; arc=none smtp.client-ip=195.201.110.149
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=holoscopio.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=holoscopio.com
+	s=arc-20240116; t=1711634730; c=relaxed/simple;
+	bh=DyPPajVzJsQEhnad3V3XmULXNURr7x/hE7W3jpIhYHU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=g1a6ueWB4BUtbTRLzwtIjeug+VyHDG5UvL6xj82XS3hDxWFktUwbUaDjZl9Et6JwybgAUsRJsAjk0v9MvoWyGQDGLy7CEWC9Ici3a8Ky4RoLSqETaGrAV1orI3/WIM8p1zEUNU4SRHIAsa3ird99hlqbDdDbM0KOw+LJvSxKRw8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YSIBj/z8; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=holoscopio.com header.i=@holoscopio.com header.b="VPL5dvFP"
-Received: from siri.cascardo.eti.br (unknown [IPv6:2804:431:e7c5:1ab4:6a17:29ff:fe00:4f38])
-	by grilo.cascardo.info (Postfix) with ESMTPSA id D24D0206F1A;
-	Thu, 28 Mar 2024 07:25:02 -0300 (-03)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=holoscopio.com;
-	s=mail; t=1711621511;
-	bh=d8qZMuxobQ9NQ+uTJ8eeu7ofwq5oepk3x8NbHvHajl8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VPL5dvFPC9/KvtZR7dhL29GCVfdBABB9ilSj2h62jCjgj3jNASCQmKccKddwNUR2u
-	 YsVTDl1IneRVDN1sl2i083vS8wXNrCVnJeOoACNhfDVrxV18sQ8S9BGenJczRpc0Be
-	 hohraa2sTtoUaUhF6GKan9BOWJJh9vKv40DsXWvSZ8CFpj1l2j2YugcG3nCrZSpzJf
-	 JfbYHtAZWZs34rq1Uaa4aI5+BoEcImc7aJd1GiXE1WUhnk4JeGzQjUFYCYDv3tgZLf
-	 OXY2vM83OKFEOE5Zt+d53o4HmJWd36MVVemcJCkR9kV1WBaVNfjBsxNUEWR4fE5V9u
-	 fdb8VgUNzIKZw==
-Date: Thu, 28 Mar 2024 07:24:59 -0300
-From: Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YSIBj/z8"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2767DC433F1;
+	Thu, 28 Mar 2024 14:05:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711634730;
+	bh=DyPPajVzJsQEhnad3V3XmULXNURr7x/hE7W3jpIhYHU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=YSIBj/z8FiuLEgDqBHCsbNl9cmMUDFKkjhDyPYeuiZwdnRhaWzQB1qy5bUc+cEoyn
+	 TgUgizmrgNHaRrJXrUOrR+GdgNy6Jcz8XE1oOPfSpaFhiEmf4RgxaXmRRkMfBs3XvJ
+	 Wdamgkwsoalajey9FhYVrBXHHnDc3hfmz1/sXLzA38s+j7m8rRsVIbogv2merkfHvl
+	 7NGUhSAkFPNi5a9tOFYSVMmfUJIhgs6J2mztKYfkmZfdJyHIxoNs7A5AsNpAjEutO0
+	 MTG5hno3yJ9IL2S3wchli/Txbu6/jMN5FjWKlXiRfuxNfq/iu1yN/a5CzMTTL577iG
+	 hodYTkkA1QuNg==
+From: Arnd Bergmann <arnd@kernel.org>
+To: linux-kernel@vger.kernel.org
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Jens Axboe <axboe@kernel.dk>,
 	Robert Moore <robert.moore@intel.com>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Benson Leung <bleung@chromium.org>,
-	Tzung-Bi Shih <tzungbi@kernel.org>,
-	Corentin Chary <corentin.chary@gmail.com>,
-	"Luke D. Jones" <luke@ljones.dev>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
-	Daniel Oliveira Nascimento <don@syst.com.br>,
-	Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>,
-	Matan Ziv-Av <matan@svgalib.org>,
-	Mattia Dongili <malattia@linux.it>,
-	Azael Avalos <coproscefalo@gmail.com>,
-	Richard Cochran <richardcochran@gmail.com>,
-	Jeff Sipek <jsipek@vmware.com>, Ajay Kaher <akaher@vmware.com>,
-	Alexey Makhalov <amakhalov@vmware.com>,
-	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
-	Theodore Ts'o <tytso@mit.edu>,
-	"Jason A. Donenfeld" <Jason@zx2c4.com>,
 	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	acpica-devel@lists.linux.dev, linux-input@vger.kernel.org,
-	netdev@vger.kernel.org, chrome-platform@lists.linux.dev,
-	platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH 06/19] platform: classmate-laptop: drop owner assignment
-Message-ID: <ZgVFe4MRgQNZW4WM@siri.cascardo.eti.br>
-References: <20240327-b4-module-owner-acpi-v1-0-725241a2d224@linaro.org>
- <20240327-b4-module-owner-acpi-v1-6-725241a2d224@linaro.org>
+	Len Brown <lenb@kernel.org>,
+	"James E.J. Bottomley" <jejb@linux.ibm.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	Viresh Kumar <vireshk@kernel.org>,
+	Johan Hovold <johan@kernel.org>,
+	Alex Elder <elder@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Mike Marshall <hubcap@omnibond.com>,
+	Martin Brandenburg <martin@omnibond.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	Kees Cook <keescook@chromium.org>,
+	Alexey Starikovskiy <astarikovskiy@suse.de>,
+	linux-ntfs-dev@lists.sourceforge.net,
+	linux-block@vger.kernel.org,
+	linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev,
+	linux-scsi@vger.kernel.org,
+	greybus-dev@lists.linaro.org,
+	linux-staging@lists.linux.dev,
+	linux-rpi-kernel@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	devel@lists.orangefs.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-kbuild@vger.kernel.org
+Subject: [PATCH 00/11] address remaining stringop-truncation warnings
+Date: Thu, 28 Mar 2024 15:04:44 +0100
+Message-Id: <20240328140512.4148825-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240327-b4-module-owner-acpi-v1-6-725241a2d224@linaro.org>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Mar 27, 2024 at 08:43:53AM +0100, Krzysztof Kozlowski wrote:
-> ACPI bus core already sets the .owner, so driver does not need to.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+From: Arnd Bergmann <arnd@arndb.de>
 
-Acked-by: Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>
+We are close to being able to turn on -Wstringop-truncation
+unconditionally instead of only at the 'make W=1' level, these ten
+warnings are all that I saw in randconfig testing across compiler versions
+on arm, arm64 and x86.
 
-> ---
->  drivers/platform/x86/classmate-laptop.c | 5 -----
->  1 file changed, 5 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/classmate-laptop.c b/drivers/platform/x86/classmate-laptop.c
-> index 2edaea2492df..87462e7c6219 100644
-> --- a/drivers/platform/x86/classmate-laptop.c
-> +++ b/drivers/platform/x86/classmate-laptop.c
-> @@ -434,7 +434,6 @@ static const struct acpi_device_id cmpc_accel_device_ids_v4[] = {
->  };
->  
->  static struct acpi_driver cmpc_accel_acpi_driver_v4 = {
-> -	.owner = THIS_MODULE,
->  	.name = "cmpc_accel_v4",
->  	.class = "cmpc_accel_v4",
->  	.ids = cmpc_accel_device_ids_v4,
-> @@ -660,7 +659,6 @@ static const struct acpi_device_id cmpc_accel_device_ids[] = {
->  };
->  
->  static struct acpi_driver cmpc_accel_acpi_driver = {
-> -	.owner = THIS_MODULE,
->  	.name = "cmpc_accel",
->  	.class = "cmpc_accel",
->  	.ids = cmpc_accel_device_ids,
-> @@ -754,7 +752,6 @@ static const struct acpi_device_id cmpc_tablet_device_ids[] = {
->  };
->  
->  static struct acpi_driver cmpc_tablet_acpi_driver = {
-> -	.owner = THIS_MODULE,
->  	.name = "cmpc_tablet",
->  	.class = "cmpc_tablet",
->  	.ids = cmpc_tablet_device_ids,
-> @@ -996,7 +993,6 @@ static const struct acpi_device_id cmpc_ipml_device_ids[] = {
->  };
->  
->  static struct acpi_driver cmpc_ipml_acpi_driver = {
-> -	.owner = THIS_MODULE,
->  	.name = "cmpc",
->  	.class = "cmpc",
->  	.ids = cmpc_ipml_device_ids,
-> @@ -1064,7 +1060,6 @@ static const struct acpi_device_id cmpc_keys_device_ids[] = {
->  };
->  
->  static struct acpi_driver cmpc_keys_acpi_driver = {
-> -	.owner = THIS_MODULE,
->  	.name = "cmpc_keys",
->  	.class = "cmpc_keys",
->  	.ids = cmpc_keys_device_ids,
-> 
-> -- 
-> 2.34.1
-> 
+The final patch is only there for reference at the moment, I hope
+we can merge the other ones through the subsystem trees first,
+as there are no dependencies between them.
+
+     Arnd
+
+Arnd Bergmann (11):
+  staging: vc04_services: changen strncpy() to strscpy_pad()
+  scsi: devinfo: rework scsi_strcpy_devinfo()
+  staging: replace weird strncpy() with memcpy()
+  orangefs: convert strncpy() to strscpy()
+  test_hexdump: avoid string truncation warning
+  acpi: avoid warning for truncated string copy
+  block/partitions/ldm: convert strncpy() to strscpy()
+  blktrace: convert strncpy() to strscpy_pad()
+  staging: rtl8723bs: convert strncpy to strscpy
+  staging: greybus: change strncpy() to strscpy()
+  kbuild: enable -Wstringop-truncation globally
+
+ block/partitions/ldm.c                        |  6 ++--
+ drivers/acpi/acpica/tbfind.c                  | 19 +++++------
+ drivers/scsi/scsi_devinfo.c                   | 30 +++++++++++------
+ drivers/staging/greybus/fw-management.c       |  4 +--
+ .../staging/rtl8723bs/os_dep/ioctl_cfg80211.c |  5 ++-
+ drivers/staging/rts5208/rtsx_scsi.c           |  2 +-
+ .../vc04_services/vchiq-mmal/mmal-vchiq.c     |  4 +--
+ fs/orangefs/dcache.c                          |  4 +--
+ fs/orangefs/namei.c                           | 33 +++++++++----------
+ fs/orangefs/super.c                           | 16 ++++-----
+ kernel/trace/blktrace.c                       |  3 +-
+ lib/test_hexdump.c                            |  2 +-
+ scripts/Makefile.extrawarn                    |  1 -
+ 13 files changed, 64 insertions(+), 65 deletions(-)
+
+-- 
+2.39.2
+
+Cc: "Richard Russon
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Robert Moore <robert.moore@intel.com>
+Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Cc: Len Brown <lenb@kernel.org>
+Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
+Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc: Viresh Kumar <vireshk@kernel.org>
+Cc: Johan Hovold <johan@kernel.org>
+Cc: Alex Elder <elder@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Florian Fainelli <florian.fainelli@broadcom.com>
+Cc: Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>
+Cc: Mike Marshall <hubcap@omnibond.com>
+Cc: Martin Brandenburg <martin@omnibond.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nicolas Schier <nicolas@fjasle.eu>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Alexey Starikovskiy <astarikovskiy@suse.de>
+Cc: linux-ntfs-dev@lists.sourceforge.net
+Cc: linux-block@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-acpi@vger.kernel.org
+Cc: acpica-devel@lists.linux.dev
+Cc: linux-scsi@vger.kernel.org
+Cc: greybus-dev@lists.linaro.org
+Cc: linux-staging@lists.linux.dev
+Cc: linux-rpi-kernel@lists.infradead.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: devel@lists.orangefs.org
+Cc: linux-trace-kernel@vger.kernel.org
+Cc: linux-kbuild@vger.kernel.org
+
