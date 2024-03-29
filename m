@@ -1,154 +1,183 @@
-Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D5BA13A242
-	for <acpica-devel@lists.linux.dev>; Thu, 28 Mar 2024 23:20:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14F55146A98;
+	Fri, 29 Mar 2024 12:28:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711668052; cv=none; b=O/pnq+sqijSo1vR8s3ENBxpGAB6fEt5A0N9XZ1WowN/bxjaGE9VMctsycb1kp6UXIS7HMS8ttT5idsKb2eaygkCY4ZlCADaq7oKTHHecIlZR3z4GDu4FUGouT6nS2FoiU0RweWzLc1aCLGem8l+E/ZlxTxtWB3JnkAjQcB28VYs=
+	t=1711715310; cv=none; b=IkctuSuaHFGTBkuUuyYAAYuaW4O/Ow9Kdplh4So94dfM4i3JmyGEnakiGL9+UcXBlsKTwbw64XqT9Zi7cEnlVDKLQII7rvbJVjuD+dsOSfN4X86CKp5Y2xjDldEAEbE+bq4TKNlHSLXr0ceC7lYPx+Mm3TfG8PnqLu/Gqa8tVjE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711668052; c=relaxed/simple;
-	bh=kXI/N2EFthFpwFqaePA7PW8txr3uYOT4NocqWhJIaVE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Kdg/qV8GBOssmyldyQ69TrYottr/Ch0PvxwPsmOkphTRyKqc10GKN/d60m9ico+LZ08xL1sa4QRufaJWxHsMP8AMf2VC1ICib8XOFex8J+9QhEeprzzLPr5DQNTZq+/0S628xcBPoZc/auA9NzFG021J2N/SYLEjvHopkDdRqiI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=EP40IUrD; arc=none smtp.client-ip=209.85.166.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	s=arc-20240116; t=1711715310; c=relaxed/simple;
+	bh=QPLVn594emU0I3NOpLawSQgMidgeuHWuB6usbt5H/qc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=mY72b9SXh7bDeqpOecs2KD6IjuM7mqNXl5BHXgnDUc02bBbdNVnJgdnWT3uuVi5hh9ohAzOayjZvaMYC72Mk+Z1nt4bpWxiwoym2940BI7PCheavDgCkNXdztH6KFnKizYPrs4UgrmoEJmc28Ns1oPp6nQb7Ddt5JCCHB4ESZIs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dIK4Gvi0; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="EP40IUrD"
-Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-36874406ac8so5855455ab.3
-        for <acpica-devel@lists.linux.dev>; Thu, 28 Mar 2024 16:20:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711668050; x=1712272850; darn=lists.linux.dev;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mGHsh+olpz09agSrZ5PVuqusbfa5vJRT4mSuRZDIFFk=;
-        b=EP40IUrD69D3eHa/g/CY71ZeFya03cSSaIOaeas9RZtwX+SJvnf0hxSBGf+1w+0PiJ
-         /jAYBXKAVzacGCqUiybee8XPV27aEtskrxfLRZniKqbxGYn8g1JkxBHqH4RbzfUx1FEr
-         j/spjjxV7nDE6B+Hb5R1GCfnTUmCAUKp4GGgztrnZzlt4+lYIgLpn+lOP0otjOGN9Vrt
-         vfcGmvC54y3EOQUxxb27WKOzYIRpacmpr/USgqbYcXk34GT+EpYEME/HMQWTAflW7WUU
-         Ju6LGh+3cRG5imGJBSWRyfbY2MWuC5lvsxspvk81OT3v3tcjhPkzqTmfM3C+S3W12Az4
-         A4aQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711668050; x=1712272850;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mGHsh+olpz09agSrZ5PVuqusbfa5vJRT4mSuRZDIFFk=;
-        b=GV6SGieALPV3FVmFM8uFunUjty51I4vFuzYG6TqRxXza8Y6a+xANjeBQ+VUuLH8qbp
-         SB5eYAwXh0Fbn4xyCRoU1ml2Xn7fM+IyTaELmXK9dKcJ/cQXnPyUo0LNx2mHw+lvuMl5
-         t5NuIft9eSbbAzjfczWGoC2jAijIEiFMj0smDB3tv53fJ4p9q6ONOJLHmgSEx0ODVRQn
-         YIyBgjrsA6NueEdqY5o0+/tP/0CjT4SVcatgESXpk97kZQ8Qji7sf0HDMF6igTG5zSbl
-         +cRF6AJp9ID3VPMFSln+OxCoC+kmMt9NrblYI5L8r8tPFxM4qGBvkWFmjjNxpnRTus/B
-         uD+w==
-X-Forwarded-Encrypted: i=1; AJvYcCV4qkgzsqWB+iDurkpTCoQS6ccCRozGMrVsSWJEbOUDk93VJuU4JdMrqiFqJyCRasKVG8SCJwlMuReG0qIYNNsvdevePWyzQZEqXL11
-X-Gm-Message-State: AOJu0YywAyY048Y2j4Wo6eS8HEkNQBWEUu0FVmGuLAjGdZBtztviYk1z
-	MYDwQG41Ma0ZC6QKxYUBNtk3HxqLZHW3z13bgAgxBQYG8OqTygpnqvbLMMQbEw==
-X-Google-Smtp-Source: AGHT+IHj/RmxrwmmPniOkZLAq0PRG8Xgl98+vXzJdUNCAQfEqB2x3mGWkMwhUJC1dVUoP0aEft3VFw==
-X-Received: by 2002:a05:6e02:3210:b0:368:a85d:2060 with SMTP id cd16-20020a056e02321000b00368a85d2060mr554729ilb.31.1711668050548;
-        Thu, 28 Mar 2024 16:20:50 -0700 (PDT)
-Received: from google.com (30.64.135.34.bc.googleusercontent.com. [34.135.64.30])
-        by smtp.gmail.com with ESMTPSA id p3-20020a92d683000000b00368ad50d9e5sm715627iln.41.2024.03.28.16.20.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 16:20:49 -0700 (PDT)
-Date: Thu, 28 Mar 2024 23:20:47 +0000
-From: Justin Stitt <justinstitt@google.com>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Robert Moore <robert.moore@intel.com>, 
-	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Alexey Starikovskiy <astarikovskiy@suse.de>, 
-	Lin Ming <ming.m.lin@intel.com>, Len Brown <len.brown@intel.com>, Arnd Bergmann <arnd@arndb.de>, 
-	Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev
-Subject: Re: [PATCH 06/11] acpi: avoid warning for truncated string copy
-Message-ID: <qjjr3joytboeadlax7ws3j3nxiflkbcclikl4z2pezpfyj2oup@ytyzgxoyihyw>
-References: <20240328140512.4148825-1-arnd@kernel.org>
- <20240328140512.4148825-7-arnd@kernel.org>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dIK4Gvi0"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 219C0C433F1;
+	Fri, 29 Mar 2024 12:28:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711715309;
+	bh=QPLVn594emU0I3NOpLawSQgMidgeuHWuB6usbt5H/qc=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=dIK4Gvi0GCva8H0c9wYcUb6yTUdudzPp9jp1KoSqTb4a1j4jrnnjIxVo0mBEyZLC4
+	 7CID+WlABBg5A0wtcykooGcCxZcmct/LzQXu5aYmJyUuiY8CHl/FMNp8czSNgE36VB
+	 fpRK3DNhQBwoDBweQg/fqY0Ew0E0EAPhsgOGP8cPSgyCax6Id3/GVuDaIZ2i6uMPmb
+	 XwhYQmLOCl2NjHNtg+mHaN4k3tOXPrNi1xnmJmUZYn1qEkhkf6xTrSacg89RGp9IyX
+	 PI6YL4hdTmIs7z4Y33zzUFq58ehJBidx+SzQzQRPHzWtHtZtxU4mbizF6eT6AwWUEh
+	 /i4mRKS1tfyUw==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Hans de Goede <hdegoede@redhat.com>,
+	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+	Sasha Levin <sashal@kernel.org>,
+	rafael@kernel.org,
+	robert.moore@intel.com,
+	mario.limonciello@amd.com,
+	mika.westerberg@linux.intel.com,
+	michal.wilczynski@intel.com,
+	raag.jadav@intel.com,
+	mail@mariushoch.de,
+	linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev
+Subject: [PATCH AUTOSEL 6.8 45/68] ACPI: x86: Move acpi_quirk_skip_serdev_enumeration() out of CONFIG_X86_ANDROID_TABLETS
+Date: Fri, 29 Mar 2024 08:25:41 -0400
+Message-ID: <20240329122652.3082296-45-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240329122652.3082296-1-sashal@kernel.org>
+References: <20240329122652.3082296-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240328140512.4148825-7-arnd@kernel.org>
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.8.2
+Content-Transfer-Encoding: 8bit
 
-Hi,
+From: Hans de Goede <hdegoede@redhat.com>
 
-On Thu, Mar 28, 2024 at 03:04:50PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> gcc -Wstringop-truncation warns about copying a string that results in a
-> missing nul termination:
-> 
-> drivers/acpi/acpica/tbfind.c: In function 'acpi_tb_find_table':
-> drivers/acpi/acpica/tbfind.c:60:9: error: 'strncpy' specified bound 6 equals destination size [-Werror=stringop-truncation]
->    60 |         strncpy(header.oem_id, oem_id, ACPI_OEM_ID_SIZE);
->       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/acpi/acpica/tbfind.c:61:9: error: 'strncpy' specified bound 8 equals destination size [-Werror=stringop-truncation]
->    61 |         strncpy(header.oem_table_id, oem_table_id, ACPI_OEM_TABLE_ID_SIZE);
->       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> This one is intentional, so rewrite the code in a way that avoids the
-> warning. Since there is already an extra strlen() and an overflow check,
-> the actual size to be copied is already known here.
->
-I also tried cleaning these up but Kees informed me that this subsystem
-is maintained elsewhere:
+[ Upstream commit 7c86e17455de1a442ec906d3449148b5e9a218a4 ]
 
-https://lore.kernel.org/all/202308241612.DFE4119@keescook/
+Some recent(ish) Dell AIO devices have a backlight controller board
+connected to an UART.
 
-I am not sure if you can get changes through by the traditional means.
+This UART has a DELL0501 HID with CID set to PNP0501 so that the UART is
+still handled by 8250_pnp.c. Unfortunately there is no separate ACPI device
+with an UartSerialBusV2() resource to model the backlight-controller.
 
-> 
-> Fixes: 47c08729bf1c ("ACPICA: Fix for LoadTable operator, input strings")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/acpi/acpica/tbfind.c | 19 +++++++++----------
->  1 file changed, 9 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/acpi/acpica/tbfind.c b/drivers/acpi/acpica/tbfind.c
-> index 1c1b2e284bd9..472ce2a6624b 100644
-> --- a/drivers/acpi/acpica/tbfind.c
-> +++ b/drivers/acpi/acpica/tbfind.c
-> @@ -36,7 +36,7 @@ acpi_tb_find_table(char *signature,
->  {
->  	acpi_status status = AE_OK;
->  	struct acpi_table_header header;
-> -	u32 i;
-> +	u32 len, i;
->  
->  	ACPI_FUNCTION_TRACE(tb_find_table);
->  
-> @@ -46,19 +46,18 @@ acpi_tb_find_table(char *signature,
->  		return_ACPI_STATUS(AE_BAD_SIGNATURE);
->  	}
->  
-> -	/* Don't allow the OEM strings to be too long */
-> -
-> -	if ((strlen(oem_id) > ACPI_OEM_ID_SIZE) ||
-> -	    (strlen(oem_table_id) > ACPI_OEM_TABLE_ID_SIZE)) {
-> -		return_ACPI_STATUS(AE_AML_STRING_LIMIT);
-> -	}
-> -
->  	/* Normalize the input strings */
->  
->  	memset(&header, 0, sizeof(struct acpi_table_header));
->  	ACPI_COPY_NAMESEG(header.signature, signature);
-> -	strncpy(header.oem_id, oem_id, ACPI_OEM_ID_SIZE);
-> -	strncpy(header.oem_table_id, oem_table_id, ACPI_OEM_TABLE_ID_SIZE);
-> +	len = strlen(oem_id);
-> +	if (len > ACPI_OEM_ID_SIZE)
-> +		return_ACPI_STATUS(AE_AML_STRING_LIMIT);
-> +	memcpy(header.oem_id, oem_id, len);
-> +	len = strlen(oem_table_id);
-> +	if (len > ACPI_OEM_TABLE_ID_SIZE)
-> +		return_ACPI_STATUS(AE_AML_STRING_LIMIT);
-> +	memcpy(header.oem_table_id, oem_table_id, len);
->  
->  	/* Search for the table */
->  
-> -- 
-> 2.39.2
-> 
-Thanks
-Justin
+The next patch in this series will use acpi_quirk_skip_serdev_enumeration()
+to still create a serdev for this for a backlight driver to bind to
+instead of creating a /dev/ttyS0.
+
+This new acpi_quirk_skip_serdev_enumeration() use is not limited to Android
+X86 tablets, so move it out of the ifdef CONFIG_X86_ANDROID_TABLETS block.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/acpi/x86/utils.c | 18 ++++++++++++++----
+ include/acpi/acpi_bus.h  | 14 +++++++-------
+ 2 files changed, 21 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/acpi/x86/utils.c b/drivers/acpi/x86/utils.c
+index bc65ebfcdf767..8829a907eee02 100644
+--- a/drivers/acpi/x86/utils.c
++++ b/drivers/acpi/x86/utils.c
+@@ -428,7 +428,7 @@ bool acpi_quirk_skip_i2c_client_enumeration(struct acpi_device *adev)
+ }
+ EXPORT_SYMBOL_GPL(acpi_quirk_skip_i2c_client_enumeration);
+ 
+-int acpi_quirk_skip_serdev_enumeration(struct device *controller_parent, bool *skip)
++static int acpi_dmi_skip_serdev_enumeration(struct device *controller_parent, bool *skip)
+ {
+ 	struct acpi_device *adev = ACPI_COMPANION(controller_parent);
+ 	const struct dmi_system_id *dmi_id;
+@@ -436,8 +436,6 @@ int acpi_quirk_skip_serdev_enumeration(struct device *controller_parent, bool *s
+ 	u64 uid;
+ 	int ret;
+ 
+-	*skip = false;
+-
+ 	ret = acpi_dev_uid_to_integer(adev, &uid);
+ 	if (ret)
+ 		return 0;
+@@ -463,7 +461,6 @@ int acpi_quirk_skip_serdev_enumeration(struct device *controller_parent, bool *s
+ 
+ 	return 0;
+ }
+-EXPORT_SYMBOL_GPL(acpi_quirk_skip_serdev_enumeration);
+ 
+ bool acpi_quirk_skip_gpio_event_handlers(void)
+ {
+@@ -478,8 +475,21 @@ bool acpi_quirk_skip_gpio_event_handlers(void)
+ 	return (quirks & ACPI_QUIRK_SKIP_GPIO_EVENT_HANDLERS);
+ }
+ EXPORT_SYMBOL_GPL(acpi_quirk_skip_gpio_event_handlers);
++#else
++static int acpi_dmi_skip_serdev_enumeration(struct device *controller_parent, bool *skip)
++{
++	return 0;
++}
+ #endif
+ 
++int acpi_quirk_skip_serdev_enumeration(struct device *controller_parent, bool *skip)
++{
++	*skip = false;
++
++	return acpi_dmi_skip_serdev_enumeration(controller_parent, skip);
++}
++EXPORT_SYMBOL_GPL(acpi_quirk_skip_serdev_enumeration);
++
+ /* Lists of PMIC ACPI HIDs with an (often better) native charger driver */
+ static const struct {
+ 	const char *hid;
+diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+index e4d24d3f9abb5..446225aada50d 100644
+--- a/include/acpi/acpi_bus.h
++++ b/include/acpi/acpi_bus.h
+@@ -749,6 +749,7 @@ bool acpi_device_override_status(struct acpi_device *adev, unsigned long long *s
+ bool acpi_quirk_skip_acpi_ac_and_battery(void);
+ int acpi_install_cmos_rtc_space_handler(acpi_handle handle);
+ void acpi_remove_cmos_rtc_space_handler(acpi_handle handle);
++int acpi_quirk_skip_serdev_enumeration(struct device *controller_parent, bool *skip);
+ #else
+ static inline bool acpi_device_override_status(struct acpi_device *adev,
+ 					       unsigned long long *status)
+@@ -766,23 +767,22 @@ static inline int acpi_install_cmos_rtc_space_handler(acpi_handle handle)
+ static inline void acpi_remove_cmos_rtc_space_handler(acpi_handle handle)
+ {
+ }
++static inline int
++acpi_quirk_skip_serdev_enumeration(struct device *controller_parent, bool *skip)
++{
++	*skip = false;
++	return 0;
++}
+ #endif
+ 
+ #if IS_ENABLED(CONFIG_X86_ANDROID_TABLETS)
+ bool acpi_quirk_skip_i2c_client_enumeration(struct acpi_device *adev);
+-int acpi_quirk_skip_serdev_enumeration(struct device *controller_parent, bool *skip);
+ bool acpi_quirk_skip_gpio_event_handlers(void);
+ #else
+ static inline bool acpi_quirk_skip_i2c_client_enumeration(struct acpi_device *adev)
+ {
+ 	return false;
+ }
+-static inline int
+-acpi_quirk_skip_serdev_enumeration(struct device *controller_parent, bool *skip)
+-{
+-	*skip = false;
+-	return 0;
+-}
+ static inline bool acpi_quirk_skip_gpio_event_handlers(void)
+ {
+ 	return false;
+-- 
+2.43.0
+
