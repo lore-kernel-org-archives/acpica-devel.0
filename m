@@ -1,91 +1,113 @@
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E75384039
-	for <acpica-devel@lists.linux.dev>; Tue,  2 Apr 2024 14:12:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72DACD527;
+	Wed,  3 Apr 2024 00:47:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712067131; cv=none; b=N0YIKZ8DghqKfwsmFfsafLdrveWTA497EuvQkcV5rLjLCqwtZCnmf1BKEaq4arQ1dGs+Z39OF3OeGX1tjwuw3I8w0swYwT0qDnK9x3cGTm4dm97fImz1RkSP11tRDRjnRK4MI+FTtXEYMjC26yS3RZvtE9AGteRgnH2Ch7u8RNg=
+	t=1712105255; cv=none; b=GeLoezhHSqYafvNThrg19Kf4uciGBPObaYlAiMetmgn1zyGEeXPeCwneW6QlTN/vwI6yJEZZDNJt/8M5LRxVTGKlOWWqMhNpsBMu71+NqRefpSmSh7RIs28uGpCqhOL5wrBZZAvh2jWFTASBLMCy+WKjCrcnX5WPDpxt9BqR6xg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712067131; c=relaxed/simple;
-	bh=sBOdmheLZ2gGf5kKDBuAKPcg2oBCHcIwa/Kgod/gHsM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oB9iZ/Qmn1MBjFyOB5xPSAlc/nW5vPnwDntfsPpPp9EEUcJHfe9NaT3ViWJ/ibA71WClVfAsz9TMvF8CuyUeIMN+X/igl08pJxxf6ziNevovgqb6wiwDRu593yWAZfehDXKMQie+4nQF/20EPLKoyDkUy4F1LjCeIKP1IKChmI4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 75B9A2F4;
-	Tue,  2 Apr 2024 07:12:40 -0700 (PDT)
-Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E93503F64C;
-	Tue,  2 Apr 2024 07:12:06 -0700 (PDT)
-Date: Tue, 2 Apr 2024 15:12:04 +0100
-From: Sudeep Holla <sudeep.holla@arm.com>
-To: "Mediouni, Mohamed" <mediou@amazon.de>
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Sudeep Holla <sudeep.holla@arm.com>, Will Deacon <will@kernel.org>,
-	Robert Moore <robert.moore@intel.com>,
-	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-	Len Brown <lenb@kernel.org>, "Saidi, Ali" <alisaidi@amazon.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-	"acpica-devel@lists.linux.dev" <acpica-devel@lists.linux.dev>,
-	Saket Dumbre <saket.dumbre@intel.com>
-Subject: Re: [PATCH 2/2] arm64: acpi: Honour firmware_signature field of
- FACS, if it exists
-Message-ID: <ZgwSNLmQw-TrDsaZ@bogus>
-References: <20240312134148.727454-1-dwmw2@infradead.org>
- <20240312134148.727454-2-dwmw2@infradead.org>
- <dbd60df4632e5ea9cef13cdc1a406b47bd8629da.camel@infradead.org>
- <ZgveD6Hb2HbTNYNO@bogus>
- <70B4B352-08A5-4922-93A0-7F420374A831@amazon.de>
+	s=arc-20240116; t=1712105255; c=relaxed/simple;
+	bh=PycG9uF6X1iUrfJJtuBIh+LSC4+I0nUUV++uRc/SI80=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=N2etIhdot7157U6YWeiSYQ+tY8+uRUGeW7wBCUJjV85peADPlxH0953f8VBT4AGA/sWZKnF+XsLxqlZuZRZJMUON9Jnvj/Yd8A4s+cu9UMMwfH+MvLMLSzea6ya6gL6xj2W6h/RGVEbxcvcmx55Yj4x8vcCnWbPh1pikHHpqDAQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=R5pE7E3O; arc=none smtp.client-ip=212.227.15.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="R5pE7E3O"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1712105241; x=1712710041; i=w_armin@gmx.de;
+	bh=qWA45U+Q/mPj2MlS1QXch4htPzcG9qzFx8+xi4l7E7Q=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+	b=R5pE7E3OWnWfXlJhppMpmo0uoUcIdrDEPgvkAQ80oVURheeJAmktS3zPwWHDU/0Y
+	 Eb/dhFHL5aJ1Kbqb0OtggQEDUD1DYo3w6XCVfQvTzmDqcujg3mTE5V6cifr1Qvhjh
+	 czmdlQULJKg9bCs9pi4vAd3JuzdK+tZqxyc4Yx/IiWF3DSEj7Omvr4JuYI7FQIQ77
+	 clm/N3vMJi7Z2YuMfBigerMJKILOCMpV6ABe60Pz3PuxfnJ+7TlgoqgCaAcXWCw1B
+	 0yVopwfhmbAXnU1FrkTSNBvJUngMgXj9hHYphawzWK/AMazuXfhpka2c16CGI5g+6
+	 Kb9gmQiDDLTUnNm6Yg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
+ (mrgmx005 [212.227.17.190]) with ESMTPSA (Nemesis) id
+ 1MrhUE-1scxNV1nzo-00ngOb; Wed, 03 Apr 2024 02:47:21 +0200
+From: Armin Wolf <W_Armin@gmx.de>
+To: robert.moore@intel.com,
+	rafael.j.wysocki@intel.com,
+	lenb@kernel.org
+Cc: dmantipov@yandex.ru,
+	linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] ACPICA: Fix memory leak then namespace lookup fails
+Date: Wed,  3 Apr 2024 02:47:18 +0200
+Message-Id: <20240403004718.11902-1-W_Armin@gmx.de>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <70B4B352-08A5-4922-93A0-7F420374A831@amazon.de>
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:1+/LohT4HMfkZjpcu/5lHP4fjT6BlNjAsRMOUBzgk5gIkQQT05O
+ 2h+PiMk0MnMm1bzN5x2a3KDSEfy4kOtNbpnKex2ZLBwowvAuKERhcRF8DQGelTWjuTglJyo
+ 6ra/y6IVZ9D24/EA0NIC032gmCznF+lgoKnlRC3t/Dpv7E9aE++tnxy2dj8yBARMwGdEe/6
+ KIKqoyzxUbib2HQAs6cvw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:icUtJdfJZeM=;kfGPWYFf7109ebjlp50NjFzPt+1
+ sZWGNPsf/k5ubapg6s1UkJKbobX0InlykQgHs7STQywpZqXent1KsshMDMBgUhjQPBMcfSSF2
+ 6GWilxktOsotEG3x/JlwrOvcFJIk2/feS1J6DCH9kIXcnwubCN2bPjOiFL1TaxO6qxOoUvDvY
+ SH5bknShaqBK4+06uuh80mVwzA+xcM5B6LLuTMt6AtawAwdmsty2dHBZI/0OHCX3+gtLSUX7K
+ KAYtCY0GaCq52OdGYG5tcu5mTd5O0EZ8C3JdhWsFzK2+lPvT26844ooqPG00Ha4vwBao95h8K
+ zP+RC/yYqYA0Yvrcezjs52VA2jA5hx7viCabDq6PUFiTwZRqWbv/hx5wAlJmV02vAxRa+dOMJ
+ U40bjiuZdyzasARKQEPXaoJsCKOn9KqEOHZQQ8Vk28DnIRa6e5cv+buDKGMh84BaAL7BTfwE0
+ 4dJMExhjLrmrCgpUCyml8Mkid1j0StCUobbl98rileu0cKytdgY5FnFh6xJroAoAVW1LUn/2X
+ 3XvbJ9gDZ/1QhgqXeygV0kktS00GHHxNeakbMRHBctalhmQebOvkMV1mvPu2gJTxJ/l3i3QZ7
+ NXveWrmcKJ3e8enpxplblq6QdKzVPVMGsSHwght1AhLlqxGLrm/eLq9Eirn/IWJizx8B+NV6R
+ VQqCdmbzkwTIYSNfKVObuJQ7e+GJGyZiIJEy0bMK5ZKr3iNEltc/wjYcZwF3Qc/+WKsPE3WvY
+ e2r5QJNHGChJr3Ez5iGnqYNwAM+fWTXfl6R7COFEA2MZsunjTLzDN5VJ0DYzA6lN0+5XqaOuu
+ rwija1eWrs8dMMC5J8GS8Hc2J10D03RGLi+EaAaGNYdpM=
 
-On Tue, Apr 02, 2024 at 12:17:22PM +0000, Mediouni, Mohamed wrote:
-> 
-> > On 2. Apr 2024, at 12:29, Sudeep Holla <sudeep.holla@arm.com> wrote:
-> > 
-> > I think it is OK as a temporary solution for now. But there was some
-> > investigation last year as part of some work in Linaro to enable
-> > "drivers/acpi/sleep.c" into the build cleaning up some x86-ness in there.
-> > acpi_sleep_hibernate_setup() already does this but enabling sleep.c need
-> > some careful investigation so that it doesn't break any existing arm64/x86
-> > platforms and made need some wordings clarification in the ACPI spec.
-> > Today system suspend work via psci std path bypassing the ACPI paths which
-> > may not be ideal as none of the ACPI methods are honoured. Some arm64
-> > platforms may implement them and expect to be executed in the future,
-> > maybe ?
-> Current Windows on Arm platforms (seen on SC8280XP) don’t have _GTS
-> or _PTS methods, and don’t have sleeping objects either.
->
+When acpi_ps_get_next_namepath() fails due to a namespace lookup
+failure, the acpi_parse_object is not freed before returning the
+error code, causing a memory leak.
 
-IMO, SC8280XP is not a very good model platform for ACPI firmware reference.
-It uses PEP which Linux doesn't support for good reason and that make it
-hard to follow everything on that platform.
+Fix this by freeing the acpi_parse_object when encountering an
+error.
 
-> As such, I don’t expect any users for that potential functionality.
+Tested-by: Dmitry Antipov <dmantipov@yandex.ru>
+Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+=2D--
+ drivers/acpi/acpica/psargs.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-I am not 100% sure
+diff --git a/drivers/acpi/acpica/psargs.c b/drivers/acpi/acpica/psargs.c
+index 422c074ed289..7debfd5ce0d8 100644
+=2D-- a/drivers/acpi/acpica/psargs.c
++++ b/drivers/acpi/acpica/psargs.c
+@@ -820,6 +820,10 @@ acpi_ps_get_next_arg(struct acpi_walk_state *walk_sta=
+te,
+ 			    acpi_ps_get_next_namepath(walk_state, parser_state,
+ 						      arg,
+ 						      ACPI_NOT_METHOD_CALL);
++			if (ACPI_FAILURE(status)) {
++				acpi_ps_free_op(arg);
++				return_ACPI_STATUS(status);
++			}
+ 		} else {
+ 			/* Single complex argument, nothing returned */
 
-> Am I missing something or hibernation signalling to firmware (on ARM64)
-> can be made PSCI only indefinitely?
+@@ -854,6 +858,10 @@ acpi_ps_get_next_arg(struct acpi_walk_state *walk_sta=
+te,
+ 			    acpi_ps_get_next_namepath(walk_state, parser_state,
+ 						      arg,
+ 						      ACPI_POSSIBLE_METHOD_CALL);
++			if (ACPI_FAILURE(status)) {
++				acpi_ps_free_op(arg);
++				return_ACPI_STATUS(status);
++			}
 
-Also bypassing certain operation taken care in sleep.c might result in
-missing certain features. Few things IIRC(might be missing things myself
-or misunderstood as it has been a while since I looked at the code in
-detail): handing of GPE for wakeup, power resource handling during the
-resume, power button event to mention few.
+ 			if (arg->common.aml_opcode =3D=3D AML_INT_METHODCALL_OP) {
 
---
-Regards,
-Sudeep
+=2D-
+2.39.2
+
