@@ -1,170 +1,122 @@
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D22516D9C3
-	for <acpica-devel@lists.linux.dev>; Fri,  5 Apr 2024 13:53:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 251A63D64
+	for <acpica-devel@lists.linux.dev>; Sun,  7 Apr 2024 02:53:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712325204; cv=none; b=rSTWhB1e3XwvP2/GQkStw4w7ecL0ZR0EhrEQgak1V5DwslXNTst9ZR5mTW1s/X9YX4/A6sFef34IQVOhhbbFWb8YWSyb9qhPRD1wWBe730/yBI2chqooaUCrUI9wFoz1hrjlYkQQACqhYzHbVvp4i5LSJ1sUpqWfS4xwjXNDVCU=
+	t=1712458416; cv=none; b=fwLIj8aZbNL6O7PjnMy9Jyz6GMo6PSgNJbnYzC1eE/fR1jzzAphctHFsNggLodcCddq72WrotbbU8k+lWRZtLQu8Nf9S7+yWnHdtUXOFqDulv6ILNedoJwCK286Haf+geDYOx1ftFx81tpWdilnpTsGkX5eLNYgm6KelMq/J3+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712325204; c=relaxed/simple;
-	bh=0BksyQPOyLKGmYa0FEtepwJD1JDHx0EJaEKX0tpkO58=;
+	s=arc-20240116; t=1712458416; c=relaxed/simple;
+	bh=7eg5LJVoCgGpvIy5viIhvb7qyO28VADsvG9BNbWNZpc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Mj7XiTObeD27/N1AU0Aoi4A5p3vKnxgrf3F74bEnEYleL0UCqjVJax05mR5sz6KUA2+ZXVS7M1KlbzAsUdwL/4gJmAOlJN3VWXe2tIyJ4heuCTkFEv3snzEII9jpxrxC8U0le0SSurCWimSwGDoDgb/9xNDtBOiHKnjrWf6E3Uk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Pa2WOWEv; arc=none smtp.client-ip=209.85.219.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	 To:Cc:Content-Type; b=rcAQg8UL2rp+FTZi8B3rR+WESm3GoCCvsx8rQ2Xjt6p7bHYLeYt0RFzOgdZNNE2p0MIMICmkNux7FCMZb3r4NiRwx7t62frhLBeeKl/SYUiykMDj58iH0X7ebt+mdG9bvhFjMkGYy4tjjZ8tIQ097tIYahQWZzdlI+HnGRjTlT8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JNvI+Tih; arc=none smtp.client-ip=209.85.167.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Pa2WOWEv"
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dcc71031680so2202616276.2
-        for <acpica-devel@lists.linux.dev>; Fri, 05 Apr 2024 06:53:21 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JNvI+Tih"
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-516d0161e13so3581771e87.3
+        for <acpica-devel@lists.linux.dev>; Sat, 06 Apr 2024 19:53:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712325200; x=1712930000; darn=lists.linux.dev;
+        d=gmail.com; s=20230601; t=1712458413; x=1713063213; darn=lists.linux.dev;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lAHdE5NFk++ufix28SzhuwWBAI0pKipkj98VJiYe3GU=;
-        b=Pa2WOWEvFIaJ+klymHlvrrCfzsY2OtZGE7X4Nt45FZo7edyQc8QVTLpMtzIbRWOyXl
-         0QqBUQXkbTToel/ox86y0GLw3m1HNt5upKKlhbFFOaLrRl8xOZvC1x4I6ZeThI7xlz2F
-         0VsqnvcTCYowbjiSwrvUArvh/11smb33VWaD/PwBBYTqGtelf7tlN9JGzI5wNyNF2upH
-         gGsRSUk4WU6ycsmPoAaGO+XIAQBdJjHk7PllWvxo3PgJlqV6cPbbHRFV9A4DjU1262ui
-         ZR3iXXT01A23VgIVQ/QQ2bmLLpu5pGb8iBDAVW4XalooGadWWRvGrjogSt6rJfF+I/jz
-         Z3yw==
+        bh=7eg5LJVoCgGpvIy5viIhvb7qyO28VADsvG9BNbWNZpc=;
+        b=JNvI+TiheZ7ryfSB+jUE94aBBg9DmpRb9dQxKtJJUP23ueMTA44d7sXXwk9tjEdqiq
+         c9BXQbuYK1kD5A627jBHpvL337y8gTjKf6KMUDI3YoKMCz8J6thduY/Xw0dwAxuAjxYD
+         HifViDkgr8c/98Iv+YcRMLPtZTfcKjPwIjoOoUae066W5hedDqvGxfIknPO07Eol5pph
+         iTsGhTKGbXpWKQe1qJFz5HMU7rFRBnTlrsuiLu7Mw0k/5kZyHtuuS1dc8MpLiIz7ZO/S
+         zCW3+7HWTWrxnjVPFNnmQa6dPjO0tcONSfE9Hv0qOQaNN0WipqNroWhbz0MV6S4QJhG0
+         eEfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712325200; x=1712930000;
+        d=1e100.net; s=20230601; t=1712458413; x=1713063213;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=lAHdE5NFk++ufix28SzhuwWBAI0pKipkj98VJiYe3GU=;
-        b=rn2cDjpBObVskUX1Gq5MeMlp8pgVpAPnhZs8BM2uqE2VaROQJ+yvAGfX2hS5egYsdv
-         2d40Qa1y9nmp3JLDn7hr3trXY4FY9L15UHDuSX+dSY6uGwry/o6KzvqF+ipC2SnSJR/G
-         yTzY9PMXrxY2+YlG0MNUfgzr6ZMpmgTe/wB4yg+9qyqnisD9fdGQTXn4WjOGKc6Hn6Mp
-         ZwWVO2QnZlzevEsZC1oa94ZBqaXbYHn4ZWl6aUJNyiZTeiV4iPT5RrCebFelhL0FwUM9
-         RqDS2XHVQ3DBdUT9xsaVoLA4P7p19lfuMLndaoXYaOHsP6/LO5VDthw58X6pX5tMmRzz
-         fa1g==
-X-Forwarded-Encrypted: i=1; AJvYcCWDmQmJ0TrEa4I9gNARKWroffGxnaas3EbApPeaUEAYt14jN+lGp/MYHvGr4gnm4KwsW6gOufjd7J64XNnGLezZLMTNrWDbsX1sfqYX
-X-Gm-Message-State: AOJu0YxntIkEj3IMdj+4my746Q70XBGp0qULH//bODDo0SWd3gbZ6qux
-	yKfgoJqQLBiCLrId02XfpGLH+JIqsL58xfzXE4TRwOCfu+nfeqSv+z39XK7EPAJrinzK2f876EK
-	+Oxiyj7jIgEozsjTa2eL9dzzdZMFUjFmnpwgy
-X-Google-Smtp-Source: AGHT+IH/KRHN+9M5N1gYIB2bCPgMB25x0KPnvuKiHgvgSCGh43Ngn+0mkz51p67LhizDAcBL1UgazcYTNlxqGDPZP2o=
-X-Received: by 2002:a25:f454:0:b0:dcd:b624:3e55 with SMTP id
- p20-20020a25f454000000b00dcdb6243e55mr1115241ybe.54.1712325200128; Fri, 05
- Apr 2024 06:53:20 -0700 (PDT)
+        bh=7eg5LJVoCgGpvIy5viIhvb7qyO28VADsvG9BNbWNZpc=;
+        b=mLRFWF6CbgF4ZJpyPlOSW/3w514ohOHHUmIQ8Y+GElAWrbv4J+BbL69FgYXmFRCAJ+
+         tO24n5rwQRvOqGozYa0hq90AM2Pdx1wD6B9whpnAnnC/kwt8DvB8JviHHerz4kuuLyMc
+         FvSMD9OqDHnEO1BGwRPoHMVUVwLqkD38o7YjxrkyRIuwc79IEFQNY3rE8idn22gDcqdb
+         IbLDMvMMiWC1DI5PAI2jwRAA8Q82tsvncNx5QHUT4hjMEBPd96sx+LuHzQ33HzUfre3e
+         xcvcygvfs25U+O0mYmuTg6oZoMzt+dDUcTDIRX/Md+nQJ4x4Z/GrDXKsLJyoT8LpdUuV
+         gMzw==
+X-Forwarded-Encrypted: i=1; AJvYcCUT04XPb5lGQPT2A1IJWe5zQi7D6eoCWlf9Eu1zcUGaTjilu0K1oF/3z337/TXQVRQDuudZtknlgzfZslNhdKjj9wVvaS+WeFfVZwZb
+X-Gm-Message-State: AOJu0YxZhwpbQyxf+/UcuauWuXa5kFVG1+7OqaDWWilGwuyY4UL+MRV6
+	VEfyxGTBPeVljgDr+KF/4pjx4qVJjO6sIJ0L4fS0UJPtYWl+R+tkHy2tBZm/O10GmKHHoR1Ucpx
+	Cb2kyRR/XZ5F4PJ7IQufp2gqIurM=
+X-Google-Smtp-Source: AGHT+IGPNaBY7p9jhIbr7kM96+qmULR+lYEMhFuh42Rbxchab60jlMaC+Feq12fbmoMqIEL4NxFEm18CO0ttHSM12Dc=
+X-Received: by 2002:ac2:44b7:0:b0:513:cf75:2ccc with SMTP id
+ c23-20020ac244b7000000b00513cf752cccmr3762064lfm.0.1712458413059; Sat, 06 Apr
+ 2024 19:53:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20240404165404.3805498-1-surenb@google.com> <Zg7dmp5VJkm1nLRM@casper.infradead.org>
- <CAJuCfpHbTCwDERz+Hh+aLZzNdtSFKA+Q7sW-xzvmFmtyHCqROg@mail.gmail.com>
- <CAJuCfpHy5Xo76S7h9rEuA3cQ1pVqurL=wmtQ2cx9-xN1aa_C_A@mail.gmail.com>
- <Zg8qstJNfK07siNn@casper.infradead.org> <jb25mtkveqf63bv74jhynf6ncxmums5s37esveqsv52yurh4z7@5q55ttv34bia>
- <20240404154150.c25ba3a0b98023c8c1eff3a4@linux-foundation.org>
- <jpaw4hdd73ngt7mvtcdryqscivx6m2ic76ikfkcopceb47becp@vox5czt5bec3> <Zg_yHGKpw4HJHdpb@casper.infradead.org>
-In-Reply-To: <Zg_yHGKpw4HJHdpb@casper.infradead.org>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Fri, 5 Apr 2024 06:53:09 -0700
-Message-ID: <CAJuCfpGMSHv7drSu7Veo5CVz3d_Upt8S6Rdx3isi7orct9-uNQ@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mm: change inlined allocation helpers to account at
- the call site
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
-	joro@8bytes.org, will@kernel.org, trond.myklebust@hammerspace.com, 
-	anna@kernel.org, arnd@arndb.de, herbert@gondor.apana.org.au, 
-	davem@davemloft.net, jikos@kernel.org, benjamin.tissoires@redhat.com, 
-	tytso@mit.edu, jack@suse.com, dennis@kernel.org, tj@kernel.org, cl@linux.com, 
-	jakub@cloudflare.com, penberg@kernel.org, rientjes@google.com, 
-	iamjoonsoo.kim@lge.com, vbabka@suse.cz, edumazet@google.com, kuba@kernel.org, 
-	pabeni@redhat.com, iommu@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	linux-nfs@vger.kernel.org, linux-acpi@vger.kernel.org, 
-	acpica-devel@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-crypto@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-input@vger.kernel.org, linux-ext4@vger.kernel.org, linux-mm@kvack.org, 
-	netdev@vger.kernel.org, linux-security-module@vger.kernel.org
+References: <cover.1709780590.git.haibo1.xu@intel.com> <01cb5780041565784d459cd94a5c4f55eaa87739.1709780590.git.haibo1.xu@intel.com>
+ <Zgpf0rqUSEZcSiAV@sunil-laptop> <CAJve8om9-cTtYKLmB0R=6Wwh5KQ9z+16AFR-tuUkJhJjbn0UEA@mail.gmail.com>
+ <SJ1PR11MB6083B43290D216B1568642B0FC3F2@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <ZgzS7W83iWRII73G@sunil-laptop>
+In-Reply-To: <ZgzS7W83iWRII73G@sunil-laptop>
+From: Haibo Xu <xiaobo55x@gmail.com>
+Date: Sun, 7 Apr 2024 10:53:21 +0800
+Message-ID: <CAJve8o=VMXGwgGKQJvXiBXFLpqt+afFTG0vFvW-bTguzY76KMg@mail.gmail.com>
+Subject: Re: [PATCH v2 6/6] ACPI: RISCV: Enable ACPI based NUMA
+To: Sunil V L <sunilvl@ventanamicro.com>
+Cc: "Luck, Tony" <tony.luck@intel.com>, "Xu, Haibo1" <haibo1.xu@intel.com>, 
+	"ajones@ventanamicro.com" <ajones@ventanamicro.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+	"Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
+	"Moore, Robert" <robert.moore@intel.com>, Conor Dooley <conor.dooley@microchip.com>, 
+	Guo Ren <guoren@kernel.org>, Alexandre Ghiti <alexghiti@rivosinc.com>, 
+	Greentime Hu <greentime.hu@sifive.com>, Charlie Jenkins <charlie@rivosinc.com>, 
+	Sami Tolvanen <samitolvanen@google.com>, Zong Li <zong.li@sifive.com>, 
+	Jisheng Zhang <jszhang@kernel.org>, Baoquan He <bhe@redhat.com>, 
+	=?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Chen Jiahao <chenjiahao16@huawei.com>, 
+	Arnd Bergmann <arnd@arndb.de>, James Morse <james.morse@arm.com>, 
+	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>, Evan Green <evan@rivosinc.com>, 
+	Samuel Holland <samuel.holland@sifive.com>, Marc Zyngier <maz@kernel.org>, 
+	Anup Patel <apatel@ventanamicro.com>, Ard Biesheuvel <ardb@kernel.org>, 
+	Yuntao Wang <ytcoode@gmail.com>, "Schofield, Alison" <alison.schofield@intel.com>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, "Williams, Dan J" <dan.j.williams@intel.com>, 
+	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, 
+	"acpica-devel@lists.linux.dev" <acpica-devel@lists.linux.dev>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 5, 2024 at 5:44=E2=80=AFAM Matthew Wilcox <willy@infradead.org>=
- wrote:
+On Wed, Apr 3, 2024 at 11:54=E2=80=AFAM Sunil V L <sunilvl@ventanamicro.com=
+> wrote:
 >
-> On Thu, Apr 04, 2024 at 07:00:51PM -0400, Kent Overstreet wrote:
-> > On Thu, Apr 04, 2024 at 03:41:50PM -0700, Andrew Morton wrote:
-> > > On Thu, 4 Apr 2024 18:38:39 -0400 Kent Overstreet <kent.overstreet@li=
-nux.dev> wrote:
+> On Mon, Apr 01, 2024 at 04:57:30PM +0000, Luck, Tony wrote:
+> > >> If the firmware didn't provide the SRAT/SLIT on ACPI based systems, =
+then
+> > >> there will be a message "Failed to initialise from firmware" from
+> > >> arch_acpi_numa_init(). This is not specific to RISC-V. But I am
+> > >> wondering why should it be pr_info instead of pr_debug.
+> > >>
 > > >
-> > > > On Thu, Apr 04, 2024 at 11:33:22PM +0100, Matthew Wilcox wrote:
-> > > > > On Thu, Apr 04, 2024 at 03:17:43PM -0700, Suren Baghdasaryan wrot=
-e:
-> > > > > > Ironically, checkpatch generates warnings for these type casts:
-> > > > > >
-> > > > > > WARNING: unnecessary cast may hide bugs, see
-> > > > > > http://c-faq.com/malloc/mallocnocast.html
-> > > > > > #425: FILE: include/linux/dma-fence-chain.h:90:
-> > > > > > + ((struct dma_fence_chain *)kmalloc(sizeof(struct dma_fence_ch=
-ain),
-> > > > > > GFP_KERNEL))
-> > > > > >
-> > > > > > I guess I can safely ignore them in this case (since we cast to=
- the
-> > > > > > expected type)?
-> > > > >
-> > > > > I find ignoring checkpatch to be a solid move 99% of the time.
-> > > > >
-> > > > > I really don't like the codetags.  This is so much churn, and it =
-could
-> > > > > all be avoided by just passing in _RET_IP_ or _THIS_IP_ depending=
- on
-> > > > > whether we wanted to profile this function or its caller.  vmallo=
-c
-> > > > > has done it this way since 2008 (OK, using __builtin_return_addre=
-ss())
-> > > > > and lockdep has used _THIS_IP_ / _RET_IP_ since 2006.
-> > > >
-> > > > Except you can't. We've been over this; using that approach for tra=
-cing
-> > > > is one thing, using it for actual accounting isn't workable.
-> > >
-> > > I missed that.  There have been many emails.  Please remind us of the
-> > > reasoning here.
+> > > My understanding is maybe it just wants to expose explicit logs to
+> > > avoid any potential bugs from FW or Kernel.
 > >
-> > I think it's on the other people claiming 'oh this would be so easy if
-> > you just do it this other way' to put up some code - or at least more
-> > than hot takes.
+> > There are lots of ACPI enabled systems that aren't NUMA (single
+> > socket servers, desktops, laptops). Making this "pr_info()" would just
+> > add noise to the boot on all of those.
+> >
+> Exactly. But this is an existing pr_info message across architectures.
+> My suggestion is to add one more patch in this series to convert
+> this to pr_debug unless someone has strong reason to keep it pr_info.
 >
-> Well, /proc/vmallocinfo exists, and has existed since 2008, so this is
-> slightly more than a "hot take".
->
-> > But, since you asked - one of the main goals of this patchset was to be
-> > fast enough to run in production, and if you do it by return address
-> > then you've added at minimum a hash table lookup to every allocate and
-> > free; if you do that, running it in production is completely out of the
-> > question.
->
-> And yet vmalloc doesn't do that.
->
-> > Besides that - the issues with annotating and tracking the correct
-> > callsite really don't go away, they just shift around a bit. It's true
-> > that the return address approach would be easier initially, but that's
-> > not all we're concerned with; we're concerned with making sure
-> > allocations get accounted to the _correct_ callsite so that we're givin=
-g
-> > numbers that you can trust, and by making things less explicit you make
-> > that harder.
->
-> I'm not convinced that _THIS_IP_ is less precise than a codetag.  They
-> do essentially the same thing, except that codetags embed the source
-> location in the file while _THIS_IP_ requires a tool like faddr2line
-> to decode kernel_clone+0xc0/0x430 into a file + line number.
->
-> > This is all stuff that I've explained before; let's please dial back on
-> > the whining - or I'll just bookmark this for next time...
->
-> Please stop mischaracterising serious thoughtful criticism as whining.
-> I don't understand what value codetags bring over using _THIS_IP_ and
-> _RET_IP_ and you need to explain that.
 
-The conceptual difference between codetag and _THIS_IP_/_RET_IP_ is
-that codetag injects counters at the call site, so you don't need to
-spend time finding the appropriate counter to operate on during
-allocation.
+Sure. I will add a patch to fix it in v3.
+
+Thanks,
+Haibo
+
+> Thanks,
+> Sunil
