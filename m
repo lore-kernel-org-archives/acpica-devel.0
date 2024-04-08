@@ -1,409 +1,145 @@
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3851E17F0
-	for <acpica-devel@lists.linux.dev>; Sun,  7 Apr 2024 03:09:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28EAE12DD94;
+	Mon,  8 Apr 2024 14:19:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712459375; cv=none; b=MbMUAEUMuD6dWfq2zNmvJxAh1OI5Sunh1GU0SJgOb8y6hgI+CpBYVBYo5rDdqM5QTQX1up6uvdq0YB3tzYi7OmitZcki28xju0zy07h08FPQgDBQ021iTZ8LFOQVJSak1g5Kx7ZmfxAf47DKPW+OA/XX4Xp2ZMKXYo6kM3kjRsE=
+	t=1712585947; cv=none; b=jDKtG8N7eYJ+u5C9zNG4urjuveB2U1OmqjK4D8i9IKmTdarGognYIkQ5PCRPXEBxtFyVgN795KUjmw9hNsSkrb16+TgbX1jz6QJSpTakrr9YGZFZ31lO624n+AfJNrun/4IhIL6B6TZsNu6oiq5/ggrN9Rj6ypNnCadjayJn/gI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712459375; c=relaxed/simple;
-	bh=jcyWeJBvYdJXIas7KhnXSwKdy+1hcy9JSpwIM/Xa3iM=;
+	s=arc-20240116; t=1712585947; c=relaxed/simple;
+	bh=fCohwsfER8OLWfZl6LReGaQxXONj5RyinO1IgQBzs1s=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Sf1g0opFTk9dV+6Vvpe9bXHYKxIQpkMYAkhon0A2E+E9JGnRUFSdNTMwI1wDK3s3HQbUirfGJvXyeneHlRTp9Yy1+kky1CEjYPkBT7/a3sehP5O3f7668tu/1nLrqrzPkIqF1AC5CPRZoeGzGcHdG8Fhno/kn4R+tU5Y7WQRB/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eW8ksZjE; arc=none smtp.client-ip=209.85.167.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	 To:Cc:Content-Type; b=LeIP1ZqvXdyUa/hZ7Do6hmea6oYfk45uRxEGl2DzWCH6bE2/aoBcsZMqICV4PbPOIIt/zF1EcOvsAJBKL5iiDn3J2T7HweO4YOkW9Y4A03aTB3U+84vm2KXGM/Kw9GLPk1ZF9udv/SpoBV8LYikec5YsOxV2euXrkf2WKdVXLPM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TUGFi/YM; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eW8ksZjE"
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-516d6898bebso1813041e87.3
-        for <acpica-devel@lists.linux.dev>; Sat, 06 Apr 2024 20:09:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712459371; x=1713064171; darn=lists.linux.dev;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UB1xsuIDGrlKqpxeqIkDu1lSsAv5dOhHV7IigLIbRNM=;
-        b=eW8ksZjEiUY9GE9oDhi7bP9aoIf64CrfOM3Qm0ugODv60GYZpXdiitdZFQj7p+paVV
-         ZDjo2cNIAMhJY1wAGAg5WMvK9dzBw+w9W6w0ChPPVtyoiU+T3ZC52dMOAiJvzY8o3oxt
-         YeMX0GozUVR/5pEqfSdLmFwum2RHLUPCECbsGa2V90aoaddUNz1QRIVVfNgcEwgwb+/v
-         DsRVD7w4XDknSuAVaptjsC9PyMj43CkNpXD6JYFK1ggxksWK4vMU9hKuVIi8fHx/P7tu
-         mwOjq+qJDvHgduWgRl4vUnRFSQFeCaarRWN1VBpvj4862BKJtBVjENvt2HNPZnxoNbzb
-         5fBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712459371; x=1713064171;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UB1xsuIDGrlKqpxeqIkDu1lSsAv5dOhHV7IigLIbRNM=;
-        b=fruBDUGnRIHrU4ircXZnmZ93cNT7d700i4YcVdcyqOk6y2nnhlW4mj+tBi3qve6+py
-         dVnaTRs1uMY5P2IatMCCAP0Z0+Jfn+aI3LrsOy9No1Ts2Sj/KODZrXbjM7SJkAfLm6LB
-         l9oa0TJi0p49Xi9fmeKolj7Er8YJ6n0qt3j4iAtQm6vXda2JCKwDu8BVY38SrZumCzp1
-         +DuMkocAegWjJkBQU9auz1QUvzaER4iSGm502DpKArkNWvynD5Dina0Fzb3Cf85wWDS7
-         zoTxt5z6TazgYLI4w0TKf2LwzNUGF2JfOmIeERwqEhM+ZmQFAYI5kBnOhyoOYRl+iOPg
-         AEdA==
-X-Forwarded-Encrypted: i=1; AJvYcCV/kn0kgT1BsDa1/ZrgaF9cL2CEqreofGcqvhXypOMzBA67eUX6cy2K9p5NnUKcWz8FdXY6cxvBaomHKCuWiIWq4HdYgQ4ggpCyEGve
-X-Gm-Message-State: AOJu0Yw1kqaqtLFKIL9VDUOIDB2soGbiXul0+NROJ/cJ1n3maofinMgf
-	+8SucKCjW3wGkWUcEdhKEfK4Fb5HUBqZIh8+6uPE+AtYffvnxcsghwTIQmZi0LoReHrf/ki/9s0
-	7wpq6BIb2NmbJZuxpEeUBEzUvb1A=
-X-Google-Smtp-Source: AGHT+IFCYfQ2+MCzTBX4UnerMduKb/bmzFCWiyL2vJigrf3ChyX9pj8DmgpAusiXR67fRgdjPdbG3HDgXbdTpPCjP7o=
-X-Received: by 2002:a05:6512:4dd:b0:516:d029:b51e with SMTP id
- w29-20020a05651204dd00b00516d029b51emr3615249lfq.60.1712459371084; Sat, 06
- Apr 2024 20:09:31 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TUGFi/YM"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8772C433A6;
+	Mon,  8 Apr 2024 14:19:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712585946;
+	bh=fCohwsfER8OLWfZl6LReGaQxXONj5RyinO1IgQBzs1s=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=TUGFi/YM8gQSXAdKgMg9uMImfJ9pFr4J1BwQGC94uJaWyxn5itekO7PKA0SOCkcEr
+	 QA1VPSa4wvslrYn9vTSnW0EVFIanPL08HsVca7vSI9husMuO9arD8ocD6EQnzFETmf
+	 ksWAANdxnCkmOLHmrI6mO1VYhzYnkCehSOhb8tgukA/HapUYG2wm9kLJdPZyWx5ziM
+	 onUQBvdhF3eA9tBBfibtluCkIRkLz1dqefrOixMYQAZ8eVa7KryggECPnAlJmn4rg4
+	 p85ddRL+1iLruCT+0p97PQPdoRaPAkKby25KaOT07INHT9Z6ZzRDm1QnLmv0B0OGn9
+	 XEvf7acmBnFRQ==
+Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3c3db6798f6so23751b6e.0;
+        Mon, 08 Apr 2024 07:19:06 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWUPTK2ZGvSY39xFcFKBnNDSxvWYsjAeiaDGaTEq2RHWu8XouiU+47Ri8m7KyZDTrdSTy+RWVTVVvDMl1oYPAzylmeWK5UWzSbfPgSfhKYG6SLXHffjrQ6BFnT68mywDEi0BTdh1Eqz82Cfykoj
+X-Gm-Message-State: AOJu0YxURO8nMX2hKGvo0GAJW51dYz5pPpG977uQki1BNYJOEpYTvTf3
+	kygTHdxwMSKkUG/j/cRVI6/V7wDs66y9J29S4hY23k1kM63UeRVRUrCa4IrphZ0r/Is3CoEGE2r
+	drFL/Sv+vFWNL+dkK7ob5CRQfCrQ=
+X-Google-Smtp-Source: AGHT+IE2cd5MIHpLilsMOefxnD7lqhVeZau5m81/yoSXqMyOs4mTHwzl+84AR6mEi+xDVYbCBwtZjPGYOY8LlCssj9M=
+X-Received: by 2002:a05:6808:138e:b0:3c5:eab3:657 with SMTP id
+ c14-20020a056808138e00b003c5eab30657mr5718403oiw.4.1712585945878; Mon, 08 Apr
+ 2024 07:19:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <cover.1709780590.git.haibo1.xu@intel.com> <7ca110c59cbb2fb358304a9ba4f9c7cbeb191345.1709780590.git.haibo1.xu@intel.com>
- <93e24c6c-65e6-4e99-ac56-aa264dbbf525@ghiti.fr>
-In-Reply-To: <93e24c6c-65e6-4e99-ac56-aa264dbbf525@ghiti.fr>
-From: Haibo Xu <xiaobo55x@gmail.com>
-Date: Sun, 7 Apr 2024 11:09:19 +0800
-Message-ID: <CAJve8ok=p5Dv_yc8Ni2eSFZjSXtZ80LVf8whaEJDZR7DjwVRPA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/6] ACPI: RISCV: Add NUMA support based on SRAT and SLIT
-To: Alexandre Ghiti <alex@ghiti.fr>
-Cc: Haibo Xu <haibo1.xu@intel.com>, Alison Schofield <alison.schofield@intel.com>, 
-	Zong Li <zong.li@sifive.com>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, linux-kernel@vger.kernel.org, 
-	Conor Dooley <conor.dooley@microchip.com>, Guo Ren <guoren@kernel.org>, 
-	Jisheng Zhang <jszhang@kernel.org>, James Morse <james.morse@arm.com>, 
-	linux-riscv@lists.infradead.org, Ard Biesheuvel <ardb@kernel.org>, 
-	Baoquan He <bhe@redhat.com>, Marc Zyngier <maz@kernel.org>, acpica-devel@lists.linux.dev, 
-	Robert Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org, 
-	Sami Tolvanen <samitolvanen@google.com>, Greentime Hu <greentime.hu@sifive.com>, 
-	Len Brown <lenb@kernel.org>, Albert Ou <aou@eecs.berkeley.edu>, 
-	Alexandre Ghiti <alexghiti@rivosinc.com>, Arnd Bergmann <arnd@arndb.de>, 
-	Dan Williams <dan.j.williams@intel.com>, Chen Jiahao <chenjiahao16@huawei.com>, 
-	Yuntao Wang <ytcoode@gmail.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	=?UTF-8?B?Q2zDqW1lbnQgTO+/vT1BIDlnZXI=?= <cleger@rivosinc.com>, 
-	Anup Patel <apatel@ventanamicro.com>, Tony Luck <tony.luck@intel.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>, Samuel Holland <samuel.holland@sifive.com>, 
-	Evan Green <evan@rivosinc.com>, Palmer Dabbelt <palmer@dabbelt.com>, ajones@ventanamicro.com
+References: <20240328-b4-module-owner-acpi-v2-0-1e5552c2c69f@linaro.org>
+In-Reply-To: <20240328-b4-module-owner-acpi-v2-0-1e5552c2c69f@linaro.org>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Mon, 8 Apr 2024 16:18:54 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0jd7FegkcnJyDn61uBEdGRKHWoaQ8SKJE+JX18W0QHh1Q@mail.gmail.com>
+Message-ID: <CAJZ5v0jd7FegkcnJyDn61uBEdGRKHWoaQ8SKJE+JX18W0QHh1Q@mail.gmail.com>
+Subject: Re: [PATCH v2 00/19] ACPI: store owner from modules with acpi_bus_register_driver()
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
+	Robert Moore <robert.moore@intel.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Benson Leung <bleung@chromium.org>, 
+	Tzung-Bi Shih <tzungbi@kernel.org>, Corentin Chary <corentin.chary@gmail.com>, 
+	"Luke D. Jones" <luke@ljones.dev>, Hans de Goede <hdegoede@redhat.com>, 
+	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
+	Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>, =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>, 
+	Matan Ziv-Av <matan@svgalib.org>, Mattia Dongili <malattia@linux.it>, 
+	Azael Avalos <coproscefalo@gmail.com>, Ajay Kaher <akaher@vmware.com>, 
+	Alexey Makhalov <amakhalov@vmware.com>, VMware PV-Drivers Reviewers <pv-drivers@vmware.com>, 
+	Richard Cochran <richardcochran@gmail.com>, "Theodore Ts'o" <tytso@mit.edu>, 
+	"Jason A. Donenfeld" <Jason@zx2c4.com>, linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	acpica-devel@lists.linux.dev, linux-input@vger.kernel.org, 
+	netdev@vger.kernel.org, chrome-platform@lists.linux.dev, 
+	platform-driver-x86@vger.kernel.org, 
+	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 2, 2024 at 5:31=E2=80=AFPM Alexandre Ghiti <alex@ghiti.fr> wrot=
-e:
+On Thu, Mar 28, 2024 at 8:49=E2=80=AFPM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
 >
-> Hi Haibo,
+> Changes in v2:
+> - Correct input and platform/chrome subjects.
+> - Add acks.
+> - Link to v1: https://lore.kernel.org/r/20240327-b4-module-owner-acpi-v1-=
+0-725241a2d224@linaro.org
 >
-> On 07/03/2024 09:47, Haibo Xu wrote:
-> > Add acpi_numa.c file to enable parse NUMA information from
-> > ACPI SRAT and SLIT tables. SRAT table provide CPUs(Hart) and
-> > memory nodes to proximity domain mapping, while SLIT table
-> > provide the distance metrics between proximity domains.
-> >
-> > Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
-> > ---
-> >   arch/riscv/include/asm/acpi.h |  15 +++-
-> >   arch/riscv/kernel/Makefile    |   1 +
-> >   arch/riscv/kernel/acpi.c      |   5 --
-> >   arch/riscv/kernel/acpi_numa.c | 131 +++++++++++++++++++++++++++++++++=
-+
-> >   arch/riscv/kernel/setup.c     |   4 +-
-> >   arch/riscv/kernel/smpboot.c   |   2 -
-> >   include/linux/acpi.h          |   6 ++
-> >   7 files changed, 154 insertions(+), 10 deletions(-)
-> >   create mode 100644 arch/riscv/kernel/acpi_numa.c
-> >
-> > diff --git a/arch/riscv/include/asm/acpi.h b/arch/riscv/include/asm/acp=
-i.h
-> > index 7dad0cf9d701..e0a1f84404f3 100644
-> > --- a/arch/riscv/include/asm/acpi.h
-> > +++ b/arch/riscv/include/asm/acpi.h
-> > @@ -61,11 +61,14 @@ static inline void arch_fix_phys_package_id(int num=
-, u32 slot) { }
-> >
-> >   void acpi_init_rintc_map(void);
-> >   struct acpi_madt_rintc *acpi_cpu_get_madt_rintc(int cpu);
-> > -u32 get_acpi_id_for_cpu(int cpu);
-> > +static inline u32 get_acpi_id_for_cpu(int cpu)
-> > +{
-> > +     return acpi_cpu_get_madt_rintc(cpu)->uid;
-> > +}
-> > +
-> >   int acpi_get_riscv_isa(struct acpi_table_header *table,
-> >                      unsigned int cpu, const char **isa);
-> >
-> > -static inline int acpi_numa_get_nid(unsigned int cpu) { return NUMA_NO=
-_NODE; }
-> >   void acpi_get_cbo_block_size(struct acpi_table_header *table, u32 *cb=
-om_size,
-> >                            u32 *cboz_size, u32 *cbop_size);
-> >   #else
-> > @@ -87,4 +90,12 @@ static inline void acpi_get_cbo_block_size(struct ac=
-pi_table_header *table,
-> >
-> >   #endif /* CONFIG_ACPI */
-> >
-> > +#ifdef CONFIG_ACPI_NUMA
-> > +int acpi_numa_get_nid(unsigned int cpu);
-> > +void acpi_map_cpus_to_nodes(void);
-> > +#else
-> > +static inline int acpi_numa_get_nid(unsigned int cpu) { return NUMA_NO=
-_NODE; }
-> > +static inline void acpi_map_cpus_to_nodes(void) { }
-> > +#endif /* CONFIG_ACPI_NUMA */
-> > +
-> >   #endif /*_ASM_ACPI_H*/
-> > diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
-> > index f71910718053..5d3e9cf89b76 100644
-> > --- a/arch/riscv/kernel/Makefile
-> > +++ b/arch/riscv/kernel/Makefile
-> > @@ -105,3 +105,4 @@ obj-$(CONFIG_COMPAT)              +=3D compat_vdso/
-> >
-> >   obj-$(CONFIG_64BIT)         +=3D pi/
-> >   obj-$(CONFIG_ACPI)          +=3D acpi.o
-> > +obj-$(CONFIG_ACPI_NUMA)      +=3D acpi_numa.o
-> > diff --git a/arch/riscv/kernel/acpi.c b/arch/riscv/kernel/acpi.c
-> > index e619edc8b0cc..040bdbfea2b4 100644
-> > --- a/arch/riscv/kernel/acpi.c
-> > +++ b/arch/riscv/kernel/acpi.c
-> > @@ -191,11 +191,6 @@ struct acpi_madt_rintc *acpi_cpu_get_madt_rintc(in=
-t cpu)
-> >       return &cpu_madt_rintc[cpu];
-> >   }
-> >
-> > -u32 get_acpi_id_for_cpu(int cpu)
-> > -{
-> > -     return acpi_cpu_get_madt_rintc(cpu)->uid;
-> > -}
-> > -
-> >   /*
-> >    * __acpi_map_table() will be called before paging_init(), so early_i=
-oremap()
-> >    * or early_memremap() should be called here to for ACPI table mappin=
-g.
-> > diff --git a/arch/riscv/kernel/acpi_numa.c b/arch/riscv/kernel/acpi_num=
-a.c
-> > new file mode 100644
-> > index 000000000000..0231482d6946
-> > --- /dev/null
-> > +++ b/arch/riscv/kernel/acpi_numa.c
-> > @@ -0,0 +1,131 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * ACPI 6.6 based NUMA setup for RISCV
-> > + * Lots of code was borrowed from arch/arm64/kernel/acpi_numa.c
-> > + *
-> > + * Copyright 2004 Andi Kleen, SuSE Labs.
-> > + * Copyright (C) 2013-2016, Linaro Ltd.
-> > + *           Author: Hanjun Guo <hanjun.guo@linaro.org>
-> > + * Copyright (C) 2024 Intel Corporation.
-> > + *
-> > + * Reads the ACPI SRAT table to figure out what memory belongs to whic=
-h CPUs.
-> > + *
-> > + * Called from acpi_numa_init while reading the SRAT and SLIT tables.
-> > + * Assumes all memory regions belonging to a single proximity domain
-> > + * are in one chunk. Holes between them will be included in the node.
-> > + */
-> > +
-> > +#define pr_fmt(fmt) "ACPI: NUMA: " fmt
-> > +
-> > +#include <linux/acpi.h>
-> > +#include <linux/bitmap.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/mm.h>
-> > +#include <linux/memblock.h>
-> > +#include <linux/mmzone.h>
-> > +#include <linux/module.h>
-> > +#include <linux/topology.h>
-> > +
-> > +#include <asm/numa.h>
-> > +
-> > +static int acpi_early_node_map[NR_CPUS] __initdata =3D { NUMA_NO_NODE =
-};
-> > +
-> > +int __init acpi_numa_get_nid(unsigned int cpu)
-> > +{
-> > +     return acpi_early_node_map[cpu];
-> > +}
-> > +
-> > +static inline int get_cpu_for_acpi_id(u32 uid)
-> > +{
-> > +     int cpu;
-> > +
-> > +     for (cpu =3D 0; cpu < nr_cpu_ids; cpu++)
-> > +             if (uid =3D=3D get_acpi_id_for_cpu(cpu))
-> > +                     return cpu;
-> > +
-> > +     return -EINVAL;
-> > +}
-> > +
-> > +static int __init acpi_parse_rintc_pxm(union acpi_subtable_headers *he=
-ader,
-> > +                                    const unsigned long end)
-> > +{
-> > +     struct acpi_srat_rintc_affinity *pa;
-> > +     int cpu, pxm, node;
-> > +
-> > +     if (srat_disabled())
-> > +             return -EINVAL;
-> > +
-> > +     pa =3D (struct acpi_srat_rintc_affinity *)header;
-> > +     if (!pa)
-> > +             return -EINVAL;
-> > +
-> > +     if (!(pa->flags & ACPI_SRAT_RINTC_ENABLED))
-> > +             return 0;
-> > +
-> > +     pxm =3D pa->proximity_domain;
-> > +     node =3D pxm_to_node(pxm);
-> > +
-> > +     /*
-> > +      * If we can't map the UID to a logical cpu this
-> > +      * means that the UID is not part of possible cpus
-> > +      * so we do not need a NUMA mapping for it, skip
-> > +      * the SRAT entry and keep parsing.
-> > +      */
-> > +     cpu =3D get_cpu_for_acpi_id(pa->acpi_processor_uid);
-> > +     if (cpu < 0)
-> > +             return 0;
-> > +
-> > +     acpi_early_node_map[cpu] =3D node;
-> > +     pr_info("SRAT: PXM %d -> HARTID 0x%lx -> Node %d\n", pxm,
-> > +             cpuid_to_hartid_map(cpu), node);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +void __init acpi_map_cpus_to_nodes(void)
-> > +{
-> > +     int i;
-> > +
-> > +     /*
-> > +      * In ACPI, SMP and CPU NUMA information is provided in separate
-> > +      * static tables, namely the MADT and the SRAT.
-> > +      *
-> > +      * Thus, it is simpler to first create the cpu logical map throug=
-h
-> > +      * an MADT walk and then map the logical cpus to their node ids
-> > +      * as separate steps.
-> > +      */
-> > +     acpi_table_parse_entries(ACPI_SIG_SRAT, sizeof(struct acpi_table_=
-srat),
-> > +                              ACPI_SRAT_TYPE_RINTC_AFFINITY, acpi_pars=
-e_rintc_pxm, 0);
-> > +
-> > +     for (i =3D 0; i < nr_cpu_ids; i++)
-> > +             early_map_cpu_to_node(i, acpi_numa_get_nid(i));
-> > +}
-> > +
-> > +/* Callback for Proximity Domain -> logical node ID mapping */
-> > +void __init acpi_numa_rintc_affinity_init(struct acpi_srat_rintc_affin=
-ity *pa)
-> > +{
-> > +     int pxm, node;
-> > +
-> > +     if (srat_disabled())
-> > +             return;
-> > +
-> > +     if (pa->header.length < sizeof(struct acpi_srat_rintc_affinity)) =
-{
-> > +             pr_err("SRAT: Invalid SRAT header length: %d\n", pa->head=
-er.length);
-> > +             bad_srat();
-> > +             return;
-> > +     }
-> > +
-> > +     if (!(pa->flags & ACPI_SRAT_RINTC_ENABLED))
-> > +             return;
-> > +
-> > +     pxm =3D pa->proximity_domain;
-> > +     node =3D acpi_map_pxm_to_node(pxm);
-> > +
-> > +     if (node =3D=3D NUMA_NO_NODE) {
-> > +             pr_err("SRAT: Too many proximity domains %d\n", pxm);
-> > +             bad_srat();
-> > +             return;
-> > +     }
-> > +
-> > +     node_set(node, numa_nodes_parsed);
-> > +}
+> Merging
+> =3D=3D=3D=3D=3D=3D=3D
+> All further patches depend on the first amba patch, therefore one way is
+> to ack and take it via one tree, e.g. ACPI.
 >
+> Description
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> Modules registering driver with acpi_bus_register_driver() often forget t=
+o
+> set .owner field.
 >
-> What is riscv specific in the parsing of those tables? Can't we try to
-> merge this into generic ACPI code? I know that's a burden to try and
-> factorize code with other architectures instead of reusing it, but it
-> showed numerous times that duplicating was even worse (I have the NAPOT
-> code in mind).
+> Solve the problem by moving this task away from the drivers to the core
+> amba bus code, just like we did for platform_driver in commit
+> 9447057eaff8 ("platform_device: use a macro instead of
+> platform_driver_register").
 >
+> Best regards,
+> Krzysztof
+>
+> ---
+> Krzysztof Kozlowski (19):
+>       ACPI: store owner from modules with acpi_bus_register_driver()
+>       Input: atlas - drop owner assignment
+>       net: fjes: drop owner assignment
+>       platform/chrome: wilco_ec: drop owner assignment
+>       platform: asus-laptop: drop owner assignment
+>       platform: classmate-laptop: drop owner assignment
+>       platform/x86/dell: drop owner assignment
+>       platform/x86/eeepc: drop owner assignment
+>       platform/x86/intel/rst: drop owner assignment
+>       platform/x86/intel/smartconnect: drop owner assignment
+>       platform/x86/lg-laptop: drop owner assignment
+>       platform/x86/sony-laptop: drop owner assignment
+>       platform/x86/toshiba_acpi: drop owner assignment
+>       platform/x86/toshiba_bluetooth: drop owner assignment
+>       platform/x86/toshiba_haps: drop owner assignment
+>       platform/x86/wireless-hotkey: drop owner assignment
+>       ptp: vmw: drop owner assignment
+>       virt: vmgenid: drop owner assignment
+>       ACPI: drop redundant owner from acpi_driver
+>
+>  drivers/acpi/bus.c                        | 9 +++++----
+>  drivers/input/misc/atlas_btns.c           | 1 -
+>  drivers/net/fjes/fjes_main.c              | 1 -
+>  drivers/platform/chrome/wilco_ec/event.c  | 1 -
+>  drivers/platform/x86/asus-laptop.c        | 1 -
+>  drivers/platform/x86/classmate-laptop.c   | 5 -----
+>  drivers/platform/x86/dell/dell-rbtn.c     | 1 -
+>  drivers/platform/x86/eeepc-laptop.c       | 1 -
+>  drivers/platform/x86/intel/rst.c          | 1 -
+>  drivers/platform/x86/intel/smartconnect.c | 1 -
+>  drivers/platform/x86/lg-laptop.c          | 1 -
+>  drivers/platform/x86/sony-laptop.c        | 2 --
+>  drivers/platform/x86/toshiba_acpi.c       | 1 -
+>  drivers/platform/x86/toshiba_bluetooth.c  | 1 -
+>  drivers/platform/x86/toshiba_haps.c       | 1 -
+>  drivers/platform/x86/wireless-hotkey.c    | 1 -
+>  drivers/ptp/ptp_vmw.c                     | 1 -
+>  drivers/virt/vmgenid.c                    | 1 -
+>  include/acpi/acpi_bus.h                   | 8 ++++++--
+>  19 files changed, 11 insertions(+), 28 deletions(-)
+> ---
 
-Hi Alex,
-
-The acpi_srat_rintc_affinity structure is RISC-V specific and that's
-why I put the
-callback in arch/riscv/kernel/acpi_numa.c.
-
-Thanks,
-Haibo
-
-
-> Thanks,
->
-> Alex
->
->
-> > diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
-> > index 4f73c0ae44b2..a2cde65b69e9 100644
-> > --- a/arch/riscv/kernel/setup.c
-> > +++ b/arch/riscv/kernel/setup.c
-> > @@ -281,8 +281,10 @@ void __init setup_arch(char **cmdline_p)
-> >       setup_smp();
-> >   #endif
-> >
-> > -     if (!acpi_disabled)
-> > +     if (!acpi_disabled) {
-> >               acpi_init_rintc_map();
-> > +             acpi_map_cpus_to_nodes();
-> > +     }
-> >
-> >       riscv_init_cbo_blocksizes();
-> >       riscv_fill_hwcap();
-> > diff --git a/arch/riscv/kernel/smpboot.c b/arch/riscv/kernel/smpboot.c
-> > index cfbe4b840d42..81a2aa77680c 100644
-> > --- a/arch/riscv/kernel/smpboot.c
-> > +++ b/arch/riscv/kernel/smpboot.c
-> > @@ -100,7 +100,6 @@ static int __init acpi_parse_rintc(union acpi_subta=
-ble_headers *header, const un
-> >       if (hart =3D=3D cpuid_to_hartid_map(0)) {
-> >               BUG_ON(found_boot_cpu);
-> >               found_boot_cpu =3D true;
-> > -             early_map_cpu_to_node(0, acpi_numa_get_nid(cpu_count));
-> >               return 0;
-> >       }
-> >
-> > @@ -110,7 +109,6 @@ static int __init acpi_parse_rintc(union acpi_subta=
-ble_headers *header, const un
-> >       }
-> >
-> >       cpuid_to_hartid_map(cpu_count) =3D hart;
-> > -     early_map_cpu_to_node(cpu_count, acpi_numa_get_nid(cpu_count));
-> >       cpu_count++;
-> >
-> >       return 0;
-> > diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-> > index b7165e52b3c6..f74c62956e07 100644
-> > --- a/include/linux/acpi.h
-> > +++ b/include/linux/acpi.h
-> > @@ -269,6 +269,12 @@ acpi_numa_gicc_affinity_init(struct acpi_srat_gicc=
-_affinity *pa) { }
-> >
-> >   int acpi_numa_memory_affinity_init (struct acpi_srat_mem_affinity *ma=
-);
-> >
-> > +#ifdef CONFIG_RISCV
-> > +void acpi_numa_rintc_affinity_init(struct acpi_srat_rintc_affinity *pa=
-);
-> > +#else
-> > +static inline void acpi_numa_rintc_affinity_init(struct acpi_srat_rint=
-c_affinity *pa) { }
-> > +#endif
-> > +
-> >   #ifndef PHYS_CPUID_INVALID
-> >   typedef u32 phys_cpuid_t;
-> >   #define PHYS_CPUID_INVALID (phys_cpuid_t)(-1)
+Whole series applied as 6.10 material, thanks!
