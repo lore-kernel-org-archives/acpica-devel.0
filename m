@@ -1,149 +1,143 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C7A313E8AB
-	for <acpica-devel@lists.linux.dev>; Mon,  8 Apr 2024 14:41:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1486B126F07;
+	Mon,  8 Apr 2024 14:54:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712587305; cv=none; b=j7uK+oBFFvouGdsAAWhJf6hVTPCnvs9qIVQlPFkh2M8xRZUX63tZRCd1BXlx4bty/bX61NKJU/s+t2hY5V8DhB0P7mskPZXjAjd4hseCmuYBfBf652rY6zHD4kYpidJb5PK0yc2TJkoeKSf01GEdSJRXM5dcKREGfc/O52rtpX0=
+	t=1712588070; cv=none; b=szKeFTkrpqTZCHJyEjE6C4xqE9MIJsyUiq88i3YqGEoJanMSR/tl/fig0bFWuJcFdG/LLEY6dHJHHOkGggm3Y7l9nZMIDEacEVJNRpWzmogOcDNs7ZRI5Y6/sHRWoEuZK0W2Ax7QFvJ2g94/n8QrXi5MWrhw5SSTHnPSgFfQkLc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712587305; c=relaxed/simple;
-	bh=jbEWktGS8Ep13R3bVFaxKXrAOpmIt8ife9UyNU/Rcek=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=p2nwrXer5eAadLJY/Qef777wMjQjzO2rjMPWtfD7xC7MLTSC479+yi4//ZDF2BnHqXfoi1WMvguN83GhkcMRQyCSY9Cf4zJNS+6ZefSu4EFKRh0H1CqeA6/bK+tlfnPNCuqXT4bjtKL3Oukdq82dZV4u99UnPIjO5xlRw9p4hG0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I+M1bBUZ; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1712588070; c=relaxed/simple;
+	bh=6nyvPHBNhtt42tmLE/4Kw6HI0hcocSOnFt5NeHT3nEU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=li2uRk009/4mQq4DsrmDs7iJ0Po7+BITwsQLLlv4Cy5zKUFTxqCad3+7d2q4cdF9xZYw81Kx4exDymrhwwPiiP9hvW3astWQuhC1Drvn/JJjj8qNWBqUDZp/HT9t1dRxJ3IzUvBwoNiFzlPA1v/YvXBdtTAUSXFgrqatwNsWEtI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=txqodJ7u; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I+M1bBUZ"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4AC5C433C7
-	for <acpica-devel@lists.linux.dev>; Mon,  8 Apr 2024 14:41:44 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="txqodJ7u"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42448C43390;
+	Mon,  8 Apr 2024 14:54:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712587304;
-	bh=jbEWktGS8Ep13R3bVFaxKXrAOpmIt8ife9UyNU/Rcek=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=I+M1bBUZx+UIwqb2ohb4+876hCluTB2H4sTqDkldz2ZqbqUpC3gIxFWLKx3dn0xgp
-	 ihGNH6GojUPHEEf4HUem3J7nSH/p5E04AwOY7JcZB/M1DsR1Qe2FcXMsCSQYpWobQf
-	 HJ/3xl3mY61klTHN4wX6dFJwYQa0WFHps/9DD84Ow0Zb3pSXY+voV9O/7Y99pHUjgc
-	 rcuRQRNvMmQUiDCgQPFYb6codKrxr1NllK+SvejOYhXGTrtayfKlUkLR4rw5d4v3BO
-	 oI+vJbMSOxozP8FdZrQiNtIr3eEbX3xIX8jrb7zrgiHCtTCPZdBgOBf/Czm+dLTGY7
-	 P3srcEz9aiK7Q==
-Received: by mail-oi1-f173.google.com with SMTP id 5614622812f47-3c5f84a05f8so4525b6e.1
-        for <acpica-devel@lists.linux.dev>; Mon, 08 Apr 2024 07:41:44 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUbXr422Zdyw9WzjZnUusfbfmZ5fHU6ai5fxlbK4drK9AW7L8djR+9nQ/MeFR8ZrffItqz+Ei6vvdCKualHnRzXML9Pjfl8oV6AlVFo
-X-Gm-Message-State: AOJu0YzPVhB7RK+VsqhDGwdYNw8g9Z4PSxYpsXuPCv80RIdOaSOY8/Qn
-	DWdQ9GTMswqVWiuOqIi7hM1xXlvrscb7Ixk0Lqnf1LC2zfWiYWN8Flh1jcy5XR698PY2mm57H8Q
-	CW6I0a2lIjd6lYFM4z61swDcCoS4=
-X-Google-Smtp-Source: AGHT+IFSY6CfSrDc13Ub9zqdboR0p48m4YcnNknozWduUthGeYqqVzVsbWyjUe3FxoaIxSZdZxmq2ad8FKsv56rKp64=
-X-Received: by 2002:a05:6808:15a2:b0:3c5:d3eb:2c1b with SMTP id
- t34-20020a05680815a200b003c5d3eb2c1bmr9382476oiw.2.1712587304034; Mon, 08 Apr
- 2024 07:41:44 -0700 (PDT)
+	s=k20201202; t=1712588069;
+	bh=6nyvPHBNhtt42tmLE/4Kw6HI0hcocSOnFt5NeHT3nEU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=txqodJ7uy/GQaOX8PSTuc64L79RjRCEeCpLVCqNUXEgUhda0jt8vB/kwSiCz62dn7
+	 RIHGvtz08C3PpxT+3F4L639wcylZR8NUXtcS7JeKoFD4LJown+VUItdvdjsW773Xcq
+	 Cx5sG81gz+x4s8oHBFczmAM8S3o7YTbm5SfHbP60TLos/P6WvZbOHhpuGbjVF2VNyw
+	 /yVX9GAbMnZN3Il23+0TIPH+2dXogL4MuWlWDbBoy4n+oppmO5QX5RyIFoNDgNQfuh
+	 Ebf53Bavz1pRUyvJDz8xYBMnpDFl7109se1gckgdoS/zz8EUSVh8LoO2p1ovvzJoVV
+	 UlQtAg49UzPFQ==
+Date: Mon, 8 Apr 2024 16:54:24 +0200
+From: Lorenzo Pieralisi <lpieralisi@kernel.org>
+To: linux-kernel@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org, linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev, Mark Rutland <mark.rutland@arm.com>,
+	Robin Murphy <robin.murphy@arm.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Fang Xiang <fangxiang3@xiaomi.com>, Marc Zyngier <maz@kernel.org>,
+	Robert Moore <robert.moore@intel.com>
+Subject: Re: [PATCH v5 0/1] irqchip/gic-v3: Enable non-coherent GIC designs
+ probing
+Message-ID: <ZhQFICltEOcBHszS@lpieralisi>
+References: <20240123110332.112797-1-lpieralisi@kernel.org>
+ <ZeiBFBDhwlJnCUZ2@lpieralisi>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20240328140512.4148825-1-arnd@kernel.org> <20240328140512.4148825-7-arnd@kernel.org>
-In-Reply-To: <20240328140512.4148825-7-arnd@kernel.org>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Mon, 8 Apr 2024 16:41:32 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0hoUfv54KW7y4223Mn9E7D4xvR7whRFNLTBqCZMUxT50Q@mail.gmail.com>
-Message-ID: <CAJZ5v0hoUfv54KW7y4223Mn9E7D4xvR7whRFNLTBqCZMUxT50Q@mail.gmail.com>
-Subject: Re: [PATCH 06/11] acpi: avoid warning for truncated string copy
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Robert Moore <robert.moore@intel.com>, 
-	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Alexey Starikovskiy <astarikovskiy@suse.de>, 
-	Lin Ming <ming.m.lin@intel.com>, Len Brown <len.brown@intel.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org, 
-	acpica-devel@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZeiBFBDhwlJnCUZ2@lpieralisi>
 
-On Thu, Mar 28, 2024 at 3:06=E2=80=AFPM Arnd Bergmann <arnd@kernel.org> wro=
-te:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> gcc -Wstringop-truncation warns about copying a string that results in a
-> missing nul termination:
->
-> drivers/acpi/acpica/tbfind.c: In function 'acpi_tb_find_table':
-> drivers/acpi/acpica/tbfind.c:60:9: error: 'strncpy' specified bound 6 equ=
-als destination size [-Werror=3Dstringop-truncation]
->    60 |         strncpy(header.oem_id, oem_id, ACPI_OEM_ID_SIZE);
->       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/acpi/acpica/tbfind.c:61:9: error: 'strncpy' specified bound 8 equ=
-als destination size [-Werror=3Dstringop-truncation]
->    61 |         strncpy(header.oem_table_id, oem_table_id, ACPI_OEM_TABLE=
-_ID_SIZE);
->       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
-~~~~~~~~~
->
-> This one is intentional, so rewrite the code in a way that avoids the
-> warning. Since there is already an extra strlen() and an overflow check,
-> the actual size to be copied is already known here.
->
-> Fixes: 47c08729bf1c ("ACPICA: Fix for LoadTable operator, input strings")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On Wed, Mar 06, 2024 at 03:43:32PM +0100, Lorenzo Pieralisi wrote:
+> On Tue, Jan 23, 2024 at 12:03:31PM +0100, Lorenzo Pieralisi wrote:
+> > This series is v5 of previous series:
+> > 
+> > v4: https://lore.kernel.org/all/20231227110038.55453-1-lpieralisi@kernel.org
+> > v3: https://lore.kernel.org/all/20231006125929.48591-1-lpieralisi@kernel.org
+> > v2: https://lore.kernel.org/all/20230906094139.16032-1-lpieralisi@kernel.org
+> > v1: https://lore.kernel.org/all/20230905104721.52199-1-lpieralisi@kernel.org
+> > 
+> > v4 -> v5
+> > 	- ACPICA patches merged for v6.8
+> > 	- Refactored ACPI parsing code according to review
+> > 	- Rebased against v6.8-rc1
+> 
+> Hi Marc, all,
+> 
+> this is not an urgent fix (I don't think there is any ACPI platform
+> affected in the field so it is not even a fix), I am just asking please
+> what should I do with it, I appreciate it is late in the cycle (and I
+> know some fixes got merged in -rcX leading up to -rc7 that are
+> pre-requisite for this patch to work).
 
-Because ACPICA is an external project supplying code to the Linux
-kernel, the way to change the ACPICA code in the kernel is to submit a
-pull request to the upstream ACPICA project on GitHub and once that PR
-has been merged, submit a Linux patch corresponding to it including
-the Link: tag pointing to the PR in question and the git ID of the
-corresponding upstream ACPICA commit.
+Hi,
 
-However, note that upstream ACPICA changes are applied to the Linux
-kernel source code every time the upstream ACPICA project makes a
-release, so it is not necessary to send the corresponding Linux
-patches for them unless in the cases when timing matters.
+just a reminder to ask how to proceed with this patch, I know it
+is not urgent, just to understand how to handle it please.
 
-> ---
->  drivers/acpi/acpica/tbfind.c | 19 +++++++++----------
->  1 file changed, 9 insertions(+), 10 deletions(-)
->
-> diff --git a/drivers/acpi/acpica/tbfind.c b/drivers/acpi/acpica/tbfind.c
-> index 1c1b2e284bd9..472ce2a6624b 100644
-> --- a/drivers/acpi/acpica/tbfind.c
-> +++ b/drivers/acpi/acpica/tbfind.c
-> @@ -36,7 +36,7 @@ acpi_tb_find_table(char *signature,
->  {
->         acpi_status status =3D AE_OK;
->         struct acpi_table_header header;
-> -       u32 i;
-> +       u32 len, i;
->
->         ACPI_FUNCTION_TRACE(tb_find_table);
->
-> @@ -46,19 +46,18 @@ acpi_tb_find_table(char *signature,
->                 return_ACPI_STATUS(AE_BAD_SIGNATURE);
->         }
->
-> -       /* Don't allow the OEM strings to be too long */
-> -
-> -       if ((strlen(oem_id) > ACPI_OEM_ID_SIZE) ||
-> -           (strlen(oem_table_id) > ACPI_OEM_TABLE_ID_SIZE)) {
-> -               return_ACPI_STATUS(AE_AML_STRING_LIMIT);
-> -       }
-> -
->         /* Normalize the input strings */
->
->         memset(&header, 0, sizeof(struct acpi_table_header));
->         ACPI_COPY_NAMESEG(header.signature, signature);
-> -       strncpy(header.oem_id, oem_id, ACPI_OEM_ID_SIZE);
-> -       strncpy(header.oem_table_id, oem_table_id, ACPI_OEM_TABLE_ID_SIZE=
-);
-> +       len =3D strlen(oem_id);
-> +       if (len > ACPI_OEM_ID_SIZE)
-> +               return_ACPI_STATUS(AE_AML_STRING_LIMIT);
-> +       memcpy(header.oem_id, oem_id, len);
-> +       len =3D strlen(oem_table_id);
-> +       if (len > ACPI_OEM_TABLE_ID_SIZE)
-> +               return_ACPI_STATUS(AE_AML_STRING_LIMIT);
-> +       memcpy(header.oem_table_id, oem_table_id, len);
->
->         /* Search for the table */
->
-> --
-> 2.39.2
->
->
+The related ACPICA changes are already merged in the mainline.
+
+Thanks,
+Lorenzo
+
+> Thanks,
+> Lorenzo
+> 
+> > v3 -> v4:
+> > 	- Dropped patches [1-3], already merged
+> > 	- Added Linuxized ACPICA changes accepted upstream
+> > 	- Rebased against v6.7-rc3
+> > 
+> > v2 -> v3:
+> > 	- Added ACPICA temporary changes and ACPI changes to implement
+> > 	  ECR https://bugzilla.tianocore.org/show_bug.cgi?id=4557
+> > 	- ACPI changes are for testing purposes - subject to ECR code
+> > 	  first approval
+> > 
+> > v1 -> v2:
+> > 	- Updated DT bindings as per feedback
+> > 	- Updated patch[2] to use GIC quirks infrastructure
+> > 
+> > Original cover letter
+> > ---
+> > The GICv3 architecture specifications provide a means for the
+> > system programmer to set the shareability and cacheability
+> > attributes the GIC components (redistributors and ITSes) use
+> > to drive memory transactions.
+> > 
+> > Albeit the architecture give control over shareability/cacheability
+> > memory transactions attributes (and barriers), it is allowed to
+> > connect the GIC interconnect ports to non-coherent memory ports
+> > on the interconnect, basically tying off shareability/cacheability
+> > "wires" and de-facto making the redistributors and ITSes non-coherent
+> > memory observers.
+> > 
+> > This series aims at starting a discussion over a possible solution
+> > to this problem, by adding to the GIC device tree bindings the
+> > standard dma-noncoherent property. The GIC driver uses the property
+> > to force the redistributors and ITSes shareability attributes to
+> > non-shareable, which consequently forces the driver to use CMOs
+> > on GIC memory tables.
+> > 
+> > On ARM DT DMA is default non-coherent, so the GIC driver can't rely
+> > on the generic DT dma-coherent/non-coherent property management layer
+> > (of_dma_is_coherent()) which would default all GIC designs in the field
+> > as non-coherent; it has to rely on ad-hoc dma-noncoherent property handling.
+> > 
+> > When a consistent approach is agreed upon for DT an equivalent binding will
+> > be put forward for ACPI based systems.
+> > 
+> > Lorenzo Pieralisi (1):
+> >   irqchip/gic-v3: Enable non-coherent redistributors/ITSes ACPI probing
+> > 
+> >  drivers/acpi/processor_core.c    | 15 +++++++++++++++
+> >  drivers/irqchip/irq-gic-v3-its.c |  4 ++++
+> >  drivers/irqchip/irq-gic-v3.c     |  9 +++++++++
+> >  include/linux/acpi.h             |  3 +++
+> >  4 files changed, 31 insertions(+)
+> > 
+> > -- 
+> > 2.34.1
+> > 
