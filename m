@@ -1,92 +1,121 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 950DD12FF72;
-	Tue,  9 Apr 2024 14:01:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A71DE13118E
+	for <acpica-devel@lists.linux.dev>; Tue,  9 Apr 2024 15:05:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712671293; cv=none; b=qAfGlXafydH+9QFUKmeB6V/VJ2E9YJnOxjbuEqeyM6LZtgJcM7OhpDeaq+1Fpr4C67+mbefUA3KSkobN0Xx4flVl1ypGwkUTrykKismsrLCo9IFMLeGj4G7GHGHftGdx8Z1skysr2OZZ/SXJDLGhb3cLggibIYnN/TCYmPIejR4=
+	t=1712675128; cv=none; b=E+5Z0oF7LDb5rnd6FRQ6Fa/NdB/6RPfPiKGvuj398IMcizrSWDAf+6MdO6y5h5fOS/lGf1rs/ZPZdafc0KcczOkP+J1uWN076xmuccB6oIvSy6qEWIvs0bADf+BffreY2M3OPkwztH6wg06ceOaa3KRV0zy0y5SVAuNAE9XES+g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712671293; c=relaxed/simple;
-	bh=KBapuCoet5kfjziaVWML59WbPosua5uheV6EN7HL7cc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=m/G94JFVwccTPueFjzUZp8PSydKD5IGEKTnAC1OIDaIqqYIPW5JQXWt5EXFX/i+SI9fixpv9VMuoKMZnXnmfIyFafDfwvBjEpTR8A/j/NndDQ53fMM87KLB/h8vpsasSqEDYVpGGBlWfaqmUA5nKKKvEN0tGfSx8JDydRXvbNJQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CI+tE9nq; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1712675128; c=relaxed/simple;
+	bh=mJt7v6CLSOYzx1gtAyi5VoQyh9G4Ztq0Q2FlAeZxZmo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=e1aqm2m+l4Gkkh2D2ipZD/X4Jfdl/+VZEj9G80D11DeK4yuzNGIrpVtkiWF09QWSgLCOEYb2eExLYQFXXfs6BMufTK72TaO3o8FhtGdeX6GtJ2gP2sZH1bdbu0kOC3qWAGohvbTkvBFG1RKSuozlS+rKuYJvO/BPk18QYaKoaQU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fCn2zHwP; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CI+tE9nq"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5330C43390;
-	Tue,  9 Apr 2024 14:01:28 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fCn2zHwP"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41D2BC433C7
+	for <acpica-devel@lists.linux.dev>; Tue,  9 Apr 2024 15:05:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712671293;
-	bh=KBapuCoet5kfjziaVWML59WbPosua5uheV6EN7HL7cc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=CI+tE9nqa8mKqJOIqe+CfUonGLG1fsbzMR/Wd7a5I1Vi2laBO5bxr2CoMJV9PXJmW
-	 l3B5LTh7o9wALv4UUWeYM/t6wiBxQSugqqL1qMaxru2tX3syz5zQ1dsosUQsa29l8T
-	 p7IjRvBsv+ejS31ytc4jFbGqhglSJWpDfeCARtT2DuJQwR0l7vlr6MAVUGv1hn/+RL
-	 LYOEYFvgKimhfwTM29K1/o3+OR9G+feE3zRGY+tAuvl6i500jl0QwnR+iS9P/aFQXM
-	 zLfT5yP+z3QnvGF/tWNTahJ46H894mg0QFW7RX22FGXq0UqZrFoQ1e9EbWlVu3+fcI
-	 vfZrusQ178Ykg==
-From: Arnd Bergmann <arnd@kernel.org>
-To: linux-kbuild@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	"Richard Russon" <ldm@flatcap.org>,
-	Jens Axboe <axboe@kernel.dk>,
-	Robert Moore <robert.moore@intel.com>,
-	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-	Len Brown <lenb@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nicolas Schier <nicolas@fjasle.eu>,
-	Lin Ming <ming.m.lin@intel.com>,
-	Alexey Starikovskiy <astarikovskiy@suse.de>,
-	linux-ntfs-dev@lists.sourceforge.net,
-	linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev,
-	linux-trace-kernel@vger.kernel.org
-Subject: [PATCH 5/5] [v2] kbuild: enable -Wstringop-truncation globally
-Date: Tue,  9 Apr 2024 16:00:58 +0200
-Message-Id: <20240409140059.3806717-6-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240409140059.3806717-1-arnd@kernel.org>
-References: <20240409140059.3806717-1-arnd@kernel.org>
+	s=k20201202; t=1712675128;
+	bh=mJt7v6CLSOYzx1gtAyi5VoQyh9G4Ztq0Q2FlAeZxZmo=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=fCn2zHwPhopHz3aJMqQuvT0XcsT7uQACdH7RpIfWCKsUDLkk3gf5FGDw4zWpYrgvD
+	 uHsoSSt5qLptwNNbfqus0tnv+lz8+j1GLA7xNJuWdgoxedmWIxOy1qpgIkLedk9xDZ
+	 Tk/2gjwceeSc1HSDRiACiU5Lt1elWa15BD6BnZoSUoi2ONmiPBp5pZJ4PFLwkkq164
+	 yQAbCmUhBIsj30JKInNCV4w8feoC9IBwwj2hTtDSdwUhcdDk808VmE/4jVrvoWs8eH
+	 2mdyLkcgR2mZGl6rkNdcwmbWQYw5RmNuI3DaQ9sgQ+yZZNlJVIt3ARO7x5S0Mba2We
+	 Bx23czV4vYapQ==
+Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-22ec8db3803so401642fac.1
+        for <acpica-devel@lists.linux.dev>; Tue, 09 Apr 2024 08:05:28 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCX2S9GYUVWzvb7Tc/rTQ9wkCrIqbx18DZiGzSNRpSS1EkRKLYiN5SnjCOnX/iOYVOxMbJBtXnJVVRtVaEwD+A7h0qLJ4uQOrbBpEIcq
+X-Gm-Message-State: AOJu0YyzkT8j0wzT+W6Q5+NBpwejjwNNXRuw/ms8mwGxgw7P4PBZr6hc
+	vN8n3+lZ8cYZiVLSyL4lFfD+ZnliQFmcOmJHdz5DgPX0aaYDxa260eeCEAHDYRtd8UNJDoJn8vx
+	5lQv2IEk6Io7g3HU1/ER7p9SrzHM=
+X-Google-Smtp-Source: AGHT+IGDUO0rZ4GKVyVieaHSmKzYKqNHjEuMKn4kB8H+BP9iyv6DlSuHKVlwMC/rIyJebF0i0bhH71zkmEuwl5+N0cA=
+X-Received: by 2002:a05:6870:f727:b0:222:81cc:ac9c with SMTP id
+ ej39-20020a056870f72700b0022281ccac9cmr12216666oab.5.1712675127270; Tue, 09
+ Apr 2024 08:05:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240409140059.3806717-1-arnd@kernel.org> <20240409140059.3806717-3-arnd@kernel.org>
+In-Reply-To: <20240409140059.3806717-3-arnd@kernel.org>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Tue, 9 Apr 2024 17:05:15 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0h7XEV__S4pvQJt54Ab832z6PZFTNTRspfLF507MNo9Og@mail.gmail.com>
+Message-ID: <CAJZ5v0h7XEV__S4pvQJt54Ab832z6PZFTNTRspfLF507MNo9Og@mail.gmail.com>
+Subject: Re: [PATCH 2/5] [v2] acpi: disable -Wstringop-truncation
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: linux-kbuild@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, 
+	Richard Russon <ldm@flatcap.org>, Jens Axboe <axboe@kernel.dk>, Robert Moore <robert.moore@intel.com>, 
+	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Len Brown <lenb@kernel.org>, 
+	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Masahiro Yamada <masahiroy@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Nicolas Schier <nicolas@fjasle.eu>, Lin Ming <ming.m.lin@intel.com>, 
+	Alexey Starikovskiy <astarikovskiy@suse.de>, linux-ntfs-dev@lists.sourceforge.net, 
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, 
+	linux-trace-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Tue, Apr 9, 2024 at 4:01=E2=80=AFPM Arnd Bergmann <arnd@kernel.org> wrot=
+e:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> gcc -Wstringop-truncation warns about copying a string that results in a
+> missing nul termination:
+>
+> drivers/acpi/acpica/tbfind.c: In function 'acpi_tb_find_table':
+> drivers/acpi/acpica/tbfind.c:60:9: error: 'strncpy' specified bound 6 equ=
+als destination size [-Werror=3Dstringop-truncation]
+>    60 |         strncpy(header.oem_id, oem_id, ACPI_OEM_ID_SIZE);
+>       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/acpi/acpica/tbfind.c:61:9: error: 'strncpy' specified bound 8 equ=
+als destination size [-Werror=3Dstringop-truncation]
+>    61 |         strncpy(header.oem_table_id, oem_table_id, ACPI_OEM_TABLE=
+_ID_SIZE);
+>       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
+~~~~~~~~~
+>
+> The code works as intended, and the warning could be addressed by using
+> a memcpy(), but turning the warning off for this file works equally well
+> and may be easir to merge.
 
-The remaining warnings of this type have been addressed, so it can
-now be enabled by default, rather than only for W=1.
+"easier" (fixed up).
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-v2: no changes
----
- scripts/Makefile.extrawarn | 1 -
- 1 file changed, 1 deletion(-)
+Tricky that, but OK.let's get the warning off the table.
 
-diff --git a/scripts/Makefile.extrawarn b/scripts/Makefile.extrawarn
-index 57edc80661fd..f4d69092698b 100644
---- a/scripts/Makefile.extrawarn
-+++ b/scripts/Makefile.extrawarn
-@@ -107,7 +107,6 @@ else
- KBUILD_CFLAGS += $(call cc-disable-warning, format-overflow-non-kprintf)
- KBUILD_CFLAGS += $(call cc-disable-warning, format-truncation-non-kprintf)
- endif
--KBUILD_CFLAGS += $(call cc-disable-warning, stringop-truncation)
- 
- KBUILD_CFLAGS += -Wno-override-init # alias for -Wno-initializer-overrides in clang
- 
--- 
-2.39.2
+Applied as 6.10 material, thanks!
 
+> Fixes: 47c08729bf1c ("ACPICA: Fix for LoadTable operator, input strings")
+> Link: https://lore.kernel.org/lkml/CAJZ5v0hoUfv54KW7y4223Mn9E7D4xvR7whRFN=
+LTBqCZMUxT50Q@mail.gmail.com/#t
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/acpi/acpica/Makefile | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/acpi/acpica/Makefile b/drivers/acpi/acpica/Makefile
+> index 30f3fc13c29d..8d18af396de9 100644
+> --- a/drivers/acpi/acpica/Makefile
+> +++ b/drivers/acpi/acpica/Makefile
+> @@ -5,6 +5,7 @@
+>
+>  ccflags-y                      :=3D -D_LINUX -DBUILDING_ACPICA
+>  ccflags-$(CONFIG_ACPI_DEBUG)   +=3D -DACPI_DEBUG_OUTPUT
+> +CFLAGS_tbfind.o                +=3D $(call cc-disable-warning, stringop-=
+truncation)
+>
+>  # use acpi.o to put all files here into acpi.o modparam namespace
+>  obj-y  +=3D acpi.o
+> --
+> 2.39.2
+>
+>
