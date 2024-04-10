@@ -1,122 +1,136 @@
-Received: from smtp1.osuosl.org (smtp1.osuosl.org [140.211.166.138])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4FF6181CFD
-	for <acpica-devel@lists.linuxfoundation.org>; Wed, 10 Apr 2024 21:07:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.138
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70D791836C6
+	for <acpica-devel@lists.linux.dev>; Wed, 10 Apr 2024 21:10:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712783246; cv=none; b=a6rndPmddNrubrOaV75HoBOgp5HI/CMF55dUzY8plUjaskdADj9R2KCIblAWco8Xzt6+ycG48XcWj/9tvGRTd3u5exZ8+LXvE1RjBU50MWSZIBulMYTCAffHNvO/lN3UqcS3BO+BRnHOjsiHAFSV/hGEE2Q3zolD85AjjeRfHhc=
+	t=1712783409; cv=none; b=jlMvq/lT29rppw8iJwxiSMI6idmRUG0O+2bdDOq3nIIygg9lSdLoNiNpqqT3j12Dl2PLuHJpPZR2ZYj6c3BdTMR85IhHJdkxx8IgJcGZZZKtB4nJIHaSnCckpooJM2HSmUEPUzKewHinhxKYqPE0fQ0uQ5ALzTdEuUtPdWk4pYU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712783246; c=relaxed/simple;
-	bh=WUkQx3MHNfpPK223Za2QnwYdPQf2mwT7iuWRCuTCPQM=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=TWM9Fo8MTjGaetYD8kwqOBAJwmsNBHM7Xcjl7TOpx8qk6LUdSA9hhvLyT5A/rh11/O3QAVZhTrVRlIpHHAeQbPMMRWWIwRf2IFGfpReLh8RKGUbhhvA/JrFKK7rPyi4snQys5Ppu8iHv8thqTgIDXC8qmpkT8TW50v5uqrCsxtA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.138
-Received: from localhost (localhost [127.0.0.1])
-	by smtp1.osuosl.org (Postfix) with ESMTP id 55F5D820DD
-	for <acpica-devel@lists.linuxfoundation.org>; Wed, 10 Apr 2024 21:07:24 +0000 (UTC)
-X-Virus-Scanned: amavis at osuosl.org
-X-Spam-Flag: NO
-X-Spam-Score: -4.198
-X-Spam-Level:
-Received: from smtp1.osuosl.org ([127.0.0.1])
- by localhost (smtp1.osuosl.org [127.0.0.1]) (amavis, port 10024) with ESMTP
- id KTrCKKSszcKL for <acpica-devel@lists.linuxfoundation.org>;
- Wed, 10 Apr 2024 21:07:23 +0000 (UTC)
-Received-SPF: Pass (mailfrom) identity=mailfrom; client-ip=185.176.79.56; helo=frasgout.his.huawei.com; envelope-from=jonathan.cameron@huawei.com; receiver=<UNKNOWN> 
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp1.osuosl.org D648A820DB
-Authentication-Results: smtp1.osuosl.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org D648A820DB
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-	by smtp1.osuosl.org (Postfix) with ESMTPS id D648A820DB
-	for <acpica-devel@lists.linuxfoundation.org>; Wed, 10 Apr 2024 21:07:21 +0000 (UTC)
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VFFjC372rz6K6DM;
-	Thu, 11 Apr 2024 05:05:35 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 403711402C7;
-	Thu, 11 Apr 2024 05:07:14 +0800 (CST)
-Received: from localhost (10.126.168.81) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 10 Apr
- 2024 22:07:13 +0100
-Date: Wed, 10 Apr 2024 22:07:12 +0100
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-CC: "Russell King (Oracle)" <linux@armlinux.org.uk>,
-	<linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
-	<linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
-	<x86@kernel.org>, <acpica-devel@lists.linuxfoundation.org>,
-	<linux-csky@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-	<linux-ia64@vger.kernel.org>, <linux-parisc@vger.kernel.org>, Salil Mehta
-	<salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	<jianyong.wu@arm.com>, <justin.he@arm.com>, James Morse
-	<james.morse@arm.com>, Miguel Luis <miguel.luis@oracle.com>
-Subject: Re: [PATCH RFC v4 02/15] ACPI: processor: Register all CPUs from
- acpi_processor_get_info()
-Message-ID: <20240410220712.0000726f@Huawei.com>
-In-Reply-To: <CAJZ5v0gG0xLajHsWXVM+-V+fQZAudvojechUa-DzFgwCs2q8Dg@mail.gmail.com>
-References: <Zbp5xzmFhKDAgHws@shell.armlinux.org.uk>
-	<E1rVDmU-0027YP-Jz@rmk-PC.armlinux.org.uk>
-	<CAJZ5v0iiJpUWq5GMSnKFWQTzn_bdwoQz9m=hDaXNg4Lj_ePF4g@mail.gmail.com>
-	<20240322185327.00002416@Huawei.com>
-	<20240410134318.0000193c@huawei.com>
-	<CAJZ5v0ggD042sfz3jDXQVDUxQZu_AWaF2ox-Me8CvFeRB8nczw@mail.gmail.com>
-	<20240410145005.00003050@Huawei.com>
-	<ZhbgwBBvh6ccdO7x@shell.armlinux.org.uk>
-	<CAJZ5v0gG0xLajHsWXVM+-V+fQZAudvojechUa-DzFgwCs2q8Dg@mail.gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1712783409; c=relaxed/simple;
+	bh=bFyrIcuDs7nmErevy2zekDsqStQqLe+bXtd72c5CLDU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kaoKwryoP4PG35lKXEUSWOy5OxqFiUkoQv12sVrIOR57OPwwMo35i6jqk8lJlf1NPBcq8LRFvrq/U0fOpIyyOENatgm92E+PcqjGqI/pTG2NvilBFxwh0mYSqKe2P7SSw1oiqhMAzIXJTTtfvbA3Gw6u9AxeKQrE0bBwiGvjLoU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Mr1EnyiR; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Mr1EnyiR"
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6ecff9df447so5990144b3a.1
+        for <acpica-devel@lists.linux.dev>; Wed, 10 Apr 2024 14:10:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712783406; x=1713388206; darn=lists.linux.dev;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Bv/V2BDcZ6BXQvfxxNM1w/X7hHGQqyp9bJFqKpeVUk0=;
+        b=Mr1EnyiRPZUdWKLCK2NYlP9beutKLi6n8VB4CEV71HduM2VRQaODp6PZPL8ii97mCd
+         SovFbTuS/ifHh9ArZ3b7Biht01z3OgPGRpqQ8rrKnRi9+b8j/c1pZRL8Pwh7RRYySd7X
+         +Ukt7MzSBHoLHOjrweD30HQkunWY58ObOO4q2twdxBG6JuvXQiwxEFJcvlpfmoJgc7Cb
+         TBXeC63x60umZjEnrEhqd5qRzVi/iRFeVEh1b9pRi00TUKIWsx5wm51SVkyNqXlVlZrv
+         OXtu40pL8hJfcpeAwH1ZLxTHh3e3q9BG+iFHBxqoPELrSkXo7udEIMR8DwDWJTNkgNCT
+         ajzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712783406; x=1713388206;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Bv/V2BDcZ6BXQvfxxNM1w/X7hHGQqyp9bJFqKpeVUk0=;
+        b=W5cG6gmslyd1n4E6bxu26P5rF8UsMN9Py8i7N/PeVd9R81CS1IQYB2JTQHpnX4Q4N4
+         4adic5xRIC9MeEOQq4cFXHMyqzYv6qJa3NfefgD+1g4laZUGK7g53dNF1EkMCrUScv4U
+         mg8KYQimyzhH2I8ZLvwQRi4tc6CuekuK26KMBwHK0Cu/9qw5Rdt/igUxAfFEkCxpUnWI
+         fQxEINQCfPqMmEznnwufONjgOkyEOuuvvTLXbalQBShxmQYROCDZwP647Tm6D6UqAi6Z
+         5W97myPlNH653RQIn/qG+oaz2GiitubKAkHQzHCRt3aBH7uhkw3rNw2SI5Ukuab/TXXz
+         Ac1g==
+X-Forwarded-Encrypted: i=1; AJvYcCXRZkBXYrr6bGFihUAmXvlefEAaXNShyqCUCcRm8QrgsXWppiUNIneWfr5SESqpO9WdACMg4iFWXbz1bJfjHTGhslSbgsIUDCWOdGH+
+X-Gm-Message-State: AOJu0Yz3GcKKqu/gIsFZBdJnNMqChDoCsyE/kA3Xkx0bQVMmfT3GqSqL
+	uAxa2HsCBki7tFN0YwfljyhhvEERx0dYoX+VAZ9d8mw+0YLBjEldFvyWlPpSRA==
+X-Google-Smtp-Source: AGHT+IFcUUpsX3kBlOD2hO0EgX46DmOztzcA2srIGWOFuvp0m6/PaSUmCl09aWhXL/OfU4fhOLSkSg==
+X-Received: by 2002:a05:6a00:3d42:b0:6ed:21bc:ed8c with SMTP id lp2-20020a056a003d4200b006ed21bced8cmr4678360pfb.18.1712783405518;
+        Wed, 10 Apr 2024 14:10:05 -0700 (PDT)
+Received: from google.com (30.64.135.34.bc.googleusercontent.com. [34.135.64.30])
+        by smtp.gmail.com with ESMTPSA id w22-20020a634756000000b005dc4da2121fsm10368167pgk.6.2024.04.10.14.10.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Apr 2024 14:10:04 -0700 (PDT)
+Date: Wed, 10 Apr 2024 21:10:01 +0000
+From: Justin Stitt <justinstitt@google.com>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: linux-kbuild@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, 
+	Richard Russon <ldm@flatcap.org>, Jens Axboe <axboe@kernel.dk>, 
+	Robert Moore <robert.moore@intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, 
+	Len Brown <lenb@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Masahiro Yamada <masahiroy@kernel.org>, 
+	Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, 
+	Lin Ming <ming.m.lin@intel.com>, Alexey Starikovskiy <astarikovskiy@suse.de>, 
+	linux-ntfs-dev@lists.sourceforge.net, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/5] [v2] acpi: disable -Wstringop-truncation
+Message-ID: <b5ijucc7vbamdivt5o36zqleunihy6j62u3ecg6p4jgqmajao6@xatdncyyp6jv>
+References: <20240409140059.3806717-1-arnd@kernel.org>
+ <20240409140059.3806717-3-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: lhrpeml500002.china.huawei.com (7.191.160.78) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240409140059.3806717-3-arnd@kernel.org>
 
-On Wed, 10 Apr 2024 21:08:06 +0200
-"Rafael J. Wysocki" <rafael@kernel.org> wrote:
+Hi,
 
-> On Wed, Apr 10, 2024 at 8:56=E2=80=AFPM Russell King (Oracle)
-> <linux@armlinux.org.uk> wrote:
-> >
-> > On Wed, Apr 10, 2024 at 02:50:05PM +0100, Jonathan Cameron wrote: =20
-> > > If we get rid of this catch all, solution would be to move the
-> > > !acpi_disabled check into the arm64 version of arch_cpu_register()
-> > > because we would only want the delayed registration path to be
-> > > used on ACPI cases where the question of CPU availability can't
-> > > yet be resolved. =20
-> >
-> > Aren't we then needing two arch_register_cpu() implementations?
-> > I'm assuming that you're suggesting that the !acpi_disabled, then
-> > do nothing check is moved into arch_register_cpu() - or to put it
-> > another way, arch_register_cpu() does nothing if ACPI is enabled.
-> >
-> > If arch_register_cpu() does nothing if ACPI is enabled, how do
-> > CPUs get registered (and sysfs files get created to control them)
-> > on ACPI systems? ACPI wouldn't be able to call arch_register_cpu(),
-> > so I suspect you'll need an ACPI-specific version of this function. =20
->=20
-> arch_register_cpu() will do what it does, but it will check (upfront)
-> if ACPI is enabled and if so, if the ACPI Namespace is available.  In
-> the case when ACPI is enabled and the ACPI Namespace is not ready, it
-> will return -EPROBE_DEFER (say).
+On Tue, Apr 09, 2024 at 04:00:55PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> gcc -Wstringop-truncation warns about copying a string that results in a
+> missing nul termination:
+> 
+> drivers/acpi/acpica/tbfind.c: In function 'acpi_tb_find_table':
+> drivers/acpi/acpica/tbfind.c:60:9: error: 'strncpy' specified bound 6 equals destination size [-Werror=stringop-truncation]
+>    60 |         strncpy(header.oem_id, oem_id, ACPI_OEM_ID_SIZE);
+>       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/acpi/acpica/tbfind.c:61:9: error: 'strncpy' specified bound 8 equals destination size [-Werror=stringop-truncation]
+>    61 |         strncpy(header.oem_table_id, oem_table_id, ACPI_OEM_TABLE_ID_SIZE);
+>       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> The code works as intended, and the warning could be addressed by using
+> a memcpy(), but turning the warning off for this file works equally well
+> and may be easir to merge.
 
-Exactly.  I oversimplified and wasn't clear enough.
-The check is there in the arch_register_cpu() and is one of the ways
-that function can decide to actually register the cpu but not the only one.
+Dang, I would've really liked to see these strncpy()'s dealt with [1]!
 
-I think we may later want to consider breaking it into 2 arch calls
-(check if ready to register + register) to reduce code duplication
-in with the hotplug path where there is a little extra to do
-inbetween.
+The warning is there because that specific usage of strncpy is plain
+wrong. strncpy() is a string api and this usage looks like it has
+arguments and results not resembling C-strings.
 
-Hopefully that can wait though.
+Not sure if turning off correct warnings is the right call.
 
-Jonathan
+Link: https://github.com/KSPP/linux/issues/90 [1]
+
+> 
+> Fixes: 47c08729bf1c ("ACPICA: Fix for LoadTable operator, input strings")
+> Link: https://lore.kernel.org/lkml/CAJZ5v0hoUfv54KW7y4223Mn9E7D4xvR7whRFNLTBqCZMUxT50Q@mail.gmail.com/#t
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/acpi/acpica/Makefile | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/acpi/acpica/Makefile b/drivers/acpi/acpica/Makefile
+> index 30f3fc13c29d..8d18af396de9 100644
+> --- a/drivers/acpi/acpica/Makefile
+> +++ b/drivers/acpi/acpica/Makefile
+> @@ -5,6 +5,7 @@
+>  
+>  ccflags-y			:= -D_LINUX -DBUILDING_ACPICA
+>  ccflags-$(CONFIG_ACPI_DEBUG)	+= -DACPI_DEBUG_OUTPUT
+> +CFLAGS_tbfind.o 		+= $(call cc-disable-warning, stringop-truncation)
+>  
+>  # use acpi.o to put all files here into acpi.o modparam namespace
+>  obj-y	+= acpi.o
+> -- 
+> 2.39.2
+> 
+
+Thanks
+Justin
