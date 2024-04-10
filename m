@@ -1,200 +1,84 @@
-Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76AD012E73
-	for <acpica-devel@lists.linux.dev>; Wed, 10 Apr 2024 06:36:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.113
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85ABE13A405
+	for <acpica-devel@lists.linux.dev>; Wed, 10 Apr 2024 07:49:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712730983; cv=none; b=AmpysOjG1umxx7neKKVdWYS19I6CIGVDuqXfhztKoc+Tn6XnNObOJJfwCW27XxzlqWAzO3GAVSefTfB8P3lSXUceOCjHpW5ih6sL58G80kZOCuy1DX5+u9ErZPAaVGzzJWmTuRkA64z4kQysMFgx7WuzR0GNG46rtauUXnUKabo=
+	t=1712735363; cv=none; b=c/ImIWdyZ9ELCYIfArk66J1trSfIuC8t9ELvoHFeUhE1ivjDUGu5IcCQrO/4z4PkA9IygaORAeytYCdZtEBFDswAa5jB02eOAFQjSqJViM0hnfIxeigorvlnGN8SE4hWJW7k56euyvyMg671CylPK+03GdHXdwu/iqQQk2K1DAY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712730983; c=relaxed/simple;
-	bh=AsiiiP04FPes6cxdClrpGjzK6prhK+TOOFv0CR5RDd4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=btdkVOS80vCIAC+DR0HK4zyU7J6TeIXTROsyL9iTFjfkWoSotvkTNW+gZKyXTB7ZJFk7tYl2eNXQGcK5yrQZcLkfpBkTsj1MYgbt34m18lVZ5b41Ynh5H5czUkYqdqHo7pCFS/veruWTat+fiR2Y60lkHj0Qa9/WthPWc9uD0pQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=L/YBIZEX; arc=none smtp.client-ip=115.124.30.113
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+	s=arc-20240116; t=1712735363; c=relaxed/simple;
+	bh=+9te3cNBoGduBlHPkYI0dfFohs/gQ6e7/rlGyu2fe+U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GoHxLlKU3tnwZEz6/BHiu0KcOlXJGnS3prJl/RaJvUtQ/Qi9vL4InKcqOSX1IHyE0URWdNiLqxMTTi5EnJZQ9kbao+60Mqt1BhxK4Cldd/jYYTaIt+waKOOGDD6wOf93Qx28S+7beqi6r1OjpF5UQlTYPvr8PMlac9tKEHWz4Lk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WG4TViuh; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="L/YBIZEX"
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1712730979; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=hNt0SA+GEv1YPmjD1jZRbxCxc2xNlWyHdFP22xhUFMs=;
-	b=L/YBIZEXZLSByQVshhUoFzOGm+uElqgWlkMRI6lUTayQ5y1U0elix7UzYheh1jRpY7kJdO9akwtoen3N/Rk4OuJ9yhuv7xbV/kRExeg33tYggXWLAavb++Y3RIPLL0F3+7mukFw6XqlGwR3t1i3bZVO8FOMhgdYVy7OSoT1j79s=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=tianruidong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0W4GpRUK_1712730976;
-Received: from localhost(mailfrom:tianruidong@linux.alibaba.com fp:SMTPD_---0W4GpRUK_1712730976)
-          by smtp.aliyun-inc.com;
-          Wed, 10 Apr 2024 14:36:18 +0800
-From: Ruidong Tian <tianruidong@linux.alibaba.com>
-To: robert.moore@intel.com,
-	rafael.j.wysocki@intel.com,
-	lenb@kernel.org
-Cc: linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	tianruidong@linux.alibaba.com
-Subject: [PATCH v2 2/2] ACPICA: AEST: Add support for the AEST V2 table
-Date: Wed, 10 Apr 2024 14:36:02 +0800
-Message-Id: <20240410063602.41540-3-tianruidong@linux.alibaba.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20240410063602.41540-1-tianruidong@linux.alibaba.com>
-References: <20240410063602.41540-1-tianruidong@linux.alibaba.com>
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WG4TViuh"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712735361; x=1744271361;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=+9te3cNBoGduBlHPkYI0dfFohs/gQ6e7/rlGyu2fe+U=;
+  b=WG4TViuhwhAsF2AnkDSgR0q84KUIGLRE6hWcEicOmKpyct+/XIkvVjbr
+   I8hUdGBCogL/tWx0lmMht3/uviSqIyu3CgIU5Dtjhlaxh+FHTsWog3vxS
+   IpDZ3RVtqESXOSHae5TjS1BC2JZPDDjdMDoDzgLdlU34HcsbIf4m6D5ns
+   YoWtKR4r04M7WKxdEildlyCq8vT50zbP7yde/dbp4mKyqT0vEhhr/Rp6C
+   WopM+ME7yAZzm0IE1mvDzPDeOdvzX/3CMG4ABoSXAEoSJLTo07L+E+1Aj
+   uLoGYTYo60THnFbo7f8rWZ8QytWoys6kGQQScnmY6zDAuKeQ3sMeOQxxA
+   g==;
+X-CSE-ConnectionGUID: 7PiFJ/a9TMawT+efS/xrGg==
+X-CSE-MsgGUID: u8qfaOp+SL+5G6dewl35+g==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="18647780"
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="18647780"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 00:49:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="937094645"
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="937094645"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 10 Apr 2024 00:49:18 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+	id 826AC169; Wed, 10 Apr 2024 10:49:17 +0300 (EEST)
+Date: Wed, 10 Apr 2024 10:49:17 +0300
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Raag Jadav <raag.jadav@intel.com>
+Cc: rafael@kernel.org, lenb@kernel.org, robert.moore@intel.com,
+	andriy.shevchenko@linux.intel.com,
+	stanislaw.gruszka@linux.intel.com, linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] ACPI: bus: allow _UID matching for integer zero
+Message-ID: <20240410074917.GX112498@black.fi.intel.com>
+References: <20240328035540.13194-1-raag.jadav@intel.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240328035540.13194-1-raag.jadav@intel.com>
 
-ACPICA commit ebb49799c78891cbe370f1264844664a3d8b6f35
+On Thu, Mar 28, 2024 at 09:25:40AM +0530, Raag Jadav wrote:
+> Commit b2b32a173881 ("ACPI: bus: update acpi_dev_hid_uid_match() to
+> support multiple types") added _UID matching support for both integer
+> and string types, which satisfies NULL @uid2 argument for string types
+> using inversion, but this logic prevents _UID comparision in case the
+                                                ^^^^^^^^^^^
 
-AEST V2 was published[1], add V2 support based on AEST V1.
+Typo: comparison
 
-[1]: https://developer.arm.com/documentation/den0085/latest/
+> argument is integer 0, which may result in false positives.
+> 
+> Fix this using _Generic(), which will allow NULL @uid2 argument for
+> string types as well as _UID matching for all possible integer values.
+> 
+> Fixes: b2b32a173881 ("ACPI: bus: update acpi_dev_hid_uid_match() to support multiple types")
+> Signed-off-by: Raag Jadav <raag.jadav@intel.com>
 
-Link: https://github.com/acpica/acpica/commit/ebb4979
-Signed-off-by: Ruidong Tian <tianruidong@linux.alibaba.com>
----
- include/acpi/actbl2.h | 88 ++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 82 insertions(+), 6 deletions(-)
-
-diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
-index f89b23b3d2aa..d1670ab93fc6 100644
---- a/include/acpi/actbl2.h
-+++ b/include/acpi/actbl2.h
-@@ -77,8 +77,8 @@
-  *
-  * AEST - Arm Error Source Table
-  *
-- * Conforms to: ACPI for the Armv8 RAS Extensions 1.1 Platform Design Document
-- * September 2020.
-+ * Conforms to: ACPI for the Armv8 RAS Extensions 1.1(Sep 2020) and
-+ * 2.0(May 2023) Platform Design Document.
-  *
-  ******************************************************************************/
- 
-@@ -108,7 +108,9 @@ struct acpi_aest_hdr {
- #define ACPI_AEST_SMMU_ERROR_NODE           2
- #define ACPI_AEST_VENDOR_ERROR_NODE         3
- #define ACPI_AEST_GIC_ERROR_NODE            4
--#define ACPI_AEST_NODE_TYPE_RESERVED        5	/* 5 and above are reserved */
-+#define ACPI_AEST_PCIE_ERROR_NODE           5
-+#define ACPI_AEST_PROXY_ERROR_NODE          6
-+#define ACPI_AEST_NODE_TYPE_RESERVED        7 /* 7 and above are reserved */
- 
- /*
-  * AEST subtables (Error nodes)
-@@ -180,6 +182,12 @@ struct acpi_aest_vendor {
- 	u8 vendor_specific_data[16];
- };
- 
-+struct acpi_aest_vendor_v2 {
-+	char acpi_hid[8];
-+	u32 acpi_uid;
-+	u8 vendor_specific_data[16];
-+};
-+
- /* 4: Gic Error */
- 
- struct acpi_aest_gic {
-@@ -195,6 +203,18 @@ struct acpi_aest_gic {
- #define ACPI_AEST_GIC_ITS                   3
- #define ACPI_AEST_GIC_RESERVED              4	/* 4 and above are reserved */
- 
-+/* 5: PCIe Error */
-+
-+struct acpi_aest_pcie {
-+	u32 iort_node_reference;
-+};
-+
-+/* 6: Proxy Error */
-+
-+struct acpi_aest_proxy {
-+	u64 node_address;
-+};
-+
- /* Node Interface Structure */
- 
- struct acpi_aest_node_interface {
-@@ -209,11 +229,57 @@ struct acpi_aest_node_interface {
- 	u64 addressing_mode;
- };
- 
-+/* Node Interface Structure V2 */
-+
-+struct acpi_aest_node_interface_header {
-+	u8 type;
-+	u8 group_format;
-+	u8 reserved[2];
-+	u32 flags;
-+	u64 address;
-+	u32 error_record_index;
-+	u32 error_record_count;
-+};
-+
-+#define ACPI_AEST_NODE_GROUP_FORMAT_4K          0
-+#define ACPI_AEST_NODE_GROUP_FORMAT_16K         1
-+#define ACPI_AEST_NODE_GROUP_FORMAT_64K         2
-+
-+struct acpi_aest_node_interface_common {
-+	u32 error_node_device;
-+	u32 processor_affinity;
-+	u64 error_group_register_base;
-+	u64 fault_inject_register_base;
-+	u64 interrupt_config_register_base;
-+};
-+
-+struct acpi_aest_node_interface_4k {
-+	u64 error_record_implemented;
-+	u64 error_status_reporting;
-+	u64 addressing_mode;
-+	struct acpi_aest_node_interface_common common;
-+};
-+
-+struct acpi_aest_node_interface_16k {
-+	u64 error_record_implemented[4];
-+	u64 error_status_reporting[4];
-+	u64 addressing_mode[4];
-+	struct acpi_aest_node_interface_common common;
-+};
-+
-+struct acpi_aest_node_interface_64k {
-+	u64 error_record_implemented[14];
-+	u64 error_status_reporting[14];
-+	u64 addressing_mode[14];
-+	struct acpi_aest_node_interface_common common;
-+};
-+
- /* Values for Type field above */
- 
--#define ACPI_AEST_NODE_SYSTEM_REGISTER      0
--#define ACPI_AEST_NODE_MEMORY_MAPPED        1
--#define ACPI_AEST_XFACE_RESERVED            2	/* 2 and above are reserved */
-+#define ACPI_AEST_NODE_SYSTEM_REGISTER			0
-+#define ACPI_AEST_NODE_MEMORY_MAPPED			1
-+#define ACPI_AEST_NODE_SINGLE_RECORD_MEMORY_MAPPED	2
-+#define ACPI_AEST_XFACE_RESERVED			3   /* 2 and above are reserved */
- 
- /* Node Interrupt Structure */
- 
-@@ -226,6 +292,16 @@ struct acpi_aest_node_interrupt {
- 	u8 reserved1[3];
- };
- 
-+/* Node Interrupt Structure V2 */
-+
-+struct acpi_aest_node_interrupt_v2 {
-+	u8 type;
-+	u8 reserved[2];
-+	u8 flags;
-+	u32 gsiv;
-+	u8 reserved1[4];
-+};
-+
- /* Values for Type field above */
- 
- #define ACPI_AEST_NODE_FAULT_HANDLING       0
--- 
-2.33.1
-
+Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
