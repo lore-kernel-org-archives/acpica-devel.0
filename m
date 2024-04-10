@@ -1,53 +1,138 @@
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C04F154BFE
-	for <acpica-devel@lists.linux.dev>; Wed, 10 Apr 2024 09:23:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from smtp1.osuosl.org (smtp1.osuosl.org [140.211.166.138])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8385158DAF
+	for <acpica-devel@lists.linuxfoundation.org>; Wed, 10 Apr 2024 12:43:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.138
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712740981; cv=none; b=rCB7FJw6E7i564ZebG+pk3RL5leO0HTj8d0zapBEfjBc5D33XMb4v8eLd2eHAkLXdD2kgqhhD52GhgVlzW85gutpXIwTpWR4BVpm7BFomGsSHl/x2oXSN3aUHwxsZcvnQqQ1/fITqwRyCAlRbjO0Vr0fu1mq2l4Y1JXjm2EaD1I=
+	t=1712753008; cv=none; b=DUnHZa3VPPzzT4k/iSZaI+LHs4agHkOsf070+CcKNjD+1Qj+krqM4hpcVvk+aP00sqhUb8i1cmOf0o/1upDJ3wirWJSzNaL4DLPxjQNKihAon5ehihbpeJeK/LrnlfiTQzHStq1nRdCH0UTgIAs36DdGazXsZby18xmNQVoRMYk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712740981; c=relaxed/simple;
-	bh=HO2FnhHrAqQmG6Lr/6jY4JA9h0GmAjWjOy8SP2bF+sY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=p0dPCvO/9LTB5tANYdpq7ul9oRj8oB/niQM7zjGalyrUd4swcZinTm3xwdecu+QCqYsWGVZ0hs/vkHocwEqhOblE4xeB0UUzk5COqcObsbhxkjcSgK2Bu1t77G5FBBpSY1DTRas2nLO+b4Fo2B6Jk4TwDtnGRlTY3aAzBU39NZc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B1B1E139F;
-	Wed, 10 Apr 2024 02:23:29 -0700 (PDT)
-Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B44CE3F6C4;
-	Wed, 10 Apr 2024 02:22:58 -0700 (PDT)
-Date: Wed, 10 Apr 2024 10:22:56 +0100
-From: Sudeep Holla <sudeep.holla@arm.com>
-To: Ruidong Tian <tianruidong@linux.alibaba.com>
-Cc: robert.moore@intel.com, rafael.j.wysocki@intel.com, lenb@kernel.org,
-	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
-	linux-kernel@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>
-Subject: Re: [PATCH v2 0/2] ACPICA: AEST: Support AEST V2
-Message-ID: <ZhZacAOVpAXK8lDE@bogus>
-References: <20240410063602.41540-1-tianruidong@linux.alibaba.com>
+	s=arc-20240116; t=1712753008; c=relaxed/simple;
+	bh=oNXkmJLZw0UUlzScvUERB+oZiwnYTzIkRhGzopuv6w0=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=VFA6eMyWtSgt7Jso9K7tlX/i5HWUrD6eT8MsPhgxTJYbOSSy7bKOe8Rj3l+L+kCK9t9WsNq+5AvTGE7FPUHvLzyu28P8FGAZJqOimDS/cHc21QPRdxla/anSSmkfyAKX/bveOFWIjJy3zNvdkGyoLWwYFOqE9D3V4JaKwjmlng0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.138
+Received: from localhost (localhost [127.0.0.1])
+	by smtp1.osuosl.org (Postfix) with ESMTP id 8452781B23
+	for <acpica-devel@lists.linuxfoundation.org>; Wed, 10 Apr 2024 12:43:26 +0000 (UTC)
+X-Virus-Scanned: amavis at osuosl.org
+X-Spam-Flag: NO
+X-Spam-Score: -4.198
+X-Spam-Level:
+Received: from smtp1.osuosl.org ([127.0.0.1])
+ by localhost (smtp1.osuosl.org [127.0.0.1]) (amavis, port 10024) with ESMTP
+ id 9I3rPgETecxF for <acpica-devel@lists.linuxfoundation.org>;
+ Wed, 10 Apr 2024 12:43:25 +0000 (UTC)
+Received-SPF: Pass (mailfrom) identity=mailfrom; client-ip=185.176.79.56; helo=frasgout.his.huawei.com; envelope-from=jonathan.cameron@huawei.com; receiver=<UNKNOWN> 
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp1.osuosl.org 0050B8190B
+Authentication-Results: smtp1.osuosl.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org 0050B8190B
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp1.osuosl.org (Postfix) with ESMTPS id 0050B8190B
+	for <acpica-devel@lists.linuxfoundation.org>; Wed, 10 Apr 2024 12:43:23 +0000 (UTC)
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VF2Wn6z5Vz6K6Cs;
+	Wed, 10 Apr 2024 20:41:41 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id AB478140DD4;
+	Wed, 10 Apr 2024 20:43:19 +0800 (CST)
+Received: from localhost (10.122.247.231) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 10 Apr
+ 2024 13:43:19 +0100
+Date: Wed, 10 Apr 2024 13:43:18 +0100
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+CC: Russell King <rmk+kernel@armlinux.org.uk>, <linux-pm@vger.kernel.org>,
+	<loongarch@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
+	<linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-riscv@lists.infradead.org>,
+	<kvmarm@lists.linux.dev>, <x86@kernel.org>,
+	<acpica-devel@lists.linuxfoundation.org>, <linux-csky@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>, <linux-ia64@vger.kernel.org>,
+	<linux-parisc@vger.kernel.org>, Salil Mehta <salil.mehta@huawei.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>, <jianyong.wu@arm.com>,
+	<justin.he@arm.com>, James Morse <james.morse@arm.com>
+Subject: Re: [PATCH RFC v4 02/15] ACPI: processor: Register all CPUs from
+ acpi_processor_get_info()
+Message-ID: <20240410134318.0000193c@huawei.com>
+In-Reply-To: <20240322185327.00002416@Huawei.com>
+References: <Zbp5xzmFhKDAgHws@shell.armlinux.org.uk>
+	<E1rVDmU-0027YP-Jz@rmk-PC.armlinux.org.uk>
+	<CAJZ5v0iiJpUWq5GMSnKFWQTzn_bdwoQz9m=hDaXNg4Lj_ePF4g@mail.gmail.com>
+	<20240322185327.00002416@Huawei.com>
+Organization: Huawei Technologies R&D (UK) Ltd.
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.29; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240410063602.41540-1-tianruidong@linux.alibaba.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Wed, Apr 10, 2024 at 02:36:00PM +0800, Ruidong Tian wrote:
-> AEST V2 was published[1], add V2 support based on AEST V1.
+> >   
+> > > diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
+> > > index 47de0f140ba6..13d052bf13f4 100644
+> > > --- a/drivers/base/cpu.c
+> > > +++ b/drivers/base/cpu.c
+> > > @@ -553,7 +553,11 @@ static void __init cpu_dev_register_generic(void)
+> > >  {
+> > >         int i, ret;
+> > >
+> > > -       if (!IS_ENABLED(CONFIG_GENERIC_CPU_DEVICES))
+> > > +       /*
+> > > +        * When ACPI is enabled, CPUs are registered via
+> > > +        * acpi_processor_get_info().
+> > > +        */
+> > > +       if (!IS_ENABLED(CONFIG_GENERIC_CPU_DEVICES) || !acpi_disabled)
+> > >                 return;    
+> > 
+> > Honestly, this looks like a quick hack to me and it absolutely
+> > requires an ACK from the x86 maintainers to go anywhere.  
+> Will address this separately.
 > 
 
-Any changes to ACPICA has to get merged in the external ACPICA project.
-Refer [1] for details from Rafael. You can also refer [2] in the kernel
-docs.
+So do people prefer this hack, or something along lines of the following?
 
--- 
-Regards,
-Sudeep
+static int __init cpu_dev_register_generic(void)
+{
+        int i, ret = 0;
 
-[1] https://lore.kernel.org/all/CAJZ5v0g087vTJmgLHssedyCuhh61F_hR+TP3HQpoTACuzh+0jA@mail.gmail.com
-[2] Documentation/driver-api/acpi/linuxized-acpica.rst
+        for_each_online_cpu(i) {
+                if (!get_cpu_device(i)) {
+                        ret = arch_register_cpu(i);
+                        if (ret)
+                                pr_warn("register_cpu %d failed (%d)\n", i, ret);
+                }
+        }
+	//Probably just eat the error.
+        return 0;
+}
+subsys_initcall_sync(cpu_dev_register_generic);
+
+Which may look familiar at it's effectively patch 3 from v3 which was dealing
+with CPUs missing from DSDT (something we think doesn't happen).
+
+It might be possible to elide the arch_register_cpu() in
+make_present() but that will mean we use different flows in this patch set
+for the hotplug and initially present cases which is a bit messy.
+
+I've tested this lightly on arm64 and x86 ACPI + DT booting and it "seems" fine.
+
+Jonathan
+
+> >   
+> > >
+> > >         for_each_present_cpu(i) {
+> > > --    
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
