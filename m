@@ -1,121 +1,82 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A71DE13118E
-	for <acpica-devel@lists.linux.dev>; Tue,  9 Apr 2024 15:05:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9A00171BA
+	for <acpica-devel@lists.linux.dev>; Wed, 10 Apr 2024 06:00:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712675128; cv=none; b=E+5Z0oF7LDb5rnd6FRQ6Fa/NdB/6RPfPiKGvuj398IMcizrSWDAf+6MdO6y5h5fOS/lGf1rs/ZPZdafc0KcczOkP+J1uWN076xmuccB6oIvSy6qEWIvs0bADf+BffreY2M3OPkwztH6wg06ceOaa3KRV0zy0y5SVAuNAE9XES+g=
+	t=1712728835; cv=none; b=G3xgPcQLAjzcopgM7zaF/l9REfw7LaGqVR9TWZ7Qz9bxoIiMk8WG9EaFaJ6q4w1p8/M6MXp0n2gv8/NmdyMcJiaVD1xmZkzR0FUxM7RVMDsnHyHZXqZhxXZm8q7lUOX73ObBah1/63fMZ3vu6sDekWaxkGnut278tThYHOrPwPU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712675128; c=relaxed/simple;
-	bh=mJt7v6CLSOYzx1gtAyi5VoQyh9G4Ztq0Q2FlAeZxZmo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=e1aqm2m+l4Gkkh2D2ipZD/X4Jfdl/+VZEj9G80D11DeK4yuzNGIrpVtkiWF09QWSgLCOEYb2eExLYQFXXfs6BMufTK72TaO3o8FhtGdeX6GtJ2gP2sZH1bdbu0kOC3qWAGohvbTkvBFG1RKSuozlS+rKuYJvO/BPk18QYaKoaQU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fCn2zHwP; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1712728835; c=relaxed/simple;
+	bh=lS08xQB5+dfJ13UYeFRd5tnUYpoDHhzEWxLWJIVAq3w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rtM4qqse7IyP6UDHsYCJ07htfMk17t2CtGDsy1M8zWpFDiloHaaqiZg6aUeAlyRCDidRFdulD6J3vAa0V2clAb/Hm1RxDkxNEjrqe/dYmD1T1kOyF8HRUFJdVC6qAOOtLFch5BuAZYTh4H36X03LEM0jIcOFdkLsSQdltmLtr/U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ldx8Rly/; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fCn2zHwP"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41D2BC433C7
-	for <acpica-devel@lists.linux.dev>; Tue,  9 Apr 2024 15:05:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712675128;
-	bh=mJt7v6CLSOYzx1gtAyi5VoQyh9G4Ztq0Q2FlAeZxZmo=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=fCn2zHwPhopHz3aJMqQuvT0XcsT7uQACdH7RpIfWCKsUDLkk3gf5FGDw4zWpYrgvD
-	 uHsoSSt5qLptwNNbfqus0tnv+lz8+j1GLA7xNJuWdgoxedmWIxOy1qpgIkLedk9xDZ
-	 Tk/2gjwceeSc1HSDRiACiU5Lt1elWa15BD6BnZoSUoi2ONmiPBp5pZJ4PFLwkkq164
-	 yQAbCmUhBIsj30JKInNCV4w8feoC9IBwwj2hTtDSdwUhcdDk808VmE/4jVrvoWs8eH
-	 2mdyLkcgR2mZGl6rkNdcwmbWQYw5RmNuI3DaQ9sgQ+yZZNlJVIt3ARO7x5S0Mba2We
-	 Bx23czV4vYapQ==
-Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-22ec8db3803so401642fac.1
-        for <acpica-devel@lists.linux.dev>; Tue, 09 Apr 2024 08:05:28 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCX2S9GYUVWzvb7Tc/rTQ9wkCrIqbx18DZiGzSNRpSS1EkRKLYiN5SnjCOnX/iOYVOxMbJBtXnJVVRtVaEwD+A7h0qLJ4uQOrbBpEIcq
-X-Gm-Message-State: AOJu0YyzkT8j0wzT+W6Q5+NBpwejjwNNXRuw/ms8mwGxgw7P4PBZr6hc
-	vN8n3+lZ8cYZiVLSyL4lFfD+ZnliQFmcOmJHdz5DgPX0aaYDxa260eeCEAHDYRtd8UNJDoJn8vx
-	5lQv2IEk6Io7g3HU1/ER7p9SrzHM=
-X-Google-Smtp-Source: AGHT+IGDUO0rZ4GKVyVieaHSmKzYKqNHjEuMKn4kB8H+BP9iyv6DlSuHKVlwMC/rIyJebF0i0bhH71zkmEuwl5+N0cA=
-X-Received: by 2002:a05:6870:f727:b0:222:81cc:ac9c with SMTP id
- ej39-20020a056870f72700b0022281ccac9cmr12216666oab.5.1712675127270; Tue, 09
- Apr 2024 08:05:27 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ldx8Rly/"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712728834; x=1744264834;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=lS08xQB5+dfJ13UYeFRd5tnUYpoDHhzEWxLWJIVAq3w=;
+  b=Ldx8Rly/4Scf6JyWnoW/7fPPr939waRqk/9pjcCyqWqzJ4U/C3HJN4WB
+   C5smzXGiiUXmyFfWB1Uqe1X4emRXQpl3ce9P/xt4F4vBfKCOv2xBzQf2S
+   8QMjJxhoRdgEcYVIXPMvkPVAbF9H9RzC/Xfmf5ACnxghAydmB21jMLvSp
+   9ebzjMOTlt5rJeEIkVYlse3EnHmLOIgS/J/jLUbWp1fiuMTkeqzqL2GM1
+   2MjFtn4sZgKwti/TdDKNIiG6qqrK+9De3AagoPC/AQ6aXuRZ3otP/DUPf
+   bvxMXMrguG4NjZO1E2flnvildXibHzbHYNnLFPuoroPLVWVMmeUYeedmB
+   A==;
+X-CSE-ConnectionGUID: CUQ2th/BTC+WTo8HRKNJAg==
+X-CSE-MsgGUID: oCM0RuXTTOiOSabMCIT8mQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="11039204"
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="11039204"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 23:00:33 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="937094562"
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="937094562"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 23:00:30 -0700
+Date: Wed, 10 Apr 2024 09:00:28 +0300
+From: Raag Jadav <raag.jadav@intel.com>
+To: rafael@kernel.org, lenb@kernel.org, robert.moore@intel.com,
+	mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com,
+	stanislaw.gruszka@linux.intel.com
+Cc: linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] ACPI: bus: allow _UID matching for integer zero
+Message-ID: <ZhYq_HDwAi4B49Zz@black.fi.intel.com>
+References: <20240328035540.13194-1-raag.jadav@intel.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20240409140059.3806717-1-arnd@kernel.org> <20240409140059.3806717-3-arnd@kernel.org>
-In-Reply-To: <20240409140059.3806717-3-arnd@kernel.org>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Tue, 9 Apr 2024 17:05:15 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0h7XEV__S4pvQJt54Ab832z6PZFTNTRspfLF507MNo9Og@mail.gmail.com>
-Message-ID: <CAJZ5v0h7XEV__S4pvQJt54Ab832z6PZFTNTRspfLF507MNo9Og@mail.gmail.com>
-Subject: Re: [PATCH 2/5] [v2] acpi: disable -Wstringop-truncation
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: linux-kbuild@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, 
-	Richard Russon <ldm@flatcap.org>, Jens Axboe <axboe@kernel.dk>, Robert Moore <robert.moore@intel.com>, 
-	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Len Brown <lenb@kernel.org>, 
-	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Masahiro Yamada <masahiroy@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
-	Nicolas Schier <nicolas@fjasle.eu>, Lin Ming <ming.m.lin@intel.com>, 
-	Alexey Starikovskiy <astarikovskiy@suse.de>, linux-ntfs-dev@lists.sourceforge.net, 
-	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, 
-	linux-trace-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240328035540.13194-1-raag.jadav@intel.com>
 
-On Tue, Apr 9, 2024 at 4:01=E2=80=AFPM Arnd Bergmann <arnd@kernel.org> wrot=
-e:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> gcc -Wstringop-truncation warns about copying a string that results in a
-> missing nul termination:
->
-> drivers/acpi/acpica/tbfind.c: In function 'acpi_tb_find_table':
-> drivers/acpi/acpica/tbfind.c:60:9: error: 'strncpy' specified bound 6 equ=
-als destination size [-Werror=3Dstringop-truncation]
->    60 |         strncpy(header.oem_id, oem_id, ACPI_OEM_ID_SIZE);
->       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/acpi/acpica/tbfind.c:61:9: error: 'strncpy' specified bound 8 equ=
-als destination size [-Werror=3Dstringop-truncation]
->    61 |         strncpy(header.oem_table_id, oem_table_id, ACPI_OEM_TABLE=
-_ID_SIZE);
->       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
-~~~~~~~~~
->
-> The code works as intended, and the warning could be addressed by using
-> a memcpy(), but turning the warning off for this file works equally well
-> and may be easir to merge.
+On Thu, Mar 28, 2024 at 09:25:40AM +0530, Raag Jadav wrote:
+> Commit b2b32a173881 ("ACPI: bus: update acpi_dev_hid_uid_match() to
+> support multiple types") added _UID matching support for both integer
+> and string types, which satisfies NULL @uid2 argument for string types
+> using inversion, but this logic prevents _UID comparision in case the
+> argument is integer 0, which may result in false positives.
+> 
+> Fix this using _Generic(), which will allow NULL @uid2 argument for
+> string types as well as _UID matching for all possible integer values.
+> 
+> Fixes: b2b32a173881 ("ACPI: bus: update acpi_dev_hid_uid_match() to support multiple types")
+> Signed-off-by: Raag Jadav <raag.jadav@intel.com>
 
-"easier" (fixed up).
+Bump.
 
-Tricky that, but OK.let's get the warning off the table.
+Anything I can do to move this forward?
 
-Applied as 6.10 material, thanks!
-
-> Fixes: 47c08729bf1c ("ACPICA: Fix for LoadTable operator, input strings")
-> Link: https://lore.kernel.org/lkml/CAJZ5v0hoUfv54KW7y4223Mn9E7D4xvR7whRFN=
-LTBqCZMUxT50Q@mail.gmail.com/#t
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/acpi/acpica/Makefile | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/acpi/acpica/Makefile b/drivers/acpi/acpica/Makefile
-> index 30f3fc13c29d..8d18af396de9 100644
-> --- a/drivers/acpi/acpica/Makefile
-> +++ b/drivers/acpi/acpica/Makefile
-> @@ -5,6 +5,7 @@
->
->  ccflags-y                      :=3D -D_LINUX -DBUILDING_ACPICA
->  ccflags-$(CONFIG_ACPI_DEBUG)   +=3D -DACPI_DEBUG_OUTPUT
-> +CFLAGS_tbfind.o                +=3D $(call cc-disable-warning, stringop-=
-truncation)
->
->  # use acpi.o to put all files here into acpi.o modparam namespace
->  obj-y  +=3D acpi.o
-> --
-> 2.39.2
->
->
+Raag
