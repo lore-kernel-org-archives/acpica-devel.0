@@ -1,116 +1,127 @@
-Received: from smtp1.osuosl.org (smtp1.osuosl.org [140.211.166.138])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23AF4181322
-	for <acpica-devel@lists.linuxfoundation.org>; Wed, 10 Apr 2024 19:08:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.138
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DED7181BA1
+	for <acpica-devel@lists.linux.dev>; Wed, 10 Apr 2024 21:05:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712776103; cv=none; b=M7bxBQI64EIDABZncF3FxwiZOBy/LugBr71cGxv4+78QYrlNzJjK+snov6feojvL7ppYR1P+cwpx1SYO0hBokJiKBM11C4qMPFrVhbMMfatXvXn+BcOuUVOHnkyh+I3NL/Xf6dyLLeusk0sImUJVhaomXDndcDhlZEPbi9DcbEc=
+	t=1712783103; cv=none; b=n3vSRsPzCwqxG1WaO7H63saH8slMLP+bMZx9hqLmb4pt8ZXatX/x6MP2roAzdTjCQDTkkHKouun998y/Jo3IxbxET7gGKUgNt/HN4qkWMlTQMMJKhcsiOG1er0RuMDwBswJJdyBo02M+9zm0qjR9duUThBpaTiVgjI8P4lWS+w4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712776103; c=relaxed/simple;
-	bh=+eWLmlEP0bVT8/CZ2rvIUuWI74CBRr7mdsinkobDlzU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Amh7vP+HHF35JUeyQFjjr8nmaE1iJHiH6xVMbNvhq7jhM/AEH1s+dnklsklbamYsVzV+Ujos/7iExY8dA2EW8sKo4ZYa5I/uhP2hPpyidalSdW49CoOMRHA0LpU5fZswTLxLlxBGWbpAAydksg3nJAdGLvYmZw2hEpUf02I5/Rg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kBer6g/F; arc=none smtp.client-ip=140.211.166.138
+	s=arc-20240116; t=1712783103; c=relaxed/simple;
+	bh=Epm6y+/+ewLDaCEGj8jeg26lhCahwkzccVZSayI3ovA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ML2HroQOszXO+jvDasYjqaT+QXFcMTN/gy7JXp46sEZTmped0ZI5CZjoGTaqnW6m1ec9ldIgEr26zTgyTjGYRmlqwLQQ4b/jdRgFWtrx7WxjXjrdXGz66i4QtOZYPb7/nOaUN+/SmyxUnXvf3WEFKou/hnjUsPdpbqLeB4JeAV4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=dMF0aFdl; arc=none smtp.client-ip=209.85.166.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kBer6g/F"
-Received: from localhost (localhost [127.0.0.1])
-	by smtp1.osuosl.org (Postfix) with ESMTP id A082C813D0
-	for <acpica-devel@lists.linuxfoundation.org>; Wed, 10 Apr 2024 19:08:21 +0000 (UTC)
-X-Virus-Scanned: amavis at osuosl.org
-X-Spam-Flag: NO
-X-Spam-Score: -7.101
-X-Spam-Level:
-Received: from smtp1.osuosl.org ([127.0.0.1])
- by localhost (smtp1.osuosl.org [127.0.0.1]) (amavis, port 10024) with ESMTP
- id 4XPSszIIcgXn for <acpica-devel@lists.linuxfoundation.org>;
- Wed, 10 Apr 2024 19:08:21 +0000 (UTC)
-Received-SPF: Pass (mailfrom) identity=mailfrom; client-ip=139.178.84.217; helo=dfw.source.kernel.org; envelope-from=rafael@kernel.org; receiver=<UNKNOWN> 
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp1.osuosl.org E84DD80E9E
-Authentication-Results: smtp1.osuosl.org; dmarc=pass (p=none dis=none) header.from=kernel.org
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.osuosl.org E84DD80E9E
-Authentication-Results: smtp1.osuosl.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20201202 header.b=kBer6g/F
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	by smtp1.osuosl.org (Postfix) with ESMTPS id E84DD80E9E
-	for <acpica-devel@lists.linuxfoundation.org>; Wed, 10 Apr 2024 19:08:20 +0000 (UTC)
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id A830861671
-	for <acpica-devel@lists.linuxfoundation.org>; Wed, 10 Apr 2024 19:08:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46150C43390
-	for <acpica-devel@lists.linuxfoundation.org>; Wed, 10 Apr 2024 19:08:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712776099;
-	bh=+eWLmlEP0bVT8/CZ2rvIUuWI74CBRr7mdsinkobDlzU=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=kBer6g/FSVcQNlQN/dT52LUBGg0hkyFCcgbXq3fUnv4hC2VilA1zuyGqPVGaoI9rz
-	 0/MBcRSiQDjk5VbvTar8s1MII5Y0adKzNxjkxeYxriw3mc+K55GlJawuRxte3IPF3T
-	 0yjLhDefgapwQ1FYh/ibQke8EUvsYSFf2Bt7tSkMULO3L6dgzwxMmS2ZrG0XpBh0qj
-	 TZ6p5zrmOCPyTsntakq4I6xUnUrHcUgIY7EjynOD9Edj3qR4Uj1GT2QnyWxaffty1+
-	 T4vEkU9e25UakyTkLUOKd2E5zgMj5xwEQfwgEcWbJ/DWijYATCohmlmkXXuvdqLrVa
-	 rpMLs6ScIMD8Q==
-Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-22ed9094168so486561fac.1
-        for <acpica-devel@lists.linuxfoundation.org>; Wed, 10 Apr 2024 12:08:19 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXPzAJl1bYpKwtlBDPu0eFFV5iAJL7yA+KWFCIW1Fy7h0Lq79olROzEckNSOSel7SJ1oNMqMSE3zW1S6QcFF2Hozm0wjaa6tvjhiLU5IWNh7/eCyoxoFw==
-X-Gm-Message-State: AOJu0YwiZnloE7uS1Huv1Hv9fZU3ggH18nD0q7kkYEYO08nE5T24l2TY
-	RlQ4xM4HU2Ca6+cqK7hEMR9IgvTek0JcPw53iq0fBG+K/6nbpRh1PrR3hecGNMSmSwx5VRUS6bC
-	66x/BY+kcvJNCxu4nQBrcCCvJKMM=
-X-Google-Smtp-Source: AGHT+IH4A92J5HCRnizSgBq3+DCMERDHMutgLTgDu/kxW+WK07c2IT8FOUNC46ZvoIhnKLsY7Mrt28XT6qdFy5OJWR8=
-X-Received: by 2002:a05:6870:219d:b0:22e:b2ea:5758 with SMTP id
- l29-20020a056870219d00b0022eb2ea5758mr3756127oae.0.1712776098584; Wed, 10 Apr
- 2024 12:08:18 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dMF0aFdl"
+Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-7d5e3fb7f2fso148901639f.0
+        for <acpica-devel@lists.linux.dev>; Wed, 10 Apr 2024 14:05:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712783101; x=1713387901; darn=lists.linux.dev;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=5qCz8E3Di/VZoyQ+H4jHMjBhox36aDiBbL8BntpRuyE=;
+        b=dMF0aFdlVZpCX4gUth46RSBQ6HNtyozBzy15TUadeJE2si8mnpx4/6bmHaifNnuLHy
+         fjju/20US4qTkgwunnqsNTsi4xMxTLLoIPRWWCh+fpW2Hqh6g8FpAgdMav+xSjUWKg4V
+         PoD4bGAorx+eSRK1rvBFm2cKLXafPIhff801GvadQRySYk+AWrAgRQQRiDfJIAoMcW6k
+         12tjX1Y/HzQwurkBLk0j/BsZg/o+XVHN1kioyfUqvGWE3NlIwznI2X57WPsFCZDCrnBr
+         j3KxeAPk6GBHUHNE3lI5yxse1VkKuLeEPdKVhNX8S0OxeImRy73W9ESBwqBiV4KRtzve
+         I44A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712783101; x=1713387901;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5qCz8E3Di/VZoyQ+H4jHMjBhox36aDiBbL8BntpRuyE=;
+        b=hyJA99+TAHEuBdAbLiJLUCPeBijiDnuV0qyjHiZgVaT6SJtgzucp4omPJpD6GMpvj7
+         IDbhdYuKnyj7iZp32qoSyh+fCLodujF+YyXuZj5++iaSjJhFF5afYgZJk3PgVMEMFTiH
+         l7DjtvWVwjU+u51+kWn5u5VvI1KOcUzz1pno5fCtfdvblVuu/jQp0h7tS9bB/VzgLGVy
+         39HHNPdE5JkQ8fJlQZ/C6VsW82lh5DtqhjDTF7YIGkWgOKcv9XjkAYT5yiLZsW3BISgW
+         lX7o++F62Ocj+AaDypPHrtyjU4YizNnvLmyiOf7iD3WQVwtFmgPNoBGk6KtRVq6BD2H9
+         oZuQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWzhgYrVMco2UwrQkXJSru3N0wdeVvDiMc7mFFs9pcB4GTh0UBBZLJb/WM9EJ57BOIsDc4fheY5KiC4+AnvLwE7EH9BHOrmzeMaEfzV
+X-Gm-Message-State: AOJu0Yxgfat5LegCO4r6Olimn/dsnul2Hc37d0OzE4v9t0pIR+RBUEFK
+	/eDykvtqgq03e0U7l1eD6ZAOEvsckhMrVjcgXnejbHrcteJh7crC68uP4KfVHg==
+X-Google-Smtp-Source: AGHT+IHN3/xecRCfid5g0bOH7LkZ8yJnDUd9LCUKGxMaS0A+hxkDrR8tOjgJoTgIYqX095KCqX+cBg==
+X-Received: by 2002:a05:6602:4981:b0:7d0:c9c7:f52f with SMTP id eg1-20020a056602498100b007d0c9c7f52fmr5030577iob.6.1712783099842;
+        Wed, 10 Apr 2024 14:04:59 -0700 (PDT)
+Received: from google.com (30.64.135.34.bc.googleusercontent.com. [34.135.64.30])
+        by smtp.gmail.com with ESMTPSA id n5-20020a05663831c500b0047be760081asm4119002jav.154.2024.04.10.14.04.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Apr 2024 14:04:59 -0700 (PDT)
+Date: Wed, 10 Apr 2024 21:04:54 +0000
+From: Justin Stitt <justinstitt@google.com>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: linux-kbuild@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, 
+	Richard Russon <ldm@flatcap.org>, Jens Axboe <axboe@kernel.dk>, 
+	Robert Moore <robert.moore@intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, 
+	Len Brown <lenb@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Masahiro Yamada <masahiroy@kernel.org>, 
+	Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, 
+	Lin Ming <ming.m.lin@intel.com>, Alexey Starikovskiy <astarikovskiy@suse.de>, 
+	linux-ntfs-dev@lists.sourceforge.net, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] [v2] test_hexdump: avoid string truncation warning
+Message-ID: <fg6iv2dqwladc4d6tqzgg26mcyxz7c5bfn7gscic63c2qmhrz5@zvfm2btcf4fp>
+References: <20240409140059.3806717-1-arnd@kernel.org>
+ <20240409140059.3806717-2-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <Zbp5xzmFhKDAgHws@shell.armlinux.org.uk> <E1rVDmU-0027YP-Jz@rmk-PC.armlinux.org.uk>
- <CAJZ5v0iiJpUWq5GMSnKFWQTzn_bdwoQz9m=hDaXNg4Lj_ePF4g@mail.gmail.com>
- <20240322185327.00002416@Huawei.com> <20240410134318.0000193c@huawei.com>
- <CAJZ5v0ggD042sfz3jDXQVDUxQZu_AWaF2ox-Me8CvFeRB8nczw@mail.gmail.com>
- <20240410145005.00003050@Huawei.com> <ZhbgwBBvh6ccdO7x@shell.armlinux.org.uk>
-In-Reply-To: <ZhbgwBBvh6ccdO7x@shell.armlinux.org.uk>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 10 Apr 2024 21:08:06 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0gG0xLajHsWXVM+-V+fQZAudvojechUa-DzFgwCs2q8Dg@mail.gmail.com>
-Message-ID: <CAJZ5v0gG0xLajHsWXVM+-V+fQZAudvojechUa-DzFgwCs2q8Dg@mail.gmail.com>
-Subject: Re: [PATCH RFC v4 02/15] ACPI: processor: Register all CPUs from acpi_processor_get_info()
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	linux-pm@vger.kernel.org, loongarch@lists.linux.dev, 
-	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev, x86@kernel.org, 
-	acpica-devel@lists.linuxfoundation.org, linux-csky@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, Salil Mehta <salil.mehta@huawei.com>, 
-	Jean-Philippe Brucker <jean-philippe@linaro.org>, jianyong.wu@arm.com, justin.he@arm.com, 
-	James Morse <james.morse@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240409140059.3806717-2-arnd@kernel.org>
 
-On Wed, Apr 10, 2024 at 8:56=E2=80=AFPM Russell King (Oracle)
-<linux@armlinux.org.uk> wrote:
->
-> On Wed, Apr 10, 2024 at 02:50:05PM +0100, Jonathan Cameron wrote:
-> > If we get rid of this catch all, solution would be to move the
-> > !acpi_disabled check into the arm64 version of arch_cpu_register()
-> > because we would only want the delayed registration path to be
-> > used on ACPI cases where the question of CPU availability can't
-> > yet be resolved.
->
-> Aren't we then needing two arch_register_cpu() implementations?
-> I'm assuming that you're suggesting that the !acpi_disabled, then
-> do nothing check is moved into arch_register_cpu() - or to put it
-> another way, arch_register_cpu() does nothing if ACPI is enabled.
->
-> If arch_register_cpu() does nothing if ACPI is enabled, how do
-> CPUs get registered (and sysfs files get created to control them)
-> on ACPI systems? ACPI wouldn't be able to call arch_register_cpu(),
-> so I suspect you'll need an ACPI-specific version of this function.
+On Tue, Apr 09, 2024 at 04:00:54PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> gcc can warn when a string is too long to fit into the strncpy()
+> destination buffer, as it is here depending on the function
+> arguments:
+> 
+>     inlined from 'test_hexdump_prepare_test.constprop' at /home/arnd/arm-soc/lib/test_hexdump.c:116:3:
+> include/linux/fortify-string.h:108:33: error: '__builtin_strncpy' output truncated copying between 0 and 32 bytes from a string of length 32 [-Werror=stringop-truncation]
+>   108 | #define __underlying_strncpy    __builtin_strncpy
+>       |                                 ^
+> include/linux/fortify-string.h:187:16: note: in expansion of macro '__underlying_strncpy'
+>   187 |         return __underlying_strncpy(p, q, size);
+>       |                ^~~~~~~~~~~~~~~~~~~~
+> 
+> The intention here is to copy exactly 'l' bytes without any padding or
+> NUL-termination, so the most logical change is to use memcpy(), just as
+> a previous change adapted the other output from strncpy() to memcpy().
+> 
+> Cc: Justin Stitt <justinstitt@google.com>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-arch_register_cpu() will do what it does, but it will check (upfront)
-if ACPI is enabled and if so, if the ACPI Namespace is available.  In
-the case when ACPI is enabled and the ACPI Namespace is not ready, it
-will return -EPROBE_DEFER (say).
+This looks better than the previous strscpy() usage.
+
+Acked-by: Justin Stitt <justinstitt@google.com>
+
+> ---
+> ---
+>  lib/test_hexdump.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/lib/test_hexdump.c b/lib/test_hexdump.c
+> index b916801f23a8..fe2682bb21e6 100644
+> --- a/lib/test_hexdump.c
+> +++ b/lib/test_hexdump.c
+> @@ -113,7 +113,7 @@ static void __init test_hexdump_prepare_test(size_t len, int rowsize,
+>  			*p++ = ' ';
+>  		} while (p < test + rs * 2 + rs / gs + 1);
+>  
+> -		strncpy(p, data_a, l);
+> +		memcpy(p, data_a, l);
+>  		p += l;
+>  	}
+>  
+> -- 
+> 2.39.2
+> 
