@@ -1,99 +1,206 @@
-Received: from forward500b.mail.yandex.net (forward500b.mail.yandex.net [178.154.239.144])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A827614BFB0
-	for <acpica-devel@lists.linux.dev>; Fri, 12 Apr 2024 17:07:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.144
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712941657; cv=none; b=OT+sps4WTwYF+agx2MWrkR/N1eXmyMe9BMrPFbUCM6/VsHMggAlAMoUtRWxzfsps6eEDLdwCQ24dKlLiT7F3pscepMluzdA+ZwIu4utlBFLl0tsDue67PcbJ2PyOkMMxlAjKCFRN1dhz+vbu8m1m7rtXN+Ptr1rbeA2szt8bcS4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712941657; c=relaxed/simple;
-	bh=oGuGBrm2XsTgORrHIbPdgygwOqLpvFTPAvUMytMG5+I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Gd6mb3n0Ebv1UB+8ZsIZNjVSFoIUWhwozyF76X7PgO5Jgr3v/mjpVF7ELD9ZKkJZnQ3tbSFeMf5y/kidAYUqkdIV0lX3cwGB0TbE6EScZE4FaaVJiIPrKxD/L6fnl2ZxYL5tsA/hH9O7KOHRy8v8ikpib/ICoq7eLB1I23SEnCQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru; spf=pass smtp.mailfrom=yandex.ru; dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b=ilasTqh7; arc=none smtp.client-ip=178.154.239.144
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.ru
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2F09146D7B
+	for <acpica-devel@lists.linux.dev>; Fri, 12 Apr 2024 19:25:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.14
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712949913; cv=fail; b=iCoABTG4gTbt6iNTZrOx5XsJ2f3k2uMHSxygHoJo8aX5x44z0aLPEI5R9sAY1Sl/KFcJKI5/oXhvSFU38PSvkI/2YMrx8mXHSeahJQNEHlOD2tvUmph13VLhs6fL7Y4kv0CFZQ4jQecANvoP7b3ZevA99fYtbCt7sV2hJNiZyE8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712949913; c=relaxed/simple;
+	bh=WSCgMA+g7Oij0dl5PNqk0ATGxDEP/DIRnEdHdbGLv0g=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=YZH9MNNjH1YXQnPl6CQVL0BqJ83VuH814oSMp2wPrrPAzM7upjGyMBhrysDVXSfJiE8khZBzTcNR/d/UgUc7aUlW3sPXlhKg7tHwhnDk1KDWv4S8Xh1N80ABYF8ajfqNzgG6O+P4l9fNCBALfTShJGQnTTo0PPTVN9HyTc1prxk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ldi4/mVn; arc=fail smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b="ilasTqh7"
-Received: from mail-nwsmtp-smtp-production-main-39.sas.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-39.sas.yp-c.yandex.net [IPv6:2a02:6b8:c08:f220:0:640:b85:0])
-	by forward500b.mail.yandex.net (Yandex) with ESMTPS id 9A7EC61178;
-	Fri, 12 Apr 2024 20:07:26 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-39.sas.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id O7gElsHl4Ko0-OxaUhniM;
-	Fri, 12 Apr 2024 20:07:25 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
-	t=1712941646; bh=oGuGBrm2XsTgORrHIbPdgygwOqLpvFTPAvUMytMG5+I=;
-	h=In-Reply-To:To:From:Cc:Date:References:Subject:Message-ID;
-	b=ilasTqh75y8DdbfUD2T4KfuqpekbxqBzeYmIZOU/X/l6MSmvIt8fnT2AB1KgcRB3/
-	 g5vZ/zW/u/jTwXPjtfCVRvlydEiz8Gv9iHPnqbjJWdQRujIszvCeikvTp+E4zElajB
-	 9ltzzenaqKHj3pPKjDb/a/jJpSStB6jkjTC9DFkk=
-Authentication-Results: mail-nwsmtp-smtp-production-main-39.sas.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
-Message-ID: <31236394-8211-4d93-81bd-ada9b039a2d4@yandex.ru>
-Date: Fri, 12 Apr 2024 20:07:24 +0300
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ldi4/mVn"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712949912; x=1744485912;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=WSCgMA+g7Oij0dl5PNqk0ATGxDEP/DIRnEdHdbGLv0g=;
+  b=ldi4/mVn+rTgosSXpkY7hn6slKHAas8VxBAfCgxo772dK0XxIsnqgCS9
+   WlH9ykXBT9e2NwCJPKEdo51ZY2jVsuttUJpt1jPmX/fbAugcQ3tDxUq7n
+   EXzV3iL6haHB92i24HSaVGllSA+qy9CXwzVdd6htEOU0Tq6PWww+bgRrO
+   itw/KHCAtwgmKoHj+kzs8ulMH8ouPuazoVUtgr1PArBI404ACBCaM4SxO
+   YAc2Q/ptth5/Nvs4DLGMBa/xaOIXPMdX4ggaiLIw1m6m6PrmKUGZdjSU7
+   H8nhPWOU5KMM/d/jlthYHy6d8pompXBALCZoSLNEgCoUeurx5vk2j7VKR
+   w==;
+X-CSE-ConnectionGUID: bceT9WMdTHe5OOrUwPspnw==
+X-CSE-MsgGUID: +LLMeI18QaKpPzPybkmxPA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11042"; a="8635269"
+X-IronPort-AV: E=Sophos;i="6.07,197,1708416000"; 
+   d="scan'208";a="8635269"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 12:25:11 -0700
+X-CSE-ConnectionGUID: cTMnP3IvQyWz+R8j/8p76Q==
+X-CSE-MsgGUID: iZjOBULgTRyaObbiaDBIDg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,197,1708416000"; 
+   d="scan'208";a="25746608"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmviesa005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 12 Apr 2024 12:25:11 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 12 Apr 2024 12:25:10 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 12 Apr 2024 12:25:10 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Fri, 12 Apr 2024 12:25:10 -0700
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.57.40) by
+ edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 12 Apr 2024 12:25:09 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ibWco3AKvhF7I3C4Vv3W6kYxMk7SEF8aWPAeAsjzh9eCciwYlsP5aNgrPvEynqroZmG0piulzpZXeos1SIoQ+d/jOMR8HOFQyVanKbpIRnJpPYBRkGjmaebYmn4XgyzSyKr4SqXn5ZtRjrYK/LkearT96FFBaqs8Vi3nso7NjApiGqT5lhiW7KIX89wetTRsL4rBbzVJgQX5graNy8VjST2SLID/Q1+CbflZZqIKekGjURQy96zkLC+yefNbhAe4gL3A+Rtt5OHgRtDJlO0rOl9K3rn6t1+vgEQmsZCEYww0zmdBDuL/VoFHpX/N7CDVACc0N/7CBa3/Vk8I/CKvkw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=s0/nC5BO7k6XWHEqni88X4D/1cTOoZpyVu0yTMDaWA4=;
+ b=lCRs8tNvbJMLQTLqvAN5qibnHerae/QBMcTihi8d85hCHzdkHkErm6YNy0/Gfaca1SjfLfAuDrpk9/Oe8UkjNUx/S4VTS54aHIbi2MhgvnCg/jjHyjL5GCFpQY4Us+NHcsll6rrKK/x8ylvaVbVLwsbS6eStFqa0Pnti7c4B4YAS9IG4HhfaAKFCXkqR3Wpa5B4FupWjco9ZQcJ4voPy5xg/iprnsRQV5n4ohfdfkQWqg0ZD5rkjtesM6k8mYuYYdxoNarmIPiGzPSGMhiwumfzYgfzoh8DnAlTUeJ9Qot6ZR6EVQU39IEr2smYYzJAWalFuINeCJrBKXdlkK8e/5A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from MW5PR11MB5810.namprd11.prod.outlook.com (2603:10b6:303:192::22)
+ by DS0PR11MB8134.namprd11.prod.outlook.com (2603:10b6:8:15a::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.26; Fri, 12 Apr
+ 2024 19:25:08 +0000
+Received: from MW5PR11MB5810.namprd11.prod.outlook.com
+ ([fe80::85d1:70d8:4c39:4599]) by MW5PR11MB5810.namprd11.prod.outlook.com
+ ([fe80::85d1:70d8:4c39:4599%6]) with mapi id 15.20.7452.019; Fri, 12 Apr 2024
+ 19:25:07 +0000
+Message-ID: <872e3687-8431-4456-9f87-13321c19ba17@intel.com>
+Date: Fri, 12 Apr 2024 21:25:01 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/2] Support clean reboot after hibernate on Arm64
+To: David Woodhouse <dwmw2@infradead.org>, Will Deacon <will@kernel.org>
+CC: Catalin Marinas <catalin.marinas@arm.com>, Robert Moore
+	<robert.moore@intel.com>, Len Brown <lenb@kernel.org>, Sudeep Holla
+	<sudeep.holla@arm.com>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
+	<acpica-devel@lists.linux.dev>, "Rafael J. Wysocki" <rafael@kernel.org>
+References: <20240412073530.2222496-1-dwmw2@infradead.org>
+ <20240412140515.GA28052@willie-the-truck>
+ <1d7a7c6e73b4bf3f2177dca0e45d375e77e8388a.camel@infradead.org>
+Content-Language: en-US
+From: "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>
+In-Reply-To: <1d7a7c6e73b4bf3f2177dca0e45d375e77e8388a.camel@infradead.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MI0P293CA0010.ITAP293.PROD.OUTLOOK.COM
+ (2603:10a6:290:44::12) To MW5PR11MB5810.namprd11.prod.outlook.com
+ (2603:10b6:303:192::22)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ACPICA: Fix memory leak then namespace lookup fails
-To: Armin Wolf <W_Armin@gmx.de>, "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: robert.moore@intel.com, rafael.j.wysocki@intel.com, lenb@kernel.org,
- linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
- linux-kernel@vger.kernel.org
-References: <20240403004718.11902-1-W_Armin@gmx.de>
- <CAJZ5v0i3TAyDERxCm5caud5x5kLbc6J6MKqXXFWecShYe-gCrA@mail.gmail.com>
- <23c89f70-98d3-41a5-927c-ff4f2300ab7e@gmx.de>
-Content-Language: en-US
-From: Dmitry Antipov <dmantipov@yandex.ru>
-Autocrypt: addr=dmantipov@yandex.ru; keydata=
- xsDNBGBYjL8BDAC1iFIjCNMSvYkyi04ln+5sTl5TCU9O5Ot/kaKKCstLq3TZ1zwsyeqF7S/q
- vBVSmkWHQaj80BlT/1m7BnFECMNV0M72+cTGfrX8edesMSzv/id+M+oe0adUeA07bBc2Rq2V
- YD88b1WgIkACQZVFCo+y7zXY64cZnf+NnI3jCPRfCKOFVwtj4OfkGZfcDAVAtxZCaksBpTHA
- tf24ay2PmV6q/QN+3IS9ZbHBs6maC1BQe6clFmpGMTvINJ032oN0Lm5ZkpNN+Xcp9393W34y
- v3aYT/OuT9eCbOxmjgMcXuERCMok72uqdhM8zkZlV85LRdW/Vy99u9gnu8Bm9UZrKTL94erm
- 0A9LSI/6BLa1Qzvgwkyd2h1r6f2MVmy71/csplvaDTAqlF/4iA4TS0icC0iXDyD+Oh3EfvgP
- iEc0OAnNps/SrDWUdZbJpLtxDrSl/jXEvFW7KkW5nfYoXzjfrdb89/m7o1HozGr1ArnsMhQC
- Uo/HlX4pPHWqEAFKJ5HEa/0AEQEAAc0kRG1pdHJ5IEFudGlwb3YgPGRtYW50aXBvdkB5YW5k
- ZXgucnU+wsEJBBMBCAAzFiEEgi6CDXNWvLfa6d7RtgcLSrzur7cFAmYEXUsCGwMFCwkIBwIG
- FQgJCgsCBRYCAwEAAAoJELYHC0q87q+3ghQL/10U/CvLStTGIgjRmux9wiSmGtBa/dUHqsp1
- W+HhGrxkGvLheJ7KHiva3qBT++ROHZxpIlwIU4g1s6y3bqXqLFMMmfH1A+Ldqg1qCBj4zYPG
- lzgMp2Fjc+hD1oC7k7xqxemrMPstYQKPmA9VZo4w3+97vvnwDNO7iX3r0QFRc9u19MW36wq8
- 6Yq/EPTWneEDaWFIVPDvrtIOwsLJ4Bu8v2l+ejPNsEslBQv8YFKnWZHaH3o+9ccAcgpkWFJg
- Ztj7u1NmXQF2HdTVvYd2SdzuJTh3Zwm/n6Sw1czxGepbuUbHdXTkMCpJzhYy18M9vvDtcx67
- 10qEpJbe228ltWvaLYfHfiJQ5FlwqNU7uWYTKfaE+6Qs0fmHbX2Wlm6/Mp3YYL711v28b+lp
- 9FzPDFqVPfVm78KyjW6PcdFsKu40GNFo8gFW9e8D9vwZPJsUniQhnsGF+zBKPeHi/Sb0DtBt
- enocJIyYt/eAY2hGOOvRLDZbGxtOKbARRwY4id6MO4EuSs7AzQRgWIzAAQwAyZj14kk+OmXz
- TpV9tkUqDGDseykicFMrEE9JTdSO7fiEE4Al86IPhITKRCrjsBdQ5QnmYXcnr3/9i2RFI0Q7
- Evp0gD242jAJYgnCMXQXvWdfC55HyppWazwybDiyufW/CV3gmiiiJtUj3d8r8q6laXMOGky3
- 7sRlv1UvjGyjwOxY6hBpB2oXdbpssqFOAgEw66zL54pazMOQ6g1fWmvQhUh0TpKjJZRGF/si
- b/ifBFHA/RQfAlP/jCsgnX57EOP3ALNwQqdsd5Nm1vxPqDOtKgo7e0qx3sNyk05FFR+f9px6
- eDbjE3dYfsicZd+aUOpa35EuOPXS0MC4b8SnTB6OW+pmEu/wNzWJ0vvvxX8afgPglUQELheY
- +/bH25DnwBnWdlp45DZlz/LdancQdiRuCU77hC4fnntk2aClJh7L9Mh4J3QpBp3dh+vHyESF
- dWo5idUSNmWoPwLSYQ/evKynzeODU/afzOrDnUBEyyyPTknDxvBQZLv0q3vT0UiqcaL7ABEB
- AAHCwPYEGAEIACAWIQSCLoINc1a8t9rp3tG2BwtKvO6vtwUCZgRdSwIbDAAKCRC2BwtKvO6v
- t9sFC/9Ga7SI4CaIqfkye1EF7q3pe+DOr4NsdsDxnPiQuG39XmpmJdgNI139TqroU5VD7dyy
- 24YjLTH6uo0+dcj0oeAk5HEY7LvzQ8re6q/omOi3V0NVhezdgJdiTgL0ednRxRRwNDpXc2Zg
- kg76mm52BoJXC7Kd/l5QrdV8Gq5WJbLA9Kf0pTr1QEf44bVR0bajW+0Lgyb7w4zmaIagrIdZ
- fwuYZWso3Ah/yl6v1//KP2ppnG0d9FGgO9iz576KQZjsMmQOM7KYAbkVPkZ3lyRJnukrW6jC
- bdrQgBsPubep/g9Ulhkn45krX5vMbP3wp1mJSuNrACQFbpJW3t0Da4DfAFyTttltVntr/ljX
- 5TXWnMCmaYHDS/lP20obHMHW1MCItEYSIn0c5DaAIfD+IWAg8gn7n5NwrMj0iBrIVHBa5mRp
- KkzhwiUObL7NO2cnjzTQgAVUGt0MSN2YfJwmSWjKH6uppQ7bo4Z+ZEOToeBsl6waJnjCL38v
- A/UwwXBRuvydGV0=
-In-Reply-To: <23c89f70-98d3-41a5-927c-ff4f2300ab7e@gmx.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW5PR11MB5810:EE_|DS0PR11MB8134:EE_
+X-MS-Office365-Filtering-Correlation-Id: ea19e04c-2d7f-40db-fdc7-08dc5b264344
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: AHouIxvUi52/felck5YL8RkGPxOXVdRies4mFabUxWEIo4S+TKZ8B2W2DqfXHyCZ+qd+vVNMLcqT7zN+l4kHhKzTzcYuMjNqafWRbH9TTXZsZZnomPd3pKinuiEKR96aYvgJ3Dy7HZh68uO2PBPObGwX+1rOWcl7RQX1w1cmV+bhw8CZ3I7kipT0HzIH0dWbODEBLZn2BVZiLRwd5U96Q6hdeO3qUt4NzT6SVNgq3t5YUUZuP+bfg3KV7WDvODQpw6n1Wdqr7US+8MCYMhtBpUIspxd/mbxqGiLRHJ2iIp6VKQANsus8Rd+EBeI3wwTJ3Gg2RR0xMPkLrPiLD1D0jK7NYAAH2TvQ1gRIVfNSZ7+fovT1Mf6clPCC7QWrGT9ZqPnZcBx1LK+ihFdG9c4D6aJe+Mjy4KTtP7ASjunvNOv3l1WVLhTcSJBQdeBgJ/v8LuSOyyGdxpHCMDhW2/QMJMbm+2WhJTI8sHQlXdJylfVB/YdDW0JMRy3Y1WylY9rwUl9QzSMEl02dtpEXEciD0g6V1D8jZ1utK3K6fcsDzVKDih5VS72d0QZwI6x7/ptUMM01ul4EIG2Ygl+jbKmzBc1cAL3b/93l4fqOo3H2BPU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW5PR11MB5810.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(376005)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?L1o3Sm9qQVkzb0Fpc0pjajNRczRlZEwvZkJ1aWdmU3JxdmV6dFBVMDJlQmR1?=
+ =?utf-8?B?MUwvNklyQXZaSDhMNlo3ZmVUSkI5azBtOFQwMW1qYk00amFwSWpvQkFkeDRt?=
+ =?utf-8?B?a0J1OHVRdEVsMHFUc0xXVnZqalEwL09FMHlrMjRUQVdVYSs5MHRnM0dvQlJW?=
+ =?utf-8?B?L01xNnVZdUdSSE9IQ29MazM0cGNOaHk1VFBVZHJrNXJyMjB2bkE1QkZBT3Ux?=
+ =?utf-8?B?T0pZMXk5blRZVE9USUVGdkxjQlVmaFVnWEE4ZVRleXlOU2ROS21uRTBQLy9t?=
+ =?utf-8?B?eVc1cUUyOW9wYytwOTZPS1ZXcVFIT2x2bnVRMkplNjFIWmoyUzFHZDlMcC9X?=
+ =?utf-8?B?TGhaQmRRMndVMzNLQ05GVlZ3UDlmcjhSUnFBZmtpeHQrbEhtM01ZRFYzUjE1?=
+ =?utf-8?B?OFhyc2hXUVI0blZnTXNBak83RTZJanBrTmtEeGpBUG03RTliRS9lVHRBeDlC?=
+ =?utf-8?B?U2w2RUh6N3JQS1FYZFRManRwenYzK2QxcnNyNkVjVm9DQXgveCs2OXZMZjhM?=
+ =?utf-8?B?eUMrMkMzL0RyVVgvT2czSHEzcnFLREZMYnU4b1ZnSjlDRU9XV2ljd2IrMlN6?=
+ =?utf-8?B?Q0lRdlhpTUZ6SXpkVktjVmFJNUJucEs4UnNSajhKeDhwYWZ3eDlSMTJlcGEz?=
+ =?utf-8?B?OUxuM21KSW5BVEtjZkJUMFRpTFN6TnUwUkltWXpBYUVYc08zSzBjUWM4NWdV?=
+ =?utf-8?B?MnAwZVhkMG9MUE43NHZsajZFVFJrcTJIR09qeFJCUFBhZHlJalRQNUR1M00r?=
+ =?utf-8?B?NFNpNHZOY3NtbmFTWVJVSlRKMnA2bm9BeHVjb0xDVkozY2lSKytPLzZpZkpO?=
+ =?utf-8?B?NERrcVhwUlpFQTFJcDFFc1ZmTGpKUzV0S3Z6MDdVTHh2RkprL0NsdTJ1dGJB?=
+ =?utf-8?B?cmsrKzlsd2pBbVFoWER3dXlOcUxUUFZRNGs0QjNKSURnS1Q1bUpCMnczNVgr?=
+ =?utf-8?B?UFFiR2FSeWUrQysxSWJ1M21DYTZRa05YQ1Vnb0ZvUFNQcHZlcWFkd2ZncFdw?=
+ =?utf-8?B?ZmE4ZWxEdDNNbm5yNHY2MUlHeVgydk1ITkpyR0hocEtwczRTZ1dsQXNiWG41?=
+ =?utf-8?B?VVNhRHI2SHVldFd4ajd5WG04U0FERExiVjVOYlRDNWkxOUJZYVBXNnBqKzlz?=
+ =?utf-8?B?TGk1Ky9BL3RuNXdOYkgwMWUrUEdSV2hEV0VXNERSK1ArRXdYeFIxRDJJRG1s?=
+ =?utf-8?B?K2x4dHYvYXc1YnRaVVU3WTYzV1ZjVW43Y3dsNmlneGZjVnlpZnBSaWkyV2t1?=
+ =?utf-8?B?Y3FyVVlBQ2gvaTJweDlncVV4cEhBYm04VlY4Ky96TjJqaVE0c1NFV1VONld0?=
+ =?utf-8?B?cDRVeTQ1djBWeUlvMW5GT1l4REVuM1ZHbXd1UE91MGIrNlIxUGQzWUpXQTBH?=
+ =?utf-8?B?a0pqTXE3cUxvQUFSVE9hcTVpUVlLQTQva1FMQWdYRStlcklHRWozUnpyM2Rn?=
+ =?utf-8?B?ajc4Rm94VmxWOFhuRnJVMHVVd1NFS2pOL2pUSFYxTjNNN0dGSERLdVNacVli?=
+ =?utf-8?B?T283OWVBa2JTU2I0V2NMdEp6TngyRnlEdDJXNVFWVWhGK1lCeFR5VmljZVJx?=
+ =?utf-8?B?cUpFdFRub0VuUXhFUkhsVGRsNkIwY0lXRnJ3b3BFWGE1cGNkN0I3UzZIQ3Q4?=
+ =?utf-8?B?S1Baak5NOER5Q2VYbGVyL3FZQjJMdUtvTFJaNUlzczMrZlFEYnRlSFgxS2JO?=
+ =?utf-8?B?M1E5cGl2N3FDTkJIdDFjUmZkKzVld214bDV3TnhKdTFzaEs3Wm5QaDdRWVZY?=
+ =?utf-8?B?TlROV3o3czFHcVZYYVVvWnlVayt2NnVCYXN3ZXNXUDIyRjk2UUhKcTRvT0JM?=
+ =?utf-8?B?RTZxZ09mWFlleTFucHhoSTdFRnF1V05BeldYRkJsbVhuU21DbThLalMyYS9m?=
+ =?utf-8?B?eURDSmxDS2d4S0JEbDFJR21QdGtSQ05sZUxyd21zb1ZOZjRzalBzKytsYVBq?=
+ =?utf-8?B?WXgybEU4WHRBMGJoREFJY3lyditERFlkckt4dmZhZTh1bjhkL2NIeEM2Tzhs?=
+ =?utf-8?B?dENmMGRxSGVwdGRyd2JOeWVQSFlvYUxLaTcyeHdESUU4UEduMlJLZHlabWlI?=
+ =?utf-8?B?OWRvZ2ZaOFJhZUViaFZHdWJVYXhuMUoyM1dVSGl6aXd3NTJmRTZSbFI4b3Yv?=
+ =?utf-8?B?aTdpaGRRd2ZoZTJJUlRiZ0FyUEdTVXFRQVRpV2RTR2pxalhvT0kwOHYxMEh0?=
+ =?utf-8?B?UlE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: ea19e04c-2d7f-40db-fdc7-08dc5b264344
+X-MS-Exchange-CrossTenant-AuthSource: MW5PR11MB5810.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2024 19:25:07.9075
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: j0GBl6SspR+jRDWY0MamXSKiv6JDEoEWGiurISpRs6Qvh3s644SSoJMl6KdEq1uohXHtigi8wuHReIvv3bvCpqkbaSoTHoefw2c5TaId8m8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB8134
+X-OriginatorOrg: intel.com
 
-On 4/12/24 19:16, Armin Wolf wrote:
+On 4/12/2024 4:18 PM, David Woodhouse wrote:
+> On Fri, 2024-04-12 at 15:05 +0100, Will Deacon wrote:
+>> On Mon, Mar 11, 2024 at 12:19:14PM +0000, David Woodhouse wrote:
+>>> When the hardware signature in the ACPI FACS changes, the OS is supposed
+>>> to perform a clean reboot instead of attempting to resume on a changed
+>>> platform.
+>>>
+>>> Although these patches have a functional dependency, they could be merged
+>>> separately. The second patch just won't *see* a FACS table if the ACPICA
+>>> fix isn't present.
+>>>
+>>> v2: Now that the ACPICA patch is merged upstream, note its commit ID
+>>>
+>>> David Woodhouse (2):
+>>>        ACPICA: Detect FACS even for hardware reduced platforms
+>>>        arm64: acpi: Honour firmware_signature field of FACS, if it exists
+>>>
+>>>   arch/arm64/kernel/acpi.c      | 10 ++++++++++
+>>>   drivers/acpi/acpica/tbfadt.c  | 30 +++++++++++++-----------------
+>>>   drivers/acpi/acpica/tbutils.c |  7 +------
+>> Rafael, how would you like the handle this series? The arm64 part has
+>> been Acked-by Sudeep, so I'm happy with it.
+> Thanks, Will.
+>
+> Similar question for Rafael on the guest side of the PSCI SYSTEM_OFF2
+> series, in particular
+> https://lore.kernel.org/kvm/20240319130957.1050637-6-dwmw2@infradead.org/#Z31kernel:power:hibernate.c
+> which sets the entering_platform_hibernation flag around the call to
+> the standard kernel_power_off() function when invoking it for
+> HIBERNATION_SHUTDOWN.
 
-> Dmitry, do you think that this memory leak is critical? If not, then i think
-> we can wait till the next ACPICA release.
+In both cases, please feel free to route the patches as it is convenient 
+and add
 
-Hopefully not too critical. The leak itself is small, and it's highly depended
-from the particular notebook model and/or UEFI BIOS revision, so it should be
-safe to wait.
+Acked-by: Rafael J. Wysocki <rafael@kernel.org>
 
-Dmitry
+to both of them.
+
 
