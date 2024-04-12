@@ -1,38 +1,36 @@
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+Received: from forward500b.mail.yandex.net (forward500b.mail.yandex.net [178.154.239.144])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76C78149DF7;
-	Fri, 12 Apr 2024 16:16:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A827614BFB0
+	for <acpica-devel@lists.linux.dev>; Fri, 12 Apr 2024 17:07:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712938597; cv=none; b=Eja/Q+9Vtb2xpKAVvWGCSy3iY7z8gJMIksi00WypjOCjExJFZfbMajSSVOcO8YM3bAZqcRG3hzz43NlNntnLn3pcrCu2uaA4JLJhbrGxl/kjzVmQqvSWJ2EBd+NVZDqr15ty41SRkM9MXK09sJK2S1YULzQJ8JVpG+WMrq5aH0s=
+	t=1712941657; cv=none; b=OT+sps4WTwYF+agx2MWrkR/N1eXmyMe9BMrPFbUCM6/VsHMggAlAMoUtRWxzfsps6eEDLdwCQ24dKlLiT7F3pscepMluzdA+ZwIu4utlBFLl0tsDue67PcbJ2PyOkMMxlAjKCFRN1dhz+vbu8m1m7rtXN+Ptr1rbeA2szt8bcS4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712938597; c=relaxed/simple;
-	bh=H8Ts+fPORPk2Ob90sLzmeh0iBBvTzDDrCOxsmMu0ifw=;
+	s=arc-20240116; t=1712941657; c=relaxed/simple;
+	bh=oGuGBrm2XsTgORrHIbPdgygwOqLpvFTPAvUMytMG5+I=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OS+qIMYp+pXMU713kLmQG+TysNmpBSYbej4E1Zfva4xQY/+W2axlN5uYBpjtcUAN6VFCWVkl3MiylwmkZRzc6NaZfrPoI7BE3apJDL8LqJi06zebbAyjF8f1C8u+W9b1Lokr9ayiACqG+eTEHqdNJTneRH5tEeXNFAfZBHAiNvI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=t2n6MS3Q; arc=none smtp.client-ip=212.227.15.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+	 In-Reply-To:Content-Type; b=Gd6mb3n0Ebv1UB+8ZsIZNjVSFoIUWhwozyF76X7PgO5Jgr3v/mjpVF7ELD9ZKkJZnQ3tbSFeMf5y/kidAYUqkdIV0lX3cwGB0TbE6EScZE4FaaVJiIPrKxD/L6fnl2ZxYL5tsA/hH9O7KOHRy8v8ikpib/ICoq7eLB1I23SEnCQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru; spf=pass smtp.mailfrom=yandex.ru; dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b=ilasTqh7; arc=none smtp.client-ip=178.154.239.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.ru
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="t2n6MS3Q"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1712938579; x=1713543379; i=w_armin@gmx.de;
-	bh=fV5LxrZ9sicKZYNtK1OwakvaLfgHSkOsJWQfLLQ6qj8=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=t2n6MS3QRzAncGvP9ucdHs4rFukblQs6NX6A0y+74djsII75PW01mILy1Iqxgi0l
-	 WpI2XDj50C55Nvfgd5sK874CLqs5E8pKHZc3lYgDQ3NYnd68ctiCzrFndwmwrEOP1
-	 yf/27rX0/CvRn9OCY/wd2vLWZZLmx6cmwW6Cw5hbRjTH0zBeHcSwIljywojJBtYq8
-	 J2CV5Wn58GTzUa2jQLQVI2qQqun4lcQ0dth7Yuxrr+LtktSJvjTWSIxoTNv0ak2HZ
-	 cqhbZ62VwgE62MvWbHpAu/ICgoSN5hYhyVjvrtq47eW5MqcTMGDe+rud9IsmQDMNq
-	 KqscBSu2A2cCzc21HA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [141.30.226.129] ([141.30.226.129]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MmULr-1sdD741ToP-00iWgx; Fri, 12
- Apr 2024 18:16:19 +0200
-Message-ID: <23c89f70-98d3-41a5-927c-ff4f2300ab7e@gmx.de>
-Date: Fri, 12 Apr 2024 18:16:18 +0200
+	dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b="ilasTqh7"
+Received: from mail-nwsmtp-smtp-production-main-39.sas.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-39.sas.yp-c.yandex.net [IPv6:2a02:6b8:c08:f220:0:640:b85:0])
+	by forward500b.mail.yandex.net (Yandex) with ESMTPS id 9A7EC61178;
+	Fri, 12 Apr 2024 20:07:26 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-39.sas.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id O7gElsHl4Ko0-OxaUhniM;
+	Fri, 12 Apr 2024 20:07:25 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
+	t=1712941646; bh=oGuGBrm2XsTgORrHIbPdgygwOqLpvFTPAvUMytMG5+I=;
+	h=In-Reply-To:To:From:Cc:Date:References:Subject:Message-ID;
+	b=ilasTqh75y8DdbfUD2T4KfuqpekbxqBzeYmIZOU/X/l6MSmvIt8fnT2AB1KgcRB3/
+	 g5vZ/zW/u/jTwXPjtfCVRvlydEiz8Gv9iHPnqbjJWdQRujIszvCeikvTp+E4zElajB
+	 9ltzzenaqKHj3pPKjDb/a/jJpSStB6jkjTC9DFkk=
+Authentication-Results: mail-nwsmtp-smtp-production-main-39.sas.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
+Message-ID: <31236394-8211-4d93-81bd-ada9b039a2d4@yandex.ru>
+Date: Fri, 12 Apr 2024 20:07:24 +0300
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -41,111 +39,61 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH] ACPICA: Fix memory leak then namespace lookup fails
-To: "Rafael J. Wysocki" <rafael@kernel.org>
+To: Armin Wolf <W_Armin@gmx.de>, "Rafael J. Wysocki" <rafael@kernel.org>
 Cc: robert.moore@intel.com, rafael.j.wysocki@intel.com, lenb@kernel.org,
- dmantipov@yandex.ru, linux-acpi@vger.kernel.org,
- acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org
+ linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
+ linux-kernel@vger.kernel.org
 References: <20240403004718.11902-1-W_Armin@gmx.de>
  <CAJZ5v0i3TAyDERxCm5caud5x5kLbc6J6MKqXXFWecShYe-gCrA@mail.gmail.com>
+ <23c89f70-98d3-41a5-927c-ff4f2300ab7e@gmx.de>
 Content-Language: en-US
-From: Armin Wolf <W_Armin@gmx.de>
-In-Reply-To: <CAJZ5v0i3TAyDERxCm5caud5x5kLbc6J6MKqXXFWecShYe-gCrA@mail.gmail.com>
+From: Dmitry Antipov <dmantipov@yandex.ru>
+Autocrypt: addr=dmantipov@yandex.ru; keydata=
+ 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
+ A/UwwXBRuvydGV0=
+In-Reply-To: <23c89f70-98d3-41a5-927c-ff4f2300ab7e@gmx.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:tj9wE446LKuHlyG8F4jGP0znuiIlFLqdnMAdKcVvr9zI8frC2zq
- jPA41vUM0QadKXLE04LhDEB9jQRtm2SGEXDF+RVEE0X5MOgYB70k5WOE/+r8U1ZYRz21wLt
- 7bTKTeEeFnvR2sFH+kAEFsZVej0qeWJNSP32p2m2hObQSSPAouSHwjBVLLVcc5QaFpoKXdh
- +oX3KMxPSG7qCEd9RgjcA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:XsfWYk+fZUY=;ZZPIPGT2e76V8iqvObNO8Vep1KK
- 5mIBaGIYMknE7r+D+ddNwQfTcJrS3eW4ecayXEWYQxXpk68gY3KJ8jrrNfAdFY6OJR+TmCeP0
- r32VJbxnZyJlFxuhxlT1CN16J1kUGbZjHVKQEu+s2a/u1NwQ+KXKrltS8epsD8yoMu6z2r06p
- ekE5K5dcNAlpG0ye3BRf163ksRgO0pYjitUJqsmz/YRKSSXZL/UDMTaNRL6SY0avIYUIlIpc9
- Mu1WVmvGwmi5uxV9Sl4Yr1w2vLW+PgnNiOBKp9RQIpRkZ8843YVD2Sa/yoG1RfCOKvltnDLYu
- nDjebNIc2V7PwUs/361Nd6tQIIn0LNAke7LbbL4TGeqisldD9ygyLFpFpzVWERDDam7aflNuE
- JmyaZaACQauYW8lVB0iuTm+UHIjV8mq6KpeqLyd4WyaNfU/Ke4Zk14JUu20fV/Lz8WB6+dWR0
- KqOsXCsCS3LTd7/uGNSKIBxmmBUX9i2f85lJJLS7tqphXrPk3ZER6MqP339P7Dyz6PRU7ESDw
- AA4YPPfehSPGJsgu44JlT9HyugywG7F2ORsdbXpAV1iMkcZJXtilggitreiFWrawA/gUS0y6e
- lFznKkiXynOZxgICLypxp2pSNhI/JtCBsIzoWB1b6Gwvn5HiaIj1FnslD3dwBg/DSIzh/NBL3
- wbncWZVRuEeyqYextmoaf+AHc0lyLF10xZs+a5ov6ylZL7sDT0NANV4F8rJq1gnAbzINzbGs5
- 7StkKPY9qVwktgtOoaSZKEQvIdoiwoRHr2yY+Iac23kOkrJyuBgibqm0cr260Kb2detPkpNVz
- Zwe3p8hcULDlOvBURMhucQ8Yqxbq1E2hz/iS7R+bTA1YU=
+Content-Transfer-Encoding: 7bit
 
-Am 08.04.24 um 16:29 schrieb Rafael J. Wysocki:
+On 4/12/24 19:16, Armin Wolf wrote:
 
-> On Wed, Apr 3, 2024 at 2:47=E2=80=AFAM Armin Wolf <W_Armin@gmx.de> wrote=
-:
->> When acpi_ps_get_next_namepath() fails due to a namespace lookup
->> failure, the acpi_parse_object is not freed before returning the
->> error code, causing a memory leak.
->>
->> Fix this by freeing the acpi_parse_object when encountering an
->> error.
->>
->> Tested-by: Dmitry Antipov <dmantipov@yandex.ru>
->> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-> Because ACPICA is an external project supplying code to the Linux
-> kernel, the way to change the ACPICA code in the kernel is to submit a
-> pull request to the upstream ACPICA project on GitHub and once that PR
-> has been merged, submit a Linux patch corresponding to it including
-> the Link: tag pointing to the PR in question and the git ID of the
-> corresponding upstream ACPICA commit.
->
-> However, note that upstream ACPICA commits are automatically included
-> into the Linux kernel source code every time the upstream ACPICA
-> project makes a release, so it is not necessary to send the
-> corresponding Linux patches for them unless in the cases when timing
-> matters.
+> Dmitry, do you think that this memory leak is critical? If not, then i think
+> we can wait till the next ACPICA release.
 
-I submitted a PR to upstream ACPICA and the changes where accepted.
+Hopefully not too critical. The leak itself is small, and it's highly depended
+from the particular notebook model and/or UEFI BIOS revision, so it should be
+safe to wait.
 
-Dmitry, do you think that this memory leak is critical? If not, then i thi=
-nk
-we can wait till the next ACPICA release.
+Dmitry
 
-Thanks,
-Armin Wolf
-
->> ---
->>   drivers/acpi/acpica/psargs.c | 8 ++++++++
->>   1 file changed, 8 insertions(+)
->>
->> diff --git a/drivers/acpi/acpica/psargs.c b/drivers/acpi/acpica/psargs.=
-c
->> index 422c074ed289..7debfd5ce0d8 100644
->> --- a/drivers/acpi/acpica/psargs.c
->> +++ b/drivers/acpi/acpica/psargs.c
->> @@ -820,6 +820,10 @@ acpi_ps_get_next_arg(struct acpi_walk_state *walk_=
-state,
->>                              acpi_ps_get_next_namepath(walk_state, pars=
-er_state,
->>                                                        arg,
->>                                                        ACPI_NOT_METHOD_=
-CALL);
->> +                       if (ACPI_FAILURE(status)) {
->> +                               acpi_ps_free_op(arg);
->> +                               return_ACPI_STATUS(status);
->> +                       }
->>                  } else {
->>                          /* Single complex argument, nothing returned *=
-/
->>
->> @@ -854,6 +858,10 @@ acpi_ps_get_next_arg(struct acpi_walk_state *walk_=
-state,
->>                              acpi_ps_get_next_namepath(walk_state, pars=
-er_state,
->>                                                        arg,
->>                                                        ACPI_POSSIBLE_ME=
-THOD_CALL);
->> +                       if (ACPI_FAILURE(status)) {
->> +                               acpi_ps_free_op(arg);
->> +                               return_ACPI_STATUS(status);
->> +                       }
->>
->>                          if (arg->common.aml_opcode =3D=3D AML_INT_METH=
-ODCALL_OP) {
->>
->> --
->> 2.39.2
->>
->>
