@@ -1,102 +1,74 @@
-Received: from mx1.t-argos.ru (mx1.t-argos.ru [109.73.34.58])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BA5C446BD
-	for <acpica-devel@lists.linux.dev>; Fri, 12 Apr 2024 10:38:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=109.73.34.58
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA83650241;
+	Fri, 12 Apr 2024 14:05:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712918341; cv=none; b=bq8cwA11VFGJkMMYQLeHa9RtoNjsn5wA25duJajGoDYKRodJU7YAWW0DkuwwmJ4nN1cHu9qzqJq2bcXNu8bfQaY6ckgtnx3lKasYUSpsVAEXnO7Ys7H8FaOLGDhXTByB7WzuONu+WulsJIaRTryRjMXEznpHBOrnrfYBhZzjfm4=
+	t=1712930721; cv=none; b=SjXraAzZQAAGAv363IjiJQfR8Y82a8x+c+lOcot5Wp4VR+YPOJZl13uCKw9GyInDXATg2JZ7PH7niNOrbLkZcuBoDf4Ux/zgY8E53rWCpYY8avl445loheJwUVMymAn8qiu5elsWn594xDz2ETY4drfM7IJ59qojbZ0CzsgYu4M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712918341; c=relaxed/simple;
-	bh=u4aUA6NcMnVUvYddJfCG+2UiNKu6Ga4o67L0/zLDAFo=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=gipmQaHG3wtAlpyKvBKmCA5uNZaExkH1wfF28nMEFrk7fe6fTbz4sz2l+slSyxUk1RYRzFAuK+hd5R5fu4qvKB1j5VaMN4AuTkOvQwzoXIDFAR3mv8j9tIJwGmLpruA1oaL6PKHHJMgOhDd2DMxGXL0fRVcIyQtQGRl+1aeS4HE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=t-argos.ru; spf=pass smtp.mailfrom=t-argos.ru; dkim=pass (2048-bit key) header.d=t-argos.ru header.i=@t-argos.ru header.b=DHq3woNR; arc=none smtp.client-ip=109.73.34.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=t-argos.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=t-argos.ru
+	s=arc-20240116; t=1712930721; c=relaxed/simple;
+	bh=omTvxBWcSpTxGyecQAtJsPrnCfgoa+AxlGoaC88vRww=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ttx4ALf3lE6gBEF1E4GguQBFr0gPjRSqTtNNO0l5XpJTQtw7hj/nox0xeFGbYBihpq0bJakyW9j0V0PD1ELh+0T1hrSg/kFmeL/Eiva2bK0HfAYG5qXVQjstAElmjTaXvsp82aRqrRVkIYgirXukGE2DRnTs4RVr6e6Jw2YBTbw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hxEbACGo; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=t-argos.ru header.i=@t-argos.ru header.b="DHq3woNR"
-Received: from mx1.t-argos.ru (localhost [127.0.0.1])
-	by mx1.t-argos.ru (Postfix) with ESMTP id 0B841100002;
-	Fri, 12 Apr 2024 13:38:41 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=t-argos.ru; s=mail;
-	t=1712918321; bh=rYWnZbFlUffRYhsJkJp9tuIBEkLFSWBjZgHCW4zBdKs=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=DHq3woNRIwGSc/UkbIaiPcVqKYEvvBCkOVTLL4kGivRHl/YGupV4lLaq2pYlBfiL3
-	 jqPoilbQOp+6yXLl67xtXYSdoNxB70tY7krGtj51UI9kEhUGqDtotWtl4pk4SCGxoY
-	 mtYx63rSHDEpZEnjUR7LwsholWBw0JBULtNqmtpOsSF4P985oYPuXaE6+5bCoV+mKI
-	 SLQ0v7msR3kvzwk56g71vqQC3It1SvTgLpiBDTRE8F6dteJdvyojABfRwjPT02cJWj
-	 rMc/4Y6Ix9XlTDUOl6CpOaiXopFgPnju1YqBoHnDQoAeKY0E72HDxnoSMPS3Bueuik
-	 un/qN1Fnk6LZg==
-Received: from mx1.t-argos.ru.ru (ta-mail-02.ta.t-argos.ru [172.17.13.212])
-	by mx1.t-argos.ru (Postfix) with ESMTP;
-	Fri, 12 Apr 2024 13:37:52 +0300 (MSK)
-Received: from localhost.localdomain (172.17.215.6) by ta-mail-02
- (172.17.13.212) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Fri, 12 Apr
- 2024 13:37:31 +0300
-From: Aleksandr Mishin <amishin@t-argos.ru>
-To: Lv Zheng <lv.zheng@intel.com>
-CC: Aleksandr Mishin <amishin@t-argos.ru>, Robert Moore
-	<robert.moore@intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-	Len Brown <lenb@kernel.org>, <linux-acpi@vger.kernel.org>,
-	<acpica-devel@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-	<lvc-project@linuxtesting.org>
-Subject: [PATCH] ACPICA: Handle memory allocation error
-Date: Fri, 12 Apr 2024 13:37:23 +0300
-Message-ID: <20240412103723.16943-1-amishin@t-argos.ru>
-X-Mailer: git-send-email 2.30.2
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hxEbACGo"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7564BC113CC;
+	Fri, 12 Apr 2024 14:05:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712930721;
+	bh=omTvxBWcSpTxGyecQAtJsPrnCfgoa+AxlGoaC88vRww=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hxEbACGoxaVA6BbU7SH/m3SF2sTUEavGAZhWe9ZSTQHaboXVHIwKoZNwUhBYRGp4s
+	 9G3gafph0mQnVTh2Z2DUp1fmaWt9ceBHzMkzoCBVvB3BykQgL4P/zY4tmNkXWw73mp
+	 ufngXSW7QEUQaVY0vlpAgoC1ywpDjQ0EqGkmNPGSPUDhwAlwU0W4cNEa7R2WsKCqsO
+	 qa/S03GFyo1wyHXgKq0DBHsSYLigagU/0AFIi8kJmt/ilO2/JqQDP/iIs+wajv2352
+	 bkyU+eB50zksQ31vDSCapCBbmRvMGGiRT9Hyt7CzsCtK+cHGiWxf7G2SWxug4DmgcH
+	 +a50UehmT2wiw==
+Date: Fri, 12 Apr 2024 15:05:15 +0100
+From: Will Deacon <will@kernel.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+	Robert Moore <robert.moore@intel.com>,
+	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+	Len Brown <lenb@kernel.org>, Sudeep Holla <sudeep.holla@arm.com>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev
+Subject: Re: [PATCH v2 0/2] Support clean reboot after hibernate on Arm64
+Message-ID: <20240412140515.GA28052@willie-the-truck>
+References: <20240412073530.2222496-1-dwmw2@infradead.org>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: ta-mail-02.ta.t-argos.ru (172.17.13.212) To ta-mail-02
- (172.17.13.212)
-X-KSMG-Rule-ID: 1
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 184684 [Apr 12 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.4
-X-KSMG-AntiSpam-Envelope-From: amishin@t-argos.ru
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 16 0.3.16 6e64c33514fcbd07e515710c86ba61de7f56194e, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;mx1.t-argos.ru.ru:7.1.1;t-argos.ru:7.1.1, FromAlignment: s
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2024/04/12 08:01:00
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2024/04/12 08:56:00 #24754366
-X-KSMG-AntiVirus-Status: Clean, skipped
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240412073530.2222496-1-dwmw2@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-In acpi_db_add_to_history() acpi_os_allocate() may return NULL
-in case of memory allocation error. This will lead to NULL pointer
-dereference.
-Fix this bug by adding NULL return check.
+On Mon, Mar 11, 2024 at 12:19:14PM +0000, David Woodhouse wrote:
+> When the hardware signature in the ACPI FACS changes, the OS is supposed
+> to perform a clean reboot instead of attempting to resume on a changed
+> platform.
+> 
+> Although these patches have a functional dependency, they could be merged
+> separately. The second patch just won't *see* a FACS table if the ACPICA
+> fix isn't present.
+> 
+> v2: Now that the ACPICA patch is merged upstream, note its commit ID
+> 
+> David Woodhouse (2):
+>       ACPICA: Detect FACS even for hardware reduced platforms
+>       arm64: acpi: Honour firmware_signature field of FACS, if it exists
+> 
+>  arch/arm64/kernel/acpi.c      | 10 ++++++++++
+>  drivers/acpi/acpica/tbfadt.c  | 30 +++++++++++++-----------------
+>  drivers/acpi/acpica/tbutils.c |  7 +------
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+Rafael, how would you like the handle this series? The arm64 part has
+been Acked-by Sudeep, so I'm happy with it.
 
-Fixes: 995751025572 ("ACPICA: Linuxize: Export debugger files to Linux")
-Signed-off-by: Aleksandr Mishin <amishin@t-argos.ru>
----
- drivers/acpi/acpica/dbhistry.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/acpi/acpica/dbhistry.c b/drivers/acpi/acpica/dbhistry.c
-index e874c1dddefa..8366631d457f 100644
---- a/drivers/acpi/acpica/dbhistry.c
-+++ b/drivers/acpi/acpica/dbhistry.c
-@@ -69,6 +69,8 @@ void acpi_db_add_to_history(char *command_line)
- 		acpi_gbl_history_buffer[acpi_gbl_next_history_index].command =
- 		    acpi_os_allocate(cmd_len + 1);
- 	}
-+	if (!acpi_gbl_history_buffer[acpi_gbl_next_history_index].command)
-+		return;
- 
- 	strcpy(acpi_gbl_history_buffer[acpi_gbl_next_history_index].command,
- 	       command_line);
--- 
-2.30.2
-
+Will
