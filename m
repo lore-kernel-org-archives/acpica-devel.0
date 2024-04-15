@@ -1,57 +1,57 @@
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC3BE127E31
-	for <acpica-devel@lists.linux.dev>; Mon, 15 Apr 2024 17:02:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C0D212839E
+	for <acpica-devel@lists.linux.dev>; Mon, 15 Apr 2024 17:02:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713200573; cv=none; b=p2iUbf7ytqtinbfLLDw1PBA4X+fLLF4DOBRqDCGOxvrTRnZoSHTXEbOQnadmjQWNrnkPmZHs4at6fHvWeFPHGFhFx5+jJBKUivQPhbU12Rv8rQ08QbHMkOTVaF8z2+owSKq2lzKXsjCe3R7nyCoa4fWWJyKFwUnW4yw9W6lxNiA=
+	t=1713200579; cv=none; b=T8CY07MT3TtmWfBpNlAm2ejLVc35DfGCT+4IW4HFx+il4eM9c0KoeO04Qy7vq/fcIz4fzKtGVYUhJibJ5xaOGgNBEY0wNLugD98yRS7p9kQq+zGXinE6DqYE19Nrmb2LDojTizzBx2fe4sOl2Sk+MHI36jRBYtH+H42lFMgYx/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713200573; c=relaxed/simple;
-	bh=W+FH+0WMCw7p8CDy8q3yUpAykRF8ezI4H2CH+9Zt25Y=;
+	s=arc-20240116; t=1713200579; c=relaxed/simple;
+	bh=VKC1k90N2jxwUCKVmE1XZOYw+oqHJYrFO5SRt4yp4n8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=L2QT0wZmTls3UHdP5qFza7y3RXLlz96cZgrHtuLhDBW6JXqCSKufbPvQHwDqR4mlSanyvMLoSWva8vJuy1C1FY7c66nMD7ISR0Qp9k84UEH6AUzwKm91XcVUbaGabwq1obuk0+SzM1FXcUNgMnnjuN6h/G9PV9fsaanSLyEzFQc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=kbrJAy7V; arc=none smtp.client-ip=209.85.210.171
+	 MIME-Version; b=TFl7SRXphyEaoNoUFuwaMkCnO6RrzAKK8u8d91mIfJ+LO30vHxgFLRIRV5HYt5eS30Dm1oEYDhEssw5toMCld8eVUYoAQKI38OoiUmmgJ/8Rjhccguf5M4Wg6G3Ae8RxGzOfdedtOGBIgLBJ4fuMQCEtFmZmQH5kF/+9dGVlaWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=BzbjilH2; arc=none smtp.client-ip=209.85.210.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="kbrJAy7V"
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6ecf8ebff50so2273314b3a.1
-        for <acpica-devel@lists.linux.dev>; Mon, 15 Apr 2024 10:02:51 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="BzbjilH2"
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6ee12766586so2244354b3a.0
+        for <acpica-devel@lists.linux.dev>; Mon, 15 Apr 2024 10:02:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1713200571; x=1713805371; darn=lists.linux.dev;
+        d=ventanamicro.com; s=google; t=1713200577; x=1713805377; darn=lists.linux.dev;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nLDuZBMdOA5LsIhe/7seDXRfkc825n/BCOMnccmbKZw=;
-        b=kbrJAy7VSwGSwe0AT8ambB4r7CKHyWccrFU1Zovrb9nsXYbLaJv87pNBGQjXDuLUyn
-         WzlBKjFl9WyJrn0nh4mkYkArxF52amU6jcVBLwc8YUULftb0h5IUx8Sxuw4AxeR+emAx
-         HfS+PjauO9skkU7ZqX3PySqFwGq9NNnLtw/Y40Dueyran1DBAtFQknf+sJ+OFEWiOGFn
-         EahkU0tJkhDuuA4of1/weKUFvbgP3mFIb8yLpst4VY8l/BEByrlN7LjFH+MGBo4lGE+S
-         LAfE0oL7Xng9bsl/AyWLbfrBWqul2t0dZLi8LdqJX3SPWLHts619j2kWgjTlubRiSuzM
-         nD8w==
+        bh=tESHp1nipL9G+lPho1WiqoKvdd8aCfbVHrPrMY3qcLM=;
+        b=BzbjilH27njh5jXPzNiCYnNay+r/MJz2lfev3hRG9lmkyx4vnYr8lmWD2hovFVRibl
+         myTamry2ASI9nhCw/r4egK3ANuVQ8SSwTJdCg01Rj4+EvtXKg8P2Y7Ta1g/2HRoaiXdy
+         Km5MQMRVpSBH9RX0D9yrRbRm+q9NCznPWa3hYwLtuBFVURIAmn55q2ZLLOMkbKWLHD3t
+         m263EdqZv6dFT0uV/1f57TZRuA2lb3KH9X+RAXkEiW03tc8EGXMonTQXnX6d5bK7St8s
+         84DGFMZyn3rJ4RqMXX4B/ePNHaF+RSCrPTsEfszd+C1TQhXhwwS2Z2lfSmLeufm1eaJT
+         dJdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713200571; x=1713805371;
+        d=1e100.net; s=20230601; t=1713200577; x=1713805377;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=nLDuZBMdOA5LsIhe/7seDXRfkc825n/BCOMnccmbKZw=;
-        b=smgIg9AizQG2KW8c5+PPN/QIQ4DvAlhtj3utKd7H+I7QiGrpNK6ohgYib7wxdcmClT
-         Cvsw1a8KIrEl6wV3tTagN6xRn23XJ5IwHSQMmvbupGyyAyo1vl39V9DAizXcK6psxolG
-         vooJBzspZ9HHdd8jlHNEchQe6dVmX8TIjRZT4LEQz/eYNpqFPcJGfLXBciXQzoR0T5bi
-         1TspYvBRmKH1ayPu7sYW0qZUQQ+7tiV82cgDqqfDNwSwNZW4cTtLOi0Nt3lvp47cqS6b
-         CrpbRWL26Q39HOYnZvF7fbD3xF9O7FGA5Oyl0J2+HWnNaES8jgq/wWxFpFOuweBKRzBK
-         ey/g==
-X-Forwarded-Encrypted: i=1; AJvYcCUBScEk+uFOGtSuYZ6aYI4PlwDlT+22p/NhnBS6U4V4q2zIRvLsxQMRs5qQM7EVoc+PQIrydXgWoQWQ2BD2GLFv3CwzmVmLSb/m4WVh
-X-Gm-Message-State: AOJu0YwIXEhwQ2OEaY+rg7aJAaufuZY+cVa0LpB9NHzfOaTkJ4rt1B8L
-	Iq+MLxaAZ4AL5qmVOTmpdfDaOyl/WCxobcqJ0gBBWAFVfhMm/wizRo7FZVZqykc=
-X-Google-Smtp-Source: AGHT+IE0Br/sfLtBzDZxNra+WQQQj8UhdqDe5qbQkKbjYH9VavooVHUHBefLx4JOZPgJS4SQ5vD0ww==
-X-Received: by 2002:a05:6a00:190e:b0:6ec:fa34:34ab with SMTP id y14-20020a056a00190e00b006ecfa3434abmr279743pfi.9.1713200571057;
-        Mon, 15 Apr 2024 10:02:51 -0700 (PDT)
+        bh=tESHp1nipL9G+lPho1WiqoKvdd8aCfbVHrPrMY3qcLM=;
+        b=E27dccaSTznU7tIWyJDBSMf3iXoH96+86t6WTqN69Ae4LzE/6U6uOC6yM5N+zZCgPV
+         9T16olU2uIKspL4Og8uVLQ7unk6DUFOYAbASGZeaGpg8e36as74riwYvkbosfspdcMcm
+         YOwSB4Pxv7efCoeIeAd9F+XiZ4+2H4tvHQlJRMtAzgBBWgCv3JTbeTZZ8AkY8YdEaLSd
+         0ffRrq8DhgibOX0u7oaRv6JPM74dUKQRgfJt3a5VfIXnC53CXy9N0PuahWw21i1xL608
+         iL8GlGT/u57+pIMl60YWGt3QO5HoRigmDw63+Qkd2eM2/qD7sQFBLo5iUSFPLP9BW21Z
+         qsQA==
+X-Forwarded-Encrypted: i=1; AJvYcCVZomBmI0xsGjkbgVK7o1aMRt1pBTbjd76XbtKTXig2pag+PcmFwqvrGI9Q/hgjdsU6MKRhaeH8gKQNeyHhl21qVCaQtN9FGV8vPrEB
+X-Gm-Message-State: AOJu0Yyjc10Sp18BWOktP1dTiFaSlotskJcnWrTp/hwYKyG7njnNH34K
+	YIEYXMM1cH/UFWdqEfu3aCBG/BmfW2NuCAC0+RQ6koAIPxuY3KTMSo6glHRtabE=
+X-Google-Smtp-Source: AGHT+IGv/kllMgrVV78cn82AbUpzbO7/wD1E9hz7AVE67lzYg6zXQKt3/FnejYjVAq0dkP07wI6buA==
+X-Received: by 2002:a05:6a00:4611:b0:6ea:f3fb:26fe with SMTP id ko17-20020a056a00461100b006eaf3fb26femr305695pfb.12.1713200577636;
+        Mon, 15 Apr 2024 10:02:57 -0700 (PDT)
 Received: from sunil-pc.Dlink ([106.51.187.230])
-        by smtp.gmail.com with ESMTPSA id 1-20020a056a00072100b006ed045e3a70sm7433158pfm.25.2024.04.15.10.02.44
+        by smtp.gmail.com with ESMTPSA id 1-20020a056a00072100b006ed045e3a70sm7433158pfm.25.2024.04.15.10.02.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 10:02:50 -0700 (PDT)
+        Mon, 15 Apr 2024 10:02:57 -0700 (PDT)
 From: Sunil V L <sunilvl@ventanamicro.com>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
@@ -79,9 +79,9 @@ Cc: Catalin Marinas <catalin.marinas@arm.com>,
 	Marc Zyngier <maz@kernel.org>,
 	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
 	Sunil V L <sunilvl@ventanamicro.com>
-Subject: [RFC PATCH v4 13/20] ACPI/PNP: Initialize PNP devices skipped due to _DEP
-Date: Mon, 15 Apr 2024 22:31:06 +0530
-Message-Id: <20240415170113.662318-14-sunilvl@ventanamicro.com>
+Subject: [RFC PATCH v4 14/20] irqchip: riscv-intc: Add ACPI support for AIA
+Date: Mon, 15 Apr 2024 22:31:07 +0530
+Message-Id: <20240415170113.662318-15-sunilvl@ventanamicro.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240415170113.662318-1-sunilvl@ventanamicro.com>
 References: <20240415170113.662318-1-sunilvl@ventanamicro.com>
@@ -93,284 +93,194 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When PNP devices have _DEP, they will not be enumerated in
-pnpacpi_init() unless the dependency is met. Hence, when such PNP
-device's supplier device is probed, the PNP device need to be added to
-the PNP data structures. So, introduce pnpacpi_init_2() for doing this
-which gets called as part of clearing the dependency.
-
-This is currently required for RISC-V. Hence, restricted the code with a
-CONFIG option enabled for RISC-V.
-
-Since pnpacpi_add_device() can be called now even after boot,
-__init attribute is removed from pnpacpi_add_device() and its dependent
-functions.
+The RINTC subtype structure in MADT also has information about other
+interrupt controllers. Save this information and provide interfaces to
+retrieve them when required by corresponding drivers.
 
 Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
 ---
- drivers/acpi/scan.c            |  4 +++
- drivers/pnp/pnpacpi/core.c     | 24 ++++++++++---
- drivers/pnp/pnpacpi/rsparser.c | 63 +++++++++++++++++-----------------
- include/linux/pnp.h            |  7 ++++
- 4 files changed, 62 insertions(+), 36 deletions(-)
+ arch/riscv/include/asm/irq.h     | 35 ++++++++++++
+ drivers/irqchip/irq-riscv-intc.c | 97 +++++++++++++++++++++++++++++++-
+ 2 files changed, 130 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-index 8e23b9508716..086ae040a5ad 100644
---- a/drivers/acpi/scan.c
-+++ b/drivers/acpi/scan.c
-@@ -19,6 +19,7 @@
- #include <linux/dma-map-ops.h>
- #include <linux/platform_data/x86/apple.h>
- #include <linux/pgtable.h>
-+#include <linux/pnp.h>
- #include <linux/crc32.h>
- #include <linux/dma-direct.h>
- 
-@@ -2370,6 +2371,9 @@ static void acpi_scan_clear_dep_fn(struct work_struct *work)
- 	acpi_bus_attach(cdw->adev, (void *)true);
- 	acpi_scan_lock_release();
- 
-+	if (IS_ENABLED(CONFIG_ARCH_ACPI_DEFERRED_GSI) && IS_ENABLED(CONFIG_PNPACPI))
-+		pnpacpi_init_2(cdw->adev);
-+
- 	acpi_dev_put(cdw->adev);
- 	kfree(cdw);
- }
-diff --git a/drivers/pnp/pnpacpi/core.c b/drivers/pnp/pnpacpi/core.c
-index a0927081a003..c81893fc1fb2 100644
---- a/drivers/pnp/pnpacpi/core.c
-+++ b/drivers/pnp/pnpacpi/core.c
-@@ -26,7 +26,7 @@ static int num;
- #define TEST_ALPHA(c) \
- 	if (!('A' <= (c) && (c) <= 'Z')) \
- 		return 0
--static int __init ispnpidacpi(const char *id)
-+static int ispnpidacpi(const char *id)
- {
- 	TEST_ALPHA(id[0]);
- 	TEST_ALPHA(id[1]);
-@@ -194,7 +194,7 @@ struct pnp_protocol pnpacpi_protocol = {
+diff --git a/arch/riscv/include/asm/irq.h b/arch/riscv/include/asm/irq.h
+index 44a0b128c602..6bd578b1ffc9 100644
+--- a/arch/riscv/include/asm/irq.h
++++ b/arch/riscv/include/asm/irq.h
+@@ -25,9 +25,22 @@ enum riscv_irqchip_type {
+ 	ACPI_RISCV_IRQCHIP_APLIC	= 0x03,
  };
- EXPORT_SYMBOL(pnpacpi_protocol);
  
--static const char *__init pnpacpi_get_id(struct acpi_device *device)
-+static const char *pnpacpi_get_id(struct acpi_device *device)
- {
- 	struct acpi_hardware_id *id;
++/*
++ * The ext_intc_id format is as follows:
++ * Bits [31:24] APLIC/PLIC ID
++ * Bits [15:0] APLIC IDC ID / PLIC S-Mode Context ID for this hart
++ */
++#define APLIC_PLIC_ID(x) ((x) >> 24)
++#define IDC_CONTEXT_ID(x) ((x) & 0x0000ffff)
++
+ int riscv_acpi_get_gsi_info(struct fwnode_handle *fwnode, u32 *gsi_base,
+ 			    u32 *id, u32 *nr_irqs, u32 *nr_idcs);
+ struct fwnode_handle *riscv_acpi_get_gsi_domain_id(u32 gsi);
++int __init acpi_get_intc_index_hartid(u32 index, unsigned long *hartid);
++int acpi_get_ext_intc_parent_hartid(u8 id, u32 idx, unsigned long *hartid);
++void acpi_get_plic_nr_contexts(u8 id, int *nr_contexts);
++int acpi_get_plic_context(u8 id, u32 idx, int *context_id);
++int __init acpi_get_imsic_mmio_info(u32 index, struct resource *res);
  
-@@ -206,7 +206,7 @@ static const char *__init pnpacpi_get_id(struct acpi_device *device)
- 	return NULL;
- }
- 
--static int __init pnpacpi_add_device(struct acpi_device *device)
-+static int pnpacpi_add_device(struct acpi_device *device)
- {
- 	struct pnp_dev *dev;
- 	const char *pnpid;
-@@ -283,6 +283,23 @@ static int __init pnpacpi_add_device(struct acpi_device *device)
+ #else
+ static inline int riscv_acpi_get_gsi_info(struct fwnode_handle *fwnode, u32 *gsi_base,
+@@ -36,6 +49,28 @@ static inline int riscv_acpi_get_gsi_info(struct fwnode_handle *fwnode, u32 *gsi
  	return 0;
  }
  
-+int pnpacpi_disabled;
-+
-+#ifdef CONFIG_ARCH_ACPI_DEFERRED_GSI
-+void pnpacpi_init_2(struct acpi_device *adev)
++static inline int __init acpi_get_intc_index_hartid(u32 index, unsigned long *hartid)
 +{
-+	if (acpi_disabled || pnpacpi_disabled)
-+		return;
-+
-+	if (!adev)
-+		return;
-+
-+	if (acpi_is_pnp_device(adev) && acpi_dev_ready_for_enumeration(adev))
-+		pnpacpi_add_device(adev);
++	return -EINVAL;
 +}
 +
-+#endif
++static inline int acpi_get_ext_intc_parent_hartid(u8 id, u32 idx, unsigned long *hartid)
++{
++	return -EINVAL;
++}
 +
- static acpi_status __init pnpacpi_add_device_handler(acpi_handle handle,
- 						     u32 lvl, void *context,
- 						     void **rv)
-@@ -296,7 +313,6 @@ static acpi_status __init pnpacpi_add_device_handler(acpi_handle handle,
- 	return AE_OK;
- }
- 
--int pnpacpi_disabled __initdata;
- static int __init pnpacpi_init(void)
- {
- 	if (acpi_disabled || pnpacpi_disabled) {
-diff --git a/drivers/pnp/pnpacpi/rsparser.c b/drivers/pnp/pnpacpi/rsparser.c
-index c02ce0834c2c..1008599901a2 100644
---- a/drivers/pnp/pnpacpi/rsparser.c
-+++ b/drivers/pnp/pnpacpi/rsparser.c
-@@ -289,9 +289,9 @@ int pnpacpi_parse_allocated_resource(struct pnp_dev *dev)
- 	return 0;
- }
- 
--static __init void pnpacpi_parse_dma_option(struct pnp_dev *dev,
--					    unsigned int option_flags,
--					    struct acpi_resource_dma *p)
-+static void pnpacpi_parse_dma_option(struct pnp_dev *dev,
-+				     unsigned int option_flags,
-+				     struct acpi_resource_dma *p)
- {
- 	int i;
- 	unsigned char map = 0, flags;
-@@ -303,9 +303,9 @@ static __init void pnpacpi_parse_dma_option(struct pnp_dev *dev,
- 	pnp_register_dma_resource(dev, option_flags, map, flags);
- }
- 
--static __init void pnpacpi_parse_irq_option(struct pnp_dev *dev,
--					    unsigned int option_flags,
--					    struct acpi_resource_irq *p)
-+static void pnpacpi_parse_irq_option(struct pnp_dev *dev,
-+				     unsigned int option_flags,
-+				     struct acpi_resource_irq *p)
- {
- 	int i;
- 	pnp_irq_mask_t map;
-@@ -320,9 +320,9 @@ static __init void pnpacpi_parse_irq_option(struct pnp_dev *dev,
- 	pnp_register_irq_resource(dev, option_flags, &map, flags);
- }
- 
--static __init void pnpacpi_parse_ext_irq_option(struct pnp_dev *dev,
--					unsigned int option_flags,
--					struct acpi_resource_extended_irq *p)
-+static void pnpacpi_parse_ext_irq_option(struct pnp_dev *dev,
-+					 unsigned int option_flags,
-+					 struct acpi_resource_extended_irq *p)
- {
- 	int i;
- 	pnp_irq_mask_t map;
-@@ -344,9 +344,9 @@ static __init void pnpacpi_parse_ext_irq_option(struct pnp_dev *dev,
- 	pnp_register_irq_resource(dev, option_flags, &map, flags);
- }
- 
--static __init void pnpacpi_parse_port_option(struct pnp_dev *dev,
--					     unsigned int option_flags,
--					     struct acpi_resource_io *io)
-+static void pnpacpi_parse_port_option(struct pnp_dev *dev,
-+				      unsigned int option_flags,
-+				      struct acpi_resource_io *io)
- {
- 	unsigned char flags = 0;
- 
-@@ -357,16 +357,16 @@ static __init void pnpacpi_parse_port_option(struct pnp_dev *dev,
- }
- 
- static __init void pnpacpi_parse_fixed_port_option(struct pnp_dev *dev,
--					unsigned int option_flags,
--					struct acpi_resource_fixed_io *io)
-+						   unsigned int option_flags,
-+						   struct acpi_resource_fixed_io *io)
- {
- 	pnp_register_port_resource(dev, option_flags, io->address, io->address,
- 				   0, io->address_length, IORESOURCE_IO_FIXED);
- }
- 
--static __init void pnpacpi_parse_mem24_option(struct pnp_dev *dev,
--					      unsigned int option_flags,
--					      struct acpi_resource_memory24 *p)
-+static void pnpacpi_parse_mem24_option(struct pnp_dev *dev,
-+				       unsigned int option_flags,
-+				       struct acpi_resource_memory24 *p)
- {
- 	unsigned char flags = 0;
- 
-@@ -376,9 +376,9 @@ static __init void pnpacpi_parse_mem24_option(struct pnp_dev *dev,
- 				  p->alignment, p->address_length, flags);
- }
- 
--static __init void pnpacpi_parse_mem32_option(struct pnp_dev *dev,
--					      unsigned int option_flags,
--					      struct acpi_resource_memory32 *p)
-+static void pnpacpi_parse_mem32_option(struct pnp_dev *dev,
-+				       unsigned int option_flags,
-+				       struct acpi_resource_memory32 *p)
- {
- 	unsigned char flags = 0;
- 
-@@ -388,9 +388,9 @@ static __init void pnpacpi_parse_mem32_option(struct pnp_dev *dev,
- 				  p->alignment, p->address_length, flags);
- }
- 
--static __init void pnpacpi_parse_fixed_mem32_option(struct pnp_dev *dev,
--					unsigned int option_flags,
--					struct acpi_resource_fixed_memory32 *p)
-+static void pnpacpi_parse_fixed_mem32_option(struct pnp_dev *dev,
-+					     unsigned int option_flags,
-+					     struct acpi_resource_fixed_memory32 *p)
- {
- 	unsigned char flags = 0;
- 
-@@ -400,9 +400,9 @@ static __init void pnpacpi_parse_fixed_mem32_option(struct pnp_dev *dev,
- 				  0, p->address_length, flags);
- }
- 
--static __init void pnpacpi_parse_address_option(struct pnp_dev *dev,
--						unsigned int option_flags,
--						struct acpi_resource *r)
-+static void pnpacpi_parse_address_option(struct pnp_dev *dev,
-+					 unsigned int option_flags,
-+					 struct acpi_resource *r)
- {
- 	struct acpi_resource_address64 addr, *p = &addr;
- 	acpi_status status;
-@@ -427,9 +427,9 @@ static __init void pnpacpi_parse_address_option(struct pnp_dev *dev,
- 					   IORESOURCE_IO_FIXED);
- }
- 
--static __init void pnpacpi_parse_ext_address_option(struct pnp_dev *dev,
--						    unsigned int option_flags,
--						    struct acpi_resource *r)
-+static void pnpacpi_parse_ext_address_option(struct pnp_dev *dev,
-+					     unsigned int option_flags,
-+					     struct acpi_resource *r)
- {
- 	struct acpi_resource_extended_address64 *p = &r->data.ext_address64;
- 	unsigned char flags = 0;
-@@ -451,8 +451,7 @@ struct acpipnp_parse_option_s {
- 	unsigned int option_flags;
- };
- 
--static __init acpi_status pnpacpi_option_resource(struct acpi_resource *res,
--						  void *data)
-+static acpi_status pnpacpi_option_resource(struct acpi_resource *res, void *data)
- {
- 	int priority;
- 	struct acpipnp_parse_option_s *parse_data = data;
-@@ -547,7 +546,7 @@ static __init acpi_status pnpacpi_option_resource(struct acpi_resource *res,
- 	return AE_OK;
- }
- 
--int __init pnpacpi_parse_resource_option_data(struct pnp_dev *dev)
-+int pnpacpi_parse_resource_option_data(struct pnp_dev *dev)
- {
- 	struct acpi_device *acpi_dev = dev->data;
- 	acpi_handle handle = acpi_dev->handle;
-diff --git a/include/linux/pnp.h b/include/linux/pnp.h
-index ddbe7c3ca4ce..440f8c268a29 100644
---- a/include/linux/pnp.h
-+++ b/include/linux/pnp.h
-@@ -347,6 +347,7 @@ static inline struct acpi_device *pnp_acpi_device(struct pnp_dev *dev)
- 		return dev->data;
- 	return NULL;
- }
++static inline void acpi_get_plic_nr_contexts(u8 id, int *nr_contexts) { }
 +
- #else
- #define pnp_acpi_device(dev) 0
- #endif
-@@ -514,4 +515,10 @@ static inline void pnp_unregister_driver(struct pnp_driver *drv) { }
- 	module_driver(__pnp_driver, pnp_register_driver, \
- 				    pnp_unregister_driver)
- 
-+#ifdef CONFIG_ARCH_ACPI_DEFERRED_GSI
-+void pnpacpi_init_2(struct acpi_device *adev);
-+#else
-+static inline void pnpacpi_init_2(struct acpi_device *adev) { }
-+#endif
++static inline int acpi_get_plic_context(u8 id, u32 idx, int *context_id)
++{
++	return -EINVAL;
++}
 +
- #endif /* _LINUX_PNP_H */
++static inline int __init acpi_get_imsic_mmio_info(u32 index, struct resource *res)
++{
++	return 0;
++}
++
+ #endif /* CONFIG_ACPI */
+ 
+ #endif /* _ASM_RISCV_IRQ_H */
+diff --git a/drivers/irqchip/irq-riscv-intc.c b/drivers/irqchip/irq-riscv-intc.c
+index 9e71c4428814..b20272151aed 100644
+--- a/drivers/irqchip/irq-riscv-intc.c
++++ b/drivers/irqchip/irq-riscv-intc.c
+@@ -249,14 +249,101 @@ IRQCHIP_DECLARE(riscv, "riscv,cpu-intc", riscv_intc_init);
+ IRQCHIP_DECLARE(andes, "andestech,cpu-intc", riscv_intc_init);
+ 
+ #ifdef CONFIG_ACPI
++struct rintc_data {
++	u32 ext_intc_id;
++	unsigned long hart_id;
++	u64 imsic_addr;
++	u32 imsic_size;
++};
++
++static u32 nr_rintc;
++static struct rintc_data *rintc_acpi_data[NR_CPUS];
++
++int acpi_get_intc_index_hartid(u32 index, unsigned long *hartid)
++{
++	if (index >= nr_rintc)
++		return -1;
++
++	*hartid = rintc_acpi_data[index]->hart_id;
++	return 0;
++}
++
++int acpi_get_ext_intc_parent_hartid(u8 id, u32 idx, unsigned long *hartid)
++{
++	int i, j = 0;
++
++	for (i = 0; i < nr_rintc; i++) {
++		if (APLIC_PLIC_ID(rintc_acpi_data[i]->ext_intc_id) == id) {
++			if (idx == j) {
++				*hartid = rintc_acpi_data[i]->hart_id;
++				return 0;
++			}
++			j++;
++		}
++	}
++
++	return -1;
++}
++
++void acpi_get_plic_nr_contexts(u8 id, int *nr_contexts)
++{
++	int i, j = 0;
++
++	for (i = 0; i < nr_rintc; i++) {
++		if (APLIC_PLIC_ID(rintc_acpi_data[i]->ext_intc_id) == id)
++			j++;
++	}
++
++	*nr_contexts = j;
++}
++
++int acpi_get_plic_context(u8 id, u32 idx, int *context_id)
++{
++	int i, j = 0;
++
++	for (i = 0; i < nr_rintc; i++) {
++		if (APLIC_PLIC_ID(rintc_acpi_data[i]->ext_intc_id) == id) {
++			if (idx == j) {
++				*context_id = IDC_CONTEXT_ID(rintc_acpi_data[i]->ext_intc_id);
++				return 0;
++			}
++
++			j++;
++		}
++	}
++
++	return -1;
++}
++
++int acpi_get_imsic_mmio_info(u32 index, struct resource *res)
++{
++	if (index >= nr_rintc)
++		return -1;
++
++	res->start = rintc_acpi_data[index]->imsic_addr;
++	res->end = res->start + rintc_acpi_data[index]->imsic_size - 1;
++	res->flags = IORESOURCE_MEM;
++	return 0;
++}
++
+ 
+ static int __init riscv_intc_acpi_init(union acpi_subtable_headers *header,
+ 				       const unsigned long end)
+ {
+-	struct fwnode_handle *fn;
+ 	struct acpi_madt_rintc *rintc;
++	struct fwnode_handle *fn;
++	int rc;
+ 
+ 	rintc = (struct acpi_madt_rintc *)header;
++	rintc_acpi_data[nr_rintc] = kzalloc(sizeof(*rintc_acpi_data[0]), GFP_KERNEL);
++	if (!rintc_acpi_data[nr_rintc])
++		return -ENOMEM;
++
++	rintc_acpi_data[nr_rintc]->ext_intc_id = rintc->ext_intc_id;
++	rintc_acpi_data[nr_rintc]->hart_id = rintc->hart_id;
++	rintc_acpi_data[nr_rintc]->imsic_addr = rintc->imsic_addr;
++	rintc_acpi_data[nr_rintc]->imsic_size = rintc->imsic_size;
++	nr_rintc++;
+ 
+ 	/*
+ 	 * The ACPI MADT will have one INTC for each CPU (or HART)
+@@ -273,7 +360,13 @@ static int __init riscv_intc_acpi_init(union acpi_subtable_headers *header,
+ 		return -ENOMEM;
+ 	}
+ 
+-	return riscv_intc_init_common(fn, &riscv_intc_chip);
++	rc = riscv_intc_init_common(fn, &riscv_intc_chip);
++	if (rc) {
++		irq_domain_free_fwnode(fn);
++		return rc;
++	}
++
++	return 0;
+ }
+ 
+ IRQCHIP_ACPI_DECLARE(riscv_intc, ACPI_MADT_TYPE_RINTC, NULL,
 -- 
 2.40.1
 
