@@ -1,57 +1,57 @@
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8E031422B1
-	for <acpica-devel@lists.linux.dev>; Wed, 17 Apr 2024 15:33:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D43215E7F1
+	for <acpica-devel@lists.linux.dev>; Thu, 18 Apr 2024 11:46:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713367995; cv=none; b=lSPmC69oTw93a8U3Nb0cFP+XG0d5STjIllwiTk/wOVK2W3eIlWhhHBy+F/ojQU9d/OGNr5hqtoXx2dGHUsoGBcr7Q1Ea1L6vgy7AiMracBzDnqsYYN44gBw3++TutSTnPP2zoPzs1p/4gRVx4H9DnqGRW7hc17R+7uaHJNDe8Ak=
+	t=1713440768; cv=none; b=Vo92CV5eP9myIRg9c4O/qGBH818jEShz5ZVQ738W86XIA6y0wQ6xhASCRzUPMlzkikKc7F55U6i4a5LHs1GB9RLF6YBsWx+qjnm3Q+pMvyY6Q6a8h8B5A9cNheXxfs/DjChJ2pNH++TyQNProkMlcDrz+SXKlLfTYjP5MjIr+Nk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713367995; c=relaxed/simple;
-	bh=LyasFuHZp08VqwNu42/PVIEbWPHzMUfT5uQ3KYTy324=;
+	s=arc-20240116; t=1713440768; c=relaxed/simple;
+	bh=RRGuCpmn9QpJJtwiZl5qPKqvfeSljByY3/4eHt18EWs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PBAAB4UfbqtCH9bAX9vMKaLB7MJrpBYMX2+5d4c7o6Ncjtl97W6E94msxYWI1hxSSFkKkXKGZW/q2zaS8wyFy/fKq9U2uG67XxNLKPccM59Gq+LlVKpUTWc2J1GvJ2oP9j51W/HTPJ9CIgIja/KCScD9lVfM7Tr6qPpeNM7Yje4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=CD5amhla; arc=none smtp.client-ip=209.85.214.170
+	 Content-Type:Content-Disposition:In-Reply-To; b=c1qsKvd9Z7/ZS/thMTlkhFk1VkucO3ajZk4vAW+HiQFpVYxIPkz6DaN9tzdmA+qsLOqa0P0qmep9sNvKntzdJVWH5b9NUsBjVB1iJPOhyOEdmirJzOLzTvJhtlKrV6qGKDwZ0TnW6EJrDaIs/kuyILf5owgpV+l33bVJHnncAPA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=CTRY/soJ; arc=none smtp.client-ip=209.85.214.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="CD5amhla"
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1e3f17c64daso40342685ad.3
-        for <acpica-devel@lists.linux.dev>; Wed, 17 Apr 2024 08:33:13 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="CTRY/soJ"
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1e424bd30fbso6730525ad.0
+        for <acpica-devel@lists.linux.dev>; Thu, 18 Apr 2024 04:46:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1713367993; x=1713972793; darn=lists.linux.dev;
+        d=ventanamicro.com; s=google; t=1713440765; x=1714045565; darn=lists.linux.dev;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ci0/H2jmcb2D55FJA4q2NJz7BMdC0uHP2xAuYH6nUsQ=;
-        b=CD5amhlaRLO/hmV0O5uPxxUEHNLrTtVhLmpym/RAsKIrn6rSoJXNsffASwP9WEwlPt
-         mjftcNA+aHgM1/WfY4epU/GzvwStk6KGDlVtzy8ntwvhDgex778Xx/tL20bDDxx8Ajm6
-         e30HfBMJhWdwUxLHZM053v5yqTm8NjxzYK/cEppNISOIweaptLUSCaNIKKUfrePt/7BN
-         8mFwmVRYPohjKAE0HI1PlxNUhWqmFjMlYiwuqlGj8LfN3DrmDQB4R5q8OV+inBFyJ6Eh
-         aRGzYDX8asMshRjnyhhpU2blip+SrMtAI3HSHe4DgK5m3b5Lyxj+00HmBYPfKbAGtTqS
-         EOcw==
+        bh=tse31PpId242mWCWoF9F68b2IO88pQ6rFBjaTyilK9M=;
+        b=CTRY/soJNBu59A2zngHTyWk2HT4mDUTHx/PRr/cE/YW5RBe7DO7IeFy04bvb+K13XE
+         zQf0Xokz4JKxpcBSawH4LKJ5wgwTJWJXZVmauFqUOSFes0+8S9YbhsMaTWj2W+9luj3S
+         cheftyT8P0v5AbgjuU6bn/DP1XxptzmElubjxgIDKoEVrKraebvbMMoO/4EqJEv8HxO4
+         hbAWBMfl+0xRS7uJB6LMckb5KFXuIT8B9Jl2xCnBMQnNcHEjo+/NdyywQQZgYUhZMdKW
+         eRuO8jxgjgXPVLrP8i0lJh8aI4W3dlMXKoPu7LACkwXNsxJvksSWFp5iB9EX0Zg1O9xw
+         nG1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713367993; x=1713972793;
+        d=1e100.net; s=20230601; t=1713440765; x=1714045565;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Ci0/H2jmcb2D55FJA4q2NJz7BMdC0uHP2xAuYH6nUsQ=;
-        b=teaiaddOCp9fp80HocAd3Z/dtR/uzwytxT6dj0twDY+IqiDo11KhjRfyEIMUh5eMld
-         u1/+oCpNdIgMqkPeH5u/2CCN3/mTDsuZ07BmrbjB0hInNmYyT6Q3x0B1QeCNtrH1d0Lc
-         X3GDiYasbZqgy90P4WPOwnJ7/HMmvdDLUN7TosaKIZY7Mc6w2JzQayTq7aBexfwq4vVm
-         4MkuHGYLncFybZ7NI9sNHZKgidVxoQrpEnOac6b3txfNrG1alX/csN5vzxFC/ckfmDl1
-         MUm7MKiyUrh1ix0mK/rCGLtyogd0tk+cOxcicNjWVJcGwsnuQwL5sPE6OS6igpjRCLVm
-         jqoA==
-X-Forwarded-Encrypted: i=1; AJvYcCWtEqnoCaJ9Rb8LL8uqkJVBrLhY3A9e+Bj1wCMW7nyRdMmx0Z2RqebXp4dZ6eNzcVXZuTmWQP8sJUTSDRt9mWuH0Ad6yDXent+/zgU1
-X-Gm-Message-State: AOJu0Yx7jD+e5zWwcHUhyWB0W4AvEJfypVGySpPa9mXb2vv9x05AQNSx
-	MUx/WX1CuiLabj+lYisIHlk4tdjG1lH3n9eoRbyzf2XFYFINHWpcXkyr47QmpnQ=
-X-Google-Smtp-Source: AGHT+IHRZkCksWn0BOoecd+0pqZBwGMmL39xcXlgwLsVriOPR0oxo+w+nj8DW8s7r0j6AcJINnUn5A==
-X-Received: by 2002:a17:902:e5c1:b0:1e4:35b9:f150 with SMTP id u1-20020a170902e5c100b001e435b9f150mr19787192plf.11.1713367993089;
-        Wed, 17 Apr 2024 08:33:13 -0700 (PDT)
-Received: from sunil-laptop ([106.51.187.230])
-        by smtp.gmail.com with ESMTPSA id j9-20020a170903024900b001e83a718d87sm1102769plh.19.2024.04.17.08.33.06
+        bh=tse31PpId242mWCWoF9F68b2IO88pQ6rFBjaTyilK9M=;
+        b=nLY8Y2mPLfW+IE2BnxoQHLY9Hd9oeCdNjPS343WRWG5kdsnp7cJIrJP1QALTQLK3Kw
+         vnoquhqBBcpAmKfJy11+/8/WsSrEVAobMCqfXKKt8Un1vVn1dFlOiLdBb6F104wxqlrh
+         ZLEbiaZfVikUetgvFSYj41XnieXmvwEIZPSynjRMjXFJQTHscPyxnzq4OAA8tL8HeyGT
+         Zf3F81z1093C6hyp9uhmjyhwNO5nvUxMtvr7V2idrGJWvu770KlZSd+Q1iiyaTLxJ/O3
+         hrjartcc1d889UohhtOXlMg0kHQ2uYWgDHVJnlcz3xem80s5MYyALF6xtPmyr88iCAv+
+         1a8w==
+X-Forwarded-Encrypted: i=1; AJvYcCUIcbc34hl+Ev9UXQVvKds1CgYXsnp8sHEmQp79EqXyJwL48xxfOVVIoaT+6VNUFFC8oetaP5BO+I2GLOStYFzseQ6Skg3/vk72sbnM
+X-Gm-Message-State: AOJu0YzlRnnOXQZOnVpWl8vh55za1NIMJtOGicLpRJ5UvV27O1Cp3qFb
+	THBzqlGAPREqh6WF4XKODIEWrlp6v9rqC+pt28sFs/qWzaGrRcjplpYqWS+nz/A=
+X-Google-Smtp-Source: AGHT+IHRN0PX0++JRfnr2/T3yLJtW4R020dQU6g3OEB6EOIeUseXqxzCCZJlgMQ9PVF1Si/Jw1nqbQ==
+X-Received: by 2002:a17:902:ec90:b0:1e4:911b:7a6b with SMTP id x16-20020a170902ec9000b001e4911b7a6bmr3458551plg.61.1713440764817;
+        Thu, 18 Apr 2024 04:46:04 -0700 (PDT)
+Received: from sunil-laptop ([106.51.189.72])
+        by smtp.gmail.com with ESMTPSA id x1-20020a170902ec8100b001e5cadbdf8csm1327734plg.37.2024.04.18.04.45.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Apr 2024 08:33:12 -0700 (PDT)
-Date: Wed, 17 Apr 2024 21:03:02 +0530
+        Thu, 18 Apr 2024 04:46:04 -0700 (PDT)
+Date: Thu, 18 Apr 2024 17:15:53 +0530
 From: Sunil V L <sunilvl@ventanamicro.com>
 To: Bjorn Helgaas <helgaas@kernel.org>
 Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
@@ -77,9 +77,10 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
 	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
 Subject: Re: [RFC PATCH v4 03/20] PCI: Make pci_create_root_bus() declare its
  reliance on MSI domains
-Message-ID: <Zh/rroBTGTq/Q/FN@sunil-laptop>
+Message-ID: <ZiEH8VF6VhCMnXz1@sunil-laptop>
 References: <Zh41pOmtAJ0EcbiN@sunil-laptop>
  <20240416204653.GA164172@bhelgaas>
+ <Zh/rroBTGTq/Q/FN@sunil-laptop>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -88,105 +89,39 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240416204653.GA164172@bhelgaas>
+In-Reply-To: <Zh/rroBTGTq/Q/FN@sunil-laptop>
 
-On Tue, Apr 16, 2024 at 03:46:53PM -0500, Bjorn Helgaas wrote:
-> On Tue, Apr 16, 2024 at 01:54:04PM +0530, Sunil V L wrote:
-> > Hi Bjorn,
-> > 
-> > On Mon, Apr 15, 2024 at 06:15:23PM -0500, Bjorn Helgaas wrote:
-> > > On Mon, Apr 15, 2024 at 10:30:56PM +0530, Sunil V L wrote:
-> > > > Similar to commit 9ec37efb8783 ("PCI/MSI: Make
-> > > > pci_host_common_probe() declare its reliance on MSI domains"), declare
-> > > > this dependency for PCI probe in ACPI based flow.
-> > > > 
-> > > > This is required especially for RISC-V platforms where MSI controller
-> > > > can be absent. However, setting this for all architectures seem to cause
-> > > > issues on non RISC-V architectures [1]. Hence, enabled this only for
-> > > > RISC-V.
-> > > > 
-> > > > [1] - https://lore.kernel.org/oe-lkp/202403041047.791cb18e-oliver.sang@intel.com
-> > > > 
-> > > > Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
-> > > > ---
-> > > >  drivers/pci/probe.c | 3 +++
-> > > >  1 file changed, 3 insertions(+)
-> > > > 
-> > > > diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-> > > > index 1325fbae2f28..e09915bee2ee 100644
-> > > > --- a/drivers/pci/probe.c
-> > > > +++ b/drivers/pci/probe.c
-> > > > @@ -3048,6 +3048,9 @@ struct pci_bus *pci_create_root_bus(struct device *parent, int bus,
-> > > >  	bridge->sysdata = sysdata;
-> > > >  	bridge->busnr = bus;
-> > > >  	bridge->ops = ops;
-> > > > +#ifdef CONFIG_RISCV
-> > > > +	bridge->msi_domain = true;
-> > > > +#endif
-> > > 
-> > > Ugh.  I looked at [1], but that's not a very good justification for
-> > > this #ifdef.  The fault mentioned in [1] would need to be fixed, but
-> > > not this way.
-> > 
-> > Thank you again for the feedback!
-> > 
-> > I agree. This is due to my limitation with knowledge and resources to
-> > debug the issue happening on non-UEFI x86 system with some particular
-> > PCIe RC. Also, I was worried that we get into a rat hole of
-> > assumptions/quirks with various architecture/PCIe RC combinations.
-> 
-> The problem is that adding #ifdefs like this leads to a rat hole
-> itself.  We need to understand and fix the underlying issue instead.
-> 
-Agree. Ideally, from my reading of code, this change should have worked
-across architectures.
+Hi Bjorn,
 
-> > For ex: I think the issue is, somehow MSI domain is not set at the time
-> > of PCI host bridge registration in pci_register_host_bridge() causing
-> > PCI_BUS_FLAGS_NO_MSI to be set. This causes pci_alloc_irq_vectors() to
-> > fail. In portdrv.c, pcie_init_service_irqs() doesn't switch to INTx
-> > handling if MSI can not be used. It switches only if pcie_pme_no_msi()
-> > returns true. I couldn't find who actually sets up MSI domain bit late
-> > on this platform so that it somehow worked when we didn't set this flag.
-> > 
-> > Unfortunately, I don't have system to root cause and fix this issue with
-> > confidence. Also, I don't know if any other architectures have similar
-> > issues which are not caught yet. Hence, I thought it may be better
-> > just restrict the change to RISC-V.
+On Wed, Apr 17, 2024 at 09:03:13PM +0530, Sunil V L wrote:
+<snip>
 > 
-> It sounds like the above is a good start on analyzing the problem.
+> I think fundamentally there are two issues here.
 > 
-> I don't quite understand your statement that pcie_init_service_irqs()
-> doesn't fall back to INTx when MSI/MSI-X is not available.
+> 1) MSI domain should have been setup properly when
+> pci_register_host_bridge() is called. I see that pci_arch_init() which
+> is supposed to get called early calls x86_create_pci_msi_domain().
+> pci_register_host_bridge() also calls pci_set_bus_msi_domain() to setup
+> the MSI domain which can walk up to host bridge to find. So, not sure
+> why PCI_BUS_FLAGS_NO_MSI is getting set. Is there an issue in walking up
+> the tree?
 > 
-> I'm looking at this:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/pci/pcie/portdrv.c?id=v6.8#n177
-> pcie_port_enable_irq_vec() attempts
-> pci_alloc_irq_vectors(PCI_IRQ_MSIX | PCI_IRQ_MSI) and returns 0 if
-> successful.  If it returns failure, it looks like
-> pcie_init_service_irqs() *does* fall through to trying INTx
-> (PCI_IRQ_LEGACY).
-> 
-You are right. Not sure what I was looking at :-(.
+I think I understand now why this is happening on X86. In X86, even
+though x86_create_pci_msi_domain() sets up the MSI domain, it never
+informs IRQ framework. Only later in pcibios_device_add(), the device's
+MSI domain will be set which is too late for this bridge logic. So, when
+pci_set_bus_msi_domain() is called from pci_register_host_bridge(), it
+will not get it.
 
-I think fundamentally there are two issues here.
+It works in RISC-V (I guess ARM64 as well) because, the irqchip driver
+for MSI controller registers using pci_msi_register_fwnode_provider().
+But, if we set bridge->msi_domain = true in X86, it will disable MSI
+even though it supports MSI which is really bad.
 
-1) MSI domain should have been setup properly when
-pci_register_host_bridge() is called. I see that pci_arch_init() which
-is supposed to get called early calls x86_create_pci_msi_domain().
-pci_register_host_bridge() also calls pci_set_bus_msi_domain() to setup
-the MSI domain which can walk up to host bridge to find. So, not sure
-why PCI_BUS_FLAGS_NO_MSI is getting set. Is there an issue in walking up
-the tree?
-
-2) When it switches to legacy interrupt since MSI domain is not found,
-for some reason there is an interrupt enabled without a handler. I was
-suspecting PME since it was matching the IRQ#16 but it looks like PME
-handlers are present. I am unable to find anything suspicious from the
-log alone.
-
-I really don't know how to proceed further. With my limited
-understanding, I don't get any hint what is happening from the log.
+Please correct me if I am wrong with the analysis. If correct, what do
+you think the way forward if using CONFIG option is not good? I tried to
+register the domain in below commit but I don't feel it is a cleaner way.
+https://github.com/vlsunil/linux/commit/d6cf76f10c225c94fffb286b7a3e803a4e37df54
 
 Thanks,
 Sunil
