@@ -1,127 +1,133 @@
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D43215E7F1
-	for <acpica-devel@lists.linux.dev>; Thu, 18 Apr 2024 11:46:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A6B0160790;
+	Thu, 18 Apr 2024 13:49:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713440768; cv=none; b=Vo92CV5eP9myIRg9c4O/qGBH818jEShz5ZVQ738W86XIA6y0wQ6xhASCRzUPMlzkikKc7F55U6i4a5LHs1GB9RLF6YBsWx+qjnm3Q+pMvyY6Q6a8h8B5A9cNheXxfs/DjChJ2pNH++TyQNProkMlcDrz+SXKlLfTYjP5MjIr+Nk=
+	t=1713448166; cv=none; b=tAdQeIh5fU/s2MgqoJPY5epiPlEKESR3eUu2qHh4l4brDTTQN3udXQL2VLIu5D3guMd7M14d0SD/n+5sbzx/tDJbhRfFJfL8yVhBdPER0u6HmB6icTRJIyhA00rCMi035q4SokOVmjPgiPYvoXgkdEhtPkT1YO/Zg+2TnSIhmwI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713440768; c=relaxed/simple;
-	bh=RRGuCpmn9QpJJtwiZl5qPKqvfeSljByY3/4eHt18EWs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=c1qsKvd9Z7/ZS/thMTlkhFk1VkucO3ajZk4vAW+HiQFpVYxIPkz6DaN9tzdmA+qsLOqa0P0qmep9sNvKntzdJVWH5b9NUsBjVB1iJPOhyOEdmirJzOLzTvJhtlKrV6qGKDwZ0TnW6EJrDaIs/kuyILf5owgpV+l33bVJHnncAPA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=CTRY/soJ; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+	s=arc-20240116; t=1713448166; c=relaxed/simple;
+	bh=jfOQXsG4f9jvja2w3Ld4pdH6HBJIb87wPUxNL/nBu08=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=g5YmvLJ4bVwfU6ASQXopUK/5X9x5nD612pYkhZzLv9qC2/yUkLfphF4FCKqmI/yto+sOgOSK9N+2BRLK9DAxtwAYtdpUHkUQY3qcUTIHMs8gldbQwAw4sjBX/RLGry2WgtMEVV5UCLQWefyWBJFaYD8O9ks99PgCPPChy5bcLNk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o9VtkE4e; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="CTRY/soJ"
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1e424bd30fbso6730525ad.0
-        for <acpica-devel@lists.linux.dev>; Thu, 18 Apr 2024 04:46:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1713440765; x=1714045565; darn=lists.linux.dev;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=tse31PpId242mWCWoF9F68b2IO88pQ6rFBjaTyilK9M=;
-        b=CTRY/soJNBu59A2zngHTyWk2HT4mDUTHx/PRr/cE/YW5RBe7DO7IeFy04bvb+K13XE
-         zQf0Xokz4JKxpcBSawH4LKJ5wgwTJWJXZVmauFqUOSFes0+8S9YbhsMaTWj2W+9luj3S
-         cheftyT8P0v5AbgjuU6bn/DP1XxptzmElubjxgIDKoEVrKraebvbMMoO/4EqJEv8HxO4
-         hbAWBMfl+0xRS7uJB6LMckb5KFXuIT8B9Jl2xCnBMQnNcHEjo+/NdyywQQZgYUhZMdKW
-         eRuO8jxgjgXPVLrP8i0lJh8aI4W3dlMXKoPu7LACkwXNsxJvksSWFp5iB9EX0Zg1O9xw
-         nG1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713440765; x=1714045565;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tse31PpId242mWCWoF9F68b2IO88pQ6rFBjaTyilK9M=;
-        b=nLY8Y2mPLfW+IE2BnxoQHLY9Hd9oeCdNjPS343WRWG5kdsnp7cJIrJP1QALTQLK3Kw
-         vnoquhqBBcpAmKfJy11+/8/WsSrEVAobMCqfXKKt8Un1vVn1dFlOiLdBb6F104wxqlrh
-         ZLEbiaZfVikUetgvFSYj41XnieXmvwEIZPSynjRMjXFJQTHscPyxnzq4OAA8tL8HeyGT
-         Zf3F81z1093C6hyp9uhmjyhwNO5nvUxMtvr7V2idrGJWvu770KlZSd+Q1iiyaTLxJ/O3
-         hrjartcc1d889UohhtOXlMg0kHQ2uYWgDHVJnlcz3xem80s5MYyALF6xtPmyr88iCAv+
-         1a8w==
-X-Forwarded-Encrypted: i=1; AJvYcCUIcbc34hl+Ev9UXQVvKds1CgYXsnp8sHEmQp79EqXyJwL48xxfOVVIoaT+6VNUFFC8oetaP5BO+I2GLOStYFzseQ6Skg3/vk72sbnM
-X-Gm-Message-State: AOJu0YzlRnnOXQZOnVpWl8vh55za1NIMJtOGicLpRJ5UvV27O1Cp3qFb
-	THBzqlGAPREqh6WF4XKODIEWrlp6v9rqC+pt28sFs/qWzaGrRcjplpYqWS+nz/A=
-X-Google-Smtp-Source: AGHT+IHRN0PX0++JRfnr2/T3yLJtW4R020dQU6g3OEB6EOIeUseXqxzCCZJlgMQ9PVF1Si/Jw1nqbQ==
-X-Received: by 2002:a17:902:ec90:b0:1e4:911b:7a6b with SMTP id x16-20020a170902ec9000b001e4911b7a6bmr3458551plg.61.1713440764817;
-        Thu, 18 Apr 2024 04:46:04 -0700 (PDT)
-Received: from sunil-laptop ([106.51.189.72])
-        by smtp.gmail.com with ESMTPSA id x1-20020a170902ec8100b001e5cadbdf8csm1327734plg.37.2024.04.18.04.45.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 04:46:04 -0700 (PDT)
-Date: Thu, 18 Apr 2024 17:15:53 +0530
-From: Sunil V L <sunilvl@ventanamicro.com>
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
-	linux-pci@vger.kernel.org, acpica-devel@lists.linux.dev,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Anup Patel <anup@brainfault.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Samuel Holland <samuel.holland@sifive.com>,
-	Robert Moore <robert.moore@intel.com>,
-	Haibo1 Xu <haibo1.xu@intel.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Andrew Jones <ajones@ventanamicro.com>,
-	Atish Kumar Patra <atishp@rivosinc.com>,
-	Andrei Warkentin <andrei.warkentin@intel.com>,
-	Marc Zyngier <maz@kernel.org>,
-	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-Subject: Re: [RFC PATCH v4 03/20] PCI: Make pci_create_root_bus() declare its
- reliance on MSI domains
-Message-ID: <ZiEH8VF6VhCMnXz1@sunil-laptop>
-References: <Zh41pOmtAJ0EcbiN@sunil-laptop>
- <20240416204653.GA164172@bhelgaas>
- <Zh/rroBTGTq/Q/FN@sunil-laptop>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o9VtkE4e"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2064AC113CC;
+	Thu, 18 Apr 2024 13:49:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713448165;
+	bh=jfOQXsG4f9jvja2w3Ld4pdH6HBJIb87wPUxNL/nBu08=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=o9VtkE4ePs1Kn8oRF5n8WcljMFlRPUrOeX0M2eFt0VjvDoYupdqg+8AAQrh6yexev
+	 Yy4qSEQp7xvRGROpudXwJrLUR149J8R9gYOiw3nsbjzxYJ3S6lqVZztdQ/QuTYpdJ3
+	 AMxVbS9TxBORXr4RfAOXu4hhzDZeiulUkhE2sSM9J2hTdFIwYuZMSLwTSbCRcTseiL
+	 /XcdKDNoV3E0Vbyw8q4L+3DqVfDwkbwaSK7Hv6I3jlJoEKmPAla7ufnGJiEbeGcaSr
+	 ANdzPRoT333poFim3YKZJqvnXp8FyB3JQxICibj2Ch6VqjQHtbbu4ituRhMns1bgrS
+	 7POoB7ZWa0Rrg==
+From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To: Sunil V L <sunilvl@ventanamicro.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
+ linux-pci@vger.kernel.org, acpica-devel@lists.linux.dev
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon
+ <will@kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer
+ Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, "Rafael J
+ . Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, Bjorn Helgaas
+ <bhelgaas@google.com>, Anup Patel <anup@brainfault.org>, Thomas Gleixner
+ <tglx@linutronix.de>, Samuel Holland <samuel.holland@sifive.com>, Robert
+ Moore <robert.moore@intel.com>, Haibo1 Xu <haibo1.xu@intel.com>, Conor
+ Dooley <conor.dooley@microchip.com>, Andrew Jones
+ <ajones@ventanamicro.com>, Atish Kumar Patra <atishp@rivosinc.com>, Andrei
+ Warkentin <andrei.warkentin@intel.com>, Marc Zyngier <maz@kernel.org>,
+ Sunil V L <sunilvl@ventanamicro.com>, Heinrich Schuchardt
+ <heinrich.schuchardt@canonical.com>
+Subject: Re: [RFC PATCH v4 00/20] RISC-V: ACPI: Add external interrupt
+ controller support
+In-Reply-To: <20240415170113.662318-1-sunilvl@ventanamicro.com>
+References: <20240415170113.662318-1-sunilvl@ventanamicro.com>
+Date: Thu, 18 Apr 2024 15:49:22 +0200
+Message-ID: <87a5lqsrvh.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zh/rroBTGTq/Q/FN@sunil-laptop>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hi Bjorn,
+Sunil V L <sunilvl@ventanamicro.com> writes:
 
-On Wed, Apr 17, 2024 at 09:03:13PM +0530, Sunil V L wrote:
-<snip>
-> 
-> I think fundamentally there are two issues here.
-> 
-> 1) MSI domain should have been setup properly when
-> pci_register_host_bridge() is called. I see that pci_arch_init() which
-> is supposed to get called early calls x86_create_pci_msi_domain().
-> pci_register_host_bridge() also calls pci_set_bus_msi_domain() to setup
-> the MSI domain which can walk up to host bridge to find. So, not sure
-> why PCI_BUS_FLAGS_NO_MSI is getting set. Is there an issue in walking up
-> the tree?
-> 
-I think I understand now why this is happening on X86. In X86, even
-though x86_create_pci_msi_domain() sets up the MSI domain, it never
-informs IRQ framework. Only later in pcibios_device_add(), the device's
-MSI domain will be set which is too late for this bridge logic. So, when
-pci_set_bus_msi_domain() is called from pci_register_host_bridge(), it
-will not get it.
+> This series adds support for the below ECR approved by ASWG.
+> 1) MADT - https://drive.google.com/file/d/1oMGPyOD58JaPgMl1pKasT-VKsIKia7=
+zR/view?usp=3Dsharing
+>
+> The series primarily enables irqchip drivers for RISC-V ACPI based
+> platforms.
+>
+> The series can be broadly categorized like below.=20
+>
+> 1) PCI ACPI related functions are migrated from arm64 to common file so
+> that we don't need to duplicate them for RISC-V.
+>
+> 2) Added support for re-ordering the probe of interrupt controllers when
+> IRQCHIP_ACPI_DECLARE is used.
+>
+> 3) To ensure probe order between interrupt controllers and devices,
+> implicit dependency is created similar to when _DEP is present.
+>
+> 4) When PNP devices like Generic 16550A UART, have the dependency on the
+> interrupt controller, they will not be added to PNP data structures. So,
+> added second phase of pnpacpi_init to handle this.
+>
+> 5) ACPI support added in RISC-V interrupt controller drivers.
+>
+> This series is still kept as RFC to seek feedback on above design
+> changes. Looking forward for the feedback!
+>
+> Changes since RFC v3:
+> 	1) Moved to _DEP method instead of fw_devlink.
+> 	2) PLIC/APLIC driver probe using namespace devices.
+> 	3) Handling PNP devices as part of clearing dependency.
+> 	4) Rebased to latest linux-next to get AIA DT drivers.
+>
+> Changes since RFC v2:
+> 	1) Introduced fw_devlink for ACPI nodes for IRQ dependency.
+> 	2) Dropped patches in drivers which are not required due to
+> 	   fw_devlink support.
+> 	3) Dropped pci_set_msi() patch and added a patch in
+> 	   pci_create_root_bus().
+> 	4) Updated pnp_irq() patch so that none of the actual PNP
+> 	   drivers need to change.
+>
+> Changes since RFC v1:
+> 	1) Abandoned swnode approach as per Marc's feedback.
+> 	2) To cope up with AIA series changes which changed irqchip driver
+> 	   probe from core_initcall() to platform_driver, added patches
+> 	   to support deferred probing.
+> 	3) Rebased on top of Anup's AIA v11 and added tags.
+>
+> To test the series,
+>
+> 1) Qemu should be built using the riscv_acpi_namespace_v1 branch at
+> https://github.com/vlsunil/qemu.git
+>
+> 2) EDK2 should be built using the instructions at:
+> https://github.com/tianocore/edk2/blob/master/OvmfPkg/RiscVVirt/README.md
 
-It works in RISC-V (I guess ARM64 as well) because, the irqchip driver
-for MSI controller registers using pci_msi_register_fwnode_provider().
-But, if we set bridge->msi_domain = true in X86, it will disable MSI
-even though it supports MSI which is really bad.
+Hi Sunil,
 
-Please correct me if I am wrong with the analysis. If correct, what do
-you think the way forward if using CONFIG option is not good? I tried to
-register the domain in below commit but I don't feel it is a cleaner way.
-https://github.com/vlsunil/linux/commit/d6cf76f10c225c94fffb286b7a3e803a4e37df54
+I started playing with your work, and FYI: Using U-boot instead of EDK2
+works out of the box (with acpi.config added to U-boot).
 
-Thanks,
-Sunil
+I changed my rootfs/boot tooling like [1], and it boots.
+
+(For those who prefer working with U-boot UEFI instead of EDK2.)
+
+
+Bj=C3=B6rn
+
+[1] https://github.com/bjoto/riscv-rootfs-utils/commit/c0c620131f04d0c25df1=
+504af4d0629a420b097e
