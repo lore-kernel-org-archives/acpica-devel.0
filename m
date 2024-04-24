@@ -1,227 +1,200 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 446A8154432
-	for <acpica-devel@lists.linux.dev>; Mon, 22 Apr 2024 19:28:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4723154C1E;
+	Wed, 24 Apr 2024 05:29:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713814117; cv=none; b=lBrgg+NmmbJmokCn6pZjxUe6HBLX/UKjkE3xGhVHgVQZu/B1+HG2IMXhUHBj1E7zedk4UNsOQ0lQ4IREXrqQUcJ3RwTAozqVpRFcuvPXEljcnBLN3t/7tbj6d6SuXB+WHKhYcddAJ0evhFrEIJWkYneX5qeIBZkrhhSgi3gZQIY=
+	t=1713936566; cv=none; b=IB1P971BuX0NbACp1fXbksE2e34SR5TXhtfBn97P8v/mFgndavXIcXQWho2d2nktsHvuFqlItlE5dD3gTShQVqBMJV5vQ05Fnk/eQpkpeB1qsKr6oa9l+Ir+2k9Qnfh9wetxWmo4e3eqBiAHJT//aHG5sQmNgPjwOABmcbcIrS0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713814117; c=relaxed/simple;
-	bh=vK0Pec9UTkueMfeAUW6DUE58gHSSShCHCCsfnjahRB0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RYTMTz495WOWkfMSD0jQq6TnCSIBXtcb65UzeyT8i7A/nNQiQKFr/m0ZFW0mKgQ7rmnWGtFEb39HzT1V6//Ckvw77UEgheqp6SjHgrwaVTFOgF6xD6CLMi4TEz2ag2mAoWuDxIIO5016NZQirBP4apH+slHJ807HDQc7Vk3sw2Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aFAAzSYo; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1713936566; c=relaxed/simple;
+	bh=1/iIct8UGpDmuG/5bl7oWPxGoo+moxuqtVa10nZ/dok=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=QcweyzXhccbQzYlHcfnIfWjjDqqnK1burPGw2N0irivMxZ+CJj9WP5I8TaksxdY9x4FBp8On0WITxidwYjhta8rZLUsLiehfLh6oUABvibXGxizCrNV1HsMPj2lvWwWACvxaRySq8MmDsJRaphcwnV7mYnd/FQWmJKST6d5+MBo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CANq3iYR; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aFAAzSYo"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBB56C4AF0F
-	for <acpica-devel@lists.linux.dev>; Mon, 22 Apr 2024 19:28:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713814116;
-	bh=vK0Pec9UTkueMfeAUW6DUE58gHSSShCHCCsfnjahRB0=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=aFAAzSYoUCQ68idR1ZV/vA+n5TvKrpHfQPoJVIiInIMpjHdQSX73yMdn8U4ksj4Fc
-	 skG6AwXlU+5fRyCJT657pU2QBb3UEFwAmP5XAc9n2XDl5Xz1uW0oJN6x4qVbmV5LTG
-	 kcxqY4j8mc7HfQsccUQl1hDRBDyntfRMXM0/5IHXrFVFiRRrSgq8OXXe/6FaB2bmSv
-	 V5PtvrBUChUucAwEXMYzqk8qPn2vYGkelEQruUnzVbFZU5IQLsQ12fMF0BQwGrjLlg
-	 pNHv2P+Atj6ifkBsSbq3ndmGR2MyN7SrutlUyMoSh4pCnCtmBSYtw+Dvvvhr4ywRAs
-	 Yn/7YHfhlPTUg==
-Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-5acdbfac114so72029eaf.2
-        for <acpica-devel@lists.linux.dev>; Mon, 22 Apr 2024 12:28:36 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVuSo6J5VNPiVsL1rtDUfgdYw8Pk9Wg5GbxyNXfMPaIG39X/zxZAwfcjDiTbk5ye00kkyQFCtf692Omeoxcgy0o+FqB9d/Fwzg0yNrB
-X-Gm-Message-State: AOJu0YzfT6TdijRbGmjIEiO9u1r90blvQ8Vrwb92yuFkAzhBKmNGvduf
-	XYKWW3gbVYqn2nsDYs4DMIh7kXD0+Db2j9fCi8/+r/Q2tJtRFHTf8Vn/8UToz8HG8xm94TGlTmG
-	YRrq8IzxkrNgoRNGnIQYi9w82hII=
-X-Google-Smtp-Source: AGHT+IGUETKc3TgOF4OePC5o1ZswAoxj8sQKPSP7731avzXAb+y8Q1PqVfZ8Xtb3zIuDpvt+fYwScVKj2gv5dZwOXLc=
-X-Received: by 2002:a05:6820:2884:b0:5aa:241a:7f4b with SMTP id
- dn4-20020a056820288400b005aa241a7f4bmr11757032oob.1.1713814115959; Mon, 22
- Apr 2024 12:28:35 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CANq3iYR"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713936565; x=1745472565;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=1/iIct8UGpDmuG/5bl7oWPxGoo+moxuqtVa10nZ/dok=;
+  b=CANq3iYRgtTv+PuBlF267u695Z6FsiYQjbf7KyP+yWkbLFEgWNw3JUF9
+   d/EIxrJzUxsxw554sFDHSBSkGdBw4tY5STtDr2UTiTiGlTj9b403zhPvY
+   PkV4+xXIL8f2FVLWlYBF5rpD/vmYrg4B8VOZ0v9Ugc457lKmcUdhfcRmQ
+   y7DKAxbFmDTweI5kyePhVUj952WttElG/jAeik2rZpDKIxfbOiKPxttF2
+   FQltoVXFzI2HERc+c/xO3Zki/+BmZtDsG3B1kclIftXGp7vyrXxBBiAd1
+   oQeUXF1MydvEZ107YF9XTVLWvW8wZlTlXh2wnKxpYX+/m0fEUNbjvAdmc
+   Q==;
+X-CSE-ConnectionGUID: cbwGwSG1QpWvD4QE4Tzs2w==
+X-CSE-MsgGUID: S+qFf/QGRfyXjgpgSenh4A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="27004142"
+X-IronPort-AV: E=Sophos;i="6.07,225,1708416000"; 
+   d="scan'208";a="27004142"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 22:29:25 -0700
+X-CSE-ConnectionGUID: TZUdjSLNSc++1OEGH/Lb4Q==
+X-CSE-MsgGUID: 4RHRlqHiSi+Bn+7xBiL3uQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,225,1708416000"; 
+   d="scan'208";a="62049672"
+Received: from unknown (HELO haibo-OptiPlex-7090.sh.intel.com) ([10.239.159.132])
+  by orviesa001.jf.intel.com with ESMTP; 23 Apr 2024 22:29:14 -0700
+From: Haibo Xu <haibo1.xu@intel.com>
+To: sunilvl@ventanamicro.com,
+	arnd@arndb.de
+Cc: xiaobo55x@gmail.com,
+	ajones@ventanamicro.com,
+	Haibo Xu <haibo1.xu@intel.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Robert Moore <robert.moore@intel.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Guo Ren <guoren@kernel.org>,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Baoquan He <bhe@redhat.com>,
+	Greentime Hu <greentime.hu@sifive.com>,
+	Charlie Jenkins <charlie@rivosinc.com>,
+	Zong Li <zong.li@sifive.com>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	=?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
+	Samuel Holland <samuel.holland@sifive.com>,
+	Chen Jiahao <chenjiahao16@huawei.com>,
+	Jisheng Zhang <jszhang@kernel.org>,
+	James Morse <james.morse@arm.com>,
+	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+	Evan Green <evan@rivosinc.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Tony Luck <tony.luck@intel.com>,
+	Yuntao Wang <ytcoode@gmail.com>,
+	Alison Schofield <alison.schofield@intel.com>,
+	Dave Jiang <dave.jiang@intel.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	linux-riscv@lists.infradead.org,
+	linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev
+Subject: [PATCH v3 0/6] Add ACPI NUMA support for RISC-V
+Date: Wed, 24 Apr 2024 13:46:20 +0800
+Message-Id: <cover.1713778236.git.haibo1.xu@intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20240415170113.662318-1-sunilvl@ventanamicro.com>
-In-Reply-To: <20240415170113.662318-1-sunilvl@ventanamicro.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Mon, 22 Apr 2024 21:28:24 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0gTzn3TDoh0+0UQjMeJVdU+z16dDOT_fKMhr0XrOxyRtA@mail.gmail.com>
-Message-ID: <CAJZ5v0gTzn3TDoh0+0UQjMeJVdU+z16dDOT_fKMhr0XrOxyRtA@mail.gmail.com>
-Subject: Re: [RFC PATCH v4 00/20] RISC-V: ACPI: Add external interrupt
- controller support
-To: Sunil V L <sunilvl@ventanamicro.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org, 
-	linux-pci@vger.kernel.org, acpica-devel@lists.linux.dev, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, "Rafael J . Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
-	Bjorn Helgaas <bhelgaas@google.com>, Anup Patel <anup@brainfault.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Samuel Holland <samuel.holland@sifive.com>, 
-	Robert Moore <robert.moore@intel.com>, Haibo1 Xu <haibo1.xu@intel.com>, 
-	Conor Dooley <conor.dooley@microchip.com>, Andrew Jones <ajones@ventanamicro.com>, 
-	Atish Kumar Patra <atishp@rivosinc.com>, Andrei Warkentin <andrei.warkentin@intel.com>, 
-	Marc Zyngier <maz@kernel.org>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, Apr 15, 2024 at 7:01=E2=80=AFPM Sunil V L <sunilvl@ventanamicro.com=
-> wrote:
->
-> This series adds support for the below ECR approved by ASWG.
-> 1) MADT - https://drive.google.com/file/d/1oMGPyOD58JaPgMl1pKasT-VKsIKia7=
-zR/view?usp=3Dsharing
->
-> The series primarily enables irqchip drivers for RISC-V ACPI based
-> platforms.
->
-> The series can be broadly categorized like below.
->
-> 1) PCI ACPI related functions are migrated from arm64 to common file so
-> that we don't need to duplicate them for RISC-V.
->
-> 2) Added support for re-ordering the probe of interrupt controllers when
-> IRQCHIP_ACPI_DECLARE is used.
->
-> 3) To ensure probe order between interrupt controllers and devices,
-> implicit dependency is created similar to when _DEP is present.
->
-> 4) When PNP devices like Generic 16550A UART, have the dependency on the
-> interrupt controller, they will not be added to PNP data structures. So,
-> added second phase of pnpacpi_init to handle this.
->
-> 5) ACPI support added in RISC-V interrupt controller drivers.
->
-> This series is still kept as RFC to seek feedback on above design
-> changes. Looking forward for the feedback!
+This patch series enable RISC-V ACPI NUMA support which was based on
+the recently approved ACPI ECR[1].
 
-I've looked at the patches and I don't see anything deeply concerning
-in them from the ACPI core code perspective.
+Patch 1/6 is generated from the acpica PR[2] and should be merged through
+the acpica project. Due to this dependency, other 5 patches can only be
+merged after the corresponding ACPICA patch was pulled into linux.
 
-The changes look reasonably straightforward to me.
+Patch 2/6 add RISC-V specific acpi_numa.c file to parse NUMA information
+from SRAT and SLIT ACPI tables.
+Patch 3/6 add the common SRAT RINTC affinity structure handler.
+Patch 4/6 remove the '#if defined(CONFIG_ARCH)' condition to make some NUMA
+related parse functions common for all current architectures that support
+ACPI_NUMA.
+Patch 5/6 change the ACPI_NUMA to a hidden option since it would be selected
+by default on all supported platform. 
+Patch 6/6 replace pr_info with pr_debug in arch_acpi_numa_init() to avoid
+potential boot noise on ACPI platforms that are not NUMA.  
 
-Thanks!
+Based-on: https://github.com/linux-riscv/linux-riscv/tree/for-next
 
-> Changes since RFC v3:
->         1) Moved to _DEP method instead of fw_devlink.
->         2) PLIC/APLIC driver probe using namespace devices.
->         3) Handling PNP devices as part of clearing dependency.
->         4) Rebased to latest linux-next to get AIA DT drivers.
->
-> Changes since RFC v2:
->         1) Introduced fw_devlink for ACPI nodes for IRQ dependency.
->         2) Dropped patches in drivers which are not required due to
->            fw_devlink support.
->         3) Dropped pci_set_msi() patch and added a patch in
->            pci_create_root_bus().
->         4) Updated pnp_irq() patch so that none of the actual PNP
->            drivers need to change.
->
-> Changes since RFC v1:
->         1) Abandoned swnode approach as per Marc's feedback.
->         2) To cope up with AIA series changes which changed irqchip drive=
-r
->            probe from core_initcall() to platform_driver, added patches
->            to support deferred probing.
->         3) Rebased on top of Anup's AIA v11 and added tags.
->
-> To test the series,
->
-> 1) Qemu should be built using the riscv_acpi_namespace_v1 branch at
-> https://github.com/vlsunil/qemu.git
->
-> 2) EDK2 should be built using the instructions at:
-> https://github.com/tianocore/edk2/blob/master/OvmfPkg/RiscVVirt/README.md
->
-> 3) Build Linux using this series.
->
-> Run Qemu:
-> qemu-system-riscv64 \
->  -M virt,pflash0=3Dpflash0,pflash1=3Dpflash1,aia=3Daplic-imsic \
->  -m 2G -smp 8 \
->  -serial mon:stdio \
->  -device virtio-gpu-pci -full-screen \
->  -device qemu-xhci \
->  -device usb-kbd \
->  -blockdev node-name=3Dpflash0,driver=3Dfile,read-only=3Don,filename=3DRI=
-SCV_VIRT_CODE.fd \
->  -blockdev node-name=3Dpflash1,driver=3Dfile,filename=3DRISCV_VIRT_VARS.f=
-d \
->  -netdev user,id=3Dnet0 -device virtio-net-pci,netdev=3Dnet0 \
->  -kernel arch/riscv/boot/Image \
->  -initrd rootfs.cpio \
->  -append "root=3D/dev/ram ro console=3DttyS0 rootwait earlycon=3Duart8250=
-,mmio,0x10000000"
->
-> To boot with APLIC only, use aia=3Daplic.
-> To boot with PLIC, remove aia=3D option.
->
-> This series is also available in acpi_b2_v4_autodep_v1 branch at
-> https://github.com/vlsunil/linux.git
->
-> Based-on: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next=
-.git/tag/?h=3Dnext-20240415
->
-> Sunil V L (20):
->   arm64: PCI: Migrate ACPI related functions to pci-acpi.c
->   RISC-V: ACPI: Implement PCI related functionality
->   PCI: Make pci_create_root_bus() declare its reliance on MSI domains
->   ACPI: scan.c: Add weak arch specific function to reorder the IRQCHIP
->     probe
->   ACPI: RISC-V: Implement arch function to reorder irqchip probe entries
->   ACPI: bus: Add acpi_riscv_init function
->   RISC-V: Kconfig: Select deferred GSI probe for ACPI systems
->   ACPI: scan: Refactor dependency creation
->   drivers/acpi/scan.c: Update _DEP honor list
->   RISC-V: ACPI: Initialize GSI mapping structures
->   ACPI: scan.c: Define weak function to populate dependencies
->   RISC-V: ACPI: Implement function to add implicit dependencies
->   ACPI/PNP: Initialize PNP devices skipped due to _DEP
->   irqchip: riscv-intc: Add ACPI support for AIA
->   irqchip: riscv-imsic: Add ACPI support
->   irqchip: riscv-aplic: Add ACPI support
->   irqchip: irq-sifive-plic: Add ACPI support
->   ACPI: bus: Add RINTC IRQ model for RISC-V
->   irqchip: riscv-intc: Set ACPI irqmodel
->   ACPI: pci_link: Clear the dependencies after probe
->
->  arch/arm64/kernel/pci.c                    | 191 ------------
->  arch/riscv/Kconfig                         |   3 +
->  arch/riscv/include/asm/irq.h               |  57 ++++
->  arch/riscv/kernel/acpi.c                   |  31 +-
->  drivers/acpi/Kconfig                       |   3 +
->  drivers/acpi/bus.c                         |   4 +
->  drivers/acpi/pci_link.c                    |   3 +
->  drivers/acpi/riscv/Makefile                |   2 +-
->  drivers/acpi/riscv/init.c                  |  14 +
->  drivers/acpi/riscv/init.h                  |   4 +
->  drivers/acpi/riscv/irq.c                   | 323 +++++++++++++++++++++
->  drivers/acpi/scan.c                        |  69 +++--
->  drivers/irqchip/irq-riscv-aplic-direct.c   |  20 +-
->  drivers/irqchip/irq-riscv-aplic-main.c     |  70 +++--
->  drivers/irqchip/irq-riscv-aplic-main.h     |   1 +
->  drivers/irqchip/irq-riscv-aplic-msi.c      |   9 +-
->  drivers/irqchip/irq-riscv-imsic-early.c    |  52 +++-
->  drivers/irqchip/irq-riscv-imsic-platform.c |  32 +-
->  drivers/irqchip/irq-riscv-imsic-state.c    | 115 ++++----
->  drivers/irqchip/irq-riscv-imsic-state.h    |   2 +-
->  drivers/irqchip/irq-riscv-intc.c           | 102 ++++++-
->  drivers/irqchip/irq-sifive-plic.c          |  89 ++++--
->  drivers/pci/pci-acpi.c                     | 182 ++++++++++++
->  drivers/pci/probe.c                        |   3 +
->  drivers/pnp/pnpacpi/core.c                 |  24 +-
->  drivers/pnp/pnpacpi/rsparser.c             |  63 ++--
->  include/acpi/acpi_bus.h                    |   2 +
->  include/linux/acpi.h                       |   9 +
->  include/linux/irqchip/riscv-imsic.h        |  10 +
->  include/linux/pnp.h                        |   7 +
->  30 files changed, 1108 insertions(+), 388 deletions(-)
->  create mode 100644 drivers/acpi/riscv/init.c
->  create mode 100644 drivers/acpi/riscv/init.h
->  create mode 100644 drivers/acpi/riscv/irq.c
->
-> --
-> 2.40.1
->
->
+[1] https://drive.google.com/file/d/1YTdDx2IPm5IeZjAW932EYU-tUtgS08tX/view?usp=sharing
+[2] https://github.com/acpica/acpica/pull/926
+
+Testing:
+Since the ACPI AIA/PLIC support patch set is still under upstream review,
+hence it is tested using the poll based HVC SBI console and RAM disk.
+1) Build latest Qemu with the following patch backported
+   https://github.com/vlsunil/qemu/commit/42bd4eeefd5d4410a68f02d54fee406d8a1269b0
+
+2) Build latest EDK-II
+   https://github.com/tianocore/edk2/blob/master/OvmfPkg/RiscVVirt/README.md
+
+3) Build Linux with the following configs enabled
+   CONFIG_RISCV_SBI_V01=y
+   CONFIG_SERIAL_EARLYCON_RISCV_SBI=y
+   CONFIG_NONPORTABLE=y
+   CONFIG_HVC_RISCV_SBI=y
+   CONFIG_NUMA=y
+   CONFIG_ACPI_NUMA=y
+
+4) Build buildroot rootfs.cpio
+
+5) Launch the Qemu machine
+   qemu-system-riscv64 -nographic \
+   -machine virt,pflash0=pflash0,pflash1=pflash1 -smp 4 -m 8G \
+   -blockdev node-name=pflash0,driver=file,read-only=on,filename=RISCV_VIRT_CODE.fd \
+   -blockdev node-name=pflash1,driver=file,filename=RISCV_VIRT_VARS.fd \
+   -object memory-backend-ram,size=4G,id=m0 \
+   -object memory-backend-ram,size=4G,id=m1 \
+   -numa node,memdev=m0,cpus=0-1,nodeid=0 \
+   -numa node,memdev=m1,cpus=2-3,nodeid=1 \
+   -numa dist,src=0,dst=1,val=30 \
+   -kernel linux/arch/riscv/boot/Image \
+   -initrd buildroot/output/images/rootfs.cpio \
+   -append "root=/dev/ram ro console=hvc0 earlycon=sbi"
+
+[    0.000000] ACPI: SRAT: Node 0 PXM 0 [mem 0x80000000-0x17fffffff]
+[    0.000000] ACPI: SRAT: Node 1 PXM 1 [mem 0x180000000-0x27fffffff]
+[    0.000000] NUMA: NODE_DATA [mem 0x17fe3bc40-0x17fe3cfff]
+[    0.000000] NUMA: NODE_DATA [mem 0x27fff4c40-0x27fff5fff]
+...
+[    0.000000] ACPI: NUMA: SRAT: PXM 0 -> HARTID 0x0 -> Node 0
+[    0.000000] ACPI: NUMA: SRAT: PXM 0 -> HARTID 0x1 -> Node 0
+[    0.000000] ACPI: NUMA: SRAT: PXM 1 -> HARTID 0x2 -> Node 1
+[    0.000000] ACPI: NUMA: SRAT: PXM 1 -> HARTID 0x3 -> Node 1
+
+---
+Changes since v2
+  - Rebase to Linux 6.9-rc1
+  - changed ACPI_NUMA to a hidden option in patch 5/6 per Arnd's suggestion
+  - Removed original 6/6 which was not needed with changes in patch 5/6
+  - Added a new patch 6/6 to replace pr_info to pr_debug in arch_acpi_numa_init
+
+Haibo Xu (6):
+  ACPICA: SRAT: Add RISC-V RINTC affinity structure
+  ACPI: RISCV: Add NUMA support based on SRAT and SLIT
+  ACPI: NUMA: Add handler for SRAT RINTC affinity structure
+  ACPI: NUMA: Make some NUMA related parse functions common
+  ACPI: NUMA: change the ACPI_NUMA to a hidden option
+  ACPI: NUMA: replace pr_info with pr_debug in arch_acpi_numa_init
+
+ arch/arm64/Kconfig            |   1 -
+ arch/loongarch/Kconfig        |   1 -
+ arch/riscv/include/asm/acpi.h |  15 +++-
+ arch/riscv/kernel/Makefile    |   1 +
+ arch/riscv/kernel/acpi.c      |   5 --
+ arch/riscv/kernel/acpi_numa.c | 131 ++++++++++++++++++++++++++++++++++
+ arch/riscv/kernel/setup.c     |   4 +-
+ arch/riscv/kernel/smpboot.c   |   2 -
+ drivers/acpi/numa/Kconfig     |   5 +-
+ drivers/acpi/numa/srat.c      |  40 ++++++++---
+ drivers/base/arch_numa.c      |   2 +-
+ include/acpi/actbl3.h         |  18 ++++-
+ include/linux/acpi.h          |   6 ++
+ 13 files changed, 204 insertions(+), 27 deletions(-)
+ create mode 100644 arch/riscv/kernel/acpi_numa.c
+
+-- 
+2.34.1
+
