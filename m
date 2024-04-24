@@ -1,130 +1,107 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BD8315535A;
-	Wed, 24 Apr 2024 05:31:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2974E16C855;
+	Wed, 24 Apr 2024 17:55:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713936688; cv=none; b=lsgU7QwJE5cWvBgJWZXI9+gs5XJVWTAXM5vnSDou84dztZk9cj89lIT4d17eoBg+aEvR3SwRSwsF0yG7/DaPP1Lv2VDJbkSwWGw2nXxeymqnR+OTaWHi/Vg/O2ixVRdguLlPKax5uxzkTzrsv/TeLgAO2U11niRuh+q22IgbnGw=
+	t=1713981354; cv=none; b=IOitGWHCEauCEapJ3QgR7cpa6r4d6WUq5SlU/VBJ5TLBJxe3dMUAWtZCzQ5qWp/wc0X2sCJGQobijC4QDY6jnoGM4HsIaPxf0mTfEM21Jo/IG07xCJ4W+RkA1FPHJ3LJIwCMsbEGd0k1lWiJnGFNHQTwlgVJPyVWKz3ErhUqasc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713936688; c=relaxed/simple;
-	bh=tPo4ypzFj/KicqcCKxaiOjCo7Eyu+TsGnLXFq3hFYTc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=B5SxncW2LAoTeZCLSnChChIW11JfHj8Iy1d18IytpS2wcbJe3fqBgurISGKPlGzZVDWzZAkMeHHgFxdzWn5wtBBsPxPIsZoAmEL6iu41cynTNZlz1aLK6XfG9/aR/Vpsrve73hE+j0K3m2I7sbEMHjBTjapVoO19jWleXOSEtLQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gL0SCOdX; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1713981354; c=relaxed/simple;
+	bh=R4CYpHlj8jEVfIevCJyMoADNlNhxgxYKx+hnKC/6ZHQ=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=GWh5QbQceOg18/LjGMJfMmAPLs92RJNn9a0knv04ZTVSRomN2R1ncPU3orQoc3Burkqs2LLG+IcT6xUFLujR1dj9Q88R1Qg4Hx2b9cT0R4SDzOAP/dK6H/OU1Vbb+1TCs9hHYAV/esYhriih8ZLJe6Y6J1uu/gjO8W0M68Th/PU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o90A0dji; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gL0SCOdX"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713936688; x=1745472688;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=tPo4ypzFj/KicqcCKxaiOjCo7Eyu+TsGnLXFq3hFYTc=;
-  b=gL0SCOdXaEOJkH48CwLlNNYb6X1X+WgXbMhxfce6c9ajjf80uUQd2Y20
-   zeDuvOBH0G2EjuNKylfmUC3P/Xo7+hg+ehq0kJWcJInFDGYlSRzh8zZMV
-   m/wVG4i1TVN7zKSGppqK22sLVoWcb7ZmXu7+Fz5mGv+ivflyfqhz0nZIV
-   nJMB7HpeKo0agO08rYM0WFxPRgUFiWodR2j+bLc/qg+lxFMAu9ondfK/N
-   MXvMoKpagHAVsJbTIVPb/TkOQ4MOdspxdlEYj633+63E+buxi5fY1sfm/
-   Q6IiKZEST49vy5VNN/y92fYhrYp/Qd3JDtZhHXxk9Wx2SL2MmxRbFc+s2
-   A==;
-X-CSE-ConnectionGUID: IsuXlpvwQjW//T/UaK6wQw==
-X-CSE-MsgGUID: VmK79HLqSlyFAupIMcUMgA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="27004487"
-X-IronPort-AV: E=Sophos;i="6.07,225,1708416000"; 
-   d="scan'208";a="27004487"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 22:31:28 -0700
-X-CSE-ConnectionGUID: K2nGZA+6SxS85oF+8k8ISA==
-X-CSE-MsgGUID: idXSMI25RBWTdeIp9t4v1A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,225,1708416000"; 
-   d="scan'208";a="62050525"
-Received: from unknown (HELO haibo-OptiPlex-7090.sh.intel.com) ([10.239.159.132])
-  by orviesa001.jf.intel.com with ESMTP; 23 Apr 2024 22:31:16 -0700
-From: Haibo Xu <haibo1.xu@intel.com>
-To: sunilvl@ventanamicro.com,
-	arnd@arndb.de
-Cc: xiaobo55x@gmail.com,
-	ajones@ventanamicro.com,
-	Haibo Xu <haibo1.xu@intel.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Robert Moore <robert.moore@intel.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Guo Ren <guoren@kernel.org>,
-	Greentime Hu <greentime.hu@sifive.com>,
-	Baoquan He <bhe@redhat.com>,
-	Charlie Jenkins <charlie@rivosinc.com>,
-	=?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
-	Chen Jiahao <chenjiahao16@huawei.com>,
-	Jisheng Zhang <jszhang@kernel.org>,
-	James Morse <james.morse@arm.com>,
-	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-	Evan Green <evan@rivosinc.com>,
-	Samuel Holland <samuel.holland@sifive.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Marc Zyngier <maz@kernel.org>,
-	Tony Luck <tony.luck@intel.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Yuntao Wang <ytcoode@gmail.com>,
-	Alison Schofield <alison.schofield@intel.com>,
-	Dave Jiang <dave.jiang@intel.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	loongarch@lists.linux.dev,
-	linux-riscv@lists.infradead.org,
-	linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev
-Subject: [PATCH v3 6/6] ACPI: NUMA: replace pr_info with pr_debug in arch_acpi_numa_init
-Date: Wed, 24 Apr 2024 13:46:26 +0800
-Message-Id: <70870d88a26f50677eb31ac72bd8c343f428e5b6.1713778236.git.haibo1.xu@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1713778236.git.haibo1.xu@intel.com>
-References: <cover.1713778236.git.haibo1.xu@intel.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o90A0dji"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 237D7C2BD10;
+	Wed, 24 Apr 2024 17:55:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713981353;
+	bh=R4CYpHlj8jEVfIevCJyMoADNlNhxgxYKx+hnKC/6ZHQ=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=o90A0dji/1C/nj8o2so91Qf2gUBarrMOTde/k9C3QoyX+SPqyPj5Rl0J4CAjtDPFv
+	 ubbWx4NO7WFN5DxKr7dtMjXqL3ifQV9ZDEk9/E1heWe6mZNCR3tAkbzNz+d03g+0BC
+	 zhW5Qh+mMI/dbfxC5jak+61K8KAWmZm2QipBZDFOJaxHU3oYUnGE53WJHMqiMA8Wln
+	 CZnyVTlkM6DAQ/XVxoGGhSPFJKd5LRyybY0tP5A/QZNStYy/3YS1hDvFw4EGJg1UXu
+	 Z8G/GpZzpGRZNQ88h30w7vNI+z8rhH0gNd5Or4YxleSamM9mFDlFo1Y4rW+NQiv4rm
+	 upnSXlJDq9F+g==
+From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To: "Rafael J. Wysocki" <rafael@kernel.org>, Sunil V L
+ <sunilvl@ventanamicro.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
+ linux-pci@vger.kernel.org, acpica-devel@lists.linux.dev, Catalin Marinas
+ <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Paul Walmsley
+ <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
+ <aou@eecs.berkeley.edu>, "Rafael J . Wysocki" <rafael@kernel.org>, Len
+ Brown <lenb@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, Anup Patel
+ <anup@brainfault.org>, Thomas Gleixner <tglx@linutronix.de>, Samuel
+ Holland <samuel.holland@sifive.com>, Robert Moore
+ <robert.moore@intel.com>, Haibo1 Xu <haibo1.xu@intel.com>, Conor Dooley
+ <conor.dooley@microchip.com>, Andrew Jones <ajones@ventanamicro.com>,
+ Atish Kumar Patra <atishp@rivosinc.com>, Andrei Warkentin
+ <andrei.warkentin@intel.com>, Marc Zyngier <maz@kernel.org>
+Subject: Re: [RFC PATCH v4 00/20] RISC-V: ACPI: Add external interrupt
+ controller support
+In-Reply-To: <CAJZ5v0gTzn3TDoh0+0UQjMeJVdU+z16dDOT_fKMhr0XrOxyRtA@mail.gmail.com>
+References: <20240415170113.662318-1-sunilvl@ventanamicro.com>
+ <CAJZ5v0gTzn3TDoh0+0UQjMeJVdU+z16dDOT_fKMhr0XrOxyRtA@mail.gmail.com>
+Date: Wed, 24 Apr 2024 19:55:50 +0200
+Message-ID: <871q6uir15.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-There are lots of ACPI enabled systems that aren't NUMA and If the
-firmware didn't provide the SRAT/SLIT, then there will be a message
-"Failed to initialise from firmware" from arch_acpi_numa_init() which
-adding noise to the boot on all of those kind of systems. Replace the
-pr_info with pr_debug in arch_acpi_numa_init() to avoid it.
+"Rafael J. Wysocki" <rafael@kernel.org> writes:
 
-Suggested-by: Sunil V L <sunilvl@ventanamicro.com>
-Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
----
- drivers/base/arch_numa.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> On Mon, Apr 15, 2024 at 7:01=E2=80=AFPM Sunil V L <sunilvl@ventanamicro.c=
+om> wrote:
+>>
+>> This series adds support for the below ECR approved by ASWG.
+>> 1) MADT - https://drive.google.com/file/d/1oMGPyOD58JaPgMl1pKasT-VKsIKia=
+7zR/view?usp=3Dsharing
+>>
+>> The series primarily enables irqchip drivers for RISC-V ACPI based
+>> platforms.
+>>
+>> The series can be broadly categorized like below.
+>>
+>> 1) PCI ACPI related functions are migrated from arm64 to common file so
+>> that we don't need to duplicate them for RISC-V.
+>>
+>> 2) Added support for re-ordering the probe of interrupt controllers when
+>> IRQCHIP_ACPI_DECLARE is used.
+>>
+>> 3) To ensure probe order between interrupt controllers and devices,
+>> implicit dependency is created similar to when _DEP is present.
+>>
+>> 4) When PNP devices like Generic 16550A UART, have the dependency on the
+>> interrupt controller, they will not be added to PNP data structures. So,
+>> added second phase of pnpacpi_init to handle this.
+>>
+>> 5) ACPI support added in RISC-V interrupt controller drivers.
+>>
+>> This series is still kept as RFC to seek feedback on above design
+>> changes. Looking forward for the feedback!
+>
+> I've looked at the patches and I don't see anything deeply concerning
+> in them from the ACPI core code perspective.
+>
+> The changes look reasonably straightforward to me.
 
-diff --git a/drivers/base/arch_numa.c b/drivers/base/arch_numa.c
-index 5b59d133b6af..555aee3ee8e7 100644
---- a/drivers/base/arch_numa.c
-+++ b/drivers/base/arch_numa.c
-@@ -445,7 +445,7 @@ static int __init arch_acpi_numa_init(void)
- 
- 	ret = acpi_numa_init();
- 	if (ret) {
--		pr_info("Failed to initialise from firmware\n");
-+		pr_debug("Failed to initialise from firmware\n");
- 		return ret;
- 	}
- 
--- 
-2.34.1
+Sunil, given Rafael's input, it sounds like it's time for a patch
+proper. This is really the missing piece to make ACPI usable on RISC-V!
+
+Thanks for the nice work!
+Bj=C3=B6rn
+
+FWIW,
+Tested-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
+
 
