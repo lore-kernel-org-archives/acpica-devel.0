@@ -1,107 +1,202 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2974E16C855;
-	Wed, 24 Apr 2024 17:55:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CC2984D3B
+	for <acpica-devel@lists.linux.dev>; Thu, 25 Apr 2024 09:34:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713981354; cv=none; b=IOitGWHCEauCEapJ3QgR7cpa6r4d6WUq5SlU/VBJ5TLBJxe3dMUAWtZCzQ5qWp/wc0X2sCJGQobijC4QDY6jnoGM4HsIaPxf0mTfEM21Jo/IG07xCJ4W+RkA1FPHJ3LJIwCMsbEGd0k1lWiJnGFNHQTwlgVJPyVWKz3ErhUqasc=
+	t=1714037682; cv=none; b=Iwl52Ce70157CBa1YmZmsZE7CcCbmlrgTH2RNJ0mNGn/RXCKAN335X9yufGA6zYhQz/4Odmq7WJ5NkbMMizOjIfagSVcikJIr/eg0JxzasN+BxyyXPpK8wgRBy6dPAeTOyuA3ZffvP7rMVflmZRFKL1ehmGH3lzxM07oIGoovx8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713981354; c=relaxed/simple;
-	bh=R4CYpHlj8jEVfIevCJyMoADNlNhxgxYKx+hnKC/6ZHQ=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=GWh5QbQceOg18/LjGMJfMmAPLs92RJNn9a0knv04ZTVSRomN2R1ncPU3orQoc3Burkqs2LLG+IcT6xUFLujR1dj9Q88R1Qg4Hx2b9cT0R4SDzOAP/dK6H/OU1Vbb+1TCs9hHYAV/esYhriih8ZLJe6Y6J1uu/gjO8W0M68Th/PU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o90A0dji; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1714037682; c=relaxed/simple;
+	bh=5JEtP0YgJBdXih/ZcnvEmCqK+JklmCvRY/KLEJlOKdw=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=YI5/o6cWeeQivBqO+P1s1SKGDux9ur6giXg6Gvjlm4GxbII/eGBLp9bKbepkuj/7r26KLiu57y40LebRz9Qe+Z3rGoGT4wHZlMqkDfvuAfL7Y88Kv7BSzgD4o6LfsNnH2GxtPV/0Vi3dddkTKnENM/CCNwBrA8wyAkkqzjOrzH0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=UReQpdv3; arc=none smtp.client-ip=115.124.30.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o90A0dji"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 237D7C2BD10;
-	Wed, 24 Apr 2024 17:55:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713981353;
-	bh=R4CYpHlj8jEVfIevCJyMoADNlNhxgxYKx+hnKC/6ZHQ=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=o90A0dji/1C/nj8o2so91Qf2gUBarrMOTde/k9C3QoyX+SPqyPj5Rl0J4CAjtDPFv
-	 ubbWx4NO7WFN5DxKr7dtMjXqL3ifQV9ZDEk9/E1heWe6mZNCR3tAkbzNz+d03g+0BC
-	 zhW5Qh+mMI/dbfxC5jak+61K8KAWmZm2QipBZDFOJaxHU3oYUnGE53WJHMqiMA8Wln
-	 CZnyVTlkM6DAQ/XVxoGGhSPFJKd5LRyybY0tP5A/QZNStYy/3YS1hDvFw4EGJg1UXu
-	 Z8G/GpZzpGRZNQ88h30w7vNI+z8rhH0gNd5Or4YxleSamM9mFDlFo1Y4rW+NQiv4rm
-	 upnSXlJDq9F+g==
-From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To: "Rafael J. Wysocki" <rafael@kernel.org>, Sunil V L
- <sunilvl@ventanamicro.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
- linux-pci@vger.kernel.org, acpica-devel@lists.linux.dev, Catalin Marinas
- <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Paul Walmsley
- <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
- <aou@eecs.berkeley.edu>, "Rafael J . Wysocki" <rafael@kernel.org>, Len
- Brown <lenb@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, Anup Patel
- <anup@brainfault.org>, Thomas Gleixner <tglx@linutronix.de>, Samuel
- Holland <samuel.holland@sifive.com>, Robert Moore
- <robert.moore@intel.com>, Haibo1 Xu <haibo1.xu@intel.com>, Conor Dooley
- <conor.dooley@microchip.com>, Andrew Jones <ajones@ventanamicro.com>,
- Atish Kumar Patra <atishp@rivosinc.com>, Andrei Warkentin
- <andrei.warkentin@intel.com>, Marc Zyngier <maz@kernel.org>
-Subject: Re: [RFC PATCH v4 00/20] RISC-V: ACPI: Add external interrupt
- controller support
-In-Reply-To: <CAJZ5v0gTzn3TDoh0+0UQjMeJVdU+z16dDOT_fKMhr0XrOxyRtA@mail.gmail.com>
-References: <20240415170113.662318-1-sunilvl@ventanamicro.com>
- <CAJZ5v0gTzn3TDoh0+0UQjMeJVdU+z16dDOT_fKMhr0XrOxyRtA@mail.gmail.com>
-Date: Wed, 24 Apr 2024 19:55:50 +0200
-Message-ID: <871q6uir15.fsf@all.your.base.are.belong.to.us>
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="UReQpdv3"
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1714037676; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=XM7ij0If3WF0JBNX1i/Nd5TClC00Y289tpdDGzmcErU=;
+	b=UReQpdv3Rmk4Smm37AIcmn0MfVF2nC8hVYE9HSv1imvXW7H1ambynnrgn6P672UNt/3B39c3eYe5CfGE4bztMTGeleA/6ScJ8OXeTtI3w+prEw2/NqFzvN6D8yuvEtczxwQ9ibN4tlDoquh0Pv6X7BaWSrwdx0PrzmN+2BtoeTM=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033068173054;MF=tianruidong@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0W5F0WnH_1714037673;
+Received: from localhost(mailfrom:tianruidong@linux.alibaba.com fp:SMTPD_---0W5F0WnH_1714037673)
+          by smtp.aliyun-inc.com;
+          Thu, 25 Apr 2024 17:34:35 +0800
+From: Ruidong Tian <tianruidong@linux.alibaba.com>
+To: robert.moore@intel.com,
+	rafael.j.wysocki@intel.com,
+	lenb@kernel.org,
+	rafael@kernel.org,
+	sudeep.holla@arm.com
+Cc: linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	tianruidong@linux.alibaba.com
+Subject: [PATCH v3 1/1] ACPICA: AEST: Add support for the AEST V2 table
+Date: Thu, 25 Apr 2024 17:34:26 +0800
+Message-Id: <20240425093426.76130-2-tianruidong@linux.alibaba.com>
+X-Mailer: git-send-email 2.33.1
+In-Reply-To: <20240425093426.76130-1-tianruidong@linux.alibaba.com>
+References: <20240425093426.76130-1-tianruidong@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-"Rafael J. Wysocki" <rafael@kernel.org> writes:
+ACPICA commit ebb49799c78891cbe370f1264844664a3d8b6f35
 
-> On Mon, Apr 15, 2024 at 7:01=E2=80=AFPM Sunil V L <sunilvl@ventanamicro.c=
-om> wrote:
->>
->> This series adds support for the below ECR approved by ASWG.
->> 1) MADT - https://drive.google.com/file/d/1oMGPyOD58JaPgMl1pKasT-VKsIKia=
-7zR/view?usp=3Dsharing
->>
->> The series primarily enables irqchip drivers for RISC-V ACPI based
->> platforms.
->>
->> The series can be broadly categorized like below.
->>
->> 1) PCI ACPI related functions are migrated from arm64 to common file so
->> that we don't need to duplicate them for RISC-V.
->>
->> 2) Added support for re-ordering the probe of interrupt controllers when
->> IRQCHIP_ACPI_DECLARE is used.
->>
->> 3) To ensure probe order between interrupt controllers and devices,
->> implicit dependency is created similar to when _DEP is present.
->>
->> 4) When PNP devices like Generic 16550A UART, have the dependency on the
->> interrupt controller, they will not be added to PNP data structures. So,
->> added second phase of pnpacpi_init to handle this.
->>
->> 5) ACPI support added in RISC-V interrupt controller drivers.
->>
->> This series is still kept as RFC to seek feedback on above design
->> changes. Looking forward for the feedback!
->
-> I've looked at the patches and I don't see anything deeply concerning
-> in them from the ACPI core code perspective.
->
-> The changes look reasonably straightforward to me.
+AEST V2 was published[1], add V2 support based on AEST V1.
 
-Sunil, given Rafael's input, it sounds like it's time for a patch
-proper. This is really the missing piece to make ACPI usable on RISC-V!
+[1]: https://developer.arm.com/documentation/den0085/latest/
 
-Thanks for the nice work!
-Bj=C3=B6rn
+Link: https://github.com/acpica/acpica/commit/ebb4979
+Signed-off-by: Ruidong Tian <tianruidong@linux.alibaba.com>
+---
+ include/acpi/actbl2.h | 88 ++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 82 insertions(+), 6 deletions(-)
 
-FWIW,
-Tested-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
-
+diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
+index 007cfdfd5d29..ae747c89d92c 100644
+--- a/include/acpi/actbl2.h
++++ b/include/acpi/actbl2.h
+@@ -78,8 +78,8 @@
+  *
+  * AEST - Arm Error Source Table
+  *
+- * Conforms to: ACPI for the Armv8 RAS Extensions 1.1 Platform Design Document
+- * September 2020.
++ * Conforms to: ACPI for the Armv8 RAS Extensions 1.1(Sep 2020) and
++ * 2.0(May 2023) Platform Design Document.
+  *
+  ******************************************************************************/
+ 
+@@ -109,7 +109,9 @@ struct acpi_aest_hdr {
+ #define ACPI_AEST_SMMU_ERROR_NODE           2
+ #define ACPI_AEST_VENDOR_ERROR_NODE         3
+ #define ACPI_AEST_GIC_ERROR_NODE            4
+-#define ACPI_AEST_NODE_TYPE_RESERVED        5	/* 5 and above are reserved */
++#define ACPI_AEST_PCIE_ERROR_NODE           5
++#define ACPI_AEST_PROXY_ERROR_NODE          6
++#define ACPI_AEST_NODE_TYPE_RESERVED        7 /* 7 and above are reserved */
+ 
+ /*
+  * AEST subtables (Error nodes)
+@@ -188,6 +190,12 @@ typedef struct acpi_aest_vendor {
+ 
+ } acpi_aest_vendor;
+ 
++struct acpi_aest_vendor_v2 {
++	char acpi_hid[8];
++	u32 acpi_uid;
++	u8 vendor_specific_data[16];
++};
++
+ /* 4: Gic Error */
+ 
+ typedef struct acpi_aest_gic {
+@@ -204,6 +212,18 @@ typedef struct acpi_aest_gic {
+ #define ACPI_AEST_GIC_ITS                   3
+ #define ACPI_AEST_GIC_RESERVED              4	/* 4 and above are reserved */
+ 
++/* 5: PCIe Error */
++
++struct acpi_aest_pcie {
++	u32 iort_node_reference;
++};
++
++/* 6: Proxy Error */
++
++struct acpi_aest_proxy {
++	u64 node_address;
++};
++
+ /* Node Interface Structure */
+ 
+ typedef struct acpi_aest_node_interface {
+@@ -219,11 +239,57 @@ typedef struct acpi_aest_node_interface {
+ 
+ } acpi_aest_node_interface;
+ 
++/* Node Interface Structure V2 */
++
++struct acpi_aest_node_interface_header {
++	u8 type;
++	u8 group_format;
++	u8 reserved[2];
++	u32 flags;
++	u64 address;
++	u32 error_record_index;
++	u32 error_record_count;
++};
++
++#define ACPI_AEST_NODE_GROUP_FORMAT_4K          0
++#define ACPI_AEST_NODE_GROUP_FORMAT_16K         1
++#define ACPI_AEST_NODE_GROUP_FORMAT_64K         2
++
++struct acpi_aest_node_interface_common {
++	u32 error_node_device;
++	u32 processor_affinity;
++	u64 error_group_register_base;
++	u64 fault_inject_register_base;
++	u64 interrupt_config_register_base;
++};
++
++struct acpi_aest_node_interface_4k {
++	u64 error_record_implemented;
++	u64 error_status_reporting;
++	u64 addressing_mode;
++	struct acpi_aest_node_interface_common common;
++};
++
++struct acpi_aest_node_interface_16k {
++	u64 error_record_implemented[4];
++	u64 error_status_reporting[4];
++	u64 addressing_mode[4];
++	struct acpi_aest_node_interface_common common;
++};
++
++struct acpi_aest_node_interface_64k {
++	u64 error_record_implemented[14];
++	u64 error_status_reporting[14];
++	u64 addressing_mode[14];
++	struct acpi_aest_node_interface_common common;
++};
++
+ /* Values for Type field above */
+ 
+-#define ACPI_AEST_NODE_SYSTEM_REGISTER      0
+-#define ACPI_AEST_NODE_MEMORY_MAPPED        1
+-#define ACPI_AEST_XFACE_RESERVED            2	/* 2 and above are reserved */
++#define ACPI_AEST_NODE_SYSTEM_REGISTER			0
++#define ACPI_AEST_NODE_MEMORY_MAPPED			1
++#define ACPI_AEST_NODE_SINGLE_RECORD_MEMORY_MAPPED	2
++#define ACPI_AEST_XFACE_RESERVED			3   /* 2 and above are reserved */
+ 
+ /* Node Interrupt Structure */
+ 
+@@ -237,6 +303,16 @@ typedef struct acpi_aest_node_interrupt {
+ 
+ } acpi_aest_node_interrupt;
+ 
++/* Node Interrupt Structure V2 */
++
++struct acpi_aest_node_interrupt_v2 {
++	u8 type;
++	u8 reserved[2];
++	u8 flags;
++	u32 gsiv;
++	u8 reserved1[4];
++};
++
+ /* Values for Type field above */
+ 
+ #define ACPI_AEST_NODE_FAULT_HANDLING       0
+-- 
+2.33.1
 
