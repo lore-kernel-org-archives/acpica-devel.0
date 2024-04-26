@@ -1,43 +1,57 @@
-Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3AF384D0D
-	for <acpica-devel@lists.linux.dev>; Thu, 25 Apr 2024 09:34:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4187A13E05A
+	for <acpica-devel@lists.linux.dev>; Fri, 26 Apr 2024 09:50:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714037682; cv=none; b=Bzc/fRp0W+36tKEKr/8CQNm4u3Ui+1bZ2VZmZOoTj85drslcgpLYSlcLlDzoxsurvTXZ1nEbgSJqT2oSPsxeC6xPnK1hU4LZYlx4in2l1iJ0gURjgn/93mhGoTo4QcB++cWj2qBDnMLy3DeU380PFW5lFXwfTXV9SjDTT05Ofkk=
+	t=1714125010; cv=none; b=fnL/4uOT1aPoCPyyz/TqUtbX9M0qN206iof3UOJMxXtT8NFThk3kZhKZ7QOwXWFl1HxQgTZCmdWv6pUoLSVWYPoLL7cXVtVADaELSeodIK4tThhHyqXpl1dPw8qdyz+e19TsMpJpseSoiLccmKX5g0BTjZA2riJrIoXFko6kYlw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714037682; c=relaxed/simple;
-	bh=EuhJ5pCSf56nOe7Um3HD/ln5MpIugZZ8IutpRcMayJs=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=SRvJw99KRrK9RH5EO/AMAfnFgSZyAKHu88XviqtGXnXikB5g74pHQfnBSZm7TBy+qcCEU2YoPSC1H+so84bVIOy3A3sblDOeGvxWjPnoo+3Petqz+syQz5TPM0qbn9Jbq4HQiQ7WnZCh1ggba/rhWeTq9/haFwaMfWd0vW0YVso=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=QyZCjowV; arc=none smtp.client-ip=115.124.30.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+	s=arc-20240116; t=1714125010; c=relaxed/simple;
+	bh=FtpE1Uh4JuqRnIuNg/8Z/NqWAXYxZcRvxnt2JNu7LB8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=aIpNd4+Y9mrxA7Ez6MajqrHsuqK4RvXZok7zrHcHP4kFJ6lRKxj3VIrq8mrdxjuO+UaI3iC/zINkY33BMw5BkycJtn3LwTqFCmi1IjoBaV/+duxhs4PVUilKnFN5PxpLT5+uZtMR118iwzbPY/E/0EsI3jve1YfdFa+cvKDQf70=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BLR+h94H; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="QyZCjowV"
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1714037672; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=TlpWMGUo05cehXHx5vwtwe5vwkVUkHCY0eMZXZFb4oo=;
-	b=QyZCjowV8rtIsTmciVAGSHg9zeDtdu15ZW6sczUaiu+lYdKXHiyoobJktvnLML76Z8udUX0c0KvJgpHaqp0wFxfJiRGQWMPfeZadeCyjl67XMnVmv/63BIu5Ud0FOy+vdxMh8/ITnBYwTVPU4X0GNg0C0Tyoh4g2sinE5GBPfaM=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033022160150;MF=tianruidong@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0W5F1EHS_1714037668;
-Received: from localhost(mailfrom:tianruidong@linux.alibaba.com fp:SMTPD_---0W5F1EHS_1714037668)
-          by smtp.aliyun-inc.com;
-          Thu, 25 Apr 2024 17:34:31 +0800
-From: Ruidong Tian <tianruidong@linux.alibaba.com>
-To: robert.moore@intel.com,
-	rafael.j.wysocki@intel.com,
-	lenb@kernel.org,
-	rafael@kernel.org,
-	sudeep.holla@arm.com
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BLR+h94H"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714125008; x=1745661008;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=FtpE1Uh4JuqRnIuNg/8Z/NqWAXYxZcRvxnt2JNu7LB8=;
+  b=BLR+h94H8tpd8U5Cih1FVcIj/ooUXhIF5dDT89F2TpF6d+06ZduGwMcj
+   KWdCX8rflvoiiKMhrVFfEUrVSbQDbn1+Mb07ztFsU+eUbBs0CFGxv9rII
+   U+IMiGdNp4odk2+/v8HlRe7RZqvIq39UNUbDscG6zkbQj0Ds70zDaNl/+
+   BAXO2cZd0fkuyq7IUR3TCOwG0CW/1pVk5bqfm1XcGeh9WpdLOZyhoADG7
+   7Q7mmmkZJ9AqObivxQxKE0380D9MUU5mgJh2wUf7ZFxhCR6aIZ8d10YjP
+   QTxSbJQEBwZ9heWuNc2M0buuRf1uJ3CZxYh2SXGEx+pQ4pCOIjZbxUjov
+   g==;
+X-CSE-ConnectionGUID: pUY9XPq0Trit98AyqiqHKA==
+X-CSE-MsgGUID: DGkqjFJlTzShx2/y364pHw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11055"; a="9707093"
+X-IronPort-AV: E=Sophos;i="6.07,232,1708416000"; 
+   d="scan'208";a="9707093"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 02:50:08 -0700
+X-CSE-ConnectionGUID: MnRxalWPQCeHaUnLU6sE2A==
+X-CSE-MsgGUID: pqasDcjXRn+1m7KE3wAs2w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,232,1708416000"; 
+   d="scan'208";a="25411412"
+Received: from unknown (HELO chenyu-dev.sh.intel.com) ([10.239.62.107])
+  by fmviesa008.fm.intel.com with ESMTP; 26 Apr 2024 02:50:06 -0700
+From: Chen Yu <yu.c.chen@intel.com>
+To: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
 Cc: linux-acpi@vger.kernel.org,
 	acpica-devel@lists.linux.dev,
 	linux-kernel@vger.kernel.org,
-	tianruidong@linux.alibaba.com
-Subject: [PATCH v3 0/1] ACPICA: AEST: Support AEST V2
-Date: Thu, 25 Apr 2024 17:34:25 +0800
-Message-Id: <20240425093426.76130-1-tianruidong@linux.alibaba.com>
-X-Mailer: git-send-email 2.33.1
+	Chen Yu <yu.c.chen@intel.com>
+Subject: [PATCH] ACPI: tools: pfrut: Print the update_cap field during capability query
+Date: Fri, 26 Apr 2024 17:48:50 +0800
+Message-Id: <20240426094850.757123-1-yu.c.chen@intel.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -46,22 +60,27 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-AEST V2 was published[1], add V2 support based on AEST V1.
+There is request from the end user to print this field to better
+query what type of update capability is supported on this platform.
 
-Change from v2:
-- delete patch which not merged to ACPICA.
-- rebase on top of linux-next.
-Change from v1:
-- fix error variable name in struct acpi_aest_node_interface_64k. 
+Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+---
+ tools/power/acpi/tools/pfrut/pfrut.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-[1]: https://developer.arm.com/documentation/den0085/latest/
-
-Ruidong Tian (1):
-  ACPICA: AEST: Add support for the AEST V2 table
-
- include/acpi/actbl2.h | 88 ++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 82 insertions(+), 6 deletions(-)
-
+diff --git a/tools/power/acpi/tools/pfrut/pfrut.c b/tools/power/acpi/tools/pfrut/pfrut.c
+index 388c9e3ad040..44a9ecbd91e8 100644
+--- a/tools/power/acpi/tools/pfrut/pfrut.c
++++ b/tools/power/acpi/tools/pfrut/pfrut.c
+@@ -174,6 +174,8 @@ void print_cap(struct pfru_update_cap_info *cap)
+ 		exit(1);
+ 	}
+ 
++	printf("update capability:%d\n", cap->update_cap);
++
+ 	uuid_unparse(cap->code_type, uuid);
+ 	printf("code injection image type:%s\n", uuid);
+ 	printf("fw_version:%d\n", cap->fw_version);
 -- 
-2.33.1
+2.25.1
 
