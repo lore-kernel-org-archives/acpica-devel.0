@@ -1,79 +1,219 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3142D7F484
-	for <acpica-devel@lists.linux.dev>; Mon, 29 Apr 2024 14:55:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F398181CF6
+	for <acpica-devel@lists.linux.dev>; Tue, 30 Apr 2024 19:21:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714402506; cv=none; b=DbCgsE+rUSBFkteBK+zWHHkR2kIYa9napK6iSlIUsUUXYe9/fZe6xxJ2ifbbzQj+vCS03XGeVYyt4W4DAxRO7R1SZ0Hv2ush77s+ykSc785RW9sMgDLmznmuKkIcpuykIYAAAVxM5+nNq/nQ5OUJ/kj80jXm9Jk96/Ya1Ctaghw=
+	t=1714504875; cv=none; b=t439x8EfymXvVQvBOoUHJ0jz0w9ZdX7aTD8Nc5qt8ekMnd9AO4eMVC/WRaUsIVQq9cUgecqgcfn7ycME1QDRD7qratNUle96wBd/TLS7KO7osrUdFwhpEIr9ZVNpr4F0SzI/p7dHKhXwZwPL6wvp++9+1paUkCs9/v/OiJkXc+g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714402506; c=relaxed/simple;
-	bh=kqm+00gRhIZ9cVdk70Z9zqJQD734+HFtG+ZaAfUB1VU=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=Z9S0Kh0l2dO1aQXdNjVRjEiC9j/5dyAAy2OXvxEqQ8hIzYszPdNMUP1glxpC4nynaFtpnKb9EN4pUVni0Vl0U0T5veUiUXT+R6OgSGe8qiZUiKoTA7rRgqflTb7s8M9U6/xox9xK/WJadio1nxWBle7ehuYFvfwYGQvHA+MJ69A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BMTywdxk; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+	s=arc-20240116; t=1714504875; c=relaxed/simple;
+	bh=NwCpJ4/aGdZMBhntTpNF2is84X693tSgQ+YYuyWOaN4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SaRHe6G0EpFc3nfaLid0gEXxIqJd2NmA91jKrCGLluEsgbwYtu74kg4NVcbMchTn4QjssnAXZ588pZL2kYCZsf40Xj3X03xO3hZr7ZIpBx3SOdN7TDCaO/XvIYJxxhv8rBvZF9pBbu15f3xNYdMOkRDxhB5VU5z/ZTX2j1ExSao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FGivK6Xd; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BMTywdxk"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714402505; x=1745938505;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=kqm+00gRhIZ9cVdk70Z9zqJQD734+HFtG+ZaAfUB1VU=;
-  b=BMTywdxkinwSZdCrhOqohZ+eqqeWYPUO9J2WLSeuWKMIBHiCqu/9Uawr
-   ffi18wGrKkzSnXJY6s24hOnhHFim5ruZBBa2E59+cwCUTUt/KZlqzIkU5
-   hgJweKHufLm3TBfVw+lo0eUDhRoUvlvoArC3IadmAn1q+B8OLcALDUsV5
-   pZbVWe+zNGTyp43vX7hmkw9chYjye7L2d8egkbgmDt/RMX3gl2dr+akai
-   yLPSNmvaAgr+9vkJuU1tRr2fkz84n8B6HOi0Cwca+5cL768eYEGazkoO5
-   Oh/nICgzL0t/+6locPMDSCCJxaLgMnDohSwl0vr8ZlS0IVtJiH8p8u46E
-   w==;
-X-CSE-ConnectionGUID: pfNIxS9FSySYt/ur/0jNVg==
-X-CSE-MsgGUID: KHD7MrFbQIm+44+8R9zU0Q==
-X-IronPort-AV: E=McAfee;i="6600,9927,11059"; a="9942190"
-X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
-   d="scan'208";a="9942190"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 07:55:02 -0700
-X-CSE-ConnectionGUID: 5gDVzCaeR2mUbXFibuggww==
-X-CSE-MsgGUID: vfLK2+tHTFerbMo9dHQMAw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
-   d="scan'208";a="26123964"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by fmviesa007.fm.intel.com with SMTP; 29 Apr 2024 07:55:00 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 29 Apr 2024 17:54:58 +0300
-Date: Mon, 29 Apr 2024 17:54:58 +0300
-From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-	Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>
-Cc: linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev
-Subject: Missing default handler for the EmbeddedControl OpRegion
-Message-ID: <Zi+0whTvDbAdveHq@kuha.fi.intel.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FGivK6Xd"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30E78C4AF14
+	for <acpica-devel@lists.linux.dev>; Tue, 30 Apr 2024 19:21:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714504875;
+	bh=NwCpJ4/aGdZMBhntTpNF2is84X693tSgQ+YYuyWOaN4=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=FGivK6XdMlE8GYQL9XYMPwVUArMvu1ZGE7XvPUSsLtq5SEaC6Fm8+ly6La5ICit2F
+	 3Nm62Sfe4F5uIupBOychwZIpUXRIORhiW0UmuOUjsonataTQy1cz2p7MRoW7C9Py2s
+	 K26e7OXc3FHXpn7W89ezL63lgPkUPTjb6HYr5YFrNfW2x1Sd4o8RnljytkWcfTTjeq
+	 7p4KZRhkpLqr+1+HDH26WGwCkhywKnowDxayb817fX9CBcZJgbDvghv7Y6vj0Wqst5
+	 5pw4Yu9CPHVpyagzXWMJ8ebnaMoDyQ7mjCx1t6zDkESE47vfjFmDfSairuKZgBEdgm
+	 xrh3bZH3OehgA==
+Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3c70418ef53so553087b6e.1
+        for <acpica-devel@lists.linux.dev>; Tue, 30 Apr 2024 12:21:15 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWlt4lpUF4oqx6CONMkV8d48XBsXap9LNw5NVkE8n7ZF2GTz0c6u17ng4r3Zj2WPtWVtHJmsg07S/T05JoomlvEe1u0ORbDjxgtBUye
+X-Gm-Message-State: AOJu0YyodZWlaMI8tSnL/eT5TgOigRYjxIKzAg2yTUTxYCh6lrxtK3Mk
+	2SK8QxcxQM6SkikO8qhbUVpitSZroQPYzyV9KgAslAy3dnZFK7TknCIOvuQ3aIsg0KjReRt/w1i
+	ixiz7QKMf6+3Ur+Pg80Ug2UXphFk=
+X-Google-Smtp-Source: AGHT+IFj1FZy70S4ykIy+b2SrpBWlxIdXPP5QjFwuFLgwuOnQk3mWrQ7e+Wppfq3P/0JuOtNcJYrZswXSnHuEGZMa+M=
+X-Received: by 2002:a4a:654d:0:b0:5aa:241a:7f4b with SMTP id
+ z13-20020a4a654d000000b005aa241a7f4bmr397384oog.1.1714504874373; Tue, 30 Apr
+ 2024 12:21:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240425093426.76130-1-tianruidong@linux.alibaba.com> <20240425093426.76130-2-tianruidong@linux.alibaba.com>
+In-Reply-To: <20240425093426.76130-2-tianruidong@linux.alibaba.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Tue, 30 Apr 2024 21:21:02 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0i8=oTCXhAMRAckaVrTqCfOPxyYucpEguMF0tH2orY3aA@mail.gmail.com>
+Message-ID: <CAJZ5v0i8=oTCXhAMRAckaVrTqCfOPxyYucpEguMF0tH2orY3aA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/1] ACPICA: AEST: Add support for the AEST V2 table
+To: Ruidong Tian <tianruidong@linux.alibaba.com>
+Cc: robert.moore@intel.com, rafael.j.wysocki@intel.com, lenb@kernel.org, 
+	rafael@kernel.org, sudeep.holla@arm.com, linux-acpi@vger.kernel.org, 
+	acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Thu, Apr 25, 2024 at 11:34=E2=80=AFAM Ruidong Tian
+<tianruidong@linux.alibaba.com> wrote:
+>
+> ACPICA commit ebb49799c78891cbe370f1264844664a3d8b6f35
+>
+> AEST V2 was published[1], add V2 support based on AEST V1.
+>
+> [1]: https://developer.arm.com/documentation/den0085/latest/
+>
+> Link: https://github.com/acpica/acpica/commit/ebb4979
+> Signed-off-by: Ruidong Tian <tianruidong@linux.alibaba.com>
+> ---
+>  include/acpi/actbl2.h | 88 ++++++++++++++++++++++++++++++++++++++++---
+>  1 file changed, 82 insertions(+), 6 deletions(-)
+>
+> diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
+> index 007cfdfd5d29..ae747c89d92c 100644
+> --- a/include/acpi/actbl2.h
+> +++ b/include/acpi/actbl2.h
+> @@ -78,8 +78,8 @@
+>   *
+>   * AEST - Arm Error Source Table
+>   *
+> - * Conforms to: ACPI for the Armv8 RAS Extensions 1.1 Platform Design Do=
+cument
+> - * September 2020.
+> + * Conforms to: ACPI for the Armv8 RAS Extensions 1.1(Sep 2020) and
+> + * 2.0(May 2023) Platform Design Document.
+>   *
+>   ***********************************************************************=
+*******/
+>
+> @@ -109,7 +109,9 @@ struct acpi_aest_hdr {
+>  #define ACPI_AEST_SMMU_ERROR_NODE           2
+>  #define ACPI_AEST_VENDOR_ERROR_NODE         3
+>  #define ACPI_AEST_GIC_ERROR_NODE            4
+> -#define ACPI_AEST_NODE_TYPE_RESERVED        5  /* 5 and above are reserv=
+ed */
+> +#define ACPI_AEST_PCIE_ERROR_NODE           5
+> +#define ACPI_AEST_PROXY_ERROR_NODE          6
+> +#define ACPI_AEST_NODE_TYPE_RESERVED        7 /* 7 and above are reserve=
+d */
+>
+>  /*
+>   * AEST subtables (Error nodes)
+> @@ -188,6 +190,12 @@ typedef struct acpi_aest_vendor {
+>
+>  } acpi_aest_vendor;
+>
+> +struct acpi_aest_vendor_v2 {
+> +       char acpi_hid[8];
+> +       u32 acpi_uid;
+> +       u8 vendor_specific_data[16];
+> +};
+> +
+>  /* 4: Gic Error */
+>
+>  typedef struct acpi_aest_gic {
+> @@ -204,6 +212,18 @@ typedef struct acpi_aest_gic {
+>  #define ACPI_AEST_GIC_ITS                   3
+>  #define ACPI_AEST_GIC_RESERVED              4  /* 4 and above are reserv=
+ed */
+>
+> +/* 5: PCIe Error */
+> +
+> +struct acpi_aest_pcie {
+> +       u32 iort_node_reference;
+> +};
+> +
+> +/* 6: Proxy Error */
+> +
+> +struct acpi_aest_proxy {
+> +       u64 node_address;
+> +};
+> +
+>  /* Node Interface Structure */
+>
+>  typedef struct acpi_aest_node_interface {
+> @@ -219,11 +239,57 @@ typedef struct acpi_aest_node_interface {
+>
+>  } acpi_aest_node_interface;
+>
+> +/* Node Interface Structure V2 */
+> +
+> +struct acpi_aest_node_interface_header {
+> +       u8 type;
+> +       u8 group_format;
+> +       u8 reserved[2];
+> +       u32 flags;
+> +       u64 address;
+> +       u32 error_record_index;
+> +       u32 error_record_count;
+> +};
+> +
+> +#define ACPI_AEST_NODE_GROUP_FORMAT_4K          0
+> +#define ACPI_AEST_NODE_GROUP_FORMAT_16K         1
+> +#define ACPI_AEST_NODE_GROUP_FORMAT_64K         2
+> +
+> +struct acpi_aest_node_interface_common {
+> +       u32 error_node_device;
+> +       u32 processor_affinity;
+> +       u64 error_group_register_base;
+> +       u64 fault_inject_register_base;
+> +       u64 interrupt_config_register_base;
+> +};
+> +
+> +struct acpi_aest_node_interface_4k {
+> +       u64 error_record_implemented;
+> +       u64 error_status_reporting;
+> +       u64 addressing_mode;
+> +       struct acpi_aest_node_interface_common common;
+> +};
+> +
+> +struct acpi_aest_node_interface_16k {
+> +       u64 error_record_implemented[4];
+> +       u64 error_status_reporting[4];
+> +       u64 addressing_mode[4];
+> +       struct acpi_aest_node_interface_common common;
+> +};
+> +
+> +struct acpi_aest_node_interface_64k {
+> +       u64 error_record_implemented[14];
+> +       u64 error_status_reporting[14];
+> +       u64 addressing_mode[14];
+> +       struct acpi_aest_node_interface_common common;
+> +};
+> +
+>  /* Values for Type field above */
+>
+> -#define ACPI_AEST_NODE_SYSTEM_REGISTER      0
+> -#define ACPI_AEST_NODE_MEMORY_MAPPED        1
+> -#define ACPI_AEST_XFACE_RESERVED            2  /* 2 and above are reserv=
+ed */
+> +#define ACPI_AEST_NODE_SYSTEM_REGISTER                 0
+> +#define ACPI_AEST_NODE_MEMORY_MAPPED                   1
+> +#define ACPI_AEST_NODE_SINGLE_RECORD_MEMORY_MAPPED     2
+> +#define ACPI_AEST_XFACE_RESERVED                       3   /* 2 and abov=
+e are reserved */
+>
+>  /* Node Interrupt Structure */
+>
+> @@ -237,6 +303,16 @@ typedef struct acpi_aest_node_interrupt {
+>
+>  } acpi_aest_node_interrupt;
+>
+> +/* Node Interrupt Structure V2 */
+> +
+> +struct acpi_aest_node_interrupt_v2 {
+> +       u8 type;
+> +       u8 reserved[2];
+> +       u8 flags;
+> +       u32 gsiv;
+> +       u8 reserved1[4];
+> +};
+> +
+>  /* Values for Type field above */
+>
+>  #define ACPI_AEST_NODE_FAULT_HANDLING       0
+> --
 
-There's a bug that is caused by an EmbeddedControl OpRegion which is
-declared inside the scope of a specific USB Type-C device (PNP0CA0):
-https://bugzilla.kernel.org/show_bug.cgi?id=218789
-
-It looks like that's not the only case where that OpRegion ID is used
-outside of the EC device scope. There is at least one driver in Linux
-Kernel (drivers/platform/x86/wmi.c) that already has a custom handler
-for the EmbeddedControl OpRegion, and based on a quick search, the
-problem "Region EmbeddedControl (ID=3) has no handler" has happened
-with some other devices too.
-
-
-Br,
-
--- 
-heikki
+Applied as 6.10 material, thanks!
