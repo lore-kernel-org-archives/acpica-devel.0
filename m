@@ -1,57 +1,57 @@
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2E0112E1C2
-	for <acpica-devel@lists.linux.dev>; Wed,  1 May 2024 12:19:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A70B85923
+	for <acpica-devel@lists.linux.dev>; Wed,  1 May 2024 12:19:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714565948; cv=none; b=JIueGKBYo89Ug46SmUwUuJ52ykNF62erBExTSkVh6SS5ivn4eFGRoKXx/i/Eqcf/SqJhUGrF7wjPGDlZO/748TeYncQiF3Yp/qP5Fc0tVTzfON7KfQLaFUBi42Zu3aEOaoPiIvpN9zYxiKSD6wfxdulkqQyhoLyG1cJH7/0awnw=
+	t=1714565955; cv=none; b=UPElOYTAHkrvBGkubUH1X13Q+rkssKKFMJxJrDoy0tXl3EmXrVkXmkkCfiNu62bNYvAoEBlFiF+xnn9ZjCN80sPlo7fEjefYWqHmtUCjhK9M83bNqPhYbRmLmCQ5O6db0eBN5XXhl4NGYTPkShBoKg67t9a5gck+cKnPzzWuSus=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714565948; c=relaxed/simple;
-	bh=nLWDIfQeIOjbntOKuF1sgqsUGviHan2c0T12uuyd8vE=;
+	s=arc-20240116; t=1714565955; c=relaxed/simple;
+	bh=cL7Je5RYE4qBGSwgVsumxbhFwtVnDhVheuCzr81f6SQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=XCaUJwKiSldGr3+nxqZOpEjGTcBA4aiehYjHEvuqi5pVsAhtRXj6HetpNGETV/qsltr1HLsXqwf8sv0ErxgOKFQ7LlljC2nk2rwJ/HWo0D8jRwQVZSBYhltyaz0GswukaPmuoVSErESFzMqt1gtgdJ+B0cczZZ31Y5b/YYoZ4eM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=B0m/xgFt; arc=none smtp.client-ip=209.85.214.174
+	 MIME-Version; b=iWu5zkxiSPsNJgoGhg5tdHeIpK/j5Jws7NfelycC5NBMJ38fU3YAha7pf639ejS5BiH2b8RQdk4fNirG3YJpccTkGJtFwGOiuQw/ao54p3VQhrljSS0nNXG7khKjVZcUZo4s2bhIyRLRXDXv5bVCKRHA56pUNj9BKeQ+5eV9fbU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=VSSI2JH7; arc=none smtp.client-ip=209.85.214.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="B0m/xgFt"
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1e9ffd3f96eso54542235ad.3
-        for <acpica-devel@lists.linux.dev>; Wed, 01 May 2024 05:19:06 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="VSSI2JH7"
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1e3c3aa8938so44176475ad.1
+        for <acpica-devel@lists.linux.dev>; Wed, 01 May 2024 05:19:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1714565946; x=1715170746; darn=lists.linux.dev;
+        d=ventanamicro.com; s=google; t=1714565954; x=1715170754; darn=lists.linux.dev;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=38bWUcD6VJHgu2OT2TKY+rPPpBYSs9fss+ITqZ/SBFM=;
-        b=B0m/xgFt3gcGe6F7+C/FQkFSy9M0172JslZspkOFqkkmT/RY+utTM9QNwrjHG1x0mx
-         eYFDyh+/ViFcfPXjLkRXhUQ6cpO3heYmWziu+Zc31t1p1QB8BZsLJ0FUePUSgG8Jpj0B
-         C0MuVZuT0ahPvyw2440QWrXPFz9zvCbNqoMkrLnx9vZ1B/9XmR7cP0NkFLkWfXZ5AFSx
-         CetaOWBrjv6U6LQDjI8Jb68fATgy9JPmGnR9H49Q6g43EhiB8vdWgVvqdCs7yrALDT8V
-         XVfUnR+d2YIdMKsSF+cJCidgVTZ5xVSCKoycqwUZoB2kj0xp90YyKGw1rPEX6bKZjZsK
-         0R2Q==
+        bh=ycPsvBm29e5SjcL+mnP2CfCAXKwmh5unfT08m5gLAm0=;
+        b=VSSI2JH7wTXrS4V0lyyn4+wOK/RC2nDpKf2fDVKBt99hWe4S6jvLFySJZ3UtAqLyfZ
+         NdYMTXLryEunxl+eSL73lav18U8YkTxWFZirMbqew4z4ilIcaZ5r/Lt/9BRGsNCVPGsL
+         7UtOqiKJo3Y/Qf7idWVrolLWYf6R9+51DA2FEJFaR5zxbRQSKU6wb/2cUvL+vXsK6V8P
+         dCLdHZdjk76/sAvkGxkpnq78t99s7GMMsgi9wOuFDpsyf/8zS1auK7pX2eVNlBml6ean
+         Su7M/GxX4X/Q8yVui8n9vYRIXf95v6E4bFyFNJa/wy0Dcn1D8AozZAVHaMPi+8+hvwGT
+         RjGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714565946; x=1715170746;
+        d=1e100.net; s=20230601; t=1714565954; x=1715170754;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=38bWUcD6VJHgu2OT2TKY+rPPpBYSs9fss+ITqZ/SBFM=;
-        b=lZ6nYNpf60Muz27ncYEzcUSVt3IjJsP9o+uwfaNdHg4hI07ZvnEJeg3KofwRkk5PZU
-         iRBOhxYCQWygDzljEy5sw6DP1Qeyos/eZh9ouVAWhVSlxBBywWiSmtQO56Ssrwy0wPtQ
-         mozcKHUFo0+ASfRNt1i2UMQBryJ1msZfASlrk9cGOr8lGTz65befj8ghawITlhFE22/N
-         KMhJTRLGKWeDUs7w4ztjNKE7gcxdjaEBrhS5hyoXwP3J0t8zosW31WVi+QhMw8MPr627
-         P3PdMNHTSp9Nlx39rW7IjIkRqMqkVMEkN7hx2Yp69TGCT5NpuAaBjrYX2Uz59eea5fTM
-         0D4g==
-X-Forwarded-Encrypted: i=1; AJvYcCWls+5EiC0e9guRqiPm89UpVxKRQYoFu1ft+cuTL2nl9dXkEPtYCke2eHZEsAyjWOUTpyC7Pku5yllaey5qBnY4lXysnQX3iLT9t7FG
-X-Gm-Message-State: AOJu0YyzUS7s8sNLlso44PAInbtyHz/xsd1JClezIp5Uk7wxxx3EOBya
-	NH8S7DI8zpU24vbp1dSFhefuKOpJqiKfnTwCFDljOMSkHFd8r7rTOm/nYWrwtKo=
-X-Google-Smtp-Source: AGHT+IGXC7NkAjACd9P5pWtq+Fm60ySdE8zHPZMKCP8HvEhNdRXNAHHqpbDgXk2ZkzDTp6OP1jYRcw==
-X-Received: by 2002:a17:903:2591:b0:1de:f93f:4410 with SMTP id jb17-20020a170903259100b001def93f4410mr1645679plb.8.1714565945995;
-        Wed, 01 May 2024 05:19:05 -0700 (PDT)
+        bh=ycPsvBm29e5SjcL+mnP2CfCAXKwmh5unfT08m5gLAm0=;
+        b=CaaHaZVEZUn3mn5XIMaBJk0GzDu8ShERppuc1J8p9OA8TIbwrvE04RUH5g0tQZBoEd
+         gCTBE9OJePRmouVGvrkK0yPDVYg05Bn88QKyh8CGm+53n7sZXpGH3KXAQedwqBPMWpxu
+         cR96b18gVFU5fozWPhOTaeXohfUuYywdMUGsFmoP3Fuk/ZnEBSDvrRYd5ULu1nVbfQqF
+         eqYcXX9CtJ+P/6UESv7ht9x08aqoUnfrsf78Buh5m7f8OZtm71gYBoARsbFxqBZIq1Mq
+         rmLIH2yBtEFZ7e9sDB+rEf8PVsZDEUAIyh0VYuSbj30Ta0M4cTkvMTYWxEtY2M6Zsg/G
+         I6mA==
+X-Forwarded-Encrypted: i=1; AJvYcCVzrEHEpbhatgoHZus9Jk5tECSfzvSIOpZZ1/MHzLRfVYLO3GBkD2fU9k2SCjakXTmtmDfQrYYAPmA//4gjQ1zRiOLMeF5Foox6K3jd
+X-Gm-Message-State: AOJu0Yx04sDfxzcF/Nlv1CtCyLXdYdUFCj+yS3KHfwHt2wvsw8fBSaLZ
+	GXCdPBvzys7ihSry+LeetoV8M3vanw7ERmWAwUHv3V7NWll47aWay/RdRNW50oc=
+X-Google-Smtp-Source: AGHT+IEDg6A+K3iip7ZStHi7uQnpL11UU8DLGuIplAfF1OsmX8JbUJctZLyYRcjpa+LuwJ/5zvxvdQ==
+X-Received: by 2002:a17:902:864a:b0:1ea:5ac0:ce46 with SMTP id y10-20020a170902864a00b001ea5ac0ce46mr1772335plt.66.1714565953984;
+        Wed, 01 May 2024 05:19:13 -0700 (PDT)
 Received: from sunil-pc.Dlink ([106.51.188.106])
-        by smtp.gmail.com with ESMTPSA id im15-20020a170902bb0f00b001ec8888b22esm1336900plb.65.2024.05.01.05.18.58
+        by smtp.gmail.com with ESMTPSA id im15-20020a170902bb0f00b001ec8888b22esm1336900plb.65.2024.05.01.05.19.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 May 2024 05:19:05 -0700 (PDT)
+        Wed, 01 May 2024 05:19:13 -0700 (PDT)
 From: Sunil V L <sunilvl@ventanamicro.com>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
@@ -82,9 +82,9 @@ Cc: Catalin Marinas <catalin.marinas@arm.com>,
 	Haibo1 Xu <haibo1.xu@intel.com>,
 	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
 	Sunil V L <sunilvl@ventanamicro.com>
-Subject: [PATCH v5 08/17] ACPI: pci_link: Clear the dependencies after probe
-Date: Wed,  1 May 2024 17:47:33 +0530
-Message-Id: <20240501121742.1215792-9-sunilvl@ventanamicro.com>
+Subject: [PATCH v5 09/17] ACPI: RISC-V: Implement PCI related functionality
+Date: Wed,  1 May 2024 17:47:34 +0530
+Message-Id: <20240501121742.1215792-10-sunilvl@ventanamicro.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240501121742.1215792-1-sunilvl@ventanamicro.com>
 References: <20240501121742.1215792-1-sunilvl@ventanamicro.com>
@@ -96,82 +96,98 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-RISC-V platforms need to use dependencies between PCI host bridge, Link
-devices and the interrupt controllers to ensure probe order. The
-dependency is like below.
-
-Interrupt controller <-- Link Device <-- PCI Host bridge.
-
-If there is no dependency added between Link device and PCI Host Bridge,
-then the PCI end points can get probed prior to link device, unable to
-get mapping for INTx.
-
-So, add the link device's HID to dependency honor list and also clear it
-after its probe.
-
-Since this is required only for architectures like RISC-V, enable this
-code under a new config option and set this only in RISC-V.
+Replace the dummy implementation for PCI related functions with actual
+implementation. This needs ECAM and MCFG CONFIG options to be enabled
+for RISC-V.
 
 Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
 ---
- arch/riscv/Kconfig      | 1 +
- drivers/acpi/Kconfig    | 3 +++
- drivers/acpi/pci_link.c | 3 +++
- drivers/acpi/scan.c     | 1 +
- 4 files changed, 8 insertions(+)
+ arch/riscv/Kconfig       |  2 ++
+ arch/riscv/kernel/acpi.c | 31 ++++++++++++++-----------------
+ drivers/pci/pci-acpi.c   |  2 +-
+ 3 files changed, 17 insertions(+), 18 deletions(-)
 
 diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index f961449ca077..f7a36d79ff1a 100644
+index f7a36d79ff1a..09a86256ddfa 100644
 --- a/arch/riscv/Kconfig
 +++ b/arch/riscv/Kconfig
-@@ -14,6 +14,7 @@ config RISCV
+@@ -13,6 +13,7 @@ config 32BIT
+ config RISCV
  	def_bool y
  	select ACPI_GENERIC_GSI if ACPI
++	select ACPI_MCFG if (ACPI && PCI)
  	select ACPI_REDUCED_HARDWARE_ONLY if ACPI
-+	select ARCH_ACPI_DEFERRED_GSI if ACPI
+ 	select ARCH_ACPI_DEFERRED_GSI if ACPI
  	select ARCH_DMA_DEFAULT_COHERENT
- 	select ARCH_ENABLE_HUGEPAGE_MIGRATION if HUGETLB_PAGE && MIGRATION
- 	select ARCH_ENABLE_SPLIT_PMD_PTLOCK if PGTABLE_LEVELS > 2
-diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
-index e3a7c2aedd5f..ebec1707f662 100644
---- a/drivers/acpi/Kconfig
-+++ b/drivers/acpi/Kconfig
-@@ -587,6 +587,9 @@ config ACPI_PRMT
- 	  substantially increase computational overhead related to the
- 	  initialization of some server systems.
+@@ -176,6 +177,7 @@ config RISCV
+ 	select OF_EARLY_FLATTREE
+ 	select OF_IRQ
+ 	select PCI_DOMAINS_GENERIC if PCI
++	select PCI_ECAM if (ACPI && PCI)
+ 	select PCI_MSI if PCI
+ 	select RISCV_ALTERNATIVE if !XIP_KERNEL
+ 	select RISCV_APLIC
+diff --git a/arch/riscv/kernel/acpi.c b/arch/riscv/kernel/acpi.c
+index e619edc8b0cc..41aa77c8484b 100644
+--- a/arch/riscv/kernel/acpi.c
++++ b/arch/riscv/kernel/acpi.c
+@@ -306,29 +306,26 @@ void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
+ #ifdef CONFIG_PCI
  
-+config ARCH_ACPI_DEFERRED_GSI
-+	bool
-+
- endif	# ACPI
+ /*
+- * These interfaces are defined just to enable building ACPI core.
+- * TODO: Update it with actual implementation when external interrupt
+- * controller support is added in RISC-V ACPI.
++ * raw_pci_read/write - Platform-specific PCI config space access.
+  */
+-int raw_pci_read(unsigned int domain, unsigned int bus, unsigned int devfn,
+-		 int reg, int len, u32 *val)
++int raw_pci_read(unsigned int domain, unsigned int bus,
++		 unsigned int devfn, int reg, int len, u32 *val)
+ {
+-	return PCIBIOS_DEVICE_NOT_FOUND;
+-}
++	struct pci_bus *b = pci_find_bus(domain, bus);
  
- config X86_PM_TIMER
-diff --git a/drivers/acpi/pci_link.c b/drivers/acpi/pci_link.c
-index aa1038b8aec4..48cdcedafad6 100644
---- a/drivers/acpi/pci_link.c
-+++ b/drivers/acpi/pci_link.c
-@@ -748,6 +748,9 @@ static int acpi_pci_link_add(struct acpi_device *device,
- 	if (result)
- 		kfree(link);
- 
-+	if (IS_ENABLED(CONFIG_ARCH_ACPI_DEFERRED_GSI))
-+		acpi_dev_clear_dependencies(device);
-+
- 	return result < 0 ? result : 1;
+-int raw_pci_write(unsigned int domain, unsigned int bus, unsigned int devfn,
+-		  int reg, int len, u32 val)
+-{
+-	return PCIBIOS_DEVICE_NOT_FOUND;
++	if (!b)
++		return PCIBIOS_DEVICE_NOT_FOUND;
++	return b->ops->read(b, devfn, reg, len, val);
  }
  
-diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-index 3eeb4ce39fcc..67677a6ff8e3 100644
---- a/drivers/acpi/scan.c
-+++ b/drivers/acpi/scan.c
-@@ -834,6 +834,7 @@ static const char * const acpi_honor_dep_ids[] = {
- 	"INTC10CF", /* IVSC (MTL) driver must be loaded to allow i2c access to camera sensors */
- 	"RSCV0001", /* RISC-V PLIC */
- 	"RSCV0002", /* RISC-V APLIC */
-+	"PNP0C0F",  /* PCI Link Device */
- 	NULL
- };
+-int acpi_pci_bus_find_domain_nr(struct pci_bus *bus)
++int raw_pci_write(unsigned int domain, unsigned int bus,
++		  unsigned int devfn, int reg, int len, u32 val)
+ {
+-	return -1;
+-}
++	struct pci_bus *b = pci_find_bus(domain, bus);
  
+-struct pci_bus *pci_acpi_scan_root(struct acpi_pci_root *root)
+-{
+-	return NULL;
++	if (!b)
++		return PCIBIOS_DEVICE_NOT_FOUND;
++	return b->ops->write(b, devfn, reg, len, val);
+ }
++
+ #endif	/* CONFIG_PCI */
+diff --git a/drivers/pci/pci-acpi.c b/drivers/pci/pci-acpi.c
+index e8d84fa435da..b5892d0fa68c 100644
+--- a/drivers/pci/pci-acpi.c
++++ b/drivers/pci/pci-acpi.c
+@@ -1521,7 +1521,7 @@ static int __init acpi_pci_init(void)
+ }
+ arch_initcall(acpi_pci_init);
+ 
+-#if defined(CONFIG_ARM64)
++#if defined(CONFIG_ARM64) || defined(CONFIG_RISCV)
+ 
+ /*
+  * Try to assign the IRQ number when probing a new device
 -- 
 2.40.1
 
