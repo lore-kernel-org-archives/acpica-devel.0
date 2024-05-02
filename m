@@ -1,33 +1,54 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BBC513FF6;
-	Wed,  1 May 2024 16:56:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF99453373
+	for <acpica-devel@lists.linux.dev>; Thu,  2 May 2024 09:18:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714582577; cv=none; b=fI7lkGFhIajUZZMNurhtQdEiXoRY3PrTHzLBgQdpaebMWNxSTfYr3LQ/4y4yhKXc5Ch0zKoXN66AlQdF/mHsnEI2MOBn40jCG43CqNZ+79b+bBxxNZr/fmiN0XZolGp3yfpPheR7aabIzer8f21lrEGBMjfiq3V0d0iyG9jHddg=
+	t=1714641505; cv=none; b=epu56cxa93o/x09kJmy7PQNEauDAVR15uqwYq6Y5ouMtu/IO70QZcSLe1gbGEpE3EgGzVLXbIya74lGiUIHJQ0CA3ZD6YG1l8o00MLQ08go96N0qeqBIBkC1Sg+gZ957v82AIM+U3AgsrfTnEC6CawJixL/nSvfHY1uxYZTZNL4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714582577; c=relaxed/simple;
-	bh=SfIUnFvTodi3ZAdSokEGwrQBZQMoBGP2gvIdsXxo1z8=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=D5xabfYICiRdM0GdfDmOH0nzsEQWjB2W/U/nTi3G7sYIsUsXPb7MPhT9LdnfBdP2ulwOJfH410ACBzlZjmM8rSPHaGyMDZGCdHDWQnL54LzB/aUTkf8Keuodi+HuaZHOsCGy2Xa0sVXEJxV2rb7LMzDwEMA1vtZlb9/xkpsksmI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nwrFK+fQ; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1714641505; c=relaxed/simple;
+	bh=a/QufiF272o3DvR0cKkQMFkYPKhS35DQjuKoUIBYmTk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SEKEY2BM4wh8Np0eB9jza57Iv9HdGgCY2grnJRixp5zNox4IRT+j1W1R0gWrphsfD2lfLfdoZsLnJPvSoy5bq/HGgV/ICk75kmBcGNEFxIeHNy7S/1HbD1xWL7XeHke12FTtbKoLM02ey60MfPi5fXKFMT5kY96VPyx8Q12/6/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BmeN6FjY; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nwrFK+fQ"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC497C072AA;
-	Wed,  1 May 2024 16:56:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714582577;
-	bh=SfIUnFvTodi3ZAdSokEGwrQBZQMoBGP2gvIdsXxo1z8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=nwrFK+fQYl6W4IHr6gnMS8swEZfLcfdSm4TEcZt5aWvI5cpqh7w4by/NlSlrVYjZL
-	 nSyMc1JZUgqnVPi3l4AskQDTBIg9ssQDqVRKrNblj13co5FmyvpEeH/66UR7xpkZOB
-	 00NeWDZlTLiVmA0UQWYWoqUKgZkqpFbxOsnnVkdBIiEpBc979vFlZAfENsKIP5C4FP
-	 ZgIXwvnYDTXwcasDNez+ynbUOZgMUa5OPy4YdrNoLJ+KdsG164DtG/7BQjY2pA2zWK
-	 GEd3kS4ypFHM9mTJOQSG/RGht9W4bkGnY7CGz8RqZ+/Ebp1vm8DPjQkVyYEp898vFN
-	 W1ZUMK9aRV32A==
-Date: Wed, 1 May 2024 11:56:15 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BmeN6FjY"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714641503; x=1746177503;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=a/QufiF272o3DvR0cKkQMFkYPKhS35DQjuKoUIBYmTk=;
+  b=BmeN6FjYeDIUDPKzTs24qp3ck7eW0N2JdQa+AA8bNoPXD8U7QIBzmIyS
+   6GrFI7CSvJ5ixavH/2ulXav6asQwsSGlFV8o/WpzxG1Cn3RiPlF5U9Pap
+   V58Gt/Yk94aU4ICAvDlboRuyKlkMKKbsNhulXklHcq0XMSzKDEHlf4OwX
+   Rdptd+c3ySHU2kDP4S87j+AISBPoNK3yNPjtYuHc+Eu7RrbJ3HnWfQTDT
+   F+Rh2PJQ8ju0uatt9JqcpNvpo/ve4S6aKHuN+L9QqbiQCg0isJJP/spX9
+   Us4U+ctMr6dsR3OLVT0Lh460Brr4FUGzVT6262K1kf8OZbsNwdw9ru7Hb
+   g==;
+X-CSE-ConnectionGUID: xjZ438D/T5Sh5NlE9cFeCg==
+X-CSE-MsgGUID: S/WNPEMhQD6Q0uqr4I+3jA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11061"; a="10274158"
+X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
+   d="scan'208";a="10274158"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 02:18:10 -0700
+X-CSE-ConnectionGUID: weq2NrOvSyClDOUB0O6Igw==
+X-CSE-MsgGUID: iZzhZm4ZT9S/eDC2HeXt4A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
+   d="scan'208";a="27142469"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmviesa010.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 02:18:04 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1s2SZk-00000003GCl-0xR0;
+	Thu, 02 May 2024 12:18:00 +0300
+Date: Thu, 2 May 2024 12:17:59 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Sunil V L <sunilvl@ventanamicro.com>
 Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
 	linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
@@ -47,15 +68,15 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
 	Robert Moore <robert.moore@intel.com>,
 	Conor Dooley <conor.dooley@microchip.com>,
 	Andrew Jones <ajones@ventanamicro.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
 	Marc Zyngier <maz@kernel.org>,
 	Atish Kumar Patra <atishp@rivosinc.com>,
 	Andrei Warkentin <andrei.warkentin@intel.com>,
 	Haibo1 Xu <haibo1.xu@intel.com>,
-	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-Subject: Re: [PATCH v5 08/17] ACPI: pci_link: Clear the dependencies after
- probe
-Message-ID: <20240501165615.GA758227@bhelgaas>
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
+Subject: Re: [PATCH v5 17/17] serial: 8250: Add 8250_acpi driver
+Message-ID: <ZjNaR-YtVTm4pbP7@smile.fi.intel.com>
+References: <20240501121742.1215792-1-sunilvl@ventanamicro.com>
+ <20240501121742.1215792-18-sunilvl@ventanamicro.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -64,94 +85,37 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240501121742.1215792-9-sunilvl@ventanamicro.com>
+In-Reply-To: <20240501121742.1215792-18-sunilvl@ventanamicro.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Wed, May 01, 2024 at 05:47:33PM +0530, Sunil V L wrote:
-> RISC-V platforms need to use dependencies between PCI host bridge, Link
-> devices and the interrupt controllers to ensure probe order. The
-> dependency is like below.
-> 
-> Interrupt controller <-- Link Device <-- PCI Host bridge.
-> 
-> If there is no dependency added between Link device and PCI Host Bridge,
-> then the PCI end points can get probed prior to link device, unable to
-> get mapping for INTx.
-> 
-> So, add the link device's HID to dependency honor list and also clear it
-> after its probe.
-> 
-> Since this is required only for architectures like RISC-V, enable this
-> code under a new config option and set this only in RISC-V.
-> 
-> Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
-> ---
->  arch/riscv/Kconfig      | 1 +
->  drivers/acpi/Kconfig    | 3 +++
->  drivers/acpi/pci_link.c | 3 +++
->  drivers/acpi/scan.c     | 1 +
->  4 files changed, 8 insertions(+)
-> 
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index f961449ca077..f7a36d79ff1a 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -14,6 +14,7 @@ config RISCV
->  	def_bool y
->  	select ACPI_GENERIC_GSI if ACPI
->  	select ACPI_REDUCED_HARDWARE_ONLY if ACPI
-> +	select ARCH_ACPI_DEFERRED_GSI if ACPI
->  	select ARCH_DMA_DEFAULT_COHERENT
->  	select ARCH_ENABLE_HUGEPAGE_MIGRATION if HUGETLB_PAGE && MIGRATION
->  	select ARCH_ENABLE_SPLIT_PMD_PTLOCK if PGTABLE_LEVELS > 2
-> diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
-> index e3a7c2aedd5f..ebec1707f662 100644
-> --- a/drivers/acpi/Kconfig
-> +++ b/drivers/acpi/Kconfig
-> @@ -587,6 +587,9 @@ config ACPI_PRMT
->  	  substantially increase computational overhead related to the
->  	  initialization of some server systems.
->  
-> +config ARCH_ACPI_DEFERRED_GSI
-> +	bool
-> +
->  endif	# ACPI
->  
->  config X86_PM_TIMER
-> diff --git a/drivers/acpi/pci_link.c b/drivers/acpi/pci_link.c
-> index aa1038b8aec4..48cdcedafad6 100644
-> --- a/drivers/acpi/pci_link.c
-> +++ b/drivers/acpi/pci_link.c
-> @@ -748,6 +748,9 @@ static int acpi_pci_link_add(struct acpi_device *device,
->  	if (result)
->  		kfree(link);
->  
-> +	if (IS_ENABLED(CONFIG_ARCH_ACPI_DEFERRED_GSI))
-> +		acpi_dev_clear_dependencies(device);
+On Wed, May 01, 2024 at 05:47:42PM +0530, Sunil V L wrote:
+> RISC-V has non-PNP generic 16550A compatible UART which needs to be
+> enumerated as ACPI platform device. Add driver support for such devices
+> similar to 8250_of.
 
-This is really a question for Rafael, but it doesn't seem right that
-this completely depends on a config option.
+...
 
-Is there a reason this wouldn't work for all architectures, i.e., what
-would happen if you just called acpi_dev_clear_dependencies()
-unconditionally?
+> + * This driver is for generic 16550 compatible UART enumerated via ACPI
+> + * platform bus instead of PNP bus like PNP0501. This is not a full
 
-> +
->  	return result < 0 ? result : 1;
->  }
->  
-> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-> index 3eeb4ce39fcc..67677a6ff8e3 100644
-> --- a/drivers/acpi/scan.c
-> +++ b/drivers/acpi/scan.c
-> @@ -834,6 +834,7 @@ static const char * const acpi_honor_dep_ids[] = {
->  	"INTC10CF", /* IVSC (MTL) driver must be loaded to allow i2c access to camera sensors */
->  	"RSCV0001", /* RISC-V PLIC */
->  	"RSCV0002", /* RISC-V APLIC */
-> +	"PNP0C0F",  /* PCI Link Device */
->  	NULL
->  };
->  
-> -- 
-> 2.40.1
-> 
-> 
+This has to be told in the commit message. Anyway, we don't need a duplication
+code, please use 8250_pnp.
+
+...
+
+> +	{ "RSCV0003", 0 },
+
+Does it have _CID to be PNP0501?
+If not, add this ID to the 8250_pnp.
+
+...
+
+P.S.
+The code you submitted has a lot of small style issues, I can comment on them
+if you want, but as I said this code is not needed at all.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
