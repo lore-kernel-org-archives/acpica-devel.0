@@ -1,144 +1,105 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15E6A3D0A4;
-	Sat,  4 May 2024 15:53:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B97A374F9;
+	Sun,  5 May 2024 17:03:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714838022; cv=none; b=nmq8sN+SUE/JXepEpC2EPFAliw886bJoBEQiQITCyBbUPEH/30sQNXeU/VCx3cTj1+vMUuI1WN/ABZFIJgXXj+xtriDeNEtXxPOT9OB5zLZXc6jmDoeRBf8AxPMxT/EV/3HW1aGZbeaHuZoBqKTXBIrwKZM/kDtLqqu+xGUxmVc=
+	t=1714928618; cv=none; b=pVAijcsp/XIK+opncyUjBFUfJyb36RYRdps0HjcK0INuZLeMCODYmmqUeEVaHN0YDnitCY5689SedC0ZmCQgZS7aegKDCaBEAHtOSqm7U7nuwGftQpoj1+ZZHzRYdZHduDpgX8FGg2Qy0eywGu1PlhLwu7+IOwUVoA5QBgXPmU0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714838022; c=relaxed/simple;
-	bh=8I8m+ARERilkFj7kIbhJ3jfl4OiynemXtq1r//9ZZG0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FhBGtJyylf5iAZ88WUvs1TvitYOzHA6qS3HnljX8GG2AyunmIpAvvvn/sElD2DlUqhr0va8NDzbS/See0kuSZsNaHXRnWiH3RxlLD4JNY8fv9IOII+yfV6MeBWJWqxSKs/tzsxILgKAovJN51SkdId921R+QZYrHl/eYLou6jU8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=nBFZQmgd; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1714928618; c=relaxed/simple;
+	bh=vqXWGqoD0WEge/EGtT/dl0H0d4bIOExo/fiKtp+dLj8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PUcG6JK7UcWEPZuwN+uNpxjllfx8spAemyGD8cp79yYH7DsiB1Fm/rmStQeH4zERrdf7X1zyTz/EEeA2P017MNq54Ea5klqxKiab56ws3DLYW7HYnR/F+ihLLiyI33urCCeck+9XpF7c1PAOu6VuuKPd7m8h5qwKMpz/EISI2uA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=Zg28Ek3i; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="nBFZQmgd"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0ED39C072AA;
-	Sat,  4 May 2024 15:53:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1714838021;
-	bh=8I8m+ARERilkFj7kIbhJ3jfl4OiynemXtq1r//9ZZG0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nBFZQmgdyX6pMsEUa7czdAYYb8afZ3p6iRVUD/H9YzuOfGgH1cZKo2dib2Jh93VK+
-	 8LPWbA2+H9SGLgmogKYkxW5/Q+Vq/loJY9A+poOwUtd5I2agVivdOgQXtTwcqUx+b6
-	 m+Duex3ZyppN9X/0T/ZfT4gefnqjqWMjeM41aIDI=
-Date: Sat, 4 May 2024 17:53:38 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Sunil V L <sunilvl@ventanamicro.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
-	linux-pci@vger.kernel.org, linux-serial@vger.kernel.org,
-	acpica-devel@lists.linux.dev,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Anup Patel <anup@brainfault.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Samuel Holland <samuel.holland@sifive.com>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Robert Moore <robert.moore@intel.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Andrew Jones <ajones@ventanamicro.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Marc Zyngier <maz@kernel.org>,
-	Atish Kumar Patra <atishp@rivosinc.com>,
-	Andrei Warkentin <andrei.warkentin@intel.com>,
-	Haibo1 Xu <haibo1.xu@intel.com>,
-	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
-Subject: Re: [PATCH v5 17/17] serial: 8250: Add 8250_acpi driver
-Message-ID: <2024050421-coil-payphone-f3a1@gregkh>
-References: <20240501121742.1215792-1-sunilvl@ventanamicro.com>
- <20240501121742.1215792-18-sunilvl@ventanamicro.com>
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="Zg28Ek3i"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1714928604; x=1715533404; i=w_armin@gmx.de;
+	bh=vqXWGqoD0WEge/EGtT/dl0H0d4bIOExo/fiKtp+dLj8=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=Zg28Ek3iy01Ok4ns67Gqv66QWQ4Th//v9urnVSzmly1Nf+z+YkWUsikV+EW3929v
+	 YkA5XmGPPMPCftrx1tdmUendrOfvM2DkyLViF5Nzwm38NilLXCi5STI33sgc+kMIt
+	 lSw2M2LQbIWpwrqb8KnlhEFuE4IbF/m8naAvVyLIDZ6PeB3vXHnqc/j+gm3qCe67A
+	 GT/i691XnV2UlOnejkX5WO7OxEV3o0vdSxzemor3jQbzvpGpbrTAfDx/d9mZXsS3G
+	 89x9bcSuiWbpQsYs/h/FGuDB4NdsECxDVWGJ81I73fAW3QWXzVzeJHgiUvV849wyW
+	 RlELkTeADvL1oyt1fw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [141.30.226.129] ([141.30.226.129]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1M4s51-1s1jzf1n1D-000PnO; Sun, 05
+ May 2024 19:03:24 +0200
+Message-ID: <a2be7595-53c1-42fb-8633-2299ab20de64@gmx.de>
+Date: Sun, 5 May 2024 19:03:22 +0200
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240501121742.1215792-18-sunilvl@ventanamicro.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: Missing default handler for the EmbeddedControl OpRegion
+To: Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+ "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Len Brown
+ <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>
+Cc: linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev
+References: <Zi+0whTvDbAdveHq@kuha.fi.intel.com>
+Content-Language: en-US
+From: Armin Wolf <W_Armin@gmx.de>
+In-Reply-To: <Zi+0whTvDbAdveHq@kuha.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:VYh0oW7NlAshmBPzG0maSLFgnt9EwLV3EjBVekYW/2ctcZmteWh
+ vFM52r1NidXOUezHd7EbfgoCxdFLYdgIWiImqfqlXjvnu2kYu4Elh2fRZjP8X898MC3A7Vh
+ yXOf6q/g2a/jE/dfHOyg8QNSj+4Yt/IhKh1iirrMm7eq1txNTXwyHRy3O7UiamEfiNo/+At
+ lFOqhWs/5J4MW6YVXIaKg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:7JD+9MewmTw=;um97ztQmkdUn+IIxzlfuypDxmB1
+ Z1d2IULncng6wkhpFTsMC+REsFjvd+8dDmZI1WZo8fkmxq9Z6Wv9FsbLsXp2oy4eWgwK0804/
+ xOk6VeGnm0h7/eMEtDv+MeCdB3vvbCWURzu3E1Ln4UJokEbAFnwyIS8pkf5npxNfg6sTvmmm0
+ l7lMGZ389rLKCdpTlYiUPh79PawetRV138u+Sn5Eisov4po7OKgjY0SDw6SzQNwCq4hsB93zX
+ p12AFGIPHRxgw8Ujh5ALHVDhX+FuG+5fO2u5rYIR7fdLiADEB9tVtuqM3tTQuA6y3rYZU7RO1
+ r2LaMeQ54Y4rizPuYzI9HmJl9hWOvJ101ztlddeuFaW6TpbqCtofYeARYT29SVm6pRkgYW/SR
+ ZkUwwLUSdLSwb/dkrBr2G3/Y+XPbKoEat7zh26bE00f5DDmbSf4mqb1mZlc3jRF5ORfZNB6xs
+ 97mFO4+JFgu0K4yY5s9lg8AgtPbRPpaacb1WVqNbK/sz+eHl9/FdViw6cj42+Y2f6zJsqYuP0
+ ia9gReopbPUwYHfSBqBr6oWir9Jeew5IWR1D6jjCuIkeYY8LNRr6CQY+sWCOvrePRuWUtREVT
+ s6VwM9LWcgfSdUPB3MoSQd7ul0HTaOYsWPT1/MCMhFOxnWj1OExuyu046FUl027hWoooN+6zl
+ O+ECOaAnIwqyxE4Md/wCoRqclJB0QQwBFK2J4n8h/h7vxv7s5rtXG9ViF9kXqxS6xr50htAYS
+ DiXxjuOu4utLGqrzNC7takFbJR5Wmvu33Aaezf5zIR4+VRbmnw8sFPkRdns3dsPKG0cYlBMAX
+ x5awEuFOavzampFofxE2VyrbKKUV9uFWdjZD8fknr7wgs=
 
-On Wed, May 01, 2024 at 05:47:42PM +0530, Sunil V L wrote:
-> RISC-V has non-PNP generic 16550A compatible UART which needs to be
-> enumerated as ACPI platform device. Add driver support for such devices
-> similar to 8250_of.
-> 
-> The driver is enabled when the CONFIG_SERIAL_ACPI_PLATFORM option is
-> enabled. Enable this option for RISC-V.
-> 
-> Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
-> ---
->  arch/riscv/configs/defconfig        |  1 +
->  drivers/tty/serial/8250/8250_acpi.c | 96 +++++++++++++++++++++++++++++
->  drivers/tty/serial/8250/Kconfig     |  8 +++
->  drivers/tty/serial/8250/Makefile    |  1 +
->  4 files changed, 106 insertions(+)
->  create mode 100644 drivers/tty/serial/8250/8250_acpi.c
-> 
-> diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
-> index 3cae018f9315..bea8241f52eb 100644
-> --- a/arch/riscv/configs/defconfig
-> +++ b/arch/riscv/configs/defconfig
-> @@ -150,6 +150,7 @@ CONFIG_SERIAL_8250=y
->  CONFIG_SERIAL_8250_CONSOLE=y
->  CONFIG_SERIAL_8250_DW=y
->  CONFIG_SERIAL_OF_PLATFORM=y
-> +CONFIG_SERIAL_ACPI_PLATFORM=y
->  CONFIG_SERIAL_SH_SCI=y
->  CONFIG_SERIAL_EARLYCON_RISCV_SBI=y
->  CONFIG_VIRTIO_CONSOLE=y
-> diff --git a/drivers/tty/serial/8250/8250_acpi.c b/drivers/tty/serial/8250/8250_acpi.c
-> new file mode 100644
-> index 000000000000..3682443bb69c
-> --- /dev/null
-> +++ b/drivers/tty/serial/8250/8250_acpi.c
-> @@ -0,0 +1,96 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Serial Port driver for ACPI platform devices
-> + *
-> + * This driver is for generic 16550 compatible UART enumerated via ACPI
-> + * platform bus instead of PNP bus like PNP0501. This is not a full
-> + * driver but mostly provides the ACPI wrapper and uses generic
-> + * 8250 framework for rest of the functionality.
+Am 29.04.24 um 16:54 schrieb Heikki Krogerus:
 
-No copyright line?  Odd, but ok, I'll take it, glad to see your company
-finally realizes the lack of needing them :)
+> Hi,
+>
+> There's a bug that is caused by an EmbeddedControl OpRegion which is
+> declared inside the scope of a specific USB Type-C device (PNP0CA0):
+> https://bugzilla.kernel.org/show_bug.cgi?id=218789
+>
+> It looks like that's not the only case where that OpRegion ID is used
+> outside of the EC device scope. There is at least one driver in Linux
+> Kernel (drivers/platform/x86/wmi.c) that already has a custom handler
+> for the EmbeddedControl OpRegion, and based on a quick search, the
+> problem "Region EmbeddedControl (ID=3) has no handler" has happened
+> with some other devices too.
+>
+>
+> Br,
+>
+Hi,
 
+i support your proposal, but i think we first have to figure out how Windows
+handles such cases. Those devices are build for and tested with Windows only,
+so Windows seems to specify some behavior which allows for this.
 
-And as Andy said, please use the existing driver and extend what you
-need, don't write a new one, we really don't need a new one.
+I will try to contact Microsoft and ask them how the Windows Kernel handles
+this OpRegions.
 
-> +static int acpi_platform_serial_probe(struct platform_device *pdev)
-> +{
-> +	struct acpi_serial_info *data;
-> +	struct uart_8250_port port8250;
-> +	struct device *dev = &pdev->dev;
-> +	struct resource *regs;
-> +
-> +	int ret, irq;
-> +
-> +	regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	if (!regs) {
-> +		dev_err(dev, "no registers defined\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	irq = platform_get_irq(pdev, 0);
-> +	if (irq < 0)
-> +		return irq;
-> +
-> +	memset(&port8250, 0, sizeof(port8250));
-> +
-> +	spin_lock_init(&port8250.port.lock);
+Thanks,
+Armin Wolf
 
-Are you sure this works?
-
-thanks,
-
-greg k-h
