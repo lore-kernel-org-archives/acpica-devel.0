@@ -1,129 +1,94 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D85697C097
-	for <acpica-devel@lists.linux.dev>; Wed,  8 May 2024 12:21:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48637D530;
+	Wed,  8 May 2024 22:04:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715170866; cv=none; b=h0PNcjBm/oQVjEzjeER+xUAs+8GjMKh/0vmooty4E/SsGRoCGbBMzMLz0I4aADeomHP98T6dxb+ZjqRQKNS8s7N5HbS+7QKaw+xAXBOE4cykLkp9pvOD6ZL/HK2f64dPPY0c4EaF2C6jzuJjUwVuzP9+R1se2tbMpLYiU3/xRcY=
+	t=1715205879; cv=none; b=E/CT7VndAwXPHpkVRIUZzOFpAEdNVfw8voI/FMl6jnoKmYvjr+rYEWdjNo9b1rEF99LUJO/EbIx+sAKabscGsFMtQOG4LkpKT3+lWLhgBNYu3Syr3U/5u/0+p5zqsl0UCRQl5V1uU7+3iWZSsG9+Hh3YCfjHQozGL8nY3PRv1cM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715170866; c=relaxed/simple;
-	bh=XHYHk6h7rjAg4SlC+GlVGq+w7hRUI5AYJFJZ3GuIpmk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jxY55bt7NDuEF78b/fBn7pGYKQ8fKSdCau1L6LETPiHas8kvSfHJGuFoxsD35ftimIJYeqhvZFpJSKqLsCtjdRWrEl0735cN3nKvqJkf2GZif/2SJxaN7sbdK9+0Ye/TiLB2IGE3HvdpPZx6IOhiz60LfcRf2hXDVUNHk2Xj8J4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SAIQY3kP; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+	s=arc-20240116; t=1715205879; c=relaxed/simple;
+	bh=ZN+vFBI35D1ri+L+O7niU/x4x2qvaqXNVEPvYjNr4B0=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=ah4GAdah73BtpPukTF7EZkg9BdE4zzvYoLh0jSCX/YrbZGA7k88G/V7z626UkHCkd8dNtXcaeN4+Y40NetPDUqXNTqgfEPOFvhRJQCZRd9YpTbA4tiNuM/FURTyQKBYHLjip0IzS1crokGEbLfdw+nVNDyeNHtaKlnchCPfTv/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bgDkL1UL; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SAIQY3kP"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1715170864; x=1746706864;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=XHYHk6h7rjAg4SlC+GlVGq+w7hRUI5AYJFJZ3GuIpmk=;
-  b=SAIQY3kPlnDNWQ1u0oE4l1D/CshiXvjXjXW+1lprr9bDJsl5rvYVSxfp
-   goGZ4XtFqwweh8s6cDfxL4vFo30Ua7MkGUi9lhZDfDenY88O2ANSb+4yM
-   RAnXu9Xt3gW7lXnHsCb3GRclAAoICpDp6UXazl6WhGoHmtCJbZbzFXeWp
-   ZIxs1cNQCj1R+0joht4irSnq79llOcZF8WZqqHGhc68yVvwTdCjD1kvo2
-   HEVQ1XBocXwxh/ijGwzE+TW9qXGjhK9bJO/NOjQ3YKRQ/XYP6EAraY7Sq
-   ti2J7K1iI34CV8cQWMUScHqvar9qWKOTQbreT91CcrTUnaddWtCBgHt3T
-   A==;
-X-CSE-ConnectionGUID: ICaOmT5xRe6GFTvvNryFAQ==
-X-CSE-MsgGUID: TIAQVxYOTPaf4Tp19zPxrg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11066"; a="14818856"
-X-IronPort-AV: E=Sophos;i="6.08,145,1712646000"; 
-   d="scan'208";a="14818856"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2024 05:21:03 -0700
-X-CSE-ConnectionGUID: qsOlES5LTMWltWZPTwRQ/w==
-X-CSE-MsgGUID: PTVzuUm2RVus5Rmuer4Iqg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,145,1712646000"; 
-   d="scan'208";a="29390662"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by orviesa007.jf.intel.com with SMTP; 08 May 2024 05:21:00 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 08 May 2024 15:20:59 +0300
-Date: Wed, 8 May 2024 15:20:59 +0300
-From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-	Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>,
-	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev
-Subject: Re: Missing default handler for the EmbeddedControl OpRegion
-Message-ID: <ZjtuKzqpfKFbRaUi@kuha.fi.intel.com>
-References: <Zi+0whTvDbAdveHq@kuha.fi.intel.com>
- <CAJZ5v0iAMG251n6yg-h6KCUywK2vSg4sX3FTnOuxcLaEvUwFPQ@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bgDkL1UL"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8630BC113CC;
+	Wed,  8 May 2024 22:04:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1715205878;
+	bh=ZN+vFBI35D1ri+L+O7niU/x4x2qvaqXNVEPvYjNr4B0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=bgDkL1UL4cUDw/bK4TvVB6BnhfDeQox+XBPdaNKVEM1LYL8gZOLSsn5Gh1ch9Lr/o
+	 ohlulgg51oRnHEmgSrqvubg2oZJBV0fv/NP0K6oHA2oceBzfZ+BtlQgP+LNgBJfzSu
+	 dDkEosJ1IH1OSmv+iGO8wTqniE0C8IdDMiykTG8P1VFm9XuE7CwN40JSG/l60gEcre
+	 sqh1DRhzCf73jGvgfUWfRVQn3Z4Invy59zKEey6PnezZ35cwLZvMX/MydyZWa0RLMk
+	 zvf6tqrAuFXJSuI6nAOzLxAWdV0X3iRsrDT8cqgOZgUxHI3LEgf3tXFHwkOxsyvjTs
+	 jMw0tS4koxC3A==
+Date: Wed, 8 May 2024 17:04:36 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: LeoLiu-oc <LeoLiu-oc@zhaoxin.com>
+Cc: rafael@kernel.org, lenb@kernel.org, james.morse@arm.com,
+	tony.luck@intel.com, bp@alien8.de, bhelgaas@google.com,
+	robert.moore@intel.com, linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+	acpica-devel@lists.linux.dev, CobeChen@zhaoxin.com,
+	TonyWWang@zhaoxin.com, ErosZhang@zhaoxin.com, LeoLiu@zhaoxin.com
+Subject: Re: [PATCH v2 0/3] Parse the HEST PCIe AER and set to relevant
+ registers
+Message-ID: <20240508220436.GA1789788@bhelgaas>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0iAMG251n6yg-h6KCUywK2vSg4sX3FTnOuxcLaEvUwFPQ@mail.gmail.com>
+In-Reply-To: <20231218030430.783495-1-LeoLiu-oc@zhaoxin.com>
 
-On Mon, May 06, 2024 at 07:45:07PM +0200, Rafael J. Wysocki wrote:
-> Hi,
+On Mon, Dec 18, 2023 at 11:04:27AM +0800, LeoLiu-oc wrote:
+> From: LeoLiuoc <LeoLiu-oc@zhaoxin.com>
 > 
-> On Mon, Apr 29, 2024 at 4:55 PM Heikki Krogerus
-> <heikki.krogerus@linux.intel.com> wrote:
-> >
-> > Hi,
-> >
-> > There's a bug that is caused by an EmbeddedControl OpRegion which is
-> > declared inside the scope of a specific USB Type-C device (PNP0CA0):
-> > https://bugzilla.kernel.org/show_bug.cgi?id=218789
+> According to the Section 18.3.2.4, 18.3.2.5 and 18.3.2.6 in ACPI SPEC
+> r6.5, the register value form HEST PCI Express AER Structure should be
+> written to relevant PCIe Device's AER Capabilities.So the purpose of the
+> patch set is to extract register value from HEST PCI Express AER
+> structures and program them into PCIe Device's AER registers. Refer to the
+> ACPI SPEC r6.5 for the more detailed description. This patch is an
+> effective supplement to _HPP/_HPX method when the Firmware does not
+> support the _HPP/_HPX method and can be specially configured for the AER
+> register of the specific device.
 > 
-> And in this bug you are essentially proposing to install the EC
-> OpRegion handler at the namespace root instead of the EC device.
+> ---
 > 
-> This sounds reasonable, although AFAICS this is a matter of modifying
-> the EC driver (before the EC OpRegion handler is installed by the EC
-> drvier, ACPICA has no way to handle EC address space accesses anyway).
-> 
-> > It looks like that's not the only case where that OpRegion ID is used
-> > outside of the EC device scope. There is at least one driver in Linux
-> > Kernel (drivers/platform/x86/wmi.c) that already has a custom handler
-> > for the EmbeddedControl OpRegion, and based on a quick search, the
-> > problem "Region EmbeddedControl (ID=3) has no handler" has happened
-> > with some other devices too.
-> 
-> AFAICS, installing the EC address space handler at the EC device
-> object itself is not based on any sound technical arguments, it's just
-> been always done this way in Linux.  It's quite possible that the EC
-> address space handler should have been installed at the namespace root
-> from the outset.
+> v1->v2:
+> - Move the definition of structure "hest_parse_aer_info" to file apei.h.
 
-Okay, thank you for the explanation. So can we simply change it like
-this (I may have still misunderstood something)?
+Just noticed that this removes the ACPICA header dependency problem
+that Rafael pointed out.  This also applies (with minor offsets) to
+v6.9-rc1, so it's not very stale.  We're almost to the v6.9 final
+release, so when v6.10-rc1 is tagged, can you rebase to that and
+repost this?
 
-diff --git a/drivers/acpi/ec.c b/drivers/acpi/ec.c
-index 02255795b800..6b9dd27171ee 100644
---- a/drivers/acpi/ec.c
-+++ b/drivers/acpi/ec.c
-@@ -1488,7 +1488,7 @@ static int ec_install_handlers(struct acpi_ec *ec, struct acpi_device *device,
- 
-        if (!test_bit(EC_FLAGS_EC_HANDLER_INSTALLED, &ec->flags)) {
-                acpi_ec_enter_noirq(ec);
--               status = acpi_install_address_space_handler_no_reg(ec->handle,
-+               status = acpi_install_address_space_handler_no_reg(ACPI_ROOT_OBJECT,
-                                                                   ACPI_ADR_SPACE_EC,
-                                                                   &acpi_ec_space_handler,
-                                                                   NULL, ec);
-@@ -1497,7 +1497,7 @@ static int ec_install_handlers(struct acpi_ec *ec, struct acpi_device *device,
-                        return -ENODEV;
-                }
-                set_bit(EC_FLAGS_EC_HANDLER_INSTALLED, &ec->flags);
--               ec->address_space_handler_holder = ec->handle;
-+               ec->address_space_handler_holder = ACPI_ROOT_OBJECT;
-        }
- 
-        if (call_reg && !test_bit(EC_FLAGS_EC_REG_CALLED, &ec->flags)) {
+I assume you have a platform that uses this.  It would be good to
+mention that in the commit log of patches 1 and 3 so we have some idea
+of where it's useful and where changes need to be tested.
 
-thanks,
-
--- 
-heikki
+> LeoLiuoc (3):
+>   ACPI/APEI: Add hest_parse_pcie_aer()
+>   PCI: Add AER bits #defines for PCIe to PCI/PCI-X Bridge
+>   PCI/ACPI: Add pci_acpi_program_hest_aer_params()
+> 
+>  drivers/acpi/apei/hest.c      | 69 +++++++++++++++++++++++-
+>  drivers/pci/pci-acpi.c        | 98 +++++++++++++++++++++++++++++++++++
+>  drivers/pci/pci.h             |  9 ++++
+>  drivers/pci/probe.c           |  1 +
+>  include/acpi/apei.h           | 17 ++++++
+>  include/uapi/linux/pci_regs.h |  3 ++
+>  6 files changed, 195 insertions(+), 2 deletions(-)
+> 
+> -- 
+> 2.34.1
+> 
