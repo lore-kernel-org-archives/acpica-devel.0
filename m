@@ -1,90 +1,129 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9023F158855
-	for <acpica-devel@lists.linux.dev>; Mon,  6 May 2024 17:45:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D85697C097
+	for <acpica-devel@lists.linux.dev>; Wed,  8 May 2024 12:21:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715017519; cv=none; b=H6+QSChSFT/JU98hjnjVLiUP4wT9ZHM/F8p+A9QLbUxWeA4cdMqIIgLceIn/jQzsqnAmzjmY1U/Po6j/qKoietZX2Ic3jCT4LBXCw5pCv2KNlq2GgdYObTcdQB4FKSzNgQfjcadMOhROp7sPXVjm+taVEtqGgMYBpxDTCWhKakw=
+	t=1715170866; cv=none; b=h0PNcjBm/oQVjEzjeER+xUAs+8GjMKh/0vmooty4E/SsGRoCGbBMzMLz0I4aADeomHP98T6dxb+ZjqRQKNS8s7N5HbS+7QKaw+xAXBOE4cykLkp9pvOD6ZL/HK2f64dPPY0c4EaF2C6jzuJjUwVuzP9+R1se2tbMpLYiU3/xRcY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715017519; c=relaxed/simple;
-	bh=LPcCtbeAnsLOce7SfLflgIRodnJTarAfZQXME5YiTAs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kY5Kjqps0e2SR2fRXvW+tafTebfTvH7q2ic1tW6GQ8egeBt7cLDaDTFVjr8k3+M4eYF6nwU7TqBgNjnK4hMPr0Emijfh9H5YFv+4wZUYyJY2qFp0xMLaI156DoQ6HIHbE0PClmyo5QbJUTCtiCHPyp41Lj8rd6Si/hsv473BYwU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Nzuw48B3; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1715170866; c=relaxed/simple;
+	bh=XHYHk6h7rjAg4SlC+GlVGq+w7hRUI5AYJFJZ3GuIpmk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jxY55bt7NDuEF78b/fBn7pGYKQ8fKSdCau1L6LETPiHas8kvSfHJGuFoxsD35ftimIJYeqhvZFpJSKqLsCtjdRWrEl0735cN3nKvqJkf2GZif/2SJxaN7sbdK9+0Ye/TiLB2IGE3HvdpPZx6IOhiz60LfcRf2hXDVUNHk2Xj8J4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SAIQY3kP; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nzuw48B3"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34446C116B1
-	for <acpica-devel@lists.linux.dev>; Mon,  6 May 2024 17:45:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715017519;
-	bh=LPcCtbeAnsLOce7SfLflgIRodnJTarAfZQXME5YiTAs=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Nzuw48B3+Ov7P3zgNJ1xoeAHHhkuOIMIzLYT/YZFM2Ly4TCRRPrreIjgX++9X9cgQ
-	 dONjBVWu3nLhNg7Q3AEbDG702ERH0viSW3+GWHGacFp5k//Ql9LDbYKJFhKZyjhB1t
-	 dTroINkkOS29eJP1ZiSmntoKUlSe5pXUlUC4pwy5yLDwy+S9cSrQoV8brZ84HgFMXn
-	 jtrgKHa1aqJXI030tYjFbjV2SJuyIJR+oEARBgJK3oIL3Fnc3nQYgplcG9ADMmwspt
-	 Vfv6J6DQe2tG7ewvihYqYGkjkPt2UMmexx1K4FJQUgRzfl9V+tN38Inow6gwmAfiUI
-	 p6e7mGmh3W3xQ==
-Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-5b209a2c390so254690eaf.1
-        for <acpica-devel@lists.linux.dev>; Mon, 06 May 2024 10:45:19 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUh/m300ObeMq1bhMxoOEKSebau1nz4CLc0MJSihmdoyAgoxUhY1G4M1KSHFOHTc1BShqU74D8qyVhLJRrBGUCftKcAeJS8DSS/MXI4
-X-Gm-Message-State: AOJu0Yy8AJ+k6ftenI2LFjmavU5Uyk9ohYGPBMQA8U0CmKP5n7nFj8Mb
-	7++vlYc1rXLcKCVEsU9lX2DnprrpWamIRPORLIfdpze+QL0IB1VOX/Z43GkAS0+KkOlydvTLM3j
-	BFWTyfgz6hgV2/arg+Om30IcL/9A=
-X-Google-Smtp-Source: AGHT+IHYxcQAPMwxIPGVeIPuycwWU3imOMOSR1h1lHNwGaojIQ6HmxdIYOS+hyQpxHTmfRbPl5z/GR0OoTZFiSMHd4Q=
-X-Received: by 2002:a4a:601:0:b0:5aa:241a:7f4b with SMTP id
- 1-20020a4a0601000000b005aa241a7f4bmr11037084ooj.1.1715017518502; Mon, 06 May
- 2024 10:45:18 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SAIQY3kP"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1715170864; x=1746706864;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=XHYHk6h7rjAg4SlC+GlVGq+w7hRUI5AYJFJZ3GuIpmk=;
+  b=SAIQY3kPlnDNWQ1u0oE4l1D/CshiXvjXjXW+1lprr9bDJsl5rvYVSxfp
+   goGZ4XtFqwweh8s6cDfxL4vFo30Ua7MkGUi9lhZDfDenY88O2ANSb+4yM
+   RAnXu9Xt3gW7lXnHsCb3GRclAAoICpDp6UXazl6WhGoHmtCJbZbzFXeWp
+   ZIxs1cNQCj1R+0joht4irSnq79llOcZF8WZqqHGhc68yVvwTdCjD1kvo2
+   HEVQ1XBocXwxh/ijGwzE+TW9qXGjhK9bJO/NOjQ3YKRQ/XYP6EAraY7Sq
+   ti2J7K1iI34CV8cQWMUScHqvar9qWKOTQbreT91CcrTUnaddWtCBgHt3T
+   A==;
+X-CSE-ConnectionGUID: ICaOmT5xRe6GFTvvNryFAQ==
+X-CSE-MsgGUID: TIAQVxYOTPaf4Tp19zPxrg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11066"; a="14818856"
+X-IronPort-AV: E=Sophos;i="6.08,145,1712646000"; 
+   d="scan'208";a="14818856"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2024 05:21:03 -0700
+X-CSE-ConnectionGUID: qsOlES5LTMWltWZPTwRQ/w==
+X-CSE-MsgGUID: PTVzuUm2RVus5Rmuer4Iqg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.08,145,1712646000"; 
+   d="scan'208";a="29390662"
+Received: from kuha.fi.intel.com ([10.237.72.185])
+  by orviesa007.jf.intel.com with SMTP; 08 May 2024 05:21:00 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 08 May 2024 15:20:59 +0300
+Date: Wed, 8 May 2024 15:20:59 +0300
+From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+	Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>,
+	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev
+Subject: Re: Missing default handler for the EmbeddedControl OpRegion
+Message-ID: <ZjtuKzqpfKFbRaUi@kuha.fi.intel.com>
+References: <Zi+0whTvDbAdveHq@kuha.fi.intel.com>
+ <CAJZ5v0iAMG251n6yg-h6KCUywK2vSg4sX3FTnOuxcLaEvUwFPQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <Zi+0whTvDbAdveHq@kuha.fi.intel.com>
-In-Reply-To: <Zi+0whTvDbAdveHq@kuha.fi.intel.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Mon, 6 May 2024 19:45:07 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0iAMG251n6yg-h6KCUywK2vSg4sX3FTnOuxcLaEvUwFPQ@mail.gmail.com>
-Message-ID: <CAJZ5v0iAMG251n6yg-h6KCUywK2vSg4sX3FTnOuxcLaEvUwFPQ@mail.gmail.com>
-Subject: Re: Missing default handler for the EmbeddedControl OpRegion
-To: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Len Brown <lenb@kernel.org>, 
-	Robert Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org, 
-	acpica-devel@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0iAMG251n6yg-h6KCUywK2vSg4sX3FTnOuxcLaEvUwFPQ@mail.gmail.com>
 
-Hi,
-
-On Mon, Apr 29, 2024 at 4:55=E2=80=AFPM Heikki Krogerus
-<heikki.krogerus@linux.intel.com> wrote:
->
+On Mon, May 06, 2024 at 07:45:07PM +0200, Rafael J. Wysocki wrote:
 > Hi,
->
-> There's a bug that is caused by an EmbeddedControl OpRegion which is
-> declared inside the scope of a specific USB Type-C device (PNP0CA0):
-> https://bugzilla.kernel.org/show_bug.cgi?id=3D218789
+> 
+> On Mon, Apr 29, 2024 at 4:55 PM Heikki Krogerus
+> <heikki.krogerus@linux.intel.com> wrote:
+> >
+> > Hi,
+> >
+> > There's a bug that is caused by an EmbeddedControl OpRegion which is
+> > declared inside the scope of a specific USB Type-C device (PNP0CA0):
+> > https://bugzilla.kernel.org/show_bug.cgi?id=218789
+> 
+> And in this bug you are essentially proposing to install the EC
+> OpRegion handler at the namespace root instead of the EC device.
+> 
+> This sounds reasonable, although AFAICS this is a matter of modifying
+> the EC driver (before the EC OpRegion handler is installed by the EC
+> drvier, ACPICA has no way to handle EC address space accesses anyway).
+> 
+> > It looks like that's not the only case where that OpRegion ID is used
+> > outside of the EC device scope. There is at least one driver in Linux
+> > Kernel (drivers/platform/x86/wmi.c) that already has a custom handler
+> > for the EmbeddedControl OpRegion, and based on a quick search, the
+> > problem "Region EmbeddedControl (ID=3) has no handler" has happened
+> > with some other devices too.
+> 
+> AFAICS, installing the EC address space handler at the EC device
+> object itself is not based on any sound technical arguments, it's just
+> been always done this way in Linux.  It's quite possible that the EC
+> address space handler should have been installed at the namespace root
+> from the outset.
 
-And in this bug you are essentially proposing to install the EC
-OpRegion handler at the namespace root instead of the EC device.
+Okay, thank you for the explanation. So can we simply change it like
+this (I may have still misunderstood something)?
 
-This sounds reasonable, although AFAICS this is a matter of modifying
-the EC driver (before the EC OpRegion handler is installed by the EC
-drvier, ACPICA has no way to handle EC address space accesses anyway).
+diff --git a/drivers/acpi/ec.c b/drivers/acpi/ec.c
+index 02255795b800..6b9dd27171ee 100644
+--- a/drivers/acpi/ec.c
++++ b/drivers/acpi/ec.c
+@@ -1488,7 +1488,7 @@ static int ec_install_handlers(struct acpi_ec *ec, struct acpi_device *device,
+ 
+        if (!test_bit(EC_FLAGS_EC_HANDLER_INSTALLED, &ec->flags)) {
+                acpi_ec_enter_noirq(ec);
+-               status = acpi_install_address_space_handler_no_reg(ec->handle,
++               status = acpi_install_address_space_handler_no_reg(ACPI_ROOT_OBJECT,
+                                                                   ACPI_ADR_SPACE_EC,
+                                                                   &acpi_ec_space_handler,
+                                                                   NULL, ec);
+@@ -1497,7 +1497,7 @@ static int ec_install_handlers(struct acpi_ec *ec, struct acpi_device *device,
+                        return -ENODEV;
+                }
+                set_bit(EC_FLAGS_EC_HANDLER_INSTALLED, &ec->flags);
+-               ec->address_space_handler_holder = ec->handle;
++               ec->address_space_handler_holder = ACPI_ROOT_OBJECT;
+        }
+ 
+        if (call_reg && !test_bit(EC_FLAGS_EC_REG_CALLED, &ec->flags)) {
 
-> It looks like that's not the only case where that OpRegion ID is used
-> outside of the EC device scope. There is at least one driver in Linux
-> Kernel (drivers/platform/x86/wmi.c) that already has a custom handler
-> for the EmbeddedControl OpRegion, and based on a quick search, the
-> problem "Region EmbeddedControl (ID=3D3) has no handler" has happened
-> with some other devices too.
+thanks,
 
-AFAICS, installing the EC address space handler at the EC device
-object itself is not based on any sound technical arguments, it's just
-been always done this way in Linux.  It's quite possible that the EC
-address space handler should have been installed at the namespace root
-from the outset.
-
-Thanks!
+-- 
+heikki
