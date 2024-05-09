@@ -1,189 +1,133 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx1.zhaoxin.com (MX1.ZHAOXIN.COM [210.0.225.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F429130E4B;
-	Wed,  8 May 2024 22:25:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B7FC1494D2
+	for <acpica-devel@lists.linux.dev>; Thu,  9 May 2024 08:50:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.0.225.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715207104; cv=none; b=JKUrQPwOLLZ0iolFF6M40S8DMOINZHfPbcKvEADhJVY0fE6thvz+/O+ttdKPfPtFX+YLONqKPM5Q3sib5Md8WtU2NrQ/TAEF1DRC5muE2FNTUIi/wnir3Hh8lsxwmZQ9bIxIzCpzcW3yXRJ87r3rFK4ByoNNYl91uYCsg0VBWOU=
+	t=1715244644; cv=none; b=CqTFo8Aq34yZdT2+cozwCoCTbBTwuSSqZlMCp6j+LBNrUvm9lGz2WpTEq+H2adyuS5zz9zPpOs8fsBmNTuhTQHGiCs7bWFqPJCMUZighVRDDBtCU5PpMqPoc9YEmludE4sxMzAkJJbsjKSbJcWaIdqYiAGnA2PsLjY5WlXtPWvo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715207104; c=relaxed/simple;
-	bh=v8DQvHY+2r78tKC2XBRoOvgdQLkOP1CAvCK2xKElKmw=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=SrUVz9Qbx7xfOdYEn3OOaOtR3aVVbhrJeKfjI0FKqceyFVeeJShTKVSvLd3UCL2dcxTfX2DBwlwKZWXPD/f4KDX6Pk/OfbP1+H/+ZO+rQRoTYxWckPEgT3JjgA4mnI3obaFjOeAL3ksto1AssS/3Sc0AcSJbFnkyCCLci7JIYg8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fCjR1f+6; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fCjR1f+6"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C7E5C113CC;
-	Wed,  8 May 2024 22:25:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715207103;
-	bh=v8DQvHY+2r78tKC2XBRoOvgdQLkOP1CAvCK2xKElKmw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=fCjR1f+6ZoEAdzjfwhRhxRiNTSNrZ26+rWIfMOxL3Rs1Qn7TUEYWbOVSwKIITkbC/
-	 BVSnZxsxr1heihDdECVlpXkUHI2u6pUM+OrUCAXg4R+6vxGFsuC3/49Aa76+nXB1ta
-	 z2hIkQLVzjpI7GXUFlOD06o/fwFUXdOLbn1isLXC71gXZiYuXI/i0XD7vha0VEFzlb
-	 /8bpWSmvNcR2K8EBp1O2DrdNQIqp73+Pa6Y4DH9kP5Zcr/mC0J3BHvk4R9xjLRAqjJ
-	 ZYaub2vGZMEd2EEvPszqGlMAwY5iXAQBxwSd+fS5F1Dm4CgpZdCkzHlapBxnpwLARp
-	 hjTi3K5jb2/bg==
-Date: Wed, 8 May 2024 17:24:59 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: LeoLiu-oc <LeoLiu-oc@zhaoxin.com>
-Cc: rafael@kernel.org, lenb@kernel.org, james.morse@arm.com,
-	tony.luck@intel.com, bp@alien8.de, bhelgaas@google.com,
-	robert.moore@intel.com, linux-acpi@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	acpica-devel@lists.linux.dev, CobeChen@zhaoxin.com,
-	TonyWWang@zhaoxin.com, ErosZhang@zhaoxin.com, LeoLiu@zhaoxin.com
-Subject: Re: [PATCH v2 3/3] PCI/ACPI: Add pci_acpi_program_hest_aer_params()
-Message-ID: <20240508222459.GA1791619@bhelgaas>
+	s=arc-20240116; t=1715244644; c=relaxed/simple;
+	bh=kz1qxPyo9dmTKO4NicjXjKlExY5D67C43u5RpO/2nhs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=nC1IOf1BvXmbuhASyKNKylgo+QynrY9KGHPiGUYxYYyxMLXgKVILg50g5ISwt+mMPSPl20/8hyGi0olccAuGwNpvCnnwDPu7zCiVhNYtUepchD7MEETg4WOa/jRxISCfKJnglFW2zBfc2C1GvqOGQArwy8G/AQq6SZ9gycgICus=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com; spf=pass smtp.mailfrom=zhaoxin.com; arc=none smtp.client-ip=210.0.225.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zhaoxin.com
+X-ASG-Debug-ID: 1715243991-086e2325cc0db20001-m47mSr
+Received: from ZXSHMBX1.zhaoxin.com (ZXSHMBX1.zhaoxin.com [10.28.252.163]) by mx1.zhaoxin.com with ESMTP id jcY8zdEvtdy2KSos (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Thu, 09 May 2024 16:39:51 +0800 (CST)
+X-Barracuda-Envelope-From: LeoLiu-oc@zhaoxin.com
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
+Received: from ZXBJMBX03.zhaoxin.com (10.29.252.7) by ZXSHMBX1.zhaoxin.com
+ (10.28.252.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 9 May
+ 2024 16:39:50 +0800
+Received: from [192.168.1.204] (125.76.214.122) by ZXBJMBX03.zhaoxin.com
+ (10.29.252.7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 9 May
+ 2024 16:39:49 +0800
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
+Message-ID: <a70d141f-cec1-49b5-99d0-0f9e5f722afd@zhaoxin.com>
+X-Barracuda-RBL-Trusted-Forwarder: 192.168.1.204
+Date: Thu, 9 May 2024 16:39:38 +0800
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231218030430.783495-4-LeoLiu-oc@zhaoxin.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/3] Parse the HEST PCIe AER and set to relevant
+ registers
+To: Bjorn Helgaas <helgaas@kernel.org>
+X-ASG-Orig-Subj: Re: [PATCH v2 0/3] Parse the HEST PCIe AER and set to relevant
+ registers
+CC: <rafael@kernel.org>, <lenb@kernel.org>, <james.morse@arm.com>,
+	<tony.luck@intel.com>, <bp@alien8.de>, <bhelgaas@google.com>,
+	<robert.moore@intel.com>, <linux-acpi@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+	<acpica-devel@lists.linux.dev>, <CobeChen@zhaoxin.com>,
+	<TonyWWang@zhaoxin.com>, <ErosZhang@zhaoxin.com>, <LeoLiu@zhaoxin.com>
+References: <20240508220436.GA1789788@bhelgaas>
+From: LeoLiu-oc <leoliu-oc@zhaoxin.com>
+In-Reply-To: <20240508220436.GA1789788@bhelgaas>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: ZXSHCAS2.zhaoxin.com (10.28.252.162) To
+ ZXBJMBX03.zhaoxin.com (10.29.252.7)
+X-Barracuda-Connect: ZXSHMBX1.zhaoxin.com[10.28.252.163]
+X-Barracuda-Start-Time: 1715243991
+X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
+X-Barracuda-URL: https://10.28.252.35:4443/cgi-mod/mark.cgi
+X-Virus-Scanned: by bsmtpd at zhaoxin.com
+X-Barracuda-Scan-Msg-Size: 2313
+X-Barracuda-BRTS-Status: 0
+X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
+X-Barracuda-Spam-Score: -2.02
+X-Barracuda-Spam-Status: No, SCORE=-2.02 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=
+X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.124625
+	Rule breakdown below
+	 pts rule name              description
+	---- ---------------------- --------------------------------------------------
 
-On Mon, Dec 18, 2023 at 11:04:30AM +0800, LeoLiu-oc wrote:
-> From: LeoLiuoc <LeoLiu-oc@zhaoxin.com>
+
+
+在 2024/5/9 6:04, Bjorn Helgaas 写道:
 > 
-> Call the func pci_acpi_program_hest_aer_params() for every PCIe device,
-> the purpose of this function is to extract register value from HEST PCIe
-> AER structures and program them into AER Capabilities.
 > 
-> Signed-off-by: LeoLiuoc <LeoLiu-oc@zhaoxin.com>
-> ---
->  drivers/pci/pci-acpi.c | 98 ++++++++++++++++++++++++++++++++++++++++++
->  drivers/pci/pci.h      |  9 ++++
->  drivers/pci/probe.c    |  1 +
->  3 files changed, 108 insertions(+)
+> [这封邮件来自外部发件人 谨防风险]
 > 
-> diff --git a/drivers/pci/pci-acpi.c b/drivers/pci/pci-acpi.c
-> index 004575091596..3a183d5e20cb 100644
-> --- a/drivers/pci/pci-acpi.c
-> +++ b/drivers/pci/pci-acpi.c
-> @@ -18,6 +18,7 @@
->  #include <linux/pm_runtime.h>
->  #include <linux/pm_qos.h>
->  #include <linux/rwsem.h>
-> +#include <acpi/apei.h>
->  #include "pci.h"
->  
->  /*
-> @@ -783,6 +784,103 @@ int pci_acpi_program_hp_params(struct pci_dev *dev)
->  	return -ENODEV;
->  }
->  
-> +#ifdef CONFIG_ACPI_APEI
-> +static void program_hest_aer_endpoint(struct acpi_hest_aer_common aer_endpoint,
-> +				struct pci_dev *dev, int pos)
-> +{
-> +	u32 uncor_mask;
-> +	u32 uncor_severity;
-> +	u32 cor_mask;
-> +	u32 adv_cap;
-> +
-> +	uncor_mask = aer_endpoint.uncorrectable_mask;
-> +	uncor_severity = aer_endpoint.uncorrectable_severity;
-> +	cor_mask = aer_endpoint.correctable_mask;
-> +	adv_cap = aer_endpoint.advanced_capabilities;
-> +
-> +	pci_write_config_dword(dev, pos + PCI_ERR_UNCOR_MASK, uncor_mask);
-> +	pci_write_config_dword(dev, pos + PCI_ERR_UNCOR_SEVER, uncor_severity);
-> +	pci_write_config_dword(dev, pos + PCI_ERR_COR_MASK, cor_mask);
-> +	pci_write_config_dword(dev, pos + PCI_ERR_CAP, adv_cap);
+> On Mon, Dec 18, 2023 at 11:04:27AM +0800, LeoLiu-oc wrote:
+>> From: LeoLiuoc <LeoLiu-oc@zhaoxin.com>
+>>
+>> According to the Section 18.3.2.4, 18.3.2.5 and 18.3.2.6 in ACPI SPEC
+>> r6.5, the register value form HEST PCI Express AER Structure should be
+>> written to relevant PCIe Device's AER Capabilities.So the purpose of the
+>> patch set is to extract register value from HEST PCI Express AER
+>> structures and program them into PCIe Device's AER registers. Refer to the
+>> ACPI SPEC r6.5 for the more detailed description. This patch is an
+>> effective supplement to _HPP/_HPX method when the Firmware does not
+>> support the _HPP/_HPX method and can be specially configured for the AER
+>> register of the specific device.
+>>
+>> ---
+>>
+>> v1->v2:
+>> - Move the definition of structure "hest_parse_aer_info" to file apei.h.
+> 
+> Just noticed that this removes the ACPICA header dependency problem
+> that Rafael pointed out.  This also applies (with minor offsets) to
+> v6.9-rc1, so it's not very stale.  We're almost to the v6.9 final
+> release, so when v6.10-rc1 is tagged, can you rebase to that and
+> repost this?
+> 
 
-This is named for "endpoint", but it is used for Root Ports,
-Endpoints, and PCIe to PCI/PCI-X bridges.  It relies on these four
-fields being in the same place for all those HEST structures.
+Thank you very much for your review. I will make a new patch version 
+based on the kernel v6.10-rc1 according to your suggestion.
 
-That makes good sense, but maybe should have a one-line hint about
-this and maybe even a compiletime_assert().
+> I assume you have a platform that uses this.  It would be good to
+> mention that in the commit log of patches 1 and 3 so we have some idea
+> of where it's useful and where changes need to be tested.
+> 
+Okay, I will add hardware suitability information for this patch to the 
+commit log.
 
-> +}
-> +
-> +static void program_hest_aer_root(struct acpi_hest_aer_root *aer_root, struct pci_dev *dev, int pos)
-> +{
-> +	u32 root_err_cmd;
-> +
-> +	root_err_cmd = aer_root->root_error_command;
-> +
-> +	pci_write_config_dword(dev, pos + PCI_ERR_ROOT_COMMAND, root_err_cmd);
-> +}
-> +
-> +static void program_hest_aer_bridge(struct acpi_hest_aer_bridge *hest_aer_bridge,
-> +				struct pci_dev *dev, int pos)
-> +{
-> +	u32 uncor_mask2;
-> +	u32 uncor_severity2;
-> +	u32 adv_cap2;
-> +
-> +	uncor_mask2 = hest_aer_bridge->uncorrectable_mask2;
-> +	uncor_severity2 = hest_aer_bridge->uncorrectable_severity2;
-> +	adv_cap2 = hest_aer_bridge->advanced_capabilities2;
-> +
-> +	pci_write_config_dword(dev, pos + PCI_ERR_UNCOR_MASK2, uncor_mask2);
-> +	pci_write_config_dword(dev, pos + PCI_ERR_UNCOR_SEVER2, uncor_severity2);
-> +	pci_write_config_dword(dev, pos + PCI_ERR_CAP2, adv_cap2);
-> +}
-> +
-> +static void program_hest_aer_params(struct hest_parse_aer_info info)
-> +{
-> +	struct pci_dev *dev;
-> +	int port_type;
-> +	int pos;
-> +	struct acpi_hest_aer_root *hest_aer_root;
-> +	struct acpi_hest_aer *hest_aer_endpoint;
-> +	struct acpi_hest_aer_bridge *hest_aer_bridge;
-> +
-> +	dev = info.pci_dev;
-> +	port_type = pci_pcie_type(dev);
+Yours sincerely
+Leoliu-oc
 
-I'd put these two initializations up at the declarations, e.g.,
-
-  struct pci_dev *dev = info.pci_dev;
-  int port_type = pci_pcie_type(dev);
-
-> +	pos = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_ERR);
-> +	if (!pos)
-> +		return;
-> +
-> +	switch (port_type) {
-> +	case PCI_EXP_TYPE_ROOT_PORT:
-> +		hest_aer_root = info.hest_aer_root_port;
-> +		program_hest_aer_endpoint(hest_aer_root->aer, dev, pos);
-> +		program_hest_aer_root(hest_aer_root, dev, pos);
-> +		break;
-> +	case PCI_EXP_TYPE_ENDPOINT:
-> +		hest_aer_endpoint = info.hest_aer_endpoint;
-> +		program_hest_aer_endpoint(hest_aer_endpoint->aer, dev, pos);
-> +		break;
-> +	case PCI_EXP_TYPE_PCI_BRIDGE:
-> +	case PCI_EXP_TYPE_PCIE_BRIDGE:
-
-PCI_EXP_TYPE_PCIE_BRIDGE is a PCI/PCI-X to PCIe Bridge, also known as
-a "reverse bridge".  This has a conventional PCI or PCI-X primary
-interface and a PCIe secondary interface.  It's not clear to me that
-these bridges can support AER.  
-
-For one thing, the AER Capability must be in extended config space,
-which would only be available for PCI-X Mode 2 reverse bridges.
-
-The acpi_hest_aer_bridge certainly makes sense for
-PCI_EXP_TYPE_PCI_BRIDGE (a PCIe to PCI/PCI-X bridge), but the ACPI
-spec (r6.5, sec 18.3.2.6) is not very clear about whether it also
-applies to PCI_EXP_TYPE_PCIE_BRIDGE (a reverse bridge).
-
-Do you actually need this PCI_EXP_TYPE_PCIE_BRIDGE case?
-
-> +		hest_aer_bridge = info.hest_aer_bridge;
-> +		program_hest_aer_endpoint(hest_aer_bridge->aer, dev, pos);
-> +		program_hest_aer_bridge(hest_aer_bridge, dev, pos);
-> +		break;
-> +	default:
-> +		return;
-> +	}
-> +}
+>> LeoLiuoc (3):
+>>    ACPI/APEI: Add hest_parse_pcie_aer()
+>>    PCI: Add AER bits #defines for PCIe to PCI/PCI-X Bridge
+>>    PCI/ACPI: Add pci_acpi_program_hest_aer_params()
+>>
+>>   drivers/acpi/apei/hest.c      | 69 +++++++++++++++++++++++-
+>>   drivers/pci/pci-acpi.c        | 98 +++++++++++++++++++++++++++++++++++
+>>   drivers/pci/pci.h             |  9 ++++
+>>   drivers/pci/probe.c           |  1 +
+>>   include/acpi/apei.h           | 17 ++++++
+>>   include/uapi/linux/pci_regs.h |  3 ++
+>>   6 files changed, 195 insertions(+), 2 deletions(-)
+>>
+>> --
+>> 2.34.1
+>>
