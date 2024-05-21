@@ -1,207 +1,188 @@
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2115.outbound.protection.outlook.com [40.107.92.115])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDC2343AB0;
-	Tue, 21 May 2024 05:36:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716269821; cv=none; b=UdbEyU52jfXJt1FxuQvjXR/+gHsLUv1lgGZh95U4iIxtoIrWGcFwVuGYq98eU4JJ/VkTI4AAmBLftnIlt5FYp/t4p+BrufUqnnkNLA1btCGLdQzHzZYevO/xE78QAHQ7epFRUEf+vccqFNQjXeWYKMgSg9tFYLzYB/EP3C8T4FY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716269821; c=relaxed/simple;
-	bh=2VN2vCstMEu8dehVEzX+E54KclIkWatdqyR0czDkOX8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TyEepvskZEJpwxwbKizXRxel+31K2ittMKnWnYGwBpNIrgrpVhOeLKE8CKcOCNJLE0xP2VLNUyCzlf54ZhYBt5botiel8CJlHuBofv/gCe5JQg+a+zQ9I8zCcTz4X/paI3LQGXJskmopsB6vBYNm1hoG3dYHNobI8ja7+b5w3DA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S3QAyOVn; arc=none smtp.client-ip=209.85.208.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1911614A0BC
+	for <acpica-devel@lists.linux.dev>; Tue, 21 May 2024 21:10:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.115
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1716325860; cv=fail; b=aJg8HM5PDs1l5hPHe71Oyzmj73FTD9yRs2e1gXgVmvVKM0GD3Pv34eg5ZwBn/4oZZnfvVo5rW3ak8cZiUQQ3Sw/WNvap43lAV2cyZ2uASK/ZUw0VGnb00H8ohbnh1hJGZPk5YErKcb6wCTP50MnrDP5HhhJ+r2CsMvc8HvVYIWg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1716325860; c=relaxed/simple;
+	bh=7M9o6B4FwI1ZECcsNLZ9Dw/9ldoUVu8DqMM0XmT0UZU=;
+	h=From:To:Subject:Date:Message-Id:Content-Type:MIME-Version; b=bkFaiUrQzLMuclkhcQWabUJVrbWoeZoDHZNLfuJCz3oDTLWAtScrl2OgzewrrQssS5Dt+GreYjPpPbQIClAnRbvWCBhd0iGaitTki6+otSwFHi+E3nciUUn6rt62Hfbi3HkGzq4MlYm4SUDZ6m1vXLjMY4Orha49YI/RqQeTLr8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com; spf=pass smtp.mailfrom=os.amperecomputing.com; dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b=Cx1i347i; arc=fail smtp.client-ip=40.107.92.115
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=os.amperecomputing.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S3QAyOVn"
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2e52181c228so47268971fa.0;
-        Mon, 20 May 2024 22:36:59 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b="Cx1i347i"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IKNNH8KJlKEX7VGsbzIVKnrA0ODbmTNQNYVsOhxB7/lw3ZOMIe0wu0tri0U1UWbTd9KiNiuLBr79LNgyFRbCkQOHH3PVwM2qYYc2QIzcBIoFIYvUQFq+X4rTyxvAPvxu6Gi2on2deKoMJWO6wKqmEJLW033B20noFSFmWgHWGiZVd2jvykOoBOucI/k5qoZe2lYS6wyP6l1dOlnc/X3ATFvgmwxlwwurViEEsxjdBoHvIP59q5A6vZ58NUAyzAmvCpSjV7FvD75HwYKDDFxIPM84paEv83+tlz6DTcIsHGzk6IVyEvmo2+rvzvySRI38XNBLzPr0J/zEVwyAFmQ2rg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=w4guYLmmXcaOch+gq00IeAjlBGFDS28PJ2QZLWCv5oA=;
+ b=joNtey9K6uzidLVLurlwHO2NfagQP0kf/1br6oHpkp9wU3tWDNVVN4glneKcfb/umfL5cZExxeHDHrto6OxWhJi0wCA34FnJfNBzPAcxUhAf5doox7y1aZ4/vKDT6z2hJAeHrRKl65sTI15ISc7LCb6ZuCrkRES3DIFpVU/pJw6wEaMZCbqCHWpB5jahh8rwOnkz8VNTjmVfcjHRocBYXWS8lpg0G2yDR2ge4x4qGtb07luEHZC2Vu3dPqJZNN3JkRbxcVETUJgLg/fLxupAj+1PtM6Fb8fOSljqChVKPtYSJbgDNtFiD9hJRnbkWf3g3mBZt7U7Zrc6FuJ4rpfq9g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716269818; x=1716874618; darn=lists.linux.dev;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8X0+eNlzU7aWSFgffzqQI3ZbOHv/ydP087P5MpUwWWY=;
-        b=S3QAyOVnw9ONqu5o8/xY4xnDEEBbkC5/L83qfFXluUA9H/D+9/LLlBGWqCMqM0pWgr
-         pC4lhi1ApRAK1QlTU3y/lB7YWukdmmrndOIocJ9EOAj0xw/qZrng2QgeW1piKO5e0167
-         yFyIHMzOjZQ1mAE5yGLmZkqsq6XMAmB56+m35BGZdOXzAFL2waW+1ytyzYI5a4MOB/R4
-         5FhXCytmBYs+Q35+7kK1MLXRtcIS4Iqd9jouABGNPF4vFjyFykpYHD1QC66j74v0vu6v
-         pRhuVRdsE0p7xrrxlp6Wr7M8shufMxLPmO7MWqMZx8VBdVbZVMOv5eHi9rQZf+GmkKyz
-         1/gQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716269818; x=1716874618;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8X0+eNlzU7aWSFgffzqQI3ZbOHv/ydP087P5MpUwWWY=;
-        b=Lme1bjh25bbsb45zHHFqfsy+g9wL7K/86j3nbMIgbd+w0wddhHBhyh09bsDYB0NFmR
-         kB4P02INtFvbLIM+wmMwoVb3LFHvcXKpLUyu6Ie2wXjBUtHWO0Mc8f/Se0mbYouYGFyq
-         Mgb2h0SF3zADrGdPy1vJNA72b3h2EKCl2VtPe/omYv11CMBrZ5xUX89EUgCkReI7Xq5w
-         YYkNQt7ypPAKL6sKaqnfVJ02gVBKkYDeGwG4JqUPy8C8MSQKMP+ZQNXttoEVg1p3ZYLY
-         YriuXJIvtlYFDcWualS3ybyT+Iq75sqX/sdmd0xNsMPMMLBPIv9EqQ5FONgsEYdOrNjf
-         pt1g==
-X-Forwarded-Encrypted: i=1; AJvYcCWhJ4Uqr1fST7Eq6ZcOePNz3HLJKm/GMS49PBKiNhSSJtPOlFU8daz/QFtYhaVU1be52POMfuDHVyu7te6g3IfGl+eZ6F9cKqzhVJz2Gr3jQljz1DxRpQKg8dif/diZ1wo3d/81JDys
-X-Gm-Message-State: AOJu0YxMZV6N8/eeSyxD1lpfvNib7b2DqhCzqUmr4k1FxC/254+mKjoO
-	yDh7I/sK/55/Y6hdWFEPl0cooMd5mGj9MRZl6oAMKYUVRvYlLX8iyWfJL9LtKj/+7mqb2zf1NYo
-	i4rpQDSHGzCBuNzrBFkDYTOFj0+g=
-X-Google-Smtp-Source: AGHT+IEOuv6uBHGuy1kBgi3wLpvrtw9/MW5oRqRPcExCcQ7Flo7D93su7CrKiOr9ufpnZQ1Q1Cg69UJkVd4x5Efr5wk=
-X-Received: by 2002:a2e:86cc:0:b0:2d8:67a0:61b2 with SMTP id
- 38308e7fff4ca-2e51fe54024mr192133171fa.20.1716269817806; Mon, 20 May 2024
- 22:36:57 -0700 (PDT)
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=w4guYLmmXcaOch+gq00IeAjlBGFDS28PJ2QZLWCv5oA=;
+ b=Cx1i347iIBGwOlg2Fya99XFevVElGU1sK6ni5dpK5OjBC6PC7H/XXiRMfMpljHrTy91X1Ag6JTWoKe7rih4O5NwHSJwUt+fa5XxmoE1JRCNf/+MZSV/F8h6U1EPe6SyNkxRan39gp8m1pTBNUdhA/vhr2RJYSS4wiKpRFyfyQ24=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
+Received: from SN7PR01MB7903.prod.exchangelabs.com (2603:10b6:806:34f::17) by
+ MW6PR01MB8627.prod.exchangelabs.com (2603:10b6:303:23e::14) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7587.35; Tue, 21 May 2024 21:10:54 +0000
+Received: from SN7PR01MB7903.prod.exchangelabs.com
+ ([fe80::cf45:9855:a64e:382f]) by SN7PR01MB7903.prod.exchangelabs.com
+ ([fe80::cf45:9855:a64e:382f%3]) with mapi id 15.20.7587.035; Tue, 21 May 2024
+ 21:10:53 +0000
+From: Zaid Alali <zaidal@os.amperecomputing.com>
+To: rafael@kernel.org,
+	lenb@kernel.org,
+	james.morse@arm.com,
+	tony.luck@intel.com,
+	bp@alien8.de,
+	robert.moore@intel.com,
+	Jonathan.Cameron@huawei.com,
+	Benjamin.Cheatham@amd.com,
+	dan.j.williams@intel.com,
+	arnd@arndb.de,
+	Avadhut.Naik@amd.com,
+	u.kleine-koenig@pengutronix.de,
+	john.allen@amd.com,
+	linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	acpica-devel@lists.linux.dev
+Subject: [RFC PATCH v2 0/8] Enable EINJv2 support
+Date: Tue, 21 May 2024 14:10:28 -0700
+Message-Id: <20240521211036.227674-1-zaidal@os.amperecomputing.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: MW4PR04CA0187.namprd04.prod.outlook.com
+ (2603:10b6:303:86::12) To SN7PR01MB7903.prod.exchangelabs.com
+ (2603:10b6:806:34f::17)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <cover.1713778236.git.haibo1.xu@intel.com>
-In-Reply-To: <cover.1713778236.git.haibo1.xu@intel.com>
-From: Haibo Xu <xiaobo55x@gmail.com>
-Date: Tue, 21 May 2024 13:36:46 +0800
-Message-ID: <CAJve8o=bdE_g6ji78+ddjMp22_7iWtX54idmhr5OvtO8U8biHQ@mail.gmail.com>
-Subject: Re: [PATCH v3 0/6] Add ACPI NUMA support for RISC-V
-To: Haibo Xu <haibo1.xu@intel.com>
-Cc: sunilvl@ventanamicro.com, arnd@arndb.de, ajones@ventanamicro.com, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Robert Moore <robert.moore@intel.com>, 
-	Conor Dooley <conor.dooley@microchip.com>, Guo Ren <guoren@kernel.org>, 
-	Alexandre Ghiti <alexghiti@rivosinc.com>, Baoquan He <bhe@redhat.com>, 
-	Greentime Hu <greentime.hu@sifive.com>, Charlie Jenkins <charlie@rivosinc.com>, 
-	Zong Li <zong.li@sifive.com>, Sami Tolvanen <samitolvanen@google.com>, 
-	=?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>, 
-	Samuel Holland <samuel.holland@sifive.com>, Chen Jiahao <chenjiahao16@huawei.com>, 
-	Jisheng Zhang <jszhang@kernel.org>, James Morse <james.morse@arm.com>, 
-	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>, Evan Green <evan@rivosinc.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ard Biesheuvel <ardb@kernel.org>, Tony Luck <tony.luck@intel.com>, 
-	Yuntao Wang <ytcoode@gmail.com>, Alison Schofield <alison.schofield@intel.com>, 
-	Dave Jiang <dave.jiang@intel.com>, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, loongarch@lists.linux.dev, 
-	linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org, 
-	acpica-devel@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN7PR01MB7903:EE_|MW6PR01MB8627:EE_
+X-MS-Office365-Filtering-Correlation-Id: aba7d3da-f48e-4f65-f6a8-08dc79da7fb6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230031|7416005|1800799015|366007|52116005|376005|38350700005|921011;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?48OaJ4mKZ55cd5K8xLgCFLTDs6nbd0gso/dEFEbCqfe4qgIJsdWETaJLmaXY?=
+ =?us-ascii?Q?hQvJ31VCJbKXnw3R8dJlDwHgPIiOd4YG+Uzgpss+dkvtKsJFaWlv8OC0A5ml?=
+ =?us-ascii?Q?vtcgobr9qwlqj+LHUgFjg8g4epJAokAaks/tVpRea+yLP00jgQLzc+MvNtWT?=
+ =?us-ascii?Q?Al+XjqRSduEoPKe+q/0P0qUCIbR4jRYD+kkzEeJQ35dJiq68AuMvTDN7a1fm?=
+ =?us-ascii?Q?VsRe7V6FgEwv+vgmyNF17JDDkyUMyQyy8Q3BkLLPNTBWVQyjTtecA0aPAex3?=
+ =?us-ascii?Q?C46EEqmkT6nuFFc51e3BvG2H37Hs9gQTR0S98VUSKBK5STuMADhEtQX4PV9b?=
+ =?us-ascii?Q?uK7czv0GRRIHLkUiZEO2GML3eAhYd4DkpptwqdDxJPkviTEGURvML50ACxcF?=
+ =?us-ascii?Q?pYnhLqAObCWdK0pZQcB+A02prSHrbiaRNGmFAlsNZgdaVhYRxj4BYleJiQ6+?=
+ =?us-ascii?Q?ActMFmZTFJvaWxg312M4c08TnBBvxd3fwgkiHWyW0FxmqTyipLrUvUtXxHaB?=
+ =?us-ascii?Q?Y7a8hmhUMz49m1FJOBtaNzUzg3rKtT2dYDmKlse2vXVvGLgetYIYVMove7PF?=
+ =?us-ascii?Q?LCmcQsj8sqrLNJZP9GnTQjN/h+0/6RyYlFD722mlikskwqBkkCM2R9Gie5cX?=
+ =?us-ascii?Q?eZEky3BgbVvMXjvJzENady/9L6lDCi1OVh6oTWruxRSB88iDDu7lbeDm9OTf?=
+ =?us-ascii?Q?9PCwdhmEQVZzfj2lgmY/WZs8vF9+QMv/A79vbxz8k/rHqjpXL7jXl1df7KTa?=
+ =?us-ascii?Q?qgwfzwrqfzUo6yZkpqAMA0Djk6JyQd02ltP38hAbi66CKXko+1ccimoe3voy?=
+ =?us-ascii?Q?+tYFd0sBuVOMdQb2LRGjJTUkWjGco5bZhkdmJUgn9Gdk8FbowNh8NM5oIcU8?=
+ =?us-ascii?Q?FfhlLx54PXSuSVtTATOzX1RL5gI8qXWEcfU7vI00sUXYJ4U/Ox3JizrvITFO?=
+ =?us-ascii?Q?t+pn27tTObQ/WrO+Iv9/2xySBDDQ++JcnGtNIe3sFtzDTdlVM2XZsm/ybD22?=
+ =?us-ascii?Q?EBhIqTzBrSrYRJ/72wWnoNyQpVTeBblbYJ0e8+rj3KO5skD5X2ER+YslFq25?=
+ =?us-ascii?Q?jsGbJi09QUJ1fh+m+uDUt8lxUYr60guEOZqozsOHHEks884uSGZfMR1MPBXY?=
+ =?us-ascii?Q?foiqMcAxLljGg8Pd99tEcRYfbcMHFIUaVapJoPtPJH+CC2rua4DzXkYbDjpZ?=
+ =?us-ascii?Q?ETcrNo9xTiBsYFMm9iQczLpJ+R1qZdYSuiqFu7q1RNi550V3gA4PYikSeh2e?=
+ =?us-ascii?Q?4j5UBCmB4OKXEkMVI1hkD6w2ITDkYJoHfPRO4YFV69tp6bilibqtHW1CiYbt?=
+ =?us-ascii?Q?vgU=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR01MB7903.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(366007)(52116005)(376005)(38350700005)(921011);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?hfJhicWS0WN1Dlnk1WfIJjzfkoNyQU/eFbjqkvVZevX3RtDrAZ2c2fNdOLQZ?=
+ =?us-ascii?Q?ftUWJB9yVDmwQd5dGB4lrVTJJ/blC+uAltAkEfzyCCGX3jwivJHrv6JRsqHv?=
+ =?us-ascii?Q?MnZXFCrwPc0zhM1aZBfaxmp8oJpZDbxNRZ6yclNHPcHviBlh1Gt1pCV36Wa2?=
+ =?us-ascii?Q?0cqf3B+d0JpjwBAlpA5MdFb0NTuqNjRBL3pKNH9KzzwCay41k2PO7VZwa5WP?=
+ =?us-ascii?Q?DpQKCato3uhiBqsI4nZBXghEa+UcRlwbwTaHti2TVN+e+jE1dVcXxgQbUNDI?=
+ =?us-ascii?Q?/ZZyA8Zsp8Aw45cc8w/7O0i85WnQLGDdzkMDi2b6cXuSpKJiEjYErJ9kdtVr?=
+ =?us-ascii?Q?502y/FhHslYzrgEnAwnJgRPOIlgpVUZaNTJBjpB6TblCHUluXa9rTHCctBS5?=
+ =?us-ascii?Q?VsWc/DsAxjzakY/4F35+7BRXz8L+nqfxf1IpS8gEiaaisUYfk5goYs5UtyEx?=
+ =?us-ascii?Q?fc9XaZs2BE6o4WIq82PxYVQxGe9jf/CASK7unqLCMvtTLLR4DJnuCXy+Ii63?=
+ =?us-ascii?Q?sZDT9QNPzDI8LGPc68us8I7R6U+gjs0mdR7xw6d5vI+ja+0L/Wdi699/pJc+?=
+ =?us-ascii?Q?oSPRLcg8hZqrbFf7LKe2zqlw768nbXyEAvvW0yuBO2lSkfEZTTH+CWREFxUh?=
+ =?us-ascii?Q?vD7LXbomB28KkY2wuD3Z1a723TL3l8uHXPisfWmvSFnVeDiMVSVnesePvQaR?=
+ =?us-ascii?Q?QAfzW1DhSwoWYV+UzW+Xn/YtIBV6jRIxw1XDartqsLyxYNxZiCMQuvxb5iUi?=
+ =?us-ascii?Q?v96FsflftuEqTyl1+uazP02eApg41Mehypgiaf7f40QAx8Ws3m6TFvcymMBR?=
+ =?us-ascii?Q?9jO8NkOzD3vEdmObNY0eWcqTZ8g9h0W7X7bP4jqy5Ub1RI1k7gqMbPciij2b?=
+ =?us-ascii?Q?m1SwIfD3uYAKCtrxsJ22B6+FRXW9lzq8Nm0Xv/VmwAoqAC1jTK0DcFsxPTT2?=
+ =?us-ascii?Q?7Mhnvc41iWTkAdkp0KFV+MiDqCCmelgx8EsUfKaFC3TO5Q9Ma8HA/Jhz+kxW?=
+ =?us-ascii?Q?145w3cQReJTAsFJxCBk+z9emPHIKG1NEhLcc7zdxlUUROMrktR3h0Y2PI3+d?=
+ =?us-ascii?Q?q8JspWtNzg6VQ+/U5rl/z4OzTDHxHOffE7205QjNGhGvm9Sb7axHXtgTIGej?=
+ =?us-ascii?Q?nWcCoC69bMh0nd9o+kitRT4wGa50tHQ9eIV9Zd/GqWLp6UUzwHIlIIpB3cIT?=
+ =?us-ascii?Q?BjCtInq0fggoSWZbIOjjW7LMGnlQ3N3lh+DpNHgVXwlIBO8RBPiHsman03HH?=
+ =?us-ascii?Q?cQtDOfmFr31J90mGOgjjZVw3punALLwf4dC/mrdKakNFK1LcCc0ujZFbVaOv?=
+ =?us-ascii?Q?T4INThMxd/QDLuQZ/kIeptNKtRIVMdM6MTVGihMLnB2+Xbx7wopXgAKT0lKU?=
+ =?us-ascii?Q?qo3TQ0rbI/HUrOxVfWhOKkql/V0q9/6hpLucPtpKRzu/BIkcYFuAwS06z5//?=
+ =?us-ascii?Q?ooVphSo5AliV/P2zoCn69jGwt7WPXWVXlUXinX+JBUvf1d01Vm/p4GofCbsv?=
+ =?us-ascii?Q?ztOFSSJRNDQGVWahcmhLGMSW0bcbfgUDeAttWzSSlIVFgkiQhxFMjHAyVQL0?=
+ =?us-ascii?Q?M05FiU9kkbFM4RDT5ijw/iDc9R/UXO4kl47K6LdV3puLwk0dnUZv3rYDj7nA?=
+ =?us-ascii?Q?iwlzl+f6tSIIi3fjDexQ0Xs=3D?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: aba7d3da-f48e-4f65-f6a8-08dc79da7fb6
+X-MS-Exchange-CrossTenant-AuthSource: SN7PR01MB7903.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 May 2024 21:10:53.7496
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YMDqd8m5WkKWuIyzKHZVEW1lGdMFntnC2bm1VN8R/XuGPz8a9eDXH5Mzgy7KWyrN5cAAEt9JULHAyIsiadIEFdKHkdsZuQmQrx2XW7wOqFCTJ61KVlzb5yG/LaICRtS8
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR01MB8627
 
-@Sunil V L
+This patch set intends to enable EINJv2 support. The goal of this
+update is to allow the driver to simultaneously support EINJ and EINJv2.
+The implementation follows a proposed ACPI specs(1)(2) that enables the
+driver to discover system capabilities through GET_ERROR_TYPE.
 
-Could you help have a review on this patch set?
+Note: this revision includes new updates from the last review, where
+some changes remove redundant code as well as converting decimal
+values to hex for consistency purposes. This revision also includes
+CXL error injection updates.
 
-Thanks,
-Haibo
+Note: The first two ACPICA patches are to be dropped once merged in
+ACPICA project(3).
 
-On Wed, Apr 24, 2024 at 1:29=E2=80=AFPM Haibo Xu <haibo1.xu@intel.com> wrot=
-e:
->
-> This patch series enable RISC-V ACPI NUMA support which was based on
-> the recently approved ACPI ECR[1].
->
-> Patch 1/6 is generated from the acpica PR[2] and should be merged through
-> the acpica project. Due to this dependency, other 5 patches can only be
-> merged after the corresponding ACPICA patch was pulled into linux.
->
-> Patch 2/6 add RISC-V specific acpi_numa.c file to parse NUMA information
-> from SRAT and SLIT ACPI tables.
-> Patch 3/6 add the common SRAT RINTC affinity structure handler.
-> Patch 4/6 remove the '#if defined(CONFIG_ARCH)' condition to make some NU=
-MA
-> related parse functions common for all current architectures that support
-> ACPI_NUMA.
-> Patch 5/6 change the ACPI_NUMA to a hidden option since it would be selec=
-ted
-> by default on all supported platform.
-> Patch 6/6 replace pr_info with pr_debug in arch_acpi_numa_init() to avoid
-> potential boot noise on ACPI platforms that are not NUMA.
->
-> Based-on: https://github.com/linux-riscv/linux-riscv/tree/for-next
->
-> [1] https://drive.google.com/file/d/1YTdDx2IPm5IeZjAW932EYU-tUtgS08tX/vie=
-w?usp=3Dsharing
-> [2] https://github.com/acpica/acpica/pull/926
->
-> Testing:
-> Since the ACPI AIA/PLIC support patch set is still under upstream review,
-> hence it is tested using the poll based HVC SBI console and RAM disk.
-> 1) Build latest Qemu with the following patch backported
->    https://github.com/vlsunil/qemu/commit/42bd4eeefd5d4410a68f02d54fee406=
-d8a1269b0
->
-> 2) Build latest EDK-II
->    https://github.com/tianocore/edk2/blob/master/OvmfPkg/RiscVVirt/README=
-.md
->
-> 3) Build Linux with the following configs enabled
->    CONFIG_RISCV_SBI_V01=3Dy
->    CONFIG_SERIAL_EARLYCON_RISCV_SBI=3Dy
->    CONFIG_NONPORTABLE=3Dy
->    CONFIG_HVC_RISCV_SBI=3Dy
->    CONFIG_NUMA=3Dy
->    CONFIG_ACPI_NUMA=3Dy
->
-> 4) Build buildroot rootfs.cpio
->
-> 5) Launch the Qemu machine
->    qemu-system-riscv64 -nographic \
->    -machine virt,pflash0=3Dpflash0,pflash1=3Dpflash1 -smp 4 -m 8G \
->    -blockdev node-name=3Dpflash0,driver=3Dfile,read-only=3Don,filename=3D=
-RISCV_VIRT_CODE.fd \
->    -blockdev node-name=3Dpflash1,driver=3Dfile,filename=3DRISCV_VIRT_VARS=
-.fd \
->    -object memory-backend-ram,size=3D4G,id=3Dm0 \
->    -object memory-backend-ram,size=3D4G,id=3Dm1 \
->    -numa node,memdev=3Dm0,cpus=3D0-1,nodeid=3D0 \
->    -numa node,memdev=3Dm1,cpus=3D2-3,nodeid=3D1 \
->    -numa dist,src=3D0,dst=3D1,val=3D30 \
->    -kernel linux/arch/riscv/boot/Image \
->    -initrd buildroot/output/images/rootfs.cpio \
->    -append "root=3D/dev/ram ro console=3Dhvc0 earlycon=3Dsbi"
->
-> [    0.000000] ACPI: SRAT: Node 0 PXM 0 [mem 0x80000000-0x17fffffff]
-> [    0.000000] ACPI: SRAT: Node 1 PXM 1 [mem 0x180000000-0x27fffffff]
-> [    0.000000] NUMA: NODE_DATA [mem 0x17fe3bc40-0x17fe3cfff]
-> [    0.000000] NUMA: NODE_DATA [mem 0x27fff4c40-0x27fff5fff]
-> ...
-> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> HARTID 0x0 -> Node 0
-> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> HARTID 0x1 -> Node 0
-> [    0.000000] ACPI: NUMA: SRAT: PXM 1 -> HARTID 0x2 -> Node 1
-> [    0.000000] ACPI: NUMA: SRAT: PXM 1 -> HARTID 0x3 -> Node 1
->
-> ---
-> Changes since v2
->   - Rebase to Linux 6.9-rc1
->   - changed ACPI_NUMA to a hidden option in patch 5/6 per Arnd's suggesti=
-on
->   - Removed original 6/6 which was not needed with changes in patch 5/6
->   - Added a new patch 6/6 to replace pr_info to pr_debug in arch_acpi_num=
-a_init
->
-> Haibo Xu (6):
->   ACPICA: SRAT: Add RISC-V RINTC affinity structure
->   ACPI: RISCV: Add NUMA support based on SRAT and SLIT
->   ACPI: NUMA: Add handler for SRAT RINTC affinity structure
->   ACPI: NUMA: Make some NUMA related parse functions common
->   ACPI: NUMA: change the ACPI_NUMA to a hidden option
->   ACPI: NUMA: replace pr_info with pr_debug in arch_acpi_numa_init
->
->  arch/arm64/Kconfig            |   1 -
->  arch/loongarch/Kconfig        |   1 -
->  arch/riscv/include/asm/acpi.h |  15 +++-
->  arch/riscv/kernel/Makefile    |   1 +
->  arch/riscv/kernel/acpi.c      |   5 --
->  arch/riscv/kernel/acpi_numa.c | 131 ++++++++++++++++++++++++++++++++++
->  arch/riscv/kernel/setup.c     |   4 +-
->  arch/riscv/kernel/smpboot.c   |   2 -
->  drivers/acpi/numa/Kconfig     |   5 +-
->  drivers/acpi/numa/srat.c      |  40 ++++++++---
->  drivers/base/arch_numa.c      |   2 +-
->  include/acpi/actbl3.h         |  18 ++++-
->  include/linux/acpi.h          |   6 ++
->  13 files changed, 204 insertions(+), 27 deletions(-)
->  create mode 100644 arch/riscv/kernel/acpi_numa.c
->
-> --
-> 2.34.1
->
+(1) https://bugzilla.tianocore.org/show_bug.cgi?id=4615
+(2) https://bugzilla.tianocore.org/attachment.cgi?id=1446
+(3) https://lore.kernel.org/acpica-devel/20240514184150.6285-1-zaidal@os.amperecomputing.com/
+
+Zaid Alali (8):
+  ACPICA: Update values to hex to follow ACPI specs
+  ACPICA: Add EINJv2 get error type action
+  ACPI: APEI: EINJ: Remove redundant calls to
+    einj_get_available_error_type
+  ACPI: APEI: EINJ: Enable the discovery of EINJv2 capabilities
+  ACPI: APEI: EINJ: Add einjv2 extension struct
+  ACPI: APEI: EINJ: Add debugfs files for EINJv2 support
+  ACPI: APEI: EINJ: Enable EINJv2 error injections
+  ACPI: APEI: EINJ: Update the documentation for EINJv2 support
+
+ .../firmware-guide/acpi/apei/einj.rst         |  51 ++++-
+ drivers/acpi/apei/apei-internal.h             |   2 +-
+ drivers/acpi/apei/einj-core.c                 | 177 +++++++++++++++---
+ drivers/acpi/apei/einj-cxl.c                  |   2 +-
+ include/acpi/actbl1.h                         |  25 +--
+ 5 files changed, 214 insertions(+), 43 deletions(-)
+
+-- 
+2.34.1
+
