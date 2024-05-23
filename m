@@ -1,202 +1,289 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2668317577
-	for <acpica-devel@lists.linux.dev>; Thu, 23 May 2024 16:02:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.9
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716480172; cv=fail; b=XOvLoo6YvcEi5j6/dTKSQsI66YhHwY3toSg/nvC21hA8ZbtL1KQsw8A+GbCJtxQnHNCjNhbn9KibccBgicBbgLfv1so4MBGmqvwIAgT4xI1XP4JlMEjOLYjNjqFYEO5Ue5F8sMrPvPKqEAXbJ7CtLSZ8loSAV+xP79lGhXGUYSA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716480172; c=relaxed/simple;
-	bh=7ApU0J5lcJjWrulhRdM+qjRSWphVwcccT5OdW6hBhKA=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=mqlJfPC1YVrS8LhZNC4EsrWg9ZRJGNvUoqpSbmst+ls8hvNANR/aVmJ/NBdjfd1rlzZyWNaZOcjUyl8Zd/mKjShHVWih0o3jO6qNfD05Ghr9ycgZWJ2aMegnRrcEcWFFMXktL+rfyhhLHTiqVpsgHiVZYrEK49+0gFjM2GLLdj0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DSFRLslj; arc=fail smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C460823AF
+	for <acpica-devel@lists.linux.dev>; Thu, 23 May 2024 21:47:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1716500836; cv=none; b=C146J2JKsaVo2wELNAsjjcQjm+f8+9mgkmYPB/G1G4KIVA6O+ZCrEReoFywR2T5LAMroSJSt0cpr1k7fY7YN1vfKWaYEAkyW0FJlokFalD2eHYoWweemDEgsmcEVIYucNBdqa14PNmkdDoh1H82NGsnKbyXzsH/5uyf5nIKch7g=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1716500836; c=relaxed/simple;
+	bh=AIHTysb/p3mDj8tuOHpdkYeIE9mgzI5yyx/JhVGsGoY=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=uaP20Zuf8jJgxbm+FT85pO+aDts9C9PyV7F6NEAq+N734vUJyn+mNBlnTC7Nv3KbsBYNcNOkOYdGsA6sXF7WMi9U5W1rPgAqJ28nO/oPPHc4DLftihhU98EhS5ATgymZljfkjfewBjIA4TxDzhayCSaEyAcuLfjX0qNwfX4iBdI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=031Z2ztT; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=uPxNlIt2; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DSFRLslj"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1716480170; x=1748016170;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=7ApU0J5lcJjWrulhRdM+qjRSWphVwcccT5OdW6hBhKA=;
-  b=DSFRLslj897jBnS6virCZR/dQwiLLkaSq8phmDu/ipyFjK9wqIr20lF+
-   XZ6bNCE4CeE+sXlm1o1NMvvhulBIuSfmmm9DJ9Gn9V2FTuYcR2x/AeEW2
-   rEC+1okYeNdYRBzMHuxRRVZ9V/r5HBvS9oKki/L6S+SAla8Dc2Cve2J74
-   Jq8UGwDe7INKU/AoPlRmA7m5qbmmunaiKm1AXU3I/GMf1H8gLMfobdNh3
-   HSpoYN/EeFbnaQqD7pP+r0ua440wSReRCS+gIMxzjpVsm6ZIzma0O+V+W
-   QMxvCczsnEN79M9PZ9KfEj/HQvlMZgeuHbWzs1NSzdF0oCJmiclJ8hKzy
-   w==;
-X-CSE-ConnectionGUID: Ba/OaqTmS4SAJfXr5RBI0Q==
-X-CSE-MsgGUID: 5V3WzIr7QJSm1DkPmdKzKw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11081"; a="35324490"
-X-IronPort-AV: E=Sophos;i="6.08,183,1712646000"; 
-   d="scan'208";a="35324490"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 May 2024 09:02:49 -0700
-X-CSE-ConnectionGUID: 2sLYjgl8S/yvlJnczx4kmg==
-X-CSE-MsgGUID: tXce8hClRwOx5vc6bK++DQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,183,1712646000"; 
-   d="scan'208";a="38702417"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orviesa004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 23 May 2024 09:02:49 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Thu, 23 May 2024 09:02:48 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39 via Frontend Transport; Thu, 23 May 2024 09:02:48 -0700
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (104.47.73.168)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Thu, 23 May 2024 09:02:48 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HgC5LnULZyRDKiAs8YdtPeaJsjpjKFTR4nO4bKaOhK4td77p9F1Hitx41hcl5rTGiOHwIc16CFQHPceMix+UVXg9pm8lMyPDvzew2HejCKh2/kMTyaqKHqwUcnwFnWRMbhKlXd1rYN+l0S/zn0VAAgewh/XIAS+NiSyyfUurVGOmcQat/IbPbMovBqPJ8YtmB3CD3eBub8ynup8kznIYnBmL1VVwvPR0B5nAMofk1cAMuoolWx+U75CeQfZH9BuRiXnLXW0r39xTZHfYyKq+O2uHz5/SviY4aDnaL8hmQPYpUebmpWPxml6JKHZHnKvZ2+71D4zT4NZjiUcfWhjMEQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7ApU0J5lcJjWrulhRdM+qjRSWphVwcccT5OdW6hBhKA=;
- b=TbUtHVj/9zVd6tZ01HNWJHnm78EJl6ji4NhrAWF0+93Wm8RDwcJ+i6x8wsJ3cQ8AO7ONWvmsMpLb8MjfXvAHWPWaKsJWLU9JQQRg5e3spQqBpShqWgaNid+VYdRAKHx4PTi1/UU/KBtKmnzrtHj5t9NPhoK3OBw1M4ye7O89VMujekjfXd4ZXKF9/Ss0Q2lgeX01DQhh8wn5StbYhrh++8rrbBXtK5k0nY6xze2DyG2XbgYCDB4dH2XWmPfkYkC2zuIo5TeBD9GnHxFGMPEiJN9H/rCHzMzI7oDgD5CDFY77O4b6YsgvW8AKKMENsX/O5UMnCeK9573d7rJYV1ZBiA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from SJ1PR11MB6083.namprd11.prod.outlook.com (2603:10b6:a03:48a::9)
- by SN7PR11MB6774.namprd11.prod.outlook.com (2603:10b6:806:265::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7611.22; Thu, 23 May
- 2024 16:02:45 +0000
-Received: from SJ1PR11MB6083.namprd11.prod.outlook.com
- ([fe80::acfd:b7e:b73b:9361]) by SJ1PR11MB6083.namprd11.prod.outlook.com
- ([fe80::acfd:b7e:b73b:9361%4]) with mapi id 15.20.7587.028; Thu, 23 May 2024
- 16:02:45 +0000
-From: "Luck, Tony" <tony.luck@intel.com>
-To: Jonathan Cameron <Jonathan.Cameron@Huawei.com>, Zaid Alali
-	<zaidal@os.amperecomputing.com>
-CC: "rafael@kernel.org" <rafael@kernel.org>, "lenb@kernel.org"
-	<lenb@kernel.org>, "james.morse@arm.com" <james.morse@arm.com>,
-	"bp@alien8.de" <bp@alien8.de>, "Moore, Robert" <robert.moore@intel.com>,
-	"Benjamin.Cheatham@amd.com" <Benjamin.Cheatham@amd.com>, "Williams, Dan J"
-	<dan.j.williams@intel.com>, "arnd@arndb.de" <arnd@arndb.de>,
-	"Avadhut.Naik@amd.com" <Avadhut.Naik@amd.com>,
-	"u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
-	"john.allen@amd.com" <john.allen@amd.com>, "linux-acpi@vger.kernel.org"
-	<linux-acpi@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "acpica-devel@lists.linux.dev"
-	<acpica-devel@lists.linux.dev>
-Subject: RE: [RFC PATCH v2 3/8] ACPI: APEI: EINJ: Remove redundant calls to
- einj_get_available_error_type
-Thread-Topic: [RFC PATCH v2 3/8] ACPI: APEI: EINJ: Remove redundant calls to
- einj_get_available_error_type
-Thread-Index: AQHaq8NuQgJGsroEcUGX/TI726xI2LGk8COAgAANJMA=
-Date: Thu, 23 May 2024 16:02:45 +0000
-Message-ID: <SJ1PR11MB608387C960ECC119B2DF7101FCF42@SJ1PR11MB6083.namprd11.prod.outlook.com>
-References: <20240521211036.227674-1-zaidal@os.amperecomputing.com>
-	<20240521211036.227674-4-zaidal@os.amperecomputing.com>
- <20240523161357.00007532@Huawei.com>
-In-Reply-To: <20240523161357.00007532@Huawei.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ1PR11MB6083:EE_|SN7PR11MB6774:EE_
-x-ms-office365-filtering-correlation-id: 9955715b-931c-463d-cceb-08dc7b41c8d6
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230031|376005|1800799015|7416005|366007|38070700009;
-x-microsoft-antispam-message-info: =?us-ascii?Q?R6Oo3rydJWRnHrycF5zcvKgCs5LT7Ka7gcBhchMb/d9H2EYsr4Xh7mo0bDTW?=
- =?us-ascii?Q?/72uY+JOwcQ21rkjfxox7pBt7q6RVBafUnTfC9VVtiksAdzLkRIDxdWts3mx?=
- =?us-ascii?Q?XaTj7s8sJw2vpCt62RNkeIbQ5X3Qz1RYXHRMMwp7NrWMwXir6stkUrAvV1ZQ?=
- =?us-ascii?Q?jiWQkk72o5ZjzUsxgbF2NaZHOHvf+mNgvKTRCGw/Qw/fvZE5iVzmV4abT9oI?=
- =?us-ascii?Q?vFbEL3tSHhVxnRkw34EOtSkdj2QJfbivYaBGbmiEmf3TaMHZVJpc8p0r2ZjG?=
- =?us-ascii?Q?VZR5e14WS7KD21UjYvur7Ul6oyMSrFcHUNgCZ9LHyE5ZnRpLfiUpnGctE9aK?=
- =?us-ascii?Q?Gz6jfmqdgKYwItCo+qw54IGNL6+7sc51crMhJloXK77ps7x8mgh3h7a/+g+o?=
- =?us-ascii?Q?Zu0887WDADSgMlL6KhtkIWs654enXmGf4BaOKJNSrmZFsm1DIF7CpIAOo6lu?=
- =?us-ascii?Q?oSr2ARnLSljmTm2cT21NVg6zhBRjIHPERNO7pcp3MDFr2GQnm8Nk3kWc/RvX?=
- =?us-ascii?Q?PvpT0ly+RkXxn2Qz1rGJ17cvCRpXBtmVBJRl403M0mZa0gr2q78e+yb4Ue7T?=
- =?us-ascii?Q?7ytsP0jt8kdb3ISEU64TP3LhvVXf1fWmI3wUjRuCxXbzofN0YglqVWguFhl7?=
- =?us-ascii?Q?LrxLAok/etEVizEwEfbUckgjjfvrYqOhBCfdTVurNz/3RRAcNjPVLcdWRBwN?=
- =?us-ascii?Q?dM8pwax99DjSVj/LXulJ8YS58HWVsctclRtB+X+5QhvEg4s9jwf0UYgi08ld?=
- =?us-ascii?Q?UJ1PQCTkGCNVz5e8Pw1l/xe4fNl+QaTwWIa7v0Y0qwlFJDcuI+rtC1YMCTDF?=
- =?us-ascii?Q?tuNvDnGGQc0zXbMPMq+ENV2cGIbG9HWHLLGWxX6jLiRCbIErUyJWOLy/U8CG?=
- =?us-ascii?Q?jkrgFL2X0PBWdgHLxKpraZpqAuDBAFa+YDh1YQADVsiEyu+h98ez8Fvrf4ld?=
- =?us-ascii?Q?8jP7rb4LUxgB/ubHDvNY44P4MnuL3I4+ce/csowjRCVN2jAd8Q5Z22ZdGwm+?=
- =?us-ascii?Q?ukM4c/z/VFJQIjL2hd3qCdvHzdqnQxWUZKlLcpeZt0/m+6ApzpEOBr9aZYL/?=
- =?us-ascii?Q?hKd4+idZRxEV4JOtUgPeru/LKtDd6oA+NKHoqj2yezQn6QaZIyYYlEKXzoyH?=
- =?us-ascii?Q?boplCvCoOVIz+h/zpz0Ii7gSwx/XIDjSbInJkg0M0oLeI8e45+Zed0OjVJsW?=
- =?us-ascii?Q?AaDjsRHuMVgrbQyvzlt8OjUrHI5UsE1fndHsNAM4n9mn4koOU/SLUt94k5oO?=
- =?us-ascii?Q?AMuf79EkMvdFQK2gLQryNM4jq2KmouJ7NJG5uqBDR2+UPVC2jjxuV1fU5k/t?=
- =?us-ascii?Q?uUC5JLJgwEYZ0A+n0+ahRcTbrJElC7x4oszUw6R5myY6dw=3D=3D?=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ1PR11MB6083.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(7416005)(366007)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?0wkoQskOnoL7jckHc0uxS1MyzrNN36lhOoi9468Vv6XqLeT9Brl93vphuZa6?=
- =?us-ascii?Q?uD9ay54NKGNo1i6I+Fw3Esz/8rXty/b21tNPzOauWITsjdtBAh+80qkFxBQR?=
- =?us-ascii?Q?KCC5hB00dIAo8b2CalCgEdrk2mbEcHCJdBZz7c2IjUTEEpZtMkpgOdhLpKPC?=
- =?us-ascii?Q?+PCsB527BpwtBJqFt8LJXlaOtEmsk4Rs6eVlmUnBvL8tQ7KXMG+1iNZVlQ8C?=
- =?us-ascii?Q?5jGC3pZkCDXKL8eUoh4FrA6MGYCXEtWixFM6ZdXz6GYLJW+DTBQaoPBxMh4Z?=
- =?us-ascii?Q?F/n6H9zTyON9/Gb+NlRN3C/CX8LGo754Ke77MrlgIJjwDBQnnDddCPkBD0Yl?=
- =?us-ascii?Q?6LhLAJBKpGiDYKhbkRaCFRjk9q27+wnGhrvJfRMW0vEt/3f+XwJiawA2n97e?=
- =?us-ascii?Q?aH5lDmw6iXfCUnJFkzvlwaXWFVTPtrDD/4ww7+su/cEaX4wVw2alsuUeKxmv?=
- =?us-ascii?Q?tBUrBOYuEtIc3LnIK7WlKQpS2CJGno+7qS/gvixiKy7b7iyUpwy/dYaoQUFt?=
- =?us-ascii?Q?ofQ/BktJ93vm9DvDQ4b9EW0vu9gAQivPj/Jg4z+5LeAm+V41R/w/8djQ/OvW?=
- =?us-ascii?Q?F3DXuVIrau2ZkZY2aES+hoDaRDOtCWWFdxMcXN8ba1d7zAUdX7iU4iw2Y0FO?=
- =?us-ascii?Q?hPwhbOC3JS8uC27DFod+IvV46reOLaQB7URtX9SnNE/IftupuwiTugwB1Nes?=
- =?us-ascii?Q?j8RifzmMOH2PNDOGxGHtr3nDenPn51D63LkeoPvw+4ttTuh375cKYLbyniPZ?=
- =?us-ascii?Q?IST7PU3l1218ss5fqi+1vhK+Nw/2fp6aYVazk+ApPpgjmsUVEwVYCGBaUI2d?=
- =?us-ascii?Q?KVx9hLejTKbUkRQDE7Hu0FdURpTaL18m4hio8qBMXrX/7Y3U7D4I37eLsGqV?=
- =?us-ascii?Q?IOhIMjkmgIqdIRfBd1+SpAikUiiV6MIluROnNJ2NnshZUTC6C44hqL2jnYM1?=
- =?us-ascii?Q?hcsMmUoX6vdSVmddIzA8YTDQpcptxiiu5hc/iFJ5gL1vdJPzEeHOmeOpF4rm?=
- =?us-ascii?Q?hbLx7XgvdeOElrzIpRSNoyePO6BGGOvyRT8poa4ZJZB1XA2NNbZ5RwziZaPx?=
- =?us-ascii?Q?p+9K/JunqbDGysNF/D/XFwUJ7tpp26MAf2/4OndzBp6xq5jwSemG82+a6xPt?=
- =?us-ascii?Q?IEWuEHpguWAO6ZUmzCX8SQS+LDyDUt/AzyFp+l++gvup6zHf9P0ZoWfyva60?=
- =?us-ascii?Q?Ikm0X2eZAVMgHrEJqmqnL9R4TsuGtd4ZFTrMI6OfIJHbspt2YwD7vr2oHYHr?=
- =?us-ascii?Q?idAoWWyJfhuIVJ8SRaz5LE6bEPmTbp6Y95dFRlhUz6A4LXJcADiKY074Mv6d?=
- =?us-ascii?Q?iIX468xIUtFQo7qNFc2n6Q/guDZqXUlOpyPvSjgHVKAcKSh2tbWZQzC4mG3X?=
- =?us-ascii?Q?VVb+a1t+skhRm21YqFdIq7AO/Bl/vgOmroWFREqYUhZtPQ2EbFFEF9/N6x6Z?=
- =?us-ascii?Q?cTfiqQC4O5zekxYkNRH/QqAYpRl+EKOgh189vbU0q5wdd6JmRniQ1Ee7QDZk?=
- =?us-ascii?Q?fUUMucoOmnNLpoDVB2lMHB/BwJ7uT1K7z/Bvi1ggMMnmwW8J0MXfyccGCMYN?=
- =?us-ascii?Q?0AROSFrL+8xYzDiecUH7VKX+alLqA/Euim0HOKUP?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="031Z2ztT";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="uPxNlIt2"
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1716500826;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HfSWMIeSro48ZWRAqUv8vmWmiMIU3qQetnBBw4e5rJU=;
+	b=031Z2ztTxyuFXWApXykB4FQ6WaX9zYH0aXVpcqWQB5qgDssiFxcYkRuP1BHwBoJ0as9q/P
+	EXzT6AwP1f0MokxzuLUtGHnd/YRw6WlyeA3HqslxGXNKpX5tBLVchRJXUxPP3ciz07FdXC
+	P/IsavOejg3ADUlytLFev1n1x38CxXmCTeOmlrGUgy+dVEu2JXXP76YK3Y74Q43LLU+rpx
+	4e818JFQXHcoX9MRoZIv+/tG6baHUjQO/AN6kVInuwH6xJm8KrDuozEyKCeBwJtzdUm4LO
+	/OP+ayf6aZztWmSr9kpUB6ABm2jqlch7+LGwc3L8WMXS9E/1Qi0N2qxEpt8xdQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1716500826;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HfSWMIeSro48ZWRAqUv8vmWmiMIU3qQetnBBw4e5rJU=;
+	b=uPxNlIt2bLb0MzrZ7XtUuIjHV0iT2joAzZuN1nk4jaICo6I8QMAAOXKwoGUFFYbIa7H/D7
+	NeqcFf+VNhZB4jBA==
+To: Sunil V L <sunilvl@ventanamicro.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
+ linux-pci@vger.kernel.org, linux-serial@vger.kernel.org,
+ acpica-devel@lists.linux.dev
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon
+ <will@kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>, Albert Ou
+ <aou@eecs.berkeley.edu>, "Rafael J . Wysocki" <rafael@kernel.org>, Len
+ Brown <lenb@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, Anup Patel
+ <anup@brainfault.org>, Samuel Holland <samuel.holland@sifive.com>, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby
+ <jirislaby@kernel.org>, Robert Moore <robert.moore@intel.com>, Conor
+ Dooley <conor.dooley@microchip.com>, Andrew Jones
+ <ajones@ventanamicro.com>, Andy Shevchenko
+ <andriy.shevchenko@linux.intel.com>, Marc Zyngier <maz@kernel.org>, Atish
+ Kumar Patra <atishp@rivosinc.com>, Andrei Warkentin
+ <andrei.warkentin@intel.com>, Haibo1 Xu <haibo1.xu@intel.com>,
+ =?utf-8?B?QmrDtnJuIFTDtnBlbA==?=
+ <bjorn@kernel.org>, Sunil V L <sunilvl@ventanamicro.com>
+Subject: Re: [PATCH v5 13/17] irqchip/riscv-intc: Add ACPI support for AIA
+In-Reply-To: <20240501121742.1215792-14-sunilvl@ventanamicro.com>
+References: <20240501121742.1215792-1-sunilvl@ventanamicro.com>
+ <20240501121742.1215792-14-sunilvl@ventanamicro.com>
+Date: Thu, 23 May 2024 23:47:06 +0200
+Message-ID: <874jaofbfp.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ1PR11MB6083.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9955715b-931c-463d-cceb-08dc7b41c8d6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 May 2024 16:02:45.2282
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: h7M99Pu7kqkMYYAIgCtVmAz4FgUjeSIgAJ3Wjw7TGeXkO9gEHM3uWX8zhMjKmNBt38INQ4tR1vrAwxCtoif7zg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB6774
-X-OriginatorOrg: intel.com
+Content-Type: text/plain
 
->> A single call to einj_get_available_error_type in init function is
->> sufficient to save the return value in a global variable to be used
->> later in various places in the code. This commit does not introduce
->> any functional changes, but only removing unnecessary redundant
->> function calls.
->>=20
->> Signed-off-by: Zaid Alali <zaidal@os.amperecomputing.com>
->
-> Seems reasonable to me.
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+On Wed, May 01 2024 at 17:47, Sunil V L wrote:
+> diff --git a/drivers/irqchip/irq-riscv-intc.c b/drivers/irqchip/irq-riscv-intc.c
+> index 9e71c4428814..af7a2f78f0ee 100644
+> --- a/drivers/irqchip/irq-riscv-intc.c
+> +++ b/drivers/irqchip/irq-riscv-intc.c
+> @@ -249,14 +249,105 @@ IRQCHIP_DECLARE(riscv, "riscv,cpu-intc", riscv_intc_init);
+>  IRQCHIP_DECLARE(andes, "andestech,cpu-intc", riscv_intc_init);
+>  
+>  #ifdef CONFIG_ACPI
+> +struct rintc_data {
+> +	u32 ext_intc_id;
+> +	unsigned long hart_id;
+> +	u64 imsic_addr;
+> +	u32 imsic_size;
 
-Agreed. I've thought about making this change many times, but always
-distracted by other issues. Thanks for doing this.
+https://www.kernel.org/doc/html/latest/process/maintainer-tip.html#struct-declarations-and-initializers
 
-Acked-by: Tony Luck <tony.luck@intel.com>
+> +};
+> +
+> +static u32 nr_rintc;
+> +static struct rintc_data *rintc_acpi_data[NR_CPUS];
+> +
+> +int acpi_get_intc_index_hartid(u32 index, unsigned long *hartid)
 
--Tony
+Why int? All of these functions have strictly boolean return values:
+success = true, fail = false, no?
+
+Either bool or get rid of the pointer and let the function return
+either the real hart id or an invalid one.
+
+> +{
+> +	if (index >= nr_rintc)
+> +		return -1;
+> +
+> +	*hartid = rintc_acpi_data[index]->hart_id;
+> +	return 0;
+
+I.e.
+
+	return index >= nr_rintc ? rintc_acpi_data[index]->hart_id : INVALID_HART_ID;
+
+> +int acpi_get_ext_intc_parent_hartid(u8 id, u32 idx, unsigned long *hartid)
+> +{
+> +	int i, j = 0;
+> +
+> +	for (i = 0; i < nr_rintc; i++) {
+> +		if (APLIC_PLIC_ID(rintc_acpi_data[i]->ext_intc_id) == id) {
+> +			if (idx == j) {
+> +				*hartid = rintc_acpi_data[i]->hart_id;
+> +				return 0;
+> +			}
+> +			j++;
+> +		}
+> +	}
+> +
+> +	return -1;
+> +}
+> +
+> +void acpi_get_plic_nr_contexts(u8 id, int *nr_contexts)
+> +{
+> +	int i, j = 0;
+> +
+> +	for (i = 0; i < nr_rintc; i++) {
+> +		if (APLIC_PLIC_ID(rintc_acpi_data[i]->ext_intc_id) == id)
+> +			j++;
+> +	}
+> +
+> +	*nr_contexts = j;
+> +}
+> +
+> +int acpi_get_plic_context(u8 id, u32 idx, int *context_id)
+> +{
+> +	int i, j = 0;
+> +
+> +	for (i = 0; i < nr_rintc; i++) {
+> +		if (APLIC_PLIC_ID(rintc_acpi_data[i]->ext_intc_id) == id) {
+> +			if (idx == j) {
+> +				*context_id = IDC_CONTEXT_ID(rintc_acpi_data[i]->ext_intc_id);
+> +				return 0;
+> +			}
+> +
+> +			j++;
+> +		}
+> +	}
+
+So that's the third incarnation of the same loop with the truly self
+explaining variable and argument names.
+
+    j is actually the index of the context which is associated to a
+    given PLIC ID.
+
+    idx is the context index to search for
+
+Right? So why can't these things be named in a way which makes the
+intent of the code clear?
+
+Also why are all the arguments u8/u32? There is no hardware
+involved. Simple 'unsigned int' is just fine and the u8/u32 is not bying
+you anything here.
+
+Aside of that these ugly macros can be completely avoided and the code
+can be written without a copy & pasta orgy.
+
+struct rintc_data {
+	union {
+		u32		ext_intc_id;
+                struct {
+                	u32	context_id	: 16,
+                        			:  8,
+                        	aplic_plic_id	:  8;
+                }
+        };
+	unsigned long		hart_id;
+	u64			imsic_addr;
+	u32			imsic_size;
+};
+
+#define for_each_matching_plic(_plic, _plic_id)				\
+	for (_plic = 0; _plic < nr_rintc; _plict++)			\
+        	if (rintc_acpi_data[_plic]->aplic_plic_id != _plic_id)	\
+                	continue;					\
+                else
+
+unsigned int acpi_get_plic_nr_contexts(unsigned int plic_id)
+{
+	unsigned int nctx = 0;
+
+	for_each_matching_plic(plic, plic_id)
+		nctx++;
+
+	return nctx;
+}
+
+static struct rintc_data *get_plic_context(unsigned int plic_id, unsigned int ctxt_idx)
+{
+	unsigned int ctxt = 0;
+
+	for_each_matching_plic(plic, plic_id) {
+        	if (ctxt == ctxt_idx)
+                	return rintc_acpi_data + plic;
+        }
+        return NULL;
+}
+
+unsigned long acpi_get_ext_intc_parent_hartid(unsigned int plic_id, unsigned int ctxt_idx)
+{
+        struct rintc_data *data = get_plic_context(plic_id, ctxt_idx);
+
+        return data ? data->hart_id : INVALID_HART_ID;
+}
+
+unsigned int acpi_get_plic_context(unsigned int plic_id, unsigned int ctxt_idx)
+{
+        struct rintc_data *data = get_plic_context(plic_id, ctxt_idx);
+
+        return data ? data->context_id : INVALID_CONTEXT;
+}
+
+Or something like that. Hmm?
+
+> +int acpi_get_imsic_mmio_info(u32 index, struct resource *res)
+> +{
+> +	if (index >= nr_rintc)
+> +		return -1;
+> +
+> +	res->start = rintc_acpi_data[index]->imsic_addr;
+> +	res->end = res->start + rintc_acpi_data[index]->imsic_size - 1;
+> +	res->flags = IORESOURCE_MEM;
+> +	return 0;
+> +}
+> +
+> +static struct fwnode_handle *ext_entc_get_gsi_domain_id(u32 gsi)
+> +{
+> +	return riscv_acpi_get_gsi_domain_id(gsi);
+> +}
+
+This wrapper is required because using riscv_acpi_get_gsi_domain_id()
+directly is too obvious, right?
+
+>  static int __init riscv_intc_acpi_init(union acpi_subtable_headers *header,
+>  				       const unsigned long end)
+>  {
+> -	struct fwnode_handle *fn;
+>  	struct acpi_madt_rintc *rintc;
+> +	struct fwnode_handle *fn;
+> +	int rc;
+>  
+>  	rintc = (struct acpi_madt_rintc *)header;
+> +	rintc_acpi_data[nr_rintc] = kzalloc(sizeof(*rintc_acpi_data[0]), GFP_KERNEL);
+> +	if (!rintc_acpi_data[nr_rintc])
+> +		return -ENOMEM;
+> +
+> +	rintc_acpi_data[nr_rintc]->ext_intc_id = rintc->ext_intc_id;
+> +	rintc_acpi_data[nr_rintc]->hart_id = rintc->hart_id;
+> +	rintc_acpi_data[nr_rintc]->imsic_addr = rintc->imsic_addr;
+> +	rintc_acpi_data[nr_rintc]->imsic_size = rintc->imsic_size;
+> +	nr_rintc++;
+>  
+>  	/*
+>  	 * The ACPI MADT will have one INTC for each CPU (or HART)
+> @@ -273,7 +364,14 @@ static int __init riscv_intc_acpi_init(union acpi_subtable_headers *header,
+>  		return -ENOMEM;
+>  	}
+>  
+> -	return riscv_intc_init_common(fn, &riscv_intc_chip);
+> +	rc = riscv_intc_init_common(fn, &riscv_intc_chip);
+> +	if (rc) {
+> +		irq_domain_free_fwnode(fn);
+> +		return rc;
+> +	}
+
+This looks like a completely unrelated bug fix. Please don't mix functional
+changes and fixes.
+
+Thanks,
+
+        tglx
