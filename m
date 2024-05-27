@@ -1,185 +1,125 @@
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F3E184E16
-	for <acpica-devel@lists.linux.dev>; Thu, 23 May 2024 22:00:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87EDD2107;
+	Mon, 27 May 2024 02:55:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716501624; cv=none; b=lVmlH+tqNbbfpPy1HlCiVipnecqM+jEklsr0X5X1LeicfAXQL2eHi39U4pn7lgieJhFR1iO3/EqGRTQRal4uxxvb3xmCmcPKvKppVdct1oAqhtAkvRafEr1c9GGl02ygBOcsBz67nWrHagSpKwSgzErXQwuJqCGPHv6EJx1qy2Q=
+	t=1716778511; cv=none; b=gX74mgT2F9YFruY2W5wQwIXLIhrHrUeCp8ppW9rJUSNe2qpF0Xlc6Pk5K4ziXhfHW8dSwgqkNNS0iKrmMiQKdBIMcBAiY0TyK0xt2ZfNpwhdacGKobUG7CwzjiWUGD+MigZyEq89Hv213Ax/IAEjiWxWu2bNKfyRh2PgjX/TGbk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716501624; c=relaxed/simple;
-	bh=U3zNsDx6nW/dLYh1FM2TrjCHAPkf8MnEIVyZTcNJdnY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=mTW3CpJRGXwR8ZuUrnMF/o3lTJj+R1Q46Um8bM5x0QTBZBrfCMCDlUvQIxYAzdHl88fHLyTndBgkYHhA5l3rZW12ycXBR40XfoGmVNKIIvUwhYLAtmteeTYjhcGmPw+IPSIt9FcUka3mf+Uh848EetcGfmOxdko3pzIAwGMLjsA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=AbYeiDrh; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=hG7nVsQd; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+	s=arc-20240116; t=1716778511; c=relaxed/simple;
+	bh=07xiRVvLKBl9zaXa91uX9if9n5xwXqYEaruyBFZ/F9Y=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=ijYQpBr/MTIBL12eRlqAH8dxLh3Vs7uCwzI+G3fv64va63Z/p0hpwmyEov9Kb8W0/byI+y+Iivsh4dZq7msI5a1q62J26DOzfxH8bMyQqabCt4iICwmBhibrr51+sDel94R8Q0RZs+3eCgaRDm1PY1UGjI4KLZIEb/TQCZ4psfs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BDwY940h; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="AbYeiDrh";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="hG7nVsQd"
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1716501621;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=18bFCkDiE5Sbgi4NXueQ8erF60YbZu7PrN26lvvIIBA=;
-	b=AbYeiDrhr7a8f7DpLWT7jPVQsX5p8BYnloO9JHGWZo1jwWM2TNA1GkS+RXgQQZ4kwveXJA
-	uO2F3wxgENt5+tKqVIgI6LKhXREauGP4TyVSnMEjWlqAQaaQOAFEqtPs/deTAO0TFZJ7Ty
-	XF8dZT5GJXGueFBS1ZHnF05S7WpTqg0DfkUciatQMe2lVzrH9N7yj6h8ufGhwlj3MNvTIQ
-	EyaFwwIde5NjZXu/+dN8DnAO4TXG/44owA2GfGZdyYXZKje8Uxr03QDeKC3OlmZc4fjhmF
-	yOl2dALXgw8lwL0coqnq1DwlyJLRFqb5paIzqkr2HPPs4pBa2EKFPyuWxO8WYg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1716501621;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=18bFCkDiE5Sbgi4NXueQ8erF60YbZu7PrN26lvvIIBA=;
-	b=hG7nVsQdEZxaAwZk4oZt4Q8Vn66oqj4h5KlI8OqVC3M2q2XO0TFXx9+UzcEfwt+sQD2dkW
-	Gavtq8THOFkIrzAw==
-To: Sunil V L <sunilvl@ventanamicro.com>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
- linux-pci@vger.kernel.org, linux-serial@vger.kernel.org,
- acpica-devel@lists.linux.dev
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon
- <will@kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>, Albert Ou
- <aou@eecs.berkeley.edu>, "Rafael J . Wysocki" <rafael@kernel.org>, Len
- Brown <lenb@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, Anup Patel
- <anup@brainfault.org>, Samuel Holland <samuel.holland@sifive.com>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby
- <jirislaby@kernel.org>, Robert Moore <robert.moore@intel.com>, Conor
- Dooley <conor.dooley@microchip.com>, Andrew Jones
- <ajones@ventanamicro.com>, Andy Shevchenko
- <andriy.shevchenko@linux.intel.com>, Marc Zyngier <maz@kernel.org>, Atish
- Kumar Patra <atishp@rivosinc.com>, Andrei Warkentin
- <andrei.warkentin@intel.com>, Haibo1 Xu <haibo1.xu@intel.com>,
- =?utf-8?B?QmrDtnJuIFTDtnBlbA==?=
- <bjorn@kernel.org>, Sunil V L <sunilvl@ventanamicro.com>
-Subject: Re: [PATCH v5 14/17] irqchip/riscv-imsic: Add ACPI support
-In-Reply-To: <20240501121742.1215792-15-sunilvl@ventanamicro.com>
-References: <20240501121742.1215792-1-sunilvl@ventanamicro.com>
- <20240501121742.1215792-15-sunilvl@ventanamicro.com>
-Date: Fri, 24 May 2024 00:00:21 +0200
-Message-ID: <871q5sfatm.ffs@tglx>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BDwY940h"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 11B24C4AF07;
+	Mon, 27 May 2024 02:55:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1716778511;
+	bh=07xiRVvLKBl9zaXa91uX9if9n5xwXqYEaruyBFZ/F9Y=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=BDwY940hrIlTRYiSvrV7DjcF4WViK6Bz1m2nENogiX/jsjoQpTU53nLAayvGYxmRx
+	 S8//D8w3WCl7LtC6JkCFKIpeQ+sGhWcLEsA9upx10X5fKSdByT5SqokNfq/RXqmvVK
+	 gsFMHZJUKdKBdzAAYnzGkq3gnq2Fj6v5GZ+We6POjWPgnktgdq1ziwE5sPUPsV6BOl
+	 WhYVqo0n83pBClfBABUg1sMmXYUlg9E7ek8WCtt2B6ZfPB/QRtb0OlTnGOKhMx4Ngl
+	 impThOLXRXTjIpr17ItzyT1X7U3yyBEFKHpEQycQ3UDKacT/ZfU1byIffZ/Yp49udQ
+	 bcZ/XyHmDMi0A==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id EFFE4CF21E0;
+	Mon, 27 May 2024 02:55:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 00/19] ACPI: store owner from modules with
+ acpi_bus_register_driver()
+From: patchwork-bot+chrome-platform@kernel.org
+Message-Id: 
+ <171677851097.1901.11162373197607812420.git-patchwork-notify@kernel.org>
+Date: Mon, 27 May 2024 02:55:10 +0000
+References: <20240328-b4-module-owner-acpi-v2-0-1e5552c2c69f@linaro.org>
+In-Reply-To: <20240328-b4-module-owner-acpi-v2-0-1e5552c2c69f@linaro.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: rafael@kernel.org, lenb@kernel.org, robert.moore@intel.com,
+ dmitry.torokhov@gmail.com, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, bleung@chromium.org, tzungbi@kernel.org,
+ corentin.chary@gmail.com, luke@ljones.dev, hdegoede@redhat.com,
+ ilpo.jarvinen@linux.intel.com, cascardo@holoscopio.com, pali@kernel.org,
+ matan@svgalib.org, malattia@linux.it, coproscefalo@gmail.com,
+ akaher@vmware.com, amakhalov@vmware.com, pv-drivers@vmware.com,
+ richardcochran@gmail.com, tytso@mit.edu, Jason@zx2c4.com,
+ linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+ acpica-devel@lists.linux.dev, linux-input@vger.kernel.org,
+ netdev@vger.kernel.org, chrome-platform@lists.linux.dev,
+ platform-driver-x86@vger.kernel.org, rafael.j.wysocki@intel.com
 
-On Wed, May 01 2024 at 17:47, Sunil V L wrote:
+Hello:
 
-> RISC-V IMSIC interrupt controller provides IPI and MSI support.
-> Currently, DT based drivers setup the IPI feature early during boot but
-> defer setting up the MSI functionality. However, in ACPI systems, ACPI,
-> both IPI and MSI features need to be initialized early itself.
+This series was applied to chrome-platform/linux.git (for-kernelci)
+by Rafael J. Wysocki <rafael.j.wysocki@intel.com>:
 
-Why?
+On Thu, 28 Mar 2024 20:49:10 +0100 you wrote:
+> Changes in v2:
+> - Correct input and platform/chrome subjects.
+> - Add acks.
+> - Link to v1: https://lore.kernel.org/r/20240327-b4-module-owner-acpi-v1-0-725241a2d224@linaro.org
+> 
+> Merging
+> =======
+> All further patches depend on the first amba patch, therefore one way is
+> to ack and take it via one tree, e.g. ACPI.
+> 
+> [...]
 
-> +
-> +#ifdef CONFIG_ACPI
-> +
-> +static struct fwnode_handle *imsic_acpi_fwnode;
-> +
-> +struct fwnode_handle *imsic_acpi_get_fwnode(struct device *dev)
+Here is the summary with links:
+  - [v2,01/19] ACPI: store owner from modules with acpi_bus_register_driver()
+    https://git.kernel.org/chrome-platform/c/48b9c4862bd3
+  - [v2,02/19] Input: atlas - drop owner assignment
+    https://git.kernel.org/chrome-platform/c/726c149e0798
+  - [v2,03/19] net: fjes: drop owner assignment
+    https://git.kernel.org/chrome-platform/c/3bdef399d00e
+  - [v2,04/19] platform/chrome: wilco_ec: drop owner assignment
+    https://git.kernel.org/chrome-platform/c/245d97ff3473
+  - [v2,05/19] platform: asus-laptop: drop owner assignment
+    https://git.kernel.org/chrome-platform/c/eda8304c74f0
+  - [v2,06/19] platform: classmate-laptop: drop owner assignment
+    https://git.kernel.org/chrome-platform/c/be24e9a09337
+  - [v2,07/19] platform/x86/dell: drop owner assignment
+    https://git.kernel.org/chrome-platform/c/1baad72e9026
+  - [v2,08/19] platform/x86/eeepc: drop owner assignment
+    https://git.kernel.org/chrome-platform/c/4313188f8128
+  - [v2,09/19] platform/x86/intel/rst: drop owner assignment
+    https://git.kernel.org/chrome-platform/c/68370cc2e32a
+  - [v2,10/19] platform/x86/intel/smartconnect: drop owner assignment
+    https://git.kernel.org/chrome-platform/c/e84a761f1215
+  - [v2,11/19] platform/x86/lg-laptop: drop owner assignment
+    https://git.kernel.org/chrome-platform/c/2929a735d92e
+  - [v2,12/19] platform/x86/sony-laptop: drop owner assignment
+    https://git.kernel.org/chrome-platform/c/562231f34cea
+  - [v2,13/19] platform/x86/toshiba_acpi: drop owner assignment
+    https://git.kernel.org/chrome-platform/c/b655cda9f089
+  - [v2,14/19] platform/x86/toshiba_bluetooth: drop owner assignment
+    https://git.kernel.org/chrome-platform/c/ce69eeb2ccb7
+  - [v2,15/19] platform/x86/toshiba_haps: drop owner assignment
+    https://git.kernel.org/chrome-platform/c/eb22f3ba0c2e
+  - [v2,16/19] platform/x86/wireless-hotkey: drop owner assignment
+    https://git.kernel.org/chrome-platform/c/d49c09ddfbd5
+  - [v2,17/19] ptp: vmw: drop owner assignment
+    https://git.kernel.org/chrome-platform/c/cd3eda2e3508
+  - [v2,18/19] virt: vmgenid: drop owner assignment
+    https://git.kernel.org/chrome-platform/c/00e8b52bf9f9
+  - [v2,19/19] ACPI: drop redundant owner from acpi_driver
+    https://git.kernel.org/chrome-platform/c/cc85f9c05bba
 
-Why is this function global? It's only used in the very same file and
-under the same CONFIG_ACPI #ifdef, no?
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-> +{
-> +	return imsic_acpi_fwnode;
-> +}
-> +
-> +static int __init imsic_early_acpi_init(union acpi_subtable_headers *header,
-> +					const unsigned long end)
-> +{
-> +	struct acpi_madt_imsic *imsic = (struct acpi_madt_imsic *)header;
-> +	int rc;
-> +
-> +	imsic_acpi_fwnode = irq_domain_alloc_named_fwnode("imsic");
-> +	if (!imsic_acpi_fwnode) {
-> +		pr_err("unable to allocate IMSIC FW node\n");
-> +		return -ENOMEM;
-> +	}
-> +
-> +	/* Setup IMSIC state */
-> +	rc = imsic_setup_state(imsic_acpi_fwnode, (void *)imsic);
 
-Pointless (void *) cast.
-
-> +	if (rc) {
-> +		pr_err("%pfwP: failed to setup state (error %d)\n", imsic_acpi_fwnode, rc);
-> +		return rc;
-> +	}
-> +
-> +	/* Do early setup of IMSIC state and IPIs */
-> +	rc = imsic_early_probe(imsic_acpi_fwnode);
-> +	if (rc)
-> +		return rc;
-> +
-> +	rc = imsic_platform_acpi_probe(imsic_acpi_fwnode);
-> +
-> +#ifdef CONFIG_PCI
-> +	if (!rc)
-> +		pci_msi_register_fwnode_provider(&imsic_acpi_get_fwnode);
-> +#endif
-> +
-> +	return rc;
-
-Any error return in this function leaks the firmware node and probably
-some more stuff.
-
-> +}
-> +
-> +IRQCHIP_ACPI_DECLARE(riscv_imsic, ACPI_MADT_TYPE_IMSIC, NULL,
-> +		     1, imsic_early_acpi_init);
-> +#endif
-
-...
-
-> -	/* Find number of interrupt identities */
-> -	rc = of_property_read_u32(to_of_node(fwnode), "riscv,num-ids",
-> -				  &global->nr_ids);
-> -	if (rc) {
-> -		pr_err("%pfwP: number of interrupt identities not found\n", fwnode);
-> -		return rc;
-> +		/* Find number of guest interrupt identities */
-> +		rc = of_property_read_u32(to_of_node(fwnode), "riscv,num-guest-ids",
-> +					  &global->nr_guest_ids);
-> +		if (rc)
-> +			global->nr_guest_ids = global->nr_ids;
-> +	} else {
-> +		global->guest_index_bits = imsic->guest_index_bits;
-> +		global->hart_index_bits = imsic->hart_index_bits;
-> +		global->group_index_bits = imsic->group_index_bits;
-> +		global->group_index_shift = imsic->group_index_shift;
-> +		global->nr_ids = imsic->num_ids;
-> +		global->nr_guest_ids = imsic->num_guest_ids;
->  	}
-
-Seriously?
-
-Why can't you just split out the existing DT code into a separate
-function in an initial patch which avoulds all of this unreviewable
-churn of making the DT stuff indented ?
-
-> +#ifdef CONFIG_ACPI
-> +int imsic_platform_acpi_probe(struct fwnode_handle *fwnode);
-> +struct fwnode_handle *imsic_acpi_get_fwnode(struct device *dev);
-> +#else
-> +static inline struct fwnode_handle *imsic_acpi_get_fwnode(struct device *dev)
-> +{
-> +	return NULL;
-> +}
-> +#endif
-
-Oh well.
-
->  #endif
-
-Thanks,
-
-        tglx
