@@ -1,57 +1,57 @@
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A75CA17559
-	for <acpica-devel@lists.linux.dev>; Mon, 27 May 2024 04:39:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52F79184E
+	for <acpica-devel@lists.linux.dev>; Mon, 27 May 2024 04:52:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716784781; cv=none; b=bZDIypPgoSRnRS9nKuze/TB3btaGcob/aIeri8/tvQWNZEznmbe0h8chlXgoVzgbs8ZqAop71R8HwF7jEDdTeivJzlKhIY99Canpk++d98KKEaBdeB3GH7XWzlglJlrT97/BfLhGKQNxkMCfhH1n2LrspX7Jq83LIOraOhV71fE=
+	t=1716785542; cv=none; b=uTyxpf9EWabZVmlF5VTnghUGJ1EopbmYyipX5QrImnZC4Zpt4U9ctQP7ERSMIQr65fRJEZYcpPHFcmIXbwI8EpJz+n9XowhwFmcBPFJ7KobWLZ7BUa9ek7HH73Dj9YhULQr536sPvMsY9borJOyfEUOM+OrChHiH+UMPj/KQKe0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716784781; c=relaxed/simple;
-	bh=oJwR3+2YrVRYYhvFhHEyHQNfR5yttFLneZk6S+2cBpE=;
+	s=arc-20240116; t=1716785542; c=relaxed/simple;
+	bh=AMS5ARv3IfVq3Q8iY1GykVsvHQU5Z7iIP9RDyXjiVic=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PL6IKMfHvw56sg8PcbD5XynlWI5vBj7K3cOTJirM2K6m1c1VyPry6vjggir7p+DQSEKRjAst4NkfzzEhSBGSQfkw24nVoFpW8yRQSyT8f+eetkWnMHasRLqA042fbXHorpUJIgj2FYGpIwpqspNcfzSscqSByOrT3sIFNT1zwG8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=h7w2K9Aj; arc=none smtp.client-ip=209.85.215.174
+	 Content-Type:Content-Disposition:In-Reply-To; b=BRiziyQJmXzYP3702uUMhbxyNLaB+Zdfpdc7BES1Eia4eamcxKJicscQcwjzRvKXStmTg1nNHgJXcMj+qvok5StJUhp+3RiJZqZWXPhuIL+luA948RATKoNj9HpbIoik5eXaHzpXKwj+r/UKNAtHuTfSDa8IuJl7LCUGSgTVxrs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=Km8x4coa; arc=none smtp.client-ip=209.85.210.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="h7w2K9Aj"
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-68187c5534cso1730557a12.0
-        for <acpica-devel@lists.linux.dev>; Sun, 26 May 2024 21:39:39 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="Km8x4coa"
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6f966840af7so2173623b3a.2
+        for <acpica-devel@lists.linux.dev>; Sun, 26 May 2024 21:52:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1716784779; x=1717389579; darn=lists.linux.dev;
+        d=ventanamicro.com; s=google; t=1716785541; x=1717390341; darn=lists.linux.dev;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+6YXrviCLcyxXmmDXMgEBXPU7+X84327YvIUqwBQ/Tg=;
-        b=h7w2K9Aj9LlPhn+lLH7mszYG6AYsOHiYISY12Ym+HwdzgOE0BYOpKYhtVLeoM1iJYp
-         22IXFD+TwgJfgCpJuyMGDkkZsSe7Tq6TZ1505jgn5Ple5Zx5zt8JUQicTCwaeAqt8+9s
-         5Sj+ycxvvfg+qNKju6kltxi4Hq3ncUtYqyfFog/HhxWjh/NEcW1SkhX5SgBkyPeREy8A
-         0yFNd3oTn5YXGzmatePtmhtafnS7MQvP7bGe8nhJDRHfU3irvQ5xOVcPk3HDJqYBm+86
-         waD9r8Qj9THcy3f5s9iUFCC+rOEuO6aYW3E+fMXf7WDsF7qUKwo7aomUAOsxGaMskWD7
-         pgLg==
+        bh=7OwVnHZBL6wTRkCGzMu3WG8eEJumBpr030yY2OMz5XY=;
+        b=Km8x4coaYFl25wQnXOqHGgj6j/+Kv36pRxnB8jWb7lBegU/rc6SR1n5kbO0mnYe3ob
+         xdeX3/hvzHt2NlYy9iGT2gBcXk8LrBvKkTWSTFKBQjXwM5Y5ECnSQtgk3COsZ9ORR3Dg
+         QIN5so0d2uMJPy4DYq9jjm//KxBCIa9xZyjPAEOqF5k0nyMa1vYnf30ccbBiiaSBxqg3
+         IwFDuGE2+AGe5+R12KJB4PJWq6MrHwzDbKpc0/Q7O6Jc2zAge6/FNe6quFmALT+Y52Au
+         mrL8an1kBk+aPCEV/rvQCJQ+ZM6LJZqxwljANinuaPKlRVC5q96RymiZdLHRKRTntEGX
+         s84A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716784779; x=1717389579;
+        d=1e100.net; s=20230601; t=1716785541; x=1717390341;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+6YXrviCLcyxXmmDXMgEBXPU7+X84327YvIUqwBQ/Tg=;
-        b=Iyc8ha1hwlKxoYhaXAw534MgnodfcoY3w/qMdXG63kI6MJUN75GLcH+Vuh63PE7Ija
-         QAoWB3boCLtGPiptA9gS6shkyTkiQQTm6xWkmFj9fS6ammBe6tR+4BF2crw4spKFIXck
-         MtJN1L1lLWqzjwSk3pPy0nEsFrU3X8cK5WinsUP7akf6gri9+ukJpxyls7DSBu7yZrCj
-         rHRKdihkHaEYNxpi/VeTceCDkZzBG5sNvvzSXBwWIXGfCI6J0p2N5gUZ0IwJ8yjCCKdn
-         O39Kq+RPJEagUXDfNXlM/MyH1PIEIJShDbJ7TbvNHXNn4Jy1UzaMWcQll+O5YCD8NhH6
-         HokQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWQlgrgHnaZ2Yq1EulnMuVU/MW8iUIgQnFAcYCPYovy35lAF6gPB0hQh9AEi54ncLbckdtRJABPc/jVSbj5tJ5xzh0lY5wtKHLcZvBp
-X-Gm-Message-State: AOJu0Yxp1BXJaMtE4XTZY8zJdVpPupfZAcsD58DizVNRoIJcIlOYXOvN
-	VK06FMLKOeJGtL0UXYVFvXeq0TTt6X1x/sHvdDV0VXD5v0BHn8KdRorCkeupHJ0=
-X-Google-Smtp-Source: AGHT+IE9JvCAMKXsid9Oup9PtkMG3gbKLCIeVIPVgCCtq14j1hr2UK2tj9TrDVbVzYBOJhbbgWrYoQ==
-X-Received: by 2002:a17:903:188:b0:1f3:900:8f83 with SMTP id d9443c01a7336-1f4498ec4ecmr99852385ad.52.1716784778805;
-        Sun, 26 May 2024 21:39:38 -0700 (PDT)
+        bh=7OwVnHZBL6wTRkCGzMu3WG8eEJumBpr030yY2OMz5XY=;
+        b=TkxX2EKhqvtqoJQytxlv1NeOqv0VY5PDKEJi+jXhoIf4zE2HQ5zGIUvGH6/adCXeok
+         Lbp8Ux9qCTDZ9u2rPMHNsg3mVCD2TrKjscRnGLO84LhZF8xnaoiryjvbtx0Pk+y9s5ad
+         6JocP8YUI+GjM3tUph1pkqlaRflq6evw+SK5G7EySaLLvqkm8HgdJGKLpcsvanXcfb3i
+         XFUl/fWUiKAGfz+GEVMn0S15Zrp4xTxw0x7UGfnq4P0PyvWm3NKUMo7XBzvSxHW7KJv2
+         vTsPX5Vcw64afOJAzHxEFpKCO2/mVDEoF18RdhOCzWiA6CprviyB9vgqBdkivsBPlWlG
+         Sa+A==
+X-Forwarded-Encrypted: i=1; AJvYcCUzuE8kyj31QFe3yxSx5lVfjwl/l9qtO99fSSrT0MRkJ6GhZMwWSgZglgRbyhygD01RkuEaK0QIcnLo3UfFZo55oknqhaWp+1K9aMkE
+X-Gm-Message-State: AOJu0YxO0M2vU0fs0X6wcc4RFelor50pxm7fTedDonr5qiNS00Q6Wcy9
+	e4pvjEdnwT7V9BE7rGttOifNPcAhvnwEY01XU6NmzGB8v3aWhnnE8/Kv/86Psfs=
+X-Google-Smtp-Source: AGHT+IH1+6Rmi8dE36D+B+xJAB7lUPPIYa2o+TDUzseyC6rijf8D9sllaHoXY4NG8W+kwmTTtncYfQ==
+X-Received: by 2002:a05:6a21:191:b0:1a9:d6e2:66e9 with SMTP id adf61e73a8af0-1b212d4aee2mr9906286637.28.1716785540658;
+        Sun, 26 May 2024 21:52:20 -0700 (PDT)
 Received: from sunil-laptop ([106.51.188.31])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f44c9903b5sm50879945ad.189.2024.05.26.21.39.29
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f483584be5sm19427935ad.258.2024.05.26.21.52.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 May 2024 21:39:38 -0700 (PDT)
-Date: Mon, 27 May 2024 10:09:26 +0530
+        Sun, 26 May 2024 21:52:20 -0700 (PDT)
+Date: Mon, 27 May 2024 10:22:08 +0530
 From: Sunil V L <sunilvl@ventanamicro.com>
 To: Thomas Gleixner <tglx@linutronix.de>
 Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
@@ -77,11 +77,11 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
 	Andrei Warkentin <andrei.warkentin@intel.com>,
 	Haibo1 Xu <haibo1.xu@intel.com>,
 	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-Subject: Re: [PATCH v5 13/17] irqchip/riscv-intc: Add ACPI support for AIA
-Message-ID: <ZlQOfrMHHaGV0cDg@sunil-laptop>
+Subject: Re: [PATCH v5 14/17] irqchip/riscv-imsic: Add ACPI support
+Message-ID: <ZlQReOytuJcMsXUW@sunil-laptop>
 References: <20240501121742.1215792-1-sunilvl@ventanamicro.com>
- <20240501121742.1215792-14-sunilvl@ventanamicro.com>
- <874jaofbfp.ffs@tglx>
+ <20240501121742.1215792-15-sunilvl@ventanamicro.com>
+ <871q5sfatm.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -90,238 +90,139 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <874jaofbfp.ffs@tglx>
+In-Reply-To: <871q5sfatm.ffs@tglx>
 
-Hi Thomas,
-
-On Thu, May 23, 2024 at 11:47:06PM +0200, Thomas Gleixner wrote:
+On Fri, May 24, 2024 at 12:00:21AM +0200, Thomas Gleixner wrote:
 > On Wed, May 01 2024 at 17:47, Sunil V L wrote:
-> > diff --git a/drivers/irqchip/irq-riscv-intc.c b/drivers/irqchip/irq-riscv-intc.c
-> > index 9e71c4428814..af7a2f78f0ee 100644
-> > --- a/drivers/irqchip/irq-riscv-intc.c
-> > +++ b/drivers/irqchip/irq-riscv-intc.c
-> > @@ -249,14 +249,105 @@ IRQCHIP_DECLARE(riscv, "riscv,cpu-intc", riscv_intc_init);
-> >  IRQCHIP_DECLARE(andes, "andestech,cpu-intc", riscv_intc_init);
-> >  
-> >  #ifdef CONFIG_ACPI
-> > +struct rintc_data {
-> > +	u32 ext_intc_id;
-> > +	unsigned long hart_id;
-> > +	u64 imsic_addr;
-> > +	u32 imsic_size;
 > 
-> https://www.kernel.org/doc/html/latest/process/maintainer-tip.html#struct-declarations-and-initializers
->
-Sure, thanks!
- 
-> > +};
-> > +
-> > +static u32 nr_rintc;
-> > +static struct rintc_data *rintc_acpi_data[NR_CPUS];
-> > +
-> > +int acpi_get_intc_index_hartid(u32 index, unsigned long *hartid)
+> > RISC-V IMSIC interrupt controller provides IPI and MSI support.
+> > Currently, DT based drivers setup the IPI feature early during boot but
+> > defer setting up the MSI functionality. However, in ACPI systems, ACPI,
+> > both IPI and MSI features need to be initialized early itself.
 > 
-> Why int? All of these functions have strictly boolean return values:
-> success = true, fail = false, no?
+> Why?
 > 
-> Either bool or get rid of the pointer and let the function return
-> either the real hart id or an invalid one.
->
-Sure. I just tried to keep it similar to the parent function. But let me
-go with your suggestion in the next revision.
- 
-> > +{
-> > +	if (index >= nr_rintc)
-> > +		return -1;
-> > +
-> > +	*hartid = rintc_acpi_data[index]->hart_id;
-> > +	return 0;
-> 
-> I.e.
-> 
-> 	return index >= nr_rintc ? rintc_acpi_data[index]->hart_id : INVALID_HART_ID;
-> 
-Sure.
+Sorry, commit message got truncated by mistake. Basically, in ACPI PCI
+scan happens very early and there is no concept of msi-parent/dependency
+on MSI controller like in DT. It just assumes MSI is setup already. Due
+to this, we need to setup MSI controller early as well.
 
-> > +int acpi_get_ext_intc_parent_hartid(u8 id, u32 idx, unsigned long *hartid)
+> > +
+> > +#ifdef CONFIG_ACPI
+> > +
+> > +static struct fwnode_handle *imsic_acpi_fwnode;
+> > +
+> > +struct fwnode_handle *imsic_acpi_get_fwnode(struct device *dev)
+> 
+> Why is this function global? It's only used in the very same file and
+> under the same CONFIG_ACPI #ifdef, no?
+> 
+For platform devices using MSIs, we need a way to determine the MSI
+domain. This function is exported so that platform device like
+APLIC/IOMMU can find the MSI irqdomain.
+
+For PCI, pci_msi_register_fwnode_provider() is registered by the MSI
+driver for this purpose.
+
+Let me know if this can be made better.
+
 > > +{
-> > +	int i, j = 0;
-> > +
-> > +	for (i = 0; i < nr_rintc; i++) {
-> > +		if (APLIC_PLIC_ID(rintc_acpi_data[i]->ext_intc_id) == id) {
-> > +			if (idx == j) {
-> > +				*hartid = rintc_acpi_data[i]->hart_id;
-> > +				return 0;
-> > +			}
-> > +			j++;
-> > +		}
-> > +	}
-> > +
-> > +	return -1;
+> > +	return imsic_acpi_fwnode;
 > > +}
 > > +
-> > +void acpi_get_plic_nr_contexts(u8 id, int *nr_contexts)
+> > +static int __init imsic_early_acpi_init(union acpi_subtable_headers *header,
+> > +					const unsigned long end)
 > > +{
-> > +	int i, j = 0;
-> > +
-> > +	for (i = 0; i < nr_rintc; i++) {
-> > +		if (APLIC_PLIC_ID(rintc_acpi_data[i]->ext_intc_id) == id)
-> > +			j++;
-> > +	}
-> > +
-> > +	*nr_contexts = j;
-> > +}
-> > +
-> > +int acpi_get_plic_context(u8 id, u32 idx, int *context_id)
-> > +{
-> > +	int i, j = 0;
-> > +
-> > +	for (i = 0; i < nr_rintc; i++) {
-> > +		if (APLIC_PLIC_ID(rintc_acpi_data[i]->ext_intc_id) == id) {
-> > +			if (idx == j) {
-> > +				*context_id = IDC_CONTEXT_ID(rintc_acpi_data[i]->ext_intc_id);
-> > +				return 0;
-> > +			}
-> > +
-> > +			j++;
-> > +		}
-> > +	}
-> 
-> So that's the third incarnation of the same loop with the truly self
-> explaining variable and argument names.
-> 
->     j is actually the index of the context which is associated to a
->     given PLIC ID.
-> 
->     idx is the context index to search for
-> 
-> Right? So why can't these things be named in a way which makes the
-> intent of the code clear?
-> 
-> Also why are all the arguments u8/u32? There is no hardware
-> involved. Simple 'unsigned int' is just fine and the u8/u32 is not bying
-> you anything here.
-> 
-> Aside of that these ugly macros can be completely avoided and the code
-> can be written without a copy & pasta orgy.
-> 
-> struct rintc_data {
-> 	union {
-> 		u32		ext_intc_id;
->                 struct {
->                 	u32	context_id	: 16,
->                         			:  8,
->                         	aplic_plic_id	:  8;
->                 }
->         };
-> 	unsigned long		hart_id;
-> 	u64			imsic_addr;
-> 	u32			imsic_size;
-> };
-> 
-> #define for_each_matching_plic(_plic, _plic_id)				\
-> 	for (_plic = 0; _plic < nr_rintc; _plict++)			\
->         	if (rintc_acpi_data[_plic]->aplic_plic_id != _plic_id)	\
->                 	continue;					\
->                 else
-> 
-> unsigned int acpi_get_plic_nr_contexts(unsigned int plic_id)
-> {
-> 	unsigned int nctx = 0;
-> 
-> 	for_each_matching_plic(plic, plic_id)
-> 		nctx++;
-> 
-> 	return nctx;
-> }
-> 
-> static struct rintc_data *get_plic_context(unsigned int plic_id, unsigned int ctxt_idx)
-> {
-> 	unsigned int ctxt = 0;
-> 
-> 	for_each_matching_plic(plic, plic_id) {
->         	if (ctxt == ctxt_idx)
->                 	return rintc_acpi_data + plic;
->         }
->         return NULL;
-> }
-> 
-> unsigned long acpi_get_ext_intc_parent_hartid(unsigned int plic_id, unsigned int ctxt_idx)
-> {
->         struct rintc_data *data = get_plic_context(plic_id, ctxt_idx);
-> 
->         return data ? data->hart_id : INVALID_HART_ID;
-> }
-> 
-> unsigned int acpi_get_plic_context(unsigned int plic_id, unsigned int ctxt_idx)
-> {
->         struct rintc_data *data = get_plic_context(plic_id, ctxt_idx);
-> 
->         return data ? data->context_id : INVALID_CONTEXT;
-> }
-> 
-> Or something like that. Hmm?
->
-Nice!. Yes, this is better. Thanks a lot for the suggestion. Let me
-update in the next revision.
- 
-> > +int acpi_get_imsic_mmio_info(u32 index, struct resource *res)
-> > +{
-> > +	if (index >= nr_rintc)
-> > +		return -1;
-> > +
-> > +	res->start = rintc_acpi_data[index]->imsic_addr;
-> > +	res->end = res->start + rintc_acpi_data[index]->imsic_size - 1;
-> > +	res->flags = IORESOURCE_MEM;
-> > +	return 0;
-> > +}
-> > +
-> > +static struct fwnode_handle *ext_entc_get_gsi_domain_id(u32 gsi)
-> > +{
-> > +	return riscv_acpi_get_gsi_domain_id(gsi);
-> > +}
-> 
-> This wrapper is required because using riscv_acpi_get_gsi_domain_id()
-> directly is too obvious, right?
->
-:-). Let me remove it.
- 
-> >  static int __init riscv_intc_acpi_init(union acpi_subtable_headers *header,
-> >  				       const unsigned long end)
-> >  {
-> > -	struct fwnode_handle *fn;
-> >  	struct acpi_madt_rintc *rintc;
-> > +	struct fwnode_handle *fn;
+> > +	struct acpi_madt_imsic *imsic = (struct acpi_madt_imsic *)header;
 > > +	int rc;
-> >  
-> >  	rintc = (struct acpi_madt_rintc *)header;
-> > +	rintc_acpi_data[nr_rintc] = kzalloc(sizeof(*rintc_acpi_data[0]), GFP_KERNEL);
-> > +	if (!rintc_acpi_data[nr_rintc])
-> > +		return -ENOMEM;
 > > +
-> > +	rintc_acpi_data[nr_rintc]->ext_intc_id = rintc->ext_intc_id;
-> > +	rintc_acpi_data[nr_rintc]->hart_id = rintc->hart_id;
-> > +	rintc_acpi_data[nr_rintc]->imsic_addr = rintc->imsic_addr;
-> > +	rintc_acpi_data[nr_rintc]->imsic_size = rintc->imsic_size;
-> > +	nr_rintc++;
-> >  
-> >  	/*
-> >  	 * The ACPI MADT will have one INTC for each CPU (or HART)
-> > @@ -273,7 +364,14 @@ static int __init riscv_intc_acpi_init(union acpi_subtable_headers *header,
-> >  		return -ENOMEM;
-> >  	}
-> >  
-> > -	return riscv_intc_init_common(fn, &riscv_intc_chip);
-> > +	rc = riscv_intc_init_common(fn, &riscv_intc_chip);
+> > +	imsic_acpi_fwnode = irq_domain_alloc_named_fwnode("imsic");
+> > +	if (!imsic_acpi_fwnode) {
+> > +		pr_err("unable to allocate IMSIC FW node\n");
+> > +		return -ENOMEM;
+> > +	}
+> > +
+> > +	/* Setup IMSIC state */
+> > +	rc = imsic_setup_state(imsic_acpi_fwnode, (void *)imsic);
+> 
+> Pointless (void *) cast.
+> 
+Okay.
+
 > > +	if (rc) {
-> > +		irq_domain_free_fwnode(fn);
+> > +		pr_err("%pfwP: failed to setup state (error %d)\n", imsic_acpi_fwnode, rc);
 > > +		return rc;
 > > +	}
+> > +
+> > +	/* Do early setup of IMSIC state and IPIs */
+> > +	rc = imsic_early_probe(imsic_acpi_fwnode);
+> > +	if (rc)
+> > +		return rc;
+> > +
+> > +	rc = imsic_platform_acpi_probe(imsic_acpi_fwnode);
+> > +
+> > +#ifdef CONFIG_PCI
+> > +	if (!rc)
+> > +		pci_msi_register_fwnode_provider(&imsic_acpi_get_fwnode);
+> > +#endif
+> > +
+> > +	return rc;
 > 
-> This looks like a completely unrelated bug fix. Please don't mix functional
-> changes and fixes.
+> Any error return in this function leaks the firmware node and probably
+> some more stuff.
+>
+Yeah, fwnode needs free up and need to update the code a bit. Thanks!
+ 
+> > +}
+> > +
+> > +IRQCHIP_ACPI_DECLARE(riscv_imsic, ACPI_MADT_TYPE_IMSIC, NULL,
+> > +		     1, imsic_early_acpi_init);
+> > +#endif
 > 
-Makes sense. Let me create separate patch.
+> ...
+> 
+> > -	/* Find number of interrupt identities */
+> > -	rc = of_property_read_u32(to_of_node(fwnode), "riscv,num-ids",
+> > -				  &global->nr_ids);
+> > -	if (rc) {
+> > -		pr_err("%pfwP: number of interrupt identities not found\n", fwnode);
+> > -		return rc;
+> > +		/* Find number of guest interrupt identities */
+> > +		rc = of_property_read_u32(to_of_node(fwnode), "riscv,num-guest-ids",
+> > +					  &global->nr_guest_ids);
+> > +		if (rc)
+> > +			global->nr_guest_ids = global->nr_ids;
+> > +	} else {
+> > +		global->guest_index_bits = imsic->guest_index_bits;
+> > +		global->hart_index_bits = imsic->hart_index_bits;
+> > +		global->group_index_bits = imsic->group_index_bits;
+> > +		global->group_index_shift = imsic->group_index_shift;
+> > +		global->nr_ids = imsic->num_ids;
+> > +		global->nr_guest_ids = imsic->num_guest_ids;
+> >  	}
+> 
+> Seriously?
+> 
+> Why can't you just split out the existing DT code into a separate
+> function in an initial patch which avoulds all of this unreviewable
+> churn of making the DT stuff indented ?
+> 
+Sure, makes sense. let me create separate patch first as you suggested.
 
-Thanks a lot for the review!
+> > +#ifdef CONFIG_ACPI
+> > +int imsic_platform_acpi_probe(struct fwnode_handle *fwnode);
+> > +struct fwnode_handle *imsic_acpi_get_fwnode(struct device *dev);
+> > +#else
+> > +static inline struct fwnode_handle *imsic_acpi_get_fwnode(struct device *dev)
+> > +{
+> > +	return NULL;
+> > +}
+> > +#endif
+> 
+> Oh well.
+> 
+I guess this is related to your prior comment about the need to make
+this public function. Let me know if I am missing something.
+
+Thanks!
 Sunil
