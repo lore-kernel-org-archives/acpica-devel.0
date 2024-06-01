@@ -1,222 +1,247 @@
-Received: from mx1.zhaoxin.com (MX1.ZHAOXIN.COM [210.0.225.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43D4680029
-	for <acpica-devel@lists.linux.dev>; Fri, 31 May 2024 07:04:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.0.225.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19B6F1CD3D
+	for <acpica-devel@lists.linux.dev>; Sat,  1 Jun 2024 15:04:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717139067; cv=none; b=Uv/DagnplaYT73JOes1d9dPEZ3e0zIZII5wIKzagWcAimRcv0gTxNsplDzDW4z5oMVWQcVSfMJ8BFX1stSFRzVcTFdCBjV/53+girVwfpgaZ3NwMfYA8h0jwn/JxLFopQ2B4O0K/1biRZeyDn30OgsJHMPGgJ2PWMwYtZZTklzk=
+	t=1717254264; cv=none; b=BijIwpqzi2iugFwJRMRAYcxGZ0wcSwosw3+bzdleWG3gVlHUqAgAAQfFXULryPQVUy1rM7yBV0gZX62JdCGiJlu3PJQUhvfhmSx9NyJF0jVv8fARFwKgDSu5OV29J7PebNw3tB45uP1D7xUrqZYDfJgu8LJ/KD1ZH+GtFR3KlXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717139067; c=relaxed/simple;
-	bh=lcn/WRn4tuYxb3wZ5bV1UpkIeHIxRpNeQzxNuetkF6Q=;
-	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=H+69RQ/Vn47N48ZlRFv3bHcEc+rUs7/+rjDMSJ/Z4zm7b7aeDnXFPsGMzmicMk7tsH2wrjQQ5mKBB1uNF1pz5yJoq85tVJpnKWoUbtTksuQGH7TIbzseEFs5a2dTu2oN454dazlLYYQRCKXKLYFM3UMERtSosU26fYmQHS53Cu4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com; spf=pass smtp.mailfrom=zhaoxin.com; arc=none smtp.client-ip=210.0.225.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zhaoxin.com
-X-ASG-Debug-ID: 1717139062-086e23110716a50001-m47mSr
-Received: from ZXSHMBX3.zhaoxin.com (ZXSHMBX3.zhaoxin.com [10.28.252.165]) by mx1.zhaoxin.com with ESMTP id TOX1gDREyvcukL0n (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Fri, 31 May 2024 15:04:22 +0800 (CST)
-X-Barracuda-Envelope-From: LindaChai@zhaoxin.com
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.165
-Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHMBX3.zhaoxin.com
- (10.28.252.165) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 31 May
- 2024 15:04:21 +0800
-Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by zxbjmbx1.zhaoxin.com
- (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 31 May
- 2024 15:04:21 +0800
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.165
-Received: from zxbjmbx1.zhaoxin.com ([::1]) by zxbjmbx1.zhaoxin.com
- ([fe80::b125:97ff:1c5d:c6ca%3]) with mapi id 15.01.2507.027; Fri, 31 May 2024
- 15:04:21 +0800
-X-Barracuda-RBL-Trusted-Forwarder: 10.29.252.163
-From: "Linda Chai(BJ-RD)" <LindaChai@zhaoxin.com>
-To: "ricardo.neri-calderon@linux.intel.com"
-	<ricardo.neri-calderon@linux.intel.com>
-CC: "Cobe Chen(BJ-RD)" <CobeChen@zhaoxin.com>, LeoLiu-oc
-	<LeoLiu-oc@zhaoxin.com>, "Linda Chai(BJ-RD)" <LindaChai@zhaoxin.com>, "Tim
- Guo(BJ-RD)" <TimGuo@zhaoxin.com>, Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>,
-	"acpica-devel@lists.linux.dev" <acpica-devel@lists.linux.dev>, "bp@alien8.de"
-	<bp@alien8.de>, "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-	"hpa@zytor.com" <hpa@zytor.com>, "j.granados@samsung.com"
-	<j.granados@samsung.com>, "lenb@kernel.org" <lenb@kernel.org>,
-	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>, "mcgrof@kernel.org"
-	<mcgrof@kernel.org>, "mingo@redhat.com" <mingo@redhat.com>,
-	"peterz@infradead.org" <peterz@infradead.org>, "rafael@kernel.org"
-	<rafael@kernel.org>, "robert.moore@intel.com" <robert.moore@intel.com>,
-	"tglx@linutronix.de" <tglx@linutronix.de>, "viresh.kumar@linaro.org"
-	<viresh.kumar@linaro.org>, "x86@kernel.org" <x86@kernel.org>
-Subject: Re: [PATCH 3/3] ACPI: cpufreq: Add ITMT support when CPPC enabled for
- Zhaoxin CPUs
-Thread-Topic: Re: [PATCH 3/3] ACPI: cpufreq: Add ITMT support when CPPC
- enabled for Zhaoxin CPUs
-X-ASG-Orig-Subj: Re: [PATCH 3/3] ACPI: cpufreq: Add ITMT support when CPPC enabled for
- Zhaoxin CPUs
-Thread-Index: AdqzKGx5se4bWMonTx2xsC8Nn5RcCA==
-Date: Fri, 31 May 2024 07:04:21 +0000
-Message-ID: <48a2010eaf4e4eb9963117724ea93d61@zhaoxin.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	s=arc-20240116; t=1717254264; c=relaxed/simple;
+	bh=t07UkiT//kJvTyikoaPZfW2KllppHyimPLLG+y5rtMw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=dTLBt8kPQBmdfN0/pNztOvHYKitv7t/W4FIF076aZrWqI8FSuAZQiCGnCmX5nlqCgSSD+xr+xqtnjCxQWu6VAB+u+LP/t6vtv/XjCFyKEPX74BjcO3LQCTM4Kbcaqgmgzocc/RZ0D4T3Igjlwvo4Tcl+w1ACBbP+2vG1CNpTp0g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=OaC3bnEW; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="OaC3bnEW"
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-7025b253f64so245558b3a.3
+        for <acpica-devel@lists.linux.dev>; Sat, 01 Jun 2024 08:04:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1717254262; x=1717859062; darn=lists.linux.dev;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=dgxwxnWOjHGJRULZg5HYqL5pz8PSgbwJm/88zI1CoMY=;
+        b=OaC3bnEWsNZTJrli1m6zb8a3Ka9GS1LKc5Ux3Xa4sJ4yj057OMODdF/grO3Ne1Ky2f
+         QKff0DMfqP9/bScuVYcUOWbQX7oC826tw3qK6jCENfax964Q2VdxQ2u02Fq6lkS/KgTc
+         CsAD3Xa6HHEm5Qj+hTwkOpv57zxNji4ajToiL9yH6+IIyfB0zFuY8TEcTVL60vbHm0qw
+         9NrAa8GW4bbl9QaItbkoRSx85+lQ9aOHz/jYNuklm0qvPbxZzBR9DaVWv3NkauassvCY
+         mRYMjOBBG0XzcOxrFzcX8WM0RoHoPGyYz+61tX6WjKoDlrQg5QQX1NF6bVxvSQgS3PgE
+         eOcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717254262; x=1717859062;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dgxwxnWOjHGJRULZg5HYqL5pz8PSgbwJm/88zI1CoMY=;
+        b=Duae0URYMQ6ASP+PJaOypfq3YrxSVEZxPMem1ZBIqv2Eeuz6LthkxZ1DAgorK6xGKG
+         LO9Fm5sQS9qLMwWaguMWU5f12e4UJ3NXb9X2q14HLGt0uxV8skCJAJBoH0nE++WnRGnb
+         RFZLXPk/e5kRx7bTU6EYmneRFjx5d1+Dgar2ghI7HcjdSHRlao7ZwNaU4lVjSZT+ZDv5
+         HMG2Mn4Wl4tYKoo2dAzK8i0tRfPPBNshCa28cOGEsggB40jMKEn+qUg6HLTnL9Js27CJ
+         KTWuXU02nKZlI+HC+gKlJUlJ7y1hatYehbKPdmnES5MHjCJwQ5S8P5NjW018Ovx7UX8/
+         mqDA==
+X-Forwarded-Encrypted: i=1; AJvYcCVxRyzvMJqew+FUTijDzdJq9H7p3I4hqDLtAbfG/pBYsUorfO2EdEA0G2bDtI8UT0e1acCcaq1Bn4iAzzhBrQBRjhUe7mJLp7iVpdaO
+X-Gm-Message-State: AOJu0Yym3AeEcFYLukfRR7uXCbodBYzgnsIkCVmrSB9f5+qJnmBkbuEf
+	KFeeDiEYNiui7Ffqwk8TMV6fN+1857Hq8mH5ebzMWlISZU957wJy76q2GD9c58U=
+X-Google-Smtp-Source: AGHT+IENZYZ6pmncsatWg7wAXsx4MuGnUG/pExhK7JqrpVwMEVVkLjFulSLz0B0y6o7X8oXFutrZkw==
+X-Received: by 2002:a05:6a21:78a1:b0:1b2:67d1:228c with SMTP id adf61e73a8af0-1b26f2cd637mr5593792637.48.1717254261549;
+        Sat, 01 Jun 2024 08:04:21 -0700 (PDT)
+Received: from sunil-pc.Dlink ([106.51.187.237])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-6c35a4ba741sm2559410a12.85.2024.06.01.08.04.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 01 Jun 2024 08:04:20 -0700 (PDT)
+From: Sunil V L <sunilvl@ventanamicro.com>
+To: linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-acpi@vger.kernel.org,
+	linux-pci@vger.kernel.org,
+	acpica-devel@lists.linux.dev
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Anup Patel <anup@brainfault.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Samuel Holland <samuel.holland@sifive.com>,
+	Robert Moore <robert.moore@intel.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Andrew Jones <ajones@ventanamicro.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Marc Zyngier <maz@kernel.org>,
+	Atish Kumar Patra <atishp@rivosinc.com>,
+	Haibo1 Xu <haibo1.xu@intel.com>,
+	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+	Sunil V L <sunilvl@ventanamicro.com>
+Subject: [PATCH v6 00/17] RISC-V: ACPI: Add external interrupt controller support
+Date: Sat,  1 Jun 2024 20:33:54 +0530
+Message-Id: <20240601150411.1929783-1-sunilvl@ventanamicro.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-X-Barracuda-Connect: ZXSHMBX3.zhaoxin.com[10.28.252.165]
-X-Barracuda-Start-Time: 1717139062
-X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
-X-Barracuda-URL: https://10.28.252.35:4443/cgi-mod/mark.cgi
-X-Virus-Scanned: by bsmtpd at zhaoxin.com
-X-Barracuda-Scan-Msg-Size: 7590
-X-Barracuda-BRTS-Status: 1
-X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
-X-Barracuda-Spam-Score: -2.00
-X-Barracuda-Spam-Status: No, SCORE=-2.00 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=THREAD_INDEX, THREAD_TOPIC
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.125586
-	Rule breakdown below
-	 pts rule name              description
-	---- ---------------------- --------------------------------------------------
-	0.01 THREAD_INDEX           thread-index: AcO7Y8iR61tzADqsRmmc5wNiFHEOig==
-	0.01 THREAD_TOPIC           Thread-Topic: ...(Japanese Subject)...
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-SGkgLFJpY2FyZG8NCkFib3V0IHRoaXMgaXRtdCBkdW1wbGljYXRlZCBjb2RlIGluIGludGVsLXBz
-dGF0ZSBhbmQgYWNwaS1jcHVmcmVxIGRyaXZlcjsNCmhvdyBhYm91dCB3ZSBwdXQgdGhlc2UgY29t
-bW9uIGNvZGVzIGluIGFyY2gveDg2L2tlcm5lbC9pdG10LmM/DQppbiBpbnRlbC1wc3RhdGUvYWNw
-aS1jcHVmcmVxIGRyaXZlciwgaXQgb25seSBnZXQgaGlnaGVzdCBmcmVxdWVuY3kgdGhyb3VnaCBj
-cHBjIGludGVyZmFjZSBhbmQgY2FsbCBzY2hlZF9zZXRfaXRtdF9jb3JlX3ByaW8gcHJvdmlkZWQg
-YnkgaXRtdC5jOw0KICAgIGluIHRoZSBzY2hlZF9zZXRfaXRtdF9jb3JlX3ByaW8sIGRvIHRoZXNl
-IGZvbGxvd2luZyB3b3JrczoNCjEpIHNldCBjb3JlIHByaW9ydHkgYWNjb3JkaW5nIHRvIHRoZSBo
-aWdoZXN0IGZyZXF1ZW5jeTsNCjIpIGNoZWNrIHdoZXRoZXIgY29yZXPigJloaWdoZXN0IGZyZXF1
-ZW5jaWVzIGFyZSBkaWZmZXJlbnQsIGlmIHllcywgc2V0IGl0bXQgY2FwYWJsZSAmIGVuYWJsZTsN
-CjMpIGNoZWNrIHdoZXRoZXIgYWxsIG9ubGluZSBjb3JlcyBoYXZlIHVwZGF0ZWQgY29yZSBwcmlv
-cml0eSwgd2hpY2ggZ3VhcmFudGVlIHJlYnVpbGRfc2NoZWRfZG9tYWlucyB3aWxsIGdldCB0aGUg
-Y29ycmVjdCBwcmlvcml0eSBpbmZvIGZvciBlYWNoIG9ubGluZSBjb3JlOw0KDQpGb2xsb3dpbmcg
-dGhpcyBydWxlLCB0aGUgcGF0Y2ggbG9va3MgbGlrZSB0aGlzOg0KZGlmZiAtLWdpdCBhL2FyY2gv
-eDg2L2tlcm5lbC9pdG10LmMgYi9hcmNoL3g4Ni9rZXJuZWwvaXRtdC5jDQppbmRleCA5YTdjMDNk
-NDc4NjEuLmViMjRkZjI4MjZiYyAxMDA2NDQNCi0tLSBhL2FyY2gveDg2L2tlcm5lbC9pdG10LmMN
-CisrKyBiL2FyY2gveDg2L2tlcm5lbC9pdG10LmMNCkBAIC0yMiw2ICsyMiw3IEBADQojaW5jbHVk
-ZSA8bGludXgvbXV0ZXguaD4NCiNpbmNsdWRlIDxsaW51eC9zeXNjdGwuaD4NCiNpbmNsdWRlIDxs
-aW51eC9ub2RlbWFzay5oPg0KKyNpbmNsdWRlIDxsaW51eC9pdG10Lmg+DQoNCiBzdGF0aWMgREVG
-SU5FX01VVEVYKGl0bXRfdXBkYXRlX211dGV4KTsNCkRFRklORV9QRVJfQ1BVX1JFQURfTU9TVExZ
-KGludCwgc2NoZWRfY29yZV9wcmlvcml0eSk7DQpAQCAtMTYyLDYgKzE2MywxMyBAQCBpbnQgYXJj
-aF9hc3ltX2NwdV9wcmlvcml0eShpbnQgY3B1KQ0KICAgICByZXR1cm4gcGVyX2NwdShzY2hlZF9j
-b3JlX3ByaW9yaXR5LCBjcHUpOw0KfQ0KDQorLyogVGhlIHdvcmsgaXRlbSBpcyBuZWVkZWQgdG8g
-YXZvaWQgQ1BVIGhvdHBsdWcgbG9ja2luZyBpc3N1ZXMgKi8NCitzdGF0aWMgdm9pZCBzY2hlZF9p
-dG10X3dvcmtfZm4oc3RydWN0IHdvcmtfc3RydWN0ICp3b3JrKQ0KK3sNCisgICAgIHNjaGVkX3Nl
-dF9pdG10X3N1cHBvcnQoKTsNCit9DQorc3RhdGljIERFQ0xBUkVfV09SSyhzY2hlZF9pdG10X3dv
-cmssIHNjaGVkX2l0bXRfd29ya19mbik7DQorDQovKioNCiAgKiBzY2hlZF9zZXRfaXRtdF9jb3Jl
-X3ByaW8oKSAtIFNldCBDUFUgcHJpb3JpdHkgYmFzZWQgb24gSVRNVA0KICAqIEBwcmlvOiAgICAg
-UHJpb3JpdHkgb2YgQGNwdQ0KQEAgLTE3Niw3ICsxODQsMzYgQEAgaW50IGFyY2hfYXN5bV9jcHVf
-cHJpb3JpdHkoaW50IGNwdSkNCiAgKiB0aGUgQ1BVIHByaW9yaXRpZXMuIFRoZSBzY2hlZCBkb21h
-aW5zIGhhdmUgbm8NCiAgKiBkZXBlbmRlbmN5IG9uIENQVSBwcmlvcml0aWVzLg0KICAqLw0KKw0K
-K3N0YXRpYyB1NjQgbWF4X2hpZ2hlc3RfcHJpbyA9IDAsIG1pbl9oaWdoZXN0X3ByaW8gPSBVNjRf
-TUFYOw0KK3N0YXRpYyBib29sIGNvcmVfcHJpb3JpdHlfZGlmZj1mYWxzZTsNCitzdGF0aWMgc3Ry
-dWN0IGNwdW1hc2sgY29yZV9wcmlvX2NwdW1hc2s7DQp2b2lkIHNjaGVkX3NldF9pdG10X2NvcmVf
-cHJpbyhpbnQgcHJpbywgaW50IGNwdSkNCnsNCiAgICAgcGVyX2NwdShzY2hlZF9jb3JlX3ByaW9y
-aXR5LCBjcHUpID0gcHJpbzsNCisgICAgIGNwdW1hc2tfc2V0X2NwdShjcHUsICZjb3JlX3ByaW9f
-Y3B1bWFzayk7DQorDQorICAgICBpZiAobWF4X2hpZ2hlc3RfcHJpbyA8PSBtaW5faGlnaGVzdF9w
-cmlvKQ0KKyAgICAgew0KKyAgICAgICAgICAgIGlmIChwcmlvID4gbWF4X2hpZ2hlc3RfcHJpbykN
-CisgICAgICAgICAgICAgICAgICAgbWF4X2hpZ2hlc3RfcHJpbyA9IHByaW87DQorDQorICAgICAg
-ICAgICAgaWYgKHByaW8gPCBtaW5faGlnaGVzdF9wcmlvKQ0KKyAgICAgICAgICAgICAgICAgICBt
-aW5faGlnaGVzdF9wcmlvID0gcHJpbzsNCisNCisgICAgICAgICAgICBpZiAobWF4X2hpZ2hlc3Rf
-cHJpbyA+IG1pbl9oaWdoZXN0X3ByaW8pDQorICAgICAgICAgICAgICAgICAgIGNvcmVfcHJpb3Jp
-dHlfZGlmZiA9IHRydWU7DQorICAgICB9DQorDQorICAgICBpZiAoY29yZV9wcmlvcml0eV9kaWZm
-ICYmIGNwdW1hc2tfZXF1YWwoJmNvcmVfcHJpb19jcHVtYXNrLCBjcHVfb25saW5lX21hc2spKQ0K
-KyAgICAgew0KKyAgICAgICAgICAgIC8qDQorICAgICAgICAgICAgKiBUaGlzIGNvZGUgIGNhbiBi
-ZSBydW4gZHVyaW5nIENQVSBvbmxpbmUgdW5kZXIgdGhlIENQVSBob3RwbHVnIGxvY2tzLA0KKyAg
-ICAgICAgICAgICogc28gc2NoZWRfc2V0X2l0bXQgY2Fubm90IGJlIGNhbGxlZCBmcm9tIGhlcmUu
-DQorICAgICAgICAgICAgKiBxdWV1ZSBhIHdvcmsgaXRlbSB0byBpbnZva2UgaXQNCisgICAgICAg
-ICAgICAqLw0KKyAgICAgICAgICAgIHByX2RlYnVnKCJxdWV1ZSBhIHdvcmsgdG8gc2V0IGl0bXQg
-c3VwcG9ydCBhbmQgZW5hYmxlXG4iKTsNCisgICAgICAgICAgICBzY2hlZHVsZV93b3JrKCZzY2hl
-ZF9pdG10X3dvcmspOw0KKyAgICAgfQ0KKw0KfQ0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvY3B1ZnJl
-cS9hY3BpLWNwdWZyZXEuYyBiL2RyaXZlcnMvY3B1ZnJlcS9hY3BpLWNwdWZyZXEuYw0KaW5kZXgg
-MzdmMWNkZjQ2ZDI5Li4zZTVlMGY2NmIyZWQgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL2NwdWZyZXEv
-YWNwaS1jcHVmcmVxLmMNCisrKyBiL2RyaXZlcnMvY3B1ZnJlcS9hY3BpLWNwdWZyZXEuYw0KQEAg
-LTMwLDYgKzMwLDcgQEANCiNpbmNsdWRlIDxhY3BpL3Byb2Nlc3Nvci5oPg0KI2luY2x1ZGUgPGFj
-cGkvY3BwY19hY3BpLmg+DQoNCisjaW5jbHVkZSA8bGludXgvaXRtdC5oPg0KI2luY2x1ZGUgPGFz
-bS9tc3IuaD4NCiNpbmNsdWRlIDxhc20vcHJvY2Vzc29yLmg+DQojaW5jbHVkZSA8YXNtL2NwdWZl
-YXR1cmUuaD4NCkBAIC02NjMsOCArNjY0LDE3IEBAIHN0YXRpYyB1NjQgZ2V0X21heF9ib29zdF9y
-YXRpbyh1bnNpZ25lZCBpbnQgY3B1KQ0KDQogICAgICByZXR1cm4gZGl2X3U2NChoaWdoZXN0X3Bl
-cmYgPDwgU0NIRURfQ0FQQUNJVFlfU0hJRlQsIG5vbWluYWxfcGVyZik7DQp9DQorDQorc3RhdGlj
-IHZvaWQgY29yZV9zZXRfaXRtdF9wcmlvKGludCBjcHUpDQorew0KKyAgICAgdTY0IGhpZ2hlc3Rf
-cGVyZjsNCisgICAgIGNwcGNfZ2V0X2hpZ2hlc3RfcGVyZihjcHUsICZoaWdoZXN0X3BlcmYpOw0K
-KyAgICAgc2NoZWRfc2V0X2l0bXRfY29yZV9wcmlvKGhpZ2hlc3RfcGVyZiwgY3B1KTsNCit9DQor
-DQojZWxzZQ0Kc3RhdGljIGlubGluZSB1NjQgZ2V0X21heF9ib29zdF9yYXRpbyh1bnNpZ25lZCBp
-bnQgY3B1KSB7IHJldHVybiAwOyB9DQorc3RhdGljIHZvaWQgY29yZV9zZXRfaXRtdF9wcmlvKGlu
-dCBjcHUpIHt9DQojZW5kaWYNCg0KIHN0YXRpYyBpbnQgYWNwaV9jcHVmcmVxX2NwdV9pbml0KHN0
-cnVjdCBjcHVmcmVxX3BvbGljeSAqcG9saWN5KQ0KQEAgLTY3Nyw3ICs2ODcsNyBAQCBzdGF0aWMg
-aW50IGFjcGlfY3B1ZnJlcV9jcHVfaW5pdChzdHJ1Y3QgY3B1ZnJlcV9wb2xpY3kgKnBvbGljeSkN
-CiAgICAgdW5zaWduZWQgaW50IHZhbGlkX3N0YXRlcyA9IDA7DQogICAgIHVuc2lnbmVkIGludCBy
-ZXN1bHQgPSAwOw0KICAgICB1NjQgbWF4X2Jvb3N0X3JhdGlvOw0KLSAgICAgdW5zaWduZWQgaW50
-IGk7DQorICAgICB1bnNpZ25lZCBpbnQgaSxqOw0KI2lmZGVmIENPTkZJR19TTVANCiAgICAgc3Rh
-dGljIGludCBibGFja2xpc3RlZDsNCiNlbmRpZg0KQEAgLTc0MSw2ICs3NTEsMTAgQEAgc3RhdGlj
-IGludCBhY3BpX2NwdWZyZXFfY3B1X2luaXQoc3RydWN0IGNwdWZyZXFfcG9saWN5ICpwb2xpY3kp
-DQogICAgICAgICAgICBwcl9pbmZvX29uY2UoIm92ZXJyaWRpbmcgQklPUyBwcm92aWRlZCBfUFNE
-IGRhdGFcbiIpOw0KICAgICB9DQojZW5kaWYNCisgICAgIGZvcl9lYWNoX2NwdShqLHBvbGljeS0+
-Y3B1cykNCisgICAgIHsNCisgICAgICAgICAgICBjb3JlX3NldF9pdG10X3ByaW8oaik7DQorICAg
-ICB9DQoNCiAgICAgIC8qIGNhcGFiaWxpdHkgY2hlY2sgKi8NCiAgICAgaWYgKHBlcmYtPnN0YXRl
-X2NvdW50IDw9IDEpIHsNCmRpZmYgLS1naXQgYS9kcml2ZXJzL2NwdWZyZXEvaW50ZWxfcHN0YXRl
-LmMgYi9kcml2ZXJzL2NwdWZyZXEvaW50ZWxfcHN0YXRlLmMNCmluZGV4IGRiYmYyOTlmNDIxOS4u
-NGIwNGU2ZGI5ZDViIDEwMDY0NA0KLS0tIGEvZHJpdmVycy9jcHVmcmVxL2ludGVsX3BzdGF0ZS5j
-DQorKysgYi9kcml2ZXJzL2NwdWZyZXEvaW50ZWxfcHN0YXRlLmMNCkBAIC0yNyw2ICsyNyw3IEBA
-DQojaW5jbHVkZSA8bGludXgvcG1fcW9zLmg+DQojaW5jbHVkZSA8bGludXgvYml0ZmllbGQuaD4N
-CiNpbmNsdWRlIDx0cmFjZS9ldmVudHMvcG93ZXIuaD4NCisjaW5jbHVkZSA8bGludXgvaXRtdC5o
-Pg0KDQogI2luY2x1ZGUgPGFzbS9jcHUuaD4NCiNpbmNsdWRlIDxhc20vZGl2NjQuaD4NCkBAIC0z
-NDAsMjMgKzM0MSwxNCBAQCBzdGF0aWMgYm9vbCBpbnRlbF9wc3RhdGVfZ2V0X3BwY19lbmFibGVf
-c3RhdHVzKHZvaWQpDQoNCiAjaWZkZWYgQ09ORklHX0FDUElfQ1BQQ19MSUINCg0KLS8qIFRoZSB3
-b3JrIGl0ZW0gaXMgbmVlZGVkIHRvIGF2b2lkIENQVSBob3RwbHVnIGxvY2tpbmcgaXNzdWVzICov
-DQotc3RhdGljIHZvaWQgaW50ZWxfcHN0c3RlX3NjaGVkX2l0bXRfd29ya19mbihzdHJ1Y3Qgd29y
-a19zdHJ1Y3QgKndvcmspDQotew0KLSAgICAgc2NoZWRfc2V0X2l0bXRfc3VwcG9ydCgpOw0KLX0N
-Ci0NCi1zdGF0aWMgREVDTEFSRV9XT1JLKHNjaGVkX2l0bXRfd29yaywgaW50ZWxfcHN0c3RlX3Nj
-aGVkX2l0bXRfd29ya19mbik7DQotDQojZGVmaW5lIENQUENfTUFYX1BFUkYgIFU4X01BWA0KDQog
-c3RhdGljIHZvaWQgaW50ZWxfcHN0YXRlX3NldF9pdG10X3ByaW8oaW50IGNwdSkNCnsNCi0gICAg
-IHN0cnVjdCBjcHBjX3BlcmZfY2FwcyBjcHBjX3BlcmY7DQotICAgICBzdGF0aWMgdTMyIG1heF9o
-aWdoZXN0X3BlcmYgPSAwLCBtaW5faGlnaGVzdF9wZXJmID0gVTMyX01BWDsNCisgICAgIHU2NCBo
-aWdoZXN0X3BlcmY7DQogICAgIGludCByZXQ7DQoNCi0gICAgIHJldCA9IGNwcGNfZ2V0X3BlcmZf
-Y2FwcyhjcHUsICZjcHBjX3BlcmYpOw0KKyAgICAgcmV0ID0gY3BwY19nZXRfaGlnaGVzdF9wZXJm
-KGNwdSwmaGlnaGVzdF9wZXJmKTsNCiAgICAgaWYgKHJldCkNCiAgICAgICAgICAgIHJldHVybjsN
-Cg0KQEAgLTM2NSwzMyArMzU3LDE1IEBAIHN0YXRpYyB2b2lkIGludGVsX3BzdGF0ZV9zZXRfaXRt
-dF9wcmlvKGludCBjcHUpDQogICAgICAqIEluIHRoaXMgY2FzZSB3ZSBjYW4ndCB1c2UgQ1BQQy5o
-aWdoZXN0X3BlcmYgdG8gZW5hYmxlIElUTVQuDQogICAgICAqIEluIHRoaXMgY2FzZSB3ZSBjYW4g
-bG9vayBhdCBNU1JfSFdQX0NBUEFCSUxJVElFUyBiaXRzIFs4OjBdIHRvIGRlY2lkZS4NCiAgICAg
-ICovDQotICAgICBpZiAoY3BwY19wZXJmLmhpZ2hlc3RfcGVyZiA9PSBDUFBDX01BWF9QRVJGKQ0K
-LSAgICAgICAgICAgIGNwcGNfcGVyZi5oaWdoZXN0X3BlcmYgPSBIV1BfSElHSEVTVF9QRVJGKFJF
-QURfT05DRShhbGxfY3B1X2RhdGFbY3B1XS0+aHdwX2NhcF9jYWNoZWQpKTsNCisgICAgIGlmICho
-aWdoZXN0X3BlcmYgPT0gQ1BQQ19NQVhfUEVSRikNCisgICAgICAgICAgICBoaWdoZXN0X3BlcmYg
-PSBIV1BfSElHSEVTVF9QRVJGKFJFQURfT05DRShhbGxfY3B1X2RhdGFbY3B1XS0+aHdwX2NhcF9j
-YWNoZWQpKTsNCg0KICAgICAgLyoNCiAgICAgICogVGhlIHByaW9yaXRpZXMgY2FuIGJlIHNldCBy
-ZWdhcmRsZXNzIG9mIHdoZXRoZXIgb3Igbm90DQogICAgICAqIHNjaGVkX3NldF9pdG10X3N1cHBv
-cnQodHJ1ZSkgaGFzIGJlZW4gY2FsbGVkIGFuZCBpdCBpcyB2YWxpZCB0bw0KICAgICAgKiB1cGRh
-dGUgdGhlbSBhdCBhbnkgdGltZSBhZnRlciBpdCBoYXMgYmVlbiBjYWxsZWQuDQogICAgICAqLw0K
-LSAgICAgc2NoZWRfc2V0X2l0bXRfY29yZV9wcmlvKGNwcGNfcGVyZi5oaWdoZXN0X3BlcmYsIGNw
-dSk7DQotDQotICAgICBpZiAobWF4X2hpZ2hlc3RfcGVyZiA8PSBtaW5faGlnaGVzdF9wZXJmKSB7
-DQotICAgICAgICAgICAgaWYgKGNwcGNfcGVyZi5oaWdoZXN0X3BlcmYgPiBtYXhfaGlnaGVzdF9w
-ZXJmKQ0KLSAgICAgICAgICAgICAgICAgICBtYXhfaGlnaGVzdF9wZXJmID0gY3BwY19wZXJmLmhp
-Z2hlc3RfcGVyZjsNCi0NCi0gICAgICAgICAgICBpZiAoY3BwY19wZXJmLmhpZ2hlc3RfcGVyZiA8
-IG1pbl9oaWdoZXN0X3BlcmYpDQotICAgICAgICAgICAgICAgICAgIG1pbl9oaWdoZXN0X3BlcmYg
-PSBjcHBjX3BlcmYuaGlnaGVzdF9wZXJmOw0KLQ0KLSAgICAgICAgICAgIGlmIChtYXhfaGlnaGVz
-dF9wZXJmID4gbWluX2hpZ2hlc3RfcGVyZikgew0KLSAgICAgICAgICAgICAgICAgICAvKg0KLSAg
-ICAgICAgICAgICAgICAgICAqIFRoaXMgY29kZSBjYW4gYmUgcnVuIGR1cmluZyBDUFUgb25saW5l
-IHVuZGVyIHRoZQ0KLSAgICAgICAgICAgICAgICAgICAqIENQVSBob3RwbHVnIGxvY2tzLCBzbyBz
-Y2hlZF9zZXRfaXRtdF9zdXBwb3J0KCkNCi0gICAgICAgICAgICAgICAgICAgKiBjYW5ub3QgYmUg
-Y2FsbGVkIGZyb20gaGVyZS4gIFF1ZXVlIHVwIGEgd29yayBpdGVtDQotICAgICAgICAgICAgICAg
-ICAgICogdG8gaW52b2tlIGl0Lg0KLSAgICAgICAgICAgICAgICAgICAqLw0KLSAgICAgICAgICAg
-ICAgICAgICBzY2hlZHVsZV93b3JrKCZzY2hlZF9pdG10X3dvcmspOw0KLSAgICAgICAgICAgIH0N
-Ci0gICAgIH0NCisgICAgIHNjaGVkX3NldF9pdG10X2NvcmVfcHJpbyhoaWdoZXN0X3BlcmYsIGNw
-dSk7DQp9DQoNCiBzdGF0aWMgaW50IGludGVsX3BzdGF0ZV9nZXRfY3BwY19ndWFyYW50ZWVkKGlu
-dCBjcHUpDQpUaGFua3MNCkxpbmRhDQoNCg0KDQrkv53lr4blo7DmmI7vvJoNCuacrOmCruS7tuWQ
-q+acieS/neWvhuaIluS4k+acieS/oeaBr++8jOS7heS+m+aMh+WumuaUtuS7tuS6uuS9v+eUqOOA
-guS4peemgeWvueacrOmCruS7tuaIluWFtuWGheWuueWBmuS7u+S9leacque7j+aOiOadg+eahOaf
-pemYheOAgeS9v+eUqOOAgeWkjeWItuaIlui9rOWPkeOAgg0KQ09ORklERU5USUFMIE5PVEU6DQpU
-aGlzIGVtYWlsIGNvbnRhaW5zIGNvbmZpZGVudGlhbCBvciBsZWdhbGx5IHByaXZpbGVnZWQgaW5m
-b3JtYXRpb24gYW5kIGlzIGZvciB0aGUgc29sZSB1c2Ugb2YgaXRzIGludGVuZGVkIHJlY2lwaWVu
-dC4gQW55IHVuYXV0aG9yaXplZCByZXZpZXcsIHVzZSwgY29weWluZyBvciBmb3J3YXJkaW5nIG9m
-IHRoaXMgZW1haWwgb3IgdGhlIGNvbnRlbnQgb2YgdGhpcyBlbWFpbCBpcyBzdHJpY3RseSBwcm9o
-aWJpdGVkLg0K
+This series adds support for the below ECR approved by ASWG.
+1) MADT - https://drive.google.com/file/d/1oMGPyOD58JaPgMl1pKasT-VKsIKia7zR/view?usp=sharing
+
+The series primarily enables irqchip drivers for RISC-V ACPI based
+platforms.
+
+The series can be broadly categorized like below. 
+
+1) PCI ACPI related functions are migrated from arm64 to common file so
+that we don't need to duplicate them for RISC-V.
+
+2) Added support for re-ordering the probe of interrupt controllers when
+IRQCHIP_ACPI_DECLARE is used.
+
+3) To ensure probe order between interrupt controllers and devices,
+implicit dependency is created similar to when _DEP is present.
+
+4) ACPI support added in RISC-V interrupt controller drivers.
+
+Changes since v5:
+	1) Addressed feedback from Thomas.
+	2) Created separate patch for refactoring DT code in IMSIC
+	3) Separated a fix in riscv-intc irqchip driver and sent
+	   separately. This series depends on that patch [1].
+	4) Dropped serial driver patch since it depends on Andy's
+	   refactoring series [2]. RISC-V patches will be sent
+	   separately later once Andy series get accepted.
+	5) Rebased to v6.10-rc1 which has AIA DT patches.
+	6) Updated tags.
+
+Changes since RFC v4:
+	1) Removed RFC tag as the RFCv4 design looked reasonable.
+	2) Dropped PCI patch needed to avoid warning when there is no MSI
+	   controller. This will be sent later separately after the
+	   current series.
+	3) Dropped PNP handling of _DEP since there is new ACPI ID for
+	   generic 16550 UART. Added the serial driver patch instead.
+	4) Rebased to latest linux-next.
+	5) Reordered/squashed patches in the series
+
+Changes since RFC v3:
+	1) Moved to _DEP method instead of fw_devlink.
+	2) PLIC/APLIC driver probe using namespace devices.
+	3) Handling PNP devices as part of clearing dependency.
+	4) Rebased to latest linux-next to get AIA DT drivers.
+
+Changes since RFC v2:
+	1) Introduced fw_devlink for ACPI nodes for IRQ dependency.
+	2) Dropped patches in drivers which are not required due to
+	   fw_devlink support.
+	3) Dropped pci_set_msi() patch and added a patch in
+	   pci_create_root_bus().
+	4) Updated pnp_irq() patch so that none of the actual PNP
+	   drivers need to change.
+
+Changes since RFC v1:
+	1) Abandoned swnode approach as per Marc's feedback.
+	2) To cope up with AIA series changes which changed irqchip driver
+	   probe from core_initcall() to platform_driver, added patches
+	   to support deferred probing.
+	3) Rebased on top of Anup's AIA v11 and added tags.
+
+To test the series,
+
+1) qemu should be built using the riscv_acpi_namespace_v2 branch at
+https://github.com/vlsunil/qemu.git
+
+2) EDK2 should be built using the instructions at:
+https://github.com/tianocore/edk2/blob/master/OvmfPkg/RiscVVirt/README.md
+
+NOTE: One should be able to use u-boot as well as per instructions from Björn.
+https://lore.kernel.org/lkml/87a5lqsrvh.fsf@all.your.base.are.belong.to.us/
+
+3) Build Linux using this series along with the riscv-intc fix patch
+[1]. Since serial driver patch is dropped, SBI_HVC console needs to be
+used. Enable below configs while building the linux.
+CONFIG_NONPORTABLE=y
+CONFIG_HVC_RISCV_SBI=y
+
+Run Qemu:
+qemu-system-riscv64 \
+ -M virt,pflash0=pflash0,pflash1=pflash1,aia=aplic-imsic \
+ -m 2G -smp 8 \
+ -serial mon:stdio \
+ -device virtio-gpu-pci -full-screen \
+ -device qemu-xhci \
+ -device usb-kbd \
+ -blockdev node-name=pflash0,driver=file,read-only=on,filename=RISCV_VIRT_CODE.fd \
+ -blockdev node-name=pflash1,driver=file,filename=RISCV_VIRT_VARS.fd \
+ -netdev user,id=net0 -device virtio-net-pci,netdev=net0 \
+ -kernel arch/riscv/boot/Image \
+ -initrd rootfs.cpio \
+ -append "root=/dev/ram ro console=hvc0 rootwait earlycon=sbi"
+
+To boot with APLIC only, use aia=aplic.
+To boot with PLIC, remove aia= option.
+
+This series is also available in acpi_b2_v6 branch at
+https://github.com/vlsunil/linux.git
+
+[1] - https://lore.kernel.org/lkml/20240527081113.616189-1-sunilvl@ventanamicro.com/
+[2] - https://lore.kernel.org/lkml/20240506140308.4040735-1-andriy.shevchenko@linux.intel.com/
+
+Sunil V L (17):
+  arm64: PCI: Migrate ACPI related functions to pci-acpi.c
+  ACPI: scan: Add a weak function to reorder the IRQCHIP probe
+  ACPI: bus: Add acpi_riscv_init function
+  ACPI: scan: Refactor dependency creation
+  ACPI: scan: Add RISC-V interrupt controllers to honor list
+  ACPI: scan: Define weak function to populate dependencies
+  ACPI: bus: Add RINTC IRQ model for RISC-V
+  ACPI: pci_link: Clear the dependencies after probe
+  ACPI: RISC-V: Implement PCI related functionality
+  ACPI: RISC-V: Implement function to reorder irqchip probe entries
+  ACPI: RISC-V: Initialize GSI mapping structures
+  ACPI: RISC-V: Implement function to add implicit dependencies
+  irqchip/riscv-intc: Add ACPI support for AIA
+  irqchip/riscv-imsic-state: Create separate function for DT
+  irqchip/riscv-imsic: Add ACPI support
+  irqchip/riscv-aplic: Add ACPI support
+  irqchip/sifive-plic: Add ACPI support
+
+ arch/arm64/kernel/pci.c                    | 191 ------------
+ arch/riscv/Kconfig                         |   2 +
+ arch/riscv/include/asm/irq.h               |  55 ++++
+ arch/riscv/kernel/acpi.c                   |  33 +--
+ drivers/acpi/bus.c                         |   4 +
+ drivers/acpi/pci_link.c                    |   2 +
+ drivers/acpi/riscv/Makefile                |   2 +-
+ drivers/acpi/riscv/init.c                  |  14 +
+ drivers/acpi/riscv/init.h                  |   4 +
+ drivers/acpi/riscv/irq.c                   | 329 +++++++++++++++++++++
+ drivers/acpi/scan.c                        | 103 ++++---
+ drivers/irqchip/irq-riscv-aplic-direct.c   |  22 +-
+ drivers/irqchip/irq-riscv-aplic-main.c     |  68 +++--
+ drivers/irqchip/irq-riscv-aplic-main.h     |   1 +
+ drivers/irqchip/irq-riscv-aplic-msi.c      |   9 +-
+ drivers/irqchip/irq-riscv-imsic-early.c    |  64 +++-
+ drivers/irqchip/irq-riscv-imsic-platform.c |  32 +-
+ drivers/irqchip/irq-riscv-imsic-state.c    | 160 +++++-----
+ drivers/irqchip/irq-riscv-imsic-state.h    |   2 +-
+ drivers/irqchip/irq-riscv-intc.c           |  90 ++++++
+ drivers/irqchip/irq-sifive-plic.c          |  94 ++++--
+ drivers/pci/pci-acpi.c                     | 182 ++++++++++++
+ include/acpi/acpi_bus.h                    |   2 +
+ include/linux/acpi.h                       |   9 +
+ include/linux/irqchip/riscv-imsic.h        |   9 +
+ 25 files changed, 1106 insertions(+), 377 deletions(-)
+ create mode 100644 drivers/acpi/riscv/init.c
+ create mode 100644 drivers/acpi/riscv/init.h
+ create mode 100644 drivers/acpi/riscv/irq.c
+
+-- 
+2.40.1
+
