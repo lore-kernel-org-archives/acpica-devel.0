@@ -1,94 +1,118 @@
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AC9415B552
-	for <acpica-devel@lists.linux.dev>; Fri,  7 Jun 2024 09:10:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A79913F43E;
+	Mon, 10 Jun 2024 15:52:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717751423; cv=none; b=M8Os8zm61bjosLqDIn7p91JTFI4pQ7lHugGkLD/aOR6ulXf6Z01iPvbG7YZJrHBumXpFqNgdwa2ga/JN0tkKAYs/+IHTcYzby2u/lOUJ4bwzog/1/v+DzYulvgLGIDt6kG1Cd+UDg3OuHmbV2X708+AYP9MEWfVo7m75hsIhu1M=
+	t=1718034731; cv=none; b=Bs9gv8BsusX1nR7y5TOUH92Y1+VPMlaRUfUFVOZWoXZf35v+bOX+dMntOcXJkL70WcyZfWR4SuG20+8q2DgyAQfZgetdPoiVJ9KYUfOU0IX7txyHoyHGKSy0HcB88HsW2yApf7jkYyuzLmabb7Ofo8eUug1IXHvmzPlP4ljRGh4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717751423; c=relaxed/simple;
-	bh=DYpx4jfQ2pJ69pholDvW6SWXEkPz4I4Vl9+n460bUJI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rUOSxmcNTxfyXtDYrq0M0EGnZuAHZacwZOXKLgcTTOjPKIzLReB3sLyGn/eiu/kQm+qEi4qph1WJiEPEv71WQmWM7Wqci+hhol014EgFhtyT8pKLldNZ+5b9nSWuDUgcftB2WhyixhmYh/O/SMi1Z7SV+gP+JT9FYWFQm28wucc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E08E82F4;
-	Fri,  7 Jun 2024 02:10:44 -0700 (PDT)
-Received: from [10.57.70.104] (unknown [10.57.70.104])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E3EE93F762;
-	Fri,  7 Jun 2024 02:10:18 -0700 (PDT)
-Message-ID: <d1ce4b09-c0ac-447e-8779-633bfb2bd8c3@arm.com>
-Date: Fri, 7 Jun 2024 10:10:17 +0100
+	s=arc-20240116; t=1718034731; c=relaxed/simple;
+	bh=YZm4xIk6nDiHtUnYqBTNSv20zxWLGRO9uBNg5Cg7bQQ=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=u6MZcQSGDf8Wr5SZiikhDOatrccnWocjMmzHB+gxubDWcdHPwKCwi5GpXySGHC34I0/NEzNUN+5y90alHykZoddsvlLU9ydjwSA3sEPthI/UaAHMIinIlbA79AR+2NIqJaZwOggHrLTht5HqYZcQy+JFZfYf92xAKs8lAaScpQE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=XOvkVDEJ; arc=none smtp.client-ip=159.69.126.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="XOvkVDEJ"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+	s=mail; t=1718034726;
+	bh=YZm4xIk6nDiHtUnYqBTNSv20zxWLGRO9uBNg5Cg7bQQ=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+	b=XOvkVDEJHfvHFbY9wdP2Vj+VokZ7VSnZU5+EApDrSMrsNss74IZP4ZdY+GajjLkdB
+	 nUWq36d5su33vDqCSc2p0sM27tW0T10G+Fs885e3InBQbndn9sOKqL6+4lQ1zU6tpV
+	 BaPSHQvmnJJjIfEJCICq5OzdoaTXxJUzlRDDK+sI=
+From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Date: Mon, 10 Jun 2024 17:51:06 +0200
+Subject: [PATCH v3 1/5] ACPI: battery: add devm_battery_hook_register()
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 1/1] irqchip/gic-v3: Enable non-coherent
- redistributors/ITSes ACPI probing
-To: Amit Singh Tomar <amitsinght@marvell.com>,
- Lorenzo Pieralisi <lpieralisi@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>, Mark Rutland <mark.rutland@arm.com>,
- "Rafael J. Wysocki" <rafael@kernel.org>,
- linux-arm-kernel@lists.infradead.org, linux-acpi@vger.kernel.org,
- acpica-devel@lists.linux.dev
-References: <20240123110332.112797-1-lpieralisi@kernel.org>
- <20240606094238.757649-1-lpieralisi@kernel.org>
- <20240606094238.757649-2-lpieralisi@kernel.org>
- <f901fd06-3b6b-4444-a3da-2b75c59059d3@marvell.com>
- <ZmK5Ilk37GyJ4QEa@lpieralisi>
- <02dba55e-39a3-4853-ac52-834cb1c0fc7f@marvell.com>
-From: Robin Murphy <robin.murphy@arm.com>
-Content-Language: en-GB
-In-Reply-To: <02dba55e-39a3-4853-ac52-834cb1c0fc7f@marvell.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Message-Id: <20240610-cros_ec-charge-control-v3-1-135e37252094@weissschuh.net>
+References: <20240610-cros_ec-charge-control-v3-0-135e37252094@weissschuh.net>
+In-Reply-To: <20240610-cros_ec-charge-control-v3-0-135e37252094@weissschuh.net>
+To: Benson Leung <bleung@chromium.org>, Guenter Roeck <groeck@chromium.org>, 
+ Sebastian Reichel <sre@kernel.org>, 
+ =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas@weissschuh.net>, 
+ "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
+ Robert Moore <robert.moore@intel.com>, Tzung-Bi Shih <tzungbi@kernel.org>
+Cc: chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org, 
+ linux-pm@vger.kernel.org, Mario Limonciello <mario.limonciello@amd.com>, 
+ Dustin Howett <dustin@howett.net>, 
+ Stephen Horvath <s.horvath@outlook.com.au>, 
+ Rajas Paranjpe <paranjperajas@gmail.com>, linux-acpi@vger.kernel.org, 
+ acpica-devel@lists.linux.dev, Matt Hartley <matt.hartley@gmail.com>, 
+ =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1718034726; l=1770;
+ i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
+ bh=YZm4xIk6nDiHtUnYqBTNSv20zxWLGRO9uBNg5Cg7bQQ=;
+ b=2g/GG8lqFBwdVD+9PVUjWJO48YOQ51A4lhZ4oqz9aZkY/sUylc/F86XTHLl0BJhRc3qNpKH2N
+ +bXFL/y/wKDA8d/xiSsmQeubz6EGMIRrC2FD09hwoLaV+HNcLEa1UI4
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
+ pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 
-On 2024-06-07 8:53 am, Amit Singh Tomar wrote:
->> On Fri, Jun 07, 2024 at 12:21:54AM +0530, Amit Singh Tomar wrote:
->>
->> [...]
->>
->>>> diff --git a/drivers/acpi/processor_core.c 
->>>> b/drivers/acpi/processor_core.c
->>>> index b203cfe28550..915713c0e9b7 100644
->>>> --- a/drivers/acpi/processor_core.c
->>>> +++ b/drivers/acpi/processor_core.c
->>>> @@ -215,6 +215,21 @@ phys_cpuid_t __init acpi_map_madt_entry(u32 
->>>> acpi_id)
->>>>        return rv;
->>>>    }
->>>> +int __init acpi_get_madt_revision(void)
->>>
->>> Wondering, if we can have a generic function (acpi_get_tbl_revision) to
->>> obtain the revision number for any ACPI table, not just specific to 
->>> MADT?
->>
->> We could - I don't think there would be users other than code in this
->> patch though so I thought it would not be necessary.
->>
-> 
-> Right, it might not be essential now but I see that MPAM will be another 
-> user of it once the MPAM patches are out.
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git/tree/drivers/acpi/arm64/mpam.c?h=mpam/snapshot/v6.7-rc2#n299
+Add a utility function for device-managed registration of battery hooks.
+The function makes it easier to manage the lifecycle of a hook.
 
-Not really; there's already plenty of ACPI code which checks the 
-revision of a table *while* also parsing other information from it, and 
-that MPAM code is doing the same. Using a standalone function to look up 
-the table, check one thing and throw it away, and then immediately have 
-to look it up again to do the rest would be needlessly overcomplicated.
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+---
+ drivers/acpi/battery.c | 15 +++++++++++++++
+ include/acpi/battery.h |  2 ++
+ 2 files changed, 17 insertions(+)
 
-The thing in the GIC case is that doing this semi-redundant lookup to 
-re-retrieve the top-level MADT header while we're already deep into 
-parsing its subtables is still the least-worst option, because the 
-alternative would be invasively churning the whole common MADT 
-abstraction to pass that information all the way down just for this one 
-slightly niche thing.
+diff --git a/drivers/acpi/battery.c b/drivers/acpi/battery.c
+index b379401ff1c2..6ea979f76f84 100644
+--- a/drivers/acpi/battery.c
++++ b/drivers/acpi/battery.c
+@@ -756,6 +756,21 @@ void battery_hook_register(struct acpi_battery_hook *hook)
+ }
+ EXPORT_SYMBOL_GPL(battery_hook_register);
+ 
++static void devm_battery_hook_unregister(void *data)
++{
++	struct acpi_battery_hook *hook = data;
++
++	battery_hook_unregister(hook);
++}
++
++int devm_battery_hook_register(struct device *dev, struct acpi_battery_hook *hook)
++{
++	battery_hook_register(hook);
++
++	return devm_add_action_or_reset(dev, devm_battery_hook_unregister, hook);
++}
++EXPORT_SYMBOL_GPL(devm_battery_hook_register);
++
+ /*
+  * This function gets called right after the battery sysfs
+  * attributes have been added, so that the drivers that
+diff --git a/include/acpi/battery.h b/include/acpi/battery.h
+index 611a2561a014..c93f16dfb944 100644
+--- a/include/acpi/battery.h
++++ b/include/acpi/battery.h
+@@ -2,6 +2,7 @@
+ #ifndef __ACPI_BATTERY_H
+ #define __ACPI_BATTERY_H
+ 
++#include <linux/device.h>
+ #include <linux/power_supply.h>
+ 
+ #define ACPI_BATTERY_CLASS "battery"
+@@ -19,5 +20,6 @@ struct acpi_battery_hook {
+ 
+ void battery_hook_register(struct acpi_battery_hook *hook);
+ void battery_hook_unregister(struct acpi_battery_hook *hook);
++int devm_battery_hook_register(struct device *dev, struct acpi_battery_hook *hook);
+ 
+ #endif
 
-Thanks,
-Robin.
+-- 
+2.45.2
+
