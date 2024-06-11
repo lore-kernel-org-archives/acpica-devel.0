@@ -1,36 +1,37 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFAD317A92F;
-	Tue, 11 Jun 2024 10:14:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CF8717B4E5;
+	Tue, 11 Jun 2024 11:35:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718100886; cv=none; b=nr+jM4/FhmmFO6KSYixKvbany9mz/fb1y/ga26xNX3RSoIpvGI8O9Zba8N1c/wIWqDH3y/JO7pWWf5cUVttCM5yZCgvKlBYucVn7g7hBmZvdgQXvATTdIV7+JuGi1UD6VIZOBC/NwPjzM8zflilbSvRuvh3zwW54eBLJR8zC0G8=
+	t=1718105744; cv=none; b=cjg+TJpVOEUiYNK2VLgS7Mb0Zpr1qwwJriKGTAJdDERXwVfxwXmGamFmCNGX26uc7kTJnvrlEDyvaarMSjshjR0KPpKfnD76LlRNwMYkTi5JIpBFw3YfTOzsr5BBjJ59xOtn3ufZFp3RQrLDvUnx4uiVa3Jto2EqkTg9GDPkpxE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718100886; c=relaxed/simple;
-	bh=rFt4XS/CgSsXIcBXqKf+lWLQ7TFyTsJ3RIR+fC805gY=;
+	s=arc-20240116; t=1718105744; c=relaxed/simple;
+	bh=vIaLVeSYJywYPlUcMLIYwb/jAbrcLibb815/nDIAGBU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ztr/z7z4+EvKPga3AffgxOtJMnpRbVFL8n1NfWXCLSH/6t61KRYkrYZCnvm8oe45lxVg8Hm/57BUrLsJiZo50DGWtCZi4jdygnEn3pOhPsDB7oJTyY7Sil24xbCYDL438ev5Bu5WSFqYLKr94SrUPpfHTo2a6O4w6EYDkb+Lgag=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gC2oyTXJ; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=SLeH7/Nq8LWZqsefIL5As4tLCMqXK8NILm93hrwlej/Lov8QRbQ4Jy3iGnzcHjfFPAl1gNtcUWdsbAIgT5bsOKVuPY76UIwWtVs+PJQnxD5nKNtqLnrngjOblbdMhdFuMlsgYgbMrx3GRwOjKv2HbuvGHMbR+gpvMhSG6b2VJNs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eGeAbiLO; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gC2oyTXJ"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 124C2C32786;
-	Tue, 11 Jun 2024 10:14:42 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eGeAbiLO"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54F19C2BD10;
+	Tue, 11 Jun 2024 11:35:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718100885;
-	bh=rFt4XS/CgSsXIcBXqKf+lWLQ7TFyTsJ3RIR+fC805gY=;
+	s=k20201202; t=1718105744;
+	bh=vIaLVeSYJywYPlUcMLIYwb/jAbrcLibb815/nDIAGBU=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=gC2oyTXJJ93PfMa4I6COS1Yg9NWgvNdR2czNkZbCtykuuMziuG35k2lRQXsZ03s08
-	 KfIQQnswFEWvclKyGbEcLrzrEegkQC1BP5X/rsgCfh0aPrky0aCfZAPqBwj/vZBn+u
-	 0sXR4TwnyFy+c7pxsj6q0kaK7bD9Dq2m4f+C1nuBIkQDyDMxbrzwu8PnjYjYerRTMB
-	 jKX+myIF1qEgVrm5tO98eN+1f8g71nRoCz6TlDHkD05ySyflbHtT7Hv7HB5vohdD5a
-	 rYDqp6qB2JpPzxO4rj3wX1OIJSUa3+1hthCCqNWGiGHzM7mezIewYzWoKSnmBPzC+u
-	 EJAhgg5ScR99g==
-Date: Tue, 11 Jun 2024 10:14:41 +0000
+	b=eGeAbiLOO3DqDwHlEs/APyA1y1dEWYbCwpzafcNR/tGNz0bvVdTtqhVi8kncr81HZ
+	 8fljverjE72HAzzi4aT9b0MUf5vh3gRejleNYPLm7LcjrpWV0PgWYxmtWScT8Z34dH
+	 wMmo+HziDKICuEUmC/GXseLNJ3IwLldp+iiwKM6WkND+++R45Lob56f/8IrwsJCFMT
+	 Jp1iWn2909ijRn81+K9hpvAOkGYwejKopGBHAND/lOT0kAci83ubIGgSyEl9gf8XiJ
+	 Tex3N45V4jv8d0EJnnsFMKkQNefyYEBpPsXJRk0XmREr/QxSTeoQQ823C17TPHU4gG
+	 P7yucmuEf+gTg==
+Date: Tue, 11 Jun 2024 11:35:39 +0000
 From: Tzung-Bi Shih <tzungbi@kernel.org>
 To: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
 Cc: Benson Leung <bleung@chromium.org>, Guenter Roeck <groeck@chromium.org>,
 	Sebastian Reichel <sre@kernel.org>,
+	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@weissschuh.net>,
 	"Rafael J. Wysocki" <rafael@kernel.org>,
 	Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>,
 	chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org,
@@ -43,11 +44,9 @@ Cc: Benson Leung <bleung@chromium.org>, Guenter Roeck <groeck@chromium.org>,
 	Matt Hartley <matt.hartley@gmail.com>
 Subject: Re: [PATCH v3 3/5] platform/chrome: cros_ec_proto: Introduce
  cros_ec_cmd_versions()
-Message-ID: <ZmgjkVXZEe6BkZzq@google.com>
+Message-ID: <Zmg2iwOWRZdCybxw@google.com>
 References: <20240610-cros_ec-charge-control-v3-0-135e37252094@weissschuh.net>
  <20240610-cros_ec-charge-control-v3-3-135e37252094@weissschuh.net>
- <ZmfvhvcjTbjOSp4f@google.com>
- <f2a361aa-a256-41a5-8100-703e40df975d@t-8ch.de>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -57,36 +56,22 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <f2a361aa-a256-41a5-8100-703e40df975d@t-8ch.de>
+In-Reply-To: <20240610-cros_ec-charge-control-v3-3-135e37252094@weissschuh.net>
 
-On Tue, Jun 11, 2024 at 09:23:24AM +0200, Thomas Weißschuh wrote:
-> On 2024-06-11 06:32:38+0000, Tzung-Bi Shih wrote:
-> > On Mon, Jun 10, 2024 at 05:51:08PM +0200, Thomas Weißschuh wrote:
-> > > If the command is not supported at all the EC returns
-> > > -EINVAL/EC_RES_INVALID_PARAMS.
-> > > 
-> > > This error is translated into an empty version mask as that is easier to
-> > > handle for callers and they don't need to know about the error details.
-> > 
-> > I'm not sure whether the behavior is what we want or not as existing
-> > EC_CMD_GET_CMD_VERSIONS usages don't have it.
-> 
-> At least the caller of cros_ec_get_host_command_version_mask() expects
-> it:
-> 
-> ret = cros_ec_get_host_command_version_mask(..., &ver_mask);
-> if (ret < 0 || ver_mask == 0)
-> ...
-> 
-> ver_mask == 0 will never happen as in that case -EINVAL would have been
-> returned.
-> 
-> Others, like cros_ec_cec_get_write_cmd_version(), expect the current
-> semantic of ver_mask != 0 but log spurious errors in case of -EINVAL.
-> cros_pchg_cmd_ver_check(), works with both semantics, but currently also
-> logs a spurious error message.
-> 
-> To me the new semantic looks more obvious and much easier to handle.
-> For each command version a bit is set. no command versions -> no bits.
+On Mon, Jun 10, 2024 at 05:51:08PM +0200, Thomas Weißschuh wrote:
+> +/**
+> + * cros_ec_cmd_versions - Get supported version mask.
 
-Ack.
+I guess we would like to call it something like "cros_ec_get_cmd_versions".
+
+> + *
+> + * @ec_dev: EC device
+> + * @cmd: Command to test
+> + *
+> + * Return: version mask on success, negative error number on failure.
+> + */
+> +int cros_ec_cmd_versions(struct cros_ec_device *ec_dev, u16 cmd)
+
+Could it support a "version" parameter as existing EC_CMD_GET_CMD_VERSIONS
+usages use both versions?  An `u16 cmd` parameter and down-cast to u8 for v0
+should be fine. (ec_params_get_cmd_versions vs. ec_params_get_cmd_versions_v1)
