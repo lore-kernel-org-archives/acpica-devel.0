@@ -1,286 +1,124 @@
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+Received: from smtp-fw-80006.amazon.com (smtp-fw-80006.amazon.com [99.78.197.217])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA53E824A4
-	for <acpica-devel@lists.linux.dev>; Thu, 13 Jun 2024 20:15:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2840B13B787
+	for <acpica-devel@lists.linux.dev>; Thu, 13 Jun 2024 21:10:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718309740; cv=none; b=GchPcUifUorWfdk9ue2Wp/ptZZ5DaNqFT53uLBhhtLAra0/gzgBDQXducYBaOv0sXo6gGtRgTSukA2B1aH5WctlPDoQt3kTJUgjKXkbduDMSCE9w2Ib1+wdGJN3AHcM9Qc1ALiUpKEuYxuOEHhVwqlGzHFwN/HdavGiuut7IEE8=
+	t=1718313025; cv=none; b=tLTb8ge9PQMJVmPhEfYMGXe8DmrCYPR15PKXV2Lzo5oB90dwyCb5eBma905qzcIpPiWMPvHT7/HjYf02Hj04iHCaV8Ls/glp6UVfx8h3Xm4EW4SG7h6t51grInCBnPS/2Vk0FyC2xNFQq4Mg8vpt92VrLwhp0TEziHeWPCgR3Rw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718309740; c=relaxed/simple;
-	bh=OV3NvfZWfLxpDfggoJaTx32OTDbVKKTvikYlf0Uiq74=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=SBhkmpEkr0oBIS8gYKPoW/7tgCuzrDTwOItqk33ViWCjLQU2UtTY30BURk8uWwZaf7WQQWRy61j+n3qOLoUJh7Gwaa6vnVS5LfQNfmuUk1U6zopyVAm7KwAakxXSdnULeBdO1i//mYbW0/Kt3tMDj1WNKUWUPkWXjLWNWbK4ncA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=ANLHL5zV; arc=none smtp.client-ip=159.69.126.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
+	s=arc-20240116; t=1718313025; c=relaxed/simple;
+	bh=yI2pM6glGsJJWxvQAAeW+lCGZZ32jQj4MnUR25Blips=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=MHw/O8iBZ3gjQm7MWDr32KkdbfSJjxuMoTLuTHfuap/aPQF1DP0z7sXrgqs6kmDvCQQew8pQbUrpAPR6JBpRkFxyVPDLeApo6xS0MnE6C3ss90rOvzgaSRohyaIFoZ2ulnTiQ3D0wYXR4exm01SepdfHEaJhde3kN98AmrONfaY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=u5j/XtfC; arc=none smtp.client-ip=99.78.197.217
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="ANLHL5zV"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-	s=mail; t=1718309732;
-	bh=OV3NvfZWfLxpDfggoJaTx32OTDbVKKTvikYlf0Uiq74=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=ANLHL5zV23safuJoiH1GVUeQ+YKvME4p08n+h8lLYULGtQyJROol4ncn2fh7zENvA
-	 nFJ/wO5AW+vUFmIg8dEx6+X1CHVFZb4eUtuGzjj9oUynLy0H7///p/Zh5B07/C7tiw
-	 7RkDEW0XZmw2veWdF/FD54731Qf5iUMgvkrNW5ok=
-From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date: Thu, 13 Jun 2024 22:15:34 +0200
-Subject: [PATCH 3/5] ACPI: sysfs: manage attributes as attribute_group
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="u5j/XtfC"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1718313025; x=1749849025;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=bFPHb1i9S0EjfPl1sZl0nOIw+Pf+rfxtOrLIDnf0FG8=;
+  b=u5j/XtfC60PLwFpkrHe3kxefO/cMW+mrQDvYovGkgu+4LuglC5+TOgUd
+   rl9J2cBKxQR0sLafA1toJFwShZ4zqC7XqMAIls1fGEGBdi9kR+Hnc9i06
+   WuOpwTj2FkP/qs7v1tccjqFPHBWFtC5SmXxXfLBF664BmCEiQjp/xhr/Y
+   I=;
+X-IronPort-AV: E=Sophos;i="6.08,236,1712620800"; 
+   d="scan'208";a="302075455"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.214])
+  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jun 2024 21:10:24 +0000
+Received: from EX19MTAUWC001.ant.amazon.com [10.0.7.35:3454]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.35.14:2525] with esmtp (Farcaster)
+ id 50c18be9-c072-4499-aed4-f6d36ec1fcc8; Thu, 13 Jun 2024 21:10:23 +0000 (UTC)
+X-Farcaster-Flow-ID: 50c18be9-c072-4499-aed4-f6d36ec1fcc8
+Received: from EX19D030UWB002.ant.amazon.com (10.13.139.182) by
+ EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.34; Thu, 13 Jun 2024 21:10:23 +0000
+Received: from u1e958862c3245e.ant.amazon.com (10.119.132.17) by
+ EX19D030UWB002.ant.amazon.com (10.13.139.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.34; Thu, 13 Jun 2024 21:10:22 +0000
+From: Suraj Jitindar Singh <surajjs@amazon.com>
+To: <linux-acpi@vger.kernel.org>
+CC: <acpica-devel@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+	<surajjs@amazon.com>, <sjitindarsingh@gmail.com>, <robert.moore@intel.com>,
+	<rafael.j.wysocki@intel.com>, <lenb@kernel.org>, <okaya@kernel.org>,
+	<stable@vger.kernel.org>
+Subject: [PATCH] acpi: Support CONFIG_ACPI without CONFIG_PCI
+Date: Thu, 13 Jun 2024 14:10:11 -0700
+Message-ID: <20240613211011.413120-1-surajjs@amazon.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240613-acpi-sysfs-groups-v1-3-665e0deb052a@weissschuh.net>
-References: <20240613-acpi-sysfs-groups-v1-0-665e0deb052a@weissschuh.net>
-In-Reply-To: <20240613-acpi-sysfs-groups-v1-0-665e0deb052a@weissschuh.net>
-To: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
- Robert Moore <robert.moore@intel.com>
-Cc: linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
- acpica-devel@lists.linux.dev, 
- =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1718309732; l=6704;
- i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=OV3NvfZWfLxpDfggoJaTx32OTDbVKKTvikYlf0Uiq74=;
- b=GwwqBwQv+scW4j2SxrdzqcUz6nzETJkcUaVKV9Whhk73xIuG97M67oDFBpZC7OcYeOdiHfvtb
- pTzcGsJEZUSCxN147YfM4DAQV+YsOHNQzQWrTHHHk4qtFL6H5JJpCKU
-X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
- pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D041UWA003.ant.amazon.com (10.13.139.105) To
+ EX19D030UWB002.ant.amazon.com (10.13.139.182)
 
-The current manual attribute management is inconsistent and brittle.
-Not all return values of device_create_file() are checked and the
-cleanup logic needs to be kept up to date manually.
+Make is possible to use ACPI without having CONFIG_PCI set.
 
-Moving all attributes into an attribute_group and using the is_visible()
-callback allows the management of all attributes as a single unit.
+When initialising ACPI the following call chain occurs:
 
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+  acpi_init() ->
+    acpi_bus_init() ->
+      acpi_load_tables() ->
+        acpi_ev_install_region_handlers() ->
+
+acpi_ev_install_region_handlers() calls acpi_ev_install_space_handler() on
+each of the default address spaces defined as:
+
+  u8 acpi_gbl_default_address_spaces[ACPI_NUM_DEFAULT_SPACES] = {
+          ACPI_ADR_SPACE_SYSTEM_MEMORY,
+          ACPI_ADR_SPACE_SYSTEM_IO,
+          ACPI_ADR_SPACE_PCI_CONFIG,
+          ACPI_ADR_SPACE_DATA_TABLE
+  };
+
+However in acpi_ev_install_space_handler() the case statement for
+ACPI_ADR_SPACE_PCI_CONFIG is ifdef'd as:
+
+  #ifdef ACPI_PCI_CONFIGURED
+                  case ACPI_ADR_SPACE_PCI_CONFIG:
+
+                          handler = acpi_ex_pci_config_space_handler;
+                          setup = acpi_ev_pci_config_region_setup;
+                          break;
+  #endif
+
+ACPI_PCI_CONFIGURED is not defined if CONFIG_PCI is not enabled, thus the
+attempt to install the handler fails.
+
+Fix this by ifdef'ing ACPI_ADR_SPACE_PCI_CONFIG in the list of default
+address spaces.
+
+Fixes: bd23fac3eaaa ("ACPICA: Remove PCI bits from ACPICA when CONFIG_PCI is unset")
+CC: stable@vger.kernel.org # 5.0.x-
+Signed-off-by: Suraj Jitindar Singh <surajjs@amazon.com>
 ---
- drivers/acpi/device_sysfs.c | 190 ++++++++++++++++++++------------------------
- 1 file changed, 84 insertions(+), 106 deletions(-)
+ drivers/acpi/acpica/evhandler.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
-index d0ca159d93e1..a673488066b3 100644
---- a/drivers/acpi/device_sysfs.c
-+++ b/drivers/acpi/device_sysfs.c
-@@ -494,6 +494,88 @@ static ssize_t status_show(struct device *dev, struct device_attribute *attr,
- }
- static DEVICE_ATTR_RO(status);
+diff --git a/drivers/acpi/acpica/evhandler.c b/drivers/acpi/acpica/evhandler.c
+index 1c8cb6d924df..371093acb362 100644
+--- a/drivers/acpi/acpica/evhandler.c
++++ b/drivers/acpi/acpica/evhandler.c
+@@ -26,7 +26,9 @@ acpi_ev_install_handler(acpi_handle obj_handle,
+ u8 acpi_gbl_default_address_spaces[ACPI_NUM_DEFAULT_SPACES] = {
+ 	ACPI_ADR_SPACE_SYSTEM_MEMORY,
+ 	ACPI_ADR_SPACE_SYSTEM_IO,
++#ifdef ACPI_PCI_CONFIGURED
+ 	ACPI_ADR_SPACE_PCI_CONFIG,
++#endif
+ 	ACPI_ADR_SPACE_DATA_TABLE
+ };
  
-+static struct attribute *acpi_attrs[] = {
-+	&dev_attr_path.attr,
-+	&dev_attr_hid.attr,
-+	&dev_attr_modalias.attr,
-+	&dev_attr_description.attr,
-+	&dev_attr_adr.attr,
-+	&dev_attr_uid.attr,
-+	&dev_attr_sun.attr,
-+	&dev_attr_hrv.attr,
-+	&dev_attr_status.attr,
-+	&dev_attr_eject.attr,
-+	&dev_attr_power_state.attr,
-+	&dev_attr_real_power_state.attr,
-+	NULL
-+};
-+
-+static bool acpi_show_attr(struct acpi_device *dev, const struct device_attribute *attr)
-+{
-+	/*
-+	 * Devices gotten from FADT don't have a "path" attribute
-+	 */
-+	if (attr == &dev_attr_path)
-+		return dev->handle;
-+
-+	if (attr == &dev_attr_hid || attr == &dev_attr_modalias)
-+		return !list_empty(&dev->pnp.ids);
-+
-+	/*
-+	 * If device has _STR, 'description' file is created
-+	 */
-+	if (attr == &dev_attr_description)
-+		return dev->pnp.str;
-+
-+	if (attr == &dev_attr_adr)
-+		return dev->pnp.type.bus_address;
-+
-+	if (attr == &dev_attr_uid)
-+		return acpi_device_uid(dev);
-+
-+	if (attr == &dev_attr_sun)
-+		return acpi_has_method(dev->handle, "_SUN");
-+
-+	if (attr == &dev_attr_hrv)
-+		return acpi_has_method(dev->handle, "_HRV");
-+
-+	if (attr == &dev_attr_status)
-+		return acpi_has_method(dev->handle, "_STA");
-+
-+	/*
-+	 * If device has _EJ0, 'eject' file is created that is used to trigger
-+	 * hot-removal function from userland.
-+	 */
-+	if (attr == &dev_attr_eject)
-+		return acpi_has_method(dev->handle, "_EJ0");
-+
-+	if (attr == &dev_attr_power_state)
-+		return dev->flags.power_manageable;
-+
-+	if (attr == &dev_attr_real_power_state)
-+		return dev->flags.power_manageable && dev->power.flags.power_resources;
-+
-+	dev_warn_once(&dev->dev, "Unexpected attribute: %s\n", attr->attr.name);
-+	return false;
-+}
-+
-+static umode_t acpi_attr_is_visible(struct kobject *kobj,
-+				    struct attribute *attr,
-+				    int attrno)
-+{
-+	struct acpi_device *dev = to_acpi_device(kobj_to_dev(kobj));
-+
-+	if (acpi_show_attr(dev, container_of(attr, struct device_attribute, attr)))
-+		return attr->mode;
-+	else
-+		return 0;
-+}
-+
-+static const struct attribute_group acpi_group = {
-+	.attrs = acpi_attrs,
-+	.is_visible = acpi_attr_is_visible,
-+};
-+
- static const char *devm_acpi_device_str(struct acpi_device *dev)
- {
- 	struct acpi_buffer buffer = {ACPI_ALLOCATE_BUFFER, NULL};
-@@ -536,81 +618,11 @@ int acpi_device_setup_files(struct acpi_device *dev)
- {
- 	int result = 0;
- 
--	/*
--	 * Devices gotten from FADT don't have a "path" attribute
--	 */
--	if (dev->handle) {
--		result = device_create_file(&dev->dev, &dev_attr_path);
--		if (result)
--			goto end;
--	}
--
--	if (!list_empty(&dev->pnp.ids)) {
--		result = device_create_file(&dev->dev, &dev_attr_hid);
--		if (result)
--			goto end;
--
--		result = device_create_file(&dev->dev, &dev_attr_modalias);
--		if (result)
--			goto end;
--	}
--
--	/*
--	 * If device has _STR, 'description' file is created
--	 */
- 	dev->pnp.str = devm_acpi_device_str(dev);
--	if (dev->pnp.str) {
--		result = device_create_file(&dev->dev, &dev_attr_description);
--		if (result)
--			goto end;
--	}
--
--	if (dev->pnp.type.bus_address)
--		result = device_create_file(&dev->dev, &dev_attr_adr);
--	if (acpi_device_uid(dev))
--		result = device_create_file(&dev->dev, &dev_attr_uid);
--
--	if (acpi_has_method(dev->handle, "_SUN")) {
--		result = device_create_file(&dev->dev, &dev_attr_sun);
--		if (result)
--			goto end;
--	}
--
--	if (acpi_has_method(dev->handle, "_HRV")) {
--		result = device_create_file(&dev->dev, &dev_attr_hrv);
--		if (result)
--			goto end;
--	}
--
--	if (acpi_has_method(dev->handle, "_STA")) {
--		result = device_create_file(&dev->dev, &dev_attr_status);
--		if (result)
--			goto end;
--	}
--
--	/*
--	 * If device has _EJ0, 'eject' file is created that is used to trigger
--	 * hot-removal function from userland.
--	 */
--	if (acpi_has_method(dev->handle, "_EJ0")) {
--		result = device_create_file(&dev->dev, &dev_attr_eject);
--		if (result)
--			return result;
--	}
--
--	if (dev->flags.power_manageable) {
--		result = device_create_file(&dev->dev, &dev_attr_power_state);
--		if (result)
--			return result;
--
--		if (dev->power.flags.power_resources)
--			result = device_create_file(&dev->dev,
--						    &dev_attr_real_power_state);
--	}
-+	result = device_add_group(&dev->dev, &acpi_group);
- 
- 	acpi_expose_nondev_subnodes(&dev->dev.kobj, &dev->data);
- 
--end:
- 	return result;
- }
- 
-@@ -621,39 +633,5 @@ int acpi_device_setup_files(struct acpi_device *dev)
- void acpi_device_remove_files(struct acpi_device *dev)
- {
- 	acpi_hide_nondev_subnodes(&dev->data);
--
--	if (dev->flags.power_manageable) {
--		device_remove_file(&dev->dev, &dev_attr_power_state);
--		if (dev->power.flags.power_resources)
--			device_remove_file(&dev->dev,
--					   &dev_attr_real_power_state);
--	}
--
--	/*
--	 * If device has _STR, remove 'description' file
--	 */
--	if (acpi_has_method(dev->handle, "_STR"))
--		device_remove_file(&dev->dev, &dev_attr_description);
--	/*
--	 * If device has _EJ0, remove 'eject' file.
--	 */
--	if (acpi_has_method(dev->handle, "_EJ0"))
--		device_remove_file(&dev->dev, &dev_attr_eject);
--
--	if (acpi_has_method(dev->handle, "_SUN"))
--		device_remove_file(&dev->dev, &dev_attr_sun);
--
--	if (acpi_has_method(dev->handle, "_HRV"))
--		device_remove_file(&dev->dev, &dev_attr_hrv);
--
--	if (acpi_device_uid(dev))
--		device_remove_file(&dev->dev, &dev_attr_uid);
--	if (dev->pnp.type.bus_address)
--		device_remove_file(&dev->dev, &dev_attr_adr);
--	device_remove_file(&dev->dev, &dev_attr_modalias);
--	device_remove_file(&dev->dev, &dev_attr_hid);
--	if (acpi_has_method(dev->handle, "_STA"))
--		device_remove_file(&dev->dev, &dev_attr_status);
--	if (dev->handle)
--		device_remove_file(&dev->dev, &dev_attr_path);
-+	device_remove_group(&dev->dev, &acpi_group);
- }
-
 -- 
-2.45.2
+2.34.1
 
