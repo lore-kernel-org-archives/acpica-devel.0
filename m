@@ -1,32 +1,31 @@
 Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF0452110E;
-	Sun, 16 Jun 2024 19:03:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 510D2405F8;
+	Sun, 16 Jun 2024 19:03:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718564620; cv=none; b=mibmOWkDJG385Wrg/WZ73MLXyKdDOSL8U7RM3a8SIVLbuDWQL5oOnMN+PKv5p/NoZQXr6L51Ag+hCThbgtq+qHrTJQjeyynJCKUvSCB+5LiEf/ZHlIpb86+Pd4ruUoq3IQ3a85IIrsMIM62kzjX0MgYY5OVC47/tdyjay8CSCJk=
+	t=1718564620; cv=none; b=Zw3pSRUHXYeSCnmhFFy+vPXcplWHuhcdlQNvCkVo/zv6ndh8lMPDkbavd+p80WzBCB/fzmNopyQf2JwEVeMFhi82qKS2cUl6F/qoa0Bxs6ltPcKe5ovtXqjhj/hNP48SWQZkva+ie5I3Fq17B2IIXH+Wq36StQCNXAPGSUUVQh4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1718564620; c=relaxed/simple;
-	bh=tW1nNrUWVYBCf8zmU162CsKFRCRWQV68qLN5Y3zKWWY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=bFOZh7Ksfox/fLOqZLfJ5w0+4SS6v97+qAS03TIeuyko/jYcYK3rX11xnjk8pi5TX6derflBKOicuO7rA77vRJKU7VEQ1ZaiO6XI01WEs3YdkyYknR1643PeJwjgDJ+UoxbEhroHodr3b8EmSjORDtjGcFSdmMBgnpI5cSlh/eM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=oGEN8m/k; arc=none smtp.client-ip=159.69.126.157
+	bh=gXTnhlU5Io5nihYJh0y7c6dEfQuOsKvf+5cInXCGPG0=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=BJDGeOmYrNiVPXfXiAkEYuaQrBXaB9y5fhL3hHPQKTJhCVCfUg57w5a1nkQ1kQqgIj3BUKRsj2id0MpMxyrGOuDBAa3QRaFImdE+Ds0QJ3penfJa2Vy2CMhs8m+aMUjoHtJ0cb8oVpwEOP5JsjFLh91deRtM+tbcQ+33OjZBgyw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=IyQT/LST; arc=none smtp.client-ip=159.69.126.157
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="oGEN8m/k"
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="IyQT/LST"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
 	s=mail; t=1718564615;
-	bh=tW1nNrUWVYBCf8zmU162CsKFRCRWQV68qLN5Y3zKWWY=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=oGEN8m/kI73SNMyvMRdWl7vnZGgYRL10ZE17o/TPuxNMGuNIUnmXkW79e9YDO/+0S
-	 7jFGMrQEE1yMLiiGdn2JPe3K0nIChZokYMIqMXT6h8LXuDqv8pUrv6MFDy3nnD2Ur6
-	 /UfZmwZu83S77KpUWwI1IEMHY1tSXYfzcMYMex0I=
+	bh=gXTnhlU5Io5nihYJh0y7c6dEfQuOsKvf+5cInXCGPG0=;
+	h=From:Subject:Date:To:Cc:From;
+	b=IyQT/LST8fRUGwoKBxx+XicplmeqaPg0s2CknbC264dTxLYMwdm8M72TPIUI7GnMf
+	 8xB2RitTGtqhir6Ekm8ovxJL6n9n5F5JdsPnnARJzqRWKpf3emuYO4Ry+rNuYH7/Sv
+	 ZjtKtlvWtNr82F/KywgiK2NlVHo4qDZgDXj0XGQ4=
 From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date: Sun, 16 Jun 2024 21:03:31 +0200
-Subject: [PATCH v4 3/5] platform/chrome: cros_ec_proto: Introduce
- cros_ec_get_cmd_versions()
+Subject: [PATCH v4 0/5] ChromeOS Embedded Controller charge control driver
+Date: Sun, 16 Jun 2024 21:03:28 +0200
+Message-Id: <20240616-cros_ec-charge-control-v4-0-74d649a9117d@weissschuh.net>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -35,9 +34,10 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240616-cros_ec-charge-control-v4-3-74d649a9117d@weissschuh.net>
-References: <20240616-cros_ec-charge-control-v4-0-74d649a9117d@weissschuh.net>
-In-Reply-To: <20240616-cros_ec-charge-control-v4-0-74d649a9117d@weissschuh.net>
+X-B4-Tracking: v=1; b=H4sIAAE3b2YC/3XNWwrCMBQE0K2UfBvJo3nUL/chIm16YwPSSFKjU
+ rp30yIoaD/nDnPuiCIEBxHtihEFSC463+dQbgpkuro/A3ZtzogRVhJBJDbBxxMYnNuQW+P7Ifg
+ LllpIqkBDqxXK42sA6x4LfDjm3Lk4+PBc/iQ6X98krdbIRDHBTW05Ea1RVaP3d3AxRtPdum0PA
+ 5rdxL4splctli1NbcMUUGNt+dfiH0tSsmrxbFEugCsmGKl+rWmaXm5Z+4tZAQAA
 To: Benson Leung <bleung@chromium.org>, Guenter Roeck <groeck@chromium.org>, 
  Sebastian Reichel <sre@kernel.org>, 
  =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas@weissschuh.net>, 
@@ -49,95 +49,100 @@ Cc: chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org,
  Stephen Horvath <s.horvath@outlook.com.au>, 
  Rajas Paranjpe <paranjperajas@gmail.com>, linux-acpi@vger.kernel.org, 
  acpica-devel@lists.linux.dev, Matt Hartley <matt.hartley@gmail.com>, 
+ "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, 
  =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
 X-Mailer: b4 0.14.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1718564614; l=2775;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1718564614; l=3717;
  i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=tW1nNrUWVYBCf8zmU162CsKFRCRWQV68qLN5Y3zKWWY=;
- b=XBIRPF5oAuIKZzy7gGLEQjWD5190bMcbsw7+ie7DgvgXZy2F5149uQ7tOO1aK77wCAcQExkyO
- Qf6qGAyPJntDPfS5xFeIg01xdvzljFmf8IEypdO+htPFJGFk91RSG0y
+ bh=gXTnhlU5Io5nihYJh0y7c6dEfQuOsKvf+5cInXCGPG0=;
+ b=KKZQwJDP81bAATQ2cDKcnGCyYlX04gXYA04mWIRKQU1G9Tj+Z3zGQvRo5KsewLklrmGmiaBjl
+ dF5ARBHmYVsDoWvNNPEATdMAGM0EEf1H9snfZxGJCebKFILaZZvAkv6
 X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
  pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 
-Retrieving the supported versions of a command is a fairly common
-operation. Provide a helper for it.
+Note:
+To be useful, this series depends on
+commit 08dbad2c7c32 ("mfd: cros_ec: Register charge control subdevice")
+from the MFD tree [0].
 
-If the command is not supported at all the EC returns
--EINVAL/EC_RES_INVALID_PARAMS.
+Add a power supply driver that supports charge thresholds and behaviour
+configuration.
 
-This error is translated into an empty version mask as that is easier to
-handle for callers and they don't need to know about the error details.
+This is a complete rework of
+"platform/chrome: cros_ec_framework_laptop: new driver" [1], which used
+Framework specific EC commands.
 
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+The driver propsed in this series only uses upstream CrOS functionality.
+
+Tested on a Framework 13 AMD, Firmware 3.05.
+
+This driver should go through the chrome-platform tree.
+Otherwise "platform/chrome: cros_ec_proto: Introduce cros_ec_cmd_versions()"
+will conflict with
+commit a14a569a9918 ("platform/chrome: cros_ec_proto: Introduce cros_ec_cmd_readmem()")
+from chrome-platform/for-next.
+
+The patch
+"platform/chrome: cros_ec_proto: Introduce cros_ec_cmd_versions()"
+is also part of my series
+"hwmon: (cros_ec): fan target, fan pwm control and temperature thresholds"[2].
+
+Based on chrome-platform/for-next.
+
+[0] https://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git/commit/?h=for-mfd-next&id=08dbad2c7c3275e0e79190dca139bc65ce775a92
+[1] https://lore.kernel.org/lkml/20240505-cros_ec-framework-v1-0-402662d6276b@weissschuh.net/
+[2] https://lore.kernel.org/lkml/20240608-cros_ec-hwmon-pwm-v1-0-d29dfc26fbc3@weissschuh.net/
+
+Changes in v4:
+- Rename cros_ec_cmd_versions() to cros_ec_get_cmd_versions()
+- Use EC_CMD_GET_CMD_VERSIONS v0 in cros_ec_get_cmd_versions() if possible
+- Drop now unnecessary EOPNOTSUPP check after initial configuration
+- Collect review tags
+- Link to v3: https://lore.kernel.org/r/20240610-cros_ec-charge-control-v3-0-135e37252094@weissschuh.net
+
+Changes in v3:
+- Drop MFD patch that was already applied
+  (therefore drop Lee from series recipients)
+- Introduce and use devm_battery_hook_register()
+- Note that the driver should go through the chrome-platform tree
+- Introduce and use cros_ec_cmd_versions()
+- Drop logging about impossible charge behaviours
+- Use sysfs_attr_init()
+- Disable probing on incompatible Framework devices by default
+- Link to v2: https://lore.kernel.org/r/20240528-cros_ec-charge-control-v2-0-81fb27e1cff4@weissschuh.net
+
+Changes in v2:
+- Accept "0" as charge_start_threshold
+- Don't include linux/kernel.h
+- Only bind to the first found battery
+- Import EC_CMD_CHARGE_CONTROL v3 headers
+- Add support for v1 and v3 commands
+- Sort mfd cell entry alphabetically
+- Link to v1: https://lore.kernel.org/r/20240519-cros_ec-charge-control-v1-0-baf305dc79b8@weissschuh.net
+
 ---
- drivers/platform/chrome/cros_ec_proto.c     | 35 +++++++++++++++++++++++++++++
- include/linux/platform_data/cros_ec_proto.h |  2 ++
- 2 files changed, 37 insertions(+)
+Thomas Weißschuh (5):
+      ACPI: battery: add devm_battery_hook_register()
+      platform/chrome: Update binary interface for EC-based charge control
+      platform/chrome: cros_ec_proto: Introduce cros_ec_get_cmd_versions()
+      power: supply: add ChromeOS EC based charge control driver
+      power: supply: cros_charge-control: don't load if Framework control is present
 
-diff --git a/drivers/platform/chrome/cros_ec_proto.c b/drivers/platform/chrome/cros_ec_proto.c
-index fe68be66ee98..f776fd42244f 100644
---- a/drivers/platform/chrome/cros_ec_proto.c
-+++ b/drivers/platform/chrome/cros_ec_proto.c
-@@ -5,6 +5,7 @@
- 
- #include <linux/delay.h>
- #include <linux/device.h>
-+#include <linux/limits.h>
- #include <linux/module.h>
- #include <linux/platform_data/cros_ec_commands.h>
- #include <linux/platform_data/cros_ec_proto.h>
-@@ -1069,3 +1070,37 @@ int cros_ec_cmd_readmem(struct cros_ec_device *ec_dev, u8 offset, u8 size, void
- 			   &params, sizeof(params), dest, size);
- }
- EXPORT_SYMBOL_GPL(cros_ec_cmd_readmem);
-+
-+/**
-+ * cros_ec_get_cmd_versions - Get supported version mask.
-+ *
-+ * @ec_dev: EC device
-+ * @cmd: Command to test
-+ *
-+ * Return: version mask on success, negative error number on failure.
-+ */
-+int cros_ec_get_cmd_versions(struct cros_ec_device *ec_dev, u16 cmd)
-+{
-+	struct ec_params_get_cmd_versions req_v0;
-+	struct ec_params_get_cmd_versions_v1 req_v1;
-+	struct ec_response_get_cmd_versions resp;
-+	int ret;
-+
-+	if (cmd <= U8_MAX) {
-+		req_v0.cmd = cmd;
-+		ret = cros_ec_cmd(ec_dev, 0, EC_CMD_GET_CMD_VERSIONS,
-+				  &req_v0, sizeof(req_v0), &resp, sizeof(resp));
-+	} else {
-+		req_v1.cmd = cmd;
-+		ret = cros_ec_cmd(ec_dev, 1, EC_CMD_GET_CMD_VERSIONS,
-+				  &req_v1, sizeof(req_v1), &resp, sizeof(resp));
-+	}
-+
-+	if (ret == -EINVAL)
-+		return 0; /* Command not implemented */
-+	else if (ret < 0)
-+		return ret;
-+	else
-+		return resp.version_mask;
-+}
-+EXPORT_SYMBOL_GPL(cros_ec_get_cmd_versions);
-diff --git a/include/linux/platform_data/cros_ec_proto.h b/include/linux/platform_data/cros_ec_proto.h
-index 6e9225bdf903..b34ed0cc1f8d 100644
---- a/include/linux/platform_data/cros_ec_proto.h
-+++ b/include/linux/platform_data/cros_ec_proto.h
-@@ -263,6 +263,8 @@ int cros_ec_cmd(struct cros_ec_device *ec_dev, unsigned int version, int command
- 
- int cros_ec_cmd_readmem(struct cros_ec_device *ec_dev, u8 offset, u8 size, void *dest);
- 
-+int cros_ec_get_cmd_versions(struct cros_ec_device *ec_dev, u16 cmd);
-+
- /**
-  * cros_ec_get_time_ns() - Return time in ns.
-  *
+ MAINTAINERS                                    |   6 +
+ drivers/acpi/battery.c                         |  15 ++
+ drivers/platform/chrome/cros_ec_proto.c        |  35 +++
+ drivers/power/supply/Kconfig                   |  12 +
+ drivers/power/supply/Makefile                  |   1 +
+ drivers/power/supply/cros_charge-control.c     | 357 +++++++++++++++++++++++++
+ include/acpi/battery.h                         |   2 +
+ include/linux/platform_data/cros_ec_commands.h |  49 +++-
+ include/linux/platform_data/cros_ec_proto.h    |   2 +
+ 9 files changed, 477 insertions(+), 2 deletions(-)
+---
+base-commit: b57cd5703a1618e87772094ac12c5ee7d6c35e2f
+change-id: 20240506-cros_ec-charge-control-685617e8ed87
 
+Best regards,
 -- 
-2.45.2
+Thomas Weißschuh <linux@weissschuh.net>
 
