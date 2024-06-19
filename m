@@ -1,74 +1,82 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 833894F605;
-	Wed, 19 Jun 2024 03:07:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B881152792
+	for <acpica-devel@lists.linux.dev>; Wed, 19 Jun 2024 16:51:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718766475; cv=none; b=ASl6I5otEYFjPfKthL7aIyKvFeaoUr2fuOhn8kXBT27NXyKbIK0wFOl3CJ1x15OhX74rxF64fq3+mjvQwUOhOQx+0gUHdcB1Pejlr5RaWlAYgUkZ264HOMzU6yMiWqYBxc05Yss1RZdLdAHEBw0rSvSWlbJSFyyV+aKQs2RCjT4=
+	t=1718815916; cv=none; b=A+1ky9l+c3hCkgdybeblzc2mHy8zBshvRwoDTA5GXawPnOJXEFIn34tvaoMZ1ZXjfO0enu1z12JUp34+Xd/Ul7L49ptGkQR/DJqM7xDUU8AgUzYqylLa2lbhgfGp61OI2gTJnzogUsxIB6UihwMb6xYpDDWjuqTAndaTblWhMhc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718766475; c=relaxed/simple;
-	bh=FYTj5zAq9+raq/s0q+bM7+Uld8MuTvLyhTG8RSdv2PA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QWCivtNPiwAR18gSvISBK+ZHNlLEkeGgMitu3xrHAzR4RpuSHefp8HPUivB/vsXzPl4q3S1LwX/qBtWX7rWPcRgBPCypIfsnZmAliUZZNmt7qMA5QD+oVZkCV0Wtpe7kxDlDoZisVJoVb0zqUvuec2VmRb4i8iWhzDZp6uqpAp4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lt+p6Nqg; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1718815916; c=relaxed/simple;
+	bh=0hRC+aN168lB3O16MluqJfrv70JlOC7ygRKhFsS5AgE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Nwvu9RUyohJmVEj0ZmDNemzzBujtsvQiWrt2a8aqOUduLPzhFVLVrzszXPZHOsoFsWdCLPUhzwU+x+0aRGz9S8s5/e39ptp9AYTyHPnA+I93wewYQJRgROoXf+RMUsEcYRV27E1KjFYbepGy/JX22bNqqo4Abss3fLdt06/2xBc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ARNAc89C; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lt+p6Nqg"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61FD7C4AF1D;
-	Wed, 19 Jun 2024 03:07:52 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ARNAc89C"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22EFDC4AF0A
+	for <acpica-devel@lists.linux.dev>; Wed, 19 Jun 2024 16:51:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718766475;
-	bh=FYTj5zAq9+raq/s0q+bM7+Uld8MuTvLyhTG8RSdv2PA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lt+p6Nqg0wRheAVUdY7iQukaWVdfx/VCEM6X1CPHdseJIL6tVNGhiGxDPMZfKM+/+
-	 vUINKaGFCruohgSklELCmTrIqaNXKwb4QM9d3yhyowi93fGNy1CEzjD7ETpOJXGXdZ
-	 BlWDG3oGBxuWeHskiOmczMl4WFjZI5/fZhpdLWYPQ5EuwjKKo2QV/C3u9wPg1RfS3M
-	 E3bKRMP5+20Ewu2Xg2GQ3baqz1molTMPilfuLi4knOfYmyQZb1YtpLy5+zpUU9VpCV
-	 9gTwmm0EvnldnfQDZBa45njEIxUmlz/5Pu76IMoG2m2aZ1c0ZMrn19CZrpWCe8k+JS
-	 DPK41moYiHY/g==
-Date: Wed, 19 Jun 2024 03:07:50 +0000
-From: Tzung-Bi Shih <tzungbi@kernel.org>
-To: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Cc: Benson Leung <bleung@chromium.org>, Guenter Roeck <groeck@chromium.org>,
-	Sebastian Reichel <sre@kernel.org>,
-	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@weissschuh.net>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>,
-	chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org,
-	linux-pm@vger.kernel.org,
-	Mario Limonciello <mario.limonciello@amd.com>,
-	Dustin Howett <dustin@howett.net>,
-	Stephen Horvath <s.horvath@outlook.com.au>,
-	Rajas Paranjpe <paranjperajas@gmail.com>,
-	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
-	Matt Hartley <matt.hartley@gmail.com>
-Subject: Re: [PATCH v4 3/5] platform/chrome: cros_ec_proto: Introduce
- cros_ec_get_cmd_versions()
-Message-ID: <ZnJLhj4tO8ZLxNYM@google.com>
-References: <20240616-cros_ec-charge-control-v4-0-74d649a9117d@weissschuh.net>
- <20240616-cros_ec-charge-control-v4-3-74d649a9117d@weissschuh.net>
+	s=k20201202; t=1718815916;
+	bh=0hRC+aN168lB3O16MluqJfrv70JlOC7ygRKhFsS5AgE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=ARNAc89CXPlB3MiBDhH/qvcAA/KnhJBcWhrR9yUk+G8UqmqsWjkrXYwt4VAhFZy18
+	 GqpopHoDZWNsGxycoyjlyv4cf+hl6D8aesss4NYCk9vdCBKUiK70ZvxRZ3+MzWGmjO
+	 dqnzW+hi1fCPlRX3tNbEFxTIkm81UtQXVwU8gv+0+2VkCFfMx7/mz89CXcuWOhQXTb
+	 qr9bPDjLAwvWwSnL6pfLdpZbSAY2RAuxoQWL+FMiH58e6w9q9lNqXAy0vPArAVe6QZ
+	 fmKcoZlrK4Dl2/u29CUyb9e++HVw+/VxfATVifsNMr1EdMfdbRYEiWB35F22M1R+If
+	 5wSusthsHs1sA==
+Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-5c1bd1c7baaso25809eaf.0
+        for <acpica-devel@lists.linux.dev>; Wed, 19 Jun 2024 09:51:56 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVFIuntQPDT/6tngxaDCfuNP/sWh7S7q4Y+CsncfUs2K5mNTGZXD/6fSkaUOGJ8/VXJT7rz3vgv4j7Wgj/yj8na3bKFB4+Otdhac2OI
+X-Gm-Message-State: AOJu0YzEj6PZGiqR43adHLlRvWAoVOOjW6K/j1haMBuXP7ddOicTU306
+	LrVInzIAWWTbucH9zq+j/NzqaOzlBCd1q7zObNPLUkzdhqpwVfd+UqFIHdlxGjY+rjOiAejhkro
+	SFXvwRevM9Ao91MJYWFt9urSzXnQ=
+X-Google-Smtp-Source: AGHT+IELAl0orCbC2ZXB70g47mhyMh7Tjxaf1M9kGgYI8cJQCU5MQkdNn4J1p6XqgxgT0so4eVDtWs64y+7XBQywlRM=
+X-Received: by 2002:a05:6820:162c:b0:5ba:ca86:a025 with SMTP id
+ 006d021491bc7-5c1ad88a98fmr4155264eaf.0.1718815915363; Wed, 19 Jun 2024
+ 09:51:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240616-cros_ec-charge-control-v4-3-74d649a9117d@weissschuh.net>
+References: <20240613-acpi-sysfs-groups-v1-0-665e0deb052a@weissschuh.net>
+In-Reply-To: <20240613-acpi-sysfs-groups-v1-0-665e0deb052a@weissschuh.net>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Wed, 19 Jun 2024 18:51:44 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0iDiCiPqq-7Y0KmFmgtrC6-wg+JJ3EcNy5gd=vF1sveiA@mail.gmail.com>
+Message-ID: <CAJZ5v0iDiCiPqq-7Y0KmFmgtrC6-wg+JJ3EcNy5gd=vF1sveiA@mail.gmail.com>
+Subject: Re: [PATCH 0/5] ACPI: sysfs: manage sysfs attributes through device core
+To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
+	Robert Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, acpica-devel@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Jun 16, 2024 at 09:03:31PM +0200, Thomas Weiﬂschuh wrote:
-> Retrieving the supported versions of a command is a fairly common
-> operation. Provide a helper for it.
-> 
-> If the command is not supported at all the EC returns
-> -EINVAL/EC_RES_INVALID_PARAMS.
-> 
-> This error is translated into an empty version mask as that is easier to
-> handle for callers and they don't need to know about the error details.
-> 
-> Signed-off-by: Thomas Weiﬂschuh <linux@weissschuh.net>
+On Thu, Jun 13, 2024 at 10:15=E2=80=AFPM Thomas Wei=C3=9Fschuh <linux@weiss=
+schuh.net> wrote:
+>
+> Simplify the lifecycle of the sysfs attributes by letting the device
+> core manage them.
+>
+> Signed-off-by: Thomas Wei=C3=9Fschuh <linux@weissschuh.net>
+> ---
+> Thomas Wei=C3=9Fschuh (5):
+>       ACPI: sysfs: convert utf-16 from _STR to utf-8 only once
+>       ACPI: sysfs: use device lifecycle for _STR result
+>       ACPI: sysfs: manage attributes as attribute_group
+>       ACPI: sysfs: manage sysfs attributes through device core
+>       ACPI: sysfs: remove return value of acpi_device_setup_files()
+>
+>  drivers/acpi/device_sysfs.c | 229 +++++++++++++++++++++-----------------=
+------
+>  drivers/acpi/internal.h     |   3 +-
+>  drivers/acpi/scan.c         |   6 +-
+>  include/acpi/acpi_bus.h     |   2 +-
+>  4 files changed, 114 insertions(+), 126 deletions(-)
+> ---
 
-In case of the series wouldn't go through chrome-platform tree:
-Acked-by: Tzung-Bi Shih <tzungbi@kernel.org>
+Whole series applied as 6.11 material, thanks!
