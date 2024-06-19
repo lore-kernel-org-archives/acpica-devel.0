@@ -1,110 +1,74 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 479AF1990BA
-	for <acpica-devel@lists.linux.dev>; Mon, 17 Jun 2024 19:20:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 833894F605;
+	Wed, 19 Jun 2024 03:07:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718652029; cv=none; b=e2wFKwpXRfOTLhbqhtDeaDKhtiQp6uDkUUsAyvYKvEECcsRUC4MnSsztjUZpyxmRz4cxal2GCBXLivKLqECRo8w/c9BOtK94NV+iBsVgdM0OiH0chwPlC5rFZHKautluTjRWGSnaudzYko2dmcorrIl19tZBpqsVX793xmxLgSc=
+	t=1718766475; cv=none; b=ASl6I5otEYFjPfKthL7aIyKvFeaoUr2fuOhn8kXBT27NXyKbIK0wFOl3CJ1x15OhX74rxF64fq3+mjvQwUOhOQx+0gUHdcB1Pejlr5RaWlAYgUkZ264HOMzU6yMiWqYBxc05Yss1RZdLdAHEBw0rSvSWlbJSFyyV+aKQs2RCjT4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718652029; c=relaxed/simple;
-	bh=UwJilHooTAwCtU+8RqLCGxT+YJhIEjdBQnPptCGsoR4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jsSpOQ2v40QlbysOPIZp/QFR0xi0/n5Tt9IzNFQz8mY33iWFShlAXT11hh1YyW4h+z6lAzYxvIMjMhRdMKzJ4pbzQ99nnjZNpNFFonKXUkFoz7HgPKmJoMs5MUiGhW3B5frKlPSp1Q4Ea0KaS9ytGpRAG0FVp8nIZ++EpxMJJ04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tp9eY0fB; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1718766475; c=relaxed/simple;
+	bh=FYTj5zAq9+raq/s0q+bM7+Uld8MuTvLyhTG8RSdv2PA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QWCivtNPiwAR18gSvISBK+ZHNlLEkeGgMitu3xrHAzR4RpuSHefp8HPUivB/vsXzPl4q3S1LwX/qBtWX7rWPcRgBPCypIfsnZmAliUZZNmt7qMA5QD+oVZkCV0Wtpe7kxDlDoZisVJoVb0zqUvuec2VmRb4i8iWhzDZp6uqpAp4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lt+p6Nqg; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tp9eY0fB"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7AACC4AF48
-	for <acpica-devel@lists.linux.dev>; Mon, 17 Jun 2024 19:20:28 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lt+p6Nqg"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61FD7C4AF1D;
+	Wed, 19 Jun 2024 03:07:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718652028;
-	bh=UwJilHooTAwCtU+8RqLCGxT+YJhIEjdBQnPptCGsoR4=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Tp9eY0fB9SepeWw16Iti4JBWXcxiRfFhGQLIt73eC2PY2IinXxz13N9YV2cCCP5Kk
-	 K0EqSl9mvIolQVc9xZ025XmZscofYirEEnPXPNGz9iH3H4iLc5Qa/iUTVWOpq3yt4N
-	 /cc3DiazhkJ4ZaNsTpIVkdl/+1K8/RMgukOk7Sskery3GtNovOQvxuK+ASM5Z//qEK
-	 Fj5LMiYcOUhp1gYLnv1UXdUto7Ni4QlACCG3vLT5I2/M4rT9+VlmyrxY/7ZWIHp80M
-	 XipWmXEsUP8wlv/a/uz9XoQy79m24ss2iNIFR30nHQZqlgjHIBEPiNCCLceEmuGG6g
-	 /oXu1WoAAmopw==
-Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-5bb10cfe7daso353338eaf.2
-        for <acpica-devel@lists.linux.dev>; Mon, 17 Jun 2024 12:20:28 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUt71sr/SWMr9YOJk9i6j55wlxxxnimuMgFo5YHHOKR/2ocv5HBo8IrgGgTV+jfURBHdB9AoD+mHAE6NtvTQeuHFNGobqYj8GcxU5bG
-X-Gm-Message-State: AOJu0Yz7RVhBz+CgHkd+Kz5HBfrlKcKQOQlI+1pCZr9Ajm88DvHFaeza
-	etv4IcjuD4J2+ymeuul0UZD5g1HJi5i8AYB985QqXV4DIoGDnzJd5FDaqAl7ohnK02yQYJOsZK/
-	bir8/lJc0DWxRGQKhDOsem+rIuwo=
-X-Google-Smtp-Source: AGHT+IH2PQAmWZtFODds934xH9e6nUDn8Ctc7ggQgfjQk4t+2XxjLNgMOo6P4Vimpri98e0hjJt660/Tr4OiwxX4KUQ=
-X-Received: by 2002:a4a:c482:0:b0:5bd:ad72:15d3 with SMTP id
- 006d021491bc7-5bdadc0905fmr11187991eaf.1.1718652028237; Mon, 17 Jun 2024
- 12:20:28 -0700 (PDT)
+	s=k20201202; t=1718766475;
+	bh=FYTj5zAq9+raq/s0q+bM7+Uld8MuTvLyhTG8RSdv2PA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lt+p6Nqg0wRheAVUdY7iQukaWVdfx/VCEM6X1CPHdseJIL6tVNGhiGxDPMZfKM+/+
+	 vUINKaGFCruohgSklELCmTrIqaNXKwb4QM9d3yhyowi93fGNy1CEzjD7ETpOJXGXdZ
+	 BlWDG3oGBxuWeHskiOmczMl4WFjZI5/fZhpdLWYPQ5EuwjKKo2QV/C3u9wPg1RfS3M
+	 E3bKRMP5+20Ewu2Xg2GQ3baqz1molTMPilfuLi4knOfYmyQZb1YtpLy5+zpUU9VpCV
+	 9gTwmm0EvnldnfQDZBa45njEIxUmlz/5Pu76IMoG2m2aZ1c0ZMrn19CZrpWCe8k+JS
+	 DPK41moYiHY/g==
+Date: Wed, 19 Jun 2024 03:07:50 +0000
+From: Tzung-Bi Shih <tzungbi@kernel.org>
+To: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
+Cc: Benson Leung <bleung@chromium.org>, Guenter Roeck <groeck@chromium.org>,
+	Sebastian Reichel <sre@kernel.org>,
+	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@weissschuh.net>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>,
+	chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org,
+	linux-pm@vger.kernel.org,
+	Mario Limonciello <mario.limonciello@amd.com>,
+	Dustin Howett <dustin@howett.net>,
+	Stephen Horvath <s.horvath@outlook.com.au>,
+	Rajas Paranjpe <paranjperajas@gmail.com>,
+	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
+	Matt Hartley <matt.hartley@gmail.com>
+Subject: Re: [PATCH v4 3/5] platform/chrome: cros_ec_proto: Introduce
+ cros_ec_get_cmd_versions()
+Message-ID: <ZnJLhj4tO8ZLxNYM@google.com>
+References: <20240616-cros_ec-charge-control-v4-0-74d649a9117d@weissschuh.net>
+ <20240616-cros_ec-charge-control-v4-3-74d649a9117d@weissschuh.net>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20240613-acpi-sysfs-groups-v1-0-665e0deb052a@weissschuh.net>
- <20240613-acpi-sysfs-groups-v1-1-665e0deb052a@weissschuh.net>
- <CAJZ5v0iHB1X7WM6Lg_-vr3Kzwp65yqjvHG9CA_X8vqFBFV_F_A@mail.gmail.com>
- <CAJZ5v0gmHPBS3LE+Eo8yJkvpuavBvip-1AEEEf9nxAp2gi_adQ@mail.gmail.com> <7c0d3358-eb1f-4c71-8a09-52b5e7668e36@t-8ch.de>
-In-Reply-To: <7c0d3358-eb1f-4c71-8a09-52b5e7668e36@t-8ch.de>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Mon, 17 Jun 2024 21:20:17 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0h2wuYi0JuKGKBy2x3h71FO_n8FNAAd+9XXekHGA9d=3w@mail.gmail.com>
-Message-ID: <CAJZ5v0h2wuYi0JuKGKBy2x3h71FO_n8FNAAd+9XXekHGA9d=3w@mail.gmail.com>
-Subject: Re: [PATCH 1/5] ACPI: sysfs: convert utf-16 from _STR to utf-8 only once
-To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
-	Robert Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, acpica-devel@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240616-cros_ec-charge-control-v4-3-74d649a9117d@weissschuh.net>
 
-On Mon, Jun 17, 2024 at 8:57=E2=80=AFPM Thomas Wei=C3=9Fschuh <linux@weisss=
-chuh.net> wrote:
->
-> On 2024-06-17 20:43:03+0000, Rafael J. Wysocki wrote:
-> > On Mon, Jun 17, 2024 at 8:37=E2=80=AFPM Rafael J. Wysocki <rafael@kerne=
-l.org> wrote:
-> > >
-> > > On Thu, Jun 13, 2024 at 10:15=E2=80=AFPM Thomas Wei=C3=9Fschuh <linux=
-@weissschuh.net> wrote:
-> > > >
-> > > > The ACPI _STR method returns an UTF-16 string that is converted to =
-utf-8
-> > > > before printing it in sysfs.
-> > > > Currently this conversion is performed every time the "description"
-> > > > sysfs attribute is read, which is not necessary.
-> > >
-> > > Why is it a problem, though?
->
-> It's not a real problem, mostly it made the following changes simpler.
->
-> > > How many devices have _STR and how much of the time is it used?
-> > >
-> > > Hint: On the system I'm sitting in front of, the answer is 0 and neve=
-r.
-> >
-> > This was actually factually incorrect, sorry.
-> >
-> > The correct answer is 12 out of 247 and very rarely (if at all).
-> > Which doesn't really change the point IMO.
-> >
-> > > So Is it really worth adding an _STR string pointer to every struct a=
-cpi_device?
->
-> The string pointer replaces a 'union acpi_object *str_obj', so no new
-> space is used.
-> Also in case the device _STR is present the new code uses less memory, as
-> it doesn't need the full union and stores utf-8 instead of utf-16.
-> (Plus a few more cycles for the preemptive conversion)
->
-> In case no _STR is present both CPU and memory costs are identical.
+On Sun, Jun 16, 2024 at 09:03:31PM +0200, Thomas Weiﬂschuh wrote:
+> Retrieving the supported versions of a command is a fairly common
+> operation. Provide a helper for it.
+> 
+> If the command is not supported at all the EC returns
+> -EINVAL/EC_RES_INVALID_PARAMS.
+> 
+> This error is translated into an empty version mask as that is easier to
+> handle for callers and they don't need to know about the error details.
+> 
+> Signed-off-by: Thomas Weiﬂschuh <linux@weissschuh.net>
 
-OK
-
-> Anyways, I don't really care about this and can also try to drop this
-> patch if you prefer.
-> Or drop the 'union acpi_device *' from the struct completely at your
-> preference.
-
-No, this is fine as is, thanks.
+In case of the series wouldn't go through chrome-platform tree:
+Acked-by: Tzung-Bi Shih <tzungbi@kernel.org>
