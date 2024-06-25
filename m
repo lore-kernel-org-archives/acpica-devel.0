@@ -1,110 +1,95 @@
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0ECD22EED;
-	Thu, 20 Jun 2024 20:34:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 300D01465BF
+	for <acpica-devel@lists.linux.dev>; Tue, 25 Jun 2024 07:25:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718915674; cv=none; b=p36Fpaywoqzw8NtxCAn0Hk2tTE5sSRFKPSzwi4kbAvtGTvVojSKOONR3TCs6oMLf+a06A2XpyvTNgMZOMSCyvWK0rFh/ug1TBgT+lvhcl9MJBaXfK0bhdf7Dcf27FVyzyGt5N9hJ78vWBFZhZrZeVUOuQt+DFRzDc5mWF6bRAEA=
+	t=1719300327; cv=none; b=eOMeQknSzP/1aRs8tRvgYa1MRhwYjHwrapUhrP7qWYllGj9X35SBdqXA46dGGgQxi7V9K7wjzoqh2SLSJkEOHZ/IOvlLrX5EBVAVNEzy6fLSFWrVzZmqcpUs46GMMhHvR36/P21YmxFso7DM+/U82mxRJkaVJTUi2+oYFByXRqA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718915674; c=relaxed/simple;
-	bh=Qjgls1+fDHoSlp8kty5p8JufKc02nlgR5ecC7mawsk4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Fl7Lqm8QwF/NhPfZAckoyHOEQOKylt0O0SmTCCxySJViBR/BQM09OeB7pSAKWpDp9a/UgrMyuLh4ygNzjTzopc/g8vaJ9xbqCu4BhPkosTYPEZk4LbSUPbF+lDU0uFPvwR6umwanW5VBhi+djJ+eRPrr7MjuLJ2AdqIOL7OZKLM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=Bg8yPHsV; arc=none smtp.client-ip=159.69.126.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
+	s=arc-20240116; t=1719300327; c=relaxed/simple;
+	bh=ezb77GZXdVAFrfyo9/1iyHlxE3AHchnIk/xpupP7DRk=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=IHY6hAH8/mhFMmGeaCkeZkqUcsNuMK8pL5d9qCmEvfucdxQrkeEwlL2r8NqIOoYJ9CsJKqBdWRJcFiF14rhd2ULIQmThonw3rjx14lBcaFC40roGJbZkm2knrmqBMGIcgYVsqSZH6GCpg3JHZSA4KPz8r83HUaX2TCecPnVB770=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=NgMgMb2J; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=et5PWOAo; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="Bg8yPHsV"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-	s=mail; t=1718915668;
-	bh=Qjgls1+fDHoSlp8kty5p8JufKc02nlgR5ecC7mawsk4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Bg8yPHsVg7YcnTXyQtCFTUNvWfpV80lMIWHE6HVlp//JgZpLevL+72yjpW16OMiea
-	 9wfF5ort/6xXLv+beVTMts562W1f+KV7s4t12JykJNG0rb2MbJ6QgowAxk1QZmCbPK
-	 BSJ178aUs5djvWTBHYV9DIwT0yqtgki9kKvNtf3E=
-Date: Thu, 20 Jun 2024 22:34:28 +0200
-From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To: Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc: Benson Leung <bleung@chromium.org>, 
-	Guenter Roeck <groeck@chromium.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>, 
-	Tzung-Bi Shih <tzungbi@kernel.org>, chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	linux-pm@vger.kernel.org, Mario Limonciello <mario.limonciello@amd.com>, 
-	Dustin Howett <dustin@howett.net>, Stephen Horvath <s.horvath@outlook.com.au>, 
-	Rajas Paranjpe <paranjperajas@gmail.com>, linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, 
-	Matt Hartley <matt.hartley@gmail.com>
-Subject: Re: [PATCH v4 4/5] power: supply: add ChromeOS EC based charge
- control driver
-Message-ID: <933f6510-2496-4ff9-af50-dd3ff35ddffd@t-8ch.de>
-References: <20240616-cros_ec-charge-control-v4-0-74d649a9117d@weissschuh.net>
- <20240616-cros_ec-charge-control-v4-4-74d649a9117d@weissschuh.net>
- <syoaiwmmxuz4ai6jomu42kvwocwozpzfbnjhvndlfqi6zkio4x@vrg6hle2httr>
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="NgMgMb2J";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="et5PWOAo"
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1719300324;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=lbM9+X7lQHMtCd9+f5UahNU/0eZ7QOoLWzJWZWNqVH8=;
+	b=NgMgMb2JTCsUYPLOwbJdeNIErCWElIL3im8v3aHkfMZrzDiafPyOHz2ZQihqzTZ59feUZI
+	Ph8GKIjDgaGD3fXranxhg0jog/omT47YnESkhPBfZYeXbIutaovJ4h46ymqAOe0w/vObtQ
+	VAmIXZt60RmMYm596wr4gT0oa1Q5nXqkVZVUIagqA0D4lGFhgPTPJ8udrrTUjHf+S93zJK
+	+wZXkqyAEgtttXeUcPfEiN9srR0V1lxTI/minAq/ggs8/RrCLiw1CV//KQH6z6iRPnsBjt
+	Wq6RLW6LZQmqqcZ+Sq9yBw1m4BTlyXefGqZ59SkNO9ZPEoqmyjOKtwBBWmpRsA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1719300324;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=lbM9+X7lQHMtCd9+f5UahNU/0eZ7QOoLWzJWZWNqVH8=;
+	b=et5PWOAoB6bFhTt4xdB92o5jth/5tAlsTrRR8UenmF/PZcTUGdlGchhMt2EvKAp/MhhBQx
+	vz9Mlm/0DoVUKsCg==
+To: Sunil V L <sunilvl@ventanamicro.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
+ linux-pci@vger.kernel.org, acpica-devel@lists.linux.dev
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon
+ <will@kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer
+ Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, "Rafael J
+ . Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, Bjorn Helgaas
+ <bhelgaas@google.com>, Anup Patel <anup@brainfault.org>, Samuel Holland
+ <samuel.holland@sifive.com>, Robert Moore <robert.moore@intel.com>, Conor
+ Dooley <conor.dooley@microchip.com>, Andrew Jones
+ <ajones@ventanamicro.com>, Andy Shevchenko
+ <andriy.shevchenko@linux.intel.com>, Marc Zyngier <maz@kernel.org>, Atish
+ Kumar Patra <atishp@rivosinc.com>, Haibo1 Xu <haibo1.xu@intel.com>,
+ =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, Sunil V L
+ <sunilvl@ventanamicro.com>
+Subject: Re: [PATCH v6 00/17] RISC-V: ACPI: Add external interrupt
+ controller support
+In-Reply-To: <20240601150411.1929783-1-sunilvl@ventanamicro.com>
+References: <20240601150411.1929783-1-sunilvl@ventanamicro.com>
+Date: Tue, 25 Jun 2024 09:25:23 +0200
+Message-ID: <875xtx7acc.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <syoaiwmmxuz4ai6jomu42kvwocwozpzfbnjhvndlfqi6zkio4x@vrg6hle2httr>
+Content-Type: text/plain
 
-Hi Sebastian,
+On Sat, Jun 01 2024 at 20:33, Sunil V L wrote:
+> This series adds support for the below ECR approved by ASWG.
+> 1) MADT - https://drive.google.com/file/d/1oMGPyOD58JaPgMl1pKasT-VKsIKia7zR/view?usp=sharing
+>
+> The series primarily enables irqchip drivers for RISC-V ACPI based
+> platforms.
+>
+> The series can be broadly categorized like below. 
+>
+> 1) PCI ACPI related functions are migrated from arm64 to common file so
+> that we don't need to duplicate them for RISC-V.
+>
+> 2) Added support for re-ordering the probe of interrupt controllers when
+> IRQCHIP_ACPI_DECLARE is used.
+>
+> 3) To ensure probe order between interrupt controllers and devices,
+> implicit dependency is created similar to when _DEP is present.
+>
+> 4) ACPI support added in RISC-V interrupt controller drivers.
 
-On 2024-06-20 00:24:23+0000, Sebastian Reichel wrote:
-> On Sun, Jun 16, 2024 at 09:03:32PM GMT, Thomas Weißschuh wrote:
-> > The ChromeOS Embedded Controller implements a command to control charge
-> > thresholds and behaviour.
-> > 
-> > Use it to implement the standard Linux charge_control_start_threshold,
-> > charge_control_end_threshold and charge_behaviour sysfs UAPIs.
-> > 
-> > The driver is designed to be probed via the cros_ec mfd device.
-> > 
-> > Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
-> > ---
-> 
-> Acked-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+So this needs eyeballs from the ACPI people and a strategy how to merge
+it.
 
-Thanks!
+Thanks,
 
-<snip>
-
-Would you also take a look at patch 5,
-"power: supply: cros_charge-control: don't load if Framework control is present"?
-
-I'm still wondering what the best solution for the two different EC APIs
-would be. Maybe you have an idea?
-
-In short:
-
-Framework laptops have a downstream charge control API in their EC.
-This drivers binds to the upstream CrOS EC APIs, which does work on
-Framework laptops.
-If the downstream API is used, it overrides the functionality of the
-upstream API.
-
-Choices I see:
-* Ignore the incompatibility and just load the driver (maybe log something)
-* Detect if the downstream API is actively used during probing
-  (If enabled by UEFI) and either
-  * don't load the driver
-  * disable the current downstream API configuration, so the driver works
-  * disable the downstream API and take over its configuration into the
-    upstream driver
-* Detect if the downstream API is present at all and don't load the
-  driver (currently implemented)
-
-The problem is that the downstream API is still usable and its usage
-would break this driver.
-On the other hand, disabling the driver forces users to manually specify
-a kernel commandline, preventing most users from actually making use of it.
-
-(For the future I plan on adapting the Framework EC firmware to avoid
-this issue, but there is no telling how long it will take and if it is
-accepted at all)
-
-Thanks for any ideas,
-Thomas
+        tglx
