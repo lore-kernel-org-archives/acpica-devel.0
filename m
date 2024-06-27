@@ -1,93 +1,75 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 907B918C34A;
-	Wed, 26 Jun 2024 15:39:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C458D2557A
+	for <acpica-devel@lists.linux.dev>; Thu, 27 Jun 2024 17:17:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719416357; cv=none; b=b9wFLZPSoV78Yl7A72jjk0Z2sHDWdAU6SqJck1dTybgXW6hi0dCoYEIxnPw3izIuSixogOVuCL229N/3aCs+Qp6Ns3/XKykgIL6maWmFfY/cG0ruWlALhL7imWXeY8HZwbeyl6AfQkIGHsOBSvC8f3KAoVbnX5RqWQvVu8GAXb0=
+	t=1719508643; cv=none; b=qlDdN6J3vO4XG4XrIRHTvXk3pusswMKMlD98l1EKBBGlZKbwVGuok/CBGltfomnelGFBDD1VhnaavHmTUh7I9pNg/XZrb1Rxklu9SyCUts/qfZgDubPxj0zy/dxADfOV0azcFtgs137ZZUFVEgVk4PWAfdkB2DO8pKlHDmImkZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719416357; c=relaxed/simple;
-	bh=IhtfoX2xoWChAu+Pe7FH52ll/R7Au3OdYNJJdaxYtFE=;
+	s=arc-20240116; t=1719508643; c=relaxed/simple;
+	bh=9Q/pog2xSjMT0jgQZHRrF+D+sHNG81NCOjNxL27WFJ8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kg8xYPdyJCZSsokLTKiyiRJgC3dwgoTV+//QRrQl7dXF1JrqjGrgs/3QdmlASeGGT3ri/bbrTlkG+C/q3wH0vLgnE1bhulpTpop5D6ebZn+FKuITOTmUlazS+T9N1U137+a5YBKEygco95krlyNEVJBbG8G3z8/x102/Ysatmn4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aiRfV30b; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=KRkn0jufMnw7v4PVeXkQQK7ZNCtega/yuuz+0+xOiGn1zAS4ZL55cpzR9Nzo61DjbmaonOBVV5e6mOr8iXYeziLdqafAwr0Hn3pu6JMpx9UepHdO8RgMhu/NG6wXNCyuo1ikiqyHeza2cr0KsCcrBrB6y1EaGZBzgtS1bRsodD8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=IvVj8Ffg; arc=none smtp.client-ip=159.69.126.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aiRfV30b"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DCC5C32789;
-	Wed, 26 Jun 2024 15:39:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719416357;
-	bh=IhtfoX2xoWChAu+Pe7FH52ll/R7Au3OdYNJJdaxYtFE=;
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="IvVj8Ffg"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+	s=mail; t=1719508630;
+	bh=9Q/pog2xSjMT0jgQZHRrF+D+sHNG81NCOjNxL27WFJ8=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=aiRfV30bum5kTG4yK4BM1hS8H8MOrxY3vfMduOAdKjNjmmOwAcwjnzTKHHMVJGiZd
-	 OSSyMAY5XgVtDyvACP2ZpyI9eDelZimE7s3/4se8wSj9yaGRlNqEJlk8H/VvcXE6Ax
-	 q1uOphO8cUPZl+I+URTXP8zLdyl6m3JiTE3I37SFHLwcGSbCr/ooxbVhWW/Q6QQzXy
-	 5HPCuDCEiii+trR0Dje2IuCYx9KTq2nqjaKebQro7R9cFzeUTSGAIFuuqbdCdrD3RE
-	 fwK/a+4WT7gYy2S6zrMdBL6TyAR/U/G+W+96JRPyQZZQXzbLcePsQeuhR/FfXuUyV/
-	 Ht0uuIJ6Amq4w==
-Date: Wed, 26 Jun 2024 16:39:10 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
-	Robert Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org,
-	linux-kernel@vger.kernel.org, acpica-devel@lists.linux.dev,
+	b=IvVj8FfgV+AOBT4EHIbLCR45qpXIbsvhzgRmpgevM30AlPXtYecaeA/kljCusl6pG
+	 WfnLcm1VeC6mBzVB4m6BD+D54X56OS+eEAA4sZSyqLKoQbyIs9eQqhSEKQhrP7ot3t
+	 NmhebQnYPjHu8Wj/cE9fy5ZzWQ0kEFYXext++txc=
+Date: Thu, 27 Jun 2024 19:17:09 +0200
+From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To: Mark Brown <broonie@kernel.org>, 
+	"Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>, 
+	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, acpica-devel@lists.linux.dev, 
 	Aishwarya.TCV@arm.com
 Subject: Re: [PATCH 2/5] ACPI: sysfs: use device lifecycle for _STR result
-Message-ID: <d599e864-9961-44e3-8b9b-bc41a8044319@sirena.org.uk>
+Message-ID: <4cd2352c-4e95-4ddf-a366-75dad45bf7e6@t-8ch.de>
 References: <20240613-acpi-sysfs-groups-v1-0-665e0deb052a@weissschuh.net>
  <20240613-acpi-sysfs-groups-v1-2-665e0deb052a@weissschuh.net>
  <a72495c3-c996-4be7-bc64-ba10d5400971@sirena.org.uk>
  <111f7a2c-403b-40b3-9e25-8c4a040d8dfb@t-8ch.de>
+ <d599e864-9961-44e3-8b9b-bc41a8044319@sirena.org.uk>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ThsiVx38b9ZxGlco"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <111f7a2c-403b-40b3-9e25-8c4a040d8dfb@t-8ch.de>
-X-Cookie: Results vary by individual.
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d599e864-9961-44e3-8b9b-bc41a8044319@sirena.org.uk>
 
+Rafael:
 
---ThsiVx38b9ZxGlco
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Would you mind backing this series out for now?
+I'll do some more experiments and resubmit.
 
-On Tue, Jun 25, 2024 at 11:56:18PM +0200, Thomas Wei=DFschuh wrote:
-> On 2024-06-25 21:57:13+0000, Mark Brown wrote:
+On 2024-06-26 16:39:10+0000, Mark Brown wrote:
+> On Tue, Jun 25, 2024 at 11:56:18PM +0200, Thomas Weißschuh wrote:
+> > On 2024-06-25 21:57:13+0000, Mark Brown wrote:
+> 
+> > > <2>[   50.236703] acpi LNXTHERM:08: Resources present before probing
+> 
+> > This does make sense, the device is not yet bound to a driver.
+> > Which apparently precludes the usage of devres.
+> 
+> Oh, yes - I really wouldn't expect that to work at all, devres is all
+> about tying things to the device being bound so trying to use it outside
+> of that is not something I'd expect to go well.
+> 
+> > I'm also wondering why the _STR attribute behaved differently in the
+> > first place.
+> > Does the patch below work better?
+> 
+> That patch applied on top of -next appears to resolve the issue.
 
-> > <2>[   50.236703] acpi LNXTHERM:08: Resources present before probing
-
-> This does make sense, the device is not yet bound to a driver.
-> Which apparently precludes the usage of devres.
-
-Oh, yes - I really wouldn't expect that to work at all, devres is all
-about tying things to the device being bound so trying to use it outside
-of that is not something I'd expect to go well.
-
-> I'm also wondering why the _STR attribute behaved differently in the
-> first place.
-> Does the patch below work better?
-
-That patch applied on top of -next appears to resolve the issue.
-
---ThsiVx38b9ZxGlco
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmZ8Nh4ACgkQJNaLcl1U
-h9D87wf/VyUjV4W7+iYgqIYNd/24zKKwbxyauIimxphLw7n6u+synEimAReZyfYK
-HI/AFPsvBAYPcEoxXpNKI7P9fglF57aZiPZ9sVDYen2eu0TzVMzoHb9ulBVldtjD
-v8ZIyVuLR+I2dML06fiCtu2ILNvj64qogHCPdYx5VwAfCifR0upX4WHVKVMHxO14
-QsfvS26j4ltxXJaBCZUaLvdEDnUS5lcwdo2t/c3Nz2Ghi0i43SUoYCD5RpDVlojh
-fCB0Vv5m7UFZ82nRW/rcziIZiemckDIu2mx+TLEH5frIuj5eJNQeD4XGbtb06Y2e
-x8e1qU7j1Qq1ctHhaTsuJIt9frRlrw==
-=Vt/1
------END PGP SIGNATURE-----
-
---ThsiVx38b9ZxGlco--
+Thanks for the confirmation
