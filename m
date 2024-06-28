@@ -1,102 +1,71 @@
-Received: from mx1.zhaoxin.com (MX1.ZHAOXIN.COM [210.0.225.12])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 943F117583
-	for <acpica-devel@lists.linux.dev>; Fri, 28 Jun 2024 03:27:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.0.225.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C90461C9ED6
+	for <acpica-devel@lists.linux.dev>; Fri, 28 Jun 2024 17:27:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719545258; cv=none; b=bzsvOTCD3Cpx6aBGzqBinmYjEabOpBvaP5Ljtvt9p0fMJFgwlTXWb4SNWUTJ7qLcz3iHNxYcMOeelq0RNAAPnjDJ6XO05+TnrtBLEbXHg7pED6rNaGOmNnVt5Cy+r7/V93ujflbeWvIDAYcF/Xge2KwZQoS3z0aLUjvFvkHa4FI=
+	t=1719595631; cv=none; b=Yg0QgqlCnqnE9Vkodfx8Kgkcb0Vi8rToJtwMlVhw0gxfvTbTu+1T7EL/5RYjZeKTLcg8mCzRrOorJq1f+SdAQ93m+0W4CBSLGjD3cGslp7JPwLCNGX2HsBpjfJQs/wJYHGWjCCc/JHViH91qUZvbC5icwZvyvZQGARoi1SJe9dI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719545258; c=relaxed/simple;
-	bh=a3olSj8nVDgW4q/EBPpehEZzXrNx6E2BpkN/BcooknI=;
-	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=Zxb7lTYM9s44P6DjEPfSL//yENkZAfXy0l4BwgtTHMtmHeM2qEmMo0B7AexuTYo1T9ZifhZfPkME38ZnzyF7Xd5n4lsyw1zR98HXDDZby9U8GIxminR96ILxrOmpZ67gkxBGHxdG5YspfVvP7iZhvjX2KjCz6+OMpYgm16Q40qM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com; spf=pass smtp.mailfrom=zhaoxin.com; arc=none smtp.client-ip=210.0.225.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zhaoxin.com
-X-ASG-Debug-ID: 1719545240-086e231108138f50001-m47mSr
-Received: from ZXSHMBX1.zhaoxin.com (ZXSHMBX1.zhaoxin.com [10.28.252.163]) by mx1.zhaoxin.com with ESMTP id tbdnvh16gC4lZJdo (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Fri, 28 Jun 2024 11:27:20 +0800 (CST)
-X-Barracuda-Envelope-From: LindaChai@zhaoxin.com
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
-Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHMBX1.zhaoxin.com
- (10.28.252.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Fri, 28 Jun
- 2024 11:27:20 +0800
-Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by zxbjmbx1.zhaoxin.com
- (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Fri, 28 Jun
- 2024 11:27:19 +0800
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
-Received: from zxbjmbx1.zhaoxin.com ([fe80::2c4a:ac53:52a8:1a13]) by
- zxbjmbx1.zhaoxin.com ([fe80::2c4a:ac53:52a8:1a13%3]) with mapi id
- 15.01.2507.039; Fri, 28 Jun 2024 11:27:19 +0800
-X-Barracuda-RBL-Trusted-Forwarder: 10.29.252.163
-From: "Linda Chai(BJ-RD)" <LindaChai@zhaoxin.com>
-To: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
-CC: "Cobe Chen(BJ-RD)" <CobeChen@zhaoxin.com>, LeoLiu-oc
-	<LeoLiu-oc@zhaoxin.com>, "Linda Chai(BJ-RD)" <LindaChai@zhaoxin.com>, "Tim
- Guo(BJ-RD)" <TimGuo@zhaoxin.com>, "acpica-devel@lists.linux.dev"
-	<acpica-devel@lists.linux.dev>, "bp@alien8.de" <bp@alien8.de>,
-	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "hpa@zytor.com"
-	<hpa@zytor.com>, "j.granados@samsung.com" <j.granados@samsung.com>,
-	"lenb@kernel.org" <lenb@kernel.org>, "linux-acpi@vger.kernel.org"
-	<linux-acpi@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-pm@vger.kernel.org"
-	<linux-pm@vger.kernel.org>, "mcgrof@kernel.org" <mcgrof@kernel.org>,
-	"mingo@redhat.com" <mingo@redhat.com>, "peterz@infradead.org"
-	<peterz@infradead.org>, "rafael@kernel.org" <rafael@kernel.org>,
-	"ricardo.neri-calderon@linux.intel.com"
-	<ricardo.neri-calderon@linux.intel.com>, "robert.moore@intel.com"
-	<robert.moore@intel.com>, "tglx@linutronix.de" <tglx@linutronix.de>,
-	"viresh.kumar@linaro.org" <viresh.kumar@linaro.org>, "x86@kernel.org"
-	<x86@kernel.org>
-Subject: Re: [PATCH 3/3] ACPI: cpufreq: Add ITMT support when CPPC enabled for
- Zhaoxin CPUs
-Thread-Topic: Re: [PATCH 3/3] ACPI: cpufreq: Add ITMT support when CPPC
- enabled for Zhaoxin CPUs
-X-ASG-Orig-Subj: Re: [PATCH 3/3] ACPI: cpufreq: Add ITMT support when CPPC enabled for
- Zhaoxin CPUs
-Thread-Index: AdrJCJizLp8Sv9dXStirpjor4h554A==
-Date: Fri, 28 Jun 2024 03:27:19 +0000
-Message-ID: <4bee9e6ac2c84311ad7f7654d398f62a@zhaoxin.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+	s=arc-20240116; t=1719595631; c=relaxed/simple;
+	bh=Pl4fx3mvrC8/402KEMfdyFxzgN4b2vpnlOw2DUaW5DA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=M0JpjE/n1qa3O4KHawU1arL6UYQ8Pcxnf56bKE97wW+NESpKC9z+kMpR1kFFVmDHm5oN1DF5ocDCzb4Uhrn5K9aS2TCNEortFa9/uxFIptC6JDIKzdIM1ssdjyAPQ1UM2FHnN/TeSRp2Hbreu7Oy0zoQTVxaRvD9OszyIxTtasw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ETorOl2e; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ETorOl2e"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 768CFC4AF0A
+	for <acpica-devel@lists.linux.dev>; Fri, 28 Jun 2024 17:27:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1719595631;
+	bh=Pl4fx3mvrC8/402KEMfdyFxzgN4b2vpnlOw2DUaW5DA=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=ETorOl2eupSSPftAGmIP9VZ69J20eRXYr4GZWeYjotdBvXRYpdPyYFnja92PuCzek
+	 gKlFI69Yz4OffhjcwJpzuQGuhLUwWfTHbIvuH4FDEU+1I605KvLXV+0TrVjx6BS+Wd
+	 aKVvR4aE5J/YbJKQCl17TtSfXImqbA8TM6rCvv5CPVVWgPWDqiS//AVBKroiui8pAk
+	 G0baifVUeoNdUiU1K5iP1KUerKIDNZUdJP2jR9C35QMNaX+7Ibzx7YgnWMAT2B1p9R
+	 MCgIAfjRY+DUQvVVNGGiXa82Y9+tV9Gg0ssuHU+qJvrPJth2/qUD9KaU5pYxzzMsNt
+	 ix5xfcxBir2Zg==
+Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-25ce35c52e7so121078fac.2
+        for <acpica-devel@lists.linux.dev>; Fri, 28 Jun 2024 10:27:11 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVFneWJry/NSjBlBHVNrpJJT+1XQnP2O1Rrml/atPGQ02L3Vrm1MFA4HCcN1KDsZaJ1gJZP6iIsbOe3yP9eRHTs5FcYIuCQfTy44ley
+X-Gm-Message-State: AOJu0YwIpdgBknLGm6PBtabMy3/jiJsmzAEcWys7TXXj/QM5zIuM6OlO
+	CDKPYtCHLZ6TVB4P9LDl0Pj8pUVi5AJKh8GCEhUJzxeifkxmDNLFYkI6AXZq56SXDD9qQsvhBF1
+	fD1XIh7TOSSk5+rBMJP2gnEVb++g=
+X-Google-Smtp-Source: AGHT+IFDSFlkBcA1UtUiyWxUVT0UTQuwjc1IEII89TUuy5oCwtaa5V2sEhUNiihyJ9+lo7439NmQBVZqeSON5l1J/T8=
+X-Received: by 2002:a05:6870:8a24:b0:254:cae6:a812 with SMTP id
+ 586e51a60fabf-25cf3f17d37mr20750734fac.3.1719595630627; Fri, 28 Jun 2024
+ 10:27:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-X-Barracuda-Connect: ZXSHMBX1.zhaoxin.com[10.28.252.163]
-X-Barracuda-Start-Time: 1719545240
-X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
-X-Barracuda-URL: https://10.28.252.35:4443/cgi-mod/mark.cgi
-X-Virus-Scanned: by bsmtpd at zhaoxin.com
-X-Barracuda-Scan-Msg-Size: 574
-X-Barracuda-BRTS-Status: 1
-X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
-X-Barracuda-Spam-Score: -1.99
-X-Barracuda-Spam-Status: No, SCORE=-1.99 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=BSF_SC0_SA_TO_FROM_DOMAIN_MATCH, THREAD_INDEX, THREAD_TOPIC
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.126861
-	Rule breakdown below
-	 pts rule name              description
-	---- ---------------------- --------------------------------------------------
-	0.01 THREAD_INDEX           thread-index: AcO7Y8iR61tzADqsRmmc5wNiFHEOig==
-	0.01 THREAD_TOPIC           Thread-Topic: ...(Japanese Subject)...
-	0.01 BSF_SC0_SA_TO_FROM_DOMAIN_MATCH Sender Domain Matches Recipient
-	                           Domain
+References: <20240613-acpi-sysfs-groups-v1-0-665e0deb052a@weissschuh.net>
+ <20240613-acpi-sysfs-groups-v1-2-665e0deb052a@weissschuh.net>
+ <a72495c3-c996-4be7-bc64-ba10d5400971@sirena.org.uk> <111f7a2c-403b-40b3-9e25-8c4a040d8dfb@t-8ch.de>
+ <d599e864-9961-44e3-8b9b-bc41a8044319@sirena.org.uk> <4cd2352c-4e95-4ddf-a366-75dad45bf7e6@t-8ch.de>
+In-Reply-To: <4cd2352c-4e95-4ddf-a366-75dad45bf7e6@t-8ch.de>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Fri, 28 Jun 2024 19:26:59 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0hMbd_y5P0mvVktSEesYs5hGjGaFpqm3KuHqzgT2diy3g@mail.gmail.com>
+Message-ID: <CAJZ5v0hMbd_y5P0mvVktSEesYs5hGjGaFpqm3KuHqzgT2diy3g@mail.gmail.com>
+Subject: Re: [PATCH 2/5] ACPI: sysfs: use device lifecycle for _STR result
+To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Cc: Mark Brown <broonie@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
+	Robert Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, acpica-devel@lists.linux.dev, 
+	Aishwarya.TCV@arm.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-SGmjrEFsbA0KSSBoYXZlbid0IHJlY2VpdmVkIGFueSByZXBseSBhYm91dCB0aGlzIG1haWwgZm9y
-IGEgbG9uZyB0aW1lLiBJIGRvdWJ0IGlmIHlvdSBoYXZlIG5vdGljZWQgaXQ/DQpJIHJlYWxseSBs
-b29rIGZvcndhcmQgdG8gcmVjZWl2aW5nIHlvdXIgc3VnZ2VzdGlvbiBhYm91dCB0aGlzIG5ldyBw
-YXRjaC4NCg0KQlJzDQpMaW5kYQ0KDQoNCrGjw9zJ+cP3o7oNCrG+08q8/rqs09Cxo8Pcu/LXqNPQ
-0MXPoqOsvfa5qda4tqjK1bz+yMvKudPDoaPRz737ttSxvtPKvP678sbkxNrI3df2yM66zs60vq3K
-2siotcSy6dTEoaLKudPDoaK4tNbGu/LXqreioaMNCkNPTkZJREVOVElBTCBOT1RFOg0KVGhpcyBl
-bWFpbCBjb250YWlucyBjb25maWRlbnRpYWwgb3IgbGVnYWxseSBwcml2aWxlZ2VkIGluZm9ybWF0
-aW9uIGFuZCBpcyBmb3IgdGhlIHNvbGUgdXNlIG9mIGl0cyBpbnRlbmRlZCByZWNpcGllbnQuIEFu
-eSB1bmF1dGhvcml6ZWQgcmV2aWV3LCB1c2UsIGNvcHlpbmcgb3IgZm9yd2FyZGluZyBvZiB0aGlz
-IGVtYWlsIG9yIHRoZSBjb250ZW50IG9mIHRoaXMgZW1haWwgaXMgc3RyaWN0bHkgcHJvaGliaXRl
-ZC4NCg==
+On Thu, Jun 27, 2024 at 7:17=E2=80=AFPM Thomas Wei=C3=9Fschuh <linux@weisss=
+chuh.net> wrote:
+>
+> Rafael:
+>
+> Would you mind backing this series out for now?
+> I'll do some more experiments and resubmit.
+
+Done, thank you!
