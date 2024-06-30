@@ -1,71 +1,145 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C90461C9ED6
-	for <acpica-devel@lists.linux.dev>; Fri, 28 Jun 2024 17:27:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF98943AB4;
+	Sun, 30 Jun 2024 20:57:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719595631; cv=none; b=Yg0QgqlCnqnE9Vkodfx8Kgkcb0Vi8rToJtwMlVhw0gxfvTbTu+1T7EL/5RYjZeKTLcg8mCzRrOorJq1f+SdAQ93m+0W4CBSLGjD3cGslp7JPwLCNGX2HsBpjfJQs/wJYHGWjCCc/JHViH91qUZvbC5icwZvyvZQGARoi1SJe9dI=
+	t=1719781026; cv=none; b=sTrXanpcFD++6Rz5vap23QHs5qrN2u5O8FOWd91XPndsEPvAour29IsBOzF6uTSGPyKUYBRUvLVFVwCVoO/V7MoQySgl9tlQpPIeD9FidaZ5pCLDERj843khjPwYo464dXp1NZk771mc/0D8BLY9/q+wwTIP3AVanLdNUv8yVK4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719595631; c=relaxed/simple;
-	bh=Pl4fx3mvrC8/402KEMfdyFxzgN4b2vpnlOw2DUaW5DA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=M0JpjE/n1qa3O4KHawU1arL6UYQ8Pcxnf56bKE97wW+NESpKC9z+kMpR1kFFVmDHm5oN1DF5ocDCzb4Uhrn5K9aS2TCNEortFa9/uxFIptC6JDIKzdIM1ssdjyAPQ1UM2FHnN/TeSRp2Hbreu7Oy0zoQTVxaRvD9OszyIxTtasw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ETorOl2e; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1719781026; c=relaxed/simple;
+	bh=HfNMeLsLGK3GWeWdm8PDMkaGehstSeUbS2E/1F3j/j8=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=GUCKPLYDYubwz2+fL4uqoI+G1k1jnf0wEKqP7mTDHUdih6UAj0ujipyLOhZ7MMMBcMDBW7aRi8pxa2JcrP/sCCG+21BE2cxIsl2m8OkjBoDU4BpcNbuu0WdFE8PliF6I+BVBQNy2A6vv8C6dSUGD1matA7NcdTHqssXYTgXhtjQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=egr/LSvP; arc=none smtp.client-ip=159.69.126.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ETorOl2e"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 768CFC4AF0A
-	for <acpica-devel@lists.linux.dev>; Fri, 28 Jun 2024 17:27:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719595631;
-	bh=Pl4fx3mvrC8/402KEMfdyFxzgN4b2vpnlOw2DUaW5DA=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=ETorOl2eupSSPftAGmIP9VZ69J20eRXYr4GZWeYjotdBvXRYpdPyYFnja92PuCzek
-	 gKlFI69Yz4OffhjcwJpzuQGuhLUwWfTHbIvuH4FDEU+1I605KvLXV+0TrVjx6BS+Wd
-	 aKVvR4aE5J/YbJKQCl17TtSfXImqbA8TM6rCvv5CPVVWgPWDqiS//AVBKroiui8pAk
-	 G0baifVUeoNdUiU1K5iP1KUerKIDNZUdJP2jR9C35QMNaX+7Ibzx7YgnWMAT2B1p9R
-	 MCgIAfjRY+DUQvVVNGGiXa82Y9+tV9Gg0ssuHU+qJvrPJth2/qUD9KaU5pYxzzMsNt
-	 ix5xfcxBir2Zg==
-Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-25ce35c52e7so121078fac.2
-        for <acpica-devel@lists.linux.dev>; Fri, 28 Jun 2024 10:27:11 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVFneWJry/NSjBlBHVNrpJJT+1XQnP2O1Rrml/atPGQ02L3Vrm1MFA4HCcN1KDsZaJ1gJZP6iIsbOe3yP9eRHTs5FcYIuCQfTy44ley
-X-Gm-Message-State: AOJu0YwIpdgBknLGm6PBtabMy3/jiJsmzAEcWys7TXXj/QM5zIuM6OlO
-	CDKPYtCHLZ6TVB4P9LDl0Pj8pUVi5AJKh8GCEhUJzxeifkxmDNLFYkI6AXZq56SXDD9qQsvhBF1
-	fD1XIh7TOSSk5+rBMJP2gnEVb++g=
-X-Google-Smtp-Source: AGHT+IFDSFlkBcA1UtUiyWxUVT0UTQuwjc1IEII89TUuy5oCwtaa5V2sEhUNiihyJ9+lo7439NmQBVZqeSON5l1J/T8=
-X-Received: by 2002:a05:6870:8a24:b0:254:cae6:a812 with SMTP id
- 586e51a60fabf-25cf3f17d37mr20750734fac.3.1719595630627; Fri, 28 Jun 2024
- 10:27:10 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="egr/LSvP"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+	s=mail; t=1719781013;
+	bh=HfNMeLsLGK3GWeWdm8PDMkaGehstSeUbS2E/1F3j/j8=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+	b=egr/LSvPDvA3j/9HdQ6I3CE5Q+GS1MMGkd4YcDK+BsqN7xlMhPTJatqAL9wzu4mbD
+	 DFX2Amzxstl/cLJq0+3b7ho3jDV1gKfUin7krOfBccGpSSycmIXHdXZ8P7FbZwvi7O
+	 lwULwGlHLAqi2VPQ3ev6mwYnVfaM2dRbhglrln+s=
+From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Date: Sun, 30 Jun 2024 22:54:10 +0200
+Subject: [PATCH v5 3/5] platform/chrome: cros_ec_proto: Introduce
+ cros_ec_get_cmd_versions()
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20240613-acpi-sysfs-groups-v1-0-665e0deb052a@weissschuh.net>
- <20240613-acpi-sysfs-groups-v1-2-665e0deb052a@weissschuh.net>
- <a72495c3-c996-4be7-bc64-ba10d5400971@sirena.org.uk> <111f7a2c-403b-40b3-9e25-8c4a040d8dfb@t-8ch.de>
- <d599e864-9961-44e3-8b9b-bc41a8044319@sirena.org.uk> <4cd2352c-4e95-4ddf-a366-75dad45bf7e6@t-8ch.de>
-In-Reply-To: <4cd2352c-4e95-4ddf-a366-75dad45bf7e6@t-8ch.de>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Fri, 28 Jun 2024 19:26:59 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0hMbd_y5P0mvVktSEesYs5hGjGaFpqm3KuHqzgT2diy3g@mail.gmail.com>
-Message-ID: <CAJZ5v0hMbd_y5P0mvVktSEesYs5hGjGaFpqm3KuHqzgT2diy3g@mail.gmail.com>
-Subject: Re: [PATCH 2/5] ACPI: sysfs: use device lifecycle for _STR result
-To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Cc: Mark Brown <broonie@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
-	Robert Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, acpica-devel@lists.linux.dev, 
-	Aishwarya.TCV@arm.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20240630-cros_ec-charge-control-v5-3-8f649d018c52@weissschuh.net>
+References: <20240630-cros_ec-charge-control-v5-0-8f649d018c52@weissschuh.net>
+In-Reply-To: <20240630-cros_ec-charge-control-v5-0-8f649d018c52@weissschuh.net>
+To: Benson Leung <bleung@chromium.org>, Guenter Roeck <groeck@chromium.org>, 
+ Sebastian Reichel <sre@kernel.org>, 
+ =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas@weissschuh.net>, 
+ "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
+ Robert Moore <robert.moore@intel.com>, Tzung-Bi Shih <tzungbi@kernel.org>
+Cc: chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org, 
+ linux-pm@vger.kernel.org, Mario Limonciello <mario.limonciello@amd.com>, 
+ Dustin Howett <dustin@howett.net>, 
+ Stephen Horvath <s.horvath@outlook.com.au>, 
+ Rajas Paranjpe <paranjperajas@gmail.com>, linux-acpi@vger.kernel.org, 
+ acpica-devel@lists.linux.dev, Matt Hartley <matt.hartley@gmail.com>, 
+ Kieran Levin <ktl@framework.net>, 
+ =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+X-Mailer: b4 0.14.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1719781012; l=2821;
+ i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
+ bh=HfNMeLsLGK3GWeWdm8PDMkaGehstSeUbS2E/1F3j/j8=;
+ b=8384owFHstCikEunmP6XRgZQqzrhTs9O28evm8/2oNYKdsPzZ3MAYfO27KtPXanc3hbDGG1MR
+ pKoHUW7jUyKAewTjrhCcFnGQbrbPZ8fQ8vyzkuW0WFsUwQVk+ZEKoWG
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
+ pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 
-On Thu, Jun 27, 2024 at 7:17=E2=80=AFPM Thomas Wei=C3=9Fschuh <linux@weisss=
-chuh.net> wrote:
->
-> Rafael:
->
-> Would you mind backing this series out for now?
-> I'll do some more experiments and resubmit.
+Retrieving the supported versions of a command is a fairly common
+operation. Provide a helper for it.
 
-Done, thank you!
+If the command is not supported at all the EC returns
+-EINVAL/EC_RES_INVALID_PARAMS.
+
+This error is translated into an empty version mask as that is easier to
+handle for callers and they don't need to know about the error details.
+
+Acked-by: Tzung-Bi Shih <tzungbi@kernel.org>
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+---
+ drivers/platform/chrome/cros_ec_proto.c     | 35 +++++++++++++++++++++++++++++
+ include/linux/platform_data/cros_ec_proto.h |  2 ++
+ 2 files changed, 37 insertions(+)
+
+diff --git a/drivers/platform/chrome/cros_ec_proto.c b/drivers/platform/chrome/cros_ec_proto.c
+index fe68be66ee98..f776fd42244f 100644
+--- a/drivers/platform/chrome/cros_ec_proto.c
++++ b/drivers/platform/chrome/cros_ec_proto.c
+@@ -5,6 +5,7 @@
+ 
+ #include <linux/delay.h>
+ #include <linux/device.h>
++#include <linux/limits.h>
+ #include <linux/module.h>
+ #include <linux/platform_data/cros_ec_commands.h>
+ #include <linux/platform_data/cros_ec_proto.h>
+@@ -1069,3 +1070,37 @@ int cros_ec_cmd_readmem(struct cros_ec_device *ec_dev, u8 offset, u8 size, void
+ 			   &params, sizeof(params), dest, size);
+ }
+ EXPORT_SYMBOL_GPL(cros_ec_cmd_readmem);
++
++/**
++ * cros_ec_get_cmd_versions - Get supported version mask.
++ *
++ * @ec_dev: EC device
++ * @cmd: Command to test
++ *
++ * Return: version mask on success, negative error number on failure.
++ */
++int cros_ec_get_cmd_versions(struct cros_ec_device *ec_dev, u16 cmd)
++{
++	struct ec_params_get_cmd_versions req_v0;
++	struct ec_params_get_cmd_versions_v1 req_v1;
++	struct ec_response_get_cmd_versions resp;
++	int ret;
++
++	if (cmd <= U8_MAX) {
++		req_v0.cmd = cmd;
++		ret = cros_ec_cmd(ec_dev, 0, EC_CMD_GET_CMD_VERSIONS,
++				  &req_v0, sizeof(req_v0), &resp, sizeof(resp));
++	} else {
++		req_v1.cmd = cmd;
++		ret = cros_ec_cmd(ec_dev, 1, EC_CMD_GET_CMD_VERSIONS,
++				  &req_v1, sizeof(req_v1), &resp, sizeof(resp));
++	}
++
++	if (ret == -EINVAL)
++		return 0; /* Command not implemented */
++	else if (ret < 0)
++		return ret;
++	else
++		return resp.version_mask;
++}
++EXPORT_SYMBOL_GPL(cros_ec_get_cmd_versions);
+diff --git a/include/linux/platform_data/cros_ec_proto.h b/include/linux/platform_data/cros_ec_proto.h
+index 6e9225bdf903..b34ed0cc1f8d 100644
+--- a/include/linux/platform_data/cros_ec_proto.h
++++ b/include/linux/platform_data/cros_ec_proto.h
+@@ -263,6 +263,8 @@ int cros_ec_cmd(struct cros_ec_device *ec_dev, unsigned int version, int command
+ 
+ int cros_ec_cmd_readmem(struct cros_ec_device *ec_dev, u8 offset, u8 size, void *dest);
+ 
++int cros_ec_get_cmd_versions(struct cros_ec_device *ec_dev, u16 cmd);
++
+ /**
+  * cros_ec_get_time_ns() - Return time in ns.
+  *
+
+-- 
+2.45.2
+
