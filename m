@@ -1,31 +1,32 @@
 Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D22E943AD2;
-	Sun, 30 Jun 2024 20:57:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE0AA7CF34;
+	Sun, 30 Jun 2024 20:57:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719781027; cv=none; b=uy5BxnZYCe+5pHxQeggH8ouq2Tk66CZ1HuWlVSFk7cbX6O5SjHI4so2kg8gNr1asAZSdLgutkYEd8Y1C3TY0MkT6CE1YDsyyoWC3UTFwXUXNCuXBwVV+szKqBiAfWJD3DsDmo0edUsvn9J3TJCJ/n/QB10T4nLKe2IRewnlrMfc=
+	t=1719781030; cv=none; b=ekAfAdXQjHMqULmpY+0+cM/MnM9EujgLrrlgYdrOqvitUZ87TPqYcF9I8fJsSECVPGshj6sWS5YPS4+OGspfxBWdbq88pjTqW6JH3nkgnMjQ4NWnr8xe8Q2HC2aS8DVzKQ54xkkHojF3WhOYD0lXyPodSaOY0LB76F9R3YUYRX0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719781027; c=relaxed/simple;
-	bh=uw8nLh7+K+VERVHPyxd+3eO/7NhujZLZvDsfiJLrD+k=;
+	s=arc-20240116; t=1719781030; c=relaxed/simple;
+	bh=FHswT/YC3w5l89/ylaLvEiW7spavPfr3VgQBUJELu3s=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=O2pwuYSh1UhgIcWdoaGUpr7cCUW+iUP/mdZgmHsdClhs2dXqQQ3T+1hVS5Ib7G8w4hxDMg5DyU9REQIQW65MKUn3BSz/fqjLFIlk7OBcqALaD22wkuIEgeceEBDp6MIrwxfJR2bF2jVc9TL74NfjkokL4FWD4EDIc7Rm0qL/pVc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=ZAydGxhz; arc=none smtp.client-ip=159.69.126.157
+	 In-Reply-To:To:Cc; b=us7CRdpxywFtnVHOeyvegEWnr1BabZ9OOHraXSH74bXuyBSbFjtmyKQ3WZk+P1U/9osMTIuZ8ErKpGXM/KcD4b03XnGbkITCz7QIEbJm7tKH/U5LSe1tvUzKZYJr3AqFZne5e1V4hclNa0dxL22CfyGquT5TSmYTdX/AwlkL64E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=ejWDZHRf; arc=none smtp.client-ip=159.69.126.157
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="ZAydGxhz"
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="ejWDZHRf"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-	s=mail; t=1719781013;
-	bh=uw8nLh7+K+VERVHPyxd+3eO/7NhujZLZvDsfiJLrD+k=;
+	s=mail; t=1719781014;
+	bh=FHswT/YC3w5l89/ylaLvEiW7spavPfr3VgQBUJELu3s=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=ZAydGxhzKy2BRBPebAf7jE+fd7WxQqrzZxNBo/mukB5ZHdKF5KZFR0MufVAIF2b1N
-	 GGNOORrbdWk+h7TccUCPrZj8f0FY3aBHEaMHdpMVodMdsth58+r9qfXnXMWU5/KWs3
-	 ibv478/fkqXAKT/IM4ac8JVXf6OmKpEK6xWDOfnE=
+	b=ejWDZHRfukisKwAihu3IBKvVmRI2U3XVHjJJhiKuB2hP4u4h7a1MfWKyCfjKzpzn3
+	 XYY+AyxYMPfEUXIFrks+w0A/FaPIBbB+UcwH9IH4dRLkPflPrxte+pKs7fu+sIdDew
+	 gyeQCt49lMuafdri87CdHR2KJYCYg8WqN7DqfjeY=
 From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date: Sun, 30 Jun 2024 22:54:08 +0200
-Subject: [PATCH v5 1/5] ACPI: battery: add devm_battery_hook_register()
+Date: Sun, 30 Jun 2024 22:54:12 +0200
+Subject: [PATCH v5 5/5] power: supply: cros_charge-control: don't load if
+ Framework control is present
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -34,7 +35,7 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240630-cros_ec-charge-control-v5-1-8f649d018c52@weissschuh.net>
+Message-Id: <20240630-cros_ec-charge-control-v5-5-8f649d018c52@weissschuh.net>
 References: <20240630-cros_ec-charge-control-v5-0-8f649d018c52@weissschuh.net>
 In-Reply-To: <20240630-cros_ec-charge-control-v5-0-8f649d018c52@weissschuh.net>
 To: Benson Leung <bleung@chromium.org>, Guenter Roeck <groeck@chromium.org>, 
@@ -49,72 +50,81 @@ Cc: chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org,
  Rajas Paranjpe <paranjperajas@gmail.com>, linux-acpi@vger.kernel.org, 
  acpica-devel@lists.linux.dev, Matt Hartley <matt.hartley@gmail.com>, 
  Kieran Levin <ktl@framework.net>, 
- "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, 
  =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
 X-Mailer: b4 0.14.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1719781012; l=1828;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1719781012; l=2327;
  i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=uw8nLh7+K+VERVHPyxd+3eO/7NhujZLZvDsfiJLrD+k=;
- b=RVHWtd+9L3ZrbCRqbpof/wsE5mrtK9K0/YEZaN/a9i6SR8hj7KrpRk8ZtiXYKXO9+44YXlQiI
- QQn4bscPzLNDyntpXJ4CsPxXedowJSEKebuEvvKhMTz6EuIMxZ1eENi
+ bh=FHswT/YC3w5l89/ylaLvEiW7spavPfr3VgQBUJELu3s=;
+ b=1QB20YP670zdAMsu+gSGB/2BNGtpNQBitzKUlDkaUW00pP/1MiQeShLkXCRsGogQyDekRu7nJ
+ vjZV5uosjOECbDQD/3zZ6EaE39KCofha3E0CyEfdUPoeCn1cO0bwOFm
 X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
  pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 
-Add a utility function for device-managed registration of battery hooks.
-The function makes it easier to manage the lifecycle of a hook.
+Framework laptops implement a custom charge control EC command.
+The upstream CrOS EC command is also present and functional but can get
+overridden by the custom one.
 
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Until Framework make both commands compatible or remove their custom
+one, don't load the driver on those machines.
+
+If the user knows they are not going to use the custom command they can
+use a module parameter to load cros_charge-control anyways.
+
+Note that the UEFI setup configuration for battery control also uses
+their custom command.
+
 Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
 ---
- drivers/acpi/battery.c | 15 +++++++++++++++
- include/acpi/battery.h |  2 ++
- 2 files changed, 17 insertions(+)
+ drivers/power/supply/cros_charge-control.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-diff --git a/drivers/acpi/battery.c b/drivers/acpi/battery.c
-index b379401ff1c2..6ea979f76f84 100644
---- a/drivers/acpi/battery.c
-+++ b/drivers/acpi/battery.c
-@@ -756,6 +756,21 @@ void battery_hook_register(struct acpi_battery_hook *hook)
+diff --git a/drivers/power/supply/cros_charge-control.c b/drivers/power/supply/cros_charge-control.c
+index 521b0eb4ff3b..73d7f2dc0fa3 100644
+--- a/drivers/power/supply/cros_charge-control.c
++++ b/drivers/power/supply/cros_charge-control.c
+@@ -6,6 +6,7 @@
+  */
+ #include <acpi/battery.h>
+ #include <linux/container_of.h>
++#include <linux/dmi.h>
+ #include <linux/mod_devicetable.h>
+ #include <linux/module.h>
+ #include <linux/platform_data/cros_ec_commands.h>
+@@ -256,6 +257,19 @@ static int cros_chctl_remove_battery(struct power_supply *battery, struct acpi_b
+ 	return 0;
  }
- EXPORT_SYMBOL_GPL(battery_hook_register);
  
-+static void devm_battery_hook_unregister(void *data)
-+{
-+	struct acpi_battery_hook *hook = data;
++static bool probe_with_fwk_charge_control;
++module_param(probe_with_fwk_charge_control, bool, 0644);
++MODULE_PARM_DESC(probe_with_fwk_charge_control,
++		 "Probe the driver in the presence of the custom Framework EC charge control");
 +
-+	battery_hook_unregister(hook);
++static int cros_chctl_fwk_charge_control_versions(struct cros_ec_device *cros_ec)
++{
++	if (!dmi_match(DMI_SYS_VENDOR, "Framework"))
++		return 0;
++
++	return cros_ec_get_cmd_versions(cros_ec, 0x3E03 /* FW_EC_CMD_CHARGE_LIMIT */);
 +}
 +
-+int devm_battery_hook_register(struct device *dev, struct acpi_battery_hook *hook)
-+{
-+	battery_hook_register(hook);
+ static int cros_chctl_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+@@ -265,6 +279,14 @@ static int cros_chctl_probe(struct platform_device *pdev)
+ 	size_t i;
+ 	int ret;
+ 
++	ret = cros_chctl_fwk_charge_control_versions(cros_ec);
++	if (ret < 0)
++		return ret;
++	if (ret > 0 && !probe_with_fwk_charge_control) {
++		dev_info(dev, "Framework charge control detected, preventing load\n");
++		return -ENODEV;
++	}
 +
-+	return devm_add_action_or_reset(dev, devm_battery_hook_unregister, hook);
-+}
-+EXPORT_SYMBOL_GPL(devm_battery_hook_register);
-+
- /*
-  * This function gets called right after the battery sysfs
-  * attributes have been added, so that the drivers that
-diff --git a/include/acpi/battery.h b/include/acpi/battery.h
-index 611a2561a014..c93f16dfb944 100644
---- a/include/acpi/battery.h
-+++ b/include/acpi/battery.h
-@@ -2,6 +2,7 @@
- #ifndef __ACPI_BATTERY_H
- #define __ACPI_BATTERY_H
- 
-+#include <linux/device.h>
- #include <linux/power_supply.h>
- 
- #define ACPI_BATTERY_CLASS "battery"
-@@ -19,5 +20,6 @@ struct acpi_battery_hook {
- 
- void battery_hook_register(struct acpi_battery_hook *hook);
- void battery_hook_unregister(struct acpi_battery_hook *hook);
-+int devm_battery_hook_register(struct device *dev, struct acpi_battery_hook *hook);
- 
- #endif
+ 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+ 	if (!priv)
+ 		return -ENOMEM;
 
 -- 
 2.45.2
