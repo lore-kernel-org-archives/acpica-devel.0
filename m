@@ -1,131 +1,80 @@
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE0AA7CF34;
-	Sun, 30 Jun 2024 20:57:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FAF415E5AB;
+	Mon,  1 Jul 2024 13:25:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719781030; cv=none; b=ekAfAdXQjHMqULmpY+0+cM/MnM9EujgLrrlgYdrOqvitUZ87TPqYcF9I8fJsSECVPGshj6sWS5YPS4+OGspfxBWdbq88pjTqW6JH3nkgnMjQ4NWnr8xe8Q2HC2aS8DVzKQ54xkkHojF3WhOYD0lXyPodSaOY0LB76F9R3YUYRX0=
+	t=1719840358; cv=none; b=mG7cdFvqC2NcOaaJ2o4TONx4sEuXbsmLR7rkTMyExiRcw77mpxUAVKPU8KGzf1wltpK+eOsQH3OrSpFPS6HgiQ8I4uLaOVuCvf13KkUjapUB0syOUaUpf91DOGtvjJ67yzRu5lr8D1UGTN33hCYkDpaT9+tJzXUEZwsmyrJr/vk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719781030; c=relaxed/simple;
-	bh=FHswT/YC3w5l89/ylaLvEiW7spavPfr3VgQBUJELu3s=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=us7CRdpxywFtnVHOeyvegEWnr1BabZ9OOHraXSH74bXuyBSbFjtmyKQ3WZk+P1U/9osMTIuZ8ErKpGXM/KcD4b03XnGbkITCz7QIEbJm7tKH/U5LSe1tvUzKZYJr3AqFZne5e1V4hclNa0dxL22CfyGquT5TSmYTdX/AwlkL64E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=ejWDZHRf; arc=none smtp.client-ip=159.69.126.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
+	s=arc-20240116; t=1719840358; c=relaxed/simple;
+	bh=94oQe62UNNaxV4MzeVF0s6QJoleN8v1RFdpgrrP3NrY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uyYF1ibyid/cIRQLGvUpJIwRWafzsysRtYCPLoOgGwX6VWqQu81CQ2iRmmkD1MEA3vuO4oB/eAy74p/X8wsr9NX1bRbtEimgxY4OzB9+P16gxX05AwnSeVf+QC69O/wkLvxcOlScM1sSEAIr0CBb6BOaPO6o3PCW+ORd6r7uO7U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R01Ofstz; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="ejWDZHRf"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-	s=mail; t=1719781014;
-	bh=FHswT/YC3w5l89/ylaLvEiW7spavPfr3VgQBUJELu3s=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=ejWDZHRfukisKwAihu3IBKvVmRI2U3XVHjJJhiKuB2hP4u4h7a1MfWKyCfjKzpzn3
-	 XYY+AyxYMPfEUXIFrks+w0A/FaPIBbB+UcwH9IH4dRLkPflPrxte+pKs7fu+sIdDew
-	 gyeQCt49lMuafdri87CdHR2KJYCYg8WqN7DqfjeY=
-From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date: Sun, 30 Jun 2024 22:54:12 +0200
-Subject: [PATCH v5 5/5] power: supply: cros_charge-control: don't load if
- Framework control is present
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R01Ofstz"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F99DC32786;
+	Mon,  1 Jul 2024 13:25:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1719840358;
+	bh=94oQe62UNNaxV4MzeVF0s6QJoleN8v1RFdpgrrP3NrY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=R01OfstzuQjf4M+Z3m4Znz8UNIkF5wPKBc3EBaJ85D9SABPv80H2V/8SIEk0NQQFU
+	 GMdXCh46H+MCBlfaoxWRF8u8w7u06xk3X9mpuWbKLDFN5hAyWBQifwj3psasF1QqVu
+	 dBVeU6V0yONE6186yKbmHwptkV8J+w99uxvq16Un0rVt42OzzofkEzEyFnOZZQIgPe
+	 fC6azefT8tu03Mx3BQqbrctxYiHQtFgVH7uucW8TMyAaj5vlJd4dqnTn4w4m8ByJbY
+	 +G+wKxbLw3e8Ry9iH3wgUf/qon+xb0frHdyX7s7TvrJZhKddwsLytdOlz8dn9dXu3m
+	 5WvLJD4KgWiew==
+Date: Mon, 1 Jul 2024 21:25:51 +0800
+From: Tzung-Bi Shih <tzungbi@kernel.org>
+To: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
+Cc: Benson Leung <bleung@chromium.org>, Guenter Roeck <groeck@chromium.org>,
+	Sebastian Reichel <sre@kernel.org>,
+	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@weissschuh.net>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>,
+	chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org,
+	linux-pm@vger.kernel.org,
+	Mario Limonciello <mario.limonciello@amd.com>,
+	Dustin Howett <dustin@howett.net>,
+	Stephen Horvath <s.horvath@outlook.com.au>,
+	Rajas Paranjpe <paranjperajas@gmail.com>,
+	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
+	Matt Hartley <matt.hartley@gmail.com>,
+	Kieran Levin <ktl@framework.net>,
+	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+	Sebastian Reichel <sebastian.reichel@collabora.com>
+Subject: Re: [PATCH v5 0/5] ChromeOS Embedded Controller charge control driver
+Message-ID: <ZoKuXy7r_j_9iWTC@tzungbi-laptop>
+References: <20240630-cros_ec-charge-control-v5-0-8f649d018c52@weissschuh.net>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240630-cros_ec-charge-control-v5-5-8f649d018c52@weissschuh.net>
-References: <20240630-cros_ec-charge-control-v5-0-8f649d018c52@weissschuh.net>
 In-Reply-To: <20240630-cros_ec-charge-control-v5-0-8f649d018c52@weissschuh.net>
-To: Benson Leung <bleung@chromium.org>, Guenter Roeck <groeck@chromium.org>, 
- Sebastian Reichel <sre@kernel.org>, 
- =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas@weissschuh.net>, 
- "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
- Robert Moore <robert.moore@intel.com>, Tzung-Bi Shih <tzungbi@kernel.org>
-Cc: chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org, 
- linux-pm@vger.kernel.org, Mario Limonciello <mario.limonciello@amd.com>, 
- Dustin Howett <dustin@howett.net>, 
- Stephen Horvath <s.horvath@outlook.com.au>, 
- Rajas Paranjpe <paranjperajas@gmail.com>, linux-acpi@vger.kernel.org, 
- acpica-devel@lists.linux.dev, Matt Hartley <matt.hartley@gmail.com>, 
- Kieran Levin <ktl@framework.net>, 
- =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-X-Mailer: b4 0.14.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1719781012; l=2327;
- i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=FHswT/YC3w5l89/ylaLvEiW7spavPfr3VgQBUJELu3s=;
- b=1QB20YP670zdAMsu+gSGB/2BNGtpNQBitzKUlDkaUW00pP/1MiQeShLkXCRsGogQyDekRu7nJ
- vjZV5uosjOECbDQD/3zZ6EaE39KCofha3E0CyEfdUPoeCn1cO0bwOFm
-X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
- pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 
-Framework laptops implement a custom charge control EC command.
-The upstream CrOS EC command is also present and functional but can get
-overridden by the custom one.
+On Sun, Jun 30, 2024 at 10:54:07PM +0200, Thomas Weiﬂschuh wrote:
+> Add a power supply driver that supports charge thresholds and behaviour
+> configuration.
+> 
+> This is a complete rework of
+> "platform/chrome: cros_ec_framework_laptop: new driver" [1], which used
+> Framework specific EC commands.
+> 
+> The driver propsed in this series only uses upstream CrOS EC functionality.
+> 
+> Tested on a Framework 13 AMD, Firmware 3.05.
+> 
+> [...]
 
-Until Framework make both commands compatible or remove their custom
-one, don't load the driver on those machines.
+Applied to
 
-If the user knows they are not going to use the custom command they can
-use a module parameter to load cros_charge-control anyways.
+    https://git.kernel.org/pub/scm/linux/kernel/git/chrome-platform/linux.git for-next
 
-Note that the UEFI setup configuration for battery control also uses
-their custom command.
-
-Signed-off-by: Thomas Wei√üschuh <linux@weissschuh.net>
----
- drivers/power/supply/cros_charge-control.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
-
-diff --git a/drivers/power/supply/cros_charge-control.c b/drivers/power/supply/cros_charge-control.c
-index 521b0eb4ff3b..73d7f2dc0fa3 100644
---- a/drivers/power/supply/cros_charge-control.c
-+++ b/drivers/power/supply/cros_charge-control.c
-@@ -6,6 +6,7 @@
-  */
- #include <acpi/battery.h>
- #include <linux/container_of.h>
-+#include <linux/dmi.h>
- #include <linux/mod_devicetable.h>
- #include <linux/module.h>
- #include <linux/platform_data/cros_ec_commands.h>
-@@ -256,6 +257,19 @@ static int cros_chctl_remove_battery(struct power_supply *battery, struct acpi_b
- 	return 0;
- }
- 
-+static bool probe_with_fwk_charge_control;
-+module_param(probe_with_fwk_charge_control, bool, 0644);
-+MODULE_PARM_DESC(probe_with_fwk_charge_control,
-+		 "Probe the driver in the presence of the custom Framework EC charge control");
-+
-+static int cros_chctl_fwk_charge_control_versions(struct cros_ec_device *cros_ec)
-+{
-+	if (!dmi_match(DMI_SYS_VENDOR, "Framework"))
-+		return 0;
-+
-+	return cros_ec_get_cmd_versions(cros_ec, 0x3E03 /* FW_EC_CMD_CHARGE_LIMIT */);
-+}
-+
- static int cros_chctl_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
-@@ -265,6 +279,14 @@ static int cros_chctl_probe(struct platform_device *pdev)
- 	size_t i;
- 	int ret;
- 
-+	ret = cros_chctl_fwk_charge_control_versions(cros_ec);
-+	if (ret < 0)
-+		return ret;
-+	if (ret > 0 && !probe_with_fwk_charge_control) {
-+		dev_info(dev, "Framework charge control detected, preventing load\n");
-+		return -ENODEV;
-+	}
-+
- 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
- 	if (!priv)
- 		return -ENOMEM;
-
--- 
-2.45.2
-
+Thanks!
