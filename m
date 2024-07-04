@@ -1,154 +1,168 @@
-Received: from smtp-fw-6001.amazon.com (smtp-fw-6001.amazon.com [52.95.48.154])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A9D7282E1
-	for <acpica-devel@lists.linux.dev>; Tue,  2 Jul 2024 23:01:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.95.48.154
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0263A1AB53A
+	for <acpica-devel@lists.linux.dev>; Thu,  4 Jul 2024 12:16:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719961292; cv=none; b=lwEX3CeJRP8nBFlqcYX+mXPKvkfACaL4h+UMotuIp6AFYHaH/VsBlcD9CYsSDd3+1ehp2s8rTyrewXaHcl+PdAxXfZSRzD6XxpJwUOYE8T9M5jIP8WOIJWTPVKHz5eCsL6T3JscVmOkn0ZCEwYEyqkhjJ4WQpnVepX+gES29GBM=
+	t=1720095391; cv=none; b=ZWIQxZ4kcQipZJ4/x7YmrpevkguGuXGmWVBo8ovaSt/zrm90dtN0a4oUgIqdGHbjiZorMvvalxaLdGcRvNabKxPr2I7nPiv+TDnKoeuGlU9Ootvm65gB4Pbkymj9dlop6HCC5r7y+cbRGFfidKbBgEIqIGaB4Cr5ia2SlhW3f+c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719961292; c=relaxed/simple;
-	bh=/xIsCGaWYuL05CFPlNI0z3Yps/jzrOlHsAPUzvYZlRA=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=cnrZSfS55mgBhfFm7fe/aWgdJ2XuK7XayfrERTcwrbw3WZVeM0IrB3AW22kgq4CfDLw6vk4t8zK6IZRKN5qXZMJ0ciGIKSNVooeqBHnUGEM0l5A6R/YZsuR8VbE26nGxKn8totpMRORh8ecWwe+bPWIxJjoGuLsD48W+5c4Awo0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=v5uX0YvS; arc=none smtp.client-ip=52.95.48.154
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
+	s=arc-20240116; t=1720095391; c=relaxed/simple;
+	bh=W31QLCmsBH+N23WsVFp6vLfxTlySqxr6oI2EDkb0Bxs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BCCMhOU3WBcjda1s0zNh1e+PbuDAe0GRcFFGvkfA98CT4wDZYUcr1SPiiXFrgNxTzs4NCO22dnPEpJchdZyTfaHEMUbxc1Z5HPv6NL5Qr//EXRVSZTd9wsJxp68SQNF3vFbAgxXauzsNhP7EgP8x4Iy6TrKmCD1Om/hRNQRLFuA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O9uDYZNz; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="v5uX0YvS"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1719961291; x=1751497291;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=/xIsCGaWYuL05CFPlNI0z3Yps/jzrOlHsAPUzvYZlRA=;
-  b=v5uX0YvS0PUhl/141PY6ZuquZSLnngyl3UUqiW73DS3huStc2zWvao5/
-   mC63HzyGyLACw/gkUGnL93Me3X3/KFEmc125sqOQqTBSRkFkldV+O4hiF
-   UCQs53hHi7qVorWcZMDTVuD53HUXeJS+0TPUT1SwCeRs9mUY10HYExEfp
-   M=;
-X-IronPort-AV: E=Sophos;i="6.09,180,1716249600"; 
-   d="scan'208";a="407355235"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.2])
-  by smtp-border-fw-6001.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2024 23:01:29 +0000
-Received: from EX19MTAUWC002.ant.amazon.com [10.0.21.151:33344]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.60.170:2525] with esmtp (Farcaster)
- id 6c055d69-8e6c-4862-b846-0bf145a6b1aa; Tue, 2 Jul 2024 23:01:29 +0000 (UTC)
-X-Farcaster-Flow-ID: 6c055d69-8e6c-4862-b846-0bf145a6b1aa
-Received: from EX19D030UWB002.ant.amazon.com (10.13.139.182) by
- EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.34;
- Tue, 2 Jul 2024 23:01:28 +0000
-Received: from EX19D030UWB002.ant.amazon.com (10.13.139.182) by
- EX19D030UWB002.ant.amazon.com (10.13.139.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.34;
- Tue, 2 Jul 2024 23:01:28 +0000
-Received: from EX19D030UWB002.ant.amazon.com ([fe80::8cbd:fcae:56ad:4dfa]) by
- EX19D030UWB002.ant.amazon.com ([fe80::8cbd:fcae:56ad:4dfa%6]) with mapi id
- 15.02.1258.034; Tue, 2 Jul 2024 23:01:28 +0000
-From: "Jitindar Singh, Suraj" <surajjs@amazon.com>
-To: "rafael@kernel.org" <rafael@kernel.org>
-CC: "lenb@kernel.org" <lenb@kernel.org>, "acpica-devel@lists.linux.dev"
-	<acpica-devel@lists.linux.dev>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "okaya@kernel.org" <okaya@kernel.org>,
-	"rafael.j.wysocki@intel.com" <rafael.j.wysocki@intel.com>,
-	"stable@vger.kernel.org" <stable@vger.kernel.org>, "robert.moore@intel.com"
-	<robert.moore@intel.com>, "linux-acpi@vger.kernel.org"
-	<linux-acpi@vger.kernel.org>
-Subject: Re: [PATCH] acpi: Support CONFIG_ACPI without CONFIG_PCI
-Thread-Topic: [PATCH] acpi: Support CONFIG_ACPI without CONFIG_PCI
-Thread-Index: AQHazNPFj3r3z6HpXUeozo3Zl0ZSAg==
-Date: Tue, 2 Jul 2024 23:01:28 +0000
-Message-ID: <703fd8504ca9541898ec920e15c05d673233218f.camel@amazon.com>
-References: <20240613211011.413120-1-surajjs@amazon.com>
-	 <CAJZ5v0iLtYOWc0w202kq8Tb-n=8ToQj2xHQ2_socwqqTyXufSw@mail.gmail.com>
-In-Reply-To: <CAJZ5v0iLtYOWc0w202kq8Tb-n=8ToQj2xHQ2_socwqqTyXufSw@mail.gmail.com>
-Accept-Language: en-AU, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <E79D440817DB4D4F94AB54CADA5015A4@amazon.com>
-Content-Transfer-Encoding: base64
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O9uDYZNz"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89AB2C3277B
+	for <acpica-devel@lists.linux.dev>; Thu,  4 Jul 2024 12:16:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1720095390;
+	bh=W31QLCmsBH+N23WsVFp6vLfxTlySqxr6oI2EDkb0Bxs=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=O9uDYZNzfjbL20BPce0SBXAc/6RLb5luVbNL9iCTQkFLPB99LpWgM5nctRQ/1XVji
+	 nshJkaGwdzZDbyDUMoQHt/xAifrlNytJgUgH6VnItp/6hHsVmsGSLvWiDX9FRgYiWJ
+	 pjXcA7iVvKNESo3x4n19MGOsweMqlzElVf8p8SpN/ndYxkPx6CNZyT5m2ejHEsMNDq
+	 MJMpk2qp981GKj6XP19yo4c7GEZjxVCQmGhtXwTjsllc4b+11ALcxgMT/6Qvtxbrty
+	 ogK2aquxqjOS0h2jxDo1XXCmGHd4yeZDgS6s+QAvgeok/s4MCOIPUh5rq3q/uM+rzT
+	 qyQVilGGdzmvA==
+Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-25075f3f472so102135fac.2
+        for <acpica-devel@lists.linux.dev>; Thu, 04 Jul 2024 05:16:30 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXOJ6si0a8K2qkcsOn+wGTjAW8yqcBbg0vhM8WAYbE/d1hRZYVRY+sEaWQ5wXQpLMJLTqHrGNAmT3wi2z/UOyJHrVUGjxVuliKcyg13
+X-Gm-Message-State: AOJu0Yzu9plw3KiEiB2qKig/uraULKWXWiEje8MLJrp7SnaOi2gcNxtp
+	rB5//Oge65PLRygt6tNvDotJkWWgw41x8HegCxzF9+/E7jwkbxYV3zU6IG4bq3DbSryFDu5cGKD
+	h1Z+LkBIbqQcywcJRXkHi2JR/ycE=
+X-Google-Smtp-Source: AGHT+IFtXfqhDha8ognSJPCS7ZjL1umAb0rhhN7ePNkKKBtyEecApBtNtccw9KOd6T0xU7AAFVDa0ziWjPibVSlRSUc=
+X-Received: by 2002:a05:6820:2c07:b0:5c4:5cbc:b1b4 with SMTP id
+ 006d021491bc7-5c646a91827mr1360390eaf.0.1720095389853; Thu, 04 Jul 2024
+ 05:16:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
+References: <20240613211011.413120-1-surajjs@amazon.com> <CAJZ5v0iLtYOWc0w202kq8Tb-n=8ToQj2xHQ2_socwqqTyXufSw@mail.gmail.com>
+ <703fd8504ca9541898ec920e15c05d673233218f.camel@amazon.com>
+In-Reply-To: <703fd8504ca9541898ec920e15c05d673233218f.camel@amazon.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Thu, 4 Jul 2024 14:16:19 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0hXADyd57jAujYSb5gXWoPJpEAyUPXi_mcJdpORcpg7KQ@mail.gmail.com>
+Message-ID: <CAJZ5v0hXADyd57jAujYSb5gXWoPJpEAyUPXi_mcJdpORcpg7KQ@mail.gmail.com>
+Subject: Re: [PATCH] acpi: Support CONFIG_ACPI without CONFIG_PCI
+To: "Jitindar Singh, Suraj" <surajjs@amazon.com>
+Cc: "rafael@kernel.org" <rafael@kernel.org>, "lenb@kernel.org" <lenb@kernel.org>, 
+	"acpica-devel@lists.linux.dev" <acpica-devel@lists.linux.dev>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "okaya@kernel.org" <okaya@kernel.org>, 
+	"rafael.j.wysocki@intel.com" <rafael.j.wysocki@intel.com>, 
+	"stable@vger.kernel.org" <stable@vger.kernel.org>, "robert.moore@intel.com" <robert.moore@intel.com>, 
+	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-T24gRnJpLCAyMDI0LTA2LTE0IGF0IDEzOjA4ICswMjAwLCBSYWZhZWwgSi4gV3lzb2NraSB3cm90
-ZToNCj4gT24gVGh1LCBKdW4gMTMsIDIwMjQgYXQgMTE6MTDigK9QTSBTdXJhaiBKaXRpbmRhciBT
-aW5naA0KPiA8c3VyYWpqc0BhbWF6b24uY29tPiB3cm90ZToNCj4gPiANCj4gPiBNYWtlIGlzIHBv
-c3NpYmxlIHRvIHVzZSBBQ1BJIHdpdGhvdXQgaGF2aW5nIENPTkZJR19QQ0kgc2V0Lg0KPiA+IA0K
-PiA+IFdoZW4gaW5pdGlhbGlzaW5nIEFDUEkgdGhlIGZvbGxvd2luZyBjYWxsIGNoYWluIG9jY3Vy
-czoNCj4gPiANCj4gPiDCoCBhY3BpX2luaXQoKSAtPg0KPiA+IMKgwqDCoCBhY3BpX2J1c19pbml0
-KCkgLT4NCj4gPiDCoMKgwqDCoMKgIGFjcGlfbG9hZF90YWJsZXMoKSAtPg0KPiA+IMKgwqDCoMKg
-wqDCoMKgIGFjcGlfZXZfaW5zdGFsbF9yZWdpb25faGFuZGxlcnMoKSAtPg0KPiA+IA0KPiA+IGFj
-cGlfZXZfaW5zdGFsbF9yZWdpb25faGFuZGxlcnMoKSBjYWxscw0KPiA+IGFjcGlfZXZfaW5zdGFs
-bF9zcGFjZV9oYW5kbGVyKCkgb24NCj4gPiBlYWNoIG9mIHRoZSBkZWZhdWx0IGFkZHJlc3Mgc3Bh
-Y2VzIGRlZmluZWQgYXM6DQo+ID4gDQo+ID4gwqAgdTggYWNwaV9nYmxfZGVmYXVsdF9hZGRyZXNz
-X3NwYWNlc1tBQ1BJX05VTV9ERUZBVUxUX1NQQUNFU10gPSB7DQo+ID4gwqDCoMKgwqDCoMKgwqDC
-oMKgIEFDUElfQURSX1NQQUNFX1NZU1RFTV9NRU1PUlksDQo+ID4gwqDCoMKgwqDCoMKgwqDCoMKg
-IEFDUElfQURSX1NQQUNFX1NZU1RFTV9JTywNCj4gPiDCoMKgwqDCoMKgwqDCoMKgwqAgQUNQSV9B
-RFJfU1BBQ0VfUENJX0NPTkZJRywNCj4gPiDCoMKgwqDCoMKgwqDCoMKgwqAgQUNQSV9BRFJfU1BB
-Q0VfREFUQV9UQUJMRQ0KPiA+IMKgIH07DQo+ID4gDQo+ID4gSG93ZXZlciBpbiBhY3BpX2V2X2lu
-c3RhbGxfc3BhY2VfaGFuZGxlcigpIHRoZSBjYXNlIHN0YXRlbWVudCBmb3INCj4gPiBBQ1BJX0FE
-Ul9TUEFDRV9QQ0lfQ09ORklHIGlzIGlmZGVmJ2QgYXM6DQo+ID4gDQo+ID4gwqAgI2lmZGVmIEFD
-UElfUENJX0NPTkZJR1VSRUQNCj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-IGNhc2UgQUNQSV9BRFJfU1BBQ0VfUENJX0NPTkZJRzoNCj4gPiANCj4gPiDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBoYW5kbGVyID0NCj4gPiBhY3Bp
-X2V4X3BjaV9jb25maWdfc3BhY2VfaGFuZGxlcjsNCj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzZXR1cCA9IGFjcGlfZXZfcGNpX2NvbmZpZ19y
-ZWdpb25fc2V0dXA7DQo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqAgYnJlYWs7DQo+ID4gwqAgI2VuZGlmDQo+ID4gDQo+ID4gQUNQSV9QQ0lfQ09O
-RklHVVJFRCBpcyBub3QgZGVmaW5lZCBpZiBDT05GSUdfUENJIGlzIG5vdCBlbmFibGVkLA0KPiA+
-IHRodXMgdGhlDQo+ID4gYXR0ZW1wdCB0byBpbnN0YWxsIHRoZSBoYW5kbGVyIGZhaWxzLg0KPiA+
-IA0KPiA+IEZpeCB0aGlzIGJ5IGlmZGVmJ2luZyBBQ1BJX0FEUl9TUEFDRV9QQ0lfQ09ORklHIGlu
-IHRoZSBsaXN0IG9mDQo+ID4gZGVmYXVsdA0KPiA+IGFkZHJlc3Mgc3BhY2VzLg0KPiANCj4gV2hh
-dCBpZiB0aGVyZSBhcmUgUENJIG9wZXJhdGlvbiByZWdpb25zIGluIHRoZSBBTUwgb24gdGhlIHBs
-YXRmb3JtPw0KPiBIb3cgYXJlIHRoZXkgZ29pbmcgdG8gYmUgaGFuZGxlZD8NCg0KSGksDQoNCkFw
-cHJlY2lhdGUgdGhlIHJlc3BvbnNlLg0KDQpJIHRoaW5rIHRoZSBzaG9ydCBhbnN3ZXIgaXMgdGhh
-dCBpZiB0aGVyZSBhcmUgUENJIG9wZXJhdGlvbiByZWdpb25zIGluDQp0aGUgQU1MIG9uIHRoZSBw
-bGF0Zm9ybSB0aGVuIHRoZSBrZXJuZWwgd2lsbCBuZWVkIHRvIGJlIGJ1aWx0IHdpdGggUENJDQpz
-dXBwb3J0IChDT05GSUdfUENJKSBhbmQgaWYgaXQgaXNuJ3QgdGhlbiB0aGVyZSB3b24ndCBiZSBh
-IGhhbmRsZXINCmluc3RhbGxlZCBhbmQgdGhlIG9wZXJhdGlvbiB3aWxsIGVycm9yLg0KDQpDb3Jy
-ZWN0IG1lIGlmIEknbSB3cm9uZyBidXQgaXQgc2VlbXMgdGhlIGludGVudGlvbiBvZiB0aGUgcGF0
-Y2ggc2VyaWVzOg0KDQozNmFkN2QyYjllOWIgQUNQSTogTW92ZSBQQ0kgcmVzZXQgdG8gYSBzZXBh
-cmF0ZSBmdW5jdGlvbg0KODY2ODk3NzY4NzhmIEFDUEk6IEFsbG93IENPTkZJR19QQ0kgdG8gYmUg
-dW5zZXQgZm9yIHJlYm9vdA0KYmQyM2ZhYzNlYWFhIEFDUElDQTogUmVtb3ZlIFBDSSBiaXRzIGZy
-b20gQUNQSUNBIHdoZW4gQ09ORklHX1BDSSBpcw0KdW5zZXQNCjVkMzJhNjY1NDFjNCBQQ0kvQUNQ
-STogQWxsb3cgQUNQSSB0byBiZSBidWlsdCB3aXRob3V0IENPTkZJR19QQ0kgc2V0DQoNCndhcyB0
-byBkZWNvdXBsZSB0aGUgZGVwZW5kZW5jeSBiZXR3ZWVuIENPTkZJR19QQ0kgYW5kIENPTkZJR19B
-Q1BJLg0KDQpiZDIzZmFjM2VhYWEgKCJBQ1BJQ0E6IFJlbW92ZSBQQ0kgYml0cyBmcm9tIEFDUElD
-QSB3aGVuIENPTkZJR19QQ0kgaXMNCnVuc2V0IikgYWRkZWQgYW4gaWZkZWYgYXJvdW5kIHRoZSBj
-b2RlIHRvIGluc3RhbGwgdGhlIGhhbmRsZXIgZm9yIHRoZQ0KUENJIENPTkZJRyByZWdpb24gbWFr
-aW5nIGl0IGRlcGVuZGVudCBvbiBBQ1BJX1BDSV9DT05GSUdVUkVEIChhbmQgdGh1cw0KQ09ORklH
-X1BDSSkuIFRodXMgaXQgaXMgbm90IHBvc3NpYmxlIHRvIGluc3RhbGwgdGhlIGRlZmF1bHQgaGFu
-ZGxlciBmb3INCnRoZSBQQ0kgQ09ORklHIHJlZ2lvbiB1bmxlc3MgQ09ORklHX1BDSSBpcyBzZXQg
-bWVhbmluZyBpdCBtYWtlcyBubw0Kc2Vuc2UgdG8gaGF2ZSBpdCBpbiB0aGUgbGlzdCBvZiBkZWZh
-dWx0IGFkZHJlc3Mgc3BhY2VzLg0KDQpJIGNhbiBnYXRoZXIgdGhhdCB0aGlzIGxlYWRzIHRvIDIg
-cG9zc2liaWxpdGllczoNCg0KMS4gSWYgdGhlcmUgYXJlIFBDSSBvcGVyYXRpb24gcmVnaW9ucyBp
-biB0aGUgQU1MIG9uIHRoZSBwbGF0Zm9ybSB0aGVuDQp0aGVzZSB3aWxsIGVycm9yIG9uIGEga2Vy
-bmVsIG5vdCBjb21waWxlZCB3aXRoIENPTkZJR19QQ0kuDQoNCm9yLA0KDQoyLiBUaGUgY29kZSB0
-byBpbnN0YWxsIHRoZSBoYW5kbGVyIGZvciB0aGUgUENJIENPTkZJRyByZWdpb24gc2hvdWxkIG5v
-dA0KYmUgaWZkZWYnZWQgYW5kIHNob3VsZCBiZSBleGVjdXRlZCBpcnJlc3BlY3RpdmUgb2YgaWYg
-dGhlIGtlcm5lbCBpcw0KY29tcGlsZWQgd2l0aCBDT05GSUdfUENJIHRvIGFsbG93IGZvciBQQ0kg
-Q09ORklHIHJlZ2lvbnMgaW4gdGhlIEFNTC4NCg0KVGhhbmtzDQoNCj4gDQo+ID4gRml4ZXM6IGJk
-MjNmYWMzZWFhYSAoIkFDUElDQTogUmVtb3ZlIFBDSSBiaXRzIGZyb20gQUNQSUNBIHdoZW4NCj4g
-PiBDT05GSUdfUENJIGlzIHVuc2V0IikNCj4gPiBDQzogc3RhYmxlQHZnZXIua2VybmVsLm9yZ8Kg
-IyA1LjAueC0NCj4gPiBTaWduZWQtb2ZmLWJ5OiBTdXJhaiBKaXRpbmRhciBTaW5naCA8c3VyYWpq
-c0BhbWF6b24uY29tPg0KPiA+IC0tLQ0KPiA+IMKgZHJpdmVycy9hY3BpL2FjcGljYS9ldmhhbmRs
-ZXIuYyB8IDIgKysNCj4gPiDCoDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKykNCj4gPiAN
-Cj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9hY3BpL2FjcGljYS9ldmhhbmRsZXIuYw0KPiA+IGIv
-ZHJpdmVycy9hY3BpL2FjcGljYS9ldmhhbmRsZXIuYw0KPiA+IGluZGV4IDFjOGNiNmQ5MjRkZi4u
-MzcxMDkzYWNiMzYyIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvYWNwaS9hY3BpY2EvZXZoYW5k
-bGVyLmMNCj4gPiArKysgYi9kcml2ZXJzL2FjcGkvYWNwaWNhL2V2aGFuZGxlci5jDQo+ID4gQEAg
-LTI2LDcgKzI2LDkgQEAgYWNwaV9ldl9pbnN0YWxsX2hhbmRsZXIoYWNwaV9oYW5kbGUgb2JqX2hh
-bmRsZSwNCj4gPiDCoHU4IGFjcGlfZ2JsX2RlZmF1bHRfYWRkcmVzc19zcGFjZXNbQUNQSV9OVU1f
-REVGQVVMVF9TUEFDRVNdID0gew0KPiA+IMKgwqDCoMKgwqDCoMKgIEFDUElfQURSX1NQQUNFX1NZ
-U1RFTV9NRU1PUlksDQo+ID4gwqDCoMKgwqDCoMKgwqAgQUNQSV9BRFJfU1BBQ0VfU1lTVEVNX0lP
-LA0KPiA+ICsjaWZkZWYgQUNQSV9QQ0lfQ09ORklHVVJFRA0KPiA+IMKgwqDCoMKgwqDCoMKgIEFD
-UElfQURSX1NQQUNFX1BDSV9DT05GSUcsDQo+ID4gKyNlbmRpZg0KPiA+IMKgwqDCoMKgwqDCoMKg
-IEFDUElfQURSX1NQQUNFX0RBVEFfVEFCTEUNCj4gPiDCoH07DQo+ID4gDQo+ID4gLS0NCj4gPiAy
-LjM0LjENCj4gPiANCj4gPiANCg0K
+On Wed, Jul 3, 2024 at 1:01=E2=80=AFAM Jitindar Singh, Suraj <surajjs@amazo=
+n.com> wrote:
+>
+> On Fri, 2024-06-14 at 13:08 +0200, Rafael J. Wysocki wrote:
+> > On Thu, Jun 13, 2024 at 11:10=E2=80=AFPM Suraj Jitindar Singh
+> > <surajjs@amazon.com> wrote:
+> > >
+> > > Make is possible to use ACPI without having CONFIG_PCI set.
+> > >
+> > > When initialising ACPI the following call chain occurs:
+> > >
+> > >   acpi_init() ->
+> > >     acpi_bus_init() ->
+> > >       acpi_load_tables() ->
+> > >         acpi_ev_install_region_handlers() ->
+> > >
+> > > acpi_ev_install_region_handlers() calls
+> > > acpi_ev_install_space_handler() on
+> > > each of the default address spaces defined as:
+> > >
+> > >   u8 acpi_gbl_default_address_spaces[ACPI_NUM_DEFAULT_SPACES] =3D {
+> > >           ACPI_ADR_SPACE_SYSTEM_MEMORY,
+> > >           ACPI_ADR_SPACE_SYSTEM_IO,
+> > >           ACPI_ADR_SPACE_PCI_CONFIG,
+> > >           ACPI_ADR_SPACE_DATA_TABLE
+> > >   };
+> > >
+> > > However in acpi_ev_install_space_handler() the case statement for
+> > > ACPI_ADR_SPACE_PCI_CONFIG is ifdef'd as:
+> > >
+> > >   #ifdef ACPI_PCI_CONFIGURED
+> > >                   case ACPI_ADR_SPACE_PCI_CONFIG:
+> > >
+> > >                           handler =3D
+> > > acpi_ex_pci_config_space_handler;
+> > >                           setup =3D acpi_ev_pci_config_region_setup;
+> > >                           break;
+> > >   #endif
+> > >
+> > > ACPI_PCI_CONFIGURED is not defined if CONFIG_PCI is not enabled,
+> > > thus the
+> > > attempt to install the handler fails.
+> > >
+> > > Fix this by ifdef'ing ACPI_ADR_SPACE_PCI_CONFIG in the list of
+> > > default
+> > > address spaces.
+> >
+> > What if there are PCI operation regions in the AML on the platform?
+> > How are they going to be handled?
+>
+> Hi,
+>
+> Appreciate the response.
+>
+> I think the short answer is that if there are PCI operation regions in
+> the AML on the platform then the kernel will need to be built with PCI
+> support (CONFIG_PCI) and if it isn't then there won't be a handler
+> installed and the operation will error.
+
+A problem with this approach is that AML has no good way of handling
+such errors.  It accesses a location in an address space of some sort
+and expects the access to be successful.
+
+The interpreter can catch them, but then the only thing it can do is
+to abort the AML which then may lead to all sorts of unexpected
+behavior of the platform.
+
+> Correct me if I'm wrong but it seems the intention of the patch series:
+>
+> 36ad7d2b9e9b ACPI: Move PCI reset to a separate function
+> 86689776878f ACPI: Allow CONFIG_PCI to be unset for reboot
+> bd23fac3eaaa ACPICA: Remove PCI bits from ACPICA when CONFIG_PCI is
+> unset
+> 5d32a66541c4 PCI/ACPI: Allow ACPI to be built without CONFIG_PCI set
+>
+> was to decouple the dependency between CONFIG_PCI and CONFIG_ACPI.
+
+Yes, and as per the above, it was a mistake.
+
+> bd23fac3eaaa ("ACPICA: Remove PCI bits from ACPICA when CONFIG_PCI is
+> unset") added an ifdef around the code to install the handler for the
+> PCI CONFIG region making it dependent on ACPI_PCI_CONFIGURED (and thus
+> CONFIG_PCI). Thus it is not possible to install the default handler for
+> the PCI CONFIG region unless CONFIG_PCI is set meaning it makes no
+> sense to have it in the list of default address spaces.
+>
+> I can gather that this leads to 2 possibilities:
+>
+> 1. If there are PCI operation regions in the AML on the platform then
+> these will error on a kernel not compiled with CONFIG_PCI.
+
+But as I said, there is no good way of handling such errors.
+Basically, the kernel should panic() in those cases.
+
+> or,
+>
+> 2. The code to install the handler for the PCI CONFIG region should not
+> be ifdef'ed and should be executed irrespective of if the kernel is
+> compiled with CONFIG_PCI to allow for PCI CONFIG regions in the AML.
+
+That doesn't work either because the PCI config address space may not
+be really accessible without CONFIG_PCI.
+
+IOW, I don't see how this can be made work.
+
+Can you please remind me what the use case for ACPI without PCI is?
