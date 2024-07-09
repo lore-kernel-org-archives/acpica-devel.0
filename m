@@ -1,168 +1,85 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0263A1AB53A
-	for <acpica-devel@lists.linux.dev>; Thu,  4 Jul 2024 12:16:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 800CA156899
+	for <acpica-devel@lists.linux.dev>; Tue,  9 Jul 2024 20:38:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720095391; cv=none; b=ZWIQxZ4kcQipZJ4/x7YmrpevkguGuXGmWVBo8ovaSt/zrm90dtN0a4oUgIqdGHbjiZorMvvalxaLdGcRvNabKxPr2I7nPiv+TDnKoeuGlU9Ootvm65gB4Pbkymj9dlop6HCC5r7y+cbRGFfidKbBgEIqIGaB4Cr5ia2SlhW3f+c=
+	t=1720557504; cv=none; b=HAXWhwzXQHdu1h+uIzSp5yUTlsvm88wh4G5Hg1h+IIweUK7DETzhmOSHS+XQdubXjoHujrQXPWkP1uuwqXyDbWvqKPe8Vq38FHCPK1dERiVORQig+rLdJirm1VuVihBqZZ6rH3J44CQOQ7oZrC9CnZyf6hWLemgnRRbBrnUlmi8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720095391; c=relaxed/simple;
-	bh=W31QLCmsBH+N23WsVFp6vLfxTlySqxr6oI2EDkb0Bxs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BCCMhOU3WBcjda1s0zNh1e+PbuDAe0GRcFFGvkfA98CT4wDZYUcr1SPiiXFrgNxTzs4NCO22dnPEpJchdZyTfaHEMUbxc1Z5HPv6NL5Qr//EXRVSZTd9wsJxp68SQNF3vFbAgxXauzsNhP7EgP8x4Iy6TrKmCD1Om/hRNQRLFuA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O9uDYZNz; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1720557504; c=relaxed/simple;
+	bh=4LOKIwPkfG4qv/qDrlGxW3TsoLB+emhFXbvx4Ix4Zk0=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=rNDevLZDTxyCVlMBRc+WVet9mDFIz7dWoXC8Fs2qdFG7NyYi5PSmUZFbwFVKAVq21PIfuzIRiu6Lm/jLc4oguPniHFUpgt6J+P0i2ym/DNgCBUj+KsGlhrE0mGICBSE7kyUx62ANs57f5YYoi2hZvyYlUOHQshPzJXdIbiM+d3M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=dG40KnSp; arc=none smtp.client-ip=159.69.126.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O9uDYZNz"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89AB2C3277B
-	for <acpica-devel@lists.linux.dev>; Thu,  4 Jul 2024 12:16:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720095390;
-	bh=W31QLCmsBH+N23WsVFp6vLfxTlySqxr6oI2EDkb0Bxs=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=O9uDYZNzfjbL20BPce0SBXAc/6RLb5luVbNL9iCTQkFLPB99LpWgM5nctRQ/1XVji
-	 nshJkaGwdzZDbyDUMoQHt/xAifrlNytJgUgH6VnItp/6hHsVmsGSLvWiDX9FRgYiWJ
-	 pjXcA7iVvKNESo3x4n19MGOsweMqlzElVf8p8SpN/ndYxkPx6CNZyT5m2ejHEsMNDq
-	 MJMpk2qp981GKj6XP19yo4c7GEZjxVCQmGhtXwTjsllc4b+11ALcxgMT/6Qvtxbrty
-	 ogK2aquxqjOS0h2jxDo1XXCmGHd4yeZDgS6s+QAvgeok/s4MCOIPUh5rq3q/uM+rzT
-	 qyQVilGGdzmvA==
-Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-25075f3f472so102135fac.2
-        for <acpica-devel@lists.linux.dev>; Thu, 04 Jul 2024 05:16:30 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXOJ6si0a8K2qkcsOn+wGTjAW8yqcBbg0vhM8WAYbE/d1hRZYVRY+sEaWQ5wXQpLMJLTqHrGNAmT3wi2z/UOyJHrVUGjxVuliKcyg13
-X-Gm-Message-State: AOJu0Yzu9plw3KiEiB2qKig/uraULKWXWiEje8MLJrp7SnaOi2gcNxtp
-	rB5//Oge65PLRygt6tNvDotJkWWgw41x8HegCxzF9+/E7jwkbxYV3zU6IG4bq3DbSryFDu5cGKD
-	h1Z+LkBIbqQcywcJRXkHi2JR/ycE=
-X-Google-Smtp-Source: AGHT+IFtXfqhDha8ognSJPCS7ZjL1umAb0rhhN7ePNkKKBtyEecApBtNtccw9KOd6T0xU7AAFVDa0ziWjPibVSlRSUc=
-X-Received: by 2002:a05:6820:2c07:b0:5c4:5cbc:b1b4 with SMTP id
- 006d021491bc7-5c646a91827mr1360390eaf.0.1720095389853; Thu, 04 Jul 2024
- 05:16:29 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="dG40KnSp"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+	s=mail; t=1720557499;
+	bh=4LOKIwPkfG4qv/qDrlGxW3TsoLB+emhFXbvx4Ix4Zk0=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+	b=dG40KnSpTErTVkKTdq6BRp9NadeBRzRCaWTosI7Tk4miaSgMU5DWQ3YDJ8flzqxSq
+	 pecskGFgWhodamgFdTf/PyATSfiuvRtjLyFek+lNzebuporQFrIS394sOKiD5BLjHq
+	 TFUj94mQn0Gy57ANFUBOofRKbY+sLaToTC3pffeE=
+From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Date: Tue, 09 Jul 2024 22:37:24 +0200
+Subject: [PATCH v2 1/5] ACPI: sysfs: validate return type of _STR method
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20240613211011.413120-1-surajjs@amazon.com> <CAJZ5v0iLtYOWc0w202kq8Tb-n=8ToQj2xHQ2_socwqqTyXufSw@mail.gmail.com>
- <703fd8504ca9541898ec920e15c05d673233218f.camel@amazon.com>
-In-Reply-To: <703fd8504ca9541898ec920e15c05d673233218f.camel@amazon.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Thu, 4 Jul 2024 14:16:19 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0hXADyd57jAujYSb5gXWoPJpEAyUPXi_mcJdpORcpg7KQ@mail.gmail.com>
-Message-ID: <CAJZ5v0hXADyd57jAujYSb5gXWoPJpEAyUPXi_mcJdpORcpg7KQ@mail.gmail.com>
-Subject: Re: [PATCH] acpi: Support CONFIG_ACPI without CONFIG_PCI
-To: "Jitindar Singh, Suraj" <surajjs@amazon.com>
-Cc: "rafael@kernel.org" <rafael@kernel.org>, "lenb@kernel.org" <lenb@kernel.org>, 
-	"acpica-devel@lists.linux.dev" <acpica-devel@lists.linux.dev>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "okaya@kernel.org" <okaya@kernel.org>, 
-	"rafael.j.wysocki@intel.com" <rafael.j.wysocki@intel.com>, 
-	"stable@vger.kernel.org" <stable@vger.kernel.org>, "robert.moore@intel.com" <robert.moore@intel.com>, 
-	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20240709-acpi-sysfs-groups-v2-1-058ab0667fa8@weissschuh.net>
+References: <20240709-acpi-sysfs-groups-v2-0-058ab0667fa8@weissschuh.net>
+In-Reply-To: <20240709-acpi-sysfs-groups-v2-0-058ab0667fa8@weissschuh.net>
+To: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
+ Robert Moore <robert.moore@intel.com>, Lance Ortiz <lance.ortiz@hp.com>
+Cc: linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ acpica-devel@lists.linux.dev, 
+ =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>, 
+ stable@vger.kernel.org
+X-Mailer: b4 0.14.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1720557498; l=1077;
+ i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
+ bh=4LOKIwPkfG4qv/qDrlGxW3TsoLB+emhFXbvx4Ix4Zk0=;
+ b=LEZeIImkrMhJWNTWnePl193SC5ykHqSmHMH0lFF8V6YtbXAs2SlU4XQBY/in1QpVwIYrpSUF/
+ OYbf6q9I5wgDzFFsRO4cyIZQSRalkUg/SuoRcoHipm/3rernkKkInU9
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
+ pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 
-On Wed, Jul 3, 2024 at 1:01=E2=80=AFAM Jitindar Singh, Suraj <surajjs@amazo=
-n.com> wrote:
->
-> On Fri, 2024-06-14 at 13:08 +0200, Rafael J. Wysocki wrote:
-> > On Thu, Jun 13, 2024 at 11:10=E2=80=AFPM Suraj Jitindar Singh
-> > <surajjs@amazon.com> wrote:
-> > >
-> > > Make is possible to use ACPI without having CONFIG_PCI set.
-> > >
-> > > When initialising ACPI the following call chain occurs:
-> > >
-> > >   acpi_init() ->
-> > >     acpi_bus_init() ->
-> > >       acpi_load_tables() ->
-> > >         acpi_ev_install_region_handlers() ->
-> > >
-> > > acpi_ev_install_region_handlers() calls
-> > > acpi_ev_install_space_handler() on
-> > > each of the default address spaces defined as:
-> > >
-> > >   u8 acpi_gbl_default_address_spaces[ACPI_NUM_DEFAULT_SPACES] =3D {
-> > >           ACPI_ADR_SPACE_SYSTEM_MEMORY,
-> > >           ACPI_ADR_SPACE_SYSTEM_IO,
-> > >           ACPI_ADR_SPACE_PCI_CONFIG,
-> > >           ACPI_ADR_SPACE_DATA_TABLE
-> > >   };
-> > >
-> > > However in acpi_ev_install_space_handler() the case statement for
-> > > ACPI_ADR_SPACE_PCI_CONFIG is ifdef'd as:
-> > >
-> > >   #ifdef ACPI_PCI_CONFIGURED
-> > >                   case ACPI_ADR_SPACE_PCI_CONFIG:
-> > >
-> > >                           handler =3D
-> > > acpi_ex_pci_config_space_handler;
-> > >                           setup =3D acpi_ev_pci_config_region_setup;
-> > >                           break;
-> > >   #endif
-> > >
-> > > ACPI_PCI_CONFIGURED is not defined if CONFIG_PCI is not enabled,
-> > > thus the
-> > > attempt to install the handler fails.
-> > >
-> > > Fix this by ifdef'ing ACPI_ADR_SPACE_PCI_CONFIG in the list of
-> > > default
-> > > address spaces.
-> >
-> > What if there are PCI operation regions in the AML on the platform?
-> > How are they going to be handled?
->
-> Hi,
->
-> Appreciate the response.
->
-> I think the short answer is that if there are PCI operation regions in
-> the AML on the platform then the kernel will need to be built with PCI
-> support (CONFIG_PCI) and if it isn't then there won't be a handler
-> installed and the operation will error.
+Only buffer objects are valid return values of _STR.
+If something else is returned description_show() will access invalid
+memory.
 
-A problem with this approach is that AML has no good way of handling
-such errors.  It accesses a location in an address space of some sort
-and expects the access to be successful.
+Fixes: d1efe3c324ea ("ACPI: Add new sysfs interface to export device description")
+Cc: stable@vger.kernel.org
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+---
+ drivers/acpi/device_sysfs.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-The interpreter can catch them, but then the only thing it can do is
-to abort the AML which then may lead to all sorts of unexpected
-behavior of the platform.
+diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
+index 23373faa35ec..95a19e3569c8 100644
+--- a/drivers/acpi/device_sysfs.c
++++ b/drivers/acpi/device_sysfs.c
+@@ -540,8 +540,9 @@ int acpi_device_setup_files(struct acpi_device *dev)
+ 	 * If device has _STR, 'description' file is created
+ 	 */
+ 	if (acpi_has_method(dev->handle, "_STR")) {
+-		status = acpi_evaluate_object(dev->handle, "_STR",
+-					NULL, &buffer);
++		status = acpi_evaluate_object_typed(dev->handle, "_STR",
++						    NULL, &buffer,
++						    ACPI_TYPE_BUFFER);
+ 		if (ACPI_FAILURE(status))
+ 			buffer.pointer = NULL;
+ 		dev->pnp.str_obj = buffer.pointer;
 
-> Correct me if I'm wrong but it seems the intention of the patch series:
->
-> 36ad7d2b9e9b ACPI: Move PCI reset to a separate function
-> 86689776878f ACPI: Allow CONFIG_PCI to be unset for reboot
-> bd23fac3eaaa ACPICA: Remove PCI bits from ACPICA when CONFIG_PCI is
-> unset
-> 5d32a66541c4 PCI/ACPI: Allow ACPI to be built without CONFIG_PCI set
->
-> was to decouple the dependency between CONFIG_PCI and CONFIG_ACPI.
+-- 
+2.45.2
 
-Yes, and as per the above, it was a mistake.
-
-> bd23fac3eaaa ("ACPICA: Remove PCI bits from ACPICA when CONFIG_PCI is
-> unset") added an ifdef around the code to install the handler for the
-> PCI CONFIG region making it dependent on ACPI_PCI_CONFIGURED (and thus
-> CONFIG_PCI). Thus it is not possible to install the default handler for
-> the PCI CONFIG region unless CONFIG_PCI is set meaning it makes no
-> sense to have it in the list of default address spaces.
->
-> I can gather that this leads to 2 possibilities:
->
-> 1. If there are PCI operation regions in the AML on the platform then
-> these will error on a kernel not compiled with CONFIG_PCI.
-
-But as I said, there is no good way of handling such errors.
-Basically, the kernel should panic() in those cases.
-
-> or,
->
-> 2. The code to install the handler for the PCI CONFIG region should not
-> be ifdef'ed and should be executed irrespective of if the kernel is
-> compiled with CONFIG_PCI to allow for PCI CONFIG regions in the AML.
-
-That doesn't work either because the PCI config address space may not
-be really accessible without CONFIG_PCI.
-
-IOW, I don't see how this can be made work.
-
-Can you please remind me what the use case for ACPI without PCI is?
