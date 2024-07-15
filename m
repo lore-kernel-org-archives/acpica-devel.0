@@ -1,188 +1,206 @@
-Received: from mail-oo1-f45.google.com (mail-oo1-f45.google.com [209.85.161.45])
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01821193078
-	for <acpica-devel@lists.linux.dev>; Wed, 10 Jul 2024 13:56:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C91218FA2C
+	for <acpica-devel@lists.linux.dev>; Mon, 15 Jul 2024 15:33:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720619770; cv=none; b=J7+EHx6hdtwCNElJ5RczHrTOQb82FwNx25usMCV8xHibwLtxrHyPJzMv2zUWOPWh8W7tYdOp11p40aYZfM/WfdVgfOHLkPI4WUvTAVrU/c4orT24c9oYKNz1sdulsSCqhdFSieWY/1f285Zx7LDSDWj5eWpvR9zrK3Ge9jhopqQ=
+	t=1721057631; cv=none; b=Kcc1VnNLILHCboqMZvcpBLHdy4IFu6eTJ5XQ6nkShqQD2V0sk7Gq/48CDq/SZJrly01LYU2VZbSlrB7AKI2R3Icp5EF0nHcAtksUlVpjIpDCdgXfUc1+djkcGHLXL7mddkijoo+bsE4Gp2r95FWavGbuYSrlU/3djm63oYEvISA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720619770; c=relaxed/simple;
-	bh=4orvUMMoNpng3DjzFKund9fT1GMrWdRRxaueO/TppS8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cWO6FPJkS6eD/KKcM2Gta/2gYW/jv8tH0eXGdLaQwXDFYkiOefj3571gz0WbfbKej5XnWiNM/2FRGFUMWJI7IEq9IpRYFMR4v/jQADyvlr3HeZS2oBoebwkWdRhwD4tMaHh8opVbOxEfrZdhFrBzNtlfxxDWkrp3qIzmkDilAqQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=Cu9QQ+M0; arc=none smtp.client-ip=209.85.161.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+	s=arc-20240116; t=1721057631; c=relaxed/simple;
+	bh=O17oVYZHosGaaJhlD2MlU5PTYcT36bEOgqEoMy9Lp+g=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=jlRa+dduZsrcvw/gUC+6tQ0l8KiNJfTcZtfxYdFnGf2hi/WnHS+QKZ7N//3fyW6S7ylv50eSr/xhvuB5Jy5oph9sgti1o1V4qWG5++kYXFskM7tikI18gdDl4ennrJmez4GXEL3tBAxW4jhFz+ntOF5ph2eTjGCSuU6JzSRt4s4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=twNtOIyX; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="Cu9QQ+M0"
-Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-5c2011716a3so2371437eaf.1
-        for <acpica-devel@lists.linux.dev>; Wed, 10 Jul 2024 06:56:08 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="twNtOIyX"
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1fb129e6a3eso3387735ad.2
+        for <acpica-devel@lists.linux.dev>; Mon, 15 Jul 2024 08:33:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1720619768; x=1721224568; darn=lists.linux.dev;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kbBxTrEkr/JgMWsq56fte0LuyrtPahP1hWVuaQ2pC/c=;
-        b=Cu9QQ+M0jP9JkrUzr1Mag7IQgkGK0wsueHbra5Wh3tTq9rJtWJGqNBifLbj3yEdJKz
-         6ov+2V1KMWtf7MDli/UTVS94DyqCQOQsw1qxqqS9CZxVSduoPZdbQmP1Lp5hIY178PGM
-         S0pYN3lRW0kiFg/oIW9WkurkCJE06ZXmR/CA0D+MQg0c8MKhRWX4oy4SXJFSLv9oluRz
-         m24w7PPCy3l9IDUb4YAB9TYGVNyrNBybimo+7gGnezq638R+6jQvX7nWPoE/z+jErroP
-         YAzL/Wq/7JfAUuPqJQUwCL4WI54czLxh94VsfTvm+7/eTuJZxXSX6XnF9RIIyd17SfG6
-         cbUA==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1721057628; x=1721662428; darn=lists.linux.dev;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=nNrBKwYTcdYHsoBHljeLphuQCOZ/YFIVZ+KLTOSWsAs=;
+        b=twNtOIyXP5d+20EKosDeAvz1D+NPNKKAjAXt6ObceI1F2FUYCcs/8/5PDVNIxL9zEZ
+         xqWxXKHap37zroC6j92MJiAQ1jsWCwLNzUWN+fFQLqwZJrs1o7sKGkp/OLCfvSpJMuF+
+         phMaLJ+OSMaRS8jOJn/6qw4RfKgnBjGXNwpij3AgC56xDi6bFSr//fpYw/Sqz/40fz0/
+         xoQBj21U38Bv/ZQgJlLf0Yn7L1saHwOxH/jwuy46ZfaH35VWcPi9lFJaqkyR+eZgTX1e
+         2Al2zB2tK9Am2B38NPAzXa6RtPMkfymgwNt2Sl54aZD4JSt1UXo5QIbtXQBD5aIYVpgf
+         acGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720619768; x=1721224568;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kbBxTrEkr/JgMWsq56fte0LuyrtPahP1hWVuaQ2pC/c=;
-        b=n/6Pw/82ZNGBdxAzUXvQPMnGOjZ0LzfAcoQa0t2nuJWbf6OJZDHufTRP6TdswgOdTv
-         lQfHh91E7wScRUWLkZqEBckKwyEhi3d7FlRHo1I60HJ86ReeXzBU+tHhKdNeJ80pc4YA
-         QKBuBE6WrfmOomOGgepiXi3BQnf4WHSMktDq82Df4o22UaaNpzbMg4zXQO0JSUD8DKL6
-         U0VGfvEXFIKfM020lgOtwtk0aoN3bXVyy9hgPF9Y+HNQvV9x2v83NxIGTkXLa53WcYWd
-         7C6Hq8f0h+zRJpo4vMv0OsL8baHAvFF/yzAA/R9bsBSczlKilp/Skf8cHWb+58DYNKWr
-         RpRA==
-X-Forwarded-Encrypted: i=1; AJvYcCU6O9QguX/hwK55heI0F5zyNnzistwfisyVeJvGVAqiPSnLdhtBXpPIXKL78Rr+Rr2P8Kz1Fxa0XUuvpT9pc3JDifsvw7VdY8OdxUvl
-X-Gm-Message-State: AOJu0YzxQdC8PxziYfBh1Pqp50g5r8RXY2hMXyftFNVlRbOdqh7cPZf2
-	thuiRz4l9qJfwP52PkKQQWhU6oV12U51C+ihI9eidHOEUOQHVPY8mTCB2b9WoJNU3mCXhGbUhFL
-	vap8=
-X-Google-Smtp-Source: AGHT+IFcEa/6ymDnm7Yw+exYpWcVCdVGgsioH7lKM2D2Vq9RknY06qP+ZWew0XTxFouYZL+Q02zZqA==
-X-Received: by 2002:a05:6870:82a5:b0:25e:1551:a2ec with SMTP id 586e51a60fabf-25eae75ec0bmr4447821fac.3.1720619767895;
-        Wed, 10 Jul 2024 06:56:07 -0700 (PDT)
-Received: from sunil-laptop ([106.51.187.237])
-        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-25ea9f8219asm1177943fac.12.2024.07.10.06.55.59
+        d=1e100.net; s=20230601; t=1721057628; x=1721662428;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nNrBKwYTcdYHsoBHljeLphuQCOZ/YFIVZ+KLTOSWsAs=;
+        b=onZ/JmVSpeDDDXWFV7YqvY8H8xILyQjbsg0q1fbbRypxWSF5DKpRpyZCyoW5o9DXT+
+         C7eF8Q5pexuaQ2hwzEvOtDYbQv9TLjoE9FzXgLuCv55+Bbo2gnTQyLwNJFPEay61U/Dj
+         rCaukuPddihYVJIRwlAVwAYbPTlnfS34hQ5gZHaKIGYKEaUi7HFtIaJ3m2C0F/hbjOev
+         JSngzWGV9zi7njuw0Cq3gP7r5glOtveSFxbS73U/o9FLXAukyhr6JHni1JtrrZUncorS
+         EsDp2B0e3WYQ5VxZ2iKDXGr0vHYg8hLnV0YKAOB9dDAbK+4gw5VCCs8nvnRzJRZmQaSQ
+         O8sw==
+X-Forwarded-Encrypted: i=1; AJvYcCWukceApD+Uz4JGFGic/0tgURZ8UeLeJ4AgAGEYoMo6t3/tDUo7sQdVaocoH+psdpcA2vKjKvkade9mjhElyFXy5EDP+zBW5s6TP3pP
+X-Gm-Message-State: AOJu0YxwoZ78AVvprWdBB/WTzXgX5X+IQJyauuOV9quOzWoaK5UQYLpa
+	WGC301kpaZn8wl5KtlLpcEK3gsqTx68KkwSZkIm1wkjcOKGO8AmrJTaOBqr2V0o=
+X-Google-Smtp-Source: AGHT+IFBGQtaMboH87ZiITDVDC8NxVYCRbzN4TT71saPPYRoOL+WvGv7Cmx1qWcc0JUtTQaQgm2X2w==
+X-Received: by 2002:a17:903:2348:b0:1fb:3c1:cb26 with SMTP id d9443c01a7336-1fbdc45a9a0mr120691815ad.1.1721057628613;
+        Mon, 15 Jul 2024 08:33:48 -0700 (PDT)
+Received: from carbon-x1.. ([2a01:e0a:e17:9700:16d2:7456:6634:9626])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fc0bc2736dsm42303825ad.159.2024.07.15.08.33.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jul 2024 06:56:07 -0700 (PDT)
-Date: Wed, 10 Jul 2024 19:25:53 +0530
-From: Sunil V L <sunilvl@ventanamicro.com>
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
-	linux-pci@vger.kernel.org, acpica-devel@lists.linux.dev,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Anup Patel <anup@brainfault.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Samuel Holland <samuel.holland@sifive.com>,
-	Robert Moore <robert.moore@intel.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Andrew Jones <ajones@ventanamicro.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Marc Zyngier <maz@kernel.org>,
-	Atish Kumar Patra <atishp@rivosinc.com>,
-	Haibo1 Xu <haibo1.xu@intel.com>,
-	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-Subject: Re: [PATCH v6 10/17] ACPI: RISC-V: Implement function to reorder
- irqchip probe entries
-Message-ID: <Zo6S6T3HXW1IY1lP@sunil-laptop>
-References: <20240601150411.1929783-11-sunilvl@ventanamicro.com>
- <20240606220743.GA821335@bhelgaas>
+        Mon, 15 Jul 2024 08:33:47 -0700 (PDT)
+From: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
+To: "Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>,
+	Robert Moore <robert.moore@intel.com>
+Cc: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
+	linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	acpica-devel@lists.linux.dev
+Subject: [PATCH] ACPI: CPPC: Fix MASK_VAL() usage
+Date: Mon, 15 Jul 2024 17:33:35 +0200
+Message-ID: <20240715153336.3720653-1-cleger@rivosinc.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240606220743.GA821335@bhelgaas>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi Bjorn,
+MASK_VAL() was added a way to handle bit_offset and bit_width for
+registers located in system memory address space. However, while suited
+for reading, it does not work for writing and result in corrupted
+registers when writing values with bit_offset > 0. Moreover, when a
+register is collocated with another one at the same address but with a
+different mask, the current code results in the other registers being
+overwritten with 0s. The write procedure for SYSTEM_MEMORY registers
+should actually read the value, mask it, update it and write it with the
+updated value. Moreover, since registers can be located in the same
+word, we must take care of locking the access before doing it. We should
+potentially use a global lock since we don't know in if register
+addresses aren't shared with another _CPC package but better not
+encourage vendors to do so. Assume that registers can use the same word
+inside a _CPC package and thus, use a per _CPC package lock.
 
-On Thu, Jun 06, 2024 at 05:07:43PM -0500, Bjorn Helgaas wrote:
-> On Sat, Jun 01, 2024 at 08:34:04PM +0530, Sunil V L wrote:
-> > ACPI MADT entries for interrupt controllers don't have a way to describe
-> > the hierarchy. However, the hierarchy is known to the architecture and
-> > on RISC-V platforms, the MADT sub table types are ordered in the
-> > incremental order from the root controller which is RINTC. So, add
-> > architecture function for RISC-V to reorder the interrupt controller
-> > probing as per the hierarchy as below.
-> 
-> Is this ordering requirement documented anywhere?  I don't see it in
-> the RISC-V ECRs to the ACPI r6.5 spec.
-> 
+Fixes: 2f4a4d63a193 ("ACPI: CPPC: Use access_width over bit_width for system memory accesses")
+Signed-off-by: Clément Léger <cleger@rivosinc.com>
 
-Thanks. We have added this clarity in a new mantis request.
+---
+ drivers/acpi/cppc_acpi.c | 44 ++++++++++++++++++++++++++++++++++++----
+ include/acpi/cppc_acpi.h |  2 ++
+ 2 files changed, 42 insertions(+), 4 deletions(-)
 
-> I guess the implication is that you need to process MADT structures in
-> order of ascending acpi_madt_type:
-> 
->   ACPI_MADT_TYPE_RINTC = 24,
->   ACPI_MADT_TYPE_IMSIC = 25,
->   ACPI_MADT_TYPE_APLIC = 26,
->   ACPI_MADT_TYPE_PLIC = 27,
-> 
-> regardless of the order they appear in the MADT?  I.e., process all
-> the RINTC structures (in order of appearance in MADT), followed by all
-> the IMSIC structures, then all the APLIC structures, etc?
-> 
-Correct!
+diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+index 1d857978f5f4..2e99cf1842ee 100644
+--- a/drivers/acpi/cppc_acpi.c
++++ b/drivers/acpi/cppc_acpi.c
+@@ -170,8 +170,11 @@ show_cppc_data(cppc_get_perf_ctrs, cppc_perf_fb_ctrs, wraparound_time);
+ #define GET_BIT_WIDTH(reg) ((reg)->access_width ? (8 << ((reg)->access_width - 1)) : (reg)->bit_width)
+ 
+ /* Shift and apply the mask for CPC reads/writes */
+-#define MASK_VAL(reg, val) (((val) >> (reg)->bit_offset) & 			\
++#define MASK_VAL_READ(reg, val) (((val) >> (reg)->bit_offset) &				\
+ 					GENMASK(((reg)->bit_width) - 1, 0))
++#define MASK_VAL_WRITE(reg, prev_val, val)						\
++	((((val) & GENMASK(((reg)->bit_width) - 1, 0)) << (reg)->bit_offset) |		\
++	((prev_val) & ~(GENMASK(((reg)->bit_width) - 1, 0) << (reg)->bit_offset)))	\
+ 
+ static ssize_t show_feedback_ctrs(struct kobject *kobj,
+ 		struct kobj_attribute *attr, char *buf)
+@@ -857,6 +860,7 @@ int acpi_cppc_processor_probe(struct acpi_processor *pr)
+ 
+ 	/* Store CPU Logical ID */
+ 	cpc_ptr->cpu_id = pr->id;
++	spin_lock_init(&cpc_ptr->rmw_lock);
+ 
+ 	/* Parse PSD data for this CPU */
+ 	ret = acpi_get_psd(cpc_ptr, handle);
+@@ -1062,7 +1066,7 @@ static int cpc_read(int cpu, struct cpc_register_resource *reg_res, u64 *val)
+ 	}
+ 
+ 	if (reg->space_id == ACPI_ADR_SPACE_SYSTEM_MEMORY)
+-		*val = MASK_VAL(reg, *val);
++		*val = MASK_VAL_READ(reg, *val);
+ 
+ 	return 0;
+ }
+@@ -1071,9 +1075,11 @@ static int cpc_write(int cpu, struct cpc_register_resource *reg_res, u64 val)
+ {
+ 	int ret_val = 0;
+ 	int size;
++	u64 prev_val;
+ 	void __iomem *vaddr = NULL;
+ 	int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpu);
+ 	struct cpc_reg *reg = &reg_res->cpc_entry.reg;
++	struct cpc_desc *cpc_desc;
+ 
+ 	size = GET_BIT_WIDTH(reg);
+ 
+@@ -1106,8 +1112,34 @@ static int cpc_write(int cpu, struct cpc_register_resource *reg_res, u64 val)
+ 		return acpi_os_write_memory((acpi_physical_address)reg->address,
+ 				val, size);
+ 
+-	if (reg->space_id == ACPI_ADR_SPACE_SYSTEM_MEMORY)
+-		val = MASK_VAL(reg, val);
++	if (reg->space_id == ACPI_ADR_SPACE_SYSTEM_MEMORY) {
++		cpc_desc = per_cpu(cpc_desc_ptr, cpu);
++		if (!cpc_desc) {
++			pr_debug("No CPC descriptor for CPU:%d\n", cpu);
++			return -ENODEV;
++		}
++
++		spin_lock(&cpc_desc->rmw_lock);
++		switch (size) {
++		case 8:
++			prev_val = readb_relaxed(vaddr);
++			break;
++		case 16:
++			prev_val = readw_relaxed(vaddr);
++			break;
++		case 32:
++			prev_val = readl_relaxed(vaddr);
++			break;
++		case 64:
++			prev_val = readq_relaxed(vaddr);
++			break;
++		default:
++			ret_val = -EFAULT;
++			goto out_unlock;
++		};
++		val = MASK_VAL_WRITE(reg, prev_val, val);
++		val |= prev_val;
++	}
+ 
+ 	switch (size) {
+ 	case 8:
+@@ -1134,6 +1166,10 @@ static int cpc_write(int cpu, struct cpc_register_resource *reg_res, u64 val)
+ 		break;
+ 	}
+ 
++out_unlock:
++	if (reg->space_id == ACPI_ADR_SPACE_SYSTEM_MEMORY)
++		spin_unlock(&cpc_desc->rmw_lock);
++
+ 	return ret_val;
+ }
+ 
+diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
+index 930b6afba6f4..e1720d930666 100644
+--- a/include/acpi/cppc_acpi.h
++++ b/include/acpi/cppc_acpi.h
+@@ -64,6 +64,8 @@ struct cpc_desc {
+ 	int cpu_id;
+ 	int write_cmd_status;
+ 	int write_cmd_id;
++	/* Lock used for RMW operations in cpc_write() */
++	spinlock_t rmw_lock;
+ 	struct cpc_register_resource cpc_regs[MAX_CPC_REG_ENT];
+ 	struct acpi_psd_package domain_info;
+ 	struct kobject kobj;
+-- 
+2.45.2
 
-> > Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
-> > ---
-> >  drivers/acpi/riscv/Makefile |  2 +-
-> >  drivers/acpi/riscv/irq.c    | 32 ++++++++++++++++++++++++++++++++
-> >  2 files changed, 33 insertions(+), 1 deletion(-)
-> >  create mode 100644 drivers/acpi/riscv/irq.c
-> > 
-> > diff --git a/drivers/acpi/riscv/Makefile b/drivers/acpi/riscv/Makefile
-> > index 877de00d1b50..a96fdf1e2cb8 100644
-> > --- a/drivers/acpi/riscv/Makefile
-> > +++ b/drivers/acpi/riscv/Makefile
-> > @@ -1,4 +1,4 @@
-> >  # SPDX-License-Identifier: GPL-2.0-only
-> > -obj-y					+= rhct.o init.o
-> > +obj-y					+= rhct.o init.o irq.o
-> >  obj-$(CONFIG_ACPI_PROCESSOR_IDLE)	+= cpuidle.o
-> >  obj-$(CONFIG_ACPI_CPPC_LIB)		+= cppc.o
-> > diff --git a/drivers/acpi/riscv/irq.c b/drivers/acpi/riscv/irq.c
-> > new file mode 100644
-> > index 000000000000..f56e103a501f
-> > --- /dev/null
-> > +++ b/drivers/acpi/riscv/irq.c
-> > @@ -0,0 +1,32 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * Copyright (C) 2023-2024, Ventana Micro Systems Inc
-> > + *	Author: Sunil V L <sunilvl@ventanamicro.com>
-> > + *
-> 
-> Spurious blank line.
-> 
-Okay.
-
-> > + */
-> > +
-> > +#include <linux/acpi.h>
-> > +#include <linux/sort.h>
-> > +
-> > +static int irqchip_cmp_func(const void *in0, const void *in1)
-> > +{
-> > +	struct acpi_probe_entry *elem0 = (struct acpi_probe_entry *)in0;
-> > +	struct acpi_probe_entry *elem1 = (struct acpi_probe_entry *)in1;
-> > +
-> > +	return (elem0->type > elem1->type) - (elem0->type < elem1->type);
-> > +}
-> > +
-> > +/*
-> > + * RISC-V irqchips in MADT of ACPI spec are defined in the same order how
-> > + * they should be probed. Since IRQCHIP_ACPI_DECLARE doesn't define any
-> > + * order, this arch function will reorder the probe functions as per the
-> > + * required order for the architecture.
-> 
-> But this comment seems to contradict the commit log.  This comment
-> says you should process MADT structures in the order they appear in
-> the MADT.  But if that were the case, you wouldn't need to sort
-> anything.
-> 
-> Maybe "defined in the order they should be probed" means "in order of
-> increasing Interrupt Controller structure type value"?
->
-Agree. Let me update.
-
-Thanks!
-Sunil
