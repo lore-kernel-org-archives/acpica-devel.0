@@ -1,210 +1,172 @@
-Received: from mx1.zhaoxin.com (MX1.ZHAOXIN.COM [210.0.225.12])
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2080.outbound.protection.outlook.com [40.107.102.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 721085FB8A
-	for <acpica-devel@lists.linux.dev>; Thu, 18 Jul 2024 06:40:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.0.225.12
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721284837; cv=none; b=Ow1kRwjrcoIvH6PE2wCkdP4Z09rZgQfGJC8Vygo4NcEvzyJBgJo56WjziZYECTQUtTycy6pCWT3JRiyJwxdLLskFpDtDOXaf0Wyr6cn0OcbekK3NOxMbcjq0F955ROEvypZc7i8/HHNbl/dqep7haapHJmTd6phCZW9YV7HMXLk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721284837; c=relaxed/simple;
-	bh=DUK8s+vTCAsAXyc+kJAYucVtkyPsFS9f24LFJvL8u5g=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KFYiZ2M0MtIljhwDcc7HtLDt3XCmkS6mnEm+wrWq6cGYzbycrLpz6/jqvaxQ8/XpVIV5OGs8ShSMYwV+yu/h8nEb3EJcZoTfDicGm6AMQMvvMb5Ufigkv5zk3BkwNS1xnPkPcHNLLgDf37o9uIuKnzby354KyO+e6zm9es3Q2uI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com; spf=pass smtp.mailfrom=zhaoxin.com; arc=none smtp.client-ip=210.0.225.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zhaoxin.com
-X-ASG-Debug-ID: 1721283850-086e2304103b030001-m47mSr
-Received: from ZXSHMBX1.zhaoxin.com (ZXSHMBX1.zhaoxin.com [10.28.252.163]) by mx1.zhaoxin.com with ESMTP id PM94DZe0Mcf3tFRD (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Thu, 18 Jul 2024 14:24:10 +0800 (CST)
-X-Barracuda-Envelope-From: LeoLiu-oc@zhaoxin.com
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
-Received: from ZXBJMBX03.zhaoxin.com (10.29.252.7) by ZXSHMBX1.zhaoxin.com
- (10.28.252.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Thu, 18 Jul
- 2024 14:24:10 +0800
-Received: from xin.lan (10.32.64.1) by ZXBJMBX03.zhaoxin.com (10.29.252.7)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Thu, 18 Jul
- 2024 14:24:08 +0800
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
-From: LeoLiu-oc <LeoLiu-oc@zhaoxin.com>
-X-Barracuda-RBL-Trusted-Forwarder: 10.29.252.7
-To: <rafael@kernel.org>, <lenb@kernel.org>, <james.morse@arm.com>,
-	<tony.luck@intel.com>, <bp@alien8.de>, <bhelgaas@google.com>,
-	<robert.moore@intel.com>, <yazen.ghannam@amd.com>, <avadhut.naik@amd.com>,
-	<linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-pci@vger.kernel.org>, <acpica-devel@lists.linux.dev>
-CC: <CobeChen@zhaoxin.com>, <TimGuo@zhaoxin.com>, <TonyWWang-oc@zhaoxin.com>,
-	<leoliu-oc@zhaoxin.com>, LeoLiuoc <LeoLiu-oc@zhaoxin.com>
-Subject: [PATCH v3 1/3] ACPI/APEI: Add hest_parse_pcie_aer()
-Date: Thu, 18 Jul 2024 14:24:03 +0800
-X-ASG-Orig-Subj: [PATCH v3 1/3] ACPI/APEI: Add hest_parse_pcie_aer()
-Message-ID: <20240718062405.30571-2-LeoLiu-oc@zhaoxin.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240718062405.30571-1-LeoLiu-oc@zhaoxin.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D8DC1B86F8
+	for <acpica-devel@lists.linux.dev>; Thu, 18 Jul 2024 15:46:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.80
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1721317619; cv=fail; b=T0BcMB3J0LJ8F5UFLDy1ySBtsXl4oq9FtJOaj9GybGt+Ce1g1J89ArC43wfLIItunJRs/bLjOze5yolFXap0XwDAJZKzVwRd6bnQGqrEFeilSmcWCLD8S5JPHY4/w2A4Oy0UjmsoemAMKXCjo1lM6vBpPS4QuD5y/DCr4vbq8BU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1721317619; c=relaxed/simple;
+	bh=bxL2MYOLY7gbaeUjZ3Oen5CxjMJZ+GAq9AXFx7eJfgE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=hlChGxw9D+KjF4+/1MCcl7K9yYuKmxhLfQrrfGd1YTZ/o6yRFjemYOwqB4Au5wkSqR7vIlZXUslAJOJ5sRKBocr22apPzMMxVZt/mQWmi8/t6zQ3BHMZL270Wl9TbZDKl5qwIKtov4UkTbwClxMJ77ajVQ1jldooIf45xHJP56Q=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=OlEPm5M2; arc=fail smtp.client-ip=40.107.102.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="OlEPm5M2"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=v3Pe3ar8cNcSqfdunXerSc61jqZBmj2eTh+BBH7fFGaJUZY0z6R0FH4HAyJeotuD2XVYwh9dCBu7i37ek2dW4pua+huUPYHhLN7txwP4KgyY3JQBlQk/dXsDqC23g1fSsZ2xc3FpI6ou0qbM866VDCeJkfBeQm7QN95mQiX2UJCS5YA7pGDIpds97mLTdaqabSAhUI0E/4Fsj9G8n4HehHlaMWJNPC4wCLGSbx4nROhy55KeccTxeyKEwi3jQoiFLnm5VtXtZxwRuicJMO1YIUotyaIWdUH89ujUUzCiJBqMzgMNabGWSfgllo8eYxxX+9KZY3JDCfNH0qcBPcqY9Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=iAW1/wgAqx92vGH48mmAnT374vsCjCELUqnPA2jxeFc=;
+ b=wWp8Qs4dDjY3XzhqMWAVR3rnFDCZ/gDvp9EqpMNw+FUO0EQAYNMJP7Y+88U//0AH6NnOQVmeIPRldvWGCs/ue2TNR6q5KH5bkqRFSOkLE2CAQd/Dao9mNvxDcJC8q22nhvTGi9TEYNjC+Fr24pEgU0HzPsnZeNp6Mh6Bv+xDMTBvVGFkrSWR9lzDEzl8wW0LBu3ufUbllm+r5tQr3vc4eQoaLE8c/mnXfVE+SGa+DnJw4TqVo8DUfmqjvCknp9361/4QmvlLiGx2tPsXOiJvDjZTskhbdQMuBTGxqHiNOSAT14jJez11fjUjhmVjlhe/uhkJzuKkOItxwoZsbGe+EQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iAW1/wgAqx92vGH48mmAnT374vsCjCELUqnPA2jxeFc=;
+ b=OlEPm5M2tu/g/Sj5kdUjON95OrnrurgKZUzBEay/pEfLmk1PQzeSttZCWdqVGNi1YfPLFqUSfm/DlbOKWFYIigyyklf122g2YQZsOIVyyhftjpIifqzAnOe9tFin3lzFq4lWwtzPdvZQ5uhGmvHD6AiKLTxrsQluehriN6Pdzpo=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
+ by DS0PR12MB8200.namprd12.prod.outlook.com (2603:10b6:8:f5::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7784.17; Thu, 18 Jul
+ 2024 15:46:50 +0000
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::43a5:ed10:64c2:aba3]) by BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::43a5:ed10:64c2:aba3%6]) with mapi id 15.20.7784.013; Thu, 18 Jul 2024
+ 15:46:50 +0000
+Date: Thu, 18 Jul 2024 11:46:46 -0400
+From: Yazen Ghannam <yazen.ghannam@amd.com>
+To: LeoLiu-oc <LeoLiu-oc@zhaoxin.com>
+Cc: rafael@kernel.org, lenb@kernel.org, james.morse@arm.com,
+	tony.luck@intel.com, bp@alien8.de, bhelgaas@google.com,
+	robert.moore@intel.com, avadhut.naik@amd.com,
+	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-pci@vger.kernel.org, acpica-devel@lists.linux.dev,
+	CobeChen@zhaoxin.com, TimGuo@zhaoxin.com, TonyWWang-oc@zhaoxin.com
+Subject: Re: [PATCH v3 0/3] Parse the HEST PCIe AER and set to relevant
+ registers
+Message-ID: <20240718154646.GA63955@yaz-khff2.amd.com>
 References: <b99685d9-9f3a-4c21-8d33-2eaa5de8be54@zhaoxin.com>
  <20240718062405.30571-1-LeoLiu-oc@zhaoxin.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240718062405.30571-1-LeoLiu-oc@zhaoxin.com>
+X-ClientProxiedBy: MN2PR06CA0014.namprd06.prod.outlook.com
+ (2603:10b6:208:23d::19) To BN8PR12MB3108.namprd12.prod.outlook.com
+ (2603:10b6:408:40::20)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: zxbjmbx1.zhaoxin.com (10.29.252.163) To
- ZXBJMBX03.zhaoxin.com (10.29.252.7)
-X-Barracuda-Connect: ZXSHMBX1.zhaoxin.com[10.28.252.163]
-X-Barracuda-Start-Time: 1721283850
-X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
-X-Barracuda-URL: https://10.28.252.35:4443/cgi-mod/mark.cgi
-X-Virus-Scanned: by bsmtpd at zhaoxin.com
-X-Barracuda-Scan-Msg-Size: 4229
-X-Barracuda-BRTS-Status: 1
-X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
-X-Barracuda-Spam-Score: -2.02
-X-Barracuda-Spam-Status: No, SCORE=-2.02 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.127785
-	Rule breakdown below
-	 pts rule name              description
-	---- ---------------------- --------------------------------------------------
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3108:EE_|DS0PR12MB8200:EE_
+X-MS-Office365-Filtering-Correlation-Id: 947d9cd3-a4e2-4565-b189-08dca740d694
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|7416014|376014|1800799024;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?tk8GfAsQx4y3CgMREGNlJHHmVxs/BhHLn26sRSBSlJkpzYvGGRfg0ux9BpNX?=
+ =?us-ascii?Q?jtROkB3XIqRGJ0AuVtb190F5ImeKbyT4ZS+oOr/XjYYL7h3PW18Gvz+UK3nO?=
+ =?us-ascii?Q?ANn7QzFzxEGQVmUClHFBoVvyYpb0jcoRKqmRz0cLBKMjPioxtAqi0BaD9cC1?=
+ =?us-ascii?Q?vyvbXwU0LLOitRWisvQjOJnMhjYjy0bWjwZxgy1mjkjsawb7RmlKolbZYkxe?=
+ =?us-ascii?Q?rRL72UWn8kiW6fBH2iFgXPCNEukZffWzGWq3Za00z7ScNXEDj36mEDi0huwO?=
+ =?us-ascii?Q?PIEt4BUXf/S3C7kxJXsp01cqGCPHp0AJ31lQrWWRYLopK5zfAZ1diPaVTaJK?=
+ =?us-ascii?Q?WySLEvdNACr/nsWZKvsEoFRCj8pTXi8xJ8zRWEunUlAL5RNYdr5ARFin/LBO?=
+ =?us-ascii?Q?37BEaE0jpauent0mp6+q8dspFEhsas+wiYuygYhHyfLf6DLCMpjfCSdwqTOz?=
+ =?us-ascii?Q?dsj5ocYGJPyw8dbY1XsMoMd0QKZCUgb8UU9YrvtMLrTRl8BeH/mCB9t5AXCF?=
+ =?us-ascii?Q?isUpeWE35mKEhbh9ykgSLqdJ/i+Cy/tD8mfZNlrnF1fv9HdS4o9o1YyjrYAm?=
+ =?us-ascii?Q?Kvb/iPntGVMb6fwXXn1ADOmye6T66XlUXZFxt5+Ojz8mVN6qz5kMDapdrLGC?=
+ =?us-ascii?Q?AuBWqCgXP05UB/HDbNN0FZwUxRAxGWys9V/h+tOg7S+uU3cXptrnRz2c95ql?=
+ =?us-ascii?Q?J27nTEwUUNCf7iZzMUw3lDq9c4qA6MWd1tY/a7cD0HJO/tXNKpoh/K4iSzKm?=
+ =?us-ascii?Q?UmIQiMCIww/Q+7SA1IOezvC8Zchz0fEf7ra5sG68EMmIkiVqUpmBO4uaJkZw?=
+ =?us-ascii?Q?eWNxHBlZvkJ7V/Do5J4IImZpvXt14Jyl5x9Eno5kecW3FFOaCXPCj6Z9a4eB?=
+ =?us-ascii?Q?qNvKhvYy7PCziOYnSAdlydHOqZwopidwVj1QvYmVUBOMn/PWVO+cW+/R1jH4?=
+ =?us-ascii?Q?4MqEK2ARP8x+RE4FrATyLLzkO4YBgQZx1loUNWr1C0S3DyTNOCzRUMoPrSqc?=
+ =?us-ascii?Q?XLjCrQGNrPmXTIKVP1rWHd1FkI+RSIz/DBLhN5W01ycZoiizby0MOZeavtgO?=
+ =?us-ascii?Q?Sm9ysa9UxGhEYjhPxTNobR1Vw/KqEaUk3qhBUAkgzLkCmqhpoFBNBavNwdfF?=
+ =?us-ascii?Q?3bqXtSaWc1K1NrFRCZCKd24xfXuMeUt8qW/rQp9pa4p+KKqbupZUVu54+Q5y?=
+ =?us-ascii?Q?G1PuGNj3gePFfyyvqQliGILw+3ufi7SHvedT0ErBF45Ktvv80vUe8iIX/IJ+?=
+ =?us-ascii?Q?wSARUqDI/I5qOaIQU/RRjHo47iSL1dTT3rffIJd5YZM/TOHMiPTYsmom/0Us?=
+ =?us-ascii?Q?KU1oObnbNJIWF509/9X9heYhQmCDgZ7zpdvkdpBcOXG6/A=3D=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3108.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(7416014)(376014)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?0YZLSgnGRlbaCMjvmYk5Ucz4Dj3sEZi5BGVDy32Pca77csRn7LWdpd5X3Ll5?=
+ =?us-ascii?Q?5tnXKGDlWiLsSoaUX3k9dVlHvsdGU0Zs3Qy7vS9xujDcquqTqkdfEFypS+F+?=
+ =?us-ascii?Q?lviNJ5ZaI85GvKGvLCPM+U1E7eQL8cgN2J31N1pH4ZhO48No4E/P+qKsGGl8?=
+ =?us-ascii?Q?kdaxqEI7VM2nYX9uTUnSRDWCxQkP01QGtN/2pxe9wb51Y1wIt/kMOAYob/QF?=
+ =?us-ascii?Q?600/7R0PU0KdS9S9+8sSxmCZymYxjZW/q2j+zFlbh2VaKwaOuISNybgC1r0g?=
+ =?us-ascii?Q?elc9wJ/R3aOTDUSGSZwIEteJHADUjw041MdQ3FdjrctPvSFyua8ruE4eCtUs?=
+ =?us-ascii?Q?5W5508l7Rj0DmG2DHzj8uoIigAI//6kFWYqOUqMWUsmu1Z2eOeD7lf6FoXUz?=
+ =?us-ascii?Q?Li5oT2V5iz7oPEFUec4zyuEjPKH/+9evYcwOnbQJM+JqM9FR69gNLxeRDeW6?=
+ =?us-ascii?Q?Mxo4jfYikqEMLRUTnfm8yQ8JC9BnwouGttM3S8mYtRRVE2u7T+dqZp8x4uTa?=
+ =?us-ascii?Q?JCCqv/a02FM6uICKHqc0B0FDv7fDlnJ5YkzYFXHgaioC2TwF4LTLhpy56vNi?=
+ =?us-ascii?Q?12gEeeFWHr0wbAptSoJ2hXKJttlZXAVAhtcslx/etMwIUI5XI6dniKgyBYKe?=
+ =?us-ascii?Q?JhJhtR+vOF7YufAip/ppQHfzj+DvCu/mQJLxbu6An5YnnNoXvEHugEJkLHgI?=
+ =?us-ascii?Q?kWT6gw361/OLVs5c8zzRVuFy62PuIIYsVfjQh1N/ezSyLJBhcBFqc5MBwacZ?=
+ =?us-ascii?Q?dmcGlMiObeNWiOfvJpKzn7PiJh6qf5hcs8V2qXzaFLT3/vKMbljcr9xEmbim?=
+ =?us-ascii?Q?mDS2R/P2/Tq4Tfk+6vZwu6kSItN1pEofjzK5vM4NvvewVO/98luA7D0TGAfp?=
+ =?us-ascii?Q?iC8Ew5khfElSdU+8ij+pWiUfbJ7RcG76N7FmuiJCZaYYlWIRagITqNdrT5DU?=
+ =?us-ascii?Q?vPj1bFA+5rQ6iQJgOmYbGV/VoG3ohjjPxdR/w5HlOTNEnDXsGz6M+xcFShOU?=
+ =?us-ascii?Q?w5hfXMJLLaJydaPP3bBrClIi37zdMr0Lu6qfWIdzOB0Fkxk/J8DFeohlkrws?=
+ =?us-ascii?Q?tBk0S8zy9Ci7SNlE7vFs5AJj7IIQw61wN++UmNv1aWrOuOGS41DcMBJ6un6i?=
+ =?us-ascii?Q?ASmCq/9AfPHUXRP4qy6mFD3jh0d0ITxh4rChpNuYFeDaUt3eQIakvoxvdd6c?=
+ =?us-ascii?Q?bJePhai1UGv2H63ziHeuUgpHzxNVjrnlg0IAEiqQTFxPfUul1cY87XQrM3DL?=
+ =?us-ascii?Q?XjFuSIRIlO3aeTgK5Isy1uLFHOe2Q86hMVmlNfP0j3WGs6b6UPRzoC0zgmlO?=
+ =?us-ascii?Q?D0wf78GKwrOZjUGPq7qbEyLJQUTHaf2BWUX/cMBRhBr9sD7dEjG5IU6HP8Kk?=
+ =?us-ascii?Q?dJvUzXDgv9ytI4hqAV0ozs1PhF+sC/4dtOlrwlehhZDcwafG4F/yzH29IUeK?=
+ =?us-ascii?Q?98jkZD026FbHD1W+mL2ldEixkFy+1vyZn+WLgwJuwkkm9XMlFmiIwbxpSv7m?=
+ =?us-ascii?Q?j2VTaZO3qfuVTJNGdAif/hy6jrdoDDkZRU264qw4k1F5sRpZkGnXPHQHvLiV?=
+ =?us-ascii?Q?qjAFkp/XWdsGy56gyzKVLDFHxR7nJLXpuRSIfTpL?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 947d9cd3-a4e2-4565-b189-08dca740d694
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3108.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jul 2024 15:46:50.1567
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HSf+Zb4LxnIDfRpbCgVaOymqIj8P+QEs4raeX7ZP0kvsUAC/0R4btT9qytFK6HmBrlqm9au6cZ1BGbs8L5ZWdA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8200
 
-From: LeoLiuoc <LeoLiu-oc@zhaoxin.com>
+On Thu, Jul 18, 2024 at 02:24:02PM +0800, LeoLiu-oc wrote:
+> From: LeoLiuoc <LeoLiu-oc@zhaoxin.com>
+> 
+> According to the Section 18.3.2.4, 18.3.2.5 and 18.3.2.6 in ACPI SPEC
+> r6.5, the register value form HEST PCI Express AER Structure should be
+> written to relevant PCIe Device's AER Capabilities. So the purpose of the
+> patch set is to extract register value from HEST PCI Express AER
+> structures and program them into PCIe Device's AER registers.
+> Refer to the ACPI SPEC r6.5 for the more detailed description. This patch
+> is an effective supplement to _HPP/_HPX method when the Firmware does not
+> support the _HPP/_HPX method and can be specially configured for the AER
+> register of the specific device.
+> 
+> v1->v2:
+> - Move the definition of structure "hest_parse_aer_info" to file apei.h.
+> 
+> v2->v3:
+> - The applicable hardware for this patch is added to the commit
+>   information.
+> - Change the function name "program_hest_aer_endpoint" to
+>   "program_hest_aer_common".
+> - Add the comment to function "program_hest_aer_common".
+> - Remove the "PCI_EXP_TYPE_PCIE_BRIDGE" branch handling in function
+>   "program_hest_aer_params".
+>
 
-The purpose of the function apei_hest_parse_aer() is used to parse and
-extract register value from HEST PCIe AER structures. This applies to
-all hardware platforms that has a PCI Express AER structure in HEST.
+Please include a link to previous threads, if possible.
 
-Signed-off-by: LeoLiuoc <LeoLiu-oc@zhaoxin.com>
----
- drivers/acpi/apei/hest.c | 66 ++++++++++++++++++++++++++++++++++++++--
- include/acpi/apei.h      | 17 +++++++++++
- 2 files changed, 81 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/acpi/apei/hest.c b/drivers/acpi/apei/hest.c
-index 20d757687e3d..ecfb89b7d19f 100644
---- a/drivers/acpi/apei/hest.c
-+++ b/drivers/acpi/apei/hest.c
-@@ -22,6 +22,7 @@
- #include <linux/kdebug.h>
- #include <linux/highmem.h>
- #include <linux/io.h>
-+#include <linux/pci.h>
- #include <linux/platform_device.h>
- #include <acpi/apei.h>
- #include <acpi/ghes.h>
-@@ -132,9 +133,70 @@ static bool is_ghes_assist_struct(struct acpi_hest_header *hest_hdr)
- 	return false;
- }
- 
--typedef int (*apei_hest_func_t)(struct acpi_hest_header *hest_hdr, void *data);
-+#ifdef CONFIG_ACPI_APEI
-+static bool hest_match_pci_devfn(struct acpi_hest_aer_common *p, struct pci_dev *dev)
-+{
-+	return ACPI_HEST_SEGMENT(p->bus) == pci_domain_nr(dev->bus) &&
-+	       ACPI_HEST_BUS(p->bus) == dev->bus->number &&
-+	       p->device == PCI_SLOT(dev->devfn) &&
-+	       p->function == PCI_FUNC(dev->devfn);
-+}
-+
-+static bool hest_source_is_pcie_aer(struct acpi_hest_header *hest_hdr, struct pci_dev *dev)
-+{
-+	u16 hest_type = hest_hdr->type;
-+	u8 pcie_type = pci_pcie_type(dev);
-+	struct acpi_hest_aer_common *common;
-+
-+	common = (struct acpi_hest_aer_common *)(hest_hdr + 1);
-+
-+	switch (hest_type) {
-+	case ACPI_HEST_TYPE_AER_ROOT_PORT:
-+		if (pcie_type != PCI_EXP_TYPE_ROOT_PORT)
-+			return false;
-+	case ACPI_HEST_TYPE_AER_ENDPOINT:
-+		if (pcie_type != PCI_EXP_TYPE_ENDPOINT)
-+			return false;
-+	case ACPI_HEST_TYPE_AER_BRIDGE:
-+		if (pcie_type != PCI_EXP_TYPE_PCI_BRIDGE && pcie_type != PCI_EXP_TYPE_PCIE_BRIDGE)
-+			return false;
-+	default:
-+		return false;
-+	}
-+
-+	if (common->flags & ACPI_HEST_GLOBAL)
-+		return true;
-+
-+	if (hest_match_pci_devfn(common, dev))
-+		return true;
-+
-+	return false;
-+}
-+
-+int hest_parse_pcie_aer(struct acpi_hest_header *hest_hdr, void *data)
-+{
-+	struct hest_parse_aer_info *info = data;
-+
-+	if (!hest_source_is_pcie_aer(hest_hdr, info->pci_dev))
-+		return 0;
-+
-+	switch (hest_hdr->type) {
-+	case ACPI_HEST_TYPE_AER_ROOT_PORT:
-+		info->hest_aer_root_port = (struct acpi_hest_aer_root *)hest_hdr;
-+		return 1;
-+	case ACPI_HEST_TYPE_AER_ENDPOINT:
-+		info->hest_aer_endpoint = (struct acpi_hest_aer *)hest_hdr;
-+		return 1;
-+	case ACPI_HEST_TYPE_AER_BRIDGE:
-+		info->hest_aer_bridge = (struct acpi_hest_aer_bridge *)hest_hdr;
-+		return 1;
-+	default:
-+		return 0;
-+	}
-+}
-+#endif
- 
--static int apei_hest_parse(apei_hest_func_t func, void *data)
-+int apei_hest_parse(apei_hest_func_t func, void *data)
- {
- 	struct acpi_hest_header *hest_hdr;
- 	int i, rc, len;
-diff --git a/include/acpi/apei.h b/include/acpi/apei.h
-index dc60f7db5524..82d3cdf53e22 100644
---- a/include/acpi/apei.h
-+++ b/include/acpi/apei.h
-@@ -23,6 +23,15 @@ enum hest_status {
- 	HEST_NOT_FOUND,
- };
- 
-+#ifdef CONFIG_ACPI_APEI
-+struct hest_parse_aer_info {
-+	struct pci_dev *pci_dev;
-+	struct acpi_hest_aer *hest_aer_endpoint;
-+	struct acpi_hest_aer_root *hest_aer_root_port;
-+	struct acpi_hest_aer_bridge *hest_aer_bridge;
-+};
-+#endif
-+
- extern int hest_disable;
- extern int erst_disable;
- #ifdef CONFIG_ACPI_APEI_GHES
-@@ -33,10 +42,18 @@ void __init acpi_ghes_init(void);
- static inline void acpi_ghes_init(void) { }
- #endif
- 
-+typedef int (*apei_hest_func_t)(struct acpi_hest_header *hest_hdr, void *data);
-+int apei_hest_parse(apei_hest_func_t func, void *data);
-+
- #ifdef CONFIG_ACPI_APEI
- void __init acpi_hest_init(void);
-+int hest_parse_pcie_aer(struct acpi_hest_header *hest_hdr, void *data);
- #else
- static inline void acpi_hest_init(void) { }
-+static inline int hest_parse_pcie_aer(struct acpi_hest_header *hest_hdr, void *data)
-+{
-+	return 0;
-+}
- #endif
- 
- int erst_write(const struct cper_record_header *record);
--- 
-2.34.1
-
+Thanks,
+Yazen
