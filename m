@@ -1,206 +1,91 @@
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from qq.com (ec2-54-164-151-162.compute-1.amazonaws.com [54.164.151.162])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C91218FA2C
-	for <acpica-devel@lists.linux.dev>; Mon, 15 Jul 2024 15:33:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 096DE4D8C3
+	for <acpica-devel@lists.linux.dev>; Thu, 18 Jul 2024 06:12:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.164.151.162
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721057631; cv=none; b=Kcc1VnNLILHCboqMZvcpBLHdy4IFu6eTJ5XQ6nkShqQD2V0sk7Gq/48CDq/SZJrly01LYU2VZbSlrB7AKI2R3Icp5EF0nHcAtksUlVpjIpDCdgXfUc1+djkcGHLXL7mddkijoo+bsE4Gp2r95FWavGbuYSrlU/3djm63oYEvISA=
+	t=1721283160; cv=none; b=UGTfoNRjjpxXZRgbPw1j4pQvXwMn1oKbbKqf1KqLI/cMEjp90noqwSeSVZXVINkuEA5582Olk5g5IxVj7CyG5BpMzgePp8o4B25PHDathp9hiVzLwYiE6w4ftIH8NjhKUn5n5La51/0pdgrfrbZ6LtGbKMMvO3vjYMX0uS6x+8s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721057631; c=relaxed/simple;
-	bh=O17oVYZHosGaaJhlD2MlU5PTYcT36bEOgqEoMy9Lp+g=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=jlRa+dduZsrcvw/gUC+6tQ0l8KiNJfTcZtfxYdFnGf2hi/WnHS+QKZ7N//3fyW6S7ylv50eSr/xhvuB5Jy5oph9sgti1o1V4qWG5++kYXFskM7tikI18gdDl4ennrJmez4GXEL3tBAxW4jhFz+ntOF5ph2eTjGCSuU6JzSRt4s4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=twNtOIyX; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+	s=arc-20240116; t=1721283160; c=relaxed/simple;
+	bh=7JUm4p+EuPVcOm1o3oLVGCkZZPHSDs3UrfRpHozmgvw=;
+	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=WuwiSr+0Pz5C87WBn8x5mi1BlviQzwOVp9YopIejUl6Ratm1mi7b6bg/8dNh6wG4DAcDmMLa7/oco21CI0I7UMtuLLmwilFja5S1z343FVI2hG/88IIezCZoQxpgM4tmqhRYkdsnduvQbdrCD2K8DJzmIncBwWVb9uXRxHGwipY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=sTuhT3YZ; arc=none smtp.client-ip=54.164.151.162
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="twNtOIyX"
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1fb129e6a3eso3387735ad.2
-        for <acpica-devel@lists.linux.dev>; Mon, 15 Jul 2024 08:33:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1721057628; x=1721662428; darn=lists.linux.dev;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=nNrBKwYTcdYHsoBHljeLphuQCOZ/YFIVZ+KLTOSWsAs=;
-        b=twNtOIyXP5d+20EKosDeAvz1D+NPNKKAjAXt6ObceI1F2FUYCcs/8/5PDVNIxL9zEZ
-         xqWxXKHap37zroC6j92MJiAQ1jsWCwLNzUWN+fFQLqwZJrs1o7sKGkp/OLCfvSpJMuF+
-         phMaLJ+OSMaRS8jOJn/6qw4RfKgnBjGXNwpij3AgC56xDi6bFSr//fpYw/Sqz/40fz0/
-         xoQBj21U38Bv/ZQgJlLf0Yn7L1saHwOxH/jwuy46ZfaH35VWcPi9lFJaqkyR+eZgTX1e
-         2Al2zB2tK9Am2B38NPAzXa6RtPMkfymgwNt2Sl54aZD4JSt1UXo5QIbtXQBD5aIYVpgf
-         acGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721057628; x=1721662428;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nNrBKwYTcdYHsoBHljeLphuQCOZ/YFIVZ+KLTOSWsAs=;
-        b=onZ/JmVSpeDDDXWFV7YqvY8H8xILyQjbsg0q1fbbRypxWSF5DKpRpyZCyoW5o9DXT+
-         C7eF8Q5pexuaQ2hwzEvOtDYbQv9TLjoE9FzXgLuCv55+Bbo2gnTQyLwNJFPEay61U/Dj
-         rCaukuPddihYVJIRwlAVwAYbPTlnfS34hQ5gZHaKIGYKEaUi7HFtIaJ3m2C0F/hbjOev
-         JSngzWGV9zi7njuw0Cq3gP7r5glOtveSFxbS73U/o9FLXAukyhr6JHni1JtrrZUncorS
-         EsDp2B0e3WYQ5VxZ2iKDXGr0vHYg8hLnV0YKAOB9dDAbK+4gw5VCCs8nvnRzJRZmQaSQ
-         O8sw==
-X-Forwarded-Encrypted: i=1; AJvYcCWukceApD+Uz4JGFGic/0tgURZ8UeLeJ4AgAGEYoMo6t3/tDUo7sQdVaocoH+psdpcA2vKjKvkade9mjhElyFXy5EDP+zBW5s6TP3pP
-X-Gm-Message-State: AOJu0YxwoZ78AVvprWdBB/WTzXgX5X+IQJyauuOV9quOzWoaK5UQYLpa
-	WGC301kpaZn8wl5KtlLpcEK3gsqTx68KkwSZkIm1wkjcOKGO8AmrJTaOBqr2V0o=
-X-Google-Smtp-Source: AGHT+IFBGQtaMboH87ZiITDVDC8NxVYCRbzN4TT71saPPYRoOL+WvGv7Cmx1qWcc0JUtTQaQgm2X2w==
-X-Received: by 2002:a17:903:2348:b0:1fb:3c1:cb26 with SMTP id d9443c01a7336-1fbdc45a9a0mr120691815ad.1.1721057628613;
-        Mon, 15 Jul 2024 08:33:48 -0700 (PDT)
-Received: from carbon-x1.. ([2a01:e0a:e17:9700:16d2:7456:6634:9626])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fc0bc2736dsm42303825ad.159.2024.07.15.08.33.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jul 2024 08:33:47 -0700 (PDT)
-From: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
-To: "Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>,
-	Robert Moore <robert.moore@intel.com>
-Cc: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
-	linux-acpi@vger.kernel.org,
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="sTuhT3YZ"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1721283151;
+	bh=/7iSlBFI9MY1Y4PScPXpFxG9gotJAJRZJot1OTuuAO4=;
+	h=From:To:Cc:Subject:Date;
+	b=sTuhT3YZZ0w834jLJzowFUsweOOA6PtU6o5edzrkwEiaC5/xSFZeo7R8ZnU7Xn0ZW
+	 1/2/yrhKVk/eQ8vlT4zVWsGni9B4l5zedXbG5D4YXGszBfzuqmZ/OpAUuTuCfjV+BX
+	 ruyx1n0546ceAl8lPaYL66mB1mjnQ/8k+qqKNDE0=
+Received: from xp-virtual-machine.. ([111.48.58.13])
+	by newxmesmtplogicsvrszc5-2.qq.com (NewEsmtp) with SMTP
+	id 172BCE40; Thu, 18 Jul 2024 14:05:50 +0800
+X-QQ-mid: xmsmtpt1721282750tsh8h88qb
+Message-ID: <tencent_4A21A2865B8B0A0D12CAEBEB84708EDDB505@qq.com>
+X-QQ-XMAILINFO: NY3HYYTs4gYS7OOWi8VYXIKN4SmPNanHlFkl9M5hD6udx6uGqWXekcsBDUflRr
+	 8KTN6NXcomSsq+VpYWOngnszoM6c4U+0iVmxxpYcH1PgR0BIqlbBdrY5jKrls5/qeZFsxCMCkcfB
+	 WiJmTrupuW5qhCae0maNRwA4X+4SBX+RS9gDPpVIXawM5hzXur8pTfHliCmD5FsF/Qsii1qBdMH4
+	 pftNc37JpPApe4y3pgz//n1CM4YCK0bz4d32l3aj5oIaeb1nU1KGGIJ3LrNhFrtQ6J7tS+TaBcnL
+	 HVT1wnxGdLrXwEVSnWdmj4aZ9DQulwh3rQRVQUY/kRGilOXd+JYRMzZjCFtg+rR7CKrUZ4d+gKbB
+	 R8vO+Xf/lcCQbQxw5ySCj/QEqXfArnP5W8jYkYqsCJLqjv2hCMXsAyC39wfyjxIwpMipLJnu/PQt
+	 zjJs2TLS0OtUkVOnKWnW6J+9qyMgGQQ9zdBi3AXN7f6qaWbUQ21mFMxnf6p1N87gWsyPmp5YJzaE
+	 v9K7aCcLUn6pG4TeHn/x6HmHAPvkm0czYHKShGvagq8v05q5Hh8zsjcVmhgpWShI6ryZELmMcEa+
+	 FrhylYHCeOh2OiAwCBEy7ZU66BS28zmND+mNT0ih0GQtUBEiWnFNYQH4spbmGTzPuxQI6cQ3gyRr
+	 0CJb0fui5mkHKWS9mpp7x6AxHdp6FW4+3O49MZf0DTAUtBaIknRqA4rL8564M929xpU5Z50EVnwS
+	 Ndp5E/0nr3mmGHfrrONi68cUoJ9vuypjm/b0pjE9h6c+4rVdKEC/wMTx19KBudu+opO1LlY7ffUo
+	 CqnszrHtSmirAvhivFfaoHXZRT+dv0LhMBu560m+/Y236W5QDAJaJzdv+ZhoV1dpYpQdW0Hz9S9F
+	 7LhPuseEtngoekBPkb3AMkhtEexAZ2dyWgccZ458E6oikL5izpD7NkSaKV9byYsBrqGS3n+HEDYg
+	 PWKlOLA38rBcnxAquusPXigWb6YD5WNLDIz3SrZve+PyTU13n0ckXOS0QVzGgAWP+QRb9uMMf5tx
+	 jufyIg0BLzDEoQMNHitn2mAYVuZWZ+0IAa3GYhh1OTeRxlE4gTPtcm2qrM5bA=
+X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
+From: xiaopeitux@foxmail.com
+To: robert.moore@intel.com,
+	rafael.j.wysocki@intel.com
+Cc: acpica-devel@lists.linux.dev,
 	linux-kernel@vger.kernel.org,
-	acpica-devel@lists.linux.dev
-Subject: [PATCH] ACPI: CPPC: Fix MASK_VAL() usage
-Date: Mon, 15 Jul 2024 17:33:35 +0200
-Message-ID: <20240715153336.3720653-1-cleger@rivosinc.com>
-X-Mailer: git-send-email 2.45.2
+	linux-acpi@vger.kernel.org,
+	xiaopei01@kylinos.cn
+Subject: [PATCH] ACPICA: ACPICA: check null return of ACPI_ALLOCATE_ZEROED in acpi_db_convert_to_package ACPICA commit 4d4547cf13cca820ff7e0f859ba83e1a610b9fd0
+Date: Thu, 18 Jul 2024 14:05:48 +0800
+X-OQ-MSGID: <3e39c54f8278e163691d629f1cf89bffcf4c6031.1721280951.git.xiaopei01@kylinos.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-MASK_VAL() was added a way to handle bit_offset and bit_width for
-registers located in system memory address space. However, while suited
-for reading, it does not work for writing and result in corrupted
-registers when writing values with bit_offset > 0. Moreover, when a
-register is collocated with another one at the same address but with a
-different mask, the current code results in the other registers being
-overwritten with 0s. The write procedure for SYSTEM_MEMORY registers
-should actually read the value, mask it, update it and write it with the
-updated value. Moreover, since registers can be located in the same
-word, we must take care of locking the access before doing it. We should
-potentially use a global lock since we don't know in if register
-addresses aren't shared with another _CPC package but better not
-encourage vendors to do so. Assume that registers can use the same word
-inside a _CPC package and thus, use a per _CPC package lock.
+From: Pei Xiao <xiaopei01@kylinos.cn>
 
-Fixes: 2f4a4d63a193 ("ACPI: CPPC: Use access_width over bit_width for system memory accesses")
-Signed-off-by: Clément Léger <cleger@rivosinc.com>
+ACPI_ALLOCATE_ZEROED may fails, elements might be null and will cause
+null pointer dereference later.
 
+Link: https://github.com/acpica/acpica/commit/4d4547cf
+Signed-off-by: Pei Xiao <xiaopei01@kylinos.cn>
 ---
- drivers/acpi/cppc_acpi.c | 44 ++++++++++++++++++++++++++++++++++++----
- include/acpi/cppc_acpi.h |  2 ++
- 2 files changed, 42 insertions(+), 4 deletions(-)
+ drivers/acpi/acpica/dbconvert.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-index 1d857978f5f4..2e99cf1842ee 100644
---- a/drivers/acpi/cppc_acpi.c
-+++ b/drivers/acpi/cppc_acpi.c
-@@ -170,8 +170,11 @@ show_cppc_data(cppc_get_perf_ctrs, cppc_perf_fb_ctrs, wraparound_time);
- #define GET_BIT_WIDTH(reg) ((reg)->access_width ? (8 << ((reg)->access_width - 1)) : (reg)->bit_width)
+diff --git a/drivers/acpi/acpica/dbconvert.c b/drivers/acpi/acpica/dbconvert.c
+index 2b84ac093698..8dbab6932049 100644
+--- a/drivers/acpi/acpica/dbconvert.c
++++ b/drivers/acpi/acpica/dbconvert.c
+@@ -174,6 +174,8 @@ acpi_status acpi_db_convert_to_package(char *string, union acpi_object *object)
+ 	elements =
+ 	    ACPI_ALLOCATE_ZEROED(DB_DEFAULT_PKG_ELEMENTS *
+ 				 sizeof(union acpi_object));
++	if (!elements)
++		return (AE_NO_MEMORY);
  
- /* Shift and apply the mask for CPC reads/writes */
--#define MASK_VAL(reg, val) (((val) >> (reg)->bit_offset) & 			\
-+#define MASK_VAL_READ(reg, val) (((val) >> (reg)->bit_offset) &				\
- 					GENMASK(((reg)->bit_width) - 1, 0))
-+#define MASK_VAL_WRITE(reg, prev_val, val)						\
-+	((((val) & GENMASK(((reg)->bit_width) - 1, 0)) << (reg)->bit_offset) |		\
-+	((prev_val) & ~(GENMASK(((reg)->bit_width) - 1, 0) << (reg)->bit_offset)))	\
- 
- static ssize_t show_feedback_ctrs(struct kobject *kobj,
- 		struct kobj_attribute *attr, char *buf)
-@@ -857,6 +860,7 @@ int acpi_cppc_processor_probe(struct acpi_processor *pr)
- 
- 	/* Store CPU Logical ID */
- 	cpc_ptr->cpu_id = pr->id;
-+	spin_lock_init(&cpc_ptr->rmw_lock);
- 
- 	/* Parse PSD data for this CPU */
- 	ret = acpi_get_psd(cpc_ptr, handle);
-@@ -1062,7 +1066,7 @@ static int cpc_read(int cpu, struct cpc_register_resource *reg_res, u64 *val)
- 	}
- 
- 	if (reg->space_id == ACPI_ADR_SPACE_SYSTEM_MEMORY)
--		*val = MASK_VAL(reg, *val);
-+		*val = MASK_VAL_READ(reg, *val);
- 
- 	return 0;
- }
-@@ -1071,9 +1075,11 @@ static int cpc_write(int cpu, struct cpc_register_resource *reg_res, u64 val)
- {
- 	int ret_val = 0;
- 	int size;
-+	u64 prev_val;
- 	void __iomem *vaddr = NULL;
- 	int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpu);
- 	struct cpc_reg *reg = &reg_res->cpc_entry.reg;
-+	struct cpc_desc *cpc_desc;
- 
- 	size = GET_BIT_WIDTH(reg);
- 
-@@ -1106,8 +1112,34 @@ static int cpc_write(int cpu, struct cpc_register_resource *reg_res, u64 val)
- 		return acpi_os_write_memory((acpi_physical_address)reg->address,
- 				val, size);
- 
--	if (reg->space_id == ACPI_ADR_SPACE_SYSTEM_MEMORY)
--		val = MASK_VAL(reg, val);
-+	if (reg->space_id == ACPI_ADR_SPACE_SYSTEM_MEMORY) {
-+		cpc_desc = per_cpu(cpc_desc_ptr, cpu);
-+		if (!cpc_desc) {
-+			pr_debug("No CPC descriptor for CPU:%d\n", cpu);
-+			return -ENODEV;
-+		}
-+
-+		spin_lock(&cpc_desc->rmw_lock);
-+		switch (size) {
-+		case 8:
-+			prev_val = readb_relaxed(vaddr);
-+			break;
-+		case 16:
-+			prev_val = readw_relaxed(vaddr);
-+			break;
-+		case 32:
-+			prev_val = readl_relaxed(vaddr);
-+			break;
-+		case 64:
-+			prev_val = readq_relaxed(vaddr);
-+			break;
-+		default:
-+			ret_val = -EFAULT;
-+			goto out_unlock;
-+		};
-+		val = MASK_VAL_WRITE(reg, prev_val, val);
-+		val |= prev_val;
-+	}
- 
- 	switch (size) {
- 	case 8:
-@@ -1134,6 +1166,10 @@ static int cpc_write(int cpu, struct cpc_register_resource *reg_res, u64 val)
- 		break;
- 	}
- 
-+out_unlock:
-+	if (reg->space_id == ACPI_ADR_SPACE_SYSTEM_MEMORY)
-+		spin_unlock(&cpc_desc->rmw_lock);
-+
- 	return ret_val;
- }
- 
-diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
-index 930b6afba6f4..e1720d930666 100644
---- a/include/acpi/cppc_acpi.h
-+++ b/include/acpi/cppc_acpi.h
-@@ -64,6 +64,8 @@ struct cpc_desc {
- 	int cpu_id;
- 	int write_cmd_status;
- 	int write_cmd_id;
-+	/* Lock used for RMW operations in cpc_write() */
-+	spinlock_t rmw_lock;
- 	struct cpc_register_resource cpc_regs[MAX_CPC_REG_ENT];
- 	struct acpi_psd_package domain_info;
- 	struct kobject kobj;
+ 	this = string;
+ 	for (i = 0; i < (DB_DEFAULT_PKG_ELEMENTS - 1); i++) {
 -- 
-2.45.2
+2.34.1
 
