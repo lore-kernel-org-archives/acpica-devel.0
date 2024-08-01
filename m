@@ -1,93 +1,95 @@
-Received: from out203-205-221-205.mail.qq.com (out203-205-221-205.mail.qq.com [203.205.221.205])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F5D32F37
-	for <acpica-devel@lists.linux.dev>; Wed, 31 Jul 2024 01:14:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.205
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FB3D13E04C;
+	Thu,  1 Aug 2024 23:57:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722388477; cv=none; b=B8XfuApCO3PL8iQJJoSVrbjx7ReSOoDmGDnhG8DoiDSKn6NjFpDyB7Cl5/qvhCxBxR7LVjQMLIzwTJLvhrfWj3UTtzQsg8iM3mXXPU1J++x+WZ6CUCW5y4D9BF0Ru5YcRXERNkPS/05APZGvz0jNpWiJx94SIvyjfkPr+U3KxuU=
+	t=1722556674; cv=none; b=jymn90CMJIxatP6/3g03ZkfZ/1ZodZ8i0ftjDmqST1MZXpzA1znk8pKi7FRRjJDL4XDVwc3FgFpk3DWiigevrLzBDS4bj0mRjHsagMovkHkCxMqEnmkAnTqzt8EgERi0u8LlPQRScDyel32ZMsJGvCq5GsH6YCaXy9oYWF1zj+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722388477; c=relaxed/simple;
-	bh=Ol6fsE837BWnDsz8i/J0CfxAa59HnAGNzCu3Ne8NyJA=;
-	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=UkzmMIDw1Vswq5LJrLpZiNQBuMJ6lsaiz8Mbj7BRCx1VkZM1jr2QptXt2EcVgbCbIlVbUGrxv5zFwvi8fYzjJt4Hrh0Okk1MVJ6b/ZXdYSq70V/MhCwqMxXdEemUHuFYH4ZZ+D6q3btNjNStdFYMCOmeAGJNvpXUhlaw2IaFOzU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=x9VrWy/l; arc=none smtp.client-ip=203.205.221.205
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
+	s=arc-20240116; t=1722556674; c=relaxed/simple;
+	bh=NJ5xjYh4vu5N0CFN9vwh+aQ8qN3AxM5GyydRpZOCIvE=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=N0Ss8/efvv+ISXJaWVLJtyx17SCHKabRj244EeN4K9oQwPUY611buMJbPFsxXV4ovCoH6rzk2cMlSNXutc4gfbVc/tQ7pqfZmAfElZP/B0t9wldKDFUq2mQeUk5WVWvbPL17yFVrd7UVjTNmQCw1T4TXRjrBovGr6Ie5PD8ov7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=taHRRej3; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="x9VrWy/l"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1722388468;
-	bh=xmziSWrE762AJPUBIoJqWj3lQPscDyDVM+Fh5GgSVGQ=;
-	h=From:To:Cc:Subject:Date;
-	b=x9VrWy/lIw99tosAbX6RQWWt7sDU9LqdXIaRemsSXlYkUxywNBoWaGZj+R3zk3BAH
-	 UCVDz9HaT6W/pdDu+GSOgmjReAX3ObAOXg9pYIJEtGXUZwS1yVlTA7WiieD3Gb6FB4
-	 GTuMgaGsd8VpBPgdDQcPGD4dGo6bEIfGs6z9wyU0=
-Received: from xp-virtual-machine.. ([39.156.73.11])
-	by newxmesmtplogicsvrszc19-0.qq.com (NewEsmtp) with SMTP
-	id 399B164C; Wed, 31 Jul 2024 09:14:25 +0800
-X-QQ-mid: xmsmtpt1722388465tnp8i6sky
-Message-ID: <tencent_ADB80DA880207BBCFA4F5CE7F05CDD221409@qq.com>
-X-QQ-XMAILINFO: NkHKfw09D6j8rCF2OiIEIyVkqJu9N/P/cpDW5VGsn6jBXZaKkXLdvPQY0e3kb0
-	 EZoSs58fF/H586O8GGLJ5IO15XPQUahdwXSVjUNTfTOrKwKXqyIWnsfFGRLS3GPbTcfIxB0tEPZR
-	 AmclmZuCqPAafMYgJl1vc0If4I7ZijRTKxlZEesIEiDZ8oLa9n1PkC5v3S9E/t2HiUeUpnbrPtTF
-	 Jeoq0wbPywGx3wsfOhxOD7mqy32nYnUhTywpEVABq/k4WvuiyLOCmOGDc1Bz615OsSEVB7ZbG5FL
-	 ps7MrL8KykTl2NnjbHxo29xIe8Bf2XIvpKPk8lbmoEKnLlcZJXSJ/A3L9VrKXGIFgypqgzAPvGWe
-	 scYpsZYObZB3grH1LuKM86Kamfsb3YQGUagnbnCWjyFF0Iht4GX2H0m82zr2NYbKI/EituEnkDnK
-	 8XvcGikA76NhfaSVhkfhqlrxiPTlpinW4EUUFFzzz785h+EgQh3hXkocV/EzwvGKzBYHu8IsFn4t
-	 Ni6h2WQGmWN+Rc1Wgl/guvIVt+E7nIPf1BvYE6VdSp+5Lua3+dwkFpScCMC2EuuhvypA2JPUEL4q
-	 ryk/wOQS7rF0g/vh/kIKKt/0SyTgv7hDfnIOHfY0AY/xJhacPZfumaoVaWEd+jkBtUqDrhymr3Da
-	 ccN8puIyboqDL+OxKFqD2lqdbcvi+7kjyqesqLDwZ9khQQYURqxJjGA87WAN2xhC86HnMICoVBuj
-	 Eess7XZ3oX/stBg9s00VF2Z+jOyZiUUgIxlGZ0oWYbqYzLbsj5zJ0zl8BQr5+Bw9V0gLUrwv9PJn
-	 UmpzQJcHEybx0jrvAdr2ytWBV9Lry3x70gV0KmZnzkADDrB0HYYJATk6uxED8brfNfUgj668d9nH
-	 nVyH/qu0qpNOv4TOaBL4YWkyQAc9CgVw5puBaDdIqonoppWSFzLJFRZcynJlaBCCg4m1icna9hBH
-	 ibR6emSWOl4hW+2Nw6SWLc+qNGAAQmT05uuiMW/P4=
-X-QQ-XMRINFO: MSVp+SPm3vtS1Vd6Y4Mggwc=
-From: xiaopeitux@foxmail.com
-To: robert.moore@intel.com,
-	rafael.j.wysocki@intel.com
-Cc: acpica-devel@lists.linux.dev,
-	linux-acpi@vger.kernel.org,
-	xiaopei01@kylinos.cn
-Subject: [PATCH] ACPI:dbconvert:check null return of ACPI_ALLOCATE_ZEROED in acpi_db_convert_to_package
-Date: Wed, 31 Jul 2024 09:14:23 +0800
-X-OQ-MSGID: <e4f084d1fdc3fbcab24cefcbc5f484be43dc37a8.1722388346.git.xiaopei01@kylinos.cn>
-X-Mailer: git-send-email 2.34.1
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="taHRRej3"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDD92C32786;
+	Thu,  1 Aug 2024 23:57:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1722556674;
+	bh=NJ5xjYh4vu5N0CFN9vwh+aQ8qN3AxM5GyydRpZOCIvE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=taHRRej3xlM327yIOchm3zAl+K/qSRW8YYeDoaMPLx6u9Ab3Kqq3ZZOsfGrbXqDQi
+	 uKQLhjUmOSwBxriuhDCx0s5EtSDz/JgcMrOcDuWWkNRSbHt9zYFUebT8zc4TLSDgj5
+	 vyv1ni0M16DEGA+pQ30hWDsiMLVm+tPlpx2tf56RahbUKYCEY0yOneDM3AmBpm/o76
+	 Ztzy9hfxlbD2qK5xn+0/Wc9TUXzBRIRq3Ew8ZV5De+8ROOzgPoV+aH5rBR1zc0rGYq
+	 oKL1oGhUlPVMHTsbbdM2W/matl6h0Y/yl4uRPtUEffS06ZLn/FN3OLTHoZvep7T8uN
+	 fCxOkA1ZD5MQQ==
+Date: Thu, 1 Aug 2024 18:57:52 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: LeoLiu-oc <LeoLiu-oc@zhaoxin.com>
+Cc: rafael@kernel.org, lenb@kernel.org, james.morse@arm.com,
+	tony.luck@intel.com, bp@alien8.de, bhelgaas@google.com,
+	robert.moore@intel.com, yazen.ghannam@amd.com, avadhut.naik@amd.com,
+	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-pci@vger.kernel.org, acpica-devel@lists.linux.dev,
+	CobeChen@zhaoxin.com, TimGuo@zhaoxin.com, TonyWWang-oc@zhaoxin.com
+Subject: Re: [PATCH v3 0/3] Parse the HEST PCIe AER and set to relevant
+ registers
+Message-ID: <20240801235752.GA129276@bhelgaas>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240718062405.30571-1-LeoLiu-oc@zhaoxin.com>
 
-From: Pei Xiao <xiaopei01@kylinos.cn>
+On Thu, Jul 18, 2024 at 02:24:02PM +0800, LeoLiu-oc wrote:
+> From: LeoLiuoc <LeoLiu-oc@zhaoxin.com>
+> 
+> According to the Section 18.3.2.4, 18.3.2.5 and 18.3.2.6 in ACPI SPEC
+> r6.5, the register value form HEST PCI Express AER Structure should be
+> written to relevant PCIe Device's AER Capabilities. So the purpose of the
+> patch set is to extract register value from HEST PCI Express AER
+> structures and program them into PCIe Device's AER registers.
+> Refer to the ACPI SPEC r6.5 for the more detailed description. This patch
+> is an effective supplement to _HPP/_HPX method when the Firmware does not
+> support the _HPP/_HPX method and can be specially configured for the AER
+> register of the specific device.
 
-ACPI_ALLOCATE_ZEROED may fails, elements might be null and will cause
-null pointer dereference later.
+Just to close the loop on this, I'm assuming you'll rebase to
+v6.11-rc1, fix the warnings from the robot, address Yazen's comment
+and post a v4.
 
-Link: https://github.com/acpica/acpica/commit/4d4547cf
-Signed-off-by: Pei Xiao <xiaopei01@kylinos.cn>
----
- drivers/acpi/acpica/dbconvert.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/acpi/acpica/dbconvert.c b/drivers/acpi/acpica/dbconvert.c
-index 2b84ac093698..a60d1098a105 100644
---- a/drivers/acpi/acpica/dbconvert.c
-+++ b/drivers/acpi/acpica/dbconvert.c
-@@ -175,6 +175,8 @@ acpi_status acpi_db_convert_to_package(char *string, union acpi_object *object)
- 	    ACPI_ALLOCATE_ZEROED(DB_DEFAULT_PKG_ELEMENTS *
- 				 sizeof(union acpi_object));
- 
-+	if (!elements)
-+		return (AE_NO_MEMORY);
- 	this = string;
- 	for (i = 0; i < (DB_DEFAULT_PKG_ELEMENTS - 1); i++) {
- 		this = acpi_db_get_next_token(this, &next, &type);
--- 
-2.34.1
-
-
-No virus found
-		Checked by Hillstone Network AntiVirus
-
+> v1->v2:
+> - Move the definition of structure "hest_parse_aer_info" to file apei.h.
+> 
+> v2->v3:
+> - The applicable hardware for this patch is added to the commit
+>   information.
+> - Change the function name "program_hest_aer_endpoint" to
+>   "program_hest_aer_common".
+> - Add the comment to function "program_hest_aer_common".
+> - Remove the "PCI_EXP_TYPE_PCIE_BRIDGE" branch handling in function
+>   "program_hest_aer_params".
+> 
+> LeoLiuoc (3):
+>   ACPI/APEI: Add hest_parse_pcie_aer()
+>   PCI: Add AER bits #defines for PCIe to PCI/PCI-X Bridge
+>   PCI/ACPI: Add pci_acpi_program_hest_aer_params()
+> 
+>  drivers/acpi/apei/hest.c      |  66 +++++++++++++++++++++-
+>  drivers/pci/pci-acpi.c        | 101 ++++++++++++++++++++++++++++++++++
+>  drivers/pci/pci.h             |   9 +++
+>  drivers/pci/probe.c           |   1 +
+>  include/acpi/apei.h           |  17 ++++++
+>  include/uapi/linux/pci_regs.h |   3 +
+>  6 files changed, 195 insertions(+), 2 deletions(-)
+> 
+> -- 
+> 2.34.1
+> 
