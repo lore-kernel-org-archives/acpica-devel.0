@@ -1,95 +1,90 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FB3D13E04C;
-	Thu,  1 Aug 2024 23:57:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DDE51C693
+	for <acpica-devel@lists.linux.dev>; Fri,  2 Aug 2024 14:52:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722556674; cv=none; b=jymn90CMJIxatP6/3g03ZkfZ/1ZodZ8i0ftjDmqST1MZXpzA1znk8pKi7FRRjJDL4XDVwc3FgFpk3DWiigevrLzBDS4bj0mRjHsagMovkHkCxMqEnmkAnTqzt8EgERi0u8LlPQRScDyel32ZMsJGvCq5GsH6YCaXy9oYWF1zj+U=
+	t=1722610361; cv=none; b=edgeJ3mQhoGefJztY/3m5QoHD/r473B1YZc17LlXadN7DXfYSL4rxLWJGXtLQ5oXWRmFvZE2p1PbiQoP8FQeKW+dSRN1ADYJ0sQDQXOM5vQ0waHLIsgMJhe/F8GVEZRa1cRbWTajoxKcGc+bhzV4rv7licvnLiW+EwMLEUUmPcM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722556674; c=relaxed/simple;
-	bh=NJ5xjYh4vu5N0CFN9vwh+aQ8qN3AxM5GyydRpZOCIvE=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=N0Ss8/efvv+ISXJaWVLJtyx17SCHKabRj244EeN4K9oQwPUY611buMJbPFsxXV4ovCoH6rzk2cMlSNXutc4gfbVc/tQ7pqfZmAfElZP/B0t9wldKDFUq2mQeUk5WVWvbPL17yFVrd7UVjTNmQCw1T4TXRjrBovGr6Ie5PD8ov7s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=taHRRej3; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1722610361; c=relaxed/simple;
+	bh=7fW4SVY1AD5MyHTSqymQgAUot2hO/fMcw3Ygn74bn4I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ewKyVJy5gpeyJ8f+VMeiMDmcPZOQ/+NqzufVyR1WLo3p7VjzWc70leOI68X/R+O7qGgc2hsyMNJ487qgPyosiJx1Ux0Kefav4OxLwE3ijlqpg8MhRhcb5Hq1grpRAHDYtQr1o79sI3Xg+YqoYXq9Dx8YmzQIZNa2cSWmjAr8SGA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=diBQ6K9g; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="taHRRej3"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDD92C32786;
-	Thu,  1 Aug 2024 23:57:53 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="diBQ6K9g"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF21BC4AF0B
+	for <acpica-devel@lists.linux.dev>; Fri,  2 Aug 2024 14:52:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722556674;
-	bh=NJ5xjYh4vu5N0CFN9vwh+aQ8qN3AxM5GyydRpZOCIvE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=taHRRej3xlM327yIOchm3zAl+K/qSRW8YYeDoaMPLx6u9Ab3Kqq3ZZOsfGrbXqDQi
-	 uKQLhjUmOSwBxriuhDCx0s5EtSDz/JgcMrOcDuWWkNRSbHt9zYFUebT8zc4TLSDgj5
-	 vyv1ni0M16DEGA+pQ30hWDsiMLVm+tPlpx2tf56RahbUKYCEY0yOneDM3AmBpm/o76
-	 Ztzy9hfxlbD2qK5xn+0/Wc9TUXzBRIRq3Ew8ZV5De+8ROOzgPoV+aH5rBR1zc0rGYq
-	 oKL1oGhUlPVMHTsbbdM2W/matl6h0Y/yl4uRPtUEffS06ZLn/FN3OLTHoZvep7T8uN
-	 fCxOkA1ZD5MQQ==
-Date: Thu, 1 Aug 2024 18:57:52 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: LeoLiu-oc <LeoLiu-oc@zhaoxin.com>
-Cc: rafael@kernel.org, lenb@kernel.org, james.morse@arm.com,
-	tony.luck@intel.com, bp@alien8.de, bhelgaas@google.com,
-	robert.moore@intel.com, yazen.ghannam@amd.com, avadhut.naik@amd.com,
-	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org, acpica-devel@lists.linux.dev,
-	CobeChen@zhaoxin.com, TimGuo@zhaoxin.com, TonyWWang-oc@zhaoxin.com
-Subject: Re: [PATCH v3 0/3] Parse the HEST PCIe AER and set to relevant
- registers
-Message-ID: <20240801235752.GA129276@bhelgaas>
+	s=k20201202; t=1722610361;
+	bh=7fW4SVY1AD5MyHTSqymQgAUot2hO/fMcw3Ygn74bn4I=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=diBQ6K9gl9IzCkPjvuCK6NjgDdc+uTBSbcRInNQPutN3N3JVodBs0K1pODujq8oCh
+	 QrCRVYLhU87B1IOwOFo9PpcLqTLfXwIouRUZUkCBwPqvjsa49IYyFwStxZcppprvHs
+	 2ZoLlQKyONzKvPvOtCF8z/6oHAokYkWi3uq/ydNhCzEYvqg2nB/uatDEkLCZ+OJ/jM
+	 +WUHQ0DOs2qBImNtGZkzhm3tnAG0L/G9qPwyYazWIqKpxzCVb4o9WO/7m/5gB+ZrXo
+	 gcT6+1i2zrMIADvUu2m2hqLtdyykXpB3WeFZkWK38HaP4o8V8bDLoY3vAo0MPzri0V
+	 EJb/dDEjy37AA==
+Received: by mail-oa1-f53.google.com with SMTP id 586e51a60fabf-26104de0b47so372631fac.2
+        for <acpica-devel@lists.linux.dev>; Fri, 02 Aug 2024 07:52:40 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCW4M3xBUjM9v675UC4542B8dVphXuU4nuiFJyVH5e1V3Fhpsl5hfJpx2bY3poMueTTApNlDIloZCH+DBw8Ti0bnXYoAUxH2N6U5vs+s
+X-Gm-Message-State: AOJu0Ywjy+n58mLRt3zQVhjvlMtF1DUi1429mBVwrFVculvOwAA7/s7y
+	VcUFEpXldpzShgcgIEQz7XCJ3o0vHn2HblCmgSxQMxqYNXzyhACNqNrqpthwcOm3OwBMhE0OTHe
+	iQ5MKf9/O5JyKlP+6oeJAKbqqGQY=
+X-Google-Smtp-Source: AGHT+IFRwhlT5f1teywL2mMHVX2BhO378lznK7c5J3JEzN35Ix0lj/6e/en8VJKsWBhA9ktlFXeZl2ABL7W252HiR40=
+X-Received: by 2002:a05:6870:ac10:b0:260:23eb:5669 with SMTP id
+ 586e51a60fabf-26891a9437fmr2379024fac.2.1722610360309; Fri, 02 Aug 2024
+ 07:52:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240718062405.30571-1-LeoLiu-oc@zhaoxin.com>
+References: <tencent_4A21A2865B8B0A0D12CAEBEB84708EDDB505@qq.com>
+In-Reply-To: <tencent_4A21A2865B8B0A0D12CAEBEB84708EDDB505@qq.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Fri, 2 Aug 2024 16:52:29 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0iw6v+X_UM0QNzj0MC7hdvmoqUK2mt3caOn-4YbbQRkeg@mail.gmail.com>
+Message-ID: <CAJZ5v0iw6v+X_UM0QNzj0MC7hdvmoqUK2mt3caOn-4YbbQRkeg@mail.gmail.com>
+Subject: Re: [PATCH] ACPICA: ACPICA: check null return of ACPI_ALLOCATE_ZEROED
+ in acpi_db_convert_to_package ACPICA commit 4d4547cf13cca820ff7e0f859ba83e1a610b9fd0
+To: xiaopeitux@foxmail.com
+Cc: robert.moore@intel.com, rafael.j.wysocki@intel.com, 
+	acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	linux-acpi@vger.kernel.org, xiaopei01@kylinos.cn
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 18, 2024 at 02:24:02PM +0800, LeoLiu-oc wrote:
-> From: LeoLiuoc <LeoLiu-oc@zhaoxin.com>
-> 
-> According to the Section 18.3.2.4, 18.3.2.5 and 18.3.2.6 in ACPI SPEC
-> r6.5, the register value form HEST PCI Express AER Structure should be
-> written to relevant PCIe Device's AER Capabilities. So the purpose of the
-> patch set is to extract register value from HEST PCI Express AER
-> structures and program them into PCIe Device's AER registers.
-> Refer to the ACPI SPEC r6.5 for the more detailed description. This patch
-> is an effective supplement to _HPP/_HPX method when the Firmware does not
-> support the _HPP/_HPX method and can be specially configured for the AER
-> register of the specific device.
+On Thu, Jul 18, 2024 at 8:12=E2=80=AFAM <xiaopeitux@foxmail.com> wrote:
+>
+> From: Pei Xiao <xiaopei01@kylinos.cn>
+>
+> ACPI_ALLOCATE_ZEROED may fails, elements might be null and will cause
+> null pointer dereference later.
+>
+> Link: https://github.com/acpica/acpica/commit/4d4547cf
+> Signed-off-by: Pei Xiao <xiaopei01@kylinos.cn>
+> ---
+>  drivers/acpi/acpica/dbconvert.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/acpi/acpica/dbconvert.c b/drivers/acpi/acpica/dbconv=
+ert.c
+> index 2b84ac093698..8dbab6932049 100644
+> --- a/drivers/acpi/acpica/dbconvert.c
+> +++ b/drivers/acpi/acpica/dbconvert.c
+> @@ -174,6 +174,8 @@ acpi_status acpi_db_convert_to_package(char *string, =
+union acpi_object *object)
+>         elements =3D
+>             ACPI_ALLOCATE_ZEROED(DB_DEFAULT_PKG_ELEMENTS *
+>                                  sizeof(union acpi_object));
+> +       if (!elements)
+> +               return (AE_NO_MEMORY);
+>
+>         this =3D string;
+>         for (i =3D 0; i < (DB_DEFAULT_PKG_ELEMENTS - 1); i++) {
+> --
 
-Just to close the loop on this, I'm assuming you'll rebase to
-v6.11-rc1, fix the warnings from the robot, address Yazen's comment
-and post a v4.
-
-> v1->v2:
-> - Move the definition of structure "hest_parse_aer_info" to file apei.h.
-> 
-> v2->v3:
-> - The applicable hardware for this patch is added to the commit
->   information.
-> - Change the function name "program_hest_aer_endpoint" to
->   "program_hest_aer_common".
-> - Add the comment to function "program_hest_aer_common".
-> - Remove the "PCI_EXP_TYPE_PCIE_BRIDGE" branch handling in function
->   "program_hest_aer_params".
-> 
-> LeoLiuoc (3):
->   ACPI/APEI: Add hest_parse_pcie_aer()
->   PCI: Add AER bits #defines for PCIe to PCI/PCI-X Bridge
->   PCI/ACPI: Add pci_acpi_program_hest_aer_params()
-> 
->  drivers/acpi/apei/hest.c      |  66 +++++++++++++++++++++-
->  drivers/pci/pci-acpi.c        | 101 ++++++++++++++++++++++++++++++++++
->  drivers/pci/pci.h             |   9 +++
->  drivers/pci/probe.c           |   1 +
->  include/acpi/apei.h           |  17 ++++++
->  include/uapi/linux/pci_regs.h |   3 +
->  6 files changed, 195 insertions(+), 2 deletions(-)
-> 
-> -- 
-> 2.34.1
-> 
+Applied (with edited subject and changelog) as 6.12 material, thanks!
