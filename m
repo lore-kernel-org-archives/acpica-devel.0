@@ -1,137 +1,74 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EBC814E2F9
-	for <acpica-devel@lists.linux.dev>; Mon, 12 Aug 2024 05:47:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D70A9C156;
+	Mon, 12 Aug 2024 18:09:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723441626; cv=none; b=iP9VCxqMfKlgxAQAP9BDVSo8P9daPTfKaYWxvaiHEpPl92XNHNofzQBor6tVihARa/I/0quFEXizt0dU84wlfl3J2QJi5P/HpJ4SNaqnDkg64HDVZA3bno9C6GrpuBUUoRohlF20SVy/SAAgCsUHWMTl8cOQ/pj+e8MqwDS52uw=
+	t=1723486155; cv=none; b=gmSOiTpo28at3bABd/gn0Ry/02Op4l/M3M426ujVpinTiWkRj9hH9jpZA4gLNMtUyMGHq9kisxwEJMP6xWmNZ5ERYTHOx7OCI6CSSrDo1lb/MQfNALn+qp8gEpX3SeqcmHQouO5/8ESaQdW1kEIw+znYDBf5vR8Aeq2mbS9pF30=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723441626; c=relaxed/simple;
-	bh=crxt8dmFsPgKdyP6mbp9TYJDYR3hAaakUYEXKMWUPYs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ufku+wWQBQEy2uyvFpME2qCwgzKEtcLM1VfuB2GRYAkfactq4jOT2LcDD0shwjzjswF1RrPFBCTCrKciZ1gIi4cIEpMnzakfDkniPVGK1oRGg+xApMl4/73R7xF/tv6YT8rdKn88OHrnR3nqxRiAiIqW7Hlzmpm8spGDrCpGDSg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VeB5K6rd; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+	s=arc-20240116; t=1723486155; c=relaxed/simple;
+	bh=QPpTyfopkmYil5jwSWXiMRdlVekdVghmXXPWM89UkF4=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=FOiHsvDA0ZBAftn8cQFJ8gixvZYO0HMnWOzzMm6XI/CLVvRlqf3Chw+kZLyfRalxjOhWRQGmcTVOGgDPC5LteOBv13X0B8tgVVJIAlCwKgY0TCvfqkaJC4N8kgm+I8ivjbSdljIsGGSk5E+I/mnch/IMSHQR2PzfuYh1QoD2P5Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZooV+fEs; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VeB5K6rd"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1723441625; x=1754977625;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=crxt8dmFsPgKdyP6mbp9TYJDYR3hAaakUYEXKMWUPYs=;
-  b=VeB5K6rdyxSvyshQv+lKh8ZiMwqMveXsqMjtkQf7TWPpRL5TCDqeKd07
-   db7HU9fj219rdbBBVhpZeRyTkCUPCi6Iiw4vUBf8uKl1g2oPthvk1uHPG
-   x8wQHmqYPQakSqnipm7dXM6X7DGjaXaziWlgo+Y1uZ5YvFORFR6EbgbrZ
-   0YcF96qKWQ3SCK8kK1iVKNs7gmJwMyBbd6Q4KbIi5b79zpsRUo/jjb7X+
-   BB3m6bS7GqrrE2bad4+Tb7E9ykYQOtnU0l5gOjPFh4Bu0P1z5M7b1Tn70
-   GKIPtGyvB/pmW5+f+UISy9jBd6r3qHWsTGWdDk8tMiv7bWdTzj/0AJhta
-   w==;
-X-CSE-ConnectionGUID: N9mIpEqfSkat/nTuK2dsKA==
-X-CSE-MsgGUID: DI2zDOALS/GrEtU2HkEZpw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11161"; a="32925986"
-X-IronPort-AV: E=Sophos;i="6.09,282,1716274800"; 
-   d="scan'208";a="32925986"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2024 22:47:05 -0700
-X-CSE-ConnectionGUID: 594OI087SbmGbFCAPMeIUw==
-X-CSE-MsgGUID: mvthOu9nR56r9wcOzd9XlA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.09,282,1716274800"; 
-   d="scan'208";a="57800736"
-Received: from unknown (HELO jiaqingz-acrn-container.sh.intel.com) ([10.239.43.235])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2024 22:47:03 -0700
-From: Jiaqing Zhao <jiaqing.zhao@linux.intel.com>
-To: Robert Moore <robert.moore@intel.com>,
-	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-	Len Brown <lenb@kernel.org>,
-	linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev
-Cc: linux-kernel@vger.kernel.org,
-	Jiaqing Zhao <jiaqing.zhao@linux.intel.com>
-Subject: [PATCH v2 2/2] ACPICA: Allow setting waking vector on reduced hardware platforms
-Date: Mon, 12 Aug 2024 05:46:47 +0000
-Message-ID: <20240812054647.1194716-3-jiaqing.zhao@linux.intel.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240812054647.1194716-1-jiaqing.zhao@linux.intel.com>
-References: <20240812054647.1194716-1-jiaqing.zhao@linux.intel.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZooV+fEs"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56A2BC32782;
+	Mon, 12 Aug 2024 18:09:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723486154;
+	bh=QPpTyfopkmYil5jwSWXiMRdlVekdVghmXXPWM89UkF4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=ZooV+fEsbgVhEFJoJTLjXisilpk/izLOGKQdSjbK6BsiT3Mb3o4FqzNVOdzJ40HNN
+	 G7D9unrBKPh2vyCeE+R7ZrkvVbuAHrJGI0AJW4x7nruBcaMLB7xyzgDIY/4mOdQcVg
+	 OmWfzCXHyb54ARdVK19hknVOBXnJst/6h6XsjmjYQR3WK4HGdnI5i0UVbvZeGOxfOE
+	 mwjevX4IZAJiVv6AzW3NYqXJiL12WqWuQnPX+GhD4lyjwWJOZ3fH9gqTdC21LIUjCQ
+	 YIhbpf9mjzpAqkvlPduYxsdOs6w2NMz7kK4qIsW5LZA160D5y/rWFqfya3aTWa58H4
+	 TnydXrSnnR/YA==
+Date: Mon, 12 Aug 2024 13:09:12 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Sunil V L <sunilvl@ventanamicro.com>
+Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev, Will Deacon <will@kernel.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Anup Patel <anup@brainfault.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Samuel Holland <samuel.holland@sifive.com>,
+	Robert Moore <robert.moore@intel.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Haibo Xu <haibo1.xu@intel.com>,
+	Andrew Jones <ajones@ventanamicro.com>,
+	Atish Kumar Patra <atishp@rivosinc.com>,
+	Drew Fustini <dfustini@tenstorrent.com>,
+	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>
+Subject: Re: [PATCH v8 01/17] arm64: PCI: Migrate ACPI related functions to
+ pci-acpi.c
+Message-ID: <20240812180912.GA286962@bhelgaas>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240812005929.113499-2-sunilvl@ventanamicro.com>
 
-Allow setting waking vector in FACS table on reduced hardware platforms
-to support S3 wakeup.
+On Mon, Aug 12, 2024 at 06:29:13AM +0530, Sunil V L wrote:
+> The functions defined in arm64 for ACPI support are required
+> for RISC-V also. To avoid duplication, move these functions
+> to common location.
+> 
+> Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
+> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+> Acked-by: Will Deacon <will@kernel.org>
+> Tested-by: BjÃ¶rn TÃ¶pel <bjorn@rivosinc.com>
 
-Link: https://github.com/acpica/acpica/commit/ee53ed6b5452612bb44af542b68d605f8b2b1104
-Signed-off-by: Jiaqing Zhao <jiaqing.zhao@linux.intel.com>
----
- drivers/acpi/acpica/hwxfsleep.c | 15 ++++++---------
- include/acpi/acpixf.h           |  8 ++++----
- 2 files changed, 10 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/acpi/acpica/hwxfsleep.c b/drivers/acpi/acpica/hwxfsleep.c
-index 36ea48f64110..8dbf83aeb455 100644
---- a/drivers/acpi/acpica/hwxfsleep.c
-+++ b/drivers/acpi/acpica/hwxfsleep.c
-@@ -16,20 +16,11 @@
- ACPI_MODULE_NAME("hwxfsleep")
- 
- /* Local prototypes */
--#if (!ACPI_REDUCED_HARDWARE)
- static acpi_status
- acpi_hw_set_firmware_waking_vector(struct acpi_table_facs *facs,
- 				   acpi_physical_address physical_address,
- 				   acpi_physical_address physical_address64);
--#endif
--
--/*
-- * These functions are removed for the ACPI_REDUCED_HARDWARE case:
-- *      acpi_set_firmware_waking_vector
-- *      acpi_enter_sleep_state_s4bios
-- */
- 
--#if (!ACPI_REDUCED_HARDWARE)
- /*******************************************************************************
-  *
-  * FUNCTION:    acpi_hw_set_firmware_waking_vector
-@@ -115,6 +106,12 @@ acpi_set_firmware_waking_vector(acpi_physical_address physical_address,
- 
- ACPI_EXPORT_SYMBOL(acpi_set_firmware_waking_vector)
- 
-+/*
-+ * These functions are removed for the ACPI_REDUCED_HARDWARE case:
-+ *      acpi_enter_sleep_state_s4bios
-+ */
-+
-+#if (!ACPI_REDUCED_HARDWARE)
- /*******************************************************************************
-  *
-  * FUNCTION:    acpi_enter_sleep_state_s4bios
-diff --git a/include/acpi/acpixf.h b/include/acpi/acpixf.h
-index 80dc36f9d527..99bb45a46600 100644
---- a/include/acpi/acpixf.h
-+++ b/include/acpi/acpixf.h
-@@ -881,10 +881,10 @@ ACPI_EXTERNAL_RETURN_STATUS(acpi_status
- 			    acpi_leave_sleep_state_prep(u8 sleep_state))
- ACPI_EXTERNAL_RETURN_STATUS(acpi_status acpi_leave_sleep_state(u8 sleep_state))
- 
--ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status
--				acpi_set_firmware_waking_vector
--				(acpi_physical_address physical_address,
--				 acpi_physical_address physical_address64))
-+ACPI_EXTERNAL_RETURN_STATUS(acpi_status
-+			    acpi_set_firmware_waking_vector
-+			    (acpi_physical_address physical_address,
-+			     acpi_physical_address physical_address64))
- /*
-  * ACPI Timer interfaces
-  */
--- 
-2.43.0
-
+Looks like "Björn Töpel" got corrupted somewhere along the line.
