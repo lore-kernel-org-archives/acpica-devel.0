@@ -1,57 +1,57 @@
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA061481DB
-	for <acpica-devel@lists.linux.dev>; Mon, 12 Aug 2024 01:01:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27BFA53370
+	for <acpica-devel@lists.linux.dev>; Mon, 12 Aug 2024 01:01:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723424465; cv=none; b=M/HPkxtTscwsIoN1l2EJ6egDzKFqPtU+rIXnb2BgThI/WIF/5K+Td5ViMH1WL6JgUb0I2/nhr10U5c4outchubq8sk3kEBE5ygNS3fxd3lMAVGb/gYI2vUYoHYQnkkMPd59loJC3fBaH51NUQmCVSEx/1Sj6CrYyyERhPi6XKgY=
+	t=1723424471; cv=none; b=uB88rOUw26YePX59RRBHDwfxKZm3Qx/CinO1q5njmNsyOjd+uaDKD/Cy7SYSEHtd61q5VPbvPk3xqMqw+tMrVPMXjNrUllBui/DhE4BDDY6MOIEQ3/xDuiL81OR4u57fPRdd+3wL1SRCoIRpY5fyHKSWpaZU+ryBs8u4ssOB/1Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723424465; c=relaxed/simple;
-	bh=c1qYc4e9QVIA4mjJd8so/MjtDZRnBh9X0X6PihmPtA0=;
+	s=arc-20240116; t=1723424471; c=relaxed/simple;
+	bh=kUGmilJtSEYHecokfsz1Dv8H4HmvP4hekzWOib2uw/4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ItMN8clhKrVqFFR+Suz15BQN/RbJ1L2ynx2tE++mFv+1Nlh4vTopaz//jUQcobiNCUWn0Foox8EPwJfykD85d8OYn1s/JPW2hCn2GsrS624qJubnW0rSU53o03zZZJLP77isx8fir06GeNDyS0F9P73NkXPoxBgYn8qUmeytjYo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=Ot8NVy6y; arc=none smtp.client-ip=209.85.216.52
+	 MIME-Version:Content-Type; b=dXhb20SvWQ8wCh52kud9jB2FUcgSMocymYyVXGmxisLt8lYv/hMyD4zOmvqTZkIWns5CYN1N1JZdH1JHDftkS1fa3NJGrdb9xkcYT1Xfs2zI+ZOt4xbmvfZ2Y4HiZWGlhAtr/M+r6uREdaSrOBAN02Ltf8GtteOheVq9Kx752Cc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=nQ8DvTB+; arc=none smtp.client-ip=209.85.167.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="Ot8NVy6y"
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2cb53da06a9so2516437a91.0
-        for <acpica-devel@lists.linux.dev>; Sun, 11 Aug 2024 18:01:03 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="nQ8DvTB+"
+Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-3db1657c0fdso2718445b6e.1
+        for <acpica-devel@lists.linux.dev>; Sun, 11 Aug 2024 18:01:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1723424463; x=1724029263; darn=lists.linux.dev;
+        d=ventanamicro.com; s=google; t=1723424469; x=1724029269; darn=lists.linux.dev;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9eWLrHir182byqrnausz4PNiecB0MULYeCzMr04SHA0=;
-        b=Ot8NVy6yX7RHh21JR577OTrBJVLoHCdq+6B5imTI17bCdd9MTeMJyXnAYQxKvKxMgv
-         +0wszF2ZwNsEH+lknnalThTqkbKnOzaF9VytzYNYDUOniL0ohWsAXzHnO25E2d5X3Ota
-         0E3gsrYCJUpgmyoTupzagO77a3HN/GXFL23owNzCmYhhA8qCVLUbV/SkMMntzmRsR2Qq
-         w0tpDf3oyCJwoWwer3oEdb+qcTCo79dMusDYIKrWVbH0Eskumm+MZvbPRh1VnpC2a81N
-         E6/Qr9zm322PlPx1JjcE52LvH4GPpKzswHYQSbquGnEMtXnl19ijjYfoksQylyRQi/qG
-         4jKw==
+        bh=L2F9HlOmYYBgfOGZ5Y5XAW+7ZHo7CSZJxIOIoseG4Ek=;
+        b=nQ8DvTB+KQBVo1ovC2Rm2JGEXdMieNW2z0qKjCAAWULGQUEF8feS2TmcWJ0cuZgsGb
+         qOosukz8TTWvpVsENAMRUaMSLSUPpisyVMtKvbeymyBQ5attpiECeZnUxbKL+R+DG4A0
+         nxI5TLcJgbvYfabRI++zDwrkE6Puq+ORP7c+TZ7sW5HR7imRMcaHAhPGzHlRjpiiM0+y
+         G2Nv5KFv7KQyQLC+c3tbjByqTBKCLxtoMb0ShHhBYA1TT40Ven2yV8l7Q3rr8TJ0/lfA
+         S15ijZP3SrR4kQ18zhziJpXt+hkfyuj7DAujp6c2T8hD1QNcnGbc5iraTrno51P7VnkE
+         4GZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723424463; x=1724029263;
+        d=1e100.net; s=20230601; t=1723424469; x=1724029269;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9eWLrHir182byqrnausz4PNiecB0MULYeCzMr04SHA0=;
-        b=PopRYUC4KcXJwbHl22GHrim3iSIATbMPptXFNI2NjV0cwky6xg4PPnlGXgwGaoFgta
-         QY3sNbVOcotrOaQLJDTEUp5hosWt5OqsDY4X2VSLDiGvP1uTztv+yP7bf0BFf1ZTRo1/
-         V+ivzvVLSbNy2tQx9hhKg74utAvHUYxWfsDwlsSljvr/uepcZaujN0cyVKVZz2T3k6f7
-         w/Zdc7pQ3rUDIrv+Ypr/FgdmIHyF4/v+11AEDqylc/rWvUEi+T9d4YpDdwgYvR6VQ/Z5
-         Jmo6a7m8UlWNTcQ2j/pe1kfZREjXPGfcpsaCx65GEuBJMEL1yI8Rs+6zw/H+K+Hdru8y
-         75fg==
-X-Forwarded-Encrypted: i=1; AJvYcCWFGoVw2HNU69Jp/GLaat5itWK4M1Brac6Nr0tqLtdgCIVbOS8yTvyVJn+MVAI0cf3VFZWIWLo8yzWFHqddJ2Yo8+tuFmOkoEJ75INC
-X-Gm-Message-State: AOJu0YwxnTA+cMiXFs12ZTJqh8QVvDu557i5Rm1/NfsUo1W/y0HNThNz
-	eybY+W/yYmDoFtsSNC2j2da97625PwajkCK2JbBADwS8NdPowSSgMqv7g8SKDfU=
-X-Google-Smtp-Source: AGHT+IEmnnZO8yRXJ6ENu6bAM1Iq53DDo8oXCMY/2aarMSTJFhyCJE6z0a/eBIRQSdiXXTmWXrm9Iw==
-X-Received: by 2002:a17:90b:1887:b0:2cf:dd3c:9b0d with SMTP id 98e67ed59e1d1-2d1c4b674cdmr19256482a91.2.1723424463037;
-        Sun, 11 Aug 2024 18:01:03 -0700 (PDT)
+        bh=L2F9HlOmYYBgfOGZ5Y5XAW+7ZHo7CSZJxIOIoseG4Ek=;
+        b=ihBZhVqDUrp60d0wb2r3iRku2IT9ZoK2N4llVmudcHWAXD5GZHzHBeK+NpNWxTKMOw
+         GOCsJG/GWiJag8aDNYgervhErLjjM1lk08BLwlbxYa72RyfxHkIrKTZf7zmQJF931KJ5
+         BHhBenLFQWXdrT0xn5QVefcZgVgzsKltUOFFJ9x6XVatd4af+y8uk+uu4X9YZevji8IT
+         uUwyXZ6ACE1QVtYuLv4W6ToxJ06yti1CCmL1e53gAZITkSGw+PDMeIVOJx/vU25WDfv8
+         U70DXw4GNCSuytGJJfI/qQSl6qEsXwsAdq3dieSHDYW6UHgTkqSTb6xdTS9RhU8EU13p
+         5hVA==
+X-Forwarded-Encrypted: i=1; AJvYcCWClv7e7piew69ZsHAJSGyMvZAnNHMzaxc/ajLhGm1Q+5GCJAplH1yPJTtNYg7h/VrcC1WdMVweN9WnQSFUKseW7pTQKIpy02L8sRqU
+X-Gm-Message-State: AOJu0YzURBCtOPVcoaLbUiUwC0WcLc7aCB6RIKu/vP20hcW6WxBiv1iO
+	3N0Ev0oNDJiCPzlYTvzZ+fAk95ZJwdXa4/rTjZKonhuwJPIjwKh0bAXWfCUvwC0=
+X-Google-Smtp-Source: AGHT+IHZXV1nZ3pGHtKOzIjfGzSIJM5PQQnjoEr5t/Q7EAetVkMKeElEktJkKAiBNFFJkWIu7MYWBg==
+X-Received: by 2002:a05:6808:bcc:b0:3d9:35df:8f2 with SMTP id 5614622812f47-3dc4169de4bmr11444935b6e.28.1723424469384;
+        Sun, 11 Aug 2024 18:01:09 -0700 (PDT)
 Received: from sunil-pc.tail07344b.ts.net ([106.51.198.16])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7c3dbe8cbdcsm3074062a12.61.2024.08.11.18.00.57
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7c3dbe8cbdcsm3074062a12.61.2024.08.11.18.01.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Aug 2024 18:01:02 -0700 (PDT)
+        Sun, 11 Aug 2024 18:01:08 -0700 (PDT)
 From: Sunil V L <sunilvl@ventanamicro.com>
 To: linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
@@ -76,9 +76,9 @@ Cc: Will Deacon <will@kernel.org>,
 	Drew Fustini <dfustini@tenstorrent.com>,
 	Sunil V L <sunilvl@ventanamicro.com>,
 	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>
-Subject: [PATCH v8 13/17] irqchip/riscv-intc: Add ACPI support for AIA
-Date: Mon, 12 Aug 2024 06:29:25 +0530
-Message-ID: <20240812005929.113499-14-sunilvl@ventanamicro.com>
+Subject: [PATCH v8 14/17] irqchip/riscv-imsic-state: Create separate function for DT
+Date: Mon, 12 Aug 2024 06:29:26 +0530
+Message-ID: <20240812005929.113499-15-sunilvl@ventanamicro.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240812005929.113499-1-sunilvl@ventanamicro.com>
 References: <20240812005929.113499-1-sunilvl@ventanamicro.com>
@@ -91,191 +91,136 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=cp1252
 Content-Transfer-Encoding: 8bit
 
-The RINTC subtype structure in MADT also has information about other
-interrupt controllers. Save this information and provide interfaces to
-retrieve them when required by corresponding drivers.
+While populating IMSIC global structure, many fields are initialized
+using DT properties. Make the code which uses DT properties as separate
+function so that it is easier to add ACPI support later. No
+functionality added/changed.
 
+Suggested-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
 Reviewed-by: Anup Patel <anup@brainfault.org>
 Tested-by: Björn Töpel <bjorn@rivosinc.com>
 ---
- arch/riscv/include/asm/irq.h     | 33 ++++++++++++
- drivers/irqchip/irq-riscv-intc.c | 90 ++++++++++++++++++++++++++++++++
- 2 files changed, 123 insertions(+)
+ drivers/irqchip/irq-riscv-imsic-state.c | 97 ++++++++++++++-----------
+ 1 file changed, 55 insertions(+), 42 deletions(-)
 
-diff --git a/arch/riscv/include/asm/irq.h b/arch/riscv/include/asm/irq.h
-index 44a0b128c602..7e9a84a005ed 100644
---- a/arch/riscv/include/asm/irq.h
-+++ b/arch/riscv/include/asm/irq.h
-@@ -12,6 +12,8 @@
- 
- #include <asm-generic/irq.h>
- 
-+#define INVALID_CONTEXT UINT_MAX
-+
- void riscv_set_intc_hwnode_fn(struct fwnode_handle *(*fn)(void));
- 
- struct fwnode_handle *riscv_get_intc_hwnode(void);
-@@ -28,6 +30,11 @@ enum riscv_irqchip_type {
- int riscv_acpi_get_gsi_info(struct fwnode_handle *fwnode, u32 *gsi_base,
- 			    u32 *id, u32 *nr_irqs, u32 *nr_idcs);
- struct fwnode_handle *riscv_acpi_get_gsi_domain_id(u32 gsi);
-+unsigned long acpi_rintc_index_to_hartid(u32 index);
-+unsigned long acpi_rintc_ext_parent_to_hartid(unsigned int plic_id, unsigned int ctxt_idx);
-+unsigned int acpi_rintc_get_plic_nr_contexts(unsigned int plic_id);
-+unsigned int acpi_rintc_get_plic_context(unsigned int plic_id, unsigned int ctxt_idx);
-+int __init acpi_rintc_get_imsic_mmio_info(u32 index, struct resource *res);
- 
- #else
- static inline int riscv_acpi_get_gsi_info(struct fwnode_handle *fwnode, u32 *gsi_base,
-@@ -36,6 +43,32 @@ static inline int riscv_acpi_get_gsi_info(struct fwnode_handle *fwnode, u32 *gsi
+diff --git a/drivers/irqchip/irq-riscv-imsic-state.c b/drivers/irqchip/irq-riscv-imsic-state.c
+index 5479f872e62b..f9e70832863a 100644
+--- a/drivers/irqchip/irq-riscv-imsic-state.c
++++ b/drivers/irqchip/irq-riscv-imsic-state.c
+@@ -510,6 +510,60 @@ static int __init imsic_matrix_init(void)
  	return 0;
  }
  
-+static inline unsigned long acpi_rintc_index_to_hartid(u32 index)
++static int __init imsic_populate_global_dt(struct fwnode_handle *fwnode,
++					   struct imsic_global_config *global,
++					   u32 *nr_parent_irqs)
 +{
-+	return INVALID_HARTID;
-+}
++	int rc;
 +
-+static inline unsigned long acpi_rintc_ext_parent_to_hartid(unsigned int plic_id,
-+							    unsigned int ctxt_idx)
-+{
-+	return INVALID_HARTID;
-+}
++	/* Find number of guest index bits in MSI address */
++	rc = of_property_read_u32(to_of_node(fwnode), "riscv,guest-index-bits",
++				  &global->guest_index_bits);
++	if (rc)
++		global->guest_index_bits = 0;
 +
-+static inline unsigned int acpi_rintc_get_plic_nr_contexts(unsigned int plic_id)
-+{
-+	return INVALID_CONTEXT;
-+}
-+
-+static inline unsigned int acpi_rintc_get_plic_context(unsigned int plic_id, unsigned int ctxt_idx)
-+{
-+	return INVALID_CONTEXT;
-+}
-+
-+static inline int __init acpi_rintc_get_imsic_mmio_info(u32 index, struct resource *res)
-+{
-+	return 0;
-+}
-+
- #endif /* CONFIG_ACPI */
- 
- #endif /* _ASM_RISCV_IRQ_H */
-diff --git a/drivers/irqchip/irq-riscv-intc.c b/drivers/irqchip/irq-riscv-intc.c
-index 47f3200476da..8c5411386220 100644
---- a/drivers/irqchip/irq-riscv-intc.c
-+++ b/drivers/irqchip/irq-riscv-intc.c
-@@ -250,6 +250,85 @@ IRQCHIP_DECLARE(andes, "andestech,cpu-intc", riscv_intc_init);
- 
- #ifdef CONFIG_ACPI
- 
-+struct rintc_data {
-+	union {
-+		u32		ext_intc_id;
-+		struct {
-+			u32	context_id	: 16,
-+				reserved	:  8,
-+				aplic_plic_id	:  8;
-+		};
-+	};
-+	unsigned long		hart_id;
-+	u64			imsic_addr;
-+	u32			imsic_size;
-+};
-+
-+static u32 nr_rintc;
-+static struct rintc_data *rintc_acpi_data[NR_CPUS];
-+
-+#define for_each_matching_plic(_plic_id)				\
-+	unsigned int _plic;						\
-+									\
-+	for (_plic = 0; _plic < nr_rintc; _plic++)			\
-+		if (rintc_acpi_data[_plic]->aplic_plic_id != _plic_id)	\
-+			continue;					\
-+		else
-+
-+unsigned int acpi_rintc_get_plic_nr_contexts(unsigned int plic_id)
-+{
-+	unsigned int nctx = 0;
-+
-+	for_each_matching_plic(plic_id)
-+		nctx++;
-+
-+	return nctx;
-+}
-+
-+static struct rintc_data *get_plic_context(unsigned int plic_id, unsigned int ctxt_idx)
-+{
-+	unsigned int ctxt = 0;
-+
-+	for_each_matching_plic(plic_id) {
-+		if (ctxt == ctxt_idx)
-+			return rintc_acpi_data[_plic];
-+
-+		ctxt++;
++	/* Find number of HART index bits */
++	rc = of_property_read_u32(to_of_node(fwnode), "riscv,hart-index-bits",
++				  &global->hart_index_bits);
++	if (rc) {
++		/* Assume default value */
++		global->hart_index_bits = __fls(*nr_parent_irqs);
++		if (BIT(global->hart_index_bits) < *nr_parent_irqs)
++			global->hart_index_bits++;
 +	}
 +
-+	return NULL;
-+}
++	/* Find number of group index bits */
++	rc = of_property_read_u32(to_of_node(fwnode), "riscv,group-index-bits",
++				  &global->group_index_bits);
++	if (rc)
++		global->group_index_bits = 0;
 +
-+unsigned long acpi_rintc_ext_parent_to_hartid(unsigned int plic_id, unsigned int ctxt_idx)
-+{
-+	struct rintc_data *data = get_plic_context(plic_id, ctxt_idx);
++	/*
++	 * Find first bit position of group index.
++	 * If not specified assumed the default APLIC-IMSIC configuration.
++	 */
++	rc = of_property_read_u32(to_of_node(fwnode), "riscv,group-index-shift",
++				  &global->group_index_shift);
++	if (rc)
++		global->group_index_shift = IMSIC_MMIO_PAGE_SHIFT * 2;
 +
-+	return data ? data->hart_id : INVALID_HARTID;
-+}
++	/* Find number of interrupt identities */
++	rc = of_property_read_u32(to_of_node(fwnode), "riscv,num-ids",
++				  &global->nr_ids);
++	if (rc) {
++		pr_err("%pfwP: number of interrupt identities not found\n", fwnode);
++		return rc;
++	}
 +
-+unsigned int acpi_rintc_get_plic_context(unsigned int plic_id, unsigned int ctxt_idx)
-+{
-+	struct rintc_data *data = get_plic_context(plic_id, ctxt_idx);
++	/* Find number of guest interrupt identities */
++	rc = of_property_read_u32(to_of_node(fwnode), "riscv,num-guest-ids",
++				  &global->nr_guest_ids);
++	if (rc)
++		global->nr_guest_ids = global->nr_ids;
 +
-+	return data ? data->context_id : INVALID_CONTEXT;
-+}
-+
-+unsigned long acpi_rintc_index_to_hartid(u32 index)
-+{
-+	return index >= nr_rintc ? INVALID_HARTID : rintc_acpi_data[index]->hart_id;
-+}
-+
-+int acpi_rintc_get_imsic_mmio_info(u32 index, struct resource *res)
-+{
-+	if (index >= nr_rintc)
-+		return -1;
-+
-+	res->start = rintc_acpi_data[index]->imsic_addr;
-+	res->end = res->start + rintc_acpi_data[index]->imsic_size - 1;
-+	res->flags = IORESOURCE_MEM;
 +	return 0;
 +}
 +
- static int __init riscv_intc_acpi_init(union acpi_subtable_headers *header,
- 				       const unsigned long end)
+ static int __init imsic_get_parent_hartid(struct fwnode_handle *fwnode,
+ 					  u32 index, unsigned long *hartid)
  {
-@@ -258,6 +337,15 @@ static int __init riscv_intc_acpi_init(union acpi_subtable_headers *header,
- 	int rc;
+@@ -578,50 +632,9 @@ static int __init imsic_parse_fwnode(struct fwnode_handle *fwnode,
+ 		return -EINVAL;
+ 	}
  
- 	rintc = (struct acpi_madt_rintc *)header;
-+	rintc_acpi_data[nr_rintc] = kzalloc(sizeof(*rintc_acpi_data[0]), GFP_KERNEL);
-+	if (!rintc_acpi_data[nr_rintc])
-+		return -ENOMEM;
-+
-+	rintc_acpi_data[nr_rintc]->ext_intc_id = rintc->ext_intc_id;
-+	rintc_acpi_data[nr_rintc]->hart_id = rintc->hart_id;
-+	rintc_acpi_data[nr_rintc]->imsic_addr = rintc->imsic_addr;
-+	rintc_acpi_data[nr_rintc]->imsic_size = rintc->imsic_size;
-+	nr_rintc++;
- 
- 	/*
- 	 * The ACPI MADT will have one INTC for each CPU (or HART)
-@@ -277,6 +365,8 @@ static int __init riscv_intc_acpi_init(union acpi_subtable_headers *header,
- 	rc = riscv_intc_init_common(fn, &riscv_intc_chip);
+-	/* Find number of guest index bits in MSI address */
+-	rc = of_property_read_u32(to_of_node(fwnode), "riscv,guest-index-bits",
+-				  &global->guest_index_bits);
++	rc = imsic_populate_global_dt(fwnode, global, nr_parent_irqs);
  	if (rc)
- 		irq_domain_free_fwnode(fn);
-+	else
-+		acpi_set_irq_model(ACPI_IRQ_MODEL_RINTC, riscv_acpi_get_gsi_domain_id);
+-		global->guest_index_bits = 0;
+-
+-	/* Find number of HART index bits */
+-	rc = of_property_read_u32(to_of_node(fwnode), "riscv,hart-index-bits",
+-				  &global->hart_index_bits);
+-	if (rc) {
+-		/* Assume default value */
+-		global->hart_index_bits = __fls(*nr_parent_irqs);
+-		if (BIT(global->hart_index_bits) < *nr_parent_irqs)
+-			global->hart_index_bits++;
+-	}
+-
+-	/* Find number of group index bits */
+-	rc = of_property_read_u32(to_of_node(fwnode), "riscv,group-index-bits",
+-				  &global->group_index_bits);
+-	if (rc)
+-		global->group_index_bits = 0;
+-
+-	/*
+-	 * Find first bit position of group index.
+-	 * If not specified assumed the default APLIC-IMSIC configuration.
+-	 */
+-	rc = of_property_read_u32(to_of_node(fwnode), "riscv,group-index-shift",
+-				  &global->group_index_shift);
+-	if (rc)
+-		global->group_index_shift = IMSIC_MMIO_PAGE_SHIFT * 2;
+-
+-	/* Find number of interrupt identities */
+-	rc = of_property_read_u32(to_of_node(fwnode), "riscv,num-ids",
+-				  &global->nr_ids);
+-	if (rc) {
+-		pr_err("%pfwP: number of interrupt identities not found\n", fwnode);
+ 		return rc;
+-	}
+-
+-	/* Find number of guest interrupt identities */
+-	rc = of_property_read_u32(to_of_node(fwnode), "riscv,num-guest-ids",
+-				  &global->nr_guest_ids);
+-	if (rc)
+-		global->nr_guest_ids = global->nr_ids;
  
- 	return rc;
- }
+ 	/* Sanity check guest index bits */
+ 	i = BITS_PER_LONG - IMSIC_MMIO_PAGE_SHIFT;
 -- 
 2.43.0
 
