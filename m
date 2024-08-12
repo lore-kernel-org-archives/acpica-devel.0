@@ -1,57 +1,57 @@
-Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 549E7847B
-	for <acpica-devel@lists.linux.dev>; Mon, 12 Aug 2024 01:00:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71EB717552
+	for <acpica-devel@lists.linux.dev>; Mon, 12 Aug 2024 01:00:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723424409; cv=none; b=cSd2bt2QYo0lpOlUPskfnFtlPdh0rDEFi81q7/Cx9Q6XzoEzR5DQ0SIIK2L0w6l/BMffiKiuPmB16YsdgiNfWvMugc/vtsGqzaat/Pk4KFl0hkkZtECRfElchewdSsqK6XylCl0H/6JQ9UsYgTXzIxYl9B3yO5+NsrLruTjy1RE=
+	t=1723424414; cv=none; b=in/xf5BMsHDh/Doxr/OsaFqrHW/LlyP8h3gp7Wnu4jqTrF1UT7DmnJpdfn316YxuDIY5+sHB5NYxBCzatMX13MYGcD275qtP2iNPv2oOWORxSGbLKgK8TSc4xr5D8YSQTC7tNWx0TT40sM7s9sWQZt9uWueUMlT8U82qcPJujsw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723424409; c=relaxed/simple;
-	bh=K0yy2Cz0AHQ22O/DOvVoBVInCMziuYu5zVI87ewmQhw=;
+	s=arc-20240116; t=1723424414; c=relaxed/simple;
+	bh=Vcq+n8JQdTk3vmf6hqmLO7PiXIRS5Btk4ojcnv75rJM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ixty/m8bEbkgZ1rtIoI+YlZYceRitC9feA5Ymv4JcbPVd0rPXHaK9wSMPfyUTF7xPOyhErbKhxAKT4LuotKaSL5buCmeTXndg+O+tLRKGLL4/IhvLhhJ65ecq1nriV9+9Cn3HwmBmRBwkjSVn5poH8XGq3JMg0lb+AAjhmPhI+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=EAEPsR29; arc=none smtp.client-ip=209.85.167.179
+	 MIME-Version:Content-Type; b=dZ+abVJbx7kg26O1vlXtEPf6chhsefnzt+ox3yYo5vT2ZY2Aw7QIL68cY9SbxYWwZTgDIeKwixwUtWK8dac70+J/m0zsxLD9yyKuUKdVnlbb4j40Qf6eymTIXsSUOaAssBsXQoJEz00lr1uXdpyGyDpM3V1ny1k5Tjxvrj63+zo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=e5eI5d8R; arc=none smtp.client-ip=209.85.215.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="EAEPsR29"
-Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3db22c02a42so2489008b6e.3
-        for <acpica-devel@lists.linux.dev>; Sun, 11 Aug 2024 18:00:07 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="e5eI5d8R"
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-7c3e0a3c444so627308a12.1
+        for <acpica-devel@lists.linux.dev>; Sun, 11 Aug 2024 18:00:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1723424406; x=1724029206; darn=lists.linux.dev;
+        d=ventanamicro.com; s=google; t=1723424413; x=1724029213; darn=lists.linux.dev;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Fg7MKJMwlR+eRmszvFqgWwl0l7xFjetJlLXQ4McHDXI=;
-        b=EAEPsR29FrX0HA6OrmyLJ+aHpAcM3OyaWe2rm1DDz8jZz4ioQZku6nXK6Ha3DSrvap
-         UOyjGHQI+P0dBRt7a+oVPqwjaGZLZi5/2HYA3oBtfUrU2mx+JCQ1azUQQvjDJA8AJRMs
-         UKLSIZQV5N26zJrRKsvBQq7nHqT0hmkkC8i5ByWMgzdoCiJzhuFKRNd5uQltfiAxowiE
-         gPmj3zZ0szd4KKJAKdhMHmwEshr2lf7WkWXtBvoPH8ghKqjKmbXlKGzPdwy6JWAh7ydC
-         UxHjNtDqpW/u3btMK8oHvaZYBaE5zuz6lHKKT5zFMVoyDflAaOr+AaQflaSUZhG1lIS4
-         3yrg==
+        bh=uJwTiJ9RwivJpxYHWXKjwIEWKuv7B7ooXczAECPccKA=;
+        b=e5eI5d8R3w1zl9+0qGPb8+BuOTYke2WsAJnw2AhyA2P5+ICmfeS7kyXl/xJlE0yjL1
+         EmGL3qqHGdoseyMLThM8KRoeWIHRisRHaqJBOtk5Av018FAuAexzbogAskW7AjVRWkRp
+         24Apc6sT0W1A+3PRbVgDOM0XxYs5z2fBihRa7sJ+WZwKUzDWxi8BYqnbYTd9rszzjHUM
+         vvNi4f5I4fKdIgTa423C2PJNSPNJTbAdbkkD0CUcmlLLq74pI70foXm9DR0OjwExUwjj
+         8d8+yBNZm4Hend+m4cAZYlCCePSLyw3ZEt98Kz51VHE4A4gtAInstVexbVj5uB1KATL9
+         jLcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723424406; x=1724029206;
+        d=1e100.net; s=20230601; t=1723424413; x=1724029213;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Fg7MKJMwlR+eRmszvFqgWwl0l7xFjetJlLXQ4McHDXI=;
-        b=uGXA/sCvlFIZOcePxu9H1anQBaCqijiXHDBQYW7rYgoc9cETTyA1aISa6x7ZAF1Mtt
-         ilZ99klEMOukL8D6iC2nHfUh6UJweu/sfRFqOxfZK6Uy3iWAmeq/6Pi1RyYMAN3C3pRY
-         KVHeDD2Em/48fG+A3Dqj7KqcZAUP9oHhyojHs/2LkMCffdXIIgaOogqh/MemmrMegZCQ
-         xmeG/RcqGsL/1PmJUfNIzSNennedua07SBCpoJjH0DupHmu7pzXeZQ6i6tqNuzO4gVCR
-         Gi6aoQaAdu4f5Uw05zSsq/H/b0fca9KNJtPFbCpFxxGHUlfTPZoAIflmdlSkXBc2D23Q
-         v5tA==
-X-Forwarded-Encrypted: i=1; AJvYcCVmYIFBdzMW6j0c95LazTmFNmBDXA5IQrazqbdXanTClwrMqD/0BBsPaAFLOzSNfH6ApWGlLRxKwv+Fm30xGl34JC8Pp2HxK2E56sQU
-X-Gm-Message-State: AOJu0YxOXU3WhKSd2NKGc4efFOIMuVF5xDO+HXs8/L7ml1lnMuQ2vLTc
-	HFF+5+9TKPH0aVedqH4Pmx0BSARnhLPp/Xc75MehHU8BoE5EITBeuiew2m5xrZY=
-X-Google-Smtp-Source: AGHT+IFq/2aqIFIbaZVtORXZ4ma22Wclt9l+I9epH3oTGlfkp+sVOBf6L7LmmBy3q6/DeC+M+tbDQQ==
-X-Received: by 2002:a05:6808:3a07:b0:3da:a16e:1764 with SMTP id 5614622812f47-3dc41667c8fmr8781731b6e.4.1723424406285;
-        Sun, 11 Aug 2024 18:00:06 -0700 (PDT)
+        bh=uJwTiJ9RwivJpxYHWXKjwIEWKuv7B7ooXczAECPccKA=;
+        b=X/QIw1twIYlYfLwraNwy3lQTa43td5LQqSsyJsmtOiJIx3TQciUMpFxoNmAF9Iqsu6
+         Tu05xy1I7Hi9prs/KMh6gsx7PHPDls/uy+PhS1raaxoHYIAB/QcgQhPRKUL6D8H4Zx/a
+         vCw1e4Vaf0SowQdecElqa3fNnLDxnmtY/QHhr01wHbZBzD6hO5eQKMWw8OMbJrSAQ7bL
+         3r5QuilsXu0cjHgvxsqvTrKj+y++ND8Nxi4I0USjPrAOx4VPi7xdE4KUGjLeROkVMJM6
+         CoA45p4FYMO3RNFOM8h1594ZjnWQXySpgMWSqMKLOSv8CJTw4AS6OPb/5mr0BEx8+qSR
+         gX1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWc6RMte8SAQVbRdYBqX5MmIqD+mG2q7l0RMY5c/STbCQKE1c+HfsgjSqF4FvYBR+E8bXN50VcwLK6fZnlaHRsiXBAoZpZI+9HpxFxi
+X-Gm-Message-State: AOJu0YxQewBrHtLgOfiMr43+pkDVyg8I1okyjZE1CBEDQDtxJNgxqHpy
+	77c8lwyVZMtqoT43a34FQNpOky0BfTb7cIdXoPKVUYVmE6mSkSxzgbwa7QSu9qE=
+X-Google-Smtp-Source: AGHT+IEe5Qz6cd7b/1zBihHx5AlfGtYBeT8sDhSQ+DFn35gv+sWFK8VgaNh+IQbBrU4whiezDiQL7g==
+X-Received: by 2002:a17:902:e5c2:b0:1fd:8f7b:1e88 with SMTP id d9443c01a7336-2009681bff6mr206131935ad.12.1723424412492;
+        Sun, 11 Aug 2024 18:00:12 -0700 (PDT)
 Received: from sunil-pc.tail07344b.ts.net ([106.51.198.16])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7c3dbe8cbdcsm3074062a12.61.2024.08.11.18.00.00
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7c3dbe8cbdcsm3074062a12.61.2024.08.11.18.00.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Aug 2024 18:00:05 -0700 (PDT)
+        Sun, 11 Aug 2024 18:00:12 -0700 (PDT)
 From: Sunil V L <sunilvl@ventanamicro.com>
 To: linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
@@ -76,9 +76,9 @@ Cc: Will Deacon <will@kernel.org>,
 	Drew Fustini <dfustini@tenstorrent.com>,
 	Sunil V L <sunilvl@ventanamicro.com>,
 	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>
-Subject: [PATCH v8 04/17] ACPI: scan: Refactor dependency creation
-Date: Mon, 12 Aug 2024 06:29:16 +0530
-Message-ID: <20240812005929.113499-5-sunilvl@ventanamicro.com>
+Subject: [PATCH v8 05/17] ACPI: scan: Add RISC-V interrupt controllers to honor list
+Date: Mon, 12 Aug 2024 06:29:17 +0530
+Message-ID: <20240812005929.113499-6-sunilvl@ventanamicro.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240812005929.113499-1-sunilvl@ventanamicro.com>
 References: <20240812005929.113499-1-sunilvl@ventanamicro.com>
@@ -91,147 +91,28 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=cp1252
 Content-Transfer-Encoding: 8bit
 
-Some architectures like RISC-V will use implicit dependencies like GSI
-map to create dependencies between interrupt controller and devices. To
-support doing that, the function which creates the dependency, is
-refactored bit and made public so that dependency can be added from
-outside of scan.c as well.
+RISC-V PLIC and APLIC will have dependency from devices using GSI. So, add
+these devices to the honor list.
 
 Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
 Tested-by: Björn Töpel <bjorn@rivosinc.com>
 ---
- drivers/acpi/scan.c     | 86 ++++++++++++++++++++++-------------------
- include/acpi/acpi_bus.h |  1 +
- 2 files changed, 48 insertions(+), 39 deletions(-)
+ drivers/acpi/scan.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-index 52a9dfc8e18c..374cae4aef78 100644
+index 374cae4aef78..39b3ccae9f79 100644
 --- a/drivers/acpi/scan.c
 +++ b/drivers/acpi/scan.c
-@@ -2013,6 +2013,49 @@ void acpi_scan_hotplug_enabled(struct acpi_hotplug_profile *hotplug, bool val)
- 	mutex_unlock(&acpi_scan_lock);
- }
+@@ -861,6 +861,8 @@ static const char * const acpi_honor_dep_ids[] = {
+ 	"INTC1095", /* IVSC (ADL) driver must be loaded to allow i2c access to camera sensors */
+ 	"INTC100A", /* IVSC (RPL) driver must be loaded to allow i2c access to camera sensors */
+ 	"INTC10CF", /* IVSC (MTL) driver must be loaded to allow i2c access to camera sensors */
++	"RSCV0001", /* RISC-V PLIC */
++	"RSCV0002", /* RISC-V APLIC */
+ 	NULL
+ };
  
-+int acpi_scan_add_dep(acpi_handle handle, struct acpi_handle_list *dep_devices)
-+{
-+	u32 count;
-+	int i;
-+
-+	for (count = 0, i = 0; i < dep_devices->count; i++) {
-+		struct acpi_device_info *info;
-+		struct acpi_dep_data *dep;
-+		bool skip, honor_dep;
-+		acpi_status status;
-+
-+		status = acpi_get_object_info(dep_devices->handles[i], &info);
-+		if (ACPI_FAILURE(status)) {
-+			acpi_handle_debug(handle, "Error reading _DEP device info\n");
-+			continue;
-+		}
-+
-+		skip = acpi_info_matches_ids(info, acpi_ignore_dep_ids);
-+		honor_dep = acpi_info_matches_ids(info, acpi_honor_dep_ids);
-+		kfree(info);
-+
-+		if (skip)
-+			continue;
-+
-+		dep = kzalloc(sizeof(*dep), GFP_KERNEL);
-+		if (!dep)
-+			continue;
-+
-+		count++;
-+
-+		dep->supplier = dep_devices->handles[i];
-+		dep->consumer = handle;
-+		dep->honor_dep = honor_dep;
-+
-+		mutex_lock(&acpi_dep_list_lock);
-+		list_add_tail(&dep->node, &acpi_dep_list);
-+		mutex_unlock(&acpi_dep_list_lock);
-+	}
-+
-+	acpi_handle_list_free(dep_devices);
-+	return count;
-+}
-+
- static void acpi_scan_init_hotplug(struct acpi_device *adev)
- {
- 	struct acpi_hardware_id *hwid;
-@@ -2035,8 +2078,7 @@ static void acpi_scan_init_hotplug(struct acpi_device *adev)
- static u32 acpi_scan_check_dep(acpi_handle handle)
- {
- 	struct acpi_handle_list dep_devices;
--	u32 count;
--	int i;
-+	u32 count = 0;
- 
- 	/*
- 	 * Check for _HID here to avoid deferring the enumeration of:
-@@ -2045,48 +2087,14 @@ static u32 acpi_scan_check_dep(acpi_handle handle)
- 	 * Still, checking for _HID catches more then just these cases ...
- 	 */
- 	if (!acpi_has_method(handle, "_DEP") || !acpi_has_method(handle, "_HID"))
--		return 0;
-+		return count;
- 
- 	if (!acpi_evaluate_reference(handle, "_DEP", NULL, &dep_devices)) {
- 		acpi_handle_debug(handle, "Failed to evaluate _DEP.\n");
--		return 0;
-+		return count;
- 	}
- 
--	for (count = 0, i = 0; i < dep_devices.count; i++) {
--		struct acpi_device_info *info;
--		struct acpi_dep_data *dep;
--		bool skip, honor_dep;
--		acpi_status status;
--
--		status = acpi_get_object_info(dep_devices.handles[i], &info);
--		if (ACPI_FAILURE(status)) {
--			acpi_handle_debug(handle, "Error reading _DEP device info\n");
--			continue;
--		}
--
--		skip = acpi_info_matches_ids(info, acpi_ignore_dep_ids);
--		honor_dep = acpi_info_matches_ids(info, acpi_honor_dep_ids);
--		kfree(info);
--
--		if (skip)
--			continue;
--
--		dep = kzalloc(sizeof(*dep), GFP_KERNEL);
--		if (!dep)
--			continue;
--
--		count++;
--
--		dep->supplier = dep_devices.handles[i];
--		dep->consumer = handle;
--		dep->honor_dep = honor_dep;
--
--		mutex_lock(&acpi_dep_list_lock);
--		list_add_tail(&dep->node , &acpi_dep_list);
--		mutex_unlock(&acpi_dep_list_lock);
--	}
--
--	acpi_handle_list_free(&dep_devices);
-+	count += acpi_scan_add_dep(handle, &dep_devices);
- 	return count;
- }
- 
-diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-index 8db5bd382915..d6a4dd58e36f 100644
---- a/include/acpi/acpi_bus.h
-+++ b/include/acpi/acpi_bus.h
-@@ -993,6 +993,7 @@ static inline void acpi_put_acpi_dev(struct acpi_device *adev)
- 
- int acpi_wait_for_acpi_ipmi(void);
- 
-+int acpi_scan_add_dep(acpi_handle handle, struct acpi_handle_list *dep_devices);
- #else	/* CONFIG_ACPI */
- 
- static inline int register_acpi_bus_type(void *bus) { return 0; }
 -- 
 2.43.0
 
