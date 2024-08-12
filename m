@@ -1,55 +1,57 @@
-Received: from mail-ot1-f67.google.com (mail-ot1-f67.google.com [209.85.210.67])
+Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C30EB4A1C
-	for <acpica-devel@lists.linux.dev>; Mon, 12 Aug 2024 00:59:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 781256FA8
+	for <acpica-devel@lists.linux.dev>; Mon, 12 Aug 2024 00:59:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723424385; cv=none; b=rqzuouStHgoVzhwGtiVUpWdVAen0yhubA3O/YRSHz3aZ//L9p/Yq7yXDA8cSAHNejaSYu5eeTBlclKur2qZ5xlMbyzZJaEbU3uYyRUzh/fHTJa9lHVYq4Jpjx1fms/mG7LT3z+hNe62TSFTJUM7nJoAeRFQ/oApbNTAIp6WCsdA=
+	t=1723424390; cv=none; b=TnJCUxpdllZvlIRhxYFvC0f/fD6cgS/TNZH7Qk3wqIWvRvbL9qa5QFCtWbRv3d6wYSIJk8Dp4s9o3s3/DBlTYSY0snQcyWGteBg4eLdeU/wdi1wThZu3PRsD/hUxXfb+XDjt8cM10tqEQrysQrOdUvtVWCE8pZKM0Mi/UC+oqJs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723424385; c=relaxed/simple;
-	bh=JGKUKC6ddll/HQbcX29Sm7QYBwZDAAanOpcgaEl4Qts=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=nieYPaI4XseUTbW7HiJdGoYbyHoirLId9S7LUBxiLtcBeAsSJbChHOksEPttKqSrx1c9WiFh/cvJxc7DMKMnZYRGwfXAkRV0Wy5eBzGgb/lb6a5ookW3LvxUMJ1IaFv3KfuebKgyeUhYK2kgbG3N1e2YnEISwnjkjUqyiE0wLyo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=Xh+LbEbo; arc=none smtp.client-ip=209.85.210.67
+	s=arc-20240116; t=1723424390; c=relaxed/simple;
+	bh=C+i0U6VGde+1v9kIi2tE1b1sf1jRuHcxIrWnNcHIpqg=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=YDMqT6y9qovDrWdMTX18WhOJIo56CTgmO7yZU4IQ3rtfRhnlf9o0H9fgX7DOkrzEi2kycU/R9Km0f34zqPCXGTXPWbULLFXBR+d7VOHiZqAeHuxvqkrpMUugarSXELoLLAFzLROiOaJGj88jxay+IS+1zEKDgroDiyGsMl9g5gE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=DC1z8xs9; arc=none smtp.client-ip=209.85.166.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="Xh+LbEbo"
-Received: by mail-ot1-f67.google.com with SMTP id 46e09a7af769-70943b07c2cso2471548a34.1
-        for <acpica-devel@lists.linux.dev>; Sun, 11 Aug 2024 17:59:42 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="DC1z8xs9"
+Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-39728bbf949so14888235ab.3
+        for <acpica-devel@lists.linux.dev>; Sun, 11 Aug 2024 17:59:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1723424382; x=1724029182; darn=lists.linux.dev;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=u1t+DOBtWVw6p1QzV6tpA79/Z/soEYYlKfO1cj75JM4=;
-        b=Xh+LbEboWDkqmKj5G/stvwaQO9lm8q/TgPhNoohSgxKOeZOjpqGG3aXIOh/T1gdEOV
-         GXwX0WTV7r+Hd6FlmVIKOA/OEJBP1g0P5n7SWEe7S8Bn5q3feyRwcS9cHziS1kt5ccye
-         IcApySBF0dhUAbCXsX6ForffpgpCQxp/haTZUpVZCSD1RXCozbfegojBjTaC5NaiEoXx
-         DlI0SLhTf8FUeoeEz45kSf1aycF6SEGh5YwKMPZwpTkR/gZiYF6b0mO/i6faKGue/pAf
-         TLfYRb1+3gvY/qybIEAW+1xqaGMZnK+mhbeII/Qakm+y9Icx+aZKIyPavx+rMlvVO+X3
-         staw==
+        d=ventanamicro.com; s=google; t=1723424387; x=1724029187; darn=lists.linux.dev;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8jeK3ESAUl7YxTE1Iy3jfhVYgTpS15SSq0iPGR06s9c=;
+        b=DC1z8xs9hOFarISXDrq0j4TMx5Va8YISqwtpvUh/S3eNood0lv43L6kWwxocuJguM/
+         IWH7Pq7OCxbg8ZVxGDoLnx4RyOL8CW1WKspg59b9MZCgPIdM+2aUkueCXLkdCYIyFKvp
+         Ft4I0gzqJZpxnhGn1XeHWfFYSMyr4kFkQXzpYs/o/6yWwDDB1ACp+EcXtuocNFzbJPcA
+         xKU1RDdYnmbvJXY5XXFkIlLzuL+n7fXveECwwOMd+2giEgyBWGcXkhPPqGaPSxNKlv6i
+         oRZqUzrPNnnsEqlOCfvnR5LBkem1iu6x3JXjLAQZZYfqodJnWC21SL8/A7swIclEwFHQ
+         cb/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723424382; x=1724029182;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=u1t+DOBtWVw6p1QzV6tpA79/Z/soEYYlKfO1cj75JM4=;
-        b=FmsQ1c+UVd+MwjhCavzhL/+hACL4VPGwIQpnCwuecHYX846kn7eZ8MvMI1yN8t72y4
-         11JhtqlLwgfuDLX5Diq5yN6a6GjzFn2keIGy4igVAd+itnh1GzQ5V0WwKE8eygPbz4lA
-         EmpQAVtnyBzDcBydBGWZTcG4Y4u1iXs5QoeFUPufMbLpxZGDr4mNAwZZ4KN9JL3wRPUi
-         NoLocp+fzXFjU2yCvGm94MdzvjdNjqd0C6lGzRmMcYdANSuBtaaYGVjgzLmno2uAJzBl
-         KH0YddWmbfpfSL46OCqz9eR1AYa/WBO4MiV8v2Tuw4Nal/sk1Fr06sVF4PMsfTKeOY2x
-         Y3+g==
-X-Forwarded-Encrypted: i=1; AJvYcCWNg7L1P6HMC2PtQtQ5HIg5KpgIh+5Grf/5q0kyFLlFrfZ1E9eNKyCp6EeZYfmB8OUmcIDj7dgzyfkiUjI=@lists.linux.dev
-X-Gm-Message-State: AOJu0YwHz/RoCqnOW94/CoaT+8DraCKrC6QzsftgIzwDYFNpqLpXjKmR
-	1dwyRaVI1XT3NVA4QZLnMYTPeDfSR6RQ6hZaFBt0JsWDdXoS/w94YD/H7nHTdt4=
-X-Google-Smtp-Source: AGHT+IFvFD40j/75g0OMKTR99Jntdlb7KnjOCvOc/WzAwYbyCYwYB5yIZakN6YXoCdPddNyZ+Lnt1Q==
-X-Received: by 2002:a05:6830:6f04:b0:709:488f:b632 with SMTP id 46e09a7af769-70b74862b47mr12731861a34.25.1723424381262;
-        Sun, 11 Aug 2024 17:59:41 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1723424387; x=1724029187;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8jeK3ESAUl7YxTE1Iy3jfhVYgTpS15SSq0iPGR06s9c=;
+        b=TbY2eRJW6h+qwkwHp0kaP+D4C6fAx5IrNaGK9sB6xqaV5o5plqJwepOZSZnX5zbQlM
+         FpPMLzW+wLTRy/AM18fVc7JxpbTDS4BGtGhB401COr4o8ynhkSW5rscbJvMM+yrkiJVJ
+         Dep5OW0Yv62yvZZNeTBJeCV4Hhu4R8nO3T3hGjBz9URnq1n5pq1gW3CSHgh+XKVMwbex
+         zjhIY8NdhDQ+7QB4y0GcJPCjY59SAx4YtFHz74ue81oUy+OG6TWRYj5Cj23P0GscbTzp
+         ZZ1QsNQEq1KtSkwTDFGJ64SpW2Z/Mc5WXpx0P+K8FnI9s8HotIAaTu2d+z9HrMyaK/Rh
+         /toA==
+X-Forwarded-Encrypted: i=1; AJvYcCWfKcbPrSic8wu+NBqpRVRBIwgjvENvSG1cPjgOR9CUpCMM9NoQqtJ8TFDkdWLTC5CPfNb+24IJ7Mejd5/jhcgQ1olxEDGBFG3UA2vW
+X-Gm-Message-State: AOJu0YxIY9bgE2xxXwHV0+tSAPS03wjf36pftS+fZhcICPHMJDuyE7OI
+	K4APs2LR/AbXsA/kHM4l5qGsb9W/o6kbBgef/XTPjh8u2oagdaNPV2/HKCvnjZc=
+X-Google-Smtp-Source: AGHT+IFIiqNGjgTEsTyA01AhWlCd5/qrU642pe+8j8qsMImF8/xohIsj9BzQ1yvF+gyWEF8FJGTC6A==
+X-Received: by 2002:a05:6e02:1a29:b0:398:81e9:3f9e with SMTP id e9e14a558f8ab-39b813345abmr101145885ab.12.1723424387549;
+        Sun, 11 Aug 2024 17:59:47 -0700 (PDT)
 Received: from sunil-pc.tail07344b.ts.net ([106.51.198.16])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7c3dbe8cbdcsm3074062a12.61.2024.08.11.17.59.35
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7c3dbe8cbdcsm3074062a12.61.2024.08.11.17.59.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Aug 2024 17:59:40 -0700 (PDT)
+        Sun, 11 Aug 2024 17:59:47 -0700 (PDT)
 From: Sunil V L <sunilvl@ventanamicro.com>
 To: linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
@@ -72,173 +74,440 @@ Cc: Will Deacon <will@kernel.org>,
 	Andrew Jones <ajones@ventanamicro.com>,
 	Atish Kumar Patra <atishp@rivosinc.com>,
 	Drew Fustini <dfustini@tenstorrent.com>,
-	Sunil V L <sunilvl@ventanamicro.com>
-Subject: [PATCH v8 00/17] RISC-V: ACPI: Add external interrupt controller support
-Date: Mon, 12 Aug 2024 06:29:12 +0530
-Message-ID: <20240812005929.113499-1-sunilvl@ventanamicro.com>
+	Sunil V L <sunilvl@ventanamicro.com>,
+	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>
+Subject: [PATCH v8 01/17] arm64: PCI: Migrate ACPI related functions to pci-acpi.c
+Date: Mon, 12 Aug 2024 06:29:13 +0530
+Message-ID: <20240812005929.113499-2-sunilvl@ventanamicro.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240812005929.113499-1-sunilvl@ventanamicro.com>
+References: <20240812005929.113499-1-sunilvl@ventanamicro.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=cp1252
 Content-Transfer-Encoding: 8bit
 
-This series adds support for the below ECR approved by ASWG.
-1) MADT - https://drive.google.com/file/d/1oMGPyOD58JaPgMl1pKasT-VKsIKia7zR/view?usp=sharing
+The functions defined in arm64 for ACPI support are required
+for RISC-V also. To avoid duplication, move these functions
+to common location.
 
-The series primarily enables irqchip drivers for RISC-V ACPI based
-platforms.
+Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+Acked-by: Will Deacon <will@kernel.org>
+Tested-by: Björn Töpel <bjorn@rivosinc.com>
+---
+ arch/arm64/kernel/pci.c | 191 ----------------------------------------
+ drivers/pci/pci-acpi.c  | 182 ++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 182 insertions(+), 191 deletions(-)
 
-The series can be broadly categorized like below. 
-
-1) PCI ACPI related functions are migrated from arm64 to common file so
-that we don't need to duplicate them for RISC-V.
-
-2) Added support for re-ordering the probe of interrupt controllers when
-IRQCHIP_ACPI_DECLARE is used.
-
-3) To ensure probe order between interrupt controllers and devices,
-implicit dependency is created similar to when _DEP is present.
-
-4) ACPI support added in RISC-V interrupt controller drivers.
-
-Changes since v7:
-	1) Updated commit messages as per feedback from Bjorn on patches 2, 3 and 8.
-	2) Addressed Anup Patel's comments.
-	3) Added Tested-by tag from Björn Töpe which I missed to add in previous version.
-	4) Rebased to 6.11-rc3 and updated the RB tags from Anup.
-
-Changes since v6:
-	1) Update to commit message/code comments as per feedback from Bjorn.
-	2) Rebased to 6.11-rc1.
-
-Changes since v5:
-	1) Addressed feedback from Thomas.
-	2) Created separate patch for refactoring DT code in IMSIC
-	3) Separated a fix in riscv-intc irqchip driver and sent
-	   separately. This series depends on that patch [1].
-	4) Dropped serial driver patch since it depends on Andy's
-	   refactoring series [2]. RISC-V patches will be sent
-	   separately later once Andy series get accepted.
-	5) Rebased to v6.10-rc1 which has AIA DT patches.
-	6) Updated tags.
-
-Changes since RFC v4:
-	1) Removed RFC tag as the RFCv4 design looked reasonable.
-	2) Dropped PCI patch needed to avoid warning when there is no MSI
-	   controller. This will be sent later separately after the
-	   current series.
-	3) Dropped PNP handling of _DEP since there is new ACPI ID for
-	   generic 16550 UART. Added the serial driver patch instead.
-	4) Rebased to latest linux-next.
-	5) Reordered/squashed patches in the series
-
-Changes since RFC v3:
-	1) Moved to _DEP method instead of fw_devlink.
-	2) PLIC/APLIC driver probe using namespace devices.
-	3) Handling PNP devices as part of clearing dependency.
-	4) Rebased to latest linux-next to get AIA DT drivers.
-
-Changes since RFC v2:
-	1) Introduced fw_devlink for ACPI nodes for IRQ dependency.
-	2) Dropped patches in drivers which are not required due to
-	   fw_devlink support.
-	3) Dropped pci_set_msi() patch and added a patch in
-	   pci_create_root_bus().
-	4) Updated pnp_irq() patch so that none of the actual PNP
-	   drivers need to change.
-
-Changes since RFC v1:
-	1) Abandoned swnode approach as per Marc's feedback.
-	2) To cope up with AIA series changes which changed irqchip driver
-	   probe from core_initcall() to platform_driver, added patches
-	   to support deferred probing.
-	3) Rebased on top of Anup's AIA v11 and added tags.
-
-To test the series,
-
-1) qemu should be built using the latest master branch.
-
-2) EDK2 should be built using the instructions at:
-https://github.com/tianocore/edk2/blob/master/OvmfPkg/RiscVVirt/README.md
-
-NOTE: One should be able to use u-boot as well as per instructions from Björn.
-https://lore.kernel.org/lkml/87a5lqsrvh.fsf@all.your.base.are.belong.to.us/
-
-3) Build Linux using this series (+ serial driver patches which are already in linux-next).
-aia_b2_v8 branch in https://github.com/vlsunil/linux.git all these patches.
-
-Run Qemu:
-qemu-system-riscv64 \
- -M virt,pflash0=pflash0,pflash1=pflash1,aia=aplic-imsic \
- -m 2G -smp 8 \
- -serial mon:stdio \
- -device virtio-gpu-pci -full-screen \
- -device qemu-xhci \
- -device usb-kbd \
- -blockdev node-name=pflash0,driver=file,read-only=on,filename=RISCV_VIRT_CODE.fd \
- -blockdev node-name=pflash1,driver=file,filename=RISCV_VIRT_VARS.fd \
- -netdev user,id=net0 -device virtio-net-pci,netdev=net0 \
- -kernel arch/riscv/boot/Image \
- -initrd rootfs.cpio \
- -append "root=/dev/ram ro console=ttyS0 rootwait earlycon=sbi"
-
-To boot with APLIC only, use aia=aplic.
-To boot with PLIC, remove aia= option.
-
-Sunil V L (17):
-  arm64: PCI: Migrate ACPI related functions to pci-acpi.c
-  ACPI: scan: Add a weak arch_sort_irqchip_probe() to order the IRQCHIP
-    probe
-  ACPI: bus: Add acpi_riscv_init() function
-  ACPI: scan: Refactor dependency creation
-  ACPI: scan: Add RISC-V interrupt controllers to honor list
-  ACPI: scan: Define weak function to populate dependencies
-  ACPI: bus: Add RINTC IRQ model for RISC-V
-  ACPI: pci_link: Clear the dependencies after probe
-  ACPI: RISC-V: Implement PCI related functionality
-  ACPI: RISC-V: Implement function to reorder irqchip probe entries
-  ACPI: RISC-V: Initialize GSI mapping structures
-  ACPI: RISC-V: Implement function to add implicit dependencies
-  irqchip/riscv-intc: Add ACPI support for AIA
-  irqchip/riscv-imsic-state: Create separate function for DT
-  irqchip/riscv-imsic: Add ACPI support
-  irqchip/riscv-aplic: Add ACPI support
-  irqchip/sifive-plic: Add ACPI support
-
- arch/arm64/kernel/pci.c                    | 191 ------------
- arch/riscv/Kconfig                         |   2 +
- arch/riscv/include/asm/irq.h               |  55 ++++
- arch/riscv/kernel/acpi.c                   |  33 +-
- drivers/acpi/bus.c                         |   4 +
- drivers/acpi/pci_link.c                    |   2 +
- drivers/acpi/riscv/Makefile                |   2 +-
- drivers/acpi/riscv/init.c                  |  13 +
- drivers/acpi/riscv/init.h                  |   4 +
- drivers/acpi/riscv/irq.c                   | 335 +++++++++++++++++++++
- drivers/acpi/scan.c                        | 103 ++++---
- drivers/irqchip/irq-riscv-aplic-direct.c   |  22 +-
- drivers/irqchip/irq-riscv-aplic-main.c     |  69 +++--
- drivers/irqchip/irq-riscv-aplic-main.h     |   1 +
- drivers/irqchip/irq-riscv-aplic-msi.c      |   9 +-
- drivers/irqchip/irq-riscv-imsic-early.c    |  64 +++-
- drivers/irqchip/irq-riscv-imsic-platform.c |  32 +-
- drivers/irqchip/irq-riscv-imsic-state.c    | 160 +++++-----
- drivers/irqchip/irq-riscv-imsic-state.h    |   2 +-
- drivers/irqchip/irq-riscv-intc.c           |  90 ++++++
- drivers/irqchip/irq-sifive-plic.c          |  95 ++++--
- drivers/pci/pci-acpi.c                     | 182 +++++++++++
- include/acpi/acpi_bus.h                    |   2 +
- include/linux/acpi.h                       |   9 +
- include/linux/irqchip/riscv-imsic.h        |   9 +
- 25 files changed, 1113 insertions(+), 377 deletions(-)
- create mode 100644 drivers/acpi/riscv/init.c
- create mode 100644 drivers/acpi/riscv/init.h
- create mode 100644 drivers/acpi/riscv/irq.c
-
+diff --git a/arch/arm64/kernel/pci.c b/arch/arm64/kernel/pci.c
+index f872c57e9909..fd9a7bed83ce 100644
+--- a/arch/arm64/kernel/pci.c
++++ b/arch/arm64/kernel/pci.c
+@@ -6,28 +6,7 @@
+  * Copyright (C) 2014 ARM Ltd.
+  */
+ 
+-#include <linux/acpi.h>
+-#include <linux/init.h>
+-#include <linux/io.h>
+-#include <linux/kernel.h>
+-#include <linux/mm.h>
+ #include <linux/pci.h>
+-#include <linux/pci-acpi.h>
+-#include <linux/pci-ecam.h>
+-#include <linux/slab.h>
+-
+-#ifdef CONFIG_ACPI
+-/*
+- * Try to assign the IRQ number when probing a new device
+- */
+-int pcibios_alloc_irq(struct pci_dev *dev)
+-{
+-	if (!acpi_disabled)
+-		acpi_pci_irq_enable(dev);
+-
+-	return 0;
+-}
+-#endif
+ 
+ /*
+  * raw_pci_read/write - Platform-specific PCI config space access.
+@@ -61,173 +40,3 @@ int pcibus_to_node(struct pci_bus *bus)
+ EXPORT_SYMBOL(pcibus_to_node);
+ 
+ #endif
+-
+-#ifdef CONFIG_ACPI
+-
+-struct acpi_pci_generic_root_info {
+-	struct acpi_pci_root_info	common;
+-	struct pci_config_window	*cfg;	/* config space mapping */
+-};
+-
+-int acpi_pci_bus_find_domain_nr(struct pci_bus *bus)
+-{
+-	struct pci_config_window *cfg = bus->sysdata;
+-	struct acpi_device *adev = to_acpi_device(cfg->parent);
+-	struct acpi_pci_root *root = acpi_driver_data(adev);
+-
+-	return root->segment;
+-}
+-
+-int pcibios_root_bridge_prepare(struct pci_host_bridge *bridge)
+-{
+-	struct pci_config_window *cfg;
+-	struct acpi_device *adev;
+-	struct device *bus_dev;
+-
+-	if (acpi_disabled)
+-		return 0;
+-
+-	cfg = bridge->bus->sysdata;
+-
+-	/*
+-	 * On Hyper-V there is no corresponding ACPI device for a root bridge,
+-	 * therefore ->parent is set as NULL by the driver. And set 'adev' as
+-	 * NULL in this case because there is no proper ACPI device.
+-	 */
+-	if (!cfg->parent)
+-		adev = NULL;
+-	else
+-		adev = to_acpi_device(cfg->parent);
+-
+-	bus_dev = &bridge->bus->dev;
+-
+-	ACPI_COMPANION_SET(&bridge->dev, adev);
+-	set_dev_node(bus_dev, acpi_get_node(acpi_device_handle(adev)));
+-
+-	return 0;
+-}
+-
+-static int pci_acpi_root_prepare_resources(struct acpi_pci_root_info *ci)
+-{
+-	struct resource_entry *entry, *tmp;
+-	int status;
+-
+-	status = acpi_pci_probe_root_resources(ci);
+-	resource_list_for_each_entry_safe(entry, tmp, &ci->resources) {
+-		if (!(entry->res->flags & IORESOURCE_WINDOW))
+-			resource_list_destroy_entry(entry);
+-	}
+-	return status;
+-}
+-
+-/*
+- * Lookup the bus range for the domain in MCFG, and set up config space
+- * mapping.
+- */
+-static struct pci_config_window *
+-pci_acpi_setup_ecam_mapping(struct acpi_pci_root *root)
+-{
+-	struct device *dev = &root->device->dev;
+-	struct resource *bus_res = &root->secondary;
+-	u16 seg = root->segment;
+-	const struct pci_ecam_ops *ecam_ops;
+-	struct resource cfgres;
+-	struct acpi_device *adev;
+-	struct pci_config_window *cfg;
+-	int ret;
+-
+-	ret = pci_mcfg_lookup(root, &cfgres, &ecam_ops);
+-	if (ret) {
+-		dev_err(dev, "%04x:%pR ECAM region not found\n", seg, bus_res);
+-		return NULL;
+-	}
+-
+-	adev = acpi_resource_consumer(&cfgres);
+-	if (adev)
+-		dev_info(dev, "ECAM area %pR reserved by %s\n", &cfgres,
+-			 dev_name(&adev->dev));
+-	else
+-		dev_warn(dev, FW_BUG "ECAM area %pR not reserved in ACPI namespace\n",
+-			 &cfgres);
+-
+-	cfg = pci_ecam_create(dev, &cfgres, bus_res, ecam_ops);
+-	if (IS_ERR(cfg)) {
+-		dev_err(dev, "%04x:%pR error %ld mapping ECAM\n", seg, bus_res,
+-			PTR_ERR(cfg));
+-		return NULL;
+-	}
+-
+-	return cfg;
+-}
+-
+-/* release_info: free resources allocated by init_info */
+-static void pci_acpi_generic_release_info(struct acpi_pci_root_info *ci)
+-{
+-	struct acpi_pci_generic_root_info *ri;
+-
+-	ri = container_of(ci, struct acpi_pci_generic_root_info, common);
+-	pci_ecam_free(ri->cfg);
+-	kfree(ci->ops);
+-	kfree(ri);
+-}
+-
+-/* Interface called from ACPI code to setup PCI host controller */
+-struct pci_bus *pci_acpi_scan_root(struct acpi_pci_root *root)
+-{
+-	struct acpi_pci_generic_root_info *ri;
+-	struct pci_bus *bus, *child;
+-	struct acpi_pci_root_ops *root_ops;
+-	struct pci_host_bridge *host;
+-
+-	ri = kzalloc(sizeof(*ri), GFP_KERNEL);
+-	if (!ri)
+-		return NULL;
+-
+-	root_ops = kzalloc(sizeof(*root_ops), GFP_KERNEL);
+-	if (!root_ops) {
+-		kfree(ri);
+-		return NULL;
+-	}
+-
+-	ri->cfg = pci_acpi_setup_ecam_mapping(root);
+-	if (!ri->cfg) {
+-		kfree(ri);
+-		kfree(root_ops);
+-		return NULL;
+-	}
+-
+-	root_ops->release_info = pci_acpi_generic_release_info;
+-	root_ops->prepare_resources = pci_acpi_root_prepare_resources;
+-	root_ops->pci_ops = (struct pci_ops *)&ri->cfg->ops->pci_ops;
+-	bus = acpi_pci_root_create(root, root_ops, &ri->common, ri->cfg);
+-	if (!bus)
+-		return NULL;
+-
+-	/* If we must preserve the resource configuration, claim now */
+-	host = pci_find_host_bridge(bus);
+-	if (host->preserve_config)
+-		pci_bus_claim_resources(bus);
+-
+-	/*
+-	 * Assign whatever was left unassigned. If we didn't claim above,
+-	 * this will reassign everything.
+-	 */
+-	pci_assign_unassigned_root_bus_resources(bus);
+-
+-	list_for_each_entry(child, &bus->children, node)
+-		pcie_bus_configure_settings(child);
+-
+-	return bus;
+-}
+-
+-void pcibios_add_bus(struct pci_bus *bus)
+-{
+-	acpi_pci_add_bus(bus);
+-}
+-
+-void pcibios_remove_bus(struct pci_bus *bus)
+-{
+-	acpi_pci_remove_bus(bus);
+-}
+-
+-#endif
+diff --git a/drivers/pci/pci-acpi.c b/drivers/pci/pci-acpi.c
+index 9cc447da9475..8ed81a373bd7 100644
+--- a/drivers/pci/pci-acpi.c
++++ b/drivers/pci/pci-acpi.c
+@@ -15,6 +15,7 @@
+ #include <linux/pci_hotplug.h>
+ #include <linux/module.h>
+ #include <linux/pci-acpi.h>
++#include <linux/pci-ecam.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/pm_qos.h>
+ #include <linux/rwsem.h>
+@@ -1541,3 +1542,184 @@ static int __init acpi_pci_init(void)
+ 	return 0;
+ }
+ arch_initcall(acpi_pci_init);
++
++#if defined(CONFIG_ARM64)
++
++/*
++ * Try to assign the IRQ number when probing a new device
++ */
++int pcibios_alloc_irq(struct pci_dev *dev)
++{
++	if (!acpi_disabled)
++		acpi_pci_irq_enable(dev);
++
++	return 0;
++}
++
++struct acpi_pci_generic_root_info {
++	struct acpi_pci_root_info	common;
++	struct pci_config_window	*cfg;	/* config space mapping */
++};
++
++int acpi_pci_bus_find_domain_nr(struct pci_bus *bus)
++{
++	struct pci_config_window *cfg = bus->sysdata;
++	struct acpi_device *adev = to_acpi_device(cfg->parent);
++	struct acpi_pci_root *root = acpi_driver_data(adev);
++
++	return root->segment;
++}
++
++int pcibios_root_bridge_prepare(struct pci_host_bridge *bridge)
++{
++	struct pci_config_window *cfg;
++	struct acpi_device *adev;
++	struct device *bus_dev;
++
++	if (acpi_disabled)
++		return 0;
++
++	cfg = bridge->bus->sysdata;
++
++	/*
++	 * On Hyper-V there is no corresponding ACPI device for a root bridge,
++	 * therefore ->parent is set as NULL by the driver. And set 'adev' as
++	 * NULL in this case because there is no proper ACPI device.
++	 */
++	if (!cfg->parent)
++		adev = NULL;
++	else
++		adev = to_acpi_device(cfg->parent);
++
++	bus_dev = &bridge->bus->dev;
++
++	ACPI_COMPANION_SET(&bridge->dev, adev);
++	set_dev_node(bus_dev, acpi_get_node(acpi_device_handle(adev)));
++
++	return 0;
++}
++
++static int pci_acpi_root_prepare_resources(struct acpi_pci_root_info *ci)
++{
++	struct resource_entry *entry, *tmp;
++	int status;
++
++	status = acpi_pci_probe_root_resources(ci);
++	resource_list_for_each_entry_safe(entry, tmp, &ci->resources) {
++		if (!(entry->res->flags & IORESOURCE_WINDOW))
++			resource_list_destroy_entry(entry);
++	}
++	return status;
++}
++
++/*
++ * Lookup the bus range for the domain in MCFG, and set up config space
++ * mapping.
++ */
++static struct pci_config_window *
++pci_acpi_setup_ecam_mapping(struct acpi_pci_root *root)
++{
++	struct device *dev = &root->device->dev;
++	struct resource *bus_res = &root->secondary;
++	u16 seg = root->segment;
++	const struct pci_ecam_ops *ecam_ops;
++	struct resource cfgres;
++	struct acpi_device *adev;
++	struct pci_config_window *cfg;
++	int ret;
++
++	ret = pci_mcfg_lookup(root, &cfgres, &ecam_ops);
++	if (ret) {
++		dev_err(dev, "%04x:%pR ECAM region not found\n", seg, bus_res);
++		return NULL;
++	}
++
++	adev = acpi_resource_consumer(&cfgres);
++	if (adev)
++		dev_info(dev, "ECAM area %pR reserved by %s\n", &cfgres,
++			 dev_name(&adev->dev));
++	else
++		dev_warn(dev, FW_BUG "ECAM area %pR not reserved in ACPI namespace\n",
++			 &cfgres);
++
++	cfg = pci_ecam_create(dev, &cfgres, bus_res, ecam_ops);
++	if (IS_ERR(cfg)) {
++		dev_err(dev, "%04x:%pR error %ld mapping ECAM\n", seg, bus_res,
++			PTR_ERR(cfg));
++		return NULL;
++	}
++
++	return cfg;
++}
++
++/* release_info: free resources allocated by init_info */
++static void pci_acpi_generic_release_info(struct acpi_pci_root_info *ci)
++{
++	struct acpi_pci_generic_root_info *ri;
++
++	ri = container_of(ci, struct acpi_pci_generic_root_info, common);
++	pci_ecam_free(ri->cfg);
++	kfree(ci->ops);
++	kfree(ri);
++}
++
++/* Interface called from ACPI code to setup PCI host controller */
++struct pci_bus *pci_acpi_scan_root(struct acpi_pci_root *root)
++{
++	struct acpi_pci_generic_root_info *ri;
++	struct pci_bus *bus, *child;
++	struct acpi_pci_root_ops *root_ops;
++	struct pci_host_bridge *host;
++
++	ri = kzalloc(sizeof(*ri), GFP_KERNEL);
++	if (!ri)
++		return NULL;
++
++	root_ops = kzalloc(sizeof(*root_ops), GFP_KERNEL);
++	if (!root_ops) {
++		kfree(ri);
++		return NULL;
++	}
++
++	ri->cfg = pci_acpi_setup_ecam_mapping(root);
++	if (!ri->cfg) {
++		kfree(ri);
++		kfree(root_ops);
++		return NULL;
++	}
++
++	root_ops->release_info = pci_acpi_generic_release_info;
++	root_ops->prepare_resources = pci_acpi_root_prepare_resources;
++	root_ops->pci_ops = (struct pci_ops *)&ri->cfg->ops->pci_ops;
++	bus = acpi_pci_root_create(root, root_ops, &ri->common, ri->cfg);
++	if (!bus)
++		return NULL;
++
++	/* If we must preserve the resource configuration, claim now */
++	host = pci_find_host_bridge(bus);
++	if (host->preserve_config)
++		pci_bus_claim_resources(bus);
++
++	/*
++	 * Assign whatever was left unassigned. If we didn't claim above,
++	 * this will reassign everything.
++	 */
++	pci_assign_unassigned_root_bus_resources(bus);
++
++	list_for_each_entry(child, &bus->children, node)
++		pcie_bus_configure_settings(child);
++
++	return bus;
++}
++
++void pcibios_add_bus(struct pci_bus *bus)
++{
++	acpi_pci_add_bus(bus);
++}
++
++void pcibios_remove_bus(struct pci_bus *bus)
++{
++	acpi_pci_remove_bus(bus);
++}
++
++#endif
 -- 
 2.43.0
 
