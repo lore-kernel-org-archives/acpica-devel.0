@@ -1,169 +1,174 @@
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2085.outbound.protection.outlook.com [40.107.237.85])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A997194AFA;
-	Tue, 20 Aug 2024 15:24:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.85
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724167491; cv=fail; b=gk6fcj66V1bDcgAuVYH29DSKjJulD5nw+ivOcQvtL0jnn+gbqU1mVOlwuB5/9xwlxxG7RTDTNmTBQDr10GBN5565Pxw7c+7ldJAeKhKROYIbPVDDaSXQKiNOqEQ0vySbSVzxuvbeYesNYsPJuduVSVD+RQGtqEZHDtR48ek2k+A=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724167491; c=relaxed/simple;
-	bh=CHApj+NsBDBGlhR+rA2Fen91D0NPeqkhvzBg2tUP+VM=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gMVU76O9Xvt1jEJIG0c1N+P8EHIWjFmXX4Dqeif3wtRY1Ux+d2powieBXZvNsXkBVdb0pTC307xwx/uMFTixDNCXDBuMXkN2awJ60xyF24zQ28kmdqZrJfWzysbtqIjnCjnujZtcy+Zp1HOm4LH5P80geUb9ZLc/I0veusYFPL4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Nlxq7flw; arc=fail smtp.client-ip=40.107.237.85
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 048F015C148
+	for <acpica-devel@lists.linux.dev>; Tue, 20 Aug 2024 19:53:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1724183582; cv=none; b=lnpN4WgQSP9kToaF/Bx+R8LoyhbL3dDvcjDDCBGHONWN6XYJ9CW+CBD/Pr9CnaqQLervEwZ9/UU16QGzSKhEQbugXBHASq9C/vB+JCdn7DoCbAaxcNMwPH6YoZvG6jj3W2rb7dTJzjTzRfkkLhWKHeXnQdS+gBfeTmb2MDKT9sU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1724183582; c=relaxed/simple;
+	bh=f2EDYJYaLCiAoxFHTZr78tEIJO4+g6e/klYwcujCItM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fPAPHaaxWDad9iyRnvgwzBSO/oT2PB/GdFT5tvVkI5vqPywW9V9AWNAodPkxLZcxZDon0H0oBntH7Nu7zWlOWf1Q8oNOpBEVDbNEv5FvAB8unNhNIYV0mxUukrEQuMQz3PPcjDpJOS87KkgSy2aJ76cO86ICd1Q+o3uBQt0nLBg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=M59SPv75; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Nlxq7flw"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=VmUUs5A0LsyhLmiBjNKidwfKarZYy5hzcGCD4rQ6Upwsb8/BG3MbMhryu7Aw8M/uDZlF8MM6MZT6mB58HZJFRdpgXfgPrgXMXmCkrNXFk8GrEPK/uWQD551UTPI889OsSjXg+lPDCZBm1fLAXP45hBxzqOZgOtDdoz67rXB/bFuwtuNEZ3yBpZLcF+UK3eakSZCjB55JZeW1T1Q9Ho0NMCWWWP/bm0tT1DUgHxIhQkeHBLPP8ZFwrWIucTwOMwSJr+zQa/OjdVhFP2QOKUJzY0H9dow/OD1QfCIFfBZ49H1iWFNVxvONfFAesVYybfBHG4MaeRsKe/CrVjgRX/oF9w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OkYHJ+mPRtYm3B59wrDzysbRo9Q3GZfAi30cd56mtGg=;
- b=Tv9ZpBuIsqjlKH8PZSX6F+VbtyN8JMYyJob9mbO2f8R/wZwYOzzH66R6j7zdnZEc+L9yaUtszY8NEaNmz3/H+G0pRDz9YdouX+Z5hMCFdScZiDH07dzCcqP6gHX7xDcRHXsjKr6En/ltZfMd3UqYZv8SyWUq02hcxyLreNjOWJsNhFf+5geYF4gb3AlTkEOPvCoG90TZvSXLYdWTeiONvnnV+gkOg6G/jVD6NkLf6NMxD2mgZqBQMtzHwXdGKph/HgyJJU8IQmXQojv38dOzRWfZoD1TXJM3GuzoKUyizelbsTuEIkaZeKakYqxi6kj7SIWBdO9/ZA2F6iI7bokYlg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OkYHJ+mPRtYm3B59wrDzysbRo9Q3GZfAi30cd56mtGg=;
- b=Nlxq7flw4hpTYFUu3b9ggwaBy25czMVD16sf4xKWYfzUooPA4e9z81342nDNteb2F1XHDS0rKLcszTL5cEtbZUqD0SnFdHk2L+iShVbtal+NPtl2VXMdwvw17VIOl9uUR5ez9b18JdTkev751JyvTtL13cpsoiFUYRe8+C98ujEr9FPlwtSHbVxdfaj+m452XAxg0VaSpTNw1hkyil5awZRJsee12ejEN59iNi7a8cQY7GV6WP3dA0ss7GvvutNRFB4DLZruNVoi8sxN81fduiLueoN4lx/Jls0/u8cYlDbE+pA/hAxgcqFY5/6YoYN8AGbX396kmE2MblAknThhzQ==
-Received: from DS7PR05CA0009.namprd05.prod.outlook.com (2603:10b6:5:3b9::14)
- by CY8PR12MB7435.namprd12.prod.outlook.com (2603:10b6:930:51::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7897.16; Tue, 20 Aug
- 2024 15:24:43 +0000
-Received: from DS1PEPF00017099.namprd05.prod.outlook.com
- (2603:10b6:5:3b9:cafe::14) by DS7PR05CA0009.outlook.office365.com
- (2603:10b6:5:3b9::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7897.13 via Frontend
- Transport; Tue, 20 Aug 2024 15:24:43 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- DS1PEPF00017099.mail.protection.outlook.com (10.167.18.103) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7897.11 via Frontend Transport; Tue, 20 Aug 2024 15:24:43 +0000
-Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Tue, 20 Aug
- 2024 08:24:33 -0700
-Received: from drhqmail201.nvidia.com (10.126.190.180) by
- drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Tue, 20 Aug 2024 08:24:32 -0700
-Received: from Asurada-Nvidia (10.127.8.12) by mail.nvidia.com
- (10.126.190.180) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4 via Frontend
- Transport; Tue, 20 Aug 2024 08:24:31 -0700
-Date: Tue, 20 Aug 2024 08:24:30 -0700
-From: Nicolin Chen <nicolinc@nvidia.com>
-To: Mostafa Saleh <smostafa@google.com>
-CC: Jason Gunthorpe <jgg@nvidia.com>, <acpica-devel@lists.linux.dev>, "Alex
- Williamson" <alex.williamson@redhat.com>, Hanjun Guo <guohanjun@huawei.com>,
-	<iommu@lists.linux.dev>, Joerg Roedel <joro@8bytes.org>, Kevin Tian
-	<kevin.tian@intel.com>, <kvm@vger.kernel.org>, Len Brown <lenb@kernel.org>,
-	<linux-acpi@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	"Lorenzo Pieralisi" <lpieralisi@kernel.org>, "Rafael J. Wysocki"
-	<rafael@kernel.org>, Robert Moore <robert.moore@intel.com>, Robin Murphy
-	<robin.murphy@arm.com>, Sudeep Holla <sudeep.holla@arm.com>, Will Deacon
-	<will@kernel.org>, "Eric Auger" <eric.auger@redhat.com>, Jean-Philippe
- Brucker <jean-philippe@linaro.org>, Moritz Fischer <mdf@kernel.org>, Michael
- Shavit <mshavit@google.com>, <patches@lists.linux.dev>, Shameerali Kolothum
- Thodi <shameerali.kolothum.thodi@huawei.com>
-Subject: Re: [PATCH 0/8] Initial support for SMMUv3 nested translation
-Message-ID: <ZsS1Lsd5ORJOlRJQ@Asurada-Nvidia>
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="M59SPv75"
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-428e12f6e56so15085e9.0
+        for <acpica-devel@lists.linux.dev>; Tue, 20 Aug 2024 12:53:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1724183579; x=1724788379; darn=lists.linux.dev;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=yp4vfYpCGOdYBS/m6HmbaB98zMN6C60AGpKXCWzp5n0=;
+        b=M59SPv75VJ4cuxFAj1LBtKbLzZPUb2N6KD90Z02uWfyU/uRBAuMxtvNPiYs8vBDeYM
+         5YQijTQkKlNCGG1FBtuKa68GlylMtwOjaYFXokx+0Im72HetE/VSE2y+M+yFqctBXFwy
+         IzgXU7BcK4Xec5Q7lnhbvBpjaM7AJee+W6rcRQf6hJfrZcdFiDD0Kd9kElcWg8sCPz2V
+         Xg0J2hsGNThrRdUHFGh2fx+O6IdIDVoEX8SH94pu+4CTIb5BKLhmMDajOYr/xL3kCo07
+         J1d9NT347MmxijtwlPgxPgCGenX4Ng7/d1dqkImhv61D3aRSSUXsqJEhSW3N1z5CJimT
+         2m2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724183579; x=1724788379;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yp4vfYpCGOdYBS/m6HmbaB98zMN6C60AGpKXCWzp5n0=;
+        b=JrBKkHl/rMy7lHjM4bOpfcY6xz3u03aySeWUb3l+NECQOqOd/NUb+OgkgvucrkKQC/
+         HG17WySTff7cN0ICvyOBcZ5mBlPQXvdkoUJcrC2NSKepxWPMQRj5r8pZDNL7hC+2DJZ8
+         0lfdrIegN14oEhvvZRdyuLnLnxm1xUq2PjNGD0wkfRPrfUtaQWnJUBVIyj0YFWs7fiNr
+         H/ok7qjJrT+hE5jdd1Kljuc8L0UeXq2Vzm6sqrf8z/g7LHK6HYoBkinnZujlzR/JcEVe
+         3UM01ysCZr2KjgYs0PPH14Bmq0S+eg6pl58OxRZElKoWK0bqoOhfLq9Tq/vG9aALZeTY
+         QTuw==
+X-Gm-Message-State: AOJu0YxV3cymFeUJ1F1FokO6A24gcBFUmf+ORjx1Lco3xC5v9Q0nMS0e
+	oMuYdHilzJc+t6gIwx9N+iIygUnXsSX1ub3WpqZWzacwX4FrK0Ki6Wgkk3ykDQ==
+X-Google-Smtp-Source: AGHT+IEIPDf3d+uDL/Y/8Kxr91qxpv+48637k6O2srNTmFhDwf9KvmOeUX+rRg1Oapmp/C3vcKZSsw==
+X-Received: by 2002:a05:600c:1f07:b0:424:898b:522b with SMTP id 5b1f17b1804b1-42ab78c1aa8mr1113155e9.1.1724183578856;
+        Tue, 20 Aug 2024 12:52:58 -0700 (PDT)
+Received: from google.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-371898b89bdsm13811059f8f.112.2024.08.20.12.52.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Aug 2024 12:52:58 -0700 (PDT)
+Date: Tue, 20 Aug 2024 19:52:53 +0000
+From: Mostafa Saleh <smostafa@google.com>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: acpica-devel@lists.linux.dev,
+	Alex Williamson <alex.williamson@redhat.com>,
+	Hanjun Guo <guohanjun@huawei.com>, iommu@lists.linux.dev,
+	Joerg Roedel <joro@8bytes.org>, Kevin Tian <kevin.tian@intel.com>,
+	kvm@vger.kernel.org, Len Brown <lenb@kernel.org>,
+	linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Robert Moore <robert.moore@intel.com>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Sudeep Holla <sudeep.holla@arm.com>, Will Deacon <will@kernel.org>,
+	Eric Auger <eric.auger@redhat.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	Moritz Fischer <mdf@kernel.org>,
+	Michael Shavit <mshavit@google.com>,
+	Nicolin Chen <nicolinc@nvidia.com>, patches@lists.linux.dev,
+	Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+Subject: Re: [PATCH 2/8] iommu/arm-smmu-v3: Use S2FWB when available
+Message-ID: <ZsT0Fd5FHS47gm0-@google.com>
 References: <0-v1-54e734311a7f+14f72-smmuv3_nesting_jgg@nvidia.com>
- <ZsRR0MUHPz23zxu3@google.com>
+ <2-v1-54e734311a7f+14f72-smmuv3_nesting_jgg@nvidia.com>
+ <ZsRUDaFLd85O8u4Z@google.com>
+ <20240820120102.GB3773488@nvidia.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZsRR0MUHPz23zxu3@google.com>
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS1PEPF00017099:EE_|CY8PR12MB7435:EE_
-X-MS-Office365-Filtering-Correlation-Id: a4ce7730-607d-4695-b882-08dcc12c3789
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|82310400026|7416014|376014|1800799024|36860700013;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?Ysgs677FBIKJ3kF2J6Wcd+XnIPCbURPbVPVb4hb0jhyli3eMh0kdIrCIGdLm?=
- =?us-ascii?Q?6/CMT9BFLn38jHh1dOhxkf4TmpKOB3dWL7BdyqKzqmt5Pn/1Bxyy/GGTft9e?=
- =?us-ascii?Q?mfM7KbHqZGrUiqDr5gHtJByKso/OEEgWdlBW04FaL2WwUKG9KPwEigR4eWuS?=
- =?us-ascii?Q?gdy5Hm/Ropnu9B4T3UIx9rfq26JrNGRbukqmTPD3TmhGpFJhPQEqeK4nJk+E?=
- =?us-ascii?Q?dnveeRHeI4F7g2kq6zSib7S9nM6R293qQl2iGw4PMpLzyYblLiigbA9jS3mB?=
- =?us-ascii?Q?7CzZZUUv2CzBhI3SZqgziE0+aDYV5acAh4BnJOXMoiZ8wnWbtTz2Q3pLbkd2?=
- =?us-ascii?Q?t0rfXF7NDqy9MClvKj/zzNAt1TdI/ksvVaRakwQJDAA6rqNSMRl/Z5loViij?=
- =?us-ascii?Q?ecDqeVYU/uEapeYCOVetDFsCG6s8fHhLiOoLr1yroP+60eXrkGh1UknbZRdC?=
- =?us-ascii?Q?0a2j2GUr3gwhpKrTYqTm50lUDP0cn8nkYWoGKKkfID15XgJ6CacepMGD9Z8M?=
- =?us-ascii?Q?YJ3eUmLbZinoYq482B0jpu0a2ip6eJcscW8O3nZzUJfEe7G7ul5TK+KSRitf?=
- =?us-ascii?Q?QNlhmF1KhtKw7OKrHO23eys0kjXMZRl83iCsei8KpG2iJsyKha0ZFtyxn2RR?=
- =?us-ascii?Q?O5D+gOJA0BABZ1dQqtLv/hhmQIGQAySpR1ek2wm0+dFsKYQHunoPsYMuNVGG?=
- =?us-ascii?Q?lRkWEsjo678jSdLboCAmQGk95CntOmbejooCO5bGheai0BELpj6D4LIbkGLp?=
- =?us-ascii?Q?UgWP8zb5ZSuMFpPcWhkJjLvZ+zTQn7S2uAeosk1PU1YkBKFjD8k5HhnLW07N?=
- =?us-ascii?Q?ZwJiMr7F+Z/QdXMmTBrjEF7Q7YQ7EXMaUJ8Qy7ASLxUui9J6udt7xgu5kGoc?=
- =?us-ascii?Q?OqlPCS80+vRBUvh4D6Rqc9+Uxg7nWG0M4kfyqLgLrYkmIzxFQ0Ycd9OZyi9M?=
- =?us-ascii?Q?+OR3f7QnRJCIBwDqWx4b7h8WvLWfaKBl/66r1QqDhN0dV87ZomTJZ4fK3unH?=
- =?us-ascii?Q?u2DtHeVwdJ+5e1DxOc79j+iguRVeUCKtQxjsyLgmKrDyxhzn+AwOnNZSuQvH?=
- =?us-ascii?Q?WTAe9YO2ZYHUqDGT+q/RjQt9U2MzUpA9yWx+lFgIttZC++Q73kWJFmdKlgXx?=
- =?us-ascii?Q?ubTinpod29avs/E/T7dcrnhbE+324RwiIQo/v6xv40Kr+BaZflJpgWRPnWH8?=
- =?us-ascii?Q?cVObn2/n+uQr5mw6bv16wKt2yRqqcNZ7xEqnea/IgixjTkQERE7flp8YaRwx?=
- =?us-ascii?Q?YOlR6uaJTggmTNaJWbHdZzrYxRux7ahKXSE2tpkelLsSh/3JbZ2QVPvYyR81?=
- =?us-ascii?Q?9zoWV9/rbJijBnFxLNnT4eGCjmYxh9daPUmCCwnJzAf1ZNIFJKVo/3a1P1zR?=
- =?us-ascii?Q?cE1xsBSdQT6cCqEItMi1Kml4UtmFP9Y0uS7cqhn+jKX/w+qseEtdPpfYR1ba?=
- =?us-ascii?Q?0V4kZ8rzgzsVnIy/+tLUWvTEWIfuM9mm?=
-X-Forefront-Antispam-Report:
-	CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(7416014)(376014)(1800799024)(36860700013);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Aug 2024 15:24:43.2855
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a4ce7730-607d-4695-b882-08dcc12c3789
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DS1PEPF00017099.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7435
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240820120102.GB3773488@nvidia.com>
 
-On Tue, Aug 20, 2024 at 08:20:32AM +0000, Mostafa Saleh wrote:
-> > This is the first series in what will be several to complete nesting
-> > support. At least:
-> >  - IOMMU_RESV_SW_MSI related fixups
-> >  - VIOMMU object support to allow ATS invalidations
-> >  - vCMDQ hypervisor support for direct invalidation queue assignment
-> >  - KVM pinned VMID using VIOMMU for vBTM
-> >  - Cross instance S2 sharing
-> >  - Virtual Machine Structure using VIOMMU (for vMPAM?)
-> >  - Fault forwarding support through IOMMUFD's fault fd for vSVA
-> >
-> > It is enough to allow significant amounts of qemu work to progress.
-> >
+On Tue, Aug 20, 2024 at 09:01:02AM -0300, Jason Gunthorpe wrote:
+> On Tue, Aug 20, 2024 at 08:30:05AM +0000, Mostafa Saleh wrote:
+> > Hi Jason,
+> > 
+> > On Tue, Aug 06, 2024 at 08:41:15PM -0300, Jason Gunthorpe wrote:
+> > > Force Write Back (FWB) changes how the S2 IOPTE's MemAttr field
+> > > works. When S2FWB is supported and enabled the IOPTE will force cachable
+> > > access to IOMMU_CACHE memory and deny cachable access otherwise.
+> > > 
+> > > This is not especially meaningful for simple S2 domains, it apparently
+> > > doesn't even force PCI no-snoop access to be coherent.
+> > > 
+> > > However, when used with a nested S1, FWB has the effect of preventing the
+> > > guest from choosing a MemAttr that would cause ordinary DMA to bypass the
+> > > cache. Consistent with KVM we wish to deny the guest the ability to become
+> > > incoherent with cached memory the hypervisor believes is cachable so we
+> > > don't have to flush it.
+> > > 
+> > > Turn on S2FWB whenever the SMMU supports it and use it for all S2
+> > > mappings.
+> > 
+> > I have been looking into this recently from the KVM side as it will
+> > use FWB for the CPU stage-2 unconditionally for guests(if supported),
+> > however that breaks for non-coherent devices when assigned, and
+> > limiting assigned devices to be coherent seems too restrictive.
+> 
+> kvm's CPU S2 doesn't care about non-DMA-coherent devices though? That
+> concept is only relevant to the SMMU.
+> 
 
-> Are there any qemu patches to tests this?
-> As I am confused with some of the user space bits and that would help.
+Why not? That would be a problem if a device is not dma coherent,
+and the VM knows that and maps it’s DMA memory as non cacheable.
+But it would be overridden by FWB in stage-2 to be cacheable,
+it would lead to coherency issues.
 
-I have the qemu patches, but am running some backlogs to keep it
-updated, and don't have one exactly fitting to test this series.
+> The issue on the KVM side is you can't put device MMIO into the CPU S2
+> using S2FWB and Normal Cachable, it will break the MMIO programming
+> model. That isn't "coherency" though.> 
+> It has to be Normal-NC, which this patch does:
+> 
+> https://lore.kernel.org/r/20240224150546.368-4-ankita@nvidia.com
 
-I collected a few remarks from Jason regarding the VIOMMU series.
-And I am reworking on it. I plan to post a testable QEMU branch
-with the next VIOMMU version. Will CC you and more folks.
+Yes, that also breaks (although I think this is an easier problem to
+solve)
 
-Thanks
-Nicolin
+> 
+> > But for SMMUv3, S2FWB is per stream, can’t we just use it if the master
+> > is DMA coherent?
+> 
+> Sure, that seems to be a weird corner. Lets add this:
+> 
+> @@ -4575,7 +4575,12 @@ static int arm_smmu_device_hw_probe(struct arm_smmu_device *smmu)
+>  
+>         /* IDR3 */
+>         reg = readl_relaxed(smmu->base + ARM_SMMU_IDR3);
+> -       if (FIELD_GET(IDR3_FWB, reg))
+> +       /*
+> +        * If for some reason the HW does not support DMA coherency then using
+> +        * S2FWB won't work. This will also disable nesting support.
+> +        */
+> +       if (FIELD_GET(IDR3_FWB, reg) &&
+> +           (smmu->features & ARM_SMMU_FEAT_COHERENCY))
+>                 smmu->features |= ARM_SMMU_FEAT_S2FWB;
+>         if (FIELD_GET(IDR3_RIL, reg))
+>                 smmu->features |= ARM_SMMU_FEAT_RANGE_INV;
+> 
+> IMHO it would be weird to make HW that has S2FWB but not coherency,
+> but sure let's check it.
+> 
+What I mean is the master itself not the SMMU (the SID basically),
+so in that case the STE shouldn’t have FWB enabled.
+
+> Also bear in mind VFIO won't run unless ARM_SMMU_FEAT_COHERENCY is set
+> so we won't even get a chance to ask for a S2 domain.
+
+Oh, I think that is only for the SMMU, not for the master, the
+SMMU can be coherent (for pte, ste …) but the master can still be
+non coherent. Looking at how VFIO uses it, that seems to be a bug?
+
+Thanks,
+Mostafa
+
+> 
+> Jason
