@@ -1,170 +1,201 @@
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2046.outbound.protection.outlook.com [40.107.92.46])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 051B518DF6F;
-	Tue, 20 Aug 2024 13:02:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.46
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724158928; cv=fail; b=Xwh0s3R/3KW78MVMHyz/zgTetymg+GKOkQmU9AX/PjFpq//PcdbBl111Te4kJidVU13OpOBopYnCt2/+ZaJ4q4WAafOioVMCutNrRwcKbMc7+t66B69xbdpp5f8vUj8O64yP11J0nc5MS/HvdmCC9zszvZ17hDl4a9VtYWuHCsI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724158928; c=relaxed/simple;
-	bh=tUzpGvPjS6BvDBWtkX9zOxcMviychqsFrpDkbLSg2/E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=W4zwLiOXhYom7Adyf3lu/rSpCJJNurJq3xsmKEEV4MkmVuerFjHjFlv9Tu1hxVUbdI+BPo0d18jpwe5J4D1iDYA9LK0gRrNkb7gfgf9TCDBTWWo76TX3x3kgfNPm23kqarYWmUphh9BwXc0kgEYBH6uYu7gfuNp+8TDVVxsSKLo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=j3OmhgWD; arc=fail smtp.client-ip=40.107.92.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CC07191F94
+	for <acpica-devel@lists.linux.dev>; Tue, 20 Aug 2024 14:55:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1724165753; cv=none; b=fnrzFbQDA7bmSWjZJc+FztsquCLtEVAT/958OwI4QpmmppGTWRrKFbhH6jMQxh5uXArM8LCXaF4Bsuc9YWGNyGD4dPsa1MupzO9U7dlqIEwLtd2BQPmb/ixSW/OXMSPreRIFHqKAFilHdYgVB7al5lkRf2RBiPaq/MnNyOh9DJY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1724165753; c=relaxed/simple;
+	bh=0ZOu3inMv6TGg0c6P8Xpu2xNmZ613jQlAGBpZEN8z08=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=srw/aj9W21t1OCqdPrHL0J7sTgYr12E7jzfGyNB2LOz9u1oqjlt+CwC78nQ7On7LyS/toLVQZxgGvbPLObqix0v5aEwfaMlLF5pyPmza2NgFeQk32Xy2ar7zHvvyjR7SBca0ia0hqpKAhgOsdOhdUsAvuO8xYGQZHwwbnNGc6h4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FgK1iQh4; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="j3OmhgWD"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=ge4NmdZYPN9zLQ59FEMFu7zqJlAGZ1+Iv9LhwHfmrLHJBi7B+CQ/D6Y89kER7SwbQj1aycyZDAd965F1bulHrSqorVgakkvhwTrkDAQkcFN+4j+iLxOGAt0tT0eBOZhLZTDO+8maXgZ0k0/JnxYKzEvRAJxniqJ1L5BXNyUEPZKQ0/t1g8efjLTjwY8dTa9p7iIT3l9QrP+7ApD5G3w10N1N0uzAXMDiVx4jGR4s/gXXKyY1WrFfUTZHiEivUFUFjKwNrOPDF0am4S6K4OzxBnZdCQ0ZgXZhC1BXtc2KQuOwSmlXKHqk75PyiVUtFKGC9wAoAzsiuaz208DrkACqvg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tUzpGvPjS6BvDBWtkX9zOxcMviychqsFrpDkbLSg2/E=;
- b=OFThIYjlWVafzTcnDsgz9yheqiy4EVEVyfalTCMYPWfAnX5r7OTSXRMiioT0u0p3nPuKX2kCxBvA1pXJ2o71RKnhs6XONcAiK89tV0D/HzK+cZNVkZkMz+VGNq6QTP4wD5uLftMJWMv+77T8zJJvFDJqElyBownlTkXZ/7fhntiVeJUJm/Sb1d1vnc+B9NIBNLYi9cfmbMzbNRP3yU1DEUVVOG918XKVmStmKBla5HA/kVx5SKwcnxHPc2Jqb3yZ20h1x+cT3JW7oPqkTGDNYmv/zuP9mVwHoScTwTM6hEO24/3iloMk9X8V1ISdNyCoazxVcBmk7VkQBj0QQEcvtg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tUzpGvPjS6BvDBWtkX9zOxcMviychqsFrpDkbLSg2/E=;
- b=j3OmhgWD6VgwghodVbnW7V9QEorzY/iCwWi2XJbgEusOydY7c7Ja7vIsmizexaU5HLwABH+l3Npi8P/86HodPBjI2BFR7QvREnXrhcMGiL6ze7TzjV/dQEFVzlviDBiggvb3XDCGv6i30mrLNBxHVjHTQ+4teZYpqVoMxzkYjt5XpcXXMhbiY/B2JblHm8TSnp7y+XGVN1iXNO0pYmeXyMC4lMcujxcbsouGoUt4gH+EeOliwnybx+nCGA5ncfdFcuNG/MFottkEFdyifJ2VYWfEIodQPvSWCCZoLTi4SRw1KBXBwNxzZnpjrJontfpmIQ5T7IuaH3v8QTIiO4SVoQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CH3PR12MB7763.namprd12.prod.outlook.com (2603:10b6:610:145::10)
- by PH8PR12MB7376.namprd12.prod.outlook.com (2603:10b6:510:214::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7875.21; Tue, 20 Aug
- 2024 13:01:57 +0000
-Received: from CH3PR12MB7763.namprd12.prod.outlook.com
- ([fe80::8b63:dd80:c182:4ce8]) by CH3PR12MB7763.namprd12.prod.outlook.com
- ([fe80::8b63:dd80:c182:4ce8%3]) with mapi id 15.20.7875.023; Tue, 20 Aug 2024
- 13:01:57 +0000
-Date: Tue, 20 Aug 2024 10:01:55 -0300
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Mostafa Saleh <smostafa@google.com>
-Cc: acpica-devel@lists.linux.dev,
-	Alex Williamson <alex.williamson@redhat.com>,
-	Hanjun Guo <guohanjun@huawei.com>, iommu@lists.linux.dev,
-	Joerg Roedel <joro@8bytes.org>, Kevin Tian <kevin.tian@intel.com>,
-	kvm@vger.kernel.org, Len Brown <lenb@kernel.org>,
-	linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Robert Moore <robert.moore@intel.com>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Sudeep Holla <sudeep.holla@arm.com>, Will Deacon <will@kernel.org>,
-	Eric Auger <eric.auger@redhat.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	Moritz Fischer <mdf@kernel.org>,
-	Michael Shavit <mshavit@google.com>,
-	Nicolin Chen <nicolinc@nvidia.com>, patches@lists.linux.dev,
-	Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-Subject: Re: [PATCH 2/8] iommu/arm-smmu-v3: Use S2FWB when available
-Message-ID: <20240820130155.GD3773488@nvidia.com>
-References: <0-v1-54e734311a7f+14f72-smmuv3_nesting_jgg@nvidia.com>
- <2-v1-54e734311a7f+14f72-smmuv3_nesting_jgg@nvidia.com>
- <ZsRUDaFLd85O8u4Z@google.com>
- <20240820120102.GB3773488@nvidia.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240820120102.GB3773488@nvidia.com>
-X-ClientProxiedBy: MN2PR20CA0042.namprd20.prod.outlook.com
- (2603:10b6:208:235::11) To CH3PR12MB7763.namprd12.prod.outlook.com
- (2603:10b6:610:145::10)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FgK1iQh4"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06382C4AF0E
+	for <acpica-devel@lists.linux.dev>; Tue, 20 Aug 2024 14:55:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1724165753;
+	bh=0ZOu3inMv6TGg0c6P8Xpu2xNmZ613jQlAGBpZEN8z08=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=FgK1iQh4RWOwOelEdQ9jeGUfZx+WnxkwYkczIBVkqVFn+rL0ri4YWp2O6ORwfc1ea
+	 CL5XwX3vt8+v1vt9XBn/xqqX5AhV/lYdYFYW/MhJV1YakNKndJoR7TAzRpelgDBMjk
+	 xIb4elNsp7Zs+v2W0bs4IaEoIPXsP1iDO3HYsulZIyRhKqmvTFxmgEutE0c3dc3Ulz
+	 /R2zGjFVEbGOYJlQ8VEU7kvDApqiGy0WgE7DdcXNvpK28+WdjUnFADogi1IQNJwp6T
+	 es6qiLQTaBjLi2C1nJiI7pWy8bn23WbY7CIF1qccAK0hWshPl4i2ncl0NH9sSBvsTs
+	 pUVuhK1V/UkXg==
+Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-5d5d077c60aso3043443eaf.1
+        for <acpica-devel@lists.linux.dev>; Tue, 20 Aug 2024 07:55:53 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXFmUKNZQbdkc6jVQRbCxB1r9Ycd0+rb1e3j6QH9Eo9tUgH7o1n+agbhbLfaODhuqd8zWS79u+6f2JV+P4=@lists.linux.dev
+X-Gm-Message-State: AOJu0Yx+Jc/KoXychMVKkehUuIupcSmU+q4lUiBuHUHRltPD3et1Qtdj
+	sxhPxei6LtPvXs5FfbSeCdtWkfRsTBBMrRCS6A/sT/OWtQPPTvqb0hnhMemR3fEpx1dIbla+eKj
+	nlAnJL2UetCvpavKuc/3xTsLUVSo=
+X-Google-Smtp-Source: AGHT+IERmvMStpESs9VrqArXN+cb5EeE1Fq/0gAmtGZ11naWDvaXrGCSH5qncYXRCTOyrCOPzq+Yoeo8p8V7jLtU6NI=
+X-Received: by 2002:a05:6820:1a0d:b0:5c4:e8d:58be with SMTP id
+ 006d021491bc7-5da98896595mr14771765eaf.3.1724165752262; Tue, 20 Aug 2024
+ 07:55:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR12MB7763:EE_|PH8PR12MB7376:EE_
-X-MS-Office365-Filtering-Correlation-Id: c6d3069f-3ef5-48b9-c398-08dcc118457f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|1800799024|7416014|366016;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?5CYioQ5P7UolrWE4I6CZB+M8qFRpWqvm3jE8BT3oj8PpksX6oCtJxipGz9yn?=
- =?us-ascii?Q?OJ7wExzT3YQHFP4JDl/5JcT5iDGkmOmq5BWvWu9Jm6z7JjS06DIEVy6fVUhK?=
- =?us-ascii?Q?MmKzolZwhSJxp+/BuOpYQ9nJJ99wL+Pyq3sadwAOUDL4zHXGjsbP+DC136FC?=
- =?us-ascii?Q?tBBhLN6+4Y41EaeMJaXpmoO0G+COahZ9ZQ37TuPkL6bs7KC42L373nSNmNcp?=
- =?us-ascii?Q?faKAL6SBL2A1/+h9v2P2zUTT9tNZ4XJXMHQrICYD2rwCrKkpetynGk2JoJne?=
- =?us-ascii?Q?b1xhLCDQQp8yX43Pttn9jcFCG5qKrj/4QitMwdi39rIFByLJp3clzbrK3A0X?=
- =?us-ascii?Q?/A5UBzUbf+dN7Zv0tcOqhJZYhtsqcqbo9yTwn/0XzTgbVOKfjp7o4rfyc86K?=
- =?us-ascii?Q?2rJQk82L2Y5Ucq6cGRau5tvYJSgVAqLpU8RdfliwMDNn+EIW3LbAuqPWkLes?=
- =?us-ascii?Q?qUDdp4WLOWWDFTGRgOBsxl03nczEdw0/qqVjQ7SDGjMrlEvL5NvoR6XNPUSE?=
- =?us-ascii?Q?SGBHpmZpeYmPGMNB2Rkt+Uft3uJWxBt/F/WPwrlKUmPIFQX6uPzdsi2KjqRr?=
- =?us-ascii?Q?1z21eA/N2vnpVh2IIbTtLoFVs0O2497iK+4eoqsxbbCXhnft+RHtob7vNCOa?=
- =?us-ascii?Q?2ofz0taj9DCAtHVI2CXHsSmI0XAAddyDgT7XKG+lUktsx7RTZm0n1ZbA5XQH?=
- =?us-ascii?Q?UF1DtawuOeIEZtXhhhOSr0jyNoGxo271q+OwaNv8O+s5bsh3F2xDInb2apjn?=
- =?us-ascii?Q?gtTGffeM6/NBtGp1WFUm0uSUJEHEB8dNtiJsoHjLVOHppO9g4Elpshnl8IZV?=
- =?us-ascii?Q?QuIYUJWyf0UskvImuMbC5sFawYRhZxma7OA0SeO2Cw81hIuQ4sqx+4qFN/PI?=
- =?us-ascii?Q?cFSADO4NkVeDP0XazvZv2k/OLuxlvi4Gz0uhQjoiZBrqLkyVWmDvAtO053O4?=
- =?us-ascii?Q?paCMrvIhjdi8piymjJAATag7jP8cowlM4rQDcRppQ+iWkbD5CA+TwnLUTmQF?=
- =?us-ascii?Q?i8dKQzd60zPNkdYLXci5QFXXkoxYVtIe1zQpytgOnRJwOI2woWl6/QtxyvhZ?=
- =?us-ascii?Q?P1Jl3uo43MsM5kbbLi49nzhTzxvbcNPzm+t9VufCKrJNW2YNxxt3YpdDzZzG?=
- =?us-ascii?Q?1OxKIYnHQNs9kpUTOqTJKt9enzfvMNm3P//8OpLZlsX3d7sgQ7+1aCHqoJNG?=
- =?us-ascii?Q?oAU8GXqobBT68SzTntChechCw2zTXuS5nxb2BahjJdYPSbtdSIhxAUfTS/4X?=
- =?us-ascii?Q?PHYqBvIrxN/m5xM47p7SrjeC4e+bRY5OHRuTi2TtM/8BsB0FBcQzhc3UGTWX?=
- =?us-ascii?Q?AE6hQPQFPXXYX9JEpJvGzGlvaTb5R6/jwqAdesjOvZnh5A=3D=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB7763.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(7416014)(366016);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?+eZ/ipGZBeOwWWf8MpFe0AlJLw7uTnoEMt99f0+wU/y1tyuR6Rl2rDSuye/R?=
- =?us-ascii?Q?82NVBpy+z380+83LlwMlAF1nW9JAsXIq+DssyDhVtSCF+fKktnU8gSdcJSIQ?=
- =?us-ascii?Q?a85n1ARS7aWc3f2Ez73QBF4EZzSZQBaTQ0xTnt5Ovqvu9TzXlUlRbq2vYt1K?=
- =?us-ascii?Q?WN0UHlmG2ffC/myRbZK1jVndgHJUg9q2VYyKDe17JWOwle6WVMXo5FpDRu/S?=
- =?us-ascii?Q?SSZAF2oWYa//xQyGEqu7hZ89yusxH3BbyjcNupPQjbky+xvUW/kfKz6KLjP2?=
- =?us-ascii?Q?xAg7vBBSvYU2CCsoWTuQ4Y4QutYDqcYp3wl14aPbmHh5Oz2Ytrd9QGAvvHJh?=
- =?us-ascii?Q?Jo+KNRKMeFbTqhvO23075vBJED4upImJzpgHo2xRC3rImmWLclXH5IhGma4A?=
- =?us-ascii?Q?reqZTubKg7I7OA+QHCo1OHlyd3tG4jQgU5ZmT+Vyzjs+JJ/jggJcMiq+fC/l?=
- =?us-ascii?Q?E4uMKNbbtO0nAp+hnJalyH+6e2KiA1WcZFsYHt0raCZQ/PZBwL8vbO1AnosO?=
- =?us-ascii?Q?ee7A7a817nKKTpDR/rjh0dv4xhw88yt+E9lBOq0uuE3ZXPTGsYzW++5QTFVD?=
- =?us-ascii?Q?KeyecQej8tLHq5k9o/UEVznc+8Ct5JqT/B0FnObVkUWhgYFzYFNUrNtFfWCA?=
- =?us-ascii?Q?zxYKiuUfDT3bT7u7GUaK/tffPWuyKk9CEsW6jq1UVvoChoeHieDEJEIwPJ7G?=
- =?us-ascii?Q?zmT7mAIwYa77XyO9o2/yYyNaQ8whUkm78DEKk1oq8Vq18yyw/5Qltwd8d+Jy?=
- =?us-ascii?Q?7s6F12UhGthHUez5LJCW/E2yeKlKIY+81Vtlj6su6qugajqcooXkvr2Thcot?=
- =?us-ascii?Q?4QkyW5OZqjC9+GTb6RNgNEAvq2MUqixepBWWS2wGwvPSKOxbcAjOhjDb+3eo?=
- =?us-ascii?Q?YbkeOXReBalUqwQaLuSjig+GM099eeSIMwewyal/+irzL/s1+vmVPuvHEDWR?=
- =?us-ascii?Q?yDCM7+eVZWDr+VoApV6ynbXhJdGbAUAShGvRtuDHUKX+o12qFxNji/7Xk5KD?=
- =?us-ascii?Q?0aXkZ7qs0C/0siA3rcd/qWluSLPueNqMiGVYwipo/8bOybD1E+GlOVwSSDtI?=
- =?us-ascii?Q?dKJydct34fmxSRyDMso9+rOLBQJNm6tOAnIU9oBHxBrtVCimjYXstcS/uFS8?=
- =?us-ascii?Q?U4dY4ATk+0NeefOjB7+7A13qrQxxLvgUmvBoBhJM/dTbIufrRvAnxFzFSxcd?=
- =?us-ascii?Q?e+w0+idz6qfROWCZz6YTKuA1DFFL5v0oCQsOuwXndglmUcFuG4u/KEMEzHc2?=
- =?us-ascii?Q?0KMWmjevYRnsXsapk+AvWsVgw/Qeg+iRiq28TfhnTaYLzgvwLMFxbehwpPJa?=
- =?us-ascii?Q?OHALiZrdliTrjLsKLewjwuSe9eSqjM13Ved591fdpIADMUVOmVIqpkxl8MsM?=
- =?us-ascii?Q?Ps43tdZgYuK+3tkXbEErtxwamG8ze4MK1XgtoyV7utaP0hH01z2gNCiWR3/B?=
- =?us-ascii?Q?oh5PyS52jC9u2PpP/88gzeqMXJd+84Mz5NDpsXd1IFIfNbNQayCotzwbBmpF?=
- =?us-ascii?Q?6oj1kuFlPjQQ33JF6slYKZjZjrK6hXTmm/aCIf2ZFF90LQY/ddUYOmLcaSPv?=
- =?us-ascii?Q?pY7fE2Iiwyiwh6JbMLk=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c6d3069f-3ef5-48b9-c398-08dcc118457f
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB7763.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Aug 2024 13:01:57.0542
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: J1688jy4G1rOGRp+xTtix1NNLVrPoSmUzhlxdYbHXynFfDAr+thih4/vIxU27T+g
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB7376
+References: <20240812054647.1194716-1-jiaqing.zhao@linux.intel.com> <20240812054647.1194716-2-jiaqing.zhao@linux.intel.com>
+In-Reply-To: <20240812054647.1194716-2-jiaqing.zhao@linux.intel.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Tue, 20 Aug 2024 16:55:40 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0hPtvVRM=Te2oPzCvE3tOy_rXYGJwaoQOfNc71z+pmkvA@mail.gmail.com>
+Message-ID: <CAJZ5v0hPtvVRM=Te2oPzCvE3tOy_rXYGJwaoQOfNc71z+pmkvA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] ACPICA: Detect FACS in reduced hardware build
+To: Jiaqing Zhao <jiaqing.zhao@linux.intel.com>
+Cc: Robert Moore <robert.moore@intel.com>, 
+	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org, 
+	acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Aug 20, 2024 at 09:01:02AM -0300, Jason Gunthorpe wrote:
+On Mon, Aug 12, 2024 at 7:47=E2=80=AFAM Jiaqing Zhao
+<jiaqing.zhao@linux.intel.com> wrote:
+>
+> According to Section 5.2.10 of ACPI Specification, FACS is optional
+> in reduced hardware model. Enable the detection for "Hardware-reduced
+> ACPI support only" build (CONFIG_ACPI_REDUCED_HARDWARE_ONLY=3Dy) also.
+>
+> Link: https://github.com/acpica/acpica/commit/ee53ed6b5452612bb44af542b68=
+d605f8b2b1104
+> Signed-off-by: Jiaqing Zhao <jiaqing.zhao@linux.intel.com>
+> ---
+>  drivers/acpi/acpica/acglobal.h |  6 +-----
+>  drivers/acpi/acpica/tbutils.c  |  5 +----
+>  drivers/acpi/acpica/utxfinit.c | 24 ++++++++++++------------
+>  include/acpi/acconfig.h        |  1 -
+>  4 files changed, 14 insertions(+), 22 deletions(-)
+>
+> diff --git a/drivers/acpi/acpica/acglobal.h b/drivers/acpi/acpica/acgloba=
+l.h
+> index f4c90fc99be2..309ce8efb4f6 100644
+> --- a/drivers/acpi/acpica/acglobal.h
+> +++ b/drivers/acpi/acpica/acglobal.h
+> @@ -29,11 +29,7 @@ ACPI_INIT_GLOBAL(u32, acpi_gbl_dsdt_index, ACPI_INVALI=
+D_TABLE_INDEX);
+>  ACPI_INIT_GLOBAL(u32, acpi_gbl_facs_index, ACPI_INVALID_TABLE_INDEX);
+>  ACPI_INIT_GLOBAL(u32, acpi_gbl_xfacs_index, ACPI_INVALID_TABLE_INDEX);
+>  ACPI_INIT_GLOBAL(u32, acpi_gbl_fadt_index, ACPI_INVALID_TABLE_INDEX);
+> -
+> -#if (!ACPI_REDUCED_HARDWARE)
+> -ACPI_GLOBAL(struct acpi_table_facs *, acpi_gbl_FACS);
+> -
+> -#endif                         /* !ACPI_REDUCED_HARDWARE */
+> +ACPI_INIT_GLOBAL(struct acpi_table_facs *, acpi_gbl_FACS, NULL);
+>
+>  /* These addresses are calculated from the FADT Event Block addresses */
+>
+> diff --git a/drivers/acpi/acpica/tbutils.c b/drivers/acpi/acpica/tbutils.=
+c
+> index 15fa68a5ea6e..356700349b45 100644
+> --- a/drivers/acpi/acpica/tbutils.c
+> +++ b/drivers/acpi/acpica/tbutils.c
+> @@ -18,7 +18,6 @@ ACPI_MODULE_NAME("tbutils")
+>  static acpi_physical_address
+>  acpi_tb_get_root_table_entry(u8 *table_entry, u32 table_entry_size);
+>
+> -#if (!ACPI_REDUCED_HARDWARE)
+>  /***********************************************************************=
+********
+>   *
+>   * FUNCTION:    acpi_tb_initialize_facs
+> @@ -37,8 +36,7 @@ acpi_status acpi_tb_initialize_facs(void)
+>         struct acpi_table_facs *facs;
+>
+>         if (acpi_gbl_FADT.Xfacs &&
+> -                  (!acpi_gbl_FADT.facs
+> -                   || !acpi_gbl_use32_bit_facs_addresses)) {
+> +           (!acpi_gbl_FADT.facs || !acpi_gbl_use32_bit_facs_addresses)) =
+{
+>                 (void)acpi_get_table_by_index(acpi_gbl_xfacs_index,
+>                                               ACPI_CAST_INDIRECT_PTR(stru=
+ct
+>                                                                      acpi=
+_table_header,
 
-> Also bear in mind VFIO won't run unless ARM_SMMU_FEAT_COHERENCY is set
-> so we won't even get a chance to ask for a S2 domain.
+I'm not sure how this change is related to the rest of the patch.
 
-And I should also say that without iommufd something like the DMA API
-could select a S2 with S2FWB enabled, but all that does is change the
-encoding of the memattr bits. Requests for !IOMMU_CACHE will still map
-to non-cacheble IO PTEs like before - just with a different encoding.
+It doesn't appear to be present in the original commit pointed to by
+the Link tag.
 
-The only thing at issue is nesting which will end up in the guest as
-forced cachable - however since VFIO doesn't support non-DMA-coherent
-devices at all this is not a problem.
-
-Jason
+> @@ -56,7 +54,6 @@ acpi_status acpi_tb_initialize_facs(void)
+>
+>         return (AE_OK);
+>  }
+> -#endif                         /* !ACPI_REDUCED_HARDWARE */
+>
+>  /***********************************************************************=
+********
+>   *
+> diff --git a/drivers/acpi/acpica/utxfinit.c b/drivers/acpi/acpica/utxfini=
+t.c
+> index 1915bec2b279..70ae0afa7939 100644
+> --- a/drivers/acpi/acpica/utxfinit.c
+> +++ b/drivers/acpi/acpica/utxfinit.c
+> @@ -120,6 +120,18 @@ acpi_status ACPI_INIT_FUNCTION acpi_enable_subsystem=
+(u32 flags)
+>          */
+>         acpi_gbl_early_initialization =3D FALSE;
+>
+> +       /*
+> +        * Obtain a permanent mapping for the FACS. This is required for =
+the
+> +        * Global Lock and the Firmware Waking Vector
+> +        */
+> +       if (!(flags & ACPI_NO_FACS_INIT)) {
+> +               status =3D acpi_tb_initialize_facs();
+> +               if (ACPI_FAILURE(status)) {
+> +                       ACPI_WARNING((AE_INFO, "Could not map the FACS ta=
+ble"));
+> +                       return_ACPI_STATUS(status);
+> +               }
+> +       }
+> +
+>  #if (!ACPI_REDUCED_HARDWARE)
+>
+>         /* Enable ACPI mode */
+> @@ -137,18 +149,6 @@ acpi_status ACPI_INIT_FUNCTION acpi_enable_subsystem=
+(u32 flags)
+>                 }
+>         }
+>
+> -       /*
+> -        * Obtain a permanent mapping for the FACS. This is required for =
+the
+> -        * Global Lock and the Firmware Waking Vector
+> -        */
+> -       if (!(flags & ACPI_NO_FACS_INIT)) {
+> -               status =3D acpi_tb_initialize_facs();
+> -               if (ACPI_FAILURE(status)) {
+> -                       ACPI_WARNING((AE_INFO, "Could not map the FACS ta=
+ble"));
+> -                       return_ACPI_STATUS(status);
+> -               }
+> -       }
+> -
+>         /*
+>          * Initialize ACPI Event handling (Fixed and General Purpose)
+>          *
+> diff --git a/include/acpi/acconfig.h b/include/acpi/acconfig.h
+> index d768d9c568cf..2da5f4a6e814 100644
+> --- a/include/acpi/acconfig.h
+> +++ b/include/acpi/acconfig.h
+> @@ -67,7 +67,6 @@
+>   *      General Purpose Events (GPEs)
+>   *      Global Lock
+>   *      ACPI PM timer
+> - *      FACS table (Waking vectors and Global Lock)
+>   */
+>  #ifndef ACPI_REDUCED_HARDWARE
+>  #define ACPI_REDUCED_HARDWARE           FALSE
+> --
+> 2.43.0
+>
+>
