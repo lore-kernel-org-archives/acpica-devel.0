@@ -1,59 +1,50 @@
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2082.outbound.protection.outlook.com [40.107.236.82])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DAEB18952F
-	for <acpica-devel@lists.linux.dev>; Tue, 20 Aug 2024 08:30:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724142615; cv=none; b=XwLktpMxsD3FEaWIL2+QgpbP8oSFMpl/PG1p2Uc1B6hvgoxbkPZPNNEFaet4FsIeQyGRykLlv/eknOArqrxl4zS/JGti/tVyH9UYVXHPyapoQXdS060GflfPzL/TbdzPrHaWD5qJh+2RIIKa+t0gojKujmcmndo9R+mpemUg46I=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724142615; c=relaxed/simple;
-	bh=C97kW6GO0b184jP3Z6JLzvY+X/IbBXrnJu7dwpjsKjc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rM6YgZHMYabRYzGfj6sM7y/0sWxrgN8BopOzK8/g3T7ZZ54xrrUKpCFvkKOnn6J1t2PtM/gFtlc/hOzKm7wCOlAw1nxg6jBKAmEuxOiIHTV0QXJ17bgjEoYwDOdtVc4KF845AnRnC6QuA4mGEKfrpIMsdvJJqifPxd3KYoGpc8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0GUg8zOp; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B50F018F2EF;
+	Tue, 20 Aug 2024 12:01:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.82
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1724155269; cv=fail; b=TGx1KbZ1jEVOAsBdZUsjV1Fu8QA3aHlfZ5y3KkGqsVfYihHG/jHThHDreW+nPzGJjjPnFYH/ma5WGsKvu5dP45FSZRH8dQVJ7qCu/gcmbWfb5jNqrZy+7pvxqeU3/SoHL7SuZqnYE0cTVpBEVuMHSySc6IjuMTxFWWUVsx1a0hE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1724155269; c=relaxed/simple;
+	bh=EmTcHp7FXKlT1G1HjS1IA8RbW6IP4klaLCxlc189mJQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=lfWnTMLx/8BO8XJq/8Rew2uqGHm0iN+fpTCX/WawExWlHeq0y3FnV//UBdLRBHYVPkdyofvvVcfZ/WEf1azW8PqiAM9yilChO5nwToE7DeOxWt42MerFG3Hd07Z2EVq4AeQer3GMfyKb2XdmBrOm5AjeKfH452kZ3SvYqq8NgE4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=jFUcONEH; arc=fail smtp.client-ip=40.107.236.82
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0GUg8zOp"
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-5bec7c5af2aso3982a12.1
-        for <acpica-devel@lists.linux.dev>; Tue, 20 Aug 2024 01:30:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1724142611; x=1724747411; darn=lists.linux.dev;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Nmtk1HP3ErSXQsoJaqLN7JzX8v0kJjj6aEOiqGrjDL0=;
-        b=0GUg8zOph7R+ndZJT6exCUxw8TCOqx1SwYSJUo1dtC1gOivSqAGJ7P2KDCyjBW7krS
-         mnel+me4IR0xouQD7eZRF/jlbxLxc6URqBB8KvhBjhzvF8faCwvji0QLEpSmTBMwpJLw
-         nIza7yQ3DZXY4N3G3xZv0eMThX1VddVwUlrNNYdj61F/yAiS97x53BjO4jFGSRs/pD0k
-         /iMwrqahJdGCv10iEDo1e5pLCaViNBnSmX8C2qjRDRc1gM+BLSi66zOu4CVRLBhginwH
-         bRVnzwmNSUt8MLiCjeAa0jj8YAFn5JCgKShtGoNxWFrlRW4TjN/cZMh/TnktFsqy4z7e
-         caww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724142611; x=1724747411;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Nmtk1HP3ErSXQsoJaqLN7JzX8v0kJjj6aEOiqGrjDL0=;
-        b=gmLlS5ByRlsEnC3g9e3fy8VfiyOYiKWt9e9GCk/t1ikL6KvibV+tN0VLt/Qnnu8YCo
-         yRSPQ9roBf4SxPwGzWB3HQFAmMuWLxQHYHkBhcm2/ftSL+qU5HIEUrh7vvxBWdi9lVag
-         GVanvgQuv5d77qEcJ4RTbePGRFwvCyYQ0e+GdJuEXtYrMcbRoekPzUV4gHihIUQlEMSE
-         2c9OUFK+7qezJin/APseVESwm87bYzV9r4aV9FSc2/bVpSrK7uLLcsgz89V9mwop3j6w
-         8YtN5GziP7UX7OFlmAnhKUFR8IYmm66oabIBXAE0GnRo66fevH76MoLXqoMLCaYEyi2u
-         vnaQ==
-X-Gm-Message-State: AOJu0YyyEgFOVSC4a+bT0VjZISv8eUpEd5Z3Cs6nCiScCtlW5EMWOP8f
-	aZImJf0+4PacdPFbA9i63c46OVL/tFHCA0vKTMXqcfpIeZ8ViUUE9p3Pq2VjQQ==
-X-Google-Smtp-Source: AGHT+IGPziUVy8HDcHfDeem3AWflQvAYWNj8eBFcuwDV7RIOne/5+5CR2e95OR/3zOh5eRn0jG6aJw==
-X-Received: by 2002:a05:6402:3546:b0:5be:c28a:97cf with SMTP id 4fb4d7f45d1cf-5bf0e5a28eemr37487a12.5.1724142610293;
-        Tue, 20 Aug 2024 01:30:10 -0700 (PDT)
-Received: from google.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-429ed7945b8sm135707085e9.44.2024.08.20.01.30.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Aug 2024 01:30:09 -0700 (PDT)
-Date: Tue, 20 Aug 2024 08:30:05 +0000
-From: Mostafa Saleh <smostafa@google.com>
-To: Jason Gunthorpe <jgg@nvidia.com>
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="jFUcONEH"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=N86HajC28AjsxyJr1NJDNs3NTvKESCKMA1tivg2yru2M6YZ/IPULp/t5ubINqeRCdY2SMj3qs+xrQX2lg/jy8UG1FfmtROU5Q/+ELvPb2Th17XWR8CBwolxHM4Hh7adR6umhA+NU49hd3k+lIpFt87qG4JLG3rHYDjqHs8BJGJmX+K9SH2OHxi+pbk8X50ePAlkXndrFOIW6OhDmS9idUKmlHYZXsKJM6Yv8IQiUXy62/eB3Fim+fJk11j13x5MHz1jCskPsHA0mDMxBdI3atRXH7VVclB6fvBJK9+2cnLdLfJhgo+d0fcfyajMaT77538Eh8UF4DAA9rTmyGdhO7g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ICd1IQl4iRppIed1BW+PAdVfdetVzyz43u1yOKHsLIQ=;
+ b=NU8NREkU2oCbvIosbOYGvAT1GQktf3k/sqz8aViHpJ473c5G0z1rsidH6aau4DWmUU4kmg1w+eSC/tGtRcoMRqPCLYu4qRYPlZGFNnut9UJh+f858mkjwIjR5sHa3YdzsLEIOOFf+Q713BpPb40jC67G1Mb9TtNVyOoOoMviV5VCYq5a33okP90/x4hNvNEIcu81DyCBptekdjFLo1NVgVgcLXIjdEosT0lxMDKbYjIRT0m7OWn68rP0F/wjkSpeLaR05ZUIDQ14/rECmitp3Sge+yVYXhtocZriFxiSYdCj7q3xAsb0VnTPuyLmHt1IaOz0J/0rVWUtglCULoKZlQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ICd1IQl4iRppIed1BW+PAdVfdetVzyz43u1yOKHsLIQ=;
+ b=jFUcONEH60pO8CcgPQf3rRgcn8keGAA0P2c1oDimjyAuBUVp8J7wTFu+ciRJ0sFTd4Tv3naxdSlKQCqA/HX/fDKJ1umoYqoAaRByTZb0X4sLfCe6xoI53oLwH7low+ZMxiPRbACKevyFUNvXbaaC+T7TpmUhiuRYMaZ3Wrf9YE4GHX/vl8YWNqNH3xddf929za+ey7PGqSvn7e+JbUGdI62vfIFFkDnKMVOz9H3O9weVPl9EW3U6HW/dq1iHvU3QFWdsWx/dYZJj0MuxQmEkU+HxhbLjNbnWewUudfer11x/CBiGjIwH1kpUfNG8wS8F6nBG2D48k8KjNPrA30XeSg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from CH3PR12MB7763.namprd12.prod.outlook.com (2603:10b6:610:145::10)
+ by CH2PR12MB4328.namprd12.prod.outlook.com (2603:10b6:610:a6::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7897.16; Tue, 20 Aug
+ 2024 12:01:04 +0000
+Received: from CH3PR12MB7763.namprd12.prod.outlook.com
+ ([fe80::8b63:dd80:c182:4ce8]) by CH3PR12MB7763.namprd12.prod.outlook.com
+ ([fe80::8b63:dd80:c182:4ce8%3]) with mapi id 15.20.7875.023; Tue, 20 Aug 2024
+ 12:01:04 +0000
+Date: Tue, 20 Aug 2024 09:01:02 -0300
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Mostafa Saleh <smostafa@google.com>
 Cc: acpica-devel@lists.linux.dev,
 	Alex Williamson <alex.williamson@redhat.com>,
 	Hanjun Guo <guohanjun@huawei.com>, iommu@lists.linux.dev,
@@ -72,184 +63,173 @@ Cc: acpica-devel@lists.linux.dev,
 	Nicolin Chen <nicolinc@nvidia.com>, patches@lists.linux.dev,
 	Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
 Subject: Re: [PATCH 2/8] iommu/arm-smmu-v3: Use S2FWB when available
-Message-ID: <ZsRUDaFLd85O8u4Z@google.com>
+Message-ID: <20240820120102.GB3773488@nvidia.com>
 References: <0-v1-54e734311a7f+14f72-smmuv3_nesting_jgg@nvidia.com>
  <2-v1-54e734311a7f+14f72-smmuv3_nesting_jgg@nvidia.com>
+ <ZsRUDaFLd85O8u4Z@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZsRUDaFLd85O8u4Z@google.com>
+X-ClientProxiedBy: BL1P221CA0025.NAMP221.PROD.OUTLOOK.COM
+ (2603:10b6:208:2c5::13) To CH3PR12MB7763.namprd12.prod.outlook.com
+ (2603:10b6:610:145::10)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2-v1-54e734311a7f+14f72-smmuv3_nesting_jgg@nvidia.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR12MB7763:EE_|CH2PR12MB4328:EE_
+X-MS-Office365-Filtering-Correlation-Id: d20769b9-5422-4e28-8c50-08dcc10fc413
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|376014|1800799024|366016;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?SXNCTzR2MEwxTWw0aDViQW5qQkgxNXhEbVgyWVd0M25kS1dNVTE2bXR4dmpl?=
+ =?utf-8?B?cnNtVFA5c2l4REl0NUowcFNiOTM3MEZ5TmJ3Z2NzMFY3YTNTU09XQU1CTThZ?=
+ =?utf-8?B?MERjWWl4azRHRU8zaTQrbjVoMS9ZZkVJTWZKb0NISkFwTnRsbnRDSmZ1RmNR?=
+ =?utf-8?B?TFZzQ2ZWdFp4MlF0b3BrdkowNC9zN1kyOTVqNDBwNHQxOFVqWGE0UjdrRER2?=
+ =?utf-8?B?YlRHVGo2d1BXNCt5T1V0TTZiMG93N0VxbHI0OGYrZ0lGbUJEa3BraS9vZFdr?=
+ =?utf-8?B?M1dlOWhjTkJnUkhKNXhTSHRtQWw5Q0RkdHdDaDZQTXlQK3grVm8zb3YrSWYx?=
+ =?utf-8?B?Vm5wRjlUelg2d2dkOVVkNUVZU0RkM3RuK1JwV05aV09tb2RFTENVREwxWHJo?=
+ =?utf-8?B?Z2o5Y0M3aC90ZHBOSURhWjNEbkljRFpPYXY4azlGdSs1bVE2YWZpczRUYVVW?=
+ =?utf-8?B?SW5oTVdtN2RCSjM1Y3o0TktaeHM3UHBNUVhDNnAxc3czeGxsUm1udlVCbDBi?=
+ =?utf-8?B?ZGUyazgyVExqOVBidExWeDJMTTdJODMrVzVWSUR4eWwxZ1BZOVduUEkyMkpT?=
+ =?utf-8?B?clpoNFBvT2g2TDY5aHYrOXYzR2QxQVE1eElXcEVQMTFtaVJISGpiU2NUSGZB?=
+ =?utf-8?B?ZWNpK3pjcmVndzdGRng3QmJxYmlQYTVocFpKbngvbFNGZVNMQldIVXBsb0VL?=
+ =?utf-8?B?WC84NW94V0ZFSFFzaFU1eGQ3OEVOZHBoWHZJd3pnNWlmRFMxeHVEalBUL0dw?=
+ =?utf-8?B?aGFOY0xxZGs4VG4vSTJieVBleDQ3aTRSbDJoUEFvSTQ0T0xEcmNQeGxZbEFa?=
+ =?utf-8?B?Wmc1YzBHVDJiWVBKSTVFTnVDazdmTlRZQURnTWhldGJOOHZmYm5yakJub1hK?=
+ =?utf-8?B?dHpqQW9wNUZid3ZmVE54Mm5LSld4b3hwNnUxYXdmN05oSG5VTXBZdVBnR05u?=
+ =?utf-8?B?WGJSS2RTNWRMUDE2UjFITlVHUnF2WkE3RE40TERURlJnTyszOGg3MzMxWE5o?=
+ =?utf-8?B?eUhCR2htSmkrd3Z6MmcveElaUm1OOVBXVUd1RFdZQjNadzhQTlRSayt3SEdh?=
+ =?utf-8?B?WXNmYTlKa08wb0pUUWpSZm5lcmpKU3RlWll3WGJZOWFRTmxpNU5VaDhCSGNW?=
+ =?utf-8?B?cjNIL2tpUXlldVE5Sy95a3VOUXZHWFNpZWVSQzlwQmNheVlSQlVueFZRVldZ?=
+ =?utf-8?B?Tkx4WndmMzJZQW8rZzl0WE8xTXduNXV3UlpsQnJWVnpMTEFoN01id081blJQ?=
+ =?utf-8?B?Sm5kNWl4OUFpV2FQZ1pHNVRkUFdDUk1BcFZLTXg5OGN5bE02VlN1Y3p2VzIx?=
+ =?utf-8?B?dFNveVhSWGRUc05RYW9QRHBqbFpRMldtNFc0MFhNeW80djNXQW91YmUrVUs0?=
+ =?utf-8?B?YVZLV3VzNUdodW9VeWpnanhMcnJYcExJdFZUOVFiUTcraUpqZ203d1hRenFi?=
+ =?utf-8?B?NHZGSGkrQThPNlNVUlg4Y1A4a0wwM3pQcGZKZ3B6U2VaM212ak9DaTFCSXV1?=
+ =?utf-8?B?Nmt6a2d6MFZwd2RXSGJTK0VBamthTzczTkVOdDBIOExqTy9OalkrUzdwV1dY?=
+ =?utf-8?B?dUpZOElrbnhNLytoUmkwOVcyRFpVOHgzS0VJYU8wLzd4Mk9hOWxBMnRNUEd3?=
+ =?utf-8?B?citrVjYzSUJyQTM3aUpuRWRZUUZ2WWJUMkRLSER0ZW5JRkVUYWIyanJEcjJY?=
+ =?utf-8?B?SVBRdEtyM1ViK1V0b3FKVEhvTXpNN014SGgyRXd6NW9TVGpCK0pKaDZNemZB?=
+ =?utf-8?B?UWVGSEU0MzVXWXduSG5kb1VpTnpaYnRMVmNuQnFUSTF5MVJHZkpzekJqeS9C?=
+ =?utf-8?Q?I72j2Kz0/0hqCV60G+6SVudte4jfiln8dnJnQ=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB7763.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(1800799024)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?UENNOUJWcklPQllLNTZZd01uSjk1Z1g2TWdvWUpNb3E3SzN5eFdZOTFRT3o1?=
+ =?utf-8?B?Ykd2cEMvYU9TWFdzUmJmbUxRNVRkOWsxRUJTS3ZnbFBzcW1Mc0dad0JRRS9p?=
+ =?utf-8?B?dUxwQkk4OFJ2YUljMzRyZjVVQlFsdTVVRmFsRFovKzlVbWxiU1k1OWtiN1pu?=
+ =?utf-8?B?TGNPLy9KdUcvQUJUMFJrYTNTbEoveDJlK09HR0xXelNnY3lLc3dFSlpHNVFF?=
+ =?utf-8?B?dWRsamhiRGFlZ3FsVThnSHdFNWNwMjBEcG9GY3hjcjdUUyt6SWtxZkR1L2J3?=
+ =?utf-8?B?RVJrOGl6V0EyVms1YzhWamV2eFRBbURtc0cyUDBGcnVMYm80WVFrQ29rTkdO?=
+ =?utf-8?B?dnZNWFdyOTJ4Q1VmTzRSa3Z0Y3laRWNrejBWbmVBTi9VcW1ta1loMnRQTDV4?=
+ =?utf-8?B?cFlJTFc4TWpXSkFuQmd1cEZEYlFGMVVXL1NnQ1lUOGdEQWNZZFdIcmZURnFX?=
+ =?utf-8?B?Z1hZUDVPVUhFZ3hlc25IZVQvbzhHODIreDFVYmZYa0JJWGdNZ2Y3Yi9oL1l2?=
+ =?utf-8?B?Tm92RFlhVmxhc3pFNWZaZkdVMkR5Q2xRUnZSZGhvTmpNRm9oUFBoZzFnMGJn?=
+ =?utf-8?B?QmhjdDBveFVVOHFPUEdERmZJQ0lTRlpQVHpjOXB1TytOOXlWK0tBQUdTdmtF?=
+ =?utf-8?B?a1I0MHVsVWVDaUZ2UzNlVXc2RFhQMGdHamdCRjkvODJVUlIyL005dkYvY1Uv?=
+ =?utf-8?B?UG5ObjVpSUxEL2pqS3Y1V2M5bjF6OXVBSkF2cTB6d3dnN0E1UFRYU1pYUVJu?=
+ =?utf-8?B?K3VOMHRMM3RuakRlWUF6b09nODdZY0Z1M1JUTDJzNkp0azgxbnRJNDUzeEli?=
+ =?utf-8?B?SEVKSnNGblZaRm9MMS9QTWpjTWZZZ0JabEZ1eTRrS0o2Uk5kbTU3cmdJOXBx?=
+ =?utf-8?B?aGh4SWt5RUJoUXc0amxXMGx4dEg2SFBkSm9ISERNaXIzYlVPalhyd1c0ZHpa?=
+ =?utf-8?B?cE9TSEo5SDNFUDR3VWNFYkl6a2k4UnRaVnlnWlJtcGZNWVh0VllzS1Z0OEN6?=
+ =?utf-8?B?TDNUdTdYM1JXQzR2RDg0WWdKZnh1ejIrY1hOeXZqZ0x6VVUwTCtZK0RLZlBZ?=
+ =?utf-8?B?OWh5ZUh1TFJlOTFmNWNnK1V2NzBPejR1SWgvK1Qwek93MjlvY3lyeThCajB1?=
+ =?utf-8?B?d0RaV2JqMnV5bVdJdmhFeWdRZ0NTZ2JFcUc2NU9NcHR2cUFsbzFBamM0YTlH?=
+ =?utf-8?B?eE41SkdJc1IrSW8zdzVpbzBoaVo5U0ZxaUtFZytZcEZyakZSd0UxNzdJcS9y?=
+ =?utf-8?B?VnlYTUVVRGtsdjFZSnZ1ckdVcFFzeGU0ZVh2dEFWYnM0UzVQTjZ4S25mbTVP?=
+ =?utf-8?B?QXYwYSs2WWcyd1llV3dpVEJnQklwY1hrbGNHQU5DSTZ3WnFlMWYyS0RRczUy?=
+ =?utf-8?B?aVFQZ2IvT2UxaTVrZS9laHltRFNJaDlybUNEdERoN0lIbDI4d2ZSNVZYaUZj?=
+ =?utf-8?B?V0tKdHFiSWtZKzZtNDdZQ09rLzdwZWx4Z2VPYXlhVDQra2ovV2x0QXdvdVRL?=
+ =?utf-8?B?TXcra3A3SGZsdzZia0xNTnRSaVN4bGxlUURNaHd6S3RUYUNYWTdxWVJpcmFo?=
+ =?utf-8?B?amJxTldUSHFYSnlydjdORHdXSzErWW50VHQvLzlGb1dGNFowbUhSUWVLNFMv?=
+ =?utf-8?B?NjZDVTZnSStia21lWGVtSEVHazJnK3hHb2dIejRrdDFxTGl6d2xNL0ZYS3lu?=
+ =?utf-8?B?UU5ZQlZOUDZhLy95ZnZ3L2h3ck54SlR2WmUrNmhTV0dISm9YWVhDTG44MkNw?=
+ =?utf-8?B?c1Z5b3Azc2E0MG5tRHhkRzkwV1BLT0VRK0JzNzMrdzNPV29LTXFpb0dKZ3dh?=
+ =?utf-8?B?MFduU2lTOFV1bndDMkVYSGtSb2ZZNHBEUndTV0VHNEM2dDAralJWTkEyL0ZM?=
+ =?utf-8?B?U3pseTQ5WDhIRVJZbzJXYldKZmorSWRQcEUveG9xSzBGeDlQVm1JQ1Y0R3NV?=
+ =?utf-8?B?TTYwekxSME43MjFmbUFlbm1HNjRDRVNKWTh6dVBDOEFEbk1wVkxUWGtqM0dw?=
+ =?utf-8?B?WW9uZEVaUmZ2ekQwR2tpOFhQTE1rWmxRbXFzUGZQQTN4NXpRTjIzcERNNE10?=
+ =?utf-8?B?OFlSTk5oOTZZdXhtNkZEcHgxeE1nWGtqbFhPS0Q4SkNrdFFkMytJMWxqWFRx?=
+ =?utf-8?Q?xz1G75KUQPVYyH4GVrB+MSoES?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d20769b9-5422-4e28-8c50-08dcc10fc413
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB7763.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Aug 2024 12:01:03.9699
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ij0hoEkQyrNrXrxucmqbVwypXlCej3v847F6jhjAj0Lhz4pYLXfRDtst3jxnNOaJ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4328
 
-Hi Jason,
+On Tue, Aug 20, 2024 at 08:30:05AM +0000, Mostafa Saleh wrote:
+> Hi Jason,
+> 
+> On Tue, Aug 06, 2024 at 08:41:15PM -0300, Jason Gunthorpe wrote:
+> > Force Write Back (FWB) changes how the S2 IOPTE's MemAttr field
+> > works. When S2FWB is supported and enabled the IOPTE will force cachable
+> > access to IOMMU_CACHE memory and deny cachable access otherwise.
+> > 
+> > This is not especially meaningful for simple S2 domains, it apparently
+> > doesn't even force PCI no-snoop access to be coherent.
+> > 
+> > However, when used with a nested S1, FWB has the effect of preventing the
+> > guest from choosing a MemAttr that would cause ordinary DMA to bypass the
+> > cache. Consistent with KVM we wish to deny the guest the ability to become
+> > incoherent with cached memory the hypervisor believes is cachable so we
+> > don't have to flush it.
+> > 
+> > Turn on S2FWB whenever the SMMU supports it and use it for all S2
+> > mappings.
+> 
+> I have been looking into this recently from the KVM side as it will
+> use FWB for the CPU stage-2 unconditionally for guests(if supported),
+> however that breaks for non-coherent devices when assigned, and
+> limiting assigned devices to be coherent seems too restrictive.
 
-On Tue, Aug 06, 2024 at 08:41:15PM -0300, Jason Gunthorpe wrote:
-> Force Write Back (FWB) changes how the S2 IOPTE's MemAttr field
-> works. When S2FWB is supported and enabled the IOPTE will force cachable
-> access to IOMMU_CACHE memory and deny cachable access otherwise.
-> 
-> This is not especially meaningful for simple S2 domains, it apparently
-> doesn't even force PCI no-snoop access to be coherent.
-> 
-> However, when used with a nested S1, FWB has the effect of preventing the
-> guest from choosing a MemAttr that would cause ordinary DMA to bypass the
-> cache. Consistent with KVM we wish to deny the guest the ability to become
-> incoherent with cached memory the hypervisor believes is cachable so we
-> don't have to flush it.
-> 
-> Turn on S2FWB whenever the SMMU supports it and use it for all S2
-> mappings.
+kvm's CPU S2 doesn't care about non-DMA-coherent devices though? That
+concept is only relevant to the SMMU.
 
-I have been looking into this recently from the KVM side as it will
-use FWB for the CPU stage-2 unconditionally for guests(if supported),
-however that breaks for non-coherent devices when assigned, and
-limiting assigned devices to be coherent seems too restrictive.
-I have been looking into ways to notify KVM from VFIO as early as
-possible so it can configure the page table properly.
+The issue on the KVM side is you can't put device MMIO into the CPU S2
+using S2FWB and Normal Cachable, it will break the MMIO programming
+model. That isn't "coherency" though.
 
-But for SMMUv3, S2FWB is per stream, can’t we just use it if the master
-is DMA coherent?
+It has to be Normal-NC, which this patch does:
 
-Thanks,
-Mostafa
+https://lore.kernel.org/r/20240224150546.368-4-ankita@nvidia.com
 
-> 
-> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> ---
->  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c |  6 ++++++
->  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  3 +++
->  drivers/iommu/io-pgtable-arm.c              | 24 +++++++++++++++++----
->  include/linux/io-pgtable.h                  |  2 ++
->  4 files changed, 31 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> index 531125f231b662..7fe1e27d11586c 100644
-> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> @@ -1612,6 +1612,8 @@ void arm_smmu_make_s2_domain_ste(struct arm_smmu_ste *target,
->  		FIELD_PREP(STRTAB_STE_1_EATS,
->  			   ats_enabled ? STRTAB_STE_1_EATS_TRANS : 0));
->  
-> +	if (smmu->features & ARM_SMMU_FEAT_S2FWB)
-> +		target->data[1] |= cpu_to_le64(STRTAB_STE_1_S2FWB);
->  	if (smmu->features & ARM_SMMU_FEAT_ATTR_TYPES_OVR)
->  		target->data[1] |= cpu_to_le64(FIELD_PREP(STRTAB_STE_1_SHCFG,
->  							  STRTAB_STE_1_SHCFG_INCOMING));
-> @@ -2400,6 +2402,8 @@ static int arm_smmu_domain_finalise(struct arm_smmu_domain *smmu_domain,
->  		pgtbl_cfg.oas = smmu->oas;
->  		fmt = ARM_64_LPAE_S2;
->  		finalise_stage_fn = arm_smmu_domain_finalise_s2;
-> +		if (smmu->features & ARM_SMMU_FEAT_S2FWB)
-> +			pgtbl_cfg.quirks |= IO_PGTABLE_QUIRK_ARM_S2FWB;
->  		break;
->  	default:
->  		return -EINVAL;
-> @@ -4189,6 +4193,8 @@ static int arm_smmu_device_hw_probe(struct arm_smmu_device *smmu)
->  
->  	/* IDR3 */
->  	reg = readl_relaxed(smmu->base + ARM_SMMU_IDR3);
-> +	if (FIELD_GET(IDR3_FWB, reg))
-> +		smmu->features |= ARM_SMMU_FEAT_S2FWB;
->  	if (FIELD_GET(IDR3_RIL, reg))
->  		smmu->features |= ARM_SMMU_FEAT_RANGE_INV;
->  
-> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-> index 8851a7abb5f0f3..7e8d2f36faebf3 100644
-> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-> @@ -55,6 +55,7 @@
->  #define IDR1_SIDSIZE			GENMASK(5, 0)
->  
->  #define ARM_SMMU_IDR3			0xc
-> +#define IDR3_FWB			(1 << 8)
->  #define IDR3_RIL			(1 << 10)
->  
->  #define ARM_SMMU_IDR5			0x14
-> @@ -258,6 +259,7 @@ static inline u32 arm_smmu_strtab_l2_idx(u32 sid)
->  #define STRTAB_STE_1_S1CSH		GENMASK_ULL(7, 6)
->  
->  #define STRTAB_STE_1_S1STALLD		(1UL << 27)
-> +#define STRTAB_STE_1_S2FWB		(1UL << 25)
->  
->  #define STRTAB_STE_1_EATS		GENMASK_ULL(29, 28)
->  #define STRTAB_STE_1_EATS_ABT		0UL
-> @@ -700,6 +702,7 @@ struct arm_smmu_device {
->  #define ARM_SMMU_FEAT_ATTR_TYPES_OVR	(1 << 20)
->  #define ARM_SMMU_FEAT_HA		(1 << 21)
->  #define ARM_SMMU_FEAT_HD		(1 << 22)
-> +#define ARM_SMMU_FEAT_S2FWB		(1 << 23)
->  	u32				features;
->  
->  #define ARM_SMMU_OPT_SKIP_PREFETCH	(1 << 0)
-> diff --git a/drivers/iommu/io-pgtable-arm.c b/drivers/iommu/io-pgtable-arm.c
-> index f5d9fd1f45bf49..62bbb6037e1686 100644
-> --- a/drivers/iommu/io-pgtable-arm.c
-> +++ b/drivers/iommu/io-pgtable-arm.c
-> @@ -106,6 +106,18 @@
->  #define ARM_LPAE_PTE_HAP_FAULT		(((arm_lpae_iopte)0) << 6)
->  #define ARM_LPAE_PTE_HAP_READ		(((arm_lpae_iopte)1) << 6)
->  #define ARM_LPAE_PTE_HAP_WRITE		(((arm_lpae_iopte)2) << 6)
-> +/*
-> + * For !FWB these code to:
-> + *  1111 = Normal outer write back cachable / Inner Write Back Cachable
-> + *         Permit S1 to override
-> + *  0101 = Normal Non-cachable / Inner Non-cachable
-> + *  0001 = Device / Device-nGnRE
-> + * For S2FWB these code:
-> + *  0110 Force Normal Write Back
-> + *  0101 Normal* is forced Normal-NC, Device unchanged
-> + *  0001 Force Device-nGnRE
-> + */
-> +#define ARM_LPAE_PTE_MEMATTR_FWB_WB	(((arm_lpae_iopte)0x6) << 2)
->  #define ARM_LPAE_PTE_MEMATTR_OIWB	(((arm_lpae_iopte)0xf) << 2)
->  #define ARM_LPAE_PTE_MEMATTR_NC		(((arm_lpae_iopte)0x5) << 2)
->  #define ARM_LPAE_PTE_MEMATTR_DEV	(((arm_lpae_iopte)0x1) << 2)
-> @@ -458,12 +470,16 @@ static arm_lpae_iopte arm_lpae_prot_to_pte(struct arm_lpae_io_pgtable *data,
->  	 */
->  	if (data->iop.fmt == ARM_64_LPAE_S2 ||
->  	    data->iop.fmt == ARM_32_LPAE_S2) {
-> -		if (prot & IOMMU_MMIO)
-> +		if (prot & IOMMU_MMIO) {
->  			pte |= ARM_LPAE_PTE_MEMATTR_DEV;
-> -		else if (prot & IOMMU_CACHE)
-> -			pte |= ARM_LPAE_PTE_MEMATTR_OIWB;
-> -		else
-> +		} else if (prot & IOMMU_CACHE) {
-> +			if (data->iop.cfg.quirks & IO_PGTABLE_QUIRK_ARM_S2FWB)
-> +				pte |= ARM_LPAE_PTE_MEMATTR_FWB_WB;
-> +			else
-> +				pte |= ARM_LPAE_PTE_MEMATTR_OIWB;
-> +		} else {
->  			pte |= ARM_LPAE_PTE_MEMATTR_NC;
-> +		}
->  	} else {
->  		if (prot & IOMMU_MMIO)
->  			pte |= (ARM_LPAE_MAIR_ATTR_IDX_DEV
-> diff --git a/include/linux/io-pgtable.h b/include/linux/io-pgtable.h
-> index f9a81761bfceda..aff9b020b6dcc7 100644
-> --- a/include/linux/io-pgtable.h
-> +++ b/include/linux/io-pgtable.h
-> @@ -87,6 +87,7 @@ struct io_pgtable_cfg {
->  	 *	attributes set in the TCR for a non-coherent page-table walker.
->  	 *
->  	 * IO_PGTABLE_QUIRK_ARM_HD: Enables dirty tracking in stage 1 pagetable.
-> +	 * IO_PGTABLE_QUIRK_ARM_S2FWB: Use the FWB format for the MemAttrs bits
->  	 */
->  	#define IO_PGTABLE_QUIRK_ARM_NS			BIT(0)
->  	#define IO_PGTABLE_QUIRK_NO_PERMS		BIT(1)
-> @@ -95,6 +96,7 @@ struct io_pgtable_cfg {
->  	#define IO_PGTABLE_QUIRK_ARM_TTBR1		BIT(5)
->  	#define IO_PGTABLE_QUIRK_ARM_OUTER_WBWA		BIT(6)
->  	#define IO_PGTABLE_QUIRK_ARM_HD			BIT(7)
-> +	#define IO_PGTABLE_QUIRK_ARM_S2FWB		BIT(8)
->  	unsigned long			quirks;
->  	unsigned long			pgsize_bitmap;
->  	unsigned int			ias;
-> -- 
-> 2.46.0
-> 
+> But for SMMUv3, S2FWB is per stream, can’t we just use it if the master
+> is DMA coherent?
+
+Sure, that seems to be a weird corner. Lets add this:
+
+@@ -4575,7 +4575,12 @@ static int arm_smmu_device_hw_probe(struct arm_smmu_device *smmu)
+ 
+        /* IDR3 */
+        reg = readl_relaxed(smmu->base + ARM_SMMU_IDR3);
+-       if (FIELD_GET(IDR3_FWB, reg))
++       /*
++        * If for some reason the HW does not support DMA coherency then using
++        * S2FWB won't work. This will also disable nesting support.
++        */
++       if (FIELD_GET(IDR3_FWB, reg) &&
++           (smmu->features & ARM_SMMU_FEAT_COHERENCY))
+                smmu->features |= ARM_SMMU_FEAT_S2FWB;
+        if (FIELD_GET(IDR3_RIL, reg))
+                smmu->features |= ARM_SMMU_FEAT_RANGE_INV;
+
+IMHO it would be weird to make HW that has S2FWB but not coherency,
+but sure let's check it.
+
+Also bear in mind VFIO won't run unless ARM_SMMU_FEAT_COHERENCY is set
+so we won't even get a chance to ask for a S2 domain.
+
+Jason
