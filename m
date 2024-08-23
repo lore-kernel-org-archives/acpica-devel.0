@@ -1,60 +1,34 @@
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA727558BB
-	for <acpica-devel@lists.linux.dev>; Fri, 23 Aug 2024 06:33:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A292191493;
+	Fri, 23 Aug 2024 17:45:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724394824; cv=none; b=QX5fB0nVRZCRPeAs3iZ7k6FTeb8YYnGEwiUwh1adJhGQ136uh28zAmULj1yOsY5e/3TR9GJlcUWRzqgh2R3pb2u0J7zMqO5ZqOUDx54zuzHTHFSRZKh0CewsdzGb5e3NEArV1wBO5Q6RSHNI7myPpIuZPpe9fH6Irl+tPTWL420=
+	t=1724435155; cv=none; b=VIWwLscxtrhdh/c8LdSE9ys6bkxZrqCElGi4QFcLEw40czrnJS+/xJXoPIBRz5iV8fa0XKsJ0MxxqRR1Crc+mSpTvKhndLTelTklbw6nhVtiGmwfob8x5slzO9XJ+9zxqZu9i5V36QqrbB0nY98SbDszHne0w+/2dI5++3DKHTw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724394824; c=relaxed/simple;
-	bh=x0K0LEJWtcXiX9pS8782m4VauBznWN2r2hfMVYg5vPY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WmTFLySNV9o5gjYjmb4TtKAL6rlKOeiy7pEI8KomKhsmUFvNOh41SzPDoLCo5ATFqtHlxEYGIgNa/3aKYun36d3/fSeTbgi/sR3u+vRegxaPp5Bc6SdBZN5SGhT9kQe8Z7injXu0jJWVvYUVPa5dG27Mvsz82sKFo4iywCN5bwk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=M2m8LWhG; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+	s=arc-20240116; t=1724435155; c=relaxed/simple;
+	bh=mr01yUEvX26NmVp0jXUcMup0uPWebEfYc7j3GsM8fjs=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=jDOAupVUdyzbauKUJHpulGD3RrcOJzoSLW44Mm/qSZAPWSD5YZb3QFEPwx5uXoLoUkzzraUgfgBY4dQFKTqb51kWis9pp9gSDht47zqMQ2MO1T1CA0sVwMTk29RcNW+2DO0uWRRZPS29Y0Wshajd2EQPPfPH51avvk2sCwncz0o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eHPWSEM9; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="M2m8LWhG"
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-428178fc07eso11446235e9.3
-        for <acpica-devel@lists.linux.dev>; Thu, 22 Aug 2024 23:33:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1724394820; x=1724999620; darn=lists.linux.dev;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Nwwa4zZWKWT0C7ngpvIXaYQp8a5Xf4joWxzD56LK+ns=;
-        b=M2m8LWhGTm5oy/7RHjtOFLKoG6lx1c4m+VFKCNpmpWvJ8K0i+umeF7ZDFK71DKpT/3
-         A4or87iE/VYwyIiHSIAECKfapdpxAL9gKAdjHErCxQUS27TAqCXNOHr0f23FXudXw6so
-         41ophsWVcxU4zWQAqllgAmCPX9fq2nbAT7EekmV2FUrPULQNGHSRv/SffMK2293ZSghJ
-         l/SXpBMErsC3GCNP6shTjr5pADHxKBNGKefWq6eJKOeZspjCfPycGKGJ0S0WmR4kWFy/
-         6sA9yIPaoFdIKrFLFQlOZQKLRj/8yaYojurX7hTIUVdfkkJPJmF58pdztrkKUnV6FmhD
-         a+Qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724394820; x=1724999620;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Nwwa4zZWKWT0C7ngpvIXaYQp8a5Xf4joWxzD56LK+ns=;
-        b=J9r/JJL1FT5vX73Tu9y4M7Dfk5DlIiGxtQrBVNbBLafNgT0iolBf20U032oEzYnlRH
-         08PIoSbatYSgYH7wNBxGo3p1qkzobWnzNM1dvtckB3ftf3CrQ9aHaADful2yZ5FwigpS
-         epSKypWRwzbvnd9CC8KePcxYLz64ILVhVwvjwi8hdsDGrkwm8c9Sv70WFkVM7bp8w+9o
-         lSOEtGtKmUHBJwTODefp3glYemeh9A4RSA40xHK5yJ6HI18AXV0ChaX1PaOedfX7T+zr
-         6ccdwnUTVr+/uJs7tzfN9yoGfLn0+7nt2D0wZV0sOb65ihUAd8CTWhja6SIRx9sqLqB8
-         ilEA==
-X-Forwarded-Encrypted: i=1; AJvYcCXWXxjsTemaj0QehvhyyRbLETeD9Z6jQ4cdQ/azJSXuH1D+Vs29dBJqg2jFB+03kWD/1eszCNS/9qasCbQ=@lists.linux.dev
-X-Gm-Message-State: AOJu0YxxquuBPxyBJl54KormVtpVhvj7W75Hg+7ZaoJdU0J7ealKPPDO
-	Z3s1lhl8Tf9oc3553WjuwDL6KPAv7ecMTfDykUmESHw1O6rQ7oFjgnWKHdUlpUQ=
-X-Google-Smtp-Source: AGHT+IE1rLgEUi/E+JRWhk5yegpaazjUMmQ/t/cN3D8r5PCsnRrmCPHJTAiKkoCLeX2MUJRaLJ7WWw==
-X-Received: by 2002:a05:600c:4e01:b0:426:654e:16da with SMTP id 5b1f17b1804b1-42acd39e07cmr7246735e9.0.1724394820150;
-        Thu, 22 Aug 2024 23:33:40 -0700 (PDT)
-Received: from sunil-laptop ([106.51.198.16])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42abee8c2dbsm83828835e9.21.2024.08.22.23.33.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Aug 2024 23:33:39 -0700 (PDT)
-Date: Fri, 23 Aug 2024 12:03:25 +0530
-From: Sunil V L <sunilvl@ventanamicro.com>
-To: Bjorn Helgaas <helgaas@kernel.org>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eHPWSEM9"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86113C32786;
+	Fri, 23 Aug 2024 17:45:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1724435154;
+	bh=mr01yUEvX26NmVp0jXUcMup0uPWebEfYc7j3GsM8fjs=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=eHPWSEM9ZihA42Y4ZITQjghgyKSJcIG+f546BaW4ykszsvYxOtxHN3kY+roDFfypS
+	 1Z9tclp0ated/Dhp/CvM2h9Ud1w3QZ0bHZ2CTxLSlxzllhTeLw5uPjmHTGHMKpkj4/
+	 lmXTBuktRhntuUv0huFq2r3cauXx9sAoYuaR7MG4J2Gfb81ZobYpbyP1N+62I+hBEx
+	 5mrnYORL607W41D7saiW13gfbqhH9lxljbJxnnkQOkizrXTjNhjEQPOsvWSUTv6MV/
+	 MhbpPkybGZDDzm0hTA/q1WEp4NF7mpuV2RFgVBiP/sTbhrP6B7qssbGeadwmnRBufj
+	 LJkiPqsE47CKQ==
+Date: Fri, 23 Aug 2024 12:45:52 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Sunil V L <sunilvl@ventanamicro.com>
 Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
 	linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
 	acpica-devel@lists.linux.dev, Will Deacon <will@kernel.org>,
@@ -75,9 +49,7 @@ Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
 	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>
 Subject: Re: [PATCH v8 08/17] ACPI: pci_link: Clear the dependencies after
  probe
-Message-ID: <ZsgtNbBLfP3SygYv@sunil-laptop>
-References: <20240812005929.113499-9-sunilvl@ventanamicro.com>
- <20240822214415.GA351762@bhelgaas>
+Message-ID: <20240823174552.GA375227@bhelgaas>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -87,72 +59,87 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240822214415.GA351762@bhelgaas>
+In-Reply-To: <ZsgtNbBLfP3SygYv@sunil-laptop>
 
-Hi Bjorn,
+On Fri, Aug 23, 2024 at 12:03:25PM +0530, Sunil V L wrote:
+> On Thu, Aug 22, 2024 at 04:44:15PM -0500, Bjorn Helgaas wrote:
+> > On Mon, Aug 12, 2024 at 06:29:20AM +0530, Sunil V L wrote:
+> > > RISC-V platforms need to use dependencies between PCI host bridge, Link
+> > > devices and the interrupt controllers to ensure probe order. The
+> > > dependency is like below.
+> > > 
+> > > Interrupt controller <-- Link Device <-- PCI Host bridge.
+> > > 
+> > > If there is no dependency between Link device and PCI Host Bridge,
+> > > then PCI devices may be probed prior to Link devices.  If a PCI
+> > > device is probed before its Link device, we won't be able to find
+> > > its INTx mapping.
+> > 
+> > This seems to explain why we want these dependencies, which is useful,
+> > but *this* patch only removes the dependencies.
+> > 
+> > Maybe this description should be in the patch that *adds* the
+> > dependencies, e.g., "ACPI: RISC-V: Implement function to add implicit
+> > dependencies"?
+> >
+> Okay. Let me move this to the patch you suggested.
 
-On Thu, Aug 22, 2024 at 04:44:15PM -0500, Bjorn Helgaas wrote:
-> On Mon, Aug 12, 2024 at 06:29:20AM +0530, Sunil V L wrote:
-> > RISC-V platforms need to use dependencies between PCI host bridge, Link
-> > devices and the interrupt controllers to ensure probe order. The
-> > dependency is like below.
-> > 
-> > Interrupt controller <-- Link Device <-- PCI Host bridge.
-> > 
-> > If there is no dependency between Link device and PCI Host Bridge,
-> > then PCI devices may be probed prior to Link devices.  If a PCI
-> > device is probed before its Link device, we won't be able to find
-> > its INTx mapping.
-> 
-> This seems to explain why we want these dependencies, which is useful,
-> but *this* patch only removes the dependencies.
-> 
-> Maybe this description should be in the patch that *adds* the
-> dependencies, e.g., "ACPI: RISC-V: Implement function to add implicit
-> dependencies"?
+Given my forgetfulness and your pointing out that this *does* add the
+dependencies (by virtue of adding PNP0C0F to the acpi_honor_dep_ids[]
+list), it does make sense here.
+
+> > > So, add the link device's HID to dependency honor list and clear the
+> > > dependency after probe is done so that the dependent devices are
+> > > unblocked to probe.
+
+Maybe expanding this to "Add the link devices HID (PNP0C0F) to the
+acpi_honor_dep_ids[] dependency list" would help connect this all
+together?
+
+> > This still claims this patch adds HID, which I don't think it does.
+> >
+> Please see below.
+>  
+> > > Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
+> > > Tested-by: BjÃ¶rn TÃ¶pel <bjorn@rivosinc.com>
+> > > ---
+> > >  drivers/acpi/pci_link.c | 2 ++
+> > >  drivers/acpi/scan.c     | 1 +
+> > >  2 files changed, 3 insertions(+)
+> > > 
+> > > diff --git a/drivers/acpi/pci_link.c b/drivers/acpi/pci_link.c
+> > > index aa1038b8aec4..b727db968f33 100644
+> > > --- a/drivers/acpi/pci_link.c
+> > > +++ b/drivers/acpi/pci_link.c
+> > > @@ -748,6 +748,8 @@ static int acpi_pci_link_add(struct acpi_device *device,
+> > >  	if (result)
+> > >  		kfree(link);
+> > >  
+> > > +	acpi_dev_clear_dependencies(device);
+> > > +
+> > >  	return result < 0 ? result : 1;
+> > >  }
+> > >  
+> > > diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+> > > index 28a221f956d7..753539a1f26b 100644
+> > > --- a/drivers/acpi/scan.c
+> > > +++ b/drivers/acpi/scan.c
+> > > @@ -863,6 +863,7 @@ static const char * const acpi_honor_dep_ids[] = {
+> > >  	"INTC10CF", /* IVSC (MTL) driver must be loaded to allow i2c access to camera sensors */
+> > >  	"RSCV0001", /* RISC-V PLIC */
+> > >  	"RSCV0002", /* RISC-V APLIC */
+> > > +	"PNP0C0F",  /* PCI Link Device */
 >
-Okay. Let me move this to the patch you suggested.
- 
-> > So, add the link device's HID to dependency honor list and clear the
-> > dependency after probe is done so that the dependent devices are
-> > unblocked to probe.
-> 
-> This still claims this patch adds HID, which I don't think it does.
->
-Please see below.
- 
-> > Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
-> > Tested-by: BjÃ¶rn TÃ¶pel <bjorn@rivosinc.com>
-> > ---
-> >  drivers/acpi/pci_link.c | 2 ++
-> >  drivers/acpi/scan.c     | 1 +
-> >  2 files changed, 3 insertions(+)
-> > 
-> > diff --git a/drivers/acpi/pci_link.c b/drivers/acpi/pci_link.c
-> > index aa1038b8aec4..b727db968f33 100644
-> > --- a/drivers/acpi/pci_link.c
-> > +++ b/drivers/acpi/pci_link.c
-> > @@ -748,6 +748,8 @@ static int acpi_pci_link_add(struct acpi_device *device,
-> >  	if (result)
-> >  		kfree(link);
-> >  
-> > +	acpi_dev_clear_dependencies(device);
-> > +
-> >  	return result < 0 ? result : 1;
-> >  }
-> >  
-> > diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-> > index 28a221f956d7..753539a1f26b 100644
-> > --- a/drivers/acpi/scan.c
-> > +++ b/drivers/acpi/scan.c
-> > @@ -863,6 +863,7 @@ static const char * const acpi_honor_dep_ids[] = {
-> >  	"INTC10CF", /* IVSC (MTL) driver must be loaded to allow i2c access to camera sensors */
-> >  	"RSCV0001", /* RISC-V PLIC */
-> >  	"RSCV0002", /* RISC-V APLIC */
-> > +	"PNP0C0F",  /* PCI Link Device */
-This is the change which I meant adding HID to the honor list. Do you
-recommend to make this change separate patch so that it doesn't confuse
-with adding a new HID to the probe match table?
+> This is the change which I meant adding HID to the honor list. Do you
+> recommend to make this change separate patch so that it doesn't confuse
+> with adding a new HID to the probe match table?
 
-Thanks!
-Sunil
+Oh, right, sorry.  I remember working this out in the past, but I had
+forgotten.
+
+I think it makes sense in this patch because the add and removal are
+matched when they're in the same patch.
+
+Sorry for the noise!
+
+Bjorn
