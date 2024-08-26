@@ -1,145 +1,201 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A292191493;
-	Fri, 23 Aug 2024 17:45:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F6432C95
+	for <acpica-devel@lists.linux.dev>; Mon, 26 Aug 2024 01:10:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724435155; cv=none; b=VIWwLscxtrhdh/c8LdSE9ys6bkxZrqCElGi4QFcLEw40czrnJS+/xJXoPIBRz5iV8fa0XKsJ0MxxqRR1Crc+mSpTvKhndLTelTklbw6nhVtiGmwfob8x5slzO9XJ+9zxqZu9i5V36QqrbB0nY98SbDszHne0w+/2dI5++3DKHTw=
+	t=1724634623; cv=none; b=B9WTfpR6EQn78zoJq5QY/DEcxWezMWWvEzQMCYuZtqGdNbfheEjfOg+UC+munqCzXVdGvm5iLwVkieM+F9btJs7vlw7pcud7EngHzj4aWx/H40z7njDzRLxC4JeKpUXHeBsUh5wB4L4fRQYjapKhnkNdw3NF6ES7yDNkdG4hQ9Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724435155; c=relaxed/simple;
-	bh=mr01yUEvX26NmVp0jXUcMup0uPWebEfYc7j3GsM8fjs=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=jDOAupVUdyzbauKUJHpulGD3RrcOJzoSLW44Mm/qSZAPWSD5YZb3QFEPwx5uXoLoUkzzraUgfgBY4dQFKTqb51kWis9pp9gSDht47zqMQ2MO1T1CA0sVwMTk29RcNW+2DO0uWRRZPS29Y0Wshajd2EQPPfPH51avvk2sCwncz0o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eHPWSEM9; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1724634623; c=relaxed/simple;
+	bh=7tye6QropyoxCiVWsCw2kMvEiF7Zsxv+8zMJkehhxvM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XouUsELcRPRMIpxm398gnemhiv4mzAhIv8yD7I/j6OUT5KFfzKmo0Mp8eWLLy1ngogrXcika99rK7pwZPkyZKFW5xjHZUeqbQtnBGQs3DSKwkWDeUx4abTRJMr30bGTZDUy1PjQX+O+l311zeYrmM9hFiNk5KpIRMk+oq2GDv1c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gEaii0uP; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eHPWSEM9"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86113C32786;
-	Fri, 23 Aug 2024 17:45:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724435154;
-	bh=mr01yUEvX26NmVp0jXUcMup0uPWebEfYc7j3GsM8fjs=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=eHPWSEM9ZihA42Y4ZITQjghgyKSJcIG+f546BaW4ykszsvYxOtxHN3kY+roDFfypS
-	 1Z9tclp0ated/Dhp/CvM2h9Ud1w3QZ0bHZ2CTxLSlxzllhTeLw5uPjmHTGHMKpkj4/
-	 lmXTBuktRhntuUv0huFq2r3cauXx9sAoYuaR7MG4J2Gfb81ZobYpbyP1N+62I+hBEx
-	 5mrnYORL607W41D7saiW13gfbqhH9lxljbJxnnkQOkizrXTjNhjEQPOsvWSUTv6MV/
-	 MhbpPkybGZDDzm0hTA/q1WEp4NF7mpuV2RFgVBiP/sTbhrP6B7qssbGeadwmnRBufj
-	 LJkiPqsE47CKQ==
-Date: Fri, 23 Aug 2024 12:45:52 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Sunil V L <sunilvl@ventanamicro.com>
-Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev, Will Deacon <will@kernel.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Anup Patel <anup@brainfault.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Samuel Holland <samuel.holland@sifive.com>,
-	Robert Moore <robert.moore@intel.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Haibo Xu <haibo1.xu@intel.com>,
-	Andrew Jones <ajones@ventanamicro.com>,
-	Atish Kumar Patra <atishp@rivosinc.com>,
-	Drew Fustini <dfustini@tenstorrent.com>,
-	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>
-Subject: Re: [PATCH v8 08/17] ACPI: pci_link: Clear the dependencies after
- probe
-Message-ID: <20240823174552.GA375227@bhelgaas>
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gEaii0uP"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1724634622; x=1756170622;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=7tye6QropyoxCiVWsCw2kMvEiF7Zsxv+8zMJkehhxvM=;
+  b=gEaii0uP/DwlFIr6gbrShwbv4+LiboCKoUiHdqvw9jqHBtEZLDqWdJA9
+   p2VMWA4tqT0olpS6/klDDZzdX1PiN9+KVD6Z3j3YlS3y9XaJGEfAAGLfn
+   5AQvHXbopYpacGIP9pf6LCr0a63yDfwG0c/4dLF8/3Ttw4vzIWdOg4kWL
+   F5CAIA5MpFZG+wAKhdWeE6k+ql4N1u5GWF3ejmcnRS1aFivse4uPLHnwu
+   Mtym7fFEBIWw9X/VJYkFGPyQNyTjYxIsD3F5mB77u/b8wUx4diGY0QfmA
+   LrkXnxB/kBq87KY7Qwvb7+azUIEIDT+QzkLiJdWPRo4pRm7WAdU++FNfD
+   w==;
+X-CSE-ConnectionGUID: Rt1jVjB7QiWtlsF0qdtr9A==
+X-CSE-MsgGUID: 746lvuBiThKrAxDzZWfhhQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11175"; a="48427838"
+X-IronPort-AV: E=Sophos;i="6.10,176,1719903600"; 
+   d="scan'208";a="48427838"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2024 18:10:21 -0700
+X-CSE-ConnectionGUID: REkBD5B8Sfyt12aeVZWTmw==
+X-CSE-MsgGUID: rTRRKj90RkK/2hbpiZByKA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.10,176,1719903600"; 
+   d="scan'208";a="62499766"
+Received: from zhedache-mobl1.ccr.corp.intel.com (HELO [10.125.240.83]) ([10.125.240.83])
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2024 18:10:19 -0700
+Message-ID: <f2fd62f7-3fe3-4bea-8c9e-6343d2cce8b7@linux.intel.com>
+Date: Mon, 26 Aug 2024 09:09:00 +0800
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] ACPICA: Detect FACS in reduced hardware build
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Robert Moore <robert.moore@intel.com>,
+ "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Len Brown
+ <lenb@kernel.org>, linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+References: <20240812054647.1194716-1-jiaqing.zhao@linux.intel.com>
+ <20240812054647.1194716-2-jiaqing.zhao@linux.intel.com>
+ <CAJZ5v0hPtvVRM=Te2oPzCvE3tOy_rXYGJwaoQOfNc71z+pmkvA@mail.gmail.com>
+Content-Language: en-US
+From: Jiaqing Zhao <jiaqing.zhao@linux.intel.com>
+In-Reply-To: <CAJZ5v0hPtvVRM=Te2oPzCvE3tOy_rXYGJwaoQOfNc71z+pmkvA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZsgtNbBLfP3SygYv@sunil-laptop>
 
-On Fri, Aug 23, 2024 at 12:03:25PM +0530, Sunil V L wrote:
-> On Thu, Aug 22, 2024 at 04:44:15PM -0500, Bjorn Helgaas wrote:
-> > On Mon, Aug 12, 2024 at 06:29:20AM +0530, Sunil V L wrote:
-> > > RISC-V platforms need to use dependencies between PCI host bridge, Link
-> > > devices and the interrupt controllers to ensure probe order. The
-> > > dependency is like below.
-> > > 
-> > > Interrupt controller <-- Link Device <-- PCI Host bridge.
-> > > 
-> > > If there is no dependency between Link device and PCI Host Bridge,
-> > > then PCI devices may be probed prior to Link devices.  If a PCI
-> > > device is probed before its Link device, we won't be able to find
-> > > its INTx mapping.
-> > 
-> > This seems to explain why we want these dependencies, which is useful,
-> > but *this* patch only removes the dependencies.
-> > 
-> > Maybe this description should be in the patch that *adds* the
-> > dependencies, e.g., "ACPI: RISC-V: Implement function to add implicit
-> > dependencies"?
-> >
-> Okay. Let me move this to the patch you suggested.
+On 2024-08-20 22:55, Rafael J. Wysocki wrote:
+> On Mon, Aug 12, 2024 at 7:47 AM Jiaqing Zhao
+> <jiaqing.zhao@linux.intel.com> wrote:
+>>
+>> According to Section 5.2.10 of ACPI Specification, FACS is optional
+>> in reduced hardware model. Enable the detection for "Hardware-reduced
+>> ACPI support only" build (CONFIG_ACPI_REDUCED_HARDWARE_ONLY=y) also.
+>>
+>> Link: https://github.com/acpica/acpica/commit/ee53ed6b5452612bb44af542b68d605f8b2b1104
+>> Signed-off-by: Jiaqing Zhao <jiaqing.zhao@linux.intel.com>
+>> ---
+>>  drivers/acpi/acpica/acglobal.h |  6 +-----
+>>  drivers/acpi/acpica/tbutils.c  |  5 +----
+>>  drivers/acpi/acpica/utxfinit.c | 24 ++++++++++++------------
+>>  include/acpi/acconfig.h        |  1 -
+>>  4 files changed, 14 insertions(+), 22 deletions(-)
+>>
+>> diff --git a/drivers/acpi/acpica/acglobal.h b/drivers/acpi/acpica/acglobal.h
+>> index f4c90fc99be2..309ce8efb4f6 100644
+>> --- a/drivers/acpi/acpica/acglobal.h
+>> +++ b/drivers/acpi/acpica/acglobal.h
+>> @@ -29,11 +29,7 @@ ACPI_INIT_GLOBAL(u32, acpi_gbl_dsdt_index, ACPI_INVALID_TABLE_INDEX);
+>>  ACPI_INIT_GLOBAL(u32, acpi_gbl_facs_index, ACPI_INVALID_TABLE_INDEX);
+>>  ACPI_INIT_GLOBAL(u32, acpi_gbl_xfacs_index, ACPI_INVALID_TABLE_INDEX);
+>>  ACPI_INIT_GLOBAL(u32, acpi_gbl_fadt_index, ACPI_INVALID_TABLE_INDEX);
+>> -
+>> -#if (!ACPI_REDUCED_HARDWARE)
+>> -ACPI_GLOBAL(struct acpi_table_facs *, acpi_gbl_FACS);
+>> -
+>> -#endif                         /* !ACPI_REDUCED_HARDWARE */
+>> +ACPI_INIT_GLOBAL(struct acpi_table_facs *, acpi_gbl_FACS, NULL);
+>>
+>>  /* These addresses are calculated from the FADT Event Block addresses */
+>>
+>> diff --git a/drivers/acpi/acpica/tbutils.c b/drivers/acpi/acpica/tbutils.c
+>> index 15fa68a5ea6e..356700349b45 100644
+>> --- a/drivers/acpi/acpica/tbutils.c
+>> +++ b/drivers/acpi/acpica/tbutils.c
+>> @@ -18,7 +18,6 @@ ACPI_MODULE_NAME("tbutils")
+>>  static acpi_physical_address
+>>  acpi_tb_get_root_table_entry(u8 *table_entry, u32 table_entry_size);
+>>
+>> -#if (!ACPI_REDUCED_HARDWARE)
+>>  /*******************************************************************************
+>>   *
+>>   * FUNCTION:    acpi_tb_initialize_facs
+>> @@ -37,8 +36,7 @@ acpi_status acpi_tb_initialize_facs(void)
+>>         struct acpi_table_facs *facs;
+>>
+>>         if (acpi_gbl_FADT.Xfacs &&
+>> -                  (!acpi_gbl_FADT.facs
+>> -                   || !acpi_gbl_use32_bit_facs_addresses)) {
+>> +           (!acpi_gbl_FADT.facs || !acpi_gbl_use32_bit_facs_addresses)) {
+>>                 (void)acpi_get_table_by_index(acpi_gbl_xfacs_index,
+>>                                               ACPI_CAST_INDIRECT_PTR(struct
+>>                                                                      acpi_table_header,
+> 
+> I'm not sure how this change is related to the rest of the patch.
+> 
+> It doesn't appear to be present in the original commit pointed to by
+> the Link tag.
 
-Given my forgetfulness and your pointing out that this *does* add the
-dependencies (by virtue of adding PNP0C0F to the acpi_honor_dep_ids[]
-list), it does make sense here.
+This change here is just indention fix, in original acpica, the indention is just fine.
 
-> > > So, add the link device's HID to dependency honor list and clear the
-> > > dependency after probe is done so that the dependent devices are
-> > > unblocked to probe.
+Shall I remove this change?
 
-Maybe expanding this to "Add the link devices HID (PNP0C0F) to the
-acpi_honor_dep_ids[] dependency list" would help connect this all
-together?
-
-> > This still claims this patch adds HID, which I don't think it does.
-> >
-> Please see below.
->  
-> > > Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
-> > > Tested-by: BjÃ¶rn TÃ¶pel <bjorn@rivosinc.com>
-> > > ---
-> > >  drivers/acpi/pci_link.c | 2 ++
-> > >  drivers/acpi/scan.c     | 1 +
-> > >  2 files changed, 3 insertions(+)
-> > > 
-> > > diff --git a/drivers/acpi/pci_link.c b/drivers/acpi/pci_link.c
-> > > index aa1038b8aec4..b727db968f33 100644
-> > > --- a/drivers/acpi/pci_link.c
-> > > +++ b/drivers/acpi/pci_link.c
-> > > @@ -748,6 +748,8 @@ static int acpi_pci_link_add(struct acpi_device *device,
-> > >  	if (result)
-> > >  		kfree(link);
-> > >  
-> > > +	acpi_dev_clear_dependencies(device);
-> > > +
-> > >  	return result < 0 ? result : 1;
-> > >  }
-> > >  
-> > > diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-> > > index 28a221f956d7..753539a1f26b 100644
-> > > --- a/drivers/acpi/scan.c
-> > > +++ b/drivers/acpi/scan.c
-> > > @@ -863,6 +863,7 @@ static const char * const acpi_honor_dep_ids[] = {
-> > >  	"INTC10CF", /* IVSC (MTL) driver must be loaded to allow i2c access to camera sensors */
-> > >  	"RSCV0001", /* RISC-V PLIC */
-> > >  	"RSCV0002", /* RISC-V APLIC */
-> > > +	"PNP0C0F",  /* PCI Link Device */
->
-> This is the change which I meant adding HID to the honor list. Do you
-> recommend to make this change separate patch so that it doesn't confuse
-> with adding a new HID to the probe match table?
-
-Oh, right, sorry.  I remember working this out in the past, but I had
-forgotten.
-
-I think it makes sense in this patch because the add and removal are
-matched when they're in the same patch.
-
-Sorry for the noise!
-
-Bjorn
+>> @@ -56,7 +54,6 @@ acpi_status acpi_tb_initialize_facs(void)
+>>
+>>         return (AE_OK);
+>>  }
+>> -#endif                         /* !ACPI_REDUCED_HARDWARE */
+>>
+>>  /*******************************************************************************
+>>   *
+>> diff --git a/drivers/acpi/acpica/utxfinit.c b/drivers/acpi/acpica/utxfinit.c
+>> index 1915bec2b279..70ae0afa7939 100644
+>> --- a/drivers/acpi/acpica/utxfinit.c
+>> +++ b/drivers/acpi/acpica/utxfinit.c
+>> @@ -120,6 +120,18 @@ acpi_status ACPI_INIT_FUNCTION acpi_enable_subsystem(u32 flags)
+>>          */
+>>         acpi_gbl_early_initialization = FALSE;
+>>
+>> +       /*
+>> +        * Obtain a permanent mapping for the FACS. This is required for the
+>> +        * Global Lock and the Firmware Waking Vector
+>> +        */
+>> +       if (!(flags & ACPI_NO_FACS_INIT)) {
+>> +               status = acpi_tb_initialize_facs();
+>> +               if (ACPI_FAILURE(status)) {
+>> +                       ACPI_WARNING((AE_INFO, "Could not map the FACS table"));
+>> +                       return_ACPI_STATUS(status);
+>> +               }
+>> +       }
+>> +
+>>  #if (!ACPI_REDUCED_HARDWARE)
+>>
+>>         /* Enable ACPI mode */
+>> @@ -137,18 +149,6 @@ acpi_status ACPI_INIT_FUNCTION acpi_enable_subsystem(u32 flags)
+>>                 }
+>>         }
+>>
+>> -       /*
+>> -        * Obtain a permanent mapping for the FACS. This is required for the
+>> -        * Global Lock and the Firmware Waking Vector
+>> -        */
+>> -       if (!(flags & ACPI_NO_FACS_INIT)) {
+>> -               status = acpi_tb_initialize_facs();
+>> -               if (ACPI_FAILURE(status)) {
+>> -                       ACPI_WARNING((AE_INFO, "Could not map the FACS table"));
+>> -                       return_ACPI_STATUS(status);
+>> -               }
+>> -       }
+>> -
+>>         /*
+>>          * Initialize ACPI Event handling (Fixed and General Purpose)
+>>          *
+>> diff --git a/include/acpi/acconfig.h b/include/acpi/acconfig.h
+>> index d768d9c568cf..2da5f4a6e814 100644
+>> --- a/include/acpi/acconfig.h
+>> +++ b/include/acpi/acconfig.h
+>> @@ -67,7 +67,6 @@
+>>   *      General Purpose Events (GPEs)
+>>   *      Global Lock
+>>   *      ACPI PM timer
+>> - *      FACS table (Waking vectors and Global Lock)
+>>   */
+>>  #ifndef ACPI_REDUCED_HARDWARE
+>>  #define ACPI_REDUCED_HARDWARE           FALSE
+>> --
+>> 2.43.0
+>>
+>>
