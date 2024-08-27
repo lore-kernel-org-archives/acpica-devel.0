@@ -1,98 +1,94 @@
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6531A199384
-	for <acpica-devel@lists.linux.dev>; Mon, 26 Aug 2024 21:17:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DC0717543
+	for <acpica-devel@lists.linux.dev>; Tue, 27 Aug 2024 02:58:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724707044; cv=none; b=lNHb0w8jbxpQy0FFonQnthrbDNCn3cKJSpq3/CQNPGV6aSsWEWz9/uL38Kfh2A0WAZDCHxsFbcptXukKGRF+v/uKWFzl7+DtEDkTUE8zkmldcB13sJPfHC28UU/wEy3DeMm/D5qexm708WFbiOdIneGo+1X6+3LGze1n/IOiGKM=
+	t=1724727518; cv=none; b=hpIkOmJZlPT12Z8Z4o+rne7wE8AmYRt6zcfZe1yPb1hhUzV9HRDlOcld21E6Hjof6UFSOd9oihFxRVOs6mbF/n2URDM3NouCOXP3Pb79op0GCX2C/Rge81pG3MvIBlJyN+gNCT4H+1GBcBf+eFQWYjVOzZZ0TQmbDuNACqhe+2c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724707044; c=relaxed/simple;
-	bh=Wr96xlHde4Iq/q86Pq81lXt/DBJWo0l413IAUdj5WSM=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=I3Tom8vQ7/90A1K5Qqa3Yi6uIecsi7cJl9VmOMDcy/u3CI8Abg6fe7eT3K/nPk+vWXiXjjvk03/WVaU+XhVr8c38tTFD/iz6WvVsV8WaWQc/44S3ntlp4bsdZfSwRks27hemwl5M2VYeodYPSM4P6UGYzp/pCRe9obJyIc4t2Sk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=f+dwtiMZ; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=SukSGpuF; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+	s=arc-20240116; t=1724727518; c=relaxed/simple;
+	bh=jqyKjeT+R4Fk0oV/newEmCCJjx15nG/UAsgJcEBYdQg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Zmx0GNZsdQ4H+1HZeDvufmiHcMkiOr/wtlt6YaYsTWaPyUSBXd3K522pkYHKx38A/exF8FHMnnTuAVxxL7Fr88Wd2DMQxqNJwzvyCVnZPMUTvTon2UMF5mjgWveN1BMRYoA5R81nSkxkT1+gdnp00sD0fD0SpWVSAxajhQ7odcA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=i/FdYYU3; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="f+dwtiMZ";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="SukSGpuF"
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1724707041;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=43rARpIabmoF/X4nl2L65kxlo3pcBgpwUNSnL7OF7ag=;
-	b=f+dwtiMZsAypPINdPYjJMSxRgqTYYkRX8/ijDCkQoPWJ6wCDNuvx/uJBedUE8MdqIizpaW
-	+ZvQkcpLq2EeLwe0n7+8+6nBpIlb37VvRw0BGg6VbLv3/TFfOkuSw3rDzL/GHCPAt4dGVM
-	BpcDb5jbzqkvlc2LyidGKMP9Y/3pbPqzRITxCECELeSY5iCO3IWvgZz6qgJSyHhqQeLlj/
-	vR9aVou0rW9G+a0AHY0ts5BGt9szTX/5GCABfbiR1OSlFuljxNlnyzBkJUU7p14T39I67m
-	jO0jpSZXLqjYHuIFE+mo/WAeZpv5nyUxPYntSviUx32hXz79XZ1pUxDhl1a70A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1724707041;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=43rARpIabmoF/X4nl2L65kxlo3pcBgpwUNSnL7OF7ag=;
-	b=SukSGpuFtbwIxx+NKHCHDL12zE+JC0KFepVFOj288ZMYr7Gjw3F/W6yQ7GQ9sQxNW/LIH4
-	rx+3Wq+dLNzvGhDQ==
-To: "Rafael J. Wysocki" <rafael@kernel.org>, Sunil V L
- <sunilvl@ventanamicro.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Will Deacon <will@kernel.org>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Len Brown
- <lenb@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, Anup Patel
- <anup@brainfault.org>, Samuel Holland <samuel.holland@sifive.com>, Robert
- Moore <robert.moore@intel.com>, Conor Dooley <conor.dooley@microchip.com>,
- Haibo Xu <haibo1.xu@intel.com>, Andrew Jones <ajones@ventanamicro.com>,
- Atish Kumar Patra <atishp@rivosinc.com>, Drew Fustini
- <dfustini@tenstorrent.com>, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-riscv@lists.infradead.org,
- linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev
-Subject: Re: [PATCH v8 00/17] RISC-V: ACPI: Add external interrupt
- controller support
-In-Reply-To: <CAJZ5v0hxoT9tBjm3xRPU4fHx3MgHfYAx_Vyf4oe2toa3GWAN+Q@mail.gmail.com>
-References: <20240812005929.113499-1-sunilvl@ventanamicro.com>
- <ZrlgVUXC_dCW9ISM@sunil-laptop> <87mskzcnmf.ffs@tglx>
- <CAJZ5v0imJcU4cwDuZKEvGf93fZm4ea4s2Ocp3Cnfb3+nBQ0-Gg@mail.gmail.com>
- <Zsy3o_N8hvc6GfTp@sunil-laptop>
- <CAJZ5v0hxoT9tBjm3xRPU4fHx3MgHfYAx_Vyf4oe2toa3GWAN+Q@mail.gmail.com>
-Date: Mon, 26 Aug 2024 23:17:20 +0200
-Message-ID: <87jzg3c7bz.ffs@tglx>
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="i/FdYYU3"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1724727516; x=1756263516;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=jqyKjeT+R4Fk0oV/newEmCCJjx15nG/UAsgJcEBYdQg=;
+  b=i/FdYYU385dITiGIAGZFP1L/1MaNy4Z1mmEr9RBlCsZnP99ikrhdCmaF
+   TrpMjYStfPfAAb6w9hRZXkB4p5fqNN4EqTpcJSUnkxAVQbOFo+/51ufW1
+   k1IOeFcpx2uLm4A4tjP79An0iDe38CGSCqbtngu8Uwed6OqDMsJw/L8hc
+   JoCxQAynjjxODPgS8t2f8sOSwEtQPyILzLyVJSEP4c4En3gErudORxOOa
+   C3AUhvs5vM5KfvH5RfYrz6myAbMRnK7FHV6kZC+5QC3iohAnPiCQuqFBI
+   gs5ZohMGgSKSTX9nFfhfbEFs5/QXqFwLuh9SS19kmotwhkqFr7FNi3n1C
+   w==;
+X-CSE-ConnectionGUID: MbN8tQxKTZaTnKGQk/eAQA==
+X-CSE-MsgGUID: sWjnBfXxRFqT+sZbPXy89Q==
+X-IronPort-AV: E=McAfee;i="6700,10204,11176"; a="40654894"
+X-IronPort-AV: E=Sophos;i="6.10,179,1719903600"; 
+   d="scan'208";a="40654894"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2024 19:58:36 -0700
+X-CSE-ConnectionGUID: mnJTibRmRsSifiWvKkI+Bg==
+X-CSE-MsgGUID: Gl/duOj7Q7ahMb/TqejOiA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.10,179,1719903600"; 
+   d="scan'208";a="93512976"
+Received: from unknown (HELO jiaqingz-acrn-container.sh.intel.com) ([10.239.43.235])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2024 19:58:32 -0700
+From: Jiaqing Zhao <jiaqing.zhao@linux.intel.com>
+To: Robert Moore <robert.moore@intel.com>,
+	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+	Len Brown <lenb@kernel.org>,
+	linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev
+Cc: linux-kernel@vger.kernel.org,
+	Jiaqing Zhao <jiaqing.zhao@linux.intel.com>
+Subject: [PATCH v3 0/2] S3 wakeup support for hardware reduced model
+Date: Tue, 27 Aug 2024 02:58:19 +0000
+Message-ID: <20240827025821.2099068-1-jiaqing.zhao@linux.intel.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, Aug 26 2024 at 19:27, Rafael J. Wysocki wrote:
-> On Mon, Aug 26, 2024 at 7:22=E2=80=AFPM Sunil V L <sunilvl@ventanamicro.c=
-om> wrote:
->> There will be a conflict in PLIC irqchip driver due to a recent patch [1=
-].
->> This patch is not in latest RC5 release but in linux-next. I usually bas=
-e the
->> series on latest RC release. Should I rebase to linux-next in this case
->> and send the next revision of the series resolving the conflict?
->
-> No, please don't.
->
-> That will be resolved at the merge time.
+S3 wakeup requires waking vector in FACS table, which is typically set
+by OS. This patchset enables FACS table support and allows setting
+waking vector in "Hardware-reduced ACPI support only" builds
+(CONFIG_ACPI_REDUCED_HARDWARE_ONLY=y).
 
-Alternatively you can pull
+Link: https://github.com/acpica/acpica/pull/960
+Link: https://github.com/acpica/acpica/commit/ee53ed6b5452612bb44af542b68d605f8b2b1104
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq-urgent-2024=
--08-25
+v2->v3:
+* Remove extra code style changes to align with original ACPICA commit.
+v1->v2:
+* Not removing acpi_hw_set_firmware_waking_vector() declaration in
+  hwxfsleep.c
+* Change was merged in ACPICA project, add links to it.
 
-which I'm about to send to Linus latest tomorrow morning. That contains
-the conflicting change.
+Jiaqing Zhao (2):
+  ACPICA: Detect FACS in reduced hardware build
+  ACPICA: Allow setting waking vector on reduced hardware platforms
 
-Thanks,
+ drivers/acpi/acpica/acglobal.h  |  6 +-----
+ drivers/acpi/acpica/hwxfsleep.c | 15 ++++++---------
+ drivers/acpi/acpica/tbutils.c   |  2 --
+ drivers/acpi/acpica/utxfinit.c  | 24 ++++++++++++------------
+ include/acpi/acconfig.h         |  1 -
+ include/acpi/acpixf.h           |  8 ++++----
+ 6 files changed, 23 insertions(+), 33 deletions(-)
 
-        tglx
+-- 
+2.43.0
+
