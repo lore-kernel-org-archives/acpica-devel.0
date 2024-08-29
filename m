@@ -1,211 +1,92 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 137C018E348
-	for <acpica-devel@lists.linux.dev>; Thu, 29 Aug 2024 11:28:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F039E1B6553
+	for <acpica-devel@lists.linux.dev>; Thu, 29 Aug 2024 12:44:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724930896; cv=none; b=Difqg17OQChNtL61/MdssnjV0a4s9nvHtb+uL2AmpSY/dUpMke/yf9ALXKk1pkWzdwihMUAp41bEu09JwOJ9pM/oVb+8fvqigFGIlfwVgcApwQ82xM3WRIlh66M5V1G/915crypdIaGt780qss3uRAO/g+wzSfdwhR/d89c0QuI=
+	t=1724935500; cv=none; b=VVBAZvqDVR37Sl7OPf4DKp3YoxhpWzPsiK20+mgLfsrrC+X0XOQtn+gi+yMJCDVIAUpc3c/hkAE5WSO17FPHIP/dW0GlPgKlKyrxMyJA7yeIFr4ToUjvfJ2jI+Cu32vwELB9fsKEKibROmcmQeImx3myarAKSiIk48yKKI1RQAo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724930896; c=relaxed/simple;
-	bh=CW83ZEIpkPz52PNovqYIVdDMJHBmM0F3hp75/bBTlUI=;
+	s=arc-20240116; t=1724935500; c=relaxed/simple;
+	bh=bmThkBbfzGY/zRaA5TdivH5V4F0RokpFhyMV8XTIb00=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TebuVoE1c0IoumT2aYEbf+rgt8fnerJrCZ1HQ8S3g1zr9OOjFcowTYkFxaMjPF0sjzhbiiNuIDbxHBs/wjcG64uUlv0f64oNV/3NYZPFVuaV6Unax+oxcXutzL+WR50zybI2hQxdKQsG8gBUsjlHNXYBbhc+lubV7Aeaf2v0hJo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XKbG4lhl; arc=none smtp.client-ip=10.30.226.201
+	 To:Cc:Content-Type; b=sOecrwR58s/+VqWgPTyHFoBj9jwo/pmMMPJs+4/sudjZ50hHFyRZdkwj+2kMHXndhq97FDOQmUEhpFS7YDAiqdyFt0EIyJd53ae6WEfBtV5mxhMsXXodkTYvHLT99UfcwV5ZeVgU3eJ6guZNkj4+VIuT6hGEJf1NSD3mNs6nrYM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a0gX7Gvo; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XKbG4lhl"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0EB1C4CEC5
-	for <acpica-devel@lists.linux.dev>; Thu, 29 Aug 2024 11:28:15 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a0gX7Gvo"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92265C4CEC1
+	for <acpica-devel@lists.linux.dev>; Thu, 29 Aug 2024 12:44:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724930895;
-	bh=CW83ZEIpkPz52PNovqYIVdDMJHBmM0F3hp75/bBTlUI=;
+	s=k20201202; t=1724935499;
+	bh=bmThkBbfzGY/zRaA5TdivH5V4F0RokpFhyMV8XTIb00=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=XKbG4lhlp7ELKxPWqB5DcmWwqaLwt0frVjrqzpKPRXfymI1MhZiP0G5nCBGJ5Bg4t
-	 sgnbUPzCNBrw/sz7rxcT9Ltnh6RwgkHVzO2Qv0Ty53i/hKu4/lztP+bdk1PgeQ3ofK
-	 kY9psR6NhY4hxdYyNwbas4HdFeXTjosHu2ugl2msQMUcbqHFA81Bde23EUc/n+DNdy
-	 oEjtEbg1QYtlvh8p6jVEjzQiaEXTc5QFNh3/LSXCN2ZFnuXnwofPkJQh1u08BelvAH
-	 9B43XWN4HC4/0mJFPQEvrHOI8eNuH3Wy7btmLmKgRJkiZmlG5P4e7OEDNFpuHPNcmp
-	 QXcoqUC6l+fdA==
-Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3df04a2420aso262901b6e.1
-        for <acpica-devel@lists.linux.dev>; Thu, 29 Aug 2024 04:28:15 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUKMZ1vN77PkevALxw675kqgHmR6oYrEef92whcLh3Hpo9ukP5godQKhuyHmCFzNKnSbEgRaT2tNiTxcBg=@lists.linux.dev
-X-Gm-Message-State: AOJu0YyqIKhMODFCWsIQZUqRga+D2zdpAvMojiO6PWS+aiTIZ4SNIM+a
-	GPf3m3kCFI8Xgok5QQYgyVzEQJTYbzrtxawcbY1Itu7t3OuXnF3iOoOEkLfGOPPQuieSMhilbst
-	hD+0iB9gXiJ2024eBcrnrbDsMiIM=
-X-Google-Smtp-Source: AGHT+IGz5F+qmlvaiKD6trNVX8aBlX43dl81V4HoKG0dddBlHdfJlg7ZRaq9zYgsOxqBnmAWOCmUVysjX+v1FckoXUU=
-X-Received: by 2002:a05:6808:169e:b0:3dd:4376:db2c with SMTP id
- 5614622812f47-3df05db003emr2649869b6e.9.1724930894959; Thu, 29 Aug 2024
- 04:28:14 -0700 (PDT)
+	b=a0gX7GvoH5EeSuChFPBYTlzCF1d1y934EjEzXpyy6OZlcF6s1mEvQVMCt+JnUkZ70
+	 vpvAwc5My2WgNpTb0cFN3sq0tntq1RXKwsC2W0UkeQ/Sc+S5NDvmw3mIafGb/fq4NY
+	 wzGe+nxwu9WmbChwDcKh1dG4VPdliq4kffaB3uQvUoKkeRsTSp90MJE8JtGD8f9N1H
+	 BCitxjSiO9LzIf2jYy1CBs3GwAVCAdF5wSmoelXcc2esTqXKrpoSzgKOKZhGNvq8Uy
+	 Ou2PalcCB7IRdLObKlmN0bJ4dTs1b2eNxDN1eBiIVPZdDpWUbDvd7txuZpmq5IBJRR
+	 GRZ6z3yFC/8Ug==
+Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-2704b6a6fe6so321617fac.1
+        for <acpica-devel@lists.linux.dev>; Thu, 29 Aug 2024 05:44:58 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXO9OKFYrUnjYiLrrz+JcSXt+P1mYnGf73kHBQdvPK8+XFKERwMIUimK4tBNEgyTwkLOVk+Eyajzn/hefY=@lists.linux.dev
+X-Gm-Message-State: AOJu0Yx+c/tllVVO4rCFafa+jP6OjofexxeAd/yc8yG5Cs1JFQrEUokZ
+	ad3qJvezJWKEjswoDbsSe8OWDt4reC1KwivneAvFvTl3rlkSPF1bMpKKDDceRrnZgno7xPU+k/0
+	e4nFS8NTaiTFDHvNr/+lnejdqukQ=
+X-Google-Smtp-Source: AGHT+IGwwcMeXsd6teP/NpzkS3WieVlJLs/+1rpwoZoBxyYX9HPJGboOAyMFF/OmSM2K7zH72Y53RWKmWyRG7LowxaQ=
+X-Received: by 2002:a05:6871:2b2a:b0:270:184b:ccd9 with SMTP id
+ 586e51a60fabf-277902e2b7emr2814143fac.39.1724935497901; Thu, 29 Aug 2024
+ 05:44:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20240826101648.95654-1-cleger@rivosinc.com>
-In-Reply-To: <20240826101648.95654-1-cleger@rivosinc.com>
+References: <20240827025821.2099068-1-jiaqing.zhao@linux.intel.com>
+In-Reply-To: <20240827025821.2099068-1-jiaqing.zhao@linux.intel.com>
 From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Thu, 29 Aug 2024 13:28:04 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0jDzZDhorU+zE+dh+wd0cim9n2XQYZbMUDhyQ=DgDhNYw@mail.gmail.com>
-Message-ID: <CAJZ5v0jDzZDhorU+zE+dh+wd0cim9n2XQYZbMUDhyQ=DgDhNYw@mail.gmail.com>
-Subject: Re: [PATCH v2] ACPI: CPPC: Fix MASK_VAL() usage
-To: =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
-	Robert Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, acpica-devel@lists.linux.dev
+Date: Thu, 29 Aug 2024 14:44:46 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0jc7_k0GEVYD06v-VJ5Mc9af2MV4taXTxJ9SnZ6+Q3n3A@mail.gmail.com>
+Message-ID: <CAJZ5v0jc7_k0GEVYD06v-VJ5Mc9af2MV4taXTxJ9SnZ6+Q3n3A@mail.gmail.com>
+Subject: Re: [PATCH v3 0/2] S3 wakeup support for hardware reduced model
+To: Jiaqing Zhao <jiaqing.zhao@linux.intel.com>
+Cc: Robert Moore <robert.moore@intel.com>, 
+	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org, 
+	acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Aug 26, 2024 at 12:32=E2=80=AFPM Cl=C3=A9ment L=C3=A9ger <cleger@ri=
-vosinc.com> wrote:
+On Tue, Aug 27, 2024 at 4:58=E2=80=AFAM Jiaqing Zhao
+<jiaqing.zhao@linux.intel.com> wrote:
 >
-> MASK_VAL() was added as a way to handle bit_offset and bit_width for
-> registers located in system memory address space. However, while suited
-> for reading, it does not work for writing and result in corrupted
-> registers when writing values with bit_offset > 0. Moreover, when a
-> register is collocated with another one at the same address but with a
-> different mask, the current code results in the other registers being
-> overwritten with 0s. The write procedure for SYSTEM_MEMORY registers
-> should actually read the value, mask it, update it and write it with the
-> updated value. Moreover, since registers can be located in the same
-> word, we must take care of locking the access before doing it. We should
-> potentially use a global lock since we don't know in if register
-> addresses aren't shared with another _CPC package but better not
-> encourage vendors to do so. Assume that registers can use the same word
-> inside a _CPC package and thus, use a per _CPC package lock.
+> S3 wakeup requires waking vector in FACS table, which is typically set
+> by OS. This patchset enables FACS table support and allows setting
+> waking vector in "Hardware-reduced ACPI support only" builds
+> (CONFIG_ACPI_REDUCED_HARDWARE_ONLY=3Dy).
 >
-> Fixes: 2f4a4d63a193 ("ACPI: CPPC: Use access_width over bit_width for sys=
-tem memory accesses")
-> Signed-off-by: Cl=C3=A9ment L=C3=A9ger <cleger@rivosinc.com>
+> Link: https://github.com/acpica/acpica/pull/960
+> Link: https://github.com/acpica/acpica/commit/ee53ed6b5452612bb44af542b68=
+d605f8b2b1104
 >
-> ---
-> v2:
->  - Remove label and unlock the spinlock earlier.
+> v2->v3:
+> * Remove extra code style changes to align with original ACPICA commit.
+> v1->v2:
+> * Not removing acpi_hw_set_firmware_waking_vector() declaration in
+>   hwxfsleep.c
+> * Change was merged in ACPICA project, add links to it.
 >
->  drivers/acpi/cppc_acpi.c | 43 ++++++++++++++++++++++++++++++++++++----
->  include/acpi/cppc_acpi.h |  2 ++
->  2 files changed, 41 insertions(+), 4 deletions(-)
+> Jiaqing Zhao (2):
+>   ACPICA: Detect FACS in reduced hardware build
+>   ACPICA: Allow setting waking vector on reduced hardware platforms
 >
-> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-> index 1d857978f5f4..4a47e08704d9 100644
-> --- a/drivers/acpi/cppc_acpi.c
-> +++ b/drivers/acpi/cppc_acpi.c
-> @@ -170,8 +170,11 @@ show_cppc_data(cppc_get_perf_ctrs, cppc_perf_fb_ctrs=
-, wraparound_time);
->  #define GET_BIT_WIDTH(reg) ((reg)->access_width ? (8 << ((reg)->access_w=
-idth - 1)) : (reg)->bit_width)
+>  drivers/acpi/acpica/acglobal.h  |  6 +-----
+>  drivers/acpi/acpica/hwxfsleep.c | 15 ++++++---------
+>  drivers/acpi/acpica/tbutils.c   |  2 --
+>  drivers/acpi/acpica/utxfinit.c  | 24 ++++++++++++------------
+>  include/acpi/acconfig.h         |  1 -
+>  include/acpi/acpixf.h           |  8 ++++----
+>  6 files changed, 23 insertions(+), 33 deletions(-)
 >
->  /* Shift and apply the mask for CPC reads/writes */
-> -#define MASK_VAL(reg, val) (((val) >> (reg)->bit_offset) &              =
-       \
-> +#define MASK_VAL_READ(reg, val) (((val) >> (reg)->bit_offset) &         =
-                       \
->                                         GENMASK(((reg)->bit_width) - 1, 0=
-))
-> +#define MASK_VAL_WRITE(reg, prev_val, val)                              =
-               \
-> +       ((((val) & GENMASK(((reg)->bit_width) - 1, 0)) << (reg)->bit_offs=
-et) |          \
-> +       ((prev_val) & ~(GENMASK(((reg)->bit_width) - 1, 0) << (reg)->bit_=
-offset)))      \
->
->  static ssize_t show_feedback_ctrs(struct kobject *kobj,
->                 struct kobj_attribute *attr, char *buf)
-> @@ -857,6 +860,7 @@ int acpi_cppc_processor_probe(struct acpi_processor *=
-pr)
->
->         /* Store CPU Logical ID */
->         cpc_ptr->cpu_id =3D pr->id;
-> +       spin_lock_init(&cpc_ptr->rmw_lock);
->
->         /* Parse PSD data for this CPU */
->         ret =3D acpi_get_psd(cpc_ptr, handle);
-> @@ -1062,7 +1066,7 @@ static int cpc_read(int cpu, struct cpc_register_re=
-source *reg_res, u64 *val)
->         }
->
->         if (reg->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_MEMORY)
-> -               *val =3D MASK_VAL(reg, *val);
-> +               *val =3D MASK_VAL_READ(reg, *val);
->
->         return 0;
->  }
-> @@ -1071,9 +1075,11 @@ static int cpc_write(int cpu, struct cpc_register_=
-resource *reg_res, u64 val)
->  {
->         int ret_val =3D 0;
->         int size;
-> +       u64 prev_val;
->         void __iomem *vaddr =3D NULL;
->         int pcc_ss_id =3D per_cpu(cpu_pcc_subspace_idx, cpu);
->         struct cpc_reg *reg =3D &reg_res->cpc_entry.reg;
-> +       struct cpc_desc *cpc_desc;
->
->         size =3D GET_BIT_WIDTH(reg);
->
-> @@ -1106,8 +1112,34 @@ static int cpc_write(int cpu, struct cpc_register_=
-resource *reg_res, u64 val)
->                 return acpi_os_write_memory((acpi_physical_address)reg->a=
-ddress,
->                                 val, size);
->
-> -       if (reg->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_MEMORY)
-> -               val =3D MASK_VAL(reg, val);
-> +       if (reg->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_MEMORY) {
-> +               cpc_desc =3D per_cpu(cpc_desc_ptr, cpu);
-> +               if (!cpc_desc) {
-> +                       pr_debug("No CPC descriptor for CPU:%d\n", cpu);
-> +                       return -ENODEV;
-> +               }
-> +
-> +               spin_lock(&cpc_desc->rmw_lock);
-> +               switch (size) {
-> +               case 8:
-> +                       prev_val =3D readb_relaxed(vaddr);
-> +                       break;
-> +               case 16:
-> +                       prev_val =3D readw_relaxed(vaddr);
-> +                       break;
-> +               case 32:
-> +                       prev_val =3D readl_relaxed(vaddr);
-> +                       break;
-> +               case 64:
-> +                       prev_val =3D readq_relaxed(vaddr);
-> +                       break;
-> +               default:
-> +                       spin_unlock(&cpc_desc->rmw_lock);
-> +                       return -EFAULT;
-> +               };
-> +               val =3D MASK_VAL_WRITE(reg, prev_val, val);
-> +               val |=3D prev_val;
-> +       }
->
->         switch (size) {
->         case 8:
-> @@ -1134,6 +1166,9 @@ static int cpc_write(int cpu, struct cpc_register_r=
-esource *reg_res, u64 val)
->                 break;
->         }
->
-> +       if (reg->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_MEMORY)
-> +               spin_unlock(&cpc_desc->rmw_lock);
-> +
->         return ret_val;
->  }
->
-> diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
-> index 930b6afba6f4..e1720d930666 100644
-> --- a/include/acpi/cppc_acpi.h
-> +++ b/include/acpi/cppc_acpi.h
-> @@ -64,6 +64,8 @@ struct cpc_desc {
->         int cpu_id;
->         int write_cmd_status;
->         int write_cmd_id;
-> +       /* Lock used for RMW operations in cpc_write() */
-> +       spinlock_t rmw_lock;
->         struct cpc_register_resource cpc_regs[MAX_CPC_REG_ENT];
->         struct acpi_psd_package domain_info;
->         struct kobject kobj;
 > --
 
-Applied as 6.12 material, thanks!
+Both patches applied as 6.12 material, thanks!
