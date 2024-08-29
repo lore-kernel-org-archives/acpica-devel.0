@@ -1,127 +1,211 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8518F18E053;
-	Thu, 29 Aug 2024 10:15:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 137C018E348
+	for <acpica-devel@lists.linux.dev>; Thu, 29 Aug 2024 11:28:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724926506; cv=none; b=t5rAsCpUJ9Y6JKi/rWwvwbzZrRY3CvmbqewpCbeHjR+bDwg3TkiHrYX9uorjb1sq0iduGNyX9skBhvhl3imPZoLzO80Mm0+ZhQ6YdkOleb787FlE+BTIvroUSJvSxqru7U/WObPypgQZ6c8AveAhFpjJ3XqBp6amn5APGwjwhlo=
+	t=1724930896; cv=none; b=Difqg17OQChNtL61/MdssnjV0a4s9nvHtb+uL2AmpSY/dUpMke/yf9ALXKk1pkWzdwihMUAp41bEu09JwOJ9pM/oVb+8fvqigFGIlfwVgcApwQ82xM3WRIlh66M5V1G/915crypdIaGt780qss3uRAO/g+wzSfdwhR/d89c0QuI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724926506; c=relaxed/simple;
-	bh=ja3k5hFICUQ46VNR/0UCHIUMXdkpQSTHbdMOS3QfItE=;
+	s=arc-20240116; t=1724930896; c=relaxed/simple;
+	bh=CW83ZEIpkPz52PNovqYIVdDMJHBmM0F3hp75/bBTlUI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=A5W215LmtIfmcsDvA29SL9JWXlYyBazC4xHMUzLZJfngDW/H3hNgecm60uhvv4zOKRQ2/tkgy3ba+9EIr/NXQhE04l1CqTdc7aUSTdh8vjB4DTqJ861yVf7u953m0Qb02j5ClfjtsFwgbf/OPqnRrHbGWALv3vLZWyhItcKV11g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FIt/zQ5o; arc=none smtp.client-ip=10.30.226.201
+	 To:Cc:Content-Type; b=TebuVoE1c0IoumT2aYEbf+rgt8fnerJrCZ1HQ8S3g1zr9OOjFcowTYkFxaMjPF0sjzhbiiNuIDbxHBs/wjcG64uUlv0f64oNV/3NYZPFVuaV6Unax+oxcXutzL+WR50zybI2hQxdKQsG8gBUsjlHNXYBbhc+lubV7Aeaf2v0hJo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XKbG4lhl; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FIt/zQ5o"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1ADC7C4CEC3;
-	Thu, 29 Aug 2024 10:15:06 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XKbG4lhl"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0EB1C4CEC5
+	for <acpica-devel@lists.linux.dev>; Thu, 29 Aug 2024 11:28:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724926506;
-	bh=ja3k5hFICUQ46VNR/0UCHIUMXdkpQSTHbdMOS3QfItE=;
+	s=k20201202; t=1724930895;
+	bh=CW83ZEIpkPz52PNovqYIVdDMJHBmM0F3hp75/bBTlUI=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=FIt/zQ5okD2OnX/3U8XS7YxcRyv/6TQL2fIHw3oVa+7i9XNpDlvrTH6MJhhynFpvA
-	 8kQj4SB3cztOUNZa9JRRw9gh2PvNEEQVDOB8oDh05o1XOmsEP55g9YUaqG5iy3dBSB
-	 ZoGkskxApKAmbm0Y+27J6zH6yHBa/OskT7ad6O6EMZWc77Ydr4uV6nqGIaTCclDI4X
-	 qikL6ijv4YNUUNOuqxc0uyzD2dIiK5mfuK7Tqu2A1V+abeDFJor45fFHYrZGbKFgAv
-	 twQaALgBV/m8ekSYddGfXGC6igdrgEY75bTlSYZYtGv4pmBbcRjLRAMGRgO+cjskev
-	 VjTgrjgzVojTA==
-Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-5dc93fa5639so258796eaf.1;
-        Thu, 29 Aug 2024 03:15:06 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCV+ls9SpauKMvW16gYAzfFj6YYs6bbJ2Sux8j6S9IE9n+OntB6vdsLYmahcoNinSyIUpdrN6A==@lists.linux.dev, AJvYcCXLRrDPGSMDtiAbnPhlpXekTVcij8OQWqCt989QTE0Vv75VsC5Ji4ltfTRgkAYvTRetzEcXeEdAWw==@lists.linux.dev
-X-Gm-Message-State: AOJu0YzgixjDXtD0T+YJfiUp/TRpCN6BZaqcOwXtVJk9k45B/+cubyfL
-	LVpenPjK1BdGM+W6uH/cU/mJjohOBSizNY1swWfniUsbO+rtKn2v4TuqG22wHpo0S5b6a+mHtlW
-	cTbt4q3PycYHzfWZYkC0G75HOocQ=
-X-Google-Smtp-Source: AGHT+IH1iV6L1TGRMqY7jf4E7+LOi1yBY1y43SdO+ovsqtu6sddWwnbpbj08nm5SY9sGMdOM9bStbW37+fCJJzH/H0k=
-X-Received: by 2002:a05:6820:1610:b0:5da:a462:6a30 with SMTP id
- 006d021491bc7-5df97ebd7bdmr2719698eaf.1.1724926505401; Thu, 29 Aug 2024
- 03:15:05 -0700 (PDT)
+	b=XKbG4lhlp7ELKxPWqB5DcmWwqaLwt0frVjrqzpKPRXfymI1MhZiP0G5nCBGJ5Bg4t
+	 sgnbUPzCNBrw/sz7rxcT9Ltnh6RwgkHVzO2Qv0Ty53i/hKu4/lztP+bdk1PgeQ3ofK
+	 kY9psR6NhY4hxdYyNwbas4HdFeXTjosHu2ugl2msQMUcbqHFA81Bde23EUc/n+DNdy
+	 oEjtEbg1QYtlvh8p6jVEjzQiaEXTc5QFNh3/LSXCN2ZFnuXnwofPkJQh1u08BelvAH
+	 9B43XWN4HC4/0mJFPQEvrHOI8eNuH3Wy7btmLmKgRJkiZmlG5P4e7OEDNFpuHPNcmp
+	 QXcoqUC6l+fdA==
+Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3df04a2420aso262901b6e.1
+        for <acpica-devel@lists.linux.dev>; Thu, 29 Aug 2024 04:28:15 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUKMZ1vN77PkevALxw675kqgHmR6oYrEef92whcLh3Hpo9ukP5godQKhuyHmCFzNKnSbEgRaT2tNiTxcBg=@lists.linux.dev
+X-Gm-Message-State: AOJu0YyqIKhMODFCWsIQZUqRga+D2zdpAvMojiO6PWS+aiTIZ4SNIM+a
+	GPf3m3kCFI8Xgok5QQYgyVzEQJTYbzrtxawcbY1Itu7t3OuXnF3iOoOEkLfGOPPQuieSMhilbst
+	hD+0iB9gXiJ2024eBcrnrbDsMiIM=
+X-Google-Smtp-Source: AGHT+IGz5F+qmlvaiKD6trNVX8aBlX43dl81V4HoKG0dddBlHdfJlg7ZRaq9zYgsOxqBnmAWOCmUVysjX+v1FckoXUU=
+X-Received: by 2002:a05:6808:169e:b0:3dd:4376:db2c with SMTP id
+ 5614622812f47-3df05db003emr2649869b6e.9.1724930894959; Thu, 29 Aug 2024
+ 04:28:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <0-v2-621370057090+91fec-smmuv3_nesting_jgg@nvidia.com> <3-v2-621370057090+91fec-smmuv3_nesting_jgg@nvidia.com>
-In-Reply-To: <3-v2-621370057090+91fec-smmuv3_nesting_jgg@nvidia.com>
+References: <20240826101648.95654-1-cleger@rivosinc.com>
+In-Reply-To: <20240826101648.95654-1-cleger@rivosinc.com>
 From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Thu, 29 Aug 2024 12:14:54 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0hZKs8QkjA=JMYwaXpPm8kQM91WnyMNP2Mcyk7s51NfyQ@mail.gmail.com>
-Message-ID: <CAJZ5v0hZKs8QkjA=JMYwaXpPm8kQM91WnyMNP2Mcyk7s51NfyQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/8] ACPICA: IORT: Update for revision E.f
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: acpica-devel@lists.linux.dev, Hanjun Guo <guohanjun@huawei.com>, 
-	iommu@lists.linux.dev, Joerg Roedel <joro@8bytes.org>, Kevin Tian <kevin.tian@intel.com>, 
-	kvm@vger.kernel.org, Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, 
-	Lorenzo Pieralisi <lpieralisi@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Robert Moore <robert.moore@intel.com>, Robin Murphy <robin.murphy@arm.com>, 
-	Sudeep Holla <sudeep.holla@arm.com>, Will Deacon <will@kernel.org>, 
-	Alex Williamson <alex.williamson@redhat.com>, Eric Auger <eric.auger@redhat.com>, 
-	Jean-Philippe Brucker <jean-philippe@linaro.org>, Moritz Fischer <mdf@kernel.org>, 
-	Michael Shavit <mshavit@google.com>, Nicolin Chen <nicolinc@nvidia.com>, patches@lists.linux.dev, 
-	Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>, Mostafa Saleh <smostafa@google.com>
+Date: Thu, 29 Aug 2024 13:28:04 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0jDzZDhorU+zE+dh+wd0cim9n2XQYZbMUDhyQ=DgDhNYw@mail.gmail.com>
+Message-ID: <CAJZ5v0jDzZDhorU+zE+dh+wd0cim9n2XQYZbMUDhyQ=DgDhNYw@mail.gmail.com>
+Subject: Re: [PATCH v2] ACPI: CPPC: Fix MASK_VAL() usage
+To: =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
+	Robert Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, acpica-devel@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Aug 27, 2024 at 5:51=E2=80=AFPM Jason Gunthorpe <jgg@nvidia.com> wr=
-ote:
+On Mon, Aug 26, 2024 at 12:32=E2=80=AFPM Cl=C3=A9ment L=C3=A9ger <cleger@ri=
+vosinc.com> wrote:
 >
-> From: Nicolin Chen <nicolinc@nvidia.com>
+> MASK_VAL() was added as a way to handle bit_offset and bit_width for
+> registers located in system memory address space. However, while suited
+> for reading, it does not work for writing and result in corrupted
+> registers when writing values with bit_offset > 0. Moreover, when a
+> register is collocated with another one at the same address but with a
+> different mask, the current code results in the other registers being
+> overwritten with 0s. The write procedure for SYSTEM_MEMORY registers
+> should actually read the value, mask it, update it and write it with the
+> updated value. Moreover, since registers can be located in the same
+> word, we must take care of locking the access before doing it. We should
+> potentially use a global lock since we don't know in if register
+> addresses aren't shared with another _CPC package but better not
+> encourage vendors to do so. Assume that registers can use the same word
+> inside a _CPC package and thus, use a per _CPC package lock.
 >
-> ACPICA commit c4f5c083d24df9ddd71d5782c0988408cf0fc1ab
+> Fixes: 2f4a4d63a193 ("ACPI: CPPC: Use access_width over bit_width for sys=
+tem memory accesses")
+> Signed-off-by: Cl=C3=A9ment L=C3=A9ger <cleger@rivosinc.com>
 >
-> The IORT spec, Issue E.f (April 2024), adds a new CANWBS bit to the Memor=
-y
-> Access Flag field in the Memory Access Properties table, mainly for a PCI
-> Root Complex.
->
-> This CANWBS defines the coherency of memory accesses to be not marked IOW=
-B
-> cacheable/shareable. Its value further implies the coherency impact from =
-a
-> pair of mismatched memory attributes (e.g. in a nested translation case):
->   0x0: Use of mismatched memory attributes for accesses made by this
->        device may lead to a loss of coherency.
->   0x1: Coherency of accesses made by this device to locations in
->        Conventional memory are ensured as follows, even if the memory
->        attributes for the accesses presented by the device or provided by
->        the SMMU are different from Inner and Outer Write-back cacheable,
->        Shareable.
->
-> Link: https://github.com/acpica/acpica/commit/c4f5c083
-> Signed-off-by: Nicolin Chen <nicolinc@nvidia.com>
-> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-
 > ---
->  include/acpi/actbl2.h | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> v2:
+>  - Remove label and unlock the spinlock earlier.
 >
-> diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
-> index e27958ef82642f..9a7acf403ed3c8 100644
-> --- a/include/acpi/actbl2.h
-> +++ b/include/acpi/actbl2.h
-> @@ -453,7 +453,7 @@ struct acpi_table_ccel {
->   * IORT - IO Remapping Table
->   *
->   * Conforms to "IO Remapping Table System Software on ARM Platforms",
-> - * Document number: ARM DEN 0049E.e, Sep 2022
-> + * Document number: ARM DEN 0049E.f, Apr 2024
->   *
->   ***********************************************************************=
-*******/
+>  drivers/acpi/cppc_acpi.c | 43 ++++++++++++++++++++++++++++++++++++----
+>  include/acpi/cppc_acpi.h |  2 ++
+>  2 files changed, 41 insertions(+), 4 deletions(-)
 >
-> @@ -524,6 +524,7 @@ struct acpi_iort_memory_access {
+> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+> index 1d857978f5f4..4a47e08704d9 100644
+> --- a/drivers/acpi/cppc_acpi.c
+> +++ b/drivers/acpi/cppc_acpi.c
+> @@ -170,8 +170,11 @@ show_cppc_data(cppc_get_perf_ctrs, cppc_perf_fb_ctrs=
+, wraparound_time);
+>  #define GET_BIT_WIDTH(reg) ((reg)->access_width ? (8 << ((reg)->access_w=
+idth - 1)) : (reg)->bit_width)
 >
->  #define ACPI_IORT_MF_COHERENCY          (1)
->  #define ACPI_IORT_MF_ATTRIBUTES         (1<<1)
-> +#define ACPI_IORT_MF_CANWBS             (1<<2)
+>  /* Shift and apply the mask for CPC reads/writes */
+> -#define MASK_VAL(reg, val) (((val) >> (reg)->bit_offset) &              =
+       \
+> +#define MASK_VAL_READ(reg, val) (((val) >> (reg)->bit_offset) &         =
+                       \
+>                                         GENMASK(((reg)->bit_width) - 1, 0=
+))
+> +#define MASK_VAL_WRITE(reg, prev_val, val)                              =
+               \
+> +       ((((val) & GENMASK(((reg)->bit_width) - 1, 0)) << (reg)->bit_offs=
+et) |          \
+> +       ((prev_val) & ~(GENMASK(((reg)->bit_width) - 1, 0) << (reg)->bit_=
+offset)))      \
 >
->  /*
->   * IORT node specific subtables
+>  static ssize_t show_feedback_ctrs(struct kobject *kobj,
+>                 struct kobj_attribute *attr, char *buf)
+> @@ -857,6 +860,7 @@ int acpi_cppc_processor_probe(struct acpi_processor *=
+pr)
+>
+>         /* Store CPU Logical ID */
+>         cpc_ptr->cpu_id =3D pr->id;
+> +       spin_lock_init(&cpc_ptr->rmw_lock);
+>
+>         /* Parse PSD data for this CPU */
+>         ret =3D acpi_get_psd(cpc_ptr, handle);
+> @@ -1062,7 +1066,7 @@ static int cpc_read(int cpu, struct cpc_register_re=
+source *reg_res, u64 *val)
+>         }
+>
+>         if (reg->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_MEMORY)
+> -               *val =3D MASK_VAL(reg, *val);
+> +               *val =3D MASK_VAL_READ(reg, *val);
+>
+>         return 0;
+>  }
+> @@ -1071,9 +1075,11 @@ static int cpc_write(int cpu, struct cpc_register_=
+resource *reg_res, u64 val)
+>  {
+>         int ret_val =3D 0;
+>         int size;
+> +       u64 prev_val;
+>         void __iomem *vaddr =3D NULL;
+>         int pcc_ss_id =3D per_cpu(cpu_pcc_subspace_idx, cpu);
+>         struct cpc_reg *reg =3D &reg_res->cpc_entry.reg;
+> +       struct cpc_desc *cpc_desc;
+>
+>         size =3D GET_BIT_WIDTH(reg);
+>
+> @@ -1106,8 +1112,34 @@ static int cpc_write(int cpu, struct cpc_register_=
+resource *reg_res, u64 val)
+>                 return acpi_os_write_memory((acpi_physical_address)reg->a=
+ddress,
+>                                 val, size);
+>
+> -       if (reg->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_MEMORY)
+> -               val =3D MASK_VAL(reg, val);
+> +       if (reg->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_MEMORY) {
+> +               cpc_desc =3D per_cpu(cpc_desc_ptr, cpu);
+> +               if (!cpc_desc) {
+> +                       pr_debug("No CPC descriptor for CPU:%d\n", cpu);
+> +                       return -ENODEV;
+> +               }
+> +
+> +               spin_lock(&cpc_desc->rmw_lock);
+> +               switch (size) {
+> +               case 8:
+> +                       prev_val =3D readb_relaxed(vaddr);
+> +                       break;
+> +               case 16:
+> +                       prev_val =3D readw_relaxed(vaddr);
+> +                       break;
+> +               case 32:
+> +                       prev_val =3D readl_relaxed(vaddr);
+> +                       break;
+> +               case 64:
+> +                       prev_val =3D readq_relaxed(vaddr);
+> +                       break;
+> +               default:
+> +                       spin_unlock(&cpc_desc->rmw_lock);
+> +                       return -EFAULT;
+> +               };
+> +               val =3D MASK_VAL_WRITE(reg, prev_val, val);
+> +               val |=3D prev_val;
+> +       }
+>
+>         switch (size) {
+>         case 8:
+> @@ -1134,6 +1166,9 @@ static int cpc_write(int cpu, struct cpc_register_r=
+esource *reg_res, u64 val)
+>                 break;
+>         }
+>
+> +       if (reg->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_MEMORY)
+> +               spin_unlock(&cpc_desc->rmw_lock);
+> +
+>         return ret_val;
+>  }
+>
+> diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
+> index 930b6afba6f4..e1720d930666 100644
+> --- a/include/acpi/cppc_acpi.h
+> +++ b/include/acpi/cppc_acpi.h
+> @@ -64,6 +64,8 @@ struct cpc_desc {
+>         int cpu_id;
+>         int write_cmd_status;
+>         int write_cmd_id;
+> +       /* Lock used for RMW operations in cpc_write() */
+> +       spinlock_t rmw_lock;
+>         struct cpc_register_resource cpc_regs[MAX_CPC_REG_ENT];
+>         struct acpi_psd_package domain_info;
+>         struct kobject kobj;
 > --
-> 2.46.0
->
->
+
+Applied as 6.12 material, thanks!
