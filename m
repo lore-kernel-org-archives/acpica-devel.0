@@ -1,32 +1,32 @@
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EC2C1AD9E5;
-	Thu, 29 Aug 2024 13:15:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9404C1B1402;
+	Thu, 29 Aug 2024 14:52:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724937304; cv=none; b=mUWS+Q5zL+JnX8ync6NqAyLgCUNIx9RcadIOmP5DoY57y3eqdto1ayzCb4fN2YtsVGgPCU9vjG7SyFgdMVqiHT/qvF1QvQnSznPCoIXyPDOR8ca3tM/0vYf0109+LmVJQlJbWRTXYFubLXohz6oxHYIjE5iRUVlJCUXir2pwlzw=
+	t=1724943151; cv=none; b=I7jYFRMbSlFdXrasg32v1nszNiGsp/l08iLV9oF9PaaqX5HyR2RlSrYtzL1M9EkdwnZ+NHx2d+nHGDdZjS4PjpCAYVBtj+elkGuSJ3WDcXBoZXiLn1rBf7Of62mdhwWvJyitypVjPHlTCnIMGIHMY9dybX6idjyM16FwpFhf/c4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724937304; c=relaxed/simple;
-	bh=lihYB3H/FMQYtWTitMrBFoX9tv8ZBPb3PyGsDX7yvMU=;
+	s=arc-20240116; t=1724943151; c=relaxed/simple;
+	bh=uS6ZUGkMELokJhjp5dBYR6LbnxF19SksPUR5GdIllFM=;
 	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=Bew3ZvX72ikRvA83Dh9izubVO/0/VNrGOJnRqdcHT7YX6dK/1o4B/bosMz5vDvvn0gLTmhvIvk+UdHDaCd0wrdn23YoXR+yunRI25RHw5lUwAtp6kLShbUbdudZvTR4oX7XDDUKFJ3zQjPCCuDaiY9FWD0XkS8sbTrKzZsuV4P8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+	 Content-Type:MIME-Version; b=cbMAp4AxESOLxLwhbbHstube1b7QUa6XGp1yTN6RvAXY4wqgbd0kj+hS/k5HGfUmH9fAcJqCAvmHDaFPc2EpLyOg7fTZ1ESIxxdEAd9y7DeoIIK+mgkNPuZZuDuLMGxvteB7e3HaL17oHR9H3eCprnUflUDLQbZIekmzASjOt7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4WvhZs2vJ2z1j7gZ;
-	Thu, 29 Aug 2024 21:14:45 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Wvkdy6wLJzQr6Y;
+	Thu, 29 Aug 2024 22:47:34 +0800 (CST)
 Received: from dggpemf500003.china.huawei.com (unknown [7.185.36.204])
-	by mail.maildlp.com (Postfix) with ESMTPS id EEE1E140136;
-	Thu, 29 Aug 2024 21:14:57 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 108351401E0;
+	Thu, 29 Aug 2024 22:52:26 +0800 (CST)
 Received: from lhrpeml500005.china.huawei.com (7.191.163.240) by
  dggpemf500003.china.huawei.com (7.185.36.204) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Thu, 29 Aug 2024 21:14:57 +0800
+ 15.2.1544.11; Thu, 29 Aug 2024 22:52:25 +0800
 Received: from lhrpeml500005.china.huawei.com ([7.191.163.240]) by
  lhrpeml500005.china.huawei.com ([7.191.163.240]) with mapi id 15.01.2507.039;
- Thu, 29 Aug 2024 14:14:55 +0100
+ Thu, 29 Aug 2024 15:52:23 +0100
 From: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
 To: Nicolin Chen <nicolinc@nvidia.com>
 CC: Jason Gunthorpe <jgg@nvidia.com>, "acpica-devel@lists.linux.dev"
@@ -47,16 +47,17 @@ CC: Jason Gunthorpe <jgg@nvidia.com>, "acpica-devel@lists.linux.dev"
 	<smostafa@google.com>
 Subject: RE: [PATCH v2 0/8] Initial support for SMMUv3 nested translation
 Thread-Topic: [PATCH v2 0/8] Initial support for SMMUv3 nested translation
-Thread-Index: AQHa+JkQkcFFSAeDsUqyXyGP6/LaZLI7ju0AgAFNDID///2PgIAAHqvg///xn4CAAU4tEA==
-Date: Thu, 29 Aug 2024 13:14:54 +0000
-Message-ID: <d2ad792fe9dd44d38396c5646fa956c6@huawei.com>
+Thread-Index: AQHa+JkQkcFFSAeDsUqyXyGP6/LaZLI7ju0AgAFNDID///2PgIAAHqvg///xn4CAAU4tEIAAHHjg
+Date: Thu, 29 Aug 2024 14:52:23 +0000
+Message-ID: <d1dc23f484784413bb3f6658717de516@huawei.com>
 References: <0-v2-621370057090+91fec-smmuv3_nesting_jgg@nvidia.com>
  <Zs5Fom+JFZimFpeS@Asurada-Nvidia>
  <7debe8f99afa4e33aa1872be0d4a63e1@huawei.com>
  <Zs9a9/Dc0vBxp/33@Asurada-Nvidia>
  <cd36b0e460734df0ae95f5e82bfebaef@huawei.com>
  <Zs9ooZLNtPZ8PwJh@Asurada-Nvidia>
-In-Reply-To: <Zs9ooZLNtPZ8PwJh@Asurada-Nvidia>
+ <d2ad792fe9dd44d38396c5646fa956c6@huawei.com>
+In-Reply-To: <d2ad792fe9dd44d38396c5646fa956c6@huawei.com>
 Accept-Language: en-GB, en-US
 Content-Language: en-US
 X-MS-Has-Attach:
@@ -73,9 +74,9 @@ MIME-Version: 1.0
 
 
 > -----Original Message-----
-> From: Nicolin Chen <nicolinc@nvidia.com>
-> Sent: Wednesday, August 28, 2024 7:13 PM
-> To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+> From: Shameerali Kolothum Thodi
+> Sent: Thursday, August 29, 2024 2:15 PM
+> To: 'Nicolin Chen' <nicolinc@nvidia.com>
 > Cc: Jason Gunthorpe <jgg@nvidia.com>; acpica-devel@lists.linux.dev;
 > Guohanjun (Hanjun Guo) <guohanjun@huawei.com>;
 > iommu@lists.linux.dev; Joerg Roedel <joro@8bytes.org>; Kevin Tian
@@ -90,101 +91,49 @@ fael J.
 > Philippe Brucker <jean-philippe@linaro.org>; Moritz Fischer
 > <mdf@kernel.org>; Michael Shavit <mshavit@google.com>;
 > patches@lists.linux.dev; Mostafa Saleh <smostafa@google.com>
-> Subject: Re: [PATCH v2 0/8] Initial support for SMMUv3 nested translation
+> Subject: RE: [PATCH v2 0/8] Initial support for SMMUv3 nested translation
 >=20
-> On Wed, Aug 28, 2024 at 06:06:36PM +0000, Shameerali Kolothum Thodi
-> wrote:
-> > > > > As mentioned above, the VIOMMU series would be required to test
-> the
-> > > > > entire nesting feature, which now has a v2 rebasing on this serie=
-s.
-> > > > > I tested it with a paring QEMU branch. Please refer to:
-> > > > > https://lore.kernel.org/linux-
-> > > > > iommu/cover.1724776335.git.nicolinc@nvidia.com/
-> > > >
-> > > > Thanks for this. I haven't gone through the viommu and its Qemu
-> branch
-> > > > yet.  The way we present nested-smmuv3/iommufd to the Qemu seems
-> to
-> > > > have changed  with the above Qemu branch(multiple nested SMMUs).
-> > > > The old Qemu command line for nested setup doesn't work anymore.
-> > > >
-> > > > Could you please share an example Qemu command line  to verify this
-> > > > series(Sorry, if I missed it in the links/git).
-> > >
-> > > My bad. I updated those two "for_iommufd_" QEMU branches with a
-> > > README commit on top of each for the reference command.
-> >
-> > Thanks. I did give it a go and this is my command line based on above,
+> That makes some progress. But still I am not seeing the assigned dev  in
+> Guest.
 >=20
-> > But it fails to boot very early:
-> >
-> > root@ubuntu:/home/shameer/qemu-test# ./qemu_run-simple-iommufd-
-> nicolin-2
-> > qemu-system-aarch64-nicolin-viommu: Illegal numa node 2
-> >
-> > Any idea what am I missing? Do you any special config enabled while
-> building Qemu?
+> -device vfio-pci-nohotplug,host=3D0000:75:00.1,iommufd=3Diommufd0
 >=20
-> Looks like you are running on a multi-SMMU platform :)
+> root@ubuntu:/# lspci -tv#
 >=20
-> Would you please try syncing your local branch? That should work,
-> as the update also had a small change to the virt code:
+> root@ubuntu:/# lspci -tv
+> -+-[0000:ca]---00.0-[cb]--
+>  \-[0000:00]-+-00.0  Red Hat, Inc. QEMU PCIe Host bridge
+>              +-01.0  Red Hat, Inc Virtio network device
+>              +-02.0  Red Hat, Inc. QEMU PCIe Expander bridge
+>              +-03.0  Red Hat, Inc. QEMU PCIe Expander bridge
+>              +-04.0  Red Hat, Inc. QEMU PCIe Expander bridge
+>              +-05.0  Red Hat, Inc. QEMU PCIe Expander bridge
+>              +-06.0  Red Hat, Inc. QEMU PCIe Expander bridge
+>              +-07.0  Red Hat, Inc. QEMU PCIe Expander bridge
+>              +-08.0  Red Hat, Inc. QEMU PCIe Expander bridge
+>              \-09.0  Red Hat, Inc. QEMU PCIe Expander bridge
 >=20
-> diff --git a/hw/arm/virt.c b/hw/arm/virt.c
-> index 161a28a311..a782909016 100644
-> --- a/hw/arm/virt.c
-> +++ b/hw/arm/virt.c
-> @@ -1640,7 +1640,7 @@ static PCIBus
-> *create_pcie_expander_bridge(VirtMachineState *vms, uint8_t idx)
->      }
->=20
->      qdev_prop_set_uint8(dev, "bus_nr", bus_nr);
-> -    qdev_prop_set_uint16(dev, "numa_node", idx);
-> +    qdev_prop_set_uint16(dev, "numa_node", 0);
->      qdev_realize_and_unref(dev, BUS(bus), &error_fatal);
+> The new root port is created, but no device attached.
+It looks like Guest finds the config invalid:
 
-That makes some progress. But still I am not seeing the assigned
-dev  in Guest.
+[    0.283618] PCI host bridge to bus 0000:ca
+[    0.284064] ACPI BIOS Error (bug): \_SB.PCF7.PCEE.PCE5.PCDC.PCD3.PCCA._D=
+SM: Excess arguments - ASL declared 5, ACPI requires 4 (20240322/nsargument=
+s-162)
+[    0.285533] pci_bus 0000:ca: root bus resource [bus ca]
+[    0.286214] pci 0000:ca:00.0: [1b36:000c] type 01 class 0x060400 PCIe Ro=
+ot Port
+[    0.287717] pci 0000:ca:00.0: BAR 0 [mem 0x00000000-0x00000fff]
+[    0.288431] pci 0000:ca:00.0: PCI bridge to [bus 00]
+[    0.290649] pci 0000:ca:00.0: bridge configuration invalid ([bus 00-00])=
+, reconfiguring
+[    0.292476] pci_bus 0000:cb: busn_res: can not insert [bus cb-ca] under =
+[bus ca] (conflicts with (null) [bus ca])
+[    0.293597] pci_bus 0000:cb: busn_res: [bus cb-ca] end is updated to cb
+[    0.294300] pci_bus 0000:cb: busn_res: can not insert [bus cb] under [bu=
+s ca] (conflicts with (null) [bus ca])
 
--device vfio-pci-nohotplug,host=3D0000:75:00.1,iommufd=3Diommufd0
-
-root@ubuntu:/# lspci -tv#
-
-root@ubuntu:/# lspci -tv
--+-[0000:ca]---00.0-[cb]--
- \-[0000:00]-+-00.0  Red Hat, Inc. QEMU PCIe Host bridge
-             +-01.0  Red Hat, Inc Virtio network device
-             +-02.0  Red Hat, Inc. QEMU PCIe Expander bridge
-             +-03.0  Red Hat, Inc. QEMU PCIe Expander bridge
-             +-04.0  Red Hat, Inc. QEMU PCIe Expander bridge
-             +-05.0  Red Hat, Inc. QEMU PCIe Expander bridge
-             +-06.0  Red Hat, Inc. QEMU PCIe Expander bridge
-             +-07.0  Red Hat, Inc. QEMU PCIe Expander bridge
-             +-08.0  Red Hat, Inc. QEMU PCIe Expander bridge
-             \-09.0  Red Hat, Inc. QEMU PCIe Expander bridge
-
-The new root port is created, but no device attached.
-
-But without iommufd,
--device vfio-pci-nohotplug,host=3D0000:75:00.1
-
-root@ubuntu:/# lspci -tv
--[0000:00]-+-00.0  Red Hat, Inc. QEMU PCIe Host bridge
-           +-01.0  Red Hat, Inc Virtio network device
-           +-02.0  Red Hat, Inc. QEMU PCIe Expander bridge
-           +-03.0  Red Hat, Inc. QEMU PCIe Expander bridge
-           +-04.0  Red Hat, Inc. QEMU PCIe Expander bridge
-           +-05.0  Red Hat, Inc. QEMU PCIe Expander bridge
-           +-06.0  Red Hat, Inc. QEMU PCIe Expander bridge
-           +-07.0  Red Hat, Inc. QEMU PCIe Expander bridge
-           +-08.0  Red Hat, Inc. QEMU PCIe Expander bridge
-           +-09.0  Red Hat, Inc. QEMU PCIe Expander bridge
-           \-0a.0  Huawei Technologies Co., Ltd. Device a251
-
-We can see dev a251.
-
-And yes the setup has multiple SMMUs(8).
+Let me know if you have any clue.=20
 
 Thanks,
 Shameer
