@@ -1,57 +1,57 @@
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0AFA1D0DE0
-	for <acpica-devel@lists.linux.dev>; Tue,  3 Sep 2024 08:34:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA4581C7680
+	for <acpica-devel@lists.linux.dev>; Tue,  3 Sep 2024 09:00:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725352465; cv=none; b=WTKHFmfP7bPhcYWLzWkz49RDtv06zSACj54kisUNElXjwbgxkmLkB/it4KjkPs18rOCifzRiSFfdgg0YoaDVTBVX0QVhxzeF8pqmZQenc0Ik/unn+CDPXHlURM+tPyu3aaJOiD18eXovOIe949n1/yzHH8QoTrlzqhWeTPZH6pA=
+	t=1725354041; cv=none; b=QaIKFsvOP5A6z04ZPiUCeYgwGSsmMWIfwTuI3RPVYqfXOHakiJ/YXWnJy99lELAswiBwzEdfXS4FzhNL/JbnVSexuVSwbSVdy1gyyjQXkcv3dxMDKsGdJC7VJlhPQk5XjYh8/2PWEC7OHRX8elED23FvWDxGyYjYsOcVNp6rwvc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725352465; c=relaxed/simple;
-	bh=Ooaq7ri1Yl3eVP7lha8lZRj8WwdjRH3fBUHtV8sPBAw=;
+	s=arc-20240116; t=1725354041; c=relaxed/simple;
+	bh=1L04pRJHwpqlONziVoFoJ3562XOYBoFFgUHaSW/QS5A=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Cq2tV66TPpEzMvFRNFWVC3R8UvUFmr0k5SpUsJTQjTmu55mkHnkL8uzYNgNb2uxG3mwZJrQ8B3BPnUc0xXT8jMf+40MQOTZWQ8kHsMJa9zMfeuTjWndtJHk68Y22RtIVJ+2DqwrUeLnCNVv3sUADQI63nO1E0kjMzxR0HbSTxtY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=EeSe6CW7; arc=none smtp.client-ip=209.85.208.48
+	 Content-Type:Content-Disposition:In-Reply-To; b=fqNsnt/BfGz0/8JEKN9dJWY31mttni0QDFpJUHg9duhf5EWUxNpuae3m2jSsqzxWwGsYYxOMPvwDAj1zhrPM4BgxmJOrWFvfxA/H7hkGesJzAU4WjOCyTeWz1zkgQLhlJl/kKwl70DomUNXyZ8wplioMCtvbO/tSg9+pqBdA43g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0VlC8vx8; arc=none smtp.client-ip=209.85.128.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="EeSe6CW7"
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5c24374d8b6so22117a12.1
-        for <acpica-devel@lists.linux.dev>; Tue, 03 Sep 2024 01:34:23 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0VlC8vx8"
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-429d1a9363aso108185e9.1
+        for <acpica-devel@lists.linux.dev>; Tue, 03 Sep 2024 02:00:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1725352462; x=1725957262; darn=lists.linux.dev;
+        d=google.com; s=20230601; t=1725354038; x=1725958838; darn=lists.linux.dev;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=0x4pAN9v3PKcJSMJc9wNdVW/9mRtNQg8cuL1zQPTZck=;
-        b=EeSe6CW70jF9xDrEWrvDEpbaNfDKIQ4ECCZDGIXlEakzvHhXQKLnAye4xF5kQ+oPv0
-         C5IUIc51yISZx2VfEnXHO7GhWOuPPx0iRDLXH4BAs/yYeUWaBVZmbCXFql1wkqCijF09
-         nOR2b7LQSskINmiOsn3gAxPBvpJxMGM1kp8kP8YeRZq9I+YWUPFSYqabmoZG8BAvFVDm
-         fiPNgacXGEeWX9mESet6oeCyWuWOIivRlExj3WZX9UwUp1PksfQ+q1vppsoXy9TBRdLC
-         xacM86M+KcssqDItpCKVsiGW1B7qqPrTWQDFuIdy0olM78z0FGy6aTOo+1tSFui5C88u
-         hEkw==
+        bh=mcAweApl0SMnSEwpMO3VeLlceofmGojlXD55ghcyISI=;
+        b=0VlC8vx8+ZShvomUuSGutDDIguTYBshu2TEExzBEw/cotwRPHFYecL3PimRKB6EbQ8
+         UJQCSslkNH1vDzGn1bST/7bJWP4O+0bfmOC8FU1Mkw1vxp0h8OflFrbyHv3N4DsIxOpe
+         jDbmOM3MiOF/Az0luqj6+PDJY8TNCuHCnLvBdtVZCorPtB8Cp5n3F7MsFm+PoYTgCLdd
+         vrDtECjpiDqYQWWAM355A/mPzmaqZmAL731tJjtNtemLqvyCAjr/+RMHumTuPj5rc3vU
+         +YmJgmNij40l4VqrqppHdsR5OxWcTfqjL3HQGLoGdeZzEitQYDOOEp2lW+NSylHhnpxD
+         gzIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725352462; x=1725957262;
+        d=1e100.net; s=20230601; t=1725354038; x=1725958838;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0x4pAN9v3PKcJSMJc9wNdVW/9mRtNQg8cuL1zQPTZck=;
-        b=JA78wMgpG8bOmKY4J6B1B4vNY5ZbO5A9v7DUNtRzYw6tKCkQFhSrfwRzf88jCPlQ9j
-         lHOY8WPIJS3Ry0OcxgZE9v0t20Kpi4C+L84/ziDaJrLFk3UKion4NbXJJkTUwqcjPEFW
-         dcNlZwvFMZzTpU03kr3uTGXO7fkKJczwbqSPv461bUo0G8NYUu0gWNcF451tQIAm9J15
-         hOiCTWEJ5ej5W+mFYlzBVAXIvyiMuZnBEG39pvxpA837fz4H7RtGXEEBUYR6AQbJvd7g
-         rR5XFGWcObdc9q6/JL6TB0kvXJuwWgHVJ1IgmZf+kRV9KFH/TsJb3iu7Mtb/2IIgbhU3
-         ntBQ==
-X-Gm-Message-State: AOJu0YzSs08+OYOL9HSkzvHhCZyV0nsxZn0xhvR4j7U+hyuvOS6HkqPr
-	4Rer2uVAwNxPXnA9M0gMqnh49GSDRagywDPIpVxklPk9fNA2/W6x5I5z2nMwUg==
-X-Google-Smtp-Source: AGHT+IHojl3Oq9t0TVbNRBXWCRNq0mfrK+8JmhduosaFNh97XMJFm2HeZ0fHsdevV1+0F28pRpzQOw==
-X-Received: by 2002:a05:6402:2687:b0:5aa:19b1:ffc7 with SMTP id 4fb4d7f45d1cf-5c244360b96mr412535a12.2.1725352461558;
-        Tue, 03 Sep 2024 01:34:21 -0700 (PDT)
+        bh=mcAweApl0SMnSEwpMO3VeLlceofmGojlXD55ghcyISI=;
+        b=GaN+ie4E7Iohtyji4a9kIFu4ok0aXxlFw8Gpe+SC3G5fk3GyVbQ8zHxW93qBajlQrZ
+         NBHrT0nomEtiOlMWaO9jbB7qLz59Zfk/HR2jw/8Ftgkv54RZQrI28z5b58MdBBjC7N9Z
+         CT2Egc3u2PGBugdSKGScfJpmMrntMNwee+vzWGA8a4C99rHrZWmbJUKQ+4QhdoHgr6LK
+         2lKwf0telQStLll/N/ufJANR1GZxeJJ7jRnZGqqujwHD2MwcEpDAi1p7BM/GFN0dx+L8
+         PMYKWL6q9cei8kCXtUL7x5X4L4LZZGalxynBO4juzU6Ux4FIPXLxQbivIFqewS2Utk51
+         H1Pw==
+X-Gm-Message-State: AOJu0YyjsNuOafNT1hEOKnimZNrXLxl0kUOU88b/+oCFxpUcWc8QE6lS
+	WD572je3b8jjxmVCq9Jruk/MlYlzWMX9oA1f5KiK3V4fkOlzTtvqMxIR3f7KUA==
+X-Google-Smtp-Source: AGHT+IE6lmyFVDIzRDjMNMDJr7ziWFO9lcVLRUhmriJlMF/fW0JeEBIeoIvfxe2utlR5wgFziPhLlg==
+X-Received: by 2002:a05:600c:3485:b0:426:66a0:6df6 with SMTP id 5b1f17b1804b1-42c29f25f8bmr3176475e9.0.1725354037545;
+        Tue, 03 Sep 2024 02:00:37 -0700 (PDT)
 Received: from google.com (109.36.187.35.bc.googleusercontent.com. [35.187.36.109])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-374baae211bsm9667974f8f.66.2024.09.03.01.34.20
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42bb6df84b9sm163907905e9.24.2024.09.03.02.00.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Sep 2024 01:34:21 -0700 (PDT)
-Date: Tue, 3 Sep 2024 08:34:17 +0000
+        Tue, 03 Sep 2024 02:00:37 -0700 (PDT)
+Date: Tue, 3 Sep 2024 09:00:32 +0000
 From: Mostafa Saleh <smostafa@google.com>
 To: Jason Gunthorpe <jgg@nvidia.com>
 Cc: acpica-devel@lists.linux.dev, Hanjun Guo <guohanjun@huawei.com>,
@@ -71,15 +71,14 @@ Cc: acpica-devel@lists.linux.dev, Hanjun Guo <guohanjun@huawei.com>,
 	Michael Shavit <mshavit@google.com>,
 	Nicolin Chen <nicolinc@nvidia.com>, patches@lists.linux.dev,
 	Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-Subject: Re: [PATCH v2 6/8] iommu/arm-smmu-v3: Support IOMMU_GET_HW_INFO via
- struct arm_smmu_hw_info
-Message-ID: <ZtbKCb9FTt5gjERf@google.com>
+Subject: Re: [PATCH v2 8/8] iommu/arm-smmu-v3: Support IOMMU_DOMAIN_NESTED
+Message-ID: <ZtbQMDxKZUZCGfrR@google.com>
 References: <0-v2-621370057090+91fec-smmuv3_nesting_jgg@nvidia.com>
- <6-v2-621370057090+91fec-smmuv3_nesting_jgg@nvidia.com>
- <ZtHj_X6Gt91TlUZG@google.com>
- <20240830171602.GX3773488@nvidia.com>
- <ZtWPRDsQ-VV-6juL@google.com>
- <20240903001654.GE3773488@nvidia.com>
+ <8-v2-621370057090+91fec-smmuv3_nesting_jgg@nvidia.com>
+ <ZtHuoDWbe54H1nhZ@google.com>
+ <20240830170426.GV3773488@nvidia.com>
+ <ZtWMGQAdR6sjBmer@google.com>
+ <20240903003022.GF3773488@nvidia.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -89,79 +88,107 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240903001654.GE3773488@nvidia.com>
+In-Reply-To: <20240903003022.GF3773488@nvidia.com>
 
-On Mon, Sep 02, 2024 at 09:16:54PM -0300, Jason Gunthorpe wrote:
-> On Mon, Sep 02, 2024 at 10:11:16AM +0000, Mostafa Saleh wrote:
-> 
-> > > What is the harm? Does exposing IDR data to userspace in any way
-> > > compromise the security or integrity of the system?
+On Mon, Sep 02, 2024 at 09:30:22PM -0300, Jason Gunthorpe wrote:
+> On Mon, Sep 02, 2024 at 09:57:45AM +0000, Mostafa Saleh wrote:
+> > > > 2) Is there a reason the UAPI is designed this way?
+> > > > The way I imagined this, is that userspace will pass the pointer to the CD
+> > > > (+ format) not the STE (or part of it).
 > > > 
-> > > I think no - how could it?
+> > > Yes, we need more information from the STE than just that. EATS and
+> > > STALL for instance. And the cachability below. Who knows what else in
+> > > the future.
 > > 
-> > I don’t see a clear harm or exploit with exposing IDRs, but IMHO we
-> > should deal with userspace with the least privilege principle and
-> > only expose what user space cares about (with sanitised IDRs or
-> > through another mechanism)
+> > But for example if that was extended later, how can user space know
+> > which fields are allowed and which are not?
 > 
-> If the information is harmless then why hide it? We expose all kinds
-> of stuff to userspace, like most of the PCI config space for
-> instance. I think we need a reason. 
+> Changes the vSTE rules that require userspace being aware would have
+> to be signaled in the GET_INFO answer. This is the same process no
+> matter how you encode the STE bits in the structure.
 > 
-> Any sanitization in the kernel will complicate everything because we
-> will get it wrong.
-> 
-> Let's not make things complicated without reasons. Intel and AMD are
-> exposing their IDR equivalents in this manner as well.
-> 
-> > For example, KVM doesn’t allow reading reading the CPU system
-> > registers to know if SVE(or other features) is supported but hides
-> > that by a CAP in KVM_CHECK_EXTENSION
-> 
-> Do you know why?
-> 
+How? And why changing that in the future is not a problem as sanitising IDRs?
 
-I am not really sure, but I believe it’s a useful abstraction
-
-> > > As the comments says, the VMM should not just blindly forward this to
-> > > a guest!
+> This confirmation of kernel support would then be reflected in the
+> vIDRs to the VM and the VM could know to set the extended bits.
+> 
+> Otherwise setting an invalidate vSTE will fail the ioctl, the VMM can
+> log the event, generate an event and install an abort vSTE.
+> 
+> > > Overall this sort of direct transparency is how I prefer to see these
+> > > kinds of iommufd HW specific interfaces designed. From a lot of
+> > > experience here, arbitary marshall/unmarshall is often an
+> > > antipattern :)
 > > 
-> > I don't think the kernel should trust userspace.
+> > Is there any documentation for the (proposed) SMMUv3 UAPI for IOMMUFD?
 > 
-> There is no trust. If the VMM blindly forwards the IDRS then the VMM
-> will find its VM's have issues. It is a functional bug, just as if the
-> VMM puts random garbage in its vIDRS.
-> 
-> The onl purpose of this interface is to provide information about the
-> physical hardware to the VMM.
-> 
-> > > The VMM needs to make its own IDR to reflect its own vSMMU
-> > > capabilities. It can refer to the kernel IDR if it needs to.
-> > > 
-> > > So, if the kernel is going to limit it, what criteria would you
-> > > propose the kernel use?
-> > 
-> > I agree that the VMM would create a virtual IDR for guest, but that
-> > doesn't have to be directly based on the physical one (same as CPU).
-> 
-> No one said it should be. In fact the comment explicitly says not to
-> do that.
-> 
-> The VMM is expected to read out of the physical IDR any information
-> that effects data structures that are under direct guest control.
-> 
-> For instance anything that effects the CD on downwards. So page sizes,
-> IAS limits, etc etc etc. Anything that effects assigned invalidation
-> queues. Anything that impacts errata the VM needs to be aware of.
-> 
-> If you sanitize it then you will hide information that someone will
-> need at some point, then we have go an unsanitize it, then add feature
-> flags.. It is a pain.
+> Just the comments in this series?
 
-I don’t have a very strong opinion to sanitise the IDRs (specifically
-many of those are documented anyway per IP), but at least we should have
-some clear requirement for what userspace needs, I am just concerned
-that userspace can misuse some of the features leading to a strange UAPI.
+But this is a UAPI. How can userspace implement that if it has no
+documentation, and how can it be maintained if there is no clear
+interface with userspace with what is expected/returned...
+
+> 
+> > I can understand reading IDRs from userspace (with some sanitation),
+> > but adding some more logic to map vSTE to STE needs more care of what
+> > kind of semantics are provided.
+> 
+> We can enhance the comment if you think it is not clear enough. It
+> lists the fields the userspace should pass through.
+> 
+> > Also, I am working on similar interface for pKVM where we “paravirtualize”
+> > the SMMU access for guests, it’s different semantics, but I hope we can
+> > align that with IOMMUFD (but it’s nowhere near upstream now)
+> 
+> Well, if you do paravirt where you just do map/unmap calls to the
+> hypervisor (ie classic virtio-iommu) then you don't need to do very
+> much.
+
+But we have a different model, with virtio-iommu, it typically presents
+the device to the VM and on the backend it calls VFIO MAP/UNMAP.
+Although technically we can have virtio-iommu in the hypervisor (EL2),
+that is a lot of complexit and increase in the TCB of pKVM.
+
+For pKVM, the VMM is not trusted and the hypervisor would do the map/unmap...,
+but the VMM will have to configure the virtual view of the device (Mapping of
+endpoints to virtual endpoints, vIRQs…), this requires a userspace interface
+to query some HW info (similar to VFIO VFIO_DEVICE_GET_IRQ_INFO and then mapping
+it to a GSI through KVM, but for IOMMUs)
+Though, this design is very early and in progress.
+
+> 
+> If you want to do nesting, then IMHO, just present a real vSMMU. It is
+> already intended to be paravirtualized and this is what the
+> confidential compute people are going to be doing as well.
+> 
+> Otherwise I'd expect you'd get more value to align with the
+> virtio-iommu nesting stuff, where they have layed out what information
+> the VM needs. iommufd is not intended to be just jammed directly into
+> a VM. There is an expectation that a VMM will sit there on top and
+> massage things.
+
+I haven’t been keeping up with iommufd lately, I will try to spend more
+time on that in the future.
+But my idea is that we would create an IOMMUFD, attach it to a device and then
+through some extra IOCTLs, we can configure some “virtual” topology for it which
+then relies on KVM, again this is very early, and we need to support pKVM IOMMUs
+in the host first (I plan to send v2 RFC soon for that)
+
+> 
+> > I see you are talking in LPC about IOMMUFD:
+> > https://lore.kernel.org/linux-iommu/0-v1-01fa10580981+1d-iommu_pt_jgg@nvidia.com/T/#m2dbb08f3bf8506a492bc7dda2de662e42371e683
+> > 
+> > Do you have any plans to talk about this also?
+> 
+> Nothing specific, this is LPC so if people in the room would like to
+> use the session for that then we can talk about it. Last year the room
+> wanted to talk about PASID mostly.
+> 
+> I haven't heard if someone is going to KVM forum to talk about
+> vSMMUv3? Eric? Nicolin do you know?
+
+I see, I won’t be in KVM forum, but I plan to attend LPC, we can discuss
+further there if people are interested.
 
 Thanks,
 Mostafa
