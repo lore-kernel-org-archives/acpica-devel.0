@@ -1,220 +1,184 @@
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2067.outbound.protection.outlook.com [40.107.223.67])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11E8D1D58B5;
-	Wed,  4 Sep 2024 12:01:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.67
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725451273; cv=fail; b=peXoARmVUP1ddiOFwDCOFDX9mQeXqq492Fle6xaE+elvhNlQ7jEw4mnRfYvO7+TTrNQsopYOTFzZWpyNqD9MYVpkFl4wWGBmQgLQ4pZUkj8jvwuNi4aZgUcpqRxANprkh6O213YRzjv5+LoyIsFU9ZDIccN7TMrhHmBwxtxf3gs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725451273; c=relaxed/simple;
-	bh=zyH7Kpi+T0Ety3nenMg7Qz5Kf606rAjg1cQRWNU7mRM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=W+z3Z5lX021Cb6YJJKdkc2goT8BPUO+IMuhvU79IolqOTYvUUes0mQA9SOVfD8qBiPzfrmNx1Aa3V49yy/3u1Uey07i7Eb4eG/fxSkg10vcQwbEkUkB+LJZAIoyyctBz5GH6Gu11WGO8XhrJVW0wiDvEOQMy4Ysk63syIH63Ia0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=kz/o9aU+; arc=fail smtp.client-ip=40.107.223.67
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="kz/o9aU+"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=t72KmuTDdMAGxPtgDvi4/cUi/reQcKJ/kk0BmeZ2yaTBytHtC51TJDGszikY9JzRxPTduTNrmDtWd/FfETpVqaRzaxbY9zX780NFUziRSHimrrs6wkELO0r0h9YpkdvhRB2AmcvzQAr2kyorf/ni3SWofmuLmfzOdo8iIvMZRUNa2vr2ba5c1Iu+nWXn8DMEgqqE0WIOdD9gV9LvlmAPWTh31D6OQnSghBeKZC/9Wa0ZtNf1AFUnjf1tp9ceSAYNFnnoAog+VgWyaQ2HwCQf/PxFDjCFgqwBzQnpv/odpY0GvL3UmSKFgZd4Um85DAN7QrnVS60LgC1tvvmZdl+rZg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=18WgC/YD8FGZD37SfXhhhAnO8yp7qKVhB9weAsro6zk=;
- b=TsMzMFbfDsu/ex3T12sutBFE5gBP2wWxENbMn0XVjsxUwLm6QvWX341jWskUmBK9MDcAzdf9uLH527kWxsNnl33i1Hhin537BAIQAb9RIN+YLITeoGEFFobYf2L/+QuHT3ftlJS3b2zER6ImenWmLU4k/ms240OL0TjrqjcpACMRufIWzZV85Z19LucRw+8pxIFetcg2D0t+JwWm+GihUY04/Pkbgkq6jrRZrpWOiM7rKHTqnbgiH+kKFgffbOLf94xx32Ooi7h/mJfitpTh83uyiyX0DlgOS/7XlDdniuyd5Mba32LtMDSdb7sTmBPV+b3G5Hrh/HQxz9ToPd/jfA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=18WgC/YD8FGZD37SfXhhhAnO8yp7qKVhB9weAsro6zk=;
- b=kz/o9aU+Y1h/IJDn0YZ1Coe2RWQCubmwYT5Va7M48euuG+CqLHXnMdFCqxhnXF0/wLGfhIKCqrr0Ryie22Sspcd6xgUXccE35xFb1RoCGjqF2fjDx87Hvl5sgY+6GY1Gn6xws6LEsNp19rg5iw6LdG1A32sKmHez3ZkSM3fVZ+g5UvszCV4Nkjp1F+hsy/FADT0rt/jg72Tvikugk2yqOrEDPKFsNbiaen1q8C0KSm27x0Hk73iuPXV8OiRObn+RTLgQgKZXuB95fKf3Q9+GczHoWNPCFcadPix2e0Mh6ttM4+Xc70bb/kQRaLFOUxoUzx+O4CLzQq6QSG8Dxw7Zmw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CH3PR12MB7763.namprd12.prod.outlook.com (2603:10b6:610:145::10)
- by PH8PR12MB6794.namprd12.prod.outlook.com (2603:10b6:510:1c5::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7918.25; Wed, 4 Sep
- 2024 12:01:04 +0000
-Received: from CH3PR12MB7763.namprd12.prod.outlook.com
- ([fe80::8b63:dd80:c182:4ce8]) by CH3PR12MB7763.namprd12.prod.outlook.com
- ([fe80::8b63:dd80:c182:4ce8%3]) with mapi id 15.20.7918.024; Wed, 4 Sep 2024
- 12:01:04 +0000
-Date: Wed, 4 Sep 2024 09:01:03 -0300
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-Cc: Mostafa Saleh <smostafa@google.com>,
-	"acpica-devel@lists.linux.dev" <acpica-devel@lists.linux.dev>,
-	"Guohanjun (Hanjun Guo)" <guohanjun@huawei.com>,
-	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8D941D014A;
+	Wed,  4 Sep 2024 14:20:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1725459646; cv=none; b=Mz2l1NC5bAlt2opP6B1RZsAUNzo8OXfrIyj+AWdWLYZXH6pjywSqHywG/AkIDkl8Vq34elDcYLMg8/EwCjrEAr6ch9XalJZlkbga0H3pAyoxQuZkLJeZubSUw+r4rGeTeg4zB6CYsEOge/5xpJ5w69MW3sJgeO0gQYcLUMH0YhM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1725459646; c=relaxed/simple;
+	bh=3NFixX3Kl1y5WBzsUh6ZkbNWiMteGWvyfBElaxW/K1Q=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=l2QLUHXJus5lU1mL+mwmEzMj5CVoMG4BgXilP/F9inBCtanX6Vkmedz33nsKIMiH32cEtSRu2CR/y3AvMZc5rVCVPgVOIMqq+412sNTj4mC+pTN3cFU4Sq70gwTbl4y/W7HGHJiMBt5SX5Lf+G17f+iLtwL5fuD1BmkoEN1/WA8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4WzPfQ4FJsz20nLZ;
+	Wed,  4 Sep 2024 22:15:42 +0800 (CST)
+Received: from dggpemf500002.china.huawei.com (unknown [7.185.36.57])
+	by mail.maildlp.com (Postfix) with ESMTPS id CDD681400D7;
+	Wed,  4 Sep 2024 22:20:39 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (7.191.163.240) by
+ dggpemf500002.china.huawei.com (7.185.36.57) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Wed, 4 Sep 2024 22:20:38 +0800
+Received: from lhrpeml500005.china.huawei.com ([7.191.163.240]) by
+ lhrpeml500005.china.huawei.com ([7.191.163.240]) with mapi id 15.01.2507.039;
+ Wed, 4 Sep 2024 15:20:37 +0100
+From: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+To: Jason Gunthorpe <jgg@nvidia.com>, "acpica-devel@lists.linux.dev"
+	<acpica-devel@lists.linux.dev>, "Guohanjun (Hanjun Guo)"
+	<guohanjun@huawei.com>, "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
 	Joerg Roedel <joro@8bytes.org>, Kevin Tian <kevin.tian@intel.com>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	Len Brown <lenb@kernel.org>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, Len Brown <lenb@kernel.org>,
 	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Robert Moore <robert.moore@intel.com>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Sudeep Holla <sudeep.holla@arm.com>, Will Deacon <will@kernel.org>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	Eric Auger <eric.auger@redhat.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	Moritz Fischer <mdf@kernel.org>,
-	Michael Shavit <mshavit@google.com>,
-	Nicolin Chen <nicolinc@nvidia.com>,
-	"patches@lists.linux.dev" <patches@lists.linux.dev>
-Subject: Re: [PATCH v2 6/8] iommu/arm-smmu-v3: Support IOMMU_GET_HW_INFO via
- struct arm_smmu_hw_info
-Message-ID: <20240904120103.GB3915968@nvidia.com>
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, Lorenzo Pieralisi
+	<lpieralisi@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, "Robert
+ Moore" <robert.moore@intel.com>, Robin Murphy <robin.murphy@arm.com>, "Sudeep
+ Holla" <sudeep.holla@arm.com>, Will Deacon <will@kernel.org>
+CC: Alex Williamson <alex.williamson@redhat.com>, Eric Auger
+	<eric.auger@redhat.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	Moritz Fischer <mdf@kernel.org>, Michael Shavit <mshavit@google.com>,
+	"Nicolin Chen" <nicolinc@nvidia.com>, "patches@lists.linux.dev"
+	<patches@lists.linux.dev>, Mostafa Saleh <smostafa@google.com>
+Subject: RE: [PATCH v2 2/8] iommu/arm-smmu-v3: Use S2FWB when available
+Thread-Topic: [PATCH v2 2/8] iommu/arm-smmu-v3: Use S2FWB when available
+Thread-Index: AQHa+JkNXX8oIDp/tkauz0b2cgKn4bJHsELw
+Date: Wed, 4 Sep 2024 14:20:36 +0000
+Message-ID: <85aa5e8eb6f243fd9df754fdc96471b8@huawei.com>
 References: <0-v2-621370057090+91fec-smmuv3_nesting_jgg@nvidia.com>
- <6-v2-621370057090+91fec-smmuv3_nesting_jgg@nvidia.com>
- <ZtHj_X6Gt91TlUZG@google.com>
- <20240830171602.GX3773488@nvidia.com>
- <ZtWPRDsQ-VV-6juL@google.com>
- <20240903001654.GE3773488@nvidia.com>
- <ZtbKCb9FTt5gjERf@google.com>
- <20240903234019.GI3773488@nvidia.com>
- <9e8153c95b664726bd7fcb6d0605610a@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9e8153c95b664726bd7fcb6d0605610a@huawei.com>
-X-ClientProxiedBy: MN2PR04CA0022.namprd04.prod.outlook.com
- (2603:10b6:208:d4::35) To CH3PR12MB7763.namprd12.prod.outlook.com
- (2603:10b6:610:145::10)
+ <2-v2-621370057090+91fec-smmuv3_nesting_jgg@nvidia.com>
+In-Reply-To: <2-v2-621370057090+91fec-smmuv3_nesting_jgg@nvidia.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR12MB7763:EE_|PH8PR12MB6794:EE_
-X-MS-Office365-Filtering-Correlation-Id: 865fc5a9-7054-4fe5-95d1-08dcccd9408a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|1800799024|7416014;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?SnliQnh1eDlSdElPMDdFRVpod1N4TGc4QkhUbWM1UWxWbFhxMUVvY0hlSXAy?=
- =?utf-8?B?U1FPOHB6cXpBb1FCeC85eE1VR1Y3STAzbDdESmp3QXhOQXNVRzZtbjIvNUoy?=
- =?utf-8?B?QVc3TDZrb0JnQndBTHpPdXV3VWhld1Q4TjhQYnB1VTNCOHlZYWk4TEZ1Tm5K?=
- =?utf-8?B?OVlpTnV4SytaWjJ0TVZIR1EvTFk5QVRBMmtQMzFuR1ZESDFUWUhoQ2h0SlJz?=
- =?utf-8?B?QlpLN2VhT25sdnJGWWxhaVg5emxJbzFvMHpMUXlleE5mL1FwNEFNSDliaFRH?=
- =?utf-8?B?cGhSK210ZTBBZlBKaUlnSkVIOUh0RDJSc0RoV0JWVHNwVFlRelU2cU1qZ0t5?=
- =?utf-8?B?N3R4OTFXY3VZSU1oVkFxVVpvY3E4VWw2OTFtT0YrbWNacE9oTndleHVzblR2?=
- =?utf-8?B?NW5PT2U0ODNlL3pHTnZlb1JDMktwMFd3ejlGV0VnNFpWZmNXZGl6UHRZbnZZ?=
- =?utf-8?B?dFowL1ZWKy9sU0xNYnZnMjJNcXlZS3AvSXA4RGxuK1h4OTh2dlRtMlM4MkRG?=
- =?utf-8?B?V25QcFJyWjNSOTlYYU1Vc2toUGVNeUgrNUtDdkk2ckI1REZqSWtCekZFZGtX?=
- =?utf-8?B?R2w2dXRneTZvbWx5MUhwU2sxd0F1em1pc055YkFKZk1RUDA4VjJjb1dkbjBY?=
- =?utf-8?B?NVNHU0NjYlIyQnluaWZGY0kxNWxzdlhoU3g2WGNFb01XcmZCUjN5N2FMdHRi?=
- =?utf-8?B?MVVzd2FqVUt4TjdsemF0UHl1MkV3c05Ga3lVVXFJMWd4Lyt4MUNaT1dXcExt?=
- =?utf-8?B?U3lUQlJ2VUUzUHhwS3hXT05BR09jOUZmVjlDUUFzcnNGV1V6akYyM2FTK0k2?=
- =?utf-8?B?b0tITXk5WVJmYUZXUTl6dlIzcDJMV3pUWUQvZDU0VndKc213ckg5NVZvNmVj?=
- =?utf-8?B?dE9EMThMeEtSTlB5TTVLQVdFcjRjQ2hxNm80dlB3WEhZbUc0Y2U0MGJFQW82?=
- =?utf-8?B?VnlWUGRsTDhXL3YvaXF3WFh2dFpiTVdCS0ZUTk56RVFEQm40Um9VRUFDdEdt?=
- =?utf-8?B?ZVNXaTFONGJDanBYWVc2ZHVVRXVZMEpOS3ZmZXFFMnVlVUZtaitKYW90cWZF?=
- =?utf-8?B?TmYwa3RleGc1bURSYVROZG5ROUg0ZzlOK1FOcjFUdU5HZVBIYi9BVGxUV3hv?=
- =?utf-8?B?VU9QaTdVam5CSlRzNVBMd25XMGErQmw1VmJyR2NLZ0RtUnJmNVdkNDk0eCtP?=
- =?utf-8?B?ZVdBUDFaR2ZOY3l3REdFWjJscC9acmhONFlRMWRRanJ2a1FNU25kNFdLT0VE?=
- =?utf-8?B?UDB4c3hPbXBHdyswWHM0bkZkcjAyK2krYTYrb1JtYkQ3L2tpOWJlQ0tRdEY4?=
- =?utf-8?B?ZVY1QTlyeGhTRnpVV1NOZWMwQTJNdU1EZ0VJckoxT3Z4cHRrbUQyMi8yejB1?=
- =?utf-8?B?WUNLMHhrN1ZsRmQ3YkhlOFVISmN5SEpvUnNGUTVmYkN3WlJGVVFiYmNqN3Z4?=
- =?utf-8?B?QzMwMlZHT1lYZ0NWUnU4SkFnQnpLdjIrdjZLNXZQVWErVlJMSHJxZ2lCSDZV?=
- =?utf-8?B?b2Ryb05EZ2NWbmJ0a0I4bFJ2SmJtOGFUQ3BGd0FYMmFXaFRpTnJzeTN4QjRP?=
- =?utf-8?B?U25pZHVuZXJTdXlscEh1M0M1MzlUazd5R1BvR0pPVmNObUxFR2tkZXZyNHlI?=
- =?utf-8?B?Lzd1UjF6bDR6VmVmZlFjM3VYMEJOR1BqaDZwcUdvell2Z1A4ZDQwU2tIcGpW?=
- =?utf-8?B?aDRSdXoxRHNSK1J6WnJtNEhlUTNJeUxNaWNPV09WWXVXRFpFRElUU20vSW1W?=
- =?utf-8?B?b3p1OFZuTkEwd2ZGT3FPempGeHRUYjZQcW95NzN3bEMza29VT3p2OWJMYmMv?=
- =?utf-8?Q?n2zA8N/kQl5w/iV24obNuGFp6M5+nfTyActXc=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB7763.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024)(7416014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?MlJ6bE9nSUVib25YQmtIWFdTcnM2VGpBZE1nR1YrZ3NBWWUxNjhBeHJPeEdy?=
- =?utf-8?B?dUppOS9NMzFHbnY0REl6R2hDTXNsTWNhY3ZZWks3MmY1c29GeHhuY2hKWVpU?=
- =?utf-8?B?WG1Cd1BSTldhWTZydmZxTUpLRTg5OEFIOXlsMDlSR1dHcXJJMFVwOHRUZDVQ?=
- =?utf-8?B?bHZWQlVDQWhvekp1VWJtT1pqQWRGTi9rN09sVEpHZXQ3Qm8weVkzbHBxNFFP?=
- =?utf-8?B?c0x6Y2IvU2ErcU0reXptVU1zbElidDBKeVBHNkw3TXc5Mit1UnN3NDZxc0RF?=
- =?utf-8?B?eVdlNmtGNnAvNFlQYWtQdUN4YldDSGpib2hGcTFXaTJrbGhCNDVCTGttVHE5?=
- =?utf-8?B?d0pWTU9tQmZJYXNMZ0dsQzVYb01VbTY0bytyd0F5clp3ajQ2UFc5cTFpc2c5?=
- =?utf-8?B?RWpoV011UXZ1WVF4WE40b1ppd0tIcVA4ekkyK0l3aTduU012L2E2TGsvQUxt?=
- =?utf-8?B?SHMydXRjZy9Cc0c2NUNXYitwekR4Z3FWb2xxWm5KSkcyNmlETUI4cnFrSXBS?=
- =?utf-8?B?SlBvRWJLeEtKZXBlZlFOV0xpZG1acWlVK1pydEU2ZVB2S1I0VFoxaGpPenpN?=
- =?utf-8?B?RFZIcEdpNzdibVcyOG1lY3FFWEo4aWJNTk9Selg1cW93K0tmQWlPTjRFU0Iz?=
- =?utf-8?B?eTdzRHdOVUdsSEFuU0dIcnRFU3F5SGdKN05peWM0cHhPZDhNamJKMWRnT0lv?=
- =?utf-8?B?V2J1K1ZMbTJDZnpqNGpxNXhYWml0Vit2MytiNEFkeVJiTkJ2L2k2RjJndzBS?=
- =?utf-8?B?d3ltTmlkZWh1UnlZVnNJaW5hN090cGZpWnlhMjEzK0NoZk9Jam1WKzk4REZ1?=
- =?utf-8?B?WGJEUjlaMTdJcHB2MC80OFV1MTl1NHcrY2gwTmUraEtOeWU0N1RVaXk2UXp5?=
- =?utf-8?B?R0pQNU1LZExSRTg2aGtLYUtFVHhkS1BHdGQxS2RjRFBUclZNNzQydEh2a0ZK?=
- =?utf-8?B?Rlhod05WcHdZckVncG1DRUlwdTJkUmgvMDJRSWYvTERkMUZ2R2tNTis4Lzd3?=
- =?utf-8?B?cWFydVJyM09LRjZxZ2c2RWZCM1VwUDdrZFlBMmNtajhkZHBFMHZubVY4cFpQ?=
- =?utf-8?B?K2RjUXZOWDhlTjl2MXNMYU5hbFZMZTFITXdSNnBOUzJZUU9GNllNMmZmeXdV?=
- =?utf-8?B?d0RUR0piUTY3M1lwL0hHank4MUJOYUYxdGowdi8wcUlyeHZmNVdGdS9veDIy?=
- =?utf-8?B?SCtwb1E2aFEwblBmSllaSEJqWWRsN0xsNEltQkVmRmh5dCtEWi8xL1lLcW1I?=
- =?utf-8?B?WG9zWTY3cUVCbGt0c0kwVWNrcGVuWkhxUlZNUFoxaHVGSkRqYld5akhRZ2w2?=
- =?utf-8?B?U2JsdWRacUM3cHl3UlRuQlRLN2pZeU1VT01MWUJVSE51TkRwU0RvSTEyNnBv?=
- =?utf-8?B?aitsRzZ2S3Z5THU3NGhDSDMrUVR2ZFU4bThlUkV5RXZIZmNpTGV1cmxiLzQ3?=
- =?utf-8?B?aUF2eTY2TkpzOHkzZ3gyRFpkdWVrRlIybXpaQlZnSjc1eGJYU0dpdXlhcmNw?=
- =?utf-8?B?dnV6VkxIdGkzcDc4RGJwSklINFRMT0Z5SEQwL0FwV1krRGpzT3BrS0xQWElj?=
- =?utf-8?B?aytkMlVtZFZRUDhEK1hWSGhLUFUxcUtZQU9palUvNDNWWCszK0sycWdyYXlp?=
- =?utf-8?B?bWRMV1dxeWZCRlJJdU0zdkN1eUtJeWpFRlVuRnhqT3NycmRCa1RLL29Qb1Zp?=
- =?utf-8?B?RzFZSVAwblRkY3I2LzB4aEJ3ZXNMcDZ5TVVmS21HakhpK1kwUkRiUElIOEZD?=
- =?utf-8?B?VitZM2ZtSkNSQ1hFeUFPTHBydGlLbWhxbzJmS3lxd1pmbVRSRXVjRzFzRzFI?=
- =?utf-8?B?M2ViVmZvek1YK2lRRDQrQVp6YlV0THpFWXE2Vit3TTZjMUw2K21BOHhXS1pk?=
- =?utf-8?B?bnJENmJwbkZ4eXJoUmwrNFBOb2ZvVDNtSXRJcXJSVE5pamw4alhhRjBnS0dR?=
- =?utf-8?B?cDRwcGx0aHZQOHlCdjUvNm5IRXhaTllCOVhwVjlmTVR0S1RORThlSkdnTVhK?=
- =?utf-8?B?RmFyS0ZBQ0Voa01vTmdSOUpXMmtMTjBEcTRJc1M3ejFrNms5RlpsOHU1bW5Q?=
- =?utf-8?B?dWYyQXUvbnR6bHR1V2xERnBIdmkwdzUrckJRRjNmdEFtSEhTY2JrTFZ3cWk0?=
- =?utf-8?Q?AZc8NJbNVh8twmxPwlimOWHM1?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 865fc5a9-7054-4fe5-95d1-08dcccd9408a
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB7763.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Sep 2024 12:01:04.4001
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: AdiamznpW45ZHHUMllRyI4Uhs7eWB0PjwC7TQhHUZeXsRYHntvbo68zDqjK5njZj
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB6794
 
-On Wed, Sep 04, 2024 at 07:11:19AM +0000, Shameerali Kolothum Thodi wrote:
 
-> > On Tue, Sep 03, 2024 at 08:34:17AM +0000, Mostafa Saleh wrote:
-> > 
-> > > > > For example, KVM doesn’t allow reading reading the CPU system
-> > > > > registers to know if SVE(or other features) is supported but hides
-> > > > > that by a CAP in KVM_CHECK_EXTENSION
-> > > >
-> > > > Do you know why?
-> > >
-> > > I am not really sure, but I believe it’s a useful abstraction
-> > 
-> > It seems odd to me, unpriv userspace can look in /proc/cpuinfo and see
-> > SEV, why would kvm hide the same information behind a
-> > CAP_SYS_ADMIN/whatever check?
-> 
-> I don’t think KVM hides SVE always. It also depends on whether the
-> VMM has requested sve for a specific Guest or not(Qemu has option to
-> turn sve on/off, similarly pmu as well).  Based on that KVM
-> populates the Guest specific ID registers.  And Guest /proc/cpuinfo
-> reflects that.
-> 
-> And for some features if KVM is not handling the feature properly or
-> not making any sense to be exposed to Guest, those features are
-> masked in ID registers.
-> 
-> Recently ARM64 ID registers has been made writable from userspace to
-> allow VMM to turn on/off features, so that VMs can be migrated
-> between hosts that differ in feature support.
-> 
-> https://lore.kernel.org/all/ZR2YfAixZgbCFnb8@linux.dev/T/#m7c2493fd2d43c13a3336d19f2dc06a89803c6fdb
 
-I see, so there is a significant difference - in KVM the kernel
-controls what ID values the VM observes and in vSMMU the VMM controls
-it.
+> -----Original Message-----
+> From: Jason Gunthorpe <jgg@nvidia.com>
+> Sent: Tuesday, August 27, 2024 4:52 PM
+> To: acpica-devel@lists.linux.dev; Guohanjun (Hanjun Guo)
+> <guohanjun@huawei.com>; iommu@lists.linux.dev; Joerg Roedel
+> <joro@8bytes.org>; Kevin Tian <kevin.tian@intel.com>;
+> kvm@vger.kernel.org; Len Brown <lenb@kernel.org>; linux-
+> acpi@vger.kernel.org; linux-arm-kernel@lists.infradead.org; Lorenzo Piera=
+lisi
+> <lpieralisi@kernel.org>; Rafael J. Wysocki <rafael@kernel.org>; Robert
+> Moore <robert.moore@intel.com>; Robin Murphy
+> <robin.murphy@arm.com>; Sudeep Holla <sudeep.holla@arm.com>; Will
+> Deacon <will@kernel.org>
+> Cc: Alex Williamson <alex.williamson@redhat.com>; Eric Auger
+> <eric.auger@redhat.com>; Jean-Philippe Brucker <jean-
+> philippe@linaro.org>; Moritz Fischer <mdf@kernel.org>; Michael Shavit
+> <mshavit@google.com>; Nicolin Chen <nicolinc@nvidia.com>;
+> patches@lists.linux.dev; Shameerali Kolothum Thodi
+> <shameerali.kolothum.thodi@huawei.com>; Mostafa Saleh
+> <smostafa@google.com>
+> Subject: [PATCH v2 2/8] iommu/arm-smmu-v3: Use S2FWB when available
+>=20
+> Force Write Back (FWB) changes how the S2 IOPTE's MemAttr field
+> works. When S2FWB is supported and enabled the IOPTE will force cachable
+> access to IOMMU_CACHE memory when nesting with a S1 and deny cachable
+> access otherwise.
+>=20
+> When using a single stage of translation, a simple S2 domain, it doesn't
+> change anything as it is just a different encoding for the exsting mappin=
+g
+> of the IOMMU protection flags to cachability attributes.
+>=20
+> However, when used with a nested S1, FWB has the effect of preventing the
+> guest from choosing a MemAttr in it's S1 that would cause ordinary DMA to
+> bypass the cache. Consistent with KVM we wish to deny the guest the
+> ability to become incoherent with cached memory the hypervisor believes i=
+s
+> cachable so we don't have to flush it.
+>=20
+> Turn on S2FWB whenever the SMMU supports it and use it for all S2
+> mappings.
+>=20
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> ---
 
-Jason
+(...)
+
+> @@ -932,7 +948,8 @@ arm_64_lpae_alloc_pgtable_s1(struct io_pgtable_cfg
+> *cfg, void *cookie)
+>  	if (cfg->quirks & ~(IO_PGTABLE_QUIRK_ARM_NS |
+>  			    IO_PGTABLE_QUIRK_ARM_TTBR1 |
+>  			    IO_PGTABLE_QUIRK_ARM_OUTER_WBWA |
+> -			    IO_PGTABLE_QUIRK_ARM_HD))
+> +			    IO_PGTABLE_QUIRK_ARM_HD |
+> +			    IO_PGTABLE_QUIRK_ARM_S2FWB))
+>  		return NULL;
+
+This should be added to arm_64_lpae_alloc_pgtable_s2(), not here.
+
+With the above fixed, I was able to assign a n/w VF dev to a Guest on a
+test hardware that supports S2FWB.
+
+However host kernel has this WARN message:
+[ 1546.165105] WARNING: CPU: 5 PID: 7047 at drivers/iommu/arm/arm-smmu-v3/a=
+rm-smmu-v3.c:1086 arm_smmu_entry_qword_diff+0x124/0x138
+....
+[ 1546.330312]  arm_smmu_entry_qword_diff+0x124/0x138
+[ 1546.335090]  arm_smmu_write_entry+0x38/0x22c
+[ 1546.339346]  arm_smmu_install_ste_for_dev+0x158/0x1ac
+[ 1546.344383]  arm_smmu_attach_dev+0x138/0x240
+[ 1546.348639]  __iommu_device_set_domain+0x7c/0x11c
+[ 1546.353330]  __iommu_group_set_domain_internal+0x60/0x134
+[ 1546.358714]  iommu_group_replace_domain+0x3c/0x68
+[ 1546.363404]  iommufd_device_do_replace+0x334/0x398
+[ 1546.368181]  iommufd_device_change_pt+0x26c/0x650
+[ 1546.372871]  iommufd_device_replace+0x18/0x24
+[ 1546.377214]  vfio_iommufd_physical_attach_ioas+0x28/0x68
+[ 1546.382514]  vfio_df_ioctl_attach_pt+0x98/0x170
+
+
+And when I tried to use the assigned n/w dev, it seems to do a reset
+continuously.
+
+root@localhost:/# ping 150.0.124.42
+PING 150.0.124.42 (150.0.124.42): 56 data bytes
+64 bytes from 150.0.124.42: seq=3D0 ttl=3D64 time=3D47.648 ms
+[ 1395.958630] hns3 0000:c2:00.0 eth1: NETDEV WATCHDOG: CPU: 1: transmit qu=
+eue 10 timed out 5260 ms
+[ 1395.960187] hns3 0000:c2:00.0 eth1: DQL info last_cnt: 42, queued: 42, a=
+dj_limit: 0, completed: 0
+[ 1395.961758] hns3 0000:c2:00.0 eth1: queue state: 0x6, delta msecs: 5260
+[ 1395.962925] hns3 0000:c2:00.0 eth1: tx_timeout count: 1, queue id: 10, S=
+W_NTU: 0x1, SW_NTC: 0x0, napi state: 16
+[ 1395.964677] hns3 0000:c2:00.0 eth1: tx_pkts: 0, tx_bytes: 0, sw_err_cnt:=
+ 0, tx_pending: 0
+[ 1395.966114] hns3 0000:c2:00.0 eth1: seg_pkt_cnt: 0, tx_more: 0, restart_=
+queue: 0, tx_busy: 0
+[ 1395.967598] hns3 0000:c2:00.0 eth1: tx_push: 1, tx_mem_doorbell: 0
+[ 1395.968687] hns3 0000:c2:00.0 eth1: BD_NUM: 0x7f HW_HEAD: 0x0, HW_TAIL: =
+0x0, BD_ERR: 0x0, INT: 0x1
+[ 1395.970291] hns3 0000:c2:00.0 eth1: RING_EN: 0x1, TC: 0x0, FBD_NUM: 0x0 =
+FBD_OFT: 0x0, EBD_NUM: 0x400, EBD_OFT: 0x0
+[ 1395.972134] hns3 0000:c2:00.0: received reset request from VF enet
+
+All this works fine on a hardware without S2FWB though.
+
+Also on this test hardware, it works fine with legacy VFIO assignment.
+
+Not debugged further. Please let me know if you have any hunch.
+
+Thanks,
+Shameer
+
+
+
