@@ -1,150 +1,102 @@
-Received: from mail-il1-f177.google.com (mail-il1-f177.google.com [209.85.166.177])
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A98D1BF810
-	for <acpica-devel@lists.linux.dev>; Thu, 12 Sep 2024 17:39:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 849654776E
+	for <acpica-devel@lists.linux.dev>; Fri, 13 Sep 2024 15:43:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726162753; cv=none; b=MeUh+08ln/MSUyvrNkRN50ATmxPdMKGh5+AC6OwtuMAdpDQ+zzme4REzSLl7/iRVkAjyrqBxNtUMbqH1To47aw3LH54ErX6wUOt2pTOSpFUUA2SCkU31HJ3G+6AbfmpnlHCAMblKeneQFhuoGLGNrW32yLF4qCPklzvz0c/wmNI=
+	t=1726242234; cv=none; b=AFo52hMNlLAuNOX8MPNmC+VH/ibmoTQ8j3AAoeSx/Zvn8NV/ZzjmV60qK0v2yosBzleKl/V7s/L+DwWfsVLiDe2YbXhGHc+9//wqkGhHUyIieFFBw+UKaXUqqFSAytj83kjV2Z9A+jiiOE5sbHs8St4hRTZSSRKszStx/GmOGoQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726162753; c=relaxed/simple;
-	bh=sdvuNJYXbnl+iyClqdVA5O83W4ftzy+TWXXAq64uN7o=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dHVPNd7IeG20NNGBOQopXP6203m16AlQ3CmS9cXTRZtH203o/gxh1BDGD0qYg4Leczi2+ivzxIR8925NJZplSJ9WiNAOf0wMXwbVCdfxI5Mv/vE3YU0IwGWmUnt5Zupe6gHnQ4dKVM7E/3qbeDyO7fSvmRH/2LSIH9wMNm99SBM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=kdkQNoSx; arc=none smtp.client-ip=209.85.166.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+	s=arc-20240116; t=1726242234; c=relaxed/simple;
+	bh=UgejVN/99nwt2N3xq1SPwRkr/wpZolJE3Mk9WmbBWgo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=U+7MoHE88RuxbWiBrqWJMaH+vEtWwqL4+ory/jRds2WPCxJraa6wISzAShuPpisRBCNoM+mohVuS84HU7mMDOcYMTYb4goLPn3TteBFGMEMMObKlnb3Ope6L+P6jGH2w2mzzA4uH26SPZYMO9hv7syR4gY/jRmy66wUBAJhUHFc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=d7lW/41V; arc=none smtp.client-ip=209.85.208.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="kdkQNoSx"
-Received: by mail-il1-f177.google.com with SMTP id e9e14a558f8ab-3a046d4c465so4310005ab.3
-        for <acpica-devel@lists.linux.dev>; Thu, 12 Sep 2024 10:39:11 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="d7lW/41V"
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2f74e468baeso14752951fa.2
+        for <acpica-devel@lists.linux.dev>; Fri, 13 Sep 2024 08:43:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1726162750; x=1726767550; darn=lists.linux.dev;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qECmHjc9dK1dFT5mGpczd6pcWBHqdXTgofYQGynhgPc=;
-        b=kdkQNoSxfprZu/wXtzoU0EMZ836OwjN8JzNWbfesJqYwBaaUh1URdcP6FU+ATRkf1R
-         Vh12F0Pte06csU+POQJNnwZaE9KPpyFo7zp+W4pb5SBbYy66amScHUVMoi76TE2vajFC
-         bgSgUxcWl5QUdkCkrntUQeG3KU7fWVZZmZqMc=
+        d=suse.com; s=google; t=1726242231; x=1726847031; darn=lists.linux.dev;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=d1zLfAygLCX5nindDhcisFbkr71lDlDKqH7T8AVgiyk=;
+        b=d7lW/41VCf2BxkN/kGrDCTY/CMD/Me4LY95eNBkRIwKYN41VnvbhACcJ0ySDDP72Cr
+         8630uni0yqOdk69dn8yb1nLhu6iE2Oky8uwN9btabema1XPduMHcXMWb9987CKd1WG9d
+         yLxORKw75YcgPgiN/cov74i4pXQyGVx0/6vrL7RPMN3/6VrXgqoG69hWnIzHUid/CgSn
+         RoGx4AK1P4mmZ8o1/M2sHvUBvUX01GyP+br0Bg9KNFjnYZ7ZxZpikTmIh876hEI784Gk
+         KMRQbeJoL9sjUNdGuN1pO0N1mqueLlvTOf7Df8M232IOBuphdR7JL/CKjuVwyxS3nEMd
+         cTeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726162750; x=1726767550;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qECmHjc9dK1dFT5mGpczd6pcWBHqdXTgofYQGynhgPc=;
-        b=JGCne1cnRNciEonj1CdPjGMZ19EGkYBWKhXv2po1vebsrrs82WRR7LG5mMqD1tP8MR
-         JJMEY8VHP3psXPl5KCA/35UP/xdY1xIw+tPThhQXdZWCdG/Ycc6LQNjfi3kwbpweQHlf
-         OGEHtvZ+EKCgUolR2EfgdCC6FDCbp1/27tTwqvvIMvEX9GZCF9xxVWGYdpbC/AoJqv7f
-         GUpePIimpVFdn0jiJglvTYW5mOe3zfYD6MUPbMKgRcVyGdV7IZC/C+CrkStuXxw9/LAc
-         LB9m1INKKfkKuatcBSpN0dBt7yQfxweUfF0c+Fxb7Px+ykapKEjubzE1RvZ+SA+vi9Fi
-         UJ6Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWAA23yD+t8GWNs9dY9LNuIpTHZdPd/S5OFV4Cd5jBYvYFhfQyPIsTowgD6nViyWJ2xzCiYnthpSa4/uOs=@lists.linux.dev
-X-Gm-Message-State: AOJu0Yx2RYZHcVeyt68ej6CtkiOmK1QfFhQzUBkaCbNovV7c/GYJinWA
-	aLWPGuCGLEXWMDO/xCh30eCNObt5RWObpSIWWYJFR035xqWFQfiPk3HR+y8WbA==
-X-Google-Smtp-Source: AGHT+IHL4MH+QIKEB9bCMel4ROL7d0o5CwGYlEvbEC0U2AMuWF6C9AaGEEJwAGhel0XN8qNUrPvZtg==
-X-Received: by 2002:a92:c24d:0:b0:39f:6fcc:fcc with SMTP id e9e14a558f8ab-3a0848ae8c0mr36173705ab.4.1726162750451;
-        Thu, 12 Sep 2024 10:39:10 -0700 (PDT)
-Received: from rrangel920.bld.corp.google.com (h24-56-189-226.arvdco.broadband.dynamic.tds.net. [24.56.189.226])
-        by smtp.gmail.com with ESMTPSA id e9e14a558f8ab-3a05900e618sm32570135ab.55.2024.09.12.10.39.09
+        d=1e100.net; s=20230601; t=1726242231; x=1726847031;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=d1zLfAygLCX5nindDhcisFbkr71lDlDKqH7T8AVgiyk=;
+        b=pWIYgUF3b38oelygyElad4cbkzDtEJI1upllWvAf9GoyilxXx28UyZFHPcNixLaEGH
+         AmY1w6yPpJF3ELRDbC18VH0oz+EofVQyPXkQiszxCqlI0YZMq4JUqrMeyYtDeaRLxi6r
+         SYS/QWlc0v2uVAA6N+ossvHM6skG0+ufh4QtMBtm7rB3wM59gh/pDYRSVFcwaRJMuNWb
+         l4wDRn7QdWuDxG+f+GmTZPsyQd9PrwANsIGvqYw57hKKgSowIIDqPsWR5gbPuQiaX3BG
+         N0nA/96cuynA8r4Ujv3gcYT6QgyH+nYb7TL6bpVvSCxmIL8xyt9QEy0dpDuxOflKMa35
+         szOA==
+X-Forwarded-Encrypted: i=1; AJvYcCUaz0D8OP8NbK+q7b/ioj+t9XXwNgZdx4Rxd79evp2gLmexoRjoF58rmBev1+6t9PnihQTCLdLMaloewsY=@lists.linux.dev
+X-Gm-Message-State: AOJu0YxXjhso61QbxUMGshYXPq5tHYQqHl5kGQAJCkkNcfDa/2Fndj/q
+	vAQWPaZkO3Fvoz+ccdMYJWUPdbkN9Ghq3P5/wiSwR0V2wfFHhI1XUEr1+g3qvIw=
+X-Google-Smtp-Source: AGHT+IHjEojEFl9I+KdlNdjvlxdqRp6uQW0BMPVHLr049XIwfxrFRE+znIjnvIhA2A3Ivu37qd1QSQ==
+X-Received: by 2002:a05:651c:b0f:b0:2f7:5914:c22e with SMTP id 38308e7fff4ca-2f7918e09e0mr20801991fa.6.1726242230552;
+        Fri, 13 Sep 2024 08:43:50 -0700 (PDT)
+Received: from pathway.suse.cz ([176.114.240.50])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5c3ebd76efbsm7768944a12.67.2024.09.13.08.43.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Sep 2024 10:39:09 -0700 (PDT)
-From: Raul E Rangel <rrangel@chromium.org>
-To: linux-serial@vger.kernel.org
-Cc: pmladek@suse.com,
-	rafael.j.wysocki@intel.com,
-	ribalda@chromium.org,
-	Raul E Rangel <rrangel@chromium.org>,
-	Len Brown <lenb@kernel.org>,
+        Fri, 13 Sep 2024 08:43:50 -0700 (PDT)
+Date: Fri, 13 Sep 2024 17:43:48 +0200
+From: Petr Mladek <pmladek@suse.com>
+To: Raul E Rangel <rrangel@chromium.org>
+Cc: linux-serial@vger.kernel.org, rafael.j.wysocki@intel.com,
+	ribalda@chromium.org, Len Brown <lenb@kernel.org>,
 	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Robert Moore <robert.moore@intel.com>,
-	acpica-devel@lists.linux.dev,
-	linux-acpi@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] ACPI: SPCR: Add support for rev 3
-Date: Thu, 12 Sep 2024 11:36:21 -0600
-Message-ID: <20240912113616.3.I1b7a5033a2191cb0cdbadc2d51666a97f16cc663@changeid>
-X-Mailer: git-send-email 2.46.0.662.g92d0881bb0-goog
-In-Reply-To: <20240912173901.3969597-1-rrangel@chromium.org>
+	Robert Moore <robert.moore@intel.com>, acpica-devel@lists.linux.dev,
+	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] ACPI: SPCR: Add support for rev 3
+Message-ID: <ZuRdtFNjFr1_-VEw@pathway.suse.cz>
 References: <20240912173901.3969597-1-rrangel@chromium.org>
+ <20240912113616.3.I1b7a5033a2191cb0cdbadc2d51666a97f16cc663@changeid>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240912113616.3.I1b7a5033a2191cb0cdbadc2d51666a97f16cc663@changeid>
 
-Revision 3 supports specifying the UART input clock. This allows for
-proper computation of the UART divisor when the baud rate is specified.
+On Thu 2024-09-12 11:36:21, Raul E Rangel wrote:
+> Revision 3 supports specifying the UART input clock. This allows for
+> proper computation of the UART divisor when the baud rate is specified.
+> 
+> The earlycon code can accept the following format (See `parse_options`
+> in `earlycon.c`.):
+> * <name>,io|mmio|mmio32|mmio32be,<addr>,<baud>,<uartclk>,<options>
+> 
+> This change makes it so the uartclk is passed along if it's defined in
+> the SPCR table.
+> 
+> Booting with `earlycon` and a SPCR v3 table that has the uartclk and
+> baud defined:
+> [    0.028251] ACPI: SPCR: console: uart,mmio32,0xfedc9000,115200,48000000
+> [    0.028267] earlycon: uart0 at MMIO32 0x00000000fedc9000 (options '115200,48000000')
+> [    0.028272] printk: legacy bootconsole [uart0] enabled
+> 
+> Link: https://learn.microsoft.com/en-us/windows-hardware/drivers/serports/serial-port-console-redirection-table
+> 
+> Signed-off-by: Raul E Rangel <rrangel@chromium.org>
 
-The earlycon code can accept the following format (See `parse_options`
-in `earlycon.c`.):
-* <name>,io|mmio|mmio32|mmio32be,<addr>,<baud>,<uartclk>,<options>
+Looks good to me:
 
-This change makes it so the uartclk is passed along if it's defined in
-the SPCR table.
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-Booting with `earlycon` and a SPCR v3 table that has the uartclk and
-baud defined:
-[    0.028251] ACPI: SPCR: console: uart,mmio32,0xfedc9000,115200,48000000
-[    0.028267] earlycon: uart0 at MMIO32 0x00000000fedc9000 (options '115200,48000000')
-[    0.028272] printk: legacy bootconsole [uart0] enabled
-
-Link: https://learn.microsoft.com/en-us/windows-hardware/drivers/serports/serial-port-console-redirection-table
-
-Signed-off-by: Raul E Rangel <rrangel@chromium.org>
-
----
-
- drivers/acpi/spcr.c   | 5 ++++-
- include/acpi/actbl3.h | 6 +++---
- 2 files changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/acpi/spcr.c b/drivers/acpi/spcr.c
-index cd36a97b0ea2c7..67ae42afcc59ef 100644
---- a/drivers/acpi/spcr.c
-+++ b/drivers/acpi/spcr.c
-@@ -209,9 +209,12 @@ int __init acpi_parse_spcr(bool enable_earlycon, bool enable_console)
- 	if (!baud_rate) {
- 		snprintf(opts, sizeof(opts), "%s,%s,0x%llx", uart, iotype,
- 			 table->serial_port.address);
--	} else {
-+	} else if (table->header.revision <= 2 || !table->uartclk) {
- 		snprintf(opts, sizeof(opts), "%s,%s,0x%llx,%d", uart, iotype,
- 			 table->serial_port.address, baud_rate);
-+	} else {
-+		snprintf(opts, sizeof(opts), "%s,%s,0x%llx,%d,%d", uart, iotype,
-+			 table->serial_port.address, baud_rate, table->uartclk);
- 	}
- 
- 	pr_info("console: %s\n", opts);
-diff --git a/include/acpi/actbl3.h b/include/acpi/actbl3.h
-index 8f775e3a08fdfb..afe45a2379866a 100644
---- a/include/acpi/actbl3.h
-+++ b/include/acpi/actbl3.h
-@@ -92,10 +92,10 @@ struct acpi_table_slit {
- /*******************************************************************************
-  *
-  * SPCR - Serial Port Console Redirection table
-- *        Version 2
-+ *        Version 3
-  *
-  * Conforms to "Serial Port Console Redirection Table",
-- * Version 1.03, August 10, 2015
-+ * Version 1.08, October 7, 2021
-  *
-  ******************************************************************************/
- 
-@@ -120,7 +120,7 @@ struct acpi_table_spcr {
- 	u8 pci_function;
- 	u32 pci_flags;
- 	u8 pci_segment;
--	u32 reserved2;
-+	u32 uartclk;
- };
- 
- /* Masks for pci_flags field above */
--- 
-2.46.0.662.g92d0881bb0-goog
-
+Best Regards,
+Petr
