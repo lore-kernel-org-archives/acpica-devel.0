@@ -1,192 +1,104 @@
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44564175548
-	for <acpica-devel@lists.linux.dev>; Tue, 17 Sep 2024 09:48:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1DB218BBBA;
+	Wed, 25 Sep 2024 11:37:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726566574; cv=none; b=pV1DjWJBIAzLmdscgwxWibsJ64753iUexMKaQNeUgfJMmWPLUp5/XzcGJeI0pWU1SNl3cWL9MqvBe2IJ1siLBAtEgiMg47UPTzmIINoVRo49KgiJvFBpvFVsk1GSllS6IPydJ8L+VdtwtECA/p+YYd+FD8GV5zuqagG3TZln+I8=
+	t=1727264245; cv=none; b=BZa8mznsdGs5laNw/qqBt6dsAIeg9g3iz2dd/tw3A6MnfXR2h7f/OY0Dxl4Htn7g6jWUupJVUAwrcxHVrOBty8K+vEOYCh5h+EDP1o1kLoSB4sTZCZRZHFABdp8XcTfcw4OvQmEbErFQHn9MoBHtIQK/oSxy5xkX6+efD2kMkYc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726566574; c=relaxed/simple;
-	bh=x0Khn8huUisoszlE0mEAiaPbyYa2Sp+KfRqHCN9xHSg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ewsv/ckN+p2loMlRcucNZCYd/5FbhSPMtdzhC+p5JgL1j9Z37VG26A7m38i+OgCKZaEVH7oUHBmWvpUZ7SQi4cyN7rzzpxUb8BdRqlc5bpfJHQsGdFwZe/jnFViV/mUrVlkumEFI/amvcR6q6p2o3ef0sSKPuSjiWQDldEVu3aM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=C48M+Coj; arc=none smtp.client-ip=209.85.167.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	s=arc-20240116; t=1727264245; c=relaxed/simple;
+	bh=+vRT/9sKMUBWk8ChoX3rH60aEURssGy3Awjy1YZ6UG4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=URBOhucLEjlWoo8jFy41E6EOZH+pOboElI1fXBIdKAMODXHhXZVQqRJMvzEQhknB4JLmYm8hhMswjhTipxk82Zc2BZJA3mGEJQvSAItdCnuRn9e+F3a6Fi+vhLJEZyCup1l/L5b0N4xsXnaMHckoEreoj9Wa69NNMRLYbVZ1kJk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vh5JFOFC; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="C48M+Coj"
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-53661d95508so7096e87.1
-        for <acpica-devel@lists.linux.dev>; Tue, 17 Sep 2024 02:48:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1726566534; x=1727171334; darn=lists.linux.dev;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=oNGxPHFyTwOGWUxhI2HLPoZN1QSNNpDRrCcM4Trhkt8=;
-        b=C48M+CojnFZogdsxjDV0Ro02RxRpcoHynSKa6k6lRTpf/vX2t0pkzoeylVydkgnzMN
-         SnjcubCZT5TYgIinK3EBzryv+JZfS+0VFSTRp9Tffobe/dzpw6PDI2VE/6bGDgnRqKKK
-         dOjuVE0115BhTKnwOzIBuuObKRXmC7S/jE8mpB4JriJdQhlBm1NxQqUY7JDBi90KKeL8
-         Eu83Mt6GDoXNJJB1x3VRPEHq5K240ZyEHRPWfTVt3O2/oNrZDmaywlEXzomMzixZE7xW
-         EBsO+7wHrff7RXwf+6m073+M/GV5Cl9t4g3Di97WglqxvT8SANjlgnQX3zxBAsQWgbbv
-         e31A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726566534; x=1727171334;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oNGxPHFyTwOGWUxhI2HLPoZN1QSNNpDRrCcM4Trhkt8=;
-        b=M0tRsP768vOyimuPjlZOVybHMxAffbvjzL+XBQ9CydIB5qsrw3Bc2FkO6NAvKMONaC
-         CYOQOZugHjIe+tHffQxxysSeXH1a+mRjrT/EocAtCrXXzlC23DH+ap78ZdFORdVSSj5Y
-         FBxInNXMYDWPu1/npFqDyH0dcGgKdj0vVR9xvFF4BAam8rLTpsoZEDB900JOrk6RlxpW
-         jKwtQKcEosH3r6IRHPTqosotdZhb43C3dftnqXIoa28WgBYusuI3vi1pNqEGo0nS4FrS
-         1tcOxt8f3zZuOToLbTH3nKeOiv4dAC9DqaRgjMpUP0Mo90Dw5gxGAO2uth7pNDYIJvi1
-         KGCQ==
-X-Gm-Message-State: AOJu0YwiTTSAkr9i5XJQAAgxyka58iXM6TemDuhgCfXLZm4XNVNrEwi5
-	aso1rWLdxQvGoGWqSolJhliFXg4/RviA57GUmbGuB/AX5z3IhhlrkEsUYqdH5A==
-X-Google-Smtp-Source: AGHT+IG753oKcJhRrwoevlbm6QMdqTgcn7I6H4uCXXVzFfJ7Uy1lB5slwSYlnEJ6eqpTHciyovo7Lg==
-X-Received: by 2002:a05:6512:3da4:b0:536:52dc:291f with SMTP id 2adb3069b0e04-5369c3a3e71mr131542e87.1.1726566533718;
-        Tue, 17 Sep 2024 02:48:53 -0700 (PDT)
-Received: from google.com (205.215.190.35.bc.googleusercontent.com. [35.190.215.205])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-378e780016asm9132715f8f.85.2024.09.17.02.48.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Sep 2024 02:48:52 -0700 (PDT)
-Date: Tue, 17 Sep 2024 09:48:44 +0000
-From: Mostafa Saleh <smostafa@google.com>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: acpica-devel@lists.linux.dev, Hanjun Guo <guohanjun@huawei.com>,
-	iommu@lists.linux.dev, Joerg Roedel <joro@8bytes.org>,
-	Kevin Tian <kevin.tian@intel.com>, kvm@vger.kernel.org,
-	Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Robert Moore <robert.moore@intel.com>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Sudeep Holla <sudeep.holla@arm.com>, Will Deacon <will@kernel.org>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	Eric Auger <eric.auger@redhat.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	Moritz Fischer <mdf@kernel.org>,
-	Michael Shavit <mshavit@google.com>,
-	Nicolin Chen <nicolinc@nvidia.com>, patches@lists.linux.dev,
-	Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-Subject: Re: [PATCH v2 2/8] iommu/arm-smmu-v3: Use S2FWB when available
-Message-ID: <ZulQfG0fnGlABZrR@google.com>
-References: <0-v2-621370057090+91fec-smmuv3_nesting_jgg@nvidia.com>
- <2-v2-621370057090+91fec-smmuv3_nesting_jgg@nvidia.com>
- <ZtHhdj6RAKACBCUG@google.com>
- <20240830164019.GU3773488@nvidia.com>
- <ZtWFkR0eSRM4ogJL@google.com>
- <20240903000546.GD3773488@nvidia.com>
- <ZtbBTX96OWdONhaQ@google.com>
- <20240903233340.GH3773488@nvidia.com>
- <ZuAlt9SsijRxuGLk@google.com>
- <20240910202251.GJ58321@nvidia.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vh5JFOFC"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 609D3C4CECE;
+	Wed, 25 Sep 2024 11:37:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1727264245;
+	bh=+vRT/9sKMUBWk8ChoX3rH60aEURssGy3Awjy1YZ6UG4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Vh5JFOFCyl+/eI8gAXtJLhC1vJ4waINnvaVtxueV06TZFPsR5msVCkBluzUe/qhPH
+	 OiXBs+ufkcw7dOcnGoOYAaAhOQMRPRUtNYu73aubxyIeRIGde0SIj7tA4a7xJARPvf
+	 Gyaywf6PJyEfmXSSVj6oyP4IvxYzYy8O5XbjP2ERudN5XNMwAyVw0SMpbJAigdJlV2
+	 QG0eMllyOJp2CHuQqxxqayIn/I1JKnS1lTkOke+vUUnN7DpLt9fFARoC7go3g6JO5c
+	 mp5JtXYuEVwRLYnCGw/TgSYQ512LZkZS6e7wT7HbYKrTaxMETcB5LapQl85pMDkoBR
+	 3sz0BReviRKxQ==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Armin Wolf <W_Armin@gmx.de>,
+	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+	Sasha Levin <sashal@kernel.org>,
+	robert.moore@intel.com,
+	linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev
+Subject: [PATCH AUTOSEL 6.11 018/244] ACPICA: Fix memory leak if acpi_ps_get_next_namepath() fails
+Date: Wed, 25 Sep 2024 07:23:59 -0400
+Message-ID: <20240925113641.1297102-18-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240925113641.1297102-1-sashal@kernel.org>
+References: <20240925113641.1297102-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.11
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240910202251.GJ58321@nvidia.com>
 
-On Tue, Sep 10, 2024 at 05:22:51PM -0300, Jason Gunthorpe wrote:
-> On Tue, Sep 10, 2024 at 10:55:51AM +0000, Mostafa Saleh wrote:
-> > On Tue, Sep 03, 2024 at 08:33:40PM -0300, Jason Gunthorpe wrote:
-> > > On Tue, Sep 03, 2024 at 07:57:01AM +0000, Mostafa Saleh wrote:
-> > > 
-> > > > Basically, I believe we shouldn’t set FWB blindly just because it’s supported,
-> > > > I don’t see how it’s useful for stage-2 only domains.
-> > > 
-> > > And the only problem we can see is some niche scenario where incoming
-> > > memory attributes that are already requesting cachable combine to a
-> > > different kind of cachable?
-> > 
-> > No, it’s not about the niche scenario, as I mentioned I don’t think
-> > we should enable FWB because it just exists. One can argue the opposite,
-> > if S2FWB is no different why enable it?
-> 
-> Well, I'd argue that it provides more certainty for the kernel that
-> the DMA API behavior is matched by HW behavior. But I don't feel strongly.
-> 
-> I adjusted the patch to only enable it for nesting parents.
-> 
-> > AFAIU, FWB would be useful in cases where the hypervisor(or VMM) knows
-> > better than the VM, for example some devices MMIO space are emulated so
-> > they are normal memory and it’s more efficient to use memory attributes.
-> 
-> Not quite, the purpose of FWB is to allow the hypervisor to avoid
-> costly cache flushing. It is specifically to protect the hypervisor
-> against a VM causing the caches to go incoherent.
-> 
-> Caches that are unexpectedly incoherent are a security problem for the
-> hypervisor.
+From: Armin Wolf <W_Armin@gmx.de>
 
-I see, thanks for explaining, I got confused about the device emulation case,
-it’s also about corruption because of a mismatch of memory attributes,
-something like:
-https://bugzilla.redhat.com/show_bug.cgi?id=1679680
+[ Upstream commit 5accb265f7a1b23e52b0ec42313d1e12895552f4 ]
 
-At the moment, I see KVM doesn’t really touch guest memory, but it does CMO for
-guest map(in case memslot had already some data) and on unmap, which I
-believe has significant performance improvement.
+ACPICA commit 2802af722bbde7bf1a7ac68df68e179e2555d361
 
-> 
-> > > > and we should only set FWB for coherent
-> > > > devices in nested setup only where the VMM(or hypervisor) knows better than
-> > > > the VM.
-> > > 
-> > > I don't want to touch the 'only coherent devices' question. Last time
-> > > I tried to do that I got told every option was wrong.
-> > > 
-> > > I would be fine to only enable for nesting parent domains. It is
-> > > mandatory here and we definitely don't support non-cachable nesting
-> > > today.  Can we agree on that?
-> > 
-> > Why is it mandatory?
-> 
-> Because iommufd/vfio doesn't have cache flushing.
->  
+If acpi_ps_get_next_namepath() fails, the previously allocated
+union acpi_parse_object needs to be freed before returning the
+status code.
 
-I see.
+The issue was first being reported on the Linux ACPI mailing list:
 
-> > I think a supporting point for this, is that KVM does the same for
-> > the CPU, where it enables FWB for VMs if supported. I have this on
-> > my list to study if that can be improved. But may be if we are out
-> > of options that would be a start.
-> 
-> When KVM turns on S2FWB it stops doing cache flushing. As I understand
-> it S2FWB is significantly a performance optimization.
-> 
-> On the VFIO side we don't have cache flushing at all. So enforcing
-> cache consistency is mandatory for security.
-> 
-> For native VFIO we set IOMMU_CACHE and expect that the contract with
-> the IOMMU is that no cache flushing is required.
-> 
-> For nested we set S2FWB/CANWBS to prevent the VM from disabling VFIO's
-> IOMMU_CACHE and again the contract with the HW is that no cache
-> flushing is required.
-> 
-> Thus VFIO is security correct even though it doesn't cache flush.
-> 
-> None of this has anything to do with device coherence capability. It
-> is why I keep saying incoherent devices must be blocked from VFIO
-> because it cannot operate them securely/correctly.
-> 
-> Fixing that is a whole other topic, Yi has a series for it on x86 at
-> least..
+Link: https://lore.kernel.org/linux-acpi/56f94776-484f-48c0-8855-dba8e6a7793b@yandex.ru/T/
+Link: https://github.com/acpica/acpica/commit/2802af72
+Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/acpi/acpica/psargs.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-I see, that makes sense to only support it for nested domains on
-the assumption they are only used for VFIO/IOMMUFD till we figure out
-non-coherent devices, I guess you are referring to:
-https://lore.kernel.org/all/ZltQ3PyHKiQmN9SU@nvidia.com/t/#me702dd242782393eb7769000c96702a0fed7f6ca
+diff --git a/drivers/acpi/acpica/psargs.c b/drivers/acpi/acpica/psargs.c
+index 422c074ed2897..7debfd5ce0d86 100644
+--- a/drivers/acpi/acpica/psargs.c
++++ b/drivers/acpi/acpica/psargs.c
+@@ -820,6 +820,10 @@ acpi_ps_get_next_arg(struct acpi_walk_state *walk_state,
+ 			    acpi_ps_get_next_namepath(walk_state, parser_state,
+ 						      arg,
+ 						      ACPI_NOT_METHOD_CALL);
++			if (ACPI_FAILURE(status)) {
++				acpi_ps_free_op(arg);
++				return_ACPI_STATUS(status);
++			}
+ 		} else {
+ 			/* Single complex argument, nothing returned */
+ 
+@@ -854,6 +858,10 @@ acpi_ps_get_next_arg(struct acpi_walk_state *walk_state,
+ 			    acpi_ps_get_next_namepath(walk_state, parser_state,
+ 						      arg,
+ 						      ACPI_POSSIBLE_METHOD_CALL);
++			if (ACPI_FAILURE(status)) {
++				acpi_ps_free_op(arg);
++				return_ACPI_STATUS(status);
++			}
+ 
+ 			if (arg->common.aml_opcode == AML_INT_METHODCALL_OP) {
+ 
+-- 
+2.43.0
 
-Thanks,
-Mostafa
-> 
-> Jason
