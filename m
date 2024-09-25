@@ -1,46 +1,46 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D80591A2623;
-	Wed, 25 Sep 2024 11:39:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 917831AD3F5;
+	Wed, 25 Sep 2024 11:59:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727264348; cv=none; b=gBwNVPjPC7Coi8Xm4GL1vkg5b3Ne4LNqKECaNPsXMefDS7zNIMztNC5QoIqf1xiqQdBPDcdZVatOAwNRPm26AdlNgnRo3Gl1f091FsVua0ZaIWTXkFBH1gNmRWeZrjMijLxPVZEgseIHkiwvgw4woDeUaGkvaSPpF+rINxxlpp8=
+	t=1727265547; cv=none; b=V+JOyoLYhX4Khu/qLkC54dQ1iOSsi8GgXMOaVdsGujvBh80gx5WYY+iF6tea912pxqtzzdyhI4arPpOyz+1I03KZNYKK5VuHmVMZ+g/Mho8I16vdBP3cKpSWnKO122uhvMbUFgfVuZrq93auWgtLy/u7phlpbjBtIueQlha/LrE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727264348; c=relaxed/simple;
-	bh=nxvCESaPo3tee+1z3SSAOCc5NyVOaygaIYLanQVQlwA=;
+	s=arc-20240116; t=1727265547; c=relaxed/simple;
+	bh=+vRT/9sKMUBWk8ChoX3rH60aEURssGy3Awjy1YZ6UG4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dzQxzlgG/Irbmn2logX9hcdd0i/haZsneaMdtfo0l+y2Zt2eQOUqx/5z2lrB08lO7yC6obi/gE6LUNXnABYx3arnW2tu2pDCL20o40O0OER3Llj8UcfNrw3OGmqs7EdJin1rX9SwsOm0Xsp+rBelnNR91Rai3IbnOB04Ur4QGhY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=umLkRrl8; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=cesoc6lPFLEsBdYDrVbZLI8xmL5zBssNYLqXiLJ2u/C2fqYRoyFwUphJZ5tcP0WiUxtEuoq9zs4qqHuZNAIh98Nffxq6fV407j9mnZO3eaj2bcm6MeuRiklIM3Vxg/20BH3XxhdBg+ha6c0UPiQiPdCYJI/UWe4Hkm6J5P/tBwU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HXwqEGXh; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="umLkRrl8"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8E40C4CECD;
-	Wed, 25 Sep 2024 11:39:07 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HXwqEGXh"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A1CFC4CEC3;
+	Wed, 25 Sep 2024 11:59:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727264348;
-	bh=nxvCESaPo3tee+1z3SSAOCc5NyVOaygaIYLanQVQlwA=;
+	s=k20201202; t=1727265547;
+	bh=+vRT/9sKMUBWk8ChoX3rH60aEURssGy3Awjy1YZ6UG4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=umLkRrl8vlIeclQEcDE6vMIs31H3TqSGbSNMxcZCTiI+LZlFigTAPd2gypb8yxTq+
-	 pB/wTZzCeAIfsAlwNmslMYolv8Vux0YnBaTJkB0oyIqZNhi+y0yrLO55pXJZmfDaux
-	 qK079jCxt3jMSipHr1QbXmL1WuuBGoWSf9c/3BDLL9yp88Feg3Mc5mJPbO980hS7ie
-	 zf46PTlmGKWjlmb1IGT6qJ89OXOIX9x4ytvCQPctqUjU3WmQkZyJnNtmIupZjWVy2j
-	 hYNZQrarhBah+6mb23SULyD7MuXOI+ZeIq1S+rh+HcM5FhSCwjFG84Re5+3NSImw/d
-	 bVEnOntyG56oA==
+	b=HXwqEGXh+Zcg85L4N8hD6EZPCRFmRYfP74lISZVqwSFBTVzdgZySz77DdzIYBfdeI
+	 Q4KrABKfxpa+mEsFCRBJ4T7RTwmefUMxBIZk57lh/dFkgKBKKng+rRfCoCZJtG2dCe
+	 q87Vi7gzGzc4otxEOv2M/4AVQdIzRx90SK4mMFN8kMp/H4LHiZwMM4E2rsDajSNFr2
+	 Qd69N7wAlvc3ohx0gyXiMypkvGNFc7/InDGod/q2TfnhKhd24/Q8JFLJevFjXyKxBm
+	 C7P+LH18QmI4UDVyfIJ998P/dzDn2DEOJl4OwYYQcH4KuEro3X7x0uYoyAiGyqLkZs
+	 8SWQBCKEhxICg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Aleksandrs Vinarskis <alex.vinarskis@gmail.com>,
+Cc: Armin Wolf <W_Armin@gmx.de>,
 	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
 	Sasha Levin <sashal@kernel.org>,
 	robert.moore@intel.com,
 	linux-acpi@vger.kernel.org,
 	acpica-devel@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.11 063/244] ACPICA: iasl: handle empty connection_node
-Date: Wed, 25 Sep 2024 07:24:44 -0400
-Message-ID: <20240925113641.1297102-63-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.10 016/197] ACPICA: Fix memory leak if acpi_ps_get_next_namepath() fails
+Date: Wed, 25 Sep 2024 07:50:35 -0400
+Message-ID: <20240925115823.1303019-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240925113641.1297102-1-sashal@kernel.org>
-References: <20240925113641.1297102-1-sashal@kernel.org>
+In-Reply-To: <20240925115823.1303019-1-sashal@kernel.org>
+References: <20240925115823.1303019-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -49,37 +49,56 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.11
+X-stable-base: Linux 6.10.11
 Content-Transfer-Encoding: 8bit
 
-From: Aleksandrs Vinarskis <alex.vinarskis@gmail.com>
+From: Armin Wolf <W_Armin@gmx.de>
 
-[ Upstream commit a0a2459b79414584af6c46dd8c6f866d8f1aa421 ]
+[ Upstream commit 5accb265f7a1b23e52b0ec42313d1e12895552f4 ]
 
-ACPICA commit 6c551e2c9487067d4b085333e7fe97e965a11625
+ACPICA commit 2802af722bbde7bf1a7ac68df68e179e2555d361
 
-Link: https://github.com/acpica/acpica/commit/6c551e2c
-Signed-off-by: Aleksandrs Vinarskis <alex.vinarskis@gmail.com>
+If acpi_ps_get_next_namepath() fails, the previously allocated
+union acpi_parse_object needs to be freed before returning the
+status code.
+
+The issue was first being reported on the Linux ACPI mailing list:
+
+Link: https://lore.kernel.org/linux-acpi/56f94776-484f-48c0-8855-dba8e6a7793b@yandex.ru/T/
+Link: https://github.com/acpica/acpica/commit/2802af72
+Signed-off-by: Armin Wolf <W_Armin@gmx.de>
 Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/acpica/exprep.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/acpi/acpica/psargs.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/acpi/acpica/exprep.c b/drivers/acpi/acpica/exprep.c
-index 08196fa17080e..82b1fa2d201fe 100644
---- a/drivers/acpi/acpica/exprep.c
-+++ b/drivers/acpi/acpica/exprep.c
-@@ -437,6 +437,9 @@ acpi_status acpi_ex_prep_field_value(struct acpi_create_field_info *info)
- 
- 		if (info->connection_node) {
- 			second_desc = info->connection_node->object;
-+			if (second_desc == NULL) {
-+				break;
+diff --git a/drivers/acpi/acpica/psargs.c b/drivers/acpi/acpica/psargs.c
+index 422c074ed2897..7debfd5ce0d86 100644
+--- a/drivers/acpi/acpica/psargs.c
++++ b/drivers/acpi/acpica/psargs.c
+@@ -820,6 +820,10 @@ acpi_ps_get_next_arg(struct acpi_walk_state *walk_state,
+ 			    acpi_ps_get_next_namepath(walk_state, parser_state,
+ 						      arg,
+ 						      ACPI_NOT_METHOD_CALL);
++			if (ACPI_FAILURE(status)) {
++				acpi_ps_free_op(arg);
++				return_ACPI_STATUS(status);
 +			}
- 			if (!(second_desc->common.flags & AOPOBJ_DATA_VALID)) {
- 				status =
- 				    acpi_ds_get_buffer_arguments(second_desc);
+ 		} else {
+ 			/* Single complex argument, nothing returned */
+ 
+@@ -854,6 +858,10 @@ acpi_ps_get_next_arg(struct acpi_walk_state *walk_state,
+ 			    acpi_ps_get_next_namepath(walk_state, parser_state,
+ 						      arg,
+ 						      ACPI_POSSIBLE_METHOD_CALL);
++			if (ACPI_FAILURE(status)) {
++				acpi_ps_free_op(arg);
++				return_ACPI_STATUS(status);
++			}
+ 
+ 			if (arg->common.aml_opcode == AML_INT_METHODCALL_OP) {
+ 
 -- 
 2.43.0
 
