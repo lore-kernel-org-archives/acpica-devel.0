@@ -1,43 +1,43 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B9DD2127E6;
-	Wed, 25 Sep 2024 12:12:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4D301D09E4;
+	Wed, 25 Sep 2024 12:12:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727266338; cv=none; b=RyLFEs1pHACqXzQNvat4I6Dsrxj2vbdHJTCl2YxYqoqKmjJ5Q3wLArWQuiJ1i1dUbd3Brh3qhEa39qanDA1kYKVhjwOkxRSKi4Wqa0G7574vMY9GpCyEVy4X9egFBK/AhXfVo2LhxOEjDHwrNPE2jHIR7+lz1aaSFM+5ufJSBoE=
+	t=1727266366; cv=none; b=X7n6j97wu3SgRjVkathVnZa537iePCuYTOL0G1abKwi76VW/MMXCoLrjO61/OF5/ZwSn+xbsqf4y1CPlmfEoGF7CZpTsIct/qTRT3SZkQUeLzhkm1j86p98AVC2fakawjQvJWMzxNafvj1Keb1pITVYPuGA7wjiwT+HzNhGBmO0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727266338; c=relaxed/simple;
-	bh=c4FGg+Mkb3VqwAyZ2q6Ojfr+niwT1uXN5adRPOU7VtY=;
+	s=arc-20240116; t=1727266366; c=relaxed/simple;
+	bh=Ohhi8k8R187QiFgr3vx1uB0EkOOzrESJdh5GYE0JEOg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VgWiUuLeCWAJwPxvT3lJbbmUUb18CIfF3o9jscKSSAy22Pkt0e/AYlQqXX4NAI/uSAa2SFORwGCh3e2zkyO7QYN46MkOI06kHh+j8VdfQOKo3fW9o1od8+eo8TlI1jWa+4MgSvWjV/gKIXi0paT5e7VK1F4fPuG4nkYGnLTrCEk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uvsYNxqj; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=Kfyjc90LQlA7EWGuXZJsxNElz8+yjHswt9ZqXY4ddlqzvBK6KLM1jdod1GR9t4LFk2LelTIZjRA2N0ELTWS6hXGwyvNJAjiNgmXYpoCfRATAmqUHFEBbCVzs2QPdrSnoyH5IHfcY6dMq6Y5nNsdjQ28fmfXuRZ+WwJ+vp0dHMtI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aKXRTE4Y; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uvsYNxqj"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB1CFC4CECD;
-	Wed, 25 Sep 2024 12:12:16 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aKXRTE4Y"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F337C4CEC3;
+	Wed, 25 Sep 2024 12:12:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727266337;
-	bh=c4FGg+Mkb3VqwAyZ2q6Ojfr+niwT1uXN5adRPOU7VtY=;
+	s=k20201202; t=1727266366;
+	bh=Ohhi8k8R187QiFgr3vx1uB0EkOOzrESJdh5GYE0JEOg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=uvsYNxqjv7Ma1hc0A2nOnoZ39yUr+PJS44Iu0Ke6U0qpcvpzLzHTUPNBexxdUgRSB
-	 YkxwHRJ+wXPuR4GC1HXHmG1nyQlq6THQwnwEgP0/50tOg6uJ2W7tJbTfHvIgDSaX8r
-	 vYJ+l/Ey5zgPr276fgDR2KmnE/d3pv43/0s2Fqwmhz1tX+G3QilL3JS4jFuRA1SpCc
-	 6HkoRr02ojBnPIbEdcFGMqmvYG9OGRs6xZvrQ/C7JAN3fCbRlTQGGgl/Is3T9k2pTV
-	 TJFz3/V0TROdhGGs9bH+HwRydJgnV2DWZKGcnWsjgpSK6U1YLvmnCg008CfkFm6Kz8
-	 1VKqjcBI0A7rQ==
+	b=aKXRTE4Y341MVRhBaFi86pznrdplVEXXgD0Vu+9Uale/6uoJIEgErNBSlyaOLCjbU
+	 oNFpSXLbC70+gIWbe5atInmQQ5U493dEnTbUNZJEeEYJ3X4FSzlnfoGzq7kauvJ8BE
+	 8Vkjjcg6GTOCXWx77eUwQhYrElKjkIoLvgHMjM3c6o04KWoBBd5vlRSG2mzCAK1rRj
+	 7+RnrGXK38NxpT/rGietBiu10GJ9I/fC6GX27nXqJwJj2f1UW04DQHpOALcv2mdrdh
+	 rFeL++J1unsuSpaPj20g2WufxSZewoLOKlA5yvick4R35MLCoeS2XprEFaIA+58jG7
+	 OFvWG+fyusr1w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Armin Wolf <W_Armin@gmx.de>,
+Cc: Pei Xiao <xiaopei01@kylinos.cn>,
 	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
 	Sasha Levin <sashal@kernel.org>,
 	robert.moore@intel.com,
 	linux-acpi@vger.kernel.org,
 	acpica-devel@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.6 017/139] ACPICA: Fix memory leak if acpi_ps_get_next_field() fails
-Date: Wed, 25 Sep 2024 08:07:17 -0400
-Message-ID: <20240925121137.1307574-17-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 032/139] ACPICA: check null return of ACPI_ALLOCATE_ZEROED() in acpi_db_convert_to_package()
+Date: Wed, 25 Sep 2024 08:07:32 -0400
+Message-ID: <20240925121137.1307574-32-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240925121137.1307574-1-sashal@kernel.org>
 References: <20240925121137.1307574-1-sashal@kernel.org>
@@ -52,88 +52,38 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.52
 Content-Transfer-Encoding: 8bit
 
-From: Armin Wolf <W_Armin@gmx.de>
+From: Pei Xiao <xiaopei01@kylinos.cn>
 
-[ Upstream commit e6169a8ffee8a012badd8c703716e761ce851b15 ]
+[ Upstream commit a5242874488eba2b9062985bf13743c029821330 ]
 
-ACPICA commit 1280045754264841b119a5ede96cd005bc09b5a7
+ACPICA commit 4d4547cf13cca820ff7e0f859ba83e1a610b9fd0
 
-If acpi_ps_get_next_field() fails, the previously created field list
-needs to be properly disposed before returning the status code.
+ACPI_ALLOCATE_ZEROED() may fail, elements might be NULL and will cause
+NULL pointer dereference later.
 
-Link: https://github.com/acpica/acpica/commit/12800457
-Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-[ rjw: Rename local variable to avoid compiler confusion ]
+Link: https://github.com/acpica/acpica/commit/4d4547cf
+Signed-off-by: Pei Xiao <xiaopei01@kylinos.cn>
+Link: https://patch.msgid.link/tencent_4A21A2865B8B0A0D12CAEBEB84708EDDB505@qq.com
+[ rjw: Subject and changelog edits ]
 Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/acpica/psargs.c | 39 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
+ drivers/acpi/acpica/dbconvert.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/acpi/acpica/psargs.c b/drivers/acpi/acpica/psargs.c
-index 7debfd5ce0d86..28582adfc0aca 100644
---- a/drivers/acpi/acpica/psargs.c
-+++ b/drivers/acpi/acpica/psargs.c
-@@ -25,6 +25,8 @@ acpi_ps_get_next_package_length(struct acpi_parse_state *parser_state);
- static union acpi_parse_object *acpi_ps_get_next_field(struct acpi_parse_state
- 						       *parser_state);
+diff --git a/drivers/acpi/acpica/dbconvert.c b/drivers/acpi/acpica/dbconvert.c
+index 2b84ac093698a..8dbab69320499 100644
+--- a/drivers/acpi/acpica/dbconvert.c
++++ b/drivers/acpi/acpica/dbconvert.c
+@@ -174,6 +174,8 @@ acpi_status acpi_db_convert_to_package(char *string, union acpi_object *object)
+ 	elements =
+ 	    ACPI_ALLOCATE_ZEROED(DB_DEFAULT_PKG_ELEMENTS *
+ 				 sizeof(union acpi_object));
++	if (!elements)
++		return (AE_NO_MEMORY);
  
-+static void acpi_ps_free_field_list(union acpi_parse_object *start);
-+
- /*******************************************************************************
-  *
-  * FUNCTION:    acpi_ps_get_next_package_length
-@@ -683,6 +685,39 @@ static union acpi_parse_object *acpi_ps_get_next_field(struct acpi_parse_state
- 	return_PTR(field);
- }
- 
-+/*******************************************************************************
-+ *
-+ * FUNCTION:    acpi_ps_free_field_list
-+ *
-+ * PARAMETERS:  start               - First Op in field list
-+ *
-+ * RETURN:      None.
-+ *
-+ * DESCRIPTION: Free all Op objects inside a field list.
-+ *
-+ ******************************************************************************/
-+
-+static void acpi_ps_free_field_list(union acpi_parse_object *start)
-+{
-+	union acpi_parse_object *cur = start;
-+	union acpi_parse_object *next;
-+	union acpi_parse_object *arg;
-+
-+	while (cur) {
-+		next = cur->common.next;
-+
-+		/* AML_INT_CONNECTION_OP can have a single argument */
-+
-+		arg = acpi_ps_get_arg(cur, 0);
-+		if (arg) {
-+			acpi_ps_free_op(arg);
-+		}
-+
-+		acpi_ps_free_op(cur);
-+		cur = next;
-+	}
-+}
-+
- /*******************************************************************************
-  *
-  * FUNCTION:    acpi_ps_get_next_arg
-@@ -751,6 +786,10 @@ acpi_ps_get_next_arg(struct acpi_walk_state *walk_state,
- 			while (parser_state->aml < parser_state->pkg_end) {
- 				field = acpi_ps_get_next_field(parser_state);
- 				if (!field) {
-+					if (arg) {
-+						acpi_ps_free_field_list(arg);
-+					}
-+
- 					return_ACPI_STATUS(AE_NO_MEMORY);
- 				}
- 
+ 	this = string;
+ 	for (i = 0; i < (DB_DEFAULT_PKG_ELEMENTS - 1); i++) {
 -- 
 2.43.0
 
