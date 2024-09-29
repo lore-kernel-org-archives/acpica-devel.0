@@ -1,85 +1,108 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx.treblig.org (mx.treblig.org [46.235.229.95])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52C1A156236;
-	Wed, 25 Sep 2024 12:13:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F6C82594;
+	Sun, 29 Sep 2024 00:03:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.229.95
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727266399; cv=none; b=JujVZ0BarczuIoyn7HlbgEhLbbG8G0J1ZPoiAhQozxUGTiNWfh324m3a15+sJGpFYLdoZ0yWbIHyg+Iq1XC7WvkDiKC1HrTRAL+wWOMe/+vMqv+UQdEOd1HKf+lRPF6f37CdsLW8843JoyOlHP+dmlh9xdbFztrk8lVF/I5crrQ=
+	t=1727568193; cv=none; b=evDgM+HBq8np80sVUjHjbO4n44tudVq4MAHepmE41dW5mJFtJhofjVsJKCsJxHamrKYgKep7CMYAJ3CVuvHBtTYoyNEKsTPAC9Fg3azgYBqp2X5Y8kJ03xyoqTMz94YvbiNeaEi9KMffHVIjIW/bJ7EbLeDr4n6wj4B11iLjA5U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727266399; c=relaxed/simple;
-	bh=nxvCESaPo3tee+1z3SSAOCc5NyVOaygaIYLanQVQlwA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=HoLUBzmaBLkGLZC0rMst48vapM2+0rogutxib3H7QSc3WbYd6dXvah1j7ZrgaYLL5cfiuLERPLYmNahNh9SoVG+qCelO5H5iab9Lj1U1VWbHi0cY+NTcla3hRwhRlezV1i3X854ad1DvnhAfLuBb+k0k9ZSB4CNM5Fwv4bO5sAk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JMxwLxK+; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1727568193; c=relaxed/simple;
+	bh=U3e3anVP2I5mlSlWV5cTmjbYxuRmLsYw2ZO11ASv4R4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CCtgJ3Dd46RGte9V4NteEZl5hC1U8rBqgk3bVywAg5SbCwwsdPH8yLlgrV1KLE7mO6hWJeJvw+4DXCL+maorwlquXZ6V3EJgDamQcvq2b5jBwDwWlQXvIVmRn0PkLCqECJZpUAJwhyahQu2Iag3o4mb7dw/+oj6JGYh/KF0CbyA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=treblig.org; spf=pass smtp.mailfrom=treblig.org; dkim=pass (2048-bit key) header.d=treblig.org header.i=@treblig.org header.b=pXFFQGkt; arc=none smtp.client-ip=46.235.229.95
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=treblig.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=treblig.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JMxwLxK+"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29C84C4CECD;
-	Wed, 25 Sep 2024 12:13:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727266399;
-	bh=nxvCESaPo3tee+1z3SSAOCc5NyVOaygaIYLanQVQlwA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=JMxwLxK+vGxAa/fjU3udQJdO8rcUe6yM29nDzbuIGs27YaJYS89p+3nczqttpY8VH
-	 DoDswmMKAkMddFnFp8pcXIVIXbMz1WxrHNllJjGh3YTYf2O7YcXXP0A5pWGiZ3SG0y
-	 b0ERHydKOI/c9DIpFGp6s+oIyUmFEPV+27jg4P4IIIKPPv+UuT8ZOu6uXn+ZVU/qTz
-	 HUfBpiqesoicVMmF3S5iH3yGRAPqkKQ+duLddxrQVZLsJ/GGiaViLTZsGTAA7yu2Yr
-	 yqpWRM+9+XFiC9PgVXab8Bsa1Y9SiQxi4y3l4TVXSfQ41LsGh75S5TI/d8KdS9D8e+
-	 jKlbV55caVSSg==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Aleksandrs Vinarskis <alex.vinarskis@gmail.com>,
-	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-	Sasha Levin <sashal@kernel.org>,
-	robert.moore@intel.com,
-	linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.6 047/139] ACPICA: iasl: handle empty connection_node
-Date: Wed, 25 Sep 2024 08:07:47 -0400
-Message-ID: <20240925121137.1307574-47-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240925121137.1307574-1-sashal@kernel.org>
-References: <20240925121137.1307574-1-sashal@kernel.org>
+	dkim=pass (2048-bit key) header.d=treblig.org header.i=@treblig.org header.b="pXFFQGkt"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
+	; s=bytemarkmx; h=MIME-Version:Message-ID:Date:Subject:From:Content-Type:From
+	:Subject; bh=547Das7nJu/+ANxIPN+NDpwejelzHoEvg/AEGNlGgOQ=; b=pXFFQGkttYKM8lOY
+	8S3peTzXEZ+Ty3HnxmiUb66y9B+L+iPUAyt1nZxXyALJxYueYhgcm5D2yl04q6eRQuoLySBrq+TgR
+	dGpeoDywd6VOiMKq9sfNeXHWZHFuYqGob6oQ5etfjLT+9tk5grBQ8FMZUwiIv2vjoZ5nFRXh+QCTC
+	h9B/4TIEo4vCUmXTwCMeujl3gPCQEMenhNoy9ZkncGMh5KVnMHu98tEkygBCEY20+B74D97GUfUbA
+	r59FXbeofxDXZySFnSiTN8N1Ll0jc6K9yOMV8hgvZmwQhSYefsIR19S8NBqnVnp4hiQyWtSNLe/FR
+	ndO3+nc3Epupemqrrw==;
+Received: from localhost ([127.0.0.1] helo=dalek.home.treblig.org)
+	by mx.treblig.org with esmtp (Exim 4.96)
+	(envelope-from <linux@treblig.org>)
+	id 1suhOs-007mHS-0o;
+	Sun, 29 Sep 2024 00:02:58 +0000
+From: linux@treblig.org
+To: robert.moore@intel.com,
+	rafael.j.wysocki@intel.com,
+	lenb@kernel.org
+Cc: linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	"Dr. David Alan Gilbert" <linux@treblig.org>
+Subject: [PATCH] ACPICA: Remove unused 'acpi_ps_get_name'
+Date: Sun, 29 Sep 2024 01:02:53 +0100
+Message-ID: <20240929000253.418403-1-linux@treblig.org>
+X-Mailer: git-send-email 2.46.2
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.6.52
 Content-Transfer-Encoding: 8bit
 
-From: Aleksandrs Vinarskis <alex.vinarskis@gmail.com>
+From: "Dr. David Alan Gilbert" <linux@treblig.org>
 
-[ Upstream commit a0a2459b79414584af6c46dd8c6f866d8f1aa421 ]
+acpi_ps_get_name is currently unused, remove it.
 
-ACPICA commit 6c551e2c9487067d4b085333e7fe97e965a11625
+I can't find any history of it's use since git, but I can
+see it was used in 2.5.0, and see a record of a removal
+of uses at Fri Aug 30 00:38:52 2002.
 
-Link: https://github.com/acpica/acpica/commit/6c551e2c
-Signed-off-by: Aleksandrs Vinarskis <alex.vinarskis@gmail.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Dr. David Alan Gilbert <linux@treblig.org>
 ---
- drivers/acpi/acpica/exprep.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/acpi/acpica/acparser.h |  2 --
+ drivers/acpi/acpica/psutils.c  | 17 -----------------
+ 2 files changed, 19 deletions(-)
 
-diff --git a/drivers/acpi/acpica/exprep.c b/drivers/acpi/acpica/exprep.c
-index 08196fa17080e..82b1fa2d201fe 100644
---- a/drivers/acpi/acpica/exprep.c
-+++ b/drivers/acpi/acpica/exprep.c
-@@ -437,6 +437,9 @@ acpi_status acpi_ex_prep_field_value(struct acpi_create_field_info *info)
+diff --git a/drivers/acpi/acpica/acparser.h b/drivers/acpi/acpica/acparser.h
+index 6dad786a382c..3a61853591d3 100644
+--- a/drivers/acpi/acpica/acparser.h
++++ b/drivers/acpi/acpica/acparser.h
+@@ -207,8 +207,6 @@ void acpi_ps_free_op(union acpi_parse_object *op);
  
- 		if (info->connection_node) {
- 			second_desc = info->connection_node->object;
-+			if (second_desc == NULL) {
-+				break;
-+			}
- 			if (!(second_desc->common.flags & AOPOBJ_DATA_VALID)) {
- 				status =
- 				    acpi_ds_get_buffer_arguments(second_desc);
+ u8 acpi_ps_is_leading_char(u32 c);
+ 
+-u32 acpi_ps_get_name(union acpi_parse_object *op);
+-
+ void acpi_ps_set_name(union acpi_parse_object *op, u32 name);
+ 
+ /*
+diff --git a/drivers/acpi/acpica/psutils.c b/drivers/acpi/acpica/psutils.c
+index d550c4af4702..3799ae9f6d39 100644
+--- a/drivers/acpi/acpica/psutils.c
++++ b/drivers/acpi/acpica/psutils.c
+@@ -181,23 +181,6 @@ u8 acpi_ps_is_leading_char(u32 c)
+ 	return ((u8) (c == '_' || (c >= 'A' && c <= 'Z')));
+ }
+ 
+-/*
+- * Get op's name (4-byte name segment) or 0 if unnamed
+- */
+-u32 acpi_ps_get_name(union acpi_parse_object * op)
+-{
+-
+-	/* The "generic" object has no name associated with it */
+-
+-	if (op->common.flags & ACPI_PARSEOP_GENERIC) {
+-		return (0);
+-	}
+-
+-	/* Only the "Extended" parse objects have a name */
+-
+-	return (op->named.name);
+-}
+-
+ /*
+  * Set op's name
+  */
 -- 
-2.43.0
+2.46.2
 
