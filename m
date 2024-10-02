@@ -1,108 +1,150 @@
-Received: from mx.treblig.org (mx.treblig.org [46.235.229.95])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F6C82594;
-	Sun, 29 Sep 2024 00:03:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.229.95
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C714D1D12E3
+	for <acpica-devel@lists.linux.dev>; Wed,  2 Oct 2024 18:13:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727568193; cv=none; b=evDgM+HBq8np80sVUjHjbO4n44tudVq4MAHepmE41dW5mJFtJhofjVsJKCsJxHamrKYgKep7CMYAJ3CVuvHBtTYoyNEKsTPAC9Fg3azgYBqp2X5Y8kJ03xyoqTMz94YvbiNeaEi9KMffHVIjIW/bJ7EbLeDr4n6wj4B11iLjA5U=
+	t=1727892794; cv=none; b=ocsS1BWAJKYR+Eb7hi5FoMhfbLMoq2I7SFpx2MV90dhE33Kuk7E/89aAZ7XTYBhI6TS0azTatR0lQI6YPwJ0+XmDlz0epqdBwKfyZXEzkluNbk1BvqPnOnGqsV5zJdzla1u08l536BOniVETU100u5lsKfLle9PCzjIvp9CuIcE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727568193; c=relaxed/simple;
-	bh=U3e3anVP2I5mlSlWV5cTmjbYxuRmLsYw2ZO11ASv4R4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CCtgJ3Dd46RGte9V4NteEZl5hC1U8rBqgk3bVywAg5SbCwwsdPH8yLlgrV1KLE7mO6hWJeJvw+4DXCL+maorwlquXZ6V3EJgDamQcvq2b5jBwDwWlQXvIVmRn0PkLCqECJZpUAJwhyahQu2Iag3o4mb7dw/+oj6JGYh/KF0CbyA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=treblig.org; spf=pass smtp.mailfrom=treblig.org; dkim=pass (2048-bit key) header.d=treblig.org header.i=@treblig.org header.b=pXFFQGkt; arc=none smtp.client-ip=46.235.229.95
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=treblig.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=treblig.org
+	s=arc-20240116; t=1727892794; c=relaxed/simple;
+	bh=grwSoWKPsOI8pRGhnuHfLCDv1R3IvWwGE3IGbB7BvHU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VuWQ5HN82ubjMDmZrZfKVxexUxI3JEk5Au94rlxHq45DMVagiIudUoR+vsqfNoG+93y2hJ0dPaPhN5/JHEFp6F9rcvTfqzAnQqbpq0GxEPRn+Wx+p0AJp34Efkiggk1a9EeMyLHEZEGGNGcpJ+Kwyno8/KX2YAhCXzrLGAcTv0k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dRhTMiHK; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=treblig.org header.i=@treblig.org header.b="pXFFQGkt"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
-	; s=bytemarkmx; h=MIME-Version:Message-ID:Date:Subject:From:Content-Type:From
-	:Subject; bh=547Das7nJu/+ANxIPN+NDpwejelzHoEvg/AEGNlGgOQ=; b=pXFFQGkttYKM8lOY
-	8S3peTzXEZ+Ty3HnxmiUb66y9B+L+iPUAyt1nZxXyALJxYueYhgcm5D2yl04q6eRQuoLySBrq+TgR
-	dGpeoDywd6VOiMKq9sfNeXHWZHFuYqGob6oQ5etfjLT+9tk5grBQ8FMZUwiIv2vjoZ5nFRXh+QCTC
-	h9B/4TIEo4vCUmXTwCMeujl3gPCQEMenhNoy9ZkncGMh5KVnMHu98tEkygBCEY20+B74D97GUfUbA
-	r59FXbeofxDXZySFnSiTN8N1Ll0jc6K9yOMV8hgvZmwQhSYefsIR19S8NBqnVnp4hiQyWtSNLe/FR
-	ndO3+nc3Epupemqrrw==;
-Received: from localhost ([127.0.0.1] helo=dalek.home.treblig.org)
-	by mx.treblig.org with esmtp (Exim 4.96)
-	(envelope-from <linux@treblig.org>)
-	id 1suhOs-007mHS-0o;
-	Sun, 29 Sep 2024 00:02:58 +0000
-From: linux@treblig.org
-To: robert.moore@intel.com,
-	rafael.j.wysocki@intel.com,
-	lenb@kernel.org
-Cc: linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	"Dr. David Alan Gilbert" <linux@treblig.org>
-Subject: [PATCH] ACPICA: Remove unused 'acpi_ps_get_name'
-Date: Sun, 29 Sep 2024 01:02:53 +0100
-Message-ID: <20240929000253.418403-1-linux@treblig.org>
-X-Mailer: git-send-email 2.46.2
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dRhTMiHK"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80BC3C4CECF
+	for <acpica-devel@lists.linux.dev>; Wed,  2 Oct 2024 18:13:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1727892794;
+	bh=grwSoWKPsOI8pRGhnuHfLCDv1R3IvWwGE3IGbB7BvHU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=dRhTMiHKT1RnETVX+Hkwembxlg2VggFcKSlhr7s8hLH64V0gcLgNOkOL94eScWePu
+	 1ayKicEl7qSutBlLWK62FYfrFnsvNPb4r4tQmgfUDpN4kNTESitrgO69FKGyYmuC7i
+	 RguPCxczFsmZcwYOkOiRF3RCF+HuXZ0pCaeKZsXzx0FUzplX8tlMTqKAftYQsxmRIY
+	 fufdEFLxriX1YYPRLtmoA6buicBoncwPsjKZkA8JL5awTdNeMihc7J4T46rvWrpGRp
+	 mTZtEJ82tPztFo2qBNMjKBGPBmCXZ6dXdQ3AsBvafdqPHeS9XACFVkR2mMw5KWvMII
+	 d7Mkw7mTba3SA==
+Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3e3991843e2so95034b6e.3
+        for <acpica-devel@lists.linux.dev>; Wed, 02 Oct 2024 11:13:14 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCW88CAZvTAogW1O2NTW9A1V99kSQJzWZndmii0TZshb3nHy4vLatuyv/m1seU/cG9dGU96Y7W56o4ZzNiE=@lists.linux.dev
+X-Gm-Message-State: AOJu0YylnzfIWQnUf1Kmz3tCOMm5ex3glJvvqWqJTcMiKqYy/tb+SDjh
+	1x07ZrNXjgxwze3l7EB4JNnZRPBBPePRxgHRIu37vnhflyeS8gDTt+rTEEbj5cClOnRvYpv/pUB
+	Ys2K8baLBokZ+2VocjI1etQ4CrfE=
+X-Google-Smtp-Source: AGHT+IE3dupSoce4kYpZO3+6P99yFSc6BYr72zwY1Tqta07GNvTEYwGWWcgn1Fx1RxCjaVyg5dSaBYUyfRESgyNJPrY=
+X-Received: by 2002:a05:6808:3196:b0:3e3:a7f2:1aa4 with SMTP id
+ 5614622812f47-3e3b40e5856mr3269526b6e.8.1727892793837; Wed, 02 Oct 2024
+ 11:13:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240912173901.3969597-1-rrangel@chromium.org> <20240912113616.3.I1b7a5033a2191cb0cdbadc2d51666a97f16cc663@changeid>
+In-Reply-To: <20240912113616.3.I1b7a5033a2191cb0cdbadc2d51666a97f16cc663@changeid>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Wed, 2 Oct 2024 20:13:02 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0hmf55OA1f4egzE7F0ET+7af_+pcxmnOSxO5Snd6L5CrQ@mail.gmail.com>
+Message-ID: <CAJZ5v0hmf55OA1f4egzE7F0ET+7af_+pcxmnOSxO5Snd6L5CrQ@mail.gmail.com>
+Subject: Re: [PATCH 3/3] ACPI: SPCR: Add support for rev 3
+To: Raul E Rangel <rrangel@chromium.org>
+Cc: linux-serial@vger.kernel.org, pmladek@suse.com, rafael.j.wysocki@intel.com, 
+	ribalda@chromium.org, Len Brown <lenb@kernel.org>, 
+	"Rafael J. Wysocki" <rafael@kernel.org>, Robert Moore <robert.moore@intel.com>, acpica-devel@lists.linux.dev, 
+	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: "Dr. David Alan Gilbert" <linux@treblig.org>
+On Thu, Sep 12, 2024 at 7:39=E2=80=AFPM Raul E Rangel <rrangel@chromium.org=
+> wrote:
+>
+> Revision 3 supports specifying the UART input clock. This allows for
+> proper computation of the UART divisor when the baud rate is specified.
+>
+> The earlycon code can accept the following format (See `parse_options`
+> in `earlycon.c`.):
+> * <name>,io|mmio|mmio32|mmio32be,<addr>,<baud>,<uartclk>,<options>
+>
+> This change makes it so the uartclk is passed along if it's defined in
+> the SPCR table.
+>
+> Booting with `earlycon` and a SPCR v3 table that has the uartclk and
+> baud defined:
+> [    0.028251] ACPI: SPCR: console: uart,mmio32,0xfedc9000,115200,4800000=
+0
+> [    0.028267] earlycon: uart0 at MMIO32 0x00000000fedc9000 (options '115=
+200,48000000')
+> [    0.028272] printk: legacy bootconsole [uart0] enabled
+>
+> Link: https://learn.microsoft.com/en-us/windows-hardware/drivers/serports=
+/serial-port-console-redirection-table
+>
+> Signed-off-by: Raul E Rangel <rrangel@chromium.org>
+>
+> ---
+>
+>  drivers/acpi/spcr.c   | 5 ++++-
+>  include/acpi/actbl3.h | 6 +++---
+>  2 files changed, 7 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/acpi/spcr.c b/drivers/acpi/spcr.c
+> index cd36a97b0ea2c7..67ae42afcc59ef 100644
+> --- a/drivers/acpi/spcr.c
+> +++ b/drivers/acpi/spcr.c
+> @@ -209,9 +209,12 @@ int __init acpi_parse_spcr(bool enable_earlycon, boo=
+l enable_console)
+>         if (!baud_rate) {
+>                 snprintf(opts, sizeof(opts), "%s,%s,0x%llx", uart, iotype=
+,
+>                          table->serial_port.address);
+> -       } else {
+> +       } else if (table->header.revision <=3D 2 || !table->uartclk) {
+>                 snprintf(opts, sizeof(opts), "%s,%s,0x%llx,%d", uart, iot=
+ype,
+>                          table->serial_port.address, baud_rate);
+> +       } else {
+> +               snprintf(opts, sizeof(opts), "%s,%s,0x%llx,%d,%d", uart, =
+iotype,
+> +                        table->serial_port.address, baud_rate, table->ua=
+rtclk);
+>         }
+>
+>         pr_info("console: %s\n", opts);
+> diff --git a/include/acpi/actbl3.h b/include/acpi/actbl3.h
+> index 8f775e3a08fdfb..afe45a2379866a 100644
+> --- a/include/acpi/actbl3.h
+> +++ b/include/acpi/actbl3.h
 
-acpi_ps_get_name is currently unused, remove it.
+The part of the patch below is outdated - SPCR v4 is supported already.
 
-I can't find any history of it's use since git, but I can
-see it was used in 2.5.0, and see a record of a removal
-of uses at Fri Aug 30 00:38:52 2002.
+Please rebase on the current mainline kernel source.
 
-Signed-off-by: Dr. David Alan Gilbert <linux@treblig.org>
----
- drivers/acpi/acpica/acparser.h |  2 --
- drivers/acpi/acpica/psutils.c  | 17 -----------------
- 2 files changed, 19 deletions(-)
-
-diff --git a/drivers/acpi/acpica/acparser.h b/drivers/acpi/acpica/acparser.h
-index 6dad786a382c..3a61853591d3 100644
---- a/drivers/acpi/acpica/acparser.h
-+++ b/drivers/acpi/acpica/acparser.h
-@@ -207,8 +207,6 @@ void acpi_ps_free_op(union acpi_parse_object *op);
- 
- u8 acpi_ps_is_leading_char(u32 c);
- 
--u32 acpi_ps_get_name(union acpi_parse_object *op);
--
- void acpi_ps_set_name(union acpi_parse_object *op, u32 name);
- 
- /*
-diff --git a/drivers/acpi/acpica/psutils.c b/drivers/acpi/acpica/psutils.c
-index d550c4af4702..3799ae9f6d39 100644
---- a/drivers/acpi/acpica/psutils.c
-+++ b/drivers/acpi/acpica/psutils.c
-@@ -181,23 +181,6 @@ u8 acpi_ps_is_leading_char(u32 c)
- 	return ((u8) (c == '_' || (c >= 'A' && c <= 'Z')));
- }
- 
--/*
-- * Get op's name (4-byte name segment) or 0 if unnamed
-- */
--u32 acpi_ps_get_name(union acpi_parse_object * op)
--{
--
--	/* The "generic" object has no name associated with it */
--
--	if (op->common.flags & ACPI_PARSEOP_GENERIC) {
--		return (0);
--	}
--
--	/* Only the "Extended" parse objects have a name */
--
--	return (op->named.name);
--}
--
- /*
-  * Set op's name
-  */
--- 
-2.46.2
-
+> @@ -92,10 +92,10 @@ struct acpi_table_slit {
+>  /***********************************************************************=
+********
+>   *
+>   * SPCR - Serial Port Console Redirection table
+> - *        Version 2
+> + *        Version 3
+>   *
+>   * Conforms to "Serial Port Console Redirection Table",
+> - * Version 1.03, August 10, 2015
+> + * Version 1.08, October 7, 2021
+>   *
+>   ***********************************************************************=
+*******/
+>
+> @@ -120,7 +120,7 @@ struct acpi_table_spcr {
+>         u8 pci_function;
+>         u32 pci_flags;
+>         u8 pci_segment;
+> -       u32 reserved2;
+> +       u32 uartclk;
+>  };
+>
+>  /* Masks for pci_flags field above */
+> --
+> 2.46.0.662.g92d0881bb0-goog
+>
