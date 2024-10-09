@@ -1,240 +1,301 @@
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AD5F52F9E;
-	Wed,  9 Oct 2024 18:16:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E99FE1714A4
+	for <acpica-devel@lists.linux.dev>; Wed,  9 Oct 2024 19:40:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728497816; cv=none; b=XuuBhZtxlkhE3mDubL5q5SsWTsqFNv0tErv7ewRsEKW8UH6K0nJQaYHwIawdJpzKreoiJT3QWOYJEnO/fg+YxKnMzAxSopoRQa7tOEHZYYvtrzb3WNi8uVyA1n7h9BcBmpdq6lwdNea+XQixvlfj/gqemMfhFVRZMRl+K/VnyeM=
+	t=1728502823; cv=none; b=Ig+9On+T3eY4sZHNWtdCj6w09heRnwMy9vLZ7uuzLtcZRUvIaNnYKrPIZZioOpXZtKT2LOetqqVKqzdokvUJoe1C5GOvFbyn3D5HbfK2cbiebSjkw5wOULZ72g9YaKVM1DaJzvY8UYNuvOApKOg3KfqTjbtfhDcbMfb6LT0KtyE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728497816; c=relaxed/simple;
-	bh=pgwXgBk4u3VDmEKtGUQEApvK2p6Cbd2W1dgFQxkkxbs=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EXAvbbHSMXP2vdlT5KyV90UGSVbfcMvCtCIWyj8eiVGCnf75qgYzLIXzqxvUV6iImjjvoOqAlsTKcChcWiBGu396pQF/9frIEjfUzc8pOaoqJ6GfsTMoP1I8jwyABbARDJ0nlCyH8P2UR699R27cEpc79PxggtY819JolcIfTAY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aJq1qDao; arc=none smtp.client-ip=209.85.219.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1728502823; c=relaxed/simple;
+	bh=aKfGHvxtx2jHudoi3yqdcvhArPGA54mqJWauC72y1rU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=buaY4EYMxZHrXdRr53VUCQeP5zFItQJGFQcMKFrJNAIVRGpIlQSVyYn/OSf/LgHcp1CyU/uqZa1RVfAUKhKB9TiZLutnYVVE7UXuF9Yp7q/VngLY2W8MFQR5SyGgdR3JdFN+A9Wcc2enYEc54lX/iDEz21/qTDkcR2Jj9ToSmvo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tbBynD0y; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aJq1qDao"
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-e28fa28de37so22405276.3;
-        Wed, 09 Oct 2024 11:16:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728497813; x=1729102613; darn=lists.linux.dev;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=CMJHEoItCLKNQqTYhraWfgSOwnHOJJjA5T9nEdBreoo=;
-        b=aJq1qDaoWIOopefUqr5g0xO6OTJTpuPlGJLeenG6A9ZQ0iWV2w3UuRiic07BXVo2M+
-         Xv3K8JLESoi6Z+iWjUTtGwDyu2DoudWR+bRLH3WfhDtzehowULc14S6cwQ19yJptl19h
-         4TaXiXajBegIZTFZAITLKMzx9UMyHkU9DtLOH1mrqka0mG2V+YVGsZKWmDCh/wez1lsW
-         Mf54YxZAqF7hFMhzIcfNpxPLaFkPe5dpMAGN2CNgGye4miXCoyv6re9gDIkulZ5FiYwk
-         YO4KVvIf95n5m7A5LSuWH4mbrWMW35B05PMb4y9b76IC7iDMwuBTKGSknbz4MkGcmIhv
-         th0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728497813; x=1729102613;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CMJHEoItCLKNQqTYhraWfgSOwnHOJJjA5T9nEdBreoo=;
-        b=TN2IblCxw+r7R0KWQ4o2AX4HjMfnFi6wZ2gYx9oyK8OAjrPdz7q0AXIbjlJrnysJ3h
-         +tIF1VZoUJ9MFjB3wl17zAZ03xj2QRhmnKdeztTy+gL2IRorMxmUkhVXIrjYURX/IJvy
-         /sUpPFCUkbWfbhRDb+ps5rW6UvCHiSIQ5W34/cQL5TACV4dq963UQ00LY+ynCIiDExt3
-         Ni89aEWf8CrOH4FkH9Lh2szq8qXau7XEJsB6Q1nlFkXVoJspLxesUJAYJ4atHVWOluFA
-         hSaqAFOcl370fFbbjPjtDZpYHpPoeZppb2ZZB6z35iJZ40iPun1K2IWPEtr1ehLbYpla
-         RyUQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWQofZtQEiobjcyc81+ljNsIb80w3IngM4qpZXjFAClh0KQqKP2Y9Ye3MHufdlTeLDfJq18Ig6s5YHBkpQ=@lists.linux.dev, AJvYcCXZY1Qh0ulOQkYjOCjyJdOYc2KBD+bEPiXOOm6s38Pesad31W0MdSYwNR9P11fBp8XzMM1l2Y05@lists.linux.dev
-X-Gm-Message-State: AOJu0YyfaKjIr8TENYLQKIXtTyX7jJonbczCUpyc7W+a093CH3vFfBa5
-	wp9WQuOyWgzBGtLgLuFd0+/M3xtOuwEZhxO1kIDlBKLT7HGB8OqA
-X-Google-Smtp-Source: AGHT+IECrhvsoxz0tchfe2uj4Zhv6SF3YjPCuZouV+uInwFOYEXaWO6HLusBCmrFa51JFGrbxab3yQ==
-X-Received: by 2002:a05:6902:218f:b0:e28:f176:105 with SMTP id 3f1490d57ef6-e28fe4dbdc4mr3312075276.36.1728497812917;
-        Wed, 09 Oct 2024 11:16:52 -0700 (PDT)
-Received: from fan ([50.205.20.42])
-        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e2908cde6d6sm142601276.24.2024.10.09.11.16.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Oct 2024 11:16:52 -0700 (PDT)
-From: Fan Ni <nifan.cxl@gmail.com>
-X-Google-Original-From: Fan Ni <fan.ni@samsung.com>
-Date: Wed, 9 Oct 2024 11:16:49 -0700
-To: Ira Weiny <ira.weiny@intel.com>
-Cc: Dave Jiang <dave.jiang@intel.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Navneet Singh <navneet.singh@intel.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Alison Schofield <alison.schofield@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org,
-	linux-doc@vger.kernel.org, nvdimm@lists.linux.dev,
-	linux-kernel@vger.kernel.org, Robert Moore <robert.moore@intel.com>,
-	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-	Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev
-Subject: Re: [PATCH v4 12/28] cxl/cdat: Gather DSMAS data for DCD regions
-Message-ID: <ZwbIkQCzaOoUwWki@fan>
-References: <20241007-dcd-type2-upstream-v4-0-c261ee6eeded@intel.com>
- <20241007-dcd-type2-upstream-v4-12-c261ee6eeded@intel.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tbBynD0y"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 837ACC4CED0
+	for <acpica-devel@lists.linux.dev>; Wed,  9 Oct 2024 19:40:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1728502822;
+	bh=aKfGHvxtx2jHudoi3yqdcvhArPGA54mqJWauC72y1rU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=tbBynD0yvF3GFOeBgNpWPasatK5W43BJWif/HOnpJ+1qpJqtLEd0Wq8YXGrGIW+13
+	 3dfGbXiioVBCDWZ7vZems22ea8zq0LuFqlBcGIgSAUMs4UYPVZ+dp302IybmQtJ9Ct
+	 DzEg6EP2bOn4rHOb3vLYGhuUZCJtgeygOvAx3JhJAfu6bmK6zPOjvVnh0aL+1fb32K
+	 1sjUUvKN2C3tTwgTojfA3MZBKobI6wICf1xgnkv1z7+MJQwTIz1aFMs1unmUUsrD8b
+	 QdFzadkzsqBPYAujBqM8lA2J0P98EOtpGxsUX9RclJEiX7CAbJUCSZs7qUjbw/Wg2r
+	 eh/HoTSyymLdg==
+Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-3e3e6ca86faso106984b6e.3
+        for <acpica-devel@lists.linux.dev>; Wed, 09 Oct 2024 12:40:22 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXMZgYQZ81UwS+uehj0WzCU9lKZi5oKRYivrXauN+3DAqWPjY5ldggTWwJ32RhOpMiYsSYxEsTd2A5avIU=@lists.linux.dev
+X-Gm-Message-State: AOJu0YyjC4YLRtaE7Kdk90kqK7UA6JYZ+43XokHyvOjuqEE0zB0M5r9X
+	ZrkTyZDpHVJhRitZ07Io2OLHMJAlk/KAYz4bqa5ihwoTHmgZZzNx+bnQGRLdHQLTYOj6feZTtCP
+	nFrB9hZXNAMm3/K2AHLGXg830HB8=
+X-Google-Smtp-Source: AGHT+IFJ609ZL8gemgxVGu+HNY0V1JQcHHfVROXRen2YkNvjEyWFyWpjthck5EejbuzdeTIak0KNM89ZoagfkoVy1Xo=
+X-Received: by 2002:a05:6808:2218:b0:3e2:7e10:5fd2 with SMTP id
+ 5614622812f47-3e3e66b3afemr2926913b6e.11.1728502821740; Wed, 09 Oct 2024
+ 12:40:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241007-dcd-type2-upstream-v4-12-c261ee6eeded@intel.com>
+References: <20241004204845.970951-1-arnd@kernel.org> <CAJZ5v0immr4obYsu2qNKKY2DKxzLDR1a=6B4xY_YTHfPF5kADg@mail.gmail.com>
+ <641307d3-3fe5-401a-ba22-96ad5ef25fed@app.fastmail.com>
+In-Reply-To: <641307d3-3fe5-401a-ba22-96ad5ef25fed@app.fastmail.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Wed, 9 Oct 2024 21:40:10 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0jBY91TDXPMfmLPeoDLeQCKFD+sHBgkOwPusQAMpZJc6A@mail.gmail.com>
+Message-ID: <CAJZ5v0jBY91TDXPMfmLPeoDLeQCKFD+sHBgkOwPusQAMpZJc6A@mail.gmail.com>
+Subject: Re: [PATCH] acpi: allow building without CONFIG_HAS_IOPORT
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: "Rafael J . Wysocki" <rafael@kernel.org>, Arnd Bergmann <arnd@kernel.org>, 
+	Robert Moore <robert.moore@intel.com>, Niklas Schnelle <schnelle@linux.ibm.com>, 
+	Len Brown <lenb@kernel.org>, James Morse <james.morse@arm.com>, Tony Luck <tony.luck@intel.com>, 
+	Borislav Petkov <bp@alien8.de>, Jonathan Cameron <Jonathan.Cameron@huawei.com>, 
+	Sunil V L <sunilvl@ventanamicro.com>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, linux-acpi@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, acpica-devel@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Oct 07, 2024 at 06:16:18PM -0500, Ira Weiny wrote:
-> Additional DCD region (partition) information is contained in the DSMAS
-> CDAT tables, including performance, read only, and shareable attributes.
-> 
-> Match DCD partitions with DSMAS tables and store the meta data.
-> 
-> To: Robert Moore <robert.moore@intel.com>
-> To: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> To: Len Brown <lenb@kernel.org>
-> Cc: linux-acpi@vger.kernel.org
-> Cc: acpica-devel@lists.linux.dev
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> 
+On Mon, Oct 7, 2024 at 9:23=E2=80=AFPM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Mon, Oct 7, 2024, at 16:04, Rafael J. Wysocki wrote:
+> > On Fri, Oct 4, 2024 at 10:48=E2=80=AFPM Arnd Bergmann <arnd@kernel.org>=
+ wrote:
+> >>
+> >> From: Arnd Bergmann <arnd@arndb.de>
+> >>
+> >> CONFIG_HAS_IOPORT will soon become optional and cause a build time
+> >> failure when it is disabled but a driver calls inb()/outb(). At the
+> >> moment, all architectures that can support ACPI have port I/O, but
+> >> this is not necessarily the case in the future.
+> >
+> > Can addressing this be deferred to that point?
+>
+> Yes. I would like to have all of arm64 and riscv be able to turn
+> off HAS_IOPORT eventually, but nothing depends on doing this
+> when ACPI is enabled.
+>
+> >> Since the embedded controller can only exist when port I/O is
+> >> active, it makes sense to disable that code on targets that don't
+> >> have it. The same is true for anything using acpi_os_read_port()
+> >> and similar functions.
+> >>
+> >> Add compile-time conditionals around all of those and their callers.
+> >>
+> >> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> >> ---
+> >> Should this be split up into smaller patches?
+> >
+> > No need, but the ACPICA part is kind of nasty.
+>
+> Right, I see.
+>
+> >> --- a/drivers/acpi/acpica/evhandler.c
+> >> +++ b/drivers/acpi/acpica/evhandler.c
+> >> @@ -358,12 +358,13 @@ acpi_ev_install_space_handler(struct acpi_namesp=
+ace_node *node,
+> >>                         handler =3D acpi_ex_system_memory_space_handle=
+r;
+> >>                         setup =3D acpi_ev_system_memory_region_setup;
+> >>                         break;
+> >> -
+> >> +#ifdef CONFIG_HAS_IOPORT
+> >>                 case ACPI_ADR_SPACE_SYSTEM_IO:
+> >>
+> >>                         handler =3D acpi_ex_system_io_space_handler;
+> >>                         setup =3D acpi_ev_io_space_region_setup;
+> >>                         break;
+> >> +#endif
+> >
+> > All changes like the above in the ACPICA code potentially increase the
+> > number of times when upstream ACPICA patches will have to be ported to
+> > Linux manually, which in turn increases the number of potential
+> > mistakes in the process.
+> >
+> > I'd rather avoid making them, if possible.
+>
+> Understood. Does that mean that on the flip-side we can change
+> the drivers/acpi/osl.c portion to turn acpi_os_read_port()
+> and acpi_os_write_port() into a runtime error for configurations
+> without port I/O, without causing the same maintenance overhead?
 
-One minor comment inline.
+Yes, that can be done.
 
-> ---
-> Changes:
-> [iweiny: new patch]
-> [iweiny: Gather shareable/read-only flags for later use]
-> ---
->  drivers/cxl/core/cdat.c | 38 ++++++++++++++++++++++++++++++++++++++
->  drivers/cxl/core/mbox.c |  2 ++
->  drivers/cxl/cxlmem.h    |  3 +++
->  include/acpi/actbl1.h   |  2 ++
->  4 files changed, 45 insertions(+)
-> 
-> diff --git a/drivers/cxl/core/cdat.c b/drivers/cxl/core/cdat.c
-> index bd50bb655741..9b2f717a16e5 100644
-> --- a/drivers/cxl/core/cdat.c
-> +++ b/drivers/cxl/core/cdat.c
-> @@ -17,6 +17,8 @@ struct dsmas_entry {
->  	struct access_coordinate cdat_coord[ACCESS_COORDINATE_MAX];
->  	int entries;
->  	int qos_class;
-> +	bool shareable;
-> +	bool read_only;
->  };
->  
->  static u32 cdat_normalize(u16 entry, u64 base, u8 type)
-> @@ -74,6 +76,8 @@ static int cdat_dsmas_handler(union acpi_subtable_headers *header, void *arg,
->  		return -ENOMEM;
->  
->  	dent->handle = dsmas->dsmad_handle;
-> +	dent->shareable = dsmas->flags & ACPI_CDAT_DSMAS_SHAREABLE;
-> +	dent->read_only = dsmas->flags & ACPI_CDAT_DSMAS_READ_ONLY;
->  	dent->dpa_range.start = le64_to_cpu((__force __le64)dsmas->dpa_base_address);
->  	dent->dpa_range.end = le64_to_cpu((__force __le64)dsmas->dpa_base_address) +
->  			      le64_to_cpu((__force __le64)dsmas->dpa_length) - 1;
-> @@ -255,6 +259,38 @@ static void update_perf_entry(struct device *dev, struct dsmas_entry *dent,
->  		dent->coord[ACCESS_COORDINATE_CPU].write_latency);
->  }
->  
-> +
-Unwanted blank line.
+> The version below builds fine and doesn't touch acpica but
+> it's a bit harder to predict what would happen at runtime.
 
-Fan
-> +static void update_dcd_perf(struct cxl_dev_state *cxlds,
-> +			    struct dsmas_entry *dent)
-> +{
-> +	struct cxl_memdev_state *mds = to_cxl_memdev_state(cxlds);
-> +	struct device *dev = cxlds->dev;
-> +
-> +	for (int i = 0; i < mds->nr_dc_region; i++) {
-> +		/* CXL defines a u32 handle while cdat defines u8, ignore upper bits */
-> +		u8 dc_handle = mds->dc_region[i].dsmad_handle & 0xff;
-> +
-> +		if (resource_size(&cxlds->dc_res[i])) {
-> +			struct range dc_range = {
-> +				.start = cxlds->dc_res[i].start,
-> +				.end = cxlds->dc_res[i].end,
-> +			};
-> +
-> +			if (range_contains(&dent->dpa_range, &dc_range)) {
-> +				if (dent->handle != dc_handle)
-> +					dev_warn(dev, "DC Region/DSMAS mis-matched handle/range; region %pra (%u); dsmas %pra (%u)\n"
-> +						      "   setting DC region attributes regardless\n",
-> +						&dent->dpa_range, dent->handle,
-> +						&dc_range, dc_handle);
-> +
-> +				mds->dc_region[i].shareable = dent->shareable;
-> +				mds->dc_region[i].read_only = dent->read_only;
-> +				update_perf_entry(dev, dent, &mds->dc_perf[i]);
-> +			}
-> +		}
-> +	}
-> +}
-> +
->  static void cxl_memdev_set_qos_class(struct cxl_dev_state *cxlds,
->  				     struct xarray *dsmas_xa)
+Sure.
+
+> diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
+> index b8924077163b..5ec58c4e0332 100644
+> --- a/drivers/acpi/Kconfig
+> +++ b/drivers/acpi/Kconfig
+> @@ -134,6 +134,7 @@ config ACPI_REV_OVERRIDE_POSSIBLE
+>
+>  config ACPI_EC_DEBUGFS
+>         tristate "EC read/write access through /sys/kernel/debug/ec"
+> +       depends on HAS_IOPORT
+>         help
+>           Say N to disable Embedded Controller /sys/kernel/debug interfac=
+e
+>
+> diff --git a/drivers/acpi/Makefile b/drivers/acpi/Makefile
+> index 61ca4afe83dc..132357815324 100644
+> --- a/drivers/acpi/Makefile
+> +++ b/drivers/acpi/Makefile
+> @@ -41,7 +41,7 @@ acpi-y                                +=3D resource.o
+>  acpi-y                         +=3D acpi_processor.o
+>  acpi-y                         +=3D processor_core.o
+>  acpi-$(CONFIG_ARCH_MIGHT_HAVE_ACPI_PDC) +=3D processor_pdc.o
+> -acpi-y                         +=3D ec.o
+> +acpi-$(CONFIG_HAS_IOPORT)      +=3D ec.o
+>  acpi-$(CONFIG_ACPI_DOCK)       +=3D dock.o
+>  acpi-$(CONFIG_PCI)             +=3D pci_root.o pci_link.o pci_irq.o
+>  obj-$(CONFIG_ACPI_MCFG)                +=3D pci_mcfg.o
+> diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c
+> index 16917dc3ad60..535d6a72ce1b 100644
+> --- a/drivers/acpi/bus.c
+> +++ b/drivers/acpi/bus.c
+> @@ -1356,7 +1356,8 @@ static int __init acpi_bus_init(void)
+>          * Do that before calling acpi_initialize_objects() which may tri=
+gger EC
+>          * address space accesses.
+>          */
+> -       acpi_ec_ecdt_probe();
+> +       if (IS_ENABLED(CONFIG_HAS_IOPORT))
+> +               acpi_ec_ecdt_probe();
+>
+>         status =3D acpi_enable_subsystem(ACPI_NO_ACPI_ENABLE);
+>         if (ACPI_FAILURE(status)) {
+> @@ -1391,7 +1392,8 @@ static int __init acpi_bus_init(void)
+>          * Maybe EC region is required at bus_scan/acpi_get_devices. So i=
+t
+>          * is necessary to enable it as early as possible.
+>          */
+> -       acpi_ec_dsdt_probe();
+> +       if (IS_ENABLED(CONFIG_HAS_IOPORT))
+> +               acpi_ec_dsdt_probe();
+
+The above two changes mean that it is not necessary to compile either
+acpi_ec_ecdt_probe() or acpi_ec_dsdt_probe() at all if
+CONFIG_HAS_IOPORT is not enabled.
+
+>
+>         pr_info("Interpreter enabled\n");
+>
+> @@ -1464,7 +1466,8 @@ static int __init acpi_init(void)
+>         acpi_arm_init();
+>         acpi_riscv_init();
+>         acpi_scan_init();
+> -       acpi_ec_init();
+> +       if (IS_ENABLED(CONFIG_HAS_IOPORT))
+> +               acpi_ec_init();
+
+And this means that the whole EC driver is not going to work at all then.
+
+>         acpi_debugfs_init();
+>         acpi_sleep_proc_init();
+>         acpi_wakeup_device_init();
+> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+> index b73b3aa92f3f..326b73ae77a9 100644
+> --- a/drivers/acpi/cppc_acpi.c
+> +++ b/drivers/acpi/cppc_acpi.c
+> @@ -1017,7 +1017,8 @@ static int cpc_read(int cpu, struct cpc_register_re=
+source *reg_res, u64 *val)
+>         *val =3D 0;
+>         size =3D GET_BIT_WIDTH(reg);
+>
+> -       if (reg->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_IO) {
+> +       if (IS_ENABLED(CONFIG_HAS_IOPORT) &&
+> +           reg->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_IO) {
+>                 u32 val_u32;
+>                 acpi_status status;
+>
+> @@ -1090,7 +1091,8 @@ static int cpc_write(int cpu, struct cpc_register_r=
+esource *reg_res, u64 val)
+>
+>         size =3D GET_BIT_WIDTH(reg);
+>
+> -       if (reg->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_IO) {
+> +       if (IS_ENABLED(CONFIG_HAS_IOPORT) &&
+> +           reg->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_IO) {
+>                 acpi_status status;
+>
+>                 status =3D acpi_os_write_port((acpi_io_address)reg->addre=
+ss,
+> diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
+> index 78a81969d90e..04d3864073ba 100644
+> --- a/drivers/acpi/osl.c
+> +++ b/drivers/acpi/osl.c
+> @@ -642,6 +642,11 @@ acpi_status acpi_os_read_port(acpi_io_address port, =
+u32 *value, u32 width)
 >  {
-> @@ -278,6 +314,8 @@ static void cxl_memdev_set_qos_class(struct cxl_dev_state *cxlds,
->  		else if (resource_size(&cxlds->pmem_res) &&
->  			 range_contains(&pmem_range, &dent->dpa_range))
->  			update_perf_entry(dev, dent, &mds->pmem_perf);
-> +		else if (cxl_dcd_supported(mds))
-> +			update_dcd_perf(cxlds, dent);
->  		else
->  			dev_dbg(dev, "no partition for dsmas dpa: %pra\n",
->  				&dent->dpa_range);
-> diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
-> index 4b51ddd1ff94..3ba465823564 100644
-> --- a/drivers/cxl/core/mbox.c
-> +++ b/drivers/cxl/core/mbox.c
-> @@ -1649,6 +1649,8 @@ struct cxl_memdev_state *cxl_memdev_state_create(struct device *dev)
->  	mds->cxlds.type = CXL_DEVTYPE_CLASSMEM;
->  	mds->ram_perf.qos_class = CXL_QOS_CLASS_INVALID;
->  	mds->pmem_perf.qos_class = CXL_QOS_CLASS_INVALID;
-> +	for (int i = 0; i < CXL_MAX_DC_REGION; i++)
-> +		mds->dc_perf[i].qos_class = CXL_QOS_CLASS_INVALID;
->  
->  	return mds;
->  }
-> diff --git a/drivers/cxl/cxlmem.h b/drivers/cxl/cxlmem.h
-> index 0690b917b1e0..c3b889a586d8 100644
-> --- a/drivers/cxl/cxlmem.h
-> +++ b/drivers/cxl/cxlmem.h
-> @@ -466,6 +466,8 @@ struct cxl_dc_region_info {
->  	u64 blk_size;
->  	u32 dsmad_handle;
->  	u8 flags;
-> +	bool shareable;
-> +	bool read_only;
->  	u8 name[CXL_DC_REGION_STRLEN];
->  };
->  
-> @@ -533,6 +535,7 @@ struct cxl_memdev_state {
->  
->  	u8 nr_dc_region;
->  	struct cxl_dc_region_info dc_region[CXL_MAX_DC_REGION];
-> +	struct cxl_dpa_perf dc_perf[CXL_MAX_DC_REGION];
->  
->  	struct cxl_event_state event;
->  	struct cxl_poison_state poison;
-> diff --git a/include/acpi/actbl1.h b/include/acpi/actbl1.h
-> index 199afc2cd122..387fc821703a 100644
-> --- a/include/acpi/actbl1.h
-> +++ b/include/acpi/actbl1.h
-> @@ -403,6 +403,8 @@ struct acpi_cdat_dsmas {
->  /* Flags for subtable above */
->  
->  #define ACPI_CDAT_DSMAS_NON_VOLATILE        (1 << 2)
-> +#define ACPI_CDAT_DSMAS_SHAREABLE           (1 << 3)
-> +#define ACPI_CDAT_DSMAS_READ_ONLY           (1 << 6)
->  
->  /* Subtable 1: Device scoped Latency and Bandwidth Information Structure (DSLBIS) */
->  
-> 
-> -- 
-> 2.46.0
-> 
+>         u32 dummy;
+>
+> +       if (!IS_ENABLED(CONFIG_HAS_IOPORT)) {
+> +               *value =3D BIT_MASK(width);
+> +               return AE_NOT_IMPLEMENTED;
+> +       }
+> +
+>         if (value)
+>                 *value =3D 0;
+>         else
+> @@ -665,6 +670,9 @@ EXPORT_SYMBOL(acpi_os_read_port);
+>
+>  acpi_status acpi_os_write_port(acpi_io_address port, u32 value, u32 widt=
+h)
+>  {
+> +       if (!IS_ENABLED(CONFIG_HAS_IOPORT))
+> +               return AE_NOT_IMPLEMENTED;
+> +
+>         if (width <=3D 8) {
+>                 outb(value, port);
+>         } else if (width <=3D 16) {
 
--- 
-Fan Ni
+The above two changes look reasonable to me.
+
+> diff --git a/drivers/acpi/processor_perflib.c b/drivers/acpi/processor_pe=
+rflib.c
+> index 4265814c74f8..8be453d89ef8 100644
+> --- a/drivers/acpi/processor_perflib.c
+> +++ b/drivers/acpi/processor_perflib.c
+> @@ -455,7 +455,8 @@ int acpi_processor_pstate_control(void)
+>  {
+>         acpi_status status;
+>
+> -       if (!acpi_gbl_FADT.smi_command || !acpi_gbl_FADT.pstate_control)
+> +       if (!IS_ENABLED(CONFIG_HAS_IOPORT) ||
+> +           !acpi_gbl_FADT.smi_command || !acpi_gbl_FADT.pstate_control)
+>                 return 0;
+
+All of the existing callers of acpi_processor_pstate_control() are x86
+which has CONFIG_HAS_IOPORT AFAICS.
+
+And if you care about the code size, acpi_processor_notify_smm() can
+go away for !CONFIG_HAS_IOPORT too.
+
+>         pr_debug("Writing pstate_control [0x%x] to smi_command [0x%x]\n",
+> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+> index 7ecc401fb97f..9d5e6dd542bf 100644
+> --- a/drivers/acpi/scan.c
+> +++ b/drivers/acpi/scan.c
+> @@ -2293,7 +2293,8 @@ static int acpi_bus_attach(struct acpi_device *devi=
+ce, void *first_pass)
+>         if (device->handler)
+>                 goto ok;
+>
+> -       acpi_ec_register_opregions(device);
+> +       if (IS_ENABLED(CONFIG_HAS_IOPORT))
+> +               acpi_ec_register_opregions(device);
+
+I'd rather have an empty stub of acpi_ec_register_opregions() for
+!CONFIG_HAS_IOPORT instead.
+
+>
+>         if (!device->flags.initialized) {
+>                 device->flags.power_manageable =3D
