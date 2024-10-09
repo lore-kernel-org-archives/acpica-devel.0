@@ -1,227 +1,267 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2065.outbound.protection.outlook.com [40.107.220.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5A2C1836D9;
-	Wed,  9 Oct 2024 14:42:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728484979; cv=none; b=aRo12ZH92vC1xreMDYTequIBCBLOKIijRIU5SMI7WavpwO5jelidRleZ60DtDrIRFUH2FjxTj8n+i2mb8yygUOVvq0K5bn9i67LovAx0WM3kkx92muWXpsKGHsR1Uc4pB8PFQuKUX3yGTsHwnqg/Kxr+ToL7DvGRl2jlzleRdmM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728484979; c=relaxed/simple;
-	bh=6JEg1IWQ9xC5kwBpzTwz9Zj3qaAc3eJWc5MRgFK88fQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QTPMaLY6dYCKwFWJ4OMyx8d0oQTynIQT/wKwzuO1kH4r81zbJpPEGEo/fQv+mh9lLMxxfVxGDilw2lIrrASa/b+uPdI8RVT7mrM6LCUVrJ81OvaXz2YFsiACMNlYb6k+2wc6wmQwL/DbSJzibf92QEiQCRpMVhWaOpap9pKDKLU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TvSnDEtv; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6FA2198E69;
+	Wed,  9 Oct 2024 16:23:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.65
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1728491005; cv=fail; b=FpQIVhuMPjxl2H7qup43U/22BFXN5w7etzl1p/9mgAX8XSuicYrizuuG4mO+S1m8C5CZcnnlGIx75iU43jue/FFqdYVwLbFqa+6AevNpiD08rnnjVO+uhJP8a9JOvl0frsJMajYsorXMZ249rjZSIUGgUGUOX3PLmC04uOPyrKY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1728491005; c=relaxed/simple;
+	bh=HLgJSx9zNbLKmh+2CXeB+LrMw50jskRmGn9phyJNGss=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=CA+g+tAfJfM+dwALs+JjrCl/TxmPQu22xj7CowZckrbDJgBBzKdsChPn8VGmTPW3qwqfKgfMtJ4D17eg5ky3bS08G7VQzuo+K0jyqcEsbJxB6KMFh1BALQREtN61qs7dUcfPQk3KScIZ0OQqsZkgl1OGMd0XkwVvFT5GUKWdTnI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=d50cU2wX; arc=fail smtp.client-ip=40.107.220.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TvSnDEtv"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56D58C4CECD;
-	Wed,  9 Oct 2024 14:42:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728484979;
-	bh=6JEg1IWQ9xC5kwBpzTwz9Zj3qaAc3eJWc5MRgFK88fQ=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=TvSnDEtvtsN6C+/SM0y/Zbf/0mXF2Mn40y3by2HXHrux1RDGnG93kLUpMEWmcPDrK
-	 sOX+zsHqBO9edGNccIA/BCVzwphzpD+8sT1rkGL39LV+4W0hIPChLuzaCgFDX0tdGy
-	 99IVRBVIcPd2UUNFhIHbCdepzcA5TkxeWzO6/DBQLQGBKFDV2dchgAC/8u9eZEmdSM
-	 DUkmjUJm0gsBfLV8mqdVdGhYdlmkqSqM/x64gpO4AglxBO94SHpBjV2cfuXtgmN/GB
-	 A53oHen1qpgDxEIXmusKyzpNQeVORIpc9p/FWuCMW3NmDpM1hhfUcVeNWO26s7z7sk
-	 fBvhb+rJfGSzA==
-Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-5e9876999a9so486185eaf.3;
-        Wed, 09 Oct 2024 07:42:59 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUknc1v7jU5ixmB6QD1QxYNog4s0sw4zeFNBaVS0KaPgHkA+XBkny3wzUStx+9T992em+l1BAXy@lists.linux.dev, AJvYcCVxDTaeKki9VLqZhyE38zD93G7my1q8jH/5MuqyeN8bKwAVvE/o1dgoK48jWTeY3edILppIEKF39RxE9m8=@lists.linux.dev
-X-Gm-Message-State: AOJu0YwqJxjce67xmauAMy9F6JH2IEDy5hergzsyuj2ZicXFcuDxOEfD
-	PEdhHkW9WlWJbMSW4Vnv2pjVhOTn+PFceSAD2bl9il5h53BdxKXcGePH8E7VYF7Ka969PhE0QxG
-	WnXKcWTExFZP7Bwiz61I54ba9IyE=
-X-Google-Smtp-Source: AGHT+IHDaVFF9QB5Ocw0e+agFVyqw6KDF/qmyIN+xkqeGE34qYEEyNH3bqQh/xYpVKP/VbDhTkTKtGu9dtJoOOgnpNU=
-X-Received: by 2002:a05:6820:80b:b0:5e1:e65d:5148 with SMTP id
- 006d021491bc7-5e987ba3164mr1641923eaf.6.1728484978584; Wed, 09 Oct 2024
- 07:42:58 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="d50cU2wX"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=Cmx28ZrbUKKO+Y7gFTAHRm7ADUT8xShV6LoOR2t3MAYBv00OvEoNwV3VqP7JvyB+C9h8PxdFQS+SNzKoETsDtVs0941eLxHWEiGiJA9jCImnVjidBhFX0cbGL/dS9rVH4PhMakQSmAUwX2XpvIl9K13trVvmMWAY1HRFH1iTdGmT/KfRbvQ84M4qP4NDp+TbFWZIwo1d2AQiSbON4+CSRNWRZFz+ja5nxYQxQYz05hVGJiDnSsp71dKNqHwVQ1vmy+BHbxkLfm2j9XCgsvZoAlFHELeJnAyfL8J1i/xqRm5OJk9pxB8kynbi9gQaJm8jWGSymy7xLt1x3VEQeHdSMw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=UpiN5oo4z3lvMmB3amQBIgcZf9ooTUIzQ5WEgszjOO4=;
+ b=VG6E62Xwwpz/sXSNgW+HOkpkADSdpss8iRuB7qAeF74kb4RMV0jICG/D5VcZTg6EWqsHCV5pW1sWK+oOXCX9YHlo58dDOfAx7eBmy29l9f1nl/mL3ag+mN22FlyMAoow57koLkINMCl4kRt3AZnc8lkpYwVCILqYg/T//VNahVPvFGwQ9kuDprKINQbLPb2xrivVU8w/IbO7xcl70KUqEdmXzOpCzp1VgncnV927BYt1t1k9jUlttUATs5jMx36sQ+vjoTr758yeF7/LYCkYSjW7rUmC7AyRgUs2u+qFYpqGiSMK+zhZWXcvopsB/Uov1divB+vBZuuMa9gqCkNsOg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UpiN5oo4z3lvMmB3amQBIgcZf9ooTUIzQ5WEgszjOO4=;
+ b=d50cU2wXXX4tpCgnPtBgw3FI+ThGtUmAiTH1UQ5VGYyTasQgEhYu2wCWokHn23qcV8EXFUzvuzAfSo5MQGPxiiy0BEH+XFXKNJFxIgG6eeOkYmFMcmZr6KOMxSSZlYjy43ohiSfWCzS6rojnuVWBQZJ5GCzF8Fl03LavhdeTe4q/+0BjDqafU2Ymhe8t+8oMPwzvRfwlhCGJ2ACwVavlxKndRy7zhe2LxPIVSlJFcgSiB1AsPJ+dodEOaBcVr25bIBiAqP9yyM9zWojGKkCYieC/vMxvtVYOyDh1yaPS6+ErHfGBZJhJB6QOmCTCrH3k5YSiZqVSooL2f7NJQ3CkyQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from CH3PR12MB8659.namprd12.prod.outlook.com (2603:10b6:610:17c::13)
+ by SJ1PR12MB6073.namprd12.prod.outlook.com (2603:10b6:a03:488::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8048.16; Wed, 9 Oct
+ 2024 16:23:16 +0000
+Received: from CH3PR12MB8659.namprd12.prod.outlook.com
+ ([fe80::6eb6:7d37:7b4b:1732]) by CH3PR12MB8659.namprd12.prod.outlook.com
+ ([fe80::6eb6:7d37:7b4b:1732%4]) with mapi id 15.20.8048.013; Wed, 9 Oct 2024
+ 16:23:16 +0000
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: acpica-devel@lists.linux.dev,
+	Hanjun Guo <guohanjun@huawei.com>,
+	iommu@lists.linux.dev,
+	Joerg Roedel <joro@8bytes.org>,
+	Kevin Tian <kevin.tian@intel.com>,
+	kvm@vger.kernel.org,
+	Len Brown <lenb@kernel.org>,
+	linux-acpi@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Robert Moore <robert.moore@intel.com>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	Will Deacon <will@kernel.org>
+Cc: Alex Williamson <alex.williamson@redhat.com>,
+	Eric Auger <eric.auger@redhat.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	Moritz Fischer <mdf@kernel.org>,
+	Michael Shavit <mshavit@google.com>,
+	Nicolin Chen <nicolinc@nvidia.com>,
+	patches@lists.linux.dev,
+	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+	Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
+	Mostafa Saleh <smostafa@google.com>
+Subject: [PATCH v3 4/9] iommu/arm-smmu-v3: Report IOMMU_CAP_ENFORCE_CACHE_COHERENCY for CANWBS
+Date: Wed,  9 Oct 2024 13:23:10 -0300
+Message-ID: <4-v3-e2e16cd7467f+2a6a1-smmuv3_nesting_jgg@nvidia.com>
+In-Reply-To: <0-v3-e2e16cd7467f+2a6a1-smmuv3_nesting_jgg@nvidia.com>
+References:
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BL1PR13CA0025.namprd13.prod.outlook.com
+ (2603:10b6:208:256::30) To CH3PR12MB8659.namprd12.prod.outlook.com
+ (2603:10b6:610:17c::13)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20241007-dcd-type2-upstream-v4-0-c261ee6eeded@intel.com> <20241007-dcd-type2-upstream-v4-12-c261ee6eeded@intel.com>
-In-Reply-To: <20241007-dcd-type2-upstream-v4-12-c261ee6eeded@intel.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 9 Oct 2024 16:42:47 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0iFco4htzfW1sYYKKh67oe4GsnUBOPRiunHQ1n2FHa3hA@mail.gmail.com>
-Message-ID: <CAJZ5v0iFco4htzfW1sYYKKh67oe4GsnUBOPRiunHQ1n2FHa3hA@mail.gmail.com>
-Subject: Re: [PATCH v4 12/28] cxl/cdat: Gather DSMAS data for DCD regions
-To: Ira Weiny <ira.weiny@intel.com>
-Cc: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, 
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>, Navneet Singh <navneet.singh@intel.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Andrew Morton <akpm@linux-foundation.org>, 
-	Dan Williams <dan.j.williams@intel.com>, Davidlohr Bueso <dave@stgolabs.net>, 
-	Alison Schofield <alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, 
-	linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org, 
-	linux-doc@vger.kernel.org, nvdimm@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, Robert Moore <robert.moore@intel.com>, 
-	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org, 
-	acpica-devel@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR12MB8659:EE_|SJ1PR12MB6073:EE_
+X-MS-Office365-Filtering-Correlation-Id: fdaad5cd-7566-4a9b-e640-08dce87eae34
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|366016|376014|7416014|1800799024|921020;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?8l7TPVPIUxftarXeh6xoov6stLFcFUajRZ0AQWDehlA6lXrgcjTufwTLqjzy?=
+ =?us-ascii?Q?J6+vTAvzAnqEp2zoeAWzSwBUJlYk/xueKOThrwFrzwEF3zWZRGg1+0yHuCcf?=
+ =?us-ascii?Q?4uYafoGk0aMRA7M7kXpV1rcuidZ1o/8vnJKneDNg2EoIql3r74f1/J0i5h2L?=
+ =?us-ascii?Q?stUAHJtBLk40dINnIjAoZcYOKrFb3NaiEJgB6weX/LM2z9nfuXTqyeTY0PmY?=
+ =?us-ascii?Q?1L7q4ZKi7u3fjmnqPaj4FHL6ylkB8knc6dtJiOFouD2fncckchmPsIYT5jAf?=
+ =?us-ascii?Q?Rha5TI9CzwKd6GXGlrQ6UUVRZ4+u8pdyiMAhSqB8CBzkfN5XkzYjr+vUChWf?=
+ =?us-ascii?Q?PG6kkSAObZrKANrybdC+qv6rvBR+YbM8wNwd3q4ErKivW2GTemZxOJN7sev7?=
+ =?us-ascii?Q?2QJZKD27y2vpCZ9lUkcQc3ayUAZyDt2wLOBuGEgzOT9ZLk2VUV0eY/7da00j?=
+ =?us-ascii?Q?+Rl/YSxToBrYAwdex8ToiHAjjv9fb8/zd2RcT+bPvas5IWz8YnB/NFsbykkD?=
+ =?us-ascii?Q?jI+TgwDeEt6pVZgCFWHGJyQq4u3tJ7fpCOYNQKsJrW1k1OQ599u3fTgQW0Xb?=
+ =?us-ascii?Q?rQ5mJiLwR7aGTxmIZU0Xs5jhZylv1c+KFV9+7vgb15l6cw7/R+L9s/yeVoGR?=
+ =?us-ascii?Q?XIcdN0R3k8r02u4HKVThCOwqxzNXDkcUs9RowfVD0+NINIAX9esvxKNbTsXI?=
+ =?us-ascii?Q?Pd+7DKoPMHhIwerLhgsBnSJWB8bcJkbZxSWRVqHLcL9IcPvP/mdxHnBQqOKp?=
+ =?us-ascii?Q?zQoCbi9L1sljX5My+bM8Awdex83X+7ersGi/nfw7267wHQ3U/AcaJCRJulmV?=
+ =?us-ascii?Q?8fmbAu77azMrpDo1gOPnyf9KDtUJEc2+L9jaoQcSOGXjk3WXHebizXXf3C6a?=
+ =?us-ascii?Q?vigoUbg2/A9W8kW+qoU9lwGMv4jGHzA4HFx/WlSTWFMuvLSX4Am43NaDryzK?=
+ =?us-ascii?Q?IV4mA0mi9phA678pAeFoG6nydDZR/NUiB49PY1ubxBvB5ifiZkYaDKR8xapp?=
+ =?us-ascii?Q?sjSuz8OVkdKSvXJJJKy+6zboesR/35WlCOlk3XL8dsxvJAW4k4O/M8VIp+Ws?=
+ =?us-ascii?Q?PNmm02jPeuk47Mhaet4va2fjJsKcc7PjH79pQQHFleT1J2/YP3jnzyC4PTrT?=
+ =?us-ascii?Q?f3efqe3idUH01vkbDBNGQGE4X9UH2wzvz6ZT00tYWXul9qJERTXGuxXYFdzd?=
+ =?us-ascii?Q?SqNBpqmf+CxZXyoUd/X5OxWHQYilPe3AJBquuBugHJKy8FDqyyT0ZSnNgFxh?=
+ =?us-ascii?Q?DcWNg/fYhEYhQMY4kzcElYbkf0+FTmtHUj9hmIzF38yXgINqhHkUFRp5ovRG?=
+ =?us-ascii?Q?YpLKPU9LcW/qCC9/RyeucMhr?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8659.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(7416014)(1800799024)(921020);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?ipMbwgG8999eMqS3NGhX+qqv1Dyqc41YuoLPJdhYlwQe7YkpcKRoxDnD9qyD?=
+ =?us-ascii?Q?u32nhr9PfRsk0zyER77xTXurjj7hS3NMsHdDFulrNW/QP6bxLNK5gRlCZw0O?=
+ =?us-ascii?Q?GfoJrdiuzzHZEEr/wRtofgBuivnX7bQuSx2ctCIno96a0HWoEk4fss7Ch2dV?=
+ =?us-ascii?Q?FIWPR8Tmg5U41uXFT4TaPUZ2FhwqxaPRg/p7MclbsoRjvajx3zYjr7DnNjp6?=
+ =?us-ascii?Q?ZPThQ5KgAKdKE85utyqPOcVZBqjK+SynLH+J8Mrg8smDQRCHgAd9e1cDE/F1?=
+ =?us-ascii?Q?k4cgG/sbGmqOAu9e7EMRAFQrHefDiqesG9Cg/zmk2VInJ1ff0eQwUcBTwXiC?=
+ =?us-ascii?Q?+7We7kE7InMJTTD7KIeSG/rPp2es4NT3vEveZLgeLGAB6wdY5dgaFaroivET?=
+ =?us-ascii?Q?aCqipEOA6JeBhJgE5ps8fIR8F4kt0nWiRs9rX0X1/4FJijopWNsrdBD7w39X?=
+ =?us-ascii?Q?DxDnSI/Ki6eGFGs8thP7FAaTgAut4jMg8gJXLqe0Riwqzz7/ha1DuWe32/xA?=
+ =?us-ascii?Q?CJZs+DR4hrSXyOkwYc75L8HPd1z2CpiU5u2voabN/2PihaTTGZYfmFmxvBhI?=
+ =?us-ascii?Q?bW5CJ3oC2CaeXEATapJyh5YPA4vIM2IRCXNp34rCIWG7i7o5nKDUIHLiRrAv?=
+ =?us-ascii?Q?QQz6bwsm2kuAAVs86AxEujQ79bY8CwZXBjhWIValVkgQlKa2sH1gfkKTckH0?=
+ =?us-ascii?Q?myEk7RJttI7n3AaLEvO/Xj37AVa1uCQYDzKnBeqORW6yhbnAr4UmqQXw4+e9?=
+ =?us-ascii?Q?g1XnTgLvF4sRkcqeqvbBCMfEqMPQKUu+ba679ReA5/YdN56E7ywb2g7Zw1Uk?=
+ =?us-ascii?Q?A1EG9UlACM0xUSMP0UJwHgijEcHpnFaEB8wkdmbrnqnABq1mDIodG7ncHZv+?=
+ =?us-ascii?Q?Cn6YGxt5j60KApK72Y+cfhkxZkIWuEfna2c2tx544P163v0oahltI+Be9cFy?=
+ =?us-ascii?Q?gomImmxxD+WaSnXt2fL/hZLnjPofNLNsvSDTNyrzIYIE6IToztxBu7y0/mBP?=
+ =?us-ascii?Q?bRaxDlvuSwgPlepk0JIwLyDjESjBhmvSyPKrVvtothFioLhjn15DndJZ/CyT?=
+ =?us-ascii?Q?UfxOj3eeu9QKbVWG+IkpiL73UlfFnL/Y3uAORwj5u2Ax5/FWD8FlWH7bXBcj?=
+ =?us-ascii?Q?RIyuJqo1S2ghaiT/UKehoXrZShL5Tjeyw/qDeBivxJsZhJ7SOL0+fr9x2dE6?=
+ =?us-ascii?Q?HqhmDiWJ1fdKS9oqstdkUYGDiZZNK9cm+tk3plJcccGggPCBGma4xRxKXTbk?=
+ =?us-ascii?Q?+ZnIWu9wSXj+1uG3/+mCfKCv67eVIEHDLmQ8pma3Rm0+ZZJBXNEH+DQ3KGyf?=
+ =?us-ascii?Q?fL88jINY5JUawCK3+A8XAvRFo8T+u5y4CwF2lwfyddKgJTYG8NAyeIXvor9n?=
+ =?us-ascii?Q?S+W2VObMzqbQcz9HmF1BzxsHlU+YCBGMHzu/IwdHaTJqt7A/Nlnzrpgd5f3L?=
+ =?us-ascii?Q?Kmu9osBP7ms9k3oEeagACF4tf1Af9ySJNB0qkkJFHFNzrTMDwCijtExZ3R7l?=
+ =?us-ascii?Q?IjdThyQNmzdqYTE8oxqF8UMC/VB8Z1QTFRy2C0RpB31bHmCVOQSWrYIw7M9Q?=
+ =?us-ascii?Q?YVeogeFfeju0Oh4w88g=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fdaad5cd-7566-4a9b-e640-08dce87eae34
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8659.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2024 16:23:16.7719
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: tu/QoKBeEhfnrbPFzNBLBXOeGfW+110zvi186QV1iyiwNeRfUD/vW7PhqP66UKjH
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR12MB6073
 
-On Tue, Oct 8, 2024 at 1:17=E2=80=AFAM Ira Weiny <ira.weiny@intel.com> wrot=
-e:
->
-> Additional DCD region (partition) information is contained in the DSMAS
-> CDAT tables, including performance, read only, and shareable attributes.
->
-> Match DCD partitions with DSMAS tables and store the meta data.
->
-> To: Robert Moore <robert.moore@intel.com>
-> To: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> To: Len Brown <lenb@kernel.org>
-> Cc: linux-acpi@vger.kernel.org
-> Cc: acpica-devel@lists.linux.dev
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
->
-> ---
-> Changes:
-> [iweiny: new patch]
-> [iweiny: Gather shareable/read-only flags for later use]
-> ---
->  drivers/cxl/core/cdat.c | 38 ++++++++++++++++++++++++++++++++++++++
->  drivers/cxl/core/mbox.c |  2 ++
->  drivers/cxl/cxlmem.h    |  3 +++
->  include/acpi/actbl1.h   |  2 ++
->  4 files changed, 45 insertions(+)
->
-> diff --git a/drivers/cxl/core/cdat.c b/drivers/cxl/core/cdat.c
-> index bd50bb655741..9b2f717a16e5 100644
-> --- a/drivers/cxl/core/cdat.c
-> +++ b/drivers/cxl/core/cdat.c
-> @@ -17,6 +17,8 @@ struct dsmas_entry {
->         struct access_coordinate cdat_coord[ACCESS_COORDINATE_MAX];
->         int entries;
->         int qos_class;
-> +       bool shareable;
-> +       bool read_only;
->  };
->
->  static u32 cdat_normalize(u16 entry, u64 base, u8 type)
-> @@ -74,6 +76,8 @@ static int cdat_dsmas_handler(union acpi_subtable_heade=
-rs *header, void *arg,
->                 return -ENOMEM;
->
->         dent->handle =3D dsmas->dsmad_handle;
-> +       dent->shareable =3D dsmas->flags & ACPI_CDAT_DSMAS_SHAREABLE;
-> +       dent->read_only =3D dsmas->flags & ACPI_CDAT_DSMAS_READ_ONLY;
->         dent->dpa_range.start =3D le64_to_cpu((__force __le64)dsmas->dpa_=
-base_address);
->         dent->dpa_range.end =3D le64_to_cpu((__force __le64)dsmas->dpa_ba=
-se_address) +
->                               le64_to_cpu((__force __le64)dsmas->dpa_leng=
-th) - 1;
-> @@ -255,6 +259,38 @@ static void update_perf_entry(struct device *dev, st=
-ruct dsmas_entry *dent,
->                 dent->coord[ACCESS_COORDINATE_CPU].write_latency);
->  }
->
-> +
-> +static void update_dcd_perf(struct cxl_dev_state *cxlds,
-> +                           struct dsmas_entry *dent)
-> +{
-> +       struct cxl_memdev_state *mds =3D to_cxl_memdev_state(cxlds);
-> +       struct device *dev =3D cxlds->dev;
-> +
-> +       for (int i =3D 0; i < mds->nr_dc_region; i++) {
-> +               /* CXL defines a u32 handle while cdat defines u8, ignore=
- upper bits */
-> +               u8 dc_handle =3D mds->dc_region[i].dsmad_handle & 0xff;
-> +
-> +               if (resource_size(&cxlds->dc_res[i])) {
-> +                       struct range dc_range =3D {
-> +                               .start =3D cxlds->dc_res[i].start,
-> +                               .end =3D cxlds->dc_res[i].end,
-> +                       };
-> +
-> +                       if (range_contains(&dent->dpa_range, &dc_range)) =
-{
-> +                               if (dent->handle !=3D dc_handle)
-> +                                       dev_warn(dev, "DC Region/DSMAS mi=
-s-matched handle/range; region %pra (%u); dsmas %pra (%u)\n"
-> +                                                     "   setting DC regi=
-on attributes regardless\n",
-> +                                               &dent->dpa_range, dent->h=
-andle,
-> +                                               &dc_range, dc_handle);
-> +
-> +                               mds->dc_region[i].shareable =3D dent->sha=
-reable;
-> +                               mds->dc_region[i].read_only =3D dent->rea=
-d_only;
-> +                               update_perf_entry(dev, dent, &mds->dc_per=
-f[i]);
-> +                       }
-> +               }
-> +       }
-> +}
-> +
->  static void cxl_memdev_set_qos_class(struct cxl_dev_state *cxlds,
->                                      struct xarray *dsmas_xa)
->  {
-> @@ -278,6 +314,8 @@ static void cxl_memdev_set_qos_class(struct cxl_dev_s=
-tate *cxlds,
->                 else if (resource_size(&cxlds->pmem_res) &&
->                          range_contains(&pmem_range, &dent->dpa_range))
->                         update_perf_entry(dev, dent, &mds->pmem_perf);
-> +               else if (cxl_dcd_supported(mds))
-> +                       update_dcd_perf(cxlds, dent);
->                 else
->                         dev_dbg(dev, "no partition for dsmas dpa: %pra\n"=
-,
->                                 &dent->dpa_range);
-> diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
-> index 4b51ddd1ff94..3ba465823564 100644
-> --- a/drivers/cxl/core/mbox.c
-> +++ b/drivers/cxl/core/mbox.c
-> @@ -1649,6 +1649,8 @@ struct cxl_memdev_state *cxl_memdev_state_create(st=
-ruct device *dev)
->         mds->cxlds.type =3D CXL_DEVTYPE_CLASSMEM;
->         mds->ram_perf.qos_class =3D CXL_QOS_CLASS_INVALID;
->         mds->pmem_perf.qos_class =3D CXL_QOS_CLASS_INVALID;
-> +       for (int i =3D 0; i < CXL_MAX_DC_REGION; i++)
-> +               mds->dc_perf[i].qos_class =3D CXL_QOS_CLASS_INVALID;
->
->         return mds;
->  }
-> diff --git a/drivers/cxl/cxlmem.h b/drivers/cxl/cxlmem.h
-> index 0690b917b1e0..c3b889a586d8 100644
-> --- a/drivers/cxl/cxlmem.h
-> +++ b/drivers/cxl/cxlmem.h
-> @@ -466,6 +466,8 @@ struct cxl_dc_region_info {
->         u64 blk_size;
->         u32 dsmad_handle;
->         u8 flags;
-> +       bool shareable;
-> +       bool read_only;
->         u8 name[CXL_DC_REGION_STRLEN];
->  };
->
-> @@ -533,6 +535,7 @@ struct cxl_memdev_state {
->
->         u8 nr_dc_region;
->         struct cxl_dc_region_info dc_region[CXL_MAX_DC_REGION];
-> +       struct cxl_dpa_perf dc_perf[CXL_MAX_DC_REGION];
->
->         struct cxl_event_state event;
->         struct cxl_poison_state poison;
-> diff --git a/include/acpi/actbl1.h b/include/acpi/actbl1.h
-> index 199afc2cd122..387fc821703a 100644
-> --- a/include/acpi/actbl1.h
-> +++ b/include/acpi/actbl1.h
-> @@ -403,6 +403,8 @@ struct acpi_cdat_dsmas {
->  /* Flags for subtable above */
->
->  #define ACPI_CDAT_DSMAS_NON_VOLATILE        (1 << 2)
-> +#define ACPI_CDAT_DSMAS_SHAREABLE           (1 << 3)
-> +#define ACPI_CDAT_DSMAS_READ_ONLY           (1 << 6)
->
->  /* Subtable 1: Device scoped Latency and Bandwidth Information Structure=
- (DSLBIS) */
->
+HW with CANWBS is always cache coherent and ignores PCI No Snoop requests
+as well. This meets the requirement for IOMMU_CAP_ENFORCE_CACHE_COHERENCY,
+so let's return it.
 
-Is there an upstream ACPICA commit for this?
+Implement the enforce_cache_coherency() op to reject attaching devices
+that don't have CANWBS.
+
+Reviewed-by: Nicolin Chen <nicolinc@nvidia.com>
+Reviewed-by: Mostafa Saleh <smostafa@google.com>
+Tested-by: Nicolin Chen <nicolinc@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+---
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 31 +++++++++++++++++++++
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  7 +++++
+ 2 files changed, 38 insertions(+)
+
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+index acf250aeb18b27..38725810c14eeb 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+@@ -2293,6 +2293,8 @@ static bool arm_smmu_capable(struct device *dev, enum iommu_cap cap)
+ 	case IOMMU_CAP_CACHE_COHERENCY:
+ 		/* Assume that a coherent TCU implies coherent TBUs */
+ 		return master->smmu->features & ARM_SMMU_FEAT_COHERENCY;
++	case IOMMU_CAP_ENFORCE_CACHE_COHERENCY:
++		return arm_smmu_master_canwbs(master);
+ 	case IOMMU_CAP_NOEXEC:
+ 	case IOMMU_CAP_DEFERRED_FLUSH:
+ 		return true;
+@@ -2303,6 +2305,26 @@ static bool arm_smmu_capable(struct device *dev, enum iommu_cap cap)
+ 	}
+ }
+ 
++static bool arm_smmu_enforce_cache_coherency(struct iommu_domain *domain)
++{
++	struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
++	struct arm_smmu_master_domain *master_domain;
++	unsigned long flags;
++	bool ret = true;
++
++	spin_lock_irqsave(&smmu_domain->devices_lock, flags);
++	list_for_each_entry(master_domain, &smmu_domain->devices,
++			    devices_elm) {
++		if (!arm_smmu_master_canwbs(master_domain->master)) {
++			ret = false;
++			break;
++		}
++	}
++	smmu_domain->enforce_cache_coherency = ret;
++	spin_unlock_irqrestore(&smmu_domain->devices_lock, flags);
++	return ret;
++}
++
+ struct arm_smmu_domain *arm_smmu_domain_alloc(void)
+ {
+ 	struct arm_smmu_domain *smmu_domain;
+@@ -2731,6 +2753,14 @@ static int arm_smmu_attach_prepare(struct arm_smmu_attach_state *state,
+ 		 * one of them.
+ 		 */
+ 		spin_lock_irqsave(&smmu_domain->devices_lock, flags);
++		if (smmu_domain->enforce_cache_coherency &&
++		    !arm_smmu_master_canwbs(master)) {
++			spin_unlock_irqrestore(&smmu_domain->devices_lock,
++					       flags);
++			kfree(master_domain);
++			return -EINVAL;
++		}
++
+ 		if (state->ats_enabled)
+ 			atomic_inc(&smmu_domain->nr_ats_masters);
+ 		list_add(&master_domain->devices_elm, &smmu_domain->devices);
+@@ -3493,6 +3523,7 @@ static struct iommu_ops arm_smmu_ops = {
+ 	.owner			= THIS_MODULE,
+ 	.default_domain_ops = &(const struct iommu_domain_ops) {
+ 		.attach_dev		= arm_smmu_attach_dev,
++		.enforce_cache_coherency = arm_smmu_enforce_cache_coherency,
+ 		.set_dev_pasid		= arm_smmu_s1_set_dev_pasid,
+ 		.map_pages		= arm_smmu_map_pages,
+ 		.unmap_pages		= arm_smmu_unmap_pages,
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+index 1e9952ca989f87..06e3d88932df12 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+@@ -811,6 +811,7 @@ struct arm_smmu_domain {
+ 	/* List of struct arm_smmu_master_domain */
+ 	struct list_head		devices;
+ 	spinlock_t			devices_lock;
++	bool				enforce_cache_coherency : 1;
+ 
+ 	struct mmu_notifier		mmu_notifier;
+ };
+@@ -893,6 +894,12 @@ int arm_smmu_init_one_queue(struct arm_smmu_device *smmu,
+ int arm_smmu_cmdq_init(struct arm_smmu_device *smmu,
+ 		       struct arm_smmu_cmdq *cmdq);
+ 
++static inline bool arm_smmu_master_canwbs(struct arm_smmu_master *master)
++{
++	return dev_iommu_fwspec_get(master->dev)->flags &
++	       IOMMU_FWSPEC_PCI_RC_CANWBS;
++}
++
+ #ifdef CONFIG_ARM_SMMU_V3_SVA
+ bool arm_smmu_sva_supported(struct arm_smmu_device *smmu);
+ bool arm_smmu_master_sva_supported(struct arm_smmu_master *master);
+-- 
+2.46.2
+
