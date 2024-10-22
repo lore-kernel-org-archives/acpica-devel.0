@@ -1,49 +1,49 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F37AA13B58A
-	for <acpica-devel@lists.linux.dev>; Tue, 22 Oct 2024 22:11:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48BB21CCB50
+	for <acpica-devel@lists.linux.dev>; Tue, 22 Oct 2024 22:12:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729635071; cv=none; b=TLaMvvtTzQTscQWFDzOlTkDHJwJxVILh7AC6/AFXg3YpHf47WLFw0WpmMxEELe3egSR1wbMylokyH2M7ciiaxnC6Oj8qGlK67yKVrMSl6B2dONBQSEGLdYkIUF/rNW7fzVFAnPrraTwDlqklrxo4g+ZUpZL4yta+nvAaK001O24=
+	t=1729635123; cv=none; b=ut6qfNHnptnAEv3u9vnPn9xgVYJHxwEpgxaYBLRjDZgxgQuMYVQZfIyoLvWm7h6c9SXbG0IC3CoqF8/F22txsttYFohBNB+yUMs9j4MnLJc3lovl0h9rO5aiZ80OjVVRk1KR1QfAkdGNLfEZVuQ/49Q8fTVzAy3Nk8ykFnRXDHU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729635071; c=relaxed/simple;
-	bh=HhjXGOIoQmTl111qLHD0aSi7QzSy2hSuthAv88Ng8Pg=;
+	s=arc-20240116; t=1729635123; c=relaxed/simple;
+	bh=b1JW7krYn2Ty31n1Gs1Qbwt8owJ6tKib/gKh2vvGJXY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b2BOnEma9Pjj1zF/gGOjkWtK7+JNHjPRO4JCxl61hAuQp2BBc/Iv/Y19moWj5PlM8geeeNkyewWw+b3JMaFWqRpaz0Dqw6kTIAsONfGpCylvOJSYe7blj2JPcCQY4MKUhOaJI/LFHvmmlj7q9F7EBShn8qha3hEu5s39U9QninQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Dy6wZo6R; arc=none smtp.client-ip=198.175.65.10
+	 Content-Type:Content-Disposition:In-Reply-To; b=P7FU4w8isLFoM6pn/BQW3waEfruoaX5sFNntRsq4x5fNcYnd5u+VnngMPoI7Dq5dFaT6CvvbnlgRwzHHryaaMtwwOBeTtxrp3eAWrKaMuVMfi2+upWf9L9BgJii9j7xDWrtLGoMhnPDLa3AQiahviJ1xs949V3x4q64bAaJ/5Oc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UNdlgIka; arc=none smtp.client-ip=192.198.163.17
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Dy6wZo6R"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UNdlgIka"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1729635070; x=1761171070;
+  t=1729635122; x=1761171122;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=HhjXGOIoQmTl111qLHD0aSi7QzSy2hSuthAv88Ng8Pg=;
-  b=Dy6wZo6RaKrm83Hd5PFPYqz1yv7o2Dkg9C5FRpM0HWh8ba2YVZPexmFb
-   aDKrnQaYhr1r7Eyqa7Y0tjptQ5UBFsXbuYOyat1HZC0Ce36fdCwjVPO9l
-   peXUdWZGYW31mUUS8Wf/Czgty0lGG/wlQ362d5VrIKtj2w4uFXvP5UFn1
-   O5Nalg2Sig0wfADqLLFwWzJn/3Sb80X2njCWcTbwmJibtC+Hqc3ptKFSV
-   OPemCLHnOB7O+RXaQpDUkIB/HAabiUWMYAmhB8H/nPc8gMyxYwzCpig34
-   Wh+gf54DhiyQd4/Kc/gXMUj+hV6C31BsxrMptc3zACdqORVrNO92hLKYG
-   g==;
-X-CSE-ConnectionGUID: DlFN5qlAQm+tipH3hdf4vA==
-X-CSE-MsgGUID: WuHY9GkySeKsOFngaAis2g==
-X-IronPort-AV: E=McAfee;i="6700,10204,11222"; a="46661306"
-X-IronPort-AV: E=Sophos;i="6.11,199,1725346800"; 
-   d="scan'208";a="46661306"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2024 15:11:10 -0700
-X-CSE-ConnectionGUID: j7ea8Mo0Q3WhidcU3RqWAQ==
-X-CSE-MsgGUID: ROGVkmVsSfOu1cwnRhFiKw==
+  bh=b1JW7krYn2Ty31n1Gs1Qbwt8owJ6tKib/gKh2vvGJXY=;
+  b=UNdlgIkabe5UBCj49vf+WK29JoxOuUd/6l6qCT/I45g+bfsV5ApoH3IX
+   oAPnrU2Pf1sBCbCGiMXq6DGYqUOeHcQnPZBZl+cfCeIZq1Xxi0imlxjPv
+   4IpeUoWgRamqQMNVcXBNm7kgZ13hRBwDqDexCqEA0cEKchPP/crNT69H7
+   Wc/v5oMSdnejR7gu3EdyaRxrnlsfMD1LscpJAQZUysKfSRXjeZz1axkrZ
+   ftSCNyZms8PyUKRNVfUMa2ELltvVfY6mWivfofZlqbELqqU/hDioXKR87
+   bOH/sxdJXGOKjFOxy7/ncnLKIyqc+tABngN0SD32kpGdXnY8riSbWoAo/
+   w==;
+X-CSE-ConnectionGUID: g4EHzx/0QTyPc9lbdwuwQQ==
+X-CSE-MsgGUID: We2MNpWVQ3SR/AgZvVYDMg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11233"; a="29094889"
+X-IronPort-AV: E=Sophos;i="6.11,223,1725346800"; 
+   d="scan'208";a="29094889"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2024 15:12:02 -0700
+X-CSE-ConnectionGUID: xpWT1d/ETRuCXmG7gf4Tbw==
+X-CSE-MsgGUID: WBt8aHDPQU+QqFkalHrbnQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.11,223,1725346800"; 
-   d="scan'208";a="110801841"
+   d="scan'208";a="80192808"
 Received: from agluck-desk3.sc.intel.com ([172.25.222.70])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2024 15:11:02 -0700
-Date: Tue, 22 Oct 2024 15:10:59 -0700
+  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2024 15:12:01 -0700
+Date: Tue, 22 Oct 2024 15:11:59 -0700
 From: Tony Luck <tony.luck@intel.com>
 To: Zaid Alali <zaidal@os.amperecomputing.com>
 Cc: rafael@kernel.org, lenb@kernel.org, james.morse@arm.com, bp@alien8.de,
@@ -53,11 +53,10 @@ Cc: rafael@kernel.org, lenb@kernel.org, james.morse@arm.com, bp@alien8.de,
 	ira.weiny@intel.com, dave.jiang@intel.com,
 	sthanneeru.opensrc@micron.com, linux-acpi@vger.kernel.org,
 	linux-kernel@vger.kernel.org, acpica-devel@lists.linux.dev
-Subject: Re: [PATCH 4/8] ACPI: APEI: EINJ: Enable the discovery of EINJv2
- capabilities
-Message-ID: <Zxgi87DJvsUKTAyb@agluck-desk3.sc.intel.com>
+Subject: Re: [PATCH 5/8] ACPI: APEI: EINJ: Add einjv2 extension struct
+Message-ID: <ZxgjLwEXKSGnQBE-@agluck-desk3.sc.intel.com>
 References: <20241022213429.1561784-1-zaidal@os.amperecomputing.com>
- <20241022213429.1561784-5-zaidal@os.amperecomputing.com>
+ <20241022213429.1561784-6-zaidal@os.amperecomputing.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -66,16 +65,13 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241022213429.1561784-5-zaidal@os.amperecomputing.com>
+In-Reply-To: <20241022213429.1561784-6-zaidal@os.amperecomputing.com>
 
-On Tue, Oct 22, 2024 at 02:34:25PM -0700, Zaid Alali wrote:
-> @@ -692,7 +704,7 @@ int einj_validate_error_type(u64 type)
->  	if (tval & (tval - 1))
->  		return -EINVAL;
->  	if (!vendor)
-> -		if (!(type & available_error_type))
-> +		if (!(type & (available_error_type)))
+On Tue, Oct 22, 2024 at 02:34:26PM -0700, Zaid Alali wrote:
+> Add einjv2 extension struct and EINJv2 error types to prepare
+> the driver for EINJv2 support. ACPI specifications(1) enables
+> EINJv2 by extending set_error_type_with_address strcut.
 
-Extra parentheses around available_error_type not needed.
+s/strcut/struct/
 
 -Tony
