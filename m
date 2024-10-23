@@ -1,49 +1,49 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7164198E8C
-	for <acpica-devel@lists.linux.dev>; Tue, 22 Oct 2024 22:44:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0B651CCECB
+	for <acpica-devel@lists.linux.dev>; Wed, 23 Oct 2024 17:20:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729637093; cv=none; b=JsMF5isv+7db/87DBomuCGR+DV9twcVWqhfxWEZH3ynpeVavAzxZdtICwjCqT3zaJRgzViNyk5MP0Ovvq/p0/6Vb47rWBPt5WrViv031St0ROL7bXWuWV5SizBWpW/9Eo3vuIcWfj90xSgRKo5b5EQXYKEZWeDb3nma3e9PI5hg=
+	t=1729704058; cv=none; b=ZKIo3OoiEsMFq3kd2mGRSHHYXP4nR6/e8fzZ/+elhtYwCOIF1MwydxC9RjS0FPQsvOPoWxIc7I5r7EGWW6rbC0m7BOP9M2HsW6euTVNJsoC7sh1yMVEN7fkN9qLPwWSccMnMkVRLo9vrndjzfDxhN/zUy9sV2CfWsGE5K03M3Fk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729637093; c=relaxed/simple;
-	bh=40AJEEku2/+aledTHQy8tBcThqJuXsMNlt4ia9XyEKo=;
+	s=arc-20240116; t=1729704058; c=relaxed/simple;
+	bh=ez8ql2SG1sc2hyGeYZeeLamv0TSCW3Far16SATtP3TQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Md5qXSL5IWeWvDCJycQK7Ng0lnJjr57rkuFMp+kN4isKZdxR4tT4KwhErTL2Zt1wxMLQ164RQBzoOFiWzyZVqEsf5Tmkju3gM/ZZdjOD3FQcR01UH4DWF1OaPReKFmQvxQQ3OY0DptG8qnWS2tcSR+v2Juq+8q0KEyivb902Ozc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lJmQVHIK; arc=none smtp.client-ip=198.175.65.13
+	 Content-Type:Content-Disposition:In-Reply-To; b=eFVTINtgXzX1NSwkXT8JB7c1Dck0D2rnfJw56Uy1sYsWxKTq+hJZu6cPYBMI6m7Hp+A7cRmnEzGdSLGUZJxRdcyWUWwyyd02ivwLnSMQ7lPkB8dTIEEt5v3HWB5BvN39IWGlwQfIjWvRGhKwK3zW2JaySHsUGz7wBTgz7gimFho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PFPG915a; arc=none smtp.client-ip=198.175.65.12
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lJmQVHIK"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PFPG915a"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1729637092; x=1761173092;
+  t=1729704057; x=1761240057;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=40AJEEku2/+aledTHQy8tBcThqJuXsMNlt4ia9XyEKo=;
-  b=lJmQVHIKoGQ1GlcGR6Cy2P/5lYd7cKNAiQjitCjRYeVnW+YRWLD/Tj1j
-   QPeGtxCq0740vBsYni2KCT8lel2UL2gpi0vnq5Ah2KLprOPyZAWGsaNZ2
-   hD0QKrcPlGXhC3d/wqsdCHQIXH/rkFUD5NL2eCFS/NoKUkii15ETisGrJ
-   j/Zc2do1o6X9DrvbL1wz0Lcd5VppkJcup/YRjpyj64/Qawm9v7qCHapjP
-   wQzK9UfQogKN+/GPPnRDWF50/ka9D0dM0iwFjr0C/zsuLFZM4AEaLCchm
-   qYGwcZJulTezN2OeNgtOxBU0ap0Wmdpz2tIeRGBNwqkUj90UkmA4mpxYB
-   g==;
-X-CSE-ConnectionGUID: 2y/ujp/OSPOu8o8eN17ZFw==
-X-CSE-MsgGUID: 3JrNpBEoQxaxLj0N+wQ4iQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11222"; a="40322734"
-X-IronPort-AV: E=Sophos;i="6.11,199,1725346800"; 
-   d="scan'208";a="40322734"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2024 15:44:51 -0700
-X-CSE-ConnectionGUID: QzqXchzhQCq6Z41KSkJ8Sw==
-X-CSE-MsgGUID: e0GRUKgeR1OjLNfDzfV7JQ==
+  bh=ez8ql2SG1sc2hyGeYZeeLamv0TSCW3Far16SATtP3TQ=;
+  b=PFPG915aJzLWXlov0GTMR0GxWjsGKnPECWhdnUl1froW8of61n/IUpcG
+   TKa41hNeoegjWtwxUqyank8OPkV1cQyAmh16mvpJZ8ltbhA0/hwoP946C
+   TO0Na9RHvOhyDYX2KuNm4+EVSKxXaQASZqU//QzxV/sHV3ZWSdP42g7v7
+   9Rd617sjNINWaDSYIkoCWjCOQnDPrmD5fmtDo6i+BRUk6uPu8H+nUpQCa
+   z31XD9LcuUh21gTj/HT+0JhvwO5ylpxFrnRd0fPp4wBmbIq6NSyJ+cOxJ
+   xqT1aakQLyP5O4v65GOz2rtrfmG53tqSaortDbCqCJwP+fO5osknr19sD
+   w==;
+X-CSE-ConnectionGUID: mVs2KcNzQ+O4q9b2eiPgUQ==
+X-CSE-MsgGUID: NcSyM+YdSPWFuXApJ8XGfg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11234"; a="40699841"
+X-IronPort-AV: E=Sophos;i="6.11,226,1725346800"; 
+   d="scan'208";a="40699841"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2024 10:20:56 -0700
+X-CSE-ConnectionGUID: n0/Zq1N5S6K3OWgFcL7fRQ==
+X-CSE-MsgGUID: Ks1ydMzRTv+uDrJjR+RNSw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,223,1725346800"; 
-   d="scan'208";a="84604092"
+X-IronPort-AV: E=Sophos;i="6.11,226,1725346800"; 
+   d="scan'208";a="111089977"
 Received: from agluck-desk3.sc.intel.com ([172.25.222.70])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2024 15:44:48 -0700
-Date: Tue, 22 Oct 2024 15:44:47 -0700
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2024 10:20:56 -0700
+Date: Wed, 23 Oct 2024 10:20:54 -0700
 From: Tony Luck <tony.luck@intel.com>
 To: Zaid Alali <zaidal@os.amperecomputing.com>
 Cc: rafael@kernel.org, lenb@kernel.org, james.morse@arm.com, bp@alien8.de,
@@ -55,9 +55,10 @@ Cc: rafael@kernel.org, lenb@kernel.org, james.morse@arm.com, bp@alien8.de,
 	linux-kernel@vger.kernel.org, acpica-devel@lists.linux.dev
 Subject: Re: [PATCH 8/8] ACPI: APEI: EINJ: Update the documentation for
  EINJv2 support
-Message-ID: <Zxgq33pNuWBvadet@agluck-desk3.sc.intel.com>
+Message-ID: <ZxkwdinS4lbBX0mi@agluck-desk3.sc.intel.com>
 References: <20241022213429.1561784-1-zaidal@os.amperecomputing.com>
  <20241022213429.1561784-9-zaidal@os.amperecomputing.com>
+ <Zxgq33pNuWBvadet@agluck-desk3.sc.intel.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -66,131 +67,43 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241022213429.1561784-9-zaidal@os.amperecomputing.com>
+In-Reply-To: <Zxgq33pNuWBvadet@agluck-desk3.sc.intel.com>
 
-On Tue, Oct 22, 2024 at 02:34:29PM -0700, Zaid Alali wrote:
-> Add documentation for the updated ACPI specs for EINJv2(1)(2)
+On Tue, Oct 22, 2024 at 03:44:47PM -0700, Tony Luck wrote:
+> On Tue, Oct 22, 2024 at 02:34:29PM -0700, Zaid Alali wrote:
+> > +  # cd /sys/kernel/debug/apei/einj
+> > +  # cat available_error_type			# See which errors can be injected
+> > +  0x00000002	Processor Uncorrectable non-fatal
+> > +  0x00000008	Memory Correctable
+> > +  0x00000010	Memory Uncorrectable non-fatal
+> > +  0x00000001	EINJV2 Processor Error
+> > +  0x00000002	EINJV2 Memory Error
 > 
-> (1)https://bugzilla.tianocore.org/show_bug.cgi?id=4615
-> (2)https://bugzilla.tianocore.org/attachment.cgi?id=1446
-> 
-> Signed-off-by: Zaid Alali <zaidal@os.amperecomputing.com>
-> ---
->  .../firmware-guide/acpi/apei/einj.rst         | 46 ++++++++++++++++++-
->  1 file changed, 44 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/firmware-guide/acpi/apei/einj.rst b/Documentation/firmware-guide/acpi/apei/einj.rst
-> index c52b9da08fa9..3ad092111035 100644
-> --- a/Documentation/firmware-guide/acpi/apei/einj.rst
-> +++ b/Documentation/firmware-guide/acpi/apei/einj.rst
-> @@ -61,6 +61,14 @@ The following files belong to it:
->    0x00000800        Platform Uncorrectable fatal
->    ================  ===================================
->  
-> +  ================  ===================================
-> +  Error Type Value      Error Description
-> +  ================  ===================================
+> This seems confusing to me. Is 0x00000002 the code for a V1 processor
+> uncorrectable, or a V2 memory error? It seems that the "error_type" file
+> is interpreted differently depending on what is written to the "flags"
+> file.
 
-This shows up in the html output as a separate table with the
-same headers. Why not concatenate this to the existing table?
+Maybe the confusion would be removed if the "error_type"
+file is changed from using a hex number to using a string
+which the einj driver parses.
 
-The example of EINJv2 shows these extra lines just appearing
-right after the v1 lines.
+Hex values are parsed as before as legacy EINJ types. To specify
+a V2 EINJ type the user does:
 
-> +  0x00000001        EINJV2 Processor Error
-> +  0x00000002        EINJV2 Memory Error
-> +  0x00000004        EINJV2 PCI Express Error
-> +  ================  ===================================
-> +
->    The format of the file contents are as above, except present are only
->    the available error types.
->  
-> @@ -85,9 +93,11 @@ The following files belong to it:
->      Bit 0
->        Processor APIC field valid (see param3 below).
->      Bit 1
-> -      Memory address and mask valid (param1 and param2).
-> +      Memory address and range valid (param1 and param2).
->      Bit 2
->        PCIe (seg,bus,dev,fn) valid (see param4 below).
-> +    Bit 3
-> +      EINJv2 extension structure is valid
->  
->    If set to zero, legacy behavior is mimicked where the type of
->    injection specifies just one bit set, and param1 is multiplexed.
-> @@ -110,6 +120,7 @@ The following files belong to it:
->    Used when the 0x1 bit is set in "flags" to specify the APIC id
->  
->  - param4
-> +
->    Used when the 0x4 bit is set in "flags" to specify target PCIe device
->  
->  - notrigger
-> @@ -122,6 +133,18 @@ The following files belong to it:
->    this actually works depends on what operations the BIOS actually
->    includes in the trigger phase.
->  
-> +- einjv2_component_count
-> +
-> +  The value from this file is used to set the "Component Array Count"
-> +  field of EINJv2 Extension Structure.
-> +
-> +- einjv2_component_array
-> +
-> +  The contents of this file are used to set the "Component Array" field
-> +  of the EINJv2 Extension Structure. The expected format is hex values
-> +  for component id and syndrome separated by space, and multiple
-> +  components are separated by new line.
-> +
->  CXL error types are supported from ACPI 6.5 onwards (given a CXL port
->  is present). The EINJ user interface for CXL error types is at
->  <debugfs mount point>/cxl. The following files belong to it:
-> @@ -139,7 +162,6 @@ is present). The EINJ user interface for CXL error types is at
->    under <debugfs mount point>/apei/einj, while CXL 1.1/1.0 port injections
->    must use this file.
->  
-> -
->  BIOS versions based on the ACPI 4.0 specification have limited options
->  in controlling where the errors are injected. Your BIOS may support an
->  extension (enabled with the param_extension=1 module parameter, or boot
-> @@ -194,6 +216,26 @@ An error injection example::
->    # echo 0x8 > error_type			# Choose correctable memory error
->    # echo 1 > error_inject			# Inject now
->  
-> +An EINJv2 error injection example::
-> +
-> +  # cd /sys/kernel/debug/apei/einj
-> +  # cat available_error_type			# See which errors can be injected
-> +  0x00000002	Processor Uncorrectable non-fatal
-> +  0x00000008	Memory Correctable
-> +  0x00000010	Memory Uncorrectable non-fatal
-> +  0x00000001	EINJV2 Processor Error
-> +  0x00000002	EINJV2 Memory Error
+# echo V2_0x2 > error_type
 
-This seems confusing to me. Is 0x00000002 the code for a V1 processor
-uncorrectable, or a V2 memory error? It seems that the "error_type" file
-is interpreted differently depending on what is written to the "flags"
-file.
+and EINJ driver then knows to treat the code as a V2 type (instead
+of using a bit written to the flags file).
 
-> +
-> +  # echo 0x12345000 > param1			# Set memory address for injection
-> +  # echo 0xfffffffffffff000 > param2		# Range - anywhere in this page
-> +  # comp_arr="0x1 0x2				# Fill in the component array
-> +    >0x1 0x4
-> +    >0x2 0x4"
+For consistency the available_error_type would show the V2_ prefix
 
-Default $PS2 prompt in bash doesn't have leading spaces before the ">".
-So this example looks unnatural to me.
-
-> +  # echo "$comp_arr" > einjv2_component_array
-> +  # echo 0x2 > error_type			# Choose EINJv2 memory error
-> +  # echo 0xa > flags				# set flags to indicate EINJv2
-> +  # echo 1 > error_inject			# Inject now
-> +
->  You should see something like this in dmesg::
->  
->    [22715.830801] EDAC sbridge MC3: HANDLING MCE MEMORY ERROR
-> -- 
-> 2.34.1
+# cat available_error_type                       # See which errors can be injected
+0x00000002	Processor Uncorrectable non-fatal
+0x00000008	Memory Correctable
+0x00000010	Memory Uncorrectable non-fatal
+V2_0x00000001	EINJV2 Processor Error
+V2_0x00000002	EINJV2 Memory Error
 
 -Tony
+
