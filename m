@@ -1,197 +1,209 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2045.outbound.protection.outlook.com [40.107.102.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 747C715098E;
-	Thu, 24 Oct 2024 08:33:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729758830; cv=none; b=eHF3LstSga21VqaBvVcYj4L9KMZjnZt0ICjOOs1cNpMp/h1fgGM9NduXut0p9DljbFYr+hJwIBNNfb7ZwbcpabWR8D2OZFjz9PxuUuRafHJxiMHm++l5NO9SspS40aPU6PSkW9+ctIrW+bDpcB5C2U/TCgLCbRX/qdzKcyC0qAQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729758830; c=relaxed/simple;
-	bh=440a4UowBscCj5x5jCi7O4w9UQNiUsfEUJpOX9n3XQI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TACAbx3LKdy/Pxtbs61PGZr7HLSJNBfZIxy4gEYtskMRT1K62c+DSCoTPjwZleQriUazl92NuqxbEA9bD4GD7YMAvWtH6WyfLNRMrcRa2VhfYutLIxiEtardR+ytCOhHreKH9IKfGXc8LeprA1xwlZJd4mHkjNI97Xphuegt8B0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=L9IvI8YI; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5F18745F2;
+	Fri, 25 Oct 2024 14:00:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.45
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1729864854; cv=fail; b=iKONq2IMAMdep4Q+SkwmAuqVf5rSWULRL5GkZZ4qUeQoisKTikXhNmMUEQdxPaMuuzvR/FKsvLvxW1HL+rGjfrUIFeZxAXAzS32ex3cCm4i2vZ+au1iOzjcX//Lq3ZrGRLGIFJ11LiVcHPwmB31oqwKAOObvpdB9uO3CDrDynpI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1729864854; c=relaxed/simple;
+	bh=Oc+UtHm2UAaar7wgqZtUJIoh4MlEm8ZpTvxmCRb9ZLg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=NE69bfmT4EyD8tmPTU68pSvhFAbJjEijCm8DWhOoIcJTiFwG33JWLCnf/NzefL2IdhoffYlsSqpJJkY1YvXcok8dyWBUIYGuQGYc7P+WsPiHQcCFb42vDzlvITwFFPTZ40BA71/dsP08hLJ7r1NqkTZhU6Yf8p5PPlzwlT5LxDc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=CrpY7Tkx; arc=fail smtp.client-ip=40.107.102.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="L9IvI8YI"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1729758828; x=1761294828;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=440a4UowBscCj5x5jCi7O4w9UQNiUsfEUJpOX9n3XQI=;
-  b=L9IvI8YIk3VVoue076fVFQtURhv60QGp2mHmaRF2MlHWgcRqMG8GGPHy
-   wBB2P6yVVjsZCk9iwbLQ+Xq1dbmw7gYTQhANOe/7s5pHQAAm6YJ0y1A2g
-   xLdFZPAe5E9m8NYFXLnem8gplMho7qHIP+UsRqX27s1eqnyjecDW4733q
-   UJZ+r03ThEDjFcrwqhZS+3sOx8k3XdRrL0+/DfrYnvnrR9xJPkXu0g+pG
-   ZK13mdPyo9QVIr4kW+PPPeI7VymLC/dIW+vBRcywLoX7vSISgzZjGLh2s
-   VnFl6qR661+UkzaeivX+2SqC/crRTPSSiCDQOS2b0WChxniTH6p5W9Jkl
-   Q==;
-X-CSE-ConnectionGUID: Vo0+n0rDS1qC0wQqPRBWcw==
-X-CSE-MsgGUID: ewrEw/hWRyeei662+StOIA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11234"; a="40768681"
-X-IronPort-AV: E=Sophos;i="6.11,228,1725346800"; 
-   d="scan'208";a="40768681"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2024 01:33:47 -0700
-X-CSE-ConnectionGUID: DRmIii6WQkOK83fLyDLxhQ==
-X-CSE-MsgGUID: hI6GWyVHQXytlid2aGlJeQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,228,1725346800"; 
-   d="scan'208";a="85075578"
-Received: from lkp-server01.sh.intel.com (HELO a48cf1aa22e8) ([10.239.97.150])
-  by fmviesa005.fm.intel.com with ESMTP; 24 Oct 2024 01:33:43 -0700
-Received: from kbuild by a48cf1aa22e8 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1t3tHo-000WA4-0X;
-	Thu, 24 Oct 2024 08:33:40 +0000
-Date: Thu, 24 Oct 2024 16:33:04 +0800
-From: kernel test robot <lkp@intel.com>
-To: Zaid Alali <zaidal@os.amperecomputing.com>, rafael@kernel.org,
-	lenb@kernel.org, james.morse@arm.com, tony.luck@intel.com,
-	bp@alien8.de, robert.moore@intel.com, dan.j.williams@intel.com,
-	Jonathan.Cameron@huawei.com, Benjamin.Cheatham@amd.com,
-	Avadhut.Naik@amd.com, viro@zeniv.linux.org.uk, arnd@arndb.de,
-	ira.weiny@intel.com, dave.jiang@intel.com,
-	sthanneeru.opensrc@micron.com, linux-acpi@vger.kernel.org,
-	linux-kernel@vger.kernel.org, acpica-devel@lists.linux.dev
-Cc: oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH 7/8] ACPI: APEI: EINJ: Enable EINJv2 error injections
-Message-ID: <202410241620.oApALow5-lkp@intel.com>
-References: <20241022213429.1561784-8-zaidal@os.amperecomputing.com>
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="CrpY7Tkx"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=q6VR+hJ5ZrtbcifNxAYfT3MqKs7VvRxAVfEUFEkjsMWEMPjTlXpLN1TzJF2LMkWYdeb83N7E3gMQsYe5pXPdqHnyrxKtIf6Vh5GnRNViDRT2fWzRFMctc2iKjv9oMjWPyJt56weaNAXg4HhDj69eKVn5dVp+QVAAbjVVwieAxQfRCzhznNZyTs9OmhuhNaGkW7sd7+y4HaYnd7FLRLodyHXnsHRQ2U6hn8Lht0Qo03ttWRYelbgvDMUw1h+AuyR8MF2CsEz935eRU03gvrCHdE4IDPYG2OSp2m3Kf/dcgCgjsyDAXTfRLCV4LKNGffuSpUuHUzk4mVYFmnSQYuru2A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=HF7E9GxunQXOglzBZSufPGugXvqVoqtvZTiLe5T9cOM=;
+ b=BBIga4FKxD7XCQd4Iz8Rlnzz4XJIcFKe+IhYALF6dRHtsPZSsHasvGBnzdb6fIiM3uTjWeMu/tvDj9F5d0iugcin35frzTR5EdY7SO9etKcsbe0LfjEXb4v7YHcJGp11TiAVMxdDdv2NNBNOddvAfYrcfARSHWqifGQR9RjXEC8uFutKrn9oZKR4EJDex9uArNniuS6Qs4AI9YfCKIKsxmWETOY9p7JvyNMSYcqIG40+l6L9rq8ijtVWMVi9zQ356LTviBnAFM5HoB55pQR0ZSIPCyWH4x+tiZewoNj9z33iHa6vkap6Wdvb85+uytJMGnsL5BmaKTyfm3iyTfk5Ow==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HF7E9GxunQXOglzBZSufPGugXvqVoqtvZTiLe5T9cOM=;
+ b=CrpY7Tkx+yNmDo2FQeXYKAreZdPyS4Wdg8oDIqPZt+g1UCWHJBAkx7IN7jswnMno4qUTYdkuhZMWud+ispHnNQafrWeLoShGuyk7Pp2gX/RIrEyqJZBwV3gEaS7XiikVIEQatpZh065cTf+lcnZziZ4VXpyy4wDZa3DH/lRrqhJz1soUgo32Rc5XGQqKYansvJ1783iQrXKVQL0pWO0OEkB72oYsYgsNLsbm7XwPCDjXNZeUW5g0omHTZtu9GO67bMB9RjpYDBQlFHUluOXqxeiDB6e2VRv/2n9C44/F786Glx6vUXJF7a+L7ZEptHb5LkA0euemxRoJtDp2Lbedyg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from CH3PR12MB8659.namprd12.prod.outlook.com (2603:10b6:610:17c::13)
+ by SA1PR12MB6679.namprd12.prod.outlook.com (2603:10b6:806:252::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8093.19; Fri, 25 Oct
+ 2024 14:00:49 +0000
+Received: from CH3PR12MB8659.namprd12.prod.outlook.com
+ ([fe80::6eb6:7d37:7b4b:1732]) by CH3PR12MB8659.namprd12.prod.outlook.com
+ ([fe80::6eb6:7d37:7b4b:1732%4]) with mapi id 15.20.8093.018; Fri, 25 Oct 2024
+ 14:00:49 +0000
+Date: Fri, 25 Oct 2024 11:00:48 -0300
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: "Tian, Kevin" <kevin.tian@intel.com>
+Cc: "acpica-devel@lists.linux.dev" <acpica-devel@lists.linux.dev>,
+	Hanjun Guo <guohanjun@huawei.com>,
+	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+	Joerg Roedel <joro@8bytes.org>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	Len Brown <lenb@kernel.org>,
+	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	"Moore, Robert" <robert.moore@intel.com>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Sudeep Holla <sudeep.holla@arm.com>, Will Deacon <will@kernel.org>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	Eric Auger <eric.auger@redhat.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	Moritz Fischer <mdf@kernel.org>,
+	Michael Shavit <mshavit@google.com>,
+	Nicolin Chen <nicolinc@nvidia.com>,
+	"patches@lists.linux.dev" <patches@lists.linux.dev>,
+	"Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
+	Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
+	Mostafa Saleh <smostafa@google.com>
+Subject: Re: [PATCH v3 9/9] iommu/arm-smmu-v3: Use S2FWB for NESTED domains
+Message-ID: <20241025140048.GG6956@nvidia.com>
+References: <0-v3-e2e16cd7467f+2a6a1-smmuv3_nesting_jgg@nvidia.com>
+ <9-v3-e2e16cd7467f+2a6a1-smmuv3_nesting_jgg@nvidia.com>
+ <BN9PR11MB5276A5BCD028849E1658416D8C4E2@BN9PR11MB5276.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BN9PR11MB5276A5BCD028849E1658416D8C4E2@BN9PR11MB5276.namprd11.prod.outlook.com>
+X-ClientProxiedBy: BN9PR03CA0041.namprd03.prod.outlook.com
+ (2603:10b6:408:fb::16) To CH3PR12MB8659.namprd12.prod.outlook.com
+ (2603:10b6:610:17c::13)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241022213429.1561784-8-zaidal@os.amperecomputing.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR12MB8659:EE_|SA1PR12MB6679:EE_
+X-MS-Office365-Filtering-Correlation-Id: d0d09501-5672-421a-baeb-08dcf4fd6e13
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|1800799024|366016;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?f30H2238AQ3zvKQA5Q6O2TEq7lVa+ts+eDYaKJmitLimCHAcG+Bf8/ktKrqJ?=
+ =?us-ascii?Q?y+bCb0uQpNAnVjB5ZzEEx8nXG5a/FIWs/VOPSromXN1U5yDGtbId+QHpza96?=
+ =?us-ascii?Q?bRtUd62dYQCX42MJZB9m57GUXTa+NVaE/VKjN2+gJ8+d0MFPnYuOy7kboN8M?=
+ =?us-ascii?Q?IE2JOo29ERkKnQQNngp9PXx2Q5jdEy4SEqKxWnHrWTYkhkT7sQq1jjGesV+r?=
+ =?us-ascii?Q?E+HeRyBBZqPxjI5c6oHWIsi1CtMZjoAStzu+xwkjKBh5/DXxwTi2vXYU1jVw?=
+ =?us-ascii?Q?d9GY8osExfT9PKbWwjvl7RVeyp/Cq4J4ArAllQOYBOWw3PS3CN/xFxvNyvhy?=
+ =?us-ascii?Q?+a8h2qXgwi1DH5KZiAdJR2tKHHF7VsuYyiCW0Z0K/R1otjECPZtBt3lPxFp6?=
+ =?us-ascii?Q?OpcLcTcpjib6sOersJhJH91DiTBd6wQ0Cx7+42fPfkfGBaP+i7SnsDmCyjcu?=
+ =?us-ascii?Q?EK7xyJ9wXyY82zw0zmLbIlXYY7oBYFa8FYPau7l4fWDiYgJ8EkGQi10GSyFn?=
+ =?us-ascii?Q?Ij9wdnedr0fBIKgeaMNTTZBptTLU/i906JC2Ou/pdJ2F84z/iJNhRf4CVTrm?=
+ =?us-ascii?Q?WpIQAW3fPILzFUtbE6LsNOY1fjG3dkNyJjSD3Ac9DP3shkpp6neUVb0p4zJN?=
+ =?us-ascii?Q?iTQJoCJhxVCsR33A10E/HEtd63PAU3LTSYbkZA1q1oKheNo4rJSGbc9utbrN?=
+ =?us-ascii?Q?I2+nmyqdnlxDNf3DDnbbqvYKHHtR1ZrAjuyGqsL+v2WORSmbPvzAuQy20cy6?=
+ =?us-ascii?Q?Pgf99dSOos1aIJwSLto9ks8WpsJ3n+C8JQ5tAqC02Y/a7/dInDcrIeyVISyn?=
+ =?us-ascii?Q?Zf5T8wrts/KxoYuyxZ9Dcp4Sv/qy+jvWSEyMSzgQIi+UW0qGJbpFASIpHgJe?=
+ =?us-ascii?Q?oMfwb/+hdFWRASx7wsyO/NUeMxtImaubNDDDSRlA7JDYiZTeFoByitmlyd0u?=
+ =?us-ascii?Q?aHwqOxBpis76v2+OstTxrEkcErNzkW/mznbkjVA3xlMk4o6VCkhASIXCcffe?=
+ =?us-ascii?Q?jwHrdijpLHkYPQp05tvRfXZRjC6TeZAonG3ED5flsI8yMRoFAwXwNrJRgJYL?=
+ =?us-ascii?Q?S6krMgULPlqM9a4GhI//fH4EIjH6Oz927bKR7pZ25Xe8fuUqFjqjSBjEMpEC?=
+ =?us-ascii?Q?BJRskHa5adUC02Tj7fo5ZpWOoT2KTYl/sCPgpxmlSLDHAH4SbgDqyPLs2kOq?=
+ =?us-ascii?Q?1/yvfOHVNpmJy5KeKP8N87V9k2f4CVMKxDD5mBxUfF5tcFpQ9K5aWxBfhqCL?=
+ =?us-ascii?Q?n4b98BYRpAjd9fgBjwmGLKi4hi7Y5BitBVLL/moCUhA/HUJDEpxVr7OdL6Il?=
+ =?us-ascii?Q?PskGYOB6k9KxJAjYbZRVWLvG?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8659.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?6rytUPg5snRmQMKTA9zzCnLTknBvHNYLRDv6WY8qRG7GIy9xMENR2gk24BWp?=
+ =?us-ascii?Q?fGYFMSJuVD/1MYJi4unwQKHAqNeZ79JRytKfwDtPtVelLZBGMsmRC0vh8FAC?=
+ =?us-ascii?Q?uOsE5OYnFlQbPSAifg9ht/M1ShTCUkgFZRoSQoBctyQgLepEzhUBQ6d01dQ/?=
+ =?us-ascii?Q?jD+90M7N4w9aJ6yGR3TEJi3hmrxxtZOsyv9R1C+cldiUkwiyn3wbEYTnHtEQ?=
+ =?us-ascii?Q?OItSfn2tJlrE5GKF1IxyvvY4U6WMP3F+xXNOyE5aUd0iKFlet5yIfqGaR2qR?=
+ =?us-ascii?Q?74smatIlfpNoBm7QQ6lI7ftMA7CERVpX7rOPDGIWYuAeBzDKaKVYAUGKCjtA?=
+ =?us-ascii?Q?HcwCyv2ZGIMoQbrITVyjgtgGMAT50+5t281oVGBeWaCDv5smU2Mi45S2bIJS?=
+ =?us-ascii?Q?uVXslGJpf20wVGkUckGiMg+JD30cZs88DC/jkyNcxXxLsoKMZFcAdmBPdjqP?=
+ =?us-ascii?Q?uIEGgFJpp938aeReR5lnW6fp+xp8TP0g62tWx9/v47s+aRM6R1tcrBBkXb7Z?=
+ =?us-ascii?Q?HtLU6egr3UkP91/pYr+FyjYpVFQDr8yMdkRFq16LA2qZpIQUEJ8s7eDgBeSz?=
+ =?us-ascii?Q?qATpAFzv7d1DNKGD9alnogehcl9odjI8r7LFYzvCDEKbB2XnSagk+eh3n1RH?=
+ =?us-ascii?Q?mgladKpW5umJIc7wYVBJluzeVGonZoSABbOoDKKs0R+cNtrgXaz2gtrM+KiX?=
+ =?us-ascii?Q?lBbpJIAlBE5K4fIUpgVO9nQfKnY/VwTSFrd8va6E1NHY7Rpo3sNmmVQDCpWU?=
+ =?us-ascii?Q?i8elVBzo6Sic4zSvc6HJio9WEPTfFky6jmyGrKWkHYzaB1WYHGKiOmz5Jex9?=
+ =?us-ascii?Q?tXihO0lwG74ynK4zMBlU4FTMcWOw8ZUJWiDybyHf05WUUpxlxXRFIxdvKKa6?=
+ =?us-ascii?Q?9dGIBDDCXyTRup2yJvBlSLFKV2Dlz1fcKM0uqj2El1Yyn2yAkwC/svQv39Iv?=
+ =?us-ascii?Q?QXzqnH286xpuEzAFLTCZOqQQFZ8jZ8vz5fgpTzdsI5aUu+1QO5Aj81vOr+Cc?=
+ =?us-ascii?Q?F9vBR2T34D4q22vaeTrYFi0GJWyUdltn6czzi2bUjUEbekDyIRKzUvg7ODUm?=
+ =?us-ascii?Q?89Rf6M6AMwXDX0t8wsCqBKijJpv4rEq+qByoxNoShsG6HvNw1Ms35PQ5wLM+?=
+ =?us-ascii?Q?u6Vh7cUvCkUkdFSRM6Q0FA8oB9LtSFZgn3I0prXhzehShvVViPSZm17OZH3a?=
+ =?us-ascii?Q?DmEaWSXBqNfHF5G1csUauU95eHiVzsz/Pvqbnu7gI5Oq4j7/y4kXk4zo2RvM?=
+ =?us-ascii?Q?XDvO8OYaVFxAzSOt+0Gl8IJsXBWIZqZZe8qbIRWOiVCo10w7AJdNRsFrFMOk?=
+ =?us-ascii?Q?epT2ExoVUQe74mjYhOJPrdwH3FGxcng3G89wKPzouCGXCwyHirXNJXoYxJ9L?=
+ =?us-ascii?Q?rxbeeYpei2O1uvjeRgCJDqB8Xi3vnUxdHhY/UHEV1EGsl2JJ1aVmWItcJMA/?=
+ =?us-ascii?Q?g4L97WR6DnxW2fWCw5piAh4MdRmnG74/4kBOe7H6L8BAe/8dBCt0JXVnpgQz?=
+ =?us-ascii?Q?J0TgMYSqTI2xnWQ/+BkK70QN9lJtJyKuSu/MVwgX9lI4IX2/p9GR73etnnpa?=
+ =?us-ascii?Q?1elt6QOqIEOKzNEC77xsXc/cpbmPSHk9OExDcprl?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d0d09501-5672-421a-baeb-08dcf4fd6e13
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8659.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Oct 2024 14:00:49.2778
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4xeKJmuR5HHRC9KB/K2QFbdn8b3gIcVyAzJ65da8mh9yyKZGz2pK2ku+mGUgv4Va
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB6679
 
-Hi Zaid,
+On Thu, Oct 24, 2024 at 07:54:10AM +0000, Tian, Kevin wrote:
+> > From: Jason Gunthorpe <jgg@nvidia.com>
+> > Sent: Thursday, October 10, 2024 12:23 AM
+> > 
+> > Force Write Back (FWB) changes how the S2 IOPTE's MemAttr field
+> > works. When S2FWB is supported and enabled the IOPTE will force cachable
+> > access to IOMMU_CACHE memory when nesting with a S1 and deny cachable
+> > access otherwise.
+> 
+> didn't get the last part "deny cacheable access otherwise"
 
-kernel test robot noticed the following build warnings:
+ Force Write Back (FWB) changes how the S2 IOPTE's MemAttr field
+ works. When S2FWB is supported and enabled the IOPTE will force cachable
+ access to IOMMU_CACHE memory when nesting with a S1 and deny cachable
+ access when !IOMMU_CACHE.
 
-[auto build test WARNING on rafael-pm/linux-next]
-[also build test WARNING on rafael-pm/bleeding-edge linus/master v6.12-rc4 next-20241024]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+?
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Zaid-Alali/ACPICA-Update-values-to-hex-to-follow-ACPI-specs/20241023-054034
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git linux-next
-patch link:    https://lore.kernel.org/r/20241022213429.1561784-8-zaidal%40os.amperecomputing.com
-patch subject: [PATCH 7/8] ACPI: APEI: EINJ: Enable EINJv2 error injections
-config: x86_64-randconfig-121-20241024 (https://download.01.org/0day-ci/archive/20241024/202410241620.oApALow5-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241024/202410241620.oApALow5-lkp@intel.com/reproduce)
+> > @@ -169,7 +169,8 @@ arm_smmu_domain_alloc_nesting(struct device *dev,
+> > u32 flags,
+> >  	 * Must support some way to prevent the VM from bypassing the
+> > cache
+> >  	 * because VFIO currently does not do any cache maintenance.
+> >  	 */
+> > -	if (!arm_smmu_master_canwbs(master))
+> > +	if (!arm_smmu_master_canwbs(master) &&
+> > +	    !(master->smmu->features & ARM_SMMU_FEAT_S2FWB))
+> >  		return ERR_PTR(-EOPNOTSUPP);
+> 
+> Probably can clarify the difference between CANWBS and S2FWB here
+> by copying some words from the previous commit message. especially
+> about the part of PCI nosnoop.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202410241620.oApALow5-lkp@intel.com/
+	/*
+	 * Must support some way to prevent the VM from bypassing the cache
+	 * because VFIO currently does not do any cache maintenance. canwbs
+	 * indicates the device is fully coherent and no cache maintenance is
+	 * ever required, even for PCI No-Snoop. S2FWB means the S1 can't make
+	 * things non-coherent using the memattr, but No-Snoop behavior is not
+	 * effected.
+	 */
+	if (!arm_smmu_master_canwbs(master) &&
+	    !(master->smmu->features & ARM_SMMU_FEAT_S2FWB))
+		return ERR_PTR(-EOPNOTSUPP);
 
-sparse warnings: (new ones prefixed by >>)
-   drivers/acpi/apei/einj-core.c:261:11: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct vendor_error_type_extension *v @@     got void [noderef] __iomem * @@
-   drivers/acpi/apei/einj-core.c:261:11: sparse:     expected struct vendor_error_type_extension *v
-   drivers/acpi/apei/einj-core.c:261:11: sparse:     got void [noderef] __iomem *
-   drivers/acpi/apei/einj-core.c:270:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] __iomem *virt @@     got struct vendor_error_type_extension *v @@
-   drivers/acpi/apei/einj-core.c:270:29: sparse:     expected void [noderef] __iomem *virt
-   drivers/acpi/apei/einj-core.c:270:29: sparse:     got struct vendor_error_type_extension *v
-   drivers/acpi/apei/einj-core.c:296:25: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct set_error_type_with_address *v5param @@     got void [noderef] __iomem * @@
-   drivers/acpi/apei/einj-core.c:296:25: sparse:     expected struct set_error_type_with_address *v5param
-   drivers/acpi/apei/einj-core.c:296:25: sparse:     got void [noderef] __iomem *
->> drivers/acpi/apei/einj-core.c:306:53: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] __iomem *virt @@     got struct set_error_type_with_address *v5param @@
-   drivers/acpi/apei/einj-core.c:306:53: sparse:     expected void [noderef] __iomem *virt
-   drivers/acpi/apei/einj-core.c:306:53: sparse:     got struct set_error_type_with_address *v5param
-   drivers/acpi/apei/einj-core.c:307:41: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct set_error_type_with_address *v5param @@     got void [noderef] __iomem * @@
-   drivers/acpi/apei/einj-core.c:307:41: sparse:     expected struct set_error_type_with_address *v5param
-   drivers/acpi/apei/einj-core.c:307:41: sparse:     got void [noderef] __iomem *
-   drivers/acpi/apei/einj-core.c:316:25: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct einj_parameter *v4param @@     got void [noderef] __iomem * @@
-   drivers/acpi/apei/einj-core.c:316:25: sparse:     expected struct einj_parameter *v4param
-   drivers/acpi/apei/einj-core.c:316:25: sparse:     got void [noderef] __iomem *
-   drivers/acpi/apei/einj-core.c:320:45: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] __iomem *virt @@     got struct einj_parameter *v4param @@
-   drivers/acpi/apei/einj-core.c:320:45: sparse:     expected void [noderef] __iomem *virt
-   drivers/acpi/apei/einj-core.c:320:45: sparse:     got struct einj_parameter *v4param
-   drivers/acpi/apei/einj-core.c:387:21: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct acpi_einj_trigger *trigger_tab @@     got void [noderef] __iomem * @@
-   drivers/acpi/apei/einj-core.c:387:21: sparse:     expected struct acpi_einj_trigger *trigger_tab
-   drivers/acpi/apei/einj-core.c:387:21: sparse:     got void [noderef] __iomem *
-   drivers/acpi/apei/einj-core.c:413:17: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got struct acpi_einj_trigger *trigger_tab @@
-   drivers/acpi/apei/einj-core.c:413:17: sparse:     expected void volatile [noderef] __iomem *addr
-   drivers/acpi/apei/einj-core.c:413:17: sparse:     got struct acpi_einj_trigger *trigger_tab
-   drivers/acpi/apei/einj-core.c:414:21: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct acpi_einj_trigger *trigger_tab @@     got void [noderef] __iomem * @@
-   drivers/acpi/apei/einj-core.c:414:21: sparse:     expected struct acpi_einj_trigger *trigger_tab
-   drivers/acpi/apei/einj-core.c:414:21: sparse:     got void [noderef] __iomem *
-   drivers/acpi/apei/einj-core.c:477:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got struct acpi_einj_trigger *trigger_tab @@
-   drivers/acpi/apei/einj-core.c:477:25: sparse:     expected void volatile [noderef] __iomem *addr
-   drivers/acpi/apei/einj-core.c:477:25: sparse:     got struct acpi_einj_trigger *trigger_tab
-   drivers/acpi/apei/einj-core.c:983:37: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] __iomem *virt @@     got void *static [assigned] [toplevel] einj_param @@
-   drivers/acpi/apei/einj-core.c:983:37: sparse:     expected void [noderef] __iomem *virt
-   drivers/acpi/apei/einj-core.c:983:37: sparse:     got void *static [assigned] [toplevel] einj_param
+?
 
-vim +306 drivers/acpi/apei/einj-core.c
-
-   272	
-   273	static void *einj_get_parameter_address(void)
-   274	{
-   275		int i;
-   276		u64 pa_v4 = 0, pa_v5 = 0;
-   277		struct acpi_whea_header *entry;
-   278	
-   279		entry = EINJ_TAB_ENTRY(einj_tab);
-   280		for (i = 0; i < einj_tab->entries; i++) {
-   281			if (entry->action == ACPI_EINJ_SET_ERROR_TYPE &&
-   282			    entry->instruction == ACPI_EINJ_WRITE_REGISTER &&
-   283			    entry->register_region.space_id ==
-   284			    ACPI_ADR_SPACE_SYSTEM_MEMORY)
-   285				pa_v4 = get_unaligned(&entry->register_region.address);
-   286			if (entry->action == ACPI_EINJ_SET_ERROR_TYPE_WITH_ADDRESS &&
-   287			    entry->instruction == ACPI_EINJ_WRITE_REGISTER &&
-   288			    entry->register_region.space_id ==
-   289			    ACPI_ADR_SPACE_SYSTEM_MEMORY)
-   290				pa_v5 = get_unaligned(&entry->register_region.address);
-   291			entry++;
-   292		}
-   293		if (pa_v5) {
-   294			struct set_error_type_with_address *v5param;
-   295	
-   296			v5param = acpi_os_map_iomem(pa_v5, sizeof(*v5param));
-   297			if (v5param) {
-   298				int offset, len;
-   299	
-   300				acpi5 = 1;
-   301				check_vendor_extension(pa_v5, v5param);
-   302				if (available_error_type & ACPI65_EINJV2_SUPP) {
-   303					len = v5param->einjv2_struct.length;
-   304					offset = offsetof(struct einjv2_extension_struct, component_arr);
-   305					nr_components = (len - offset) / 32;
- > 306					acpi_os_unmap_iomem(v5param, sizeof(*v5param));
-   307					v5param = acpi_os_map_iomem(pa_v5, sizeof(*v5param) + (
-   308						(nr_components) * sizeof(struct syndrome_array)));
-   309				}
-   310				return v5param;
-   311			}
-   312		}
-   313		if (param_extension && pa_v4) {
-   314			struct einj_parameter *v4param;
-   315	
-   316			v4param = acpi_os_map_iomem(pa_v4, sizeof(*v4param));
-   317			if (!v4param)
-   318				return NULL;
-   319			if (v4param->reserved1 || v4param->reserved2) {
-   320				acpi_os_unmap_iomem(v4param, sizeof(*v4param));
-   321				return NULL;
-   322			}
-   323			return v4param;
-   324		}
-   325	
-   326		return NULL;
-   327	}
-   328	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks,
+Jason
