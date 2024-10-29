@@ -1,191 +1,373 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D378B206079
-	for <acpica-devel@lists.linux.dev>; Tue, 29 Oct 2024 12:03:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 715E43207;
+	Tue, 29 Oct 2024 20:35:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730203423; cv=none; b=U8dkdyPyBPxJ7VsnWMdnTMZkFV6DriSQo7fZodQtC9YQ3CezPENFByXwLC2eEreEsDnI9DnRq9QFCF8cVKZu0XEaEvOIQ5sZwP92TtYwnjMwvBS6INio4mXOQ6NM361xh4/jOHYbhnUo8+JGEJq6Ph+PwwExNw71cxSCENPnyJI=
+	t=1730234111; cv=none; b=kNNiffQGbdn8u9TSakBJ+IZsw3m4hHJixetSdB2bvz+25iD36oSvKDOYhGdIQy4BdaHaZ/xqnyjY5bbbqmuuO4lG48mBJ3wWHviuH/sdrL6WyzdNAiR4C1h1qH0QqQNvIKXi4qoRLhJnFUvD0HSMCX/gYSLmPw1Kdms0zo/ycCU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730203423; c=relaxed/simple;
-	bh=4QJnoopncawiR3Bs++HFf+6Jy9YaevrMrh6+AldV06I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SyPo/9Z0nAsPtvRsE+aEKj03A1ayyMckOAqQhA6VkoLKhZgzsSo2n3bSLfhpalc7yAz+OiY0ZsXAH0Z8gCVIwDX3f6FKm/llT8mzjhnp56GZ9uNiK2fxI3gfO7wYJ6J3poVNmk4x4gd4S3+EcO6z5QyKEp8g6DoDUhkLRHOyImo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mTBvZRHV; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1730234111; c=relaxed/simple;
+	bh=+n7NESwCAXCuQb/gjoCvHq4i9tG4yrJ8CQQkFfi2yh0=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=cRDBINMyj3AEX7SD1eGpfLQj2m2yjtDPnlah31ShwBExOZRLjJtYDHX963/YQYASaTH4OtnMK3TSL9r/zCrZKwfQNNX09TmUJDbmt02ASCG93YKL+HNcYQ0dMLTMgE6B/cJlp66zsnJtd7yTSgct9AtNpy166SqP5NA27t9+GIk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=R/JLqP/4; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mTBvZRHV"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 794A5C4CEE6
-	for <acpica-devel@lists.linux.dev>; Tue, 29 Oct 2024 12:03:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730203423;
-	bh=4QJnoopncawiR3Bs++HFf+6Jy9YaevrMrh6+AldV06I=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=mTBvZRHVIPnxd/GwItxRwE6jCEF7UzJ7hKi9JMw3umgXJ2t9oYXgfFqoiNMD6j+MU
-	 076o1TlRGXZwfWXYDThptSSklw6L+H7xiaTNIGfEsXjgVqkOHRH42CdHxwAupoxQQX
-	 wsoSapY1LJbLVA0UuctQRzDHqbQ9Hk224qwzquz9XndZFrrMoAAFC78XoainIS+foh
-	 +TD/SzGnCROsRdQJLNRFK3ISlRpEsnNDVzaxpbb074C1T2/gCfpr08wtuLMrXnipgH
-	 qsuJv9cnL0x3JsZlzgzhBrcIwu3Hc9xlmzJLdQuIfsEavsmUN75zpq0fdfGRyASLgA
-	 XAQctH8lOWwcQ==
-Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-2884e6ed0daso1995941fac.0
-        for <acpica-devel@lists.linux.dev>; Tue, 29 Oct 2024 05:03:43 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUQee/PXVaxUXBRoCtcWznai+WrSccJhpyAjQa/DHLGAkmnIbL9QTJvvr5zWJBDXx+CdnVscuY0LBkPmZ4=@lists.linux.dev
-X-Gm-Message-State: AOJu0YwfJwpVNxHKxf9QJUuzX3ZM5a80Dp03lJPPEe3V3FY++mQCsqkU
-	XXBBno7RGBRk2PJAaIqevZsDnzObRm9PWoXXBGNkK7WU/h2CD5oAVJ2ZujUgnJmRwU9wt0L6sj5
-	Oh85QuSzZyf4td4fjSXRpabWYTvY=
-X-Google-Smtp-Source: AGHT+IFijydljJ+b+OkcOdBuE96XgR7L6OsNAUhKgYukL1UdIMGAiWPi+qa3j+0XWsYieCS9E0eSxZ9unEXBjJefoWI=
-X-Received: by 2002:a05:6871:58c:b0:268:a79a:be0d with SMTP id
- 586e51a60fabf-29051decfcfmr8753664fac.47.1730203422728; Tue, 29 Oct 2024
- 05:03:42 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="R/JLqP/4"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1730234108; x=1761770108;
+  h=from:subject:date:message-id:mime-version:
+   content-transfer-encoding:to:cc;
+  bh=+n7NESwCAXCuQb/gjoCvHq4i9tG4yrJ8CQQkFfi2yh0=;
+  b=R/JLqP/4bzTtEptmu4G4nE74MREqfEfb+0nxYiTFsswW6gyav/AmsTU7
+   uYrQpiFqdxRrSWWG/aF1XMTqtGEw09K5C3kQ7H/DdqpPb2M98oiXilTDV
+   QCGcQi2yAR/grcqeSkHjzJ+ZAXi+hlNnj01DkgNG4EFAJzKqr/W3qRVRP
+   CiO95+86lcpud+fajJrjro+KjEatYNPLHaaneFacC/TwEnKkDFTl1lZL1
+   8yw/TorNxOKov9pEaG5k4OfKrzzn1+JcMw6gIzWeNP7dbRmlS6UbjLhAs
+   fvLS5ltWKMA8c/fvkI0g/xUUiE5tuN2TxXz5aEtoI+ByKDq3Sxh/zSmSy
+   g==;
+X-CSE-ConnectionGUID: 3rKMkr0hS5i+KNKBW5NowA==
+X-CSE-MsgGUID: ORX0gIzXQJC5dlwTZvr+5A==
+X-IronPort-AV: E=McAfee;i="6700,10204,11222"; a="29865444"
+X-IronPort-AV: E=Sophos;i="6.11,199,1725346800"; 
+   d="scan'208";a="29865444"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2024 13:35:06 -0700
+X-CSE-ConnectionGUID: lroTCasgQyWg50KojOG50g==
+X-CSE-MsgGUID: mQWihjETSri2srMzmXBy0w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.11,243,1725346800"; 
+   d="scan'208";a="81712032"
+Received: from ldmartin-desk2.corp.intel.com (HELO localhost) ([10.125.108.77])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2024 13:35:03 -0700
+From: Ira Weiny <ira.weiny@intel.com>
+Subject: [PATCH v5 00/27] DCD: Add support for Dynamic Capacity Devices
+ (DCD)
+Date: Tue, 29 Oct 2024 15:34:35 -0500
+Message-Id: <20241029-dcd-type2-upstream-v5-0-8739cb67c374@intel.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20241028125657.1271512-1-pierre.gondois@arm.com>
-In-Reply-To: <20241028125657.1271512-1-pierre.gondois@arm.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Tue, 29 Oct 2024 13:03:30 +0100
-X-Gmail-Original-Message-ID: <CAJZ5v0jzDxAe6FmVOigd-EnAOkgOhbtdPp-ZrVGQqjpxAnabRQ@mail.gmail.com>
-Message-ID: <CAJZ5v0jzDxAe6FmVOigd-EnAOkgOhbtdPp-ZrVGQqjpxAnabRQ@mail.gmail.com>
-Subject: Re: [PATCH v2] ACPI: CPPC: Make rmw_lock a raw_spin_lock
-To: Pierre Gondois <pierre.gondois@arm.com>
-Cc: linux-kernel@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>, 
-	=?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>, 
-	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIANtGIWcC/4WPy07EMAxFf2WUNUF2kjp0VvwHYpGHSyNBWyWlY
+ jTqv5NWAg2jAZbX8jnXPovCOXERx8NZZF5SSeNQQ3N3EKF3wwvLFGsWCpQGAiNjiHI+Tazk+1T
+ mzO5NQojYdKSQuigq6F1h6bMbQr+hP7e3hSlzlz721qfnmvtU5jGf9iMW3KZ/9i0oQVr0pA16x
+ 415TMPMr/dh3O0VNaDV76i3HiCS0qSaC3S7ZFH/t6uq6KyBYCzbFulaob8UBh6Qbir09kBofUv
+ BO4r2WmG+FQhgbypMVQRFyEzMkeOlYl3XTwgLo8DZAQAA
+X-Change-ID: 20230604-dcd-type2-upstream-0cd15f6216fd
+To: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, 
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>, 
+ Navneet Singh <navneet.singh@intel.com>, Jonathan Corbet <corbet@lwn.net>, 
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: Dan Williams <dan.j.williams@intel.com>, 
+ Davidlohr Bueso <dave@stgolabs.net>, 
+ Alison Schofield <alison.schofield@intel.com>, 
+ Vishal Verma <vishal.l.verma@intel.com>, Ira Weiny <ira.weiny@intel.com>, 
+ linux-cxl@vger.kernel.org, linux-doc@vger.kernel.org, 
+ nvdimm@lists.linux.dev, linux-kernel@vger.kernel.org, 
+ Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
+ David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org, 
+ Johannes Thumshirn <johannes.thumshirn@wdc.com>, 
+ Robert Moore <robert.moore@intel.com>, Len Brown <lenb@kernel.org>, 
+ "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, 
+ linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, 
+ Li Ming <ming4.li@intel.com>, 
+ Jonathan Cameron <Jonathan.Cameron@Huawei.com>, Kees Cook <kees@kernel.org>, 
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>, 
+ linux-hardening@vger.kernel.org
+X-Mailer: b4 0.15-dev-2a633
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1730234086; l=12751;
+ i=ira.weiny@intel.com; s=20221211; h=from:subject:message-id;
+ bh=+n7NESwCAXCuQb/gjoCvHq4i9tG4yrJ8CQQkFfi2yh0=;
+ b=bvfmGERYfMwlQbFx9G3hlmmE/UzOREqs1CYEf3A7to317J8Uv40SfHtzHcHwcVCg5PPyuTC66
+ jxTVUk5/Z15BcUFYVyvzSs6ECJvCiFXkACxnA+y5nb9utzEdOlctXR1
+X-Developer-Key: i=ira.weiny@intel.com; a=ed25519;
+ pk=noldbkG+Wp1qXRrrkfY1QJpDf7QsOEthbOT7vm0PqsE=
 
-On Mon, Oct 28, 2024 at 1:57=E2=80=AFPM Pierre Gondois <pierre.gondois@arm.=
-com> wrote:
->
-> The following BUG was triggered. sugov_update_shared() locks a
-> raw_spinlock while cpc_write() locks a spinlock. To have a correct
-> wait-type order, update rmw_lock to a raw_spinlock.
->
-> Also save irq state.
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-> [ BUG: Invalid wait context ]
-> 6.12.0-rc2-XXX #406 Not tainted
-> -----------------------------
-> kworker/1:1/62 is trying to lock:
-> ffffff8801593030 (&cpc_ptr->rmw_lock){+.+.}-{3:3}, at: cpc_write+0xcc/0x3=
-70
-> other info that might help us debug this:
-> context-{5:5}
-> 2 locks held by kworker/1:1/62:
->   #0: ffffff897ef5ec98 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_ne=
-sted+0x2c/0x50
->   #1: ffffff880154e238 (&sg_policy->update_lock){....}-{2:2}, at: sugov_u=
-pdate_shared+0x3c/0x280
-> stack backtrace:
-> CPU: 1 UID: 0 PID: 62 Comm: kworker/1:1 Not tainted 6.12.0-rc2-g9654bd3e8=
-806 #406
-> Workqueue:  0x0 (events)
-> Call trace:
->   dump_backtrace+0xa4/0x130
->   show_stack+0x20/0x38
->   dump_stack_lvl+0x90/0xd0
->   dump_stack+0x18/0x28
->   __lock_acquire+0x480/0x1ad8
->   lock_acquire+0x114/0x310
->   _raw_spin_lock+0x50/0x70
->   cpc_write+0xcc/0x370
->   cppc_set_perf+0xa0/0x3a8
->   cppc_cpufreq_fast_switch+0x40/0xc0
->   cpufreq_driver_fast_switch+0x4c/0x218
->   sugov_update_shared+0x234/0x280
->   update_load_avg+0x6ec/0x7b8
->   dequeue_entities+0x108/0x830
->   dequeue_task_fair+0x58/0x408
->   __schedule+0x4f0/0x1070
->   schedule+0x54/0x130
->   worker_thread+0xc0/0x2e8
->   kthread+0x130/0x148
->   ret_from_fork+0x10/0x20
->
-> Fixes: 60949b7b8054 ("ACPI: CPPC: Fix MASK_VAL() usage")
-> Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
-> ---
->
-> Notes:
->     v2:
->     - Do the actual changes.
->
->  drivers/acpi/cppc_acpi.c | 9 +++++----
->  include/acpi/cppc_acpi.h | 2 +-
->  2 files changed, 6 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-> index c3fc2c05d868..1a40f0514eaa 100644
-> --- a/drivers/acpi/cppc_acpi.c
-> +++ b/drivers/acpi/cppc_acpi.c
-> @@ -867,7 +867,7 @@ int acpi_cppc_processor_probe(struct acpi_processor *=
-pr)
->
->         /* Store CPU Logical ID */
->         cpc_ptr->cpu_id =3D pr->id;
-> -       spin_lock_init(&cpc_ptr->rmw_lock);
-> +       raw_spin_lock_init(&cpc_ptr->rmw_lock);
->
->         /* Parse PSD data for this CPU */
->         ret =3D acpi_get_psd(cpc_ptr, handle);
-> @@ -1087,6 +1087,7 @@ static int cpc_write(int cpu, struct cpc_register_r=
-esource *reg_res, u64 val)
->         int pcc_ss_id =3D per_cpu(cpu_pcc_subspace_idx, cpu);
->         struct cpc_reg *reg =3D &reg_res->cpc_entry.reg;
->         struct cpc_desc *cpc_desc;
-> +       unsigned long flags;
->
->         size =3D GET_BIT_WIDTH(reg);
->
-> @@ -1126,7 +1127,7 @@ static int cpc_write(int cpu, struct cpc_register_r=
-esource *reg_res, u64 val)
->                         return -ENODEV;
->                 }
->
-> -               spin_lock(&cpc_desc->rmw_lock);
-> +               raw_spin_lock_irqsave(&cpc_desc->rmw_lock, flags);
->                 switch (size) {
->                 case 8:
->                         prev_val =3D readb_relaxed(vaddr);
-> @@ -1141,7 +1142,7 @@ static int cpc_write(int cpu, struct cpc_register_r=
-esource *reg_res, u64 val)
->                         prev_val =3D readq_relaxed(vaddr);
->                         break;
->                 default:
-> -                       spin_unlock(&cpc_desc->rmw_lock);
-> +                       raw_spin_unlock_irqrestore(&cpc_desc->rmw_lock, f=
-lags);
->                         return -EFAULT;
->                 }
->                 val =3D MASK_VAL_WRITE(reg, prev_val, val);
-> @@ -1174,7 +1175,7 @@ static int cpc_write(int cpu, struct cpc_register_r=
-esource *reg_res, u64 val)
->         }
->
->         if (reg->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_MEMORY)
-> -               spin_unlock(&cpc_desc->rmw_lock);
-> +               raw_spin_unlock_irqrestore(&cpc_desc->rmw_lock, flags);
->
->         return ret_val;
->  }
-> diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
-> index 76e44e102780..62d368bcd9ec 100644
-> --- a/include/acpi/cppc_acpi.h
-> +++ b/include/acpi/cppc_acpi.h
-> @@ -65,7 +65,7 @@ struct cpc_desc {
->         int write_cmd_status;
->         int write_cmd_id;
->         /* Lock used for RMW operations in cpc_write() */
-> -       spinlock_t rmw_lock;
-> +       raw_spinlock_t rmw_lock;
->         struct cpc_register_resource cpc_regs[MAX_CPC_REG_ENT];
->         struct acpi_psd_package domain_info;
->         struct kobject kobj;
-> --
+A git tree of this series can be found here:
 
-Applied (with edited changelog) as 6.12-rc material, thanks!
+	https://github.com/weiny2/linux-kernel/tree/dcd-v4-2024-10-29
+
+Series info
+===========
+
+This series has 4 parts:
+
+Patch 1: Add core range_overlaps() function
+Patch 2-6: CXL clean up/prelim patches
+Patch 7-25: Core DCD support
+Patch 26-27: cxl_test support
+
+Background
+==========
+
+A Dynamic Capacity Device (DCD) (CXL 3.1 sec 9.13.3) is a CXL memory
+device that allows memory capacity within a region to change
+dynamically without the need for resetting the device, reconfiguring
+HDM decoders, or reconfiguring software DAX regions.
+
+One of the biggest use cases for Dynamic Capacity is to allow hosts to
+share memory dynamically within a data center without increasing the
+per-host attached memory.
+
+The general flow for the addition or removal of memory is to have an
+orchestrator coordinate the use of the memory.  Generally there are 5
+actors in such a system, the Orchestrator, Fabric Manager, the Logical
+device, the Host Kernel, and a Host User.
+
+Typical work flows are shown below.
+
+Orchestrator      FM         Device       Host Kernel    Host User
+
+    |             |           |            |              |
+    |-------------- Create region ----------------------->|
+    |             |           |            |              |
+    |             |           |            |<-- Create ---|
+    |             |           |            |    Region    |
+    |<------------- Signal done --------------------------|
+    |             |           |            |              |
+    |-- Add ----->|-- Add --->|--- Add --->|              |
+    |  Capacity   |  Extent   |   Extent   |              |
+    |             |           |            |              |
+    |             |<- Accept -|<- Accept  -|              |
+    |             |   Extent  |   Extent   |              |
+    |             |           |            |<- Create --->|
+    |             |           |            |   DAX dev    |-- Use memory
+    |             |           |            |              |   |
+    |             |           |            |              |   |
+    |             |           |            |<- Release ---| <-+
+    |             |           |            |   DAX dev    |
+    |             |           |            |              |
+    |<------------- Signal done --------------------------|
+    |             |           |            |              |
+    |-- Remove -->|- Release->|- Release ->|              |
+    |  Capacity   |  Extent   |   Extent   |              |
+    |             |           |            |              |
+    |             |<- Release-|<- Release -|              |
+    |             |   Extent  |   Extent   |              |
+    |             |           |            |              |
+    |-- Add ----->|-- Add --->|--- Add --->|              |
+    |  Capacity   |  Extent   |   Extent   |              |
+    |             |           |            |              |
+    |             |<- Accept -|<- Accept  -|              |
+    |             |   Extent  |   Extent   |              |
+    |             |           |            |<- Create ----|
+    |             |           |            |   DAX dev    |-- Use memory
+    |             |           |            |              |   |
+    |             |           |            |<- Release ---| <-+
+    |             |           |            |   DAX dev    |
+    |<------------- Signal done --------------------------|
+    |             |           |            |              |
+    |-- Remove -->|- Release->|- Release ->|              |
+    |  Capacity   |  Extent   |   Extent   |              |
+    |             |           |            |              |
+    |             |<- Release-|<- Release -|              |
+    |             |   Extent  |   Extent   |              |
+    |             |           |            |              |
+    |-- Add ----->|-- Add --->|--- Add --->|              |
+    |  Capacity   |  Extent   |   Extent   |              |
+    |             |           |            |<- Create ----|
+    |             |           |            |   DAX dev    |-- Use memory
+    |             |           |            |              |   |
+    |-- Remove -->|- Release->|- Release ->|              |   |
+    |  Capacity   |  Extent   |   Extent   |              |   |
+    |             |           |            |              |   |
+    |             |           |     (Release Ignored)     |   |
+    |             |           |            |              |   |
+    |             |           |            |<- Release ---| <-+
+    |             |           |            |   DAX dev    |
+    |<------------- Signal done --------------------------|
+    |             |           |            |              |
+    |             |- Release->|- Release ->|              |
+    |             |  Extent   |   Extent   |              |
+    |             |           |            |              |
+    |             |<- Release-|<- Release -|              |
+    |             |   Extent  |   Extent   |              |
+    |             |           |            |<- Destroy ---|
+    |             |           |            |   Region     |
+    |             |           |            |              |
+
+Implementation
+==============
+
+The series still requires the creation of regions and DAX devices to be
+closely synchronized with the Orchestrator and Fabric Manager.  The host
+kernel will reject extents if a region is not yet created.  It also
+ignores extent release if memory is in use (DAX device created).  These
+synchronizations are not anticipated to be an issue with real
+applications.
+
+In order to allow for capacity to be added and removed a new concept of
+a sparse DAX region is introduced.  A sparse DAX region may have 0 or
+more bytes of available space.  The total space depends on the number
+and size of the extents which have been added.
+
+Initially it is anticipated that users of the memory will carefully
+coordinate the surfacing of additional capacity with the creation of DAX
+devices which use that capacity.  Therefore, the allocation of the
+memory to DAX devices does not allow for specific associations between
+DAX device and extent.  This keeps allocations very similar to existing
+DAX region behavior.
+
+To keep the DAX memory allocation aligned with the existing DAX devices
+which do not have tags extents are not allowed to have tags.  Future
+support for tags is planned.
+
+Great care was taken to keep the extent tracking simple.  Some xarray's
+needed to be added but extra software objects were kept to a minimum.
+
+Region extents continue to be tracked as sub-devices of the DAX region.
+This ensures that region destruction cleans up all extent allocations
+properly.
+
+Some review tags were kept if a patch did not change.
+
+The major functionality of this series includes:
+
+- Getting the dynamic capacity (DC) configuration information from cxl
+  devices
+
+- Configuring the DC partitions reported by hardware
+
+- Enhancing the CXL and DAX regions for dynamic capacity support
+	a. Maintain a logical separation between hardware extents and
+	   software managed region extents.  This provides an
+	   abstraction between the layers and should allow for
+	   interleaving in the future
+
+- Get hardware extent lists for endpoint decoders upon
+  region creation.
+
+- Adjust extent/region memory available on the following events.
+        a. Add capacity Events
+	b. Release capacity events
+
+- Host response for add capacity
+	a. do not accept the extent if:
+		If the region does not exist
+		or an error occurs realizing the extent
+	b. If the region does exist
+		realize a DAX region extent with 1:1 mapping (no
+		interleave yet)
+	c. Support the event more bit by processing a list of extents
+	   marked with the more bit together before setting up a
+	   response.
+
+- Host response for remove capacity
+	a. If no DAX device references the extent; release the extent
+	b. If a reference does exist, ignore the request.
+	   (Require FM to issue release again.)
+
+- Modify DAX device creation/resize to account for extents within a
+  sparse DAX region
+
+- Trace Dynamic Capacity events for debugging
+
+- Add cxl-test infrastructure to allow for faster unit testing
+  (See new ndctl branch for cxl-dcd.sh test[1])
+
+- Only support 0 value extent tags
+
+Fan Ni's upstream of Qemu DCD was used for testing.
+
+Remaining work:
+
+	1) Allow mapping to specific extents (perhaps based on
+	   label/tag)
+	   1a) devise region size reporting based on tags
+	2) Interleave support
+
+Possible additional work depending on requirements:
+
+	1) Accept a new extent which extends (but overlaps) an existing
+	   extent(s)
+	2) Release extents when DAX devices are released if a release
+	   was previously seen from the device
+	3) Rework DAX device interfaces, memfd has been explored a bit
+
+[1] https://github.com/weiny2/ndctl/tree/dcd-region2-2024-10-01
+
+---
+Major Changes in v5:
+- Clean up more bit processing with bug fixes
+- Add cache flush on extent removal path
+- Split out %pra print specifier
+	Link: https://lore.kernel.org/all/20241025-cxl-pra-v2-0-123a825daba2@intel.com/
+- Split out ACPI flags additions
+- Address comments on code format/spelling etc.
+- Link to v4: https://patch.msgid.link/20241007-dcd-type2-upstream-v4-0-c261ee6eeded@intel.com
+
+---
+Ira Weiny (13):
+      range: Add range_overlaps()
+      ACPI/CDAT: Add CDAT/DSMAS shared and read only flag values
+      dax: Document struct dev_dax_range
+      cxl/pci: Delay event buffer allocation
+      cxl/hdm: Use guard() in cxl_dpa_set_mode()
+      cxl/region: Refactor common create region code
+      cxl/cdat: Gather DSMAS data for DCD regions
+      cxl/events: Split event msgnum configuration from irq setup
+      cxl/pci: Factor out interrupt policy check
+      cxl/core: Return endpoint decoder information from region search
+      dax/bus: Factor out dev dax resize logic
+      tools/testing/cxl: Make event logs dynamic
+      tools/testing/cxl: Add DC Regions to mock mem data
+
+Navneet Singh (14):
+      cxl/mbox: Flag support for Dynamic Capacity Devices (DCD)
+      cxl/mem: Read dynamic capacity configuration from the device
+      cxl/core: Separate region mode from decoder mode
+      cxl/region: Add dynamic capacity decoder and region modes
+      cxl/hdm: Add dynamic capacity size support to endpoint decoders
+      cxl/mem: Expose DCD partition capabilities in sysfs
+      cxl/port: Add endpoint decoder DC mode support to sysfs
+      cxl/region: Add sparse DAX region support
+      cxl/mem: Configure dynamic capacity interrupts
+      cxl/extent: Process DCD events and realize region extents
+      cxl/region/extent: Expose region extent information in sysfs
+      dax/region: Create resources on sparse DAX regions
+      cxl/region: Read existing extents on region creation
+      cxl/mem: Trace Dynamic capacity Event Record
+
+ Documentation/ABI/testing/sysfs-bus-cxl | 125 ++++-
+ drivers/cxl/core/Makefile               |   2 +-
+ drivers/cxl/core/cdat.c                 |  45 +-
+ drivers/cxl/core/core.h                 |  34 +-
+ drivers/cxl/core/extent.c               | 500 +++++++++++++++++
+ drivers/cxl/core/hdm.c                  | 231 ++++++--
+ drivers/cxl/core/mbox.c                 | 610 +++++++++++++++++++-
+ drivers/cxl/core/memdev.c               | 128 ++++-
+ drivers/cxl/core/port.c                 |  19 +-
+ drivers/cxl/core/region.c               | 185 ++++--
+ drivers/cxl/core/trace.h                |  65 +++
+ drivers/cxl/cxl.h                       | 120 +++-
+ drivers/cxl/cxlmem.h                    | 131 ++++-
+ drivers/cxl/pci.c                       | 122 ++--
+ drivers/dax/bus.c                       | 356 ++++++++++--
+ drivers/dax/bus.h                       |   4 +-
+ drivers/dax/cxl.c                       |  71 ++-
+ drivers/dax/dax-private.h               |  66 ++-
+ drivers/dax/hmem/hmem.c                 |   2 +-
+ drivers/dax/pmem.c                      |   2 +-
+ fs/btrfs/ordered-data.c                 |  10 +-
+ include/acpi/actbl1.h                   |   2 +
+ include/cxl/event.h                     |  32 ++
+ include/linux/ioport.h                  |   3 +
+ include/linux/range.h                   |   8 +
+ tools/testing/cxl/Kbuild                |   3 +-
+ tools/testing/cxl/test/mem.c            | 958 ++++++++++++++++++++++++++++----
+ 27 files changed, 3502 insertions(+), 332 deletions(-)
+---
+base-commit: c2ee9f594da826bea183ed14f2cc029c719bf4da
+change-id: 20230604-dcd-type2-upstream-0cd15f6216fd
+
+Best regards,
+-- 
+Ira Weiny <ira.weiny@intel.com>
+
