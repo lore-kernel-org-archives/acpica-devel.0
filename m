@@ -1,86 +1,311 @@
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F67E1F4FAF;
-	Wed, 30 Oct 2024 14:48:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 240322141AD
+	for <acpica-devel@lists.linux.dev>; Wed, 30 Oct 2024 16:24:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730299729; cv=none; b=Uu56uYRnSnIxwHHAce45UF7T2amLN1fdjuTcKSFTn6Y8gQU9zgUaDgvmilHvMqpGPL1rEX8IB0IO2mHjAeIicYwPvVZGLayrXEMJO9fu7t0/EaDmgINS7BB7+Tn+rp4tnL/rhLDl9l0UwD/B+zrozTR6N6B4NPkqlbzmvBVYxWs=
+	t=1730305493; cv=none; b=l/6QmPQ8CsUsg8X8P6P0me0wxZJ87dbRY3HObCVin96m31EjRuRVU6+aLN0F/1+nFa1/83m16m+3O2CDRhFDasyIX4zqlLJBmDXfd+AhSxpMp9iHleQ1HFX9SevkNaqkhtxehe0aoB/g+dCjCkelzVGpjSpXtTvCd+PZYwnyS0Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730299729; c=relaxed/simple;
-	bh=lQRfqcUFnh1Q9TAfFVHoDskiifmQlnSBJhbcwNY/6Zs=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gYqq+4nj02OZKCLjDK99inWMFmcdSFsG16hINgXbWe9auEkgdi3Oo7YcGzCvRzR1qOVVNtMgQTuG7WxNB7GcWCALUMIaINWGUwjs6vWv89SBptmz5N3hZ9alqTzpX3fu9CJq0FowKN+NTMz+6S+VkhugGYP4oUcMwydLK3Cc25Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Xdqd53czYz6GFBq;
-	Wed, 30 Oct 2024 22:43:53 +0800 (CST)
-Received: from frapeml500008.china.huawei.com (unknown [7.182.85.71])
-	by mail.maildlp.com (Postfix) with ESMTPS id B55EB140593;
-	Wed, 30 Oct 2024 22:48:44 +0800 (CST)
-Received: from localhost (10.203.177.66) by frapeml500008.china.huawei.com
- (7.182.85.71) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Wed, 30 Oct
- 2024 15:48:43 +0100
-Date: Wed, 30 Oct 2024 14:48:41 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Ira Weiny <ira.weiny@intel.com>
-CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
- Singh" <navneet.singh@intel.com>, Jonathan Corbet <corbet@lwn.net>, "Andrew
- Morton" <akpm@linux-foundation.org>, Dan Williams <dan.j.williams@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>, "Alison Schofield"
-	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
-	<linux-cxl@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-	<nvdimm@lists.linux.dev>, <linux-kernel@vger.kernel.org>, Chris Mason
-	<clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David Sterba
-	<dsterba@suse.com>, <linux-btrfs@vger.kernel.org>, Johannes Thumshirn
-	<johannes.thumshirn@wdc.com>, Robert Moore <robert.moore@intel.com>, "Len
- Brown" <lenb@kernel.org>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-	<linux-acpi@vger.kernel.org>, <acpica-devel@lists.linux.dev>, Li Ming
-	<ming4.li@intel.com>, Kees Cook <kees@kernel.org>, "Gustavo A. R. Silva"
-	<gustavoars@kernel.org>, <linux-hardening@vger.kernel.org>
-Subject: Re: [PATCH v5 00/27] DCD: Add support for Dynamic Capacity Devices
- (DCD)
-Message-ID: <20241030144841.00006746@Huawei.com>
-In-Reply-To: <20241029-dcd-type2-upstream-v5-0-8739cb67c374@intel.com>
-References: <20241029-dcd-type2-upstream-v5-0-8739cb67c374@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1730305493; c=relaxed/simple;
+	bh=kdxsp+FvuAUbZvIT1RpMFDU46BVfWQTsZ9w7Hgn6y/0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qsTL3MI66w/Icj3YQ8WNSg49gQNORH80wX395k15DjW/Vie2PKNE7KJn4gN0Xbu0GBmykN4LqzDBHBRMzOT66P5R4DMww6iSJOdVQ4QQlss92GQEoVuqfxJV83IVAVhKBEv2e50JzziQwh8FyMCiTAOZ7TEV1OA5KoU6cixLuas=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=LEhQxBYX; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="LEhQxBYX"
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-43150ea2db6so261725e9.0
+        for <acpica-devel@lists.linux.dev>; Wed, 30 Oct 2024 09:24:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1730305489; x=1730910289; darn=lists.linux.dev;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=rirf9ShYmRb5CMlpaICloXmtFMhlyQIKSk5nv7X8RPs=;
+        b=LEhQxBYXSJo8qqR25XCZATCdNtwidL8SxT4L9iyv3Cr7ZhtMhwj6+6myR7AQv7+AAm
+         erq+cbVdP8YJRMe9LknBqtkOUsP1/37Ed0aLr8Ty27fTW3jidg9VKMEZCeRL4fzNTb4r
+         fY7sgfMsjyNdDXBsYuMjHRNVgNDFuqgtFFi/NAAyphSmULPGacDu6j8K5nMCuTzC4BrO
+         T5u9nFls7hBrfG3xJT4suJQcLjK6+54vrrY/melArAJvUe/5ghogTpXNti4rS5Imjptk
+         zSUBFePMHJY41K2DnlAzBGNg4c7XqJkKyvXFtWzUNWBa4SjesAvYZYZWQCxfXatbiiy6
+         aveQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730305489; x=1730910289;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rirf9ShYmRb5CMlpaICloXmtFMhlyQIKSk5nv7X8RPs=;
+        b=PAbsmirr77gmIzwKamNn9J1KjOd9iW3LjFvrQu348qUMShGaDctExigGSDIYZUsf4l
+         5VqrEcOWeVOwjoOukbyT30173J1XNVrvx8UFGr+DMycEgeR9HAMnyw8sLtZ03XWS7Bb7
+         UhqJP6bN7xEILuNZxddk10gEC3+Ql/pP0wHSG7Ob9yDdAK70pvHyLAHBguPHbnU2Cq10
+         55W8n/GI6QuAMY0JRy2tBneJiTz8/zB6a1yKNC1GxF7zuCRsrCwwS5hTLyhxUMrsGG5h
+         j3tY9iyzOKyBj27kp66yf7692tMZ6M3I2HRmESBdpxHSC4WpAE+I6lSv7adYQYHEUD3m
+         ehkA==
+X-Gm-Message-State: AOJu0YwhHiwpqspnZyofHCjIFPw1aCtz1Sw30cH6zZPa5ueY4nXPLxLf
+	5+8eBafS59T1dn2O7rQQyFAN9wmp+001c+xx8C+/oJ2Qsrx4CqZ/k1NKiEVa2g==
+X-Gm-Gg: ASbGncvTa21IaJ2ttpNaAKd5LdCshAgauJhnZ3SxuVSKw5ZI8nJfbbQTeCR+fBBIg7G
+	zsnvRhkrikgBEhUbKdHrF/Tw5TRQOERYoqobToB67tm2dKTaLFz3RcmFQzwJFdOUoB15pIPSLMr
+	X6QOnTnWgxpvCmFHur93spM8mtMOvi1MmG3ae+x604nync6q8K1vm9+hZ3ALSOON2mukAcxtB1q
+	SphEyi2MivYVT7Hi+LIlOl09mL6oC18jPvree2aIWju3Zm8ff3ic7f7bC4tdkE4Nr5jljH9g+OU
+	B5SF2KbmrA==
+X-Google-Smtp-Source: AGHT+IGfLN42zYs7WkhqHVTz5dvbQRdyqXTi/om8YzP4B4GGUgm47RZgeS3TcYJgArt8TPOM7QN0Fg==
+X-Received: by 2002:a05:600c:c16:b0:42b:a8fc:3937 with SMTP id 5b1f17b1804b1-431b3cdeb36mr11221675e9.4.1730305489275;
+        Wed, 30 Oct 2024 09:24:49 -0700 (PDT)
+Received: from google.com (88.140.78.34.bc.googleusercontent.com. [34.78.140.88])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-431bd91834asm26571265e9.7.2024.10.30.09.24.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Oct 2024 09:24:48 -0700 (PDT)
+Date: Wed, 30 Oct 2024 16:24:44 +0000
+From: Mostafa Saleh <smostafa@google.com>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: acpica-devel@lists.linux.dev, Hanjun Guo <guohanjun@huawei.com>,
+	iommu@lists.linux.dev, Joerg Roedel <joro@8bytes.org>,
+	Kevin Tian <kevin.tian@intel.com>, kvm@vger.kernel.org,
+	Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Robert Moore <robert.moore@intel.com>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Sudeep Holla <sudeep.holla@arm.com>, Will Deacon <will@kernel.org>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	Eric Auger <eric.auger@redhat.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	Moritz Fischer <mdf@kernel.org>,
+	Michael Shavit <mshavit@google.com>,
+	Nicolin Chen <nicolinc@nvidia.com>, patches@lists.linux.dev,
+	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+	Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+Subject: Re: [PATCH v3 5/9] iommu/arm-smmu-v3: Support IOMMU_GET_HW_INFO via
+ struct arm_smmu_hw_info
+Message-ID: <ZyJdzBgiP70MOtcP@google.com>
+References: <0-v3-e2e16cd7467f+2a6a1-smmuv3_nesting_jgg@nvidia.com>
+ <5-v3-e2e16cd7467f+2a6a1-smmuv3_nesting_jgg@nvidia.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100011.china.huawei.com (7.191.174.247) To
- frapeml500008.china.huawei.com (7.182.85.71)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5-v3-e2e16cd7467f+2a6a1-smmuv3_nesting_jgg@nvidia.com>
 
-On Tue, 29 Oct 2024 15:34:35 -0500
-Ira Weiny <ira.weiny@intel.com> wrote:
+Hi Jason,
 
-> A git tree of this series can be found here:
+On Wed, Oct 09, 2024 at 01:23:11PM -0300, Jason Gunthorpe wrote:
+> From: Nicolin Chen <nicolinc@nvidia.com>
 > 
-> 	https://github.com/weiny2/linux-kernel/tree/dcd-v4-2024-10-29
+> For virtualization cases the IDR/IIDR/AIDR values of the actual SMMU
+> instance need to be available to the VMM so it can construct an
+> appropriate vSMMUv3 that reflects the correct HW capabilities.
 > 
-> Series info
-> ===========
+> For userspace page tables these values are required to constrain the valid
+> values within the CD table and the IOPTEs.
 > 
-> This series has 4 parts:
+> The kernel does not sanitize these values. If building a VMM then
+> userspace is required to only forward bits into a VM that it knows it can
+> implement. Some bits will also require a VMM to detect if appropriate
+> kernel support is available such as for ATS and BTM.
 > 
-> Patch 1: Add core range_overlaps() function
-> Patch 2-6: CXL clean up/prelim patches
-> Patch 7-25: Core DCD support
-> Patch 26-27: cxl_test support
+> Start a new file and kconfig for the advanced iommufd support. This lets
+> it be compiled out for kernels that are not intended to support
+> virtualization, and allows distros to leave it disabled until they are
+> shipping a matching qemu too.
+> 
+> Tested-by: Nicolin Chen <nicolinc@nvidia.com>
+> Signed-off-by: Nicolin Chen <nicolinc@nvidia.com>
+> Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> ---
+>  drivers/iommu/Kconfig                         |  9 +++++
+>  drivers/iommu/arm/arm-smmu-v3/Makefile        |  1 +
+>  .../arm/arm-smmu-v3/arm-smmu-v3-iommufd.c     | 31 ++++++++++++++++
+>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c   |  1 +
+>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h   |  9 +++++
+>  include/uapi/linux/iommufd.h                  | 35 +++++++++++++++++++
+>  6 files changed, 86 insertions(+)
+>  create mode 100644 drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-iommufd.c
+> 
+> diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
+> index b3aa1f5d53218b..0c9bceb1653d5f 100644
+> --- a/drivers/iommu/Kconfig
+> +++ b/drivers/iommu/Kconfig
+> @@ -415,6 +415,15 @@ config ARM_SMMU_V3_SVA
+>  	  Say Y here if your system supports SVA extensions such as PCIe PASID
+>  	  and PRI.
+>  
+> +config ARM_SMMU_V3_IOMMUFD
+> +	bool "Enable IOMMUFD features for ARM SMMUv3 (EXPERIMENTAL)"
+> +	depends on IOMMUFD
+> +	help
+> +	  Support for IOMMUFD features intended to support virtual machines
+> +	  with accelerated virtual IOMMUs.
+> +
+> +	  Say Y here if you are doing development and testing on this feature.
+> +
+>  config ARM_SMMU_V3_KUNIT_TEST
+>  	tristate "KUnit tests for arm-smmu-v3 driver"  if !KUNIT_ALL_TESTS
+>  	depends on KUNIT
+> diff --git a/drivers/iommu/arm/arm-smmu-v3/Makefile b/drivers/iommu/arm/arm-smmu-v3/Makefile
+> index dc98c88b48c827..493a659cc66bb2 100644
+> --- a/drivers/iommu/arm/arm-smmu-v3/Makefile
+> +++ b/drivers/iommu/arm/arm-smmu-v3/Makefile
+> @@ -1,6 +1,7 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  obj-$(CONFIG_ARM_SMMU_V3) += arm_smmu_v3.o
+>  arm_smmu_v3-y := arm-smmu-v3.o
+> +arm_smmu_v3-$(CONFIG_ARM_SMMU_V3_IOMMUFD) += arm-smmu-v3-iommufd.o
+>  arm_smmu_v3-$(CONFIG_ARM_SMMU_V3_SVA) += arm-smmu-v3-sva.o
+>  arm_smmu_v3-$(CONFIG_TEGRA241_CMDQV) += tegra241-cmdqv.o
+>  
+> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-iommufd.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-iommufd.c
+> new file mode 100644
+> index 00000000000000..3d2671031c9bb5
+> --- /dev/null
+> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-iommufd.c
+> @@ -0,0 +1,31 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2024, NVIDIA CORPORATION & AFFILIATES
+> + */
+> +
+> +#include <uapi/linux/iommufd.h>
+> +
+> +#include "arm-smmu-v3.h"
+> +
+> +void *arm_smmu_hw_info(struct device *dev, u32 *length, u32 *type)
+> +{
+> +	struct arm_smmu_master *master = dev_iommu_priv_get(dev);
+> +	struct iommu_hw_info_arm_smmuv3 *info;
+> +	u32 __iomem *base_idr;
+> +	unsigned int i;
+> +
+> +	info = kzalloc(sizeof(*info), GFP_KERNEL);
+> +	if (!info)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	base_idr = master->smmu->base + ARM_SMMU_IDR0;
+> +	for (i = 0; i <= 5; i++)
+> +		info->idr[i] = readl_relaxed(base_idr + i);
+> +	info->iidr = readl_relaxed(master->smmu->base + ARM_SMMU_IIDR);
+> +	info->aidr = readl_relaxed(master->smmu->base + ARM_SMMU_AIDR);
 
-Other than a few trivial comments and that one build bot reported
-issue all looks good to me. Nice work Ira, Navneet etc.
+I wonder if passing the IDRs is enough for the VMM, for example in some
+cases, firmware can override the coherency, also the IIDR can override
+some features (as MMU700 and BTM), although, the VMM can deal with.
 
-Maybe optimistic to hit 6.13, but I'd love it if it did.
-If not, Dave, how about shaving a few off the front so at least
-there is less to remember for v6 onwards :)
+Also, PRI and ATS are gated by configs, I’d be worried if the VMM can make
+ome assumptions just from the IDRs.
 
-Jonathan
+Maybe for those(coherency, ATS, PRI) we would need to keep the VMM view and
+the kernel in sync?
+
+Otherwise, LGTM.
+
+Thanks,
+Mostafa
+
+> +
+> +	*length = sizeof(*info);
+> +	*type = IOMMU_HW_INFO_TYPE_ARM_SMMUV3;
+> +
+> +	return info;
+> +}
+> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> index 38725810c14eeb..996774d461aea2 100644
+> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> @@ -3506,6 +3506,7 @@ static struct iommu_ops arm_smmu_ops = {
+>  	.identity_domain	= &arm_smmu_identity_domain,
+>  	.blocked_domain		= &arm_smmu_blocked_domain,
+>  	.capable		= arm_smmu_capable,
+> +	.hw_info		= arm_smmu_hw_info,
+>  	.domain_alloc_paging    = arm_smmu_domain_alloc_paging,
+>  	.domain_alloc_sva       = arm_smmu_sva_domain_alloc,
+>  	.domain_alloc_user	= arm_smmu_domain_alloc_user,
+> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+> index 06e3d88932df12..66261fd5bfb2d2 100644
+> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+> @@ -81,6 +81,8 @@ struct arm_smmu_device;
+>  #define IIDR_REVISION			GENMASK(15, 12)
+>  #define IIDR_IMPLEMENTER		GENMASK(11, 0)
+>  
+> +#define ARM_SMMU_AIDR			0x1C
+> +
+>  #define ARM_SMMU_CR0			0x20
+>  #define CR0_ATSCHK			(1 << 4)
+>  #define CR0_CMDQEN			(1 << 3)
+> @@ -956,4 +958,11 @@ tegra241_cmdqv_probe(struct arm_smmu_device *smmu)
+>  	return ERR_PTR(-ENODEV);
+>  }
+>  #endif /* CONFIG_TEGRA241_CMDQV */
+> +
+> +#if IS_ENABLED(CONFIG_ARM_SMMU_V3_IOMMUFD)
+> +void *arm_smmu_hw_info(struct device *dev, u32 *length, u32 *type);
+> +#else
+> +#define arm_smmu_hw_info NULL
+> +#endif /* CONFIG_ARM_SMMU_V3_IOMMUFD */
+> +
+>  #endif /* _ARM_SMMU_V3_H */
+> diff --git a/include/uapi/linux/iommufd.h b/include/uapi/linux/iommufd.h
+> index 72010f71c5e479..b5c94fecb94ca5 100644
+> --- a/include/uapi/linux/iommufd.h
+> +++ b/include/uapi/linux/iommufd.h
+> @@ -484,15 +484,50 @@ struct iommu_hw_info_vtd {
+>  	__aligned_u64 ecap_reg;
+>  };
+>  
+> +/**
+> + * struct iommu_hw_info_arm_smmuv3 - ARM SMMUv3 hardware information
+> + *                                   (IOMMU_HW_INFO_TYPE_ARM_SMMUV3)
+> + *
+> + * @flags: Must be set to 0
+> + * @__reserved: Must be 0
+> + * @idr: Implemented features for ARM SMMU Non-secure programming interface
+> + * @iidr: Information about the implementation and implementer of ARM SMMU,
+> + *        and architecture version supported
+> + * @aidr: ARM SMMU architecture version
+> + *
+> + * For the details of @idr, @iidr and @aidr, please refer to the chapters
+> + * from 6.3.1 to 6.3.6 in the SMMUv3 Spec.
+> + *
+> + * User space should read the underlying ARM SMMUv3 hardware information for
+> + * the list of supported features.
+> + *
+> + * Note that these values reflect the raw HW capability, without any insight if
+> + * any required kernel driver support is present. Bits may be set indicating the
+> + * HW has functionality that is lacking kernel software support, such as BTM. If
+> + * a VMM is using this information to construct emulated copies of these
+> + * registers it should only forward bits that it knows it can support.
+> + *
+> + * In future, presence of required kernel support will be indicated in flags.
+> + */
+> +struct iommu_hw_info_arm_smmuv3 {
+> +	__u32 flags;
+> +	__u32 __reserved;
+> +	__u32 idr[6];
+> +	__u32 iidr;
+> +	__u32 aidr;
+> +};
+> +
+>  /**
+>   * enum iommu_hw_info_type - IOMMU Hardware Info Types
+>   * @IOMMU_HW_INFO_TYPE_NONE: Used by the drivers that do not report hardware
+>   *                           info
+>   * @IOMMU_HW_INFO_TYPE_INTEL_VTD: Intel VT-d iommu info type
+> + * @IOMMU_HW_INFO_TYPE_ARM_SMMUV3: ARM SMMUv3 iommu info type
+>   */
+>  enum iommu_hw_info_type {
+>  	IOMMU_HW_INFO_TYPE_NONE = 0,
+>  	IOMMU_HW_INFO_TYPE_INTEL_VTD = 1,
+> +	IOMMU_HW_INFO_TYPE_ARM_SMMUV3 = 2,
+>  };
+>  
+>  /**
+> -- 
+> 2.46.2
+> 
