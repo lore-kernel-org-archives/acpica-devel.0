@@ -1,61 +1,62 @@
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B6E72141BD
-	for <acpica-devel@lists.linux.dev>; Wed, 30 Oct 2024 16:26:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 317022141D9
+	for <acpica-devel@lists.linux.dev>; Wed, 30 Oct 2024 16:27:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730305586; cv=none; b=iGPIbDYyBXEtTjiP44ap2nmaJHTAYgT/obvINLUFfJGgDPWA4fXILXVuAkbh4cwOTuKzDel/616Lae3B+xXK/faHHC36x/7lacAbdSjA43TVc/vlvBPAV7Iih8FUMV9yGvOorUhgzx7IUJAMaP+shE5FbViltfR7mjCmUzjF9Rw=
+	t=1730305641; cv=none; b=VBkNe5kCnFjVgtNi1XS/eNnbSD00b3bRKaWk7icPD8wLrCV1Php9AtHzwJEJ2TRP005maHXPnz4EruP+UAzBSLWNuKg2HDYyId3Mq5G7YQzylX+o83agCAhm2fDaN8AomcWFyOmgx38N4lxv6kc8a+yvhQyUocc17OanLTdXC2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730305586; c=relaxed/simple;
-	bh=wzGL5UpvG0bdwTiYnT824JUIRPqrqwRpm/7xcQNirR4=;
+	s=arc-20240116; t=1730305641; c=relaxed/simple;
+	bh=UblSNSNMS2SOQAz7chOMf7T7raYYYerjDvTtLkicoW0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lr4VSgms3LQy5h/476J0O8LeE70Pb1y4/9HsIAhFLlXTTMkCw/EBOxYtMhFts3bJl2moKM/HM/xyrR7S1z9JKcH5QnH0lJPybUj4nkAS+ATuRbk9v+mqhBPKig6YNGj5zZMaWY2Kd1BwcDOEHi7KpPnhw3K73WzZlJREfAkNUzw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=kek2cHsZ; arc=none smtp.client-ip=209.85.128.44
+	 Content-Type:Content-Disposition:In-Reply-To; b=FR6SinhnSFz2Oy4YxHazg7f1xo8x4TzJJGLHewWElOt/EyaQXmhRfalRQK84CEe40F3d0LxYrkg1w7GaETddJpTdU9V7g1dFXi2Rlp3Y7H1rDdWol5R5/XWrLmiRM2S5IcjSnki/d/9KiMWNVxUXIj3tAXb24q6mcQzTzKfkbhk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=yzu2W2FC; arc=none smtp.client-ip=209.85.128.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="kek2cHsZ"
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-43150ea2db6so262215e9.0
-        for <acpica-devel@lists.linux.dev>; Wed, 30 Oct 2024 09:26:24 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yzu2W2FC"
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-43150ea2db6so262585e9.0
+        for <acpica-devel@lists.linux.dev>; Wed, 30 Oct 2024 09:27:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1730305583; x=1730910383; darn=lists.linux.dev;
+        d=google.com; s=20230601; t=1730305635; x=1730910435; darn=lists.linux.dev;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7UYLjFAMj81rJ/LVUvePRD+K/hBtRYfZ9cIPVkpzOQ4=;
-        b=kek2cHsZoQKrNnOeGbvOciGSfLN3Jl6+Y1isfJCsB5XWT7zhfubCFaPlS817Aqo1Sf
-         gj9+ZHea1CNeKq0sRhLhyYTF310goDfaw/Bn5jLlQ4ziI0kX4Ro+iru8XrgjwRZ2biCp
-         9t+oo/I21gwH8SA3KJEyO8z6/mecBfcBb5bf72d3uXoyyZdGvkNIAVtODaDxWOsgSK0y
-         grBeSTnsNmKIKtbLKcdgr1pyj4CDV4bI7T7j2uugdbJ8aqmxvctPEWc3IZv0jWnF+M+e
-         qMzIZVC/gl+t+5KAfJWPH5PiDf7Kppnuc9E9mAM+cgJEVD8K1VkWgzJQr/Ps/nbQqmx/
-         BtHQ==
+        bh=yYoXZbQ0uAqOxJs4pfuNVgj8x5cCoQnCDnibucZBWDk=;
+        b=yzu2W2FCvWmZzNR6wJHmBWm3CURBDg93sUL5bi4IBYCMsnMDS/as3b63skPv27zLJG
+         svAfTHY5XPWoT13vEorHbXXh9/nhQ7bFzJUN2sDzMbr2EddVTg1uiyJ3UnK3CwLvlSrx
+         tcorJ3JSYuIbPBaAC9hNW89Q80e+Lhzerxz3d+HE/kmgmspQHffnAyrOuuDd5e/GW/Qo
+         MFyBAXZVNQzF61ZfORR6AwbJXVNz7XsTWLM/6mJAVQ/Uc2cucG2twFD4r4RvocDV7DBg
+         YIqKg7zLaIkJoPg9GO1fTvwM9W52ZFQMaH0WzxHM6DJspWBdn8bfPjyH/4wYOO28PiDD
+         qwBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730305583; x=1730910383;
+        d=1e100.net; s=20230601; t=1730305635; x=1730910435;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7UYLjFAMj81rJ/LVUvePRD+K/hBtRYfZ9cIPVkpzOQ4=;
-        b=cYaqwNV2kKp4e/SvCcAkLnKvFCyQso5bFwuoN4tpbPlZYujwGPLb1G09YD+oUwWkmE
-         kUJtZjG0i7NyE7XKE1tNUU21IS5r7t6bWT/V+LbESA58AbODLus6WLLYJ8mYFVFrUGUa
-         eqmShMKKWI+Gn7Auh9O/6DG01OItPimRyzgevwjkmgp0IJ0FwpH/2irlnwg8KrOQp/9y
-         L9+SMxfRnCj0K51a9LYJ/IweNDT2KKwTdzdQjOjo6iaerCQHMLnyeN3SO/g8Kqz99zOz
-         SBHe+MVqQf5Egr83EZHDilVQqasLbc5EB/ZPoeXBFuTkEtYGk2srnlQ3zIgj2SP3dc5O
-         ByiQ==
-X-Gm-Message-State: AOJu0Yzf6qr8Ak4hPp8b96JQX+LX37wcpzjLAE3FRmE44eJDM5+GofzU
-	Lwd/p2el9OMvUwA0iiY+pIq64YqHTJZaOeg3pb/VbFKC128//QtTY7FtWAIK5A==
-X-Gm-Gg: ASbGncsPaF7q1KJQOv0SRMCzSgUtxq+1aGB7rm4IHinoGsH3hAfCbjYsUA7i8Biyd7m
-	1IK/At0q9k8fH/mIZd0xNBKF5H7XtxbkGLk2NQp/dKx9QvShDcUNyxk1mhF4+4265kfyu13F2qX
-	IjU86P2uwuXUHGb93WrEQveTTmokCrcDTwgb23beZ8tTgVLvLO063qbVl+4nVcxbfuZ9JXPcvse
-	e+wye2NsAKwbKgowk/niX+OckNxCGDwD1oYHfDyXwoerrK4wEkVIDKFJ/yfuI5ci5UeublwfGiU
-	z82Z2AzV7Q==
-X-Google-Smtp-Source: AGHT+IF5k+xhEFV5HljKvzF9cSpzzYGRlJbocUjKE5hnuGSngP/vDOPF5xH9U8BJE4SMib7JrVlCvw==
-X-Received: by 2002:a05:600c:1e04:b0:431:43a1:4cac with SMTP id 5b1f17b1804b1-431b4a21ba1mr10153235e9.3.1730305582787;
-        Wed, 30 Oct 2024 09:26:22 -0700 (PDT)
+        bh=yYoXZbQ0uAqOxJs4pfuNVgj8x5cCoQnCDnibucZBWDk=;
+        b=Zs6mot/aPI1yiCmEkGATIVp70I3jwUF0FWlUK5sobyw/BPhHJsYp4YRx8QS4abrXTL
+         Z41UFIzELZ9K6RU/pougTKYfS23b5ifQenJbL3N9Sa1wiOc047PU/gOB0IdNhJUBzXST
+         dlb5WUIiErEaXgOlzp0pU3qF3EHx5wzDgdgRf2ov50dRe0p5K7Sg0DYXBQz6Vq8Dlv12
+         KGZJUGSOLbBC6J/++2dnl50L10MVNqknC4FJgiv5XZ8Z81B1K/i/gIkmI99mABkGbx2j
+         tl80FO+QQ82oUO9KJuFld0epI5pAvjPO7ugmS1iNgZLRXL3ghcUnlQe4vvvExzZ66xAb
+         YzEA==
+X-Gm-Message-State: AOJu0YyQdU6U6cUPhJ8ecNezNNSiZV2HEVbzwoU/iPzgmQ92f65D9yoE
+	cqEt2VtILOlBBY+iAznt3+WbN3flNHE8c+DiQhTq5bdAT+rgOSEtL4K7zBI+bJbhggssBKa7UaF
+	P5g==
+X-Gm-Gg: ASbGncsGWNcksRAao/DsojBOpeJmUe413tqsI0/Gov9JBsiixB5Adw/EzBh10QnwoKF
+	A0ZbPAys10LfSMzkQkPB9s1QCqgApHs4p16W8lCwR9wZp5NT+7Z6Zg4U7NAWP34cbxuCjVSjacN
+	qNuwCwtRCoXsCcS6qqqmQCI4TFOIO69wVeT8+O9zeF6hMGCT6MHHi93HY35UddMiX5nrccKZbY1
+	TuiZsB2mAna28bVqLtxtD3EchPDdmJ0xThXxRZ/kVe4J25gfJR+cL0kxNaZrayNAB+gtB7Fw177
+	sa1PQ4xl2A==
+X-Google-Smtp-Source: AGHT+IEOBtDGTbd6gFd1Z2+Q52Kfzjw/j8SXp0CbEXKBAIwCsXgB74M2Jp4jqtd+Hp2Dw2dtDYw8jw==
+X-Received: by 2002:a05:600c:1d83:b0:42c:acd7:b59b with SMTP id 5b1f17b1804b1-431b3cdeb16mr11198215e9.6.1730305635387;
+        Wed, 30 Oct 2024 09:27:15 -0700 (PDT)
 Received: from google.com (88.140.78.34.bc.googleusercontent.com. [34.78.140.88])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38058bb4287sm15691567f8f.114.2024.10.30.09.26.20
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-431bd9ca818sm25801655e9.40.2024.10.30.09.27.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Oct 2024 09:26:21 -0700 (PDT)
-Date: Wed, 30 Oct 2024 16:26:16 +0000
+        Wed, 30 Oct 2024 09:27:08 -0700 (PDT)
+Date: Wed, 30 Oct 2024 16:26:59 +0000
 From: Mostafa Saleh <smostafa@google.com>
 To: Jason Gunthorpe <jgg@nvidia.com>
 Cc: acpica-devel@lists.linux.dev, Hanjun Guo <guohanjun@huawei.com>,
@@ -76,11 +77,11 @@ Cc: acpica-devel@lists.linux.dev, Hanjun Guo <guohanjun@huawei.com>,
 	Nicolin Chen <nicolinc@nvidia.com>, patches@lists.linux.dev,
 	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
 	Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-Subject: Re: [PATCH v3 6/9] iommu/arm-smmu-v3: Implement
- IOMMU_HWPT_ALLOC_NEST_PARENT
-Message-ID: <ZyJeKPvMRBaKpMeJ@google.com>
+Subject: Re: [PATCH v3 7/9] iommu/arm-smmu-v3: Expose the arm_smmu_attach
+ interface
+Message-ID: <ZyJeU9Kkos6RibsR@google.com>
 References: <0-v3-e2e16cd7467f+2a6a1-smmuv3_nesting_jgg@nvidia.com>
- <6-v3-e2e16cd7467f+2a6a1-smmuv3_nesting_jgg@nvidia.com>
+ <7-v3-e2e16cd7467f+2a6a1-smmuv3_nesting_jgg@nvidia.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -89,58 +90,148 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6-v3-e2e16cd7467f+2a6a1-smmuv3_nesting_jgg@nvidia.com>
+In-Reply-To: <7-v3-e2e16cd7467f+2a6a1-smmuv3_nesting_jgg@nvidia.com>
 
-On Wed, Oct 09, 2024 at 01:23:12PM -0300, Jason Gunthorpe wrote:
-> For SMMUv3 the parent must be a S2 domain, which can be composed
-> into a IOMMU_DOMAIN_NESTED.
+On Wed, Oct 09, 2024 at 01:23:13PM -0300, Jason Gunthorpe wrote:
+> The arm-smmuv3-iommufd.c file will need to call these functions too.
+> Remove statics and put them in the header file. Remove the kunit
+> visibility protections from arm_smmu_make_abort_ste() and
+> arm_smmu_make_s2_domain_ste().
 > 
-> In future the S2 parent will also need a VMID linked to the VIOMMU and
-> even to KVM.
-> 
-> Reviewed-by: Nicolin Chen <nicolinc@nvidia.com>
-> Tested-by: Nicolin Chen <nicolinc@nvidia.com>
-> Reviewed-by: Kevin Tian <kevin.tian@intel.com>
 > Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 
 Reviewed-by: Mostafa Saleh <smostafa@google.com>
 
 Thanks,
 Mostafa
-
 > ---
->  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 11 ++++++++++-
->  1 file changed, 10 insertions(+), 1 deletion(-)
+>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 22 ++++-------------
+>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h | 27 +++++++++++++++++----
+>  2 files changed, 27 insertions(+), 22 deletions(-)
 > 
 > diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> index 996774d461aea2..80847fa386fcd2 100644
+> index 80847fa386fcd2..b4b03206afbf48 100644
 > --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
 > +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> @@ -3114,7 +3114,8 @@ arm_smmu_domain_alloc_user(struct device *dev, u32 flags,
->  			   const struct iommu_user_data *user_data)
+> @@ -1549,7 +1549,6 @@ static void arm_smmu_write_ste(struct arm_smmu_master *master, u32 sid,
+>  	}
+>  }
+>  
+> -VISIBLE_IF_KUNIT
+>  void arm_smmu_make_abort_ste(struct arm_smmu_ste *target)
 >  {
->  	struct arm_smmu_master *master = dev_iommu_priv_get(dev);
-> -	const u32 PAGING_FLAGS = IOMMU_HWPT_ALLOC_DIRTY_TRACKING;
-> +	const u32 PAGING_FLAGS = IOMMU_HWPT_ALLOC_DIRTY_TRACKING |
-> +				 IOMMU_HWPT_ALLOC_NEST_PARENT;
->  	struct arm_smmu_domain *smmu_domain;
->  	int ret;
+>  	memset(target, 0, sizeof(*target));
+> @@ -1632,7 +1631,6 @@ void arm_smmu_make_cdtable_ste(struct arm_smmu_ste *target,
+>  }
+>  EXPORT_SYMBOL_IF_KUNIT(arm_smmu_make_cdtable_ste);
 >  
-> @@ -3127,6 +3128,14 @@ arm_smmu_domain_alloc_user(struct device *dev, u32 flags,
->  	if (IS_ERR(smmu_domain))
->  		return ERR_CAST(smmu_domain);
+> -VISIBLE_IF_KUNIT
+>  void arm_smmu_make_s2_domain_ste(struct arm_smmu_ste *target,
+>  				 struct arm_smmu_master *master,
+>  				 struct arm_smmu_domain *smmu_domain,
+> @@ -2505,8 +2503,8 @@ arm_smmu_get_step_for_sid(struct arm_smmu_device *smmu, u32 sid)
+>  	}
+>  }
 >  
-> +	if (flags & IOMMU_HWPT_ALLOC_NEST_PARENT) {
-> +		if (!(master->smmu->features & ARM_SMMU_FEAT_NESTING)) {
-> +			ret = -EOPNOTSUPP;
-> +			goto err_free;
-> +		}
-> +		smmu_domain->stage = ARM_SMMU_DOMAIN_S2;
-> +	}
+> -static void arm_smmu_install_ste_for_dev(struct arm_smmu_master *master,
+> -					 const struct arm_smmu_ste *target)
+> +void arm_smmu_install_ste_for_dev(struct arm_smmu_master *master,
+> +				  const struct arm_smmu_ste *target)
+>  {
+>  	int i, j;
+>  	struct arm_smmu_device *smmu = master->smmu;
+> @@ -2671,16 +2669,6 @@ static void arm_smmu_remove_master_domain(struct arm_smmu_master *master,
+>  	spin_unlock_irqrestore(&smmu_domain->devices_lock, flags);
+>  }
+>  
+> -struct arm_smmu_attach_state {
+> -	/* Inputs */
+> -	struct iommu_domain *old_domain;
+> -	struct arm_smmu_master *master;
+> -	bool cd_needs_ats;
+> -	ioasid_t ssid;
+> -	/* Resulting state */
+> -	bool ats_enabled;
+> -};
+> -
+>  /*
+>   * Start the sequence to attach a domain to a master. The sequence contains three
+>   * steps:
+> @@ -2701,8 +2689,8 @@ struct arm_smmu_attach_state {
+>   * new_domain can be a non-paging domain. In this case ATS will not be enabled,
+>   * and invalidations won't be tracked.
+>   */
+> -static int arm_smmu_attach_prepare(struct arm_smmu_attach_state *state,
+> -				   struct iommu_domain *new_domain)
+> +int arm_smmu_attach_prepare(struct arm_smmu_attach_state *state,
+> +			    struct iommu_domain *new_domain)
+>  {
+>  	struct arm_smmu_master *master = state->master;
+>  	struct arm_smmu_master_domain *master_domain;
+> @@ -2784,7 +2772,7 @@ static int arm_smmu_attach_prepare(struct arm_smmu_attach_state *state,
+>   * completes synchronizing the PCI device's ATC and finishes manipulating the
+>   * smmu_domain->devices list.
+>   */
+> -static void arm_smmu_attach_commit(struct arm_smmu_attach_state *state)
+> +void arm_smmu_attach_commit(struct arm_smmu_attach_state *state)
+>  {
+>  	struct arm_smmu_master *master = state->master;
+>  
+> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+> index 66261fd5bfb2d2..c9e5290e995a64 100644
+> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+> @@ -830,21 +830,22 @@ struct arm_smmu_entry_writer_ops {
+>  	void (*sync)(struct arm_smmu_entry_writer *writer);
+>  };
+>  
+> +void arm_smmu_make_abort_ste(struct arm_smmu_ste *target);
+> +void arm_smmu_make_s2_domain_ste(struct arm_smmu_ste *target,
+> +				 struct arm_smmu_master *master,
+> +				 struct arm_smmu_domain *smmu_domain,
+> +				 bool ats_enabled);
 > +
->  	smmu_domain->domain.type = IOMMU_DOMAIN_UNMANAGED;
->  	smmu_domain->domain.ops = arm_smmu_ops.default_domain_ops;
->  	ret = arm_smmu_domain_finalise(smmu_domain, master->smmu, flags);
+>  #if IS_ENABLED(CONFIG_KUNIT)
+>  void arm_smmu_get_ste_used(const __le64 *ent, __le64 *used_bits);
+>  void arm_smmu_write_entry(struct arm_smmu_entry_writer *writer, __le64 *cur,
+>  			  const __le64 *target);
+>  void arm_smmu_get_cd_used(const __le64 *ent, __le64 *used_bits);
+> -void arm_smmu_make_abort_ste(struct arm_smmu_ste *target);
+>  void arm_smmu_make_bypass_ste(struct arm_smmu_device *smmu,
+>  			      struct arm_smmu_ste *target);
+>  void arm_smmu_make_cdtable_ste(struct arm_smmu_ste *target,
+>  			       struct arm_smmu_master *master, bool ats_enabled,
+>  			       unsigned int s1dss);
+> -void arm_smmu_make_s2_domain_ste(struct arm_smmu_ste *target,
+> -				 struct arm_smmu_master *master,
+> -				 struct arm_smmu_domain *smmu_domain,
+> -				 bool ats_enabled);
+>  void arm_smmu_make_sva_cd(struct arm_smmu_cd *target,
+>  			  struct arm_smmu_master *master, struct mm_struct *mm,
+>  			  u16 asid);
+> @@ -902,6 +903,22 @@ static inline bool arm_smmu_master_canwbs(struct arm_smmu_master *master)
+>  	       IOMMU_FWSPEC_PCI_RC_CANWBS;
+>  }
+>  
+> +struct arm_smmu_attach_state {
+> +	/* Inputs */
+> +	struct iommu_domain *old_domain;
+> +	struct arm_smmu_master *master;
+> +	bool cd_needs_ats;
+> +	ioasid_t ssid;
+> +	/* Resulting state */
+> +	bool ats_enabled;
+> +};
+> +
+> +int arm_smmu_attach_prepare(struct arm_smmu_attach_state *state,
+> +			    struct iommu_domain *new_domain);
+> +void arm_smmu_attach_commit(struct arm_smmu_attach_state *state);
+> +void arm_smmu_install_ste_for_dev(struct arm_smmu_master *master,
+> +				  const struct arm_smmu_ste *target);
+> +
+>  #ifdef CONFIG_ARM_SMMU_V3_SVA
+>  bool arm_smmu_sva_supported(struct arm_smmu_device *smmu);
+>  bool arm_smmu_master_sva_supported(struct arm_smmu_master *master);
 > -- 
 > 2.46.2
 > 
