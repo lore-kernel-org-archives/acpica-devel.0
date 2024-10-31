@@ -1,113 +1,121 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0B2D1BCA0A;
-	Thu, 31 Oct 2024 15:55:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8B0513A868
+	for <acpica-devel@lists.linux.dev>; Thu, 31 Oct 2024 17:32:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730390108; cv=none; b=KjOogm4u1IM8+rZrwCB7C0lztqEo7eWJD/jp++pDLmRi6vskK10CTYLxDFfRyBVDSuA9BDm9LmtuBycftjuCodaUD3QJ/k8ZBLe9VfNGrQ2GGyu7bYg5/Mu2cApHffYETkbJDXpSFngxuLDO5VucAaRDW/JlLMAh8+9E7SkFFYw=
+	t=1730395937; cv=none; b=fVLWEA2rx3ePX7MDT0TVnzSzQkuM52temZZTfhTgxL7kp1e4QuKUi+WEUw1++dCqRGCTa9xhED7A7yMapRqixUvdN+MxpGv1/GTUvPNh39p2/tvo3jZyVCngzpjb4UhrJ/tvy1+NA3yPAD/gaC+AYTXPMBusXhAzT8gaLxeIexY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730390108; c=relaxed/simple;
-	bh=wlV3Rx5aKG704hWG8gNKyyb0F+JFaerl7qBcn2lQewo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gmcmsJx2g1vFj0COJ7V8U6UNP+mWz/g/Uxdf/rgtgdrMG/akDH+L0pkscZHR7Lob3+GQoh2eVxvAWLNW2GWiNXIKwTqnOUYSY7aeApyFxfcwbQmrlbpZVhS1M02KahpZ3gM+sZouBm//Rt+Pd+gSuFgzfhEnVORCOzYTpwJuX54=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nRcYbMDw; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1730395937; c=relaxed/simple;
+	bh=M0pIn94Azowchec7I7p7M49ATq272Lmt8o7hlwxwDKU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=rHNaN0B8BniGPsi4bfkIr81KtqYk5UGvjU3cWWvwzOdhfR0hd17Q8mRh02l3j0Y/RdHXNxObqJUbZ4qGyLdHm8Ydui6MjGXQz3nWF+wsKJST7Vl+30jzHQKZPKXPpXbO16J0fnJxyFH+ZBOrL2/hC8SH8FHBBycTF/SyLaFTQnc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hMGBljcU; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nRcYbMDw"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1730390107; x=1761926107;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=wlV3Rx5aKG704hWG8gNKyyb0F+JFaerl7qBcn2lQewo=;
-  b=nRcYbMDwUR7Qbx+yF4Lbw2VGRNVejdqKMYgmD8z4tj29yGH75A7KKsyQ
-   BbazPfyLqRwheHd1T32Bwv6w+kxpFeBsRGDEbgNhm+wB1Z4stXFy2nX0Q
-   mFfpJNzH0TIm1xKbySfRHsPYi2i0Nyb/9WnBk7NcYTYfAxFxOJ0d4Dfss
-   Gmi7kH9fWtgLgyRVohftGGPzLNJG68Nv57QfUnUqYpGXYahgTDa/6fQrE
-   roXCHv8shxpH1TeVGsQrJ3A3U1FPPGSrA3MbeI2kQlZbhengbAWkutza9
-   PoBG6jJ2qIm6F2l2HZMXlu9+yN0EaTqxk4KjypZEE7PYPRmawMULP5Jqi
-   g==;
-X-CSE-ConnectionGUID: mIjEm3i3S9iLTZa5qnpJ2Q==
-X-CSE-MsgGUID: Xe7ap1R3RfGwCWjuk+VZmg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11242"; a="41507964"
-X-IronPort-AV: E=Sophos;i="6.11,247,1725346800"; 
-   d="scan'208";a="41507964"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2024 08:55:06 -0700
-X-CSE-ConnectionGUID: rSnazU4oRDish+4AbsdK9A==
-X-CSE-MsgGUID: xHNWbduNRwO9xzz1Nz+KAQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,247,1725346800"; 
-   d="scan'208";a="82571183"
-Received: from dwoodwor-mobl2.amr.corp.intel.com (HELO [10.125.108.232]) ([10.125.108.232])
-  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2024 08:55:04 -0700
-Message-ID: <880d28c7-7284-41b2-88dc-12498b473a86@intel.com>
-Date: Thu, 31 Oct 2024 08:55:03 -0700
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hMGBljcU"
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-539e4824917so127585e87.3
+        for <acpica-devel@lists.linux.dev>; Thu, 31 Oct 2024 10:32:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1730395934; x=1731000734; darn=lists.linux.dev;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=d4sLwJ1Za+GKDAjN1FVw7zfT75tbwo/FRlb/5kWrOi0=;
+        b=hMGBljcUA4bVZPPvALJrzy1hMkELvMYMxWlQlBFv3CDPPU9NzqB7UGJBzTDux3LLXw
+         Z7nD2VTvJUq/tp2wJDPVbzaX1X109NOhbYfqGZ3eURxv3h0aswBblqZeM+/Oz0ka/9hJ
+         GJI61qtmofClm+tU1MBtUKhVJtQ2HA9IgUhZw3NRPR1ICDc/sBel+woXyBNplDQsD6Br
+         IIkB12ic0BZIwNQQmrsj40LxihFfCb6Ovtepn9w85L0OnoaJyUjWf3BaSTLeSEb8j6xr
+         Znwfk5GYCFyX+5I2Qo94nkD8g7Gv6LkhSBF/HJp8tUmPP1c08PNK8gIbnUy/Poc126D7
+         0FAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730395934; x=1731000734;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=d4sLwJ1Za+GKDAjN1FVw7zfT75tbwo/FRlb/5kWrOi0=;
+        b=MOYQLmj6VNhTuEHQHD2fESPlqiWMOCjPsq7z9mw5T8D2tBxhRZWD1e1XCJ6jieo5zB
+         dvMSCwjQx2zi7eKisVpG+bMjNBd/QkEUz0D9NtI7nv2tVJYeJ94ZczH9b/5BhoqGAgnX
+         in+4YZkDrn/5+stZC7IfllPWdle+DV4wL07/vHcD5fLCOt+rEQiNtX49adWhruisLBK5
+         Ut5cTIa4nfitbtaovxlrY4dDZmeHjb0NRR+k7qHAiRNxt+nBR85pO6fdRLOe8Tsc2D2E
+         F7DVLU/tEJ0jCTWVh/CPtAxS0bKIPZWVRH1TLn2ZXu3UvPhZ/TZD5NCfLsz9Ui0jayHc
+         Ij9w==
+X-Forwarded-Encrypted: i=1; AJvYcCUMe2g6BLoeKbR92f1M8lUjWkPihXuUw6HusbNxQMXxaSX8MlIPTd69TfbZyCypLeoWTM+W+2mdyRRFri0=@lists.linux.dev
+X-Gm-Message-State: AOJu0YwpoL2LMCzBBE91NwNy6o92fv5Y/qFpCle3LPhPmjT8GOt2BTav
+	K1KFKyp9QnrKH0VE+o8OK3k8vvWk3kpBVoZwweNfkSp/bvnymGgE
+X-Google-Smtp-Source: AGHT+IFe87xKBVd4yftUeVT3qx9Oy2VAjU24uHaxTTbj4T2Gm9PoVBGwUR8pD/gNPDXKGc4fcsTaTA==
+X-Received: by 2002:a05:6512:2354:b0:52f:c142:6530 with SMTP id 2adb3069b0e04-53b3491cb47mr3046431e87.6.1730395933433;
+        Thu, 31 Oct 2024 10:32:13 -0700 (PDT)
+Received: from localhost.localdomain (109-252-121-216.nat.spd-mgts.ru. [109.252.121.216])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-53c7bde3287sm270315e87.273.2024.10.31.10.32.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Oct 2024 10:32:13 -0700 (PDT)
+From: George Rurikov <grurikov@gmail.com>
+To: Robert Moore <robert.moore@intel.com>
+Cc: George Rurikov <grurikov@gmail.com>,
+	"Rafael J. Wysocki" <lenb@kernel.org>,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	lvc-project@linuxtesting.org,
+	stable@vger.kernel.org
+Subject: [PATCH] ACPICA: Fix dereference in acpi_ev_address_space_dispatch()
+Date: Thu, 31 Oct 2024 20:31:46 +0300
+Message-Id: <20241031173146.1459-1-grurikov@gmail.com>
+X-Mailer: git-send-email 2.31.1.windows.1
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 00/27] DCD: Add support for Dynamic Capacity Devices
- (DCD)
-To: Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
- Ira Weiny <ira.weiny@intel.com>
-Cc: Fan Ni <fan.ni@samsung.com>, Navneet Singh <navneet.singh@intel.com>,
- Jonathan Corbet <corbet@lwn.net>, Andrew Morton <akpm@linux-foundation.org>,
- Dan Williams <dan.j.williams@intel.com>, Davidlohr Bueso
- <dave@stgolabs.net>, Alison Schofield <alison.schofield@intel.com>,
- Vishal Verma <vishal.l.verma@intel.com>, linux-cxl@vger.kernel.org,
- linux-doc@vger.kernel.org, nvdimm@lists.linux.dev,
- linux-kernel@vger.kernel.org, Chris Mason <clm@fb.com>,
- Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
- linux-btrfs@vger.kernel.org, Johannes Thumshirn
- <johannes.thumshirn@wdc.com>, Robert Moore <robert.moore@intel.com>,
- Len Brown <lenb@kernel.org>, "Rafael J. Wysocki"
- <rafael.j.wysocki@intel.com>, linux-acpi@vger.kernel.org,
- acpica-devel@lists.linux.dev, Li Ming <ming4.li@intel.com>,
- Kees Cook <kees@kernel.org>, "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- linux-hardening@vger.kernel.org
-References: <20241029-dcd-type2-upstream-v5-0-8739cb67c374@intel.com>
- <20241030144841.00006746@Huawei.com>
-Content-Language: en-US
-From: Dave Jiang <dave.jiang@intel.com>
-In-Reply-To: <20241030144841.00006746@Huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+When support for  PCC Opregion was added, validation of field_obj
+was missed.
+Based on the acpi_ev_address_space_dispatch function description,
+field_obj can be NULL, and also when acpi_ev_address_space_dispatch
+is called in the acpi_ex_region_read() NULL is passed as field_obj.
 
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-On 10/30/24 7:48 AM, Jonathan Cameron wrote:
-> On Tue, 29 Oct 2024 15:34:35 -0500
-> Ira Weiny <ira.weiny@intel.com> wrote:
-> 
->> A git tree of this series can be found here:
->>
->> 	https://github.com/weiny2/linux-kernel/tree/dcd-v4-2024-10-29
->>
->> Series info
->> ===========
->>
->> This series has 4 parts:
->>
->> Patch 1: Add core range_overlaps() function
->> Patch 2-6: CXL clean up/prelim patches
->> Patch 7-25: Core DCD support
->> Patch 26-27: cxl_test support
-> 
-> Other than a few trivial comments and that one build bot reported
-> issue all looks good to me. Nice work Ira, Navneet etc.
-> 
-> Maybe optimistic to hit 6.13, but I'd love it if it did.
-> If not, Dave, how about shaving a few off the front so at least
-> there is less to remember for v6 onwards :)
+Fixes: 0acf24ad7e10 ("ACPICA: Add support for PCC Opregion special context data")
+Cc: stable@vger.kernel.org
+Signed-off-by: George Rurikov <grurikov@gmail.com>
+---
+ drivers/acpi/acpica/evregion.c | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
 
-I'd like to take it for 6.13. Just seeing if Dan has any last minute complaints :) We should be able to take 1-6 at least.
-
-> 
-> Jonathan
+diff --git a/drivers/acpi/acpica/evregion.c b/drivers/acpi/acpica/evregion.c
+index cf53b9535f18..03e8b6f186af 100644
+--- a/drivers/acpi/acpica/evregion.c
++++ b/drivers/acpi/acpica/evregion.c
+@@ -164,13 +164,17 @@ acpi_ev_address_space_dispatch(union acpi_operand_object *region_obj,
+ 		}
+ 
+ 		if (region_obj->region.space_id == ACPI_ADR_SPACE_PLATFORM_COMM) {
+-			struct acpi_pcc_info *ctx =
+-			    handler_desc->address_space.context;
+-
+-			ctx->internal_buffer =
+-			    field_obj->field.internal_pcc_buffer;
+-			ctx->length = (u16)region_obj->region.length;
+-			ctx->subspace_id = (u8)region_obj->region.address;
++			if (field_obj != NULL) {
++				struct acpi_pcc_info *ctx =
++					handler_desc->address_space.context;
++
++				ctx->internal_buffer =
++					field_obj->field.internal_pcc_buffer;
++				ctx->length = (u16)region_obj->region.length;
++				ctx->subspace_id = (u8)region_obj->region.address;
++			} else {
++				return_ACPI_STATUS(AE_ERROR);
++			}
+ 		}
+ 
+ 		if (region_obj->region.space_id ==
+-- 
+2.34.1
 
