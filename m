@@ -1,108 +1,74 @@
-Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E4EA28E8
-	for <acpica-devel@lists.linux.dev>; Thu, 31 Oct 2024 19:51:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.149.199.84
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA65AC13C;
+	Fri,  1 Nov 2024 12:18:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730404286; cv=none; b=K7fpz2AePsRo/817FhXmFVji3kBByiFp+mkSgcgn4/uIo1KvQqhyW2h/K7yNoCklRWaDNQ2/J7oa+jmJqyvrxUulDvI0PGynT9bPxL/hEIr8DucyZCsWYy5x7/lqY5IQKnAEwN9q3zuye/22Fo6/4t5EcnAeJlRm1kjBaCPtyt8=
+	t=1730463539; cv=none; b=UJmUOXmKJYhUMtY/lR5P39HCvv3ppCjp2OzGVdVSuZW0XbgwAfo0bNsZLfxhPUuZONyhv9ojjrNvACyRESoEAqK4u5/WRz7YfEQHlW99KAMsZf5PuujbfdCxGksNuyilyo7VI8gA1KDuSm2ZrN0/LV+cf4fTnl6FUOPPvo/jrMQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730404286; c=relaxed/simple;
-	bh=pWeTyJJNnr00Ds1a/IrE+1tdtM+/jzwGubwtgQ/p3RA=;
+	s=arc-20240116; t=1730463539; c=relaxed/simple;
+	bh=+HDgzWKsUKx97E2mppbNA0tlv52sTXzgPdKbp7JsyHc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BRnnYqKCxMm9XQVAoYCduVfdkW3rlMID7LGWOhaQo2YiYyDAKjs/MJVM8lJJiSlW0A1soQVAzfw9WSXadcnAu9uBm5cnoJAJ+RUgOT4PRhLuKNSq9X75vxDx/7MS+cg1BpJ7/FjMEfEN5vnNI8lm1THR9Rrd0HP3MojyO2zRC0s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru; spf=pass smtp.mailfrom=ispras.ru; dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b=sK2Mu5Uv; arc=none smtp.client-ip=83.149.199.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
+	 Content-Type:Content-Disposition:In-Reply-To; b=EH2rRfi0EVqj+A25Al8Cs4RadLaY5Mwo+rAtJk0k7yCbJibz+5efhSdUp+sm4EIlz9iFL6EKrg7ePdZzcVxYPRiAHy3ubbGJQfxakjUF/x0zSlratMsvqdmDAINZ9WztHTaP9zWGYK1lOI2P3N3geBXw/q+QUJfG71BB4acM2D0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NBHuxN/p; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="sK2Mu5Uv"
-Received: from fpc (unknown [10.10.165.3])
-	by mail.ispras.ru (Postfix) with ESMTPSA id 61BCD40777DF;
-	Thu, 31 Oct 2024 19:51:13 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 61BCD40777DF
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
-	s=default; t=1730404273;
-	bh=ANbGFTkYcuHN9MP7yhDSsW9JkyY2aWF7v/pBJSBGoLc=;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NBHuxN/p"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C80BC4CECD;
+	Fri,  1 Nov 2024 12:18:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1730463539;
+	bh=+HDgzWKsUKx97E2mppbNA0tlv52sTXzgPdKbp7JsyHc=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sK2Mu5UvfLD+ZZnSKJGEh+JOx0In9VTgb+fmUGwhG0Xr6PTTb2L7Qp+4oDud+QgBx
-	 IS8U8Sgra+7jfgv5V6E+Ap4FBDBb/r610FIaUz7QBldHurlKqN9asHCMsrFwQy6+Ao
-	 cCTXHFvNDp1AEmwugIKBkM3/2EhQoyhKEdbauILY=
-Date: Thu, 31 Oct 2024 22:51:09 +0300
-From: Fedor Pchelkin <pchelkin@ispras.ru>
-To: George Rurikov <grurikov@gmail.com>
-Cc: Robert Moore <robert.moore@intel.com>, lvc-project@linuxtesting.org,
-	acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org, linux-acpi@vger.kernel.org,
+	b=NBHuxN/pAPf8IHixhryTxZ/futb2LvKpXXCyR/SW5uqdlFGHVLyrlBC+FoDgxJK/8
+	 BXZ1Fn1ywsP56K2duT3rd3UI+AOCVdZmtR/HykfvCUXf3jv+5ZNKavkqEnCI4LKVwF
+	 LRMnqS48aXxmJsDs31Z4xPwsC+bm4UTb7nLroxbppw7andSl//KM3oM0Tk4BPncaBZ
+	 w1Qs2YqwVqIpnwUXRzbOyRf6LMKWgSiY+Z1kSvOokZF2WryjywWEbsMTi0AdGzTtx3
+	 DxocfHC4sNGzai1qJLidnKNIKvKXS5sFlWCK6RoNSgw6FiIuVJ2TXQJsams+pxngiG
+	 /RIoyXXF0y6rQ==
+Date: Fri, 1 Nov 2024 12:18:50 +0000
+From: Will Deacon <will@kernel.org>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: acpica-devel@lists.linux.dev, iommu@lists.linux.dev,
+	Joerg Roedel <joro@8bytes.org>, Kevin Tian <kevin.tian@intel.com>,
+	kvm@vger.kernel.org, Len Brown <lenb@kernel.org>,
+	linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Robert Moore <robert.moore@intel.com>,
+	Robin Murphy <robin.murphy@arm.com>,
 	Sudeep Holla <sudeep.holla@arm.com>,
-	"Rafael J. Wysocki" <lenb@kernel.org>
-Subject: Re: [PATCH] ACPICA: Fix dereference in
- acpi_ev_address_space_dispatch()
-Message-ID: <20241031-2f71908a9a589c4469480e73-pchelkin@ispras.ru>
-References: <20241031173146.1459-1-grurikov@gmail.com>
+	Alex Williamson <alex.williamson@redhat.com>,
+	Donald Dutile <ddutile@redhat.com>,
+	Eric Auger <eric.auger@redhat.com>,
+	Hanjun Guo <guohanjun@huawei.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	Jerry Snitselaar <jsnitsel@redhat.com>,
+	Moritz Fischer <mdf@kernel.org>,
+	Michael Shavit <mshavit@google.com>,
+	Nicolin Chen <nicolinc@nvidia.com>, patches@lists.linux.dev,
+	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+	Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
+	Mostafa Saleh <smostafa@google.com>
+Subject: Re: [PATCH v4 00/12] Initial support for SMMUv3 nested translation
+Message-ID: <20241101121849.GD8518@willie-the-truck>
+References: <0-v4-9e99b76f3518+3a8-smmuv3_nesting_jgg@nvidia.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241031173146.1459-1-grurikov@gmail.com>
+In-Reply-To: <0-v4-9e99b76f3518+3a8-smmuv3_nesting_jgg@nvidia.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On Thu, 31. Oct 20:31, George Rurikov wrote:
-> When support for  PCC Opregion was added, validation of field_obj
-> was missed.
-> Based on the acpi_ev_address_space_dispatch function description,
-> field_obj can be NULL, and also when acpi_ev_address_space_dispatch
-> is called in the acpi_ex_region_read() NULL is passed as field_obj.
-> 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> 
-> Fixes: 0acf24ad7e10 ("ACPICA: Add support for PCC Opregion special context data")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: George Rurikov <grurikov@gmail.com>
-> ---
->  drivers/acpi/acpica/evregion.c | 18 +++++++++++-------
+On Wed, Oct 30, 2024 at 09:20:44PM -0300, Jason Gunthorpe wrote:
+> [This is now based on Nicolin's iommufd patches for vIOMMU and will need
+> to go through the iommufd tree, please ack]
 
-Hi George,
+Can't we separate out the SMMUv3 driver changes? They shouldn't depend on
+Nicolin's work afaict.
 
-ACPICA patches go first via a separate Github project [1].
-[1]: https://github.com/acpica/acpica
-
-Please see [2] and [3] for more info:
-[2]: https://lore.kernel.org/acpica-devel/CAJZ5v0i7LYzF13M0qdeYWXZ7uO6HUpAS7pE5RJnOAJtKB8o88A@mail.gmail.com/
-[3]: https://docs.kernel.org/driver-api/acpi/linuxized-acpica.html
-
->  1 file changed, 11 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/acpi/acpica/evregion.c b/drivers/acpi/acpica/evregion.c
-> index cf53b9535f18..03e8b6f186af 100644
-> --- a/drivers/acpi/acpica/evregion.c
-> +++ b/drivers/acpi/acpica/evregion.c
-> @@ -164,13 +164,17 @@ acpi_ev_address_space_dispatch(union acpi_operand_object *region_obj,
->  		}
->  
->  		if (region_obj->region.space_id == ACPI_ADR_SPACE_PLATFORM_COMM) {
-> -			struct acpi_pcc_info *ctx =
-> -			    handler_desc->address_space.context;
-> -
-> -			ctx->internal_buffer =
-> -			    field_obj->field.internal_pcc_buffer;
-> -			ctx->length = (u16)region_obj->region.length;
-> -			ctx->subspace_id = (u8)region_obj->region.address;
-> +			if (field_obj != NULL) {
-> +				struct acpi_pcc_info *ctx =
-> +					handler_desc->address_space.context;
-> +
-> +				ctx->internal_buffer =
-> +					field_obj->field.internal_pcc_buffer;
-> +				ctx->length = (u16)region_obj->region.length;
-> +				ctx->subspace_id = (u8)region_obj->region.address;
-> +			} else {
-> +				return_ACPI_STATUS(AE_ERROR);
-> +			}
->  		}
->  
->  		if (region_obj->region.space_id ==
-> -- 
-> 2.34.1
+Will
