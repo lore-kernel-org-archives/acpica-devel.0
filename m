@@ -1,128 +1,143 @@
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 652A918FDDE
-	for <acpica-devel@lists.linux.dev>; Wed,  6 Nov 2024 05:39:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 317C613C67C;
+	Wed,  6 Nov 2024 16:37:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730871570; cv=none; b=oWXK7/pYFgDs05iILIFT6UaYHNXuX30EasSv4gsi83RJi88l488ATCfhBwUO7oucyeyMrsBdjsmUnCc5kt7p0nkz8iKFFniQ7i6PXrYIATFRp6h6jFULChpXeurZoKE+p1gDNvO5Gj+roXlyMdtoBK7pvJyklzg8/jQiT5fCRZ0=
+	t=1730911081; cv=none; b=XQx2vwb8sPMK2XiXgn5OgOTVc5JH8pzXepKhyo1NOVQvvsVyEpEkfzIDedb6IfpruxOSUFdrRES9GTeWvJbOQQW7Mn0ggbUO/2Bdd2O7YgOvDcIOOwCm1jR5Mpg7efEc/rdntQUGIbdPoT/91HmPwwLSoaiUrYFSMDTUu05Mhec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730871570; c=relaxed/simple;
-	bh=3qBDiqpY9XDqbY2Y9odYYAPqOm9MdhCQLElgiaodrH0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Y2vIu+HtZYJq/rJuEmTsVgw1orJteAu6RXpVKAs44BcNBpxodlBXFEnkJ2u9Mak4SZ90NLcR/dlAwR2+tJPPNldlzAF3DtWL+9wnZdss/A6pnWIMEFHlI1T9CEgONtyYIe2hmYAgESbx9VNeSqfZF+IhaHLvOhs3ptnWNdZ1bmc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=eWOAUpvw; arc=none smtp.client-ip=209.85.167.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="eWOAUpvw"
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-53c78ebe580so493323e87.1
-        for <acpica-devel@lists.linux.dev>; Tue, 05 Nov 2024 21:39:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1730871565; x=1731476365; darn=lists.linux.dev;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=AN4uQlg4JmmnskoZUbD9ajWs6/v+l9dkVw03I1zm8cw=;
-        b=eWOAUpvwcpojXTxRa/r/aSdVLbridQ8KRMfdpu+u9AZdSYfX/hze+IIUH/zM55HJoY
-         Wipz2BQA5f94yw4pkYll2mTWXuLxEprfdO9mEn7yvzaTxSvKO2Y99neucUOZ6JpD3dSI
-         v8NCwHP6H/WNKLRjZm9hZU8prT694mjXonFTiNHTONWMLW7mpMijUle9mVRILe5SbrlQ
-         LRaBBHN2k1Tt8LfxFN8f4vODioHeF1Azd5YyFqEWah69R5+WhyPVKmo1wp3X6bbruNTA
-         QvWwkI0FqhexA41Q7FgoK9rmMUdmrZAKaoS7XuS7NtCZHw7BpZKW3iZz9j6gv1LPz9W5
-         mpZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730871565; x=1731476365;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AN4uQlg4JmmnskoZUbD9ajWs6/v+l9dkVw03I1zm8cw=;
-        b=sUmbHLeP0r8mYdipC8O05ZVSrQ/GfB7uVPk0jaeeAHbUSWTlC3FTDNPXJimC0I2iJ4
-         FopRmP1qj8jkEdrKjUYvikexmzTACYruPmRrGx5Ark9lsXHjpGsxMlNl73rGSXcuiu3W
-         4mRqJhn0PzzbC+j/gS0DESUdF78NQvUjqH6ib+/XpEwiPId6fqLpIAfj0HQcYkjTzWl8
-         0ZfI/OrpnzhqgdRanwKlXOghNsuXlhJP5+YpZBfhXpICdZ6Sr7yYLGJTVY70FdQXYYpN
-         rXJ9EM6G8eYn2ra49LVituyZjelY7LO3o+rPEcDozs6KmSzEllK6QjvCXPJ6rroB5Wu0
-         8aZA==
-X-Gm-Message-State: AOJu0YxW4CYJ2z3nH8T2nAPqjD1dtJroLrnVRHAHHLVmvFYwzQeDxInT
-	x92J5s6qiRR8QBIeRHQsTlNyi9wJnbTgLXjgxg+ZlnImPwP19/rgXDVjp4ebgJuzScXjEjIa86I
-	6CXp6Qr9cnVxH0P6Vy2v2G1+pjdWf0JARvhJayw==
-X-Google-Smtp-Source: AGHT+IHkFZmS15Yat+yA6wTIjddaBPNP6Qu4/1YXgkU7r7C/EE/mZc+JCaJP3gRrzyZ+p7mBuvSg1qn/MJDQimjHDOk=
-X-Received: by 2002:a05:6512:4803:b0:53b:1ede:9174 with SMTP id
- 2adb3069b0e04-53d7cff7502mr316569e87.28.1730871564937; Tue, 05 Nov 2024
- 21:39:24 -0800 (PST)
+	s=arc-20240116; t=1730911081; c=relaxed/simple;
+	bh=NoUPWQGZ3FMIWDA+UGAU977oicgCj2D+ncc6vpw6caU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WNaHgcETXkzfeWBCmb5aQYYblnVrC7qwdtLlQW0Oc9EEgxYc+xSpwxdZqi4BdRcKxIBL0OYiLfHGuvYLWLeV4Ln4K4V8jZvcc4yrLZw6OXqVy4xFs5JAXFNHhXl8sf8RPpjJEzlvnDgdIhwMOuH0IXTdI8lRAwOH9c9p68IDkB0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 118FC497;
+	Wed,  6 Nov 2024 08:38:28 -0800 (PST)
+Received: from [10.57.90.5] (unknown [10.57.90.5])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6850B3F528;
+	Wed,  6 Nov 2024 08:37:54 -0800 (PST)
+Message-ID: <8a5940b0-08f3-48b1-9498-f09f0527a964@arm.com>
+Date: Wed, 6 Nov 2024 16:37:53 +0000
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 05/12] iommu/arm-smmu-v3: Support IOMMU_GET_HW_INFO via
+ struct arm_smmu_hw_info
+To: Jason Gunthorpe <jgg@nvidia.com>, Will Deacon <will@kernel.org>
+Cc: acpica-devel@lists.linux.dev, iommu@lists.linux.dev,
+ Joerg Roedel <joro@8bytes.org>, Kevin Tian <kevin.tian@intel.com>,
+ kvm@vger.kernel.org, Len Brown <lenb@kernel.org>,
+ linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>,
+ Robert Moore <robert.moore@intel.com>, Sudeep Holla <sudeep.holla@arm.com>,
+ Alex Williamson <alex.williamson@redhat.com>,
+ Donald Dutile <ddutile@redhat.com>, Eric Auger <eric.auger@redhat.com>,
+ Hanjun Guo <guohanjun@huawei.com>,
+ Jean-Philippe Brucker <jean-philippe@linaro.org>,
+ Jerry Snitselaar <jsnitsel@redhat.com>, Moritz Fischer <mdf@kernel.org>,
+ Michael Shavit <mshavit@google.com>, Nicolin Chen <nicolinc@nvidia.com>,
+ patches@lists.linux.dev, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+ Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
+ Mostafa Saleh <smostafa@google.com>
 References: <0-v4-9e99b76f3518+3a8-smmuv3_nesting_jgg@nvidia.com>
- <9-v4-9e99b76f3518+3a8-smmuv3_nesting_jgg@nvidia.com> <CABQgh9HoGFGDTEqziQt6WrJ7Bm9d-0c259PYsms3nOVEidn5BA@mail.gmail.com>
- <20241104171931.GB10193@nvidia.com>
-In-Reply-To: <20241104171931.GB10193@nvidia.com>
-From: Zhangfei Gao <zhangfei.gao@linaro.org>
-Date: Wed, 6 Nov 2024 05:39:13 +0000
-Message-ID: <CABQgh9HSAhat3_P43F_z07oqDaJ9h_YrZ-+SdHZ=ijzrZD1CVw@mail.gmail.com>
-Subject: Re: [PATCH v4 09/12] iommu/arm-smmu-v3: Support IOMMU_DOMAIN_NESTED
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: acpica-devel@lists.linux.dev, iommu@lists.linux.dev, 
-	Joerg Roedel <joro@8bytes.org>, Kevin Tian <kevin.tian@intel.com>, kvm@vger.kernel.org, 
-	Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, 
-	Lorenzo Pieralisi <lpieralisi@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Robert Moore <robert.moore@intel.com>, Robin Murphy <robin.murphy@arm.com>, 
-	Sudeep Holla <sudeep.holla@arm.com>, Will Deacon <will@kernel.org>, 
-	Alex Williamson <alex.williamson@redhat.com>, Donald Dutile <ddutile@redhat.com>, 
-	Eric Auger <eric.auger@redhat.com>, Hanjun Guo <guohanjun@huawei.com>, 
-	Jean-Philippe Brucker <jean-philippe@linaro.org>, Jerry Snitselaar <jsnitsel@redhat.com>, 
-	Moritz Fischer <mdf@kernel.org>, Michael Shavit <mshavit@google.com>, Nicolin Chen <nicolinc@nvidia.com>, 
-	patches@lists.linux.dev, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, 
-	Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>, Mostafa Saleh <smostafa@google.com>
-Content-Type: text/plain; charset="UTF-8"
+ <5-v4-9e99b76f3518+3a8-smmuv3_nesting_jgg@nvidia.com>
+ <20241104114723.GA11511@willie-the-truck> <20241104124102.GX10193@nvidia.com>
+From: Robin Murphy <robin.murphy@arm.com>
+Content-Language: en-GB
+In-Reply-To: <20241104124102.GX10193@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, 4 Nov 2024 at 17:19, Jason Gunthorpe <jgg@nvidia.com> wrote:
->
-> On Thu, Oct 31, 2024 at 02:21:11PM +0800, Zhangfei Gao wrote:
->
-> > > +static struct iommu_domain *
-> > > +arm_vsmmu_alloc_domain_nested(struct iommufd_viommu *viommu, u32 flags,
-> > > +                             const struct iommu_user_data *user_data)
-> > > +{
-> > > +       struct arm_vsmmu *vsmmu = container_of(viommu, struct arm_vsmmu, core);
-> > > +       struct arm_smmu_nested_domain *nested_domain;
-> > > +       struct iommu_hwpt_arm_smmuv3 arg;
-> > > +       int ret;
-> > > +
-> > > +       if (flags)
-> > > +               return ERR_PTR(-EOPNOTSUPP);
-> >
-> > This check fails when using user page fault, with flags =
-> > IOMMU_HWPT_FAULT_ID_VALID (4)
-> > Strange, the check is not exist in last version?
-> >
-> > iommufd_viommu_alloc_hwpt_nested ->
-> > viommu->ops->alloc_domain_nested(viommu, flags, user_data) ->
-> > arm_vsmmu_alloc_domain_nested
->
-> It should permit IOMMU_HWPT_FAULT_ID_VALID, I'll add this hunk:
->
-> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-iommufd.c
-> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-iommufd.c
-> @@ -178,12 +178,18 @@ arm_vsmmu_alloc_domain_nested(struct iommufd_viommu *viommu, u32 flags,
->                               const struct iommu_user_data *user_data)
->  {
->         struct arm_vsmmu *vsmmu = container_of(viommu, struct arm_vsmmu, core);
-> +       const u32 SUPPORTED_FLAGS = IOMMU_HWPT_FAULT_ID_VALID;
->         struct arm_smmu_nested_domain *nested_domain;
->         struct iommu_hwpt_arm_smmuv3 arg;
->         bool enable_ats = false;
->         int ret;
->
-> -       if (flags)
-> +       /*
-> +        * Faults delivered to the nested domain are faults that originated by
-> +        * the S1 in the domain. The core code will match all PASIDs when
-> +        * delivering the fault due to user_pasid_table
-> +        */
-> +       if (flags & ~SUPPORTED_FLAGS)
->                 return ERR_PTR(-EOPNOTSUPP);
+On 2024-11-04 12:41 pm, Jason Gunthorpe wrote:
+> On Mon, Nov 04, 2024 at 11:47:24AM +0000, Will Deacon wrote:
+>>> +/**
+>>> + * struct iommu_hw_info_arm_smmuv3 - ARM SMMUv3 hardware information
+>>> + *                                   (IOMMU_HW_INFO_TYPE_ARM_SMMUV3)
+>>> + *
+>>> + * @flags: Must be set to 0
+>>> + * @__reserved: Must be 0
+>>> + * @idr: Implemented features for ARM SMMU Non-secure programming interface
+>>> + * @iidr: Information about the implementation and implementer of ARM SMMU,
+>>> + *        and architecture version supported
+>>> + * @aidr: ARM SMMU architecture version
+>>> + *
+>>> + * For the details of @idr, @iidr and @aidr, please refer to the chapters
+>>> + * from 6.3.1 to 6.3.6 in the SMMUv3 Spec.
+>>> + *
+>>> + * User space should read the underlying ARM SMMUv3 hardware information for
+>>> + * the list of supported features.
+>>> + *
+>>> + * Note that these values reflect the raw HW capability, without any insight if
+>>> + * any required kernel driver support is present. Bits may be set indicating the
+>>> + * HW has functionality that is lacking kernel software support, such as BTM. If
+>>> + * a VMM is using this information to construct emulated copies of these
+>>> + * registers it should only forward bits that it knows it can support.
 
-Thanks Jason, this works
+But how *is* a VMM supposed to know what it can support? Are they all 
+expected to grovel the host devicetree/ACPI tables and maintain their 
+own knowledge of implementation errata to understand what's actually usable?
+
+>>> + *
+>>> + * In future, presence of required kernel support will be indicated in flags.
+>>
+>> What about the case where we _know_ that some functionality is broken in
+>> the hardware? For example, we nobble BTM support on MMU 700 thanks to
+>> erratum #2812531 yet we'll still cheerfully advertise it in IDR0 here.
+>> Similarly, HTTU can be overridden by IORT, so should we update the view
+>> that we advertise for that as well?
+> 
+> My knee jerk answer is no, these struct fields should just report the
+> raw HW register. A VMM should not copy these fields directly into a
+> VM. The principle purpose is to give the VMM the same details about the
+> HW as the kernel so it can apply erratas/etc.
+> 
+> For instance, if we hide these fields how will the VMM/VM know to
+> apply the various flushing errata? With vCMDQ/etc the VM is directly
+> pushing flushes to HW, it must know the errata.
+
+That doesn't seem like a valid argument. We obviously can't abstract 
+SMMU_IIDR, that would indeed be an invitation for trouble, but 
+otherwise, if an erratum affects S1 operation under conditions dependent 
+on an optional feature, then not advertising that feature would make the 
+workaround irrelevant anyway, since as far as the VM is concerned it 
+would be wrong to expect a non-existent feature to work in the first place.
+
+> For BTM/HTTU/etc - those all require kernel SW support and per-device
+> permission in the kernel to turn on. For instance requesting a nested
+> vSTE that needs BTM will fail today during attach. Turning on HTTU on
+> the S2 already has an API that will fail if the IORT blocks it.
+
+What does S2 HTTU have to do with the VM? How the host wants to maintain 
+its S2 tables it its own business. AFAICS, unless the VMM wants to do 
+some fiddly CD shadowing, it's going to be kinda hard to prevent the 
+SMMU seeing a guest CD with CD.HA and/or CD.HD set if the guest expects 
+S1 HTTU to work.
+
+I'm not sure what "vSTE that needs BTM" means. Even if the system does 
+support BTM, the only control is the global SMMU_CR2.PTM, and a vSMMU 
+can't usefully emulate changing that either way. Either the host set 
+PTM=0 before enabling the SMMU, so BTM can be advertised and expected to 
+work, or it didn't, in which case there can be no BTM, full stop.
+
+> Incrementally dealing with expanding the support is part of the
+> "required kernel support will be indicated in flags."
+> 
+> Basically, exposing the information as-is doesn't do any harm.
+
+I would say it does. Advertising a feature when we already know it's not 
+usable at all puts a non-trivial and unnecessary burden on the VMM and 
+VM to then have to somehow derive that information from other sources, 
+at the risk of being confused by unexpected behaviour if they don't.
+
+We sanitise CPU ID registers for userspace and KVM, so I see no 
+compelling reason for SMMU ID registers to be different.
+
+Thanks,
+Robin.
