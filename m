@@ -1,48 +1,48 @@
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2045.outbound.protection.outlook.com [40.107.244.45])
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2055.outbound.protection.outlook.com [40.107.223.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1D95199B8;
-	Thu,  7 Nov 2024 02:35:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A7202144B1;
+	Thu,  7 Nov 2024 15:51:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.55
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730946913; cv=fail; b=OT9GHRJG/JwIGnuoXy+6UlYKm6Q1LDYzqvbT5UALfMsyL+zFkgpP+ujFLMywQRIE/2lqCRbAzP9iouLwCjR9g1IkwvxqQyexgtilsruayk+d67eitFFSJrNk5hFO4MPVCj0Ownof434weMofv7UccETlnGfpyRNXcKsagDXOJms=
+	t=1730994716; cv=fail; b=fYbP7LrnfG1c6EGLwQI3FcOQT8aVLQNogxLfny6mXOXd+Cs2IqKSNUMPH7cRs43pn0gF31CRjKHV/as4attvWTC2aXO+wdMlhx3F5VdO9204Bi+GR4u97mTPJkqCzyHPGesDQgh5Vt3uet9c4y7sDGNF/Hg8lFYhR7OJmQLGvBQ=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730946913; c=relaxed/simple;
-	bh=+7g3+tgbr7eHhNwo8bNmD35CojMKqgH98FDE29LJVK0=;
+	s=arc-20240116; t=1730994716; c=relaxed/simple;
+	bh=DNfmREALQIdyYyW6Q0QZ9I7h0QFXduZqRg97GNwjtZ0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=tBfxORAO30dFuR4a7LT2KHTi65ESvSwuQhq0SncQwK4ZIPgGQo2zZoFjbo8DxGqNjgBpZhl8WqNndaZpL4GZRduPyeaot82kLXd8utRCBD2Tq7cjp5zDoK03Bcf+L9pEjLmoiz583HBfLXQrW4rmAT95Y5uPhy8dcuPL1Li6X6A=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=DFjELzMg; arc=fail smtp.client-ip=40.107.244.45
+	 Content-Disposition:In-Reply-To:MIME-Version; b=mxQX+MqVcWMrUs+l8e+qOO/wxWsYKvKosM93WnTkD3AKVoq78IumvckyVN048edYAbh8q8GnfMfMsVr/pzmEyrJ3xTkXa3Q7jJjZ3N0gjOeFCyZRjbqZS51oDBxN+R4tTp1GvAMCQA3pHS6RC7/zft35q9eBE2lmYKLaNq8hlQE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=CsuNDBpA; arc=fail smtp.client-ip=40.107.223.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="DFjELzMg"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="CsuNDBpA"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=hJHzzo9CZQ4lR0wJJhoyv4ciwzSyX9LQVdspLGK8DG/JeK5nnqS43f3h49xpJL7dxNDi6FXOsdKUeGdiuC3EWrlPErqxYc7kDqOMOBOPwnY2jDWcl/Oy43bxnfP6kS3EemVB2N5mbQwLMrCI9qSc8OEwFyRNeubDDTJnTkcDSyCTSlHp6mWA+VdrMJV8ON3toDklxTXAII9tisql5sSSLNGScidoaqfoq5q4GR0n//Fvxcvvw+7OXwM/CymfKKyvW+SRWQR+e35AWo3R5GYA85heuaMw56hXaLCnkOxqK86uJJNw8jPB9gCcjSGE9wrnIMfUCU7Ftz09R49pzF9kUg==
+ b=CEzQ5CktD9I2M1MsVoxJjz5MRtNJ8vFvdo98TYG2vPLf2kC0sTAgZ4+4plKdcuW2n9SQfNsNi8OGduEAB6/e2c7k1hEq69hYKJdDjUbJWwwkM/vkn7Tw+YugJaqZRoEyx00z2lYYiCtO/z6EiZNVQMybT5dBPjYnUMyAJUEkE416Lx3k9oCIXtPS/NyGpuEccmM5O76ro1vjPVxlXl7QsOodcdhglnBoeFLaljRj3zh0dzJJIdi4drGmXNeaqJMZQZ/m01vUsIa+DeKS5qARqdzskVQPZCpbJ4nitrOMLPGD2tgDfzVrhGyo3epRE+cq0lcMHluydqeroIMC/GwQJw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+4/cTM18zF7Tj52PepiTZVzSOZ4qRJx258zHdVlVRTo=;
- b=J0lqnxQ5DL0TinZQjhwCSvB77YQjTi2Vw8wyqOyG/fwGW4k20St+huc3PSBONSXDViEc9X4KXTQWdlt9CUMOqVSc3Zw5BQ1t9jsta4jrNiWhBPhBmo69N1kEXhKh5KHU+nVsz04/OJlQ77gN1hzKYCCuzDmlu3U+W/75Vatc7tCzJy03k1lBVgubHJhc0HxbBUqjjZDwpLF9TLxJ3C/wpJQLuWVyvzr960Vvd4sMpH7D0imXZ/pnC6iKP7p0DlE2JAS3Jqk0gP5Q/GUn5E1LgKYV3NB27Ek8EDQ/6+Ggsb6ppugvfy6ijuQCwhsrxLPNfBnhroC2PfGIMX2WymY2sA==
+ bh=jg6Ck2TA/9JqrHRFolKiu/83sEVbl4LjdEAd+5wJJ2w=;
+ b=G90OU/HoJyVqJc592cFAF/3O86hggLuVyiIwBLg6UCUvwYJjgN3CBf5DbRagmfhlkO5/R8RiDvC1JcEkE+cEmPjtmkICbTkFko9jpf6LHVALbM/WbvUTa2Pt+5Tl4QrdeN552s/lblSs41cTII6i36R3DPSNs+3/C1ioZyjk855Z42wSzgFvcLKAYqWHtqpxd9KS6oXPXlXti4wEztdzRWjaPIE37qSMVA1BwVcz0ycrMJ2EoA+DqzJmBAwVBEv1/HBPbpxC1lQYF5GEI7ytKNbIMWGeWrID1ESYyaUZiK9N9elIiqCo6pgUMAUeNsyFV/XkHokvysnWDVBFqH48LA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+4/cTM18zF7Tj52PepiTZVzSOZ4qRJx258zHdVlVRTo=;
- b=DFjELzMgYBEWSt0S8kXZ3/gELyK9cdTA3glc1BN58AFYRMyLgdcGlTsyMugKls+TXrXZV05svUQsLiEc64paPZT9vqirX2LBg5MJRybbIYdirrGKtBdoP6V+pTSZTotW3/ozx7tIkQdza69gKvUs6VmJFdSVF3WUFCj5rwQtte89mQ+REVvzu65HPIoSw6qs1aeV30QlOXqVdZHFph4x4+hgkp/FdDpcQCcj8CSe42ZhmQTcUXyhISoxMdFp7I72KYtEt0YD2AmfXfmhefauHZ9QGGgwDicQt7V6dfZegu9iNNQbpVf5nAC5IQZa3dDs6+dSjiNe8/bM0ErWeM8OaA==
+ bh=jg6Ck2TA/9JqrHRFolKiu/83sEVbl4LjdEAd+5wJJ2w=;
+ b=CsuNDBpARmua9P7YJF7fCPE2KnAsL3vKW/3xFh6ZpWFN8A7Ep2/i0Nqrl9x+2SPJ5uUvyho1GeBta9Ot3sZJ7NTHOz+kHJWXxdtYLb0ZqLsWc1f7KWWka7qMjYegT2LUpYaVG4wO1zG3GY1WLPvWIigdeZUCDJeieB0UcKMwr1LApJuI0tIK2+p2Oj2yIcx/20zFrlGdUQvia866ErOGLSyrxTm/YvsQ3TwTcZZ1pBuRRXpMM+Yc2p+SnAo1np8Yi5WsZptAyVIFwx5cikO43NWUviycbwbwihSAg888ouAI+KgmvTc7ch1U7tr/d7u+qQApXIr70N0NLGsN0/kMMg==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from CH3PR12MB8659.namprd12.prod.outlook.com (2603:10b6:610:17c::13)
- by CY5PR12MB6034.namprd12.prod.outlook.com (2603:10b6:930:2e::12) with
+ by CY8PR12MB7708.namprd12.prod.outlook.com (2603:10b6:930:87::19) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8114.30; Thu, 7 Nov
- 2024 02:35:08 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8137.20; Thu, 7 Nov
+ 2024 15:51:50 +0000
 Received: from CH3PR12MB8659.namprd12.prod.outlook.com
  ([fe80::6eb6:7d37:7b4b:1732]) by CH3PR12MB8659.namprd12.prod.outlook.com
  ([fe80::6eb6:7d37:7b4b:1732%4]) with mapi id 15.20.8137.018; Thu, 7 Nov 2024
- 02:35:08 +0000
-Date: Wed, 6 Nov 2024 22:35:06 -0400
+ 15:51:49 +0000
+Date: Thu, 7 Nov 2024 11:51:48 -0400
 From: Jason Gunthorpe <jgg@nvidia.com>
 To: Robin Murphy <robin.murphy@arm.com>
 Cc: Will Deacon <will@kernel.org>, acpica-devel@lists.linux.dev,
@@ -68,7 +68,7 @@ Cc: Will Deacon <will@kernel.org>, acpica-devel@lists.linux.dev,
 	Mostafa Saleh <smostafa@google.com>
 Subject: Re: [PATCH v4 05/12] iommu/arm-smmu-v3: Support IOMMU_GET_HW_INFO
  via struct arm_smmu_hw_info
-Message-ID: <20241107023506.GC520535@nvidia.com>
+Message-ID: <20241107155148.GF520535@nvidia.com>
 References: <0-v4-9e99b76f3518+3a8-smmuv3_nesting_jgg@nvidia.com>
  <5-v4-9e99b76f3518+3a8-smmuv3_nesting_jgg@nvidia.com>
  <20241104114723.GA11511@willie-the-truck>
@@ -76,11 +76,12 @@ References: <0-v4-9e99b76f3518+3a8-smmuv3_nesting_jgg@nvidia.com>
  <8a5940b0-08f3-48b1-9498-f09f0527a964@arm.com>
  <20241106180531.GA520535@nvidia.com>
  <2a0e69e3-63ba-475b-a5a9-0863ad0f2bf8@arm.com>
+ <20241107023506.GC520535@nvidia.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2a0e69e3-63ba-475b-a5a9-0863ad0f2bf8@arm.com>
-X-ClientProxiedBy: BLAPR03CA0058.namprd03.prod.outlook.com
- (2603:10b6:208:32d::33) To CH3PR12MB8659.namprd12.prod.outlook.com
+In-Reply-To: <20241107023506.GC520535@nvidia.com>
+X-ClientProxiedBy: BL1PR13CA0252.namprd13.prod.outlook.com
+ (2603:10b6:208:2ba::17) To CH3PR12MB8659.namprd12.prod.outlook.com
  (2603:10b6:610:17c::13)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
@@ -89,205 +90,129 @@ List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR12MB8659:EE_|CY5PR12MB6034:EE_
-X-MS-Office365-Filtering-Correlation-Id: 660a7ea3-b932-4d5e-30ca-08dcfed4cb73
+X-MS-TrafficTypeDiagnostic: CH3PR12MB8659:EE_|CY8PR12MB7708:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4abfc410-74b5-4487-5d04-08dcff441770
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014|7416014;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?M/KT3p1wPcLfAineckpu3rW25pDxMjHQJ6IxKza3opzvHEXkltfmXKM95ON/?=
- =?us-ascii?Q?OidmFJQa/+mDgvRb+PYvyD0Dq7D0pZbkfWP9pBi53cFy8GAtyabgsG1w/Z5/?=
- =?us-ascii?Q?SxxEg/Gn1Xbtv3vK6ZY2O7kdBvocWBCaUI1sKymIWA84FnpZQLlcxYHAjXuj?=
- =?us-ascii?Q?KJaTC5nHhwRYfm7gWbuA8LuhmBeKaY3oa5r31bXA+Q37ym+6qEk6LNt6JzNG?=
- =?us-ascii?Q?R3WP/1Mw8qkpPzSOC0x8iv3vGIarrwokC5FzC4b37vYZskfNepIw3pwai+eR?=
- =?us-ascii?Q?d2+iX3calB1LvwWpk89kHDitK8RP5TSTHzphAg4Wy3OJ+ude4VL8rX7H2iqw?=
- =?us-ascii?Q?M3wmhU8JZcxpCSylzyqr5loSuOIhDfvVsGtLP0YEfeBLAGjZi9Jhuod/M9Hh?=
- =?us-ascii?Q?kqxyGID0KoZc/WzduRO4ZOm++3sP4LIufHDBwfkLGNFEE4dGU3Zid54W8euD?=
- =?us-ascii?Q?ptlHNi5f3bx1nhL4VyjXBMvfoaiPgDPPT86Uky+23IyRzRu+5AuhKLpZ9PVU?=
- =?us-ascii?Q?AGnqCt4TEhq1Ill5YLbMUbRFNrBYtNWNtkGkJRd/no5QCQxJMTIaczr4hb9y?=
- =?us-ascii?Q?6b2KI+tdDfEdim4U2eQpxznGUt8JwfAO1f1GKJTOtbqXEEwli0AyhjBhOiTq?=
- =?us-ascii?Q?Wan3BmQNUuqc0zJT2s4Zm8Cnk9mZifJsHXBggl/YqWNXBuUoTvMrcBrmmuX+?=
- =?us-ascii?Q?elW4Jwbzn68piHz//7Rug9F8y7RZ9enE/Kv00/1JLed5dh5T5/lk8S/WWUJq?=
- =?us-ascii?Q?1paqInL+jz4NgfBu3zbv+4wClhyTfAuNb5bKAA8IGA+I98n/RkUXLSJAIn5A?=
- =?us-ascii?Q?ns9W/q30p93dku9jJgho6ROer/BMJ+IpOc4Yo4NCXb6d9w5FTwNPvqBBYnyK?=
- =?us-ascii?Q?oEEOr9IienAJl/qMQC78jUh/DaEwravP1EN++OT3LGcazkBXfdAsL/XJ1Pmh?=
- =?us-ascii?Q?+HOo2lJOV6O0jI7ERAn9lxmVDqW7muYv37IXIAh93CO7I21rFvn5Pyq1AKHs?=
- =?us-ascii?Q?0VM7nXufvVtYKcZqZptXIzH9fS2L/R47ulC/PSFKwbqmReoWKk/xVgXZWQNh?=
- =?us-ascii?Q?eAdOwC4rr9xIN7K9qAoGuKb7JUi3hV4dy03YkkA0bv+ixGOT8OE9zHSaWkx5?=
- =?us-ascii?Q?a9YBOJev0iyUdNAJoKraeIzXbQ3GuZ0p1bhmBA7B6CkngkM1hj6+tSOaqaP5?=
- =?us-ascii?Q?CzttPyz6/nLoI+wHEnj/derN0eATfdVeBMqubIMf86FaI6N7HZBPFR68nKrG?=
- =?us-ascii?Q?o9BUUmiW4Xi2YxB2WKK9MHLlklNvqGnL86mxkkKC5dTxiUoHHTc7YBRLaPI0?=
- =?us-ascii?Q?aRU4P4LTPEYyMrshJMR/f0GG?=
+	=?us-ascii?Q?oQmlx1pjs9+a0NO+pLxGfPNHmPM51QAcSnp6yhGirxTjeeOGBoxmeGeUQXr/?=
+ =?us-ascii?Q?UG3ESmysX3rnj7VtMga5SIIFTwWd8pwWb+vaxNn1Cjea7sWxkCYC8y7nC2ND?=
+ =?us-ascii?Q?ElCwKUTBUvS7f2RnYoCrSt0Zu+lTZBnIRH4G4rQve0IyXld6dG8OGY16fGFZ?=
+ =?us-ascii?Q?Joe0GQp0/5wlcFJkYhhTGC9FbYYY2WH/7j1g2iUfqKvJLFqn87S/QYGkGsch?=
+ =?us-ascii?Q?l7f3OtFwKsibpQfNHfe+Z19g3ZSR7Uxfuvm01XtZRhL2CB62pv3oBV3WST1D?=
+ =?us-ascii?Q?zd6i+z0lVwGt7Te2vHK0cBI9gQdfDZDRHp0ONvh5IUOzhlrxcOoJUcqTl4tE?=
+ =?us-ascii?Q?OjZM+28eZf3R63ZOGbCHkF7bTtamgwimEfqpgeXzTqwqKjgxZHP2dmPalusg?=
+ =?us-ascii?Q?7W8p70EeJCJrk5LCxtGkI3Vang/bd/rfg4jUauL2N3o5a+TuTOvKXdrf1JRM?=
+ =?us-ascii?Q?0rO7Gy+sHcAwm6BZPOkaMbocjDQpf5wYiQOoSxjPcmlLnBRFj+C0ReNvSsML?=
+ =?us-ascii?Q?Yv7NuMZtE8sfQjTZV86pzvlZRQv27+EdTBKOnHYNarohBXlqx9lelLQzjX6K?=
+ =?us-ascii?Q?XoDNSnEThCtjT6QTEYOSgQK8BqZQdNPaITWtOttU+K6kAL5OPkvKLRewvbRq?=
+ =?us-ascii?Q?PScX/oRP6JV2vA1xDEDB4WWIJJz9AhhYFPWHSsL/FEdeAAv1Ox05WhHl4r+H?=
+ =?us-ascii?Q?swb0n3FjxWqUUja5P/J79ByBNdWd70lbWwMHKccIflp6mGMTS8CIV3aWShX8?=
+ =?us-ascii?Q?xp9qS02tNqI4uQsWynMUGJp0ZMwnga0mxFUNYQIRKKAlU35gZxS4aMpoUMJD?=
+ =?us-ascii?Q?0iYJPlZz6lHwWz6WjZl6jjojsKecZocU5soKYmwio+9VbyqiGfkLffdzsLqm?=
+ =?us-ascii?Q?0zZ6FZBJBKsXb8YnJtLWE0sDzP+6xokUxjUcwcAZLYTaFYBtN5kITzWRy3hb?=
+ =?us-ascii?Q?c/6Zd1Tm5rNuscQLFJAzN+lTFmY2LpoFiey7ax57lnRUd44rLzmEhpPYn93d?=
+ =?us-ascii?Q?sOwmFogLldFo3fayr0bYrqXq/gJyUc9w8fx0eBj2rBJCf2y2EXztS6usE9Wx?=
+ =?us-ascii?Q?WRda53ropX1MhhIwDelYMEo0/4cwI2U8JEutuq2qTaNzODGSwO1Aciv2c9Iv?=
+ =?us-ascii?Q?KgRdbUKoetTXt8d1X8+0aIk0fH36WMoa6Ubp1JOmoxzKPhjWHrjialyu5fj+?=
+ =?us-ascii?Q?KYwBcxXnkw2HG8hdiSfU6LGAq1oVgOjqwPoo25nEzx7EPEpu3sCnhVPMRJ3h?=
+ =?us-ascii?Q?2Yl6/ByjdPCtmO2ZCNYUVJDAky74XadcJr5hnHNxJMyjejqeNsD9XCqRKAgc?=
+ =?us-ascii?Q?q0KQ5ItW9BC8YsRJDaxj0cvh?=
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8659.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7416014);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?d7SviTQEtXitNW3n+UBSwEj53avW8HRT6G6GlGHhqMhVZXDggJs5ldLUirP/?=
- =?us-ascii?Q?kRrvuOOio12L++9dl+A6VzQjNQAKFnU6NsZdnJx4/1uVFjOXa8rTP62hWxzL?=
- =?us-ascii?Q?93BFYyFyaHK0EnzEL5p+5UJTWDOjojTBtlNAPPjlE8K7bmGpbLVT46p5CBEn?=
- =?us-ascii?Q?pS2RGFMHsR59mvqisMdmF5IAjMSl1dp4TO9ogdohncByuEfVJ+rOyDVleZ3+?=
- =?us-ascii?Q?SCELYQl/cxpVaoydbApuLEG9HrLkRETzgxjAMR1lxmh4aELTp9JOw9Qwh50T?=
- =?us-ascii?Q?uiN4tC2u4CagNkswQJyh0R+RGzvWfOQ13R1xy9qNgh06gaTOq0r2ozoy3jR5?=
- =?us-ascii?Q?7ZraYF8CZVQhnApbXhWgbbDsF8R77ojQqUMo2PlM7pNl3/qFrPaP3qgqk20Q?=
- =?us-ascii?Q?wW+ztRQxZ21s//N0rXyhZXczVDxoIwQ6jdmIpCkZg4t/cWtFWgMd7LIhkMQY?=
- =?us-ascii?Q?lyF0GJPmegAd8L0873uOnmHNT3VvBwJEUprXh7Tl9HnbkFhPPFSZ4jrMuHZi?=
- =?us-ascii?Q?G94yM/DSYmALL0qB0dZX4yubs3imhAeEpmryOr/hUehJm2RGjVR9FzO2XPl6?=
- =?us-ascii?Q?g5ZLK9lGPzmFF6enJA17FIRGOu1dwP9i2GUdMj/8pzqObppSBaXiiE1a5ewV?=
- =?us-ascii?Q?R/apudDe8zH5N4ygDSGrl0JmztVNs6hbJIDI52vr6bElJSmI6EV/R5ZGrnGV?=
- =?us-ascii?Q?AHNxizGsxPYFvPehpHt3wm6ddEp/Qodf6LG/rWeufuV7Ha6B3NFDx8EwNp7v?=
- =?us-ascii?Q?de7uDOGbTrcFFN/fT+zIhj82EEF1r67eCzZd5Hf/k3NPtriYgfED0kCi3BAM?=
- =?us-ascii?Q?EvS5Crh6g4taed36ptbxHkjTVV9grdVuJNpo0FpvePf95dKFpCavAjjS4vEk?=
- =?us-ascii?Q?lBiQD8ZwbjHXYZYCWRE0TalZewK6Ht2qVPnPmi03KFf8juMEyUrIMFwABCsE?=
- =?us-ascii?Q?EgFy6WKcY3NYZl8FKoIoPA7XPgwGiwE4fAMDds5GnYd/bPP8HlIS49S8xgq8?=
- =?us-ascii?Q?aepULOw4stcqiaDunQ1OaBfAD9D+YeOXnsjDAqTm5cgL9tnXnT+chJldqm/i?=
- =?us-ascii?Q?vRdSiiXkkGSN2BhyXuT/yP2o/LUg3/MsTWlF2k2GHZnADkt/BwImZr9chLST?=
- =?us-ascii?Q?az+XHQuOwhGHpyxaqjl4CG2I61X2pD07Cpu2Bfpf8gJO+c7kBrZ6Ngp8xFOz?=
- =?us-ascii?Q?CMTxhBMerMqEg5l0TNVcLPs8YR0S69GxDTqzFpE0aBGjAw8llasbnK4arKLt?=
- =?us-ascii?Q?eyc9cJTpBwUXhCe5oCYryENYiR90qTg7jrDeqWKzxgykBF0/xYI8Dp6naqTG?=
- =?us-ascii?Q?mHct2PkG5D4BTiRig6CVWpYlGsV7iTuOJC8oCeEXGRWhYQD2vDkLkxe+NUNg?=
- =?us-ascii?Q?6slnAHIfXk8aQCcB0jbdbggg8b2FwnpgLQm2iPqVO/9WLyaQDCwnO/YjCm90?=
- =?us-ascii?Q?i0F41Xeuzl7Z2c/6ZP7AjIlPzZdjVEPY09WVFUQsa4zY7g50AD0ZYvqh9/D8?=
- =?us-ascii?Q?xwCF9ffVJuJIoPlmpeBWxCRrAp1w6B8Te7y9Kv7FTKUO/nXLA3t8rXAO/Xlw?=
- =?us-ascii?Q?3fIXrbRcPivHi4Jp2mM=3D?=
+	=?us-ascii?Q?PEGEZkQHHfAKcUxFgvx/1zNH8Kcxh0EUtuZukZQwJeKKXAt6K4E5GPNi92Yz?=
+ =?us-ascii?Q?SF4rzLCHc0MdS/EwDr+0svLoV5q0l2mWU2R/By1PGaDPdJyvFa9A1al77WT2?=
+ =?us-ascii?Q?jUOLpUrGMga9E6Kr0U8bwM9aRM/hZMxN5g7MrcQKxEDQOdequqFJg+vA+SCL?=
+ =?us-ascii?Q?p3lrbU/E1kko5uw9I7+Exs4K2CuQrZRFVbXeCRRXjf4QGssj7pM5ChMJAhB9?=
+ =?us-ascii?Q?E0UsLu5m310Ei9Kh6QUixxA3dhI0liarfElPot9UdoFG4UZJFeePdt1nkgXn?=
+ =?us-ascii?Q?NaVYHJrWMyzp/Mg0gxDQmi6HCPdWXXlKRyX2Xut8N5ZRQNtMSC17CiiLZpDe?=
+ =?us-ascii?Q?zxHCqdn28xzWLrz4mWRW3qUFdENVoD6ItEo89ZbTEHmCdyM4ZAAsSwgW2K1E?=
+ =?us-ascii?Q?qPBmevmO0dUWvBGnDBtkQ7y+rHuEgouTgSx46UrepulHUj724EOkQ9/GCv7R?=
+ =?us-ascii?Q?9HZVu9YNeipsIebTQYNDjoLccEchN5AguZND0AvrHE+9UCkdBY13jqCmgxE9?=
+ =?us-ascii?Q?hvVXKfgmTQnTDIvIOjeGSgq56YTz00Usk+MC0cskoc2DSt+hQghV4uQKNsr/?=
+ =?us-ascii?Q?W2jqjUfe5eczvBjjNXsuZLD1jVk4bTbju+pdJ40TXHv9EItGkqjZ721UX3nY?=
+ =?us-ascii?Q?IzYZV2HHlaJWqCp438OqyuRHNsmZNOuIm+BO1J+RqSzd3R9Pv3JAKQGmbFoY?=
+ =?us-ascii?Q?LWNzus2Sos2dt0SarHWiMEGJfE9b67ayVyz8wdSelx6SY5HJG3PX/JG7D/+e?=
+ =?us-ascii?Q?WFqGHHnoosRUaUbgny3yqas0pDsbeOKRMc4dID81PYs8Ux+bOjYmHARzCbJp?=
+ =?us-ascii?Q?12UXEWI2avJbU1yfSoLnr3FwnuyPyzm1mSXSQ33StDjaVqOdvjon26YDD2Ox?=
+ =?us-ascii?Q?R9b91c51tW4kXWJF78HQHVnn07xUXH1VUYR2fCKd8fg8XuJd21Ky54/pvH9a?=
+ =?us-ascii?Q?vQnhECTM8DpBFsazI7coOTU8GZ0S8oT5ZTP85FDThvWbZh8c9/wvyUVstPi1?=
+ =?us-ascii?Q?DujQxxtXOh9Irr8Vh8fbpzcfG3q5YTDOaybW9Laa82YxkGURJd5gMbhj3+P3?=
+ =?us-ascii?Q?flzRfhOdcMv3ddvMU5X4AdSweLjBXJ/HQO0JLp4Ec0tONMoT6TEWAvhPmShi?=
+ =?us-ascii?Q?7tID8WeOOwCoYoPyM/96g7OQBhIxUjTySslahio/Blpga0coRezVaTekCxBi?=
+ =?us-ascii?Q?VEdiT1EEosge9oDFW9a29ZID8hQ9gRE24qN4ZrMuwuVj1WD1HilN5o897lmh?=
+ =?us-ascii?Q?vv27Jmuljh1LnY7Tj5Pg98HjaTQ11CxeBOrc2UmdiDF/eCXiMs45z6dy2Hpc?=
+ =?us-ascii?Q?gGraFVKzb/2VfTvImO86EKtvHDs5CiljeCyK7EWAH0SwSCGnLd2Vr2C6kSfa?=
+ =?us-ascii?Q?KIYeaoHnnuC12SEgI2UegjS9ArpZLN0inYnhxUVIXtnVhPkhom/9bpo/80+h?=
+ =?us-ascii?Q?oWQijrTC1/94kjmHeN8agu4OPAOX3pEuPNBcoG4shacz6q5WMuSE/99qUQiu?=
+ =?us-ascii?Q?EHDWtx+lo1CCRZWXZpIXwjjL0DRXpz0JCzTuzzkEei/8YXuG3b6bbFw3zWJt?=
+ =?us-ascii?Q?zg+cU+W3cYb1de1FNO3h3FWOGHLa6GxRs6SmZ+Jq?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 660a7ea3-b932-4d5e-30ca-08dcfed4cb73
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4abfc410-74b5-4487-5d04-08dcff441770
 X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8659.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Nov 2024 02:35:08.1720
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Nov 2024 15:51:49.8710
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Dlm05OvxGA8hXodRWrSZpPof+kLySC6Tj4EGVT9TaFARvcpESuYIvHd4mh8DDHRn
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6034
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5mkUvx97nsdIr1UNo/hMmHVaMwVOlmlJunRXlyfFhlRVOLfteEqEMtFJ3Fo99LgH
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7708
 
-On Wed, Nov 06, 2024 at 09:05:26PM +0000, Robin Murphy wrote:
-> > Each future capability we want to enable at the VMM needs an analysis:
-> > 
-> >   1) Does it require kernel SW changes, ie like BTM? Then it needs a
-> >      kernel_capabilities bit to say the kernel SW exists
-> >   2) Does it require data from ACPI/DT/etc? Then it needs a
-> >      kernel_capabilities bit
-> >   3) Does it need to be "turned on" per VM, ie with a VMS enablement?
-> >      Then it needs a new request flag in ALLOC_VIOMMU
-> >   4) Otherwise it can be read directly from the idr[] array
-> > 
-> > This is why the comment above is so stern that the VMM "should only
-> > forward bits that it knows it can support".
-> 
-> So... you're saying this patch is in fact broken, or at least uselessly
-> incomplete, since VMMs aren't allowed to emulate a vSMMU at all without
-> first consulting some other interface which does not exist? Great.
+On Wed, Nov 06, 2024 at 10:35:07PM -0400, Jason Gunthorpe wrote:
 
-That is too far, there is nothing fundamentally broken here.
+> I agree the kdoc does not describe what the baseline actually is.
 
-This does not enable every SMMU feature in the architecture. It
-implements a basic baseline and no more. The VMMs are only permitted
-to read bits in that baseline. VMMs that want to go beyond that have
-to go through the 4 steps above.
+Nicolin worked on this, here is a more detailed kdoc:
 
-Fundamentally all we are arguing about here is if bits the VMM
-shouldn't even read should be forced to zero by the kernel.
+/**
+ * struct iommu_hw_info_arm_smmuv3 - ARM SMMUv3 hardware information
+ *                                   (IOMMU_HW_INFO_TYPE_ARM_SMMUV3)
+ *
+ * @flags: Must be set to 0
+ * @__reserved: Must be 0
+ * @idr: Implemented features for ARM SMMU Non-secure programming interface
+ * @iidr: Information about the implementation and implementer of ARM SMMU,
+ *        and architecture version supported
+ * @aidr: ARM SMMU architecture version
+ *
+ * For the details of @idr, @iidr and @aidr, please refer to the chapters
+ * from 6.3.1 to 6.3.6 in the SMMUv3 Spec.
+ *
+ * This reports the raw HW capability, and not all bits are meaningful to be
+ * read by userspace. Only the following fields should be used:
+ *
+ * idr[0]: ST_LEVEL, TERM_MODEL, STALL_MODEL, TTENDIAN , CD2L, ASID16, TTF
+ * idr[1]: SIDSIZE, SSIDSIZE
+ * idr[3]: BBML, RIL
+ * idr[5]: VAX, GRAN64K, GRAN16K, GRAN4K
+ *
+ * - S1P should be assumed to be true if a NESTED HWPT can be created
+ * - VFIO/iommufd only support platforms with COHACC, it should be assumed to be
+ *   true.
+ * - ATS is a per-device property. If the VMM describes any devices as ATS
+ *   capable in ACPI/DT it should set the corresponding idr.
+ *
+ * This list may expand in future (eg E0PD, AIE, PBHA, D128, DS etc). It is
+ * important that VMMs do not read bits outside the list to allow for
+ * compatibility with future kernels. Several features in the SMMUv3
+ * architecture are not currently supported by the kernel for nesting: HTTU,
+ * BTM, MPAM and others.
+ */
 
-If the bits are forced to zero then perhaps they could be used as a
-future SW feature negotiation, and maybe that would be better, or
-maybe not. See below about BTM for a counter example.
+This focuses on stuff we can actually test and gives a path to test
+and confirm a no-code update to future stuff.
 
-I agree the kdoc does not describe what the baseline actually is.
+The future list (E0PD/etc) reflects things the current kernel doesn't
+use. Our naive read of the spec suggests they are probably fine to
+just read the raw HW IDR. When someone implements guest kernel
+support, does a detailed spec read, and crucially tests them - then we
+can update the comment and have immediate support.
 
-> We know about that in the kernel, but all a VMM sees is
-> iommu_hw_info_arm_smmuv3.idr[0] indicating HTTU=2. If it is "broken" to take
-> the only information available at face value, assume HTTU is available, and
-> reflect that in a vSMMU interface, then what is the correct thing to do,
-> other than to not dare emulate a vSMMU at all, in fear of a sternly worded
-> comment?
+HTTU, BTM, and others like that will need additional bits outside the
+IDR if someone wishes to enable them.
 
-These patches support a baseline feature set. They do not support the
-entire SMMU architecture. They do not support vHTTU.
-
-Things are going step by step because this is a huge project. HTTU is
-not in the baseline, so it is definitely wrong for any VMM working on
-these patches to advertise support to the VM! The VMM *MUST* ignore
-such bits in the IDR report.
-
-The correct thing is the 4 steps I outlined above. When a VMM author
-wants to go beyond the baseline they have to determine what kernel and
-VMM software is required and implement the missing parts.
-
-> Your tautology still does not offer any reasoning against doing the logical
-> thing and following the same basic pattern: the kernel uses the ID register
-> mechanism itself to advertise the set of features it's able/willing to
-> support, by sanitising the values it offers to the VMM, combining the
-> notions of hardware and kernel support where the distinction is irrelevant
-> anyway.
-
-Even with your plan the VMM can not pass the kernel's IDR register
-into the VM unprotected. It must always sanitize it against the
-features that the VMM supports.
-
-Let's consider vBTM support. This requires kernel support to enable
-the global BTM register *AND* a new VMM ioctl flow with iommufd to
-link to KVM's VMID.
-
-You are suggesting that the old kernel should wire IDR BTM to 0 and
-the new kernel will set it to 1. However the VMM cannot just forward
-this bit to the VM! A old VMM that does not do the KVM flow does NOT
-support BTM.
-
-All VMM's must mask the BTM bit from day 0, or we can never set it to
-1 in a future kernel. Which is exactly the same plan as this patch!
-
-> You should take "We discussed this already"
-> as more of a clue to yourself than to me - if 4 different people have all
-> said the exact same thing in so many words, perhaps there's something in
-> it...
-
-And all seemed to agree it was not a big deal after the discussion.
-
-I think Mostafa was driving in a direction that we break up the IDR
-into explicit fields and thus be explicit about what information the
-VMM is able to access. This would effectively document and enforce
-what the baseline is.
-
-> And in case I need to spell it out with less sarcasm, "we'll get masking
-> wrong in the kernel" only implies "we'll get kernel_capabilities wrong in
-> the kernel (and elsewhere)",
-
-Less sarcasm and hyperbole would be nice.
-
-> > If you still feel strongly about this please let me know by Friday and
-> > I will drop the idr[] array from this cycle. We can continue to
-> > discuss a solution for the next cycle.
-> 
-> It already can't work as-is, 
-
-As above, this is not true.
-
-> I don't see how making it even more broken
-> would help. IMO it doesn't seem like a good idea to be merging UAPI at all
-> while it's still clearly incomplete and by its own definition unusable.
-
-I agree that removing the idr would make it definitely unusable. There
-is quite a bit of essential information in there the VMM
-needs. However, the uAPI is extensible so adding a new field in the
-next cycle is not breaking.
-
-I'm trying to offer you an olive branch so we can have this discussion
-with time instead of urgently at the 11th hour and derailing the
-series. This exact topic has been discussed already two months ago,
-and is, IMHO, mostly a style choice not an urgent technical matter.
-
-If you have another option we can conclude in the next few days then
-I'm happy to hear it.
-
-If we focus only on the baseline functionality Nicolin can come up
-with a list of fields and we can write it very explicitly in the kdoc
-that the VMM can only read those fields.
-
-I could also reluctantly agree to permanent masking to report only the
-above kdoc bits in the kernel. Noting if you want this because you
-don't trust the VMM authors to follow an explicit kdoc, then we likely
-also cannot ever set some bits to 1. Eg BTM would be permanently 0.
-
-Regards,
 Jason
