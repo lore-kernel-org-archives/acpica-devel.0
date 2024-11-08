@@ -1,120 +1,129 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29E4A218D7D;
-	Thu,  7 Nov 2024 20:58:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5CFD1803A;
+	Fri,  8 Nov 2024 14:53:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731013115; cv=none; b=owz4aDtb6GdNdHeoDQWVcew1o2TRYCG303jl3L4erCi/mkg6ZMRkNScGS8fe8nDOuM6pYiUG7oW/hO2ZtJdZzf47LEim5Esa3urT2vPao5qRJ8oYFBgRMLqUpyFMrsiC1+8Kv49WZGa6vaYnbrMB/bYujHNK47d6fmhFCv9qfF8=
+	t=1731077611; cv=none; b=jRcplzXzObUN9sMHzAFf6I1+STtiICq46rfn3mZjCLDfO/j7ag7v+2UrtASkDt07igXcPEcodHGMVK3d7L6WUXpv0CuVL6rboE6/N52Gsr8h0tIn+Qgh2fSrqP1BO+9miertVdBOzFfMhl+T/MadCAtKUx109Et13EINfnvhb3A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731013115; c=relaxed/simple;
-	bh=cSMvJkX51N5SZd4M/a76wB0H3R/PAuQxBIejQHOLvpQ=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=ZYPsNp6ed6NrB39HmG1fWw6wrrSouu0zx1WYP41ETdL/GvYNfoH0T+uHC754X3wmua7xKI5PjHenZFn5JkIosMmU6TjLyRfBFDdivpnbUo33rh2DomQRmuXM8qxbEwMRAmPmpYgXzOmHpBOi5z2/wqiX0OGYGZkbt8HWaTcmmh8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cgqWGMrR; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1731077611; c=relaxed/simple;
+	bh=kZbPfuZ0ikYZXriOFOyM/wtjpbX2/SuwojvsPEaqSLA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oPcNgYSDeZg/EglCRPD406jjMej4FNk5RUDZIJN2rNoRCTw+bXUkF1Mo9Y/Batxxg0LgbRV7GLJhAipjFY71AgH8u4ac2l6ci+8xnUZlayq0Xl2Iqm992mkHRD/5xopsHj/rDvUdjq/ZhsdBGHTN2NRn6AVU684VFFB1PwUajTw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rZh606o7; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cgqWGMrR"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1731013114; x=1762549114;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:references:in-reply-to:to:cc;
-  bh=cSMvJkX51N5SZd4M/a76wB0H3R/PAuQxBIejQHOLvpQ=;
-  b=cgqWGMrRqzCfhY8EJcqQb2Y7O+k0gEv5oifSIHUAa43NCtmOtGviRSEh
-   iqIVgFLsm6bXES2chAufqKmDj5Ij45zAeDO16wG72k5m9VyvLnLvEoqSU
-   8lzBOHNx0oNk22PmEQqemBpZQ4CTwfaiBx4B0TgmuncdiMwqMmr0zlfZd
-   +Jn+asWwMrAncXKFCSPBBigSXoD3JJyXX2UFCNbJajaOGrZvmSS525/V8
-   s+PPAmOzTj5tH+R6dskNET8u57bVi7TZAm2aeXypfkAcIuTwSZDstU2K0
-   Zy9zL9aee1Xh+BAmpqGeZBQ6wcC4OofqmjpfnxI5PKtNJ6pXJ1qPXrmjn
-   A==;
-X-CSE-ConnectionGUID: RgnfaOSwRIqY+QmrlZdEXQ==
-X-CSE-MsgGUID: wXBeJ2XBTU6CP2LOM9H8eQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11249"; a="30300318"
-X-IronPort-AV: E=Sophos;i="6.12,136,1728975600"; 
-   d="scan'208";a="30300318"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2024 12:58:33 -0800
-X-CSE-ConnectionGUID: JVKLk2P4TLSaUd1DIFL9SA==
-X-CSE-MsgGUID: zxiGuk0jSZee4Mz22ZEHeg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,136,1728975600"; 
-   d="scan'208";a="90093588"
-Received: from aschofie-mobl2.amr.corp.intel.com (HELO localhost) ([10.125.110.195])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2024 12:58:32 -0800
-From: Ira Weiny <ira.weiny@intel.com>
-Date: Thu, 07 Nov 2024 14:58:20 -0600
-Subject: [PATCH v7 02/27] ACPI/CDAT: Add CDAT/DSMAS shared and read only
- flag values
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rZh606o7"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F1CCC4CED5;
+	Fri,  8 Nov 2024 14:53:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1731077611;
+	bh=kZbPfuZ0ikYZXriOFOyM/wtjpbX2/SuwojvsPEaqSLA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=rZh606o7uJMo6Rkf6Lz4RxQEyMr7vA756y0kFoEQhrTmohzr9Rp23gAVJj0gPMiLJ
+	 fiXqcWwVsoZGUl2E1KYIZdbZGgQgoAxcy2j0yAULt+/HhwCWGPl7QQ10YIxm/N7GGE
+	 7HwCs+UTOIW82PdunYNwSqmiCw/688dnKn1I9smPqqH4dK5e4pkg6bUKnLWUeFXz1D
+	 jmlU9f6QgL0uLbtdWuN195GnRy/Q3rTRqlJHzsOyTbQUklcr9SF0nNwXgiyMyMbdaM
+	 uXxVGrW0J8Um2aCgd+5douR6vdS7u6p21BHrCfHKPj2T6ojdtMqDWvKmv2J3OKSwTA
+	 uQV4/Bd+cHtMA==
+Date: Fri, 8 Nov 2024 14:53:22 +0000
+From: Will Deacon <will@kernel.org>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Robin Murphy <robin.murphy@arm.com>, acpica-devel@lists.linux.dev,
+	iommu@lists.linux.dev, Joerg Roedel <joro@8bytes.org>,
+	Kevin Tian <kevin.tian@intel.com>, kvm@vger.kernel.org,
+	Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Robert Moore <robert.moore@intel.com>,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	Donald Dutile <ddutile@redhat.com>,
+	Eric Auger <eric.auger@redhat.com>,
+	Hanjun Guo <guohanjun@huawei.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	Jerry Snitselaar <jsnitsel@redhat.com>,
+	Moritz Fischer <mdf@kernel.org>,
+	Michael Shavit <mshavit@google.com>,
+	Nicolin Chen <nicolinc@nvidia.com>, patches@lists.linux.dev,
+	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+	Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
+	Mostafa Saleh <smostafa@google.com>
+Subject: Re: [PATCH v4 05/12] iommu/arm-smmu-v3: Support IOMMU_GET_HW_INFO
+ via struct arm_smmu_hw_info
+Message-ID: <20241108145320.GA17325@willie-the-truck>
+References: <0-v4-9e99b76f3518+3a8-smmuv3_nesting_jgg@nvidia.com>
+ <5-v4-9e99b76f3518+3a8-smmuv3_nesting_jgg@nvidia.com>
+ <20241104114723.GA11511@willie-the-truck>
+ <20241104124102.GX10193@nvidia.com>
+ <8a5940b0-08f3-48b1-9498-f09f0527a964@arm.com>
+ <20241106180531.GA520535@nvidia.com>
+ <2a0e69e3-63ba-475b-a5a9-0863ad0f2bf8@arm.com>
+ <20241107023506.GC520535@nvidia.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20241107-dcd-type2-upstream-v7-2-56a84e66bc36@intel.com>
-References: <20241107-dcd-type2-upstream-v7-0-56a84e66bc36@intel.com>
-In-Reply-To: <20241107-dcd-type2-upstream-v7-0-56a84e66bc36@intel.com>
-To: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, 
- Jonathan Cameron <Jonathan.Cameron@huawei.com>, 
- Navneet Singh <navneet.singh@intel.com>, Jonathan Corbet <corbet@lwn.net>, 
- Andrew Morton <akpm@linux-foundation.org>
-Cc: Dan Williams <dan.j.williams@intel.com>, 
- Davidlohr Bueso <dave@stgolabs.net>, 
- Alison Schofield <alison.schofield@intel.com>, 
- Vishal Verma <vishal.l.verma@intel.com>, Ira Weiny <ira.weiny@intel.com>, 
- linux-cxl@vger.kernel.org, linux-doc@vger.kernel.org, 
- nvdimm@lists.linux.dev, linux-kernel@vger.kernel.org, 
- Robert Moore <robert.moore@intel.com>, Len Brown <lenb@kernel.org>, 
- "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, 
- linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev
-X-Mailer: b4 0.15-dev-2a633
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1731013104; l=1396;
- i=ira.weiny@intel.com; s=20221211; h=from:subject:message-id;
- bh=cSMvJkX51N5SZd4M/a76wB0H3R/PAuQxBIejQHOLvpQ=;
- b=z2BQlqBVQRzSIOea9aSZ3mKia0/yYjWvDVWSXOZmb9+T/4l35RyKgajzpDqsbaka1Sb+agahK
- anSxXg8dEN1DYqTcqqUY9ZV2pc/Vxksjh6VyGDUIWV6MiqayH97WPkG
-X-Developer-Key: i=ira.weiny@intel.com; a=ed25519;
- pk=noldbkG+Wp1qXRrrkfY1QJpDf7QsOEthbOT7vm0PqsE=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241107023506.GC520535@nvidia.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-The Coherent Device Attribute Table (CDAT) Device Scoped Memory Affinity
-Structure (DSMAS) version 1.04 [1] defines flags to indicate if a DPA range
-is read only and/or shared.
+Hi guys,
 
-Add read only and shareable flag definitions.
+On Wed, Nov 06, 2024 at 10:35:06PM -0400, Jason Gunthorpe wrote:
+> On Wed, Nov 06, 2024 at 09:05:26PM +0000, Robin Murphy wrote:
+> > You should take "We discussed this already"
+> > as more of a clue to yourself than to me - if 4 different people have all
+> > said the exact same thing in so many words, perhaps there's something in
+> > it...
+> 
+> And all seemed to agree it was not a big deal after the discussion.
+> 
+> I think Mostafa was driving in a direction that we break up the IDR
+> into explicit fields and thus be explicit about what information the
+> VMM is able to access. This would effectively document and enforce
+> what the baseline is.
 
-This change was merged in ACPICA via PR 976.[2]
+As one of the four people mentioned above, I figured I'd chime in with
+my rationale for queuing this in case it's of any help or interest.
 
-Link: https://uefi.org/sites/default/files/resources/Coherent%20Device%20Attribute%20Table_1.04%20published_0.pdf [1]
-Link: https://github.com/acpica/acpica/pull/976 [2]
-Cc: Robert Moore <robert.moore@intel.com>
-Cc: Len Brown <lenb@kernel.org>
-Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Cc: linux-acpi@vger.kernel.org
-Cc: acpica-devel@lists.linux.dev
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
----
- include/acpi/actbl1.h | 2 ++
- 1 file changed, 2 insertions(+)
+Initially, I was reasonably sure that we should be sanitising the ID
+registers and being selective about what we advertise to userspace.
+However, after Jason's reply to my comments, mulling it over in my head
+and having lively conversations with Mostafa at lunchtime, I've come
+full circle. Is it a great interface? Not at all. It's 8 register values
+copied from the hardware to userspace. But is it good enough? I think it
+is. It's also extremely simple (i.e. easy to explain what it does and
+trivial to implement), which I think is a huge benefit given that the
+IOMMUFD work around it is still evolving.
 
-diff --git a/include/acpi/actbl1.h b/include/acpi/actbl1.h
-index 199afc2cd122ca8b383b1c9286f8c8cc33842fae..387fc821703a80b324637743f0d5afe03b8d7943 100644
---- a/include/acpi/actbl1.h
-+++ b/include/acpi/actbl1.h
-@@ -403,6 +403,8 @@ struct acpi_cdat_dsmas {
- /* Flags for subtable above */
- 
- #define ACPI_CDAT_DSMAS_NON_VOLATILE        (1 << 2)
-+#define ACPI_CDAT_DSMAS_SHAREABLE           (1 << 3)
-+#define ACPI_CDAT_DSMAS_READ_ONLY           (1 << 6)
- 
- /* Subtable 1: Device scoped Latency and Bandwidth Information Structure (DSLBIS) */
- 
+I'm firmly of the opinion that the VMM is going to need a tonne of help
+from other sources to expose a virtual IOMMU successfully. For example,
+anything relating to policy or configuration choices should be driven
+from userspace rather than the kernel. If we start to expose policy in
+the id registers for the cases where it happens to fit nicely, I fear
+that this will backfire and the VMM will end up second-guessing the
+kernel in cases where it decides it knows best. I'm not sold on the
+analogy with CPU ID registers as (a) we don't have big/little idiocy to
+deal with in the SMMU and (b) I don't think SMMU features always need
+support code in the host, which is quite unlike many CPU features that
+cannot be exposed safely without hypervisor context-switching support.
 
--- 
-2.47.0
+On top of all that, this interface can be extended if we change our
+minds. If we decide we need to mask out fields, I think we could add
+that after the fact. Hell, if we all decide that it's a disaster in a
+few releases time, we can try something else. Ultimately, Jason is the
+one maintaining IOMMUFD and he gets to deal with the problems if his
+UAPI doesn't work out :)
 
+So, given where we are in the cycle, I think the pragmatic thing to do
+is to land this change now and enable the ongoing IOMMUFD work to
+continue. We still have over two months to resolve any major problems
+with the interface (and even unplug it entirely from the driver if we
+really get stuck) but for now I think it's "fine".
+
+Will
