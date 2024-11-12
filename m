@@ -1,368 +1,172 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2042.outbound.protection.outlook.com [40.107.93.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D31BD198A17;
-	Fri,  8 Nov 2024 17:27:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731086853; cv=none; b=gJrGbjn3KU0pHLgkisjvNdvvMO0iaGeoetg6gVnp9rAsm+YMBOubvgTFsrk1l3Yxeem3PMiyEkD53C96tQQwA4MPct2KIGd8WTZJz0QZPAZVSLd5bVCV690gc6Jh40gMtKEtxUbFw6T7dqXoqUT7VYMK6X65dVCcXF6xCrjQxN4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731086853; c=relaxed/simple;
-	bh=f4PJaVljdIJ/oBBjOmHGAG8o+kWjkBTU3psAdpIWRAE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fqaC2eNh1haFov0TxJsxsNKQ7D0AnZwGJ91j//173g0iBTK1hdS0hIahTY1ZC5sDOS2AmhmBwuIwkJvM8iZ/G+b4gtAV1pIHyXSEQ6T5S3LVePnBFDw2uCbfM64JTEXa9tcV9PmojfezttbOs4NyeyDD8sF5sMkIDp2Ck2KiO+k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZuzrHROO; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E17B2123CD;
+	Tue, 12 Nov 2024 18:29:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.42
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1731436188; cv=fail; b=sYQfB6zNIp2CSGbkESMyiKyDs86ybGsQMXkxidUzEZo7nBCfEsGsBPfSGLE7bGWR7bJU/vgOup9EcJbfkIkZSLTx6bbYIpmJH4sq0kMrCBM7umOpzxqM67p3VAdlJkOhuSCpwJbQr0BE/O0NRTXG5jCoB5gid/6WtDY8AOXnhsw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1731436188; c=relaxed/simple;
+	bh=xGsUlHw4Sq/BmeXK/ffeG46UufU4MBrpqO9hH9BMFc4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=FMfxo4SZmV8pdfB2yIuGiOwERqipQbmVqIw8ymqzAdSKIs1IkNzRqHamXVhWLwZIIFRGSPTfMj89kGvGQg3oDNqmFfUa3XYOC/6JsfGXNBdJQPRXSzvSocx4DEo+x80qY7NYyO56I7bbbwXFydJAZ4sZQoWeZ+LRnAXd7xuF0r8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=QEnvaRPp; arc=fail smtp.client-ip=40.107.93.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZuzrHROO"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1731086851; x=1762622851;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=f4PJaVljdIJ/oBBjOmHGAG8o+kWjkBTU3psAdpIWRAE=;
-  b=ZuzrHROOFQZD3B7PEd6RUYfliiV6xxKQp3eAEzwmA0Dddj49jpuKNzKV
-   ecc6i6UcMOZp2U+3V+vbZdXapMx38lYsU5wGK0BJfULMNiqx3IAr0ZFeB
-   robLVAdrqvzH8aFFqiL75J9AXgBCWVO4+u3NEbaHjTgTbirW2g+iSyzJW
-   DwyM6ovV9Xgh9iZ9KCrxO1yrx/GlthfPGMj2z2j4yYoLnFP0CzRNMd7ko
-   aPyrSWFhiAG5Hg3keFXwlm98lKLuqKbOTAaltmnI3EJ8NBZPi4CgGeIsr
-   S158IDGaotdms+fAreH0HqjQv2W6hMSmNPZS4goWDbdEUqfEhGryy5DCC
-   Q==;
-X-CSE-ConnectionGUID: PXHr/I+YRE6GQ9IMhx1O+w==
-X-CSE-MsgGUID: 7tntHmj5Qemu7sBfFHheOg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11222"; a="30937566"
-X-IronPort-AV: E=Sophos;i="6.11,199,1725346800"; 
-   d="scan'208";a="30937566"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2024 09:27:30 -0800
-X-CSE-ConnectionGUID: haoDRfOqRGaNcx230Kdacg==
-X-CSE-MsgGUID: 19cBg4iPRZqh0P8i3L1N0g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,138,1728975600"; 
-   d="scan'208";a="123176009"
-Received: from ldmartin-desk2.corp.intel.com (HELO [10.125.110.245]) ([10.125.110.245])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2024 09:27:29 -0800
-Message-ID: <d02f217d-ae4f-476c-a20b-2b449cff73c0@intel.com>
-Date: Fri, 8 Nov 2024 10:27:28 -0700
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="QEnvaRPp"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=N4Dpq6iW+BuRURrTqWCAP8MeH62RrclAyNStdhNjfmfm4MiS3svbFk0CnBKmDKyeP3lE9RgNGsMFJCFU3pjeGmEx22Fi/ku6VO5Wdy2LLMseesoRP7ieF1wusD5O7TQuFY3d9IXrLnpRYXNw996Fr1g1qC9b0Sfr6hEi8K4uunFO6kefRRsowImEyYF8m8RNFdAOP0KjDTzrix/GUPwh+yITLItKeAuq3vhqac59dhV5LQJ/DWkzDEmzfj3AQvWVYaC4HLXDwjgJ5N2yuQj31ukypoEbY7uDcjpcy3Po0Fv1uNWpTBq0mUxtEBKcfIX6YRGbKMisb4YSxbEpdebuwA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pXIbQQQ8yDyW7l37GYP8bkvAQbnhwG0mdYvYqZwCELs=;
+ b=Nd8Fim/USs6d6/rBgjGdvtW7GZsJ3Qm/Ehq+Pw4ZE35HPag6UuqspzXmYFjv9BdpgDolq5UXmSYGxUKT/NSq3mOOwWyPNbPBiOKx/+e/Fy7fnzTPTjxwzMBTGUtLmiWho2iMWZCe2veHT6PhVX5Fe185N/jXgxw4JVqxiwcuaEEIkjg1325fSnXLDZOb77eTwIWt/GIwKGB99w/0YeI/HokWmAMEhj0/YXRv9swL7uXLSOIXGtOIXBnMyJdNlNPObZhPkhz1jzWneYmRxTwx8fM0laZ1zVw8K3UgcFl4OyvaxUefHZEAhUUVj9Q0O8pTDEcq6ow2/3w1gn8Z/LJ2rg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pXIbQQQ8yDyW7l37GYP8bkvAQbnhwG0mdYvYqZwCELs=;
+ b=QEnvaRPpzeHmbqjspP8RhxqMdqOs49Jav8QnTAt8sgT2e0WuzLDbfkev+1LxI+VItT4+mbCJ/N6uE+al3U87x6LdHrrddz6VhL/1AcyI+SZzYnOUi5SEWVp7hz3xGni5aER+puET6Va2qJbz+4lPUUXDrvhjgPRlLafwhy5MYD/iydw/cuOu2DBGCHxj5Y/ZF5i1cX8bv19nFWr3exR1wzK3SF7liSikGeHTrSrXjYni0TJkfJdVeCaE4q696uxWpv3l9EGgvBBhIRZ/loufJSgnGjRKy7HJjEKIxHjBW9NSogAQjYcpklSLJyNNRtp9aL3SHYL+FxFG0rpGq35CWQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from CH3PR12MB8659.namprd12.prod.outlook.com (2603:10b6:610:17c::13)
+ by IA1PR12MB6482.namprd12.prod.outlook.com (2603:10b6:208:3a9::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8137.27; Tue, 12 Nov
+ 2024 18:29:41 +0000
+Received: from CH3PR12MB8659.namprd12.prod.outlook.com
+ ([fe80::6eb6:7d37:7b4b:1732]) by CH3PR12MB8659.namprd12.prod.outlook.com
+ ([fe80::6eb6:7d37:7b4b:1732%4]) with mapi id 15.20.8137.027; Tue, 12 Nov 2024
+ 18:29:40 +0000
+Date: Tue, 12 Nov 2024 14:29:38 -0400
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: acpica-devel@lists.linux.dev, iommu@lists.linux.dev,
+	Joerg Roedel <joro@8bytes.org>, Kevin Tian <kevin.tian@intel.com>,
+	kvm@vger.kernel.org, Len Brown <lenb@kernel.org>,
+	linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Robert Moore <robert.moore@intel.com>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Sudeep Holla <sudeep.holla@arm.com>, Will Deacon <will@kernel.org>
+Cc: Alex Williamson <alex.williamson@redhat.com>,
+	Donald Dutile <ddutile@redhat.com>,
+	Eric Auger <eric.auger@redhat.com>,
+	Hanjun Guo <guohanjun@huawei.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	Jerry Snitselaar <jsnitsel@redhat.com>,
+	Moritz Fischer <mdf@kernel.org>,
+	Michael Shavit <mshavit@google.com>,
+	Nicolin Chen <nicolinc@nvidia.com>, patches@lists.linux.dev,
+	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+	Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
+	Mostafa Saleh <smostafa@google.com>
+Subject: Re: [PATCH v4 00/12] Initial support for SMMUv3 nested translation
+Message-ID: <20241112182938.GA172989@nvidia.com>
+References: <0-v4-9e99b76f3518+3a8-smmuv3_nesting_jgg@nvidia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0-v4-9e99b76f3518+3a8-smmuv3_nesting_jgg@nvidia.com>
+X-ClientProxiedBy: MN2PR15CA0065.namprd15.prod.outlook.com
+ (2603:10b6:208:237::34) To CH3PR12MB8659.namprd12.prod.outlook.com
+ (2603:10b6:610:17c::13)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 00/27] DCD: Add support for Dynamic Capacity Devices
- (DCD)
-To: Ira Weiny <ira.weiny@intel.com>, Fan Ni <fan.ni@samsung.com>,
- Jonathan Cameron <Jonathan.Cameron@huawei.com>,
- Navneet Singh <navneet.singh@intel.com>, Jonathan Corbet <corbet@lwn.net>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: Dan Williams <dan.j.williams@intel.com>,
- Davidlohr Bueso <dave@stgolabs.net>,
- Alison Schofield <alison.schofield@intel.com>,
- Vishal Verma <vishal.l.verma@intel.com>, linux-cxl@vger.kernel.org,
- linux-doc@vger.kernel.org, nvdimm@lists.linux.dev,
- linux-kernel@vger.kernel.org, Chris Mason <clm@fb.com>,
- Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
- linux-btrfs@vger.kernel.org, Johannes Thumshirn
- <johannes.thumshirn@wdc.com>, Robert Moore <robert.moore@intel.com>,
- Len Brown <lenb@kernel.org>, "Rafael J. Wysocki"
- <rafael.j.wysocki@intel.com>, linux-acpi@vger.kernel.org,
- acpica-devel@lists.linux.dev, Li Ming <ming4.li@intel.com>,
- Kees Cook <kees@kernel.org>, "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- linux-hardening@vger.kernel.org
-References: <20241107-dcd-type2-upstream-v7-0-56a84e66bc36@intel.com>
-Content-Language: en-US
-From: Dave Jiang <dave.jiang@intel.com>
-In-Reply-To: <20241107-dcd-type2-upstream-v7-0-56a84e66bc36@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR12MB8659:EE_|IA1PR12MB6482:EE_
+X-MS-Office365-Filtering-Correlation-Id: a60af493-d0e4-491b-181d-08dd0347f835
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|376014|366016|7416014|1800799024|921020;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?M3lgGGgXyx+sSjVM5yu1uEK+v1kf3OfMMPDPCFeO2gXZIFImAyr0xW2CR1uA?=
+ =?us-ascii?Q?r5y/8kNKHdKqxGoAie0uN/B35tuGXRq7mNVpzD9LtoffOB1GE/5xUl9wPvNY?=
+ =?us-ascii?Q?Vd84EFAa1nfptHc/5UPSl+Xotr9uYgEnz0DLhhrTnHGusyGOIIYvTnoO+Urc?=
+ =?us-ascii?Q?4lV/GURcnFqTVy6habeYb7vYcjBMY7pAN9f0YjT28Y2THFrFkdFiWeK00ZJf?=
+ =?us-ascii?Q?as8mRd6s3LsS6VtIp5ulj+WnXbchv5aL9FKGfeGkLrUCUz2eLJdvcm8LyXzk?=
+ =?us-ascii?Q?wZPdgZpIrkkmCTLjZn0wW33KmWceLvJxGVE4J9ocd/oR5HMK+ADVEfLT6w2W?=
+ =?us-ascii?Q?E8o1yzyTsNMCx6ZdTFFc6nFq3bhuOI1GPx42pmkRnZcpleHCTI4Bc2gEoNdz?=
+ =?us-ascii?Q?3aeQcE0ejlc8EdzqlweGqGAXry+r+kfeD29LJG0vDGs0Gns2S0EtyEdhkIzy?=
+ =?us-ascii?Q?oXs+0FEwu4NJk0JSqBDZnasEhJ6/3Zt7w6sdXyXAD5nW6gxkCsUs0CaSPLh4?=
+ =?us-ascii?Q?LbpzWEaFC4TbMjdOOoCRVEaDMTh7mxCwU6iwTeyKJNiFMRYGphvn++mx9ANZ?=
+ =?us-ascii?Q?y3XxC7D1UXNVvSh/3V30bBc5+2aDpP8W7JkBzpM0hoWcJmCfE/9F3XuW5R+T?=
+ =?us-ascii?Q?2v5z7/s/Umdngp7pRPthzPg8fGgrCyEmeK9I1XKKqd9zy39bx0hpkPpI32bj?=
+ =?us-ascii?Q?OUry4umYUEJ83zyrqeh1WT08lR/m1MboI31IHky2MAhu4/+V8NFrd7iQIN56?=
+ =?us-ascii?Q?gt3lUSWwRhJIZG3N7jvU3DAcvRkQPr0lqSYACtxNFeXjt4huoZ4SgVe8Tw9O?=
+ =?us-ascii?Q?7NWmu5BTT/8xjVb8ix/HXHle/E5hxkHzSrwBDBIOenJQerK5CnBPikR6MiX/?=
+ =?us-ascii?Q?gRy/NjMJUR/09fLqD8xOuhG1AVPl+7ElKPmgDCj7G0AJTpO5m8r/vDheo4nx?=
+ =?us-ascii?Q?u96QSBs00iB/WKYYAIZgAChg8vvfnU8YPXIGGMH71PtWSjjEDDO3PvwrVAfb?=
+ =?us-ascii?Q?Mi2Bt77tgeR+oUUve1C4RKBoSNCK/bomTTqO44O/eOkooMSS+cexUarxFK+a?=
+ =?us-ascii?Q?ka1Tc65V/re5SLXN3wRXEfm0k8j6vhvwYvlJOa9s862t4U8yChR2k0DJgSsP?=
+ =?us-ascii?Q?zz9Kn/NtFIXfs1VuOi7dOycpEkQLqUN7vSC8f0HsZB6bHuE1YYo46exrpYbb?=
+ =?us-ascii?Q?cCu6EY+H3PIrFqt9GTMPoeKE4hBRpvo6LyQ/ljUeSFCqhTrgYmpvqn0HLN5x?=
+ =?us-ascii?Q?XrJ3+LtdsMjvD+Ktq5ayJ05YfUS6/TmJKB3pEKwFLqKTO5pi54xWQMtHH5jm?=
+ =?us-ascii?Q?v1LgAi1xYGaGSeNH7ueKi3UH7O5G4rBbE44yEmFO3DAVs1OsDI4DWH+cSoca?=
+ =?us-ascii?Q?fI5gMuY=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8659.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(7416014)(1800799024)(921020);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?XYMQAUyFGnTXWbwdUe3WC8bsB3n9HT0ge7sji3la4gThn8+FGa3yep9BASkD?=
+ =?us-ascii?Q?Wg0ifESUNLwzujAsSdtoZWt+apFr7S+DMq8DogCwHqLmcwBIFWkaONKnAH/0?=
+ =?us-ascii?Q?uAoRRSqZXZDpphiJJNjbtYU/hK4bU7+CNK7n6x+2ko1Adjrfe16e1JLfqPwe?=
+ =?us-ascii?Q?ACUIls+zkA5iGWeWXXzkpHGz7VYRmHWqeIMHXHHd3lpxAaKpeGyN9G3HuNU3?=
+ =?us-ascii?Q?mqSiJP+kL3+wETvbLT5gcoG7DQISB3gfJCHPXA8/ju8B9bK9inM+2r7E8+QP?=
+ =?us-ascii?Q?ceR/3iGXq/GpmguZYd2ISvDObJVI2IsD3NdIAOfnyi3HPaAAear/tq8A7sEA?=
+ =?us-ascii?Q?36T4r9qdctj8EZRCff8nCG+rCCMRWoJOKX/IBk7pHRQNLOICd7Zrweq0CgkH?=
+ =?us-ascii?Q?As4KQNb6Z27L8NkF0C0OWDqlTTCiPFb2NKWrcUIlYa3JEV+ypVOeLu+fjN0/?=
+ =?us-ascii?Q?7QBCUTVDYgT/jom8W5rTRmbN1N7kSm1KThkckrsizFr2lRxlmOOamr046fro?=
+ =?us-ascii?Q?fXwKX6Lmj3zNtt6MvBPnL/OUDMyO81Lxctfp//Fds7zC+Zj0an0DZn5R88UM?=
+ =?us-ascii?Q?cMGPBJ/lNJUdBI66Q+H46IVj90gDdV15giABYxIv/1kUdQ1DKjKolKAW+K83?=
+ =?us-ascii?Q?w4vQb0MqnuPUcf0TIOazzqx6Bp+2h+0aJJEK271GZfHQgcsrfCds4+E7UjYJ?=
+ =?us-ascii?Q?3zu/RYI4Hygk8Ys13TSxtBNalY/UH8J4oS/bXirVn4XJ+KYmcmQr8tNqr/VK?=
+ =?us-ascii?Q?LcV/sZiClI7bWWuXn8L7UpHKN0Slq+3vfp7oksH3pIAEZSY7NJSM3NWuwqyc?=
+ =?us-ascii?Q?qzob24BYDeZzT+wH5geLrTUUJMNphaA+TUUZFdKXJ1JDaXTHct/SU+S4VWgK?=
+ =?us-ascii?Q?7aEdpx3jTy1dCYSU82wtLLTNNhOu6Hv9FsvylK6O+UToxQGLf5/h5yJliGOU?=
+ =?us-ascii?Q?aXFZr7lHI0PnyZrgvMQjIeRxzZMz+3Gt1nX+CYJdcvLRXmZCxfxLulZ3tyus?=
+ =?us-ascii?Q?yTkpN1Mv8bGnymnEr7/esDcUbTdpx6gVWNUEjPsb6sSeP+exv4SzaF3pmDL5?=
+ =?us-ascii?Q?JSABeq43JenFY6k75pRam+HZHWMFudYyRQh/SnjkUeAYpUVg4GblNevp3Dm/?=
+ =?us-ascii?Q?TP70A3gB/uOhoHdiMrYYrE+9WOEKluIleJwzA0P8YBOIziS1LSP5yDAi2hfq?=
+ =?us-ascii?Q?3YnjTI20nTEufOJLNDkMteG/6JkgbDJZ7GluB1RIOBYbDhyk5RP9Un1LHAXD?=
+ =?us-ascii?Q?Xul0s080JzTrxNQxUsoys/hzAg4ZU8PP/zk6g0O9BOuZr0AdyCyEfp2MZIXm?=
+ =?us-ascii?Q?Cpblwy7050pa76HVhdXXGFBjXbbJJhgG/ZNLRkbdMfUTo544cB/mvJCnICOq?=
+ =?us-ascii?Q?BKWpgfuGB+x7uqm4HmcCdKsZP7YuTlGseFfhSZWMntDXqGNX551RhrisnyyV?=
+ =?us-ascii?Q?ApQ4nIqPZ1HhTJrlFQLX6baQnp4JWgmWFQtbJuRC7VvNZCFF+NAfGsUwIsMM?=
+ =?us-ascii?Q?ayvKYX8i+DKlAMSSnc4mG1YPX67Ytmmsf6ukAWWuA6L225tEwu6ZqUgZ9dgA?=
+ =?us-ascii?Q?qCE5917YvWngSeCYqDY=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a60af493-d0e4-491b-181d-08dd0347f835
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8659.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Nov 2024 18:29:40.0508
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fExhsYtRoGGLNbIu4ccvApSNdh8LOSNB5eey6/pUqwbVWvahlIr7eYowaxtx0lc0
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6482
 
+On Wed, Oct 30, 2024 at 09:20:44PM -0300, Jason Gunthorpe wrote:
+> Jason Gunthorpe (7):
+>   iommu/arm-smmu-v3: Support IOMMU_DOMAIN_NESTED
+>   iommu/arm-smmu-v3: Use S2FWB for NESTED domains
+>   iommu/arm-smmu-v3: Allow ATS for IOMMU_DOMAIN_NESTED
+> 
+> Nicolin Chen (5):
+>   iommu/arm-smmu-v3: Support IOMMU_VIOMMU_ALLOC
+>   iommu/arm-smmu-v3: Support IOMMU_HWPT_INVALIDATE using a VIOMMU object
 
+Applied to iommufd for-next along with all the dependencies and the
+additional hunk Zhangfei pointed out.
 
-On 11/7/24 1:58 PM, Ira Weiny wrote:
-> A git tree of this series can be found here:
-> 
-> 	https://github.com/weiny2/linux-kernel/tree/dcd-v4-2024-11-07
-> 
-> This is a quick spin with minor clean ups Dave was going to apply as
-> well as a couple of clean ups I had slated for after V4 landed.
-
-Top 6 patches (for DCD preparation) applied to cxl/next for 6.13 merge window. 
-
-> 
-> Series info
-> ===========
-> 
-> This series has 4 parts:
-> 
-> Patch 1: Add core range_overlaps() function
-> Patch 2-6: CXL clean up/prelim patches
-> Patch 7-25: Core DCD support
-> Patch 26-27: cxl_test support
-> 
-> Patches 1-6 have received a lot of review and can be applied to cxl-next
-> straight away.  While 7-27 may need to wait for Dan review.
-> 
-> Background
-> ==========
-> 
-> A Dynamic Capacity Device (DCD) (CXL 3.1 sec 9.13.3) is a CXL memory
-> device that allows memory capacity within a region to change
-> dynamically without the need for resetting the device, reconfiguring
-> HDM decoders, or reconfiguring software DAX regions.
-> 
-> One of the biggest use cases for Dynamic Capacity is to allow hosts to
-> share memory dynamically within a data center without increasing the
-> per-host attached memory.
-> 
-> The general flow for the addition or removal of memory is to have an
-> orchestrator coordinate the use of the memory.  Generally there are 5
-> actors in such a system, the Orchestrator, Fabric Manager, the Logical
-> device, the Host Kernel, and a Host User.
-> 
-> Typical work flows are shown below.
-> 
-> Orchestrator      FM         Device       Host Kernel    Host User
-> 
->     |             |           |            |              |
->     |-------------- Create region ----------------------->|
->     |             |           |            |              |
->     |             |           |            |<-- Create ---|
->     |             |           |            |    Region    |
->     |<------------- Signal done --------------------------|
->     |             |           |            |              |
->     |-- Add ----->|-- Add --->|--- Add --->|              |
->     |  Capacity   |  Extent   |   Extent   |              |
->     |             |           |            |              |
->     |             |<- Accept -|<- Accept  -|              |
->     |             |   Extent  |   Extent   |              |
->     |             |           |            |<- Create --->|
->     |             |           |            |   DAX dev    |-- Use memory
->     |             |           |            |              |   |
->     |             |           |            |              |   |
->     |             |           |            |<- Release ---| <-+
->     |             |           |            |   DAX dev    |
->     |             |           |            |              |
->     |<------------- Signal done --------------------------|
->     |             |           |            |              |
->     |-- Remove -->|- Release->|- Release ->|              |
->     |  Capacity   |  Extent   |   Extent   |              |
->     |             |           |            |              |
->     |             |<- Release-|<- Release -|              |
->     |             |   Extent  |   Extent   |              |
->     |             |           |            |              |
->     |-- Add ----->|-- Add --->|--- Add --->|              |
->     |  Capacity   |  Extent   |   Extent   |              |
->     |             |           |            |              |
->     |             |<- Accept -|<- Accept  -|              |
->     |             |   Extent  |   Extent   |              |
->     |             |           |            |<- Create ----|
->     |             |           |            |   DAX dev    |-- Use memory
->     |             |           |            |              |   |
->     |             |           |            |<- Release ---| <-+
->     |             |           |            |   DAX dev    |
->     |<------------- Signal done --------------------------|
->     |             |           |            |              |
->     |-- Remove -->|- Release->|- Release ->|              |
->     |  Capacity   |  Extent   |   Extent   |              |
->     |             |           |            |              |
->     |             |<- Release-|<- Release -|              |
->     |             |   Extent  |   Extent   |              |
->     |             |           |            |              |
->     |-- Add ----->|-- Add --->|--- Add --->|              |
->     |  Capacity   |  Extent   |   Extent   |              |
->     |             |           |            |<- Create ----|
->     |             |           |            |   DAX dev    |-- Use memory
->     |             |           |            |              |   |
->     |-- Remove -->|- Release->|- Release ->|              |   |
->     |  Capacity   |  Extent   |   Extent   |              |   |
->     |             |           |            |              |   |
->     |             |           |     (Release Ignored)     |   |
->     |             |           |            |              |   |
->     |             |           |            |<- Release ---| <-+
->     |             |           |            |   DAX dev    |
->     |<------------- Signal done --------------------------|
->     |             |           |            |              |
->     |             |- Release->|- Release ->|              |
->     |             |  Extent   |   Extent   |              |
->     |             |           |            |              |
->     |             |<- Release-|<- Release -|              |
->     |             |   Extent  |   Extent   |              |
->     |             |           |            |<- Destroy ---|
->     |             |           |            |   Region     |
->     |             |           |            |              |
-> 
-> Implementation
-> ==============
-> 
-> The series still requires the creation of regions and DAX devices to be
-> closely synchronized with the Orchestrator and Fabric Manager.  The host
-> kernel will reject extents if a region is not yet created.  It also
-> ignores extent release if memory is in use (DAX device created).  These
-> synchronizations are not anticipated to be an issue with real
-> applications.
-> 
-> In order to allow for capacity to be added and removed a new concept of
-> a sparse DAX region is introduced.  A sparse DAX region may have 0 or
-> more bytes of available space.  The total space depends on the number
-> and size of the extents which have been added.
-> 
-> Initially it is anticipated that users of the memory will carefully
-> coordinate the surfacing of additional capacity with the creation of DAX
-> devices which use that capacity.  Therefore, the allocation of the
-> memory to DAX devices does not allow for specific associations between
-> DAX device and extent.  This keeps allocations very similar to existing
-> DAX region behavior.
-> 
-> To keep the DAX memory allocation aligned with the existing DAX devices
-> which do not have tags extents are not allowed to have tags.  Future
-> support for tags is planned.
-> 
-> Great care was taken to keep the extent tracking simple.  Some xarray's
-> needed to be added but extra software objects were kept to a minimum.
-> 
-> Region extents continue to be tracked as sub-devices of the DAX region.
-> This ensures that region destruction cleans up all extent allocations
-> properly.
-> 
-> Some review tags were kept if a patch did not change.
-> 
-> The major functionality of this series includes:
-> 
-> - Getting the dynamic capacity (DC) configuration information from cxl
->   devices
-> 
-> - Configuring the DC partitions reported by hardware
-> 
-> - Enhancing the CXL and DAX regions for dynamic capacity support
-> 	a. Maintain a logical separation between hardware extents and
-> 	   software managed region extents.  This provides an
-> 	   abstraction between the layers and should allow for
-> 	   interleaving in the future
-> 
-> - Get hardware extent lists for endpoint decoders upon
->   region creation.
-> 
-> - Adjust extent/region memory available on the following events.
->         a. Add capacity Events
-> 	b. Release capacity events
-> 
-> - Host response for add capacity
-> 	a. do not accept the extent if:
-> 		If the region does not exist
-> 		or an error occurs realizing the extent
-> 	b. If the region does exist
-> 		realize a DAX region extent with 1:1 mapping (no
-> 		interleave yet)
-> 	c. Support the event more bit by processing a list of extents
-> 	   marked with the more bit together before setting up a
-> 	   response.
-> 
-> - Host response for remove capacity
-> 	a. If no DAX device references the extent; release the extent
-> 	b. If a reference does exist, ignore the request.
-> 	   (Require FM to issue release again.)
-> 
-> - Modify DAX device creation/resize to account for extents within a
->   sparse DAX region
-> 
-> - Trace Dynamic Capacity events for debugging
-> 
-> - Add cxl-test infrastructure to allow for faster unit testing
->   (See new ndctl branch for cxl-dcd.sh test[1])
-> 
-> - Only support 0 value extent tags
-> 
-> Fan Ni's upstream of Qemu DCD was used for testing.
-> 
-> Remaining work:
-> 
-> 	1) Allow mapping to specific extents (perhaps based on
-> 	   label/tag)
-> 	   1a) devise region size reporting based on tags
-> 	2) Interleave support
-> 
-> Possible additional work depending on requirements:
-> 
-> 	1) Accept a new extent which extends (but overlaps) an existing
-> 	   extent(s)
-> 	2) Release extents when DAX devices are released if a release
-> 	   was previously seen from the device
-> 	3) Rework DAX device interfaces, memfd has been explored a bit
-> 
-> [1] https://github.com/weiny2/ndctl/tree/dcd-region2-2024-10-01
-> 
-> ---
-> Changes in v7:
-> - Pick up review tags
-> - Ming: Fix setting the more flag
-> - Link to v6: https://patch.msgid.link/20241105-dcd-type2-upstream-v6-0-85c7fa2140fe@intel.com
-> 
-> ---
-> Ira Weiny (13):
->       range: Add range_overlaps()
->       ACPI/CDAT: Add CDAT/DSMAS shared and read only flag values
->       dax: Document struct dev_dax_range
->       cxl/pci: Delay event buffer allocation
->       cxl/hdm: Use guard() in cxl_dpa_set_mode()
->       cxl/region: Refactor common create region code
->       cxl/cdat: Gather DSMAS data for DCD regions
->       cxl/events: Split event msgnum configuration from irq setup
->       cxl/pci: Factor out interrupt policy check
->       cxl/core: Return endpoint decoder information from region search
->       dax/bus: Factor out dev dax resize logic
->       tools/testing/cxl: Make event logs dynamic
->       tools/testing/cxl: Add DC Regions to mock mem data
-> 
-> Navneet Singh (14):
->       cxl/mbox: Flag support for Dynamic Capacity Devices (DCD)
->       cxl/mem: Read dynamic capacity configuration from the device
->       cxl/core: Separate region mode from decoder mode
->       cxl/region: Add dynamic capacity decoder and region modes
->       cxl/hdm: Add dynamic capacity size support to endpoint decoders
->       cxl/mem: Expose DCD partition capabilities in sysfs
->       cxl/port: Add endpoint decoder DC mode support to sysfs
->       cxl/region: Add sparse DAX region support
->       cxl/mem: Configure dynamic capacity interrupts
->       cxl/extent: Process DCD events and realize region extents
->       cxl/region/extent: Expose region extent information in sysfs
->       dax/region: Create resources on sparse DAX regions
->       cxl/region: Read existing extents on region creation
->       cxl/mem: Trace Dynamic capacity Event Record
-> 
->  Documentation/ABI/testing/sysfs-bus-cxl |  125 +++-
->  drivers/cxl/core/Makefile               |    2 +-
->  drivers/cxl/core/cdat.c                 |   45 +-
->  drivers/cxl/core/core.h                 |   34 +-
->  drivers/cxl/core/extent.c               |  502 +++++++++++++++
->  drivers/cxl/core/hdm.c                  |  231 ++++++-
->  drivers/cxl/core/mbox.c                 |  610 +++++++++++++++++-
->  drivers/cxl/core/memdev.c               |  128 +++-
->  drivers/cxl/core/port.c                 |   19 +-
->  drivers/cxl/core/region.c               |  185 ++++--
->  drivers/cxl/core/trace.h                |   65 ++
->  drivers/cxl/cxl.h                       |  122 +++-
->  drivers/cxl/cxlmem.h                    |  132 +++-
->  drivers/cxl/pci.c                       |  122 +++-
->  drivers/dax/bus.c                       |  356 +++++++++--
->  drivers/dax/bus.h                       |    4 +-
->  drivers/dax/cxl.c                       |   71 ++-
->  drivers/dax/dax-private.h               |   66 +-
->  drivers/dax/hmem/hmem.c                 |    2 +-
->  drivers/dax/pmem.c                      |    2 +-
->  fs/btrfs/ordered-data.c                 |   10 +-
->  include/acpi/actbl1.h                   |    2 +
->  include/cxl/event.h                     |   32 +
->  include/linux/ioport.h                  |    3 +
->  include/linux/range.h                   |    8 +
->  tools/testing/cxl/Kbuild                |    3 +-
->  tools/testing/cxl/test/mem.c            | 1019 +++++++++++++++++++++++++++----
->  27 files changed, 3568 insertions(+), 332 deletions(-)
-> ---
-> base-commit: c2ee9f594da826bea183ed14f2cc029c719bf4da
-> change-id: 20230604-dcd-type2-upstream-0cd15f6216fd
-> 
-> Best regards,
-
+Thanks,
+Jason
