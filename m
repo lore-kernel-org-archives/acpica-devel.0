@@ -1,145 +1,160 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05536E573;
-	Thu, 14 Nov 2024 00:52:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED6E71F6663
+	for <acpica-devel@lists.linux.dev>; Thu, 14 Nov 2024 08:48:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731545576; cv=none; b=rNAodmcWS+41psK0FA57RVGZr4AUQD+JJNAVTe9E5P3fIu32u2KC4MqdaYHR+y9d2nL0cdpS0CpeJkNEeVq0VRoOWoWsiO12YwZzSNbdbrmtO4r5nDFeNRtt6akijmjLSgglPpGg04YoeLnA/FfdZloo6GOCBrBqUD+UISQxj+g=
+	t=1731574104; cv=none; b=kpxORmXVI2hWI93d39Kc1VWo0o4qKM+Eu04G87TSX618ioaWnyUvgUKzCEJ1nvqR6kijSSl4l05aSGWOms2wDxVYpsowCF16iBwmRzODXcgYUnr3dm0Mw7U6qRtBdq+UGU13vR+6VxoHwokaSmWsnAT2Lycf6mLT9A7DPANnws8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731545576; c=relaxed/simple;
-	bh=h5sSTsp24D65G2XFtPO48h/kyNuKIpKzlGZiJU4kZtI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Rt4IJ3dpe6aA26tDrBd6nIjtv7Qy3zMeBtxcBHrBa8c5cibBbxzTm8D9zp3li4T7EFvZ2Fg3ImKqNYXPOp2l5ArHahSlbsg+XlfYv+2vsDGY4XlzFphDwMJ6eDU9WG83FNjMdY/llEipovq93WVlLz7iSHCnFoxyZ5gTtccKEZs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HXgxwhVo; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HXgxwhVo"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1731545575; x=1763081575;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=h5sSTsp24D65G2XFtPO48h/kyNuKIpKzlGZiJU4kZtI=;
-  b=HXgxwhVoBw/zASnAPqRIXt0MYIdAwLWtZhdPo7/siW6C2ma5CR0WiQKF
-   8Jp1qN5PyLz5RKoXYlYoblhLvB7/hzuoAV+A7MiX7H0UghusopWho3r3e
-   N5YmtXM25Hn2omlfQ/mbT4XROwhPiI4B/OzWimaBDDMhEzctjOKjqcR76
-   6YBufEaMp+Tku36IZgxldhBm+NLtkBc8saf00z5NqPkRrPUC85lyA3ubL
-   YN/PlIjxWKv9329V/O5EeVQ2vUDn1xNNgiMAEUinSkVyvWKW5nv7yFZ3L
-   xgCMk4wDDItX3fKDjZlqdEasMV378owdE7WC3aDjOfXGAw6KlPAkKdNcB
-   w==;
-X-CSE-ConnectionGUID: ZcEG5ILCSBCov3N8MWnWXQ==
-X-CSE-MsgGUID: 3fNN+c2OQzuK8Tp4+iRsUg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11255"; a="42879446"
-X-IronPort-AV: E=Sophos;i="6.12,152,1728975600"; 
-   d="scan'208";a="42879446"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2024 16:52:54 -0800
-X-CSE-ConnectionGUID: CE2x8RESTWyiyF9dktIJzw==
-X-CSE-MsgGUID: VspIz9jaRZigJjTinNKxEQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,152,1728975600"; 
-   d="scan'208";a="88020775"
-Received: from allen-sbox.sh.intel.com (HELO [10.239.159.30]) ([10.239.159.30])
-  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2024 16:52:48 -0800
-Message-ID: <6ed97a10-853f-429e-8506-94b218050ad3@linux.intel.com>
-Date: Thu, 14 Nov 2024 08:51:47 +0800
+	s=arc-20240116; t=1731574104; c=relaxed/simple;
+	bh=d4856qNk5rNFXvmwuNr+k1O35vPA+KmOivzh/+eQlkY=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=sLCoESppXMxP6GxLAXmEhvr51iR/YAacvyacT+ymy453bdgTEjiR0O/Q13OUNvsOhMUMGBl1pNx9RwuXIyFJi7y83Z2u0KOsLZV9uppUVwJodFfa2sGMuE4QjqEBFbNwx066oRSlqK1IGGuuP9s3C8y70AT9vJO9feg0oALuj9U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Xptzk6W1szpZGj;
+	Thu, 14 Nov 2024 16:46:26 +0800 (CST)
+Received: from kwepemh100008.china.huawei.com (unknown [7.202.181.93])
+	by mail.maildlp.com (Postfix) with ESMTPS id 686351401F4;
+	Thu, 14 Nov 2024 16:48:19 +0800 (CST)
+Received: from localhost.huawei.com (10.50.165.33) by
+ kwepemh100008.china.huawei.com (7.202.181.93) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Thu, 14 Nov 2024 16:48:18 +0800
+From: Lifeng Zheng <zhenglifeng1@huawei.com>
+To: <rafael@kernel.org>, <lenb@kernel.org>, <robert.moore@intel.com>,
+	<viresh.kumar@linaro.org>
+CC: <acpica-devel@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+	<zhanjie9@hisilicon.com>, <lihuisong@huawei.com>, <fanghao11@huawei.com>,
+	<zhenglifeng1@huawei.com>
+Subject: [PATCH 2/3] ACPI: CPPC: Add autonomous selection ABIs
+Date: Thu, 14 Nov 2024 16:48:15 +0800
+Message-ID: <20241114084816.1128647-3-zhenglifeng1@huawei.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20241114084816.1128647-1-zhenglifeng1@huawei.com>
+References: <20241114084816.1128647-1-zhenglifeng1@huawei.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 00/12] Initial support for SMMUv3 nested translation
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Zhangfei Gao <zhangfei.gao@linaro.org>, acpica-devel@lists.linux.dev,
- iommu@lists.linux.dev, Joerg Roedel <joro@8bytes.org>,
- Kevin Tian <kevin.tian@intel.com>, kvm@vger.kernel.org,
- Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- Lorenzo Pieralisi <lpieralisi@kernel.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>,
- Robert Moore <robert.moore@intel.com>, Robin Murphy <robin.murphy@arm.com>,
- Sudeep Holla <sudeep.holla@arm.com>, Will Deacon <will@kernel.org>,
- Alex Williamson <alex.williamson@redhat.com>,
- Donald Dutile <ddutile@redhat.com>, Eric Auger <eric.auger@redhat.com>,
- Hanjun Guo <guohanjun@huawei.com>,
- Jean-Philippe Brucker <jean-philippe@linaro.org>,
- Jerry Snitselaar <jsnitsel@redhat.com>, Moritz Fischer <mdf@kernel.org>,
- Michael Shavit <mshavit@google.com>, Nicolin Chen <nicolinc@nvidia.com>,
- patches@lists.linux.dev, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
- Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
- Mostafa Saleh <smostafa@google.com>
-References: <0-v4-9e99b76f3518+3a8-smmuv3_nesting_jgg@nvidia.com>
- <20241112182938.GA172989@nvidia.com>
- <CABQgh9HOHzeRF7JfrXrRAcGB53o29HkW9rnVTf4JefeVWDvzyQ@mail.gmail.com>
- <20241113012359.GB35230@nvidia.com>
- <9df3dd17-375a-4327-b2a8-e9f7690d81b1@linux.intel.com>
- <20241113164316.GL35230@nvidia.com>
-Content-Language: en-US
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <20241113164316.GL35230@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemh100008.china.huawei.com (7.202.181.93)
 
-On 11/14/24 00:43, Jason Gunthorpe wrote:
-> On Wed, Nov 13, 2024 at 10:55:41AM +0800, Baolu Lu wrote:
->> On 11/13/24 09:23, Jason Gunthorpe wrote:
->>>> https://github.com/Linaro/linux-kernel-uadk/tree/6.12-wip
->>>> https://github.com/Linaro/qemu/tree/6.12-wip
->>>>
->>>> Still need this hack
->>>> https://github.com/Linaro/linux-kernel-uadk/commit/
->>>> eaa194d954112cad4da7852e29343e546baf8683
->>>>
->>>> One is adding iommu_dev_enable/disable_feature IOMMU_DEV_FEAT_SVA,
->>>> which you have patchset before.
->>> Yes, I have a more complete version of that here someplace. Need some
->>> help on vt-d but hope to get that done next cycle.
->>
->> Can you please elaborate this a bit more? Are you talking about below
->> change
-> 
-> I need your help to remove IOMMU_DEV_FEAT_IOPF from the intel
-> driver. I have a patch series that eliminates it from all the other
-> drivers, and I wrote a patch to remove FEAT_SVA from intel..
+cppc_set_epp - write energy performance preference register
 
-Yes, sure. Let's make this happen in the next cycle.
+cppc_get_auto_act_window - read autonomous activity window register
 
-FEAT_IOPF could be removed. IOPF manipulation can be handled in the
-domain attachment path. A per-device refcount can be implemented. This
-count increments with each iopf-capable domain attachment and decrements
-with each detachment. PCI PRI is enabled for the first iopf-capable
-domain and disabled when the last one is removed. Probably we can also
-solve the PF/VF sharing PRI issue.
+cppc_set_auto_act_window - write autonomous activity window register
 
-With iopf moved to the domain attach path and hardware capability checks
-to the SVA domain allocation path, FEAT_SVA becomes essentially a no-op.
+cppc_get_auto_sel - read autonomous selection enable register
 
-> 
->> +	ret = iommu_dev_enable_feature(idev->dev, IOMMU_DEV_FEAT_SVA);
->> +	if (ret)
->> +		return ret;
->>
->> in iommufd_fault_iopf_enable()?
->>
->> I have no idea about why SVA is affected when enabling iopf.
-> 
-> It is ARM not implementing the API correctly. Only SVA turns on the
-> page fault reporting mechanism.
-> 
-> In the new world the page fault reporting should be managed during
-> domain attachment. If the domain is fault capable then faults should
-> be delivered to that domain. That is the correct time to setup the
-> iopf mechanism as well.
-> 
-> So I fixed that and now ARM and AMD both have no-op implementations of
-> IOMMU_DEV_FEAT_IOPF and IOMMU_DEV_FEAT_SVA. Thus I'd like to remove it
-> entirely.
+Signed-off-by: Lifeng Zheng <zhenglifeng1@huawei.com>
+---
+ drivers/acpi/cppc_acpi.c | 44 ++++++++++++++++++++++++++++++++++++++++
+ include/acpi/cppc_acpi.h | 20 ++++++++++++++++++
+ 2 files changed, 64 insertions(+)
 
-Thank you for the explanation.
+diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+index 306ced9c3376..f69ef7cc0caf 100644
+--- a/drivers/acpi/cppc_acpi.c
++++ b/drivers/acpi/cppc_acpi.c
+@@ -1588,6 +1588,50 @@ int cppc_set_epp_perf(int cpu, struct cppc_perf_ctrls *perf_ctrls, bool enable)
+ }
+ EXPORT_SYMBOL_GPL(cppc_set_epp_perf);
+ 
++/**
++ * cppc_set_epp() - Write the EPP register.
++ * @cpu: CPU on which to write register.
++ * @epp_val: Value to write to the EPP register.
++ */
++int cppc_set_epp(int cpu, u64 epp_val)
++{
++	return cppc_set_reg(cpu, ENERGY_PERF, epp_val);
++}
++EXPORT_SYMBOL_GPL(cppc_set_epp);
++
++/**
++ * cppc_get_auto_act_window() - Read autonomous activity window register.
++ * @cpu: CPU from which to read register.
++ * @auto_act_window: Return address.
++ */
++int cppc_get_auto_act_window(int cpu, u64 *auto_act_window)
++{
++	return cppc_get_reg(cpu, AUTO_ACT_WINDOW, auto_act_window);
++}
++EXPORT_SYMBOL_GPL(cppc_get_auto_act_window);
++
++/**
++ * cppc_set_auto_act_window() - Write autonomous activity window register.
++ * @cpu: CPU on which to write register.
++ * @auto_act_window: Value to write to the autonomous activity window register.
++ */
++int cppc_set_auto_act_window(int cpu, u64 auto_act_window)
++{
++	return cppc_set_reg(cpu, AUTO_ACT_WINDOW, auto_act_window);
++}
++EXPORT_SYMBOL_GPL(cppc_set_auto_act_window);
++
++/**
++ * cppc_get_auto_sel() - Read autonomous selection register.
++ * @cpu: CPU from which to read register.
++ * @auto_sel: Return address.
++ */
++int cppc_get_auto_sel(int cpu, u64 *auto_sel)
++{
++	return cppc_get_reg(cpu, AUTO_SEL_ENABLE, auto_sel);
++}
++EXPORT_SYMBOL_GPL(cppc_get_auto_sel);
++
+ /**
+  * cppc_get_auto_sel_caps - Read autonomous selection register.
+  * @cpunum : CPU from which to read register.
+diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
+index 62d368bcd9ec..134931b081a0 100644
+--- a/include/acpi/cppc_acpi.h
++++ b/include/acpi/cppc_acpi.h
+@@ -159,6 +159,10 @@ extern int cpc_read_ffh(int cpunum, struct cpc_reg *reg, u64 *val);
+ extern int cpc_write_ffh(int cpunum, struct cpc_reg *reg, u64 val);
+ extern int cppc_get_epp_perf(int cpunum, u64 *epp_perf);
+ extern int cppc_set_epp_perf(int cpu, struct cppc_perf_ctrls *perf_ctrls, bool enable);
++extern int cppc_set_epp(int cpu, u64 epp_val);
++extern int cppc_get_auto_act_window(int cpu, u64 *auto_act_window);
++extern int cppc_set_auto_act_window(int cpu, u64 auto_act_window);
++extern int cppc_get_auto_sel(int cpu, u64 *auto_sel);
+ extern int cppc_get_auto_sel_caps(int cpunum, struct cppc_perf_caps *perf_caps);
+ extern int cppc_set_auto_sel(int cpu, bool enable);
+ extern int amd_get_highest_perf(unsigned int cpu, u32 *highest_perf);
+@@ -225,6 +229,22 @@ static inline int cppc_set_epp_perf(int cpu, struct cppc_perf_ctrls *perf_ctrls,
+ {
+ 	return -EOPNOTSUPP;
+ }
++static inline int cppc_set_epp(int cpu, u64 epp_val)
++{
++	return -EOPNOTSUPP;
++}
++static inline int cppc_get_auto_act_window(int cpu, u64 *auto_act_window)
++{
++	return -EOPNOTSUPP;
++}
++static inline int cppc_set_auto_act_window(int cpu, u64 auto_act_window)
++{
++	return -EOPNOTSUPP;
++}
++static inline int cppc_get_auto_sel(int cpu, u64 *auto_sel)
++{
++	return -EOPNOTSUPP;
++}
+ static inline int cppc_get_epp_perf(int cpunum, u64 *epp_perf)
+ {
+ 	return -EOPNOTSUPP;
+-- 
+2.33.0
 
---
-baolu
