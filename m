@@ -1,29 +1,29 @@
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 970DA1F7552
-	for <acpica-devel@lists.linux.dev>; Thu, 14 Nov 2024 08:48:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C134B1F81B1
+	for <acpica-devel@lists.linux.dev>; Thu, 14 Nov 2024 08:48:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731574105; cv=none; b=VY7wg0PZGIfQf/f4ROQj07QqzZr42COYtH/BRcXt/ZxQuNf84ZuYyVm+V9iCM9emlAbPLMUWsjTDh19xVAJXDZj10+KfXAZGNvwjszhHJMBJURZfFcT8aELQZotaWpqUFotqQxu4Kx0AHkxqN83wbB9gHtSWCfJiLnMq5xrgYZc=
+	t=1731574110; cv=none; b=pcN5oSOuPCkdc6l/58/+yvr7a2sjprcki5nkNilKPdEpZEW3h36p6IsxXIZa67HeBtlnswDMsSx2x8/qYzyeRxw8HopjxUiljW3k00AEAmMWTlaTL7gPS4kJNgg4/gB+aod6LlPgFWHQ+droPQxiDxnK9yCi/q6Dsv3HDFKl/fk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731574105; c=relaxed/simple;
-	bh=RuR9Nkxewkh04J9ECyn/qzw9JeJoKz9Nh8JEiJg7JCg=;
+	s=arc-20240116; t=1731574110; c=relaxed/simple;
+	bh=DmkFSJ0Dc908RKzofhscowO6CKihQtsKpAiW71CIkdE=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=kx2lu1U5NJKXEnSL60tiOm4dEh0kCYuDL5XJlAd2HZYMd8950bs9miYb/nvx8B4JOqH+g1N6kW12jVIxBUtbz6fnvo7ck1wKfRFFXEML8N398VnDsVqs7gc6WMY6bNvZ4x/Ef8/jSSzpmVo/QmxwdJRuwKXIFCfhp6iNxiZg29U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+	 MIME-Version:Content-Type; b=SRHYEXhOUId1IT5eYTRIk/H85UkHtNp2i7RUFPH1AoVoB5gfSzEMfKa2vUkiqMG0iDVaWYpzDh8bljZIwsYpnuiCmjxJeP15mhqEdQhwvBASI9RaMvcoZjjI8rGhDue0Sd7KrtxBiSiUo2n1vyGJc3MpEna7qaZK+FLl9Ixgenw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Xptzl6Rmtz1jyxJ;
-	Thu, 14 Nov 2024 16:46:27 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Xptz14HY7z1V3r2;
+	Thu, 14 Nov 2024 16:45:49 +0800 (CST)
 Received: from kwepemh100008.china.huawei.com (unknown [7.202.181.93])
-	by mail.maildlp.com (Postfix) with ESMTPS id DFBBA1A0188;
-	Thu, 14 Nov 2024 16:48:18 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id DF4F31800DE;
+	Thu, 14 Nov 2024 16:48:19 +0800 (CST)
 Received: from localhost.huawei.com (10.50.165.33) by
  kwepemh100008.china.huawei.com (7.202.181.93) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Thu, 14 Nov 2024 16:48:18 +0800
+ 15.2.1544.11; Thu, 14 Nov 2024 16:48:19 +0800
 From: Lifeng Zheng <zhenglifeng1@huawei.com>
 To: <rafael@kernel.org>, <lenb@kernel.org>, <robert.moore@intel.com>,
 	<viresh.kumar@linaro.org>
@@ -31,9 +31,9 @@ CC: <acpica-devel@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
 	<zhanjie9@hisilicon.com>, <lihuisong@huawei.com>, <fanghao11@huawei.com>,
 	<zhenglifeng1@huawei.com>
-Subject: [PATCH 1/3] ACPI: CPPC: Refactor register get and set ABIs
-Date: Thu, 14 Nov 2024 16:48:14 +0800
-Message-ID: <20241114084816.1128647-2-zhenglifeng1@huawei.com>
+Subject: [PATCH 3/3] cpufreq: CPPC: Support for autonomous selection in cppc_cpufreq
+Date: Thu, 14 Nov 2024 16:48:16 +0800
+Message-ID: <20241114084816.1128647-4-zhenglifeng1@huawei.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20241114084816.1128647-1-zhenglifeng1@huawei.com>
 References: <20241114084816.1128647-1-zhenglifeng1@huawei.com>
@@ -48,320 +48,235 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
  kwepemh100008.china.huawei.com (7.202.181.93)
 
-Refactor register get and set ABIs using cppc_get_reg() and cppc_set_reg().
-
-Rename cppc_get_perf() to cppc_get_reg() as a generic function to read cppc
-registers, with two changes:
-
-1. Change the error kind to "no such device" when pcc_ss_id < 0, which
-means that this cpu cannot get a valid pcc_ss_id.
-
-2. Add a check to verify if the register is a cpc supported one before
-using it.
-
-Add cppc_set_reg() as a generic function for setting cppc registers. Unlike
-other set reg ABIs, this function checks CPC_SUPPORTED right after getting
-the register, because the rest of the operations are meaningless if this
-register is not a cpc supported one.
+Add sysfs interfaces for CPPC autonomous selection in the cppc_cpufreq
+driver.
 
 Signed-off-by: Lifeng Zheng <zhenglifeng1@huawei.com>
 ---
- drivers/acpi/cppc_acpi.c | 191 +++++++++++++++------------------------
- 1 file changed, 72 insertions(+), 119 deletions(-)
+ .../ABI/testing/sysfs-devices-system-cpu      |  54 +++++++
+ drivers/cpufreq/cppc_cpufreq.c                | 141 ++++++++++++++++++
+ 2 files changed, 195 insertions(+)
 
-diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-index c1f3568d0c50..306ced9c3376 100644
---- a/drivers/acpi/cppc_acpi.c
-+++ b/drivers/acpi/cppc_acpi.c
-@@ -1179,10 +1179,13 @@ static int cpc_write(int cpu, struct cpc_register_resource *reg_res, u64 val)
- 	return ret_val;
- }
+diff --git a/Documentation/ABI/testing/sysfs-devices-system-cpu b/Documentation/ABI/testing/sysfs-devices-system-cpu
+index 206079d3bd5b..ba7b8ea613e5 100644
+--- a/Documentation/ABI/testing/sysfs-devices-system-cpu
++++ b/Documentation/ABI/testing/sysfs-devices-system-cpu
+@@ -268,6 +268,60 @@ Description:	Discover CPUs in the same CPU frequency coordination domain
+ 		This file is only present if the acpi-cpufreq or the cppc-cpufreq
+ 		drivers are in use.
  
--static int cppc_get_perf(int cpunum, enum cppc_regs reg_idx, u64 *perf)
-+static int cppc_get_reg(int cpunum, enum cppc_regs reg_idx, u64 *val)
- {
- 	struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpunum);
-+	struct cppc_pcc_data *pcc_ss_data = NULL;
- 	struct cpc_register_resource *reg;
-+	int pcc_ss_id;
-+	int ret = 0;
- 
- 	if (!cpc_desc) {
- 		pr_debug("No CPC descriptor for CPU:%d\n", cpunum);
-@@ -1191,20 +1194,23 @@ static int cppc_get_perf(int cpunum, enum cppc_regs reg_idx, u64 *perf)
- 
- 	reg = &cpc_desc->cpc_regs[reg_idx];
- 
-+	if (!CPC_SUPPORTED(reg)) {
-+		pr_debug("CPC register (reg_idx=%u) is not supported\n", reg_idx);
-+		return -EOPNOTSUPP;
-+	}
++What:		/sys/devices/system/cpu/cpuX/cpufreq/auto_select
++Date:		October 2024
++Contact:	linux-pm@vger.kernel.org
++Description:	Autonomous selection enable
 +
- 	if (CPC_IN_PCC(reg)) {
--		int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpunum);
--		struct cppc_pcc_data *pcc_ss_data = NULL;
--		int ret = 0;
-+		pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpunum);
++		Read/write interface to control autonomous selection enable
++			Read returns autonomous selection status:
++				0: autonomous selection is disabled
++				1: autonomous selection is enabled
++
++			Write '1' to enable autonomous selection.
++			Write '0' to disable autonomous selection.
++
++		This file only presents if the cppc-cpufreq driver is in use.
++
++What:		/sys/devices/system/cpu/cpuX/cpufreq/auto_act_window
++Date:		October 2024
++Contact:	linux-pm@vger.kernel.org
++Description:	Autonomous activity window
++
++		This file indicates a moving utilization sensitivity window to
++		the platform's autonomous selection policy.
++
++		Read/write an integer represents autonomous activity window (in
++		microseconds) from/to this file. The max value to write is
++		1270000000 but the max significand is 127. This means that if 128
++		is written to this file, 127 will be stored. If the value is
++		greater than 130, only the first two digits will be saved as
++		significand.
++
++		Writing a zero value to this file enable the platform to
++		determine an appropriate Activity Window depending on the workload.
++
++		Writing to this file only has meaning when Autonomous Selection is
++		enabled.
++
++		This file only presents if the cppc-cpufreq driver is in use.
++
++What:		/sys/devices/system/cpu/cpuX/cpufreq/energy_perf
++Date:		October 2024
++Contact:	linux-pm@vger.kernel.org
++Description:	Energy performance preference
++
++		Read/write an 8-bit integer from/to this file. This file
++		represents a range of values from 0 (performance preference) to
++		0xFF (energy efficiency preference) that influences the rate of
++		performance increase/decrease and the result of the hardware's
++		energy efficiency and performance optimization policies.
++
++		Writing to this file only has meaning when Autonomous Selection is
++		enabled.
++
++		This file only presents if the cppc-cpufreq driver is in use.
++
  
- 		if (pcc_ss_id < 0)
--			return -EIO;
-+			return -ENODEV;
+ What:		/sys/devices/system/cpu/cpu*/cache/index3/cache_disable_{0,1}
+ Date:		August 2008
+diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
+index 2b8708475ac7..b435e1751d0d 100644
+--- a/drivers/cpufreq/cppc_cpufreq.c
++++ b/drivers/cpufreq/cppc_cpufreq.c
+@@ -792,10 +792,151 @@ static ssize_t show_freqdomain_cpus(struct cpufreq_policy *policy, char *buf)
  
- 		pcc_ss_data = pcc_data[pcc_ss_id];
- 
- 		down_write(&pcc_ss_data->pcc_lock);
- 
- 		if (send_pcc_cmd(pcc_ss_id, CMD_READ) >= 0)
--			cpc_read(cpunum, reg, perf);
-+			cpc_read(cpunum, reg, val);
- 		else
- 			ret = -EIO;
- 
-@@ -1213,21 +1219,65 @@ static int cppc_get_perf(int cpunum, enum cppc_regs reg_idx, u64 *perf)
- 		return ret;
- 	}
- 
--	cpc_read(cpunum, reg, perf);
-+	cpc_read(cpunum, reg, val);
- 
- 	return 0;
+ 	return cpufreq_show_cpus(cpu_data->shared_cpu_map, buf);
  }
- 
-+static int cppc_set_reg(int cpu, enum cppc_regs reg_idx, u64 val)
++
++static ssize_t show_auto_select(struct cpufreq_policy *policy, char *buf)
 +{
-+	struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpu);
-+	struct cppc_pcc_data *pcc_ss_data = NULL;
-+	struct cpc_register_resource *reg;
-+	int pcc_ss_id;
++	u64 val;
 +	int ret;
 +
-+	if (!cpc_desc) {
-+		pr_debug("No CPC descriptor for CPU:%d\n", cpu);
-+		return -ENODEV;
-+	}
++	ret = cppc_get_auto_sel(policy->cpu, &val);
 +
-+	reg = &cpc_desc->cpc_regs[reg_idx];
++	/* show "<unsupported>" when this register is not supported by cpc */
++	if (ret == -EOPNOTSUPP)
++		return sysfs_emit(buf, "%s\n", "<unsupported>");
 +
-+	if (!CPC_SUPPORTED(reg)) {
-+		pr_debug("CPC register (reg_idx=%u) is not supported\n", reg_idx);
-+		return -EOPNOTSUPP;
-+	}
-+
-+	if (CPC_IN_PCC(reg)) {
-+		pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpu);
-+
-+		if (pcc_ss_id < 0) {
-+			pr_debug("Invalid pcc_ss_id\n");
-+			return -ENODEV;
-+		}
-+
-+		ret = cpc_write(cpu, reg, val);
-+		if (ret)
-+			return ret;
-+
-+		pcc_ss_data = pcc_data[pcc_ss_id];
-+
-+		down_write(&pcc_ss_data->pcc_lock);
-+		/* after writing CPC, transfer the ownership of PCC to platform */
-+		ret = send_pcc_cmd(pcc_ss_id, CMD_WRITE);
-+		up_write(&pcc_ss_data->pcc_lock);
++	if (ret)
 +		return ret;
-+	}
 +
-+	return cpc_write(cpu, reg, val);
++	return sysfs_emit(buf, "%lld\n", val);
 +}
 +
- /**
-  * cppc_get_desired_perf - Get the desired performance register value.
-  * @cpunum: CPU from which to get desired performance.
-  * @desired_perf: Return address.
-  *
-- * Return: 0 for success, -EIO otherwise.
-+ * Return: 0 for success, -ERRNO otherwise.
-  */
- int cppc_get_desired_perf(int cpunum, u64 *desired_perf)
- {
--	return cppc_get_perf(cpunum, DESIRED_PERF, desired_perf);
-+	return cppc_get_reg(cpunum, DESIRED_PERF, desired_perf);
- }
- EXPORT_SYMBOL_GPL(cppc_get_desired_perf);
- 
-@@ -1236,11 +1286,11 @@ EXPORT_SYMBOL_GPL(cppc_get_desired_perf);
-  * @cpunum: CPU from which to get nominal performance.
-  * @nominal_perf: Return address.
-  *
-- * Return: 0 for success, -EIO otherwise.
-+ * Return: 0 for success, -ERRNO otherwise.
-  */
- int cppc_get_nominal_perf(int cpunum, u64 *nominal_perf)
- {
--	return cppc_get_perf(cpunum, NOMINAL_PERF, nominal_perf);
-+	return cppc_get_reg(cpunum, NOMINAL_PERF, nominal_perf);
- }
- 
- /**
-@@ -1248,11 +1298,11 @@ int cppc_get_nominal_perf(int cpunum, u64 *nominal_perf)
-  * @cpunum: CPU from which to get highest performance.
-  * @highest_perf: Return address.
-  *
-- * Return: 0 for success, -EIO otherwise.
-+ * Return: 0 for success, -ERRNO otherwise.
-  */
- int cppc_get_highest_perf(int cpunum, u64 *highest_perf)
- {
--	return cppc_get_perf(cpunum, HIGHEST_PERF, highest_perf);
-+	return cppc_get_reg(cpunum, HIGHEST_PERF, highest_perf);
- }
- EXPORT_SYMBOL_GPL(cppc_get_highest_perf);
- 
-@@ -1261,11 +1311,11 @@ EXPORT_SYMBOL_GPL(cppc_get_highest_perf);
-  * @cpunum: CPU from which to get epp preference value.
-  * @epp_perf: Return address.
-  *
-- * Return: 0 for success, -EIO otherwise.
-+ * Return: 0 for success, -ERRNO otherwise.
-  */
- int cppc_get_epp_perf(int cpunum, u64 *epp_perf)
- {
--	return cppc_get_perf(cpunum, ENERGY_PERF, epp_perf);
-+	return cppc_get_reg(cpunum, ENERGY_PERF, epp_perf);
- }
- EXPORT_SYMBOL_GPL(cppc_get_epp_perf);
- 
-@@ -1545,44 +1595,14 @@ EXPORT_SYMBOL_GPL(cppc_set_epp_perf);
-  */
- int cppc_get_auto_sel_caps(int cpunum, struct cppc_perf_caps *perf_caps)
- {
--	struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpunum);
--	struct cpc_register_resource *auto_sel_reg;
--	u64  auto_sel;
--
--	if (!cpc_desc) {
--		pr_debug("No CPC descriptor for CPU:%d\n", cpunum);
--		return -ENODEV;
--	}
--
--	auto_sel_reg = &cpc_desc->cpc_regs[AUTO_SEL_ENABLE];
--
--	if (!CPC_SUPPORTED(auto_sel_reg))
--		pr_warn_once("Autonomous mode is not unsupported!\n");
--
--	if (CPC_IN_PCC(auto_sel_reg)) {
--		int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpunum);
--		struct cppc_pcc_data *pcc_ss_data = NULL;
--		int ret = 0;
--
--		if (pcc_ss_id < 0)
--			return -ENODEV;
--
--		pcc_ss_data = pcc_data[pcc_ss_id];
--
--		down_write(&pcc_ss_data->pcc_lock);
--
--		if (send_pcc_cmd(pcc_ss_id, CMD_READ) >= 0) {
--			cpc_read(cpunum, auto_sel_reg, &auto_sel);
--			perf_caps->auto_sel = (bool)auto_sel;
--		} else {
--			ret = -EIO;
--		}
--
--		up_write(&pcc_ss_data->pcc_lock);
-+	u64 auto_sel;
++static ssize_t store_auto_select(struct cpufreq_policy *policy,
++				 const char *buf, size_t count)
++{
++	unsigned long val;
 +	int ret;
- 
-+	ret = cppc_get_reg(cpunum, AUTO_SEL_ENABLE, &auto_sel);
++
++	ret = kstrtoul(buf, 0, &val);
 +	if (ret)
- 		return ret;
--	}
++		return ret;
++
++	if (val > 1)
++		return -EINVAL;
++
++	ret = cppc_set_auto_sel(policy->cpu, val);
++	if (ret)
++		return ret;
++
++	return count;
++}
++
++#define AUTO_ACT_WINDOW_SIG_BIT_SIZE	(7)
++#define AUTO_ACT_WINDOW_EXP_BIT_SIZE	(3)
++#define AUTO_ACT_WINDOW_MAX_SIG	((1 << AUTO_ACT_WINDOW_SIG_BIT_SIZE) - 1)
++#define AUTO_ACT_WINDOW_MAX_EXP	((1 << AUTO_ACT_WINDOW_EXP_BIT_SIZE) - 1)
++/* AUTO_ACT_WINDOW_MAX_SIG is 127, so 128 and 129 will decay to 127 when writing */
++#define AUTO_ACT_WINDOW_SIG_CARRY_THRESH 129
++
++static ssize_t show_auto_act_window(struct cpufreq_policy *policy, char *buf)
++{
++	int sig, exp;
++	u64 val;
++	int ret;
++
++	ret = cppc_get_auto_act_window(policy->cpu, &val);
++
++	/* show "<unsupported>" when this register is not supported by cpc */
++	if (ret == -EOPNOTSUPP)
++		return sysfs_emit(buf, "%s\n", "<unsupported>");
++
++	if (ret)
++		return ret;
++
++	sig = val & AUTO_ACT_WINDOW_MAX_SIG;
++	exp = (val >> AUTO_ACT_WINDOW_SIG_BIT_SIZE) & AUTO_ACT_WINDOW_MAX_EXP;
++
++	return sysfs_emit(buf, "%lld\n", sig * int_pow(10, exp));
++}
++
++static ssize_t store_auto_act_window(struct cpufreq_policy *policy,
++				     const char *buf, size_t count)
++{
++	unsigned long usec;
++	int digits = 0;
++	int ret;
++
++	ret = kstrtoul(buf, 0, &usec);
++	if (ret)
++		return ret;
++
++	if (usec > AUTO_ACT_WINDOW_MAX_SIG * int_pow(10, AUTO_ACT_WINDOW_MAX_EXP))
++		return -EINVAL;
++
++	while (usec > AUTO_ACT_WINDOW_SIG_CARRY_THRESH) {
++		usec /= 10;
++		digits += 1;
++	}
++
++	if (usec > AUTO_ACT_WINDOW_MAX_SIG)
++		usec = AUTO_ACT_WINDOW_MAX_SIG;
++
++	ret = cppc_set_auto_act_window(policy->cpu,
++				       (digits << AUTO_ACT_WINDOW_SIG_BIT_SIZE) + usec);
++	if (ret)
++		return ret;
++
++	return count;
++}
++
++static ssize_t show_energy_perf(struct cpufreq_policy *policy, char *buf)
++{
++	u64 val;
++	int ret;
++
++	ret = cppc_get_epp_perf(policy->cpu, &val);
++
++	/* show "<unsupported>" when this register is not supported by cpc */
++	if (ret == -EOPNOTSUPP)
++		return sysfs_emit(buf, "%s\n", "<unsupported>");
++
++	if (ret)
++		return ret;
++
++	return sysfs_emit(buf, "%lld\n", val);
++}
++
++#define ENERGY_PERF_MAX	(0xFF)
++
++static ssize_t store_energy_perf(struct cpufreq_policy *policy,
++				 const char *buf, size_t count)
++{
++	unsigned long val;
++	int ret;
++
++	ret = kstrtoul(buf, 0, &val);
++	if (ret)
++		return ret;
++
++	if (val > ENERGY_PERF_MAX)
++		return -EINVAL;
++
++	ret = cppc_set_epp(policy->cpu, val);
++	if (ret)
++		return ret;
++
++	return count;
++}
++
+ cpufreq_freq_attr_ro(freqdomain_cpus);
++cpufreq_freq_attr_rw(auto_select);
++cpufreq_freq_attr_rw(auto_act_window);
++cpufreq_freq_attr_rw(energy_perf);
  
-+	perf_caps->auto_sel = (bool)auto_sel;
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(cppc_get_auto_sel_caps);
-@@ -1594,43 +1614,7 @@ EXPORT_SYMBOL_GPL(cppc_get_auto_sel_caps);
-  */
- int cppc_set_auto_sel(int cpu, bool enable)
- {
--	int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpu);
--	struct cpc_register_resource *auto_sel_reg;
--	struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpu);
--	struct cppc_pcc_data *pcc_ss_data = NULL;
--	int ret = -EINVAL;
--
--	if (!cpc_desc) {
--		pr_debug("No CPC descriptor for CPU:%d\n", cpu);
--		return -ENODEV;
--	}
--
--	auto_sel_reg = &cpc_desc->cpc_regs[AUTO_SEL_ENABLE];
--
--	if (CPC_IN_PCC(auto_sel_reg)) {
--		if (pcc_ss_id < 0) {
--			pr_debug("Invalid pcc_ss_id\n");
--			return -ENODEV;
--		}
--
--		if (CPC_SUPPORTED(auto_sel_reg)) {
--			ret = cpc_write(cpu, auto_sel_reg, enable);
--			if (ret)
--				return ret;
--		}
--
--		pcc_ss_data = pcc_data[pcc_ss_id];
--
--		down_write(&pcc_ss_data->pcc_lock);
--		/* after writing CPC, transfer the ownership of PCC to platform */
--		ret = send_pcc_cmd(pcc_ss_id, CMD_WRITE);
--		up_write(&pcc_ss_data->pcc_lock);
--	} else {
--		ret = -ENOTSUPP;
--		pr_debug("_CPC in PCC is not supported\n");
--	}
--
--	return ret;
-+	return cppc_set_reg(cpu, AUTO_SEL_ENABLE, enable);
- }
- EXPORT_SYMBOL_GPL(cppc_set_auto_sel);
- 
-@@ -1644,38 +1628,7 @@ EXPORT_SYMBOL_GPL(cppc_set_auto_sel);
-  */
- int cppc_set_enable(int cpu, bool enable)
- {
--	int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpu);
--	struct cpc_register_resource *enable_reg;
--	struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpu);
--	struct cppc_pcc_data *pcc_ss_data = NULL;
--	int ret = -EINVAL;
--
--	if (!cpc_desc) {
--		pr_debug("No CPC descriptor for CPU:%d\n", cpu);
--		return -EINVAL;
--	}
--
--	enable_reg = &cpc_desc->cpc_regs[ENABLE];
--
--	if (CPC_IN_PCC(enable_reg)) {
--
--		if (pcc_ss_id < 0)
--			return -EIO;
--
--		ret = cpc_write(cpu, enable_reg, enable);
--		if (ret)
--			return ret;
--
--		pcc_ss_data = pcc_data[pcc_ss_id];
--
--		down_write(&pcc_ss_data->pcc_lock);
--		/* after writing CPC, transfer the ownership of PCC to platfrom */
--		ret = send_pcc_cmd(pcc_ss_id, CMD_WRITE);
--		up_write(&pcc_ss_data->pcc_lock);
--		return ret;
--	}
--
--	return cpc_write(cpu, enable_reg, enable);
-+	return cppc_set_reg(cpu, ENABLE, enable);
- }
- EXPORT_SYMBOL_GPL(cppc_set_enable);
+ static struct freq_attr *cppc_cpufreq_attr[] = {
+ 	&freqdomain_cpus,
++	&auto_select,
++	&auto_act_window,
++	&energy_perf,
+ 	NULL,
+ };
  
 -- 
 2.33.0
