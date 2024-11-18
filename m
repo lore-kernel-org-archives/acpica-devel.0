@@ -1,87 +1,67 @@
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2049.outbound.protection.outlook.com [40.107.220.49])
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2074.outbound.protection.outlook.com [40.107.223.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41F9B1D61A1;
-	Fri, 15 Nov 2024 17:55:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 636D5158DAC
+	for <acpica-devel@lists.linux.dev>; Mon, 18 Nov 2024 22:21:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.74
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731693328; cv=fail; b=eZNLccMJBEFbkeMdWTUvhpCQtMEuN1FGPX+O7un0Xe2ALRDey3kkSPl7Wc8ZoPNug17XVWfTB8ruqvNXZTcHfuHSpLnY97gRUAxENo0jlDHiVPeWzQQeneVVblKR+OCpcZhZ3jxNpS4Lw/by6rRCWPIGntxpBg3fh/L7xqQphik=
+	t=1731968473; cv=fail; b=C4wcCZAOeyRkDtdqZOd8G6DSokDEjq7xuXGd+9UDjfHCRQsH6+uCU1PT0dbpmpQ6FfV64TGtaZREbS88hivVTvhJVIIWBWabMHY4hf010sJv4XpataK44CAIE2sprNX0Kn0N9Yu7cFn5rO4+m8jPxqfZPV487Lp0XR8J4bWWP4E=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731693328; c=relaxed/simple;
-	bh=b79WYDYD47DuJDVuPLoMc0OMVn+z+z1A70V7s1GaPxM=;
+	s=arc-20240116; t=1731968473; c=relaxed/simple;
+	bh=p2Bc5ctZulIbTobSEJ8cW9NbDTYkrhHhr3TlZiM8p80=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=EZvxmB78p31MPHRbdH/Z1Jfaq6wSHZAI6mSZ1juEy2W0thNZJO132viRcLKYlvlxJRckFOuYvvrylwnCOnibYcIIB6/BEhTjeFU2ZV/HSs1AEGX4sOkQwvea2LN4rZAB+gJwsmcZcpfswqf8FP7QZB/K5AvqoLA4E3CAHupcpmg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=aoYtLkik; arc=fail smtp.client-ip=40.107.220.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	 Content-Disposition:In-Reply-To:MIME-Version; b=sLs9414N5p4HUY3N3M6y2VjgmFLYPOkzgHETkl+MuSPiYCbGSWpBwCS9GXzoDuZE+u3SEAC76h0/sChUQKetjWLEFR3E9FC5/bPE2GfxAH+JtFHz8+7oWvWhZln5/+/zDEwbeu7fo0xa0MvDHWxYf880XkVc79/PKiHeIbtwMKE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=G0fblqgN; arc=fail smtp.client-ip=40.107.223.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="aoYtLkik"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="G0fblqgN"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=y5Dm2MtCe66WUlbIBkjD3Bz1oH/qau96g0xVKEOaqINLmY8p2MsxG7YNE8af+T3GgtoGe40mMu8vvm7b1BPqY/KIP3oBknvOglaNqYuOp3FRmnKEtWRjZgjZSvaDSUdyrvfU8a8dZU0Wy7ZA9nva/YM9+JWEF6APxnljD1uUGlVG5MhunSfxjaTG7rLd551a0OeF1ZurAKXdkMMNyKbHWPiVFpOClqDXYNvTLK2MRBmvEOOrlzeY+RKLjSKOCJcIRkyrqRS3LhJbCgPFtghy4VUz9/sKuSSoJv5DEJn8s0mxy3q+ULPj9uij3ofKJFC6g7YjRvKRR0hxMsV33lkWVw==
+ b=Lkjcq5Z1vLlHzgurIPrzRdxMbj1lOZYn62Z/jxTPQ2AQhLMSpKv1LFOrqAu7ixYl5ahV6r2aR4TMNYyBtgmiAgO5eOPte/LvkPTP7pP8WeYYAByRLCZ9ULKZSKgVGxplxTJMAI0HOj3j9AHY9IezIsbfSW5tWOKZyko/I2jGqpEgJXdzQnNm3r5Sm7lvEjYSo207LjgsqaFHz5idJEsHekud5mNDC0uD/XbZfPN/1JBajLZehutpxboNEBHVoB1umstMBBMzaWi7I52FdTplLa51ltcX6FSqFHNM1NbqXT0KCWnfdiQXoR5Mih4VZBWCagq6FZJE0HIadNZkxiT4nA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lE8VoHLIWRB4ibsLC9j/Wnt/YktLXTPLTZmciV+yDMI=;
- b=q0/AtyZJ+k3bwxKqYfycuh7xhdFKat4LzoJkyZMKd0xA+CJOJBzf6OTNiCYIkdIV+y8P4mB4RKTetsBM2u3EcB5TzL161GFCImuw63pAD61uN++A0FblyoEB15lmJVmVBwwRXawaaSdZCuvr10klBgshTNIC32g7JaoPaLlUbglZn632jOSne7Mxpub8ikI9DwiwTJFjZpG3Ioxi34wIYr7r8jztm4mtqz5LgyL/edlZH+jysGk82eycCsjz/hHS6poUwHFGBM8aOGQdHx/wxP5e4xkRrJxqRr00OPU44tc+uTmWO0MOOwt3YPCMV1o+MrcQQSCNqOINjH9shzUFJg==
+ bh=k2p+UrqzbT50wXEqlKz2O2TjEkRA2Cqc2lBDAaYFlTg=;
+ b=A188psJfHsPbdELg5gZeTWrzojluseOphVwryYJLnedSDJAJmNIGB2rTp9N0lar/pgxt/hTqfhYaRADpvFmGVvv8GJ2u3d4GAdIVFAq9EwwYRxXE5zlMrn0fV9kulwfsBHp3Fi6OPFx9wgpkY2nRTRyr6a0aoj8ILG0dKUjubIhP79u3WburLYJ56/ltEz9JBYVoiQ8JmGxKcyStDk9JaCQSg5si3AtoGCekQ/l9HJZdwLZkGmDrepmNJrj6FwciDS1V6U3aZtypbgD6GJf79cC/pUCUopxwebLfDUxrWX2a4C//MRxXvcJqYm/AJQZfDIABsuHNaPQgQOEzgn/eXw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lE8VoHLIWRB4ibsLC9j/Wnt/YktLXTPLTZmciV+yDMI=;
- b=aoYtLkikxOluR61jq+mjAvXzLaj5VhaUTjiW8CL3dJXJfDvwawfpNySaeUq5abSH7E6EB5Gn48A7nPF0tJZxnKuBLsPUMlvDPSwlVNS4/GH46w+hw3A9aIgOgs9Pt4VQn2F4qThFrMbSHKx9+iCSTp6okH66GmNGQOHvvWzV7FS4ie+03QxTSZjCvnAKcDN3wiM7FYPGoIPkAW0mFDfZNiH0h1GqMj8zviNHpq2BJsZtYtx+qEvrmKEHT4cS1H/6qk9jQ8jun11ivZA67qhKvzOw0/pvnHQThsuV7vY/d2oDxMDmZ1+UoauIkrDKkNqRGIdxyiFXx0iYBjXaEH0adw==
+ bh=k2p+UrqzbT50wXEqlKz2O2TjEkRA2Cqc2lBDAaYFlTg=;
+ b=G0fblqgNULeZw2W5BGcXyXUg9QtkKd8XEQLpQH1XUgljJnO3P1HOmEgi/QtmaKbgP0ForifAZnSHBNEA0e8hp3/lZ58Ozgr24xlpNu6LLOPoB91fxJ8j/3igSWTyDizlqOHSpDCnL9ZCwCAqSSM4qEt18St1FIUhuvRKS4gnY48=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from MW6PR12MB8663.namprd12.prod.outlook.com (2603:10b6:303:240::9)
- by CYYPR12MB8752.namprd12.prod.outlook.com (2603:10b6:930:b9::13) with
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BL1PR12MB5995.namprd12.prod.outlook.com (2603:10b6:208:39b::20)
+ by SJ0PR12MB6734.namprd12.prod.outlook.com (2603:10b6:a03:478::16) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8158.17; Fri, 15 Nov
- 2024 17:55:23 +0000
-Received: from MW6PR12MB8663.namprd12.prod.outlook.com
- ([fe80::594:5be3:34d:77f]) by MW6PR12MB8663.namprd12.prod.outlook.com
- ([fe80::594:5be3:34d:77f%6]) with mapi id 15.20.8158.019; Fri, 15 Nov 2024
- 17:55:23 +0000
-Date: Fri, 15 Nov 2024 13:55:22 -0400
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Baolu Lu <baolu.lu@linux.intel.com>
-Cc: Zhangfei Gao <zhangfei.gao@linaro.org>, acpica-devel@lists.linux.dev,
-	iommu@lists.linux.dev, Joerg Roedel <joro@8bytes.org>,
-	Kevin Tian <kevin.tian@intel.com>, kvm@vger.kernel.org,
-	Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Robert Moore <robert.moore@intel.com>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Sudeep Holla <sudeep.holla@arm.com>, Will Deacon <will@kernel.org>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	Donald Dutile <ddutile@redhat.com>,
-	Eric Auger <eric.auger@redhat.com>,
-	Hanjun Guo <guohanjun@huawei.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	Jerry Snitselaar <jsnitsel@redhat.com>,
-	Moritz Fischer <mdf@kernel.org>,
-	Michael Shavit <mshavit@google.com>,
-	Nicolin Chen <nicolinc@nvidia.com>, patches@lists.linux.dev,
-	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-	Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
-	Mostafa Saleh <smostafa@google.com>
-Subject: Re: [PATCH v4 00/12] Initial support for SMMUv3 nested translation
-Message-ID: <20241115175522.GA35230@nvidia.com>
-References: <0-v4-9e99b76f3518+3a8-smmuv3_nesting_jgg@nvidia.com>
- <20241112182938.GA172989@nvidia.com>
- <CABQgh9HOHzeRF7JfrXrRAcGB53o29HkW9rnVTf4JefeVWDvzyQ@mail.gmail.com>
- <20241113012359.GB35230@nvidia.com>
- <9df3dd17-375a-4327-b2a8-e9f7690d81b1@linux.intel.com>
- <20241113164316.GL35230@nvidia.com>
- <6ed97a10-853f-429e-8506-94b218050ad3@linux.intel.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8158.23; Mon, 18 Nov
+ 2024 22:21:08 +0000
+Received: from BL1PR12MB5995.namprd12.prod.outlook.com
+ ([fe80::7298:510:d37d:fa92]) by BL1PR12MB5995.namprd12.prod.outlook.com
+ ([fe80::7298:510:d37d:fa92%5]) with mapi id 15.20.8158.021; Mon, 18 Nov 2024
+ 22:21:08 +0000
+Date: Mon, 18 Nov 2024 16:20:53 -0600
+From: John Allen <john.allen@amd.com>
+To: Zaid Alali <zaidal@os.amperecomputing.com>
+Cc: rafael@kernel.org, lenb@kernel.org, james.morse@arm.com,
+	tony.luck@intel.com, bp@alien8.de, robert.moore@intel.com,
+	dan.j.williams@intel.com, Jonathan.Cameron@huawei.com,
+	Benjamin.Cheatham@amd.com, Avadhut.Naik@amd.com,
+	viro@zeniv.linux.org.uk, arnd@arndb.de, ira.weiny@intel.com,
+	dave.jiang@intel.com, sthanneeru.opensrc@micron.com,
+	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	acpica-devel@lists.linux.dev
+Subject: Re: [PATCH 7/8] ACPI: APEI: EINJ: Enable EINJv2 error injections
+Message-ID: <Zzu9xWllk6GsT3a+@AUSJOHALLEN.amd.com>
+References: <20241022213429.1561784-1-zaidal@os.amperecomputing.com>
+ <20241022213429.1561784-8-zaidal@os.amperecomputing.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6ed97a10-853f-429e-8506-94b218050ad3@linux.intel.com>
-X-ClientProxiedBy: BN9PR03CA0335.namprd03.prod.outlook.com
- (2603:10b6:408:f6::10) To MW6PR12MB8663.namprd12.prod.outlook.com
- (2603:10b6:303:240::9)
+In-Reply-To: <20241022213429.1561784-8-zaidal@os.amperecomputing.com>
+X-ClientProxiedBy: BYAPR11CA0090.namprd11.prod.outlook.com
+ (2603:10b6:a03:f4::31) To BL1PR12MB5995.namprd12.prod.outlook.com
+ (2603:10b6:208:39b::20)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -89,115 +69,278 @@ List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW6PR12MB8663:EE_|CYYPR12MB8752:EE_
-X-MS-Office365-Filtering-Correlation-Id: 960e9745-0ad5-4ba7-f22c-08dd059eadbb
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5995:EE_|SJ0PR12MB6734:EE_
+X-MS-Office365-Filtering-Correlation-Id: f65eacdb-4809-4a37-0795-08dd081f4c80
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|366016|1800799024|376014;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|7416014|376014|366016;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?mbxJjowsLnZ8zHTgcI7P2yvZzlRzGcs396HiH68FJ5z+6YRTfBbU/WxY0j1U?=
- =?us-ascii?Q?ee0hy3QrIUdwA/EVq11ELyhK86VrwbU3X9LApYsNzJVo2V8lNgSUxpr3/sBG?=
- =?us-ascii?Q?H9GfjcOVTlDBdgAAqYqUdgPHXf53/76+0Cvhl0u9ocNVRfYoQX5VMVY4feiw?=
- =?us-ascii?Q?5jlj4ERPcArOZoRiWi0KM9QzBwJUaZlkfz8cN/U+nKqlTAUnMEa9S2LrFJGT?=
- =?us-ascii?Q?75GmD/QTYEX0CXJL9OD7oZpeXcUhjxcxpCZc7VJE4B5WCnSSW+LAZ8GVLw+x?=
- =?us-ascii?Q?KHB/c/3OrMOioW4ZKgccXd8BHxobQJCZFXkYUeAYS8Z7cZEylwMoG1isigy9?=
- =?us-ascii?Q?IpRVM/RYlQGnT0+Ul0qem8us0oKXBDf+JXx22hiUSUzCp3map99DOB5eqAaY?=
- =?us-ascii?Q?zudXKqGCIBUqGum4Vo4W2rqzLVJvq5jN+Cm0BU51wjmxUUMMg+RId/lHWTKw?=
- =?us-ascii?Q?aU2+SLt9rBCHfzV0j3a3eRcsmymC7rIOd9u/kLHglZ9aOs5M6pJcPau6zBd2?=
- =?us-ascii?Q?mLD9hcZthZo/1huz+2BDBQqVJpkjKBABl4twEIXDW5nq5oUA3cMnDBkgel0E?=
- =?us-ascii?Q?pq/VNvmNCFMA996JLjnrNsQ89f+WeF3VmhEjkxmnqOawxXrdnygICBC/ooPa?=
- =?us-ascii?Q?+9DdxmhqfTiMfPo4++FoSt3LsZ5ss8Fa6OxDyRHZXFDaZav6rVLB5n3lHHDd?=
- =?us-ascii?Q?fX/afm47kZs5j/4NXbKqtuHRaCjlkw80QDGUweF8Xd1wK2zH03ie10VgKPZ2?=
- =?us-ascii?Q?xxlByjU9+87DA0cZe09xFgonJmLKNcBiuhVk1U0xElRBTX+CgTmgkWtUkXm8?=
- =?us-ascii?Q?zs7ATww0DgvvUjJ7JSMBeZw2nwKXkB0iNvr32gANbTLXMo+dr6PVMGjOPjvd?=
- =?us-ascii?Q?mDmKc0INi5japg1BJvsHaGhJxPFVXibAGq9uA7i99/8PN8iyaAEerbUAesje?=
- =?us-ascii?Q?repeuuatnoTrbhCU/mJEYfybWFe6u8zMBDxKUa2ATIYPqKdNpbZIEyAQUbIs?=
- =?us-ascii?Q?sRZ3C6kMQj/3bkEVztqHLlgBbhDOsYxx3x+zjpGnv6w7j45TpnzjueDM8o2n?=
- =?us-ascii?Q?Vl5xyp/N58UEjipOfKzpbbDZBJ+Fl1T+B+4M4xVhZdZPG6JuRmi+x/l32IMy?=
- =?us-ascii?Q?1GZ4Vd+sFaNhy44W0FbBmGSt7X3dDQOn1it3kl2UMrKX1HypdT+AP199EGlq?=
- =?us-ascii?Q?H3teLyZEVLj/KjSfQ3o0Ee1B5rsPki/ZwOhSzd6y89N+/oCYzzFMZchnTLgq?=
- =?us-ascii?Q?s1FIDwoYp2P4IK93KSQrEoRAe+OENvLLGnxSj+j7R9NmqGrMBA2UozHzyux3?=
- =?us-ascii?Q?EHb9AnhO/xS8yijMhPnotwva?=
+	=?us-ascii?Q?jRdja2Zi9yN+L+LxL90gxhIGrq0BFQsk8Y8shncN25200MJgDatSFot9WMO7?=
+ =?us-ascii?Q?9MkpSeQauH8YKFR2bGU2GD4D5o1jey/Wu8L6T90diKpe4hO5o2BNSyu6QEZ0?=
+ =?us-ascii?Q?qdMD46rtaZY/GV6oFXdCbG9gJuQTsr7oeC3pKQozeAq0Qry89B5LLRHUwqbG?=
+ =?us-ascii?Q?puf97MGPgfpfGWz9lZf2HfSnPcDMkEzu7gAevH04PeC9lP+fJ9FrAdhNmSUB?=
+ =?us-ascii?Q?ahcm2qlP92MwcnvJ0yavlFhTykIZuIMYom8fRRRxwGRZd17q3rx86fRBgQMl?=
+ =?us-ascii?Q?1mzI9vYjI+KIHzzYWaUxQm9fJAq02QdyZQqt6VVKDNz8dfxCD8YPbNn6TN3q?=
+ =?us-ascii?Q?Ipf37utGputSxyviPcSfwak3OShf12ujJc9LDSl+KyZKzwH3O4VmPKr/FUwN?=
+ =?us-ascii?Q?U5xQ0sck+FINr7M3G3t6XSGQ80u+GpxYAhoIud25Zlyi9/ILXPoN+i9PPxvi?=
+ =?us-ascii?Q?0pXBsjIlDVlHB+ROBYy+3HTh0VZA7mqBsdTRSnGVtwA6VLcQvGHOovBbMaUQ?=
+ =?us-ascii?Q?LiRGal/lZFCnmlgttbvhG8svf1qXal651lIuWU9gau2OVc8SPOh4tpHzs41E?=
+ =?us-ascii?Q?yohJ8OP/ooZ9gCGxuXl7Nks+stK9kKc38j4SdLyIqJDUNr4IwrQ53yrVoxYG?=
+ =?us-ascii?Q?sX6wTljEV8dY2LGlS9iFltYy5mZqSt6ViRBPq3lAkF/ftMj9wAqcxVd+OcAX?=
+ =?us-ascii?Q?2WtTFfr8+ZyjIlI3tWeHx6zuN7wJEYHlRyx5O2fMsXmL1Y6VhzsDWuIFj6Yv?=
+ =?us-ascii?Q?74RoegGjA96SUvuBL1Ypqu9CGQEeXllzAH7BvrHfR7+54Mzel7cb3TQLVIJC?=
+ =?us-ascii?Q?yk/GIgjPyvU+jIOS8wi+RA/+mB6/K4ty05OBehHP+UDF4yqLOQxPv9edY9Dm?=
+ =?us-ascii?Q?1evUTH5TThVEfWSsMvrDKIbD0ewDrExQlcZwAtFV67LndZ4uuK5ZgkH8rJXu?=
+ =?us-ascii?Q?SLMEL5kPfOaqw6RA8YMAP1Yt5Qa3bafW/iG9ytpgCtOqg03BUsrJIiugKBNm?=
+ =?us-ascii?Q?pW+u00rOv992UuTQYdX4VPw7LfUU6GkRGuAzMg6qnakkYDN/Vv2U8zAv0irh?=
+ =?us-ascii?Q?/bw6fAmRaoguGIlTOk3oTef4NM0sJGAwVLOqNZYhfjCTmaBBgfJ1mQZTZATI?=
+ =?us-ascii?Q?K9zc4bb6CIilx4oHLOCEPTmvb0eyKi67fiInxAd4sWBscyEv5SR37fIl9DXB?=
+ =?us-ascii?Q?DR1rvCAXRM4MtgwTUl2doLA/rK7KmhMlQ8KQk0c/zQqqr6v/D5D/r+kPOAUR?=
+ =?us-ascii?Q?GMf3FNNVZFUMvi2om2zgHIeMApWYE1DWzPBSBDwPspMXQ5OUaVDYdFVQZyVS?=
+ =?us-ascii?Q?+jf2GkFBdVsY5u7OVq8CYJ6J?=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW6PR12MB8663.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(366016)(1800799024)(376014);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5995.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(376014)(366016);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?V7tKoSvmOgXEOdU9Cl2dG2FnQmINMsJsmau2Th0VknkMoeI0JmwRR9Xkl8gk?=
- =?us-ascii?Q?sKb8hi5SqJtQc7Eld6xIFrE4+eeOfMiRMPRqPmcJBVDFWs5Qf7rnflts2G7H?=
- =?us-ascii?Q?Fc7RlCN9TtDzSFV9laaBFrPs1JoAe1LEl5PMxViPuC5wRE+B3rxvknPZTesn?=
- =?us-ascii?Q?EsmBpA5lFoldMd3tO+0upiYSPiXRo9K3kGtFAH/6rxIz7uQRzX2x+km0AK7u?=
- =?us-ascii?Q?/CCobAfRzslWrS8WbljNeSTbjHA+8YKYTtvSoi3JrrC+cMZqBUwSfXdSUWGc?=
- =?us-ascii?Q?XNfprZXKQS9OoIHw43Z95A4Ym0ng0Wi+7/FtmG88QVm3jbqVBqcrJuYDQUA4?=
- =?us-ascii?Q?FcE8P0tiJch/Bagn9HMTYw660h4gTAXu+qAjaUgon13jNAJ+IsWx8MCkpuDI?=
- =?us-ascii?Q?53ktvkI4M81hQ0A5xl8eS8xBS4FjYAo5ZO1YmwWWYLXGGFcm9+i1tVVU2LjB?=
- =?us-ascii?Q?oVS8dV5fxuU+1jrIqcyRSDVDoLe6HExqrrRzLPZiH1W1zHulP+BB37qOsyj9?=
- =?us-ascii?Q?kTXuzAUVAijxZJHJGJu6ITB0GDglh6oHGZiz5cIDOE/QvpJXWdpvT44EWZoi?=
- =?us-ascii?Q?MB1OEa0C6QAodmkZ0y8UU64ruEPdtVmgw4F8Ygr/5lOEg42/0/byd/QaSGPe?=
- =?us-ascii?Q?PNphNi3Oozrj77sjEypedwQE32mkgZaOVTjx297OqZiwLZEq79RXFuUfHj4M?=
- =?us-ascii?Q?Sv7pEtDVfkzjwxvI2WVfKQ4atXFmYYOESTw+3a0iq0K42BdECZj6F88wy+Ey?=
- =?us-ascii?Q?vcxnUPCH6SFm+eSvLA5hir811AcW92G7If026UYW9B/zHaUeYox/zPPuDEgD?=
- =?us-ascii?Q?UFYW4sVj9afJpx8+xdx3vmZ6WogfWKQey7VbcfNO9kqj8mMzauVH14lzBsCX?=
- =?us-ascii?Q?Z5/wCpWR9MSJZioRy1tCZ0ThsBBelThFS3ZcCKiMOd2FdqmhYH0stnAgQySQ?=
- =?us-ascii?Q?UnsXVdj3uJOg4Qfkk7ZAbaptpfzqUH/ThanD3RtzmMogUdmseQZfdK43OJpT?=
- =?us-ascii?Q?qBLm3R9wAoxQNXyekt8iigmyutJ09ErD7NRM6xROn2MB1/bg9YuUzSW7V7ZB?=
- =?us-ascii?Q?ZhnIvUr9ZKh8k5ZPjZiaka9XC4FZreM36WD4Pb4TqZ5heO8FkafaItbTi5II?=
- =?us-ascii?Q?Fm7TzEhkqY1bflEEt5h/Omvl9oBGf7FmTEtmeL6kccGFT/F/K9EfUdWUn5Gp?=
- =?us-ascii?Q?Y6iuEi2hAByzyNCMrlDx1ceqK4pFEsje/ojMk209N7Sq5nttOpxa+P4OjA8E?=
- =?us-ascii?Q?9826PjSTEi2H4evaR5iF6/9CkzFnsTlKedZQU0ONvej/fGQSqGkeXEyXoSfX?=
- =?us-ascii?Q?YCmBmoYUwdC+vK12w7mvjnYYJh0NbNZxFBHbngmRhCCG7YtDGCJgXSNmyrl4?=
- =?us-ascii?Q?QbTwPKv3S31STBalpTdtP6n14oE1JhymKs7cUlsfX+fxJ/Ak+Z3fSn6ZAgDq?=
- =?us-ascii?Q?oVyy90JT8FtALcvPU0bxTEoIw4IBrClTF5pFodNPPNVyZ7bYQ3G9HAfZbVzh?=
- =?us-ascii?Q?7ZeMCi3GkogcZrFXOgm6dSdV+0HD/xT7T/4ZfPn3TKalayWM92MkQFAM/ItN?=
- =?us-ascii?Q?aVMEm0ETRu16FNMMmL8=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 960e9745-0ad5-4ba7-f22c-08dd059eadbb
-X-MS-Exchange-CrossTenant-AuthSource: MW6PR12MB8663.namprd12.prod.outlook.com
+	=?us-ascii?Q?okjyBTvjkPN4+zZM73RsxmWLyrPy6f2f7pw4ccsGHE45UF49cLMLv8+BD3eI?=
+ =?us-ascii?Q?twADLU8B3bifz19r+SgqHQ/oKGXfEzzSljMU8mlp1KK+pngWvK2uWS0uWwdF?=
+ =?us-ascii?Q?Qja1SHkNcmdd9H4uOqnMJmVlraROSJMiFQ0V4ais5G7Lw380NXkhZ0TDr6te?=
+ =?us-ascii?Q?b7ntmmt3Wis2cKdyGWQcrl5t9rvOe3OS1TlPW3oYlhTCR5Um8L/LvZbIEcK9?=
+ =?us-ascii?Q?zbLsKDPmYVwJLKL6GQ+Azls1TP+oSZtkTVZnthCu+gR/2d5h6Z4KqKGOXMib?=
+ =?us-ascii?Q?fPji6wd9qhWv6g/ErQ8QK4dYirwQBj3rsxHJQ0xtYLV+w5IActLP1FXs74wv?=
+ =?us-ascii?Q?srO68ObuZxjAW7s2OxbAEzOD2gpjkkgfTsUMXk28omF925zRJS9mzNXQbL+d?=
+ =?us-ascii?Q?h/G/gt8IP+uTtLqkRD+K0ao0YnwoxGdbCIpiZ4WzxIuTs2lZFboP0d07Zj7x?=
+ =?us-ascii?Q?23TMpzVYCbjB1hp937jsVLdXNxs7h30P04aNWfD/lqgnQrwbOWznGna73ACp?=
+ =?us-ascii?Q?HMOH6PuAf34jbMdVVK3RvHH7039qGc1xTDeSRDBUj1xOx1o4cfb06IWlHZg3?=
+ =?us-ascii?Q?bKKm9TgGbi3Mr2b5QX0tJVdBasNUCWjhUS1LVKb47FlI/cXyjh76mzovXhmM?=
+ =?us-ascii?Q?+eJmoy1lAbDEGIYWGqrUmbvzkt27VHrSvGQjKGYEsa453fEtAutYWmFcUauU?=
+ =?us-ascii?Q?RjBPovMD55ePZgTuOuj73vh8GJ39JGJrc2ilUaxqvmueIKFfR3UimF/3yA+g?=
+ =?us-ascii?Q?T4q6Hp7dxnGKlUxeZs2jgGrsENKTBCp+01uTG+/KNGE1y8gfRqy/yC1/IX3h?=
+ =?us-ascii?Q?GJtFzQGZzH8Jcpa80loQ0k/djbF7Xkw6mV2ocRhRVsgYtVoAEt3M+naptLyq?=
+ =?us-ascii?Q?VshN2BxEXhGJuLqlRa0gMu2EuIDD1u+dmXdVe5hePM/dlSjwyixbbJcersw1?=
+ =?us-ascii?Q?AlIDk62lVaaPWWuVWnWtKfzNphHJ6X6ZTATJfhFsh2U+WJFbJEECyEoR8o/+?=
+ =?us-ascii?Q?1TPnSdzLxGgUDHHEU3+rpzx/1VC7zMG+GPKzbPLL+wWG1U++CfzCarF5ssbG?=
+ =?us-ascii?Q?/ddf34cixhU7iqDaF3mec/1y8/feLoKrvo/M5l8oLAxKWRbrKFcGFs17O65S?=
+ =?us-ascii?Q?ws2imQazIVP+SqPvNjOPRBQe2soB6V4LOK1d+JZh5fpIqXonCIp65cTno6wD?=
+ =?us-ascii?Q?Avt2P0Hrf6PiGTtls65o+a5SYr21oUsKE9juMbEe8Ypoi6tgzzohYgLd64RH?=
+ =?us-ascii?Q?0/nnE609hWuTKL9OY+DX6CTRsXEgTtfoa0mXsPqVUXReOl+LZwj2ETVzjMR1?=
+ =?us-ascii?Q?wnp+CQFkTVZqNidCGFjnzZxeZDiag+MlZ/JLjV57uQRewFbCn2yQToMiyHkL?=
+ =?us-ascii?Q?NOVZrCvab+1eysKes3EZ3Nn/KtBlJ5+Pd8y3C2XSWYymOvNsYuHTnUYI0n3n?=
+ =?us-ascii?Q?tCIQUS8P4fucRc/vIhloylRj/JvAfgJdcHN2W3CLKfzpec4HN0B5LAdN9tX4?=
+ =?us-ascii?Q?Asya9VFZ+LAPL5QkgWnDqAZX5WpMiFwRdiXJFgvlqQ8qqLsAi/rQ5ubiEUKM?=
+ =?us-ascii?Q?i4D/HOVS4sqTd7MJscam5qEu4SnrX1GU7maQYAcA?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f65eacdb-4809-4a37-0795-08dd081f4c80
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5995.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2024 17:55:23.6182
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2024 22:21:07.9652
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ADDYgfLVKWdM12Z/bDc9HTHPH7LNOShfVZI4K2HdWxb3zc6+drPW60AholDfnfHq
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR12MB8752
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6LFywxfqTsv7alYseIYz/EXaR7vhdT98Y3H+L8d9+o5hPiPCOQ/FVT1C/Zs6Wt0w0T8VkNU1+N8VO/Ez9DYUdw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB6734
 
-On Thu, Nov 14, 2024 at 08:51:47AM +0800, Baolu Lu wrote:
-> On 11/14/24 00:43, Jason Gunthorpe wrote:
-> > On Wed, Nov 13, 2024 at 10:55:41AM +0800, Baolu Lu wrote:
-> > > On 11/13/24 09:23, Jason Gunthorpe wrote:
-> > > > > https://github.com/Linaro/linux-kernel-uadk/tree/6.12-wip
-> > > > > https://github.com/Linaro/qemu/tree/6.12-wip
-> > > > > 
-> > > > > Still need this hack
-> > > > > https://github.com/Linaro/linux-kernel-uadk/commit/
-> > > > > eaa194d954112cad4da7852e29343e546baf8683
-> > > > > 
-> > > > > One is adding iommu_dev_enable/disable_feature IOMMU_DEV_FEAT_SVA,
-> > > > > which you have patchset before.
-> > > > Yes, I have a more complete version of that here someplace. Need some
-> > > > help on vt-d but hope to get that done next cycle.
-> > > 
-> > > Can you please elaborate this a bit more? Are you talking about below
-> > > change
-> > 
-> > I need your help to remove IOMMU_DEV_FEAT_IOPF from the intel
-> > driver. I have a patch series that eliminates it from all the other
-> > drivers, and I wrote a patch to remove FEAT_SVA from intel..
+On Tue, Oct 22, 2024 at 02:34:28PM -0700, Zaid Alali wrote:
+> Enable the driver to inject EINJv2 type errors. The component
+> array values are parsed from user_input and expected to contain
+> hex values for component id and syndrome separated by space,
+> and multiple components are separated by new line as follows:
 > 
-> Yes, sure. Let's make this happen in the next cycle.
->
-> FEAT_IOPF could be removed. IOPF manipulation can be handled in the
-> domain attachment path. A per-device refcount can be implemented. This
-> count increments with each iopf-capable domain attachment and decrements
-> with each detachment. PCI PRI is enabled for the first iopf-capable
-> domain and disabled when the last one is removed. Probably we can also
-> solve the PF/VF sharing PRI issue.
+> component_id1 component_syndrome1
+> component_id2 component_syndrome2
+>  :
+> component_id(n) component_syndrome(n)
+> 
+> for example:
+> 
+> $comp_arr="0x1 0x2
+> >0x1 0x4
+> >0x2 0x4"
+> $cd /sys/kernel/debug/apei/einj/
+> $echo "$comp_arr" > einjv2_component_array
+> 
+> Signed-off-by: Zaid Alali <zaidal@os.amperecomputing.com>
+> ---
+>  drivers/acpi/apei/einj-core.c | 76 +++++++++++++++++++++++++++++++++--
+>  1 file changed, 72 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/acpi/apei/einj-core.c b/drivers/acpi/apei/einj-core.c
+> index bd46a611eef7..bc833f42dfc7 100644
+> --- a/drivers/acpi/apei/einj-core.c
+> +++ b/drivers/acpi/apei/einj-core.c
+> @@ -87,6 +87,13 @@ enum {
+>  	SETWA_FLAGS_APICID = 1,
+>  	SETWA_FLAGS_MEM = 2,
+>  	SETWA_FLAGS_PCIE_SBDF = 4,
+> +	SETWA_FLAGS_EINJV2 = 8,
+> +};
+> +
+> +enum {
+> +	EINJV2_PROCESSOR_ERROR = 0x1,
+> +	EINJV2_MEMORY_ERROR = 0x2,
+> +	EINJV2_PCIE_ERROR = 0x4,
+>  };
+>  
+>  /*
+> @@ -111,6 +118,7 @@ static char vendor_dev[64];
+>  static struct debugfs_blob_wrapper einjv2_component_arr;
+>  static u64 component_count;
+>  static void *user_input;
+> +static int nr_components;
+>  static u32 available_error_type;
+>  static u32 available_error_type_v2;
+>  
+> @@ -287,8 +295,18 @@ static void *einj_get_parameter_address(void)
+>  
+>  		v5param = acpi_os_map_iomem(pa_v5, sizeof(*v5param));
+>  		if (v5param) {
+> +			int offset, len;
+> +
+>  			acpi5 = 1;
+>  			check_vendor_extension(pa_v5, v5param);
+> +			if (available_error_type & ACPI65_EINJV2_SUPP) {
+> +				len = v5param->einjv2_struct.length;
+> +				offset = offsetof(struct einjv2_extension_struct, component_arr);
+> +				nr_components = (len - offset) / 32;
+> +				acpi_os_unmap_iomem(v5param, sizeof(*v5param));
+> +				v5param = acpi_os_map_iomem(pa_v5, sizeof(*v5param) + (
+> +					(nr_components) * sizeof(struct syndrome_array)));
 
-Here is what I have so far, if you send me a patch for vt-d to move
-FEAT_IOPF into attach as you describe above (see what I did to arm for
-example), then I can send it next cycle
+The way this line is broken up doesn't look quite right. That paren on
+the top line should get pulled on to the next line and aligned with the
+beginning of acpi_os_unmap_iomem. See below example.
 
-https://github.com/jgunthorpe/linux/commits/iommu_no_feat/
+Also, it's a little awkward here to map the v5param above just to unmap it
+here in the case of EINJv2. Is there a reason it needs to be done like
+this or can we do something like this instead?
+
+		if (available_error_type & ACPI65_EINJV2_SUPP) {
+			len = v5param->einjv2_struct.length;
+			offset = offsetof(struct einjv2_extension_struct, component_arr);
+			nr_components = (len - offset) / 32;
+			v5param = acpi_os_map_iomem(pa_v5, sizeof(*v5param) +
+				  ((nr_components) * sizeof(struct syndrome_array)));
+		else {
+			v5param = acpi_os_map_iomem(pa_v5, sizeof(*v5param));
+		}
+
+		if (v5param) {
+			acpi5 = 1;
+			check_vendor_extension(pa_v5, v5param);
+			return v5param;
+		}
+
+> +			}
+>  			return v5param;
+>  		}
+>  	}
+> @@ -496,8 +514,49 @@ static int __einj_error_inject(u32 type, u32 flags, u64 param1, u64 param2,
+>  			v5param->flags = flags;
+>  			v5param->memory_address = param1;
+>  			v5param->memory_address_range = param2;
+> -			v5param->apicid = param3;
+> -			v5param->pcie_sbdf = param4;
+> +
+> +			if (flags & SETWA_FLAGS_EINJV2) {
+
+IMO, moving this chunk inside the conditional here to a helper function
+would improve readability. As written, there are a couple too many
+levels of indentation.
+
+> +				int count = 0, bytes_read, pos = 0;
+> +				unsigned int comp, synd;
+> +				struct syndrome_array *component_arr;
+> +
+> +				if (component_count > nr_components)
+> +					goto err_out;
+> +
+> +				v5param->einjv2_struct.component_arr_count = component_count;
+> +				component_arr = v5param->einjv2_struct.component_arr;
+> +
+> +				while (sscanf(user_input+pos, "%x %x\n%n", &comp, &synd,
+
+Arithmetic operators should have a single space on each side:
+user_input + pos
+
+> +							&bytes_read) == 2) {
+
+Another alignment issue here. This would be nice to have aligned after
+the sscanf paren. Like:
+				while (sscanf(user_input+pos, "%x %x\n%n", &comp, &synd,
+					      &bytes_read) == 2) {
 
 Thanks,
-Jason
+John
+
+> +					pos += bytes_read;
+> +					if (count > component_count)
+> +						goto err_out;
+> +
+> +					switch (type) {
+> +					case EINJV2_PROCESSOR_ERROR:
+> +						component_arr[count].comp_id.acpi_id = comp;
+> +						component_arr[count].comp_synd.proc_synd = synd;
+> +						break;
+> +					case EINJV2_MEMORY_ERROR:
+> +						component_arr[count].comp_id.device_id = comp;
+> +						component_arr[count].comp_synd.mem_synd = synd;
+> +						break;
+> +					case EINJV2_PCIE_ERROR:
+> +						component_arr[count].comp_id.pcie_sbdf = comp;
+> +						component_arr[count].comp_synd.pcie_synd = synd;
+> +						break;
+> +					}
+> +					count++;
+> +				}
+> +				if (count != component_count - 1)
+> +					goto err_out;
+> +
+> +				/* clear buffer after user input for next injection */
+> +				memset(user_input, 0, COMP_ARR_SIZE);
+> +			} else {
+> +				v5param->apicid = param3;
+> +				v5param->pcie_sbdf = param4;
+> +			}
+>  		} else {
+>  			switch (type) {
+>  			case ACPI_EINJ_PROCESSOR_CORRECTABLE:
+> @@ -570,6 +629,9 @@ static int __einj_error_inject(u32 type, u32 flags, u64 param1, u64 param2,
+>  	rc = apei_exec_run_optional(&ctx, ACPI_EINJ_END_OPERATION);
+>  
+>  	return rc;
+> +err_out:
+> +	memset(user_input, 0, COMP_ARR_SIZE);
+> +	return -EINVAL;
+>  }
+>  
+>  /* Inject the specified hardware error */
+> @@ -581,9 +643,14 @@ int einj_error_inject(u32 type, u32 flags, u64 param1, u64 param2, u64 param3,
+>  
+>  	/* If user manually set "flags", make sure it is legal */
+>  	if (flags && (flags &
+> -		~(SETWA_FLAGS_APICID|SETWA_FLAGS_MEM|SETWA_FLAGS_PCIE_SBDF)))
+> +		~(SETWA_FLAGS_APICID|SETWA_FLAGS_MEM|SETWA_FLAGS_PCIE_SBDF|SETWA_FLAGS_EINJV2)))
+>  		return -EINVAL;
+>  
+> +	/*check if type is a valid EINJv2 error type*/
+> +	if (flags & SETWA_FLAGS_EINJV2) {
+> +		if (!(type & available_error_type_v2))
+> +			return -EINVAL;
+> +	}
+>  	/*
+>  	 * We need extra sanity checks for memory errors.
+>  	 * Other types leap directly to injection.
+> @@ -913,7 +980,8 @@ static void __exit einj_remove(struct platform_device *pdev)
+>  			sizeof(struct set_error_type_with_address) :
+>  			sizeof(struct einj_parameter);
+>  
+> -		acpi_os_unmap_iomem(einj_param, size);
+> +		acpi_os_unmap_iomem(einj_param,
+> +				size + (nr_components * sizeof(struct syndrome_array)));
+>  		if (vendor_errors.size)
+>  			acpi_os_unmap_memory(vendor_errors.data, vendor_errors.size);
+>  	}
+> -- 
+> 2.34.1
+> 
