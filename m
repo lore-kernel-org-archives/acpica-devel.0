@@ -1,63 +1,62 @@
-Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
+Received: from mail-vs1-f51.google.com (mail-vs1-f51.google.com [209.85.217.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCBFA1DED5C
-	for <acpica-devel@lists.linux.dev>; Fri, 22 Nov 2024 09:48:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F30141DED43
+	for <acpica-devel@lists.linux.dev>; Fri, 22 Nov 2024 09:48:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732268910; cv=none; b=DpAdOwZsduN6xjMxO+noCa/7+k7BFcbkL0CCDG+6idIAbF00ABRje4q7fkOLoJf0DemOwubinGex4PhANGtoOFzympIH/G/wXesxWlyoddIQsDiD+ZPJaR9daU1YnUQbsos4xtpEhiJXlcOyrIvbAK8fXqZ6VCEuvv8vxuYFd6o=
+	t=1732268910; cv=none; b=forI2vhXUundqocKhwkxOevpcDnpWV3EbZmmJPL5QEd/ZVMKO7oP2AjjFLpke0TbqWfE4PNG0ikycLS1oACoA2A45ZnNBT2wFnrveimqYX5QR/8g1/Mf2uu6DXo1ovXnenMPx8pGvGdwekAo+XB/gFlJKfLNjQqbfP5CWz5zFVM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1732268910; c=relaxed/simple;
-	bh=BYuLHzueav0sdSprQfzk88q4Y6f26g51RU20Q1WXi6I=;
+	bh=4cTEN9eOVpTN9Nyc7Cl2/7/R18o2ZkyvA49rT4c3S24=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=XcDWF6/Zrj+rfoDNMCQK+zNgjvrFuY4zCy5GasJccJplBz8yoVzjlxjWdakuFfwrkx5+F590QXro/YjhDo9x6qhKnREtxMqMbxj3EbB18O0fnp5hbeMLQbMKa5pTGbAmxJZzsCeUYKf2IBUZBS+xFFMHZCLojXWd2RKbYSKDVe8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=iiqcv6cW; arc=none smtp.client-ip=209.85.160.180
+	 In-Reply-To:To:Cc; b=KmWH0NEy/9LfAJvsRgpEB1IlxUpp33SjLh/Rl+q+pbK/DDoN9q0gK4fxXxCZRTYaz1kffzKieybLZtqW/bb8OizVxho1uNbDUvsh8ReumhpnSfi414hOKSprgy8ZogsD2qgXn5ibQr3otbmsWyoRfLvGqAoAsFbtns6Qc4GTNh0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=d1eOwX42; arc=none smtp.client-ip=209.85.217.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="iiqcv6cW"
-Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-46375ac25fbso12685231cf.0
-        for <acpica-devel@lists.linux.dev>; Fri, 22 Nov 2024 01:48:25 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="d1eOwX42"
+Received: by mail-vs1-f51.google.com with SMTP id ada2fe7eead31-4a47177cf6bso337916137.3
+        for <acpica-devel@lists.linux.dev>; Fri, 22 Nov 2024 01:48:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1732268905; x=1732873705; darn=lists.linux.dev;
+        d=chromium.org; s=google; t=1732268908; x=1732873708; darn=lists.linux.dev;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Acc8f5vjpjnUsttSTKqKG5ha9p9/8KASrkXH0sEj3iU=;
-        b=iiqcv6cWiPHzok2tAOgl0SSegkjQG1BZ//unvv1nua5ptl5BBdGjGxYQr1U24oI6aM
-         qow2RvFcIsB5lo2Ght1vzMLRqUWe40l3h5zbp9MXl/5pUQgNSXYn1665Z9rMTRy9xCzk
-         R0D7k+OtnHg/N31q/WVWTGpFYOvEbcX9dU6EI=
+        bh=K/QkgKOmc9/c2cCjRI19/30uaM7Ny2Es4XuDA0KGTSM=;
+        b=d1eOwX422nSFM2gI7FZ3eN1rqU1LiDwZ9FAxUHme5RR5vf8/1BaeDsyz/gBuEOAQH7
+         8Ms06evgEUCmKK6nqojtkDSaIijiJoYHAsjVRHUnfHlGkXiqTb9gDj7wQXmGlB9YGk/u
+         PTm5MSe3DiQrE69+POXvYvd3T80c0Ebz6oHds=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732268905; x=1732873705;
+        d=1e100.net; s=20230601; t=1732268908; x=1732873708;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Acc8f5vjpjnUsttSTKqKG5ha9p9/8KASrkXH0sEj3iU=;
-        b=vqRU6ugp488/MOxMD48SMmFbEhZkDk4vnQEiXBI5g9JbTVarDLu/oYbuaAchDV0+4C
-         OpjqQ6+86kzXft0nEb/LfOg66Nj5bkvpi5Jfeo1BPt7nUXUHsv31WbAFJdRv3dzr14AM
-         DKtPq9MGMcANTcCTGMQCx7skZQU3XkiLUU/I9qRfxLoUPx2kBc0vaadSzL4DsKhmVyDN
-         mSDCIstgGpTbBqUUOvz3xU1wrbxtwZ0vlHuhNpAVxXASBW+8nRGneSRp6b8FTCqd2LBW
-         CWwSQJWMA/LXtu2MFw8+0s0sFNLsbWPO0K8KRM1JL6nJDlJ0tkGocVIe7Rn3VxJT894X
-         dObw==
-X-Forwarded-Encrypted: i=1; AJvYcCUdA6hZseI4I0tt5Vg6Z4KepdOoSu5KKLVRe//EQiOU56tgoUtUCBNzl66TV7nTqPavVJE80auRMKNS2vk=@lists.linux.dev
-X-Gm-Message-State: AOJu0Yy3giE9q+UFXtCjgF4Mgaor0ZMg/qZG4qTu+uCP6zFbN+Kspkus
-	CZ7ZcI0CnW8dg/BOzwt7hqMDGz8IZyN91eEyzOdSSXUYit22uVykGFjLoXP3mw==
-X-Gm-Gg: ASbGnctCZfbjawAXbKOtA5IMf3IXm0BO9wz+8hOxG4kZdMYt5Myh61KChRmwOb13aOB
-	Ypt3yZYw+hL4U0mbx33QI1xc+ZJsypKM+nCXL6sc/qknk6pfNHfTTizbTvzKYRnSIlQhJ8hVE95
-	APOBb2L7nTi6ouTN8Xlhicq4rWFHFkf9/NTppgSjeGXfhpEdbdO7q5U8GF8xyGgn3ZNWgwkt6J/
-	wo2NDujqS4uS4h2GejT3+57BOLCBGHBcZ09V9OcABl5wu0ZKmuXDAmQ/cdscvbDOemCvORAg9i5
-	X4izuVeAjPp+EvrZbudPzslf
-X-Google-Smtp-Source: AGHT+IECFL9WoKiDiu1xKptVQF2T2gvsl28cr0HW2a0s9qqj6Aj7Q+ZZVLocd/R1cde01FoPlwJaWg==
-X-Received: by 2002:a05:622a:1ba9:b0:464:889f:a413 with SMTP id d75a77b69052e-4653d5344f9mr24237121cf.6.1732268904929;
-        Fri, 22 Nov 2024 01:48:24 -0800 (PST)
+        bh=K/QkgKOmc9/c2cCjRI19/30uaM7Ny2Es4XuDA0KGTSM=;
+        b=L4tFogtnBIhKxJ8t4gf1X0M/yAxwt1POq48xCBcsyF/87Ne2QRHMdMe7D3qDtD4Rq1
+         29yQRIkOg12xwpdfcRMfT/OceO6pqiaKhmmowEdFDkq76iPY7aRJDPP+Y5xzU2lm0twM
+         XpZspDU1UU/tqfBJd4aJS+zZNkPWjLaVl9BdgQvCPB7W6yN5KbmaC6/I8J2wA7S2dF0J
+         5GmibFfiewRYYBfUXkpzndd+13IbFTcpQSqmG4Jy3uOWvYGWuq+0Z7/xr7n5w+yX1J2O
+         DTVc9miWX4i5bbfzia8Jts04TBPDHwPyNQXvoKSA4iLKUxMPg+jWONaHzOMrjB95l1S6
+         7JrA==
+X-Forwarded-Encrypted: i=1; AJvYcCUqre4zeQLlzTtv9XNY/9GYCUFxZ1l6P7jVAvFaovOPjnTOyJye2XvKPoMg9AZ13R3wBJmv2bf3GGLHkME=@lists.linux.dev
+X-Gm-Message-State: AOJu0YyKY0Z8PNu80rC3NwzDgdHCH+ctKvTeY3Svin9P6bRvfF9NHwu/
+	DPKu97XY3xQSwL0cV21XHZ6xVcb24ZyKI1GOgHG0C1lbNvtIR9pg/wwQY3qkvg==
+X-Gm-Gg: ASbGncuVI4MwFN5GLx+CO5KJsSSzKWUOlmXyHgv+WOTAi03qdqTGEz94HsvClFkfIFF
+	H2zK0f+82HQOKDepatyrB22ZaYw6ugBsenhGOh95oCEbRdYNCRJNq9i38QDRpZ3UqlC5lXn1+I3
+	RLIvoZXFafkl61FSQ7A3+Z/hiGewJteoqIKq9sfvPlKi7wvjlLLGiqjwxrIH1dkTPyJtWrjxpP2
+	eYuOX6UyrH0SXpXRLMbutHR4isnVdWscHzU00TiiDipLmKldYrMVnO6P50twFXjE0U6sNFFVGKg
+	wplINj81rIXX5vYiZJs3KhSE
+X-Google-Smtp-Source: AGHT+IFUbTeZHYJsenOKlTvdD0U5qrkMPADbncarGrIZ0AbdaxBfQXQNtKr0lRUxMa4p5cx4/MlDgA==
+X-Received: by 2002:a05:6102:374c:b0:4aa:fafa:e100 with SMTP id ada2fe7eead31-4addcecef0fmr2390924137.26.1732268907770;
+        Fri, 22 Nov 2024 01:48:27 -0800 (PST)
 Received: from denia.c.googlers.com (5.236.236.35.bc.googleusercontent.com. [35.236.236.5])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4653c47f124sm9282731cf.62.2024.11.22.01.48.23
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4653c47f124sm9282731cf.62.2024.11.22.01.48.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Nov 2024 01:48:23 -0800 (PST)
+        Fri, 22 Nov 2024 01:48:27 -0800 (PST)
 From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Fri, 22 Nov 2024 09:48:01 +0000
-Subject: [PATCH v2 4/7] ACPI: header: implement acpi_device_handle when
- !ACPI
+Date: Fri, 22 Nov 2024 09:48:03 +0000
+Subject: [PATCH v2 6/7] ACPI: bus: implement acpi_device_hid when !ACPI
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -66,7 +65,7 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20241122-fix-ipu-v2-4-bba65856e9ff@chromium.org>
+Message-Id: <20241122-fix-ipu-v2-6-bba65856e9ff@chromium.org>
 References: <20241122-fix-ipu-v2-0-bba65856e9ff@chromium.org>
 In-Reply-To: <20241122-fix-ipu-v2-0-bba65856e9ff@chromium.org>
 To: Mauro Carvalho Chehab <mchehab@kernel.org>, 
@@ -79,26 +78,27 @@ Cc: Sakari Ailus <sakari.ailus@linux.intel.com>,
  acpica-devel@lists.linux.dev, Ricardo Ribalda <ribalda@chromium.org>
 X-Mailer: b4 0.13.0
 
-Provide an implementation of acpi_device_handle that can be used when
+Provide an implementation of acpi_device_hid that can be used when
 CONFIG_ACPI is not set.
 
 Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
- include/linux/acpi.h | 1 +
- 1 file changed, 1 insertion(+)
+ include/acpi/acpi_bus.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-index 4d5ee84c468b..85d7649ac17d 100644
---- a/include/linux/acpi.h
-+++ b/include/linux/acpi.h
-@@ -777,6 +777,7 @@ const char *acpi_get_subsystem_id(acpi_handle handle);
+diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+index 57298c7cfb5d..cb1b38245f15 100644
+--- a/include/acpi/acpi_bus.h
++++ b/include/acpi/acpi_bus.h
+@@ -1003,6 +1003,8 @@ static inline int unregister_acpi_bus_type(void *bus) { return 0; }
  
- #define acpi_disabled 1
+ static inline int acpi_wait_for_acpi_ipmi(void) { return 0; }
  
-+#define acpi_device_handle(adev)	(NULL)
- #define ACPI_COMPANION(dev)		(NULL)
- #define ACPI_COMPANION_SET(dev, adev)	do { } while (0)
- #define ACPI_HANDLE(dev)		(NULL)
++#define acpi_device_hid(device) ""
++
+ #define acpi_get_physical_device_location(handle, pld) (AE_ERROR)
+ 
+ #define for_each_acpi_consumer_dev(supplier, consumer)			\
 
 -- 
 2.47.0.371.ga323438b13-goog
