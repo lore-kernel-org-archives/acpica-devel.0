@@ -1,248 +1,138 @@
-Received: from mx1.zhaoxin.com (MX1.ZHAOXIN.COM [210.0.225.12])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62F281F5FD
-	for <acpica-devel@lists.linux.dev>; Fri,  6 Dec 2024 01:01:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.0.225.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49A9E1714A1;
+	Fri,  6 Dec 2024 03:11:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733446874; cv=none; b=ECosRZ6pxqAkkhDaZzz4RzIxeY8xVmfl8UTOYPOBtszTNojYfWysdKA7+kSr2oJO1Vno4gQyRTRIq/vHTiiidf0mebCF8/pxS+o1jVk/oVyzXihF3Jk2gCgy1YWzX4c+6v8UpQFuVRHmaPtVTTty8FJ3oRN9r2UvHyVc40t8gXk=
+	t=1733454703; cv=none; b=MRcgj2V5Fa3RLycb1EhiL/+/Ql0mbUbo8VW591aqldaANa2/F60HB4MTaXfrP9opMlh9fK8Lc7zMhYECKJdjrPeTUGiCygCcIoe+gOzYJNvJ2PdvSqfuD3mvqCDHJfSmlHisx/6ryDhHUl5tOU0kWNwJC4mMxnrjqMvQEtyrvnQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733446874; c=relaxed/simple;
-	bh=RDfVKyiGPkxjQWiZXYTMz5EOd1dIdsbHDvSH0iNDcAE=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=oMoqY2F+CkIWFJjgcQjDlb++pWWonnKjv6d3xAoJDhmz7evK+hj1+RbPZR4jndfjSBwto3U8ib5NdXBi2hSjTMF9rb1FPl7vNLonNyH7vQY+ufMa9qQ3kcjhVkFhYPK4KHPKrsnEaD9YBR4IxNY7jyUTVCbE0ILf9KxJ1gju3gA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com; spf=pass smtp.mailfrom=zhaoxin.com; arc=none smtp.client-ip=210.0.225.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zhaoxin.com
-X-ASG-Debug-ID: 1733446126-086e2312d5235b0001-m47mSr
-Received: from ZXSHMBX1.zhaoxin.com (ZXSHMBX1.zhaoxin.com [10.28.252.163]) by mx1.zhaoxin.com with ESMTP id IQ6SxxUcIQQpJ0vr (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Fri, 06 Dec 2024 08:48:46 +0800 (CST)
-X-Barracuda-Envelope-From: LeoLiu-oc@zhaoxin.com
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
-Received: from ZXSHMBX1.zhaoxin.com (10.28.252.163) by ZXSHMBX1.zhaoxin.com
- (10.28.252.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Fri, 6 Dec
- 2024 08:48:45 +0800
-Received: from ZXSHMBX1.zhaoxin.com ([fe80::3066:e339:e3d6:5264]) by
- ZXSHMBX1.zhaoxin.com ([fe80::3066:e339:e3d6:5264%7]) with mapi id
- 15.01.2507.039; Fri, 6 Dec 2024 08:48:45 +0800
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
-Received: from xin.lan (10.32.64.1) by ZXBJMBX03.zhaoxin.com (10.29.252.7)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Thu, 5 Dec
- 2024 19:40:53 +0800
-From: LeoLiu-oc <LeoLiu-oc@zhaoxin.com>
-To: <rafael@kernel.org>, <lenb@kernel.org>, <james.morse@arm.com>,
-	<tony.luck@intel.com>, <bp@alien8.de>, <bhelgaas@google.com>,
-	<robert.moore@intel.com>, <avadhut.naik@amd.com>, <yazen.ghannam@amd.com>,
-	<linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-pci@vger.kernel.org>, <acpica-devel@lists.linux.dev>
-CC: <CobeChen@zhaoxin.com>, <TonyWWang@zhaoxin.com>, <ErosZhang@zhaoxin.com>,
-	<LeoLiu-oc@zhaoxin.com>
-Subject: [PATCH v4 3/3] PCI/ACPI: Add pci_acpi_program_hest_aer_params()
-Date: Thu, 5 Dec 2024 19:40:48 +0800
-X-ASG-Orig-Subj: [PATCH v4 3/3] PCI/ACPI: Add pci_acpi_program_hest_aer_params()
-Message-ID: <20241205114048.60291-4-LeoLiu-oc@zhaoxin.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20241205114048.60291-1-LeoLiu-oc@zhaoxin.com>
-References: <20241205114048.60291-1-LeoLiu-oc@zhaoxin.com>
+	s=arc-20240116; t=1733454703; c=relaxed/simple;
+	bh=KEXoYBWFuGfczmXXqwmh2W0p479mENK9Jw6E6ADQazY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bp3pYabcIRCgivsBfTlJdpKHY8QKfRX4PHRx5LvtiNhydZ5++KNc0/1XbmbFbWqNbyOArPklzh2Fn5W1wrDL+EhbCXFFHWT2m9Ki/G+ZBPG3fG7S7wvbvaptLtFvfhjMt1P2uOPNndBcMtkQ5fxvYiKaJFabZWeM95P8BLCQWkE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dPfxiIWe; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dPfxiIWe"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1733454702; x=1764990702;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=KEXoYBWFuGfczmXXqwmh2W0p479mENK9Jw6E6ADQazY=;
+  b=dPfxiIWeKFXqoCXjljcRRAX36Nl0xcje7BStSn7b8TIOnKWYSo7HhW8i
+   FLqywzev0VvvCwx+SPnag3bkMHeuceKRJ7vj/DUMvx79Kn8+KCwexpFmS
+   sGTvYfVH+AgU3XNak+n27DJjzlgpjfq4CrZER01s4z9z07WzB2rfm8OO2
+   0xit9pXCCwj7amHKuid6PXHq4Q1354sG0os2D9LseCX75OHV0rCvHBskM
+   lzbsiNsot5EoCNmSwld867m/Wg2ZGRW7BDDKxmPtPOlaKI7Iml3hzRK/s
+   y2n2MmN5SWs2x8W00cIB66REZbYmCLPGTUBShpTsWiI6ABblwywSdFQYZ
+   Q==;
+X-CSE-ConnectionGUID: cf6qQ0FLRTOJlVHNMUnaeg==
+X-CSE-MsgGUID: r3iHOHJDTR62RKmAQRQ5Dw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11277"; a="33945832"
+X-IronPort-AV: E=Sophos;i="6.12,212,1728975600"; 
+   d="scan'208";a="33945832"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2024 19:11:41 -0800
+X-CSE-ConnectionGUID: sQ+gxZrTSEio+Y9CgWHQCw==
+X-CSE-MsgGUID: lgtGaKRZQya0y25WG6uOXQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,212,1728975600"; 
+   d="scan'208";a="125118662"
+Received: from lkp-server01.sh.intel.com (HELO 82a3f569d0cb) ([10.239.97.150])
+  by orviesa002.jf.intel.com with ESMTP; 05 Dec 2024 19:11:36 -0800
+Received: from kbuild by 82a3f569d0cb with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1tJOkf-0000eX-1W;
+	Fri, 06 Dec 2024 03:11:33 +0000
+Date: Fri, 6 Dec 2024 11:10:51 +0800
+From: kernel test robot <lkp@intel.com>
+To: Zaid Alali <zaidal@os.amperecomputing.com>, rafael@kernel.org,
+	lenb@kernel.org, james.morse@arm.com, tony.luck@intel.com,
+	bp@alien8.de, robert.moore@intel.com, dan.j.williams@intel.com,
+	Jonathan.Cameron@huawei.com, Benjamin.Cheatham@amd.com,
+	Avadhut.Naik@amd.com, viro@zeniv.linux.org.uk, arnd@arndb.de,
+	ira.weiny@intel.com, dave.jiang@intel.com,
+	sthanneeru.opensrc@micron.com, linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org, acpica-devel@lists.linux.dev
+Cc: oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH v2 5/9] ACPI: APEI: EINJ: Enable the discovery of EINJv2
+ capabilities
+Message-ID: <202412061056.fk2xNw7W-lkp@intel.com>
+References: <20241205211854.43215-6-zaidal@os.amperecomputing.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-X-ClientProxiedBy: zxbjmbx1.zhaoxin.com (10.29.252.163) To
- ZXBJMBX03.zhaoxin.com (10.29.252.7)
-X-Moderation-Data: 12/6/2024 8:48:45 AM
-X-Barracuda-Connect: ZXSHMBX1.zhaoxin.com[10.28.252.163]
-X-Barracuda-Start-Time: 1733446126
-X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
-X-Barracuda-URL: https://10.28.252.35:4443/cgi-mod/mark.cgi
-X-Virus-Scanned: by bsmtpd at zhaoxin.com
-X-Barracuda-Scan-Msg-Size: 5221
-X-Barracuda-BRTS-Status: 1
-X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
-X-Barracuda-Spam-Score: -2.02
-X-Barracuda-Spam-Status: No, SCORE=-2.02 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.134151
-	Rule breakdown below
-	 pts rule name              description
-	---- ---------------------- --------------------------------------------------
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241205211854.43215-6-zaidal@os.amperecomputing.com>
 
-From: LeoLiuoc <LeoLiu-oc@zhaoxin.com>
+Hi Zaid,
 
-Call the func pci_acpi_program_hest_aer_params() for every PCIe device,
-the purpose of this function is to extract register value from HEST PCIe
-AER structures and program them into AER Capabilities. This function
-applies to all hardware platforms that has a PCI Express AER structure
-in HEST.
+kernel test robot noticed the following build warnings:
 
-Signed-off-by: LeoLiuoc <LeoLiu-oc@zhaoxin.com>
----
- drivers/pci/pci-acpi.c | 103 +++++++++++++++++++++++++++++++++++++++++
- drivers/pci/pci.h      |   9 ++++
- drivers/pci/probe.c    |   1 +
- 3 files changed, 113 insertions(+)
+[auto build test WARNING on rafael-pm/linux-next]
+[also build test WARNING on rafael-pm/bleeding-edge linus/master v6.13-rc1 next-20241205]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-diff --git a/drivers/pci/pci-acpi.c b/drivers/pci/pci-acpi.c
-index af370628e583..6e29af8e6cc4 100644
---- a/drivers/pci/pci-acpi.c
-+++ b/drivers/pci/pci-acpi.c
-@@ -19,6 +19,7 @@
- #include <linux/pm_runtime.h>
- #include <linux/pm_qos.h>
- #include <linux/rwsem.h>
-+#include <acpi/apei.h>
- #include "pci.h"
-=20
- /*
-@@ -806,6 +807,108 @@ int pci_acpi_program_hp_params(struct pci_dev *dev)
- 	return -ENODEV;
- }
-=20
-+#ifdef CONFIG_ACPI_APEI
-+/*
-+ * program_hest_aer_common() - configure AER common registers for Root Por=
-ts,
-+ * Endpoints and PCIe to PCI/PCI-X bridges
-+ */
-+static void program_hest_aer_common(struct acpi_hest_aer_common aer_common=
-,
-+				    struct pci_dev *dev, int pos)
-+{
-+	u32 uncor_mask;
-+	u32 uncor_severity;
-+	u32 cor_mask;
-+	u32 adv_cap;
-+
-+	uncor_mask =3D aer_common.uncorrectable_mask;
-+	uncor_severity =3D aer_common.uncorrectable_severity;
-+	cor_mask =3D aer_common.correctable_mask;
-+	adv_cap =3D aer_common.advanced_capabilities;
-+
-+	pci_write_config_dword(dev, pos + PCI_ERR_UNCOR_MASK, uncor_mask);
-+	pci_write_config_dword(dev, pos + PCI_ERR_UNCOR_SEVER, uncor_severity);
-+	pci_write_config_dword(dev, pos + PCI_ERR_COR_MASK, cor_mask);
-+	pci_write_config_dword(dev, pos + PCI_ERR_CAP, adv_cap);
-+}
-+
-+static void program_hest_aer_root(struct acpi_hest_aer_root *aer_root,
-+				  struct pci_dev *dev, int pos)
-+{
-+	u32 root_err_cmd;
-+
-+	root_err_cmd =3D aer_root->root_error_command;
-+
-+	pci_write_config_dword(dev, pos + PCI_ERR_ROOT_COMMAND, root_err_cmd);
-+}
-+
-+static void program_hest_aer_bridge(struct acpi_hest_aer_bridge *hest_aer_=
-bridge,
-+				    struct pci_dev *dev, int pos)
-+{
-+	u32 uncor_mask2;
-+	u32 uncor_severity2;
-+	u32 adv_cap2;
-+
-+	uncor_mask2 =3D hest_aer_bridge->uncorrectable_mask2;
-+	uncor_severity2 =3D hest_aer_bridge->uncorrectable_severity2;
-+	adv_cap2 =3D hest_aer_bridge->advanced_capabilities2;
-+
-+	pci_write_config_dword(dev, pos + PCI_ERR_UNCOR_MASK2, uncor_mask2);
-+	pci_write_config_dword(dev, pos + PCI_ERR_UNCOR_SEVER2, uncor_severity2);
-+	pci_write_config_dword(dev, pos + PCI_ERR_CAP2, adv_cap2);
-+}
-+
-+static void program_hest_aer_params(struct hest_parse_aer_info info)
-+{
-+	struct pci_dev *dev;
-+	int port_type;
-+	int pos;
-+	struct acpi_hest_aer_root *hest_aer_root;
-+	struct acpi_hest_aer *hest_aer_endpoint;
-+	struct acpi_hest_aer_bridge *hest_aer_bridge;
-+
-+	dev =3D info.pci_dev;
-+	port_type =3D pci_pcie_type(dev);
-+	pos =3D pci_find_ext_capability(dev, PCI_EXT_CAP_ID_ERR);
-+	if (!pos)
-+		return;
-+
-+	switch (port_type) {
-+	case PCI_EXP_TYPE_ROOT_PORT:
-+		hest_aer_root =3D info.hest_aer_root_port;
-+		program_hest_aer_common(hest_aer_root->aer, dev, pos);
-+		program_hest_aer_root(hest_aer_root, dev, pos);
-+	break;
-+	case PCI_EXP_TYPE_ENDPOINT:
-+		hest_aer_endpoint =3D info.hest_aer_endpoint;
-+		program_hest_aer_common(hest_aer_endpoint->aer, dev, pos);
-+	break;
-+	case PCI_EXP_TYPE_PCI_BRIDGE:
-+		hest_aer_bridge =3D info.hest_aer_bridge;
-+		program_hest_aer_common(hest_aer_bridge->aer, dev, pos);
-+		program_hest_aer_bridge(hest_aer_bridge, dev, pos);
-+	break;
-+	default:
-+		return;
-+	break;
-+	}
-+}
-+
-+int pci_acpi_program_hest_aer_params(struct pci_dev *dev)
-+{
-+	struct hest_parse_aer_info info =3D {
-+		.pci_dev =3D dev
-+	};
-+
-+	if (!pci_is_pcie(dev))
-+		return -ENODEV;
-+
-+	if (apei_hest_parse(hest_parse_pcie_aer, &info) =3D=3D 1)
-+		program_hest_aer_params(info);
-+
-+	return 0;
-+}
-+#endif
-+
- /**
-  * pciehp_is_native - Check whether a hotplug port is handled by the OS
-  * @bridge: Hotplug port to check
-diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-index 2e40fc63ba31..78bdc121c905 100644
---- a/drivers/pci/pci.h
-+++ b/drivers/pci/pci.h
-@@ -897,6 +897,15 @@ static inline void pci_save_aer_state(struct pci_dev *=
-dev) { }
- static inline void pci_restore_aer_state(struct pci_dev *dev) { }
- #endif
-=20
-+#ifdef CONFIG_ACPI_APEI
-+int pci_acpi_program_hest_aer_params(struct pci_dev *dev);
-+#else
-+static inline int pci_acpi_program_hest_aer_params(struct pci_dev *dev)
-+{
-+	return 0;
-+}
-+#endif
-+
- #ifdef CONFIG_ACPI
- bool pci_acpi_preserve_config(struct pci_host_bridge *bridge);
- int pci_acpi_program_hp_params(struct pci_dev *dev);
-diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-index 2e81ab0f5a25..33b8b46ca554 100644
---- a/drivers/pci/probe.c
-+++ b/drivers/pci/probe.c
-@@ -2304,6 +2304,7 @@ static void pci_configure_device(struct pci_dev *dev)
- 	pci_configure_serr(dev);
-=20
- 	pci_acpi_program_hp_params(dev);
-+	pci_acpi_program_hest_aer_params(dev);
- }
-=20
- static void pci_release_capabilities(struct pci_dev *dev)
---=20
-2.34.1
+url:    https://github.com/intel-lab-lkp/linux/commits/Zaid-Alali/ACPICA-Update-values-to-hex-to-follow-ACPI-specs/20241206-052420
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git linux-next
+patch link:    https://lore.kernel.org/r/20241205211854.43215-6-zaidal%40os.amperecomputing.com
+patch subject: [PATCH v2 5/9] ACPI: APEI: EINJ: Enable the discovery of EINJv2 capabilities
+config: arm64-randconfig-002-20241206 (https://download.01.org/0day-ci/archive/20241206/202412061056.fk2xNw7W-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 14.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241206/202412061056.fk2xNw7W-lkp@intel.com/reproduce)
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202412061056.fk2xNw7W-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   drivers/acpi/apei/einj-core.c: In function 'error_type_set':
+>> drivers/acpi/apei/einj-core.c:728:35: warning: argument to 'sizeof' in 'memset' call is the same expression as the destination; did you mean to provide an explicit length? [-Wsizeof-pointer-memaccess]
+     728 |         memset(einj_buf, 0, sizeof(einj_buf));
+         |                                   ^
+
+
+vim +728 drivers/acpi/apei/einj-core.c
+
+   721	
+   722	static ssize_t error_type_set(struct file *file, const char __user *buf,
+   723					size_t count, loff_t *ppos)
+   724	{
+   725		int rc;
+   726		u64 val;
+   727	
+ > 728		memset(einj_buf, 0, sizeof(einj_buf));
+   729		if (copy_from_user(einj_buf, buf, count))
+   730			return -EFAULT;
+   731	
+   732		if (strncmp(einj_buf, "V2_", 3) == 0) {
+   733			if (!sscanf(einj_buf, "V2_%llx", &val))
+   734				return -EINVAL;
+   735		} else
+   736			if (!sscanf(einj_buf, "%llx", &val))
+   737				return -EINVAL;
+   738	
+   739		rc = einj_validate_error_type(val);
+   740		if (rc)
+   741			return rc;
+   742	
+   743		error_type = val;
+   744	
+   745		return count;
+   746	}
+   747	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
