@@ -1,93 +1,120 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BBE91D8E09
-	for <acpica-devel@lists.linux.dev>; Tue, 10 Dec 2024 18:22:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5F6E195808
+	for <acpica-devel@lists.linux.dev>; Tue, 10 Dec 2024 18:31:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733854953; cv=none; b=KdGBjenk49nnJvz8EiZ4Te3g8EQIfl+XDNChlF/1a6PaePU1nJB3YXZGep+I0sCrJn7UbHBKbPAtAwaJJycmWMpzSFHMB4Rc3EYgEafanLvzxEQS6hgFCY7oHUvr2QXjWzAntHcFZlHNRN1ruyLM7qrvNtf6q8nvkUEnThEIQlc=
+	t=1733855502; cv=none; b=iCKS4ZqPk8qosMRQjIltgVjhd03gUoWAzvq82Bwu2Q0X7kicQbGB5gn1/DNq926ZGx+H48bCznVd7P1oB56Pl2dF8wG3NLzC5ZI+jsQP3Xe3cSqAEVS+yqSjVEYLnqmrQ8b371q88Qym4cOkV00IPCGYrflOMkiUtIcgWL6a2ik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733854953; c=relaxed/simple;
-	bh=KJuDRLnfyA/pBRaEV+y3cEarwDisp3b9kpQ6c41LOts=;
+	s=arc-20240116; t=1733855502; c=relaxed/simple;
+	bh=yMvDfYdMEC2GbNStQaUd8LmXaxCMcS26AvjUFzyncLc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iu0tHncc6M8xlFBZAA47MagcZfJRwevpoYjzA8B1YmZu0rMU3UUmLixu4PX0/SlDrVm5pF/8Xmq/qRfKIA95xukszoLDuf8AJyG0uHtCBP1D1DNsd7Y/0iQWmLRZcBgsLzXfYUS56xak2FgvgEjOFY/VNAW82DRyM0VznZAOCK0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sZNM41Ei; arc=none smtp.client-ip=10.30.226.201
+	 To:Cc:Content-Type; b=jSMg1OeMHxKsijohOunzGJXsVD7Eh7/i6X3dbBB83CzKJG15yfqnAu43GlJgPhnh0Qt3VuAD2zX77Rlx3AeF7K5/Q/kJhQIIKl7pvH4haLE0sfDkaDxI1rYXoUMC9/BVlo5JRubpQFFThTSOiaau6NrFIcWVZyX001F9H58CiwE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JAmDTS/g; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sZNM41Ei"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C1D7C4CEDF
-	for <acpica-devel@lists.linux.dev>; Tue, 10 Dec 2024 18:22:32 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JAmDTS/g"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77EEFC4CEDD
+	for <acpica-devel@lists.linux.dev>; Tue, 10 Dec 2024 18:31:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733854952;
-	bh=KJuDRLnfyA/pBRaEV+y3cEarwDisp3b9kpQ6c41LOts=;
+	s=k20201202; t=1733855502;
+	bh=yMvDfYdMEC2GbNStQaUd8LmXaxCMcS26AvjUFzyncLc=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=sZNM41EiaVswXTpc44XsBCwf007pJJGehMeQ4JYnn98QNkI7OVwt1dwnClnkqsj1V
-	 pvbG8j3B107urZZeIgZqr9wcVU8JQOaS7XLLVjIkHEhRPTbyHQAC3A9CJ9O6KCZsDF
-	 ikCV8PzktRw03/n1k+KOTZXZjDpk03cgOU0sFkxwjaPcLcIxOOghwqLDzRgwosqtj4
-	 L4kmL/+taOBFDhn4XDnSFd+A5zuzj9ZT8ScuXhXhnPufgmQ/G9Hgukx9NHu1y98TFE
-	 ZyLOIVwUnAegFgLnqkB8wyNLNdAmDKfxxk3EUWonkPGsdkDzRHUZwpCyHGcAmNecql
-	 TSnkR28ub5rIw==
-Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-5f2c86d59ccso724606eaf.1
-        for <acpica-devel@lists.linux.dev>; Tue, 10 Dec 2024 10:22:32 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXYegHDINBhufkHmIfYiyErd48klLPgHaBmPopjcovOoYd1BDzJT7TXmc4jMUp0Gv86+4jFA4MvdiaHWeY=@lists.linux.dev
-X-Gm-Message-State: AOJu0YxpMI3FuYZaIQd01Bpc7lPmUfWb6qatdiJcfl8nV6sUKGdclmBo
-	wDLKEryFtM0SbyFCKSmPwDr3n8/dkprMI4SK1kc4EEfs7urVha9UiGDcnX8PEAHpVWO1LN60lwX
-	Zw8/PhdWs57cygwB0shJRV2UJzfo=
-X-Google-Smtp-Source: AGHT+IEGAhTiJSFFOJoZwv9XwbVki7dy+WJHiqDVr8m1hv00B9JfJL10oma3JMzWPGuZrnZ+k9U2xMvevQeZ+mixl/o=
-X-Received: by 2002:a4a:e909:0:b0:5f2:af6a:e4c0 with SMTP id
- 006d021491bc7-5f2af6af6b8mr6837431eaf.1.1733854951876; Tue, 10 Dec 2024
- 10:22:31 -0800 (PST)
+	b=JAmDTS/gP3xwYtvGgG1Cp1ESfgypsbHpM7wf9vOebwtU3sQlgywaQe9Eydz61g/l8
+	 onyY4yRQ/4TAnTDfJeAAeYvVM2qNn4M8848djWKF5QYvQCnIf05xP8aqLaE4RjNYom
+	 T1VdNMigonKpuU7IbPAE9N3c7/vZf2wSEvUZKvN4SgqNenbR4d05am1+ia/YDD3u0T
+	 zmtyquH4/8rR0eDQFCN5ufdXZ5PP9tfDgkzmEjM+jBxBMCCXPjMlP/ooJydlycfrDZ
+	 7cils4KX1ltw97zK42IkfYUANMs+t2a1syYOOWYR8hmqhXZNpMfySg+K7BmIe1fgbt
+	 YaWZFjPWo/zHQ==
+Received: by mail-oo1-f49.google.com with SMTP id 006d021491bc7-5f2abc36f15so920373eaf.1
+        for <acpica-devel@lists.linux.dev>; Tue, 10 Dec 2024 10:31:42 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWyYkh3OE3dlfTCQmrhVltO1kCE6Ol5E7mzI2WDgrU2NKC6uKKyuiawhAxG3Klfs2WTd7mEFYU6prYFU8E=@lists.linux.dev
+X-Gm-Message-State: AOJu0YxE7xhzJ52S1z3In/rr3r0TgxDoUmypYvJ4ojPyHC6FscuTcvfQ
+	Kpb8tTL5sKzqrgkKPgcZkTFHZQzAJI2hUSLn7SmlTd/O1HZ8bpwnL032aQgvN3JKE2rk42ogaBg
+	saiIfu5wnR/eRcC+6BG9QV8Awb1k=
+X-Google-Smtp-Source: AGHT+IGrUjOmExbcetYeztZRi2yn7rV87vBJKoza5mnnu0jBPpeX3+Ebs1lT+UBA4sTBULYeIhZEaTbL6G8LbS4Zado=
+X-Received: by 2002:a05:6820:3101:b0:5ee:ebcb:e701 with SMTP id
+ 006d021491bc7-5f2c8eb83f6mr3635752eaf.6.1733855501744; Tue, 10 Dec 2024
+ 10:31:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20241122082954.658356-1-d-tatianin@yandex-team.ru>
-In-Reply-To: <20241122082954.658356-1-d-tatianin@yandex-team.ru>
+References: <20241122-fix-ipu-v2-0-bba65856e9ff@chromium.org> <20241122-fix-ipu-v2-3-bba65856e9ff@chromium.org>
+In-Reply-To: <20241122-fix-ipu-v2-3-bba65856e9ff@chromium.org>
 From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Tue, 10 Dec 2024 19:22:20 +0100
-X-Gmail-Original-Message-ID: <CAJZ5v0hfhsy6rvYQ87n68VZ7tySTe3GNaJAQ5n2mJtwYLHUEbw@mail.gmail.com>
-Message-ID: <CAJZ5v0hfhsy6rvYQ87n68VZ7tySTe3GNaJAQ5n2mJtwYLHUEbw@mail.gmail.com>
-Subject: Re: [PATCH] ACPICA: events/evxfregn: don't release the ContextMutex
- that was never acquired
-To: Daniil Tatianin <d-tatianin@yandex-team.ru>
-Cc: Robert Moore <robert.moore@intel.com>, 
-	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Len Brown <lenb@kernel.org>, 
-	Hans de Goede <hdegoede@redhat.com>, Erik Kaneda <erik.kaneda@intel.com>, linux-acpi@vger.kernel.org, 
-	acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org
+Date: Tue, 10 Dec 2024 19:31:30 +0100
+X-Gmail-Original-Message-ID: <CAJZ5v0i9SresLT14aWuyodKyi2y3yyC8wLMYzrSD4ec=9WVSvg@mail.gmail.com>
+Message-ID: <CAJZ5v0i9SresLT14aWuyodKyi2y3yyC8wLMYzrSD4ec=9WVSvg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/7] ACPI: bus: implement acpi_get_physical_device_location
+ when !ACPI
+To: Ricardo Ribalda <ribalda@chromium.org>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
+	Robert Moore <robert.moore@intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, 
+	Sakari Ailus <sakari.ailus@linux.intel.com>, Dan Carpenter <dan.carpenter@linaro.org>, 
+	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Nov 22, 2024 at 9:30=E2=80=AFAM Daniil Tatianin
-<d-tatianin@yandex-team.ru> wrote:
+On Fri, Nov 22, 2024 at 10:48=E2=80=AFAM Ricardo Ribalda <ribalda@chromium.=
+org> wrote:
 >
-> This bug was first introduced in c27f3d011b08, where the author of the
-> patch probably meant to do DeleteMutex instead of ReleaseMutex. The
-> mutex leak was noticed later on and fixed in e4dfe108371, but the bogus
-> MutexRelease line was never removed, so do it now.
+> Provide an implementation of acpi_get_physical_device_location that can
+> be used when CONFIG_ACPI is not set.
 >
-> Link: https://github.com/acpica/acpica/pull/982
-> Fixes: c27f3d011b08 ("Fix race in GenericSerialBus (I2C) and GPIO OpRegio=
-n parameter handling")
-> Signed-off-by: Daniil Tatianin <d-tatianin@yandex-team.ru>
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 > ---
->  drivers/acpi/acpica/evxfregn.c | 2 --
->  1 file changed, 2 deletions(-)
+>  include/acpi/acpi_bus.h | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
 >
-> diff --git a/drivers/acpi/acpica/evxfregn.c b/drivers/acpi/acpica/evxfreg=
-n.c
-> index 95f78383bbdb..bff2d099f469 100644
-> --- a/drivers/acpi/acpica/evxfregn.c
-> +++ b/drivers/acpi/acpica/evxfregn.c
-> @@ -232,8 +232,6 @@ acpi_remove_address_space_handler(acpi_handle device,
+> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+> index eaafca41cf02..4888231422ea 100644
+> --- a/include/acpi/acpi_bus.h
+> +++ b/include/acpi/acpi_bus.h
+> @@ -43,9 +43,6 @@ acpi_status
+>  acpi_evaluate_ost(acpi_handle handle, u32 source_event, u32 status_code,
+>                   struct acpi_buffer *status_buf);
 >
->                         /* Now we can delete the handler object */
+> -acpi_status
+> -acpi_get_physical_device_location(acpi_handle handle, struct acpi_pld_in=
+fo **pld);
+> -
+>  bool acpi_has_method(acpi_handle handle, char *name);
+>  acpi_status acpi_execute_simple_method(acpi_handle handle, char *method,
+>                                        u64 arg);
+> @@ -60,6 +57,9 @@ bool acpi_check_dsm(acpi_handle handle, const guid_t *g=
+uid, u64 rev, u64 funcs);
+>  union acpi_object *acpi_evaluate_dsm(acpi_handle handle, const guid_t *g=
+uid,
+>                         u64 rev, u64 func, union acpi_object *argv4);
+>  #ifdef CONFIG_ACPI
+> +acpi_status
+> +acpi_get_physical_device_location(acpi_handle handle, struct acpi_pld_in=
+fo **pld);
+> +
+>  static inline union acpi_object *
+>  acpi_evaluate_dsm_typed(acpi_handle handle, const guid_t *guid, u64 rev,
+>                         u64 func, union acpi_object *argv4,
+> @@ -1003,6 +1003,8 @@ static inline int unregister_acpi_bus_type(void *bu=
+s) { return 0; }
 >
-> -                       acpi_os_release_mutex(handler_obj->address_space.
-> -                                             context_mutex);
->                         acpi_ut_remove_reference(handler_obj);
->                         goto unlock_and_exit;
->                 }
-> --
+>  static inline int acpi_wait_for_acpi_ipmi(void) { return 0; }
+>
+> +#define acpi_get_physical_device_location(handle, pld) (AE_ERROR)
 
-Applied as 6.13-rc material, thanks!
+This is a function, so static inline please.
+
+Analogously in patches [4,6/7].
+
+And you can merge patches [2-6/7] together into one patch, as far as
+I'm concerned.
+
+> +
+>  #define for_each_acpi_dev_match(adev, hid, uid, hrv)                   \
+>         for (adev =3D NULL; false && (hid) && (uid) && (hrv);)
+>
+>
+> --
