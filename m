@@ -1,153 +1,178 @@
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D2292451C5
-	for <acpica-devel@lists.linux.dev>; Wed, 11 Dec 2024 08:19:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B6692451C5;
+	Wed, 11 Dec 2024 08:20:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733905163; cv=none; b=AmGupHp4S1Q+3AFM1pFwL9ZngU9mICLgZXdpZD1nCHVb9Q2hCbmJiuM+iVuio5jI7klNeIYHGa57SQKRnWAdUOaWtEnnoz3AjQCieAK8w7JCF0I1YLxePgOv5AVO6J5xnzjZLeZVRUy0swmF/txPQda6Lkikgp/cZ44TUXoxdjQ=
+	t=1733905200; cv=none; b=o86JjrUL4hnVOG8QZpyCaqjxXCaZdzgVQ4RmgXRi6GTKRvzWFTfN/5XbZxjhaDkKq6XkEjxFmZv9fanDKwaE2tSzgluFZxOL5BnSU8AgjrOVLCFHRjY5FYAlrUbUzR4hZ16/mZ6+YIS1s3KbhhsHIAHpBG+kOAmbnfKMjjULNT8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733905163; c=relaxed/simple;
-	bh=Lsm8C3031w9xBCb23/cgZ3DoZ2ls3z/NYBjnTBCzjJc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qTYi9tcqENjOGrhLWVCXRx1YfpF0bWz/glmeorcSnxMUP3mXrkwjox53NP51djvfFpYYNW/fNVhAJPxzaq20Rpuh5YzGHMUJ8prXhk6X56cCYNV6bTfC7x/RPYc0Ol2UD3EEl/bBlAA9gysFlNe/QqXIE+YWe9ohZfMjFx0mNH0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=G2T15aQi; arc=none smtp.client-ip=209.85.210.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+	s=arc-20240116; t=1733905200; c=relaxed/simple;
+	bh=r21WtUBRcZwcSHqLPko9GR/J8w+sSShlZLghGN9Gwuo=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=u7Em7mUVKoZOBuWF7SbFD6I/FgjMuP0U03cOVQLlK2GJR2BmFVKFdZjIq6Ft4TgcMZhdfiEUln1HfOrmb3WSSImRLgnzXci9rMU/RfKvgW3+kBjMBpfEdtWCe+0ZphfWTIqfA23QvQ9fwTtGWCeVaCDOqP86H86fEYPcJrjAfLI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iuiLW79X; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="G2T15aQi"
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-728f337a921so175370b3a.3
-        for <acpica-devel@lists.linux.dev>; Wed, 11 Dec 2024 00:19:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1733905160; x=1734509960; darn=lists.linux.dev;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=S37tUa9+4E/BElh55Abu22jNluchZXe2JCq2BZHuzPc=;
-        b=G2T15aQi81NVm0aqTh2nR+qdGgWXVUL2wZ/tNZxok6GB1NsVQMC4pLZ9eApkHHB9uE
-         VI0mQ/7455md9GLjoxAzck7blN1dkmnhhNHPBrn3ecAI1bbISegpSWqomPHRD1zP+vKE
-         QLmK3RsC3NzWSplygHeFgBHS0Cs4qxOsgQ6xE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733905160; x=1734509960;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=S37tUa9+4E/BElh55Abu22jNluchZXe2JCq2BZHuzPc=;
-        b=RNC6ns6iRin6O7qYOKAND3rPvBvAvOf1tl+eorxyBRdRAIBN+qSImaJxgPsGOpLTc5
-         mJd6dF05KNI8rcfKjyL8qcN4zn5PSViG56CTqUhLq9RmLdUG0HeMdDCaVwEI3L6jYNQU
-         GUchpLtzuLg8s9JQMIrFKfDUWZ6G68eF6k+2p06uyWCjjw9SLmNkW7ZlYMTrLlkFHz5H
-         xYuGcm+EtXvbOT1Uy7hrzzLCHe9l+6q7pRqfg2mil9E3gpU5z/M3wp8tK4CUoUyEK7yv
-         ZOhoHmG8VX3zQAkUFLZHcrQ2GuroiYRFdcluysRIuBQyiis2G0hWEIImkdKxZe+HALZo
-         wj6Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWh+8UUmHFUY38J5sKawTUwD9gAd5g1CATpggjALOIfJ1zotv6NQ8VnNSXdnW91BAIlEp9Dknf1gwLmEqM=@lists.linux.dev
-X-Gm-Message-State: AOJu0YzdGkQHIB2lkZXPDx0SM176xaNk70wuPocfjDtYp8g2ZFYRVWlc
-	NV4NhcRWeN/jqiq/vTCOocu27b5vokTqoUTd160BC0+iLreks1x/b5Ch+sODP+ebv2BGqqGBFNw
-	=
-X-Gm-Gg: ASbGncumgpfDduweNr/ZFTCzCXFOu408CxAA8Ee2QW1cakMC6qvY301uRtyMn6bsUkk
-	dM+cu4uQSIH+FOWyD3NmwnmjwhpeHzbtVjdzM5m19HdvYIHQc9e5nf1Fg+QujXfMxifq3PVHJR5
-	RMzTO0M4lH1L4cnhlPHuRO5hC/9D7+jZ/LWXGwZ1uvnn0jyxMXmv5Nym/DSeSfzBaoi7BNzU2GF
-	tHm/9GYV+YlgqcnxkHN0uq0w4n1/+VhgSCjpJF/YiLk4TpIhm5kxe6t444stoPds517qdNlOCnQ
-	Sje5ork+2FEOyeOV
-X-Google-Smtp-Source: AGHT+IENPtoNUtW+WYTerO6DVqCxcPSsO2p4KNmFijl7zxQj+/YcHQnbygtxvna7eigafXNuKEjvag==
-X-Received: by 2002:a05:6a00:c8a:b0:727:3b77:4174 with SMTP id d2e1a72fcca58-728ed4b9fa7mr3645331b3a.23.1733905160321;
-        Wed, 11 Dec 2024 00:19:20 -0800 (PST)
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com. [209.85.216.53])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-725a29c5af9sm10603239b3a.19.2024.12.11.00.19.19
-        for <acpica-devel@lists.linux.dev>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Dec 2024 00:19:19 -0800 (PST)
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2eeb4d643a5so5715126a91.3
-        for <acpica-devel@lists.linux.dev>; Wed, 11 Dec 2024 00:19:19 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWjTMmF7aaUpbdvSQMJqj5M0GoVL97h2AGAzu+9KxMLxidrvFn081clYrT3Z/omxjan1Iea40CtPcdpFJE=@lists.linux.dev
-X-Received: by 2002:a17:90b:1d91:b0:2ee:f687:6acb with SMTP id
- 98e67ed59e1d1-2f127fc7278mr3021275a91.13.1733905159097; Wed, 11 Dec 2024
- 00:19:19 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iuiLW79X"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 650FEC4CED2;
+	Wed, 11 Dec 2024 08:19:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1733905200;
+	bh=r21WtUBRcZwcSHqLPko9GR/J8w+sSShlZLghGN9Gwuo=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=iuiLW79XfjJ2N1gQfWS3HXYLgct6Gc2ZnbSbN+JmB6aHayYd8NPo+W5Vz1pip0XlO
+	 oD++IolMyu6nnxJeAies0r79HYPhH/tbIi5vo5DmKWb6mzflM4QK+fzl1g1FTl67+h
+	 C8hG6M5E0Q8NrAyBK7CpuzIjbWpKklMfwAe2U875zdvUEuHXsFyECGOUoz8zVELUsi
+	 1Nrmqxecw66DwkDxRBUGqJ2n5Ta8lGQjyQgmmDKfvJ4LMeF2sFvLp+TQ8M13VNNR8h
+	 Wj/9mxczs1s1FsEQKHHPl8ZhDT6U5emuhgxcPNqCYDDzKHI6236d9DkNrMx7XXcRdv
+	 MFl/Y4p/qPUow==
+Date: Wed, 11 Dec 2024 09:19:54 +0100
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To: Ricardo Ribalda <ribalda@chromium.org>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>, "Rafael J. Wysocki"
+ <rafael@kernel.org>, Len Brown <lenb@kernel.org>, Robert Moore
+ <robert.moore@intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+ Sakari Ailus <sakari.ailus@linux.intel.com>, Dan Carpenter
+ <dan.carpenter@linaro.org>, linux-media@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+ acpica-devel@lists.linux.dev
+Subject: Re: [PATCH v3 7/7] media: ipu-bridge: Remove unneeded conditional
+ compilations
+Message-ID: <20241211091954.42a5c778@foz.lan>
+In-Reply-To: <20241210-fix-ipu-v3-7-00e409c84a6c@chromium.org>
+References: <20241210-fix-ipu-v3-0-00e409c84a6c@chromium.org>
+	<20241210-fix-ipu-v3-7-00e409c84a6c@chromium.org>
+X-Mailer: Claws Mail 4.3.0 (GTK 3.24.43; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20241210-fix-ipu-v3-0-00e409c84a6c@chromium.org>
- <20241210-fix-ipu-v3-1-00e409c84a6c@chromium.org> <20241211091147.717e53a4@foz.lan>
-In-Reply-To: <20241211091147.717e53a4@foz.lan>
-From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Wed, 11 Dec 2024 09:19:07 +0100
-X-Gmail-Original-Message-ID: <CANiDSCvkBvdstVn4GwtdNiJhs67TO6rXVBcsdfRJNgNMXkjvKA@mail.gmail.com>
-X-Gm-Features: AZHOrDm09Y0n30eCWNJ7YxalIcoq21V7pnpLmE36rjaksDFouTGIwgN4Tsc_yGk
-Message-ID: <CANiDSCvkBvdstVn4GwtdNiJhs67TO6rXVBcsdfRJNgNMXkjvKA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/7] media: ipu-bridge: Fix warning when !ACPI
-To: Mauro Carvalho Chehab <maurochehab@gmail.com>
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
-	Robert Moore <robert.moore@intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, 
-	Sakari Ailus <sakari.ailus@linux.intel.com>, Dan Carpenter <dan.carpenter@linaro.org>, 
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, 
-	kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hi Mauro
+Em Tue, 10 Dec 2024 19:56:04 +0000
+Ricardo Ribalda <ribalda@chromium.org> escreveu:
 
-On Wed, 11 Dec 2024 at 09:15, Mauro Carvalho Chehab
-<maurochehab@gmail.com> wrote:
->
-> Em Tue, 10 Dec 2024 19:55:58 +0000
-> Ricardo Ribalda <ribalda@chromium.org> escreveu:
->
-> > One of the quirks that we introduced to build with !ACPI && COMPILE_TEST
-> > throws the following smatch warning:
-> > drivers/media/pci/intel/ipu-bridge.c:752 ipu_bridge_ivsc_is_ready() warn: iterator 'i' not incremented
-> >
-> > Fix it by replacing the condition.
-> >
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Closes: https://lore.kernel.org/r/202411221147.N6w23gDo-lkp@intel.com/
-> > Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> > Closes: https://lore.kernel.org/r/202411221147.N6w23gDo-lkp@intel.com/
-> > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> > ---
-> >  drivers/media/pci/intel/ipu-bridge.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/media/pci/intel/ipu-bridge.c b/drivers/media/pci/intel/ipu-bridge.c
-> > index a0e9a71580b5..be82bc3e27d0 100644
-> > --- a/drivers/media/pci/intel/ipu-bridge.c
-> > +++ b/drivers/media/pci/intel/ipu-bridge.c
-> > @@ -774,7 +774,7 @@ static int ipu_bridge_ivsc_is_ready(void)
-> >
-> >               for_each_acpi_dev_match(sensor_adev, cfg->hid, NULL, -1) {
-> >  #else
-> > -             while (true) {
-> > +             while (false) {
-> >                       sensor_adev = NULL;
-> >  #endif
->
-> The better would be to just remove all #if and handle ACPI compatibility
-> with COMPILE_TEST inside acpi headers.
->
-> Besides that, t sounds that patch 2 makes this hack unneeded, as you added
-> a false check at the for macro:
->
->         #define for_each_acpi_dev_match(adev, hid, uid, hrv)                    \
->         for (adev = NULL; false && (hid) && (uid) && (hrv);)
->
-> Please place only one set of subsystem maintainers at the To: line,
-> directing to the one(s) you expect to merge this series.
->
-> In this particular case, the one to be added should be the ACPI
-> maintainers.
+> The ACPI headers have introduced implementations for some of their
+> functions when the kernel is not configured with ACPI.
+> 
+> Let's use them instead of our conditional compilation. It is easier to
+> maintain and less prone to errors.
+> 
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> ---
+>  drivers/media/pci/intel/ipu-bridge.c | 28 +++++-----------------------
+>  1 file changed, 5 insertions(+), 23 deletions(-)
+> 
+> diff --git a/drivers/media/pci/intel/ipu-bridge.c b/drivers/media/pci/intel/ipu-bridge.c
+> index be82bc3e27d0..1db994338fdf 100644
+> --- a/drivers/media/pci/intel/ipu-bridge.c
+> +++ b/drivers/media/pci/intel/ipu-bridge.c
+> @@ -2,6 +2,7 @@
+>  /* Author: Dan Scally <djrscally@gmail.com> */
+>  
+>  #include <linux/acpi.h>
+> +#include <acpi/acpi_bus.h>
+>  #include <linux/cleanup.h>
+>  #include <linux/device.h>
+>  #include <linux/i2c.h>
+> @@ -107,7 +108,6 @@ static const char * const ipu_vcm_types[] = {
+>  	"lc898212axb",
+>  };
+>  
+> -#if IS_ENABLED(CONFIG_ACPI)
+>  /*
+>   * Used to figure out IVSC acpi device by ipu_bridge_get_ivsc_acpi_dev()
+>   * instead of device and driver match to probe IVSC device.
+> @@ -127,11 +127,11 @@ static struct acpi_device *ipu_bridge_get_ivsc_acpi_dev(struct acpi_device *adev
+>  		const struct acpi_device_id *acpi_id = &ivsc_acpi_ids[i];
+>  		struct acpi_device *consumer, *ivsc_adev;
+>  
+> -		acpi_handle handle = acpi_device_handle(adev);
+> +		acpi_handle handle = acpi_device_handle(ACPI_PTR(adev));
+>  		for_each_acpi_dev_match(ivsc_adev, acpi_id->id, NULL, -1)
+>  			/* camera sensor depends on IVSC in DSDT if exist */
+>  			for_each_acpi_consumer_dev(ivsc_adev, consumer)
+> -				if (consumer->handle == handle) {
+> +				if (ACPI_PTR(consumer->handle) == handle) {
+>  					acpi_dev_put(consumer);
+>  					return ivsc_adev;
+>  				}
+> @@ -139,12 +139,6 @@ static struct acpi_device *ipu_bridge_get_ivsc_acpi_dev(struct acpi_device *adev
+>  
+>  	return NULL;
+>  }
+> -#else
+> -static struct acpi_device *ipu_bridge_get_ivsc_acpi_dev(struct acpi_device *adev)
+> -{
+> -	return NULL;
+> -}
+> -#endif
+>  
+>  static int ipu_bridge_match_ivsc_dev(struct device *dev, const void *adev)
+>  {
+> @@ -261,9 +255,8 @@ static enum v4l2_fwnode_orientation ipu_bridge_parse_orientation(struct acpi_dev
+>  	struct acpi_pld_info *pld = NULL;
+>  	acpi_status status = AE_ERROR;
+>  
+> -#if IS_ENABLED(CONFIG_ACPI)
+> -	status = acpi_get_physical_device_location(adev->handle, &pld);
+> -#endif
+> +	status = acpi_get_physical_device_location(ACPI_PTR(adev->handle),
+> +						   &pld);
+>  	if (ACPI_FAILURE(status)) {
+>  		dev_warn(ADEV_DEV(adev), "_PLD call failed, using default orientation\n");
+>  		return V4L2_FWNODE_ORIENTATION_EXTERNAL;
+> @@ -498,9 +491,7 @@ static void ipu_bridge_create_connection_swnodes(struct ipu_bridge *bridge,
+>  	if (sensor->csi_dev) {
+>  		const char *device_hid = "";
+>  
+> -#if IS_ENABLED(CONFIG_ACPI)
+>  		device_hid = acpi_device_hid(sensor->ivsc_adev);
+> -#endif
+>  
+>  		snprintf(sensor->ivsc_name, sizeof(sensor->ivsc_name), "%s-%u",
+>  			 device_hid, sensor->link);
+> @@ -671,11 +662,7 @@ static int ipu_bridge_connect_sensor(const struct ipu_sensor_config *cfg,
+>  	struct acpi_device *adev = NULL;
+>  	int ret;
+>  
+> -#if IS_ENABLED(CONFIG_ACPI)
+>  	for_each_acpi_dev_match(adev, cfg->hid, NULL, -1) {
+> -#else
+> -	while (true) {
+> -#endif
+>  		if (!ACPI_PTR(adev->status.enabled))
+>  			continue;
 
-The plan was to land 1/7 via the media tree with a PR from Sakari soonish.
+Heh, that's what I pointed on patch 1: you don't need it there, as this
+will be handled on patch 2.
 
-I believe he has already picked it on his tree. I will remove you from
-Cc in the next version
+>  
+> @@ -768,15 +755,10 @@ static int ipu_bridge_ivsc_is_ready(void)
+>  	unsigned int i;
+>  
+>  	for (i = 0; i < ARRAY_SIZE(ipu_supported_sensors); i++) {
+> -#if IS_ENABLED(CONFIG_ACPI)
+>  		const struct ipu_sensor_config *cfg =
+>  			&ipu_supported_sensors[i];
+>  
+>  		for_each_acpi_dev_match(sensor_adev, cfg->hid, NULL, -1) {
+> -#else
+> -		while (false) {
+> -			sensor_adev = NULL;
+> -#endif
+>  			if (!ACPI_PTR(sensor_adev->status.enabled))
+>  				continue;
+>  
+> 
 
-thanks :)
+Considering that you drop patch 1, and keep the ACPI dependencies
+at the header, as proposed by patches 2-6:
 
->
-> Regards,
-> Mauro
+Reviewed-by: Mauro Carvalho Chehab <mchehab+huawei@kerenel.org>
 
-
-
--- 
-Ricardo Ribalda
+Thanks,
+Mauro
