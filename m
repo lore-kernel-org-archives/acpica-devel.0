@@ -1,63 +1,63 @@
-Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
+Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 238481DD0DC
-	for <acpica-devel@lists.linux.dev>; Wed, 11 Dec 2024 16:07:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 750FA1DDC2C
+	for <acpica-devel@lists.linux.dev>; Wed, 11 Dec 2024 16:07:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733933247; cv=none; b=Ob3kBCjk9hrt5jbP0pPrcGPaHmhoPZUWRkRLPoW02kfL3PzHnYm+1+HubhWa5+jwe8ov17kll+IpS8mpaHNGQQ7hQCnGF1gk852xerKRcwdT/AoycrCclk6XkiV2iQ4DRZCMySjcqPiOS63IBBr84u2IahyG2fuJEhfCuXMXrwk=
+	t=1733933249; cv=none; b=kZk6WcSSGDV4Z69vE5vjRYDdCUN6bb6yM0awaDerw5q11gyB1nVTuHRtAB2ZNJ8AlubfpLobKkhh6/E8qtJzWI6hz1i42BjoVufI/qx14Bb3e1Jx0JV6vaeIT0V4MiWKHiJOBaU0TEvI9QNd3JBxLTxmYexcj8b9qd679BWpffM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733933247; c=relaxed/simple;
-	bh=Rthe3LzHY0QJPosKabOqFJY90O39hBmNGtzh12F+k2M=;
+	s=arc-20240116; t=1733933249; c=relaxed/simple;
+	bh=9zHOmlSE2lBt2Rpl8UOox++hLCi27/TryYwCxVSnPew=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=TV/RHDNocGLt7VP/prnJp+Y+jsZoPxfXdnBpahR250VXLk85rmK0BmKXh7Eqy+TO7D5qD84I+lxUi5OAsvSYV+OAvBUEbSTpI0umliYmyn1CEaeY6zMRMaS1fPFdXWS8lz2xWZnwQkJWzMUkTmtkKtp9UR5X8UvB1iWGss0jtq8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=N5H0aBqF; arc=none smtp.client-ip=209.85.219.47
+	 In-Reply-To:To:Cc; b=n4vSJlO8I0A+4B2sE4/HfWEK2L+ZGrGRcklLi6msyPGEpK20+KL3U0Ntl+z6lxONE8bLFdFHvnSAEKVapGb43tM9Z/vaaEJtkgNEflQWXDcJ2zqz7YHlr8PG4nVP+z/C8K8efZoFNS2/y3/D/DjwDwzQUlL3UoNeMpy5uUBIKkM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=jhOjoeuH; arc=none smtp.client-ip=209.85.219.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="N5H0aBqF"
-Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-6d8f916b40bso59096916d6.3
-        for <acpica-devel@lists.linux.dev>; Wed, 11 Dec 2024 08:07:25 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="jhOjoeuH"
+Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-6d8f916b40bso59096986d6.3
+        for <acpica-devel@lists.linux.dev>; Wed, 11 Dec 2024 08:07:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google; t=1733933245; x=1734538045; darn=lists.linux.dev;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Essqe2WEjNsh1+1eTJTpKRXpLjov7BKteAS8plE/7UE=;
-        b=N5H0aBqF+eGmCEM5EDJa7b7nLjHKurV/dWUstebqDj5BIXkVcSyCUEi2zzIOKFcBTM
-         XzZzIxZFkDVXX3ydz1bIn/QIgb6hSNuvn3FrEUHcxay1zv0HK9ZG5/ryJxHPTD2Wlgr/
-         uwKk6NmXMFrKEhRvKOaQn6n3BK9JezCZJn4Dw=
+        bh=MMK9uUImiu6io0KCKsugDZpWMzJZHLlDJZIO+NA/9Ro=;
+        b=jhOjoeuHEOfQDhZHCpR4BP0fol5EZa0MOV8Ev6Dlk9NLX0q5NvjNx5/Bq8Ty0LN5DP
+         UINZq1I82v3bh/2dddpbebdY6P4vg2X//czHIGLq102abwAQeqME3P+77YjjM7zZ7iwO
+         tTZI6JkLO7KR0CTEAqD7jEBbUS6vFujY87OUY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1733933245; x=1734538045;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Essqe2WEjNsh1+1eTJTpKRXpLjov7BKteAS8plE/7UE=;
-        b=vrxt75KYfeJ9EB4rY0oseN8KwaHsuEzLRg3WmlHjEnxsAjg36U7qYnPBrX4Fh+WyOW
-         g0XymwMJ4szYrCylYYZJf4hHjYYThuN9nkV3QK3WoMbn7KBc9Vz0vOb+IclQF5M1QGR2
-         uIc91WyMhOvJiMEfMNME+Qrnc9+Iqzsi8aD6aLgqZU0EOpI5UEJHI6Z5ABHPXnqKXkDf
-         BDOP0CzZ0lZBnzgkMlzmarhfd5ogWEh7mrNZwvKNM2yO/dqr9MfxF7UVNymXUawLWVKj
-         mFfxyLceMG19gbgcBkwPmm+6ZvydIvKK09RVLY2Acs/E8S34xyE6rCB9+1boFB+NHgN7
-         KP4A==
-X-Forwarded-Encrypted: i=1; AJvYcCWVoSTd7/94mnSioTv2E++ePdh1Z73y+lI0QaBR7W8/o95aYtw6Bs3O3AMdXSJcAoZ2zvFwzc+//yvV5HA=@lists.linux.dev
-X-Gm-Message-State: AOJu0YyY72HjnmR66aVmO1pOjObOnaKa9Q0ctoIA9Jgk8MGuH8aU6T0O
-	Q9NIyUlxi3HM15TSTJseYpVzKmGH0j99UGiZHbVDGW/scgy51TjkHDfgmlCQkQ==
-X-Gm-Gg: ASbGncuTl8Uj+ub2OH208EBiu6RtUxu2tSxZcnYdJdHitAT1/pwGqkTShr6S8y30fdZ
-	D4Hgi77YFRqkkhfaL4usNz1QDGuGbV8xeVZkLEzmGBxIgfo/xb5cndKvrWpWaOeqE8KGiYdFJAl
-	YfjQoUIcJQNa2UZZdOg2KpsUwhKkYOszf+ltWhrsUsyFzS5f4tHxWtaYzw2DmFjEIpM76jWa9+U
-	3dkkX2pKehhwUiQ06qCdepowAS6Vk2j5ED+Cr3jWANTFHGuVat0FHo0pif5odzqOw4aBVEecso1
-	T9lJ973bFMPZY23cPyyJxFLjDqE/
-X-Google-Smtp-Source: AGHT+IE2ZjzhhF3KT4N00BscK7M3J3K9+kILugqUUTPdX4rGdXCCT0e/jhysbXYNIB+9mUv7WWWTlg==
-X-Received: by 2002:ad4:5962:0:b0:6d8:8e0f:8c03 with SMTP id 6a1803df08f44-6d934aec01cmr68660266d6.18.1733933245095;
-        Wed, 11 Dec 2024 08:07:25 -0800 (PST)
+        bh=MMK9uUImiu6io0KCKsugDZpWMzJZHLlDJZIO+NA/9Ro=;
+        b=TtwaeM6FqorZ9L6phXNi/yN8VQ4pWD3daYUFWmrf0r802DzSbJvLnr4CDIiHNW54Ws
+         /dihW9E/uTVAtTgM6hEeqnALjxFUnzHCmfyOxsm5lDc8xKcBEvhzQuk8EsoPwuCQtHBs
+         oiPcJ7nc8+ENNnqIT0ghAHSsCB4C/JYBSU5dQh4FI4oEljZ+osDIL8zu14cyt1nVLn6c
+         fSQgGm0owoshvDpvyU3+e/eI+ws9BvpjFR/shMusdxlXUxrJ4eCI7uVbgRKQhvKZq55M
+         MSh7Re7S7XZlEcQ/jjsOw8+3M/dfKr2PXkqb0T8JyVUtvCQWJOTCjSVhVHkeHoHC278i
+         StHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVWtL6SC9bLtnz1HXsaTf81IYOfnyFxAmv4coEqLNfsmBuDDafx7OWiAtd3avkxO/iamku7Hx5mzj2dzlU=@lists.linux.dev
+X-Gm-Message-State: AOJu0YzSoJclEWbRXEn9ECpjby4sthVizrH7TAcebIR9txY42H85Rsoo
+	4mVYj/87BWEMBr6RStranfzYJU4VRDy8iMaPo7keC6i65jKB0uBxSDgnDWUorw==
+X-Gm-Gg: ASbGncsWu+QWiDXFcoSn9/77r+hfCHvZiA+E149j1m0UXq5Mmbvn/n6LyOQonApBIJ8
+	Tg0jbyFHxfOBdx3Km3NdKJJTODVZztuBR4mLM97TPMZG0/aGhpvTnaNfdssEx14z+aOPbYYbLE0
+	9tyZsuyNzhtsV2gWEqYovmJ8gVn3HVDenKNsMh6GODMOcwn1ScNqclkQPiZfxTWOG95oVG7/y7M
+	aP3xU8Go18qnZykpYz6eoFesjWFdFfDIbrftmB2rAiMIf4p+g6ltF6ZaOodhJc/v0mS9vOGL6IZ
+	EeYoDJU/VlSHQ1hnFV+Yn1bzuisk
+X-Google-Smtp-Source: AGHT+IHPKXKsI2zaWBcy93AAaoxDDsJF4jn7MhbcckWqatjm8Z8ybpD/fk9DT9vAC4RVxmtKnQPx9A==
+X-Received: by 2002:a05:6214:4106:b0:6d4:dae:6250 with SMTP id 6a1803df08f44-6d934be3d2bmr58201826d6.34.1733933243809;
+        Wed, 11 Dec 2024 08:07:23 -0800 (PST)
 Received: from denia.c.googlers.com (5.236.236.35.bc.googleusercontent.com. [35.236.236.5])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6d8daa00671sm71484946d6.88.2024.12.11.08.07.24
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6d8daa00671sm71484946d6.88.2024.12.11.08.07.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Dec 2024 08:07:24 -0800 (PST)
+        Wed, 11 Dec 2024 08:07:23 -0800 (PST)
 From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Wed, 11 Dec 2024 16:07:22 +0000
-Subject: [PATCH v4 6/6] media: ipu-bridge: Remove unneeded conditional
- compilations
+Date: Wed, 11 Dec 2024 16:07:20 +0000
+Subject: [PATCH v4 4/6] ACPI: bus: implement for_each_acpi_consumer_dev
+ when !ACPI
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -66,7 +66,7 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20241211-fix-ipu-v4-6-4102e97aceb6@chromium.org>
+Message-Id: <20241211-fix-ipu-v4-4-4102e97aceb6@chromium.org>
 References: <20241211-fix-ipu-v4-0-4102e97aceb6@chromium.org>
 In-Reply-To: <20241211-fix-ipu-v4-0-4102e97aceb6@chromium.org>
 To: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
@@ -79,116 +79,32 @@ Cc: Sakari Ailus <sakari.ailus@linux.intel.com>,
  Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 X-Mailer: b4 0.13.0
 
-The ACPI headers have introduced implementations for some of their
-functions when the kernel is not configured with ACPI.
+Provide an implementation of for_each_acpi_consumer_dev that can be use
+used when CONFIG_ACPI is not set.
 
-Let's use them instead of our conditional compilation. It is easier to
-maintain and less prone to errors.
+The expression `false && supplier` is used to avoid "variable not used"
+warnings.
 
-Reviewed-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Fixes: 8810e055b575 ("media: intel/ipu6: Fix build with !ACPI")
+Reviewed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
 Acked-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
- drivers/media/pci/intel/ipu-bridge.c | 28 +++++-----------------------
- 1 file changed, 5 insertions(+), 23 deletions(-)
+ include/acpi/acpi_bus.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/media/pci/intel/ipu-bridge.c b/drivers/media/pci/intel/ipu-bridge.c
-index a0e9a71580b5..1db994338fdf 100644
---- a/drivers/media/pci/intel/ipu-bridge.c
-+++ b/drivers/media/pci/intel/ipu-bridge.c
-@@ -2,6 +2,7 @@
- /* Author: Dan Scally <djrscally@gmail.com> */
- 
- #include <linux/acpi.h>
-+#include <acpi/acpi_bus.h>
- #include <linux/cleanup.h>
- #include <linux/device.h>
- #include <linux/i2c.h>
-@@ -107,7 +108,6 @@ static const char * const ipu_vcm_types[] = {
- 	"lc898212axb",
- };
- 
--#if IS_ENABLED(CONFIG_ACPI)
- /*
-  * Used to figure out IVSC acpi device by ipu_bridge_get_ivsc_acpi_dev()
-  * instead of device and driver match to probe IVSC device.
-@@ -127,11 +127,11 @@ static struct acpi_device *ipu_bridge_get_ivsc_acpi_dev(struct acpi_device *adev
- 		const struct acpi_device_id *acpi_id = &ivsc_acpi_ids[i];
- 		struct acpi_device *consumer, *ivsc_adev;
- 
--		acpi_handle handle = acpi_device_handle(adev);
-+		acpi_handle handle = acpi_device_handle(ACPI_PTR(adev));
- 		for_each_acpi_dev_match(ivsc_adev, acpi_id->id, NULL, -1)
- 			/* camera sensor depends on IVSC in DSDT if exist */
- 			for_each_acpi_consumer_dev(ivsc_adev, consumer)
--				if (consumer->handle == handle) {
-+				if (ACPI_PTR(consumer->handle) == handle) {
- 					acpi_dev_put(consumer);
- 					return ivsc_adev;
- 				}
-@@ -139,12 +139,6 @@ static struct acpi_device *ipu_bridge_get_ivsc_acpi_dev(struct acpi_device *adev
- 
- 	return NULL;
+diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+index b312a72f48ad..80ddd76b3a6a 100644
+--- a/include/acpi/acpi_bus.h
++++ b/include/acpi/acpi_bus.h
+@@ -1009,6 +1009,9 @@ acpi_get_physical_device_location(acpi_handle handle, struct acpi_pld_info **pld
+ 	return AE_ERROR;
  }
--#else
--static struct acpi_device *ipu_bridge_get_ivsc_acpi_dev(struct acpi_device *adev)
--{
--	return NULL;
--}
--#endif
  
- static int ipu_bridge_match_ivsc_dev(struct device *dev, const void *adev)
- {
-@@ -261,9 +255,8 @@ static enum v4l2_fwnode_orientation ipu_bridge_parse_orientation(struct acpi_dev
- 	struct acpi_pld_info *pld = NULL;
- 	acpi_status status = AE_ERROR;
- 
--#if IS_ENABLED(CONFIG_ACPI)
--	status = acpi_get_physical_device_location(adev->handle, &pld);
--#endif
-+	status = acpi_get_physical_device_location(ACPI_PTR(adev->handle),
-+						   &pld);
- 	if (ACPI_FAILURE(status)) {
- 		dev_warn(ADEV_DEV(adev), "_PLD call failed, using default orientation\n");
- 		return V4L2_FWNODE_ORIENTATION_EXTERNAL;
-@@ -498,9 +491,7 @@ static void ipu_bridge_create_connection_swnodes(struct ipu_bridge *bridge,
- 	if (sensor->csi_dev) {
- 		const char *device_hid = "";
- 
--#if IS_ENABLED(CONFIG_ACPI)
- 		device_hid = acpi_device_hid(sensor->ivsc_adev);
--#endif
- 
- 		snprintf(sensor->ivsc_name, sizeof(sensor->ivsc_name), "%s-%u",
- 			 device_hid, sensor->link);
-@@ -671,11 +662,7 @@ static int ipu_bridge_connect_sensor(const struct ipu_sensor_config *cfg,
- 	struct acpi_device *adev = NULL;
- 	int ret;
- 
--#if IS_ENABLED(CONFIG_ACPI)
- 	for_each_acpi_dev_match(adev, cfg->hid, NULL, -1) {
--#else
--	while (true) {
--#endif
- 		if (!ACPI_PTR(adev->status.enabled))
- 			continue;
- 
-@@ -768,15 +755,10 @@ static int ipu_bridge_ivsc_is_ready(void)
- 	unsigned int i;
- 
- 	for (i = 0; i < ARRAY_SIZE(ipu_supported_sensors); i++) {
--#if IS_ENABLED(CONFIG_ACPI)
- 		const struct ipu_sensor_config *cfg =
- 			&ipu_supported_sensors[i];
- 
- 		for_each_acpi_dev_match(sensor_adev, cfg->hid, NULL, -1) {
--#else
--		while (true) {
--			sensor_adev = NULL;
--#endif
- 			if (!ACPI_PTR(sensor_adev->status.enabled))
- 				continue;
++#define for_each_acpi_consumer_dev(supplier, consumer)			\
++	for (consumer = NULL; false && (supplier);)
++
+ #define for_each_acpi_dev_match(adev, hid, uid, hrv)			\
+ 	for (adev = NULL; false && (hid) && (uid) && (hrv); )
  
 
 -- 
