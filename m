@@ -1,115 +1,142 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72F6586321
-	for <acpica-devel@lists.linux.dev>; Wed, 11 Dec 2024 08:32:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6073D1D90B1
+	for <acpica-devel@lists.linux.dev>; Wed, 11 Dec 2024 08:37:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733905938; cv=none; b=eXnpvK422gO68iCueQ/ifa8qN7FZag9hCHoX7jX6CwOFJmFwq0i+xKCP8rMKTEtkx0rNTiB+iF0z5km57CCia3GMu7v0JKZ8x0m15n0Xr2cZbhOWS3J85cZ16gj242N6tp21ucUPJWA3st0U1CtTbH88z0akU4VMElSzXUnEZho=
+	t=1733906246; cv=none; b=BTLM+gX0bh8RhSCppMCQ60dR33vSTdY9g78W6JVT5tc0pOL2hxVB7XyAMcR7lvwcSPLD7jcGIXPOpyFs+Q9ozH0aA3AEOv0G9GVoROAxif5e3veGBgsuizmUU6WN2taAr12P12gPlflDHvV1bfdNx0rjIfEP7nXemzTlBDTaMNg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733905938; c=relaxed/simple;
-	bh=ASSddga9/M67TA3gYuvbbIyqUT/9g38+NyFTLhOga1A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cfUERtfXvQ9l9CSEy1BVuO+nFHp1l9k/gxAP8HAJxTsKm73BLBh30y7pAjj36hkAb3rzxxt5DOz05MFD8/Wo5yzOIvge8QRLH0cRpRkl6sahXHT9KaIpb3KPY+5/aNnC04EcrCEWmQNHExGaWSYM+0jZD7kBNBiaLo1rXGddeKc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AZh73o6Y; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+	s=arc-20240116; t=1733906246; c=relaxed/simple;
+	bh=XBgmqrGOR+TiaTyhJ7G4EyEffKB3hn5wBPa+e60msYg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=W3h/RzYQWcfkhSHueu54UGfngHqEEOy8v+Gg2gRtYTb6tSL2dD/VmtyyElyeGPhZCORkGz/7EvTBCO2Gx0eR6Vwx7a3jNnmIzIQwtGpgjELK+EklI+ig0U5/FkKTEzsBprgP7Ryh+PXdv47Po2BD2xLNsjQRGzOLmAm0DaEnb98=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=kw4taMr+; arc=none smtp.client-ip=209.85.216.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AZh73o6Y"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1733905937; x=1765441937;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ASSddga9/M67TA3gYuvbbIyqUT/9g38+NyFTLhOga1A=;
-  b=AZh73o6YgrKmBJ7OXHZ1RGkHbUqGmhswmkjLa8YWyPwcS8vZpRkq5tpL
-   jla+15nSbGLvhqEKYUc5bYzeQjvOEwXeixVINk2HOHCcex+cm5EymA3mv
-   g0gJHoslAnetx5UvYJrpZVZ/Ah/QJJspG6x5O6KnR9HxSg+OoKfq+GDmE
-   xzOwSloIp+Mrjj0syMSieNh5rkmSCtRc5IcF0RhCpBUNXOgf9wngBbYLz
-   MX9XA6yE0jB8lgcIWzpUkmQXOY7D1BPjgoIq2+j20Zj++jR6wZH8oF9cw
-   5RzCUGGQNMEyfFcevuzvvFJsRXH7DzgL8aTCU+nxCLlIYTJQkm8luqWJb
-   Q==;
-X-CSE-ConnectionGUID: rCvBzEp4S/6CH9WEi8pF+g==
-X-CSE-MsgGUID: q9eniGYWTFu2HT5upf+37A==
-X-IronPort-AV: E=McAfee;i="6700,10204,11282"; a="34197776"
-X-IronPort-AV: E=Sophos;i="6.12,225,1728975600"; 
-   d="scan'208";a="34197776"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2024 00:32:15 -0800
-X-CSE-ConnectionGUID: yGhZC1/aRCWJk+iRVq200Q==
-X-CSE-MsgGUID: TmrSgisHTB2/5QcJNlGcEA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,225,1728975600"; 
-   d="scan'208";a="100536367"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2024 00:32:11 -0800
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-	by kekkonen.fi.intel.com (Postfix) with SMTP id EE8DD11F71F;
-	Wed, 11 Dec 2024 10:32:08 +0200 (EET)
-Date: Wed, 11 Dec 2024 08:32:08 +0000
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
-To: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc: Ricardo Ribalda <ribalda@chromium.org>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>,
-	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev
-Subject: Re: [PATCH v3 7/7] media: ipu-bridge: Remove unneeded conditional
- compilations
-Message-ID: <Z1lOCGJvgFcqmR3R@kekkonen.localdomain>
-References: <20241210-fix-ipu-v3-0-00e409c84a6c@chromium.org>
- <20241210-fix-ipu-v3-7-00e409c84a6c@chromium.org>
- <20241211091954.42a5c778@foz.lan>
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="kw4taMr+"
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2ee51f8c47dso4744736a91.1
+        for <acpica-devel@lists.linux.dev>; Wed, 11 Dec 2024 00:37:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1733906244; x=1734511044; darn=lists.linux.dev;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=qbJ9A+m8ws44k2uM8AYTsZl/eWYOAV0rPVSUcQb9sbo=;
+        b=kw4taMr+/PiSQgDIqImD87+0gXsrgPbIIF5QA4QbFWshLwD2llvD4kAtTXXMYOgSMC
+         DFfyKcjXnoxo9WinhZMnz9Z8uqz7Q+djyFeEJUr3kiN9rsObajrNSfNJ9HN4kFFMnBrF
+         8Aerrov9rx9qvijAZyJrz/L30m1Xvn296I5Gg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733906244; x=1734511044;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qbJ9A+m8ws44k2uM8AYTsZl/eWYOAV0rPVSUcQb9sbo=;
+        b=TAk25Xdeutm2cyJUPjmyDGt5tbwEJPknxdsbiH4WodJLm6+/fN0LPONtOVgWdPuC/1
+         5IqcYMoIg/TKMui0oIUvAb+CDw5bNMiTQaWQ4ezVJssO3Yi78L92JOFkOsBLv6bPU8eA
+         bxOrKBtN/+vu9SUweXX7QDuS50QtTQynXZVGU+EWOxGvh3maisEcPhXmTwyAaMa6ics8
+         goXFoY6tIFtZVg52MDG/7TbBGRDC/uT93IYeW/KMSaBOPZ6XnEk2LQayNGrbEbFqfojI
+         J2NS6XiIecXofqS9Wm08zi2hQ8n1XC75imOzOesLo1Wu51Q0Sw+Hu8wZ8nmKuDEwXj52
+         MtQw==
+X-Forwarded-Encrypted: i=1; AJvYcCUeN4QOjjIUgDJtH9/a4NxZlIbPYwJEj604DCsvb5vqg/8MaOMyd9sl+9apccRHa8Q5l4/Bzo+21L3Ze7E=@lists.linux.dev
+X-Gm-Message-State: AOJu0Ywgv7v4x/jSVDN+XwlrkKRJoI4KrGvd2c3TmNcJgjFbk3F9e8XW
+	ZC8nf+87weAqZmQGTBlmk1YqAXTaUmUQN01QPIyJnUwyFI95456UTrPBu1u5ORC4xfG90jKpYQ4
+	=
+X-Gm-Gg: ASbGncvW09bkUpce1tGedJH8aLSrB/cpHn5H+3Spx0lmIqzEKXhH89Nz6qcOkhCx82+
+	agzHMOUspsYx34O87jxQA7ExzRJJwQvz2z5l37EfLS8OK5xu2V+heDusPyqS2fHaWIw07sZbVEv
+	ZYUIm4c/EZfBrEZ8X4vUYR2ez4hxg8gYCvtX7tl7YawjGehSrliKo5kNExb50PJLvaxS2ciirOb
+	HYKfnpqHtKFgcAv/JaLYOFhrn1FFFXVUkbiPdz/XggbUeSJ+qiyigsOH4ll8MXGM20asN98lp+t
+	wJxpIX4Zt+o5kosC
+X-Google-Smtp-Source: AGHT+IE9atl4Bg9aWCoEPhVErqEPBMPs71fhbmIrwm61esRzK2Jx84ytsbZkz+zT4BmDTvj2R/txfA==
+X-Received: by 2002:a17:90b:4c48:b0:2ee:8358:385 with SMTP id 98e67ed59e1d1-2f127f550fbmr3258788a91.4.1733906244481;
+        Wed, 11 Dec 2024 00:37:24 -0800 (PST)
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com. [209.85.216.45])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ef26ff86d9sm12976583a91.1.2024.12.11.00.37.20
+        for <acpica-devel@lists.linux.dev>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Dec 2024 00:37:21 -0800 (PST)
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2ef28f07dbaso4738962a91.2
+        for <acpica-devel@lists.linux.dev>; Wed, 11 Dec 2024 00:37:20 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWpSdg/WpcoqAMa2wDcXi0cQRVNwydnUmQKwxP7bNgzLztUcIwKzcUEX+rK34XEum2+HiYKhHC/tXRvl/U=@lists.linux.dev
+X-Received: by 2002:a17:90b:4c84:b0:2ea:aa56:499 with SMTP id
+ 98e67ed59e1d1-2f127f555a9mr3269053a91.1.1733906240145; Wed, 11 Dec 2024
+ 00:37:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241211091954.42a5c778@foz.lan>
+References: <20241210-fix-ipu-v3-0-00e409c84a6c@chromium.org>
+ <20241210-fix-ipu-v3-7-00e409c84a6c@chromium.org> <20241211091954.42a5c778@foz.lan>
+ <Z1lOCGJvgFcqmR3R@kekkonen.localdomain>
+In-Reply-To: <Z1lOCGJvgFcqmR3R@kekkonen.localdomain>
+From: Ricardo Ribalda <ribalda@chromium.org>
+Date: Wed, 11 Dec 2024 09:37:07 +0100
+X-Gmail-Original-Message-ID: <CANiDSCvPNf2KiEpr6Tboon6bjUxwEkD=+_AQjhiOA7RDTTpnCw@mail.gmail.com>
+X-Gm-Features: AZHOrDlaYtacxTR4SrQpC121lb8rk1oSdpiMfzTs7ikEYNouO9W71c6h8nTE3PY
+Message-ID: <CANiDSCvPNf2KiEpr6Tboon6bjUxwEkD=+_AQjhiOA7RDTTpnCw@mail.gmail.com>
+Subject: Re: [PATCH v3 7/7] media: ipu-bridge: Remove unneeded conditional compilations
+To: Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>, Mauro Carvalho Chehab <mchehab@kernel.org>, 
+	"Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
+	Robert Moore <robert.moore@intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, 
+	Dan Carpenter <dan.carpenter@linaro.org>, linux-media@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, 
+	acpica-devel@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Mauro,
+On Wed, 11 Dec 2024 at 09:32, Sakari Ailus <sakari.ailus@linux.intel.com> wrote:
+>
+> Hi Mauro,
+>
+> On Wed, Dec 11, 2024 at 09:19:54AM +0100, Mauro Carvalho Chehab wrote:
+> > > @@ -768,15 +755,10 @@ static int ipu_bridge_ivsc_is_ready(void)
+> > >     unsigned int i;
+> > >
+> > >     for (i = 0; i < ARRAY_SIZE(ipu_supported_sensors); i++) {
+> > > -#if IS_ENABLED(CONFIG_ACPI)
+> > >             const struct ipu_sensor_config *cfg =
+> > >                     &ipu_supported_sensors[i];
+> > >
+> > >             for_each_acpi_dev_match(sensor_adev, cfg->hid, NULL, -1) {
+> > > -#else
+> > > -           while (false) {
+> > > -                   sensor_adev = NULL;
+> > > -#endif
+> > >                     if (!ACPI_PTR(sensor_adev->status.enabled))
+> > >                             continue;
+> > >
+> > >
+> >
+> > Considering that you drop patch 1, and keep the ACPI dependencies
+> > at the header, as proposed by patches 2-6:
+> >
+> > Reviewed-by: Mauro Carvalho Chehab <mchehab+huawei@kerenel.org>
+>
+> The 1st patch fixes a compilation warning when CONFIG_ACPI is disabled.
+> Merging that patch as a temporary solution is simply easier than making
+> arragements for merging the ACPI patches to the Media tree so the last
+> patch may be merged, too.
+>
+> Besides, the fix should also be backported.
+>
+> Ricardo: how about adding Cc: stable for that one?
 
-On Wed, Dec 11, 2024 at 09:19:54AM +0100, Mauro Carvalho Chehab wrote:
-> > @@ -768,15 +755,10 @@ static int ipu_bridge_ivsc_is_ready(void)
-> >  	unsigned int i;
-> >  
-> >  	for (i = 0; i < ARRAY_SIZE(ipu_supported_sensors); i++) {
-> > -#if IS_ENABLED(CONFIG_ACPI)
-> >  		const struct ipu_sensor_config *cfg =
-> >  			&ipu_supported_sensors[i];
-> >  
-> >  		for_each_acpi_dev_match(sensor_adev, cfg->hid, NULL, -1) {
-> > -#else
-> > -		while (false) {
-> > -			sensor_adev = NULL;
-> > -#endif
-> >  			if (!ACPI_PTR(sensor_adev->status.enabled))
-> >  				continue;
-> >  
-> > 
-> 
-> Considering that you drop patch 1, and keep the ACPI dependencies
-> at the header, as proposed by patches 2-6:
-> 
-> Reviewed-by: Mauro Carvalho Chehab <mchehab+huawei@kerenel.org>
+Adding:
+    Cc: stable@kernel.org
+    Fixes: 8810e055b575 ("media: intel/ipu6: Fix build with !ACPI")
+to v4
 
-The 1st patch fixes a compilation warning when CONFIG_ACPI is disabled.
-Merging that patch as a temporary solution is simply easier than making
-arragements for merging the ACPI patches to the Media tree so the last
-patch may be merged, too.
+Regards!
 
-Besides, the fix should also be backported.
+>
+> --
+> Regards,
+>
+> Sakari Ailus
 
-Ricardo: how about adding Cc: stable for that one?
+
 
 -- 
-Regards,
-
-Sakari Ailus
+Ricardo Ribalda
