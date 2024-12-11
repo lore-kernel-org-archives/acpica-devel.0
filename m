@@ -1,91 +1,115 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05E4E2451EB;
-	Wed, 11 Dec 2024 08:31:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72F6586321
+	for <acpica-devel@lists.linux.dev>; Wed, 11 Dec 2024 08:32:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733905919; cv=none; b=CQGAPN97/XgRvSWi3KmcU2eJf6tDhzb+rTdpmqC5Z7oWrxyFs0tsn81dLN/cEP93d1eHrluhKfdoONqtk+nTI6zi4ngTsN7KOnR6q/riSgJIa7BHk0opez6NH6X4L2QtYXiiK2S2sqCEfHsnRsr0iqQJu5niQTYM6B4gC65g1Bg=
+	t=1733905938; cv=none; b=eXnpvK422gO68iCueQ/ifa8qN7FZag9hCHoX7jX6CwOFJmFwq0i+xKCP8rMKTEtkx0rNTiB+iF0z5km57CCia3GMu7v0JKZ8x0m15n0Xr2cZbhOWS3J85cZ16gj242N6tp21ucUPJWA3st0U1CtTbH88z0akU4VMElSzXUnEZho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733905919; c=relaxed/simple;
-	bh=wYfGk39UOWCkSKleOFWnwE5xreKXyOntKThxjVcTuyM=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rnt/Etzg3Lk3cf7/JPw0YKkJYdt+AUNWjVnGryaZBQj9wF0BFEV4uIgZ31xT9qKN9iO0aVbmguPw3C7Lp/yZmej4QySwJkls259JuzSotwPdL6tvMQj6w+QzAnGqPHtPs+0/1lYyOMlg1w5/RIyQvzPEjlJuhdZ4zezJuvqCcpA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lHmhAAJz; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1733905938; c=relaxed/simple;
+	bh=ASSddga9/M67TA3gYuvbbIyqUT/9g38+NyFTLhOga1A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cfUERtfXvQ9l9CSEy1BVuO+nFHp1l9k/gxAP8HAJxTsKm73BLBh30y7pAjj36hkAb3rzxxt5DOz05MFD8/Wo5yzOIvge8QRLH0cRpRkl6sahXHT9KaIpb3KPY+5/aNnC04EcrCEWmQNHExGaWSYM+0jZD7kBNBiaLo1rXGddeKc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AZh73o6Y; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lHmhAAJz"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E34DCC4CEDE;
-	Wed, 11 Dec 2024 08:31:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733905918;
-	bh=wYfGk39UOWCkSKleOFWnwE5xreKXyOntKThxjVcTuyM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=lHmhAAJzzDgkUyuL4TPPoz4BjOPT2r9CW3d3p0Y6AhnNDnTvA9Qs1z8Js9/hNiSQM
-	 Nwpwr8PeZr0M7i6giWLgCVr7HAw0vDZPstOSfmSB6DgUbcviS918w0NY8zzAuSLPM+
-	 wBeYWrjcg2QOAynBnLzuVI581GJWIWBkSeVZDdTCVdugCbhi4IC8kK1PVF9yxGweFR
-	 whQ95yPbxYPDSTec72uQM1N2DYA3InqdMulap4PvQjF7KWARLEXOnapxEXCevzV4K6
-	 uVlzD3rhYrhBmxamiTeOO9Wpx64Vv3r8zBrMRKCdGJTnnqp7eJ2cOj2q9odOwrlOxo
-	 jfhf67/eJqKvw==
-Date: Wed, 11 Dec 2024 09:31:53 +0100
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To: Ricardo Ribalda <ribalda@chromium.org>
-Cc: Sakari Ailus <sakari.ailus@linux.intel.com>, Mauro Carvalho Chehab
- <mchehab@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown
- <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>, "Rafael J.
- Wysocki" <rafael.j.wysocki@intel.com>, Dan Carpenter
- <dan.carpenter@linaro.org>, linux-media@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
- acpica-devel@lists.linux.dev, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v3 1/7] media: ipu-bridge: Fix warning when !ACPI
-Message-ID: <20241211093153.7acd91c4@foz.lan>
-In-Reply-To: <CANiDSCtFQBNjJoLF1VKR_M4zNHQWwWATu3p=-QQS-d3fY+9KUA@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AZh73o6Y"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1733905937; x=1765441937;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ASSddga9/M67TA3gYuvbbIyqUT/9g38+NyFTLhOga1A=;
+  b=AZh73o6YgrKmBJ7OXHZ1RGkHbUqGmhswmkjLa8YWyPwcS8vZpRkq5tpL
+   jla+15nSbGLvhqEKYUc5bYzeQjvOEwXeixVINk2HOHCcex+cm5EymA3mv
+   g0gJHoslAnetx5UvYJrpZVZ/Ah/QJJspG6x5O6KnR9HxSg+OoKfq+GDmE
+   xzOwSloIp+Mrjj0syMSieNh5rkmSCtRc5IcF0RhCpBUNXOgf9wngBbYLz
+   MX9XA6yE0jB8lgcIWzpUkmQXOY7D1BPjgoIq2+j20Zj++jR6wZH8oF9cw
+   5RzCUGGQNMEyfFcevuzvvFJsRXH7DzgL8aTCU+nxCLlIYTJQkm8luqWJb
+   Q==;
+X-CSE-ConnectionGUID: rCvBzEp4S/6CH9WEi8pF+g==
+X-CSE-MsgGUID: q9eniGYWTFu2HT5upf+37A==
+X-IronPort-AV: E=McAfee;i="6700,10204,11282"; a="34197776"
+X-IronPort-AV: E=Sophos;i="6.12,225,1728975600"; 
+   d="scan'208";a="34197776"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2024 00:32:15 -0800
+X-CSE-ConnectionGUID: yGhZC1/aRCWJk+iRVq200Q==
+X-CSE-MsgGUID: TmrSgisHTB2/5QcJNlGcEA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,225,1728975600"; 
+   d="scan'208";a="100536367"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2024 00:32:11 -0800
+Received: from kekkonen.localdomain (localhost [127.0.0.1])
+	by kekkonen.fi.intel.com (Postfix) with SMTP id EE8DD11F71F;
+	Wed, 11 Dec 2024 10:32:08 +0200 (EET)
+Date: Wed, 11 Dec 2024 08:32:08 +0000
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+From: Sakari Ailus <sakari.ailus@linux.intel.com>
+To: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc: Ricardo Ribalda <ribalda@chromium.org>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>,
+	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev
+Subject: Re: [PATCH v3 7/7] media: ipu-bridge: Remove unneeded conditional
+ compilations
+Message-ID: <Z1lOCGJvgFcqmR3R@kekkonen.localdomain>
 References: <20241210-fix-ipu-v3-0-00e409c84a6c@chromium.org>
-	<20241210-fix-ipu-v3-1-00e409c84a6c@chromium.org>
-	<Z1isvGLLwr7jmW5k@kekkonen.localdomain>
-	<CANiDSCtFQBNjJoLF1VKR_M4zNHQWwWATu3p=-QQS-d3fY+9KUA@mail.gmail.com>
-X-Mailer: Claws Mail 4.3.0 (GTK 3.24.43; x86_64-redhat-linux-gnu)
+ <20241210-fix-ipu-v3-7-00e409c84a6c@chromium.org>
+ <20241211091954.42a5c778@foz.lan>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241211091954.42a5c778@foz.lan>
 
-Em Tue, 10 Dec 2024 22:27:32 +0100
-Ricardo Ribalda <ribalda@chromium.org> escreveu:
+Hi Mauro,
 
-> On Tue, 10 Dec 2024 at 22:04, Sakari Ailus <sakari.ailus@linux.intel.com> wrote:
-> >
-> > Hi Ricardo,
-> >
-> > On Tue, Dec 10, 2024 at 07:55:58PM +0000, Ricardo Ribalda wrote:  
-> > > One of the quirks that we introduced to build with !ACPI && COMPILE_TEST
-> > > throws the following smatch warning:
-> > > drivers/media/pci/intel/ipu-bridge.c:752 ipu_bridge_ivsc_is_ready() warn: iterator 'i' not incremented
-> > >
-> > > Fix it by replacing the condition.
-> > >
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > > Closes: https://lore.kernel.org/r/202411221147.N6w23gDo-lkp@intel.com/
-> > > Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> > > Closes: https://lore.kernel.org/r/202411221147.N6w23gDo-lkp@intel.com/
-> > > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>  
-> >
-> > I've picked this to my tree and I'll take the last one, too, once the rest
-> > reaches the media tree.  
+On Wed, Dec 11, 2024 at 09:19:54AM +0100, Mauro Carvalho Chehab wrote:
+> > @@ -768,15 +755,10 @@ static int ipu_bridge_ivsc_is_ready(void)
+> >  	unsigned int i;
+> >  
+> >  	for (i = 0; i < ARRAY_SIZE(ipu_supported_sensors); i++) {
+> > -#if IS_ENABLED(CONFIG_ACPI)
+> >  		const struct ipu_sensor_config *cfg =
+> >  			&ipu_supported_sensors[i];
+> >  
+> >  		for_each_acpi_dev_match(sensor_adev, cfg->hid, NULL, -1) {
+> > -#else
+> > -		while (false) {
+> > -			sensor_adev = NULL;
+> > -#endif
+> >  			if (!ACPI_PTR(sensor_adev->status.enabled))
+> >  				continue;
+> >  
+> > 
 > 
-> Thanks!
+> Considering that you drop patch 1, and keep the ACPI dependencies
+> at the header, as proposed by patches 2-6:
 > 
-> If you do not mind, I will keep sending 1/7 when I send v3, to make
-> sure it is tested by the CI. I will mark it as duplicate in patchwork.
+> Reviewed-by: Mauro Carvalho Chehab <mchehab+huawei@kerenel.org>
 
-Patches should not be designed to make CI happy, but to ensure that we
-have a nice history at Kernel's log. Patch 1/7 shall be merged with
-7/7, as you're just artificially breaking it into without a good
-reason, making CI happy, but reviewers and maintainers unhappy :-)
+The 1st patch fixes a compilation warning when CONFIG_ACPI is disabled.
+Merging that patch as a temporary solution is simply easier than making
+arragements for merging the ACPI patches to the Media tree so the last
+patch may be merged, too.
 
+Besides, the fix should also be backported.
 
-Thanks,
-Mauro
+Ricardo: how about adding Cc: stable for that one?
+
+-- 
+Regards,
+
+Sakari Ailus
