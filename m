@@ -1,328 +1,443 @@
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2040.outbound.protection.outlook.com [40.107.94.40])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AD4E1C4A0E
-	for <acpica-devel@lists.linux.dev>; Wed, 11 Dec 2024 19:47:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.40
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733946470; cv=fail; b=TiZJDGHUrMMtGeqHlcJsk+GzKbSFxOm/pAprAB+1WCl7JOrGpChe5TxtmxEYXz6REX4vK9CA4t9tllFqtsDDAY3PSx+CDcr8EOnX/pHikCet0FP3/HHgz5tYeJW5ITa4yC3sEAvlo28LAvt9JhLCcM2PN4gWXDhGuvgwHtivCKY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733946470; c=relaxed/simple;
-	bh=DCY8umbeEhfY+Z3N3ywwNiIbybD9JEBcVQc18gtcizo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=WDBwaU+2+fufIgl0stW1Vya7+VXuvl4Yyg40sEKrO8/enkGol9bA3RXN7+eQyJBRYHA5DUrUsJejuwbnYE6CCiPCGqWNUwVMGYEhmqlTNHGnzaM8O5MlzFIZD3xaYoH50JhMXX4Bynk2GiAb+54y9dcu+XdhaBzryyFXKPyWMRU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=H81OOFeI; arc=fail smtp.client-ip=40.107.94.40
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="H81OOFeI"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=NHr1AmF8bL/3JVQvoMmDPqLRVf/3mblNlgtitQLnbjoNAEgtPGRCMmiRRQsrE6qUfy8bKI6y+NLcx9jLKN3aB1wZX3aY5UsNld3RnM8HZ4pJTO8QGSM6/yuIlHJ018DR3Lyx5A2Xt0YZvvaeBkamdWV8uCFEEjGsQYI2Et2DbOo5lweFGfvoUMvjnVATKb0qAgJQWIqqBzvNAsh+bp5eMGrmRYVk0H1a64hqyqxtZm0wURsPRxezTvU5limGrxdEamScKlrA8tsmgixqHgpMGlvOQWyXN/RorzKf3SxEwHGJpoOb/eHtuearjs/8mfW4GT1hMfWLekUEtXiQLP3Ekg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=X+ct/Znm2GCeFpIfguKLollOWdUcvzJwPlkDdzg/FS8=;
- b=d0iDZeOlcMiSvBs1Y5KnbtTfSUG3CrF4488VPII633mXUtybqBhc63FagV75TY21oHzSC0iqw08uABTQeYK+CxWbJVLL+6HZfpJ71Lhdwk4eu8TXPj1R+twU7uMSVzjvIA1EYGsteMssc2Bqy8MyHOeFOi7mwNpnXoZdodTswJVcXQ9Xd9dHIYw7Ojm0J1WKyEN+bsIPTyvG88GnnXtRAlqNE/5ky8ydAj6pdjQ3UD8dRwjOmtZraaOVMae5qIT2loORzhXugt5L1kV+1IBUNEAyhw1jPfTYJoTGfARZbuYtp/aHoy6gstqGAN5XuTuveoNQnjqZlCBsyVvOsYM3kw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=X+ct/Znm2GCeFpIfguKLollOWdUcvzJwPlkDdzg/FS8=;
- b=H81OOFeIGGiwj4z52fq6gNIme/HaHPhsYx6oHw8Lkrq3Gdr5lmppIqCK4o9zlNuf/SuwYr+69ZQM9hHOZZs5o2kSdupVjWS3z51GjXs8mf+NVP76M9o4kUNc2T+NEd2Cqv7+RB99Xc9T4ZaEWb4b+WQ1iIqUgYsIt6cJCv22Lj4=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB6373.namprd12.prod.outlook.com (2603:10b6:8:a4::7) by
- MN2PR12MB4221.namprd12.prod.outlook.com (2603:10b6:208:1d2::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8207.15; Wed, 11 Dec
- 2024 19:47:44 +0000
-Received: from DM4PR12MB6373.namprd12.prod.outlook.com
- ([fe80::12f7:eff:380b:589f]) by DM4PR12MB6373.namprd12.prod.outlook.com
- ([fe80::12f7:eff:380b:589f%6]) with mapi id 15.20.8230.016; Wed, 11 Dec 2024
- 19:47:44 +0000
-Date: Wed, 11 Dec 2024 14:47:35 -0500
-From: Yazen Ghannam <yazen.ghannam@amd.com>
-To: LeoLiu-oc <LeoLiu-oc@zhaoxin.com>
-Cc: rafael@kernel.org, lenb@kernel.org, james.morse@arm.com,
-	tony.luck@intel.com, bp@alien8.de, bhelgaas@google.com,
-	robert.moore@intel.com, avadhut.naik@amd.com,
-	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org, acpica-devel@lists.linux.dev,
-	CobeChen@zhaoxin.com, TonyWWang@zhaoxin.com, ErosZhang@zhaoxin.com
-Subject: Re: [PATCH v4 3/3] PCI/ACPI: Add pci_acpi_program_hest_aer_params()
-Message-ID: <20241211194735.GB1960478@yaz-khff2.amd.com>
-References: <20241205114048.60291-1-LeoLiu-oc@zhaoxin.com>
- <20241205114048.60291-4-LeoLiu-oc@zhaoxin.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241205114048.60291-4-LeoLiu-oc@zhaoxin.com>
-X-ClientProxiedBy: MN2PR20CA0039.namprd20.prod.outlook.com
- (2603:10b6:208:235::8) To DM4PR12MB6373.namprd12.prod.outlook.com
- (2603:10b6:8:a4::7)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E702020DD5C
+	for <acpica-devel@lists.linux.dev>; Thu, 12 Dec 2024 08:43:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1733993027; cv=none; b=eVezxd1ySZzI+GsbbkGHFNUCDSKJdXyi2hKJloB1z8xvxmA/Vu6LfDERzyLzej8tN54AyhzgFDqsQhiRiBVAzh8H712LamvyVviv/zI3NKg8MvlY0F7AZL6CZu8Hl+O6Jwj053EBk6KoQUYak9oTMo2+wed0Iei6bu/aLfczQhA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1733993027; c=relaxed/simple;
+	bh=lnDPQ6Whp46KDXJMRtkZBB8R/W4aOE6DAx7he0IMN5E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=S4CRiQ0Wf9jMKE01RjcRdYPilei4pOYHb9xi7JyCNugkM5EXG9p2Kf5Vy7CwzysOUZlv8e/Qnt7QgsrzU/JCgiOONJkBbfW0glE0naxy75zXUr8Ru2RgXDgOLkQNmWnt6mba7/y07owiYxHNS3OaI6k539tIFas3GpxqwLBhba0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Y85Ww6QDfz11MLY;
+	Thu, 12 Dec 2024 16:40:28 +0800 (CST)
+Received: from kwepemh100008.china.huawei.com (unknown [7.202.181.93])
+	by mail.maildlp.com (Postfix) with ESMTPS id F20EE1402C1;
+	Thu, 12 Dec 2024 16:43:35 +0800 (CST)
+Received: from [10.67.121.90] (10.67.121.90) by kwepemh100008.china.huawei.com
+ (7.202.181.93) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Thu, 12 Dec
+ 2024 16:43:35 +0800
+Message-ID: <7f976270-1fce-451b-801b-a593aaec719c@huawei.com>
+Date: Thu, 12 Dec 2024 16:43:34 +0800
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR12MB6373:EE_|MN2PR12MB4221:EE_
-X-MS-Office365-Filtering-Correlation-Id: fe94e544-ddce-47ed-7d4c-08dd1a1cae52
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|366016|376014|7416014|1800799024|7053199007;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?1WxDml9QHgyBKjTlQ8W4mMZKpL3d7pIeyShiKaHUc5AAuTCb/Bq3YxmUZYnw?=
- =?us-ascii?Q?5JaFS/12688K0lDFa0oNZxdQ41ZrWBt8EnGDnBBhyRYvRFZo3de1YyJfiY/Q?=
- =?us-ascii?Q?wmAh1IquFJXD/nlvt/uX77ZVStabkHsFVYVmmOzeDSg0yE0Gjeog1bTyrkhH?=
- =?us-ascii?Q?EhPKz9xvzgeSC6AfipL42CtlJlYXWCx3b5ByZN/UwvADel/zj941z5442q3q?=
- =?us-ascii?Q?nl1nogY2UWKKPrO5/thf7uzAbEiWs4E8ndazA4x4qZbejVIMZFYwl0Fesa4R?=
- =?us-ascii?Q?DozSztsXxSSGqlm0fptEfWoOuOaBK4czDtzw/KeQj+wea9WdskKkLN4F3zxy?=
- =?us-ascii?Q?wsg8H3l2SHdW4iIy/x+w3IBLX9WTqjPsv58VHLvT1nmatP9Jbr6FLA+py7PQ?=
- =?us-ascii?Q?6/bbQ6jwNmToMG1fo892VDfqpPdHd5V0tFgKIxTPc3ErEbNyAVwrcl1J8+1+?=
- =?us-ascii?Q?ikK4RjpPDcmMQdEAylWBizzjAQlMdGx4Px5sXNKL9fXsXZxdUPBTWkUjlYNy?=
- =?us-ascii?Q?DxOnMJN9HL9GlNkvGr00tTVSgwSrCUaRKKFh5Gg0OaMIxyiLYyUHggNW5b24?=
- =?us-ascii?Q?V3OQHC0eMz4jpFhOshzE7zJglvM/mm+ToRnHXkulRtG1vOuZQgUSZ+KeMcSh?=
- =?us-ascii?Q?Vz58qAs+BcnFt1veSGZzWVpn42mGGzk44D5EJxfexB0j4At3LukHRRDUZkR8?=
- =?us-ascii?Q?Z/fVdWk020Ovz/sESYC+/onsUqf+3vJtWb5PsTRCMGYaCyiq+4GBLaB0+taM?=
- =?us-ascii?Q?EYHcDEIihiy8S0yaBpgEY/I7Q1aO1c8Xehl8jAmg1g2YmrqzZMqa3kmczgxO?=
- =?us-ascii?Q?9R4pplS1KIaIzPK2ahP0FI3Hm3htmjiMfQa6Sndb0QzOI9tkAw9mIt26H2YV?=
- =?us-ascii?Q?qhy31OzZxZpK7zEN1miif97hZlLe2W4H0rlBda5IV55fSTVK1znlJwxhPxtV?=
- =?us-ascii?Q?Dni14xawmnXAryUh5rdwre8T4D0C79WeYt9JK5ZXcdI4ZT4RN4SEk0QZKMCr?=
- =?us-ascii?Q?Wq4nG4CdHK2pUUDKSJzqVeSepU/hh/HdDHUkVjTh34lqm0ZL53tM1noZfHyn?=
- =?us-ascii?Q?WGEGnS+B79kNyQ3yGP/CMcFUaYt1dvuSxLbnYvhmi5nVE0+puhQ2bB4ZfMut?=
- =?us-ascii?Q?3/rYp/+nAxRkQcLXRCkt1V4UW7CF2j4FcJ/M7KK/cOGUVaSXF9oHypRtyPSx?=
- =?us-ascii?Q?3cBY12k3nl3/PGyDUriYvwP8BB03y2BkCUY9VU1Noh0IMBwe0L/FLZFYJNP/?=
- =?us-ascii?Q?S8XOGMQxuXO2URdMd3TwQkaAGUNu0XxG5Q0w9q9GytCaqZo7j8UyKGqoc9lu?=
- =?us-ascii?Q?lixSR3vtiKwO9Rnz1T4YuWHlZkpV0kwiZeHKcC7ZoucHSg=3D=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB6373.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(7416014)(1800799024)(7053199007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?EcpjwxCKL+RxlnFuzVtEQrZkjWCvFJ2Z8jnFxYOn2T9DDIxGV45LY8MU2wFv?=
- =?us-ascii?Q?ltAJVJFN82g9hwXaKko6RhRH3x7G/UU7ekM41cgZaXbSLK8XgK56N/s0NhYl?=
- =?us-ascii?Q?gCXaStF14MW7UPLPz4ekasvFf01iWF4ue7e1TPEAlT1lPy1VVb9AIfLQB+bU?=
- =?us-ascii?Q?Md1WCsKt1WGduZMfeAok7l9mskkyZz9QJZkmCr2EYQ1i/n/QvpgYQJuL3C7f?=
- =?us-ascii?Q?nOGOSkBPaGSgU2MfByMwqlJaqy+68ALsD3HJmecrFYK4/c+cXISDVTxQhX+w?=
- =?us-ascii?Q?aJDu5i/V1ZzFQZZhqfbzZdIIXm1AAJIdJBC6xVqb4aNw7OJwBAZKrqu4BYvM?=
- =?us-ascii?Q?DyzqpbypIeUFvZfHaQeMuhjRghwa/78iiOw2nlSkvzPJxDOBb5OUi8J8qnyT?=
- =?us-ascii?Q?xsWSET++xLj6AW2NEj5u0e8bSvX6J8T+iM3wQYcbOfKRT5lU9GRkj0Hags4w?=
- =?us-ascii?Q?abFctk21rILnM+tRjPQnhVlZkv8aNcdufJsil2FAk3JIH7GEVWXXxpMV3fT5?=
- =?us-ascii?Q?2cBUU4hUfDZWu0jarzz40HXjCjrIW9c0TCxlpS2mgOPr2szivQo70tPzZWFh?=
- =?us-ascii?Q?kE+VmEEdLimDSi19aPeNbCV6UOsko83bujRB1BM5DtYJtc0wDJj1KakB1DOX?=
- =?us-ascii?Q?Msy4oBq7lFYXY4Zi8/sml0rfEWCBnuV/jj3rouqwvENsSYtqY6zoOppCtYSG?=
- =?us-ascii?Q?xU2e8M2CAh/V+68on1aSSd9DFkMqyCPVN9stDvyIfqhPV94rRmK8a44sGVqo?=
- =?us-ascii?Q?EhZgJBvmcX/snZu6/0cVx1ZLBsrcenFQQ2hmMAvOuJg4D6ubn4YSzdsxr1SB?=
- =?us-ascii?Q?VOgQZocHaZ95W4EH0wFtU7Yt9WWrD8yDr6nYMYjmx0fEfw/HJUX6HZ5LiP0N?=
- =?us-ascii?Q?9bDK4z74aME9IqX6Ex3dYApxYdMCFwPLSKc/xRxf0JqWhBamZw4wtX58pqSm?=
- =?us-ascii?Q?JNJheMJq4y+Jmd2rN+ulOkEJNh4lnhI89Pi6PxZ2sRgLeIDbTBg7NmMhiKoV?=
- =?us-ascii?Q?Ar/BjZ4J3gCICGQ3nzo5Kru122yrZsAHlrxpNy2CfTI9qPe45zjgldNQtzdQ?=
- =?us-ascii?Q?/b06ZWiEn3nw9pCE2iub5I0DJxJXDa5nNBgvODkJ91Sju9SKew90aZ4walyA?=
- =?us-ascii?Q?VBZrSYNruY+fGi7cBnCvAX975AfTI9/kft2c1Rp8S/RsH5rYArmbgGahEOxQ?=
- =?us-ascii?Q?X+zwbtbmXPVxAR8ZatCWYARY3onmCuqFukxxud1oDmZuT5qHyYZRSQhZxCaI?=
- =?us-ascii?Q?2KEiuVXwl/pvdJBuCIHHWXKbYZH8gsLAeLI5sQueGkJUE7VU9SZirVNd6Xoh?=
- =?us-ascii?Q?uHLlaGEH56qpGDQkEmSMe6hDIZxg9Uq8WuIZ4EDB7FAL1WKNble9XaBqj+nT?=
- =?us-ascii?Q?a2KZTjBYtjiu8cAfdFXl78IJwRhZjZ4pT+QnP8ny4/3cnXJbE3rnJvJ4qU9i?=
- =?us-ascii?Q?8SjWnNLpaquzbdwAxGZHcaFYwxrhgh0cFOAYDmAU1ADYKbL2Z4iLQ0V+fM54?=
- =?us-ascii?Q?THyrF/Xqx3/nBNl6JZFlzk+BZR5k/ShnxTmo2nlaJoTeJ3h2QDlVDmT/+bg0?=
- =?us-ascii?Q?p1SjGU98o7O2jmmdV1/YtUx1EF3Dm9ODaISxhi78?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fe94e544-ddce-47ed-7d4c-08dd1a1cae52
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB6373.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2024 19:47:44.4900
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GL4/JzueIlWtQqFF/pgcO8GImhcBkBM6Jxz2lnfjMS5SZV0qAX+8MeqDJ3dUnsgp6Qur6AV1SNkw5hJYouob0w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4221
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/3] ACPI: CPPC: Refactor register get and set ABIs
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+CC: <lenb@kernel.org>, <robert.moore@intel.com>, <viresh.kumar@linaro.org>,
+	<acpica-devel@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+	<linuxarm@huawei.com>, <jonathan.cameron@huawei.com>,
+	<zhanjie9@hisilicon.com>, <lihuisong@huawei.com>, <hepeng68@huawei.com>,
+	<fanghao11@huawei.com>
+References: <20241122062051.3658577-1-zhenglifeng1@huawei.com>
+ <20241122062051.3658577-2-zhenglifeng1@huawei.com>
+ <CAJZ5v0jnF82WX_=4KtqwnLd=vcHYt_pbtyvQV74p0ojKr33D=A@mail.gmail.com>
+From: "zhenglifeng (A)" <zhenglifeng1@huawei.com>
+In-Reply-To: <CAJZ5v0jnF82WX_=4KtqwnLd=vcHYt_pbtyvQV74p0ojKr33D=A@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemh100008.china.huawei.com (7.202.181.93)
 
-On Thu, Dec 05, 2024 at 07:40:48PM +0800, LeoLiu-oc wrote:
-> From: LeoLiuoc <LeoLiu-oc@zhaoxin.com>
+On 2024/12/11 2:14, Rafael J. Wysocki wrote:
+> On Fri, Nov 22, 2024 at 7:21 AM Lifeng Zheng <zhenglifeng1@huawei.com> wrote:
+>>
+>> Refactor register get and set ABIs using cppc_get_reg() and cppc_set_reg().
 > 
-> Call the func pci_acpi_program_hest_aer_params() for every PCIe device,
-> the purpose of this function is to extract register value from HEST PCIe
-> AER structures and program them into AER Capabilities. This function
-> applies to all hardware platforms that has a PCI Express AER structure
-> in HEST.
+> I don't quite like the cppc_get_reg() name.  I think that
+> cppc_get_reg_val() would be better.
+
+Indeed, it is better. Will change. Thanks.
+
 > 
-> Signed-off-by: LeoLiuoc <LeoLiu-oc@zhaoxin.com>
-> ---
->  drivers/pci/pci-acpi.c | 103 +++++++++++++++++++++++++++++++++++++++++
->  drivers/pci/pci.h      |   9 ++++
->  drivers/pci/probe.c    |   1 +
->  3 files changed, 113 insertions(+)
+>> Rename cppc_get_perf() to cppc_get_reg() as a generic function to read cppc
+>> registers, with two changes:
+>>
+>> 1. Change the error kind to "no such device" when pcc_ss_id < 0, which
+>> means that this cpu cannot get a valid pcc_ss_id.
+>>
+>> 2. Add a check to verify if the register is a cpc supported one before
+>> using it.
 > 
-> diff --git a/drivers/pci/pci-acpi.c b/drivers/pci/pci-acpi.c
-> index af370628e583..6e29af8e6cc4 100644
-> --- a/drivers/pci/pci-acpi.c
-> +++ b/drivers/pci/pci-acpi.c
-> @@ -19,6 +19,7 @@
->  #include <linux/pm_runtime.h>
->  #include <linux/pm_qos.h>
->  #include <linux/rwsem.h>
-> +#include <acpi/apei.h>
->  #include "pci.h"
->  
->  /*
-> @@ -806,6 +807,108 @@ int pci_acpi_program_hp_params(struct pci_dev *dev)
->  	return -ENODEV;
->  }
->  
-> +#ifdef CONFIG_ACPI_APEI
-> +/*
-> + * program_hest_aer_common() - configure AER common registers for Root Ports,
-> + * Endpoints and PCIe to PCI/PCI-X bridges
-> + */
-> +static void program_hest_aer_common(struct acpi_hest_aer_common aer_common,
-> +				    struct pci_dev *dev, int pos)
-> +{
-> +	u32 uncor_mask;
-> +	u32 uncor_severity;
-> +	u32 cor_mask;
-> +	u32 adv_cap;
-> +
-> +	uncor_mask = aer_common.uncorrectable_mask;
-> +	uncor_severity = aer_common.uncorrectable_severity;
-> +	cor_mask = aer_common.correctable_mask;
-> +	adv_cap = aer_common.advanced_capabilities;
-> +
+> So it's not just a rename, but also a change in behavior.  Can this
+> change in behavior become user-visible?
 
-These can be done at the same time as the declarations. Same for the
-remaining functions.
+The register value get ABIs in this file returned different error numbers
+when pcc_ss_id < 0, but should be the same one. So I chose a most suitable
+one I thought to be returned here when doing refactoring. This change is
+not user-visible as I know.
 
-> +	pci_write_config_dword(dev, pos + PCI_ERR_UNCOR_MASK, uncor_mask);
-> +	pci_write_config_dword(dev, pos + PCI_ERR_UNCOR_SEVER, uncor_severity);
-> +	pci_write_config_dword(dev, pos + PCI_ERR_COR_MASK, cor_mask);
-> +	pci_write_config_dword(dev, pos + PCI_ERR_CAP, adv_cap);
-> +}
-> +
-> +static void program_hest_aer_root(struct acpi_hest_aer_root *aer_root,
-> +				  struct pci_dev *dev, int pos)
-> +{
-> +	u32 root_err_cmd;
-> +
-> +	root_err_cmd = aer_root->root_error_command;
-> +
-> +	pci_write_config_dword(dev, pos + PCI_ERR_ROOT_COMMAND, root_err_cmd);
-> +}
-> +
-> +static void program_hest_aer_bridge(struct acpi_hest_aer_bridge *hest_aer_bridge,
-> +				    struct pci_dev *dev, int pos)
-> +{
-> +	u32 uncor_mask2;
-> +	u32 uncor_severity2;
-> +	u32 adv_cap2;
-> +
-> +	uncor_mask2 = hest_aer_bridge->uncorrectable_mask2;
-> +	uncor_severity2 = hest_aer_bridge->uncorrectable_severity2;
-> +	adv_cap2 = hest_aer_bridge->advanced_capabilities2;
-> +
-> +	pci_write_config_dword(dev, pos + PCI_ERR_UNCOR_MASK2, uncor_mask2);
-> +	pci_write_config_dword(dev, pos + PCI_ERR_UNCOR_SEVER2, uncor_severity2);
-> +	pci_write_config_dword(dev, pos + PCI_ERR_CAP2, adv_cap2);
-> +}
-> +
-> +static void program_hest_aer_params(struct hest_parse_aer_info info)
-> +{
-> +	struct pci_dev *dev;
-> +	int port_type;
-> +	int pos;
-> +	struct acpi_hest_aer_root *hest_aer_root;
-> +	struct acpi_hest_aer *hest_aer_endpoint;
-> +	struct acpi_hest_aer_bridge *hest_aer_bridge;
-> +
-> +	dev = info.pci_dev;
-> +	port_type = pci_pcie_type(dev);
-> +	pos = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_ERR);
-> +	if (!pos)
-> +		return;
-> +
-> +	switch (port_type) {
-> +	case PCI_EXP_TYPE_ROOT_PORT:
-> +		hest_aer_root = info.hest_aer_root_port;
-> +		program_hest_aer_common(hest_aer_root->aer, dev, pos);
-> +		program_hest_aer_root(hest_aer_root, dev, pos);
-> +	break;
-> +	case PCI_EXP_TYPE_ENDPOINT:
-> +		hest_aer_endpoint = info.hest_aer_endpoint;
-> +		program_hest_aer_common(hest_aer_endpoint->aer, dev, pos);
-> +	break;
-> +	case PCI_EXP_TYPE_PCI_BRIDGE:
-> +		hest_aer_bridge = info.hest_aer_bridge;
-> +		program_hest_aer_common(hest_aer_bridge->aer, dev, pos);
-> +		program_hest_aer_bridge(hest_aer_bridge, dev, pos);
-> +	break;
-> +	default:
-> +		return;
-> +	break;
-> +	}
-> +}
-> +
-> +int pci_acpi_program_hest_aer_params(struct pci_dev *dev)
-> +{
-> +	struct hest_parse_aer_info info = {
-> +		.pci_dev = dev
-> +	};
-> +
-> +	if (!pci_is_pcie(dev))
-> +		return -ENODEV;
-> +
-> +	if (apei_hest_parse(hest_parse_pcie_aer, &info) == 1)
+It is necessary to do the CPC_SUPPORTED() check before using the register.
+If it is not a cpc supported one, the rest of the operation is pointless
+and may be dangerous. This change might be user-visible but is still
+necessary.
 
-Don't need the "== 1".
+> 
+>> Add cppc_set_reg() as a generic function for setting cppc registers.
+> 
+> Again, I would prefer cppc_set_reg_val().
+> 
+>> Unlike other set reg ABIs, this function checks CPC_SUPPORTED right after getting
+>> the register, because the rest of the operations are meaningless if this
+>> register is not a cpc supported one.
+> 
+> And the new function is used to reduce some existing code duplication,
+> isn't it?  Which would be good to mention here.
 
-> +		program_hest_aer_params(info);
-> +
-> +	return 0;
-> +}
-> +#endif
-> +
->  /**
->   * pciehp_is_native - Check whether a hotplug port is handled by the OS
->   * @bridge: Hotplug port to check
-> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-> index 2e40fc63ba31..78bdc121c905 100644
-> --- a/drivers/pci/pci.h
-> +++ b/drivers/pci/pci.h
-> @@ -897,6 +897,15 @@ static inline void pci_save_aer_state(struct pci_dev *dev) { }
->  static inline void pci_restore_aer_state(struct pci_dev *dev) { }
->  #endif
->  
-> +#ifdef CONFIG_ACPI_APEI
-> +int pci_acpi_program_hest_aer_params(struct pci_dev *dev);
+Yes, Will mention it in next version. Thanks.
 
-The return value is never checked, so this can return void.
+> 
+>> Signed-off-by: Lifeng Zheng <zhenglifeng1@huawei.com>
+>> ---
+>>  drivers/acpi/cppc_acpi.c | 191 +++++++++++++++------------------------
+>>  1 file changed, 72 insertions(+), 119 deletions(-)
+>>
+>> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+>> index c1f3568d0c50..9aab22d8136a 100644
+>> --- a/drivers/acpi/cppc_acpi.c
+>> +++ b/drivers/acpi/cppc_acpi.c
+>> @@ -1179,10 +1179,13 @@ static int cpc_write(int cpu, struct cpc_register_resource *reg_res, u64 val)
+>>         return ret_val;
+>>  }
+>>
+>> -static int cppc_get_perf(int cpunum, enum cppc_regs reg_idx, u64 *perf)
+>> +static int cppc_get_reg(int cpunum, enum cppc_regs reg_idx, u64 *val)
+>>  {
+>>         struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpunum);
+>> +       struct cppc_pcc_data *pcc_ss_data = NULL;
+> 
+> Why are you moving this here?  This change is not related to the rest
+> of the patch, is it?
+> 
+>>         struct cpc_register_resource *reg;
+>> +       int pcc_ss_id;
+>> +       int ret = 0;
+> 
+> And here?
 
-> +#else
-> +static inline int pci_acpi_program_hest_aer_params(struct pci_dev *dev)
-> +{
-> +	return 0;
-> +}
-> +#endif
-> +
->  #ifdef CONFIG_ACPI
->  bool pci_acpi_preserve_config(struct pci_host_bridge *bridge);
->  int pci_acpi_program_hp_params(struct pci_dev *dev);
-> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-> index 2e81ab0f5a25..33b8b46ca554 100644
-> --- a/drivers/pci/probe.c
-> +++ b/drivers/pci/probe.c
-> @@ -2304,6 +2304,7 @@ static void pci_configure_device(struct pci_dev *dev)
->  	pci_configure_serr(dev);
->  
->  	pci_acpi_program_hp_params(dev);
-> +	pci_acpi_program_hest_aer_params(dev);
+Moving these because I'm used to declare variables at the beginning of a
+function. It's really unnecessary. After defining new functions as
+cppc_get_reg_val_in_pcc() and cppc_set_reg_val_in_pcc() as you suggest
+below, these variables will be moved to the new functions.
 
-This should not be called here unconditionally.
+> 
+>>
+>>         if (!cpc_desc) {
+>>                 pr_debug("No CPC descriptor for CPU:%d\n", cpunum);
+>> @@ -1191,20 +1194,23 @@ static int cppc_get_perf(int cpunum, enum cppc_regs reg_idx, u64 *perf)
+>>
+>>         reg = &cpc_desc->cpc_regs[reg_idx];
+>>
+>> +       if (!CPC_SUPPORTED(reg)) {
+>> +               pr_debug("CPC register (reg_idx=%d) is not supported\n", reg_idx);
+>> +               return -EOPNOTSUPP;
+>> +       }
+>> +
+>>         if (CPC_IN_PCC(reg)) {
+>> -               int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpunum);
+>> -               struct cppc_pcc_data *pcc_ss_data = NULL;
+>> -               int ret = 0;
+>> +               pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpunum);
+>>
+>>                 if (pcc_ss_id < 0)
+>> -                       return -EIO;
+>> +                       return -ENODEV;
+>>
+>>                 pcc_ss_data = pcc_data[pcc_ss_id];
+>>
+>>                 down_write(&pcc_ss_data->pcc_lock);
+>>
+>>                 if (send_pcc_cmd(pcc_ss_id, CMD_READ) >= 0)
+>> -                       cpc_read(cpunum, reg, perf);
+>> +                       cpc_read(cpunum, reg, val);
+>>                 else
+>>                         ret = -EIO;
+>>
+>> @@ -1213,21 +1219,65 @@ static int cppc_get_perf(int cpunum, enum cppc_regs reg_idx, u64 *perf)
+>>                 return ret;
+>>         }
+>>
+>> -       cpc_read(cpunum, reg, perf);
+>> +       cpc_read(cpunum, reg, val);
+>>
+>>         return 0;
+>>  }
+>>
+>> +static int cppc_set_reg(int cpu, enum cppc_regs reg_idx, u64 val)
+>> +{
+>> +       struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpu);
+>> +       struct cppc_pcc_data *pcc_ss_data = NULL;
+>> +       struct cpc_register_resource *reg;
+>> +       int pcc_ss_id;
+>> +       int ret;
+>> +
+>> +       if (!cpc_desc) {
+>> +               pr_debug("No CPC descriptor for CPU:%d\n", cpu);
+>> +               return -ENODEV;
+>> +       }
+>> +
+>> +       reg = &cpc_desc->cpc_regs[reg_idx];
+>> +
+>> +       if (!CPC_SUPPORTED(reg)) {
+>> +               pr_debug("CPC register (reg_idx=%d) is not supported\n", reg_idx);
+>> +               return -EOPNOTSUPP;
+>> +       }
+>> +
+>> +       if (CPC_IN_PCC(reg)) {
+>> +               pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpu);
+> 
+> Please declare the variables that are only needed in the PCC case here.
+> 
+> Also, I think it would be better to define a new function, say
+> cppc_set_reg_val_in_pcc() for this code and then have
+> 
+> if (CPC_IN_PCC(reg))
+>         return cppc_set_reg_val_in_pcc(reg, val);
 
-OS should only write AER registers if granted permission through
-_OSC.
+Will define new functions as cppc_get_reg_val_in_pcc() and
+cppc_set_reg_val_in_pcc(). Thanks.
 
-It would be more appropriate to call this from pci_aer_init().
+> 
+>> +
+>> +               if (pcc_ss_id < 0) {
+>> +                       pr_debug("Invalid pcc_ss_id\n");
+>> +                       return -ENODEV;
+>> +               }
+>> +
+>> +               ret = cpc_write(cpu, reg, val);
+>> +               if (ret)
+>> +                       return ret;
+>> +
+>> +               pcc_ss_data = pcc_data[pcc_ss_id];
+>> +
+>> +               down_write(&pcc_ss_data->pcc_lock);
+>> +               /* after writing CPC, transfer the ownership of PCC to platform */
+>> +               ret = send_pcc_cmd(pcc_ss_id, CMD_WRITE);
+>> +               up_write(&pcc_ss_data->pcc_lock);
+>> +               return ret;
+>> +       }
+>> +
+>> +       return cpc_write(cpu, reg, val);
+>> +}
+>> +
+>>  /**
+>>   * cppc_get_desired_perf - Get the desired performance register value.
+>>   * @cpunum: CPU from which to get desired performance.
+>>   * @desired_perf: Return address.
+>>   *
+>> - * Return: 0 for success, -EIO otherwise.
+>> + * Return: 0 for success, -ERRNO otherwise.
+>>   */
+>>  int cppc_get_desired_perf(int cpunum, u64 *desired_perf)
+>>  {
+>> -       return cppc_get_perf(cpunum, DESIRED_PERF, desired_perf);
+>> +       return cppc_get_reg(cpunum, DESIRED_PERF, desired_perf);
+>>  }
+>>  EXPORT_SYMBOL_GPL(cppc_get_desired_perf);
+>>
+>> @@ -1236,11 +1286,11 @@ EXPORT_SYMBOL_GPL(cppc_get_desired_perf);
+>>   * @cpunum: CPU from which to get nominal performance.
+>>   * @nominal_perf: Return address.
+>>   *
+>> - * Return: 0 for success, -EIO otherwise.
+>> + * Return: 0 for success, -ERRNO otherwise.
+> 
+> What do you mean by ERRNO?
 
-Thanks,
-Yazen
+Error number. I see this expression elsewhere in this file so I use it too.
+
+> 
+>>   */
+>>  int cppc_get_nominal_perf(int cpunum, u64 *nominal_perf)
+>>  {
+>> -       return cppc_get_perf(cpunum, NOMINAL_PERF, nominal_perf);
+>> +       return cppc_get_reg(cpunum, NOMINAL_PERF, nominal_perf);
+>>  }
+>>
+>>  /**
+>> @@ -1248,11 +1298,11 @@ int cppc_get_nominal_perf(int cpunum, u64 *nominal_perf)
+>>   * @cpunum: CPU from which to get highest performance.
+>>   * @highest_perf: Return address.
+>>   *
+>> - * Return: 0 for success, -EIO otherwise.
+>> + * Return: 0 for success, -ERRNO otherwise.
+>>   */
+>>  int cppc_get_highest_perf(int cpunum, u64 *highest_perf)
+>>  {
+>> -       return cppc_get_perf(cpunum, HIGHEST_PERF, highest_perf);
+>> +       return cppc_get_reg(cpunum, HIGHEST_PERF, highest_perf);
+>>  }
+>>  EXPORT_SYMBOL_GPL(cppc_get_highest_perf);
+>>
+>> @@ -1261,11 +1311,11 @@ EXPORT_SYMBOL_GPL(cppc_get_highest_perf);
+>>   * @cpunum: CPU from which to get epp preference value.
+>>   * @epp_perf: Return address.
+>>   *
+>> - * Return: 0 for success, -EIO otherwise.
+>> + * Return: 0 for success, -ERRNO otherwise.
+> 
+> Same here?
+> 
+>>   */
+>>  int cppc_get_epp_perf(int cpunum, u64 *epp_perf)
+>>  {
+>> -       return cppc_get_perf(cpunum, ENERGY_PERF, epp_perf);
+>> +       return cppc_get_reg(cpunum, ENERGY_PERF, epp_perf);
+>>  }
+>>  EXPORT_SYMBOL_GPL(cppc_get_epp_perf);
+> 
+> It would be cleaner to do the changes below in a separate patch IMV.
+
+Will separate it. Thanks.
+
+> 
+>> @@ -1545,44 +1595,14 @@ EXPORT_SYMBOL_GPL(cppc_set_epp_perf);
+>>   */
+>>  int cppc_get_auto_sel_caps(int cpunum, struct cppc_perf_caps *perf_caps)
+>>  {
+>> -       struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpunum);
+>> -       struct cpc_register_resource *auto_sel_reg;
+>> -       u64  auto_sel;
+>> -
+>> -       if (!cpc_desc) {
+>> -               pr_debug("No CPC descriptor for CPU:%d\n", cpunum);
+>> -               return -ENODEV;
+>> -       }
+>> -
+>> -       auto_sel_reg = &cpc_desc->cpc_regs[AUTO_SEL_ENABLE];
+>> -
+>> -       if (!CPC_SUPPORTED(auto_sel_reg))
+>> -               pr_warn_once("Autonomous mode is not unsupported!\n");
+>> -
+>> -       if (CPC_IN_PCC(auto_sel_reg)) {
+>> -               int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpunum);
+>> -               struct cppc_pcc_data *pcc_ss_data = NULL;
+>> -               int ret = 0;
+>> -
+>> -               if (pcc_ss_id < 0)
+>> -                       return -ENODEV;
+>> -
+>> -               pcc_ss_data = pcc_data[pcc_ss_id];
+>> -
+>> -               down_write(&pcc_ss_data->pcc_lock);
+>> -
+>> -               if (send_pcc_cmd(pcc_ss_id, CMD_READ) >= 0) {
+>> -                       cpc_read(cpunum, auto_sel_reg, &auto_sel);
+>> -                       perf_caps->auto_sel = (bool)auto_sel;
+>> -               } else {
+>> -                       ret = -EIO;
+>> -               }
+>> -
+>> -               up_write(&pcc_ss_data->pcc_lock);
+>> +       u64 auto_sel;
+>> +       int ret;
+>>
+>> +       ret = cppc_get_reg(cpunum, AUTO_SEL_ENABLE, &auto_sel);
+>> +       if (ret)
+>>                 return ret;
+>> -       }
+>>
+>> +       perf_caps->auto_sel = (bool)auto_sel;
+>>         return 0;
+>>  }
+>>  EXPORT_SYMBOL_GPL(cppc_get_auto_sel_caps);
+>> @@ -1594,43 +1614,7 @@ EXPORT_SYMBOL_GPL(cppc_get_auto_sel_caps);
+>>   */
+>>  int cppc_set_auto_sel(int cpu, bool enable)
+>>  {
+>> -       int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpu);
+>> -       struct cpc_register_resource *auto_sel_reg;
+>> -       struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpu);
+>> -       struct cppc_pcc_data *pcc_ss_data = NULL;
+>> -       int ret = -EINVAL;
+>> -
+>> -       if (!cpc_desc) {
+>> -               pr_debug("No CPC descriptor for CPU:%d\n", cpu);
+>> -               return -ENODEV;
+>> -       }
+>> -
+>> -       auto_sel_reg = &cpc_desc->cpc_regs[AUTO_SEL_ENABLE];
+>> -
+>> -       if (CPC_IN_PCC(auto_sel_reg)) {
+>> -               if (pcc_ss_id < 0) {
+>> -                       pr_debug("Invalid pcc_ss_id\n");
+>> -                       return -ENODEV;
+>> -               }
+>> -
+>> -               if (CPC_SUPPORTED(auto_sel_reg)) {
+>> -                       ret = cpc_write(cpu, auto_sel_reg, enable);
+>> -                       if (ret)
+>> -                               return ret;
+>> -               }
+>> -
+>> -               pcc_ss_data = pcc_data[pcc_ss_id];
+>> -
+>> -               down_write(&pcc_ss_data->pcc_lock);
+>> -               /* after writing CPC, transfer the ownership of PCC to platform */
+>> -               ret = send_pcc_cmd(pcc_ss_id, CMD_WRITE);
+>> -               up_write(&pcc_ss_data->pcc_lock);
+>> -       } else {
+>> -               ret = -ENOTSUPP;
+>> -               pr_debug("_CPC in PCC is not supported\n");
+>> -       }
+>> -
+>> -       return ret;
+>> +       return cppc_set_reg(cpu, AUTO_SEL_ENABLE, enable);
+>>  }
+>>  EXPORT_SYMBOL_GPL(cppc_set_auto_sel);
+>>
+>> @@ -1644,38 +1628,7 @@ EXPORT_SYMBOL_GPL(cppc_set_auto_sel);
+>>   */
+>>  int cppc_set_enable(int cpu, bool enable)
+>>  {
+>> -       int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpu);
+>> -       struct cpc_register_resource *enable_reg;
+>> -       struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpu);
+>> -       struct cppc_pcc_data *pcc_ss_data = NULL;
+>> -       int ret = -EINVAL;
+>> -
+>> -       if (!cpc_desc) {
+>> -               pr_debug("No CPC descriptor for CPU:%d\n", cpu);
+>> -               return -EINVAL;
+>> -       }
+>> -
+>> -       enable_reg = &cpc_desc->cpc_regs[ENABLE];
+>> -
+>> -       if (CPC_IN_PCC(enable_reg)) {
+>> -
+>> -               if (pcc_ss_id < 0)
+>> -                       return -EIO;
+>> -
+>> -               ret = cpc_write(cpu, enable_reg, enable);
+>> -               if (ret)
+>> -                       return ret;
+>> -
+>> -               pcc_ss_data = pcc_data[pcc_ss_id];
+>> -
+>> -               down_write(&pcc_ss_data->pcc_lock);
+>> -               /* after writing CPC, transfer the ownership of PCC to platfrom */
+>> -               ret = send_pcc_cmd(pcc_ss_id, CMD_WRITE);
+>> -               up_write(&pcc_ss_data->pcc_lock);
+>> -               return ret;
+>> -       }
+>> -
+>> -       return cpc_write(cpu, enable_reg, enable);
+>> +       return cppc_set_reg(cpu, ENABLE, enable);
+>>  }
+>>  EXPORT_SYMBOL_GPL(cppc_set_enable);
+>>
+>> --
+> 
+
