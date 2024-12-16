@@ -1,63 +1,63 @@
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
+Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4C111D4352
-	for <acpica-devel@lists.linux.dev>; Mon, 16 Dec 2024 21:17:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3028C145A09
+	for <acpica-devel@lists.linux.dev>; Mon, 16 Dec 2024 21:17:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734383848; cv=none; b=VUS7BkQ73QXcFhnfO42vEaoGE5NM4J6PiSaE7k7k9DzrBhdx+5H+69Tz5QZoF0PXC6L9mA94LFlLZp1v1dn7Rlt/L4jIZSg2v2+JHTZjx0ImxI4mzWJaIMFz0+fvK7t490JKPZnFPIv/e4wSeXMDtWVG0bDP2JtPf1ygR9X+UUI=
+	t=1734383849; cv=none; b=BK7YJD91Q3lio+TStfhSA3z+KQIzFzGoje5byulWcLG4HKSXeZ3xobyDVAFNPO1vHimllvUGlrpv6pG64wXIwP2v9bhXJklIrOYF4Nu3KWAQhsbK2vGOBcJEtGGl1DZOe8tA5QNHoNgXxABEE2oTF0OsA/dAtWGWwd04j9/VMsY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734383848; c=relaxed/simple;
-	bh=kKwZloJ+pxiytz9zfwyv5msK5QwJz26A7aW8bSu0I3s=;
+	s=arc-20240116; t=1734383849; c=relaxed/simple;
+	bh=e7SFMwzDWsXgzO/ZNzsWTCVExP8H4avRE4Psyn2EYBU=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=jsNDYFBY9dWBmc9TNxosvdxWQkv0BcxkF0G7e/PLJ05XWtxkGKCUVOQcygozwMdUzqySO3N7wLc6k3uwEDZ3fGiRbaybM2n9lcvCUAeLBJEWnRhA0NOMn7YAz9WFecaw6d84syjA6HK3YMKVYVc4hgVsDhTVjx3rjioOnegS6KY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=DWaR57Ok; arc=none smtp.client-ip=209.85.160.169
+	 In-Reply-To:To:Cc; b=Crad5TRV5pvPmkcKzKS+Bbf0DuUUxWun7iRhNXK52IajWau85/rztZDWdgdtthlI69MsqhC4z3f0UVV4s9xfqBpScH1wQrNM1hMM8rKZyIOdAe6/oWCtqPBMicO+aYFyUKWDjkb/lnI1H6VQyd+FEj7BxF8sqxDQ9LuHk6bFF6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Voo0EvGN; arc=none smtp.client-ip=209.85.160.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="DWaR57Ok"
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-46792996074so54146751cf.0
-        for <acpica-devel@lists.linux.dev>; Mon, 16 Dec 2024 13:17:25 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Voo0EvGN"
+Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-46792996074so54146951cf.0
+        for <acpica-devel@lists.linux.dev>; Mon, 16 Dec 2024 13:17:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1734383845; x=1734988645; darn=lists.linux.dev;
+        d=chromium.org; s=google; t=1734383846; x=1734988646; darn=lists.linux.dev;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=kM2B80UZkeR2LPczGOfVlIBqSwSauWzJe2cC0H2QDRc=;
-        b=DWaR57OkWBWn8sadv3bMm8rtXrkO/5+kUKZgUjA9JDFddL15zPTKard3i1anLGN4My
-         W8qOgJlkBtJEtoQb3sC4gy02JyyFowSepD896bS+ZSwnJsDryoyf2Io0Oc3LKo/bvC2G
-         v1R/5F+Q7nPoQ1aUX28wpQRWJzmwFbbc9nSnI=
+        bh=Wrx/XZpVy8CcSfrt0QCmmOTT7oU2GR+FF7o9rBsUVb8=;
+        b=Voo0EvGNy7k7OHYn1Z0z4f5RcxIBAOELRUkO6H2/VWXu8nE42/YhmCR+QRMcT1zxBA
+         vEkVU6t0sFGey/STADhVBBPop1RytNOAqkpdaZGNNzcf2B6XB3M5I/j0ZlAHZ4r/z6Ll
+         A7NYJq3SbOhHGdFsWNgg7uyGGbydHwzXSn63g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734383845; x=1734988645;
+        d=1e100.net; s=20230601; t=1734383846; x=1734988646;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kM2B80UZkeR2LPczGOfVlIBqSwSauWzJe2cC0H2QDRc=;
-        b=D9qyeCmw9FgIolVPKZSfwnJvNs7hGyIi/d3hlrlGhmNp6jRo7h8cYfL2fgIRB8cT3X
-         u/Yhmm4NECSR8OFdUrwF1yBz3QumLOv81NFudXrMy8HzRooYRjASg3S/xNWpM3xWmGB8
-         iwGrneWuxluWi6j69xl3YbS6KxUVOGRS2TpCR0QYErO+ZwgYkwwNOzbvz1WPOoP8+ZOD
-         YF20D21Gu+Cvptk1qGWfWiOpQl68s6r7S55NgBLyVqrJPXixftFfwuqtDM/Vu8Tv8Lfl
-         GD2CK0A0XcTtL2V7IBF27zcOb4YVLGLUrL+EbmZXOIzrAGyYkJHEO2YWkmfkCVATyxp3
-         3OWg==
-X-Forwarded-Encrypted: i=1; AJvYcCUpKFJESsNOiWxF70zMo8Ocq/oy6Xe1MCAMb+DGMksU9/HG7SpiuC8IqdeAwvagkfR3Y+e5LfhZeiSk9Ms=@lists.linux.dev
-X-Gm-Message-State: AOJu0Yw6Fpy6KD7sNPG5U8iJE5atpcjDUVaJpSp8chJQLXdZDMLlxfzH
-	QQFuZx5/KX2PpVR5/ifnmWbkww1EzbpZSh17YcsXATvscFYbh7pE6jN8tI6ssw==
-X-Gm-Gg: ASbGnct4UI/kKnObUlP73ilvxcge5WtEL6XeFdw41iiwUcUFXg8H9D9rTrAsQahPuAG
-	hacCk0UkpQ8WGCgwRJIYBBfwreqgGEjv71UlHslvGiYpGBc8H69bsrkGSBB4KpitSgpjGhbK9sH
-	kxq/wDTTX2hacmCG3PWerQk6GZ9xPhVlEOIp6uLV/yVdcnEaFmFQHZs+t7CDqprH2J5Bk1J+erD
-	hcOYEosPr+Kn85ke5qwIVzkKGoTSSS4xpDv/hJSvz6sa2RAVOgZpynEwc6TDIzNhvQHz0XcjkiJ
-	DDf6/C0S9wJk0rDpJvu16i4dmo/vHjw=
-X-Google-Smtp-Source: AGHT+IHSGnqI6FhkQaL0069bHSXiDXW28qApI4WsVyO7HAsa7gVNw+XbMJ7VfZy9PvrVRyRjuC0jMg==
-X-Received: by 2002:a05:622a:1487:b0:467:45b7:c495 with SMTP id d75a77b69052e-468f8ad232emr17931231cf.15.1734383844801;
-        Mon, 16 Dec 2024 13:17:24 -0800 (PST)
+        bh=Wrx/XZpVy8CcSfrt0QCmmOTT7oU2GR+FF7o9rBsUVb8=;
+        b=SFtRJisZ2lOfGVQ4MCqagub/ZtQCSdWyqpJzh8nxQRI+qOd3IEKpNPDLbhNdyH6TX2
+         /AFFWm9/iyvwtiHLBgm0bBZmB67KOfgpfsWGkOjUqo7kxAcUV1W5Kut/GifzRn3ejRIN
+         RdUWyaBARtj8pY/MODw5xcjXkG5JY2bIFd5x+dhNv+cqBq4bZ7ed9gdd/G1Ox8GkJONz
+         IEI7t3H3xn6FqHBow2Oj/AhItb3oD7BNZQLQGZcwWEWx+zvyTcDPUns6wn0kWhKzE9w3
+         VRKw7JCM3GVrKBCNWRw+bZEgJNW/Rm8BKTzC+LzFd1p0FImnucgTae4psMEdplgQ2O/I
+         fa3A==
+X-Forwarded-Encrypted: i=1; AJvYcCUyQsHCsxHYotd7jTLvb39c6rsVO/+Dn3ype3wF+IhUchZeDShjwSPuYIjxYUKPSEgY05DHG6QViWxObsU=@lists.linux.dev
+X-Gm-Message-State: AOJu0Yy+Mj9CKPy2hQOkpjiiE7l/hDYMb5SkHvfzRBpz6MHX14oU0+/5
+	n9F6wkl/rvCBNxcfAuhdeMxIEMNejLIRcLkakit+tFZQntI/K7yXsUagBG5yvw==
+X-Gm-Gg: ASbGnctu+lFxG8GqeKeLlNqFVRIXEGCS1oqwJjJ8XSPtEdhBgdGIAnlHsHA3SFmREr1
+	YxXicbGqjCM/wWnXwPVlXR3R2U38AphJ4SA0aex6ilxu3ofaU0j+Wpea0WnFAmcKVp0bMVWhHRv
+	ncj80FQqCsOPk2k8JV22uMqGryxlTl6EwbZ833ZPJA3RjvydUo4gpj+hWSN0efCBRD0b2eCfg6C
+	U6Psp+CCGpT3uRLhTZyynARcQK4igqZ0kVESFcaET+6BQTg/oqinr0VXqAB82xmrh7+MIfLu6R0
+	hg6Ju9VJqZR5C8tNB9gc4K+JKgDaOSw=
+X-Google-Smtp-Source: AGHT+IFe0W9f2W39cOFyxGiYpi+wHrRevZyo7XAuH0Mr2XhLF/7Z6NTzZgUOvov+yVRzbUrbAYKkSw==
+X-Received: by 2002:a05:622a:115:b0:466:9a61:273a with SMTP id d75a77b69052e-468f8b66f1emr17164551cf.52.1734383846255;
+        Mon, 16 Dec 2024 13:17:26 -0800 (PST)
 Received: from denia.c.googlers.com (5.236.236.35.bc.googleusercontent.com. [35.236.236.5])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-467b2e85c03sm31927501cf.69.2024.12.16.13.17.22
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-467b2e85c03sm31927501cf.69.2024.12.16.13.17.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Dec 2024 13:17:23 -0800 (PST)
+        Mon, 16 Dec 2024 13:17:25 -0800 (PST)
 From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Mon, 16 Dec 2024 21:17:15 +0000
-Subject: [PATCH v5 1/7] ACPI: bus: change the prototype for
- acpi_get_physical_device_location
+Date: Mon, 16 Dec 2024 21:17:16 +0000
+Subject: [PATCH v5 2/7] ACPI: bus: implement for_each_acpi_dev_match when
+ !ACPI
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -66,7 +66,7 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20241216-fix-ipu-v5-1-3d6b35ddce7b@chromium.org>
+Message-Id: <20241216-fix-ipu-v5-2-3d6b35ddce7b@chromium.org>
 References: <20241216-fix-ipu-v5-0-3d6b35ddce7b@chromium.org>
 In-Reply-To: <20241216-fix-ipu-v5-0-3d6b35ddce7b@chromium.org>
 To: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
@@ -77,157 +77,37 @@ Cc: linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-media@vger.kernel.org, linux-usb@vger.kernel.org, 
  acpica-devel@lists.linux.dev, Sakari Ailus <sakari.ailus@linux.intel.com>, 
  Dan Carpenter <dan.carpenter@linaro.org>, 
- Ricardo Ribalda <ribalda@chromium.org>
+ Ricardo Ribalda <ribalda@chromium.org>, 
+ Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 X-Mailer: b4 0.13.0
 
-It generally is not OK to use acpi_status and/or AE_ error codes
-without CONFIG_ACPI and they really only should be used in
-drivers/acpi/ (and not everywhere in there for that matter).
+Provide an implementation of for_each_acpi_dev_match that can be used
+when CONFIG_ACPI is not set.
 
-So acpi_get_physical_device_location() needs to be redefined to return
-something different from acpi_status (preferably bool) in order to be
-used in !CONFIG_ACPI code.
+The condition `false && hid && uid && hrv` is used to avoid "variable
+not used" warnings.
 
-Suggested-by: Rafael J. Wysocki <rafael@kernel.org>
+Reviewed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Acked-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
- drivers/acpi/mipi-disco-img.c        | 3 +--
- drivers/acpi/scan.c                  | 4 +---
- drivers/acpi/utils.c                 | 7 +++----
- drivers/base/physical_location.c     | 4 +---
- drivers/media/pci/intel/ipu-bridge.c | 4 ++--
- drivers/usb/core/usb-acpi.c          | 3 +--
- include/acpi/acpi_bus.h              | 2 +-
- 7 files changed, 10 insertions(+), 17 deletions(-)
+ include/acpi/acpi_bus.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/acpi/mipi-disco-img.c b/drivers/acpi/mipi-disco-img.c
-index 92b658f92dc0..5b85989f96be 100644
---- a/drivers/acpi/mipi-disco-img.c
-+++ b/drivers/acpi/mipi-disco-img.c
-@@ -624,8 +624,7 @@ static void init_crs_csi2_swnodes(struct crs_csi2 *csi2)
- 	if (!fwnode_property_present(adev_fwnode, "rotation")) {
- 		struct acpi_pld_info *pld;
- 
--		status = acpi_get_physical_device_location(handle, &pld);
--		if (ACPI_SUCCESS(status)) {
-+		if (acpi_get_physical_device_location(handle, &pld)) {
- 			swnodes->dev_props[NEXT_PROPERTY(prop_index, DEV_ROTATION)] =
- 					PROPERTY_ENTRY_U32("rotation",
- 							   pld->rotation * 45U);
-diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-index 74dcccdc6482..93d340027b7f 100644
---- a/drivers/acpi/scan.c
-+++ b/drivers/acpi/scan.c
-@@ -723,10 +723,8 @@ int acpi_tie_acpi_dev(struct acpi_device *adev)
- static void acpi_store_pld_crc(struct acpi_device *adev)
- {
- 	struct acpi_pld_info *pld;
--	acpi_status status;
- 
--	status = acpi_get_physical_device_location(adev->handle, &pld);
--	if (ACPI_FAILURE(status))
-+	if (!acpi_get_physical_device_location(adev->handle, &pld))
- 		return;
- 
- 	adev->pld_crc = crc32(~0, pld, sizeof(*pld));
-diff --git a/drivers/acpi/utils.c b/drivers/acpi/utils.c
-index 6de542d99518..526563a0d188 100644
---- a/drivers/acpi/utils.c
-+++ b/drivers/acpi/utils.c
-@@ -494,7 +494,7 @@ bool acpi_device_dep(acpi_handle target, acpi_handle match)
- }
- EXPORT_SYMBOL_GPL(acpi_device_dep);
- 
--acpi_status
-+bool
- acpi_get_physical_device_location(acpi_handle handle, struct acpi_pld_info **pld)
- {
- 	acpi_status status;
-@@ -502,9 +502,8 @@ acpi_get_physical_device_location(acpi_handle handle, struct acpi_pld_info **pld
- 	union acpi_object *output;
- 
- 	status = acpi_evaluate_object(handle, "_PLD", NULL, &buffer);
--
- 	if (ACPI_FAILURE(status))
--		return status;
-+		return false;
- 
- 	output = buffer.pointer;
- 
-@@ -523,7 +522,7 @@ acpi_get_physical_device_location(acpi_handle handle, struct acpi_pld_info **pld
- 
- out:
- 	kfree(buffer.pointer);
--	return status;
-+	return ACPI_SUCCESS(status);
- }
- EXPORT_SYMBOL(acpi_get_physical_device_location);
- 
-diff --git a/drivers/base/physical_location.c b/drivers/base/physical_location.c
-index 951819e71b4a..5db06e825c94 100644
---- a/drivers/base/physical_location.c
-+++ b/drivers/base/physical_location.c
-@@ -13,13 +13,11 @@
- bool dev_add_physical_location(struct device *dev)
- {
- 	struct acpi_pld_info *pld;
--	acpi_status status;
- 
- 	if (!has_acpi_companion(dev))
- 		return false;
- 
--	status = acpi_get_physical_device_location(ACPI_HANDLE(dev), &pld);
--	if (ACPI_FAILURE(status))
-+	if (!acpi_get_physical_device_location(ACPI_HANDLE(dev), &pld))
- 		return false;
- 
- 	dev->physical_location =
-diff --git a/drivers/media/pci/intel/ipu-bridge.c b/drivers/media/pci/intel/ipu-bridge.c
-index a0e9a71580b5..6cc2614b8f86 100644
---- a/drivers/media/pci/intel/ipu-bridge.c
-+++ b/drivers/media/pci/intel/ipu-bridge.c
-@@ -259,12 +259,12 @@ static enum v4l2_fwnode_orientation ipu_bridge_parse_orientation(struct acpi_dev
- {
- 	enum v4l2_fwnode_orientation orientation;
- 	struct acpi_pld_info *pld = NULL;
--	acpi_status status = AE_ERROR;
-+	bool status = false;
- 
- #if IS_ENABLED(CONFIG_ACPI)
- 	status = acpi_get_physical_device_location(adev->handle, &pld);
- #endif
--	if (ACPI_FAILURE(status)) {
-+	if (!status) {
- 		dev_warn(ADEV_DEV(adev), "_PLD call failed, using default orientation\n");
- 		return V4L2_FWNODE_ORIENTATION_EXTERNAL;
- 	}
-diff --git a/drivers/usb/core/usb-acpi.c b/drivers/usb/core/usb-acpi.c
-index 03c22114214b..935c0efea0b6 100644
---- a/drivers/usb/core/usb-acpi.c
-+++ b/drivers/usb/core/usb-acpi.c
-@@ -213,8 +213,7 @@ usb_acpi_get_connect_type(struct usb_port *port_dev, acpi_handle *handle)
- 	 * no connectable, the port would be not used.
- 	 */
- 
--	status = acpi_get_physical_device_location(handle, &pld);
--	if (ACPI_SUCCESS(status) && pld)
-+	if (acpi_get_physical_device_location(handle, &pld) && pld)
- 		port_dev->location = USB_ACPI_LOCATION_VALID |
- 			pld->group_token << 8 | pld->group_position;
- 
 diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-index b2e377b7f337..19f92852e127 100644
+index 19f92852e127..a9b5a5204781 100644
 --- a/include/acpi/acpi_bus.h
 +++ b/include/acpi/acpi_bus.h
-@@ -43,7 +43,7 @@ acpi_status
- acpi_evaluate_ost(acpi_handle handle, u32 source_event, u32 status_code,
- 		  struct acpi_buffer *status_buf);
+@@ -1003,6 +1003,9 @@ static inline int unregister_acpi_bus_type(void *bus) { return 0; }
  
--acpi_status
-+bool
- acpi_get_physical_device_location(acpi_handle handle, struct acpi_pld_info **pld);
+ static inline int acpi_wait_for_acpi_ipmi(void) { return 0; }
  
- bool acpi_has_method(acpi_handle handle, char *name);
++#define for_each_acpi_dev_match(adev, hid, uid, hrv)			\
++	for (adev = NULL; false && (hid) && (uid) && (hrv); )
++
+ #endif				/* CONFIG_ACPI */
+ 
+ #endif /*__ACPI_BUS_H__*/
 
 -- 
 2.47.1.613.gc27f4b7a9f-goog
