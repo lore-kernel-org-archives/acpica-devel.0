@@ -1,162 +1,131 @@
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2B662036E4
-	for <acpica-devel@lists.linux.dev>; Mon, 16 Dec 2024 09:16:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6875215852F
+	for <acpica-devel@lists.linux.dev>; Mon, 16 Dec 2024 20:17:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734340579; cv=none; b=am0XU6HApH1YiXWIkLIqfdCK5c6KRhs2UMfD0YGOWyEh5qpQnpg4emuVTehUJVawVsaogdkaQs0KyZLKw3bTD5CfcDZKsLs4/76Qhves8XgQWGvD0NmUYmHiqeO6RQOa3q4LXz3PMTkWxtOtqYgMvlms9l93XDeGyPydYJVgn5o=
+	t=1734380260; cv=none; b=aHSE0XFXKM1UIsghy1kvC6m3WhNQwprmS4yuCKTNFBmUpq8AFW5f63sjdWWE4Z+i5TymhEkxaKWW2N36ma+wPqChN9YVUnmw0tXFvpqcVsLbJi4q//aJbViollU8wLlwKfeNqzc+3XvRRZgNrvwLxxrDjCtPN5p4ouqivRmLB9g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734340579; c=relaxed/simple;
-	bh=DVbfO+bImgQLdojqzoZJCD0lmtLp8iIAPncop/S3X/Q=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=fpi618kseFOUJMCS6ZicDyxhGgAvp6TJuvhsB7wjppmca0mfCsVXIplrJEnqKUTbnjC4rE1c42L93aTd9jrE+LuJZq3nTcIucLxikwdYadBe6JJZiph6/caYObnXMlpTz3AV/Lsts8dtk+VmEElMkwY9/a3BzwNKHTpQ31fdAm0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4YBZ4G4V31z2Dj0L;
-	Mon, 16 Dec 2024 17:13:34 +0800 (CST)
-Received: from kwepemh100008.china.huawei.com (unknown [7.202.181.93])
-	by mail.maildlp.com (Postfix) with ESMTPS id AE79D1A016C;
-	Mon, 16 Dec 2024 17:16:06 +0800 (CST)
-Received: from localhost.huawei.com (10.50.165.33) by
- kwepemh100008.china.huawei.com (7.202.181.93) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Mon, 16 Dec 2024 17:16:05 +0800
-From: Lifeng Zheng <zhenglifeng1@huawei.com>
-To: <rafael@kernel.org>, <lenb@kernel.org>, <robert.moore@intel.com>,
-	<viresh.kumar@linaro.org>
-CC: <acpica-devel@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-	<linuxarm@huawei.com>, <pierre.gondois@arm.com>, <ionela.voinescu@arm.com>,
-	<jonathan.cameron@huawei.com>, <zhanjie9@hisilicon.com>,
-	<lihuisong@huawei.com>, <zhenglifeng1@huawei.com>, <hepeng68@huawei.com>,
-	<fanghao11@huawei.com>
-Subject: [PATCH v3 3/4] ACPI: CPPC: Add autonomous selection ABIs
-Date: Mon, 16 Dec 2024 17:16:02 +0800
-Message-ID: <20241216091603.1247644-4-zhenglifeng1@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20241216091603.1247644-1-zhenglifeng1@huawei.com>
-References: <20241216091603.1247644-1-zhenglifeng1@huawei.com>
+	s=arc-20240116; t=1734380260; c=relaxed/simple;
+	bh=KXqvjWiMSVH5syUt6Sl7U8sBOsToQ7b/XVL13BAKR14=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Et3BhB0fvDmoscHtLPEMvNjuVzURVOTpCID/RH6aX+i9yaKsZoRkokav9aLOtXNGhaoFdsDLxrcst940ZbXVIEhA2C3u9Q1yC7yCpzjbhgPPD4RK7MtpAcKMNgePxiQU0+9q0KZONWMz+07zLWQW0cMhpICPfVTlcpWzLSSHtqk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VTNvLBw5; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VTNvLBw5"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7397C4CEE0
+	for <acpica-devel@lists.linux.dev>; Mon, 16 Dec 2024 20:17:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1734380259;
+	bh=KXqvjWiMSVH5syUt6Sl7U8sBOsToQ7b/XVL13BAKR14=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=VTNvLBw5wBLHf0Ga1JK0h6B9YiQeKA2ODJR9b0ytg8fvIetTWHS9/jW/YhD2RjUGy
+	 7+gjIZFRM23RyMqqO/zV85QeJqNJHH9nxaZFlCIbzIT+PWQFyl7lyfr0sD1JnK93/W
+	 D0ICdqzmXDgJuuc6HicyHgEajlwQRQ4PtE6qf4e/37ulOSSOVADTgFObzuBa2W9LGs
+	 d51tsx4Oii+Rzhd/1KOA6Nqtj8BcdC1hIU99kKbM7xNhZCE48WM+xcVHE03Ud863yf
+	 n2r0s+AodheEiaVv75sNLHu9kyQifGlkQ7m+yEQzUs85Lwbc8Lp6hSMtzYG2Xtf/sw
+	 KDnbajW9a564g==
+Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-3eb9de518e2so2109264b6e.2
+        for <acpica-devel@lists.linux.dev>; Mon, 16 Dec 2024 12:17:39 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUkQJkri0yNWMgR1blHGLnRQ88y/h5mmvc85Xuqlzj97RM1r8k8UcYuKaOsxYvMN6O1b9ZsrbddMK2ax+I=@lists.linux.dev
+X-Gm-Message-State: AOJu0YzyPIaAfF8WN5uRXFiybuJChy1b/6Y/L41WtDtmca91Ou/1xJQV
+	vnjPfOM9R369bArxFWZcMcY6E+5lh54kMwQ0sOpqOu57tsfOtYDfkzqcP/p0L3n9XAfZxLSmUv/
+	1Lgz3pmI5lGtCz2CXbRgbQjHZvKo=
+X-Google-Smtp-Source: AGHT+IEiShw8w54t2n+KxDLI4IZEJWF1mNySxa+8zBzEosJsmwh5xKbuP+ot2fbuSzq3zRpqTEUHr9IPWYc7TNJbuAY=
+X-Received: by 2002:a05:6808:1907:b0:3eb:44a7:d3f8 with SMTP id
+ 5614622812f47-3ebcb3ae9fbmr57086b6e.39.1734380259145; Mon, 16 Dec 2024
+ 12:17:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemh100008.china.huawei.com (7.202.181.93)
+References: <20241211-fix-ipu-v4-0-4102e97aceb6@chromium.org> <20241211-fix-ipu-v4-2-4102e97aceb6@chromium.org>
+In-Reply-To: <20241211-fix-ipu-v4-2-4102e97aceb6@chromium.org>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Mon, 16 Dec 2024 21:17:28 +0100
+X-Gmail-Original-Message-ID: <CAJZ5v0gmN6+y2DveaBjSqWpTRWqm9zo2t0uDdvGwnVXcdQ777A@mail.gmail.com>
+Message-ID: <CAJZ5v0gmN6+y2DveaBjSqWpTRWqm9zo2t0uDdvGwnVXcdQ777A@mail.gmail.com>
+Subject: Re: [PATCH v4 2/6] ACPI: bus: implement acpi_get_physical_device_location
+ when !ACPI
+To: Ricardo Ribalda <ribalda@chromium.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
+	Robert Moore <robert.moore@intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, 
+	Sakari Ailus <sakari.ailus@linux.intel.com>, Dan Carpenter <dan.carpenter@linaro.org>, 
+	linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, 
+	acpica-devel@lists.linux.dev, 
+	Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-cppc_set_epp - write energy performance preference register
+On Wed, Dec 11, 2024 at 5:07=E2=80=AFPM Ricardo Ribalda <ribalda@chromium.o=
+rg> wrote:
+>
+> Provide an implementation of acpi_get_physical_device_location that can
+> be used when CONFIG_ACPI is not set.
+>
+> Reviewed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> Acked-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> ---
+>  include/acpi/acpi_bus.h | 12 +++++++++---
+>  1 file changed, 9 insertions(+), 3 deletions(-)
+>
+> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+> index 2b09e513ecf3..b312a72f48ad 100644
+> --- a/include/acpi/acpi_bus.h
+> +++ b/include/acpi/acpi_bus.h
+> @@ -43,9 +43,6 @@ acpi_status
+>  acpi_evaluate_ost(acpi_handle handle, u32 source_event, u32 status_code,
+>                   struct acpi_buffer *status_buf);
+>
+> -acpi_status
+> -acpi_get_physical_device_location(acpi_handle handle, struct acpi_pld_in=
+fo **pld);
+> -
+>  bool acpi_has_method(acpi_handle handle, char *name);
+>  acpi_status acpi_execute_simple_method(acpi_handle handle, char *method,
+>                                        u64 arg);
+> @@ -60,6 +57,9 @@ bool acpi_check_dsm(acpi_handle handle, const guid_t *g=
+uid, u64 rev, u64 funcs);
+>  union acpi_object *acpi_evaluate_dsm(acpi_handle handle, const guid_t *g=
+uid,
+>                         u64 rev, u64 func, union acpi_object *argv4);
+>  #ifdef CONFIG_ACPI
+> +acpi_status
+> +acpi_get_physical_device_location(acpi_handle handle, struct acpi_pld_in=
+fo **pld);
+> +
+>  static inline union acpi_object *
+>  acpi_evaluate_dsm_typed(acpi_handle handle, const guid_t *guid, u64 rev,
+>                         u64 func, union acpi_object *argv4,
+> @@ -1003,6 +1003,12 @@ static inline int unregister_acpi_bus_type(void *b=
+us) { return 0; }
+>
+>  static inline int acpi_wait_for_acpi_ipmi(void) { return 0; }
+>
+> +static inline acpi_status
+> +acpi_get_physical_device_location(acpi_handle handle, struct acpi_pld_in=
+fo **pld)
+> +{
+> +       return AE_ERROR;
+> +}
 
-cppc_get_auto_act_window - read autonomous activity window register
+I overlooked this before, sorry.
 
-cppc_set_auto_act_window - write autonomous activity window register
+It generally is not OK to use acpi_status and/or AE_ error codes
+without CONFIG_ACPI and they really only should be used in
+drivers/acpi/ (and not everywhere in there for that matter).
 
-cppc_get_auto_sel - read autonomous selection enable register
+So acpi_get_physical_device_location() needs to be redefined to return
+something different from acpi_status (preferably bool) in order to be
+used in !CONFIG_ACPI code.
 
-Signed-off-by: Lifeng Zheng <zhenglifeng1@huawei.com>
----
- drivers/acpi/cppc_acpi.c | 44 ++++++++++++++++++++++++++++++++++++++++
- include/acpi/cppc_acpi.h | 20 ++++++++++++++++++
- 2 files changed, 64 insertions(+)
-
-diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-index 83c7fcad74ad..645f2366c888 100644
---- a/drivers/acpi/cppc_acpi.c
-+++ b/drivers/acpi/cppc_acpi.c
-@@ -1595,6 +1595,50 @@ int cppc_set_epp_perf(int cpu, struct cppc_perf_ctrls *perf_ctrls, bool enable)
- }
- EXPORT_SYMBOL_GPL(cppc_set_epp_perf);
- 
-+/**
-+ * cppc_set_epp() - Write the EPP register.
-+ * @cpu: CPU on which to write register.
-+ * @epp_val: Value to write to the EPP register.
-+ */
-+int cppc_set_epp(int cpu, u64 epp_val)
-+{
-+	return cppc_set_reg_val(cpu, ENERGY_PERF, epp_val);
-+}
-+EXPORT_SYMBOL_GPL(cppc_set_epp);
-+
-+/**
-+ * cppc_get_auto_act_window() - Read autonomous activity window register.
-+ * @cpu: CPU from which to read register.
-+ * @auto_act_window: Return address.
-+ */
-+int cppc_get_auto_act_window(int cpu, u64 *auto_act_window)
-+{
-+	return cppc_get_reg_val(cpu, AUTO_ACT_WINDOW, auto_act_window);
-+}
-+EXPORT_SYMBOL_GPL(cppc_get_auto_act_window);
-+
-+/**
-+ * cppc_set_auto_act_window() - Write autonomous activity window register.
-+ * @cpu: CPU on which to write register.
-+ * @auto_act_window: Value to write to the autonomous activity window register.
-+ */
-+int cppc_set_auto_act_window(int cpu, u64 auto_act_window)
-+{
-+	return cppc_set_reg_val(cpu, AUTO_ACT_WINDOW, auto_act_window);
-+}
-+EXPORT_SYMBOL_GPL(cppc_set_auto_act_window);
-+
-+/**
-+ * cppc_get_auto_sel() - Read autonomous selection register.
-+ * @cpu: CPU from which to read register.
-+ * @auto_sel: Return address.
-+ */
-+int cppc_get_auto_sel(int cpu, u64 *auto_sel)
-+{
-+	return cppc_get_reg_val(cpu, AUTO_SEL_ENABLE, auto_sel);
-+}
-+EXPORT_SYMBOL_GPL(cppc_get_auto_sel);
-+
- /**
-  * cppc_get_auto_sel_caps - Read autonomous selection register.
-  * @cpunum : CPU from which to read register.
-diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
-index 62d368bcd9ec..134931b081a0 100644
---- a/include/acpi/cppc_acpi.h
-+++ b/include/acpi/cppc_acpi.h
-@@ -159,6 +159,10 @@ extern int cpc_read_ffh(int cpunum, struct cpc_reg *reg, u64 *val);
- extern int cpc_write_ffh(int cpunum, struct cpc_reg *reg, u64 val);
- extern int cppc_get_epp_perf(int cpunum, u64 *epp_perf);
- extern int cppc_set_epp_perf(int cpu, struct cppc_perf_ctrls *perf_ctrls, bool enable);
-+extern int cppc_set_epp(int cpu, u64 epp_val);
-+extern int cppc_get_auto_act_window(int cpu, u64 *auto_act_window);
-+extern int cppc_set_auto_act_window(int cpu, u64 auto_act_window);
-+extern int cppc_get_auto_sel(int cpu, u64 *auto_sel);
- extern int cppc_get_auto_sel_caps(int cpunum, struct cppc_perf_caps *perf_caps);
- extern int cppc_set_auto_sel(int cpu, bool enable);
- extern int amd_get_highest_perf(unsigned int cpu, u32 *highest_perf);
-@@ -225,6 +229,22 @@ static inline int cppc_set_epp_perf(int cpu, struct cppc_perf_ctrls *perf_ctrls,
- {
- 	return -EOPNOTSUPP;
- }
-+static inline int cppc_set_epp(int cpu, u64 epp_val)
-+{
-+	return -EOPNOTSUPP;
-+}
-+static inline int cppc_get_auto_act_window(int cpu, u64 *auto_act_window)
-+{
-+	return -EOPNOTSUPP;
-+}
-+static inline int cppc_set_auto_act_window(int cpu, u64 auto_act_window)
-+{
-+	return -EOPNOTSUPP;
-+}
-+static inline int cppc_get_auto_sel(int cpu, u64 *auto_sel)
-+{
-+	return -EOPNOTSUPP;
-+}
- static inline int cppc_get_epp_perf(int cpunum, u64 *epp_perf)
- {
- 	return -EOPNOTSUPP;
--- 
-2.33.0
-
+> +
+>  #define for_each_acpi_dev_match(adev, hid, uid, hrv)                   \
+>         for (adev =3D NULL; false && (hid) && (uid) && (hrv); )
+>
+>
+> --
