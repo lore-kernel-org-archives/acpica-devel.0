@@ -1,199 +1,278 @@
-Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2693D1DB933
-	for <acpica-devel@lists.linux.dev>; Mon, 16 Dec 2024 21:17:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C4AA4A23
+	for <acpica-devel@lists.linux.dev>; Tue, 17 Dec 2024 13:48:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734383855; cv=none; b=Qdkc1c4N8TGJhTf17eA3TWOJI8HmjIqjCssBcsh/ngDPSksGP3hIoX27P9uu9COG8FoBlQIptV6+NFt7omx+0sNv+yd8hPtbNRQnuT1KOcGDpTje7nk54IJGAP0/Rsl5DrosKrjt3o1xnMGEWLS1/lwPI3igBm3ejmfN3luC0f4=
+	t=1734443310; cv=none; b=rYv1iflBaN0Pf8thbo6AECLQBtIFTv5ypk28EqWPv6Wezvw0AiRTSM9qft69MpKdr4gUGTPKgUX+BhE6Dd/5uYWKo20pXfQQZurz8Y2JC/x2kBnZXEF+ZH/3fIJKajDVSoiMy+8GmXQmRvjDywGupcgWBaLv+ezjWI4eAZkZbM4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734383855; c=relaxed/simple;
-	bh=IKB58y4snq/gqAR94o4C+T0eqQtkn7ecDZk3e6CYE68=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=M4W9mwy76o+BG53LF+qWbJ2ezqfnBAA3YAI/AhJNFQ+SnnvBXnp1m4Px4ladfuvN1LsEKY3XzLHUf5/v2X1LBOvWKMMdsnDuIMK97ekjBDpuUjTZDNEWno9VQF2R1qIJr/it9zu3vwQHfn/HTXqTcbI/LwZ6aWJI4yrqaoJoUgs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=AkXPp5a8; arc=none smtp.client-ip=209.85.160.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="AkXPp5a8"
-Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-468f6b3a439so5579311cf.1
-        for <acpica-devel@lists.linux.dev>; Mon, 16 Dec 2024 13:17:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1734383852; x=1734988652; darn=lists.linux.dev;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pSt2f8yebuqnlO+DsTFByKH2G3GRiRhWURC3O1KFqeY=;
-        b=AkXPp5a80zwGIZrCLwDgO7shWGZmNeyh2RUnj45XmcwdMIoGsEQAdXqnULcYzcTIaD
-         ieYDWwKqvZP/tF45lLnKeCB1+d+A/d6vMG6WZzlcZ7WVr5fu8nWZVABG6DMrjK+9P8dI
-         FbZ9jwv6oCf/BT9LxhuyBl5LPuOu1uN/YIgMs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734383852; x=1734988652;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pSt2f8yebuqnlO+DsTFByKH2G3GRiRhWURC3O1KFqeY=;
-        b=cbfPruzd7Oo0fPkq2ukU4EwIVLxJsaJXJLkZLJCHm0gGAMPnn8OH09jgBwoNZUmeFq
-         ak6fcpL31ChO+ZxwkP8g9x6gGFCknT68RN76E3DN0uonG/jli6lHwm409SDaX3yV5Z7E
-         pr5oBgwD6Pit7e5flC1SUlZumfd+YBdJAk+fiUEYytR9Cya4RRAzEyjoepdwFdE2eHXS
-         PWRZPCiKm+8lseJM/KtkffI4IZVb4sArIGNbUZ1nDpRl8Wmutg2Ezsf+KTOY4bUgjYRt
-         2MPwZNqMTA4CRaCqHRacNJT7YOn7v7AHOwE9qBQmkb9VfvAm2KzVTFwG8Pf48TXAREoi
-         5VPw==
-X-Forwarded-Encrypted: i=1; AJvYcCVVldb8t+GVpYUZ+9cT/pdbukZPyW0hbl4WMkOErlQrdCEgGp/E6xulcpgErAxNT8EpAIZwarMgl5zNOLw=@lists.linux.dev
-X-Gm-Message-State: AOJu0YxQVuuSwfYTgEFNi4uOy9WdAa/OLAKKiNMngONP+k23B39YJ0IJ
-	x9cGZ/BWejY4m7JTuUXU+X43rTrUaoz+FBD5AmWLjY/hNSEyPvR6VmwtClTqvA==
-X-Gm-Gg: ASbGncv5oGOVGQhuWafE1CasJ7MqnnpCa68k68OWlZhCyxjI7vZdWRZYw+ylqAdYN4c
-	/JCUT+7OOOXh4lnHWZuPloDz/SFVH2yvCweaMJLQWUSOnWBE1cnibl2NbcY52c532OnSZUowmpm
-	bYOs55U/zNxYft7yAGExCTn3ylbIiXCcy7hGXG/kkKRcBpwEYG+tJpsG1t85xnx0KCMA2FZA0ZY
-	pCEkvTambQLSGSXN5pGwbZWcs8tKyMOcKzmAe0/B/GeYttyiL3tZiEQgkOPp0ABErnw59aSpUb9
-	aazjAaKXf0nsGlOlIxETAF64ZaPrs08=
-X-Google-Smtp-Source: AGHT+IGA7OE2/+AFr8NJQp1+beNCjHTix5HDCvzlrGBd1KJenMxv6YV5fSV7uyPrfaZdLlcoEJkjrQ==
-X-Received: by 2002:ac8:5a93:0:b0:466:a983:a15a with SMTP id d75a77b69052e-467a581d253mr223743851cf.42.1734383852093;
-        Mon, 16 Dec 2024 13:17:32 -0800 (PST)
-Received: from denia.c.googlers.com (5.236.236.35.bc.googleusercontent.com. [35.236.236.5])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-467b2e85c03sm31927501cf.69.2024.12.16.13.17.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Dec 2024 13:17:31 -0800 (PST)
-From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Mon, 16 Dec 2024 21:17:21 +0000
-Subject: [PATCH v5 7/7] media: ipu-bridge: Remove unneeded conditional
- compilations
+	s=arc-20240116; t=1734443310; c=relaxed/simple;
+	bh=Dec/BYNYnRrGFmxGH3FDut30oCKG3o6pxweQtg4CNvI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HfPHJsF6Ri2avXyCuh8FrN4gRvvI8bKVq8ihxPGHd68+86KdIcIloNlBBQZ88iQNwR3xUgcdqtRQ6wg8I1mqdYAij61fvrH8oObJEaPML4Xa14pTjkhVxJnUU328LW3pAJKuLx0/SSp6f9GujXUAcn2RqtXjlEPho/QIO/YbRec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C6A3A497;
+	Tue, 17 Dec 2024 05:48:52 -0800 (PST)
+Received: from [10.34.129.42] (e126645.nice.arm.com [10.34.129.42])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 597833F528;
+	Tue, 17 Dec 2024 05:48:21 -0800 (PST)
+Message-ID: <8e9c1ede-3277-458b-bd44-ca0c7615a4ab@arm.com>
+Date: Tue, 17 Dec 2024 14:48:16 +0100
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/4] ACPI: CPPC: Add cppc_get_reg_val and
+ cppc_set_reg_val function
+To: Lifeng Zheng <zhenglifeng1@huawei.com>, rafael@kernel.org,
+ lenb@kernel.org, robert.moore@intel.com, viresh.kumar@linaro.org
+Cc: acpica-devel@lists.linux.dev, linux-acpi@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, linuxarm@huawei.com,
+ ionela.voinescu@arm.com, jonathan.cameron@huawei.com,
+ zhanjie9@hisilicon.com, lihuisong@huawei.com, hepeng68@huawei.com,
+ fanghao11@huawei.com
+References: <20241216091603.1247644-1-zhenglifeng1@huawei.com>
+ <20241216091603.1247644-2-zhenglifeng1@huawei.com>
+Content-Language: en-US
+From: Pierre Gondois <pierre.gondois@arm.com>
+In-Reply-To: <20241216091603.1247644-2-zhenglifeng1@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20241216-fix-ipu-v5-7-3d6b35ddce7b@chromium.org>
-References: <20241216-fix-ipu-v5-0-3d6b35ddce7b@chromium.org>
-In-Reply-To: <20241216-fix-ipu-v5-0-3d6b35ddce7b@chromium.org>
-To: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- Robert Moore <robert.moore@intel.com>, 
- "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Cc: linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-media@vger.kernel.org, linux-usb@vger.kernel.org, 
- acpica-devel@lists.linux.dev, Sakari Ailus <sakari.ailus@linux.intel.com>, 
- Dan Carpenter <dan.carpenter@linaro.org>, 
- Ricardo Ribalda <ribalda@chromium.org>, 
- Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-X-Mailer: b4 0.13.0
 
-The ACPI headers have introduced implementations for some of their
-functions when the kernel is not configured with ACPI.
+Hello Lifeng,
 
-Let's use them instead of our conditional compilation. It is easier to
-maintain and less prone to errors.
+On 12/16/24 10:16, Lifeng Zheng wrote:
+> Rename cppc_get_perf() to cppc_get_reg_val() as a generic function to read
+> cppc registers, with four changes:
+> 
+> 1. Change the error kind to "no such device" when pcc_ss_id < 0, which
+> means that this cpu cannot get a valid pcc_ss_id.
+> 
+> 2. Add a check to verify if the register is a cpc supported one before
+> using it.
+> 
+> 3. Extract the operations if register is in pcc out as
+> cppc_get_reg_val_in_pcc().
+> 
+> 4. Return the result of cpc_read() instead of 0.
+> 
+> Add cppc_set_reg_val_in_pcc() and cppc_set_reg_val() as generic functions
+> for setting cppc registers value. Unlike other set reg ABIs,
+> cppc_set_reg_val() checks CPC_SUPPORTED right after getting the register,
+> because the rest of the operations are meaningless if this register is not
+> a cpc supported one.
+> 
+> These functions can be used to reduce some existing code duplication.
+> 
+> Signed-off-by: Lifeng Zheng <zhenglifeng1@huawei.com>
+> ---
+>   drivers/acpi/cppc_acpi.c | 111 +++++++++++++++++++++++++++++----------
+>   1 file changed, 84 insertions(+), 27 deletions(-)
+> 
+> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+> index c1f3568d0c50..bb5333a503a2 100644
+> --- a/drivers/acpi/cppc_acpi.c
+> +++ b/drivers/acpi/cppc_acpi.c
+> @@ -1179,43 +1179,100 @@ static int cpc_write(int cpu, struct cpc_register_resource *reg_res, u64 val)
+>   	return ret_val;
+>   }
+>   
+> -static int cppc_get_perf(int cpunum, enum cppc_regs reg_idx, u64 *perf)
+> +static int cppc_get_reg_val_in_pcc(int cpu, struct cpc_register_resource *reg, u64 *val)
+>   {
+> -	struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpunum);
+> +	int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpu);
+> +	struct cppc_pcc_data *pcc_ss_data = NULL;
+> +	int ret;
+> +
+> +	if (pcc_ss_id < 0) {
+> +		pr_debug("Invalid pcc_ss_id\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	pcc_ss_data = pcc_data[pcc_ss_id];
+> +
+> +	down_write(&pcc_ss_data->pcc_lock);
+> +
+> +	if (send_pcc_cmd(pcc_ss_id, CMD_READ) >= 0)
+> +		ret = cpc_read(cpu, reg, val);
+> +	else
+> +		ret = -EIO;
+> +
+> +	up_write(&pcc_ss_data->pcc_lock);
+> +
+> +	return ret;
+> +}
+> +
+> +static int cppc_get_reg_val(int cpu, enum cppc_regs reg_idx, u64 *val)
+> +{
+> +	struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpu);
+>   	struct cpc_register_resource *reg;
+>   
+>   	if (!cpc_desc) {
+> -		pr_debug("No CPC descriptor for CPU:%d\n", cpunum);
+> +		pr_debug("No CPC descriptor for CPU:%d\n", cpu);
+>   		return -ENODEV;
+>   	}
+>   
+>   	reg = &cpc_desc->cpc_regs[reg_idx];
+>   
+> -	if (CPC_IN_PCC(reg)) {
+> -		int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpunum);
+> -		struct cppc_pcc_data *pcc_ss_data = NULL;
+> -		int ret = 0;
+> -
+> -		if (pcc_ss_id < 0)
+> -			return -EIO;
+> +	if (!CPC_SUPPORTED(reg)) {
+> +		pr_debug("CPC register (reg_idx=%d) is not supported\n", reg_idx);
+> +		return -EOPNOTSUPP;
+> +	}
 
-Reviewed-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Acked-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
----
- drivers/media/pci/intel/ipu-bridge.c | 29 ++++-------------------------
- 1 file changed, 4 insertions(+), 25 deletions(-)
+I think this is only valid for optional fields. Meaning that:
+- if the function is used one day for the mandatory 'Lowest Performance'
+field, an integer value of 0 would be valid.
+- if the function is used for a mandatory field containing a NULL Buffer,
+it seems we would return -EFAULT currently, through cpc_read(). -EOPNOTSUPP
+doesn't seem appropriate as the field would be mandatory.
 
-diff --git a/drivers/media/pci/intel/ipu-bridge.c b/drivers/media/pci/intel/ipu-bridge.c
-index 6cc2614b8f86..be84c100d732 100644
---- a/drivers/media/pci/intel/ipu-bridge.c
-+++ b/drivers/media/pci/intel/ipu-bridge.c
-@@ -2,6 +2,7 @@
- /* Author: Dan Scally <djrscally@gmail.com> */
- 
- #include <linux/acpi.h>
-+#include <acpi/acpi_bus.h>
- #include <linux/cleanup.h>
- #include <linux/device.h>
- #include <linux/i2c.h>
-@@ -107,7 +108,6 @@ static const char * const ipu_vcm_types[] = {
- 	"lc898212axb",
- };
- 
--#if IS_ENABLED(CONFIG_ACPI)
- /*
-  * Used to figure out IVSC acpi device by ipu_bridge_get_ivsc_acpi_dev()
-  * instead of device and driver match to probe IVSC device.
-@@ -127,11 +127,11 @@ static struct acpi_device *ipu_bridge_get_ivsc_acpi_dev(struct acpi_device *adev
- 		const struct acpi_device_id *acpi_id = &ivsc_acpi_ids[i];
- 		struct acpi_device *consumer, *ivsc_adev;
- 
--		acpi_handle handle = acpi_device_handle(adev);
-+		acpi_handle handle = acpi_device_handle(ACPI_PTR(adev));
- 		for_each_acpi_dev_match(ivsc_adev, acpi_id->id, NULL, -1)
- 			/* camera sensor depends on IVSC in DSDT if exist */
- 			for_each_acpi_consumer_dev(ivsc_adev, consumer)
--				if (consumer->handle == handle) {
-+				if (ACPI_PTR(consumer->handle) == handle) {
- 					acpi_dev_put(consumer);
- 					return ivsc_adev;
- 				}
-@@ -139,12 +139,6 @@ static struct acpi_device *ipu_bridge_get_ivsc_acpi_dev(struct acpi_device *adev
- 
- 	return NULL;
- }
--#else
--static struct acpi_device *ipu_bridge_get_ivsc_acpi_dev(struct acpi_device *adev)
--{
--	return NULL;
--}
--#endif
- 
- static int ipu_bridge_match_ivsc_dev(struct device *dev, const void *adev)
- {
-@@ -259,12 +253,8 @@ static enum v4l2_fwnode_orientation ipu_bridge_parse_orientation(struct acpi_dev
- {
- 	enum v4l2_fwnode_orientation orientation;
- 	struct acpi_pld_info *pld = NULL;
--	bool status = false;
- 
--#if IS_ENABLED(CONFIG_ACPI)
--	status = acpi_get_physical_device_location(adev->handle, &pld);
--#endif
--	if (!status) {
-+	if (!acpi_get_physical_device_location(ACPI_PTR(adev->handle), &pld)) {
- 		dev_warn(ADEV_DEV(adev), "_PLD call failed, using default orientation\n");
- 		return V4L2_FWNODE_ORIENTATION_EXTERNAL;
- 	}
-@@ -498,9 +488,7 @@ static void ipu_bridge_create_connection_swnodes(struct ipu_bridge *bridge,
- 	if (sensor->csi_dev) {
- 		const char *device_hid = "";
- 
--#if IS_ENABLED(CONFIG_ACPI)
- 		device_hid = acpi_device_hid(sensor->ivsc_adev);
--#endif
- 
- 		snprintf(sensor->ivsc_name, sizeof(sensor->ivsc_name), "%s-%u",
- 			 device_hid, sensor->link);
-@@ -671,11 +659,7 @@ static int ipu_bridge_connect_sensor(const struct ipu_sensor_config *cfg,
- 	struct acpi_device *adev = NULL;
- 	int ret;
- 
--#if IS_ENABLED(CONFIG_ACPI)
- 	for_each_acpi_dev_match(adev, cfg->hid, NULL, -1) {
--#else
--	while (true) {
--#endif
- 		if (!ACPI_PTR(adev->status.enabled))
- 			continue;
- 
-@@ -768,15 +752,10 @@ static int ipu_bridge_ivsc_is_ready(void)
- 	unsigned int i;
- 
- 	for (i = 0; i < ARRAY_SIZE(ipu_supported_sensors); i++) {
--#if IS_ENABLED(CONFIG_ACPI)
- 		const struct ipu_sensor_config *cfg =
- 			&ipu_supported_sensors[i];
- 
- 		for_each_acpi_dev_match(sensor_adev, cfg->hid, NULL, -1) {
--#else
--		while (true) {
--			sensor_adev = NULL;
--#endif
- 			if (!ACPI_PTR(sensor_adev->status.enabled))
- 				continue;
- 
+Maybe the function needs an additional 'bool optional' input parameter
+to do these check conditionally.
 
--- 
-2.47.1.613.gc27f4b7a9f-goog
+>   
+> -		pcc_ss_data = pcc_data[pcc_ss_id];
+> +	if (CPC_IN_PCC(reg))
+> +		return cppc_get_reg_val_in_pcc(cpu, reg, val);
+>   
+> -		down_write(&pcc_ss_data->pcc_lock);
+> +	return cpc_read(cpu, reg, val);
+> +}
+>   
+> -		if (send_pcc_cmd(pcc_ss_id, CMD_READ) >= 0)
+> -			cpc_read(cpunum, reg, perf);
+> -		else
+> -			ret = -EIO;
+> +static int cppc_set_reg_val_in_pcc(int cpu, struct cpc_register_resource *reg, u64 val)
+> +{
+> +	int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpu);
+> +	struct cppc_pcc_data *pcc_ss_data = NULL;
+> +	int ret;
+>   
+> -		up_write(&pcc_ss_data->pcc_lock);
+> +	if (pcc_ss_id < 0) {
+> +		pr_debug("Invalid pcc_ss_id\n");
+> +		return -ENODEV;
+> +	}
+>   
+> +	ret = cpc_write(cpu, reg, val);
+> +	if (ret)
+>   		return ret;
+> +
+> +	pcc_ss_data = pcc_data[pcc_ss_id];
+> +
+> +	down_write(&pcc_ss_data->pcc_lock);
+> +	/* after writing CPC, transfer the ownership of PCC to platform */
+> +	ret = send_pcc_cmd(pcc_ss_id, CMD_WRITE);
+> +	up_write(&pcc_ss_data->pcc_lock);
+> +
+> +	return ret;
+> +}
+> +
+> +static int cppc_set_reg_val(int cpu, enum cppc_regs reg_idx, u64 val)
+> +{
+> +	struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpu);
+> +	struct cpc_register_resource *reg;
+> +
+> +	if (!cpc_desc) {
+> +		pr_debug("No CPC descriptor for CPU:%d\n", cpu);
+> +		return -ENODEV;
+>   	}
+>   
+> -	cpc_read(cpunum, reg, perf);
+> +	reg = &cpc_desc->cpc_regs[reg_idx];
+>   
+> -	return 0;
+> +	if (!CPC_SUPPORTED(reg)) {
+> +		pr_debug("CPC register (reg_idx=%d) is not supported\n", reg_idx);
+> +		return -EOPNOTSUPP;
+> +	}
 
+Similarly to cppc_get_reg_val(), if a field is:
+- mandatory + integer: currently doesn't exist. Not sure we should
+try to detect that, but might be safer.
+- mandatory + buffer: should not return -EOPNOTSUPP I think
+- optional + integer: e.g.: 'Autonomous Selection Enable Register',
+we should return -EOPNOTSUPP. It seems that currently, if the integer
+value is 1, I get a 'write error: Bad address'
+- optional + buffer:
+should effectively return -EOPNOTSUPP if the buffer is NULL.
+
+> +
+> +	if (CPC_IN_PCC(reg))
+> +		return cppc_set_reg_val_in_pcc(cpu, reg, val);
+> +
+> +	return cpc_write(cpu, reg, val);
+>   }
+>   
+>   /**
+> @@ -1223,11 +1280,11 @@ static int cppc_get_perf(int cpunum, enum cppc_regs reg_idx, u64 *perf)
+>    * @cpunum: CPU from which to get desired performance.
+>    * @desired_perf: Return address.
+>    *
+> - * Return: 0 for success, -EIO otherwise.
+> + * Return: 0 for success, -ERRNO otherwise.
+>    */
+>   int cppc_get_desired_perf(int cpunum, u64 *desired_perf)
+>   {
+> -	return cppc_get_perf(cpunum, DESIRED_PERF, desired_perf);
+> +	return cppc_get_reg_val(cpunum, DESIRED_PERF, desired_perf);
+>   }
+>   EXPORT_SYMBOL_GPL(cppc_get_desired_perf);
+>   
+> @@ -1236,11 +1293,11 @@ EXPORT_SYMBOL_GPL(cppc_get_desired_perf);
+>    * @cpunum: CPU from which to get nominal performance.
+>    * @nominal_perf: Return address.
+>    *
+> - * Return: 0 for success, -EIO otherwise.
+> + * Return: 0 for success, -ERRNO otherwise.
+>    */
+>   int cppc_get_nominal_perf(int cpunum, u64 *nominal_perf)
+>   {
+> -	return cppc_get_perf(cpunum, NOMINAL_PERF, nominal_perf);
+> +	return cppc_get_reg_val(cpunum, NOMINAL_PERF, nominal_perf);
+>   }
+>   
+>   /**
+> @@ -1248,11 +1305,11 @@ int cppc_get_nominal_perf(int cpunum, u64 *nominal_perf)
+>    * @cpunum: CPU from which to get highest performance.
+>    * @highest_perf: Return address.
+>    *
+> - * Return: 0 for success, -EIO otherwise.
+> + * Return: 0 for success, -ERRNO otherwise.
+>    */
+>   int cppc_get_highest_perf(int cpunum, u64 *highest_perf)
+>   {
+> -	return cppc_get_perf(cpunum, HIGHEST_PERF, highest_perf);
+> +	return cppc_get_reg_val(cpunum, HIGHEST_PERF, highest_perf);
+>   }
+>   EXPORT_SYMBOL_GPL(cppc_get_highest_perf);
+>   
+> @@ -1261,11 +1318,11 @@ EXPORT_SYMBOL_GPL(cppc_get_highest_perf);
+>    * @cpunum: CPU from which to get epp preference value.
+>    * @epp_perf: Return address.
+>    *
+> - * Return: 0 for success, -EIO otherwise.
+> + * Return: 0 for success, -ERRNO otherwise.
+>    */
+>   int cppc_get_epp_perf(int cpunum, u64 *epp_perf)
+>   {
+> -	return cppc_get_perf(cpunum, ENERGY_PERF, epp_perf);
+> +	return cppc_get_reg_val(cpunum, ENERGY_PERF, epp_perf);
+>   }
+>   EXPORT_SYMBOL_GPL(cppc_get_epp_perf);
+>   
