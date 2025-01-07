@@ -1,25 +1,25 @@
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1F961E0DEA
-	for <acpica-devel@lists.linux.dev>; Tue,  7 Jan 2025 16:54:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E702C188736
+	for <acpica-devel@lists.linux.dev>; Tue,  7 Jan 2025 17:37:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736268886; cv=none; b=Yb6jeB6uiXNiZKoatqOEfS0VzqfW1bdloTjsCZkz+ztOc7GJ2DkgosA4PIsCAyHs+XeaMx8fH9/0cPY1iEcayRZh350zjvnSq48mo3QOEfDL2p319Oz8QMM33/ZgEqslVUFHjpDhxbmx7PCmXizB4CBU7Gc2R8EC2dOHaqpse1A=
+	t=1736271427; cv=none; b=GucXMTMsGSqnr6NmxUocslXbCCzff2n/bcAQbumxxU4uYVSS0oTnGvKIVNgoiBrtyPU3GBkcvXUyTB3izFOCuftdTfgvdz9nbAZAD9nlYzgDBisJSnIjNqKHJQJtqWSEk+2lG9hgaZ+6SOiTJCqsGeut6NpoMFepOyvJZi4Lv+g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736268886; c=relaxed/simple;
-	bh=v8BGuOfz3BqVzPbsyN4GIK0XcWMo9ZU08M8yMuRU/jY=;
+	s=arc-20240116; t=1736271427; c=relaxed/simple;
+	bh=MCGVPEPwHTz5c7Yp4A7t785cwKwFxolZ7+d6KKuFyRw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Y/lidVVS7Vmi0RqccOyYjQdSoeTExcl9l10NbmCM1Yek/KSvh4aQDZJWXWeenZzpH8dYd2zgyMH28V3RcciWZ8qFUuV2AF/XCzt1dinf4Ia2Hdeekh0Psl1uH2mlyW0MW3EpXFdbpfQ2iD/dk8uaUkeaHFf/OSjsdThLn1KdCuo=
+	 In-Reply-To:Content-Type; b=V08/0Eyso0R77BM809dsdB9JlCzhcvGR0pv0eRqAFUZwwQqmb1vBKKrKacaW2jg1MWNsBCGoXU9ldZnldVLY+jz9XO4j/9AOSVdp7P/LCSCTDnayUY9gmzOrL7BaTS6owTHDtDWXBrKA4t5fwULr+GSDgyUBDyEn1QoPFhB2KKI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 727651424;
-	Tue,  7 Jan 2025 08:55:10 -0800 (PST)
-Received: from [192.168.1.12] (usa-sjc-mx-foss1.foss.arm.com [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BF67E3F59E;
-	Tue,  7 Jan 2025 08:54:38 -0800 (PST)
-Message-ID: <a9574bab-3b85-4a33-b465-204687dabc98@arm.com>
-Date: Tue, 7 Jan 2025 17:54:36 +0100
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6D53C1424;
+	Tue,  7 Jan 2025 09:37:31 -0800 (PST)
+Received: from [172.27.42.65] (usa-sjc-mx-foss1.foss.arm.com [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A30DF3F59E;
+	Tue,  7 Jan 2025 09:37:02 -0800 (PST)
+Message-ID: <85fb2b19-9d15-44ea-8f76-b3cac14e2810@arm.com>
+Date: Tue, 7 Jan 2025 11:37:01 -0600
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -27,231 +27,111 @@ List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/4] ACPI: CPPC: Add cppc_get_reg_val and
- cppc_set_reg_val function
-To: "zhenglifeng (A)" <zhenglifeng1@huawei.com>, rafael@kernel.org,
- lenb@kernel.org, robert.moore@intel.com, viresh.kumar@linaro.org
-Cc: acpica-devel@lists.linux.dev, linux-acpi@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, linuxarm@huawei.com,
- ionela.voinescu@arm.com, jonathan.cameron@huawei.com,
- zhanjie9@hisilicon.com, lihuisong@huawei.com, hepeng68@huawei.com,
- fanghao11@huawei.com
-References: <20241216091603.1247644-1-zhenglifeng1@huawei.com>
- <20241216091603.1247644-2-zhenglifeng1@huawei.com>
- <8e9c1ede-3277-458b-bd44-ca0c7615a4ab@arm.com>
- <74be38cf-8e18-44fc-995c-a5b734d9df29@huawei.com>
+Subject: Re: [RFC 0/2] GENL interface for ACPI _DSM methods
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ Wathsala Vithanage <wathsala.vithanage@arm.com>
+Cc: linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
+ acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org, lenb@kernel.org,
+ robert.moore@intel.com, bhelgaas@google.com, wei.huang2@amd.com,
+ honnappa.nagarahalli@arm.com, dhruv.tripathi@arm.com, rob.herring@arm.com,
+ Jason Gunthorpe <jgg@nvidia.com>
+References: <20250106163045.508959-1-wathsala.vithanage@arm.com>
+ <20250106180140.00005132@huawei.com>
 Content-Language: en-US
-From: Pierre Gondois <pierre.gondois@arm.com>
-In-Reply-To: <74be38cf-8e18-44fc-995c-a5b734d9df29@huawei.com>
+From: Jeremy Linton <jeremy.linton@arm.com>
+In-Reply-To: <20250106180140.00005132@huawei.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-Hello Lifeng,
+Hi,
 
-On 12/20/24 09:30, zhenglifeng (A) wrote:
-> On 2024/12/17 21:48, Pierre Gondois wrote:
->> Hello Lifeng,
->>
->> On 12/16/24 10:16, Lifeng Zheng wrote:
->>> Rename cppc_get_perf() to cppc_get_reg_val() as a generic function to read
->>> cppc registers, with four changes:
->>>
->>> 1. Change the error kind to "no such device" when pcc_ss_id < 0, which
->>> means that this cpu cannot get a valid pcc_ss_id.
->>>
->>> 2. Add a check to verify if the register is a cpc supported one before
->>> using it.
->>>
->>> 3. Extract the operations if register is in pcc out as
->>> cppc_get_reg_val_in_pcc().
->>>
->>> 4. Return the result of cpc_read() instead of 0.
->>>
->>> Add cppc_set_reg_val_in_pcc() and cppc_set_reg_val() as generic functions
->>> for setting cppc registers value. Unlike other set reg ABIs,
->>> cppc_set_reg_val() checks CPC_SUPPORTED right after getting the register,
->>> because the rest of the operations are meaningless if this register is not
->>> a cpc supported one.
->>>
->>> These functions can be used to reduce some existing code duplication.
->>>
->>> Signed-off-by: Lifeng Zheng <zhenglifeng1@huawei.com>
->>> ---
->>>    drivers/acpi/cppc_acpi.c | 111 +++++++++++++++++++++++++++++----------
->>>    1 file changed, 84 insertions(+), 27 deletions(-)
->>>
->>> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
->>> index c1f3568d0c50..bb5333a503a2 100644
->>> --- a/drivers/acpi/cppc_acpi.c
->>> +++ b/drivers/acpi/cppc_acpi.c
->>> @@ -1179,43 +1179,100 @@ static int cpc_write(int cpu, struct cpc_register_resource *reg_res, u64 val)
->>>        return ret_val;
->>>    }
->>>    -static int cppc_get_perf(int cpunum, enum cppc_regs reg_idx, u64 *perf)
->>> +static int cppc_get_reg_val_in_pcc(int cpu, struct cpc_register_resource *reg, u64 *val)
->>>    {
->>> -    struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpunum);
->>> +    int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpu);
->>> +    struct cppc_pcc_data *pcc_ss_data = NULL;
->>> +    int ret;
->>> +
->>> +    if (pcc_ss_id < 0) {
->>> +        pr_debug("Invalid pcc_ss_id\n");
->>> +        return -ENODEV;
->>> +    }
->>> +
->>> +    pcc_ss_data = pcc_data[pcc_ss_id];
->>> +
->>> +    down_write(&pcc_ss_data->pcc_lock);
->>> +
->>> +    if (send_pcc_cmd(pcc_ss_id, CMD_READ) >= 0)
->>> +        ret = cpc_read(cpu, reg, val);
->>> +    else
->>> +        ret = -EIO;
->>> +
->>> +    up_write(&pcc_ss_data->pcc_lock);
->>> +
->>> +    return ret;
->>> +}
->>> +
->>> +static int cppc_get_reg_val(int cpu, enum cppc_regs reg_idx, u64 *val)
->>> +{
->>> +    struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpu);
->>>        struct cpc_register_resource *reg;
->>>          if (!cpc_desc) {
->>> -        pr_debug("No CPC descriptor for CPU:%d\n", cpunum);
->>> +        pr_debug("No CPC descriptor for CPU:%d\n", cpu);
->>>            return -ENODEV;
->>>        }
->>>          reg = &cpc_desc->cpc_regs[reg_idx];
->>>    -    if (CPC_IN_PCC(reg)) {
->>> -        int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpunum);
->>> -        struct cppc_pcc_data *pcc_ss_data = NULL;
->>> -        int ret = 0;
->>> -
->>> -        if (pcc_ss_id < 0)
->>> -            return -EIO;
->>> +    if (!CPC_SUPPORTED(reg)) {
->>> +        pr_debug("CPC register (reg_idx=%d) is not supported\n", reg_idx);
->>> +        return -EOPNOTSUPP;
->>> +    }
->>
->> I think this is only valid for optional fields. Meaning that:
->> - if the function is used one day for the mandatory 'Lowest Performance'
->> field, an integer value of 0 would be valid.
->> - if the function is used for a mandatory field containing a NULL Buffer,
->> it seems we would return -EFAULT currently, through cpc_read(). -EOPNOTSUPP
->> doesn't seem appropriate as the field would be mandatory.
->>
->> Maybe the function needs an additional 'bool optional' input parameter
->> to do these check conditionally.
+On 1/6/25 12:01 PM, Jonathan Cameron wrote:
+> On Mon, 6 Jan 2025 16:30:43 +0000
+> Wathsala Vithanage <wathsala.vithanage@arm.com> wrote:
 > 
-> Indeed, I should have judged the type before doing this check. But adding a
-> input parameter is not a really nice way to me. How about adding a bool
-> list of length MAX_CPC_REG_ENT in cppc_acpi.h to indicate wheter it is
-> optional?
+>> Linux v6.13-rc1 added support for PCIe TPH and direct cache injection.
+>> As already described in the patch set[1] that introduced this feature,
+>> the cache injection in supported hardware allows optimal utilization of
+>> platform resources for specific requests on the PCIe bus. However, the
+>> patch set [1] implements the functionality for usage within the kernel.
+>> But certain user space applications, especially those whose performance
+>> is sensitive to the latency of inbound writes as seen by a CPU core, may
+>> benefit from using this information (E.g., the DPDK cache stashing
+>> feature discussed in RFC [2]). This RFC is an attempt to obtain the PCIe
+>> steering tag information from the kernel to be used by user mode
+>> applications. We understand that there is more than one way to provide
+>> this information. Please review and suggest alternatives if necessary.
+>>
+>> The first of the two patches introduced in this RFC attempts to overcome
+>> the kernel-only limitation by providing an API to kernel subsystems to
+>> hook up relevant _DSM methods to a GENL interface. User space
+>> applications can invoke a _DSM hooked up to this interface via the
+>> "acpi-event" GENL family socket, granted they have the minimum
+>> capabilities and message formats demanded by the kernel subsystem that
+>> hooked up the _DSM method. This feature is added by extending the
+>> "acpi-event" GENL family that multicasts ACPI events to the user-space
+>> applications such as acpid.
+>>
+>> The second patch of this RFC hooks up the PCIe root-port TLP Processing
+>> Hints (TPH) _DSM to the ACPI GENL interface. User space applications
+>> like [2] can now request the kernel to execute the _DSM on their behalf
+>> and return steering-tag information.
+>>
+>> [1] lore.kernel.org/linux-pci/20241002165954.128085-1-wei.huang2@amd.com
+>> [2] inbox.dpdk.org/dev/20241021015246.304431-2-wathsala.vithanage@arm.com
+> 
+> Hi Wathsala,
+> 
+> Superficially this feels like another potential interface that could be wrapped
+> up under appropriate fwctl. Jason, what do you think?
+> 
+> Mind you I'm not personally convinced that an interface that focuses on
+> exposing _DSM calls to userspace makes sense as opposed to subsystem specific
+> stuff.
+> 
+> Maybe consider associating the actual interface with the individual PCI functions
+> (which provides the first chunk of the message directly).
 
-Actually all these functions:
-- cppc_get_desired_perf
-- cppc_get_highest_perf
-- cppc_get_epp_perf
-- cppc_set_epp
-- cppc_get_auto_act_window
-- cppc_set_auto_act_window
-- cppc_get_auto_sel
-- cppc_get_nominal_perf
+Right,
 
-and in general all the functions getting / setting one value at a time could
-be implemented by macros similars to show_cppc_data(). From what I see the
-input parameters required are:
-- name of the field
-- if the field is mandatory to have or not
-- if the field is writeable
-- if the field is implemented as an integer, register, or can be both
+I think this was similar to a conversation we had internally, which was 
+basically to detect the PCIe extended capability and export a 'steering' 
+entry in sysfs on each PCIe device which can take a logical cpu/cache 
+value, translate those on write to the ACPI cpu/cache id's, make the 
+firmware call, then directly update the PCIe device's capability with 
+the result. This also leaves the door open for future 
+cpu/cache->steering tag translation methods to transparently replace the 
+_DSM call while leaving the userspace API the same.
 
-This would avoid having numerous function definitions doing approximately the
-same thing.
 
 > 
->>
->>>    -        pcc_ss_data = pcc_data[pcc_ss_id];
->>> +    if (CPC_IN_PCC(reg))
->>> +        return cppc_get_reg_val_in_pcc(cpu, reg, val);
->>>    -        down_write(&pcc_ss_data->pcc_lock);
->>> +    return cpc_read(cpu, reg, val);
->>> +}
->>>    -        if (send_pcc_cmd(pcc_ss_id, CMD_READ) >= 0)
->>> -            cpc_read(cpunum, reg, perf);
->>> -        else
->>> -            ret = -EIO;
->>> +static int cppc_set_reg_val_in_pcc(int cpu, struct cpc_register_resource *reg, u64 val)
->>> +{
->>> +    int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpu);
->>> +    struct cppc_pcc_data *pcc_ss_data = NULL;
->>> +    int ret;
->>>    -        up_write(&pcc_ss_data->pcc_lock);
->>> +    if (pcc_ss_id < 0) {
->>> +        pr_debug("Invalid pcc_ss_id\n");
->>> +        return -ENODEV;
->>> +    }
->>>    +    ret = cpc_write(cpu, reg, val);
->>> +    if (ret)
->>>            return ret;
->>> +
->>> +    pcc_ss_data = pcc_data[pcc_ss_id];
->>> +
->>> +    down_write(&pcc_ss_data->pcc_lock);
->>> +    /* after writing CPC, transfer the ownership of PCC to platform */
->>> +    ret = send_pcc_cmd(pcc_ss_id, CMD_WRITE);
->>> +    up_write(&pcc_ss_data->pcc_lock);
->>> +
->>> +    return ret;
->>> +}
->>> +
->>> +static int cppc_set_reg_val(int cpu, enum cppc_regs reg_idx, u64 val)
->>> +{
->>> +    struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpu);
->>> +    struct cpc_register_resource *reg;
->>> +
->>> +    if (!cpc_desc) {
->>> +        pr_debug("No CPC descriptor for CPU:%d\n", cpu);
->>> +        return -ENODEV;
->>>        }
->>>    -    cpc_read(cpunum, reg, perf);
->>> +    reg = &cpc_desc->cpc_regs[reg_idx];
->>>    -    return 0;
->>> +    if (!CPC_SUPPORTED(reg)) {
->>> +        pr_debug("CPC register (reg_idx=%d) is not supported\n", reg_idx);
->>> +        return -EOPNOTSUPP;
->>> +    }
->>
->> Similarly to cppc_get_reg_val(), if a field is:
->> - mandatory + integer: currently doesn't exist. Not sure we should
->> try to detect that, but might be safer.
->> - mandatory + buffer: should not return -EOPNOTSUPP I think
->> - optional + integer: e.g.: 'Autonomous Selection Enable Register',
->> we should return -EOPNOTSUPP. It seems that currently, if the integer
->> value is 1, I get a 'write error: Bad address'
->> - optional + buffer:
->> should effectively return -EOPNOTSUPP if the buffer is NULL.
+> Also, _DSM is just one form of firmware interface used for PCI supporting
+> system. Tying the userspace interface to that feels unwise.  I can certainly
+> foresee a PSCI/SCMI or similar interface for this on ARM platforms
+> wrapped up in _DSM where ACPI is present but directly accessed when DT
+> is in use.
 > 
-> Actually, cpc_write() doesn't check field type and treats the field as a
-> buffer. That's why you get 'Bad address' error when the integer value is 1.
-> I think the existing code needs to be improved, otherwise there may be
-> unexpected problems.
+> I'd also request that you break out what goes in ARG0,1,2 as that is all
+> stuff that the kernel is aware of and not all reviewers have access to the
+> ECN (I do though).  In particular the fact there are ACPI UIDs may
+> need a more generic solution.
 > 
-> Do you mean we should return -EOPNOTSUPP no matter what to be written if
-> this field is a optional + integer one?
+> Jonathan
+> 
+>> Wathsala Vithanage (2):
+>>    ACPI: Add support for invoking select _DSM methods from user space
+>>    PCI: Add generic netlink interface to TPH _DSM
+>>
+>>   drivers/acpi/Makefile                 |   3 +-
+>>   drivers/acpi/{event.c => acpi_genl.c} | 110 ++++++++++++++++++++++-
+>>   drivers/acpi/acpi_genl_dsm.c          |  76 ++++++++++++++++
+>>   drivers/pci/tph.c                     | 121 ++++++++++++++++++++++++++
+>>   include/acpi/acpi_genl.h              |  54 ++++++++++++
+>>   include/linux/acpi.h                  |   1 +
+>>   6 files changed, 360 insertions(+), 5 deletions(-)
+>>   rename drivers/acpi/{event.c => acpi_genl.c} (63%)
+>>   create mode 100644 drivers/acpi/acpi_genl_dsm.c
+>>   create mode 100644 include/acpi/acpi_genl.h
+>>
+> 
 
-Yes exact
-
-  And what about a mandatory +
-> integer one. Should we directly write the int_value?
-
-I don't think it is possible to have this. Indeed, if a value is writeable,
-it must be a register, so mandatory + integer should not exist. I suggested
-a check in case someone made a mistake, but it is not sure the check is actually
-necessary.
-
-Regards,
-Pierre
