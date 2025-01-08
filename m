@@ -1,180 +1,108 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9463F1F76B9
-	for <acpica-devel@lists.linux.dev>; Wed,  8 Jan 2025 09:55:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3D081AA1DA
+	for <acpica-devel@lists.linux.dev>; Wed,  8 Jan 2025 19:59:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736330160; cv=none; b=cI5l34BDx2DPusjLB6mfSUHc+saS94n5aqvWCGlR1izs9Gr1jBF7vI6upkmUbr6z83jyiVuWwxyaWUdkFq5lfnMBGV8wW2j25ox24QJ9iHZClaB8F7VtlJJYOxVrh46Mcsn95Eq7jpF10ctgMDb+nwM9CphpbQMPJNaHFnDfbhw=
+	t=1736366379; cv=none; b=U0Nx6/Z++2/D1TUhcNgVPc7Mr6gfcjWeue9ScigniylZ8dX5WHe6w4mOE2wfZKpR8FfbmZAnAlMYNxePoQcY9YWL4izD47GLIX7EkliU9sQXOUUdYa3cPjQk6hYcjNZqkrQ24bnwqPIOIOcaG5SaLEgt81S+qB5uL8kTUv6BELE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736330160; c=relaxed/simple;
-	bh=IZ+iP2nsjXJoqis1nS8rDf7as5EAhzqeumMQiQXrAuQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MB1LbCbGw5Oxf3F1USP8rKdeSWu3cLxLSxIwV+iEEiox70E/IcP4nJfHm4owdkPs8fvABMkK/PzAl+0AOpoObsDNOidBGBorKYBIlw7OGKOiQSNDxoLVrZVzvqclYn4+dyPIlkyG8dG9jk2lFj2jKcdt7aV1N2vqDf/6I2jsALw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CTrTYRXe; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CTrTYRXe"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1736330158; x=1767866158;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=IZ+iP2nsjXJoqis1nS8rDf7as5EAhzqeumMQiQXrAuQ=;
-  b=CTrTYRXelmjEe+OiJY9lujG6NwCWmQOt24Eo+jjZgu+93sj+HOQlf3m2
-   Vr4qhvP27f/Nd0XAwWvd4xG7byGYf6aWc37qGQ8/XNkHTliQKEUXq2syg
-   +mG+XYxCWEsVDfI9uP8KHc3cwUaWdfLpvoYd7DWdgw8j0YwFJz/oCQco3
-   CQ8TyRq2RR92MBBmJ1gdtFE+lYaBE3/4hrqlwqi3AlVh8KGO11naxmOs8
-   C4lEsAYWezyU21a04uxdFfn5sOCbMT0L7Cx1Fe3B6AzQHzICYYH4sY/Zu
-   Zozczel9eq6d07a9c23M/SEOrMIbJZZNZ5VgvEmzEr/LxIVhEUQM0/qoy
-   g==;
-X-CSE-ConnectionGUID: Sba0sTilR8qHTmVCKyr3xw==
-X-CSE-MsgGUID: VXqFDI6jTjSnStcu/Cqhpg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11308"; a="53962467"
-X-IronPort-AV: E=Sophos;i="6.12,297,1728975600"; 
-   d="scan'208";a="53962467"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2025 01:55:58 -0800
-X-CSE-ConnectionGUID: WcqJwRQDRKKlpnhlvZ0PiA==
-X-CSE-MsgGUID: WJcSKjWaTL62HONckQyVBQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,297,1728975600"; 
-   d="scan'208";a="107916886"
-Received: from ly-workstation.sh.intel.com (HELO ly-workstation) ([10.239.161.23])
-  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2025 01:55:53 -0800
-Date: Wed, 8 Jan 2025 17:55:40 +0800
-From: "Lai, Yi" <yi1.lai@linux.intel.com>
-To: Zaid Alali <zaidal@os.amperecomputing.com>
-Cc: rafael@kernel.org, lenb@kernel.org, james.morse@arm.com,
-	tony.luck@intel.com, bp@alien8.de, robert.moore@intel.com,
-	dan.j.williams@intel.com, Jonathan.Cameron@huawei.com,
-	Benjamin.Cheatham@amd.com, Avadhut.Naik@amd.com,
-	viro@zeniv.linux.org.uk, arnd@arndb.de, ira.weiny@intel.com,
-	dave.jiang@intel.com, sthanneeru.opensrc@micron.com,
-	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	acpica-devel@lists.linux.dev
-Subject: Re: [PATCH v2 9/9] ACPI: APEI: EINJ: Update the documentation for
- EINJv2 support
-Message-ID: <Z35LnJIdGgct+8jm@ly-workstation>
-References: <20241205211854.43215-1-zaidal@os.amperecomputing.com>
- <20241205211854.43215-10-zaidal@os.amperecomputing.com>
+	s=arc-20240116; t=1736366379; c=relaxed/simple;
+	bh=/KGS/8rQgUDzOWmbIuVURj9WEuwmEg34L0vx2hkYIUA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=D3fyiflpJcxWmdSig2aNKXLGRLmIIYuRGwdn2yji8Tvy/pu96byLoZfOnwEq3YADOqfLIG0stHCzFgBtv3e+iaS6/ti9v1ImiZQ2jEWvcfDdwVXPmuAx3Ophxpz28AHHzP7nWm3xR70szcqZjmWmnoxdUAMBn+LLkT18reudACQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 673C213D5;
+	Wed,  8 Jan 2025 12:00:04 -0800 (PST)
+Received: from [172.27.42.68] (usa-sjc-mx-foss1.foss.arm.com [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6FF2C3F66E;
+	Wed,  8 Jan 2025 11:59:35 -0800 (PST)
+Message-ID: <d35924de-a560-40aa-a99d-7278009c5ff3@arm.com>
+Date: Wed, 8 Jan 2025 13:59:35 -0600
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241205211854.43215-10-zaidal@os.amperecomputing.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC 0/2] GENL interface for ACPI _DSM methods
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ Wathsala Vithanage <wathsala.vithanage@arm.com>, linux-acpi@vger.kernel.org,
+ linux-pci@vger.kernel.org, acpica-devel@lists.linux.dev,
+ linux-kernel@vger.kernel.org, lenb@kernel.org, robert.moore@intel.com,
+ bhelgaas@google.com, wei.huang2@amd.com, honnappa.nagarahalli@arm.com,
+ dhruv.tripathi@arm.com, rob.herring@arm.com
+References: <20250106163045.508959-1-wathsala.vithanage@arm.com>
+ <20250106180140.00005132@huawei.com>
+ <85fb2b19-9d15-44ea-8f76-b3cac14e2810@arm.com>
+ <20250107174842.GN5556@nvidia.com>
+Content-Language: en-US
+From: Jeremy Linton <jeremy.linton@arm.com>
+In-Reply-To: <20250107174842.GN5556@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Dec 05, 2024 at 01:18:54PM -0800, Zaid Alali wrote:
-> Add documentation for the updated ACPI specs for EINJv2(1)(2)
-> 
-> (1)https://bugzilla.tianocore.org/show_bug.cgi?id=4615
-> (2)https://bugzilla.tianocore.org/attachment.cgi?id=1446
-> 
-> Signed-off-by: Zaid Alali <zaidal@os.amperecomputing.com>
-> ---
->  .../firmware-guide/acpi/apei/einj.rst         | 41 ++++++++++++++++++-
->  1 file changed, 39 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/firmware-guide/acpi/apei/einj.rst b/Documentation/firmware-guide/acpi/apei/einj.rst
-> index c52b9da08fa9..b1c0464f6002 100644
-> --- a/Documentation/firmware-guide/acpi/apei/einj.rst
-> +++ b/Documentation/firmware-guide/acpi/apei/einj.rst
-> @@ -59,6 +59,9 @@ The following files belong to it:
->    0x00000200        Platform Correctable
->    0x00000400        Platform Uncorrectable non-fatal
->    0x00000800        Platform Uncorrectable fatal
-> +  V2_0x00000001     EINJV2 Processor Error
-> +  V2_0x00000002     EINJV2 Memory Error
-> +  V2_0x00000004     EINJV2 PCI Express Error
->    ================  ===================================
->  
->    The format of the file contents are as above, except present are only
-> @@ -85,9 +88,11 @@ The following files belong to it:
->      Bit 0
->        Processor APIC field valid (see param3 below).
->      Bit 1
-> -      Memory address and mask valid (param1 and param2).
-> +      Memory address and range valid (param1 and param2).
->      Bit 2
->        PCIe (seg,bus,dev,fn) valid (see param4 below).
-> +    Bit 3
-> +      EINJv2 extension structure is valid
->  
->    If set to zero, legacy behavior is mimicked where the type of
->    injection specifies just one bit set, and param1 is multiplexed.
-> @@ -110,6 +115,7 @@ The following files belong to it:
->    Used when the 0x1 bit is set in "flags" to specify the APIC id
->  
->  - param4
-> +
->    Used when the 0x4 bit is set in "flags" to specify target PCIe device
->  
->  - notrigger
-> @@ -122,6 +128,18 @@ The following files belong to it:
->    this actually works depends on what operations the BIOS actually
->    includes in the trigger phase.
->  
-> +- einjv2_component_count
-> +
-> +  The value from this file is used to set the "Component Array Count"
-> +  field of EINJv2 Extension Structure.
-> +
-> +- einjv2_component_array
-> +
-> +  The contents of this file are used to set the "Component Array" field
-> +  of the EINJv2 Extension Structure. The expected format is hex values
-> +  for component id and syndrome separated by space, and multiple
-> +  components are separated by new line.
-> +
->  CXL error types are supported from ACPI 6.5 onwards (given a CXL port
->  is present). The EINJ user interface for CXL error types is at
->  <debugfs mount point>/cxl. The following files belong to it:
-> @@ -139,7 +157,6 @@ is present). The EINJ user interface for CXL error types is at
->    under <debugfs mount point>/apei/einj, while CXL 1.1/1.0 port injections
->    must use this file.
->  
-> -
->  BIOS versions based on the ACPI 4.0 specification have limited options
->  in controlling where the errors are injected. Your BIOS may support an
->  extension (enabled with the param_extension=1 module parameter, or boot
-> @@ -194,6 +211,26 @@ An error injection example::
->    # echo 0x8 > error_type			# Choose correctable memory error
->    # echo 1 > error_inject			# Inject now
->  
-> +An EINJv2 error injection example::
-> +
-> +  # cd /sys/kernel/debug/apei/einj
-> +  # cat available_error_type			# See which errors can be injected
-> +  0x00000002	Processor Uncorrectable non-fatal
-> +  0x00000008	Memory Correctable
-> +  0x00000010	Memory Uncorrectable non-fatal
-> +  0x00000001	EINJV2 Processor Error
-> +  0x00000002	EINJV2 Memory Error
-> +
-> +  # echo 0x12345000 > param1			# Set memory address for injection
-> +  # echo 0xfffffffffffff000 > param2		# Range - anywhere in this page
-> +  # comp_arr="0x1 0x2				# Fill in the component array
-> +    >0x1 0x4
-> +    >0x2 0x4"
-> +  # echo "$comp_arr" > einjv2_component_array
-> +  # echo 0x2 > error_type			# Choose EINJv2 memory error
+Hi,
 
-Missing the V2_ prefix here.
-
-Regards,
-Yi Lai
-
-> +  # echo 0xa > flags				# set flags to indicate EINJv2
-> +  # echo 1 > error_inject			# Inject now
-> +
->  You should see something like this in dmesg::
->  
->    [22715.830801] EDAC sbridge MC3: HANDLING MCE MEMORY ERROR
-> -- 
-> 2.34.1
+On 1/7/25 11:48 AM, Jason Gunthorpe wrote:
+> On Tue, Jan 07, 2025 at 11:37:01AM -0600, Jeremy Linton wrote:
+>> Hi,
+>>
+>> On 1/6/25 12:01 PM, Jonathan Cameron wrote:
+>>> On Mon, 6 Jan 2025 16:30:43 +0000
+>>> Wathsala Vithanage <wathsala.vithanage@arm.com> wrote:
+>>>
+>>>> Linux v6.13-rc1 added support for PCIe TPH and direct cache injection.
+>>>> As already described in the patch set[1] that introduced this feature,
+>>>> the cache injection in supported hardware allows optimal utilization of
+>>>> platform resources for specific requests on the PCIe bus. However, the
+>>>> patch set [1] implements the functionality for usage within the kernel.
+>>>> But certain user space applications, especially those whose performance
+>>>> is sensitive to the latency of inbound writes as seen by a CPU core, may
+>>>> benefit from using this information (E.g., the DPDK cache stashing
+>>>> feature discussed in RFC [2]).
 > 
+> There is no way for userspace to program TPH information into a PCI
+> device without going through a kernel driver, and the kernel driver
+> must be the exclusive owner of the steering tag configuration or chaos
+> would ensue. Having a way for sysfs to override this seems very wrong
+> to me, and I think you should not go in this direction.
+> 
+> DPDK runs on VFIO or RDMA. It would natural to have an VFIO native API
+> to manipulate the steering tags, and we are already discussing what
+> RDMA support for steering tag would look like.
+> 
+>>> Superficially this feels like another potential interface that could be wrapped
+>>> up under appropriate fwctl. Jason, what do you think?
+> 
+> As above, I think this very squarely belongs under the appropriate
+> subsystems that are providing the kernel drivers for the device. There
+> is no reasonable way to share steering tags with unrelated userspace
+> through any mechanism. Basically it fails the independence test of
+> fwctl.
+> 
+>> I think this was similar to a conversation we had internally, which was
+>> basically to detect the PCIe extended capability and export a 'steering'
+>> entry in sysfs on each PCIe device which can take a logical cpu/cache value,
+>> translate those on write to the ACPI cpu/cache id's, make the firmware call,
+>> then directly update the PCIe device's capability with the result.
+> 
+> Seems wrong, driver must do this. If the driver was already using that
+> entry for something else you've just wrecked it.
+
+Can you clarify what you mean by 'wrecked'? AFAIK a valid, if poorly 
+chosen, steering tag is going to be sub-optimal performance.
+
+I'm under the impression this is a similar problem to cpu/irq/numa 
+affinity where the driver/subsystem should be making the choice, but the 
+user is provided the opportunity to override the defaults if they think 
+there is benefit in their environment. Again AFAIK, the whole 
+OS/software stashing is already well down the 'I know better than the HW 
+where to store this data' rabbit hole.
+
+
+Thanks,
+
