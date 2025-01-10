@@ -1,177 +1,300 @@
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2044.outbound.protection.outlook.com [40.107.100.44])
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 325FA21859D
-	for <acpica-devel@lists.linux.dev>; Thu,  9 Jan 2025 13:46:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.100.44
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736430389; cv=fail; b=AawSgj/bvpNxJZF+CJoWypXH+badWgZ2WgJ482odcKjjVmFhqZXazL6ZyCsE6wVC1I73wgRvpdzBoxA73hLbXpNrcTQiHZwL12bf/bSfWgOG3zFntpoSXm00M5Fj7rQYVuDm36j4nW+FMr3LmoFyDnqYph4TgDk/J00dTzFXacQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736430389; c=relaxed/simple;
-	bh=hq/53HkHZUvXyUXJrHWzWKZIZFnJw8Zis4+9PpEDsF8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=BxN03e7TNiRn7449zmC8/YC6C/KLYww64x4QrSiPqDwSoMX4hDEkMgNQGVXmB91pPxP2xVDHcf86b9D4rf5NCVke1TdhdDi2WKZswDKB59SB+QgKXLEI3DFokQl/+6U6M4jezUN4nDfD5nNst8TsoPj+kmmecI6K2enNRAgSOUA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=aR3zyJC6; arc=fail smtp.client-ip=40.107.100.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="aR3zyJC6"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Tx/PXcYgt8n2z1DlEukJENBCN27wFi3pNA52ChPUHFcTs3Z4XhNk8hFEdxtan0vjuogDnK6o5mickvAZAL67MAAXF0cfxVg5jp9IWuWvUXLmiNW6D5FrMivtyatH1AUT8AHVMxahoA3WyJRUgvYsE6tEleEBnmKJ6QCPK43A3gLVBCkRpjE8nHRkpsKQiqxI4GmR5kIYjzSSA51m0oLqiuQHsmUqXlyFXyA4wzFeg9Y8Y9pCQttUWknROq0O++SA7SFPvBofe6DC/FbN4gcYtM1a6U3whY6o1A5hR7Yq/0ILrD/xzHitpqc0OmXwxQQ2GoFMXuEuSMBqFeHkF05tkQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=axSigNcod2rzX1HbN54+Vdf3z8Fwiv3s0T4Yc0Wj9PQ=;
- b=YLtcFRLimb4OOu2p/XBVlGgNvBsSlPDQfB0+5K8uIJwU8C8pKN4goCZa/gtfEU/MZMcFfUC0x4g0tm85wpSroifx/RBAuiGZ3UV/9UENTNbZMDuL/6ogdGVt2EpWNnUoCefZ+rptn+1xjgFnEDjyPbw0k68mnhp9THmkVNHj/TqPsuo5znNy9K6ir4f6xGSswFLno/upib7eFjsOe/jU27UJ23Fq9Oo3my/1FlZcb56+/JiQkvaJC9/ftoD86DO3RHIrfn5XNLW8F4zcXu2/oJhk/ap+7CzMAyubwiuzI4NDOo1AAhhRmZEHcqeT1qDjSqDW5+s6U1YHC4VCRRu3ng==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=axSigNcod2rzX1HbN54+Vdf3z8Fwiv3s0T4Yc0Wj9PQ=;
- b=aR3zyJC6jxtOyJ3JwWxUjsZkypKT5Vk48IgRWlYvhtn55z0hVHCq9IBEQMkJixpbMcLWy5biactgWRRfKN/3GapPnMZpxXMGx46+eSyv/KWVGjc0iLEhkyUBqpkyyiPNmlo4V+PGsZMlcz1Ctr91H36uUnWWlACgw7yOdSTm7XSnS/xqWH/wVOExNX1QxR4Y98AHRLxlmCOvqn/xIK9xvA9dtTtQbHu6vktQHbszjCvA4t/20CgN0A8jtBi+Mo2hiEOI0nJBuoO1heNMWic4sIEeEViFk/siTCNSLGHOBtCH0qMX5SeZKRfLQOLS1bK8bwOdVGD7QOCSxn4hTgx74Q==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CH3PR12MB8659.namprd12.prod.outlook.com (2603:10b6:610:17c::13)
- by PH7PR12MB6785.namprd12.prod.outlook.com (2603:10b6:510:1ab::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8314.17; Thu, 9 Jan
- 2025 13:46:19 +0000
-Received: from CH3PR12MB8659.namprd12.prod.outlook.com
- ([fe80::6eb6:7d37:7b4b:1732]) by CH3PR12MB8659.namprd12.prod.outlook.com
- ([fe80::6eb6:7d37:7b4b:1732%4]) with mapi id 15.20.8314.015; Thu, 9 Jan 2025
- 13:46:19 +0000
-Date: Thu, 9 Jan 2025 09:46:17 -0400
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Wathsala Wathawana Vithanage <wathsala.vithanage@arm.com>
-Cc: Jeremy Linton <Jeremy.Linton@arm.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-	"acpica-devel@lists.linux.dev" <acpica-devel@lists.linux.dev>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"lenb@kernel.org" <lenb@kernel.org>,
-	"robert.moore@intel.com" <robert.moore@intel.com>,
-	"bhelgaas@google.com" <bhelgaas@google.com>,
-	"wei.huang2@amd.com" <wei.huang2@amd.com>,
-	Honnappa Nagarahalli <Honnappa.Nagarahalli@arm.com>,
-	Dhruv Tripathi <Dhruv.Tripathi@arm.com>,
-	Rob Herring <Rob.Herring@arm.com>, nd <nd@arm.com>
-Subject: Re: [RFC 0/2] GENL interface for ACPI _DSM methods
-Message-ID: <20250109134617.GW5556@nvidia.com>
-References: <20250106163045.508959-1-wathsala.vithanage@arm.com>
- <20250106180140.00005132@huawei.com>
- <85fb2b19-9d15-44ea-8f76-b3cac14e2810@arm.com>
- <20250107174842.GN5556@nvidia.com>
- <d35924de-a560-40aa-a99d-7278009c5ff3@arm.com>
- <20250108205030.GU5556@nvidia.com>
- <PAWPR08MB8909F2373F84E4951F74A79C9F132@PAWPR08MB8909.eurprd08.prod.outlook.com>
- <20250109133815.GV5556@nvidia.com>
- <PAWPR08MB89099DA1BF11CACBA14E21359F132@PAWPR08MB8909.eurprd08.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PAWPR08MB89099DA1BF11CACBA14E21359F132@PAWPR08MB8909.eurprd08.prod.outlook.com>
-X-ClientProxiedBy: BN9PR03CA0927.namprd03.prod.outlook.com
- (2603:10b6:408:107::32) To CH3PR12MB8659.namprd12.prod.outlook.com
- (2603:10b6:610:17c::13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D34A51534F7
+	for <acpica-devel@lists.linux.dev>; Fri, 10 Jan 2025 02:23:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1736475788; cv=none; b=Mb8ApWg/zW9lcl3iTwKuo+flF37W+tsLswBVJ37fRcHW/Cj3544p1e2Z5uGCp/aOUOjzpQZA5uKHUDf/D33uFg0KZw0AuHnLpDk3SRjsyBmEU2WUMkZgBds5f+RvKtfca1GWyjrzXTeX2SZtyMtPMdAYPzD8eCLnBVvBe2ftftY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1736475788; c=relaxed/simple;
+	bh=aiLymV2UWSp3zEcSt82qm9KqxXmYjgxcUtLPnMJOwI8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=rYN8VpESN4coU8Ux5zntPlbHtryhse8fhrVQZQotsNL/+Uh/IEC3WK1jBV7aAIR7sX8zQzDHP8krKrEh+JYcwy3tZvr70eii6VyqxyoYirExz8qJ3M+jHLjYwN/6kefJ/iP9tDBuI6HWD8GNscRYY3TdFNw0ldhNBVq1j4wQWDc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4YTlhk1d8Rz1W3hc;
+	Fri, 10 Jan 2025 10:19:18 +0800 (CST)
+Received: from kwepemh100008.china.huawei.com (unknown [7.202.181.93])
+	by mail.maildlp.com (Postfix) with ESMTPS id 25DCA18007C;
+	Fri, 10 Jan 2025 10:23:02 +0800 (CST)
+Received: from [10.67.121.90] (10.67.121.90) by kwepemh100008.china.huawei.com
+ (7.202.181.93) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Fri, 10 Jan
+ 2025 10:23:01 +0800
+Message-ID: <49bd9db5-b05d-4bed-8f9d-10ec087323b5@huawei.com>
+Date: Fri, 10 Jan 2025 10:23:00 +0800
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR12MB8659:EE_|PH7PR12MB6785:EE_
-X-MS-Office365-Filtering-Correlation-Id: 72b14a2f-e81b-4635-d6eb-08dd30b3fec3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|7416014|376014|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?6/ubM7RAVsa2eH2sbdPFiZFLcUj5p67f8UlS+mOcQa8sVmu2PeCaPnA3gXOC?=
- =?us-ascii?Q?rDlFSy5scZKmD0fBDweCEUzMMkNt1E18UMc8odQ7YKj1DFmPQtH37ydtirUp?=
- =?us-ascii?Q?7VbVD1A/LqoqlKdmoYUyJgl/nXXnmzFRKekAIeTEY4jb+VpUqUCBsndubw9Y?=
- =?us-ascii?Q?p0h6ZQ86dCG5VHKNkyZl/96sWBJ8PpuQFwWlNwJXGNw2+cyeoxeO/DmS/H+E?=
- =?us-ascii?Q?FqoH0PQ7PeBTOdlSF9nM6IMbknUEMu04seIjHlVKRiXPrmzx2Qx6bnrtQ6N7?=
- =?us-ascii?Q?k067XpEMvxduJMZ5CKX2OFgfo2NKJD7hpowg4jkIC5hnumh/iEmR27jW6px4?=
- =?us-ascii?Q?Pz4fGulb6TqGJG9IPm0fHVMBPNeoaSsdNt0SHSZya3cHDn6KOK+B5AUrz7b7?=
- =?us-ascii?Q?2cdmMDI6XqnHAwtCxG/NKCJTHsGD6ShGbAGqA3mD/xDKeYs65E4ZoP1pNyeB?=
- =?us-ascii?Q?yV9KpXGuqn9bWFi+doK60stmcjPgPM8GQbPn1hUliyPBeoKApQKBJKMS8XGj?=
- =?us-ascii?Q?+aMQVbcE6s3TwdbrwLIUl3sCeKDUbE+diVIGO0iKKfUSfqJFfiConOVo7FLb?=
- =?us-ascii?Q?xs+Tx2cSZ36vjqwcLKSes0ijSwwdEl+jBoYBgp3rO03OINkuRL5iM37xyZ4z?=
- =?us-ascii?Q?hkv/Rd4awy9/Cb5L9vR23w0a49FV8XEiJ3Wq2DLUojNP9MXEi7lmjLGDvOM9?=
- =?us-ascii?Q?MsHfL/UrLVHOw/F3GSX+b+5PnqVNyHrhcM5WbDO8s0/1yR3rXo/hkDhUP2U6?=
- =?us-ascii?Q?sQoMtpEx5NIgmNQye3kv3FItfIsiL8QamMr/J4HjTGWwUvVDDpEvP3BMR8Yu?=
- =?us-ascii?Q?16r1bgBr9u1gpkyMhrrWAJo8DFl+vPknGRIhDvcs8ZTvQT9qrJVDD4ab8VAs?=
- =?us-ascii?Q?uiuH+UnUCoVMEm0OvRGrT5GP43X7uiaBzPkEzI6D9SIj0O2J2CZl53x8/Bzm?=
- =?us-ascii?Q?VHEJV77l1cRj3CxJq1ILdlW6tvGnJRpfh/EOlp+j1bKD8rJ5U2cZG036nBDA?=
- =?us-ascii?Q?52cXwO3uafa4LcGK//7EYR4pO0K7fpcLQNpwsvyJMa8fZZmgenOUrOPVZfbE?=
- =?us-ascii?Q?D5F23VxhWgnJWp3v5npfmm36dWJdVK/uHhju1GCIQbVEKVZ3e2fLzFgQk4nz?=
- =?us-ascii?Q?OCQz6h2hGWh+DiXyMar8J26abKKM2Qx9Hv4IRIXTzbbNw0BvUk4/s3SdNU5N?=
- =?us-ascii?Q?uKmP6f8DVXNC7Yn+0gX4YDgaQpyBK5Mya4qVAKexFBBESjMvRlc5tXF2Jr2q?=
- =?us-ascii?Q?CwLdWAZewKjuSu0kiK0GHAtd70JVOGuaq+oqfOzUWkEeqZsOd+BjOgyZyAEJ?=
- =?us-ascii?Q?/PNi4ZYAYu4vtMtZ3fEPZVlX7piRLekf3txuXjV2qvH8IsKaypyovOf0N9oc?=
- =?us-ascii?Q?GOgscIyLUkAtkf04Wa2heTlg0fYZ?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8659.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(7416014)(376014)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?G3KkbYcyIWqar12OiJ0oYplNZNpB41xc8TZdnSKbCLTMwRnyO4WDKBkB2pJa?=
- =?us-ascii?Q?lmpo6Sz3yeqaxDC1Si+M47AuyIAzWaOIZQfvJTTWhakXHFSdcZAugTFwbD8d?=
- =?us-ascii?Q?3cr0P5w0apEK29IJinhDoiQS9KSLDKextKoqCGFvk4wNrv4nytKSluHQoSAX?=
- =?us-ascii?Q?QdFKghqzp1IDKNSWeR3HDoJndibZElXm6ZPI60ol6IOLk25nXZs2i67Quprq?=
- =?us-ascii?Q?b4Tls0h7z8ZvNX2y+7Tx18eNY1MfhTs9fnqYsS6m/zsoVtsOl5wS087dUIsk?=
- =?us-ascii?Q?hwzP24V933zdVDEA1LL9AGSkvQvR970ZKNiI7Gll9+hZLELTQn0311IE8Why?=
- =?us-ascii?Q?la430qvw3G33MMresjfgqLkETlKwWcV2+3zwQi/C+oSWlPj4r+R9kCxocgmD?=
- =?us-ascii?Q?o+i1cML69OjvrMrnS7jpootSVKku9PZrdtxlO5Skg1e7Lu2tvqGcEfywdPso?=
- =?us-ascii?Q?Mx4gXEXmC77C6n3U/kgg+6wtiRGjWQLteMw8bOXPzr409NVJnGlr3rPFpe85?=
- =?us-ascii?Q?NwWX8Xig19o0fjrkNULnNVrvKjfIpFckn6EldIZrX//8gI9FrPQu5d6y0KTN?=
- =?us-ascii?Q?6sO/d1NfbAr/9cZI/bncsoWuDuQdFk8qTS25UFFtTbXoYUab5+uolkjOclx7?=
- =?us-ascii?Q?cLoCY6ER9o3LQ6UuipnQ6je87w19E0m4hmG3ZqpJprsJLIoCWePUXO3PkRbD?=
- =?us-ascii?Q?HPbhoapEIZVAhAIVMlf6DF/lYe/dBVVCqfr6h31FQuAgDMYGCKR4U7y6zce7?=
- =?us-ascii?Q?epgABjV2qCJr8GO/dhwW0oarkex88FmvFdUO9BqGvcIfxflH5ffPwRolDMfq?=
- =?us-ascii?Q?IfpUxmNanLVjVPM+EhDA1NgKZ3joCYnGUDR/qn9EeAqNVC58Yj45bkJffW2D?=
- =?us-ascii?Q?Eb71qloBnShR0i00ljujLms9bieubW73XIFFYvtFWR5T+abmqbk4zkl+EMSj?=
- =?us-ascii?Q?A8KzmmXIMaIhQkPUA/EJ4V/OZ9gsIcoILXDVrPdnZpMMNwKZsD8PpPwhoV1j?=
- =?us-ascii?Q?CjvJFBGG4zjbRWZs4G42/KCLl1dBrvRyvqMndV4WrBAG4LB6jTcOs7r+h3Rx?=
- =?us-ascii?Q?dAeXL7MUB1y3GZySvkx63pDOofJCqWS261PeBiUGKGKGmtiy/6zFps0fdGH6?=
- =?us-ascii?Q?3nf74Dxqqwi7VujL0kzBMlkLpwLIiahQNHjCz84h1GYpU0CZ/2HG/VZgRE0o?=
- =?us-ascii?Q?larXk60Nh6/7LBpPzfIf3wt1KAjHHKg1VX0eoO48ecakRsWbZFhF1rBTXHJy?=
- =?us-ascii?Q?Nw0jCnFdoQGQxavzuyw5HmqRp2Iz/BfVVG/HjUQ/ejYizpY2wpU4/PlmqpR2?=
- =?us-ascii?Q?28K/pU6OfVnS4H/S8K69dNVeYFphpAjRjLi3G6a3eYuIRMjhCroauRlwFXiZ?=
- =?us-ascii?Q?MDsZiB49cDO2Xgt9+skDjQ96gvAMZM34wFaHfU1p2spZJa5jf/u1+HY+loz8?=
- =?us-ascii?Q?ogyIPvkX+1Nd9zxdKsRLprVmJJ2PtW0tpOPhrvx3Z3zO3iuiskut/mlfifvV?=
- =?us-ascii?Q?OzHO+LuZb0TOHPbOsKxNuCSVj5u9IGAjEH+M8J9xh+USwnTya9IiCiRpVbhv?=
- =?us-ascii?Q?DGFGPDBujQhYYzikFoVzR6EUoKA7VxfXIdER0RU0?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 72b14a2f-e81b-4635-d6eb-08dd30b3fec3
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8659.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jan 2025 13:46:18.9312
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: XD62R3tL39qaQKSN7BIifbABLmIcn9IIEnKWjtfnUoljhbxLRqr6ErYimgYsjrOz
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6785
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/4] ACPI: CPPC: Add cppc_get_reg_val and
+ cppc_set_reg_val function
+To: Pierre Gondois <pierre.gondois@arm.com>, <rafael@kernel.org>,
+	<lenb@kernel.org>, <robert.moore@intel.com>, <viresh.kumar@linaro.org>
+CC: <acpica-devel@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+	<linuxarm@huawei.com>, <ionela.voinescu@arm.com>,
+	<jonathan.cameron@huawei.com>, <zhanjie9@hisilicon.com>,
+	<lihuisong@huawei.com>, <hepeng68@huawei.com>, <fanghao11@huawei.com>
+References: <20241216091603.1247644-1-zhenglifeng1@huawei.com>
+ <20241216091603.1247644-2-zhenglifeng1@huawei.com>
+ <8e9c1ede-3277-458b-bd44-ca0c7615a4ab@arm.com>
+ <74be38cf-8e18-44fc-995c-a5b734d9df29@huawei.com>
+ <a9574bab-3b85-4a33-b465-204687dabc98@arm.com>
+From: "zhenglifeng (A)" <zhenglifeng1@huawei.com>
+In-Reply-To: <a9574bab-3b85-4a33-b465-204687dabc98@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemh100008.china.huawei.com (7.202.181.93)
 
+Hello Pierre,
 
-> > > This RFC is only about acquiring the steering tag from the ACPI _DSM,
-> > > which the DPDK user space driver will set in the queue context
-> > > of the device it manages.
-> > > Setting of the steering tag part happens in the DPDK device driver.
-> > > Are you suggesting that I should instead pass a CPU and a cache ID to
-> > > VFIO and let VFIO decide what's right for the application?
-> > 
-> > I think that would be better, yes. Get VFIO to give you the steering tag
-> > information, and any related control of the config space you may need, via an
-> > IOCTL.
+On 2025/1/8 0:54, Pierre Gondois wrote:
+> Hello Lifeng,
 > 
-> Sounds good, I like that idea.
+> On 12/20/24 09:30, zhenglifeng (A) wrote:
+>> On 2024/12/17 21:48, Pierre Gondois wrote:
+>>> Hello Lifeng,
+>>>
+>>> On 12/16/24 10:16, Lifeng Zheng wrote:
+>>>> Rename cppc_get_perf() to cppc_get_reg_val() as a generic function to read
+>>>> cppc registers, with four changes:
+>>>>
+>>>> 1. Change the error kind to "no such device" when pcc_ss_id < 0, which
+>>>> means that this cpu cannot get a valid pcc_ss_id.
+>>>>
+>>>> 2. Add a check to verify if the register is a cpc supported one before
+>>>> using it.
+>>>>
+>>>> 3. Extract the operations if register is in pcc out as
+>>>> cppc_get_reg_val_in_pcc().
+>>>>
+>>>> 4. Return the result of cpc_read() instead of 0.
+>>>>
+>>>> Add cppc_set_reg_val_in_pcc() and cppc_set_reg_val() as generic functions
+>>>> for setting cppc registers value. Unlike other set reg ABIs,
+>>>> cppc_set_reg_val() checks CPC_SUPPORTED right after getting the register,
+>>>> because the rest of the operations are meaningless if this register is not
+>>>> a cpc supported one.
+>>>>
+>>>> These functions can be used to reduce some existing code duplication.
+>>>>
+>>>> Signed-off-by: Lifeng Zheng <zhenglifeng1@huawei.com>
+>>>> ---
+>>>>    drivers/acpi/cppc_acpi.c | 111 +++++++++++++++++++++++++++++----------
+>>>>    1 file changed, 84 insertions(+), 27 deletions(-)
+>>>>
+>>>> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+>>>> index c1f3568d0c50..bb5333a503a2 100644
+>>>> --- a/drivers/acpi/cppc_acpi.c
+>>>> +++ b/drivers/acpi/cppc_acpi.c
+>>>> @@ -1179,43 +1179,100 @@ static int cpc_write(int cpu, struct cpc_register_resource *reg_res, u64 val)
+>>>>        return ret_val;
+>>>>    }
+>>>>    -static int cppc_get_perf(int cpunum, enum cppc_regs reg_idx, u64 *perf)
+>>>> +static int cppc_get_reg_val_in_pcc(int cpu, struct cpc_register_resource *reg, u64 *val)
+>>>>    {
+>>>> -    struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpunum);
+>>>> +    int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpu);
+>>>> +    struct cppc_pcc_data *pcc_ss_data = NULL;
+>>>> +    int ret;
+>>>> +
+>>>> +    if (pcc_ss_id < 0) {
+>>>> +        pr_debug("Invalid pcc_ss_id\n");
+>>>> +        return -ENODEV;
+>>>> +    }
+>>>> +
+>>>> +    pcc_ss_data = pcc_data[pcc_ss_id];
+>>>> +
+>>>> +    down_write(&pcc_ss_data->pcc_lock);
+>>>> +
+>>>> +    if (send_pcc_cmd(pcc_ss_id, CMD_READ) >= 0)
+>>>> +        ret = cpc_read(cpu, reg, val);
+>>>> +    else
+>>>> +        ret = -EIO;
+>>>> +
+>>>> +    up_write(&pcc_ss_data->pcc_lock);
+>>>> +
+>>>> +    return ret;
+>>>> +}
+>>>> +
+>>>> +static int cppc_get_reg_val(int cpu, enum cppc_regs reg_idx, u64 *val)
+>>>> +{
+>>>> +    struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpu);
+>>>>        struct cpc_register_resource *reg;
+>>>>          if (!cpc_desc) {
+>>>> -        pr_debug("No CPC descriptor for CPU:%d\n", cpunum);
+>>>> +        pr_debug("No CPC descriptor for CPU:%d\n", cpu);
+>>>>            return -ENODEV;
+>>>>        }
+>>>>          reg = &cpc_desc->cpc_regs[reg_idx];
+>>>>    -    if (CPC_IN_PCC(reg)) {
+>>>> -        int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpunum);
+>>>> -        struct cppc_pcc_data *pcc_ss_data = NULL;
+>>>> -        int ret = 0;
+>>>> -
+>>>> -        if (pcc_ss_id < 0)
+>>>> -            return -EIO;
+>>>> +    if (!CPC_SUPPORTED(reg)) {
+>>>> +        pr_debug("CPC register (reg_idx=%d) is not supported\n", reg_idx);
+>>>> +        return -EOPNOTSUPP;
+>>>> +    }
+>>>
+>>> I think this is only valid for optional fields. Meaning that:
+>>> - if the function is used one day for the mandatory 'Lowest Performance'
+>>> field, an integer value of 0 would be valid.
+>>> - if the function is used for a mandatory field containing a NULL Buffer,
+>>> it seems we would return -EFAULT currently, through cpc_read(). -EOPNOTSUPP
+>>> doesn't seem appropriate as the field would be mandatory.
+>>>
+>>> Maybe the function needs an additional 'bool optional' input parameter
+>>> to do these check conditionally.
+>>
+>> Indeed, I should have judged the type before doing this check. But adding a
+>> input parameter is not a really nice way to me. How about adding a bool
+>> list of length MAX_CPC_REG_ENT in cppc_acpi.h to indicate wheter it is
+>> optional?
+> 
+> Actually all these functions:
+> - cppc_get_desired_perf
+> - cppc_get_highest_perf
+> - cppc_get_epp_perf
+> - cppc_set_epp
+> - cppc_get_auto_act_window
+> - cppc_set_auto_act_window
 
-Yeah, remember there is a broad complexity here. Some devices want to
-setup their steering tag information through the MSI-X table, for
-instance. VFIO is the right place to assist DPDK with all of these
-cases that need kernel involvement.
+As you suggest in another patch, the logic should be placed in
+cppc_get_auto_act_window() and some other functions. I'm afraid these
+functions couldn't be implemented with the macros you suggest.
 
-Jason
+> - cppc_get_auto_sel
+> - cppc_get_nominal_perf
+> 
+> and in general all the functions getting / setting one value at a time could
+> be implemented by macros similars to show_cppc_data(). From what I see the
+> input parameters required are:
+> - name of the field
+> - if the field is mandatory to have or not
+
+If with this parameter, we should put all the cppc_get_reg_val() and
+cppc_set_reg_val() in the macro. This wouldn't look really nice. I
+prefer to use a macro to judge mandatory / optional. I'll show you in
+v4.
+
+> - if the field is writeable
+
+I think we can define a READ macro, a WRITE macro and a RW macro. For
+the registers which are not writeable, only use the READ macro to
+implement getting function.
+
+> - if the field is implemented as an integer, register, or can be both
+
+I don't think this parameter is necessary. The field type can be got
+from cpc_desc->cpc_regs[reg_idx].type.
+
+> 
+> This would avoid having numerous function definitions doing approximately the
+> same thing.
+
+So from what I see the input parameters required are name of the field
+and reg_idx. Thanks for your advice!
+
+> 
+>>
+>>>
+>>>>    -        pcc_ss_data = pcc_data[pcc_ss_id];
+>>>> +    if (CPC_IN_PCC(reg))
+>>>> +        return cppc_get_reg_val_in_pcc(cpu, reg, val);
+>>>>    -        down_write(&pcc_ss_data->pcc_lock);
+>>>> +    return cpc_read(cpu, reg, val);
+>>>> +}
+>>>>    -        if (send_pcc_cmd(pcc_ss_id, CMD_READ) >= 0)
+>>>> -            cpc_read(cpunum, reg, perf);
+>>>> -        else
+>>>> -            ret = -EIO;
+>>>> +static int cppc_set_reg_val_in_pcc(int cpu, struct cpc_register_resource *reg, u64 val)
+>>>> +{
+>>>> +    int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpu);
+>>>> +    struct cppc_pcc_data *pcc_ss_data = NULL;
+>>>> +    int ret;
+>>>>    -        up_write(&pcc_ss_data->pcc_lock);
+>>>> +    if (pcc_ss_id < 0) {
+>>>> +        pr_debug("Invalid pcc_ss_id\n");
+>>>> +        return -ENODEV;
+>>>> +    }
+>>>>    +    ret = cpc_write(cpu, reg, val);
+>>>> +    if (ret)
+>>>>            return ret;
+>>>> +
+>>>> +    pcc_ss_data = pcc_data[pcc_ss_id];
+>>>> +
+>>>> +    down_write(&pcc_ss_data->pcc_lock);
+>>>> +    /* after writing CPC, transfer the ownership of PCC to platform */
+>>>> +    ret = send_pcc_cmd(pcc_ss_id, CMD_WRITE);
+>>>> +    up_write(&pcc_ss_data->pcc_lock);
+>>>> +
+>>>> +    return ret;
+>>>> +}
+>>>> +
+>>>> +static int cppc_set_reg_val(int cpu, enum cppc_regs reg_idx, u64 val)
+>>>> +{
+>>>> +    struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpu);
+>>>> +    struct cpc_register_resource *reg;
+>>>> +
+>>>> +    if (!cpc_desc) {
+>>>> +        pr_debug("No CPC descriptor for CPU:%d\n", cpu);
+>>>> +        return -ENODEV;
+>>>>        }
+>>>>    -    cpc_read(cpunum, reg, perf);
+>>>> +    reg = &cpc_desc->cpc_regs[reg_idx];
+>>>>    -    return 0;
+>>>> +    if (!CPC_SUPPORTED(reg)) {
+>>>> +        pr_debug("CPC register (reg_idx=%d) is not supported\n", reg_idx);
+>>>> +        return -EOPNOTSUPP;
+>>>> +    }
+>>>
+>>> Similarly to cppc_get_reg_val(), if a field is:
+>>> - mandatory + integer: currently doesn't exist. Not sure we should
+>>> try to detect that, but might be safer.
+>>> - mandatory + buffer: should not return -EOPNOTSUPP I think
+>>> - optional + integer: e.g.: 'Autonomous Selection Enable Register',
+>>> we should return -EOPNOTSUPP. It seems that currently, if the integer
+>>> value is 1, I get a 'write error: Bad address'
+>>> - optional + buffer:
+>>> should effectively return -EOPNOTSUPP if the buffer is NULL.
+>>
+>> Actually, cpc_write() doesn't check field type and treats the field as a
+>> buffer. That's why you get 'Bad address' error when the integer value is 1.
+>> I think the existing code needs to be improved, otherwise there may be
+>> unexpected problems.
+>>
+>> Do you mean we should return -EOPNOTSUPP no matter what to be written if
+>> this field is a optional + integer one?
+> 
+> Yes exact
+> 
+>> And what about a mandatory +
+>> integer one. Should we directly write the int_value?
+> 
+> I don't think it is possible to have this. Indeed, if a value is writeable,
+> it must be a register, so mandatory + integer should not exist. I suggested
+> a check in case someone made a mistake, but it is not sure the check is actually
+> necessary.
+
+Yeah, I think it's better to have this check, too.
+
+Regards,
+Lifeng
+
+> 
+> Regards,
+> Pierre
+> 
+
