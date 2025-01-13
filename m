@@ -1,29 +1,28 @@
 Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A57E522AE74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A577822AE73
 	for <acpica-devel@lists.linux.dev>; Mon, 13 Jan 2025 12:21:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736770876; cv=none; b=Ay4t7iHYG+NL0zP63JsSGSpIM41w82sYLtGjCdpET0Gd82nPB4bApRI5fEMzHYadaHlhz6EPhpkXJzzogcrbzSArWeDdKBt6v78neyk3J3KQ6LlUgi7PFympyQH6mVEEdYj+VVL+KJ8+SUrprAAvQiDLtvUiFdyT8kx7xDhxJ84=
+	t=1736770877; cv=none; b=AbxzZPZN321b2cMErwgPzQWcdVCyIzn6aOS4vq8BVufaFXWNU5moGbhyTZOeZb7qL2UPxEccRXTm7WNWQoogS+1WnySz60oK4a3n9RS6vvBI19dQEWxnbAYyWNvYgSVAz598nwwfVvc4CF3ftAsY3vwYhnr7p43sxArJvUrXhe4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736770876; c=relaxed/simple;
-	bh=zekOdi6n3VYMxHGrckuhAG8bsTJ3kkcv6UwM1qs/lgI=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=GjUjB5Hmn76pDz/oWlXG5cEaYARhXxiSrgYyID9U8XArxcZSY8bFD1P97BJHzfkt5J95YQhfzeNNu7i2ohmkvfo4hwbrbMDWdgWwM9CuUjoFU2ulrXj88MLwT0KPf8/tuVFLh56jFmhyIWxQrxFAIADPm8zaZqlz9HpKo/Kqfq4=
+	s=arc-20240116; t=1736770877; c=relaxed/simple;
+	bh=eDUBdG9s1RWTx81cm8cANOu8fq+JRyUO066Yrx0jLOE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=UsEWQ3yI+RiXSp72B46ghGwQa6ajnl4DaMah46mMAi3Z0P6aZVpftMWOfshAFar4hqfz1Hu5t9ZP8I8FYpPPCqWuzkYjZ2woOyazPPHlwPV5W5pC0rbG2F+2D45dJOHRRad0I6R2QRP9x5jbALpV8yn3kRYERR0MIIdA8V1ENWQ=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4YWrs24b89z22l71;
-	Mon, 13 Jan 2025 20:18:46 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4YWrr64Gc1z2Djfy;
+	Mon, 13 Jan 2025 20:17:58 +0800 (CST)
 Received: from kwepemh100008.china.huawei.com (unknown [7.202.181.93])
-	by mail.maildlp.com (Postfix) with ESMTPS id 265111401F4;
-	Mon, 13 Jan 2025 20:21:07 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 6DF851402C3;
+	Mon, 13 Jan 2025 20:21:06 +0800 (CST)
 Received: from localhost.huawei.com (10.50.165.33) by
  kwepemh100008.china.huawei.com (7.202.181.93) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Mon, 13 Jan 2025 20:21:06 +0800
+ 15.2.1544.11; Mon, 13 Jan 2025 20:21:05 +0800
 From: Lifeng Zheng <zhenglifeng1@huawei.com>
 To: <rafael@kernel.org>, <lenb@kernel.org>, <robert.moore@intel.com>,
 	<viresh.kumar@linaro.org>, <mario.limonciello@amd.com>,
@@ -33,12 +32,10 @@ CC: <acpica-devel@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
 	<linuxarm@huawei.com>, <jonathan.cameron@huawei.com>,
 	<zhanjie9@hisilicon.com>, <lihuisong@huawei.com>, <zhenglifeng1@huawei.com>,
 	<hepeng68@huawei.com>, <fanghao11@huawei.com>
-Subject: [PATCH v4 1/6] ACPI: CPPC: Add IS_OPTIONAL_CPC_REG macro
-Date: Mon, 13 Jan 2025 20:20:59 +0800
-Message-ID: <20250113122104.3870673-2-zhenglifeng1@huawei.com>
+Subject: [PATCH v4 0/6] Support for autonomous selection in cppc_cpufreq
+Date: Mon, 13 Jan 2025 20:20:58 +0800
+Message-ID: <20250113122104.3870673-1-zhenglifeng1@huawei.com>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20250113122104.3870673-1-zhenglifeng1@huawei.com>
-References: <20250113122104.3870673-1-zhenglifeng1@huawei.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -50,30 +47,72 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
  kwepemh100008.china.huawei.com (7.202.181.93)
 
-Add IS_OPTIONAL_CPC_REG macro to judge if a cpc_reg is an optional one.
+Add sysfs interfaces for CPPC autonomous selection in the cppc_cpufreq
+driver.
 
-Signed-off-by: Lifeng Zheng <zhenglifeng1@huawei.com>
+The patch series is organized in two parts:
+
+ - patch 1-4 refactor out the general CPPC register get and set functions
+   in cppc_acpi.c
+
+ - patches 5-6 expose sysfs files for users to control CPPC autonomous
+   selection when supported
+
 ---
- drivers/acpi/cppc_acpi.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Since Pierre and me have discussed about whether or not to show
+auto_act_window and energy_perf when auto_select is disabled. It seems
+like whether to show these two files has their own points. We'd like to
+ask for some advice.
 
-diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-index f193e713825a..6454b469338f 100644
---- a/drivers/acpi/cppc_acpi.c
-+++ b/drivers/acpi/cppc_acpi.c
-@@ -129,6 +129,12 @@ static DEFINE_PER_CPU(struct cpc_desc *, cpc_desc_ptr);
- #define CPC_SUPPORTED(cpc) ((cpc)->type == ACPI_TYPE_INTEGER ?		\
- 				!!(cpc)->cpc_entry.int_value :		\
- 				!IS_NULL_REG(&(cpc)->cpc_entry.reg))
-+
-+/* These indicate optional of the per-cpu cpc_regs[]. */
-+#define REG_OPTIONAL (0b111111100011111010000)
-+
-+#define IS_OPTIONAL_CPC_REG(reg_idx) (REG_OPTIONAL & (1U << (reg_idx)))
-+
- /*
-  * Arbitrary Retries in case the remote processor is slow to respond
-  * to PCC commands. Keeping it high enough to cover emulators where
+Relevant discussion:
+[1] https://lore.kernel.org/all/522721da-1a5c-439c-96a8-d0300dd0f906@huawei.com/
+
+Changelog:
+
+v4:
+
+ - add REG_OPTIONAL and IS_OPTIONAL_CPC_REG to judge if a cpc register is
+   an optional one
+ - check whether the register is optional before CPC_SUPPORTED check in
+   cppc_get_reg_val() and cppc_set_reg_val()
+ - check the register's type in cppc_set_reg_val()
+ - add macros to generally implement registers getting and setting
+   functions
+ - move some logic codes from cppc_cpufreq.c to cppc_acpi.c
+ - replace cppc_get_auto_sel_caps() by cppc_get_auto_sel()
+
+v3:
+
+ - change cppc_get_reg() and cppc_set_reg() name to cppc_get_reg_val() and
+   cppc_set_reg_val()
+ - extract cppc_get_reg_val_in_pcc() and cppc_set_reg_val_in_pcc()
+ - return the result of cpc_read() in cppc_get_reg_val()
+ - add pr_debug() in cppc_get_reg_val_in_pcc() when pcc_ss_id < 0
+ - rename 'cpunum' to 'cpu' in cppc_get_reg_val()
+ - move some macros from drivers/cpufreq/cppc_cpufreq.c to
+   include/acpi/cppc_acpi.h with a CPPC_XXX prefix
+
+v2:
+
+ - fix some incorrect placeholder
+ - change kstrtoul to kstrtobool in store_auto_select
+
+Lifeng Zheng (6):
+  ACPI: CPPC: Add IS_OPTIONAL_CPC_REG macro
+  ACPI: CPPC: Add cppc_get_reg_val and cppc_set_reg_val function
+  ACPI: CPPC: Add macros to generally implement registers getting and
+    setting functions
+  ACPI: CPPC: Refactor register value get and set ABIs
+  ACPI: CPPC: Add autonomous selection ABIs
+  cpufreq: CPPC: Support for autonomous selection in cppc_cpufreq
+
+ .../ABI/testing/sysfs-devices-system-cpu      |  54 +++
+ drivers/acpi/cppc_acpi.c                      | 332 +++++++++---------
+ drivers/cpufreq/amd-pstate.c                  |   3 +-
+ drivers/cpufreq/cppc_cpufreq.c                | 109 ++++++
+ include/acpi/cppc_acpi.h                      |  30 +-
+ 5 files changed, 359 insertions(+), 169 deletions(-)
+
 -- 
 2.33.0
 
