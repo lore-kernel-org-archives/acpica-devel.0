@@ -1,55 +1,56 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 526EB232436
-	for <acpica-devel@lists.linux.dev>; Tue, 14 Jan 2025 13:27:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48C8818952C
+	for <acpica-devel@lists.linux.dev>; Tue, 14 Jan 2025 17:41:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736861244; cv=none; b=odYu5WysNHkiuKiF3G4z1YkYgarcQmUmx9rsVT5GadORwxzagUv54dz7tozRuz8NJ6kR1yjrA0fxnLE3KMaO+YnLQfp3AuicfEPPwX1pPjc4WnxmaXdPLEWLZV73moampkX8HxGQ6baF8uOKvvEZASpSVK4/Rjo8hQ6P0TAiDTk=
+	t=1736876514; cv=none; b=Bas9Via+XU/49mhA6R0Cc0RkMkcbXZpW2j/rYSM702Z0MaDJTdTvw6tooT/vgeeuzFykdGtl9YrdFgCDkvOmAg7uMSyW19Id+VZ0/zeyPpBiVtLSUpWNL5HFgv7dmUjV7MFPF+GL/NC9jpjUh/wNN4wwCRsF2lctnxBPyINAnX0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736861244; c=relaxed/simple;
-	bh=eLc+q9S1jrqfKEh0Shy5K5yfQiiy8VjwTpD0Ol7oxo4=;
+	s=arc-20240116; t=1736876514; c=relaxed/simple;
+	bh=wEZ8dT0PZlqi23JTZp0cFDZB2rKwqMi5MSkO0O3iaA8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Fbv4/FRl8ullsw05p1CzmH+cfi28pwWt+6MdkDJNZSkr4nkQ7jP9fnwWLI43Lt7oMQI/YSLDDL4m9ZaZJW5HOyRCbIoIdC0LcePOBA6WKBNReRIGqLodz7/e26CaesVVmoMGznBERvuWEOjbB5zdftgbmoXqnf4+ysK+6STCTbE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Th2+swrA; arc=none smtp.client-ip=10.30.226.201
+	 To:Cc:Content-Type; b=iZrp/MeUpKaShh72mR5PE4R/9HF6aPgU8dZ+23Ru8AdJ94ZKS1uV8e0vAOAY/WtGZwXTa4xIJmztLsffMS8OG+FHvOtJfnz7HH1T3XVKp7QF92lFRuQFY8sSy/C57ksMwBqJjCthWSSotCENj/vT+0DJ17RFcyNq/Xb3csZoQxs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G2maKCJR; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Th2+swrA"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B27E7C4CEE3
-	for <acpica-devel@lists.linux.dev>; Tue, 14 Jan 2025 13:27:23 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G2maKCJR"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF39EC4CEEC
+	for <acpica-devel@lists.linux.dev>; Tue, 14 Jan 2025 17:41:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736861243;
-	bh=eLc+q9S1jrqfKEh0Shy5K5yfQiiy8VjwTpD0Ol7oxo4=;
+	s=k20201202; t=1736876513;
+	bh=wEZ8dT0PZlqi23JTZp0cFDZB2rKwqMi5MSkO0O3iaA8=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Th2+swrA+f4hqIJCt6+/umIAMrtHCVhi9cd3Chl2vVpJt8RYmsKKyYxEW+17USVPz
-	 Lsl1k4znjaUEGAA0hHOSFmuEv918VP5plSCeC3npxvIuUyjZC0zgxgAQYJmIJ/uik5
-	 rYPkIl4w7wbJ5QG7hdB02tjA79n3Wm4c1P+rdpOdILEhB233wlqTm/NKWFCrbU59T0
-	 gmx3djDhpMH0pssNjXAdMvERa5QZHNRJwz4N8AtHAMsgV+SxY4hOfWAfXIr+tfxHkd
-	 YGUTGbAau7nVH2grbRyqVyNuG0M5eRZWs/vx2q5esJ4mhM9gRiKIVgIqD/inOPqGkz
-	 ni85WRL8TuuEQ==
-Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-29ff5c75c21so3379524fac.0
-        for <acpica-devel@lists.linux.dev>; Tue, 14 Jan 2025 05:27:23 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUEfG1KnVJeI5meDc12GTEZ32Ne5NtvfqcbdgRG6Fd700iwTOIqQDYuzbbceB23oGMK58lwsIQNB1MKWy0=@lists.linux.dev
-X-Gm-Message-State: AOJu0YwXga4WhznbSjTcNIuLxmpv9IBZ4Yjc3lIagVt3tfhwwUY7dJ9M
-	+dQTTmMx1wKoRHpTIU8v8fqLVHRcTquLfkR8R6ZV6XnryaaoUjCBgyrBAlF/+go+XEc8rIvDAxz
-	KjMYMTeN/OEc/mjuRyDJmG7WvRQw=
-X-Google-Smtp-Source: AGHT+IFqQ76W/O+kYshOg6zjtig0JEaVkHWcK8wO+TUwklW859PHlWhrWxjbqDONCXGyMjbNuAP8/Ne+16wXvsa6rkQ=
-X-Received: by 2002:a05:6870:b9c4:b0:29f:b645:ce86 with SMTP id
- 586e51a60fabf-2aae5aa8daemr12907467fac.12.1736861243031; Tue, 14 Jan 2025
- 05:27:23 -0800 (PST)
+	b=G2maKCJRVBC9PJ9l5yk23xrB+p1QZgJN9W4TMuYPefS+VKPM0bB4di7zZMdqn6gCy
+	 iaEkT1sFcFbePj9LEYlpoMs7pV1qIXet2tXTaUojKrFDUrUzuPiAHHKsOLbfHZ9T/7
+	 QudBLr+nuF2h0/pq2MkwnJM6QHRT5GGsN3XDQoGwEXJ8iR69GHLasgfp7Z/QK3KyJL
+	 CSNabMbm4jdtGgL2rFdGwm+kxQpywjDqP2N9YwoFCSJjJ+5iCqcVMfRGfehURfHyLN
+	 rQ49VGWcsoHt2hRJZNu85eabwldnYByNkQG0o6x0OHHbHoQICCpyBDZ7A6uqPAO4G+
+	 8erPK8H+GqDKA==
+Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-3eb880e5ac2so3131478b6e.2
+        for <acpica-devel@lists.linux.dev>; Tue, 14 Jan 2025 09:41:53 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWtI8xh2sLHuF78EymeKl1nN0mwLK4Ie2tZf5Kbo4FfQiMdOyZR4rR7MrGgkU/O/X0j9n5MbiO5CU8mL5Q=@lists.linux.dev
+X-Gm-Message-State: AOJu0YyF+xtaleXnOVqlmpOEn9LRAZl/Nk6gVzvTb9pYo11RkCNLRgoc
+	fE2ldPEJGjiVEWnNAhmsetc/am1iAqeA6UNZ56vMDheNp0tB1qkrgomZ3bMS+NLzcJuyi8Bjlb6
+	meHHyQcOJioe7123kQpldxWnPcr0=
+X-Google-Smtp-Source: AGHT+IFI+C4ErCM+V60/ozQiwwdOhrIiiwCSVSrl7STdX5BXIOvWCSlRs093HMXawDQKMjebU7/Z3HIZiz8CB+eY11A=
+X-Received: by 2002:a05:6808:13d0:b0:3e7:b3d9:4109 with SMTP id
+ 5614622812f47-3ef2ec6c8a3mr17185301b6e.22.1736876513104; Tue, 14 Jan 2025
+ 09:41:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20250113122104.3870673-1-zhenglifeng1@huawei.com> <20250113122104.3870673-2-zhenglifeng1@huawei.com>
-In-Reply-To: <20250113122104.3870673-2-zhenglifeng1@huawei.com>
+References: <20250113122104.3870673-1-zhenglifeng1@huawei.com> <20250113122104.3870673-3-zhenglifeng1@huawei.com>
+In-Reply-To: <20250113122104.3870673-3-zhenglifeng1@huawei.com>
 From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Tue, 14 Jan 2025 14:27:12 +0100
-X-Gmail-Original-Message-ID: <CAJZ5v0ja7AaJza0PeNgutebXRV3tsgxZRwZUBcFksD9thyKg1Q@mail.gmail.com>
-X-Gm-Features: AbW1kvYxFpUsEc9PFeMehAkFEsQFM5KZKo-OlX1ezuwCujGsEj_an0AKwqHVAyg
-Message-ID: <CAJZ5v0ja7AaJza0PeNgutebXRV3tsgxZRwZUBcFksD9thyKg1Q@mail.gmail.com>
-Subject: Re: [PATCH v4 1/6] ACPI: CPPC: Add IS_OPTIONAL_CPC_REG macro
+Date: Tue, 14 Jan 2025 18:41:41 +0100
+X-Gmail-Original-Message-ID: <CAJZ5v0g5vuO9jHD+vRUyCeNE7V6zaW6okAVep3V=TLRosk1NAQ@mail.gmail.com>
+X-Gm-Features: AbW1kvZQ4eo44ZDPpROwb0aIEJr9R-LIb7IX_VmNmlZpYX7ahnLlZw4q5gySm5A
+Message-ID: <CAJZ5v0g5vuO9jHD+vRUyCeNE7V6zaW6okAVep3V=TLRosk1NAQ@mail.gmail.com>
+Subject: Re: [PATCH v4 2/6] ACPI: CPPC: Add cppc_get_reg_val and
+ cppc_set_reg_val function
 To: Lifeng Zheng <zhenglifeng1@huawei.com>
 Cc: rafael@kernel.org, lenb@kernel.org, robert.moore@intel.com, 
 	viresh.kumar@linaro.org, mario.limonciello@amd.com, gautham.shenoy@amd.com, 
@@ -61,45 +62,227 @@ Cc: rafael@kernel.org, lenb@kernel.org, robert.moore@intel.com,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
+The word "function" at the end of the subject is redundant IMV.
+
 On Mon, Jan 13, 2025 at 1:21=E2=80=AFPM Lifeng Zheng <zhenglifeng1@huawei.c=
 om> wrote:
 >
-> Add IS_OPTIONAL_CPC_REG macro to judge if a cpc_reg is an optional one.
+> Rename cppc_get_perf() to cppc_get_reg_val() as a generic function to rea=
+d
+> cppc registers, with four changes:
+>
+> 1. Change the error kind to "no such device" when pcc_ss_id < 0, which
+> means that this cpu cannot get a valid pcc_ss_id.
+>
+> 2. Add a check to verify if the register is a mandatory or cpc supported
+> one before using it.
+>
+> 3. Extract the operations if register is in pcc out as
+> cppc_get_reg_val_in_pcc().
+>
+> 4. Return the result of cpc_read() instead of 0.
+>
+> Add cppc_set_reg_val() as a generic function for setting cppc registers
+> value, with this features:
+>
+> 1. Check register type. If a register is writeable, it must be a buffer.
+>
+> 2. Check if the register is a optional and null one right after getting t=
+he
+> register.  Because if so, the rest of the operations are meaningless.
+>
+> 3. Extract the operations if register is in pcc out as
+> cppc_set_reg_val_in_pcc().
+>
+> These functions can be used to reduce some existing code duplication.
 
-This requires a bit more explanation, especially what's the purpose of
-it (ie. the "why").
+This mixes functional changes with function renames and code
+refactoring while it is better to do all of these things separately.
+
+Why don't you split the patch into a few smaller patches doing each
+one thing at a time?  Like rename the existing function and refactor
+it in one patch (if this makes sense), make functional changes to it
+in another patch, then add new functions in a third one?
+
+This would help to review the changes and explain why each of them is made.
 
 > Signed-off-by: Lifeng Zheng <zhenglifeng1@huawei.com>
 > ---
->  drivers/acpi/cppc_acpi.c | 6 ++++++
->  1 file changed, 6 insertions(+)
+>  drivers/acpi/cppc_acpi.c | 105 ++++++++++++++++++++++++++++++---------
+>  1 file changed, 82 insertions(+), 23 deletions(-)
 >
 > diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-> index f193e713825a..6454b469338f 100644
+> index 6454b469338f..571f94855dce 100644
 > --- a/drivers/acpi/cppc_acpi.c
 > +++ b/drivers/acpi/cppc_acpi.c
-> @@ -129,6 +129,12 @@ static DEFINE_PER_CPU(struct cpc_desc *, cpc_desc_pt=
-r);
->  #define CPC_SUPPORTED(cpc) ((cpc)->type =3D=3D ACPI_TYPE_INTEGER ?      =
-   \
->                                 !!(cpc)->cpc_entry.int_value :          \
->                                 !IS_NULL_REG(&(cpc)->cpc_entry.reg))
+> @@ -1181,43 +1181,102 @@ static int cpc_write(int cpu, struct cpc_registe=
+r_resource *reg_res, u64 val)
+>         return ret_val;
+>  }
+>
+> -static int cppc_get_perf(int cpunum, enum cppc_regs reg_idx, u64 *perf)
+> +static int cppc_get_reg_val_in_pcc(int cpu, struct cpc_register_resource=
+ *reg, u64 *val)
+>  {
+> -       struct cpc_desc *cpc_desc =3D per_cpu(cpc_desc_ptr, cpunum);
+> +       int pcc_ss_id =3D per_cpu(cpu_pcc_subspace_idx, cpu);
+> +       struct cppc_pcc_data *pcc_ss_data =3D NULL;
+> +       int ret;
 > +
-> +/* These indicate optional of the per-cpu cpc_regs[]. */
-
-Again, you need to say more here, like how this is supposed to work.
-
-> +#define REG_OPTIONAL (0b111111100011111010000)
-
-A hex literal would work too AFAICS.
-
+> +       if (pcc_ss_id < 0) {
+> +               pr_debug("Invalid pcc_ss_id\n");
+> +               return -ENODEV;
+> +       }
 > +
-> +#define IS_OPTIONAL_CPC_REG(reg_idx) (REG_OPTIONAL & (1U << (reg_idx)))
-
-You need to explain what reg_idx is.
-
+> +       pcc_ss_data =3D pcc_data[pcc_ss_id];
 > +
->  /*
->   * Arbitrary Retries in case the remote processor is slow to respond
->   * to PCC commands. Keeping it high enough to cover emulators where
+> +       down_write(&pcc_ss_data->pcc_lock);
+> +
+> +       if (send_pcc_cmd(pcc_ss_id, CMD_READ) >=3D 0)
+> +               ret =3D cpc_read(cpu, reg, val);
+> +       else
+> +               ret =3D -EIO;
+> +
+> +       up_write(&pcc_ss_data->pcc_lock);
+> +
+> +       return ret;
+> +}
+> +
+> +static int cppc_get_reg_val(int cpu, enum cppc_regs reg_idx, u64 *val)
+> +{
+> +       struct cpc_desc *cpc_desc =3D per_cpu(cpc_desc_ptr, cpu);
+>         struct cpc_register_resource *reg;
+>
+>         if (!cpc_desc) {
+> -               pr_debug("No CPC descriptor for CPU:%d\n", cpunum);
+> +               pr_debug("No CPC descriptor for CPU:%d\n", cpu);
+>                 return -ENODEV;
+>         }
+>
+>         reg =3D &cpc_desc->cpc_regs[reg_idx];
+>
+> -       if (CPC_IN_PCC(reg)) {
+> -               int pcc_ss_id =3D per_cpu(cpu_pcc_subspace_idx, cpunum);
+> -               struct cppc_pcc_data *pcc_ss_data =3D NULL;
+> -               int ret =3D 0;
+> -
+> -               if (pcc_ss_id < 0)
+> -                       return -EIO;
+> +       if (IS_OPTIONAL_CPC_REG(reg_idx) && !CPC_SUPPORTED(reg)) {
+> +               pr_debug("CPC register (reg_idx=3D%d) is not supported\n"=
+, reg_idx);
+> +               return -EOPNOTSUPP;
+> +       }
+>
+> -               pcc_ss_data =3D pcc_data[pcc_ss_id];
+> +       if (CPC_IN_PCC(reg))
+> +               return cppc_get_reg_val_in_pcc(cpu, reg, val);
+>
+> -               down_write(&pcc_ss_data->pcc_lock);
+> +       return cpc_read(cpu, reg, val);
+> +}
+>
+> -               if (send_pcc_cmd(pcc_ss_id, CMD_READ) >=3D 0)
+> -                       cpc_read(cpunum, reg, perf);
+> -               else
+> -                       ret =3D -EIO;
+> +static int cppc_set_reg_val_in_pcc(int cpu, struct cpc_register_resource=
+ *reg, u64 val)
+> +{
+> +       int pcc_ss_id =3D per_cpu(cpu_pcc_subspace_idx, cpu);
+> +       struct cppc_pcc_data *pcc_ss_data =3D NULL;
+> +       int ret;
+>
+> -               up_write(&pcc_ss_data->pcc_lock);
+> +       if (pcc_ss_id < 0) {
+> +               pr_debug("Invalid pcc_ss_id\n");
+> +               return -ENODEV;
+> +       }
+>
+> +       ret =3D cpc_write(cpu, reg, val);
+> +       if (ret)
+>                 return ret;
+> +
+> +       pcc_ss_data =3D pcc_data[pcc_ss_id];
+> +
+> +       down_write(&pcc_ss_data->pcc_lock);
+> +       /* after writing CPC, transfer the ownership of PCC to platform *=
+/
+> +       ret =3D send_pcc_cmd(pcc_ss_id, CMD_WRITE);
+> +       up_write(&pcc_ss_data->pcc_lock);
+> +
+> +       return ret;
+> +}
+> +
+> +static int cppc_set_reg_val(int cpu, enum cppc_regs reg_idx, u64 val)
+> +{
+> +       struct cpc_desc *cpc_desc =3D per_cpu(cpc_desc_ptr, cpu);
+> +       struct cpc_register_resource *reg;
+> +
+> +       if (!cpc_desc) {
+> +               pr_debug("No CPC descriptor for CPU:%d\n", cpu);
+> +               return -ENODEV;
+>         }
+>
+> -       cpc_read(cpunum, reg, perf);
+> +       reg =3D &cpc_desc->cpc_regs[reg_idx];
+>
+> -       return 0;
+> +       /* if a register is writeable, it must be a buffer */
+> +       if ((reg->type !=3D ACPI_TYPE_BUFFER) ||
+> +           (IS_OPTIONAL_CPC_REG(reg_idx) && IS_NULL_REG(&reg->cpc_entry.=
+reg))) {
+> +               pr_debug("CPC register (reg_idx=3D%d) is not supported\n"=
+, reg_idx);
+> +               return -EOPNOTSUPP;
+> +       }
+> +
+> +       if (CPC_IN_PCC(reg))
+> +               return cppc_set_reg_val_in_pcc(cpu, reg, val);
+> +
+> +       return cpc_write(cpu, reg, val);
+>  }
+>
+>  /**
+> @@ -1229,7 +1288,7 @@ static int cppc_get_perf(int cpunum, enum cppc_regs=
+ reg_idx, u64 *perf)
+>   */
+>  int cppc_get_desired_perf(int cpunum, u64 *desired_perf)
+>  {
+> -       return cppc_get_perf(cpunum, DESIRED_PERF, desired_perf);
+> +       return cppc_get_reg_val(cpunum, DESIRED_PERF, desired_perf);
+>  }
+>  EXPORT_SYMBOL_GPL(cppc_get_desired_perf);
+>
+> @@ -1242,7 +1301,7 @@ EXPORT_SYMBOL_GPL(cppc_get_desired_perf);
+>   */
+>  int cppc_get_nominal_perf(int cpunum, u64 *nominal_perf)
+>  {
+> -       return cppc_get_perf(cpunum, NOMINAL_PERF, nominal_perf);
+> +       return cppc_get_reg_val(cpunum, NOMINAL_PERF, nominal_perf);
+>  }
+>
+>  /**
+> @@ -1254,7 +1313,7 @@ int cppc_get_nominal_perf(int cpunum, u64 *nominal_=
+perf)
+>   */
+>  int cppc_get_highest_perf(int cpunum, u64 *highest_perf)
+>  {
+> -       return cppc_get_perf(cpunum, HIGHEST_PERF, highest_perf);
+> +       return cppc_get_reg_val(cpunum, HIGHEST_PERF, highest_perf);
+>  }
+>  EXPORT_SYMBOL_GPL(cppc_get_highest_perf);
+>
+> @@ -1267,7 +1326,7 @@ EXPORT_SYMBOL_GPL(cppc_get_highest_perf);
+>   */
+>  int cppc_get_epp_perf(int cpunum, u64 *epp_perf)
+>  {
+> -       return cppc_get_perf(cpunum, ENERGY_PERF, epp_perf);
+> +       return cppc_get_reg_val(cpunum, ENERGY_PERF, epp_perf);
+>  }
+>  EXPORT_SYMBOL_GPL(cppc_get_epp_perf);
+>
 > --
+> 2.33.0
+>
+>
