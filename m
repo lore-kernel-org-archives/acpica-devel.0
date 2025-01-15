@@ -1,31 +1,31 @@
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDD6F22F830
-	for <acpica-devel@lists.linux.dev>; Wed, 15 Jan 2025 08:10:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BDAA246A2B
+	for <acpica-devel@lists.linux.dev>; Wed, 15 Jan 2025 08:58:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736928634; cv=none; b=TSSP/gJrTpyJwDSLHy/PI17fSigmqfksiY2FtO8NSHuV+2VzEeln4GlEEKkYwD7UeEUsKLRpF5PppQp7ZmmXJeAo+rU+LHFsg8Jyun80ZaUg7bnRF9EUFpO1oNUNeu/NhtwZsD8/T3XZQVymYJFBAklvm5ab7juc81TRk8UYkIo=
+	t=1736931543; cv=none; b=s/BLW/AbGjJc1UbKvg/sYSob7dgpxtYt21fXnKo8zgcrTd6+DD48iUH2OAvLmBIZMDb9gQsOdEhyzsmwZFszjUrZmdrbsQqhm4YLSkRw36Jf9l4EDZc7XfkFspqkiAbovumLAnpleT/4GQ983U5Mj48AObsiL/1zomkDgDjhiwE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736928634; c=relaxed/simple;
-	bh=hI+RvpuYlgKt9ZThOVuHcl5qPRXYAYBwH1XGnFbHmw8=;
+	s=arc-20240116; t=1736931543; c=relaxed/simple;
+	bh=W5jUnKHX3Bc96iYTkLtLx6tVDe56SPHqx1+paIKUr1A=;
 	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=TM4AR5VBOfGviAlEULzueQaFAtH0eYT144JhztKN7yBTZdQYMcN/vNKzOz17SfU+KDUbnyFuUe5ad07q1cRV6y/+poMN3H70eNk5LKFIHyF6xk3pb/UFasBVSN029QaU1Fat3k/qJ6z0GpSwI9tA7CnYnbQQNz9mRbBI/tQ7a+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+	 In-Reply-To:Content-Type; b=bUVhnydhiXgo+YV2S0Vq5kcYBNG/FNiboPUTbvfzEH4dBfEVsk0HU6Lcvfll+2CKeAKS8PPZmI+bvdl66aOyA84CRtqfzmKWcFIb9+aj+cG1HvjCncNFiPlVg4CXzq96858oGiSF89DwqQ6FVikhnuFTg5zoTbiXTzlX0852OaQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4YXzDV1FtPz1xmfP;
-	Wed, 15 Jan 2025 16:09:30 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4YY0F56nfHzbdMn;
+	Wed, 15 Jan 2025 16:55:05 +0800 (CST)
 Received: from kwepemh100008.china.huawei.com (unknown [7.202.181.93])
-	by mail.maildlp.com (Postfix) with ESMTPS id DFB1D140119;
-	Wed, 15 Jan 2025 16:10:22 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id EEB8618032E;
+	Wed, 15 Jan 2025 16:58:56 +0800 (CST)
 Received: from [10.67.121.90] (10.67.121.90) by kwepemh100008.china.huawei.com
  (7.202.181.93) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Wed, 15 Jan
- 2025 16:10:21 +0800
-Message-ID: <82831405-4d81-4090-831c-92d841723b81@huawei.com>
-Date: Wed, 15 Jan 2025 16:10:21 +0800
+ 2025 16:58:56 +0800
+Message-ID: <10a624c3-66c1-420c-860d-2ef9104b59d8@huawei.com>
+Date: Wed, 15 Jan 2025 16:58:55 +0800
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -33,8 +33,8 @@ List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/6] ACPI: CPPC: Add cppc_get_reg_val and
- cppc_set_reg_val function
+Subject: Re: [PATCH v4 3/6] ACPI: CPPC: Add macros to generally implement
+ registers getting and setting functions
 To: "Rafael J. Wysocki" <rafael@kernel.org>
 CC: <lenb@kernel.org>, <robert.moore@intel.com>, <viresh.kumar@linaro.org>,
 	<mario.limonciello@amd.com>, <gautham.shenoy@amd.com>, <ray.huang@amd.com>,
@@ -44,234 +44,64 @@ CC: <lenb@kernel.org>, <robert.moore@intel.com>, <viresh.kumar@linaro.org>,
 	<jonathan.cameron@huawei.com>, <zhanjie9@hisilicon.com>,
 	<lihuisong@huawei.com>, <hepeng68@huawei.com>, <fanghao11@huawei.com>
 References: <20250113122104.3870673-1-zhenglifeng1@huawei.com>
- <20250113122104.3870673-3-zhenglifeng1@huawei.com>
- <CAJZ5v0g5vuO9jHD+vRUyCeNE7V6zaW6okAVep3V=TLRosk1NAQ@mail.gmail.com>
+ <20250113122104.3870673-4-zhenglifeng1@huawei.com>
+ <CAJZ5v0jwqZ4A=eeHSXGHKpj-g+KFNWvgLB_yjM55Yk37LryrwQ@mail.gmail.com>
 From: "zhenglifeng (A)" <zhenglifeng1@huawei.com>
-In-Reply-To: <CAJZ5v0g5vuO9jHD+vRUyCeNE7V6zaW6okAVep3V=TLRosk1NAQ@mail.gmail.com>
+In-Reply-To: <CAJZ5v0jwqZ4A=eeHSXGHKpj-g+KFNWvgLB_yjM55Yk37LryrwQ@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
  kwepemh100008.china.huawei.com (7.202.181.93)
 
-On 2025/1/15 1:41, Rafael J. Wysocki wrote:
+On 2025/1/15 1:58, Rafael J. Wysocki wrote:
 
-> The word "function" at the end of the subject is redundant IMV.
-
-Yes, you are right. Will delete it. Thanks.
-
-> 
 > On Mon, Jan 13, 2025 at 1:21 PM Lifeng Zheng <zhenglifeng1@huawei.com> wrote:
 >>
->> Rename cppc_get_perf() to cppc_get_reg_val() as a generic function to read
->> cppc registers, with four changes:
+>> Add CPPC_REG_VAL_READ() to implement registers getting functions.
 >>
->> 1. Change the error kind to "no such device" when pcc_ss_id < 0, which
->> means that this cpu cannot get a valid pcc_ss_id.
+>> Add CPPC_REG_VAL_WRITE() to implement registers setting functions.
 >>
->> 2. Add a check to verify if the register is a mandatory or cpc supported
->> one before using it.
->>
->> 3. Extract the operations if register is in pcc out as
->> cppc_get_reg_val_in_pcc().
->>
->> 4. Return the result of cpc_read() instead of 0.
->>
->> Add cppc_set_reg_val() as a generic function for setting cppc registers
->> value, with this features:
->>
->> 1. Check register type. If a register is writeable, it must be a buffer.
->>
->> 2. Check if the register is a optional and null one right after getting the
->> register.  Because if so, the rest of the operations are meaningless.
->>
->> 3. Extract the operations if register is in pcc out as
->> cppc_set_reg_val_in_pcc().
->>
->> These functions can be used to reduce some existing code duplication.
-> 
-> This mixes functional changes with function renames and code
-> refactoring while it is better to do all of these things separately.
-> 
-> Why don't you split the patch into a few smaller patches doing each
-> one thing at a time?  Like rename the existing function and refactor
-> it in one patch (if this makes sense), make functional changes to it
-> in another patch, then add new functions in a third one?
-> 
-> This would help to review the changes and explain why each of them is made.
-
-It does make more sense. Will split it. Thanks.
-
-> 
 >> Signed-off-by: Lifeng Zheng <zhenglifeng1@huawei.com>
+> 
+> I don't particularly like these macros as they will generally make it
+> harder to follow the code.
+> 
 >> ---
->>  drivers/acpi/cppc_acpi.c | 105 ++++++++++++++++++++++++++++++---------
->>  1 file changed, 82 insertions(+), 23 deletions(-)
+>>  drivers/acpi/cppc_acpi.c | 14 ++++++++++++++
+>>  1 file changed, 14 insertions(+)
 >>
 >> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
->> index 6454b469338f..571f94855dce 100644
+>> index 571f94855dce..6326a1536cda 100644
 >> --- a/drivers/acpi/cppc_acpi.c
 >> +++ b/drivers/acpi/cppc_acpi.c
->> @@ -1181,43 +1181,102 @@ static int cpc_write(int cpu, struct cpc_register_resource *reg_res, u64 val)
->>         return ret_val;
+>> @@ -1279,6 +1279,20 @@ static int cppc_set_reg_val(int cpu, enum cppc_regs reg_idx, u64 val)
+>>         return cpc_write(cpu, reg, val);
 >>  }
 >>
->> -static int cppc_get_perf(int cpunum, enum cppc_regs reg_idx, u64 *perf)
->> +static int cppc_get_reg_val_in_pcc(int cpu, struct cpc_register_resource *reg, u64 *val)
->>  {
->> -       struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpunum);
->> +       int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpu);
->> +       struct cppc_pcc_data *pcc_ss_data = NULL;
->> +       int ret;
->> +
->> +       if (pcc_ss_id < 0) {
->> +               pr_debug("Invalid pcc_ss_id\n");
->> +               return -ENODEV;
->> +       }
->> +
->> +       pcc_ss_data = pcc_data[pcc_ss_id];
->> +
->> +       down_write(&pcc_ss_data->pcc_lock);
->> +
->> +       if (send_pcc_cmd(pcc_ss_id, CMD_READ) >= 0)
->> +               ret = cpc_read(cpu, reg, val);
->> +       else
->> +               ret = -EIO;
->> +
->> +       up_write(&pcc_ss_data->pcc_lock);
->> +
->> +       return ret;
->> +}
->> +
->> +static int cppc_get_reg_val(int cpu, enum cppc_regs reg_idx, u64 *val)
->> +{
->> +       struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpu);
->>         struct cpc_register_resource *reg;
->>
->>         if (!cpc_desc) {
->> -               pr_debug("No CPC descriptor for CPU:%d\n", cpunum);
->> +               pr_debug("No CPC descriptor for CPU:%d\n", cpu);
->>                 return -ENODEV;
->>         }
->>
->>         reg = &cpc_desc->cpc_regs[reg_idx];
->>
->> -       if (CPC_IN_PCC(reg)) {
->> -               int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpunum);
->> -               struct cppc_pcc_data *pcc_ss_data = NULL;
->> -               int ret = 0;
->> -
->> -               if (pcc_ss_id < 0)
->> -                       return -EIO;
->> +       if (IS_OPTIONAL_CPC_REG(reg_idx) && !CPC_SUPPORTED(reg)) {
->> +               pr_debug("CPC register (reg_idx=%d) is not supported\n", reg_idx);
->> +               return -EOPNOTSUPP;
->> +       }
->>
->> -               pcc_ss_data = pcc_data[pcc_ss_id];
->> +       if (CPC_IN_PCC(reg))
->> +               return cppc_get_reg_val_in_pcc(cpu, reg, val);
->>
->> -               down_write(&pcc_ss_data->pcc_lock);
->> +       return cpc_read(cpu, reg, val);
->> +}
->>
->> -               if (send_pcc_cmd(pcc_ss_id, CMD_READ) >= 0)
->> -                       cpc_read(cpunum, reg, perf);
->> -               else
->> -                       ret = -EIO;
->> +static int cppc_set_reg_val_in_pcc(int cpu, struct cpc_register_resource *reg, u64 val)
->> +{
->> +       int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpu);
->> +       struct cppc_pcc_data *pcc_ss_data = NULL;
->> +       int ret;
->>
->> -               up_write(&pcc_ss_data->pcc_lock);
->> +       if (pcc_ss_id < 0) {
->> +               pr_debug("Invalid pcc_ss_id\n");
->> +               return -ENODEV;
->> +       }
->>
->> +       ret = cpc_write(cpu, reg, val);
->> +       if (ret)
->>                 return ret;
->> +
->> +       pcc_ss_data = pcc_data[pcc_ss_id];
->> +
->> +       down_write(&pcc_ss_data->pcc_lock);
->> +       /* after writing CPC, transfer the ownership of PCC to platform */
->> +       ret = send_pcc_cmd(pcc_ss_id, CMD_WRITE);
->> +       up_write(&pcc_ss_data->pcc_lock);
->> +
->> +       return ret;
->> +}
->> +
->> +static int cppc_set_reg_val(int cpu, enum cppc_regs reg_idx, u64 val)
->> +{
->> +       struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpu);
->> +       struct cpc_register_resource *reg;
->> +
->> +       if (!cpc_desc) {
->> +               pr_debug("No CPC descriptor for CPU:%d\n", cpu);
->> +               return -ENODEV;
->>         }
->>
->> -       cpc_read(cpunum, reg, perf);
->> +       reg = &cpc_desc->cpc_regs[reg_idx];
->>
->> -       return 0;
->> +       /* if a register is writeable, it must be a buffer */
->> +       if ((reg->type != ACPI_TYPE_BUFFER) ||
->> +           (IS_OPTIONAL_CPC_REG(reg_idx) && IS_NULL_REG(&reg->cpc_entry.reg))) {
->> +               pr_debug("CPC register (reg_idx=%d) is not supported\n", reg_idx);
->> +               return -EOPNOTSUPP;
->> +       }
->> +
->> +       if (CPC_IN_PCC(reg))
->> +               return cppc_set_reg_val_in_pcc(cpu, reg, val);
->> +
->> +       return cpc_write(cpu, reg, val);
->>  }
->>
->>  /**
->> @@ -1229,7 +1288,7 @@ static int cppc_get_perf(int cpunum, enum cppc_regs reg_idx, u64 *perf)
->>   */
->>  int cppc_get_desired_perf(int cpunum, u64 *desired_perf)
->>  {
->> -       return cppc_get_perf(cpunum, DESIRED_PERF, desired_perf);
->> +       return cppc_get_reg_val(cpunum, DESIRED_PERF, desired_perf);
->>  }
->>  EXPORT_SYMBOL_GPL(cppc_get_desired_perf);
->>
->> @@ -1242,7 +1301,7 @@ EXPORT_SYMBOL_GPL(cppc_get_desired_perf);
->>   */
->>  int cppc_get_nominal_perf(int cpunum, u64 *nominal_perf)
->>  {
->> -       return cppc_get_perf(cpunum, NOMINAL_PERF, nominal_perf);
->> +       return cppc_get_reg_val(cpunum, NOMINAL_PERF, nominal_perf);
->>  }
->>
->>  /**
->> @@ -1254,7 +1313,7 @@ int cppc_get_nominal_perf(int cpunum, u64 *nominal_perf)
->>   */
->>  int cppc_get_highest_perf(int cpunum, u64 *highest_perf)
->>  {
->> -       return cppc_get_perf(cpunum, HIGHEST_PERF, highest_perf);
->> +       return cppc_get_reg_val(cpunum, HIGHEST_PERF, highest_perf);
->>  }
->>  EXPORT_SYMBOL_GPL(cppc_get_highest_perf);
->>
->> @@ -1267,7 +1326,7 @@ EXPORT_SYMBOL_GPL(cppc_get_highest_perf);
->>   */
->>  int cppc_get_epp_perf(int cpunum, u64 *epp_perf)
->>  {
->> -       return cppc_get_perf(cpunum, ENERGY_PERF, epp_perf);
->> +       return cppc_get_reg_val(cpunum, ENERGY_PERF, epp_perf);
->>  }
->>  EXPORT_SYMBOL_GPL(cppc_get_epp_perf);
->>
->> --
->> 2.33.0
->>
->>
+>> +#define CPPC_REG_VAL_READ(reg_name, reg_idx)           \
+>> +int cppc_get_##reg_name(int cpu, u64 *val)             \
+>> +{                                                      \
+>> +       return cppc_get_reg_val(cpu, reg_idx, val);     \
+>> +}                                                      \
+>> +EXPORT_SYMBOL_GPL(cppc_get_##reg_name)
 > 
+> What about if defining something like
+> 
+> #define CPPC_READ_REG_VAL(cpu, reg_name, val)
+> cppc_get_reg_val((cpu), CPPC_REG_IDX(reg_name), (val))
+> 
+> (and analogously for the WRITE_ part), where CPPC_REG_IDX(reg_name) is
+> 
+> #define CPPC_REG_IDX(reg_name)    CPPC_REG_##reg_name_IDX
+> 
+> and there are CPPC_REG_##reg_name_IDX macros defined for all register
+> names in use?
+> 
+> For example
+> 
+> #define CPPC_REG_desired_perf_IDX   DESIRED_PERF
+
+What about keeping these two macros but replace reg_idx with
+CPPC_REG_IDX(reg_name)? With this, the only needed parameter for these two
+macros is reg_name.
 
