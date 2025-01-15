@@ -1,287 +1,127 @@
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DF691E7C1F
-	for <acpica-devel@lists.linux.dev>; Wed, 15 Jan 2025 09:16:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C97EB22FACA
+	for <acpica-devel@lists.linux.dev>; Wed, 15 Jan 2025 11:13:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736932610; cv=none; b=jlnffVD2KGJCb8pPF32IhKK4977VMFgizeCb67MHnfLdjb8Yz7MjaUfJ4n5dBcWGpJyELP52YIkDuHZLYsONs6Lp8iPbovgEVLDnouc2hAB2/0sFo9PeX46uKw8Z16zveLcHhEUNXUyopTAtFk3lAACAGMGvp5kBP5G48TDW/hA=
+	t=1736939590; cv=none; b=kgZHt3dwYeRKLLG+h/6i9s7y4CblTDCdbX9rlqllh1md1NZsxF+zUR2EwAFAsjZ1QT5pxQCrd2zQh0Jr7S4YTKJELFfioH26uj3sM53kwXgWkXl/yn8dw6+Uo/9l9JzZ0jJV0zZMLIGNewIGrCGALUox0HEsicvuywYyxAqU7TY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736932610; c=relaxed/simple;
-	bh=mn330r5buxbnIyzzcqAXkfMOP76wg1Y403B1yovkHfo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=UdijPmGkU2/Cu1J86VqEoMhRN157WR4ahGCYUWeDeEuiBxKXGDGwMVdLP4VllAPKx3FmLvlsUFIkXkfj6q5JBwfX86fhRNRa/Kb/YCO42S3iH6Wauy8LgSYEv+ugEaEBJT9K807RbRdTHlfkKF+3B+aEmzfCqipe4jD687AasW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4YY0fP3ZJMz2Djg7;
-	Wed, 15 Jan 2025 17:13:33 +0800 (CST)
-Received: from kwepemh100008.china.huawei.com (unknown [7.202.181.93])
-	by mail.maildlp.com (Postfix) with ESMTPS id B45CE1A016C;
-	Wed, 15 Jan 2025 17:16:43 +0800 (CST)
-Received: from [10.67.121.90] (10.67.121.90) by kwepemh100008.china.huawei.com
- (7.202.181.93) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Wed, 15 Jan
- 2025 17:16:42 +0800
-Message-ID: <e29f1d7e-943d-4286-a92c-3db04f9e60ae@huawei.com>
-Date: Wed, 15 Jan 2025 17:16:42 +0800
+	s=arc-20240116; t=1736939590; c=relaxed/simple;
+	bh=6jO4WiPBhFzgyb9GhdkgahEyUDYbh3P2ioXyxGAwVdw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=EafT8FThzUq0pgubIblZdyaV1cDRk6qQuvq1n6GkvfgBGqLM2Mn38A8SN6392jud7Wgiyi5eLCAooM5/+Wnlxc6+tRVK5lYuZawjeNxOUuNXrJW1BXgnCMqG6v6E7hiJdfOwv1DVYlXPDn7uLSKhjEiZmy3/jtOnIrpZ2w473xo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=djdd+Tiv; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="djdd+Tiv"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53C7DC4CEE6
+	for <acpica-devel@lists.linux.dev>; Wed, 15 Jan 2025 11:13:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1736939589;
+	bh=6jO4WiPBhFzgyb9GhdkgahEyUDYbh3P2ioXyxGAwVdw=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=djdd+TivZehmhPLpPa4kJZz1+1z7/jt7y/q8s7pcUVQ0XE7AgDNQ/c3m+ICnbvMuD
+	 lRMAXCi4jKbjH8de34O9BIT+bRBJQOnltJD655VBtdT3Qfpp1+EZROiWBA38Ybsm5s
+	 gSrjMZRaz1X9yEsSyrZbf4Cc5j5xsUPq5EnxgpDn/pIHhUySnXPj/MBeon4a4BLEp3
+	 JpDZpuNsiz3YRiu3fDY4IcRO1q0/nZVaEuWzxjM4xTMEo9aeG4/mzPN9AO518PCLoz
+	 NFfYVo/qtARRITXmuRpsHpE300Ql2UVV018us7d6KeA6xTL//cWAg8jx7WU1+urNEN
+	 vql5fiqTXQm9w==
+Received: by mail-oi1-f176.google.com with SMTP id 5614622812f47-3eba347aa6fso4099148b6e.3
+        for <acpica-devel@lists.linux.dev>; Wed, 15 Jan 2025 03:13:09 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVcZKfrf9H+QaOlC67ZnQv0fQYIhm2Uuw4T3fkRGsPeLrYu1yqm3C6UmCu3QHtkn45EzPTNoHHbY9Bt3dw=@lists.linux.dev
+X-Gm-Message-State: AOJu0YyTF+LjQ+IdRkhcE5w/JVw0HCSfc9YcmiAZxknUPb7AM/KotjLd
+	DglcLbC9ByxssJB+eSMi7T2L+rCiOQ5o+7NODKYW3re4+TZ9m77krWBjK4Qm3RQNArsn5WLDkZL
+	/+awqikcTDoi9UInsna14HF4Ee/U=
+X-Google-Smtp-Source: AGHT+IHnnDdSk0+UGjbtKgUlEIzX22igfm/NGfH82JBFguw7/RwNA1HP/MBV1bCC8lSJ8ui81Ri8tBig7u5Nt4aXNpU=
+X-Received: by 2002:a05:6808:3095:b0:3eb:a602:62b1 with SMTP id
+ 5614622812f47-3ef2ec43a84mr18858448b6e.17.1736939588258; Wed, 15 Jan 2025
+ 03:13:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 5/6] ACPI: CPPC: Add autonomous selection ABIs
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-CC: <lenb@kernel.org>, <robert.moore@intel.com>, <viresh.kumar@linaro.org>,
-	<mario.limonciello@amd.com>, <gautham.shenoy@amd.com>, <ray.huang@amd.com>,
-	<pierre.gondois@arm.com>, <acpica-devel@lists.linux.dev>,
-	<linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-pm@vger.kernel.org>, <linuxarm@huawei.com>,
-	<jonathan.cameron@huawei.com>, <zhanjie9@hisilicon.com>,
-	<lihuisong@huawei.com>, <hepeng68@huawei.com>, <fanghao11@huawei.com>
 References: <20250113122104.3870673-1-zhenglifeng1@huawei.com>
- <20250113122104.3870673-6-zhenglifeng1@huawei.com>
- <CAJZ5v0go8y7E2kCDbPYKcwppp0iGzZb3WiKAMhcMRMf_wrUVGA@mail.gmail.com>
-From: "zhenglifeng (A)" <zhenglifeng1@huawei.com>
-In-Reply-To: <CAJZ5v0go8y7E2kCDbPYKcwppp0iGzZb3WiKAMhcMRMf_wrUVGA@mail.gmail.com>
+ <20250113122104.3870673-4-zhenglifeng1@huawei.com> <CAJZ5v0jwqZ4A=eeHSXGHKpj-g+KFNWvgLB_yjM55Yk37LryrwQ@mail.gmail.com>
+ <10a624c3-66c1-420c-860d-2ef9104b59d8@huawei.com>
+In-Reply-To: <10a624c3-66c1-420c-860d-2ef9104b59d8@huawei.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Wed, 15 Jan 2025 12:12:57 +0100
+X-Gmail-Original-Message-ID: <CAJZ5v0jmZy0tNO7Btc9-A0rfzL5jPp2ZEH99bEX00cEi3z+XcQ@mail.gmail.com>
+X-Gm-Features: AbW1kvbIZPwFXAmyiLrc7Lroo3xglhf9zN2VVd-BjjjHc-QrsQ-2BYDR3RYvtEs
+Message-ID: <CAJZ5v0jmZy0tNO7Btc9-A0rfzL5jPp2ZEH99bEX00cEi3z+XcQ@mail.gmail.com>
+Subject: Re: [PATCH v4 3/6] ACPI: CPPC: Add macros to generally implement
+ registers getting and setting functions
+To: "zhenglifeng (A)" <zhenglifeng1@huawei.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, lenb@kernel.org, robert.moore@intel.com, 
+	viresh.kumar@linaro.org, mario.limonciello@amd.com, gautham.shenoy@amd.com, 
+	ray.huang@amd.com, pierre.gondois@arm.com, acpica-devel@lists.linux.dev, 
+	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-pm@vger.kernel.org, linuxarm@huawei.com, jonathan.cameron@huawei.com, 
+	zhanjie9@hisilicon.com, lihuisong@huawei.com, hepeng68@huawei.com, 
+	fanghao11@huawei.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemh100008.china.huawei.com (7.202.181.93)
+Content-Transfer-Encoding: quoted-printable
 
-On 2025/1/15 2:24, Rafael J. Wysocki wrote:
+On Wed, Jan 15, 2025 at 9:59=E2=80=AFAM zhenglifeng (A) <zhenglifeng1@huawe=
+i.com> wrote:
+>
+> On 2025/1/15 1:58, Rafael J. Wysocki wrote:
+>
+> > On Mon, Jan 13, 2025 at 1:21=E2=80=AFPM Lifeng Zheng <zhenglifeng1@huaw=
+ei.com> wrote:
+> >>
+> >> Add CPPC_REG_VAL_READ() to implement registers getting functions.
+> >>
+> >> Add CPPC_REG_VAL_WRITE() to implement registers setting functions.
+> >>
+> >> Signed-off-by: Lifeng Zheng <zhenglifeng1@huawei.com>
+> >
+> > I don't particularly like these macros as they will generally make it
+> > harder to follow the code.
+> >
+> >> ---
+> >>  drivers/acpi/cppc_acpi.c | 14 ++++++++++++++
+> >>  1 file changed, 14 insertions(+)
+> >>
+> >> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+> >> index 571f94855dce..6326a1536cda 100644
+> >> --- a/drivers/acpi/cppc_acpi.c
+> >> +++ b/drivers/acpi/cppc_acpi.c
+> >> @@ -1279,6 +1279,20 @@ static int cppc_set_reg_val(int cpu, enum cppc_=
+regs reg_idx, u64 val)
+> >>         return cpc_write(cpu, reg, val);
+> >>  }
+> >>
+> >> +#define CPPC_REG_VAL_READ(reg_name, reg_idx)           \
+> >> +int cppc_get_##reg_name(int cpu, u64 *val)             \
+> >> +{                                                      \
+> >> +       return cppc_get_reg_val(cpu, reg_idx, val);     \
+> >> +}                                                      \
+> >> +EXPORT_SYMBOL_GPL(cppc_get_##reg_name)
+> >
+> > What about if defining something like
+> >
+> > #define CPPC_READ_REG_VAL(cpu, reg_name, val)
+> > cppc_get_reg_val((cpu), CPPC_REG_IDX(reg_name), (val))
+> >
+> > (and analogously for the WRITE_ part), where CPPC_REG_IDX(reg_name) is
+> >
+> > #define CPPC_REG_IDX(reg_name)    CPPC_REG_##reg_name_IDX
+> >
+> > and there are CPPC_REG_##reg_name_IDX macros defined for all register
+> > names in use?
+> >
+> > For example
+> >
+> > #define CPPC_REG_desired_perf_IDX   DESIRED_PERF
+>
+> What about keeping these two macros but replace reg_idx with
+> CPPC_REG_IDX(reg_name)? With this, the only needed parameter for these tw=
+o
+> macros is reg_name.
 
-> On Mon, Jan 13, 2025 at 1:21 PM Lifeng Zheng <zhenglifeng1@huawei.com> wrote:
-> 
-> This should mention the specification revision and section number(s)
-> for the specification material the code is based on.
-
-Will mention it. Thanks.
-
-> 
->> cppc_set_epp - write energy performance preference register value
->>
->> cppc_get_auto_act_window - read autonomous activity window register value
->>
->> cppc_set_auto_act_window - write autonomous activity window register value
->>
->> cppc_get_auto_sel - read autonomous selection enable register value,
->> modified from cppc_get_auto_sel_caps()
-> 
-> It would be better to move the modification part into a separate patch.
-
-Yes, good point. Thanks.
-
-> 
->> Signed-off-by: Lifeng Zheng <zhenglifeng1@huawei.com>
->> ---
->>  drivers/acpi/cppc_acpi.c     | 82 ++++++++++++++++++++++++++++++++----
->>  drivers/cpufreq/amd-pstate.c |  3 +-
->>  include/acpi/cppc_acpi.h     | 30 +++++++++++--
->>  3 files changed, 103 insertions(+), 12 deletions(-)
->>
->> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
->> index 03134613311d..7bfe30f7b40f 100644
->> --- a/drivers/acpi/cppc_acpi.c
->> +++ b/drivers/acpi/cppc_acpi.c
->> @@ -1568,23 +1568,89 @@ int cppc_set_epp_perf(int cpu, struct cppc_perf_ctrls *perf_ctrls, bool enable)
->>  EXPORT_SYMBOL_GPL(cppc_set_epp_perf);
->>
->>  /**
->> - * cppc_get_auto_sel_caps - Read autonomous selection register.
->> - * @cpunum : CPU from which to read register.
->> - * @perf_caps : struct where autonomous selection register value is updated.
->> + * cppc_set_epp() - Write the EPP register.
->> + * @cpu: CPU on which to write register.
->> + * @epp_val: Value to write to the EPP register.
->>   */
->> -int cppc_get_auto_sel_caps(int cpunum, struct cppc_perf_caps *perf_caps)
->> +int cppc_set_epp(int cpu, u64 epp_val)
->>  {
->> -       u64 auto_sel;
->> +       if (epp_val > CPPC_ENERGY_PERF_MAX)
->> +               return -EINVAL;
->> +
->> +       return cppc_set_reg_val(cpu, ENERGY_PERF, epp_val);
->> +}
->> +EXPORT_SYMBOL_GPL(cppc_set_epp);
->> +
->> +/**
->> + * cppc_get_auto_act_window() - Read autonomous activity window register.
->> + * @cpu: CPU from which to read register.
->> + * @auto_act_window: Return address.
-> 
-> It would be good to describe the autonomous activity window encoding.
-
-Will add. Thanks.
-
-> 
->> + */
->> +int cppc_get_auto_act_window(int cpu, u64 *auto_act_window)
->> +{
->> +       unsigned int exp;
->> +       u64 val, sig;
->> +       int ret;
->> +
->> +       ret = cppc_get_reg_val(cpu, AUTO_ACT_WINDOW, &val);
->> +       if (ret)
->> +               return ret;
->> +
->> +       sig = val & CPPC_AUTO_ACT_WINDOW_MAX_SIG;
->> +       exp = (val >> CPPC_AUTO_ACT_WINDOW_SIG_BIT_SIZE) & CPPC_AUTO_ACT_WINDOW_MAX_EXP;
->> +       *auto_act_window = sig * int_pow(10, exp);
->> +
->> +       return 0;
->> +}
->> +EXPORT_SYMBOL_GPL(cppc_get_auto_act_window);
->> +
->> +/**
->> + * cppc_set_auto_act_window() - Write autonomous activity window register.
->> + * @cpu: CPU on which to write register.
->> + * @auto_act_window: usec value to write to the autonomous activity window register.
->> + */
->> +int cppc_set_auto_act_window(int cpu, u64 auto_act_window)
->> +{
->> +       u64 max_val = CPPC_AUTO_ACT_WINDOW_MAX_SIG * int_pow(10, CPPC_AUTO_ACT_WINDOW_MAX_EXP);
->> +       int digits = 0;
->> +       u64 val;
->> +
->> +       if (auto_act_window > max_val)
->> +               return -EINVAL;
->> +
->> +       while (auto_act_window > CPPC_AUTO_ACT_WINDOW_SIG_CARRY_THRESH) {
->> +               auto_act_window /= 10;
->> +               digits += 1;
->> +       }
->> +
->> +       if (auto_act_window > CPPC_AUTO_ACT_WINDOW_MAX_SIG)
->> +               auto_act_window = CPPC_AUTO_ACT_WINDOW_MAX_SIG;
-> 
-> It looks like this may clobber the most significant bit, or am I mistaken?
-
-Actually, after the while loop above, auto_act_window is not larger than
-CPPC_AUTO_ACT_WINDOW_SIG_CARRY_THRESH, which is 129. So this if condition
-is valid only when auto_act_window is 128 or 129. Since we only have 7 bits
-to store this value, 128 and 129 can only be cut to 127.
-
-> 
->> +
->> +       val = (digits << CPPC_AUTO_ACT_WINDOW_SIG_BIT_SIZE) + auto_act_window;
->> +
->> +       return cppc_set_reg_val(cpu, AUTO_ACT_WINDOW, val);
->> +}
->> +EXPORT_SYMBOL_GPL(cppc_set_auto_act_window);
->> +
->> +/**
->> + * cppc_get_auto_sel() - Read autonomous selection register.
->> + * @cpu: CPU from which to read register.
->> + * @enable: Return address.
->> + */
->> +int cppc_get_auto_sel(int cpu, bool *enable)
->> +{
->> +       u64 val;
->>         int ret;
->>
->> -       ret = cppc_get_reg_val(cpunum, AUTO_SEL_ENABLE, &auto_sel);
->> +       ret = cppc_get_reg_val(cpu, AUTO_SEL_ENABLE, &val);
->>         if (ret)
->>                 return ret;
->>
->> -       perf_caps->auto_sel = (bool)auto_sel;
->> +       *enable = (bool)val;
->> +
->>         return 0;
->>  }
->> -EXPORT_SYMBOL_GPL(cppc_get_auto_sel_caps);
->> +EXPORT_SYMBOL_GPL(cppc_get_auto_sel);
->>
->>  /**
->>   * cppc_set_auto_sel - Write autonomous selection register.
->> diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
->> index 66e5dfc711c0..8bc11d0618f8 100644
->> --- a/drivers/cpufreq/amd-pstate.c
->> +++ b/drivers/cpufreq/amd-pstate.c
->> @@ -399,6 +399,7 @@ static int shmem_init_perf(struct amd_cpudata *cpudata)
->>  {
->>         struct cppc_perf_caps cppc_perf;
->>         u64 numerator;
->> +       bool auto_sel;
->>
->>         int ret = cppc_get_perf_caps(cpudata->cpu, &cppc_perf);
->>         if (ret)
->> @@ -420,7 +421,7 @@ static int shmem_init_perf(struct amd_cpudata *cpudata)
->>         if (cppc_state == AMD_PSTATE_ACTIVE)
->>                 return 0;
->>
->> -       ret = cppc_get_auto_sel_caps(cpudata->cpu, &cppc_perf);
->> +       ret = cppc_get_auto_sel(cpudata->cpu, &auto_sel);
->>         if (ret) {
->>                 pr_warn("failed to get auto_sel, ret: %d\n", ret);
->>                 return 0;
->> diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
->> index 62d368bcd9ec..325e9543e08f 100644
->> --- a/include/acpi/cppc_acpi.h
->> +++ b/include/acpi/cppc_acpi.h
->> @@ -32,6 +32,15 @@
->>  #define        CMD_READ 0
->>  #define        CMD_WRITE 1
->>
->> +#define CPPC_AUTO_ACT_WINDOW_SIG_BIT_SIZE      (7)
->> +#define CPPC_AUTO_ACT_WINDOW_EXP_BIT_SIZE      (3)
->> +#define CPPC_AUTO_ACT_WINDOW_MAX_SIG   ((1 << CPPC_AUTO_ACT_WINDOW_SIG_BIT_SIZE) - 1)
->> +#define CPPC_AUTO_ACT_WINDOW_MAX_EXP   ((1 << CPPC_AUTO_ACT_WINDOW_EXP_BIT_SIZE) - 1)
->> +/* CPPC_AUTO_ACT_WINDOW_MAX_SIG is 127, so 128 and 129 will decay to 127 when writing */
->> +#define CPPC_AUTO_ACT_WINDOW_SIG_CARRY_THRESH 129
->> +
->> +#define CPPC_ENERGY_PERF_MAX   (0xFF)
->> +
->>  /* Each register has the folowing format. */
->>  struct cpc_reg {
->>         u8 descriptor;
->> @@ -159,7 +168,10 @@ extern int cpc_read_ffh(int cpunum, struct cpc_reg *reg, u64 *val);
->>  extern int cpc_write_ffh(int cpunum, struct cpc_reg *reg, u64 val);
->>  extern int cppc_get_epp_perf(int cpunum, u64 *epp_perf);
->>  extern int cppc_set_epp_perf(int cpu, struct cppc_perf_ctrls *perf_ctrls, bool enable);
->> -extern int cppc_get_auto_sel_caps(int cpunum, struct cppc_perf_caps *perf_caps);
->> +extern int cppc_set_epp(int cpu, u64 epp_val);
->> +extern int cppc_get_auto_act_window(int cpu, u64 *auto_act_window);
->> +extern int cppc_set_auto_act_window(int cpu, u64 auto_act_window);
->> +extern int cppc_get_auto_sel(int cpu, bool *enable);
->>  extern int cppc_set_auto_sel(int cpu, bool enable);
->>  extern int amd_get_highest_perf(unsigned int cpu, u32 *highest_perf);
->>  extern int amd_get_boost_ratio_numerator(unsigned int cpu, u64 *numerator);
->> @@ -229,11 +241,23 @@ static inline int cppc_get_epp_perf(int cpunum, u64 *epp_perf)
->>  {
->>         return -EOPNOTSUPP;
->>  }
->> -static inline int cppc_set_auto_sel(int cpu, bool enable)
->> +static inline int cppc_set_epp(int cpu, u64 epp_val)
->>  {
->>         return -EOPNOTSUPP;
->>  }
->> -static inline int cppc_get_auto_sel_caps(int cpunum, struct cppc_perf_caps *perf_caps)
->> +static inline int cppc_get_auto_act_window(int cpu, u64 *auto_act_window)
->> +{
->> +       return -EOPNOTSUPP;
->> +}
->> +static inline int cppc_set_auto_act_window(int cpu, u64 auto_act_window)
->> +{
->> +       return -EOPNOTSUPP;
->> +}
->> +static inline int cppc_get_auto_sel(int cpu, bool *enable)
->> +{
->> +       return -EOPNOTSUPP;
->> +}
->> +static inline int cppc_set_auto_sel(int cpu, bool enable)
->>  {
->>         return -EOPNOTSUPP;
->>  }
->> --
->> 2.33.0
->>
->>
-> 
-
+The problem is that looking up functions defined through macros is
+hard when somebody wants to know what they do, so I'd prefer to avoid
+doing that.
