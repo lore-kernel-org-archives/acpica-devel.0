@@ -1,50 +1,31 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48E0E40849;
-	Wed,  5 Feb 2025 03:45:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64A5C21481B
+	for <acpica-devel@lists.linux.dev>; Wed,  5 Feb 2025 06:13:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738727126; cv=none; b=d/Nf4hu1q5RScvNSLHTPjH2jcuVENtV2AUBmOg3U+aBNI4GKRkVHEor8IF2ykdUaOtZSk2xgPbyRjLE1TTaBEuWWDw2cudcvred+FBGsC4Y0ZrGvTGhoKQd/iNqDIOGmIGbwkkHl1OeMUdmuy4KaoGFpva8eU2Z2/v4ml2ACR7s=
+	t=1738736002; cv=none; b=T0y5JGm+FmOeGO8a34h3VR8iYYbttNdVUSZrKf9SZLbrB3rtU/PTrdezZQ75PrWNNpUOpKWx6xluZZ69nA00stVVt+W2W/YraRawZmG0ZtPAKPKSxAEUW1nn5y7Y1JA1w2BpCoNA1AL9abbBfMa3csbPLCmW50g+j/aA+S/tKpQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738727126; c=relaxed/simple;
-	bh=MLaFTGCPEcg9NYXwrgf9SMfKqQ9G+0WJl/NqM7xYYn8=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Vh31IposDgPqhaa9+Y5CcarHjnksTpbbqExAfQWmTEFPAUeDDv1UtmhF5og3V5HjEGIeU+2g7/aW0RPhAVwURwgpSdjj/9292zvbqtEGOd+2A+dnieZJqc5R8/B8I0mA5c7D2Ec1ffJk3CfAtUUUug7wicl72Qtf+bT7+zzEN6Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ks7Pitsw; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ks7Pitsw"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1738727125; x=1770263125;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=MLaFTGCPEcg9NYXwrgf9SMfKqQ9G+0WJl/NqM7xYYn8=;
-  b=ks7Pitsw8DQYqLAPWG2p8sHcmQGGzieIkiMBtZsUAR3VCrhIY39PP/0e
-   9HbgWGg+LBZOzs+0/DWRJWjeNJQ2btNXfMjcdUy5e8wXUPyc4x/H53vQr
-   DypmzCHWAbs3bRTLNM48DRddBLaJ7dUmvab1nYkCp3RMBP1yuHD9Eqf3/
-   E4H77rBAEohkS+Ch/+LkL2evqK8usU3vKn2/pWcq24KH4Aa/DYy8kRvWn
-   1pPFiTOOkpYLWtJxSObD97tEyAbzzQPkfSSLkD8jdRyvglszAB/TnrH23
-   Tu4n6GMNZwdttR2H1lFt/3rxmYGaJsBAZMOcUp0xzg7d8NApQlL/HMips
-   g==;
-X-CSE-ConnectionGUID: V2Je3YZiQIKQVLVqHQXteA==
-X-CSE-MsgGUID: lgqYDOioRVyMxJcvwVgpug==
-X-IronPort-AV: E=McAfee;i="6700,10204,11336"; a="39165405"
-X-IronPort-AV: E=Sophos;i="6.13,260,1732608000"; 
-   d="scan'208";a="39165405"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2025 19:45:25 -0800
-X-CSE-ConnectionGUID: WpR9JSfURxSI/IIjqWagHg==
-X-CSE-MsgGUID: qbIxOqA5Tj+fNgVN36xa1g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.13,260,1732608000"; 
-   d="scan'208";a="141642470"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.124.242.149]) ([10.124.242.149])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2025 19:45:18 -0800
-Message-ID: <284dd081-8d53-45ef-ae18-78b0388c98ca@linux.intel.com>
-Date: Wed, 5 Feb 2025 11:45:15 +0800
+	s=arc-20240116; t=1738736002; c=relaxed/simple;
+	bh=p10IvJqFqcFd2UYdA7sFGlvIhojWB/exVMZMRq2vW8E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=sQoa9XCDSF14b5uqzzbXobcrTDnEY/jbtmY5YPiNF+7WSPk97HPRQmBHdgIF7U4omyqfGDXHWXlaFGH7oFLRYcgRJIRMHuwXefsO8CuHFfMg7bslEYGzg67/IEJVBmXrMNf2BbweOA2wPgx1V+Xd6KzT1kxEKQP8k+dDmU8wghs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4YnqZk6npBz11TS4;
+	Wed,  5 Feb 2025 14:09:50 +0800 (CST)
+Received: from kwepemh100008.china.huawei.com (unknown [7.202.181.93])
+	by mail.maildlp.com (Postfix) with ESMTPS id C1F2C1800E6;
+	Wed,  5 Feb 2025 14:13:15 +0800 (CST)
+Received: from [10.67.121.90] (10.67.121.90) by kwepemh100008.china.huawei.com
+ (7.202.181.93) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Wed, 5 Feb
+ 2025 14:13:14 +0800
+Message-ID: <be69bd58-e5f0-4b4c-8eaf-37eefaef4f90@huawei.com>
+Date: Wed, 5 Feb 2025 14:13:14 +0800
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -52,62 +33,339 @@ List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, Zhangfei Gao <zhangfei.gao@linaro.org>,
- acpica-devel@lists.linux.dev, iommu@lists.linux.dev,
- Joerg Roedel <joro@8bytes.org>, Kevin Tian <kevin.tian@intel.com>,
- kvm@vger.kernel.org, Len Brown <lenb@kernel.org>,
- linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- Lorenzo Pieralisi <lpieralisi@kernel.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>,
- Robert Moore <robert.moore@intel.com>, Robin Murphy <robin.murphy@arm.com>,
- Sudeep Holla <sudeep.holla@arm.com>, Will Deacon <will@kernel.org>,
- Alex Williamson <alex.williamson@redhat.com>,
- Donald Dutile <ddutile@redhat.com>, Eric Auger <eric.auger@redhat.com>,
- Hanjun Guo <guohanjun@huawei.com>,
- Jean-Philippe Brucker <jean-philippe@linaro.org>,
- Jerry Snitselaar <jsnitsel@redhat.com>, Moritz Fischer <mdf@kernel.org>,
- Michael Shavit <mshavit@google.com>, Nicolin Chen <nicolinc@nvidia.com>,
- patches@lists.linux.dev, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
- Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
- Mostafa Saleh <smostafa@google.com>
-Subject: Re: [PATCH v4 00/12] Initial support for SMMUv3 nested translation
-To: Jason Gunthorpe <jgg@nvidia.com>
-References: <0-v4-9e99b76f3518+3a8-smmuv3_nesting_jgg@nvidia.com>
- <20241112182938.GA172989@nvidia.com>
- <CABQgh9HOHzeRF7JfrXrRAcGB53o29HkW9rnVTf4JefeVWDvzyQ@mail.gmail.com>
- <20241113012359.GB35230@nvidia.com>
- <9df3dd17-375a-4327-b2a8-e9f7690d81b1@linux.intel.com>
- <20241113164316.GL35230@nvidia.com>
- <6ed97a10-853f-429e-8506-94b218050ad3@linux.intel.com>
- <20241115175522.GA35230@nvidia.com> <20250122192622.GA965540@nvidia.com>
-Content-Language: en-US
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <20250122192622.GA965540@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH v4 6/6] cpufreq: CPPC: Support for autonomous selection in
+ cppc_cpufreq
+To: srinivas pandruvada <srinivas.pandruvada@linux.intel.com>, Mario
+ Limonciello <mario.limonciello@amd.com>, Pierre Gondois
+	<pierre.gondois@arm.com>, Russell Haley <yumpusamongus@gmail.com>,
+	<rafael@kernel.org>, <lenb@kernel.org>, <robert.moore@intel.com>,
+	<viresh.kumar@linaro.org>
+CC: <acpica-devel@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+	<linuxarm@huawei.com>, <jonathan.cameron@huawei.com>,
+	<gautham.shenoy@amd.com>, <ray.huang@amd.com>, <zhanjie9@hisilicon.com>,
+	<lihuisong@huawei.com>, <hepeng68@huawei.com>, <fanghao11@huawei.com>
+References: <20250113122104.3870673-1-zhenglifeng1@huawei.com>
+ <20250113122104.3870673-7-zhenglifeng1@huawei.com>
+ <21654032-a394-4da9-8ee9-d7cb9df8c855@gmail.com>
+ <6909eef3-20aa-4341-9177-a42323a0d5c6@huawei.com>
+ <270a1cce-8afe-497a-b30b-56157d75a863@amd.com>
+ <0705775a-1040-4564-b97b-2ed397803723@huawei.com>
+ <256a7620-2d21-4474-b64d-b1e8effbc975@arm.com>
+ <32d084f3-f114-420e-affa-2f7ba107de0d@amd.com>
+ <eadd291e-c797-4d7d-b1f9-f8778fa58b23@huawei.com>
+ <6267261b-4e4a-475f-b17d-5473d72b2c2a@linux.intel.com>
+ <9f5f8181-7d0e-415d-b473-0e3c6601ccc3@amd.com>
+ <0c511da2-6a4a-4fa2-9d82-da45d1afe346@huawei.com>
+ <bf3d232eef124080eb0482ff1b43c17739a1c50b.camel@linux.intel.com>
+From: "zhenglifeng (A)" <zhenglifeng1@huawei.com>
+In-Reply-To: <bf3d232eef124080eb0482ff1b43c17739a1c50b.camel@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemh100008.china.huawei.com (7.202.181.93)
 
-On 2025/1/23 3:26, Jason Gunthorpe wrote:
-> On Fri, Nov 15, 2024 at 01:55:22PM -0400, Jason Gunthorpe wrote:
->>>> I need your help to remove IOMMU_DEV_FEAT_IOPF from the intel
->>>> driver. I have a patch series that eliminates it from all the other
->>>> drivers, and I wrote a patch to remove FEAT_SVA from intel..
->>> Yes, sure. Let's make this happen in the next cycle.
->>>
->>> FEAT_IOPF could be removed. IOPF manipulation can be handled in the
->>> domain attachment path. A per-device refcount can be implemented. This
->>> count increments with each iopf-capable domain attachment and decrements
->>> with each detachment. PCI PRI is enabled for the first iopf-capable
->>> domain and disabled when the last one is removed. Probably we can also
->>> solve the PF/VF sharing PRI issue.
->> Here is what I have so far, if you send me a patch for vt-d to move
->> FEAT_IOPF into attach as you describe above (see what I did to arm for
->> example), then I can send it next cycle
+Hello,
+
+Sorry for my delay due to the recent holiday.
+
+On 2025/1/24 22:18, srinivas pandruvada wrote:
+
+> On Fri, 2025-01-24 at 11:53 +0800, zhenglifeng (A) wrote:
+>> On 2025/1/24 1:05, Mario Limonciello wrote:
 >>
->> https://github.com/jgunthorpe/linux/commits/iommu_no_feat/
-> Hey Baolu, a reminder on this, lets try for it next cycle?
+>>> On 1/23/2025 10:46, Srinivas Pandruvada wrote:
+>>>>
+>>>> On 1/20/25 18:42, zhenglifeng (A) wrote:
+>>>>> On 2025/1/21 1:44, Mario Limonciello wrote:
+>>>>>
+>>>>>> On 1/20/2025 08:49, Pierre Gondois wrote:
+>>>>>>>
+>>>>>>> On 1/20/25 04:15, zhenglifeng (A) wrote:
+>>>>>>>> On 2025/1/17 22:30, Mario Limonciello wrote:
+>>>>>>>>
+>>>>>>>>> On 1/16/2025 21:11, zhenglifeng (A) wrote:
+>>>>>>>>>> On 2025/1/16 19:39, Russell Haley wrote:
+>>>>>>>>>>
+>>>>>>>>>>> Hello,
+>>>>>>>>>>>
+>>>>>>>>>>> I noticed something here just as a user casually
+>>>>>>>>>>> browsing the mailing list.
+>>>>>>>>>>>
+>>>>>>>>>>> On 1/13/25 6:21 AM, Lifeng Zheng wrote:
+>>>>>>>>>>>> Add sysfs interfaces for CPPC autonomous
+>>>>>>>>>>>> selection in the cppc_cpufreq
+>>>>>>>>>>>> driver.
+>>>>>>>>>>>>
+>>>>>>>>>>>> Signed-off-by: Lifeng Zheng
+>>>>>>>>>>>> <zhenglifeng1@huawei.com>
+>>>>>>>>>>>> ---
+>>>>>>>>>>>>     .../ABI/testing/sysfs-devices-system-cpu     
+>>>>>>>>>>>> |  54 +++++++++
+>>>>>>>>>>>>     drivers/cpufreq/cppc_cpufreq.c               
+>>>>>>>>>>>> | 109 +++++++ ++++ +++++++
+>>>>>>>>>>>>     2 files changed, 163 insertions(+)
+>>>>>>>>>>>>
+>>>>>>>>>>>> diff --git a/Documentation/ABI/testing/sysfs-
+>>>>>>>>>>>> devices-system-cpu b/
+>>>>>>>>>>>> Documentation/ABI/testing/sysfs-devices-system-
+>>>>>>>>>>>> cpu
+>>>>>>>>>>>> index 206079d3bd5b..3d87c3bb3fe2 100644
+>>>>>>>>>>>> --- a/Documentation/ABI/testing/sysfs-devices-
+>>>>>>>>>>>> system-cpu
+>>>>>>>>>>>> +++ b/Documentation/ABI/testing/sysfs-devices-
+>>>>>>>>>>>> system-cpu
+>>>>>>>>>>>> @@ -268,6 +268,60 @@ Description:    Discover
+>>>>>>>>>>>> CPUs in the same CPU frequency coordination
+>>>>>>>>>>>> domain
+>>>>>>>>>>>>             This file is only present if the
+>>>>>>>>>>>> acpi-cpufreq or the cppc-cpufreq
+>>>>>>>>>>>>             drivers are in use.
+>>>>>>>>>>> [...snip...]
+>>>>>>>>>>>
+>>>>>>>>>>>> +What:       
+>>>>>>>>>>>> /sys/devices/system/cpu/cpuX/cpufreq/energy_perf
+>>>>>>>>>>>> +Date:        October 2024
+>>>>>>>>>>>> +Contact:    linux-pm@vger.kernel.org
+>>>>>>>>>>>> +Description:    Energy performance preference
+>>>>>>>>>>>> +
+>>>>>>>>>>>> +        Read/write an 8-bit integer from/to this
+>>>>>>>>>>>> file. This file
+>>>>>>>>>>>> +        represents a range of values from 0
+>>>>>>>>>>>> (performance preference) to
+>>>>>>>>>>>> +        0xFF (energy efficiency preference) that
+>>>>>>>>>>>> influences the rate of
+>>>>>>>>>>>> +        performance increase/decrease and the
+>>>>>>>>>>>> result of the hardware's
+>>>>>>>>>>>> +        energy efficiency and performance
+>>>>>>>>>>>> optimization policies.
+>>>>>>>>>>>> +
+>>>>>>>>>>>> +        Writing to this file only has meaning
+>>>>>>>>>>>> when Autonomous Selection is
+>>>>>>>>>>>> +        enabled.
+>>>>>>>>>>>> +
+>>>>>>>>>>>> +        This file only presents if the cppc-
+>>>>>>>>>>>> cpufreq driver is in use.
+>>>>>>>>>>> In intel_pstate driver, there is file with near-
+>>>>>>>>>>> identical semantics:
+>>>>>>>>>>>
+>>>>>>>>>>> /sys/devices/system/cpu/cpuX/cpufreq/energy_perform
+>>>>>>>>>>> ance_preference
+>>>>>>>>>>>
+>>>>>>>>>>> It also accepts a few string arguments and converts
+>>>>>>>>>>> them to integers.
+>>>>>>>>>>>
+>>>>>>>>>>> Perhaps the same name should be used, and the
+>>>>>>>>>>> semantics made exactly
+>>>>>>>>>>> identical, and then it could be documented as
+>>>>>>>>>>> present for either
+>>>>>>>>>>> cppc_cpufreq OR intel_pstate?
+>>>>>>>>>>>
+>>>>>>>>>>> I think would be more elegant if userspace tooling
+>>>>>>>>>>> could Just Work with
+>>>>>>>>>>> either driver.
+>>>>>>>>>>>
+>>>>>>>>>>> One might object that the frequency selection
+>>>>>>>>>>> behavior that results from
+>>>>>>>>>>> any particular value of the register itself might
+>>>>>>>>>>> be different, but they
+>>>>>>>>>>> are *already* different between Intel's P and E-
+>>>>>>>>>>> cores in the same CPU
+>>>>>>>>>>> package. (Ugh.)
+>>>>>>>>>> Yes, I should use the same name. Thanks.
+>>>>>>>>>>
+>>>>>>>>>> As for accepting string arguments and converting them
+>>>>>>>>>> to integers, I don't
+>>>>>>>>>> think it is necessary. It'll be a litte confused if
+>>>>>>>>>> someone writes a raw
+>>>>>>>>>> value and reads a string I think. I prefer to let
+>>>>>>>>>> users freely set this
+>>>>>>>>>> value.
+>>>>>>>>>>
+>>>>>>>>>> In addition, there are many differences between the
+>>>>>>>>>> implementations of
+>>>>>>>>>> energy_performance_preference in intel_pstate and
+>>>>>>>>>> cppc_cpufreq (and
+>>>>>>>>>> amd-pstate...). It is really difficult to explain all
+>>>>>>>>>> this differences in
+>>>>>>>>>> this document. So I'll leave it to be documented as
+>>>>>>>>>> present for
+>>>>>>>>>> cppc_cpufreq only.
+>>>>>>>>> At least the interface to userspace I think we should
+>>>>>>>>> do the best we can to be the same between all the
+>>>>>>>>> drivers if possible.
+>>>>>>>>>
+>>>>>>>>> For example; I've got a patch that I may bring up in a
+>>>>>>>>> future kernel cycle that adds raw integer writes to
+>>>>>>>>> amd-pstates energy_performance_profile to behave the
+>>>>>>>>> same way intel-pstate does.
+>>>>>>>> I agree that it's better to keep this interface
+>>>>>>>> consistent across different
+>>>>>>>> drivers. But in my opinion, the implementation of
+>>>>>>>> intel_pstate
+>>>>>>>> energy_performance_preference is not really nice. Someone
+>>>>>>>> may write a raw
+>>>>>>>> value but read a string, or read strings for some values
+>>>>>>>> and read raw
+>>>>>>>> values for some other values. It is inconsistent. It may
+>>>>>>>> be better to use
+>>>>>>>> some other implementation, such as seperating the
+>>>>>>>> operations of r/w strings
+>>>>>>>> and raw values into two files.
+>>>>>>> I agree it would be better to be sure of the type to expect
+>>>>>>> when reading the
+>>>>>>> energy_performance_preference file. The epp values in the
+>>>>>>> range 0-255 with 0
+>>>>>>> being the performance value for all interfaces.
+>>>>>>>
+>>>>>>> In the current epp strings, it seems there is a big gap
+>>>>>>> between the PERFORMANCE
+>>>>>>> and the BALANCE_PERFORMANCE strings. Maybe it would be good
+>>>>>>> to complete it:
+>>>>>>> EPP_PERFORMANCE        0x00
+>>>>>>> EPP_BALANCE_PERFORMANCE    0x40      // state value changed
+>>>>>>> EPP_BALANCE        0x80      // new state
+>>>>>>> EPP_BALANCE_POWERSAVE    0xC0
+>>>>>>> EPP_POWERSAVE        0xFF
+>>>>>>>
+>>>>>>> NIT: The mapping seems to be slightly different for
+>>>>>>> intel_pstate and amd-pstate
+>>>>>>> currently:
+>>>>>>> drivers/cpufreq/amd-pstate.c
+>>>>>>> #define AMD_CPPC_EPP_PERFORMANCE        0x00
+>>>>>>> #define AMD_CPPC_EPP_BALANCE_PERFORMANCE    0x80
+>>>>>>> #define AMD_CPPC_EPP_BALANCE_POWERSAVE        0xBF
+>>>>>>> #define AMD_CPPC_EPP_POWERSAVE            0xFF
+>>>>>>>
+>>>>>>> arch/x86/include/asm/msr-index.h
+>>>>>>> #define HWP_EPP_PERFORMANCE        0x00
+>>>>>>> #define HWP_EPP_BALANCE_PERFORMANCE    0x80
+>>>>>>> #define HWP_EPP_BALANCE_POWERSAVE    0xC0   <------
+>>>>>>> Different from AMD_CPPC_EPP_BALANCE_POWERSAVE
+>>>>>>> #define HWP_EPP_POWERSAVE        0xFF
+>>>>>>>
+>>>>>>>> I think it's better to consult Rafael and Viresh about
+>>>>>>>> how this should
+>>>>>>>> evolve.
+>>>>>>> Yes indeed
+>>>>>> Maybe it's best to discuss what the goal of raw EPP number
+>>>>>> writes is to decide what to do with it.
+>>>>>>
+>>>>>> IE in intel-pstate is it for userspace to be able to actually
+>>>>>> utilize something besides the strings all the time?  Or is it
+>>>>>> just for debugging to find better values for strings in the
+>>>>>> future?
+>>>>>>
+>>>>>> If the former maybe we're better off splitting to
+>>>>>> 'energy_performance_preference' and
+>>>>>> 'energy_performance_preference_int'.
+>>>>>>
+>>>>>> If the latter maybe we're better off putting the integer
+>>>>>> writes and reads into debugfs instead and making
+>>>>>> 'energy_performance_preference' return -EINVAL while a non-
+>>>>>> predefined value is in use.
+>>>>
+>>>> In Intel case EPP values can be different based on processor. In
+>>>> some case they they end up sharing the same CPU model. So strings
+>>>> are not suitable for all cases. Also there is different
+>>>> preference of EPP between Chrome systems and non chrome distro.
+>>>> For example Chrome has some resource manager which can change and
+>>>> same on Intel distros with LPMD.
+>>>>
+>>>
+>>> Thanks for confirming it is intentional and changing it would break
+>>> existing userspace.
+>>>
+>>> And FWIW even in Windows there are more than 4 situational values
+>>> used like we have in Linux today.
+>>>
+>>> As the status quo is there I personally feel that we should do the
+>>> exact same for other implementation of
+>>> energy_performance_preference.
+>>
+>> I still don't think this implementation is nice, for the following
+>> reasons:
+>>
+>> 1. Users may write raw value but read string. It's odd.
+>>
+>> 2. Sometimes a raw value is read and sometimes a character string is
+>> read.
+>> The userspace tool needs to adapt this.
+>>
+>> 3. Reading and writing EPP strings is not really general in driver.
+>> It is
+>> more reasonable to use the userspace tool to implement it.
+>>
+>> In order not to break existing userspace, I'll rename the file to
+>> 'energy_performance_preference_int' or
+>> 'energy_performance_preference_val'
+>> in cppc_cpufreq and only support reading and writing raw value. As
+>> for
+>> accepting string arguments, it's not necessary for cppc_cpufreq for
+>> now.
+>> It's easy to add this feature but hard to remove, so I'll leave it to
+>> the
+>> future if it is really needed.
+>>
+>> As for amd-pstate and intel_pstate, you can decide how
+>> energy_performance_preference should evolve. But I strongly recommend
+>> splitting it.
+> 
+> No. User space can deal with this already. 
 
-Oh, I forgot this. Thanks for the reminding. Sure, let's try to make it
-in the next cycle.
+I know that. What I mean is that user space had to do more to adapt this
+"sometims value sometimes string" situation. This could have been avoided.
 
----
-baolu
+> Atleast this has one
+> interface. If you split you need to keep them consistent. You can write
+> a raw value  to new attribute and then can read a string from the other
+> attribute, which means different.
+
+I won't do any change in amd-pstate and intel_pstate because it involves
+too much. I'll only add a new file in cppc_cpufreq for reading and writing
+EPP raw value.
+
+> 
+> This is not the only place where strings and raw values can be written
+> in sysfs. Also true for energy_perf_bias.
+> 
+> 
+> Thanks,
+> Srinivas
+> 
+> 
+> 
+>>
+>> Regards,
+>>
+>> Lifeng
+>>
+>>>
+>>>>
+>>>> Thanks,
+>>>>
+>>>> Srinivas
+>>>>
+>>>>
+>>>>> I think it's the former.
+>>>>>
+>>>>> I added the author of the patch that allows raw energy
+>>>>> performance
+>>>>> preference value in intel_pstate to ask about what the goal is
+>>>>> and if this
+>>>>> would be ok to do the modification mentioned above.
+>>>>>
+>>>>> To see the patch from
+>>>>> https://lore.kernel.org/ all/20200626183401.1495090-3-srinivas.pandruvada@linux.intel.c
+>>>>> om/
+>>>>>
+>>>>> Anyway, the purpose of this patch is to allow users write and
+>>>>> read raw EPP
+>>>>> number. So maybe I can just rename the file to
+>>>>> 'energy_performance_preference_int'?
+>>>>>
+>>>
+>>
+> 
+> 
+
