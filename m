@@ -1,29 +1,29 @@
 Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D753232371
-	for <acpica-devel@lists.linux.dev>; Thu,  6 Feb 2025 13:14:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE174230995
+	for <acpica-devel@lists.linux.dev>; Thu,  6 Feb 2025 13:14:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738847676; cv=none; b=XzyDhJ8tJ2Rko5MktlJZatFMpqw7As3V11bXIW6GcMNgSUr/LLRuv9uq8vuoCiH5u7C4BvxxOH7mauuYAWgGMWqeNN6bpfwpeynqMb6tH5hi7OiY6tkSGYXM/RVMfP7FrBS09zQBXXOCQK1fzZaR0eZyGhMTiP2gCoyWv1s8zMM=
+	t=1738847677; cv=none; b=bpGnu2gKWCr2rusTHHOx9e9UGpXnZbdBWtm5ssi5U//Rt4rfm06h5W6QrnphEVD6vzvDyLNK5PzM+LVTGpY/7zp95Fv/p/LcmKqctCsYBhH+gd7yk6PqA2t9/bpVSPcwHw1VYl8LzRMTX2DJn/DC0YGbvR1ID1z6LfC0OvrOmNs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738847676; c=relaxed/simple;
-	bh=RZnMzdulRLNgifHQdIHsKNjUzLRlnQNJ1xKNoq93Xno=;
+	s=arc-20240116; t=1738847677; c=relaxed/simple;
+	bh=3cxgxCVAFeM5eXgQltqtLCo3JTXoXLcrK2CcRWwDvMo=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=lOf8iYUQjfx18+yVBq9hl1JjHENh3M5TOIzL3Qd0YhkUsAmMolmoboQ1syhXofT/38jxW7eDY5sMyYPmqcGM5wIgm6rrB1b7RfBdy+nD/QAeLVkGvDUJVB9DWr/FWZgNhhwSjRwqEOjx8jSS7qDf5W0yPWksvzNKEidrOJBQ3Cs=
+	 MIME-Version:Content-Type; b=BpWBFLpZh27MpZMzWaNFeAKlB2d5NrEVudVEeO45JtgKkyI9YUWnnbVzQh6irjbk1Kfb6V7zVEgqxjAdNkXns39JPyU+zmprRWFhLtQWw8S5bri35Dtg4CTPwKQvGWl3R/Fdn74gWbLHCaf11x+DBxK1VN8B0VfqYE39W6w49NU=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4YpctJ3xFczbnny;
-	Thu,  6 Feb 2025 21:11:04 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4YpcsK6P09z11PbB;
+	Thu,  6 Feb 2025 21:10:13 +0800 (CST)
 Received: from kwepemh100008.china.huawei.com (unknown [7.202.181.93])
-	by mail.maildlp.com (Postfix) with ESMTPS id BFAC6140383;
-	Thu,  6 Feb 2025 21:14:30 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 8C136180103;
+	Thu,  6 Feb 2025 21:14:33 +0800 (CST)
 Received: from localhost.huawei.com (10.50.165.33) by
  kwepemh100008.china.huawei.com (7.202.181.93) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Thu, 6 Feb 2025 21:14:29 +0800
+ 15.2.1544.11; Thu, 6 Feb 2025 21:14:32 +0800
 From: Lifeng Zheng <zhenglifeng1@huawei.com>
 To: <rafael@kernel.org>, <lenb@kernel.org>, <robert.moore@intel.com>,
 	<viresh.kumar@linaro.org>, <mario.limonciello@amd.com>,
@@ -34,9 +34,9 @@ CC: <acpica-devel@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
 	<srinivas.pandruvada@linux.intel.com>, <jonathan.cameron@huawei.com>,
 	<zhanjie9@hisilicon.com>, <lihuisong@huawei.com>, <zhenglifeng1@huawei.com>,
 	<hepeng68@huawei.com>, <fanghao11@huawei.com>
-Subject: [PATCH v5 1/8] ACPI: CPPC: Add IS_OPTIONAL_CPC_REG macro to judge if a cpc_reg is optional
-Date: Thu, 6 Feb 2025 21:14:21 +0800
-Message-ID: <20250206131428.3261578-2-zhenglifeng1@huawei.com>
+Subject: [PATCH v5 5/8] ACPI: CPPC: Refactor register value get and set ABIs
+Date: Thu, 6 Feb 2025 21:14:25 +0800
+Message-ID: <20250206131428.3261578-6-zhenglifeng1@huawei.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20250206131428.3261578-1-zhenglifeng1@huawei.com>
 References: <20250206131428.3261578-1-zhenglifeng1@huawei.com>
@@ -51,41 +51,153 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
  kwepemh100008.china.huawei.com (7.202.181.93)
 
-In ACPI 6.5, s8.4.6.1 _CPC (Continuous Performance Control), whether each
-of the per-cpu cpc_regs[] is mendatory or optional is defined. Since the
-CPC_SUPPORTED() check is only for optional cpc field, another macro to
-check if the field is optional is needed.
+Refactor register value get and set ABIs by using cppc_get_reg_val(),
+cppc_set_reg_val() and CPPC_REG_VAL_READ().
 
 Signed-off-by: Lifeng Zheng <zhenglifeng1@huawei.com>
 ---
- drivers/acpi/cppc_acpi.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ drivers/acpi/cppc_acpi.c | 111 +++------------------------------------
+ 1 file changed, 7 insertions(+), 104 deletions(-)
 
 diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-index f193e713825a..39f019e265da 100644
+index 17558d2b5ae5..c9fa5fdde7eb 100644
 --- a/drivers/acpi/cppc_acpi.c
 +++ b/drivers/acpi/cppc_acpi.c
-@@ -129,6 +129,20 @@ static DEFINE_PER_CPU(struct cpc_desc *, cpc_desc_ptr);
- #define CPC_SUPPORTED(cpc) ((cpc)->type == ACPI_TYPE_INTEGER ?		\
- 				!!(cpc)->cpc_entry.int_value :		\
- 				!IS_NULL_REG(&(cpc)->cpc_entry.reg))
-+
-+/*
-+ * Each bit indicates the optionality of the register in per-cpu
-+ * cpc_regs[] with the corresponding index. 0 means mandatory and 1
-+ * means optional.
-+ */
-+#define REG_OPTIONAL (0x1FC7D0)
-+
-+/*
-+ * Use the index of the register in per-cpu cpc_regs[] to check if
-+ * it's an optional one.
-+ */
-+#define IS_OPTIONAL_CPC_REG(reg_idx) (REG_OPTIONAL & (1U << (reg_idx)))
-+
- /*
-  * Arbitrary Retries in case the remote processor is slow to respond
-  * to PCC commands. Keeping it high enough to cover emulators where
+@@ -1614,44 +1614,14 @@ EXPORT_SYMBOL_GPL(cppc_set_epp_perf);
+  */
+ int cppc_get_auto_sel_caps(int cpunum, struct cppc_perf_caps *perf_caps)
+ {
+-	struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpunum);
+-	struct cpc_register_resource *auto_sel_reg;
+-	u64  auto_sel;
+-
+-	if (!cpc_desc) {
+-		pr_debug("No CPC descriptor for CPU:%d\n", cpunum);
+-		return -ENODEV;
+-	}
+-
+-	auto_sel_reg = &cpc_desc->cpc_regs[AUTO_SEL_ENABLE];
+-
+-	if (!CPC_SUPPORTED(auto_sel_reg))
+-		pr_warn_once("Autonomous mode is not unsupported!\n");
+-
+-	if (CPC_IN_PCC(auto_sel_reg)) {
+-		int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpunum);
+-		struct cppc_pcc_data *pcc_ss_data = NULL;
+-		int ret = 0;
+-
+-		if (pcc_ss_id < 0)
+-			return -ENODEV;
+-
+-		pcc_ss_data = pcc_data[pcc_ss_id];
+-
+-		down_write(&pcc_ss_data->pcc_lock);
+-
+-		if (send_pcc_cmd(pcc_ss_id, CMD_READ) >= 0) {
+-			cpc_read(cpunum, auto_sel_reg, &auto_sel);
+-			perf_caps->auto_sel = (bool)auto_sel;
+-		} else {
+-			ret = -EIO;
+-		}
+-
+-		up_write(&pcc_ss_data->pcc_lock);
++	u64 auto_sel;
++	int ret;
+ 
++	ret = cppc_get_reg_val(cpunum, AUTO_SEL_ENABLE, &auto_sel);
++	if (ret)
+ 		return ret;
+-	}
+ 
++	perf_caps->auto_sel = (bool)auto_sel;
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(cppc_get_auto_sel_caps);
+@@ -1663,43 +1633,7 @@ EXPORT_SYMBOL_GPL(cppc_get_auto_sel_caps);
+  */
+ int cppc_set_auto_sel(int cpu, bool enable)
+ {
+-	int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpu);
+-	struct cpc_register_resource *auto_sel_reg;
+-	struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpu);
+-	struct cppc_pcc_data *pcc_ss_data = NULL;
+-	int ret = -EINVAL;
+-
+-	if (!cpc_desc) {
+-		pr_debug("No CPC descriptor for CPU:%d\n", cpu);
+-		return -ENODEV;
+-	}
+-
+-	auto_sel_reg = &cpc_desc->cpc_regs[AUTO_SEL_ENABLE];
+-
+-	if (CPC_IN_PCC(auto_sel_reg)) {
+-		if (pcc_ss_id < 0) {
+-			pr_debug("Invalid pcc_ss_id\n");
+-			return -ENODEV;
+-		}
+-
+-		if (CPC_SUPPORTED(auto_sel_reg)) {
+-			ret = cpc_write(cpu, auto_sel_reg, enable);
+-			if (ret)
+-				return ret;
+-		}
+-
+-		pcc_ss_data = pcc_data[pcc_ss_id];
+-
+-		down_write(&pcc_ss_data->pcc_lock);
+-		/* after writing CPC, transfer the ownership of PCC to platform */
+-		ret = send_pcc_cmd(pcc_ss_id, CMD_WRITE);
+-		up_write(&pcc_ss_data->pcc_lock);
+-	} else {
+-		ret = -ENOTSUPP;
+-		pr_debug("_CPC in PCC is not supported\n");
+-	}
+-
+-	return ret;
++	return cppc_set_reg_val(cpu, AUTO_SEL_ENABLE, enable);
+ }
+ EXPORT_SYMBOL_GPL(cppc_set_auto_sel);
+ 
+@@ -1713,38 +1647,7 @@ EXPORT_SYMBOL_GPL(cppc_set_auto_sel);
+  */
+ int cppc_set_enable(int cpu, bool enable)
+ {
+-	int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpu);
+-	struct cpc_register_resource *enable_reg;
+-	struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpu);
+-	struct cppc_pcc_data *pcc_ss_data = NULL;
+-	int ret = -EINVAL;
+-
+-	if (!cpc_desc) {
+-		pr_debug("No CPC descriptor for CPU:%d\n", cpu);
+-		return -EINVAL;
+-	}
+-
+-	enable_reg = &cpc_desc->cpc_regs[ENABLE];
+-
+-	if (CPC_IN_PCC(enable_reg)) {
+-
+-		if (pcc_ss_id < 0)
+-			return -EIO;
+-
+-		ret = cpc_write(cpu, enable_reg, enable);
+-		if (ret)
+-			return ret;
+-
+-		pcc_ss_data = pcc_data[pcc_ss_id];
+-
+-		down_write(&pcc_ss_data->pcc_lock);
+-		/* after writing CPC, transfer the ownership of PCC to platfrom */
+-		ret = send_pcc_cmd(pcc_ss_id, CMD_WRITE);
+-		up_write(&pcc_ss_data->pcc_lock);
+-		return ret;
+-	}
+-
+-	return cpc_write(cpu, enable_reg, enable);
++	return cppc_set_reg_val(cpu, ENABLE, enable);
+ }
+ EXPORT_SYMBOL_GPL(cppc_set_enable);
+ 
 -- 
 2.33.0
 
