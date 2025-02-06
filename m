@@ -1,29 +1,29 @@
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 639CE233144
-	for <acpica-devel@lists.linux.dev>; Thu,  6 Feb 2025 13:14:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D76762451DA
+	for <acpica-devel@lists.linux.dev>; Thu,  6 Feb 2025 13:14:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738847679; cv=none; b=a5AhW1is7I6Ecv+tObFxjadr5CGFCuEy5xHDLBydEYQJA0XYzYrXIrqXDDQP3P1AT7boezb3oMZv2lEYTq86uFLUcZ6UShz+OHEInzOwCrXqoAOEU8Opfrk+LYQLi5Pb+3Ijn8eUdAfTsweZAIbC+C8axnyLurLE/xlNn79L5x8=
+	t=1738847684; cv=none; b=XZdNfOsBdmeIWw5iw1BpuqkDGx3QcvXuGk4HjG2zISdwOWPBDv7R/W9kDTloACbmGMgLCpkJ3Q2SDIde9EGK4ozFrme4yofUiCsTf+CEnjcreI27QAY2UeRqTa7PzeVicalyvSN4xM2OEsoGr89GqHZV5tYCHHHCzNkqHzlJdzU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738847679; c=relaxed/simple;
-	bh=DZ8UHcAeIDMcoJqsS0ZTJ6cc6M+v6or2qSsK+YheY1E=;
+	s=arc-20240116; t=1738847684; c=relaxed/simple;
+	bh=YuwtsskjQbXREf3umJAMaaR55thryRj0A/sPk/b4sds=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=SHuOxPAdwqsjD2xbMrGpDKmL7XyBCNyj9zSqtGIQmg6hG6kJn7MoVNItadQ3rkC4tuWLwMhb4ZA6tEX+TvWZJhx0Mocme5fTeh984mSylw13hIl3SBn5YHj4KBQhS0us8tw1UAcrKBQXn4SIkZf23Dz2egVvbY84mqMA03+FyTU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+	 MIME-Version:Content-Type; b=DIEsx7jURaMMZsD3dtvsfs9iFXZ2X6cvbvZirjy6Vm3g+ZQmlr2Q8V4hBT6okmcT4Ibc8COFjkU331TI3UkQ9UESYExuYa6N6deQeOJ+OQpmEk1fnR6zijJiynvcd+cpfR09tZnWYJxXWiY0Q/l8Xnc9U9Sj2EvEQzsq9Aw7lGM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Ypcv75c0gz22mWR;
-	Thu,  6 Feb 2025 21:11:47 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Ypcv61JwZzmZC0;
+	Thu,  6 Feb 2025 21:11:46 +0800 (CST)
 Received: from kwepemh100008.china.huawei.com (unknown [7.202.181.93])
-	by mail.maildlp.com (Postfix) with ESMTPS id 4203B140391;
-	Thu,  6 Feb 2025 21:14:34 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id D59C31400CA;
+	Thu,  6 Feb 2025 21:14:32 +0800 (CST)
 Received: from localhost.huawei.com (10.50.165.33) by
  kwepemh100008.china.huawei.com (7.202.181.93) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Thu, 6 Feb 2025 21:14:33 +0800
+ 15.2.1544.11; Thu, 6 Feb 2025 21:14:31 +0800
 From: Lifeng Zheng <zhenglifeng1@huawei.com>
 To: <rafael@kernel.org>, <lenb@kernel.org>, <robert.moore@intel.com>,
 	<viresh.kumar@linaro.org>, <mario.limonciello@amd.com>,
@@ -34,9 +34,9 @@ CC: <acpica-devel@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
 	<srinivas.pandruvada@linux.intel.com>, <jonathan.cameron@huawei.com>,
 	<zhanjie9@hisilicon.com>, <lihuisong@huawei.com>, <zhenglifeng1@huawei.com>,
 	<hepeng68@huawei.com>, <fanghao11@huawei.com>
-Subject: [PATCH v5 6/8] ACPI: CPPC: Modify cppc_get_auto_sel_caps() to cppc_get_auto_sel()
-Date: Thu, 6 Feb 2025 21:14:26 +0800
-Message-ID: <20250206131428.3261578-7-zhenglifeng1@huawei.com>
+Subject: [PATCH v5 4/8] ACPI: CPPC: Add cppc_set_reg_val()
+Date: Thu, 6 Feb 2025 21:14:24 +0800
+Message-ID: <20250206131428.3261578-5-zhenglifeng1@huawei.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20250206131428.3261578-1-zhenglifeng1@huawei.com>
 References: <20250206131428.3261578-1-zhenglifeng1@huawei.com>
@@ -51,100 +51,85 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
  kwepemh100008.china.huawei.com (7.202.181.93)
 
-Modify cppc_get_auto_sel_caps() to cppc_get_auto_sel(). Using a
-cppc_perf_caps to carry the value is unnecessary.
+Add cppc_set_reg_val() as a generic function for setting cppc registers
+value, with this features:
+
+1. Check register type. If a register is writeable, it must be a buffer.
+
+2. Check if the register is a optional and null one right after getting the
+register.  Because if so, the rest of the operations are meaningless.
+
+3. Extract the operations if register is in pcc out as
+cppc_set_reg_val_in_pcc().
+
+These functions can be used to reduce some existing code duplication.
 
 Signed-off-by: Lifeng Zheng <zhenglifeng1@huawei.com>
 ---
- drivers/acpi/cppc_acpi.c     | 15 ++++++++-------
- drivers/cpufreq/amd-pstate.c |  3 ++-
- include/acpi/cppc_acpi.h     |  6 +++---
- 3 files changed, 13 insertions(+), 11 deletions(-)
+ drivers/acpi/cppc_acpi.c | 50 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 50 insertions(+)
 
 diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-index c9fa5fdde7eb..e4c663000e40 100644
+index 3c9c4ce2a0b0..17558d2b5ae5 100644
 --- a/drivers/acpi/cppc_acpi.c
 +++ b/drivers/acpi/cppc_acpi.c
-@@ -1608,23 +1608,24 @@ int cppc_set_epp_perf(int cpu, struct cppc_perf_ctrls *perf_ctrls, bool enable)
- EXPORT_SYMBOL_GPL(cppc_set_epp_perf);
+@@ -1237,6 +1237,56 @@ static int cppc_get_reg_val(int cpu, enum cppc_regs reg_idx, u64 *val)
+ 	return cpc_read(cpu, reg, val);
+ }
  
- /**
-- * cppc_get_auto_sel_caps - Read autonomous selection register.
-- * @cpunum : CPU from which to read register.
-- * @perf_caps : struct where autonomous selection register value is updated.
-+ * cppc_get_auto_sel() - Read autonomous selection register.
-+ * @cpu: CPU from which to read register.
-+ * @enable: Return address.
-  */
--int cppc_get_auto_sel_caps(int cpunum, struct cppc_perf_caps *perf_caps)
-+int cppc_get_auto_sel(int cpu, bool *enable)
- {
- 	u64 auto_sel;
- 	int ret;
- 
--	ret = cppc_get_reg_val(cpunum, AUTO_SEL_ENABLE, &auto_sel);
-+	ret = cppc_get_reg_val(cpu, AUTO_SEL_ENABLE, &auto_sel);
- 	if (ret)
- 		return ret;
- 
--	perf_caps->auto_sel = (bool)auto_sel;
-+	*enable = (bool)auto_sel;
++static int cppc_set_reg_val_in_pcc(int cpu, struct cpc_register_resource *reg, u64 val)
++{
++	int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpu);
++	struct cppc_pcc_data *pcc_ss_data = NULL;
++	int ret;
 +
- 	return 0;
- }
--EXPORT_SYMBOL_GPL(cppc_get_auto_sel_caps);
-+EXPORT_SYMBOL_GPL(cppc_get_auto_sel);
- 
++	if (pcc_ss_id < 0) {
++		pr_debug("Invalid pcc_ss_id\n");
++		return -ENODEV;
++	}
++
++	ret = cpc_write(cpu, reg, val);
++	if (ret)
++		return ret;
++
++	pcc_ss_data = pcc_data[pcc_ss_id];
++
++	down_write(&pcc_ss_data->pcc_lock);
++	/* after writing CPC, transfer the ownership of PCC to platform */
++	ret = send_pcc_cmd(pcc_ss_id, CMD_WRITE);
++	up_write(&pcc_ss_data->pcc_lock);
++
++	return ret;
++}
++
++static int cppc_set_reg_val(int cpu, enum cppc_regs reg_idx, u64 val)
++{
++	struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpu);
++	struct cpc_register_resource *reg;
++
++	if (!cpc_desc) {
++		pr_debug("No CPC descriptor for CPU:%d\n", cpu);
++		return -ENODEV;
++	}
++
++	reg = &cpc_desc->cpc_regs[reg_idx];
++
++	/* if a register is writeable, it must be a buffer */
++	if ((reg->type != ACPI_TYPE_BUFFER) ||
++	    (IS_OPTIONAL_CPC_REG(reg_idx) && IS_NULL_REG(&reg->cpc_entry.reg))) {
++		pr_debug("CPC register (reg_idx=%d) is not supported\n", reg_idx);
++		return -EOPNOTSUPP;
++	}
++
++	if (CPC_IN_PCC(reg))
++		return cppc_set_reg_val_in_pcc(cpu, reg, val);
++
++	return cpc_write(cpu, reg, val);
++}
++
  /**
-  * cppc_set_auto_sel - Write autonomous selection register.
-diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
-index dd9b8d6993d6..d289edc851c0 100644
---- a/drivers/cpufreq/amd-pstate.c
-+++ b/drivers/cpufreq/amd-pstate.c
-@@ -436,6 +436,7 @@ static int shmem_init_perf(struct amd_cpudata *cpudata)
- {
- 	struct cppc_perf_caps cppc_perf;
- 	u64 numerator;
-+	bool auto_sel;
- 
- 	int ret = cppc_get_perf_caps(cpudata->cpu, &cppc_perf);
- 	if (ret)
-@@ -457,7 +458,7 @@ static int shmem_init_perf(struct amd_cpudata *cpudata)
- 	if (cppc_state == AMD_PSTATE_ACTIVE)
- 		return 0;
- 
--	ret = cppc_get_auto_sel_caps(cpudata->cpu, &cppc_perf);
-+	ret = cppc_get_auto_sel(cpudata->cpu, &auto_sel);
- 	if (ret) {
- 		pr_warn("failed to get auto_sel, ret: %d\n", ret);
- 		return 0;
-diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
-index 62d368bcd9ec..31767c65be20 100644
---- a/include/acpi/cppc_acpi.h
-+++ b/include/acpi/cppc_acpi.h
-@@ -159,7 +159,7 @@ extern int cpc_read_ffh(int cpunum, struct cpc_reg *reg, u64 *val);
- extern int cpc_write_ffh(int cpunum, struct cpc_reg *reg, u64 val);
- extern int cppc_get_epp_perf(int cpunum, u64 *epp_perf);
- extern int cppc_set_epp_perf(int cpu, struct cppc_perf_ctrls *perf_ctrls, bool enable);
--extern int cppc_get_auto_sel_caps(int cpunum, struct cppc_perf_caps *perf_caps);
-+extern int cppc_get_auto_sel(int cpu, bool *enable);
- extern int cppc_set_auto_sel(int cpu, bool enable);
- extern int amd_get_highest_perf(unsigned int cpu, u32 *highest_perf);
- extern int amd_get_boost_ratio_numerator(unsigned int cpu, u64 *numerator);
-@@ -229,11 +229,11 @@ static inline int cppc_get_epp_perf(int cpunum, u64 *epp_perf)
- {
- 	return -EOPNOTSUPP;
- }
--static inline int cppc_set_auto_sel(int cpu, bool enable)
-+static inline int cppc_get_auto_sel(int cpu, bool *enable)
- {
- 	return -EOPNOTSUPP;
- }
--static inline int cppc_get_auto_sel_caps(int cpunum, struct cppc_perf_caps *perf_caps)
-+static inline int cppc_set_auto_sel(int cpu, bool enable)
- {
- 	return -EOPNOTSUPP;
- }
+  * cppc_get_desired_perf - Get the desired performance register value.
+  * @cpunum: CPU from which to get desired performance.
 -- 
 2.33.0
 
