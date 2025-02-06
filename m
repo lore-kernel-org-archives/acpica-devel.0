@@ -1,29 +1,29 @@
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E322B235BFF
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D753232371
 	for <acpica-devel@lists.linux.dev>; Thu,  6 Feb 2025 13:14:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738847675; cv=none; b=F2ZkvPSnvn3RmUia5+DnKPyKpmvP++yruiy0CjuHp0ve2ECZS11ieaDn6e/bDfnBqCZu2vbgyrghNoccfOdiY5QL03HmW0nldxfm4a48BZ2JpFOF6hdWY3FK/NFgBDiHi8BAAuFzN45myMmSicFVhfOajqQ1TovfALJ1gX8r18U=
+	t=1738847676; cv=none; b=XzyDhJ8tJ2Rko5MktlJZatFMpqw7As3V11bXIW6GcMNgSUr/LLRuv9uq8vuoCiH5u7C4BvxxOH7mauuYAWgGMWqeNN6bpfwpeynqMb6tH5hi7OiY6tkSGYXM/RVMfP7FrBS09zQBXXOCQK1fzZaR0eZyGhMTiP2gCoyWv1s8zMM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738847675; c=relaxed/simple;
-	bh=oD4CNHGZFnu1bAbRywJFA78m65IicxF9IAjnEYV25Ic=;
+	s=arc-20240116; t=1738847676; c=relaxed/simple;
+	bh=RZnMzdulRLNgifHQdIHsKNjUzLRlnQNJ1xKNoq93Xno=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dsyWfHJL5wfGARysW7NUtA9bN6Wiycal3wRDxTVT0G+scNuUrDKtTD4u+3PgPjSFIs8gNGd1v0UZPVMJIEM0cIiKJlx/Cn+HgmTrvb/FlDY5u9eaRr04B0JPt1luLBMVfeURPDINFWXZmJIqNHqzAf98n82rP1Uc7UqQ5fbGWWU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+	 MIME-Version:Content-Type; b=lOf8iYUQjfx18+yVBq9hl1JjHENh3M5TOIzL3Qd0YhkUsAmMolmoboQ1syhXofT/38jxW7eDY5sMyYPmqcGM5wIgm6rrB1b7RfBdy+nD/QAeLVkGvDUJVB9DWr/FWZgNhhwSjRwqEOjx8jSS7qDf5W0yPWksvzNKEidrOJBQ3Cs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4YpcwR3V35zrRhk;
-	Thu,  6 Feb 2025 21:12:55 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4YpctJ3xFczbnny;
+	Thu,  6 Feb 2025 21:11:04 +0800 (CST)
 Received: from kwepemh100008.china.huawei.com (unknown [7.202.181.93])
-	by mail.maildlp.com (Postfix) with ESMTPS id 75DCF14034D;
-	Thu,  6 Feb 2025 21:14:31 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id BFAC6140383;
+	Thu,  6 Feb 2025 21:14:30 +0800 (CST)
 Received: from localhost.huawei.com (10.50.165.33) by
  kwepemh100008.china.huawei.com (7.202.181.93) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Thu, 6 Feb 2025 21:14:30 +0800
+ 15.2.1544.11; Thu, 6 Feb 2025 21:14:29 +0800
 From: Lifeng Zheng <zhenglifeng1@huawei.com>
 To: <rafael@kernel.org>, <lenb@kernel.org>, <robert.moore@intel.com>,
 	<viresh.kumar@linaro.org>, <mario.limonciello@amd.com>,
@@ -34,9 +34,9 @@ CC: <acpica-devel@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
 	<srinivas.pandruvada@linux.intel.com>, <jonathan.cameron@huawei.com>,
 	<zhanjie9@hisilicon.com>, <lihuisong@huawei.com>, <zhenglifeng1@huawei.com>,
 	<hepeng68@huawei.com>, <fanghao11@huawei.com>
-Subject: [PATCH v5 2/8] ACPI: CPPC: Optimize cppc_get_perf()
-Date: Thu, 6 Feb 2025 21:14:22 +0800
-Message-ID: <20250206131428.3261578-3-zhenglifeng1@huawei.com>
+Subject: [PATCH v5 1/8] ACPI: CPPC: Add IS_OPTIONAL_CPC_REG macro to judge if a cpc_reg is optional
+Date: Thu, 6 Feb 2025 21:14:21 +0800
+Message-ID: <20250206131428.3261578-2-zhenglifeng1@huawei.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20250206131428.3261578-1-zhenglifeng1@huawei.com>
 References: <20250206131428.3261578-1-zhenglifeng1@huawei.com>
@@ -51,68 +51,41 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
  kwepemh100008.china.huawei.com (7.202.181.93)
 
-Optimize cppc_get_perf() with three changes:
-
-1. Change the error kind to "no such device" when pcc_ss_id < 0, as other
-register value getting functions.
-
-2. Add a check to verify if the register is a mandatory or cpc supported
-one before using it.
-
-3. Return the result of cpc_read() instead of 0.
+In ACPI 6.5, s8.4.6.1 _CPC (Continuous Performance Control), whether each
+of the per-cpu cpc_regs[] is mendatory or optional is defined. Since the
+CPC_SUPPORTED() check is only for optional cpc field, another macro to
+check if the field is optional is needed.
 
 Signed-off-by: Lifeng Zheng <zhenglifeng1@huawei.com>
 ---
- drivers/acpi/cppc_acpi.c | 19 ++++++++++++-------
- 1 file changed, 12 insertions(+), 7 deletions(-)
+ drivers/acpi/cppc_acpi.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
 diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-index 39f019e265da..db22f8f107db 100644
+index f193e713825a..39f019e265da 100644
 --- a/drivers/acpi/cppc_acpi.c
 +++ b/drivers/acpi/cppc_acpi.c
-@@ -1201,20 +1201,27 @@ static int cppc_get_perf(int cpunum, enum cppc_regs reg_idx, u64 *perf)
- 
- 	reg = &cpc_desc->cpc_regs[reg_idx];
- 
-+	if (IS_OPTIONAL_CPC_REG(reg_idx) && !CPC_SUPPORTED(reg)) {
-+		pr_debug("CPC register (reg_idx=%d) is not supported\n", reg_idx);
-+		return -EOPNOTSUPP;
-+	}
+@@ -129,6 +129,20 @@ static DEFINE_PER_CPU(struct cpc_desc *, cpc_desc_ptr);
+ #define CPC_SUPPORTED(cpc) ((cpc)->type == ACPI_TYPE_INTEGER ?		\
+ 				!!(cpc)->cpc_entry.int_value :		\
+ 				!IS_NULL_REG(&(cpc)->cpc_entry.reg))
 +
- 	if (CPC_IN_PCC(reg)) {
- 		int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpunum);
- 		struct cppc_pcc_data *pcc_ss_data = NULL;
--		int ret = 0;
-+		int ret;
- 
--		if (pcc_ss_id < 0)
--			return -EIO;
-+		if (pcc_ss_id < 0) {
-+			pr_debug("Invalid pcc_ss_id\n");
-+			return -ENODEV;
-+		}
- 
- 		pcc_ss_data = pcc_data[pcc_ss_id];
- 
- 		down_write(&pcc_ss_data->pcc_lock);
- 
- 		if (send_pcc_cmd(pcc_ss_id, CMD_READ) >= 0)
--			cpc_read(cpunum, reg, perf);
-+			ret = cpc_read(cpunum, reg, perf);
- 		else
- 			ret = -EIO;
- 
-@@ -1223,9 +1230,7 @@ static int cppc_get_perf(int cpunum, enum cppc_regs reg_idx, u64 *perf)
- 		return ret;
- 	}
- 
--	cpc_read(cpunum, reg, perf);
--
--	return 0;
-+	return cpc_read(cpunum, reg, perf);
- }
- 
- /**
++/*
++ * Each bit indicates the optionality of the register in per-cpu
++ * cpc_regs[] with the corresponding index. 0 means mandatory and 1
++ * means optional.
++ */
++#define REG_OPTIONAL (0x1FC7D0)
++
++/*
++ * Use the index of the register in per-cpu cpc_regs[] to check if
++ * it's an optional one.
++ */
++#define IS_OPTIONAL_CPC_REG(reg_idx) (REG_OPTIONAL & (1U << (reg_idx)))
++
+ /*
+  * Arbitrary Retries in case the remote processor is slow to respond
+  * to PCC commands. Keeping it high enough to cover emulators where
 -- 
 2.33.0
 
