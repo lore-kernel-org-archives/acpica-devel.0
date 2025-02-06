@@ -1,29 +1,29 @@
 Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D362235C0D
-	for <acpica-devel@lists.linux.dev>; Thu,  6 Feb 2025 13:14:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17B82236A99
+	for <acpica-devel@lists.linux.dev>; Thu,  6 Feb 2025 13:14:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738847678; cv=none; b=eqWMDpPJDaZrakdvOF3L/dparsgXa6pO8P/7vyTOMKH8K//yjwAQV/iJUqCGJZ+U/YeLefR2mTqikMI2nZCSiPdebpMPRvOG93SvBaM9I6/CMqXJGs1ZvuUtSsvi1T0haJNxnVIZjZqs7Gn8poRr4pcPmes3dV/u3nyhb7CMEKA=
+	t=1738847679; cv=none; b=DXZZN/dRcL5AOQn4tVARhkiKF4vZ5P4MgyAY7dXzsT1W/tAwLOtJ2eVR3O/DqzPcctqRD+XYS5AlgQdkGmgTFzOaxFq25m1JAHKogFH763PbLl03o0zc4rXleNqaXz0zDH3U1TXZvEHJL3niG2heu39sFCTBnhyUe5IwtwsgAXM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738847678; c=relaxed/simple;
-	bh=LFINFwZDTcrxNkgzrOQp7NsOqsxtGzH4BfLLw8dn9m8=;
+	s=arc-20240116; t=1738847679; c=relaxed/simple;
+	bh=5ctVPrKhJOZudjG64Xr3iyO4rI/3R7iXk5XHAk/qeHw=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JfPMgRfUnAlrRU/6hHT8fgmKLiWWCML5CQX7t2ZUfWFuBiOO/3+S6NCHD5plhocgksJr+9YJC4Z7MIEfyzR5/tbVXGa1JhHHsjeYmKzJ6N/c+kqHfSX2pDYYSAzr/ly6HLe6uQvLe/nHXSgjsiSqASsCDopmElqrw8LG6FA5qWE=
+	 MIME-Version:Content-Type; b=tyPKIYwT5xEJTlsuTTDWnmU9BIrtuutt4/U5993oBlnf+DCb2XjYfHcndmwag3RJMbTbcvAlgEc540yU6lPGiucbRybgIUqEQttAf5o8NomSBUfUxoObWO3l3r8KoZh8RIPBIITft7mVOWnpNHYo2g36n8kahVynmfiHT4Wj4FM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Ypct51Y3sz1V65F;
-	Thu,  6 Feb 2025 21:10:53 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Ypct80FZkz1V5xD;
+	Thu,  6 Feb 2025 21:10:56 +0800 (CST)
 Received: from kwepemh100008.china.huawei.com (unknown [7.202.181.93])
-	by mail.maildlp.com (Postfix) with ESMTPS id 2ACC91A016C;
-	Thu,  6 Feb 2025 21:14:32 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id F26BB1402CF;
+	Thu,  6 Feb 2025 21:14:34 +0800 (CST)
 Received: from localhost.huawei.com (10.50.165.33) by
  kwepemh100008.china.huawei.com (7.202.181.93) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Thu, 6 Feb 2025 21:14:31 +0800
+ 15.2.1544.11; Thu, 6 Feb 2025 21:14:34 +0800
 From: Lifeng Zheng <zhenglifeng1@huawei.com>
 To: <rafael@kernel.org>, <lenb@kernel.org>, <robert.moore@intel.com>,
 	<viresh.kumar@linaro.org>, <mario.limonciello@amd.com>,
@@ -34,9 +34,9 @@ CC: <acpica-devel@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
 	<srinivas.pandruvada@linux.intel.com>, <jonathan.cameron@huawei.com>,
 	<zhanjie9@hisilicon.com>, <lihuisong@huawei.com>, <zhenglifeng1@huawei.com>,
 	<hepeng68@huawei.com>, <fanghao11@huawei.com>
-Subject: [PATCH v5 3/8] ACPI: CPPC: Rename cppc_get_perf() to cppc_get_reg_val()
-Date: Thu, 6 Feb 2025 21:14:23 +0800
-Message-ID: <20250206131428.3261578-4-zhenglifeng1@huawei.com>
+Subject: [PATCH v5 7/8] ACPI: CPPC: Add three functions related to autonomous selection
+Date: Thu, 6 Feb 2025 21:14:27 +0800
+Message-ID: <20250206131428.3261578-8-zhenglifeng1@huawei.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20250206131428.3261578-1-zhenglifeng1@huawei.com>
 References: <20250206131428.3261578-1-zhenglifeng1@huawei.com>
@@ -51,135 +51,161 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
  kwepemh100008.china.huawei.com (7.202.181.93)
 
-Rename cppc_get_perf() to cppc_get_reg_val() as a generic function to read
-cppc registers. And extract the operations if register is in pcc out as
-cppc_get_reg_val_in_pcc(). Without functional change.
+cppc_set_epp - write energy performance preference register value, based on
+ACPI 6.5, s8.4.6.1.7
+
+cppc_get_auto_act_window - read autonomous activity window register value,
+based on ACPI 6.5, s8.4.6.1.6
+
+cppc_set_auto_act_window - write autonomous activity window register value,
+based on ACPI 6.5, s8.4.6.1.6
 
 Signed-off-by: Lifeng Zheng <zhenglifeng1@huawei.com>
 ---
- drivers/acpi/cppc_acpi.c | 66 +++++++++++++++++++++-------------------
- 1 file changed, 35 insertions(+), 31 deletions(-)
+ drivers/acpi/cppc_acpi.c | 80 ++++++++++++++++++++++++++++++++++++++++
+ include/acpi/cppc_acpi.h | 24 ++++++++++++
+ 2 files changed, 104 insertions(+)
 
 diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-index db22f8f107db..3c9c4ce2a0b0 100644
+index e4c663000e40..a075eaa83d6c 100644
 --- a/drivers/acpi/cppc_acpi.c
 +++ b/drivers/acpi/cppc_acpi.c
-@@ -1189,48 +1189,52 @@ static int cpc_write(int cpu, struct cpc_register_resource *reg_res, u64 val)
- 	return ret_val;
+@@ -1607,6 +1607,86 @@ int cppc_set_epp_perf(int cpu, struct cppc_perf_ctrls *perf_ctrls, bool enable)
  }
+ EXPORT_SYMBOL_GPL(cppc_set_epp_perf);
  
--static int cppc_get_perf(int cpunum, enum cppc_regs reg_idx, u64 *perf)
-+static int cppc_get_reg_val_in_pcc(int cpu, struct cpc_register_resource *reg, u64 *val)
- {
--	struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpunum);
--	struct cpc_register_resource *reg;
-+	int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpu);
-+	struct cppc_pcc_data *pcc_ss_data = NULL;
-+	int ret;
- 
--	if (!cpc_desc) {
--		pr_debug("No CPC descriptor for CPU:%d\n", cpunum);
-+	if (pcc_ss_id < 0) {
-+		pr_debug("Invalid pcc_ss_id\n");
- 		return -ENODEV;
- 	}
- 
--	reg = &cpc_desc->cpc_regs[reg_idx];
-+	pcc_ss_data = pcc_data[pcc_ss_id];
- 
--	if (IS_OPTIONAL_CPC_REG(reg_idx) && !CPC_SUPPORTED(reg)) {
--		pr_debug("CPC register (reg_idx=%d) is not supported\n", reg_idx);
--		return -EOPNOTSUPP;
--	}
-+	down_write(&pcc_ss_data->pcc_lock);
- 
--	if (CPC_IN_PCC(reg)) {
--		int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpunum);
--		struct cppc_pcc_data *pcc_ss_data = NULL;
--		int ret;
-+	if (send_pcc_cmd(pcc_ss_id, CMD_READ) >= 0)
-+		ret = cpc_read(cpu, reg, val);
-+	else
-+		ret = -EIO;
- 
--		if (pcc_ss_id < 0) {
--			pr_debug("Invalid pcc_ss_id\n");
--			return -ENODEV;
--		}
-+	up_write(&pcc_ss_data->pcc_lock);
- 
--		pcc_ss_data = pcc_data[pcc_ss_id];
-+	return ret;
-+}
- 
--		down_write(&pcc_ss_data->pcc_lock);
-+static int cppc_get_reg_val(int cpu, enum cppc_regs reg_idx, u64 *val)
++/**
++ * cppc_set_epp() - Write the EPP register.
++ * @cpu: CPU on which to write register.
++ * @epp_val: Value to write to the EPP register.
++ */
++int cppc_set_epp(int cpu, u64 epp_val)
 +{
-+	struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpu);
-+	struct cpc_register_resource *reg;
- 
--		if (send_pcc_cmd(pcc_ss_id, CMD_READ) >= 0)
--			ret = cpc_read(cpunum, reg, perf);
--		else
--			ret = -EIO;
-+	if (!cpc_desc) {
-+		pr_debug("No CPC descriptor for CPU:%d\n", cpu);
-+		return -ENODEV;
-+	}
- 
--		up_write(&pcc_ss_data->pcc_lock);
-+	reg = &cpc_desc->cpc_regs[reg_idx];
- 
--		return ret;
-+	if (IS_OPTIONAL_CPC_REG(reg_idx) && !CPC_SUPPORTED(reg)) {
-+		pr_debug("CPC register (reg_idx=%d) is not supported\n", reg_idx);
-+		return -EOPNOTSUPP;
- 	}
- 
--	return cpc_read(cpunum, reg, perf);
-+	if (CPC_IN_PCC(reg))
-+		return cppc_get_reg_val_in_pcc(cpu, reg, val);
++	if (epp_val > CPPC_ENERGY_PERF_MAX)
++		return -EINVAL;
 +
-+	return cpc_read(cpu, reg, val);
- }
- 
++	return cppc_set_reg_val(cpu, ENERGY_PERF, epp_val);
++}
++EXPORT_SYMBOL_GPL(cppc_set_epp);
++
++/**
++ * cppc_get_auto_act_window() - Read autonomous activity window register.
++ * @cpu: CPU from which to read register.
++ * @auto_act_window: Return address.
++ *
++ * According to ACPI 6.5, s8.4.6.1.6, the value read from the autonomous
++ * activity window register consists of two parts: a 7 bits value indicate
++ * significand and a 3 bits value indicate exponent.
++ */
++int cppc_get_auto_act_window(int cpu, u64 *auto_act_window)
++{
++	unsigned int exp;
++	u64 val, sig;
++	int ret;
++
++	ret = cppc_get_reg_val(cpu, AUTO_ACT_WINDOW, &val);
++	if (ret)
++		return ret;
++
++	sig = val & CPPC_AUTO_ACT_WINDOW_MAX_SIG;
++	exp = (val >> CPPC_AUTO_ACT_WINDOW_SIG_BIT_SIZE) & CPPC_AUTO_ACT_WINDOW_MAX_EXP;
++	*auto_act_window = sig * int_pow(10, exp);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(cppc_get_auto_act_window);
++
++/**
++ * cppc_set_auto_act_window() - Write autonomous activity window register.
++ * @cpu: CPU on which to write register.
++ * @auto_act_window: usec value to write to the autonomous activity window register.
++ *
++ * According to ACPI 6.5, s8.4.6.1.6, the value to write to the autonomous
++ * activity window register consists of two parts: a 7 bits value indicate
++ * significand and a 3 bits value indicate exponent.
++ */
++int cppc_set_auto_act_window(int cpu, u64 auto_act_window)
++{
++	/* The max value to stroe is 1270000000 */
++	u64 max_val = CPPC_AUTO_ACT_WINDOW_MAX_SIG * int_pow(10, CPPC_AUTO_ACT_WINDOW_MAX_EXP);
++	int exp = 0;
++	u64 val;
++
++	if (auto_act_window > max_val)
++		return -EINVAL;
++
++	/*
++	 * The max significand is 127, when auto_act_window is larger than
++	 * 129, discard the precision of the last digit and increase the
++	 * exponent by 1.
++	 */
++	while (auto_act_window > CPPC_AUTO_ACT_WINDOW_SIG_CARRY_THRESH) {
++		auto_act_window /= 10;
++		exp += 1;
++	}
++
++	/* For 128 and 129, cut it to 127. */
++	if (auto_act_window > CPPC_AUTO_ACT_WINDOW_MAX_SIG)
++		auto_act_window = CPPC_AUTO_ACT_WINDOW_MAX_SIG;
++
++	val = (exp << CPPC_AUTO_ACT_WINDOW_SIG_BIT_SIZE) + auto_act_window;
++
++	return cppc_set_reg_val(cpu, AUTO_ACT_WINDOW, val);
++}
++EXPORT_SYMBOL_GPL(cppc_set_auto_act_window);
++
  /**
-@@ -1242,7 +1246,7 @@ static int cppc_get_perf(int cpunum, enum cppc_regs reg_idx, u64 *perf)
-  */
- int cppc_get_desired_perf(int cpunum, u64 *desired_perf)
- {
--	return cppc_get_perf(cpunum, DESIRED_PERF, desired_perf);
-+	return cppc_get_reg_val(cpunum, DESIRED_PERF, desired_perf);
- }
- EXPORT_SYMBOL_GPL(cppc_get_desired_perf);
+  * cppc_get_auto_sel() - Read autonomous selection register.
+  * @cpu: CPU from which to read register.
+diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
+index 31767c65be20..325e9543e08f 100644
+--- a/include/acpi/cppc_acpi.h
++++ b/include/acpi/cppc_acpi.h
+@@ -32,6 +32,15 @@
+ #define	CMD_READ 0
+ #define	CMD_WRITE 1
  
-@@ -1255,7 +1259,7 @@ EXPORT_SYMBOL_GPL(cppc_get_desired_perf);
-  */
- int cppc_get_nominal_perf(int cpunum, u64 *nominal_perf)
++#define CPPC_AUTO_ACT_WINDOW_SIG_BIT_SIZE	(7)
++#define CPPC_AUTO_ACT_WINDOW_EXP_BIT_SIZE	(3)
++#define CPPC_AUTO_ACT_WINDOW_MAX_SIG	((1 << CPPC_AUTO_ACT_WINDOW_SIG_BIT_SIZE) - 1)
++#define CPPC_AUTO_ACT_WINDOW_MAX_EXP	((1 << CPPC_AUTO_ACT_WINDOW_EXP_BIT_SIZE) - 1)
++/* CPPC_AUTO_ACT_WINDOW_MAX_SIG is 127, so 128 and 129 will decay to 127 when writing */
++#define CPPC_AUTO_ACT_WINDOW_SIG_CARRY_THRESH 129
++
++#define CPPC_ENERGY_PERF_MAX	(0xFF)
++
+ /* Each register has the folowing format. */
+ struct cpc_reg {
+ 	u8 descriptor;
+@@ -159,6 +168,9 @@ extern int cpc_read_ffh(int cpunum, struct cpc_reg *reg, u64 *val);
+ extern int cpc_write_ffh(int cpunum, struct cpc_reg *reg, u64 val);
+ extern int cppc_get_epp_perf(int cpunum, u64 *epp_perf);
+ extern int cppc_set_epp_perf(int cpu, struct cppc_perf_ctrls *perf_ctrls, bool enable);
++extern int cppc_set_epp(int cpu, u64 epp_val);
++extern int cppc_get_auto_act_window(int cpu, u64 *auto_act_window);
++extern int cppc_set_auto_act_window(int cpu, u64 auto_act_window);
+ extern int cppc_get_auto_sel(int cpu, bool *enable);
+ extern int cppc_set_auto_sel(int cpu, bool enable);
+ extern int amd_get_highest_perf(unsigned int cpu, u32 *highest_perf);
+@@ -229,6 +241,18 @@ static inline int cppc_get_epp_perf(int cpunum, u64 *epp_perf)
  {
--	return cppc_get_perf(cpunum, NOMINAL_PERF, nominal_perf);
-+	return cppc_get_reg_val(cpunum, NOMINAL_PERF, nominal_perf);
+ 	return -EOPNOTSUPP;
  }
- 
- /**
-@@ -1267,7 +1271,7 @@ int cppc_get_nominal_perf(int cpunum, u64 *nominal_perf)
-  */
- int cppc_get_highest_perf(int cpunum, u64 *highest_perf)
++static inline int cppc_set_epp(int cpu, u64 epp_val)
++{
++	return -EOPNOTSUPP;
++}
++static inline int cppc_get_auto_act_window(int cpu, u64 *auto_act_window)
++{
++	return -EOPNOTSUPP;
++}
++static inline int cppc_set_auto_act_window(int cpu, u64 auto_act_window)
++{
++	return -EOPNOTSUPP;
++}
+ static inline int cppc_get_auto_sel(int cpu, bool *enable)
  {
--	return cppc_get_perf(cpunum, HIGHEST_PERF, highest_perf);
-+	return cppc_get_reg_val(cpunum, HIGHEST_PERF, highest_perf);
- }
- EXPORT_SYMBOL_GPL(cppc_get_highest_perf);
- 
-@@ -1280,7 +1284,7 @@ EXPORT_SYMBOL_GPL(cppc_get_highest_perf);
-  */
- int cppc_get_epp_perf(int cpunum, u64 *epp_perf)
- {
--	return cppc_get_perf(cpunum, ENERGY_PERF, epp_perf);
-+	return cppc_get_reg_val(cpunum, ENERGY_PERF, epp_perf);
- }
- EXPORT_SYMBOL_GPL(cppc_get_epp_perf);
- 
+ 	return -EOPNOTSUPP;
 -- 
 2.33.0
 
