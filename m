@@ -1,170 +1,163 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 938711F417C
-	for <acpica-devel@lists.linux.dev>; Tue, 11 Feb 2025 12:16:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 713591FCFF3
+	for <acpica-devel@lists.linux.dev>; Tue, 11 Feb 2025 13:08:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739276179; cv=none; b=BQwzJxKBuElMO/wKlRcUhAA8lPhq4JTM+7Zrzs0FDhezFLvR0E5JPG2Dx7WIxGNqwyWax5HeMmjjnuZX87iLaPkXBxf98QeMdzey5KBhdCddC1q6goWCSIG3v/1mjLKamqNCAv6zht6DEJ/Ud4h1G3CdjzJ0sN3w0rYAIr/6gZE=
+	t=1739279299; cv=none; b=LApEBUt+bUoKaeh0heRNnuTiFholEticNrn6gHG/ZD0sed6CyukmeQ4wsYmeUCsuxmZj2OOgLqDQJmvmzB+7yChWnupgrkRLhHlmNB9lQyjvKcpFFFKuN+loEqShzGJl0iKAf4/sh/Y2la/et4riUhjs5V/O3f5uMmQbaAa0oiI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739276179; c=relaxed/simple;
-	bh=MU6yp0uVmHSvhlg0eZOaCvSj/yEbYjzcgmlHVf6TAE0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=flbn+2Rn2hH8RZv4AntBAkXpN51B+MjqcqEIrAA0N0Tec6nNqq7ow/tLgZ9+BzyNyWYw03ptLhDUuTu6JbM0A8yJEB/fMgug16kUqjr18mDYsf6RCVEGAGVPsYm6EDpAnfnOWJxCpaapiH6Du/9iDb1QmebeYV8eEtLaH90CsvI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eAoTaa7N; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1739279299; c=relaxed/simple;
+	bh=/RWwDCgWIvfRxCBNDmFnORoLKXqc+sVPbPIATI7AWBo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UWLbDkNvCQOBWCVdKaZZx3ExQ93i7Fwy+CvO7sP229pEs6pOKGS2pFIxFCnKNNIl0FCCWThOAdsRoS83bqrz2EFoavSKWxtb/WULAVk9HulQvSNbMtFmGOFD9a7q+o5bk/DXz4s70Kbprvi0S7iKbbhK5af5kQZ+tw/HylMProU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hbrvKE0N; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eAoTaa7N"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 113A7C4CEEA
-	for <acpica-devel@lists.linux.dev>; Tue, 11 Feb 2025 12:16:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739276179;
-	bh=MU6yp0uVmHSvhlg0eZOaCvSj/yEbYjzcgmlHVf6TAE0=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=eAoTaa7NpghysdEQG4MMv0SDnRMaNQBLGa7NyXfp9se9d0eqG6CdXeO1y7ZYeID3b
-	 rrWUmsT2r1vfw1movEBJQ2Axiwsfi1sORJ1W7W9sXeA+TePVLh+BRezSL/8sx05nI3
-	 wcjozpOiETE+9guc4FjwYcmWFsL6ud4/hyTnNez6WgD/1Tf5gTf8XkA08a5lIKhi73
-	 eifMEB5PmIliZqJbaUqvaRRTAqdjCxbOUCWfuVFLTvE4IL6PRCsENwFXfrDSJ+SDiy
-	 aOpBU2jKo+ecTPC+D6Y9qyqMdeo8PgL+vHQtYiPY0UREbTdL8MRoWh7o4ut63EA+2E
-	 P0zAmwaQh85Vg==
-Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-5f88b61399dso3235155eaf.1
-        for <acpica-devel@lists.linux.dev>; Tue, 11 Feb 2025 04:16:18 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCX7z/gytWDELgwfoRBsfSAbL3tJLLUlWpiau7yrWw6cwHTaIw0NZrZJNTf8Ti6afkPasp8fH9nCNNxrIg0=@lists.linux.dev
-X-Gm-Message-State: AOJu0YxSNAFUPiqQECbvlyaKkPAtX04rziVIziv3mQEMvMhauU2kouwc
-	L/ByV8/9FtQtQrGkNTWeDjdl4QBS/H7SjygDalHKDFlxpN6XbQ9qn2DMfteM6UzqJXfUaWvzW9R
-	trlANBHDyNSTXpc8he6d++5trJMM=
-X-Google-Smtp-Source: AGHT+IFEzSXnaFW3fXpl8HEm6wmuusCX522zCeoYDCQQ9T2IkFUiDR3+WnRuNEqVE8qBh5Gv74Fj17wD41RMNi2l2ic=
-X-Received: by 2002:a05:6870:2253:b0:297:683:8b5b with SMTP id
- 586e51a60fabf-2b8b6e3082amr1999660fac.10.1739276178243; Tue, 11 Feb 2025
- 04:16:18 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hbrvKE0N"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1739279296;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=KTxPyDdb2wxiihdhjpasEWTWWdsjHn10mmqL0GFzWvs=;
+	b=hbrvKE0NjMT8OYu5zFJw99+3QAqbJEeS2lVOiBwz7GEeIiPYzuct/LjJ3f9bPgpUknELBG
+	9lmbeB12nYEwV1G+TFLFI2rje2OFf3TY2f5Q66sxeF6oRO+FPrIbux2uDRO7Rw5OeTX4Bd
+	8dzRWw3WhrIqYhdGD6T6C1qlSee+9hM=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-625-KHZVIZ_iMfymCi8xPXCUKg-1; Tue, 11 Feb 2025 08:08:15 -0500
+X-MC-Unique: KHZVIZ_iMfymCi8xPXCUKg-1
+X-Mimecast-MFC-AGG-ID: KHZVIZ_iMfymCi8xPXCUKg
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-43935bcec79so13058275e9.3
+        for <acpica-devel@lists.linux.dev>; Tue, 11 Feb 2025 05:08:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739279294; x=1739884094;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=KTxPyDdb2wxiihdhjpasEWTWWdsjHn10mmqL0GFzWvs=;
+        b=tcSTCGGkMpeyn7MbOjOHWgbmtpleEZeSdSK/8SNlcMUg4MmEUhWr6VzWekVBHuBeKr
+         oh1/1caX31VCV1o1H4YUxju33N2yX2nvH443K4hb04QCzfVMpJHcNu8wOPm1SX7zL3ph
+         JS0tsdFPKeOIpy8hzPib1ueY7miR2aJaZjSVH0/eXCX+ACeF4mctDLcQoC5lSGCJVzt3
+         0odZnM3763ZG33JB/v76/atTkN0aD3ny3WpF1MVqHV6GboigalO682s6AVH/mw5thXWh
+         2GId/dyampnegH4r/D7BcOhtF4rTfA4c1oSyyJoLhGChCVOPgHZ0029qqTXStg/dMx+6
+         hP1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXTChOF+xpMnYfyaJRuFJVU2nw+6i/giBUQYc5/hue7eGRa7sT2mDq+s/9D25JTky/7w9JwHaNHqFQuBNE=@lists.linux.dev
+X-Gm-Message-State: AOJu0YzxiDwuQk+6CcIsT78mHTxTdshqMGDsBb5R9Cw3BvxJk4wlNXnA
+	nGbVIxnTPr1X39PK3Cw7l66zbEolMQdrWeYSbjOkFhRtHsjgbvICSjpV1XDVN1UZE4uOObAl8/q
+	64MDQiQEtEY6KJqcw4mugPgZoy/2opXRijZ9Dy2QVFKN7yNATT35jxubGsjT9ew==
+X-Gm-Gg: ASbGncsOW+r+IxtXsDQdDI+QTM8+SeV9k1q+TxYZz8QzsrLr9oxEe5Dwzg46RMi7PsM
+	v7pxk0ePZQUkgXa4BAUB6L5BPgUCQydQEPcSzSJoxLOQYBaa2N74RG/cXBvKebqU5Za9Cu9yb5T
+	cc9/2p3qeujPv6v5z6vRnlHPJZfBNfrmu2jEK2boAL/AvtrMorTU1Co7z8bV4bYn1qNB/7LYlLU
+	q+KjDYZcuIhNeGXMtC5D1t2gTMC0snTgXngF7zr3GLmMIV2g9+rgw86miFDMM8n+yKrFNqua2jp
+	Rk7YkJRAyUNKaW9lifxebRYPNdRWA89ES0N7pME=
+X-Received: by 2002:a05:600c:3b1c:b0:439:488b:985d with SMTP id 5b1f17b1804b1-439488b9a27mr60819785e9.4.1739279293915;
+        Tue, 11 Feb 2025 05:08:13 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHf/drif5hPNe2I0N6R4vROc+jEbwvVIvaQdzsYekSKWtj0FR4Mu+MdWbvn9S9v4+doZaSkgA==
+X-Received: by 2002:a05:600c:3b1c:b0:439:488b:985d with SMTP id 5b1f17b1804b1-439488b9a27mr60819475e9.4.1739279293603;
+        Tue, 11 Feb 2025 05:08:13 -0800 (PST)
+Received: from ?IPV6:2a09:80c0:192:0:5dac:bf3d:c41:c3e7? ([2a09:80c0:192:0:5dac:bf3d:c41:c3e7])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4391da96502sm180879475e9.1.2025.02.11.05.08.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 Feb 2025 05:08:12 -0800 (PST)
+Message-ID: <f26fd867-d348-40cf-ac55-023ac814cc50@redhat.com>
+Date: Tue, 11 Feb 2025 14:08:11 +0100
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20250210211223.6139-1-tony.luck@intel.com> <20250210211223.6139-2-tony.luck@intel.com>
-In-Reply-To: <20250210211223.6139-2-tony.luck@intel.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Tue, 11 Feb 2025 13:16:05 +0100
-X-Gmail-Original-Message-ID: <CAJZ5v0gfeiHOVzi=YLJivuc7yt=1Rmbo6u759B0=xp_hTOAjXg@mail.gmail.com>
-X-Gm-Features: AWEUYZmd-8dXPwgv8smRTbZJNEbp_Na1VjY_SDkiWWFBKIWRdRIJqCE5PVkTers
-Message-ID: <CAJZ5v0gfeiHOVzi=YLJivuc7yt=1Rmbo6u759B0=xp_hTOAjXg@mail.gmail.com>
-Subject: Re: [PATCH 1/4] ACPICA: Define MRRM ACPI table
-To: Tony Luck <tony.luck@intel.com>
-Cc: Robert Moore <robert.moore@intel.com>, 
-	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org, 
-	acpica-devel@lists.linux.dev, Thomas Gleixner <tglx@linutronix.de>, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, David Hildenbrand <david@redhat.com>, Oscar Salvador <osalvador@suse.de>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Danilo Krummrich <dakr@kernel.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
-	Fenghua Yu <fenghua.yu@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/4] ACPI/MRRM: Create /sys/devices/system/memory/rangeX
+ ABI
+To: Tony Luck <tony.luck@intel.com>, Robert Moore <robert.moore@intel.com>,
+ "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Len Brown <lenb@kernel.org>
+Cc: linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+ Oscar Salvador <osalvador@suse.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Danilo Krummrich <dakr@kernel.org>, Andrew Morton
+ <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org
+References: <20250210211223.6139-1-tony.luck@intel.com>
+ <20250210211223.6139-3-tony.luck@intel.com>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20250210211223.6139-3-tony.luck@intel.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: 1_F9iHTdNPQEBGi1JWJmAhhkv2bRYKJ2Fs2GWtjNeec_1739279294
+X-Mimecast-Originator: redhat.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Feb 10, 2025 at 10:12=E2=80=AFPM Tony Luck <tony.luck@intel.com> wr=
-ote:
->
-> From: Fenghua Yu <fenghua.yu@intel.com>
->
-> The MRRM table describes association between physical address ranges
-> and "region numbers". This is used by:
->
-> 1) The /sys/fs/resctrl filesystem to report memory traffic per-RMID for
-> each region.
-> 2) Perf subsystem to report memory related uncore events per region.
->
-> Structure defined in the Intel Resource Director Technology (RDT)
-> Architecture specification downloadable from www.intel.com/sdm
->
-> Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
-> Signed-off-by: Tony Luck <tony.luck@intel.com>
+On 10.02.25 22:12, Tony Luck wrote:
+> Perf and resctrl users need an enumeration of which memory addresses
+> are bound to which "region" tag.
+> 
+> Parse the ACPI MRRM table and add /sys entries for each memory range
+> describing base address, length, and which region tags apply for
+> same-socket and cross-socket access.
 
-So the process for ACPICA changes is that they first need to go into
-the upstream ACPICA project on GitHub.
+How does an example in /sys/devices/system/memory/ look like later?
 
-Once merged there, you can submit a corresponding Linux patch pointing
-to the upstream commit, but submitting it is not mandatory because
-upstream material lands in the Linux kernel eventually automatically.
+ From a quick glimpse, I am not sure if this really belongs into 
+/sys/devices/system/memory/, but I am missing some information in cover 
+letter / patch.
 
-> ---
->  include/acpi/actbl3.h | 40 ++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 40 insertions(+)
->
-> diff --git a/include/acpi/actbl3.h b/include/acpi/actbl3.h
-> index 5cd755143b7d..1b9a03ff73ba 100644
-> --- a/include/acpi/actbl3.h
-> +++ b/include/acpi/actbl3.h
-> @@ -42,6 +42,7 @@
->  #define ACPI_SIG_WSMT           "WSMT" /* Windows SMM Security Mitigatio=
-ns Table */
->  #define ACPI_SIG_XENV           "XENV" /* Xen Environment table */
->  #define ACPI_SIG_XXXX           "XXXX" /* Intermediate AML header for AS=
-L/ASL+ converter */
-> +#define ACPI_SIG_MRRM           "MRRM" /* Memory Range and Region Mappin=
-g table */
->
->  /*
->   * All tables must be byte-packed to match the ACPI specification, since
-> @@ -793,6 +794,45 @@ struct acpi_table_xenv {
->         u8 event_flags;
->  };
->
-> +/***********************************************************************=
-********
-> + *
-> + * MRRM - Memory Range and Region Mapping (MRRM) table
-> + *
-> + ***********************************************************************=
-*******/
-> +
-> +struct acpi_table_mrrm {
-> +       struct acpi_table_header header;
-> +       u8 max_mem_region;      /* Max Memory Regions supported */
-> +       u8 flags;               /* Region assignment type */
-> +       u8 reserved[26];
-> +       /* Memory range entry array */
-> +};
-> +#define ACPI_MRRM_FLAGS_REGION_ASSIGNMENT_OS   (1<<0)
-> +
-> +/***********************************************************************=
-********
-> + *
-> + * Memory Range entry - Memory Range entry in MRRM table
-> + *
-> + ***********************************************************************=
-*******/
-> +
-> +struct acpi_table_mrrm_mem_range_entry {
-> +       u16 type;               /* Type 0=3D"MRRM" */
-> +       u16 length;             /* 32B + sizeof(Region-ID Programming Reg=
-[]) */
-> +       u32 reserved;           /* Reserved */
-> +       u32 base_addr_low;      /* Low 32 bits of base addr of the mem ra=
-nge */
-> +       u32 base_addr_high;     /* High 32 bits of base addr of the mem r=
-ange */
-> +       u32 len_low;            /* Low 32 bits of length of the mem range=
- */
-> +       u32 len_high;           /* High 32 bits of length of the mem rang=
-e */
-> +       u16 region_id_flags;    /* Valid local or remote Region-ID */
-> +       u8  local_region_id;    /* Platform-assigned static local Region-=
-ID */
-> +       u8  remote_region_id;   /* Platform-assigned static remote Region=
--ID */
-> +       u32 reserved1;          /* Reserved */
-> +       /* Region-ID Programming Registers[] */
-> +};
-> +
-> +#define ACPI_MRRM_VALID_REGION_ID_FLAGS_LOCAL  (1<<0)
-> +#define ACPI_MRRM_VALID_REGION_ID_FLAGS_REMOTE (1<<1)
-> +
->  /* Reset to default packing */
->
->  #pragma pack()
-> --
-> 2.48.1
->
->
+-- 
+Cheers,
+
+David / dhildenb
+
