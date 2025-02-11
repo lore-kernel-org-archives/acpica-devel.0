@@ -1,72 +1,67 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2044.outbound.protection.outlook.com [40.107.223.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F27620B81D
-	for <acpica-devel@lists.linux.dev>; Tue, 11 Feb 2025 13:27:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739280468; cv=none; b=QaiQwaOZT7PxzH9ATupTP7/H+CPOWsp4sXgRkEC33iLek323iMw5SLOIXLumND2i1Ml/daxiZbxxI/TdJQMRk8pUvIQtqqTdXXOT/Aq5CNqz+WO5pQlZXq+vejDp3pVMLdWowgpvc6YspwvEq3QazmAAto7x0hSiMRj2WShhrdw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739280468; c=relaxed/simple;
-	bh=CX7lnilW9sbI3Vky73CNlewLMliV3YoE8FiZmFwXgTI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IcD37sO8zmX8NK35k0gWNaRBSIvCe3LdQ+H6SkMYXL6If/OpSVOgbdjzMF+OJbccREggNx9ojQyuYjp1CIrp5SkJAcr/+OuOm4opfgC5OXN7MV2A9ME86fJ0tJHRR6VNWGsHgy5/1C7vs1sSkzzFJaEGWevSMAcfWVbC4wsdyMY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ETyLvKzm; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3248B24C698
+	for <acpica-devel@lists.linux.dev>; Tue, 11 Feb 2025 14:09:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.44
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1739282958; cv=fail; b=PCKTtJOh+fj3lwL8/B6FTTHJ39HTF1cLHecoTWgssXmQUiQXX0lDeitqbZ/w/cIlIZiIE9dtTH7Y6uUlXRcpgtKStXWHxD0GWVOsRh7DPPjnJLTyQOvmNK3ZFffVY0oiUWRxkipGblucHQAnFvkvqFw06+ugUmJXwriV3RpfUb8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1739282958; c=relaxed/simple;
+	bh=91Den3JnjZe34Of1lC3mdEj6AHv6AopxLfgExPPe/c8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=Q8qFydhW1BlSKIaZ3HiURk4sg9yERlJufJL1ioiM9ot1Dh9RSBJexpH5ET6UQ2OjtmJRBW59P4/AEvrBN+QYB/C155YAriLXFnqKlUflFP4Z55G/Uaww9q2/c5PxNlroxXDTeK0JjAXmYKBQL7dfu4VWbn0aWN5gko4JammMRz8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=fM+kifAs; arc=fail smtp.client-ip=40.107.223.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ETyLvKzm"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1739280465;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=+DkuDtOtzjY6Gb6ZkxsAXFxf0AKiS7x2SvB3W65iASI=;
-	b=ETyLvKzmg85syqTSu0uxRU9sMpnSCS6tYCiLMgpaTxHVsVz6vGpf33caQuoLqsFbXzzTJz
-	X1Pn8d1kS0lqLi82o1enPV1zZ+xtvxNWY1wjhBzCg6LiE4HYN5ciL6C6HmUxIlYyjzIhnx
-	fMGHIXFYbOecdbV4ErcNWCIqYJRbhGo=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-418-LnKweLZUNae-hNK_LqrZgw-1; Tue, 11 Feb 2025 08:27:44 -0500
-X-MC-Unique: LnKweLZUNae-hNK_LqrZgw-1
-X-Mimecast-MFC-AGG-ID: LnKweLZUNae-hNK_LqrZgw
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-38dce0d3d34so1921163f8f.2
-        for <acpica-devel@lists.linux.dev>; Tue, 11 Feb 2025 05:27:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739280463; x=1739885263;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=+DkuDtOtzjY6Gb6ZkxsAXFxf0AKiS7x2SvB3W65iASI=;
-        b=nmklQkyThxAPU2OpHQARVBXlMCBs2at08cK3xNpRNf95NmkUk1dQGB2mVB+qE4jpTW
-         5WgWg5uidf+vYWasj2SAGKn9Pt7QW5yTV9IY9NTlHFIcm0Am1ZTcaa+g4lbnnIP3kGAJ
-         3Exe5nuHwtCQftBbkjFz90V71VsnffenMidgLcBe6bvFlaaMzSlxRa5wdbPgnDagDTmS
-         8izLg1cB6k3usvq6EAxoNHvEzPoXxKWdd+Y4VSYMahDs1FWhAoiGtViayI72gkpmcDa/
-         7wVJOvhASSq6Ck6TAM4pzfdE7jWaDeVcq2wQ2y6b60rkFDrV1V7jTWAgy0KPH7fdTfti
-         OrIA==
-X-Forwarded-Encrypted: i=1; AJvYcCWQoGKaWkJKDI94raISjCtExQbw6+klZr0heHcvcAxmhoTQHZmJuS0oDVWLd7D3W31IpCnvAsMMdKSHFLo=@lists.linux.dev
-X-Gm-Message-State: AOJu0Yw8RqsPRNXug9SbT8kCUQyUdvCjhjCEP2rMlQJT6marpcaK+OxR
-	+K1pYWK9dLqnCSVxYr97mqLY/TWmWqOiRQfHlG6RDCGwXnLWiUgZhpGSnFA/ppjl/xScIByNrwd
-	I/QtvHM76espRMPtNydUI6a3ZLN9NiWEDOZqwM2Ray+e7k+3fJkrjNxay9HbeXw==
-X-Gm-Gg: ASbGncuBIkauY1ELNM4PA5qUd+9E7ytN1q8ItgtA+1R3VWpWjPjKN7/gcTWYIcm1rwR
-	rqf1RjeIr5yBu/vabhDZ9c+1wQQ5U3l7q9xeweYlclvNyxzIS4McV6kUHxDlUXPbxVL9hQP1zWV
-	1gytGpEmIy2XuOWCPely9EHk5U3LIKrvPCnrmm/kRuoMniNXkB+i6Dhed0Ujjpz3ExKp+PI6sGA
-	lnxKTgVlqSYl7CUQs3B9U+cTzBwolyIaWy5Pdu6I1seF3/f0negmYZqJkIK96yw0ViqsaDyAJ0t
-	/v42AaCrNgpFhcLgrZyDt1Od+7H1suob857d2ZY=
-X-Received: by 2002:a05:6000:178a:b0:38d:c771:1a21 with SMTP id ffacd0b85a97d-38de41c54cbmr3306670f8f.50.1739280462788;
-        Tue, 11 Feb 2025 05:27:42 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IES8BmD5KVnJ7AOsEX1VJGJXGv3OpI33bF4yN3HJaiNguyrQtCmoYvDdbWdljJ4VKqKgxqbLg==
-X-Received: by 2002:a05:6000:178a:b0:38d:c771:1a21 with SMTP id ffacd0b85a97d-38de41c54cbmr3306647f8f.50.1739280462362;
-        Tue, 11 Feb 2025 05:27:42 -0800 (PST)
-Received: from ?IPV6:2a09:80c0:192:0:5dac:bf3d:c41:c3e7? ([2a09:80c0:192:0:5dac:bf3d:c41:c3e7])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38dcd8213f2sm11803708f8f.67.2025.02.11.05.27.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 Feb 2025 05:27:41 -0800 (PST)
-Message-ID: <d19e60d7-8abb-4e46-8935-bc989b1d5d68@redhat.com>
-Date: Tue, 11 Feb 2025 14:27:39 +0100
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="fM+kifAs"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=sY1Qwo+X8npJexn9027bnbdG6OlEyYkW5SH6Cw1jgp1Xl2+aeEMzAYXYOnLCiw++02qMCl7BaCbp75N2UWecwDHrBiqFmO0z1sy6fKrhUhTQ4nYBLqE1/lE678P6CZyZ0YNtqsFFcvLtRModWqJ3eZqTb82A3XOXSSFG8MDF5U68VrzhNzv/QeeZP913H3yvbgAt+703T/QLcoI/vXepJH0PxpoPo7ihccP4ZVAxuicuiYCSSdiv0FhjSghyIG0w6kVwNpNRuAeLt2ixNMzvjRT+NV+E5LGFvmzsx5P2f5FDwT/0vPxF/gqj44t5U0IkAOROE6V0IyPQD4YPPuMR5g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Z0qrc8Y/w+OTiGrAu9QluRWGhvp3LSW/xD2o7SSiowI=;
+ b=IcSAeh6CLJPuwor1dhtw1uKG8eldSXjXaQGMPmnng5npDcXQCg6S03BVBBlpWCXmwvK25VjGBTNiBKLtLV3VoKlF8Z+S14AlbMr2SGSirQO93tqq3O/7SiFTZUVMb68KE2vS4bdWdZrbE4jqkK1dnuRHLLDCGX3W0J+YUmLmQT2AQXMdmrstZbfTIr9MupQVHRuXQKgn1/q+VLfhgKex5yXHrEy05fuNIh3ZiYGy/aRDKXcoOazw2GeMz7aLLXnF6dj88AR47mY7h79meMDcMohIwscceJf6W18IFlESd3xskzrCFvvNeh2nGKAAEnWJmiNiGcUcX/qoTI3VBrSORA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=huawei.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Z0qrc8Y/w+OTiGrAu9QluRWGhvp3LSW/xD2o7SSiowI=;
+ b=fM+kifAsTiX3u0qCgRtJbrpOwNywzaRWLa2ctNh/lXW3qcXIn+ZCT4Kh9PxWALtghYNmd/7GcXbMy2eGZfio1Gy/H/WYgsilth9F/RyJYBJeewh92kb/AIes7muHmbMIPOm2AW0Jq23clyioqKR5d0Aj09Ko4onsCQvThdglWOLY3jFeAKPf1edGHZ0ygLM0MwUoV5vLRen2emxBTovR8SOyTjP/r67pPH/S7iIMtLG6S7bMXfM5Zj+/c1SRsfIbAiTd99uBiTFeVgMwXqqxOk4SxYoXNSrt7SspZx0RnVNTadlM0brUCHNmJmegTyIZ0kZKQKEUjfvbg7cJtpLUYg==
+Received: from PH8PR21CA0013.namprd21.prod.outlook.com (2603:10b6:510:2ce::22)
+ by DS7PR12MB9041.namprd12.prod.outlook.com (2603:10b6:8:ea::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8422.18; Tue, 11 Feb
+ 2025 14:09:11 +0000
+Received: from SN1PEPF000397B0.namprd05.prod.outlook.com
+ (2603:10b6:510:2ce:cafe::14) by PH8PR21CA0013.outlook.office365.com
+ (2603:10b6:510:2ce::22) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.8466.5 via Frontend Transport; Tue,
+ 11 Feb 2025 14:09:11 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ SN1PEPF000397B0.mail.protection.outlook.com (10.167.248.54) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8445.10 via Frontend Transport; Tue, 11 Feb 2025 14:09:09 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Tue, 11 Feb
+ 2025 06:08:50 -0800
+Received: from [10.41.21.79] (10.126.231.35) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Tue, 11 Feb
+ 2025 06:08:44 -0800
+Message-ID: <868d4c2a-583a-4cbb-a572-d884090a7134@nvidia.com>
+Date: Tue, 11 Feb 2025 19:38:42 +0530
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -74,134 +69,180 @@ List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/4] ACPI/MRRM: Add "node" symlink to
- /sys/devices/system/memory/rangeX
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Tony Luck <tony.luck@intel.com>
-Cc: Robert Moore <robert.moore@intel.com>,
- "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Len Brown
- <lenb@kernel.org>, linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
- Oscar Salvador <osalvador@suse.de>, Danilo Krummrich <dakr@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org
-References: <20250210211223.6139-1-tony.luck@intel.com>
- <20250210211223.6139-4-tony.luck@intel.com>
- <2025021111-deepen-landing-4252@gregkh>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
- dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
- QZLQMzNE74ap+GDK0wnacPQFpcG1AE9RMq3aeErY5tujekBS32jfC/7AnH7I0v1v1TbbK3Gp
- XNeiN4QroO+5qaSr0ID2sz5jtBLRb15RMre27E1ImpaIv2Jw8NJgW0k/D1RyKCwaTsgRdwuK
- Kx/Y91XuSBdz0uOyU/S8kM1+ag0wvsGlpBVxRR/xw/E8M7TEwuCZQArqqTCmkG6HGcXFT0V9
- PXFNNgV5jXMQRwU0O/ztJIQqsE5LsUomE//bLwzj9IVsaQpKDqW6TAPjcdBDPLHvriq7kGjt
- WhVhdl0qEYB8lkBEU7V2Yb+SYhmhpDrti9Fq1EsmhiHSkxJcGREoMK/63r9WLZYI3+4W2rAc
- UucZa4OT27U5ZISjNg3Ev0rxU5UH2/pT4wJCfxwocmqaRr6UYmrtZmND89X0KigoFD/XSeVv
- jwBRNjPAubK9/k5NoRrYqztM9W6sJqrH8+UWZ1Idd/DdmogJh0gNC0+N42Za9yBRURfIdKSb
- B3JfpUqcWwE7vUaYrHG1nw54pLUoPG6sAA7Mehl3nd4pZUALHwARAQABzSREYXZpZCBIaWxk
- ZW5icmFuZCA8ZGF2aWRAcmVkaGF0LmNvbT7CwZgEEwEIAEICGwMGCwkIBwMCBhUIAgkKCwQW
- AgMBAh4BAheAAhkBFiEEG9nKrXNcTDpGDfzKTd4Q9wD/g1oFAl8Ox4kFCRKpKXgACgkQTd4Q
- 9wD/g1oHcA//a6Tj7SBNjFNM1iNhWUo1lxAja0lpSodSnB2g4FCZ4R61SBR4l/psBL73xktp
- rDHrx4aSpwkRP6Epu6mLvhlfjmkRG4OynJ5HG1gfv7RJJfnUdUM1z5kdS8JBrOhMJS2c/gPf
- wv1TGRq2XdMPnfY2o0CxRqpcLkx4vBODvJGl2mQyJF/gPepdDfcT8/PY9BJ7FL6Hrq1gnAo4
- 3Iv9qV0JiT2wmZciNyYQhmA1V6dyTRiQ4YAc31zOo2IM+xisPzeSHgw3ONY/XhYvfZ9r7W1l
- pNQdc2G+o4Di9NPFHQQhDw3YTRR1opJaTlRDzxYxzU6ZnUUBghxt9cwUWTpfCktkMZiPSDGd
- KgQBjnweV2jw9UOTxjb4LXqDjmSNkjDdQUOU69jGMUXgihvo4zhYcMX8F5gWdRtMR7DzW/YE
- BgVcyxNkMIXoY1aYj6npHYiNQesQlqjU6azjbH70/SXKM5tNRplgW8TNprMDuntdvV9wNkFs
- 9TyM02V5aWxFfI42+aivc4KEw69SE9KXwC7FSf5wXzuTot97N9Phj/Z3+jx443jo2NR34XgF
- 89cct7wJMjOF7bBefo0fPPZQuIma0Zym71cP61OP/i11ahNye6HGKfxGCOcs5wW9kRQEk8P9
- M/k2wt3mt/fCQnuP/mWutNPt95w9wSsUyATLmtNrwccz63XOwU0EVcufkQEQAOfX3n0g0fZz
- Bgm/S2zF/kxQKCEKP8ID+Vz8sy2GpDvveBq4H2Y34XWsT1zLJdvqPI4af4ZSMxuerWjXbVWb
- T6d4odQIG0fKx4F8NccDqbgHeZRNajXeeJ3R7gAzvWvQNLz4piHrO/B4tf8svmRBL0ZB5P5A
- 2uhdwLU3NZuK22zpNn4is87BPWF8HhY0L5fafgDMOqnf4guJVJPYNPhUFzXUbPqOKOkL8ojk
- CXxkOFHAbjstSK5Ca3fKquY3rdX3DNo+EL7FvAiw1mUtS+5GeYE+RMnDCsVFm/C7kY8c2d0G
- NWkB9pJM5+mnIoFNxy7YBcldYATVeOHoY4LyaUWNnAvFYWp08dHWfZo9WCiJMuTfgtH9tc75
- 7QanMVdPt6fDK8UUXIBLQ2TWr/sQKE9xtFuEmoQGlE1l6bGaDnnMLcYu+Asp3kDT0w4zYGsx
- 5r6XQVRH4+5N6eHZiaeYtFOujp5n+pjBaQK7wUUjDilPQ5QMzIuCL4YjVoylWiBNknvQWBXS
- lQCWmavOT9sttGQXdPCC5ynI+1ymZC1ORZKANLnRAb0NH/UCzcsstw2TAkFnMEbo9Zu9w7Kv
- AxBQXWeXhJI9XQssfrf4Gusdqx8nPEpfOqCtbbwJMATbHyqLt7/oz/5deGuwxgb65pWIzufa
- N7eop7uh+6bezi+rugUI+w6DABEBAAHCwXwEGAEIACYCGwwWIQQb2cqtc1xMOkYN/MpN3hD3
- AP+DWgUCXw7HsgUJEqkpoQAKCRBN3hD3AP+DWrrpD/4qS3dyVRxDcDHIlmguXjC1Q5tZTwNB
- boaBTPHSy/Nksu0eY7x6HfQJ3xajVH32Ms6t1trDQmPx2iP5+7iDsb7OKAb5eOS8h+BEBDeq
- 3ecsQDv0fFJOA9ag5O3LLNk+3x3q7e0uo06XMaY7UHS341ozXUUI7wC7iKfoUTv03iO9El5f
- XpNMx/YrIMduZ2+nd9Di7o5+KIwlb2mAB9sTNHdMrXesX8eBL6T9b+MZJk+mZuPxKNVfEQMQ
- a5SxUEADIPQTPNvBewdeI80yeOCrN+Zzwy/Mrx9EPeu59Y5vSJOx/z6OUImD/GhX7Xvkt3kq
- Er5KTrJz3++B6SH9pum9PuoE/k+nntJkNMmQpR4MCBaV/J9gIOPGodDKnjdng+mXliF3Ptu6
- 3oxc2RCyGzTlxyMwuc2U5Q7KtUNTdDe8T0uE+9b8BLMVQDDfJjqY0VVqSUwImzTDLX9S4g/8
- kC4HRcclk8hpyhY2jKGluZO0awwTIMgVEzmTyBphDg/Gx7dZU1Xf8HFuE+UZ5UDHDTnwgv7E
- th6RC9+WrhDNspZ9fJjKWRbveQgUFCpe1sa77LAw+XFrKmBHXp9ZVIe90RMe2tRL06BGiRZr
- jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <2025021111-deepen-landing-4252@gregkh>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: lygtHr_Y-9dRqmqggBmdFyVtjLqN4k6sgj6T0JR1G84_1739280463
-X-Mimecast-Originator: redhat.com
+Subject: Re: [Patch 0/5] Support Autonomous Selection mode in cppc_cpufreq
+To: "zhenglifeng (A)" <zhenglifeng1@huawei.com>, Viresh Kumar
+	<viresh.kumar@linaro.org>
+CC: <rafael@kernel.org>, <lenb@kernel.org>, <robert.moore@intel.com>,
+	<corbet@lwn.net>, <linux-pm@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>, <acpica-devel@lists.linux.dev>,
+	<linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+	<treding@nvidia.com>, <jonathanh@nvidia.com>, <sashal@nvidia.com>,
+	<vsethi@nvidia.com>, <ksitaraman@nvidia.com>, <sanjayc@nvidia.com>,
+	<bbasu@nvidia.com>, Sumit Gupta <sumitg@nvidia.com>
+References: <20250211103737.447704-1-sumitg@nvidia.com>
+ <20250211104428.dibsnxmkiluzixvz@vireshk-i7>
+ <b45d0d81-e4f7-474e-a146-0075a6145cc2@huawei.com>
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Sumit Gupta <sumitg@nvidia.com>
+In-Reply-To: <b45d0d81-e4f7-474e-a146-0075a6145cc2@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: rnnvmail203.nvidia.com (10.129.68.9) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN1PEPF000397B0:EE_|DS7PR12MB9041:EE_
+X-MS-Office365-Filtering-Correlation-Id: 98513222-33e1-4493-2c06-08dd4aa5a78a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|376014|7416014|82310400026|36860700013|1800799024|13003099007|7053199007;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?V2Y5T29ZREUzcFNHSGZYSUdraGNCRTB6OGNQeml4YTIrUGRnQWVHVkExZWc4?=
+ =?utf-8?B?dk9zL0pqdmk4TTVwcTJIZTE1L3pqQytTQTgxZHZLcktudTE5S1JTa3ZDdHZh?=
+ =?utf-8?B?T1NGa0tPOUVpZmMzT1ViN0FkeDAySmQ3Z3FucG4vcVI3SS9GNWxReTFIdHBP?=
+ =?utf-8?B?R2djRjg3OFFCbytvcGl0SDIwdjYxQzdlZCswQnJZbHZMK1daYXFzRE53dkdr?=
+ =?utf-8?B?cnFpOGhZOHd2Z0JhOUZLVmpNSml2WXpzaWdCdFJnZmZBUWJrR1FVajdOcEZp?=
+ =?utf-8?B?Nisrb1ZwZXk2RzdZak52YUpvbHdtQjI3ZUpweTZWWkdxNmJySUgwc2dnczhr?=
+ =?utf-8?B?VjdpYmd3TlVEOVV4UmNlaXhicmF5eXdvazU5L1c4d3B0OXUxR3JXSXN3cm9r?=
+ =?utf-8?B?RmQwd2hPdzA4UjR2R2c1SzdEOHA2dXlCK1podXMzNHJ3VkIyUk0xNTE1LzZR?=
+ =?utf-8?B?UGREL1pKQ1kvazVwZ01WdVduMVhmRFQ1MUJDbDhvZTZyRWErS2JFOG9XOEJu?=
+ =?utf-8?B?SENYTGlXR2hMK3ZFVHBDdEdrbGhLUnlpSWlRdEQ2Z09nRkJqbmtMZUFHMDE0?=
+ =?utf-8?B?RzFqWkQzT3B3NnorVU85OENraWk4RDFST3NSUGxTbjRmbnc5ekxCUG42KzJj?=
+ =?utf-8?B?eUlBQ0xhS01jemFxMURVRzFaL2lqZ005QVgxbGRkMzhvb3N6Z0FvYk9DTlA4?=
+ =?utf-8?B?MSs5WG5QK3cyNTJrVDRkc1FwaU1HMlZnNlVVSGdCZzJIc3kxTzNRZVZXOG5n?=
+ =?utf-8?B?RDVoNGxLejN1LzZlYzIzN0JEN0FjdjRMNVVKVUNRbUV0aEFZM3RGUGF1YkFT?=
+ =?utf-8?B?eU5uMmhCa2psN2JJMEJqZUFORjIvSkFlS3gwdi81U1R4b2FDTnNXc0R0QW5r?=
+ =?utf-8?B?MVQwRnduVkhQeXpFUXd4VjRqRlpqSStDMnNsa1UwZzNIZXpvSWFoQVNja0wy?=
+ =?utf-8?B?Z2JRYldYNkNjR3NNRmdQWjVIVXh1NXR1RFpEcjl1TnhrNDg2RjR4WFdUR2hN?=
+ =?utf-8?B?RHV3bW5QbElkanowRTFmRHdJNUVaclplWVNZQ2FzLzVMYXVwcmY2ZFJpZWJR?=
+ =?utf-8?B?RzErVURWVVRxenNJRm1rT1M2V1AyYjhaQVgwaTdqbFNDRWNia29CWUQ3RUNu?=
+ =?utf-8?B?R2tTTytkcWV4TXMrK0hFNEJDNk84dWtsbjZKREpSQWZlcHVQMzdoT2ZvMDdK?=
+ =?utf-8?B?ODZ3TkQrcXo1ZmVwdkVpajhUazdDK084UmFJMHRxSmRRaGxWNVdKV2lGUzdZ?=
+ =?utf-8?B?QjdMbkRjMlZ2UE14V1IvYjUrQ0dhNlQwMjFITXcxcGdsNFFsaUZocXlReDhp?=
+ =?utf-8?B?cDZ4Y0NuL2lsb3dJaDJsNzFJQUlGaE5NdWhFMkxySFJzNGhUQ1VLN0pSeGZE?=
+ =?utf-8?B?RFNTL3l4Y25SclE2OUY4RmNnTUlRN2NLbHZ5RUJMOVU2YVBrem5rNUZzdFpu?=
+ =?utf-8?B?czZlRWJCUkF4c00vUzc0VFlSalpSczJUNVU3WHhmc3Y3L2NkN0l5NmhPRWNk?=
+ =?utf-8?B?SU9PbUZTRzhmU3NQNHcybkZibEhnTlY3cGZjVHg1aEhhekN0M0NlTFJRcGM2?=
+ =?utf-8?B?VVNDQWN0cVMybFZaNkZqSmgzVmhUZU9BdDgvNmhGekc2K3FwOE9FNDRaWDQz?=
+ =?utf-8?B?WUcrRDArbWx6dXFkZlR0aEFUMWpFZFhHYUdxMnI4ckxpZENmMGdJeVRCblNv?=
+ =?utf-8?B?WXQ0aGRiaUdYcWsyVlRYMmlQdWdqSzM1ODF4VW93b2dicDJmMXA0MGJvdzdL?=
+ =?utf-8?B?QWIxU2w4TkFSM3IvT0xYMmozUWRPSHJMdDNVbVp3eG15VmN0MTVma0NSMlFx?=
+ =?utf-8?B?MTl0amZ0V2Nvd3BSMkVuUVN1Z09JV1V5b2NyTTdQeHZLRnVwc1RROURqbWdn?=
+ =?utf-8?B?UUhxeWZnYnU1WWdCNWd4d1JYV2czeFI2d2NJYXpFdFpxZTJWVnZCMTVqSDNQ?=
+ =?utf-8?B?WG5rT0VIeEJmc3NVdkQ0N1VDRzVybUhvNlViU1dxOFJ2YkFHV01oZHJSTkgw?=
+ =?utf-8?Q?1h05BXcji6BCaHEovnnQE6Wx+OvbYo=3D?=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(376014)(7416014)(82310400026)(36860700013)(1800799024)(13003099007)(7053199007);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Feb 2025 14:09:09.5981
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 98513222-33e1-4493-2c06-08dd4aa5a78a
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SN1PEPF000397B0.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB9041
 
-On 11.02.25 07:51, Greg Kroah-Hartman wrote:
-> On Mon, Feb 10, 2025 at 01:12:22PM -0800, Tony Luck wrote:
->> Users will likely want to know which node owns each memory range
->> and which CPUs are local to the range.
->>
->> Add a symlink to the node directory to provide both pieces of information.
->>
->> Signed-off-by: Tony Luck <tony.luck@intel.com>
->> ---
->>   drivers/acpi/acpi_mrrm.c | 29 +++++++++++++++++++++++++++++
->>   1 file changed, 29 insertions(+)
->>
->> diff --git a/drivers/acpi/acpi_mrrm.c b/drivers/acpi/acpi_mrrm.c
->> index 51ed9064e025..28b484943bbd 100644
->> --- a/drivers/acpi/acpi_mrrm.c
->> +++ b/drivers/acpi/acpi_mrrm.c
->> @@ -119,6 +119,31 @@ static struct attribute *memory_range_attrs[] = {
->>   
->>   ATTRIBUTE_GROUPS(memory_range);
->>   
->> +static __init int add_node_link(struct mrrm_mem_range_entry *entry)
->> +{
->> +	struct node *node = NULL;
->> +	int ret = 0;
->> +	int nid;
->> +
->> +	for_each_online_node(nid) {
->> +		for (int z = 0; z < MAX_NR_ZONES; z++) {
->> +			struct zone *zone = NODE_DATA(nid)->node_zones + z;
->> +
->> +			if (!populated_zone(zone))
->> +				continue;
->> +			if (zone_intersects(zone, PHYS_PFN(entry->base), PHYS_PFN(entry->length))) {
->> +				node = node_devices[zone->node];
->> +				goto found;
->> +			}
->> +		}
->> +	}
->> +found:
->> +	if (node)
->> +		ret = sysfs_create_link(&entry->dev.kobj, &node->dev.kobj, "node");
+
+
 > 
-> What is going to remove this symlink if the memory goes away?  Or do
-> these never get removed?
+> On 2025/2/11 18:44, Viresh Kumar wrote:
+>> On 11-02-25, 16:07, Sumit Gupta wrote:
+>>> This patchset supports the Autonomous Performance Level Selection mode
+>>> in the cppc_cpufreq driver. The feature is part of the existing CPPC
+>>> specification and already present in Intel and AMD specific pstate
+>>> cpufreq drivers. The patchset adds the support in generic acpi cppc
+>>> cpufreq driver.
+>>
+>> Is there an overlap with:
+>>
+>> https://lore.kernel.org/all/20250206131428.3261578-1-zhenglifeng1@huawei.com/
+>>
+>> ?
 > 
-> symlinks in sysfs created like this always worry me.  What is going to
-> use it?
+> Ha, it looks like we're doing something very similar.
+> 
 
-On top of that, we seem to be building a separate hierarchy here.
+Hi Viresh,
 
-/sys/devices/system/memory/ operates in memory block granularity.
+Thank you for pointing to [1].
 
-/sys/devices/system/node/nodeX/ links to memory blocks that belong to it.
+There seems to be some common points about updating the 'energy_perf'
+and 'auto_sel' registers for autonomous mode but the current patchset
+has more comprehensive changes to support Autonomous mode with the
+cppc_cpufreq driver.
 
-Why is the memory-block granularity insufficient, and why do we have to 
-squeeze in another range API here?
+The patches in [1]:
+1) Make the cpc register read/write API’s generic and improves error
+    handling for 'CPC_IN_PCC'.
+2) Expose sysfs under 'cppc_cpufreq_attr' to update 'auto_select',
+    'auto_act_window' and 'epp' registers.
 
--- 
-Cheers,
+The current patch series:
+1) Exposes sysfs under 'cppc_attrs' to keep CPC registers together.
+2) Updates existing API’s to use new registers and creates new API
+    with similar semantics to get all perf_ctrls.
+3) Renames some existing API’s for clarity.
+4) Use these existing API’s from acpi_cppc sysfs to update the CPC
+    registers used in Autonomous mode:
+    'auto_select', 'epp', 'min_perf', 'max_perf' registers.
+5) Add separate 'cppc_cpufreq_epp' instance of the 'cppc_cpufreq'
+    driver to apply different limit and policy for Autonomous mode.
+    Having it separate will avoid confusion between SW and HW mode.
+    Also, it will be easy to scale and add new features in future
+    without interference. Similar approach is used in Intel and AMD
+    pstate drivers.
 
-David / dhildenb
+Please share inputs about the preferred approach.
 
+Best Regards,
+Sumit Gupta
+
+[1] 
+https://lore.kernel.org/all/20250206131428.3261578-1-zhenglifeng1@huawei.com/
+
+
+>>
+>>> It adds a new 'cppc_cpufreq_epp' instance of the 'cppc_cpufreq' driver
+>>> for supporting the Autonomous Performance Level Selection and Energy
+>>> Performance Preference (EPP).
+>>> Autonomous selection will get enabled during boot if 'cppc_auto_sel'
+>>> boot argument is passed or the 'Autonomous Selection Enable' register
+>>> is already set before kernel boot. When enabled, the hardware is
+>>> allowed to autonomously select the CPU frequency within the min and
+>>> max perf boundaries using the Engergy Performance Preference hints.
+>>> The EPP values range from '0x0'(performance preference) to '0xFF'
+>>> (energy efficiency preference).
+>>>
+>>> It also exposes the acpi_cppc sysfs nodes to update the epp, auto_sel
+>>> and {min|max_perf} registers for changing the hints to hardware for
+>>> Autonomous selection.
+>>>
+>>> In a followup patch, plan to add support to dynamically switch the
+>>> cpufreq driver instance from 'cppc_cpufreq_epp' to 'cppc_cpufreq' and
+>>> vice-versa without reboot.
+>>>
+>>> The patches are divided into below groups:
+>>> - Patch [1-2]: Improvements. Can be applied independently.
+>>> - Patch [3-4]: sysfs store nodes for Auto mode. Depend on Patch [1-2].
+>>> - Patch [5]: Support for 'cppc_cpufreq_epp'. Uses a macro from [3].
+>>>
+>>> Sumit Gupta (5):
+>>>    ACPI: CPPC: add read perf ctrls api and rename few existing
+>>>    ACPI: CPPC: expand macro to create store acpi_cppc sysfs node
+>>>    ACPI: CPPC: support updating epp, auto_sel and {min|max_perf} from
+>>>      sysfs
+>>>    Documentation: ACPI: add autonomous mode ctrls info in cppc_sysfs.txt
+>>>    cpufreq: CPPC: Add cppc_cpufreq_epp instance for Autonomous mode
+>>>
+>>>   Documentation/admin-guide/acpi/cppc_sysfs.rst |  28 ++
+>>>   .../admin-guide/kernel-parameters.txt         |  11 +
+>>>   drivers/acpi/cppc_acpi.c                      | 311 ++++++++++++++++--
+>>>   drivers/cpufreq/cppc_cpufreq.c                | 260 ++++++++++++++-
+>>>   include/acpi/cppc_acpi.h                      |  19 +-
+>>>   5 files changed, 572 insertions(+), 57 deletions(-)
+>>
+> 
