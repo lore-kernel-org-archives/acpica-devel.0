@@ -1,110 +1,170 @@
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 496A41B85FD
-	for <acpica-devel@lists.linux.dev>; Tue, 11 Feb 2025 12:01:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 938711F417C
+	for <acpica-devel@lists.linux.dev>; Tue, 11 Feb 2025 12:16:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739275280; cv=none; b=CwArAcinbKNS/4HTq5hC6QUQUJOz1pbHuz/ibk/HLBej1S6eME+s/NIqUzQhuV2Q2eGA2HJLnxyDZCwbM0Brh1Psc4eEtTW1ikVFgW1TFsdIoeW0Fqa4fa4qfMTa4HrfS2ftaewlPR9XUs7YKxosRVdCAPY1iVEqpQy5sx5vpvk=
+	t=1739276179; cv=none; b=BQwzJxKBuElMO/wKlRcUhAA8lPhq4JTM+7Zrzs0FDhezFLvR0E5JPG2Dx7WIxGNqwyWax5HeMmjjnuZX87iLaPkXBxf98QeMdzey5KBhdCddC1q6goWCSIG3v/1mjLKamqNCAv6zht6DEJ/Ud4h1G3CdjzJ0sN3w0rYAIr/6gZE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739275280; c=relaxed/simple;
-	bh=coGhJ4FDslwaXOjbG0NX4DSiL83TYxGibJL0y0TxOxg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=t5MoUDMMMVkNZg+RwGvtB/Z8Z1QY/njSGlLBVhvRoYFOVrcFMOO/XlYV1cuGgypNQKXy6nZdMkF2a36Ar0CtdjRD5m0DPZ2x7gCHKAz4rCHIare+ADvV00/fnWSz/v2gEjD9nkzU79xLQqL6ABJrtYxGpsFVByRsz1RbfH3jGbQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Ysg140gk8z1V6WM;
-	Tue, 11 Feb 2025 19:57:28 +0800 (CST)
-Received: from kwepemh100008.china.huawei.com (unknown [7.202.181.93])
-	by mail.maildlp.com (Postfix) with ESMTPS id 51EF71A0188;
-	Tue, 11 Feb 2025 20:01:13 +0800 (CST)
-Received: from [10.67.121.90] (10.67.121.90) by kwepemh100008.china.huawei.com
- (7.202.181.93) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Tue, 11 Feb
- 2025 20:01:12 +0800
-Message-ID: <b45d0d81-e4f7-474e-a146-0075a6145cc2@huawei.com>
-Date: Tue, 11 Feb 2025 20:01:11 +0800
+	s=arc-20240116; t=1739276179; c=relaxed/simple;
+	bh=MU6yp0uVmHSvhlg0eZOaCvSj/yEbYjzcgmlHVf6TAE0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=flbn+2Rn2hH8RZv4AntBAkXpN51B+MjqcqEIrAA0N0Tec6nNqq7ow/tLgZ9+BzyNyWYw03ptLhDUuTu6JbM0A8yJEB/fMgug16kUqjr18mDYsf6RCVEGAGVPsYm6EDpAnfnOWJxCpaapiH6Du/9iDb1QmebeYV8eEtLaH90CsvI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eAoTaa7N; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eAoTaa7N"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 113A7C4CEEA
+	for <acpica-devel@lists.linux.dev>; Tue, 11 Feb 2025 12:16:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1739276179;
+	bh=MU6yp0uVmHSvhlg0eZOaCvSj/yEbYjzcgmlHVf6TAE0=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=eAoTaa7NpghysdEQG4MMv0SDnRMaNQBLGa7NyXfp9se9d0eqG6CdXeO1y7ZYeID3b
+	 rrWUmsT2r1vfw1movEBJQ2Axiwsfi1sORJ1W7W9sXeA+TePVLh+BRezSL/8sx05nI3
+	 wcjozpOiETE+9guc4FjwYcmWFsL6ud4/hyTnNez6WgD/1Tf5gTf8XkA08a5lIKhi73
+	 eifMEB5PmIliZqJbaUqvaRRTAqdjCxbOUCWfuVFLTvE4IL6PRCsENwFXfrDSJ+SDiy
+	 aOpBU2jKo+ecTPC+D6Y9qyqMdeo8PgL+vHQtYiPY0UREbTdL8MRoWh7o4ut63EA+2E
+	 P0zAmwaQh85Vg==
+Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-5f88b61399dso3235155eaf.1
+        for <acpica-devel@lists.linux.dev>; Tue, 11 Feb 2025 04:16:18 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCX7z/gytWDELgwfoRBsfSAbL3tJLLUlWpiau7yrWw6cwHTaIw0NZrZJNTf8Ti6afkPasp8fH9nCNNxrIg0=@lists.linux.dev
+X-Gm-Message-State: AOJu0YxSNAFUPiqQECbvlyaKkPAtX04rziVIziv3mQEMvMhauU2kouwc
+	L/ByV8/9FtQtQrGkNTWeDjdl4QBS/H7SjygDalHKDFlxpN6XbQ9qn2DMfteM6UzqJXfUaWvzW9R
+	trlANBHDyNSTXpc8he6d++5trJMM=
+X-Google-Smtp-Source: AGHT+IFEzSXnaFW3fXpl8HEm6wmuusCX522zCeoYDCQQ9T2IkFUiDR3+WnRuNEqVE8qBh5Gv74Fj17wD41RMNi2l2ic=
+X-Received: by 2002:a05:6870:2253:b0:297:683:8b5b with SMTP id
+ 586e51a60fabf-2b8b6e3082amr1999660fac.10.1739276178243; Tue, 11 Feb 2025
+ 04:16:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Patch 0/5] Support Autonomous Selection mode in cppc_cpufreq
-To: Viresh Kumar <viresh.kumar@linaro.org>, Sumit Gupta <sumitg@nvidia.com>
-CC: <rafael@kernel.org>, <lenb@kernel.org>, <robert.moore@intel.com>,
-	<corbet@lwn.net>, <linux-pm@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>, <acpica-devel@lists.linux.dev>,
-	<linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-	<treding@nvidia.com>, <jonathanh@nvidia.com>, <sashal@nvidia.com>,
-	<vsethi@nvidia.com>, <ksitaraman@nvidia.com>, <sanjayc@nvidia.com>,
-	<bbasu@nvidia.com>
-References: <20250211103737.447704-1-sumitg@nvidia.com>
- <20250211104428.dibsnxmkiluzixvz@vireshk-i7>
-From: "zhenglifeng (A)" <zhenglifeng1@huawei.com>
-In-Reply-To: <20250211104428.dibsnxmkiluzixvz@vireshk-i7>
+References: <20250210211223.6139-1-tony.luck@intel.com> <20250210211223.6139-2-tony.luck@intel.com>
+In-Reply-To: <20250210211223.6139-2-tony.luck@intel.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Tue, 11 Feb 2025 13:16:05 +0100
+X-Gmail-Original-Message-ID: <CAJZ5v0gfeiHOVzi=YLJivuc7yt=1Rmbo6u759B0=xp_hTOAjXg@mail.gmail.com>
+X-Gm-Features: AWEUYZmd-8dXPwgv8smRTbZJNEbp_Na1VjY_SDkiWWFBKIWRdRIJqCE5PVkTers
+Message-ID: <CAJZ5v0gfeiHOVzi=YLJivuc7yt=1Rmbo6u759B0=xp_hTOAjXg@mail.gmail.com>
+Subject: Re: [PATCH 1/4] ACPICA: Define MRRM ACPI table
+To: Tony Luck <tony.luck@intel.com>
+Cc: Robert Moore <robert.moore@intel.com>, 
+	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org, 
+	acpica-devel@lists.linux.dev, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, David Hildenbrand <david@redhat.com>, Oscar Salvador <osalvador@suse.de>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Danilo Krummrich <dakr@kernel.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
+	Fenghua Yu <fenghua.yu@intel.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemh100008.china.huawei.com (7.202.181.93)
+Content-Transfer-Encoding: quoted-printable
 
-On 2025/2/11 18:44, Viresh Kumar wrote:
-> On 11-02-25, 16:07, Sumit Gupta wrote:
->> This patchset supports the Autonomous Performance Level Selection mode
->> in the cppc_cpufreq driver. The feature is part of the existing CPPC
->> specification and already present in Intel and AMD specific pstate
->> cpufreq drivers. The patchset adds the support in generic acpi cppc
->> cpufreq driver.
-> 
-> Is there an overlap with:
-> 
-> https://lore.kernel.org/all/20250206131428.3261578-1-zhenglifeng1@huawei.com/
-> 
-> ?
+On Mon, Feb 10, 2025 at 10:12=E2=80=AFPM Tony Luck <tony.luck@intel.com> wr=
+ote:
+>
+> From: Fenghua Yu <fenghua.yu@intel.com>
+>
+> The MRRM table describes association between physical address ranges
+> and "region numbers". This is used by:
+>
+> 1) The /sys/fs/resctrl filesystem to report memory traffic per-RMID for
+> each region.
+> 2) Perf subsystem to report memory related uncore events per region.
+>
+> Structure defined in the Intel Resource Director Technology (RDT)
+> Architecture specification downloadable from www.intel.com/sdm
+>
+> Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+> Signed-off-by: Tony Luck <tony.luck@intel.com>
 
-Ha, it looks like we're doing something very similar.
+So the process for ACPICA changes is that they first need to go into
+the upstream ACPICA project on GitHub.
 
-> 
->> It adds a new 'cppc_cpufreq_epp' instance of the 'cppc_cpufreq' driver
->> for supporting the Autonomous Performance Level Selection and Energy
->> Performance Preference (EPP).
->> Autonomous selection will get enabled during boot if 'cppc_auto_sel'
->> boot argument is passed or the 'Autonomous Selection Enable' register
->> is already set before kernel boot. When enabled, the hardware is
->> allowed to autonomously select the CPU frequency within the min and
->> max perf boundaries using the Engergy Performance Preference hints.
->> The EPP values range from '0x0'(performance preference) to '0xFF'
->> (energy efficiency preference).
->>
->> It also exposes the acpi_cppc sysfs nodes to update the epp, auto_sel
->> and {min|max_perf} registers for changing the hints to hardware for
->> Autonomous selection.
->>
->> In a followup patch, plan to add support to dynamically switch the
->> cpufreq driver instance from 'cppc_cpufreq_epp' to 'cppc_cpufreq' and
->> vice-versa without reboot.
->>
->> The patches are divided into below groups:
->> - Patch [1-2]: Improvements. Can be applied independently.
->> - Patch [3-4]: sysfs store nodes for Auto mode. Depend on Patch [1-2].
->> - Patch [5]: Support for 'cppc_cpufreq_epp'. Uses a macro from [3].
->>
->> Sumit Gupta (5):
->>   ACPI: CPPC: add read perf ctrls api and rename few existing
->>   ACPI: CPPC: expand macro to create store acpi_cppc sysfs node
->>   ACPI: CPPC: support updating epp, auto_sel and {min|max_perf} from
->>     sysfs
->>   Documentation: ACPI: add autonomous mode ctrls info in cppc_sysfs.txt
->>   cpufreq: CPPC: Add cppc_cpufreq_epp instance for Autonomous mode
->>
->>  Documentation/admin-guide/acpi/cppc_sysfs.rst |  28 ++
->>  .../admin-guide/kernel-parameters.txt         |  11 +
->>  drivers/acpi/cppc_acpi.c                      | 311 ++++++++++++++++--
->>  drivers/cpufreq/cppc_cpufreq.c                | 260 ++++++++++++++-
->>  include/acpi/cppc_acpi.h                      |  19 +-
->>  5 files changed, 572 insertions(+), 57 deletions(-)
-> 
+Once merged there, you can submit a corresponding Linux patch pointing
+to the upstream commit, but submitting it is not mandatory because
+upstream material lands in the Linux kernel eventually automatically.
 
+> ---
+>  include/acpi/actbl3.h | 40 ++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 40 insertions(+)
+>
+> diff --git a/include/acpi/actbl3.h b/include/acpi/actbl3.h
+> index 5cd755143b7d..1b9a03ff73ba 100644
+> --- a/include/acpi/actbl3.h
+> +++ b/include/acpi/actbl3.h
+> @@ -42,6 +42,7 @@
+>  #define ACPI_SIG_WSMT           "WSMT" /* Windows SMM Security Mitigatio=
+ns Table */
+>  #define ACPI_SIG_XENV           "XENV" /* Xen Environment table */
+>  #define ACPI_SIG_XXXX           "XXXX" /* Intermediate AML header for AS=
+L/ASL+ converter */
+> +#define ACPI_SIG_MRRM           "MRRM" /* Memory Range and Region Mappin=
+g table */
+>
+>  /*
+>   * All tables must be byte-packed to match the ACPI specification, since
+> @@ -793,6 +794,45 @@ struct acpi_table_xenv {
+>         u8 event_flags;
+>  };
+>
+> +/***********************************************************************=
+********
+> + *
+> + * MRRM - Memory Range and Region Mapping (MRRM) table
+> + *
+> + ***********************************************************************=
+*******/
+> +
+> +struct acpi_table_mrrm {
+> +       struct acpi_table_header header;
+> +       u8 max_mem_region;      /* Max Memory Regions supported */
+> +       u8 flags;               /* Region assignment type */
+> +       u8 reserved[26];
+> +       /* Memory range entry array */
+> +};
+> +#define ACPI_MRRM_FLAGS_REGION_ASSIGNMENT_OS   (1<<0)
+> +
+> +/***********************************************************************=
+********
+> + *
+> + * Memory Range entry - Memory Range entry in MRRM table
+> + *
+> + ***********************************************************************=
+*******/
+> +
+> +struct acpi_table_mrrm_mem_range_entry {
+> +       u16 type;               /* Type 0=3D"MRRM" */
+> +       u16 length;             /* 32B + sizeof(Region-ID Programming Reg=
+[]) */
+> +       u32 reserved;           /* Reserved */
+> +       u32 base_addr_low;      /* Low 32 bits of base addr of the mem ra=
+nge */
+> +       u32 base_addr_high;     /* High 32 bits of base addr of the mem r=
+ange */
+> +       u32 len_low;            /* Low 32 bits of length of the mem range=
+ */
+> +       u32 len_high;           /* High 32 bits of length of the mem rang=
+e */
+> +       u16 region_id_flags;    /* Valid local or remote Region-ID */
+> +       u8  local_region_id;    /* Platform-assigned static local Region-=
+ID */
+> +       u8  remote_region_id;   /* Platform-assigned static remote Region=
+-ID */
+> +       u32 reserved1;          /* Reserved */
+> +       /* Region-ID Programming Registers[] */
+> +};
+> +
+> +#define ACPI_MRRM_VALID_REGION_ID_FLAGS_LOCAL  (1<<0)
+> +#define ACPI_MRRM_VALID_REGION_ID_FLAGS_REMOTE (1<<1)
+> +
+>  /* Reset to default packing */
+>
+>  #pragma pack()
+> --
+> 2.48.1
+>
+>
