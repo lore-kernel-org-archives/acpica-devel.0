@@ -1,170 +1,185 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F8C32046A1;
-	Wed, 12 Feb 2025 09:28:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDFE6208987
+	for <acpica-devel@lists.linux.dev>; Wed, 12 Feb 2025 10:52:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739352519; cv=none; b=YjEv1pl7JqUZcQzjpcGbJi8Q13JrRnQKb9Xnk0EVEZuxELSZ8eoFep0lqkSBXMTjrDrhPvKUlDTZv20xgT5DU8mRH30udxGBT33aBZwOjPbwrX6Z42RTIdQHoDDJy7o/BVFDNIcyVR8opzPJ4o12PYvO7NdROKiyrX1UCC0g4+U=
+	t=1739357532; cv=none; b=ME18qZJxAqKDsw6OCe2UGVFGxUy6VAjsjpoRBME6xFFjoJVQmTGaLAU4P3vgrDBMDdOMsIXd+/HiaV1vzBg4b3wF46XAOvNmX+nX+WE78EKtBuaKkDURS38y1FzGl07Uqe2lTEGoSbxM7GQGGfev0o42wFluGRPn3RyvuJ95lwE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739352519; c=relaxed/simple;
-	bh=gJpIK2N1oWtH5ADm/MDAKA+A5d3VUR0XUHUg0+3+Iq8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Cm/maOLWhiUrT8Z5G8EESgTAu4bv5fU78zSE95LiURn7AJ2uwnBncBIHoGcXjn1fuujpDDlXREWzR2LDDqgdD3vb7z+AgzmQQPM1sBSF6Qbn5C0q1jiVADBhMm4b6zQFx0vuzKNeZYR1SnYf+ZznYQkMtbQcZ0ZN+qQfd9YfGF8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=W1XYIkYk; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="W1XYIkYk"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1739352516; x=1770888516;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=gJpIK2N1oWtH5ADm/MDAKA+A5d3VUR0XUHUg0+3+Iq8=;
-  b=W1XYIkYkfxMdyfDtmZQGJWgC3j7NFNh1NCQGZ8fUYNlwteZa5Ep4hu2v
-   2dM9Gr9rlPecVsFVDDrBlRiwjHX/TJot48djgiD82/+ahjjmUuEHEtRbk
-   8vCNaxzoCvr82a87gQpgbJ90sVcO/XpmEbb21f+JfgA6eRElHDahI7sdE
-   aKMQadgaFn7Uz73J7I6xqVnbTAfG2g95LGqawsftwx66aPMzUYWdOuHyw
-   XVsAo4hPTVR1sASdTePyDFSetkiJkXWsnaCIOW4E6AJqzrBruc5R57uHk
-   HzO/Tb6n2toWd/ltxjCTpMq69utZkL0fpj80ORsyWn0x1VKx1RnX9ouQI
-   A==;
-X-CSE-ConnectionGUID: heRrhIy+S0SPPQqJoJpHzw==
-X-CSE-MsgGUID: pxWCeev2SUm2vXSYSi7J+A==
-X-IronPort-AV: E=McAfee;i="6700,10204,11342"; a="43925756"
-X-IronPort-AV: E=Sophos;i="6.13,279,1732608000"; 
-   d="scan'208";a="43925756"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2025 01:28:36 -0800
-X-CSE-ConnectionGUID: uoFlp30lSuaGrdQz3fpcsg==
-X-CSE-MsgGUID: XLCudRqwS5uKdTV8jnwDsw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.13,279,1732608000"; 
-   d="scan'208";a="112526808"
-Received: from lkp-server01.sh.intel.com (HELO d63d4d77d921) ([10.239.97.150])
-  by orviesa009.jf.intel.com with ESMTP; 12 Feb 2025 01:28:32 -0800
-Received: from kbuild by d63d4d77d921 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1ti92j-0015R1-2F;
-	Wed, 12 Feb 2025 09:28:29 +0000
-Date: Wed, 12 Feb 2025 17:27:58 +0800
-From: kernel test robot <lkp@intel.com>
-To: Sumit Gupta <sumitg@nvidia.com>, rafael@kernel.org,
-	viresh.kumar@linaro.org, lenb@kernel.org, robert.moore@intel.com,
-	corbet@lwn.net, linux-pm@vger.kernel.org,
-	linux-acpi@vger.kernel.org, linux-doc@vger.kernel.org,
-	acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	linux-tegra@vger.kernel.org, treding@nvidia.com,
-	jonathanh@nvidia.com, sashal@nvidia.com, vsethi@nvidia.com,
-	ksitaraman@nvidia.com, sanjayc@nvidia.com, bbasu@nvidia.com,
-	sumitg@nvidia.com
-Subject: Re: [Patch 5/5] cpufreq: CPPC: Add cppc_cpufreq_epp instance for
- Autonomous mode
-Message-ID: <202502121734.xMnvqs6o-lkp@intel.com>
-References: <20250211103737.447704-6-sumitg@nvidia.com>
+	s=arc-20240116; t=1739357532; c=relaxed/simple;
+	bh=AI5QOFLLH0oxBfsduevknRWSBfbZxBE//7tA0kLY9ic=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=OIO1SjF2GCGb6vWF3I0Q2cw6ks/PAcMPlvf4iK0bVuxun6V2Q+jHGdvDgGkMA6p0FBKO4PIts4xdrcW4wbawbOPQeUcZDCkrRlfOE0EgGg/V2sP7zi1Blsd6xd/86bAIhJWClDOd/F/nII39WhRozYU5+3pkj3+GDz6numD+pMA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4YtFQ03R0Lz11Q1B;
+	Wed, 12 Feb 2025 18:47:36 +0800 (CST)
+Received: from kwepemh100008.china.huawei.com (unknown [7.202.181.93])
+	by mail.maildlp.com (Postfix) with ESMTPS id BAF91140258;
+	Wed, 12 Feb 2025 18:52:03 +0800 (CST)
+Received: from [10.67.121.90] (10.67.121.90) by kwepemh100008.china.huawei.com
+ (7.202.181.93) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Wed, 12 Feb
+ 2025 18:52:02 +0800
+Message-ID: <8d5e0035-d8fe-49ef-bda5-f5881ff96657@huawei.com>
+Date: Wed, 12 Feb 2025 18:52:02 +0800
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250211103737.447704-6-sumitg@nvidia.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [Patch 0/5] Support Autonomous Selection mode in cppc_cpufreq
+To: Sumit Gupta <sumitg@nvidia.com>, Viresh Kumar <viresh.kumar@linaro.org>
+CC: <rafael@kernel.org>, <lenb@kernel.org>, <robert.moore@intel.com>,
+	<corbet@lwn.net>, <linux-pm@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>, <acpica-devel@lists.linux.dev>,
+	<linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+	<treding@nvidia.com>, <jonathanh@nvidia.com>, <sashal@nvidia.com>,
+	<vsethi@nvidia.com>, <ksitaraman@nvidia.com>, <sanjayc@nvidia.com>,
+	<bbasu@nvidia.com>
+References: <20250211103737.447704-1-sumitg@nvidia.com>
+ <20250211104428.dibsnxmkiluzixvz@vireshk-i7>
+ <b45d0d81-e4f7-474e-a146-0075a6145cc2@huawei.com>
+ <868d4c2a-583a-4cbb-a572-d884090a7134@nvidia.com>
+From: "zhenglifeng (A)" <zhenglifeng1@huawei.com>
+In-Reply-To: <868d4c2a-583a-4cbb-a572-d884090a7134@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemh100008.china.huawei.com (7.202.181.93)
+
+On 2025/2/11 22:08, Sumit Gupta wrote:
+> 
+> 
+>>
+>> On 2025/2/11 18:44, Viresh Kumar wrote:
+>>> On 11-02-25, 16:07, Sumit Gupta wrote:
+>>>> This patchset supports the Autonomous Performance Level Selection mode
+>>>> in the cppc_cpufreq driver. The feature is part of the existing CPPC
+>>>> specification and already present in Intel and AMD specific pstate
+>>>> cpufreq drivers. The patchset adds the support in generic acpi cppc
+>>>> cpufreq driver.
+>>>
+>>> Is there an overlap with:
+>>>
+>>> https://lore.kernel.org/all/20250206131428.3261578-1-zhenglifeng1@huawei.com/
+>>>
+>>> ?
+>>
+>> Ha, it looks like we're doing something very similar.
+>>
+> 
+> Hi Viresh,
+> 
+> Thank you for pointing to [1].
+> 
+> There seems to be some common points about updating the 'energy_perf'
+> and 'auto_sel' registers for autonomous mode but the current patchset
+> has more comprehensive changes to support Autonomous mode with the
+> cppc_cpufreq driver.
+> 
+> The patches in [1]:
+> 1) Make the cpc register read/write API’s generic and improves error
+>    handling for 'CPC_IN_PCC'.
+> 2) Expose sysfs under 'cppc_cpufreq_attr' to update 'auto_select',
+>    'auto_act_window' and 'epp' registers.
+> 
+> The current patch series:
+> 1) Exposes sysfs under 'cppc_attrs' to keep CPC registers together.
+> 2) Updates existing API’s to use new registers and creates new API
+>    with similar semantics to get all perf_ctrls.
+> 3) Renames some existing API’s for clarity.
+> 4) Use these existing API’s from acpi_cppc sysfs to update the CPC
+>    registers used in Autonomous mode:
+>    'auto_select', 'epp', 'min_perf', 'max_perf' registers.
+> 5) Add separate 'cppc_cpufreq_epp' instance of the 'cppc_cpufreq'
+>    driver to apply different limit and policy for Autonomous mode.
+>    Having it separate will avoid confusion between SW and HW mode.
+>    Also, it will be easy to scale and add new features in future
+>    without interference. Similar approach is used in Intel and AMD
+>    pstate drivers.
+> 
+> Please share inputs about the preferred approach.
+> 
+> Best Regards,
+> Sumit Gupta
+> 
+> [1] https://lore.kernel.org/all/20250206131428.3261578-1-zhenglifeng1@huawei.com/
+> 
+> 
 
 Hi Sumit,
 
-kernel test robot noticed the following build warnings:
+Thanks for upstreaming this.
 
-[auto build test WARNING on next-20250210]
-[cannot apply to rafael-pm/linux-next rafael-pm/bleeding-edge v6.14-rc2 v6.14-rc1 v6.13 linus/master v6.14-rc2]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+I think the changes to cppc_acpi in this patchset is inappropriate.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Sumit-Gupta/ACPI-CPPC-add-read-perf-ctrls-api-and-rename-few-existing/20250211-184154
-base:   next-20250210
-patch link:    https://lore.kernel.org/r/20250211103737.447704-6-sumitg%40nvidia.com
-patch subject: [Patch 5/5] cpufreq: CPPC: Add cppc_cpufreq_epp instance for Autonomous mode
-config: riscv-randconfig-001-20250212 (https://download.01.org/0day-ci/archive/20250212/202502121734.xMnvqs6o-lkp@intel.com/config)
-compiler: clang version 21.0.0git (https://github.com/llvm/llvm-project 6807164500e9920638e2ab0cdb4bf8321d24f8eb)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250212/202502121734.xMnvqs6o-lkp@intel.com/reproduce)
+1) cppc_attrs are common sysfs for any system that supports CPPC. That
+means, these interfaces would appear even if the cpufreq driver has already
+managing it, e.g. amd-pstate and cppc_cpufreq. This would create multiple
+interfaces to modify the same CPPC regs, which may probably introduce
+concurrency and data consistency issues. Instead, exposing the interfaces
+under cppc_cpufreq_attr decouples the write access to CPPC regs.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202502121734.xMnvqs6o-lkp@intel.com/
+2) It's inappropriate to call cpufreq_cpu_get() in cppc_acpi. This file
+currently provides interfaces for cpufreq drivers to use. It has no ABI
+dependency on cpufreq at the moment.
 
-All warnings (new ones prefixed by >>):
+Apart from the changes to cppc_acpi, I think the whole patchset in [1] can
+be independent to this patchset. In other words, adding the
+cppc_cpufreq_epp_driver could be standalone to discuss. I think combining
+the use of ->setpolicy() and setting EPP could be a use case? Could you
+explain more on the motivation of adding a new cppc_cpufreq_epp_driver?
 
->> drivers/cpufreq/cppc_cpufreq.c:780:68: warning: more '%' conversions than data arguments [-Wformat-insufficient-args]
-     780 |         pr_debug("cpu%d, curr epp:%u, new epp:%u, curr mode:%u, new mode:%u\n",
-         |                                                                          ~^
-   include/linux/printk.h:631:30: note: expanded from macro 'pr_debug'
-     631 |         no_printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
-         |                                     ^~~
-   drivers/cpufreq/cppc_cpufreq.c:11:37: note: expanded from macro 'pr_fmt'
-      11 | #define pr_fmt(fmt)     "CPPC Cpufreq:" fmt
-         |                                         ^~~
-   include/linux/printk.h:135:11: note: expanded from macro 'no_printk'
-     135 |                 _printk(fmt, ##__VA_ARGS__);            \
-         |                         ^~~
->> drivers/cpufreq/cppc_cpufreq.c:799:23: warning: unused variable 'cpu_data' [-Wunused-variable]
-     799 |         struct cppc_cpudata *cpu_data = policy->driver_data;
-         |                              ^~~~~~~~
-   drivers/cpufreq/cppc_cpufreq.c:1018:23: warning: unused variable 'cpu_data' [-Wunused-variable]
-    1018 |         struct cppc_cpudata *cpu_data;
-         |                              ^~~~~~~~
->> drivers/cpufreq/cppc_cpufreq.c:1019:11: warning: unused variable 'pref' [-Wunused-variable]
-    1019 |         int cpu, pref, ret = 0;
-         |                  ^~~~
-   4 warnings generated.
+[1] https://lore.kernel.org/all/20250206131428.3261578-1-zhenglifeng1@huawei.com/
 
+Regards,
+Lifeng
 
-vim +780 drivers/cpufreq/cppc_cpufreq.c
+>>>
+>>>> It adds a new 'cppc_cpufreq_epp' instance of the 'cppc_cpufreq' driver
+>>>> for supporting the Autonomous Performance Level Selection and Energy
+>>>> Performance Preference (EPP).
+>>>> Autonomous selection will get enabled during boot if 'cppc_auto_sel'
+>>>> boot argument is passed or the 'Autonomous Selection Enable' register
+>>>> is already set before kernel boot. When enabled, the hardware is
+>>>> allowed to autonomously select the CPU frequency within the min and
+>>>> max perf boundaries using the Engergy Performance Preference hints.
+>>>> The EPP values range from '0x0'(performance preference) to '0xFF'
+>>>> (energy efficiency preference).
+>>>>
+>>>> It also exposes the acpi_cppc sysfs nodes to update the epp, auto_sel
+>>>> and {min|max_perf} registers for changing the hints to hardware for
+>>>> Autonomous selection.
+>>>>
+>>>> In a followup patch, plan to add support to dynamically switch the
+>>>> cpufreq driver instance from 'cppc_cpufreq_epp' to 'cppc_cpufreq' and
+>>>> vice-versa without reboot.
+>>>>
+>>>> The patches are divided into below groups:
+>>>> - Patch [1-2]: Improvements. Can be applied independently.
+>>>> - Patch [3-4]: sysfs store nodes for Auto mode. Depend on Patch [1-2].
+>>>> - Patch [5]: Support for 'cppc_cpufreq_epp'. Uses a macro from [3].
+>>>>
+>>>> Sumit Gupta (5):
+>>>>    ACPI: CPPC: add read perf ctrls api and rename few existing
+>>>>    ACPI: CPPC: expand macro to create store acpi_cppc sysfs node
+>>>>    ACPI: CPPC: support updating epp, auto_sel and {min|max_perf} from
+>>>>      sysfs
+>>>>    Documentation: ACPI: add autonomous mode ctrls info in cppc_sysfs.txt
+>>>>    cpufreq: CPPC: Add cppc_cpufreq_epp instance for Autonomous mode
+>>>>
+>>>>   Documentation/admin-guide/acpi/cppc_sysfs.rst |  28 ++
+>>>>   .../admin-guide/kernel-parameters.txt         |  11 +
+>>>>   drivers/acpi/cppc_acpi.c                      | 311 ++++++++++++++++--
+>>>>   drivers/cpufreq/cppc_cpufreq.c                | 260 ++++++++++++++-
+>>>>   include/acpi/cppc_acpi.h                      |  19 +-
+>>>>   5 files changed, 572 insertions(+), 57 deletions(-)
+>>>
+>>
 
-   773	
-   774	static int cppc_cpufreq_epp_update_auto_mode(struct cpufreq_policy *policy, int auto_sel, u32 epp)
-   775	{
-   776		struct cppc_cpudata *cpu_data = policy->driver_data;
-   777		int ret, curr_epp;
-   778	
-   779		curr_epp = cpu_data->perf_ctrls.energy_perf;
- > 780		pr_debug("cpu%d, curr epp:%u, new epp:%u, curr mode:%u, new mode:%u\n",
-   781			 curr_epp, epp, cpu_data->perf_caps.auto_sel, auto_sel);
-   782	
-   783		/* set Performance preference as default */
-   784		cpu_data->perf_ctrls.energy_perf = epp;
-   785		ret = cppc_set_epp_perf(policy->cpu, &cpu_data->perf_ctrls, auto_sel);
-   786		if (ret < 0) {
-   787			pr_err("failed to set energy perf value (%d)\n", ret);
-   788			cpu_data->perf_ctrls.energy_perf = curr_epp;
-   789			return ret;
-   790		}
-   791		cpu_data->perf_caps.auto_sel = auto_sel;
-   792	
-   793		return ret;
-   794	}
-   795	
-   796	static int cppc_cpufreq_epp_update_perf(struct cpufreq_policy *policy, int auto_sel, u32 epp,
-   797						u32 highest_perf, u32 lowest_perf)
-   798	{
- > 799		struct cppc_cpudata *cpu_data = policy->driver_data;
-   800		int ret;
-   801	
-   802		ret = cppc_cpufreq_epp_update_perf_ctrls(policy, highest_perf, lowest_perf);
-   803		if (ret)
-   804			return ret;
-   805	
-   806		ret = cppc_cpufreq_epp_update_auto_mode(policy, auto_sel, epp);
-   807		if (ret)
-   808			return ret;
-   809	
-   810		return ret;
-   811	}
-   812	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
