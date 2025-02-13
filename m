@@ -1,41 +1,41 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61D4F1547F0
-	for <acpica-devel@lists.linux.dev>; Thu, 13 Feb 2025 20:12:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EEC528A2C1
+	for <acpica-devel@lists.linux.dev>; Thu, 13 Feb 2025 21:36:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739477536; cv=none; b=cPgw8gJoDP5UghIdH00c7agv6GdTkH0gmKMj+wtV+tTJs09BkfFWJ6xOytOpl7wtV0y6OGtP8S6YlgRdvzpF/kEUJc9jdBA1hS3KYfr0P6qy/8OprjBsp0iNf6nXmbMCMpKrxI52+FTKcZBgdKzl6Eu4QeWsc/gzcvWFvAZMHF8=
+	t=1739482580; cv=none; b=AfifFw3A2zXMF5/fgK071ozIjcy1ZM5QQ6wYPQ8FR9Pe/l4pJTD2IQS4YoO/FMCpO4If5m/K1Ur2jMJe/ucNAdsTaGtUUHx9ttTpIxwoVw5QIa2izvT9yIuqIr0YT65lMEzafzp547ykn+jayaHF2zNbFJ5aFDNJdz+3wJylD/U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739477536; c=relaxed/simple;
-	bh=4UtfTY9zieaOYjwynH0tPvjHVW4IZ0oEF4cXexzyaOo=;
+	s=arc-20240116; t=1739482580; c=relaxed/simple;
+	bh=CK+vbXcbSgW4rGdSQOrgX37aHaOo6VgVNeLHQCkbKts=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FMmpYYKWw+546LlaFTDPYjC9MrHf43dQIThqKukEPNokww54PQ3WTz6L4aldDZ89IPSNjo8+CDnnI8/6JnuRQzLlVjdVLXy90FSvqfH5SnBGpZAFFTl/fjAAbynGW6rv6AZA0bYUK5NT4bjH5yOEs/aqVShmz6t6lmkQbkEZMZw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dhj+NZB0; arc=none smtp.client-ip=10.30.226.201
+	 To:Cc:Content-Type; b=ucp8zTPJ+7S2c57RNg4vqRhUttdN80h0pvk567m/S/Dvp/fDHpZX3RQHW39T2xS7L0qyajBbSZWB6ftKciyw0h00pq260aEpzEdXtT2TjuXueDBWmVza+gRn1YitFB3U2Vo+8kvltbdRxIDg2fTmjvucoXplalJr17l1fQD+EsU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hPtplcf/; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dhj+NZB0"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 403EFC4CEE4
-	for <acpica-devel@lists.linux.dev>; Thu, 13 Feb 2025 20:12:16 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hPtplcf/"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 967E3C4CED1
+	for <acpica-devel@lists.linux.dev>; Thu, 13 Feb 2025 21:36:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739477536;
-	bh=4UtfTY9zieaOYjwynH0tPvjHVW4IZ0oEF4cXexzyaOo=;
+	s=k20201202; t=1739482579;
+	bh=CK+vbXcbSgW4rGdSQOrgX37aHaOo6VgVNeLHQCkbKts=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=dhj+NZB0nBvCV4NhBKdZKMW8jZREcMnEWIqfPM/NZYyb3TS4oTO5+PSAXV55hk9JW
-	 K+iR+Xl4tC5WkhlVtXQ9kmjRV9b2pl1m3iqpW36Hi9FsEi2S5XuIKRaO92ORvn5VxY
-	 UNHmUkyayXjK0KJo9fjsvJDNQxmyZZbSpFvK8isWGVy+QbCbImcbQaauCC8aya55Z7
-	 5w9PjvzU1C74wo0oymsAJWg5hhRMNXBIJTpLW5tkb5sHA6u95Yv4elGmHW+TwWJy+O
-	 B/kxMrUP3FkxnzRh8BSjujefcKBZ4MHw4Wel2KFl+SD7cMjeBMAYfRqNE9Pziye+Sj
-	 ZeWlh2E9EXkbA==
-Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-726e9659704so375658a34.0
-        for <acpica-devel@lists.linux.dev>; Thu, 13 Feb 2025 12:12:16 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUMkNUhsUkOYrq037uKjx2/Ipp1IhgIOEeWVzbEZVs9cTNyq+081dyms41Nuw+KY85Dj1g6DUmuhkqiIsQ=@lists.linux.dev
-X-Gm-Message-State: AOJu0YyrwAY55MOy0oMlOSn6w5NszM6Okr5QQEoR5DO1qxwU1zdvov4Y
-	OZdu//egZ0+B1HOoqaLpdn3I3ZOqiW2vbvsBO+NK7xVWGs0XsXeJ4z95ngwU3Nq17oGls05vRtE
-	6iZhr8Crgy5tRbKI2Uzst+FnUBRs=
-X-Google-Smtp-Source: AGHT+IHUb925K+afVeLFlaj2tLrsB841+HPBuvUK3nvJjp5zoYsavuU53gy6ED6o8N8crHrEpNh1OQtHS+MqOVVNVTI=
-X-Received: by 2002:a05:6830:391c:b0:71e:1392:80b5 with SMTP id
- 46e09a7af769-726fe7fdd85mr3619137a34.24.1739477535534; Thu, 13 Feb 2025
- 12:12:15 -0800 (PST)
+	b=hPtplcf/5bzDhLESuVE8Bh/rlSUbQoY739FfT6pT9DzgV6c2uWCpnP/1h5y7DfghY
+	 k5wI0DJBVoyPdOmr+a9O6BJn0dPvuHpQc4sIlcDJLufieRITwfHq8QoUKP85MJ+vV+
+	 oLztJrJSgNm5LYMS6xida6BNrGMnJd5qgir24vzmXwxNdr0Md+n+ZU7q7yCAYrZUYS
+	 Gw7g8GCUmO812sFszdhqst2EMllN7LMctMOAP67IzY8XM/MTZqVMp2xAqujEgB4Ine
+	 Xcv4snydNgheR9qC5hhiWiQutYpKC2dz/LHmX2tXXYMD//YF8nRoQ0v5ILhLOKuWGU
+	 mqCpVrSKFMwLg==
+Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-5f4d935084aso613335eaf.2
+        for <acpica-devel@lists.linux.dev>; Thu, 13 Feb 2025 13:36:19 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXr6YnxksfxKNeBQr8Jm96Isduj4vF4Bsh1qRWc/6lFQGXDRtSceTMVSpjfawgzFZb8aLEZcYSPssIHZ0A=@lists.linux.dev
+X-Gm-Message-State: AOJu0YwbDCosVeFeYw4L/Kgybn4Q6oxDyPYQ0vkNipfBVeKi+KjbWdbA
+	Tr9hrq7wGKX/MRh6dZWaBxk0RVhLz+BzCTSkyHrklfZai0DK35S+vn6q1rmYoHgP/vPhL+6OrpW
+	u+kLKeJYC+uvYPo4JlfmNGafB5Yk=
+X-Google-Smtp-Source: AGHT+IEFtiQ+UpM2ZtRoj8CTUtLwrkGMcE2jX3wJsB3J96xvLwWFsmOFco5nfniYBNpejwVOOZu0rK5tUOLpFx39oWM=
+X-Received: by 2002:a05:6870:ec94:b0:29e:29ac:5ade with SMTP id
+ 586e51a60fabf-2b8daf9798fmr5677846fac.35.1739482578963; Thu, 13 Feb 2025
+ 13:36:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -45,18 +45,18 @@ MIME-Version: 1.0
 References: <Z64iUD8EeF82k9Nt@agluck-desk3>
 In-Reply-To: <Z64iUD8EeF82k9Nt@agluck-desk3>
 From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Thu, 13 Feb 2025 21:12:03 +0100
-X-Gmail-Original-Message-ID: <CAJZ5v0iW44uZU96M-zKC7gpSfAwaL6-mZrJJnsm6Q0AQANHtFA@mail.gmail.com>
-X-Gm-Features: AWEUYZmqdeUERatOcU1WB6Mvb6sNW97xyfnG7l4cccLLPQ-di7dmfmxUTbbppIc
-Message-ID: <CAJZ5v0iW44uZU96M-zKC7gpSfAwaL6-mZrJJnsm6Q0AQANHtFA@mail.gmail.com>
+Date: Thu, 13 Feb 2025 22:36:07 +0100
+X-Gmail-Original-Message-ID: <CAJZ5v0jDOoNb8y5Ht6rUP7OouWWknOKf3ZTcAcuCV+5ZEvbs_g@mail.gmail.com>
+X-Gm-Features: AWEUYZmMdONyKlXBJmk2k2btt7NwvxNOpwT88FaXzsvZTMVL7eES7-B4xPe18Sk
+Message-ID: <CAJZ5v0jDOoNb8y5Ht6rUP7OouWWknOKf3ZTcAcuCV+5ZEvbs_g@mail.gmail.com>
 Subject: Re: ACPICA MRRM support
 To: "Luck, Tony" <tony.luck@intel.com>
 Cc: "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>, "Moore, Robert" <robert.moore@intel.com>, 
-	acpica-devel@lists.linux.dev
+	acpica-devel@lists.linux.dev, Saket Dumbre <saket.dumbre@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-+Saket
++Saket (again)
 
 On Thu, Feb 13, 2025 at 5:48=E2=80=AFPM Luck, Tony <tony.luck@intel.com> wr=
 ote:
