@@ -1,242 +1,131 @@
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A937F260A57
-	for <acpica-devel@lists.linux.dev>; Wed, 12 Feb 2025 17:04:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBE4E18EB0
+	for <acpica-devel@lists.linux.dev>; Thu, 13 Feb 2025 01:55:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739379867; cv=none; b=FMrE+w/1/SC/WFWfNP/ORX/A94lGHqNf+DPc/qZp7gQdmIoAtD1ecObDryRNpEYFk2lO5p5IY7afrD1O0TfAjqSL6merE4REq2p5/3srtPlkkg+P7UVhtA3m5lyz39ACaQkEVhS9YpJv9eLu6ffVhaW+zJhxuDIXxHSVbD4qudI=
+	t=1739411745; cv=none; b=AeqX8i7HVfvN4DF6/paiU6Vq3f31p941IiKPOJS9Hwv1HSuiKuENYXJEt9fsdcGXIfjFOjqSCZwV1mbp9H1EUeYFpxpSTyMkDl9nEsTH0+CJzkfnj4q8xE8DG6XySRCRy+n/hi3mVM2pjfkHI70hyWUDZxfa5R1aggcM0CyWfJo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739379867; c=relaxed/simple;
-	bh=13W5/30634OZAOEp8C34fhFNef/hkBvT0Qann9WW4zE=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=eLxTwwsTQHF1Iuc5Xj0T7zU3HSYC4C/BuX75y6CmuPe7DqwjYyzFxWiU05rSE9PBGUeaWHwPNCvTTs87ns0g9sTOWIhzjn7j0bUN9TQ9ACMs+sUyTxjmo29Enpt1MmVRQpfDuPiClflD1LZmsk6TNpBRT+fDIwTzDPXfsX1RNKc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+	s=arc-20240116; t=1739411745; c=relaxed/simple;
+	bh=iTSClWmyDqTMwzKfbdlDXnb2TNVtqMpl6wDetfIo41E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=PN3AbuNo/kL9XZvIjC61B3Eo0FBaG2X9YxlT/GHl2ZXL5e2qmR8eRkUK+9OI5DfTwYHnQwn8/fEU26lULc6lIViuVTGEokphJ8fOk7PK9hHpHZ3bmeC3fPd1g/ynQ1SY7BeJIb50M1DoffSPqlu4pykQsuWSWpdVTo+zSFfr7Y8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4YtPj734z1z6L5JZ;
-	Thu, 13 Feb 2025 01:01:15 +0800 (CST)
-Received: from frapeml500008.china.huawei.com (unknown [7.182.85.71])
-	by mail.maildlp.com (Postfix) with ESMTPS id 1D503140525;
-	Thu, 13 Feb 2025 01:04:16 +0800 (CST)
-Received: from localhost (10.203.177.66) by frapeml500008.china.huawei.com
- (7.182.85.71) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Wed, 12 Feb
- 2025 18:04:15 +0100
-Date: Wed, 12 Feb 2025 17:04:14 +0000
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-To: Zaid Alali <zaidal@os.amperecomputing.com>
-CC: <rafael@kernel.org>, <lenb@kernel.org>, <james.morse@arm.com>,
-	<tony.luck@intel.com>, <bp@alien8.de>, <robert.moore@intel.com>,
-	<dan.j.williams@intel.com>, <Benjamin.Cheatham@amd.com>,
-	<Avadhut.Naik@amd.com>, <viro@zeniv.linux.org.uk>, <arnd@arndb.de>,
-	<ira.weiny@intel.com>, <dave.jiang@intel.com>,
-	<sthanneeru.opensrc@micron.com>, <linux-acpi@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <acpica-devel@lists.linux.dev>
-Subject: Re: [PATCH v3 8/9] ACPI: APEI: EINJ: Enable EINJv2 error injections
-Message-ID: <20250212170414.000059c4@huawei.com>
-In-Reply-To: <20250210183705.1114624-9-zaidal@os.amperecomputing.com>
-References: <20250210183705.1114624-1-zaidal@os.amperecomputing.com>
-	<20250210183705.1114624-9-zaidal@os.amperecomputing.com>
-X-Mailer: Claws Mail 4.3.0 (GTK 3.24.42; x86_64-w64-mingw32)
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4YtdTf50VqzkXKD;
+	Thu, 13 Feb 2025 09:52:06 +0800 (CST)
+Received: from kwepemh100008.china.huawei.com (unknown [7.202.181.93])
+	by mail.maildlp.com (Postfix) with ESMTPS id ED4271800B6;
+	Thu, 13 Feb 2025 09:55:39 +0800 (CST)
+Received: from [10.67.121.90] (10.67.121.90) by kwepemh100008.china.huawei.com
+ (7.202.181.93) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Thu, 13 Feb
+ 2025 09:55:39 +0800
+Message-ID: <0097a9a3-fe61-4200-9a54-5a9c81d3219c@huawei.com>
+Date: Thu, 13 Feb 2025 09:55:38 +0800
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 0/8] Support for autonomous selection in cppc_cpufreq
+To: <rafael@kernel.org>, <lenb@kernel.org>, <robert.moore@intel.com>,
+	<viresh.kumar@linaro.org>, <mario.limonciello@amd.com>,
+	<gautham.shenoy@amd.com>, <ray.huang@amd.com>, <pierre.gondois@arm.com>
+CC: <acpica-devel@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+	<linuxarm@huawei.com>, <yumpusamongus@gmail.com>,
+	<srinivas.pandruvada@linux.intel.com>, <jonathan.cameron@huawei.com>,
+	<zhanjie9@hisilicon.com>, <lihuisong@huawei.com>, <hepeng68@huawei.com>,
+	<fanghao11@huawei.com>
+References: <20250206131428.3261578-1-zhenglifeng1@huawei.com>
+From: "zhenglifeng (A)" <zhenglifeng1@huawei.com>
+In-Reply-To: <20250206131428.3261578-1-zhenglifeng1@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100012.china.huawei.com (7.191.174.184) To
- frapeml500008.china.huawei.com (7.182.85.71)
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemh100008.china.huawei.com (7.202.181.93)
 
-On Mon, 10 Feb 2025 10:37:04 -0800
-Zaid Alali <zaidal@os.amperecomputing.com> wrote:
-
-> Enable the driver to inject EINJv2 type errors. The component
-> array values are parsed from user_input and expected to contain
-> hex values for component id and syndrome separated by space,
-> and multiple components are separated by new line as follows:
+On 2025/2/6 21:14, Lifeng Zheng wrote:
+> Add sysfs interfaces for CPPC autonomous selection in the cppc_cpufreq
+> driver.
 > 
-> component_id1 component_syndrome1
-> component_id2 component_syndrome2
->  :
-> component_id(n) component_syndrome(n)
+> The patch series is organized in two parts:
 > 
-> for example:
+>  - patch 1-5 refactor out the general CPPC register get and set functions
+>    in cppc_acpi.c
 > 
-> $comp_arr="0x1 0x2
-> >0x1 0x4
-> >0x2 0x4"  
-> $cd /sys/kernel/debug/apei/einj/
-> $echo "$comp_arr" > einjv2_component_array
+>  - patches 6-8 expose sysfs files for users to control CPPC autonomous
+>    selection when supported
 > 
-> Signed-off-by: Zaid Alali <zaidal@os.amperecomputing.com>
-> ---
->  drivers/acpi/apei/einj-core.c | 103 +++++++++++++++++++++++++++++-----
->  1 file changed, 89 insertions(+), 14 deletions(-)
+> Changelog:
 > 
-> diff --git a/drivers/acpi/apei/einj-core.c b/drivers/acpi/apei/einj-core.c
-> index 40ebdbc4961f..46359019ca03 100644
-> --- a/drivers/acpi/apei/einj-core.c
-> +++ b/drivers/acpi/apei/einj-core.c
-> @@ -87,6 +87,13 @@ enum {
->  	SETWA_FLAGS_APICID = 1,
->  	SETWA_FLAGS_MEM = 2,
->  	SETWA_FLAGS_PCIE_SBDF = 4,
-> +	SETWA_FLAGS_EINJV2 = 8,
-> +};
-> +
-> +enum {
-> +	EINJV2_PROCESSOR_ERROR = 0x1,
-> +	EINJV2_MEMORY_ERROR = 0x2,
-> +	EINJV2_PCIE_ERROR = 0x4,
->  };
->  
->  /*
-> @@ -111,6 +118,7 @@ static char vendor_dev[64];
->  static struct debugfs_blob_wrapper einjv2_component_arr;
->  static u64 component_count;
->  static void *user_input;
-> +static int nr_components;
->  static u32 available_error_type;
->  static u32 available_error_type_v2;
->  
-> @@ -181,6 +189,8 @@ static DEFINE_MUTEX(einj_mutex);
->  bool einj_initialized __ro_after_init;
->  
->  static void __iomem *einj_param;
-> +static u32 v5param_size;
-> +static bool is_V2;
->  
->  static void einj_exec_ctx_init(struct apei_exec_context *ctx)
->  {
-> @@ -288,11 +298,23 @@ static void *einj_get_parameter_address(void)
->  		struct set_error_type_with_address v5param;
->  		void __iomem *p;
->  
-> +		v5param_size = sizeof(v5param);
->  		p = acpi_os_map_iomem(pa_v5, sizeof(v5param));
->  		if (p) {
-> -			memcpy_fromio(&v5param, p, sizeof(v5param));
-> +			int offset, len;
-> +
-> +			memcpy_fromio(&v5param, p, v5param_size);
+> v5:
+> 
+>  - add more explanation to the commit logs and comments
+>  - change REG_OPTIONAL from bin to hex
+>  - split patch 2 into 3 smaller patches
+>  - remove CPPC_REG_VAL_READ() and CPPC_REG_VAL_WRITE() macros
+>  - move the modification part in patch 5 into a separate patch
+>  - rename the sysfs file from "energy_perf" to
+>    energy_performance_preference_val
+> 
+> v4:
+> 
+>  - add REG_OPTIONAL and IS_OPTIONAL_CPC_REG to judge if a cpc register is
+>    an optional one
+>  - check whether the register is optional before CPC_SUPPORTED check in
+>    cppc_get_reg_val() and cppc_set_reg_val()
+>  - check the register's type in cppc_set_reg_val()
+>  - add macros to generally implement registers getting and setting
+>    functions
+>  - move some logic codes from cppc_cpufreq.c to cppc_acpi.c
+>  - replace cppc_get_auto_sel_caps() by cppc_get_auto_sel()
+> 
+> v3:
+> 
+>  - change cppc_get_reg() and cppc_set_reg() name to cppc_get_reg_val() and
+>    cppc_set_reg_val()
+>  - extract cppc_get_reg_val_in_pcc() and cppc_set_reg_val_in_pcc()
+>  - return the result of cpc_read() in cppc_get_reg_val()
+>  - add pr_debug() in cppc_get_reg_val_in_pcc() when pcc_ss_id < 0
+>  - rename 'cpunum' to 'cpu' in cppc_get_reg_val()
+>  - move some macros from drivers/cpufreq/cppc_cpufreq.c to
+>    include/acpi/cppc_acpi.h with a CPPC_XXX prefix
+> 
+> v2:
+> 
+>  - fix some incorrect placeholder
+>  - change kstrtoul to kstrtobool in store_auto_select
+> 
+> Lifeng Zheng (8):
+>   ACPI: CPPC: Add IS_OPTIONAL_CPC_REG macro to judge if a cpc_reg is
+>     optional
+>   ACPI: CPPC: Optimize cppc_get_perf()
+>   ACPI: CPPC: Rename cppc_get_perf() to cppc_get_reg_val()
+>   ACPI: CPPC: Add cppc_set_reg_val()
+>   ACPI: CPPC: Refactor register value get and set ABIs
+>   ACPI: CPPC: Modify cppc_get_auto_sel_caps() to cppc_get_auto_sel()
+>   ACPI: CPPC: Add three functions related to autonomous selection
+>   cpufreq: CPPC: Support for autonomous selection in cppc_cpufreq
+> 
+>  .../ABI/testing/sysfs-devices-system-cpu      |  54 ++++
+>  drivers/acpi/cppc_acpi.c                      | 303 +++++++++++-------
+>  drivers/cpufreq/amd-pstate.c                  |   3 +-
+>  drivers/cpufreq/cppc_cpufreq.c                | 109 +++++++
+>  include/acpi/cppc_acpi.h                      |  30 +-
+>  5 files changed, 372 insertions(+), 127 deletions(-)
+> 
 
-Here you clear the first part, but not the extra elements.
+Gentle ping.
 
->  			acpi5 = 1;
->  			check_vendor_extension(pa_v5, &v5param);
-> +			if (available_error_type & ACPI65_EINJV2_SUPP) {
-> +				len = v5param.einjv2_struct.length;
-> +				offset = offsetof(struct einjv2_extension_struct, component_arr);
-> +				nr_components = (len - offset) / 32;
-> +				acpi_os_unmap_iomem(p, v5param_size);
-> +				v5param_size = sizeof(v5param) +
-> +					(nr_components * sizeof(struct syndrome_array));
-
-struct_size()
-
-> +				p = acpi_os_map_iomem(pa_v5, v5param_size);
-> +			}
->  			return p;
->  		}
->  	}
-> @@ -486,8 +508,8 @@ static int __einj_error_inject(u32 type, u32 flags, u64 param1, u64 param2,
->  	if (acpi5) {
->  		struct set_error_type_with_address *v5param;
->  
-> -		v5param = kmalloc(sizeof(*v5param), GFP_KERNEL);
-> -		memcpy_fromio(v5param, einj_param, sizeof(*v5param));
-> +		v5param = kmalloc(v5param_size, GFP_KERNEL);
-
-This patch is the point where kmalloc makes sense. I'd introduce it here
-rather than in earlier patch.
-
-> +		memcpy_fromio(v5param, einj_param, v5param_size);
->  		v5param->type = type;
->  		if (type & ACPI5_VENDOR_BIT) {
->  			switch (vendor_flags) {
-
-...
-
->  /* Inject the specified hardware error */
-> @@ -597,10 +663,15 @@ int einj_error_inject(u32 type, u32 flags, u64 param1, u64 param2, u64 param3,
->  	u64 base_addr, size;
->  
->  	/* If user manually set "flags", make sure it is legal */
-> -	if (flags && (flags &
-> -		~(SETWA_FLAGS_APICID|SETWA_FLAGS_MEM|SETWA_FLAGS_PCIE_SBDF)))
-> +	if (flags && (flags & ~(SETWA_FLAGS_APICID | SETWA_FLAGS_MEM |
-> +		      SETWA_FLAGS_PCIE_SBDF | SETWA_FLAGS_EINJV2)))
->  		return -EINVAL;
->  
-> +	/* check if type is a valid EINJv2 error type */
-> +	if (is_V2) {
-> +		if (!(type & available_error_type_v2))
-> +			return -EINVAL;
-> +	}
->  	/*
->  	 * We need extra sanity checks for memory errors.
->  	 * Other types leap directly to injection.
-> @@ -750,7 +821,7 @@ int einj_validate_error_type(u64 type)
->  	if (tval & (tval - 1))
->  		return -EINVAL;
->  	if (!vendor)
-> -		if (!(type & available_error_type))
-> +		if (!(type & (available_error_type | available_error_type_v2)))
->  			return -EINVAL;
->  
->  	return 0;
-> @@ -763,12 +834,14 @@ static ssize_t error_type_set(struct file *file, const char __user *buf,
->  	u64 val;
->  
->  	memset(einj_buf, 0, BUFF_SIZE);
-> +	is_V2 = false;
->  	if (copy_from_user(einj_buf, buf, count))
->  		return -EFAULT;
->  
->  	if (strncmp(einj_buf, "V2_", 3) == 0) {
->  		if (!sscanf(einj_buf, "V2_%llx", &val))
->  			return -EINVAL;
-> +		is_V2 = true;
-
-Given you have an if / else here. Set is_V2 = false
-in the else rather that default and override in one leg of
-the if / else.
-
->  	} else
->  		if (!sscanf(einj_buf, "%llx", &val))
->  			return -EINVAL;
-> @@ -792,6 +865,9 @@ static int error_inject_set(void *data, u64 val)
->  	if (!error_type)
->  		return -EINVAL;
->  
-> +	if (is_V2)
-> +		error_flags |= SETWA_FLAGS_EINJV2;
-> +
->  	return einj_error_inject(error_type, error_flags, error_param1, error_param2,
->  				error_param3, error_param4);
->  }
-> @@ -944,11 +1020,10 @@ static void __exit einj_remove(struct platform_device *pdev)
->  	struct apei_exec_context ctx;
->  
->  	if (einj_param) {
-> -		acpi_size size = (acpi5) ?
-> -			sizeof(struct set_error_type_with_address) :
-> -			sizeof(struct einj_parameter);
-> -
-> -		acpi_os_unmap_iomem(einj_param, size);
-
-Unless strong reason to change I'd keep to existing style and just
-replace the true condition with v5param_size
-
-> +		if (acpi5)
-> +			acpi_os_unmap_iomem(einj_param, v5param_size);
-> +		else
-> +			acpi_os_unmap_iomem(einj_param,	sizeof(struct einj_parameter));
->  		if (vendor_errors.size)
->  			acpi_os_unmap_memory(vendor_errors.data, vendor_errors.size);
->  	}
-
+Attach discussions of previous versions:
+v1: https://lore.kernel.org/all/20241114084816.1128647-1-zhenglifeng1@huawei.com/
+v2: https://lore.kernel.org/all/20241122062051.3658577-1-zhenglifeng1@huawei.com/
+v3: https://lore.kernel.org/all/20241216091603.1247644-1-zhenglifeng1@huawei.com/
+v4: https://lore.kernel.org/all/20250113122104.3870673-1-zhenglifeng1@huawei.com/
