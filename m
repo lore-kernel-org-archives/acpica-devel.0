@@ -1,31 +1,50 @@
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBE4E18EB0
-	for <acpica-devel@lists.linux.dev>; Thu, 13 Feb 2025 01:55:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F2A9214206;
+	Thu, 13 Feb 2025 11:58:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739411745; cv=none; b=AeqX8i7HVfvN4DF6/paiU6Vq3f31p941IiKPOJS9Hwv1HSuiKuENYXJEt9fsdcGXIfjFOjqSCZwV1mbp9H1EUeYFpxpSTyMkDl9nEsTH0+CJzkfnj4q8xE8DG6XySRCRy+n/hi3mVM2pjfkHI70hyWUDZxfa5R1aggcM0CyWfJo=
+	t=1739447883; cv=none; b=rYkUMrZyIcNEyeCwmEAQFKgdhMfujVBiBScuDq1x0I4JgsIDCqiGLznQNEEbjqL/+BdxPTg4F4fa6UMhcd7FQp/CeojANnir5h6SWW6YzetLcmGDBbJCTK40D1UJhvcUKcqwLwj4KM5s4/IfMd+ZVpYL2Yu2WsLverf5joiQMLc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739411745; c=relaxed/simple;
-	bh=iTSClWmyDqTMwzKfbdlDXnb2TNVtqMpl6wDetfIo41E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=PN3AbuNo/kL9XZvIjC61B3Eo0FBaG2X9YxlT/GHl2ZXL5e2qmR8eRkUK+9OI5DfTwYHnQwn8/fEU26lULc6lIViuVTGEokphJ8fOk7PK9hHpHZ3bmeC3fPd1g/ynQ1SY7BeJIb50M1DoffSPqlu4pykQsuWSWpdVTo+zSFfr7Y8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4YtdTf50VqzkXKD;
-	Thu, 13 Feb 2025 09:52:06 +0800 (CST)
-Received: from kwepemh100008.china.huawei.com (unknown [7.202.181.93])
-	by mail.maildlp.com (Postfix) with ESMTPS id ED4271800B6;
-	Thu, 13 Feb 2025 09:55:39 +0800 (CST)
-Received: from [10.67.121.90] (10.67.121.90) by kwepemh100008.china.huawei.com
- (7.202.181.93) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Thu, 13 Feb
- 2025 09:55:39 +0800
-Message-ID: <0097a9a3-fe61-4200-9a54-5a9c81d3219c@huawei.com>
-Date: Thu, 13 Feb 2025 09:55:38 +0800
+	s=arc-20240116; t=1739447883; c=relaxed/simple;
+	bh=AK+FKyMd7dfZt0G7tPDijdfr9CalJ0oWmocbmIdcgPo=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=OGJ843Vwd3vn+F+N7v8Kp4R05umIWijccLJ6HDi+YLMTFawSy1/5dExdJWynvF+VZmMVsUo8/iRcf+BBf2+v4SH+e6ZcKNoIFngJgi+bylwqFsrHGxzm3dGCiQkkpqqULFL78zKnPEOqlqz/B4hS3xam528kv3kLqxpEIk/F0Sc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OlIO4VkI; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OlIO4VkI"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1739447883; x=1770983883;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=AK+FKyMd7dfZt0G7tPDijdfr9CalJ0oWmocbmIdcgPo=;
+  b=OlIO4VkI+p5xONu2FQ0KpNRC/otp0aTLDqKnBtD+q8L1F1RkZZ14pXZv
+   11I5DQ5atYrkcyqiZZ5stzS3gaVUGMEEI/jcdnv8W2ehe1P7uZXE+j0h9
+   9aBUdnTE9dRyE9uvHG9j32LAJRtnRhsuhl5I7kJwUXdWHKllmREfYHrGP
+   2PNLCUPWU/ziRs6yWkgOiS1wCAMcEaXGcL0jCkdUH5i4PYoXtZNRdHMj6
+   9qUApA8e77moX0T6O25mYHCFwzavJmtAbRtrWTGz5LRx3PYwKxoadQWms
+   XJl2D1WOsJe1ihuJtZhYKR8SpBKyNoDZ1aC9jSTcH/GnLGfyY5XkFcOHs
+   g==;
+X-CSE-ConnectionGUID: 04Fj9eEES+mmWX0wQ2+9/w==
+X-CSE-MsgGUID: 755Gr6BKSYuByl7NhZpqxA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11314"; a="40261277"
+X-IronPort-AV: E=Sophos;i="6.12,310,1728975600"; 
+   d="scan'208";a="40261277"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2025 03:58:02 -0800
+X-CSE-ConnectionGUID: sqjDCNoHTtaIhPm2Z1Mc8A==
+X-CSE-MsgGUID: 62i6si6lRmG0UymwlyBHRQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.11,199,1725346800"; 
+   d="scan'208";a="118060259"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.124.242.149]) ([10.124.242.149])
+  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2025 03:57:56 -0800
+Message-ID: <f7b6c833-b6c1-4154-9b77-13553e501f2b@linux.intel.com>
+Date: Thu, 13 Feb 2025 19:57:51 +0800
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -33,99 +52,73 @@ List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 0/8] Support for autonomous selection in cppc_cpufreq
-To: <rafael@kernel.org>, <lenb@kernel.org>, <robert.moore@intel.com>,
-	<viresh.kumar@linaro.org>, <mario.limonciello@amd.com>,
-	<gautham.shenoy@amd.com>, <ray.huang@amd.com>, <pierre.gondois@arm.com>
-CC: <acpica-devel@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-	<linuxarm@huawei.com>, <yumpusamongus@gmail.com>,
-	<srinivas.pandruvada@linux.intel.com>, <jonathan.cameron@huawei.com>,
-	<zhanjie9@hisilicon.com>, <lihuisong@huawei.com>, <hepeng68@huawei.com>,
-	<fanghao11@huawei.com>
-References: <20250206131428.3261578-1-zhenglifeng1@huawei.com>
-From: "zhenglifeng (A)" <zhenglifeng1@huawei.com>
-In-Reply-To: <20250206131428.3261578-1-zhenglifeng1@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+Cc: baolu.lu@linux.intel.com, Zhangfei Gao <zhangfei.gao@linaro.org>,
+ acpica-devel@lists.linux.dev, iommu@lists.linux.dev,
+ Joerg Roedel <joro@8bytes.org>, Kevin Tian <kevin.tian@intel.com>,
+ kvm@vger.kernel.org, Len Brown <lenb@kernel.org>,
+ linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>,
+ Robert Moore <robert.moore@intel.com>, Robin Murphy <robin.murphy@arm.com>,
+ Sudeep Holla <sudeep.holla@arm.com>, Will Deacon <will@kernel.org>,
+ Alex Williamson <alex.williamson@redhat.com>,
+ Donald Dutile <ddutile@redhat.com>, Eric Auger <eric.auger@redhat.com>,
+ Hanjun Guo <guohanjun@huawei.com>,
+ Jean-Philippe Brucker <jean-philippe@linaro.org>,
+ Jerry Snitselaar <jsnitsel@redhat.com>, Moritz Fischer <mdf@kernel.org>,
+ Michael Shavit <mshavit@google.com>, Nicolin Chen <nicolinc@nvidia.com>,
+ patches@lists.linux.dev, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+ Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
+ Mostafa Saleh <smostafa@google.com>
+Subject: Re: [PATCH v4 00/12] Initial support for SMMUv3 nested translation
+To: Jason Gunthorpe <jgg@nvidia.com>
+References: <0-v4-9e99b76f3518+3a8-smmuv3_nesting_jgg@nvidia.com>
+ <20241112182938.GA172989@nvidia.com>
+ <CABQgh9HOHzeRF7JfrXrRAcGB53o29HkW9rnVTf4JefeVWDvzyQ@mail.gmail.com>
+ <20241113012359.GB35230@nvidia.com>
+ <9df3dd17-375a-4327-b2a8-e9f7690d81b1@linux.intel.com>
+ <20241113164316.GL35230@nvidia.com>
+ <6ed97a10-853f-429e-8506-94b218050ad3@linux.intel.com>
+ <20241115175522.GA35230@nvidia.com> <20250122192622.GA965540@nvidia.com>
+ <284dd081-8d53-45ef-ae18-78b0388c98ca@linux.intel.com>
+Content-Language: en-US
+From: Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <284dd081-8d53-45ef-ae18-78b0388c98ca@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemh100008.china.huawei.com (7.202.181.93)
 
-On 2025/2/6 21:14, Lifeng Zheng wrote:
-> Add sysfs interfaces for CPPC autonomous selection in the cppc_cpufreq
-> driver.
+On 2025/2/5 11:45, Baolu Lu wrote:
+> On 2025/1/23 3:26, Jason Gunthorpe wrote:
+>> On Fri, Nov 15, 2024 at 01:55:22PM -0400, Jason Gunthorpe wrote:
+>>>>> I need your help to remove IOMMU_DEV_FEAT_IOPF from the intel
+>>>>> driver. I have a patch series that eliminates it from all the other
+>>>>> drivers, and I wrote a patch to remove FEAT_SVA from intel..
+>>>> Yes, sure. Let's make this happen in the next cycle.
+>>>>
+>>>> FEAT_IOPF could be removed. IOPF manipulation can be handled in the
+>>>> domain attachment path. A per-device refcount can be implemented. This
+>>>> count increments with each iopf-capable domain attachment and 
+>>>> decrements
+>>>> with each detachment. PCI PRI is enabled for the first iopf-capable
+>>>> domain and disabled when the last one is removed. Probably we can also
+>>>> solve the PF/VF sharing PRI issue.
+>>> Here is what I have so far, if you send me a patch for vt-d to move
+>>> FEAT_IOPF into attach as you describe above (see what I did to arm for
+>>> example), then I can send it next cycle
+>>>
+>>> https://github.com/jgunthorpe/linux/commits/iommu_no_feat/
+>> Hey Baolu, a reminder on this, lets try for it next cycle?
 > 
-> The patch series is organized in two parts:
-> 
->  - patch 1-5 refactor out the general CPPC register get and set functions
->    in cppc_acpi.c
-> 
->  - patches 6-8 expose sysfs files for users to control CPPC autonomous
->    selection when supported
-> 
-> Changelog:
-> 
-> v5:
-> 
->  - add more explanation to the commit logs and comments
->  - change REG_OPTIONAL from bin to hex
->  - split patch 2 into 3 smaller patches
->  - remove CPPC_REG_VAL_READ() and CPPC_REG_VAL_WRITE() macros
->  - move the modification part in patch 5 into a separate patch
->  - rename the sysfs file from "energy_perf" to
->    energy_performance_preference_val
-> 
-> v4:
-> 
->  - add REG_OPTIONAL and IS_OPTIONAL_CPC_REG to judge if a cpc register is
->    an optional one
->  - check whether the register is optional before CPC_SUPPORTED check in
->    cppc_get_reg_val() and cppc_set_reg_val()
->  - check the register's type in cppc_set_reg_val()
->  - add macros to generally implement registers getting and setting
->    functions
->  - move some logic codes from cppc_cpufreq.c to cppc_acpi.c
->  - replace cppc_get_auto_sel_caps() by cppc_get_auto_sel()
-> 
-> v3:
-> 
->  - change cppc_get_reg() and cppc_set_reg() name to cppc_get_reg_val() and
->    cppc_set_reg_val()
->  - extract cppc_get_reg_val_in_pcc() and cppc_set_reg_val_in_pcc()
->  - return the result of cpc_read() in cppc_get_reg_val()
->  - add pr_debug() in cppc_get_reg_val_in_pcc() when pcc_ss_id < 0
->  - rename 'cpunum' to 'cpu' in cppc_get_reg_val()
->  - move some macros from drivers/cpufreq/cppc_cpufreq.c to
->    include/acpi/cppc_acpi.h with a CPPC_XXX prefix
-> 
-> v2:
-> 
->  - fix some incorrect placeholder
->  - change kstrtoul to kstrtobool in store_auto_select
-> 
-> Lifeng Zheng (8):
->   ACPI: CPPC: Add IS_OPTIONAL_CPC_REG macro to judge if a cpc_reg is
->     optional
->   ACPI: CPPC: Optimize cppc_get_perf()
->   ACPI: CPPC: Rename cppc_get_perf() to cppc_get_reg_val()
->   ACPI: CPPC: Add cppc_set_reg_val()
->   ACPI: CPPC: Refactor register value get and set ABIs
->   ACPI: CPPC: Modify cppc_get_auto_sel_caps() to cppc_get_auto_sel()
->   ACPI: CPPC: Add three functions related to autonomous selection
->   cpufreq: CPPC: Support for autonomous selection in cppc_cpufreq
-> 
->  .../ABI/testing/sysfs-devices-system-cpu      |  54 ++++
->  drivers/acpi/cppc_acpi.c                      | 303 +++++++++++-------
->  drivers/cpufreq/amd-pstate.c                  |   3 +-
->  drivers/cpufreq/cppc_cpufreq.c                | 109 +++++++
->  include/acpi/cppc_acpi.h                      |  30 +-
->  5 files changed, 372 insertions(+), 127 deletions(-)
-> 
+> Oh, I forgot this. Thanks for the reminding. Sure, let's try to make it
+> in the next cycle.
 
-Gentle ping.
+Hi Jason,
 
-Attach discussions of previous versions:
-v1: https://lore.kernel.org/all/20241114084816.1128647-1-zhenglifeng1@huawei.com/
-v2: https://lore.kernel.org/all/20241122062051.3658577-1-zhenglifeng1@huawei.com/
-v3: https://lore.kernel.org/all/20241216091603.1247644-1-zhenglifeng1@huawei.com/
-v4: https://lore.kernel.org/all/20250113122104.3870673-1-zhenglifeng1@huawei.com/
+I've worked through the entire series. The patches are available here:
+
+https://github.com/LuBaolu/intel-iommu/commits/iommu-no-feat-v6.14-rc2
+
+Please check if this is the right direction.
+
+Thanks,
+baolu
