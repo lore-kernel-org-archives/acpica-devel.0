@@ -1,158 +1,231 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E12BC42C0B
-	for <acpica-devel@lists.linux.dev>; Tue, 18 Feb 2025 19:17:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B49E61F5853
+	for <acpica-devel@lists.linux.dev>; Tue, 18 Feb 2025 19:23:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739906278; cv=none; b=tK/HgJHCTl5rsD0i/Rs3SULfq9cj3SuwZCZpicWdpQHzoeQoB3oKUd4qdYKVjKWTe4P+9krdA1+UKCVT3sXRy9fkt0amGthEpivB3CGNAIWIqW48nzfVA+K/I+/HEjMdq9rE9cOzPlu/LUu+FmOvXHdE6hXl/csmYvlnnttF7F8=
+	t=1739906609; cv=none; b=pwBs2ttKW2W0JudLehA7nTiKHkKX+B3HvynF2PndpCyUDxq12zQ1nvd+cyYW9piD2ofYjBsQqUhTKiXdjkCloO9qRHOezULN5NHVL+yY5OXQD4eGd9WRlAWuTZUZ5tZD+lDnXRNzTMLKiijiSMRRuh+qA9r9yxUUaclT3ZgpyOs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739906278; c=relaxed/simple;
-	bh=Okr34aKUyByTgMrq3BUiBcdCK3Tgwa9jn3l+JQLmqWI=;
+	s=arc-20240116; t=1739906609; c=relaxed/simple;
+	bh=tHGA5G2WYkatnmKUK3lUU0vRU387uRxbNlWbdsK5rwE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iLI0AB8HwOgFf/9DTJY1UlxSslqthocjWYLcd/Zyo9HVwDHFBCQQ/Ig9kxYn0fs9NIxTRWpTCAqQt/gu5sFDjTzDuQwSva2GGe+qz2onK/OM/nRVT/oxvUO1rY8PU9UPGLfNUtt2V5nD1OrGm0Pi+YVvSFrOL1LUfeQYbcpv7UM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NgNG4J78; arc=none smtp.client-ip=10.30.226.201
+	 To:Cc:Content-Type; b=Shifk4dB9Ra4mkFj3C6w0ffoiitU/biZJdQ1GZnNk3BAJ/Q/Qu7Jwhf8/RdGQU1ZxBSNCkJvW501cbLUgHl6v8Bkt86t5OvIZtqtGLLkEHaLlmW+MAH/VWzp6oq9YZsLQ5LXiMcEt/fqBda/ZgU6IvnkvGbvSt8swAF5iLw7YL8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OBjICclE; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NgNG4J78"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5891BC4AF0B
-	for <acpica-devel@lists.linux.dev>; Tue, 18 Feb 2025 19:17:57 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OBjICclE"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 390DEC4CEEC
+	for <acpica-devel@lists.linux.dev>; Tue, 18 Feb 2025 19:23:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739906277;
-	bh=Okr34aKUyByTgMrq3BUiBcdCK3Tgwa9jn3l+JQLmqWI=;
+	s=k20201202; t=1739906609;
+	bh=tHGA5G2WYkatnmKUK3lUU0vRU387uRxbNlWbdsK5rwE=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=NgNG4J784DDjNhQl+yWyPwZWwNozAPCEK7J12ulNQC4wX0iXq86wvHd8WMvO9DUpg
-	 FSEE8kcl2pcfw71CHwgC/xAJS0TBmuimz+/XNm86QGRcy3QC7jvmMwnOnvnPcHR8MS
-	 Foq/6ouhP2rzW/+7GQ0ZFt3gsIKLmxNvRcTdjy2AcmZA8NpCaDekR8Rl+sX0hrx6IP
-	 1v6CbWm2ULvrf/iyFb2B2QFCYSFeqn4pC18Y8xZRoo0vXy6IaTuhANHNDZBOIRU2gi
-	 305Ca8sojAVg7R1BqruSsJdZ3jvrXprikuh39U4M+o1qfwCTrOOxlPFHfzstoFb/bV
-	 H2sy+HTd/SZNw==
-Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3f404933b1cso496876b6e.3
-        for <acpica-devel@lists.linux.dev>; Tue, 18 Feb 2025 11:17:57 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVYGec9rdM770rdegjtedqELWsc97L46Em19SeDTG7TrtBFJgd3txjDWtZpnH1zqXhEMXhIKoTC8pCXG0c=@lists.linux.dev
-X-Gm-Message-State: AOJu0Yzp0ErJ2z3FWBbudSTmhW3djZnscIayFnrir/n7xdqUOQjjRvi2
-	xE2vc95zcaA3YFqBYuxR+VIyfknDZ/yKAjlVZeg4w6jqe0vM40r2R2fJhc2t2xoSCevdCGzG9PA
-	/WR63cmie8dDymuu0RSEW7swEuvE=
-X-Google-Smtp-Source: AGHT+IE11iyyMeBw/VMtJQQmRZ5BdbepoHXAD4Hl2n6hzj1swyyMTfhVLwBTksLrkoVda+oAF13P9TqZzn+9gPy5epw=
-X-Received: by 2002:a05:6808:f90:b0:3f3:d9e2:73c8 with SMTP id
- 5614622812f47-3f3eb11b313mr8215252b6e.30.1739906276561; Tue, 18 Feb 2025
- 11:17:56 -0800 (PST)
+	b=OBjICclEAhuFsYzZQCfh187X4A70ZB8kLhlGB+G0Y1WH52H1IVUzEefn3Yr47eVzD
+	 SRCMzEexqdZQKEQDRkNQd05L5cnaPhfvHF7iBXIoRaAHKU59bKop6m/vjg5FIw9yaq
+	 CemDgQZneYRRgnQCG6eFr9+Q4ya7+dcrDxZZAoyrTeZxwQ9v4mfA8xJSw3/kY2KYuw
+	 wWA3MAaso2buF5NziFfkUx0EqYV8hQXGpshjYnV3PeyUoYeIL5u2b7yTGTkxd/M1PX
+	 SOyARhe5rafluU1t/PdE80Q+y0wcP8OQTC04wtwMR48UIsqdCtOcg35iQ9NPMQ5a+W
+	 aKmBt9T9L4pGQ==
+Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-3f3e0498beaso55034b6e.1
+        for <acpica-devel@lists.linux.dev>; Tue, 18 Feb 2025 11:23:29 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCU37e/+OsQmSS4bka9Ai/NDxtE5AQMgUe9n/sft9YuUnEsSf4mZV8mOivAVLhqNZ/o84hUKTBs8o/McpIg=@lists.linux.dev
+X-Gm-Message-State: AOJu0YzhFSaMLNa19lIdwtX/kr8copgLsiFQUO7QUCPnOZXVHLLelha6
+	vs95VL0H0cXqChntGCn5MvX09Cz1bdWZ1EleUrr5vst5dYzAwL4pJeWJlMZdREKAL6KDiX+fRz5
+	m+FkkWm85dPbTHpuStQ+nlBjTwu4=
+X-Google-Smtp-Source: AGHT+IFnQSrEOQ5XyF8kcORbR22aIZWDMKNGLzVsGwRAAbFTPsjQg/3r9VLhR4uCpNrzjbTL59N8kAtr10x5ERBjPf4=
+X-Received: by 2002:a05:6808:188b:b0:3f4:9e6:fb7 with SMTP id
+ 5614622812f47-3f40eefb38fmr790244b6e.1.1739906608509; Tue, 18 Feb 2025
+ 11:23:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20250206131428.3261578-1-zhenglifeng1@huawei.com> <0097a9a3-fe61-4200-9a54-5a9c81d3219c@huawei.com>
-In-Reply-To: <0097a9a3-fe61-4200-9a54-5a9c81d3219c@huawei.com>
+References: <20250211103737.447704-1-sumitg@nvidia.com> <20250211104428.dibsnxmkiluzixvz@vireshk-i7>
+ <b45d0d81-e4f7-474e-a146-0075a6145cc2@huawei.com> <868d4c2a-583a-4cbb-a572-d884090a7134@nvidia.com>
+ <8d5e0035-d8fe-49ef-bda5-f5881ff96657@huawei.com> <94bdab73-adc4-4b43-9037-5639f23e3d1e@nvidia.com>
+In-Reply-To: <94bdab73-adc4-4b43-9037-5639f23e3d1e@nvidia.com>
 From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Tue, 18 Feb 2025 20:17:45 +0100
-X-Gmail-Original-Message-ID: <CAJZ5v0hP9a8g8UR2oPyivP1C65=csR245PSHay+nOx3vkoKoaA@mail.gmail.com>
-X-Gm-Features: AWEUYZkgrfYy0ha5UC1R_2_bCqZ7xDXpbb42jW2c9EZZuVtbfizHgfedEgRK23s
-Message-ID: <CAJZ5v0hP9a8g8UR2oPyivP1C65=csR245PSHay+nOx3vkoKoaA@mail.gmail.com>
-Subject: Re: [PATCH v5 0/8] Support for autonomous selection in cppc_cpufreq
-To: "zhenglifeng (A)" <zhenglifeng1@huawei.com>
-Cc: rafael@kernel.org, lenb@kernel.org, robert.moore@intel.com, 
-	viresh.kumar@linaro.org, mario.limonciello@amd.com, gautham.shenoy@amd.com, 
-	ray.huang@amd.com, pierre.gondois@arm.com, acpica-devel@lists.linux.dev, 
-	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-pm@vger.kernel.org, linuxarm@huawei.com, yumpusamongus@gmail.com, 
-	srinivas.pandruvada@linux.intel.com, jonathan.cameron@huawei.com, 
-	zhanjie9@hisilicon.com, lihuisong@huawei.com, hepeng68@huawei.com, 
-	fanghao11@huawei.com
+Date: Tue, 18 Feb 2025 20:23:17 +0100
+X-Gmail-Original-Message-ID: <CAJZ5v0iAg6HFROHctYQwW=V9XiV8p3XVYgeKUcX4qBgfwQK6Ow@mail.gmail.com>
+X-Gm-Features: AWEUYZnjK1GpyeSViY75mprA6AS3e808U82IVCn4oReC-_uewxJCKtkO01zA8nA
+Message-ID: <CAJZ5v0iAg6HFROHctYQwW=V9XiV8p3XVYgeKUcX4qBgfwQK6Ow@mail.gmail.com>
+Subject: Re: [Patch 0/5] Support Autonomous Selection mode in cppc_cpufreq
+To: Sumit Gupta <sumitg@nvidia.com>, "zhenglifeng (A)" <zhenglifeng1@huawei.com>
+Cc: Viresh Kumar <viresh.kumar@linaro.org>, rafael@kernel.org, lenb@kernel.org, 
+	robert.moore@intel.com, corbet@lwn.net, linux-pm@vger.kernel.org, 
+	linux-acpi@vger.kernel.org, linux-doc@vger.kernel.org, 
+	acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	linux-tegra@vger.kernel.org, treding@nvidia.com, jonathanh@nvidia.com, 
+	sashal@nvidia.com, vsethi@nvidia.com, ksitaraman@nvidia.com, 
+	sanjayc@nvidia.com, bbasu@nvidia.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 13, 2025 at 2:55=E2=80=AFAM zhenglifeng (A) <zhenglifeng1@huawe=
-i.com> wrote:
+On Fri, Feb 14, 2025 at 8:09=E2=80=AFAM Sumit Gupta <sumitg@nvidia.com> wro=
+te:
 >
-> On 2025/2/6 21:14, Lifeng Zheng wrote:
-> > Add sysfs interfaces for CPPC autonomous selection in the cppc_cpufreq
-> > driver.
+>
+>
+> On 12/02/25 16:22, zhenglifeng (A) wrote:
+> > External email: Use caution opening links or attachments
 > >
-> > The patch series is organized in two parts:
 > >
-> >  - patch 1-5 refactor out the general CPPC register get and set functio=
-ns
-> >    in cppc_acpi.c
+> > On 2025/2/11 22:08, Sumit Gupta wrote:
+> >>
+> >>
+> >>>
+> >>> On 2025/2/11 18:44, Viresh Kumar wrote:
+> >>>> On 11-02-25, 16:07, Sumit Gupta wrote:
+> >>>>> This patchset supports the Autonomous Performance Level Selection m=
+ode
+> >>>>> in the cppc_cpufreq driver. The feature is part of the existing CPP=
+C
+> >>>>> specification and already present in Intel and AMD specific pstate
+> >>>>> cpufreq drivers. The patchset adds the support in generic acpi cppc
+> >>>>> cpufreq driver.
+> >>>>
+> >>>> Is there an overlap with:
+> >>>>
+> >>>> https://lore.kernel.org/all/20250206131428.3261578-1-zhenglifeng1@hu=
+awei.com/
+> >>>>
+> >>>> ?
+> >>>
+> >>> Ha, it looks like we're doing something very similar.
+> >>>
+> >>
+> >> Hi Viresh,
+> >>
+> >> Thank you for pointing to [1].
+> >>
+> >> There seems to be some common points about updating the 'energy_perf'
+> >> and 'auto_sel' registers for autonomous mode but the current patchset
+> >> has more comprehensive changes to support Autonomous mode with the
+> >> cppc_cpufreq driver.
+> >>
+> >> The patches in [1]:
+> >> 1) Make the cpc register read/write API=E2=80=99s generic and improves=
+ error
+> >>     handling for 'CPC_IN_PCC'.
+> >> 2) Expose sysfs under 'cppc_cpufreq_attr' to update 'auto_select',
+> >>     'auto_act_window' and 'epp' registers.
+> >>
+> >> The current patch series:
+> >> 1) Exposes sysfs under 'cppc_attrs' to keep CPC registers together.
+> >> 2) Updates existing API=E2=80=99s to use new registers and creates new=
+ API
+> >>     with similar semantics to get all perf_ctrls.
+> >> 3) Renames some existing API=E2=80=99s for clarity.
+> >> 4) Use these existing API=E2=80=99s from acpi_cppc sysfs to update the=
+ CPC
+> >>     registers used in Autonomous mode:
+> >>     'auto_select', 'epp', 'min_perf', 'max_perf' registers.
+> >> 5) Add separate 'cppc_cpufreq_epp' instance of the 'cppc_cpufreq'
+> >>     driver to apply different limit and policy for Autonomous mode.
+> >>     Having it separate will avoid confusion between SW and HW mode.
+> >>     Also, it will be easy to scale and add new features in future
+> >>     without interference. Similar approach is used in Intel and AMD
+> >>     pstate drivers.
+> >>
+> >> Please share inputs about the preferred approach.
+> >>
+> >> Best Regards,
+> >> Sumit Gupta
+> >>
+> >> [1] https://lore.kernel.org/all/20250206131428.3261578-1-zhenglifeng1@=
+huawei.com/
+> >>
+> >>
 > >
-> >  - patches 6-8 expose sysfs files for users to control CPPC autonomous
-> >    selection when supported
+> > Hi Sumit,
 > >
-> > Changelog:
+> > Thanks for upstreaming this.
 > >
-> > v5:
+> > I think the changes to cppc_acpi in this patchset is inappropriate.
 > >
-> >  - add more explanation to the commit logs and comments
-> >  - change REG_OPTIONAL from bin to hex
-> >  - split patch 2 into 3 smaller patches
-> >  - remove CPPC_REG_VAL_READ() and CPPC_REG_VAL_WRITE() macros
-> >  - move the modification part in patch 5 into a separate patch
-> >  - rename the sysfs file from "energy_perf" to
-> >    energy_performance_preference_val
-> >
-> > v4:
-> >
-> >  - add REG_OPTIONAL and IS_OPTIONAL_CPC_REG to judge if a cpc register =
-is
-> >    an optional one
-> >  - check whether the register is optional before CPC_SUPPORTED check in
-> >    cppc_get_reg_val() and cppc_set_reg_val()
-> >  - check the register's type in cppc_set_reg_val()
-> >  - add macros to generally implement registers getting and setting
-> >    functions
-> >  - move some logic codes from cppc_cpufreq.c to cppc_acpi.c
-> >  - replace cppc_get_auto_sel_caps() by cppc_get_auto_sel()
-> >
-> > v3:
-> >
-> >  - change cppc_get_reg() and cppc_set_reg() name to cppc_get_reg_val() =
-and
-> >    cppc_set_reg_val()
-> >  - extract cppc_get_reg_val_in_pcc() and cppc_set_reg_val_in_pcc()
-> >  - return the result of cpc_read() in cppc_get_reg_val()
-> >  - add pr_debug() in cppc_get_reg_val_in_pcc() when pcc_ss_id < 0
-> >  - rename 'cpunum' to 'cpu' in cppc_get_reg_val()
-> >  - move some macros from drivers/cpufreq/cppc_cpufreq.c to
-> >    include/acpi/cppc_acpi.h with a CPPC_XXX prefix
-> >
-> > v2:
-> >
-> >  - fix some incorrect placeholder
-> >  - change kstrtoul to kstrtobool in store_auto_select
-> >
-> > Lifeng Zheng (8):
-> >   ACPI: CPPC: Add IS_OPTIONAL_CPC_REG macro to judge if a cpc_reg is
-> >     optional
-> >   ACPI: CPPC: Optimize cppc_get_perf()
-> >   ACPI: CPPC: Rename cppc_get_perf() to cppc_get_reg_val()
-> >   ACPI: CPPC: Add cppc_set_reg_val()
-> >   ACPI: CPPC: Refactor register value get and set ABIs
-> >   ACPI: CPPC: Modify cppc_get_auto_sel_caps() to cppc_get_auto_sel()
-> >   ACPI: CPPC: Add three functions related to autonomous selection
-> >   cpufreq: CPPC: Support for autonomous selection in cppc_cpufreq
-> >
-> >  .../ABI/testing/sysfs-devices-system-cpu      |  54 ++++
-> >  drivers/acpi/cppc_acpi.c                      | 303 +++++++++++-------
-> >  drivers/cpufreq/amd-pstate.c                  |   3 +-
-> >  drivers/cpufreq/cppc_cpufreq.c                | 109 +++++++
-> >  include/acpi/cppc_acpi.h                      |  30 +-
-> >  5 files changed, 372 insertions(+), 127 deletions(-)
+> > 1) cppc_attrs are common sysfs for any system that supports CPPC. That
+> > means, these interfaces would appear even if the cpufreq driver has alr=
+eady
+> > managing it, e.g. amd-pstate and cppc_cpufreq. This would create multip=
+le
+> > interfaces to modify the same CPPC regs, which may probably introduce
+> > concurrency and data consistency issues. Instead, exposing the interfac=
+es
+> > under cppc_cpufreq_attr decouples the write access to CPPC regs.
 > >
 >
-> Gentle ping.
-
-OK, so I'm wondering how this is related to the patch series at
-
-https://lore.kernel.org/linux-acpi/20250211103737.447704-1-sumitg@nvidia.co=
-m/
-
-> Attach discussions of previous versions:
-> v1: https://lore.kernel.org/all/20241114084816.1128647-1-zhenglifeng1@hua=
-wei.com/
-> v2: https://lore.kernel.org/all/20241122062051.3658577-1-zhenglifeng1@hua=
-wei.com/
-> v3: https://lore.kernel.org/all/20241216091603.1247644-1-zhenglifeng1@hua=
-wei.com/
-> v4: https://lore.kernel.org/all/20250113122104.3870673-1-zhenglifeng1@hua=
-wei.com/
+> Hi Lifeng,
 >
+> I think its more appropriate to keep all the CPC registers together
+> instead of splitting the read only registers to the acpi_cppc sysfs
+> and read/write registers to the cpufreq sysfs.
+>
+> Only the EPP register is written from Intel and AMD.
+>   $ grep cpufreq_freq_attr_rw drivers/cpufreq/* | grep -v scaling
+>   drivers/cpufreq/acpi-cpufreq.c:cpufreq_freq_attr_rw(cpb);
+>
+> drivers/cpufreq/amd-pstate.c:cpufreq_freq_attr_rw(energy_performance_pref=
+erence);
+>
+> drivers/cpufreq/intel_pstate.c:cpufreq_freq_attr_rw(energy_performance_pr=
+eference);
+>
+> We are currently updating four registers and there can be more in
+> future like 'auto_act_window' update attribute in [1].
+> Changed to make this conditional with 'ifdef CONFIG_ACPI_CPPC_CPUFREQ'
+> to not create attributes for Intel/AMD.
+>
+>   +++ b/drivers/acpi/cppc_acpi.c
+>   @@ static struct attribute *cppc_attrs[] =3D {
+>           &lowest_freq.attr,
+>   +#ifdef CONFIG_ACPI_CPPC_CPUFREQ
+>           &max_perf.attr,
+>           &min_perf.attr,
+>           &perf_limited.attr,
+>           &auto_activity_window.attr,
+>           &energy_perf.attr,
+>   +#endif
+>
+> > 2) It's inappropriate to call cpufreq_cpu_get() in cppc_acpi. This file
+> > currently provides interfaces for cpufreq drivers to use. It has no ABI
+> > dependency on cpufreq at the moment.
+> >
+>
+> cpufreq_cpu_get() is already used by multiple non-cpufreq drivers.
+> So, don't think its a problem.
+>   $ grep -inr "=3D cpufreq_cpu_get(.*;" drivers/*| grep -v "cpufreq/"|wc =
+-l
+>   10
+>
+> > Apart from the changes to cppc_acpi, I think the whole patchset in [1] =
+can
+> > be independent to this patchset. In other words, adding the
+> > cppc_cpufreq_epp_driver could be standalone to discuss. I think combini=
+ng
+> > the use of ->setpolicy() and setting EPP could be a use case? Could you
+> > explain more on the motivation of adding a new cppc_cpufreq_epp_driver?
+> >
+>
+> With 'cppc_cpufreq_epp_driver', we provide an easy option to boot all
+> CPU's in auto mode with right epp and policy min/max equivalent of
+> {min|max}_perf. The mode can be found clearly with scaling_driver node.
+> Separating the HW and SW mode based on driver instance also
+> makes it easy to scale later.
+> Advanced users can program sysfs to switch individual CPU's in and out
+> of the HW mode. We can update policy min/max values accordingly.
+> In this case, there can be some CPU's in SW mode with epp driver
+> instance. But a separate instance will be more convenient for the
+> users who want all CPU's either in HW mode or in SW mode than having
+> to explicitly set all the values correctly.
+
+There seems to be some quite fundamental disagreement on how this
+should be done, so I'm afraid I cannot do much about it ATM.
+
+Please agree on a common approach and come back to me when you are ready.
+
+Sending two concurrent patchsets under confusingly similar names again
+and again isn't particularly helpful.
+
+Thanks!
