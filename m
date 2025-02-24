@@ -1,25 +1,31 @@
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B812C14658C
-	for <acpica-devel@lists.linux.dev>; Mon, 24 Feb 2025 10:31:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96F192192EB
+	for <acpica-devel@lists.linux.dev>; Mon, 24 Feb 2025 12:50:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740393097; cv=none; b=XsXn5SKhLYZqskRvr5AGGCfkhxC5MXI9bGoJdFEapXtApW0qrGnzx7w/XU6BAo6IyYyhQvAjhgOD6HPSae7yZ6FGujjS6rhh4R4E3G0Wsy8nPjapMVanCVvdNyqhgM9RUcPkpZ0Rc9rPaQr7dUaOccTAtAvQcWyjj3/MUqBvJ6c=
+	t=1740401404; cv=none; b=OL7FYzEiR057lCQOqcG02L26bhCiWq8qLRo7FBUKkFu5n2zUP6Ixp7PxIxrB2uoG6dWj9h7epiZAPYV0R5i9riY63J+BWvESOi4XbUbKgbCQGrcgl5dMqsxDYFX3lbAwUNL/pSZnEX+uj1+PcHnLAffG/TjhSUgEheLFj9u2jgE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740393097; c=relaxed/simple;
-	bh=dXRdm8n1r2jv7wtwFW8fNm4TeJQUiRjJq79tsZ/qQ+s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PYLged+BhcuXKjEciyIn2sveToI/jAR8jpfQdrpZ54+Lj9dIzwFGx3pChkAeoiS+zf9HV/4UEif713/fI+9XbAEI+lbyUjsCchNQujjHX8F9krBMaHcTJrJHLPB+TMKO3dn1KiCYWFPyjvVyqJ9aLnrI1wI8Vbolf54NO5aU/ew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D449A1E7D;
-	Mon, 24 Feb 2025 02:31:51 -0800 (PST)
-Received: from [10.57.38.222] (unknown [10.57.38.222])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0F5B33F673;
-	Mon, 24 Feb 2025 02:31:30 -0800 (PST)
-Message-ID: <828ab846-fe03-4830-a722-a86e57ba89c7@arm.com>
-Date: Mon, 24 Feb 2025 11:31:29 +0100
+	s=arc-20240116; t=1740401404; c=relaxed/simple;
+	bh=ZdBCdF5KOs1JctRObwGVJkOHnGlGXqRbiACo9SOfprU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=NUHmc0z6MCAJp9yvA6iPO5ceR1zATkpqGl2pXMC3Em4e/k9LIz/Qltf06LwLKPTKdv4XQfy/m2qmBpxF7yVVpb/2+yXDET88ygMjTFiYnnbeFr2sQkfq7ZBIHVfIbeIVn2ZuwwSlJ32LSocn0wQw4K+4YTEEkmc4hJuTLAH77/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Z1gT108Dcz1ltby;
+	Mon, 24 Feb 2025 20:45:57 +0800 (CST)
+Received: from kwepemh100008.china.huawei.com (unknown [7.202.181.93])
+	by mail.maildlp.com (Postfix) with ESMTPS id 1C17E180069;
+	Mon, 24 Feb 2025 20:49:58 +0800 (CST)
+Received: from [10.67.121.90] (10.67.121.90) by kwepemh100008.china.huawei.com
+ (7.202.181.93) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 24 Feb
+ 2025 20:49:57 +0800
+Message-ID: <5162cd2c-e239-4fc6-b2da-2e2fe087cb1b@huawei.com>
+Date: Mon, 24 Feb 2025 20:49:56 +0800
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -28,137 +34,149 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v5 0/8] Support for autonomous selection in cppc_cpufreq
-To: "zhenglifeng (A)" <zhenglifeng1@huawei.com>,
- "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: lenb@kernel.org, robert.moore@intel.com, viresh.kumar@linaro.org,
- mario.limonciello@amd.com, gautham.shenoy@amd.com, ray.huang@amd.com,
- acpica-devel@lists.linux.dev, linux-acpi@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, linuxarm@huawei.com,
- yumpusamongus@gmail.com, srinivas.pandruvada@linux.intel.com,
- jonathan.cameron@huawei.com, zhanjie9@hisilicon.com, lihuisong@huawei.com,
- hepeng68@huawei.com, fanghao11@huawei.com
+To: Pierre Gondois <pierre.gondois@arm.com>
+CC: "Rafael J. Wysocki" <rafael@kernel.org>, <lenb@kernel.org>,
+	<robert.moore@intel.com>, <viresh.kumar@linaro.org>,
+	<mario.limonciello@amd.com>, <gautham.shenoy@amd.com>, <ray.huang@amd.com>,
+	<acpica-devel@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+	<linuxarm@huawei.com>, <yumpusamongus@gmail.com>,
+	<srinivas.pandruvada@linux.intel.com>, <jonathan.cameron@huawei.com>,
+	<zhanjie9@hisilicon.com>, <lihuisong@huawei.com>, <hepeng68@huawei.com>,
+	<fanghao11@huawei.com>
 References: <20250206131428.3261578-1-zhenglifeng1@huawei.com>
  <0097a9a3-fe61-4200-9a54-5a9c81d3219c@huawei.com>
  <CAJZ5v0hP9a8g8UR2oPyivP1C65=csR245PSHay+nOx3vkoKoaA@mail.gmail.com>
  <ddbc0336-9083-4054-8930-c22bd8337488@huawei.com>
-Content-Language: en-US
-From: Pierre Gondois <pierre.gondois@arm.com>
-In-Reply-To: <ddbc0336-9083-4054-8930-c22bd8337488@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+ <828ab846-fe03-4830-a722-a86e57ba89c7@arm.com>
+From: "zhenglifeng (A)" <zhenglifeng1@huawei.com>
+In-Reply-To: <828ab846-fe03-4830-a722-a86e57ba89c7@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemh100008.china.huawei.com (7.202.181.93)
 
-
-
-On 2/22/25 11:07, zhenglifeng (A) wrote:
-> On 2025/2/19 3:17, Rafael J. Wysocki wrote:
->> On Thu, Feb 13, 2025 at 2:55 AM zhenglifeng (A) <zhenglifeng1@huawei.com> wrote:
+On 2025/2/24 18:31, Pierre Gondois wrote:
+> 
+> 
+> On 2/22/25 11:07, zhenglifeng (A) wrote:
+>> On 2025/2/19 3:17, Rafael J. Wysocki wrote:
+>>> On Thu, Feb 13, 2025 at 2:55 AM zhenglifeng (A) <zhenglifeng1@huawei.com> wrote:
+>>>>
+>>>> On 2025/2/6 21:14, Lifeng Zheng wrote:
+>>>>> Add sysfs interfaces for CPPC autonomous selection in the cppc_cpufreq
+>>>>> driver.
+>>>>>
+>>>>> The patch series is organized in two parts:
+>>>>>
+>>>>>   - patch 1-5 refactor out the general CPPC register get and set functions
+>>>>>     in cppc_acpi.c
+>>>>>
+>>>>>   - patches 6-8 expose sysfs files for users to control CPPC autonomous
+>>>>>     selection when supported
+>>>>>
+>>>>> Changelog:
+>>>>>
+>>>>> v5:
+>>>>>
+>>>>>   - add more explanation to the commit logs and comments
+>>>>>   - change REG_OPTIONAL from bin to hex
+>>>>>   - split patch 2 into 3 smaller patches
+>>>>>   - remove CPPC_REG_VAL_READ() and CPPC_REG_VAL_WRITE() macros
+>>>>>   - move the modification part in patch 5 into a separate patch
+>>>>>   - rename the sysfs file from "energy_perf" to
+>>>>>     energy_performance_preference_val
+>>>>>
+>>>>> v4:
+>>>>>
+>>>>>   - add REG_OPTIONAL and IS_OPTIONAL_CPC_REG to judge if a cpc register is
+>>>>>     an optional one
+>>>>>   - check whether the register is optional before CPC_SUPPORTED check in
+>>>>>     cppc_get_reg_val() and cppc_set_reg_val()
+>>>>>   - check the register's type in cppc_set_reg_val()
+>>>>>   - add macros to generally implement registers getting and setting
+>>>>>     functions
+>>>>>   - move some logic codes from cppc_cpufreq.c to cppc_acpi.c
+>>>>>   - replace cppc_get_auto_sel_caps() by cppc_get_auto_sel()
+>>>>>
+>>>>> v3:
+>>>>>
+>>>>>   - change cppc_get_reg() and cppc_set_reg() name to cppc_get_reg_val() and
+>>>>>     cppc_set_reg_val()
+>>>>>   - extract cppc_get_reg_val_in_pcc() and cppc_set_reg_val_in_pcc()
+>>>>>   - return the result of cpc_read() in cppc_get_reg_val()
+>>>>>   - add pr_debug() in cppc_get_reg_val_in_pcc() when pcc_ss_id < 0
+>>>>>   - rename 'cpunum' to 'cpu' in cppc_get_reg_val()
+>>>>>   - move some macros from drivers/cpufreq/cppc_cpufreq.c to
+>>>>>     include/acpi/cppc_acpi.h with a CPPC_XXX prefix
+>>>>>
+>>>>> v2:
+>>>>>
+>>>>>   - fix some incorrect placeholder
+>>>>>   - change kstrtoul to kstrtobool in store_auto_select
+>>>>>
+>>>>> Lifeng Zheng (8):
+>>>>>    ACPI: CPPC: Add IS_OPTIONAL_CPC_REG macro to judge if a cpc_reg is
+>>>>>      optional
+>>>>>    ACPI: CPPC: Optimize cppc_get_perf()
+>>>>>    ACPI: CPPC: Rename cppc_get_perf() to cppc_get_reg_val()
+>>>>>    ACPI: CPPC: Add cppc_set_reg_val()
+>>>>>    ACPI: CPPC: Refactor register value get and set ABIs
+>>>>>    ACPI: CPPC: Modify cppc_get_auto_sel_caps() to cppc_get_auto_sel()
+>>>>>    ACPI: CPPC: Add three functions related to autonomous selection
+>>>>>    cpufreq: CPPC: Support for autonomous selection in cppc_cpufreq
+>>>>>
+>>>>>   .../ABI/testing/sysfs-devices-system-cpu      |  54 ++++
+>>>>>   drivers/acpi/cppc_acpi.c                      | 303 +++++++++++-------
+>>>>>   drivers/cpufreq/amd-pstate.c                  |   3 +-
+>>>>>   drivers/cpufreq/cppc_cpufreq.c                | 109 +++++++
+>>>>>   include/acpi/cppc_acpi.h                      |  30 +-
+>>>>>   5 files changed, 372 insertions(+), 127 deletions(-)
+>>>>>
+>>>>
+>>>> Gentle ping.
 >>>
->>> On 2025/2/6 21:14, Lifeng Zheng wrote:
->>>> Add sysfs interfaces for CPPC autonomous selection in the cppc_cpufreq
->>>> driver.
->>>>
->>>> The patch series is organized in two parts:
->>>>
->>>>   - patch 1-5 refactor out the general CPPC register get and set functions
->>>>     in cppc_acpi.c
->>>>
->>>>   - patches 6-8 expose sysfs files for users to control CPPC autonomous
->>>>     selection when supported
->>>>
->>>> Changelog:
->>>>
->>>> v5:
->>>>
->>>>   - add more explanation to the commit logs and comments
->>>>   - change REG_OPTIONAL from bin to hex
->>>>   - split patch 2 into 3 smaller patches
->>>>   - remove CPPC_REG_VAL_READ() and CPPC_REG_VAL_WRITE() macros
->>>>   - move the modification part in patch 5 into a separate patch
->>>>   - rename the sysfs file from "energy_perf" to
->>>>     energy_performance_preference_val
->>>>
->>>> v4:
->>>>
->>>>   - add REG_OPTIONAL and IS_OPTIONAL_CPC_REG to judge if a cpc register is
->>>>     an optional one
->>>>   - check whether the register is optional before CPC_SUPPORTED check in
->>>>     cppc_get_reg_val() and cppc_set_reg_val()
->>>>   - check the register's type in cppc_set_reg_val()
->>>>   - add macros to generally implement registers getting and setting
->>>>     functions
->>>>   - move some logic codes from cppc_cpufreq.c to cppc_acpi.c
->>>>   - replace cppc_get_auto_sel_caps() by cppc_get_auto_sel()
->>>>
->>>> v3:
->>>>
->>>>   - change cppc_get_reg() and cppc_set_reg() name to cppc_get_reg_val() and
->>>>     cppc_set_reg_val()
->>>>   - extract cppc_get_reg_val_in_pcc() and cppc_set_reg_val_in_pcc()
->>>>   - return the result of cpc_read() in cppc_get_reg_val()
->>>>   - add pr_debug() in cppc_get_reg_val_in_pcc() when pcc_ss_id < 0
->>>>   - rename 'cpunum' to 'cpu' in cppc_get_reg_val()
->>>>   - move some macros from drivers/cpufreq/cppc_cpufreq.c to
->>>>     include/acpi/cppc_acpi.h with a CPPC_XXX prefix
->>>>
->>>> v2:
->>>>
->>>>   - fix some incorrect placeholder
->>>>   - change kstrtoul to kstrtobool in store_auto_select
->>>>
->>>> Lifeng Zheng (8):
->>>>    ACPI: CPPC: Add IS_OPTIONAL_CPC_REG macro to judge if a cpc_reg is
->>>>      optional
->>>>    ACPI: CPPC: Optimize cppc_get_perf()
->>>>    ACPI: CPPC: Rename cppc_get_perf() to cppc_get_reg_val()
->>>>    ACPI: CPPC: Add cppc_set_reg_val()
->>>>    ACPI: CPPC: Refactor register value get and set ABIs
->>>>    ACPI: CPPC: Modify cppc_get_auto_sel_caps() to cppc_get_auto_sel()
->>>>    ACPI: CPPC: Add three functions related to autonomous selection
->>>>    cpufreq: CPPC: Support for autonomous selection in cppc_cpufreq
->>>>
->>>>   .../ABI/testing/sysfs-devices-system-cpu      |  54 ++++
->>>>   drivers/acpi/cppc_acpi.c                      | 303 +++++++++++-------
->>>>   drivers/cpufreq/amd-pstate.c                  |   3 +-
->>>>   drivers/cpufreq/cppc_cpufreq.c                | 109 +++++++
->>>>   include/acpi/cppc_acpi.h                      |  30 +-
->>>>   5 files changed, 372 insertions(+), 127 deletions(-)
->>>>
+>>> OK, so I'm wondering how this is related to the patch series at
 >>>
->>> Gentle ping.
+>>> https://lore.kernel.org/linux-acpi/20250211103737.447704-1-sumitg@nvidia.com/
 >>
->> OK, so I'm wondering how this is related to the patch series at
+>> This series refactors some cppc_acpi ABIs and supports cppc autonomous
+>> selection with sysfs files in cpufreq policy.  Later, [1] proposed another
+>> design with different user interfaces.We will discuss and reach a consensus
+>> with regard to this.
 >>
->> https://lore.kernel.org/linux-acpi/20250211103737.447704-1-sumitg@nvidia.com/
+>> However, as mentioned in [1], patch 1-7 in this series (the cppc_acpi part)
+>> are not related to user interfaces, so can be reviewed and applied
+>> separately.  I can also send patch 1-7 as a new thread if preferred.
+>>
+>> [1] https://lore.kernel.org/linux-acpi/20250211103737.447704-1-sumitg@nvidia.com/
 > 
-> This series refactors some cppc_acpi ABIs and supports cppc autonomous
-> selection with sysfs files in cpufreq policy.  Later, [1] proposed another
-> design with different user interfaces.We will discuss and reach a consensus
-> with regard to this.
+> I tried the patchset on a platform which doesn't implement CPC and everything worked well.
+> As Lifeng said,
+>   PATCH v5 8/8] cpufreq: CPPC: Support for autonomous selection in cppc_cpufreq
+> seems to be still in discussion, but for patches 1-7 FWIW:
 > 
-> However, as mentioned in [1], patch 1-7 in this series (the cppc_acpi part)
-> are not related to user interfaces, so can be reviewed and applied
-> separately.  I can also send patch 1-7 as a new thread if preferred.
-> 
-> [1] https://lore.kernel.org/linux-acpi/20250211103737.447704-1-sumitg@nvidia.com/
+> Reviewed-by: Pierre Gondois <pierre.gondois@arm.com>
 
-I tried the patchset on a platform which doesn't implement CPC and everything worked well.
-As Lifeng said,
-   PATCH v5 8/8] cpufreq: CPPC: Support for autonomous selection in cppc_cpufreq
-seems to be still in discussion, but for patches 1-7 FWIW:
-
-Reviewed-by: Pierre Gondois <pierre.gondois@arm.com>
+Thank you!
 
 Regards,
-Pierre
+Lifeng
 
 > 
+> Regards,
+> Pierre
+> 
 >>
->>> Attach discussions of previous versions:
->>> v1: https://lore.kernel.org/all/20241114084816.1128647-1-zhenglifeng1@huawei.com/
->>> v2: https://lore.kernel.org/all/20241122062051.3658577-1-zhenglifeng1@huawei.com/
->>> v3: https://lore.kernel.org/all/20241216091603.1247644-1-zhenglifeng1@huawei.com/
->>> v4: https://lore.kernel.org/all/20250113122104.3870673-1-zhenglifeng1@huawei.com/
+>>>
+>>>> Attach discussions of previous versions:
+>>>> v1: https://lore.kernel.org/all/20241114084816.1128647-1-zhenglifeng1@huawei.com/
+>>>> v2: https://lore.kernel.org/all/20241122062051.3658577-1-zhenglifeng1@huawei.com/
+>>>> v3: https://lore.kernel.org/all/20241216091603.1247644-1-zhenglifeng1@huawei.com/
+>>>> v4: https://lore.kernel.org/all/20250113122104.3870673-1-zhenglifeng1@huawei.com/
+>>>>
 >>>
 >>
+>>
 > 
-> 
+
