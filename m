@@ -1,31 +1,31 @@
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96F192192EB
-	for <acpica-devel@lists.linux.dev>; Mon, 24 Feb 2025 12:50:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B2C0211A24
+	for <acpica-devel@lists.linux.dev>; Wed, 26 Feb 2025 10:22:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740401404; cv=none; b=OL7FYzEiR057lCQOqcG02L26bhCiWq8qLRo7FBUKkFu5n2zUP6Ixp7PxIxrB2uoG6dWj9h7epiZAPYV0R5i9riY63J+BWvESOi4XbUbKgbCQGrcgl5dMqsxDYFX3lbAwUNL/pSZnEX+uj1+PcHnLAffG/TjhSUgEheLFj9u2jgE=
+	t=1740565371; cv=none; b=juv3i0kk8vfZWStJ6oWTP0hdiDMvOKWlXyX2qP84Eb+ozIQfvldv70KA7A70QlHk6W85Vns8nQ2VULtm5ipm+EKw4ViYx7tbssElIjFiMC7WHnwAhrj3soL54S7C2GM+/8zi1b728rJrM6WceZK3tOWAR0FaXQKgjhR5D0Nf3Lw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740401404; c=relaxed/simple;
-	bh=ZdBCdF5KOs1JctRObwGVJkOHnGlGXqRbiACo9SOfprU=;
+	s=arc-20240116; t=1740565371; c=relaxed/simple;
+	bh=S8bkmRF4hFy5oAR0L+B0tr5ao+COGAqRwbPx36g9o2k=;
 	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=NUHmc0z6MCAJp9yvA6iPO5ceR1zATkpqGl2pXMC3Em4e/k9LIz/Qltf06LwLKPTKdv4XQfy/m2qmBpxF7yVVpb/2+yXDET88ygMjTFiYnnbeFr2sQkfq7ZBIHVfIbeIVn2ZuwwSlJ32LSocn0wQw4K+4YTEEkmc4hJuTLAH77/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+	 In-Reply-To:Content-Type; b=i/NhwyofFfeXYb1UjheaNcrhNvkja+LD08+KftXskFSLL1cql9ajO4+ENAzQFTtXGatidacmg3tu9c0JObfBY9HzzbW0/yLkOrP4ZNCg/Z08W5fdJTIXJpLMNGrW0sO0ElXGNS14+vxjpxLSBbLMARx1dsNCL0MW/gWNFKe+Dd4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Z1gT108Dcz1ltby;
-	Mon, 24 Feb 2025 20:45:57 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Z2r6B18P3z2CpfZ;
+	Wed, 26 Feb 2025 18:18:42 +0800 (CST)
 Received: from kwepemh100008.china.huawei.com (unknown [7.202.181.93])
-	by mail.maildlp.com (Postfix) with ESMTPS id 1C17E180069;
-	Mon, 24 Feb 2025 20:49:58 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id D33A4140109;
+	Wed, 26 Feb 2025 18:22:45 +0800 (CST)
 Received: from [10.67.121.90] (10.67.121.90) by kwepemh100008.china.huawei.com
  (7.202.181.93) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 24 Feb
- 2025 20:49:57 +0800
-Message-ID: <5162cd2c-e239-4fc6-b2da-2e2fe087cb1b@huawei.com>
-Date: Mon, 24 Feb 2025 20:49:56 +0800
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Wed, 26 Feb
+ 2025 18:22:45 +0800
+Message-ID: <73fbf483-7afa-4cd2-84d1-6ace36549c53@huawei.com>
+Date: Wed, 26 Feb 2025 18:22:44 +0800
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -33,150 +33,132 @@ List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 0/8] Support for autonomous selection in cppc_cpufreq
-To: Pierre Gondois <pierre.gondois@arm.com>
-CC: "Rafael J. Wysocki" <rafael@kernel.org>, <lenb@kernel.org>,
-	<robert.moore@intel.com>, <viresh.kumar@linaro.org>,
-	<mario.limonciello@amd.com>, <gautham.shenoy@amd.com>, <ray.huang@amd.com>,
-	<acpica-devel@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-	<linuxarm@huawei.com>, <yumpusamongus@gmail.com>,
-	<srinivas.pandruvada@linux.intel.com>, <jonathan.cameron@huawei.com>,
-	<zhanjie9@hisilicon.com>, <lihuisong@huawei.com>, <hepeng68@huawei.com>,
-	<fanghao11@huawei.com>
-References: <20250206131428.3261578-1-zhenglifeng1@huawei.com>
- <0097a9a3-fe61-4200-9a54-5a9c81d3219c@huawei.com>
- <CAJZ5v0hP9a8g8UR2oPyivP1C65=csR245PSHay+nOx3vkoKoaA@mail.gmail.com>
- <ddbc0336-9083-4054-8930-c22bd8337488@huawei.com>
- <828ab846-fe03-4830-a722-a86e57ba89c7@arm.com>
+Subject: Re: [Patch 0/5] Support Autonomous Selection mode in cppc_cpufreq
+To: Sumit Gupta <sumitg@nvidia.com>, "Rafael J. Wysocki" <rafael@kernel.org>
+CC: Viresh Kumar <viresh.kumar@linaro.org>, <lenb@kernel.org>,
+	<robert.moore@intel.com>, <corbet@lwn.net>, <linux-pm@vger.kernel.org>,
+	<linux-acpi@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+	<acpica-devel@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+	<linux-tegra@vger.kernel.org>, <treding@nvidia.com>, <jonathanh@nvidia.com>,
+	<sashal@nvidia.com>, <vsethi@nvidia.com>, <ksitaraman@nvidia.com>,
+	<sanjayc@nvidia.com>, <bbasu@nvidia.com>
+References: <20250211103737.447704-1-sumitg@nvidia.com>
+ <20250211104428.dibsnxmkiluzixvz@vireshk-i7>
+ <b45d0d81-e4f7-474e-a146-0075a6145cc2@huawei.com>
+ <868d4c2a-583a-4cbb-a572-d884090a7134@nvidia.com>
+ <8d5e0035-d8fe-49ef-bda5-f5881ff96657@huawei.com>
+ <94bdab73-adc4-4b43-9037-5639f23e3d1e@nvidia.com>
+ <CAJZ5v0iAg6HFROHctYQwW=V9XiV8p3XVYgeKUcX4qBgfwQK6Ow@mail.gmail.com>
+ <e58a20f8-e8bf-409c-a878-af2bd3c7d243@nvidia.com>
 From: "zhenglifeng (A)" <zhenglifeng1@huawei.com>
-In-Reply-To: <828ab846-fe03-4830-a722-a86e57ba89c7@arm.com>
+In-Reply-To: <e58a20f8-e8bf-409c-a878-af2bd3c7d243@nvidia.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
 X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
  kwepemh100008.china.huawei.com (7.202.181.93)
 
-On 2025/2/24 18:31, Pierre Gondois wrote:
+On 2025/2/21 21:14, Sumit Gupta wrote:
 > 
 > 
-> On 2/22/25 11:07, zhenglifeng (A) wrote:
->> On 2025/2/19 3:17, Rafael J. Wysocki wrote:
->>> On Thu, Feb 13, 2025 at 2:55 AM zhenglifeng (A) <zhenglifeng1@huawei.com> wrote:
->>>>
->>>> On 2025/2/6 21:14, Lifeng Zheng wrote:
->>>>> Add sysfs interfaces for CPPC autonomous selection in the cppc_cpufreq
->>>>> driver.
->>>>>
->>>>> The patch series is organized in two parts:
->>>>>
->>>>>   - patch 1-5 refactor out the general CPPC register get and set functions
->>>>>     in cppc_acpi.c
->>>>>
->>>>>   - patches 6-8 expose sysfs files for users to control CPPC autonomous
->>>>>     selection when supported
->>>>>
->>>>> Changelog:
->>>>>
->>>>> v5:
->>>>>
->>>>>   - add more explanation to the commit logs and comments
->>>>>   - change REG_OPTIONAL from bin to hex
->>>>>   - split patch 2 into 3 smaller patches
->>>>>   - remove CPPC_REG_VAL_READ() and CPPC_REG_VAL_WRITE() macros
->>>>>   - move the modification part in patch 5 into a separate patch
->>>>>   - rename the sysfs file from "energy_perf" to
->>>>>     energy_performance_preference_val
->>>>>
->>>>> v4:
->>>>>
->>>>>   - add REG_OPTIONAL and IS_OPTIONAL_CPC_REG to judge if a cpc register is
->>>>>     an optional one
->>>>>   - check whether the register is optional before CPC_SUPPORTED check in
->>>>>     cppc_get_reg_val() and cppc_set_reg_val()
->>>>>   - check the register's type in cppc_set_reg_val()
->>>>>   - add macros to generally implement registers getting and setting
->>>>>     functions
->>>>>   - move some logic codes from cppc_cpufreq.c to cppc_acpi.c
->>>>>   - replace cppc_get_auto_sel_caps() by cppc_get_auto_sel()
->>>>>
->>>>> v3:
->>>>>
->>>>>   - change cppc_get_reg() and cppc_set_reg() name to cppc_get_reg_val() and
->>>>>     cppc_set_reg_val()
->>>>>   - extract cppc_get_reg_val_in_pcc() and cppc_set_reg_val_in_pcc()
->>>>>   - return the result of cpc_read() in cppc_get_reg_val()
->>>>>   - add pr_debug() in cppc_get_reg_val_in_pcc() when pcc_ss_id < 0
->>>>>   - rename 'cpunum' to 'cpu' in cppc_get_reg_val()
->>>>>   - move some macros from drivers/cpufreq/cppc_cpufreq.c to
->>>>>     include/acpi/cppc_acpi.h with a CPPC_XXX prefix
->>>>>
->>>>> v2:
->>>>>
->>>>>   - fix some incorrect placeholder
->>>>>   - change kstrtoul to kstrtobool in store_auto_select
->>>>>
->>>>> Lifeng Zheng (8):
->>>>>    ACPI: CPPC: Add IS_OPTIONAL_CPC_REG macro to judge if a cpc_reg is
->>>>>      optional
->>>>>    ACPI: CPPC: Optimize cppc_get_perf()
->>>>>    ACPI: CPPC: Rename cppc_get_perf() to cppc_get_reg_val()
->>>>>    ACPI: CPPC: Add cppc_set_reg_val()
->>>>>    ACPI: CPPC: Refactor register value get and set ABIs
->>>>>    ACPI: CPPC: Modify cppc_get_auto_sel_caps() to cppc_get_auto_sel()
->>>>>    ACPI: CPPC: Add three functions related to autonomous selection
->>>>>    cpufreq: CPPC: Support for autonomous selection in cppc_cpufreq
->>>>>
->>>>>   .../ABI/testing/sysfs-devices-system-cpu      |  54 ++++
->>>>>   drivers/acpi/cppc_acpi.c                      | 303 +++++++++++-------
->>>>>   drivers/cpufreq/amd-pstate.c                  |   3 +-
->>>>>   drivers/cpufreq/cppc_cpufreq.c                | 109 +++++++
->>>>>   include/acpi/cppc_acpi.h                      |  30 +-
->>>>>   5 files changed, 372 insertions(+), 127 deletions(-)
->>>>>
->>>>
->>>> Gentle ping.
->>>
->>> OK, so I'm wondering how this is related to the patch series at
->>>
->>> https://lore.kernel.org/linux-acpi/20250211103737.447704-1-sumitg@nvidia.com/
+> On 19/02/25 00:53, Rafael J. Wysocki wrote:
 >>
->> This series refactors some cppc_acpi ABIs and supports cppc autonomous
->> selection with sysfs files in cpufreq policy.  Later, [1] proposed another
->> design with different user interfaces.We will discuss and reach a consensus
->> with regard to this.
+>> There seems to be some quite fundamental disagreement on how this
+>> should be done, so I'm afraid I cannot do much about it ATM.
 >>
->> However, as mentioned in [1], patch 1-7 in this series (the cppc_acpi part)
->> are not related to user interfaces, so can be reviewed and applied
->> separately.  I can also send patch 1-7 as a new thread if preferred.
+>> Please agree on a common approach and come back to me when you are ready.
 >>
->> [1] https://lore.kernel.org/linux-acpi/20250211103737.447704-1-sumitg@nvidia.com/
+>> Sending two concurrent patchsets under confusingly similar names again
+>> and again isn't particularly helpful.
+>>
+>> Thanks!
 > 
-> I tried the patchset on a platform which doesn't implement CPC and everything worked well.
-> As Lifeng said,
->   PATCH v5 8/8] cpufreq: CPPC: Support for autonomous selection in cppc_cpufreq
-> seems to be still in discussion, but for patches 1-7 FWIW:
+> Hi Rafael,
 > 
-> Reviewed-by: Pierre Gondois <pierre.gondois@arm.com>
+> Thank you for looking into this.
+> 
+> Hi Lifeng,
+> 
+> As per the discussion, we can make the driver future extensible and
+> also can optimize the register read/write access.
+> 
+> I gave some thought and below is my proposal.
+> 
+> 1) Pick 'Patch 1-7' from your patch series [1] which optimize API's
+>    to read/write a cpc register.
+> 
+> 2) Pick my patches in [2]:
+>    - Patch 1-4: Keep all cpc registers together under acpi_cppc sysfs.
+>                 Also, update existing API's to read/write regs in batch.
+>    - Patch 5: Creates 'cppc_cpufreq_epp_driver' instance for booting
+>      all CPU's in Auto mode and set registers with right values.
+>      They can be updated after boot from sysfs to change hints to HW.
+>      I can use the optimized API's from [1] where required in [2].
+> 
+> Let me know if you are okay with this proposal.
+> I can also send an updated patch series with all the patches combined?
+> 
+> [1] https://lore.kernel.org/all/20250206131428.3261578-1-zhenglifeng1@huawei.com/
+> [2] https://lore.kernel.org/lkml/20250211103737.447704-1-sumitg@nvidia.com/
+> 
+> Regards,
+> Sumit Gupta
+> 
 
-Thank you!
+Hi Sumit,
+
+Over the past few days, I've been thinking about your proposal and
+scenario.
+
+I think we both agree that PATCH 1-7 in [1] doesn't conflicts with [2], so
+the rest of the discussion focuses on the differences between [2] and the
+PATCH 8 in [1].
+
+We both tried to support autonomous selection mode in cppc_cpufreq but on
+different ways. I think the differences between these two approaches can be
+summarized into three questions:
+
+1. Which sysfs files to expose? I think this is not a problem, we can keep
+all of them.
+
+2. Where to expose these sysfs files? I understand your willing to keep all
+cpc registers together under acpi_cppc sysfs. But in my opinion, it is more
+suitable to expose them under cppc_cpufreq_attr, for these reasons:
+
+  1) It may probably introduce concurrency and data consistency issues, as 
+I mentioned before.
+
+  2) The store functions call cpufreq_cpu_get() to get policy and update
+the driver_data which is a cppc_cpudata. Only the driver_data in 
+cppc_cpufreq's policy is a cppc_cpudata! These operations are inappropriate
+in cppc_acpi. This file currently provides interfaces for cpufreq drivers
+to use. Reverse calls might mess up call relationships, break code
+structures, and cause problems that are hard to pinpoint the root cause!
+
+  3) Difficult to extend. Different cpufreq drivers may have different
+processing logic when reading from and writing to these CPC registers.
+Limiting all sysfs here makes it difficult for each cpufreq driver to
+extend. I think this is why there are only read-only interfaces under
+cppc_attrs before.
+
+Adding a 'ifdef' is not a good way to solve these problems. Defining this
+config does not necessarily mean that the cpufreq driver is cppc_cpufreq.
+
+3. Is it necessary to add a new driver instance? [1] exposed the sysfs
+files to support users dynamically change the auto selection mode of each
+policy. Each policy can be operated seperately. It seems to me that if you
+want to boot all CPUs in auto mode, it should be sufficient to set all
+relevant registers to the correct values at boot time. I can't see why the
+new instance is necessary unless you explain it further. Could you explain
+more about why you add a new instance starting from answer these questions:
+
+For a specific CPU, what is the difference between using the two instances
+when auto_sel is 1? And what is the difference when auto_sel is 0?
+
+If it turns out that the new instance is necessary, I think we can reach a
+common approach by adding this new cpufreq driver instance and place the
+attributes in 'cppc_cpufreq_epp_attr', like amd-pstate did.
+
+What do you think?
 
 Regards,
 Lifeng
-
-> 
-> Regards,
-> Pierre
-> 
->>
->>>
->>>> Attach discussions of previous versions:
->>>> v1: https://lore.kernel.org/all/20241114084816.1128647-1-zhenglifeng1@huawei.com/
->>>> v2: https://lore.kernel.org/all/20241122062051.3658577-1-zhenglifeng1@huawei.com/
->>>> v3: https://lore.kernel.org/all/20241216091603.1247644-1-zhenglifeng1@huawei.com/
->>>> v4: https://lore.kernel.org/all/20250113122104.3870673-1-zhenglifeng1@huawei.com/
->>>>
->>>
->>
->>
-> 
-
