@@ -1,164 +1,201 @@
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from mx2.zhaoxin.com (mx2.zhaoxin.com [61.152.208.219])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B2C0211A24
-	for <acpica-devel@lists.linux.dev>; Wed, 26 Feb 2025 10:22:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 163824C7C
+	for <acpica-devel@lists.linux.dev>; Thu, 27 Feb 2025 00:48:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=61.152.208.219
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740565371; cv=none; b=juv3i0kk8vfZWStJ6oWTP0hdiDMvOKWlXyX2qP84Eb+ozIQfvldv70KA7A70QlHk6W85Vns8nQ2VULtm5ipm+EKw4ViYx7tbssElIjFiMC7WHnwAhrj3soL54S7C2GM+/8zi1b728rJrM6WceZK3tOWAR0FaXQKgjhR5D0Nf3Lw=
+	t=1740617310; cv=none; b=OzeKzQ7eKcIqkwJAfwxsLxrugU5j/kLMuY1Als8+J1V5rqY0dQ8+Yq+ABWRatMM5usjhe5dBa1FBUuiqmhvFq7ZvvnMuXI6IiXpZ0ez5xASohr2IcD+OyFGI386c6QPzNMsN5Yo/esFG54PKxNUIZKQFlgknlD2JKXdOhQEguHY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740565371; c=relaxed/simple;
-	bh=S8bkmRF4hFy5oAR0L+B0tr5ao+COGAqRwbPx36g9o2k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=i/NhwyofFfeXYb1UjheaNcrhNvkja+LD08+KftXskFSLL1cql9ajO4+ENAzQFTtXGatidacmg3tu9c0JObfBY9HzzbW0/yLkOrP4ZNCg/Z08W5fdJTIXJpLMNGrW0sO0ElXGNS14+vxjpxLSBbLMARx1dsNCL0MW/gWNFKe+Dd4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Z2r6B18P3z2CpfZ;
-	Wed, 26 Feb 2025 18:18:42 +0800 (CST)
-Received: from kwepemh100008.china.huawei.com (unknown [7.202.181.93])
-	by mail.maildlp.com (Postfix) with ESMTPS id D33A4140109;
-	Wed, 26 Feb 2025 18:22:45 +0800 (CST)
-Received: from [10.67.121.90] (10.67.121.90) by kwepemh100008.china.huawei.com
- (7.202.181.93) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Wed, 26 Feb
- 2025 18:22:45 +0800
-Message-ID: <73fbf483-7afa-4cd2-84d1-6ace36549c53@huawei.com>
-Date: Wed, 26 Feb 2025 18:22:44 +0800
+	s=arc-20240116; t=1740617310; c=relaxed/simple;
+	bh=xf6aa909pkiri3/XbRp02yuy6janMrg6fh9L8J/CqZg=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=MyDoYAZjzM26QlXY6+UUBauynz6aiBSq1xSJ1KMPW7FiIMTnCg5DxAQh+Qts6+SV0FioLFSCwrhH4GoxAkWxL1KSQCvFLaC8JVzP+F84TI7UFfR+Zp8DKT0FI783vrOlocYGfgV01U6n9j6UQCrKYe95tLHO1dohbpDIyZLcLhM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com; spf=pass smtp.mailfrom=zhaoxin.com; arc=none smtp.client-ip=61.152.208.219
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zhaoxin.com
+X-ASG-Debug-ID: 1740616661-1eb14e79ff31220001-m47mSr
+Received: from ZXSHMBX1.zhaoxin.com (ZXSHMBX1.zhaoxin.com [10.28.252.163]) by mx2.zhaoxin.com with ESMTP id eI7UeMFzGx2DDqYp (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Thu, 27 Feb 2025 08:37:41 +0800 (CST)
+X-Barracuda-Envelope-From: LeoLiu-oc@zhaoxin.com
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
+Received: from ZXSHMBX2.zhaoxin.com (10.28.252.164) by ZXSHMBX1.zhaoxin.com
+ (10.28.252.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.44; Thu, 27 Feb
+ 2025 08:37:41 +0800
+Received: from ZXSHMBX2.zhaoxin.com ([fe80::4dfc:4f6a:c0cf:4298]) by
+ ZXSHMBX2.zhaoxin.com ([fe80::4dfc:4f6a:c0cf:4298%4]) with mapi id
+ 15.01.2507.044; Thu, 27 Feb 2025 08:37:41 +0800
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
+Received: from xin.lan (10.32.64.1) by ZXBJMBX03.zhaoxin.com (10.29.252.7)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.44; Wed, 26 Feb
+ 2025 20:18:54 +0800
+From: LeoLiu-oc <LeoLiu-oc@zhaoxin.com>
+To: <rafael@kernel.org>, <lenb@kernel.org>, <james.morse@arm.com>,
+	<tony.luck@intel.com>, <bp@alien8.de>, <bhelgaas@google.com>,
+	<robert.moore@intel.com>, <yazen.ghannam@amd.com>, <avadhut.naik@amd.com>,
+	<linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-pci@vger.kernel.org>, <acpica-devel@lists.linux.dev>
+CC: <CobeChen@zhaoxin.com>, <TonyWWang@zhaoxin.com>, <ErosZhang@zhaoxin.com>,
+	<leoliu@zhaoxin.com>, LeoLiuoc <LeoLiu-oc@zhaoxin.com>
+Subject: [PATCH v5 2/4] ACPI: APEI: Add new hest_parse_pcie_aer()
+Date: Wed, 26 Feb 2025 20:18:36 +0800
+X-ASG-Orig-Subj: [PATCH v5 2/4] ACPI: APEI: Add new hest_parse_pcie_aer()
+Message-ID: <20250226121838.364533-3-LeoLiu-oc@zhaoxin.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20250226121838.364533-1-LeoLiu-oc@zhaoxin.com>
+References: <20250226121838.364533-1-LeoLiu-oc@zhaoxin.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Patch 0/5] Support Autonomous Selection mode in cppc_cpufreq
-To: Sumit Gupta <sumitg@nvidia.com>, "Rafael J. Wysocki" <rafael@kernel.org>
-CC: Viresh Kumar <viresh.kumar@linaro.org>, <lenb@kernel.org>,
-	<robert.moore@intel.com>, <corbet@lwn.net>, <linux-pm@vger.kernel.org>,
-	<linux-acpi@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-	<acpica-devel@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-	<linux-tegra@vger.kernel.org>, <treding@nvidia.com>, <jonathanh@nvidia.com>,
-	<sashal@nvidia.com>, <vsethi@nvidia.com>, <ksitaraman@nvidia.com>,
-	<sanjayc@nvidia.com>, <bbasu@nvidia.com>
-References: <20250211103737.447704-1-sumitg@nvidia.com>
- <20250211104428.dibsnxmkiluzixvz@vireshk-i7>
- <b45d0d81-e4f7-474e-a146-0075a6145cc2@huawei.com>
- <868d4c2a-583a-4cbb-a572-d884090a7134@nvidia.com>
- <8d5e0035-d8fe-49ef-bda5-f5881ff96657@huawei.com>
- <94bdab73-adc4-4b43-9037-5639f23e3d1e@nvidia.com>
- <CAJZ5v0iAg6HFROHctYQwW=V9XiV8p3XVYgeKUcX4qBgfwQK6Ow@mail.gmail.com>
- <e58a20f8-e8bf-409c-a878-af2bd3c7d243@nvidia.com>
-From: "zhenglifeng (A)" <zhenglifeng1@huawei.com>
-In-Reply-To: <e58a20f8-e8bf-409c-a878-af2bd3c7d243@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemh100008.china.huawei.com (7.202.181.93)
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-ClientProxiedBy: zxbjmbx1.zhaoxin.com (10.29.252.163) To
+ ZXBJMBX03.zhaoxin.com (10.29.252.7)
+X-Moderation-Data: 2/27/2025 8:37:40 AM
+X-Barracuda-Connect: ZXSHMBX1.zhaoxin.com[10.28.252.163]
+X-Barracuda-Start-Time: 1740616661
+X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
+X-Barracuda-URL: https://10.28.252.36:4443/cgi-mod/mark.cgi
+X-Virus-Scanned: by bsmtpd at zhaoxin.com
+X-Barracuda-Scan-Msg-Size: 3598
+X-Barracuda-BRTS-Status: 1
+X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
+X-Barracuda-Spam-Score: -2.02
+X-Barracuda-Spam-Status: No, SCORE=-2.02 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=
+X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.137756
+	Rule breakdown below
+	 pts rule name              description
+	---- ---------------------- --------------------------------------------------
 
-On 2025/2/21 21:14, Sumit Gupta wrote:
-> 
-> 
-> On 19/02/25 00:53, Rafael J. Wysocki wrote:
->>
->> There seems to be some quite fundamental disagreement on how this
->> should be done, so I'm afraid I cannot do much about it ATM.
->>
->> Please agree on a common approach and come back to me when you are ready.
->>
->> Sending two concurrent patchsets under confusingly similar names again
->> and again isn't particularly helpful.
->>
->> Thanks!
-> 
-> Hi Rafael,
-> 
-> Thank you for looking into this.
-> 
-> Hi Lifeng,
-> 
-> As per the discussion, we can make the driver future extensible and
-> also can optimize the register read/write access.
-> 
-> I gave some thought and below is my proposal.
-> 
-> 1) Pick 'Patch 1-7' from your patch series [1] which optimize API's
->    to read/write a cpc register.
-> 
-> 2) Pick my patches in [2]:
->    - Patch 1-4: Keep all cpc registers together under acpi_cppc sysfs.
->                 Also, update existing API's to read/write regs in batch.
->    - Patch 5: Creates 'cppc_cpufreq_epp_driver' instance for booting
->      all CPU's in Auto mode and set registers with right values.
->      They can be updated after boot from sysfs to change hints to HW.
->      I can use the optimized API's from [1] where required in [2].
-> 
-> Let me know if you are okay with this proposal.
-> I can also send an updated patch series with all the patches combined?
-> 
-> [1] https://lore.kernel.org/all/20250206131428.3261578-1-zhenglifeng1@huawei.com/
-> [2] https://lore.kernel.org/lkml/20250211103737.447704-1-sumitg@nvidia.com/
-> 
-> Regards,
-> Sumit Gupta
-> 
+From: LeoLiuoc <LeoLiu-oc@zhaoxin.com>
 
-Hi Sumit,
+The purpose of the function apei_hest_parse_aer() is used to parse and
+extract register value from HEST PCIe AER structures. This applies to
+all hardware platforms that has a PCI Express AER structure in HEST.
 
-Over the past few days, I've been thinking about your proposal and
-scenario.
+Signed-off-by: LeoLiuoc <LeoLiu-oc@zhaoxin.com>
+---
+ drivers/acpi/apei/hest.c | 52 +++++++++++++++++++++++++++++++++++++++-
+ include/acpi/apei.h      | 11 +++++++++
+ 2 files changed, 62 insertions(+), 1 deletion(-)
 
-I think we both agree that PATCH 1-7 in [1] doesn't conflicts with [2], so
-the rest of the discussion focuses on the differences between [2] and the
-PATCH 8 in [1].
+diff --git a/drivers/acpi/apei/hest.c b/drivers/acpi/apei/hest.c
+index 35d08f4e50e6..e7a15d60ecc1 100644
+--- a/drivers/acpi/apei/hest.c
++++ b/drivers/acpi/apei/hest.c
+@@ -22,6 +22,7 @@
+ #include <linux/kdebug.h>
+ #include <linux/highmem.h>
+ #include <linux/io.h>
++#include <linux/pci.h>
+ #include <linux/platform_device.h>
+ #include <acpi/apei.h>
+ #include <acpi/ghes.h>
+@@ -132,7 +133,56 @@ static bool is_ghes_assist_struct(struct acpi_hest_hea=
+der *hest_hdr)
+ 	return false;
+ }
+=20
+-typedef int (*apei_hest_func_t)(struct acpi_hest_header *hest_hdr, void *d=
+ata);
++static bool hest_match_pci_devfn(struct acpi_hest_aer_common *p, struct pc=
+i_dev *dev)
++{
++	return ACPI_HEST_SEGMENT(p->bus) =3D=3D pci_domain_nr(dev->bus) &&
++	       ACPI_HEST_BUS(p->bus)     =3D=3D dev->bus->number &&
++	       p->device                 =3D=3D PCI_SLOT(dev->devfn) &&
++	       p->function               =3D=3D PCI_FUNC(dev->devfn);
++}
++
++static bool hest_source_is_pcie_aer(struct acpi_hest_header *hest_hdr, str=
+uct pci_dev *dev)
++{
++	u16 hest_type =3D hest_hdr->type;
++	u8 pcie_type =3D pci_pcie_type(dev);
++	struct acpi_hest_aer_common *common =3D (struct acpi_hest_aer_common *)(h=
+est_hdr + 1);
++
++	switch (hest_type) {
++	case ACPI_HEST_TYPE_AER_ROOT_PORT:
++		if (pcie_type !=3D PCI_EXP_TYPE_ROOT_PORT)
++			return false;
++		break;
++	case ACPI_HEST_TYPE_AER_ENDPOINT:
++		if (pcie_type !=3D PCI_EXP_TYPE_ENDPOINT)
++			return false;
++		break;
++	case ACPI_HEST_TYPE_AER_BRIDGE:
++		if (pcie_type !=3D PCI_EXP_TYPE_PCI_BRIDGE && pcie_type !=3D PCI_EXP_TYP=
+E_PCIE_BRIDGE)
++			return false;
++		break;
++	default:
++		return false;
++	}
++
++	if (common->flags & ACPI_HEST_GLOBAL)
++		return true;
++
++	if (hest_match_pci_devfn(common, dev))
++		return true;
++
++	return false;
++}
++
++int hest_parse_pcie_aer(struct acpi_hest_header *hest_hdr, void *data)
++{
++	struct hest_parse_aer_info *info =3D data;
++
++	info->data =3D (void *)hest_hdr;
++	if (!hest_source_is_pcie_aer(hest_hdr, info->pci_dev))
++		return 0;
++	else
++		return 1;
++}
+=20
+ int apei_hest_parse(apei_hest_func_t func, void *data)
+ {
+diff --git a/include/acpi/apei.h b/include/acpi/apei.h
+index b79976daa4bb..047e0469927c 100644
+--- a/include/acpi/apei.h
++++ b/include/acpi/apei.h
+@@ -23,6 +23,11 @@ enum hest_status {
+ 	HEST_NOT_FOUND,
+ };
+=20
++struct hest_parse_aer_info {
++	struct pci_dev *pci_dev;
++	void *data;
++};
++
+ extern int hest_disable;
+ extern int erst_disable;
+ #ifdef CONFIG_ACPI_APEI_GHES
+@@ -33,12 +38,18 @@ void __init acpi_ghes_init(void);
+ static inline void acpi_ghes_init(void) { }
+ #endif
+=20
++typedef int (*apei_hest_func_t)(struct acpi_hest_header *hest_hdr, void *d=
+ata);
+ int apei_hest_parse(apei_hest_func_t func, void *data);
+=20
+ #ifdef CONFIG_ACPI_APEI
+ void __init acpi_hest_init(void);
++int hest_parse_pcie_aer(struct acpi_hest_header *hest_hdr, void *data);
+ #else
+ static inline void acpi_hest_init(void) { }
++static inline int hest_parse_pcie_aer(struct acpi_hest_header *hest_hdr, v=
+oid *data)
++{
++	return 0;
++}
+ #endif
+=20
+ int erst_write(const struct cper_record_header *record);
+--=20
+2.34.1
 
-We both tried to support autonomous selection mode in cppc_cpufreq but on
-different ways. I think the differences between these two approaches can be
-summarized into three questions:
-
-1. Which sysfs files to expose? I think this is not a problem, we can keep
-all of them.
-
-2. Where to expose these sysfs files? I understand your willing to keep all
-cpc registers together under acpi_cppc sysfs. But in my opinion, it is more
-suitable to expose them under cppc_cpufreq_attr, for these reasons:
-
-  1) It may probably introduce concurrency and data consistency issues, as 
-I mentioned before.
-
-  2) The store functions call cpufreq_cpu_get() to get policy and update
-the driver_data which is a cppc_cpudata. Only the driver_data in 
-cppc_cpufreq's policy is a cppc_cpudata! These operations are inappropriate
-in cppc_acpi. This file currently provides interfaces for cpufreq drivers
-to use. Reverse calls might mess up call relationships, break code
-structures, and cause problems that are hard to pinpoint the root cause!
-
-  3) Difficult to extend. Different cpufreq drivers may have different
-processing logic when reading from and writing to these CPC registers.
-Limiting all sysfs here makes it difficult for each cpufreq driver to
-extend. I think this is why there are only read-only interfaces under
-cppc_attrs before.
-
-Adding a 'ifdef' is not a good way to solve these problems. Defining this
-config does not necessarily mean that the cpufreq driver is cppc_cpufreq.
-
-3. Is it necessary to add a new driver instance? [1] exposed the sysfs
-files to support users dynamically change the auto selection mode of each
-policy. Each policy can be operated seperately. It seems to me that if you
-want to boot all CPUs in auto mode, it should be sufficient to set all
-relevant registers to the correct values at boot time. I can't see why the
-new instance is necessary unless you explain it further. Could you explain
-more about why you add a new instance starting from answer these questions:
-
-For a specific CPU, what is the difference between using the two instances
-when auto_sel is 1? And what is the difference when auto_sel is 0?
-
-If it turns out that the new instance is necessary, I think we can reach a
-common approach by adding this new cpufreq driver instance and place the
-attributes in 'cppc_cpufreq_epp_attr', like amd-pstate did.
-
-What do you think?
-
-Regards,
-Lifeng
