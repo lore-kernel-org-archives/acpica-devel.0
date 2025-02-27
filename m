@@ -1,284 +1,183 @@
-Received: from mx1.zhaoxin.com (MX1.ZHAOXIN.COM [210.0.225.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49C4B1EB5C3
-	for <acpica-devel@lists.linux.dev>; Thu, 27 Feb 2025 04:59:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.0.225.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C563B22F3AB
+	for <acpica-devel@lists.linux.dev>; Thu, 27 Feb 2025 12:36:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740632404; cv=none; b=l+N/krMBeMWxzYTJuBvBNRIEgxjBnQm3SZ75d9wm+IW7yD3B0H7xgWvbQjx7+ktR4SA1csSZfp4aoxWH+nRJel3OLSMQFllVHUntbwu+V7eRbbRtrJs+AFKBPStv0zQmj1Ybgl10r75xXX91bHTUm6qvr12Tht72P2gCrKW25Us=
+	t=1740659801; cv=none; b=NyTibfOaCz8vdlhct4F8w2uT00G/FjNyNA3FCiAAb3aAmzIsbzb0GhIliT8VvQ3DGrTKxAsX8XRwm4sGg4LKeWV7vB+phmSp3w+uyKr+pVxN8ZqdBdIapzqg9ppgYZVfIP1ZR+W6WQZ/pHF10riMMI1gO6XqqVVNypoO/vH8aWo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740632404; c=relaxed/simple;
-	bh=9wKlRlfh6+hqaiNsar4uUlJBFTr/ICWvyAUWcrw+Tm4=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:CC:References:
-	 In-Reply-To:Content-Type; b=ie156b8ilOmQpNy1bSP8dQ0vyZ9mZDThevOyj+JxQzaVqZLtq5L1mTjQ9YKU9Cfn0OtakwGLaJtwJaJZq/YEibIol4IUo5zI3qKyEIN3tCFgEfyqW8/7KYOqs+YE2t+Ac8vsMfbDSfaLdjx0R/EkB83kU6BPCAGLKCPoJ8PEOUY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com; spf=pass smtp.mailfrom=zhaoxin.com; arc=none smtp.client-ip=210.0.225.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zhaoxin.com
-X-ASG-Debug-ID: 1740632384-086e23601915ff00001-m47mSr
-Received: from ZXSHMBX3.zhaoxin.com (ZXSHMBX3.zhaoxin.com [10.28.252.165]) by mx1.zhaoxin.com with ESMTP id D1GWUQnXWUTW6gOV (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Thu, 27 Feb 2025 12:59:44 +0800 (CST)
-X-Barracuda-Envelope-From: LeoLiu-oc@zhaoxin.com
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.165
-Received: from ZXSHMBX2.zhaoxin.com (10.28.252.164) by ZXSHMBX3.zhaoxin.com
- (10.28.252.165) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.44; Thu, 27 Feb
- 2025 12:59:44 +0800
-Received: from ZXSHMBX2.zhaoxin.com ([fe80::4dfc:4f6a:c0cf:4298]) by
- ZXSHMBX2.zhaoxin.com ([fe80::4dfc:4f6a:c0cf:4298%4]) with mapi id
- 15.01.2507.044; Thu, 27 Feb 2025 12:59:44 +0800
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.165
-Received: from [10.32.64.4] (10.32.64.4) by ZXBJMBX03.zhaoxin.com
- (10.29.252.7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.44; Wed, 26 Feb
- 2025 17:40:02 +0800
-Message-ID: <ab631e27-ee35-47b9-879b-2b8d6a245512@zhaoxin.com>
-Date: Wed, 26 Feb 2025 17:39:48 +0800
+	s=arc-20240116; t=1740659801; c=relaxed/simple;
+	bh=jVNWxl4WmX/uXUCzIy5O6n0LejX0fZ69NtkSB8CPtZA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=C5DeqSPJJPyFfeYDR1BQp3bePYBKi9RdYnmFzkkj2agbMO3qsKbs/1OqJ42NOZ/mfWJFWSukd5j3ZWBVea34E7LXmfgG601YOJqyNo5GU2DE+Xi28bA5OPn47DGUC502ICHHTaYnDEWolRNO9xDOLnA/gAXV0hKLBOcFKUXz84E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=ITuKS7DY; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="ITuKS7DY"
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-2233622fdffso15879485ad.2
+        for <acpica-devel@lists.linux.dev>; Thu, 27 Feb 2025 04:36:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1740659799; x=1741264599; darn=lists.linux.dev;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xtME809Eew76HgNd2VZgiOyw7ntFEPKx2r2sqfXdyNY=;
+        b=ITuKS7DY8aZacO/b1SKrnp9hNVy0igaRNwdfNuFwcZ5tINUx1HJl/vjRt6HkCXo++7
+         QRYrbw80UoRXUal4r1tqv95wTDsqz92Tg+VsBMSH9Fu8zQn5r+lYh6xRIqjoDfNfeG0P
+         0MgRVlsLyzzC2CIKC9Nv3UKmv+uCvCVZagPtgzf/SG8Cty4NMO5JJpHxMXPHsA6rTZ8a
+         ur4uAvLYeDO6gSU44vpYnNwr5fNgSnRbOjjwp3ip8wOulZaz0O0XI21ovx7SFwXlu4z5
+         E0ilni8XvAQxPs6fE+WIggIfOrUr7Sz/hM0oFR24/8NMWmrzZK8Vq2v6X40zt5PbOP6H
+         vtSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740659799; x=1741264599;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xtME809Eew76HgNd2VZgiOyw7ntFEPKx2r2sqfXdyNY=;
+        b=DYuaewR0dAGbNpwFke9/5+RCg//CM1vUAInBIbq6oW9h7ICTq3Jhakg/Tu9CFmm7EZ
+         XmSXVeb4waHIJFeE3UcqCoqYF2rofTrDKd9/ek8TMg1bsYGUYt36vpSU/MbmPuCfvCxJ
+         X6WuoFoA0Sa5t+NW5xs3uCVMPxujw+RCR6xc22pl0MQe4kS1dLvgU/+ahgUQkQQZx/aj
+         +yjJqYtqxyrp/maQ9jXBHjT9kOyuKat55ekv/FiDWh+eb0ZFo/+i51DaYP+6hJ/HLaR+
+         tt0wwI0Y9mixrSoJXz3hAQinwA1GwkBGlecycBTl+BP1+ppqA37rXAgTadgq8DUATf3I
+         Qz8A==
+X-Forwarded-Encrypted: i=1; AJvYcCUiFCem0JLIVuUx5ufRSueOXwMVbuIyuF10MmGJNef7foPVuGWOtk0cT7Al+Wfs7gcrDi8wG64Bq1kCDpM=@lists.linux.dev
+X-Gm-Message-State: AOJu0Yz0e3ULbk2muceVPqkDtdpjMUw/cUPIOLQGJas2BeCpGM3cOgmE
+	dSfbnped8GUXWae6rar0tDTFFSktK3H2zVJyz3pm3jDVohQ2E8iJUJZ2/WMMTIU=
+X-Gm-Gg: ASbGnculKNSgUjsSIMP2sHh0i4RLkDLSRPpATDtkDJBJCe6aLsZhKc51NSWQUkQB0IU
+	SVRfatY5ij1xEc2Xdy3F3yq0bjQn1H/KW5o+GI7hCSdQW1XRcmuFTOx/CCgCqdqqNKbr6qhktTq
+	LbU05uye9kOc5FbrG8YkuSf1SoDQnCAIwo3BlOj7H7exRuUAHPawt/vYgnMOQEaZd2VRBrgFE34
+	sfRI0rGT1qaV/Fh5MSZh7FMUCALbseoFxeXt0ABZcf37v4uimnKXk3Je+qGtcGrXJ65hzBoDEIr
+	sfIJiBvg0jq3RyP6yqHvQGz2h2ByzGHH8tWR
+X-Google-Smtp-Source: AGHT+IH56tY+4vK57WuCNQiVCZOgB7TNFoVCq9IHBAMlZTCbUrlVJLG7r/B7T96EdJnPgpthhW1GjA==
+X-Received: by 2002:a17:902:ecd0:b0:21f:542e:dd0a with SMTP id d9443c01a7336-22307e6586fmr197711655ad.41.1740659799030;
+        Thu, 27 Feb 2025 04:36:39 -0800 (PST)
+Received: from ventana-bhyve.. ([49.37.249.43])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-223504c5bddsm13219135ad.140.2025.02.27.04.36.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Feb 2025 04:36:38 -0800 (PST)
+From: Himanshu Chauhan <hchauhan@ventanamicro.com>
+To: linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-acpi@vger.kernel.org,
+	linux-efi@vger.kernel.org,
+	acpica-devel@lists.linux.dev
+Cc: paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	lenb@kernel.org,
+	james.morse@arm.com,
+	tony.luck@intel.com,
+	ardb@kernel.org,
+	conor@kernel.org,
+	cleger@rivosinc.com,
+	robert.moore@intel.com,
+	sunilvl@ventanamicro.com,
+	apatel@ventanamicro.com,
+	Himanshu Chauhan <hchauhan@ventanamicro.com>
+Subject: [RFC PATCH v1 00/10] Add RAS support for RISC-V architecture
+Date: Thu, 27 Feb 2025 18:06:18 +0530
+Message-ID: <20250227123628.2931490-1-hchauhan@ventanamicro.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: LeoLiu-oc <leoliu-oc@zhaoxin.com>
-Subject: Re: [PATCH v4 1/3] ACPI/APEI: Add hest_parse_pcie_aer()
-To: Yazen Ghannam <yazen.ghannam@amd.com>
-X-ASG-Orig-Subj: Re: [PATCH v4 1/3] ACPI/APEI: Add hest_parse_pcie_aer()
-CC: <rafael@kernel.org>, <lenb@kernel.org>, <james.morse@arm.com>,
-	<tony.luck@intel.com>, <bp@alien8.de>, <bhelgaas@google.com>,
-	<robert.moore@intel.com>, <avadhut.naik@amd.com>,
-	<linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-pci@vger.kernel.org>, <acpica-devel@lists.linux.dev>,
-	<CobeChen@zhaoxin.com>, <TonyWWang@zhaoxin.com>, <ErosZhang@zhaoxin.com>
-References: <20241205114048.60291-1-LeoLiu-oc@zhaoxin.com>
- <20241205114048.60291-2-LeoLiu-oc@zhaoxin.com>
- <20241211192048.GA1960478@yaz-khff2.amd.com>
-In-Reply-To: <20241211192048.GA1960478@yaz-khff2.amd.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: ZXSHCAS2.zhaoxin.com (10.28.252.162) To
- ZXBJMBX03.zhaoxin.com (10.29.252.7)
-X-Moderation-Data: 2/27/2025 12:59:43 PM
-X-Barracuda-Connect: ZXSHMBX3.zhaoxin.com[10.28.252.165]
-X-Barracuda-Start-Time: 1740632384
-X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
-X-Barracuda-URL: https://10.28.252.35:4443/cgi-mod/mark.cgi
-X-Barracuda-BRTS-Status: 1
-X-Virus-Scanned: by bsmtpd at zhaoxin.com
-X-Barracuda-Scan-Msg-Size: 6440
-X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
-X-Barracuda-Spam-Score: -2.02
-X-Barracuda-Spam-Status: No, SCORE=-2.02 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.137764
-	Rule breakdown below
-	 pts rule name              description
-	---- ---------------------- --------------------------------------------------
+Content-Transfer-Encoding: 8bit
 
+This series implements the RAS (Reliability, Availability and Serviceability)
+support for RISC-V architecture using RISC-V RERI specification. It is conformant
+to ACPI platform error interfaces (APEI). It uses the highest priority
+Supervisor Software Events (SSE)[2] to deliver the hardware error events to the kernel.
+The SSE implemetation has already been merged in OpenSBI. Clement has sent a patch series for
+its implemenation in Linux kernel.[5]
 
+The GHES driver framework is used as is with the following changes for RISC-V:
+	1. Register each ghes entry with SSE layer. Ghes notification vector is SSE event.
+	2. Add RISC-V specific entries for processor type and ISA string
+	3. Add fixmap indices GHES SSE Low and High Priority to help map and read from
+	   physical addresses present in GHES entry.
+	4. Other changes to build/configure the RAS support
 
-=E5=9C=A8 2024/12/12 3:20, Yazen Ghannam =E5=86=99=E9=81=93:
->=20
->=20
-> [=E8=BF=99=E5=B0=81=E9=82=AE=E4=BB=B6=E6=9D=A5=E8=87=AA=E5=A4=96=E9=83=A8=
-=E5=8F=91=E4=BB=B6=E4=BA=BA =E8=B0=A8=E9=98=B2=E9=A3=8E=E9=99=A9]
->=20
-> On Thu, Dec 05, 2024 at 07:40:46PM +0800, LeoLiu-oc wrote:
->> From: LeoLiuoc <LeoLiu-oc@zhaoxin.com>
->>
->> The purpose of the function apei_hest_parse_aer() is used to parse and
->> extract register value from HEST PCIe AER structures. This applies to
->> all hardware platforms that has a PCI Express AER structure in HEST.
->>
->> Signed-off-by: LeoLiuoc <LeoLiu-oc@zhaoxin.com>
->> ---
->>   drivers/acpi/apei/hest.c | 77 ++++++++++++++++++++++++++++++++++++++--
->>   include/acpi/apei.h      | 17 +++++++++
->>   2 files changed, 92 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/acpi/apei/hest.c b/drivers/acpi/apei/hest.c
->> index 20d757687e3d..13075f5aea25 100644
->> --- a/drivers/acpi/apei/hest.c
->> +++ b/drivers/acpi/apei/hest.c
->> @@ -22,6 +22,7 @@
->>   #include <linux/kdebug.h>
->>   #include <linux/highmem.h>
->>   #include <linux/io.h>
->> +#include <linux/pci.h>
->>   #include <linux/platform_device.h>
->>   #include <acpi/apei.h>
->>   #include <acpi/ghes.h>
->> @@ -132,9 +133,81 @@ static bool is_ghes_assist_struct(struct acpi_hest_=
-header *hest_hdr)
->>        return false;
->>   }
->>
->> -typedef int (*apei_hest_func_t)(struct acpi_hest_header *hest_hdr, void=
- *data);
->> +#ifdef CONFIG_ACPI_APEI
->=20
-> Why is this needed? The entire hest.c file is only built if
-> CONFIG_ACPI_APEI is enabled.
->=20
-I agree with your point.
+How to Use:
+----------
+This RAS stack consists of Qemu[3], OpenSBI, EDK2[4], Linux kernel and devmem utility to inject and trigger
+errors. Qemu [Ref.] has support to emulate RISC-V RERI. The RAS agent is implemented in OpenSBI which
+creates CPER records. EDK2 generates HEST table and populates it with GHES entries with the help of
+OpenSBI.
 
->> +static bool hest_match_pci_devfn(struct acpi_hest_aer_common *p,
->> +                              struct pci_dev *dev)
->> +{
->> +     return ACPI_HEST_SEGMENT(p->bus) =3D=3D pci_domain_nr(dev->bus) &&
->> +            ACPI_HEST_BUS(p->bus) =3D=3D dev->bus->number &&
->> +            p->device =3D=3D PCI_SLOT(dev->devfn) &&
->> +            p->function =3D=3D PCI_FUNC(dev->devfn);
->=20
-> It may be nice to align all these lines on the "=3D=3D".
->=20
-Okay, I will make the changes in the next version
+Qemu Command:
+------------
+<qemu-dir>/build/qemu-system-riscv64 \
+    -s -accel tcg -m 4096 -smp 2 \
+    -cpu rv64,smepmp=false \
+    -serial mon:stdio \
+    -d guest_errors -D ./qemu.log \
+    -bios <opensbi-dir>/build/platform/generic/firmware/fw_dynamic.bin \
+    -monitor telnet:127.0.0.1:55555,server,nowait \
+    -device virtio-gpu-pci -full-screen \ 
+    -device qemu-xhci \
+    -device usb-kbd \
+    -blockdev node-name=pflash0,driver=file,read-only=on,filename=<edk2-build-dir>/RiscVVirtQemu/RELEASE_GCC5/FV/RISCV_VIRT_CODE.fd \
+    -blockdev node-name=pflash1,driver=file,filename=<edk2-build-dir>/RiscVVirtQemu/RELEASE_GCC5/FV/RISCV_VIRT_VARS.fd \
+    -M virt,pflash0=pflash0,pflash1=pflash1,rpmi=true,reri=true,aia=aplic-imsic \
+    -kernel <kernel image> \
+    -initrd <rootfs image> \
+    -append "root=/dev/ram rw console=ttyS0 earlycon=uart8250,mmio,0x10000000"
 
->> +}
->> +
->> +static bool hest_source_is_pcie_aer(struct acpi_hest_header *hest_hdr,
->> +                                 struct pci_dev *dev)
->> +{
->> +     u16 hest_type =3D hest_hdr->type;
->> +     u8 pcie_type =3D pci_pcie_type(dev);
->> +     struct acpi_hest_aer_common *common;
->> +
->> +     common =3D (struct acpi_hest_aer_common *)(hest_hdr + 1);
->> +
->> +     switch (hest_type) {
->> +     case ACPI_HEST_TYPE_AER_ROOT_PORT:
->> +             if (pcie_type !=3D PCI_EXP_TYPE_ROOT_PORT)
->> +                     return false;
->> +     break;
->=20
-> The breaks should be indented to the "if". Same for the rest of the
-> file.
->=20
-I agree with your point of view and will make modifications in the next=20
-version.
+Error Injection & Triggering:
+----------------------------
+devmem 0x4010040 32 0x2a1
+devmem 0x4010048 32 0x9001404
+devmem 0x4010044 8 1
 
->> +     case ACPI_HEST_TYPE_AER_ENDPOINT:
->> +             if (pcie_type !=3D PCI_EXP_TYPE_ENDPOINT)
->> +                     return false;
->> +     break;
->> +     case ACPI_HEST_TYPE_AER_BRIDGE:
->> +             if (pcie_type !=3D PCI_EXP_TYPE_PCI_BRIDGE &&
->> +                 pcie_type !=3D PCI_EXP_TYPE_PCIE_BRIDGE)
->> +                     return false;
->> +     break;
->> +     default:
->> +             return false;
->> +     break;
->> +     }
->> +
->> +     if (common->flags & ACPI_HEST_GLOBAL)
->> +             return true;
->> +
->> +     if (hest_match_pci_devfn(common, dev))
->> +             return true;
->> +
->> +     return false;
->> +}
->> +
->> +int hest_parse_pcie_aer(struct acpi_hest_header *hest_hdr, void *data)
->> +{
->> +     struct hest_parse_aer_info *info =3D data;
->> +
->> +     if (!hest_source_is_pcie_aer(hest_hdr, info->pci_dev))
->> +             return 0;
->> +
->> +     switch (hest_hdr->type) {
->> +     case ACPI_HEST_TYPE_AER_ROOT_PORT:
->> +             info->hest_aer_root_port =3D (struct acpi_hest_aer_root *)=
-hest_hdr;
->> +             return 1;
->> +     break;
->> +     case ACPI_HEST_TYPE_AER_ENDPOINT:
->> +             info->hest_aer_endpoint =3D (struct acpi_hest_aer *)hest_h=
-dr;
->> +             return 1;
->> +     break;
->> +     case ACPI_HEST_TYPE_AER_BRIDGE:
->> +             info->hest_aer_bridge =3D (struct acpi_hest_aer_bridge *)h=
-est_hdr;
->> +             return 1;
->> +     break;
->> +     default:
->> +             return 0;
->> +     break;
->> +     }
->> +}
->> +#endif
->>
->> -static int apei_hest_parse(apei_hest_func_t func, void *data)
->> +int apei_hest_parse(apei_hest_func_t func, void *data)
->>   {
->>        struct acpi_hest_header *hest_hdr;
->>        int i, rc, len;
->> diff --git a/include/acpi/apei.h b/include/acpi/apei.h
->> index dc60f7db5524..82d3cdf53e22 100644
->> --- a/include/acpi/apei.h
->> +++ b/include/acpi/apei.h
->> @@ -23,6 +23,15 @@ enum hest_status {
->>        HEST_NOT_FOUND,
->>   };
->>
->> +#ifdef CONFIG_ACPI_APEI
->> +struct hest_parse_aer_info {
->> +     struct pci_dev *pci_dev;
->> +     struct acpi_hest_aer *hest_aer_endpoint;
->> +     struct acpi_hest_aer_root *hest_aer_root_port;
->> +     struct acpi_hest_aer_bridge *hest_aer_bridge;
->=20
-> These three pointers are mutually exclusive. Can you save just one
-> pointer and then cast it when checking the "port_type" in patch 3?
->=20
->> +};
->> +#endif
->=20
-> I think the #ifdef is not needed, because this is not declaring an
-> instance of the struct.
->=20
-I agree with your point of view and will make modifications in the next=20
-version.
+The above commands injects a TLB error on CPU 0.
 
->> +
->>   extern int hest_disable;
->>   extern int erst_disable;
->>   #ifdef CONFIG_ACPI_APEI_GHES
->> @@ -33,10 +42,18 @@ void __init acpi_ghes_init(void);
->>   static inline void acpi_ghes_init(void) { }
->>   #endif
->>
->> +typedef int (*apei_hest_func_t)(struct acpi_hest_header *hest_hdr, void=
- *data);
->> +int apei_hest_parse(apei_hest_func_t func, void *data);
->> +
->=20
-> Minor nit: this could be done as a separate patch.
->=20
-> Patch 1: Move apei_hest_parse() to apei.h
-> Patch 2: Add new hest_parse_pcie_aer()
->=20
-Ok, your suggestion is very reasonable, I will modify it in the next=20
-version.
+Sample Output (CPU 0):
+---------------------
+[   34.370282] {1}[Hardware Error]: Hardware error from APEI Generic Hardware Error Source: 1
+[   34.371375] {1}[Hardware Error]: event severity: recoverable
+[   34.372149] {1}[Hardware Error]:  Error 0, type: recoverable
+[   34.372756] {1}[Hardware Error]:   section_type: general processor error
+[   34.373357] {1}[Hardware Error]:   processor_type: 3, RISCV
+[   34.373806] {1}[Hardware Error]:   processor_isa: 6, RISCV64
+[   34.374294] {1}[Hardware Error]:   error_type: 0x02
+[   34.374845] {1}[Hardware Error]:   TLB error
+[   34.375448] {1}[Hardware Error]:   operation: 1, data read
+[   34.376100] {1}[Hardware Error]:   target_address: 0x0000000000000000
 
-Leoliu-oc
-Best Regards
+References:
+----------
+[1] RERI Specification: https://github.com/riscv-non-isa/riscv-ras-eri/releases/download/v1.0/riscv-reri.pdf
+[2] SSE Section in OpenSBI v3.0: https://github.com/riscv-non-isa/riscv-sbi-doc/releases/download/v3.0-rc3/riscv-sbi.pdf
+[3] Qemu source (with RERI emulation support): https://github.com/ventanamicro/qemu.git (branch: dev-upstream)
+[4] EDK2: https://github.com/ventanamicro/edk2.git (branch: dev-upstream)
+[5] SSE Kernel Patches: https://lore.kernel.org/linux-riscv/649fdead-09b0-4f94-a6ff-099fc970d890@rivosinc.com/T/
 
->>   #ifdef CONFIG_ACPI_APEI
->>   void __init acpi_hest_init(void);
->> +int hest_parse_pcie_aer(struct acpi_hest_header *hest_hdr, void *data);
->>   #else
->>   static inline void acpi_hest_init(void) { }
->> +static inline int hest_parse_pcie_aer(struct acpi_hest_header *hest_hdr=
-, void *data)
->> +{
->> +     return 0;
->> +}
->>   #endif
->>
->>   int erst_write(const struct cper_record_header *record);
->> --
->=20
-> Thanks,
-> Yazen
+Himanshu Chauhan (10):
+  riscv: Define ioremap_cache for RISC-V
+  riscv: Define arch_apei_get_mem_attribute for RISC-V
+  acpi: Introduce SSE in HEST notification types
+  riscv: Add fixmap indices for GHES IRQ and SSE contexts
+  riscv: conditionally compile GHES NMI spool function
+  riscv: Add functions to register ghes having SSE notification
+  riscv: Add RISC-V entries in processor type and ISA strings
+  riscv: Introduce HEST SSE notification handlers
+  riscv: Add config option to enable APEI SSE handler
+  riscv: Enable APEI and NMI safe cmpxchg options required for RAS
+
+ arch/riscv/Kconfig                 |   2 +
+ arch/riscv/include/asm/acpi.h      |  20 ++++
+ arch/riscv/include/asm/fixmap.h    |   8 ++
+ arch/riscv/include/asm/io.h        |   3 +
+ drivers/acpi/apei/Kconfig          |   5 +
+ drivers/acpi/apei/ghes.c           | 102 +++++++++++++++++---
+ drivers/firmware/efi/cper.c        |   3 +
+ drivers/firmware/riscv/riscv_sse.c | 147 +++++++++++++++++++++++++++++
+ include/acpi/actbl1.h              |   3 +-
+ include/linux/riscv_sse.h          |  15 +++
+ 10 files changed, 296 insertions(+), 12 deletions(-)
+
+-- 
+2.43.0
 
