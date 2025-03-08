@@ -1,259 +1,165 @@
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2137.outbound.protection.outlook.com [40.107.236.137])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EAA219E971
-	for <acpica-devel@lists.linux.dev>; Thu,  6 Mar 2025 23:48:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.137
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741304940; cv=fail; b=jZhr0QB+CUTu8xvu6rug/AjNMCBnHZmUF2r/9UKpAJSHrOIPrAq7ArXHRrpDtZsRDRgLBgXPmTmkpxUB5V1+WIERRoWVFVKq7fKtkp42W5V1iQbD38cUetCXpJOvDxScJuJoQEGH0LtJuLUa+fq5G2N/rZpsxn2q1QNMTAF2CQ8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741304940; c=relaxed/simple;
-	bh=y98HZz+zzcWdMhuHxdodZldEsHpYDN17tadSgqLMSqE=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=dvjllVHONzSElD2mvKJJDVW+Vx3cuYouHX1k0PJz3WOove/B5e/RPTTySKQeT98YnopjuaPo9nk23NqAVWTXGxlOBo8WirUZNHBFullmjoJBjwrmM3/y6UCaoHB3XaeB/EjSuyCWN6jpGIZgzIWY2E7m5sbPlbjueuCYPjSyWpo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com; spf=pass smtp.mailfrom=os.amperecomputing.com; dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b=BacQ/N6y; arc=fail smtp.client-ip=40.107.236.137
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=os.amperecomputing.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9899E192D68;
+	Sat,  8 Mar 2025 08:56:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1741424172; cv=none; b=uT9EK/1seRAgmw7CQm6+QPww/kz60B/8x/U+108HrlB0/6gQZjGBfJYtp4JGUtF0Ig074JlBOWHWvYRd/NmA8TfG2um2PJR+PEgJQDDUzWEqDn5KEqdLdcMQx2w7sA7QLh+7wR8qfLq3+YDwI+x79fv6YINd/qe+hXK2CTKos74=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1741424172; c=relaxed/simple;
+	bh=4VgkYCgoYtsqJcDFHrQ8pnLz9wmKnHdijePp6ttEMMg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kCHUPGQNExPo3w1lCg19UaLpNM7j5WlY5tG6U77UaAoZfBCF8yyXGcfgxtvbBzlL5H3+ZGbwGNqYO7z2nFUa1g4qYFNEt+MugSHU/9/5bdftHH/8CnSmWqi+BzqVmpIWtrmjJ/M/O/xV9+fcWpp6taKqvYu1TOurlWdMdrWqIJs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SXR/I6AU; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b="BacQ/N6y"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=u17FjqrMvEUfqoLJSDzyGOnEpPBMufHUCgOuGjzunZz+IEYlcu40oREGMq6ng/TBBTr3pRi2BPOR8/MxbbZvVE+v4V7vTH0CXAJ9Mlj6sMi63+LNrz2GvaUrbaO4T4URtJfjSpq6G2rSyrs045qfidwWlC8NRb++Mglcsdi951qlf+QzFJVOarqerHfLB/PmmJFoWwSWDDuRWub5Na38oRf3BrGVa00Ro9PLJws6Q6B/7l7RzThgMDUUkhhWcjKX/15YpEI9eI3FXM8fpK6pZbFjfUu1eK1WPGM1tfU9pCn+o/SSTsIHPBClupQvGLygjQaX+zg6Ur941AZX3/zfvQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6pJiYHlwfQRmcCIedmE7X1eOCQSmMb3DkoqEsIoUb18=;
- b=ifAsoePDbGv3S8VcBxlUGjquhblIxQrZdyshPINboNc8eyGGtdgzyU+dJPTDX2NRmgRPmQVusCq9wOXv+gp45LJXBDzXUq7YOHG2zqGwi0k5lnrjwpFITnE6GCPm1HMtb4PGat+ziUARrEg42oXsB4IlE7OqldHB02NbeQOvzoYF+yMfHqzzfyoUDED31wFagQQSI2f0jQ4qxZ0PyGzwKAMIMF5GGRqXplIuMvtfaIzIETVDnaMM52EffYzfLowdPiNBsloepGsb5pJ1OOolh2cWwvuPj55qD8TAOVZ1yLd7X7BjFFN2WjpRUqiDL+2i0GlSuSp8250Gn4JfLdND/g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6pJiYHlwfQRmcCIedmE7X1eOCQSmMb3DkoqEsIoUb18=;
- b=BacQ/N6yjCw6VYL5Zke9v5PLd0BQxAHePG7HBfvAPSX5WOdPhZtTPUnfNSb747PlCApW4wiB+kLRxTT3GVgjRz712Kx9auacovhEDU+Xy4zUWAjSgvrmetRLgAVmvw6CjVpGIl6voHS0TbzfEQcmNxACfYzK5t7oB/otAiq5C3c=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
-Received: from SN7PR01MB7903.prod.exchangelabs.com (2603:10b6:806:34f::17) by
- DM4PR01MB7737.prod.exchangelabs.com (2603:10b6:8:65::9) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8511.17; Thu, 6 Mar 2025 23:48:55 +0000
-Received: from SN7PR01MB7903.prod.exchangelabs.com
- ([fe80::cf45:9855:a64e:382f]) by SN7PR01MB7903.prod.exchangelabs.com
- ([fe80::cf45:9855:a64e:382f%5]) with mapi id 15.20.8511.015; Thu, 6 Mar 2025
- 23:48:55 +0000
-From: Zaid Alali <zaidal@os.amperecomputing.com>
-To: rafael@kernel.org,
-	lenb@kernel.org,
-	james.morse@arm.com,
-	tony.luck@intel.com,
-	bp@alien8.de,
-	robert.moore@intel.com,
-	dan.j.williams@intel.com,
-	zaidal@os.amperecomputing.com,
-	Jonathan.Cameron@huawei.com,
-	Benjamin.Cheatham@amd.com,
-	Avadhut.Naik@amd.com,
-	viro@zeniv.linux.org.uk,
-	arnd@arndb.de,
-	ira.weiny@intel.com,
-	dave.jiang@intel.com,
-	sthanneeru.opensrc@micron.com,
-	linux-acpi@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	acpica-devel@lists.linux.dev
-Subject: [PATCH v4 9/9] ACPI: APEI: EINJ: Update the documentation for EINJv2 support
-Date: Thu,  6 Mar 2025 15:48:10 -0800
-Message-Id: <20250306234810.75511-10-zaidal@os.amperecomputing.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250306234810.75511-1-zaidal@os.amperecomputing.com>
-References: <20250306234810.75511-1-zaidal@os.amperecomputing.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: MW4PR03CA0055.namprd03.prod.outlook.com
- (2603:10b6:303:8e::30) To SN7PR01MB7903.prod.exchangelabs.com
- (2603:10b6:806:34f::17)
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SXR/I6AU"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1741424170; x=1772960170;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=4VgkYCgoYtsqJcDFHrQ8pnLz9wmKnHdijePp6ttEMMg=;
+  b=SXR/I6AUsknINmcsyqQqUrYfU+GvZDDACFmYYt5Bm+RIPMg2EaEOCJIu
+   I/j4+7iB6rVYDRYbJSJeeF2FS2jInuh9OR9mIwtAWILKBn5jvJmmzc902
+   16whSqTnZJHs3QMBAUxIbmENw+d1Is2Rbt7fs94EzvqmKh2hKWGewD4TA
+   nkfz8N8f+ue4osqHB+Loflpri7+eFu7P4aPVewyDtBNGgdjkXic7TiEul
+   GQWDNWMtt6o4H7C0xXS+sKE9i0+88wR9Ow1/x6MJrZYmy5VeYqcq2hvT1
+   5qRp/hs04Q7B9CytGjC7mKtdqs2p15tGMgjs7rRBw8WRHpaKyzgLWwqOx
+   g==;
+X-CSE-ConnectionGUID: uUB4jQLxRZeAzJfTquW3gQ==
+X-CSE-MsgGUID: YCg6LuhYRT+1f5h0QYf/ng==
+X-IronPort-AV: E=McAfee;i="6700,10204,11366"; a="46395422"
+X-IronPort-AV: E=Sophos;i="6.14,231,1736841600"; 
+   d="scan'208";a="46395422"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2025 00:56:09 -0800
+X-CSE-ConnectionGUID: prOlML3uTkWwaENRbOkvzQ==
+X-CSE-MsgGUID: 4N6N18olTjev+4xijpH3ag==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
+   d="scan'208";a="120434605"
+Received: from lkp-server02.sh.intel.com (HELO a4747d147074) ([10.239.97.151])
+  by orviesa008.jf.intel.com with ESMTP; 08 Mar 2025 00:56:04 -0800
+Received: from kbuild by a4747d147074 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1tqpyU-0001jE-0K;
+	Sat, 08 Mar 2025 08:56:02 +0000
+Date: Sat, 8 Mar 2025 16:55:04 +0800
+From: kernel test robot <lkp@intel.com>
+To: Zaid Alali <zaidal@os.amperecomputing.com>, rafael@kernel.org,
+	lenb@kernel.org, james.morse@arm.com, tony.luck@intel.com,
+	bp@alien8.de, robert.moore@intel.com, dan.j.williams@intel.com,
+	Jonathan.Cameron@huawei.com, Benjamin.Cheatham@amd.com,
+	Avadhut.Naik@amd.com, viro@zeniv.linux.org.uk, arnd@arndb.de,
+	ira.weiny@intel.com, dave.jiang@intel.com,
+	sthanneeru.opensrc@micron.com, linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org, acpica-devel@lists.linux.dev
+Cc: oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH v4 3/9] ACPI: APEI: EINJ: Fix kernel test robot sparse
+ warning
+Message-ID: <202503081600.JxR875hh-lkp@intel.com>
+References: <20250306234810.75511-4-zaidal@os.amperecomputing.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN7PR01MB7903:EE_|DM4PR01MB7737:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0d321be2-e2b4-4cdd-d805-08dd5d0974e3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|366016|376014|7416014|52116014|1800799024|921020|38350700014;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?Y1n2Rn0LwqvLTVlu7UWidpXMbiy2H6cxlbXZn52JJ5hMFYRGxo9dbC1kBUZ4?=
- =?us-ascii?Q?BkLlG99PtjtlWajWUEgVL16Y2Fxeu26/VAro5byowwJnY27cMsuzShFWZ1QD?=
- =?us-ascii?Q?RawKDUyt30/5bSpEJ/eX+M/4fei8sGBgF9qae19cnl0piUpJYzvfgA5pZYD7?=
- =?us-ascii?Q?2VLlVXcq9btioElJhwATOKX0tKEJzCpZ4jt2ODBj100v7sllX9X397isG1hr?=
- =?us-ascii?Q?CWL+W2uyI8SLndYCg3i8NMrUvgu2bqmFsA82JHjTCrakQoAkx0tz9WpCFxXK?=
- =?us-ascii?Q?UjlxBkRoLl6r4/WmSd4KYBROrXiZQ5WmzB2ua24Cv+DpDAPsUz1jkX5qKQT2?=
- =?us-ascii?Q?WyHk2freXGhBGQj9dESgyNKcLV5BTrKu5yUBsyq5uvax9WHbIkob/NJvtE7u?=
- =?us-ascii?Q?noROpiLSL3xnmJdOvIh/Ge+Sy3zokMN29NyebhaZAjNUUd6RF4l1RNNSDIam?=
- =?us-ascii?Q?KzS3pjjXttqcTb4PWE3OAmSeRdqaG23VTO7LQm63BdzdN1p8bZHM1BOE7g2X?=
- =?us-ascii?Q?65q6GJiCDpYiH7dS8qMXHrGb8Rat6Y0K1dF5SX8Eoy+Ad9Nh0JZj/288D5tK?=
- =?us-ascii?Q?mCX2BTqrcarsi2YzZR76Ul5UlEDa4rf5EYHfL4kOKfUU43Dl16Iz9a4L6D9r?=
- =?us-ascii?Q?88loJiHrQs7MQVUWHtynK+UVpUw8emlMgmR9UBAEQl501nOFqEr5d3vtDskB?=
- =?us-ascii?Q?miOlF1udCpgZYQ5ECzAWIgsfBfVTEkVdvVudE7Vz/gCgnZVe9vKQ98G1Mpdn?=
- =?us-ascii?Q?Ch5nn2TI03LR3dUqH3NCWaAfdSEhcqUBSB6yaGL02emPnomVjgMBvmpr7trp?=
- =?us-ascii?Q?647WI584bFgDttwPyQ67Rq2pjrfXo5AS/kJwx2ByxZHwpjUMRudOssqkbtM8?=
- =?us-ascii?Q?wZ44IQq3deYRxhyJnZRbAx7a7yKMejE0npIG3J6KtY9JnRwf9TtZ/j2v0xpP?=
- =?us-ascii?Q?uFuRj8Mir/fQlzB8VE6kr9ig5OxSQbFv46IqgiuWvYf+v2qU7C2f9DxLzWwP?=
- =?us-ascii?Q?xWrPNYImpbIeCc5mQ2jME42iONuO/Irco+BcCAzXaAGMh3qfCzkMgsTwrUGL?=
- =?us-ascii?Q?SYIdJHrDTU/Jpi5GZiK+XNdiBPqPwE/mt4zXApWCuMU459N2zUBjpInPlFlJ?=
- =?us-ascii?Q?v61ceXJmdtwbAvd/dxEu4A8hAqr8SkKMGJFCd7d4iAFqdSeTkDI2TYrX7DKj?=
- =?us-ascii?Q?/RSIwIFK1QJDt1aoLRYYmy/2Jokd38JM/1eV+CE6oi8Q4wnQ8hU8xrPzGVE6?=
- =?us-ascii?Q?OiYgocJNr0QxVgEZtTbARMm1dKroDlJDykUkIwdBxHXPs0VqrzA7T9vJ49Yz?=
- =?us-ascii?Q?cOGXAJHPdX2RFKvf8B5CAyAiKNb9XxZ2rQBuoPsaXgs9PcwjvxVQbgHhwQ6r?=
- =?us-ascii?Q?xqLtDLnRD/amB39aw2c8DLnSaPlRPc+MF/N7JR1EVcPK+/6KlQ=3D=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR01MB7903.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(7416014)(52116014)(1800799024)(921020)(38350700014);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?+nyo6Rhy4fhCzKio1iRQviApMWV98I2pRgzm6arX/aQMLiXUJ1Wt6YMIU4jc?=
- =?us-ascii?Q?lf2P9mvPAOJ8R7XM9LqGxDxYdqBUDrmcYhnFX9Dr8Qkybsyo0RDEWrKF8SXr?=
- =?us-ascii?Q?+Mpv9Dfsvb5nBq71I9z125vPFWFCpoB+AJogOSuewl7cfQkckRddfb4oRgG1?=
- =?us-ascii?Q?Wj58BrxHS1mqL5S7aHFzPJUafEcPU6qbzG+qW52Q9zodfhpWx0AN0obuwsSP?=
- =?us-ascii?Q?YUyENd8/2IyTxFwhASInHeRTe50kOCID4QVqSVw8/lhR6Nav2U+0yY55984N?=
- =?us-ascii?Q?HqaEpaLbpjMOG7dHqaa4LZJ9HfTp2adxi7kGlycWYWrLniVaKbhJpwkwptP+?=
- =?us-ascii?Q?/r14m0H+h6dfuXCMepcTZ+cYooCFq9sPf02EtHKY+0UmeGsl8888hdmPPpK7?=
- =?us-ascii?Q?LQi7hN3jRxyS2IRkW3RIU0XEUOk/Vd7I930WzkGa4D9wMvqv8zMtElvq4AW/?=
- =?us-ascii?Q?6s056KkWlyzbUPJtLyoDDt/6HLG1rUW+yLIfgYYC01a7ePit25qrbAhdWGtb?=
- =?us-ascii?Q?Ia4BSX67+tPcPiLd75mnIT8ngkjC22srWXt9x4nD2POq5pO64W0Qed6ttzFc?=
- =?us-ascii?Q?asYt0e0+azht9fKVCO5+AOUDvBmM2nUU/+2Z95V6uyF3Deg2BaONvqu87NTr?=
- =?us-ascii?Q?Oo2P5//cU7j0mQfxfksL1wZPw+MqFDquFZK+PhtyJfvsawsso4ZgoqKPsER6?=
- =?us-ascii?Q?HSHzCmTIgM0BGAl/6omLKAoPgRMAzG28OYx+dH92e17P0yU4n301183V782e?=
- =?us-ascii?Q?BrnDzthBmwSax/6arj1TfiHDcglGXcFlJ5USw0fPzHPREkGIp5YQRFGnV8tM?=
- =?us-ascii?Q?yDz7/Jde3Fwpane+93hT8rg+YVFM4OZ+giu5dzD2phjBWwpfOe7Btw2kOsxZ?=
- =?us-ascii?Q?nFXqov6m1J7l4Wq1ODhEQxHVAYI34TGQfb4F14L0ylitsj2OkDOoh5ud1WTw?=
- =?us-ascii?Q?DP/Ei4paI605Yc1zKO/loH/ZxGotF4zPLoBOE77hhq1HanNU4tubrx1FH30Z?=
- =?us-ascii?Q?BWd26AYKr1NXLpbVAt06iRcmCH5ZBsDo2c3mHHq5gA2QQvGRNAqpTz4kEvxV?=
- =?us-ascii?Q?Sp3f5LPNw0PAlUbl5c4MGnJMsE7HHBkeJmVfo6Zzl+zKE1IbsR9pMJWvd/XT?=
- =?us-ascii?Q?WqqrzssrnAhcF1eSeClFis7Wi4oCoG3ihuvqituL0vRREAyivW/K012QdyJx?=
- =?us-ascii?Q?yGJnPs/bt/XUJoxr4CSvL/WN+IuVWCGvsibNRJLH4ZgOJTu9UxXgbObK5Y9G?=
- =?us-ascii?Q?RGSRuO6XbN0CPVrgVpTQB67Z6M1CHUptyMm+40kh23OnQRC7i9QPrOvm1Ikg?=
- =?us-ascii?Q?CTgGvy/HotFsp99bSm+xiaV/X5Ov1Ei118F9uzvKugirQV5E7ZtoXF8gS86G?=
- =?us-ascii?Q?cyM5T49/tmcTfdMbU9wjpZBG1qqY/VJBOx3rlfAi6S9JeSlI7E398XW5F4FN?=
- =?us-ascii?Q?hthqEHddfPfhPSFRz+OVjFsgzAnr5ZWrLY+Atoo7AqDs8EQcOSPkAV75YSNC?=
- =?us-ascii?Q?q/l1e1BGXVBTG0nTeoIjwaykul3Wi0yxRBL7HPCTsvvoitMu8q2uI0Glid13?=
- =?us-ascii?Q?2Da5kVHfbb04IsH/11a0K2qwfpET56VJxCYfrcr6s5qiftEE0NKwL8FMO/02?=
- =?us-ascii?Q?UZTaMoJPgObalXFde3pbQAU=3D?=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0d321be2-e2b4-4cdd-d805-08dd5d0974e3
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR01MB7903.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Mar 2025 23:48:55.5027
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vk5F/BMIc7XA5B1CrM+BxRozyK+J9A9Ts3jor3zCZiyA3cItGjwywlnUmKCRFpACxY+4qNm7+IfDvXclkcOdroHgdJKITMpRiOnrB7p2LuY5Zlm38atbHrg0cQ7SfEPG
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR01MB7737
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250306234810.75511-4-zaidal@os.amperecomputing.com>
 
-Add documentation for the updated ACPI specs for EINJv2(1)(2)
+Hi Zaid,
 
-(1)https://bugzilla.tianocore.org/show_bug.cgi?id=4615
-(2)https://bugzilla.tianocore.org/attachment.cgi?id=1446
+kernel test robot noticed the following build warnings:
 
-Signed-off-by: Zaid Alali <zaidal@os.amperecomputing.com>
----
- .../firmware-guide/acpi/apei/einj.rst         | 41 ++++++++++++++++++-
- 1 file changed, 39 insertions(+), 2 deletions(-)
+[auto build test WARNING on rafael-pm/linux-next]
+[also build test WARNING on rafael-pm/bleeding-edge linus/master v6.14-rc5 next-20250307]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-diff --git a/Documentation/firmware-guide/acpi/apei/einj.rst b/Documentation/firmware-guide/acpi/apei/einj.rst
-index c52b9da08fa9..31c848183af0 100644
---- a/Documentation/firmware-guide/acpi/apei/einj.rst
-+++ b/Documentation/firmware-guide/acpi/apei/einj.rst
-@@ -59,6 +59,9 @@ The following files belong to it:
-   0x00000200        Platform Correctable
-   0x00000400        Platform Uncorrectable non-fatal
-   0x00000800        Platform Uncorrectable fatal
-+  V2_0x00000001     EINJV2 Processor Error
-+  V2_0x00000002     EINJV2 Memory Error
-+  V2_0x00000004     EINJV2 PCI Express Error
-   ================  ===================================
- 
-   The format of the file contents are as above, except present are only
-@@ -85,9 +88,11 @@ The following files belong to it:
-     Bit 0
-       Processor APIC field valid (see param3 below).
-     Bit 1
--      Memory address and mask valid (param1 and param2).
-+      Memory address and range valid (param1 and param2).
-     Bit 2
-       PCIe (seg,bus,dev,fn) valid (see param4 below).
-+    Bit 3
-+      EINJv2 extension structure is valid
- 
-   If set to zero, legacy behavior is mimicked where the type of
-   injection specifies just one bit set, and param1 is multiplexed.
-@@ -110,6 +115,7 @@ The following files belong to it:
-   Used when the 0x1 bit is set in "flags" to specify the APIC id
- 
- - param4
-+
-   Used when the 0x4 bit is set in "flags" to specify target PCIe device
- 
- - notrigger
-@@ -122,6 +128,18 @@ The following files belong to it:
-   this actually works depends on what operations the BIOS actually
-   includes in the trigger phase.
- 
-+- einjv2_component_count
-+
-+  The value from this file is used to set the "Component Array Count"
-+  field of EINJv2 Extension Structure.
-+
-+- einjv2_component_array
-+
-+  The contents of this file are used to set the "Component Array" field
-+  of the EINJv2 Extension Structure. The expected format is hex values
-+  for component id and syndrome separated by space, and multiple
-+  components are separated by new line.
-+
- CXL error types are supported from ACPI 6.5 onwards (given a CXL port
- is present). The EINJ user interface for CXL error types is at
- <debugfs mount point>/cxl. The following files belong to it:
-@@ -139,7 +157,6 @@ is present). The EINJ user interface for CXL error types is at
-   under <debugfs mount point>/apei/einj, while CXL 1.1/1.0 port injections
-   must use this file.
- 
--
- BIOS versions based on the ACPI 4.0 specification have limited options
- in controlling where the errors are injected. Your BIOS may support an
- extension (enabled with the param_extension=1 module parameter, or boot
-@@ -194,6 +211,26 @@ An error injection example::
-   # echo 0x8 > error_type			# Choose correctable memory error
-   # echo 1 > error_inject			# Inject now
- 
-+An EINJv2 error injection example::
-+
-+  # cd /sys/kernel/debug/apei/einj
-+  # cat available_error_type			# See which errors can be injected
-+  0x00000002	Processor Uncorrectable non-fatal
-+  0x00000008	Memory Correctable
-+  0x00000010	Memory Uncorrectable non-fatal
-+  0x00000001	EINJV2 Processor Error
-+  0x00000002	EINJV2 Memory Error
-+
-+  # echo 0x12345000 > param1			# Set memory address for injection
-+  # echo 0xfffffffffffff000 > param2		# Range - anywhere in this page
-+  # comp_arr="0x1 0x2				# Fill in the component array
-+    >0x1 0x4
-+    >0x2 0x4"
-+  # echo "$comp_arr" > einjv2_component_array
-+  # echo V2_0x2 > error_type			# Choose EINJv2 memory error
-+  # echo 0xa > flags				# set flags to indicate EINJv2
-+  # echo 1 > error_inject			# Inject now
-+
- You should see something like this in dmesg::
- 
-   [22715.830801] EDAC sbridge MC3: HANDLING MCE MEMORY ERROR
+url:    https://github.com/intel-lab-lkp/linux/commits/Zaid-Alali/ACPICA-Update-values-to-hex-to-follow-ACPI-specs/20250307-075155
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git linux-next
+patch link:    https://lore.kernel.org/r/20250306234810.75511-4-zaidal%40os.amperecomputing.com
+patch subject: [PATCH v4 3/9] ACPI: APEI: EINJ: Fix kernel test robot sparse warning
+config: i386-randconfig-063-20250308 (https://download.01.org/0day-ci/archive/20250308/202503081600.JxR875hh-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250308/202503081600.JxR875hh-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202503081600.JxR875hh-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+>> drivers/acpi/apei/einj-core.c:265:32: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected void * @@     got void [noderef] __iomem *[assigned] p @@
+   drivers/acpi/apei/einj-core.c:265:32: sparse:     expected void *
+   drivers/acpi/apei/einj-core.c:265:32: sparse:     got void [noderef] __iomem *[assigned] p
+   drivers/acpi/apei/einj-core.c:280:24: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected void * @@     got void [noderef] __iomem *[assigned] p @@
+   drivers/acpi/apei/einj-core.c:280:24: sparse:     expected void *
+   drivers/acpi/apei/einj-core.c:280:24: sparse:     got void [noderef] __iomem *[assigned] p
+>> drivers/acpi/apei/einj-core.c:824:20: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void [noderef] __iomem *static [toplevel] einj_param @@     got void * @@
+   drivers/acpi/apei/einj-core.c:824:20: sparse:     expected void [noderef] __iomem *static [toplevel] einj_param
+   drivers/acpi/apei/einj-core.c:824:20: sparse:     got void *
+
+vim +265 drivers/acpi/apei/einj-core.c
+
+   235	
+   236	static void *einj_get_parameter_address(void)
+   237	{
+   238		int i;
+   239		u64 pa_v4 = 0, pa_v5 = 0;
+   240		struct acpi_whea_header *entry;
+   241	
+   242		entry = EINJ_TAB_ENTRY(einj_tab);
+   243		for (i = 0; i < einj_tab->entries; i++) {
+   244			if (entry->action == ACPI_EINJ_SET_ERROR_TYPE &&
+   245			    entry->instruction == ACPI_EINJ_WRITE_REGISTER &&
+   246			    entry->register_region.space_id ==
+   247			    ACPI_ADR_SPACE_SYSTEM_MEMORY)
+   248				pa_v4 = get_unaligned(&entry->register_region.address);
+   249			if (entry->action == ACPI_EINJ_SET_ERROR_TYPE_WITH_ADDRESS &&
+   250			    entry->instruction == ACPI_EINJ_WRITE_REGISTER &&
+   251			    entry->register_region.space_id ==
+   252			    ACPI_ADR_SPACE_SYSTEM_MEMORY)
+   253				pa_v5 = get_unaligned(&entry->register_region.address);
+   254			entry++;
+   255		}
+   256		if (pa_v5) {
+   257			struct set_error_type_with_address v5param;
+   258			void __iomem *p;
+   259	
+   260			p = acpi_os_map_iomem(pa_v5, sizeof(v5param));
+   261			if (p) {
+   262				memcpy_fromio(&v5param, p, sizeof(v5param));
+   263				acpi5 = 1;
+   264				check_vendor_extension(pa_v5, &v5param);
+ > 265				return p;
+   266			}
+   267		}
+   268		if (param_extension && pa_v4) {
+   269			struct einj_parameter v4param;
+   270			void __iomem *p;
+   271	
+   272			p = acpi_os_map_iomem(pa_v4, sizeof(v4param));
+   273			if (!p)
+   274				return NULL;
+   275			memcpy_fromio(&v4param, p, sizeof(v4param));
+   276			if (v4param.reserved1 || v4param.reserved2) {
+   277				acpi_os_unmap_iomem(p, sizeof(v4param));
+   278				return NULL;
+   279			}
+   280			return p;
+   281		}
+   282	
+   283		return NULL;
+   284	}
+   285	
+
 -- 
-2.46.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
