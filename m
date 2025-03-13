@@ -1,30 +1,30 @@
 Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F37E4261398
-	for <acpica-devel@lists.linux.dev>; Thu, 13 Mar 2025 09:37:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EA6526560E
+	for <acpica-devel@lists.linux.dev>; Thu, 13 Mar 2025 09:40:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741858673; cv=none; b=PgThHy8rVLkdY8pB6fKsZCll3uIEfVVhiJxkyohBCU52uYtaTjxufIQvOcACvS4OWhS+Yuq4BkwtooKMm/yW1nJPrmEOJIw4VgJodh4VlkQiWvD7Oh3nkUHu3sizMUVui0wAa57fiFqEPmMKr3kaTUM8ELIIj1tFIIj9mfpHjss=
+	t=1741858805; cv=none; b=E2lHsEDIp9OIys6zkTdbCxfaHbz2nqDEeSQoC7Xar9c33ILzB+t0si4WaQgl6BZd23cSP8Flv0MYj731HJEv8pUbhMIu8ENmoULKO+VEcEQW7Y9Iqxjwkz56Zacx7cKVOe7ZdfhlWUxuD3bK7CyyCilZbn9aNkLlWJHIZC1czNw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741858673; c=relaxed/simple;
-	bh=znEuZ53TxTz0nJRHhcA3Sgdlgmi6R1MC4XsIZjxIggY=;
+	s=arc-20240116; t=1741858805; c=relaxed/simple;
+	bh=OanOg2QJhwZ6mKdmGf8UyGOz8ytmi0JebT8MUuN1NtE=;
 	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=eW4OhGbepkv5SGG2jh5Rz+F/m2+cXsxy2XdzFQ2/PUGYRyu1ZvOh2jBW7rJV4HmgpQftv1EQ0O1VIhqbU/Or7U0UHsjU/eEvmUF2ONdH51GKKh71XVcNcISmXDxysI4txgUFRzDZv8WKBj+2Zc1qGeQiEOmT5Bge1SarLSK9nHg=
+	 MIME-Version:Content-Type; b=mm4TlZ8A9DUYhlsa5OWRKt/Q/MOG5vv3GkeyXPtrQ7CWZg/vH39GEx9ij9e+yVLN65PHvdgobwlpp0I768gogpCBgxecqFKzz/P0qIe+mbrQTs3iJgYkB8DgMMXTrIEdOnnyvKeGVYn8AbowNK6leUQjpHfzlEOH60lJmE8FBDo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4ZD2R26Wnkz6K9cg;
-	Thu, 13 Mar 2025 17:35:10 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4ZD2RQ1ztrz6J6g3;
+	Thu, 13 Mar 2025 17:35:30 +0800 (CST)
 Received: from frapeml500008.china.huawei.com (unknown [7.182.85.71])
-	by mail.maildlp.com (Postfix) with ESMTPS id A0647140D26;
-	Thu, 13 Mar 2025 17:37:48 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 96D80140442;
+	Thu, 13 Mar 2025 17:40:01 +0800 (CST)
 Received: from localhost (10.203.177.66) by frapeml500008.china.huawei.com
  (7.182.85.71) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Thu, 13 Mar
- 2025 10:37:44 +0100
-Date: Thu, 13 Mar 2025 09:37:43 +0000
+ 2025 10:40:00 +0100
+Date: Thu, 13 Mar 2025 09:39:59 +0000
 From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 To: Zaid Alali <zaidal@os.amperecomputing.com>
 CC: <rafael@kernel.org>, <lenb@kernel.org>, <james.morse@arm.com>,
@@ -34,12 +34,12 @@ CC: <rafael@kernel.org>, <lenb@kernel.org>, <james.morse@arm.com>,
 	<ira.weiny@intel.com>, <dave.jiang@intel.com>,
 	<sthanneeru.opensrc@micron.com>, <linux-acpi@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>, <acpica-devel@lists.linux.dev>
-Subject: Re: [PATCH v4 3/9] ACPI: APEI: EINJ: Fix kernel test robot sparse
- warning
-Message-ID: <20250313093743.00007602@huawei.com>
-In-Reply-To: <20250306234810.75511-4-zaidal@os.amperecomputing.com>
+Subject: Re: [PATCH v4 5/9] ACPI: APEI: EINJ: Enable the discovery of EINJv2
+ capabilities
+Message-ID: <20250313093959.0000619d@huawei.com>
+In-Reply-To: <20250306234810.75511-6-zaidal@os.amperecomputing.com>
 References: <20250306234810.75511-1-zaidal@os.amperecomputing.com>
-	<20250306234810.75511-4-zaidal@os.amperecomputing.com>
+	<20250306234810.75511-6-zaidal@os.amperecomputing.com>
 X-Mailer: Claws Mail 4.3.0 (GTK 3.24.42; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
@@ -52,272 +52,90 @@ Content-Transfer-Encoding: 7bit
 X-ClientProxiedBy: lhrpeml500009.china.huawei.com (7.191.174.84) To
  frapeml500008.china.huawei.com (7.182.85.71)
 
-On Thu,  6 Mar 2025 15:48:04 -0800
+On Thu,  6 Mar 2025 15:48:06 -0800
 Zaid Alali <zaidal@os.amperecomputing.com> wrote:
 
-> This patch fixes the kernel test robot warning reported here:
-> https://lore.kernel.org/all/202410241620.oApALow5-lkp@intel.com/
+> Enable the driver to show all supported error injections for EINJ
+> and EINJv2 at the same time. EINJv2 capabilities can be discovered
+> by checking the return value of get_error_type, where bit 30 set
+> indicates EINJv2 support.
 > 
 > Signed-off-by: Zaid Alali <zaidal@os.amperecomputing.com>
-Hi Zaid,
-
-I'm not so keen on loosing the type of the pointer as that leads
-to slightly odd situation of using the size of where we care copying it
-to later for the dma mapping. Kind of fine, but weird looking!
-Also, if you keep original naming and introduce a new v_copy or similar
-then you can end up with a shorter and probably easier to review patch.
-(slightly)
-
-Jonathan
+Trivial comment for another day inline.
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
 > ---
->  drivers/acpi/apei/einj-core.c | 104 +++++++++++++++++++---------------
->  1 file changed, 59 insertions(+), 45 deletions(-)
+>  drivers/acpi/apei/apei-internal.h |  2 +-
+>  drivers/acpi/apei/einj-core.c     | 64 ++++++++++++++++++++++++-------
+>  drivers/acpi/apei/einj-cxl.c      |  2 +-
+>  3 files changed, 52 insertions(+), 16 deletions(-)
 > 
+> diff --git a/drivers/acpi/apei/apei-internal.h b/drivers/acpi/apei/apei-internal.h
+> index cd2766c69d78..77c10a7a7a9f 100644
+> --- a/drivers/acpi/apei/apei-internal.h
+> +++ b/drivers/acpi/apei/apei-internal.h
+> @@ -131,7 +131,7 @@ static inline u32 cper_estatus_len(struct acpi_hest_generic_status *estatus)
+>  
+>  int apei_osc_setup(void);
+>  
+> -int einj_get_available_error_type(u32 *type);
+> +int einj_get_available_error_type(u32 *type, int einj_action);
+>  int einj_error_inject(u32 type, u32 flags, u64 param1, u64 param2, u64 param3,
+>  		      u64 param4);
+>  int einj_cxl_rch_error_inject(u32 type, u32 flags, u64 param1, u64 param2,
 > diff --git a/drivers/acpi/apei/einj-core.c b/drivers/acpi/apei/einj-core.c
-> index 04731a5b01fa..b40ed44c4983 100644
+> index 3f828f9265a8..aee9a7b17313 100644
 > --- a/drivers/acpi/apei/einj-core.c
 > +++ b/drivers/acpi/apei/einj-core.c
-> @@ -149,7 +149,7 @@ static DEFINE_MUTEX(einj_mutex);
->   */
->  bool einj_initialized __ro_after_init;
+> @@ -33,6 +33,7 @@
+>  #define SLEEP_UNIT_MAX		5000			/* 5ms */
+>  /* Firmware should respond within 1 seconds */
+>  #define FIRMWARE_TIMEOUT	(1 * USEC_PER_SEC)
+> +#define ACPI65_EINJV2_SUPP	BIT(30)
+>  #define ACPI5_VENDOR_BIT	BIT(31)
+>  #define MEM_ERROR_MASK		(ACPI_EINJ_MEMORY_CORRECTABLE | \
+>  				ACPI_EINJ_MEMORY_UNCORRECTABLE | \
+> @@ -84,6 +85,7 @@ static struct debugfs_blob_wrapper vendor_errors;
+>  static char vendor_dev[64];
 >  
-> -static void *einj_param;
-> +static void __iomem *einj_param;
+>  static u32 available_error_type;
+> +static u32 available_error_type_v2;
 >  
->  static void einj_exec_ctx_init(struct apei_exec_context *ctx)
->  {
-> @@ -214,21 +214,23 @@ static void check_vendor_extension(u64 paddr,
->  				   struct set_error_type_with_address *v5param)
->  {
->  	int	offset = v5param->vendor_extension;
-> -	struct	vendor_error_type_extension *v;
-> +	struct	vendor_error_type_extension v;
-> +	void __iomem *p;
-I'd keep it typed.
-	struct __iomem vendor_error_extension *p;
-
->  	u32	sbdf;
->  
->  	if (!offset)
->  		return;
-> -	v = acpi_os_map_iomem(paddr + offset, sizeof(*v));
-> -	if (!v)
-> +	p = acpi_os_map_iomem(paddr + offset, sizeof(v));
-then this can be sizeof(*p)
-
-Or reduce the diff and rename the copy + add __iomem
-marking to the original *v definition. 
-Call the copy v_copy or something like that.
-
-
-> +	if (!p)
->  		return;
-> -	get_oem_vendor_struct(paddr, offset, v);
-> -	sbdf = v->pcie_sbdf;
-> +	memcpy_fromio(&v, p, sizeof(v));
-> +	get_oem_vendor_struct(paddr, offset, &v);
-> +	sbdf = v.pcie_sbdf;
->  	sprintf(vendor_dev, "%x:%x:%x.%x vendor_id=%x device_id=%x rev_id=%x\n",
->  		sbdf >> 24, (sbdf >> 16) & 0xff,
->  		(sbdf >> 11) & 0x1f, (sbdf >> 8) & 0x7,
-> -		 v->vendor_id, v->device_id, v->rev_id);
-> -	acpi_os_unmap_iomem(v, sizeof(*v));
-> +		 v.vendor_id, v.device_id, v.rev_id);
-> +	acpi_os_unmap_iomem(p, sizeof(v));
+>  /*
+>   * Some BIOSes allow parameters to the SET_ERROR_TYPE entries in the
+> @@ -159,13 +161,13 @@ static void einj_exec_ctx_init(struct apei_exec_context *ctx)
+>  			   EINJ_TAB_ENTRY(einj_tab), einj_tab->entries);
 >  }
 >  
->  static void *einj_get_parameter_address(void)
-> @@ -252,26 +254,30 @@ static void *einj_get_parameter_address(void)
->  		entry++;
->  	}
->  	if (pa_v5) {
-> -		struct set_error_type_with_address *v5param;
-> +		struct set_error_type_with_address v5param;
-> +		void __iomem *p;
-
-Similar to above in remaining cases.
-
-Jonathan
-
- 
->  
-> -		v5param = acpi_os_map_iomem(pa_v5, sizeof(*v5param));
-> -		if (v5param) {
-> +		p = acpi_os_map_iomem(pa_v5, sizeof(v5param));
-> +		if (p) {
-> +			memcpy_fromio(&v5param, p, sizeof(v5param));
->  			acpi5 = 1;
-> -			check_vendor_extension(pa_v5, v5param);
-> -			return v5param;
-> +			check_vendor_extension(pa_v5, &v5param);
-> +			return p;
->  		}
->  	}
->  	if (param_extension && pa_v4) {
-> -		struct einj_parameter *v4param;
-> +		struct einj_parameter v4param;
-> +		void __iomem *p;
->  
-> -		v4param = acpi_os_map_iomem(pa_v4, sizeof(*v4param));
-> -		if (!v4param)
-> +		p = acpi_os_map_iomem(pa_v4, sizeof(v4param));
-> +		if (!p)
->  			return NULL;
-> -		if (v4param->reserved1 || v4param->reserved2) {
-> -			acpi_os_unmap_iomem(v4param, sizeof(*v4param));
-> +		memcpy_fromio(&v4param, p, sizeof(v4param));
-> +		if (v4param.reserved1 || v4param.reserved2) {
-> +			acpi_os_unmap_iomem(p, sizeof(v4param));
->  			return NULL;
->  		}
-> -		return v4param;
-> +		return p;
->  	}
->  
->  	return NULL;
-> @@ -317,7 +323,7 @@ static struct acpi_generic_address *einj_get_trigger_parameter_region(
->  static int __einj_error_trigger(u64 trigger_paddr, u32 type,
->  				u64 param1, u64 param2)
+> -static int __einj_get_available_error_type(u32 *type)
+> +static int __einj_get_available_error_type(u32 *type, int einj_action)
 >  {
-> -	struct acpi_einj_trigger *trigger_tab = NULL;
-> +	struct acpi_einj_trigger trigger_tab;
->  	struct apei_exec_context trigger_ctx;
->  	struct apei_resources trigger_resources;
->  	struct acpi_whea_header *trigger_entry;
-> @@ -325,54 +331,57 @@ static int __einj_error_trigger(u64 trigger_paddr, u32 type,
->  	u32 table_size;
->  	int rc = -EIO;
->  	struct acpi_generic_address *trigger_param_region = NULL;
-> +	void __iomem *p;
+>  	struct apei_exec_context ctx;
+>  	int rc;
 >  
-> -	r = request_mem_region(trigger_paddr, sizeof(*trigger_tab),
-> +	r = request_mem_region(trigger_paddr, sizeof(trigger_tab),
->  			       "APEI EINJ Trigger Table");
->  	if (!r) {
->  		pr_err("Can not request [mem %#010llx-%#010llx] for Trigger table\n",
->  		       (unsigned long long)trigger_paddr,
->  		       (unsigned long long)trigger_paddr +
-> -			    sizeof(*trigger_tab) - 1);
-> +			    sizeof(trigger_tab) - 1);
->  		goto out;
->  	}
-> -	trigger_tab = ioremap_cache(trigger_paddr, sizeof(*trigger_tab));
-> -	if (!trigger_tab) {
-> +	p = ioremap_cache(trigger_paddr, sizeof(trigger_tab));
-> +	if (!p) {
->  		pr_err("Failed to map trigger table!\n");
->  		goto out_rel_header;
->  	}
-> -	rc = einj_check_trigger_header(trigger_tab);
-> +	memcpy_fromio(&trigger_tab, p, sizeof(trigger_tab));
-> +	rc = einj_check_trigger_header(&trigger_tab);
->  	if (rc) {
->  		pr_warn(FW_BUG "Invalid trigger error action table.\n");
->  		goto out_rel_header;
->  	}
->  
->  	/* No action structures in the TRIGGER_ERROR table, nothing to do */
-> -	if (!trigger_tab->entry_count)
-> +	if (!trigger_tab.entry_count)
->  		goto out_rel_header;
->  
->  	rc = -EIO;
-> -	table_size = trigger_tab->table_size;
-> -	r = request_mem_region(trigger_paddr + sizeof(*trigger_tab),
-> -			       table_size - sizeof(*trigger_tab),
-> +	table_size = trigger_tab.table_size;
-> +	r = request_mem_region(trigger_paddr + sizeof(trigger_tab),
-> +			       table_size - sizeof(trigger_tab),
->  			       "APEI EINJ Trigger Table");
->  	if (!r) {
->  		pr_err("Can not request [mem %#010llx-%#010llx] for Trigger Table Entry\n",
-> -		       (unsigned long long)trigger_paddr + sizeof(*trigger_tab),
-> +		       (unsigned long long)trigger_paddr + sizeof(trigger_tab),
->  		       (unsigned long long)trigger_paddr + table_size - 1);
->  		goto out_rel_header;
->  	}
-> -	iounmap(trigger_tab);
-> -	trigger_tab = ioremap_cache(trigger_paddr, table_size);
-> -	if (!trigger_tab) {
-> +	iounmap(p);
-> +	p = ioremap_cache(trigger_paddr, table_size);
-> +	if (!p) {
->  		pr_err("Failed to map trigger table!\n");
->  		goto out_rel_entry;
->  	}
-> +	memcpy_fromio(&trigger_tab, p, sizeof(trigger_tab));
->  	trigger_entry = (struct acpi_whea_header *)
-> -		((char *)trigger_tab + sizeof(struct acpi_einj_trigger));
-> +		((char *)&trigger_tab + sizeof(struct acpi_einj_trigger));
->  	apei_resources_init(&trigger_resources);
->  	apei_exec_ctx_init(&trigger_ctx, einj_ins_type,
->  			   ARRAY_SIZE(einj_ins_type),
-> -			   trigger_entry, trigger_tab->entry_count);
-> +			   trigger_entry, trigger_tab.entry_count);
->  	rc = apei_exec_collect_resources(&trigger_ctx, &trigger_resources);
+>  	einj_exec_ctx_init(&ctx);
+> -	rc = apei_exec_run(&ctx, ACPI_EINJ_GET_ERROR_TYPE);
+> +	rc = apei_exec_run(&ctx, einj_action);
 >  	if (rc)
->  		goto out_fini;
-> @@ -390,7 +399,7 @@ static int __einj_error_trigger(u64 trigger_paddr, u32 type,
+>  		return rc;
+>  	*type = apei_exec_ctx_get_output(&ctx);
+> @@ -174,12 +176,12 @@ static int __einj_get_available_error_type(u32 *type)
+>  }
 >  
->  		apei_resources_init(&addr_resources);
->  		trigger_param_region = einj_get_trigger_parameter_region(
-> -			trigger_tab, param1, param2);
-> +			&trigger_tab, param1, param2);
->  		if (trigger_param_region) {
->  			rc = apei_resources_add(&addr_resources,
->  				trigger_param_region->address,
-> @@ -419,13 +428,13 @@ static int __einj_error_trigger(u64 trigger_paddr, u32 type,
->  out_fini:
->  	apei_resources_fini(&trigger_resources);
->  out_rel_entry:
-> -	release_mem_region(trigger_paddr + sizeof(*trigger_tab),
-> -			   table_size - sizeof(*trigger_tab));
-> +	release_mem_region(trigger_paddr + sizeof(trigger_tab),
-> +			   table_size - sizeof(trigger_tab));
->  out_rel_header:
-> -	release_mem_region(trigger_paddr, sizeof(*trigger_tab));
-> +	release_mem_region(trigger_paddr, sizeof(trigger_tab));
->  out:
-> -	if (trigger_tab)
-> -		iounmap(trigger_tab);
-> +	if (p)
-> +		iounmap(p);
+>  /* Get error injection capabilities of the platform */
+> -int einj_get_available_error_type(u32 *type)
+> +int einj_get_available_error_type(u32 *type, int einj_action)
+>  {
+>  	int rc;
+>  
+>  	mutex_lock(&einj_mutex);
+
+Might be worth looking at using guard(mutex) in here to simplify paths.
+But that's a job for another day!
+
+> -	rc = __einj_get_available_error_type(type);
+> +	rc = __einj_get_available_error_type(type, einj_action);
+>  	mutex_unlock(&einj_mutex);
 >  
 >  	return rc;
->  }
-> @@ -444,8 +453,10 @@ static int __einj_error_inject(u32 type, u32 flags, u64 param1, u64 param2,
->  		return rc;
->  	apei_exec_ctx_set_input(&ctx, type);
->  	if (acpi5) {
-> -		struct set_error_type_with_address *v5param = einj_param;
-> +		struct set_error_type_with_address *v5param, v5_struct;
->  
-> +		v5param = &v5_struct;
-> +		memcpy_fromio(v5param, einj_param, sizeof(*v5param));
->  		v5param->type = type;
->  		if (type & ACPI5_VENDOR_BIT) {
->  			switch (vendor_flags) {
-> @@ -490,15 +501,18 @@ static int __einj_error_inject(u32 type, u32 flags, u64 param1, u64 param2,
->  				break;
->  			}
->  		}
-> +		memcpy_toio(einj_param, v5param, sizeof(*v5param));
->  	} else {
->  		rc = apei_exec_run(&ctx, ACPI_EINJ_SET_ERROR_TYPE);
->  		if (rc)
->  			return rc;
->  		if (einj_param) {
-> -			struct einj_parameter *v4param = einj_param;
-> +			struct einj_parameter v4param;
->  
-> -			v4param->param1 = param1;
-> -			v4param->param2 = param2;
-> +			memcpy_fromio(&v4param, einj_param, sizeof(v4param));
-> +			v4param.param1 = param1;
-> +			v4param.param2 = param2;
-> +			memcpy_toio(einj_param, &v4param, sizeof(v4param));
->  		}
->  	}
->  	rc = apei_exec_run(&ctx, ACPI_EINJ_EXECUTE_OPERATION);
 
