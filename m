@@ -1,218 +1,323 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EF3A1DE4CE
-	for <acpica-devel@lists.linux.dev>; Wed, 12 Mar 2025 19:54:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F37E4261398
+	for <acpica-devel@lists.linux.dev>; Thu, 13 Mar 2025 09:37:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741809288; cv=none; b=jrYAVWYQN6qtUPbGY2LFWZeTUyb+1d42BQznEue2ylvEtcMfNV2GSHRAjIwA3XtaYX96LX2UCNPnAmk5w64bmoFfSWn18mTmWMZToY0YESJkl4nUwoCZzWrE9Y3sBDH59a5ZnYjTNSFre4tfa4thmze+JQH2pdYjMNH4j8rzYqA=
+	t=1741858673; cv=none; b=PgThHy8rVLkdY8pB6fKsZCll3uIEfVVhiJxkyohBCU52uYtaTjxufIQvOcACvS4OWhS+Yuq4BkwtooKMm/yW1nJPrmEOJIw4VgJodh4VlkQiWvD7Oh3nkUHu3sizMUVui0wAa57fiFqEPmMKr3kaTUM8ELIIj1tFIIj9mfpHjss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741809288; c=relaxed/simple;
-	bh=lKt4v6B/Hv/DuheeaArB6L02/tBeX5Mg5/cRp3lVdsU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PWUiEHNO53szKVINZMODhWOtE7qlKNQchxx9veo42uciW/hI7vmATaskiVZVL+dEJaTD5DJTG1k4i0UDRdoCleXLBuc2ZVsrkPES++1xoNHl1606XkKh+rHLNC1z6UMB+ca1E8b4BOcI9bSCSUCDFjcYpHLLnfyxdTTgbr+nao4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rhy+nLOc; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rhy+nLOc"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D573C4CEF0
-	for <acpica-devel@lists.linux.dev>; Wed, 12 Mar 2025 19:54:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741809288;
-	bh=lKt4v6B/Hv/DuheeaArB6L02/tBeX5Mg5/cRp3lVdsU=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=rhy+nLOcuegG9GRsRnZfn4eUz+8IK92sp+r2Lnz20uoBfcf3B5PRZQuHld87R32Uy
-	 7sWWdbWS6T1lIznmf34VIwwYxOXN8UHInoQ+5qmVzKMK61xvvrpv+CoGCG6Iev9M18
-	 fmgtKmpE7yzAlAhA18cL0e/up9roNS/bW2tof5O/PFYf+dVMLrac3QZJXV78KTDbhs
-	 gXl+V3CFiF7dQ6LxA+sPAZBNKDoeDifu7/G9VU69XxDj6Oz1gLDIWtD73m2Jg7M/Zn
-	 EO1uMeC7kD//PfXKzVum72KWEBZw5oTs1FQv6r31Lg22J23zPxipMu7Y8yDNq98dJh
-	 FakOuJ+EyyW1Q==
-Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-72726025fa5so65783a34.0
-        for <acpica-devel@lists.linux.dev>; Wed, 12 Mar 2025 12:54:48 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCV0veOZVAQJx63yh9xcs/09W2Hznc7zHRpKjjlfpTE1qK4iOu1FMjMBOgZZ3c+3FThreKBpaqkJi/+zcfE=@lists.linux.dev
-X-Gm-Message-State: AOJu0Yzpd/MQ4GurmiJSCImd5cGyvSgHH6uWbK3ZUts6qooffEEmEKQQ
-	HciAphOrgWnxsmOBXORt4ltcuC44zC2M40Pwy+Xpe5PkCDedswB5z8F3hzshLRkVjkq0RE8E93m
-	+mxKzEyX9lfb0zlfOCM4aGJnssRA=
-X-Google-Smtp-Source: AGHT+IFWQ+68T4cDYbzYqN7yYRPuiErjeJlW/C3PqbsPHji5gMhp9e3GkwZlyvDgbgSTRVqkboScmEK2ysD6txHZ8lU=
-X-Received: by 2002:a05:6830:314b:b0:72a:4804:77ff with SMTP id
- 46e09a7af769-72a48047df7mr9950313a34.25.1741809287316; Wed, 12 Mar 2025
- 12:54:47 -0700 (PDT)
+	s=arc-20240116; t=1741858673; c=relaxed/simple;
+	bh=znEuZ53TxTz0nJRHhcA3Sgdlgmi6R1MC4XsIZjxIggY=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=eW4OhGbepkv5SGG2jh5Rz+F/m2+cXsxy2XdzFQ2/PUGYRyu1ZvOh2jBW7rJV4HmgpQftv1EQ0O1VIhqbU/Or7U0UHsjU/eEvmUF2ONdH51GKKh71XVcNcISmXDxysI4txgUFRzDZv8WKBj+2Zc1qGeQiEOmT5Bge1SarLSK9nHg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4ZD2R26Wnkz6K9cg;
+	Thu, 13 Mar 2025 17:35:10 +0800 (CST)
+Received: from frapeml500008.china.huawei.com (unknown [7.182.85.71])
+	by mail.maildlp.com (Postfix) with ESMTPS id A0647140D26;
+	Thu, 13 Mar 2025 17:37:48 +0800 (CST)
+Received: from localhost (10.203.177.66) by frapeml500008.china.huawei.com
+ (7.182.85.71) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Thu, 13 Mar
+ 2025 10:37:44 +0100
+Date: Thu, 13 Mar 2025 09:37:43 +0000
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+To: Zaid Alali <zaidal@os.amperecomputing.com>
+CC: <rafael@kernel.org>, <lenb@kernel.org>, <james.morse@arm.com>,
+	<tony.luck@intel.com>, <bp@alien8.de>, <robert.moore@intel.com>,
+	<dan.j.williams@intel.com>, <Benjamin.Cheatham@amd.com>,
+	<Avadhut.Naik@amd.com>, <viro@zeniv.linux.org.uk>, <arnd@arndb.de>,
+	<ira.weiny@intel.com>, <dave.jiang@intel.com>,
+	<sthanneeru.opensrc@micron.com>, <linux-acpi@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <acpica-devel@lists.linux.dev>
+Subject: Re: [PATCH v4 3/9] ACPI: APEI: EINJ: Fix kernel test robot sparse
+ warning
+Message-ID: <20250313093743.00007602@huawei.com>
+In-Reply-To: <20250306234810.75511-4-zaidal@os.amperecomputing.com>
+References: <20250306234810.75511-1-zaidal@os.amperecomputing.com>
+	<20250306234810.75511-4-zaidal@os.amperecomputing.com>
+X-Mailer: Claws Mail 4.3.0 (GTK 3.24.42; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20250206131428.3261578-1-zhenglifeng1@huawei.com> <20250206131428.3261578-4-zhenglifeng1@huawei.com>
-In-Reply-To: <20250206131428.3261578-4-zhenglifeng1@huawei.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 12 Mar 2025 20:54:36 +0100
-X-Gmail-Original-Message-ID: <CAJZ5v0iNzNROkPD4+b=Au8DwdF9unajKivdRQMBFfwzjFxHLcg@mail.gmail.com>
-X-Gm-Features: AQ5f1JoSmulRpnfW_hUqrLihklxgXLKWq2sUIv3vB-S-zZVKKZq8CTuYE0thOsU
-Message-ID: <CAJZ5v0iNzNROkPD4+b=Au8DwdF9unajKivdRQMBFfwzjFxHLcg@mail.gmail.com>
-Subject: Re: [PATCH v5 3/8] ACPI: CPPC: Rename cppc_get_perf() to cppc_get_reg_val()
-To: Lifeng Zheng <zhenglifeng1@huawei.com>
-Cc: rafael@kernel.org, lenb@kernel.org, robert.moore@intel.com, 
-	viresh.kumar@linaro.org, mario.limonciello@amd.com, gautham.shenoy@amd.com, 
-	ray.huang@amd.com, pierre.gondois@arm.com, acpica-devel@lists.linux.dev, 
-	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-pm@vger.kernel.org, linuxarm@huawei.com, yumpusamongus@gmail.com, 
-	srinivas.pandruvada@linux.intel.com, jonathan.cameron@huawei.com, 
-	zhanjie9@hisilicon.com, lihuisong@huawei.com, hepeng68@huawei.com, 
-	fanghao11@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500009.china.huawei.com (7.191.174.84) To
+ frapeml500008.china.huawei.com (7.182.85.71)
 
-On Thu, Feb 6, 2025 at 2:14=E2=80=AFPM Lifeng Zheng <zhenglifeng1@huawei.co=
-m> wrote:
->
-> Rename cppc_get_perf() to cppc_get_reg_val() as a generic function to rea=
-d
-> cppc registers. And extract the operations if register is in pcc out as
-> cppc_get_reg_val_in_pcc(). Without functional change.
+On Thu,  6 Mar 2025 15:48:04 -0800
+Zaid Alali <zaidal@os.amperecomputing.com> wrote:
 
-This should be split into two patches IMV.
+> This patch fixes the kernel test robot warning reported here:
+> https://lore.kernel.org/all/202410241620.oApALow5-lkp@intel.com/
+> 
+> Signed-off-by: Zaid Alali <zaidal@os.amperecomputing.com>
+Hi Zaid,
 
-> Signed-off-by: Lifeng Zheng <zhenglifeng1@huawei.com>
+I'm not so keen on loosing the type of the pointer as that leads
+to slightly odd situation of using the size of where we care copying it
+to later for the dma mapping. Kind of fine, but weird looking!
+Also, if you keep original naming and introduce a new v_copy or similar
+then you can end up with a shorter and probably easier to review patch.
+(slightly)
+
+Jonathan
+
 > ---
->  drivers/acpi/cppc_acpi.c | 66 +++++++++++++++++++++-------------------
->  1 file changed, 35 insertions(+), 31 deletions(-)
->
-> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-> index db22f8f107db..3c9c4ce2a0b0 100644
-> --- a/drivers/acpi/cppc_acpi.c
-> +++ b/drivers/acpi/cppc_acpi.c
-> @@ -1189,48 +1189,52 @@ static int cpc_write(int cpu, struct cpc_register=
-_resource *reg_res, u64 val)
->         return ret_val;
->  }
->
-> -static int cppc_get_perf(int cpunum, enum cppc_regs reg_idx, u64 *perf)
-> +static int cppc_get_reg_val_in_pcc(int cpu, struct cpc_register_resource=
- *reg, u64 *val)
+>  drivers/acpi/apei/einj-core.c | 104 +++++++++++++++++++---------------
+>  1 file changed, 59 insertions(+), 45 deletions(-)
+> 
+> diff --git a/drivers/acpi/apei/einj-core.c b/drivers/acpi/apei/einj-core.c
+> index 04731a5b01fa..b40ed44c4983 100644
+> --- a/drivers/acpi/apei/einj-core.c
+> +++ b/drivers/acpi/apei/einj-core.c
+> @@ -149,7 +149,7 @@ static DEFINE_MUTEX(einj_mutex);
+>   */
+>  bool einj_initialized __ro_after_init;
+>  
+> -static void *einj_param;
+> +static void __iomem *einj_param;
+>  
+>  static void einj_exec_ctx_init(struct apei_exec_context *ctx)
 >  {
-> -       struct cpc_desc *cpc_desc =3D per_cpu(cpc_desc_ptr, cpunum);
-> -       struct cpc_register_resource *reg;
-> +       int pcc_ss_id =3D per_cpu(cpu_pcc_subspace_idx, cpu);
-> +       struct cppc_pcc_data *pcc_ss_data =3D NULL;
-> +       int ret;
->
-> -       if (!cpc_desc) {
-> -               pr_debug("No CPC descriptor for CPU:%d\n", cpunum);
-> +       if (pcc_ss_id < 0) {
-> +               pr_debug("Invalid pcc_ss_id\n");
->                 return -ENODEV;
->         }
->
-> -       reg =3D &cpc_desc->cpc_regs[reg_idx];
-> +       pcc_ss_data =3D pcc_data[pcc_ss_id];
->
-> -       if (IS_OPTIONAL_CPC_REG(reg_idx) && !CPC_SUPPORTED(reg)) {
-> -               pr_debug("CPC register (reg_idx=3D%d) is not supported\n"=
-, reg_idx);
-> -               return -EOPNOTSUPP;
-> -       }
+> @@ -214,21 +214,23 @@ static void check_vendor_extension(u64 paddr,
+>  				   struct set_error_type_with_address *v5param)
+>  {
+>  	int	offset = v5param->vendor_extension;
+> -	struct	vendor_error_type_extension *v;
+> +	struct	vendor_error_type_extension v;
+> +	void __iomem *p;
+I'd keep it typed.
+	struct __iomem vendor_error_extension *p;
 
-I'm not a big fan of the IS_OPTIONAL_CPC_REG() macro.  I'm not
-convinced at all that it adds any value above (and in the next patch
-for that matter) and the message printing the register index is just
-plain unuseful to anyone who doesn't know how to decode it.
+>  	u32	sbdf;
+>  
+>  	if (!offset)
+>  		return;
+> -	v = acpi_os_map_iomem(paddr + offset, sizeof(*v));
+> -	if (!v)
+> +	p = acpi_os_map_iomem(paddr + offset, sizeof(v));
+then this can be sizeof(*p)
 
-If CPC_SUPPORTED(reg) is not true, the register cannot be used AFAICS
-regardless of what IS_OPTIONAL_CPC_REG() has to say about it.
+Or reduce the diff and rename the copy + add __iomem
+marking to the original *v definition. 
+Call the copy v_copy or something like that.
 
-> +       down_write(&pcc_ss_data->pcc_lock);
->
-> -       if (CPC_IN_PCC(reg)) {
-> -               int pcc_ss_id =3D per_cpu(cpu_pcc_subspace_idx, cpunum);
-> -               struct cppc_pcc_data *pcc_ss_data =3D NULL;
-> -               int ret;
-> +       if (send_pcc_cmd(pcc_ss_id, CMD_READ) >=3D 0)
-> +               ret =3D cpc_read(cpu, reg, val);
-> +       else
-> +               ret =3D -EIO;
->
-> -               if (pcc_ss_id < 0) {
-> -                       pr_debug("Invalid pcc_ss_id\n");
-> -                       return -ENODEV;
-> -               }
-> +       up_write(&pcc_ss_data->pcc_lock);
->
-> -               pcc_ss_data =3D pcc_data[pcc_ss_id];
-> +       return ret;
-> +}
->
-> -               down_write(&pcc_ss_data->pcc_lock);
-> +static int cppc_get_reg_val(int cpu, enum cppc_regs reg_idx, u64 *val)
-> +{
-> +       struct cpc_desc *cpc_desc =3D per_cpu(cpc_desc_ptr, cpu);
-> +       struct cpc_register_resource *reg;
->
-> -               if (send_pcc_cmd(pcc_ss_id, CMD_READ) >=3D 0)
-> -                       ret =3D cpc_read(cpunum, reg, perf);
-> -               else
-> -                       ret =3D -EIO;
-> +       if (!cpc_desc) {
-> +               pr_debug("No CPC descriptor for CPU:%d\n", cpu);
-> +               return -ENODEV;
-> +       }
->
-> -               up_write(&pcc_ss_data->pcc_lock);
-> +       reg =3D &cpc_desc->cpc_regs[reg_idx];
->
-> -               return ret;
-> +       if (IS_OPTIONAL_CPC_REG(reg_idx) && !CPC_SUPPORTED(reg)) {
-> +               pr_debug("CPC register (reg_idx=3D%d) is not supported\n"=
-, reg_idx);
-> +               return -EOPNOTSUPP;
->         }
->
-> -       return cpc_read(cpunum, reg, perf);
-> +       if (CPC_IN_PCC(reg))
-> +               return cppc_get_reg_val_in_pcc(cpu, reg, val);
-> +
-> +       return cpc_read(cpu, reg, val);
+
+> +	if (!p)
+>  		return;
+> -	get_oem_vendor_struct(paddr, offset, v);
+> -	sbdf = v->pcie_sbdf;
+> +	memcpy_fromio(&v, p, sizeof(v));
+> +	get_oem_vendor_struct(paddr, offset, &v);
+> +	sbdf = v.pcie_sbdf;
+>  	sprintf(vendor_dev, "%x:%x:%x.%x vendor_id=%x device_id=%x rev_id=%x\n",
+>  		sbdf >> 24, (sbdf >> 16) & 0xff,
+>  		(sbdf >> 11) & 0x1f, (sbdf >> 8) & 0x7,
+> -		 v->vendor_id, v->device_id, v->rev_id);
+> -	acpi_os_unmap_iomem(v, sizeof(*v));
+> +		 v.vendor_id, v.device_id, v.rev_id);
+> +	acpi_os_unmap_iomem(p, sizeof(v));
 >  }
->
->  /**
-> @@ -1242,7 +1246,7 @@ static int cppc_get_perf(int cpunum, enum cppc_regs=
- reg_idx, u64 *perf)
->   */
->  int cppc_get_desired_perf(int cpunum, u64 *desired_perf)
+>  
+>  static void *einj_get_parameter_address(void)
+> @@ -252,26 +254,30 @@ static void *einj_get_parameter_address(void)
+>  		entry++;
+>  	}
+>  	if (pa_v5) {
+> -		struct set_error_type_with_address *v5param;
+> +		struct set_error_type_with_address v5param;
+> +		void __iomem *p;
+
+Similar to above in remaining cases.
+
+Jonathan
+
+ 
+>  
+> -		v5param = acpi_os_map_iomem(pa_v5, sizeof(*v5param));
+> -		if (v5param) {
+> +		p = acpi_os_map_iomem(pa_v5, sizeof(v5param));
+> +		if (p) {
+> +			memcpy_fromio(&v5param, p, sizeof(v5param));
+>  			acpi5 = 1;
+> -			check_vendor_extension(pa_v5, v5param);
+> -			return v5param;
+> +			check_vendor_extension(pa_v5, &v5param);
+> +			return p;
+>  		}
+>  	}
+>  	if (param_extension && pa_v4) {
+> -		struct einj_parameter *v4param;
+> +		struct einj_parameter v4param;
+> +		void __iomem *p;
+>  
+> -		v4param = acpi_os_map_iomem(pa_v4, sizeof(*v4param));
+> -		if (!v4param)
+> +		p = acpi_os_map_iomem(pa_v4, sizeof(v4param));
+> +		if (!p)
+>  			return NULL;
+> -		if (v4param->reserved1 || v4param->reserved2) {
+> -			acpi_os_unmap_iomem(v4param, sizeof(*v4param));
+> +		memcpy_fromio(&v4param, p, sizeof(v4param));
+> +		if (v4param.reserved1 || v4param.reserved2) {
+> +			acpi_os_unmap_iomem(p, sizeof(v4param));
+>  			return NULL;
+>  		}
+> -		return v4param;
+> +		return p;
+>  	}
+>  
+>  	return NULL;
+> @@ -317,7 +323,7 @@ static struct acpi_generic_address *einj_get_trigger_parameter_region(
+>  static int __einj_error_trigger(u64 trigger_paddr, u32 type,
+>  				u64 param1, u64 param2)
 >  {
-> -       return cppc_get_perf(cpunum, DESIRED_PERF, desired_perf);
-> +       return cppc_get_reg_val(cpunum, DESIRED_PERF, desired_perf);
+> -	struct acpi_einj_trigger *trigger_tab = NULL;
+> +	struct acpi_einj_trigger trigger_tab;
+>  	struct apei_exec_context trigger_ctx;
+>  	struct apei_resources trigger_resources;
+>  	struct acpi_whea_header *trigger_entry;
+> @@ -325,54 +331,57 @@ static int __einj_error_trigger(u64 trigger_paddr, u32 type,
+>  	u32 table_size;
+>  	int rc = -EIO;
+>  	struct acpi_generic_address *trigger_param_region = NULL;
+> +	void __iomem *p;
+>  
+> -	r = request_mem_region(trigger_paddr, sizeof(*trigger_tab),
+> +	r = request_mem_region(trigger_paddr, sizeof(trigger_tab),
+>  			       "APEI EINJ Trigger Table");
+>  	if (!r) {
+>  		pr_err("Can not request [mem %#010llx-%#010llx] for Trigger table\n",
+>  		       (unsigned long long)trigger_paddr,
+>  		       (unsigned long long)trigger_paddr +
+> -			    sizeof(*trigger_tab) - 1);
+> +			    sizeof(trigger_tab) - 1);
+>  		goto out;
+>  	}
+> -	trigger_tab = ioremap_cache(trigger_paddr, sizeof(*trigger_tab));
+> -	if (!trigger_tab) {
+> +	p = ioremap_cache(trigger_paddr, sizeof(trigger_tab));
+> +	if (!p) {
+>  		pr_err("Failed to map trigger table!\n");
+>  		goto out_rel_header;
+>  	}
+> -	rc = einj_check_trigger_header(trigger_tab);
+> +	memcpy_fromio(&trigger_tab, p, sizeof(trigger_tab));
+> +	rc = einj_check_trigger_header(&trigger_tab);
+>  	if (rc) {
+>  		pr_warn(FW_BUG "Invalid trigger error action table.\n");
+>  		goto out_rel_header;
+>  	}
+>  
+>  	/* No action structures in the TRIGGER_ERROR table, nothing to do */
+> -	if (!trigger_tab->entry_count)
+> +	if (!trigger_tab.entry_count)
+>  		goto out_rel_header;
+>  
+>  	rc = -EIO;
+> -	table_size = trigger_tab->table_size;
+> -	r = request_mem_region(trigger_paddr + sizeof(*trigger_tab),
+> -			       table_size - sizeof(*trigger_tab),
+> +	table_size = trigger_tab.table_size;
+> +	r = request_mem_region(trigger_paddr + sizeof(trigger_tab),
+> +			       table_size - sizeof(trigger_tab),
+>  			       "APEI EINJ Trigger Table");
+>  	if (!r) {
+>  		pr_err("Can not request [mem %#010llx-%#010llx] for Trigger Table Entry\n",
+> -		       (unsigned long long)trigger_paddr + sizeof(*trigger_tab),
+> +		       (unsigned long long)trigger_paddr + sizeof(trigger_tab),
+>  		       (unsigned long long)trigger_paddr + table_size - 1);
+>  		goto out_rel_header;
+>  	}
+> -	iounmap(trigger_tab);
+> -	trigger_tab = ioremap_cache(trigger_paddr, table_size);
+> -	if (!trigger_tab) {
+> +	iounmap(p);
+> +	p = ioremap_cache(trigger_paddr, table_size);
+> +	if (!p) {
+>  		pr_err("Failed to map trigger table!\n");
+>  		goto out_rel_entry;
+>  	}
+> +	memcpy_fromio(&trigger_tab, p, sizeof(trigger_tab));
+>  	trigger_entry = (struct acpi_whea_header *)
+> -		((char *)trigger_tab + sizeof(struct acpi_einj_trigger));
+> +		((char *)&trigger_tab + sizeof(struct acpi_einj_trigger));
+>  	apei_resources_init(&trigger_resources);
+>  	apei_exec_ctx_init(&trigger_ctx, einj_ins_type,
+>  			   ARRAY_SIZE(einj_ins_type),
+> -			   trigger_entry, trigger_tab->entry_count);
+> +			   trigger_entry, trigger_tab.entry_count);
+>  	rc = apei_exec_collect_resources(&trigger_ctx, &trigger_resources);
+>  	if (rc)
+>  		goto out_fini;
+> @@ -390,7 +399,7 @@ static int __einj_error_trigger(u64 trigger_paddr, u32 type,
+>  
+>  		apei_resources_init(&addr_resources);
+>  		trigger_param_region = einj_get_trigger_parameter_region(
+> -			trigger_tab, param1, param2);
+> +			&trigger_tab, param1, param2);
+>  		if (trigger_param_region) {
+>  			rc = apei_resources_add(&addr_resources,
+>  				trigger_param_region->address,
+> @@ -419,13 +428,13 @@ static int __einj_error_trigger(u64 trigger_paddr, u32 type,
+>  out_fini:
+>  	apei_resources_fini(&trigger_resources);
+>  out_rel_entry:
+> -	release_mem_region(trigger_paddr + sizeof(*trigger_tab),
+> -			   table_size - sizeof(*trigger_tab));
+> +	release_mem_region(trigger_paddr + sizeof(trigger_tab),
+> +			   table_size - sizeof(trigger_tab));
+>  out_rel_header:
+> -	release_mem_region(trigger_paddr, sizeof(*trigger_tab));
+> +	release_mem_region(trigger_paddr, sizeof(trigger_tab));
+>  out:
+> -	if (trigger_tab)
+> -		iounmap(trigger_tab);
+> +	if (p)
+> +		iounmap(p);
+>  
+>  	return rc;
 >  }
->  EXPORT_SYMBOL_GPL(cppc_get_desired_perf);
->
-> @@ -1255,7 +1259,7 @@ EXPORT_SYMBOL_GPL(cppc_get_desired_perf);
->   */
->  int cppc_get_nominal_perf(int cpunum, u64 *nominal_perf)
->  {
-> -       return cppc_get_perf(cpunum, NOMINAL_PERF, nominal_perf);
-> +       return cppc_get_reg_val(cpunum, NOMINAL_PERF, nominal_perf);
->  }
->
->  /**
-> @@ -1267,7 +1271,7 @@ int cppc_get_nominal_perf(int cpunum, u64 *nominal_=
-perf)
->   */
->  int cppc_get_highest_perf(int cpunum, u64 *highest_perf)
->  {
-> -       return cppc_get_perf(cpunum, HIGHEST_PERF, highest_perf);
-> +       return cppc_get_reg_val(cpunum, HIGHEST_PERF, highest_perf);
->  }
->  EXPORT_SYMBOL_GPL(cppc_get_highest_perf);
->
-> @@ -1280,7 +1284,7 @@ EXPORT_SYMBOL_GPL(cppc_get_highest_perf);
->   */
->  int cppc_get_epp_perf(int cpunum, u64 *epp_perf)
->  {
-> -       return cppc_get_perf(cpunum, ENERGY_PERF, epp_perf);
-> +       return cppc_get_reg_val(cpunum, ENERGY_PERF, epp_perf);
->  }
->  EXPORT_SYMBOL_GPL(cppc_get_epp_perf);
->
-> --
-> 2.33.0
->
->
+> @@ -444,8 +453,10 @@ static int __einj_error_inject(u32 type, u32 flags, u64 param1, u64 param2,
+>  		return rc;
+>  	apei_exec_ctx_set_input(&ctx, type);
+>  	if (acpi5) {
+> -		struct set_error_type_with_address *v5param = einj_param;
+> +		struct set_error_type_with_address *v5param, v5_struct;
+>  
+> +		v5param = &v5_struct;
+> +		memcpy_fromio(v5param, einj_param, sizeof(*v5param));
+>  		v5param->type = type;
+>  		if (type & ACPI5_VENDOR_BIT) {
+>  			switch (vendor_flags) {
+> @@ -490,15 +501,18 @@ static int __einj_error_inject(u32 type, u32 flags, u64 param1, u64 param2,
+>  				break;
+>  			}
+>  		}
+> +		memcpy_toio(einj_param, v5param, sizeof(*v5param));
+>  	} else {
+>  		rc = apei_exec_run(&ctx, ACPI_EINJ_SET_ERROR_TYPE);
+>  		if (rc)
+>  			return rc;
+>  		if (einj_param) {
+> -			struct einj_parameter *v4param = einj_param;
+> +			struct einj_parameter v4param;
+>  
+> -			v4param->param1 = param1;
+> -			v4param->param2 = param2;
+> +			memcpy_fromio(&v4param, einj_param, sizeof(v4param));
+> +			v4param.param1 = param1;
+> +			v4param.param2 = param2;
+> +			memcpy_toio(einj_param, &v4param, sizeof(v4param));
+>  		}
+>  	}
+>  	rc = apei_exec_run(&ctx, ACPI_EINJ_EXECUTE_OPERATION);
+
