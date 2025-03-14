@@ -1,142 +1,162 @@
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E99581C07D9
-	for <acpica-devel@lists.linux.dev>; Fri, 14 Mar 2025 09:27:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAFDF1F4739
+	for <acpica-devel@lists.linux.dev>; Fri, 14 Mar 2025 10:32:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741944432; cv=none; b=HjdCcY3+EvgPjdy1ycYzvnva+SUzFaAOS3cHEPA59mvDctqKKhEEFQTpPwsM+Dogh11VvMW+7SeRk12CvCYRpLwEFQs/Aq3rlrMJYksYmhBWu8uTzxfaCER6bCTaZHuMNmNMwGhoYcVjKVVYgtBn5PRE4rcLkVETp/C49cB95DY=
+	t=1741948339; cv=none; b=WqtQ7Mz8HW1HYzb6f1axtuyS9loi7nOkONksiLYjFX287sF11HQRPtMD1RchqdkOGwBeCd33HXVi8X/Sgf2ZatDu8knQaaWzfcE8t/EG8YX3wN6qRf/31Ofgd8WZUdaozSBMSry9VZA48X8HY1c/nghS9/z3SMK5Wt8xj/ey0HA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741944432; c=relaxed/simple;
-	bh=PqUbDXVDaiUum+Dew0MC5ziN5yYPu9hhy423HzIFiWY=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PjoZBVL6ylFdMYXh5VtwejhJKAs1qu4scOu+PFTf273G3u4LCfqyx74ujWVcab2GoVLPC8Owq0zmmVTUIxKfZj8kwC+eLW/RljquDR2LATxDE8xEkQfhcwXdc0tbcQY61Sa1U4VVFiD6UjgaYwjnV/GwFlxZ8ijgkQ3ZXcPO5Fs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4ZDf7b3c1Yz6J7qr;
-	Fri, 14 Mar 2025 17:23:55 +0800 (CST)
-Received: from frapeml500008.china.huawei.com (unknown [7.182.85.71])
-	by mail.maildlp.com (Postfix) with ESMTPS id 7F87C1400CD;
-	Fri, 14 Mar 2025 17:27:06 +0800 (CST)
-Received: from localhost (10.203.177.66) by frapeml500008.china.huawei.com
- (7.182.85.71) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Fri, 14 Mar
- 2025 10:27:05 +0100
-Date: Fri, 14 Mar 2025 09:27:04 +0000
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-To: Zaid Alali <zaidal@os.amperecomputing.com>
-CC: <rafael@kernel.org>, <lenb@kernel.org>, <james.morse@arm.com>,
-	<tony.luck@intel.com>, <bp@alien8.de>, <robert.moore@intel.com>,
-	<dan.j.williams@intel.com>, <Benjamin.Cheatham@amd.com>,
-	<Avadhut.Naik@amd.com>, <viro@zeniv.linux.org.uk>, <arnd@arndb.de>,
-	<ira.weiny@intel.com>, <dave.jiang@intel.com>,
-	<sthanneeru.opensrc@micron.com>, <linux-acpi@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <acpica-devel@lists.linux.dev>
-Subject: Re: [PATCH v4 6/9] ACPI: APEI: EINJ: Add einjv2 extension struct
-Message-ID: <20250314092704.00006ffe@huawei.com>
-In-Reply-To: <Z9M6ryapTGlBWA3Q@zaid-VirtualBox>
-References: <20250306234810.75511-1-zaidal@os.amperecomputing.com>
-	<20250306234810.75511-7-zaidal@os.amperecomputing.com>
-	<20250313094230.00004696@huawei.com>
-	<Z9M6ryapTGlBWA3Q@zaid-VirtualBox>
-X-Mailer: Claws Mail 4.3.0 (GTK 3.24.42; x86_64-w64-mingw32)
+	s=arc-20240116; t=1741948339; c=relaxed/simple;
+	bh=bIVEOosLbXV7zBjslXZjI9/mMTUHcG4P15ca5rWDDm0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=EuAPJGY/3JQczJhCo1YhSN8ZirczNnAklNh0FfM2D1LpBfxwvxPjq/SXle8ryotrQ1sAWxiAVEX9VbGrkxTdKWlHAI092aPBDFP7gUS161d/0qCJjz5ZrNhwxK0tWvoRaPaai27+VoD3CNtu89ktxBMhbEcU+WjfMW2pfcfEkUY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j3+19/Bi; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j3+19/Bi"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AE4BC4CEEE
+	for <acpica-devel@lists.linux.dev>; Fri, 14 Mar 2025 10:32:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1741948338;
+	bh=bIVEOosLbXV7zBjslXZjI9/mMTUHcG4P15ca5rWDDm0=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=j3+19/BiN6v+pKli7W3LfZ4dOW/TqRiIxjSoUqF9o+jkG4SSng7zRIqEKXKKBsH4C
+	 xkZ11M7AcGfz/2r4brm4/Xx4UhzihYkcsZDkpM8yn02ikkw3QTpvp5VKBsj26525oi
+	 5K0yrlqBThCiaSvkU1bzENme1lXVpV644FHoeWZ/u0yhkz8Mqm7ShqeWu4VjQ3VZrs
+	 M6jxYoyZTzIQY3Yy9ACoJLNz/1MPJo91jmWcq5GH1xosg1hhFuBUG+TFhibP2gQMCQ
+	 W8wpYHTeCVg1ZMErre5+7Ri//vKGuvhIjYvFEt2kjnee7bwYxbOsWAa1scEc2gWCLp
+	 fejBWC9+Re/zg==
+Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-2c12b7af278so1324949fac.0
+        for <acpica-devel@lists.linux.dev>; Fri, 14 Mar 2025 03:32:18 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWvIGZq2ymW0RihtVmIH5AT7rLwlKm4IGFupfrszsWTVVOnZGARRnEO9PuPLNev5W0fUnzven37WjzKYZQ=@lists.linux.dev
+X-Gm-Message-State: AOJu0Yx0fO+9qF34dGNG9XJQlaLY2MTBgwn0/zKWn/h0DD+YwyIpmknL
+	YtrheiRp/GfnSEYHDBn14lOBnGqNHP0au4OwYHpI0X0oRJt4vL//FaR49j2MZB6IrLMjuJ85vQ+
+	snRKO9D4gOryaIbPWYbYFS0HMDz4=
+X-Google-Smtp-Source: AGHT+IHMIhcxmJiI89lHkmcp10N9Gc8dwaHNOvydy7F0N4rYcB6pfEg4Jewk4sgyfM2HYz8d8QVhijGhPoQRMSCLG6M=
+X-Received: by 2002:a05:6871:8907:b0:2c3:13f7:2b3d with SMTP id
+ 586e51a60fabf-2c66faa0ad9mr3253949fac.13.1741948337647; Fri, 14 Mar 2025
+ 03:32:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100006.china.huawei.com (7.191.160.224) To
- frapeml500008.china.huawei.com (7.182.85.71)
+References: <20250206131428.3261578-1-zhenglifeng1@huawei.com>
+ <20250206131428.3261578-4-zhenglifeng1@huawei.com> <CAJZ5v0iNzNROkPD4+b=Au8DwdF9unajKivdRQMBFfwzjFxHLcg@mail.gmail.com>
+ <4fc77a58-8c77-463c-a50d-06ad19685bfb@huawei.com>
+In-Reply-To: <4fc77a58-8c77-463c-a50d-06ad19685bfb@huawei.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Fri, 14 Mar 2025 11:32:05 +0100
+X-Gmail-Original-Message-ID: <CAJZ5v0gmGx-9QsTTdbKi6EMQm2tePfhBdYMry_88gbybLUY6WA@mail.gmail.com>
+X-Gm-Features: AQ5f1JoupU6GpOA9Iyps8s1JuMZY-IPPw-xEHtHAfwnoaE6pdAQsbzMgFba8YeA
+Message-ID: <CAJZ5v0gmGx-9QsTTdbKi6EMQm2tePfhBdYMry_88gbybLUY6WA@mail.gmail.com>
+Subject: Re: [PATCH v5 3/8] ACPI: CPPC: Rename cppc_get_perf() to cppc_get_reg_val()
+To: "zhenglifeng (A)" <zhenglifeng1@huawei.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, lenb@kernel.org, robert.moore@intel.com, 
+	viresh.kumar@linaro.org, mario.limonciello@amd.com, gautham.shenoy@amd.com, 
+	ray.huang@amd.com, pierre.gondois@arm.com, acpica-devel@lists.linux.dev, 
+	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-pm@vger.kernel.org, linuxarm@huawei.com, yumpusamongus@gmail.com, 
+	srinivas.pandruvada@linux.intel.com, jonathan.cameron@huawei.com, 
+	zhanjie9@hisilicon.com, lihuisong@huawei.com, hepeng68@huawei.com, 
+	fanghao11@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 13 Mar 2025 13:06:07 -0700
-Zaid Alali <zaidal@os.amperecomputing.com> wrote:
+On Fri, Mar 14, 2025 at 10:25=E2=80=AFAM zhenglifeng (A)
+<zhenglifeng1@huawei.com> wrote:
+>
+> On 2025/3/13 3:54, Rafael J. Wysocki wrote:
+>
+> > On Thu, Feb 6, 2025 at 2:14=E2=80=AFPM Lifeng Zheng <zhenglifeng1@huawe=
+i.com> wrote:
+> >>
+> >> Rename cppc_get_perf() to cppc_get_reg_val() as a generic function to =
+read
+> >> cppc registers. And extract the operations if register is in pcc out a=
+s
+> >> cppc_get_reg_val_in_pcc(). Without functional change.
+> >
+> > This should be split into two patches IMV.
+>
+> Yes. That makes sense. Thanks.
+>
+> >
+> >> Signed-off-by: Lifeng Zheng <zhenglifeng1@huawei.com>
+> >> ---
+> >>  drivers/acpi/cppc_acpi.c | 66 +++++++++++++++++++++------------------=
+-
+> >>  1 file changed, 35 insertions(+), 31 deletions(-)
+> >>
+> >> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+> >> index db22f8f107db..3c9c4ce2a0b0 100644
+> >> --- a/drivers/acpi/cppc_acpi.c
+> >> +++ b/drivers/acpi/cppc_acpi.c
+> >> @@ -1189,48 +1189,52 @@ static int cpc_write(int cpu, struct cpc_regis=
+ter_resource *reg_res, u64 val)
+> >>         return ret_val;
+> >>  }
+> >>
+> >> -static int cppc_get_perf(int cpunum, enum cppc_regs reg_idx, u64 *per=
+f)
+> >> +static int cppc_get_reg_val_in_pcc(int cpu, struct cpc_register_resou=
+rce *reg, u64 *val)
+> >>  {
+> >> -       struct cpc_desc *cpc_desc =3D per_cpu(cpc_desc_ptr, cpunum);
+> >> -       struct cpc_register_resource *reg;
+> >> +       int pcc_ss_id =3D per_cpu(cpu_pcc_subspace_idx, cpu);
+> >> +       struct cppc_pcc_data *pcc_ss_data =3D NULL;
+> >> +       int ret;
+> >>
+> >> -       if (!cpc_desc) {
+> >> -               pr_debug("No CPC descriptor for CPU:%d\n", cpunum);
+> >> +       if (pcc_ss_id < 0) {
+> >> +               pr_debug("Invalid pcc_ss_id\n");
+> >>                 return -ENODEV;
+> >>         }
+> >>
+> >> -       reg =3D &cpc_desc->cpc_regs[reg_idx];
+> >> +       pcc_ss_data =3D pcc_data[pcc_ss_id];
+> >>
+> >> -       if (IS_OPTIONAL_CPC_REG(reg_idx) && !CPC_SUPPORTED(reg)) {
+> >> -               pr_debug("CPC register (reg_idx=3D%d) is not supported=
+\n", reg_idx);
+> >> -               return -EOPNOTSUPP;
+> >> -       }
+> >
+> > I'm not a big fan of the IS_OPTIONAL_CPC_REG() macro.  I'm not
+> > convinced at all that it adds any value above (and in the next patch
+> > for that matter) and the message printing the register index is just
+> > plain unuseful to anyone who doesn't know how to decode it.
+>
+> With this index, it is easier to locate problems. This is what a "pr_debu=
+g"
+> for, isn't it?
 
-> On Thu, Mar 13, 2025 at 09:42:30AM +0000, Jonathan Cameron wrote:
-> > On Thu,  6 Mar 2025 15:48:07 -0800
-> > Zaid Alali <zaidal@os.amperecomputing.com> wrote:
-> >   
-> > > Add einjv2 extension struct and EINJv2 error types to prepare
-> > > the driver for EINJv2 support. ACPI specifications(1) enables
-> > > EINJv2 by extending set_error_type_with_address struct.
-> > > 
-> > > (1) https://bugzilla.tianocore.org/show_bug.cgi?id=4615  
-> > Still seems to be down.
-> > Also, we have tag for this.  
-> > > 
-> > > Signed-off-by: Zaid Alali <zaidal@os.amperecomputing.com>  
-> > 
-> > Link: https://bugzilla.tianocore.org/show_bug.cgi?id=4615 # [1]
-> > 
-> > 
-> > One additional request inline.
-> > Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>  
-> > > ---
-> > >  drivers/acpi/apei/einj-core.c | 23 +++++++++++++++++++++++
-> > >  1 file changed, 23 insertions(+)
-> > > 
-> > > diff --git a/drivers/acpi/apei/einj-core.c b/drivers/acpi/apei/einj-core.c
-> > > index aee9a7b17313..32b8d102f399 100644
-> > > --- a/drivers/acpi/apei/einj-core.c
-> > > +++ b/drivers/acpi/apei/einj-core.c
-> > > @@ -50,6 +50,28 @@
-> > >   */
-> > >  static int acpi5;
-> > >  
-> > > +struct syndrome_array {
-> > > +	union {
-> > > +		u32	acpi_id;
-> > > +		u32	device_id;
-> > > +		u32	pcie_sbdf;
-> > > +		u8	vendor_id[16];
-> > > +	} comp_id;
-> > > +	union {
-> > > +		u32	proc_synd;
-> > > +		u32	mem_synd;
-> > > +		u32	pcie_synd;
-> > > +		u8	vendor_synd[16];
-> > > +	} comp_synd;
-> > > +};
-> > > +
-> > > +struct einjv2_extension_struct {
-> > > +	u32 length;
-> > > +	u16 revision;
-> > > +	u16 component_arr_count;
-> > > +	struct syndrome_array component_arr[];  
-> > 
-> > __counted_by(component_arr_count);
-> > should be fine and marking these is always good to do in
-> > new code (and old code if you have time!)  
-> 
-> I am not sure if __counted_by is appropriate here. Please note that component_arr_count
-> is set by the user and does NOT represent the size of the component_arr[].
+For those who know how to decode it, yes.  For others, not really.
 
-Does it represent the length that should ever be accessed (which is what
-the __counted_by() stuff will help us find bugs around).
+> >
+> > If CPC_SUPPORTED(reg) is not true, the register cannot be used AFAICS
+> > regardless of what IS_OPTIONAL_CPC_REG() has to say about it.
+>
+> The name "CPC_SUPPORTED" may be a little confused. Actually, in ACPI 6.5,
+> only optional _CPC package fields that are not supported by the platform
+> should be encoded as 0 intergers or NULL registers. A mandatory field as =
+a
+> 0 interger is valid. So If I wanted to make this function as a generic on=
+e
+> to read cppc registers, it would have been more reasonable to do this
+> IS_OPTIONAL_CPC_REG() check before CPC_SUPPORTED().
 
-If not that wins an award for misleading naming :)
+I see, so you need to explain this in the changelog.
 
-Jonathan
+And IMV the code logic should be:
 
+(1) If this is a NULL register, don't use it.
+(2) If it is integer 0, check if it is optional.
+    (a) If it is optional, don't use it.
+    (b) Otherwise, use 0 as the value.
 
-> > 
-> >   
-> > > +};
-> > > +
-> > >  struct set_error_type_with_address {
-> > >  	u32	type;
-> > >  	u32	vendor_extension;
-> > > @@ -58,6 +80,7 @@ struct set_error_type_with_address {
-> > >  	u64	memory_address;
-> > >  	u64	memory_address_range;
-> > >  	u32	pcie_sbdf;
-> > > +	struct	einjv2_extension_struct einjv2_struct;
-> > >  };
-> > >  enum {
-> > >  	SETWA_FLAGS_APICID = 1,  
-> >   
-
+Of course, there is a problem for platforms that may want to pass 0 as
+an optional field value, but this is a spec issue.
