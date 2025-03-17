@@ -1,75 +1,110 @@
-Received: from mxhk.zte.com.cn (mxhk.zte.com.cn [63.216.63.35])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C79EC219A89
-	for <acpica-devel@lists.linux.dev>; Mon, 17 Mar 2025 06:38:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=63.216.63.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E10021B910;
+	Mon, 17 Mar 2025 08:19:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742193503; cv=none; b=qAROtEAU5xqqAqTPpt+SgMh57kLLDf9lbS2JPJ6jyPzD/iFQlhOnF2ZMONoqfOeDKsWP//M7cImBwy6rBC3vF+MNQCkZTPU9wz4hiz9ynN7LgoPlTNp7Cq54kfOiQwM5n3diSVC789jYoahvKaj9FeIASX986XGGrpc9AzMnA74=
+	t=1742199573; cv=none; b=iMWHGT/502DbkyS/MbM+Gthxdw3m6+C+R1rh2+xJ6m/uwwq3nbVHJmv5gA53mhUEASUii4D2AIvqswjAXZzEAvfzBFufIqaD9oNFxxbjjlaNyxoMP3o4H/SXqheldt9u+0CJjggsqgiCi3bJ095dICb9dlu3rG8Ar/XR8ljk6Ak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742193503; c=relaxed/simple;
-	bh=eruNzRwTOpaRmrW/71RoAXKODrnvfE3/jBaveuW3O1o=;
-	h=Date:Message-ID:Mime-Version:From:To:Cc:Subject:Content-Type; b=BNErobb9ftp6bDzScvcOq7XWSCcv29+vPMXfoz8cLF7JWwg0bLK6SBFMtXaMaeHvVjTH0mUWGrn6PmD9Ev0h4S61XAjbMfb2M/Ws7VlwQHOkeOvIpok1A1y5P6YUbT9R9x8XBKf49f9BmGa1Jwp08xWc/x5UifsmAi/tC3z9BLo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn; spf=pass smtp.mailfrom=zte.com.cn; arc=none smtp.client-ip=63.216.63.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zte.com.cn
-Received: from mse-fl2.zte.com.cn (unknown [10.5.228.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mxhk.zte.com.cn (FangMail) with ESMTPS id 4ZGQK60J68z5B1J4;
-	Mon, 17 Mar 2025 14:38:18 +0800 (CST)
-Received: from xaxapp02.zte.com.cn ([10.88.97.241])
-	by mse-fl2.zte.com.cn with SMTP id 52H6c46Z033413;
-	Mon, 17 Mar 2025 14:38:04 +0800 (+08)
-	(envelope-from feng.wei8@zte.com.cn)
-Received: from mapi (xaxapp05[null])
-	by mapi (Zmail) with MAPI id mid32;
-	Mon, 17 Mar 2025 14:38:06 +0800 (CST)
-Date: Mon, 17 Mar 2025 14:38:06 +0800 (CST)
-X-Zmail-TransId: 2afc67d7c34e210-9c6d8
-X-Mailer: Zmail v1.0
-Message-ID: <20250317143806244wrGxYdlssPbWp7T7W5Gbr@zte.com.cn>
+	s=arc-20240116; t=1742199573; c=relaxed/simple;
+	bh=OCC+mYDQPuP2N1ShX3bfGGi04SGy5DRFdyXbMoxMUdw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LTTB+IZhVl+vE/+IR3OXn4ERndZQw7oOa2yZhjyNzgIze7bpUK5fqw94kltsT4FJIPSLfTw5wh1dmGSUjvv7ZTEwUIowxXpfbPyWoJm+j6W5y77sYKKiyJj8MPp5j5Bjqyt0AX6ddJGaj2zi6xjInveNkrKm3pMFr7A71wPgH3E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pzNYl7n2; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pzNYl7n2"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC8BAC4CEEC;
+	Mon, 17 Mar 2025 08:19:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1742199572;
+	bh=OCC+mYDQPuP2N1ShX3bfGGi04SGy5DRFdyXbMoxMUdw=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=pzNYl7n2mroeGhLcjpf/4giu//c3D3lBUPBiume22u2gF6DUPTsoKweI5rk6Hcj1g
+	 g61Dw5j7sFWlu97UQ5+qwhZoHA46STRjPd9GkoD642b17MQN6rib/dMDauYgZaPg24
+	 obOzUhsiuswhxCDOfF+ZByWdNFaMlHIZ+yJtL2zSJ+QgGGRSwpj2WP37jDkkX+eLVw
+	 pCsoxT1vMhpZaUB7/3HhP7KD3yoUTH2777jgZn60VM2mjafblkBebibiCrgVjaQ5MQ
+	 RhIQy+5kShf2ZdVM/JDipxo7neA9/a0zxWhOWMU5liMdwhLS/fbhSlvosClLUwvux8
+	 RIKJjTHs7Mpaw==
+Message-ID: <c5cf8522-8967-40f5-9f7c-525ff535875c@kernel.org>
+Date: Mon, 17 Mar 2025 09:19:27 +0100
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
-Mime-Version: 1.0
-From: <feng.wei8@zte.com.cn>
-To: <robert.moore@intel.com>
-Cc: <rafael.j.wysocki@intel.com>, <lenb@kernel.org>,
-        <linux-acpi@vger.kernel.org>, <acpica-devel@lists.linux.dev>,
-        <linux-kernel@vger.kernel.org>
-Subject: =?UTF-8?B?W1BBVENIXSBBQ1BJQ0E6IFJlcGxhY2UgZGVwcmVjYXRlZCBzdHJuY3B5KCkgd2l0aCBzdHJzY3B5KCk=?=
-Content-Type: text/plain;
-	charset="UTF-8"
-X-MAIL:mse-fl2.zte.com.cn 52H6c46Z033413
-X-Fangmail-Anti-Spam-Filtered: true
-X-Fangmail-MID-QID: 67D7C35A.000/4ZGQK60J68z5B1J4
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ACPICA: Replace deprecated strncpy() with strscpy()
+To: feng.wei8@zte.com.cn, robert.moore@intel.com
+Cc: rafael.j.wysocki@intel.com, lenb@kernel.org, linux-acpi@vger.kernel.org,
+ acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20250317143806244wrGxYdlssPbWp7T7W5Gbr@zte.com.cn>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20250317143806244wrGxYdlssPbWp7T7W5Gbr@zte.com.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-From: FengWei <feng.wei8@zte.com.cn>
+On 17/03/2025 07:38, feng.wei8@zte.com.cn wrote:
+> diff --git a/drivers/acpi/acpica/utnonansi.c b/drivers/acpi/acpica/utnonansi.c
+> index ff0802ace19b..1da9b8246011 100644
+> --- a/drivers/acpi/acpica/utnonansi.c
+> +++ b/drivers/acpi/acpica/utnonansi.c
+> @@ -168,8 +168,7 @@ void acpi_ut_safe_strncpy(char *dest, char *source, acpi_size dest_size)
+>  {
+>  	/* Always terminate destination string */
+> 
+> -	strncpy(dest, source, dest_size);
+> -	dest[dest_size - 1] = 0;
+> +	strscpy(dest, source, dest_size);
 
-strncpy() is deprecated for NUL-terminated destination buffers. Use
-strscpy() instead and remove the manual NUL-termination.
+What is the point of this function now?
 
-Signed-off-by: FengWei <feng.wei8@zte.com.cn>
----
- drivers/acpi/acpica/utnonansi.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Can ZTE slow down and address the feedback first?
 
-diff --git a/drivers/acpi/acpica/utnonansi.c b/drivers/acpi/acpica/utnonansi.c
-index ff0802ace19b..1da9b8246011 100644
---- a/drivers/acpi/acpica/utnonansi.c
-+++ b/drivers/acpi/acpica/utnonansi.c
-@@ -168,8 +168,7 @@ void acpi_ut_safe_strncpy(char *dest, char *source, acpi_size dest_size)
- {
- 	/* Always terminate destination string */
-
--	strncpy(dest, source, dest_size);
--	dest[dest_size - 1] = 0;
-+	strscpy(dest, source, dest_size);
- }
-
- #endif
--- 
-2.25.1
+Best regards,
+Krzysztof
