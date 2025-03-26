@@ -1,155 +1,101 @@
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F37235947
-	for <acpica-devel@lists.linux.dev>; Fri, 21 Mar 2025 01:45:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 053FF14831F
+	for <acpica-devel@lists.linux.dev>; Wed, 26 Mar 2025 15:06:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742521553; cv=none; b=BLrXtCuSaLuFTWz0Mw2DzGR7Yb8QdnrAgnaDVmlMqIe8WV6k4dVdNICaP5AC0rxHAgsfOgveTueCL9BXQh+HP6GvZPKfaH3q7YQTDKduIB8Epx7V3FWe9Iqr6MzqMG+G8rl9LdI8q101yhwn+ZLXhx6pvZ3eQHVaEKZQ4C/AZnE=
+	t=1743001599; cv=none; b=e+UH5fUtj/F69trpOwsXBxj5rekcRy4EP5ZBa/pmv6rXY3S4LrfNh/xpr+stzINJBqBlACtGcDT9Yd76sflJ2s0GJoV1whYwE8qwE4E06eOG3fvLeqvyD1zpdBt8Ua3SOy7uldLHHTa4fllN14ucTHep8RLDJ9TKBM/ufb81EJE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742521553; c=relaxed/simple;
-	bh=cPi2rLqMVZVMrpf6kVXEz5Xc035JMvkZO475SzT1E6A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=u3mYqQyO9HBlFVIWzCgR9DoW4pPjXIkpn9Y9JGPJ7F2xtoY82bnchaMDyHrB/cQGHM248HKRfT7Kn9LSBoazJriI5lUP6DGtIlu+600y7cOQyOmk23EM/QDZJMjr0TNHzFQ8fe/OUPpiR4mcddKx5TrYTkYqb3k/FAZQGD18S8E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4ZJldS2dxjz1d0cp;
-	Fri, 21 Mar 2025 09:45:32 +0800 (CST)
-Received: from kwepemh100008.china.huawei.com (unknown [7.202.181.93])
-	by mail.maildlp.com (Postfix) with ESMTPS id 023261402CC;
-	Fri, 21 Mar 2025 09:45:48 +0800 (CST)
-Received: from [10.67.121.90] (10.67.121.90) by kwepemh100008.china.huawei.com
- (7.202.181.93) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Fri, 21 Mar
- 2025 09:45:47 +0800
-Message-ID: <67031906-5b7e-4f4d-86c8-d534b6d61f2c@huawei.com>
-Date: Fri, 21 Mar 2025 09:45:46 +0800
+	s=arc-20240116; t=1743001599; c=relaxed/simple;
+	bh=eG/T134t1BpVKjLV2gOl1Ja0VVIdhzM/6dZvtfLmW3Q=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nrgDnEiHcGcsVW1KMryKhm/QhNjYYHpVqMsi4YQL5wOe+vlv6H9wmfkAfcXmlbnVdj0g2PH6ma1WDwgQ2BCnTMSMPiwGXaxkLhLi9EE9wfMMfkb5FuZ3uw2JAOKP/tEW4ypwI/+yMNeAqkvPYANxWLes2fJNKG1nY9zZ47gtsys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vMalqNjj; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vMalqNjj"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83FC7C4CEEE
+	for <acpica-devel@lists.linux.dev>; Wed, 26 Mar 2025 15:06:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1743001598;
+	bh=eG/T134t1BpVKjLV2gOl1Ja0VVIdhzM/6dZvtfLmW3Q=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=vMalqNjjmzCWyfP20tx+ST2Eb6rLDX+av+6+yIL5PG3j5Uw7VqyVXF8Y/xWtySGS6
+	 J4b81Bl0BmsJBXDSbGU4zf2woSVdci6ZCKyz24TXrddByi+VqXQOjUorT1POIJklVk
+	 MtrRV4nTZkhAYvAgVi6BxtFhAbBIBP5WbF+JIrdw6uzDiykMAviPToKF6ZiThu+1s9
+	 wZ0+JkK3LILuymLZOnylG5pJNOvYpTs8kLVBSTWFWfxbEYm31dGSSgnyxwpst9XGPU
+	 IqkSaCj73OJ9kFUzZecERWOGXVTQn92xpZ2QZ2jgB0/Y4Y4gmkeu37V2RVFFdDl9Xg
+	 o6eaR42w9ICcg==
+Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-2c1c9b7bd9aso3703640fac.0
+        for <acpica-devel@lists.linux.dev>; Wed, 26 Mar 2025 08:06:38 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXZHvQbKK6aoeMqeqlCjQUeneTUm1Yy+FvAajZf/gBMwN6NoCxdx95nKRSvmCyVV3jtrmOoVP4zJjgtRkc=@lists.linux.dev
+X-Gm-Message-State: AOJu0YzbJQK5v7cNughvBEI5uOpJPuJNjknSqaAA5r9N9SBI+tkfoZ1G
+	nAoyyWbsMMuK86p1QipxiMg50Lx73D7Xi/Y7TlCSY+hnMuMmCQ1J6SqIBvjO+Ss6idAdFpTAW82
+	W/Zja5qAJ/L6FLPNBM0PcvUIbbGY=
+X-Google-Smtp-Source: AGHT+IGkvPIhAdIe2uCHkUV7jdqJrG0IDNtgByDus5UItrR41CYXQI0TX/ZBHOpWTPlZ2WX0WUbSZSJjAndGBhaskI0=
+X-Received: by 2002:a05:6870:2b1b:b0:29e:2d18:2718 with SMTP id
+ 586e51a60fabf-2c78048a3d2mr14302920fac.28.1743001597790; Wed, 26 Mar 2025
+ 08:06:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 3/8] ACPI: CPPC: Rename cppc_get_perf() to
- cppc_get_reg_val()
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-CC: <lenb@kernel.org>, <robert.moore@intel.com>, <viresh.kumar@linaro.org>,
-	<mario.limonciello@amd.com>, <gautham.shenoy@amd.com>, <ray.huang@amd.com>,
-	<pierre.gondois@arm.com>, <acpica-devel@lists.linux.dev>,
-	<linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-pm@vger.kernel.org>, <linuxarm@huawei.com>, <yumpusamongus@gmail.com>,
-	<srinivas.pandruvada@linux.intel.com>, <jonathan.cameron@huawei.com>,
-	<zhanjie9@hisilicon.com>, <lihuisong@huawei.com>, <hepeng68@huawei.com>,
-	<fanghao11@huawei.com>
-References: <20250206131428.3261578-1-zhenglifeng1@huawei.com>
- <20250206131428.3261578-4-zhenglifeng1@huawei.com>
- <CAJZ5v0iNzNROkPD4+b=Au8DwdF9unajKivdRQMBFfwzjFxHLcg@mail.gmail.com>
- <4fc77a58-8c77-463c-a50d-06ad19685bfb@huawei.com>
- <CAJZ5v0gmGx-9QsTTdbKi6EMQm2tePfhBdYMry_88gbybLUY6WA@mail.gmail.com>
-From: "zhenglifeng (A)" <zhenglifeng1@huawei.com>
-In-Reply-To: <CAJZ5v0gmGx-9QsTTdbKi6EMQm2tePfhBdYMry_88gbybLUY6WA@mail.gmail.com>
+References: <20250317143806244wrGxYdlssPbWp7T7W5Gbr@zte.com.cn>
+In-Reply-To: <20250317143806244wrGxYdlssPbWp7T7W5Gbr@zte.com.cn>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Wed, 26 Mar 2025 16:06:25 +0100
+X-Gmail-Original-Message-ID: <CAJZ5v0gLweZL_v68aEFOvYYs2zHwT2HzGjf0b7ZD-qmTw6cd=A@mail.gmail.com>
+X-Gm-Features: AQ5f1JphAlHj-vnQbNXz4EBhTHajNte1OOhPJKLEs-XNLulzBlPDIu2IUzU_H8k
+Message-ID: <CAJZ5v0gLweZL_v68aEFOvYYs2zHwT2HzGjf0b7ZD-qmTw6cd=A@mail.gmail.com>
+Subject: Re: [PATCH] ACPICA: Replace deprecated strncpy() with strscpy()
+To: feng.wei8@zte.com.cn
+Cc: robert.moore@intel.com, rafael.j.wysocki@intel.com, lenb@kernel.org, 
+	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemh100008.china.huawei.com (7.202.181.93)
+Content-Transfer-Encoding: quoted-printable
 
-On 2025/3/14 18:32, Rafael J. Wysocki wrote:
+On Mon, Mar 17, 2025 at 7:38=E2=80=AFAM <feng.wei8@zte.com.cn> wrote:
+>
+> From: FengWei <feng.wei8@zte.com.cn>
+>
+> strncpy() is deprecated for NUL-terminated destination buffers. Use
+> strscpy() instead and remove the manual NUL-termination.
+>
+> Signed-off-by: FengWei <feng.wei8@zte.com.cn>
 
-> On Fri, Mar 14, 2025 at 10:25 AM zhenglifeng (A)
-> <zhenglifeng1@huawei.com> wrote:
->>
->> On 2025/3/13 3:54, Rafael J. Wysocki wrote:
->>
->>> On Thu, Feb 6, 2025 at 2:14 PM Lifeng Zheng <zhenglifeng1@huawei.com> wrote:
->>>>
->>>> Rename cppc_get_perf() to cppc_get_reg_val() as a generic function to read
->>>> cppc registers. And extract the operations if register is in pcc out as
->>>> cppc_get_reg_val_in_pcc(). Without functional change.
->>>
->>> This should be split into two patches IMV.
->>
->> Yes. That makes sense. Thanks.
->>
->>>
->>>> Signed-off-by: Lifeng Zheng <zhenglifeng1@huawei.com>
->>>> ---
->>>>  drivers/acpi/cppc_acpi.c | 66 +++++++++++++++++++++-------------------
->>>>  1 file changed, 35 insertions(+), 31 deletions(-)
->>>>
->>>> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
->>>> index db22f8f107db..3c9c4ce2a0b0 100644
->>>> --- a/drivers/acpi/cppc_acpi.c
->>>> +++ b/drivers/acpi/cppc_acpi.c
->>>> @@ -1189,48 +1189,52 @@ static int cpc_write(int cpu, struct cpc_register_resource *reg_res, u64 val)
->>>>         return ret_val;
->>>>  }
->>>>
->>>> -static int cppc_get_perf(int cpunum, enum cppc_regs reg_idx, u64 *perf)
->>>> +static int cppc_get_reg_val_in_pcc(int cpu, struct cpc_register_resource *reg, u64 *val)
->>>>  {
->>>> -       struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpunum);
->>>> -       struct cpc_register_resource *reg;
->>>> +       int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpu);
->>>> +       struct cppc_pcc_data *pcc_ss_data = NULL;
->>>> +       int ret;
->>>>
->>>> -       if (!cpc_desc) {
->>>> -               pr_debug("No CPC descriptor for CPU:%d\n", cpunum);
->>>> +       if (pcc_ss_id < 0) {
->>>> +               pr_debug("Invalid pcc_ss_id\n");
->>>>                 return -ENODEV;
->>>>         }
->>>>
->>>> -       reg = &cpc_desc->cpc_regs[reg_idx];
->>>> +       pcc_ss_data = pcc_data[pcc_ss_id];
->>>>
->>>> -       if (IS_OPTIONAL_CPC_REG(reg_idx) && !CPC_SUPPORTED(reg)) {
->>>> -               pr_debug("CPC register (reg_idx=%d) is not supported\n", reg_idx);
->>>> -               return -EOPNOTSUPP;
->>>> -       }
->>>
->>> I'm not a big fan of the IS_OPTIONAL_CPC_REG() macro.  I'm not
->>> convinced at all that it adds any value above (and in the next patch
->>> for that matter) and the message printing the register index is just
->>> plain unuseful to anyone who doesn't know how to decode it.
->>
->> With this index, it is easier to locate problems. This is what a "pr_debug"
->> for, isn't it?
-> 
-> For those who know how to decode it, yes.  For others, not really.
+In order to modify ACPICA code in the Linux kernel, please first
+submit the change in question to the upstream ACPICA project on GitHub
+as a pull request.  Once that pull request has been merged, you can
+send a corresponding Linux patch with a Link: tag pointing to it, but
+in principle it is not necessary to do so because ACPICA changes are
+automatically integrated into the Linux code base on a more-or-less
+regular basis.
 
-At least it means something. But if you think this index is confusing for
-those who don't know how to decode it, I'll remove it in the next version.
+Thanks!
 
-> 
->>>
->>> If CPC_SUPPORTED(reg) is not true, the register cannot be used AFAICS
->>> regardless of what IS_OPTIONAL_CPC_REG() has to say about it.
->>
->> The name "CPC_SUPPORTED" may be a little confused. Actually, in ACPI 6.5,
->> only optional _CPC package fields that are not supported by the platform
->> should be encoded as 0 intergers or NULL registers. A mandatory field as a
->> 0 interger is valid. So If I wanted to make this function as a generic one
->> to read cppc registers, it would have been more reasonable to do this
->> IS_OPTIONAL_CPC_REG() check before CPC_SUPPORTED().
-> 
-> I see, so you need to explain this in the changelog.
-
-OK.
-
-> 
-> And IMV the code logic should be:
-> 
-> (1) If this is a NULL register, don't use it.
-> (2) If it is integer 0, check if it is optional.
->     (a) If it is optional, don't use it.
->     (b) Otherwise, use 0 as the value.
-> 
-> Of course, there is a problem for platforms that may want to pass 0 as
-> an optional field value, but this is a spec issue.
-
-I'll change the logic in next version. Thanks!
-
+> ---
+>  drivers/acpi/acpica/utnonansi.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/drivers/acpi/acpica/utnonansi.c b/drivers/acpi/acpica/utnona=
+nsi.c
+> index ff0802ace19b..1da9b8246011 100644
+> --- a/drivers/acpi/acpica/utnonansi.c
+> +++ b/drivers/acpi/acpica/utnonansi.c
+> @@ -168,8 +168,7 @@ void acpi_ut_safe_strncpy(char *dest, char *source, a=
+cpi_size dest_size)
+>  {
+>         /* Always terminate destination string */
+>
+> -       strncpy(dest, source, dest_size);
+> -       dest[dest_size - 1] =3D 0;
+> +       strscpy(dest, source, dest_size);
+>  }
+>
+>  #endif
+> --
+> 2.25.1
+>
