@@ -1,104 +1,115 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A30C61E1E0D
-	for <acpica-devel@lists.linux.dev>; Wed, 26 Mar 2025 15:25:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3452211A05
+	for <acpica-devel@lists.linux.dev>; Fri, 28 Mar 2025 07:48:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743002719; cv=none; b=ZarIMqNo+3IVc9Qpw7/dYxpVQF9goBb7mIT5AFQWY8obyZKqIPAsylmWcq2+DrAyNlUXlghKoA7tKDimo1DAgBvB7QaPRVjnaTtPOXP/rb7lQ5HJUHzaOrn3NOoE9poUNoLqsvS1VtifI0DZj4Ifk7t9pGWDaNbHv3Yc1auGCIQ=
+	t=1743148089; cv=none; b=Oj8mugeMqj1EguaHzK/dE8WXaRhfXM9GfbOyDn0gEYNhIjzPQ9ImJNuOOC20aUCeJQSYjghdlc0YZ8BUfXJdYWYgMaOtPoO+d7vNRnK1nQuj9+aX0149jafk61N/g81VtKIt1hRVqytviBqcooNL+3rbIgKhbV6IZqcwHrL7sms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743002719; c=relaxed/simple;
-	bh=fAuSUL7yObr2JsUjb/aNOLhrRIjNLcrPE9UvoJPnNnI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iaX3b7kBYsWitGo0eSy3edVisTGh/Oa+b1Cc/jFgyCuWatk1uZ1DTYRDNWMh+READg3LRlr+683jTJf3WH0oH0Qn+WSIhEMRKQcSqcsuZ0J16B1/sky646lAU/77QSEJ3/vLEJ7kJ+XTsbiE3+nGA4qNOUUXe5tiNHbEhUBOYFs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LC7IxoH9; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LC7IxoH9"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33B0AC4CEEB
-	for <acpica-devel@lists.linux.dev>; Wed, 26 Mar 2025 15:25:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1743002719;
-	bh=fAuSUL7yObr2JsUjb/aNOLhrRIjNLcrPE9UvoJPnNnI=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=LC7IxoH9s5uM7aSYG/LyfJ4Z5BDoAFUQW2ObD3P6edGM/15AQNyWnoi4/6FtTuxB1
-	 zt++n3xiCp/p6sbpXBN3wei5zXQPLPMAuMo4m9N6YoAh3mteB8fDXBctQgF8pkgdDq
-	 /5+2F7aOfH5hbs7LcHtsFIs6pP/X2RAPnn6A7uDZ+y9wwfDJKq5R+Jp+W5Isg97Sqy
-	 nBK3wDXYQQ9RPYt/TfemxoDMn68CuhImCWWOKfOTz/4YWMU3RZl44/VLmnlVkCBYtL
-	 GssFM4Rwc3wiTypr67jT2ge+vbTe278RM8KVcVNpy8SzifYh6CQEZSV7G7MV2XaG5Q
-	 KUhgVlW6eohbg==
-Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-72c40235c34so549146a34.3
-        for <acpica-devel@lists.linux.dev>; Wed, 26 Mar 2025 08:25:19 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCV43qwQVpwL/FpajZp37rBEcG5peEbA/XqBXf8x2APP7UULsVMLSK0AAG/sIr9JmoLfXYLGA7HEaNubeLY=@lists.linux.dev
-X-Gm-Message-State: AOJu0Yw3rCq8B401AkYjr18sTerhgJGRi5qERck4JBRrNv1ybkZnyvhO
-	RyIiy33Gsr/qorG/8XX1li+BBYqGjASDZOWabWUHE8uXopqHYUUG6JMHTuKh8W2xwGJ0vMY7elw
-	JVNUneMx2em3UoeHDm8kTxs0ushE=
-X-Google-Smtp-Source: AGHT+IHr5tsGpOngZIcIxU/BshH+uj+SEmFWZRPxZ1xT9KDNCl5JkjcXIT/guU1z2fkpt2dop7yD15PAh+5hCWL/xAA=
-X-Received: by 2002:a05:6870:20d:b0:2c6:72d3:fc93 with SMTP id
- 586e51a60fabf-2c7802ef8b5mr11720539fac.12.1743002718471; Wed, 26 Mar 2025
- 08:25:18 -0700 (PDT)
+	s=arc-20240116; t=1743148089; c=relaxed/simple;
+	bh=IWSfYK3ukHnxWl3RBO25f4Y1+/GOZMUiZZVobtATz8A=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=VT0TpaHwyqolCqX2qJCIacRMT2glpBhufl7nkx0p9eBiEwgKM3fZ2gODcqFyZpa8bUIwNu6Vgtvp4LkxS7QiEfy7qDh7QQJwA22otW7V0rHKAJANuYD3FBXfXMZPGF/gdoLzMLoyyC1xvOn2bTOnXiwObODfd+kaOBTQRg/7b9s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: f5e55b0a0ba811f0a216b1d71e6e1362-20250328
+X-CTIC-Tags:
+	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CC_NO_NAME, HR_CTE_8B
+	HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME
+	HR_SJ_DIGIT_LEN, HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM
+	HR_SJ_PHRASE, HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
+	HR_TO_NO_NAME, IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_EXISTED
+	SN_EXISTED, SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS, CIE_BAD
+	CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO, GTI_C_BU, AMN_T1
+	AMN_GOOD, AMN_C_TI, AMN_C_BU
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.45,REQID:cc3b53a5-0111-4e00-96bc-dfa742625284,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:5
+X-CID-INFO: VERSION:1.1.45,REQID:cc3b53a5-0111-4e00-96bc-dfa742625284,IP:0,URL
+	:0,TC:0,Content:0,EDM:0,RT:0,SF:5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:re
+	lease,TS:5
+X-CID-META: VersionHash:6493067,CLOUDID:0cf768b468af5a1b5f3fb68e35504a8d,BulkI
+	D:250328154248NRJDV73B,BulkQuantity:2,Recheck:0,SF:19|38|66|72|78|102,TC:n
+	il,Content:0|50,EDM:-3,IP:nil,URL:0,File:nil,RT:nil,Bulk:40,QS:nil,BEC:nil
+	,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FSD
+X-UUID: f5e55b0a0ba811f0a216b1d71e6e1362-20250328
+X-User: luriwen@kylinos.cn
+Received: from localhost.localdomain [(10.44.16.150)] by mailgw.kylinos.cn
+	(envelope-from <luriwen@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
+	with ESMTP id 1370077647; Fri, 28 Mar 2025 15:47:55 +0800
+From: Riwen Lu <luriwen@kylinos.cn>
+To: o-takashi@sakamocchi.jp,
+	rafael@kernel.org,
+	lenb@kernel.org,
+	robert.moore@intel.com
+Cc: linux1394-devel@lists.sourceforge.net,
+	linux-kernel@vger.kernel.org,
+	linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev,
+	Riwen Lu <luriwen@kylinos.cn>,
+	k2ci <kernel-bot@kylinos.cn>
+Subject: [PATCH v1] tools: Fix compile error of pfrut/firewire
+Date: Fri, 28 Mar 2025 15:47:50 +0800
+Message-Id: <20250328074750.3524280-1-luriwen@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20250320092943.92790-1-qiaozhe@iscas.ac.cn>
-In-Reply-To: <20250320092943.92790-1-qiaozhe@iscas.ac.cn>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 26 Mar 2025 16:25:05 +0100
-X-Gmail-Original-Message-ID: <CAJZ5v0gUDxrAn4W+Rf3ifjrg8Z9ZzTTOZjPFSSN5488mPqzXeA@mail.gmail.com>
-X-Gm-Features: AQ5f1JrFEpUN-GlO-VC4xnjHPMjRt4YSppHgFV2CAH6qLqsSxNLTbDaOdzQZnd4
-Message-ID: <CAJZ5v0gUDxrAn4W+Rf3ifjrg8Z9ZzTTOZjPFSSN5488mPqzXeA@mail.gmail.com>
-Subject: Re: [PATCH] ACPICA: Adjust the position of code lines.
-To: Zhe Qiao <qiaozhe@iscas.ac.cn>
-Cc: robert.moore@intel.com, rafael.j.wysocki@intel.com, lenb@kernel.org, 
-	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, Mar 20, 2025 at 10:33=E2=80=AFAM Zhe Qiao <qiaozhe@iscas.ac.cn> wro=
-te:
->
-> In the acpica/utcache.c file, adjust the position of the
-> "ACPI_MEM_TRACKING(cache->total_allocated++);" code line
-> to ensure that the increment operation on total_allocated
-> is included within the ACPI_DBG_TRACK_ALLOCATIONS configuration.
->
-> Signed-off-by: Zhe Qiao <qiaozhe@iscas.ac.cn>
+The value -rR of MAKEFLAGS implicit do not use make's built-in rules and
+variables. Previous commit d1d096312176 ("tools: fix annoying "mkdir -p
+..." logs when building tools in parallel") removed the MAKEFLAGS=
+command for tools and caused the built-in rules for pfrut/firewire
+failed to take effect.
 
-In order to modify ACPICA code in the Linux kernel, please first
-submit the change in question to the upstream ACPICA project on GitHub
-as a pull request.  Once that pull request has been merged, you can
-send a corresponding Linux patch with a Link: tag pointing to it, but
-in principle it is not necessary to do so because ACPICA changes are
-automatically integrated into the Linux code base on a more-or-less
-regular basis.
+Reported-by: k2ci <kernel-bot@kylinos.cn>
+Signed-off-by: Riwen Lu <luriwen@kylinos.cn>
+---
+ tools/firewire/Makefile               | 7 +++++++
+ tools/power/acpi/tools/pfrut/Makefile | 2 +-
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
-Thanks!
+diff --git a/tools/firewire/Makefile b/tools/firewire/Makefile
+index 67b6e9fca83c..8ba53e1173c6 100644
+--- a/tools/firewire/Makefile
++++ b/tools/firewire/Makefile
+@@ -12,6 +12,13 @@ nosy-dump : LDFLAGS = -g
+ nosy-dump : LDLIBS = -lpopt
+ 
+ nosy-dump : nosy-dump.o decode-fcp.o
++	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
++
++nosy-dump.o : nosy-dump.c
++	$(CC) $(CFLAGS) $(CPPFLAGS) -c -o $@ $<
++
++decode-fcp.o : decode-fcp.c
++	$(CC) $(CFLAGS) $(CPPFLAGS) -c -o $@ $<
+ 
+ clean :
+ 	rm -rf *.o nosy-dump
+diff --git a/tools/power/acpi/tools/pfrut/Makefile b/tools/power/acpi/tools/pfrut/Makefile
+index 61c1a96fd433..e682ee135f1d 100644
+--- a/tools/power/acpi/tools/pfrut/Makefile
++++ b/tools/power/acpi/tools/pfrut/Makefile
+@@ -8,7 +8,7 @@ EXTRA_UNINSTALL = uninstall-man
+ 
+ CFLAGS += -Wall -O2
+ CFLAGS += -DPFRUT_HEADER='"../../../../../include/uapi/linux/pfrut.h"'
+-LDFLAGS += -luuid
++override LDFLAGS += -luuid
+ 
+ TOOL_OBJS = \
+ 	pfrut.o
+-- 
+2.25.1
 
-> ---
->  drivers/acpi/acpica/utcache.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/acpi/acpica/utcache.c b/drivers/acpi/acpica/utcache.=
-c
-> index 85a85f7cf750..046e6ba127d4 100644
-> --- a/drivers/acpi/acpica/utcache.c
-> +++ b/drivers/acpi/acpica/utcache.c
-> @@ -251,9 +251,9 @@ void *acpi_os_acquire_object(struct acpi_memory_list =
-*cache)
->         } else {
->                 /* The cache is empty, create a new object */
->
-> +#ifdef ACPI_DBG_TRACK_ALLOCATIONS
->                 ACPI_MEM_TRACKING(cache->total_allocated++);
->
-> -#ifdef ACPI_DBG_TRACK_ALLOCATIONS
->                 if ((cache->total_allocated - cache->total_freed) >
->                     cache->max_occupied) {
->                         cache->max_occupied =3D
-> --
-> 2.34.1
->
->
