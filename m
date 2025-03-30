@@ -1,95 +1,68 @@
-Received: from fhigh-b4-smtp.messagingengine.com (fhigh-b4-smtp.messagingengine.com [202.12.124.155])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E3671C36
-	for <acpica-devel@lists.linux.dev>; Sat, 29 Mar 2025 01:07:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.155
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5B8917C2
+	for <acpica-devel@lists.linux.dev>; Sun, 30 Mar 2025 05:53:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743210451; cv=none; b=HNuNcvMdcfoojG5VK6DLg0b2SizdoxJNjZFM+y5aIBF5SM1njQlWY5DlD17AyDnT3j/+zB3zypMG9cJDwPk0uSbE8zWLFakmhDcdI+rwF1Bk9MLt2sclt/gxUF3nhSNvew0vRBunL3b8lHgx9118yA9NbTgyK6efbaHqjsWM0CQ=
+	t=1743314034; cv=none; b=dp2pNv2i4wuANFZBohK6U8T5lKcM8Kv5JmCBpAJP/hVKnLyXkAWVb2BgzzE5vOJ/w/N74Z/EZ1ZhJiyPWUHywt/KlZBy/25NtTBZS1SKjMQWSxnBTVT1qUm0JD9D7JBu3lLSU3WQ2582LRKJo9tagVXrfHvSGIM846L+q0cxHOU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743210451; c=relaxed/simple;
-	bh=9VHMgg8XVI03DXLD39IVNu73KXwzIK1KERt6YTLgiE0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XLM2AwquWBjzPJhJg3TYFPOsfORwvBxMe4b4KR8cjcEgqFq4xrLKvu9Re5pUmZpKk6QAFiep4KZDkj3lm4t/AQ0qbIPD872PjhPwpYoOgKzf1S/sN2RZHVZ3JO4K55PfaY8sbQ3+OcxdBTrvUHhoX9xESNe6qa2ishDnLEsQNAk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp; spf=pass smtp.mailfrom=sakamocchi.jp; dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b=baHwbji8; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=F4ngpkAK; arc=none smtp.client-ip=202.12.124.155
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
+	s=arc-20240116; t=1743314034; c=relaxed/simple;
+	bh=2Fhv9qnvd8RNjpQuGaYtULwR1+y1/6h6SMgBrXpH98g=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=F4I3PTganicWJGnBUSk4Jh6nLGYJ3O/5rOjpxhVnhhkNFsklDxcsSfyqcol+nIXCKSUkT4JmpNtZNAuGIVbgsFUHkSDJg1Zfze56E9EyskyLLjVLKUZ+pYQXvB9zMr4kEToyRPFLrG26j/szIaYeMXVeqHYYB3hnPrgv+p/48T0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fa9QkCcQ; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="baHwbji8";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="F4ngpkAK"
-Received: from phl-compute-07.internal (phl-compute-07.phl.internal [10.202.2.47])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id 3BAF125401CC;
-	Fri, 28 Mar 2025 21:07:27 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-07.internal (MEProxy); Fri, 28 Mar 2025 21:07:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-	 h=cc:cc:content-type:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm2; t=1743210447; x=
-	1743296847; bh=wKO8nLwVZ/c6d2peXPF8XkbDrw0UaTn7gMMaej/9ejg=; b=b
-	aHwbji8vf+26Z3AhA/3BOLPo/6KL/u1O6ZQ9sgVTT1ZIMQQIdC65DWB2ksyOLFuv
-	e+Zyjdo+V9IZhPHd2WI3sRF3S6JefkeezDN4r2ubtSeD4H/uNzTI2h1+WQZnkN64
-	MPyyoI1G0uuT5+q1HppvbjOtBCZe07Fs4tn/FYbV4zfSV4pKlqRfkYoChz199cnV
-	7Uptv60tU5WxjZK/g8D2CuwZwpOp6Vv5cgPhqrG+ZGYfjHcVuq1R7n9FicOHOt+C
-	Wba6lMfAb8MNEcaZP9+avFL4Wqn/L2wBGmHdrFD4Z2N5tQyDNSbT5HmbYLWjphTB
-	dFQMFfJkBKyvsznRl9LAw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-	1743210447; x=1743296847; bh=wKO8nLwVZ/c6d2peXPF8XkbDrw0UaTn7gMM
-	aej/9ejg=; b=F4ngpkAKSoehP3OLsF/lxLU0TZmnIpoyTC+9EeeZ2cTRWwPf8Kl
-	cJRlLd5djqHUayoozyF2W8oU8EX1fyP1kGNaQLt99Id93137/AhAHbTJEyn+Nq7U
-	x7h/5Lt1J3FFLZ/BuuUdnucZ0JHbZuHPZGNEb0TmrNH1mlbRKmfg/86TLdRizwBi
-	9rZUjkt8Tp0ph3DoxQZnGC12hNzZJy2x+5bz7vFBs+g8Vd3DLqRPQYKOkSsE+qh/
-	N6EATpXXu9h7+M2P5ZpaYNOxfFz2N2qK8AWfpJkQt3bTWhjqH2eCM0OiN/ETNbnX
-	DmljxKUOf4sou+ntsh7MbWa8mg0qwTmdYfA==
-X-ME-Sender: <xms:zkfnZ5cv0tN7H6h2b0G8kIC-F1SM83Tdr4kvIT266XcRHosBJSvPBw>
-    <xme:zkfnZ3MJaiAkJKzPMdvFuFhVRNuscMZPGgKH89d880-yDO5xjuQbxPmcxWM-leK7H
-    wBwmvizMHbxEj7EC7M>
-X-ME-Received: <xmr:zkfnZyiwB3mb2sXBjbeH0Yvk1tYzndaq7o_l1ONTx1MUySF-yllp6RwoggJzPGxdc1IvM684cJ3bWLTnCGtWNLVyqrErFph94GQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddujedvkeduucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
-    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
-    gvnhhtshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggujgesthdtredttddt
-    vdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhhih
-    esshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhephefhhfettefgkedv
-    ieeuffevveeufedtlefhjeeiieetvdelfedtgfefuedukeeunecuvehluhhsthgvrhfuih
-    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgr
-    mhhotggthhhirdhjphdpnhgspghrtghpthhtohepledpmhhouggvpehsmhhtphhouhhtpd
-    hrtghpthhtoheplhhurhhifigvnheskhihlhhinhhoshdrtghnpdhrtghpthhtoheprhgr
-    fhgrvghlsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlvghnsgeskhgvrhhnvghlrd
-    horhhgpdhrtghpthhtoheprhhosggvrhhtrdhmohhorhgvsehinhhtvghlrdgtohhmpdhr
-    tghpthhtoheplhhinhhugidufeelgedquggvvhgvlheslhhishhtshdrshhouhhrtggvfh
-    horhhgvgdrnhgvthdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhk
-    vghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvg
-    hrnhgvlhdrohhrghdprhgtphhtthhopegrtghpihgtrgdquggvvhgvlheslhhishhtshdr
-    lhhinhhugidruggvvhdprhgtphhtthhopehkvghrnhgvlhdqsghotheskhihlhhinhhosh
-    drtghn
-X-ME-Proxy: <xmx:zkfnZy9dTcq5_GooPo6FBhesS3-eTeFA9FJ5mnYztXhSZoT7VaLZwQ>
-    <xmx:zkfnZ1urQIo1HtXOxIXOyfszpprewy-pWXPkxDHpNYkpabXocAaBiQ>
-    <xmx:zkfnZxFUR1qUFUbRj_KHGKjaWLsMGdSkr4jIRd7_rc0e3cefm0YmFw>
-    <xmx:zkfnZ8OiLzZxmWIFGXvxyjOt9IjSqjrlNng4W8_-dzycsaWRKNtDtg>
-    <xmx:z0fnZ7InwO7RsxXU6AfioiRJ9a1GHj4X_mbER07cpjox-XHj7BV4djb1>
-Feedback-ID: ie8e14432:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 28 Mar 2025 21:07:23 -0400 (EDT)
-Date: Sat, 29 Mar 2025 10:07:21 +0900
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: Riwen Lu <luriwen@kylinos.cn>
-Cc: rafael@kernel.org, lenb@kernel.org, robert.moore@intel.com,
-	linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
-	k2ci <kernel-bot@kylinos.cn>
-Subject: Re: [PATCH v1] tools: Fix compile error of pfrut/firewire
-Message-ID: <20250329010721.GA11319@workstation.local>
-Mail-Followup-To: Riwen Lu <luriwen@kylinos.cn>, rafael@kernel.org,
-	lenb@kernel.org, robert.moore@intel.com,
-	linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
-	k2ci <kernel-bot@kylinos.cn>
-References: <20250328074750.3524280-1-luriwen@kylinos.cn>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fa9QkCcQ"
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-ac2c663a3daso687597466b.2
+        for <acpica-devel@lists.linux.dev>; Sat, 29 Mar 2025 22:53:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1743314030; x=1743918830; darn=lists.linux.dev;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=f7+opnZnWv2RK4udQA4OVRLQ8DCRiE3lR+tMnaFWVmg=;
+        b=Fa9QkCcQaDJOeRq0hvjlB/wyrJ6G5xrhyfhwv5zns5Nycv1+jYVFCxV8+YJjpMFJ2g
+         ZcrvSa/GjVNUsU3eIThpTGHsNBo918ZOBr7gA1vEjm37wTFB9W6p73hPRW51EFYuY7vr
+         Ibpid4OzgFvqn1GQhZQIybGMZBdHp2WDTjwwbYxo2BeR7GaKS5WWx5YDA1OgUU0e/NzQ
+         GexzTiljWbuD4k53MYe1S2woYqW++R2aIqooX+S4TNmgz1x7Sg67TjYH87tSR+iemjTO
+         Ua1Y0lyNcEWOL0gerQa2lAJDfrYkYOgwTwMtmPySOddOHJe6y4P3RT0JoPjR8N6GRbkV
+         b25Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1743314030; x=1743918830;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=f7+opnZnWv2RK4udQA4OVRLQ8DCRiE3lR+tMnaFWVmg=;
+        b=Ug4WnLCQHn2Lyeupg+jlwKaYBWDINKli2Gl2YT2vdbcSlYVBNyALezlyW7gwE+oYrS
+         G/GJT8D0Ne3K8dB2+BiN4VL8l2swIjf66rS7mqNlkenSZMEXpG/JS3Z06EmhAk7o4zOS
+         +2J9nwWZRkz7fdy+m1nvLc7Sp7L4QWr3gPCXSPPFx13NxgQkbhX9qY/C/gYk4ZQDlwTk
+         LknMGDiPf0NZjgqXqlogI2KOqmfuKtPnB6kNh8otCuooiIvATQwkyehuV8mUybr/8vjX
+         SXDvOOzCANs6/2QMODFxY20nPn1Tj0iaEnqOATpNOYIQqulciqZN3bbj+arVwyeoQOYG
+         O/pA==
+X-Forwarded-Encrypted: i=1; AJvYcCUMDUDfZEcz3+BLKrtX5qXHziz5UYyDm/SRJcwbJEvqh8tyO6HMvorL7dND7a3NCHwNkZP3RtFBfBdqaaY=@lists.linux.dev
+X-Gm-Message-State: AOJu0YwG7t27T4rnRLEGP1j5qctotTLUcdt5fq/uiWQ5/zrhTGONCryt
+	O8PolPSOQhP03wzyg95KgSc8eYjR1VcqDBaWsyVbjQYjWFJz9Am5
+X-Gm-Gg: ASbGncvsXRAmul/5q3H/D90vQE6OM7j4IUIt7JPT1tMPOmLQkZ0BsCRgnlCSgfmvX9m
+	WntFKkhmFMUFGJToiNpLzgjvfN5cqtSMK+wfGoHeJ5UvE0ZrIkj2bWMaSHZUqOSVv+CKVSdj/em
+	UDXV+asJUgYuwC7ut11PxYSGt1H4IEpTD4cmhtj9CmhXidFOOo0WxEe36zBGabPi5rkpXtj1jRA
+	EeRjaI/HD1Rd8wkartans95cIo7l5v8kIcPv5Dx38dKFjjt2BMOdN0Y/I5L/JcX+Sv/lXg49xbF
+	SwFSsxvbHmLjEMPVJaPGm93zXtN/a0HtkDyI4xAlneG1cTeR4mr8heeZGB3ssX7SlNs=
+X-Google-Smtp-Source: AGHT+IFt1IoPQ+hdWHf9zq0XxxQYclb2T0wJwu5XUmcSUTJ7OgzLLs+YQy9bosZqvphuRf4Q85XUYQ==
+X-Received: by 2002:a17:907:9629:b0:ac3:c020:25e9 with SMTP id a640c23a62f3a-ac738a96fc7mr372842066b.34.1743314029858;
+        Sat, 29 Mar 2025 22:53:49 -0700 (PDT)
+Received: from localhost (44.tor-exit.nothingtohide.nl. [192.42.116.218])
+        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-ac71927b12dsm441296566b.59.2025.03.29.22.53.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 29 Mar 2025 22:53:49 -0700 (PDT)
+Date: Sun, 30 Mar 2025 07:53:40 +0200
+From: Ahmed Salem <x0rw3ll@gmail.com>
+To: robert.moore@intel.com, rafael.j.wysocki@intel.com, lenb@kernel.org
+Cc: skhan@linuxfoundation.org, 
+	linux-kernel-mentees@lists.linuxfoundation.org, linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, 
+	linux-kernel@vger.kernel.org
+Subject: [RFC PATCH 0/2] ACPI: replace deprecated strncpy()
+Message-ID: <cover.1743313252.git.x0rw3ll@gmail.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -98,31 +71,34 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250328074750.3524280-1-luriwen@kylinos.cn>
 
-Hi,
+strncpy() is deprecated. This patch series is split over two patches,
+the first of which annotates destinations with __nonstring, and the
+second replaces strncpy() with strtomem() in the ACPI_COPY_NAMESEG
+macro. Additionally, two replacements in drivers/acpi/acpica/tbfind.c:60
+with memcpy().
 
-On Fri, Mar 28, 2025 at 03:47:50PM +0800, Riwen Lu wrote:
-> The value -rR of MAKEFLAGS implicit do not use make's built-in rules and
-> variables. Previous commit d1d096312176 ("tools: fix annoying "mkdir -p
-> ..." logs when building tools in parallel") removed the MAKEFLAGS=
-> command for tools and caused the built-in rules for pfrut/firewire
-> failed to take effect.
-> 
-> Reported-by: k2ci <kernel-bot@kylinos.cn>
-> Signed-off-by: Riwen Lu <luriwen@kylinos.cn>
-> ---
->  tools/firewire/Makefile               | 7 +++++++
->  tools/power/acpi/tools/pfrut/Makefile | 2 +-
->  2 files changed, 8 insertions(+), 1 deletion(-)
+This is an effort to avoid using deprecated interfaces, and potential
+compiler warnings in the future.
 
-As long as testing with v6.14 release, I can not find such failure. I
-guess that some one has fixed the issue between the commit and the
-release.
+Link: https://github.com/KSPP/linux/issues/90
 
-Would you please recheck the issue?
+Ahmed Salem (2):
+  ACPI: mark ACPI_COPY_NAMESEG destinations with __nonstring attribute
+  ACPI: replace deprecated strncpy() with strtomem()
+
+ drivers/acpi/acpica/acdebug.h                            | 2 +-
+ drivers/acpi/acpica/tbfind.c                             | 4 ++--
+ drivers/acpi/prmt.c                                      | 2 +-
+ drivers/acpi/sysfs.c                                     | 4 ++--
+ include/acpi/actbl.h                                     | 6 +++---
+ include/acpi/actypes.h                                   | 2 +-
+ tools/power/acpi/os_specific/service_layers/oslinuxtbl.c | 2 +-
+ tools/power/acpi/tools/acpidump/apfiles.c                | 2 +-
+ 8 files changed, 12 insertions(+), 12 deletions(-)
 
 
-Thanks
+base-commit: b3c623b9a94f7f798715c87e7a75ceeecf15292f
+-- 
+2.47.2
 
-Takashi Sakamoto
