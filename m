@@ -1,153 +1,223 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 550EA1E104E
-	for <acpica-devel@lists.linux.dev>; Mon, 31 Mar 2025 11:52:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0686D1DDC07
+	for <acpica-devel@lists.linux.dev>; Mon, 31 Mar 2025 17:55:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743421977; cv=none; b=oztWDWJJ03Q3uk8fI9GEFZLHYPexNx57O5zHfxdOJseRJYGVoMUuoJ9skGmD+5hojnoCm17Nl7tHBxBMS+p22Kdg5yN+XaVv7rGY+6NZE7MEmvbmlNcnnQUA43tx+GKh4cqXYbVBiN8xfCWWqzCV0eTCDwHESlNP3Jq0x2kikbE=
+	t=1743443715; cv=none; b=tLto3+eSZLcHTyMHA1HRqSYuKryu/eI83NqkPUB7d5NqnG+bm1V/whelsRE3hNQ+XTI3jiLi6DYCOYRXWqnjCbHhC3a6UOE08ICBH72l2BFaLOMe5RCnZD7cRc5RlaVvpjEaOSiq4zauPwaSH3C3LuhVpUeApfzAMjtw7Z/eTQ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743421977; c=relaxed/simple;
-	bh=9KMR49+PrufVovv2R9w12T/lYLKZ8NydmQ95HlmkTYY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EdaSokNAy5QripH5Pzxw9kJ98d7OWc0lZGhJG7Sp7j6+WlTejM7sMwv/Yx0CXX9hCeD5JYRw+65l5bzZnftwCarqwio3o7QMFmAudokdcBKjMu+5ekHo/wZliw7TMxWg2MUP04GE/X0lCppWCAObub0bxQsra/g9HnFA/HdVhLY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KKKr66Rb; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1743443715; c=relaxed/simple;
+	bh=ttvXahU6JXAuXxoEGpK31TnHIITuNAysaxcF/tKm/NA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hxo2AVvZ5r3a2UgHrMbD/jAsfD7Mgzp+ZIEgDl0JUvaF0cFiUzBdwF/eQtSV1JqYzs2da4XJFzxvl1o7rY/yiq9+u21bLnz9FnjV93NgRbFPRupzy34K4Iv+/fXJNaJ4OxkaTKc3hGtdp75BJegbzryMLXldo8hTAEB88ysx8k8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EhMIsjUe; arc=none smtp.client-ip=209.85.208.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KKKr66Rb"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36461C4CEE3
-	for <acpica-devel@lists.linux.dev>; Mon, 31 Mar 2025 11:52:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1743421977;
-	bh=9KMR49+PrufVovv2R9w12T/lYLKZ8NydmQ95HlmkTYY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=KKKr66RbrvASKh4yhqpuj5Soo+Pykx6Goa1Ns4KMQdSOmHDkvdu6hVVr3KpdR8XQl
-	 GpHVgwrT+IfpocF2qWu8C3WohF4K0pFYdydTSCNQ1FHkZHkwDEp/VDpMUBcAJGp8H/
-	 4LrEt1JwahFMUoBzTzTq/xXGgwnq8kXGKN7fWOlbW5Fp3RZDFSRWLTmTdbD5gagU9w
-	 qCY9rT7KAVlFosEaWkctQwRql1V8SX5Z/fth76Tix7M6BcQnyyvNy//62V5ZZWui92
-	 O88dZBXR/gHhC2AC5q6VLJ9zKXd6QHtUiQHdhJ8GYBLbD/b/GyXnrB9ClbLWFYwg9M
-	 j16Ob66oXsDlg==
-Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-603be85490bso31032eaf.2
-        for <acpica-devel@lists.linux.dev>; Mon, 31 Mar 2025 04:52:57 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCV22ZYRRsim08P5YNwjhtqFw/hr1iNTLP1h6X8ubz5kS5IdV8KaSPJnevUlBcRlfe9QYmFvL8Ds2PDQtSE=@lists.linux.dev
-X-Gm-Message-State: AOJu0Yw9KIwnqk40UdF2IRhBDIuEnTAPpobcnXDK2oFOOaTJJO8epvXF
-	mHM9Nwzu1j+92rRAtoP7VGdEGDAbER6cz/tqG0+D9OYT4xQ4PCZl4wlZtGynGjDw5f4rRZkjNDD
-	TocwPpeqbCS2XHckruz+ABGXeJLg=
-X-Google-Smtp-Source: AGHT+IEW+T8lg4skl+EXd58usiutU6y63d+E6SF/+rbhWOnbpfd3S1oqjmnCXNnekxkr714brDTwd1TrNSy6BCYPUdk=
-X-Received: by 2002:a05:6870:7009:b0:29d:c709:a76c with SMTP id
- 586e51a60fabf-2cbcf49116amr5545639fac.4.1743421976501; Mon, 31 Mar 2025
- 04:52:56 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EhMIsjUe"
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5e677f59438so7136078a12.2
+        for <acpica-devel@lists.linux.dev>; Mon, 31 Mar 2025 10:55:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1743443712; x=1744048512; darn=lists.linux.dev;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=KXTV0VWzIghH7eWjopMb8VSJWH0nbYt3yb1dFJgZQTg=;
+        b=EhMIsjUesGCQuG54vN5C3R6N+eFMuDRwgdrMZWxKI0LuaTIZGzpODpb2xFiR8nVHfm
+         EHRV/RmIJX1Rkk7ryw1qe4O+n6WIJ7dT7o92It+4L7gZlgRmijvWM+jurRzIG4GgBgA5
+         PNpfSe3e9fafSLbeS7svM2rXNagxlGKu2+zFfwTJRf3U7V9axxUrGoWi31Sph4WPxtA5
+         blp9+ys+1YGw+lSIdjS8pVoUzXxtykMhyom95qQi0tEybeFAg8/zZrS42H2DTrj/f3tn
+         sST25GKP61QPT9DZWjTyY4FKqRa5mky90bdHT05zJTPOTfJGSgAKMEj6leUxqrZ9O7/T
+         c9iA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1743443712; x=1744048512;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KXTV0VWzIghH7eWjopMb8VSJWH0nbYt3yb1dFJgZQTg=;
+        b=DCzvxYfBPlnywtJOlNR6L6364+08gNhE7W4igxyUHMQqg96gltd2AiByuZkHo5SXhj
+         gwZVsVklR7MIKEEao+sH0PsdfVqfWj+gcjmw9ZFSD/kALzG0GjVA3vVKG6gmV38VRo2y
+         sA7N/8bzE7YPu7qLlSa2ISiSrXP7WyRlOsOmpNpWnoSztuARVcELL/QvutFhTUULDOur
+         pQJF3BP1KKjYp6glsm76g8S6z06QfmESUECYIx3lS9S2z2ZL++7vUSdxx7lJ38D5jqZS
+         xsBnmUrxW+zLN9sBGEtenxIi549UNOkVsaQ8Ab8MjtBKqoLW4a6QEVHDhA4O35Wr/MKR
+         irFg==
+X-Forwarded-Encrypted: i=1; AJvYcCXvW62KuhTBl9HqKrB3uIIp8akxdOVAFluap0bbSG3c7zNgKzP1IuBhAxNS70mXZ1dGa7QYtORrfiLY2ps=@lists.linux.dev
+X-Gm-Message-State: AOJu0YyzYk1qJ/s+qqh9ccVvwdgx4KnntUCZ1d4qG3BMXoJQ0zgjZ8Py
+	5Pr1xMRIY80HuV34pU+L/VF7yhZUBttyX98sUtURWnDkYDp+DA6A
+X-Gm-Gg: ASbGncuBf1Y+Ie+L1kG7xYaA32POocrEeEBUZBJSPqfw1NDwNQKoxlbERoS3k58xZ9i
+	pVLS82kStGB1QxtE0pAKvXlJ0zx3kIaqawPx+MQZ/y8R1M9bDMsHBWZ8y8+t76+eAtbzCiYJmJ5
+	SGhr9Ao9zxB7bk6u6evIBwlB07BTOOfocdtF0bD/eTT4tXyqLA9pBZiD8rRkG6dBVkgDG3DmPAG
+	zQEN0Q0GNT7aO9pk8RE+b7Ks6VSI1uI/c7qYaQ66T78UlZpOTRJkfr681E+ZetgTFMbHcko9EX6
+	9lxoo6F3egLC/OoOEn8Od5hEuZeQy62wviGUdiYtt+ahIAMLC61x6FmR
+X-Google-Smtp-Source: AGHT+IH/xXI93ke9faWSKBf2mG4FMyJbbgdoQak0Z/9++IGsl4A3a1LlK5tyg/njP7SZPjHykpDxjA==
+X-Received: by 2002:a05:6402:42d2:b0:5e6:616f:42e4 with SMTP id 4fb4d7f45d1cf-5edfdd22a1amr10055198a12.27.1743443711992;
+        Mon, 31 Mar 2025 10:55:11 -0700 (PDT)
+Received: from localhost (13.tor-exit.nothingtohide.nl. [192.42.116.210])
+        by smtp.gmail.com with UTF8SMTPSA id 4fb4d7f45d1cf-5edc17dff0bsm5895018a12.70.2025.03.31.10.55.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Mar 2025 10:55:11 -0700 (PDT)
+Date: Mon, 31 Mar 2025 19:55:04 +0200
+From: Ahmed Salem <x0rw3ll@gmail.com>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: robert.moore@intel.com, rafael.j.wysocki@intel.com, lenb@kernel.org, 
+	skhan@linuxfoundation.org, linux-kernel-mentees@lists.linuxfoundation.org, 
+	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 1/2] ACPI: mark ACPI_COPY_NAMESEG destinations with
+ __nonstring attribute
+Message-ID: <xxibvztriq62tdzjhubb6ll3tbwghmiynmwxz4jp7clk6x2f7q@ato7owvq5jv6>
+References: <cover.1743313252.git.x0rw3ll@gmail.com>
+ <a9bd2a1b490b4305c18f8473aab21c97e8902fb8.1743313252.git.x0rw3ll@gmail.com>
+ <CAJZ5v0jUO-7t4F09TjpX_Ea-U8i61N=9DWwB3urJ6KQGzFX_-g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20250328074750.3524280-1-luriwen@kylinos.cn> <20250329010721.GA11319@workstation.local>
- <TYBPR01MB5470C91FC2902D16D3FB9707B1AD2@TYBPR01MB5470.jpnprd01.prod.outlook.com>
-In-Reply-To: <TYBPR01MB5470C91FC2902D16D3FB9707B1AD2@TYBPR01MB5470.jpnprd01.prod.outlook.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Mon, 31 Mar 2025 13:52:45 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0jy21xWDSrTxSzg0YPBQYrntXvDYK-GZtH2we+qGjw3Bw@mail.gmail.com>
-X-Gm-Features: AQ5f1JqNXBOBZs1mBlPxML04pTBlgsnqjsJNA70u0N79xSM8uU0o7kM7LvRz7Pg
-Message-ID: <CAJZ5v0jy21xWDSrTxSzg0YPBQYrntXvDYK-GZtH2we+qGjw3Bw@mail.gmail.com>
-Subject: Re: [PATCH v1] tools: Fix compile error of pfrut/firewire
-To: luriwen <luriwen@hotmail.com>, "Chen, Yu C" <yu.c.chen@intel.com>
-Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>, rafael@kernel.org, lenb@kernel.org, 
-	robert.moore@intel.com, linux1394-devel@lists.sourceforge.net, 
-	linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, 
-	acpica-devel@lists.linux.dev, k2ci <kernel-bot@kylinos.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0jUO-7t4F09TjpX_Ea-U8i61N=9DWwB3urJ6KQGzFX_-g@mail.gmail.com>
 
-On Mon, Mar 31, 2025 at 11:15=E2=80=AFAM luriwen <luriwen@hotmail.com> wrot=
-e:
->
-> =E5=9C=A8 2025/3/29 09:07, Takashi Sakamoto =E5=86=99=E9=81=93:
-> > Hi,
+On 25/03/31 01:49PM, Rafael J. Wysocki wrote:
+> On Sun, Mar 30, 2025 at 7:54 AM Ahmed Salem <x0rw3ll@gmail.com> wrote:
 > >
-> > On Fri, Mar 28, 2025 at 03:47:50PM +0800, Riwen Lu wrote:
-> >> The value -rR of MAKEFLAGS implicit do not use make's built-in rules a=
-nd
-> >> variables. Previous commit d1d096312176 ("tools: fix annoying "mkdir -=
-p
-> >> ..." logs when building tools in parallel") removed the MAKEFLAGS=3D
-> >> command for tools and caused the built-in rules for pfrut/firewire
-> >> failed to take effect.
-> >>
-> >> Reported-by: k2ci <kernel-bot@kylinos.cn>
-> >> Signed-off-by: Riwen Lu <luriwen@kylinos.cn>
+> > strncpy(), which ACPI_COPY_NAMESEG currently uses, is deprecated[1].
+> >
+> > This patch is the first of two, ultimately replacing strncpy() with
+> > strtomem(), avoiding future compiler warnings about truncation.
+> >
+> > [1] https://github.com/KSPP/linux/issues/90
+> >
+> > Signed-off-by: Ahmed Salem <x0rw3ll@gmail.com>
+> 
+> ACPICA material is primarily handled by the upstream ACPICA project on
+> GitHub, so please avoid mixing ACPICA code changes with changes to the
+> other code in one patch.
+> 
+> Also, ACPICA changes should first be submitted to upstream ACPICA, as
+> indicated on this list for many times, see for instance:
+> 
+> https://lore.kernel.org/linux-acpi/CAJZ5v0gUDxrAn4W+Rf3ifjrg8Z9ZzTTOZjPFSSN5488mPqzXeA@mail.gmail.com/
+> 
 
-Yu, can you have a look at this please?
+Thank you so much for the note! In full transparency, I did see that
+comment prior to submitting this patch. However, I wasn't entirely sure
+whether I should have done that given the nature of this patch.
 
-> >> ---
-> >>   tools/firewire/Makefile               | 7 +++++++
-> >>   tools/power/acpi/tools/pfrut/Makefile | 2 +-
-> >>   2 files changed, 8 insertions(+), 1 deletion(-)
+This marks my second time contributing patches as part of the LKMP, and
+I've just got started learning C fairly recently, so I thought I'd
+consolidate the changes into this series so if there's anything wrong
+with my approach, it would cut the time discussing it over on upstream
+as well as mailing lists. Hindsight being what it is, however, I should
+have seen the MR from Kees Cook introducing ACPI_NONSTRING before
+proposing changes, so that's definitely lessons learned for current and
+future reference.
+
+Point taken nonetheless, and I will be submitting the ACPICA-related PR
+upstream, and resend the ACPI-specific one here instead without the RFC
+tag. My apologies, and thank you so much once again for your time and
+effort!
+
+> > ---
+> >  drivers/acpi/acpica/acdebug.h                            | 2 +-
+> >  drivers/acpi/prmt.c                                      | 2 +-
+> >  drivers/acpi/sysfs.c                                     | 4 ++--
+> >  include/acpi/actbl.h                                     | 6 +++---
+> >  tools/power/acpi/os_specific/service_layers/oslinuxtbl.c | 2 +-
+> >  tools/power/acpi/tools/acpidump/apfiles.c                | 2 +-
+> >  6 files changed, 9 insertions(+), 9 deletions(-)
 > >
-> > As long as testing with v6.14 release, I can not find such failure. I
-> > guess that some one has fixed the issue between the commit and the
-> > release.
+> > diff --git a/drivers/acpi/acpica/acdebug.h b/drivers/acpi/acpica/acdebug.h
+> > index 911875c5a5f1..2b56a8178f43 100644
+> > --- a/drivers/acpi/acpica/acdebug.h
+> > +++ b/drivers/acpi/acpica/acdebug.h
+> > @@ -37,7 +37,7 @@ struct acpi_db_argument_info {
+> >  struct acpi_db_execute_walk {
+> >         u32 count;
+> >         u32 max_count;
+> > -       char name_seg[ACPI_NAMESEG_SIZE + 1];
+> > +       char name_seg[ACPI_NAMESEG_SIZE + 1] __nonstring;
+> >  };
 > >
-> > Would you please recheck the issue?
+> >  #define PARAM_LIST(pl)                  pl
+> > diff --git a/drivers/acpi/prmt.c b/drivers/acpi/prmt.c
+> > index e549914a636c..ca70f01c940c 100644
+> > --- a/drivers/acpi/prmt.c
+> > +++ b/drivers/acpi/prmt.c
+> > @@ -40,7 +40,7 @@ struct prm_buffer {
+> >  };
+> >
+> >  struct prm_context_buffer {
+> > -       char signature[ACPI_NAMESEG_SIZE];
+> > +       char signature[ACPI_NAMESEG_SIZE] __nonstring;
+> >         u16 revision;
+> >         u16 reserved;
+> >         guid_t identifier;
+> > diff --git a/drivers/acpi/sysfs.c b/drivers/acpi/sysfs.c
+> > index a48ebbf768f9..a05d4032d4f1 100644
+> > --- a/drivers/acpi/sysfs.c
+> > +++ b/drivers/acpi/sysfs.c
+> > @@ -307,9 +307,9 @@ static struct kobject *hotplug_kobj;
+> >
+> >  struct acpi_table_attr {
+> >         struct bin_attribute attr;
+> > -       char name[ACPI_NAMESEG_SIZE];
+> > +       char name[ACPI_NAMESEG_SIZE] __nonstring;
+> >         int instance;
+> > -       char filename[ACPI_NAMESEG_SIZE+ACPI_INST_SIZE];
+> > +       char filename[ACPI_NAMESEG_SIZE+ACPI_INST_SIZE] __nonstring;
+> >         struct list_head node;
+> >  };
+> >
+> > diff --git a/include/acpi/actbl.h b/include/acpi/actbl.h
+> > index 451f6276da49..8aa60281e7db 100644
+> > --- a/include/acpi/actbl.h
+> > +++ b/include/acpi/actbl.h
+> > @@ -66,12 +66,12 @@
+> >   ******************************************************************************/
+> >
+> >  struct acpi_table_header {
+> > -       char signature[ACPI_NAMESEG_SIZE];      /* ASCII table signature */
+> > +       char signature[ACPI_NAMESEG_SIZE] __nonstring;  /* ASCII table signature */
+> >         u32 length;             /* Length of table in bytes, including this header */
+> >         u8 revision;            /* ACPI Specification minor version number */
+> >         u8 checksum;            /* To make sum of entire table == 0 */
+> > -       char oem_id[ACPI_OEM_ID_SIZE];  /* ASCII OEM identification */
+> > -       char oem_table_id[ACPI_OEM_TABLE_ID_SIZE];      /* ASCII OEM table identification */
+> > +       char oem_id[ACPI_OEM_ID_SIZE] __nonstring;      /* ASCII OEM identification */
+> > +       char oem_table_id[ACPI_OEM_TABLE_ID_SIZE] __nonstring;  /* ASCII OEM table identification */
+> >         u32 oem_revision;       /* OEM revision number */
+> >         char asl_compiler_id[ACPI_NAMESEG_SIZE];        /* ASCII ASL compiler vendor ID */
+> >         u32 asl_compiler_revision;      /* ASL compiler version */
+> > diff --git a/tools/power/acpi/os_specific/service_layers/oslinuxtbl.c b/tools/power/acpi/os_specific/service_layers/oslinuxtbl.c
+> > index 9d70d8c945af..52026b9e389e 100644
+> > --- a/tools/power/acpi/os_specific/service_layers/oslinuxtbl.c
+> > +++ b/tools/power/acpi/os_specific/service_layers/oslinuxtbl.c
+> > @@ -19,7 +19,7 @@ ACPI_MODULE_NAME("oslinuxtbl")
+> >  typedef struct osl_table_info {
+> >         struct osl_table_info *next;
+> >         u32 instance;
+> > -       char signature[ACPI_NAMESEG_SIZE];
+> > +       char signature[ACPI_NAMESEG_SIZE] __nonstring;
+> >
+> >  } osl_table_info;
+> >
+> > diff --git a/tools/power/acpi/tools/acpidump/apfiles.c b/tools/power/acpi/tools/acpidump/apfiles.c
+> > index 13817f9112c0..5a39b7d9351d 100644
+> > --- a/tools/power/acpi/tools/acpidump/apfiles.c
+> > +++ b/tools/power/acpi/tools/acpidump/apfiles.c
+> > @@ -103,7 +103,7 @@ int ap_open_output_file(char *pathname)
+> >
+> >  int ap_write_to_binary_file(struct acpi_table_header *table, u32 instance)
+> >  {
+> > -       char filename[ACPI_NAMESEG_SIZE + 16];
+> > +       char filename[ACPI_NAMESEG_SIZE + 16] __nonstring;
+> >         char instance_str[16];
+> >         ACPI_FILE file;
+> >         acpi_size actual;
+> > --
+> > 2.47.2
 > >
 > >
-> > Thanks
-> >
-> > Takashi Sakamoto
->
-> I have reconfirmed that this type of error does indeed exist when using
-> make tools/all or make tools/firewire at commit 4e82c87058f4 ("Merge tag
-> 'rust-6.15' of
-> git://git.kernel.org/pub/scm/linux/kernel/git/ojeda/linux") in the 6.14
-> kernel.
-> The relevant error messages are as follows:
-> $ make tools/all
->    ...
->    LD       pfrut
-> /usr/bin/ld:
-> /home/luriwen/workspace/kernel/kernel.org/linux-git/linux/tools/power/acp=
-i/tools/pfrut/pfrut.o:
-> in function `print_cap':
-> /home/luriwen/workspace/kernel/kernel.org/linux-git/linux/tools/power/acp=
-i/tools/pfrut/pfrut.c:179:
-> undefined reference to `uuid_unparse'
-> /usr/bin/ld:
-> /home/luriwen/workspace/kernel/kernel.org/linux-git/linux/tools/power/acp=
-i/tools/pfrut/pfrut.c:184:
-> undefined reference to `uuid_unparse'
-> /usr/bin/ld:
-> /home/luriwen/workspace/kernel/kernel.org/linux-git/linux/tools/power/acp=
-i/tools/pfrut/pfrut.c:189:
-> undefined reference to `uuid_unparse'
-> /usr/bin/ld:
-> /home/luriwen/workspace/kernel/kernel.org/linux-git/linux/tools/power/acp=
-i/tools/pfrut/pfrut.c:191:
-> undefined reference to `uuid_unparse'
-> collect2: error: ld returned 1 exit status
->
-> $ make tools/firewire
->    SYNC    include/config/auto.conf.cmd
->    HOSTCC  scripts/basic/fixdep
->    HOSTCC  scripts/kconfig/conf.o
->    HOSTCC  scripts/kconfig/confdata.o
->    HOSTCC  scripts/kconfig/expr.o
->    LEX     scripts/kconfig/lexer.lex.c
->    YACC    scripts/kconfig/parser.tab.[ch]
->    HOSTCC  scripts/kconfig/lexer.lex.o
->    HOSTCC  scripts/kconfig/menu.o
->    HOSTCC  scripts/kconfig/parser.tab.o
->    HOSTCC  scripts/kconfig/preprocess.o
->    HOSTCC  scripts/kconfig/symbol.o
->    HOSTCC  scripts/kconfig/util.o
->    HOSTLD  scripts/kconfig/conf
->    DESCEND firewire
-> make[3]: *** No rule to make target 'nosy-dump.o', needed by
-> 'nosy-dump'.  Stop.
-> make[2]: *** [Makefile:72: firewire] Error 2
-> make[1]: ***
-> [/home/kylin/remote/kernel/kernel.org/linux-git/linux/Makefile:1438:
-> tools/firewire] Error 2
-> make: *** [Makefile:251: __sub-make] Error 2
->
-> Thanks
->
