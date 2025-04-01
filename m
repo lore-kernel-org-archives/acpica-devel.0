@@ -1,223 +1,324 @@
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0686D1DDC07
-	for <acpica-devel@lists.linux.dev>; Mon, 31 Mar 2025 17:55:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743443715; cv=none; b=tLto3+eSZLcHTyMHA1HRqSYuKryu/eI83NqkPUB7d5NqnG+bm1V/whelsRE3hNQ+XTI3jiLi6DYCOYRXWqnjCbHhC3a6UOE08ICBH72l2BFaLOMe5RCnZD7cRc5RlaVvpjEaOSiq4zauPwaSH3C3LuhVpUeApfzAMjtw7Z/eTQ0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743443715; c=relaxed/simple;
-	bh=ttvXahU6JXAuXxoEGpK31TnHIITuNAysaxcF/tKm/NA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hxo2AVvZ5r3a2UgHrMbD/jAsfD7Mgzp+ZIEgDl0JUvaF0cFiUzBdwF/eQtSV1JqYzs2da4XJFzxvl1o7rY/yiq9+u21bLnz9FnjV93NgRbFPRupzy34K4Iv+/fXJNaJ4OxkaTKc3hGtdp75BJegbzryMLXldo8hTAEB88ysx8k8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EhMIsjUe; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2D5E3BBC9
+	for <acpica-devel@lists.linux.dev>; Tue,  1 Apr 2025 06:56:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.14
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1743490607; cv=fail; b=VmPggVTsx2MqCkOguZVBX1PVj4Xa9qVXGdU/v5Ri1LE2y/o3euY1Oly7Xp6VMSLnsOQEO0yBMKcUtjxbt1vkA/gGM21mV6Gwp57hg3h9UZQtLGF1F6uVSZ0/dToWgkUZNNld0HAZZioHneUDY8lF6NNLl21AqB6YRZz0goXTyAo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1743490607; c=relaxed/simple;
+	bh=KBvhp9zqgRibxGvB6nkziG5uBHGZiSQfsHt+EyAk844=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=DmMNslOX/f2alTCA8+wHN9MdphJkmcw5lxDp1ue9hBDPutifzq0PHn93P/4Z+x/2z+Q/Bq7Rc8fpxDPORcofdigjHDEjWLPnKY3uYydOS5dHlc6g4qG34FiWijCFny5Kj03tJm92Z8CakWvt1s4rlYPO1ndIXcwc8p2K3WZEexM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RwjfO8dh; arc=fail smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EhMIsjUe"
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5e677f59438so7136078a12.2
-        for <acpica-devel@lists.linux.dev>; Mon, 31 Mar 2025 10:55:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743443712; x=1744048512; darn=lists.linux.dev;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=KXTV0VWzIghH7eWjopMb8VSJWH0nbYt3yb1dFJgZQTg=;
-        b=EhMIsjUesGCQuG54vN5C3R6N+eFMuDRwgdrMZWxKI0LuaTIZGzpODpb2xFiR8nVHfm
-         EHRV/RmIJX1Rkk7ryw1qe4O+n6WIJ7dT7o92It+4L7gZlgRmijvWM+jurRzIG4GgBgA5
-         PNpfSe3e9fafSLbeS7svM2rXNagxlGKu2+zFfwTJRf3U7V9axxUrGoWi31Sph4WPxtA5
-         blp9+ys+1YGw+lSIdjS8pVoUzXxtykMhyom95qQi0tEybeFAg8/zZrS42H2DTrj/f3tn
-         sST25GKP61QPT9DZWjTyY4FKqRa5mky90bdHT05zJTPOTfJGSgAKMEj6leUxqrZ9O7/T
-         c9iA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743443712; x=1744048512;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KXTV0VWzIghH7eWjopMb8VSJWH0nbYt3yb1dFJgZQTg=;
-        b=DCzvxYfBPlnywtJOlNR6L6364+08gNhE7W4igxyUHMQqg96gltd2AiByuZkHo5SXhj
-         gwZVsVklR7MIKEEao+sH0PsdfVqfWj+gcjmw9ZFSD/kALzG0GjVA3vVKG6gmV38VRo2y
-         sA7N/8bzE7YPu7qLlSa2ISiSrXP7WyRlOsOmpNpWnoSztuARVcELL/QvutFhTUULDOur
-         pQJF3BP1KKjYp6glsm76g8S6z06QfmESUECYIx3lS9S2z2ZL++7vUSdxx7lJ38D5jqZS
-         xsBnmUrxW+zLN9sBGEtenxIi549UNOkVsaQ8Ab8MjtBKqoLW4a6QEVHDhA4O35Wr/MKR
-         irFg==
-X-Forwarded-Encrypted: i=1; AJvYcCXvW62KuhTBl9HqKrB3uIIp8akxdOVAFluap0bbSG3c7zNgKzP1IuBhAxNS70mXZ1dGa7QYtORrfiLY2ps=@lists.linux.dev
-X-Gm-Message-State: AOJu0YyzYk1qJ/s+qqh9ccVvwdgx4KnntUCZ1d4qG3BMXoJQ0zgjZ8Py
-	5Pr1xMRIY80HuV34pU+L/VF7yhZUBttyX98sUtURWnDkYDp+DA6A
-X-Gm-Gg: ASbGncuBf1Y+Ie+L1kG7xYaA32POocrEeEBUZBJSPqfw1NDwNQKoxlbERoS3k58xZ9i
-	pVLS82kStGB1QxtE0pAKvXlJ0zx3kIaqawPx+MQZ/y8R1M9bDMsHBWZ8y8+t76+eAtbzCiYJmJ5
-	SGhr9Ao9zxB7bk6u6evIBwlB07BTOOfocdtF0bD/eTT4tXyqLA9pBZiD8rRkG6dBVkgDG3DmPAG
-	zQEN0Q0GNT7aO9pk8RE+b7Ks6VSI1uI/c7qYaQ66T78UlZpOTRJkfr681E+ZetgTFMbHcko9EX6
-	9lxoo6F3egLC/OoOEn8Od5hEuZeQy62wviGUdiYtt+ahIAMLC61x6FmR
-X-Google-Smtp-Source: AGHT+IH/xXI93ke9faWSKBf2mG4FMyJbbgdoQak0Z/9++IGsl4A3a1LlK5tyg/njP7SZPjHykpDxjA==
-X-Received: by 2002:a05:6402:42d2:b0:5e6:616f:42e4 with SMTP id 4fb4d7f45d1cf-5edfdd22a1amr10055198a12.27.1743443711992;
-        Mon, 31 Mar 2025 10:55:11 -0700 (PDT)
-Received: from localhost (13.tor-exit.nothingtohide.nl. [192.42.116.210])
-        by smtp.gmail.com with UTF8SMTPSA id 4fb4d7f45d1cf-5edc17dff0bsm5895018a12.70.2025.03.31.10.55.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Mar 2025 10:55:11 -0700 (PDT)
-Date: Mon, 31 Mar 2025 19:55:04 +0200
-From: Ahmed Salem <x0rw3ll@gmail.com>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: robert.moore@intel.com, rafael.j.wysocki@intel.com, lenb@kernel.org, 
-	skhan@linuxfoundation.org, linux-kernel-mentees@lists.linuxfoundation.org, 
-	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 1/2] ACPI: mark ACPI_COPY_NAMESEG destinations with
- __nonstring attribute
-Message-ID: <xxibvztriq62tdzjhubb6ll3tbwghmiynmwxz4jp7clk6x2f7q@ato7owvq5jv6>
-References: <cover.1743313252.git.x0rw3ll@gmail.com>
- <a9bd2a1b490b4305c18f8473aab21c97e8902fb8.1743313252.git.x0rw3ll@gmail.com>
- <CAJZ5v0jUO-7t4F09TjpX_Ea-U8i61N=9DWwB3urJ6KQGzFX_-g@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RwjfO8dh"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1743490606; x=1775026606;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=KBvhp9zqgRibxGvB6nkziG5uBHGZiSQfsHt+EyAk844=;
+  b=RwjfO8dh9A1TSwUX/jcJGXQxa83wYUtYwwS7p6EBZpRRLqwUQ57KJh0Q
+   JfG0n+5ZZ44TnvzbRMZvfKeMi66KPuvbZIvjmI/eSDOk/q1OekkOCD7BQ
+   gMmuQ7+l1pYnbq18s396deAK/tZvtX5SU1Jdw83g71+fKjEtebk7wT0yx
+   dXLfU8hfE3pp4Pqr1NQmxIgYnEbbQ7M8+lBWqBczntYS/NTnZ7zCUeu9B
+   OiGFkhAxb/y6lkXXHYZHgIVU2lRXf+f3/0IVB7h3MxAR6wRyjEtugmFKM
+   bOJgPUWOtXVKwlHttgK0XjpILN21+7V7hrX8a0Hwqu82dxPwokdhVhZGf
+   g==;
+X-CSE-ConnectionGUID: 0pAZWZUcSz2gdVTU+bnbAg==
+X-CSE-MsgGUID: UeWg+EdNTSaOBdr8i+Qp/Q==
+X-IronPort-AV: E=McAfee;i="6700,10204,11390"; a="44970331"
+X-IronPort-AV: E=Sophos;i="6.14,292,1736841600"; 
+   d="scan'208";a="44970331"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2025 23:56:45 -0700
+X-CSE-ConnectionGUID: aZVARx6SSeqyVX/vhm0gLQ==
+X-CSE-MsgGUID: K3aQWO1sTsevRFSYutBYDQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.14,292,1736841600"; 
+   d="scan'208";a="131296076"
+Received: from orsmsx902.amr.corp.intel.com ([10.22.229.24])
+  by orviesa004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2025 23:56:45 -0700
+Received: from ORSMSX902.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX902.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.14; Mon, 31 Mar 2025 23:56:44 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ ORSMSX902.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.14 via Frontend Transport; Mon, 31 Mar 2025 23:56:44 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.44; Mon, 31 Mar 2025 23:56:44 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=WoMJBVBV50W6SzElBJsjJrePl+xK68Tv1leElsvvXzDvpD7lsACkrNHtU99jhNwsYxXoHmNUCMMfvfRarLBGcD0fqWNdAkGWetYZcMyvFfqI02xo6qweJa3XhLRIXTgcTd+HuzeLGdUsHSR2lTJeLlekhcE9dhi/hwRY9z9Gr9r6b9m4bqUu7msbq/j5CyMg3B60ZM2pBT7Y3kAZxiNTtG+0ZxefWs5rwy0Pi6qME2PGO7F55obnUfmmk8OGRPogsrC2RU4eYACHm7v4ebR1pwgBEI4JEHApxItMFXQUmKT5/3+xynVn49YJUzH9lKhTt6MOz+11I9FvZLfDmXDxbg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6jOKT3vvsCGNe8U82/OQkptIgq1yn8vXLsxiTQcPZdk=;
+ b=j4OwXJfUulj5dtq8zbXbF5ooMjMbigXkvmP2bVnM9qkAXZAQjO2qKubm8WxRg9gAep5tLUkGX90+7CM5Mep2ZxFRHC4aUevlvio7iG3clp+B4+UbjRj8szOUj4y1Viju/4sNYym2906zfkAe85GVY0W8u4HDo7WqDoUwkVRFeXG5x+4HaOQfZMoCwXDYp0P85C1/P1obu8GC+YCEwz+j4Wjg5VGh5MVtBkzne003KTSUI8Wysrbw7icdRNrLjOgLrCBYUED6MIE6ChpIT4+8LYclS4rQVXwU6rltj12XrU11QwAEV+lCJ6BtcwHeteuY812tLmHPt2EYRuxyM/JPUQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB6020.namprd11.prod.outlook.com (2603:10b6:8:61::19) by
+ IA1PR11MB6468.namprd11.prod.outlook.com (2603:10b6:208:3a4::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8534.44; Tue, 1 Apr
+ 2025 06:56:41 +0000
+Received: from DM4PR11MB6020.namprd11.prod.outlook.com
+ ([fe80::4af6:d44e:b6b0:fdce]) by DM4PR11MB6020.namprd11.prod.outlook.com
+ ([fe80::4af6:d44e:b6b0:fdce%7]) with mapi id 15.20.8534.048; Tue, 1 Apr 2025
+ 06:56:41 +0000
+Message-ID: <88a36c5b-8dc0-47b8-832d-366f0214dd11@intel.com>
+Date: Tue, 1 Apr 2025 14:56:31 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] tools: Fix compile error of pfrut/firewire
+To: luriwen <luriwen@hotmail.com>
+CC: Takashi Sakamoto <o-takashi@sakamocchi.jp>, <lenb@kernel.org>,
+	<robert.moore@intel.com>, <linux1394-devel@lists.sourceforge.net>,
+	<linux-kernel@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
+	<acpica-devel@lists.linux.dev>, k2ci <kernel-bot@kylinos.cn>, "Rafael J.
+ Wysocki" <rafael@kernel.org>, Masahiro Yamada <masahiroy@kernel.org>,
+	<yu.chen.surf@foxmail.com>
+References: <20250328074750.3524280-1-luriwen@kylinos.cn>
+ <20250329010721.GA11319@workstation.local>
+ <TYBPR01MB5470C91FC2902D16D3FB9707B1AD2@TYBPR01MB5470.jpnprd01.prod.outlook.com>
+ <CAJZ5v0jy21xWDSrTxSzg0YPBQYrntXvDYK-GZtH2we+qGjw3Bw@mail.gmail.com>
+Content-Language: en-US
+From: "Chen, Yu C" <yu.c.chen@intel.com>
+In-Reply-To: <CAJZ5v0jy21xWDSrTxSzg0YPBQYrntXvDYK-GZtH2we+qGjw3Bw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: KU1PR03CA0001.apcprd03.prod.outlook.com
+ (2603:1096:802:18::13) To DM4PR11MB6020.namprd11.prod.outlook.com
+ (2603:10b6:8:61::19)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0jUO-7t4F09TjpX_Ea-U8i61N=9DWwB3urJ6KQGzFX_-g@mail.gmail.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR11MB6020:EE_|IA1PR11MB6468:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5c7531d1-0f0c-4d55-94d4-08dd70ea5b81
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|7416014|1800799024|7053199007;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?Y25ORjY2ZDNLSjEvbU41WUZnYkc1Z2phT29HRW9uamFjdmYvRE14Z1hTSVBO?=
+ =?utf-8?B?YmROeDFKeEpWcFByTmNyODNLQVE1Q1NoSlE5a2hHSVlTSUtJbW9sTFRaem5I?=
+ =?utf-8?B?U3hNcjhiV0JYSnZBc0c2VDV0WkpOVlhJQVk0elVhTVpzODh6SDhNSG0yd3dK?=
+ =?utf-8?B?aDI0a3pwNHFUMWF1WngwdkF3Y2MrOTNjakkwYU1jUXluK2dCU3RiWW11NjFq?=
+ =?utf-8?B?cDNSKzBsN1gwRlFGN0x2WjhxT1M1enZray84S25vTEtDNURMQzd2WFN0OGpS?=
+ =?utf-8?B?VnVWcVNRV0pQRWxhZEwzOWRrak9OWHZCSE9KSGNVVVZOT0VieW0zZFM3Y2Ew?=
+ =?utf-8?B?M29LaDhwQnZBcHNzZjIvUE1CU0dHOFJvck01NzV3SHFrM0ZDNitIeE5iM2Yw?=
+ =?utf-8?B?d1pFbGNSc1hzVXRqSklKa3kxbThlWmVTaWVSOXlKaDNsMGViZjB3VUNwT0kz?=
+ =?utf-8?B?M3JwMWxDcjJ5eW5USGdLSDRNSWtHanZpUnBaQmJidCtOZEhJZkdFRFdRcGx6?=
+ =?utf-8?B?YmRUbEVCR1ZmOWpmd0tNaEZQQjZiUTE1S0Zwcjhrb3pZRUJFQXpOUlhCSlNI?=
+ =?utf-8?B?VWFoMnNOcHpETC9FM1B5WThBZitTVXpzUWp4VlNYT1l2aEZzQnl5czlXNEls?=
+ =?utf-8?B?a1hvaWIyNEpSUStBRW93bWN1MVY1LzFrcVB1UC82MUZYbjgzVkErY2NhczJs?=
+ =?utf-8?B?UDNDbkZYRWY2STUxTzEwSkpmYXNwTlQ0OWpUVG56Yy9CZEJUZlcyMTUzMTF0?=
+ =?utf-8?B?bmNJeC9Fb0xCQnVhTjBzdCt4MWRBYnJUTHVyd2xmNkhyZmJ6MXZqNWpubUN6?=
+ =?utf-8?B?Zk5GVnRxSHFacklRanBqMVFXYW5lTlNCRFc4cXhZL0p5bk4wYUJKOG9jV3dq?=
+ =?utf-8?B?VUpiZHF3SEpQdXJWVFgraDRLaWRBR2RlT1FpdEVoMGRDUGZxM0ZVbjJhODRK?=
+ =?utf-8?B?UnlvQ2dJTEtaWEwrcmZ2Z0NUMmFUYzBIVEN1RmUvZnh2elh0clRsaHpZZzdO?=
+ =?utf-8?B?OGlGWU1naGVVYVVHWFF3aHpIdzBQNmcyQlVBSGhza2VGV0pJbzRLTjRJeHpP?=
+ =?utf-8?B?ODc0VGZyRnJLTENOTWpOS3M1L2dtSWlYOG44eVYrMjJJUFEzKzlERGdxZEJ4?=
+ =?utf-8?B?NlJ3L29TY0lndFV5OXFGWmtTWHNPWmpVNkF2RnFMN1BlSldaanVLK3VYZE9M?=
+ =?utf-8?B?WXdzY241a0xXTkVhbCtTYWMvMzR0cUNaYk16cG9XQW9DcmxzbFdnZEFpSlBl?=
+ =?utf-8?B?QmZnNGF6Y3RGbjA0d2J6NmdBOW5KcWN1VWtSbmFjb3h3aThoMy94cVlkNmFH?=
+ =?utf-8?B?MDJZclhyVGFMWEVZWUg5ZGw3b041em9SU2d6VXlBMk5jVlRLaDZHRWFlb3RL?=
+ =?utf-8?B?azZmdWVHM25vTGxlMWF1WjRhYnh3dmxLT1BFaFpEcTVvQm84K294MWFQaUdz?=
+ =?utf-8?B?R2I4TXdPWm12TFdueEVrbnJmaHRsN1RTR01hOTREYjV6c3lYbDF6cllPMDhl?=
+ =?utf-8?B?YUQ0OUxsL2xseHU3bFhIdUt4L08wSjJ5cGpodlhHS1kweVpWMzAwem1mWWMy?=
+ =?utf-8?B?Q3pRZFNqKzl3SDJjYXpQbzlodGRGTXh5RHpVSS9UczBoc3N0azIyUHp1aFZQ?=
+ =?utf-8?B?SG9yM0RNNkEwek53d1BsZVlmYWtZVDZoSUY3cDV4WVk3cEc4YVkzRUVQaVla?=
+ =?utf-8?B?R1RjQ1IwTjg4NlVxUzRwcWRmWXpQMkNZT2tMZVRzQ0ZWVndGc0cvU0UrL0RZ?=
+ =?utf-8?B?cmh3UTV5NXlwSzVJclZYM015Q1NHTEs5aXB4Z3FvNWlYZEtzbkxucUNFdFpo?=
+ =?utf-8?B?TGV2ZmxDb3orWHNyS3MzNDEzelB6MG9XczNxeGdzVFh4QmZSUFBBSDg4Smtn?=
+ =?utf-8?Q?XMai95E4iIZK2?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6020.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(7416014)(1800799024)(7053199007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VVliaHlWK1NDRHRaMjcxcGxsMGNPRklRQUNYRWw5c0hyME5wMFJxWG51YXJa?=
+ =?utf-8?B?OFF0c1lmZVBkZHc4WEozWlhJMjIwMzYwejhaN2htQitpK0hpSXZoOVcyZGR0?=
+ =?utf-8?B?NkFLODNJaWtOYzFyTlhCaW5jVStwSngrR0NnUFhRNVVDbU9NNDJlL1JLcWhX?=
+ =?utf-8?B?cjl4UTZmMVUzTlJzUFVzVHdmYUF3UTJMVm5RQUVpME1iZjYyT2ZtNVkrTXFC?=
+ =?utf-8?B?bjB3ekFLTHFWbUNjTjl3U3pCWCtTM1pFWjBYYS9xYW5rZndpOHB0RlEvN2Uw?=
+ =?utf-8?B?UHJqcFVMeCtYVFpqOG1rdTM5MDg5eTFLZGNGcUF1cGVEWmhDZGZGcWRkckd3?=
+ =?utf-8?B?cmlrTDFzKytmN2VvTTBVZSsxTHkrK1JuWEpyTnQ0L1NZZzlHSEN6bXhRTXFv?=
+ =?utf-8?B?b01OYWV1V2JmVmh3QisyU2tMUERNR3hEQTlqVEwvSU4wVEFiTlpRQStqMG5m?=
+ =?utf-8?B?NXRKeHVsRm9nUDlrckdkWjZyZmhEejBZcDUzRkNFaEFFc1hlMXVHUm14b0t2?=
+ =?utf-8?B?STA0YlRET2psM3hQNXBHaGp4cDBqSWNjQjhjc045dGtVeHBSTjlmM01TUjJP?=
+ =?utf-8?B?dTROYy9hY2F1dWlxVk5RcVliVG1QUC9rQmJHNWR4Y2hDZjh3Tng2NmQwaVlF?=
+ =?utf-8?B?Y2lrZzUxanZJMXJSRFQ3MGlWTTBFS215Q0VEeHREcXI2alpVODhzanVkMkVk?=
+ =?utf-8?B?eElJcnRtbWkySkplM2dEdFlHZG9YbkRnRllmN0hPenZvTFN5YVVFVWtyQVZB?=
+ =?utf-8?B?Z3QxM0FJamVhaDVGWnRwU2s2VUJvcU9RTXo5MUlSMks0VWF0Mm1lTUFXMUtx?=
+ =?utf-8?B?QkhhdlErT0xjVW9UQmxCQjJnSWpIbVRuWnhVVlUvMmtKWWN6dkRqMzl3aERy?=
+ =?utf-8?B?aEZuZlhXSjk2YXpYZ3g3a0h0MjNDejdGa1dmcWhXV1AzZEk2QnVvTkZtV2dP?=
+ =?utf-8?B?bXR3UlF4aUZUZ1p1WHNTUHR5MlFncGRMd0JaWHA4SWZ3WWppdkNlS2dNeGVL?=
+ =?utf-8?B?QXdoQXh2MUI5eUprMWlQQzZCWldpajh1d0lGOFUzamhmVGtSUm9zbHEzdTVl?=
+ =?utf-8?B?dVhEWkttVTVYTWROU1RPOUs1dFBBMmhoaFRINjRLUHJ4L2FpaS9MeWovWGtD?=
+ =?utf-8?B?RHRmNFNhRitWcDVXTHBGUktwVXBKQ0xqTmk1bFNyMEt4L2ZIQi9pS3o0TDA5?=
+ =?utf-8?B?R09FSE5OdmFmL01mNW9FL2ZnY0dOaG9RcjRndmJpRW1VMGFHYkN1bWd6QWpK?=
+ =?utf-8?B?c0lvbEJDT3B5enFFbWh1ekZmbnVwRjRLdlo2YzVOL2ZQTktIMUpQc0Jtb0tD?=
+ =?utf-8?B?MGdFaWNDRVlLeTFmaUl0ck5LaVExMWVUVmp1ZXJ0S3M3WlhOWXRrRUVlbEtw?=
+ =?utf-8?B?NlVEbHlDKysyVzVQbVppTk1kQTdlVDNqekg4QUZFaUtqWkVVQXoySFhDNkVF?=
+ =?utf-8?B?K0RhbHNYYktqSmpudTJqRmhLd0hBWTdvVnNDdUZQNEdHWFFza1haN1drYmcz?=
+ =?utf-8?B?WXY5ZVNhck05aXZxVUppemdCWjNQR0tYRUxBTmVkTkpmT0c1MkhhVHU5VTRq?=
+ =?utf-8?B?THFQRXN6c1NUQlNVWTBTamdGek1HT1llcE5iWWdiZmdiYTNTV1hmWldrekZv?=
+ =?utf-8?B?MTFoNEJYY3p6ZUtYTXNKM240TFg3RHVuRzdsQ0ZUVDVEZDBydHhEL3orYjg5?=
+ =?utf-8?B?NGx3LzhmdjI2K2JxZEtvRGJpYitvQ09vV3pSVDlsdnVpWGxFYm40UUt0SHpx?=
+ =?utf-8?B?UG81SUNGSkVKNHFUV0phUzUwa0QwN3RWdUx4bUY4ODZKcEZxcWtoRnpENHB2?=
+ =?utf-8?B?U1VtMmg0anAwS2llQlM1WFBUNWEwZEpPUXNyVFlaNmRyQXA0dmFvZ1MzKzc5?=
+ =?utf-8?B?TG52Y2t4NEVhcXZqTHNJblBmOFkrMWxMNVhBNkZBd0JXMlhhT2lhSTRmVHBs?=
+ =?utf-8?B?dGM4cTBBN0FNSWtIVHFqcnBJSlJyeFZZZ1FLUmF1d3RsdHdPQmpmbDJHMHRx?=
+ =?utf-8?B?Yjd3dFRHcWJnbHlsZDh0S3NVQ2RCSk5vNEdocno5dmFvSk1ULzVsY2VRRDlE?=
+ =?utf-8?B?bUNINlZQTWxGVzhBV2NTaGVPeTdhdURqWTNVMkQzVEpkelJ4T25weUY2RDhj?=
+ =?utf-8?Q?SA6RVKRs3qQ/xIhwWsf3bwXDY?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5c7531d1-0f0c-4d55-94d4-08dd70ea5b81
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6020.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2025 06:56:41.7763
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9YMHPPbuqXZYgHIjBKTGHRsOnIsCmbEbk8wjzcwakJHb+wNqyBi1mHefVikJH3xvPN4ZGyGVwaBReQKVogapZg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB6468
+X-OriginatorOrg: intel.com
 
-On 25/03/31 01:49PM, Rafael J. Wysocki wrote:
-> On Sun, Mar 30, 2025 at 7:54 AM Ahmed Salem <x0rw3ll@gmail.com> wrote:
-> >
-> > strncpy(), which ACPI_COPY_NAMESEG currently uses, is deprecated[1].
-> >
-> > This patch is the first of two, ultimately replacing strncpy() with
-> > strtomem(), avoiding future compiler warnings about truncation.
-> >
-> > [1] https://github.com/KSPP/linux/issues/90
-> >
-> > Signed-off-by: Ahmed Salem <x0rw3ll@gmail.com>
+Hi Riwen,
+
+On 3/31/2025 7:52 PM, Rafael J. Wysocki wrote:
+> On Mon, Mar 31, 2025 at 11:15 AM luriwen <luriwen@hotmail.com> wrote:
+>>
+>> 在 2025/3/29 09:07, Takashi Sakamoto 写道:
+>>> Hi,
+>>>
+>>> On Fri, Mar 28, 2025 at 03:47:50PM +0800, Riwen Lu wrote:
+>>>> The value -rR of MAKEFLAGS implicit do not use make's built-in rules and
+>>>> variables. Previous commit d1d096312176 ("tools: fix annoying "mkdir -p
+>>>> ..." logs when building tools in parallel") removed the MAKEFLAGS=
+>>>> command for tools and caused the built-in rules for pfrut/firewire
+>>>> failed to take effect.
+>>>>
+>>>> Reported-by: k2ci <kernel-bot@kylinos.cn>
+>>>> Signed-off-by: Riwen Lu <luriwen@kylinos.cn>
 > 
-> ACPICA material is primarily handled by the upstream ACPICA project on
-> GitHub, so please avoid mixing ACPICA code changes with changes to the
-> other code in one patch.
+> Yu, can you have a look at this please?
 > 
-> Also, ACPICA changes should first be submitted to upstream ACPICA, as
-> indicated on this list for many times, see for instance:
-> 
-> https://lore.kernel.org/linux-acpi/CAJZ5v0gUDxrAn4W+Rf3ifjrg8Z9ZzTTOZjPFSSN5488mPqzXeA@mail.gmail.com/
-> 
+>>>> ---
+>>>>    tools/firewire/Makefile               | 7 +++++++
+>>>>    tools/power/acpi/tools/pfrut/Makefile | 2 +-
+>>>>    2 files changed, 8 insertions(+), 1 deletion(-)
+>>>
+>>> As long as testing with v6.14 release, I can not find such failure. I
+>>> guess that some one has fixed the issue between the commit and the
+>>> release.
+>>>
+>>> Would you please recheck the issue?
+>>>
+>>>
+>>> Thanks
+>>>
+>>> Takashi Sakamoto
+>>
+>> I have reconfirmed that this type of error does indeed exist when using
+>> make tools/all or make tools/firewire at commit 4e82c87058f4 ("Merge tag
+>> 'rust-6.15' of
+>> git://git.kernel.org/pub/scm/linux/kernel/git/ojeda/linux") in the 6.14
+>> kernel.
+>> The relevant error messages are as follows:
+>> $ make tools/all
+>>     ...
+>>     LD       pfrut
+>> /usr/bin/ld:
+>> /home/luriwen/workspace/kernel/kernel.org/linux-git/linux/tools/power/acpi/tools/pfrut/pfrut.o:
+>> in function `print_cap':
+>> /home/luriwen/workspace/kernel/kernel.org/linux-git/linux/tools/power/acpi/tools/pfrut/pfrut.c:179:
+>> undefined reference to `uuid_unparse'
+>> /usr/bin/ld:
+>> /home/luriwen/workspace/kernel/kernel.org/linux-git/linux/tools/power/acpi/tools/pfrut/pfrut.c:184:
+>> undefined reference to `uuid_unparse'
+>> /usr/bin/ld:
+>> /home/luriwen/workspace/kernel/kernel.org/linux-git/linux/tools/power/acpi/tools/pfrut/pfrut.c:189:
+>> undefined reference to `uuid_unparse'
+>> /usr/bin/ld:
+>> /home/luriwen/workspace/kernel/kernel.org/linux-git/linux/tools/power/acpi/tools/pfrut/pfrut.c:191:
+>> undefined reference to `uuid_unparse'
+>> collect2: error: ld returned 1 exit status
+>>
+>> $ make tools/firewire
+>>     SYNC    include/config/auto.conf.cmd
+>>     HOSTCC  scripts/basic/fixdep
+>>     HOSTCC  scripts/kconfig/conf.o
+>>     HOSTCC  scripts/kconfig/confdata.o
+>>     HOSTCC  scripts/kconfig/expr.o
+>>     LEX     scripts/kconfig/lexer.lex.c
+>>     YACC    scripts/kconfig/parser.tab.[ch]
+>>     HOSTCC  scripts/kconfig/lexer.lex.o
+>>     HOSTCC  scripts/kconfig/menu.o
+>>     HOSTCC  scripts/kconfig/parser.tab.o
+>>     HOSTCC  scripts/kconfig/preprocess.o
+>>     HOSTCC  scripts/kconfig/symbol.o
+>>     HOSTCC  scripts/kconfig/util.o
+>>     HOSTLD  scripts/kconfig/conf
+>>     DESCEND firewire
+>> make[3]: *** No rule to make target 'nosy-dump.o', needed by
+>> 'nosy-dump'.  Stop.
+>> make[2]: *** [Makefile:72: firewire] Error 2
+>> make[1]: ***
+>> [/home/kylin/remote/kernel/kernel.org/linux-git/linux/Makefile:1438:
+>> tools/firewire] Error 2
+>> make: *** [Makefile:251: __sub-make] Error 2
+>>
 
-Thank you so much for the note! In full transparency, I did see that
-comment prior to submitting this patch. However, I wasn't entirely sure
-whether I should have done that given the nature of this patch.
+Maybe add more background in the commit log that, the default
+MAKEFLAGS in Makefile under Linux's root directory is with "-rR".
+Before commit d1d096312176 is applied, the -rR is overwriten by
+the subdirectory's MAKEFLAGS, so it will not cause problems when
+compiling the sub-directory of tools. After commit d1d096312176,
+the -rR takes effect, which prevents the tools from using the
+built-in rules and variables. Maybe also added Fixed: tag.
 
-This marks my second time contributing patches as part of the LKMP, and
-I've just got started learning C fairly recently, so I thought I'd
-consolidate the changes into this series so if there's anything wrong
-with my approach, it would cut the time discussing it over on upstream
-as well as mailing lists. Hindsight being what it is, however, I should
-have seen the MR from Kees Cook introducing ACPI_NONSTRING before
-proposing changes, so that's definitely lessons learned for current and
-future reference.
+Regarding the prfut Makefile, we have fixed the LDFLAGS issue,
+but the CFLAGS += xxx will not take effect, right?
 
-Point taken nonetheless, and I will be submitting the ACPICA-related PR
-upstream, and resend the ACPI-specific one here instead without the RFC
-tag. My apologies, and thank you so much once again for your time and
-effort!
+This reminds me that, is it possible to just remove -rR for the
+sub-directories? In this way we don't have to change the code of
+every tool one-by-one, pfrut, firewire...
+Cced Masahiro for guidance.
 
-> > ---
-> >  drivers/acpi/acpica/acdebug.h                            | 2 +-
-> >  drivers/acpi/prmt.c                                      | 2 +-
-> >  drivers/acpi/sysfs.c                                     | 4 ++--
-> >  include/acpi/actbl.h                                     | 6 +++---
-> >  tools/power/acpi/os_specific/service_layers/oslinuxtbl.c | 2 +-
-> >  tools/power/acpi/tools/acpidump/apfiles.c                | 2 +-
-> >  6 files changed, 9 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/drivers/acpi/acpica/acdebug.h b/drivers/acpi/acpica/acdebug.h
-> > index 911875c5a5f1..2b56a8178f43 100644
-> > --- a/drivers/acpi/acpica/acdebug.h
-> > +++ b/drivers/acpi/acpica/acdebug.h
-> > @@ -37,7 +37,7 @@ struct acpi_db_argument_info {
-> >  struct acpi_db_execute_walk {
-> >         u32 count;
-> >         u32 max_count;
-> > -       char name_seg[ACPI_NAMESEG_SIZE + 1];
-> > +       char name_seg[ACPI_NAMESEG_SIZE + 1] __nonstring;
-> >  };
-> >
-> >  #define PARAM_LIST(pl)                  pl
-> > diff --git a/drivers/acpi/prmt.c b/drivers/acpi/prmt.c
-> > index e549914a636c..ca70f01c940c 100644
-> > --- a/drivers/acpi/prmt.c
-> > +++ b/drivers/acpi/prmt.c
-> > @@ -40,7 +40,7 @@ struct prm_buffer {
-> >  };
-> >
-> >  struct prm_context_buffer {
-> > -       char signature[ACPI_NAMESEG_SIZE];
-> > +       char signature[ACPI_NAMESEG_SIZE] __nonstring;
-> >         u16 revision;
-> >         u16 reserved;
-> >         guid_t identifier;
-> > diff --git a/drivers/acpi/sysfs.c b/drivers/acpi/sysfs.c
-> > index a48ebbf768f9..a05d4032d4f1 100644
-> > --- a/drivers/acpi/sysfs.c
-> > +++ b/drivers/acpi/sysfs.c
-> > @@ -307,9 +307,9 @@ static struct kobject *hotplug_kobj;
-> >
-> >  struct acpi_table_attr {
-> >         struct bin_attribute attr;
-> > -       char name[ACPI_NAMESEG_SIZE];
-> > +       char name[ACPI_NAMESEG_SIZE] __nonstring;
-> >         int instance;
-> > -       char filename[ACPI_NAMESEG_SIZE+ACPI_INST_SIZE];
-> > +       char filename[ACPI_NAMESEG_SIZE+ACPI_INST_SIZE] __nonstring;
-> >         struct list_head node;
-> >  };
-> >
-> > diff --git a/include/acpi/actbl.h b/include/acpi/actbl.h
-> > index 451f6276da49..8aa60281e7db 100644
-> > --- a/include/acpi/actbl.h
-> > +++ b/include/acpi/actbl.h
-> > @@ -66,12 +66,12 @@
-> >   ******************************************************************************/
-> >
-> >  struct acpi_table_header {
-> > -       char signature[ACPI_NAMESEG_SIZE];      /* ASCII table signature */
-> > +       char signature[ACPI_NAMESEG_SIZE] __nonstring;  /* ASCII table signature */
-> >         u32 length;             /* Length of table in bytes, including this header */
-> >         u8 revision;            /* ACPI Specification minor version number */
-> >         u8 checksum;            /* To make sum of entire table == 0 */
-> > -       char oem_id[ACPI_OEM_ID_SIZE];  /* ASCII OEM identification */
-> > -       char oem_table_id[ACPI_OEM_TABLE_ID_SIZE];      /* ASCII OEM table identification */
-> > +       char oem_id[ACPI_OEM_ID_SIZE] __nonstring;      /* ASCII OEM identification */
-> > +       char oem_table_id[ACPI_OEM_TABLE_ID_SIZE] __nonstring;  /* ASCII OEM table identification */
-> >         u32 oem_revision;       /* OEM revision number */
-> >         char asl_compiler_id[ACPI_NAMESEG_SIZE];        /* ASCII ASL compiler vendor ID */
-> >         u32 asl_compiler_revision;      /* ASL compiler version */
-> > diff --git a/tools/power/acpi/os_specific/service_layers/oslinuxtbl.c b/tools/power/acpi/os_specific/service_layers/oslinuxtbl.c
-> > index 9d70d8c945af..52026b9e389e 100644
-> > --- a/tools/power/acpi/os_specific/service_layers/oslinuxtbl.c
-> > +++ b/tools/power/acpi/os_specific/service_layers/oslinuxtbl.c
-> > @@ -19,7 +19,7 @@ ACPI_MODULE_NAME("oslinuxtbl")
-> >  typedef struct osl_table_info {
-> >         struct osl_table_info *next;
-> >         u32 instance;
-> > -       char signature[ACPI_NAMESEG_SIZE];
-> > +       char signature[ACPI_NAMESEG_SIZE] __nonstring;
-> >
-> >  } osl_table_info;
-> >
-> > diff --git a/tools/power/acpi/tools/acpidump/apfiles.c b/tools/power/acpi/tools/acpidump/apfiles.c
-> > index 13817f9112c0..5a39b7d9351d 100644
-> > --- a/tools/power/acpi/tools/acpidump/apfiles.c
-> > +++ b/tools/power/acpi/tools/acpidump/apfiles.c
-> > @@ -103,7 +103,7 @@ int ap_open_output_file(char *pathname)
-> >
-> >  int ap_write_to_binary_file(struct acpi_table_header *table, u32 instance)
-> >  {
-> > -       char filename[ACPI_NAMESEG_SIZE + 16];
-> > +       char filename[ACPI_NAMESEG_SIZE + 16] __nonstring;
-> >         char instance_str[16];
-> >         ACPI_FILE file;
-> >         acpi_size actual;
-> > --
-> > 2.47.2
-> >
-> >
+Something like below:
+
+diff --git a/Makefile b/Makefile
+index d138b17b8840..853be42ca1a1 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1431,12 +1431,11 @@ endif
+
+  tools/: FORCE
+         $(Q)mkdir -p $(objtree)/tools
+-       $(Q)$(MAKE) LDFLAGS= O=$(abspath $(objtree)) subdir=tools -C 
+$(srctree)/tools/
++       $(Q)$(MAKE) LDFLAGS= MAKEFLAGS="$(filter-out rR,$(MAKEFLAGS))" 
+O=$(abspath $(objtree)) subdir=tools -C $(srctree)/tools/
+
+  tools/%: FORCE
+         $(Q)mkdir -p $(objtree)/tools
+-       $(Q)$(MAKE) LDFLAGS= O=$(abspath $(objtree)) subdir=tools -C 
+$(srctree)/tools/ $*
+-
++       $(Q)$(MAKE) LDFLAGS= MAKEFLAGS="$(filter-out rR,$(MAKEFLAGS))" 
+O=$(abspath $(objtree)) subdir=tools -C $(srctree)/tools/ $*
+  # 
+---------------------------------------------------------------------------
+  # Kernel selftest
+
+
