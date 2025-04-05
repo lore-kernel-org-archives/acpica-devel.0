@@ -1,299 +1,542 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9C071F3D21
-	for <acpica-devel@lists.linux.dev>; Fri,  4 Apr 2025 14:55:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.12
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743778551; cv=fail; b=WUEwdlJTmK5J6GTAFrtbpZsY9Nekk+emP+6iiJRja+j7UDMcyCYgxPhjx+xW3ayKOrMxdiXAdDX5YpYhGwUTG0Z/Pgh12xQXqBz6duG8qr/CWsD045a3cZ8tj5icwdk3nMO1OQNlZMIHNIQLltXqSiTrCwiU8zwSEiVmkTSUCYY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743778551; c=relaxed/simple;
-	bh=RMgt/mqKS4kaoOco8+FyNHu0udd9+n73+SZIGlXkGLM=;
-	h=Date:From:To:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=jcBHuzc1//1a5xKV3h/Ctyv+dijwTGpYunxrOYeERn1b2Nu8gHHE1i8FgKmPXRFX2j138IiZRGOMRN6rCYn1JTIpw3mPsOvfRyd899yGIyS7zWDBBJdIft+YQzpzi35btBGC1LIindFzmvFXxFQEcR6JwmvXHaQnIK3fN8/d1kQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bi4NIto8; arc=fail smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CBDC35950;
+	Sat,  5 Apr 2025 04:39:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1743827987; cv=none; b=eEwa9HF67VmUcm6P3/WcLPQH9SEc361H/CAiUgJSlB1UMLmWbaSqocUYHYLNpKtDwkyVYKG0zu+6d07tvHR7wIdEkk2nv6PYJ4SWUweatS8cock3WKVoElWc8OoSBQPDTfOl6HEDEuXpiAamBrfeIJw2VOEidsjOy3DsY9uRRJk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1743827987; c=relaxed/simple;
+	bh=d2pgQYlkYLdy1r+Ab47pFziwrYKE6o0bQV2lrsGKecU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jQ9d476mGPsG4gq48ULWUNeGPfkDIWTRbMCEac4mT8+ZKzgdZAvKmsVBd2TMWcsat8cGX/WQuWzT9KzkrtKvCV5JbNvJbvO0j+nxbqjvhsoIij1hIQCm0UNtCshhsZAWrvixmI4f4PdYYJRacDioC6MZAcHDvQroLVSIDrzxV88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SlyUtijj; arc=none smtp.client-ip=192.198.163.18
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bi4NIto8"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SlyUtijj"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1743778550; x=1775314550;
-  h=date:from:to:subject:message-id:references:in-reply-to:
-   mime-version;
-  bh=RMgt/mqKS4kaoOco8+FyNHu0udd9+n73+SZIGlXkGLM=;
-  b=bi4NIto8L4fILfZPgtEfwjznNZ/YQf0qfKO7qT3aprn1uJAWNDYc7Z0x
-   6kTZm+QURJojk7GnvwfsKMHLCuynhvuMIom2eALb77jcrJSTCA4dX0fh0
-   0AxG3tSKkl1sVzWCu9iSDtLBYYt5BNhb1+XHrGb1uIDku5un/lfKt4U3x
-   OidQLls2I7/aj6l/L1gi3WXkJe+7DNgYf+VR1HdaJ8rGUYaL7v6NaSdHn
-   mJXmHjuIQc5e2zoxw6FUZDKMwSpFSnF2w+LC0Y5aJSmMMSa44uKDNDzU+
-   6rl+boFe38Lc6WFm7HJ7Mg0t/8bP9nbRbR8BSY615iIvX8dh5kEIbYBNg
-   g==;
-X-CSE-ConnectionGUID: hZPoBrm5Q/qBNyCt1I2rFw==
-X-CSE-MsgGUID: cWuec09kQyOa7kSi7kFnJA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11394"; a="49078718"
-X-IronPort-AV: E=Sophos;i="6.15,188,1739865600"; 
-   d="scan'208";a="49078718"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2025 07:55:49 -0700
-X-CSE-ConnectionGUID: LZnvLaapRWqB5zOx8aDtQA==
-X-CSE-MsgGUID: yf8UYVPEQdajRFwdTgfzlg==
+  t=1743827985; x=1775363985;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=d2pgQYlkYLdy1r+Ab47pFziwrYKE6o0bQV2lrsGKecU=;
+  b=SlyUtijjBCXirRUFWP6/ZYfG1DFYkGdlAuPEMxY1fpNFWVXX6Q2d6pQ5
+   GxZPW0edIfryPiAlCsgF28nPZRaQnZZjo7Lm1QMOGZoLg2/L4GdATrzUQ
+   zfiQ02yWq4AIw8N6+yFsVLB6R7a834a4w2tfdUl+AplPjk904aaHPvSoJ
+   EopjfPqAEi3uDMGueSwa7o2yU24PIqViNwa7d0BNuXAu4/ubMwJjV0+Hp
+   asgG7NAiPXxKHxrdkXDRNOeaOuWohltTBcT/CNGK3901MdJHSBi56POJl
+   O9QczrXg+FGJs2cD3NkPoxLtUt2/KGn1WszdRqCBOJiufF1DTOB4xeGm4
+   Q==;
+X-CSE-ConnectionGUID: /75DGFsmQDCE+oXabgwVBg==
+X-CSE-MsgGUID: D83SX8oHSuefCmUtiwdScg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11394"; a="44523599"
+X-IronPort-AV: E=Sophos;i="6.15,190,1739865600"; 
+   d="scan'208";a="44523599"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2025 21:39:44 -0700
+X-CSE-ConnectionGUID: MMkCpUBEQDa4JhAgjHJeWg==
+X-CSE-MsgGUID: pWpUwB2MTUmYN3wS8xnBEg==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.15,188,1739865600"; 
-   d="scan'208";a="158317484"
-Received: from orsmsx901.amr.corp.intel.com ([10.22.229.23])
-  by fmviesa001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2025 07:55:48 -0700
-Received: from ORSMSX901.amr.corp.intel.com (10.22.229.23) by
- ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.14; Fri, 4 Apr 2025 07:55:48 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.14 via Frontend Transport; Fri, 4 Apr 2025 07:55:48 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.41) by
- edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.44; Fri, 4 Apr 2025 07:55:46 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=s9rj7B3YRA77hz86qidjekmOTo75JgxwpmDWbVeap9u/8Xq9dYmjetAjASGuCJhfYaAHqtqvifcqCayboJxcFkB+ricCfytaiLh1a+F+EMPObJI2N7OwUc+TH5Od8pxLBPFG4pxGVr5e7XFg/iUqMpfKYZWcbkESJnWOs0gPwRhgX16AUiZWCgOUc9XhKAEzTvo+A+GLTuShKFurf31H4C35Z1KqO98m58zYm04gh3jLGYyBIrlNsuL05WanB3okfNIIo0oIrF+g26LDfsW8D45WRNBc4Sbh2kch28Lrz06N48vTpLdargOM5qRVfLRHIf6QVBhhU9g66YYsUct3Gg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Mktu9yze2kpsGPPbVYgS+9f9x2PyIdDoLHi7y5uM72c=;
- b=dh7fIgvoGrbyk58z5kVJULvJLCLsLmcqBgfQIqO+95kMMTVvBPXoyhlc5i+Drt53EkCDJ2JO8SUJTg4/QnIWaIZKiSi+6uDn4ky4k4Lam/Y4u2PQdzqZWqU70ZsD8mPREypUUuDQgF8MLgLK7nlM6uDYMdQ1xRXWw2pfLd0T6VdAMCvJBHUzOuCKw+ap73IKkwOmn+gNtWVGa2UI+oKfnQw/dtGMYnkR61t0y7aC+BQaxY8nyhS4GJLxeFL2bNTYxVgj/soMiohkUuyxm0tMSx+dhZdcijFWFshROYsUuse+MwYRL32nJJ42Wls0j71KJTK1ydNwp54aVfr2QEBWiA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
- by MN2PR11MB4519.namprd11.prod.outlook.com (2603:10b6:208:26c::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8583.42; Fri, 4 Apr
- 2025 14:55:44 +0000
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::cf7d:9363:38f4:8c57]) by SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::cf7d:9363:38f4:8c57%5]) with mapi id 15.20.8534.052; Fri, 4 Apr 2025
- 14:55:44 +0000
-Date: Fri, 4 Apr 2025 09:56:05 -0500
-From: Ira Weiny <ira.weiny@intel.com>
-To: Zaid Alali <zaidal@os.amperecomputing.com>, <rafael@kernel.org>,
-	<lenb@kernel.org>, <james.morse@arm.com>, <tony.luck@intel.com>,
-	<bp@alien8.de>, <robert.moore@intel.com>, <dan.j.williams@intel.com>,
-	<Jonathan.Cameron@huawei.com>, <Benjamin.Cheatham@amd.com>,
-	<Avadhut.Naik@amd.com>, <viro@zeniv.linux.org.uk>, <arnd@arndb.de>,
-	<ira.weiny@intel.com>, <dave.jiang@intel.com>,
-	<sthanneeru.opensrc@micron.com>, <linux-acpi@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <acpica-devel@lists.linux.dev>
-Subject: Re: [PATCH v5 8/9] ACPI: APEI: EINJ: Enable EINJv2 error injections
-Message-ID: <67eff305b2094_9807c2941e@iweiny-mobl.notmuch>
-References: <20250403231339.23708-1-zaidal@os.amperecomputing.com>
- <20250403231339.23708-9-zaidal@os.amperecomputing.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20250403231339.23708-9-zaidal@os.amperecomputing.com>
-X-ClientProxiedBy: MW4P221CA0002.NAMP221.PROD.OUTLOOK.COM
- (2603:10b6:303:8b::7) To SA1PR11MB6733.namprd11.prod.outlook.com
- (2603:10b6:806:25c::17)
+X-IronPort-AV: E=Sophos;i="6.15,190,1739865600"; 
+   d="scan'208";a="127997702"
+Received: from lkp-server01.sh.intel.com (HELO b207828170a5) ([10.239.97.150])
+  by orviesa007.jf.intel.com with ESMTP; 04 Apr 2025 21:39:41 -0700
+Received: from kbuild by b207828170a5 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1u0vJi-0001oZ-2W;
+	Sat, 05 Apr 2025 04:39:38 +0000
+Date: Sat, 5 Apr 2025 12:39:18 +0800
+From: kernel test robot <lkp@intel.com>
+To: Ahmed Salem <x0rw3ll@gmail.com>, robert.moore@intel.com,
+	rafael.j.wysocki@intel.com, lenb@kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, skhan@linuxfoundation.org,
+	linux-kernel-mentees@lists.linuxfoundation.org,
+	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] ACPI: sysfs: apply ACPI_NONSTRING annotation
+Message-ID: <202504051219.T47PnjYj-lkp@intel.com>
+References: <dcc3a018fb28899b277df2e154740d59d4e404af.1743754416.git.x0rw3ll@gmail.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|MN2PR11MB4519:EE_
-X-MS-Office365-Filtering-Correlation-Id: 88559257-f483-4fde-9c4e-08dd7388c6b5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|1800799024|10070799003|366016|376014|7053199007|921020;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?HKZQ0BDQ1xiIuvE5Q/bUgGG/WNXuWZlCV7Y+1Cb8H1YTD3KWJMPedjKbJ7eQ?=
- =?us-ascii?Q?WuNUwAPNJ675stykNj35J04uWRN85ys3Ef5/V9h+Ff4exYokiBOjnb2s+25B?=
- =?us-ascii?Q?u0DqmtoWzTisiSe6uCS0ijT4N7fBs3FQW2rhL8fh/fEUAWSroZmmcbKrtTVk?=
- =?us-ascii?Q?AJb8U2Z3py0HTfi0/GAcIDpXRasbCOOu+/vXtcBRbMT8AM+FKhb/7+lKz6kY?=
- =?us-ascii?Q?cM2BBdrrLm+rDoE/aIr8pKuS0juH2ucJSJ2KPVKFURas9K5urXl53O0/+7B7?=
- =?us-ascii?Q?17rZr0In9gRqIPUvfbnKudA06VDNlKXHqcCW+lO8h9HhXMaajQ1D+wn183RA?=
- =?us-ascii?Q?aCnZX2mhcVzdN5J/0SF5F+JB+g9LUwSRUScdp3xNTFMM65T+DGI1grixWBQ+?=
- =?us-ascii?Q?g/eZY4N0B8htoALeXyxdT7rkmR0TkfC6ic04HoEzUzo0KmlsyrDQpTQzcF7F?=
- =?us-ascii?Q?5JucSHZqzhXVLrk2ZJPb4s8cbccQhy4QINhDRL5wA8jtf6LgS2aoLqpAyHxj?=
- =?us-ascii?Q?4vHafgEPcbiPXzaq/8fRk1+S9gxExaFN61Kg8BMrg+kuWK8qsMxR7u0sY+GN?=
- =?us-ascii?Q?++OYTYjOhGzUDB4/xn9F4MIJOA27ID7rEZPhAYubuwKbo3gMJLQPMpdfHLBB?=
- =?us-ascii?Q?ESRGe0IafatVOp2I+1f5PuAdCDUoOuwNeGY6HjkUuvIujLoKzPf2XwdyMxsw?=
- =?us-ascii?Q?niUj2jgf+HSBx/lZ/1sRRjjqKENDMmDS9+3PZ4wij2iC5pb40Nkv0w+QKMKD?=
- =?us-ascii?Q?VnTP28lZLwy7xeETaNTzAdd/fQigkdwLiS7Q0fLW9qQvOPMhXnoWnxH4YzTb?=
- =?us-ascii?Q?w2GZVv1U0MhRGa88L6vJe+XbKsHpPdaZkzKT0eARg/aHyIfVCOlkHyUbY+I6?=
- =?us-ascii?Q?KA+3J/1Gzs4DsERDe1eMr7F0J4YNUWPJtcfruQFK5o0iidfTfc5CxgcGe1NR?=
- =?us-ascii?Q?X4KnwIObuNWfQn272ZPHuZ4bJn0agSIwEdNBeKxU7mNr+mOjGt/iP1C8ynI6?=
- =?us-ascii?Q?sZTZFYpctPGtU3sQrxhYeA76l9ndoApOUX4UB15ka8PUmc6EPtKPOkbEMegY?=
- =?us-ascii?Q?0gePdOnSKOsTvhs1aewPyuFpd/fMDF5htbWtmNeWyCQb93h3WOImiSq9YCaJ?=
- =?us-ascii?Q?VCOQkzXPeD2d0M24qqkBVm7+vsE+IGwboqjj5gU+90Tec4OrZX+iZNnZakSL?=
- =?us-ascii?Q?RtZ64lQa0TEJu97TBqeQK29hV53YWC7tPdqD8DOPTYVD2VL10oQSrJu3bKLX?=
- =?us-ascii?Q?+mLBPUJrrHtz/X8NRMu0EPPjkSZlvZj2Btn5062XVtrGPnSHwQ2K0nZclvpW?=
- =?us-ascii?Q?UrZD1CfIzv/LeSnOJP0iNqCvwTzzbVRrH0P294vST0u9ZAu2/NdlZ+EV3R0V?=
- =?us-ascii?Q?ZflbIzAsFTCCnwB8giQ0LFGQARL0rMPx1iM60EVNdEuHhug8Kmssf6xXiqft?=
- =?us-ascii?Q?JNNuzdi1gZg=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(1800799024)(10070799003)(366016)(376014)(7053199007)(921020);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?mJtKp9gHhAWCNDZmhr75c6KUVhunF1BW3alyepMSgKO9xmurjGoHSYmKNxrY?=
- =?us-ascii?Q?rPi5cZnK8telQLokISV3Pi3T+SLRIGXpOATOz8/cVvASLJjkR2xpf1FyGMb4?=
- =?us-ascii?Q?56/NidyRh1ZYtvWpgdIbqFmOQecNO+qZz/nf7eQjjjgkWAzzJa9e6zDg7Evj?=
- =?us-ascii?Q?C+s4A2CVyUD8PZN4TsNzWByJXZSduEcd1jvUJrY6/VwB7XIEWxL/GpZAt+I7?=
- =?us-ascii?Q?cfhKq3LQvqVCg06uQFD9BWdERT+tTpt6rTSKypldghNRUo1M5370tNupObbZ?=
- =?us-ascii?Q?Zv7XyagyPoio0IBltZKx3uAyGrY4fMFzbC4cnA0as/ht/+/MJ05g32AMK4H3?=
- =?us-ascii?Q?cNlcf+AnWJlPwcuHeLJ6LaIUT179tTkWtG7XVikEsAbD6OmUmiYijdgT5o8x?=
- =?us-ascii?Q?uyls2eJEfZwlZC6IdwCMpuB2pIoQYGuSN0nUGjkWrl2peeuwFr6RghxqOD3N?=
- =?us-ascii?Q?lfpJQkAaRN40siCxMnKuwGx5mPKY/zOjTiWal2B950eSjvTUuH1N52iT83HE?=
- =?us-ascii?Q?QgweGJL/sHk6WoMrKats1YeevZVp7SKAmdzHT/EaEBbOAyjjgu3adcdMEf+V?=
- =?us-ascii?Q?1Mwne8wtG+YByY3vuVKLWfIJBoXbbdCT50HryqZhcA8M+RR71EJwDK+feso9?=
- =?us-ascii?Q?OtTlwSc+ZhIzdZrw3IT1sDCgwl/aon+GbhkogEw6r6yhvc91sI9GX2BIG1I6?=
- =?us-ascii?Q?CY1O1j1/d/3bxCRzGKIWuhyIqKmVZ36fxqEwIQ9XRPTmtYRe2Qe30fSsGWs/?=
- =?us-ascii?Q?GAyWA6/1kaahATcTMbiYzE9CTBplaJXKH5/nGrhbMjpmRDlb1t7rJ1065jBu?=
- =?us-ascii?Q?g1BAjXmFDZWpb1fMGVb5ini5uKgVicY8g3xKaZhUiH5+8GoI/VO5wUQex614?=
- =?us-ascii?Q?YiuZFq0vFslZvf8yXwQ2c4iT5+o+GKYi3gzyBqoZcnWDEKh6GE6+LIOkpLLa?=
- =?us-ascii?Q?WHGd4dq0vDfv89WCq7T0aJSm6xxGOHLePzwtWxSHR/Hr2dn/n02+MYfU0PZW?=
- =?us-ascii?Q?eJqdvs3Npx5ed0O2IcszAwn0ph7daiasPXeXtA2FQy23jgGIrWk3wDGYm/CM?=
- =?us-ascii?Q?55sc42m8r4p1acoV8/NiyrfOYdRNYFnfdDb0/IO//WCx73JC/a8rJJrDDR8M?=
- =?us-ascii?Q?leMMkMTqDEyIVXljCfsG8AgN8OHAS9acUMzvea8z9awjfFVkgLsIQ30aQhHB?=
- =?us-ascii?Q?KH+HKlJVNGjnfPjLT0rVtc9a19TnGxn6B/WaF+FNU77ffdqE46oDSVrjqWAF?=
- =?us-ascii?Q?tTd3bsVohFW/Y8lLHyTFQeMLtuXxjxwwgrEgCaBjJ+ZKBxlOr7EhI6dEusJ+?=
- =?us-ascii?Q?xm2Qrn/OP9HLM0kRcz9QZ7qPemB9/daE2pBspEgBfGJWSlkyuPsKHgVTeJBB?=
- =?us-ascii?Q?lgIWPfCn/G0u1RkfJvGMKVthWDRegwh29g1AqOLK9LoV415QEKO7vB4JteHL?=
- =?us-ascii?Q?Okb7QizAbUZn6m9yC2ujyVkOz2YnG+SWmWRSi76Lvlgdfwz5JIV0vOp2dYTU?=
- =?us-ascii?Q?XH9atzCCDiT8Cl9fgC72SPMvPf6TMxNdzDuY9L5/zeG1Q9cyN07FYIy04ved?=
- =?us-ascii?Q?j7wRDnYxzplJ/qkba68LkzRDbM1UNRBQW1OPaynpQMK9mEExNwxK6Epl6W1+?=
- =?us-ascii?Q?gSvcYBKFkNwxhLfbbP/RBj1Lx9B4432SVVZya5mT6OI3?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 88559257-f483-4fde-9c4e-08dd7388c6b5
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Apr 2025 14:55:44.4152
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DjhFIe+O5dScme9lSEcE+PrtOjX8GuQ2t9sQhyAhlapmfXOZXUu8X68vIdBANcIz2Bv/dC/B2bbe4LTs+RDJNg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB4519
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dcc3a018fb28899b277df2e154740d59d4e404af.1743754416.git.x0rw3ll@gmail.com>
 
-Zaid Alali wrote:
-> Enable the driver to inject EINJv2 type errors. The component
-> array values are parsed from user_input and expected to contain
-> hex values for component id and syndrome separated by space,
-> and multiple components are separated by new line as follows:
-> 
-> component_id1 component_syndrome1
-> component_id2 component_syndrome2
->  :
-> component_id(n) component_syndrome(n)
-> 
-> for example:
-> 
-> $comp_arr="0x1 0x2
-> >0x1 0x4
-> >0x2 0x4"
-> $cd /sys/kernel/debug/apei/einj/
-> $echo "$comp_arr" > einjv2_component_array
-> 
-> Signed-off-by: Zaid Alali <zaidal@os.amperecomputing.com>
-> ---
+Hi Ahmed,
 
-[snip]
+kernel test robot noticed the following build errors:
 
-> @@ -483,10 +513,10 @@ static int __einj_error_inject(u32 type, u32 flags, u64 param1, u64 param2,
->  		return rc;
->  	apei_exec_ctx_set_input(&ctx, type);
->  	if (acpi5) {
-> -		struct set_error_type_with_address *v5param, v5_struct;
-> +		struct set_error_type_with_address *v5param;
->  
-> -		v5param = &v5_struct;
-> -		memcpy_fromio(v5param, einj_param, sizeof(*v5param));
-> +		v5param = kmalloc(v5param_size, GFP_KERNEL);
-> +		memcpy_fromio(v5param, einj_param, v5param_size);
->  		v5param->type = type;
->  		if (type & ACPI5_VENDOR_BIT) {
->  			switch (vendor_flags) {
-> @@ -506,8 +536,50 @@ static int __einj_error_inject(u32 type, u32 flags, u64 param1, u64 param2,
->  			v5param->flags = flags;
->  			v5param->memory_address = param1;
->  			v5param->memory_address_range = param2;
-> -			v5param->apicid = param3;
-> -			v5param->pcie_sbdf = param4;
-> +
-> +			if (is_V2) {
-> +				int count = 0, bytes_read, pos = 0, nr_parsed = 0, str_len;
-> +				unsigned int comp, synd;
-> +				struct syndrome_array *component_arr;
-> +
-> +				component_arr = v5param->einjv2_struct.component_arr;
-> +				str_len = strlen(user_input);
-> +
-> +				while ((nr_parsed = sscanf(user_input + pos, "%x %x\n%n", &comp,
-> +					&synd, &bytes_read))) {
-> +					pos += bytes_read;
-> +
-> +					if (nr_parsed != 2)
-> +						goto err_out;
-> +					if (count >= nr_components)
-> +						goto err_out;
+[auto build test ERROR on b3c623b9a94f7f798715c87e7a75ceeecf15292f]
 
-It is hard to tell but I think these err_out's skip the kfree?
+url:    https://github.com/intel-lab-lkp/linux/commits/Ahmed-Salem/ACPI-PRM-apply-ACPI_NONSTRING-annotation/20250404-162651
+base:   b3c623b9a94f7f798715c87e7a75ceeecf15292f
+patch link:    https://lore.kernel.org/r/dcc3a018fb28899b277df2e154740d59d4e404af.1743754416.git.x0rw3ll%40gmail.com
+patch subject: [PATCH 2/2] ACPI: sysfs: apply ACPI_NONSTRING annotation
+config: loongarch-randconfig-002-20250405 (https://download.01.org/0day-ci/archive/20250405/202504051219.T47PnjYj-lkp@intel.com/config)
+compiler: loongarch64-linux-gcc (GCC) 14.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250405/202504051219.T47PnjYj-lkp@intel.com/reproduce)
 
-Regardless it is better to use the cleanup functions[1] on that kmalloc and let
-the destructors clean up for you.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202504051219.T47PnjYj-lkp@intel.com/
 
-Ira
+All errors (new ones prefixed by >>):
 
-[1] include/linux/cleanup.h
+>> drivers/acpi/sysfs.c:310:38: error: expected ':', ',', ';', '}' or '__attribute__' before 'ACPI_NONSTRING'
+     310 |         char name[ACPI_NAMESEG_SIZE] ACPI_NONSTRING;
+         |                                      ^~~~~~~~~~~~~~
+   drivers/acpi/sysfs.c: In function 'acpi_table_show':
+>> drivers/acpi/sysfs.c:331:43: error: 'struct acpi_table_attr' has no member named 'name'
+     331 |         status = acpi_get_table(table_attr->name, table_attr->instance,
+         |                                           ^~
+>> drivers/acpi/sysfs.c:331:61: error: 'struct acpi_table_attr' has no member named 'instance'
+     331 |         status = acpi_get_table(table_attr->name, table_attr->instance,
+         |                                                             ^~
+   In file included from include/acpi/acpi.h:24,
+                    from include/linux/acpi.h:26,
+                    from drivers/acpi/sysfs.c:8:
+   drivers/acpi/sysfs.c: In function 'acpi_table_attr_init':
+   drivers/acpi/sysfs.c:351:37: error: 'struct acpi_table_attr' has no member named 'name'
+     351 |         ACPI_COPY_NAMESEG(table_attr->name, table_header->signature);
+         |                                     ^~
+   include/acpi/actypes.h:501:66: note: in definition of macro 'ACPI_CAST_PTR'
+     501 | #define ACPI_CAST_PTR(t, p)             ((t *) (acpi_uintptr_t) (p))
+         |                                                                  ^
+   drivers/acpi/sysfs.c:351:9: note: in expansion of macro 'ACPI_COPY_NAMESEG'
+     351 |         ACPI_COPY_NAMESEG(table_attr->name, table_header->signature);
+         |         ^~~~~~~~~~~~~~~~~
+   In file included from include/linux/bits.h:22,
+                    from include/linux/ioport.h:13,
+                    from include/linux/acpi.h:12:
+>> include/linux/container_of.h:20:54: error: 'struct acpi_table_attr' has no member named 'node'
+      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+         |                                                      ^~
+   include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
+      78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+         |                                                        ^~~~
+   include/linux/container_of.h:20:9: note: in expansion of macro 'static_assert'
+      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+         |         ^~~~~~~~~~~~~
+   include/linux/container_of.h:20:23: note: in expansion of macro '__same_type'
+      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+         |                       ^~~~~~~~~~~
+   include/linux/list.h:601:9: note: in expansion of macro 'container_of'
+     601 |         container_of(ptr, type, member)
+         |         ^~~~~~~~~~~~
+   include/linux/list.h:612:9: note: in expansion of macro 'list_entry'
+     612 |         list_entry((ptr)->next, type, member)
+         |         ^~~~~~~~~~
+   include/linux/list.h:770:20: note: in expansion of macro 'list_first_entry'
+     770 |         for (pos = list_first_entry(head, typeof(*pos), member);        \
+         |                    ^~~~~~~~~~~~~~~~
+   drivers/acpi/sysfs.c:353:9: note: in expansion of macro 'list_for_each_entry'
+     353 |         list_for_each_entry(attr, &acpi_table_attr_list, node) {
+         |         ^~~~~~~~~~~~~~~~~~~
+   include/linux/compiler_types.h:498:27: error: expression in static assertion is not an integer
+     498 | #define __same_type(a, b) __builtin_types_compatible_p(typeof(a), typeof(b))
+         |                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
+      78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+         |                                                        ^~~~
+   include/linux/container_of.h:20:9: note: in expansion of macro 'static_assert'
+      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+         |         ^~~~~~~~~~~~~
+   include/linux/container_of.h:20:23: note: in expansion of macro '__same_type'
+      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+         |                       ^~~~~~~~~~~
+   include/linux/list.h:601:9: note: in expansion of macro 'container_of'
+     601 |         container_of(ptr, type, member)
+         |         ^~~~~~~~~~~~
+   include/linux/list.h:612:9: note: in expansion of macro 'list_entry'
+     612 |         list_entry((ptr)->next, type, member)
+         |         ^~~~~~~~~~
+   include/linux/list.h:770:20: note: in expansion of macro 'list_first_entry'
+     770 |         for (pos = list_first_entry(head, typeof(*pos), member);        \
+         |                    ^~~~~~~~~~~~~~~~
+   drivers/acpi/sysfs.c:353:9: note: in expansion of macro 'list_for_each_entry'
+     353 |         list_for_each_entry(attr, &acpi_table_attr_list, node) {
+         |         ^~~~~~~~~~~~~~~~~~~
+   In file included from include/uapi/linux/posix_types.h:5,
+                    from include/uapi/linux/types.h:14,
+                    from include/linux/types.h:6,
+                    from include/linux/kasan-checks.h:5,
+                    from include/asm-generic/rwonce.h:26,
+                    from ./arch/loongarch/include/generated/asm/rwonce.h:1,
+                    from include/linux/compiler.h:370,
+                    from include/linux/build_bug.h:5:
+>> include/linux/stddef.h:16:33: error: 'struct acpi_table_attr' has no member named 'node'
+      16 | #define offsetof(TYPE, MEMBER)  __builtin_offsetof(TYPE, MEMBER)
+         |                                 ^~~~~~~~~~~~~~~~~~
+   include/linux/container_of.h:23:28: note: in expansion of macro 'offsetof'
+      23 |         ((type *)(__mptr - offsetof(type, member))); })
+         |                            ^~~~~~~~
+   include/linux/list.h:601:9: note: in expansion of macro 'container_of'
+     601 |         container_of(ptr, type, member)
+         |         ^~~~~~~~~~~~
+   include/linux/list.h:612:9: note: in expansion of macro 'list_entry'
+     612 |         list_entry((ptr)->next, type, member)
+         |         ^~~~~~~~~~
+   include/linux/list.h:770:20: note: in expansion of macro 'list_first_entry'
+     770 |         for (pos = list_first_entry(head, typeof(*pos), member);        \
+         |                    ^~~~~~~~~~~~~~~~
+   drivers/acpi/sysfs.c:353:9: note: in expansion of macro 'list_for_each_entry'
+     353 |         list_for_each_entry(attr, &acpi_table_attr_list, node) {
+         |         ^~~~~~~~~~~~~~~~~~~
+   In file included from include/linux/resource_ext.h:9,
+                    from include/linux/acpi.h:13:
+>> include/linux/list.h:761:26: error: 'struct acpi_table_attr' has no member named 'node'
+     761 |         list_is_head(&pos->member, (head))
+         |                          ^~
+   include/linux/list.h:771:15: note: in expansion of macro 'list_entry_is_head'
+     771 |              !list_entry_is_head(pos, head, member);                    \
+         |               ^~~~~~~~~~~~~~~~~~
+   drivers/acpi/sysfs.c:353:9: note: in expansion of macro 'list_for_each_entry'
+     353 |         list_for_each_entry(attr, &acpi_table_attr_list, node) {
+         |         ^~~~~~~~~~~~~~~~~~~
+   In file included from include/linux/list.h:5:
+   include/linux/list.h:645:25: error: 'struct acpi_table_attr' has no member named 'node'
+     645 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |                         ^~
+   include/linux/container_of.h:19:33: note: in definition of macro 'container_of'
+      19 |         void *__mptr = (void *)(ptr);                                   \
+         |                                 ^~~
+   include/linux/list.h:645:9: note: in expansion of macro 'list_entry'
+     645 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |         ^~~~~~~~~~
+   include/linux/list.h:772:20: note: in expansion of macro 'list_next_entry'
+     772 |              pos = list_next_entry(pos, member))
+         |                    ^~~~~~~~~~~~~~~
+   drivers/acpi/sysfs.c:353:9: note: in expansion of macro 'list_for_each_entry'
+     353 |         list_for_each_entry(attr, &acpi_table_attr_list, node) {
+         |         ^~~~~~~~~~~~~~~~~~~
+   include/linux/list.h:645:25: error: 'struct acpi_table_attr' has no member named 'node'
+     645 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |                         ^~
+   include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
+      78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+         |                                                        ^~~~
+   include/linux/container_of.h:20:9: note: in expansion of macro 'static_assert'
+      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+         |         ^~~~~~~~~~~~~
+   include/linux/container_of.h:20:23: note: in expansion of macro '__same_type'
+      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+         |                       ^~~~~~~~~~~
+   include/linux/list.h:601:9: note: in expansion of macro 'container_of'
+     601 |         container_of(ptr, type, member)
+         |         ^~~~~~~~~~~~
+   include/linux/list.h:645:9: note: in expansion of macro 'list_entry'
+     645 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |         ^~~~~~~~~~
+   include/linux/list.h:772:20: note: in expansion of macro 'list_next_entry'
+     772 |              pos = list_next_entry(pos, member))
+         |                    ^~~~~~~~~~~~~~~
+   drivers/acpi/sysfs.c:353:9: note: in expansion of macro 'list_for_each_entry'
+     353 |         list_for_each_entry(attr, &acpi_table_attr_list, node) {
+         |         ^~~~~~~~~~~~~~~~~~~
+>> include/linux/container_of.h:20:54: error: 'struct acpi_table_attr' has no member named 'node'
+      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+         |                                                      ^~
+   include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
+      78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+         |                                                        ^~~~
+   include/linux/container_of.h:20:9: note: in expansion of macro 'static_assert'
+      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+         |         ^~~~~~~~~~~~~
+   include/linux/container_of.h:20:23: note: in expansion of macro '__same_type'
+      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+         |                       ^~~~~~~~~~~
+   include/linux/list.h:601:9: note: in expansion of macro 'container_of'
+     601 |         container_of(ptr, type, member)
+         |         ^~~~~~~~~~~~
+   include/linux/list.h:645:9: note: in expansion of macro 'list_entry'
+     645 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |         ^~~~~~~~~~
+   include/linux/list.h:772:20: note: in expansion of macro 'list_next_entry'
+     772 |              pos = list_next_entry(pos, member))
+         |                    ^~~~~~~~~~~~~~~
+   drivers/acpi/sysfs.c:353:9: note: in expansion of macro 'list_for_each_entry'
+     353 |         list_for_each_entry(attr, &acpi_table_attr_list, node) {
+         |         ^~~~~~~~~~~~~~~~~~~
+   include/linux/list.h:645:25: error: 'struct acpi_table_attr' has no member named 'node'
+     645 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |                         ^~
+   include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
+      78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+         |                                                        ^~~~
+   include/linux/container_of.h:20:9: note: in expansion of macro 'static_assert'
+      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+         |         ^~~~~~~~~~~~~
+   include/linux/container_of.h:21:23: note: in expansion of macro '__same_type'
+      21 |                       __same_type(*(ptr), void),                        \
+         |                       ^~~~~~~~~~~
+   include/linux/list.h:601:9: note: in expansion of macro 'container_of'
+     601 |         container_of(ptr, type, member)
+         |         ^~~~~~~~~~~~
+   include/linux/list.h:645:9: note: in expansion of macro 'list_entry'
+     645 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |         ^~~~~~~~~~
+   include/linux/list.h:772:20: note: in expansion of macro 'list_next_entry'
+     772 |              pos = list_next_entry(pos, member))
+         |                    ^~~~~~~~~~~~~~~
+   drivers/acpi/sysfs.c:353:9: note: in expansion of macro 'list_for_each_entry'
+     353 |         list_for_each_entry(attr, &acpi_table_attr_list, node) {
+         |         ^~~~~~~~~~~~~~~~~~~
+   include/linux/compiler_types.h:498:27: error: expression in static assertion is not an integer
+     498 | #define __same_type(a, b) __builtin_types_compatible_p(typeof(a), typeof(b))
+         |                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
+      78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+         |                                                        ^~~~
+   include/linux/container_of.h:20:9: note: in expansion of macro 'static_assert'
+      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+         |         ^~~~~~~~~~~~~
+   include/linux/container_of.h:20:23: note: in expansion of macro '__same_type'
+      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+         |                       ^~~~~~~~~~~
+   include/linux/list.h:601:9: note: in expansion of macro 'container_of'
+     601 |         container_of(ptr, type, member)
+         |         ^~~~~~~~~~~~
+   include/linux/list.h:645:9: note: in expansion of macro 'list_entry'
+     645 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |         ^~~~~~~~~~
+   include/linux/list.h:772:20: note: in expansion of macro 'list_next_entry'
+     772 |              pos = list_next_entry(pos, member))
+         |                    ^~~~~~~~~~~~~~~
+   drivers/acpi/sysfs.c:353:9: note: in expansion of macro 'list_for_each_entry'
+     353 |         list_for_each_entry(attr, &acpi_table_attr_list, node) {
+         |         ^~~~~~~~~~~~~~~~~~~
+>> include/linux/stddef.h:16:33: error: 'struct acpi_table_attr' has no member named 'node'
+      16 | #define offsetof(TYPE, MEMBER)  __builtin_offsetof(TYPE, MEMBER)
+         |                                 ^~~~~~~~~~~~~~~~~~
+   include/linux/container_of.h:23:28: note: in expansion of macro 'offsetof'
+      23 |         ((type *)(__mptr - offsetof(type, member))); })
+         |                            ^~~~~~~~
+   include/linux/list.h:601:9: note: in expansion of macro 'container_of'
+     601 |         container_of(ptr, type, member)
+         |         ^~~~~~~~~~~~
+   include/linux/list.h:645:9: note: in expansion of macro 'list_entry'
+     645 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+         |         ^~~~~~~~~~
+   include/linux/list.h:772:20: note: in expansion of macro 'list_next_entry'
+     772 |              pos = list_next_entry(pos, member))
+         |                    ^~~~~~~~~~~~~~~
+   drivers/acpi/sysfs.c:353:9: note: in expansion of macro 'list_for_each_entry'
+     353 |         list_for_each_entry(attr, &acpi_table_attr_list, node) {
+         |         ^~~~~~~~~~~~~~~~~~~
+   drivers/acpi/sysfs.c:354:52: error: 'struct acpi_table_attr' has no member named 'name'
+     354 |                 if (ACPI_COMPARE_NAMESEG(table_attr->name, attr->name))
+         |                                                    ^~
+   include/acpi/actypes.h:501:66: note: in definition of macro 'ACPI_CAST_PTR'
+     501 | #define ACPI_CAST_PTR(t, p)             ((t *) (acpi_uintptr_t) (p))
+         |                                                                  ^
+   drivers/acpi/sysfs.c:354:21: note: in expansion of macro 'ACPI_COMPARE_NAMESEG'
+     354 |                 if (ACPI_COMPARE_NAMESEG(table_attr->name, attr->name))
+         |                     ^~~~~~~~~~~~~~~~~~~~
+   drivers/acpi/sysfs.c:354:64: error: 'struct acpi_table_attr' has no member named 'name'
+     354 |                 if (ACPI_COMPARE_NAMESEG(table_attr->name, attr->name))
+         |                                                                ^~
+   include/acpi/actypes.h:501:66: note: in definition of macro 'ACPI_CAST_PTR'
+     501 | #define ACPI_CAST_PTR(t, p)             ((t *) (acpi_uintptr_t) (p))
+         |                                                                  ^
+   drivers/acpi/sysfs.c:354:21: note: in expansion of macro 'ACPI_COMPARE_NAMESEG'
+     354 |                 if (ACPI_COMPARE_NAMESEG(table_attr->name, attr->name))
+         |                     ^~~~~~~~~~~~~~~~~~~~
+   drivers/acpi/sysfs.c:355:39: error: 'struct acpi_table_attr' has no member named 'instance'
+     355 |                         if (table_attr->instance < attr->instance)
+         |                                       ^~
+   drivers/acpi/sysfs.c:355:56: error: 'struct acpi_table_attr' has no member named 'instance'
+     355 |                         if (table_attr->instance < attr->instance)
+         |                                                        ^~
+   drivers/acpi/sysfs.c:356:43: error: 'struct acpi_table_attr' has no member named 'instance'
+     356 |                                 table_attr->instance = attr->instance;
+         |                                           ^~
+   drivers/acpi/sysfs.c:356:60: error: 'struct acpi_table_attr' has no member named 'instance'
+     356 |                                 table_attr->instance = attr->instance;
+         |                                                            ^~
+   drivers/acpi/sysfs.c:358:19: error: 'struct acpi_table_attr' has no member named 'instance'
+     358 |         table_attr->instance++;
+         |                   ^~
+   drivers/acpi/sysfs.c:359:23: error: 'struct acpi_table_attr' has no member named 'instance'
+     359 |         if (table_attr->instance > ACPI_MAX_TABLE_INSTANCES) {
+         |                       ^~
+   In file included from include/asm-generic/bug.h:22,
+                    from arch/loongarch/include/asm/bug.h:61,
+                    from include/linux/bug.h:5,
+                    from include/linux/thread_info.h:13,
+                    from include/asm-generic/preempt.h:5,
+                    from ./arch/loongarch/include/generated/asm/preempt.h:1,
+                    from include/linux/preempt.h:79,
+                    from include/linux/spinlock.h:56,
+                    from include/linux/mmzone.h:8,
+                    from include/linux/gfp.h:7,
+                    from include/linux/slab.h:16,
+                    from include/linux/resource_ext.h:11:
+   drivers/acpi/sysfs.c:360:72: error: 'struct acpi_table_attr' has no member named 'name'
+     360 |                 pr_warn("%4.4s: too many table instances\n", table_attr->name);
+         |                                                                        ^~
+   include/linux/printk.h:479:33: note: in definition of macro 'printk_index_wrap'
+     479 |                 _p_func(_fmt, ##__VA_ARGS__);                           \
+         |                                 ^~~~~~~~~~~
+   include/linux/printk.h:560:9: note: in expansion of macro 'printk'
+     560 |         printk(KERN_WARNING pr_fmt(fmt), ##__VA_ARGS__)
+         |         ^~~~~~
+   drivers/acpi/sysfs.c:360:17: note: in expansion of macro 'pr_warn'
+     360 |                 pr_warn("%4.4s: too many table instances\n", table_attr->name);
+         |                 ^~~~~~~
+>> drivers/acpi/sysfs.c:364:37: error: 'struct acpi_table_attr' has no member named 'filename'
+     364 |         ACPI_COPY_NAMESEG(table_attr->filename, table_header->signature);
+         |                                     ^~
+   include/acpi/actypes.h:501:66: note: in definition of macro 'ACPI_CAST_PTR'
+     501 | #define ACPI_CAST_PTR(t, p)             ((t *) (acpi_uintptr_t) (p))
+         |                                                                  ^
+   drivers/acpi/sysfs.c:364:9: note: in expansion of macro 'ACPI_COPY_NAMESEG'
+     364 |         ACPI_COPY_NAMESEG(table_attr->filename, table_header->signature);
+         |         ^~~~~~~~~~~~~~~~~
+   drivers/acpi/sysfs.c:365:19: error: 'struct acpi_table_attr' has no member named 'filename'
+     365 |         table_attr->filename[ACPI_NAMESEG_SIZE] = '\0';
+         |                   ^~
+   drivers/acpi/sysfs.c:366:23: error: 'struct acpi_table_attr' has no member named 'instance'
+     366 |         if (table_attr->instance > 1 || (table_attr->instance == 1 &&
+         |                       ^~
+   drivers/acpi/sysfs.c:366:52: error: 'struct acpi_table_attr' has no member named 'instance'
+     366 |         if (table_attr->instance > 1 || (table_attr->instance == 1 &&
+         |                                                    ^~
+   drivers/acpi/sysfs.c:370:36: error: 'struct acpi_table_attr' has no member named 'instance'
+     370 |                          table_attr->instance);
+         |                                    ^~
+   drivers/acpi/sysfs.c:371:34: error: 'struct acpi_table_attr' has no member named 'filename'
+     371 |                 strcat(table_attr->filename, instance_str);
+         |                                  ^~
+   drivers/acpi/sysfs.c:376:48: error: 'struct acpi_table_attr' has no member named 'filename'
+     376 |         table_attr->attr.attr.name = table_attr->filename;
+         |                                                ^~
+   drivers/acpi/sysfs.c: In function 'acpi_sysfs_table_handler':
+>> drivers/acpi/sysfs.c:397:42: error: 'struct acpi_table_attr' has no member named 'node'
+     397 |                 list_add_tail(&table_attr->node, &acpi_table_attr_list);
+         |                                          ^~
+   drivers/acpi/sysfs.c: In function 'acpi_tables_sysfs_init':
+   drivers/acpi/sysfs.c:545:42: error: 'struct acpi_table_attr' has no member named 'node'
+     545 |                 list_add_tail(&table_attr->node, &acpi_table_attr_list);
+         |                                          ^~
 
-> +
-> +					switch (type) {
-> +					case EINJV2_PROCESSOR_ERROR:
-> +						component_arr[count].comp_id.acpi_id = comp;
-> +						component_arr[count].comp_synd.proc_synd = synd;
-> +						break;
-> +					case EINJV2_MEMORY_ERROR:
-> +						component_arr[count].comp_id.device_id = comp;
-> +						component_arr[count].comp_synd.mem_synd = synd;
-> +						break;
-> +					case EINJV2_PCIE_ERROR:
-> +						component_arr[count].comp_id.pcie_sbdf = comp;
-> +						component_arr[count].comp_synd.pcie_synd = synd;
-> +						break;
-> +					}
-> +					count++;
-> +					if (pos >= str_len)
-> +						break;
-> +				}
-> +				v5param->einjv2_struct.component_arr_count = count;
-> +
-> +				/* clear buffer after user input for next injection */
-> +				memset(user_input, 0, COMP_ARR_SIZE);
-> +			} else {
-> +				v5param->apicid = param3;
-> +				v5param->pcie_sbdf = param4;
-> +			}
->  		} else {
->  			switch (type) {
->  			case ACPI_EINJ_PROCESSOR_CORRECTABLE:
-> @@ -531,7 +603,8 @@ static int __einj_error_inject(u32 type, u32 flags, u64 param1, u64 param2,
->  				break;
->  			}
->  		}
-> -		memcpy_toio(einj_param, v5param, sizeof(*v5param));
-> +		memcpy_toio(einj_param, v5param, v5param_size);
-> +		kfree(v5param);
->  	} else {
->  		rc = apei_exec_run(&ctx, ACPI_EINJ_SET_ERROR_TYPE);
->  		if (rc)
-> @@ -583,6 +656,9 @@ static int __einj_error_inject(u32 type, u32 flags, u64 param1, u64 param2,
->  	rc = apei_exec_run_optional(&ctx, ACPI_EINJ_END_OPERATION);
->  
->  	return rc;
-> +err_out:
-> +	memset(user_input, 0, COMP_ARR_SIZE);
-> +	return -EINVAL;
->  }
->  
 
-[snip]
+vim +310 drivers/acpi/sysfs.c
+
+   307	
+   308	struct acpi_table_attr {
+   309		struct bin_attribute attr;
+ > 310		char name[ACPI_NAMESEG_SIZE] ACPI_NONSTRING;
+   311		int instance;
+   312		char filename[ACPI_NAMESEG_SIZE+ACPI_INST_SIZE] ACPI_NONSTRING;
+   313		struct list_head node;
+   314	};
+   315	
+   316	struct acpi_data_attr {
+   317		struct bin_attribute attr;
+   318		u64	addr;
+   319	};
+   320	
+   321	static ssize_t acpi_table_show(struct file *filp, struct kobject *kobj,
+   322				       const struct bin_attribute *bin_attr, char *buf,
+   323				       loff_t offset, size_t count)
+   324	{
+   325		struct acpi_table_attr *table_attr =
+   326		    container_of(bin_attr, struct acpi_table_attr, attr);
+   327		struct acpi_table_header *table_header = NULL;
+   328		acpi_status status;
+   329		ssize_t rc;
+   330	
+ > 331		status = acpi_get_table(table_attr->name, table_attr->instance,
+   332					&table_header);
+   333		if (ACPI_FAILURE(status))
+   334			return -ENODEV;
+   335	
+   336		rc = memory_read_from_buffer(buf, count, &offset, table_header,
+   337				table_header->length);
+   338		acpi_put_table(table_header);
+   339		return rc;
+   340	}
+   341	
+   342	static int acpi_table_attr_init(struct kobject *tables_obj,
+   343					struct acpi_table_attr *table_attr,
+   344					struct acpi_table_header *table_header)
+   345	{
+   346		struct acpi_table_header *header = NULL;
+   347		struct acpi_table_attr *attr = NULL;
+   348		char instance_str[ACPI_INST_SIZE];
+   349	
+   350		sysfs_attr_init(&table_attr->attr.attr);
+   351		ACPI_COPY_NAMESEG(table_attr->name, table_header->signature);
+   352	
+   353		list_for_each_entry(attr, &acpi_table_attr_list, node) {
+   354			if (ACPI_COMPARE_NAMESEG(table_attr->name, attr->name))
+   355				if (table_attr->instance < attr->instance)
+   356					table_attr->instance = attr->instance;
+   357		}
+   358		table_attr->instance++;
+   359		if (table_attr->instance > ACPI_MAX_TABLE_INSTANCES) {
+   360			pr_warn("%4.4s: too many table instances\n", table_attr->name);
+   361			return -ERANGE;
+   362		}
+   363	
+ > 364		ACPI_COPY_NAMESEG(table_attr->filename, table_header->signature);
+   365		table_attr->filename[ACPI_NAMESEG_SIZE] = '\0';
+   366		if (table_attr->instance > 1 || (table_attr->instance == 1 &&
+   367						 !acpi_get_table
+   368						 (table_header->signature, 2, &header))) {
+   369			snprintf(instance_str, sizeof(instance_str), "%u",
+   370				 table_attr->instance);
+   371			strcat(table_attr->filename, instance_str);
+   372		}
+   373	
+   374		table_attr->attr.size = table_header->length;
+   375		table_attr->attr.read_new = acpi_table_show;
+   376		table_attr->attr.attr.name = table_attr->filename;
+   377		table_attr->attr.attr.mode = 0400;
+   378	
+   379		return sysfs_create_bin_file(tables_obj, &table_attr->attr);
+   380	}
+   381	
+   382	acpi_status acpi_sysfs_table_handler(u32 event, void *table, void *context)
+   383	{
+   384		struct acpi_table_attr *table_attr;
+   385	
+   386		switch (event) {
+   387		case ACPI_TABLE_EVENT_INSTALL:
+   388			table_attr = kzalloc(sizeof(*table_attr), GFP_KERNEL);
+   389			if (!table_attr)
+   390				return AE_NO_MEMORY;
+   391	
+   392			if (acpi_table_attr_init(dynamic_tables_kobj,
+   393						 table_attr, table)) {
+   394				kfree(table_attr);
+   395				return AE_ERROR;
+   396			}
+ > 397			list_add_tail(&table_attr->node, &acpi_table_attr_list);
+   398			break;
+   399		case ACPI_TABLE_EVENT_LOAD:
+   400		case ACPI_TABLE_EVENT_UNLOAD:
+   401		case ACPI_TABLE_EVENT_UNINSTALL:
+   402			/*
+   403			 * we do not need to do anything right now
+   404			 * because the table is not deleted from the
+   405			 * global table list when unloading it.
+   406			 */
+   407			break;
+   408		default:
+   409			return AE_BAD_PARAMETER;
+   410		}
+   411		return AE_OK;
+   412	}
+   413	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
