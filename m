@@ -1,118 +1,128 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+Received: from mx2.zhaoxin.com (mx2.zhaoxin.com [61.152.208.219])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E9821B042E;
-	Sat,  5 Apr 2025 07:06:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1823B211A3E
+	for <acpica-devel@lists.linux.dev>; Mon,  7 Apr 2025 02:07:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=61.152.208.219
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743836773; cv=none; b=NTvR2gK6I/tPheTQTqCp1GkD8hgYwAkJ6/biKhf98oxf8up8went51gyrvDbvJGP+Hh/RLx0fFg95gIO3ubGCZ0iD/jOmqkOIMVIiCs474S/G42WHGZQSIGKqDDLTYk8bksFFizagTiFv+v3/tZwxjlNqxTu9pQH4YFpeaE0KaI=
+	t=1743991644; cv=none; b=fMCER9IkXyjJUVOI30aDBT+Tgdw0yy+ckxMC+lMpcvoIVn+3s26dCO9lTB/SkfSKiL0zPodj5RJxDAQRiYGqBA2uFtYoQmhdq138LAzIxMdApiiiWHt0KSWH1lTiqzR9trK2XTUKSFtIynhi73/s6QxTja0MSu9H0T3MsbKol0A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743836773; c=relaxed/simple;
-	bh=c6pVeoNRFL0+YVb4Jo8fBY1tS3Gnyl5Tlg2+CQkLYkI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e6gwe3efLOXYSyV7Xf53DwqJmh9LAF40K3D+K40llk4THxb3lAIQyTvhCVeBRwY8BNT87LLTVas/xsVA1X/dwSfE3FJN3x6I0GTidMs7lGdZjVVAHOPPy1IlS5KuUeorntKRy2RpRwf28u1WXIbC7vZHG0QYwYIhpEP3nxJSYU4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PCSAIY7v; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PCSAIY7v"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1743836772; x=1775372772;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=c6pVeoNRFL0+YVb4Jo8fBY1tS3Gnyl5Tlg2+CQkLYkI=;
-  b=PCSAIY7vkz4YMMHlD8H/2W513+60eolcXmKvJaWbcB0x/hh04vr5WJ9E
-   bWLIQbTabAj5lsHwsMYVKro+s0rOj0MPF/qUzhjlqMLSDTzi1R8msvHDZ
-   yP8WO4XAWehSNs4PWsqCjZ/bYh0uvJygkpoedytY+O55nRpNR3xP7+rU2
-   +lmFjhSUdkyCGH7DTzZ9AQit94vWoDZCsg3PksH9D1VVPrQ03Uow1lJLn
-   5G1HJEBMo6a5wGVABamZooa0Zo6zBXlBTP/fKYmBm+qOynDWy9xsXdBXP
-   Rs15826WEtZDLG2UGYWm1K3FWpaCj2BhdeRkpCnf9eT4gVe4xv212oRoF
-   A==;
-X-CSE-ConnectionGUID: 7CX3l2GERw6KNBCuDhz45A==
-X-CSE-MsgGUID: akPDMciRQoCIMZGJcTWLJA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11394"; a="49072309"
-X-IronPort-AV: E=Sophos;i="6.15,190,1739865600"; 
-   d="scan'208";a="49072309"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2025 00:06:09 -0700
-X-CSE-ConnectionGUID: gAUA3IfzRCe9ESoQV2bv5Q==
-X-CSE-MsgGUID: +NpNIIZ+TPOZvAzfnJgRgQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.15,190,1739865600"; 
-   d="scan'208";a="132472871"
-Received: from lkp-server01.sh.intel.com (HELO b207828170a5) ([10.239.97.150])
-  by orviesa004.jf.intel.com with ESMTP; 05 Apr 2025 00:06:02 -0700
-Received: from kbuild by b207828170a5 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1u0xbC-0001sB-2q;
-	Sat, 05 Apr 2025 07:05:50 +0000
-Date: Sat, 5 Apr 2025 15:04:55 +0800
-From: kernel test robot <lkp@intel.com>
-To: Ahmed Salem <x0rw3ll@gmail.com>, robert.moore@intel.com,
-	rafael.j.wysocki@intel.com, lenb@kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	skhan@linuxfoundation.org,
-	linux-kernel-mentees@lists.linuxfoundation.org,
-	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] ACPI: sysfs: apply ACPI_NONSTRING annotation
-Message-ID: <202504051453.3rcptolF-lkp@intel.com>
-References: <dcc3a018fb28899b277df2e154740d59d4e404af.1743754416.git.x0rw3ll@gmail.com>
+	s=arc-20240116; t=1743991644; c=relaxed/simple;
+	bh=TTpNxi60rOS9cwxZpQdBYdmkZyVazYfR2C92mh+98r8=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=WlrQLy8pUM3LpV8f0NPusLO8qT/JSonvqYqxEbPFYihJ5F29w3Xgk5gOgU0iZ/Q2jPjQZanLMA94bCJ3kqNxgQFoyjVO9N0Y1ZMSDZPVXuQE6HEyfhMBHjiG80yu1KLgfQR5M8nFrhYoCD7JWZZHzR77g6yt+qbZpmXujJswecA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com; spf=pass smtp.mailfrom=zhaoxin.com; arc=none smtp.client-ip=61.152.208.219
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zhaoxin.com
+X-ASG-Debug-ID: 1743991630-1eb14e119c07020001-m47mSr
+Received: from ZXSHMBX3.zhaoxin.com (ZXSHMBX3.zhaoxin.com [10.28.252.165]) by mx2.zhaoxin.com with ESMTP id 11kl4D0J42PEHCEC (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Mon, 07 Apr 2025 10:07:10 +0800 (CST)
+X-Barracuda-Envelope-From: LeoLiu-oc@zhaoxin.com
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.165
+Received: from ZXSHMBX3.zhaoxin.com (10.28.252.165) by ZXSHMBX3.zhaoxin.com
+ (10.28.252.165) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.44; Mon, 7 Apr
+ 2025 10:07:10 +0800
+Received: from ZXSHMBX3.zhaoxin.com ([fe80::8cc5:5bc6:24ec:65f2]) by
+ ZXSHMBX3.zhaoxin.com ([fe80::8cc5:5bc6:24ec:65f2%6]) with mapi id
+ 15.01.2507.044; Mon, 7 Apr 2025 10:07:10 +0800
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.165
+Received: from xin.lan (10.32.64.1) by ZXBJMBX03.zhaoxin.com (10.29.252.7)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.44; Mon, 7 Apr
+ 2025 10:05:58 +0800
+From: LeoLiu-oc <LeoLiu-oc@zhaoxin.com>
+To: <rafael@kernel.org>, <lenb@kernel.org>, <james.morse@arm.com>,
+	<tony.luck@intel.com>, <bp@alien8.de>, <bhelgaas@google.com>,
+	<robert.moore@intel.com>, <yazen.ghannam@amd.com>, <avadhut.naik@amd.com>,
+	<linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-pci@vger.kernel.org>, <acpica-devel@lists.linux.dev>
+CC: <CobeChen@zhaoxin.com>, <TonyWWang@zhaoxin.com>, <ErosZhang@zhaoxin.com>,
+	<leoliu@zhaoxin.com>, LeoLiuoc <LeoLiu-oc@zhaoxin.com>
+Subject: [PATCH v6 0/4]  Parse the HEST PCIe AER and set to relevant registers
+Date: Mon, 7 Apr 2025 10:05:53 +0800
+X-ASG-Orig-Subj: [PATCH v6 0/4]  Parse the HEST PCIe AER and set to relevant registers
+Message-ID: <20250407020557.1225166-1-LeoLiu-oc@zhaoxin.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dcc3a018fb28899b277df2e154740d59d4e404af.1743754416.git.x0rw3ll@gmail.com>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-ClientProxiedBy: zxbjmbx1.zhaoxin.com (10.29.252.163) To
+ ZXBJMBX03.zhaoxin.com (10.29.252.7)
+X-Moderation-Data: 4/7/2025 10:07:08 AM
+X-Barracuda-Connect: ZXSHMBX3.zhaoxin.com[10.28.252.165]
+X-Barracuda-Start-Time: 1743991630
+X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
+X-Barracuda-URL: https://10.28.252.36:4443/cgi-mod/mark.cgi
+X-Virus-Scanned: by bsmtpd at zhaoxin.com
+X-Barracuda-Scan-Msg-Size: 2157
+X-Barracuda-BRTS-Status: 1
+X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
+X-Barracuda-Spam-Score: -2.02
+X-Barracuda-Spam-Status: No, SCORE=-2.02 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=
+X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.139598
+	Rule breakdown below
+	 pts rule name              description
+	---- ---------------------- --------------------------------------------------
 
-Hi Ahmed,
+From: LeoLiuoc <LeoLiu-oc@zhaoxin.com>
 
-kernel test robot noticed the following build errors:
+According to the Section 18.3.2.4, 18.3.2.5 and 18.3.2.6 in ACPI SPEC r6.5,
+the register value form HEST PCI Express AER Structure should be written to
+relevant PCIe Device's AER Capabilities. So the purpose of the patch set is
+to extract register value from HEST PCI Express AER structures and program
+them into PCIe Device's AER registers. Refer to the ACPI SPEC r6.5 for the
+more detailed description.
 
-[auto build test ERROR on b3c623b9a94f7f798715c87e7a75ceeecf15292f]
+Changes in v2:
+- Move the definition of structure "hest_parse_aer_info" to file apei.h.
+- Link to v1: https://lore.kernel.org/all/20231115091612.580685-1-LeoLiu-oc=
+@zhaoxin.com/
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Ahmed-Salem/ACPI-PRM-apply-ACPI_NONSTRING-annotation/20250404-162651
-base:   b3c623b9a94f7f798715c87e7a75ceeecf15292f
-patch link:    https://lore.kernel.org/r/dcc3a018fb28899b277df2e154740d59d4e404af.1743754416.git.x0rw3ll%40gmail.com
-patch subject: [PATCH 2/2] ACPI: sysfs: apply ACPI_NONSTRING annotation
-config: i386-buildonly-randconfig-004-20250405 (https://download.01.org/0day-ci/archive/20250405/202504051453.3rcptolF-lkp@intel.com/config)
-compiler: clang version 20.1.2 (https://github.com/llvm/llvm-project 58df0ef89dd64126512e4ee27b4ac3fd8ddf6247)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250405/202504051453.3rcptolF-lkp@intel.com/reproduce)
+Changes in v3:
+- The applicable hardware for this patch is added to the commit
+  information.
+- Change the function name "program_hest_aer_endpoint" to
+  "program_hest_aer_common".
+- Add the comment to function "program_hest_aer_common".
+- Remove the "PCI_EXP_TYPE_PCIE_BRIDGE" branch handling in function
+  "program_hest_aer_params".
+- Link to v2: https://lore.kernel.org/all/20231218030430.783495-1-LeoLiu-oc=
+@zhaoxin.com/
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202504051453.3rcptolF-lkp@intel.com/
+Changes in v4:
+- Fix some compilation warnings.
+- Link to v3: https://lore.kernel.org/all/20240718062405.30571-1-LeoLiu-oc@=
+zhaoxin.com/
 
-All errors (new ones prefixed by >>):
+Changes in v5:
+- Optimize the code according to the suggestions.
+- Link to v4: https://lore.kernel.org/all/20241205114048.60291-1-LeoLiu-oc@=
+zhaoxin.com/
 
->> drivers/acpi/sysfs.c:310:30: error: expected ';' at end of declaration list
-     310 |         char name[ACPI_NAMESEG_SIZE] ACPI_NONSTRING;
-         |                                     ^
-         |                                     ;
-   drivers/acpi/sysfs.c:312:49: error: expected ';' at end of declaration list
-     312 |         char filename[ACPI_NAMESEG_SIZE+ACPI_INST_SIZE] ACPI_NONSTRING;
-         |                                                        ^
-         |                                                        ;
-   2 errors generated.
+Changes in v6:
+- Fix the issue that the first patch in the patch set fails to compile indi=
+vidually.
+- Link to v5: https://lore.kernel.org/all/20250226121838.364533-1-LeoLiu-oc=
+@zhaoxin.com/
 
+LeoLiuoc (4):
+  ACPI: APEI: Move apei_hest_parse() to apei.h
+  ACPI: APEI: Add new hest_parse_pcie_aer()
+  PCI: Add AER bits #defines for PCIe to PCI/PCI-X Bridge
+  PCI: ACPI: Add new pci_acpi_program_hest_aer_params()
 
-vim +310 drivers/acpi/sysfs.c
+ drivers/acpi/apei/hest.c      | 54 ++++++++++++++++++++-
+ drivers/pci/pci-acpi.c        | 88 +++++++++++++++++++++++++++++++++++
+ drivers/pci/pci.h             |  6 +++
+ drivers/pci/probe.c           |  1 +
+ include/acpi/apei.h           | 13 ++++++
+ include/uapi/linux/pci_regs.h |  3 ++
+ 6 files changed, 163 insertions(+), 2 deletions(-)
 
-   307	
-   308	struct acpi_table_attr {
-   309		struct bin_attribute attr;
- > 310		char name[ACPI_NAMESEG_SIZE] ACPI_NONSTRING;
-   311		int instance;
-   312		char filename[ACPI_NAMESEG_SIZE+ACPI_INST_SIZE] ACPI_NONSTRING;
-   313		struct list_head node;
-   314	};
-   315	
+--=20
+2.34.1
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
