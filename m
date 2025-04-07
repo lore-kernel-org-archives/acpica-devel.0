@@ -1,105 +1,90 @@
-Received: from mx1.zhaoxin.com (MX1.ZHAOXIN.COM [210.0.225.12])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BED52135C4
-	for <acpica-devel@lists.linux.dev>; Mon,  7 Apr 2025 02:07:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.0.225.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21FDD2571B0
+	for <acpica-devel@lists.linux.dev>; Mon,  7 Apr 2025 18:47:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743991651; cv=none; b=qwSgdcGzZQePC+nRKH+jJkB/VzVOlrCx9V8lLcqngR9suSfRKc/QSK3rFXJgXPpgZSBzpBkOsBkONKg//VCTBd04n0vkG/UuTTkjIAoKhTdMhSguJIf1dfyA9DOYrea7H6YWeo+2ZYP29mx04CtZLF3+H1kVVnq3V/mALVvNkko=
+	t=1744051673; cv=none; b=oskiLd6teTX6YkJA1V81l/aVmr8SVzI8nAMq7AzZMl9tfvAZxC1rrxEOtFKDo38aoJWPLADhDvzKqx9iBI2UZ21xlOgj3iZWWRvfGUCrzizcLf/8Z3ci2Z0GcBHQaautdp75hHhOUL3SB+PEXhnZ7rT42PEYPLae+jHCJI4UEA8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743991651; c=relaxed/simple;
-	bh=LI1xxYswTZGnREaBh49kFITjcqbPBpNgdy0MRsQJsEE=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=q+JzTXnksnHDvhfWe5S/1ucTbWRf9GxhPss8NPUeJfjYwQPvQWgwS60LJSvN2Cxrvd3fkMPgMcftjk7gDHLIWDfvrEH2lVtGQgZU3lXBLGiXyJ3/SI/ekJzVBqdtOa0Ay6Auryqfey+o/BKGrYZU0SjOB8pXhoMkgxAx6A5qoD0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com; spf=pass smtp.mailfrom=zhaoxin.com; arc=none smtp.client-ip=210.0.225.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zhaoxin.com
-X-ASG-Debug-ID: 1743991639-086e2365b83ef00001-m47mSr
-Received: from ZXSHMBX2.zhaoxin.com (ZXSHMBX2.zhaoxin.com [10.28.252.164]) by mx1.zhaoxin.com with ESMTP id pCU9HxyFP6hAAIVa (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Mon, 07 Apr 2025 10:07:19 +0800 (CST)
-X-Barracuda-Envelope-From: LeoLiu-oc@zhaoxin.com
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.164
-Received: from ZXSHMBX3.zhaoxin.com (10.28.252.165) by ZXSHMBX2.zhaoxin.com
- (10.28.252.164) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.44; Mon, 7 Apr
- 2025 10:07:19 +0800
-Received: from ZXSHMBX3.zhaoxin.com ([fe80::8cc5:5bc6:24ec:65f2]) by
- ZXSHMBX3.zhaoxin.com ([fe80::8cc5:5bc6:24ec:65f2%6]) with mapi id
- 15.01.2507.044; Mon, 7 Apr 2025 10:07:19 +0800
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.164
-Received: from xin.lan (10.32.64.1) by ZXBJMBX03.zhaoxin.com (10.29.252.7)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.44; Mon, 7 Apr
- 2025 10:06:03 +0800
-From: LeoLiu-oc <LeoLiu-oc@zhaoxin.com>
-To: <rafael@kernel.org>, <lenb@kernel.org>, <james.morse@arm.com>,
-	<tony.luck@intel.com>, <bp@alien8.de>, <bhelgaas@google.com>,
-	<robert.moore@intel.com>, <yazen.ghannam@amd.com>, <avadhut.naik@amd.com>,
-	<linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-pci@vger.kernel.org>, <acpica-devel@lists.linux.dev>
-CC: <CobeChen@zhaoxin.com>, <TonyWWang@zhaoxin.com>, <ErosZhang@zhaoxin.com>,
-	<leoliu@zhaoxin.com>, LeoLiuoc <LeoLiu-oc@zhaoxin.com>
-Subject: [PATCH v6 3/4] PCI: Add AER bits #defines for PCIe to PCI/PCI-X Bridge
-Date: Mon, 7 Apr 2025 10:05:56 +0800
-X-ASG-Orig-Subj: [PATCH v6 3/4] PCI: Add AER bits #defines for PCIe to PCI/PCI-X Bridge
-Message-ID: <20250407020557.1225166-4-LeoLiu-oc@zhaoxin.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250407020557.1225166-1-LeoLiu-oc@zhaoxin.com>
-References: <20250407020557.1225166-1-LeoLiu-oc@zhaoxin.com>
+	s=arc-20240116; t=1744051673; c=relaxed/simple;
+	bh=jc+HkENZJIE/WyOoX7Wd1g4lRbZOlgcYKfYj6l/NAHc=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=Bw/o0cQwaWyvS6vxQ5JYAsNiCZ/3WrBXejcNySaw6k0S4d31+4v4BeeNxyqCIuIVB95xUhieZa7HQeQTNC/gGFyKIpC8XzcS8dFGZEi73bv+juB+WrruaRXrZTSDjO3SuCpI4tUcYf7cJ7mPFCjmgcNNtZNWIPAxjuh9ck3GIxA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kIhqjflx; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kIhqjflx"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1744051672; x=1775587672;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=jc+HkENZJIE/WyOoX7Wd1g4lRbZOlgcYKfYj6l/NAHc=;
+  b=kIhqjflx1BpmJlkYERnphiHj+TjzX8N4naXhldICbBubbjmokxjaoESg
+   e33T5Nx4bmCTXrGUb6LDbmM+Yoapu47d/tecNiYyI7Xv8BVJOmUk2+tr7
+   1McdtSddEGwKcFU2xUH3cOuMa2sBlHzT22wuLO7bqiTGBX6h9GED+XVee
+   1vEIedg63vZPO2QcPhoUkgTZnvkMyMqQD/VHxxa7Y1eXdzoK7F2eOB1CV
+   1WKX67CBOen2TH0MgBbTKXO4jGhCkn/Grksnx0hWRGJ6kIrmAZkepyvvt
+   vz40LJ4/cRRdIhqKqzQfb+2wD8rOeyotdmqsXlCtKYskzMqttJnY9YV4/
+   g==;
+X-CSE-ConnectionGUID: pwHli6ppRISNnvKmLXCW7Q==
+X-CSE-MsgGUID: VlB+Vz+ZTm64FD6A612Mng==
+X-IronPort-AV: E=McAfee;i="6700,10204,11397"; a="45167634"
+X-IronPort-AV: E=Sophos;i="6.15,194,1739865600"; 
+   d="scan'208";a="45167634"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2025 11:47:51 -0700
+X-CSE-ConnectionGUID: 3O06cto4TVmpELNz1wcTtQ==
+X-CSE-MsgGUID: GH3E5Cp/SaaUsXrsWq9RtQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.15,194,1739865600"; 
+   d="scan'208";a="127788685"
+Received: from smile.fi.intel.com ([10.237.72.58])
+  by orviesa009.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2025 11:47:50 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.98.2)
+	(envelope-from <andriy.shevchenko@intel.com>)
+	id 1u1rVb-0000000AAPo-3Vdt;
+	Mon, 07 Apr 2025 21:47:47 +0300
+Date: Mon, 7 Apr 2025 21:47:47 +0300
+From: Andy Shevchenko <andriy.shevchenko@intel.com>
+To: Robert Moore <robert.moore@intel.com>,
+	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Cc: linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev
+Subject: ACPICA compilation error on x86_64_defconfig (W=1 build)
+Message-ID: <Z_Qd0x6bLSQjJ7Rw@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-X-ClientProxiedBy: zxbjmbx1.zhaoxin.com (10.29.252.163) To
- ZXBJMBX03.zhaoxin.com (10.29.252.7)
-X-Moderation-Data: 4/7/2025 10:07:18 AM
-X-Barracuda-Connect: ZXSHMBX2.zhaoxin.com[10.28.252.164]
-X-Barracuda-Start-Time: 1743991639
-X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
-X-Barracuda-URL: https://10.28.252.35:4443/cgi-mod/mark.cgi
-X-Virus-Scanned: by bsmtpd at zhaoxin.com
-X-Barracuda-Scan-Msg-Size: 1201
-X-Barracuda-BRTS-Status: 1
-X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
-X-Barracuda-Spam-Score: -2.02
-X-Barracuda-Spam-Status: No, SCORE=-2.02 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.139599
-	Rule breakdown below
-	 pts rule name              description
-	---- ---------------------- --------------------------------------------------
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-From: LeoLiuoc <LeoLiu-oc@zhaoxin.com>
+v6.15-rc1 (but seems older should also be problematic) fails to compile by
+Clang 19 with `make W=1`.
 
-Define secondary uncorrectable error mask register, secondary
-uncorrectable error severity register and secondary error capabilities and
-control register bits in AER capability for PCIe to PCI/PCI-X Bridge.
-Please refer to PCIe to PCI/PCI-X Bridge Specification r1.0, sec 5.2.3.2,
-5.2.3.3 and 5.2.3.4.
+  CC      drivers/acpi/acpica/nsaccess.o
+  drivers/acpi/acpica/nsaccess.c:295:6: error: variable 'num_carats' set but not used [-Werror,-Wunused-but-set-variable]
+    295 |         u32 num_carats;
+        |             ^
+  1 error generated.
 
-Signed-off-by: LeoLiuoc <LeoLiu-oc@zhaoxin.com>
----
- include/uapi/linux/pci_regs.h | 3 +++
- 1 file changed, 3 insertions(+)
+I looked briefly in the code and I have no idea how to fix this, as probably
+__maybe_unused not an option for ACPICA. Hence this report.
 
-diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
-index ba326710f9c8..96dc910dc0eb 100644
---- a/include/uapi/linux/pci_regs.h
-+++ b/include/uapi/linux/pci_regs.h
-@@ -814,6 +814,9 @@
- #define  PCI_ERR_ROOT_AER_IRQ		0xf8000000 /* Advanced Error Interrupt Mess=
-age Number */
- #define PCI_ERR_ROOT_ERR_SRC	0x34	/* Error Source Identification */
- #define PCI_ERR_PREFIX_LOG	0x38	/* TLP Prefix LOG Register (up to 16 bytes=
-) */
-+#define PCI_ERR_UNCOR_MASK2	0x30	/* PCIe to PCI/PCI-X Bridge */
-+#define PCI_ERR_UNCOR_SEVER2	0x34	/* PCIe to PCI/PCI-X Bridge */
-+#define PCI_ERR_CAP2		0x38	/* PCIe to PCI/PCI-X Bridge */
-=20
- /* Virtual Channel */
- #define PCI_VC_PORT_CAP1	0x04
---=20
-2.34.1
+Note, the in-tree defconfig is in use:
+
+	git checkout v6.15-rc1
+	make x86_64_defconfig
+	make W=1
+
+should trigger it.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
