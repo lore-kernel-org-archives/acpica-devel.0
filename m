@@ -1,104 +1,135 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E496B224225
-	for <acpica-devel@lists.linux.dev>; Mon,  7 Apr 2025 18:51:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40ACE1DE4E7
+	for <acpica-devel@lists.linux.dev>; Wed,  9 Apr 2025 06:57:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744051881; cv=none; b=tYHjbLcJRWS9JWf29LCH/iLUEUd4asZI6UNVDgfpayiZRu/qJJp7vidnKeyYSKngFTX1jcjXZkVsTMqfZ9oVrREAaCP7fZ6/AkoI2pRto1EXPBwAwgoMWF6LmWawYHHAf2Vkf+I9gDjz1CCY4pvNu009S0PqFWciYoAP1nowClE=
+	t=1744181830; cv=none; b=DsR03Ml9pjyVXd/apwMJEQK7xpvnIv5by+2cE6wcpxKGaa9zkvo2NIei0Z9zR0sGyC8wPDpP/yE0ebqoWMJa69bHQZjJ/8fkDjBcVMBPk9YEvW0vjU6sG5SRBiYlI9JFslaXY1eou5PmxcCSylDqmc0eFBg1hNRFW/NqN2OGl3E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744051881; c=relaxed/simple;
-	bh=m8fcxrwIZ81oqP3+PTHU29MMELBlQeCLYlUr8QdX2B4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gUeU/Z3oANefi+FdYBKFCNFdlCqzBRQNOqyaI5glH3S7Nm4U99JU1XfERSjJgl5S1CvFkw0d74t3a30Yiv2Hb7wRDy4rUjl18Gy+y+WVwHy6wL52REss1gWv5hsep75KiW2tXezYHPeMDj9iUPmFa8s6dO/GKD23IxCfK3hZpR0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=N9yrPiq5; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="N9yrPiq5"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1744051880; x=1775587880;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=m8fcxrwIZ81oqP3+PTHU29MMELBlQeCLYlUr8QdX2B4=;
-  b=N9yrPiq5YdH2B6Azw1OV9imDh3a9Aff2bXBm7tAfAvmlvo0rtuOZQrSJ
-   v0we4DNtQt2QtMSZ60yny7ZlyZDprwFISuKWB6AiorUiDH7QGA63cLqb/
-   vtNZv+PwuiJs8nNei+8XG6K4UJpFbj1HTQOmm6zEdxNl94O5gJXBaVISb
-   yEwAXo3t5mPOUMcNIwsu1NvzqGyao5zxrhgI1UU8XNVZmPvoIsLaTU2Xj
-   eDy1xsMtTu2vd7pWvJshIXB/RMA/+yR5S92RIF0kyEnBEkk6DHL+mWQ5a
-   +6T0sfkqNwtD6R6vk6p3yr5TvXddxZo+ORzCwUTbi4h6Ey6/qzomkwTa+
-   w==;
-X-CSE-ConnectionGUID: F2gMQziwQziq15A1rgDdcA==
-X-CSE-MsgGUID: pdRdMrDdTMKT8QLe4NcZdg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11397"; a="45356801"
-X-IronPort-AV: E=Sophos;i="6.15,194,1739865600"; 
-   d="scan'208";a="45356801"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2025 11:51:19 -0700
-X-CSE-ConnectionGUID: +tuUeOkeRIurk9EF5b6iqQ==
-X-CSE-MsgGUID: B8/dhCOxSfatSDXpCylsuQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.15,194,1739865600"; 
-   d="scan'208";a="132764938"
-Received: from smile.fi.intel.com ([10.237.72.58])
-  by fmviesa005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2025 11:51:18 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.98.2)
-	(envelope-from <andriy.shevchenko@intel.com>)
-	id 1u1rYx-0000000AASv-0uIV;
-	Mon, 07 Apr 2025 21:51:15 +0300
-Date: Mon, 7 Apr 2025 21:51:14 +0300
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: Saket Dumbre <saket.dumbre@intel.com>,
-	Robert Moore <robert.moore@intel.com>,
-	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev
-Subject: Re: ACPICA compilation error on x86_64_defconfig (W=1 build)
-Message-ID: <Z_Qeot7pps5Q4vx7@smile.fi.intel.com>
-References: <Z_Qd0x6bLSQjJ7Rw@smile.fi.intel.com>
- <CAJZ5v0j2Y3vPZhUGJmcWzn6esg9zv5an0KPEN4QfQuyGrd5=YQ@mail.gmail.com>
+	s=arc-20240116; t=1744181830; c=relaxed/simple;
+	bh=5OqQXLP2ulysEHMnWREeyJq89gXDNN8qHGaB8hrEtD4=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ehtHUkry3PUlmEFIrc3buj0KyyQ764HqjnVCNuiqPHXcv9RxxbpIGGueF3lajMuXYH4xhY/ORvedt+Y7FvL1tgdk19qFuUR1NjCZLGMfGKuu7uZvvmL8hWmZ6PIkp4G87lFvnTD9DlxG9Wi/JDcOSMysTBNJBR+wH1E38h8eH4Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4ZXYZG0X2szHrW0;
+	Wed,  9 Apr 2025 14:53:42 +0800 (CST)
+Received: from kwepemh100008.china.huawei.com (unknown [7.202.181.93])
+	by mail.maildlp.com (Postfix) with ESMTPS id 68E481402C4;
+	Wed,  9 Apr 2025 14:57:05 +0800 (CST)
+Received: from localhost.huawei.com (10.50.165.33) by
+ kwepemh100008.china.huawei.com (7.202.181.93) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Wed, 9 Apr 2025 14:57:04 +0800
+From: Lifeng Zheng <zhenglifeng1@huawei.com>
+To: <rafael@kernel.org>, <lenb@kernel.org>, <robert.moore@intel.com>,
+	<viresh.kumar@linaro.org>, <mario.limonciello@amd.com>,
+	<gautham.shenoy@amd.com>, <ray.huang@amd.com>, <perry.yuan@amd.com>,
+	<pierre.gondois@arm.com>
+CC: <acpica-devel@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+	<linuxarm@huawei.com>, <jonathan.cameron@huawei.com>,
+	<zhanjie9@hisilicon.com>, <lihuisong@huawei.com>,
+	<cenxinghai@h-partners.com>, <zhenglifeng1@huawei.com>, <hepeng68@huawei.com>
+Subject: [PATCH v6 0/8] Add functions for getting and setting registers related to autonomous selection in cppc_acpi
+Date: Wed, 9 Apr 2025 14:56:55 +0800
+Message-ID: <20250409065703.1461867-1-zhenglifeng1@huawei.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0j2Y3vPZhUGJmcWzn6esg9zv5an0KPEN4QfQuyGrd5=YQ@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemh100008.china.huawei.com (7.202.181.93)
 
-On Mon, Apr 07, 2025 at 08:49:41PM +0200, Rafael J. Wysocki wrote:
-> On Mon, Apr 7, 2025 at 8:47 PM Andy Shevchenko
-> <andriy.shevchenko@intel.com> wrote:
-> >
-> > v6.15-rc1 (but seems older should also be problematic) fails to compile by
-> > Clang 19 with `make W=1`.
-> >
-> >   CC      drivers/acpi/acpica/nsaccess.o
-> >   drivers/acpi/acpica/nsaccess.c:295:6: error: variable 'num_carats' set but not used [-Werror,-Wunused-but-set-variable]
-> >     295 |         u32 num_carats;
-> >         |             ^
-> >   1 error generated.
-> >
-> > I looked briefly in the code and I have no idea how to fix this, as probably
-> > __maybe_unused not an option for ACPICA. Hence this report.
-> >
-> > Note, the in-tree defconfig is in use:
-> >
-> >         git checkout v6.15-rc1
-> >         make x86_64_defconfig
+The patch series is organized in two parts:
 
-> >         make W=1
+ - patch 1-6 refactor out the general CPPC register get and set functions
+   in cppc_acpi.c
 
-Since it's a clang, this should have also something like LLVM=1.
+ - patches 7-8 add functions for getting and setting values of auto_sel,
+   energy_perf and auto_act_window in cppc_acpi.c
 
-> > should trigger it.
+Changelog:
+
+v6:
+
+ - Remove the last patch, will resent it in the future after reaching an
+   agreement with Sumit
+ - split patch 3 into 2 smaller patches
+ - Remove the printing of reg_idx in cppc_get_reg_val() and
+   cppc_set_reg_val()
+ - Change the logic for determing whether a register is supported in
+   cppc_get_reg_val() and cppc_set_reg_val()
+
+v5:
+
+ - add more explanation to the commit logs and comments
+ - change REG_OPTIONAL from bin to hex
+ - split patch 2 into 3 smaller patches
+ - remove CPPC_REG_VAL_READ() and CPPC_REG_VAL_WRITE() macros
+ - move the modification part in patch 5 into a separate patch
+ - rename the sysfs file from "energy_perf" to
+   energy_performance_preference_val
+
+v4:
+
+ - add REG_OPTIONAL and IS_OPTIONAL_CPC_REG to judge if a cpc register is
+   an optional one
+ - check whether the register is optional before CPC_SUPPORTED check in
+   cppc_get_reg_val() and cppc_set_reg_val()
+ - check the register's type in cppc_set_reg_val()
+ - add macros to generally implement registers getting and setting
+   functions
+ - move some logic codes from cppc_cpufreq.c to cppc_acpi.c
+ - replace cppc_get_auto_sel_caps() by cppc_get_auto_sel()
+
+v3:
+
+ - change cppc_get_reg() and cppc_set_reg() name to cppc_get_reg_val() and
+   cppc_set_reg_val()
+ - extract cppc_get_reg_val_in_pcc() and cppc_set_reg_val_in_pcc()
+ - return the result of cpc_read() in cppc_get_reg_val()
+ - add pr_debug() in cppc_get_reg_val_in_pcc() when pcc_ss_id < 0
+ - rename 'cpunum' to 'cpu' in cppc_get_reg_val()
+ - move some macros from drivers/cpufreq/cppc_cpufreq.c to
+   include/acpi/cppc_acpi.h with a CPPC_XXX prefix
+
+v2:
+
+ - fix some incorrect placeholder
+ - change kstrtoul to kstrtobool in store_auto_select
+
+---
+Discussions of previous versions:
+v1: https://lore.kernel.org/all/20241114084816.1128647-1-zhenglifeng1@huawei.com/
+v2: https://lore.kernel.org/all/20241122062051.3658577-1-zhenglifeng1@huawei.com/
+v3: https://lore.kernel.org/all/20241216091603.1247644-1-zhenglifeng1@huawei.com/
+v4: https://lore.kernel.org/all/20250113122104.3870673-1-zhenglifeng1@huawei.com/
+v5: https://lore.kernel.org/all/20250206131428.3261578-1-zhenglifeng1@huawei.com/
+
+Lifeng Zheng (8):
+  ACPI: CPPC: Add IS_OPTIONAL_CPC_REG macro to judge if a cpc_reg is
+    optional
+  ACPI: CPPC: Optimize cppc_get_perf()
+  ACPI: CPPC: Rename cppc_get_perf() to cppc_get_reg_val()
+  ACPI: CPPC: Extract cppc_get_reg_val_in_pcc()
+  ACPI: CPPC: Add cppc_set_reg_val()
+  ACPI: CPPC: Refactor register value get and set ABIs
+  ACPI: CPPC: Modify cppc_get_auto_sel_caps() to cppc_get_auto_sel()
+  ACPI: CPPC: Add three functions related to autonomous selection
+
+ drivers/acpi/cppc_acpi.c     | 304 +++++++++++++++++++++--------------
+ drivers/cpufreq/amd-pstate.c |   3 +-
+ include/acpi/cppc_acpi.h     |  30 +++-
+ 3 files changed, 210 insertions(+), 127 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.33.0
 
