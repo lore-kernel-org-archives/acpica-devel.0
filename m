@@ -1,217 +1,204 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCE21264FA5
-	for <acpica-devel@lists.linux.dev>; Wed,  9 Apr 2025 14:07:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C9D914F121
+	for <acpica-devel@lists.linux.dev>; Wed,  9 Apr 2025 14:15:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744207641; cv=none; b=Y+z00xFgP+x2f0gFlCGjgQeSDx+EJlEiEvilUIIcPx4WZXsGfWK1MXhDacTULeJwinLuJjUJVduqWuPikk6o1z5c07BrKUb+2UQHwWKiX7K1lRSwauBuiiyghYnkiMfQoMu5+ONZW+bfzhgQ1f7fDf6ifPuH5exxi5RaccF9fl8=
+	t=1744208111; cv=none; b=fGKIDe1TKcRQmbmEgTNInxancxRwsy0udIU0eTVOGmOx9corvkwheE8bYli3tpLyPeJUFmlh58FYERa8XX4yUbky0pgXcrb16WUNtE7lYE+gN8XcfC8yvIAtiv7f+jDncjRp0Sg+ODz4yMagDKv8/4E2mNQkFywtz3JJccn+EX0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744207641; c=relaxed/simple;
-	bh=Ylnyd4UKcWGGSded241Wo5qaAuR45DuBA/5qomazLSo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nIb30hgs0LMX5cH+snzbAvKZjoi1jWD6nELknPoNOptZD8VwFLPd3pOF58rTokaNoTmU1ePbUS/UFQlE/DiFTdMz5SnPe1XGpOTYxOPuKAHzIWGSzJv1kdIRnCRvYSQRgzB6piPA1uMMMTTMOXFNPAvW6gNamPcV5ra6lCAag/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OWx4g3ME; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1744208111; c=relaxed/simple;
+	bh=YZNADTDnpFwmstiZiOUvs9W0ptXjNDD/nKl6XbxpEN0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Xjrr7EXpQkIf37bhiQUsDwUg2sZro1IT8EsfnHUE+fmlJ7LsqoTGluqjL60BnQUvVTh9dSalu6R+34oDe/2p/OpIN7hbHA9kXNLsQ38QuhgTtQG9kqfhGVT5XtX11ordMZ6655BrUsgkvJbetG6sEaGPiTVXtZS3lBR3bH9/x7M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MVuAqni8; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OWx4g3ME"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53A42C4CEE3
-	for <acpica-devel@lists.linux.dev>; Wed,  9 Apr 2025 14:07:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744207641;
-	bh=Ylnyd4UKcWGGSded241Wo5qaAuR45DuBA/5qomazLSo=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=OWx4g3MEBkwCkQjGlpvkF3HUVx6Z1sIHzOdLdX10adWkx+g0B6zdZlx33cp3dxgwP
-	 /gjfg0BX6L+BiiCb5hw19JCGLSUXr96uGX5UlZXYb4YKkF3dsYtHMpQktcdA+rLOEM
-	 91PasKejLoLhEoVNXq2ugGu9iXygWKuZPGYAgTdyPDeMT6zGct+npfxGXo7D+y1X9A
-	 ZDgi3JoHRbPr27LecvzzQZBaaIG1zTxutKOUp696+915hs+/OotKJuYTRvhi//RPei
-	 BJ0b4JQBcbCnNEO2L8rApRUWxUlbAZean6PcZddfF2ZfyexbLLucKuRluzITXC6SI6
-	 azYBmUJp6IoTw==
-Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-2cc89c59cc0so458078fac.0
-        for <acpica-devel@lists.linux.dev>; Wed, 09 Apr 2025 07:07:21 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWUZAcMx27hcCjZJlIrBxlMEiNYKRno0DrRT0mww4MMdk0DkMBmP3bW1qmTpw+4+BlwV71+r5IaGuoBy1Q=@lists.linux.dev
-X-Gm-Message-State: AOJu0YwcPoij/MRVGEk5nAQp78DP05b9IMCDgDeMCtmEiPE4xe337zEw
-	yM75RuBaJzblQwgIQ3KrgXw4s1yKBvUa+Qosq3WKhGF7C3OC4SA5bDMOx1X2IRE85i8LOa1Eq5O
-	qLqWphJfHIPSwdeng4y1algL+Fmw=
-X-Google-Smtp-Source: AGHT+IGC/A7sU/5qPA97lgZb2/LjsIdD+DX7DdMmLvr2fSxt/ypxFH1MadKCySziCcmUvWO1zSybBgjLcqyol+Y35h0=
-X-Received: by 2002:a05:6870:7e8c:b0:2b8:5d9e:d0d9 with SMTP id
- 586e51a60fabf-2d0648c58dbmr3672518fac.4.1744207640586; Wed, 09 Apr 2025
- 07:07:20 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MVuAqni8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1744208110; x=1775744110;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=YZNADTDnpFwmstiZiOUvs9W0ptXjNDD/nKl6XbxpEN0=;
+  b=MVuAqni8vB7MJQhmjhdCV0mXb+h8wuiKPKijLzv60HrRm3GYE1maM7nr
+   XL+ZdB90Si0B/ftHoHk7j/Axc+DntlCNqSIox6+O9ic8ZS8dEQpxm5IOm
+   dEp4zwQhwL2FKAugg3Ualuy7WauaTg8OPB2IOBqlBi2Ui53ctnRHas8oy
+   qN2xZyjey7wvV8CF2mVK9hYLZ7tFX0NZMCzQ9gB/MBcYOu6GnjGc65GYB
+   +evRMELZ8lVED1pb19DYXOBNDp64eqYgdhD7eLwZvDfiOQMcIZlV1eScz
+   PprxGrTLQl3NAzk91sA1M/TIzESVds2kSeuTdL2fx7caYm3FrUc1zqJFw
+   w==;
+X-CSE-ConnectionGUID: u1CrWEC4TNmQ+9juC/WrsQ==
+X-CSE-MsgGUID: SA6QmKESRAqP7UbRz+Iz8w==
+X-IronPort-AV: E=McAfee;i="6700,10204,11397"; a="45809981"
+X-IronPort-AV: E=Sophos;i="6.15,200,1739865600"; 
+   d="scan'208";a="45809981"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2025 07:15:09 -0700
+X-CSE-ConnectionGUID: GXh8NcH4TFy1pli2oRjmYA==
+X-CSE-MsgGUID: +EL+c7RYTzOPd4yopBeCIw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.15,200,1739865600"; 
+   d="scan'208";a="159576359"
+Received: from smile.fi.intel.com ([10.237.72.58])
+  by fmviesa001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2025 07:15:07 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.98.2)
+	(envelope-from <andriy.shevchenko@intel.com>)
+	id 1u2WCm-0000000Al3J-3nYF;
+	Wed, 09 Apr 2025 17:15:04 +0300
+Date: Wed, 9 Apr 2025 17:15:04 +0300
+From: "Shevchenko, Andriy" <andriy.shevchenko@intel.com>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: "Dumbre, Saket" <saket.dumbre@intel.com>,
+	"Moore, Robert" <robert.moore@intel.com>,
+	"Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
+	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+	"acpica-devel@lists.linux.dev" <acpica-devel@lists.linux.dev>
+Subject: Re: ACPICA compilation error on x86_64_defconfig (W=1 build)
+Message-ID: <Z_aA6D7_FdG4RTQV@smile.fi.intel.com>
+References: <Z_Qd0x6bLSQjJ7Rw@smile.fi.intel.com>
+ <CAJZ5v0j2Y3vPZhUGJmcWzn6esg9zv5an0KPEN4QfQuyGrd5=YQ@mail.gmail.com>
+ <Z_Qeot7pps5Q4vx7@smile.fi.intel.com>
+ <LV8PR11MB86980990221C597E01BAEB7980B52@LV8PR11MB8698.namprd11.prod.outlook.com>
+ <LV8PR11MB8698978FFF89ACBEF253667680B52@LV8PR11MB8698.namprd11.prod.outlook.com>
+ <Z_ZY_UA7ypFzpT0t@smile.fi.intel.com>
+ <Z_Z9mnDbypQ0KLF8@smile.fi.intel.com>
+ <CAJZ5v0jWu4rEjO1bYzaTkF3Edcmnyi+3yEz9WNYzb8+3J74hEw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <Z_Qd0x6bLSQjJ7Rw@smile.fi.intel.com> <CAJZ5v0j2Y3vPZhUGJmcWzn6esg9zv5an0KPEN4QfQuyGrd5=YQ@mail.gmail.com>
- <Z_Qeot7pps5Q4vx7@smile.fi.intel.com> <LV8PR11MB86980990221C597E01BAEB7980B52@LV8PR11MB8698.namprd11.prod.outlook.com>
- <LV8PR11MB8698978FFF89ACBEF253667680B52@LV8PR11MB8698.namprd11.prod.outlook.com>
- <Z_ZY_UA7ypFzpT0t@smile.fi.intel.com> <Z_Z9mnDbypQ0KLF8@smile.fi.intel.com>
-In-Reply-To: <Z_Z9mnDbypQ0KLF8@smile.fi.intel.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 9 Apr 2025 16:07:09 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0jWu4rEjO1bYzaTkF3Edcmnyi+3yEz9WNYzb8+3J74hEw@mail.gmail.com>
-X-Gm-Features: ATxdqUERXfaraGx-9xin0b4-ewvt4t5EgbfCJmIz4mI_sEqHao4GnjegsWdn20Q
-Message-ID: <CAJZ5v0jWu4rEjO1bYzaTkF3Edcmnyi+3yEz9WNYzb8+3J74hEw@mail.gmail.com>
-Subject: Re: ACPICA compilation error on x86_64_defconfig (W=1 build)
-To: "Shevchenko, Andriy" <andriy.shevchenko@intel.com>
-Cc: "Dumbre, Saket" <saket.dumbre@intel.com>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	"Moore, Robert" <robert.moore@intel.com>, "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>, 
-	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, 
-	"acpica-devel@lists.linux.dev" <acpica-devel@lists.linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0jWu4rEjO1bYzaTkF3Edcmnyi+3yEz9WNYzb8+3J74hEw@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Wed, Apr 9, 2025 at 4:01=E2=80=AFPM Shevchenko, Andriy
-<andriy.shevchenko@intel.com> wrote:
->
-> Note, I have posted two much better solutions in that bug report thread.
-
-Which bug report thread do you mean?
-
-> Please, choose one and fix, it prevents kernel from building...
-
-With Clang-19 and 'make W=3D1' that is.
-
-> On Wed, Apr 09, 2025 at 02:24:45PM +0300, Shevchenko, Andriy wrote:
-> > GCC should ignore all clang specific pragmas as far as I know.
+On Wed, Apr 09, 2025 at 04:07:09PM +0200, Rafael J. Wysocki wrote:
+> On Wed, Apr 9, 2025 at 4:01 PM Shevchenko, Andriy
+> <andriy.shevchenko@intel.com> wrote:
 > >
-> > But this seems to me the not the best solution either. What code needs =
-is to
-> > have some refactoring to make sure the variable is used or not defined =
-and used
-> > at all. Unfortunately, I am not familiar with ACPICA to propose anythin=
-g right
-> > now, though.
-> >
-> > On Tue, Apr 08, 2025 at 09:34:36PM +0300, Dumbre, Saket wrote:
-> > > I am not sure about the Linux environment specifics like Andy describ=
-ed in the
-> > > previous conversation, but if GCC or some other compiler throws an er=
-ror in the
-> > > code with #pragma for clang, then may I suggest using this instead:
+> > Note, I have posted two much better solutions in that bug report thread.
+> 
+> Which bug report thread do you mean?
+
+https://github.com/acpica/acpica/issues/973
+
+> > Please, choose one and fix, it prevents kernel from building...
+> 
+> With Clang-19 and 'make W=1' that is.
+
+Yes. it is not *that* critical, sure.
+
+> > On Wed, Apr 09, 2025 at 02:24:45PM +0300, Shevchenko, Andriy wrote:
+> > > GCC should ignore all clang specific pragmas as far as I know.
 > > >
-> > > #pragma clang diagnostic push
-> > > #if defined(__clang__) && __clang__ >=3D n (replace n with the least =
-version
-> > > number which introduces this new warning type)
-> > > #pragma clang diagnostic ignored "-Wunused-but-set-variable"
-> > > #endif
-> > > u32 num_carats;
-> > > #pragma clang diagnostic pop
+> > > But this seems to me the not the best solution either. What code needs is to
+> > > have some refactoring to make sure the variable is used or not defined and used
+> > > at all. Unfortunately, I am not familiar with ACPICA to propose anything right
+> > > now, though.
 > > >
-> > > =E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=
-=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=
-=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=
-=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=
-=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=
-=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=
-=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=
-=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=
-=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=
-=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81
-> > > From: Dumbre, Saket <saket.dumbre@intel.com>
-> > > Sent: Tuesday, April 8, 2025 11:11 AM
-> > > To: Shevchenko, Andriy <andriy.shevchenko@intel.com>; Rafael J. Wysoc=
-ki
-> > > <rafael@kernel.org>
-> > > Cc: Moore, Robert <robert.moore@intel.com>; Wysocki, Rafael J
-> > > <rafael.j.wysocki@intel.com>; linux-acpi@vger.kernel.org
-> > > <linux-acpi@vger.kernel.org>; acpica-devel@lists.linux.dev
-> > > <acpica-devel@lists.linux.dev>
-> > > Subject: Re: ACPICA compilation error on x86_64_defconfig (W=3D1 buil=
-d)
-> > >
-> > > Hi Andy and Rafael,
-> > >
-> > > This issue is a duplication of an Apple ecosystem-based (ARM + M-seri=
-es micro
-> > > architecture) ACPICA GitHub Issue, which I was waiting on a response =
-from the
-> > > contributor/submitter to move ahead to resolve it:
-> > > https://github.com/acpica/acpica/issues/973
-> > >
-> > > I don't see a platform specific file for Clang/LLVM in ACPICA (only f=
-or GCC and
-> > > MSVC), so I think the worst-case untidy solution would be to locally =
-patch this
-> > > warning-turned-error by suppressing this warning type if the compiler=
- is Clang/
-> > > LLVM.
-> > >
-> > > It would look somewhat better to move that line all the way down afte=
-r all the
-> > > other definitions/declarations just before any execution line and wra=
-p it with
-> > > a #pragma something along the lines:
-> > >
-> > > #pragma clang diagnostic push
-> > > #pragma clang diagnostic ignored "-Wunused-but-set-variable"
-> > > u32 num_carats;
-> > > #pragma clang diagnostic pop
-> > >
-> > > I am just not sure if this is the only place in the ACPICA code that =
-generates
-> > > this warning type and depending on the answer, this fix could be impl=
-emented at
-> > > a wider/global scale, but please give this hacky fix a try and let me=
- know if
-> > > it resolves that. Thanks a lot!
-> > >
-> > >
-> > > Kind regards,
-> > >
-> > > Saket Dumbre
-> > >
-> > >
-> > > =E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=
-=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=
-=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=
-=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=
-=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=
-=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=
-=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=
-=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=
-=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=
-=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81
-> > > From: Shevchenko, Andriy
-> > > Sent: Monday, April 7, 2025 11:51 AM
-> > > To: Rafael J. Wysocki
-> > > Cc: Dumbre, Saket; Moore, Robert; Wysocki, Rafael J;
-> > > linux-acpi@vger.kernel.org; acpica-devel@lists.linux.dev
-> > > Subject: Re: ACPICA compilation error on x86_64_defconfig (W=3D1 buil=
-d)
-> > >
-> > > On Mon, Apr 07, 2025 at 08:49:41PM +0200, Rafael J. Wysocki wrote:
-> > > > On Mon, Apr 7, 2025 at 8:47=E2=80=AFPM Andy Shevchenko
-> > > > <andriy.shevchenko@intel.com> wrote:
-> > > > >
-> > > > > v6.15-rc1 (but seems older should also be problematic) fails to c=
-ompile by
-> > > > > Clang 19 with `make W=3D1`.
-> > > > >
-> > > > >   CC      drivers/acpi/acpica/nsaccess.o
-> > > > >   drivers/acpi/acpica/nsaccess.c:295:6: error: variable 'num_cara=
-ts' set
-> > > but not used [-Werror,-Wunused-but-set-variable]
-> > > > >     295 |         u32 num_carats;
-> > > > >         |             ^
-> > > > >   1 error generated.
-> > > > >
-> > > > > I looked briefly in the code and I have no idea how to fix this, =
-as
-> > > probably
-> > > > > __maybe_unused not an option for ACPICA. Hence this report.
-> > > > >
-> > > > > Note, the in-tree defconfig is in use:
-> > > > >
-> > > > >         git checkout v6.15-rc1
-> > > > >         make x86_64_defconfig
-> > >
-> > > > >         make W=3D1
-> > >
-> > > Since it's a clang, this should have also something like LLVM=3D1.
-> > >
-> > > > > should trigger it.
+> > > On Tue, Apr 08, 2025 at 09:34:36PM +0300, Dumbre, Saket wrote:
+> > > > I am not sure about the Linux environment specifics like Andy described in the
+> > > > previous conversation, but if GCC or some other compiler throws an error in the
+> > > > code with #pragma for clang, then may I suggest using this instead:
+> > > >
+> > > > #pragma clang diagnostic push
+> > > > #if defined(__clang__) && __clang__ >= n (replace n with the least version
+> > > > number which introduces this new warning type)
+> > > > #pragma clang diagnostic ignored "-Wunused-but-set-variable"
+> > > > #endif
+> > > > u32 num_carats;
+> > > > #pragma clang diagnostic pop
+> > > >
+> > > > ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+> > > > From: Dumbre, Saket <saket.dumbre@intel.com>
+> > > > Sent: Tuesday, April 8, 2025 11:11 AM
+> > > > To: Shevchenko, Andriy <andriy.shevchenko@intel.com>; Rafael J. Wysocki
+> > > > <rafael@kernel.org>
+> > > > Cc: Moore, Robert <robert.moore@intel.com>; Wysocki, Rafael J
+> > > > <rafael.j.wysocki@intel.com>; linux-acpi@vger.kernel.org
+> > > > <linux-acpi@vger.kernel.org>; acpica-devel@lists.linux.dev
+> > > > <acpica-devel@lists.linux.dev>
+> > > > Subject: Re: ACPICA compilation error on x86_64_defconfig (W=1 build)
+> > > >
+> > > > Hi Andy and Rafael,
+> > > >
+> > > > This issue is a duplication of an Apple ecosystem-based (ARM + M-series micro
+> > > > architecture) ACPICA GitHub Issue, which I was waiting on a response from the
+> > > > contributor/submitter to move ahead to resolve it:
+> > > > https://github.com/acpica/acpica/issues/973
+> > > >
+> > > > I don't see a platform specific file for Clang/LLVM in ACPICA (only for GCC and
+> > > > MSVC), so I think the worst-case untidy solution would be to locally patch this
+> > > > warning-turned-error by suppressing this warning type if the compiler is Clang/
+> > > > LLVM.
+> > > >
+> > > > It would look somewhat better to move that line all the way down after all the
+> > > > other definitions/declarations just before any execution line and wrap it with
+> > > > a #pragma something along the lines:
+> > > >
+> > > > #pragma clang diagnostic push
+> > > > #pragma clang diagnostic ignored "-Wunused-but-set-variable"
+> > > > u32 num_carats;
+> > > > #pragma clang diagnostic pop
+> > > >
+> > > > I am just not sure if this is the only place in the ACPICA code that generates
+> > > > this warning type and depending on the answer, this fix could be implemented at
+> > > > a wider/global scale, but please give this hacky fix a try and let me know if
+> > > > it resolves that. Thanks a lot!
+> > > >
+> > > >
+> > > > Kind regards,
+> > > >
+> > > > Saket Dumbre
+> > > >
+> > > >
+> > > > ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+> > > > From: Shevchenko, Andriy
+> > > > Sent: Monday, April 7, 2025 11:51 AM
+> > > > To: Rafael J. Wysocki
+> > > > Cc: Dumbre, Saket; Moore, Robert; Wysocki, Rafael J;
+> > > > linux-acpi@vger.kernel.org; acpica-devel@lists.linux.dev
+> > > > Subject: Re: ACPICA compilation error on x86_64_defconfig (W=1 build)
+> > > >
+> > > > On Mon, Apr 07, 2025 at 08:49:41PM +0200, Rafael J. Wysocki wrote:
+> > > > > On Mon, Apr 7, 2025 at 8:47 PM Andy Shevchenko
+> > > > > <andriy.shevchenko@intel.com> wrote:
+> > > > > >
+> > > > > > v6.15-rc1 (but seems older should also be problematic) fails to compile by
+> > > > > > Clang 19 with `make W=1`.
+> > > > > >
+> > > > > >   CC      drivers/acpi/acpica/nsaccess.o
+> > > > > >   drivers/acpi/acpica/nsaccess.c:295:6: error: variable 'num_carats' set
+> > > > but not used [-Werror,-Wunused-but-set-variable]
+> > > > > >     295 |         u32 num_carats;
+> > > > > >         |             ^
+> > > > > >   1 error generated.
+> > > > > >
+> > > > > > I looked briefly in the code and I have no idea how to fix this, as
+> > > > probably
+> > > > > > __maybe_unused not an option for ACPICA. Hence this report.
+> > > > > >
+> > > > > > Note, the in-tree defconfig is in use:
+> > > > > >
+> > > > > >         git checkout v6.15-rc1
+> > > > > >         make x86_64_defconfig
+> > > >
+> > > > > >         make W=1
+> > > >
+> > > > Since it's a clang, this should have also something like LLVM=1.
+> > > >
+> > > > > > should trigger it.
+> > > >
+> > > > --
+> > > > With Best Regards,
+> > > > Andy Shevchenko
+> > > >
+> > > >
 > > >
 > > > --
 > > > With Best Regards,
@@ -224,10 +211,10 @@ as
 > > Andy Shevchenko
 > >
 > >
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
->
+> >
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
