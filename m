@@ -1,125 +1,125 @@
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE47725A620
-	for <acpica-devel@lists.linux.dev>; Mon, 14 Apr 2025 07:35:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CF3127FD40
+	for <acpica-devel@lists.linux.dev>; Mon, 14 Apr 2025 14:25:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744616140; cv=none; b=bTr1egeKinCuew0aPCbCy5K+qEzvL2o22rdIZpZUVAYkE+06j81+vQhPkN0gjGZan2md+2bEFGQN1/s+yLRcg/XGeun+ESGh1dQM0LrVwTkNBGEYoiyFjJ+Sxh4a6CXZpaTGXRtHdOBdteUnfP3Y+GzbeblZ4PPMRiXzt5Rwcck=
+	t=1744640729; cv=none; b=odm31Z+gLPN0NmovErYrCfmJlnP2CCymMbzTRcgP9dhWzp6JFrH0EbDoWLNQvRkPlkx9+twiB4axOpJ84f/iLg+p2J/Jx9Yg46aulcI8kS6wmlgIklAc9R/1hXdSV+dW9FYcvl/161NYxyewcLE4+pkNjSO0KwDIEPOQixrKBOk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744616140; c=relaxed/simple;
-	bh=KTe3uWaWlgANscop60ILOfJGk6PaXW06xvdFjDJSwTM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=DDQ3t84/JrkxeR415gNKJgfpd8+SEY07UXFaJs6VwM6nn9heJjCEr7bv/JcoYT3/PWTiGo1h0R9b2+1DBZyuQTpqUx5ulTIIw+9b9x1Ch+eqnn0vy74w5S5hcC2Q9mFMbqtt6TXYhEAWUTuZJa3/CS+qg+tbyNWQ6ic6gIgScPc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kdN2G0EO; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1744640729; c=relaxed/simple;
+	bh=yg6EWMxUISCyYSYPYDJV3F2CpXW7on+QB5igo/9U3WM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dQlc8LZQjc7j9GrDU3yMQ7zcOPlQa3e96bK/uvenpiDDsuxHYwxbiLVYma8LPcsAFJWEWHDikkLjsMwW1I1qEinc8F7hcDouksd3ACqL5OqG9kYrMjbzp/4QFIrIYVg+M0hjt08KYUHhObXZareS+Focs7kddOb0zdxGprMTkWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b5xnaIoI; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kdN2G0EO"
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-73bb647eb23so3442558b3a.0
-        for <acpica-devel@lists.linux.dev>; Mon, 14 Apr 2025 00:35:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744616138; x=1745220938; darn=lists.linux.dev;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=aWQtHqSbTf9NzEXG3WeHgoYFaTCv1grfOd+Mceut8xA=;
-        b=kdN2G0EORETdJEVFxh17svR0DNp42DpgdUsx5etvFnjl/W04g6BtA3RLBjbXYluzUj
-         TaJqm5oONB4lEAt+wbAbv4H+yNMMKc+xDfP6Gpa6jfHxUwlDVNHgL5mB0hmZ0VDE70bX
-         d4T6WM9qrX2NTpJquxMjzJks//fo4fuY29PsYB48j8dqpOw0i/+Q6SaCnZXgrp00AqJn
-         WGVhrHTIphsWgmIekShGOgEh4mIVYzNMSRiRm7bnCLJT+nAfoF44GmJDu//NOhnIuanC
-         iGMjEwaeocAVNZwYTHgvnoS1m6U+GoGtUEgqzKJwt75ImNXBcm1Y3gzgbZR0QOay6xGK
-         zRkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744616138; x=1745220938;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=aWQtHqSbTf9NzEXG3WeHgoYFaTCv1grfOd+Mceut8xA=;
-        b=dwP708KaFCdjTbcHDvb1D1baY7CjvzLNF9vGi7lQvIWj3BlzXOmujbzfYluLPJIP/K
-         rB3aZV4AHRPKIw7pnhoTCzkh81ST0Tze2na4cfvDCfq6d7grHHLIB1SkkLN4YRM3yws7
-         +xjYGy1W14ZQIJ1YOdYnYN22BEZ5dZGkE/xXKD1d9YFhZ2fwThaAWgXlXroaTBOTYwKL
-         /MXPyLnt5YaqUECyfkLm7XPZeWZfzaUx9hL5GnHed2pV/6lF0/F2SRG6YS7Z1veD8ZCO
-         BVo/oH+4NJj742EgNStaR0b+c+9f1APA2aoCTYTfTDZYN+O/m2Mf+LDpxNjXLTwzhE6A
-         l9Dg==
-X-Forwarded-Encrypted: i=1; AJvYcCV61zruZEJ/ftV0Uap2AI8ldYo5QGDtyh7Fg9/AfwRYiyrl4sNBrYie1PaeaOPAzrNWDUSzeegTyvqa0dc=@lists.linux.dev
-X-Gm-Message-State: AOJu0YwIXG4HAcxEu4M1wqr3pdczrsmVqlxvXI+YbQium+hsfrekgrMV
-	7AAfIyqL+nMOmcf5/lqpVRnPllDPKgugSpTO62Rt3H2hV0WBsjg2
-X-Gm-Gg: ASbGnct2a6yiowmpPBYh89lPnAoS6XhtxCF+DQKDr47cBUHtaEz2QOy8VpfjUinxuYU
-	yg3a+Xz+vNJ+Lrs9YLlo6/5YfNTXO9e1RpgX4bKmK5PELeju8TYO3fDFJt5IEpEeJu1g8S3RvZe
-	feTq3JQjBBljG9XFP5Vp13zw4NQ0EBXXdxYbuJ2MBRH/b9VUel0gxGal+N18vVKyJsJ1KuW4Yh7
-	3hhErZGcjoKaCs7JsERRPS4Y2tvCL/LPScZsNrS0+bS+LmOxwxsKm/VyPs5ZFL6iSka+xA6c3mK
-	fpMy7KZ+99YGbcBQtf/qU74eFbat5nmVF3S40Ybflq+PKwl8K3Yuqlbqw+h9
-X-Google-Smtp-Source: AGHT+IE3VhdggcNXYAgq0b6PYooX5zuI2ynpcIPLIPK5E38pSNyG5MDqPQafDO4ubU5wA1GBOa1Txw==
-X-Received: by 2002:a05:6a21:9012:b0:1f5:59e5:8ade with SMTP id adf61e73a8af0-2017996f6c8mr17350608637.29.1744616137864;
-        Mon, 14 Apr 2025 00:35:37 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:c408:a0b5:82a7:fae4:9cf0:3b75])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b0830418644sm1615915a12.39.2025.04.14.00.35.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Apr 2025 00:35:37 -0700 (PDT)
-From: Kevin Paul Reddy Janagari <kevinpaul468@gmail.com>
-To: robert.moore@intel.com,
-	rafael.j.wysocki@intel.com,
-	lenb@kernel.org
-Cc: linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	kevinpaul468@gmail.com
-Subject: [PATCH] acpica: Removing deprecated strncpy()
-Date: Mon, 14 Apr 2025 13:05:17 +0530
-Message-Id: <20250414073517.57745-1-kevinpaul468@gmail.com>
-X-Mailer: git-send-email 2.39.5
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b5xnaIoI"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD8A5C4CEEE
+	for <acpica-devel@lists.linux.dev>; Mon, 14 Apr 2025 14:25:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1744640728;
+	bh=yg6EWMxUISCyYSYPYDJV3F2CpXW7on+QB5igo/9U3WM=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=b5xnaIoIi/nu5s7HP6IU9n3N9sIZC6rCnMlcUAUDLYrdTKJFF+k0jOSMdO+MVL4r4
+	 Xg90kiLPLvJVsrCi3tqZ5tv4uJVVW9VOh7OV45dvPJRy8lvRizgyjLZeM0KHNAbNQU
+	 vumektwdm3FBJglsE+0AT8f55TuPusym+ubQFinR0xVW96zcCQ0Vxr/f6ngUztO+Y/
+	 2VCmMDYNNXYeyLqkVd+94p1vxAp8dPd0FQtPTgcDlOWX9NiL7C51F978BDKn8e9GGI
+	 akLwF0Vq1YigNjzIzImElNNl9BW5SX/jvDucuVsNKMTVvd3gulrwnDQZZBfaSli+vJ
+	 7p5/8j6qt/bsA==
+Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-2cca475546fso2075338fac.1
+        for <acpica-devel@lists.linux.dev>; Mon, 14 Apr 2025 07:25:28 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVLhJK2LzVqUcs0qb3f+WxsKzupEkOLMz02dqj9k00gpUQJzQRCd0Sd5U1m3UARi/QdFIlWkRCEMn0DCI4=@lists.linux.dev
+X-Gm-Message-State: AOJu0YzrFsGnSf4A5nQtkIwel4KxlXvdv6MCLHsXzMuHfKR62SezS33Q
+	IHmbsp+rGNzUqtnnxwLtMkX2VwmwatxWWA2SiKC4fD3ugwoyAF96y2HpCBzTarht8lgiCwSI9hq
+	5KT06uQrfuiz++KZiaLFgEELRUYI=
+X-Google-Smtp-Source: AGHT+IGpQ8Gu6BowkMYFfcY+1nthKg0wd1cz3rjIdC8dPfkokVglpT5SfkZnRdy5kH2Kp1RRisWLKcbiXxBnKB2lNME=
+X-Received: by 2002:a05:6871:6216:b0:2c1:6bbc:70f4 with SMTP id
+ 586e51a60fabf-2d0d5f74b56mr7444602fac.38.1744640728206; Mon, 14 Apr 2025
+ 07:25:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250414073517.57745-1-kevinpaul468@gmail.com>
+In-Reply-To: <20250414073517.57745-1-kevinpaul468@gmail.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Mon, 14 Apr 2025 16:25:11 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0gTXstnnFWi87ihxLx7u1HcNaKeUdBpE+2HyJ+40wLCbQ@mail.gmail.com>
+X-Gm-Features: ATxdqUHoCYUB-YbsecjuItR83jefDARX0oJSWSXyKosTFhnQ3zOAQZ8DOaF_SUQ
+Message-ID: <CAJZ5v0gTXstnnFWi87ihxLx7u1HcNaKeUdBpE+2HyJ+40wLCbQ@mail.gmail.com>
+Subject: Re: [PATCH] acpica: Removing deprecated strncpy()
+To: Kevin Paul Reddy Janagari <kevinpaul468@gmail.com>
+Cc: robert.moore@intel.com, rafael.j.wysocki@intel.com, lenb@kernel.org, 
+	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This patch suggests the replacement of strncpy with strscpy
-as per Documentation/process/deprecated.
-The strncpy() fails to guarantee NULL termination,
-The function adds zero pads which isn't really convenient for short strings
-as it may cause performance issues.
+On Mon, Apr 14, 2025 at 9:35=E2=80=AFAM Kevin Paul Reddy Janagari
+<kevinpaul468@gmail.com> wrote:
+>
+> This patch suggests the replacement of strncpy with strscpy
+> as per Documentation/process/deprecated.
+> The strncpy() fails to guarantee NULL termination,
+> The function adds zero pads which isn't really convenient for short strin=
+gs
+> as it may cause performance issues.
+>
+> strscpy() is a preferred replacement because
+> it overcomes the limitations of strncpy mentioned above.
+>
+> Compile Tested
 
-strscpy() is a preferred replacement because
-it overcomes the limitations of strncpy mentioned above.
+ACPICA material is primarily handled by the upstream ACPICA project on
+GitHub, so  ACPICA changes should first be submitted to upstream ACPICA as
+indicated on this list for many times, see for instance:
 
-Compile Tested
+https://lore.kernel.org/linux-acpi/CAJZ5v0gUDxrAn4W+Rf3ifjrg8Z9ZzTTOZjPFSSN=
+5488mPqzXeA@mail.gmail.com/
 
-Signed-off-by: Kevin Paul Reddy Janagari <kevinpaul468@gmail.com>
----
- drivers/acpi/acpica/exconvrt.c | 2 +-
- drivers/acpi/acpica/tbfind.c   | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/acpi/acpica/exconvrt.c b/drivers/acpi/acpica/exconvrt.c
-index bb1be42daee1..648e68a31e1f 100644
---- a/drivers/acpi/acpica/exconvrt.c
-+++ b/drivers/acpi/acpica/exconvrt.c
-@@ -226,7 +226,7 @@ acpi_ex_convert_to_buffer(union acpi_operand_object *obj_desc,
- 		/* Copy the string to the buffer */
- 
- 		new_buf = return_desc->buffer.pointer;
--		strncpy((char *)new_buf, (char *)obj_desc->string.pointer,
-+		strscpy((char *)new_buf, (char *)obj_desc->string.pointer,
- 			obj_desc->string.length);
- 		break;
- 
-diff --git a/drivers/acpi/acpica/tbfind.c b/drivers/acpi/acpica/tbfind.c
-index 1c1b2e284bd9..5536d1755188 100644
---- a/drivers/acpi/acpica/tbfind.c
-+++ b/drivers/acpi/acpica/tbfind.c
-@@ -57,8 +57,8 @@ acpi_tb_find_table(char *signature,
- 
- 	memset(&header, 0, sizeof(struct acpi_table_header));
- 	ACPI_COPY_NAMESEG(header.signature, signature);
--	strncpy(header.oem_id, oem_id, ACPI_OEM_ID_SIZE);
--	strncpy(header.oem_table_id, oem_table_id, ACPI_OEM_TABLE_ID_SIZE);
-+	strscpy(header.oem_id, oem_id, ACPI_OEM_ID_SIZE);
-+	strscpy(header.oem_table_id, oem_table_id, ACPI_OEM_TABLE_ID_SIZE);
- 
- 	/* Search for the table */
- 
--- 
-2.39.5
-
+> Signed-off-by: Kevin Paul Reddy Janagari <kevinpaul468@gmail.com>
+> ---
+>  drivers/acpi/acpica/exconvrt.c | 2 +-
+>  drivers/acpi/acpica/tbfind.c   | 4 ++--
+>  2 files changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/acpi/acpica/exconvrt.c b/drivers/acpi/acpica/exconvr=
+t.c
+> index bb1be42daee1..648e68a31e1f 100644
+> --- a/drivers/acpi/acpica/exconvrt.c
+> +++ b/drivers/acpi/acpica/exconvrt.c
+> @@ -226,7 +226,7 @@ acpi_ex_convert_to_buffer(union acpi_operand_object *=
+obj_desc,
+>                 /* Copy the string to the buffer */
+>
+>                 new_buf =3D return_desc->buffer.pointer;
+> -               strncpy((char *)new_buf, (char *)obj_desc->string.pointer=
+,
+> +               strscpy((char *)new_buf, (char *)obj_desc->string.pointer=
+,
+>                         obj_desc->string.length);
+>                 break;
+>
+> diff --git a/drivers/acpi/acpica/tbfind.c b/drivers/acpi/acpica/tbfind.c
+> index 1c1b2e284bd9..5536d1755188 100644
+> --- a/drivers/acpi/acpica/tbfind.c
+> +++ b/drivers/acpi/acpica/tbfind.c
+> @@ -57,8 +57,8 @@ acpi_tb_find_table(char *signature,
+>
+>         memset(&header, 0, sizeof(struct acpi_table_header));
+>         ACPI_COPY_NAMESEG(header.signature, signature);
+> -       strncpy(header.oem_id, oem_id, ACPI_OEM_ID_SIZE);
+> -       strncpy(header.oem_table_id, oem_table_id, ACPI_OEM_TABLE_ID_SIZE=
+);
+> +       strscpy(header.oem_id, oem_id, ACPI_OEM_ID_SIZE);
+> +       strscpy(header.oem_table_id, oem_table_id, ACPI_OEM_TABLE_ID_SIZE=
+);
+>
+>         /* Search for the table */
+>
+> --
+> 2.39.5
+>
+>
