@@ -1,156 +1,125 @@
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA3D814B965
-	for <acpica-devel@lists.linux.dev>; Mon, 14 Apr 2025 01:26:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE47725A620
+	for <acpica-devel@lists.linux.dev>; Mon, 14 Apr 2025 07:35:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744593984; cv=none; b=FIs7E+6PQPXULC0uRBu/7OvH4Sy+NU4KFVkjkdw/+txPS0tkfODd+o5v1gHm4LE0cCAVQ976FWRv3PlaTWKERY3RRs2qBCd6hc5dX1fM7ngAQ+LkFkHCCWeaNf8ILKNW1EfvnNo9FLOldE/owsYWkG3gimPKpR0FZun1iAkDG9c=
+	t=1744616140; cv=none; b=bTr1egeKinCuew0aPCbCy5K+qEzvL2o22rdIZpZUVAYkE+06j81+vQhPkN0gjGZan2md+2bEFGQN1/s+yLRcg/XGeun+ESGh1dQM0LrVwTkNBGEYoiyFjJ+Sxh4a6CXZpaTGXRtHdOBdteUnfP3Y+GzbeblZ4PPMRiXzt5Rwcck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744593984; c=relaxed/simple;
-	bh=wS24v30if9RYBtGDQ3Jax1G2zzJrDoYyGOIOHyWAawg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=nN6SPMl8BfbqB7DTuZ/f3/vPtX1YhkYZd7+V0kTmSuIasgUCAlY+7hIp6RyU5m9P3eyGaNilY9fYW7sknFsgi07nq4wYbrGBpslTMJqthdbKIro2zPUXUzA1aufxqFB3A8L6r1VKl2fK8S94G5wM+fyPHySkbL90gMGn9GR7gu8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4ZbV390zx2z13KcB;
-	Mon, 14 Apr 2025 09:25:25 +0800 (CST)
-Received: from kwepemh100008.china.huawei.com (unknown [7.202.181.93])
-	by mail.maildlp.com (Postfix) with ESMTPS id 06482180080;
-	Mon, 14 Apr 2025 09:26:12 +0800 (CST)
-Received: from [10.67.121.90] (10.67.121.90) by kwepemh100008.china.huawei.com
- (7.202.181.93) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 14 Apr
- 2025 09:26:10 +0800
-Message-ID: <ddf0b5bb-b988-4c4f-b638-01273dc04b98@huawei.com>
-Date: Mon, 14 Apr 2025 09:26:10 +0800
+	s=arc-20240116; t=1744616140; c=relaxed/simple;
+	bh=KTe3uWaWlgANscop60ILOfJGk6PaXW06xvdFjDJSwTM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=DDQ3t84/JrkxeR415gNKJgfpd8+SEY07UXFaJs6VwM6nn9heJjCEr7bv/JcoYT3/PWTiGo1h0R9b2+1DBZyuQTpqUx5ulTIIw+9b9x1Ch+eqnn0vy74w5S5hcC2Q9mFMbqtt6TXYhEAWUTuZJa3/CS+qg+tbyNWQ6ic6gIgScPc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kdN2G0EO; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kdN2G0EO"
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-73bb647eb23so3442558b3a.0
+        for <acpica-devel@lists.linux.dev>; Mon, 14 Apr 2025 00:35:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1744616138; x=1745220938; darn=lists.linux.dev;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=aWQtHqSbTf9NzEXG3WeHgoYFaTCv1grfOd+Mceut8xA=;
+        b=kdN2G0EORETdJEVFxh17svR0DNp42DpgdUsx5etvFnjl/W04g6BtA3RLBjbXYluzUj
+         TaJqm5oONB4lEAt+wbAbv4H+yNMMKc+xDfP6Gpa6jfHxUwlDVNHgL5mB0hmZ0VDE70bX
+         d4T6WM9qrX2NTpJquxMjzJks//fo4fuY29PsYB48j8dqpOw0i/+Q6SaCnZXgrp00AqJn
+         WGVhrHTIphsWgmIekShGOgEh4mIVYzNMSRiRm7bnCLJT+nAfoF44GmJDu//NOhnIuanC
+         iGMjEwaeocAVNZwYTHgvnoS1m6U+GoGtUEgqzKJwt75ImNXBcm1Y3gzgbZR0QOay6xGK
+         zRkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744616138; x=1745220938;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aWQtHqSbTf9NzEXG3WeHgoYFaTCv1grfOd+Mceut8xA=;
+        b=dwP708KaFCdjTbcHDvb1D1baY7CjvzLNF9vGi7lQvIWj3BlzXOmujbzfYluLPJIP/K
+         rB3aZV4AHRPKIw7pnhoTCzkh81ST0Tze2na4cfvDCfq6d7grHHLIB1SkkLN4YRM3yws7
+         +xjYGy1W14ZQIJ1YOdYnYN22BEZ5dZGkE/xXKD1d9YFhZ2fwThaAWgXlXroaTBOTYwKL
+         /MXPyLnt5YaqUECyfkLm7XPZeWZfzaUx9hL5GnHed2pV/6lF0/F2SRG6YS7Z1veD8ZCO
+         BVo/oH+4NJj742EgNStaR0b+c+9f1APA2aoCTYTfTDZYN+O/m2Mf+LDpxNjXLTwzhE6A
+         l9Dg==
+X-Forwarded-Encrypted: i=1; AJvYcCV61zruZEJ/ftV0Uap2AI8ldYo5QGDtyh7Fg9/AfwRYiyrl4sNBrYie1PaeaOPAzrNWDUSzeegTyvqa0dc=@lists.linux.dev
+X-Gm-Message-State: AOJu0YwIXG4HAcxEu4M1wqr3pdczrsmVqlxvXI+YbQium+hsfrekgrMV
+	7AAfIyqL+nMOmcf5/lqpVRnPllDPKgugSpTO62Rt3H2hV0WBsjg2
+X-Gm-Gg: ASbGnct2a6yiowmpPBYh89lPnAoS6XhtxCF+DQKDr47cBUHtaEz2QOy8VpfjUinxuYU
+	yg3a+Xz+vNJ+Lrs9YLlo6/5YfNTXO9e1RpgX4bKmK5PELeju8TYO3fDFJt5IEpEeJu1g8S3RvZe
+	feTq3JQjBBljG9XFP5Vp13zw4NQ0EBXXdxYbuJ2MBRH/b9VUel0gxGal+N18vVKyJsJ1KuW4Yh7
+	3hhErZGcjoKaCs7JsERRPS4Y2tvCL/LPScZsNrS0+bS+LmOxwxsKm/VyPs5ZFL6iSka+xA6c3mK
+	fpMy7KZ+99YGbcBQtf/qU74eFbat5nmVF3S40Ybflq+PKwl8K3Yuqlbqw+h9
+X-Google-Smtp-Source: AGHT+IE3VhdggcNXYAgq0b6PYooX5zuI2ynpcIPLIPK5E38pSNyG5MDqPQafDO4ubU5wA1GBOa1Txw==
+X-Received: by 2002:a05:6a21:9012:b0:1f5:59e5:8ade with SMTP id adf61e73a8af0-2017996f6c8mr17350608637.29.1744616137864;
+        Mon, 14 Apr 2025 00:35:37 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:c408:a0b5:82a7:fae4:9cf0:3b75])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b0830418644sm1615915a12.39.2025.04.14.00.35.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Apr 2025 00:35:37 -0700 (PDT)
+From: Kevin Paul Reddy Janagari <kevinpaul468@gmail.com>
+To: robert.moore@intel.com,
+	rafael.j.wysocki@intel.com,
+	lenb@kernel.org
+Cc: linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	kevinpaul468@gmail.com
+Subject: [PATCH] acpica: Removing deprecated strncpy()
+Date: Mon, 14 Apr 2025 13:05:17 +0530
+Message-Id: <20250414073517.57745-1-kevinpaul468@gmail.com>
+X-Mailer: git-send-email 2.39.5
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 0/8] Add functions for getting and setting registers
- related to autonomous selection in cppc_acpi
-To: Mario Limonciello <mario.limonciello@amd.com>, <rafael@kernel.org>,
-	<lenb@kernel.org>, <robert.moore@intel.com>, <viresh.kumar@linaro.org>,
-	<gautham.shenoy@amd.com>, <ray.huang@amd.com>, <perry.yuan@amd.com>,
-	<pierre.gondois@arm.com>, <sumitg@nvidia.com>
-CC: <acpica-devel@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-	<linuxarm@huawei.com>, <jonathan.cameron@huawei.com>,
-	<zhanjie9@hisilicon.com>, <lihuisong@huawei.com>,
-	<cenxinghai@h-partners.com>, <hepeng68@huawei.com>
-References: <20250411093855.982491-1-zhenglifeng1@huawei.com>
- <f6904bb1-f41f-4be9-92bb-92fec509a821@amd.com>
-From: "zhenglifeng (A)" <zhenglifeng1@huawei.com>
-In-Reply-To: <f6904bb1-f41f-4be9-92bb-92fec509a821@amd.com>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemh100008.china.huawei.com (7.202.181.93)
 
-On 2025/4/12 2:18, Mario Limonciello wrote:
+This patch suggests the replacement of strncpy with strscpy
+as per Documentation/process/deprecated.
+The strncpy() fails to guarantee NULL termination,
+The function adds zero pads which isn't really convenient for short strings
+as it may cause performance issues.
 
-> On 4/11/2025 4:38 AM, Lifeng Zheng wrote:
->> The patch series is organized in two parts:
->>
->>   - patch 1-6 refactor out the general CPPC register get and set functions
->>     in cppc_acpi.c
->>
->>   - patches 7-8 add functions for getting and setting values of auto_sel,
->>     energy_perf and auto_act_window in cppc_acpi.c
->>
->> Changelog:
->>
->> v7:
->>
->>   - Fix some typos
->>   - Add check of null pointer in cppc_get_reg_val(),
->>     cppc_get_auto_act_window() and cppc_get_auto_sel()
->>   - Replace ternary operator with logical expression in cppc_get_reg_val()
->>
->> v6:
->>
->>   - Remove the last patch, will resent it in the future after reaching an
->>     agreement with Sumit
->>   - split patch 3 into 2 smaller patches
->>   - Remove the printing of reg_idx in cppc_get_reg_val() and
->>     cppc_set_reg_val()
->>   - Change the logic for determing whether a register is supported in
->>     cppc_get_reg_val() and cppc_set_reg_val()
->>
->> v5:
->>
->>   - add more explanation to the commit logs and comments
->>   - change REG_OPTIONAL from bin to hex
->>   - split patch 2 into 3 smaller patches
->>   - remove CPPC_REG_VAL_READ() and CPPC_REG_VAL_WRITE() macros
->>   - move the modification part in patch 5 into a separate patch
->>   - rename the sysfs file from "energy_perf" to
->>     energy_performance_preference_val
->>
->> v4:
->>
->>   - add REG_OPTIONAL and IS_OPTIONAL_CPC_REG to judge if a cpc register is
->>     an optional one
->>   - check whether the register is optional before CPC_SUPPORTED check in
->>     cppc_get_reg_val() and cppc_set_reg_val()
->>   - check the register's type in cppc_set_reg_val()
->>   - add macros to generally implement registers getting and setting
->>     functions
->>   - move some logic codes from cppc_cpufreq.c to cppc_acpi.c
->>   - replace cppc_get_auto_sel_caps() by cppc_get_auto_sel()
->>
->> v3:
->>
->>   - change cppc_get_reg() and cppc_set_reg() name to cppc_get_reg_val() and
->>     cppc_set_reg_val()
->>   - extract cppc_get_reg_val_in_pcc() and cppc_set_reg_val_in_pcc()
->>   - return the result of cpc_read() in cppc_get_reg_val()
->>   - add pr_debug() in cppc_get_reg_val_in_pcc() when pcc_ss_id < 0
->>   - rename 'cpunum' to 'cpu' in cppc_get_reg_val()
->>   - move some macros from drivers/cpufreq/cppc_cpufreq.c to
->>     include/acpi/cppc_acpi.h with a CPPC_XXX prefix
->>
->> v2:
->>
->>   - fix some incorrect placeholder
->>   - change kstrtoul to kstrtobool in store_auto_select
->>
->> ---
->> Discussions of previous versions:
->> v1: https://lore.kernel.org/all/20241114084816.1128647-1-zhenglifeng1@huawei.com/
->> v2: https://lore.kernel.org/all/20241122062051.3658577-1-zhenglifeng1@huawei.com/
->> v3: https://lore.kernel.org/all/20241216091603.1247644-1-zhenglifeng1@huawei.com/
->> v4: https://lore.kernel.org/all/20250113122104.3870673-1-zhenglifeng1@huawei.com/
->> v5: https://lore.kernel.org/all/20250206131428.3261578-1-zhenglifeng1@huawei.com/
->> v6: https://lore.kernel.org/all/20250409065703.1461867-1-zhenglifeng1@huawei.com/
->>
->> Lifeng Zheng (8):
->>    ACPI: CPPC: Add IS_OPTIONAL_CPC_REG macro to judge if a cpc_reg is
->>      optional
->>    ACPI: CPPC: Optimize cppc_get_perf()
->>    ACPI: CPPC: Rename cppc_get_perf() to cppc_get_reg_val()
->>    ACPI: CPPC: Extract cppc_get_reg_val_in_pcc()
->>    ACPI: CPPC: Add cppc_set_reg_val()
->>    ACPI: CPPC: Refactor register value get and set ABIs
->>    ACPI: CPPC: Modify cppc_get_auto_sel_caps() to cppc_get_auto_sel()
->>    ACPI: CPPC: Add three functions related to autonomous selection
->>
->>   drivers/acpi/cppc_acpi.c     | 313 +++++++++++++++++++++--------------
->>   drivers/cpufreq/amd-pstate.c |   3 +-
->>   include/acpi/cppc_acpi.h     |  30 +++-
->>   3 files changed, 219 insertions(+), 127 deletions(-)
->>
-> 
-> Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
+strscpy() is a preferred replacement because
+it overcomes the limitations of strncpy mentioned above.
 
-Thank you!
+Compile Tested
 
-Regards,
-Lifeng
+Signed-off-by: Kevin Paul Reddy Janagari <kevinpaul468@gmail.com>
+---
+ drivers/acpi/acpica/exconvrt.c | 2 +-
+ drivers/acpi/acpica/tbfind.c   | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/acpi/acpica/exconvrt.c b/drivers/acpi/acpica/exconvrt.c
+index bb1be42daee1..648e68a31e1f 100644
+--- a/drivers/acpi/acpica/exconvrt.c
++++ b/drivers/acpi/acpica/exconvrt.c
+@@ -226,7 +226,7 @@ acpi_ex_convert_to_buffer(union acpi_operand_object *obj_desc,
+ 		/* Copy the string to the buffer */
+ 
+ 		new_buf = return_desc->buffer.pointer;
+-		strncpy((char *)new_buf, (char *)obj_desc->string.pointer,
++		strscpy((char *)new_buf, (char *)obj_desc->string.pointer,
+ 			obj_desc->string.length);
+ 		break;
+ 
+diff --git a/drivers/acpi/acpica/tbfind.c b/drivers/acpi/acpica/tbfind.c
+index 1c1b2e284bd9..5536d1755188 100644
+--- a/drivers/acpi/acpica/tbfind.c
++++ b/drivers/acpi/acpica/tbfind.c
+@@ -57,8 +57,8 @@ acpi_tb_find_table(char *signature,
+ 
+ 	memset(&header, 0, sizeof(struct acpi_table_header));
+ 	ACPI_COPY_NAMESEG(header.signature, signature);
+-	strncpy(header.oem_id, oem_id, ACPI_OEM_ID_SIZE);
+-	strncpy(header.oem_table_id, oem_table_id, ACPI_OEM_TABLE_ID_SIZE);
++	strscpy(header.oem_id, oem_id, ACPI_OEM_ID_SIZE);
++	strscpy(header.oem_table_id, oem_table_id, ACPI_OEM_TABLE_ID_SIZE);
+ 
+ 	/* Search for the table */
+ 
+-- 
+2.39.5
 
