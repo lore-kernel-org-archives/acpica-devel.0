@@ -1,166 +1,109 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E59719CD17;
-	Tue, 15 Apr 2025 19:26:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF1892DFA5E
+	for <acpica-devel@lists.linux.dev>; Tue, 15 Apr 2025 20:30:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744745191; cv=none; b=Pcdavk8aU2P5Xg9t2EnPjhHlrZKj+99/DzPVEGH0GxhHCFLRFZrPphSnkPCwxW+gVeukY3ZwoGBMrbH2mKA854NGMOYyB1TwPrVxX0OfidWB5USiMXFJtKookAQSZMhPfxFenW8OrnBvbwNk6+cIgPRIVb5XHwYyY3JI3JibmaU=
+	t=1744749043; cv=none; b=eCGgu6FpgtvssebRRpHH7GqHLSnaPC/+s+TS+I08lq2hQ3wlDJsWjJ1bM6CTV+QdeP+ysS/QzLSWLpI1oxv0VoDNyN8TzOhSxrd6KxM1T2eW8izx2KoviUyjcQa/P4To5jMFEN5PRnmxOB9D5T5XZ6TbIbJ0JgybvpcaUaE7HyI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744745191; c=relaxed/simple;
-	bh=dhHHFjWpyT5HIVylDO2zg98dOnJbsIh9d6qlVbp/4Hw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Au4pMInNxVEa7Z6UjT4lPOL0z/WWqvMQYluvgMKp3X9EMZM2Ju97eRQzCg7QvCqvb53t9zQ7NieMNX9n/G97bVeeF6wNn3m1zqW5ByNtMqfH4q/gwMzUU6KZj0fojsLN1HPo+IRr6zk3LoOHq/WOg2ItiKuwHkFHDJ3l0B/Snn0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T/YFmxZi; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1744749043; c=relaxed/simple;
+	bh=wCxBeybE6qJRE3pXHWxqErGRwtA/zocP0Tj2YURCkZU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DyrREKbzJnlyst3V8+Ri8plLYn0WU3vwjdWkvX3sjm4/3WVzxjXHaQ81UrmQYlj+pFK4VMd59f+G1w1IMPhNxQi16tJxfcRqrGVA/LXdxY7LhGw1KBysleGasmsE61vyVkCHvkeKn65UhZF23MQB2EwVCt/N6vxb+QkWLxg0q58=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bsIM1+Lb; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T/YFmxZi"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02C86C4CEE7;
-	Tue, 15 Apr 2025 19:26:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744745190;
-	bh=dhHHFjWpyT5HIVylDO2zg98dOnJbsIh9d6qlVbp/4Hw=;
-	h=From:To:Cc:Subject:Date:From;
-	b=T/YFmxZi7+jN30g0nNBOBhJlGcK7S1jpPXjgUpEo09B0EY5FSKQZVWib/JrM1E3uP
-	 4hiAx3C95MQwnkgaJrq9gLQH3NnMiOhus4LYgwRCqTuNCx4Xxb71XdnDuzN41C9rc+
-	 jQRdCmajIwVlIsqq/W/5bMWdGAPocgsiWUFBvEqkTmvsmhrJWEJlKW8BECD43X3e8F
-	 WDFMPElVusZc0g8AACnbs5WS1IDyc+nq+qPwbx9FiUTO3+zabrLgTbLksR3Ya9v0An
-	 lrLCsSlITmUa7VHMAKJh1hfKhWUIhhy2RPP5rzntfmXCMh5wjuODmVTGgZAotplv3g
-	 r20Vu2WdNGIGg==
-From: Mario Limonciello <superm1@kernel.org>
-To: mario.limonciello@amd.com,
-	robert.moore@intel.com,
-	rafael.j.wysocki@intel.com
-Cc: linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev
-Subject: [PATCH] ACPICA: Add support for printing AML arguments when trace point enabled
-Date: Tue, 15 Apr 2025 14:26:11 -0500
-Message-ID: <20250415192614.2042036-1-superm1@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bsIM1+Lb"
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-ac7bd86f637so8077166b.1
+        for <acpica-devel@lists.linux.dev>; Tue, 15 Apr 2025 13:30:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1744749039; x=1745353839; darn=lists.linux.dev;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2EnaYYq5VpNpfq3jhDm3c5QMz4PJIrMHZNekW0Qvzd4=;
+        b=bsIM1+LbDZdWUAYvpvHoNoSmcUgm46HFHUqZYXLjnT0GD35Oln+PlDVXtuuFeEEJYw
+         4vM5KmzAF/aLg6y75IBDOB25px1X/flPDj1DQ4CSdEwDmchYjISe5s579iBt6KmB0CO4
+         /icocF+QhyMdlxH/UQpspjiCSX2+EZ73Jf/Ar89shH+IPk2ZupfnU9BSFoDvXeVdwsOl
+         n3wmFQbh5Y3/yRiagrWP0fkF9naOPD915DIjUUVPrQV8q8yVkc51Ls7B9Pjvn624aGdr
+         Qq0xWPwgeUuicY94SV3qYZBGv05eN8i1veF0yafzEoRKB/SAEXtKLKvetKEJ4HXhtcij
+         35BQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744749039; x=1745353839;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2EnaYYq5VpNpfq3jhDm3c5QMz4PJIrMHZNekW0Qvzd4=;
+        b=wK24Ab1JUkiDshh5HpZ82amANz127oJM94BDcGcLZmTDGdDW6HGrjvVCoEZ7b6sh4N
+         NzN8vUIAwiRAAC7xeIaCIJHX+0xm9ktFvWSiP9L4DUfBSQ94jZj08Jcd64GyOQSkmpRO
+         Sim0Bep8tNDncT0Ht/t3TdRq7FOkWqyuZdBwwzATLer6ZtsP50XtwARzCwpG0hbW33re
+         RZEc4PYHOjYjrm2MtkqAiviTPTSKiJLuxH30RJJT9lhUae3FivfySYsqIgvhlgkzCK+2
+         pdHDs/I+AL9ioKXlwdq2pZjsaTW8ZoDUkaXaz0n2r/eEZCeyJodHv1Z8IMKamx8De7Ht
+         bkNA==
+X-Forwarded-Encrypted: i=1; AJvYcCUY78EyCDOgdbubTkRiv3idGTROfIxYqsUGuEDk+3gcQD/SVxLd9jyQ8DI1khxzKiCQ2G7MYxtRE6hGqS0=@lists.linux.dev
+X-Gm-Message-State: AOJu0Yyok+LUYsUADv/D0ViH7Z/EQ5tY8BSVtMPgq7FpyVgbzWCfe2gf
+	e0kRBpApS+FKBc5BKsvkONy1qDwrJ5b8QNuMtb1G16VwOOOEadJq
+X-Gm-Gg: ASbGncuvRvkI5kqs3mpfz+qrjiH5WEYgGeKizm6OHJRAvaZFjTLy/nOWYAJBqz0oIFP
+	3y+56Ss7fZtT8qSU+wiR3E7+zGIyI0wyj69w8mcSRgwdH5csjct3kx71A9d1uA4NIRWRI+KHCMQ
+	5Rnj28KOw440mMCFvo7UU0XdAAAIi72ZLfpnzYpw4QXReqnCHII9CEKetMYbE4NXU2NdgN5G8SZ
+	ZUs+mvh2PuAcbgEJm7yEMElIMp/C46ROKMPBlY6CXzTyWthHq3yYf+VhaZc5D/HQseuUFMdabP1
+	nS6Nrs8bqpmb/rtMJ2Ce0jNc6mJr+WowEkd53S5Vi1Nu
+X-Google-Smtp-Source: AGHT+IFpMejbMKxwYVP3ClTbtsxDAvjUr56x/paNPdsUiAiUOxhFmTaY2rFqndunam8jIBSsD9BHVQ==
+X-Received: by 2002:a17:907:3f99:b0:aca:aeb4:938e with SMTP id a640c23a62f3a-acb357fd0f8mr75255766b.8.1744749038369;
+        Tue, 15 Apr 2025 13:30:38 -0700 (PDT)
+Received: from gmail.com ([103.210.134.105])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-acaa1bed98esm1149894366b.72.2025.04.15.13.30.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Apr 2025 13:30:38 -0700 (PDT)
+Date: Wed, 16 Apr 2025 02:00:26 +0530
+From: Brahmajit <brahmajit.xyz@gmail.com>
+To: David Laight <david.laight.linux@gmail.com>
+Cc: Robert Moore <robert.moore@intel.com>, 
+	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org, 
+	acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] ACPI: Fix building with GCC 15
+Message-ID: <gwmtns3c6lxgsxtbit2vwjr64yqlp3wlmvj4p3o6oqi34bng5h@tenldomcival>
+References: <20250414161644.30400-1-listout@listout.xyz>
+ <20250415190457.351e22a1@pumpkin>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20250415190457.351e22a1@pumpkin>
 
-From: Mario Limonciello <mario.limonciello@amd.com>
+On 15.04.2025 19:04, David Laight wrote:
+> 
+> Doesn't than generate an 'unknown attribute' error on older compilers?
+> 
+> Does:
+> 	typedef char char_nonstring __attribute__((nonstring));
+> 	char_nonstring name[4] = "abcd";
+> work?
+> 
+> If so the attribute could even be applied to 'u8'.
+> 
+> 	David
 
-When debug level is set to `ACPI_LV_TRACE_POINT` method start and
-exit are emitted into the debug logs. This can be useful to understand
-call paths, however none of the arguments for the method calls are
-populated even when turning up other debug levels.
+David, what if I used the __nonstring attribute from
+include/linux/compiler_attributes.h which defines the following
 
-This can be useful for BIOSes that contain debug strings to see those
-strings. When `ACPI_LV_TRACE_POINT` is set also output all of the arguments
-for a given method call.
+#if __has_attribute(__nonstring__)
+# define __nonstring                    __attribute__((__nonstring__))
+#else
+# define __nonstring
+#endif
 
-This enables this type of debugging:
+Which I came across from
+https://www.kernel.org/doc/html/latest/process/programming-language.html#attributes
+Also the checkpatch.pl scripts suggests using that instead.
 
-```
-extrace-0138 ex_trace_point        : Method Begin [0x0000000096b240c4:\M460] execution.
-extrace-0173 ex_trace_args         :  "  POST CODE: %X  ACPI TIMER: %X  TIME: %d.%d ms\n", b0003f53, 1a26a8b2, 0, 15e, 0, 0
-extrace-0138 ex_trace_point        : Method End [0x0000000096b240c4:\M460] execution.
-```
+I guess this would work from older compilers as well.
 
-Link: https://github.com/acpica/acpica/commit/08219d91b5678ae2fae6e4f208df790a4e108c1c
-Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
----
-This is a backport from upstream ACPICA.  I'm not sure if there is a script
-that converts code style, so I just manually adjusted to kernel code style.
-It is really useful for me for debugging; so I would ideally like to see it
-go for 6.16 if possible.
----
- drivers/acpi/acpica/acinterp.h |  3 +++
- drivers/acpi/acpica/dsmthdat.c |  1 +
- drivers/acpi/acpica/extrace.c  | 49 ++++++++++++++++++++++++++++++++++
- 3 files changed, 53 insertions(+)
-
-diff --git a/drivers/acpi/acpica/acinterp.h b/drivers/acpi/acpica/acinterp.h
-index 955114c926bd0..d02779ee92103 100644
---- a/drivers/acpi/acpica/acinterp.h
-+++ b/drivers/acpi/acpica/acinterp.h
-@@ -120,6 +120,9 @@ void
- acpi_ex_trace_point(acpi_trace_event_type type,
- 		    u8 begin, u8 *aml, char *pathname);
- 
-+void
-+acpi_ex_trace_args(union acpi_operand_object **params, u32 count);
-+
- /*
-  * exfield - ACPI AML (p-code) execution - field manipulation
-  */
-diff --git a/drivers/acpi/acpica/dsmthdat.c b/drivers/acpi/acpica/dsmthdat.c
-index eca50517ad824..5393de4dbc4ca 100644
---- a/drivers/acpi/acpica/dsmthdat.c
-+++ b/drivers/acpi/acpica/dsmthdat.c
-@@ -188,6 +188,7 @@ acpi_ds_method_data_init_args(union acpi_operand_object **params,
- 
- 		index++;
- 	}
-+	acpi_ex_trace_args(params, index);
- 
- 	ACPI_DEBUG_PRINT((ACPI_DB_EXEC, "%u args passed to method\n", index));
- 	return_ACPI_STATUS(AE_OK);
-diff --git a/drivers/acpi/acpica/extrace.c b/drivers/acpi/acpica/extrace.c
-index b5e4bb4ae3ce6..4a2a1eda1b25d 100644
---- a/drivers/acpi/acpica/extrace.c
-+++ b/drivers/acpi/acpica/extrace.c
-@@ -147,6 +147,55 @@ acpi_ex_trace_point(acpi_trace_event_type type,
- 	}
- }
- 
-+/*******************************************************************************
-+ *
-+ * FUNCTION:    acpi_ex_trace_args
-+ *
-+ * PARAMETERS:  params            - AML method arguments
-+ *              count             - numer of method arguments
-+ *
-+ * RETURN:      None
-+ *
-+ * DESCRIPTION: Trace any arguments
-+ *
-+ ******************************************************************************/
-+
-+void
-+acpi_ex_trace_args(union acpi_operand_object **params, u32 count)
-+{
-+	u32 i;
-+
-+	ACPI_FUNCTION_NAME(ex_trace_args);
-+
-+	for (i = 0; i < count; i++) {
-+		union acpi_operand_object *obj_desc = params[i];
-+
-+		if (!i)
-+			ACPI_DEBUG_PRINT((ACPI_DB_TRACE_POINT, " "));
-+
-+		switch (obj_desc->common.type) {
-+		case ACPI_TYPE_INTEGER:
-+			ACPI_DEBUG_PRINT_RAW((ACPI_DB_TRACE_POINT, "%llx", obj_desc->integer.value));
-+			break;
-+		case ACPI_TYPE_STRING:
-+			if (!obj_desc->string.length) {
-+				ACPI_DEBUG_PRINT_RAW((ACPI_DB_TRACE_POINT, "NULL"));
-+				continue;
-+			}
-+			if (ACPI_IS_DEBUG_ENABLED(ACPI_LV_TRACE_POINT, _COMPONENT))
-+				acpi_ut_print_string(obj_desc->string.pointer, ACPI_UINT8_MAX);
-+			break;
-+		default:
-+			ACPI_DEBUG_PRINT_RAW((ACPI_DB_TRACE_POINT, "Unknown"));
-+			break;
-+		}
-+		if (i+1 == count)
-+			ACPI_DEBUG_PRINT_RAW((ACPI_DB_TRACE_POINT, "\n"));
-+		else
-+			ACPI_DEBUG_PRINT_RAW((ACPI_DB_TRACE_POINT, ", "));
-+	}
-+}
-+
- /*******************************************************************************
-  *
-  * FUNCTION:    acpi_ex_start_trace_method
 -- 
-2.43.0
-
+Regards,
+listout
