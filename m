@@ -1,239 +1,147 @@
-Received: from DM1PR04CU001.outbound.protection.outlook.com (mail-centralusazon11020117.outbound.protection.outlook.com [52.101.61.117])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B729927817A
-	for <acpica-devel@lists.linux.dev>; Tue, 22 Apr 2025 19:49:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.61.117
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745351382; cv=fail; b=C4o2EUrN94NTDZaB8uZXSODGUOMltdWKiuJbO2/ap628Ce9AKslIxAgYuelcbSgKGSVNdkUC47jiLUO0wvr+38O6BPpbzFnqTbAiJQ1mDemuy7qbaZODj2scf97u85lvb9qJhgaKM9/LXhCJnolSdak+/K4d1oOJdOvMqpsMC4w=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745351382; c=relaxed/simple;
-	bh=QcsC4omIMq3mURUL22YLpRcrQM9QydrMgjOuYqiZWww=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=ipNetFavikiek9cRj8NEwrahrleciDki378sIdw9ylnxVYB1HmHI+46UYVzrx7/vQvjnpf9AXzkwm9Qwmkr6FBi43GleCL87o2qidFyhr9qgMtczzSDAMMUwp8C44G65+84TtmyGZTWRhZgvZhMWGMFSS3XuY+pnnUYuwkTHG3g=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com; spf=pass smtp.mailfrom=os.amperecomputing.com; dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b=LLGrpxPZ; arc=fail smtp.client-ip=52.101.61.117
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=os.amperecomputing.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0790223DFB
+	for <acpica-devel@lists.linux.dev>; Wed, 23 Apr 2025 20:04:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1745438659; cv=none; b=DSisdWlDxxWBUFN7qFbqgb+V34RMPG9yV2drxZ2a7/9J2xHvZBnj6gCqOS+/hWlxViA4rmj4Po4+NpFn9idGbC16iYsK+anZ0sgQSB9Gg0OrD9e6Vpbxvu8D6tb3ec83oymxwuqXX81E0mUtJZJIWoUpjAfLteFI0WqyGNwlQ1w=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1745438659; c=relaxed/simple;
+	bh=cxaMvVcBVtdfwqKCy8tAu7BZLGaLreXc/92Wi3OWRRU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nxHnCUTUM1EW+c7kWVJVI9DNub4Kj/nTDijtgWCYd7/VG9ZXmsVdONpRs0FESO+iSPLe9d6HRHbDBZAhlPW/1gQLTf2i57Ru4XB0wM7XeLiY/Bk3zT2ro683SDAf+0JFEG7gH9TFdTFs4zvuZSfcv20Z6EFbMI8bKhtWtfozGdU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QFIS7+7v; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b="LLGrpxPZ"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=mxmiDHv7lRoK2ANXwQBKWe5sNBkFGyuoT2yGHdxD9tF550y8iof91lk9u1oL0HiycI4sSVFGNMB9zbA0LMces3hr/ZNRoBLdgpUoGho92yhM7eodkxyQ0etEcF5TMezK6EeV2f1JlLV2xiPTF6crs4I5MMk2BSdvkNF3ToAZvGH2PZOY0youuZTp1wK+MRPJVMc+IvirDKn/3BHl4q532uuyDZko2tramhgGfN2Y+wteK6gs82wdiNVykwD93HXJMu9ln5/uURBJ4U0DZ+TUFcvih5NsGPmHyYH3P4V+IJsDyBRaN7lH1zwOhUXgP1uw4nbX7kasD7xxYHlZBkwqSg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DOo2sHw69wrsqNXSYn8paO6XcVmwtdiA/QgWjFgLqOQ=;
- b=uiLCdCdLy/1KcqWyjR6GDik7Y+jEGrC9ydruGJQIecpcgueLUCZh2qbXm69SJQ1j4kQ4owpfeLWHaZwLDyjxyHPfzwkoAQYmWiWmfY4U0wGtcpvW6/0N9D+4+FGQUW0MpKmYmLr5w2W4jy72Y+qmP4mEBV0TQabMsUOcWUiBlu/UkJUfSfBL34ZqsWmzDJUk/1F++L1oCK5DWvQzXNKkirujl9S1IGXY/O2VzCOfAG25S1jgU8BkM/P3FoXOOrrztJgME2Wwod31PWv8yuWaAO6gg1xSrPR1ZpFVaqfBTeL4hvhA1Q6OKfGKQHyE1HITUq94YScKvJvurdGh0TBRig==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DOo2sHw69wrsqNXSYn8paO6XcVmwtdiA/QgWjFgLqOQ=;
- b=LLGrpxPZOjPR9XTKHruCQt+wXxxJH8qgN/WDgLus+6Ctkn7VilbpoKnWM0pETzFEug1LvkLtcParQRJw5LlkFPQDCDvyqGuH6TTC6+i6pTOcIsR9z+9xfG4ALqIeOaQ7g/aGY3cqMRx1X5vJjolFMY4/gk+JDzgPnvBvHTJXf/8=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
-Received: from SN7PR01MB7903.prod.exchangelabs.com (2603:10b6:806:34f::17) by
- SJ0PR01MB6109.prod.exchangelabs.com (2603:10b6:a03:2a1::18) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8655.35; Tue, 22 Apr 2025 19:49:34 +0000
-Received: from SN7PR01MB7903.prod.exchangelabs.com
- ([fe80::cf45:9855:a64e:382f]) by SN7PR01MB7903.prod.exchangelabs.com
- ([fe80::cf45:9855:a64e:382f%6]) with mapi id 15.20.8655.033; Tue, 22 Apr 2025
- 19:49:34 +0000
-Date: Tue, 22 Apr 2025 12:49:29 -0700
-From: Zaid Alali <zaidal@os.amperecomputing.com>
-To: "Luck, Tony" <tony.luck@intel.com>
-Cc: rafael@kernel.org, lenb@kernel.org, james.morse@arm.com, bp@alien8.de,
-	robert.moore@intel.com, Jonathan.Cameron@huawei.com,
-	ira.weiny@intel.com, Benjamin.Cheatham@amd.com,
-	dan.j.williams@intel.com, arnd@arndb.de, Avadhut.Naik@amd.com,
-	u.kleine-koenig@pengutronix.de, john.allen@amd.com,
-	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	acpica-devel@lists.linux.dev
-Subject: Re: [PATCH v6 8/9] ACPI: APEI: EINJ: Enable EINJv2 error injections
-Message-ID: <aAfyyS9qUgzsQeLY@zaid-VirtualBox>
-References: <20250417220019.27898-1-zaidal@os.amperecomputing.com>
- <20250417220019.27898-9-zaidal@os.amperecomputing.com>
- <aAKvs2cDLu_mVGdr@agluck-desk3>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aAKvs2cDLu_mVGdr@agluck-desk3>
-X-ClientProxiedBy: MW4PR04CA0150.namprd04.prod.outlook.com
- (2603:10b6:303:84::35) To SN7PR01MB7903.prod.exchangelabs.com
- (2603:10b6:806:34f::17)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QFIS7+7v"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72C10C4CEE2
+	for <acpica-devel@lists.linux.dev>; Wed, 23 Apr 2025 20:04:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1745438658;
+	bh=cxaMvVcBVtdfwqKCy8tAu7BZLGaLreXc/92Wi3OWRRU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=QFIS7+7vOH3mbByJthVS5BZpFzinoka2fvXZ7pReRxqDjEFvnruht/1pgcQtrj4NL
+	 wUAC4kiXVPAwiDSuhxUjFsBKFGPa3YDb2cJ8AFSGYdb2POvVcY6rslkUSYzGJhIIfb
+	 /SzT8Ga4winbAy6Q+XRK0yRw1iK1f3OXcVCyygrZ9KJB/KTEM2OeGpr4nTA8fDNxJr
+	 k3S8r7ELcpWP9HUuXetm/XFS0U9cyr9UQ+8Fd2d9bpCOrla/lGqviFe6gIcXXfVSOe
+	 OeSqw94ylOqgR0YIsH6LjAer6E0kBh3ZE+W80E2Un8uRxgwxohSl6loATz43ojoXPl
+	 GO3rFI+HCnxjQ==
+Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-2c6f27599abso44566fac.2
+        for <acpica-devel@lists.linux.dev>; Wed, 23 Apr 2025 13:04:18 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVVLQJVRy1B0gstY5w0Gvhln16hDqvecabVek8AwZwQg0mxhwn7CIXJ7m/WN7v3Z59+5FHQMBLPwbeYhvE=@lists.linux.dev
+X-Gm-Message-State: AOJu0YzZxQAXTsmFHCneD/6xXiDFT+pjqvykh093/eJEn0GjB778z9vw
+	i+3TqlC3fufTzcUZu9iCC20syohY9DNFLerQ/Vqi+XOHkfbEBYI9XJpJArzCZJAzkHnLz/LYLb0
+	tTcJSOiiev5NlEfxr4QMGfyHFOpI=
+X-Google-Smtp-Source: AGHT+IGNdK95WXoJNH2YFoPShvcuAWCN+P/w+m/y1K2Oby12AFZZkHdCKndMaq8lzZJIhc5cb8euX9kuVjrYL073DuA=
+X-Received: by 2002:a05:6870:9127:b0:2d8:957a:5176 with SMTP id
+ 586e51a60fabf-2d96e19b0camr50460fac.5.1745438657751; Wed, 23 Apr 2025
+ 13:04:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN7PR01MB7903:EE_|SJ0PR01MB6109:EE_
-X-MS-Office365-Filtering-Correlation-Id: 00e51893-5291-423e-1c97-08dd81d6ce30
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|366016|376014|52116014|7416014|1800799024|38350700014;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?Csha+6Xz9H/Umh5BBMGEzDkgi2L7PushdhIkWoVldJ/Yb6VwpJxhwEhHH7J9?=
- =?us-ascii?Q?Slx8ZeBSjwbCt+jeD0LLbOVEo7ml9BAJtNIKNqwYLLaMzcdblw8dzmtFo81B?=
- =?us-ascii?Q?6NPy1tZ1G9Apm+e1wu6QaGjz4GgRKj85cWgcmgdm/u32DnrtarFOVj9Xavhd?=
- =?us-ascii?Q?P4cNyHwME5oqTKZv/4xjkAUcU3hsokd3Aem6Lp+eDTWyKw3Cfc0RRBhJFTaX?=
- =?us-ascii?Q?A2oRTpyHESRrueQw35+jKjLeScyL4fon7r7XBvSXljxHJTK/fzOI/9n8mFbs?=
- =?us-ascii?Q?s/ncEPtnwOekGIKypQ9cdyfXkNnnemfeAjMO5SXZ8XGcDksXeCwj7PHgKFHZ?=
- =?us-ascii?Q?03kiJBUCDSnxT356ldnmH+ohzfaIGLkfAAfBjQlGqye+b7KUVcACtCRBv7i0?=
- =?us-ascii?Q?L2QsWTYUJomuYwnlZ/zA4CsL3set4qzQbeQzTY+Wtu+WqPIU3m86WytF+0hM?=
- =?us-ascii?Q?KHbuPOL1QtxsGDwRSgUQsbYeRRTyuXh0hy756Ub3J2MKBjEbSEGPXXF0r4Co?=
- =?us-ascii?Q?/HEtXLq/LeJr5C5mshAgUUfElFhJbb/HTS6/jZasnvYt1xrffNsRXZNGes7f?=
- =?us-ascii?Q?ZnqIdlffkZvsZz0H/8niPkb2OKY18OP5VSr4g2f+/xYfhNWkGdEfXnRjGK4/?=
- =?us-ascii?Q?MBiDNyKWo5DPDq8Ml2Pm7bjMudDYXiK6p3tQXzDLJ+BZQSUQfS3usKylKVuc?=
- =?us-ascii?Q?w3WH6DT0VXbNiuqKJvum/5UeSuf7Q2rGFCLlRuY/T7tatwxE/JK7gwFRXQqG?=
- =?us-ascii?Q?3tFqux5nQ5ALpRy74fILB5jG98hu36tkBTEG4JUSsnX8CUbBFdgHmtITH3lE?=
- =?us-ascii?Q?aris13tvW9xwmP0NhsG0MYqa25TsJQH1Vn234wwb4w4vDuw+ejy4PURGKyBf?=
- =?us-ascii?Q?Hw2ToklRnuDZ9vwiBSJSjc+oQGhR6znSrA8JVkhbylb3VMEtbd5GIDYot6E9?=
- =?us-ascii?Q?W87SpRt8EZt0FZeee6QDtxOsxmYp2zoiDKeVXkIEuvo9Dct+5/u4wUlt8k5X?=
- =?us-ascii?Q?R2GDbonuqKuhhiLdTw4ts7GppQpnMp0hyd1v/Ta8dkvfytoKth507tsIhhsa?=
- =?us-ascii?Q?P/iVTewg1KlPrw1mZkXoDcM9OSo4wCiwtY/kf4kAuoTUOPJ7ft1uNdUrYY3P?=
- =?us-ascii?Q?jY2DJBNqZsCzDs663Mu0OB25M+NUmr/QCIz8afcTdbtp8bgvtO20dv5WGzTY?=
- =?us-ascii?Q?4Gnc7mA7A5fYxknGxfWzTLdzGX60HqA0i5JCyy35cNvSSjgGbDmxNWGd3BwQ?=
- =?us-ascii?Q?OCHKvihA6E5+fsMx6+bQvKn4UhfXqbV88Xs74tLxuLTSGVXiZEFyZd7kPk1d?=
- =?us-ascii?Q?Fx1X8zKBGMR8YxVLJdHu5jVmx/mm2jLdgM8nJ7Jdo8t3GJTKVyXbELClQ0LY?=
- =?us-ascii?Q?cOXPn97TOVh1XiRUTDDB+iLNJnmMPo+nSRD0RFzJbY4PI8/ncMCDZbQZt6+l?=
- =?us-ascii?Q?+uyK1SnfDfmkGqu5pGaBv6w+bM34STfz8iod16WAQUb2D9ulKpWQoQ=3D=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR01MB7903.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(52116014)(7416014)(1800799024)(38350700014);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?V/woajNHnK6eF0ap3OoMKL2f0RscPU79ppkEotwezli1VzTvHg2oEBxTUn+j?=
- =?us-ascii?Q?SfOwwZeuuZytl5NQYx5u9z8vXFGOLzt3DuA+9uhmDcKi2ohy2Do08MCszegY?=
- =?us-ascii?Q?OdNkCEi7jp8PpjDCRHyb340gFhlW+rujFkUCT4W0PMUggmE5UqsUSCqGtSq3?=
- =?us-ascii?Q?QXG30lApC08J46IbozKiVPW3yAtrluJ6lOp3RbIVPRQhbq5133C25VmLNMyU?=
- =?us-ascii?Q?LBuo5X+DolnrmctQ8t63qXg/RBOPN8blrPPwrSbGyEmDSfeglbNzOd8l38NM?=
- =?us-ascii?Q?QAvblCoWdTav6y1wLgh5Xi4mFDIIi7WHDtVlmxyOssBrGziF4K9nKka4pp5V?=
- =?us-ascii?Q?NdelF9Wk8NoXLPVygQCDuAxk/IIzoWJ/sTNXi2gZ8fExxHSqkr8zyd/e7PZc?=
- =?us-ascii?Q?ZRvI+gBjRiQZ+wTZT47k8KzRRyEKjLnkTdrFacyksIsTFgd+piFRt7493N8O?=
- =?us-ascii?Q?EPuN1Rr/bzqBP6rPPr88SlubcWrK6TKPSnHka+FQHoM71G248FAezdbX7jS8?=
- =?us-ascii?Q?RJ8cykiF0KyTYBK7DfmgvEqyS4Z2rG5dEejSClXtN1TtsThnydVQ8pOUeM3l?=
- =?us-ascii?Q?PRO/Zhd+W0G0Sfnhz2RygVPh+e3HTw7MQa/KqQpPBRytSJ8nq7e3TZyL3nr3?=
- =?us-ascii?Q?D0W5njjcJCUPMH5fsA+4/VIq6CmAIIiWWwRCRwlRx7RmrEiYVzw9RnyTcl29?=
- =?us-ascii?Q?ndtDC2nbcyC+h2W9TgKMfFx3I1izsvpRBPIEqA8WGiRXE4M0vD4OsdB4FSTS?=
- =?us-ascii?Q?DgKtfBc4HzPb6JXyxpRjUAHJp0Yddp12B5fkQTIMvYI5vKWY1tZ829vry3pf?=
- =?us-ascii?Q?/ka8wrVmUA8adjD9CO8zR+dF5E/uzaHyWVx/hlFWFbFFJo4X6wpJH/kWb3Ni?=
- =?us-ascii?Q?qZu9iQE/iUJxdzzUzFePAVxWEG84YJdlTpUZFV8QU8SoZ+wqaqZt3y9WdY+g?=
- =?us-ascii?Q?uiD0naW6ut1IELrxsMQvPbe9BE7qlZjQ9DxENW4wsZGsZu8XJ+5szn2rWqSz?=
- =?us-ascii?Q?tKUAnvOq6oIOzRxaOq50LoSdYDoDufrXnybsrZ/bji4oRCuLN6hsvIOLVAhE?=
- =?us-ascii?Q?wWXbZPEc0DHl4E3CjOB4nef3GOelk0WkxJDwKKUs55b7qJseSMQTr0Ks4cFS?=
- =?us-ascii?Q?hm8KdrUw6Lzzt2gKAcoNvSvMDIEz1lNklfHs5MGiaMJB6lQA0nKI/VjcKc3O?=
- =?us-ascii?Q?LxVTgF9U+qtPQME/qR722aynj9NGwVj0trL5+S5mpRBkOtb2zKzWRM44Zs86?=
- =?us-ascii?Q?j2Tf89nnbKa5oM/v/zk1W0jPaLocV3qFa1gk1ieUvSbtBueK5s/vZuTZyB3R?=
- =?us-ascii?Q?3GiED1v0qAztsEzkuYePfl7j7MzvDaFY+GLKscUC+q5s3aMkcD7O4O2INBWC?=
- =?us-ascii?Q?sqdLOXb9oI9HbX4GxZXiDWIzA34wp5bPY0jEhvElS5w6D3sDtBPLwfnj1If3?=
- =?us-ascii?Q?xGlrF4Zg02u6v4BrBDtZW3PJN4m/C/FGwF+m9r1FqeleRyJ1+pDlyX9Y2N7G?=
- =?us-ascii?Q?VhBt5NjkQI17aRhAPsS7bwktY3Pi7HxJCp/rDXA12uLfvsrAIrWbX8RGcvHc?=
- =?us-ascii?Q?pzFsYIqCbLiJkGES11cm4AJTYI1MiB34hShepK5GIWJ/xFG4w6sVsirKHelv?=
- =?us-ascii?Q?EHnXK30O721YRX6ZvD8W5gg=3D?=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 00e51893-5291-423e-1c97-08dd81d6ce30
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR01MB7903.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Apr 2025 19:49:34.1548
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: QKgpyl0zFIWXkX48miBj9e9S4hWZ6idbGYTNo4aeSzIAvg12BA7qvtZa3VLMlAuvL7knJHZ2UlwiETlJ0feO25oV/sWCHru/BLfElGt20LMJbU/00fLnALZsKbwt6t7y
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR01MB6109
+References: <20250415232028.work.843-kees@kernel.org>
+In-Reply-To: <20250415232028.work.843-kees@kernel.org>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Wed, 23 Apr 2025 22:04:06 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0j9xA0rj3QFD6jv+vabRtgFqa2nza_RFjq=c5=ds9yCNg@mail.gmail.com>
+X-Gm-Features: ATxdqUHRYTqya0acLc4Hb2cQFkwS76MbdgHgn_ewJ3DBhKc43JCe7GYCZZj2Vbg
+Message-ID: <CAJZ5v0j9xA0rj3QFD6jv+vabRtgFqa2nza_RFjq=c5=ds9yCNg@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: tables: Add __nonstring annotations for
+ unterminated strings
+To: Kees Cook <kees@kernel.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
+	Robert Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org, 
+	acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 18, 2025 at 01:01:55PM -0700, Luck, Tony wrote:
-> On Thu, Apr 17, 2025 at 03:00:18PM -0700, Zaid Alali wrote:
-> > +			if (is_V2) {
-> > +				int count = 0, bytes_read, pos = 0, nr_parsed = 0, str_len;
-> > +				unsigned int comp, synd;
-> 
-> I've been staring at the ACPI spec to try and figure out how many bits
-> are needed for comp and sync. The example in section 18.6.7 "Error
-> Injection Version 2 Operation" has this in step 6:
-> 
-> Component Syndrome Array [0] = { 00000000000000000000000000000004 , 000000000000000000000000A5A5A5A5 }
-> 
-> Which really looks like 128-bit values!
-> 
-> So are "unsigned int" adequate? Even "u64" looks like it would fall short.
+On Wed, Apr 16, 2025 at 1:20=E2=80=AFAM Kees Cook <kees@kernel.org> wrote:
+>
+> When a character array without a terminating NUL character has a static
+> initializer, GCC 15's -Wunterminated-string-initialization will only
+> warn if the array lacks the "nonstring" attribute[1]. Mark the 4-byte
+> ACPI identifier arrays with __nonstring (and the new __nonstring_array)
+> to correctly identify the char arrays as "not C strings" and thereby
+> eliminate the many warnings like this:
+>
+> In file included from include/acpi/actbl.h:371,
+>                  from include/acpi/acpi.h:26,
+>                  from include/linux/acpi.h:26,
+>                  from drivers/acpi/tables.c:19:
+> include/acpi/actbl1.h:30:33: warning: initializer-string for array of 'ch=
+ar' truncates NUL terminator but destination lacks 'nonstring' attribute (5=
+ chars into 4 available) [-Wunterminated-string-initialization]
+>    30 | #define ACPI_SIG_BERT           "BERT"  /* Boot Error Record Tabl=
+e */
+>       |                                 ^~~~~~
+> drivers/acpi/tables.c:400:9: note: in expansion of macro 'ACPI_SIG_BERT'
+>   400 |         ACPI_SIG_BERT, ACPI_SIG_BGRT, ACPI_SIG_CPEP, ACPI_SIG_ECD=
+T,
+>       |         ^~~~~~~~~~~~~
+>
+> Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D117178 [1]
+> Signed-off-by: Kees Cook <kees@kernel.org>
+> ---
+> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+> Cc: Len Brown <lenb@kernel.org>
+> Cc: Robert Moore <robert.moore@intel.com>
+> Cc: linux-acpi@vger.kernel.org
+> Cc: acpica-devel@lists.linux.dev
+> ---
+>  drivers/acpi/tables.c | 2 +-
+>  include/acpi/actbl.h  | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/acpi/tables.c b/drivers/acpi/tables.c
+> index 2295abbecd14..0a9ade7117bd 100644
+> --- a/drivers/acpi/tables.c
+> +++ b/drivers/acpi/tables.c
+> @@ -396,7 +396,7 @@ static u8 __init acpi_table_checksum(u8 *buffer, u32 =
+length)
+>  }
+>
+>  /* All but ACPI_SIG_RSDP and ACPI_SIG_FACS: */
+> -static const char table_sigs[][ACPI_NAMESEG_SIZE] __initconst =3D {
+> +static const char table_sigs[][ACPI_NAMESEG_SIZE] __nonstring_array __in=
+itconst =3D {
+>         ACPI_SIG_BERT, ACPI_SIG_BGRT, ACPI_SIG_CPEP, ACPI_SIG_ECDT,
+>         ACPI_SIG_EINJ, ACPI_SIG_ERST, ACPI_SIG_HEST, ACPI_SIG_MADT,
+>         ACPI_SIG_MSCT, ACPI_SIG_SBST, ACPI_SIG_SLIT, ACPI_SIG_SRAT,
+> diff --git a/include/acpi/actbl.h b/include/acpi/actbl.h
+> index 451f6276da49..2fc89704be17 100644
+> --- a/include/acpi/actbl.h
+> +++ b/include/acpi/actbl.h
+> @@ -66,7 +66,7 @@
+>   ***********************************************************************=
+*******/
+>
+>  struct acpi_table_header {
+> -       char signature[ACPI_NAMESEG_SIZE];      /* ASCII table signature =
+*/
+> +       char signature[ACPI_NAMESEG_SIZE] __nonstring;  /* ASCII table si=
+gnature */
+>         u32 length;             /* Length of table in bytes, including th=
+is header */
+>         u8 revision;            /* ACPI Specification minor version numbe=
+r */
+>         u8 checksum;            /* To make sum of entire table =3D=3D 0 *=
+/
+> --
 
-Hi Tony,
+Applied as 6.16 material.
 
-Hi Tony,
+I've rebased it on top of
 
-Thats a great point! I beleive I need to change "struct syndrom_array" to make all union members have
-a 128-bit size
+https://web.git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/comm=
+it/?id=3D9d7a0577c9db35c4cc52db90bc415ea248446472
 
-struct syndrome_array {
-        union {
-                u32     acpi_id;      ====> all should be 128-bit long
-                u32     device_id;
-                u32     pcie_sbdf;
-                u8      vendor_id[16];
-        } comp_id;
-        union {
-                u32     proc_synd;
-                u32     mem_synd;
-                u32     pcie_synd;
-                u8      vendor_synd[16];
-        } comp_synd;
-};
+so basically the hunk in actbl.h is gone.  Please see
 
+https://web.git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git/com=
+mit/?h=3Dbleeding-edge&id=3D18eb45b67544b995a8a6f48a72b816fd75776f52
 
-> 
-> > +				struct syndrome_array *component_arr;
-> > +
-> > +				component_arr = v5param->einjv2_struct.component_arr;
-> > +				str_len = strlen(user_input);
-> > +
-> > +				while ((nr_parsed = sscanf(user_input + pos, "%x %x\n%n", &comp,
-> 
-> Parsing user input with sscanf() is a bit fragile.  Take a look at
-> rdtgroup_schemata_write() which uses:
-> 
-> 	while ((tok = strsep(&buf, "\n")) != NULL) {
-> 
-> to split input into lines, and then strim() and strsep() to break
-> up items within a line.
-> 
-> > +					&synd, &bytes_read))) {
-> > +					pos += bytes_read;
-> > +
-> > +					if (nr_parsed != 2) {
-> > +						kfree(v5param);
-> > +						goto err_out;
-> > +					}
-> > +					if (count >= nr_components) {
-> > +						kfree(v5param);
-> > +						goto err_out;
-> > +					}
-> > +
-> > +					switch (type) {
-> > +					case EINJV2_PROCESSOR_ERROR:
-> > +						component_arr[count].comp_id.acpi_id = comp;
-> > +						component_arr[count].comp_synd.proc_synd = synd;
-> > +						break;
-> > +					case EINJV2_MEMORY_ERROR:
-> > +						component_arr[count].comp_id.device_id = comp;
-> > +						component_arr[count].comp_synd.mem_synd = synd;
-> > +						break;
-> > +					case EINJV2_PCIE_ERROR:
-> > +						component_arr[count].comp_id.pcie_sbdf = comp;
-> > +						component_arr[count].comp_synd.pcie_synd = synd;
-> > +						break;
-
-I also need to include another case here for EINJv2_VENDOR_ERROR
-I will fix this in the next revision.
-
--Zaid
-
-> > +					}
-> > +					count++;
-> > +					if (pos >= str_len)
-> > +						break;
-> > +				}
+Thanks!
