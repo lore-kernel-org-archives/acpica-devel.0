@@ -1,147 +1,128 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0790223DFB
-	for <acpica-devel@lists.linux.dev>; Wed, 23 Apr 2025 20:04:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 122561B4F1F
+	for <acpica-devel@lists.linux.dev>; Thu, 24 Apr 2025 20:04:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745438659; cv=none; b=DSisdWlDxxWBUFN7qFbqgb+V34RMPG9yV2drxZ2a7/9J2xHvZBnj6gCqOS+/hWlxViA4rmj4Po4+NpFn9idGbC16iYsK+anZ0sgQSB9Gg0OrD9e6Vpbxvu8D6tb3ec83oymxwuqXX81E0mUtJZJIWoUpjAfLteFI0WqyGNwlQ1w=
+	t=1745525050; cv=none; b=d0F7SgG4itRdC6vheJMPNEiUAwOZfrhgPgXG1hR2F1teYvpJBIwjmUNawhnM8o+FjqY4paKlXKMzBTlHxbu7/zwkeejMrqLz1C///+lqQ4Hb4AbeHdG36BmvRjKErPURplr6Rk6Ju23NpMe8EDmZVcvTQWO7OY45hXRwY/wkOuk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745438659; c=relaxed/simple;
-	bh=cxaMvVcBVtdfwqKCy8tAu7BZLGaLreXc/92Wi3OWRRU=;
+	s=arc-20240116; t=1745525050; c=relaxed/simple;
+	bh=KkxKNu+7sYjEvW2eUqgTl7hxYpjjmGiMFnVC7NvxbIw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nxHnCUTUM1EW+c7kWVJVI9DNub4Kj/nTDijtgWCYd7/VG9ZXmsVdONpRs0FESO+iSPLe9d6HRHbDBZAhlPW/1gQLTf2i57Ru4XB0wM7XeLiY/Bk3zT2ro683SDAf+0JFEG7gH9TFdTFs4zvuZSfcv20Z6EFbMI8bKhtWtfozGdU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QFIS7+7v; arc=none smtp.client-ip=10.30.226.201
+	 To:Cc:Content-Type; b=oqaKUqAs0qWCRNeF7lto1B4Qaz1l3OUN/MGdap4TRIRzH1vokZjvjiSAjlGBAjVynT3WcGAtz/5PcH2aE1frSOO4KEhCJ8UoJzmdppb2oRIBxSwU9vs0qI4YsJ9HhkQEDVXyjthHMjTgrFNbLhx+oOzXyxSrj36kuSGRrN5oFBY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YxmiO6ps; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QFIS7+7v"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72C10C4CEE2
-	for <acpica-devel@lists.linux.dev>; Wed, 23 Apr 2025 20:04:18 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YxmiO6ps"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80B2EC4AF0B
+	for <acpica-devel@lists.linux.dev>; Thu, 24 Apr 2025 20:04:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745438658;
-	bh=cxaMvVcBVtdfwqKCy8tAu7BZLGaLreXc/92Wi3OWRRU=;
+	s=k20201202; t=1745525049;
+	bh=KkxKNu+7sYjEvW2eUqgTl7hxYpjjmGiMFnVC7NvxbIw=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=QFIS7+7vOH3mbByJthVS5BZpFzinoka2fvXZ7pReRxqDjEFvnruht/1pgcQtrj4NL
-	 wUAC4kiXVPAwiDSuhxUjFsBKFGPa3YDb2cJ8AFSGYdb2POvVcY6rslkUSYzGJhIIfb
-	 /SzT8Ga4winbAy6Q+XRK0yRw1iK1f3OXcVCyygrZ9KJB/KTEM2OeGpr4nTA8fDNxJr
-	 k3S8r7ELcpWP9HUuXetm/XFS0U9cyr9UQ+8Fd2d9bpCOrla/lGqviFe6gIcXXfVSOe
-	 OeSqw94ylOqgR0YIsH6LjAer6E0kBh3ZE+W80E2Un8uRxgwxohSl6loATz43ojoXPl
-	 GO3rFI+HCnxjQ==
-Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-2c6f27599abso44566fac.2
-        for <acpica-devel@lists.linux.dev>; Wed, 23 Apr 2025 13:04:18 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVVLQJVRy1B0gstY5w0Gvhln16hDqvecabVek8AwZwQg0mxhwn7CIXJ7m/WN7v3Z59+5FHQMBLPwbeYhvE=@lists.linux.dev
-X-Gm-Message-State: AOJu0YzZxQAXTsmFHCneD/6xXiDFT+pjqvykh093/eJEn0GjB778z9vw
-	i+3TqlC3fufTzcUZu9iCC20syohY9DNFLerQ/Vqi+XOHkfbEBYI9XJpJArzCZJAzkHnLz/LYLb0
-	tTcJSOiiev5NlEfxr4QMGfyHFOpI=
-X-Google-Smtp-Source: AGHT+IGNdK95WXoJNH2YFoPShvcuAWCN+P/w+m/y1K2Oby12AFZZkHdCKndMaq8lzZJIhc5cb8euX9kuVjrYL073DuA=
-X-Received: by 2002:a05:6870:9127:b0:2d8:957a:5176 with SMTP id
- 586e51a60fabf-2d96e19b0camr50460fac.5.1745438657751; Wed, 23 Apr 2025
- 13:04:17 -0700 (PDT)
+	b=YxmiO6psIt+uOX1V/ERh5+bjozKvEbTD/LDAmY5USFU1AJ/IsWw6qnmmfaC2vQ9hV
+	 GVUDA9wpgc0zKVz9vNy1Mv1srEBq3iVT/+UDmsbsv33uLqchzFidrwsJ8BEkxhLnw1
+	 qAYTF9/SYa01xEf1ZQEBS4EhH1kScjwfQR6XqNVM4J6xVGoLkiv1ONuFQ7noOwf0Ih
+	 Rjt4yOWhr8elcFTzLD5q59i621nja/vmWsSoY9LX74rwLGBH4EVaPW+ctkPWdwWFJf
+	 9YPyyY0ubihfmiUERVQdATAdFMUIFN3fP8/L+n8u1Vu9lJvQR5w7t72VtOTPpr5X/Q
+	 iP2bgJdjdQMgg==
+Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-2d071fcd89bso453540fac.3
+        for <acpica-devel@lists.linux.dev>; Thu, 24 Apr 2025 13:04:09 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXSK01x/QPG8h/tBOyijEyaVzf21L1V57irELqg6j8FAwOmHClfJCQTfSDQ6PpAU0r/5DWIRjG3xR23Q3Y=@lists.linux.dev
+X-Gm-Message-State: AOJu0YxCaOMofJc+6IR8ZnAVmq+8nBsTtgNAIoRYEpu+e8gsneZnWAzT
+	Csqc7TytAjsG4D/7A8K7q1OCvV7kDlXzopx5Ap6k2H+x8Wn3TgtQSXlHUnfWvFj9VjDYQqcgRPh
+	xHgqSdMyl2upnJklC7wl8JehYHUg=
+X-Google-Smtp-Source: AGHT+IGA3cFIyxUaOUIh8097AbbxY4ZEq161C8YsJAHuQN2iFbHrk133ky3OUDGk7/YzotAcJDSuNHiqKO6HfRyDn0g=
+X-Received: by 2002:a05:6870:9121:b0:2d4:d07c:7cc5 with SMTP id
+ 586e51a60fabf-2d96e29c4bemr2058793fac.12.1745525048837; Thu, 24 Apr 2025
+ 13:04:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20250415232028.work.843-kees@kernel.org>
-In-Reply-To: <20250415232028.work.843-kees@kernel.org>
+References: <20250417031040.514460-1-superm1@kernel.org> <CAJZ5v0iQMOY1NhpE9Hy0jD6iKQeFbdxB4ZWj5KZcsbApwZ_RhQ@mail.gmail.com>
+ <90fcc29b-be8e-44b3-b6bb-a1ef06096520@kernel.org> <CAJZ5v0jRLRdcvTGELZswnNuQKQx_RuKvDAL776Qv49bP7vxKrQ@mail.gmail.com>
+ <d00430dd-000f-4805-ab5d-d04affffa833@kernel.org> <CAJZ5v0iod_R7gSt8ppEtrkP59w6trRjpg=ZGc1hZr+sFuYELVg@mail.gmail.com>
+In-Reply-To: <CAJZ5v0iod_R7gSt8ppEtrkP59w6trRjpg=ZGc1hZr+sFuYELVg@mail.gmail.com>
 From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 23 Apr 2025 22:04:06 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0j9xA0rj3QFD6jv+vabRtgFqa2nza_RFjq=c5=ds9yCNg@mail.gmail.com>
-X-Gm-Features: ATxdqUHRYTqya0acLc4Hb2cQFkwS76MbdgHgn_ewJ3DBhKc43JCe7GYCZZj2Vbg
-Message-ID: <CAJZ5v0j9xA0rj3QFD6jv+vabRtgFqa2nza_RFjq=c5=ds9yCNg@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: tables: Add __nonstring annotations for
- unterminated strings
-To: Kees Cook <kees@kernel.org>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
-	Robert Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org, 
-	acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	linux-hardening@vger.kernel.org
+Date: Thu, 24 Apr 2025 22:03:57 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0gCVFNLOHSpiF_6SrNAdu-6S0HHnpp6+TeqW9qN70Afrw@mail.gmail.com>
+X-Gm-Features: ATxdqUH_i0I8SJTmXO1agHsNuOXHT0dOVi9K9KQN6X0Es40QkVFwO7T6c5WimFQ
+Message-ID: <CAJZ5v0gCVFNLOHSpiF_6SrNAdu-6S0HHnpp6+TeqW9qN70Afrw@mail.gmail.com>
+Subject: Re: [PATCH v2] ACPICA: Add support for printing AML arguments when
+ trace point enabled
+To: Mario Limonciello <superm1@kernel.org>
+Cc: mario.limonciello@amd.com, robert.moore@intel.com, 
+	rafael.j.wysocki@intel.com, linux-acpi@vger.kernel.org, 
+	acpica-devel@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 16, 2025 at 1:20=E2=80=AFAM Kees Cook <kees@kernel.org> wrote:
+On Thu, Apr 17, 2025 at 3:51=E2=80=AFPM Rafael J. Wysocki <rafael@kernel.or=
+g> wrote:
 >
-> When a character array without a terminating NUL character has a static
-> initializer, GCC 15's -Wunterminated-string-initialization will only
-> warn if the array lacks the "nonstring" attribute[1]. Mark the 4-byte
-> ACPI identifier arrays with __nonstring (and the new __nonstring_array)
-> to correctly identify the char arrays as "not C strings" and thereby
-> eliminate the many warnings like this:
+> On Thu, Apr 17, 2025 at 2:59=E2=80=AFPM Mario Limonciello <superm1@kernel=
+.org> wrote:
+> >
+> > On 4/17/2025 7:46 AM, Rafael J. Wysocki wrote:
+> > > On Thu, Apr 17, 2025 at 2:03=E2=80=AFPM Mario Limonciello <superm1@ke=
+rnel.org> wrote:
+> > >>
+> > >>
+> > >>
+> > >> On 4/17/25 06:19, Rafael J. Wysocki wrote:
+> > >>> On Thu, Apr 17, 2025 at 5:10=E2=80=AFAM Mario Limonciello <superm1@=
+kernel.org> wrote:
+> > >>>>
+> > >>>> From: Mario Limonciello <mario.limonciello@amd.com>
+> > >>>>
+> > >>>> When debug level is set to `ACPI_LV_TRACE_POINT` method start and
+> > >>>> exit are emitted into the debug logs. This can be useful to unders=
+tand
+> > >>>> call paths, however none of the arguments for the method calls are
+> > >>>> populated even when turning up other debug levels.
+> > >>>>
+> > >>>> This can be useful for BIOSes that contain debug strings to see th=
+ose
+> > >>>> strings. When `ACPI_LV_TRACE_POINT` is set also output all of the =
+arguments
+> > >>>> for a given method call.
+> > >>>>
+> > >>>> This enables this type of debugging:
+> > >>>>
+> > >>>> ```
+> > >>>> extrace-0138 ex_trace_point        : Method Begin [0x0000000096b24=
+0c4:\M460] execution.
+> > >>>> extrace-0173 ex_trace_args         :  "  POST CODE: %X  ACPI TIMER=
+: %X  TIME: %d.%d ms\n", b0003f53, 1a26a8b2, 0, 15e, 0, 0
+> > >>>> extrace-0138 ex_trace_point        : Method End [0x0000000096b240c=
+4:\M460] execution.
+> > >>>> ```
+> > >>>>
+> > >>>> Link: https://github.com/acpica/acpica/commit/08219d91b5678ae2fae6=
+e4f208df790a4e108c1c
+> > >>>
+> > >>> The link doesn't work.
+> > >>
+> > >> Are you sure?
+> > >>
+> > >> I just tried again and it worked for me.
+> > >
+> > > Yeah, it works now, I had to sign in to github.
+> > >
+> > > But it is a link to a commit and I need a link to a PR.  I think it's=
+ this one:
+> > >
+> > > https://github.com/acpica/acpica/pull/1012
+> >
+> > Yes that's the right PR that led to the commit.  Can you swap it out?
 >
-> In file included from include/acpi/actbl.h:371,
->                  from include/acpi/acpi.h:26,
->                  from include/linux/acpi.h:26,
->                  from drivers/acpi/tables.c:19:
-> include/acpi/actbl1.h:30:33: warning: initializer-string for array of 'ch=
-ar' truncates NUL terminator but destination lacks 'nonstring' attribute (5=
- chars into 4 available) [-Wunterminated-string-initialization]
->    30 | #define ACPI_SIG_BERT           "BERT"  /* Boot Error Record Tabl=
-e */
->       |                                 ^~~~~~
-> drivers/acpi/tables.c:400:9: note: in expansion of macro 'ACPI_SIG_BERT'
->   400 |         ACPI_SIG_BERT, ACPI_SIG_BGRT, ACPI_SIG_CPEP, ACPI_SIG_ECD=
-T,
->       |         ^~~~~~~~~~~~~
+> Yes, I can.
 >
-> Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D117178 [1]
-> Signed-off-by: Kees Cook <kees@kernel.org>
-> ---
-> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> Cc: Len Brown <lenb@kernel.org>
-> Cc: Robert Moore <robert.moore@intel.com>
-> Cc: linux-acpi@vger.kernel.org
-> Cc: acpica-devel@lists.linux.dev
-> ---
->  drivers/acpi/tables.c | 2 +-
->  include/acpi/actbl.h  | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+> > Or would you like me to resubmit with it adjusted?
 >
-> diff --git a/drivers/acpi/tables.c b/drivers/acpi/tables.c
-> index 2295abbecd14..0a9ade7117bd 100644
-> --- a/drivers/acpi/tables.c
-> +++ b/drivers/acpi/tables.c
-> @@ -396,7 +396,7 @@ static u8 __init acpi_table_checksum(u8 *buffer, u32 =
-length)
->  }
->
->  /* All but ACPI_SIG_RSDP and ACPI_SIG_FACS: */
-> -static const char table_sigs[][ACPI_NAMESEG_SIZE] __initconst =3D {
-> +static const char table_sigs[][ACPI_NAMESEG_SIZE] __nonstring_array __in=
-itconst =3D {
->         ACPI_SIG_BERT, ACPI_SIG_BGRT, ACPI_SIG_CPEP, ACPI_SIG_ECDT,
->         ACPI_SIG_EINJ, ACPI_SIG_ERST, ACPI_SIG_HEST, ACPI_SIG_MADT,
->         ACPI_SIG_MSCT, ACPI_SIG_SBST, ACPI_SIG_SLIT, ACPI_SIG_SRAT,
-> diff --git a/include/acpi/actbl.h b/include/acpi/actbl.h
-> index 451f6276da49..2fc89704be17 100644
-> --- a/include/acpi/actbl.h
-> +++ b/include/acpi/actbl.h
-> @@ -66,7 +66,7 @@
->   ***********************************************************************=
-*******/
->
->  struct acpi_table_header {
-> -       char signature[ACPI_NAMESEG_SIZE];      /* ASCII table signature =
-*/
-> +       char signature[ACPI_NAMESEG_SIZE] __nonstring;  /* ASCII table si=
-gnature */
->         u32 length;             /* Length of table in bytes, including th=
-is header */
->         u8 revision;            /* ACPI Specification minor version numbe=
-r */
->         u8 checksum;            /* To make sum of entire table =3D=3D 0 *=
-/
-> --
+> No need.
 
-Applied as 6.16 material.
-
-I've rebased it on top of
-
-https://web.git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/comm=
-it/?id=3D9d7a0577c9db35c4cc52db90bc415ea248446472
-
-so basically the hunk in actbl.h is gone.  Please see
-
-https://web.git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git/com=
-mit/?h=3Dbleeding-edge&id=3D18eb45b67544b995a8a6f48a72b816fd75776f52
-
-Thanks!
+Applied as 6.16 material, thanks!
