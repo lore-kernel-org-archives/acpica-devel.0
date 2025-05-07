@@ -1,55 +1,55 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68DA423315E
-	for <acpica-devel@lists.linux.dev>; Wed,  7 May 2025 11:34:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EEDC233155
+	for <acpica-devel@lists.linux.dev>; Wed,  7 May 2025 11:39:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746617699; cv=none; b=iJq4crSb1NIar2qgNQ1bksr2rejx1o+hGeQiAD4JJl3lJr7Ja4oYNArfJWcetJ7nTwcTMFIPaiEkah4Ycqxm/sbgJ1t7k/k5QKXPCNz+mi443eO9HVhanD75VCSz6IKds6d1acKlJNaoJY1GviEws89Rrc9tnTTENyARxwX+Fsg=
+	t=1746617943; cv=none; b=AFCC5ik8yZgYHhde1S3FlNqLcjA60qFT3YAPOFQJMn6gHqGz7uYhB9ju16yieVf/tH2Ei461wez5sLOLAwK19gwM9g37ObswQy/kQHM7CC95pdgorEncexrUDxe4vpu5da6gcnoXySHYtll0BFNuP1lOtj8LHipZ8/Jwdp3GMHw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746617699; c=relaxed/simple;
-	bh=SC0HTXn/LkVgrR8Tndvl49zyehmbitAVQKEPvqIXjkM=;
+	s=arc-20240116; t=1746617943; c=relaxed/simple;
+	bh=Hg6l6V9O/4wtXYDdTgCPzwnNnEBa8OCBsehc8OvrrqA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jPfC3sujmw5dJtcteVMlJvjNoU18Kst/VosmAoF83qg9Ris94aRHm5uZZg/viigh8ssKDjQkvolvU1JzCahW757w3Fwd9gu5le+mtOSkm+PX/GY+jcINB6NiAFvHEhPebXVvggc6aZPQUuk7V64RrrnQevuLK5xj/VbEM/1pXOE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DC5YO2Zw; arc=none smtp.client-ip=10.30.226.201
+	 To:Cc:Content-Type; b=CXzCDYjokVgbe4o1f0qEtgJiOIDJdvpauMCyiY2cboMN1900TZIGL+yGdNUyFzx9yZ0FiLUImcDh7fCmIOIJA97ludKxHmK7D3GuNbum/QQHQVoTfoSzkB7InDrgs3wEaE/T67NBR6v39K1VwlKo37rSSSgw3nEpBvtTLO1rmcU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DxcCDH8q; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DC5YO2Zw"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2C60C4CEF0
-	for <acpica-devel@lists.linux.dev>; Wed,  7 May 2025 11:34:57 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DxcCDH8q"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E774C4AF09
+	for <acpica-devel@lists.linux.dev>; Wed,  7 May 2025 11:39:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746617697;
-	bh=SC0HTXn/LkVgrR8Tndvl49zyehmbitAVQKEPvqIXjkM=;
+	s=k20201202; t=1746617942;
+	bh=Hg6l6V9O/4wtXYDdTgCPzwnNnEBa8OCBsehc8OvrrqA=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=DC5YO2ZwSDGb9fivcalZdqyqqNNA1m8gKt9lE4jASbZQhX+WebeCim3aE71z+U4LL
-	 sCJ8Iupf3HJ6mpXNjvqOwNQYgB6esf0kJpPkXE/ud9VXpGJQfqO+OVjYcZpvExiHlS
-	 5IlzpDomxriyVSZRX7S3qtY/sxY+mWVNY6zyOREknDAvDShluFrW4JQMbjM7A+unHs
-	 3N16RCx5Eeb+N0X9RHd4suMFIOgSMSuW18+EyorY6ovTiTXjCxs/Z3Eag571O7eo/2
-	 XBjfoFv20heuW2N9yuvD3P9vD8CSCRrVA0hLNP+MwW+wuhwHhPWXN0XYAdUzwNOSnd
-	 r7MPzD9eLgxyA==
-Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-7300069c447so3586042a34.2
-        for <acpica-devel@lists.linux.dev>; Wed, 07 May 2025 04:34:57 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVKoFJMzaSm9ga1n5PRT2D0euOq9ooYyAUlcl2cUiijFhahbAgB7/pTMbV8svtH4utnLP82AIrX9XZqSgk=@lists.linux.dev
-X-Gm-Message-State: AOJu0YxeyUPersOsCLyHktDQcKzugDvpS4jfKpDtQqmkqezhZmnOZfLL
-	Nbiz7vyoJVPDzM4JmLUAo6Vh/8flFC/H06tb8gwZP2IZmm2hn+LJSlK4gk8S+dQL1SQt20CO4Ym
-	v8HdK+gu8PwX3qyu3Gz0F+cSIqjI=
-X-Google-Smtp-Source: AGHT+IF4YK67tIpkwsZswLnC9nszcTGZb0WX1YzzFw8/i8GM8voajrlh579SmjmLL7VCIfEf+DqGnxNahUO6cTWsDj8=
-X-Received: by 2002:a05:6808:19aa:b0:403:31a4:f3fa with SMTP id
- 5614622812f47-4036f0da2cbmr1833792b6e.35.1746617686660; Wed, 07 May 2025
- 04:34:46 -0700 (PDT)
+	b=DxcCDH8qx/q6v1LR8JboomoBFDhoa1gA+AZYhADwXOQoAShTQMj3Ox8tMI+/RxeJA
+	 OI6EqRypC18VcI8R0AsLAA6YhQSjprYEfBUQfiEkuBRcb0zk6hPyBIOp7I1fqxaR/G
+	 J80oA9b3ek2D2P2OBhDSPTxTU9fZbeUT17yh8bAUcwskixojQljCuDTu06bGf8LODZ
+	 sJVMv9JvzDbKwzU76CLgnle18qHBhvxmc1A68+VVU/B7YabbKrOVTl7lIfhgZcwyYJ
+	 prSEy0Bu0uZ6l8444DVysssxEGG81hwWIhctQtwWLrtORx2oNC6R9AvYGvg8Rt9j4r
+	 3rM7gYMqXzMZA==
+Received: by mail-oa1-f53.google.com with SMTP id 586e51a60fabf-2c76a1b574cso2125321fac.2
+        for <acpica-devel@lists.linux.dev>; Wed, 07 May 2025 04:39:02 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUCfXKCShSpgifVUw6fn/RKXkIIBjrjWI4lrUL0Mjo/bwrQBI+as9EZc6lLuuj6s0Xf65AVcMF7E5ocp+U=@lists.linux.dev
+X-Gm-Message-State: AOJu0YzjcJVMnFFNd/Q55uJoTFKCeehOv4yNFwWzfWAqW7QepbY3xrul
+	Elr13rY+mo61X7uUF5SpPgKkmC06WQoBnQT6MtJYgdeJJAXciL90UOJRBPDEZGybgA15TmYmUdx
+	l6IMjm7pfmpkSGxljI/uXX3XM0as=
+X-Google-Smtp-Source: AGHT+IFaSvdYyurc08EQzE/f5lxzhMMtC8SjK5DkN1Oux0A085DrUh3IgQugzwZfSDEB0LFsg/5XTZkvMW78zYzqS4k=
+X-Received: by 2002:a05:6870:95a0:b0:2c1:650b:fc86 with SMTP id
+ 586e51a60fabf-2db5bd5c524mr1481924fac.1.1746617941915; Wed, 07 May 2025
+ 04:39:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20250506213814.2365788-1-zaidal@os.amperecomputing.com> <20250506213814.2365788-5-zaidal@os.amperecomputing.com>
-In-Reply-To: <20250506213814.2365788-5-zaidal@os.amperecomputing.com>
+References: <20250506213814.2365788-1-zaidal@os.amperecomputing.com> <20250506213814.2365788-6-zaidal@os.amperecomputing.com>
+In-Reply-To: <20250506213814.2365788-6-zaidal@os.amperecomputing.com>
 From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 7 May 2025 13:34:35 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0j-84MDP10YEL48GTPWy1SqHWAA_Dbq+X-k3PFi9brZPw@mail.gmail.com>
-X-Gm-Features: ATxdqUFo9t00Y08Bqt8BJZ0VScpKVfjmIqHn29yfFbbnRTEorhLPCSwW2nP9xUw
-Message-ID: <CAJZ5v0j-84MDP10YEL48GTPWy1SqHWAA_Dbq+X-k3PFi9brZPw@mail.gmail.com>
-Subject: Re: [PATCH v7 4/9] ACPI: APEI: EINJ: Remove redundant calls to einj_get_available_error_type
+Date: Wed, 7 May 2025 13:38:50 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0hr74LKfz+8EzAeR59_2RYKCNAxh0_MSRvfA+nJakyfHw@mail.gmail.com>
+X-Gm-Features: ATxdqUF_NwJ81TANR2N1xhJiUnotNJZzTryt9AripfXwdoa0owKuov1zAn95eDc
+Message-ID: <CAJZ5v0hr74LKfz+8EzAeR59_2RYKCNAxh0_MSRvfA+nJakyfHw@mail.gmail.com>
+Subject: Re: [PATCH v7 5/9] ACPI: APEI: EINJ: Enable the discovery of EINJv2 capabilities
 To: Zaid Alali <zaidal@os.amperecomputing.com>
 Cc: rafael@kernel.org, lenb@kernel.org, james.morse@arm.com, 
 	tony.luck@intel.com, bp@alien8.de, robert.moore@intel.com, 
@@ -64,95 +64,247 @@ Content-Transfer-Encoding: quoted-printable
 On Tue, May 6, 2025 at 11:38=E2=80=AFPM Zaid Alali
 <zaidal@os.amperecomputing.com> wrote:
 >
-> A single call to einj_get_available_error_type in init function is
-> sufficient to save the return value in a global variable to be used
-> later in various places in the code. This commit does not introduce
-> any functional changes, but only removing unnecessary redundant
-> function calls.
+> Enable the driver to show all supported error injections for EINJ
+> and EINJv2 at the same time. EINJv2 capabilities can be discovered
+> by checking the return value of get_error_type, where bit 30 set
+> indicates EINJv2 support.
 >
 > Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Reviewed-by: Ira Weiny <ira.weiny@intel.com>
 > Signed-off-by: Zaid Alali <zaidal@os.amperecomputing.com>
 
-Does this patch depend on patches [1-3/7]?  If not, I can pick it up
-as an optimization.
+While the tag provided by Jonathan is appreciated, patches [5-9/9]
+need to be reviewed by one of the reviewers listed in the APEI entry
+in MAINTAINERS.
 
 > ---
->  drivers/acpi/apei/einj-core.c | 22 +++++++++-------------
->  1 file changed, 9 insertions(+), 13 deletions(-)
+>  drivers/acpi/apei/apei-internal.h |  2 +-
+>  drivers/acpi/apei/einj-core.c     | 75 +++++++++++++++++++++++++------
+>  drivers/acpi/apei/einj-cxl.c      |  2 +-
+>  3 files changed, 63 insertions(+), 16 deletions(-)
 >
+> diff --git a/drivers/acpi/apei/apei-internal.h b/drivers/acpi/apei/apei-i=
+nternal.h
+> index cd2766c69d78..77c10a7a7a9f 100644
+> --- a/drivers/acpi/apei/apei-internal.h
+> +++ b/drivers/acpi/apei/apei-internal.h
+> @@ -131,7 +131,7 @@ static inline u32 cper_estatus_len(struct acpi_hest_g=
+eneric_status *estatus)
+>
+>  int apei_osc_setup(void);
+>
+> -int einj_get_available_error_type(u32 *type);
+> +int einj_get_available_error_type(u32 *type, int einj_action);
+>  int einj_error_inject(u32 type, u32 flags, u64 param1, u64 param2, u64 p=
+aram3,
+>                       u64 param4);
+>  int einj_cxl_rch_error_inject(u32 type, u32 flags, u64 param1, u64 param=
+2,
 > diff --git a/drivers/acpi/apei/einj-core.c b/drivers/acpi/apei/einj-core.=
 c
-> index 47abd9317fef..ada1d7026af5 100644
+> index ada1d7026af5..ee26df0398fc 100644
 > --- a/drivers/acpi/apei/einj-core.c
 > +++ b/drivers/acpi/apei/einj-core.c
-> @@ -83,6 +83,8 @@ static struct debugfs_blob_wrapper vendor_blob;
->  static struct debugfs_blob_wrapper vendor_errors;
+> @@ -33,6 +33,7 @@
+>  #define SLEEP_UNIT_MAX         5000                    /* 5ms */
+>  /* Firmware should respond within 1 seconds */
+>  #define FIRMWARE_TIMEOUT       (1 * USEC_PER_SEC)
+> +#define ACPI65_EINJV2_SUPP     BIT(30)
+>  #define ACPI5_VENDOR_BIT       BIT(31)
+>  #define MEM_ERROR_MASK         (ACPI_EINJ_MEMORY_CORRECTABLE | \
+>                                 ACPI_EINJ_MEMORY_UNCORRECTABLE | \
+> @@ -84,6 +85,7 @@ static struct debugfs_blob_wrapper vendor_errors;
 >  static char vendor_dev[64];
 >
-> +static u32 available_error_type;
-> +
+>  static u32 available_error_type;
+> +static u32 available_error_type_v2;
+>
 >  /*
 >   * Some BIOSes allow parameters to the SET_ERROR_TYPE entries in the
->   * EINJ table through an unpublished extension. Use with caution as
-> @@ -662,14 +664,9 @@ static struct { u32 mask; const char *str; } const e=
-inj_error_type_string[] =3D {
+> @@ -159,13 +161,13 @@ static void einj_exec_ctx_init(struct apei_exec_con=
+text *ctx)
+>                            EINJ_TAB_ENTRY(einj_tab), einj_tab->entries);
+>  }
 >
+> -static int __einj_get_available_error_type(u32 *type)
+> +static int __einj_get_available_error_type(u32 *type, int einj_action)
+>  {
+>         struct apei_exec_context ctx;
+>         int rc;
+>
+>         einj_exec_ctx_init(&ctx);
+> -       rc =3D apei_exec_run(&ctx, ACPI_EINJ_GET_ERROR_TYPE);
+> +       rc =3D apei_exec_run(&ctx, einj_action);
+>         if (rc)
+>                 return rc;
+>         *type =3D apei_exec_ctx_get_output(&ctx);
+> @@ -174,17 +176,34 @@ static int __einj_get_available_error_type(u32 *typ=
+e)
+>  }
+>
+>  /* Get error injection capabilities of the platform */
+> -int einj_get_available_error_type(u32 *type)
+> +int einj_get_available_error_type(u32 *type, int einj_action)
+>  {
+>         int rc;
+>
+>         mutex_lock(&einj_mutex);
+> -       rc =3D __einj_get_available_error_type(type);
+> +       rc =3D __einj_get_available_error_type(type, einj_action);
+>         mutex_unlock(&einj_mutex);
+>
+>         return rc;
+>  }
+>
+> +static int einj_get_available_error_types(u32 *type1, u32 *type2)
+> +{
+> +       int rc;
+> +
+> +       rc =3D einj_get_available_error_type(type1, ACPI_EINJ_GET_ERROR_T=
+YPE);
+> +       if (rc)
+> +               return rc;
+> +       if (*type1 & ACPI65_EINJV2_SUPP) {
+> +               rc =3D einj_get_available_error_type(type2,
+> +                                                  ACPI_EINJV2_GET_ERROR_=
+TYPE);
+> +               if (rc)
+> +                       return rc;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+>  static int einj_timedout(u64 *t)
+>  {
+>         if ((s64)*t < SLEEP_UNIT_MIN) {
+> @@ -646,6 +665,7 @@ static u64 error_param2;
+>  static u64 error_param3;
+>  static u64 error_param4;
+>  static struct dentry *einj_debug_dir;
+> +static char einj_buf[32];
+>  static struct { u32 mask; const char *str; } const einj_error_type_strin=
+g[] =3D {
+>         { BIT(0), "Processor Correctable" },
+>         { BIT(1), "Processor Uncorrectable non-fatal" },
+> @@ -662,6 +682,12 @@ static struct { u32 mask; const char *str; } const e=
+inj_error_type_string[] =3D {
+>         { BIT(31), "Vendor Defined Error Types" },
+>  };
+>
+> +static struct { u32 mask; const char *str; } const einjv2_error_type_str=
+ing[] =3D {
+> +       { BIT(0), "EINJV2 Processor Error" },
+> +       { BIT(1), "EINJV2 Memory Error" },
+> +       { BIT(2), "EINJV2 PCI Express Error" },
+> +};
+> +
 >  static int available_error_type_show(struct seq_file *m, void *v)
 >  {
-> -       int rc;
-> -       u32 error_type =3D 0;
 >
-> -       rc =3D einj_get_available_error_type(&error_type);
-> -       if (rc)
-> -               return rc;
->         for (int pos =3D 0; pos < ARRAY_SIZE(einj_error_type_string); pos=
-++)
-> -               if (error_type & einj_error_type_string[pos].mask)
-> +               if (available_error_type & einj_error_type_string[pos].ma=
+> @@ -669,17 +695,22 @@ static int available_error_type_show(struct seq_fil=
+e *m, void *v)
+>                 if (available_error_type & einj_error_type_string[pos].ma=
 sk)
 >                         seq_printf(m, "0x%08x\t%s\n", einj_error_type_str=
 ing[pos].mask,
 >                                    einj_error_type_string[pos].str);
->
-> @@ -692,8 +689,7 @@ bool einj_is_cxl_error_type(u64 type)
->
->  int einj_validate_error_type(u64 type)
->  {
-> -       u32 tval, vendor, available_error_type =3D 0;
-> -       int rc;
-> +       u32 tval, vendor;
->
->         /* Only low 32 bits for error type are valid */
->         if (type & GENMASK_ULL(63, 32))
-> @@ -709,13 +705,9 @@ int einj_validate_error_type(u64 type)
->         /* Only one error type can be specified */
->         if (tval & (tval - 1))
->                 return -EINVAL;
-> -       if (!vendor) {
-> -               rc =3D einj_get_available_error_type(&available_error_typ=
-e);
-> -               if (rc)
-> -                       return rc;
-> +       if (!vendor)
->                 if (!(type & available_error_type))
->                         return -EINVAL;
-> -       }
->
+> -
+> +       if (available_error_type & ACPI65_EINJV2_SUPP) {
+> +               for (int pos =3D 0; pos < ARRAY_SIZE(einjv2_error_type_st=
+ring); pos++) {
+> +                       if (available_error_type_v2 & einjv2_error_type_s=
+tring[pos].mask)
+> +                               seq_printf(m, "V2_0x%08x\t%s\n", einjv2_e=
+rror_type_string[pos].mask,
+> +                                          einjv2_error_type_string[pos].=
+str);
+> +               }
+> +       }
 >         return 0;
 >  }
-> @@ -791,6 +783,10 @@ static int __init einj_probe(struct platform_device =
-*pdev)
+>
+>  DEFINE_SHOW_ATTRIBUTE(available_error_type);
+>
+> -static int error_type_get(void *data, u64 *val)
+> +static ssize_t error_type_get(struct file *file, char __user *buf,
+> +                               size_t count, loff_t *ppos)
+>  {
+> -       *val =3D error_type;
+> -
+> -       return 0;
+> +       return simple_read_from_buffer(buf, count, ppos, einj_buf, strlen=
+(einj_buf));
+>  }
+>
+>  bool einj_is_cxl_error_type(u64 type)
+> @@ -712,9 +743,23 @@ int einj_validate_error_type(u64 type)
+>         return 0;
+>  }
+>
+> -static int error_type_set(void *data, u64 val)
+> +static ssize_t error_type_set(struct file *file, const char __user *buf,
+> +                               size_t count, loff_t *ppos)
+>  {
+>         int rc;
+> +       u64 val;
+> +
+> +       memset(einj_buf, 0, sizeof(einj_buf));
+> +       if (copy_from_user(einj_buf, buf, count))
+> +               return -EFAULT;
+> +
+> +       if (strncmp(einj_buf, "V2_", 3) =3D=3D 0) {
+> +               if (!sscanf(einj_buf, "V2_%llx", &val))
+> +                       return -EINVAL;
+> +       } else {
+> +               if (!sscanf(einj_buf, "%llx", &val))
+> +                       return -EINVAL;
+> +       }
+>
+>         rc =3D einj_validate_error_type(val);
+>         if (rc)
+> @@ -722,11 +767,13 @@ static int error_type_set(void *data, u64 val)
+>
+>         error_type =3D val;
+>
+> -       return 0;
+> +       return count;
+>  }
+>
+> -DEFINE_DEBUGFS_ATTRIBUTE(error_type_fops, error_type_get, error_type_set=
+,
+> -                        "0x%llx\n");
+> +static const struct file_operations error_type_fops =3D {
+> +       .read           =3D error_type_get,
+> +       .write          =3D error_type_set,
+> +};
+>
+>  static int error_inject_set(void *data, u64 val)
+>  {
+> @@ -783,7 +830,7 @@ static int __init einj_probe(struct platform_device *=
+pdev)
 >                 goto err_put_table;
 >         }
 >
-> +       rc =3D einj_get_available_error_type(&available_error_type);
-> +       if (rc)
-> +               return rc;
-> +
->         rc =3D -ENOMEM;
->         einj_debug_dir =3D debugfs_create_dir("einj", apei_get_debugfs_di=
-r());
+> -       rc =3D einj_get_available_error_type(&available_error_type);
+> +       rc =3D einj_get_available_error_types(&available_error_type, &ava=
+ilable_error_type_v2);
+>         if (rc)
+>                 return rc;
+>
+> diff --git a/drivers/acpi/apei/einj-cxl.c b/drivers/acpi/apei/einj-cxl.c
+> index 78da9ae543a2..e70a416ec925 100644
+> --- a/drivers/acpi/apei/einj-cxl.c
+> +++ b/drivers/acpi/apei/einj-cxl.c
+> @@ -30,7 +30,7 @@ int einj_cxl_available_error_type_show(struct seq_file =
+*m, void *v)
+>         int cxl_err, rc;
+>         u32 available_error_type =3D 0;
+>
+> -       rc =3D einj_get_available_error_type(&available_error_type);
+> +       rc =3D einj_get_available_error_type(&available_error_type, ACPI_=
+EINJ_GET_ERROR_TYPE);
+>         if (rc)
+>                 return rc;
 >
 > --
 > 2.43.0
