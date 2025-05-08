@@ -1,94 +1,70 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+Received: from CH5PR02CU005.outbound.protection.outlook.com (mail-northcentralusazon11022075.outbound.protection.outlook.com [40.107.200.75])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72BE072639;
-	Thu,  8 May 2025 02:48:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 130621E3DE8
+	for <acpica-devel@lists.linux.dev>; Thu,  8 May 2025 17:58:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.200.75
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746672542; cv=fail; b=A6g/gBGfn8GC9vTgHB+48ifU1qQZvtrYsvTTL/89/llmcHk+TahwuCsVZsICrt0k6yoZu+LS6DWKH+5S7MC03xFOo7775W4m70TXRwjywOr68Q/0vGcnKG6f1ULrb3bH7/CemkEy5ef1dwt1EkIyh4cIjEtsKMKGVB+ml/X3vWE=
+	t=1746727092; cv=fail; b=KkxRbbqiExhBG+S8b+JcoA5PGz/6ifnkcKi2kyUuftGiMD7vgX+Ykg0Rj+kdujQEE5F5z8OgsHBqcPW+Lojl64en6yV8aCkbR/g/cCt0k2+s+5ABZxmok4XESXXA5MsTinYSiRWwj/0/M2nt0vjt6HvFNhXznXGn98rgcaXJQRw=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746672542; c=relaxed/simple;
-	bh=JLA3z3oTPA7HIhWGMEdcTsubL/q5DIG6Hy0i+mksJGs=;
-	h=Date:From:To:CC:Subject:Message-ID:Content-Type:
-	 Content-Disposition:MIME-Version; b=YFidyXgrcCsay3ysSgO6yvQxnD+4tIh6CYrw2mfCMIbn26ObYQlwqnOeJPy5fP9H6ZIbdzx8uqzT3YLindTQqtn+SPz3wP5E/17hprtHJa0idYLR61+ipXo+8McAIGvOsZETL7VHlov8kY1F1bASGKOmYr9UWW3IBWUNiPqc9vk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Gngsne3N; arc=fail smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1746727092; c=relaxed/simple;
+	bh=WcsopY6tkWuoePm19XIXYhA8Jd9SbrRq0PkRhT8NlSA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=OfPMPDzPW+Tu3NT2cHdqp4vTH6moDkmWYlq0/v1S/gUJUEvesOUYA+C+sAS8YuoeDPZW0acafhuRd8a+KRlSMQQd+KxQGaAVIroSetiFs5p9zOr4wWUEJnQFi/YtjRO8b0MGZlFiYBiN2336X3CzPGpx3029ZHhLEyR+f+nvluY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com; spf=pass smtp.mailfrom=os.amperecomputing.com; dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b=FRfWULLA; arc=fail smtp.client-ip=40.107.200.75
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=os.amperecomputing.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Gngsne3N"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1746672540; x=1778208540;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=JLA3z3oTPA7HIhWGMEdcTsubL/q5DIG6Hy0i+mksJGs=;
-  b=Gngsne3NRtEfK3hv5ezo1+AZ6liQPXP88QL1wGc/pUfB8D+o9TYXnmfh
-   CSaF9dp9x0/fiMFzhXSau0/zgH6sMNt89F7UyHv5rD7e+N9nkbDGOLpxW
-   OUtmR+tAz3jR2EiqW6A3xkK0CyIkn7uORWZP8q2KRq26lPP0sXh9BW3tN
-   YyEGaFG0f/Y+aaTY3GtLKSrm3sdStxh/9aI3DRtBrcaKflRrswZm3WV79
-   Xt5/MQYT5L5RVK58tnsUCGQ3mlbUUxOAXCjQF6hGqBGI8H4DGjS1uiU1T
-   xSkgpGGezm6Y6Lp0Jg7nQGrP0pR9eNlUgvnFwKVZb7ordWB7vg0iAXTu1
-   g==;
-X-CSE-ConnectionGUID: o9hHCzN0Q6uoVTy2z2GfWA==
-X-CSE-MsgGUID: mT8RPBnsTQOOVWlHKX/F+w==
-X-IronPort-AV: E=McAfee;i="6700,10204,11426"; a="52247965"
-X-IronPort-AV: E=Sophos;i="6.15,271,1739865600"; 
-   d="scan'208";a="52247965"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2025 19:48:59 -0700
-X-CSE-ConnectionGUID: uddEb5DaTGi2C/zkGMC8Wg==
-X-CSE-MsgGUID: bJxBGSvgQHGlk7M827MrkA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.15,271,1739865600"; 
-   d="scan'208";a="173362696"
-Received: from orsmsx903.amr.corp.intel.com ([10.22.229.25])
-  by orviesa001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2025 19:48:58 -0700
-Received: from ORSMSX901.amr.corp.intel.com (10.22.229.23) by
- ORSMSX903.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.14; Wed, 7 May 2025 19:48:58 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.14 via Frontend Transport; Wed, 7 May 2025 19:48:58 -0700
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.49) by
- edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.44; Wed, 7 May 2025 19:48:57 -0700
+	dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b="FRfWULLA"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Ko51YxHPcdvs9iX1i4WeYtsckc9lVmJHMt3YM7m3rP78pixz4MGSkujigvx6w7HATZ/UHZFs9VV1LMsu5dPB5q/BUzclKykoXvyn7RYBQHrzPwQnO+II2zKJzX2Ho+ydFV9CbWsPiOD3BF7b/1j1W4fLELpjh7pmUisxP4t2DDRGDOi0eCW3TvNzfQpbFicaQSDFadavQjv1VzeXfyHTR8+YFUaJrCs4JC4RM/PMcbTlF2Nt8yYXzA/h/jY2OSg/t9/ChoykYph5JZDq+GQsf913a7pTxtLYvRlJ28C9tdjlAGckPaCjMXZjI9Y8ubzSWmhbF7wO2fAcXWI3kkqEWg==
+ b=LI5n5dFXxkuNAdVjx6kxN72eQx0ET/i4/5bGw7Rj4xcdCrNRgWlwH/UPMtWTfE4iY/Q2E7y7+VlKeVBDGGbhy4ohLPu7Keskc1ZvGWUvuXdE8owDbSCRtoR3Tybh/F4YrRI5bn5Gj7wQyzcSNyQ5xUtaRAbRTFuPMBG64Jsbj1Dy2c/wgNehzN0v6LPeD67kOtloVBmA/pVr9jHvEERC0V41ts8pTt13wXriW+ef2oTJ2YkdnlcGQhOaa1uxbKLfviawa6FV9rZua+87lNtKNmcFN884Ep2I6ptqItVhsFW7eAJkejT9qNraCMpMHnAttd20947d/mWYjzKGbMnsDw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4PjHJ4Fp2aaZYD24WL0o2ZU0AiSm8QxiptcCsexP6YI=;
- b=LcFQ/zISOXP9qzjxmXpUNQZWKt78SgwBjAD5wnyASjv+5SBPCxuT3USj/xxN3/jyyYlcoRyIkO3JhrXkZ0+5JvA0qU7llDZbh+GLFDzJrJJc8wgaFogYbrt2jPc53uTIRu1bTOpYkCQVJV+vpBiyYyO+VKwgK3eGEuAZ1JMjFXCklCmuIRPmRbqjfiDzXx/zMkMk0df7x0KN3zhAwIq7xYzs3gllK2FqigA7TbvKgHdure/HEA7LBTFf3Ofzc3cZNuUnn36ixlEMg3fJeSIEtVK/E6t+5vBlTK5Z7kL9HIOLpKjm/GYMBF5LdHfu1vi55bKxAjRQR6+9AlAW6Wh8jw==
+ bh=IJL4qmZTj1ej00oK+1Axc8b7pBwoGSbhCoaI2cSPjm4=;
+ b=iSHePr+nfk5xs+YEsQ5o+l1WMS7TGXR5lzcvjdUyUs9Z2k88gkqeybMkbsdrWQ3Vn+4C2mqNhdKFY8NeYyOKLXUrBobObfDZ2aReMp/hmuaPcQxy8eTndRdhiGOHGw0MPPIjp+SqCYGo8E66yhk/pMmSn5h1Dwtb9wGS5bC9prCwSKgEOdqxdmcxScG5CxiHKP+kd7zVFN0Td3Yi6iQZ8ftT2gyIcqZwy6Y8BUemOcqQuqwZB97uqUZszTTT3YlGQ4wWF+7TPmBqgvlqVlrLgV6T+/NzACNIuBFw/6IM6fT9ewjQfvIB2EDnW2BRmiKQ8bxw13Q+drmDX83v4xMJUA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IJL4qmZTj1ej00oK+1Axc8b7pBwoGSbhCoaI2cSPjm4=;
+ b=FRfWULLAUAZLSyYSzbWt4kmrLWKBMBPJmmSQ8sPauDMCv4lVEO3AzA6Bu1KJF/vDVVRBuUA3f+i4huqMyU17VPytPkXn5726RFD/WOXy7ljS/MXxzxihq8X0zNWUmyHXROePDAkdb4Q4tTE12B4lqNXh1BBiz60vIa8aheFLBak=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
- by DS0PR11MB6495.namprd11.prod.outlook.com (2603:10b6:8:c1::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8678.33; Thu, 8 May
- 2025 02:48:46 +0000
-Received: from LV3PR11MB8603.namprd11.prod.outlook.com
- ([fe80::4622:29cf:32b:7e5c]) by LV3PR11MB8603.namprd11.prod.outlook.com
- ([fe80::4622:29cf:32b:7e5c%4]) with mapi id 15.20.8699.026; Thu, 8 May 2025
- 02:48:45 +0000
-Date: Thu, 8 May 2025 10:48:36 +0800
-From: kernel test robot <oliver.sang@intel.com>
-To: Ahmed Salem <x0rw3ll@gmail.com>
-CC: <oe-lkp@lists.linux.dev>, <lkp@intel.com>, "Rafael J. Wysocki"
-	<rafael.j.wysocki@intel.com>, <linux-acpi@vger.kernel.org>,
-	<acpica-devel@lists.linux.dev>, <oliver.sang@intel.com>
-Subject: [linux-next:master] [ACPICA]  1f5f181b9b:
- BUG:KASAN:global-out-of-bounds_in_acpi_ut_safe_strncpy
-Message-ID: <202505081033.50e45ff4-lkp@intel.com>
-Content-Type: text/plain; charset="us-ascii"
+ header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
+Received: from SN7PR01MB7903.prod.exchangelabs.com (2603:10b6:806:34f::17) by
+ BY1PR01MB8948.prod.exchangelabs.com (2603:10b6:a03:5b7::10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8722.23; Thu, 8 May 2025 17:58:01 +0000
+Received: from SN7PR01MB7903.prod.exchangelabs.com
+ ([fe80::cf45:9855:a64e:382f]) by SN7PR01MB7903.prod.exchangelabs.com
+ ([fe80::cf45:9855:a64e:382f%6]) with mapi id 15.20.8722.020; Thu, 8 May 2025
+ 17:58:00 +0000
+Date: Thu, 8 May 2025 10:57:57 -0700
+From: Zaid Alali <zaidal@os.amperecomputing.com>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: lenb@kernel.org, james.morse@arm.com, tony.luck@intel.com, bp@alien8.de,
+	robert.moore@intel.com, Jonathan.Cameron@huawei.com,
+	ira.weiny@intel.com, Benjamin.Cheatham@amd.com,
+	dan.j.williams@intel.com, arnd@arndb.de, Avadhut.Naik@amd.com,
+	u.kleine-koenig@pengutronix.de, john.allen@amd.com,
+	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	acpica-devel@lists.linux.dev
+Subject: Re: [PATCH v7 4/9] ACPI: APEI: EINJ: Remove redundant calls to
+ einj_get_available_error_type
+Message-ID: <aBzwpS6t3V4zwrxn@zaid-VirtualBox>
+References: <20250506213814.2365788-1-zaidal@os.amperecomputing.com>
+ <20250506213814.2365788-5-zaidal@os.amperecomputing.com>
+ <CAJZ5v0j-84MDP10YEL48GTPWy1SqHWAA_Dbq+X-k3PFi9brZPw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-X-ClientProxiedBy: SI2P153CA0017.APCP153.PROD.OUTLOOK.COM
- (2603:1096:4:140::10) To LV3PR11MB8603.namprd11.prod.outlook.com
- (2603:10b6:408:1b6::9)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0j-84MDP10YEL48GTPWy1SqHWAA_Dbq+X-k3PFi9brZPw@mail.gmail.com>
+X-ClientProxiedBy: MW4PR04CA0277.namprd04.prod.outlook.com
+ (2603:10b6:303:89::12) To SN7PR01MB7903.prod.exchangelabs.com
+ (2603:10b6:806:34f::17)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -96,219 +72,192 @@ List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|DS0PR11MB6495:EE_
-X-MS-Office365-Filtering-Correlation-Id: 74570a10-815f-4bff-f5d4-08dd8ddada04
+X-MS-TrafficTypeDiagnostic: SN7PR01MB7903:EE_|BY1PR01MB8948:EE_
+X-MS-Office365-Filtering-Correlation-Id: df7777ce-5e6d-45e4-b17e-08dd8e59defd
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|376014;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?17HOCLi244D0KIXO0IbvVMjipt466BZL+ZSzFCEJ7SfeSGartewc8SbHKGw0?=
- =?us-ascii?Q?Tlo2NGuukUGHV8o+4Gk9aP6hnjSfCfhMb0OGuutFBnoeIpuENNCi9s1a/dIt?=
- =?us-ascii?Q?MZb+Y1G+Q393Eu4EfW2NaiObhRw7MdsTrdaD4ER8KoLDR64mQDp8yrZdeTOG?=
- =?us-ascii?Q?44MT2phQ18y1v/zE5LUmX8WqkaZoghaxJfdvjK6CA2ecOgG6GgI0qrG8PpfY?=
- =?us-ascii?Q?e6kXQqEJw0C45hgUAqbIbn6K/TXilKO18c/YFIQkYaQduSv1/VhkacKQH0Zb?=
- =?us-ascii?Q?vrG7tiL8l9pQJdBs5VggvL+JAwBSL8eZRvk6F5XnxgvN3sSbSXXiOlo0I/ad?=
- =?us-ascii?Q?dSFKDA2n3exX+LBTTgvWx6TvWo/bZshEhmC/4z2BlOZXXg3BBcJHgok/r74J?=
- =?us-ascii?Q?mFgpaBN039yWWylhPacYvOp7FMLkkMt+gVSmY5zwvDR3wLgHboJ9Rob91N6i?=
- =?us-ascii?Q?znGoYgkg1XfP9iRIP00fVIzGlFVFelDRxgUnTwMsJ1PbIjtTYOTDdr6KRa7O?=
- =?us-ascii?Q?h4aYl+ssdZoPHSEefSLEk0DFYr94KBa5PkDmGcUs6aFmbnD8sRK2yKPCJTa0?=
- =?us-ascii?Q?9zVQc/g2Y+vzWbzEpfGj+4hZmb4qzExYFgguHGBo3asesTbJ/vCRG2otFG8E?=
- =?us-ascii?Q?l4J2YEv6AlaQTH/tOscCiVBusQLDNbERlHhhgxKS5LzUha9Fs12tAvzz3dR+?=
- =?us-ascii?Q?C5T0Lif395n0YaMz0fHuNEKpJWkqcCh57YHlVtxAg00gYNh78j+M2ril4KTl?=
- =?us-ascii?Q?5LQMOJ/fIuN5YFhpSpb+fuULxADtW28JF2RU8i/Gv9eAeIexcXOxpCwkDuUg?=
- =?us-ascii?Q?5MrbOZHGozTSmwf5uVCw49IH2WI4hBfUvplfsZ6JMaKUEhuwN3l/dwzf3j3h?=
- =?us-ascii?Q?COtoLzOW283HWsCCdeXtuJgE7GCMy1xX8K95ouqhAZqAAv3agML7oNwlpVGu?=
- =?us-ascii?Q?GAzQCqmCmmEEiSz2jU+9i4Qzf6ojill/VnyMkXEx6Aqt/0N20N90qf0lHehA?=
- =?us-ascii?Q?N2V4/saPO/aYvxNX66WkA2ZjOEdTo5s2wQg6qqGxa5TNN3zByLg5Bj3/d/m9?=
- =?us-ascii?Q?kKfoYfLtagdmF1eRtIOczMxUbC2UFgleYx5jww6hKpziw9JR8kbRf02e9yOp?=
- =?us-ascii?Q?sU+BN+zVndOzZJd8lHiAmsBRNW8miSnXevke2tJdozY03OoX3mF6IPc+9yXv?=
- =?us-ascii?Q?SOEzFE+RfImj+kJQihLz3Pma9yyaQEAiQPrqs1TD0yBaK9vOjenfL7tiKOC7?=
- =?us-ascii?Q?o2PiEF6LHVcj1/nPnOgzp8sYgWcX8eUxAw6wPHFFh+Ls0O+6aKY60Z2Ac8Gi?=
- =?us-ascii?Q?hSh4XUgoy4rVXnDdNjelnlLrFDEakxnnCj6ZNNCgc3bf5PuPFrSywl5pGHQp?=
- =?us-ascii?Q?mhJ2axa3Yhbt2xCZCUaS6PItjaH3?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR11MB8603.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|366016|1800799024|376014|52116014|7416014|38350700014;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?a1IwWDV2LzczT2I5aXhhTlMvVWFFR3cxUTNDOTlZTzRyclVmMVVmTXQxZ1hV?=
+ =?utf-8?B?bk9YUzFNcHp2YWlCTFp5QTBtNmk1eDBLODN2NEVVMFdCR09xTVhlZlJGYlUz?=
+ =?utf-8?B?YXUvM0NENUJHYk5YcnVZRStDSkZaRmdKRy9QdDlhWGpIU1RhUkVncXhZNFB2?=
+ =?utf-8?B?bVYrTUp2cVZUZGY5ckZnS2xQT25waGxsTHpJeTFmcFlWOEEyZFpLazI1dGhx?=
+ =?utf-8?B?SXJPWGk4dkR5cGttUTA0RHJvSjdKQVo3Yzk5M2xrRXlYMkdRc09nVnV5eExD?=
+ =?utf-8?B?RFI3RGZrSEFoUDB1WFVOdFNvUDVPdXAvWFlqeVAyZ0p3ckVENVp0OGlGZ3lM?=
+ =?utf-8?B?cVFvNGdXZlArS0pBcmw1REYrSTYvSjJYWDQ2c0hXdVFSNUhsL0IvNmxJMWFJ?=
+ =?utf-8?B?TGJ2TFIrTlFkTis3c2k5MWRHdE82NjRCeG0vVzZzRUJKYWhjYktESkk4TlhD?=
+ =?utf-8?B?aysrdFVnNjVBSmdYVXQxRC95NVZlTWRWN0x2Y0s1SVRUZkQ1bkNmSnZmSXRU?=
+ =?utf-8?B?MmJ0dW9VR282Z0hHQ3hrblRKUkFrNFFpclloQW9Ycm9FREN3eCtTT1pueGdm?=
+ =?utf-8?B?L1lkaDcveSt0TldwbjYrb0lvZlNhWFdlZGVzOUlNOEF0Tmd4dVpyZVJ2MUtC?=
+ =?utf-8?B?VHI5b2FKZ2FDNWN3T3dNRC9VNGF3aEc1bitpV1NEcGFnLzVwem1YOHl4bEgy?=
+ =?utf-8?B?U2cvb0xNc1NDNkhiZmNHT2tXRUdEby9rbmtnWVFFZWJBU3NIeGdnOFZYbzF4?=
+ =?utf-8?B?ZEQ0bWlITnl2b3hoS0F1dE5MZHk2VTN6UUNTWU1yak9uNmZCeG4yTENxQkNB?=
+ =?utf-8?B?eVY2MlZEK0ZlT2dheDRFdU1KT1JxQ0RzNi8vQVEyeXlLSkp5ZWppQkFMWEQz?=
+ =?utf-8?B?c0pqSmxFYlh5LzNBQW82YmFkRVNKSzBhb3htQlNNbXh4U0dmY0NjaE1HaFhx?=
+ =?utf-8?B?Um9rQ2NvMHE1blI5SndjNHlKTFFjaVpuSTdNOW45SXE1VGx2VjE3ajlXUnNC?=
+ =?utf-8?B?em5YV3RQTHVzaTloQThJSFZmR1ovU09HVGpqQ3Evd1RneWZsWmlQL283OFJi?=
+ =?utf-8?B?Mm5JUnlPdkpxNE5mNGErakVldzRsSEpqUXpMQXV0TFcvZ1NIZGoyTStxd0c4?=
+ =?utf-8?B?bE1pM3pKbExqc2pmWFAweFFtUTlMWGxWOHpoR1BsQWt6WWhZSlgyYTJYQVFC?=
+ =?utf-8?B?TVh4aHV3S3c3SXNzQk1seUFaL2h6YmM4bFN2ZVFjV2FPa1F3aTFFVXd2ZUtl?=
+ =?utf-8?B?aEVxOXBtdmVHR1k5VzBuVkkzcXM1Qkl6NFNndWNDSzVpeTFwbXdEMEpFVmhE?=
+ =?utf-8?B?Qi9HK3IyeEw2K0FaVkxSNmx6S24xWSt2RlcvajlseVhWQUpBaEt0VnRkbWJJ?=
+ =?utf-8?B?VW8zdmcxZWR0SUlsOFNlMEFKcVZFSUhFVm9IeStYeEoyNGNPczAyTW5WZXBP?=
+ =?utf-8?B?ZG43YjhFV0tnd1hhWHNNOStFYmlydVFFeTBHc0taOFk4OTZFaFNiY0tnNURZ?=
+ =?utf-8?B?M25Ua05vN21iMnZ3VUd4U0RKL09PeTRTSkpsMGltd2N4MlVIVVFCb0Vmb1Vs?=
+ =?utf-8?B?Yk9TcWt2OTRNTzZiNXpoR2pnbnVZYUVHVit3M1IzZndFS0preE5HMTRTZVg1?=
+ =?utf-8?B?MUdScmdmNTBrcTc0NGt5NERCaGU5Z2pWb2pqdWpEc1NoRllxVkFzYXcyT3RB?=
+ =?utf-8?B?YnB1bjdXWXFpc2FlaVFqaHRDMVlaM1dtUVlaS2p4a0lkQUlLMHhLSy9sZUw5?=
+ =?utf-8?B?alJ3b0czOU9Rdm0rNnVtcWZFSUNpZ0txOXlJUjl6c2JSdUN2MjF6cWJRRmxo?=
+ =?utf-8?B?V3pGZFNjNnh5cHVFYkxGVUxQdTg2bndjNW1IanlLWTZYTVBRejd5MHFoUHo5?=
+ =?utf-8?B?cEo2bUpJYjl1MVNFRkZyUkE1K0M4NEZlV09tRWovZ3d5d2h6clRiR1BlQjEr?=
+ =?utf-8?B?aDJFNFVsbVVGekFrU1RQNTJEWVlSb2xwNnNOR29kb21HOTQ3NVZpUnJMUVZF?=
+ =?utf-8?B?VE5rV1BWU2J3PT0=?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR01MB7903.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(52116014)(7416014)(38350700014);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?5J5txNUKv+lUlkuard9ByP4K2fVTg6zmd6N6aMecZzOrqSCVf3kMX/fMfHeC?=
- =?us-ascii?Q?FT/aoVA/d7W4rswMlU+ToQ7KLYnF/5uj27b6xaSw8vNToM8XgDWavonk51Pq?=
- =?us-ascii?Q?z3Q46ee7S5IBZnywBtaZfQ8T9DA/ZVaCTisAYJdF9R6YtaP+vCI/FvDAT8oo?=
- =?us-ascii?Q?CPZHO2a63ULAB8hm9nGNGiik0CKfA8/wUO9gK7cCmVVtblx++OLQ6KdYu+iR?=
- =?us-ascii?Q?uYeJbSLttgoKMTGi058NkSda8OnlQPZJfLM/MLWkd1BFgFoI2703xkIg07kJ?=
- =?us-ascii?Q?BZA9vD03HWyIKjq633o9ACtcbZxauocAD9/swx2JUFtzrjPAc13ITozXzWKR?=
- =?us-ascii?Q?nP4zu3R1LICnziNRCW+WZRDw1E1xrWKMt2c/uIRRAcUPZ0isIfJo3xWAmFSv?=
- =?us-ascii?Q?l2RO5rUHBz6O+AV5yIQ8TO+Bv4uEu6uBjd0uMKCXLsNSY0Se66zQSbHliGL6?=
- =?us-ascii?Q?A8aruLh9pARdbI2Gfg3VjJPQIS0hD5PZ833syraW+PvdD/RCD93n85ygpm07?=
- =?us-ascii?Q?3BgZZHz7CpXGEmh3lG8GLi0LTo47x2egI9LYyLKb/PqNtZNTE/fBaP+sefoF?=
- =?us-ascii?Q?4tVG+CpgGK9JCyNAbUoaSaWU/jbzMI7pKpKcveTDzJfV9liZxGYI9f7/Gjy1?=
- =?us-ascii?Q?gzI0gFgd3JdLcwwjI0QZyefAJz1qQ6X3v9R33RaXDK2AY08XbBTY35l7EdqW?=
- =?us-ascii?Q?LPXt2ncQwNnJvcRzLTYcctvmJ1JhrWnpH2ihC/ZbPpeLznbkB5az8Rm5IweM?=
- =?us-ascii?Q?Y3UqdrO+EOb+o+37OTrqk7YyypI8LyabEQdD2DINHUBauIDfr5q2ERN/8e+s?=
- =?us-ascii?Q?ygHzp4RO4NsPjFqHPQ0B36gVzeI5RXuA8NjxK7ItGd0JdWtSkbvtnSZ4pQEM?=
- =?us-ascii?Q?E71xBH0J9JFYxiqEnUBorfsg5g/4kG19bINUlIgET9cpSc4CqQRAfsn563Vz?=
- =?us-ascii?Q?uc8+kr2awDuMcldvd7WGdB/4LPdZw5+Fv1pVBC7Pg4dbgx2jyJzPzSJT5OIh?=
- =?us-ascii?Q?I2iIc5q8eYFC7yfvuo5y8Cq6YIs+EPTDc0WH6NVQcuivhuTLxiAj/GWjXxTx?=
- =?us-ascii?Q?dErLrwRSxg+Pi000rozx0K/wvtmExSb3QHoIn3rGPWYgb0Nmzq5OAAqZ5JvR?=
- =?us-ascii?Q?S1S5x8+JZ2wM/lbNbLiLDap5iCj2Gy/0VgWGoAzh0MxS5HDvoZKcV4uIB44Y?=
- =?us-ascii?Q?ty3FvIgqTcyFf/4VWRu7uvFqA6kTkzevmKiLzSpOtDECur0gsS1yrbQDBf9Y?=
- =?us-ascii?Q?76orI9zcnbPW88WkSx3XnYz0RnMcJjEVvNg/3LOFzJkkw+2q5+uWzxDuoY3+?=
- =?us-ascii?Q?Zn+Lqt7L4+48l2jMwZwRdHk3ReJoBc9fuggLsnXRl4jgAE9zBn8yVOsh2b7i?=
- =?us-ascii?Q?xqfKfL5ib2A7BgdUNwtPVioc5HJ7SDNq6i4J/mxzU6ykN7P3fPLEq8v2pAXC?=
- =?us-ascii?Q?Unn/GKOkeZYEXL8ETicYvtVBBjG8W7YIESsT6gb0uegUTG4qfYGFQsxyhkez?=
- =?us-ascii?Q?y/zyKhs9kTLh9XMJRVxdaNRTSjsAICd/nRsu5em+IIHi2PkNrl6vW/auyK3l?=
- =?us-ascii?Q?+n6BuyJ6f5QkiiaTXKKjYXl7mFt5m24hTcdWcQZteXKq1tVkj9UUUakJglGd?=
- =?us-ascii?Q?gQ=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 74570a10-815f-4bff-f5d4-08dd8ddada04
-X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8603.namprd11.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?YXBWNjlmVnpBWEsxQWdOOHBRU3AxRW4rN1Fybmg1M3dHTlJxUTlCK1lRWk5r?=
+ =?utf-8?B?K29oUGRBdDFWMXBFRGdWcnpLY1pWWE0vYWdRUE1Qa2JFTktLSjVYZ1hxbUJI?=
+ =?utf-8?B?ZnVWQmlScGh0ZTdBdzlmL09mcW1GYWlDNEJxK25QM3QxMFJYdWF5UG5YOU5O?=
+ =?utf-8?B?amxYR3AyL0MzUm5EZ3YrNkpMVHBZZ3ZHYXN5czY1TXZCVGpHQlRzdzhxVVNv?=
+ =?utf-8?B?MTNPdkxoc3ZvYUVFTThYTmpwbVRjOFFaSnlpM09wMDJScFROQ2w2RkUyU1hx?=
+ =?utf-8?B?TTZXWTlRZEtDKzZwS0hRdnlaNVVLdjBIYWt5cWZXdmJzVWxoY2wvRHJaTDdB?=
+ =?utf-8?B?NnlKT2piT0tPU1ZEekQycXRZWDVrMGUzd0I4cGdsazhJMm1nOFBPTmZWbGky?=
+ =?utf-8?B?b1YrMWpUL0REN0ZJNmVsMnZWazgxTHBmZTlvMk9RQitxcUxvUFZ1cktLdm13?=
+ =?utf-8?B?SmtueUY2ZFNERFBaQm1mVlRCVUdJeVBQVEFxSGpNamE0ckROUmZjTkhDc1pt?=
+ =?utf-8?B?eFlydENBUUpVazZNRldrU2JrN2g0YkkvWUtxUDVEMytqNmphZkxMSXVKejlE?=
+ =?utf-8?B?UjRRR1dCNmJIK0Z5Wk9Cd2VDRHlmRUpJYXBPazZRRm92ZjFlaUtwL0RUdXJx?=
+ =?utf-8?B?R2Zydmt1Q1lBN1dzYXJPUXFhUDl4Nkk5Tm1UeURYNFpZeDExQWJvMm05dnJw?=
+ =?utf-8?B?TkdJbHlwNGdWakVROXp3OWxlbUs1djRmSVRSdVppbVptdjh4WmE4NlphMXly?=
+ =?utf-8?B?bFNOTGIrdzRTNEhNV2FVem5UVGsvaTg1WXg3VVR5enBNM0lzWEFteUtoZ0pG?=
+ =?utf-8?B?em9vbnJ0OFhPSGNQSDdDeGpqYVBpK0grRFN2eW1uT0hDNFNSdjVuRDJlOWRJ?=
+ =?utf-8?B?R3pSbXBIcXRQV3NTU2o3R0Z0WFFCa2dFY0JGck00cTNQQXRRczBWS0h4UEZO?=
+ =?utf-8?B?V1E3WVhHcDZ0L3RpWU1zVS90ZTBVM2JtR3NGY1dBWHUyeFlGV0xuV1ErRXJD?=
+ =?utf-8?B?TCtJY2d3K0w0ZVJVWW94RFYyemhSTzRPNUthWUxkWWlQN1ZUVW9Pb2hEbmV1?=
+ =?utf-8?B?S3FiVHgxVVFRK0x2RmlsMkhlY2JScUY1QWswYjM0ZU5kTS9Gc2xXdndvSUsx?=
+ =?utf-8?B?YXlIUmpuQXAvbkFLTXNIUDJEQWd1OXZFcGtmVi90ZkxORDhUVjI0aC8zTG1P?=
+ =?utf-8?B?UWZnQ2NmeE9mNmkxODJYTGMrZ2dYOURZaVd4L25Dd2xlMSswZlRUd1ZacTc3?=
+ =?utf-8?B?cmVVNUNCYjJCckoyK1htLzBPaVRrWWltMWJrblVzWkEwQ1ZaYXRKL2xOc3pC?=
+ =?utf-8?B?bDBBVFA0WXJCTk81OVNaMzVkcUI4ZUlkOVkvZUtUV1FNZGhKRHFndHgwdlBh?=
+ =?utf-8?B?WnZ3dWF4YkJxRDczbDdIejJrRk55TS9OMURPaW1TcUZ0ZTNiNFJmSTdGcm5H?=
+ =?utf-8?B?aEZIQ1poNm1NRndWTHBPQ3pZdmpKZ2U3RCtTQ08xNTZUelVzam1FQ21jeUpq?=
+ =?utf-8?B?YVJucnRBUWZneGhMcDE1YWxWMHVCWlJ6N0dWemV0TnRQaXc2bHVwSEJxMXlQ?=
+ =?utf-8?B?b3E3QytOczlkSkRBQnBvU1VZbElvZzZKTkEzeGZlRU9NL0t1cWJ5TW9tRkNQ?=
+ =?utf-8?B?V2hIcXM2bDdKWURNdHZJbXJhQmdjVzNEQitaOHd4N1piSTdoT01CYkJzby9K?=
+ =?utf-8?B?WURndVpSd3l6YnFGRlJNL2JZcnRqQ09XeDF2dXlQSUp0SmZ4aDZBdFRXcGR0?=
+ =?utf-8?B?S3haeS9lU0V1cklkazhuMG1EcGhqcmdwOFVPYm55VDJpTysvUHpraFFCbkZT?=
+ =?utf-8?B?aHJDWklsTEVsM3pydHIrUXU3Y2JQQ1plZFA5SldRRXUxVE9iZUh4VmN3aTdx?=
+ =?utf-8?B?NlZLVlA2WDUydEkxR0NuTU4rNFdxZUlpOVJBeVkrVldZR0hQWU1UU2orUEI4?=
+ =?utf-8?B?dGl3cXY2MERnT0sxUStQakJ6TUt5dnVjQVZDc0pEc3ppdTN6ajE2RlVBTXBj?=
+ =?utf-8?B?NUNkMm5xcnhYWnlScEVtUEJZN0p4cUMrcXE1emVQN2dscnNabUtTYzdGeEdT?=
+ =?utf-8?B?SHcwSW52TlMveEZiVFltQkl0ZW5SUnRnZGJEc0MyZWp4ZGxnVkJkTCs4QmJG?=
+ =?utf-8?B?cUNHdGk3UzRJTUlQMktIUVkzdTdKeEt5UEVTVngvWWZtOUFIV0haSEcybkRW?=
+ =?utf-8?Q?uoGFiM9VFCi5ZkRRU/k7jW4=3D?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: df7777ce-5e6d-45e4-b17e-08dd8e59defd
+X-MS-Exchange-CrossTenant-AuthSource: SN7PR01MB7903.prod.exchangelabs.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 May 2025 02:48:45.8706
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 May 2025 17:58:00.6004
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: sfu+V/Y4SD7D4PeC+GGJgFFvez0xNxs3ogzcxLDgMTlRXCbL5JvLzo1YrR10nYlDuM0uVxyhivFk8Bd1j7OKcA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB6495
-X-OriginatorOrg: intel.com
+X-MS-Exchange-CrossTenant-UserPrincipalName: adhIS7RrNqpHHXG4zmCVaWu1MU+QuLwR5px0R6Fl0RX14t5O+Ed81WsaDL0AfTscVh1xcXyZ6N3zbtGjGFDZxrzbYak+qc9y7a660YmJIIz1LmzlmQf9w0lkSNEkKQ3l
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY1PR01MB8948
 
+On Wed, May 07, 2025 at 01:34:35PM +0200, Rafael J. Wysocki wrote:
+> On Tue, May 6, 2025 at 11:38 PM Zaid Alali
+> <zaidal@os.amperecomputing.com> wrote:
+> >
+> > A single call to einj_get_available_error_type in init function is
+> > sufficient to save the return value in a global variable to be used
+> > later in various places in the code. This commit does not introduce
+> > any functional changes, but only removing unnecessary redundant
+> > function calls.
+> >
+> > Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+> > Signed-off-by: Zaid Alali <zaidal@os.amperecomputing.com>
+> 
+> Does this patch depend on patches [1-3/7]?  If not, I can pick it up
+> as an optimization.
+Hi Rafael,
 
+No, this patch is does not depend on 1-3 patches. You can pick it up!
 
-Hello,
+-Zaid 
 
-kernel test robot noticed "BUG:KASAN:global-out-of-bounds_in_acpi_ut_safe_strncpy" on:
-
-commit: 1f5f181b9bdfd4d55a058aaec0b6d17f18084e75 ("ACPICA: Replace strncpy() with memcpy()")
-https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
-
-[test failed on linux-next/master 37ff6e9a2ce321b7932d3987701757fb4d87b0e6]
-
-in testcase: boot
-
-config: x86_64-randconfig-r051-20250501
-compiler: clang-20
-test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
-
-(please refer to attached dmesg/kmsg for entire log/backtrace)
-
-
-+--------------------------------------------------------+------------+------------+
-|                                                        | 9d57241663 | 1f5f181b9b |
-+--------------------------------------------------------+------------+------------+
-| BUG:KASAN:global-out-of-bounds_in_acpi_ut_safe_strncpy | 0          | 12         |
-+--------------------------------------------------------+------------+------------+
-
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <oliver.sang@intel.com>
-| Closes: https://lore.kernel.org/oe-lkp/202505081033.50e45ff4-lkp@intel.com
-
-
-[ 16.282972][ T1] BUG: KASAN: global-out-of-bounds in acpi_ut_safe_strncpy (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/drivers/acpi/acpica/utnonansi.c:172) 
-[   16.283199][    T1] Read of size 16 at addr ffffffff88301f40 by task swapper/0/1
-[   16.283199][    T1]
-[   16.283199][    T1] CPU: 0 UID: 0 PID: 1 Comm: swapper/0 Not tainted 6.15.0-rc3-00029-g1f5f181b9bdf #1 VOLUNTARY
-[   16.283199][    T1] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-[   16.283199][    T1] Call Trace:
-[   16.283199][    T1]  <TASK>
-[ 16.283199][ T1] __dump_stack (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/lib/dump_stack.c:95) 
-[ 16.283199][ T1] dump_stack_lvl (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/lib/dump_stack.c:123) 
-[ 16.283199][ T1] ? show_regs_print_info (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/lib/dump_stack.c:104) 
-[ 16.283199][ T1] ? lock_acquire (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/kernel/locking/lockdep.c:118 kbuild/obj/consumer/x86_64-randconfig-r051-20250501/kernel/locking/lockdep.c:5842) 
-[ 16.283199][ T1] ? load_image (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/kernel/printk/printk.c:2470) 
-[ 16.283199][ T1] ? lock_release (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/include/trace/events/lock.h:69) 
-[ 16.283199][ T1] ? __virt_addr_valid (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/arch/x86/include/asm/preempt.h:85 kbuild/obj/consumer/x86_64-randconfig-r051-20250501/include/linux/rcupdate.h:955 kbuild/obj/consumer/x86_64-randconfig-r051-20250501/include/linux/mmzone.h:2127 kbuild/obj/consumer/x86_64-randconfig-r051-20250501/arch/x86/mm/physaddr.c:65) 
-[ 16.283199][ T1] ? acpi_ut_safe_strncpy (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/drivers/acpi/acpica/utnonansi.c:172) 
-[ 16.283199][ T1] print_report (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/mm/kasan/report.c:409) 
-[ 16.283199][ T1] ? acpi_ut_safe_strncpy (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/drivers/acpi/acpica/utnonansi.c:172) 
-[ 16.283199][ T1] kasan_report (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/mm/kasan/report.c:636) 
-[ 16.283199][ T1] ? acpi_ut_safe_strncpy (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/drivers/acpi/acpica/utnonansi.c:172) 
-[ 16.283199][ T1] kasan_check_range (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/mm/kasan/generic.c:?) 
-[ 16.283199][ T1] ? acpi_ut_safe_strncpy (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/drivers/acpi/acpica/utnonansi.c:172) 
-[ 16.283199][ T1] __asan_memcpy (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/mm/kasan/shadow.c:105) 
-[ 16.283199][ T1] acpi_ut_safe_strncpy (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/drivers/acpi/acpica/utnonansi.c:172) 
-[ 16.283199][ T1] acpi_ps_init_op (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/drivers/acpi/acpica/psutils.c:68) 
-[ 16.283199][ T1] acpi_ps_alloc_op (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/drivers/acpi/acpica/psutils.c:122) 
-[ 16.283199][ T1] ? acpi_ns_get_normalized_pathname (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/drivers/acpi/acpica/nsnames.c:307) 
-[ 16.283199][ T1] ? acpi_ps_create_scope_op (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/drivers/acpi/acpica/psutils.c:86) 
-[ 16.283199][ T1] ? acpi_debug_print_raw (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/drivers/acpi/acpica/utdebug.c:266) 
-[ 16.283199][ T1] acpi_ps_create_scope_op (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/drivers/acpi/acpica/psutils.c:34) 
-[ 16.283199][ T1] acpi_ps_execute_table (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/drivers/acpi/acpica/psxface.c:?) 
-[ 16.283199][ T1] ? __kmalloc_cache_noprof (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/mm/slub.c:4373) 
-[ 16.283199][ T1] acpi_ns_execute_table (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/drivers/acpi/acpica/nsparse.c:?) 
-[ 16.283199][ T1] ? acpi_ns_get_attached_data (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/drivers/acpi/acpica/nsparse.c:45) 
-[ 16.283199][ T1] ? acpi_debug_print_raw (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/drivers/acpi/acpica/utdebug.c:266) 
-[ 16.283199][ T1] ? acpi_os_signal_semaphore (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/drivers/acpi/osl.c:?) 
-[ 16.283199][ T1] ? acpi_ut_release_mutex (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/drivers/acpi/acpica/utmutex.c:?) 
-[ 16.283199][ T1] acpi_ns_parse_table (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/drivers/acpi/acpica/nsparse.c:268) 
-[ 16.283199][ T1] acpi_ns_load_table (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/drivers/acpi/acpica/nsload.c:72) 
-[ 16.283199][ T1] acpi_tb_load_namespace (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/drivers/acpi/acpica/tbxfload.c:158) 
-[ 16.283199][ T1] ? acpi_ev_install_region_handlers (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/drivers/acpi/acpica/evhandler.c:101) 
-[ 16.283199][ T1] acpi_load_tables (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/drivers/acpi/acpica/tbxfload.c:67) 
-[ 16.283199][ T1] acpi_bus_init (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/drivers/acpi/bus.c:?) 
-[ 16.283199][ T1] ? acpi_init (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/drivers/acpi/bus.c:1337) 
-[ 16.283199][ T1] ? kasan_save_alloc_info (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/mm/kasan/generic.c:563) 
-[ 16.283199][ T1] ? __kasan_kmalloc (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/mm/kasan/common.c:398) 
-[ 16.283199][ T1] ? __kasan_check_write (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/mm/kasan/shadow.c:37) 
-[ 16.283199][ T1] ? kobject_init (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/arch/x86/include/asm/atomic.h:28) 
-[ 16.283199][ T1] acpi_init (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/drivers/acpi/bus.c:1455) 
-[ 16.283199][ T1] do_one_initcall (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/init/main.c:1257) 
-[ 16.283199][ T1] ? acpi_arch_init+0x10/0x10 
-[ 16.283199][ T1] ? IS_ERR_OR_NULL (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/init/main.c:1248) 
-[ 16.283199][ T1] ? _raw_spin_unlock_irqrestore (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/include/linux/spinlock_api_smp.h:? kbuild/obj/consumer/x86_64-randconfig-r051-20250501/kernel/locking/spinlock.c:194) 
-[ 16.283199][ T1] ? _raw_spin_unlock_irqrestore (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/arch/x86/include/asm/irqflags.h:146 kbuild/obj/consumer/x86_64-randconfig-r051-20250501/kernel/locking/spinlock.c:194) 
-[ 16.283199][ T1] ? _raw_spin_unlock (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/kernel/locking/spinlock.c:193) 
-[ 16.283199][ T1] ? t_show (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/include/linux/ucopysize.h:57 kbuild/obj/consumer/x86_64-randconfig-r051-20250501/include/linux/uaccess.h:207 kbuild/obj/consumer/x86_64-randconfig-r051-20250501/kernel/trace/trace.c:6336) 
-[ 16.283199][ T1] ? irqentry_exit (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/kernel/entry/common.c:?) 
-[ 16.283199][ T1] ? sysvec_apic_timer_interrupt (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/arch/x86/kernel/apic/apic.c:1049) 
-[ 16.283199][ T1] ? stop_critical_timings (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/kernel/trace/trace_irqsoff.c:633) 
-[ 16.283199][ T1] ? sysvec_apic_timer_interrupt (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/arch/x86/kernel/apic/apic.c:1049) 
-[ 16.283199][ T1] ? irqentry_exit (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/kernel/entry/common.c:?) 
-[ 16.283199][ T1] ? sysvec_apic_timer_interrupt (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/arch/x86/kernel/apic/apic.c:1049) 
-[ 16.283199][ T1] ? trace_hardirqs_on (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/kernel/trace/trace_preemptirq.c:80) 
-[ 16.283199][ T1] ? irqentry_exit (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/kernel/entry/common.c:?) 
-[ 16.283199][ T1] ? sysvec_apic_timer_interrupt (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/arch/x86/kernel/apic/apic.c:1049) 
-[ 16.283199][ T1] ? asm_sysvec_apic_timer_interrupt (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/arch/x86/include/asm/idtentry.h:702) 
-[ 16.283199][ T1] ? do_initcall_level (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/init/main.c:1303) 
-[ 16.283199][ T1] ? next_arg (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/lib/cmdline.c:273) 
-[ 16.283199][ T1] ? parameq (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/kernel/params.c:90 kbuild/obj/consumer/x86_64-randconfig-r051-20250501/kernel/params.c:99) 
-[ 16.283199][ T1] ? parse_args (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/kernel/params.c:153) 
-[ 16.283199][ T1] ? parameq (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/kernel/params.c:168) 
-[ 16.283199][ T1] ? t_show (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/include/linux/ucopysize.h:57 kbuild/obj/consumer/x86_64-randconfig-r051-20250501/include/linux/uaccess.h:207 kbuild/obj/consumer/x86_64-randconfig-r051-20250501/kernel/trace/trace.c:6336) 
-[ 16.283199][ T1] ? do_initcalls (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/init/main.c:1329) 
-[ 16.283199][ T1] do_initcall_level (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/init/main.c:1318) 
-[ 16.283199][ T1] do_initcalls (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/init/main.c:1332) 
-[ 16.283199][ T1] do_basic_setup (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/init/main.c:1355) 
-[ 16.283199][ T1] kernel_init_freeable (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/init/main.c:1571) 
-[ 16.283199][ T1] ? rest_init (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/init/main.c:1449) 
-[ 16.283199][ T1] kernel_init (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/init/main.c:1459) 
-[ 16.283199][ T1] ? rest_init (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/init/main.c:1449) 
-[ 16.283199][ T1] ret_from_fork (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/arch/x86/kernel/process.c:159) 
-[ 16.283199][ T1] ? rest_init (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/init/main.c:1449) 
-[ 16.283199][ T1] ret_from_fork_asm (kbuild/obj/consumer/x86_64-randconfig-r051-20250501/arch/x86/entry/entry_64.S:258) 
-[   16.283199][    T1]  </TASK>
-[   16.283199][    T1]
-[   16.283199][    T1] The buggy address belongs to the variable:
-[ 16.283199][ T1] .str.8+0x0/0x20 
-[   16.283199][    T1]
-[   16.283199][    T1] The buggy address belongs to the physical page:
-[   16.283199][    T1] page: refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x8301
-[   16.283199][    T1] flags: 0x4000000000002000(reserved|zone=1)
-[   16.283199][    T1] raw: 4000000000002000 ffffea000020c048 ffffea000020c048 0000000000000000
-[   16.283199][    T1] raw: 0000000000000000 0000000000000000 00000001ffffffff 0000000000000000
-[   16.283199][    T1] page dumped because: kasan: bad access detected
-[   16.283199][    T1] page_owner info is not present (never set?)
-[   16.283199][    T1]
-[   16.283199][    T1] Memory state around the buggy address:
-[   16.283199][    T1]  ffffffff88301e00: 00 00 00 00 00 00 00 00 05 f9 f9 f9 04 f9 f9 f9
-[   16.283199][    T1]  ffffffff88301e80: 06 f9 f9 f9 05 f9 f9 f9 00 02 f9 f9 00 02 f9 f9
-[   16.283199][    T1] >ffffffff88301f00: 00 03 f9 f9 07 f9 f9 f9 06 f9 f9 f9 07 f9 f9 f9
-[   16.283199][    T1]                                            ^
-[   16.283199][    T1]  ffffffff88301f80: 00 f9 f9 f9 07 f9 f9 f9 07 f9 f9 f9 07 f9 f9 f9
-
-
-The kernel config and materials to reproduce are available at:
-https://download.01.org/0day-ci/archive/20250508/202505081033.50e45ff4-lkp@intel.com
-
-
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
+> 
+> > ---
+> >  drivers/acpi/apei/einj-core.c | 22 +++++++++-------------
+> >  1 file changed, 9 insertions(+), 13 deletions(-)
+> >
+> > diff --git a/drivers/acpi/apei/einj-core.c b/drivers/acpi/apei/einj-core.c
+> > index 47abd9317fef..ada1d7026af5 100644
+> > --- a/drivers/acpi/apei/einj-core.c
+> > +++ b/drivers/acpi/apei/einj-core.c
+> > @@ -83,6 +83,8 @@ static struct debugfs_blob_wrapper vendor_blob;
+> >  static struct debugfs_blob_wrapper vendor_errors;
+> >  static char vendor_dev[64];
+> >
+> > +static u32 available_error_type;
+> > +
+> >  /*
+> >   * Some BIOSes allow parameters to the SET_ERROR_TYPE entries in the
+> >   * EINJ table through an unpublished extension. Use with caution as
+> > @@ -662,14 +664,9 @@ static struct { u32 mask; const char *str; } const einj_error_type_string[] = {
+> >
+> >  static int available_error_type_show(struct seq_file *m, void *v)
+> >  {
+> > -       int rc;
+> > -       u32 error_type = 0;
+> >
+> > -       rc = einj_get_available_error_type(&error_type);
+> > -       if (rc)
+> > -               return rc;
+> >         for (int pos = 0; pos < ARRAY_SIZE(einj_error_type_string); pos++)
+> > -               if (error_type & einj_error_type_string[pos].mask)
+> > +               if (available_error_type & einj_error_type_string[pos].mask)
+> >                         seq_printf(m, "0x%08x\t%s\n", einj_error_type_string[pos].mask,
+> >                                    einj_error_type_string[pos].str);
+> >
+> > @@ -692,8 +689,7 @@ bool einj_is_cxl_error_type(u64 type)
+> >
+> >  int einj_validate_error_type(u64 type)
+> >  {
+> > -       u32 tval, vendor, available_error_type = 0;
+> > -       int rc;
+> > +       u32 tval, vendor;
+> >
+> >         /* Only low 32 bits for error type are valid */
+> >         if (type & GENMASK_ULL(63, 32))
+> > @@ -709,13 +705,9 @@ int einj_validate_error_type(u64 type)
+> >         /* Only one error type can be specified */
+> >         if (tval & (tval - 1))
+> >                 return -EINVAL;
+> > -       if (!vendor) {
+> > -               rc = einj_get_available_error_type(&available_error_type);
+> > -               if (rc)
+> > -                       return rc;
+> > +       if (!vendor)
+> >                 if (!(type & available_error_type))
+> >                         return -EINVAL;
+> > -       }
+> >
+> >         return 0;
+> >  }
+> > @@ -791,6 +783,10 @@ static int __init einj_probe(struct platform_device *pdev)
+> >                 goto err_put_table;
+> >         }
+> >
+> > +       rc = einj_get_available_error_type(&available_error_type);
+> > +       if (rc)
+> > +               return rc;
+> > +
+> >         rc = -ENOMEM;
+> >         einj_debug_dir = debugfs_create_dir("einj", apei_get_debugfs_dir());
+> >
+> > --
+> > 2.43.0
+> >
