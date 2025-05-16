@@ -1,200 +1,200 @@
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0530A1FBCB0
-	for <acpica-devel@lists.linux.dev>; Wed, 14 May 2025 05:57:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC0421519AC;
+	Fri, 16 May 2025 14:12:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747202277; cv=none; b=kRX2e9LJQph5DuKzJmY1YBNVRIx1WWjQSgsOMr0Mu0VTXPgrBhphWWNYn/hembkZ0okl8dCngCuO/nILRykyjKfjcHgA17HZHHf+dDE8pIaZGtXhCokyOnRgNifW55HGGrdC2PDpVfmZM5EcH40+ChFBSKj51ta2vxD5w8M/nyI=
+	t=1747404778; cv=none; b=ulivxSdPRue1mn27F/S0KjAoADgorAPKZFUoe6ksez2BpwVEgipUZ8iaXC7WK5I9JBZgSdLQX1B8zpeSEp+EHw9C65NxuGOD+p0qq5bX8OtPx9eVkEEJUCQyF0idJZnQ9rVLJWq94vo2g2LSNFIzZWuXPclnONxplojn45F1wDE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747202277; c=relaxed/simple;
-	bh=Tr1XOcL/8BhgssUXkqbsbVw45YsiIW9Uliv4Chah6tw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cI/RPKtbwEdSswQsJrfxkMWmTbs7/iGqg7hNBoND6eGaVJsdjZi5dvZttHioknRZl7Y6hBHWZ7P/O0oHgWaWTTd6BfJC9+RRWRSgLlR+OT5yMMTI0Yvo4ilkPaQbmFeo2ZNcmv4u8aNGyvcr9c/1FKhrNJRRfbAS+/zowFv+bdQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=KfTNo4+u; arc=none smtp.client-ip=209.85.215.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+	s=arc-20240116; t=1747404778; c=relaxed/simple;
+	bh=M40WfWlk5YMTEsDWr5cABgdKxkUNV407DW73Q7i7IeI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YVXSOaYWGSmTSFFngbe45qa84aRJ1L9Rwfk1qZkp3/WUITmhtHJxigXMLRJX5H2bmW2pTXSsnoMGSfO8EJTj20LMxqCtuKu6lqZwcFneiFfxvDBTN7IAep6MKwBAxBP9dAmDaGQA15b3PkPlBS239jOKg1pKXIvStuomF+hR5Ss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NAZaY/4C; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="KfTNo4+u"
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-b200047a6a5so463663a12.0
-        for <acpica-devel@lists.linux.dev>; Tue, 13 May 2025 22:57:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1747202275; x=1747807075; darn=lists.linux.dev;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FbiDocnvP7/vIiwuy9W9uCrvaQAnUMotSiyx0gsvykM=;
-        b=KfTNo4+ukmaXxw8E3O0puQNwakp9eWKOIlMKEhy/keS3StyuLR+o5oBsBT5zNZCtag
-         MPZQdENa274yBrhQbdqLQ2SUVCD4rQWkprDfEx9vHVABducUC3hAuZBz5Q8QjHwPCMwr
-         Ml73qP+yMS3xf/A9NMYSFOsygWrznp4ETxUqrnSnihkCdlCFjfYLjD4seuEpAFggj8ik
-         zlvSfcpOXjD1jqI8B6nQ8dpjmBRK5iho21Mfk3s0lymeqqwAluw1JfFkl+YJIgCXJsAs
-         h/pxQDvTfXN92NmbmGqmeycVslY6TQ+xFgqU7h1JaNpbZnBzQhN5YRh/wpUXiHmT41T7
-         bMcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747202275; x=1747807075;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FbiDocnvP7/vIiwuy9W9uCrvaQAnUMotSiyx0gsvykM=;
-        b=t6hZkxALLMy3YFlDonjiC78qaKpa6zXlUt/CEk30EkLOJ3bDD44i2anUJPyb/wPfJM
-         Y/Z6a+dSWCqujdY7a25aoVr/FCf7Af07EeZdH3jAk4K6JsOJ1IeMR14VWOpjxhNKQVVA
-         hloavziiHfcKwCn3/62pH/eIBPSKvduI/ymS3pnqt/QsJ9jsEz4cMtU67C7svFPlB+bH
-         +DTjRMOrk42zCWJno9JdJg0yPO1mudFpirPXIcJTDxevhhXabQTtR9hty3/kG9BtUOLl
-         h6hzD5o4lnKvNemugTBMFJx+Jm41+NYayAB0RXLFU0Jq1f8LC0HSOydEHMRiCYZjfz+U
-         huhg==
-X-Forwarded-Encrypted: i=1; AJvYcCWhGu+pnLQr1AycCmN08hDT417GnXnDB0HS+KInjQxSM+/Iu69UuCNQiFk4OYeuIrHcDIDumk9y0AHWpG8=@lists.linux.dev
-X-Gm-Message-State: AOJu0YwKa8U36MesMiNN9Ua5SGJLTxtB6Bha3tZt1d9HjMYPWsP9j0Q5
-	eIz9W5qFOoapYMPNTSeFX52d8Uxkc7qhBR7nnNet+CtDuhuZeOY7cU3QJayCk5g=
-X-Gm-Gg: ASbGncsfhgpK5PRQwJ8g2mRfgpV9sEZgbk6dGDlcQquOb7ukiibmHh+E03WHBtnFKXn
-	Z9TqsRiwuthzLYmj93SvCdX7WwQsyxIcQNJNxGGUMyg49yZDIxZKw2MK+mkY0O2vVvAFIuqTy9+
-	SS5rUdLaWbZbruZ9x9ALvSli1jPKsbXh6Mzq1vzahLx87rKpmUkgHv/QuQajD3soiQJ4d+4H/hq
-	2oDLycMFOzSvp1IsUUq+VuvBOm/fzPuI9m5hxYc/rUnos1izusivPYB4WYGv2gRIOHiZ3PPp/h6
-	1JXVy4HXzqcoLUIJoGF5/O3/9FPNOl0oMxrBHToT6ia5E3YUrPLkZwfzGKpqSA==
-X-Google-Smtp-Source: AGHT+IGgGwlhXhb97hz7G/rQ5hnEoBLy0AHEplWytso8kcAajszMRL1hQAHqjtumZAwOWQTJC9TsUw==
-X-Received: by 2002:a17:903:32d1:b0:223:807f:7f92 with SMTP id d9443c01a7336-2317cb4f087mr83654885ad.20.1747202275325;
-        Tue, 13 May 2025 22:57:55 -0700 (PDT)
-Received: from sunil-pc.Dlink ([106.51.196.253])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22fc8271c2dsm91721615ad.135.2025.05.13.22.57.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 May 2025 22:57:54 -0700 (PDT)
-From: Sunil V L <sunilvl@ventanamicro.com>
-To: linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	linux-acpi@vger.kernel.org,
-	iommu@lists.linux.dev,
-	acpica-devel@lists.linux.dev
-Cc: Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Alexandre Ghiti <alex@ghiti.fr>,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>,
-	Tomasz Jeznach <tjeznach@rivosinc.com>,
-	Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Atish Kumar Patra <atishp@rivosinc.com>,
-	Anup Patel <apatel@ventanamicro.com>,
-	Andrew Jones <ajones@ventanamicro.com>,
-	Sunil V L <sunilvl@ventanamicro.com>
-Subject: [PATCH 4/4] iommu/riscv: Add ACPI support
-Date: Wed, 14 May 2025 11:27:23 +0530
-Message-ID: <20250514055723.1328557-5-sunilvl@ventanamicro.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250514055723.1328557-1-sunilvl@ventanamicro.com>
-References: <20250514055723.1328557-1-sunilvl@ventanamicro.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NAZaY/4C"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D06FC4CEF2;
+	Fri, 16 May 2025 14:12:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1747404778;
+	bh=M40WfWlk5YMTEsDWr5cABgdKxkUNV407DW73Q7i7IeI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=NAZaY/4CpF0feR2rflVvHns81UR7MQacqaPo/ql/3FOQ/wRMlyVUzX9OLlk8Z780h
+	 NW0WIOojV892uYO1oRts59Uae2uXosWs5rDCcNJrHvPAEzpASW5gRkcO15ihuNQ3at
+	 KX9s3XBPMmzxHMHBJhzxW1hyAiAykGXi7Oh3DnBL2KtsUabczzEcEqWdt6m3ETc+3s
+	 K1FgLClCRQdSGC4eee5Y8D3u8Qr+VT70nEQvZw5aaKYA/R3v5nSxaon5aGmwNFBmcP
+	 rvoHyWrXkkPNIzeBK1/OPZrDi3qTb8d5Q9hxTm5wiIq9YBjh70bAxKmlJsq+5cWVM5
+	 /UhI6clSoea4Q==
+Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-60402c94319so1572926eaf.1;
+        Fri, 16 May 2025 07:12:58 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWAYn3IT5me4liEcVjBdQcVcnN4GWGRevOBz8nPN8aLEb0WxOXA1wBLIEHpl3atls1JFoHQhJM=@lists.linux.dev, AJvYcCXqzqUSZOQDC8TfmNUSgzkXt/ffkK1eRpAuveDWQ2S3S2GgmHwic0RKuTZUJTb5EOBjXwxUTBJ+9G9SF2I=@lists.linux.dev
+X-Gm-Message-State: AOJu0Yz7tiOL0hhOI3vCSsINPMY4vD4GExYmoeAvNmjY6dp9v3/5Lm0b
+	ramJWqvAjr2I7DfbOv1+Mm0DgVDWASY7nsUxZT0jWRrZwsHmTJ2qxcOUoSmZTRztdyCSkV1ISee
+	FZ28d2OrO1xNIN9RBr+wXMm4odi+Qtxc=
+X-Google-Smtp-Source: AGHT+IGupjLPJfmTwVsmvNg0fAfU7DGdQNDawRspJaseP9wgN7f5DAnJ+5/LOf3oSCS/IGTVEHVkkx5+Ray2I6WcuTI=
+X-Received: by 2002:a05:6820:1908:b0:606:361b:52ad with SMTP id
+ 006d021491bc7-609f3731c3bmr2140452eaf.3.1747404777502; Fri, 16 May 2025
+ 07:12:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250514055723.1328557-1-sunilvl@ventanamicro.com> <20250514055723.1328557-2-sunilvl@ventanamicro.com>
+In-Reply-To: <20250514055723.1328557-2-sunilvl@ventanamicro.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Fri, 16 May 2025 16:12:46 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0hGVYyHX7ZQPQ5XNrHBBy9jfA+WMLu7XaoXAqr3s4dOfg@mail.gmail.com>
+X-Gm-Features: AX0GCFsH-bwqQdQsyTXD9jznFAfsf5DgDdkDatIcIuRAOxRJWF942Z9YbvDa2JI
+Message-ID: <CAJZ5v0hGVYyHX7ZQPQ5XNrHBBy9jfA+WMLu7XaoXAqr3s4dOfg@mail.gmail.com>
+Subject: Re: [PATCH 1/4] ACPICA: actbl2: Add definitions for RIMT
+To: Sunil V L <sunilvl@ventanamicro.com>
+Cc: linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	linux-acpi@vger.kernel.org, iommu@lists.linux.dev, 
+	acpica-devel@lists.linux.dev, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+	Alexandre Ghiti <alex@ghiti.fr>, "Rafael J . Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
+	Tomasz Jeznach <tjeznach@rivosinc.com>, Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>, 
+	Robin Murphy <robin.murphy@arm.com>, Atish Kumar Patra <atishp@rivosinc.com>, 
+	Anup Patel <apatel@ventanamicro.com>, Andrew Jones <ajones@ventanamicro.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-RISC-V IO Mapping Table (RIMT) provides the information about the IOMMU
-to the OS in ACPI. Add support for ACPI in RISC-V IOMMU drivers by using
-RIMT data.
+On Wed, May 14, 2025 at 7:57=E2=80=AFAM Sunil V L <sunilvl@ventanamicro.com=
+> wrote:
+>
+> ACPICA commit 73c32bc89cad64ab19c1231a202361e917e6823c
+>
+> RISC-V IO Mapping Table (RIMT) is a new static table defined for RISC-V
+> to communicate IOMMU information to the OS. The specification for RIMT
+> is available at [1]. Add structure definitions for RIMT.
+>
+> [1] - https://github.com/riscv-non-isa/riscv-acpi-rimt
+>
+> Link: https://github.com/acpica/acpica/commit/73c32bc8
+> Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
 
-The changes at high level are,
+An analogous patch is present in linux-next already as
 
-a) Register the IOMMU with RIMT data structures.
-b) Enable probing of platform IOMMU in ACPI way using the ACPIID defined
-   for the RISC-V IOMMU in the BRS spec [1]. Configure the MSI domain if
-   the platform IOMMU uses MSIs.
+ced63370237a ACPICA: actbl2: Add definitions for RIMT
 
-[1] - https://github.com/riscv-non-isa/riscv-brs/blob/main/acpi-id.adoc
+No need to send this again.
 
-Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
----
- drivers/iommu/riscv/iommu-platform.c | 17 ++++++++++++++++-
- drivers/iommu/riscv/iommu.c          | 10 ++++++++++
- 2 files changed, 26 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/iommu/riscv/iommu-platform.c b/drivers/iommu/riscv/iommu-platform.c
-index 725e919b97ef..83a28c83f991 100644
---- a/drivers/iommu/riscv/iommu-platform.c
-+++ b/drivers/iommu/riscv/iommu-platform.c
-@@ -10,6 +10,8 @@
-  *	Tomasz Jeznach <tjeznach@rivosinc.com>
-  */
- 
-+#include <linux/acpi.h>
-+#include <linux/irqchip/riscv-imsic.h>
- #include <linux/kernel.h>
- #include <linux/msi.h>
- #include <linux/of_irq.h>
-@@ -46,6 +48,7 @@ static int riscv_iommu_platform_probe(struct platform_device *pdev)
- 	enum riscv_iommu_igs_settings igs;
- 	struct device *dev = &pdev->dev;
- 	struct riscv_iommu_device *iommu = NULL;
-+	struct irq_domain *msi_domain;
- 	struct resource *res = NULL;
- 	int vec, ret;
- 
-@@ -76,8 +79,13 @@ static int riscv_iommu_platform_probe(struct platform_device *pdev)
- 	switch (igs) {
- 	case RISCV_IOMMU_CAPABILITIES_IGS_BOTH:
- 	case RISCV_IOMMU_CAPABILITIES_IGS_MSI:
--		if (is_of_node(dev->fwnode))
-+		if (is_of_node(dev_fwnode(dev))) {
- 			of_msi_configure(dev, to_of_node(dev->fwnode));
-+		} else {
-+			msi_domain = irq_find_matching_fwnode(imsic_acpi_get_fwnode(dev),
-+							      DOMAIN_BUS_PLATFORM_MSI);
-+			dev_set_msi_domain(dev, msi_domain);
-+		}
- 
- 		if (!dev_get_msi_domain(dev)) {
- 			dev_warn(dev, "failed to find an MSI domain\n");
-@@ -150,6 +158,12 @@ static const struct of_device_id riscv_iommu_of_match[] = {
- 	{},
- };
- 
-+static const struct acpi_device_id riscv_iommu_acpi_match[] = {
-+	{ "RSCV0004", 0 },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(acpi, riscv_iommu_acpi_match);
-+
- static struct platform_driver riscv_iommu_platform_driver = {
- 	.probe = riscv_iommu_platform_probe,
- 	.remove = riscv_iommu_platform_remove,
-@@ -158,6 +172,7 @@ static struct platform_driver riscv_iommu_platform_driver = {
- 		.name = "riscv,iommu",
- 		.of_match_table = riscv_iommu_of_match,
- 		.suppress_bind_attrs = true,
-+		.acpi_match_table = riscv_iommu_acpi_match,
- 	},
- };
- 
-diff --git a/drivers/iommu/riscv/iommu.c b/drivers/iommu/riscv/iommu.c
-index 8f049d4a0e2c..e51af4ba54a8 100644
---- a/drivers/iommu/riscv/iommu.c
-+++ b/drivers/iommu/riscv/iommu.c
-@@ -12,6 +12,8 @@
- 
- #define pr_fmt(fmt) "riscv-iommu: " fmt
- 
-+#include <linux/acpi.h>
-+#include <linux/acpi_rimt.h>
- #include <linux/compiler.h>
- #include <linux/crash_dump.h>
- #include <linux/init.h>
-@@ -1650,6 +1652,14 @@ int riscv_iommu_init(struct riscv_iommu_device *iommu)
- 		goto err_iodir_off;
- 	}
- 
-+	if (!acpi_disabled) {
-+		rc = rimt_iommu_register(iommu->dev);
-+		if (rc) {
-+			dev_err_probe(iommu->dev, rc, "cannot register iommu with RIMT\n");
-+			goto err_remove_sysfs;
-+		}
-+	}
-+
- 	rc = iommu_device_register(&iommu->iommu, &riscv_iommu_ops, iommu->dev);
- 	if (rc) {
- 		dev_err_probe(iommu->dev, rc, "cannot register iommu interface\n");
--- 
-2.43.0
-
+> ---
+>  include/acpi/actbl2.h | 83 +++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 83 insertions(+)
+>
+> diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
+> index 2e917a8f8bca..99ea8bfe47de 100644
+> --- a/include/acpi/actbl2.h
+> +++ b/include/acpi/actbl2.h
+> @@ -50,6 +50,7 @@
+>  #define ACPI_SIG_RAS2           "RAS2" /* RAS2 Feature table */
+>  #define ACPI_SIG_RGRT           "RGRT" /* Regulatory Graphics Resource T=
+able */
+>  #define ACPI_SIG_RHCT           "RHCT" /* RISC-V Hart Capabilities Table=
+ */
+> +#define ACPI_SIG_RIMT           "RIMT" /* RISC-V IO Mapping Table */
+>  #define ACPI_SIG_SBST           "SBST" /* Smart Battery Specification Ta=
+ble */
+>  #define ACPI_SIG_SDEI           "SDEI" /* Software Delegated Exception I=
+nterface Table */
+>  #define ACPI_SIG_SDEV           "SDEV" /* Secure Devices table */
+> @@ -3002,6 +3003,88 @@ struct acpi_rhct_hart_info {
+>         u32 uid;                /* ACPI processor UID */
+>  };
+>
+> +/***********************************************************************=
+********
+> + *
+> + * RIMT - RISC-V IO Remapping Table
+> + *
+> + * https://github.com/riscv-non-isa/riscv-acpi-rimt
+> + *
+> + ***********************************************************************=
+*******/
+> +
+> +struct acpi_table_rimt {
+> +       struct acpi_table_header header;        /* Common ACPI table head=
+er */
+> +       u32 num_nodes;          /* Number of RIMT Nodes */
+> +       u32 node_offset;        /* Offset to RIMT Node Array */
+> +       u32 reserved;
+> +};
+> +
+> +struct acpi_rimt_node {
+> +       u8 type;
+> +       u8 revision;
+> +       u16 length;
+> +       u16 reserved;
+> +       u16 id;
+> +       char node_data[];
+> +};
+> +
+> +enum acpi_rimt_node_type {
+> +       ACPI_RIMT_NODE_TYPE_IOMMU =3D 0x0,
+> +       ACPI_RIMT_NODE_TYPE_PCIE_ROOT_COMPLEX =3D 0x1,
+> +       ACPI_RIMT_NODE_TYPE_PLAT_DEVICE =3D 0x2,
+> +};
+> +
+> +struct acpi_rimt_iommu {
+> +       u8 hardware_id[8];      /* Hardware ID */
+> +       u64 base_address;       /* Base Address */
+> +       u32 flags;              /* Flags */
+> +       u32 proximity_domain;   /* Proximity Domain */
+> +       u16 pcie_segment_number;        /* PCIe Segment number */
+> +       u16 pcie_bdf;           /* PCIe B/D/F */
+> +       u16 num_interrupt_wires;        /* Number of interrupt wires */
+> +       u16 interrupt_wire_offset;      /* Interrupt wire array offset */
+> +       u64 interrupt_wire[];   /* Interrupt wire array */
+> +};
+> +
+> +/* IOMMU Node Flags */
+> +#define ACPI_RIMT_IOMMU_FLAGS_PCIE      (1)
+> +#define ACPI_RIMT_IOMMU_FLAGS_PXM_VALID (1 << 1)
+> +
+> +/* Interrupt Wire Structure */
+> +struct acpi_rimt_iommu_wire_gsi {
+> +       u32 irq_num;            /* Interrupt Number */
+> +       u32 flags;              /* Flags */
+> +};
+> +
+> +/* Interrupt Wire Flags */
+> +#define ACPI_RIMT_GSI_LEVEL_TRIGGERRED  (1)
+> +#define ACPI_RIMT_GSI_ACTIVE_HIGH       (1 << 1)
+> +
+> +struct acpi_rimt_id_mapping {
+> +       u32 source_id_base;     /* Source ID Base */
+> +       u32 num_ids;            /* Number of IDs */
+> +       u32 dest_id_base;       /* Destination Device ID Base */
+> +       u32 dest_offset;        /* Destination IOMMU Offset */
+> +       u32 flags;              /* Flags */
+> +};
+> +
+> +struct acpi_rimt_pcie_rc {
+> +       u32 flags;              /* Flags */
+> +       u16 reserved;           /* Reserved */
+> +       u16 pcie_segment_number;        /* PCIe Segment number */
+> +       u16 id_mapping_offset;  /* ID mapping array offset */
+> +       u16 num_id_mappings;    /* Number of ID mappings */
+> +};
+> +
+> +/* PCIe Root Complex Node Flags */
+> +#define ACPI_RIMT_PCIE_ATS_SUPPORTED   (1)
+> +#define ACPI_RIMT_PCIE_PRI_SUPPORTED   (1 << 1)
+> +
+> +struct acpi_rimt_platform_device {
+> +       u16 id_mapping_offset;  /* ID Mapping array offset */
+> +       u16 num_id_mappings;    /* Number of ID mappings */
+> +       char device_name[];     /* Device Object Name */
+> +};
+> +
+>  /***********************************************************************=
+********
+>   *
+>   * SBST - Smart Battery Specification Table
+> --
+> 2.43.0
+>
