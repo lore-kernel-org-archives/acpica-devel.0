@@ -1,114 +1,125 @@
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 078FA25F965;
-	Tue, 20 May 2025 16:48:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1684F232785;
+	Wed, 21 May 2025 07:43:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747759730; cv=none; b=QqXavZt0czadLhAmNKwkgEn7n9MT2UZ2if7L6UBrF6+zztBhk2xCRZ1rc1hVMBZyfe8A6ZLnQgAKYq1hCKAz8Vs4Ic5TJprp3DCua65Thl4jbxAyXQ+mdKnWh2iw3MBiXiuEVGTSQ2yfF8z5XhS7kvIE/pfMCNzEzeU6fMmZCck=
+	t=1747813405; cv=none; b=aObH7SEjCcRe27lR0nmzovF4mqyvjYK+RNIKalFN66vqlPO+dpFXZAiQZwN3kBSf9BP2oEkJBYGgyjRjJYNIdcHdLTugqSz7LhsEn2biU2hc9X/apyVHQiCqJ+wN10H6RSoghiHcDCpxcj9lOtnXjw+DTB0zokGBcHV3t5gc9XI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747759730; c=relaxed/simple;
-	bh=DXtNUfWvj2BEdRTkqaOsp53rwbRczpAnjfVf3cndUS4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=lmJMl/cdVt9WB1+zD1Q4pzDeKGsTW6jx3mB5krN/TJXQ3YWgfZCz0PKEWF6GELbm6j7wYEmLJdYyZX/KqlZOhsJynwcO9gwhSgxp6BnC9AR8xjMqdFUEY9Rz1d4F03/JV49Ypx7OBDMw3Kh9o6KSSSuFGzaVKrz1HHNxhYnCSJI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BpM1s+Xt; arc=none smtp.client-ip=209.85.221.53
+	s=arc-20240116; t=1747813405; c=relaxed/simple;
+	bh=w1Dg5RsBUc18F5v8ye2RlpbIpog0I4kAhq9mtswyzPc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Fpje05cE4O9j3aodC09Y2EOlUKREZWEUdy4IUv05wiID2VZxdZehz49lWcjdMnpmFx1C4hMrrGVB6bRH/1oLYKoHfmEhlLt7qvImcPM46dXy5/e27VE32cleQJshwPIzzkafGsHTrlJliHlLax0pwf3g0w/9hRSxdOAKva5RfVw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HksF6l3E; arc=none smtp.client-ip=209.85.218.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BpM1s+Xt"
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-3a365a6804eso2118630f8f.3;
-        Tue, 20 May 2025 09:48:48 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HksF6l3E"
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-ad5574b59c0so651728266b.2;
+        Wed, 21 May 2025 00:43:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747759727; x=1748364527; darn=lists.linux.dev;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RX/xTTJv673giKzShX4ULe6HYBzR7J67EwT0wiQt9tc=;
-        b=BpM1s+XtZdVDJb6glJl/g0TgriJDtFI3vgnuAlAo+hv7/3hOOQnVSdWUKAIVJFTZED
-         ArMBuH3nKTrWnp03Lzc+g/3C+y3mpGYgzSbAV7NGQSvt/Nv7SOyUksRDIw4c/orikeRN
-         HgbTqiXv9BHWRwDZcRFm8NdANK0Q1OJ1SU/jTxKgu9MTRvY3l71qdQJPQLYseY0/Lrnj
-         WhBGFmYhXSRDTisIc59YW4Cl0TNDEDJ1zhxhloP/6XEEmcWbu5w7dvKvLKeRRypvpvcT
-         u9ndYevWoALgqKK2K6T6ZOQKYkM2DS4d6mV1MC/7fyqz7unjR6QvAnQ/wsYHUAxF9Jby
-         NfCg==
+        d=gmail.com; s=20230601; t=1747813393; x=1748418193; darn=lists.linux.dev;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=J84xNzRgQa8mrQOkYbumbzzgj0ybXamBQeiJjclSyrA=;
+        b=HksF6l3EveuER/wyl6bH5APGsc3LEYBswjSHFqMuLzYVsbMjilJlnsmbq92H1CFinL
+         5779XiB/SrlplpM3A599066FvoeaKewPp0o16oYCWXt3lE6Zo28XSCShKYqWCjLqoJI0
+         UILxaa20Mf5exAUGyrUnwSFpti7O6haysvAJazO14hYN0ey2eQy6ES9WcGPHErGbubfx
+         7t/lm5YngCLjUy18xHrmo5jz1UeF27ENVae2CEwceBdAAcf3U0N/d/DWYmh57mu8nPdW
+         fYZ3hATznoE6LGF5fBHWiHqKp/0OxLMfRSEwT7AvONx0YJDWEmp9IcbORmE9wg7a2TFM
+         mcxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747759727; x=1748364527;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RX/xTTJv673giKzShX4ULe6HYBzR7J67EwT0wiQt9tc=;
-        b=COdPgvocIzDtUdd/iV6CHyLStG4jIqpMkq9OT3WzVLGKnvfrsyZS6nVC8lwzm3E3uZ
-         bDk/xX/wH6qRo+Drxm2SfG5oabhEuHZAt29ozWAaOeVJFrPDaoblzgIGH0E+zIwcfGAq
-         b/xVrTBW7fA2lZi3AI0UFyFtrRwuBrD8De75K1xy5WsOfSdQfqDCbsQmzOWzlDUGmgGT
-         fTaQlmnHqXr97B7pMzff7Jj9FpjJhdfycy3Jpzgm/voBSmWv1jP2g1FISH2NCxKclGxB
-         TtZclfoXzbfpYu6Vb0WYbPIhfVwdjqGUE9zPAD3hjFkU0ArhONPj7su3LfCIGXITLs1T
-         s/Og==
-X-Forwarded-Encrypted: i=1; AJvYcCWRfg1LWRs/GzT33hBtJNvL86fXl3mjPzUejk+YqJ02PQbo6iLkAwt7GdjeBGmCFdtkEgRIyYk=@lists.linux.dev
-X-Gm-Message-State: AOJu0YyoV+Ed6hKh1xJu7DzIgZSWK1BkHHNxFmNBYeudJf1g8XfUXECm
-	+i+41JKNTgqVjvtpzI59D21zvcVDITNBznxB9+Ps2/qgy30mL/hkzxiR
-X-Gm-Gg: ASbGncsXV+c3FMvT6I70ABarLaK+W/3l5t20B+Oo6ECdw0yGugjSD/WvzOi4kyg7lSk
-	PRNMfrmaJEHguph+UYoAuSuNEojnJemL+dLObfw+tYH68Pp/f3AOnF2owY1O9pbifC0Tfo0e++X
-	qfPfQefI72htA4aL+hJitOyVrGaixpBTaItylPeJjWPCg6+tgJ0AjHVv61sShOOW2HAUqjlauGm
-	5l4k47ytpvdLgxN6u4pbZeAG1TOCs1A/FLefJdbBtd53erNZ7nwXsZOsCVhqCgBjDrf7aE/d/dB
-	lNdgkTLHYu25ZrU4hU063JPR7wt3NS4xxMPh3pn0Lo0/1J+BBnTWQyuI0+L1fHU=
-X-Google-Smtp-Source: AGHT+IHDT70S1ARAbUv6HAp7abwv12dONID6pWotK54QvtsjTevUA/NG27tOXymDxylQzVHpQdworQ==
-X-Received: by 2002:a05:6000:184d:b0:3a0:b308:8427 with SMTP id ffacd0b85a97d-3a35c84bda9mr14099902f8f.37.1747759727073;
-        Tue, 20 May 2025 09:48:47 -0700 (PDT)
-Received: from localhost.localdomain ([78.172.0.119])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a364d2636bsm14306852f8f.99.2025.05.20.09.48.45
+        d=1e100.net; s=20230601; t=1747813393; x=1748418193;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=J84xNzRgQa8mrQOkYbumbzzgj0ybXamBQeiJjclSyrA=;
+        b=ETbogwY2cMxaUuxDUE3XyvxpKEJrMAe3TsaFuzdJx8eEYB46MtThV9s8CRJuIIQ7OI
+         I6opjGObV0ndl4nTmBbFKVrmd1Lyspserrgk+shhsD/QfUl9ZLZTCK+XKsgD515fCn3l
+         xKXohOZ+/7boJGX3hNDGJ/+k4pydouQJCSygOOTH29CmHVm5nR+HjBWOWzUKVvYxj4/M
+         s+8KD+jb5CAzsFQwJZq1rS8GwMI8BEOfa+MOPNgYDD+mwGJ63XnYayRcxLouiIQipXFl
+         J1Wc6ORHek71mSD/g375wLRnqO2IkqiddkOJrbmVRBiB+EbRxgCX1yIMx+sPjZ3uCrZI
+         kLHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUxadVjvRlQpu57qgbzmjU9EvjqM5dXxryuz7+brWYg38jz8Y+vDvqv287sKbWEN3llXvWJto6jHR2LNN4=@lists.linux.dev, AJvYcCXZzXh5VRSlE445/MphQ9frKn/uhPjmmrBeE+Czn863JwqEUJiB1nEHp2a5/OVlT56i0FYkKp6X@lists.linux.dev
+X-Gm-Message-State: AOJu0Yyhh5WpJg3OrBFUCGmurtWvdiSlbbnAmhEVEEpDi5MyKLJhRARg
+	ayIZzgDd9Mk0BXF4GwxcKNFgXEvv94JFT8RFtgTs+okXMDbSQ7xEzUrr
+X-Gm-Gg: ASbGncuaTor3xeU7GCM7AFxbhAADbxtgk4QCRHDBS2od7awAmrmdTpw0DXtapU2Y5ry
+	W7VancH54RJMZtdWb209HYDv2jYH2SnM2zo4QjYhBdXwTCo8vfoRXCq1LlPWo7ahxIyOs7NYUNT
+	4f5CZSNxshC9sDmu90Pw+zEtlsZ9oZ7hjT81CidnhiRmsGO2oQwAJDKVmPWGszEDL5UYb5AlJIc
+	ijVqyOMEpF1pUArKVNKHXaTTZv1i6z6G9Z4C1yVgcbn0fEOw5+tvyxXgQX2BSLybjuiAwb+zEya
+	5MDhPM/V/Dfepav34OOdFLCICzWOzL5aX3JPCB6JlDcaAml77fWTCqtXWPKcBLXf
+X-Google-Smtp-Source: AGHT+IH5tn7Yh9xi/YcQ/171T3oryvhz9qm9/H/Z6ntY23ewvFkuclGodMzYYPJIYuU9jlPXxMJw+A==
+X-Received: by 2002:a17:907:3d4e:b0:ad5:e0f:7850 with SMTP id a640c23a62f3a-ad536bde688mr1648749566b.23.1747813392931;
+        Wed, 21 May 2025 00:43:12 -0700 (PDT)
+Received: from f (cst-prg-94-60.cust.vodafone.cz. [46.135.94.60])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ad52d06dc6csm868357266b.53.2025.05.21.00.43.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 May 2025 09:48:46 -0700 (PDT)
-From: Baris Can Goral <goralbaris@gmail.com>
-To: goralbaris@gmail.com
-Cc: acpica-devel@lists.linux.dev,
-	lenb@kernel.org,
-	linux-acpi@vger.kernel.org,
-	lkp@intel.com,
-	oe-lkp@lists.linux.dev,
-	oliver.sang@intel.com,
-	rafael.j.wysocki@intel.com,
-	robert.moore@intel.com,
-	skhan@linuxfoundation.org
-Subject: [PATCH v2] acpi: convert strncpy into strscpy
-Date: Tue, 20 May 2025 19:48:13 +0300
-Message-Id: <20250520164812.7689-1-goralbaris@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250520163540.6893-1-goralbaris@gmail.com>
-References: <20250520163540.6893-1-goralbaris@gmail.com>
+        Wed, 21 May 2025 00:43:11 -0700 (PDT)
+Date: Wed, 21 May 2025 09:43:01 +0200
+From: Mateusz Guzik <mjguzik@gmail.com>
+To: Baris Can Goral <goralbaris@gmail.com>
+Cc: oliver.sang@intel.com, acpica-devel@lists.linux.dev, lenb@kernel.org, 
+	linux-acpi@vger.kernel.org, lkp@intel.com, oe-lkp@lists.linux.dev, 
+	rafael.j.wysocki@intel.com, robert.moore@intel.com, skhan@linuxfoundation.org, 
+	kees@kernel.org
+Subject: Re: [PATCH acpi] Replace strncpy with strscpy
+Message-ID: <rkc452hxtxcaym55croa5uvtjjsulbl25bhdk2mw2ce5fwqx4p@guhdxk6eogqj>
+References: <202505191014.718ca1d6-lkp@intel.com>
+ <20250520163540.6893-1-goralbaris@gmail.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20250520163540.6893-1-goralbaris@gmail.com>
 
-The strncpy() function is actively dangerous to use since it may not
-NULL-terminate the destination string, resulting in potential memory
-content exposures, unbounded reads, or crashes.
-Link: https://github.com/KSPP/linux/issues/90
+On Tue, May 20, 2025 at 07:35:40PM +0300, Baris Can Goral wrote:
+> Hi,
+> Rafael I dont understand your question. This patch replaces
+> strncpy which is vulnerable with strscpy. As it stated in Link I shared.
 
-Signed-off-by: Baris Can Goral <goralbaris@gmail.com>
----
- v2: naming issue solved
- 
- drivers/acpi/acpica/tbfind.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Uses of strncpy are not inherently buggy, rather there is a corner case
+where the string might happen to end up not terminated.
 
-diff --git a/drivers/acpi/acpica/tbfind.c b/drivers/acpi/acpica/tbfind.c
-index 1c1b2e284bd9..5536d1755188 100644
---- a/drivers/acpi/acpica/tbfind.c
-+++ b/drivers/acpi/acpica/tbfind.c
-@@ -57,8 +57,8 @@ acpi_tb_find_table(char *signature,
- 
- 	memset(&header, 0, sizeof(struct acpi_table_header));
- 	ACPI_COPY_NAMESEG(header.signature, signature);
--	strncpy(header.oem_id, oem_id, ACPI_OEM_ID_SIZE);
--	strncpy(header.oem_table_id, oem_table_id, ACPI_OEM_TABLE_ID_SIZE);
-+	strscpy(header.oem_id, oem_id, ACPI_OEM_ID_SIZE);
-+	strscpy(header.oem_table_id, oem_table_id, ACPI_OEM_TABLE_ID_SIZE);
- 
- 	/* Search for the table */
- 
--- 
-2.34.1
+Rafael asked if that's what is being patched here.
 
+> It seems it works to fix somethings.
+
+If anything it seems to /break/ something.
+
+In all reported cases the idle time went down significantly, which I
+looks like an unexpected outcome.
+
+So interestingly (to my reading anyway) this particular consumer
+explicitly wants the target string to NOT be nul terminated.
+
+The copied to struct is:
+
+struct acpi_table_header {
+[snip]
+        char oem_id[ACPI_OEM_ID_SIZE];  /* ASCII OEM identification */
+        char oem_table_id[ACPI_OEM_TABLE_ID_SIZE];      /* ASCII OEM table identification */
+[/snip]
+};
+
+Later the thing is NOT treated as a string, instead it is handled with
+memcmp:
+ !memcmp(acpi_gbl_root_table_list.tables[i].pointer->
+		oem_table_id, header.oem_table_id,
+		ACPI_OEM_TABLE_ID_SIZE))) {
+
+So, for "table ids" which occupy the entirety of ACPI_OEM_TABLE_ID_SIZE
+(and which end up not null terminated), your patch changes the behavior
+as they end up suddenly truncated by 1 to nul terminate, which then
+makes them fail memcmp.
+
+So the patch is not a nop and it breaks stuff afaics.
+
+I thing the real bug here is that strscpy does anything of the sort.
+Instead it should fail *and* be annotated with __must_check or whatever
+the name it has on Linux so that consumers don't unknowingly introduce
+truncated strings..
