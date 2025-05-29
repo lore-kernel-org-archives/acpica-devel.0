@@ -1,74 +1,100 @@
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7741F9C0
-	for <acpica-devel@lists.linux.dev>; Thu, 29 May 2025 06:29:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D051E2222CB
+	for <acpica-devel@lists.linux.dev>; Thu, 29 May 2025 15:28:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748500149; cv=none; b=dKVnBlNsrFL1PKw30dmspzW1zr4lMsIOoHAR5xDurQ41TZwF9wXYe5kASClTjzPnV0JEjWcHxh7reav8/ARdhfQvlQ5KVclHFnHTNuWDqyIHD/1dOnPrJlzc9HiwkLQYfGvZYE7uOcBZ1kTNcTM+YNGFHxcbEfonv9qaRv1hD4Q=
+	t=1748532489; cv=none; b=RMaXL5enEmjFwoBf1zxE+nkBsGN9HVGbWhUMb0ZUuDlznpSwGOjMlxH8TRDhQuqfA8XrDIZp5coiBo2nK9xWLIXEvcLvF1i5mTJ8uIkGkOaItDsaD6yqqUob9DInx0K7mbRoe9Bp+sY7ShP6pmhOw3hSdXbtrDkhd1OvieHtvPs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748500149; c=relaxed/simple;
-	bh=nEZFeDhMbKm8P6aZ9Z6p0YQJ3z8YaMzgK9SpR1wNv50=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=BI7u2A50q/bRpptXZ1eDUIBfBWhbc5d1cVFq3/ESf9JQTjCgIVKwW17Sh2L23f3z9bQBVU4Pt9S4fcJ3url35gJeLokUAA4DFzcdWLe6a9x9wm2W1Pm3hxDAFNtnLT/Feb4evG/iusM0Xs/XOyBgCi1d9j0Ms0YbRt3R9XKLv04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4b7GdQ3CC0z1f1pM;
-	Thu, 29 May 2025 14:27:54 +0800 (CST)
-Received: from kwepemh100008.china.huawei.com (unknown [7.202.181.93])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8C65D1A016C;
-	Thu, 29 May 2025 14:28:57 +0800 (CST)
-Received: from [10.67.121.90] (10.67.121.90) by kwepemh100008.china.huawei.com
- (7.202.181.93) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Thu, 29 May
- 2025 14:28:56 +0800
-Message-ID: <69327669-155d-415b-a218-2b4806a90890@huawei.com>
-Date: Thu, 29 May 2025 14:28:56 +0800
+	s=arc-20240116; t=1748532489; c=relaxed/simple;
+	bh=yPFET+cnqeHQaXJ8X3deZZadSpN1vopNPMuqCZp9UZw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Z7+T7ZKW1H0ccpRMAZsm0oDlKmY+sJnHzvTo499KgPICfBvu8RLQxTCt0bKfZwRkyl5pkwTRlQq4fD8DAnEyzlXM7z91YiF0jg5Wu/XhzuC9LS/jkz1Nyv5UR3LcH7mh5Ps1j+oHTWqXNvD6FGffkrguXD6ZGwSFrTKOX+UAaFY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Q4m3XRav; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Q4m3XRav"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1748532488; x=1780068488;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=yPFET+cnqeHQaXJ8X3deZZadSpN1vopNPMuqCZp9UZw=;
+  b=Q4m3XRavVOUydTSGQ5TeKzWXISYUBlxeN9YDTDR7phUJeB9W2kYcurXL
+   /LTQWmEJYSk0oWnfZU7iFrpwNsX6qf4cPzaN/Bjkpq9/vP3+gH5HFaywF
+   H0YCgw//oYVBC/mcdT2z4HgdfU3vEUUiE6XSyqllDgbcLDAaBOFAmXCUo
+   xPQ0IyvF23ZvhQrpJ0xH0PrFHUAWCfpS/tV4BL9eW9EDRnFwAUTuIe8LG
+   87VZCYXu4HUSwwiS+147jBcEiYGD0l/C2KvMpz0CpkFq5ZlAMXFPQJY1Y
+   yVPULqn55/OuTS1hpI+XXcK19FfJW+3AK3Ks2WqYw+2FrjwaSseQy/gzr
+   w==;
+X-CSE-ConnectionGUID: H8STCo7CQieRJyfyOZZ68Q==
+X-CSE-MsgGUID: M7RjJE6sRwOmIz9sR/RFMw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11448"; a="50654514"
+X-IronPort-AV: E=Sophos;i="6.16,193,1744095600"; 
+   d="scan'208";a="50654514"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 May 2025 08:28:08 -0700
+X-CSE-ConnectionGUID: 5eqefe/rQSiqkWpb7m7BFQ==
+X-CSE-MsgGUID: r5RXPeHzS/W9NHUEnz/Y+w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.16,193,1744095600"; 
+   d="scan'208";a="148749765"
+Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.103.51])
+  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 May 2025 08:28:07 -0700
+Date: Thu, 29 May 2025 08:28:05 -0700
+From: "Luck, Tony" <tony.luck@intel.com>
+To: Zaid Alali <zaidal@os.amperecomputing.com>
+Cc: rafael@kernel.org, lenb@kernel.org, james.morse@arm.com, bp@alien8.de,
+	robert.moore@intel.com, Jonathan.Cameron@huawei.com,
+	ira.weiny@intel.com, Benjamin.Cheatham@amd.com,
+	dan.j.williams@intel.com, arnd@arndb.de, Avadhut.Naik@amd.com,
+	u.kleine-koenig@pengutronix.de, john.allen@amd.com,
+	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	acpica-devel@lists.linux.dev
+Subject: Re: [PATCH v7 6/9] ACPI: APEI: EINJ: Add einjv2 extension struct
+Message-ID: <aDh9BfyNXvJvduDr@agluck-desk3>
+References: <20250506213814.2365788-1-zaidal@os.amperecomputing.com>
+ <20250506213814.2365788-7-zaidal@os.amperecomputing.com>
+ <aDdYPf-4ru_cC-_D@agluck-desk3>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/3] cpufreq: CPPC: Some optimizations for cppc_cpufreq.c.
-To: Pierre Gondois <pierre.gondois@arm.com>, <rafael@kernel.org>,
-	<viresh.kumar@linaro.org>, <robert.moore@intel.com>, <lenb@kernel.org>
-CC: <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-acpi@vger.kernel.org>, <acpica-devel@lists.linux.dev>,
-	<linuxarm@huawei.com>, <jonathan.cameron@huawei.com>,
-	<zhanjie9@hisilicon.com>, <lihuisong@huawei.com>,
-	<cenxinghai@h-partners.com>, <yubowen8@huawei.com>
-References: <20250526113057.3086513-1-zhenglifeng1@huawei.com>
- <237e957e-82fa-41ea-9f6e-bd37f51003aa@arm.com>
-From: "zhenglifeng (A)" <zhenglifeng1@huawei.com>
-In-Reply-To: <237e957e-82fa-41ea-9f6e-bd37f51003aa@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemh100008.china.huawei.com (7.202.181.93)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aDdYPf-4ru_cC-_D@agluck-desk3>
 
-On 2025/5/28 21:26, Pierre Gondois wrote:
-
-> Reviewed-by: Pierre Gondois <pierre.gondois@arm.com>
-
-Thanks!
-
+On Wed, May 28, 2025 at 11:38:54AM -0700, Luck, Tony wrote:
+> On Tue, May 06, 2025 at 02:38:10PM -0700, Zaid Alali wrote:
+> >  struct set_error_type_with_address {
+> >  	u32	type;
+> >  	u32	vendor_extension;
+> > @@ -58,6 +80,7 @@ struct set_error_type_with_address {
+> >  	u64	memory_address;
+> >  	u64	memory_address_range;
+> >  	u32	pcie_sbdf;
+> > +	struct	einjv2_extension_struct einjv2_struct;
 > 
-> On 5/26/25 13:30, Lifeng Zheng wrote:
->> This patch series makes some minor optimizations for cppc_cpufreq.c to
->> makes codes cleaner.
->>
->> Lifeng Zheng (3):
->>    cpufreq: CPPC: Remove cpu_data_list
->>    cpufreq: CPPC: Return void in populate_efficiency_class()
->>    cpufreq: CPPC: Remove forward declaration of
->>      cppc_cpufreq_register_em()
->>
->>   drivers/cpufreq/cppc_cpufreq.c | 59 +++++++++-------------------------
->>   include/acpi/cppc_acpi.h       |  1 -
->>   2 files changed, 15 insertions(+), 45 deletions(-)
->>
+> I can't make this match up with the ACPI v6.5 spec.  The spec defines
+> a whole new EINJV2_SET_ERROR_TYPE data structure in table 18.34 that
+> is NOT just a simple addition of new fields at the end of the existing
+> SET_ERROR_TYPE_WITH_ADDRESS data structure. E.g. the "flags" are now
+> in a 3-byte field at offset 5 instead of a 4-byte field at offset 8.
+> There is a new "length" field that descibes the total size of the
+> structure including the new flex array of syndrome values at the
+> end.
 
+Someone pointed me to the ACPI 6.5 Errata A spec: https://uefi.org/specs/ACPI/6.5_A/
+
+This code does match with the description there.
+
+I'll continue looking at your patches with this as the reference.
+
+Please make sure to reference this spec directly (not buried in links
+to tianocore bugzilla entries) when you post next version.
+
+-Tony
