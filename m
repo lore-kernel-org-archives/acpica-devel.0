@@ -1,63 +1,61 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0915022D9EA
-	for <acpica-devel@lists.linux.dev>; Thu, 29 May 2025 23:36:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6D9810F1
+	for <acpica-devel@lists.linux.dev>; Fri, 30 May 2025 00:21:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748561769; cv=none; b=FTbV51iQ3wXSbDb7udMcTeuzR0SD/RtPeYV9MJCbuXKQLJE/gD9M3j06edzh5GvQpq6/7l8TSQkoG8RtcYutHVZzSB2ONXGdlVifwZS2vnejnc/yxWMvuUpQgxIjB82tnRmWXK07IuF4Dt6zmcm9p2yTPkUDAU41pIlJ+kgeoR0=
+	t=1748564476; cv=none; b=MZFhu2ck6GnY+wcOPipK2ZyI2Fb/ec8Y6fm5gcCTf48IeE6rnS/aTqpw2u/acJSJaRbzjuJ1wFP0kFnx6iPNOrHAy/5eL0/6z5mFSXJv5AR3B3GKw4vljCdCFD/sY8TkQM+33c+96FcUBhFWtU2+f3t1/JTvPs5LKXqdRc8NU0U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748561769; c=relaxed/simple;
-	bh=Q2XwdLQnrIkll8t6+9mdiBU9jJB2NiAhwlt3aabO7FU=;
+	s=arc-20240116; t=1748564476; c=relaxed/simple;
+	bh=P5gWbhrcucId5s76sLp62JDJ45ZrdXT7Z3T+FJU+Wt0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SwuOe9UDKdpa75vC7UA8YaYqh6tz3GZda9Kp6EQViAE0B2dczyxKtbK1eyl1Hfo/gI2ET1Y7cZ7Of0vHAwhtCLJ/WcBt70xX7TNjTz529nLSWF0vLVD8mKOwENQ5JQ1O1ZtWKnMpP0jLenzdWpmd6P2ZKAg4FR84bG//81kR1yw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ToY9hXjM; arc=none smtp.client-ip=192.198.163.9
+	 Content-Type:Content-Disposition:In-Reply-To; b=BTH4hHahzwX4THAnEUfTLva9Mt9e0oP7pa+uAiOYhnj/KKO4HPY2a/025ChxMimiN1PYzedy2+5oh3Rza06uwxyFXJIqX8WcNO47T/BM3zhkuB76k23gzDdlFGl61vlByyMsbsYPGBvKKl4P7vmJXkRPv3qY7Fy22MH6cepTrTs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iq0wqHmS; arc=none smtp.client-ip=198.175.65.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ToY9hXjM"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iq0wqHmS"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1748561768; x=1780097768;
+  t=1748564474; x=1780100474;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=Q2XwdLQnrIkll8t6+9mdiBU9jJB2NiAhwlt3aabO7FU=;
-  b=ToY9hXjMTjR0a3iI5E4SEZ+/kD5NvjUwAs+RF3i7mWLlXCjRDLLzBO4f
-   Xnf8GIL7MOgbguPnHMPGTz2W4ZGQ+HYYv6b3S6kpu0Q59hA0Cc43pXWa1
-   RaFp/scbb46LfZiV8yepfy243X6XoH4nI5IIr10ISwZyVuuAdOE3nkadB
-   mCAlyIeQas1j22sZqgi+WswUQ40dKQ8jSHaVA8l02UB8MYTtVsXCtiOfu
-   mwfHvgHqH2Az9iG+RWuPvkB4PaSBMYJtBsYhSjmzsXT2M8pDwiDLqXSKF
-   RcR8sKw9L3e83sK+3dxz4dMoMdQ9eOKC2AHnI4gMsFEPrrfbyXjbNHt01
-   Q==;
-X-CSE-ConnectionGUID: AGt042QyQvqXwBXRtRG9MA==
-X-CSE-MsgGUID: 7fjGB5faQraT94wCYgddSA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11448"; a="61309736"
+  bh=P5gWbhrcucId5s76sLp62JDJ45ZrdXT7Z3T+FJU+Wt0=;
+  b=iq0wqHmS5ek5oHELrPTXWhUIkprOrV6wZWTm0qexkfpRjvCRzTNNb6M/
+   NyjOZdlgSo5KPBp+8amiWpa7g8JbDLYqVjhlu0MkIU2TDLe0I+/Q1CoCG
+   MTIVPQ8BJ6I19Qa5uR/+E68FAQ7zQGOEJ79fIn1FadbtX4GdC6kxcNYzS
+   U+8PsG6qEfe7Asw1D37q80/c/GI8Ut6CD6enxUwlYAN3Kyg9qZ9E/QX/m
+   wOO5OBaYuo73nHul12BQRLzsOvHo/id1O0uP2tMSpZoD7v8a0rkCYjtgx
+   Lj18BpEFyOfq/jb/resBz+7d+ED9pGHu1T2JJgn03+Dp3W7wpeF8RbmFT
+   A==;
+X-CSE-ConnectionGUID: V5Mw24yMTxud3zkz68RpTg==
+X-CSE-MsgGUID: y5NkAzWmSBCzj11EfiwOYQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11448"; a="61704064"
 X-IronPort-AV: E=Sophos;i="6.16,194,1744095600"; 
-   d="scan'208";a="61309736"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 May 2025 16:36:07 -0700
-X-CSE-ConnectionGUID: xkSmuDiqQNe++hBVgTDbiA==
-X-CSE-MsgGUID: GUAqWgrhSrml+jXCTsCGOw==
+   d="scan'208";a="61704064"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 May 2025 17:21:13 -0700
+X-CSE-ConnectionGUID: 0KjYsiXcS7C8VgXvNquWeg==
+X-CSE-MsgGUID: 9cQAoHYuRDevKTrESGBrYQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.16,194,1744095600"; 
-   d="scan'208";a="144356843"
+   d="scan'208";a="143542265"
 Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.103.51])
-  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 May 2025 16:36:06 -0700
-Date: Thu, 29 May 2025 16:36:05 -0700
+  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 May 2025 17:21:12 -0700
+Date: Thu, 29 May 2025 17:21:11 -0700
 From: "Luck, Tony" <tony.luck@intel.com>
 To: Zaid Alali <zaidal@os.amperecomputing.com>
 Cc: rafael@kernel.org, lenb@kernel.org, james.morse@arm.com, bp@alien8.de,
 	robert.moore@intel.com, Jonathan.Cameron@huawei.com,
 	ira.weiny@intel.com, Benjamin.Cheatham@amd.com,
 	dan.j.williams@intel.com, arnd@arndb.de, Avadhut.Naik@amd.com,
-	u.kleine-koenig@pengutronix.de, john.allen@amd.com,
-	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	acpica-devel@lists.linux.dev
-Subject: Re: [PATCH v7 7/9] ACPI: APEI: EINJ: Add debugfs files for EINJv2
- support
-Message-ID: <aDjvZVUU_GJ4dxQ_@agluck-desk3>
+	john.allen@amd.com, linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org, acpica-devel@lists.linux.dev
+Subject: Re: [PATCH v7 8/9] ACPI: APEI: EINJ: Enable EINJv2 error injections
+Message-ID: <aDj597ZLqrg-uZn-@agluck-desk3>
 References: <20250506213814.2365788-1-zaidal@os.amperecomputing.com>
- <20250506213814.2365788-8-zaidal@os.amperecomputing.com>
+ <20250506213814.2365788-9-zaidal@os.amperecomputing.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -66,92 +64,374 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250506213814.2365788-8-zaidal@os.amperecomputing.com>
+In-Reply-To: <20250506213814.2365788-9-zaidal@os.amperecomputing.com>
 
-On Tue, May 06, 2025 at 02:38:11PM -0700, Zaid Alali wrote:
-> Create a debugfs blob file to be used for reading the user
-> input for the component array. EINJv2 enables users to inject
-> errors to multiple components/devices at the same time using
-> component array.
+On Tue, May 06, 2025 at 02:38:12PM -0700, Zaid Alali wrote:
+> Enable the driver to inject EINJv2 type errors. The component
+> array values are parsed from user_input and expected to contain
+> hex values for component id and syndrome separated by space,
+> and multiple components are separated by new line as follows:
 > 
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> component_id1 component_syndrome1
+> component_id2 component_syndrome2
+>  :
+> component_id(n) component_syndrome(n)
+> 
+> for example:
+> 
+> $comp_arr="0x1 0x2
+> >0x1 0x4
+> >0x2 0x4"
+> $cd /sys/kernel/debug/apei/einj/
+> $echo "$comp_arr" > einjv2_component_array
+> 
 > Signed-off-by: Zaid Alali <zaidal@os.amperecomputing.com>
 > ---
->  drivers/acpi/apei/einj-core.c | 21 ++++++++++++++++++++-
->  1 file changed, 20 insertions(+), 1 deletion(-)
+>  drivers/acpi/apei/einj-core.c | 177 +++++++++++++++++++++++++++++++---
+>  1 file changed, 166 insertions(+), 11 deletions(-)
 > 
 > diff --git a/drivers/acpi/apei/einj-core.c b/drivers/acpi/apei/einj-core.c
-> index 60e4f3dc7055..44f9166c3881 100644
+> index 44f9166c3881..491d33529a3d 100644
 > --- a/drivers/acpi/apei/einj-core.c
 > +++ b/drivers/acpi/apei/einj-core.c
-> @@ -33,6 +33,7 @@
->  #define SLEEP_UNIT_MAX		5000			/* 5ms */
+> @@ -34,6 +34,7 @@
 >  /* Firmware should respond within 1 seconds */
 >  #define FIRMWARE_TIMEOUT	(1 * USEC_PER_SEC)
-> +#define COMP_ARR_SIZE		1024
+>  #define COMP_ARR_SIZE		1024
+> +#define COMPONENT_LEN		16
 >  #define ACPI65_EINJV2_SUPP	BIT(30)
 >  #define ACPI5_VENDOR_BIT	BIT(31)
 >  #define MEM_ERROR_MASK		(ACPI_EINJ_MEMORY_CORRECTABLE | \
-> @@ -107,6 +108,8 @@ static struct debugfs_blob_wrapper vendor_blob;
->  static struct debugfs_blob_wrapper vendor_errors;
->  static char vendor_dev[64];
+> @@ -87,6 +88,14 @@ enum {
+>  	SETWA_FLAGS_APICID = 1,
+>  	SETWA_FLAGS_MEM = 2,
+>  	SETWA_FLAGS_PCIE_SBDF = 4,
+> +	SETWA_FLAGS_EINJV2 = 8,
+> +};
+> +
+> +enum {
+> +	EINJV2_PROCESSOR_ERROR = 0x1,
+> +	EINJV2_MEMORY_ERROR = 0x2,
+> +	EINJV2_PCIE_ERROR = 0x4,
+> +	EINJV2_VENDOR_ERROR = 0x80000000,
+>  };
 >  
-> +static struct debugfs_blob_wrapper einjv2_component_arr;
-> +static void *user_input;
+>  /*
+> @@ -110,6 +119,7 @@ static char vendor_dev[64];
+>  
+>  static struct debugfs_blob_wrapper einjv2_component_arr;
+>  static void *user_input;
+> +static int nr_components;
 
-Better name for this? "user_input" is too generic.
+Maybe call this "max_component_count"?
+
+This code figures out the value by digging into the BIOS structure
+pointed at by the ACPI_EINJ_SET_ERROR_TYPE_WITH_ADDRESS entry in
+the "EINJ" table. But doesn't make this visible to the user. Only
+way for them to find it out is try try injections with progressively
+more components until they get the ubiquitous -EINVAL error.
+
+Please add a read-only file in the einj debugfs directory that will
+show this value.
 
 >  static u32 available_error_type;
 >  static u32 available_error_type_v2;
 >  
-> @@ -689,6 +692,7 @@ static u64 error_param3;
->  static u64 error_param4;
->  static struct dentry *einj_debug_dir;
->  static char einj_buf[32];
-> +static bool EINJv2_enabled;
->  static struct { u32 mask; const char *str; } const einj_error_type_string[] = {
->  	{ BIT(0), "Processor Correctable" },
->  	{ BIT(1), "Processor Uncorrectable non-fatal" },
-> @@ -718,7 +722,7 @@ static int available_error_type_show(struct seq_file *m, void *v)
->  		if (available_error_type & einj_error_type_string[pos].mask)
->  			seq_printf(m, "0x%08x\t%s\n", einj_error_type_string[pos].mask,
->  				   einj_error_type_string[pos].str);
-> -	if (available_error_type & ACPI65_EINJV2_SUPP) {
-> +	if ((available_error_type & ACPI65_EINJV2_SUPP) && EINJv2_enabled) {
->  		for (int pos = 0; pos < ARRAY_SIZE(einjv2_error_type_string); pos++) {
->  			if (available_error_type_v2 & einjv2_error_type_string[pos].mask)
->  				seq_printf(m, "V2_0x%08x\t%s\n", einjv2_error_type_string[pos].mask,
-> @@ -901,8 +905,22 @@ static int __init einj_probe(struct platform_device *pdev)
->  				   &error_param4);
->  		debugfs_create_x32("notrigger", S_IRUSR | S_IWUSR,
->  				   einj_debug_dir, &notrigger);
-> +		if (available_error_type & ACPI65_EINJV2_SUPP) {
-> +			user_input = kzalloc(COMP_ARR_SIZE, GFP_KERNEL);
-> +			if (!user_input) {
-> +				EINJv2_enabled = false;
-> +				pr_info("EINJv2 is disabled: not enough memory\n");
-> +				goto skip_EINJv2;
+> @@ -180,6 +190,8 @@ static DEFINE_MUTEX(einj_mutex);
+>  bool einj_initialized __ro_after_init;
+>  
+>  static void __iomem *einj_param;
+> +static u32 v5param_size;
+> +static bool is_V2;
+>  
+>  static void einj_exec_ctx_init(struct apei_exec_context *ctx)
+>  {
+> @@ -304,11 +316,31 @@ static void __iomem *einj_get_parameter_address(void)
+>  		struct set_error_type_with_address v5param;
+>  		struct set_error_type_with_address __iomem *p;
+>  
+> +		v5param_size = sizeof(v5param);
+>  		p = acpi_os_map_iomem(pa_v5, sizeof(*p));
+>  		if (p) {
+> -			memcpy_fromio(&v5param, p, sizeof(v5param));
+> +			int offset, len;
+> +
+> +			memcpy_fromio(&v5param, p, v5param_size);
+>  			acpi5 = 1;
+>  			check_vendor_extension(pa_v5, &v5param);
+> +			if (available_error_type & ACPI65_EINJV2_SUPP) {
+> +				len = v5param.einjv2_struct.length;
+> +				offset = offsetof(struct einjv2_extension_struct, component_arr);
+> +				nr_components = (len - offset) /
+> +						sizeof(v5param.einjv2_struct.component_arr[0]);
+> +				/*
+> +				 * The first call to acpi_os_map_iomem above does not include the
+> +				 * component array, instead it is used to read and calculate maximum
+> +				 * number of components supported by the system. Below, the mapping
+> +				 * is expanded to include the component array.
+> +				 */
+> +				acpi_os_unmap_iomem(p, v5param_size);
+> +				offset = offsetof(struct set_error_type_with_address, einjv2_struct);
+> +				v5param_size = offset + struct_size(&v5param.einjv2_struct,
+> +					component_arr, nr_components);
+> +				p = acpi_os_map_iomem(pa_v5, v5param_size);
 > +			}
-> +			EINJv2_enabled = true;
-> +			einjv2_component_arr.data = user_input;
-> +			einjv2_component_arr.size = COMP_ARR_SIZE;
-> +			debugfs_create_blob("einjv2_component_array", S_IRUSR | S_IWUSR,
-> +					einj_debug_dir, &einjv2_component_arr);
+>  			return p;
+>  		}
+>  	}
+> @@ -486,6 +518,104 @@ static int __einj_error_trigger(u64 trigger_paddr, u32 type,
+>  	return rc;
+>  }
+>  
+> +static int parse_hex_to_u8(char *str, u8 *arr)
+> +{
+> +	char *ptr, val[32];
+s/32/COMPONENT_LEN * 2/
+> +	int pad, str_len;
+> +
+> +
+> +	if (str[0] == '0' && (str[1] == 'x' || str[1] == 'X'))
+> +		str += 2;
+> +
+> +	str_len = strlen(str);
+> +	if (str_len > 32)
+s/32/sizeof(val)/
+> +		return -EINVAL;
+> +
+> +	memcpy(val, str, str_len);
+Does not copy NUL string terminator. But see my next comments.
+> +
+> +	ptr = val;
+> +	while (*ptr != '\0') {
+But you scan "val" looking for the NUL!
+> +		if (!isxdigit(*ptr))
+> +			return -EINVAL;
+> +		ptr++;
+> +	}
+Perhaps do this whole sanity check against "str" instead of "val"
+and drop the memcpy() above?
+> +
+> +	pad = 32 - str_len;
+> +
+Comment here? /* prefix input with '0' characters */
+> +	memmove(val + pad, val, str_len);
+> +	memset(val, '0', pad);
+> +
+> +	for (int i = 0; i < COMPONENT_LEN; ++i) {
+> +		char byte_str[3] = {val[i * 2], val[i * 2 + 1], '\0'};
+> +		/* write bytes in little endian format to follow ACPI specs */
+> +		arr[COMPONENT_LEN - i - 1] = (u8)strtoul(byte_str, NULL, 16);
+> +	}
+> +
+> +	return 0;
+> +}
+Just to check the steps here.
+1) User input 0x1234
+2) val[] is set to "00000000000000000000000000001234"
+3) arr[] is set to { 0x34, 0x12, 0x0 ... }
+> +
+> +static int read_component_array(struct set_error_type_with_address *v5param)
+> +{
+> +	int count = 0, str_len;
+> +	u8 comp_arr[COMPONENT_LEN], synd_arr[COMPONENT_LEN];
+> +	struct syndrome_array *component_arr;
+> +	char *tok, *comp_str, *synd_str, *user;
+> +
+> +	component_arr = v5param->einjv2_struct.component_arr;
+> +	str_len = strlen(user_input);
+> +	user = user_input;
+> +	user[str_len - 1] = '\0';
+> +	while ((tok = strsep(&user, "\n")) != NULL) {
+> +		if (count >= nr_components)
+> +			return -EINVAL;
+> +
+> +		comp_str = strsep(&tok, " \t");
+> +		synd_str = strsep(&tok, " \t");
+> +
+> +		if (!comp_str || !synd_str)
+> +			return -EINVAL;
+> +
+> +		if (parse_hex_to_u8(comp_str, comp_arr))
+> +			return -EINVAL;
+> +		if (parse_hex_to_u8(synd_str, synd_arr))
+> +			return -EINVAL;
+> +
+> +		switch (v5param->type) {
+> +		case EINJV2_PROCESSOR_ERROR:
+> +			for (int i = 0; i < COMPONENT_LEN; ++i) {
+> +				component_arr[count].comp_id.acpi_id[i] = comp_arr[i];
+> +				component_arr[count].comp_synd.proc_synd[i] = synd_arr[i];
+> +			}
+> +			break;
+> +		case EINJV2_MEMORY_ERROR:
+> +			for (int i = 0; i < COMPONENT_LEN; ++i) {
+> +				component_arr[count].comp_id.device_id[i] = comp_arr[i];
+> +				component_arr[count].comp_synd.mem_synd[i] = synd_arr[i];
+> +			}
+> +			break;
+> +		case EINJV2_PCIE_ERROR:
+> +			for (int i = 0; i < COMPONENT_LEN; ++i) {
+> +				component_arr[count].comp_id.pcie_sbdf[i] = comp_arr[i];
+> +				component_arr[count].comp_synd.pcie_synd[i] = synd_arr[i];
+> +			}
+> +			break;
+> +		case EINJV2_VENDOR_ERROR:
+> +			for (int i = 0; i < COMPONENT_LEN; ++i) {
+> +				component_arr[count].comp_id.vendor_id[i] = comp_arr[i];
+> +				component_arr[count].comp_synd.vendor_synd[i] = synd_arr[i];
+> +			}
+> +			break;
+
+These four cases are all doing exactly the same thing since the targets
+of the copies are overlapping "union" fields in the syndrome_array
+structure. Could you just have:
+
+struct syndrome_array {
+	u8	component_id[16];
+	u8	component_syndrome[16];
+};
+
+and then remove the switch((v5param->type) and just have:
+
+	for (int i = 0; i < COMPONENT_LEN; ++i) {
+		component_arr[count].component_id[i] = comp_arr[i];
+		component_arr[count].component_syndrome[i] = synd_arr[i];
+	}
+		
 > +		}
+> +		count++;
+> +
+> +	}
+> +	v5param->einjv2_struct.component_arr_count = count;
+> +
+> +	/* clear buffer after user input for next injection */
+> +	memset(user_input, 0, COMP_ARR_SIZE);
+No. User input should be sticky across injections.
+
+> +	return 0;
+> +}
+> +
+>  static int __einj_error_inject(u32 type, u32 flags, u64 param1, u64 param2,
+>  			       u64 param3, u64 param4)
+>  {
+> @@ -500,10 +630,10 @@ static int __einj_error_inject(u32 type, u32 flags, u64 param1, u64 param2,
+>  		return rc;
+>  	apei_exec_ctx_set_input(&ctx, type);
+>  	if (acpi5) {
+> -		struct set_error_type_with_address *v5param, v5_struct;
+> +		struct set_error_type_with_address *v5param;
+>  
+> -		v5param = &v5_struct;
+> -		memcpy_fromio(v5param, einj_param, sizeof(*v5param));
+> +		v5param = kmalloc(v5param_size, GFP_KERNEL);
+> +		memcpy_fromio(v5param, einj_param, v5param_size);
+>  		v5param->type = type;
+>  		if (type & ACPI5_VENDOR_BIT) {
+>  			switch (vendor_flags) {
+> @@ -523,8 +653,19 @@ static int __einj_error_inject(u32 type, u32 flags, u64 param1, u64 param2,
+>  			v5param->flags = flags;
+>  			v5param->memory_address = param1;
+>  			v5param->memory_address_range = param2;
+> -			v5param->apicid = param3;
+> -			v5param->pcie_sbdf = param4;
+> +
+> +			if (is_V2) {
+> +				rc = read_component_array(v5param);
+> +				if (rc) {
+> +					kfree(v5param);
+> +					goto err_out;
+> +				}
+> +				/* clear buffer after user input for next injection */
+> +				memset(user_input, 0, COMP_ARR_SIZE);
+No. User input should be sticky across injections.
+
+> +			} else {
+> +				v5param->apicid = param3;
+> +				v5param->pcie_sbdf = param4;
+> +			}
+>  		} else {
+>  			switch (type) {
+>  			case ACPI_EINJ_PROCESSOR_CORRECTABLE:
+> @@ -548,7 +689,8 @@ static int __einj_error_inject(u32 type, u32 flags, u64 param1, u64 param2,
+>  				break;
+>  			}
+>  		}
+> -		memcpy_toio(einj_param, v5param, sizeof(*v5param));
+> +		memcpy_toio(einj_param, v5param, v5param_size);
+> +		kfree(v5param);
+>  	} else {
+>  		rc = apei_exec_run(&ctx, ACPI_EINJ_SET_ERROR_TYPE);
+>  		if (rc)
+> @@ -600,6 +742,9 @@ static int __einj_error_inject(u32 type, u32 flags, u64 param1, u64 param2,
+>  	rc = apei_exec_run_optional(&ctx, ACPI_EINJ_END_OPERATION);
+>  
+>  	return rc;
+> +err_out:
+> +	memset(user_input, 0, COMP_ARR_SIZE);
+No. User input should be sticky across injections.
+
+> +	return -EINVAL;
+>  }
+>  
+>  /* Inject the specified hardware error */
+> @@ -610,10 +755,15 @@ int einj_error_inject(u32 type, u32 flags, u64 param1, u64 param2, u64 param3,
+>  	u64 base_addr, size;
+>  
+>  	/* If user manually set "flags", make sure it is legal */
+> -	if (flags && (flags &
+> -		~(SETWA_FLAGS_APICID|SETWA_FLAGS_MEM|SETWA_FLAGS_PCIE_SBDF)))
+> +	if (flags && (flags & ~(SETWA_FLAGS_APICID | SETWA_FLAGS_MEM |
+> +		      SETWA_FLAGS_PCIE_SBDF | SETWA_FLAGS_EINJV2)))
+>  		return -EINVAL;
+>  
+> +	/* check if type is a valid EINJv2 error type */
+> +	if (is_V2) {
+> +		if (!(type & available_error_type_v2))
+> +			return -EINVAL;
+> +	}
+>  	/*
+>  	 * We need extra sanity checks for memory errors.
+>  	 * Other types leap directly to injection.
+> @@ -764,7 +914,7 @@ int einj_validate_error_type(u64 type)
+>  	if (tval & (tval - 1))
+>  		return -EINVAL;
+>  	if (!vendor)
+> -		if (!(type & available_error_type))
+> +		if (!(type & (available_error_type | available_error_type_v2)))
+>  			return -EINVAL;
+>  
+>  	return 0;
+> @@ -783,9 +933,11 @@ static ssize_t error_type_set(struct file *file, const char __user *buf,
+>  	if (strncmp(einj_buf, "V2_", 3) == 0) {
+>  		if (!sscanf(einj_buf, "V2_%llx", &val))
+>  			return -EINVAL;
+> +		is_V2 = true;
+>  	} else {
+>  		if (!sscanf(einj_buf, "%llx", &val))
+>  			return -EINVAL;
+> +		is_V2 = false;
 >  	}
 >  
-> +skip_EINJv2:
->  	if (vendor_dev[0]) {
->  		vendor_blob.data = vendor_dev;
->  		vendor_blob.size = strlen(vendor_dev);
-> @@ -944,6 +962,7 @@ static void __exit einj_remove(struct platform_device *pdev)
->  		if (vendor_errors.size)
->  			acpi_os_unmap_memory(vendor_errors.data, vendor_errors.size);
->  	}
-> +	kfree(user_input);
->  	einj_exec_ctx_init(&ctx);
->  	apei_exec_post_unmap_gars(&ctx);
->  	apei_resources_release(&einj_resources);
+>  	rc = einj_validate_error_type(val);
+> @@ -807,6 +959,9 @@ static int error_inject_set(void *data, u64 val)
+>  	if (!error_type)
+>  		return -EINVAL;
+>  
+> +	if (is_V2)
+> +		error_flags |= SETWA_FLAGS_EINJV2;
+> +
+>  	return einj_error_inject(error_type, error_flags, error_param1, error_param2,
+>  		error_param3, error_param4);
+>  }
+> @@ -955,7 +1110,7 @@ static void __exit einj_remove(struct platform_device *pdev)
+>  
+>  	if (einj_param) {
+>  		acpi_size size = (acpi5) ?
+> -			sizeof(struct set_error_type_with_address) :
+> +			v5param_size :
+>  			sizeof(struct einj_parameter);
+>  
+>  		acpi_os_unmap_iomem(einj_param, size);
 > -- 
 > 2.43.0
 > 
