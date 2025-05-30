@@ -1,96 +1,449 @@
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB19E1411EB
-	for <acpica-devel@lists.linux.dev>; Fri, 30 May 2025 10:27:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA6CF148850
+	for <acpica-devel@lists.linux.dev>; Fri, 30 May 2025 20:52:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748600867; cv=none; b=ScoZeQ5UF+nT9mAmBROpF6drPPWXCPJYCK5s/rVaMtPPk/MyA8dRQTYyP1Her8I2P5H46+64DaLnpYOLERm0lc2ZqpLN/76q7vyOJe1X3DFN4bhKsY2du1cwDqgRicLUq8b7MdfzJKfboiXi/7x3Ua5//1Ij3ulCkugGm59nLtg=
+	t=1748638363; cv=none; b=avZeIFkNlvO+4h4cVLGypE9sTKOoiFHfz2iGrc4VASf3XZTZ+7wQ6lX+X8Tv6kUiCL2oozIiuYRAJQkadgiGdwkyx0zTMXMLLxjvJl3STc4p3+KTCQj/6x08+eBZZo50aS+msKL13MEUUGvwlxYrFwwhwvVXZ3roq0r1yzJ11NQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748600867; c=relaxed/simple;
-	bh=yimb/h/oIv9nrFU36k+skWXKj5ccHe01EMDttikc/sI=;
+	s=arc-20240116; t=1748638363; c=relaxed/simple;
+	bh=6wD9qLU9InEHmkifduhSxAoPuEl6o3f+VKiVSxBDZfY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NhmRshq2Jipx3iFUE7BKXnAQlpGnYVT4uim8iXJ81cyCM6+0H/zyslFNL1NnL+fHI4XQl7/CKSjqdOnZ8qKAXRkwcs2DbqK6JYnyGdQSGO5eqgZqJPh/tKbUWd70dNycVse5e4nIUJQs5PQy2ZAbKPoiVoVq4iulawdmpbsRD9E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=JOE1VagW; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+	 Content-Type:Content-Disposition:In-Reply-To; b=K9TEJGd2xQCT7baKSrmWSE53z5IyJr5C0TGJDIS05XCDTP7DfQsmAsZl+kOjF3xrATI5ZRtwcDsLxomDyvy1ktFjt8HFUD48qSxzulIc038Kldl5bOXCMuIJAYIng48x+JDMqbNtpFClV0wiWi1tKogNEMGIYuMeGEvDutX0ExI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fGseEN0s; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="JOE1VagW"
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id D951140E01A3;
-	Fri, 30 May 2025 10:27:40 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id P9lM-Eo2BI2t; Fri, 30 May 2025 10:27:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1748600856; bh=blS/JssQQ0agsCa6iwZIdjI/QV/iJgq7L8Ra63G35JA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JOE1VagW3LYq3qu19XX/Arlt27IOQZt4+zPdZpViVzMy6uWRVk/mkXSNTXzPr38xn
-	 D/b7Z6745UcKg3okH4WGahMbGP3+iNOG9Zb8Ocmq3U74uV9bOJwdIX7oWX44dCQkQP
-	 u54doDUI/UV45/wP7sFLZX2Fm/wTlcL4ViWNmT8PuylToQrstROVIiuYpaIbWFksYQ
-	 WJ3vhjMZX7ELJ0SzQI2EW9MeZtuZleMry3k1Qlx3kB0EKDmpl+PvEUe9FysqMVOWqU
-	 H7FwKfyrJxQl9HxIgiHB+3aZ3UVoe/v75/3n7ZEJyAMF0CJ+BoIvyqBJuOu2qgQoW9
-	 31aqPfQ/9l61h+oYXz3wgVNUVlXwx0REwbhlLlSZE2EucBbrENuNX4gdRx5g0of8vP
-	 pO/OVN0jCutGg56HJVf3dd0hFNQ8ds/AYpdrVTQe46XUiryBQEPWfsuPflXOsqVD46
-	 1S9AORwC8RP0TBzzGrWu6+nVQ6RGbYwaMKAWbR0UuFEhEMf6LGlvIUvHhDFf/H47Si
-	 upGfGM5fsHupxhda7XSxT11MLb5MnOgteJFK5AuuTI1soRoL0qL++hETl1ZMwk7UGu
-	 FHFr0o/klRY4IWEVWnuiVHaqAy3lgKTE+3sH0C9hrJe1s3hT+oaEnBKN6I+M2Fwppy
-	 rRS45TdAQBSTODtdNbAILmSc=
-Received: from zn.tnic (p57969c58.dip0.t-ipconnect.de [87.150.156.88])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3B32D40E015E;
-	Fri, 30 May 2025 10:27:19 +0000 (UTC)
-Date: Fri, 30 May 2025 12:27:11 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: Zaid Alali <zaidal@os.amperecomputing.com>
-Cc: rafael@kernel.org, lenb@kernel.org, james.morse@arm.com,
-	tony.luck@intel.com, robert.moore@intel.com,
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fGseEN0s"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1748638361; x=1780174361;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=6wD9qLU9InEHmkifduhSxAoPuEl6o3f+VKiVSxBDZfY=;
+  b=fGseEN0sk5Bf82aIRvmpT8XyqVRLHDu+NHmUas6pM9MHruafCIg5PYEe
+   hgrd0cMePcOu/kOZssi0r0JwkGqorADdVWACKhv/c7zuL2WwEx7N2ndId
+   WSbsOsTQMMEMkZdXoklFdzar9T1J9yB7arvYlmgYbfK1sM86/3aA9J+90
+   sudkjksf8Ol+GpTAwXkf/XDWLCJtdn18nkvPXBRtw0eV5qRAWYZ/dk9z+
+   CKo8E0lAnJb9xOZYnF/G5fN2n4elbKoP2LoLXWuIIODSLNnR32PQymxvP
+   x35vahBXUcKNkFJivvVRvIvpncxERCxOj/WFe6K8aSgPdGlJbYNnxpfs6
+   Q==;
+X-CSE-ConnectionGUID: kuerCr59TRW9IzH+U2Qstg==
+X-CSE-MsgGUID: DoDzawyHS/yaVMBQhGdwxA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11449"; a="50619083"
+X-IronPort-AV: E=Sophos;i="6.16,196,1744095600"; 
+   d="scan'208";a="50619083"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 May 2025 13:52:41 -0700
+X-CSE-ConnectionGUID: Cj6n6M3rTVuOoqAhFPI/fg==
+X-CSE-MsgGUID: kr7aRojyQUGQYs4Bqi4fWQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.16,196,1744095600"; 
+   d="scan'208";a="144952758"
+Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.103.51])
+  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 May 2025 13:52:41 -0700
+Date: Fri, 30 May 2025 13:52:39 -0700
+From: "Luck, Tony" <tony.luck@intel.com>
+To: Borislav Petkov <bp@alien8.de>
+Cc: Zaid Alali <zaidal@os.amperecomputing.com>, rafael@kernel.org,
+	lenb@kernel.org, james.morse@arm.com, robert.moore@intel.com,
 	Jonathan.Cameron@huawei.com, ira.weiny@intel.com,
 	Benjamin.Cheatham@amd.com, dan.j.williams@intel.com, arnd@arndb.de,
-	Avadhut.Naik@amd.com, u.kleine-koenig@pengutronix.de,
-	john.allen@amd.com, linux-acpi@vger.kernel.org,
-	linux-kernel@vger.kernel.org, acpica-devel@lists.linux.dev
+	Avadhut.Naik@amd.com, john.allen@amd.com,
+	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	acpica-devel@lists.linux.dev
 Subject: Re: [PATCH v7 9/9] ACPI: APEI: EINJ: Update the documentation for
  EINJv2 support
-Message-ID: <20250530102711.GAaDmH_1O7lc6kuveY@fat_crate.local>
+Message-ID: <aDoal24J-BMTIBCq@agluck-desk3>
 References: <20250506213814.2365788-1-zaidal@os.amperecomputing.com>
  <20250506213814.2365788-10-zaidal@os.amperecomputing.com>
+ <20250530102711.GAaDmH_1O7lc6kuveY@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250506213814.2365788-10-zaidal@os.amperecomputing.com>
+In-Reply-To: <20250530102711.GAaDmH_1O7lc6kuveY@fat_crate.local>
 
-On Tue, May 06, 2025 at 02:38:13PM -0700, Zaid Alali wrote:
-> +- einjv2_component_array
-> +
-> +  The contents of this file are used to set the "Component Array" field
-> +  of the EINJv2 Extension Structure. The expected format is hex values
-> +  for component id and syndrome separated by space, and multiple
-> +  components are separated by new line.
+On Fri, May 30, 2025 at 12:27:11PM +0200, Borislav Petkov wrote:
+> On Tue, May 06, 2025 at 02:38:13PM -0700, Zaid Alali wrote:
+> > +- einjv2_component_array
+> > +
+> > +  The contents of this file are used to set the "Component Array" field
+> > +  of the EINJv2 Extension Structure. The expected format is hex values
+> > +  for component id and syndrome separated by space, and multiple
+> > +  components are separated by new line.
+> 
+> How is this a good design?
+> 
+> Do you guys not see that the other injection files are one value per file?
+> 
+> > +  # comp_arr="0x1 0x2				# Fill in the component array
+> > +    >0x1 0x4
+> > +    >0x2 0x4"
+> > +  # echo "$comp_arr" > einjv2_component_array
+> 
+> Oh boy. Srsly?!
 
-How is this a good design?
+I've been staring at the debugfs blob used for einjv2_component_array
+to try and come up with some sane way to use it ... but I think it is
+a lost cause and I agree we need "one file, one value" like the rest of
+the EINJ user interface.
 
-Do you guys not see that the other injection files are one value per file?
+I poked at the code a bit and mangled it into the patch below. I've
+tested that the new files read/write as expected. But I don't have
+an EINJV2 enabled system to run a full test.
 
-> +  # comp_arr="0x1 0x2				# Fill in the component array
-> +    >0x1 0x4
-> +    >0x2 0x4"
-> +  # echo "$comp_arr" > einjv2_component_array
+New files in the einj directory (assuming the system reports that
+it supports up to four simultaneous injections):
 
-Oh boy. Srsly?!
+-rw-------. 1 root root 0 May 30 13:26 component_id0
+-rw-------. 1 root root 0 May 30 13:26 component_id1
+-rw-------. 1 root root 0 May 30 13:26 component_id2
+-rw-------. 1 root root 0 May 30 13:26 component_id3
+-rw-------. 1 root root 0 May 30 13:26 component_syndrome0
+-rw-------. 1 root root 0 May 30 13:26 component_syndrome1
+-rw-------. 1 root root 0 May 30 13:26 component_syndrome2
+-rw-------. 1 root root 0 May 30 13:26 component_syndrome3
+-r--------. 1 root root 0 May 30 13:26 max_nr_components
+-rw-------. 1 root root 0 May 30 13:26 nr_components
 
+Use case to inject to one device would be:
+
+# echo 1 > nr_components
+# echo 4 > component_id0
+# echo A5A5A5A5 > component_syndrome0
+... set other files and finish with usual
+# echo 1 > error_inject
+
+There isn't a fancy "debugfs_create_x128_le()" helper to manage these
+128-bit little endian numbers. So I've coded with the basic building
+blocks (though using copy_from_user() and copy_to_user() feels like
+back in the stone age). If there some helpers that I missed I'd be
+happy to see that part simplified.
+
+Patch is on top of the existing v7 set. Obviously it needs to be folded
+back into the earlier patches to make a clean history that doesn't add
+functions and then replace them with different code.
+
+-Tony
+
+---
+
+diff --git a/drivers/acpi/apei/einj-core.c b/drivers/acpi/apei/einj-core.c
+index ab3d20b51ff1..9f29fc97f6a6 100644
+--- a/drivers/acpi/apei/einj-core.c
++++ b/drivers/acpi/apei/einj-core.c
+@@ -65,7 +65,7 @@ struct syndrome_array {
+ 		u8	pcie_synd[16];
+ 		u8	vendor_synd[16];
+ 	} comp_synd;
+-};
++} *syndrome_data;
+ 
+ struct einjv2_extension_struct {
+ 	u32 length;
+@@ -117,9 +117,7 @@ static struct debugfs_blob_wrapper vendor_blob;
+ static struct debugfs_blob_wrapper vendor_errors;
+ static char vendor_dev[64];
+ 
+-static struct debugfs_blob_wrapper einjv2_component_arr;
+-static void *user_input;
+-static int nr_components;
++static u32 max_nr_components, nr_components;
+ static u32 available_error_type;
+ static u32 available_error_type_v2;
+ 
+@@ -327,7 +325,7 @@ static void __iomem *einj_get_parameter_address(void)
+ 			if (available_error_type & ACPI65_EINJV2_SUPP) {
+ 				len = v5param.einjv2_struct.length;
+ 				offset = offsetof(struct einjv2_extension_struct, component_arr);
+-				nr_components = (len - offset) /
++				max_nr_components = (len - offset) /
+ 						sizeof(v5param.einjv2_struct.component_arr[0]);
+ 				/*
+ 				 * The first call to acpi_os_map_iomem above does not include the
+@@ -338,7 +336,7 @@ static void __iomem *einj_get_parameter_address(void)
+ 				acpi_os_unmap_iomem(p, v5param_size);
+ 				offset = offsetof(struct set_error_type_with_address, einjv2_struct);
+ 				v5param_size = offset + struct_size(&v5param.einjv2_struct,
+-					component_arr, nr_components);
++					component_arr, max_nr_components);
+ 				p = acpi_os_map_iomem(pa_v5, v5param_size);
+ 			}
+ 			return p;
+@@ -518,104 +516,6 @@ static int __einj_error_trigger(u64 trigger_paddr, u32 type,
+ 	return rc;
+ }
+ 
+-static int parse_hex_to_u8(char *str, u8 *arr)
+-{
+-	char *ptr, val[32];
+-	int pad, str_len;
+-
+-
+-	if (str[0] == '0' && (str[1] == 'x' || str[1] == 'X'))
+-		str += 2;
+-
+-	str_len = strlen(str);
+-	if (str_len > 32)
+-		return -EINVAL;
+-
+-	memcpy(val, str, str_len);
+-
+-	ptr = val;
+-	while (*ptr != '\0') {
+-		if (!isxdigit(*ptr))
+-			return -EINVAL;
+-		ptr++;
+-	}
+-
+-	pad = 32 - str_len;
+-
+-	memmove(val + pad, val, str_len);
+-	memset(val, '0', pad);
+-
+-	for (int i = 0; i < COMPONENT_LEN; ++i) {
+-		char byte_str[3] = {val[i * 2], val[i * 2 + 1], '\0'};
+-		/* write bytes in little endian format to follow ACPI specs */
+-		arr[COMPONENT_LEN - i - 1] = (u8)strtoul(byte_str, NULL, 16);
+-	}
+-
+-	return 0;
+-}
+-
+-static int read_component_array(struct set_error_type_with_address *v5param)
+-{
+-	int count = 0, str_len;
+-	u8 comp_arr[COMPONENT_LEN], synd_arr[COMPONENT_LEN];
+-	struct syndrome_array *component_arr;
+-	char *tok, *comp_str, *synd_str, *user;
+-
+-	component_arr = v5param->einjv2_struct.component_arr;
+-	str_len = strlen(user_input);
+-	user = user_input;
+-	user[str_len - 1] = '\0';
+-	while ((tok = strsep(&user, "\n")) != NULL) {
+-		if (count >= nr_components)
+-			return -EINVAL;
+-
+-		comp_str = strsep(&tok, " \t");
+-		synd_str = strsep(&tok, " \t");
+-
+-		if (!comp_str || !synd_str)
+-			return -EINVAL;
+-
+-		if (parse_hex_to_u8(comp_str, comp_arr))
+-			return -EINVAL;
+-		if (parse_hex_to_u8(synd_str, synd_arr))
+-			return -EINVAL;
+-
+-		switch (v5param->type) {
+-		case EINJV2_PROCESSOR_ERROR:
+-			for (int i = 0; i < COMPONENT_LEN; ++i) {
+-				component_arr[count].comp_id.acpi_id[i] = comp_arr[i];
+-				component_arr[count].comp_synd.proc_synd[i] = synd_arr[i];
+-			}
+-			break;
+-		case EINJV2_MEMORY_ERROR:
+-			for (int i = 0; i < COMPONENT_LEN; ++i) {
+-				component_arr[count].comp_id.device_id[i] = comp_arr[i];
+-				component_arr[count].comp_synd.mem_synd[i] = synd_arr[i];
+-			}
+-			break;
+-		case EINJV2_PCIE_ERROR:
+-			for (int i = 0; i < COMPONENT_LEN; ++i) {
+-				component_arr[count].comp_id.pcie_sbdf[i] = comp_arr[i];
+-				component_arr[count].comp_synd.pcie_synd[i] = synd_arr[i];
+-			}
+-			break;
+-		case EINJV2_VENDOR_ERROR:
+-			for (int i = 0; i < COMPONENT_LEN; ++i) {
+-				component_arr[count].comp_id.vendor_id[i] = comp_arr[i];
+-				component_arr[count].comp_synd.vendor_synd[i] = synd_arr[i];
+-			}
+-			break;
+-		}
+-		count++;
+-
+-	}
+-	v5param->einjv2_struct.component_arr_count = count;
+-
+-	/* clear buffer after user input for next injection */
+-	memset(user_input, 0, COMP_ARR_SIZE);
+-	return 0;
+-}
+-
+ static int __einj_error_inject(u32 type, u32 flags, u64 param1, u64 param2,
+ 			       u64 param3, u64 param4)
+ {
+@@ -655,13 +555,17 @@ static int __einj_error_inject(u32 type, u32 flags, u64 param1, u64 param2,
+ 			v5param->memory_address_range = param2;
+ 
+ 			if (is_V2) {
+-				rc = read_component_array(v5param);
+-				if (rc) {
++				if (nr_components < 1 || nr_components > max_nr_components) {
+ 					kfree(v5param);
+-					goto err_out;
++					return -EINVAL;
++				}
++				v5param->einjv2_struct.component_arr_count = nr_components;
++				for (int i = 0; i < nr_components; i++) {
++					v5param->einjv2_struct.component_arr[i].comp_id =
++						syndrome_data[i].comp_id;
++					v5param->einjv2_struct.component_arr[i].comp_synd =
++						syndrome_data[i].comp_synd;
+ 				}
+-				/* clear buffer after user input for next injection */
+-				memset(user_input, 0, COMP_ARR_SIZE);
+ 			} else {
+ 				v5param->apicid = param3;
+ 				v5param->pcie_sbdf = param4;
+@@ -742,9 +646,6 @@ static int __einj_error_inject(u32 type, u32 flags, u64 param1, u64 param2,
+ 	rc = apei_exec_run_optional(&ctx, ACPI_EINJ_END_OPERATION);
+ 
+ 	return rc;
+-err_out:
+-	memset(user_input, 0, COMP_ARR_SIZE);
+-	return -EINVAL;
+ }
+ 
+ /* Inject the specified hardware error */
+@@ -984,6 +885,97 @@ static int einj_check_table(struct acpi_table_einj *einj_tab)
+ 	return 0;
+ }
+ 
++static ssize_t u128_read(struct file *f, char __user *buf, size_t count, loff_t *off)
++{
++	char output[2 * COMPONENT_LEN + 1];
++	u8 *data = f->f_inode->i_private;
++	ssize_t n;
++	int i;
++
++	if (*off >= sizeof(output))
++		return 0;
++
++	for (i = 0; i < COMPONENT_LEN; i++)
++		sprintf(output + 2 * i, "%.02x", data[i]);
++	output[2 * COMPONENT_LEN] = '\n';
++
++	n = min(count, sizeof(output) - *off);
++	if (copy_to_user(buf, output + *off, n))
++		return -EFAULT;
++	*off += n;
++
++	return n;
++}
++
++static ssize_t u128_write(struct file *f, const char __user *buf, size_t count, loff_t *off)
++{
++	char input[2 + 2 * COMPONENT_LEN + 2];
++	u8 *save = f->f_inode->i_private;
++	u8 tmp[COMPONENT_LEN];
++	char byte[3] = {};
++	char *s, *e;
++	long val;
++	int i;
++
++	if (count > sizeof(input))
++		return -EINVAL;
++	if (copy_from_user(input, buf, count))
++		return -EFAULT;
++
++	if (input[0] == '0' && (input[1] == 'x' || input[1] == 'X'))
++		s = input + 2;
++	else
++		s = input;
++	e = input + count;
++	if (e[-1] == '\n')
++		e--;
++
++	for (i = 0; i < COMPONENT_LEN; i++) {
++		byte[1] = *--e;
++		byte[0] = e > s ? *--e : '0';
++		if (kstrtol(byte, 16, &val))
++			return -EINVAL;
++		tmp[i] = val;
++		if (e <= s)
++			break;
++	}
++	while (++i < COMPONENT_LEN)
++		tmp[i] = 0;
++
++	memcpy(save, tmp, COMPONENT_LEN);
++
++	return count;
++}
++
++static const struct file_operations u128_fops = {
++	.read	= u128_read,
++	.write	= u128_write,
++};
++
++static bool setup_einjv2_component_files(void)
++{
++	char name[32];
++
++	max_nr_components = 4; //FAKE!!!
++	debugfs_create_u32("max_nr_components", 0400, einj_debug_dir, &max_nr_components);
++	debugfs_create_u32("nr_components", 0600, einj_debug_dir, &nr_components);
++
++	syndrome_data = kcalloc(max_nr_components, sizeof(syndrome_data[0]), GFP_KERNEL);
++	if (!syndrome_data)
++		return false;
++
++	for (int i = 0; i < max_nr_components; i++) {
++		sprintf(name, "component_id%d", i);
++		debugfs_create_file(name, 0600, einj_debug_dir,
++				    &syndrome_data[i].comp_id, &u128_fops);
++		sprintf(name, "component_syndrome%d", i);
++		debugfs_create_file(name, 0600, einj_debug_dir,
++				    &syndrome_data[i].comp_synd, &u128_fops);
++	}
++
++	return true;
++}
++
+ static int __init einj_probe(struct faux_device *fdev)
+ {
+ 	int rc;
+@@ -1056,21 +1048,10 @@ static int __init einj_probe(struct faux_device *fdev)
+ 		debugfs_create_x32("notrigger", S_IRUSR | S_IWUSR,
+ 				   einj_debug_dir, &notrigger);
+ 		if (available_error_type & ACPI65_EINJV2_SUPP) {
+-			user_input = kzalloc(COMP_ARR_SIZE, GFP_KERNEL);
+-			if (!user_input) {
+-				EINJv2_enabled = false;
+-				pr_info("EINJv2 is disabled: not enough memory\n");
+-				goto skip_EINJv2;
+-			}
+-			EINJv2_enabled = true;
+-			einjv2_component_arr.data = user_input;
+-			einjv2_component_arr.size = COMP_ARR_SIZE;
+-			debugfs_create_blob("einjv2_component_array", S_IRUSR | S_IWUSR,
+-					einj_debug_dir, &einjv2_component_arr);
++			EINJv2_enabled = setup_einjv2_component_files();
+ 		}
+ 	}
+ 
+-skip_EINJv2:
+ 	if (vendor_dev[0]) {
+ 		vendor_blob.data = vendor_dev;
+ 		vendor_blob.size = strlen(vendor_dev);
+@@ -1112,7 +1093,7 @@ static void __exit einj_remove(struct faux_device *fdev)
+ 		if (vendor_errors.size)
+ 			acpi_os_unmap_memory(vendor_errors.data, vendor_errors.size);
+ 	}
+-	kfree(user_input);
++	kfree(syndrome_data);
+ 	einj_exec_ctx_init(&ctx);
+ 	apei_exec_post_unmap_gars(&ctx);
+ 	apei_resources_release(&einj_resources);
 -- 
-Regards/Gruss,
-    Boris.
+2.49.0
 
-https://people.kernel.org/tglx/notes-about-netiquette
