@@ -1,51 +1,53 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 804BA21884A
-	for <acpica-devel@lists.linux.dev>; Fri, 30 May 2025 23:09:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 971DD238143
+	for <acpica-devel@lists.linux.dev>; Sat, 31 May 2025 09:21:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748646575; cv=none; b=WR6SGTj/aeA0amT1OSNR0TjUCHBydUAbgDnzVb8kqeq+9vpgXmg8F3hmAlAY8HStK4bA8GcPc4QEnqS2xFvhuZMTlsr/OIlnFdBL0T64hrApJ4wIttCL20t13EE6a8JC+dLVlPCFmabMytnfnLu2VXGyvKT35iEAeHpCQSWKjK8=
+	t=1748683276; cv=none; b=H2P3F+gC6pQX0sZAMCnfqB8TESwgJ/jRg+mRohtX58du79v/2LPAu/qbmN9porfMFU0u7Eklc+MdoukrzQbS18Q95i/UtGropPgXoqvK+3upkrQd0VaJTRp5LNUX7KZblioPFq9IfXgnxlv9y/4OvrZYgvWpyCfNpRNNi2tgSqs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748646575; c=relaxed/simple;
-	bh=LoyjE9kdzjoi6fevHiJCdYiahDxSoe9dp4RhP57cdSs=;
+	s=arc-20240116; t=1748683276; c=relaxed/simple;
+	bh=2cKWC+jp3T+h4rEeMC3I3qwW+MyoPZ9M8l6BinJBIvw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ipA7zbQHamwvjuZ6G1PQEhvJGuUd9bWZCB4FdfwC+2KtIb3c18vz0ACaJzbUK+KVGReqjeKP6NEvtsaZ7pVPyYNlo+Hcdr5udPQvBey5QmNf+cELENR/BnXwFiviohNY1eKoV7o+EbBIxt4MwRKCGdb0QMebH4HqfyFXw5Hjcfs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GlNTLfW8; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=o2KGewsPZ9jIlcsx034dSNIHG98ggY9w/tJxGtEsI9cMesqJVdXdmqXBb4rLyaI9fEdzjgIOwlZ/q+7fWMUT8XsEOtP5adtgzM+D0UxqDn6fTC7dGjp8Ioak782faMzXJsF38AaL3yXY6HnQfc7h00jHdG9XwDhvwk80o1iNQbM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=Eabi1BoP; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GlNTLfW8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1748646573; x=1780182573;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=LoyjE9kdzjoi6fevHiJCdYiahDxSoe9dp4RhP57cdSs=;
-  b=GlNTLfW8ubkwkGspOoogMz5HL3tpDkJvwprQqx467Vg4w68Cq4u5XvCg
-   Onh2B9TFfjeRtPWhrmuWsYpvNSVqOKYII8iboixyKnQyhifgj3qoZf0In
-   0mGhDxoLerD767vReRM8OTdpNEhKWz6L4oQ/YomcHv5LozA9nBI3n1Kpm
-   SDZveGx9+woLagF4lDQOpP5NY2/9JajG+SA5oaY89EFwESV5YKMC4lxV1
-   bKon5dGwvHc2CQ3hI8R1/yR7zIXeaHlEsHNNh0y3JOeEcVCIzWDKmNLd6
-   IExH3k9GmqCFjBupeQ9inW19N/mHKEHK0OkHCLbnO/DGU7PiMnw5zK97M
-   g==;
-X-CSE-ConnectionGUID: HmlTS47AQkyi3uJuOyjGsw==
-X-CSE-MsgGUID: hHDQDcSRSjKpwbkUtbagQA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11449"; a="50618272"
-X-IronPort-AV: E=Sophos;i="6.16,197,1744095600"; 
-   d="scan'208";a="50618272"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 May 2025 16:09:33 -0700
-X-CSE-ConnectionGUID: OK7YvfbETYid7DukXd+cRg==
-X-CSE-MsgGUID: HAogEd4dS2+ky+skW9xPcg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,197,1744095600"; 
-   d="scan'208";a="147885592"
-Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.103.51])
-  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 May 2025 16:09:33 -0700
-Date: Fri, 30 May 2025 16:09:31 -0700
-From: "Luck, Tony" <tony.luck@intel.com>
-To: Borislav Petkov <bp@alien8.de>
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="Eabi1BoP"
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 4E00A40E01B0;
+	Sat, 31 May 2025 09:21:11 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id C7FoGxDnSMSc; Sat, 31 May 2025 09:21:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1748683267; bh=hPncIQfmkOc9jGoevaB6tq3hVWi4s4eLHLj2UZams40=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Eabi1BoPz0FpYimj5i2YRLX7/2E9Xtq4U8idvjkw8cbbHC0QwCeVLC7UgwkOPqnrm
+	 0h+//cn/exUzXZSWpM6G/fpg7oFOAmc0GAs7JTWvdmzlWzADSxEsLJI8ok5Fk2HJRw
+	 5Rpo3sHvt/JXvJPSGWSBt9udWuIwRDLhPqKoXbtdmqPAmxO2oqOQ9SpK8W1Jb8pk8W
+	 BYr+pOMAoOQ2lTTtH10C+ZRdbLq2Vtssb8Ds1QiACiU4e9ZFxay1MYuCwuz7ol0pl2
+	 RL31ECgAhjjngJ7Gijo93stVn546NZ3IIaB1JilP1tVqn0KWeQcJjkd+1bsa007mmI
+	 tVSF2U0G2vZ56jU4NfSNe3yeFJOm/YV0Qr0+hEHO6HdKEdye+1fG/8MZmex8h8tlU2
+	 oXvMwiY5OugDmUvM51P++Z/OJlKICZ0UY14K5ANqrGEWZco2/fSIa/ZmQBSRtRJ4L/
+	 XJZ+PeuPV2tiyl7txx6dcBton+J+UDKMPplCCkW8m/8Ui3IkqOHt5h1/vlB0xpPSw7
+	 DRlIKp5MPKDG6AsUYoAjHiK24YCnVhF6iDHYp6MIS198cYJS3roE85sxxlt81uDJcf
+	 rxSkqL5J+q+kEe01zJi1ZWZM6JXsrxdLIl72r/LHrdSinNJk0rCrsK1yJe34JTobwF
+	 g/MexLYzvAuNhvcpr6b/yhf4=
+Received: from zn.tnic (p57969c58.dip0.t-ipconnect.de [87.150.156.88])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 32DF240E016A;
+	Sat, 31 May 2025 09:20:51 +0000 (UTC)
+Date: Sat, 31 May 2025 11:20:50 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: "Luck, Tony" <tony.luck@intel.com>
 Cc: Zaid Alali <zaidal@os.amperecomputing.com>, rafael@kernel.org,
 	lenb@kernel.org, james.morse@arm.com, robert.moore@intel.com,
 	Jonathan.Cameron@huawei.com, ira.weiny@intel.com,
@@ -55,7 +57,7 @@ Cc: Zaid Alali <zaidal@os.amperecomputing.com>, rafael@kernel.org,
 	acpica-devel@lists.linux.dev
 Subject: Re: [PATCH v7 9/9] ACPI: APEI: EINJ: Update the documentation for
  EINJv2 support
-Message-ID: <aDo6q74ADqfUXjO3@agluck-desk3>
+Message-ID: <20250531092050.GBaDrJ8iw7cNcpOKeA@fat_crate.local>
 References: <20250506213814.2365788-1-zaidal@os.amperecomputing.com>
  <20250506213814.2365788-10-zaidal@os.amperecomputing.com>
  <20250530102711.GAaDmH_1O7lc6kuveY@fat_crate.local>
@@ -66,20 +68,40 @@ List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 In-Reply-To: <aDoal24J-BMTIBCq@agluck-desk3>
 
-On Fri, May 30, 2025 at 01:52:41PM -0700, Luck, Tony wrote:
-> On Fri, May 30, 2025 at 12:27:11PM +0200, Borislav Petkov wrote:
-> > On Tue, May 06, 2025 at 02:38:13PM -0700, Zaid Alali wrote:
+On Fri, May 30, 2025 at 01:52:39PM -0700, Luck, Tony wrote:
+> Use case to inject to one device would be:
+> 
+> # echo 1 > nr_components
+
+What does that do?
+
+The interface probably needs a little refinement, but...
+
+> # echo 4 > component_id0
+> # echo A5A5A5A5 > component_syndrome0
+> ... set other files and finish with usual
+> # echo 1 > error_inject
+> 
 > There isn't a fancy "debugfs_create_x128_le()" helper to manage these
 > 128-bit little endian numbers. So I've coded with the basic building
 > blocks (though using copy_from_user() and copy_to_user() feels like
 > back in the stone age). If there some helpers that I missed I'd be
 > happy to see that part simplified.
+> 
+> Patch is on top of the existing v7 set. Obviously it needs to be folded
+> back into the earlier patches to make a clean history that doesn't add
+> functions and then replace them with different code.
 
-simple_read_from_buffer() and simple_write_to_buffer() may be the
-helpers that I didn't spot earlier.
+... yes, definitely much better.
 
--Tony
+Thanks!
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
