@@ -1,156 +1,143 @@
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67F5B17996
-	for <acpica-devel@lists.linux.dev>; Sun,  1 Jun 2025 10:26:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 889CE281341;
+	Sun,  1 Jun 2025 23:29:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748773585; cv=none; b=B6h9XG2A2BnrbcFJEzcbcE8DaMU+yojoGJYsELJsLOZy2oGZ4u97DNO/MoEt2/Hsa618+UiS0XZYPlVV9IblddkIJ/U5olGefCYqpRNID379HvOt/TiuPiYkLqNEyya4Ox/EjRntGl5Nl0kK6mKED9WSo9iWYZK4A3uRf8GRyGQ=
+	t=1748820552; cv=none; b=k+00aTvsMHpJbUTnJa/M2lCD3Ro/RPuJJFJLkcwusTARIz5qYEm/+YbEOQ2mTth2gv0hd7ZUEkwgAnRssMLoMkg8u7gTKfT8Yk2NrEVlomHGjtNe8d2rQI+9epJYNgE/Bfy4F3yB2HJOnwq0mEuJBMTvCt2WkJFSlsprOCkMqyk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748773585; c=relaxed/simple;
-	bh=Bmo7ipxl3L6iPB/EfZHYxh9n0+XfLJTO2vLZ9RBxReE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BOIDx978sv7bUr0qStsnuz4msZjPy3w6VTcJhE2I3AIt5QbLsG1INxm74qaJc3Ub/+4poRaYUHsyCBacl9Pg79koPtMNRoNlRnRF7MhBJkRfZIZNs5K470GZEmXFe2FPIn6J1KGr7KpEOmtKmP4YtgP/TvOrXgn/yymRot2f4UU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=Cl1G10K4; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+	s=arc-20240116; t=1748820552; c=relaxed/simple;
+	bh=XRHEWhgqj6nLkAZAodbWHQagGGUd+jA0JtzRnx1/B6c=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Ok+gySXWdKGdG5vXQ81OAe0vGdcBFcSLOCOUJm1N259uiaessUWmMtiKfQDgrR1pJMtuo4cDAZ+YpX/xwh5QSZNbQYd4rgRUUjdKGWEwxj493UsjDyWHDTkj6mTcZSu1hz/i6zduDVeaJkUvBpWs1lymd9MTh+P2T7uDg4wHUDA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dKFB9vqP; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="Cl1G10K4"
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id E992B40E01B0;
-	Sun,  1 Jun 2025 10:26:20 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id gtcQpti0-juV; Sun,  1 Jun 2025 10:26:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1748773576; bh=X2hdjNqzaXawS+C1EkrP1A41VrUp5qnQPvrxqGdIiL8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Cl1G10K4dhDyphQmUYRagU7FdFQLC70NYOjElY8xTnAMX1Be6lpPnybz7QNQZTAl2
-	 3ybzELP0AZG+o72zs7+E0KXEH5+mD4XC+srlDxCIecrmwqxF6Nu4YYaYUvtzRRaknY
-	 PhQf3XR4S13o86K3hy1N2PHgi4uWI+s1eObUD8yzvvoeM4bW6893pViKGMuUGS7uhx
-	 c5USnTkeji0KbccXh7XP/lplV4z7fuCeFOrL/9MlRQdrSlMowWlJy1kSdhxMvjxKVA
-	 kdeE/Ra9tBFXb/fN3MZsdpVPjG5JnAX1BFyX7FvvUkgfrPz8dhhhJlXon2YFDaww+L
-	 uzlualxnlPfsetlSuv2jvDR6VYwliK8gx/UD4WUa5upmFQLGC/Ym1LpzFCyB+mVyMb
-	 W36Pcf1sWKlM9olwiIIDVoX47PSS9m8wIXsqBGqDkB47o1opg/enjjHi07d1yAYlCj
-	 cgaCtN4E4c4hrVB/+Vf5RhbNb7leyAJfULoeAir7zcNZwEhUYNyPjyl/P/vIYdn9nB
-	 5x1IB+4YNzrtcBGdHsFSKlAfxraNRHZ2dRXxFz/+281BBjGlpKl4cfu4HXGFqsjY4r
-	 Ap/+pYv883bm51C9UJm+8gKdUpQCvY6XjmU7Gw6vPTQpCc4xo94t0A3RDtWqTudTch
-	 Htd+RuMYg2+Y08VWuM9CdKD8=
-Received: from zn.tnic (p57969c58.dip0.t-ipconnect.de [87.150.156.88])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 99ED540E01A0;
-	Sun,  1 Jun 2025 10:26:00 +0000 (UTC)
-Date: Sun, 1 Jun 2025 12:25:54 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: "Luck, Tony" <tony.luck@intel.com>
-Cc: Zaid Alali <zaidal@os.amperecomputing.com>, rafael@kernel.org,
-	lenb@kernel.org, james.morse@arm.com, robert.moore@intel.com,
-	Jonathan.Cameron@huawei.com, ira.weiny@intel.com,
-	Benjamin.Cheatham@amd.com, dan.j.williams@intel.com, arnd@arndb.de,
-	Avadhut.Naik@amd.com, john.allen@amd.com,
-	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	acpica-devel@lists.linux.dev
-Subject: Re: [PATCH v7 9/9] ACPI: APEI: EINJ: Update the documentation for
- EINJv2 support
-Message-ID: <20250601102554.GAaDwqsgCODzEne7Ow@fat_crate.local>
-References: <20250506213814.2365788-1-zaidal@os.amperecomputing.com>
- <20250506213814.2365788-10-zaidal@os.amperecomputing.com>
- <20250530102711.GAaDmH_1O7lc6kuveY@fat_crate.local>
- <aDoal24J-BMTIBCq@agluck-desk3>
- <20250531092050.GBaDrJ8iw7cNcpOKeA@fat_crate.local>
- <aDuBjopy_nE9A-ph@agluck-desk3>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dKFB9vqP"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F39CC4CEF1;
+	Sun,  1 Jun 2025 23:29:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1748820552;
+	bh=XRHEWhgqj6nLkAZAodbWHQagGGUd+jA0JtzRnx1/B6c=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=dKFB9vqPeXfE4S+qxf5Fxopzn/LW1ix2M0CRRwZaPkzYyMw4+obUFVRzCqeeqJObX
+	 yxWQXBMwehLzoviCjzwNn5DAWfpLhQnxLzYM70+H1FimSTHynirlD63mJiUFJBdBXy
+	 PGzrN9DiLf6gK9s5Noeynepm8FY51ALApRgwFRfswZ4jpPwuCQ8GlV7+FCsbZDjcNv
+	 NP2OhFAwwkyRys8MFXYjNbGpTnSJ8bjeFlK5EevVkVm18TUatCSUTp+V9G1i+JkWQK
+	 13P68xloB0dbYOzMZa7tF6DP2WdQUVFwud03HtFequ3YPBMD1d5MPO176Qrr89+kJn
+	 vg7bvHdj/JaDA==
+From: Sasha Levin <sashal@kernel.org>
+To: patches@lists.linux.dev,
+	stable@vger.kernel.org
+Cc: Ahmed Salem <x0rw3ll@gmail.com>,
+	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+	Sasha Levin <sashal@kernel.org>,
+	robert.moore@intel.com,
+	linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.15 098/110] ACPICA: Avoid sequence overread in call to strncmp()
+Date: Sun,  1 Jun 2025 19:24:20 -0400
+Message-Id: <20250601232435.3507697-98-sashal@kernel.org>
+X-Mailer: git-send-email 2.39.5
+In-Reply-To: <20250601232435.3507697-1-sashal@kernel.org>
+References: <20250601232435.3507697-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <aDuBjopy_nE9A-ph@agluck-desk3>
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.15
+Content-Transfer-Encoding: 8bit
 
-Some questions inline...
+From: Ahmed Salem <x0rw3ll@gmail.com>
 
-On Sat, May 31, 2025 at 03:24:14PM -0700, Luck, Tony wrote:
-> EINJ V2 allows the user to perform multiple injections together.
-> 
-> The component_idN/component_syndromeN pairs of files direct the
-> "where" and the "what" of each injection.
-> 
-> But the kernel needs to know how many of these pairs to use
-> for an injection (to fill in a field in the structure passed
-> to the BIOS).
+[ Upstream commit 64b9dfd0776e9c38d733094859a09f13282ce6f8 ]
 
-The kernel could realloc on each write. Or we could allocate the struct to max
-elems and trim it before passing it down to BIOS.
+ACPICA commit 8b83a8d88dfec59ea147fad35fc6deea8859c58c
 
-> With EINJ V2 the user might want to inject to 2 locations with
-> one injection, and then just to 1 location on the next.
+ap_get_table_length() checks if tables are valid by
+calling ap_is_valid_header(). The latter then calls
+ACPI_VALIDATE_RSDP_SIG(Table->Signature).
 
-Right.
+ap_is_valid_header() accepts struct acpi_table_header as an argument, so
+the signature size is always fixed to 4 bytes.
 
-> Zaid Alali's version took the approach of zeroing the input
-> after each injection so the user had to start from scratch
-> for each injection.
-> 
-> I wasn't fond of that because the existing Linux EINJ interface
-> saves all the paramters allowing the user to repeat the same
-> injection by just runniing "echo 1 > error_inject: over and over
-> (e.g. to force a soft offline by injecting multiple corrected
-> errors to the same address).
+The problem is when the string comparison is between ACPI-defined table
+signature and ACPI_SIG_RSDP. Common ACPI table header specifies the
+Signature field to be 4 bytes long[1], with the exception of the RSDP
+structure whose signature is 8 bytes long "RSD PTR " (including the
+trailing blank character)[2]. Calling strncmp(sig, rsdp_sig, 8) would
+then result in a sequence overread[3] as sig would be smaller (4 bytes)
+than the specified bound (8 bytes).
 
-I agree with you here. Linux sysfs, etc interfaces do keep their values
-usually.
+As a workaround, pass the bound conditionally based on the size of the
+signature being passed.
 
-> User interface options:
-> 
-> 1) User can zero out the component_idN/component_syndromeN pairs
-> that they don't need and have the kernel count how many injections
-> are requested by looping to find the zero terminator.
-> 
-> 2) Kernel could zero all pairs after an injection to make the user
-> explicitly set the list of targets each time.
-> 
-> 3) User provides the count vis the nr_components file (perhaps
-> needs a better name?)
+Link: https://uefi.org/specs/ACPI/6.5_A/05_ACPI_Software_Programming_Model.html#system-description-table-header [1]
+Link: https://uefi.org/specs/ACPI/6.5_A/05_ACPI_Software_Programming_Model.html#root-system-description-pointer-rsdp-structure [2]
+Link: https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wstringop-overread [3]
+Link: https://github.com/acpica/acpica/commit/8b83a8d8
+Signed-off-by: Ahmed Salem <x0rw3ll@gmail.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Link: https://patch.msgid.link/2248233.Mh6RI2rZIc@rjwysocki.net
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
 
-Yap, agree that the name is not optimal.
+Now I understand the issue! Let me analyze the problem: **Analysis:**
+**YES** - This commit should be backported to stable kernel trees. ##
+Detailed Analysis: ### The Problem: The commit fixes a **buffer overread
+vulnerability** in the `ACPI_VALIDATE_RSDP_SIG` macro. The issue occurs
+when: 1. `ap_is_valid_header()` accepts a `struct acpi_table_header
+*table` parameter 2. `struct acpi_table_header` has a `signature` field
+that is only **4 bytes** (`char signature[ACPI_NAMESEG_SIZE]` where
+`ACPI_NAMESEG_SIZE = 4`) 3. The original `ACPI_VALIDATE_RSDP_SIG(a)`
+macro calls `strncmp(a, ACPI_SIG_RSDP, 8)` - comparing **8 bytes** 4.
+When `table->signature` (4 bytes) is passed to this macro, `strncmp`
+reads **beyond the bounds** of the signature field, causing a buffer
+overread ### The Fix: The new macro implementation: ```c #define
+ACPI_VALIDATE_RSDP_SIG(a) (!strncmp (ACPI_CAST_PTR (char, (a)),
+ACPI_SIG_RSDP, (sizeof(a) < 8) ? ACPI_NAMESEG_SIZE : 8)) ``` This
+intelligently chooses the comparison length: - If `sizeof(a) < 8`, it
+uses `ACPI_NAMESEG_SIZE` (4 bytes) - Otherwise, it uses the full 8 bytes
+for legitimate RSDP signatures ### Why This Should Be Backported: 1.
+**Security Issue**: This is a buffer overread that could potentially
+lead to information disclosure or memory corruption 2. **Minimal Risk**:
+The change is a small, surgical fix to a macro with clear logic 3.
+**Wide Impact**: The macro is used in multiple places including: -
+Kernel ACPI subsystem (`drivers/acpi/acpica/tbprint.c`, `tbxfroot.c`) -
+Boot code (`arch/x86/boot/compressed/acpi.c`) - ACPI tools (userspace
+tools) 4. **Compiler Warnings**: This likely fixes `-Wstringop-overread`
+compiler warnings, improving code quality 5. **No Functional Change**:
+The fix maintains the same intended behavior while preventing the
+overread 6. **Follows Stable Rules**: This is exactly the type of
+important bugfix that stable trees are meant to include ### Similar
+Commit Precedent: Similar commit #3 (Status: YES) shows that ACPI
+compilation warning fixes have been backported before, and this is a
+more serious issue (actual buffer overread vs. just truncation
+warnings). The fix addresses a real memory safety issue in a fundamental
+ACPI macro used throughout the kernel, making it an excellent candidate
+for stable backporting.
 
-> 4) Something else?
+ include/acpi/actypes.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-See above.
-
-User can inject into each component pairs file and the kernel can put that in
-the tracking struct. So you have:
-
-# echo 4 > component_id0
-# echo A5A5A5A5 > component_syndrome0
-... set other files and finish with usual
-# echo 1 > error_inject
-
-<--- here, it goes through each component pair and builds the structure to
-pass down the BIOS.
-
-And you track valid component pairs by setting the IDs to -1 or something else
-invalid.
-
-All those component IDs which have remained invalid after the error_inject
-write happens, get ignored - you gather only those which are valid and inject.
-
-And this way you can keep the old values too and gather them again and inject
-again, over and over again.
-
-Right?
-
-Thx.
-
+diff --git a/include/acpi/actypes.h b/include/acpi/actypes.h
+index 80767e8bf3ad4..d323dfffa4bfc 100644
+--- a/include/acpi/actypes.h
++++ b/include/acpi/actypes.h
+@@ -527,7 +527,7 @@ typedef u64 acpi_integer;
+ 
+ /* Support for the special RSDP signature (8 characters) */
+ 
+-#define ACPI_VALIDATE_RSDP_SIG(a)       (!strncmp (ACPI_CAST_PTR (char, (a)), ACPI_SIG_RSDP, 8))
++#define ACPI_VALIDATE_RSDP_SIG(a)       (!strncmp (ACPI_CAST_PTR (char, (a)), ACPI_SIG_RSDP, (sizeof(a) < 8) ? ACPI_NAMESEG_SIZE : 8))
+ #define ACPI_MAKE_RSDP_SIG(dest)        (memcpy (ACPI_CAST_PTR (char, (dest)), ACPI_SIG_RSDP, 8))
+ 
+ /* Support for OEMx signature (x can be any character) */
 -- 
-Regards/Gruss,
-    Boris.
+2.39.5
 
-https://people.kernel.org/tglx/notes-about-netiquette
