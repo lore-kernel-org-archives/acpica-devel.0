@@ -1,144 +1,146 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 671CA33E429;
-	Sun,  1 Jun 2025 23:46:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADB3E2C3259
+	for <acpica-devel@lists.linux.dev>; Mon,  2 Jun 2025 17:02:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748821563; cv=none; b=ZpPTtqSvbpIvZQKe+XsqZ0Dxm6ofap+RJOYB6WL5VqtAUAZ4jBf7lPANFAKy1FEvgKI7UK32H7pb0OJb+OCkRMos0kHazDgcm86T/91HXdWAEe7Iv0sHvtdbuZIvBSoBCYgLmqgWwfpuwJZlarObINblp+Sb8NNDUKwbvJmj49Y=
+	t=1748883739; cv=none; b=YloYAcMDnHRAazjl1DbX9bzrSOkUNq7/XuaIfv4G4JzaKsIwxQbBNrEB/gExvCMkrWdTUlgoJ/jRrWdxHGqPvAIwnQkVbpBtLqFO35d3YPAxxEaRRr/CpVBLMrTRC7lYnH4PrGSYwvvb6gxKvp9Lmip/KrXroQ74rmoN38NiFJY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748821563; c=relaxed/simple;
-	bh=0SoWlbox1O5Ztxhv2TBlipSHvtog3stqQrMWmt265T8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=MFiYfYUp+KN0VND3Z5GBy1hL64/mmC3K/IzA2uM+Dz5KG15vSGmYqxP4O31W/DbiRfBEZ3gRiqOUhVO2nSve7bhTbfSaemXkNaIc7NPk92rvn3fZ06pnc8oYVa1TodrW3oSqLSVT2exy3VpdvEaZ+h88KfWyCwP8pG/H5ELlmJk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MhHEbQ6m; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1748883739; c=relaxed/simple;
+	bh=PAm0qcVMccKzdp3fnXKmqZ+vGp/mrw6+rOYNaWYB160=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FZymTehWtHv8AYXurRPDH+XpHB5BokG+12ZusqnWmQ8zwjqGgVCvzzs6jiGA2wTTEPNLXIp7HViq4Su2+EmejT2Kpgm0uSURwDscN9fsM+/CS8XRS6DW0mj1/aRkjs7mjGCV+y9Xt1ns3Dwn+AJ/Rk9pt1oeVWIxUOYzqD3XQEU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VYFZTPPh; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MhHEbQ6m"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 322C3C4CEEE;
-	Sun,  1 Jun 2025 23:46:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748821563;
-	bh=0SoWlbox1O5Ztxhv2TBlipSHvtog3stqQrMWmt265T8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MhHEbQ6m+xXqkasjP3Vnums1EcWglOYOgF9fcRLxofEwrqunKKD7MV+zY55ay1UnC
-	 FWhNzARQyRmDkPXUiC2F6gkRubLRZJ6rebW43GLNNEFW3WivGbdatb3tTJgScTBC+f
-	 8FWQqlPYRsu387WsKddQO7ywKdL65wztn6zxzYMSQjb1vYY7/x0A6khrkjBK4GsHPO
-	 t/GMg8W8tnfV59czxQc7Na3Pa7nBGOG40Kdsj/kl0g728xRYkShVHmx6OFESWQ5EYM
-	 c+ulm/gwhH7dYtvGJVWnk8JsLYzTCb468Oun6lEm+pRKAmOpYSAIigRp8eTP4Kf9/m
-	 ndVPYha2izbGg==
-From: Sasha Levin <sashal@kernel.org>
-To: patches@lists.linux.dev,
-	stable@vger.kernel.org
-Cc: Ahmed Salem <x0rw3ll@gmail.com>,
-	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-	Sasha Levin <sashal@kernel.org>,
-	rafael@kernel.org,
-	robert.moore@intel.com,
-	linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 20/22] ACPICA: Avoid sequence overread in call to strncmp()
-Date: Sun,  1 Jun 2025 19:45:11 -0400
-Message-Id: <20250601234515.3519309-20-sashal@kernel.org>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250601234515.3519309-1-sashal@kernel.org>
-References: <20250601234515.3519309-1-sashal@kernel.org>
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VYFZTPPh"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1748883738; x=1780419738;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=PAm0qcVMccKzdp3fnXKmqZ+vGp/mrw6+rOYNaWYB160=;
+  b=VYFZTPPhKiBC/Sb/trqgppHvCfCTCvHE0aM6AE5jhRhwGTG9hloTN2UC
+   5Q8Pqbcfz6ldGmodh71fJB9piXu/4oIsrO/tx2bAuw2jMfMNW8xoFWT45
+   y8hytDNy8kwxAg4M+UPLG2E5253MPCWfghjQxPMtzSFS0wFQmLy1PGWSK
+   Tn9geGBehI7yk/dt5j/7TUYRlEeLkjPwhNRtXae7pBQ5Kll4q/GuwtjnG
+   me/PLHb7cKEJwYtnWhxKvPIG8zV5csT8n/trrqsmEBspXWNqJvEEkkelu
+   7g8YTDWr2zoMcJ3sd7UGRzS9OwJfkLHD/K/zuMRZjjgwjGNasobFr4hY2
+   g==;
+X-CSE-ConnectionGUID: hU1cVUgrRJKblmC/BMJvHg==
+X-CSE-MsgGUID: 9xbBgo+rTjars7EUPo9Tcw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11451"; a="51045533"
+X-IronPort-AV: E=Sophos;i="6.16,203,1744095600"; 
+   d="scan'208";a="51045533"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2025 10:02:17 -0700
+X-CSE-ConnectionGUID: z/pjBT1NRjuZhrsoXUAvOw==
+X-CSE-MsgGUID: z/gChtcpR1WIx6vBj/unYw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.16,203,1744095600"; 
+   d="scan'208";a="148451524"
+Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.103.51])
+  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2025 10:02:16 -0700
+Date: Mon, 2 Jun 2025 10:02:15 -0700
+From: "Luck, Tony" <tony.luck@intel.com>
+To: Borislav Petkov <bp@alien8.de>
+Cc: Zaid Alali <zaidal@os.amperecomputing.com>, rafael@kernel.org,
+	lenb@kernel.org, james.morse@arm.com, robert.moore@intel.com,
+	Jonathan.Cameron@huawei.com, ira.weiny@intel.com,
+	Benjamin.Cheatham@amd.com, dan.j.williams@intel.com, arnd@arndb.de,
+	Avadhut.Naik@amd.com, john.allen@amd.com,
+	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	acpica-devel@lists.linux.dev
+Subject: Re: [PATCH v7 9/9] ACPI: APEI: EINJ: Update the documentation for
+ EINJv2 support
+Message-ID: <aD3ZFyBW4SCyaGI9@agluck-desk3>
+References: <20250506213814.2365788-1-zaidal@os.amperecomputing.com>
+ <20250506213814.2365788-10-zaidal@os.amperecomputing.com>
+ <20250530102711.GAaDmH_1O7lc6kuveY@fat_crate.local>
+ <aDoal24J-BMTIBCq@agluck-desk3>
+ <20250531092050.GBaDrJ8iw7cNcpOKeA@fat_crate.local>
+ <aDuBjopy_nE9A-ph@agluck-desk3>
+ <20250601102554.GAaDwqsgCODzEne7Ow@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.4.293
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250601102554.GAaDwqsgCODzEne7Ow@fat_crate.local>
 
-From: Ahmed Salem <x0rw3ll@gmail.com>
+On Sun, Jun 01, 2025 at 12:25:54PM +0200, Borislav Petkov wrote:
+> Some questions inline...
+> 
+> On Sat, May 31, 2025 at 03:24:14PM -0700, Luck, Tony wrote:
+> > EINJ V2 allows the user to perform multiple injections together.
+> > 
+> > The component_idN/component_syndromeN pairs of files direct the
+> > "where" and the "what" of each injection.
+> > 
+> > But the kernel needs to know how many of these pairs to use
+> > for an injection (to fill in a field in the structure passed
+> > to the BIOS).
+> 
+> The kernel could realloc on each write. Or we could allocate the struct to max
+> elems and trim it before passing it down to BIOS.
 
-[ Upstream commit 64b9dfd0776e9c38d733094859a09f13282ce6f8 ]
+The actual structure passed to BIOS is the same each time. Just the
+set_error_type_with_address::einjv2_struct::component_arr_count
+changed to indicate how many errors to inject.  In theory the
+driver could allocate and copy a correctly sized structure, but
+Zaid's code here is simpler, an this is hardly a critical path.
 
-ACPICA commit 8b83a8d88dfec59ea147fad35fc6deea8859c58c
+> > User interface options:
+> > 
+> > 1) User can zero out the component_idN/component_syndromeN pairs
+> > that they don't need and have the kernel count how many injections
+> > are requested by looping to find the zero terminator.
+> > 
+> > 2) Kernel could zero all pairs after an injection to make the user
+> > explicitly set the list of targets each time.
+> > 
+> > 3) User provides the count vis the nr_components file (perhaps
+> > needs a better name?)
+> 
+> Yap, agree that the name is not optimal.
 
-ap_get_table_length() checks if tables are valid by
-calling ap_is_valid_header(). The latter then calls
-ACPI_VALIDATE_RSDP_SIG(Table->Signature).
+It can be dropped if we make the user zap previously supplied
+component_idN/component_syndromeN pairs that are no longer
+wanted.
+> 
+> User can inject into each component pairs file and the kernel can put that in
+> the tracking struct. So you have:
+> 
+> # echo 4 > component_id0
+> # echo A5A5A5A5 > component_syndrome0
+> ... set other files and finish with usual
+> # echo 1 > error_inject
+> 
+> <--- here, it goes through each component pair and builds the structure to
+> pass down the BIOS.
+> 
+> And you track valid component pairs by setting the IDs to -1 or something else
+> invalid.
 
-ap_is_valid_header() accepts struct acpi_table_header as an argument, so
-the signature size is always fixed to 4 bytes.
+This is just an improvement on my "option 1" (improved because all-ones
+for the component ID is going to be invalid for sure, while all zeroes
+could be a valid component).
+> 
+> All those component IDs which have remained invalid after the error_inject
+> write happens, get ignored - you gather only those which are valid and inject.
 
-The problem is when the string comparison is between ACPI-defined table
-signature and ACPI_SIG_RSDP. Common ACPI table header specifies the
-Signature field to be 4 bytes long[1], with the exception of the RSDP
-structure whose signature is 8 bytes long "RSD PTR " (including the
-trailing blank character)[2]. Calling strncmp(sig, rsdp_sig, 8) would
-then result in a sequence overread[3] as sig would be smaller (4 bytes)
-than the specified bound (8 bytes).
+Or just stop collecting on the first invalid one.
 
-As a workaround, pass the bound conditionally based on the size of the
-signature being passed.
+> And this way you can keep the old values too and gather them again and inject
+> again, over and over again.
+> 
+> Right?
 
-Link: https://uefi.org/specs/ACPI/6.5_A/05_ACPI_Software_Programming_Model.html#system-description-table-header [1]
-Link: https://uefi.org/specs/ACPI/6.5_A/05_ACPI_Software_Programming_Model.html#root-system-description-pointer-rsdp-structure [2]
-Link: https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wstringop-overread [3]
-Link: https://github.com/acpica/acpica/commit/8b83a8d8
-Signed-off-by: Ahmed Salem <x0rw3ll@gmail.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Link: https://patch.msgid.link/2248233.Mh6RI2rZIc@rjwysocki.net
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
+Yup.
 
-Now I understand the issue! Let me analyze the problem: **Analysis:**
-**YES** - This commit should be backported to stable kernel trees. ##
-Detailed Analysis: ### The Problem: The commit fixes a **buffer overread
-vulnerability** in the `ACPI_VALIDATE_RSDP_SIG` macro. The issue occurs
-when: 1. `ap_is_valid_header()` accepts a `struct acpi_table_header
-*table` parameter 2. `struct acpi_table_header` has a `signature` field
-that is only **4 bytes** (`char signature[ACPI_NAMESEG_SIZE]` where
-`ACPI_NAMESEG_SIZE = 4`) 3. The original `ACPI_VALIDATE_RSDP_SIG(a)`
-macro calls `strncmp(a, ACPI_SIG_RSDP, 8)` - comparing **8 bytes** 4.
-When `table->signature` (4 bytes) is passed to this macro, `strncmp`
-reads **beyond the bounds** of the signature field, causing a buffer
-overread ### The Fix: The new macro implementation: ```c #define
-ACPI_VALIDATE_RSDP_SIG(a) (!strncmp (ACPI_CAST_PTR (char, (a)),
-ACPI_SIG_RSDP, (sizeof(a) < 8) ? ACPI_NAMESEG_SIZE : 8)) ``` This
-intelligently chooses the comparison length: - If `sizeof(a) < 8`, it
-uses `ACPI_NAMESEG_SIZE` (4 bytes) - Otherwise, it uses the full 8 bytes
-for legitimate RSDP signatures ### Why This Should Be Backported: 1.
-**Security Issue**: This is a buffer overread that could potentially
-lead to information disclosure or memory corruption 2. **Minimal Risk**:
-The change is a small, surgical fix to a macro with clear logic 3.
-**Wide Impact**: The macro is used in multiple places including: -
-Kernel ACPI subsystem (`drivers/acpi/acpica/tbprint.c`, `tbxfroot.c`) -
-Boot code (`arch/x86/boot/compressed/acpi.c`) - ACPI tools (userspace
-tools) 4. **Compiler Warnings**: This likely fixes `-Wstringop-overread`
-compiler warnings, improving code quality 5. **No Functional Change**:
-The fix maintains the same intended behavior while preventing the
-overread 6. **Follows Stable Rules**: This is exactly the type of
-important bugfix that stable trees are meant to include ### Similar
-Commit Precedent: Similar commit #3 (Status: YES) shows that ACPI
-compilation warning fixes have been backported before, and this is a
-more serious issue (actual buffer overread vs. just truncation
-warnings). The fix addresses a real memory safety issue in a fundamental
-ACPI macro used throughout the kernel, making it an excellent candidate
-for stable backporting.
-
- include/acpi/actypes.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/acpi/actypes.h b/include/acpi/actypes.h
-index ff5fecff51167..f931312cf51a1 100644
---- a/include/acpi/actypes.h
-+++ b/include/acpi/actypes.h
-@@ -524,7 +524,7 @@ typedef u64 acpi_integer;
- 
- /* Support for the special RSDP signature (8 characters) */
- 
--#define ACPI_VALIDATE_RSDP_SIG(a)       (!strncmp (ACPI_CAST_PTR (char, (a)), ACPI_SIG_RSDP, 8))
-+#define ACPI_VALIDATE_RSDP_SIG(a)       (!strncmp (ACPI_CAST_PTR (char, (a)), ACPI_SIG_RSDP, (sizeof(a) < 8) ? ACPI_NAMESEG_SIZE : 8))
- #define ACPI_MAKE_RSDP_SIG(dest)        (memcpy (ACPI_CAST_PTR (char, (dest)), ACPI_SIG_RSDP, 8))
- 
- /* Support for OEMx signature (x can be any character) */
--- 
-2.39.5
-
+-Tony
