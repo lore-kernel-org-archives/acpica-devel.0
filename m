@@ -1,115 +1,109 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6788817A31D
-	for <acpica-devel@lists.linux.dev>; Mon,  9 Jun 2025 09:31:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98C9F13635C;
+	Mon,  9 Jun 2025 12:48:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749461503; cv=none; b=nDS3Sx/Z285MboGIgnbG3+wGHkmSddPSwdssDbs+2reCnzdwHCnF5aLIgEdmnQm86xPvPPoXjLy6iEE4iQ+Fe3XL1aUooxJiArf+b58W45gAXKLZ0p0TchFvoEmPV82me+lOfuunyDxu3hTiBfcQmvUWdizNN9R7GDAA/61F/lw=
+	t=1749473337; cv=none; b=Q6JvgVsV4ICddFNHtbMTp8EY39rsASnwdPTJyNhld5ZrZbO9EMa0/vlMpkgsmoa/YOd4FXHZuSU/ucyPF0BDW+CZZGQKtDeUmF/FWWGKVdKra2NZUecRi3fV5Guqp4kbZWXTSUa6E/oB/hQ8g6Xsl8pbcH8wC2tAtll0J3d2cd4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749461503; c=relaxed/simple;
-	bh=zNtDPa5n/PwAJ80qPuI7OgznWoPABWfiRViVY8gCA2A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=I4Qa/al+jflsDL4P7hE8+mSc2p2peROj4RpDLObDHdoCt33NIherJeCeUKjS0hoYLSKbhLz9Txjp6en5mzv6z4YmeGK+K5prtDka8Mcs/7NSvD4fC4y9W8f6iPYXb3kdQ/T2CiLLuohVNvyDFRGrfm3vChVfq1H4ky9thhKKVXk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pKSWh2qG; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1749473337; c=relaxed/simple;
+	bh=WR2KXlOgsqQgLa9D+uPDkUMVazhEh528GadISJQueX8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NGlCPox7tRGBP692pGUBateh5rMQDioT8lTOulqXqV3rLnSgg6R5tb9Le4/w/fGghIcF0OY3m4f0vfv3Nvg76p4ZHNkybBYZOKD1GVBXCX4uA1zw+SYDz6Q0YcZjjPzFOE2uUXD8WsJL7cVEqObDnrGj2hbTcsC65vUBBBtdRko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mZkx9DSa; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pKSWh2qG"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04755C4CEEB
-	for <acpica-devel@lists.linux.dev>; Mon,  9 Jun 2025 09:31:43 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mZkx9DSa"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09E2CC4CEEB;
+	Mon,  9 Jun 2025 12:48:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749461503;
-	bh=zNtDPa5n/PwAJ80qPuI7OgznWoPABWfiRViVY8gCA2A=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=pKSWh2qGfwVn+IK3t+CJQ2GsWOBOqvWhAdQk15BpeMy40zlijvYtKMgRUgJx6CkH4
-	 j2Kru+F4i/1qnVWxVkUBU4kLDvIdqO97F3PdT1axjt39es+zIZt7A9W/8jCzPP8FE2
-	 JQ+xuxGTfS/J7IIKm9QGPxYjjP8dzljao4V1UBkJNIwU6PfxRjrdfQF+eZBd5N42VM
-	 qMEQMPhAfnRvzdK/3GjH6HHOrUGteikO4gl/PPld72nT3VKNXxhHEhNAbcsJz7fGYC
-	 rCUp/v2Oi7D8JuwOTeXkmhTKAqlvc1Lsu0ItLMZSq3e5FJtTWUbPGRC88C8E+ZA95l
-	 ONK+fHWvZ4xEw==
-Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-60be8b6f1e2so2286023eaf.1
-        for <acpica-devel@lists.linux.dev>; Mon, 09 Jun 2025 02:31:42 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUFEflD6gS2gFvAKNuQImHuiRzVVuGCrdUqDUguwgZ0Rjqvjw/lFXej1tGKEKGW5TF9bdZ4idyY9RDhtJk=@lists.linux.dev
-X-Gm-Message-State: AOJu0YxeeNJ7y6gMDJmD3QJmiDQ014W6Vum/lXBLGIdvkdwKQOLGiGvM
-	TdxT+xb8BTyvp2LGBfXNDs+joA/3l1P/0TJnUIr9zL0EemSafzI6VYUinRlol//KEEiOO8U/7Fu
-	78qwVE2MeBwa63oVVUsPzKSGFFS+g/OE=
-X-Google-Smtp-Source: AGHT+IFYuDhhac9sF/tr7yvmttGCvHxnpq9sJAWKSYAgPWS7lSyASuhm3jm70idMIqYDbMZrow/nJqZpm9CdGlVVTMw=
-X-Received: by 2002:a05:6820:1897:b0:610:d415:46bc with SMTP id
- 006d021491bc7-610d4154a57mr1601813eaf.7.1749461502397; Mon, 09 Jun 2025
- 02:31:42 -0700 (PDT)
+	s=k20201202; t=1749473337;
+	bh=WR2KXlOgsqQgLa9D+uPDkUMVazhEh528GadISJQueX8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=mZkx9DSatDLF2EXFyCp4EdcC3Lw1MF1ev55aH+u8Fa+dJXiCKjDGBwptLV+QRtuW0
+	 tiCiGwbskn2chFqjPI+xpdadKDoN45mrSxJ7cIc70WAnxJKnR0lakr9wscEI3K6kJ4
+	 yXmTkSdFIZtdFaL8L3dNe45usWGHszaJSCRNZ3iEZcwZS3MFsJ3PoWJq7/4oujd392
+	 hq+6xnBHyN1/pvbw0TCjoFvJ9CGOZzQugUJlq5yJlVRExp0i6XiilUoSqg7U9mf9Jv
+	 cGxT12Ngyq7thwb8Bt9PGRLS9dOXirHr03Mfz9EG76DXjGKDFIAUPXJmJYsA24SwK3
+	 w2bA9t6PkKCyg==
+Message-ID: <2825b98d-1bbf-4312-899d-c0eea0854d51@kernel.org>
+Date: Mon, 9 Jun 2025 07:48:55 -0500
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20250609032839.525087-1-superm1@kernel.org>
-In-Reply-To: <20250609032839.525087-1-superm1@kernel.org>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Mon, 9 Jun 2025 11:31:27 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0iNoT79e9RRraifMY84oR8QAcSeYwk+=vaRSuB9mGmtAA@mail.gmail.com>
-X-Gm-Features: AX0GCFsbyF9TF4nfYaLxr0fDuQLJ6TbH04x0LuYGlMzf0gVsYgB1yvXx2Mjd0ZY
-Message-ID: <CAJZ5v0iNoT79e9RRraifMY84oR8QAcSeYwk+=vaRSuB9mGmtAA@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH] Decrease `AcpiExTracePoint` verbosity
-To: Mario Limonciello <superm1@kernel.org>
-Cc: mario.limonciello@amd.com, robert.moore@intel.com, 
-	rafael.j.wysocki@intel.com, linux-acpi@vger.kernel.org, 
-	acpica-devel@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: mario.limonciello@amd.com, robert.moore@intel.com,
+ rafael.j.wysocki@intel.com, linux-acpi@vger.kernel.org,
+ acpica-devel@lists.linux.dev
+References: <20250609032839.525087-1-superm1@kernel.org>
+ <CAJZ5v0iNoT79e9RRraifMY84oR8QAcSeYwk+=vaRSuB9mGmtAA@mail.gmail.com>
+Content-Language: en-US
+From: Mario Limonciello <superm1@kernel.org>
+In-Reply-To: <CAJZ5v0iNoT79e9RRraifMY84oR8QAcSeYwk+=vaRSuB9mGmtAA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, Jun 9, 2025 at 5:29=E2=80=AFAM Mario Limonciello <superm1@kernel.or=
-g> wrote:
->
-> From: Mario Limonciello <mario.limonciello@amd.com>
->
-> Early in kernel boot pointers can't be used and so %p shows up
-> incorrectly:
->
-> ```
-> extrace-0138 ex_trace_point        : Method Begin [0x(____ptrval____):\M4=
-60] execution.
-> ```
->
-> Later in the boot %p works, but it's not really actually useful when
-> the pathname can resolve properly. Adjust the debug print so that if
-> the Pathname resolves that the pointer isn't also printed:
->
-> ```
-> extrace-0138 ex_trace_point        : Method Begin [\M460] execution.
-> ```
->
-> Link: https://github.com/acpica/acpica/pull/1013
-> Link: https://github.com/acpica/acpica/commit/bdc2a4e646f097b693aa60f1f2c=
-4228d1e31b0d1
-> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+On 6/9/2025 4:31 AM, Rafael J. Wysocki wrote:
+> On Mon, Jun 9, 2025 at 5:29 AM Mario Limonciello <superm1@kernel.org> wrote:
+>>
+>> From: Mario Limonciello <mario.limonciello@amd.com>
+>>
+>> Early in kernel boot pointers can't be used and so %p shows up
+>> incorrectly:
+>>
+>> ```
+>> extrace-0138 ex_trace_point        : Method Begin [0x(____ptrval____):\M460] execution.
+>> ```
+>>
+>> Later in the boot %p works, but it's not really actually useful when
+>> the pathname can resolve properly. Adjust the debug print so that if
+>> the Pathname resolves that the pointer isn't also printed:
+>>
+>> ```
+>> extrace-0138 ex_trace_point        : Method Begin [\M460] execution.
+>> ```
+>>
+>> Link: https://github.com/acpica/acpica/pull/1013
+>> Link: https://github.com/acpica/acpica/commit/bdc2a4e646f097b693aa60f1f2c4228d1e31b0d1
+>> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+> 
+> This is an ACPICA change, so it should be made upstream first unless
+> there is a good enough reason to make it directly in Linux.  In which
+> case that reason should be mentioned in the changelog.
 
-This is an ACPICA change, so it should be made upstream first unless
-there is a good enough reason to make it directly in Linux.  In which
-case that reason should be mentioned in the changelog.
+The patches were from ACPICA (I included the links above).  I wasn't 
+sure if it needed to be a manual application here or if you'll do it the 
+next cycle.  If you're going to automatically do it then we can 
+disregard this patch for now.
 
-> ---
->  drivers/acpi/acpica/extrace.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/acpi/acpica/extrace.c b/drivers/acpi/acpica/extrace.=
-c
-> index d34497f3576a4..36934d4f26fb4 100644
-> --- a/drivers/acpi/acpica/extrace.c
-> +++ b/drivers/acpi/acpica/extrace.c
-> @@ -136,9 +136,9 @@ acpi_ex_trace_point(acpi_trace_event_type type,
->
->         if (pathname) {
->                 ACPI_DEBUG_PRINT((ACPI_DB_TRACE_POINT,
-> -                                 "%s %s [0x%p:%s] execution.\n",
-> +                                 "%s %s [%s] execution.\n",
->                                   acpi_ex_get_trace_event_name(type),
-> -                                 begin ? "Begin" : "End", aml, pathname)=
-);
-> +                                 begin ? "Begin" : "End", pathname));
->         } else {
->                 ACPI_DEBUG_PRINT((ACPI_DB_TRACE_POINT,
->                                   "%s %s [0x%p] execution.\n",
-> --
-> 2.43.0
->
->
+> 
+>> ---
+>>   drivers/acpi/acpica/extrace.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/acpi/acpica/extrace.c b/drivers/acpi/acpica/extrace.c
+>> index d34497f3576a4..36934d4f26fb4 100644
+>> --- a/drivers/acpi/acpica/extrace.c
+>> +++ b/drivers/acpi/acpica/extrace.c
+>> @@ -136,9 +136,9 @@ acpi_ex_trace_point(acpi_trace_event_type type,
+>>
+>>          if (pathname) {
+>>                  ACPI_DEBUG_PRINT((ACPI_DB_TRACE_POINT,
+>> -                                 "%s %s [0x%p:%s] execution.\n",
+>> +                                 "%s %s [%s] execution.\n",
+>>                                    acpi_ex_get_trace_event_name(type),
+>> -                                 begin ? "Begin" : "End", aml, pathname));
+>> +                                 begin ? "Begin" : "End", pathname));
+>>          } else {
+>>                  ACPI_DEBUG_PRINT((ACPI_DB_TRACE_POINT,
+>>                                    "%s %s [0x%p] execution.\n",
+>> --
+>> 2.43.0
+>>
+>>
+
