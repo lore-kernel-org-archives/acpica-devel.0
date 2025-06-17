@@ -1,33 +1,31 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98C9F13635C;
-	Mon,  9 Jun 2025 12:48:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDDD82165EC
+	for <acpica-devel@lists.linux.dev>; Tue, 17 Jun 2025 02:33:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749473337; cv=none; b=Q6JvgVsV4ICddFNHtbMTp8EY39rsASnwdPTJyNhld5ZrZbO9EMa0/vlMpkgsmoa/YOd4FXHZuSU/ucyPF0BDW+CZZGQKtDeUmF/FWWGKVdKra2NZUecRi3fV5Guqp4kbZWXTSUa6E/oB/hQ8g6Xsl8pbcH8wC2tAtll0J3d2cd4=
+	t=1750127589; cv=none; b=IIY9kcNW1yo//eUtlaTN57McBl4l446DFLLy1A5WOr2eWATnKXY1EOCzynZb2B9iJzRjc1cFANYGdgjdZx5n2PmzeUQ1ugeDTuy3fbktgWv4KTb8/O0dHnGAMwUKztadezZ1FzFYmIcL/QdtwfOx73DOm1TQc1kH+7G8JPs39qc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749473337; c=relaxed/simple;
-	bh=WR2KXlOgsqQgLa9D+uPDkUMVazhEh528GadISJQueX8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NGlCPox7tRGBP692pGUBateh5rMQDioT8lTOulqXqV3rLnSgg6R5tb9Le4/w/fGghIcF0OY3m4f0vfv3Nvg76p4ZHNkybBYZOKD1GVBXCX4uA1zw+SYDz6Q0YcZjjPzFOE2uUXD8WsJL7cVEqObDnrGj2hbTcsC65vUBBBtdRko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mZkx9DSa; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mZkx9DSa"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09E2CC4CEEB;
-	Mon,  9 Jun 2025 12:48:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749473337;
-	bh=WR2KXlOgsqQgLa9D+uPDkUMVazhEh528GadISJQueX8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=mZkx9DSatDLF2EXFyCp4EdcC3Lw1MF1ev55aH+u8Fa+dJXiCKjDGBwptLV+QRtuW0
-	 tiCiGwbskn2chFqjPI+xpdadKDoN45mrSxJ7cIc70WAnxJKnR0lakr9wscEI3K6kJ4
-	 yXmTkSdFIZtdFaL8L3dNe45usWGHszaJSCRNZ3iEZcwZS3MFsJ3PoWJq7/4oujd392
-	 hq+6xnBHyN1/pvbw0TCjoFvJ9CGOZzQugUJlq5yJlVRExp0i6XiilUoSqg7U9mf9Jv
-	 cGxT12Ngyq7thwb8Bt9PGRLS9dOXirHr03Mfz9EG76DXjGKDFIAUPXJmJYsA24SwK3
-	 w2bA9t6PkKCyg==
-Message-ID: <2825b98d-1bbf-4312-899d-c0eea0854d51@kernel.org>
-Date: Mon, 9 Jun 2025 07:48:55 -0500
+	s=arc-20240116; t=1750127589; c=relaxed/simple;
+	bh=icJQ57/lLtsIkqFlgrS3T4na4ZU3WMX2Sk5sOLAXQZg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=KZNFD71MPq7Yp/5t93dmYkIA5VCq8PXSocuMxrzHVKOQJvSfnkvY0eFZNvqUWRhdXqxsth9VHRId0nkhsv3RHRgLF6Zzq6dI+f8LjWyDOYFtEmytj4XDpkbAhHgcpn0lG7oF/rnf6I9pcu4NjWzV6LQpbuY+/xdldGuN8Ve7HwE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4bLrXj37CKz2QVKM;
+	Tue, 17 Jun 2025 10:33:57 +0800 (CST)
+Received: from kwepemh100008.china.huawei.com (unknown [7.202.181.93])
+	by mail.maildlp.com (Postfix) with ESMTPS id BDBC914011F;
+	Tue, 17 Jun 2025 10:33:03 +0800 (CST)
+Received: from [10.67.121.90] (10.67.121.90) by kwepemh100008.china.huawei.com
+ (7.202.181.93) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Tue, 17 Jun
+ 2025 10:33:03 +0800
+Message-ID: <9c82abca-0772-444c-8122-59a953c83984@huawei.com>
+Date: Tue, 17 Jun 2025 10:33:02 +0800
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -35,75 +33,35 @@ List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Decrease `AcpiExTracePoint` verbosity
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: mario.limonciello@amd.com, robert.moore@intel.com,
- rafael.j.wysocki@intel.com, linux-acpi@vger.kernel.org,
- acpica-devel@lists.linux.dev
-References: <20250609032839.525087-1-superm1@kernel.org>
- <CAJZ5v0iNoT79e9RRraifMY84oR8QAcSeYwk+=vaRSuB9mGmtAA@mail.gmail.com>
-Content-Language: en-US
-From: Mario Limonciello <superm1@kernel.org>
-In-Reply-To: <CAJZ5v0iNoT79e9RRraifMY84oR8QAcSeYwk+=vaRSuB9mGmtAA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH 0/3] cpufreq: CPPC: Some optimizations for cppc_cpufreq.c.
+To: <rafael@kernel.org>, <viresh.kumar@linaro.org>, <robert.moore@intel.com>,
+	<lenb@kernel.org>
+CC: <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-acpi@vger.kernel.org>, <acpica-devel@lists.linux.dev>,
+	<linuxarm@huawei.com>, <jonathan.cameron@huawei.com>,
+	<zhanjie9@hisilicon.com>, <lihuisong@huawei.com>, <yubowen8@huawei.com>
+References: <20250526113057.3086513-1-zhenglifeng1@huawei.com>
+From: "zhenglifeng (A)" <zhenglifeng1@huawei.com>
+In-Reply-To: <20250526113057.3086513-1-zhenglifeng1@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: kwepems500001.china.huawei.com (7.221.188.70) To
+ kwepemh100008.china.huawei.com (7.202.181.93)
 
-On 6/9/2025 4:31 AM, Rafael J. Wysocki wrote:
-> On Mon, Jun 9, 2025 at 5:29 AM Mario Limonciello <superm1@kernel.org> wrote:
->>
->> From: Mario Limonciello <mario.limonciello@amd.com>
->>
->> Early in kernel boot pointers can't be used and so %p shows up
->> incorrectly:
->>
->> ```
->> extrace-0138 ex_trace_point        : Method Begin [0x(____ptrval____):\M460] execution.
->> ```
->>
->> Later in the boot %p works, but it's not really actually useful when
->> the pathname can resolve properly. Adjust the debug print so that if
->> the Pathname resolves that the pointer isn't also printed:
->>
->> ```
->> extrace-0138 ex_trace_point        : Method Begin [\M460] execution.
->> ```
->>
->> Link: https://github.com/acpica/acpica/pull/1013
->> Link: https://github.com/acpica/acpica/commit/bdc2a4e646f097b693aa60f1f2c4228d1e31b0d1
->> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+Gentle ping.
+
+On 2025/5/26 19:30, Lifeng Zheng wrote:
+> This patch series makes some minor optimizations for cppc_cpufreq.c to
+> makes codes cleaner.
 > 
-> This is an ACPICA change, so it should be made upstream first unless
-> there is a good enough reason to make it directly in Linux.  In which
-> case that reason should be mentioned in the changelog.
-
-The patches were from ACPICA (I included the links above).  I wasn't 
-sure if it needed to be a manual application here or if you'll do it the 
-next cycle.  If you're going to automatically do it then we can 
-disregard this patch for now.
-
+> Lifeng Zheng (3):
+>   cpufreq: CPPC: Remove cpu_data_list
+>   cpufreq: CPPC: Return void in populate_efficiency_class()
+>   cpufreq: CPPC: Remove forward declaration of
+>     cppc_cpufreq_register_em()
 > 
->> ---
->>   drivers/acpi/acpica/extrace.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/acpi/acpica/extrace.c b/drivers/acpi/acpica/extrace.c
->> index d34497f3576a4..36934d4f26fb4 100644
->> --- a/drivers/acpi/acpica/extrace.c
->> +++ b/drivers/acpi/acpica/extrace.c
->> @@ -136,9 +136,9 @@ acpi_ex_trace_point(acpi_trace_event_type type,
->>
->>          if (pathname) {
->>                  ACPI_DEBUG_PRINT((ACPI_DB_TRACE_POINT,
->> -                                 "%s %s [0x%p:%s] execution.\n",
->> +                                 "%s %s [%s] execution.\n",
->>                                    acpi_ex_get_trace_event_name(type),
->> -                                 begin ? "Begin" : "End", aml, pathname));
->> +                                 begin ? "Begin" : "End", pathname));
->>          } else {
->>                  ACPI_DEBUG_PRINT((ACPI_DB_TRACE_POINT,
->>                                    "%s %s [0x%p] execution.\n",
->> --
->> 2.43.0
->>
->>
+>  drivers/cpufreq/cppc_cpufreq.c | 59 +++++++++-------------------------
+>  include/acpi/cppc_acpi.h       |  1 -
+>  2 files changed, 15 insertions(+), 45 deletions(-)
+> 
 
