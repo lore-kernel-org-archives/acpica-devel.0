@@ -1,183 +1,97 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77331256C8D;
-	Tue, 24 Jun 2025 04:13:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 101FF1F3BB5
+	for <acpica-devel@lists.linux.dev>; Thu, 26 Jun 2025 19:00:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750738416; cv=none; b=lHM8RUZ6UlTSNvObCKZ9Aup/PJFZC+hl4ClxeFxGU4Kje7D3hihA1nDGslleLZ/e8O5/Z3YG/IxNidN5zYSBm/QFgkvmaiPDjkev5+qzSaomBLK0POqIyI5pC58j/akJ/uSgr6zMQ+j1zDv9SThy/Oa/5wdIc4R+5EWswQjr4/8=
+	t=1750964401; cv=none; b=p/zwkvRl4ofkzhDUuM2m7Uhi1eTTvIcQvIFdltxLXjBuyRxvVFdE3Li49IhQ0evnWNt6FuTEE5gMBYIsFW7dJ2pLtbwE7XlsZ1o7cIMMcZNafOxampxzG5t+H2LxE6DjArRJukx9fwM90Q7cb+hSXGgDi49sDXk3ptrJlnWjLYo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750738416; c=relaxed/simple;
-	bh=TwrQjdlP0OUorDN3yCXuFl/6CjqkzSp94aRpKa0YY2g=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=nj0zvfgeMrJteUuvVxy30jxAO6Fi0oGNH30AuzDx0nS4lU4RlLjIqwMljm1fRF85FIAnKp98xGt6lcGz0k76ZRAZ0UiUvpKJgX78et0WqpcsbSMt32vYydqx1uIM7TLiNB6qFgL1net1LLZ1Gdya57gT/IZr+AdU7mrxgUf8Bkc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pH4iNBRF; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1750964401; c=relaxed/simple;
+	bh=z8kEw7JJb2bp/MQgg2V6g++d3118nygEV9UNrHq9jUs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=C0lp4jjtRSgsBK8uqqjbe1O3jbWnu2L7OT4PscOdFQTZHYcnS93F30V5ALwyLf2UFZesAHATGgg7R0uiBCvYwxIopLgK/GZfMkbrz2GQYjQDFn7VnftK+tZTO3OfaKKPtXc735z+VWvRxOgkFyA1g+bungmJxd/Cbf4Oey0ULOc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BGpaWCXH; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pH4iNBRF"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9691DC4CEF2;
-	Tue, 24 Jun 2025 04:13:35 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BGpaWCXH"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5083C4CEF2
+	for <acpica-devel@lists.linux.dev>; Thu, 26 Jun 2025 19:00:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750738416;
-	bh=TwrQjdlP0OUorDN3yCXuFl/6CjqkzSp94aRpKa0YY2g=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=pH4iNBRFs+fWbm3xG/S3BjQ8Ys7X148w5yTLFWkfcwTzcJr7KkFrO0Y/2b3Psf4sw
-	 9RFFO3jS6Rxu2r+6AwOCdp/0jBXeME+z6pefjuIg05oXRhx7XOqq0oYhRRszK1jXG2
-	 7oZeIO3HuefhLbL9UaMl8Fy/gVzNGYghJgqK+Aa2sGPO+z0XUZ8znBUqbebLObpdzZ
-	 sGQAuMTE6SCjtCB0HqYhWLGTj4Z7Qh2E6/wxQ7RfzHY15NpflqrVsvBfrGjIRsk0dc
-	 DcK4Lyee7oWixkAql7rzHOmzf/AT8m6rZ0TNodFCTWG3RQxz2rv2skqsbdfJy+6koZ
-	 txbHSovKcLHsg==
-From: Sasha Levin <sashal@kernel.org>
-To: patches@lists.linux.dev,
-	stable@vger.kernel.org
-Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-	Peter Williams <peter@newton.cx>,
-	Hans de Goede <hansg@kernel.org>,
-	Sasha Levin <sashal@kernel.org>,
-	robert.moore@intel.com,
-	linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev
-Subject: [PATCH AUTOSEL 5.4 6/7] ACPICA: Refuse to evaluate a method if arguments are missing
-Date: Tue, 24 Jun 2025 00:13:25 -0400
-Message-Id: <20250624041327.85407-6-sashal@kernel.org>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250624041327.85407-1-sashal@kernel.org>
-References: <20250624041327.85407-1-sashal@kernel.org>
+	s=k20201202; t=1750964400;
+	bh=z8kEw7JJb2bp/MQgg2V6g++d3118nygEV9UNrHq9jUs=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=BGpaWCXHuzGrqxch+wszKYgyYZce4/T9l3wP3+DUs6zBx2eQY2rwZrgGEDiecGOsE
+	 qFIUho3AeU2KXktZ1CB4gtDXZpGGrIlo55Y4Ph8EFy2cSb5PpbSCZap6Kpn+BINsBW
+	 Re/1Ttu8I6KOC/NVDg7Ygy4QTCuxv3vGhOX5fauR9Erra/X2N/SOCKsnXeOeArSgEX
+	 3w5Ls4otSk8QODwJs50rB557WLbnIRBd1JFnZB0qiEbXAQwm3t+j5qP5McozATubwM
+	 PDCf8tTymGbvuASg2l46CyEh/fcUzACNc6f6VkExi2sqp2NSSf9RosLgy9aGLB+Ktv
+	 G3crkahYGGRRQ==
+Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-60be827f2b7so1418536eaf.0
+        for <acpica-devel@lists.linux.dev>; Thu, 26 Jun 2025 12:00:00 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUtz7xJAfDPdy7456CGHdz817p6OUNs+wFdI9uqIzcmhH+UbivhuYRruPjWjaXeJiGNoCmXczF2o2goBjU=@lists.linux.dev
+X-Gm-Message-State: AOJu0YxwnMGqG3DVyhcNinV/r98AeR9UfDKSB1m77QuHXAKc9lBP90Up
+	sM2BGLRJhA92Beh+SLvvDPK2w2kc4JP1/yR0VZThtdBP0/9XlwJtzSizqw5jGIpbWEyq+QMoVcE
+	smqqmh8HL7QH208sLoXo6M0vf/3ejX24=
+X-Google-Smtp-Source: AGHT+IGRGm9V9G1/XQMXvowWQEj/txuJHawesLvcIIDcCfrtoyRYJniMPZfSR5r25D3cYeyp+04WTBWMD3OtV/C+qxM=
+X-Received: by 2002:a05:6820:a09a:b0:603:f521:ff26 with SMTP id
+ 006d021491bc7-611aaeb14f9mr2576800eaf.1.1750964399625; Thu, 26 Jun 2025
+ 11:59:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.4.294
-Content-Transfer-Encoding: 8bit
+References: <20250609032839.525087-1-superm1@kernel.org> <CAJZ5v0iNoT79e9RRraifMY84oR8QAcSeYwk+=vaRSuB9mGmtAA@mail.gmail.com>
+ <2825b98d-1bbf-4312-899d-c0eea0854d51@kernel.org>
+In-Reply-To: <2825b98d-1bbf-4312-899d-c0eea0854d51@kernel.org>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Thu, 26 Jun 2025 20:59:48 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0h-3L0Bh21_Z7QTEeWWgdQfW-8POKv5X+oL5HSLnKgaJA@mail.gmail.com>
+X-Gm-Features: Ac12FXwRAH0vcdqhp1PRahTk8eDjUEaz50ONfTkDCH1IszkcO7Bfto-phzTJu7M
+Message-ID: <CAJZ5v0h-3L0Bh21_Z7QTEeWWgdQfW-8POKv5X+oL5HSLnKgaJA@mail.gmail.com>
+Subject: Re: [PATCH] Decrease `AcpiExTracePoint` verbosity
+To: Mario Limonciello <superm1@kernel.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, mario.limonciello@amd.com, robert.moore@intel.com, 
+	rafael.j.wysocki@intel.com, linux-acpi@vger.kernel.org, 
+	acpica-devel@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+On Mon, Jun 9, 2025 at 2:48=E2=80=AFPM Mario Limonciello <superm1@kernel.or=
+g> wrote:
+>
+> On 6/9/2025 4:31 AM, Rafael J. Wysocki wrote:
+> > On Mon, Jun 9, 2025 at 5:29=E2=80=AFAM Mario Limonciello <superm1@kerne=
+l.org> wrote:
+> >>
+> >> From: Mario Limonciello <mario.limonciello@amd.com>
+> >>
+> >> Early in kernel boot pointers can't be used and so %p shows up
+> >> incorrectly:
+> >>
+> >> ```
+> >> extrace-0138 ex_trace_point        : Method Begin [0x(____ptrval____):=
+\M460] execution.
+> >> ```
+> >>
+> >> Later in the boot %p works, but it's not really actually useful when
+> >> the pathname can resolve properly. Adjust the debug print so that if
+> >> the Pathname resolves that the pointer isn't also printed:
+> >>
+> >> ```
+> >> extrace-0138 ex_trace_point        : Method Begin [\M460] execution.
+> >> ```
+> >>
+> >> Link: https://github.com/acpica/acpica/pull/1013
+> >> Link: https://github.com/acpica/acpica/commit/bdc2a4e646f097b693aa60f1=
+f2c4228d1e31b0d1
+> >> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+> >
+> > This is an ACPICA change, so it should be made upstream first unless
+> > there is a good enough reason to make it directly in Linux.  In which
+> > case that reason should be mentioned in the changelog.
+>
+> The patches were from ACPICA (I included the links above).
 
-[ Upstream commit 6fcab2791543924d438e7fa49276d0998b0a069f ]
-
-As reported in [1], a platform firmware update that increased the number
-of method parameters and forgot to update a least one of its callers,
-caused ACPICA to crash due to use-after-free.
-
-Since this a result of a clear AML issue that arguably cannot be fixed
-up by the interpreter (it cannot produce missing data out of thin air),
-address it by making ACPICA refuse to evaluate a method if the caller
-attempts to pass fewer arguments than expected to it.
-
-Closes: https://github.com/acpica/acpica/issues/1027 [1]
-Reported-by: Peter Williams <peter@newton.cx>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Reviewed-by: Hans de Goede <hansg@kernel.org>
-Tested-by: Hans de Goede <hansg@kernel.org> # Dell XPS 9640 with BIOS 1.12.0
-Link: https://patch.msgid.link/5909446.DvuYhMxLoT@rjwysocki.net
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
-
-**YES**
-
-This commit should be backported to stable kernel trees. Here's my
-extensive analysis:
-
-## Key Reasons for Backporting:
-
-### 1. **Critical Security Bug - Use-After-Free**
-The commit message explicitly states this fixes a use-after-free
-vulnerability that causes ACPICA to crash. Use-after-free bugs are
-severe security issues that can lead to:
-- System crashes and denial of service
-- Potential arbitrary code execution
-- Memory corruption
-
-### 2. **Real-World Impact**
-The commit references an actual bug report with a specific
-hardware/firmware scenario:
-- Platform firmware update increased method parameters
-- Firmware forgot to update at least one caller
-- This caused a real crash on actual hardware (Dell XPS 9640 with BIOS
-  1.12.0)
-- The bug has been reported, tested, and verified by multiple people
-
-### 3. **Small, Focused Fix**
-The code change is minimal and surgical:
-```c
-+       if (this_walk_state->num_operands <
-obj_desc->method.param_count) {
-+               ACPI_ERROR((AE_INFO, "Missing argument for method
-[%4.4s]",
-+                           acpi_ut_get_node_name(method_node)));
-+
-+               return_ACPI_STATUS(AE_AML_UNINITIALIZED_ARG);
-+       }
-```
-This adds a simple bounds check before method execution, which is
-exactly the type of defensive programming that should be in stable
-kernels.
-
-### 4. **Prevents Memory Corruption**
-Looking at the surrounding code (specifically line 542 in the original):
-```c
-for (i = 0; i < obj_desc->method.param_count; i++) {
-    acpi_ut_remove_reference(this_walk_state->operands[i]);
-    this_walk_state->operands[i] = NULL;
-}
-```
-Without the check, if `num_operands < param_count`, this loop would
-access beyond the valid operands, causing use-after-free.
-
-### 5. **Clear Error Handling**
-The fix properly returns `AE_AML_UNINITIALIZED_ARG`, which is an
-existing ACPICA error code specifically designed for this scenario
-("Method tried to use an uninitialized argument"). This maintains API
-compatibility.
-
-### 6. **No Architectural Changes**
-The commit:
-- Doesn't introduce new features
-- Doesn't change existing behavior for valid code
-- Only adds validation to prevent crashes from invalid AML
-- Is confined to the ACPICA subsystem
-
-### 7. **Firmware Bug Mitigation**
-This is a defensive fix against firmware bugs, which is exactly the type
-of robustness stable kernels need. The kernel should not crash due to
-firmware mistakes.
-
-## Comparison with Similar Commits:
-
-Unlike the similar commits shown (which were mostly about improving
-error messages or cosmetic changes), this commit:
-- Fixes an actual crash/security issue
-- Has been reported and tested on real hardware
-- Prevents memory corruption
-- Is not just a theoretical improvement
-
-This aligns perfectly with stable kernel rules: important bug fixes with
-minimal risk that improve system stability and security.
-
- drivers/acpi/acpica/dsmethod.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/drivers/acpi/acpica/dsmethod.c b/drivers/acpi/acpica/dsmethod.c
-index 603483f8332b0..203e9ee47fdb8 100644
---- a/drivers/acpi/acpica/dsmethod.c
-+++ b/drivers/acpi/acpica/dsmethod.c
-@@ -483,6 +483,13 @@ acpi_ds_call_control_method(struct acpi_thread_state *thread,
- 		return_ACPI_STATUS(AE_NULL_OBJECT);
- 	}
- 
-+	if (this_walk_state->num_operands < obj_desc->method.param_count) {
-+		ACPI_ERROR((AE_INFO, "Missing argument for method [%4.4s]",
-+			    acpi_ut_get_node_name(method_node)));
-+
-+		return_ACPI_STATUS(AE_AML_UNINITIALIZED_ARG);
-+	}
-+
- 	/* Init for new method, possibly wait on method mutex */
- 
- 	status =
--- 
-2.39.5
-
+OK, applied as 6.17 material, thanks!
