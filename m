@@ -1,97 +1,195 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 101FF1F3BB5
-	for <acpica-devel@lists.linux.dev>; Thu, 26 Jun 2025 19:00:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 896FB72632
+	for <acpica-devel@lists.linux.dev>; Mon, 14 Jul 2025 16:57:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750964401; cv=none; b=p/zwkvRl4ofkzhDUuM2m7Uhi1eTTvIcQvIFdltxLXjBuyRxvVFdE3Li49IhQ0evnWNt6FuTEE5gMBYIsFW7dJ2pLtbwE7XlsZ1o7cIMMcZNafOxampxzG5t+H2LxE6DjArRJukx9fwM90Q7cb+hSXGgDi49sDXk3ptrJlnWjLYo=
+	t=1752512266; cv=none; b=EMc3zsGEMK1QPyeet3aGqzKEPLo5Ii0a00piAx6IJy0UM0W4bMw27Yy+OGuFyews6vY5sN0q6+9vrfzm03C4g4IIB6MvpbtAhe2JUZvTXYf026Q6qO3wvSQvLnHj0ZYzJy3CTawHmGx8NnbAk09BtMg2oY2OtYtrhuHN66KBzWI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750964401; c=relaxed/simple;
-	bh=z8kEw7JJb2bp/MQgg2V6g++d3118nygEV9UNrHq9jUs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=C0lp4jjtRSgsBK8uqqjbe1O3jbWnu2L7OT4PscOdFQTZHYcnS93F30V5ALwyLf2UFZesAHATGgg7R0uiBCvYwxIopLgK/GZfMkbrz2GQYjQDFn7VnftK+tZTO3OfaKKPtXc735z+VWvRxOgkFyA1g+bungmJxd/Cbf4Oey0ULOc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BGpaWCXH; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BGpaWCXH"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5083C4CEF2
-	for <acpica-devel@lists.linux.dev>; Thu, 26 Jun 2025 19:00:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750964400;
-	bh=z8kEw7JJb2bp/MQgg2V6g++d3118nygEV9UNrHq9jUs=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=BGpaWCXHuzGrqxch+wszKYgyYZce4/T9l3wP3+DUs6zBx2eQY2rwZrgGEDiecGOsE
-	 qFIUho3AeU2KXktZ1CB4gtDXZpGGrIlo55Y4Ph8EFy2cSb5PpbSCZap6Kpn+BINsBW
-	 Re/1Ttu8I6KOC/NVDg7Ygy4QTCuxv3vGhOX5fauR9Erra/X2N/SOCKsnXeOeArSgEX
-	 3w5Ls4otSk8QODwJs50rB557WLbnIRBd1JFnZB0qiEbXAQwm3t+j5qP5McozATubwM
-	 PDCf8tTymGbvuASg2l46CyEh/fcUzACNc6f6VkExi2sqp2NSSf9RosLgy9aGLB+Ktv
-	 G3crkahYGGRRQ==
-Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-60be827f2b7so1418536eaf.0
-        for <acpica-devel@lists.linux.dev>; Thu, 26 Jun 2025 12:00:00 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUtz7xJAfDPdy7456CGHdz817p6OUNs+wFdI9uqIzcmhH+UbivhuYRruPjWjaXeJiGNoCmXczF2o2goBjU=@lists.linux.dev
-X-Gm-Message-State: AOJu0YxwnMGqG3DVyhcNinV/r98AeR9UfDKSB1m77QuHXAKc9lBP90Up
-	sM2BGLRJhA92Beh+SLvvDPK2w2kc4JP1/yR0VZThtdBP0/9XlwJtzSizqw5jGIpbWEyq+QMoVcE
-	smqqmh8HL7QH208sLoXo6M0vf/3ejX24=
-X-Google-Smtp-Source: AGHT+IGRGm9V9G1/XQMXvowWQEj/txuJHawesLvcIIDcCfrtoyRYJniMPZfSR5r25D3cYeyp+04WTBWMD3OtV/C+qxM=
-X-Received: by 2002:a05:6820:a09a:b0:603:f521:ff26 with SMTP id
- 006d021491bc7-611aaeb14f9mr2576800eaf.1.1750964399625; Thu, 26 Jun 2025
- 11:59:59 -0700 (PDT)
+	s=arc-20240116; t=1752512266; c=relaxed/simple;
+	bh=eKAdqCDO003fP3K1uBEK4504ZrmN+ncMJaYNVcw8ZcQ=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=GEtF1m98LuytZyDUnaMz2XeroDT2jS6crk6wLoZM2VZV+IVYg8O6k2tF2ebdzm0a7T/5dXdJ9sIYEH7Dqxs5PNM7hJHiUuoi+VQzOrYgk1ZTyBaVq4D5bx1UsTyZ1KJ+kM828mOKHzRXOH1sUjbitoSKkEP02/+GVVSsdFXYHeg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-60780d74c85so6500520a12.2
+        for <acpica-devel@lists.linux.dev>; Mon, 14 Jul 2025 09:57:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752512263; x=1753117063;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bPJZVawJT7CPGnMAptYuh6EKT+rETkMW0bHZBhmJAVo=;
+        b=pczoEt79F62N2/rEZDYncBNI0OT5JvAa50JD8QcDt2ACmlK0eWSNEYIj6SZTbvwTQQ
+         7YHzgo1zPK6X2xZU9of7q0YER5fcFhJMkFmf91nMqCY5pfOjiyi+A4VwjOlDxW0hlRqZ
+         6lp9KfRBJu9B8PuP73YddEAY+FZw0CwAXaNq4hiqhYn9CsRVlMmGpmVmf2+ZCcUVEiOM
+         k1Z6Aek3GZm4YqdJ7CmCveeAZpQRo0pv1My1OEbb9CS4+dniuZObuHDt9STdiZ1+pK7K
+         1JzNE/zIhNWQML5x7Hnkr+ZdUhggTTmZF3jOqsU7Y8cxMDxE3LBJ4i7Jh9LJOT9iolfG
+         ye7w==
+X-Forwarded-Encrypted: i=1; AJvYcCXUgpzVYwcjLUmSFhHDmj1DglioIhPkQ1r2CQy/ib1SRx9P5WDHtQZJpIzk/JzyHzFawJMe9f0/+qCtyb4=@lists.linux.dev
+X-Gm-Message-State: AOJu0YwiwJVDI21A894J2S5QdN1d2/gBUvkSmPSBKmeHesFu78grlQ1v
+	T2mgNBKHrq+UtfZ1oSYmbVt8LbOcH8ZijFNSnlCDRQDuj/4P4ly3Gac1
+X-Gm-Gg: ASbGncuydWWxPnRw3BHgJKst2PIKoejkmGNjAgJXKPA9Xwr5mLzJ8C+hGupvFwrDL6S
+	lfoU8BCVoUAvLvuukz3tT8Un3VZqim5Ai5EmHPVeZJ3AkI0x7QVf42+920wLZzEyG9odaqEw4Sf
+	dxy1rgo1WdIsiaXBbfWL7DoJtNfuyVZHHOgOTwjExpirWZ3ZhV/ZxMGyLtjBOUhtkxXGU26iXG9
+	d+RgWI50eLK0iyLmpgGDWGVOK0j/U29P/juykZ6iIYSDEFZBIpgzOY7r0lJ8RqF3LdS2zyZeoas
+	uvikvtnj2wuubptjCGMCvw1y5vKOtg8eaP/AAc4KcVkRero/5oJOzJUm0t8Pdp6fg4r/SvJoKMs
+	27+dr9M5faVu2iHQ1BlVSpW0=
+X-Google-Smtp-Source: AGHT+IH4+NoV/k8BNZ35hPnNGpYGLhQAWXWvnEspzGRclmJEYNu1kq5VOlTvVPxMTFvfJc9CL5J7MQ==
+X-Received: by 2002:a50:d791:0:b0:606:a77b:cca3 with SMTP id 4fb4d7f45d1cf-611e7611eacmr10110799a12.7.1752512262565;
+        Mon, 14 Jul 2025 09:57:42 -0700 (PDT)
+Received: from localhost ([2a03:2880:30ff:6::])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-611c9523a75sm6344787a12.25.2025.07.14.09.57.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Jul 2025 09:57:42 -0700 (PDT)
+From: Breno Leitao <leitao@debian.org>
+Date: Mon, 14 Jul 2025 09:57:29 -0700
+Subject: [PATCH] ghes: Track number of recovered hardware errors
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20250609032839.525087-1-superm1@kernel.org> <CAJZ5v0iNoT79e9RRraifMY84oR8QAcSeYwk+=vaRSuB9mGmtAA@mail.gmail.com>
- <2825b98d-1bbf-4312-899d-c0eea0854d51@kernel.org>
-In-Reply-To: <2825b98d-1bbf-4312-899d-c0eea0854d51@kernel.org>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Thu, 26 Jun 2025 20:59:48 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0h-3L0Bh21_Z7QTEeWWgdQfW-8POKv5X+oL5HSLnKgaJA@mail.gmail.com>
-X-Gm-Features: Ac12FXwRAH0vcdqhp1PRahTk8eDjUEaz50ONfTkDCH1IszkcO7Bfto-phzTJu7M
-Message-ID: <CAJZ5v0h-3L0Bh21_Z7QTEeWWgdQfW-8POKv5X+oL5HSLnKgaJA@mail.gmail.com>
-Subject: Re: [PATCH] Decrease `AcpiExTracePoint` verbosity
-To: Mario Limonciello <superm1@kernel.org>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, mario.limonciello@amd.com, robert.moore@intel.com, 
-	rafael.j.wysocki@intel.com, linux-acpi@vger.kernel.org, 
-	acpica-devel@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20250714-vmcore_hw_error-v1-1-8cf45edb6334@debian.org>
+X-B4-Tracking: v=1; b=H4sIAPk2dWgC/x3MQQqDMBAF0KsMf20gjm3EXEWKSDqts6iRCWghe
+ HfBd4BXUcRUCiJVmOxaNK+I1DaEtMzrV5y+EQns+el737v9l7LJtByTmGVzHfODBwmpawMawmb
+ y0f89jq/zvADoaEhfYQAAAA==
+X-Change-ID: 20250707-vmcore_hw_error-322429e6c316
+To: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
+ James Morse <james.morse@arm.com>, Tony Luck <tony.luck@intel.com>, 
+ Borislav Petkov <bp@alien8.de>, Robert Moore <robert.moore@intel.com>
+Cc: linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ acpica-devel@lists.linux.dev, kernel-team@meta.com, 
+ Breno Leitao <leitao@debian.org>
+X-Mailer: b4 0.15-dev-dd21f
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3762; i=leitao@debian.org;
+ h=from:subject:message-id; bh=eKAdqCDO003fP3K1uBEK4504ZrmN+ncMJaYNVcw8ZcQ=;
+ b=owEBbQKS/ZANAwAIATWjk5/8eHdtAcsmYgBodTcFDimZ8jCGBcMTxwoApHwIhC39Iq5RcmAtn
+ Ixt2kenafqJAjMEAAEIAB0WIQSshTmm6PRnAspKQ5s1o5Of/Hh3bQUCaHU3BQAKCRA1o5Of/Hh3
+ bWdgD/9usBjWL6yAM7Z4+a0pJhupguVwDbO7Ajuv0qnSue+UfuBWehu3+VUikW9YzKBx8nk7zZQ
+ PquRK0hPe0d+fpkgWFCkB2AdM5WP5x0ziGV7xIMO1KGcCm65faZmrVdv9Acq5Dw0J6/QbJ5ha1g
+ Fno6UkGDx2LBrnpPqJysDJGLgs5YOMvMvOE/b8IlBqDvfthEzCZMpE9V3s1goC5r9Rc/ZGq0UmW
+ NSF30HNRlLTI8Q4izitvyu5YK4WTsqbWXsKxzzi4setbxBgC8B1y5/mNMoMF2fOmD9ZTxE/cOV/
+ yHwPp5JShRE7GACYfivm2vjsdvGIs+GL670H8lnjZ2nRxuTr+2zdoy5Vx5Og8gGRF4525TNrYX+
+ wxPOMG2M2+l8TbpLoXVsvnD/3pRI6gxC/Jy6ej795+TBVcY+1M0F7Js4SG7tIi+tY4v21FokiME
+ wtuhfNnyEN3omcjt58VTrlJ0gAWEHZP7mo/2VUMEShmk9kxOmTYV1ihX/kn2B5HG++MIaqi1gAb
+ 8trbB697DBWJ3I9tA2P+MD+ORqmOdeGOTL6cHHkonjH2WGFM7lCIZTO9yf5f4AKQQSd3r8TcuWK
+ hi7T3q2LTYwfka23pT9yf+5dIfHTG2U4PN1bnB+wkuLv4uCAcbwL+ET0Pvpk162gC15BEXQShZI
+ 5+YS0zxpX3Llyeg==
+X-Developer-Key: i=leitao@debian.org; a=openpgp;
+ fpr=AC8539A6E8F46702CA4A439B35A3939FFC78776D
 
-On Mon, Jun 9, 2025 at 2:48=E2=80=AFPM Mario Limonciello <superm1@kernel.or=
-g> wrote:
->
-> On 6/9/2025 4:31 AM, Rafael J. Wysocki wrote:
-> > On Mon, Jun 9, 2025 at 5:29=E2=80=AFAM Mario Limonciello <superm1@kerne=
-l.org> wrote:
-> >>
-> >> From: Mario Limonciello <mario.limonciello@amd.com>
-> >>
-> >> Early in kernel boot pointers can't be used and so %p shows up
-> >> incorrectly:
-> >>
-> >> ```
-> >> extrace-0138 ex_trace_point        : Method Begin [0x(____ptrval____):=
-\M460] execution.
-> >> ```
-> >>
-> >> Later in the boot %p works, but it's not really actually useful when
-> >> the pathname can resolve properly. Adjust the debug print so that if
-> >> the Pathname resolves that the pointer isn't also printed:
-> >>
-> >> ```
-> >> extrace-0138 ex_trace_point        : Method Begin [\M460] execution.
-> >> ```
-> >>
-> >> Link: https://github.com/acpica/acpica/pull/1013
-> >> Link: https://github.com/acpica/acpica/commit/bdc2a4e646f097b693aa60f1=
-f2c4228d1e31b0d1
-> >> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-> >
-> > This is an ACPICA change, so it should be made upstream first unless
-> > there is a good enough reason to make it directly in Linux.  In which
-> > case that reason should be mentioned in the changelog.
->
-> The patches were from ACPICA (I included the links above).
+Add a global variable, ghes_recovered_erors, to count hardware errors
+classified as recoverable or corrected. This counter is exported and
+included in vmcoreinfo for post-crash diagnostics.
 
-OK, applied as 6.17 material, thanks!
+Tracking this value helps operators potentially correlate hardware
+errors across system events and crash dumps, indicating that RAS logs
+might be useful while analyzing these crashes. This discussion and
+motivation could be found in [1].
+
+Atomic operations are deliberately omitted, as precise accuracy is not
+required for this metric.
+
+Link: https://lore.kernel.org/all/20250704-taint_recovered-v1-0-7a817f2d228e@debian.org/#t [1]
+Suggested-by: Borislav Petkov <bp@alien8.de>
+Signed-off-by: Breno Leitao <leitao@debian.org>
+---
+ drivers/acpi/apei/ghes.c | 15 +++++++++++++--
+ include/acpi/ghes.h      |  2 ++
+ kernel/vmcore_info.c     |  4 ++++
+ 3 files changed, 19 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
+index f0584ccad4519..3735cfba17667 100644
+--- a/drivers/acpi/apei/ghes.c
++++ b/drivers/acpi/apei/ghes.c
+@@ -118,6 +118,12 @@ static inline bool is_hest_sync_notify(struct ghes *ghes)
+ 	return notify_type == ACPI_HEST_NOTIFY_SEA;
+ }
+ 
++/* Count the number of hardware recovered errors, to be reported at
++ * crash/vmcore
++ */
++unsigned int ghes_recovered_erors;
++EXPORT_SYMBOL_GPL(ghes_recovered_erors);
++
+ /*
+  * This driver isn't really modular, however for the time being,
+  * continuing to use module_param is the easiest way to remain
+@@ -1100,13 +1106,16 @@ static int ghes_proc(struct ghes *ghes)
+ {
+ 	struct acpi_hest_generic_status *estatus = ghes->estatus;
+ 	u64 buf_paddr;
+-	int rc;
++	int rc, sev;
+ 
+ 	rc = ghes_read_estatus(ghes, estatus, &buf_paddr, FIX_APEI_GHES_IRQ);
+ 	if (rc)
+ 		goto out;
+ 
+-	if (ghes_severity(estatus->error_severity) >= GHES_SEV_PANIC)
++	sev = ghes_severity(estatus->error_severity);
++	if (sev == GHES_SEV_RECOVERABLE || sev ==  GHES_SEV_CORRECTED)
++		ghes_recovered_erors += 1;
++	else if (sev >= GHES_SEV_PANIC)
+ 		__ghes_panic(ghes, estatus, buf_paddr, FIX_APEI_GHES_IRQ);
+ 
+ 	if (!ghes_estatus_cached(estatus)) {
+@@ -1750,6 +1759,8 @@ void __init acpi_ghes_init(void)
+ 		pr_info(GHES_PFX "APEI firmware first mode is enabled by APEI bit.\n");
+ 	else
+ 		pr_info(GHES_PFX "Failed to enable APEI firmware first mode.\n");
++
++	ghes_recovered_erors = 0;
+ }
+ 
+ /*
+diff --git a/include/acpi/ghes.h b/include/acpi/ghes.h
+index be1dd4c1a9174..4b6be6733f826 100644
+--- a/include/acpi/ghes.h
++++ b/include/acpi/ghes.h
+@@ -75,6 +75,8 @@ void ghes_unregister_vendor_record_notifier(struct notifier_block *nb);
+ struct list_head *ghes_get_devices(void);
+ 
+ void ghes_estatus_pool_region_free(unsigned long addr, u32 size);
++
++extern unsigned int ghes_recovered_erors;
+ #else
+ static inline struct list_head *ghes_get_devices(void) { return NULL; }
+ 
+diff --git a/kernel/vmcore_info.c b/kernel/vmcore_info.c
+index e066d31d08f89..cb2a7daef3a68 100644
+--- a/kernel/vmcore_info.c
++++ b/kernel/vmcore_info.c
+@@ -14,6 +14,7 @@
+ #include <linux/cpuhotplug.h>
+ #include <linux/memblock.h>
+ #include <linux/kmemleak.h>
++#include <acpi/ghes.h>
+ 
+ #include <asm/page.h>
+ #include <asm/sections.h>
+@@ -223,6 +224,9 @@ static int __init crash_save_vmcoreinfo_init(void)
+ 	VMCOREINFO_SYMBOL(kallsyms_offsets);
+ 	VMCOREINFO_SYMBOL(kallsyms_relative_base);
+ #endif /* CONFIG_KALLSYMS */
++#ifdef CONFIG_ACPI_APEI_GHES
++	VMCOREINFO_NUMBER(ghes_recovered_erors);
++#endif
+ 
+ 	arch_crash_save_vmcoreinfo();
+ 	update_vmcoreinfo_note();
+
+---
+base-commit: d7b8f8e20813f0179d8ef519541a3527e7661d3a
+change-id: 20250707-vmcore_hw_error-322429e6c316
+
+Best regards,
+--  
+Breno Leitao <leitao@debian.org>
+
