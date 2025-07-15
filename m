@@ -1,65 +1,61 @@
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA42E1CDFAC
-	for <acpica-devel@lists.linux.dev>; Tue, 15 Jul 2025 15:10:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCF546A8D2
+	for <acpica-devel@lists.linux.dev>; Tue, 15 Jul 2025 17:25:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752592217; cv=none; b=MH0aPU+GYY/w+mFhz09K8zDxqF0EJKH0kBOmDnKfN6+b4CxdHPKqCSoyK9FSlrgNmw/kPdpPxKKgE3HdLKM8Sw/asZs7yNFlAcVGS3UBz5Hrpu9bNOxr0A3QDTtjiV2e1GpDz+gSV2DwYY6DV/T6hKVxCdWJpbxf9442ueeWBrQ=
+	t=1752600353; cv=none; b=KFL9TSj1mgTxYEC1bEv1lpDi4+Qm94w/vB70Es0MqFE0gvqU5JDk8UIIsqOVpPEB27u9KjTKZcljtatqCbM/fwLHWhO53wRxXWFbmL21OsbrvZ1eQBwvIYRnpszTw5If8qoAo1h7J3IiYppXT84ir6Em3HbTU34THyyf5+kE1zw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752592217; c=relaxed/simple;
-	bh=HmoZ4lN3wvwAzl5tWZFRqjK3/FTT5rlib3oST7BeXog=;
+	s=arc-20240116; t=1752600353; c=relaxed/simple;
+	bh=ObNJkp8w8dckS4HfYzBEO63j0fpZbJAJtHbLUzQTMHQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pqCIGwsSikQczSXD18vWmd28+W9f9NdU9G4rPgv5Qz6K1TEkhO9xQcvI+5FAsnGF+ti839TrBXsDqRvpGLq3oIaHLnJYTVWhf+g2IojOFoskiysnXgHe9zWfHjdHB3rrULYJCWpnHDTyPxjklaC6ph6oJIaNndfR2wfKRC2O5Js=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=PXc33a/Z; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="PXc33a/Z"
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 5A68940E0213;
-	Tue, 15 Jul 2025 15:10:11 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id zNuZLnjRNb5u; Tue, 15 Jul 2025 15:10:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1752592208; bh=XNB3FVi86rDQ41zikMknzeSTzlfLx8JzZduWBcGkNJE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PXc33a/ZNuN0cee7L5ZMqLapPXrOzkljN5rzIYMxoPjjD7ABUPnUV+rmjXdbjoV9u
-	 DUEWkFCt3nasNTvibw1vnSHbW1klANe45HBj0qmqrQroBw/c/zaOdN/0np1A1u+XoI
-	 mMDoNClJfxe75m+hnUh5oBpMmMYUCs10JI3T5Bp4Q+Ty+uWtsVm252laBccNvEISoq
-	 TN2tbA/JLMi3G6X2g4gpmsUkEh8hci5Sfes91CjrTmgZNEi0yJgK4yx6ESeBiPb+Su
-	 1FApx5FFhNsi+eb4HyIMZbCCGmtHeC8vzZ41VswdVDeK/h/rAIotC7W0yKVA5XEz/T
-	 HZLVU5DNWeuTKX7b4eBqWNNGNfiMce4z5t1qiyUPHKXNhI6/7lv2b2Rr0Ff6gUqOa4
-	 ZzMOdrD0nO2kN49MMdfgUTZagQn8IC2uay+Ye2G9YWLC+EM/Z7cXqZsL9gK4S9Yygz
-	 y9t4Cpl1ecC7TZGyoaWQBQIsGNA8K5fj6ikil0yHIoRAVwWg2r179lfId0M5B9pYcP
-	 kBc9hF0z34amzU0mKp8rW6qU+TrxPzqXcRT3wZAE2tmtqsD4KSF7HdCP+/Zg/mMqBj
-	 D3jMh6hNLCHCJd0UBsHaH8wS6xdKBX+sp67EfBor9B5bDIfQrZ1vUij1K8eWEe9kqf
-	 8V5BufIjpV52p23RvadHL41g=
-Received: from zn.tnic (p57969c58.dip0.t-ipconnect.de [87.150.156.88])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E34BD40E0208;
-	Tue, 15 Jul 2025 15:09:53 +0000 (UTC)
-Date: Tue, 15 Jul 2025 17:09:47 +0200
-From: Borislav Petkov <bp@alien8.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=uqzxqV1ycOq7NglZWJpqQHgXfv/uilYLE+o57hlAbbssO81ZoWR2kFUjoDWJu+AxiH/FIdjRjKdSoHtaEfxyQq0YbWM5bj0YyDRVXt3kdJ2jrPyl67MC4AgcfI0GKpJOoV6F7qtRoLaP4mMuKY9VWwOSN5mjSKP8bM/FZhTAriI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-ae0c571f137so1072419766b.0
+        for <acpica-devel@lists.linux.dev>; Tue, 15 Jul 2025 10:25:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752600350; x=1753205150;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Xf1dUxpG80FVASwwBORzwwbeN/v/ksSLNBI/P0k3Gcc=;
+        b=ox125THh1ZYHTlV8qAup+XClF4D1mZd5UTYayHPr7tuxktlKBMJ72WItc+bfXiugOy
+         RHKeysr8BD5gLxxG9C2IzHnJmO6LaJvezGSgioq8TpDTUddCpXpjtAJ5Op82FHhdkm+x
+         mP0B5HIcIb52HRUz4vlxzkfrj/vDlcG2woQ9cnk86cZMQYEH7fClN1eWugsAwPab6Fty
+         mCIWF46B+AhxkPRyfqWlucAh671iTsXas5F5+zy8qRNaaMRcicZEa1V0LuYUIcJvIgqG
+         I9fokoT2qLe+q2FHqt0ylFrOK2KpaTYe4sxtPsyZJHnwZoMlWb87FuZEC54+6t81ZLcU
+         38cQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUlbEfcap9k4UbbzjyOrAlVY6QLWt0SC4PABPD9sCpaAkl20ziJYigDvEpgncK2UyKazuLtGWN7VMQKE6c=@lists.linux.dev
+X-Gm-Message-State: AOJu0YyY3BwNzWOpfDEIps8XW+OHI3A5OpE/9f9JFxBf9czAsHVAjA62
+	DNYXu8jqpp7iFxhOn94PXl0GFnEt+GBba+CQoHnhDLMSerMx791pklQj
+X-Gm-Gg: ASbGncsL4kLMoXt3iU9mAllTE5RDRz9Tga/3ZC8ArYzvm7nu5yv/s6DEErzdTxhHBG/
+	mqLRN9b26oWrQmetQt5/y8ge5I5iAkZx+klcVJS0nHIkoKuN6S4xxMAknZbQD4A4hmh15scMhAZ
+	i0RBi56DS5WedoH5rW2KXY6uXUv1U5fmob0/aTpFJh4PjN3S22wXqRkK5UR3XRCyFt2B0oWjv9J
+	Aoy0RcON+A1M1v2zGvleQfZeqBJt4lcBmOj3e6fOED0huLFXvBRRJX+TsU1GLGvZzJnm4+obsU8
+	kZdngDE4+ORv6aDFcGTLC++HdCLcNvIWSdXrIY5h8VVXP8Xb9IAfCnKBNPMExB9f34VusvPGhbh
+	gPi9JgEK6xsFC
+X-Google-Smtp-Source: AGHT+IFeQYyxja+cmVPhs40k5Cb0GxRCsVCO/YLoPe8/dy4NpmE659Cs2eUBxOmp8tWCHkW96xjcFQ==
+X-Received: by 2002:a17:906:b212:b0:ae0:b7c8:d735 with SMTP id a640c23a62f3a-ae9c9b6c4dfmr25479566b.42.1752600349578;
+        Tue, 15 Jul 2025 10:25:49 -0700 (PDT)
+Received: from gmail.com ([2a03:2880:30ff:8::])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ae6e826651csm1035756866b.101.2025.07.15.10.25.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jul 2025 10:25:49 -0700 (PDT)
+Date: Tue, 15 Jul 2025 10:25:46 -0700
+From: Breno Leitao <leitao@debian.org>
 To: Shuai Xue <xueshuai@linux.alibaba.com>
-Cc: Breno Leitao <leitao@debian.org>, Alexander Graf <graf@amazon.com>,
-	Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-	Peter Gonda <pgonda@google.com>, "Luck, Tony" <tony.luck@intel.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>, James Morse <james.morse@arm.com>,
-	"Moore, Robert" <robert.moore@intel.com>,
-	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"acpica-devel@lists.linux.dev" <acpica-devel@lists.linux.dev>,
+Cc: Borislav Petkov <bp@alien8.de>, Alexander Graf <graf@amazon.com>, 
+	Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, Peter Gonda <pgonda@google.com>, 
+	"Luck, Tony" <tony.luck@intel.com>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Len Brown <lenb@kernel.org>, James Morse <james.morse@arm.com>, 
+	"Moore, Robert" <robert.moore@intel.com>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "acpica-devel@lists.linux.dev" <acpica-devel@lists.linux.dev>, 
 	"kernel-team@meta.com" <kernel-team@meta.com>
 Subject: Re: [PATCH] ghes: Track number of recovered hardware errors
-Message-ID: <20250715150947.GAaHZvOxsvEvALZNDd@fat_crate.local>
+Message-ID: <p2iytcdfvgm74zif6ihd7gs4kuaeza4b4p52cr5ya4upabiome@kr3yy7fjznwe>
 References: <20250714171040.GOaHU6EKH2xxSZFnZd@fat_crate.local>
  <SJ1PR11MB6083C38E6DA922E05E1748D6FC54A@SJ1PR11MB6083.namprd11.prod.outlook.com>
  <20250714173556.GQaHU__LL6IUIPCDIW@fat_crate.local>
@@ -76,22 +72,36 @@ List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <68b6961c-4443-48a8-a7f7-ed94f3352d7d@linux.alibaba.com>
 
+Hello Shuai,
+
 On Tue, Jul 15, 2025 at 09:46:03PM +0800, Shuai Xue wrote:
+> > It would be really good to sync with other cloud providers here so that we can
+> > do this one solution which fits all. Lemme CC some other folks I know who do
+> > cloud gunk and leave the whole mail for their pleasure.
+> > 
+> > Newly CCed folks, you know how to find the whole discussion. :-)
+> > 
+> > Thx.
+> 
+> 
 > For the purpose of counting, how about using the cmdline of rasdaemon?
 
-That would mean you have to run rasdaemon on those machines before they
-explode and then carve out the rasdaemon db from the coredump (this is
-post-mortem analysis).
+How do you manage it at a large fleet of hosts? Do you have rasdaemon
+logging always and how do you correlate with kernel crashes? At Meta, we
+have an a "clues" tag for each crash, and one of the tags is Machine
+Check Exception (MCE), which is parsed from dmesg right now (with the
+regexp I shared earlier).
 
-I would love for rasdaemon to log over the network and then other tools can
-query those centralized logs but that has its own challenges...
+My plan with this patch is to have a counter for hardware errors that
+would be exposed to the crashdump. So, post-morten analyzes tooling can
+easily query if there are hardware errors and query RAS information in
+the right databases, in case it seems a smoking gun.
 
--- 
-Regards/Gruss,
-    Boris.
+Do you have any experience with this type of automatic correlation?
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks for your insights,
+--breno
