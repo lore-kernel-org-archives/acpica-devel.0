@@ -1,136 +1,93 @@
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73E1B271466
-	for <acpica-devel@lists.linux.dev>; Tue, 15 Jul 2025 10:07:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DA3314A4F0
+	for <acpica-devel@lists.linux.dev>; Tue, 15 Jul 2025 10:19:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752574042; cv=none; b=TBby84QEKZuD6STaka7zkJk0/NwOHDFFoxQbsF+rEHtNZvnmEnaoD/zwg1mI6MLk8BPNwXUYn3wConwl1s5jPKlzRiE/Iqr9zV2WQskgUkhgsKBkd07odFxgeMARQHkqMODtMPOKzJDEc3jQRtBqC+2cHm0zeseItH0j8wUKR6Y=
+	t=1752574746; cv=none; b=ZW5qoiQ/f1kBRgcia/L7ZasP8sm6B2W52t6uJLdqJ1NTzFKVpyF93gD+jvv1IQBlxqMdZCT55G/u5na1aAJYva6sMNjB0goky2CqvzaUfSlIkkOwVBNjYPriad0tLyM2PM7eTXAf1TT33siADItnYbN8yWYSpQ7xNXTdPqs3bCk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752574042; c=relaxed/simple;
-	bh=CEsVDuk89VpKmAPWQ5Lc9vHgl5qUJQIeXFI8iRVERSo=;
+	s=arc-20240116; t=1752574746; c=relaxed/simple;
+	bh=JwTn+js22wSKjCG4zHc5wIB1/7QyM+1uvR3jU8j82zU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dQdOpfV6CxcSuPbhnBkNdzrhs3rzc9KqxDsI07Jg6yhr47ZeepW0xofiHRZSVoXp/dEC9azU5RNf6vDq/zQ29aqhkIJueMJtS/x36KaJVl0Gn+ONw6qyerTGAST7PieNPOJLuBT9kvu2ffpR1Tik5DwXrIn9kSAvQ/lzojV0Av0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-ae9be1697easo56322466b.1
-        for <acpica-devel@lists.linux.dev>; Tue, 15 Jul 2025 03:07:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752574039; x=1753178839;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9CyqsNhV6AOPqrjCx0s1BS/XfJpNNVBgBdd+x3YjLSA=;
-        b=wBU6HzNN/yqZJowBk4vsDGLLRv65AnTVhA4EEs9rj4xEwcG/xwiPPCMbfMndA1MdL/
-         u/+xeqNcl+3AQPYzpKuywzByIEeOOGR2sQf/u4Qn5ECTcodystDdK/Xxd0C3fjc1pfOO
-         pJFk3by5CagZKbn6qeX/u/uLx8JW8fvAwL973SCLZMbUt0d0nykb1CejgltuDAh9Bmwu
-         LOo5GGpXLsL4mdGuI3tG0NEnivTYQ0yZzOXqA0bWVDHHsgt7Qwlrl1eFsgxpQ7M1Shlv
-         g/zGcCUVCwbveVeNKeVK7rc4puBh0ZvWfHa4ivhSurSWTVtWCN+D3beLE1nZZ1gUCycM
-         2MWA==
-X-Forwarded-Encrypted: i=1; AJvYcCUmhSqLZw2O0S1jpmhmUQ/FJSi/tnFOKz0MxBcPQz+BdVb8hRiArWmrby3O8qppUh0xzHJywCyxsiTbJjQ=@lists.linux.dev
-X-Gm-Message-State: AOJu0Yzj/2U326hfdiJwJSXatUImiva5hLV16rdJEXrddq5LFGusudSF
-	QZkobuOf5NPJnJL3GRL9Iamuo2cZzIA/XgUN8KTWesdHi4UH35gDeEwZ
-X-Gm-Gg: ASbGncvwRzmREkDpWwqQcz/jZqVyOetBG6cjH//Rj4e+PHB3LECS8A6GUeHZVR79clV
-	hNwAEFNG2nkojJRfz9Gf4nwWZ3Is5SHSa6gpcXH3OGRz4P/J2CR83YkEQw746uFTVNsSgb/Dk4C
-	ee2gpJZh2ACpLKGyVcZj+A6up8Hshn/ZhcYF92IH/N00W7DhvqqejvcxEjSX2j35Ie9m6tgKrQd
-	+Ywfr1LU6Cip64IDJQzLqW+U2zi1Lrs5WxQ6vaeTOFQL1p9UXRpuXIS5PDvhZWu9jH20fvn5GYB
-	Qwiqtej/C4d81PuNAa0Z+GpOaFErfisGXTrEE1f8h4iCGD90+1QbyR8vaxTp5QypQN5ekDdvubO
-	ld+IxNE1u97fctrGKpNY7Q2I=
-X-Google-Smtp-Source: AGHT+IGAZs6WyRVig7C1YfRiiiEkEK4uMkpC8Yd4rgpV4X4+QdVS5c4fnynPR/MaJfKvgMAJayrtSg==
-X-Received: by 2002:a17:907:78a:b0:ae3:6fdb:6e9d with SMTP id a640c23a62f3a-ae9b5bd5291mr266858166b.1.1752574038322;
-        Tue, 15 Jul 2025 03:07:18 -0700 (PDT)
-Received: from gmail.com ([2a03:2880:30ff:5::])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ae6e82dedd3sm972662566b.150.2025.07.15.03.07.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jul 2025 03:07:17 -0700 (PDT)
-Date: Tue, 15 Jul 2025 03:07:15 -0700
-From: Breno Leitao <leitao@debian.org>
-To: "Luck, Tony" <tony.luck@intel.com>
-Cc: Borislav Petkov <bp@alien8.de>, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, James Morse <james.morse@arm.com>, 
-	"Moore, Robert" <robert.moore@intel.com>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "acpica-devel@lists.linux.dev" <acpica-devel@lists.linux.dev>, 
+	 Content-Type:Content-Disposition:In-Reply-To; b=l5RlWQHXHDKwChatbGWx0ZRZ2Qetw1FpFiTb10j98UeG4xVrhscJ4byHS6pNtLG2VgleEz7nqtNqreV/QlDFGEx2/c/DgB2XkwNYnsIviS+hqax6uMSxBgP5mAvR4Hbc29ns48eV+Gp4jZwqG0LLOhpLpD6XYjCN93BXgfTOgc8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=iVMgwS2f; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="iVMgwS2f"
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 2267540E00DE;
+	Tue, 15 Jul 2025 10:19:03 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id uypXlsET2J0M; Tue, 15 Jul 2025 10:19:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1752574739; bh=QKoLKYw9lnujFTl5EUQy6sm0Ni2fS/FYcFpyqD/WohQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=iVMgwS2fZvs1uFmfKnBk8o0z9gjnpZRBEy01FH/2rMKmjjXAKk5E6mEYVw/GYNsvI
+	 CzM5U8BQudkd7R+chZQ7UHfRNbDW7hXzthNbizoh1MWG9fAoRP2ZJKUMu4/iXAgTM6
+	 ss2TZkWnGPvjik0vkCHJ9pFtREnYFKAPIZmQzsf8ySayC7J8eNgVoZj+w74UB/zgHn
+	 BEGDtd17tar1oKfDO5YCLZkeklrVwgOD0mbm8pwZBAPOMisumzSeKqfw7EbF0bU09T
+	 njrzK3POOEchPel1Wzv6nOxWyJisN/ZfPpf4pzir2ryyfL6W3B0XnlmZnuIgZIerqQ
+	 hGVL+q/rCrHxBV80eg9cX3ckI72O2Vlx34Y6YGoXo0tvIa9vGqbFjTkDBzINYWCwVm
+	 qrCs8P4xrxV9FkNLlRuABE3HFvfb71wLUTUyWuo8hLV5jcgE4RnDs1UlvHqk8TpH/G
+	 gjkAlLF4DmGZpOf6e5Ev59aDasf/uY7yRo+k/gt3yubCO+AZoH/TGz+5Pa5+UwcfYP
+	 8rneQgPDtxwdWj1iAWskEMQ1K/6D8pTneiJR1x181D5zZ53PPJ9pn1s9tN1/uEtw++
+	 N4yvzt2WonxJtKaySPIXajQh1oE4wAJVt3+Bru2r3Jg2+Ykt2w1RyZrEPKsz4KBxMv
+	 hq+1dCnvcO0x5TW6Rz+1V0i0=
+Received: from zn.tnic (p57969c58.dip0.t-ipconnect.de [87.150.156.88])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8C68840E0213;
+	Tue, 15 Jul 2025 10:18:49 +0000 (UTC)
+Date: Tue, 15 Jul 2025 12:18:44 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: Breno Leitao <leitao@debian.org>
+Cc: "Luck, Tony" <tony.luck@intel.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>, James Morse <james.morse@arm.com>,
+	"Moore, Robert" <robert.moore@intel.com>,
+	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"acpica-devel@lists.linux.dev" <acpica-devel@lists.linux.dev>,
 	"kernel-team@meta.com" <kernel-team@meta.com>
 Subject: Re: [PATCH] ghes: Track number of recovered hardware errors
-Message-ID: <cw6miesl6kwlpf4p4zjbeemam47n5sljtwbut6qpsadmfykwym@x55nztp5e7ln>
+Message-ID: <20250715101844.GEaHYrBJQzLKBsQCTS@fat_crate.local>
 References: <20250714-vmcore_hw_error-v1-1-8cf45edb6334@debian.org>
  <20250714171040.GOaHU6EKH2xxSZFnZd@fat_crate.local>
  <SJ1PR11MB6083C38E6DA922E05E1748D6FC54A@SJ1PR11MB6083.namprd11.prod.outlook.com>
  <20250714173556.GQaHU__LL6IUIPCDIW@fat_crate.local>
  <aHWC-J851eaHa_Au@agluck-desk3>
+ <cw6miesl6kwlpf4p4zjbeemam47n5sljtwbut6qpsadmfykwym@x55nztp5e7ln>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <aHWC-J851eaHa_Au@agluck-desk3>
+In-Reply-To: <cw6miesl6kwlpf4p4zjbeemam47n5sljtwbut6qpsadmfykwym@x55nztp5e7ln>
 
-On Mon, Jul 14, 2025 at 03:21:44PM -0700, Luck, Tony wrote:
-> On Mon, Jul 14, 2025 at 07:35:56PM +0200, Borislav Petkov wrote:
-> > On Mon, Jul 14, 2025 at 05:33:45PM +0000, Luck, Tony wrote:
-> > > > If you're going to do this, then you can perhaps make this variable always
-> > > > present so that you don't need an export and call it "hardware_errors_count"
-> > > > or so and all machinery which deals with RAS - GHES, MCE, AER, bla, can
-> > > > increment it...
-> > > 
-> > > Not sure I'd want to see all the different classes of errors bundled together
-> > > in a single count.  I think MCE recovery is quite robust and rarely leads to
-> > > subsequent kernel problems.
-> > 
-> > That's what I said. And a RAS tool can give that info already.
+On Tue, Jul 15, 2025 at 03:07:15AM -0700, Breno Leitao wrote:
+> That's precisely the aim: I want to streamline the process without
+> duplicating detailed error reports, since we already have specialized
+> tools for in-depth analysis.
 > 
-> There's some value in it being in the kdump file, rather than having
-> to correlate data from multiple places. That's both time consuming
-> and error prone.
+> Even a brief value in the crash dump alerting the reader that errors
+> occurred would be a valuable aid for anyone diagnosing the issue.
 
-That's precisely the aim: I want to streamline the process without
-duplicating detailed error reports, since we already have specialized
-tools for in-depth analysis.
+And what's stopping you from examining dmesg from the core dump?
 
-Even a brief value in the crash dump alerting the reader that errors
-occurred would be a valuable aid for anyone diagnosing the issue.
+I'm sure you have to look at that anyway...
 
-> > But for some reason Breno still wants that info somewhere else.
-> 
-> So what about something like:
-> 
-> enum recovered_error_sources {
-> 	ERR_GHES,
-> 	ERR_MCE,
-> 	ERR_AER,
-> 	...
-> 	ERR_NUM_SOURCES
-> };
-> 
-> static struct recovered_error_info {
-> 	int	num_recovered_errors;
-> 	time64_t	last_recovered_error_timestamp;
-> } recovered_error_info[ERR_NUM_SOURCES];
-> 
-> void log_recovered_error(enum recovered_error_sources src)
-> {
-> 	recovered_error_info[src].num_recovered_errors++;
-> 	recovered_error_info[src].last_recovered_error_timestamp =
-> 		ktime_get_real_seconds();
-> }
-> EXPORT_SYMBOL_GPL(log_recovered_error);
-> 
-> 
-> PLus code to include that in VMCORE.
-> 
-> Then each subsystem just adds:
-> 
-> 
-> 	log_recovered_error(ERR_GHES);
-> or
-> 	log_recovered_error(ERR_MCE);
-> etc.
-> 
-> in the recovery path.
- 
-Thanks. Let me play with this suggestion.
---breno
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
