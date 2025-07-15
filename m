@@ -1,51 +1,53 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86F5D23C4E3
-	for <acpica-devel@lists.linux.dev>; Mon, 14 Jul 2025 22:21:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17FC327510A
+	for <acpica-devel@lists.linux.dev>; Tue, 15 Jul 2025 08:30:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752531708; cv=none; b=G2ccfXnbWkoBjFyPw3Xmln4rjfWJfWlfjRTtXAfRAGieunrWXzXjoIgJmGUCx7AmBNM5BdcPMiRxk+LjnsKnw3MFMe4tP3b+CSvKrEqOukV3zDbqzfA7knhrLjB6KEBBhRf1/m4Vps/0jjrJ9jnYwHOjAUUmLQT35cCfZn+odiA=
+	t=1752568206; cv=none; b=H4vSFPhbFTkk9XjJ3uSDx1GLq1QHw4D221fVhktNED8I+el2R1dYlYdArHtLX8shMMMyhveKQg9UeYq9kAtLvJOktaVyHUHaaP6J04OHyRNKSXOV0cQWKttcHqX0GnJOMAz5hrj8NMq1yRzgUmOuFpgpewqvY4X1ro8t/o5Iid4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752531708; c=relaxed/simple;
-	bh=gob8qkgliZxPkWX7FZAA+iLSehjFtaMX8AhTrYAAosE=;
+	s=arc-20240116; t=1752568206; c=relaxed/simple;
+	bh=h/pfCpDMjWTqe/dvmJVF9X9JwfQYz7GSXTRkMsmHkQw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EJxLEKzm1ia4W4tv0v4zwIPQkvdrT728gxpGJwLZmdWhL1JPZGBtwBcNqs3rR33gbg+L1YV3iSr+ZDO4LOG+GyBU1gzPQpvRyBJfk8RAV2yaHOVbNCudY0p7XHs1rI2+2EVjmTuS+w67VqyMdstXSGsG6s/ZjsejtyaLyn7xqZU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=l/DzskkK; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=Xbzvk0mmM96VH9ymkISmdjMFyce5a7ysfN5ZDMH5S8LNUZu/HaZzYt3Xi9ZXcHrD546+CzDS3ehccn4M67n9fHYyvopKM/cbbCilSXN/IjmJmWRRc5HhSJYVgaa8eaDSro+TR9dZtJktbNUTc93gK+7RuNNONTnqQeABFe97yv8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=CWjLfTg/; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="l/DzskkK"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1752531706; x=1784067706;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=gob8qkgliZxPkWX7FZAA+iLSehjFtaMX8AhTrYAAosE=;
-  b=l/DzskkKICYRe/ZV7jQR2peLnPprYRTXGlrFs/fNLi03zIg/dHw/rrDB
-   xNhFFeNl9/YWM9/BOq91ZwW0FQehtkbLc1HyV23pq4olu4xhheUQWUl4J
-   m5P5UcS6OSUSA9I/6dnihwr5MFsxGX29Njsu3GpuPeh1jj4nvX+KQDaRz
-   m9jr1i+MPhI+Y6CKgv1OLKbgt2tRXinIoTjIm8O2XqWT/AU0CFHcwR4jF
-   B0Tp7/gvhSWo41FAS58YYfi0ihwgWzoERWfVatmBn1Z3Q8Igs5h1TAcRN
-   zRWvHBifcqEccd1MK0FPf0L6mfVWFgzXWwEH1YYzCljGI/gsBS09hUK/h
-   A==;
-X-CSE-ConnectionGUID: gXA3VxwWTF2owGOzmtqKUA==
-X-CSE-MsgGUID: CmEI24MbREy2dXcRfCVYWw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11491"; a="72313913"
-X-IronPort-AV: E=Sophos;i="6.16,312,1744095600"; 
-   d="scan'208";a="72313913"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2025 15:21:46 -0700
-X-CSE-ConnectionGUID: iz+JpsTaQLi9IFSI4bD3hw==
-X-CSE-MsgGUID: msxzYfwBTkWy8pACtUaT7A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,312,1744095600"; 
-   d="scan'208";a="156686024"
-Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.103.51])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2025 15:21:46 -0700
-Date: Mon, 14 Jul 2025 15:21:44 -0700
-From: "Luck, Tony" <tony.luck@intel.com>
-To: Borislav Petkov <bp@alien8.de>
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="CWjLfTg/"
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 91CE040E0208;
+	Tue, 15 Jul 2025 08:30:01 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 9KM_z8NCoKpf; Tue, 15 Jul 2025 08:29:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1752568196; bh=RTx8e2p8V1LQHIFJgxMIie0+itdjsVlC/C6D4mzUHZs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=CWjLfTg/z0jSfaWaLKexB4AeRjsH9M0DkBpfgVTzbDN8ZdVe1wb3i4omUZlQWZXeA
+	 j5a+Ru73tJHyzPk78qWbJN9GEcF2nIHl+c2iELMRoOssCOHYPMpc2aw4bN4wplMOXu
+	 a1oZlgXMFLgTSKOqbggHunXbBWStb3LIsc/lQEcx3kI5/hIeseaQGPs3FZ5kyGEWww
+	 +XLUsDguDBvodirwBGcZyDD9bNo+7tUUyRQByLBh0hL+E9E0dUssEaai/Q6TbVmxay
+	 tuBPddRcB5PSxDFuyqXXYn5t0QgRZP5PTLbSQuxrLlST/LRzUOpXPQ86a5ae9/zG2b
+	 9z5QUBOfIjMZHAwtXWX0Ft2G+bMr+zXOY8+LJrtRS/k/sKANLJvdAiCfst9IKnbnLR
+	 IQOINkpLLepwndtCxAybewCSNozqqIVscBmCDzRdxtwwx/F5qr3cLXz2EtwW8pMvjx
+	 g5oNNenhmRkf5oLyV6OIRXN95nPPSU4wBKn+K6QP+viGrLu9XMXAFSX64NjOU/kw2J
+	 fGhd2kZJ1dhXG5Cb8eyVJvcPszndztQajPfqUjxJXkq/ahW9MtJkeMaAuBx89fs5Yj
+	 ExsrQAFSN1z39zIWwLZp+FQ1at0mp2cLtthgUGl2hOgoENMuhgu/8AhShnwMMVsuxV
+	 mJBqynnabt41Wh9X40fHbwwM=
+Received: from zn.tnic (p57969c58.dip0.t-ipconnect.de [87.150.156.88])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1769B40E0213;
+	Tue, 15 Jul 2025 08:29:46 +0000 (UTC)
+Date: Tue, 15 Jul 2025 10:29:39 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: "Luck, Tony" <tony.luck@intel.com>
 Cc: Breno Leitao <leitao@debian.org>,
 	"Rafael J. Wysocki" <rafael@kernel.org>,
 	Len Brown <lenb@kernel.org>, James Morse <james.morse@arm.com>,
@@ -55,77 +57,59 @@ Cc: Breno Leitao <leitao@debian.org>,
 	"acpica-devel@lists.linux.dev" <acpica-devel@lists.linux.dev>,
 	"kernel-team@meta.com" <kernel-team@meta.com>
 Subject: Re: [PATCH] ghes: Track number of recovered hardware errors
-Message-ID: <aHWC-J851eaHa_Au@agluck-desk3>
+Message-ID: <20250715082939.GAaHYRc3Yn49jyvYzc@fat_crate.local>
 References: <20250714-vmcore_hw_error-v1-1-8cf45edb6334@debian.org>
  <20250714171040.GOaHU6EKH2xxSZFnZd@fat_crate.local>
  <SJ1PR11MB6083C38E6DA922E05E1748D6FC54A@SJ1PR11MB6083.namprd11.prod.outlook.com>
  <20250714173556.GQaHU__LL6IUIPCDIW@fat_crate.local>
+ <aHWC-J851eaHa_Au@agluck-desk3>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20250714173556.GQaHU__LL6IUIPCDIW@fat_crate.local>
+In-Reply-To: <aHWC-J851eaHa_Au@agluck-desk3>
 
-On Mon, Jul 14, 2025 at 07:35:56PM +0200, Borislav Petkov wrote:
-> On Mon, Jul 14, 2025 at 05:33:45PM +0000, Luck, Tony wrote:
-> > > If you're going to do this, then you can perhaps make this variable always
-> > > present so that you don't need an export and call it "hardware_errors_count"
-> > > or so and all machinery which deals with RAS - GHES, MCE, AER, bla, can
-> > > increment it...
-> > 
-> > Not sure I'd want to see all the different classes of errors bundled together
-> > in a single count.  I think MCE recovery is quite robust and rarely leads to
-> > subsequent kernel problems.
+On Mon, Jul 14, 2025 at 03:21:44PM -0700, Luck, Tony wrote:
+> So what about something like:
 > 
-> That's what I said. And a RAS tool can give that info already.
+> enum recovered_error_sources {
+> 	ERR_GHES,
+> 	ERR_MCE,
+> 	ERR_AER,
+> 	...
+> 	ERR_NUM_SOURCES
+> };
+> 
+> static struct recovered_error_info {
+> 	int	num_recovered_errors;
+> 	time64_t	last_recovered_error_timestamp;
+> } recovered_error_info[ERR_NUM_SOURCES];
 
-There's some value in it being in the kdump file, rather than having
-to correlate data from multiple places. That's both time consuming
-and error prone.
+Too many "recovered" :-)
 
-> But for some reason Breno still wants that info somewhere else.
+> A count is just a hint. A count with a timestamp that is shortly
+> before a crash is a smoking gun.
 
-So what about something like:
+All good thoughts... from where I'm standing right now, though, it looks to me
+like we're wagging the dog: inventing issues and thinking of which solution
+would fit them best. :-)
 
-enum recovered_error_sources {
-	ERR_GHES,
-	ERR_MCE,
-	ERR_AER,
-	...
-	ERR_NUM_SOURCES
-};
+We have all of that info in rasdaemon. If the machine explodes, one can simply
+read out its database from the core file. 
 
-static struct recovered_error_info {
-	int	num_recovered_errors;
-	time64_t	last_recovered_error_timestamp;
-} recovered_error_info[ERR_NUM_SOURCES];
+And if you don't run rasdaemon, you can read out dmesg from the vmcore where
+the errors should have been dumped anyway.
 
-void log_recovered_error(enum recovered_error_sources src)
-{
-	recovered_error_info[src].num_recovered_errors++;
-	recovered_error_info[src].last_recovered_error_timestamp =
-		ktime_get_real_seconds();
-}
-EXPORT_SYMBOL_GPL(log_recovered_error);
+So there's no need to add anything new to the kernel.
 
+IMNSVHO.
 
-PLus code to include that in VMCORE.
+-- 
+Regards/Gruss,
+    Boris.
 
-Then each subsystem just adds:
-
-
-	log_recovered_error(ERR_GHES);
-or
-	log_recovered_error(ERR_MCE);
-etc.
-
-in the recovery path.
-
-A count is just a hint. A count with a timestamp that is shortly
-before a crash is a smoking gun.
-
--Tony
+https://people.kernel.org/tglx/notes-about-netiquette
