@@ -1,31 +1,31 @@
 Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AB9527280B
-	for <acpica-devel@lists.linux.dev>; Wed, 16 Jul 2025 02:05:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFE3617ADF8
+	for <acpica-devel@lists.linux.dev>; Wed, 16 Jul 2025 03:09:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752631535; cv=none; b=PeA0dPdU04psNaKaZvjX7B8aco57s0gP+3EaVHEcFxGQ1exs4mNXc9a3wt15jsmQVSUtkQ4xcZmkobnw6XRkIl7nQw0gvDPHYxC3LPHRvA7EAls3DT1KViuRVXDluRHIkqr+2alOzuQH5nA6U4hhK5g/rAbZYHAcbf7yryW+358=
+	t=1752635395; cv=none; b=me3loYMgmiZVWvboSXaF048IGePId2a57OAzUjyuz1YezblV3OprUlSEiqaYy1zLn4DYFXtiR5xKeKMTOohKERDP+5/a/gP9VG+GfCGOp1JFaHhCYsrJRrFIW8p9Qt8xjdtR0lImZ/Y9gw/TpZxvlIaXGNNXB7S60Ivm09v/az8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752631535; c=relaxed/simple;
-	bh=Rq7A6ZARUBLXwh0/B00UjiojKtkVI5fFgnBC8LrD1f8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mVJJ78ffiZLijMgDbtvRiHvxtN0I33NrwwnGpEDqIKbHSqWfN8+xxRS5n+mdgG6ci7B7NN47VK2mzrao7tgHUBdlgb+5/X5wZ0/+wo8HXSVGfVTIViIpcDTI7opF/zBJAjnf1Z3WxXoARyVFNCfzFUiRYw6mqphGlH2tAbIIBHI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=V8XHfSFc; arc=none smtp.client-ip=115.124.30.131
+	s=arc-20240116; t=1752635395; c=relaxed/simple;
+	bh=ghDhaR0c6hTsusUYN/do7KgBwZkbeEBUhV5TVSwbOuM=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=HnAlrKO0W7/191Sg+v5Dc3DDLXqVVkXhJUeDCTTBk9po+PMCOjzNu7f2TrUFDOxUkY2qhjCwajtXN0fo7YUcuOVq1MQjtx0ubmgsDn74D+ylITEYRD29i329v+R1Sb+lKSOi3T8J3hg4qMsAYE6yIF/47Zs4c+iLzwJ57mxPOM8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=BBx3hjzr; arc=none smtp.client-ip=115.124.30.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="V8XHfSFc"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="BBx3hjzr"
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1752631530; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=PJ5lsZI4OHNjAytd5bva2oVW3dsOReZjpWZ15UKmY3I=;
-	b=V8XHfSFcYb/e6HsqpFIWk4Qh0mnBWz87tf/G4uIyJj6O23zwkjOh4YkeNDMBPMvq22syMlj/GTKOGppna6ILInJyCsF59/aCJ5LB3sJ5niop63p0DJCRUrr0oZ3TFJC4CdpCAIu73dVm56c0pH/6nxNSElmxPUSWeNdXFKy3Jlc=
-Received: from 30.246.162.71(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Wj26Dj7_1752631528 cluster:ay36)
+	t=1752635389; h=Message-ID:Date:MIME-Version:From:Subject:To:Content-Type;
+	bh=bz/gT2zU2lHgaYtQPft6aSJWRjBtEX5KzBsJPznda0c=;
+	b=BBx3hjzrf82wMaCZWCIPlmUH77wexF/8GSL6Mlb5GRQCte6fw1ColKX0h/av63YAN2PRjG4enDSWQm2xjPGRGyefInCkmbTcIMifKZRMMa+uF3mZApa6aIly/ithOWG2pHDFpvWjHRZHKERkMbgti3++EpWLhgaCi2QlaXjRE68=
+Received: from 30.246.162.71(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Wj2Cz4n_1752635068 cluster:ay36)
           by smtp.aliyun-inc.com;
-          Wed, 16 Jul 2025 10:05:29 +0800
-Message-ID: <564e0deb-73f0-449f-9d0f-181311d3a348@linux.alibaba.com>
-Date: Wed, 16 Jul 2025 10:05:27 +0800
+          Wed, 16 Jul 2025 11:04:29 +0800
+Message-ID: <b4c39a87-c5a4-4525-b598-61fc28a8dc36@linux.alibaba.com>
+Date: Wed, 16 Jul 2025 11:04:28 +0800
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -33,9 +33,10 @@ List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
+From: Shuai Xue <xueshuai@linux.alibaba.com>
 Subject: Re: [PATCH] ghes: Track number of recovered hardware errors
-To: Borislav Petkov <bp@alien8.de>, mchehab+huawei@kernel.org
-Cc: Breno Leitao <leitao@debian.org>, Alexander Graf <graf@amazon.com>,
+To: Breno Leitao <leitao@debian.org>
+Cc: Borislav Petkov <bp@alien8.de>, Alexander Graf <graf@amazon.com>,
  Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
  Peter Gonda <pgonda@google.com>, "Luck, Tony" <tony.luck@intel.com>,
  "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
@@ -54,46 +55,59 @@ References: <20250714171040.GOaHU6EKH2xxSZFnZd@fat_crate.local>
  <vs5x5qvw2veurxdljmdiumqpseze2myx6quw3rmt7li7d3dbin@duoky4z44zzz>
  <20250715125327.GGaHZPRz9QLNNO-7q8@fat_crate.local>
  <68b6961c-4443-48a8-a7f7-ed94f3352d7d@linux.alibaba.com>
- <20250715150947.GAaHZvOxsvEvALZNDd@fat_crate.local>
-From: Shuai Xue <xueshuai@linux.alibaba.com>
-In-Reply-To: <20250715150947.GAaHZvOxsvEvALZNDd@fat_crate.local>
+ <p2iytcdfvgm74zif6ihd7gs4kuaeza4b4p52cr5ya4upabiome@kr3yy7fjznwe>
+In-Reply-To: <p2iytcdfvgm74zif6ihd7gs4kuaeza4b4p52cr5ya4upabiome@kr3yy7fjznwe>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
-在 2025/7/15 23:09, Borislav Petkov 写道:
+在 2025/7/16 01:25, Breno Leitao 写道:
+> Hello Shuai,
+> 
 > On Tue, Jul 15, 2025 at 09:46:03PM +0800, Shuai Xue wrote:
+>>> It would be really good to sync with other cloud providers here so that we can
+>>> do this one solution which fits all. Lemme CC some other folks I know who do
+>>> cloud gunk and leave the whole mail for their pleasure.
+>>>
+>>> Newly CCed folks, you know how to find the whole discussion. :-)
+>>>
+>>> Thx.
+>>
+>>
 >> For the purpose of counting, how about using the cmdline of rasdaemon?
 > 
-> That would mean you have to run rasdaemon on those machines before they
-> explode and then carve out the rasdaemon db from the coredump (this is
-> post-mortem analysis).
+> How do you manage it at a large fleet of hosts? Do you have rasdaemon
+> logging always and how do you correlate with kernel crashes? At Meta, we
+> have an a "clues" tag for each crash, and one of the tags is Machine
+> Check Exception (MCE), which is parsed from dmesg right now (with the
+> regexp I shared earlier).
 
-Rasdaemon is a userspace tool that will collect all hardware error 
-events reported by the Linux Kernel from several sources (EDAC, MCE, 
-PCI, ...) into one common framework. And it has been a standard tools
-in Alibaba. As far as I know, twitter also use Rasdaemon in its production.
+We deploy rasdaemon on each individual node, and then collect the
+rasdaemon logs centrally. At the same time, we collect out-of-band
+error logs. We aggregate and count the types and occurrences of errors,
+and finally use empirical thresholds for operational alerts. The crash
+analysis service consumes these alert messages.
 
 > 
-> I would love for rasdaemon to log over the network and then other tools can
-> query those centralized logs but that has its own challenges...
+> My plan with this patch is to have a counter for hardware errors that
+> would be exposed to the crashdump. So, post-morten analyzes tooling can
+> easily query if there are hardware errors and query RAS information in
+> the right databases, in case it seems a smoking gun.
+
+I see your point. But does using a single ghes_recovered_errors counter
+to track all corrected and non-fatal errors for CPU, memory, and PCIe
+really help?
+
 > 
+> Do you have any experience with this type of automatic correlation?
 
-I also prefer collecting rasdaemon data in a centralized data center, as 
-this is more beneficial for using big data analytics to analyze and 
-predict errors. At the same time, the centralized side also uses 
-rasdaemon logs as one of the references for machine operations and 
-maintenance.
+Please see my reply above.
 
-As for rasdaemon itself, it is just a single-node event collector and 
-database, although it does also print logs. In practice, we use SLS [1] 
-to collect rasdaemon text logs from individual nodes and parse them on 
-the central side.
+> 
+> Thanks for your insights,
+> --breno
 
 Thanks.
 Shuai
-
-[1]https://www.alibabacloud.com/help/en/sls/getting-started
-[2]https://blog.x.com/engineering/en_us/topics/infrastructure/2023/how-twitter-uses-rasdaemon-for-hardware-reliability 
 
