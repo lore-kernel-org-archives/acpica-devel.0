@@ -1,107 +1,101 @@
-Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A63821E379B
-	for <acpica-devel@lists.linux.dev>; Thu, 17 Jul 2025 03:04:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70121288CBE;
+	Thu, 17 Jul 2025 09:58:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752721444; cv=none; b=ZAPUF7k5lSnJ4dW81EMqidO+eC4Xco5+8T9g4vcxVz+TM640dz8wvvI+MrvAJ+Wckhnnkw3OJpOXiJ63efj5KrCwu0fQH7JJVG2ZBxfdS408JO67DMg7BhUV9Ktvk9i0JmPK33jYyTl8Imf5FYkrKs9ZgfyZ1ltH5++dePeLLUI=
+	t=1752746283; cv=none; b=sR2zo9dYchMXQyEgGki0jvyOdDr74+yQEWWdjpwgRm4pQbHz3kXx/dpJkkV4OON6fVmoTpIBeeDaDcOh6xMAj4bpEI+B0PGxmgniEMHlwTWlqCHhc1BVzt45tsuzRhQSEvqiGXaNXZgtUjIond3RIDLoAibaAZlfSE0bueHoMrk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752721444; c=relaxed/simple;
-	bh=MA7DhgnrHAFOSfD3Z71cnWoWC9q9bvXHQq62SUa7Hj8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fcLluLGZTySZ9mAquWRPkb6r8ZoX0IfQMS8tUUdKvRxlLqRQyywmxOIKYrWrulrqlhPqgNBfvscacmHPA602ocT5du1pbIUec1lHUW8fCsMpfH9S2pvvGhDPxMTbG/fnif1uNz0gbjNJ0hj9SCtxrh2/+/tW4kl0Fj0D5AKJheE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=siGf1j6S; arc=none smtp.client-ip=115.124.30.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+	s=arc-20240116; t=1752746283; c=relaxed/simple;
+	bh=UcUgBkuYffStTu9fwls0Y3+yc53zyJShMuqRpuh0m6U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=im6TFTLGZlQgj81EIexbybFBpSayOKRquBPTERxosSjeDt44gPPYW6f7V3UUiulGxHC/augHznRJj6v9utIeMLepmKPKbPJnO28AgCVXIw5wn73BdKKoxWKmm6RfDu5A2Lsb8vk1EL3ZSigDkvtiqS6eF3Njcg7ekXcqsjlt/C8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UhvWfng3; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="siGf1j6S"
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1752721433; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=y27C67f1ZvJH371/Jn25fxn30qg7QY+upPRPKPMQK4A=;
-	b=siGf1j6SG56lzOqRRqTYHgVMM1kksuYqaZ1cxvB2X0xvJZppA997Jn9uLy4GWNzafR64daZ2FKJQBAJ7jbZrODNVCHlWkXGRj61264/hOb59V6DglCLdLHRLOQ4qw9dg1pvSbF8aakt9VZkI8OpO6qKdGadDjboyefZXJ9d3dBE=
-Received: from 30.246.162.71(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Wj6dHlv_1752721419 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Thu, 17 Jul 2025 11:03:51 +0800
-Message-ID: <58f3242a-e52a-46a9-9a99-3887eeaa1285@linux.alibaba.com>
-Date: Thu, 17 Jul 2025 11:03:51 +0800
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UhvWfng3"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46846C4CEE3;
+	Thu, 17 Jul 2025 09:58:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752746283;
+	bh=UcUgBkuYffStTu9fwls0Y3+yc53zyJShMuqRpuh0m6U=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=UhvWfng3K9WZ0rqIyPCE+c3v/AD/aq47bpEszhmoia4fLXW3W9JL1eimyr6/pUyDq
+	 H1Q4N81D1NDt4X12/6FIjOxVKPvv+VYGj5n6YQ+UmSKSNSckfFH8cOCQB6csLeRMMg
+	 af2a29ptpPbP2icx80CsOlWpYonOkXMUnvz5is9fjezihWGMLl22rqg8R1ivi1sZb+
+	 zELsDeUScZYjFgE94OdkQRP1J27LmHVaXw1zFlx1Pvs+ytdm+WkuNnJMCIS0vrbB00
+	 1TMhIt/hDBX7S/YCwCGYqtJ+dUB2clUtoXBrPzVx/7sItHqDhlIDKIYycvrNxCDBXQ
+	 0byBA1G8EV/ow==
+Date: Thu, 17 Jul 2025 10:57:57 +0100
+From: Will Deacon <will@kernel.org>
+To: Breno Leitao <leitao@debian.org>
+Cc: Mark Rutland <mark.rutland@arm.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>, James Morse <james.morse@arm.com>,
+	Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>,
+	Robert Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org, acpica-devel@lists.linux.dev,
+	kernel-team@meta.com, Catalin Marinas <catalin.marinas@arm.com>,
+	osandov@fb.com, leo.yan@arm.com, rmikey@meta.com
+Subject: Re: [PATCH v2] arm64: Mark kernel as tainted on SAE and SError panic
+Message-ID: <aHjJJf4KTzXLBjM0@willie-the-truck>
+References: <20250716-vmcore_hw_error-v2-1-f187f7d62aba@debian.org>
+ <aHd8uvMegWXHyhvN@J2N7QTR9R3>
+ <xdvsnmcgfk7kkeq4r43l2c3h4vrlhuy4s6g2nybzsibyna3ipd@tkb7elmgn5m5>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ghes: Track number of recovered hardware errors
-To: Breno Leitao <leitao@debian.org>
-Cc: Borislav Petkov <bp@alien8.de>, Alexander Graf <graf@amazon.com>,
- Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
- Peter Gonda <pgonda@google.com>, "Luck, Tony" <tony.luck@intel.com>,
- "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
- James Morse <james.morse@arm.com>, "Moore, Robert" <robert.moore@intel.com>,
- "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "acpica-devel@lists.linux.dev" <acpica-devel@lists.linux.dev>,
- "kernel-team@meta.com" <kernel-team@meta.com>
-References: <20250714173556.GQaHU__LL6IUIPCDIW@fat_crate.local>
- <aHWC-J851eaHa_Au@agluck-desk3>
- <20250715082939.GAaHYRc3Yn49jyvYzc@fat_crate.local>
- <kyprjdilgyz3xgw3slnrsemptnpp6h75mipv6a3lgp2dmwqekg@s7azbepy7nu2>
- <20250715103125.GFaHYt_TnFQW6ti0ST@fat_crate.local>
- <vs5x5qvw2veurxdljmdiumqpseze2myx6quw3rmt7li7d3dbin@duoky4z44zzz>
- <20250715125327.GGaHZPRz9QLNNO-7q8@fat_crate.local>
- <68b6961c-4443-48a8-a7f7-ed94f3352d7d@linux.alibaba.com>
- <p2iytcdfvgm74zif6ihd7gs4kuaeza4b4p52cr5ya4upabiome@kr3yy7fjznwe>
- <b4c39a87-c5a4-4525-b598-61fc28a8dc36@linux.alibaba.com>
- <ckn7d3e3xynnup4bbombn7z7xxvld3a7xmqpg4pzp57qebywfc@t2yrn3zqmnje>
-From: Shuai Xue <xueshuai@linux.alibaba.com>
-In-Reply-To: <ckn7d3e3xynnup4bbombn7z7xxvld3a7xmqpg4pzp57qebywfc@t2yrn3zqmnje>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <xdvsnmcgfk7kkeq4r43l2c3h4vrlhuy4s6g2nybzsibyna3ipd@tkb7elmgn5m5>
 
+On Wed, Jul 16, 2025 at 03:52:55AM -0700, Breno Leitao wrote:
+> On Wed, Jul 16, 2025 at 11:19:38AM +0100, Mark Rutland wrote:
+> > On Wed, Jul 16, 2025 at 02:42:01AM -0700, Breno Leitao wrote:
+> > > Set TAINT_MACHINE_CHECK when SError or Synchronous External Abort (SEA)
+> > > interrupts trigger a panic to flag potential hardware faults. This
+> > > tainting mechanism aids in debugging and enables correlation of
+> > > hardware-related crashes in large-scale deployments.
+> > > 
+> > > This change aligns with similar patches[1] that mark machine check
+> > > events when the system crashes due to hardware errors.
+> > > 
+> > > Link: https://lore.kernel.org/all/20250702-add_tain-v1-1-9187b10914b9@debian.org/ [1]
+> > > Signed-off-by: Breno Leitao <leitao@debian.org>
+> > > ---
+> > > Changes in v2:
+> > > - Also taint the kernel on Synchronous External Abort panics (Will Deacon)
+> > > - Link to v1: https://lore.kernel.org/r/20250714-vmcore_hw_error-v1-1-8cf45edb6334@debian.org
+> > 
+> > I think something went wrong when respinning this patch, because the v1
+> > link above is incorrect, and should be:
+> > 
+> >   https://lore.kernel.org/linux-arm-kernel/20250710-arm_serror-v1-1-2a3def3740d7@debian.org/
+> > 
+> > The Cc header for this posting matches that of the unrelated patch (and
+> > excludes Will, Catalin, etc), rather than that of the real v1. The
+> > change-id trailer also doesn't match v1.
+> > 
+> > The actual patch and commit message look fine to me, so:
+> 
+> Sorry about it, it was totally my mess with b4 on two different
+> machines/branches. I've been testing it on a arm64 hosts that
+> has no email access. When I picked the patch into the machine with
+> email, I messed up where to cherry pick and branches.
+>  
+> > Acked-by: Mark Rutland <mark.rutland@arm.com>
+> > 
+> > I assume that Will or Catalin will be happy to pick this up. I've added
+> > those missing folk to this reply, so I don't imagine this should need a
+> > respin.
+> 
+> Thanks. I will not respin then (unless requested).
+> 
+> Sorry for the mess,
 
+No probs, I'll figure it out!
 
-在 2025/7/16 20:42, Breno Leitao 写道:
-> hello Shuai,
-> 
-> On Wed, Jul 16, 2025 at 11:04:28AM +0800, Shuai Xue wrote:
->>> My plan with this patch is to have a counter for hardware errors that
->>> would be exposed to the crashdump. So, post-morten analyzes tooling can
->>> easily query if there are hardware errors and query RAS information in
->>> the right databases, in case it seems a smoking gun.
->>
->> I see your point. But does using a single ghes_recovered_errors counter
->> to track all corrected and non-fatal errors for CPU, memory, and PCIe
->> really help?
-> 
-> It provides a quick indication that hardware issues have occurred, which
-> can prompt the operator to investigate further via RAS events.
-> 
-> That said, Tony proposed a more robust approach—categorizing and
-> tracking errors by their source. This would involve maintaining separate
-> counters for each source using an counter per enum type:
-> 
-> 	enum recovered_error_sources {
-> 		ERR_GHES,
-> 		ERR_MCE,
-> 		ERR_AER,
-> 		...
-> 		ERR_NUM_SOURCES
-> 	};
-> 
-> See more at: https://lore.kernel.org/all/aHWC-J851eaHa_Au@agluck-desk3/
-> 
-> Do you think this would help you by any chance?
-> 
-> Thanks
-> --breno
-
-
-Personally, I think this approach would be more helpful. Additionally, I
-suggest not mixing CEs (Correctable Errors) and UEs (Uncorrectable
-Errors) together. This is especially important for memory errors, as CEs
-occur much more frequently than UEs, but their impact is much smaller.
-
-Thanks.
-Shuai
+Will
