@@ -1,101 +1,81 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70121288CBE;
-	Thu, 17 Jul 2025 09:58:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 985582DCF73;
+	Thu, 17 Jul 2025 10:46:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752746283; cv=none; b=sR2zo9dYchMXQyEgGki0jvyOdDr74+yQEWWdjpwgRm4pQbHz3kXx/dpJkkV4OON6fVmoTpIBeeDaDcOh6xMAj4bpEI+B0PGxmgniEMHlwTWlqCHhc1BVzt45tsuzRhQSEvqiGXaNXZgtUjIond3RIDLoAibaAZlfSE0bueHoMrk=
+	t=1752749192; cv=none; b=jhoMb6xpvRDiFYs+3+ci7UZYLofpxwYTYNel0Y14baqGh++xfno6TPq9ljYw1TpOSMPsNs2TVsY9HFPMjaazMoUZXbLfFr+BBn+bLEE2rvNTdAiC+Act1FVGYhKwPSY2w8LRxFcbJExTWoQbXfej5bjpubj1g70bJmiRQGoZDn8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752746283; c=relaxed/simple;
-	bh=UcUgBkuYffStTu9fwls0Y3+yc53zyJShMuqRpuh0m6U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=im6TFTLGZlQgj81EIexbybFBpSayOKRquBPTERxosSjeDt44gPPYW6f7V3UUiulGxHC/augHznRJj6v9utIeMLepmKPKbPJnO28AgCVXIw5wn73BdKKoxWKmm6RfDu5A2Lsb8vk1EL3ZSigDkvtiqS6eF3Njcg7ekXcqsjlt/C8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UhvWfng3; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1752749192; c=relaxed/simple;
+	bh=0qgMdt/0EtzMZfFqcKJGGFv4x+9cNMvWf5W808j3enc=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=WXJqYi3UG6sqNGHw0EoO2LWPiYu2BCSsKzVODSJK0CSBpg/j2V4JQaeeE3OMlKjhuBStuqqgMoBkBoKBahxyi23H6/EK9NmmLU8H7E+RAaDhkAir8M1CpHOdi9cx74jReLbAzZ/xskENtnEEI0oE1PibebuvNvZ9D2lHVII5Mtc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SFv82nLd; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UhvWfng3"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46846C4CEE3;
-	Thu, 17 Jul 2025 09:58:00 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SFv82nLd"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A968C4CEED;
+	Thu, 17 Jul 2025 10:46:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752746283;
-	bh=UcUgBkuYffStTu9fwls0Y3+yc53zyJShMuqRpuh0m6U=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UhvWfng3K9WZ0rqIyPCE+c3v/AD/aq47bpEszhmoia4fLXW3W9JL1eimyr6/pUyDq
-	 H1Q4N81D1NDt4X12/6FIjOxVKPvv+VYGj5n6YQ+UmSKSNSckfFH8cOCQB6csLeRMMg
-	 af2a29ptpPbP2icx80CsOlWpYonOkXMUnvz5is9fjezihWGMLl22rqg8R1ivi1sZb+
-	 zELsDeUScZYjFgE94OdkQRP1J27LmHVaXw1zFlx1Pvs+ytdm+WkuNnJMCIS0vrbB00
-	 1TMhIt/hDBX7S/YCwCGYqtJ+dUB2clUtoXBrPzVx/7sItHqDhlIDKIYycvrNxCDBXQ
-	 0byBA1G8EV/ow==
-Date: Thu, 17 Jul 2025 10:57:57 +0100
+	s=k20201202; t=1752749192;
+	bh=0qgMdt/0EtzMZfFqcKJGGFv4x+9cNMvWf5W808j3enc=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=SFv82nLdSEfLmuwrqHSkDWdQe2axVz877mdrMR1KigU7QY3lIVBPN/5mdqIfHaLqH
+	 3ilBMk4VRGEBqjTfOBp8t1ywLpC0msDeH3AKVKhbDPx2vlg5Kw+tZY0JiO/N4EVTj4
+	 7VkQ2OQfb0BacFJmehrD46qDqYjXrdc8kIt70BF7XO0vp04YayoHNIM1N5tbO85zUo
+	 y93bOsm4zMvEuj5eN+CRpLwWFrWFettiK02Sk9hL7Hi9vg1t6KmEiUXWbeR+ZC8kwr
+	 ldbdgu+0lIAAqNcR/to+L3qAL1UX9KtgphquVjQYwic/JHtbUX8KjCPaeWqCKohDi+
+	 kBjzM6YrGNx8g==
 From: Will Deacon <will@kernel.org>
-To: Breno Leitao <leitao@debian.org>
-Cc: Mark Rutland <mark.rutland@arm.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>, James Morse <james.morse@arm.com>,
-	Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>,
-	Robert Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org,
-	linux-kernel@vger.kernel.org, acpica-devel@lists.linux.dev,
-	kernel-team@meta.com, Catalin Marinas <catalin.marinas@arm.com>,
-	osandov@fb.com, leo.yan@arm.com, rmikey@meta.com
+To: "Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>,
+	James Morse <james.morse@arm.com>,
+	Tony Luck <tony.luck@intel.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Robert Moore <robert.moore@intel.com>,
+	Breno Leitao <leitao@debian.org>
+Cc: catalin.marinas@arm.com,
+	kernel-team@android.com,
+	Will Deacon <will@kernel.org>,
+	linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	acpica-devel@lists.linux.dev,
+	kernel-team@meta.com
 Subject: Re: [PATCH v2] arm64: Mark kernel as tainted on SAE and SError panic
-Message-ID: <aHjJJf4KTzXLBjM0@willie-the-truck>
+Date: Thu, 17 Jul 2025 11:46:18 +0100
+Message-Id: <175274683701.735514.4319542940682343455.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.39.5
+In-Reply-To: <20250716-vmcore_hw_error-v2-1-f187f7d62aba@debian.org>
 References: <20250716-vmcore_hw_error-v2-1-f187f7d62aba@debian.org>
- <aHd8uvMegWXHyhvN@J2N7QTR9R3>
- <xdvsnmcgfk7kkeq4r43l2c3h4vrlhuy4s6g2nybzsibyna3ipd@tkb7elmgn5m5>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <xdvsnmcgfk7kkeq4r43l2c3h4vrlhuy4s6g2nybzsibyna3ipd@tkb7elmgn5m5>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jul 16, 2025 at 03:52:55AM -0700, Breno Leitao wrote:
-> On Wed, Jul 16, 2025 at 11:19:38AM +0100, Mark Rutland wrote:
-> > On Wed, Jul 16, 2025 at 02:42:01AM -0700, Breno Leitao wrote:
-> > > Set TAINT_MACHINE_CHECK when SError or Synchronous External Abort (SEA)
-> > > interrupts trigger a panic to flag potential hardware faults. This
-> > > tainting mechanism aids in debugging and enables correlation of
-> > > hardware-related crashes in large-scale deployments.
-> > > 
-> > > This change aligns with similar patches[1] that mark machine check
-> > > events when the system crashes due to hardware errors.
-> > > 
-> > > Link: https://lore.kernel.org/all/20250702-add_tain-v1-1-9187b10914b9@debian.org/ [1]
-> > > Signed-off-by: Breno Leitao <leitao@debian.org>
-> > > ---
-> > > Changes in v2:
-> > > - Also taint the kernel on Synchronous External Abort panics (Will Deacon)
-> > > - Link to v1: https://lore.kernel.org/r/20250714-vmcore_hw_error-v1-1-8cf45edb6334@debian.org
-> > 
-> > I think something went wrong when respinning this patch, because the v1
-> > link above is incorrect, and should be:
-> > 
-> >   https://lore.kernel.org/linux-arm-kernel/20250710-arm_serror-v1-1-2a3def3740d7@debian.org/
-> > 
-> > The Cc header for this posting matches that of the unrelated patch (and
-> > excludes Will, Catalin, etc), rather than that of the real v1. The
-> > change-id trailer also doesn't match v1.
-> > 
-> > The actual patch and commit message look fine to me, so:
+On Wed, 16 Jul 2025 02:42:01 -0700, Breno Leitao wrote:
+> Set TAINT_MACHINE_CHECK when SError or Synchronous External Abort (SEA)
+> interrupts trigger a panic to flag potential hardware faults. This
+> tainting mechanism aids in debugging and enables correlation of
+> hardware-related crashes in large-scale deployments.
 > 
-> Sorry about it, it was totally my mess with b4 on two different
-> machines/branches. I've been testing it on a arm64 hosts that
-> has no email access. When I picked the patch into the machine with
-> email, I messed up where to cherry pick and branches.
->  
-> > Acked-by: Mark Rutland <mark.rutland@arm.com>
-> > 
-> > I assume that Will or Catalin will be happy to pick this up. I've added
-> > those missing folk to this reply, so I don't imagine this should need a
-> > respin.
+> This change aligns with similar patches[1] that mark machine check
+> events when the system crashes due to hardware errors.
 > 
-> Thanks. I will not respin then (unless requested).
-> 
-> Sorry for the mess,
+> [...]
 
-No probs, I'll figure it out!
+Applied to arm64 (for-next/misc), thanks!
 
+[1/1] arm64: Mark kernel as tainted on SAE and SError panic
+      https://git.kernel.org/arm64/c/d7ce7e3a8464
+
+Cheers,
+-- 
 Will
+
+https://fixes.arm64.dev
+https://next.arm64.dev
+https://will.arm64.dev
