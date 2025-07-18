@@ -1,60 +1,96 @@
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE4AE2E6124
-	for <acpica-devel@lists.linux.dev>; Fri, 18 Jul 2025 16:11:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752855083; cv=none; b=GmDld8kRsL6yY4Q1QY27g+o2hfoljDm5XzZODmZyUZHWAgeEDotE4KVfro231cmwG5x+vyjRYZfRXj8xjjwRjVjPDQxu+sk2y3erwLrGsWtI31g6ot9Uq4102VcM3Oou64AAEjmzSWn/ksqfL8DIFHtl+RrbqB12qqyot4ap6xA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752855083; c=relaxed/simple;
-	bh=XHgiyEjPJ+WCMu2WjrK8ME5xyrBwVfaiU4xdmlEA4aA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lXLlmb/eM7azHvstW1nlbYQZqxjZqgDbWtzvV5Cwz+/kmcu1GULUNH5q7XADT2FFgzqAzuw3vyl1Fu2ww0kdkBtPNKTsoDeZHFL/b3zRR9AY0nzHDX2aQDsGZzNvQM6vkcOswJ5iwB9sKjmBLqquGV/QxE7ezfNSWcQ9+zqnMZw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-ae04d3d63e6so419240466b.2
-        for <acpica-devel@lists.linux.dev>; Fri, 18 Jul 2025 09:11:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752855079; x=1753459879;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XqEj8W5u0PUeUJPY+sEKzsugXYSIb9vt2kBSXIxBRws=;
-        b=tTIqB3coSfSV0LX/bWgHv/chDbrsDSKEJzmBbMRrY2IHt2LCEmwljUThrd0lKbIWun
-         2mTlmAPg4xYcQtNd/+CH+f+D09LqMM5AHSpfisfpTqAsGeMkLSdQhDPKlazzspVzAoss
-         CCaCplLdXSK6evBd8V6u085bG1uTRrKOfTLRbKmKNKzTyBOB6xuwlzgjia0twcxkdmi2
-         tfZenDqQ5+drkNiggct7+V7sGBnszhmfyU2DENCGTvwHc9hpHW2z5kh+GRPluEEJSsbq
-         q0JlfRJW7qdcXmArqo8/rH7dABHB6fFOTR4zAwiyOdOd0zVsEdoux6AimNlHr1ybwTNp
-         OEaQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXiags3AFBwh6Mp7kr2LXWYH9aFmmDJxZhF+zTrAKQ9XXQGCxJU3g8Nm3hzU0ACSvw1LgGgQ4bxBPLI77Y=@lists.linux.dev
-X-Gm-Message-State: AOJu0YwDlv6nKC4/P2L8A97CCszB2nqUCyOuTfb0vCb3d3JatL7wsh4e
-	2rPRQ9/JFcOQDDrSjODlLZ/qJbTBvOw58nwFrjI/jKVkptvCtUeCeaOU
-X-Gm-Gg: ASbGncvkvMZ1XrqMGYOj+8kxRW8Nnj1KZyWMtIIzki7bgBpTtIJE264JkDY2FXCY5Fe
-	yaQVCNGKJCuqQx8AEYqeDMJ0G8Af7NiHY0fFDwb+tN0nAV/239UszJXfYNIFSQfq5+ETKUcslQy
-	rtdC3O62KIWADPviAhFf2XJusixNCdt4LZiCcXZrc79Kyac4g/5G4Xy4cCG5TlBI8+lX8pBF6wV
-	TQfo33GsQf1x3+9PUOhqk+ZZS2oKLNAKD5sGgb7bjIxFFfrqBiikrzawPoss7E9xRIxA6z0aTrf
-	HvJGnEVoIDmPylF+pv6Z6cZ05KPrhq41mIv2GQ0eE+BryTbr1Hh/9GGnBaYK+VQYuSuZSnY6dhk
-	qmj21pW8rEkijz/6zPfVB
-X-Google-Smtp-Source: AGHT+IEiIuDXKUJLBKu3VOqaAEewUE0HyZp4v/jj6blHZALvKRW9GCnqD0O0owXO5y4N0JWIx1a0ew==
-X-Received: by 2002:a17:906:d54d:b0:aec:578e:caf0 with SMTP id a640c23a62f3a-aec578ecd9fmr676449266b.29.1752855078677;
-        Fri, 18 Jul 2025 09:11:18 -0700 (PDT)
-Received: from gmail.com ([2a03:2880:30ff::])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aec6ca7ae11sm142459866b.108.2025.07.18.09.11.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jul 2025 09:11:18 -0700 (PDT)
-Date: Fri, 18 Jul 2025 09:11:15 -0700
-From: Breno Leitao <leitao@debian.org>
-To: "Luck, Tony" <tony.luck@intel.com>, xueshuai@linux.alibaba.com, 
-	mahesh@linux.ibm.com, oohall@gmail.com
-Cc: Borislav Petkov <bp@alien8.de>, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, James Morse <james.morse@arm.com>, 
-	"Moore, Robert" <robert.moore@intel.com>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "acpica-devel@lists.linux.dev" <acpica-devel@lists.linux.dev>, 
-	"kernel-team@meta.com" <kernel-team@meta.com>, osandov@osandov.com, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] ghes: Track number of recovered hardware errors
-Message-ID: <mazejvrglvtqdfsevduahqxvlvjv6hlo3apivossn2jnxpsuds@os6kxmmsq3xt>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A59302E6D3A
+	for <acpica-devel@lists.linux.dev>; Fri, 18 Jul 2025 17:37:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.20
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1752860232; cv=fail; b=XHOs+MuWDcKqprKhUrb2PVD2QMCRYeatb27qIFbRQJllaZwKbzfHXT7+GWijeFuFMPHi2OsIBJRV78OJk1aHSFUl0rXVrgiOhQWnuRmx9TRRUYWPz089SPIVr4Hr0hgeYhhMIvng1fCag7JMn3uVdJjm6qQPors7vwd8MpfisuI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1752860232; c=relaxed/simple;
+	bh=fcFT1uZZQCFDDbZi6aqdHBuWNYBvRi6zg7Q9UHnZEh8=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=U3lfzqF7xFudLMZaDTX9V8BLfctUqdfX6aML0fGGzbFvnAVdCO8nLuTfuhMNNpriVdtLLqSrgxQwugpEGoLxAeX+95GlISgeJSXRcFmlyWwmGASGj+X7LEtv9QFpYP84PVZqqJ0pj2e4RdgpKVb89BXP8sMW+32x0REy/X07TmQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ByCv/iGu; arc=fail smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ByCv/iGu"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1752860231; x=1784396231;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=fcFT1uZZQCFDDbZi6aqdHBuWNYBvRi6zg7Q9UHnZEh8=;
+  b=ByCv/iGuy4qnGUP2If5SaD0ogwzjQTMzmObi3IBiWO+cDTxIpvcnwzm2
+   72uirEK27ERkntEaIOJvhckdAD9NyqJ1G+Ur4IG1OstO2/6p13PNPWjk3
+   pNUAFcJFeqh99Gk6j7jU/5amAVypubeKGUn1w/3DUAB/uIx+68i4a/PCj
+   9yOkz4tm9v0n/q8d5dnWLmqsYGXX5+rwONZTp46lSYNlgHUb44qOweurE
+   QcCbr1hq4c+/I5BoUbBWh/sQ6MF/e7hLvHn+JvxDCoE28vwGPQIyQocWo
+   aTXX+WwuLs3pIx6YdG7lIOY0GeN9O2VNwQsOgfuHskd79Aj+BEYtfEKqH
+   w==;
+X-CSE-ConnectionGUID: a1z7HjGVQq+QCCnJsESkjw==
+X-CSE-MsgGUID: +viRLgrCQ56vYA21piWIrw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11496"; a="54873365"
+X-IronPort-AV: E=Sophos;i="6.16,322,1744095600"; 
+   d="scan'208";a="54873365"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2025 10:37:10 -0700
+X-CSE-ConnectionGUID: MpmVSVegSSGMMEfC2InRPg==
+X-CSE-MsgGUID: hmVf6G3LRweqFX0kbIqZcg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.16,322,1744095600"; 
+   d="scan'208";a="162392779"
+Received: from orsmsx901.amr.corp.intel.com ([10.22.229.23])
+  by orviesa003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2025 10:37:10 -0700
+Received: from ORSMSX902.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1748.26; Fri, 18 Jul 2025 10:37:09 -0700
+Received: from ORSEDG901.ED.cps.intel.com (10.7.248.11) by
+ ORSMSX902.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1748.26 via Frontend Transport; Fri, 18 Jul 2025 10:37:09 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (40.107.236.67)
+ by edgegateway.intel.com (134.134.137.111) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1748.26; Fri, 18 Jul 2025 10:37:06 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=owJbG9YhMbd/lNSYm1GF6pLnJYY7cWQC+I+JPsbwVgvx1+r6mtQSbIMIQgO3Z2Pxl83MoYGoMoKj7Kaobxl6QPmb2FyLFPO19G0Pn9RRAmyK4pf+EP1RTa0em7Cu7kyXsRVpjeTcihySuOTvylksHzM/+4+qXsxrZGI34VDlORVyGRnZzGBGFJJuCHlbplG8hiduwh7JlZoB2ePNNdDutMVi22kSOFWUXbh603kQ2LLYK/bFDjcZAfPhmpj6ix00CyvtmHcgFYBXCGpKAf79UO5emDT7avJ7Y1CyWghN9AfQmVLF4ds4rmcyM28godaAe8CJq6PykIYSccALIWBqcA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=fcFT1uZZQCFDDbZi6aqdHBuWNYBvRi6zg7Q9UHnZEh8=;
+ b=X9OO4VS87GeISdqPBxCPi5Pk1ESQCQIupjYinu2QrE06Ch1wqpBW0ut8I4P5XWcgBKCyIZC8d62l6AXE8A7Z+p+ZBOlHyZuc/ZAqXVZ/Dyi9qXQWDybulyoMsEnWwnXH/buMvQ2o5s6Zkqx6Bpf+hKlVe3GtgDDqlBnbnqUyDNGwFNj7SBT1jwoY/pQzj7rPF/lrmBCp23PU/IhYCPVxOw+RMmtBvgd8sbw60FZ+htMoaFvkyVaMBwzijnZ26Wq8hADKMDVRjFcTnJqN35M4SancD9rRmpSt5hA3FUCtAFAGSUce6WEF60rzDE0HnbnecGFzyK3hd3Ds1P7FvQb3qw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from SJ1PR11MB6083.namprd11.prod.outlook.com (2603:10b6:a03:48a::9)
+ by SJ5PPFF330187AB.namprd11.prod.outlook.com (2603:10b6:a0f:fc02::860) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8835.37; Fri, 18 Jul
+ 2025 17:36:50 +0000
+Received: from SJ1PR11MB6083.namprd11.prod.outlook.com
+ ([fe80::acfd:b7e:b73b:9361]) by SJ1PR11MB6083.namprd11.prod.outlook.com
+ ([fe80::acfd:b7e:b73b:9361%4]) with mapi id 15.20.8901.021; Fri, 18 Jul 2025
+ 17:36:50 +0000
+From: "Luck, Tony" <tony.luck@intel.com>
+To: Breno Leitao <leitao@debian.org>, "xueshuai@linux.alibaba.com"
+	<xueshuai@linux.alibaba.com>, "mahesh@linux.ibm.com" <mahesh@linux.ibm.com>,
+	"oohall@gmail.com" <oohall@gmail.com>
+CC: Borislav Petkov <bp@alien8.de>, "Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>, James Morse <james.morse@arm.com>, "Moore,
+ Robert" <robert.moore@intel.com>, "linux-acpi@vger.kernel.org"
+	<linux-acpi@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "acpica-devel@lists.linux.dev"
+	<acpica-devel@lists.linux.dev>, "kernel-team@meta.com"
+	<kernel-team@meta.com>, "osandov@osandov.com" <osandov@osandov.com>,
+	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Subject: RE: [PATCH] ghes: Track number of recovered hardware errors
+Thread-Topic: [PATCH] ghes: Track number of recovered hardware errors
+Thread-Index: AQHb9OBy0msNHAJLb0CCMVEuXQ5eELQx2rEAgAAFjlCAAAGCAIAEniKmgAAVGSCAAX5vgIAAFdQQ
+Date: Fri, 18 Jul 2025 17:36:50 +0000
+Message-ID: <SJ1PR11MB6083D08A2F94FAEE5261AA6CFC50A@SJ1PR11MB6083.namprd11.prod.outlook.com>
 References: <20250714-vmcore_hw_error-v1-1-8cf45edb6334@debian.org>
  <20250714171040.GOaHU6EKH2xxSZFnZd@fat_crate.local>
  <SJ1PR11MB6083C38E6DA922E05E1748D6FC54A@SJ1PR11MB6083.namprd11.prod.outlook.com>
@@ -62,225 +98,118 @@ References: <20250714-vmcore_hw_error-v1-1-8cf45edb6334@debian.org>
  <aHWC-J851eaHa_Au@agluck-desk3>
  <kw7mwmca3ir4nfyofumqiack5sht3aisdchevykdtmlio6xo7z@5xbdibpqvqix>
  <SJ1PR11MB6083CEAB23FCE85937DC5403FC51A@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <mazejvrglvtqdfsevduahqxvlvjv6hlo3apivossn2jnxpsuds@os6kxmmsq3xt>
+In-Reply-To: <mazejvrglvtqdfsevduahqxvlvjv6hlo3apivossn2jnxpsuds@os6kxmmsq3xt>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SJ1PR11MB6083:EE_|SJ5PPFF330187AB:EE_
+x-ms-office365-filtering-correlation-id: c5410c68-fc63-4168-9d0f-08ddc621adaf
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|7416014|376014|366016|1800799024|38070700018;
+x-microsoft-antispam-message-info: =?us-ascii?Q?+bqXEhnWPXB+OyrnEw/xbljBAArePy99djTZZm/A98qrEa6EkAkqsxQtfCIv?=
+ =?us-ascii?Q?LW5kAMrxEuqnTMglPLwkf0agFqrlnAqJyyp5BuP8hjR/RlZVW8/A2Y4PTQGA?=
+ =?us-ascii?Q?WsHvvTd8HScZ3eI0GXFQt4ti1o5tsihhe+XFszcdN0hsT98JIPMpV3uEBRXG?=
+ =?us-ascii?Q?3VE6m9IoPHo9sSLGCZ6KegzLpxVEgbIDkWXetw+6/IJ4ZZcmGGfOeZAm3xZp?=
+ =?us-ascii?Q?9PFc/rXj7I/XY8sck3wyk3nIdIYYsTTGDphTiH5aQJzw/8O63d6nlM1dEEJV?=
+ =?us-ascii?Q?1k/P70Jh80F1K4TR/IqNjx51n2w54O59/apf/3n7RcsTTP6qYm6H6Jjhbsy7?=
+ =?us-ascii?Q?DDuGOyV0w+36lymQnIZHPCegHkqliFdwd9jFK8cX33PklPiFdD+TFlvd2dBA?=
+ =?us-ascii?Q?4VFQA/aMLmAwn5Q/yxWUcqIUyU0nmIutKX2h/ilcA2X4V+c8mt+z4sjJIT7/?=
+ =?us-ascii?Q?/jQCu20uSImzFqErpVlCoQMJMzbHCwmVFk9ocfqcrgWJiwlK87RfFgnsNb2X?=
+ =?us-ascii?Q?DzDvV0meDynObSXkU1K0yCT65vP8ZPrhTkaaplP1HYD5ULXer88L5re0Bw2v?=
+ =?us-ascii?Q?tWYLQ6XB9dx9rqWpq39dy0yAf4GFav9TpLh4sGNQ8GNggyXrRhi4VUlsDF7h?=
+ =?us-ascii?Q?B0cdMwbHWSnUolXlMW7mzmz3JXSo5NVsO3f3jiUI67Fln/mIAtve4sEvFMNI?=
+ =?us-ascii?Q?g9D16YJ059Rluck9EnL1Dm++xwOr3MCUqBO+SLBzIrFyZhauUtwpbYAkQB63?=
+ =?us-ascii?Q?Zbgy1014Dbs6zlxNRbXIofn4lwdvJF8f9omOQrxq3YHvDfbxu5lrlofr52Zn?=
+ =?us-ascii?Q?qBqTEfJqZ27iUa7hWLBUH+/2DBpQvJoz+QNT74mRcMM5TS13EMhp6fc4428r?=
+ =?us-ascii?Q?WDUwoBa7Bl0lb1Wvw+BramIEr29rjbYcwgpoOzWRjPKToAYL+As2ICHQeeSe?=
+ =?us-ascii?Q?uM1T6geBipCNJfvCOxiS6hS2t+gwH9LdFp0KGnfe29UqN0Fookb7SFQqpNRx?=
+ =?us-ascii?Q?TC/ia3cSycye2BeTbpd9T2GLE2uG5zQNx7tp+YOr/tmYf8yQjH2GIWpTaQNb?=
+ =?us-ascii?Q?0PZ085aHbBkirRhmOtG9OuxLMg9cszBHEe7bJwKjw5/Bfqji4CQ1HhA38eTr?=
+ =?us-ascii?Q?jFoEDQzsVZesc84mdvNfEWmHRaEwXejPw5nfU+6qFl2rIQeORdGvPDbaSNtf?=
+ =?us-ascii?Q?04UMCjt6mM7TBJQ4So2sarf671agCwCtAxHNke5zhwSAFt0mAxNSPTsyxhzO?=
+ =?us-ascii?Q?R5ihcmivpusixDX5s12ZwWsZe/rybadD/VnR5wZwepOGpDskRt4oF+8RC+0q?=
+ =?us-ascii?Q?dSb2uzZ7qC78/kxKwcg9fQxBRHJI5+IbF2Quva32UIsw3qdhkWusw/00H5QE?=
+ =?us-ascii?Q?7jwQXM+YHbt/ghE3MbWxASRHZDximqURSpHGAsmeljV6swz1x+pNgSJ4TlvM?=
+ =?us-ascii?Q?p9Iwls05y1A7WsbALqM9+mNv/ln9o8WDq/WvplHhHXoCcYHgd4EHEg=3D=3D?=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ1PR11MB6083.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(366016)(1800799024)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?/hiW/exmPBrsCZjQqVAfyrWvH62XY7KvzXxufkbcxX6NpATYj7YwGNWD58qi?=
+ =?us-ascii?Q?GcGkcQdpAYwAqJg6WgjBo7tMEy5SU3daVinRymKaLvw8PMf2Xv3pexDY+Hwj?=
+ =?us-ascii?Q?Ff94lyVQVasXivFZiLJa36Q6b0iMRUNsFMNt30rUXDTx1MP0ui3czpShF5IO?=
+ =?us-ascii?Q?553AHOXsVjwv5YcGCeCMIrkphI27dv2NYRC1/I4b4tSe+yKSTM+fgA5SLl2t?=
+ =?us-ascii?Q?Am8WZgL6pM7lNTT60lzucZ2Oi2tOS0yQJbjyJJWYq/qG83RhRktdNa7tijko?=
+ =?us-ascii?Q?VAgDJ6auFG+a729NMGaJ4omQxh4LwCE2qUqPCAOjNbCkJZ/G+XXCr1p2hpt/?=
+ =?us-ascii?Q?b6eGlZmK2H0HU34/cvRnIq9xQrb57V7BmtRDYphcjm8w7paxqg7DknzD7fgT?=
+ =?us-ascii?Q?RUHRDDayf1s7Vs9q50Xf64iFOZbl6mz9dg9u/r2Lw8Evl6fG4Y92s1vQl2Ac?=
+ =?us-ascii?Q?CfpZEnfEOSyszBpnJhAoYgw6tpei6sgppm5U3YJagCG6t2EcYeLOKQQc9H6q?=
+ =?us-ascii?Q?4tjygi9PqOXr4aHe5/rnfKY3KCtI8T7G6g6f3DOiPj3YVqW5tvQqV8t5yGOG?=
+ =?us-ascii?Q?WrNQZhmwEiYcuK+W9c1O+dCxUMOEL2Hr3qt+PeMT86s3h41gLDckSE6MuwW1?=
+ =?us-ascii?Q?bQxVTAgXL/IhchjUYPK29nljaEXSvNSQDwEdRMVucF0u49XKzAQKPj3mnEYd?=
+ =?us-ascii?Q?WGNx3uw3mBZm7mHQ1rDmwoUv1km8vPoA6LqWgzLpTz3JI361FHVw/kbm4AYR?=
+ =?us-ascii?Q?e7+2g/7L/Y4zKgd7hjLgvEitaxqIA49GtvyI7S3g0PVJRouPs/62Vi5YTRmg?=
+ =?us-ascii?Q?pYKck3NYFQW67Ab2zHSf0J4DzrIPZoyiBAxg9Av91TGr17Vcb9OpzaGKPk5s?=
+ =?us-ascii?Q?qGMlGsDfisZXt7OlB9iwS1RAtKrabGilurkjAy6cdZKY8SC10BBgQLdV+vx4?=
+ =?us-ascii?Q?+qZJXbee9C9g6zGS8tnY2e/hgdqd0vO3zCt2A1w6DrGcWnzBNq4QTD97mfIn?=
+ =?us-ascii?Q?zLwLKNVNQxmXDV85ZkRhwm7/DqFTMNQvECbl6WX12zjZcntPFLsa/1pPTz9g?=
+ =?us-ascii?Q?15BqMaSUfRsrW34S00YuTp6efZ4+2Pc9IUVsIMNOY/P34Ve459Y2SgmAW2iw?=
+ =?us-ascii?Q?GtcVJmSM+lPumfNq6jtnaWzFzc8ZmD1i2J3A2uGj4709aNJmEAcbFaJ3hw+i?=
+ =?us-ascii?Q?6tifX8FD5q7zKElAG+ckquWSDiHLZiINXjlmNhsvQLkuw3btRTEnRirLgLoP?=
+ =?us-ascii?Q?Wb1ifPDqOtPK9KqLvhW+7+WWX0Lcdf5B4Fq+Mzxq0bDzs8Jf6Z/qgTigYTU5?=
+ =?us-ascii?Q?+u3xCco7Ksy5/t5I+xgNIdrcq95BKSfhuLsjKsfTDirLdEkRZAvm6PHUlV5B?=
+ =?us-ascii?Q?slPkM5qfyV3QurWJBsSGXHu1jpqeG66ZfF3FjUKELWlq7bV9no2qMoNmQAEk?=
+ =?us-ascii?Q?+phKRGbZDkEU+geyhnYU36Lc7xv16UP74bUF/Ai8+9asryj3XogTz62aqH4Q?=
+ =?us-ascii?Q?lSV3BlDEsJyxaGBjDkLMArDIr//muCJ/By+5JmcX05IaRJ01F+KI92fDzGRC?=
+ =?us-ascii?Q?TBMofPlyRZL4IlvsJCQzp6ZGAuoQI+AlZSBe50Px?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <SJ1PR11MB6083CEAB23FCE85937DC5403FC51A@SJ1PR11MB6083.namprd11.prod.outlook.com>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ1PR11MB6083.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c5410c68-fc63-4168-9d0f-08ddc621adaf
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Jul 2025 17:36:50.6328
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: nGxifywlINCAaWxlhSE5Y6wwMvh/BxgVtOJ9P5Y1UApKV0N7CoS5vqlpqev+UO0cy33wZGLwibut0W5InovcYw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ5PPFF330187AB
+X-OriginatorOrg: intel.com
 
-Hello Tony,
-
-On Thu, Jul 17, 2025 at 05:29:14PM +0000, Luck, Tony wrote:
+> I found that I don't need to expose the metrics in vmcore info at all to
+> be able to read them from vmcore, given crash/drgn can read those
+> symbols.
 >
-> If the intent is still to add this information to vmcore (as in
-> earlier discussions in this thread). Then it could go into
-> kernel/vmcore_info.c (and be configured with CONFIG_VMCORE_INFO).
-> 
-> Would just need an empty stub in some header file for the
-> log_recovered_error() function.
+> Global variable hwerror_tracking will be write-only during kernel
+> run-time, and only read during post morten analyzes. I am still not sure
+> if the compiler might not get rid of them completely, given no on reads.
+> I am wondering if I should EXPORT_SYMBOL_GPL(hwerror_tracking) to avoid
+> any optimization there.
 
-Thanks for the suggestion.
+Thanks for fleshing this out into a patch. It looks very much like I
+imagined.
 
-I found that I don't need to expose the metrics in vmcore info at all to
-be able to read them from vmcore, given crash/drgn can read those
-symbols.
+I'd be amazed if a compiler did elide all this code and data because it
+noticed it was written but never read.
 
-Global variable hwerror_tracking will be write-only during kernel
-run-time, and only read during post morten analyzes. I am still not sure
-if the compiler might not get rid of them completely, given no on reads.
-I am wondering if I should EXPORT_SYMBOL_GPL(hwerror_tracking) to avoid
-any optimization there.
+Is the spinlock when logging really helping anything? You weren't
+worried about locking/atomics in your original patch because users
+mostly care about zero vs. non-zero (or maybe vs. "many"). If the
+count is slightly off when many logs happen, it may not matter.
 
-Anyway, this is the patch I am using and it solves the problem I am
-interested in. Any opinion?
+The spinlock doesn't help with the timestamp part at all.
 
-Thanks for your support,
---breno
+> Anyway, this is the patch I am using and it solves the problem I am
+> interested in. Any opinion?
 
-commit 396d9bd5266607731b535f4246fd3e4971df9016
-Author: Breno Leitao <leitao@debian.org>
-Date:   Thu Jul 17 07:39:26 2025 -0700
-
-    vmcoreinfo: Track and log recoverable hardware errors
-    
-    Introduce a generic infrastructure for tracking recoverable hardware
-    errors (HW errors that did not cause a panic) and record them for vmcore
-    consumption. This aids post-mortem crash analysis tools by preserving
-    a count and timestamp for the last occurrence of such errors.
-    
-    This patch adds centralized logging for three common sources of
-    recoverable hardware errors:
-    
-      - PCIe AER Correctable errors
-      - x86 Machine Check Exceptions (MCE)
-      - APEI/CPER GHES corrected or recoverable errors
-    
-    Each source logs to a shared `hwerror_tracking` array, protected by a
-    spinlock, and maintains a per-source error count and timestamp of the
-    most recent event.
-    
-    hwerror_tracking is write-only at kernel runtime, and it is meant to be
-    read from vmcore using tools like crash/drgn. For example, this is how
-    it looks like from drgn:
-    
-            >>> prog['hwerror_tracking']
-            (struct hwerror_tracking_info [3]){
-                    {
-                            .count = (int)0,
-                            .timestamp = (time64_t)0,
-                    },
-                    {
-                            .count = (int)0,
-                            .timestamp = (time64_t)0,
-                    },
-                    {
-                            .count = (int)844,
-                            .timestamp = (time64_t)1752852018,
-                    },
-            }
-    
-    Suggested-by: Tony Luck <tony.luck@intel.com>
-    Signed-off-by: Breno Leitao <leitao@debian.org>
-
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index 4da4eab56c81d..781cf574642eb 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -45,6 +45,7 @@
- #include <linux/task_work.h>
- #include <linux/hardirq.h>
- #include <linux/kexec.h>
-+#include <linux/vmcore_info.h>
- 
- #include <asm/fred.h>
- #include <asm/cpu_device_id.h>
-@@ -1692,6 +1693,8 @@ noinstr void do_machine_check(struct pt_regs *regs)
- out:
- 	instrumentation_end();
- 
-+	/* Given it didn't panic, mark it as recoverable */
-+	hwerror_tracking_log(HWE_RECOV_MCE);
- clear:
- 	mce_wrmsrq(MSR_IA32_MCG_STATUS, 0);
- }
-diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
-index f0584ccad4519..255453cdc72e9 100644
---- a/drivers/acpi/apei/ghes.c
-+++ b/drivers/acpi/apei/ghes.c
-@@ -43,6 +43,7 @@
- #include <linux/uuid.h>
- #include <linux/ras.h>
- #include <linux/task_work.h>
-+#include <linux/vmcore_info.h>
- 
- #include <acpi/actbl1.h>
- #include <acpi/ghes.h>
-@@ -1100,13 +1101,16 @@ static int ghes_proc(struct ghes *ghes)
- {
- 	struct acpi_hest_generic_status *estatus = ghes->estatus;
- 	u64 buf_paddr;
--	int rc;
-+	int rc, sev;
- 
- 	rc = ghes_read_estatus(ghes, estatus, &buf_paddr, FIX_APEI_GHES_IRQ);
- 	if (rc)
- 		goto out;
- 
--	if (ghes_severity(estatus->error_severity) >= GHES_SEV_PANIC)
-+	sev = ghes_severity(estatus->error_severity);
-+	if (sev == GHES_SEV_RECOVERABLE || sev ==  GHES_SEV_CORRECTED)
-+		hwerror_tracking_log(HWE_RECOV_GHES);
-+	else if (sev >= GHES_SEV_PANIC)
- 		__ghes_panic(ghes, estatus, buf_paddr, FIX_APEI_GHES_IRQ);
- 
- 	if (!ghes_estatus_cached(estatus)) {
-diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-index 70ac661883672..9d4fa1cb8afb9 100644
---- a/drivers/pci/pcie/aer.c
-+++ b/drivers/pci/pcie/aer.c
-@@ -30,6 +30,7 @@
- #include <linux/kfifo.h>
- #include <linux/ratelimit.h>
- #include <linux/slab.h>
-+#include <linux/vmcore_info.h>
- #include <acpi/apei.h>
- #include <acpi/ghes.h>
- #include <ras/ras_event.h>
-@@ -746,6 +747,7 @@ static void pci_dev_aer_stats_incr(struct pci_dev *pdev,
- 	switch (info->severity) {
- 	case AER_CORRECTABLE:
- 		aer_info->dev_total_cor_errs++;
-+		hwerror_tracking_log(HWE_RECOV_AER);
- 		counter = &aer_info->dev_cor_errs[0];
- 		max = AER_MAX_TYPEOF_COR_ERRS;
- 		break;
-diff --git a/include/linux/vmcore_info.h b/include/linux/vmcore_info.h
-index 37e003ae52626..5894da92a6ba4 100644
---- a/include/linux/vmcore_info.h
-+++ b/include/linux/vmcore_info.h
-@@ -77,4 +77,18 @@ extern u32 *vmcoreinfo_note;
- Elf_Word *append_elf_note(Elf_Word *buf, char *name, unsigned int type,
- 			  void *data, size_t data_len);
- void final_note(Elf_Word *buf);
-+
-+enum hwerror_tracking_source {
-+	HWE_RECOV_AER,
-+	HWE_RECOV_MCE,
-+	HWE_RECOV_GHES,
-+	HWE_RECOV_MAX,
-+};
-+
-+#ifdef CONFIG_VMCORE_INFO
-+void hwerror_tracking_log(enum hwerror_tracking_source src);
-+#else
-+void hwerror_tracking_log(enum hwerror_tracking_source src) {};
-+#endif
-+
- #endif /* LINUX_VMCORE_INFO_H */
-diff --git a/kernel/vmcore_info.c b/kernel/vmcore_info.c
-index e066d31d08f89..c3d2bfffec298 100644
---- a/kernel/vmcore_info.c
-+++ b/kernel/vmcore_info.c
-@@ -31,6 +31,14 @@ u32 *vmcoreinfo_note;
- /* trusted vmcoreinfo, e.g. we can make a copy in the crash memory */
- static unsigned char *vmcoreinfo_data_safecopy;
- 
-+static struct hwerror_tracking_info {
-+	int         count;
-+	time64_t    timestamp;
-+};
-+
-+static struct hwerror_tracking_info hwerror_tracking[HWE_RECOV_MAX];
-+static DEFINE_SPINLOCK(hwerror_tracking_lock);
-+
- Elf_Word *append_elf_note(Elf_Word *buf, char *name, unsigned int type,
- 			  void *data, size_t data_len)
- {
-@@ -118,6 +126,23 @@ phys_addr_t __weak paddr_vmcoreinfo_note(void)
- }
- EXPORT_SYMBOL(paddr_vmcoreinfo_note);
- 
-+void hwerror_tracking_log(enum hwerror_tracking_source src)
-+{
-+	struct hwerror_tracking_info *hwet;
-+	unsigned long flags;
-+
-+	if (src < 0 || src >= HWE_RECOV_MAX)
-+		return;
-+
-+	hwet = &hwerror_tracking[src];
-+
-+	spin_lock_irqsave(&hwerror_tracking_lock, flags);
-+	hwet->count++;
-+	hwet->timestamp = ktime_get_real_seconds();
-+	spin_unlock_irqrestore(&hwerror_tracking_lock, flags);
-+}
-+EXPORT_SYMBOL_GPL(hwerror_tracking_log);
-+
- static int __init crash_save_vmcoreinfo_init(void)
- {
- 	vmcoreinfo_data = (unsigned char *)get_zeroed_page(GFP_KERNEL);
+-Tony
