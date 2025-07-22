@@ -1,130 +1,291 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73C632E0924;
-	Mon, 21 Jul 2025 16:24:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59EBB25A34F
+	for <acpica-devel@lists.linux.dev>; Tue, 22 Jul 2025 16:56:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753115098; cv=none; b=Eiaea17eSsYrJ19lsvUh31u4a0q3Eo2qDZ2xv93MJ0drwpZDiLhwuvywmwLD9yAotyOtBlugn4nGIgTtQeGz2omBO55jeoPaXTwmGLvhNz8Csh9LfM5nXKQCMOlBiVp/UMPvO6QJhLVtXthlaJkcjOJJHeRw1mprD7WAVwZwqDU=
+	t=1753203414; cv=none; b=WnYZIAZUjIRF92hN63Soc9IgbYwKk9fCAdhFmvbPlhedrIh6DampduUl7qdWI50VvNUcnFmEiNm6volLJ1N1zozIusnQyGxjFcWYW2jNZpVMxXAMihy5qLNSIto4mDrpLZYreIVaDcxbAbkgeFiIhuBmXijaVjDYsuRpMGh26D0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753115098; c=relaxed/simple;
-	bh=Y0c8fyTNCDbBI1ib06Eg9UDIUghtCzMuq8qbf2t/k5w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cf3j7S1b9ph2BQHlxi+rOtGRkPvyaeEtbcpY38VR1SgdAgiUjJBXb3Zz0i0BTXuaBMZaK3FrhSVcU2yaGiQbnC14yujM6YapjNKfONcgZCP7+KM7gAqgZn6ja4qSncYj4PcJ1rwbjsnC7H7uikhR7GkHTOzhjtyBgJUrlkcWLaY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mFTssMIn; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mFTssMIn"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1753115096; x=1784651096;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Y0c8fyTNCDbBI1ib06Eg9UDIUghtCzMuq8qbf2t/k5w=;
-  b=mFTssMInS1Kwl3uVp8J8xU8irBVx7Fo2ubnlrlhYBb+VneYACjdowqCV
-   YCoQ+72UsWKA57IQEsto2xC+OMsYR/VSccARrnjHrKtnj5/ppKsuzBliO
-   hCQGcxOxefudnEQW4UVJnmpwp/CXDRRiAI9r2uJDMLern1Xr6a6x/yC1S
-   pMGnd3F9IqSgdUmDLLFN42rNsQ+lmqfC6TCSW5S/4A7yMTizDqCDHUvos
-   uL+Z2moDk/T/NpgamH3GsIn8j3m1vvh+CCc1h6edciWQBIjNnWr7Qng1B
-   hVgbHtOQoQ7zw1xvLOgR7DHKk0Z+ZMd32ays0dIAJ5VJbkRNeFmR7MzSe
-   g==;
-X-CSE-ConnectionGUID: qSvfbzlDQ/a98XdJTgh4Lg==
-X-CSE-MsgGUID: q/b9EifSQQWFMfYsg59J4Q==
-X-IronPort-AV: E=McAfee;i="6800,10657,11499"; a="72791488"
-X-IronPort-AV: E=Sophos;i="6.16,329,1744095600"; 
-   d="scan'208";a="72791488"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2025 09:24:56 -0700
-X-CSE-ConnectionGUID: /80dSFaRRlanM/T6SY8zFw==
-X-CSE-MsgGUID: l0qUhxBCQz+Cpzl2V+Cj2A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,329,1744095600"; 
-   d="scan'208";a="158184620"
-Received: from lkp-server01.sh.intel.com (HELO 9ee84586c615) ([10.239.97.150])
-  by orviesa010.jf.intel.com with ESMTP; 21 Jul 2025 09:24:49 -0700
-Received: from kbuild by 9ee84586c615 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1udtJn-000GyP-0h;
-	Mon, 21 Jul 2025 16:24:47 +0000
-Date: Tue, 22 Jul 2025 00:24:42 +0800
-From: kernel test robot <lkp@intel.com>
-To: Breno Leitao <leitao@debian.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>, James Morse <james.morse@arm.com>,
-	Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>,
-	Robert Moore <robert.moore@intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>, Hanjun Guo <guohanjun@huawei.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-	Oliver O'Halloran <oohall@gmail.com>,
-	Bjorn Helgaas <helgaas@kernel.org>
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	linux-media@vger.kernel.org, linux-acpi@vger.kernel.org,
-	linux-kernel@vger.kernel.org, acpica-devel@lists.linux.dev,
-	osandov@osandov.com, xueshuai@linux.alibaba.com,
-	konrad.wilk@oracle.com, linux-edac@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, linux-pci@vger.kernel.org,
-	kernel-team@meta.com, Breno Leitao <leitao@debian.org>
-Subject: Re: [PATCH v2] vmcoreinfo: Track and log recoverable hardware errors
-Message-ID: <202507220057.iVSR8aqd-lkp@intel.com>
-References: <20250721-vmcore_hw_error-v2-1-ab65a6b43c5a@debian.org>
+	s=arc-20240116; t=1753203414; c=relaxed/simple;
+	bh=mDC8389t2+JWUjueofRYUrCIHY6cXFw3h6b4pxyIR1A=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=ZB7me35BfHp+sBtaGtnmv4pWuwfmhjUT21CZ3ORd9sEhStZy+mwbS+qtMjtDquDKZmpSBW70EJ/4Tmt4+TTtV0N5aKKNYa50gQCNtfmOf7iHUJIwoIEWMTG7yVtQoK8aPnev3gvZTSw5xZH/K30lEXwkpgCDTsRb6znKRMmQvqM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-ae0c4945c76so777057366b.3
+        for <acpica-devel@lists.linux.dev>; Tue, 22 Jul 2025 09:56:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753203411; x=1753808211;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Y65MISs+ayKi1h/c+6Q6S5YM36LuH85b0lohq9HpFs4=;
+        b=L6LXuf9Nj7XnmxFxrh3U98diDGQKciRpkN+JPUHYcr88TPOhu4hYoZyU60hefcEn11
+         +DeNPpgLgz7WucNds3liQPyaL8s+ZC+q5yW1rlVdFi0+nAMzAPkCnqtSdEGozVqk6NGP
+         d8xgTtWblgdi/9Du57Qrbvyg082TfM+7G0N88Qz1WFLpRRCb7Yq81UcKm5FNFA5xcfmD
+         tgvLcWzqzkgo5XuIDL5Me/DTgKGWmUjZAwsqgauwzSlaJ4GguGITOLYuD/t5kB5iIfQf
+         GhCCNjwNKVVAx2lc5pPLnwv8XEGnOQBvEqy3KZU//2xpDDoKSzJ31QCffWeFwUgoaHoH
+         jXwQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVdecOW7/tRYKtP4UTbcdg3jjO+FqTeQ+NyZMpVnw40DRjJb8jgRnjq8jRla8P4SvEFDCmCXXPnaIx2NRo=@lists.linux.dev
+X-Gm-Message-State: AOJu0Yy7r5pQHA580B9fxNmkcXuQG4hbX5sVKF5HBFbFT/h6N+erb5qw
+	VDhoAPpcJGxh6rBMahec1M7mWgUmzeUYJKDU472dO01/52vU6sGzobd7
+X-Gm-Gg: ASbGncvRdp/3Ghhy36Z2q9GdhHJo/5qR+5p0xeyTXAu8Z/x+ZT4LOkO2GBnsBnjtUEx
+	/JqkeoYpaMJoDr+iCtNQ4uyfwvm/kXtPzkjSiX0KosKErx5djE8vY8iVX8nkTSsLML06NGgcaOy
+	qt6uoqFuorLqUK91ePqOYic5QAHmax4PeRdJrIti9YhpfSUGXUZ2ylqj05Cm429PL7RmhExKz3C
+	wz5LCkt6+vy+unT2E+cdIyK9wZy+aV/AdzGEEJF/NmSHlhsQEdCZ0ikI8nPhnxYlNQIgbJBMW0e
+	th8tAXSfixS87iTnqxnqtjjtHoPtYyKk+D0oGQ+hVqwWFNqBQ/cIBFbB0JN5N6lzV86TwpMzqPq
+	96G7z/CFCPOuLnjnni7rk8Jg=
+X-Google-Smtp-Source: AGHT+IH1AYyufkWnx6tJRuJWQqKT1LagkvCibf5kL4lR2YqMxA4GaifFCKYDzqx6UoyX8YSH9UzPZQ==
+X-Received: by 2002:a17:907:a647:b0:ad8:a935:b8ff with SMTP id a640c23a62f3a-ae9ce094585mr2656153566b.31.1753203410260;
+        Tue, 22 Jul 2025 09:56:50 -0700 (PDT)
+Received: from localhost ([2a03:2880:30ff:7::])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aec6c7d81e9sm891979866b.49.2025.07.22.09.56.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Jul 2025 09:56:49 -0700 (PDT)
+From: Breno Leitao <leitao@debian.org>
+Date: Tue, 22 Jul 2025 09:56:37 -0700
+Subject: [PATCH v3] vmcoreinfo: Track and log recoverable hardware errors
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250721-vmcore_hw_error-v2-1-ab65a6b43c5a@debian.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20250722-vmcore_hw_error-v3-1-ff0683fc1f17@debian.org>
+X-B4-Tracking: v=1; b=H4sIAMTCf2gC/23PwQrCMBAE0F8Je26k2aSp9uR/iEiSbm0ONrKVq
+ JT+u1QUFL0OzBtmgpE40giNmIApxzGmARqhCwGhd8ORZGyhEYAlVmVd1jKfQmI69NcDMSeWGtH
+ ghmzQykIh4MzUxdtT3O0LAX0cL4nvz4GslvRlKfNjZSWVXIfOVNR6q7XZtuSjG1aJj7BgGT8B+
+ wugVLJT67qrW4vOu0+geL9A9b/ovK2c9UaH6qu4n+f5AaB/gXMpAQAA
+X-Change-ID: 20250707-vmcore_hw_error-322429e6c316
+To: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
+ James Morse <james.morse@arm.com>, Tony Luck <tony.luck@intel.com>, 
+ Borislav Petkov <bp@alien8.de>, Robert Moore <robert.moore@intel.com>, 
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+ Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+ "H. Peter Anvin" <hpa@zytor.com>, Hanjun Guo <guohanjun@huawei.com>, 
+ Mauro Carvalho Chehab <mchehab@kernel.org>, 
+ Mahesh J Salgaonkar <mahesh@linux.ibm.com>, 
+ Oliver O'Halloran <oohall@gmail.com>, Bjorn Helgaas <bhelgaas@google.com>
+Cc: linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ acpica-devel@lists.linux.dev, osandov@osandov.com, 
+ xueshuai@linux.alibaba.com, konrad.wilk@oracle.com, 
+ linux-edac@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
+ linux-pci@vger.kernel.org, kernel-team@meta.com, 
+ Breno Leitao <leitao@debian.org>
+X-Mailer: b4 0.15-dev-dd21f
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6616; i=leitao@debian.org;
+ h=from:subject:message-id; bh=mDC8389t2+JWUjueofRYUrCIHY6cXFw3h6b4pxyIR1A=;
+ b=owEBbQKS/ZANAwAIATWjk5/8eHdtAcsmYgBof8LQP0mW5Apo3fJr4Kr3UWtr7a5fUV3ENzs3z
+ bsR6oroctuJAjMEAAEIAB0WIQSshTmm6PRnAspKQ5s1o5Of/Hh3bQUCaH/C0AAKCRA1o5Of/Hh3
+ bfrmEACWV0Y2NzNaS+rMrKfK+UXuqYwjEo8CgQ+ePFSlXXZwP6FW3WTvwMh7PSTQdr7ywWj4Axk
+ wwTbPaFU5BYeUK1aKZ8d3hkkuT7SD9ea4mOPr9rqK9h6yw+NkQbC/CuKVWHzuv8mpDZavcZ7b+V
+ oK04g/W4hahVLe0TcmPc1npBK4Bk+cubix+NP7YG1TelB2vHAr44zCdlp732X+0sIZ7vSqg+IHV
+ FSWEEMoU5x/aG75jE7VKxbfgpOBkqenHN7akQrh6MnD7eahJu2fY/q5HQOUmXPAv0oE9ZMOOjK6
+ iYAkjaL8E3pGUksfwB4omeIzF/J5bnMwm3TMamhYbrx/5A3MCn0JBiTxkPpjw8OOE0ySRFEXX49
+ 2jbUXS+1tr9sx6TgQUKt729saRYUe5fJBuoYMA+b8OqebtNpV43EKQgA2q5pGqA/ak4R78MeDOT
+ Bnq1CGyZ0oH1UqLbMxjrEQZVGUQbM8xhmluGo57IG5crD6XJjLNzjx5xloqE4Ohvj1SZ/mAnHYy
+ DzJRuAiLhkYtcxVEombXzHMpYVO+7jflrN7vsn8ND67bODDLjUbd7V475HSx2pTxD+P4aLKnju3
+ BgYljXOPgd5Pdi6NphcpJaC+OteLJxrk/F0hrvVL2Cql5+QkBy32qJ/+FSUul+BxYmqfjU9mbQu
+ E0VQF/26shq/x+Q==
+X-Developer-Key: i=leitao@debian.org; a=openpgp;
+ fpr=AC8539A6E8F46702CA4A439B35A3939FFC78776D
 
-Hi Breno,
+Introduce a generic infrastructure for tracking recoverable hardware
+errors (HW errors that did not cause a panic) and record them for vmcore
+consumption. This aids post-mortem crash analysis tools by preserving
+a count and timestamp for the last occurrence of such errors.
 
-kernel test robot noticed the following build warnings:
+Add centralized logging for three common sources of recoverable hardware
+errors:
 
-[auto build test WARNING on 97987520025658f30bb787a99ffbd9bbff9ffc9d]
+  - PCIe AER Correctable errors
+  - x86 Machine Check Exceptions (MCE)
+  - APEI/CPER GHES corrected or recoverable errors
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Breno-Leitao/vmcoreinfo-Track-and-log-recoverable-hardware-errors/20250721-181439
-base:   97987520025658f30bb787a99ffbd9bbff9ffc9d
-patch link:    https://lore.kernel.org/r/20250721-vmcore_hw_error-v2-1-ab65a6b43c5a%40debian.org
-patch subject: [PATCH v2] vmcoreinfo: Track and log recoverable hardware errors
-config: i386-buildonly-randconfig-001-20250721 (https://download.01.org/0day-ci/archive/20250722/202507220057.iVSR8aqd-lkp@intel.com/config)
-compiler: clang version 20.1.8 (https://github.com/llvm/llvm-project 87f0227cb60147a26a1eeb4fb06e3b505e9c7261)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250722/202507220057.iVSR8aqd-lkp@intel.com/reproduce)
+hwerror_data is write-only at kernel runtime, and it is meant to be
+read from vmcore using tools like crash/drgn. For example, this is how
+it looks like when opening the crashdump from drgn.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202507220057.iVSR8aqd-lkp@intel.com/
+	>>> prog['hwerror_data']
+	(struct hwerror_info[3]){
+		{
+			.count = (int)844,
+			.timestamp = (time64_t)1752852018,
+		},
+		...
 
-All warnings (new ones prefixed by >>):
+This helps fleet operators quickly triage whether a crash may be
+influenced by hardware recoverable errors (which executes a uncommon
+code path in the kernel), especially when recoverable errors occurred
+shortly before a panic, such as the bug fixed by
+commit ee62ce7a1d90 ("page_pool: Track DMA-mapped pages and unmap them
+when destroying the pool")
 
-   In file included from init/initramfs.c:603:
-   In file included from include/linux/kexec.h:18:
->> include/linux/vmcore_info.h:91:6: warning: no previous prototype for function 'hwerror_tracking_log' [-Wmissing-prototypes]
-      91 | void hwerror_tracking_log(enum hwerror_tracking_source src) {};
-         |      ^
-   include/linux/vmcore_info.h:91:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-      91 | void hwerror_tracking_log(enum hwerror_tracking_source src) {};
-         | ^
-         | static 
-   1 warning generated.
+This is not intended to replace full hardware diagnostics but provides
+a fast way to correlate hardware events with kernel panics quickly.
 
+Suggested-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Breno Leitao <leitao@debian.org>
+---
+Changes in v3:
+- Add more information about this feature in the commit message
+  (Borislav Petkov)
+- Renamed the function to hwerr_log_error_type() and use hwerr as
+  suffix (Borislav Petkov)
+- Make the empty function static inline (kernel test robot)
+- Link to v2: https://lore.kernel.org/r/20250721-vmcore_hw_error-v2-1-ab65a6b43c5a@debian.org
 
-vim +/hwerror_tracking_log +91 include/linux/vmcore_info.h
+Changes in v2:
+- Split the counter by recoverable error (Tony Luck)
+- Link to v1: https://lore.kernel.org/r/20250714-vmcore_hw_error-v1-1-8cf45edb6334@debian.org
+---
+ arch/x86/kernel/cpu/mce/core.c |  3 +++
+ drivers/acpi/apei/ghes.c       |  8 ++++++--
+ drivers/pci/pcie/aer.c         |  2 ++
+ include/linux/vmcore_info.h    | 14 ++++++++++++++
+ kernel/vmcore_info.c           | 18 ++++++++++++++++++
+ 5 files changed, 43 insertions(+), 2 deletions(-)
 
-    87	
-    88	#ifdef CONFIG_VMCORE_INFO
-    89	void hwerror_tracking_log(enum hwerror_tracking_source src);
-    90	#else
-  > 91	void hwerror_tracking_log(enum hwerror_tracking_source src) {};
-    92	#endif
-    93	
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index 4da4eab56c81d..cb225a42eebbb 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -45,6 +45,7 @@
+ #include <linux/task_work.h>
+ #include <linux/hardirq.h>
+ #include <linux/kexec.h>
++#include <linux/vmcore_info.h>
+ 
+ #include <asm/fred.h>
+ #include <asm/cpu_device_id.h>
+@@ -1692,6 +1693,8 @@ noinstr void do_machine_check(struct pt_regs *regs)
+ out:
+ 	instrumentation_end();
+ 
++	/* Given it didn't panic, mark it as recoverable */
++	hwerr_log_error_type(HWERR_RECOV_MCE);
+ clear:
+ 	mce_wrmsrq(MSR_IA32_MCG_STATUS, 0);
+ }
+diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
+index a0d54993edb3b..ebda2aa3d68f2 100644
+--- a/drivers/acpi/apei/ghes.c
++++ b/drivers/acpi/apei/ghes.c
+@@ -43,6 +43,7 @@
+ #include <linux/uuid.h>
+ #include <linux/ras.h>
+ #include <linux/task_work.h>
++#include <linux/vmcore_info.h>
+ 
+ #include <acpi/actbl1.h>
+ #include <acpi/ghes.h>
+@@ -1136,13 +1137,16 @@ static int ghes_proc(struct ghes *ghes)
+ {
+ 	struct acpi_hest_generic_status *estatus = ghes->estatus;
+ 	u64 buf_paddr;
+-	int rc;
++	int rc, sev;
+ 
+ 	rc = ghes_read_estatus(ghes, estatus, &buf_paddr, FIX_APEI_GHES_IRQ);
+ 	if (rc)
+ 		goto out;
+ 
+-	if (ghes_severity(estatus->error_severity) >= GHES_SEV_PANIC)
++	sev = ghes_severity(estatus->error_severity);
++	if (sev == GHES_SEV_RECOVERABLE || sev ==  GHES_SEV_CORRECTED)
++		hwerr_log_error_type(HWERR_RECOV_GHES);
++	else if (sev >= GHES_SEV_PANIC)
+ 		__ghes_panic(ghes, estatus, buf_paddr, FIX_APEI_GHES_IRQ);
+ 
+ 	if (!ghes_estatus_cached(estatus)) {
+diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
+index e286c197d7167..1ab744a3b7310 100644
+--- a/drivers/pci/pcie/aer.c
++++ b/drivers/pci/pcie/aer.c
+@@ -30,6 +30,7 @@
+ #include <linux/kfifo.h>
+ #include <linux/ratelimit.h>
+ #include <linux/slab.h>
++#include <linux/vmcore_info.h>
+ #include <acpi/apei.h>
+ #include <acpi/ghes.h>
+ #include <ras/ras_event.h>
+@@ -746,6 +747,7 @@ static void pci_dev_aer_stats_incr(struct pci_dev *pdev,
+ 	switch (info->severity) {
+ 	case AER_CORRECTABLE:
+ 		aer_info->dev_total_cor_errs++;
++		hwerr_log_error_type(HWERR_RECOV_AER);
+ 		counter = &aer_info->dev_cor_errs[0];
+ 		max = AER_MAX_TYPEOF_COR_ERRS;
+ 		break;
+diff --git a/include/linux/vmcore_info.h b/include/linux/vmcore_info.h
+index 37e003ae52626..39afce28bfaac 100644
+--- a/include/linux/vmcore_info.h
++++ b/include/linux/vmcore_info.h
+@@ -77,4 +77,18 @@ extern u32 *vmcoreinfo_note;
+ Elf_Word *append_elf_note(Elf_Word *buf, char *name, unsigned int type,
+ 			  void *data, size_t data_len);
+ void final_note(Elf_Word *buf);
++
++enum hwerr_error_type {
++	HWERR_RECOV_AER,
++	HWERR_RECOV_MCE,
++	HWERR_RECOV_GHES,
++	HWERR_RECOV_MAX,
++};
++
++#ifdef CONFIG_VMCORE_INFO
++void hwerr_log_error_type(enum hwerr_error_type src);
++#else
++static inline void hwerr_log_error_type(enum hwerr_error_type src) {};
++#endif
++
+ #endif /* LINUX_VMCORE_INFO_H */
+diff --git a/kernel/vmcore_info.c b/kernel/vmcore_info.c
+index e066d31d08f89..4b5ab45d468f5 100644
+--- a/kernel/vmcore_info.c
++++ b/kernel/vmcore_info.c
+@@ -31,6 +31,13 @@ u32 *vmcoreinfo_note;
+ /* trusted vmcoreinfo, e.g. we can make a copy in the crash memory */
+ static unsigned char *vmcoreinfo_data_safecopy;
+ 
++struct hwerr_info {
++	int __data_racy count;
++	time64_t __data_racy timestamp;
++};
++
++static struct hwerr_info hwerr_data[HWERR_RECOV_MAX];
++
+ Elf_Word *append_elf_note(Elf_Word *buf, char *name, unsigned int type,
+ 			  void *data, size_t data_len)
+ {
+@@ -118,6 +125,17 @@ phys_addr_t __weak paddr_vmcoreinfo_note(void)
+ }
+ EXPORT_SYMBOL(paddr_vmcoreinfo_note);
+ 
++void hwerr_log_error_type(enum hwerr_error_type src)
++{
++	if (src < 0 || src >= HWERR_RECOV_MAX)
++		return;
++
++	/* No need to atomics/locks given the precision is not important */
++	hwerr_data[src].count++;
++	hwerr_data[src].timestamp = ktime_get_real_seconds();
++}
++EXPORT_SYMBOL_GPL(hwerr_log_error_type);
++
+ static int __init crash_save_vmcoreinfo_init(void)
+ {
+ 	vmcoreinfo_data = (unsigned char *)get_zeroed_page(GFP_KERNEL);
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+---
+base-commit: 97987520025658f30bb787a99ffbd9bbff9ffc9d
+change-id: 20250707-vmcore_hw_error-322429e6c316
+
+Best regards,
+--  
+Breno Leitao <leitao@debian.org>
+
