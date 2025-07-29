@@ -1,124 +1,99 @@
-Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
+Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 034CA184E
-	for <acpica-devel@lists.linux.dev>; Mon, 28 Jul 2025 01:08:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.99
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B93D61758B
+	for <acpica-devel@lists.linux.dev>; Tue, 29 Jul 2025 13:05:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753664919; cv=none; b=HUetsyB1F+Uma6HOloY0VWx8hlikM8QvuUt0RZNZGF3cHzBQf57ps5ERKQvBvZafnoG+Ha47JwyPVoG/x8vbg0GCi+gkUKudbhmsTcGDXA3xsE7OASNbFyPZRtOkvJy4uSzSJe9xLwuyZOvD0Zj748XgFCzFcbrKUqSz8zRVrak=
+	t=1753794344; cv=none; b=pqYnR/OM/DyjN9Iw+dQAs+3vhouwIMuYIN1Uw8SWZXQ7adbloirtIgVDbgpgNKOm5G30fCpD6jklALgIF2/QMbEQm9TUpHDJ+uHK/s4l1cmWrINmT9iGD/krcA7KmBQLtpQw9Moec9wv3brxhgD0NVOhWaPnF3kYCsO6608EuPM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753664919; c=relaxed/simple;
-	bh=6Y3D9D9Ou7Tlb+4EPgKYBcu/72sFDKzVsN8C1xEr5d0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sAoRKKCPCiNq90ndC+S9l7kczEHYNBPB3sn339H+YI+z0M7CiwgtUNK7W4Gs6+xJv8+2QTcrEn/bMe+5krAhjT4Gsu4supPcV4YRK0a2VCbNA+atnoaHJZ2vnikBeHsQIhkHwHtgZA9oosMfOqnRTRzmOKX50AsfAb0BErl5KgQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=eGKpMu8N; arc=none smtp.client-ip=115.124.30.99
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+	s=arc-20240116; t=1753794344; c=relaxed/simple;
+	bh=E8U4HaasjlSJK1+GMTnWdvQ5jIArAlNSX8Ddx7nmH8I=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=VLfVDpo9KlSnonJtUEty3QA8dWUOJYUEEnZJn+UqpE+YWvABcAmV1fsnQCeSFtUSv1Nz2aO7YGtlQkiJ8e619jtOHVXeNRtX+6RrpsXOJ1p0qzEx7kCnk10oJCfGSmaLijyDsATp3xG2he2XgRUkabcaTHZb56hymci9vdBNlPo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=listout.xyz; spf=pass smtp.mailfrom=listout.xyz; dkim=pass (2048-bit key) header.d=listout.xyz header.i=@listout.xyz header.b=yoetLX9R; arc=none smtp.client-ip=80.241.56.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=listout.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=listout.xyz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="eGKpMu8N"
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1753664908; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=2Iz/DOKZWtt9pD+4iMxQ3XO3FM24VBfncMNR3ZAeizA=;
-	b=eGKpMu8NscuyUwKZnRp3q8JcVV05i/CslvjaduwcGJ4JGAVbxoBKkdH+efdAXASIX8mYJySv2+aHT7VylLCfSJ0JWtmoP8dFopeh3IzzyyjDbMOak0cgEY2+BDpxSe45xjlLEe+I6ay/nEQpWD32lTWqmHEdsuP/9zGoloh4D2o=
-Received: from 30.246.181.19(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0WkBBPjH_1753664905 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Mon, 28 Jul 2025 09:08:26 +0800
-Message-ID: <4ef01be1-44b2-4bf5-afec-a90d4f71e955@linux.alibaba.com>
-Date: Mon, 28 Jul 2025 09:08:25 +0800
+	dkim=pass (2048-bit key) header.d=listout.xyz header.i=@listout.xyz header.b="yoetLX9R"
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [10.196.197.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4brwZB09kmz9sd7;
+	Tue, 29 Jul 2025 15:05:38 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=listout.xyz; s=MBO0001;
+	t=1753794338;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=CLHsjtMIuXd91H+odZvaVwTEqjWhiAprj4V1F8Qa8sM=;
+	b=yoetLX9RIBNkYz/d0StCabOiUAILBQyQyVXoS7bho7SybnrE0r/2aUkIj+HDHqar1LuWRI
+	gBGn65KJzWK/UHoWa0EhSSNM/EXPjwivx6Bc6cxipu6RM9/qis2dTpnExx5TtoIbHgeYTw
+	DDVFEqAaqk5XX8i/YyshZqO3UQTd0D7I+eTPRXU3rb/oObHBTZsDmuKeS1zsgu8J1N5P6p
+	jUyfbcE4qYcKXiKfk3bsMQnA1ViNxiZAiN1/HIDBCswt0nmkKCPIij8qjg30l8DpJNZzBv
+	qKxURbdM1b+9jIoCNz/rHJyBntTSbImkQd1CYoHEy6vw8+9FUjOnUxKHOxYsTA==
+From: Brahmajit Das <listout@listout.xyz>
+To: linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Cc: robert.moore@intel.com,
+	rafael.j.wysocki@intel.com,
+	lenb@kernel.org,
+	jrtc27@jrtc27.com,
+	x0rw3ll@gmail.com
+Subject: [RFC PATCH] Revert "ACPICA: Avoid subobject buffer overflow when validating RSDP signature"
+Date: Tue, 29 Jul 2025 18:35:24 +0530
+Message-ID: <20250729130524.7226-1-listout@listout.xyz>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] vmcoreinfo: Track and log recoverable hardware errors
-To: Breno Leitao <leitao@debian.org>
-Cc: Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>,
- "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
- James Morse <james.morse@arm.com>, Robert Moore <robert.moore@intel.com>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
- "H. Peter Anvin" <hpa@zytor.com>, Hanjun Guo <guohanjun@huawei.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
- Oliver O'Halloran <oohall@gmail.com>, Bjorn Helgaas <bhelgaas@google.com>,
- linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
- acpica-devel@lists.linux.dev, osandov@osandov.com, konrad.wilk@oracle.com,
- linux-edac@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-pci@vger.kernel.org, kernel-team@meta.com
-References: <20250722-vmcore_hw_error-v3-1-ff0683fc1f17@debian.org>
- <7ce9731a-b212-4e27-8809-0559eb36c5f2@linux.alibaba.com>
- <4qh2wbcbzdajh2tvki26qe4tqjazmyvbn7v7aqqhkxpitdrexo@ucch4ppo7i4e>
- <fdb5dced-ea5a-48b8-bbb4-fc3ade7f3df8@linux.alibaba.com>
- <ldlansfiesfxf4a6dzp5z2etquz5jgiq6ttx3al6q7sesgros6@xh4lkevbzsow>
-From: Shuai Xue <xueshuai@linux.alibaba.com>
-In-Reply-To: <ldlansfiesfxf4a6dzp5z2etquz5jgiq6ttx3al6q7sesgros6@xh4lkevbzsow>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
+This reverts commit a3e525feaeec436cd9f82f84e345f0d18dc2638f.
 
+With 64b9dfd0776e9 there is the following build error:
 
-在 2025/7/26 00:16, Breno Leitao 写道:
-> Hello Shuai,
-> 
-> On Fri, Jul 25, 2025 at 03:40:58PM +0800, Shuai Xue wrote:
->>>> APEI does not define an error type named GHES. GHES is just a kernel
->>>> driver name. Many hardware error types can be handled in GHES (see
->>>> ghes_do_proc), for example, AER is routed by GHES when firmware-first
->>>> mode is used. As far as I know, firmware-first mode is commonly used in
->>>> production. Should GHES errors be categorized into AER, memory, and CXL
->>>> memory instead?
->>>
->>> I also considered slicing the data differently initially, but then
->>> realized it would add more complexity than necessary for my needs.
->>>
->>> If you believe we should further subdivide the data, I’m happy to do so.
->>>
->>> You’re suggesting a structure like this, which would then map to the
->>> corresponding CPER_SEC_ sections:
->>>
->>> 	enum hwerr_error_type {
->>> 	HWERR_RECOV_AER,     // maps to CPER_SEC_PCIE
->>> 	HWERR_RECOV_MCE,     // maps to default MCE + CPER_SEC_PCIE
->>
->> CPER_SEC_PCIE is typo?
-> 
-> Correct, HWERR_RECOV_MCE would map to the regular MCE and not errors
-> coming from GHES.
-> 
->>> 	HWERR_RECOV_CXL,     // maps to CPER_SEC_CXL_*
->>> 	HWERR_RECOV_MEMORY,  // maps to CPER_SEC_PLATFORM_MEM
->>> 	}
->>>
->>> Additionally, what about events related to CPU, Firmware, or DMA
->>> errors—for example, CPER_SEC_PROC, CPER_SEC_FW, CPER_SEC_DMAR? Should we
->>> include those in the classification as well?
->>
->> I would like to split a error from ghes to its own type,
->> it sounds more reasonable. I can not tell what happened from HWERR_RECOV_AERat all :(
-> 
-> Makes sense. Regarding your answer, I suppose we might want to have
-> something like the following:
-> 
-> 	enum hwerr_error_type {
-> 		HWERR_RECOV_MCE,     // maps to errors in do_machine_check()
-> 		HWERR_RECOV_CXL,     // maps to CPER_SEC_CXL_
-> 		HWERR_RECOV_PCI,     // maps to AER (pci_dev_aer_stats_incr()) and CPER_SEC_PCIE and CPER_SEC_PCI
-> 		HWERR_RECOV_MEMORY,  // maps to CPER_SEC_PLATFORM_MEM_
-> 		HWERR_RECOV_CPU,     // maps to CPER_SEC_PROC_
-> 		HWERR_RECOV_DMA,     // maps to CPER_SEC_DMAR_
-> 		HWERR_RECOV_OTHERS,  // maps to CPER_SEC_FW_, CPER_SEC_DMAR_,
-> 	}
-> 
-> Is this what you think we should track?
-> 
-> Thanks
-> --breno
+In file included from ./include/acpi/acpi.h:24,
+                 from drivers/acpi/acpica/tbprint.c:10:
+drivers/acpi/acpica/tbprint.c: In function ‘acpi_tb_print_table_header’:
+./include/acpi/actypes.h:530:43: error: ‘strncmp’ argument 1 declared attribute ‘nonstring’ is smaller than the specified bound 8 [-Werror=stringop-overread]
+  530 | #define ACPI_VALIDATE_RSDP_SIG(a)       (!strncmp (ACPI_CAST_PTR (char, (a)), ACPI_SIG_RSDP, (sizeof(a) < 8) ? ACPI_NAMESEG_SIZE : 8))
+      |                                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/acpi/acpica/tbprint.c:105:20: note: in expansion of macro ‘ACPI_VALIDATE_RSDP_SIG’
+  105 |         } else if (ACPI_VALIDATE_RSDP_SIG(ACPI_CAST_PTR(struct acpi_table_rsdp,
+      |                    ^~~~~~~~~~~~~~~~~~~~~~
+In file included from ./include/acpi/acpi.h:26:
+./include/acpi/actbl.h:69:14: note: argument ‘signature’ declared here
+   69 |         char signature[ACPI_NAMESEG_SIZE] ACPI_NONSTRING;       /* ASCII table signature */
+      |              ^~~~~~~~~
+cc1: all warnings being treated as errors
 
-It sounds good to me.
+With the overread checking in 64b9dfd0776e9, I think we can safely
+revert this and fix the build error.
 
-Thanks.
-Shuai
+Signed-off-by: Brahmajit Das <listout@listout.xyz>
+---
+ drivers/acpi/acpica/tbprint.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/acpi/acpica/tbprint.c b/drivers/acpi/acpica/tbprint.c
+index fd64460a2e26..73d854daad76 100644
+--- a/drivers/acpi/acpica/tbprint.c
++++ b/drivers/acpi/acpica/tbprint.c
+@@ -102,8 +102,7 @@ acpi_tb_print_table_header(acpi_physical_address address,
+ 		ACPI_INFO(("%-4.4s 0x%8.8X%8.8X %06X",
+ 			   header->signature, ACPI_FORMAT_UINT64(address),
+ 			   header->length));
+-	} else if (ACPI_VALIDATE_RSDP_SIG(ACPI_CAST_PTR(struct acpi_table_rsdp,
+-							header)->signature)) {
++	} else if (ACPI_VALIDATE_RSDP_SIG(header->signature)) {
+ 
+ 		/* RSDP has no common fields */
+ 
+-- 
+2.50.1
 
