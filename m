@@ -1,237 +1,143 @@
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.web.de (mout.web.de [212.227.17.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2604B2F2E
-	for <acpica-devel@lists.linux.dev>; Mon,  4 Aug 2025 18:59:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3C98A920
+	for <acpica-devel@lists.linux.dev>; Mon,  4 Aug 2025 20:25:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754333948; cv=none; b=CTGU+IkM85jPIfwi5yn6zzwLFY/B/OSqr1couYXDYTMGrQGZhGO7j8Jrc1lCv6VIHOTtJBcykNd8pIDDe41pi4GKNGQmNDDXwr6iEUgmTMCr4hcgiHuVdFzDD+C7YCITbP6f4JFMPhh1bOJvTYwJqlng5yV0kKDcRYa5Yg8ZYk8=
+	t=1754339129; cv=none; b=oaiuld6dMAE6UFM15s1YpNjQyoNLkBmByeKol2TJtC9OjUM1Io8umcbBZIzPxJs6FCbteN5SAlAfwqIqjRtC7PmIMEHp37V8OPl4kz65ZMrE54VzuEmSfcw4hpHRL9S4TNIwAELFUTZFaWSgnj2i4tbLIkdUuYH6TUMV/rqu2GY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754333948; c=relaxed/simple;
-	bh=cEmRum5XYAzlQ9YsYVZG/YOXocwoC+rRSdZyIJuBJ3g=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=BLa/Mmw/28dnKsepG7BMGhZLcNIq2xxkCgqBeedyL7k1fxHkO6a1oZHzI5Z1Cb7GD6sxkQg2tiT28dk99f5TJ+442R4wxHa4X6Q1RutHP6zkP9W+g4BWg5Z/F3WzN/noR2X9pa/nthwY0zg/5KuWl2PfmjreMqMSii3IJKnAyc8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aro0rh+F; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1754339129; c=relaxed/simple;
+	bh=dGgpH6gwtRoBFvZBeky55WocZ6/31ZO/1l8ElUMZKtQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:Cc:
+	 In-Reply-To:Content-Type; b=uKmGjwZdNNJzgqj0PKeJnXFIOpGIN3V88FgZcjvuY6g3cAsnsPD0/+evRin3scb8Z2gIIljH0xuMp8DuJpTD6Bj5lVpKWfjzTAJ1TWtDyL7Y30p2PmDEhqqM/OnNrWgVpT/xSM+4VyMV8IrH+pBAzYJJPjgGk2zE4eN+hDE3yCI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=fsd8vl27; arc=none smtp.client-ip=212.227.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aro0rh+F"
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-23fc5aedaf0so33158535ad.2
-        for <acpica-devel@lists.linux.dev>; Mon, 04 Aug 2025 11:59:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1754333946; x=1754938746; darn=lists.linux.dev;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZMHrDBTVCapZN4Ij1l4T90M7GkuqWi+q6Y/GUZJOE5A=;
-        b=aro0rh+F82Phg+c+CNkCzaUokO6ckeBo1J5BkN0/VHceZRmJah/JcPFFLGw9hhpvzF
-         rxoc6HS5ifdBYNghQy9szvNN3hpghP+tnF36KUelELOZnCvm4FmyTuF4x5vViAuItoEM
-         8GGa/Rdiy2Kbi5fGzs5n1YaZZtEYKpaDtD3v6sRkO8Kn9WAyiEvHUJ2LE3AFVL2tYGIt
-         icsnpylvv1WiocK8alcB/opFi2414b9A2WWTeGcxeIV2BjOlt36OdChUti1+Jx2giuXq
-         Sfb8son/Evx7RiYdFQUNQz9VuWy4BsJz0e3h/bRLptrQtEStCJgJTrX48iPwqrIQVvCP
-         56xA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754333946; x=1754938746;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZMHrDBTVCapZN4Ij1l4T90M7GkuqWi+q6Y/GUZJOE5A=;
-        b=crlDKp8yc7ot7+FRoNFeuzI6oXKiWuVBHbV2ER3qbaUO8G1/AxHLrNye0M+sjYutKZ
-         GdKKfl+QxdMknMcn6nBvWK3LbSLgezdzRP34tdLKDAGCSEnxKUY+73BJibvbfZf0ezvo
-         ep6Zg897h4Ol2Iv2T5C8911wiMMewxtI49oXYaXwDWqGC7FKeALmkY78arpXesvSovhS
-         XqNSUN6qnrE2sD8j8oTS1Qt/MiiZYvhvOmnD/cKjtJ/g+0YotLWQx5MySKswAQhVXaMn
-         x6Ca5a7fgoru7w+23pkRONYIW2hFZK80KaUlW2+UFUZACzrno0Pt50VqvGcR5ZUU7yNg
-         ktpQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVof8ykXeQZTnYkucnfkARQX9tetxDBXjM40lhrfhK1kn7EELcSNbd5bQcvEKaYZaO6AJ6ZcxFGWR4YKeo=@lists.linux.dev
-X-Gm-Message-State: AOJu0YwsiukP1cvY6mb4gB+34b8SaLoQzjrwnEr6MkVYhaRC/hzncRsb
-	lkMoCj2h94xEKD6o+taI7KUlb8cPdGPS0j8Sw9o2AqWmy3JrXPmtnlQA
-X-Gm-Gg: ASbGnctjs182b2Shc35SqbKc2LX76kcPAMBJ2796QeK9pFiEMIZeUxOdjlKh84rhpZV
-	ILABZeqFgJEx83e3yeCcQkqMH7JzUEFalz+cVeS6eFVlS4yY1uFvRQOS8vjVY9WX25jICnhKl5R
-	ewc8Cgna8PYoeerDbeWCYi14hdRNNoJhnjpEaVkS19Iq6IEt05R0Js5nY7voEtHcKHByNk8cGnB
-	JIUCSpCEtaIbMr+aP6gTrek8b2H5teKWd7eX8Ru2nUkKR6Qv5dmRPWEUyt3kryq71Z+scFgLOmR
-	ET5Bvz0hdJxeyjWlTkg26W/JJHVBw8MQjntGC1D6RKl8zBAAjn97ynqpLADSt36LfgEVYTvD49h
-	nqN/o9NJRrRfER6w=
-X-Google-Smtp-Source: AGHT+IEOnucQk03b0U4cuDeXdIZDNb3Av5jSWL1ukaJL0ECYCD8PzJA4YIhmCdjbvBLf0PScyJPtrQ==
-X-Received: by 2002:a17:903:2d1:b0:23f:d8e4:ded2 with SMTP id d9443c01a7336-24247066a0fmr142738105ad.53.1754333946401;
-        Mon, 04 Aug 2025 11:59:06 -0700 (PDT)
-Received: from diksha-pc.. ([2401:4900:1f27:8800:4f4d:8f79:7e46:47aa])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-241e8976d13sm115046835ad.109.2025.08.04.11.58.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Aug 2025 11:59:06 -0700 (PDT)
-From: Diksha Kumari <dikshakdevgan@gmail.com>
-To: rafael@kernel.org,
-	robert.moore@intel.com,
-	lenb@kernel.org,
-	linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	Markus.Elfring@web.de
-Cc: Diksha Kumari <dikshakdevgan@gmail.com>
-Subject: [PATCH V3] acpi: remove unnecessary return parentheses and conditional braces
-Date: Tue,  5 Aug 2025 00:28:26 +0530
-Message-Id: <20250804185826.29723-1-dikshakdevgan@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="fsd8vl27"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1754339107; x=1754943907; i=markus.elfring@web.de;
+	bh=KOX4QJhrYzw8nKxF5MH4/N723uIDdGwpPl2R8p8sZOE=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	 References:From:Cc:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=fsd8vl27gmABuH3AvFnaj6SrAyZ6CHp0f0sTIE+xgvbOhK0usGPOB2cf6qrBuzfU
+	 TWKRiJ99IDImfCzHBMgLZBUQXNaJko4/GEfO+WpovM+fdpwQS33zCKtJF//JadqtQ
+	 R2eQob2SadGiZ3YX8QMG/BxRuxT4NxXFmG5QxXQVilgicSCiSju//iKl9BpXa+Xcw
+	 yFqqLE0wxdjfXL0+tdhr6ao1NI5bxpK5A8gWXoef/98CX+BIjfxliaHDC9CmryPFw
+	 JU59nNwtg9ZwWkZFymIUpPTp4Zb+5V0xVAr2pdwvw/hvNFMtTqJ36v4fXuYOiwfQ+
+	 LZYUNmr+KS2DdSjXfg==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.29] ([94.31.92.221]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1Mae3c-1uCivg38Z8-00lpQb; Mon, 04
+ Aug 2025 22:25:06 +0200
+Message-ID: <927e03af-6682-44c5-9225-fb269b0a6e1c@web.de>
+Date: Mon, 4 Aug 2025 22:24:48 +0200
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V3] acpi: remove unnecessary return parentheses and
+ conditional braces
+To: Diksha Kumari <dikshakdevgan@gmail.com>, linux-acpi@vger.kernel.org,
+ acpica-devel@lists.linux.dev
+References: <20250804185826.29723-1-dikshakdevgan@gmail.com>
+Content-Language: en-GB, de-DE
+From: Markus Elfring <Markus.Elfring@web.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, Len Brown <lenb@kernel.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>,
+ Robert Moore <robert.moore@intel.com>
+In-Reply-To: <20250804185826.29723-1-dikshakdevgan@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:EngeTMD8wxUh8vQHUxcWbjcqwLe6EHpRBSz7g9GKQkSkptU7Ejy
+ mTJ5HjX6nbFhCZcc9nR99gxpxrwyvy6wXnoL8q04swLLdyFj47r2Ir0F9+iPdr0gaGvuQkP
+ r8kmEhMLuJvJPOYVVCkrf+PtOTZaAGBreizvUshVDzkFfkSnHELfofvkWwaTGmwOXUzzkbz
+ xh/8XRNWuZY6I3hdCKrtQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:I5wNMSbmLL0=;s95AXCMYu1DJA9/oelmgnfps6aa
+ mSy3u1K11Q5YqsphxNQweWm9DRud9wIeYIDu4eNLEpyVjhZjpM7gUjl/00KBgmTM79erBTH80
+ vHC8xrggWSm6FNrhR2R7hk4fIuVwV0bqcu9HsfTNvQOE1ggfTlRj+AgxjME+LJQ/TNPpWgLPT
+ PSqsUfm0zVTFMChn3NAsThait4QQgLYBqOEqLAqyFNeaiCTrA3E0RbOY2DGB5WP6NczbH9cst
+ Hiaong1cENa4HjpbYS0AyHx03lEV6FArhp2Kb1wBcSrGYb2vonYcDTup7VOqCF863Jc1ySmcn
+ ZZyiTRSS4Epd2gO4+Vn3cm+YnPTGmBCvkxe3X/PO7MtYpzHo1VmE5z65IacFL9HyEG9GgGLFj
+ Iq2eSBaDGZU4YSzDwc9hAJf4BNPqbNXZOgIZSWjWFydNmo9XciMe12N9+icOrcSxdUx8hZdzl
+ x3wC5M5YX7dhvpavw3saMPhdg8S0VfZu6BhG1crPkMlSMyqWaDYt0OXqtkFaLNaYVjn2f1iKG
+ 7bhagxfrwruOsIrzvQe6monmAzBU6bx4YXYHVH14Ffh2GUiFsRQjGvQwwpyWqJqkO+e73IFj6
+ A9uTztzKGBFA5TM0E4f2mMipZ7kFsDd436C7ShCY5BZI0JrYxw9QKkLsgeyq8RwhW3wZNk3qD
+ wqnX1B6umRalMUw5JxU2BkhoNxxmPWfGtVxCRM0c+kg4wi2p9WIjRBRCcdkca9/e+E8FNU1+p
+ ssCorz+FpaYZIkCKATC8NZymZGvUnE49b3USENCOtWpTu8PoUprzaXyw5XGdH2/Xr1C7qT/ha
+ P1663wT0uIVACLA+Ehflf57npRH1vTyRIyAPpAvfg3/lDMhmvAPkTj2YSzqCxXDEhrURhvY3d
+ qyh87cxjlKanikOItLcNcCV7kAbSEjiBSq7GvJKK+JVqSmIU0c2rUe0tuLpmdpham4utGXGI9
+ i2NZt7d5qeKIV2p4q0buM7HrDbtK78R7cUPPLAVbmiI+j7d1cdKsD6NNjiQNO0jfrjjb+fYzB
+ ww6YqzqfStjrVwE7eKZ4YJ9glX8jGOWKK3qtObhAldtvpvUvTy449UMHrOcnUcxj5IR1hZYDH
+ jBlHNZugOUWnYs/hVhFn1d/fZDSph6l7vByG4CL4rztEKAptB5b7LVtq0TqU+mfAgJLTMeHI8
+ PCMh2O8KtjEXWAloSJqp6rQe995G8rlz4OFe7e4dVXTehtShZ/xNV6sonbP5eXiJcohOrTycX
+ WBAtjaQqmqPyqOVDi7FR5Gm73mhWXsbi+bgJ5ak284KBZtCTbSEgsBFOS9yDyGHLg6H1Kxvi9
+ +bVpasp7EXtnGSMEW2szDmJcI7N+RfLaQownF4kRDn5OdcwcTHKUPHEi+kA9FJEYY0J0XdEDs
+ xqI7U4jiDpgBarqUf+f+FZ+7z/J+2U6sollh89FwXSdf7C79vR+mKntRvqB05jFxaAE1KxGJl
+ l3vllaIZ0U0CbjGK3ZV/t2TyZKgoQqdCd06CnidMkPemCGrGZARJ8sxYtGR9qEbqVuhg8+pn3
+ UfHb2DBKCPLKXP+7UT9+bcGQ0MH9iivRIG8Nu98F99mVupe7OBqqvChwbZBA7I3cqfVjjl6Ye
+ 8UYS8tXegfEXgWWTZyFUqS3hQBt/aYvGa8CL3K9UopRgehkLwEXnfkrWWJGnlIprKHccY6h60
+ rH7kfCdQFLiQ5L6usWtW2WoSra4yMi5bwUHxRKhgEcF2IDS/S57Ue4h3ZcCfaQxY36Do/va2Z
+ k6eyaSqmUmemkRabM8tIPM1V+jpR6LDFYU68A+kRmAW4v8Gxp/Pp4PmccmoYJSYHVXbfC8UyE
+ OzvhCFfvw1IoIqpzzKRUqrAJLbRn0pjJO9zwRbntO6O0OcBVc/2tbLidl91Cmu+QJFR+UJnPS
+ Ou3krVsqbPVcFNyvjW42fQRCIEavdkrW0cb37i86DK4ZqxHroVHTTo8jtX41KxrANgOLxT6GO
+ GTooLQM512McbxlET+HuBu/B8Cnuke+Q6eCHWdLA8jb3TtGKS1uMKpwF+AuBSn6hd24wiXuE4
+ sgzQbQW45Jmvm3WEzqfUMacNokW5my1/gY9lnJNF6uNhBuDVOP8opCg2VqTWI4mhIznk5fF6M
+ ijLHRMZwFNxO73TUU0ubUF9oBrHjqjCgbYKCs14qYS0NN6q9X1ICa4J8hWjnKp6Jf7kzVVsrX
+ URmSw54veEUCeJXvxun0ZWjVT5df2CjWTxMPs2oURIN0hOnYxU4RyVTzFLFKjEW0p9KBsexT3
+ 2xBz7br4K5oJ684fxDF4NODVtCgJajIRXD9zH19hw/gPVp8lZO+mTrixJlVDyvaiKVZ3f6ygE
+ 0kxNIrofo2awOXvMhTxvsH0kBj5udxkIGqFycact9X6gVtJiK4MEI/8fPmKv9ZHGG1eEpQF6G
+ FYF6D03Vdwj1Zeu0FHDVHbh40KMtraegkstczTeIoEdpKytIQd2ohcrXHknflXUF6fB5+j+D0
+ /Plij5JqaOJNL6sDB5i52LLGcN+c5Rp6AU2vghBGIsRx9GA15Jpq2od1/BkL+C1w8Kow30rsd
+ DV6nV5tChoXomt44arsUrSVtCi5E+TNNMUXK8gWkg6doacK9hWpDPZmoItFa0fC1phvNb+ugE
+ nsHbP4NJHxwdY5z30ePpiRbH8zJzH7tJIV7gaZBDwf9JWIft/JSHPf9RweTpz+Zsqt92dCwit
+ 4QJfCeUcOTzyd4g/qhV1xe2vs0mALLq4YR+YQsZMtuckJqB9QMIc81SS4TmQl89Xg2ipwPQpl
+ L9CegtKTK2XzycFHuHfSMQOJWAvsx2+nRdzyAkOrLcLI3PTygCq8ZNKb0nbL1wVdPwbpqeKma
+ n4GmuMhbXT5gYgfkPgnTB+0ckF/k4ff2xnafgXHrP5oVphTHFU3MnTZMtxR5Cn3Alpld/hlWg
+ TKdkQDLLmY9ENJzXNARwiM+aJnksFGT4uJ/pXEWtF7oLMSPwHQnnWe6Fc+99eWLGlKAtZy/E8
+ DZaCK6wjUzO3tn4/06tvMAmH9ARzaddt6d31yfow2AQl0TxkIel4j6EuN2ijAcYsYZ0R8gaZj
+ RBf6CubJT5kXvX23tGeirR03DnkTm8VOAZ4+f3dD7eZA+I0r7ir0qu/vO4DtJJ+SWipXQppNz
+ 3monqeyE4TmLSbc6Zyjn9rtkTUeTjF1ZJHNcx3H9pwre8v7QFFQIbjsfKWrdbpqpQTNvHghmY
+ nqiOgra+4whYldFeN2JE+lzBjbdQCwWiqgEU3gMuBfca25k8JP0DDxhqv0+f8QaZX6LmlUyyV
+ hsqeD6Pl6eNglw/xDpmTsGcFBGOJhLHzkUCnxGnfP0lB1H+MPum/ODSoecYkWCmQchVuD5klV
+ R6P08jNQ0mU4TeUQWZVesqZ4Sxy8ggWoMWMql4Mhio1W4OUpwAAoaKUesCdSDBoboLKyMXequ
+ eSRqUBD1ebDae9fxZIlOYGTHMODz3dwLHWLHK56FXiZIF5wkOrHGZ98Mji1insGFaEOdMZeim
+ 3cQUb5i+sZDKHG80JNOZMzi3pXw1YarRqvbtzVSGmznKh5XtmmqMO/LVre5yipECpSbCbdwuJ
+ nMdKCwjdR6cqFWUsfPoyZDLE0129r3PpzQUTojTUr29u
 
-This patch removes unnecessary parentheses around return values and curly braces from single-statement conditionals.
-Curly braces are removed only from conditionals that are directly related to the return statements being cleaned up.
-Other instances of one-line conditionals remain unchanged to limit the scope of this patch.
+> This patch removes =E2=80=A6
 
-These changes address checkpatch.pl warnings and improve code readability.
+See also:
 
-v3:
-- Updated commit message
+* https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/=
+Documentation/process/submitting-patches.rst?h=3Dv6.16#n94
 
-v2:
-- Addressed review comments
-- Updated commit message
+* https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/=
+Documentation/process/submitting-patches.rst?h=3Dv6.16#n658
 
-Signed-off-by: Diksha Kumari <dikshakdevgan@gmail.com>
----
- drivers/acpi/acpica/dbconvert.c | 43 +++++++++++++++------------------
- 1 file changed, 19 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/acpi/acpica/dbconvert.c b/drivers/acpi/acpica/dbconvert.c
-index 8dbab6932049..5f53388b6f1e 100644
---- a/drivers/acpi/acpica/dbconvert.c
-+++ b/drivers/acpi/acpica/dbconvert.c
-@@ -31,9 +31,8 @@ acpi_status acpi_db_hex_char_to_value(int hex_char, u8 *return_value)
- 
- 	/* Digit must be ascii [0-9a-fA-F] */
- 
--	if (!isxdigit(hex_char)) {
--		return (AE_BAD_HEX_CONSTANT);
--	}
-+	if (!isxdigit(hex_char))
-+		return AE_BAD_HEX_CONSTANT;
- 
- 	if (hex_char <= 0x39) {
- 		value = (u8)(hex_char - 0x30);
-@@ -42,7 +41,7 @@ acpi_status acpi_db_hex_char_to_value(int hex_char, u8 *return_value)
- 	}
- 
- 	*return_value = value;
--	return (AE_OK);
-+	return AE_OK;
- }
- 
- /*******************************************************************************
-@@ -68,19 +67,17 @@ static acpi_status acpi_db_hex_byte_to_binary(char *hex_byte, u8 *return_value)
- 	/* High byte */
- 
- 	status = acpi_db_hex_char_to_value(hex_byte[0], &local0);
--	if (ACPI_FAILURE(status)) {
--		return (status);
--	}
-+	if (ACPI_FAILURE(status))
-+		return status;
- 
- 	/* Low byte */
- 
- 	status = acpi_db_hex_char_to_value(hex_byte[1], &local1);
--	if (ACPI_FAILURE(status)) {
--		return (status);
--	}
-+	if (ACPI_FAILURE(status))
-+		return status;
- 
- 	*return_value = (u8)((local0 << 4) | local1);
--	return (AE_OK);
-+	return AE_OK;
- }
- 
- /*******************************************************************************
-@@ -122,9 +119,8 @@ acpi_db_convert_to_buffer(char *string, union acpi_object *object)
- 	}
- 
- 	buffer = ACPI_ALLOCATE(length);
--	if (!buffer) {
--		return (AE_NO_MEMORY);
--	}
-+	if (!buffer)
-+		return AE_NO_MEMORY;
- 
- 	/* Convert the command line bytes to the buffer */
- 
-@@ -132,7 +128,7 @@ acpi_db_convert_to_buffer(char *string, union acpi_object *object)
- 		status = acpi_db_hex_byte_to_binary(&string[i], &buffer[j]);
- 		if (ACPI_FAILURE(status)) {
- 			ACPI_FREE(buffer);
--			return (status);
-+			return status;
- 		}
- 
- 		j++;
-@@ -145,7 +141,7 @@ acpi_db_convert_to_buffer(char *string, union acpi_object *object)
- 	object->type = ACPI_TYPE_BUFFER;
- 	object->buffer.pointer = buffer;
- 	object->buffer.length = length;
--	return (AE_OK);
-+	return AE_OK;
- }
- 
- /*******************************************************************************
-@@ -175,7 +171,7 @@ acpi_status acpi_db_convert_to_package(char *string, union acpi_object *object)
- 	    ACPI_ALLOCATE_ZEROED(DB_DEFAULT_PKG_ELEMENTS *
- 				 sizeof(union acpi_object));
- 	if (!elements)
--		return (AE_NO_MEMORY);
-+		return AE_NO_MEMORY;
- 
- 	this = string;
- 	for (i = 0; i < (DB_DEFAULT_PKG_ELEMENTS - 1); i++) {
-@@ -190,7 +186,7 @@ acpi_status acpi_db_convert_to_package(char *string, union acpi_object *object)
- 		if (ACPI_FAILURE(status)) {
- 			acpi_db_delete_objects(i + 1, elements);
- 			ACPI_FREE(elements);
--			return (status);
-+			return status;
- 		}
- 
- 		this = next;
-@@ -199,7 +195,7 @@ acpi_status acpi_db_convert_to_package(char *string, union acpi_object *object)
- 	object->type = ACPI_TYPE_PACKAGE;
- 	object->package.count = i;
- 	object->package.elements = elements;
--	return (AE_OK);
-+	return AE_OK;
- }
- 
- /*******************************************************************************
-@@ -251,7 +247,7 @@ acpi_db_convert_to_object(acpi_object_type type,
- 		break;
- 	}
- 
--	return (status);
-+	return status;
- }
- 
- /*******************************************************************************
-@@ -272,9 +268,8 @@ u8 *acpi_db_encode_pld_buffer(struct acpi_pld_info *pld_info)
- 	u32 dword;
- 
- 	buffer = ACPI_ALLOCATE_ZEROED(ACPI_PLD_BUFFER_SIZE);
--	if (!buffer) {
--		return (NULL);
--	}
-+	if (!buffer)
-+		return NULL;
- 
- 	/* First 32 bits */
- 
-@@ -331,7 +326,7 @@ u8 *acpi_db_encode_pld_buffer(struct acpi_pld_info *pld_info)
- 		ACPI_MOVE_32_TO_32(&buffer[4], &dword);
- 	}
- 
--	return (ACPI_CAST_PTR(u8, buffer));
-+	return ACPI_CAST_PTR(u8, buffer);
- }
- 
- /*******************************************************************************
--- 
-2.34.1
+=E2=80=A6
 
+> These changes address checkpatch.pl warnings and improve code readabilit=
+y.
+>=20
+> v3:
+> - Updated commit message
+=E2=80=A6> ---
+>  drivers/acpi/acpica/dbconvert.c | 43 +++++++++++++++------------------
+=E2=80=A6
+
+Please move your patch version descriptions behind the marker line.
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Do=
+cumentation/process/submitting-patches.rst?h=3Dv6.16#n784
+
+Regards,
+Markus
