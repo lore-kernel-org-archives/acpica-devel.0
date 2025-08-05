@@ -1,156 +1,119 @@
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD61A42049
-	for <acpica-devel@lists.linux.dev>; Tue,  5 Aug 2025 13:00:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 505BD2566E9
+	for <acpica-devel@lists.linux.dev>; Tue,  5 Aug 2025 16:27:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754398815; cv=none; b=hWobfKufXFrJvhEXu+9ufTUkWNkcHWSEE4z7YTe3ceC+Qu89rzoh8fp4JuF6iE5AkDJbYZTL8fAUunteWDTn4cZZ0gsLDDFaH6xtdHgemT5WR9rLI5wnPqhP9eESrP/GXReB75Vcmx5uc5LKe3olFkv01lnhCtAyN8Ztex/SDX4=
+	t=1754411269; cv=none; b=ebDx1aDDOJrEo8W21z+peKmpXicRCyM39Raky40cYkkGab2PVMzGOP3zcTuwB693kufgh8f5Dxi5bVSmUuQwkRX6t8ICKxHmuxrhx6C7YCt/irVY5Ad/e7F1hzh38snBz3sxgoiWPVWSYYD3/EY5s0ZV53MC1QKM4pk/U2m9XoU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754398815; c=relaxed/simple;
-	bh=4t7dMcqzc7zDlbYdbuJAk8tlv9zQyDoso6MSnjmvM50=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sdlaTrk9DCw8tUM8zrs/4/SRZHSOqbC/1EYW7j+BYZ1c66sUYMhx5DnMszoA6YaAqTDiHVJpo7UKGWZCNHCb9sKov/ioWXNB8BMr+YsPxP1EYqqHd7Cp0BJGuo52WI7nLUi4fZ1knxVjXikoD6HrAW7wekIn4Zq4HIEIsqwsIOM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+	s=arc-20240116; t=1754411269; c=relaxed/simple;
+	bh=5BJyQyJpgV+yQh2Ditn8oy8a04n9ISc9q8hHHgTLqBU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KxcgI26KbH86DT62jSjVOBRObHDGtj394/UbH4GSrBdGRpopqQEquYZx+lefyHnhCCyBMSfn+ss3segzSXLVTn6hs9UAL7gFuNITnmRwq02viWnLtKLqqEPZl87b/fhtdYbxKkXkVmFbSt4TLGwinB2EZ4hSRohUkAzlRZzmTpU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F8gDg5Pi; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-6153a19dddfso8591323a12.1
-        for <acpica-devel@lists.linux.dev>; Tue, 05 Aug 2025 06:00:13 -0700 (PDT)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F8gDg5Pi"
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-24031a3e05cso374115ad.1
+        for <acpica-devel@lists.linux.dev>; Tue, 05 Aug 2025 09:27:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1754411267; x=1755016067; darn=lists.linux.dev;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+3O50zNUML0rXrgIz2L4u9X6MchbPe/SOppfxHs5UVY=;
+        b=F8gDg5PiPQA78vzIogu68++cpJs5w/PZw4rTvMyaO3Ri1SLccontc830kHbcYgxgu0
+         sN4egSLPGhvRApJvJYUIi5DUgAn8CynuKhvdQFMNhYmT9pUC5ZqMYFMR3Qi42xWNuJrA
+         3o/b1WTEBGee1oNiEQP13HQjNrLU1JbQUTZHyAj+IwNdkKXGFs+h9aHOtYVyQsa2wWJ4
+         f8q3vFEHY2OEpiytg+DtCdKijpF525hp+WN9BA1L2esYqpUJ8rFttI0/hYsmOwNrcsf1
+         LUA145Bg9iQ7VkcPdl4fR8NA4dl/SnfYjfHrcRAksQtEeXhLtupjDCqM6M2HXxlmQAfl
+         JV+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754398812; x=1755003612;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BzQHx1i5Fs/JOgRu+gEHkLfTlj9ZTI1ibV6XEx4O938=;
-        b=vyK6o3UodvCrQ13stPISgYQupOqUbkRvFeIDXKUOihMYa/AsrC3WlmnBZ9Md7cevL1
-         2TClnVmhH7vyEdVxhtSPzKg/WhLO1YNjTHT0Drfxj2fM8rHFj7ssbA69jymO7l3mGgEn
-         hHxaXxVeD2xfZe8ZssbQ7Ukl1KGapEukr4Pp44MEhOVGXC4Tae2DZbpH7axm08OHnysv
-         93QwGRoWD3QK3tykPmwLXurNciRAxVXoU7/3quxC9r9KRICObnTGQjrosW16gI5PIV+U
-         jELCRmLpEdS8NOFgCgjeBpiEc0bONx1Ywd5Qx+PSxpEtI+rnTvcH3upiVi2bNs6kyvGm
-         j+Cg==
-X-Forwarded-Encrypted: i=1; AJvYcCVwisyg7JCQm1nOpD7uUQUym69HfJNe2x0hPxZ0ImCoTuVPZHWQbA6BwK1Bq0N39L/6z86PfZ1RsWMMe+U=@lists.linux.dev
-X-Gm-Message-State: AOJu0YyjpvOktAsTjKZD+17ntpDtmtfAZ6dz54+kR2hkXNw3xoCfqpua
-	/2GKZG4gr5FNQyJYd0yKbpkrp5177JZAGu8wdBvYfEQNPJda/ZMhF4da
-X-Gm-Gg: ASbGncswFL/7ELJ9lTg/SkQ2DMIvqP5zmMFqMW/PuWgU+duI6PbzO2G2pMmmnE7R6pe
-	Q1CEmFt+K4c9EGHfDpeVlTwHfd2esD7mzlNIncoIAfqX5ZhD0rUDDG5/qCZDdLS31eC6jffkXwU
-	nIoDPFmPYfpF7YU4/7pqHh651FEUNZ7xWjlAf/dncOgbo39EZHT94zh2kT0pROGXFKMiJ9m67IQ
-	GT5jY45gZkC592y/P1jkD69EsFwvuGXiXwcU29Y7rwwUJXeNFnXKbtrI57Nj2IMcvwdo4uhG0Uu
-	Uvr1KGUq4dIgiUeeoYXdgXsI8MgH7eU3feDHVefgpWV0/l2ESp+rirBq2k0eglCUPaAGWR3p/1J
-	ZqjRhaYnUHDBB
-X-Google-Smtp-Source: AGHT+IGjZSNpW7mJUj3kJ0f8IpMzBnPj+YUjP2KOPDwITdV1e7i/FDQIvzJwDgp/H8IFr3t8Mztalg==
-X-Received: by 2002:a05:6402:4402:b0:615:b0e2:124b with SMTP id 4fb4d7f45d1cf-615e715bd27mr13276935a12.24.1754398811018;
-        Tue, 05 Aug 2025 06:00:11 -0700 (PDT)
-Received: from gmail.com ([2a03:2880:30ff:8::])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-615a8f2a448sm8429117a12.20.2025.08.05.06.00.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Aug 2025 06:00:10 -0700 (PDT)
-Date: Tue, 5 Aug 2025 06:00:07 -0700
-From: Breno Leitao <leitao@debian.org>
-To: Dave Hansen <dave.hansen@intel.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
-	James Morse <james.morse@arm.com>, Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>, 
-	Robert Moore <robert.moore@intel.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	Ingo Molnar <mingo@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, Hanjun Guo <guohanjun@huawei.com>, 
-	Mauro Carvalho Chehab <mchehab@kernel.org>, Mahesh J Salgaonkar <mahesh@linux.ibm.com>, 
-	Oliver O'Halloran <oohall@gmail.com>, Bjorn Helgaas <bhelgaas@google.com>, linux-acpi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, acpica-devel@lists.linux.dev, osandov@osandov.com, 
-	xueshuai@linux.alibaba.com, konrad.wilk@oracle.com, linux-edac@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, linux-pci@vger.kernel.org, kernel-team@meta.com, osandov@fb.com
-Subject: Re: [PATCH v4] vmcoreinfo: Track and log recoverable hardware errors
-Message-ID: <j4ac55vpiemdjdbfzoktoqv763fhpv6q2agmgaeggvahfj5kuy@v7l5lrrdwkjj>
-References: <20250801-vmcore_hw_error-v4-1-fa1fe65edb83@debian.org>
- <85663f65-d746-4e2c-b8a6-d594d9d0ba42@intel.com>
- <f3yl424iqiyctgz4j36hzjrhkgae3a2h5smhalm2qbmq3nrpzd@oeuprthscfez>
- <0c045f1b-44d0-430c-9e8a-58b65dd84453@intel.com>
- <buhwuankenpnvmio6jeoxverixoyfpn2eh62ix7vzxw7xvlxcv@rpibcrufr2yg>
- <842d675e-4c22-4f13-b40b-c4b5208e4223@intel.com>
- <ipdhflmgqrlq2vor657fiwex66jqw2do747uvu3tvrcsvtvdjj@lg5zrcua2dgn>
- <529fbbc1-90fe-467b-9bd2-d1a18bb38670@intel.com>
+        d=1e100.net; s=20230601; t=1754411267; x=1755016067;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+3O50zNUML0rXrgIz2L4u9X6MchbPe/SOppfxHs5UVY=;
+        b=cLehpF/UVNtcEXtqb9pLbG+Wg1sTief0V23BsCgSN047WUTf41HxK83WDQI7uqXSZa
+         txtsj5a4bRqD/176wjioRLLPwTDQ10JL+6ZppmM9CzBugln2RUmpxKh1ywZGjNTm6WVO
+         +AfPxf8ZZfyEnquxVOwUcJcfpSZDKtlbqgfR1qiNzQDGBZqVDm5ZPT0xfdwS+r4wr2LU
+         2r7QxFK2HA5y/G21W8wxNPrPgJFwK4b4rThRRnMuMYiOZkBYlwTfQKVih8qzmuvtZPA3
+         Vcymg9izl2qgKqxBXc063EgfrOUbU9MOa8jjDx7od1mAUis4RWcolP9hQ5bGuWlKUJmt
+         ++Vg==
+X-Forwarded-Encrypted: i=1; AJvYcCWAeNMbU0ywb90Wfki3ws1r484RfViFQhG+dYRrkGsIrbpNZe4sfDvLvGi5zQar2HffV8NGRL4N2r0Pffo=@lists.linux.dev
+X-Gm-Message-State: AOJu0Yxl9PSGhJaopZLypJiLjhd+h9G8LNw/XuElO24yp83mTtX5phD6
+	hD1P4xxCXrbbNDWupSJQak9MEc53c2/QZO3+GBz1y1KCQ5m4g8r/tIy2
+X-Gm-Gg: ASbGncu1XelixMIl71V/K9aA5Zv5TfKu7OGdJaQlikNHkh5usYcWSW5If2NZIUI9jY1
+	B6qLvVYBCbblldUyd4TwgQ1qz1QSfADY1Kj9RxmnhqiXT1xivSXVmiysBQbU/tMcjr+gsLj+Rei
+	JMjRETMLyb92wOnxL9DVBWL1oYNxDVipNRrcRsRqIVUxJfYDlE3KDYmGP4yd1Ow566vNri5T8jQ
+	wLLb7vstTLHiC1gav2FkozxE7KCN7f4AleM+z3GGnxPTNLgr1RyNoLANAnWKPPWzpgNdQRsHlh1
+	LfAmYglooBGDt5T0jLHzJ+JB4vqFziH8pvS7zUGSwh13Vd8SDqDUb3qXRU9Ho6cDpa9KFZqYx/x
+	JFMXLmAhySQ8i9lj6sfoBYU68q9iCVu7eE+2Hq7fRUinQyYgDo/wHUmBtLUxzClVtOa6JCNlQd+
+	2r
+X-Google-Smtp-Source: AGHT+IHd19vjUFBW1J+x03NMEuyJK581n036vQ9x7nKm3KkZ/4nVoUzKV04IA+ulDj2XieVTIyuOvA==
+X-Received: by 2002:a17:902:d508:b0:215:b1e3:c051 with SMTP id d9443c01a7336-24288d2ef67mr49304575ad.11.1754411267413;
+        Tue, 05 Aug 2025 09:27:47 -0700 (PDT)
+Received: from ?IPV6:2401:4900:1f27:8800:d28b:e1ed:c83b:1281? ([2401:4900:1f27:8800:d28b:e1ed:c83b:1281])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-241d1f0f7bfsm137074095ad.41.2025.08.05.09.27.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Aug 2025 09:27:47 -0700 (PDT)
+Message-ID: <4dc74bbe-da7b-4f40-a5e4-130ef20dbaa8@gmail.com>
+Date: Tue, 5 Aug 2025 21:57:42 +0530
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <529fbbc1-90fe-467b-9bd2-d1a18bb38670@intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V3] acpi: remove unnecessary return parentheses and
+ conditional braces
+To: Markus Elfring <Markus.Elfring@web.de>, linux-acpi@vger.kernel.org,
+ acpica-devel@lists.linux.dev
+Cc: LKML <linux-kernel@vger.kernel.org>, Len Brown <lenb@kernel.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>,
+ Robert Moore <robert.moore@intel.com>
+References: <20250804185826.29723-1-dikshakdevgan@gmail.com>
+ <927e03af-6682-44c5-9225-fb269b0a6e1c@web.de>
+Content-Language: en-US
+From: Diksha Kumari <dikshakdevgan@gmail.com>
+In-Reply-To: <927e03af-6682-44c5-9225-fb269b0a6e1c@web.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, Aug 04, 2025 at 10:41:05AM -0700, Dave Hansen wrote:
-> On 8/4/25 10:12, Breno Leitao wrote:
-> ...
-> > +- These errros are divided by are, which includes CPU, Memory, PCI, CXL and
-> > +  others.
-> 
-> There's a double typo in there I think:
-> 
-> 	errros => errors
-> and
-> 	are,=>area,
-> 
-> > --- a/include/linux/vmcore_info.h
-> > +++ b/include/linux/vmcore_info.h
-> > @@ -77,4 +77,20 @@ extern u32 *vmcoreinfo_note;
-> >  Elf_Word *append_elf_note(Elf_Word *buf, char *name, unsigned int type,
-> >  			  void *data, size_t data_len);
-> >  void final_note(Elf_Word *buf);
-> > +
-> > +enum hwerr_error_type {
-> > +	HWERR_RECOV_CPU,
-> > +	HWERR_RECOV_MEMORY,
-> > +	HWERR_RECOV_PCI,
-> > +	HWERR_RECOV_CXL,
-> > +	HWERR_RECOV_OTHERS,
-> > +	HWERR_RECOV_MAX,
-> > +};
-> That enum needs to go into an abi header.
 
-Agree. I came up with something like the change below. Is it the right
-thing to mark the enum as stable ABI?
+On 05/08/25 01:54, Markus Elfring wrote:
+>> This patch removes …
+> See also:
+>
+> * https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?h=v6.16#n94
+>
+> * https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?h=v6.16#n658
+>
+ok, i will do the changes in the next revision.
+> …
+>
+>> These changes address checkpatch.pl warnings and improve code readability.
+>>
+>> v3:
+>> - Updated commit message
+> …> ---
+>>   drivers/acpi/acpica/dbconvert.c | 43 +++++++++++++++------------------
+> …
+>
+> Please move your patch version descriptions behind the marker line.
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?h=v6.16#n784
 
-Thanks
---breno
+ok, will do the changes in the next revision.
 
-diff --git a/include/linux/vmcore_info.h b/include/linux/vmcore_info.h
-index 37e003ae52626..e71518caacdfc 100644
---- a/include/linux/vmcore_info.h
-+++ b/include/linux/vmcore_info.h
-@@ -5,6 +5,7 @@
- #include <linux/linkage.h>
- #include <linux/elfcore.h>
- #include <linux/elf.h>
-+#include <uapi/linux/vmcore.h>
 
- #define CRASH_CORE_NOTE_HEAD_BYTES ALIGN(sizeof(struct elf_note), 4)
- #define CRASH_CORE_NOTE_NAME_BYTES ALIGN(sizeof(NN_PRSTATUS), 4)
-@@ -77,4 +78,11 @@ extern u32 *vmcoreinfo_note;
- Elf_Word *append_elf_note(Elf_Word *buf, char *name, unsigned int type,
-                          void *data, size_t data_len);
- void final_note(Elf_Word *buf);
-+
-+#ifdef CONFIG_VMCORE_INFO
-+void hwerr_log_error_type(enum hwerr_error_type src);
-+#else
-+static inline void hwerr_log_error_type(enum hwerr_error_type src) {};
-+#endif
-+
- #endif /* LINUX_VMCORE_INFO_H */
-diff --git a/include/uapi/linux/vmcore.h b/include/uapi/linux/vmcore.h
-index 3e9da91866ffd..2ba89fafa518a 100644
---- a/include/uapi/linux/vmcore.h
-+++ b/include/uapi/linux/vmcore.h
-@@ -15,4 +15,13 @@ struct vmcoredd_header {
-        __u8 dump_name[VMCOREDD_MAX_NAME_BYTES]; /* Device dump's name */
- };
+Thanks again for the feedback.
 
-+enum hwerr_error_type {
-+       HWERR_RECOV_CPU,
-+       HWERR_RECOV_MEMORY,
-+       HWERR_RECOV_PCI,
-+       HWERR_RECOV_CXL,
-+       HWERR_RECOV_OTHERS,
-+       HWERR_RECOV_MAX,
-+};
-+
- #endif /* _UAPI_VMCORE_H */
+Regards,
+
+Diksha
+
+> Regards,
+> Markus
