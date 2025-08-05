@@ -1,143 +1,156 @@
-Received: from mout.web.de (mout.web.de [212.227.17.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3C98A920
-	for <acpica-devel@lists.linux.dev>; Mon,  4 Aug 2025 20:25:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD61A42049
+	for <acpica-devel@lists.linux.dev>; Tue,  5 Aug 2025 13:00:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754339129; cv=none; b=oaiuld6dMAE6UFM15s1YpNjQyoNLkBmByeKol2TJtC9OjUM1Io8umcbBZIzPxJs6FCbteN5SAlAfwqIqjRtC7PmIMEHp37V8OPl4kz65ZMrE54VzuEmSfcw4hpHRL9S4TNIwAELFUTZFaWSgnj2i4tbLIkdUuYH6TUMV/rqu2GY=
+	t=1754398815; cv=none; b=hWobfKufXFrJvhEXu+9ufTUkWNkcHWSEE4z7YTe3ceC+Qu89rzoh8fp4JuF6iE5AkDJbYZTL8fAUunteWDTn4cZZ0gsLDDFaH6xtdHgemT5WR9rLI5wnPqhP9eESrP/GXReB75Vcmx5uc5LKe3olFkv01lnhCtAyN8Ztex/SDX4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754339129; c=relaxed/simple;
-	bh=dGgpH6gwtRoBFvZBeky55WocZ6/31ZO/1l8ElUMZKtQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:Cc:
-	 In-Reply-To:Content-Type; b=uKmGjwZdNNJzgqj0PKeJnXFIOpGIN3V88FgZcjvuY6g3cAsnsPD0/+evRin3scb8Z2gIIljH0xuMp8DuJpTD6Bj5lVpKWfjzTAJ1TWtDyL7Y30p2PmDEhqqM/OnNrWgVpT/xSM+4VyMV8IrH+pBAzYJJPjgGk2zE4eN+hDE3yCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=fsd8vl27; arc=none smtp.client-ip=212.227.17.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="fsd8vl27"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1754339107; x=1754943907; i=markus.elfring@web.de;
-	bh=KOX4QJhrYzw8nKxF5MH4/N723uIDdGwpPl2R8p8sZOE=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:Cc:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=fsd8vl27gmABuH3AvFnaj6SrAyZ6CHp0f0sTIE+xgvbOhK0usGPOB2cf6qrBuzfU
-	 TWKRiJ99IDImfCzHBMgLZBUQXNaJko4/GEfO+WpovM+fdpwQS33zCKtJF//JadqtQ
-	 R2eQob2SadGiZ3YX8QMG/BxRuxT4NxXFmG5QxXQVilgicSCiSju//iKl9BpXa+Xcw
-	 yFqqLE0wxdjfXL0+tdhr6ao1NI5bxpK5A8gWXoef/98CX+BIjfxliaHDC9CmryPFw
-	 JU59nNwtg9ZwWkZFymIUpPTp4Zb+5V0xVAr2pdwvw/hvNFMtTqJ36v4fXuYOiwfQ+
-	 LZYUNmr+KS2DdSjXfg==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.29] ([94.31.92.221]) by smtp.web.de (mrweb106
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1Mae3c-1uCivg38Z8-00lpQb; Mon, 04
- Aug 2025 22:25:06 +0200
-Message-ID: <927e03af-6682-44c5-9225-fb269b0a6e1c@web.de>
-Date: Mon, 4 Aug 2025 22:24:48 +0200
+	s=arc-20240116; t=1754398815; c=relaxed/simple;
+	bh=4t7dMcqzc7zDlbYdbuJAk8tlv9zQyDoso6MSnjmvM50=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sdlaTrk9DCw8tUM8zrs/4/SRZHSOqbC/1EYW7j+BYZ1c66sUYMhx5DnMszoA6YaAqTDiHVJpo7UKGWZCNHCb9sKov/ioWXNB8BMr+YsPxP1EYqqHd7Cp0BJGuo52WI7nLUi4fZ1knxVjXikoD6HrAW7wekIn4Zq4HIEIsqwsIOM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-6153a19dddfso8591323a12.1
+        for <acpica-devel@lists.linux.dev>; Tue, 05 Aug 2025 06:00:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1754398812; x=1755003612;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BzQHx1i5Fs/JOgRu+gEHkLfTlj9ZTI1ibV6XEx4O938=;
+        b=vyK6o3UodvCrQ13stPISgYQupOqUbkRvFeIDXKUOihMYa/AsrC3WlmnBZ9Md7cevL1
+         2TClnVmhH7vyEdVxhtSPzKg/WhLO1YNjTHT0Drfxj2fM8rHFj7ssbA69jymO7l3mGgEn
+         hHxaXxVeD2xfZe8ZssbQ7Ukl1KGapEukr4Pp44MEhOVGXC4Tae2DZbpH7axm08OHnysv
+         93QwGRoWD3QK3tykPmwLXurNciRAxVXoU7/3quxC9r9KRICObnTGQjrosW16gI5PIV+U
+         jELCRmLpEdS8NOFgCgjeBpiEc0bONx1Ywd5Qx+PSxpEtI+rnTvcH3upiVi2bNs6kyvGm
+         j+Cg==
+X-Forwarded-Encrypted: i=1; AJvYcCVwisyg7JCQm1nOpD7uUQUym69HfJNe2x0hPxZ0ImCoTuVPZHWQbA6BwK1Bq0N39L/6z86PfZ1RsWMMe+U=@lists.linux.dev
+X-Gm-Message-State: AOJu0YyjpvOktAsTjKZD+17ntpDtmtfAZ6dz54+kR2hkXNw3xoCfqpua
+	/2GKZG4gr5FNQyJYd0yKbpkrp5177JZAGu8wdBvYfEQNPJda/ZMhF4da
+X-Gm-Gg: ASbGncswFL/7ELJ9lTg/SkQ2DMIvqP5zmMFqMW/PuWgU+duI6PbzO2G2pMmmnE7R6pe
+	Q1CEmFt+K4c9EGHfDpeVlTwHfd2esD7mzlNIncoIAfqX5ZhD0rUDDG5/qCZDdLS31eC6jffkXwU
+	nIoDPFmPYfpF7YU4/7pqHh651FEUNZ7xWjlAf/dncOgbo39EZHT94zh2kT0pROGXFKMiJ9m67IQ
+	GT5jY45gZkC592y/P1jkD69EsFwvuGXiXwcU29Y7rwwUJXeNFnXKbtrI57Nj2IMcvwdo4uhG0Uu
+	Uvr1KGUq4dIgiUeeoYXdgXsI8MgH7eU3feDHVefgpWV0/l2ESp+rirBq2k0eglCUPaAGWR3p/1J
+	ZqjRhaYnUHDBB
+X-Google-Smtp-Source: AGHT+IGjZSNpW7mJUj3kJ0f8IpMzBnPj+YUjP2KOPDwITdV1e7i/FDQIvzJwDgp/H8IFr3t8Mztalg==
+X-Received: by 2002:a05:6402:4402:b0:615:b0e2:124b with SMTP id 4fb4d7f45d1cf-615e715bd27mr13276935a12.24.1754398811018;
+        Tue, 05 Aug 2025 06:00:11 -0700 (PDT)
+Received: from gmail.com ([2a03:2880:30ff:8::])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-615a8f2a448sm8429117a12.20.2025.08.05.06.00.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Aug 2025 06:00:10 -0700 (PDT)
+Date: Tue, 5 Aug 2025 06:00:07 -0700
+From: Breno Leitao <leitao@debian.org>
+To: Dave Hansen <dave.hansen@intel.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
+	James Morse <james.morse@arm.com>, Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>, 
+	Robert Moore <robert.moore@intel.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, Hanjun Guo <guohanjun@huawei.com>, 
+	Mauro Carvalho Chehab <mchehab@kernel.org>, Mahesh J Salgaonkar <mahesh@linux.ibm.com>, 
+	Oliver O'Halloran <oohall@gmail.com>, Bjorn Helgaas <bhelgaas@google.com>, linux-acpi@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, acpica-devel@lists.linux.dev, osandov@osandov.com, 
+	xueshuai@linux.alibaba.com, konrad.wilk@oracle.com, linux-edac@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, linux-pci@vger.kernel.org, kernel-team@meta.com, osandov@fb.com
+Subject: Re: [PATCH v4] vmcoreinfo: Track and log recoverable hardware errors
+Message-ID: <j4ac55vpiemdjdbfzoktoqv763fhpv6q2agmgaeggvahfj5kuy@v7l5lrrdwkjj>
+References: <20250801-vmcore_hw_error-v4-1-fa1fe65edb83@debian.org>
+ <85663f65-d746-4e2c-b8a6-d594d9d0ba42@intel.com>
+ <f3yl424iqiyctgz4j36hzjrhkgae3a2h5smhalm2qbmq3nrpzd@oeuprthscfez>
+ <0c045f1b-44d0-430c-9e8a-58b65dd84453@intel.com>
+ <buhwuankenpnvmio6jeoxverixoyfpn2eh62ix7vzxw7xvlxcv@rpibcrufr2yg>
+ <842d675e-4c22-4f13-b40b-c4b5208e4223@intel.com>
+ <ipdhflmgqrlq2vor657fiwex66jqw2do747uvu3tvrcsvtvdjj@lg5zrcua2dgn>
+ <529fbbc1-90fe-467b-9bd2-d1a18bb38670@intel.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V3] acpi: remove unnecessary return parentheses and
- conditional braces
-To: Diksha Kumari <dikshakdevgan@gmail.com>, linux-acpi@vger.kernel.org,
- acpica-devel@lists.linux.dev
-References: <20250804185826.29723-1-dikshakdevgan@gmail.com>
-Content-Language: en-GB, de-DE
-From: Markus Elfring <Markus.Elfring@web.de>
-Cc: LKML <linux-kernel@vger.kernel.org>, Len Brown <lenb@kernel.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>,
- Robert Moore <robert.moore@intel.com>
-In-Reply-To: <20250804185826.29723-1-dikshakdevgan@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:EngeTMD8wxUh8vQHUxcWbjcqwLe6EHpRBSz7g9GKQkSkptU7Ejy
- mTJ5HjX6nbFhCZcc9nR99gxpxrwyvy6wXnoL8q04swLLdyFj47r2Ir0F9+iPdr0gaGvuQkP
- r8kmEhMLuJvJPOYVVCkrf+PtOTZaAGBreizvUshVDzkFfkSnHELfofvkWwaTGmwOXUzzkbz
- xh/8XRNWuZY6I3hdCKrtQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:I5wNMSbmLL0=;s95AXCMYu1DJA9/oelmgnfps6aa
- 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
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <529fbbc1-90fe-467b-9bd2-d1a18bb38670@intel.com>
 
-> This patch removes =E2=80=A6
+On Mon, Aug 04, 2025 at 10:41:05AM -0700, Dave Hansen wrote:
+> On 8/4/25 10:12, Breno Leitao wrote:
+> ...
+> > +- These errros are divided by are, which includes CPU, Memory, PCI, CXL and
+> > +  others.
+> 
+> There's a double typo in there I think:
+> 
+> 	errros => errors
+> and
+> 	are,=>area,
+> 
+> > --- a/include/linux/vmcore_info.h
+> > +++ b/include/linux/vmcore_info.h
+> > @@ -77,4 +77,20 @@ extern u32 *vmcoreinfo_note;
+> >  Elf_Word *append_elf_note(Elf_Word *buf, char *name, unsigned int type,
+> >  			  void *data, size_t data_len);
+> >  void final_note(Elf_Word *buf);
+> > +
+> > +enum hwerr_error_type {
+> > +	HWERR_RECOV_CPU,
+> > +	HWERR_RECOV_MEMORY,
+> > +	HWERR_RECOV_PCI,
+> > +	HWERR_RECOV_CXL,
+> > +	HWERR_RECOV_OTHERS,
+> > +	HWERR_RECOV_MAX,
+> > +};
+> That enum needs to go into an abi header.
 
-See also:
+Agree. I came up with something like the change below. Is it the right
+thing to mark the enum as stable ABI?
 
-* https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/=
-Documentation/process/submitting-patches.rst?h=3Dv6.16#n94
+Thanks
+--breno
 
-* https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/=
-Documentation/process/submitting-patches.rst?h=3Dv6.16#n658
+diff --git a/include/linux/vmcore_info.h b/include/linux/vmcore_info.h
+index 37e003ae52626..e71518caacdfc 100644
+--- a/include/linux/vmcore_info.h
++++ b/include/linux/vmcore_info.h
+@@ -5,6 +5,7 @@
+ #include <linux/linkage.h>
+ #include <linux/elfcore.h>
+ #include <linux/elf.h>
++#include <uapi/linux/vmcore.h>
 
+ #define CRASH_CORE_NOTE_HEAD_BYTES ALIGN(sizeof(struct elf_note), 4)
+ #define CRASH_CORE_NOTE_NAME_BYTES ALIGN(sizeof(NN_PRSTATUS), 4)
+@@ -77,4 +78,11 @@ extern u32 *vmcoreinfo_note;
+ Elf_Word *append_elf_note(Elf_Word *buf, char *name, unsigned int type,
+                          void *data, size_t data_len);
+ void final_note(Elf_Word *buf);
++
++#ifdef CONFIG_VMCORE_INFO
++void hwerr_log_error_type(enum hwerr_error_type src);
++#else
++static inline void hwerr_log_error_type(enum hwerr_error_type src) {};
++#endif
++
+ #endif /* LINUX_VMCORE_INFO_H */
+diff --git a/include/uapi/linux/vmcore.h b/include/uapi/linux/vmcore.h
+index 3e9da91866ffd..2ba89fafa518a 100644
+--- a/include/uapi/linux/vmcore.h
++++ b/include/uapi/linux/vmcore.h
+@@ -15,4 +15,13 @@ struct vmcoredd_header {
+        __u8 dump_name[VMCOREDD_MAX_NAME_BYTES]; /* Device dump's name */
+ };
 
-=E2=80=A6
-
-> These changes address checkpatch.pl warnings and improve code readabilit=
-y.
->=20
-> v3:
-> - Updated commit message
-=E2=80=A6> ---
->  drivers/acpi/acpica/dbconvert.c | 43 +++++++++++++++------------------
-=E2=80=A6
-
-Please move your patch version descriptions behind the marker line.
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Do=
-cumentation/process/submitting-patches.rst?h=3Dv6.16#n784
-
-Regards,
-Markus
++enum hwerr_error_type {
++       HWERR_RECOV_CPU,
++       HWERR_RECOV_MEMORY,
++       HWERR_RECOV_PCI,
++       HWERR_RECOV_CXL,
++       HWERR_RECOV_OTHERS,
++       HWERR_RECOV_MAX,
++};
++
+ #endif /* _UAPI_VMCORE_H */
