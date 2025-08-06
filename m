@@ -1,80 +1,104 @@
-Received: from forward100b.mail.yandex.net (forward100b.mail.yandex.net [178.154.239.147])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A693828B516
-	for <acpica-devel@lists.linux.dev>; Wed,  6 Aug 2025 16:13:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.147
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 740411FBEA8
+	for <acpica-devel@lists.linux.dev>; Wed,  6 Aug 2025 18:50:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.149.199.84
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754496837; cv=none; b=oT/MTstWwXX+M/hv/HAmaqfEaltwulGP8HafQCU/g7y70QTyqDxwStQW/ekpOecg65VLNFbkVXPC2AcGNRaOO+ynqQYD64MkP47fnAcLE8AdONbFG8F8vdnfOhdcfrSfciPp21JGS7lcXmVX5y826wnpTguSYxgbUy3Aj3L21vc=
+	t=1754506267; cv=none; b=P9Rvr61VJUoACpDFpeZNlTHGqBBMDS/Kd5C+SH7juEInxxEnKOCfyeFHVK8XC8VuxaA2JhD9ITu/cYE7OaqlgNrVeS4aO/Qwvj4VPwlH8WDU/8pHIJm+nAsMon52hvb6JIGKpsGeRDdMY0tLFKAXocO7MrfDQhxdNDlTzM6NkRY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754496837; c=relaxed/simple;
-	bh=6ISx/nw3+eOU66AbHs7u3iNQmuaQbReknNmnLszrGhU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=l4wPzj2ORTSsNbCApsncEv78AlgiQdsRjAwdyfleN7PzJCE885v7TEN+3dBiS3s+oQmZPGzH4V/2524FGRGp6eIvAQyavjg4r7rKmDgrZvkXBIcz2bv0usV2B3j8VLz1FZPDOmi7L01UieMlw7g4HPajj3dRJGa8VtCu3E6WDnU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru; spf=pass smtp.mailfrom=yandex.ru; dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b=XAjsJpb1; arc=none smtp.client-ip=178.154.239.147
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.ru
+	s=arc-20240116; t=1754506267; c=relaxed/simple;
+	bh=4L7OnCYNKnrx/l5GKbgkr0QaMN4bC6LphZ7ZI4fQNsc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kunYsomWyGjsL+ziu7m9hs0NQ/YcfgvO+RU9YR1gEwv8mwR1/uW7sUwUZpevecaHDbjzqSfJTugTuXHbVJwTll04M1jgRS2w+YLI25RqKsLGu38aJdf+h8zv50dOduM2Th+gxm4w8uFIbTOFgssQeDacvsIBEO4c4Ze+KCqn13Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru; spf=pass smtp.mailfrom=ispras.ru; dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b=UG8+KSEm; arc=none smtp.client-ip=83.149.199.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b="XAjsJpb1"
-Received: from mail-nwsmtp-smtp-production-main-67.sas.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-67.sas.yp-c.yandex.net [IPv6:2a02:6b8:c23:384c:0:640:64ee:0])
-	by forward100b.mail.yandex.net (Yandex) with ESMTPS id D4ADF80601;
-	Wed, 06 Aug 2025 19:13:46 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-67.sas.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id iDkRkoZNA4Y0-dXQ0zFAK;
-	Wed, 06 Aug 2025 19:13:46 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
-	t=1754496826; bh=X+v/n9rLerBM2RmlNzlMSZsG8oTEMlbl7bgj1hgRlno=;
-	h=Message-ID:Date:Cc:Subject:To:From;
-	b=XAjsJpb1WmOITWC9sW5dpJLnHHrI4yTCtNlMxN/WbW0O3O/A0OAer3YisJt6hjN70
-	 DyS3Elis5HXTVYAGr9Brs/YRojphEx6mS+uZYBO5Guaxx9nDn0GWLITPL4rZGxOlql
-	 eXiB9egVtYSuQYWncYTkcdDcNAk6frYLKV7oXiQI=
-Authentication-Results: mail-nwsmtp-smtp-production-main-67.sas.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
-From: Dmitry Antipov <dmantipov@yandex.ru>
-To: Niyas Sait <niyas.sait@linaro.org>,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	Robert Moore <robert.moore@intel.com>
-Cc: linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev,
-	lvc-project@linuxtesting.org,
-	Dmitry Antipov <dmantipov@yandex.ru>
-Subject: [PATCH] ACPICA: fix largest possible resource descriptor index
-Date: Wed,  6 Aug 2025 19:13:01 +0300
-Message-ID: <20250806161301.233242-1-dmantipov@yandex.ru>
-X-Mailer: git-send-email 2.50.1
+	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="UG8+KSEm"
+Received: from localhost (unknown [10.10.165.9])
+	by mail.ispras.ru (Postfix) with ESMTPSA id 8141C4028381;
+	Wed,  6 Aug 2025 18:50:43 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 8141C4028381
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
+	s=default; t=1754506243;
+	bh=9j5CexT8bdFIHvMhQ9FMXMaZBJvFjFE6SMxQVK0pW4U=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=UG8+KSEmkifDq2ZyI+1rN+2dOIND8R1c/hVFcwNNE71s8sqYGgGykOBs/pizrZ/PF
+	 Gr7ath7i5jryrqAnDwmDfntX2OKFNwHiK5hhIqsY3Yi1ZJ0bg1q8XMYmdQZu9b4SeR
+	 zAZaCg4e4bYEKh19cY9rvj2cGTuGfSAwOWvbaaOk=
+Date: Wed, 6 Aug 2025 21:50:43 +0300
+From: Fedor Pchelkin <pchelkin@ispras.ru>
+To: Dmitry Antipov <dmantipov@yandex.ru>
+Cc: Niyas Sait <niyas.sait@linaro.org>, 
+	"Rafael J . Wysocki" <rafael@kernel.org>, Robert Moore <robert.moore@intel.com>, 
+	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, lvc-project@linuxtesting.org
+Subject: Re: [lvc-project] [PATCH] ACPICA: fix largest possible resource
+ descriptor index
+Message-ID: <ydubyehjdctffxhcr3ou6d7p7q7mwtmnwby5m6sbxcdepvpelt@sfblrcg7p36f>
+References: <20250806161301.233242-1-dmantipov@yandex.ru>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20250806161301.233242-1-dmantipov@yandex.ru>
 
-ACPI_RESOURCE_NAME_LARGE_MAX should be equal to the last actually
-used resource descriptor index (ACPI_RESOURCE_NAME_CLOCK_INPUT).
-Otherwise 'resource_index' in 'acpi_ut_validate_resource()' may be
-clamped incorrectly and resulting value may issue an out-of-bounds
-access for 'acpi_gbl_resource_types' array. Compile tested only.
+Hey Dmitry,
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+On Wed, 06. Aug 19:13, Dmitry Antipov wrote:
+> ACPI_RESOURCE_NAME_LARGE_MAX should be equal to the last actually
+> used resource descriptor index (ACPI_RESOURCE_NAME_CLOCK_INPUT).
+> Otherwise 'resource_index' in 'acpi_ut_validate_resource()' may be
+> clamped incorrectly and resulting value may issue an out-of-bounds
+> access for 'acpi_gbl_resource_types' array. Compile tested only.
+> 
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> 
+> Fixes: 520d4a0ee5b6 ("ACPICA: add support for ClockInput resource (v6.5)")
+> Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
+> ---
 
-Fixes: 520d4a0ee5b6 ("ACPICA: add support for ClockInput resource (v6.5)")
-Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
----
- drivers/acpi/acpica/aclocal.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ACPICA patches should go through the separate Github project [1] first.
+Please see [2] and [3] for examples.
 
-diff --git a/drivers/acpi/acpica/aclocal.h b/drivers/acpi/acpica/aclocal.h
-index 0c41f0097e8d..f98640086f4e 100644
---- a/drivers/acpi/acpica/aclocal.h
-+++ b/drivers/acpi/acpica/aclocal.h
-@@ -1141,7 +1141,7 @@ struct acpi_port_info {
- #define ACPI_RESOURCE_NAME_PIN_GROUP_FUNCTION   0x91
- #define ACPI_RESOURCE_NAME_PIN_GROUP_CONFIG     0x92
- #define ACPI_RESOURCE_NAME_CLOCK_INPUT          0x93
--#define ACPI_RESOURCE_NAME_LARGE_MAX            0x94
-+#define ACPI_RESOURCE_NAME_LARGE_MAX            0x93
- 
- /*****************************************************************************
-  *
--- 
-2.50.1
+[1]: https://github.com/acpica/acpica
+[2]: https://docs.kernel.org/driver-api/acpi/linuxized-acpica.html
+[3]: https://lore.kernel.org/acpica-devel/CAJZ5v0i7LYzF13M0qdeYWXZ7uO6HUpAS7pE5RJnOAJtKB8o88A@mail.gmail.com/T/#u
 
+>  drivers/acpi/acpica/aclocal.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/acpi/acpica/aclocal.h b/drivers/acpi/acpica/aclocal.h
+> index 0c41f0097e8d..f98640086f4e 100644
+> --- a/drivers/acpi/acpica/aclocal.h
+> +++ b/drivers/acpi/acpica/aclocal.h
+> @@ -1141,7 +1141,7 @@ struct acpi_port_info {
+>  #define ACPI_RESOURCE_NAME_PIN_GROUP_FUNCTION   0x91
+>  #define ACPI_RESOURCE_NAME_PIN_GROUP_CONFIG     0x92
+>  #define ACPI_RESOURCE_NAME_CLOCK_INPUT          0x93
+> -#define ACPI_RESOURCE_NAME_LARGE_MAX            0x94
+> +#define ACPI_RESOURCE_NAME_LARGE_MAX            0x93
+
+I think some brief comment in the code explaining the reasoning for such a
+definition for the MAX value would be worth it.
+
+Though another way is to tweak the check inside acpi_ut_validate_resource()
+to have '>=':
+
+	if (resource_type > ACPI_RESOURCE_NAME_LARGE_MAX) {
+		goto invalid_resource;
+	}
+
+Maybe that'd be a bit clearer?
+
+Thanks!
+
+>  
+>  /*****************************************************************************
+>   *
+> -- 
+> 2.50.1
