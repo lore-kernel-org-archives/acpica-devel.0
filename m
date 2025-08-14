@@ -1,19 +1,20 @@
 Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50C2C2673A5
-	for <acpica-devel@lists.linux.dev>; Thu, 14 Aug 2025 07:29:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2D7E25E44E
+	for <acpica-devel@lists.linux.dev>; Thu, 14 Aug 2025 07:31:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755156589; cv=none; b=MhKc1pAbM1VJdBIx6D0Tc7PgH7+IehJZyF4QznJWO1DhILNzDw470gBu1D0ntqM47GTIbi+1JMJNWrzVsbQZBoSc227NM1xHFYBjouobrZ7JGY2jjkEoXdPOQodDutsdzmjrEGoSx9eAeBfak/u+y9ON56lJKIXHfQ7HYeiXUVg=
+	t=1755156719; cv=none; b=knAvX+umlqyrA9ASL3Pm9XEu2psrgzbKlT8ssggExY+u+Qh0xiJ7MPTIZ+Mcl+NDhElnKbjgfBdOLWOTKC8Ar+rNS8/SBjADv7M8ShPceGDAn/rskAoLv/RCLxkTAZMldo2mNo6GNt9pqHqpu1DnFG5VEdUGJ2xVNbkxMmWT9fw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755156589; c=relaxed/simple;
-	bh=6NDjjCsQASG5ZZOQnM0m9/VFP2301fUlMsPXAXbht4g=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=e9Iwdy4YkQMvoMVbJ7VVXu6J4LwQZTGWPxswyv9bGprVOhRa/N1dmJQtxRJpM0FxSKRs+ehXkzKddAB7Xn8pk96mLTpUoiG0SW4oW3lZrW8O12DiYV/pOqkJhN1TlcIC1Z9g5hHhT+UV6m3ZH3m9LMhVAbaTK3gVQjqQuOehdyw=
+	s=arc-20240116; t=1755156719; c=relaxed/simple;
+	bh=Ek71y/Vysl6TXj+/+lo0qw6uZeFpzglWXMM5szs8uNY=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=bL9m3AfcyTJ656oPtylXbyr+1yqBuMwWevBKJLlMTZIS7pkOiV7vMEbmO4JLv7yrqZbp+yibEK0DbxToBX4i7doyTR4gAnXcfetOeMXcoi786BQ8Js9xejGvAepwqws5xCjo15ZXkpJviiLVlR3+WPqzb0kwhJo/hNhz9SK+dls=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 6fcc959c78e011f0b29709d653e92f7d-20250814
+X-UUID: be08fdf478e011f0b29709d653e92f7d-20250814
 X-CTIC-Tags:
 	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CC_NO_NAME, HR_CTE_8B
 	HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME
@@ -21,29 +22,28 @@ X-CTIC-Tags:
 	HR_SJ_PHRASE, HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
 	HR_TO_NO_NAME, IP_UNTRUSTED, SRC_UNTRUSTED, IP_UNFAMILIAR, SRC_UNFAMILIAR
 	DN_TRUSTED, SRC_TRUSTED, SA_EXISTED, SN_TRUSTED, SN_EXISTED
-	SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS, CIE_BAD, CIE_GOOD_SPF
-	CIE_UNKNOWN, GTI_FG_BS, GTI_C_CI, GTI_RG_INFO, GTI_C_BU
-	AMN_T1, AMN_GOOD, AMN_C_TI, AMN_C_BU, ABX_MISS_RDNS
+	SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.45,REQID:265ac78d-44e1-410e-a988-49924ad70b26,IP:10,
-	URL:0,TC:0,Content:-25,EDM:25,RT:0,SF:5,FILE:0,BULK:0,RULE:Release_Ham,ACT
-	ION:release,TS:15
-X-CID-INFO: VERSION:1.1.45,REQID:265ac78d-44e1-410e-a988-49924ad70b26,IP:10,UR
-	L:0,TC:0,Content:-25,EDM:25,RT:0,SF:5,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:15
-X-CID-META: VersionHash:6493067,CLOUDID:afcbee8ec8a41c6e65ebd45262442616,BulkI
-	D:2508141529406YEDDMS0,BulkQuantity:0,Recheck:0,SF:19|23|38|43|66|72|74|78
-	|102,TC:nil,Content:0|50,EDM:5,IP:-2,URL:1,File:nil,RT:nil,Bulk:nil,QS:nil
-	,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC:0
+X-CID-O-INFO: VERSION:1.1.45,REQID:a1cca3fd-f7f4-4ebc-a19b-8c0e60923681,IP:10,
+	URL:0,TC:0,Content:-5,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:0
+X-CID-INFO: VERSION:1.1.45,REQID:a1cca3fd-f7f4-4ebc-a19b-8c0e60923681,IP:10,UR
+	L:0,TC:0,Content:-5,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:0
+X-CID-META: VersionHash:6493067,CLOUDID:bea4d67dd8856528292b6e946ba2286f,BulkI
+	D:250814153152UFZ3QEB5,BulkQuantity:0,Recheck:0,SF:17|19|23|38|43|66|74|78
+	|81|82|102,TC:nil,Content:0|50,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil
+	,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:
+	0,ARC:0
 X-CID-BVR: 0
 X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FSD,TF_CID_SPAM_ULS
-X-UUID: 6fcc959c78e011f0b29709d653e92f7d-20250814
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
+X-UUID: be08fdf478e011f0b29709d653e92f7d-20250814
 X-User: tianyaxiong@kylinos.cn
 Received: from localhost.localdomain [(175.2.165.11)] by mailgw.kylinos.cn
 	(envelope-from <tianyaxiong@kylinos.cn>)
 	(Generic MTA)
-	with ESMTP id 755108821; Thu, 14 Aug 2025 15:29:39 +0800
+	with ESMTP id 1345372979; Thu, 14 Aug 2025 15:31:50 +0800
 From: Yaxiong Tian <tianyaxiong@kylinos.cn>
 To: rafael@kernel.org,
 	daniel.lezcano@linaro.org,
@@ -53,11 +53,16 @@ Cc: linux-pm@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-acpi@vger.kernel.org,
 	acpica-devel@lists.linux.dev,
-	Yaxiong Tian <tianyaxiong@kylinos.cn>
-Subject: [PATCH v2 0/2] ACPI: processor: idle: Per-CPU idle driver for hybrid CPUs
-Date: Thu, 14 Aug 2025 15:29:34 +0800
-Message-Id: <20250814072934.1016694-1-tianyaxiong@kylinos.cn>
+	Yaxiong Tian <tianyaxiong@kylinos.cn>,
+	Shaobo Huang <huangshaobo2075@phytium.com.cn>,
+	Yinfeng Wang <wangyinfeng@phytium.com.cn>,
+	Xu Wang <wangxu@phytium.com.cn>
+Subject: [PATCH v2 1/2] cpuidle: Add interface to get cpuidle_driver by CPU ID
+Date: Thu, 14 Aug 2025 15:31:44 +0800
+Message-Id: <20250814073144.1022355-1-tianyaxiong@kylinos.cn>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20250814072934.1016694-1-tianyaxiong@kylinos.cn>
+References: <20250814072934.1016694-1-tianyaxiong@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -66,35 +71,68 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This series addresses limitations in the current ACPI idle driver model
-for hybrid CPU architectures (e.g., ARM big.LITTLE, Intel Alder Lake),
-where different core types have distinct _LPI-state characteristics.
+Some drivers need to obtain the cpuidle_driver via CPU ID before the
+cpuidle_device is registered. Therefore, this interface is added.
 
-This series introduces:
+Tested-by: Shaobo Huang <huangshaobo2075@phytium.com.cn>
+Signed-off-by: Yaxiong Tian <tianyaxiong@kylinos.cn>
+Signed-off-by: Shaobo Huang <huangshaobo2075@phytium.com.cn>
+Signed-off-by: Yinfeng Wang <wangyinfeng@phytium.com.cn>
+Signed-off-by: Xu Wang<wangxu@phytium.com.cn>
+---
+ drivers/cpuidle/driver.c | 16 ++++++++++++++++
+ include/linux/cpuidle.h  |  4 ++++
+ 2 files changed, 20 insertions(+)
 
-1. A per-CPU idle driver model to accurately represent idle-state per core type.
-2. A new interface to fetch cpuidle_driver by CPU ID, required for early
-   registration scenarios.
-
-This issue was initially discussed at:
-https://lore.kernel.org/linux-pm/97e8bc72-e44b-487a-91ba-206732094955@arm.com/T/#t
-
-Changes since V2:
-- Fix "using smp_processor_id() in preemptible" BUG in patch 0002.
-
-Yaxiong Tian (2):
-  cpuidle: Add interface to get cpuidle_driver by CPU ID
-  ACPI: processor: idle: Replace single idle driver with per-CPU model
-    for better hybrid CPU support
-
- drivers/acpi/Kconfig            |  1 +
- drivers/acpi/processor_driver.c |  3 +-
- drivers/acpi/processor_idle.c   | 66 +++++++++++++++++----------------
- drivers/cpuidle/driver.c        | 16 ++++++++
- include/acpi/processor.h        |  2 +-
- include/linux/cpuidle.h         |  4 ++
- 6 files changed, 59 insertions(+), 33 deletions(-)
-
+diff --git a/drivers/cpuidle/driver.c b/drivers/cpuidle/driver.c
+index 9bbfa594c442..8647f8165863 100644
+--- a/drivers/cpuidle/driver.c
++++ b/drivers/cpuidle/driver.c
+@@ -353,6 +353,22 @@ struct cpuidle_driver *cpuidle_get_cpu_driver(struct cpuidle_device *dev)
+ }
+ EXPORT_SYMBOL_GPL(cpuidle_get_cpu_driver);
+ 
++/**
++ * cpuidle_get_cpu_driver_by_cpu - return the driver registered for a CPU.
++ * @cpu_num: a valid cpu num
++ *
++ * Returns a struct cpuidle_driver pointer, or NULL if no driver is registered
++ * for the CPU associated with @cpu.
++ */
++struct cpuidle_driver *cpuidle_get_cpu_driver_by_cpu(int cpu_num)
++{
++	if (cpu_num < 0 || cpu_num >= nr_cpu_ids)
++		return NULL;
++
++	return __cpuidle_get_cpu_driver(cpu_num);
++}
++EXPORT_SYMBOL_GPL(cpuidle_get_cpu_driver_by_cpu);
++
+ /**
+  * cpuidle_driver_state_disabled - Disable or enable an idle state
+  * @drv: cpuidle driver owning the state
+diff --git a/include/linux/cpuidle.h b/include/linux/cpuidle.h
+index a9ee4fe55dcf..aebbaae6a501 100644
+--- a/include/linux/cpuidle.h
++++ b/include/linux/cpuidle.h
+@@ -200,6 +200,7 @@ extern void cpuidle_disable_device(struct cpuidle_device *dev);
+ extern int cpuidle_play_dead(void);
+ 
+ extern struct cpuidle_driver *cpuidle_get_cpu_driver(struct cpuidle_device *dev);
++extern struct cpuidle_driver *cpuidle_get_cpu_driver_by_cpu(int cpu_num);
+ static inline struct cpuidle_device *cpuidle_get_device(void)
+ {return __this_cpu_read(cpuidle_devices); }
+ #else
+@@ -240,6 +241,9 @@ static inline void cpuidle_disable_device(struct cpuidle_device *dev) { }
+ static inline int cpuidle_play_dead(void) {return -ENODEV; }
+ static inline struct cpuidle_driver *cpuidle_get_cpu_driver(
+ 	struct cpuidle_device *dev) {return NULL; }
++
++static inline struct cpuidle_driver *cpuidle_get_cpu_driver_by_cpu(
++	int cpu_num) {return NULL; };
+ static inline struct cpuidle_device *cpuidle_get_device(void) {return NULL; }
+ #endif
+ 
 -- 
 2.25.1
 
