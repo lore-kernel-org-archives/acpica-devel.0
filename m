@@ -1,39 +1,45 @@
-Received: from smtpbg154.qq.com (smtpbg154.qq.com [15.184.224.54])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59297BA34
-	for <acpica-devel@lists.linux.dev>; Tue, 26 Aug 2025 02:01:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=15.184.224.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B66D827467F
+	for <acpica-devel@lists.linux.dev>; Wed, 27 Aug 2025 07:52:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756173720; cv=none; b=pfhQ3f2qjRHmsfYsHmTE/l+NCGaqAb6lVPsF5Uhx1U/SyKT4ibx0LALxAWmElo1c4UZE9rtS/y6KcICzBxkvzxkeyTmpRp9ZvI2PV75D0DRAZZ78hkJ9NNVrUDjVeBIaM2dyzyEMkj3pqEeaUD6qGdqvjsw9JcwMtr0VhOEvuYE=
+	t=1756281180; cv=none; b=loL5I2KC4KEzDqTiT1ycHTY11OdU6PQCbxzQfhUqirxJKKBHIGZTF+UeWHP7Q36Xyu+aJ7CHz/PEuJbmg4bzx9zXn3o1UQEh5LfDPr97cFmVonQONvKzwJhnjucVCCgKg2HTAmdcOq/O+tey2WPqcq17QDeIJidroFx4wxDDO4I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756173720; c=relaxed/simple;
-	bh=JwkZ2bMQ5GCS7U8MEes6rV1TMJu1+PrRtUUNfasPYN0=;
+	s=arc-20240116; t=1756281180; c=relaxed/simple;
+	bh=t/7jF4HzApSGOAuft7CjB89pJWIK0eoDPs3XyyfXOW0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gP9XxYk9LUpZh156jRl+ldbUmLIxZ2aNw+pThp2edlilGVzkdaLjYS7AlwBfS2QfMorRhPfwDpHCOJWtIURg5hYuWG+hPjlFllpNRhjnwWsEJCEEWRmSROua4Qq3Y1q0VeC5Qp64EVoOstuFemGbRP5HW6Aat6r+ZlxVH4SfmbA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uniontech.com; spf=pass smtp.mailfrom=uniontech.com; dkim=pass (1024-bit key) header.d=uniontech.com header.i=@uniontech.com header.b=F9LdA+Gh; arc=none smtp.client-ip=15.184.224.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uniontech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uniontech.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=uniontech.com header.i=@uniontech.com header.b="F9LdA+Gh"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniontech.com;
-	s=onoh2408; t=1756173684;
-	bh=x2lm0Nv/OCTl6+uM6Cq+pGjsGylnSoWqva7oGlwIzo8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From;
-	b=F9LdA+GhG7iumMTJgssxGWUM7BmPmh8PKkT5ihdM9ZnVeIXG9/Oy6qGSSvP1keIkS
-	 BwllgMPE5i0rWUx3/l9N7G8eQNGQXiic/9Z85RATHl8x1QkyMt+GMi+vwLeuiFY8FY
-	 tYQ83x6lHtacHUd10+QH8kw09PSA2sYtDln09jDI=
-X-QQ-mid: zesmtpgz1t1756173641t8c763dc4
-X-QQ-Originating-IP: HAijc7zlmTkG2Gkix8pePMJcIs9gw8Wv0VDKqht3P1o=
-Received: from [198.18.0.1] ( [113.57.152.160])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Tue, 26 Aug 2025 10:00:39 +0800 (CST)
-X-QQ-SSF: 0000000000000000000000000000000
-X-QQ-GoodBg: 1
-X-BIZMAIL-ID: 8734322752003824177
-EX-QQ-RecipientCnt: 10
-Message-ID: <E083185E2C999692+e1900212-490b-4637-9094-919d5df2b1a0@uniontech.com>
-Date: Tue, 26 Aug 2025 10:00:39 +0800
+	 In-Reply-To:Content-Type; b=hA91a0HNZkqASZYVQ1y+kjofiv3QXVRjFI9f/s7BnjU0MAuFerD2cGPQDb1tVZ7jFIUv73M8l6jL/uZhEgpGG+N9NdUWHAQbhkm65kjS2anz/dIp2zw3koMf5XKlvvERatvnJEwmFID9UMeVCpJyc8APs66NVCyhWvEEkDH+oGw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: d3e5785c831a11f0b29709d653e92f7d-20250827
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.45,REQID:13314357-5ac7-4a30-a0f8-4170a13db8b3,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:0
+X-CID-META: VersionHash:6493067,CLOUDID:d6d895d233e5934b84c0d63ae6c55bd7,BulkI
+	D:nil,BulkQuantity:0,Recheck:0,SF:80|81|82|83|102,TC:nil,Content:0|52,EDM:
+	-3,IP:nil,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,
+	AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: d3e5785c831a11f0b29709d653e92f7d-20250827
+Received: from mail.kylinos.cn [(10.44.16.175)] by mailgw.kylinos.cn
+	(envelope-from <tianyaxiong@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 1407213635; Wed, 27 Aug 2025 15:52:49 +0800
+Received: from mail.kylinos.cn (localhost [127.0.0.1])
+	by mail.kylinos.cn (NSMail) with SMTP id 5DFD1E008FAA;
+	Wed, 27 Aug 2025 15:52:49 +0800 (CST)
+X-ns-mid: postfix-68AEB951-303610565
+Received: from [10.42.13.21] (unknown [10.42.13.21])
+	by mail.kylinos.cn (NSMail) with ESMTPA id 93400E008FA3;
+	Wed, 27 Aug 2025 15:52:47 +0800 (CST)
+Message-ID: <a369a7a9-9132-4b37-8ba2-501503477bb8@kylinos.cn>
+Date: Wed, 27 Aug 2025 15:52:46 +0800
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -41,97 +47,75 @@ List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ACPICA: add more parameter validation for
- acpi_walk_namespace()
+Subject: Re: [PATCH v2 2/2] ACPI: processor: idle: Replace single idle driver
+ with per-CPU model for better hybrid CPU support
 To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: Robert Moore <robert.moore@intel.com>, Len Brown <lenb@kernel.org>,
+Cc: daniel.lezcano@linaro.org, lenb@kernel.org, robert.moore@intel.com,
+ linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
- linux-kernel@vger.kernel.org, wangyuli@uniontech.com,
- guanwentao@uniontech.com, niecheng1@uniontech.com, zhanjun@uniontech.com
-References: <20250815-acpi_fix-v1-1-a05ebfe1b8ac@uniontech.com>
- <CAJZ5v0iaAgpGhtH27j0hRDF7-S9F7uHZ4GZkmbfVLQOEN+6tbg@mail.gmail.com>
+ Shaobo Huang <huangshaobo2075@phytium.com.cn>,
+ Yinfeng Wang <wangyinfeng@phytium.com.cn>, Xu Wang <wangxu@phytium.com.cn>
+References: <20250814072934.1016694-1-tianyaxiong@kylinos.cn>
+ <20250814073156.1022939-1-tianyaxiong@kylinos.cn>
+ <CAJZ5v0hGj3=GxnLkj0adm+ENSk7YbzNZRPiBTgm_bKZsH3OYDw@mail.gmail.com>
 Content-Language: en-US
-From: Cryolitia PukNgae <cryolitia@uniontech.com>
-In-Reply-To: <CAJZ5v0iaAgpGhtH27j0hRDF7-S9F7uHZ4GZkmbfVLQOEN+6tbg@mail.gmail.com>
+From: Yaxiong Tian <tianyaxiong@kylinos.cn>
+In-Reply-To: <CAJZ5v0hGj3=GxnLkj0adm+ENSk7YbzNZRPiBTgm_bKZsH3OYDw@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: zesmtpgz:uniontech.com:qybglogicsvrsz:qybglogicsvrsz3a-0
-X-QQ-XMAILINFO: Nsb+SUszp5EkDibXyUCq3QfaFL2hBySYwIBIUsXgscFZMUgrga/Lk9Zx
-	EFs4D1Y5gfvyW/tf8+xk1cf3r7X0b7jdTQEj4R/b2AyItiSvH1cS5x9IZkG4K/kyjuiG6Q7
-	tOAF+2r4WFKzgBFc7qlAKHSfP2zBEOpocarHK3SMNRZRTLO7krG3E5K89Upwlj2dNU+7TYI
-	+yVgefil3ljpn4D4BSTv3MGK9C4Ni1hePjpOYNdGrxgpETLZktXIBIml58nu1IUSlj9Wsrs
-	XnRXE0fyC5/BRC2yRDVHVgJR/2sNDKp3gwBSIxp9sVATJ25n3ytIUqXfCdBkpJmNt7kpvkB
-	AU7B2rkVyafDe0CSnv2i51BFtMWDvj9WatlfInZYj1xYVBlPSPQakfKttfKqyBFOa+aSqIx
-	fAL5i+KgVtyG9qisaDMHZrEkqnFDjJ8k8eNU4A+GzGfsv2Nvy8F+3keqSm2YYnAs1FWybOJ
-	UWIk13lg2JEuyDZYmaBJzit10fxxFnnC2UoUBbTl/B59/rEvt0iFWRQhO7SnTT5z+9i0ANo
-	0peMkj9u7jUoKh12XTu768hYeX1s6T60qPPEiCjNeVWK7xqoJfmwZbSIg5jI22tScQ97BrD
-	gNLRWKzg47QPSXoXn7kDElHtVSsRDEYUBUjD9HOyXf+TZjmWjAY8zmYtDdWCAH8dxVW75N7
-	wiKlMby0JtdO5WhGc6h9+mUxGKPCfizC6V8jLhg/Gocu6PKBt4QzXu9exfRmAX9irniA6X0
-	/mTGaUhcpEGH1BnlJS7TQH6HeXLXStkdZNKyBeL6WPubxrkLJn5+V7xP0qwM1vFoXQf+lOT
-	q+/Lnoj+V+ADPrkExbUVCA2NFFFwjF6r9oA8R07rEdhaHR92n/8vFkbo947bfb6eaC/fVJ1
-	bA60vschywdfbbywQmBgkxXjkz3VoTt3HtzaH66ALbYkCHpMhaQ608h2e202FO9BSbbJKwQ
-	diIc3anBl/qnOtjfLSaptZXJX7X0WsvTHI3yvFDm67Z8Xl0Trxo9Z2ltLosS7p7Qb7GlnPg
-	14zyyqhk0J3xdYXQM/ZgVC5AFWUMDjoM2z53fddlDmIkL2LCUuSOew6JzcniDnpTonQH4wy
-	Xgz9UmBI8EI
-X-QQ-XMRINFO: NyFYKkN4Ny6FSmKK/uo/jdU=
-X-QQ-RECHKSPAM: 0
+Content-Transfer-Encoding: quoted-printable
 
 
-On 25/08/2025 23.00, Rafael J. Wysocki wrote:
-> On Fri, Aug 15, 2025 at 10:56 AM Cryolitia PukNgae via B4 Relay
-> <devnull+cryolitia.uniontech.com@kernel.org> wrote:
->> From: Cryolitia PukNgae <cryolitia@uniontech.com>
+=E5=9C=A8 2025/8/25 22:56, Rafael J. Wysocki =E5=86=99=E9=81=93:
+> On Thu, Aug 14, 2025 at 9:32=E2=80=AFAM Yaxiong Tian <tianyaxiong@kylin=
+os.cn> wrote:
+>> Current implementations of hybrid architectures (e.g., ARM64 big.LITTL=
+E
+>> and Intel Alder Lake) feature CPU cores with different exit latencies.
+> This is not true for Intel platforms, all of the CPUs in there have
+> the same set of C-states.
+Yes,it is.
+>
+>> Using a single driver to describe_LPI states for all core types is
+>> therefore suboptimal. This is further supported by ACPI specification
+>> 8.4.4.1 which states: "In a processor hierarchy, each node has its
+>> own _LPI low-power states specific to that node."
 >>
->> On the Honor FMB-P-PCB laptop, an incorrect ACPI table causes
->> sdw_intel_acpi_scan to pass a NULL pointer as start_object to
->> acpi_walk_namespace() when calling it, which eventually causes the
->> kernel to report a NULL pointer dereference[1].
->>
->> 1. https://gist.github.com/Cryolitia/a860ffc97437dcd2cd988371d5b73ed7
->>
->> Signed-off-by: Cryolitia PukNgae <cryolitia@uniontech.com>
-> Please submit ACPICA changes to the upstream ACPICA project on GitHub
-> as pull requests.  Once they have been merged upstream, you can submit
-> a Linux patch based on the upstream one with a pointer to the
-> corresponding upstream commit.
+>> To address these limitations, we replace the monolithic idle driver
+> It cannot be replaced or you potentially open a Pandora's box of
+> regressions on old systems in the field.
+I agree with this point. Regarding the potential risk, does it
+make sense to=C2=A0 mitigate it through the following two approaches?
 
-I couldn't find which upstream file in acpica on GitHub should be 
-modified, to match my kernel patch, but I found that the upstream has 
-already added this parameter verification[1], although the source code 
-is in a different form.
+1) Restrict the usage of this multiple driver functionality to
+the ARM64 platform only.
+2) Use a mutex-protected global variable to indicate whether
+the platform utilizes _LPI instead of C-states. This variable
+would be determined during initialization via
+acpi_has_method(handle, "_LPI"), and the multiple driver
+would only be used if the platform employs _LPI.
 
-
-1. 
-https://github.com/acpica/acpica/commit/19d0e9560c76a9f56f214f2a9f145ebd89e8ed49#diff-4e61bde9966be8a3b82956db81c0dafb02a39ae7f92c18eef5bc1d2b57d34ff7
-
+Alternatively, the other option is to let users implement their
+own drivers. Although many ARM64 users still initialize their
+systems using the ACPI method rather than the traditional
+device tree approach, and they hope to reuse the ACPI idle driver.
+>
+>> with a per-CPU model. This approach enables accurate idle state repres=
+entation
+>> for each core type
+> The per-CPU model can be used instead of the "monolithic idle driver"
+> only if the platform is actually known to be hybrid.
+Yes,select CPU_IDLE_MULTIPLE_DRIVERS if ARM64=C2=A0 can=C2=A0 resolve thi=
+s issue.
+>
+>> Tested-by: Shaobo Huang <huangshaobo2075@phytium.com.cn>
+>> Signed-off-by: Yaxiong Tian <tianyaxiong@kylinos.cn>
+>> Signed-off-by: Shaobo Huang <huangshaobo2075@phytium.com.cn>
+>> Signed-off-by: Yinfeng Wang <wangyinfeng@phytium.com.cn>
+>> Signed-off-by: Xu Wang<wangxu@phytium.com.cn>
+> What do all of the above S-o-b mean?  Are these people involved in the
+> development of the code?  In that case Co-developed-by is also needed.
 >
 > Thanks!
->
->> ---
->>   drivers/acpi/acpica/nsxfeval.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/acpi/acpica/nsxfeval.c b/drivers/acpi/acpica/nsxfeval.c
->> index f9d059647cc52e94ce013af3382addba338820e8..c1f318ea7d5fcd846dc158b155286a6f5bba4cff 100644
->> --- a/drivers/acpi/acpica/nsxfeval.c
->> +++ b/drivers/acpi/acpica/nsxfeval.c
->> @@ -564,7 +564,7 @@ acpi_walk_namespace(acpi_object_type type,
->>
->>          /* Parameter validation */
->>
->> -       if ((type > ACPI_TYPE_LOCAL_MAX) ||
->> +       if ((type > ACPI_TYPE_LOCAL_MAX) || (start_object == NULL) ||
->>              (!max_depth) || (!descending_callback && !ascending_callback)) {
->>                  return_ACPI_STATUS(AE_BAD_PARAMETER);
->>          }
->>
->> ---
->> base-commit: 24ea63ea387714634813359e2c8e0e6c36952f73
->> change-id: 20250815-acpi_fix-3724e6c4da02
->>
->> Best regards,
->> --
->> Cryolitia PukNgae <cryolitia@uniontech.com>
->>
->>
+Thank you for your response. If it makes sense, continue to follow up,
+I will address both the issues mentioned above and the problem
+in the previous patch.
