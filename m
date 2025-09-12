@@ -1,150 +1,167 @@
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6769C1B0F19
-	for <acpica-devel@lists.linux.dev>; Thu, 11 Sep 2025 09:11:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD7182C21F6
+	for <acpica-devel@lists.linux.dev>; Fri, 12 Sep 2025 07:30:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757581916; cv=none; b=MQtxgrH/EIg6hw9MLTBC7cp6gVEaygZAUgWFyq0GtA1K5ebHdMNXS+zB48mJnLbIkO47YiqGty0DE5ecoW6ANC6TOZ/SC8VIsp6xk7fV9otK2Its+tQovjQZX4F/xoeNNLuFKh8y4Vi30fYW+b+Pmv13HRsd3ofFFNQN5IYkDZ0=
+	t=1757662245; cv=none; b=Jm9qUhm/sCl8QYwF6dejHcz/2gaddbVhi+nzMYAFAiuboOZWqx8EsHz3iGB52r0ONTpwSsq+2TEbEv4OAb2t/iCQy6Jy7zlkqDV8gQjD+jUZJY0+K4fo/D92brf12cuOhRGZDGbXJfVzMnDot9aY3u3Po31yF0OFYT8CKaykPrg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757581916; c=relaxed/simple;
-	bh=JpZBDBeKFOKzO+Oxv9nxvig4ZFN8i+yjFK9KZNu4CYA=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=NU7W2qok8Fm8NH8tVtQfQlXUd4g/RCsOJNZIRzPTDjrXyqBN3z/BpcaCB/Kovn006OikxyhxQ5MzlsYrfIsuxw21zPy59FR7VifdQNBuZg0OoV++bMpDXV02j1z0F5mP5eotp5oKN4KG7bBdgoLxJIZGDZZ4VSwuaAUFYECTe4U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4cMsDz0ybLz6LD55;
-	Thu, 11 Sep 2025 17:09:07 +0800 (CST)
-Received: from frapeml500008.china.huawei.com (unknown [7.182.85.71])
-	by mail.maildlp.com (Postfix) with ESMTPS id C491D1400D3;
-	Thu, 11 Sep 2025 17:11:46 +0800 (CST)
-Received: from localhost (10.203.177.15) by frapeml500008.china.huawei.com
- (7.182.85.71) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Thu, 11 Sep
- 2025 11:11:46 +0200
-Date: Thu, 11 Sep 2025 10:11:44 +0100
-From: Jonathan Cameron <jonathan.cameron@huawei.com>
-To: Shuai Xue <xueshuai@linux.alibaba.com>
-CC: <rafael@kernel.org>, <lenb@kernel.org>, <robert.moore@intel.com>,
-	<andrew@kernel.org>, <bfaccini@nvidia.com>, <eahariha@linux.microsoft.com>,
-	<dan.j.williams@intel.com>, <thorsten.blum@linux.dev>, <gourry@gourry.net>,
-	<nunodasneves@linux.microsoft.com>, <wangyuquan1236@phytium.com.cn>,
-	<linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<acpica-devel@lists.linux.dev>
-Subject: Re: [PATCH] acpi,srat: Fix incorrect device handle check for
- Generic Initiator
-Message-ID: <20250911101144.00001a84@huawei.com>
-In-Reply-To: <998939f5-e0f9-457f-98a2-73f687ad29cc@linux.alibaba.com>
-References: <20250910093949.5793-1-xueshuai@linux.alibaba.com>
-	<20250910105729.000070a5@huawei.com>
-	<998939f5-e0f9-457f-98a2-73f687ad29cc@linux.alibaba.com>
-X-Mailer: Claws Mail 4.3.0 (GTK 3.24.42; x86_64-w64-mingw32)
+	s=arc-20240116; t=1757662245; c=relaxed/simple;
+	bh=P7cUOL2g+F6gp0/6ezwtEHsJfG+nztCCunpKN92MqQI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fy4i+jzAqALd1PB5ObBXsx+nMZz/UoIZaqRFfe6c8fx3NlL7v4Ezgj8iuNuYQIcc8fU2ovAey/W3udEPoNsuZByncK76Kdbp4YAPDR3a+WIRC7vHwaEWWnXIvI76AH4EvrRCPf5fiVqqkdrWxH6mqm89J8krduoZhpdqxvCY+No=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=fSkSyIUC; arc=none smtp.client-ip=115.124.30.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="fSkSyIUC"
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1757662239; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=GKqEXm4uUJ/zbwCaM3425+aQc2qcRW4Q7cTIqt152L8=;
+	b=fSkSyIUC8bXiNHLmUGQ4/hgK7lwIZJurZZCJGz0fCYfQBDhGmmA6s5+43JpPGp+2Hl+a/iTz/KCqwhZCeAOZZOH9s6jBa8RCVIEo5Qhi8TenTBQBE7nNYSx09M5XTRky3wRLml2a42F1yV5MDvQPVP2A96FnIjynbhgJUvCwOaQ=
+Received: from 30.222.50.8(mailfrom:tianruidong@linux.alibaba.com fp:SMTPD_---0WnqAeI._1757662238 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Fri, 12 Sep 2025 15:30:38 +0800
+Message-ID: <72563756-a53a-4f50-9bf4-87f6b26af036@linux.alibaba.com>
+Date: Fri, 12 Sep 2025 15:30:41 +0800
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
- frapeml500008.china.huawei.com (7.182.85.71)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v1 00/10] Add RAS support for RISC-V architecture
+To: Himanshu Chauhan <hchauhan@ventanamicro.com>,
+ linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-acpi@vger.kernel.org, linux-efi@vger.kernel.org,
+ acpica-devel@lists.linux.dev
+Cc: paul.walmsley@sifive.com, palmer@dabbelt.com, lenb@kernel.org,
+ james.morse@arm.com, tony.luck@intel.com, ardb@kernel.org, conor@kernel.org,
+ cleger@rivosinc.com, robert.moore@intel.com, sunilvl@ventanamicro.com,
+ apatel@ventanamicro.com, xueshuai@linux.alibaba.com
+References: <20250227123628.2931490-1-hchauhan@ventanamicro.com>
+From: Ruidong Tian <tianruidong@linux.alibaba.com>
+In-Reply-To: <20250227123628.2931490-1-hchauhan@ventanamicro.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, 11 Sep 2025 12:28:00 +0800
-Shuai Xue <xueshuai@linux.alibaba.com> wrote:
 
-> =E5=9C=A8 2025/9/10 17:57, Jonathan Cameron =E5=86=99=E9=81=93:
-> > On Wed, 10 Sep 2025 17:39:49 +0800
-> > Shuai Xue <xueshuai@linux.alibaba.com> wrote:
-> >  =20
-> >> The Generic Initiator Affinity Structure in SRAT table uses device
-> >> handle type field to indicate the device type. According to ACPI
-> >> specification, the device handle type value of 1 represents PCI device,
-> >> not 0.
-> >>
-> >> Fix this by defining explicit macros for device handle types and using
-> >> the correct check for PCI devices:
-> >>
-> >> - ACPI_SRAT_ACPI_DEVICE_HANDLE (0): ACPI device handle
-> >> - ACPI_SRAT_PCI_DEVICE_HANDLE (1): PCI device handle
-> >>
-> >> Fixes: 894c26a1c274 ("ACPI: Support Generic Initiator only domains")
-> >> Reported-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
-> >> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com> =20
-> >=20
-> > The actbl3.h additions need to go through acpcia and then have a link
-> > tag in here to show that it was merged.  Perhaps just fix it with a num=
-ber
-> > for now and follow up with the acpcia stuff in the longer run? =20
->=20
-> Sure, I will drop changes in actbl3.h to make it easy to progress.
->=20
-> >=20
-> > Also note clearly this only affects a debug print - no functional bug.
-> > That may change whether people choose to backport this or not. =20
->=20
-> Yes.
->=20
-> >=20
-> > I'm curious on whether you are thinking of wiring this up so that
-> > we can set the appropriate nodes on PCI Devices other than by doing it
-> > with _PXM().  For obscure reasons there can be references both ways
-> > (so DSDT Device entry -> SRAT via _PXM, and SRAT -> Device via this fie=
-ld
-> > of generic initiators).
-> >=20
-> > For now we only implement the first one so all we need is a node to be
-> > instantiated for the GI to sit in.
-> >=20
-> > Come to think of it the fix that made PCI device entries in DSDT with _=
-PXM
-> > turn up in the right place was reverted (for a problem with broken firm=
-ware
-> > on AMD threadripper systems - IIRC that I think is long solved).
-> > Not sure if that path even works today and the one this code is about h=
-as
-> > never been hooked up. =20
->=20
-> You mean add a new map like pxm_to_node_map[]?
+在 2025/2/27 20:36, Himanshu Chauhan 写道:
+> This series implements the RAS (Reliability, Availability and Serviceability)
+> support for RISC-V architecture using RISC-V RERI specification. It is conformant
+> to ACPI platform error interfaces (APEI). It uses the highest priority
+> Supervisor Software Events (SSE)[2] to deliver the hardware error events to the kernel.
+> The SSE implemetation has already been merged in OpenSBI. Clement has sent a patch series for
+> its implemenation in Linux kernel.[5]
 >
-=20
-Two things involved here. If a _PXM entry exists for the PCI device, then u=
-nreverting:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?=
-id=3D0d76bcc960e6057750fcf556b65da13f8bbdfd2b
-or something to replace that is needed.  There may still be a problem somew=
-here
-as we never entirely figured out the cause last time.  It is also possible =
-this got
-fixed via another method in the meantime so first thing to do is to put som=
-e devices
-in a GI only node and see if the numa node value in sysfs is correct.
+> The GHES driver framework is used as is with the following changes for RISC-V:
+> 	1. Register each ghes entry with SSE layer. Ghes notification vector is SSE event.
+> 	2. Add RISC-V specific entries for processor type and ISA string
+> 	3. Add fixmap indices GHES SSE Low and High Priority to help map and read from
+> 	   physical addresses present in GHES entry.
+> 	4. Other changes to build/configure the RAS support
+>
+> How to Use:
+> ----------
+> This RAS stack consists of Qemu[3], OpenSBI, EDK2[4], Linux kernel and devmem utility to inject and trigger
+> errors. Qemu [Ref.] has support to emulate RISC-V RERI. The RAS agent is implemented in OpenSBI which
+> creates CPER records. EDK2 generates HEST table and populates it with GHES entries with the help of
+> OpenSBI.
+>
+> Qemu Command:
+> ------------
+> <qemu-dir>/build/qemu-system-riscv64 \
+>      -s -accel tcg -m 4096 -smp 2 \
+>      -cpu rv64,smepmp=false \
+>      -serial mon:stdio \
+>      -d guest_errors -D ./qemu.log \
+>      -bios <opensbi-dir>/build/platform/generic/firmware/fw_dynamic.bin \
+>      -monitor telnet:127.0.0.1:55555,server,nowait \
+>      -device virtio-gpu-pci -full-screen \
+>      -device qemu-xhci \
+>      -device usb-kbd \
+>      -blockdev node-name=pflash0,driver=file,read-only=on,filename=<edk2-build-dir>/RiscVVirtQemu/RELEASE_GCC5/FV/RISCV_VIRT_CODE.fd \
+>      -blockdev node-name=pflash1,driver=file,filename=<edk2-build-dir>/RiscVVirtQemu/RELEASE_GCC5/FV/RISCV_VIRT_VARS.fd \
+>      -M virt,pflash0=pflash0,pflash1=pflash1,rpmi=true,reri=true,aia=aplic-imsic \
+>      -kernel <kernel image> \
+>      -initrd <rootfs image> \
+>      -append "root=/dev/ram rw console=ttyS0 earlycon=uart8250,mmio,0x10000000"
+>
+> Error Injection & Triggering:
+> ----------------------------
+> devmem 0x4010040 32 0x2a1
+> devmem 0x4010048 32 0x9001404
+> devmem 0x4010044 8 1
+>
+> The above commands injects a TLB error on CPU 0.
+>
+> Sample Output (CPU 0):
+> ---------------------
+> [   34.370282] {1}[Hardware Error]: Hardware error from APEI Generic Hardware Error Source: 1
+> [   34.371375] {1}[Hardware Error]: event severity: recoverable
+> [   34.372149] {1}[Hardware Error]:  Error 0, type: recoverable
+> [   34.372756] {1}[Hardware Error]:   section_type: general processor error
+> [   34.373357] {1}[Hardware Error]:   processor_type: 3, RISCV
+> [   34.373806] {1}[Hardware Error]:   processor_isa: 6, RISCV64
+> [   34.374294] {1}[Hardware Error]:   error_type: 0x02
+> [   34.374845] {1}[Hardware Error]:   TLB error
+> [   34.375448] {1}[Hardware Error]:   operation: 1, data read
+> [   34.376100] {1}[Hardware Error]:   target_address: 0x0000000000000000
+>
+> References:
+> ----------
+> [1] RERI Specification: https://github.com/riscv-non-isa/riscv-ras-eri/releases/download/v1.0/riscv-reri.pdf
+> [2] SSE Section in OpenSBI v3.0: https://github.com/riscv-non-isa/riscv-sbi-doc/releases/download/v3.0-rc3/riscv-sbi.pdf
+> [3] Qemu source (with RERI emulation support): https://github.com/ventanamicro/qemu.git (branch: dev-upstream)
+> [4] EDK2: https://github.com/ventanamicro/edk2.git (branch: dev-upstream)
+> [5] SSE Kernel Patches: https://lore.kernel.org/linux-riscv/649fdead-09b0-4f94-a6ff-099fc970d890@rivosinc.com/T/
 
-For the entry you are touching here to be passed to the actual set_dev_node=
-() we'd
-probably do it by stashing any GI entries found when parsing SRAT in an xar=
-ray or similar and
-adding a lookup to see if we have a match in that xarray but not a _PXM in =
-pci_acpi_setup().
+Hi,
 
-Not particularly hard to do, but have to be very careful wrt to broken bios=
- descriptions
-of the topologies.=20
+Thanks for this series.
 
-Jonathan
+I'm doing some work related to your patch. Besides SSE, I'm working on support
+for another notification type for synchronous hardware errors (e.g., on a poison
+read), which called Hardware Error Exception (HEE) in Dhaval Sharma's UEFI
+proposal[0] in PRS-TG.  I have a patch for HEE support which I've sent out
+separately[1].
 
+Perhaps we could merge my work into your patchset to bringing a complete RAS
+solution to the RISC-V architecture? Or, I'm also happy to wait for your patches
+to land and then continue my work on top.
 
-> >=20
-> > Thanks for the fix!
-> >=20
-> > Jonathan
-> >=20
-> >  =20
->=20
-> Thanks.
->=20
-> Best Regards,
-> Shuai
+Let me know what you think would be best.
 
+Cheers,
+Ruidong Tian
+
+[0]: https://lists.riscv.org/g/tech-prs/topic/risc_v_ras_related_ecrs/113685653
+[1]: https://lore.kernel.org/all/20250910093347.75822-6-tianruidong@linux.alibaba.com/
+
+> Himanshu Chauhan (10):
+>    riscv: Define ioremap_cache for RISC-V
+>    riscv: Define arch_apei_get_mem_attribute for RISC-V
+>    acpi: Introduce SSE in HEST notification types
+>    riscv: Add fixmap indices for GHES IRQ and SSE contexts
+>    riscv: conditionally compile GHES NMI spool function
+>    riscv: Add functions to register ghes having SSE notification
+>    riscv: Add RISC-V entries in processor type and ISA strings
+>    riscv: Introduce HEST SSE notification handlers
+>    riscv: Add config option to enable APEI SSE handler
+>    riscv: Enable APEI and NMI safe cmpxchg options required for RAS
+>
+>   arch/riscv/Kconfig                 |   2 +
+>   arch/riscv/include/asm/acpi.h      |  20 ++++
+>   arch/riscv/include/asm/fixmap.h    |   8 ++
+>   arch/riscv/include/asm/io.h        |   3 +
+>   drivers/acpi/apei/Kconfig          |   5 +
+>   drivers/acpi/apei/ghes.c           | 102 +++++++++++++++++---
+>   drivers/firmware/efi/cper.c        |   3 +
+>   drivers/firmware/riscv/riscv_sse.c | 147 +++++++++++++++++++++++++++++
+>   include/acpi/actbl1.h              |   3 +-
+>   include/linux/riscv_sse.h          |  15 +++
+>   10 files changed, 296 insertions(+), 12 deletions(-)
+>
