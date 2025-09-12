@@ -1,167 +1,93 @@
-Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
+Received: from mail-m49198.qiye.163.com (mail-m49198.qiye.163.com [45.254.49.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD7182C21F6
-	for <acpica-devel@lists.linux.dev>; Fri, 12 Sep 2025 07:30:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13806259C9C
+	for <acpica-devel@lists.linux.dev>; Fri, 12 Sep 2025 15:47:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.254.49.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757662245; cv=none; b=Jm9qUhm/sCl8QYwF6dejHcz/2gaddbVhi+nzMYAFAiuboOZWqx8EsHz3iGB52r0ONTpwSsq+2TEbEv4OAb2t/iCQy6Jy7zlkqDV8gQjD+jUZJY0+K4fo/D92brf12cuOhRGZDGbXJfVzMnDot9aY3u3Po31yF0OFYT8CKaykPrg=
+	t=1757692071; cv=none; b=IXb3ETyLn81s2/HHK+KokXcQsK6wEaWYpRJ7pDLiVdVwFdqT1i2QhFsCy/NusxOuztXH6TaU/6kWX5vR1NBP4WaIeuqmb8yragxASKPmRbRY1X1DJiUMr7HuGMDa2Qn0/+TiV8bg0tpo6dOHMq+jYc6k9E7ipznrm2zx6zt2Nlc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757662245; c=relaxed/simple;
-	bh=P7cUOL2g+F6gp0/6ezwtEHsJfG+nztCCunpKN92MqQI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fy4i+jzAqALd1PB5ObBXsx+nMZz/UoIZaqRFfe6c8fx3NlL7v4Ezgj8iuNuYQIcc8fU2ovAey/W3udEPoNsuZByncK76Kdbp4YAPDR3a+WIRC7vHwaEWWnXIvI76AH4EvrRCPf5fiVqqkdrWxH6mqm89J8krduoZhpdqxvCY+No=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=fSkSyIUC; arc=none smtp.client-ip=115.124.30.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+	s=arc-20240116; t=1757692071; c=relaxed/simple;
+	bh=jPe1pdv9rph8uVbl98SfuP23RiP7V6VDtBfkTK5lkSI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=bQcTSDnCdCKDj2mRKBTWC3HV/ItHA++ihgBzaKp4rVvxiatsMGc1yFPtMGAqAyq9v+OyA6VXvZHwkSz8tmWk+E/qHYAsU49YLHNVdGgFC4Njy1Kovu4yGWu8chq07DWiN08Aomidq+GHTUnqlcychvpeGTemEBvoNbhs99Hy8a8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=seu.edu.cn; spf=pass smtp.mailfrom=seu.edu.cn; dkim=pass (1024-bit key) header.d=seu.edu.cn header.i=@seu.edu.cn header.b=Xo/rFNoS; arc=none smtp.client-ip=45.254.49.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=seu.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=seu.edu.cn
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="fSkSyIUC"
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1757662239; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=GKqEXm4uUJ/zbwCaM3425+aQc2qcRW4Q7cTIqt152L8=;
-	b=fSkSyIUC8bXiNHLmUGQ4/hgK7lwIZJurZZCJGz0fCYfQBDhGmmA6s5+43JpPGp+2Hl+a/iTz/KCqwhZCeAOZZOH9s6jBa8RCVIEo5Qhi8TenTBQBE7nNYSx09M5XTRky3wRLml2a42F1yV5MDvQPVP2A96FnIjynbhgJUvCwOaQ=
-Received: from 30.222.50.8(mailfrom:tianruidong@linux.alibaba.com fp:SMTPD_---0WnqAeI._1757662238 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Fri, 12 Sep 2025 15:30:38 +0800
-Message-ID: <72563756-a53a-4f50-9bf4-87f6b26af036@linux.alibaba.com>
-Date: Fri, 12 Sep 2025 15:30:41 +0800
+	dkim=pass (1024-bit key) header.d=seu.edu.cn header.i=@seu.edu.cn header.b="Xo/rFNoS"
+Received: from LAPTOP-N070L597.localdomain (unknown [58.241.16.34])
+	by smtp.qiye.163.com (Hmail) with ESMTP id 22a15e980;
+	Fri, 12 Sep 2025 23:47:39 +0800 (GMT+08:00)
+From: Zilin Guan <zilin@seu.edu.cn>
+To: rafael@kernel.org
+Cc: robert.moore@intel.com,
+	lenb@kernel.org,
+	linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	jianhao.xu@seu.edu.cn,
+	Zilin Guan <zilin@seu.edu.cn>
+Subject: [PATCH] acpi: replace ACPI_FREE with acpi_ut_delete_object_desc
+Date: Fri, 12 Sep 2025 15:47:35 +0000
+Message-Id: <20250912154735.158537-1-zilin@seu.edu.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v1 00/10] Add RAS support for RISC-V architecture
-To: Himanshu Chauhan <hchauhan@ventanamicro.com>,
- linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-acpi@vger.kernel.org, linux-efi@vger.kernel.org,
- acpica-devel@lists.linux.dev
-Cc: paul.walmsley@sifive.com, palmer@dabbelt.com, lenb@kernel.org,
- james.morse@arm.com, tony.luck@intel.com, ardb@kernel.org, conor@kernel.org,
- cleger@rivosinc.com, robert.moore@intel.com, sunilvl@ventanamicro.com,
- apatel@ventanamicro.com, xueshuai@linux.alibaba.com
-References: <20250227123628.2931490-1-hchauhan@ventanamicro.com>
-From: Ruidong Tian <tianruidong@linux.alibaba.com>
-In-Reply-To: <20250227123628.2931490-1-hchauhan@ventanamicro.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-HM-Tid: 0a993e9c5da603a1kunmf7421b2a2a66ff
+X-HM-MType: 10
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVlCGU4fVklDT09KGk8YS0weHVYeHw5VEwETFhoSFy
+	QUDg9ZV1kYEgtZQVlOQ1VJT0pVSk1VSE9ZV1kWGg8SFR0UWUFZS1VLVUtVS1kG
+DKIM-Signature: a=rsa-sha256;
+	b=Xo/rFNoS1dz+c0yx+HedhqhhqKgS6VOs02EpGJlZ+ROoYv3jt7JF0MFeEBwRqFvpp11mzAIkZZLDxwUOpXYrhRiw50Jd+FuLdoEc2zPJPv6pXoBkOpLLkYcX8GLEagXU/Y8JaNKHoB/+jsESq0aDeDCcpuSree6Z4H178pAaWPo=; s=default; c=relaxed/relaxed; d=seu.edu.cn; v=1;
+	bh=b9yWIDSto645FMwYolwTKJoPgHsiJq2d08oXP46kQO4=;
+	h=date:mime-version:subject:message-id:from;
 
+acpi_ut_create_internal_object may allocate memory from a slab cache
+via kmem_cache_zalloc, but the code currently frees it with ACPI_FREE,
+which calls kfree. This mismatch prevents the object from being
+released properly and may lead to memory leaks or other issues.
 
-在 2025/2/27 20:36, Himanshu Chauhan 写道:
-> This series implements the RAS (Reliability, Availability and Serviceability)
-> support for RISC-V architecture using RISC-V RERI specification. It is conformant
-> to ACPI platform error interfaces (APEI). It uses the highest priority
-> Supervisor Software Events (SSE)[2] to deliver the hardware error events to the kernel.
-> The SSE implemetation has already been merged in OpenSBI. Clement has sent a patch series for
-> its implemenation in Linux kernel.[5]
->
-> The GHES driver framework is used as is with the following changes for RISC-V:
-> 	1. Register each ghes entry with SSE layer. Ghes notification vector is SSE event.
-> 	2. Add RISC-V specific entries for processor type and ISA string
-> 	3. Add fixmap indices GHES SSE Low and High Priority to help map and read from
-> 	   physical addresses present in GHES entry.
-> 	4. Other changes to build/configure the RAS support
->
-> How to Use:
-> ----------
-> This RAS stack consists of Qemu[3], OpenSBI, EDK2[4], Linux kernel and devmem utility to inject and trigger
-> errors. Qemu [Ref.] has support to emulate RISC-V RERI. The RAS agent is implemented in OpenSBI which
-> creates CPER records. EDK2 generates HEST table and populates it with GHES entries with the help of
-> OpenSBI.
->
-> Qemu Command:
-> ------------
-> <qemu-dir>/build/qemu-system-riscv64 \
->      -s -accel tcg -m 4096 -smp 2 \
->      -cpu rv64,smepmp=false \
->      -serial mon:stdio \
->      -d guest_errors -D ./qemu.log \
->      -bios <opensbi-dir>/build/platform/generic/firmware/fw_dynamic.bin \
->      -monitor telnet:127.0.0.1:55555,server,nowait \
->      -device virtio-gpu-pci -full-screen \
->      -device qemu-xhci \
->      -device usb-kbd \
->      -blockdev node-name=pflash0,driver=file,read-only=on,filename=<edk2-build-dir>/RiscVVirtQemu/RELEASE_GCC5/FV/RISCV_VIRT_CODE.fd \
->      -blockdev node-name=pflash1,driver=file,filename=<edk2-build-dir>/RiscVVirtQemu/RELEASE_GCC5/FV/RISCV_VIRT_VARS.fd \
->      -M virt,pflash0=pflash0,pflash1=pflash1,rpmi=true,reri=true,aia=aplic-imsic \
->      -kernel <kernel image> \
->      -initrd <rootfs image> \
->      -append "root=/dev/ram rw console=ttyS0 earlycon=uart8250,mmio,0x10000000"
->
-> Error Injection & Triggering:
-> ----------------------------
-> devmem 0x4010040 32 0x2a1
-> devmem 0x4010048 32 0x9001404
-> devmem 0x4010044 8 1
->
-> The above commands injects a TLB error on CPU 0.
->
-> Sample Output (CPU 0):
-> ---------------------
-> [   34.370282] {1}[Hardware Error]: Hardware error from APEI Generic Hardware Error Source: 1
-> [   34.371375] {1}[Hardware Error]: event severity: recoverable
-> [   34.372149] {1}[Hardware Error]:  Error 0, type: recoverable
-> [   34.372756] {1}[Hardware Error]:   section_type: general processor error
-> [   34.373357] {1}[Hardware Error]:   processor_type: 3, RISCV
-> [   34.373806] {1}[Hardware Error]:   processor_isa: 6, RISCV64
-> [   34.374294] {1}[Hardware Error]:   error_type: 0x02
-> [   34.374845] {1}[Hardware Error]:   TLB error
-> [   34.375448] {1}[Hardware Error]:   operation: 1, data read
-> [   34.376100] {1}[Hardware Error]:   target_address: 0x0000000000000000
->
-> References:
-> ----------
-> [1] RERI Specification: https://github.com/riscv-non-isa/riscv-ras-eri/releases/download/v1.0/riscv-reri.pdf
-> [2] SSE Section in OpenSBI v3.0: https://github.com/riscv-non-isa/riscv-sbi-doc/releases/download/v3.0-rc3/riscv-sbi.pdf
-> [3] Qemu source (with RERI emulation support): https://github.com/ventanamicro/qemu.git (branch: dev-upstream)
-> [4] EDK2: https://github.com/ventanamicro/edk2.git (branch: dev-upstream)
-> [5] SSE Kernel Patches: https://lore.kernel.org/linux-riscv/649fdead-09b0-4f94-a6ff-099fc970d890@rivosinc.com/T/
+Fix this by replacing ACPI_FREE with acpi_ut_delete_object_desc, which
+matches the allocation method used for internal objects.
 
-Hi,
+Signed-off-by: Zilin Guan <zilin@seu.edu.cn>
+---
+ drivers/acpi/acpica/nsxfname.c | 2 +-
+ drivers/acpi/acpica/utobject.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Thanks for this series.
+diff --git a/drivers/acpi/acpica/nsxfname.c b/drivers/acpi/acpica/nsxfname.c
+index 1db831545ec8..b6895a48ae68 100644
+--- a/drivers/acpi/acpica/nsxfname.c
++++ b/drivers/acpi/acpica/nsxfname.c
+@@ -601,7 +601,7 @@ acpi_status acpi_install_method(u8 *buffer)
+ error_exit:
+ 
+ 	ACPI_FREE(aml_buffer);
+-	ACPI_FREE(method_obj);
++	acpi_ut_delete_object_desc(method_obj);
+ 	return (status);
+ }
+ ACPI_EXPORT_SYMBOL(acpi_install_method)
+diff --git a/drivers/acpi/acpica/utobject.c b/drivers/acpi/acpica/utobject.c
+index 272e46208263..8362204b57b5 100644
+--- a/drivers/acpi/acpica/utobject.c
++++ b/drivers/acpi/acpica/utobject.c
+@@ -148,7 +148,7 @@ union acpi_operand_object *acpi_ut_create_package_object(u32 count)
+ 	package_elements = ACPI_ALLOCATE_ZEROED(((acpi_size)count +
+ 						 1) * sizeof(void *));
+ 	if (!package_elements) {
+-		ACPI_FREE(package_desc);
++		acpi_ut_delete_object_desc(package_desc);
+ 		return_PTR(NULL);
+ 	}
+ 
+-- 
+2.34.1
 
-I'm doing some work related to your patch. Besides SSE, I'm working on support
-for another notification type for synchronous hardware errors (e.g., on a poison
-read), which called Hardware Error Exception (HEE) in Dhaval Sharma's UEFI
-proposal[0] in PRS-TG.  I have a patch for HEE support which I've sent out
-separately[1].
-
-Perhaps we could merge my work into your patchset to bringing a complete RAS
-solution to the RISC-V architecture? Or, I'm also happy to wait for your patches
-to land and then continue my work on top.
-
-Let me know what you think would be best.
-
-Cheers,
-Ruidong Tian
-
-[0]: https://lists.riscv.org/g/tech-prs/topic/risc_v_ras_related_ecrs/113685653
-[1]: https://lore.kernel.org/all/20250910093347.75822-6-tianruidong@linux.alibaba.com/
-
-> Himanshu Chauhan (10):
->    riscv: Define ioremap_cache for RISC-V
->    riscv: Define arch_apei_get_mem_attribute for RISC-V
->    acpi: Introduce SSE in HEST notification types
->    riscv: Add fixmap indices for GHES IRQ and SSE contexts
->    riscv: conditionally compile GHES NMI spool function
->    riscv: Add functions to register ghes having SSE notification
->    riscv: Add RISC-V entries in processor type and ISA strings
->    riscv: Introduce HEST SSE notification handlers
->    riscv: Add config option to enable APEI SSE handler
->    riscv: Enable APEI and NMI safe cmpxchg options required for RAS
->
->   arch/riscv/Kconfig                 |   2 +
->   arch/riscv/include/asm/acpi.h      |  20 ++++
->   arch/riscv/include/asm/fixmap.h    |   8 ++
->   arch/riscv/include/asm/io.h        |   3 +
->   drivers/acpi/apei/Kconfig          |   5 +
->   drivers/acpi/apei/ghes.c           | 102 +++++++++++++++++---
->   drivers/firmware/efi/cper.c        |   3 +
->   drivers/firmware/riscv/riscv_sse.c | 147 +++++++++++++++++++++++++++++
->   include/acpi/actbl1.h              |   3 +-
->   include/linux/riscv_sse.h          |  15 +++
->   10 files changed, 296 insertions(+), 12 deletions(-)
->
