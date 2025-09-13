@@ -1,117 +1,84 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 388B5285CB2
-	for <acpica-devel@lists.linux.dev>; Fri, 12 Sep 2025 19:15:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7892E9460
+	for <acpica-devel@lists.linux.dev>; Sat, 13 Sep 2025 02:32:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.113
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757704511; cv=none; b=eyQ6so2XMX+wTs0sK+NwCEQZccapl9p2QNXNr9svE40ZCU9h8k/2G8vxY4Ej6ruXLdKu7PoGRoDh3YlxnXL/rbw4vvjjyQ/RXZ4WLE+DnqTNLeJqpHM5lxgweKBq7nwqnUfPFgNfOROEMjF+WNa11S0gAom6EvPdF8rPOnj8sqk=
+	t=1757730753; cv=none; b=aS8c7HyWyt8zJCopuE9fWzKMnfzrABcqMcdRV3V3A2kE1qCivTSdGK2doTMouJcCsHSDhrP0qP8hdFAuiXUf2a3+RZHxBXn9RV5DGzmRiyME5nLai9EYE5YqXc/GPuo0HbuwfHD6FNAuar8HaPK36y36yR9Xj/psFNwGIblCRWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757704511; c=relaxed/simple;
-	bh=TQ9VfjXfclB8dh8foLJE1O+GAfnD6lRseSo061flmAE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nikoY5ogj+TrVWMwlRSY/LRq7Uha9JfC+6Rl6KhZSq5R2WIYjiUUbPqIB8KpimeNcEfuOGQdmi4Atr8Lk7BZxA0hqaKRkhv3YD5NNmjezCuoiJVqGhoPdHMS+CFNjE1QZAQWX6rjidxUsJauAC4Wv13gC+6T2eTPkkWFrOapH18=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SRzsyF70; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1757730753; c=relaxed/simple;
+	bh=zm0VCcs9boavV2TCGL/wOXYwcxDhgoWmXtNFO35a+L0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=S6n88dmpbNu2jUMSrEvjDS/viI1gXd4LgepP8ElDWnd8N/kIFN+Y4T7uS/v31BiChTt17TqmyG5n4lLuzwsMjhTpM/jyCox/zlIR/VLfuUzPYjh4npq/F4a3Dgi/w9YH8RgkfpWH+F5IeuA2vkqw0SMyU30PECgIfr8qx9zPeAs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=A9G1GEq6; arc=none smtp.client-ip=115.124.30.113
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SRzsyF70"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D53F3C4CEF4
-	for <acpica-devel@lists.linux.dev>; Fri, 12 Sep 2025 19:15:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757704510;
-	bh=TQ9VfjXfclB8dh8foLJE1O+GAfnD6lRseSo061flmAE=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=SRzsyF70MStqeKXB4IEk8QBWLL8+T8Fafs3jHgcEs2AElEJeC4rGOEAm0ofpHN4R3
-	 pXLhGZgV1mrEvctG28E9c54JvHNOUegvvVIMXtyyF6ZlLqNb1Oq1XU9xRZ4RNeP1c5
-	 rRVrCCbaRxGee+DztO37+V6SFWBklMF9RyllfW+fe7mLNeSuPdck35SCZc04LUR0Ix
-	 Dz7uU3JVlMH27YCnBj8GKzp0LpG9Te1YVguh4TIQ9DYG3ei5CG8CtT2Ov77BUUX7iv
-	 dmFDoMB57eFS7g81kIadtyzI9u0JmFs08kqZshVP3yJKnJDss99aLkvRoFhPVIBivO
-	 FFt+QYruatLlA==
-Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-621b4d2b2f3so800190eaf.0
-        for <acpica-devel@lists.linux.dev>; Fri, 12 Sep 2025 12:15:10 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCU5BTWmVAbFnyIdebgku44Yvi+HIwuV5SZfcLp78tYvnAg40PB/4yTjjatHhYSoipVOndmOtqdQVIrCA/8=@lists.linux.dev
-X-Gm-Message-State: AOJu0YzK4C2eTVKzHIAzq5SKvteptzYSNi+2+F0PtBRHLaGBeRNcCc8J
-	Oizr1OXSAgb3vAvy4AuKQN7QkbW11T2rah713hSGfu7Zt7OiEK/0oKOLmn01ub96gyn7cx/if19
-	aE6jWk+Lcl92qSJdJJY4XWrwHHNywlck=
-X-Google-Smtp-Source: AGHT+IFSMjCukwpRoJHHdvo7X9kkE10/cajgTTOGsw2M8TC6zIVI2Bpsk3zuGwwVvKA1mrGOEn0n8iWmSkA9BoO27MU=
-X-Received: by 2002:a05:6820:6ac4:b0:61b:9bfa:593c with SMTP id
- 006d021491bc7-621b2f4a501mr3957536eaf.3.1757704510142; Fri, 12 Sep 2025
- 12:15:10 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="A9G1GEq6"
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1757730747; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=o3zfucXj3gdSgzCiY6p2mPd7NL3n/kEPQEJn/QTqr9Y=;
+	b=A9G1GEq6zwdO7DjV5t42V19VIq+8KvA8CpuBSgPWsZ9YyLDnr/FZBtj1/Bt9sjcWBaHJhSUcRgkNaEMeE67sVSx3TlsDkKa4tzpV2q7g7AVijnOBJ2lbT1uU7lyfyzLhiUG957ls/B5G5j+l7RFUYh6vRQs0NUzxaBGp2KfaiLw=
+Received: from localhost.localdomain(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0WnsSKuO_1757730745 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Sat, 13 Sep 2025 10:32:26 +0800
+From: Shuai Xue <xueshuai@linux.alibaba.com>
+To: rafael@kernel.org,
+	lenb@kernel.org,
+	robert.moore@intel.com
+Cc: andrew@kernel.org,
+	bfaccini@nvidia.com,
+	eahariha@linux.microsoft.com,
+	dan.j.williams@intel.com,
+	thorsten.blum@linux.dev,
+	gourry@gourry.net,
+	xueshuai@linux.alibaba.com,
+	nunodasneves@linux.microsoft.com,
+	wangyuquan1236@phytium.com.cn,
+	Jonathan.Cameron@huawei.com,
+	linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	acpica-devel@lists.linux.dev
+Subject: [PATCH v2] acpi,srat: Fix incorrect device handle check for Generic Initiator
+Date: Sat, 13 Sep 2025 10:32:24 +0800
+Message-Id: <20250913023224.39281-1-xueshuai@linux.alibaba.com>
+X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20250912154735.158537-1-zilin@seu.edu.cn>
-In-Reply-To: <20250912154735.158537-1-zilin@seu.edu.cn>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Fri, 12 Sep 2025 21:14:58 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0iCQa0jr28YeT3j3OXSVp_sZmjw=617itt1UeGSE3t90A@mail.gmail.com>
-X-Gm-Features: Ac12FXwa_QzUe68Np4TmR98_Gmn1m7p6kswAYO952SHTGbx7bnsU3LaTPZiddvU
-Message-ID: <CAJZ5v0iCQa0jr28YeT3j3OXSVp_sZmjw=617itt1UeGSE3t90A@mail.gmail.com>
-Subject: Re: [PATCH] acpi: replace ACPI_FREE with acpi_ut_delete_object_desc
-To: Zilin Guan <zilin@seu.edu.cn>
-Cc: rafael@kernel.org, robert.moore@intel.com, lenb@kernel.org, 
-	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, jianhao.xu@seu.edu.cn
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Sep 12, 2025 at 5:47=E2=80=AFPM Zilin Guan <zilin@seu.edu.cn> wrote=
-:
->
-> acpi_ut_create_internal_object may allocate memory from a slab cache
-> via kmem_cache_zalloc, but the code currently frees it with ACPI_FREE,
-> which calls kfree. This mismatch prevents the object from being
-> released properly and may lead to memory leaks or other issues.
->
-> Fix this by replacing ACPI_FREE with acpi_ut_delete_object_desc, which
-> matches the allocation method used for internal objects.
->
-> Signed-off-by: Zilin Guan <zilin@seu.edu.cn>
+The Generic Initiator Affinity Structure in SRAT table uses device
+handle type field to indicate the device type. According to ACPI
+specification, the device handle type value of 1 represents PCI device,
+not 0.
 
-Please submit ACPICA updates as pull requests to the upstream ACPICA
-project on GitHub.  Once merged there, corresponding Linux patches can
-be submitted with Link: tags pointing to the original upstream ACPICA
-commits.
+Fixes: 894c26a1c274 ("ACPI: Support Generic Initiator only domains")
+Reported-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
+Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
+---
+changes since v1: drop changes in actbl3.h to make it easy to progress per Jonathan
+---
+ drivers/acpi/numa/srat.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks!
+diff --git a/drivers/acpi/numa/srat.c b/drivers/acpi/numa/srat.c
+index 53816dfab645..aa87ee1583a4 100644
+--- a/drivers/acpi/numa/srat.c
++++ b/drivers/acpi/numa/srat.c
+@@ -237,7 +237,7 @@ acpi_table_print_srat_entry(struct acpi_subtable_header *header)
+ 		struct acpi_srat_generic_affinity *p =
+ 			(struct acpi_srat_generic_affinity *)header;
+ 
+-		if (p->device_handle_type == 0) {
++		if (p->device_handle_type == 1) {
+ 			/*
+ 			 * For pci devices this may be the only place they
+ 			 * are assigned a proximity domain
+-- 
+2.39.3
 
-> ---
->  drivers/acpi/acpica/nsxfname.c | 2 +-
->  drivers/acpi/acpica/utobject.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/acpi/acpica/nsxfname.c b/drivers/acpi/acpica/nsxfnam=
-e.c
-> index 1db831545ec8..b6895a48ae68 100644
-> --- a/drivers/acpi/acpica/nsxfname.c
-> +++ b/drivers/acpi/acpica/nsxfname.c
-> @@ -601,7 +601,7 @@ acpi_status acpi_install_method(u8 *buffer)
->  error_exit:
->
->         ACPI_FREE(aml_buffer);
-> -       ACPI_FREE(method_obj);
-> +       acpi_ut_delete_object_desc(method_obj);
->         return (status);
->  }
->  ACPI_EXPORT_SYMBOL(acpi_install_method)
-> diff --git a/drivers/acpi/acpica/utobject.c b/drivers/acpi/acpica/utobjec=
-t.c
-> index 272e46208263..8362204b57b5 100644
-> --- a/drivers/acpi/acpica/utobject.c
-> +++ b/drivers/acpi/acpica/utobject.c
-> @@ -148,7 +148,7 @@ union acpi_operand_object *acpi_ut_create_package_obj=
-ect(u32 count)
->         package_elements =3D ACPI_ALLOCATE_ZEROED(((acpi_size)count +
->                                                  1) * sizeof(void *));
->         if (!package_elements) {
-> -               ACPI_FREE(package_desc);
-> +               acpi_ut_delete_object_desc(package_desc);
->                 return_PTR(NULL);
->         }
->
-> --
-> 2.34.1
->
->
