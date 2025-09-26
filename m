@@ -1,65 +1,65 @@
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5EDF2F745C
-	for <acpica-devel@lists.linux.dev>; Fri, 26 Sep 2025 13:11:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCACA2F656B
+	for <acpica-devel@lists.linux.dev>; Fri, 26 Sep 2025 13:11:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758892300; cv=none; b=sH800SCDyGtdRALqLUiPZB16dEVOL0QFMoz3cCq1VZrl3Z0htszEQEfv62vlq2F4xQjCAFtKV8q9MxDWJCvxdPsr1IXitvrrtNF0KouPeeUbdj0u+iAC9b2mzdNCgmd9aAtwd+CUgFV1SZBfh8BV5R7brklcMMamphbjDmhFn3M=
+	t=1758892301; cv=none; b=E9o7STpLk1wQtbydziVWod/dBoHNb+Q0x2WW8J5WV1HF2TRSFJaZVoP6STwabEFnh0TxF+dQs5vD0C/il2vg136dh5RIT+ujfbqAQBoz4knQZAy10IgL8j2ulRcHOzlvWz5i6UssfWzxK8hmzPony0oTRDgX8MdPUv7x3vChIsI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758892300; c=relaxed/simple;
-	bh=uQKx1xhIU5eIYcqCEj+wgLYNzIbICgNjQdDV8Jtr5o0=;
+	s=arc-20240116; t=1758892301; c=relaxed/simple;
+	bh=8QXukFFdhrRn2peTuBfsWRiyR8y/J2hEQydiLTT8V2I=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=fLz3htPdlaJmHw7gIV5CMQ2kvgrZQ7O0MEhxEHkl4SNxXuLCEmT7nUZMFaFveH7Tmtxk60xefSjnHWYJf7NHZc2JdM9zJWnqVkLzRebEsXEwMIjZKQj5PFdlQL0g4+5Fh8xNA6ZvfgAT8hvRYI4Tv50EJh0r6QXykD2R6le8190=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=gCUJZB3U; arc=none smtp.client-ip=209.85.167.44
+	 In-Reply-To:To:Cc; b=TEcE50pSpSL4Ah3pSdIwYI37MGjgqfPoV63ydRDgImbc8xBwUIQkWuGhfo7Rz+8hIQk76Q5puviIC4EIdn9ukn20Y9cJMHrrwK2yrpYV2Hk7fPPT+cn3EhUsSaxRMkCGu7cgIH7xhlAvMc6DkLtT9jxgkNrFFZQyCqAW8LE8SnQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=XdjVqt9x; arc=none smtp.client-ip=209.85.167.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="gCUJZB3U"
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-57d5ccd73dfso2129275e87.0
-        for <acpica-devel@lists.linux.dev>; Fri, 26 Sep 2025 06:11:35 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="XdjVqt9x"
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-57a960fe78fso2398151e87.2
+        for <acpica-devel@lists.linux.dev>; Fri, 26 Sep 2025 06:11:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1758892293; x=1759497093; darn=lists.linux.dev;
+        d=chromium.org; s=google; t=1758892292; x=1759497092; darn=lists.linux.dev;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=LZ2xc23cnAfVOxiaEtcKmtjDZaiDvCUR7nAT9mLWhLU=;
-        b=gCUJZB3UULPVvehzcdR6ZFVQsILy43Z3021Fel9bfpOOe+CbQ8dd9FZ+0IAGtDSf6J
-         aPez3gz/dpaIENVKSft/E80T2i1JaCwjp/ojMKaKs6Dcr7Ri5UUyrFzxzD4W8aRXlXo0
-         /+GJfjykmxSRMaiMd0X+37KYVkDyb7QOBQH+s=
+        bh=+IULFJYV86S6ZpfwTIK6NKFvLB7brLHHTAANiqsCeGE=;
+        b=XdjVqt9xRMPklaqGSv2qGsjDXpvdBYoq8C6NxyXXcb191j36FaElPe/u19ZpxcJ298
+         BwTMhGY27y/nL7IA6oUSr8jemTvs3AUAsh1XtHaxwXzZ3k8tL8w/wpwitgW92LnGHFNH
+         YAJ7nROjZ9AEZmafqcqUm/WviHP8/9C8kYTgI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758892293; x=1759497093;
+        d=1e100.net; s=20230601; t=1758892292; x=1759497092;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=LZ2xc23cnAfVOxiaEtcKmtjDZaiDvCUR7nAT9mLWhLU=;
-        b=VELz3xP2f9KtUNoT7n4gM9+9jt3s974jKTJzhwVUfhjJhO6JR7qWQwyXNQt3PItCh5
-         teMjzLSeRNYWMuRNCFQKCLENHvw/yvbofxuH/4OFP5RhFZXZpmbjK0AUbkaxa55RX62/
-         0jOGsykmpWk8uzy1pqLHmdrBLcgRZHaavGuiCoij9zR981kTBCfNP8HP17tG1IqreeJI
-         xpJrjeLyNBM7+YcGETDsGgMYA+DH7sypqD0hIGwIIABk2S4LVQ+cy832GAbsWwW7kn2D
-         S7vnoPo2k1QFxaGMgdUy4VyT/eHN9ELFKQ/GfkqiOU9auKVLKs57P/1wuocfzQNKe5e7
-         HiZg==
-X-Forwarded-Encrypted: i=1; AJvYcCXOx28L1aAt8fZkQoSx9s126CT0GEkBWIOs/seLJ2IxmYVhbHTJsBKuUuh5Sq1qvgwjGYQDP50HP8H9HzQ=@lists.linux.dev
-X-Gm-Message-State: AOJu0YyNeAgbUIXL0YNZPEpGpyQekdffgoO2XoArRLXNiwgFuPYKjP1k
-	NiYupGCQFKG9ObEzfDSexrlB3HPJkUizhzM8ULgXKBNZsKZPGLsmKcv9W6oisuBr1A==
-X-Gm-Gg: ASbGncse/TaZXlX0qUD/4CxwY3efHxWd9bwUwm8dzJLp2k8hjAysHkpmipziZJ+MmaF
-	83y6zhpieduy6D+DV96SrGt+jQe0BAMndGGVOiUNj0FPl0V9xzpVE7yQiGdR8srYuFfDAACNL0y
-	+h8yk1+TrnfwzPw93fkkyFnkPBFEbGP6V2rkvAYpTL7DZNE/qS/sJiGQMQZl4Pqnh2/8CbGas5x
-	BiXWUdu+vXc2VZimPQWQT79xJ359Gfk9MqZQ488No/6j+ONdRtg1OGw52c2vI4d7gCgyyStPy0K
-	sofFCBrLuBz/TDzgZ021QKGp8r859hUFQfCGWACwkD8xRydqgtJtMU3q+eXQChRGUobQDA0VYsc
-	ppw+NDWfSvU72P3khXdJLEzkbVn+lJetKgYxJbsJQbfDqSp8XGb9+6jQ0s988A28MgO2dS+wEE3
-	U/cTLgJWXUrEWJXLCLLbAMPls=
-X-Google-Smtp-Source: AGHT+IEc/rDB1XIEkZ7T9M5CIKlYJn+bt+sf74IR95Ks98OS/SI0N6MNxqx7nWfz1ihO3nPV6De8mw==
-X-Received: by 2002:ac2:4183:0:b0:584:2ad8:7ce3 with SMTP id 2adb3069b0e04-5842ad87e22mr755887e87.22.1758892292551;
+        bh=+IULFJYV86S6ZpfwTIK6NKFvLB7brLHHTAANiqsCeGE=;
+        b=nwbDdONpBZulGgstAwDw3eM1XnSuZhQlmUbXMZ6wM7LQ2SGOeIQd1OFWai5wHNultM
+         YBYrBWcf6HWsg6cwImbOvhPnI2W9oOdXiexul0o5QGpUgHlC6oKA+Zyh80xedfwptl1z
+         VaJ1qhZnvrxJpPmBjl990x2bioFxd0VRCKUHaWLjDw1PeQiQB8BgsOTRvL6hUCnizq1b
+         vHaiD1HN3joR32M0Ii6aAPaijR8qI8blujwkGamynK5oNN97IEQS1s1u+59IGdO/yq1o
+         2NP3ObF+jvmxpxWbXVLFoPf9K6Xqt4SZUdAxjqtEsS8ebAsBtJ9LWnMqdjrEbMfIQMaF
+         vPgA==
+X-Forwarded-Encrypted: i=1; AJvYcCU8l504kTw/LeWHFZEbTlKaewNlxMvtRu6I+CbvwFQJOhd01U38sdZBiRol5Zl63kHTGtOfcaSiYFPn7g4=@lists.linux.dev
+X-Gm-Message-State: AOJu0Yzryjd2dFA5GMS7tIubJ5c/gi+qxmW9G9Jk2NxeeULctEWQV00J
+	f18SD7kHjHEW0tbIQ67FO5mL1b/yrlcX77wZ/Osx5pkGxBmvKkKvuixLmD6/RQiwdw==
+X-Gm-Gg: ASbGncsNoqsNrKvg0xP3hdooReCJxfv17V5BMpsImUI0UrHNVIlcNIwYK9vouqZPGNv
+	vchql79RnPsAVhtJWhNGnSlNBO9aZR+7lYHh9aVj/3ayE2fa7dYvWnqvwR8Qg+xi4wac2Gc5SPC
+	wcP/y7+Swk/j6+UIFmAKprZuC2LzYI0Z2UJTZIOC61XAXzP8G3LA3qr4CXS19ug8BJfEAhdHR2g
+	Wkuk2+iOP5gJVb5czLOTidk0mRKJTMqhbp0qsfe54fD3qedijyHNAaOoirO8Efa3bC1dZO45ktg
+	RXhCTD3usrv8fuz+Wvok0Tcqu1I78UrYqP7TCHa3BkuYJOVEoqQVr8ZFWCCeXHakll8RyO57yXO
+	KoSQGg7zLyL60+JJJlSW2Qj2kjFSMe87vto47DfzbegkH0Abb3Ghqm2NLIg1SKJJ16duLjggf8l
+	twc18gR+gA9/sr
+X-Google-Smtp-Source: AGHT+IE/r2pIJwf7kAuauI+jC65tbRl8WC4I4+SdoNtU43PxQUMr/4vfCOnHocv1AyDV3BygK1ERFA==
+X-Received: by 2002:a05:6512:2201:b0:570:e55e:47fc with SMTP id 2adb3069b0e04-582d3c9674cmr2179748e87.54.1758892292030;
         Fri, 26 Sep 2025 06:11:32 -0700 (PDT)
 Received: from ribalda.c.googlers.com (64.153.228.35.bc.googleusercontent.com. [35.228.153.64])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-58527c6b014sm123872e87.43.2025.09.26.06.11.32
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-58527c6b014sm123872e87.43.2025.09.26.06.11.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Sep 2025 06:11:32 -0700 (PDT)
+        Fri, 26 Sep 2025 06:11:31 -0700 (PDT)
 From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Fri, 26 Sep 2025 13:11:29 +0000
-Subject: [PATCH v3 05/12] media: ipu-bridge: Use v4l2_fwnode_device_parse
- helper
+Date: Fri, 26 Sep 2025 13:11:28 +0000
+Subject: [PATCH v3 04/12] ACPI: mipi-disco-img: Do not duplicate rotation
+ info into swnodes
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -68,7 +68,7 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250926-uvc-orientation-v3-5-6dc2fa5b4220@chromium.org>
+Message-Id: <20250926-uvc-orientation-v3-4-6dc2fa5b4220@chromium.org>
 References: <20250926-uvc-orientation-v3-0-6dc2fa5b4220@chromium.org>
 In-Reply-To: <20250926-uvc-orientation-v3-0-6dc2fa5b4220@chromium.org>
 To: Hans de Goede <hansg@kernel.org>, 
@@ -88,102 +88,55 @@ Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
  acpica-devel@lists.linux.dev, Ricardo Ribalda <ribalda@chromium.org>
 X-Mailer: b4 0.14.2
 
-v4l2_fwnode_device_parse now supports ACPI devices as well. Use the
-helper instead of re-implement the logic.
+The function v4l2_fwnode_device_parse() is now capable of parsing the
+_PLD method, there is no need to duplicate the rotation information in a
+swnode.
 
+Reviewed-by: Hans de Goede <hansg@kernel.org>
 Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
- drivers/media/pci/intel/Kconfig      |  1 +
- drivers/media/pci/intel/ipu-bridge.c | 42 +++++++++++-------------------------
- 2 files changed, 14 insertions(+), 29 deletions(-)
+ drivers/acpi/mipi-disco-img.c | 15 ---------------
+ include/acpi/acpi_bus.h       |  1 -
+ 2 files changed, 16 deletions(-)
 
-diff --git a/drivers/media/pci/intel/Kconfig b/drivers/media/pci/intel/Kconfig
-index d9fcddce028bf736557e2c6c289d4f8056d80756..69e3108ba02c4f0bc56b0e26ddce9f86775099f6 100644
---- a/drivers/media/pci/intel/Kconfig
-+++ b/drivers/media/pci/intel/Kconfig
-@@ -8,6 +8,7 @@ config IPU_BRIDGE
- 	tristate "Intel IPU Bridge"
- 	depends on ACPI || COMPILE_TEST
- 	depends on I2C
-+	select V4L2_FWNODE
- 	help
- 	  The IPU bridge is a helper library for Intel IPU drivers to
- 	  function on systems shipped with Windows.
-diff --git a/drivers/media/pci/intel/ipu-bridge.c b/drivers/media/pci/intel/ipu-bridge.c
-index 4e579352ab2c0be656576fa223429432940747d8..441d1a5979fe94bee4738da68e185a44dbd411d4 100644
---- a/drivers/media/pci/intel/ipu-bridge.c
-+++ b/drivers/media/pci/intel/ipu-bridge.c
-@@ -257,42 +257,22 @@ static u32 ipu_bridge_parse_rotation(struct acpi_device *adev,
- 	}
- }
+diff --git a/drivers/acpi/mipi-disco-img.c b/drivers/acpi/mipi-disco-img.c
+index 5b85989f96beeb726f59ac9e12e965a215fb38f6..b58b5ba22a47a4afc5212998074d322f0b7586dc 100644
+--- a/drivers/acpi/mipi-disco-img.c
++++ b/drivers/acpi/mipi-disco-img.c
+@@ -617,21 +617,6 @@ static void init_crs_csi2_swnodes(struct crs_csi2 *csi2)
  
--static enum v4l2_fwnode_orientation ipu_bridge_parse_orientation(struct acpi_device *adev)
-+static enum v4l2_fwnode_orientation
-+ipu_bridge_parse_orientation(struct acpi_device *adev,
-+			     struct v4l2_fwnode_device_properties *props)
- {
--	enum v4l2_fwnode_orientation orientation;
--	struct acpi_pld_info *pld = NULL;
+ 	adev_fwnode = acpi_fwnode_handle(adev);
+ 
+-	/*
+-	 * If the "rotation" property is not present, but _PLD is there,
+-	 * evaluate it to get the "rotation" value.
+-	 */
+-	if (!fwnode_property_present(adev_fwnode, "rotation")) {
+-		struct acpi_pld_info *pld;
 -
--	if (!acpi_get_physical_device_location(ACPI_PTR(adev->handle), &pld)) {
--		dev_warn(ADEV_DEV(adev), "_PLD call failed, using default orientation\n");
-+	if (props->orientation == V4L2_FWNODE_PROPERTY_UNSET) {
-+		acpi_handle_warn(acpi_device_handle(adev),
-+				 "Using default orientation\n");
- 		return V4L2_FWNODE_ORIENTATION_EXTERNAL;
- 	}
- 
--	switch (pld->panel) {
--	case ACPI_PLD_PANEL_FRONT:
--		orientation = V4L2_FWNODE_ORIENTATION_FRONT;
--		break;
--	case ACPI_PLD_PANEL_BACK:
--		orientation = V4L2_FWNODE_ORIENTATION_BACK;
--		break;
--	case ACPI_PLD_PANEL_TOP:
--	case ACPI_PLD_PANEL_LEFT:
--	case ACPI_PLD_PANEL_RIGHT:
--	case ACPI_PLD_PANEL_UNKNOWN:
--		orientation = V4L2_FWNODE_ORIENTATION_EXTERNAL;
--		break;
--	default:
--		dev_warn(ADEV_DEV(adev), "Unknown _PLD panel val %d\n",
--			 pld->panel);
--		orientation = V4L2_FWNODE_ORIENTATION_EXTERNAL;
--		break;
+-		if (acpi_get_physical_device_location(handle, &pld)) {
+-			swnodes->dev_props[NEXT_PROPERTY(prop_index, DEV_ROTATION)] =
+-					PROPERTY_ENTRY_U32("rotation",
+-							   pld->rotation * 45U);
+-			kfree(pld);
+-		}
 -	}
 -
--	ACPI_FREE(pld);
--	return orientation;
-+	return props->orientation;
- }
+ 	if (!fwnode_property_read_u32(adev_fwnode, "mipi-img-clock-frequency", &val))
+ 		swnodes->dev_props[NEXT_PROPERTY(prop_index, DEV_CLOCK_FREQUENCY)] =
+ 			PROPERTY_ENTRY_U32("clock-frequency", val);
+diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+index aad1a95e6863d443a45985ba7ec7be4acf8664fe..296716875a3e7977abb7b7dfa89f78664aebd61c 100644
+--- a/include/acpi/acpi_bus.h
++++ b/include/acpi/acpi_bus.h
+@@ -389,7 +389,6 @@ struct acpi_gpio_mapping;
+ #define ACPI_DEVICE_SWNODE_PORT_NAME_LENGTH	8
  
- int ipu_bridge_parse_ssdb(struct acpi_device *adev, struct ipu_sensor *sensor)
- {
-+	struct v4l2_fwnode_device_properties props;
- 	struct ipu_sensor_ssdb ssdb = {};
- 	int ret;
- 
-@@ -300,6 +280,10 @@ int ipu_bridge_parse_ssdb(struct acpi_device *adev, struct ipu_sensor *sensor)
- 	if (ret)
- 		return ret;
- 
-+	ret = v4l2_fwnode_device_parse(ADEV_DEV(adev), &props);
-+	if (ret)
-+		return ret;
-+
- 	if (ssdb.vcmtype > ARRAY_SIZE(ipu_vcm_types)) {
- 		dev_warn(ADEV_DEV(adev), "Unknown VCM type %d\n", ssdb.vcmtype);
- 		ssdb.vcmtype = 0;
-@@ -314,7 +298,7 @@ int ipu_bridge_parse_ssdb(struct acpi_device *adev, struct ipu_sensor *sensor)
- 	sensor->lanes = ssdb.lanes;
- 	sensor->mclkspeed = ssdb.mclkspeed;
- 	sensor->rotation = ipu_bridge_parse_rotation(adev, &ssdb);
--	sensor->orientation = ipu_bridge_parse_orientation(adev);
-+	sensor->orientation = ipu_bridge_parse_orientation(adev, &props);
- 
- 	if (ssdb.vcmtype)
- 		sensor->vcm_type = ipu_vcm_types[ssdb.vcmtype - 1];
+ enum acpi_device_swnode_dev_props {
+-	ACPI_DEVICE_SWNODE_DEV_ROTATION,
+ 	ACPI_DEVICE_SWNODE_DEV_CLOCK_FREQUENCY,
+ 	ACPI_DEVICE_SWNODE_DEV_LED_MAX_MICROAMP,
+ 	ACPI_DEVICE_SWNODE_DEV_FLASH_MAX_MICROAMP,
 
 -- 
 2.51.0.536.g15c5d4f767-goog
