@@ -1,65 +1,64 @@
 Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCACA2F656B
-	for <acpica-devel@lists.linux.dev>; Fri, 26 Sep 2025 13:11:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 630352F7ABB
+	for <acpica-devel@lists.linux.dev>; Fri, 26 Sep 2025 13:11:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758892301; cv=none; b=E9o7STpLk1wQtbydziVWod/dBoHNb+Q0x2WW8J5WV1HF2TRSFJaZVoP6STwabEFnh0TxF+dQs5vD0C/il2vg136dh5RIT+ujfbqAQBoz4knQZAy10IgL8j2ulRcHOzlvWz5i6UssfWzxK8hmzPony0oTRDgX8MdPUv7x3vChIsI=
+	t=1758892301; cv=none; b=fDz2P039sjeeA6Iz+iB8wGrCk6SYjKOrKAceVNksPk6Q0zPMS7bsazg4mzZF3vsZJbRdpHnO0ElmpsF4HDl4jofeefTIdP2zQwrKfKakvNLos1CzKCWm5Gnnxa1W05Z+cmP0QguFnpaywEQfUgYiA837di/A4Zq8HZPgVyffSVY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1758892301; c=relaxed/simple;
-	bh=8QXukFFdhrRn2peTuBfsWRiyR8y/J2hEQydiLTT8V2I=;
+	bh=7+uj94r/7LeT/xAkBfTGJ8aSRCSPNzAL0fCA+D8DD2o=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=TEcE50pSpSL4Ah3pSdIwYI37MGjgqfPoV63ydRDgImbc8xBwUIQkWuGhfo7Rz+8hIQk76Q5puviIC4EIdn9ukn20Y9cJMHrrwK2yrpYV2Hk7fPPT+cn3EhUsSaxRMkCGu7cgIH7xhlAvMc6DkLtT9jxgkNrFFZQyCqAW8LE8SnQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=XdjVqt9x; arc=none smtp.client-ip=209.85.167.54
+	 In-Reply-To:To:Cc; b=K6CobseOcy5GRUoCRWjM5nlyNmB40aVLNLoiVNdUtkzISI7PuvIuVNMfZvzLyPjBCSa9+4le0Tl1nMjqAaChhdShovGwOB/CweJVrmkDY+lXvfx8p+zBXMa3bqZ2PPAv3rZU7hPZZUwALLhBtxDqAZ9SH7ZXpduVUy5kWSihQqU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=bkbZ6QCX; arc=none smtp.client-ip=209.85.167.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="XdjVqt9x"
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-57a960fe78fso2398151e87.2
-        for <acpica-devel@lists.linux.dev>; Fri, 26 Sep 2025 06:11:34 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="bkbZ6QCX"
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-57bf912cbf6so2406238e87.3
+        for <acpica-devel@lists.linux.dev>; Fri, 26 Sep 2025 06:11:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1758892292; x=1759497092; darn=lists.linux.dev;
+        d=chromium.org; s=google; t=1758892294; x=1759497094; darn=lists.linux.dev;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=+IULFJYV86S6ZpfwTIK6NKFvLB7brLHHTAANiqsCeGE=;
-        b=XdjVqt9xRMPklaqGSv2qGsjDXpvdBYoq8C6NxyXXcb191j36FaElPe/u19ZpxcJ298
-         BwTMhGY27y/nL7IA6oUSr8jemTvs3AUAsh1XtHaxwXzZ3k8tL8w/wpwitgW92LnGHFNH
-         YAJ7nROjZ9AEZmafqcqUm/WviHP8/9C8kYTgI=
+        bh=aCy6Bk8e0KycgUL3e8TXrZ2btc+fiyl+rPdd78IS8Is=;
+        b=bkbZ6QCXmzTwCqgFWYBjQTF6m89W4deC3SZzGYP3jT9QiAgxETOttcauuK2+pqLe8a
+         rqW8ZPVM0f7FYJQlUWcNVCU7+4UvuJ5tUfO9iDTZZxyll38bLpeECAoR6wJEktaVSQZ5
+         t2zDwaVPLU/1wNm8gP9+d4X9ls3uXb1Nq1Z4k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758892292; x=1759497092;
+        d=1e100.net; s=20230601; t=1758892294; x=1759497094;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+IULFJYV86S6ZpfwTIK6NKFvLB7brLHHTAANiqsCeGE=;
-        b=nwbDdONpBZulGgstAwDw3eM1XnSuZhQlmUbXMZ6wM7LQ2SGOeIQd1OFWai5wHNultM
-         YBYrBWcf6HWsg6cwImbOvhPnI2W9oOdXiexul0o5QGpUgHlC6oKA+Zyh80xedfwptl1z
-         VaJ1qhZnvrxJpPmBjl990x2bioFxd0VRCKUHaWLjDw1PeQiQB8BgsOTRvL6hUCnizq1b
-         vHaiD1HN3joR32M0Ii6aAPaijR8qI8blujwkGamynK5oNN97IEQS1s1u+59IGdO/yq1o
-         2NP3ObF+jvmxpxWbXVLFoPf9K6Xqt4SZUdAxjqtEsS8ebAsBtJ9LWnMqdjrEbMfIQMaF
-         vPgA==
-X-Forwarded-Encrypted: i=1; AJvYcCU8l504kTw/LeWHFZEbTlKaewNlxMvtRu6I+CbvwFQJOhd01U38sdZBiRol5Zl63kHTGtOfcaSiYFPn7g4=@lists.linux.dev
-X-Gm-Message-State: AOJu0Yzryjd2dFA5GMS7tIubJ5c/gi+qxmW9G9Jk2NxeeULctEWQV00J
-	f18SD7kHjHEW0tbIQ67FO5mL1b/yrlcX77wZ/Osx5pkGxBmvKkKvuixLmD6/RQiwdw==
-X-Gm-Gg: ASbGncsNoqsNrKvg0xP3hdooReCJxfv17V5BMpsImUI0UrHNVIlcNIwYK9vouqZPGNv
-	vchql79RnPsAVhtJWhNGnSlNBO9aZR+7lYHh9aVj/3ayE2fa7dYvWnqvwR8Qg+xi4wac2Gc5SPC
-	wcP/y7+Swk/j6+UIFmAKprZuC2LzYI0Z2UJTZIOC61XAXzP8G3LA3qr4CXS19ug8BJfEAhdHR2g
-	Wkuk2+iOP5gJVb5czLOTidk0mRKJTMqhbp0qsfe54fD3qedijyHNAaOoirO8Efa3bC1dZO45ktg
-	RXhCTD3usrv8fuz+Wvok0Tcqu1I78UrYqP7TCHa3BkuYJOVEoqQVr8ZFWCCeXHakll8RyO57yXO
-	KoSQGg7zLyL60+JJJlSW2Qj2kjFSMe87vto47DfzbegkH0Abb3Ghqm2NLIg1SKJJ16duLjggf8l
-	twc18gR+gA9/sr
-X-Google-Smtp-Source: AGHT+IE/r2pIJwf7kAuauI+jC65tbRl8WC4I4+SdoNtU43PxQUMr/4vfCOnHocv1AyDV3BygK1ERFA==
-X-Received: by 2002:a05:6512:2201:b0:570:e55e:47fc with SMTP id 2adb3069b0e04-582d3c9674cmr2179748e87.54.1758892292030;
-        Fri, 26 Sep 2025 06:11:32 -0700 (PDT)
+        bh=aCy6Bk8e0KycgUL3e8TXrZ2btc+fiyl+rPdd78IS8Is=;
+        b=Q4BuNq3ueEl5I1HFXwRY2ACc6lsNwLj4arJa1YOR7I7qktg+rhfOvNgUTH7WFra7py
+         UmXizAe9djrLj5Q39Wm1MOU/tj78L0V6wFZQ81EnCrjr4/Gqle0LVsmMQjvQ7r6HF9h6
+         aQV28HhPMRo4E3UZoCadqFYe8y49jZ4sAsdJkJqphE3RspSok+/Of681RNW9SllKjK02
+         +FnDsco2Kv8KHEEPU3wln9GG71zo657eZIo1g6c1l+R6Hi3VtZn17qoaq/W1pWWdJsUX
+         yel32ngrGJGfsn65v3ZbH3xWsYMhzEyOE85I+SUjlOSuvT0ka8k1cHYeiZlFOPLdOtB8
+         tLZw==
+X-Forwarded-Encrypted: i=1; AJvYcCUDakfLUi3phXaUlPtXV+6T+XP6/FqZWpkekGRA2YizlfpjoHbpOsb9aU0hOSIsoYPW4TPdiItkvnnZTWE=@lists.linux.dev
+X-Gm-Message-State: AOJu0YxSUuKsJC7bwBh1Mr5X1lJf1Nv4PlCsdERP2/OrTMl1YuM6pGqx
+	ekyz2I2JNX/rlH+mOcljgUJ++I0B0Vve+6a0/bV7Ac7FpkYv9J9U23Wga7BjTEfopg==
+X-Gm-Gg: ASbGnctVKEAJc4WZFcz9MRmgdhhxeTX17A5apohvkzC4DbeWLFCKPXtiYEM/aBWd5UE
+	sbGxf90sNEu2rWZCFZpnE8hhnqSNXYP11HR+Du8T/chOBOxwMDje8qVv40vaxdI02R6sL6zzMOM
+	vMqO//EGfnN8F1CQR+ZUA7mk0t1vVk6zksWKDlYo0zbIsjNmiNeHo21kqrDCQib/gceiT9BuhOY
+	HyXzi/SDUOO3e/yLVsUh22W++/qZ8XyNCg9lHBvLZ3HExHHkHf5zWO8n33Nyt0SKeBgCHyVGNnI
+	KSlCKyVQITyfDwdScVEpK7nqnR5t6V+gxVaiW/HC5h1G4ETvehfYGThPk/m9NSRYjJ9rD6jx+im
+	ntTkSXIWrRL9chntQRtzzSF8HKdUWoVv0lO6CFTj//PUauz795HqxjXSbplwyNWjqQLMuNdRwAV
+	VdiA==
+X-Google-Smtp-Source: AGHT+IFSULi7NpOrywI1NGNOQUbBJbkaKZRrtRNyEnHKO4o1kB5FT5TGBNkhNPYRfI8ePxwjL+x0fg==
+X-Received: by 2002:a05:6512:15a9:b0:57a:2be1:d773 with SMTP id 2adb3069b0e04-582d406b8a4mr1982976e87.53.1758892293940;
+        Fri, 26 Sep 2025 06:11:33 -0700 (PDT)
 Received: from ribalda.c.googlers.com (64.153.228.35.bc.googleusercontent.com. [35.228.153.64])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-58527c6b014sm123872e87.43.2025.09.26.06.11.31
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-58527c6b014sm123872e87.43.2025.09.26.06.11.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Sep 2025 06:11:31 -0700 (PDT)
+        Fri, 26 Sep 2025 06:11:33 -0700 (PDT)
 From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Fri, 26 Sep 2025 13:11:28 +0000
-Subject: [PATCH v3 04/12] ACPI: mipi-disco-img: Do not duplicate rotation
- info into swnodes
+Date: Fri, 26 Sep 2025 13:11:31 +0000
+Subject: [PATCH v3 07/12] dt-bindings: media: Add usb-camera-module
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -68,7 +67,7 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250926-uvc-orientation-v3-4-6dc2fa5b4220@chromium.org>
+Message-Id: <20250926-uvc-orientation-v3-7-6dc2fa5b4220@chromium.org>
 References: <20250926-uvc-orientation-v3-0-6dc2fa5b4220@chromium.org>
 In-Reply-To: <20250926-uvc-orientation-v3-0-6dc2fa5b4220@chromium.org>
 To: Hans de Goede <hansg@kernel.org>, 
@@ -88,55 +87,91 @@ Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
  acpica-devel@lists.linux.dev, Ricardo Ribalda <ribalda@chromium.org>
 X-Mailer: b4 0.14.2
 
-The function v4l2_fwnode_device_parse() is now capable of parsing the
-_PLD method, there is no need to duplicate the rotation information in a
-swnode.
+For fixed cameras modules the OS needs to know where they are mounted.
+This information is used to determine if images need to be rotated or
+not.
 
-Reviewed-by: Hans de Goede <hansg@kernel.org>
+ACPI has a property for this purpose, which is parsed by
+acpi_get_physical_device_location():
+https://uefi.org/htmlspecs/ACPI_Spec_6_4_html/06_Device_Configuration/Device_Configuration.html#pld-physical-location-of-device
+
+In DT we have similar properties for video-interface-devices called
+orientation and rotation:
+Documentation/devicetree/bindings/media/video-interface-devices.yaml
+
+Add a new schema that combines usb/usb-device.yaml and
+media/video-interface-devices.yaml
+
 Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
- drivers/acpi/mipi-disco-img.c | 15 ---------------
- include/acpi/acpi_bus.h       |  1 -
- 2 files changed, 16 deletions(-)
+ .../bindings/media/usb-camera-module.yaml          | 46 ++++++++++++++++++++++
+ MAINTAINERS                                        |  1 +
+ 2 files changed, 47 insertions(+)
 
-diff --git a/drivers/acpi/mipi-disco-img.c b/drivers/acpi/mipi-disco-img.c
-index 5b85989f96beeb726f59ac9e12e965a215fb38f6..b58b5ba22a47a4afc5212998074d322f0b7586dc 100644
---- a/drivers/acpi/mipi-disco-img.c
-+++ b/drivers/acpi/mipi-disco-img.c
-@@ -617,21 +617,6 @@ static void init_crs_csi2_swnodes(struct crs_csi2 *csi2)
- 
- 	adev_fwnode = acpi_fwnode_handle(adev);
- 
--	/*
--	 * If the "rotation" property is not present, but _PLD is there,
--	 * evaluate it to get the "rotation" value.
--	 */
--	if (!fwnode_property_present(adev_fwnode, "rotation")) {
--		struct acpi_pld_info *pld;
--
--		if (acpi_get_physical_device_location(handle, &pld)) {
--			swnodes->dev_props[NEXT_PROPERTY(prop_index, DEV_ROTATION)] =
--					PROPERTY_ENTRY_U32("rotation",
--							   pld->rotation * 45U);
--			kfree(pld);
--		}
--	}
--
- 	if (!fwnode_property_read_u32(adev_fwnode, "mipi-img-clock-frequency", &val))
- 		swnodes->dev_props[NEXT_PROPERTY(prop_index, DEV_CLOCK_FREQUENCY)] =
- 			PROPERTY_ENTRY_U32("clock-frequency", val);
-diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-index aad1a95e6863d443a45985ba7ec7be4acf8664fe..296716875a3e7977abb7b7dfa89f78664aebd61c 100644
---- a/include/acpi/acpi_bus.h
-+++ b/include/acpi/acpi_bus.h
-@@ -389,7 +389,6 @@ struct acpi_gpio_mapping;
- #define ACPI_DEVICE_SWNODE_PORT_NAME_LENGTH	8
- 
- enum acpi_device_swnode_dev_props {
--	ACPI_DEVICE_SWNODE_DEV_ROTATION,
- 	ACPI_DEVICE_SWNODE_DEV_CLOCK_FREQUENCY,
- 	ACPI_DEVICE_SWNODE_DEV_LED_MAX_MICROAMP,
- 	ACPI_DEVICE_SWNODE_DEV_FLASH_MAX_MICROAMP,
+diff --git a/Documentation/devicetree/bindings/media/usb-camera-module.yaml b/Documentation/devicetree/bindings/media/usb-camera-module.yaml
+new file mode 100644
+index 0000000000000000000000000000000000000000..e4ad6f557b9151751522e49b72ae6584deb0c7ba
+--- /dev/null
++++ b/Documentation/devicetree/bindings/media/usb-camera-module.yaml
+@@ -0,0 +1,46 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/media/usb-camera-module.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: USB Camera Module
++
++maintainers:
++  - Ricardo Ribalda <ribalda@chromium.org>
++
++description: |
++  This schema allows for annotating auxiliary information for fixed camera
++  modules. This information enables the system to determine if incoming frames
++  require rotation, mirroring, or other transformations. It also describes the
++  module's relationship with other hardware elements, such as flash LEDs or
++  Voice Coil Motors (VCMs).
++
++allOf:
++  - $ref: /schemas/usb/usb-device.yaml#
++  - $ref: /schemas/media/video-interface-devices.yaml#
++
++properties:
++  reg:
++    maxItems: 1
++
++required:
++  - reg
++
++additionalProperties: true
++
++examples:
++  - |
++    usb@11270000 {
++        reg = <0x11270000 0x1000>;
++        interrupts = <0x0 0x4e 0x0>;
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        device@1 {
++            compatible = "usb123,4567";
++            reg = <2>;
++            orientation = <0>;
++            rotation = <90>;
++        };
++    };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index ee8cb2db483f6a5e96b62b6f2edd05b1427b69f5..1503502a3aed2625e8ff488456ccd7305cc74ba7 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -26258,6 +26258,7 @@ L:	linux-media@vger.kernel.org
+ S:	Maintained
+ W:	http://www.ideasonboard.org/uvc/
+ T:	git git://linuxtv.org/media.git
++F:	Documentation/devicetree/bindings/media/usb-camera-module.yaml
+ F:	Documentation/userspace-api/media/drivers/uvcvideo.rst
+ F:	Documentation/userspace-api/media/v4l/metafmt-uvc-msxu-1-5.rst
+ F:	Documentation/userspace-api/media/v4l/metafmt-uvc.rst
 
 -- 
 2.51.0.536.g15c5d4f767-goog
