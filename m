@@ -1,65 +1,65 @@
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4603C2F60CA
-	for <acpica-devel@lists.linux.dev>; Fri, 26 Sep 2025 13:11:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 126792FB097
+	for <acpica-devel@lists.linux.dev>; Fri, 26 Sep 2025 13:11:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758892304; cv=none; b=Umh5cUudN3n3buHtadRTt+ZBOl0tUxUi9JuzsSVcPwH8BfFB+qEeRx+EWAl6ZkwY+/kwaQaYwYARPfSbK+r3GxfL6H8YxI8stl78k5pNy3pWzLvKLc559SvaWkj0XE/iv/yR3X4X0Nxp8sZCK0OPhaQ8uTSwrDntAfR8sFBUcfc=
+	t=1758892303; cv=none; b=nJZibDUQCubJ2Aly0RRyCX5WTjnhO61UifN0PwAeQabpqTcZAwHaoevry6/TyIyi9r9MgkUe0wDpwRYjwnW+GsAY9Ii4AE+56lJPHtJDWYr5mZy0yVHckozpMIFoBQKSPOwn7mFoLkS8W3HcmSu8wmYvz6oRNDCN1jtvMOL7NoA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758892304; c=relaxed/simple;
-	bh=0RIh4sUDiZBXgZTKOmEK1Orq2YrtKqmiRHFViDVMTyY=;
+	s=arc-20240116; t=1758892303; c=relaxed/simple;
+	bh=U08jW+ROLINfuVWgmwe8cpKgwKy+8J4DAE40SSartDs=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=k+OxErprG8nV+B4/AfnLA8tfHqoFScWNWRERCmQwr3UNc3USZjTS34e0PHyzzDWPdi39o6zwgCYzJd+DspjrvH6wIX1KCS4PysMNdEPCQqnNiPbtmn/uXU6JY6FO3+NF0oKq8PIpK4Nn+yxv7NXiS0QbsKW1lXF4znqHjSgyOl0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=GyKsx0q3; arc=none smtp.client-ip=209.85.167.54
+	 In-Reply-To:To:Cc; b=AgKNiRVE667Qp/5AgeZfLMh/GctiAY6KrKQONFQ/cSa23p5nh5WdpvxbIvoXY4HIHdS4Bjv3XaWQB1GL6JtfgO3MdZ/X9arwAVDh/b3kk5RDQyf1JFg8Cf8pQ+cSITMbXN990iLgXnIVMF2kp/6o4afYGsm523KHBL7qxZhFZcM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=ItJIBLFj; arc=none smtp.client-ip=209.85.167.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="GyKsx0q3"
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-57edfeaa05aso2333830e87.0
-        for <acpica-devel@lists.linux.dev>; Fri, 26 Sep 2025 06:11:37 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ItJIBLFj"
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-57f1b88354eso2214532e87.1
+        for <acpica-devel@lists.linux.dev>; Fri, 26 Sep 2025 06:11:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1758892295; x=1759497095; darn=lists.linux.dev;
+        d=chromium.org; s=google; t=1758892297; x=1759497097; darn=lists.linux.dev;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=pYyVOOG6RRM8nz0iAqyuD1/OPjUMPsAlYF5n8yOgLvk=;
-        b=GyKsx0q3A6ttalCKgSQnAnNyTBTsyBSrVUZeLt8Ae+4i87YlXRkUryY7+ENJzou4uL
-         KE85nvX0mRMmwCjDaHcpbW9AHZwb5+Bd7Ob82tkGdH7Oxr0F/zEj6F7QZBNMCu7emUas
-         NwDmtM9q7C67D9DEVnO6CvbgGoxFYdiBexivE=
+        bh=APb3UWCYeewnPsuy/XgWoHvego/0/pU0ggvZnaK9xZ8=;
+        b=ItJIBLFj+cx8NnOmfcfcEQmvJhpzmH5CNnr4Q5ddxKRIAx8BvH4n4S88y23rIdmEy0
+         U1gbnJ+P9iBewLz/2Ah1WRF3ol5TeAcX8SEUzO83mXVGF6ZbuYmtQrdxl/o29pKmJcf+
+         gb8xkHeaIP8lXVM9cCif7MFfF9fW6QKj2cuXk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758892295; x=1759497095;
+        d=1e100.net; s=20230601; t=1758892297; x=1759497097;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pYyVOOG6RRM8nz0iAqyuD1/OPjUMPsAlYF5n8yOgLvk=;
-        b=gidIUcrjrHIgT6qcqFqSi0GFIp2ZvpiONSVTUuRS7f0/eNLM9KVRBP/7oKuq5a012d
-         ZGdfeu+jJsiqNr5FBj1aEgHW1SwW1OiNUAiI7fdt9bhjBpr+fEO0ETI76eiCWW6eYtde
-         kPmSnvE+R/C0XQQc/MI2ziCmd5s9chKIUal3eFYeimk4eJNwrxXR9lZO6hpkXfm1Mmyk
-         AfI6NAVQEvrkiBmuNmTLStk6oZt/tVTVdM/2IjMVgyLAyoceSVZ6YrT9M40ABDInENaJ
-         brc0mBGL+ZeHqF+GKH1WG7T0CYLlhLgH5J8mp37+si9sbZMLqIUw11gTjiwcrBgctaDZ
-         cGrg==
-X-Forwarded-Encrypted: i=1; AJvYcCW/jV5IYv7V29aUUCxls+kI3Y0wp1AitLkNazpcSQawKjvGoDU0zpsmD+3MuxazLRmAlB9qW4oXYTxzlfY=@lists.linux.dev
-X-Gm-Message-State: AOJu0Yxblh9Wqbbk3GmgudLaQCDxPZuPdYmDgjgF7Km7FXWkU0aXkPL7
-	NO5pVKK2N78U3zLlYsZ3EI/CxgcL+e1taaUWTXmpkl/Mt1GD9Yqwf0Z0PevUpUPkiA==
-X-Gm-Gg: ASbGncu0ebxask8Su0uhLudSiNYXfokPP1GxagHAdBhpirpfLTpxuH3hDN769pPR4ls
-	pvPKAolTpEdCduDvidc1mXVaM2Im6JfLfY343yHgD9m+oYsIGZPRJVcalCmI62z003iGmJGlxVb
-	b2FqVdENjx6YpbWw1VcL4z1tD2z64L50DBL+VeeYV6Gn5BOD002nKJ/dzENfOpRCRwk7kW2zH28
-	lhIJIF4ROjZIfZW5t/pqTG8uCFiMVvTmR6S16717F6NjOfesfWuernM36lcq7PGfGLBZIPGt9ou
-	y21B4ipTSQ4x/C390JrokHmH6PHpG4WwWVhgzPpfROnmjItnc6TVooNpQ4uUtmJslqpeUiIqnFu
-	U5VjGso1KiwO3TMq2samJPMzxsqy85cGs6G8x+BVdKHcj2IYzUz0Ohc3TMqP4nTDr/ckXzlX7hL
-	GksQ==
-X-Google-Smtp-Source: AGHT+IGpDWvtokITIA2zTptMNOmw/ZYaGZaFcnmGwqV7Ib3ziWjeQpXNcwBL/nnOmUeOfVGug4KhQg==
-X-Received: by 2002:a05:6512:220d:b0:577:494e:ca63 with SMTP id 2adb3069b0e04-582d0740473mr2291049e87.12.1758892294482;
-        Fri, 26 Sep 2025 06:11:34 -0700 (PDT)
+        bh=APb3UWCYeewnPsuy/XgWoHvego/0/pU0ggvZnaK9xZ8=;
+        b=GoKXY30L11rdg/rjzo8FnR2CRMYU6Iu9Ys7NcxCQ8u2qrjr4fVQpYCB1mCGeuJ38CV
+         qpqVFmP/Be9c1+vnqtMqNtC+1K560YOq0z3Fz9jIHthClnvQxpz2UYtbIjCOkXwA8POx
+         XuadwKPNpnw3JDLQE0W/juK6MKpXl4CvUSnxnGhr3gFPo43Fb44BIzLIAehp+z0jToPl
+         dGSv0yvIPHBLq4eC5tqn8+Q8RBAU/3GlgzmdoLIRaFjvRhryTNRKtws7ZztbHFQCpSK/
+         cAb0xE+Iic23JQDMwzO9V9AxesdnOskaL5GzFYFThXz7Ac6EQnSdhDf1IsY3SMAZ+aJv
+         pZpw==
+X-Forwarded-Encrypted: i=1; AJvYcCUy4GDnPBWGctE5+ALYoQ03jsDXonjPeTRLodo+vFRK2RmHd/HP7AiKoDaAJbn/gZtUissB2npyVDsYvtM=@lists.linux.dev
+X-Gm-Message-State: AOJu0YyaMo12MPsQCaPq1DVfty5mLx79cm+tY4AEFPeImuDbpPxg9a2E
+	/2JQpIao0f1DTa3cjbi6ZWoMtj0T59X1+INwWkz3Wd1JKaxL2vAY2AVlUzPLeQxH3A==
+X-Gm-Gg: ASbGncsHHVwQXNoUhsOvm/4bKmQUcvuuklDIGd0hRHgao1WE+gkG2WWsEAjn+sFmDQE
+	m0GYZ1laROuqC34KEfOG3m6cW2HyHL/JRR9j2mVMewOllVb265IFlCOlIjxJEMt/Wq+BQlZj+/i
+	aU6gQ5yzShYAvkzvqXFQNbnX4T187UNFuWzfJ00huuVtbo7FyaGVnEJWtvwpKYcfySOBj8zq5ae
+	RrmwxokXj2Ntq1+PfoKByp186GkjHdH7j0IpQht37PWnKp3nNphCfrc4O7WsfAUUgaYzoYbjU1/
+	tVTo5ShpOcbzN8MN/KNkgRb6q2MR8fIxwNeOFR1NKXpe1SbAzOx17VxzbSkT9h86i3fxldrIraS
+	gF9hr159kKISP88t9F/dQ+dCM5DBJ+eURVYyR8ujrAN6AvYLVKV/QxYeII9x1XjSvDXa7Z0ZYYF
+	c+3w==
+X-Google-Smtp-Source: AGHT+IG13LZH3qyc8t2QDs0MQunt54awluMMidrJtB7qriVpX4diWPLucIbGRhyJDMPwZ0BJ1XUdKg==
+X-Received: by 2002:a05:6512:3b20:b0:57a:8738:4d80 with SMTP id 2adb3069b0e04-582d0c2a62fmr2064511e87.21.1758892296980;
+        Fri, 26 Sep 2025 06:11:36 -0700 (PDT)
 Received: from ribalda.c.googlers.com (64.153.228.35.bc.googleusercontent.com. [35.228.153.64])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-58527c6b014sm123872e87.43.2025.09.26.06.11.34
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-58527c6b014sm123872e87.43.2025.09.26.06.11.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Sep 2025 06:11:34 -0700 (PDT)
+        Fri, 26 Sep 2025 06:11:36 -0700 (PDT)
 From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Fri, 26 Sep 2025 13:11:32 +0000
-Subject: [PATCH v3 08/12] media: uvcvideo: Add support for
- V4L2_CID_CAMERA_ORIENTATION
+Date: Fri, 26 Sep 2025 13:11:36 +0000
+Subject: [PATCH v3 12/12] media: uvcvideo: Add support for
+ V4L2_CID_CAMERA_ROTATION
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -68,7 +68,7 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250926-uvc-orientation-v3-8-6dc2fa5b4220@chromium.org>
+Message-Id: <20250926-uvc-orientation-v3-12-6dc2fa5b4220@chromium.org>
 References: <20250926-uvc-orientation-v3-0-6dc2fa5b4220@chromium.org>
 In-Reply-To: <20250926-uvc-orientation-v3-0-6dc2fa5b4220@chromium.org>
 To: Hans de Goede <hansg@kernel.org>, 
@@ -88,316 +88,162 @@ Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
  acpica-devel@lists.linux.dev, Ricardo Ribalda <ribalda@chromium.org>
 X-Mailer: b4 0.14.2
 
-Fetch the orientation from the fwnode and map it into a control.
-
-The uvc driver does not use the media controller, so we need to create a
-software entity, like we previously did with the external gpio.
-
-We do not re-purpose the external gpio entity because its is planned to
-remove it.
-
-We need to make uvc_alloc_entity non static.
+Fetch the rotation from the fwnode and map it into a control.
 
 Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
- drivers/media/usb/uvc/Kconfig        |  1 +
- drivers/media/usb/uvc/Makefile       |  3 +-
- drivers/media/usb/uvc/uvc_ctrl.c     | 21 ++++++++++
- drivers/media/usb/uvc/uvc_driver.c   | 22 +++++++----
- drivers/media/usb/uvc/uvc_entity.c   |  1 +
- drivers/media/usb/uvc/uvc_swentity.c | 76 ++++++++++++++++++++++++++++++++++++
- drivers/media/usb/uvc/uvcvideo.h     | 17 ++++++++
- include/linux/usb/uvc.h              |  3 ++
- 8 files changed, 135 insertions(+), 9 deletions(-)
+ drivers/media/usb/uvc/uvc_ctrl.c     | 22 ++++++++++++++++---
+ drivers/media/usb/uvc/uvc_swentity.c | 41 +++++++++++++++++++++++++++++++-----
+ drivers/media/usb/uvc/uvcvideo.h     |  5 +++++
+ 3 files changed, 60 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/media/usb/uvc/Kconfig b/drivers/media/usb/uvc/Kconfig
-index 579532272fd6d7a8ef65c1a3a892b723f40e584e..65f9cf81c8f434c50910db0ae94788af182eb4c4 100644
---- a/drivers/media/usb/uvc/Kconfig
-+++ b/drivers/media/usb/uvc/Kconfig
-@@ -4,6 +4,7 @@ config USB_VIDEO_CLASS
- 	depends on VIDEO_DEV
- 	select VIDEOBUF2_VMALLOC
- 	select UVC_COMMON
-+	select V4L2_FWNODE
- 	help
- 	  Support for the USB Video Class (UVC).  Currently only video
- 	  input devices, such as webcams, are supported.
-diff --git a/drivers/media/usb/uvc/Makefile b/drivers/media/usb/uvc/Makefile
-index 4f9eee4f81ab6436a8b90324a688a149b2c3bcd1..b4398177c4bb0a9bd49dfd4ca7f2e933b4a1d7df 100644
---- a/drivers/media/usb/uvc/Makefile
-+++ b/drivers/media/usb/uvc/Makefile
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- uvcvideo-objs  := uvc_driver.o uvc_queue.o uvc_v4l2.o uvc_video.o uvc_ctrl.o \
--		  uvc_status.o uvc_isight.o uvc_debugfs.o uvc_metadata.o
-+		  uvc_status.o uvc_isight.o uvc_debugfs.o uvc_metadata.o \
-+		  uvc_swentity.o
- ifeq ($(CONFIG_MEDIA_CONTROLLER),y)
- uvcvideo-objs  += uvc_entity.o
- endif
 diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
-index a869257e9b7c07eaa7d725d107bd1cb57d3c7377..aa9de84de9236540c46ee78fb8458873d503786e 100644
+index e99fdf4bafbea662556798fe345a48b9ffd8467b..99bae519ded8910a37ad2f2112fbcbfdcac671af 100644
 --- a/drivers/media/usb/uvc/uvc_ctrl.c
 +++ b/drivers/media/usb/uvc/uvc_ctrl.c
-@@ -385,6 +385,13 @@ static const struct uvc_control_info uvc_ctrls[] = {
- 				| UVC_CTRL_FLAG_GET_RANGE
- 				| UVC_CTRL_FLAG_RESTORE,
+@@ -387,11 +387,18 @@ static const struct uvc_control_info uvc_ctrls[] = {
+ 	},
+ 	{
+ 		.entity		= UVC_GUID_SWENTITY,
+-		.selector	= 0,
+-		.index		= 0,
++		.selector	= UVC_SWENTITY_ORIENTATION,
++		.index		= UVC_SWENTITY_ORIENTATION,
+ 		.size		= 1,
+ 		.flags		= UVC_CTRL_FLAG_GET_CUR,
  	},
 +	{
 +		.entity		= UVC_GUID_SWENTITY,
-+		.selector	= 0,
-+		.index		= 0,
-+		.size		= 1,
++		.selector	= UVC_SWENTITY_ROTATION,
++		.index		= UVC_SWENTITY_ROTATION,
++		.size		= 2,
 +		.flags		= UVC_CTRL_FLAG_GET_CUR,
 +	},
  };
  
  static const u32 uvc_control_classes[] = {
-@@ -1009,6 +1016,17 @@ static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
- 		.menu_mask	= BIT(V4L2_COLORFX_VIVID) |
- 				  BIT(V4L2_COLORFX_NONE),
+@@ -1049,7 +1056,7 @@ static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
+ 	{
+ 		.id		= V4L2_CID_CAMERA_ORIENTATION,
+ 		.entity		= UVC_GUID_SWENTITY,
+-		.selector	= 0,
++		.selector	= UVC_SWENTITY_ORIENTATION,
+ 		.size		= 8,
+ 		.offset		= 0,
+ 		.v4l2_type	= V4L2_CTRL_TYPE_MENU,
+@@ -1057,6 +1064,15 @@ static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
+ 		.menu_mask	= GENMASK(V4L2_CAMERA_ORIENTATION_EXTERNAL,
+ 					  V4L2_CAMERA_ORIENTATION_FRONT),
  	},
 +	{
-+		.id		= V4L2_CID_CAMERA_ORIENTATION,
++		.id		= V4L2_CID_CAMERA_SENSOR_ROTATION,
 +		.entity		= UVC_GUID_SWENTITY,
-+		.selector	= 0,
-+		.size		= 8,
++		.selector	= UVC_SWENTITY_ROTATION,
++		.size		= 16,
 +		.offset		= 0,
-+		.v4l2_type	= V4L2_CTRL_TYPE_MENU,
-+		.data_type	= UVC_CTRL_DATA_TYPE_ENUM,
-+		.menu_mask	= GENMASK(V4L2_CAMERA_ORIENTATION_EXTERNAL,
-+					  V4L2_CAMERA_ORIENTATION_FRONT),
++		.v4l2_type	= V4L2_CTRL_TYPE_INTEGER,
++		.data_type	= UVC_CTRL_DATA_TYPE_UNSIGNED,
 +	},
  };
  
  /* ------------------------------------------------------------------------
-@@ -3281,6 +3299,9 @@ static int uvc_ctrl_init_chain(struct uvc_video_chain *chain)
- 		} else if (UVC_ENTITY_TYPE(entity) == UVC_EXT_GPIO_UNIT) {
- 			bmControls = entity->gpio.bmControls;
- 			bControlSize = entity->gpio.bControlSize;
-+		} else if (UVC_ENTITY_TYPE(entity) == UVC_SWENTITY_UNIT) {
-+			bmControls = entity->swentity.bmControls;
-+			bControlSize = entity->swentity.bControlSize;
- 		}
+diff --git a/drivers/media/usb/uvc/uvc_swentity.c b/drivers/media/usb/uvc/uvc_swentity.c
+index eefc5d08e370515181f74590f2f38189770b01b2..e180568efa802fb348dbf165da62417631ff16fd 100644
+--- a/drivers/media/usb/uvc/uvc_swentity.c
++++ b/drivers/media/usb/uvc/uvc_swentity.c
+@@ -12,10 +12,11 @@
  
- 		/* Remove bogus/blacklisted controls */
-diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-index fa61f1d0ea2c3d52c560b2f0834e52ca75c4227e..91edc7703b1987d8dfd552999edbdbf1b4653f3f 100644
---- a/drivers/media/usb/uvc/uvc_driver.c
-+++ b/drivers/media/usb/uvc/uvc_driver.c
-@@ -794,9 +794,9 @@ static const u8 uvc_media_transport_input_guid[16] =
- 	UVC_GUID_UVC_MEDIA_TRANSPORT_INPUT;
- static const u8 uvc_processing_guid[16] = UVC_GUID_UVC_PROCESSING;
+ #include "uvcvideo.h"
  
--static struct uvc_entity *uvc_alloc_new_entity(struct uvc_device *dev, u16 type,
--					       u16 id, unsigned int num_pads,
--					       unsigned int extra_size)
-+struct uvc_entity *uvc_alloc_new_entity(struct uvc_device *dev, u16 type,
-+					u16 id, unsigned int num_pads,
-+					unsigned int extra_size)
+-static int uvc_swentity_get_cur(struct uvc_device *dev, struct uvc_entity *entity,
+-				u8 cs, void *data, u16 size)
++static int uvc_swentity_get_orientation(struct uvc_device *dev,
++					struct uvc_entity *entity, u8 cs,
++					void *data, u16 size)
  {
- 	struct uvc_entity *entity;
- 	unsigned int num_inputs;
-@@ -1887,12 +1887,14 @@ static int uvc_scan_device(struct uvc_device *dev)
- 		return -ENODEV;
- 	}
+-	if (size < 1)
++	if (cs != UVC_SWENTITY_ORIENTATION || size != 1)
+ 		return -EINVAL;
  
--	/* Add GPIO entity to the first chain. */
--	if (dev->gpio_unit) {
--		chain = list_first_entry(&dev->chains,
--					 struct uvc_video_chain, list);
-+	/* Add virtual entities to the first chain. */
-+	chain = list_first_entry(&dev->chains, struct uvc_video_chain, list);
-+
-+	if (dev->gpio_unit)
- 		list_add_tail(&dev->gpio_unit->chain, &chain->entities);
--	}
-+
-+	if (dev->swentity_unit)
-+		list_add_tail(&dev->swentity_unit->chain, &chain->entities);
- 
+ 	switch (entity->swentity.props.orientation) {
+@@ -32,6 +33,31 @@ static int uvc_swentity_get_cur(struct uvc_device *dev, struct uvc_entity *entit
  	return 0;
  }
-@@ -2244,6 +2246,10 @@ static int uvc_probe(struct usb_interface *intf,
- 	if (ret < 0)
- 		goto error;
  
-+	ret = uvc_swentity_init(dev);
-+	if (ret < 0)
-+		goto error;
++static int uvc_swentity_get_rotation(struct uvc_device *dev,
++				     struct uvc_entity *entity, u8 cs, void *data,
++				     u16 size)
++{
++	if (cs != UVC_SWENTITY_ROTATION || size != 2)
++		return -EINVAL;
 +
- 	dev_info(&dev->intf->dev, "Found UVC %u.%02x device %s (%04x:%04x)\n",
- 		 dev->uvc_version >> 8, dev->uvc_version & 0xff,
- 		 udev->product ? udev->product : "<unnamed>",
-diff --git a/drivers/media/usb/uvc/uvc_entity.c b/drivers/media/usb/uvc/uvc_entity.c
-index ee1007add243036f68b7014ca621813e461fa73d..d5125fdd829a7e11f7083762531f811069e0e43f 100644
---- a/drivers/media/usb/uvc/uvc_entity.c
-+++ b/drivers/media/usb/uvc/uvc_entity.c
-@@ -86,6 +86,7 @@ static int uvc_mc_init_entity(struct uvc_video_chain *chain,
- 		case UVC_VC_PROCESSING_UNIT:
- 		case UVC_VC_EXTENSION_UNIT:
- 		case UVC_EXT_GPIO_UNIT:
-+		case UVC_SWENTITY_UNIT:
- 			/* For lack of a better option. */
- 			function = MEDIA_ENT_F_PROC_VIDEO_PIXEL_FORMATTER;
- 			break;
-diff --git a/drivers/media/usb/uvc/uvc_swentity.c b/drivers/media/usb/uvc/uvc_swentity.c
-new file mode 100644
-index 0000000000000000000000000000000000000000..eefc5d08e370515181f74590f2f38189770b01b2
---- /dev/null
-+++ b/drivers/media/usb/uvc/uvc_swentity.c
-@@ -0,0 +1,76 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ *      uvc_swentity.c  --  USB Video Class driver
-+ *
-+ *      Copyright 2025 Google LLC
-+ */
++	((u8 *)data)[0] = entity->swentity.props.rotation;
++	((u8 *)data)[1] = entity->swentity.props.rotation >> 8;
 +
-+#include <linux/kernel.h>
-+#include <linux/usb/uvc.h>
-+
-+#include <media/v4l2-fwnode.h>
-+
-+#include "uvcvideo.h"
++	return 0;
++}
 +
 +static int uvc_swentity_get_cur(struct uvc_device *dev, struct uvc_entity *entity,
 +				u8 cs, void *data, u16 size)
 +{
-+	if (size < 1)
-+		return -EINVAL;
-+
-+	switch (entity->swentity.props.orientation) {
-+	case V4L2_FWNODE_ORIENTATION_FRONT:
-+		*(u8 *)data = V4L2_CAMERA_ORIENTATION_FRONT;
-+		break;
-+	case V4L2_FWNODE_ORIENTATION_BACK:
-+		*(u8 *)data = V4L2_CAMERA_ORIENTATION_BACK;
-+		break;
-+	default:
-+		*(u8 *)data = V4L2_CAMERA_ORIENTATION_EXTERNAL;
++	switch (cs) {
++	case UVC_SWENTITY_ORIENTATION:
++		return uvc_swentity_get_orientation(dev, entity, cs, data, size);
++	case UVC_SWENTITY_ROTATION:
++		return uvc_swentity_get_rotation(dev, entity, cs, data, size);
 +	}
-+
-+	return 0;
++	return -EINVAL;
 +}
 +
-+static int uvc_swentity_get_info(struct uvc_device *dev,
-+				 struct uvc_entity *entity, u8 cs, u8 *caps)
-+{
-+	*caps = UVC_CONTROL_CAP_GET;
-+	return 0;
-+}
-+
-+int uvc_swentity_init(struct uvc_device *dev)
-+{
-+	static const u8 uvc_swentity_guid[] = UVC_GUID_SWENTITY;
-+	struct v4l2_fwnode_device_properties props;
-+	struct uvc_entity *unit;
-+	int ret;
-+
-+	ret = v4l2_fwnode_device_parse(&dev->udev->dev, &props);
-+	if (ret)
-+		return dev_err_probe(&dev->intf->dev, ret,
-+				     "Can't parse fwnode\n");
-+
-+	if (props.orientation == V4L2_FWNODE_PROPERTY_UNSET)
-+		return 0;
-+
-+	unit = uvc_alloc_new_entity(dev, UVC_SWENTITY_UNIT,
-+				    UVC_SWENTITY_UNIT_ID, 0, 1);
-+	if (!unit)
-+		return -ENOMEM;
-+
-+	memcpy(unit->guid, uvc_swentity_guid, sizeof(unit->guid));
-+	unit->swentity.props = props;
-+	unit->swentity.bControlSize = 1;
-+	unit->swentity.bmControls = (u8 *)unit + sizeof(*unit);
-+	unit->swentity.bmControls[0] = 1;
-+	unit->get_cur = uvc_swentity_get_cur;
-+	unit->get_info = uvc_swentity_get_info;
-+	strscpy(unit->name, "SWENTITY", sizeof(unit->name));
-+
-+	list_add_tail(&unit->list, &dev->entities);
-+
-+	dev->swentity_unit = unit;
-+
-+	return 0;
-+}
+ static int uvc_swentity_get_info(struct uvc_device *dev,
+ 				 struct uvc_entity *entity, u8 cs, u8 *caps)
+ {
+@@ -44,6 +70,7 @@ int uvc_swentity_init(struct uvc_device *dev)
+ 	static const u8 uvc_swentity_guid[] = UVC_GUID_SWENTITY;
+ 	struct v4l2_fwnode_device_properties props;
+ 	struct uvc_entity *unit;
++	u8 controls = 0;
+ 	int ret;
+ 
+ 	ret = v4l2_fwnode_device_parse(&dev->udev->dev, &props);
+@@ -51,7 +78,11 @@ int uvc_swentity_init(struct uvc_device *dev)
+ 		return dev_err_probe(&dev->intf->dev, ret,
+ 				     "Can't parse fwnode\n");
+ 
+-	if (props.orientation == V4L2_FWNODE_PROPERTY_UNSET)
++	if (props.orientation != V4L2_FWNODE_PROPERTY_UNSET)
++		controls |= BIT(UVC_SWENTITY_ORIENTATION);
++	if (props.rotation != V4L2_FWNODE_PROPERTY_UNSET)
++		controls |= BIT(UVC_SWENTITY_ROTATION);
++	if (!controls)
+ 		return 0;
+ 
+ 	unit = uvc_alloc_new_entity(dev, UVC_SWENTITY_UNIT,
+@@ -63,7 +94,7 @@ int uvc_swentity_init(struct uvc_device *dev)
+ 	unit->swentity.props = props;
+ 	unit->swentity.bControlSize = 1;
+ 	unit->swentity.bmControls = (u8 *)unit + sizeof(*unit);
+-	unit->swentity.bmControls[0] = 1;
++	unit->swentity.bmControls[0] = controls;
+ 	unit->get_cur = uvc_swentity_get_cur;
+ 	unit->get_info = uvc_swentity_get_info;
+ 	strscpy(unit->name, "SWENTITY", sizeof(unit->name));
 diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-index 24292efbe47d3cd440252afb85ecbc826e2eedc1..04ca5dcce11d902dbfdf32f2a962159ba7940a39 100644
+index 04ca5dcce11d902dbfdf32f2a962159ba7940a39..64c9a597cc533ebf3a305060294c7045e32f72b0 100644
 --- a/drivers/media/usb/uvc/uvcvideo.h
 +++ b/drivers/media/usb/uvc/uvcvideo.h
-@@ -18,6 +18,7 @@
- #include <media/v4l2-device.h>
- #include <media/v4l2-event.h>
- #include <media/v4l2-fh.h>
-+#include <media/v4l2-fwnode.h>
- #include <media/videobuf2-v4l2.h>
+@@ -47,6 +47,11 @@
  
- /* --------------------------------------------------------------------------
-@@ -38,6 +39,9 @@
- 	(UVC_ENTITY_IS_TERM(entity) && \
- 	((entity)->type & 0x8000) == UVC_TERM_OUTPUT)
+ #define UVC_INVALID_ENTITY_ID          0xffff
  
-+#define UVC_SWENTITY_UNIT		0x7ffd
-+#define UVC_SWENTITY_UNIT_ID		0x101
++enum {
++	UVC_SWENTITY_ORIENTATION,
++	UVC_SWENTITY_ROTATION
++};
 +
- #define UVC_EXT_GPIO_UNIT		0x7ffe
- #define UVC_EXT_GPIO_UNIT_ID		0x100
- 
-@@ -247,6 +251,12 @@ struct uvc_entity {
- 			int irq;
- 			bool initialized;
- 		} gpio;
-+
-+		struct {
-+			u8  bControlSize;
-+			u8  *bmControls;
-+			struct v4l2_fwnode_device_properties props;
-+		} swentity;
- 	};
- 
- 	u8 bNrInPins;
-@@ -623,6 +633,7 @@ struct uvc_device {
- 	} async_ctrl;
- 
- 	struct uvc_entity *gpio_unit;
-+	struct uvc_entity *swentity_unit;
- };
- 
- struct uvc_fh {
-@@ -688,6 +699,9 @@ do {									\
+ /* ------------------------------------------------------------------------
+  * Driver specific constants.
   */
- 
- struct uvc_entity *uvc_entity_by_id(struct uvc_device *dev, int id);
-+struct uvc_entity *uvc_alloc_new_entity(struct uvc_device *dev, u16 type,
-+					u16 id, unsigned int num_pads,
-+					unsigned int extra_size);
- 
- /* Video buffers queue management. */
- int uvc_queue_init(struct uvc_video_queue *queue, enum v4l2_buf_type type);
-@@ -813,4 +827,7 @@ void uvc_debugfs_cleanup_stream(struct uvc_streaming *stream);
- size_t uvc_video_stats_dump(struct uvc_streaming *stream, char *buf,
- 			    size_t size);
- 
-+/* swentity */
-+int uvc_swentity_init(struct uvc_device *dev);
-+
- #endif
-diff --git a/include/linux/usb/uvc.h b/include/linux/usb/uvc.h
-index 22e0dab0809e296e089940620ae0e8838e109701..654182c2d22cdd9c72709247c1c8cabf9f5b19ee 100644
---- a/include/linux/usb/uvc.h
-+++ b/include/linux/usb/uvc.h
-@@ -29,6 +29,9 @@
- #define UVC_GUID_EXT_GPIO_CONTROLLER \
- 	{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, \
- 	 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x03}
-+#define UVC_GUID_SWENTITY \
-+	{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, \
-+	 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x04}
- #define UVC_GUID_CHROMEOS_XU \
- 	{0x24, 0xe9, 0xd7, 0x74, 0xc9, 0x49, 0x45, 0x4a, \
- 	 0x98, 0xa3, 0xc8, 0x07, 0x7e, 0x05, 0x1c, 0xa3}
 
 -- 
 2.51.0.536.g15c5d4f767-goog
