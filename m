@@ -1,257 +1,208 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from PH0PR06CU001.outbound.protection.outlook.com (mail-westus3azon11011025.outbound.protection.outlook.com [40.107.208.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 829912032D;
-	Mon, 29 Sep 2025 18:49:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759171763; cv=none; b=VQXge/WEZfN52y+fcl0GR/KLxwV2EBaopf1nISwXVt30a5jbkvDRKm+w+ji4AnS9vRGQtVIPh+pmPWnhd9QJ4DF8cvF8sOypRe5fFxr5/kUJzlAwNYSt5LSVLx7GGVWgzj1cSu+415SzgsYgTZp/zWYyNTz4xo5oP+2hV8/pP24=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759171763; c=relaxed/simple;
-	bh=CIesZg8God6+nurlZmJlDErmkC0T5rSf+vpzR1sIRAU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eh65tXVQhGdmU6/c+XX9HmuR+CyFVU6jIBTQ0cstAZgwTC2fqe7pFc+FS6ZUA1xXK3qKmsBs82zdqOYMqnOA6NlBdLIDy+1tEhri0ezP5z7uf1jqSEP9UlVpwayGo9PSWdTWsl3n3/6wmAQX6ytYZ1oXHb8nrjug1wk+P5+kh7I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DmLQPoLf; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9761272626
+	for <acpica-devel@lists.linux.dev>; Wed,  1 Oct 2025 15:01:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.208.25
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1759330915; cv=fail; b=Tz4FGwrAEZXgec14oIley9o4ouJhwVDOy+yTKVr5vX1sATfTSEaVuWMURXO7XgfscAZN7oePWoGpWRsmLGRYlFCtQob3e5fDdCVliigQd4mv1gfe1pLq2MlRYeyaSRMATWTmWFQfo9sUehb2PuWlckQv2+deayzex9wqU9uCZk0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1759330915; c=relaxed/simple;
+	bh=Yix7ySrXaJTB8p3pGR30DmiauU2lDC74937uPjlK6Zw=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=U11qMPfc4CAfacYVQTPy28pQeS2FaQhIxdgbzDhFwag8fNBsGJxXtfGE8ozTIsgtOqsXyxNqEec8JY5dNXazdEJDCa81VGmXLL7r8956iUenQKYTiypOyP9xPGL2OpbKxQfGNmzru8yoIDjSMXGu8F0Yt/ViLmkq5zHRZaZuHDw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=jsf6i+Us; arc=fail smtp.client-ip=40.107.208.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DmLQPoLf"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02A7FC4CEF4;
-	Mon, 29 Sep 2025 18:49:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1759171763;
-	bh=CIesZg8God6+nurlZmJlDErmkC0T5rSf+vpzR1sIRAU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DmLQPoLflrWPzRHpNZHaEQ6aDwxh9aYtXgubo4m46HHBDXYVQgDPIOQtOYSXLT0UW
-	 J0cY7HPPczP7uGVH9bcU+tgHh7JtcdZAtZ/6LkN4Q9KJns0kjSKvioKAxNeym0F/RE
-	 7Jaqb/P/p+piz8zOUQLrQ0JqLlFpk0EgPrMLapEl2mTsSX89/OCAF5ICnPviDScM8e
-	 f9N+ovN/nvQY+yVV/VjHhRlzBKhjk8QSuDeMmVdSw/y/HhudxSwo2qdDx8p6luxZWn
-	 r2qXWDt5vxv4e8T8xv12/e34WtpCFymnIXXgYbICoJ1r01KImMcZb8lqAn92hmslwc
-	 qaKj9SwXF+fMQ==
-Date: Mon, 29 Sep 2025 19:49:15 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Ricardo Ribalda <ribalda@chromium.org>
-Cc: Rob Herring <robh@kernel.org>, Hans de Goede <hansg@kernel.org>,
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>,
-	Hans Verkuil <hverkuil@kernel.org>, linux-media@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
-	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev
-Subject: Re: [PATCH v3 07/12] dt-bindings: media: Add usb-camera-module
-Message-ID: <20250929-disparate-fidgeting-65c2f7eff236@spud>
-References: <20250926-uvc-orientation-v3-0-6dc2fa5b4220@chromium.org>
- <20250926-uvc-orientation-v3-7-6dc2fa5b4220@chromium.org>
- <20250926-mute-boil-e75839753526@spud>
- <CANiDSCuddqjeDr80xKsZZP7CXu9qB5qqYPoZujNYLcVjK0kKkg@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="jsf6i+Us"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=NG3f6rL2GOCv2nAOcBxsikTfTrPvobqswr7tfnlMh+OzLYNul7XexjqQ3L2rrGTYKNOH+zgls5+XbOf88EZhxb2NdW/H33BkLMySCKD+D3/LtPvq7JRv0zLabWSbKD4dxdESDH+eJ6in405XBPYkkTFg77D4co9Hgs6eydfTo3kBn0vmHYv38dfLpwuMNKGC6ZgS1QMJDjSXDtCZdPnphapmNim5PXXsIqbNIsmvU1QFgCqOEYGwb7elu6Aj5tVR2b6JoitGQAoOuuB4wDqB2GtoSxFsp1PNbQjxfkveOOb3rt/QDZozch50pgE++4za4mMmWRhkHKnTpwHScb02GQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=AgwwMBK0LvYQ6lOt/wVv7mr8GCfCJU7Na2A1IlPmllI=;
+ b=i8NswtEFXflVCsXW+URP5aup1xGQIiIv3EAwVl+9AcG+hjz7EN7YyaZ6GcGK5chbW1Dihee+fe8Iul9WZTfQLF7mUF+29VH2RsnG0nWTKD4O1DZEleEx0ZXcvM8ykLO8z/jptTjW2yV4r1QyRkvWwR5j4IGM9chKF40GXCNMu9lSZDB55CznACrjSHLLbddzBmWlFd87/mPlRygdavEQ7BmDjhFHyT1ImrAhOXPpiKjinL3/5vMaUsq5h9YWmQw2n5LE2WJfgiC9Lb9QzDS/We6o4Kws4yQkGZjJT9fAUZUGTlqyD6PnEkFzFyx9+o2Ttb/KAd4alr1ojmilH52A2g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AgwwMBK0LvYQ6lOt/wVv7mr8GCfCJU7Na2A1IlPmllI=;
+ b=jsf6i+Us2GEY1KeBudNAnxcXNx990khjltUZzoC32boy7XLXKB0mnfiqNC3KIfMlxa8y1sxgLpQ6EOPViyEHojSmPiYyI3rccY4nuQ5L/kzl7lxTd/SizRQKCsVOZcNG8gBWa4A10lLFtC50LAmZGHvzSzYA2GO/krzd3tnvC7KOTkAWIl9PyvIFJ1Ier96myrZkQW1Z3LPEdehcNljrECPQsTDCFHpC+hvQCCRB9j5zdhj8eyaHwvG1I82h7V7NIh1B03PKPDnL/34SaC032Cp59nCAeHvXocqsY2+e9OK131AmRDiVotL6AcnP9MRevwmwpOyGB5BmC/o/OFdjdA==
+Received: from MN2PR20CA0059.namprd20.prod.outlook.com (2603:10b6:208:235::28)
+ by SA1PR12MB7127.namprd12.prod.outlook.com (2603:10b6:806:29e::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9160.18; Wed, 1 Oct
+ 2025 15:01:48 +0000
+Received: from BN2PEPF000044A1.namprd02.prod.outlook.com
+ (2603:10b6:208:235:cafe::57) by MN2PR20CA0059.outlook.office365.com
+ (2603:10b6:208:235::28) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9160.18 via Frontend Transport; Wed,
+ 1 Oct 2025 15:01:48 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ BN2PEPF000044A1.mail.protection.outlook.com (10.167.243.152) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9182.15 via Frontend Transport; Wed, 1 Oct 2025 15:01:48 +0000
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Wed, 1 Oct
+ 2025 08:01:14 -0700
+Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail203.nvidia.com
+ (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Wed, 1 Oct
+ 2025 08:01:14 -0700
+Received: from sumitg-l4t.nvidia.com (10.127.8.14) by mail.nvidia.com
+ (10.129.68.6) with Microsoft SMTP Server id 15.2.2562.20 via Frontend
+ Transport; Wed, 1 Oct 2025 08:01:07 -0700
+From: Sumit Gupta <sumitg@nvidia.com>
+To: <rafael@kernel.org>, <viresh.kumar@linaro.org>, <lenb@kernel.org>,
+	<robert.moore@intel.com>, <corbet@lwn.net>, <pierre.gondois@arm.com>,
+	<zhenglifeng1@huawei.com>, <rdunlap@infradead.org>, <ray.huang@amd.com>,
+	<gautham.shenoy@amd.com>, <mario.limonciello@amd.com>, <perry.yuan@amd.com>,
+	<linux-pm@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>, <acpica-devel@lists.linux.dev>,
+	<linux-kernel@vger.kernel.org>
+CC: <linux-tegra@vger.kernel.org>, <treding@nvidia.com>,
+	<jonathanh@nvidia.com>, <vsethi@nvidia.com>, <ksitaraman@nvidia.com>,
+	<sanjayc@nvidia.com>, <bbasu@nvidia.com>, <sumitg@nvidia.com>
+Subject: [PATCH v3 0/8] Enhanced autonomous selection and improvements
+Date: Wed, 1 Oct 2025 20:30:56 +0530
+Message-ID: <20251001150104.1275188-1-sumitg@nvidia.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="T7A0TheW4Ey8c64A"
-Content-Disposition: inline
-In-Reply-To: <CANiDSCuddqjeDr80xKsZZP7CXu9qB5qqYPoZujNYLcVjK0kKkg@mail.gmail.com>
+X-NVConfidentiality: public
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN2PEPF000044A1:EE_|SA1PR12MB7127:EE_
+X-MS-Office365-Filtering-Correlation-Id: aed6d58c-a091-481b-84cc-08de00fb724a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|376014|7416014|1800799024|36860700013|82310400026|921020;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?JoYsk2yva9TsQs8wQO1Yi7yLQmMD//0fOQYhtjhAMhZjMzHwcglxPeNLdu/A?=
+ =?us-ascii?Q?E7xa0c2HoaEpgrtnQnKUyHwkrVxvvJTkCisk287t4towHcDjtpyoz7NTkkGX?=
+ =?us-ascii?Q?75nuXk9WqpVru/GIWZOJaXRMvMwvu1XeATgAGM4uAEQSf3V6lwVcmI9H0BUn?=
+ =?us-ascii?Q?MPOIPK5H+wj1FlnQbrLMjynyYZojcP5AzEF1FES/X7aM6pzZ6KuLcBp72Zt1?=
+ =?us-ascii?Q?XT5LYkp8fpaYk8mVld/OcfmFVBLo2Fm42pqL0DQe0m9aL0LiN6eFo9lyBae3?=
+ =?us-ascii?Q?vARhukPaFQLzdHLpAZmLtg62o9w750/lBWGOoz3TVdRCmUOoOZfhjbj6wDF5?=
+ =?us-ascii?Q?UVy/HdV/sud6vKELjRxYrdSh18MIdua2T3jJE6fuufJWDt5bDfVSa8KrQ1SD?=
+ =?us-ascii?Q?oHI++cZ/bgo9TYLI62ukO994T5HyQnJ7dCggkr+4MtdSRkiPouKc5Mh6WQEw?=
+ =?us-ascii?Q?/Hjfv9pFO1Hzb2kyzFp0OuZka58yZA9s+fC8MSDlOqKHzEi5VPM6djjVYCIR?=
+ =?us-ascii?Q?bj8xQkXZrqOPsfHeed4w7kbbNnQbngYMdBJz0TcrwKW3ZNR8ZTHgd1C5s1w1?=
+ =?us-ascii?Q?Fj5DzMLmQ2LDaDSLmb2xyy/26AwbiuldVQ5n+3iCkejjsjjCTwxB66N/d/Nl?=
+ =?us-ascii?Q?PQA5979yJkHZ9q6EHj9aVz+twkM/1yWiX2Pf0cz0NSMV2f9sIxEPGG7LDf+h?=
+ =?us-ascii?Q?c/mr+tNLFI9sSb6YYXEkeuUXGsX4qFvWmVzwxLYVzgfBs8mCNtt9Wo6gtF+F?=
+ =?us-ascii?Q?QUJ+vvRtvPnbjv+yMwyheWr+T+Wy1Ae2q8+Wlj4LFEmm7Q0YnEnBtP9WLAfO?=
+ =?us-ascii?Q?iKuCkR2p34COYgdcI52iqTcqHMZ9J9kyqB8O3e27HXk0W9QxmlZXX0j/lzjx?=
+ =?us-ascii?Q?vrUsr/mJVhq9MJZbmDmI3BLFc5yHOYu1iYoUAxKIs6k2Q/rnu+9INwO2/g0+?=
+ =?us-ascii?Q?Bp+tcCoLNCYpcs8xPLG+W0/O3mumY6I7/ZTr0fWzUeKYcXO2yZEhn0x8COyB?=
+ =?us-ascii?Q?sVwzl3/AMsVk8LOODanAB3x01Q5s/ZLb7RQT/LC9FQwu3EM+js+w8Kduwkdr?=
+ =?us-ascii?Q?wADTRxoKJ2dqebcHbYZb7WSRFcikF0AznwkLPlLlQoqIJ9vXrCTqbUsFQtR+?=
+ =?us-ascii?Q?RH3bcRHSrAgrQRLsNdHu4YOBG7qNaLLebk80EzjnccyXzSpqgNsCo8OMWKUI?=
+ =?us-ascii?Q?IcgQ35ADcGZps6FSN63zEOnnAtXYST9fgBBWbXLlWpoYE5aER7m8zksLTcyL?=
+ =?us-ascii?Q?iJFfB6KMqCc6JLXhG78RoFhvG+OdhWs8HQxRpWrsEZp4fyDSNAChQPMjh5tQ?=
+ =?us-ascii?Q?04zaUoqRT2T6C/rHgl8Ov/kYz4M++O1V52HOp9I57sraMkbsiHD09VGpREFH?=
+ =?us-ascii?Q?s/hhYkcPt3/Azu17Q/nIWdZiS967aCD5iPDAPNdI5PpGr5Xsy0GyRy5fhpC/?=
+ =?us-ascii?Q?sGxROZjabvLfGhWNqAWAQrBjY6UYvbGLEQyd2kUrL32mTH8Bw9RkqegMCSoz?=
+ =?us-ascii?Q?r6jIFiGqaS2Cv62OSecJOXQFdOXA6H0yYLdKq9zJEZDzu06C1Lrcclp0l1Ae?=
+ =?us-ascii?Q?lThd5OoDc0Q0doB/bFAVU8hM+IHjPBWb1S/R24Ht?=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(36860700013)(82310400026)(921020);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Oct 2025 15:01:48.5985
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: aed6d58c-a091-481b-84cc-08de00fb724a
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BN2PEPF000044A1.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB7127
 
+This patch series enhances the ACPI CPPC CPUFREQ driver with
+comprehensive support for autonomous performance selection, expanded
+runtime control interfaces and improvements.
 
---T7A0TheW4Ey8c64A
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It adds support for below:
+- Expose sysfs to read/write the Mininum/Maximum Performance Register
+  and update the policy min/max accordingly.
+    /sys/.../cpufreq/policy*/min_perf and max_perf
 
-On Mon, Sep 29, 2025 at 10:30:35AM +0200, Ricardo Ribalda wrote:
-> Hi Conor
->=20
-> On Fri, 26 Sept 2025 at 18:55, Conor Dooley <conor@kernel.org> wrote:
-> >
-> > On Fri, Sep 26, 2025 at 01:11:31PM +0000, Ricardo Ribalda wrote:
-> > > For fixed cameras modules the OS needs to know where they are mounted.
-> > > This information is used to determine if images need to be rotated or
-> > > not.
-> > >
-> > > ACPI has a property for this purpose, which is parsed by
-> > > acpi_get_physical_device_location():
-> > > https://uefi.org/htmlspecs/ACPI_Spec_6_4_html/06_Device_Configuration=
-/Device_Configuration.html#pld-physical-location-of-device
-> > >
-> > > In DT we have similar properties for video-interface-devices called
-> > > orientation and rotation:
-> > > Documentation/devicetree/bindings/media/video-interface-devices.yaml
-> > >
-> > > Add a new schema that combines usb/usb-device.yaml and
-> > > media/video-interface-devices.yaml
-> > >
-> > > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> > > ---
-> > >  .../bindings/media/usb-camera-module.yaml          | 46 ++++++++++++=
-++++++++++
-> > >  MAINTAINERS                                        |  1 +
-> > >  2 files changed, 47 insertions(+)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/media/usb-camera-modul=
-e.yaml b/Documentation/devicetree/bindings/media/usb-camera-module.yaml
-> > > new file mode 100644
-> > > index 0000000000000000000000000000000000000000..e4ad6f557b9151751522e=
-49b72ae6584deb0c7ba
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/media/usb-camera-module.yaml
-> > > @@ -0,0 +1,46 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/media/usb-camera-module.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: USB Camera Module
-> > > +
-> > > +maintainers:
-> > > +  - Ricardo Ribalda <ribalda@chromium.org>
-> > > +
-> > > +description: |
-> > > +  This schema allows for annotating auxiliary information for fixed =
-camera
-> > > +  modules. This information enables the system to determine if incom=
-ing frames
-> > > +  require rotation, mirroring, or other transformations. It also des=
-cribes the
-> > > +  module's relationship with other hardware elements, such as flash =
-LEDs or
-> > > +  Voice Coil Motors (VCMs).
-> > > +
-> > > +allOf:
-> > > +  - $ref: /schemas/usb/usb-device.yaml#
-> > > +  - $ref: /schemas/media/video-interface-devices.yaml#
-> > > +
-> > > +properties:
-> > > +  reg:
-> > > +    maxItems: 1
-> > > +
-> >
-> > What actually causes this schema to be applied? Did I miss it getting
-> > included somewhere?
->=20
-> I guess your question is why I have not defined the compatible field?
->=20
-> I tried this change[1] with no luck:
-> /usr/local/google/home/ribalda/work/linux/Documentation/devicetree/bindin=
-gs/media/uvc-camera.example.dtb:
-> device@1 (uvc-camera): compatible: ['uvc-camera'] does not contain
-> items matching the given schema
->=20
-> I think it failed, because If we add these allOfs as Rob proposed
-> https://lore.kernel.org/all/20250625185608.GA2010256-robh@kernel.org/:
-> ```
-> allOf:
->   - $ref: /schemas/usb/usb-device.yaml#
->   - $ref: /schemas/media/video-interface-devices.yaml#
-> ```
-> We cannot (or I do not know how to) have a different compatible than
-> the one from usb-device.yaml
->=20
->=20
-> Any suggestion on how to do this properly will be highly appreciated :)
+- Expose sysfs to read/write the Performance Limited Register.
+    /sys/.../cpufreq/policy*/perf_limited
 
-It'd work, I think, if you permitted the pattern from usb-device as a
-fallback compatible. I don't know if that would work for whatever niche
-you're attempting to fill here though.
+- When toggling autonomous selection, synchronize the policy limits
+  by updating the policy min/max.
 
-Probably a Rob question ultimately.
+- System-wide autonomous mode configuration via 'auto_sel_mode' boot
+  parameter. Mode can be switched dynamically on individual CPUs.
 
->=20
-> Thanks!
->=20
->=20
->=20
-> [1]
->=20
-> @@ -21,10 +21,14 @@ allOf:
->    - $ref: /schemas/media/video-interface-devices.yaml#
->=20
->  properties:
-> +  compatible:
-> +    const: uvc-camera
-> +
->    reg:
->      maxItems: 1
->=20
->  required:
-> +  - compatible
->    - reg
->=20
->  additionalProperties: true
-> @@ -38,8 +42,8 @@ examples:
->          #size-cells =3D <0>;
->=20
->          device@1 {
-> -            compatible =3D "usb123,4567";
-> +           compatible =3D "uvc-camera";
->              reg =3D <2>;
->              orientation =3D <0>;
->              rotation =3D <90>;
->          };
->=20
-> >
-> > > +required:
-> > > +  - reg
-> > > +
-> > > +additionalProperties: true
-> > > +
-> > > +examples:
-> > > +  - |
-> > > +    usb@11270000 {
-> > > +        reg =3D <0x11270000 0x1000>;
-> > > +        interrupts =3D <0x0 0x4e 0x0>;
-> > > +        #address-cells =3D <1>;
-> > > +        #size-cells =3D <0>;
-> > > +
-> > > +        device@1 {
-> > > +            compatible =3D "usb123,4567";
-> > > +            reg =3D <2>;
-> > > +            orientation =3D <0>;
-> > > +            rotation =3D <90>;
-> > > +        };
-> > > +    };
-> > > diff --git a/MAINTAINERS b/MAINTAINERS
-> > > index ee8cb2db483f6a5e96b62b6f2edd05b1427b69f5..1503502a3aed2625e8ff4=
-88456ccd7305cc74ba7 100644
-> > > --- a/MAINTAINERS
-> > > +++ b/MAINTAINERS
-> > > @@ -26258,6 +26258,7 @@ L:    linux-media@vger.kernel.org
-> > >  S:   Maintained
-> > >  W:   http://www.ideasonboard.org/uvc/
-> > >  T:   git git://linuxtv.org/media.git
-> > > +F:   Documentation/devicetree/bindings/media/usb-camera-module.yaml
-> > >  F:   Documentation/userspace-api/media/drivers/uvcvideo.rst
-> > >  F:   Documentation/userspace-api/media/v4l/metafmt-uvc-msxu-1-5.rst
-> > >  F:   Documentation/userspace-api/media/v4l/metafmt-uvc.rst
-> > >
-> > > --
-> > > 2.51.0.536.g15c5d4f767-goog
-> > >
->=20
->=20
->=20
-> --
-> Ricardo Ribalda
->=20
+- Generic sysfs helper functions to reduce code duplication.
 
---T7A0TheW4Ey8c64A
-Content-Type: application/pgp-signature; name="signature.asc"
+The patches are grouped as below:
+- Patch 1, 2 & 3: Improvements. Can be applied independently.
+- Patch 4: Sysfs to update min/max_perf. Can be applied independently.
+- Patch 5: Sysfs to update perf_limited. Can be applied independently.
+- Patch 6: add syfs documentation. Depends on 'Patch 4 and 5'.
+- Patch 7: sync policy min/max with auto_select. Depends on 'Patch 4'.
+- Patch 8: Boot Parameter Support. Depends on 'Patch 4 and 7'.
 
------BEGIN PGP SIGNATURE-----
+---
+v2[2] -> v3:
+- drop changes to rename exisiting APIs.
+- add new 'patch 1' with generic helpers for sysfs show/store.
+- used guard(mutex)() in place of mutex_lock/unlock.
+- update kernel-parameters text to 'enable if supported by hardware'.
+- disable auto_sel for all cpus if one fails in auto_sel_mode.
+- use min/max_perf values if set from bootloader.
+- general code improvements, error handling and reduced redundancies.
 
-iHUEABYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCaNrUqwAKCRB4tDGHoIJi
-0mASAP49pwqqfaBzHe/GqEE+pCyOCKLHjQV++1zecT+/WddTgAD/dP2GQvWciVeV
-ngYFC1P2vUnJOUWrondGz3NRTBBB/g0=
-=ew51
------END PGP SIGNATURE-----
+v1[1] -> v2:
+- Move CPC register set sysfs from acpi_cppc to cpufreq directory.
+- No sysfs to set auto_sel and epp. They were merged from diff series.
+- Remove 'cppc_cpufreq_epp' instance of the 'cppc_cpufreq' driver.
+- Synchronize perf_min/max with policy min/max.
+- Update policy min/max Toggling auto_select.
+- add sysfs to update the perf_limited register.
 
---T7A0TheW4Ey8c64A--
+Sumit Gupta (8):
+  cpufreq: CPPC: Add generic helpers for sysfs show/store
+  ACPI: CPPC: Add cppc_get_perf() API to read performance controls
+  ACPI: CPPC: extend APIs to support auto_sel and epp
+  ACPI: CPPC: add APIs and sysfs interface for min/max_perf
+  ACPI: CPPC: add APIs and sysfs interface for perf_limited register
+  cpufreq: CPPC: Add sysfs for min/max_perf and perf_limited
+  cpufreq: CPPC: update policy min/max when toggling auto_select
+  cpufreq: CPPC: add autonomous mode boot parameter support
+
+ .../ABI/testing/sysfs-devices-system-cpu      |  43 ++
+ .../admin-guide/kernel-parameters.txt         |  12 +
+ drivers/acpi/cppc_acpi.c                      | 184 +++++++-
+ drivers/cpufreq/cppc_cpufreq.c                | 392 ++++++++++++++++--
+ include/acpi/cppc_acpi.h                      |  39 +-
+ 5 files changed, 629 insertions(+), 41 deletions(-)
+
+[1] https://lore.kernel.org/lkml/20250211103737.447704-1-sumitg@nvidia.com/
+[2] https://lore.kernel.org/lkml/20250823200121.1320197-1-sumitg@nvidia.com/
+
+-- 
+2.34.1
+
