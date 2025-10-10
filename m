@@ -1,129 +1,203 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from canpmsgout10.his.huawei.com (canpmsgout10.his.huawei.com [113.46.200.225])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D00E6220F2C;
-	Thu,  9 Oct 2025 15:58:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 716EA2147FB
+	for <acpica-devel@lists.linux.dev>; Fri, 10 Oct 2025 03:24:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.225
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760025488; cv=none; b=PIsgoa1yNbL5gKb8Ao3HLWfJeU3xK3EYw3vLIap3ZgoeyT2S0i47zHbwNmzWBwqMjllaAXvxl4CN93N/hlZv+dfVc1MFdRqTi6xUyCQJL6S9Wuqpnel7S67yG1DUMMFVRYcMxiCKh+RP27ZFbMacic8pJiQ3LR2N69jsLRps2rk=
+	t=1760066658; cv=none; b=fLGr67b90jdvlyy/NbBqsO+QEP+4crRvavI92U2OjmhROiMbGvAIEjGHL2izwHINPivlFC8b5LZVD0ergbTuHrbgZHUhq29WFkAZUhqSRGRuDz7K7JxQqO0Cbqq/G4Qob51altFKkkQ4iZKsIZbWwFC3ot8cb87eAROCQ5Ne2ww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760025488; c=relaxed/simple;
-	bh=6vkLwtVEp5iZ/fddGeer+JB26ijRhHCLJZ0FnDiFV8M=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=QgOFpBac3KZSRU0qVyDyXyWuZjnMJECBnAnCWnlWyoDnQHh7jFSOdxLRaDlaisflshq+JSuJse5ZIsMLD+gDIpyZAtQ7ZLSdNeocQ+FKr87bBeZJxcfDl7fFrA5isU5R4TAYs3kgvCOeTYDZtJSSbSnXIQtj49Jw54DKd+FsMGc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rZQT2jSY; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rZQT2jSY"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38998C4CEE7;
-	Thu,  9 Oct 2025 15:58:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760025487;
-	bh=6vkLwtVEp5iZ/fddGeer+JB26ijRhHCLJZ0FnDiFV8M=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rZQT2jSY/8MM17nbyGSvHdSUr9rh4M89+k31Rc9chfmwWdaiuHsmNCXmt41lSgk7f
-	 eY6bfz8tAK3S7+ewWHWkvRhFUrp8sBElQYqjURUFBkj3R5A5hX4o3U3YgWjX0SrA+O
-	 vHVYPP+A5lpKabbypSUi5jW3nSbz9Fbz3Yf2y8/s9/N/rdaRsqDNY+eAFV9TMkwBhz
-	 uGaxXhQIRqATxOmYp4569byvWyguytAe/r62iUEKFVghujOHBE/kiUdrCxaTOIJWt6
-	 o2yKpSdtbzbR9eGzmIaZo4LeC6Gau13oA159rwqBfXJfk1M4WZr6ZJO//zoeTqOaUg
-	 ozuBOjtu6QyEw==
-From: Sasha Levin <sashal@kernel.org>
-To: patches@lists.linux.dev,
-	stable@vger.kernel.org
-Cc: Hans de Goede <hansg@kernel.org>,
-	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-	Sasha Levin <sashal@kernel.org>,
-	rafael@kernel.org,
-	robert.moore@intel.com,
-	linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.17-5.4] ACPICA: dispatcher: Use acpi_ds_clear_operands() in acpi_ds_call_control_method()
-Date: Thu,  9 Oct 2025 11:54:36 -0400
-Message-ID: <20251009155752.773732-10-sashal@kernel.org>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20251009155752.773732-1-sashal@kernel.org>
-References: <20251009155752.773732-1-sashal@kernel.org>
+	s=arc-20240116; t=1760066658; c=relaxed/simple;
+	bh=3WF4tIRUtvQA2j4EjIaI7q0oYeLt55Dandq5aU/vbhU=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:CC:References:
+	 In-Reply-To:Content-Type; b=UfumN3kca8YOCfND/bvRvE/OCSUh1l4LGD78YsiqFtGXYW2OBR/DW8EaJIAa1sgqn2S9Zhy1g/SnchxrUhFsOgolSgO/Vzok78hy99Rc/pQiXAeVAA2A1tU037kFitxPxJDusgnzqVmV0/FYQlTItv+nMHAG4C5wNpRl1HZWwLA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=113.46.200.225
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by canpmsgout10.his.huawei.com (SkyGuard) with ESMTPS id 4cjXCB3FGMz1K9Bc;
+	Fri, 10 Oct 2025 11:23:50 +0800 (CST)
+Received: from kwepemr500004.china.huawei.com (unknown [7.202.195.141])
+	by mail.maildlp.com (Postfix) with ESMTPS id CB73F1A0188;
+	Fri, 10 Oct 2025 11:24:06 +0800 (CST)
+Received: from [10.67.121.58] (10.67.121.58) by kwepemr500004.china.huawei.com
+ (7.202.195.141) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Fri, 10 Oct
+ 2025 11:24:05 +0800
+Message-ID: <bdd0aa7b-d239-420e-8741-b33d73959412@hisilicon.com>
+Date: Fri, 10 Oct 2025 11:24:05 +0800
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.17.1
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+From: Jie Zhan <zhanjie9@hisilicon.com>
+Subject: Re: [PATCH v3 1/8] cpufreq: CPPC: Add generic helpers for sysfs
+ show/store
+To: Sumit Gupta <sumitg@nvidia.com>, <rafael@kernel.org>,
+	<viresh.kumar@linaro.org>, <lenb@kernel.org>, <robert.moore@intel.com>,
+	<corbet@lwn.net>, <pierre.gondois@arm.com>, <zhenglifeng1@huawei.com>,
+	<rdunlap@infradead.org>, <ray.huang@amd.com>, <gautham.shenoy@amd.com>,
+	<mario.limonciello@amd.com>, <perry.yuan@amd.com>,
+	<linux-pm@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>, <acpica-devel@lists.linux.dev>,
+	<linux-kernel@vger.kernel.org>
+CC: <linux-tegra@vger.kernel.org>, <treding@nvidia.com>,
+	<jonathanh@nvidia.com>, <vsethi@nvidia.com>, <ksitaraman@nvidia.com>,
+	<sanjayc@nvidia.com>, <bbasu@nvidia.com>
+References: <20251001150104.1275188-1-sumitg@nvidia.com>
+ <20251001150104.1275188-2-sumitg@nvidia.com>
+Content-Language: en-US
+In-Reply-To: <20251001150104.1275188-2-sumitg@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: kwepems100002.china.huawei.com (7.221.188.206) To
+ kwepemr500004.china.huawei.com (7.202.195.141)
 
-From: Hans de Goede <hansg@kernel.org>
 
-[ Upstream commit e9dff11a7a50fcef23fe3e8314fafae6d5641826 ]
+Hi Sumit,
 
-When deleting the previous walkstate operand stack
-acpi_ds_call_control_method() was deleting obj_desc->Method.param_count
-operands. But Method.param_count does not necessarily match
-this_walk_state->num_operands, it may be either less or more.
+On 10/1/2025 11:00 PM, Sumit Gupta wrote:
+> Add generic show/store helper functions for u64 sysfs attributes:
+> - cppc_cpufreq_sysfs_show_u64()
+> - cppc_cpufreq_sysfs_store_u64()
+> 
+> Refactor auto_act_window and energy_performance_preference_val
+> attributes to use these helpers, eliminating code duplication.
+> 
+> No functional changes.
+> 
+> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+Nice cleanup in general.  Some minor bits inline.
+> ---
+>  drivers/cpufreq/cppc_cpufreq.c | 87 ++++++++++++++--------------------
+>  1 file changed, 35 insertions(+), 52 deletions(-)
+> 
+> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
+> index 12de0ac7bbaf..732f35096991 100644
+> --- a/drivers/cpufreq/cppc_cpufreq.c
+> +++ b/drivers/cpufreq/cppc_cpufreq.c
+> @@ -781,6 +781,36 @@ static int cppc_cpufreq_set_boost(struct cpufreq_policy *policy, int state)
+>  	return 0;
+>  }
+>  
+> +static ssize_t cppc_cpufreq_sysfs_show_u64(unsigned int cpu, int (*get_func)(int, u64 *), char *buf)
+Wrap a bit into 80 chars?
 
-After correcting the for loop to check `i < this_walk_state->num_operands`
-the code is identical to acpi_ds_clear_operands(), so just outright
-replace the code with acpi_ds_clear_operands() to fix this.
-
-Link: https://github.com/acpica/acpica/commit/53fc0220
-Signed-off-by: Hans de Goede <hansg@kernel.org>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
-
-LLM Generated explanations, may be completely bogus:
-
-YES
-- Current cleanup in `drivers/acpi/acpica/dsmethod.c:517` and
-  `drivers/acpi/acpica/dsmethod.c:549` only drops
-  `obj_desc->method.param_count` operands after a call, so when firmware
-  supplies extra arguments the additional entries in
-  `this_walk_state->operands[]` keep their references alive even though
-  `num_operands` is reset—this leaks AML temporaries and can strand
-  namespace refs on every invocation.
-- The call path copies every resolved operand up to the NULL terminator
-  into the callee (`drivers/acpi/acpica/dsmthdat.c:175`), and ACPICA
-  already anticipates AML that passes too many parameters
-  (`drivers/acpi/acpica/nsarguments.c:222`-`245`), so the leak is
-  triggered by real-world firmware and grows with each mis-specified
-  call.
-- Replacing the open-coded loop with
-  `acpi_ds_clear_operands(this_walk_state)` uses the existing helper
-  that already removes all `num_operands` entries
-  (`drivers/acpi/acpica/dsutils.c:383`-`400`) and matches the cleanup
-  used in other dispatcher paths
-  (`drivers/acpi/acpica/dswexec.c:440`-`452`); git history shows the
-  buggy pattern has existed since the original ACPICA import, so the fix
-  is self-contained and low risk for all supported branches.
-
-Next step: queue this patch for the stable ACPICA backport stream so
-kernels inheriting the long-standing leak can be corrected.
-
- drivers/acpi/acpica/dsmethod.c | 9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
-
-diff --git a/drivers/acpi/acpica/dsmethod.c b/drivers/acpi/acpica/dsmethod.c
-index fef6fb29ece4d..e707a70368026 100644
---- a/drivers/acpi/acpica/dsmethod.c
-+++ b/drivers/acpi/acpica/dsmethod.c
-@@ -546,14 +546,7 @@ acpi_ds_call_control_method(struct acpi_thread_state *thread,
- 	 * Delete the operands on the previous walkstate operand stack
- 	 * (they were copied to new objects)
- 	 */
--	for (i = 0; i < obj_desc->method.param_count; i++) {
--		acpi_ut_remove_reference(this_walk_state->operands[i]);
--		this_walk_state->operands[i] = NULL;
--	}
--
--	/* Clear the operand stack */
--
--	this_walk_state->num_operands = 0;
-+	acpi_ds_clear_operands(this_walk_state);
- 
- 	ACPI_DEBUG_PRINT((ACPI_DB_DISPATCH,
- 			  "**** Begin nested execution of [%4.4s] **** WalkState=%p\n",
--- 
-2.51.0
-
+BTW, trivial but I would prefer a symmetric param order, like:
+show(buf, get_func, cpu)
+store(buf, count, set_func, cpu)
+> +{
+> +	u64 val;
+> +	int ret = get_func(cpu, &val);
+> +
+> +	if (ret == -EOPNOTSUPP)
+> +		return sysfs_emit(buf, "<unsupported>\n");
+> +	if (ret)
+> +		return ret;
+> +
+> +	return sysfs_emit(buf, "%llu\n", val);
+> +}
+> +
+> +static ssize_t cppc_cpufreq_sysfs_store_u64(const char *buf, size_t count,
+> +					    int (*set_func)(int, u64), unsigned int cpu)
+> +{
+> +	u64 val;
+> +	int ret;
+> +
+> +	if (!buf || !set_func)
+> +		return -EINVAL;
+No need.
+> +
+> +	ret = kstrtou64(buf, 0, &val);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = set_func((int)cpu, val);
+> +	return ret ? ret : count;
+I suppose it's preferred to avoid using ternary operators like this.
+> +}
+> +
+Would be nicer to move cppc_cpufreq_sysfs_show/store_u64() to just above
+where they are used, i.e. just before show_auto_act_window().
+>  static ssize_t show_freqdomain_cpus(struct cpufreq_policy *policy, char *buf)
+>  {
+>  	struct cppc_cpudata *cpu_data = policy->driver_data;
+> @@ -824,70 +854,23 @@ static ssize_t store_auto_select(struct cpufreq_policy *policy,
+>  
+>  static ssize_t show_auto_act_window(struct cpufreq_policy *policy, char *buf)
+>  {
+> -	u64 val;
+> -	int ret;
+> -
+> -	ret = cppc_get_auto_act_window(policy->cpu, &val);
+> -
+> -	/* show "<unsupported>" when this register is not supported by cpc */
+> -	if (ret == -EOPNOTSUPP)
+> -		return sysfs_emit(buf, "<unsupported>\n");
+> -
+> -	if (ret)
+> -		return ret;
+> -
+> -	return sysfs_emit(buf, "%llu\n", val);
+> +	return cppc_cpufreq_sysfs_show_u64(policy->cpu, cppc_get_auto_act_window, buf);
+>  }
+>  
+> -static ssize_t store_auto_act_window(struct cpufreq_policy *policy,
+> -				     const char *buf, size_t count)
+> +static ssize_t store_auto_act_window(struct cpufreq_policy *policy, const char *buf, size_t count)
+>  {
+> -	u64 usec;
+> -	int ret;
+> -
+> -	ret = kstrtou64(buf, 0, &usec);
+> -	if (ret)
+> -		return ret;
+> -
+> -	ret = cppc_set_auto_act_window(policy->cpu, usec);
+> -	if (ret)
+> -		return ret;
+> -
+> -	return count;
+> +	return cppc_cpufreq_sysfs_store_u64(buf, count, cppc_set_auto_act_window, policy->cpu);
+>  }
+>  
+>  static ssize_t show_energy_performance_preference_val(struct cpufreq_policy *policy, char *buf)
+>  {
+> -	u64 val;
+> -	int ret;
+> -
+> -	ret = cppc_get_epp_perf(policy->cpu, &val);
+> -
+> -	/* show "<unsupported>" when this register is not supported by cpc */
+> -	if (ret == -EOPNOTSUPP)
+> -		return sysfs_emit(buf, "<unsupported>\n");
+> -
+> -	if (ret)
+> -		return ret;
+> -
+> -	return sysfs_emit(buf, "%llu\n", val);
+> +	return cppc_cpufreq_sysfs_show_u64(policy->cpu, cppc_get_epp_perf, buf);
+>  }
+>  
+>  static ssize_t store_energy_performance_preference_val(struct cpufreq_policy *policy,
+>  						       const char *buf, size_t count)
+>  {
+> -	u64 val;
+> -	int ret;
+> -
+> -	ret = kstrtou64(buf, 0, &val);
+> -	if (ret)
+> -		return ret;
+> -
+> -	ret = cppc_set_epp(policy->cpu, val);
+> -	if (ret)
+> -		return ret;
+> -
+> -	return count;
+> +	return cppc_cpufreq_sysfs_store_u64(buf, count, cppc_set_epp, policy->cpu);
+>  }
+>  
+>  cpufreq_freq_attr_ro(freqdomain_cpus);
