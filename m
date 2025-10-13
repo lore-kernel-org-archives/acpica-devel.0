@@ -1,429 +1,250 @@
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from BYAPR05CU005.outbound.protection.outlook.com (mail-westusazon11010071.outbound.protection.outlook.com [52.101.85.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8A832857E2
-	for <acpica-devel@lists.linux.dev>; Fri, 10 Oct 2025 10:37:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760092647; cv=none; b=GvP3uw8RjB0IT6XC9FB/Cq0D5sN64hWqjtWpXR2SLG8NSzwYyqvfGvdkVQ/pr8S6RfycME9X8rGx255uRwi57Is6zmRF14KsigNkjg0J+J6c8yGyy7uZBBv1xvTBQahIrs0GiyPL2cjUjhIPcU63mG96E1ZICsYP6hGEORSvXMY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760092647; c=relaxed/simple;
-	bh=t9iQlzVQ19GL2M0MpfsEv2qNN0F73K0bmUNkcYfhAK0=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=Br7zGpjz9nxjbN0VduqX+hY0J1nhJI+OHw5vYUSIYk8DThsfQ4GDV4VA7dUGlRE3nF8bLfQqerGqPu/5BTT2vvfbGnQ2j2BP8ofEMpIVo2nlclhgqAljwvpZ4eEYupMkpH8776qESuRgehCwJ9fheSC9gNvixORTuTAgghZ7Tmc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-b00a9989633so273831366b.0
-        for <acpica-devel@lists.linux.dev>; Fri, 10 Oct 2025 03:37:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760092642; x=1760697442;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=b1x7n9Mu/PlGODo9nRrYWrIHcB4t2KXts9oiHev/O1U=;
-        b=p74hPBDh2bR+vN/lPkrWSNk3bScCO35+x3GFs0j87aLkxFusCfzmSdZkyhkOXeJdKE
-         se2JK1wVdiYE0SOvSSzUkHfE8/bM4EmoBQ5ttrZT4G+UPSA5UrHuHE69jZFHqbzROGPP
-         bJTFmXc00NhtzGBEYOtDa5dSG8Hew09NniOzDdbyU9r4pU2pfv98Cr2IaXs1R4rlhKBb
-         IEcoSP2VPzjr3/RGsu5mD4cGeiESIMpM13/9adJXaEfO02W3h52hTQ7vazPBxIiubEJA
-         CmKs72U8hLemp83A9kfVARFlTCF1aPPiTc91rgRjSSl/SK7Ulk6U9nSx+uSsW/Vxew5f
-         wXkg==
-X-Forwarded-Encrypted: i=1; AJvYcCX5Yk8pJ0TrPXi1FLI/uaLQaLt5ztoMAw7+Vf4Rmv2G/e8SEUYd6MWNLFzVxokac2guk8QrwMp/ZsDSUJE=@lists.linux.dev
-X-Gm-Message-State: AOJu0YymQAJocLIM3cVCogKAIerujMT77onUz60pG6I2uATY4AxEr941
-	rQn+9ulvUmvnQRfCxE3qkyt2PRnu29/sBLULrtD8D9rhkvKOEMfkVnNX
-X-Gm-Gg: ASbGncuVQp/H8lwYKhuyyOhAnw5pRb/XX6lpYCFv5lPAhFEqAq+plYT89zD2rwcU0uO
-	NXMO43RQcldZG9fqLIQfQXbF2JUDa1SatoYyPkGRu0LlkTij/iOq94DMtEHzSCqWh7AoYCbxCFH
-	a39PI6UKXF1cdh13B1BSKJ5O5LgWif0Y1RRvxnLaj9J859UaX4Vu6j5ThiWfMQmxreJkZYQzXPk
-	cikeGDZX4/Aa3yvnMOcv7HvMQzHsWeySNhzzMBRxjdHkZq8SjP6mEGXguXf9eaqPbJ+aFIUt7Jk
-	vg0mWhFVNoAHfnPa5b/PIc31wSrvMSUT8/agb5bHy/yBZC3WqvXO7oTOCf24Y6vTdU2Zu+VMYJB
-	EPaIXn3P6c5Bjql77A5o4gQEMrBBO9NvwjA8=
-X-Google-Smtp-Source: AGHT+IEYfCLCRKyIYslyl3UFPfKlAD8lqFnN82aArNqtqxcmZVzH9pFB/iAZ58Z08aOhkebEsM/Xgg==
-X-Received: by 2002:a17:907:7f17:b0:b3c:5f99:dac7 with SMTP id a640c23a62f3a-b50bedbe43cmr1176878966b.21.1760092641679;
-        Fri, 10 Oct 2025 03:37:21 -0700 (PDT)
-Received: from localhost ([2a03:2880:30ff:1::])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b55d9526724sm203209666b.82.2025.10.10.03.37.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Oct 2025 03:37:21 -0700 (PDT)
-From: Breno Leitao <leitao@debian.org>
-Date: Fri, 10 Oct 2025 03:36:50 -0700
-Subject: [PATCH RESEND v5] vmcoreinfo: Track and log recoverable hardware
- errors
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E22F018E20
+	for <acpica-devel@lists.linux.dev>; Mon, 13 Oct 2025 11:59:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.85.71
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1760356791; cv=fail; b=JnjXueoxntgWjlGf478APfkT6QNYahYRp93365YM5MGSeYrxtl/Ua0hvTf9mkBWNm0H24qt4FO9AsOKrGZfDuvv6ca5FJ4NeK0iXl0bWrSzomp2wXqAzYPH7mypvA3TUd0jtdcDJoQnY/JCKU3rdgQzmCIVpTM0K6GOBLqFvrvg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1760356791; c=relaxed/simple;
+	bh=WFNz4j3XnSnLf5oKFzO9fEMtvoNJu42Y+Hz2vvX4LNc=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=IsfFHDlxFlo74SbqLLOUU2Gzzj7Jx+mKgLtEpH9L8tu6/reiAsskRCK2EU2Rpv4sdKmoCJvjzTY0YIkTaYjf1WaqO2QA0WfhmvLP68ziN4XIWjxBE/wYquZLbAQMZgzGjEq5iVPwkGTrxcCjwrN1pB/0/WFB01j/Pokce2+pLhI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=ZADweHue; arc=fail smtp.client-ip=52.101.85.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="ZADweHue"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=adXzmgyr2cAR5JZWUseQ7nMigiOiOfUmlAL++V4t+IEuTqVyQPBfm6Fv9jr20txe6pWBT2cWB8Nq4xp9YD4i7tjeRJzqzBrEbwxtZ1tBnq80iX6Q8rNXiCA7PhV32+fILenD4ALV9d/84KZIsEalZGN9IKnI5C4XSnx/lZ/FrM6rhfkEd2OKsn4mIq7cbHuy7FTkpkxSMSgKQAnhzM5FtWcefkpmFWhzz0y/fqoi2ML33L7yQ86E0wULoyLNhTAinC4nS42tzizOUdsfgPxcsS32HzWzmwcTbxhTdOvmcXLX3SEwi1pjeJ8qXmL5rJl8uqrmIlg9YorEpZFFlSo/mA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2qmhzFHTA14b9FMBJ5uYsBJoIWvYAeFWAJ8vk2Wt7OI=;
+ b=zIeXsX2qO2sDEYhePGsbPh0FAzGHzvjbQQEXTMqHTHGEJNvKwxaclvNoS5cN+5v5MbuJpLCGiSFSNMPPCrOHa+/+rQFtAcfdajp2hHKz09x0KJ5MXIN0D3qiAGySDsZRbkbFaFXoRwgWF199wXlcgBP/ax6fa3BId0a+fKZBUCsWCnramHcLcGNRZghBMhrwM+td7rP4pPzRiGz0ikiP4zA+u49uwPsRi95kRLoMeCIiCGJki7poUM64elImQBURTySR8pjeWcYv8z6DUGeGyZXZvthIXDh+O2hc5OepKCzyGA6c4AR/5d2DELk8H2ceXOhHZLOIQ9FNrvYpnB/VaA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2qmhzFHTA14b9FMBJ5uYsBJoIWvYAeFWAJ8vk2Wt7OI=;
+ b=ZADweHueF+UzVLUOuPGpC64fPzDbCdUzhBY6pATytXm2BXEgUckGiCrv2FiOwzHFFTc9GUYcuS0fitPxpv+gX4G2T1Fc9w5SAybsCtzlRQr4U6utXZLD5/KsEgEi9nM1ieWn+YX9TkIYMNXdXoVN+LWE493p2uuW0MOGOKWKJ3lPZRhhbWNq5gMYJxIWgncX6gK+Mq2Iz1mDy+xtiv+u8+Tc5ZyWWbfYijbOJZWGR6kEPboQiNIetOrSZ3umoatrfnrNmeWQP/Rk7ZiUOZZXnxtVNv5XBVQFTaHNUVV3EBWL0Scb09jvxmweeg/G3IWSq2Jwjd6mVwqSXDLiQyFuLQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BN9PR12MB5179.namprd12.prod.outlook.com (2603:10b6:408:11c::18)
+ by CH3PR12MB8725.namprd12.prod.outlook.com (2603:10b6:610:170::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9203.12; Mon, 13 Oct
+ 2025 11:59:47 +0000
+Received: from BN9PR12MB5179.namprd12.prod.outlook.com
+ ([fe80::44e5:415d:e1a8:6e42]) by BN9PR12MB5179.namprd12.prod.outlook.com
+ ([fe80::44e5:415d:e1a8:6e42%7]) with mapi id 15.20.9203.009; Mon, 13 Oct 2025
+ 11:59:46 +0000
+Message-ID: <43243a37-db14-49aa-8338-dc7ca446b94e@nvidia.com>
+Date: Mon, 13 Oct 2025 17:29:33 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 6/8] cpufreq: CPPC: Add sysfs for min/max_perf and
+ perf_limited
+To: Jie Zhan <zhanjie9@hisilicon.com>, rafael@kernel.org,
+ viresh.kumar@linaro.org, lenb@kernel.org, robert.moore@intel.com,
+ corbet@lwn.net, pierre.gondois@arm.com, zhenglifeng1@huawei.com,
+ rdunlap@infradead.org, ray.huang@amd.com, gautham.shenoy@amd.com,
+ mario.limonciello@amd.com, perry.yuan@amd.com, linux-pm@vger.kernel.org,
+ linux-acpi@vger.kernel.org, linux-doc@vger.kernel.org,
+ acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc: linux-tegra@vger.kernel.org, treding@nvidia.com, jonathanh@nvidia.com,
+ vsethi@nvidia.com, ksitaraman@nvidia.com, sanjayc@nvidia.com,
+ bbasu@nvidia.com, sumitg@nvidia.com
+References: <20251001150104.1275188-1-sumitg@nvidia.com>
+ <20251001150104.1275188-7-sumitg@nvidia.com>
+ <0dca2bf6-0f87-422d-a348-5ab33a9683d2@hisilicon.com>
+Content-Language: en-US
+From: Sumit Gupta <sumitg@nvidia.com>
+In-Reply-To: <0dca2bf6-0f87-422d-a348-5ab33a9683d2@hisilicon.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MA1P287CA0005.INDP287.PROD.OUTLOOK.COM
+ (2603:1096:a00:35::19) To DM4PR12MB5184.namprd12.prod.outlook.com
+ (2603:10b6:5:397::18)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20251010-vmcore_hw_error-v5-1-636ede3efe44@debian.org>
-X-B4-Tracking: v=1; b=H4sIAMLh6GgC/23RPU/EMAwG4L8SZW5Q7Hy014mBWxlgROiUps41w
- 7UoRQF06n9HLUIU5WbLz+tXvvKZUqSZt+zKE+U4x2nkLTMV435w45lE7HnLOEo0spa1yBc/JTo
- NHydKaUpCIWo8kPUKLK8Yf0sU4ucmvvCn4/Px8YG/VowPcX6f0tcWlGGb/pigCzODANH4oA31n
- VVK3/fURTfeTem8YRn3gC0BFCACNHWoe4uuc3ug+m2DcHvRddY422nljSuS1S4ZsQTUmhykbVT
- wEKAuAP0HNPLGBXoFHASya/tGFYDZA+VDshEgZB+UUQdLusN/wLIs38ln25D0AQAA
-X-Change-ID: 20250707-vmcore_hw_error-322429e6c316
-To: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
- James Morse <james.morse@arm.com>, Tony Luck <tony.luck@intel.com>, 
- Borislav Petkov <bp@alien8.de>, Robert Moore <robert.moore@intel.com>, 
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
- Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
- "H. Peter Anvin" <hpa@zytor.com>, Hanjun Guo <guohanjun@huawei.com>, 
- Mauro Carvalho Chehab <mchehab@kernel.org>, 
- Mahesh J Salgaonkar <mahesh@linux.ibm.com>, 
- Oliver O'Halloran <oohall@gmail.com>, Bjorn Helgaas <bhelgaas@google.com>
-Cc: linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
- acpica-devel@lists.linux.dev, osandov@osandov.com, 
- xueshuai@linux.alibaba.com, konrad.wilk@oracle.com, 
- linux-edac@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
- linux-pci@vger.kernel.org, kernel-team@meta.com, 
- Breno Leitao <leitao@debian.org>
-X-Mailer: b4 0.15-dev-dd21f
-X-Developer-Signature: v=1; a=openpgp-sha256; l=11826; i=leitao@debian.org;
- h=from:subject:message-id; bh=t9iQlzVQ19GL2M0MpfsEv2qNN0F73K0bmUNkcYfhAK0=;
- b=owEBbQKS/ZANAwAIATWjk5/8eHdtAcsmYgBo6OHgNltaZ5HX7C9EThfykcafUcVNk7oJ70BQ/
- imTzpWMiYWJAjMEAAEIAB0WIQSshTmm6PRnAspKQ5s1o5Of/Hh3bQUCaOjh4AAKCRA1o5Of/Hh3
- ba0PD/sFM8jC7KzjXxHE5yaoM16WyRH87W4OC+puOIsB6WlcXGpw97fp+kyO3Cxr4rO7PyiMh6E
- YZslSIudp3Fnehch4YnpgC++6wGUoL3yETjmylO+9R42+edASH3xPxXL8tA7OemwmuGyMegPaIE
- YH3drbJvOUdq33FBQLs5yEmCfPw7ryIEOBbhAspnlpTnjX12NgOyt1ITwMIIu2ttUDg7tBuPmrq
- IA5FTjdo0lakhHSnA7rBeXVtBF0nHKZsFC3eH3/akZNo9F9EmSHpuGTDvcASsldUBGkpWWPIOIm
- 0+7TBdyg6DeRQNp+VPDFHwlXUwu0+Ls5fxDW9MLggiedtnJrqQArvC31gKImx08P1xs8kypJ6/w
- W2A13EQ3mMgLuMrCK7Xki9p9q7CSNSi93sKrfyJNJBVfp61TthX9Rbs2QyE+gAkRKJdBSHbqGgy
- tzOjJELi9hze37VAYU9UdJI6Plz1OB4fk0qnN1epdDAbwp1QkyqIX4LJ6fdkwYx4txZO3DqYnXw
- w7zp+9ahTZF/WRXABGwjnytBwmOZVVytP0shA9pesRRadGCXgTThUp7SU3OjQDzSSkRMV5BqJBf
- QGx8I26RLhhcWdnvnx0F/Re5pz1i5lg9mLFilWibwQTufTAmEj2rybvV9RKgg07Fq35QFa90mDl
- uSEIyhXbnVXDoZQ==
-X-Developer-Key: i=leitao@debian.org; a=openpgp;
- fpr=AC8539A6E8F46702CA4A439B35A3939FFC78776D
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN9PR12MB5179:EE_|CH3PR12MB8725:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5b37f94a-978b-419a-e66e-08de0a500073
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|7416014|376014|366016|1800799024|921020;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?KzZPdTJkYTF3Z1dvOGo1M0xPeHhnMllnT0gvMkFJWi9HaE5MaG8wNU5acEdy?=
+ =?utf-8?B?SFFtVlJ0VTBsOCtTZkJpeUd1OXhYcXBBeFVhQThLL2V4YnBDY3RBRWNxeitw?=
+ =?utf-8?B?bjFGSE1DaktFVW1WdjBkWDBKN292YVM1RWZJY3hqT2ZrV3d3cnU5b2pqLzg1?=
+ =?utf-8?B?c21XYmFzakZoMFNoaE5yYnBHcVFCVmkxOTFrTEtUWU9teFZVS3I2QUw5WlVI?=
+ =?utf-8?B?RzlMeklwVGREZTZ6TGdmNXhPa0pSeFdYSjBGVFVsNENXV0xCdHA5TXorSE1H?=
+ =?utf-8?B?bkFKOW01YWwxN0FiOE15VXcrWkJpcy9YckFHd1FubmtZenA2N3R3Y3RIYTlI?=
+ =?utf-8?B?TjF3ZThpL3dTYzJ2UjY2ODByWUhtTUlIaDY3Q3lMZXEyRnRSNG8xdzNUTEp0?=
+ =?utf-8?B?bkpFZmxrOUd0NUdteXNDdFRGZWh2d25vNklHMVlMSVVxT0dFSHh1RCtyWXpF?=
+ =?utf-8?B?MVdOVEtBUWhoSU85VUxoRHZpM00wNnludHNTWTNQS2I0NEN2L3BZM0pOaTE1?=
+ =?utf-8?B?SWZtMXpRVXFHeWtic1c4S2NZeUx4UGU2UXYwdTZzcWxJZTZPbEVaNWdoeDdy?=
+ =?utf-8?B?KzZQMytLUnRzM0JsVEJqekNyRGZyRWt2SHRzdVcxb0J3OU1CV0hZZmxXOVZt?=
+ =?utf-8?B?a0JpSnZFKzE1TE8vSU1kaEF1VDRhSVNjcjhpNEpMNnVCZXNJREVmcWdwSlZ0?=
+ =?utf-8?B?VFVIQ2lQTkVmK2FvTis5eXNaVmNQRXVKZEdMQkNVNjJGWEkzbVFXenZPUTZT?=
+ =?utf-8?B?RHN1Z0lXTGRoSUttVHdQNjI4NXJXdHBlS0lMOFJUS2VoNkxRenNUWHBhOGwr?=
+ =?utf-8?B?bnN5OGZEcTRGbjJ5Ykp5elh2M2lLYWxqejBpUlVjYkZ1bm5BdTUrM3hjK0F4?=
+ =?utf-8?B?dXdZRjkzQ3FKQTdKZUZ5NEFYMC8xbWFYUXRXU0cxalNXOFhULysyUEltSnpn?=
+ =?utf-8?B?T3FlZDBYTDV3QXc5b3lVNkttNWZ3ckdmMnF3bStlRzNVMmZZWkRwRnRvdkxy?=
+ =?utf-8?B?a2hJQTJnUDlSRTRKbjE1SFFlOU1yZmZSVGl0STEwaE03YTB6V2c3bVRpdEMr?=
+ =?utf-8?B?STFUdTFXK3ZTRTBJazQ5aDgwLzd0VENRY1JNandyNDBHSExrTExlNmxZRlYx?=
+ =?utf-8?B?OE1FaTJ2U0U3QnA5WDNydFcrYndnS1Z1RGhRU3NRVmN6dWdWcUhNZmVHS3Rv?=
+ =?utf-8?B?TU5UZ0VSS25rWG93eGc5ZG9oaU4zMWpENzFvOFp6UTIyWWgramJ3MU9Vdm9F?=
+ =?utf-8?B?a2tMUk12Nmljd3RpWjlDYk9hZFJ1MkR6cktwL20xNFlHdXp1ekMvQkJwVlBy?=
+ =?utf-8?B?Y3lrcllmaGNNZ0hGNFlXdWNZajQybWtUOHhKZnJLWUdzTUtHUTdBemRGbS9l?=
+ =?utf-8?B?b3FKWmZuVE5SU0drcm1ieGJIcHNkQjBaMmgrcVVnL0Vpdy94N1dIY3l2UnB1?=
+ =?utf-8?B?a3NRZ2dYNnBHZlFtQnp3OVppVG5CQUtRL05CTENOUmtVNTNRY2pQZUt2eGRj?=
+ =?utf-8?B?NTI3TTVPSmNxS3JrUnNSNHlMMHpYSHNBRmErdmVXbFQ2VittOFA0SHczZDhG?=
+ =?utf-8?B?MDd4QVNnM3cyVEJ0enpYWTlhbjVVQmdxMk8zUlEvcHBIYlNESmNSMzU0RW1o?=
+ =?utf-8?B?SnNOU29nekw5aFNwTTRBOWI2ZERUMWRMTkNBNHJOcjd6MVZQRk94QkEzM3Y1?=
+ =?utf-8?B?THpoWkFlZnU5S2dMYzF2Z0s2eE5NSVE5TXNvcXB5c0xxQVhKTG9nRjd4Uk1C?=
+ =?utf-8?B?SmxHSmVOSys3L2VOUko0L0VLNlA5RWtBdjRhSW5NS2ZLN0txUUVWdklQbWlk?=
+ =?utf-8?B?OGMvcGRkMktmaFcrNDM3d25MbmQvQlJmWXlybTYyRExGWmFrQ2diVm1sWVM5?=
+ =?utf-8?B?M1AyVEZDSnRlcDhhYW4wbjNmbEtIdTVnaTRHcUcyY3NNVmxPVXJ1eXR5MjNy?=
+ =?utf-8?B?aGxrMU5ySTVIR1BCUGVCNGk3cm9BRWtUVnZsQlFNT2k3Nk9JN25rNnNLTkht?=
+ =?utf-8?Q?3pN5oJ+iSFZhgNHMvQPRG2qqis12H8=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5179.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(366016)(1800799024)(921020);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?VG9aaHpwSlh4RmxtanZLQVZ4eU9zNVpaRzMyWjNsZHptM3VNZ3lPSjhoT0tJ?=
+ =?utf-8?B?dGxGVE1lRUJzYVlHM2hibm9NMDN1K2ZLbU5OTlZLUk9TN3RQKzRXZmo0akR3?=
+ =?utf-8?B?ZWUvTkgwaVF4TGNiWmRFR1QvZG9rWkVIZnJyM043MGdSb2RPZG1rMlQ5RkhP?=
+ =?utf-8?B?VnBBNUlxaVBaK0JxVnFMelpXdDhRVk9xN2ZYR0RBcTRKVVhQek9FUHNScFdO?=
+ =?utf-8?B?clFrSElGQmVYOHZKY29vZWdNcWdyRzlIL3Fsa0NvcjdwOGF3NG9PcE4vSkM3?=
+ =?utf-8?B?c2s0a3hEaE1IUUEwbkVOMlAxREhSM3plWUJ1U2NKeDM2MURISXFHeVBuWkJD?=
+ =?utf-8?B?Tk9jeXZpb0d5clJPa2NEWUxkemFCUC83N3c1dktpVVhZKzJnSUU2QXlCOFRT?=
+ =?utf-8?B?UlphdnNtaXFKL05NWCtRY05SUklCMHFYNWpwd3lIZVdHZEVlV0p4WU1WZGRW?=
+ =?utf-8?B?RWNqSUdNWTd2Qk5iRmlPWDEzcVloQ2U4NHEyeHJ5U2xJKzQ0ZFZYSWVqVmRu?=
+ =?utf-8?B?dndWWTU5YzMxTy9GREFqQWlwWUQ5WHkxRmQrOFJEcTFiRnBOVjNiSlZiYW5J?=
+ =?utf-8?B?SnZsMEloT1RtSmdUdHhtYm1QREZCU2hYUnIvRXl0NFdHc2hkTThUS0wvN0li?=
+ =?utf-8?B?MytuS2dVdDB2eVl0MiszSUp1MDRObWs3UDdPZWVQTk5SVDkyLzBGcUhVamZL?=
+ =?utf-8?B?VVlhVllQTDVUUXRNUE9sWURDSEh6K3U4RDlrVU1FdGtLSTBJbThpUW1RWlRo?=
+ =?utf-8?B?WkZqd0IyMTFtMzJ6QXhyMjdKL01DRkltV05iQ0xzdnF6eE9DRVFOajlxY29k?=
+ =?utf-8?B?U2MyUk14b3FxMG1TbG1yR0hUZnlraHJWUWpuSk5ZQ1luV0N1c0trY1BHSkZB?=
+ =?utf-8?B?Mm1QMHpUTUpmbWNuV2lpM1NRMU1ZMEhFc1Z3QjVabWI1bkhBZUk5VXg2dnpU?=
+ =?utf-8?B?c2pjVHJhQzRhNmpXN05VeS9qOWxIcmVZNGd4bytwRDNyVE5CeG1XY3BXNjBo?=
+ =?utf-8?B?dmhZcnl6bzFZTFNTU29jRW9mQ1FuZlJwZWF5UTlNK3ZQajVwMnV2dkx4d2FO?=
+ =?utf-8?B?THBXYzhEQ2NNL0wzTDUvUXhzcFo5UXlzWWNsZmhzZ3F2cFRrdmhHN3FtdFdV?=
+ =?utf-8?B?UDFQbFlRNW5KdnF3anJ2ZDZOMjQrZmtQOFRYRGZRczU2NWo3VlhFYkhoWjI0?=
+ =?utf-8?B?S0w2eHZCdHhXSFRZaWNKNnM3OXBRTjlYVFk5cXNBVHpvTUQwdklwRjRKMlc3?=
+ =?utf-8?B?TmNjd3p3dVF2TXpBU1ExR01qbU9CaWM5Z2ttbjBZWjE4OGZIUWNCbXpMSk1J?=
+ =?utf-8?B?d1BUSjhmSUViTE5QQUNBeW56MmF6RXYweUdEZWhocHRPS0ZKU1ljOTJEcUh1?=
+ =?utf-8?B?eGJ0WmtKMUhHeGN1VVh5ZGJ0Q3pxMUNBbEozcW04bENzdUNDWHl4cFl1Zzhv?=
+ =?utf-8?B?U0o0S1Qxb3JreWJEZUFTTWV1QmZsblVkRmRIV2tlSnBacUlyL2RLbnZIaUo3?=
+ =?utf-8?B?VU9PbldWYnowVmt6M3JwMDZhR2s2MnNRVkU3M1hlNlIwYjZGdVRpTFdrenAr?=
+ =?utf-8?B?UStOT1MzejBENHY4TXFrYm9HUHVqV3dlWFQwbDQ4S2xJYzMwdjlzRyt2elVp?=
+ =?utf-8?B?Y0w4bFNoR2pPVTlrUGdrYWhGV3BVMXNwclpmYW1NdVE1TktLbFVMLzZhZmtK?=
+ =?utf-8?B?RlU5VHI4ZlJyd2lhTkRpbEtTdml1Zlc1OHlzRklJYkdTNWVMU3M2c3laNFEz?=
+ =?utf-8?B?YnJwUDVMSGhNUHEwZUdHUmx1QnFJbDVoQS9nSWFrZEo2RjFzaEc3TmU3b005?=
+ =?utf-8?B?dWltdVdqY1Y5RGtzRlFOM0JlZG90dG1ac3EvZG00d1hoQlZYYk5BVFBRWkxs?=
+ =?utf-8?B?WEVpYldvdTkraEFMMHR5MS9NUFUrb0V1a1c0Zk9heTUyNEg1dkV5NmtSQjhq?=
+ =?utf-8?B?YVFqRzBxRGVNdWRlMmo2ZlR0RlE0NTFTMHhCVHQxTVMzMmpGS2ErMmhxdW1n?=
+ =?utf-8?B?OWZPSDJwdXVJRzNwNlNwbmdKV2hZa01WbG1CSS9Cc0FpZTdyTEpaVUxVWDF0?=
+ =?utf-8?B?eWFKMFdVMXdHazNwQ1BIQ2ZVQk5BOE1TRzVYRGdjcGNTdDM5RnNjT09GSzZL?=
+ =?utf-8?Q?qn+uKkBcU0ViUWQxgGylbiX6v?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5b37f94a-978b-419a-e66e-08de0a500073
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5184.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2025 11:59:46.6778
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Ed5S7D9segvv3ojHPQTK1ZyKiXcNVEkKk2RtQFOSAiLVEcVjqGEM/rtXGUY4fX6raBHIcZz0RfB1qVatk7wKoA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8725
 
-Introduce a generic infrastructure for tracking recoverable hardware
-errors (HW errors that are visible to the OS but does not cause a panic)
-and record them for vmcore consumption. This aids post-mortem crash
-analysis tools by preserving a count and timestamp for the last
-occurrence of such errors. On the other side, correctable errors, which
-the OS typically remains unaware of because the underlying hardware
-handles them transparently, are less relevant for crash dump
-and therefore are NOT tracked in this infrastructure.
 
-Add centralized logging for sources of recoverable hardware
-errors based on the subsystem it has been notified.
+On 10/10/25 08:59, Jie Zhan wrote:
+> External email: Use caution opening links or attachments
+>
+>
+> On 10/1/2025 11:01 PM, Sumit Gupta wrote:
+>> Add sysfs interfaces for Minimum Performance, Maximum Performance
+>> and Performance Limited Register in the cppc_cpufreq driver.
+>>
+>> Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+>> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+>> ---
+>>   .../ABI/testing/sysfs-devices-system-cpu      | 43 +++++++++++++++++++
+>>   1 file changed, 43 insertions(+)
+>>
+>> diff --git a/Documentation/ABI/testing/sysfs-devices-system-cpu b/Documentation/ABI/testing/sysfs-devices-system-cpu
+>> index ab8cd337f43a..82141b45d58c 100644
+>> --- a/Documentation/ABI/testing/sysfs-devices-system-cpu
+>> +++ b/Documentation/ABI/testing/sysfs-devices-system-cpu
+>> @@ -327,6 +327,49 @@ Description:     Energy performance preference
+>>
+>>                This file is only present if the cppc-cpufreq driver is in use.
+>>
+>> +What:                /sys/devices/system/cpu/cpuX/cpufreq/min_perf
+>> +Date:                September 2025
+>> +Contact:     linux-pm@vger.kernel.org
+>> +Description: Minimum Performance
+>> +
+>> +             Read/write a 32 bits value from/to this file. This file
+>> +             conveys the minimum performance level at which the platform
+>> +             may run. Minimum performance may be set to any performance
+>> +             value in the range [Lowest Performance, Highest Performance],
+>> +             inclusive but must be set to a value that is less than or
+>> +             equal to that specified by the Maximum Performance Register.
+>> +
+>> +             Writing to this file only has meaning when Autonomous Selection
+>> +             is enabled.
+>> +
+>> +             This file is only present if the cppc-cpufreq driver is in use.
+>> +
+>> +What:                /sys/devices/system/cpu/cpuX/cpufreq/max_perf
+>> +Date:                September 2025
+>> +Contact:     linux-pm@vger.kernel.org
+>> +Description: Minimum Performance
+> Not adapted
+Sorry, i missed this. Will update here and below.
 
-hwerror_data is write-only at kernel runtime, and it is meant to be read
-from vmcore using tools like crash/drgn. For example, this is how it
-looks like when opening the crashdump from drgn.
+Thank you,
+Sumit
 
-	>>> prog['hwerror_data']
-	(struct hwerror_info[1]){
-		{
-			.count = (int)844,
-			.timestamp = (time64_t)1752852018,
-		},
-		...
+>> +
+>> +             Read/write a 32 bits value from/to this file. This file conveys
+>> +             the maximum performance level at which the platform may run.
+>> +             Maximum performance may be set to any performance value in the
+>> +             range [Lowest Performance, Highest Performance], inclusive.
+>> +
+>> +             Writing to this file only has meaning when Autonomous Selection is
+>> +             enabled.
+>> +
+>> +             This file is only present if the cppc-cpufreq driver is in use.
+>> +
+>> +What:                /sys/devices/system/cpu/cpuX/cpufreq/perf_limited
+>> +Date:                September 2025
+>> +Contact:     linux-pm@vger.kernel.org
+>> +Description: Minimum Performance
+> Not adapted
 
-This helps fleet operators quickly triage whether a crash may be
-influenced by hardware recoverable errors (which executes a uncommon
-code path in the kernel), especially when recoverable errors occurred
-shortly before a panic, such as the bug fixed by
-commit ee62ce7a1d90 ("page_pool: Track DMA-mapped pages and unmap them
-when destroying the pool")
+Ack.
 
-This is not intended to replace full hardware diagnostics but provides
-a fast way to correlate hardware events with kernel panics quickly.
 
-Rare machine check exceptions—like those indicated by mce_flags.p5 or
-mce_flags.winchip—are not accounted for in this method, as they fall
-outside the intended usage scope for this feature’s user base.
-
-Suggested-by: Tony Luck <tony.luck@intel.com>
-Suggested-by: Shuai Xue <xueshuai@linux.alibaba.com>
-Signed-off-by: Breno Leitao <leitao@debian.org>
-Reviewed-by: Shuai Xue <xueshuai@linux.alibaba.com>
----
-Changes in v5:
-- Move the headers to uapi file (Dave Hansen)
-- Use atomic operations in the tracking struct (Dave Hansen)
-- Drop the MCE enum type, and track MCE errors as "others"
-- Document this feature better
-- Link to v4: https://lore.kernel.org/r/20250801-vmcore_hw_error-v4-1-fa1fe65edb83@debian.org
-
-Changes in v4:
-- Split the error by hardware subsystem instead of kernel
-  subsystem/driver (Shuai)
-- Do not count the corrected errors, only focusing on recoverable errors (Shuai)
-- Link to v3: https://lore.kernel.org/r/20250722-vmcore_hw_error-v3-1-ff0683fc1f17@debian.org
-
-Changes in v3:
-- Add more information about this feature in the commit message
-  (Borislav Petkov)
-- Renamed the function to hwerr_log_error_type() and use hwerr as
-  suffix (Borislav Petkov)
-- Make the empty function static inline (kernel test robot)
-- Link to v2: https://lore.kernel.org/r/20250721-vmcore_hw_error-v2-1-ab65a6b43c5a@debian.org
-
-Changes in v2:
-- Split the counter by recoverable error (Tony Luck)
-- Link to v1: https://lore.kernel.org/r/20250714-vmcore_hw_error-v1-1-8cf45edb6334@debian.org
----
- Documentation/driver-api/hw-recoverable-errors.rst | 60 ++++++++++++++++++++++
- arch/x86/kernel/cpu/mce/core.c                     |  4 ++
- drivers/acpi/apei/ghes.c                           | 36 +++++++++++++
- drivers/pci/pcie/aer.c                             |  2 +
- include/linux/vmcore_info.h                        |  8 +++
- include/uapi/linux/vmcore.h                        |  9 ++++
- kernel/vmcore_info.c                               | 17 ++++++
- 7 files changed, 136 insertions(+)
-
-diff --git a/Documentation/driver-api/hw-recoverable-errors.rst b/Documentation/driver-api/hw-recoverable-errors.rst
-new file mode 100644
-index 0000000000000..fc526c3454bd7
---- /dev/null
-+++ b/Documentation/driver-api/hw-recoverable-errors.rst
-@@ -0,0 +1,60 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+=================================================
-+Recoverable Hardware Error Tracking in vmcoreinfo
-+=================================================
-+
-+Overview
-+--------
-+
-+This feature provides a generic infrastructure within the Linux kernel to track
-+and log recoverable hardware errors. These are hardware recoverable errors
-+visible that might not cause immediate panics but may influence health, mainly
-+because new code path will be executed in the kernel.
-+
-+By recording counts and timestamps of recoverable errors into the vmcoreinfo
-+crash dump notes, this infrastructure aids post-mortem crash analysis tools in
-+correlating hardware events with kernel failures. This enables faster triage
-+and better understanding of root causes, especially in large-scale cloud
-+environments where hardware issues are common.
-+
-+Benefits
-+--------
-+
-+- Facilitates correlation of hardware recoverable errors with kernel panics or
-+  unusual code paths that lead to system crashes.
-+- Provides operators and cloud providers quick insights, improving reliability
-+  and reducing troubleshooting time.
-+- Complements existing full hardware diagnostics without replacing them.
-+
-+Data Exposure and Consumption
-+-----------------------------
-+
-+- The tracked error data consists of per-error-type counts and timestamps of
-+  last occurrence.
-+- This data is stored in the `hwerror_data` array, categorized by error source
-+  types like CPU, memory, PCI, CXL, and others.
-+- It is exposed via vmcoreinfo crash dump notes and can be read using tools
-+  like `crash`, `drgn`, or other kernel crash analysis utilities.
-+- There is no other way to read these data other than from crash dumps.
-+- These errors are divided by area, which includes CPU, Memory, PCI, CXL and
-+  others.
-+
-+Typical usage example (in drgn REPL):
-+
-+.. code-block:: python
-+
-+    >>> prog['hwerror_data']
-+    (struct hwerror_info[HWERR_RECOV_MAX]){
-+        {
-+            .count = (int)844,
-+            .timestamp = (time64_t)1752852018,
-+        },
-+        ...
-+    }
-+
-+Enabling
-+--------
-+
-+- This feature is enabled when CONFIG_VMCORE_INFO is set.
-+
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index 460e90a1a0b17..08adbf4cd6edc 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -45,6 +45,7 @@
- #include <linux/task_work.h>
- #include <linux/hardirq.h>
- #include <linux/kexec.h>
-+#include <linux/vmcore_info.h>
- 
- #include <asm/fred.h>
- #include <asm/cpu_device_id.h>
-@@ -1700,6 +1701,9 @@ noinstr void do_machine_check(struct pt_regs *regs)
- 	}
- 
- out:
-+	/* Given it didn't panic, mark it as recoverable */
-+	hwerr_log_error_type(HWERR_RECOV_OTHERS);
-+
- 	instrumentation_end();
- 
- clear:
-diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
-index 97ee19f2cae06..92b0e3c391b2d 100644
---- a/drivers/acpi/apei/ghes.c
-+++ b/drivers/acpi/apei/ghes.c
-@@ -43,6 +43,7 @@
- #include <linux/uuid.h>
- #include <linux/ras.h>
- #include <linux/task_work.h>
-+#include <linux/vmcore_info.h>
- 
- #include <acpi/actbl1.h>
- #include <acpi/ghes.h>
-@@ -867,6 +868,40 @@ int cxl_cper_kfifo_get(struct cxl_cper_work_data *wd)
- }
- EXPORT_SYMBOL_NS_GPL(cxl_cper_kfifo_get, "CXL");
- 
-+static void ghes_log_hwerr(int sev, guid_t *sec_type)
-+{
-+	if (sev != CPER_SEV_RECOVERABLE)
-+		return;
-+
-+	if (guid_equal(sec_type, &CPER_SEC_PROC_ARM) ||
-+	    guid_equal(sec_type, &CPER_SEC_PROC_GENERIC) ||
-+	    guid_equal(sec_type, &CPER_SEC_PROC_IA)) {
-+		hwerr_log_error_type(HWERR_RECOV_CPU);
-+		return;
-+	}
-+
-+	if (guid_equal(sec_type, &CPER_SEC_CXL_PROT_ERR) ||
-+	    guid_equal(sec_type, &CPER_SEC_CXL_GEN_MEDIA_GUID) ||
-+	    guid_equal(sec_type, &CPER_SEC_CXL_DRAM_GUID) ||
-+	    guid_equal(sec_type, &CPER_SEC_CXL_MEM_MODULE_GUID)) {
-+		hwerr_log_error_type(HWERR_RECOV_CXL);
-+		return;
-+	}
-+
-+	if (guid_equal(sec_type, &CPER_SEC_PCIE) ||
-+	    guid_equal(sec_type, &CPER_SEC_PCI_X_BUS)) {
-+		hwerr_log_error_type(HWERR_RECOV_PCI);
-+		return;
-+	}
-+
-+	if (guid_equal(sec_type, &CPER_SEC_PLATFORM_MEM)) {
-+		hwerr_log_error_type(HWERR_RECOV_MEMORY);
-+		return;
-+	}
-+
-+	hwerr_log_error_type(HWERR_RECOV_OTHERS);
-+}
-+
- static void ghes_do_proc(struct ghes *ghes,
- 			 const struct acpi_hest_generic_status *estatus)
- {
-@@ -888,6 +923,7 @@ static void ghes_do_proc(struct ghes *ghes,
- 		if (gdata->validation_bits & CPER_SEC_VALID_FRU_TEXT)
- 			fru_text = gdata->fru_text;
- 
-+		ghes_log_hwerr(sev, sec_type);
- 		if (guid_equal(sec_type, &CPER_SEC_PLATFORM_MEM)) {
- 			struct cper_sec_mem_err *mem_err = acpi_hest_get_payload(gdata);
- 
-diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-index 0b5ed4722ac32..e0bcaa896803c 100644
---- a/drivers/pci/pcie/aer.c
-+++ b/drivers/pci/pcie/aer.c
-@@ -30,6 +30,7 @@
- #include <linux/kfifo.h>
- #include <linux/ratelimit.h>
- #include <linux/slab.h>
-+#include <linux/vmcore_info.h>
- #include <acpi/apei.h>
- #include <acpi/ghes.h>
- #include <ras/ras_event.h>
-@@ -765,6 +766,7 @@ static void pci_dev_aer_stats_incr(struct pci_dev *pdev,
- 		break;
- 	case AER_NONFATAL:
- 		aer_info->dev_total_nonfatal_errs++;
-+		hwerr_log_error_type(HWERR_RECOV_PCI);
- 		counter = &aer_info->dev_nonfatal_errs[0];
- 		max = AER_MAX_TYPEOF_UNCOR_ERRS;
- 		break;
-diff --git a/include/linux/vmcore_info.h b/include/linux/vmcore_info.h
-index 37e003ae52626..e71518caacdfc 100644
---- a/include/linux/vmcore_info.h
-+++ b/include/linux/vmcore_info.h
-@@ -5,6 +5,7 @@
- #include <linux/linkage.h>
- #include <linux/elfcore.h>
- #include <linux/elf.h>
-+#include <uapi/linux/vmcore.h>
- 
- #define CRASH_CORE_NOTE_HEAD_BYTES ALIGN(sizeof(struct elf_note), 4)
- #define CRASH_CORE_NOTE_NAME_BYTES ALIGN(sizeof(NN_PRSTATUS), 4)
-@@ -77,4 +78,11 @@ extern u32 *vmcoreinfo_note;
- Elf_Word *append_elf_note(Elf_Word *buf, char *name, unsigned int type,
- 			  void *data, size_t data_len);
- void final_note(Elf_Word *buf);
-+
-+#ifdef CONFIG_VMCORE_INFO
-+void hwerr_log_error_type(enum hwerr_error_type src);
-+#else
-+static inline void hwerr_log_error_type(enum hwerr_error_type src) {};
-+#endif
-+
- #endif /* LINUX_VMCORE_INFO_H */
-diff --git a/include/uapi/linux/vmcore.h b/include/uapi/linux/vmcore.h
-index 3e9da91866ffd..2ba89fafa518a 100644
---- a/include/uapi/linux/vmcore.h
-+++ b/include/uapi/linux/vmcore.h
-@@ -15,4 +15,13 @@ struct vmcoredd_header {
- 	__u8 dump_name[VMCOREDD_MAX_NAME_BYTES]; /* Device dump's name */
- };
- 
-+enum hwerr_error_type {
-+	HWERR_RECOV_CPU,
-+	HWERR_RECOV_MEMORY,
-+	HWERR_RECOV_PCI,
-+	HWERR_RECOV_CXL,
-+	HWERR_RECOV_OTHERS,
-+	HWERR_RECOV_MAX,
-+};
-+
- #endif /* _UAPI_VMCORE_H */
-diff --git a/kernel/vmcore_info.c b/kernel/vmcore_info.c
-index e066d31d08f89..fe9bf8db1922e 100644
---- a/kernel/vmcore_info.c
-+++ b/kernel/vmcore_info.c
-@@ -31,6 +31,13 @@ u32 *vmcoreinfo_note;
- /* trusted vmcoreinfo, e.g. we can make a copy in the crash memory */
- static unsigned char *vmcoreinfo_data_safecopy;
- 
-+struct hwerr_info {
-+	atomic_t count;
-+	time64_t timestamp;
-+};
-+
-+static struct hwerr_info hwerr_data[HWERR_RECOV_MAX];
-+
- Elf_Word *append_elf_note(Elf_Word *buf, char *name, unsigned int type,
- 			  void *data, size_t data_len)
- {
-@@ -118,6 +125,16 @@ phys_addr_t __weak paddr_vmcoreinfo_note(void)
- }
- EXPORT_SYMBOL(paddr_vmcoreinfo_note);
- 
-+void hwerr_log_error_type(enum hwerr_error_type src)
-+{
-+	if (src < 0 || src >= HWERR_RECOV_MAX)
-+		return;
-+
-+	atomic_inc(&hwerr_data[src].count);
-+	WRITE_ONCE(hwerr_data[src].timestamp, ktime_get_real_seconds());
-+}
-+EXPORT_SYMBOL_GPL(hwerr_log_error_type);
-+
- static int __init crash_save_vmcoreinfo_init(void)
- {
- 	vmcoreinfo_data = (unsigned char *)get_zeroed_page(GFP_KERNEL);
-
----
-base-commit: 4814a4ce3ace92d70c0cdf2896de95de0336396f
-change-id: 20250707-vmcore_hw_error-322429e6c316
-
-Best regards,
---  
-Breno Leitao <leitao@debian.org>
-
+>> +
+>> +             Read/write a 32 bits value from/to this file. This file indicates
+>> +             to OSPM that an unpredictable event has limited processor
+>> +             performance, and the delivered performance may be less than
+>> +             desired/minimum performance.
+>> +
+>> +             This file is only present if the cppc-cpufreq driver is in use.
+>>
+>>   What:                /sys/devices/system/cpu/cpu*/cache/index3/cache_disable_{0,1}
+>>   Date:                August 2008
