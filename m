@@ -1,83 +1,100 @@
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
+Received: from xry111.site (xry111.site [89.208.246.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E64418859B
-	for <acpica-devel@lists.linux.dev>; Tue, 21 Oct 2025 06:55:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.111
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D1A92E1C6F;
+	Tue, 21 Oct 2025 09:28:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761029710; cv=none; b=A+L8+/v0VEIGVIZYcHdObvciWrockuptqzI6IqsRIBHMK7zZc60R9GcePyplL/Pmtseigzp1C2FcTA2tbUozNqGHSnT3tM/5apq8WRfjefO6ib3iOo4YB6+4S+0MKuh0Njdn2aGYJT5jfJvT5AtPvaldfQ11xuw7vLgWnhvuAU8=
+	t=1761038934; cv=none; b=CcCwXmVosg6HGxLRhzl13jVe/+Xsna29iQcsvJn8opcPMQ4/Xjs/mqLCOBuv9Ia8srhXh/i+9HGqiR/oMMW+KAdQhAvMGkCLf5EbHx0y8LWR57acmTPLFSpyZDUayw4F+oCpwnTUYB38Z/TFw37zpRHmx8fVBvFuoJdKfHxIUQQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761029710; c=relaxed/simple;
-	bh=b01jDFBPXq5rbV8Y/L7o1RFolYKy1v18IqquZM7AR4A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=H3xClwdbF3Gi6JfmYqbLkA8na2bI+tp+oafEqOOVEiSJxUuqx9nLWtH4XLM0ZHLPnBN/BEKHSw3f0gQtskCE5Nv/EwUbMGdrdHnD2GMXfZ8yTCme6aiCWfPC3ZmP65MBnzqVGWEqUKPgHkjQhjsTs7K2qi5S4kwpgTdkANScv9w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=q5E+XnHT; arc=none smtp.client-ip=115.124.30.111
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+	s=arc-20240116; t=1761038934; c=relaxed/simple;
+	bh=nY1r0rxq3zaIyV9igiRD6jd9u+zKeLm99ZgpBR96GdE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=PXxjBUDqUD0KQxbS6OC9wLxC/jfd896zj0QNsLfty0/5NO7UH6k9yY2A9lWXTmK6KZHc0iEtFdjCSWC+r2n2bb1fCE6G63tGNseWMtFjE0ZIRMCKufcW08PXpWQBXafkq+zk9NbQsH0YM1538gtXvAbe6TZYPMMmCEUZoIZgT3M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=mtcgjYK/; arc=none smtp.client-ip=89.208.246.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="q5E+XnHT"
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1761029699; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=hW6pCW/lelgtOE/oMGx+iPlRXFCWmvEmZjCWVQr6yhg=;
-	b=q5E+XnHTiXMltzCPWENoIwgmZlX0FafHZjYYyhMwH6Zcegpv9DsjC4NmzhRKvl9iprOut0oSVQpPA+lq2iYzNJeuiL9BviiQoEO0gO9sLFFwE6SGG4Hpce/vlJYer4HoEzcr6fbUxzTD+eeVEdcqSuha3AVdZHfw69JF0de0YDA=
-Received: from 30.246.161.241(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0WqhvgzO_1761029697 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Tue, 21 Oct 2025 14:54:58 +0800
-Message-ID: <45d5e6a9-d561-4df9-96d4-285f2ca12888@linux.alibaba.com>
-Date: Tue, 21 Oct 2025 14:54:52 +0800
+	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="mtcgjYK/"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xry111.site;
+	s=default; t=1761038924;
+	bh=6oB5odA3UzXNEi7uAc9r3126xC/gOgrjKsCdeXENfnU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=mtcgjYK/H7i5havNt1Z+iywQROBMi1C/19KSLs03eDNPrlLLNaxgHt+j5HQmHuNY3
+	 u2fs2y2N1MZJx0LHe+TPIyLDmOkuMkGmxB86HCS9nK+zLf9JeWflmO5FNsXsh8Vh/r
+	 OO1NsZF987gHXUz12J6tPALakJd/Sd5k+6CQQO8s=
+Received: from stargazer (unknown [IPv6:2409:8a4c:e29:d50::b3c])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+	(Client did not present a certificate)
+	(Authenticated sender: xry111@xry111.site)
+	by xry111.site (Postfix) with ESMTPSA id 14EC566D01;
+	Tue, 21 Oct 2025 05:28:40 -0400 (EDT)
+From: Xi Ruoyao <xry111@xry111.site>
+To: "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+Cc: loongarch@lists.linux.dev,
+	Mingcong Bai <jeffbai@aosc.io>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Xi Ruoyao <xry111@xry111.site>,
+	stable@vger.kernel.org,
+	Saket Dumbre <saket.dumbre@intel.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Robert Moore <robert.moore@intel.com>,
+	Len Brown <lenb@kernel.org>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	linux-acpi@vger.kernel.org (open list:ACPI COMPONENT ARCHITECTURE (ACPICA)),
+	acpica-devel@lists.linux.dev (open list:ACPI COMPONENT ARCHITECTURE (ACPICA)),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] acpica: Work around bogus -Wstringop-overread warning since GCC 11
+Date: Tue, 21 Oct 2025 17:28:25 +0800
+Message-ID: <20251021092825.822007-1-xry111@xry111.site>
+X-Mailer: git-send-email 2.51.1
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] acpi,srat: Fix incorrect device handle check for
- Generic Initiator
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: lenb@kernel.org, robert.moore@intel.com, andrew@kernel.org,
- bfaccini@nvidia.com, eahariha@linux.microsoft.com, dan.j.williams@intel.com,
- thorsten.blum@linux.dev, gourry@gourry.net,
- nunodasneves@linux.microsoft.com, wangyuquan1236@phytium.com.cn,
- linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
- acpica-devel@lists.linux.dev
-References: <20250913023224.39281-1-xueshuai@linux.alibaba.com>
- <20250915093549.00006109@huawei.com>
-From: Shuai Xue <xueshuai@linux.alibaba.com>
-In-Reply-To: <20250915093549.00006109@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
+When ACPI_MISALIGNMENT_NOT_SUPPORTED, GCC can produce a bogus
+-Wstringop-overread warning, see https://gcc.gnu.org/PR122073.
 
+To me it's very clear that we have a compiler bug here, thus just
+disable the warning.
 
-在 2025/9/15 16:35, Jonathan Cameron 写道:
-> On Sat, 13 Sep 2025 10:32:24 +0800
-> Shuai Xue <xueshuai@linux.alibaba.com> wrote:
-> 
->> The Generic Initiator Affinity Structure in SRAT table uses device
->> handle type field to indicate the device type. According to ACPI
->> specification, the device handle type value of 1 represents PCI device,
->> not 0.
->>
->> Fixes: 894c26a1c274 ("ACPI: Support Generic Initiator only domains")
->> Reported-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
->> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
-> 
-> Reviewed-by: Jonathan Cameron <jonathan.cameron@huawei.com>
-> 
-> Thanks!
-> 
->> ---
->> changes since v1: drop changes in actbl3.h to make it easy to progress per Jonathan
->> ---
+Cc: stable@vger.kernel.org
+Fixes: a9d13433fe17 ("LoongArch: Align ACPI structures if ARCH_STRICT_ALIGN enabled")
+Link: https://lore.kernel.org/all/899f2dec-e8b9-44f4-ab8d-001e160a2aed@roeck-us.net/
+Link: https://github.com/acpica/acpica/commit/abf5b573
+Co-developed-by: Saket Dumbre <saket.dumbre@intel.com>
+Signed-off-by: Saket Dumbre <saket.dumbre@intel.com>
+Signed-off-by: Xi Ruoyao <xry111@xry111.site>
+---
+ drivers/acpi/acpica/tbprint.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
+diff --git a/drivers/acpi/acpica/tbprint.c b/drivers/acpi/acpica/tbprint.c
+index 049f6c2f1e32..e5631027f7f1 100644
+--- a/drivers/acpi/acpica/tbprint.c
++++ b/drivers/acpi/acpica/tbprint.c
+@@ -95,6 +95,11 @@ acpi_tb_print_table_header(acpi_physical_address address,
+ {
+ 	struct acpi_table_header local_header;
+ 
++#pragma GCC diagnostic push
++#if defined(__GNUC__) && __GNUC__ >= 11
++#pragma GCC diagnostic ignored "-Wstringop-overread"
++#endif
++
+ 	if (ACPI_COMPARE_NAMESEG(header->signature, ACPI_SIG_FACS)) {
+ 
+ 		/* FACS only has signature and length fields */
+@@ -143,4 +148,5 @@ acpi_tb_print_table_header(acpi_physical_address address,
+ 			   local_header.asl_compiler_id,
+ 			   local_header.asl_compiler_revision));
+ 	}
++#pragma GCC diagnostic pop
+ }
+-- 
+2.51.1
 
-Hi, Rafael,
-
-Gentle ping.
-
-Are you happy to pick this bugfix up in this cycle?
-
-Thanks.
-Shuai
