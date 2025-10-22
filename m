@@ -1,24 +1,24 @@
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8FA726E71E
-	for <acpica-devel@lists.linux.dev>; Wed, 22 Oct 2025 10:59:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8472B320CDF
+	for <acpica-devel@lists.linux.dev>; Wed, 22 Oct 2025 12:02:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761130742; cv=none; b=sSntbMnqSrOHZtqtWDDGGMtHH6IAmUipzJOoug58i8VfWvf8Wm/aLSP0qm8osFcqg8nWUDLr3wfkqJ0kF4VP+KK2Sk1DZTLYNqNH8ICQW3Sj/W4PjQMxx2gN6BRVt7zTU3EBuVAnpZnvvyCNekhRqcg8NebFuWvf5cD/8/FpOlg=
+	t=1761134536; cv=none; b=IHTfeeK//fG4a1gZwq2yEoce7ejaUtXjhS9MdYnE6RGfCESY7LzE/5gmwojSjaZmDaKdF6oJn/iSRMi0rFLjp2qORtOCG3Phhx1mGJMaaiu1phoVeAkF2MofLPYRxftfC+Cty2VdmxHRDBI8JZ+YXq2kRQMfaHMRYkeovFifpqQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761130742; c=relaxed/simple;
-	bh=jIUZb6aAmxrrEHsEvpWk/MNIk0riJs9b8xLA/wwDV5s=;
+	s=arc-20240116; t=1761134536; c=relaxed/simple;
+	bh=IsuZfxhGKpHeb5TgVu9VxMiAddZ0SUSvHT55nq8MAaY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jjaQzrzBFPRVJkYbvE8/I3rc5QAI+fZr149wPPzsgHnaa5fTWA+4InYAN72YB15Akw76+d5yKEesCHu2O0V5xlx5WuwgroeAjhRZove/+u9N1dn4bJQ54DmylU3sO6ddHcg7Nv7CZ8wygfwwMb2fkmMjUJUZzONZ8hOMgCuc9IA=
+	 Content-Type:Content-Disposition:In-Reply-To; b=gwvMLuVusMibH19r92CDRcyxnObNKzd6LkBOVhD8Tq9G4HlsOKEqsn7Xw+aHABiA1l7LPXMqQ0WSKv2atZX+q5HkK/RUJGqr8edE8vortK/05BvLRxQyMTJiLJv0phBmat7f494PnptN4YTPWXHRAa4R/+TfFgCFPIdiJt9qivo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 013861063;
-	Wed, 22 Oct 2025 03:58:52 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B54CB1063;
+	Wed, 22 Oct 2025 05:02:05 -0700 (PDT)
 Received: from localhost (ionvoi01-desktop.cambridge.arm.com [10.2.80.58])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6E20D3F59E;
-	Wed, 22 Oct 2025 03:58:59 -0700 (PDT)
-Date: Wed, 22 Oct 2025 11:58:57 +0100
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2FE633F63F;
+	Wed, 22 Oct 2025 05:02:13 -0700 (PDT)
+Date: Wed, 22 Oct 2025 13:02:11 +0100
 From: Ionela Voinescu <ionela.voinescu@arm.com>
 To: Sumit Gupta <sumitg@nvidia.com>
 Cc: rafael@kernel.org, viresh.kumar@linaro.org, lenb@kernel.org,
@@ -31,11 +31,11 @@ Cc: rafael@kernel.org, viresh.kumar@linaro.org, lenb@kernel.org,
 	linux-tegra@vger.kernel.org, treding@nvidia.com,
 	jonathanh@nvidia.com, vsethi@nvidia.com, ksitaraman@nvidia.com,
 	sanjayc@nvidia.com, bbasu@nvidia.com
-Subject: Re: [PATCH v3 4/8] ACPI: CPPC: add APIs and sysfs interface for
- min/max_perf
-Message-ID: <aPi48fm+cMDmQBN9@arm.com>
+Subject: Re: [PATCH v3 6/8] cpufreq: CPPC: Add sysfs for min/max_perf and
+ perf_limited
+Message-ID: <aPjHw5Sr4IYw+Dum@arm.com>
 References: <20251001150104.1275188-1-sumitg@nvidia.com>
- <20251001150104.1275188-5-sumitg@nvidia.com>
+ <20251001150104.1275188-7-sumitg@nvidia.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -44,262 +44,83 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251001150104.1275188-5-sumitg@nvidia.com>
+In-Reply-To: <20251001150104.1275188-7-sumitg@nvidia.com>
 
-On Wednesday 01 Oct 2025 at 20:31:00 (+0530), Sumit Gupta wrote:
-> CPPC allows platforms to specify minimum and maximum performance
-> limits that constrain the operating range for CPU performance scaling
-> when Autonomous Selection is enabled. These limits can be dynamically
-> adjusted to implement power management policies or workload-specific
-> optimizations.
+Hi,
+
+On Wednesday 01 Oct 2025 at 20:31:02 (+0530), Sumit Gupta wrote:
+> Add sysfs interfaces for Minimum Performance, Maximum Performance
+> and Performance Limited Register in the cppc_cpufreq driver.
 > 
-> Add cppc_get_min_perf() and cppc_set_min_perf() functions to read and
-> write the MIN_PERF register, allowing dynamic adjustment of the minimum
-> performance floor.
-> 
-> Add cppc_get_max_perf() and cppc_set_max_perf() functions to read and
-> write the MAX_PERF register, enabling dynamic ceiling control for
-> maximum performance.
-> 
-> Expose these capabilities through cpufreq sysfs attributes:
-> - /sys/.../cpufreq/policy*/min_perf: Read/write min performance limit
-> - /sys/.../cpufreq/policy*/max_perf: Read/write max performance limit
-> 
-> Also update EPP constants for better clarity:
-> - Rename CPPC_ENERGY_PERF_MAX to CPPC_EPP_ENERGY_EFFICIENCY_PREF
-> - Add CPPC_EPP_PERFORMANCE_PREF for the performance-oriented setting
-> 
+> Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
 > Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
 > ---
->  drivers/acpi/cppc_acpi.c       |  55 +++++++++++++++-
->  drivers/cpufreq/cppc_cpufreq.c | 115 +++++++++++++++++++++++++++++++++
->  include/acpi/cppc_acpi.h       |  23 ++++++-
->  3 files changed, 191 insertions(+), 2 deletions(-)
+>  .../ABI/testing/sysfs-devices-system-cpu      | 43 +++++++++++++++++++
+>  1 file changed, 43 insertions(+)
 > 
-[..]
-> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
-> index 732f35096991..864978674efc 100644
-> --- a/drivers/cpufreq/cppc_cpufreq.c
-> +++ b/drivers/cpufreq/cppc_cpufreq.c
-> @@ -23,6 +23,7 @@
->  #include <uapi/linux/sched/types.h>
+> diff --git a/Documentation/ABI/testing/sysfs-devices-system-cpu b/Documentation/ABI/testing/sysfs-devices-system-cpu
+> index ab8cd337f43a..82141b45d58c 100644
+> --- a/Documentation/ABI/testing/sysfs-devices-system-cpu
+> +++ b/Documentation/ABI/testing/sysfs-devices-system-cpu
+> @@ -327,6 +327,49 @@ Description:	Energy performance preference
 >  
->  #include <linux/unaligned.h>
-> +#include <linux/cleanup.h>
+>  		This file is only present if the cppc-cpufreq driver is in use.
 >  
->  #include <acpi/cppc_acpi.h>
->  
-> @@ -38,6 +39,8 @@ static enum {
->  module_param(fie_disabled, int, 0444);
->  MODULE_PARM_DESC(fie_disabled, "Disable Frequency Invariance Engine (FIE)");
->  
-> +static DEFINE_MUTEX(cppc_cpufreq_update_autosel_config_lock);
+> +What:		/sys/devices/system/cpu/cpuX/cpufreq/min_perf
+> +Date:		September 2025
+> +Contact:	linux-pm@vger.kernel.org
+> +Description:	Minimum Performance
+> +
+> +		Read/write a 32 bits value from/to this file. This file
+> +		conveys the minimum performance level at which the platform
+> +		may run. Minimum performance may be set to any performance
+> +		value in the range [Lowest Performance, Highest Performance],
+> +		inclusive but must be set to a value that is less than or
+> +		equal to that specified by the Maximum Performance Register.
+> +
+> +		Writing to this file only has meaning when Autonomous Selection
+> +		is enabled.
 
-Should this be under CONFIG_ACPI_CPPC_CPUFREQ_FIE?
-
-> +
->  /* Frequency invariance support */
->  struct cppc_freq_invariance {
->  	int cpu;
-> @@ -572,6 +575,70 @@ static void cppc_cpufreq_put_cpu_data(struct cpufreq_policy *policy)
->  	policy->driver_data = NULL;
->  }
->  
-> +/**
-> + * cppc_cpufreq_set_mperf_limit - Generic function to set min/max performance limit
-> + * @policy: cpufreq policy
-> + * @val: performance value to set
-> + * @update_reg: whether to update hardware register
-> + * @update_policy: whether to update policy constraints
-> + * @is_min: true for min_perf, false for max_perf
-> + */
-> +static int cppc_cpufreq_set_mperf_limit(struct cpufreq_policy *policy, u64 val,
-> +					bool update_reg, bool update_policy, bool is_min)
-> +{
-> +	struct cppc_cpudata *cpu_data = policy->driver_data;
-> +	struct cppc_perf_caps *caps = &cpu_data->perf_caps;
-> +	unsigned int cpu = policy->cpu;
-> +	struct freq_qos_request *req;
-> +	unsigned int freq;
-> +	u32 perf;
-> +	int ret;
-> +
-> +	perf = clamp(val, caps->lowest_perf, caps->highest_perf);
-> +	freq = cppc_perf_to_khz(caps, perf);
-> +
-> +	pr_debug("cpu%d, %s_perf:%llu, update_reg:%d, update_policy:%d\n", cpu,
-> +		 is_min ? "min" : "max", (u64)perf, update_reg, update_policy);
-> +
-> +	guard(mutex)(&cppc_cpufreq_update_autosel_config_lock);
-> +
-> +	if (update_reg) {
-> +		ret = is_min ? cppc_set_min_perf(cpu, perf) : cppc_set_max_perf(cpu, perf);
-> +		if (ret == -EOPNOTSUPP)
-> +			return 0;
-
-Should we return success here? The user will have no feedback that
-setting min/max performance limits is not supported.
-
-> +		if (ret) {
-> +			pr_warn("Failed to set %s_perf (%llu) on CPU%d (%d)\n",
-> +				is_min ? "min" : "max", (u64)perf, cpu, ret);
-> +			return ret;
-> +		}
-> +
-> +		/* Update cached value only on success */
-> +		if (is_min)
-> +			cpu_data->perf_ctrls.min_perf = perf;
-> +		else
-> +			cpu_data->perf_ctrls.max_perf = perf;
-> +	}
-> +
-> +	if (update_policy) {
-> +		req = is_min ? policy->min_freq_req : policy->max_freq_req;
-> +
-> +		ret = freq_qos_update_request(req, freq);
-> +		if (ret < 0) {
-> +			pr_warn("Failed to update %s_freq constraint for CPU%d: %d\n",
-> +				is_min ? "min" : "max", cpu, ret);
-> +			return ret;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +#define cppc_cpufreq_set_min_perf(policy, val, update_reg, update_policy) \
-> +	cppc_cpufreq_set_mperf_limit(policy, val, update_reg, update_policy, true)
-> +
-> +#define cppc_cpufreq_set_max_perf(policy, val, update_reg, update_policy) \
-> +	cppc_cpufreq_set_mperf_limit(policy, val, update_reg, update_policy, false)
-> +
->  static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
->  {
->  	unsigned int cpu = policy->cpu;
-> @@ -873,16 +940,64 @@ static ssize_t store_energy_performance_preference_val(struct cpufreq_policy *po
->  	return cppc_cpufreq_sysfs_store_u64(buf, count, cppc_set_epp, policy->cpu);
->  }
->  
-> +static ssize_t show_min_perf(struct cpufreq_policy *policy, char *buf)
-> +{
-> +	return cppc_cpufreq_sysfs_show_u64(policy->cpu, cppc_get_min_perf, buf);
-> +}
-> +
-> +static ssize_t store_min_perf(struct cpufreq_policy *policy, const char *buf, size_t count)
-> +{
-> +	struct cppc_cpudata *cpu_data = policy->driver_data;
-> +	u64 val;
-> +	int ret;
-> +
-> +	ret = kstrtou64(buf, 0, &val);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = cppc_cpufreq_set_min_perf(policy, val, true, cpu_data->perf_caps.auto_sel);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return count;
-> +}
-> +
-> +static ssize_t show_max_perf(struct cpufreq_policy *policy, char *buf)
-> +{
-> +	return cppc_cpufreq_sysfs_show_u64(policy->cpu, cppc_get_max_perf, buf);
-> +}
-> +
-> +static ssize_t store_max_perf(struct cpufreq_policy *policy, const char *buf, size_t count)
-> +{
-> +	struct cppc_cpudata *cpu_data = policy->driver_data;
-> +	u64 val;
-> +	int ret;
-> +
-> +	ret = kstrtou64(buf, 0, &val);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = cppc_cpufreq_set_max_perf(policy, val, true, cpu_data->perf_caps.auto_sel);
-
-These "work" on the performance scale, so the values read are
-performance values and the values that should be provided should be
-performance values as well. How is the user supposed to know what that
-scale is and what is the range of values it can provide? All of the
-other sysfs interfaces work on the "frequency" scale and the lowest and
-highest performance values are never exposed to the user.
+In the ACPI specification I don't see a clear dependency between the
+minimum and maximum performance registers and autonomous selection.
+There's nothing to say that min and max do not have meaning with
+autonomous selection is disabled.
 
 Thanks,
 Ionela.
 
-> +	if (ret)
-> +		return ret;
 > +
-> +	return count;
-> +}
+> +		This file is only present if the cppc-cpufreq driver is in use.
 > +
->  cpufreq_freq_attr_ro(freqdomain_cpus);
->  cpufreq_freq_attr_rw(auto_select);
->  cpufreq_freq_attr_rw(auto_act_window);
->  cpufreq_freq_attr_rw(energy_performance_preference_val);
-> +cpufreq_freq_attr_rw(min_perf);
-> +cpufreq_freq_attr_rw(max_perf);
+> +What:		/sys/devices/system/cpu/cpuX/cpufreq/max_perf
+> +Date:		September 2025
+> +Contact:	linux-pm@vger.kernel.org
+> +Description:	Minimum Performance
+> +
+> +		Read/write a 32 bits value from/to this file. This file conveys
+> +		the maximum performance level at which the platform may run.
+> +		Maximum performance may be set to any performance value in the
+> +		range [Lowest Performance, Highest Performance], inclusive.
+> +
+> +		Writing to this file only has meaning when Autonomous Selection is
+> +		enabled.
+> +
+> +		This file is only present if the cppc-cpufreq driver is in use.
+> +
+> +What:		/sys/devices/system/cpu/cpuX/cpufreq/perf_limited
+> +Date:		September 2025
+> +Contact:	linux-pm@vger.kernel.org
+> +Description:	Minimum Performance
+> +
+> +		Read/write a 32 bits value from/to this file. This file indicates
+> +		to OSPM that an unpredictable event has limited processor
+> +		performance, and the delivered performance may be less than
+> +		desired/minimum performance.
+> +
+> +		This file is only present if the cppc-cpufreq driver is in use.
 >  
->  static struct freq_attr *cppc_cpufreq_attr[] = {
->  	&freqdomain_cpus,
->  	&auto_select,
->  	&auto_act_window,
->  	&energy_performance_preference_val,
-> +	&min_perf,
-> +	&max_perf,
->  	NULL,
->  };
->  
-> diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
-> index 3babc6d6e70a..fc7614eb9dcb 100644
-> --- a/include/acpi/cppc_acpi.h
-> +++ b/include/acpi/cppc_acpi.h
-> @@ -39,7 +39,8 @@
->  /* CPPC_AUTO_ACT_WINDOW_MAX_SIG is 127, so 128 and 129 will decay to 127 when writing */
->  #define CPPC_AUTO_ACT_WINDOW_SIG_CARRY_THRESH 129
->  
-> -#define CPPC_ENERGY_PERF_MAX	(0xFF)
-> +#define CPPC_EPP_PERFORMANCE_PREF		0x00
-> +#define CPPC_EPP_ENERGY_EFFICIENCY_PREF		0xFF
->  
->  /* Each register has the folowing format. */
->  struct cpc_reg {
-> @@ -172,6 +173,10 @@ extern int cppc_get_auto_act_window(int cpu, u64 *auto_act_window);
->  extern int cppc_set_auto_act_window(int cpu, u64 auto_act_window);
->  extern int cppc_get_auto_sel(int cpu, bool *enable);
->  extern int cppc_set_auto_sel(int cpu, bool enable);
-> +extern int cppc_get_min_perf(int cpu, u64 *min_perf);
-> +extern int cppc_set_min_perf(int cpu, u64 min_perf);
-> +extern int cppc_get_max_perf(int cpu, u64 *max_perf);
-> +extern int cppc_set_max_perf(int cpu, u64 max_perf);
->  extern int amd_get_highest_perf(unsigned int cpu, u32 *highest_perf);
->  extern int amd_get_boost_ratio_numerator(unsigned int cpu, u64 *numerator);
->  extern int amd_detect_prefcore(bool *detected);
-> @@ -264,6 +269,22 @@ static inline int cppc_set_auto_sel(int cpu, bool enable)
->  {
->  	return -EOPNOTSUPP;
->  }
-> +static inline int cppc_get_min_perf(int cpu, u64 *min_perf)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
-> +static inline int cppc_set_min_perf(int cpu, u64 min_perf)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
-> +static inline int cppc_get_max_perf(int cpu, u64 *max_perf)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
-> +static inline int cppc_set_max_perf(int cpu, u64 max_perf)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
->  static inline int amd_get_highest_perf(unsigned int cpu, u32 *highest_perf)
->  {
->  	return -ENODEV;
+>  What:		/sys/devices/system/cpu/cpu*/cache/index3/cache_disable_{0,1}
+>  Date:		August 2008
 > -- 
 > 2.34.1
 > 
