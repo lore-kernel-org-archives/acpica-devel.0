@@ -1,378 +1,192 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12937307ACA;
-	Tue, 28 Oct 2025 10:19:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67FD3328B41
+	for <acpica-devel@lists.linux.dev>; Wed, 29 Oct 2025 11:27:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761646786; cv=none; b=WzobO5LSvI6aJG3DKgOK/uIp/4VXICEjDrMgPKp69I5a4iWkLddrJ8PEIO+BNo03oOAaPGg98o7CbS1JNIWjxsm78OlAepk/zbaQu8K4k0G9mRQBQOHCha5iBR+a2j/w1ZawW9X4xMITn2Xi7c5ydf5LeHVupfw5q3bpQL6sTlQ=
+	t=1761737226; cv=none; b=Gc2yRx0mdikEu2ZVQj9uabvcqaWoFDPeWXi7/R/5vcuopqYqm8gJB2GQ0c+EXUhRsFVjayaF3g8QYSm/RHCJXGhy+2NE32XorDTZvVl2WFUNFenePqcSHiXgZMuVQntLnZXGkElD+6VXBeoikJa6Bx63mPrQUDKIYMzq6N2q33w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761646786; c=relaxed/simple;
-	bh=minlv4Mdvyv58h6PsDl8RTUVTBPlA8ZCb/VHYefz728=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Gcc5wOhfeBkBNriP4NhisvOukVDv/wfx5pO7uTGj62xufyA4F2D2KNlF/zFz9MPeFMnK2vm1U/yUxEdGDTDV8ypk5Y9DTmamGXuKI4DXwliA7xbXWBOr2CSifp7GAYDkabOEd9Iz/WFzJq0AI4z5p5D3AqfI2akCdPOsQuIOQ1g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rE6jA4kB; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1761737226; c=relaxed/simple;
+	bh=Hjkf53zqmGuffTDA/lEf7CNxn/oGC5EWuEOnSQGpNUQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=g7OmN18gOy6qaZSCn+aT7VCimjR6vAjhYo+byugWU4pO8DsS3f7op2FDgCLlEDetMO5mci7rVhuHcZA4tjlZTdOIjQVQWVjUchvB3jKiDcbEICJrbzDOdZYsdeLPmWU/Pk3h/0uReM6e05DHRYA++8sx9p3xxEgPZ5Q6G5MrVlw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=CiCWJUbp; arc=none smtp.client-ip=209.85.216.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rE6jA4kB"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 390BCC4CEE7;
-	Tue, 28 Oct 2025 10:19:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761646785;
-	bh=minlv4Mdvyv58h6PsDl8RTUVTBPlA8ZCb/VHYefz728=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=rE6jA4kBM/6yhoGJSJ5ecD8L3pv7MXwX0H6hSlr0/gP1I8sJQpdnQfzsFedwcwNWA
-	 GUbOchBgOVDZtiJvLfkEKXNjYmJ9xYPA1c8qkL4WPbfQKKxJHVz72x5dNgSQT3CyUE
-	 /Uc4ZOZDeOTiplsYI5fsrsPiXEgBdVGybh4Vw6mcVSp7OyOJ9TX1CWK4abXQwV81BE
-	 4Ue6d9caBSS4hqka6ZCoe+zo05RV0+BmgnDq2Y2u7ON0agkCGOh2eD0w70ktt0APHG
-	 I4bGK9QtJq1vQZ+Rdt8o7IR3MLxrlxNZU6JJg/E+W00XTT4CAjj5mnAMYbVAOHIc1l
-	 UGncB2jrLmtww==
-From: Lorenzo Pieralisi <lpieralisi@kernel.org>
-Date: Tue, 28 Oct 2025 11:19:05 +0100
-Subject: [PATCH not for merging 7/7] irqchip/gic-v5: Add ACPI IWB probing
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="CiCWJUbp"
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-33bbc4e81dfso7658256a91.1
+        for <acpica-devel@lists.linux.dev>; Wed, 29 Oct 2025 04:27:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1761737224; x=1762342024; darn=lists.linux.dev;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=o/A6oM3VT03v+OO6JYlGjLYI0SFwHFSmDU7wY8ZWBxg=;
+        b=CiCWJUbpKv1Wq5L+8P0S+AfOjKP2qk6ZU4ZSJ2+B82zM4EVQ/eq/ZS5o9uV9ypbq2K
+         Y6yZ+NzY6s+xfXpbkHOIoJZHodjLB8Xt50Ayzcr+3ItITQSR1f8mb1Rj6Nrqqmp2yihG
+         v77ZLXZ5PFYjPnX3pnftD86/Au9un1RTg7/uJ69AySQTTqOIzGNr7/74favRaCjkTSJN
+         iyoCwE6dqV6nutOqxPLRvdHSPcFTblDl13nEb9G2w7kXxMAxHVR2zPPhrWD0pinh6A7k
+         MElRK86RNZ1iBw/xiyTnoS8DL+YIWWQhrj+8YUQFND8CO85ZO0/6aFNpjVweJ3Scauhe
+         XmTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761737224; x=1762342024;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=o/A6oM3VT03v+OO6JYlGjLYI0SFwHFSmDU7wY8ZWBxg=;
+        b=fWE4Jvz9LumyPJHXGoUXRp6TZglyu56ifwZQitJwNCpi3l3CATUKVM5w5Nd30Wd3x0
+         XtMVj88wcI6ng2niCW7ta5wTD0OIBopYRVc1acUxeV0Wo8TwjuBPmpbiv6HH8jwuiYZ2
+         cjryscrKBgsUrd9op0RqcRZiCPI2nyl7blHKKNsnZBW+rQhtGgEqIYz3cLknDK/4XBTl
+         MovtFy+Jmcrg9Sdk8kNLfhJJLIqdYpn3kFPgUziaM/nCHfnkBI7zvm0F/1a9v5jmQtwU
+         Zpz9eWscsa3itnZMgQ47nECBbz56MBos2FcGccERjzGvUSYvl68hZ6jia10Sa2ptrODn
+         WLBg==
+X-Forwarded-Encrypted: i=1; AJvYcCV4oUAsOWS7Q1htoZguW3SYSm5a9WHttM97p7MXOflb7OZhVzM9RaT1qWBGNFxHrWvikAdtj/tSW/hZ65c=@lists.linux.dev
+X-Gm-Message-State: AOJu0Yz6Hf5doYIJoXy4J8Y+2lmtVIgBwItugA8lcu6Uei+c1z4s64ky
+	s0D2zSytgJZHdvcQeefzEQyCnhP4Q7Lta6h/SO4+MyXPEJrgEltCdFykOIPXTPVqzlU=
+X-Gm-Gg: ASbGncsjhog2TiC6aWg58uYtvz3MJD9t1qFqzF5P8NHCwaRZCu5AFB0g5+psbwgNcQF
+	Z/zRPvCcN0AKZVUarPnjuc8WAcMuWGj51+S4GrlNkcrK9DFSywfWZ1jcztZ8N0ARryklWyPFi34
+	zH+QFQaQ6nSATxBgGwRxMM1oJS54002G4i6IdG0bcgXq2WDRXiLes2oPoRV3rUI7HetnoGb6MOp
+	n3BCdWSWHebWQBtUA0ORy0nMj494z5mmy69qJIZCOUtd2AsX9wxVvfgxcRm6uyFG/8cRT7wNEPl
+	tyxk6VhEoanshstjwT0fm8vFqPIREdUVvvM7wVBWNr84aMVnwGuNSrSVAHw1OsyLKdiYakdYvzV
+	5Mj317I4HMXsLnPhH8m9QTUTuzgYTXP58VH9ClfOgZsLiI616ZmG8iOoxsI6fYYRThPtcWmVkJo
+	pLCcsqmKhK4mToXyWajBPeux/JWgjF
+X-Google-Smtp-Source: AGHT+IHpjKO2jUEb6+cQytmuQWp7mpQLNMuWE1ztXt3I54KFHlYNvHVC4AHhBNanzFdemT5w+k0ovA==
+X-Received: by 2002:a17:90b:134b:b0:32d:db5b:7636 with SMTP id 98e67ed59e1d1-3403a28efb0mr2855484a91.27.1761737223563;
+        Wed, 29 Oct 2025 04:27:03 -0700 (PDT)
+Received: from ventana-desktop.localhost ([2405:201:d019:c0ce:f7f5:7789:48e5:c03f])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-33fed7f6040sm15316918a91.16.2025.10.29.04.26.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Oct 2025 04:27:03 -0700 (PDT)
+From: Himanshu Chauhan <hchauhan@ventanamicro.com>
+To: linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-acpi@vger.kernel.org,
+	linux-efi@vger.kernel.org,
+	acpica-devel@lists.linux.dev
+Cc: paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	lenb@kernel.org,
+	james.morse@arm.com,
+	tony.luck@intel.com,
+	ardb@kernel.org,
+	conor@kernel.org,
+	cleger@rivosinc.com,
+	robert.moore@intel.com,
+	sunilvl@ventanamicro.com,
+	apatel@ventanamicro.com,
+	Himanshu Chauhan <hchauhan@ventanamicro.com>
+Subject: [RFC PATCH v2 00/10] Add RAS support for RISC-V architecture
+Date: Wed, 29 Oct 2025 16:56:38 +0530
+Message-ID: <20251029112649.3811657-1-hchauhan@ventanamicro.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20251028-gicv5-host-acpi-v1-7-01a862feb5ca@kernel.org>
-References: <20251028-gicv5-host-acpi-v1-0-01a862feb5ca@kernel.org>
-In-Reply-To: <20251028-gicv5-host-acpi-v1-0-01a862feb5ca@kernel.org>
-To: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
- Robert Moore <robert.moore@intel.com>, Thomas Gleixner <tglx@linutronix.de>, 
- Hanjun Guo <guohanjun@huawei.com>, Sudeep Holla <sudeep.holla@arm.com>, 
- Marc Zyngier <maz@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>
-Cc: linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, 
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-pci@vger.kernel.org, Lorenzo Pieralisi <lpieralisi@kernel.org>
-X-Mailer: b4 0.14.3
+Content-Transfer-Encoding: 8bit
 
-To probe an IWB in an ACPI based system it is required:
+RAS stands for Reliability, Availability and Serviceability.
 
-- to implement the IORT functions handling the IWB IORT node and create
-  functions to retrieve IWB firmware information
-- to augment the driver to match the DSDT ACPI "ARMH0003" device and
-  retrieve the IWB wire and trigger mask from the GSI interrupt descriptor
-  in the IWB msi_domain_ops.msi_translate() function
+This series implements the RAS support for RISC-V architecture using
+RISC-V RERI specification. It is conformant to ACPI platform error
+interfaces (APEI). It uses the highest priority Supervisor Software
+Events (SSE)[2] to deliver the hardware error events to the kernel.
+The SSE implementation has already been merged in OpenSBI. Clement
+has sent a patch series for its implemenation in Linux kernel.[5]
 
-Make the required driver changes to enable IWB probing in ACPI systems.
+The GHES driver framework is used as is with the following changes for RISC-V:
+	1. Register each ghes entry with SSE layer. Ghes notification vector is SSE event.
+	2. Add RISC-V specific entries for processor type and ISA string
+	3. Add fixmap indices GHES SSE Low and High Priority to help map and read from
+	   physical addresses present in GHES entry.
+	4. Other changes to build/configure the RAS support
 
-The GICv5 GSI format requires special handling for IWB routed IRQs.
+How to Use:
+----------
+This RAS stack consists of Qemu[3], OpenSBI, EDK2[4], Linux kernel and devmem utility to inject and trigger
+errors. Qemu [Ref.] has support to emulate RISC-V RERI. The RAS agent is implemented in OpenSBI which
+creates CPER records. EDK2 generates HEST table and populates it with GHES entries with the help of
+OpenSBI.
 
-Add IWB GSI detection to the top level driver gic_v5_get_gsi_domain_id()
-function so that the correct IRQ domain for a GSI can be detected by
-parsing the GSI and check whether it is an IWB-backed IRQ or not.
+Qemu Command:
+------------
+<qemu-dir>/build/qemu-system-riscv64 \
+    -s -accel tcg -m 4096 -smp 2 \
+    -cpu rv64,smepmp=false \
+    -serial mon:stdio \
+    -d guest_errors -D ./qemu.log \
+    -bios <opensbi-dir>/build/platform/generic/firmware/fw_dynamic.bin \
+    -monitor telnet:127.0.0.1:55555,server,nowait \
+    -device virtio-gpu-pci -full-screen \ 
+    -device qemu-xhci \
+    -device usb-kbd \
+    -blockdev node-name=pflash0,driver=file,read-only=on,filename=<edk2-build-dir>/RiscVVirtQemu/RELEASE_GCC5/FV/RISCV_VIRT_CODE.fd \
+    -blockdev node-name=pflash1,driver=file,filename=<edk2-build-dir>/RiscVVirtQemu/RELEASE_GCC5/FV/RISCV_VIRT_VARS.fd \
+    -M virt,pflash0=pflash0,pflash1=pflash1,rpmi=true,reri=true,aia=aplic-imsic \
+    -kernel <kernel image> \
+    -initrd <rootfs image> \
+    -append "root=/dev/ram rw console=ttyS0 earlycon=uart8250,mmio,0x10000000"
 
-Signed-off-by: Lorenzo Pieralisi <lpieralisi@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Hanjun Guo <guohanjun@huawei.com>
-Cc: Sudeep Holla <sudeep.holla@arm.com>
-Cc: Marc Zyngier <maz@kernel.org>
----
- drivers/acpi/arm64/iort.c          | 95 ++++++++++++++++++++++++++++++++------
- drivers/irqchip/irq-gic-v5-iwb.c   | 42 +++++++++++++----
- drivers/irqchip/irq-gic-v5.c       |  4 ++
- include/linux/acpi_iort.h          |  1 +
- include/linux/irqchip/arm-gic-v5.h |  6 +++
- 5 files changed, 123 insertions(+), 25 deletions(-)
+Error Injection & Triggering:
+----------------------------
+devmem 0x4010040 32 0x2a1
+devmem 0x4010048 32 0x9001404
+devmem 0x4010044 8 1
 
-diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
-index 7354760cad5d..76ec31d385cd 100644
---- a/drivers/acpi/arm64/iort.c
-+++ b/drivers/acpi/arm64/iort.c
-@@ -264,39 +264,47 @@ static acpi_status iort_match_node_callback(struct acpi_iort_node *node,
- 	struct device *dev = context;
- 	acpi_status status = AE_NOT_FOUND;
- 
--	if (node->type == ACPI_IORT_NODE_NAMED_COMPONENT) {
-+	if (node->type == ACPI_IORT_NODE_NAMED_COMPONENT ||
-+	    node->type == ACPI_IORT_NODE_IWB) {
- 		struct acpi_buffer buf = { ACPI_ALLOCATE_BUFFER, NULL };
--		struct acpi_device *adev;
- 		struct acpi_iort_named_component *ncomp;
--		struct device *nc_dev = dev;
-+		struct acpi_iort_iwb *iwb;
-+		struct device *cdev = dev;
-+		struct acpi_device *adev;
-+		const char *device_name;
- 
- 		/*
- 		 * Walk the device tree to find a device with an
- 		 * ACPI companion; there is no point in scanning
--		 * IORT for a device matching a named component if
-+		 * IORT for a device matching a named component or IWB if
- 		 * the device does not have an ACPI companion to
- 		 * start with.
- 		 */
- 		do {
--			adev = ACPI_COMPANION(nc_dev);
-+			adev = ACPI_COMPANION(cdev);
- 			if (adev)
- 				break;
- 
--			nc_dev = nc_dev->parent;
--		} while (nc_dev);
-+			cdev = cdev->parent;
-+		} while (cdev);
- 
- 		if (!adev)
- 			goto out;
- 
- 		status = acpi_get_name(adev->handle, ACPI_FULL_PATHNAME, &buf);
- 		if (ACPI_FAILURE(status)) {
--			dev_warn(nc_dev, "Can't get device full path name\n");
-+			dev_warn(cdev, "Can't get device full path name\n");
- 			goto out;
- 		}
- 
--		ncomp = (struct acpi_iort_named_component *)node->node_data;
--		status = !strcmp(ncomp->device_name, buf.pointer) ?
--							AE_OK : AE_NOT_FOUND;
-+		if (node->type == ACPI_IORT_NODE_NAMED_COMPONENT) {
-+			ncomp = (struct acpi_iort_named_component *)node->node_data;
-+			device_name = ncomp->device_name;
-+		} else {
-+			iwb = (struct acpi_iort_iwb *)node->node_data;
-+			device_name = iwb->device_name;
-+		}
-+		status = !strcmp(device_name, buf.pointer) ?  AE_OK : AE_NOT_FOUND;
- 		acpi_os_free(buf.pointer);
- 	} else if (node->type == ACPI_IORT_NODE_PCI_ROOT_COMPLEX) {
- 		struct acpi_iort_root_complex *pci_rc;
-@@ -317,12 +325,28 @@ static acpi_status iort_match_node_callback(struct acpi_iort_node *node,
- 	return status;
- }
- 
-+static acpi_status iort_match_iwb_callback(struct acpi_iort_node *node, void *context)
-+{
-+	acpi_status status = AE_NOT_FOUND;
-+	u32 *id = context;
-+
-+	if (node->type == ACPI_IORT_NODE_IWB) {
-+		struct acpi_iort_iwb *iwb;
-+
-+		iwb = (struct acpi_iort_iwb *)node->node_data;
-+		status = iwb->iwb_index == *id ? AE_OK : AE_NOT_FOUND;
-+	}
-+
-+	return status;
-+}
-+
- static int iort_id_map(struct acpi_iort_id_mapping *map, u8 type, u32 rid_in,
- 		       u32 *rid_out, bool check_overlap)
- {
- 	/* Single mapping does not care for input id */
- 	if (map->flags & ACPI_IORT_ID_SINGLE_MAPPING) {
- 		if (type == ACPI_IORT_NODE_NAMED_COMPONENT ||
-+		    type == ACPI_IORT_NODE_IWB		   ||
- 		    type == ACPI_IORT_NODE_PCI_ROOT_COMPLEX) {
- 			*rid_out = map->output_base;
- 			return 0;
-@@ -392,6 +416,7 @@ static struct acpi_iort_node *iort_node_get_id(struct acpi_iort_node *node,
- 
- 	if (map->flags & ACPI_IORT_ID_SINGLE_MAPPING) {
- 		if (node->type == ACPI_IORT_NODE_NAMED_COMPONENT ||
-+		    node->type == ACPI_IORT_NODE_IWB ||
- 		    node->type == ACPI_IORT_NODE_PCI_ROOT_COMPLEX ||
- 		    node->type == ACPI_IORT_NODE_SMMU_V3 ||
- 		    node->type == ACPI_IORT_NODE_PMCG) {
-@@ -562,9 +587,14 @@ static struct acpi_iort_node *iort_find_dev_node(struct device *dev)
- 			return node;
- 		/*
- 		 * if not, then it should be a platform device defined in
--		 * DSDT/SSDT (with Named Component node in IORT)
-+		 * DSDT/SSDT (with Named Component node in IORT) or an
-+		 * IWB device in the DSDT/SSDT.
- 		 */
--		return iort_scan_node(ACPI_IORT_NODE_NAMED_COMPONENT,
-+		node = iort_scan_node(ACPI_IORT_NODE_NAMED_COMPONENT,
-+				      iort_match_node_callback, dev);
-+		if (node)
-+			return node;
-+		return iort_scan_node(ACPI_IORT_NODE_IWB,
- 				      iort_match_node_callback, dev);
- 	}
- 
-@@ -756,6 +786,35 @@ struct irq_domain *iort_get_device_domain(struct device *dev, u32 id,
- 	return irq_find_matching_fwnode(handle, bus_token);
- }
- 
-+struct fwnode_handle *iort_iwb_handle(u32 iwb_id)
-+{
-+	struct fwnode_handle *fwnode;
-+	struct acpi_iort_node *node;
-+	struct acpi_device *device;
-+	struct acpi_iort_iwb *iwb;
-+	acpi_status status;
-+	acpi_handle handle;
-+
-+	/* find its associated IWB node */
-+	node = iort_scan_node(ACPI_IORT_NODE_IWB, iort_match_iwb_callback, &iwb_id);
-+	if (!node)
-+		return NULL;
-+
-+	iwb = (struct acpi_iort_iwb *)node->node_data;
-+	status = acpi_get_handle(NULL, iwb->device_name, &handle);
-+	if (ACPI_FAILURE(status))
-+		return NULL;
-+
-+	device = acpi_get_acpi_dev(handle);
-+	if (!device)
-+		return NULL;
-+
-+	fwnode = acpi_fwnode_handle(device);
-+	acpi_put_acpi_dev(device);
-+
-+	return fwnode;
-+}
-+
- static void iort_set_device_domain(struct device *dev,
- 				   struct acpi_iort_node *node)
- {
-@@ -816,8 +875,14 @@ static struct irq_domain *iort_get_platform_device_domain(struct device *dev)
- 	/* find its associated iort node */
- 	node = iort_scan_node(ACPI_IORT_NODE_NAMED_COMPONENT,
- 			      iort_match_node_callback, dev);
--	if (!node)
--		return NULL;
-+	if (!node) {
-+		/* find its associated iort node */
-+		node = iort_scan_node(ACPI_IORT_NODE_IWB,
-+				      iort_match_node_callback, dev);
-+
-+		if (!node)
-+			return NULL;
-+	}
- 
- 	/* then find its msi parent node */
- 	for (i = 0; i < node->mapping_count; i++) {
-diff --git a/drivers/irqchip/irq-gic-v5-iwb.c b/drivers/irqchip/irq-gic-v5-iwb.c
-index ad9fdc14d1c6..f6f3d30cbc99 100644
---- a/drivers/irqchip/irq-gic-v5-iwb.c
-+++ b/drivers/irqchip/irq-gic-v5-iwb.c
-@@ -4,6 +4,7 @@
-  */
- #define pr_fmt(fmt)	"GICv5 IWB: " fmt
- 
-+#include <linux/acpi.h>
- #include <linux/init.h>
- #include <linux/kernel.h>
- #include <linux/msi.h>
-@@ -136,18 +137,31 @@ static int gicv5_iwb_irq_domain_translate(struct irq_domain *d, struct irq_fwspe
- 					  irq_hw_number_t *hwirq,
- 					  unsigned int *type)
- {
--	if (!is_of_node(fwspec->fwnode))
--		return -EINVAL;
-+	if (is_of_node(fwspec->fwnode)) {
- 
--	if (fwspec->param_count < 2)
--		return -EINVAL;
-+		if (fwspec->param_count < 2)
-+			return -EINVAL;
- 
--	/*
--	 * param[0] is be the wire
--	 * param[1] is the interrupt type
--	 */
--	*hwirq = fwspec->param[0];
--	*type = fwspec->param[1] & IRQ_TYPE_SENSE_MASK;
-+		/*
-+		 * param[0] is be the wire
-+		 * param[1] is the interrupt type
-+		 */
-+		*hwirq = fwspec->param[0];
-+		*type = fwspec->param[1] & IRQ_TYPE_SENSE_MASK;
-+	}
-+
-+	if (is_acpi_device_node(fwspec->fwnode)) {
-+
-+		if (fwspec->param_count < 2)
-+			return -EINVAL;
-+
-+		/*
-+		 * param[0] is the wire
-+		 * param[1] is the interrupt type
-+		 */
-+		*hwirq = FIELD_GET(GICV5_GSI_IWB_WIRE, fwspec->param[0]);
-+		*type = fwspec->param[1] & IRQ_TYPE_SENSE_MASK;
-+	}
- 
- 	return 0;
- }
-@@ -265,10 +279,18 @@ static const struct of_device_id gicv5_iwb_of_match[] = {
- };
- MODULE_DEVICE_TABLE(of, gicv5_iwb_of_match);
- 
-+#ifdef CONFIG_ACPI
-+static const struct acpi_device_id iwb_acpi_match[] = {
-+	{ "ARMH0003", 0 },
-+	{}
-+};
-+#endif
-+
- static struct platform_driver gicv5_iwb_platform_driver = {
- 	.driver = {
- 		.name			= "GICv5 IWB",
- 		.of_match_table		= gicv5_iwb_of_match,
-+		.acpi_match_table	= ACPI_PTR(iwb_acpi_match),
- 		.suppress_bind_attrs	= true,
- 	},
- 	.probe				= gicv5_iwb_device_probe,
-diff --git a/drivers/irqchip/irq-gic-v5.c b/drivers/irqchip/irq-gic-v5.c
-index 23fd551c4347..da867dd2e77d 100644
---- a/drivers/irqchip/irq-gic-v5.c
-+++ b/drivers/irqchip/irq-gic-v5.c
-@@ -5,6 +5,7 @@
- 
- #define pr_fmt(fmt)	"GICv5: " fmt
- 
-+#include <linux/acpi_iort.h>
- #include <linux/cpuhotplug.h>
- #include <linux/idr.h>
- #include <linux/irqdomain.h>
-@@ -1187,6 +1188,9 @@ static struct fwnode_handle *gsi_domain_handle;
- 
- static struct fwnode_handle *gic_v5_get_gsi_domain_id(u32 gsi)
- {
-+	if (FIELD_GET(GICV5_GSI_IC_TYPE, gsi) == GICV5_GSI_IWB_TYPE)
-+		return iort_iwb_handle(FIELD_GET(GICV5_GSI_IWB_FRAME_ID, gsi));
-+
- 	return gsi_domain_handle;
- }
- 
-diff --git a/include/linux/acpi_iort.h b/include/linux/acpi_iort.h
-index 2d22268677a9..17bb3374f4ca 100644
---- a/include/linux/acpi_iort.h
-+++ b/include/linux/acpi_iort.h
-@@ -27,6 +27,7 @@ int iort_register_domain_token(int trans_id, phys_addr_t base,
- 			       struct fwnode_handle *fw_node);
- void iort_deregister_domain_token(int trans_id);
- struct fwnode_handle *iort_find_domain_token(int trans_id);
-+struct fwnode_handle *iort_iwb_handle(u32 iwb_id);
- 
- #ifdef CONFIG_ACPI_IORT
- u32 iort_msi_map_id(struct device *dev, u32 id);
-diff --git a/include/linux/irqchip/arm-gic-v5.h b/include/linux/irqchip/arm-gic-v5.h
-index 334b6986435c..3da1ad80fc9d 100644
---- a/include/linux/irqchip/arm-gic-v5.h
-+++ b/include/linux/irqchip/arm-gic-v5.h
-@@ -265,6 +265,12 @@
- 
- #define GICV5_IWB_WENABLE_STATUSR_IDLE		BIT(0)
- 
-+#define GICV5_GSI_IC_TYPE			GENMASK(31, 29)
-+#define GICV5_GSI_IWB_TYPE			0x7
-+
-+#define GICV5_GSI_IWB_FRAME_ID			GENMASK(28, 16)
-+#define GICV5_GSI_IWB_WIRE			GENMASK(15, 0)
-+
- /*
-  * Global Data structures and functions
-  */
+The above commands injects a TLB error on CPU 0.
+
+Sample Output (CPU 0):
+---------------------
+[   34.370282] {1}[Hardware Error]: Hardware error from APEI Generic Hardware Error Source: 1
+[   34.371375] {1}[Hardware Error]: event severity: recoverable
+[   34.372149] {1}[Hardware Error]:  Error 0, type: recoverable
+[   34.372756] {1}[Hardware Error]:   section_type: general processor error
+[   34.373357] {1}[Hardware Error]:   processor_type: 3, RISCV
+[   34.373806] {1}[Hardware Error]:   processor_isa: 6, RISCV64
+[   34.374294] {1}[Hardware Error]:   error_type: 0x02
+[   34.374845] {1}[Hardware Error]:   TLB error
+[   34.375448] {1}[Hardware Error]:   operation: 1, data read
+[   34.376100] {1}[Hardware Error]:   target_address: 0x0000000000000000
+
+References:
+----------
+[1] RERI Specification: https://github.com/riscv-non-isa/riscv-ras-eri/releases/download/v1.0/riscv-reri.pdf
+[2] SSE Section in OpenSBI v3.0: https://github.com/riscv-non-isa/riscv-sbi-doc/releases/download/v3.0/riscv-sbi.pdf
+[3] Qemu source (with RERI emulation support): https://github.com/ventanamicro/qemu.git (branch: dev-upstream)
+[4] EDK2: https://github.com/ventanamicro/edk2.git (branch: dev-upstream)
+[5] SSE Kernel Patches (v7): https://lore.kernel.org/all/20250908181717.1997461-1-cleger@rivosinc.com/
+
+Changes in v2:
+ - Made changes to be conformant with SSE v7 patches
+ - Fixed some bot warnings
+
+Himanshu Chauhan (10):
+  riscv: Define ioremap_cache for RISC-V
+  riscv: Define arch_apei_get_mem_attribute for RISC-V
+  acpi: Introduce SSE in HEST notification types
+  riscv: Add fixmap indices for GHES IRQ and SSE contexts
+  riscv: conditionally compile GHES NMI spool function
+  riscv: Add functions to register ghes having SSE notification
+  riscv: Add RISC-V entries in processor type and ISA strings
+  riscv: Introduce HEST SSE notification handlers
+  riscv: Select HAVE_ACPI_APEI required for RAS
+  riscv: Enable APEI GHES driver in defconfig
+
+ arch/riscv/Kconfig                     |   1 +
+ arch/riscv/configs/defconfig           |   3 +
+ arch/riscv/include/asm/acpi.h          |  20 ++++
+ arch/riscv/include/asm/fixmap.h        |   8 ++
+ arch/riscv/include/asm/io.h            |   3 +
+ drivers/acpi/apei/Kconfig              |   5 +
+ drivers/acpi/apei/ghes.c               | 103 +++++++++++++++--
+ drivers/firmware/efi/cper.c            |   3 +
+ drivers/firmware/riscv/riscv_sbi_sse.c | 147 +++++++++++++++++++++++++
+ include/acpi/actbl1.h                  |   3 +-
+ include/linux/riscv_sbi_sse.h          |  16 +++
+ 11 files changed, 300 insertions(+), 12 deletions(-)
 
 -- 
-2.50.1
+2.43.0
 
