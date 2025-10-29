@@ -1,64 +1,64 @@
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F29C334681
-	for <acpica-devel@lists.linux.dev>; Wed, 29 Oct 2025 11:27:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 773B531062C
+	for <acpica-devel@lists.linux.dev>; Wed, 29 Oct 2025 11:27:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761737235; cv=none; b=HKJ4IX4iIOQAIVVyr/+Ir2+JPqyom/hED44uSGrEGmXC5Ejkj9an03eL2m05rafqtBHM9i22e6SqoYvGuzQLCMx390TevNqCi2Zx9iGCNqlFwCD5kevIQXkAND04xtbTswzTp63ZBN7NgQSLksdZOrqjL/IpGMnDE8KZc7eUUm8=
+	t=1761737241; cv=none; b=eGkhaK0E9/V0u3iTxr2PDKQ3W4xkqrtS9EfxRleYbUw+nWpbt/DhcgMD9g7Kc2vjh+h6EKw8Aub73gWR4FIM5JFaNH/9dq4tgvyn1amrYFHn0MJxI6BYanhWRL/ucCaP1pkWb3F2j5Q7c5RFu9HbQVgq79Ydr7oiPe/Z587oWtk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761737235; c=relaxed/simple;
-	bh=TlIOJZgzYRa0uSdvlZ7h4NFliLwrLJg52Wgu33BrOfs=;
+	s=arc-20240116; t=1761737241; c=relaxed/simple;
+	bh=3k4eu6bu2FqRegq68CTBi09f2mevDFi0nw5dHF0KKDk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Ks1YZtnVyaN3sGr1CBi93eeHdz/vxzr1Y38oQyjU3ChR4lhL6WUA5ArME7GXvStdHr2pSVCENzN/bTSCZjNZmADBk/v0ZB78ER+XW4poua3mPxGgEOki0rA0QkFzjc5lmstPyZ1J0us9vrV8QgJGDHg/VsKMotnD5RxXE2t/gdc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=i46/tE2o; arc=none smtp.client-ip=209.85.216.48
+	 MIME-Version; b=RtlXTpTo8gqtkZN3/cufsYnfYUkOcm1d2dD84OBbGSixz7OBQMPGZ8ySjLexo7VAFYgxPpXV+aOuvN7ns1MIFMflirId+PSnpyyVBiiz+8crt+vqHK172h7ED+FjXG6kZ2pF6VPkb/7U1cjsO08H+yGPnDEw3wA8Qke/xk2iXfs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=HwqMzSUJ; arc=none smtp.client-ip=209.85.216.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="i46/tE2o"
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-33badfbbc48so9042505a91.2
-        for <acpica-devel@lists.linux.dev>; Wed, 29 Oct 2025 04:27:13 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="HwqMzSUJ"
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-33badfbbc48so9042623a91.2
+        for <acpica-devel@lists.linux.dev>; Wed, 29 Oct 2025 04:27:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1761737233; x=1762342033; darn=lists.linux.dev;
+        d=ventanamicro.com; s=google; t=1761737239; x=1762342039; darn=lists.linux.dev;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=EFXZa2m3ScC7B7xgAgov/Ch2E5BoKfJoACxjrPDC6sE=;
-        b=i46/tE2oLHB8BGVgUOpcw5ENZh4L1pzTr0/d7YcyFd14wHi/q2MGE+pu+xJ8HxYoom
-         qhuxQ/a+mguWsfSYnvkI7qPGlcWgy5CqV5OZgBLVngLpWSH9QKPEQnZ64SV8gIevthe4
-         Btc7leRs2ALO0JwiFMxYJjFzJsHd4CDgCyFIkJDyJ96vleXnj+Be5UDHbBNavkXTR+LP
-         M710bQQJN/0hNOQrH5H3HF0UBSAVPUavUTEEKZsr+Z0XEElMfJOgtui+jD+5zcYuHG7i
-         +CcWPhpGLK9K63jD6lEOKoQUOOyu00o7DioBfKUjtkxBCNM/eJH2biw3Iqr5bgfdTs0X
-         qiDg==
+        bh=CjTmNoD235Z0Q+UTnvL+T6Jk9tiw9Xtbmp+pbEirE4Q=;
+        b=HwqMzSUJc10jw5dPKXb/5e16EZMdMiQx14ECMktLtpzamnHIWo2hXmAPtFrhlSJFoG
+         1g90EMUHJyAKr5n3U8psJUF8FFBNfi9Dv7WUn9pgXkiGyYjSINIbBLrdvPglwvz2fyMp
+         RSbUpbG6At0ykLRPxm4J/2ixf5PpUz5/wIDWfE0PUON1XIz5kvilTSW138Q7IqyPrdmZ
+         MmGXWbnaMs0/cQ5qBl6kQvTBe5V8bnqTBf17fsl+/TwbSvPJ8qS9/Eec+BDfQoWwKVjC
+         koCJjconXH/zA/Jt3UFaPMGocT+mo9jgygib7rPMApieY8TIp7qH5O1egIIcnyArwHhq
+         ESLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761737233; x=1762342033;
+        d=1e100.net; s=20230601; t=1761737239; x=1762342039;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=EFXZa2m3ScC7B7xgAgov/Ch2E5BoKfJoACxjrPDC6sE=;
-        b=kwoQ54lkSsnAU95nX62S0DS2tvcUfxYeA6neyQTEqzBA9V7IUDZSiKZ8ifupjKNDgQ
-         hoUOepKO/TeAXAeyisqExG1mD5GbfdiMKgzYPQVUKKYXA2wbb2P1W+nlutQdTJNStVyW
-         UeBbD6iIcqZCzpTFwdy8vhoIsdYaouW/RPd6vJvdBKiQjM01FVQKaQxml0VPwyZtP5Tf
-         OJOc3eNjhObwbDEikoncZH7aJ57uSZcE+N/sIhZJ+MOTanzXOkOCPOw0swQrMIn8phg6
-         NaUs5J8KzwMfTcGGc6uoN+PrywIbFPrNjOwtpRTqq3I+DnwoBJ9ISjDTFWa/5Y0FzICN
-         6mnw==
-X-Forwarded-Encrypted: i=1; AJvYcCWHd1SYwuRtDKf7espOq5MoUr8eDit22wYAFf9OlcuKnkvv9W7NClVfb/7xvyVq2GMbOF5l67XhZ9k+IB0=@lists.linux.dev
-X-Gm-Message-State: AOJu0YynRTSb8WASPvicB3sUmNfE+KfdvPHY+Jah+FFhckwsBfS/a1HJ
-	0LJQ9/988uI780mkyeIvClnSyY8K2U//ORURAw5htVCFwzeX1MmTbh7KbbnoUW6xzKs=
-X-Gm-Gg: ASbGnctg9406qnG5iYk06B5s/2SZcnzX+LLiy+fKAs6yuQxqD71aZTVt5jw64yHk8fB
-	SNOnjhPxVmLMklqVqjAlzeYXxKbJYbRRyg4QklgieFIyD7Tv5LQkNFfonu8n7UzvPRn7NFxt/JD
-	h5ZPzdT445krbq/YB02h0S/64Z5+FkzFbRudrDw2TNcRySe6R/exaQKOm2R40/YYTcCRXX/wB+4
-	eA5sUu3exD2T5tStOy5fDAibIqDB0QqHREMI5GJb2vl5se8Gw2cjK3Jd+cd/Ib6/kda/p/41u4a
-	3S9rA145mXH6GSMLjn5Ab9RviROq2b8Pp6wHuZZ2rMPzU6whGPkuYCGSLwcWmWUqGH5vt8n4A7+
-	JVaQIyBZq4QivPLzxDtg8AG6BjkmgWUOSI/qmPw1eRr6Uj/sczf9ih2IGU2wJSyVajMIjcx2z+F
-	Bg2RWZ2V5Hw+igUHj36WtcUixNorzZ
-X-Google-Smtp-Source: AGHT+IFGkvDWy4UC3Hg/jmsLKRMLWCVuS3Q0brKoM+EvGQYG5cGXwRa91mgG3g+8I8GSaWTf36w5eA==
-X-Received: by 2002:a17:90b:4a11:b0:330:6c5a:4af4 with SMTP id 98e67ed59e1d1-3403a29bc2cmr3385152a91.35.1761737233246;
-        Wed, 29 Oct 2025 04:27:13 -0700 (PDT)
+        bh=CjTmNoD235Z0Q+UTnvL+T6Jk9tiw9Xtbmp+pbEirE4Q=;
+        b=Y8MXqdDmAcyB9zvObM3Byckc6JI5XcFY8ul1KeTopBIJWvMuuIESzcvIcFw/4GtgUI
+         q5bQZw90ADoexnTg7ifC8sMwOT3M39eJUBVJ8/QilmYRdKuQLpX6hzAbT3p6Yo415veT
+         5TbLskw7CR+1kPt9E2Sp/Lm6wEOYLmnB0ary8PeiY4vEUOpyGhNDmAg/CY1WYlk0natQ
+         dXUdHc+WUGysrbYOo1Ns0KfQ/upvwxAbB9/+yfOunKWccLRdUDaYdCVX2W21BXrXHeSC
+         yNSSe/48QNgZRtYQJhbj8jDzKnZYx+mni6jXtT3A0TIpAEbKaBnJyESE4oNvuJ81MisL
+         DRnw==
+X-Forwarded-Encrypted: i=1; AJvYcCWlbV4V6ZPizaDzZ0J6+HxrqdI53x+M9AdzVx4TJlhKop8X2vIGvDc2RIbyCSIFZMN77bGNAvyOf25Oh08=@lists.linux.dev
+X-Gm-Message-State: AOJu0YxCq1/dB5neai/h5Fo1BUuxrjhVUhPS0Mtsu4WulmdeZs/kRP0y
+	tviu64dcc8c9y0l8UXMCTUQ9Re19qTUOUvtKqIQRmtCx96SS1g4K7gcuQZlxvE2sNTY=
+X-Gm-Gg: ASbGncuH9lmEz9yAWbtD0B5zbMhcWmnylKmMviQQZrROx135T8BMXPucvjhZJ1u+eqj
+	GjleMRM0a4d08yAIYikWjVV4NbtwcDKMTQITWlnF6h42TdPYnFWWlowQOc3wTzColNvEJ92l1b+
+	OSuT/Tvj3SEI+CKdjr4mFeHeqrjUsE4h5xdrMcUuxU68y+Y99ffwDeTpJ1yHkkVSGm9rxNp7ysu
+	IAqEpkGYBuslXSolfz5zyh7rEgFb1FexBYmkoPPnJkecZR3cWjy4IWWCCPvwzPpYFwMMKbf/fDz
+	ixsb/bysV9stHine3/AyfUQ7Lqbjse8FklxQ/0OZhXMuxzUhz541b+iZBcuZ8vSd83OLhcA3jBJ
+	sxLbjBcSsf3UoMHFafxWjAVRIIU/zKbV7j3bwg7SA8sUhh3pIrGgHJTwMDKYWlApHLexrchOgxp
+	OwUiDg2yv3Uc8wa/2wn+N/49QitZnE
+X-Google-Smtp-Source: AGHT+IGV9vVH8+hlZLrwbCF6EeuF04kV3fpI5UDP/oNNvPeA5hF+38GHsytRURBATavrU36r7KMQfg==
+X-Received: by 2002:a17:90b:384d:b0:339:d03e:2a11 with SMTP id 98e67ed59e1d1-3403a15844cmr2891587a91.14.1761737238675;
+        Wed, 29 Oct 2025 04:27:18 -0700 (PDT)
 Received: from ventana-desktop.localhost ([2405:201:d019:c0ce:f7f5:7789:48e5:c03f])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-33fed7f6040sm15316918a91.16.2025.10.29.04.27.08
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-33fed7f6040sm15316918a91.16.2025.10.29.04.27.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Oct 2025 04:27:13 -0700 (PDT)
+        Wed, 29 Oct 2025 04:27:18 -0700 (PDT)
 From: Himanshu Chauhan <hchauhan@ventanamicro.com>
 To: linux-riscv@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
@@ -77,9 +77,9 @@ Cc: paul.walmsley@sifive.com,
 	sunilvl@ventanamicro.com,
 	apatel@ventanamicro.com,
 	Himanshu Chauhan <hchauhan@ventanamicro.com>
-Subject: [RFC PATCH v2 02/10] riscv: Define arch_apei_get_mem_attribute for RISC-V
-Date: Wed, 29 Oct 2025 16:56:40 +0530
-Message-ID: <20251029112649.3811657-3-hchauhan@ventanamicro.com>
+Subject: [RFC PATCH v2 03/10] acpi: Introduce SSE in HEST notification types
+Date: Wed, 29 Oct 2025 16:56:41 +0530
+Message-ID: <20251029112649.3811657-4-hchauhan@ventanamicro.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20251029112649.3811657-1-hchauhan@ventanamicro.com>
 References: <20251029112649.3811657-1-hchauhan@ventanamicro.com>
@@ -91,46 +91,30 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-ghes_map function uses arch_apei_get_mem_attribute to get the
-protection bits for a given physical address. These protection
-bits are then used to map the physical address.
+Introduce a new HEST notification type for RISC-V SSE events.
+The GHES entry's notification structure contains the notification
+to be used for a given error source. For error sources delivering
+events over SSE, it should contain the new SSE notification type.
 
 Signed-off-by: Himanshu Chauhan <hchauhan@ventanamicro.com>
 ---
- arch/riscv/include/asm/acpi.h | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ include/acpi/actbl1.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/riscv/include/asm/acpi.h b/arch/riscv/include/asm/acpi.h
-index 6e13695120bc..0c599452ef48 100644
---- a/arch/riscv/include/asm/acpi.h
-+++ b/arch/riscv/include/asm/acpi.h
-@@ -27,6 +27,26 @@ extern int acpi_disabled;
- extern int acpi_noirq;
- extern int acpi_pci_disabled;
+diff --git a/include/acpi/actbl1.h b/include/acpi/actbl1.h
+index 7f35eb0e8458..20b490227398 100644
+--- a/include/acpi/actbl1.h
++++ b/include/acpi/actbl1.h
+@@ -1535,7 +1535,8 @@ enum acpi_hest_notify_types {
+ 	ACPI_HEST_NOTIFY_SEI = 9,	/* ACPI 6.1 */
+ 	ACPI_HEST_NOTIFY_GSIV = 10,	/* ACPI 6.1 */
+ 	ACPI_HEST_NOTIFY_SOFTWARE_DELEGATED = 11,	/* ACPI 6.2 */
+-	ACPI_HEST_NOTIFY_RESERVED = 12	/* 12 and greater are reserved */
++	ACPI_HEST_NOTIFY_SSE = 12, /* RISCV SSE */
++	ACPI_HEST_NOTIFY_RESERVED = 13	/* 13 and greater are reserved */
+ };
  
-+#ifdef	CONFIG_ACPI_APEI
-+/*
-+ * acpi_disable_cmcff is used in drivers/acpi/apei/hest.c for disabling
-+ * IA-32 Architecture Corrected Machine Check (CMC) Firmware-First mode
-+ * with a kernel command line parameter "acpi=nocmcoff". But we don't
-+ * have this IA-32 specific feature on ARM64, this definition is only
-+ * for compatibility.
-+ */
-+#define acpi_disable_cmcff 1
-+static inline pgprot_t arch_apei_get_mem_attribute(phys_addr_t addr)
-+{
-+	/*
-+	 * Until we have a way to look for EFI memory attributes.
-+	 */
-+	return PAGE_KERNEL;
-+}
-+#else /* CONFIG_ACPI_APEI */
-+#define acpi_disable_cmcff 0
-+#endif /* !CONFIG_ACPI_APEI */
-+
- static inline void disable_acpi(void)
- {
- 	acpi_disabled = 1;
+ /* Values for config_write_enable bitfield above */
 -- 
 2.43.0
 
