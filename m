@@ -1,64 +1,65 @@
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA54C3321D6
-	for <acpica-devel@lists.linux.dev>; Wed, 29 Oct 2025 11:27:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E168335094
+	for <acpica-devel@lists.linux.dev>; Wed, 29 Oct 2025 11:27:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761737246; cv=none; b=eLyzYJDUcdPsLENFbKvLF9sokRvR7sdw9cw420u8aChOXVE+d48GVOIANA/ALN4KqcLLWWziwfIXdJ7EWGy+QMYR/koMbgJjDRXb1rFb3/GIB0QXo6Vf+/qzyAmp8dzbfRnbWZwEKQXbkp6zSNaH73StKuSnvHV87sgAfm290Wg=
+	t=1761737252; cv=none; b=uQEFjmHJq0k+HRj8lNkg/SIV9rExS9gRgPGhW6hrpyPP9Z2Sem8Ve8dAh/ua+l1T2M9PUoRj50sXWgFNaVOz+XYknHd4736kHRfC2ZW4Ua8APuUtRjVt8/WlO1V31o0+14/gUBtnyoGTwBRPvPdgOTVZjGH28CMDloKD3t0HQrE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761737246; c=relaxed/simple;
-	bh=fk1jo/sIeI52ZoZ8R5y44DiLeZbX3mH6843B2DjcmcE=;
+	s=arc-20240116; t=1761737252; c=relaxed/simple;
+	bh=TSz747FjNEhM7uf1XzqCJ/IKzP85Xywzfa1M0ZRoX+4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GmYxhcIrVeQ+zUYDUC67GSelUWe9+EuwVkiVV7yCcYGgWeqBHIuZkUhZFNUiY9ieKMAQDhOKiUQgtRF3va/hr/EV/SkWLOs7bgjScnJzBo6H6HtKJan5PK8qQJ2Hiz/bisTvUtPylfNHY1gzmcTeVqoRyElZ1+z/phMmhq+7PMY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=orZF2xJU; arc=none smtp.client-ip=209.85.216.50
+	 MIME-Version; b=dzhIlRrfDESpqlJZxVWHBQVwKjT4s4dgbrs6YLbidJSEHiGp3L3ir0iTsTfO/1nVltKC4whIj6cP8f0YT5FkhuQuGSpdG23y0uHeCH1uLLb/zyW+mZ5c6Pd1hrLsBglAgUluLITOGQ2OuAiNxsUzVgffa2zl1yuNAiajnJ8m5Ds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=JGswSGlZ; arc=none smtp.client-ip=209.85.210.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="orZF2xJU"
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-340299fe579so2386672a91.2
-        for <acpica-devel@lists.linux.dev>; Wed, 29 Oct 2025 04:27:24 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="JGswSGlZ"
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-780fc3b181aso4531514b3a.2
+        for <acpica-devel@lists.linux.dev>; Wed, 29 Oct 2025 04:27:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1761737244; x=1762342044; darn=lists.linux.dev;
+        d=ventanamicro.com; s=google; t=1761737249; x=1762342049; darn=lists.linux.dev;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=eVrGZiCOO3VoWU6as4Ya4YNojK7gFL/5DgKPuB9HXfo=;
-        b=orZF2xJU6AS8A07xYuIdMdC/bshfHlUl/0KuR3FD8uwGP3fv3cGj0bGSWIUQM13dN3
-         laeM8p84/mvQtx1ld9PRF81cJS9VkRN5iB1reBaaj0xadvTIbMJWSG36Hh1aPFXcJtfx
-         2pS4qApNLh5qQJwmFDfPoFWHnnOE8FLa8ylYD6BgcHxacnNy+I5DY2o6VKTMyxfiCS2b
-         LHblgd1IwBHOfRm1OFkc9NPnFy/hxnH2A0h44ZTh6vv7uAG3AwQaxuwotacoo4rIIYQ6
-         n+U+CkmyKK5pzA0JLQwkp8LiD3O/4KV+aY26pjYM/HUPp6AuEZJx4+cDi5N2219CaWmb
-         Al9w==
+        bh=/hiwSqBhR1Qws96GQdbU4nAKreYqDyRXg+IAoSlhXoM=;
+        b=JGswSGlZyHn9G1AdJlO5lf9pA6bKDTaQ90Pgk+pkixwWp3fWOIXS8Q+oamd8j2JGXV
+         S+7LDTB3TIDn/wBX1maBfYrW28KD/Th2B5BN3P54Tr8za+LR1NYJuCndLkoCj/cB/yHZ
+         M/HGI2gwtQw5cu272E+yAxRTMgAtptddsq692zx8898MAdpVmBzCsXdt/KI3lmaiRanj
+         8omzvUVneJuqlr/KX3FKKlIQ/Vepp7gJ5OoY1nK3Jwf9biyUouOSmYOq38pLiwSkBLV4
+         JjObYfL2bnMzROWdQ7160ZaECqwH05Q1+XSOpCHWcQmJkWp1xc1SxrMGNNfjJ8Dzfi1C
+         fNCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761737244; x=1762342044;
+        d=1e100.net; s=20230601; t=1761737249; x=1762342049;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=eVrGZiCOO3VoWU6as4Ya4YNojK7gFL/5DgKPuB9HXfo=;
-        b=G+yGQtIjQsUlOAfugF/HTr0j7e49oObMlASOyyFZeu1XdVTcN9mPmxGQfaOsRm7c0B
-         oIvoiGK4RwNk1MdsQAzbXogtnK7ZaZxhm7C3uUkDtMLpBOAf9/nEE62HxVKkfpKqix8s
-         HlBS248G+GL7hZG8khy4X3EMZGVKx9EJe1l0ADwlR4Cs7v633tQKa+R1USh7vgkzNwEl
-         MK5QyrYz7oJLbk/HBpE2EPWT+Gi+D64xVotsna4/dquOybW5xu2w1CFg7MKslb1FIc9a
-         BqH3I0XV0fNv+q5ewv9qe2JTD4bwh4K08RWchYD6bOuZFE9nd4JwJpjUhZJHCKCgiDLF
-         e1XA==
-X-Forwarded-Encrypted: i=1; AJvYcCUOSBYuwf4ak/4xQw8y3P/Zd2fYhcQlYGCMOArxK9voMWHCHEzhzH7FezuqKANI63alavarKVhG93E1tAY=@lists.linux.dev
-X-Gm-Message-State: AOJu0YxdYxbhZJv1wfbVChAQAd+IOzZi2PLf6B61TEyrfEQcWEytxAo3
-	bxtwhISdS65tfmuReFhEcc5hpIzyvyZQ8RfYDDghvk8QZwEI1j3pjqMdzF44nQNT9xk=
-X-Gm-Gg: ASbGncvM7jQuOxU5fNt4b94HUfUbUNlldX8mZM054tpTZXhKGaJ+3yRE9FuDF37uQzA
-	Jl0pAZYD+shrXldWZJ9gUBiY2/5lsSOVwNwVUZRWKT5AegWpt1CbawX6g6UvF774yuL6clKMYg7
-	cGiTDLoc1jExDAIPRd0UOA9OWu1ILjZPdVc5oM50e7zjRruMk0XXK+/MbaxAXmHFrBOXUTeCtTv
-	ZkIUhNy1QePmzjiI308Y5LxouEppzJz+x9Su2a1KCAwMvFCiNUO3xLvPv+dgXyOq/PfoFcCL3yS
-	+Xdvzje6H2Ty48FlIcT+2kioyXlRwfnlphp8gKyC7ItRjOIIyV98gXSGYvTRT0GYkAtnVGiYNzm
-	fOpUl5fIwiA5mdSCzDzYOdM6/YNI3JbwZWNcVpP9/zWNDxj1yt+L+cpVWf4A/K3itGVu+uQi6t6
-	lsUQ68my0VYFDDFHPDBVQhR/RqsHdQ
-X-Google-Smtp-Source: AGHT+IEs0ZClHYQ32GXBT6VvX4hdE/vTZzW0dkqblsfwRDrg9bIgaJQ8u6BnX6Q+OdRAzRPJ5EziSQ==
-X-Received: by 2002:a17:90b:4d0b:b0:33d:a0fd:257b with SMTP id 98e67ed59e1d1-3403a2fe511mr2861483a91.36.1761737243889;
-        Wed, 29 Oct 2025 04:27:23 -0700 (PDT)
+        bh=/hiwSqBhR1Qws96GQdbU4nAKreYqDyRXg+IAoSlhXoM=;
+        b=PKyRZkYSr+MmWiBGJWBGN4I94D2kDt2XQLMXT0uiPBWr1emXFG2HS3Oba48Vvf8MAF
+         76SgOiotcU3femuFVukyBCex5xt8J6b4JlXGQTIIS7k6JDXMr/Cx4QNBhu2svGJ51vtf
+         7qCZQrRAByy9vY1HyNQwN7FDq6ktKs8uag7HKzzKzNHerHQIb9fNnPj6MFx7zkiI5eC2
+         O3+aURd5q59C+GfrKJwWzALUCSF2VfcKpu3xJqfgkqZZapFMR0gBWgeBTNfeHbyUodt6
+         6AMaq+bCRX+9yqhlUCllYiHWVigsZWeA0U+CCK6FgDmEfWO6t3ExqlSNxd7PGAyEjRdZ
+         agcw==
+X-Forwarded-Encrypted: i=1; AJvYcCWI+sJELrGVLLfw06EIaOXj09f+DjjOGHoOuTX9ek2EH3p6SAAYzGkv0R3NBF1rJmABEMyw1TGy6qWqrn4=@lists.linux.dev
+X-Gm-Message-State: AOJu0Yx6ov+mo9J1husI+xI1f0iWPuJP/ghxDeJCUUrx/sSUVnMbTgZP
+	WTj+Ns1CxzX5wVZM6HGI/y79Ai5i9Clx+bH/i1s6fivzjXYrjNY98/a0+C4Uvbg2Yo/ZE7TkCPF
+	dI/snbAbXRA==
+X-Gm-Gg: ASbGncsDNZ6Q60E/KDvLbUYCv4bMs9981kkuVMQutg4hj12HkqKDkF0tWjHN12UIJEn
+	P0LyfEHXsUZg/tnNMMhl3dZOBb3dMVGEDu5bmP0Xz5hMdRnalVv5S7gmZeeoQY6URUGnn2UA1fo
+	mvYDLPd6wxvFMes/2D+i7HpefqRYHZyFNPNXWZdKOjEpMjjPJu3OeNqgbv3QR8ZrfBm8JIwUKy1
+	4qk7FxWXlXqs0Q0K+n2JgZ/oymCwlLP+ksSHk2bQlw+XFwVkGAtT5brme3NHBzV8g1v7XqhECJc
+	utuHLm1+LEhe7dTksAJ2FVV/Pt8AK87PckxEMtAPKOUtH0eU5UYIdk7XjNrPTIeo19LbdJYu7ZD
+	O09Zwo2a4brcVEP7GsCTOJsOdP/H9zKGB9mBI6jP6AKYoxbgGV0MoHBvCSKmDpoUXHSd6zuJ1BL
+	uLTeBt3/QJnfD674X7SHqGKkFxLjg+
+X-Google-Smtp-Source: AGHT+IHs9/yah7+LL8dEcqJhQQLW+XK5ngSWHXrirtA5CcwyDvBqFPLqGRdj2uDT9wLcliFabWN9TQ==
+X-Received: by 2002:a05:6a20:4328:b0:341:ea4:b977 with SMTP id adf61e73a8af0-3465381d8f4mr2997177637.44.1761737249215;
+        Wed, 29 Oct 2025 04:27:29 -0700 (PDT)
 Received: from ventana-desktop.localhost ([2405:201:d019:c0ce:f7f5:7789:48e5:c03f])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-33fed7f6040sm15316918a91.16.2025.10.29.04.27.19
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-33fed7f6040sm15316918a91.16.2025.10.29.04.27.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Oct 2025 04:27:23 -0700 (PDT)
+        Wed, 29 Oct 2025 04:27:28 -0700 (PDT)
 From: Himanshu Chauhan <hchauhan@ventanamicro.com>
 To: linux-riscv@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
@@ -77,9 +78,9 @@ Cc: paul.walmsley@sifive.com,
 	sunilvl@ventanamicro.com,
 	apatel@ventanamicro.com,
 	Himanshu Chauhan <hchauhan@ventanamicro.com>
-Subject: [RFC PATCH v2 04/10] riscv: Add fixmap indices for GHES IRQ and SSE contexts
-Date: Wed, 29 Oct 2025 16:56:42 +0530
-Message-ID: <20251029112649.3811657-5-hchauhan@ventanamicro.com>
+Subject: [RFC PATCH v2 05/10] riscv: conditionally compile GHES NMI spool function
+Date: Wed, 29 Oct 2025 16:56:43 +0530
+Message-ID: <20251029112649.3811657-6-hchauhan@ventanamicro.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20251029112649.3811657-1-hchauhan@ventanamicro.com>
 References: <20251029112649.3811657-1-hchauhan@ventanamicro.com>
@@ -91,33 +92,35 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-GHES error handling requires fixmap entries for IRQ notifications.
-Add fixmap indices for IRQ, SSE Low and High priority notifications.
+Compile ghes_in_nmi_spool_from_list only when NMI and SEA
+is enabled. Otherwise compilation fails with "defined but
+not used" error.
 
 Signed-off-by: Himanshu Chauhan <hchauhan@ventanamicro.com>
 ---
- arch/riscv/include/asm/fixmap.h | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/acpi/apei/ghes.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/riscv/include/asm/fixmap.h b/arch/riscv/include/asm/fixmap.h
-index 0a55099bb734..e874fd952286 100644
---- a/arch/riscv/include/asm/fixmap.h
-+++ b/arch/riscv/include/asm/fixmap.h
-@@ -38,6 +38,14 @@ enum fixed_addresses {
- 	FIX_TEXT_POKE0,
- 	FIX_EARLYCON_MEM_BASE,
+diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
+index 97ee19f2cae0..f2cbd7414faf 100644
+--- a/drivers/acpi/apei/ghes.c
++++ b/drivers/acpi/apei/ghes.c
+@@ -1356,6 +1356,7 @@ static int ghes_in_nmi_queue_one_entry(struct ghes *ghes,
+ 	return rc;
+ }
  
-+#ifdef CONFIG_ACPI_APEI_GHES
-+	/* Used for GHES mapping from assorted contexts */
-+	FIX_APEI_GHES_IRQ,
-+#ifdef CONFIG_RISCV_SBI_SSE
-+	FIX_APEI_GHES_SSE_LOW_PRIORITY,
-+	FIX_APEI_GHES_SSE_HIGH_PRIORITY,
-+#endif /* CONFIG_RISCV_SBI_SSE */
-+#endif /* CONFIG_ACPI_APEI_GHES */
- 	__end_of_permanent_fixed_addresses,
- 	/*
- 	 * Temporary boot-time mappings, used by early_ioremap(),
++#if defined(CONFIG_HAVE_ACPI_APEI_NMI) || defined(CONFIG_ACPI_APEI_SEA)
+ static int ghes_in_nmi_spool_from_list(struct list_head *rcu_list,
+ 				       enum fixed_addresses fixmap_idx)
+ {
+@@ -1374,6 +1375,7 @@ static int ghes_in_nmi_spool_from_list(struct list_head *rcu_list,
+ 
+ 	return ret;
+ }
++#endif
+ 
+ #ifdef CONFIG_ACPI_APEI_SEA
+ static LIST_HEAD(ghes_sea);
 -- 
 2.43.0
 
