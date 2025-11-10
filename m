@@ -1,79 +1,77 @@
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C37930748A
-	for <acpica-devel@lists.linux.dev>; Mon, 10 Nov 2025 10:56:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F7772EBB9C
+	for <acpica-devel@lists.linux.dev>; Mon, 10 Nov 2025 11:00:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762772181; cv=none; b=I2CkN8PSLZuBY80bKlNh6eomPvU4Ln4nL1ork8+tMNYpIc7OfJUkPw6h31vmt847DHUXwnTWl2PaVXgV+53V2dypBLwwaVDFm3o/x6FABhzRAw5jOMM8cHchxJkpl+32u4Kn7LjOVC+kI36iBK0/J7kmy9nV+0LbBAbA/ZUpkf8=
+	t=1762772458; cv=none; b=ne5eemFiLsguEtlloUnyFLUbif50VL2QO986sFNs0tZkyIOwlALxdsjuPS3TzOqwWoz1zwEK1igJsFxG4b4fr/Uvz7/dj5AtHnSdNsD+ew3opvkFVD/69/U5x6K/e7wXIWvz2LRZ4cyilgmPrKt4iJiVjNlQ6+KmZaMIWsXZbN8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762772181; c=relaxed/simple;
-	bh=dEl+crxWx0Ue6Eap9IyJQOsh+WWdfuIJZKBgNUUOskU=;
+	s=arc-20240116; t=1762772458; c=relaxed/simple;
+	bh=j/sDhA1BE/crBk5MB3jz5Gyqsa0mwcEpYJuOnY+51Ws=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bK4nsf/JCJ92yZ/jFM1AO29DqaH4Ku5BKGkCUegl5r5e/KJU0I45lbO5szCc4KpesprAT/MhYDQJtBzJYQyaxLqnZI7UBh1enCJk5z093RegeG6VIPeqoOo2qklkYUx9X8xvi8ex9ljSjz2JaeuI8oS3B/nvdepO/YXY5n468sw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xPdiQjkS; arc=none smtp.client-ip=209.85.215.170
+	 Content-Type:Content-Disposition:In-Reply-To; b=dZBcHE4xawL2Ct+JBnjZRPy29MzUFZ+fJOxva2wtWRUXF/obBga8ybnnD0d/3vEDUMO2rJA9U7OUmg4ZaKgvu1MSjJilYhBYS38S9+L2QjMwMZH+eIRKRSmXetoWwbYoz8fFLfI8eS2UfqcwMzF+5nTf7cJXhIQDO9OPJgrhPEA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Bl41rIFH; arc=none smtp.client-ip=209.85.210.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xPdiQjkS"
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-b99dc8f439cso1212172a12.0
-        for <acpica-devel@lists.linux.dev>; Mon, 10 Nov 2025 02:56:18 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Bl41rIFH"
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-782e93932ffso2321410b3a.3
+        for <acpica-devel@lists.linux.dev>; Mon, 10 Nov 2025 03:00:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1762772178; x=1763376978; darn=lists.linux.dev;
+        d=linaro.org; s=google; t=1762772455; x=1763377255; darn=lists.linux.dev;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=HOTgQEUB8GcmpUQcmIkml8fFvXO2yWgEKzXQF7vCTcc=;
-        b=xPdiQjkSpBUcw6KUEisbhtOQlsEYzyk8pAL4yKkadKnaKcrfyR+Fzh3gKV8bqs2y0/
-         6m0633zvYRXSxyKFvU884GyiscRrE2/iywJBeUojhFgogu/pK0wg/FU54U45s9EW0Vlu
-         +akE0PeNS+qu6mPtTzqXmKkK5Tv7xKRYHrprMfNXsjUT3WYU4nappQwT7xzLm/mxfmT9
-         AF8DoGzEkCr6M/C6amh3+9NGWJhG3MA+Oui3sR11xSzARakE2KSYONkC2YJcIyzvX7TX
-         q5kPFX4DrvaDv8SOEmryhwfwWbfmDpoL1aU2Fv61djwlAMoyUyFpagOACZqylH+aHLGp
-         g/Og==
+        bh=YrIRy6Lhq+4eE5yPFjSN9IOBDP8Cyczj9KXwJvvJFlc=;
+        b=Bl41rIFH3q8TJW5AGkYQgaoqHB6qrzMsM9tr+HYJWM+w03C4V+hQkOzAK5/neQ3qhX
+         4HxPNnRvHw1PJR0PVrcGuuW7JHq8hcXuDeXSwKBKDVZ6HBjdvZ+iXUhR922Gg1d739no
+         LiCpayj+kCMNateJWLix6fwke1eFNb5vx5GbYYe3edz2P1VKyGexv8RPSBXp9ozoyPKP
+         QOOBLiuV8UDCm+pyQ/lMSZl34q+HAVal1JQ8l/0Gjp7VGvNv+kpXaNaEM09N5ihYXEoS
+         4TBn9iBk2EBKpP2ET6/OU4v8pdlDrtp0zGBsfI7MnDLMFIf9eJosP0XrQ+08Os+iCw5e
+         Umtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762772178; x=1763376978;
+        d=1e100.net; s=20230601; t=1762772455; x=1763377255;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HOTgQEUB8GcmpUQcmIkml8fFvXO2yWgEKzXQF7vCTcc=;
-        b=oQ/5LvLrCOn6s6jeWtIeI9FkcWR3I/g+edbpseWFYfCZgNs36CkK+G6Ea9+YXDQDxI
-         B5mQH6HZbpcvjXgG4wXh5BhMDHOK1w3OK7AHA+R5YOKS3RstLjCvwyw4P50klA2HgrJ4
-         noyu0mlpMEBizsMoS4LZtVIHJ4ERZKMID3F0Cis1hRUbUUTSdRvbrmx8u6Tmeymq4sDP
-         XcQ/J+RXd/jw6ocwkS0izcuRBhUnNFOgTc1UZzCOQhiBKKW+bchLS92ZlOj2oBEaAPNh
-         5yIXJn85IDBs93lYxlXvPvmkphukTOBK0MHvjsdAQNqFgVqzgk7f212LIKW+qK/Mo14v
-         THFA==
-X-Forwarded-Encrypted: i=1; AJvYcCUY2l2E36iYp2MTwszHRWPORtJDCp7q1lPM4nLLKSu20qwzNGT3Pdy5Gyc1bf/LlLmIChQtq16iicKa8gs=@lists.linux.dev
-X-Gm-Message-State: AOJu0YxN3kfxnt8FdGtzlA9bcP6KLBu0vUykfHtDXn1EfpZxyRgdvB2C
-	I6HAH/NYjMUSbSJ9lP/bGakHk4NpwAUITC6p/gTQE21pd24hpsMesEsFTH/xwdEAtew=
-X-Gm-Gg: ASbGncuyJOAiFVzfVt2RcPaiqhw2S5FnyTX25OVW3d27eDT8z+5pxuG8pdNWu2kuA9S
-	ked8RQXiGeIZnTul7A8FciNj71K+NEuD0lnhPram93smak2R5R+1t8nqX/QJptIAu4V5dAtbny+
-	ybjffm1JIQzOivaL8ARp+JkE/PuuDlIa2ufmcGTobmDBymSKv8eKz/j+btpeD2Z9V11+I6+8EWl
-	wKreQGmZmoAiHhC6i1miHRvUVf5D4lqJI4Y1TlnX7c5ulpmjwTXEgtn7xIB+Zrq04OLNK5YjfDy
-	l7Dto4YKt2bbZBTj6GGwEMx7SZOtI3hyS70mV1PfX86TW4X4pgqEAKdW5ehMzZhr84ug5sbLuTN
-	fjAMkULKFThpk0bBKYHsYzA6Lckb1CEDG+8eHxUuLs8sqCiUCoPsyXY/XurrQAjsD93GmSFJMJA
-	OJPdJ8t8E5bHk=
-X-Google-Smtp-Source: AGHT+IELCZjjS9db2GOOi5gG1D3fReIWK6Fsulo/YaMjMnn+TlgjP5Y2DF6HQCR7hzQBYtF9UG4Urg==
-X-Received: by 2002:a17:902:d551:b0:27e:ec72:f6d with SMTP id d9443c01a7336-297e53e7af3mr99902655ad.11.1762772178225;
-        Mon, 10 Nov 2025 02:56:18 -0800 (PST)
+        bh=YrIRy6Lhq+4eE5yPFjSN9IOBDP8Cyczj9KXwJvvJFlc=;
+        b=eucsn9X6ISKxNmBogLPcpYdyqA3AkAbZoHi5k27s3cfyFPn+vKi5JtJ7HNwFLKfAI+
+         qWVMVpNEEQACd82J8f9lIDyO0dUPQUiL5aApQd7LhZybBlwVLZkfTExVynTgvE48MzJJ
+         cW/ein8iYzZ2ZLNOK8c6v6g6am9BVzy+8Vrh8m/aGlwGqa+V/KcFcARUj44yosnq3GU0
+         3DipaE1NdFonYjaSldbfw6mZXCHcD84aqE8WfIoJAhqYtxV7RVHzkvQEBBYegIZV1Frx
+         s2ym3I6kt4Ga9lfNVYEb2ddGcq3BEc3dzU2vGh+U5v4T5qbT/xEfUFy+yziARO2DgCUl
+         PpUg==
+X-Forwarded-Encrypted: i=1; AJvYcCX7ZBurUvRRDuZ5ZQiX8hUGC+vTeYLgfJchZLfLhweQBMup6q31tjBQbYZV4589ds1vUNJmWv4Hu1q/XLE=@lists.linux.dev
+X-Gm-Message-State: AOJu0Ywh7Y3DSGkPmGLbzwyyuMpNTugoBeg5YKk6B2OYZ/LzTwrRnP32
+	KFhJt8/feVx4+/PgaTK76wGKq0+CgS3Hg+dyVGG7m8d2L0I8DYITQrh/U9we9vC14Qs=
+X-Gm-Gg: ASbGnctzvgGf1smOZJPuZvsz7BVyxYGsaT8NpwHz2LyWf8V73BqW3w2FFVY1zevDXHU
+	jV5OZj7kcE0q7aal6LG6pO258qoTAVweofJoj+FIT7FeqjQNzGaMz0jHhqT/x3sg11dlGbeMQQG
+	lbEeb2tce+9hvvHaoiHPnbop+n+c4hKfwQjEMhO77Nn89zGnNuM3GW4dcihNEer/TzcuAEw4xJW
+	gFgxnETnajPEbuJHttXO0Hravbngdy8aOJRkBCp9ZcQHoIg44Kcd7g8G5itVcVk/ytzPR3TNnNc
+	2FzI1VHYPSpgEDdgMuYhaY9HJycoR0NhOSoDk09znsGGDzn3rYrWC3qs2xIKnBtCVzpPls2EYBw
+	6AKu/uM6+XJc3cX4mYfqBZsG4eRMkQ866j2VuPHsupbymXD5Dp+oFrYE/ek7QwPAZIWyr+Fs8aD
+	Euness8GV/7Z0=
+X-Google-Smtp-Source: AGHT+IGOFDbu7mquDmNhSqV97BdY6cG6MLgvb5Xp7QodBHXn8La7j+gNEL/xmdVl7cozIyrmwIAy9g==
+X-Received: by 2002:a05:6a21:3291:b0:350:1872:7023 with SMTP id adf61e73a8af0-353a4163b2bmr9937463637.55.1762772455121;
+        Mon, 10 Nov 2025 03:00:55 -0800 (PST)
 Received: from localhost ([122.172.86.94])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-297fe688c96sm49938925ad.58.2025.11.10.02.56.17
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7b0c963586fsm11304602b3a.10.2025.11.10.03.00.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Nov 2025 02:56:17 -0800 (PST)
-Date: Mon, 10 Nov 2025 16:26:15 +0530
+        Mon, 10 Nov 2025 03:00:54 -0800 (PST)
+Date: Mon, 10 Nov 2025 16:30:52 +0530
 From: Viresh Kumar <viresh.kumar@linaro.org>
-To: Sumit Gupta <sumitg@nvidia.com>
+To: Sumit Gupta <sumitg@nvidia.com>, pierre.gondois@arm.com, 
+	zhanjie9@hisilicon.com, ionela.voinescu@arm.com, beata.michalska@arm.com
 Cc: rafael@kernel.org, lenb@kernel.org, robert.moore@intel.com, 
-	corbet@lwn.net, pierre.gondois@arm.com, zhenglifeng1@huawei.com, 
-	rdunlap@infradead.org, ray.huang@amd.com, gautham.shenoy@amd.com, 
-	mario.limonciello@amd.com, perry.yuan@amd.com, ionela.voinescu@arm.com, 
-	zhanjie9@hisilicon.com, linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org, 
+	corbet@lwn.net, zhenglifeng1@huawei.com, rdunlap@infradead.org, 
+	ray.huang@amd.com, gautham.shenoy@amd.com, mario.limonciello@amd.com, 
+	perry.yuan@amd.com, linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org, 
 	linux-doc@vger.kernel.org, acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org, 
 	linux-tegra@vger.kernel.org, treding@nvidia.com, jonathanh@nvidia.com, vsethi@nvidia.com, 
 	ksitaraman@nvidia.com, sanjayc@nvidia.com, nhartman@nvidia.com, bbasu@nvidia.com
-Subject: Re: [PATCH v4 1/8] cpufreq: CPPC: Add generic helpers for sysfs
- show/store
-Message-ID: <s5xt53i6c5wryje5x6zlq75r3lx6nxb7pat6umnghpnldi4p2h@jaeew4iimdd3>
+Subject: Re: [PATCH v4 0/8] Enhanced autonomous selection and improvements
+Message-ID: <hjrcoq7dapqcodk3iiyvjeuq3cwvyccqr4wnlcoi6eduqg5ahf@tszrjvfnkjux>
 References: <20251105113844.4086250-1-sumitg@nvidia.com>
- <20251105113844.4086250-2-sumitg@nvidia.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -82,41 +80,39 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251105113844.4086250-2-sumitg@nvidia.com>
+In-Reply-To: <20251105113844.4086250-1-sumitg@nvidia.com>
 
 On 05-11-25, 17:08, Sumit Gupta wrote:
-> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
-> -static ssize_t show_auto_act_window(struct cpufreq_policy *policy, char *buf)
-> +static ssize_t cppc_cpufreq_sysfs_show_u64(unsigned int cpu, int (*get_func)(int, u64 *), char *buf)
->  {
->  	u64 val;
-> -	int ret;
-> -
-> -	ret = cppc_get_auto_act_window(policy->cpu, &val);
-> +	int ret = get_func(cpu, &val);
+> This patch series enhances the ACPI CPPC CPUFREQ driver with
+> comprehensive support for autonomous performance selection, expanded
+> runtime control interfaces and improvements.
+> 
+> It adds support for below:
+> - Expose sysfs to read/write the Minimum/Maximum Performance Registers
+>   using frequency (kHz), with internal conversion to performance values.
+>   Also, update the policy min/max accordingly.
+>     /sys/.../cpufreq/policy*/min_perf and max_perf
+> 
+> - Expose sysfs to read/write the Performance Limited Register.
+>     /sys/.../cpufreq/policy*/perf_limited
+> 
+> - When toggling autonomous selection, synchronize the policy limits
+>   by updating the policy min/max.
+> 
+> - System-wide autonomous mode configuration via 'auto_sel_mode' boot
+>   parameter. Mode can be switched dynamically on individual CPUs.
+> 
+> - Generic sysfs helper functions to reduce code duplication.
+> 
+> The patches are grouped as below:
+> - Patch 1, 2 & 3: Improvements. Can be applied independently.
+> - Patch 4: Sysfs to update min/max_perf. Can be applied independently.
+> - Patch 5: Sysfs to update perf_limited. Can be applied independently.
+> - Patch 6: add sysfs documentation. Depends on 'Patch 4 and 5'.
+> - Patch 7: sync policy min/max with auto_select. Depends on 'Patch 4'.
+> - Patch 8: Boot Parameter Support. Depends on 'Patch 4 and 7'.
 
-Why no casting required here, when you need it ... 
-
-> -static ssize_t store_auto_act_window(struct cpufreq_policy *policy,
-> -				     const char *buf, size_t count)
-> +static ssize_t cppc_cpufreq_sysfs_store_u64(unsigned int cpu, int (*set_func)(int, u64),
-> +					    const char *buf, size_t count)
->  {
-> -	u64 usec;
-> +	u64 val;
->  	int ret;
->  
-> -	ret = kstrtou64(buf, 0, &usec);
-> +	ret = kstrtou64(buf, 0, &val);
->  	if (ret)
->  		return ret;
->  
-> -	ret = cppc_set_auto_act_window(policy->cpu, usec);
-> -	if (ret)
-> -		return ret;
-> +	ret = set_func((int)cpu, val);
-
-... here ?
+Beata/Ionela/Jie, any feedback on the CPPC changes ?
 
 -- 
 viresh
