@@ -1,186 +1,122 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43E2E30217B
-	for <acpica-devel@lists.linux.dev>; Fri,  7 Nov 2025 20:08:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C37930748A
+	for <acpica-devel@lists.linux.dev>; Mon, 10 Nov 2025 10:56:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762546133; cv=none; b=rfU3GqNny/R0oA9RrKRbl4PeqTXDfC7sTF2XPoj9n98I50wxG1K/b2BU3WF/2c89iieyw331MCS5G14EGYL4iLdOaeLi8kw/SQQAsFeulxc1Gx8zzvA/G04g6t7EQ1aszejEjAxmjAaCU6pG+ilaXOhwYedHCc+Y6yVGBgKXhf4=
+	t=1762772181; cv=none; b=I2CkN8PSLZuBY80bKlNh6eomPvU4Ln4nL1ork8+tMNYpIc7OfJUkPw6h31vmt847DHUXwnTWl2PaVXgV+53V2dypBLwwaVDFm3o/x6FABhzRAw5jOMM8cHchxJkpl+32u4Kn7LjOVC+kI36iBK0/J7kmy9nV+0LbBAbA/ZUpkf8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762546133; c=relaxed/simple;
-	bh=szesQpSM5oo7OsiDU5UKtOwtIL9eGv7CnUXjP7KFeos=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tUaoVVpMiDKi4Sj+Hu8y8NNFVYqOdoC4ysudb5rsO7NsqanGRvoL+9igdtgvoSXrZtK15OK1qtiRQ0N40ySpX2fklzAM2k1dD6wObKesiG/eUKXrIiuf1lBDCOFslU/1H4wI8bldVQIFTXOQyQDzJm03Ryy3EyeAB5DV4iFIxaI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MK4ExjfM; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1762772181; c=relaxed/simple;
+	bh=dEl+crxWx0Ue6Eap9IyJQOsh+WWdfuIJZKBgNUUOskU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bK4nsf/JCJ92yZ/jFM1AO29DqaH4Ku5BKGkCUegl5r5e/KJU0I45lbO5szCc4KpesprAT/MhYDQJtBzJYQyaxLqnZI7UBh1enCJk5z093RegeG6VIPeqoOo2qklkYUx9X8xvi8ex9ljSjz2JaeuI8oS3B/nvdepO/YXY5n468sw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xPdiQjkS; arc=none smtp.client-ip=209.85.215.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MK4ExjfM"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAD38C2BC87
-	for <acpica-devel@lists.linux.dev>; Fri,  7 Nov 2025 20:08:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762546133;
-	bh=szesQpSM5oo7OsiDU5UKtOwtIL9eGv7CnUXjP7KFeos=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=MK4ExjfMOWhtxaY36/EOJRaYXFbTHV0SGPpxdCQJWplE4xG4HgiJ/ylwJc787Sksa
-	 z4vyAEvMqm8NrQX0OlAizkMW8wjEZuNS5Wp+5v1eINEQeTr/blBsc7Dp74Ss+XFGm8
-	 ZP1vf2pa6AmEiaf541pEAg1rJiD2UJua1uBPdy34Z4A95X4npaz4LhFWjqwfhFnZig
-	 XS16qV7a8Numgked/F2/VWMeyKLyvY5hZhj9WSzJIhZ6vCWdvnFQOjkBEy59h3YFPM
-	 PslUlvQWGzFdNo/n3EMnmg0yoii6ECsU+V8Obkcrp0Zd7XhalC2zIu801ciyFm7KuX
-	 XWI6a6XH/tzRw==
-Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-656cd6c1c5eso487099eaf.0
-        for <acpica-devel@lists.linux.dev>; Fri, 07 Nov 2025 12:08:52 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVjQW39b6W3FO2/XgDaFalLAjDQV9UZoGfBj2Vc6l1As525ExC+w7VpxP5wVKUoqOUzKJJ9GkonsWpockQ=@lists.linux.dev
-X-Gm-Message-State: AOJu0YzduLybNJKs0Q+mGGSJ6pg9ye0xABxjjg4w4HfCz6E3mhj4HJ4W
-	CiO5vRM2zjp6HMgshrZJ9LLzqbfV6O6d+sqy6X7wwAlAACNFJ0lRie/ZAu5iTQCPstBS5fe7Yiq
-	9xe65fBURqNiHnBo4pIsUkNh0wES10x4=
-X-Google-Smtp-Source: AGHT+IGA04jm71Ij9xeQJEzJY7AxE62iCGgrrBQyNvtjVXE70OmsxBr7+clNSkaS9F9EzCSb46Qp9YHiGNZGj0RJ2fQ=
-X-Received: by 2002:a05:6820:16a6:b0:656:8360:3906 with SMTP id
- 006d021491bc7-656d8ea527dmr426344eaf.8.1762546131960; Fri, 07 Nov 2025
- 12:08:51 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xPdiQjkS"
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-b99dc8f439cso1212172a12.0
+        for <acpica-devel@lists.linux.dev>; Mon, 10 Nov 2025 02:56:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1762772178; x=1763376978; darn=lists.linux.dev;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=HOTgQEUB8GcmpUQcmIkml8fFvXO2yWgEKzXQF7vCTcc=;
+        b=xPdiQjkSpBUcw6KUEisbhtOQlsEYzyk8pAL4yKkadKnaKcrfyR+Fzh3gKV8bqs2y0/
+         6m0633zvYRXSxyKFvU884GyiscRrE2/iywJBeUojhFgogu/pK0wg/FU54U45s9EW0Vlu
+         +akE0PeNS+qu6mPtTzqXmKkK5Tv7xKRYHrprMfNXsjUT3WYU4nappQwT7xzLm/mxfmT9
+         AF8DoGzEkCr6M/C6amh3+9NGWJhG3MA+Oui3sR11xSzARakE2KSYONkC2YJcIyzvX7TX
+         q5kPFX4DrvaDv8SOEmryhwfwWbfmDpoL1aU2Fv61djwlAMoyUyFpagOACZqylH+aHLGp
+         g/Og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762772178; x=1763376978;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HOTgQEUB8GcmpUQcmIkml8fFvXO2yWgEKzXQF7vCTcc=;
+        b=oQ/5LvLrCOn6s6jeWtIeI9FkcWR3I/g+edbpseWFYfCZgNs36CkK+G6Ea9+YXDQDxI
+         B5mQH6HZbpcvjXgG4wXh5BhMDHOK1w3OK7AHA+R5YOKS3RstLjCvwyw4P50klA2HgrJ4
+         noyu0mlpMEBizsMoS4LZtVIHJ4ERZKMID3F0Cis1hRUbUUTSdRvbrmx8u6Tmeymq4sDP
+         XcQ/J+RXd/jw6ocwkS0izcuRBhUnNFOgTc1UZzCOQhiBKKW+bchLS92ZlOj2oBEaAPNh
+         5yIXJn85IDBs93lYxlXvPvmkphukTOBK0MHvjsdAQNqFgVqzgk7f212LIKW+qK/Mo14v
+         THFA==
+X-Forwarded-Encrypted: i=1; AJvYcCUY2l2E36iYp2MTwszHRWPORtJDCp7q1lPM4nLLKSu20qwzNGT3Pdy5Gyc1bf/LlLmIChQtq16iicKa8gs=@lists.linux.dev
+X-Gm-Message-State: AOJu0YxN3kfxnt8FdGtzlA9bcP6KLBu0vUykfHtDXn1EfpZxyRgdvB2C
+	I6HAH/NYjMUSbSJ9lP/bGakHk4NpwAUITC6p/gTQE21pd24hpsMesEsFTH/xwdEAtew=
+X-Gm-Gg: ASbGncuyJOAiFVzfVt2RcPaiqhw2S5FnyTX25OVW3d27eDT8z+5pxuG8pdNWu2kuA9S
+	ked8RQXiGeIZnTul7A8FciNj71K+NEuD0lnhPram93smak2R5R+1t8nqX/QJptIAu4V5dAtbny+
+	ybjffm1JIQzOivaL8ARp+JkE/PuuDlIa2ufmcGTobmDBymSKv8eKz/j+btpeD2Z9V11+I6+8EWl
+	wKreQGmZmoAiHhC6i1miHRvUVf5D4lqJI4Y1TlnX7c5ulpmjwTXEgtn7xIB+Zrq04OLNK5YjfDy
+	l7Dto4YKt2bbZBTj6GGwEMx7SZOtI3hyS70mV1PfX86TW4X4pgqEAKdW5ehMzZhr84ug5sbLuTN
+	fjAMkULKFThpk0bBKYHsYzA6Lckb1CEDG+8eHxUuLs8sqCiUCoPsyXY/XurrQAjsD93GmSFJMJA
+	OJPdJ8t8E5bHk=
+X-Google-Smtp-Source: AGHT+IELCZjjS9db2GOOi5gG1D3fReIWK6Fsulo/YaMjMnn+TlgjP5Y2DF6HQCR7hzQBYtF9UG4Urg==
+X-Received: by 2002:a17:902:d551:b0:27e:ec72:f6d with SMTP id d9443c01a7336-297e53e7af3mr99902655ad.11.1762772178225;
+        Mon, 10 Nov 2025 02:56:18 -0800 (PST)
+Received: from localhost ([122.172.86.94])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-297fe688c96sm49938925ad.58.2025.11.10.02.56.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Nov 2025 02:56:17 -0800 (PST)
+Date: Mon, 10 Nov 2025 16:26:15 +0530
+From: Viresh Kumar <viresh.kumar@linaro.org>
+To: Sumit Gupta <sumitg@nvidia.com>
+Cc: rafael@kernel.org, lenb@kernel.org, robert.moore@intel.com, 
+	corbet@lwn.net, pierre.gondois@arm.com, zhenglifeng1@huawei.com, 
+	rdunlap@infradead.org, ray.huang@amd.com, gautham.shenoy@amd.com, 
+	mario.limonciello@amd.com, perry.yuan@amd.com, ionela.voinescu@arm.com, 
+	zhanjie9@hisilicon.com, linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org, 
+	linux-doc@vger.kernel.org, acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	linux-tegra@vger.kernel.org, treding@nvidia.com, jonathanh@nvidia.com, vsethi@nvidia.com, 
+	ksitaraman@nvidia.com, sanjayc@nvidia.com, nhartman@nvidia.com, bbasu@nvidia.com
+Subject: Re: [PATCH v4 1/8] cpufreq: CPPC: Add generic helpers for sysfs
+ show/store
+Message-ID: <s5xt53i6c5wryje5x6zlq75r3lx6nxb7pat6umnghpnldi4p2h@jaeew4iimdd3>
+References: <20251105113844.4086250-1-sumitg@nvidia.com>
+ <20251105113844.4086250-2-sumitg@nvidia.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20251105113844.4086250-5-sumitg@nvidia.com> <202511061802.lIq09jwh-lkp@intel.com>
- <be696cb5-7d0d-44f6-970b-e417c2f89a8e@nvidia.com>
-In-Reply-To: <be696cb5-7d0d-44f6-970b-e417c2f89a8e@nvidia.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Fri, 7 Nov 2025 21:08:40 +0100
-X-Gmail-Original-Message-ID: <CAJZ5v0j8bQm+00+m75rmpKpm8yVumvYsWzCdYyCPwksnebY__A@mail.gmail.com>
-X-Gm-Features: AWmQ_bnyTo8wfwCEW9lyu_1xYl179djStUEiTR_5ulbMLWD8CjXHhBWwog1DvlU
-Message-ID: <CAJZ5v0j8bQm+00+m75rmpKpm8yVumvYsWzCdYyCPwksnebY__A@mail.gmail.com>
-Subject: Re: [PATCH v4 4/8] ACPI: CPPC: add APIs and sysfs interface for min/max_perf
-To: Sumit Gupta <sumitg@nvidia.com>
-Cc: kernel test robot <lkp@intel.com>, rafael@kernel.org, viresh.kumar@linaro.org, 
-	lenb@kernel.org, robert.moore@intel.com, corbet@lwn.net, 
-	pierre.gondois@arm.com, zhenglifeng1@huawei.com, rdunlap@infradead.org, 
-	ray.huang@amd.com, gautham.shenoy@amd.com, mario.limonciello@amd.com, 
-	perry.yuan@amd.com, ionela.voinescu@arm.com, zhanjie9@hisilicon.com, 
-	linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org, 
-	linux-doc@vger.kernel.org, acpica-devel@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev, 
-	oe-kbuild-all@lists.linux.dev, linux-tegra@vger.kernel.org, 
-	treding@nvidia.com, jonathanh@nvidia.com, vsethi@nvidia.com, 
-	ksitaraman@nvidia.com, sanjayc@nvidia.com, nhartman@nvidia.com, 
-	bbasu@nvidia.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251105113844.4086250-2-sumitg@nvidia.com>
 
-On Fri, Nov 7, 2025 at 11:00=E2=80=AFAM Sumit Gupta <sumitg@nvidia.com> wro=
-te:
->
->
-> On 06/11/25 16:00, kernel test robot wrote:
-> > External email: Use caution opening links or attachments
-> >
-> >
-> > Hi Sumit,
-> >
-> > kernel test robot noticed the following build warnings:
-> >
-> > [auto build test WARNING on rafael-pm/linux-next]
-> > [also build test WARNING on rafael-pm/bleeding-edge linus/master v6.18-=
-rc4 next-20251106]
-> > [If your patch is applied to the wrong git tree, kindly drop us a note.
-> > And when submitting patch, we suggest to use '--base' as documented in
-> > https://git-scm.com/docs/git-format-patch#_base_tree_information]
-> >
-> > url:    https://github.com/intel-lab-lkp/linux/commits/Sumit-Gupta/cpuf=
-req-CPPC-Add-generic-helpers-for-sysfs-show-store/20251105-194715
-> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm=
-.git linux-next
-> > patch link:    https://lore.kernel.org/r/20251105113844.4086250-5-sumit=
-g%40nvidia.com
-> > patch subject: [PATCH v4 4/8] ACPI: CPPC: add APIs and sysfs interface =
-for min/max_perf
-> > config: riscv-defconfig (https://download.01.org/0day-ci/archive/202511=
-06/202511061802.lIq09jwh-lkp@intel.com/config)
-> > compiler: clang version 22.0.0git (https://github.com/llvm/llvm-project=
- d2625a438020ad35330cda29c3def102c1687b1b)
-> > reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/arc=
-hive/20251106/202511061802.lIq09jwh-lkp@intel.com/reproduce)
-> >
-> > If you fix the issue in a separate patch/commit (i.e. not just a new ve=
-rsion of
-> > the same patch/commit), kindly add following tags
-> > | Reported-by: kernel test robot <lkp@intel.com>
-> > | Closes: https://lore.kernel.org/oe-kbuild-all/202511061802.lIq09jwh-l=
-kp@intel.com/
-> >
-> > All warnings (new ones prefixed by >>):
-> >
-> >>> Warning: drivers/cpufreq/cppc_cpufreq.c:954 function parameter 'polic=
-y' not described in 'show_min_perf'
-> >>> Warning: drivers/cpufreq/cppc_cpufreq.c:954 function parameter 'buf' =
-not described in 'show_min_perf'
-> >>> Warning: drivers/cpufreq/cppc_cpufreq.c:976 function parameter 'polic=
-y' not described in 'store_min_perf'
-> >>> Warning: drivers/cpufreq/cppc_cpufreq.c:976 function parameter 'buf' =
-not described in 'store_min_perf'
-> >>> Warning: drivers/cpufreq/cppc_cpufreq.c:976 function parameter 'count=
-' not described in 'store_min_perf'
-> >>> Warning: drivers/cpufreq/cppc_cpufreq.c:1003 function parameter 'poli=
-cy' not described in 'show_max_perf'
-> >>> Warning: drivers/cpufreq/cppc_cpufreq.c:1003 function parameter 'buf'=
- not described in 'show_max_perf'
-> >>> Warning: drivers/cpufreq/cppc_cpufreq.c:1025 function parameter 'poli=
-cy' not described in 'store_max_perf'
-> >>> Warning: drivers/cpufreq/cppc_cpufreq.c:1025 function parameter 'buf'=
- not described in 'store_max_perf'
-> >>> Warning: drivers/cpufreq/cppc_cpufreq.c:1025 function parameter 'coun=
-t' not described in 'store_max_perf'
-> > --
-> > 0-DAY CI Kernel Test Service
-> > https://github.com/intel/lkp-tests/wiki
->
->
-> Thank you for the report.
-> Below change to comments seem to be fixing this warning.
+On 05-11-25, 17:08, Sumit Gupta wrote:
+> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
+> -static ssize_t show_auto_act_window(struct cpufreq_policy *policy, char *buf)
+> +static ssize_t cppc_cpufreq_sysfs_show_u64(unsigned int cpu, int (*get_func)(int, u64 *), char *buf)
+>  {
+>  	u64 val;
+> -	int ret;
+> -
+> -	ret = cppc_get_auto_act_window(policy->cpu, &val);
+> +	int ret = get_func(cpu, &val);
 
-So can you please send a new version of this patch with the changes
-below folded in?
+Why no casting required here, when you need it ... 
 
-> -------------------------------------------------------
->    /**
->    * show_min_perf - Show minimum performance as frequency (kHz)
-> + * @policy: cpufreq policy
-> + * @buf: buffer to write the frequency value to
->    *
->    * Reads the MIN_PERF register and converts the performance value to
->    * frequency (kHz) for user-space consumption.
-> @@ -1117,6 +1119,9 @@ static ssize_t show_min_perf(struct cpufreq_policy
-> *policy, char *buf)
->
->   /**
->    * store_min_perf - Set minimum performance from frequency (kHz)
-> + * @policy: cpufreq policy
-> + * @buf: buffer to write the frequency value to
-> + * @count: size of @buf
->    *
->    * Converts the user-provided frequency (kHz) to a performance value
->    * and writes it to the MIN_PERF register.
-> @@ -1144,6 +1149,8 @@ static ssize_t store_min_perf(struct
-> cpufreq_policy *policy, const char *buf, si
->
->   /**
->    * show_max_perf - Show maximum performance as frequency (kHz)
-> + * @policy: cpufreq policy
-> + * @buf: buffer to write the frequency value to
->    *
->    * Reads the MAX_PERF register and converts the performance value to
->    * frequency (kHz) for user-space consumption.
-> @@ -1166,6 +1173,9 @@ static ssize_t show_max_perf(struct cpufreq_policy
-> *policy, char *buf)
->
->   /**
->    * store_max_perf - Set maximum performance from frequency (kHz)
-> + * @policy: cpufreq policy
-> + * @buf: buffer to write the frequency value to
-> + * @count: size of @buf
-> -------------------------------------------------------
+> -static ssize_t store_auto_act_window(struct cpufreq_policy *policy,
+> -				     const char *buf, size_t count)
+> +static ssize_t cppc_cpufreq_sysfs_store_u64(unsigned int cpu, int (*set_func)(int, u64),
+> +					    const char *buf, size_t count)
+>  {
+> -	u64 usec;
+> +	u64 val;
+>  	int ret;
+>  
+> -	ret = kstrtou64(buf, 0, &usec);
+> +	ret = kstrtou64(buf, 0, &val);
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = cppc_set_auto_act_window(policy->cpu, usec);
+> -	if (ret)
+> -		return ret;
+> +	ret = set_func((int)cpu, val);
 
-As for the whole series, I generally need ARM folks to review it and
-tell me that it is fine.
+... here ?
 
-Thanks!
+-- 
+viresh
