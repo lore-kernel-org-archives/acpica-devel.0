@@ -1,118 +1,247 @@
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from CH1PR05CU001.outbound.protection.outlook.com (mail-northcentralusazon11010045.outbound.protection.outlook.com [52.101.193.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F7772EBB9C
-	for <acpica-devel@lists.linux.dev>; Mon, 10 Nov 2025 11:00:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762772458; cv=none; b=ne5eemFiLsguEtlloUnyFLUbif50VL2QO986sFNs0tZkyIOwlALxdsjuPS3TzOqwWoz1zwEK1igJsFxG4b4fr/Uvz7/dj5AtHnSdNsD+ew3opvkFVD/69/U5x6K/e7wXIWvz2LRZ4cyilgmPrKt4iJiVjNlQ6+KmZaMIWsXZbN8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762772458; c=relaxed/simple;
-	bh=j/sDhA1BE/crBk5MB3jz5Gyqsa0mwcEpYJuOnY+51Ws=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dZBcHE4xawL2Ct+JBnjZRPy29MzUFZ+fJOxva2wtWRUXF/obBga8ybnnD0d/3vEDUMO2rJA9U7OUmg4ZaKgvu1MSjJilYhBYS38S9+L2QjMwMZH+eIRKRSmXetoWwbYoz8fFLfI8eS2UfqcwMzF+5nTf7cJXhIQDO9OPJgrhPEA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Bl41rIFH; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03734351FA0;
+	Tue, 11 Nov 2025 11:06:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.193.45
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1762859180; cv=fail; b=CuNl+VSlbOKCWXq83I59jUd9jixAj03SvbVOXYgFoFS9iLSvwDnn8rpwpZfwTFx48A7op4BFobLUvtNM2UZfuoMGCt3gS+V7imtpta5zaABncAxSgSnNsEJth5JlPhOhFy1dBcUUlnVPkbNKDQdxvNRsj3qjDW/heZlrSg8lInw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1762859180; c=relaxed/simple;
+	bh=Ns1EsZCWZU9HZ6enT/L4BN4FjwzZIabPyskIjOFAY5M=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=mdxyMxXAfYi57AN6tWRDjty11r6FjzcMpXv0lWBKr3RZ2sw3/iru39Hf/rifU7aVQmXPuPoVkRbDO+7mHcIxyUxRWnxqwQm1/5Qz2ah39PkXnYdRVFCm9TgK0bi7xK5ZqzskOtYfYRKBMopCYjnfG+g+HT80SIbgF/RX5eqNLE8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=WUeuOvKy; arc=fail smtp.client-ip=52.101.193.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Bl41rIFH"
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-782e93932ffso2321410b3a.3
-        for <acpica-devel@lists.linux.dev>; Mon, 10 Nov 2025 03:00:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1762772455; x=1763377255; darn=lists.linux.dev;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YrIRy6Lhq+4eE5yPFjSN9IOBDP8Cyczj9KXwJvvJFlc=;
-        b=Bl41rIFH3q8TJW5AGkYQgaoqHB6qrzMsM9tr+HYJWM+w03C4V+hQkOzAK5/neQ3qhX
-         4HxPNnRvHw1PJR0PVrcGuuW7JHq8hcXuDeXSwKBKDVZ6HBjdvZ+iXUhR922Gg1d739no
-         LiCpayj+kCMNateJWLix6fwke1eFNb5vx5GbYYe3edz2P1VKyGexv8RPSBXp9ozoyPKP
-         QOOBLiuV8UDCm+pyQ/lMSZl34q+HAVal1JQ8l/0Gjp7VGvNv+kpXaNaEM09N5ihYXEoS
-         4TBn9iBk2EBKpP2ET6/OU4v8pdlDrtp0zGBsfI7MnDLMFIf9eJosP0XrQ+08Os+iCw5e
-         Umtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762772455; x=1763377255;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YrIRy6Lhq+4eE5yPFjSN9IOBDP8Cyczj9KXwJvvJFlc=;
-        b=eucsn9X6ISKxNmBogLPcpYdyqA3AkAbZoHi5k27s3cfyFPn+vKi5JtJ7HNwFLKfAI+
-         qWVMVpNEEQACd82J8f9lIDyO0dUPQUiL5aApQd7LhZybBlwVLZkfTExVynTgvE48MzJJ
-         cW/ein8iYzZ2ZLNOK8c6v6g6am9BVzy+8Vrh8m/aGlwGqa+V/KcFcARUj44yosnq3GU0
-         3DipaE1NdFonYjaSldbfw6mZXCHcD84aqE8WfIoJAhqYtxV7RVHzkvQEBBYegIZV1Frx
-         s2ym3I6kt4Ga9lfNVYEb2ddGcq3BEc3dzU2vGh+U5v4T5qbT/xEfUFy+yziARO2DgCUl
-         PpUg==
-X-Forwarded-Encrypted: i=1; AJvYcCX7ZBurUvRRDuZ5ZQiX8hUGC+vTeYLgfJchZLfLhweQBMup6q31tjBQbYZV4589ds1vUNJmWv4Hu1q/XLE=@lists.linux.dev
-X-Gm-Message-State: AOJu0Ywh7Y3DSGkPmGLbzwyyuMpNTugoBeg5YKk6B2OYZ/LzTwrRnP32
-	KFhJt8/feVx4+/PgaTK76wGKq0+CgS3Hg+dyVGG7m8d2L0I8DYITQrh/U9we9vC14Qs=
-X-Gm-Gg: ASbGnctzvgGf1smOZJPuZvsz7BVyxYGsaT8NpwHz2LyWf8V73BqW3w2FFVY1zevDXHU
-	jV5OZj7kcE0q7aal6LG6pO258qoTAVweofJoj+FIT7FeqjQNzGaMz0jHhqT/x3sg11dlGbeMQQG
-	lbEeb2tce+9hvvHaoiHPnbop+n+c4hKfwQjEMhO77Nn89zGnNuM3GW4dcihNEer/TzcuAEw4xJW
-	gFgxnETnajPEbuJHttXO0Hravbngdy8aOJRkBCp9ZcQHoIg44Kcd7g8G5itVcVk/ytzPR3TNnNc
-	2FzI1VHYPSpgEDdgMuYhaY9HJycoR0NhOSoDk09znsGGDzn3rYrWC3qs2xIKnBtCVzpPls2EYBw
-	6AKu/uM6+XJc3cX4mYfqBZsG4eRMkQ866j2VuPHsupbymXD5Dp+oFrYE/ek7QwPAZIWyr+Fs8aD
-	Euness8GV/7Z0=
-X-Google-Smtp-Source: AGHT+IGOFDbu7mquDmNhSqV97BdY6cG6MLgvb5Xp7QodBHXn8La7j+gNEL/xmdVl7cozIyrmwIAy9g==
-X-Received: by 2002:a05:6a21:3291:b0:350:1872:7023 with SMTP id adf61e73a8af0-353a4163b2bmr9937463637.55.1762772455121;
-        Mon, 10 Nov 2025 03:00:55 -0800 (PST)
-Received: from localhost ([122.172.86.94])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7b0c963586fsm11304602b3a.10.2025.11.10.03.00.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Nov 2025 03:00:54 -0800 (PST)
-Date: Mon, 10 Nov 2025 16:30:52 +0530
-From: Viresh Kumar <viresh.kumar@linaro.org>
-To: Sumit Gupta <sumitg@nvidia.com>, pierre.gondois@arm.com, 
-	zhanjie9@hisilicon.com, ionela.voinescu@arm.com, beata.michalska@arm.com
-Cc: rafael@kernel.org, lenb@kernel.org, robert.moore@intel.com, 
-	corbet@lwn.net, zhenglifeng1@huawei.com, rdunlap@infradead.org, 
-	ray.huang@amd.com, gautham.shenoy@amd.com, mario.limonciello@amd.com, 
-	perry.yuan@amd.com, linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org, 
-	linux-doc@vger.kernel.org, acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	linux-tegra@vger.kernel.org, treding@nvidia.com, jonathanh@nvidia.com, vsethi@nvidia.com, 
-	ksitaraman@nvidia.com, sanjayc@nvidia.com, nhartman@nvidia.com, bbasu@nvidia.com
-Subject: Re: [PATCH v4 0/8] Enhanced autonomous selection and improvements
-Message-ID: <hjrcoq7dapqcodk3iiyvjeuq3cwvyccqr4wnlcoi6eduqg5ahf@tszrjvfnkjux>
-References: <20251105113844.4086250-1-sumitg@nvidia.com>
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="WUeuOvKy"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=Viy2l/+D0r96erB+sO7TIIQgZtejwqJOSAYgbGWINmho+w9DVMzwu8JPE/oEQ26nadQdJhuCNajL7Q671rVcKMKJtqkin6j9QfDz2sAaxN0pw1VlKEfNHVFoffT6nzqQTwewtoIexeT2bADJCH18rHY5elB9cspq/Rm5LNxKJRRVHMVMd3CdoCF66ycPD90cI0UqSuH4fYhq0wKdYn5VPAkyOJZCBi6E8IxU2qZcbC7DkaiPI0giSWA9V0uAOzZFNydPVU/Qf98alWTkogGwtTT+i7p0WN15ST9TJRqWzFjzwkDDau2aIPY0N4z4KiHM/QNZN9k68tQPrvRQZJHFSw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+NNmWUgmyCzxXTFoPg7up8iRT4elAX3ds83adaY2wtk=;
+ b=jeclQ4lV/rCqCLyt/x/Is+E3BbioIm3USllBIjXzzyChuDv6ztyOERAjXJSDKFo7ojBIyUgjHOx0eWI6Wif7Kcoinic2I/G7AuLy7nzz2SYAyqMnV4Jc4xjLquJzV585GcIdjgkcUlCV1lze6GFFMHyqcwzPryHOQLidDR9hd2uHjp6UUlAxFkd18d2sveuyPSDfRuW0AUWUDOVuAgwy3ETao2Hfag9ufDW+xmsJGe1o84qk7z9HrJtjYGNpbyIXSdc8t3fpJRkk2SpizP8Y1n29Jvm8lBGigSHyfTteNFOvGgecW+wz93eXWwXO+UkQ0BJabkVtP9qIvZKrXaxIKA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+NNmWUgmyCzxXTFoPg7up8iRT4elAX3ds83adaY2wtk=;
+ b=WUeuOvKyCWKBuGmYY3jpObUR1XIHCE0l5eYeXHBBn7vj8RSHZ9tMDAbQP4xL7Rz5xeKhZBcP7ZI1O3z5ryrdjyEbatvRiu09OBuLMT+ctUY2CmAOaZcPnG3a9EQ2vtsDkKuDNKGAzHQ16MP+RxgpmJT5CQe+5evfBWuvJukCG0fxQQuq6DLLG6uBSPWwVD2qh8bQJAorAwFcN4JaJ3PMB4ReOAT7fcYKwu/MpduJ8PXXbfjW7BW6nl4g08YR+0Jmo9lYGFkmQCm5ZN5K/S7IZPToJpLYc1Z83UpVJ+XmcdtRQCHH6DW9ukEwG5uOfXztsxi8lLnrqyzIf0JhvhVUNw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BN9PR12MB5179.namprd12.prod.outlook.com (2603:10b6:408:11c::18)
+ by CH2PR12MB4279.namprd12.prod.outlook.com (2603:10b6:610:af::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9320.15; Tue, 11 Nov
+ 2025 11:06:15 +0000
+Received: from BN9PR12MB5179.namprd12.prod.outlook.com
+ ([fe80::44e5:415d:e1a8:6e42]) by BN9PR12MB5179.namprd12.prod.outlook.com
+ ([fe80::44e5:415d:e1a8:6e42%7]) with mapi id 15.20.9320.013; Tue, 11 Nov 2025
+ 11:06:14 +0000
+Message-ID: <aec90c07-7528-4390-8599-e60d09159133@nvidia.com>
+Date: Tue, 11 Nov 2025 16:36:06 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 4/8] ACPI: CPPC: add APIs and sysfs interface for
+ min/max_perf
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: kernel test robot <lkp@intel.com>, viresh.kumar@linaro.org,
+ lenb@kernel.org, robert.moore@intel.com, corbet@lwn.net,
+ pierre.gondois@arm.com, zhenglifeng1@huawei.com, rdunlap@infradead.org,
+ ray.huang@amd.com, gautham.shenoy@amd.com, mario.limonciello@amd.com,
+ perry.yuan@amd.com, ionela.voinescu@arm.com, zhanjie9@hisilicon.com,
+ linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
+ linux-doc@vger.kernel.org, acpica-devel@lists.linux.dev,
+ linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+ oe-kbuild-all@lists.linux.dev, linux-tegra@vger.kernel.org,
+ treding@nvidia.com, jonathanh@nvidia.com, vsethi@nvidia.com,
+ ksitaraman@nvidia.com, sanjayc@nvidia.com, nhartman@nvidia.com,
+ bbasu@nvidia.com, sumitg@nvidia.com
+References: <20251105113844.4086250-5-sumitg@nvidia.com>
+ <202511061802.lIq09jwh-lkp@intel.com>
+ <be696cb5-7d0d-44f6-970b-e417c2f89a8e@nvidia.com>
+ <CAJZ5v0j8bQm+00+m75rmpKpm8yVumvYsWzCdYyCPwksnebY__A@mail.gmail.com>
+Content-Language: en-US
+From: Sumit Gupta <sumitg@nvidia.com>
+In-Reply-To: <CAJZ5v0j8bQm+00+m75rmpKpm8yVumvYsWzCdYyCPwksnebY__A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MA5P287CA0074.INDP287.PROD.OUTLOOK.COM
+ (2603:1096:a01:1b3::8) To BN9PR12MB5179.namprd12.prod.outlook.com
+ (2603:10b6:408:11c::18)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251105113844.4086250-1-sumitg@nvidia.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN9PR12MB5179:EE_|CH2PR12MB4279:EE_
+X-MS-Office365-Filtering-Correlation-Id: bd6a943a-1654-4903-3193-08de21125454
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|376014|366016|1800799024;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?cklNVzFtL1Z3QjNGZUFQMDZEem12dnlPa1RQQ1FpdmVtU1hpMWdMS3ErMWpB?=
+ =?utf-8?B?L1J6UkNCTzg2a1lnenJGbE9KUVcvZWVzZTZmMWFObWo3VUhkMEtZamVjcEk0?=
+ =?utf-8?B?eU1RaEcxZy9rQTZESldVeHZ3azBTOHY4Y1QvZmpONGdpMElrRVhGZWxZUjlD?=
+ =?utf-8?B?SDIrZjJKbmZ3dE82ZmduSGdmeWJHODI3UTA3LzlMOHAzNkFWYXZiUU1ub2hC?=
+ =?utf-8?B?OXl3M3FiWXJkSkM4RkdXK0ViYkhlcktoMUpHa2UrZ1M1TjF3RnZ2VDZ4U1ll?=
+ =?utf-8?B?emZnR08wWm13R2QxLzh4ajVtNVRZT0VDYVgvYTVVeEpzUERLempUMkpuazh1?=
+ =?utf-8?B?Uk0rZy9EUVIvNDJ3SU9mdW10ejZYa0Z6Si96R2lySWRZUWpZNUVzbzlhc01J?=
+ =?utf-8?B?TnN1WVAyc2ZIOXZRMkxNQW5wNElFYXFSaXMyd01FY1VCVzBZdlJqUjdZVEZ2?=
+ =?utf-8?B?L2o3UHBHVjNNclQrNXRUNW05Z0tkRGZsYW9BKzUweXZ5MjFycVRNSEpuaW16?=
+ =?utf-8?B?Rk00dDFlZ2l3M2xhQ3FoTFR5QllXMkMvb0pJNlRvcjA3OU15YW5nb0xoYnhr?=
+ =?utf-8?B?eTlvQlV5ZE9BZVJBMUYvMG9JV0Q0bW5aMzRrVFM5VXdyc0wrN3czWkpjYWh5?=
+ =?utf-8?B?b08ybE5BbDBnTHJiWEFtK1V1RHFLNitha01GMUVxT2JOMG5MK2tFbjF0dU5w?=
+ =?utf-8?B?QkpYU0lGSWtiSEJCdTMxdHd1NFVIS1lxbHhNQTlLTU1KYWZNZFRjdys5SlRN?=
+ =?utf-8?B?TUdFTzdaaHpUWW9helR0azF5dEFJZHNseVVqKzAyN0JBaC9iVWplSjV1Rkth?=
+ =?utf-8?B?M3FYMEdwZ1pBeDNQWXIvZ2dFRWwyRnZaS1VZTVlDd2o0Z2QrM2M2R3hNbFJE?=
+ =?utf-8?B?bG5IcG0vUTd6Q2lmdk9QNTdFQ2FkODV2ZTl4cUc2d2Z5SldjaThZd0JKSkpG?=
+ =?utf-8?B?eFhndWIwVFc1SjRTblNibHEwWFE0cjVQVXo4MEY5a0lpbFhCV0FCY3ZmSEV6?=
+ =?utf-8?B?Nit5ejZTaExmalEzS01IQnlvYUJ3OTloS2s2ZHpqOFZOeCtjLzNWblVUOGVt?=
+ =?utf-8?B?UFpjbzNjMUZMZkowTmtMMjZIWGhKL0E2dUdIM2VqNlVwWHlucnh1ZE41TFVa?=
+ =?utf-8?B?bTVGR1ZpZVh3YXozVk1FRFFmMGo3RXBRbWhGSGtMaXNOTlY0aFBLZktqUTVK?=
+ =?utf-8?B?bkVDaUNub0FTdjhKQWpIdmtJbnE2eExNTW1vaENqcmE4Z1BobGZGeEhjOGtu?=
+ =?utf-8?B?c29JbjB6eVpIYjlnWXBXNE9rOWVUekdLNlYzbHZZVGpVRzZwMFUxaktkMHNX?=
+ =?utf-8?B?THBwM1lMRkRFSHcrcUlQL2VZWW9nekozTzR6OXYxNWcwUS8yVUJVK0E0MjlI?=
+ =?utf-8?B?KzVYTmpvRW9JUFNKZWZzYURUcHZRMDNGMFRjZDNBekg0SkRtSXEzcmRkNk5C?=
+ =?utf-8?B?RzJKOFY0UXVVSVhuZktIUmhIMldKVDJ1WDllcVZKRlp0Q1dLYkZpNHJNbEpp?=
+ =?utf-8?B?MmMzbGdGeHlTSDF4bU9qdUNDYkJuRmdhcm1pYW9rWElUbUZrb3NNQ1lrTlIz?=
+ =?utf-8?B?dE5lWjE0U0xzWVdoN1B5N0NOUHR4eTNwMGgyQ3RkOXduL1hraGJJSkZ4LzFG?=
+ =?utf-8?B?NlBZTWVlcDh1WVhlaGpyRTJRZmsyRVZzaGgzN2hWN3JJWUp5OGRVUzBHVXFU?=
+ =?utf-8?B?c1BFUVBLNXB3eDVYdXdTYnRzTnpWSGNBRjFFcDFNUlBGUVZka0FRdG9wRnJZ?=
+ =?utf-8?B?enlvWE96bm1mNWpzMDhWL0dySG1RdnpJa2ZFWERWalpwdlk3OHVITElNeWdm?=
+ =?utf-8?B?SEhPYkUwQ2lpeitEZnNEZ0hnMmJnRUNGS284bzVXL3RCeWl4eEd2b0lFU1Jm?=
+ =?utf-8?B?N3RaK0dmdzhJUUM0UUJ1c09pWFV3NVVHTW5aR3FnWTZyNUxsNWpXeWdpZ1RT?=
+ =?utf-8?B?U2lkWVIxYW5ZTkE3K0JXMXNIczdVZU80QUVnL0xKL1NzN2VjLytudzZ0OFgx?=
+ =?utf-8?B?SVRlelZEZlZ3PT0=?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5179.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(366016)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?OFVkdWYzTjBwNnNHc2lJc1dZYUxoYVplaVVzMmtoNVJmdTc5NTh6NjBHNlkz?=
+ =?utf-8?B?MDg4dWhEZ1VCQzVFTVFacXg4QTkyUjdPMDRLb2JRRGN6dFZqRnZLc2FhSHBM?=
+ =?utf-8?B?VEZHeXBXNnZ4bE9ET0dYQy96ZDErZmRQTG9hU1NOcjFxYmRJdVl4RXVSd1VY?=
+ =?utf-8?B?UDd0c084eXg2WGxIWGMyR3VhZUlxTWdsNlBZdFNzb1kyRUY1VnJOL09VTWJq?=
+ =?utf-8?B?ZGg4ekRvbVE1VG90NHZGSExiSldiMzZ0NDU3N1ZuZEZOVWw3RU5Sa2kxNHRj?=
+ =?utf-8?B?ckZUNlN0RUNaVi9JNG1DR090RmFaUisrcCtEQUNxWFZwSFo2MFNLN3hGWHFn?=
+ =?utf-8?B?ckxUVGtKbDVNdTNJZnNWL0lCOVFlRFpJdzlFUnlZTkU0OEVGdFVYV2VvaWJn?=
+ =?utf-8?B?UUlZSmdPNjhjVEhFTFg2K1ZVdEJoaXFnU1FTRDcrSW8zT0hUK01rQnZ2WWcr?=
+ =?utf-8?B?L0E1QmJQclNHS2hOOWpHRjM3cmd3eVV4UElqN1hUWEVuejBET2ZKWmJUaU5O?=
+ =?utf-8?B?WnJSTTN0emh1QjI1T1RaSGxBTEJpcld3Mi85OHA0TllRc3hYdFNKWFFWSHNL?=
+ =?utf-8?B?YTVBK0hPemVFamNxZkRPcXJvT1gwWktLeHRqdlgrZ2hEUHdEMU5KQXRkWU1B?=
+ =?utf-8?B?cVVKeXg1dm1WL3Z2WDY5Q1hSU3h6V0pzMjExNGtFWGh3KzByOG8rd1l6YThJ?=
+ =?utf-8?B?ejROeGprQjJXMGplcUlZaTlJMTNkUDYzNmtlUTdUZ2lEZnhCK0lXV1pUci92?=
+ =?utf-8?B?VmQzeTFBYnhpTitYUjR1WTlzNThQckpMdUtSdXArelpKRmlBYkRZU3laQ0lS?=
+ =?utf-8?B?UVN2SmZJVUNObEoxRVhqTkRRUDhEUXFTUlFoUEJHT29wemE1eTkxaytLWVBu?=
+ =?utf-8?B?L2Q5WThLWFRvSEZJbVV1bTErYnM5Q1oxamFyYUhYU3pkZ0d4NnJCbGdsVVB5?=
+ =?utf-8?B?UnNWa3NqU2d2Z215UUpNUlJIZVZNRkluQXhPT3FKa2RBR3hQVS9YWGE4M0ww?=
+ =?utf-8?B?YVAyS2ZoTXN1WEl3cURYTDlHczhleGpodmYwOG9ndk0ybHZYYnlQN1pUbHNr?=
+ =?utf-8?B?bCtqbTB1cGdvOGt3S1Z1akNEZnNYZi9PRDJhbnpoSnNzL2Irbkl0Sm5JTWJs?=
+ =?utf-8?B?aHo5VjNmaWc1T3V4SjJPQTFCelEzY1kycVBrem45YWNpYUx4YjA3VHZWUkRx?=
+ =?utf-8?B?bzZwR2JhcDZ3Y1VUUmlldEdVMFkwb2h4S2hiYSt1UUtlQUt5N296OEFTMlZH?=
+ =?utf-8?B?SGFJOURPeDhDNUJBQ28wZ2ZVaHZnaGxpenJYbU9DbEovNFNwVVJVTWJST0hp?=
+ =?utf-8?B?bmowbWU2ekRKczhQczlSeWMvRWIzMkgvZTRBejZqeUN5bFkwVExndDl6SWhC?=
+ =?utf-8?B?aDZzbmppdk9kTzQ2eDd5ODdsbG82dlNZbjJsRDZHTHpVemwvcnVCeHI4U3BE?=
+ =?utf-8?B?UTYrcExlek5vMkJJU3JLODgyd2RodEJjeHZZOFVadTJvRFZ2WGpmU2NHTUVS?=
+ =?utf-8?B?dVNyMWNmOHVXNlhDSmg4SkdJVElwaUIzNW5STjQzT29NTUtaMWlaV3paak1w?=
+ =?utf-8?B?Q3gzdzc3T09rSnBPUng3enUzdFJzeWlNUElEOVM2bmtCaEtvdVNLdzYwTU15?=
+ =?utf-8?B?Umd3ZlhsM2lmVmVmaXYySFVDZTVERkxRUFFHVkY0dG9rOURlakErcEZ2ZkhO?=
+ =?utf-8?B?eVpBdWU0TVJZYUFTMmdUSXdLclE4bGFHdzZkVVlTSUFxdmQwdnhmK2hrMnNn?=
+ =?utf-8?B?Qzd6bEVzV0tsWWQ5dDJFamJSMG9EZmUweSsrOTdiTmQ4Ty8zejlpUC9QRndQ?=
+ =?utf-8?B?UnowMVJuK0QzMTBIZDBtUFhlNkxOWk1JMUQzQ3BYOC9aRDB0OUdVUzVuZ2NU?=
+ =?utf-8?B?QVAwQ1NNRXVZd1g1Tjg5K21xVnNJczhJZmFQT2dzVXc0TzNBSGlOdnc4YTJV?=
+ =?utf-8?B?S3JNdVJacWh5S25nNTU4bzUybUNXL3JuTXlNaGE3VTNGRnlRYVArWHNxM1BT?=
+ =?utf-8?B?ay90MGVXQ2l4Ym9oN3ZTdW5TcWFwdjZ2TTlxK3FSY2gzZnJMVnE2U3lsT01p?=
+ =?utf-8?B?WmJXVGoreENDR2NkZHkzSTFzZUltcnhMUTc3V2JyVEtKMkZCai9TUTROaTRB?=
+ =?utf-8?Q?djHye99VeYrGySQpayLVODREU?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bd6a943a-1654-4903-3193-08de21125454
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5179.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Nov 2025 11:06:14.4868
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7QXVi/UjVcQCr986jLK7QfCqujztNB4tUXSaAXC6md5+cUGQXeYJnP9CGIYEm4t6Fx2ZcwTOXyHTgzbOTj6Igw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4279
 
-On 05-11-25, 17:08, Sumit Gupta wrote:
-> This patch series enhances the ACPI CPPC CPUFREQ driver with
-> comprehensive support for autonomous performance selection, expanded
-> runtime control interfaces and improvements.
-> 
-> It adds support for below:
-> - Expose sysfs to read/write the Minimum/Maximum Performance Registers
->   using frequency (kHz), with internal conversion to performance values.
->   Also, update the policy min/max accordingly.
->     /sys/.../cpufreq/policy*/min_perf and max_perf
-> 
-> - Expose sysfs to read/write the Performance Limited Register.
->     /sys/.../cpufreq/policy*/perf_limited
-> 
-> - When toggling autonomous selection, synchronize the policy limits
->   by updating the policy min/max.
-> 
-> - System-wide autonomous mode configuration via 'auto_sel_mode' boot
->   parameter. Mode can be switched dynamically on individual CPUs.
-> 
-> - Generic sysfs helper functions to reduce code duplication.
-> 
-> The patches are grouped as below:
-> - Patch 1, 2 & 3: Improvements. Can be applied independently.
-> - Patch 4: Sysfs to update min/max_perf. Can be applied independently.
-> - Patch 5: Sysfs to update perf_limited. Can be applied independently.
-> - Patch 6: add sysfs documentation. Depends on 'Patch 4 and 5'.
-> - Patch 7: sync policy min/max with auto_select. Depends on 'Patch 4'.
-> - Patch 8: Boot Parameter Support. Depends on 'Patch 4 and 7'.
 
-Beata/Ionela/Jie, any feedback on the CPPC changes ?
+On 08/11/25 01:38, Rafael J. Wysocki wrote:
+....
+>
+>>>>> Warning: drivers/cpufreq/cppc_cpufreq.c:954 function parameter 'policy' not described in 'show_min_perf'
+>>>>> Warning: drivers/cpufreq/cppc_cpufreq.c:954 function parameter 'buf' not described in 'show_min_perf'
+>>>>> Warning: drivers/cpufreq/cppc_cpufreq.c:976 function parameter 'policy' not described in 'store_min_perf'
+>>>>> Warning: drivers/cpufreq/cppc_cpufreq.c:976 function parameter 'buf' not described in 'store_min_perf'
+>>>>> Warning: drivers/cpufreq/cppc_cpufreq.c:976 function parameter 'count' not described in 'store_min_perf'
+>>>>> Warning: drivers/cpufreq/cppc_cpufreq.c:1003 function parameter 'policy' not described in 'show_max_perf'
+>>>>> Warning: drivers/cpufreq/cppc_cpufreq.c:1003 function parameter 'buf' not described in 'show_max_perf'
+>>>>> Warning: drivers/cpufreq/cppc_cpufreq.c:1025 function parameter 'policy' not described in 'store_max_perf'
+>>>>> Warning: drivers/cpufreq/cppc_cpufreq.c:1025 function parameter 'buf' not described in 'store_max_perf'
+>>>>> Warning: drivers/cpufreq/cppc_cpufreq.c:1025 function parameter 'count' not described in 'store_max_perf'
+>>> --
+>>> 0-DAY CI Kernel Test Service
+>>> https://github.com/intel/lkp-tests/wiki
+>>
+>> Thank you for the report.
+>> Below change to comments seem to be fixing this warning.
+> So can you please send a new version of this patch with the changes
+> below folded in?
 
--- 
-viresh
+Sure.
+
+
+>> -------------------------------------------------------
+>>     /**
+>>     * show_min_perf - Show minimum performance as frequency (kHz)
+>> + * @policy: cpufreq policy
+>> + * @buf: buffer to write the frequency value to
+>>     *
+>>     * Reads the MIN_PERF register and converts the performance value to
+>>     * frequency (kHz) for user-space consumption.
+>> @@ -1117,6 +1119,9 @@ static ssize_t show_min_perf(struct cpufreq_policy
+>> *policy, char *buf)
+>>
+>>    /**
+>>     * store_min_perf - Set minimum performance from frequency (kHz)
+>> + * @policy: cpufreq policy
+>> + * @buf: buffer to write the frequency value to
+>> + * @count: size of @buf
+>>     *
+>>     * Converts the user-provided frequency (kHz) to a performance value
+>>     * and writes it to the MIN_PERF register.
+>> @@ -1144,6 +1149,8 @@ static ssize_t store_min_perf(struct
+>> cpufreq_policy *policy, const char *buf, si
+>>
+>>    /**
+>>     * show_max_perf - Show maximum performance as frequency (kHz)
+>> + * @policy: cpufreq policy
+>> + * @buf: buffer to write the frequency value to
+>>     *
+>>     * Reads the MAX_PERF register and converts the performance value to
+>>     * frequency (kHz) for user-space consumption.
+>> @@ -1166,6 +1173,9 @@ static ssize_t show_max_perf(struct cpufreq_policy
+>> *policy, char *buf)
+>>
+>>    /**
+>>     * store_max_perf - Set maximum performance from frequency (kHz)
+>> + * @policy: cpufreq policy
+>> + * @buf: buffer to write the frequency value to
+>> + * @count: size of @buf
+>> -------------------------------------------------------
+> As for the whole series, I generally need ARM folks to review it and
+> tell me that it is fine.
+>
+> Thanks!
+
+Will wait if ARM folks have any new comment and then re-spin next version?
+
+Thank you,
+Sumit Gupta
+
