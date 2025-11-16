@@ -1,435 +1,328 @@
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC70A2EBB8F
-	for <acpica-devel@lists.linux.dev>; Thu, 13 Nov 2025 15:15:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from mout.web.de (mout.web.de [212.227.15.3])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D81F6266B56;
+	Sun, 16 Nov 2025 21:09:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763046956; cv=none; b=di4EvcmIS/8M2XGUmIqDndjq0ic5KFv9WODaCzyYT+W/ZdeWDpN3kT++6bY9/mp5OyHqo2tuPN+A1LpxaGxrgtMvMwZQaudz7FNZay5fzYNJaHerNAg0znGd0su4X6KxNxomyQU2VF0aIR3xHSNwLgCpg2txZH5/e2NE2ZX3mCg=
+	t=1763327355; cv=none; b=CCRlfMb1u3lEx+UWXhVjPuh8FI4DLqWXCMribEKgXpxldSqgiVi1a4BFzWI7PoiERtMw7XorNv8rqD3CHHVzI+pyUKunuIWYhjTzUo5eTRKMc3g+8nNTrcYrb8a+ndaV2HV2d1juWCRdy0IjGwLs9fudWcQSsnDKhbii/uQz5ig=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763046956; c=relaxed/simple;
-	bh=b2qgVXhlTqI+ms4L6K/w37wAIrhIfLu5uz7+Fp58pio=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tH2vlL6LAYpg9UYq/vO6IZx+YG4HFSFPM8NIAsq8a3NcEzfhxwPSxHjukm0vwqJVgZ0RwHCQb9RLhQbXSCDELZBBFEl26XuSFNCmYape3noaAoDI9tmmRMCymz4GNmzdgo31vPBST81pKwqrQE20hTvmczvAqzf81GCQ2Q/S/hw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4FE6A12FC;
-	Thu, 13 Nov 2025 07:15:45 -0800 (PST)
-Received: from localhost (ionvoi01-desktop.cambridge.arm.com [10.2.80.58])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 983693F66E;
-	Thu, 13 Nov 2025 07:15:52 -0800 (PST)
-Date: Thu, 13 Nov 2025 15:15:47 +0000
-From: Ionela Voinescu <ionela.voinescu@arm.com>
-To: Sumit Gupta <sumitg@nvidia.com>
-Cc: rafael@kernel.org, viresh.kumar@linaro.org, lenb@kernel.org,
-	robert.moore@intel.com, corbet@lwn.net, pierre.gondois@arm.com,
-	zhenglifeng1@huawei.com, rdunlap@infradead.org, ray.huang@amd.com,
-	gautham.shenoy@amd.com, mario.limonciello@amd.com,
-	perry.yuan@amd.com, zhanjie9@hisilicon.com,
-	linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
-	linux-doc@vger.kernel.org, acpica-devel@lists.linux.dev,
-	linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-	treding@nvidia.com, jonathanh@nvidia.com, vsethi@nvidia.com,
-	ksitaraman@nvidia.com, sanjayc@nvidia.com, nhartman@nvidia.com,
-	bbasu@nvidia.com
-Subject: Re: [PATCH v4 8/8] cpufreq: CPPC: add autonomous mode boot parameter
- support
-Message-ID: <aRX2Iz9+3oMZpX2K@arm.com>
-References: <20251105113844.4086250-1-sumitg@nvidia.com>
- <20251105113844.4086250-9-sumitg@nvidia.com>
+	s=arc-20240116; t=1763327355; c=relaxed/simple;
+	bh=hDbzqfWxD3g3Yjt2W/La7aCBsFh6EBwI3gv4abUoYrs=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=AjKG0H7Bs6fEMm4vApLto2GEkK8DS0lkdb/hzF+WxWrc2ohqoXxbPxW1ycC9RQQMCn6hjwbp85cgLApglizMZ+FerVVOAXX0bB4BrWCBgWGk/xM2YqhD8RVmf9pQgDTff3THFDf9zfPyLFpRyBVF8Kb5Sr9pF/DOKHspYZndY0U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=spasswolf@web.de header.b=TqPLhN/E; arc=none smtp.client-ip=212.227.15.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=web.de header.i=spasswolf@web.de header.b="TqPLhN/E"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1763327336; x=1763932136; i=spasswolf@web.de;
+	bh=H34mB2us/ARTGeJI9/zWf+TinG8f+xy61EW5M3DNobQ=;
+	h=X-UI-Sender-Class:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
+	 References:Content-Type:MIME-Version:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=TqPLhN/Ex9Qya+ja+vKONU4PnhUh0FC1WdKYy2zHE8wGRcSz26PpzchRlKRA6/hF
+	 NbF39nGmUpckxaifKbSmJ8TNDmDF8ceqznE1gP1JrUXarI515Ud/9M0EeMpp9rhJ2
+	 S5VksJF8XZDRb5GwmSzFcxB+fRWnwTOrfv8q1iPR7XM0kqc1iF/AUa+i0PBHmHjYj
+	 vXliov0aqphWk0PEDsPfwjxMIiDicgrFuRZO4NYnw4rLPFfQ13HfonStumRR2/TIN
+	 YQ751XlBW5Avs0WIS+UE0PudFKSPnQsyK+/AB4mC8ZUGRFhpJw801KVBmtyNqnR53
+	 TTcueGCBjhoD4htExA==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.0.101] ([95.223.134.88]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1N4621-1wKman0DqL-011qDw; Sun, 16
+ Nov 2025 22:08:56 +0100
+Message-ID: <3f790ee59129e5e49dd875526cb308cc4d97b99d.camel@web.de>
+Subject: Re: Crash during resume of pcie bridge due to infinite loop in
+ ACPICA
+From: Bert Karwatzki <spasswolf@web.de>
+To: Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>, "Mario
+ Limonciello (AMD) (kernel.org)"
+	 <superm1@kernel.org>, linux-kernel@vger.kernel.org
+Cc: linux-next@vger.kernel.org, regressions@lists.linux.dev, 
+	linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org, "Rafael J . Wysocki"
+	 <rafael.j.wysocki@intel.com>, spasswolf@web.de,
+ acpica-devel@lists.linux.dev,  Robert Moore <robert.moore@intel.com>
+Date: Sun, 16 Nov 2025 22:08:54 +0100
+In-Reply-To: <0719d985-1c09-4039-84c1-8736a1ca5e2d@amd.com>
+References: <20251006120944.7880-1-spasswolf@web.de>
+	 <8edcc464-c467-4e83-a93b-19b92a2cf193@kernel.org>
+	 <4903e7c36adf377bcca289dbd3528055dc6cfb32.camel@web.de>
+	 <4a8302a0-209f-446a-9825-36cb267c1718@kernel.org>
+	 <25f36fa7-d1d6-4b81-a42f-64c445d6f065@amd.com>
+	 <1853e2af7f70cf726df278137b6d2d89d9d9dc82.camel@web.de>
+	 <f18bafacbd8316c9623658e2935f8fc3b276af64.camel@web.de>
+	 <26bf82303f661cdd34e4e8c16997e33eb21d1ee4.camel@web.de>
+	 <635b6cb19b5969bed7432dfd1cd651124e63aebb.camel@web.de>
+	 <18e472a0489ee5337465d5dc26685cebaf7c4f8d.camel@web.de>
+	 <3772b8f5-6d1a-403e-ad27-99a711e78902@kernel.org>
+	 <0cb75fae3a9cdb8dd82ca82348f4df919d34844d.camel@web.de>
+	 <ab51bd58919a31107caf8f8753804cb2dbfa791d.camel@web.de>
+	 <0719d985-1c09-4039-84c1-8736a1ca5e2d@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.56.1-1+deb13u1 
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251105113844.4086250-9-sumitg@nvidia.com>
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:5jb8xiLJso85XyLQcTc4dt4y5Sq7bFIMRmt4LVPzD9SK4tg3L5n
+ /XEyvRoMEqK5xr0VbUIM6H0IR/9xorOfvZj+FiM+eCf+gQr7MGKp7KVLVF9i2B1nUoyT6J6
+ c5JMHg+IuBBJZFDXkrW6p/n9zYUWBAYyLscq5WV93S6WEplCM2SKscUOD29HvnZMicx0mUb
+ D4dqfL6S7l0lYICNoSZoA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:lQREV7KdzKc=;qxsGyEUsWcBl2G4dSvsgqJGuuK0
+ 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
+ IrHiDGPesjfh/8zK2rmbLAvJe1iC7
 
-Hi,
+Am Montag, dem 10.11.2025 um 14:33 +0100 schrieb Christian K=C3=B6nig:
+> Hi Bert,
+>=20
+> well sorry to say that but from your dumps it looks more and more like y=
+ou just have faulty HW.
+>=20
+> An SMU response of 0xFFFFFFFF means that the device has spontaneously fa=
+llen of the bus while trying to resume it.
+>=20
+> My educated guess is that this is caused by a faulty power management, b=
+ut basically it could be anything.
+>=20
+> Regards,
+> Christian.
 
-As an overall comment, there are now various functions that modify the
-autonomous selection configuration in various degrees:
-cppc_cpufreq_update_autosel_config, cppc_cpufreq_update_auto_select,
-cppc_cpufreq_set_epp_autosel_allcpus.
+I think there may be more than one error here. The loss of the GPU (with S=
+MU respone log message) may be caused
+by faulty hardware but does not cause "the" crash (i.e. the crash which sh=
+owed no log messages and was so hard
+one of my nvme devices was missing temporarily afterward, and which caused=
+ me to investigate this in the first place ...).
 
-Are these all really necessary? Some seem single use functions that
-make the intention very confusing through the use of several bool
-parameters. I think a lot of this complexity can be avoided, so
-I'd recommend to re-think the software design a bit.
+As bisection of the crash is impossible I went back to inserting printk()s=
+ into acpi_power_transition() and the
+functions called by it. To reduce log spam I created _debug suffixed copie=
+s of the original functions.
+The code is found here in branch amdgpu_suspend_resume:
+https://gitlab.freedesktop.org/spasswolf/linux-stable/-/commits/amdgpu_sus=
+pend_resume?ref_type=3Dheads
+(Should I post the debug patches to the list?)
 
-I've added more details below (and I've skipped review of the previous
-patch).
+The last two commits finally cleared up what happens (but I've yet to find=
+ out why this happens).
 
-On Wednesday 05 Nov 2025 at 17:08:44 (+0530), Sumit Gupta wrote:
-> Add kernel boot parameter 'cppc_cpufreq.auto_sel_mode' to enable CPPC
-> autonomous performance selection at system startup. When autonomous mode
-> is enabled, the hardware automatically adjusts CPU performance based on
-> workload demands using Energy Performance Preference (EPP) hints.
-> 
-> This parameter allows to configure the autonomous mode on all CPUs
-> without requiring runtime sysfs manipulation if the 'auto_sel' register
-> is present.
-> 
-> When auto_sel_mode=1:
-> - All CPUs are configured for autonomous operation during module init
-> - EPP is set to performance preference (0x0) by default
-> - Min/max performance bounds use defaults
-> - CPU frequency scaling is handled by hardware instead of OS governor
-> 
-> For Documentation/:
-> Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
-> ---
->  .../admin-guide/kernel-parameters.txt         |  12 ++
->  drivers/cpufreq/cppc_cpufreq.c                | 197 +++++++++++++++---
->  2 files changed, 182 insertions(+), 27 deletions(-)
-> 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index b8f8f5d74093..048f84008a7e 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -929,6 +929,18 @@
->  			Format:
->  			<first_slot>,<last_slot>,<port>,<enum_bit>[,<debug>]
->  
-> +	cppc_cpufreq.auto_sel_mode=
-> +			[CPU_FREQ] Enable ACPI CPPC autonomous performance selection.
-> +			When enabled, hardware automatically adjusts CPU frequency
-> +			on all CPUs based on workload demands. In Autonomous mode,
-> +			Energy Performance Preference(EPP) hints guide hardware
-> +			toward performance(0x0) or energy efficiency (0xff).
-> +			Requires ACPI CPPC autonomous selection register support.
-> +			Format: <bool>
-> +			Default: 0 (disabled)
-> +			0: use cpufreq governors
-> +			1: enable if supoorted by hardware
-> +
->  	cpuidle.off=1	[CPU_IDLE]
->  			disable the cpuidle sub-system
->  
-> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
-> index d1b44beaddda..0a55ab011317 100644
-> --- a/drivers/cpufreq/cppc_cpufreq.c
-> +++ b/drivers/cpufreq/cppc_cpufreq.c
-> @@ -28,8 +28,12 @@
->  #include <acpi/cppc_acpi.h>
->  
->  static struct cpufreq_driver cppc_cpufreq_driver;
-> +
->  static DEFINE_MUTEX(cppc_cpufreq_update_autosel_config_lock);
->  
-> +/* Autonomous Selection */
-> +static bool auto_sel_mode;
-> +
->  #ifdef CONFIG_ACPI_CPPC_CPUFREQ_FIE
->  static enum {
->  	FIE_UNSET = -1,
-> @@ -272,8 +276,13 @@ static int cppc_cpufreq_set_target(struct cpufreq_policy *policy,
->  	freqs.old = policy->cur;
->  	freqs.new = target_freq;
->  
-> +	/*
-> +	 * In autonomous selection mode, hardware handles frequency scaling directly
-> +	 * based on workload and EPP hints. So, skip the OS frequency set requests.
-> +	 */
->  	cpufreq_freq_transition_begin(policy, &freqs);
-> -	ret = cppc_set_perf(cpu, &cpu_data->perf_ctrls);
-> +	if (!cpu_data->perf_caps.auto_sel)
-> +		ret = cppc_set_perf(cpu, &cpu_data->perf_ctrls);
+6.14.0-debug-00014-g2e933c56f3b6	booted 20:17, 15.11.2025 crashed 0:50, 16=
+.11.2025
+					(~4.5h, 518 GPP0 events, 393 GPU resumes)
 
-"When Autonomous Selection is enabled, it is not necessary for OSPM to assess
-processor workload performance demand and convey a corresponding performance
-delivery request to the platform via the Desired Register. If the Desired
-Performance Register exists, OSPM may provide an explicit performance
-requirement hint to the platform by writing a non-zero value."
+The interesting part of the instrumented code is this:
 
-Therefore I believe it's up to the platform to decide if it wants to use
-the software hint.
+acpi_status acpi_ps_parse_aml_debug(struct acpi_walk_state *walk_state)
+{
+	[...]
+	printk(KERN_INFO "%s: before walk loop\n", __func__);
+	while (walk_state) {
+		if (ACPI_SUCCESS(status)) {
+			/*
+			 * The parse_loop executes AML until the method terminates
+			 * or calls another method.
+			 */
+			status =3D acpi_ps_parse_loop(walk_state);
+		}
+	[...]
+	}
+	printk(KERN_INFO "%s: after walk loop\n", __func__);
+	[...]
+}
 
->  	cpufreq_freq_transition_end(policy, &freqs, ret != 0);
->  
->  	if (ret)
-> @@ -565,6 +574,12 @@ static struct cppc_cpudata *cppc_cpufreq_get_cpu_data(unsigned int cpu)
->  		goto free_mask;
->  	}
->  
-> +	ret = cppc_get_perf(cpu, &cpu_data->perf_ctrls);
-> +	if (ret) {
-> +		pr_debug("Err reading CPU%d perf ctrls: ret:%d\n", cpu, ret);
-> +		goto free_mask;
-> +	}
-> +
+This gives the following message in netconsole
+1. No crash:
+2025-11-16T00:50:35.634745+01:00 10.0.0.1 6,21514,16419759755,-,caller=3DT=
+59901;acpi_ps_execute_method_debug 329
+2025-11-16T00:50:35.634745+01:00 10.0.0.1 6,21515,16419759781,-,caller=3DT=
+59901;acpi_ps_parse_aml_debug: before walk loop
+2025-11-16T00:50:35.921210+01:00 10.0.0.1 6,21516,16420046219,-,caller=3DT=
+59901;acpi_ps_parse_aml_debug: after walk loop
+2025-11-16T00:50:35.921210+01:00 10.0.0.1 6,21517,16420046231,-,caller=3DT=
+59901;acpi_ps_execute_method_debug 331
+2025-11-16T00:50:35.921210+01:00 10.0.0.1 6,21518,16420046235,-,caller=3DT=
+59901;acpi_ns_evaluate_debug 475 METHOD
+2025-11-16T00:50:35.921210+01:00 10.0.0.1 6,21519,16420046240,-,caller=3DT=
+59901;acpi_evaluate_object_debug 255
+2025-11-16T00:50:35.921210+01:00 10.0.0.1 6,21520,16420046244,-,caller=3DT=
+59901;__acpi_power_on_debug 369
+2025-11-16T00:50:35.921210+01:00 10.0.0.1 6,21521,16420046248,-,caller=3DT=
+59901;acpi_power_on_unlocked_debug 446
+2025-11-16T00:50:35.921210+01:00 10.0.0.1 6,21522,16420046251,-,caller=3DT=
+59901;acpi_power_on_debug 471
+2025-11-16T00:50:35.921210+01:00 10.0.0.1 6,21523,16420046255,-,caller=3DT=
+59901;acpi_power_on_list_debug 642: result =3D 0
+Resume successful, normal messages from resuming GPU follow.
 
-This belongs to patch 2/8.
+2. Crash:
+2025-11-16T00:50:46.483555+01:00 10.0.0.1 6,21566,16430609060,-,caller=3DT=
+59702;acpi_ps_execute_method_debug 329
+2025-11-16T00:50:46.483555+01:00 10.0.0.1 6,21567,16430609083,-,caller=3DT=
+59702;acpi_ps_parse_aml_debug: before walk loop
+No more messages via netconsole due to crash.
 
->  	return cpu_data;
->  
->  free_mask:
-> @@ -666,11 +681,81 @@ static int cppc_cpufreq_update_autosel_val(struct cpufreq_policy *policy, bool a
->  	return 0;
->  }
->  
-> +static int cppc_cpufreq_update_epp_val(struct cpufreq_policy *policy, u32 epp)
-> +{
-> +	struct cppc_cpudata *cpu_data = policy->driver_data;
-> +	unsigned int cpu = policy->cpu;
-> +	int ret;
-> +
-> +	pr_debug("cpu%d, epp curr:%u, new:%u\n", cpu, cpu_data->perf_ctrls.energy_perf, epp);
-> +
-> +	guard(mutex)(&cppc_cpufreq_update_autosel_config_lock);
-> +
-> +	ret = cppc_set_epp(cpu, epp);
-> +	if (ret) {
-> +		pr_warn("failed to set energy_perf for cpu:%d (%d)\n", cpu, ret);
-> +		return ret;
-> +	}
-> +	cpu_data->perf_ctrls.energy_perf = epp;
-> +
-> +	return 0;
-> +}
-> +
-> +/**
-> + * cppc_cpufreq_update_autosel_config - Update Autonomous selection configuration
-> + * @policy: cpufreq policy for the CPU
-> + * @min_perf: minimum performance value to set
-> + * @max_perf: maximum performance value to set
-> + * @auto_sel: autonomous selection mode enable/disable (also controls min/max perf reg updates)
-> + * @epp_val: energy performance preference value
-> + * @update_epp: whether to update EPP register
-> + * @update_policy: whether to update policy constraints
-> + *
-> + * Return: 0 on success, negative error code on failure
-> + */
-> +static int cppc_cpufreq_update_autosel_config(struct cpufreq_policy *policy,
-> +					      u64 min_perf, u64 max_perf, bool auto_sel,
-> +					      u32 epp_val, bool update_epp, bool update_policy)
-> +{
-> +	const unsigned int cpu = policy->cpu;
-> +	int ret;
-> +
-> +	/*
-> +	 * Set min/max performance registers and update policy constraints.
-> +	 *   When enabling: update both registers and policy.
-> +	 *   When disabling: update policy only.
-> +	 * Continue even if min/max are not supported, as EPP and autosel
-> +	 * might still be supported.
-> +	 */
-> +	ret = cppc_cpufreq_set_min_perf(policy, min_perf, auto_sel, update_policy);
-> +	if (ret && ret != -EOPNOTSUPP)
-> +		return ret;
-> +
-> +	ret = cppc_cpufreq_set_max_perf(policy, max_perf, auto_sel, update_policy);
-> +	if (ret && ret != -EOPNOTSUPP)
-> +		return ret;
-> +
-> +	if (update_epp) {
-> +		ret = cppc_cpufreq_update_epp_val(policy, epp_val);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	ret = cppc_cpufreq_update_autosel_val(policy, auto_sel);
-> +	if (ret)
-> +		return ret;
-> +
-> +	pr_debug("Updated autonomous config [%llu-%llu] for CPU%d\n", min_perf, max_perf, cpu);
-> +
-> +	return 0;
-> +}
+So here we can already say that the main loop in acpi_ps_parse_aml_debug()=
+ is not finishing properly.
 
-I think cppc_cpufreq_update_auto_select() can be removed and
-cppc_cpufreq_update_autosel_config() used in its place. 
+The next step is to put monitoring inside the loop:
 
-cppc_cpufreq_update_autosel_config() would not even need min/max as
-arguments as they can be obtained from perf_caps (low/nominal range)
-or perf_ctrls (current min/max). This would also simplify
-cppc_cpufreq_cpu_init().
+6.14.0-debug-00015-gc09fd8dd0492	booted 12:09, 16.11.2025 crashed 19:55, 1=
+6.11.2025=20
+					(~8h, 1539 GPP0 events, 587 GPU resumes) "infinite" walk loop
 
-> +
->  static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
->  {
->  	unsigned int cpu = policy->cpu;
->  	struct cppc_cpudata *cpu_data;
->  	struct cppc_perf_caps *caps;
-> +	u64 min_perf, max_perf;
->  	int ret;
->  
->  	cpu_data = cppc_cpufreq_get_cpu_data(cpu);
-> @@ -734,11 +819,31 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
->  	policy->cur = cppc_perf_to_khz(caps, caps->highest_perf);
->  	cpu_data->perf_ctrls.desired_perf =  caps->highest_perf;
->  
-> -	ret = cppc_set_perf(cpu, &cpu_data->perf_ctrls);
-> -	if (ret) {
-> -		pr_debug("Err setting perf value:%d on CPU:%d. ret:%d\n",
-> -			 caps->highest_perf, cpu, ret);
-> -		goto out;
-> +	if (cpu_data->perf_caps.auto_sel) {
-> +		ret = cppc_set_enable(cpu, true);
+The interesting part of the instrumented code is this:
 
-Isn't auto-sel enabled at this point? Also, if the auto-sel is
-ACPI_TYPE_INTEGER, cppc_set_enable() will return an error,
-isn't it?
+acpi_status acpi_ps_parse_aml_debug(struct acpi_walk_state *walk_state)
+{
+	[...]
+	printk(KERN_INFO "%s: before walk loop\n", __func__);
+	while (walk_state) {
+		if (ACPI_SUCCESS(status)) {
+			/*
+			 * The parse_loop executes AML until the method terminates
+			 * or calls another method.
+			 */
+			printk(KERN_INFO "%s: before parse loop\n", __func__);
+			status =3D acpi_ps_parse_loop(walk_state);
+			printk(KERN_INFO "%s: after parse loop\n", __func__);
+		}
+	[...]
+	}
+	printk(KERN_INFO "%s: after walk loop\n", __func__);
+	[...]
+}
 
-> +		if (ret) {
-> +			pr_err("Failed to enable CPPC on cpu%d (%d)\n", cpu, ret);
-> +			goto out;
+This gives the following message in netconsole
+1. No crash:
+2025-11-16T19:55:54.203765+01:00 localhost 6,5479352,28054924877,-,caller=
+=3DT5967;acpi_ps_execute_method_debug 329
+2025-11-16T19:55:54.203765+01:00 localhost 6,5479353,28054924889,-,caller=
+=3DT5967;acpi_ps_parse_aml_debug: before walk loop
+The next two lines are repeated 1500-1700 times (it varies a little ...):
+2025-11-16T19:55:54.203765+01:00 localhost 6,5479354,28054924894,-,caller=
+=3DT5967;acpi_ps_parse_aml_debug: before parse loop
+2025-11-16T19:55:54.203765+01:00 localhost 6,5479355,28054924908,-,caller=
+=3DT5967;acpi_ps_parse_aml_debug: after parse loop
 
-Do you really want to bail out of the rest of the cpufreq CPU
-initialisation, if only auto-select configuration fails?
+2025-11-16T19:55:54.498216+01:00 localhost 6,5482288,28055219778,-,caller=
+=3DT5967;acpi_ps_parse_aml_debug: after walk loop
+2025-11-16T19:55:54.498216+01:00 localhost 6,5482289,28055219782,-,caller=
+=3DT5967;acpi_ps_execute_method_debug 331
+2025-11-16T19:55:54.498233+01:00 localhost 6,5482290,28055219786,-,caller=
+=3DT5967;acpi_ns_evaluate_debug 475 METHOD
+2025-11-16T19:55:54.498233+01:00 localhost 6,5482291,28055219791,-,caller=
+=3DT5967;acpi_evaluate_object_debug 255
+2025-11-16T19:55:54.498233+01:00 localhost 6,5482292,28055219795,-,caller=
+=3DT5967;__acpi_power_on_debug 369
+2025-11-16T19:55:54.498247+01:00 localhost 6,5482293,28055219799,-,caller=
+=3DT5967;acpi_power_on_unlocked_debug 446
+2025-11-16T19:55:54.498247+01:00 localhost 6,5482294,28055219802,-,caller=
+=3DT5967;acpi_power_on_debug 471
+2025-11-16T19:55:54.498247+01:00 localhost 6,5482295,28055219806,-,caller=
+=3DT5967;acpi_power_on_list_debug 642: result =3D 0
+Resume successful, normal messages from resuming GPU follow.
 
-> +		}
-> +
-> +		min_perf = cpu_data->perf_ctrls.min_perf ?
-> +			   cpu_data->perf_ctrls.min_perf : caps->lowest_nonlinear_perf;
-> +		max_perf = cpu_data->perf_ctrls.max_perf ?
-> +			   cpu_data->perf_ctrls.max_perf : caps->nominal_perf;
-> +
-> +		ret = cppc_cpufreq_update_autosel_config(policy, min_perf, max_perf, true,
-> +							 CPPC_EPP_PERFORMANCE_PREF, true, false);
-> +		if (ret) {
-> +			cppc_set_enable(cpu, false);
-> +			goto out;
-> +		}
-> +	} else {
-> +		ret = cppc_set_perf(cpu, &cpu_data->perf_ctrls);
-> +		if (ret) {
-> +			pr_debug("Err setting perf value:%d on CPU:%d. ret:%d\n",
-> +				 caps->highest_perf, cpu, ret);
-> +			goto out;
-> +		}
->  	}
->  
->  	cppc_cpufreq_cpu_fie_init(policy);
-> @@ -910,7 +1015,6 @@ static int cppc_cpufreq_update_auto_select(struct cpufreq_policy *policy, bool e
->  	struct cppc_perf_caps *caps = &cpu_data->perf_caps;
->  	u64 min_perf = caps->lowest_nonlinear_perf;
->  	u64 max_perf = caps->nominal_perf;
-> -	int ret;
->  
->  	if (enable) {
->  		if (cpu_data->perf_ctrls.min_perf)
-> @@ -919,26 +1023,8 @@ static int cppc_cpufreq_update_auto_select(struct cpufreq_policy *policy, bool e
->  			max_perf = cpu_data->perf_ctrls.max_perf;
->  	}
->  
-> -	/*
-> -	 * Set min/max performance registers and update policy constraints.
-> -	 *   When enabling: update both registers and policy.
-> -	 *   When disabling: update policy only.
-> -	 * Continue even if min/max are not supported, as EPP and autosel
-> -	 * might still be supported.
-> -	 */
-> -	ret = cppc_cpufreq_set_min_perf(policy, min_perf, enable, true);
-> -	if (ret && ret != -EOPNOTSUPP)
-> -		return ret;
-> -
-> -	ret = cppc_cpufreq_set_max_perf(policy, max_perf, enable, true);
-> -	if (ret && ret != -EOPNOTSUPP)
-> -		return ret;
-> -
-> -	ret = cppc_cpufreq_update_autosel_val(policy, enable);
-> -	if (ret)
-> -		return ret;
-> -
-> -	return 0;
-> +	return cppc_cpufreq_update_autosel_config(policy, min_perf, max_perf, enable,
-> +						  0, false, true);
->  }
->  
->  static ssize_t store_auto_select(struct cpufreq_policy *policy, const char *buf, size_t count)
-> @@ -1146,13 +1232,61 @@ static struct cpufreq_driver cppc_cpufreq_driver = {
->  	.name = "cppc_cpufreq",
->  };
->  
-> +static int cppc_cpufreq_set_epp_autosel_allcpus(bool auto_sel, u64 epp)
-> +{
-> +	int cpu, ret;
-> +
-> +	for_each_present_cpu(cpu) {
-> +		ret = cppc_set_epp(cpu, epp);
-> +		if (ret) {
-> +			pr_warn("Failed to set EPP on CPU%d (%d)\n", cpu, ret);
-> +			goto disable_all;
-> +		}
-> +
-> +		ret = cppc_set_auto_sel(cpu, auto_sel);
-> +		if (ret) {
-> +			pr_warn("Failed to set auto_sel on CPU%d (%d)\n", cpu, ret);
-> +			goto disable_all;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +
-> +disable_all:
-> +	pr_warn("Disabling auto_sel for all CPUs\n");
-> +	for_each_present_cpu(cpu)
-> +		cppc_set_auto_sel(cpu, false);
-> +
-> +	return -EIO;
-> +}
-> +
->  static int __init cppc_cpufreq_init(void)
->  {
-> +	bool auto_sel;
->  	int ret;
->  
->  	if (!acpi_cpc_valid())
->  		return -ENODEV;
->  
-> +	if (auto_sel_mode) {
-> +		/*
-> +		 * Check if autonomous selection is supported by testing CPU 0.
-> +		 * If supported, enable autonomous mode on all CPUs.
-> +		 */
-> +		ret = cppc_get_auto_sel(0, &auto_sel);
-> +		if (!ret) {
-> +			pr_info("Enabling auto_sel_mode (autonomous selection mode)\n");
-> +			ret = cppc_cpufreq_set_epp_autosel_allcpus(true, CPPC_EPP_PERFORMANCE_PREF);
-> +			if (ret) {
-> +				pr_warn("Disabling auto_sel_mode, fallback to standard\n");
-> +				auto_sel_mode = false;
-> +			}
-> +		} else {
-> +			pr_warn("Disabling auto_sel_mode as not supported by hardware\n");
-> +			auto_sel_mode = false;
-> +		}
-> +	}
-> +
+2. Crash:
+2025-11-16T19:56:24.213495+01:00 localhost 6,5483042,28084932950,-,caller=
+=3DT5967;acpi_ps_execute_method_debug 329
+2025-11-16T19:56:24.213495+01:00 localhost 6,5483043,28084932965,-,caller=
+=3DT5967;acpi_ps_parse_aml_debug: before walk loop
+The next two lines are repeated more than 30000 times, then the transmitio=
+n stops due to the crash:
+2025-11-16T19:56:24.213495+01:00 localhost 6,5483044,28084932971,-,caller=
+=3DT5967;acpi_ps_parse_aml_debug: before parse loop
+2025-11-16T19:56:24.213495+01:00 localhost 6,5483045,28084932991,-,caller=
+=3DT5967;acpi_ps_parse_aml_debug: after parse loop
+No more messages via netconsole due to crash.
 
-Why not check at cppc_cpufreq_cpu_init? In the unlikely case that one
-CPU does not support it, I would recommend to issue a warning, rather
-than disable auto-sel on all the other CPUs. It is possible that some
-CPUs support auto-sel and they have it enabled by default without
-exposing that control to the OS. 
+So there is some kind of infinite recursion happening inside the loop in a=
+cpi_ps_parse_aml(). Even if there is some kind
+of error in the hardware this shouldn't happen, I think.
 
->  	cppc_freq_invariance_init();
->  	populate_efficiency_class();
->  
-> @@ -1165,10 +1299,19 @@ static int __init cppc_cpufreq_init(void)
->  
->  static void __exit cppc_cpufreq_exit(void)
->  {
-> +	int cpu;
-> +
-> +	for_each_present_cpu(cpu)
-> +		cppc_set_auto_sel(cpu, false);
-> +	auto_sel_mode = false;
-> +
->  	cpufreq_unregister_driver(&cppc_cpufreq_driver);
->  	cppc_freq_invariance_exit();
->  }
->  
-> +module_param(auto_sel_mode, bool, 0000);
-> +MODULE_PARM_DESC(auto_sel_mode, "Enable Autonomous Performance Level Selection");
-> +
->  module_exit(cppc_cpufreq_exit);
->  MODULE_AUTHOR("Ashwin Chaugule");
->  MODULE_DESCRIPTION("CPUFreq driver based on the ACPI CPPC v5.0+ spec");
-> -- 
-> 2.34.1
-> 
+This bug is present in every kernel version I've tested so far, that is 6.=
+12.x, 6.13.x, 6.14.x,
+6.15.x, 6.16.x, 6.17.x (here I only tested the release candidates). 6.18 h=
+as not been tested, yet.
+
+To get to this result took several months of 24/7 test runs, I hope resolv=
+ing this will
+be faster.
+
+Bert Karwatzki
