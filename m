@@ -1,148 +1,130 @@
-Received: from canpmsgout04.his.huawei.com (canpmsgout04.his.huawei.com [113.46.200.219])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 133CE2459E7
-	for <acpica-devel@lists.linux.dev>; Fri, 21 Nov 2025 02:47:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.219
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61C1831A06C
+	for <acpica-devel@lists.linux.dev>; Mon, 24 Nov 2025 19:51:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763693260; cv=none; b=n+wS0tK8jKge7i6UMmQiTJCQBFU8A6blDVmmMghWeYt3AHbg8QGbSOnVjZZyzQ0dV0opEbaloPOD4VLkoONc7GtR/5G/yeDUIxbqW75oW58Md6c2YHnRSreA0/Gu4qOzroMYC3UhNNLmE1/pdbxgu8nxJKeC91vFf0ru6EXaC9g=
+	t=1764013905; cv=none; b=V7c1tHhWlibaWXkuqUEwAxpwgq/iElRisrFyssmx0BQRLI1iKx/m8v4dC7MZSUL6aRD+3/AcGYqZo41W60jRAHqV9zj9OqR38MRvC/8h4BKTa571MSPu3icX4KOGQKAZkMIFJFesloi/6uAvcEh5kZEKTwRCmlDSr4cMFaK1xy8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763693260; c=relaxed/simple;
-	bh=p+34e7Vy7ZrzEmj8uQRE4g/xDOXVf1bb1yoOHS6Q8f8=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=LOYQYlnGpHI8Ejc8k+qlJ0UnumdEQ+cPKnafIiz2lCG91gIjp9YD6j82earBmkWezzlOzEFJ5wbB70aoy+jWuVFv39dNvkL6/4rSTQLlABBecEud2QRaOb2h+OPALseCCpfa2bcW1E6Sahql8nSg6EvVyyfAhk28JQCUBXn/oXA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=umciH1Kb; arc=none smtp.client-ip=113.46.200.219
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+	s=arc-20240116; t=1764013905; c=relaxed/simple;
+	bh=YPdtestLIasfV0KRLy9AY08HX0axh8xGitQGoNVyqwU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OJA/2vqA84FHKYjW1GrO27Wxl4w94oVzN7Nn+3nF+m/IOU1yLlGoKdoeRfjfrdeI7nh5IAFcE3u6hUdo6348JZMhp+VRD3jdGwQjNV+CLIB6OsjhhmoSKQDpMs/UPKBuBF9nt4escJbTh5ziX/dovRHxi8rUN6rIJHDftoD/5+8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ToIXxtN7; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="umciH1Kb"
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=7/+xC9VzlzEvb/9+gGLwhYCZZ6+xeKT68zJkKrNRvNo=;
-	b=umciH1KbToXmWnysWFcNx4N/28wNz0FN+EKeR71aSehD+o98NCvFpUht/EtqQYi3rjhCrLqTR
-	xZWOX/pqi5WYvldwqLxNWtnxyvByw/QgBSrE2U/DUzmcqJSsN8KVn3UF364j5bCMoAEZ0h88/IF
-	AVQ0DIPiG0E1xO56eb13KLQ=
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by canpmsgout04.his.huawei.com (SkyGuard) with ESMTPS id 4dCKMx5vtWz1prL2;
-	Fri, 21 Nov 2025 10:45:49 +0800 (CST)
-Received: from dggpemf500002.china.huawei.com (unknown [7.185.36.57])
-	by mail.maildlp.com (Postfix) with ESMTPS id 77BB314022D;
-	Fri, 21 Nov 2025 10:47:35 +0800 (CST)
-Received: from [10.174.178.247] (10.174.178.247) by
- dggpemf500002.china.huawei.com (7.185.36.57) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Fri, 21 Nov 2025 10:47:33 +0800
-Subject: Re: [PATCH RESEND v5] vmcoreinfo: Track and log recoverable hardware
- errors
-To: Breno Leitao <leitao@debian.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>, James Morse <james.morse@arm.com>, Tony Luck
-	<tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>, Robert Moore
-	<robert.moore@intel.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
-	<mingo@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>,
-	<x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, Mauro Carvalho Chehab
-	<mchehab@kernel.org>, Mahesh J Salgaonkar <mahesh@linux.ibm.com>, Oliver
- O'Halloran <oohall@gmail.com>, Bjorn Helgaas <bhelgaas@google.com>
-CC: <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<acpica-devel@lists.linux.dev>, <osandov@osandov.com>,
-	<xueshuai@linux.alibaba.com>, <konrad.wilk@oracle.com>,
-	<linux-edac@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
-	<linux-pci@vger.kernel.org>, <kernel-team@meta.com>
-References: <20251010-vmcore_hw_error-v5-1-636ede3efe44@debian.org>
-From: Hanjun Guo <guohanjun@huawei.com>
-Message-ID: <a4a34583-8f26-bb08-001f-a53715070c00@huawei.com>
-Date: Fri, 21 Nov 2025 10:47:32 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ToIXxtN7"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02692C19421
+	for <acpica-devel@lists.linux.dev>; Mon, 24 Nov 2025 19:51:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1764013905;
+	bh=YPdtestLIasfV0KRLy9AY08HX0axh8xGitQGoNVyqwU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=ToIXxtN7TGTKyhcWQCLg3HeiRp4+oMrExWo59cr/MOGeVbELfFfmWDB+Ei7h41fqm
+	 3d8l9dMaKwhNXRW7ZF0gs0Vik2Ub5O5RqnifyICIwUYMhpfLaIuCPeYau0vqd1pMNX
+	 56cIXNE1r462KVOh7btL0zkoAlCBCGSiGC6NhaARnEgK+HSBPqC1lAYpvsiJqNMu7J
+	 Hxl3eeSWacPuwlfcn/9PqPlC2KVQ82WgyZq/Ug2wzCnYx3Iwyf/wS6SMmgVmVZtzhw
+	 Ul5Gm+WrYoyhZyoHuSaGrNzI69qxCYx3geUPiPiiniKZXVA4WCRCLKPrLlp4h/gNg3
+	 rD9vCOx6Oo+hw==
+Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-3e84d56c4b8so2829599fac.2
+        for <acpica-devel@lists.linux.dev>; Mon, 24 Nov 2025 11:51:44 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWZLMcwEgXa9AcH4Av4UICJ7XFW5m9u38OhmXkArGFUhPmexWuqjtjidQ1fFjWP3MviuCJKV5bG9K1aOI8=@lists.linux.dev
+X-Gm-Message-State: AOJu0YzsjkLnpm4Yj9oQZWR4Ov0Uy1v8xB2596FG6ihFleOrp7mKRTIb
+	VSR4/ygI61SyQkKjj9zLDAIMNLkilt3ywWOkQ2gS2dm9brmZVWijgVXcdahRZYiEAJiH6vxoXgE
+	6F42U5Fm/cEkNnMPKl72lFK+1ZzhvU/8=
+X-Google-Smtp-Source: AGHT+IE16Q5ptvTo6zpyWU0I2G7xrkJ5diqaQdF0v+EjVaTTvdKcD0eao/xw1Xu2bSFTqcYSCsy0C/AuewTNpTTr1Kw=
+X-Received: by 2002:a05:6808:448c:b0:43f:60b0:382 with SMTP id
+ 5614622812f47-4514e7f14ddmr164998b6e.40.1764013904234; Mon, 24 Nov 2025
+ 11:51:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-In-Reply-To: <20251010-vmcore_hw_error-v5-1-636ede3efe44@debian.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
- dggpemf500002.china.huawei.com (7.185.36.57)
+References: <20251120170001.251968-1-mrout@redhat.com>
+In-Reply-To: <20251120170001.251968-1-mrout@redhat.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Mon, 24 Nov 2025 20:51:33 +0100
+X-Gmail-Original-Message-ID: <CAJZ5v0i1Q7PcNLtchETbJ+1LhtMahCn75kzVCL7Dzb-bECJ39Q@mail.gmail.com>
+X-Gm-Features: AWmQ_bl_c4Pn_vLzP5i-DISTb5bRLYcnHxS9LE8mJO63WQ_9Nqu8QnrjOH0DCuA
+Message-ID: <CAJZ5v0i1Q7PcNLtchETbJ+1LhtMahCn75kzVCL7Dzb-bECJ39Q@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: tools: pfrut: fix memory leak and resource leak in pfrut.c
+To: Malaya Kumar Rout <mrout@redhat.com>
+Cc: linux-kernel@vger.kernel.org, lyude@redhat.com, malayarout91@gmail.com, 
+	"Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
+	Robert Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org, 
+	acpica-devel@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2025/10/10 18:36, Breno Leitao wrote:
-> Introduce a generic infrastructure for tracking recoverable hardware
-> errors (HW errors that are visible to the OS but does not cause a panic)
-> and record them for vmcore consumption. This aids post-mortem crash
-> analysis tools by preserving a count and timestamp for the last
-> occurrence of such errors. On the other side, correctable errors, which
-> the OS typically remains unaware of because the underlying hardware
-> handles them transparently, are less relevant for crash dump
-> and therefore are NOT tracked in this infrastructure.
-> 
-> Add centralized logging for sources of recoverable hardware
-> errors based on the subsystem it has been notified.
-> 
-> hwerror_data is write-only at kernel runtime, and it is meant to be read
-> from vmcore using tools like crash/drgn. For example, this is how it
-> looks like when opening the crashdump from drgn.
-> 
-> 	>>> prog['hwerror_data']
-> 	(struct hwerror_info[1]){
-> 		{
-> 			.count = (int)844,
-> 			.timestamp = (time64_t)1752852018,
-> 		},
-> 		...
-> 
-> This helps fleet operators quickly triage whether a crash may be
-> influenced by hardware recoverable errors (which executes a uncommon
-> code path in the kernel), especially when recoverable errors occurred
-> shortly before a panic, such as the bug fixed by
-> commit ee62ce7a1d90 ("page_pool: Track DMA-mapped pages and unmap them
-> when destroying the pool")
-> 
-> This is not intended to replace full hardware diagnostics but provides
-> a fast way to correlate hardware events with kernel panics quickly.
-> 
-> Rare machine check exceptions—like those indicated by mce_flags.p5 or
-> mce_flags.winchip—are not accounted for in this method, as they fall
-> outside the intended usage scope for this feature’s user base.
-> 
-> Suggested-by: Tony Luck <tony.luck@intel.com>
-> Suggested-by: Shuai Xue <xueshuai@linux.alibaba.com>
-> Signed-off-by: Breno Leitao <leitao@debian.org>
-> Reviewed-by: Shuai Xue <xueshuai@linux.alibaba.com>
+On Thu, Nov 20, 2025 at 6:00=E2=80=AFPM Malaya Kumar Rout <mrout@redhat.com=
+> wrote:
+>
+> Static analysis found an issue in pfrut.c
+>
+> cppcheck output before this patch:
+> tools/power/acpi/tools/pfrut/pfrut.c:225:3: error: Resource leak: fd_upda=
+te [resourceLeak]
+> tools/power/acpi/tools/pfrut/pfrut.c:269:3: error: Resource leak: fd_upda=
+te [resourceLeak]
+> tools/power/acpi/tools/pfrut/pfrut.c:269:3: error: Resource leak: fd_upda=
+te_log [resourceLeak]
+> tools/power/acpi/tools/pfrut/pfrut.c:365:4: error: Memory leak: addr_map_=
+capsule [memleak]
+> tools/power/acpi/tools/pfrut/pfrut.c:424:4: error: Memory leak: log_buf [=
+memleak]
+>
+> cppcheck output after this patch:
+> No resource leaks found
+>
+> Fix by closing file descriptors and freeing allocated memory.
+>
+> Signed-off-by: Malaya Kumar Rout <mrout@redhat.com>
 > ---
-> Changes in v5:
-> - Move the headers to uapi file (Dave Hansen)
-> - Use atomic operations in the tracking struct (Dave Hansen)
-> - Drop the MCE enum type, and track MCE errors as "others"
-> - Document this feature better
-> - Link to v4: https://lore.kernel.org/r/20250801-vmcore_hw_error-v4-1-fa1fe65edb83@debian.org
-> 
-> Changes in v4:
-> - Split the error by hardware subsystem instead of kernel
->    subsystem/driver (Shuai)
-> - Do not count the corrected errors, only focusing on recoverable errors (Shuai)
-> - Link to v3: https://lore.kernel.org/r/20250722-vmcore_hw_error-v3-1-ff0683fc1f17@debian.org
-> 
-> Changes in v3:
-> - Add more information about this feature in the commit message
->    (Borislav Petkov)
-> - Renamed the function to hwerr_log_error_type() and use hwerr as
->    suffix (Borislav Petkov)
-> - Make the empty function static inline (kernel test robot)
-> - Link to v2: https://lore.kernel.org/r/20250721-vmcore_hw_error-v2-1-ab65a6b43c5a@debian.org
-> 
-> Changes in v2:
-> - Split the counter by recoverable error (Tony Luck)
-> - Link to v1: https://lore.kernel.org/r/20250714-vmcore_hw_error-v1-1-8cf45edb6334@debian.org
-> ---
->   Documentation/driver-api/hw-recoverable-errors.rst | 60 ++++++++++++++++++++++
->   arch/x86/kernel/cpu/mce/core.c                     |  4 ++
->   drivers/acpi/apei/ghes.c                           | 36 +++++++++++++
+>  tools/power/acpi/tools/pfrut/pfrut.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/power/acpi/tools/pfrut/pfrut.c b/tools/power/acpi/tool=
+s/pfrut/pfrut.c
+> index 44a9ecbd91e8..4d9b0177c312 100644
+> --- a/tools/power/acpi/tools/pfrut/pfrut.c
+> +++ b/tools/power/acpi/tools/pfrut/pfrut.c
+> @@ -222,6 +222,7 @@ int main(int argc, char *argv[])
+>         fd_update_log =3D open("/dev/acpi_pfr_telemetry0", O_RDWR);
+>         if (fd_update_log < 0) {
+>                 printf("PFRT device not supported - Quit...\n");
+> +               close(fd_update);
+>                 return 1;
+>         }
+>
+> @@ -265,7 +266,8 @@ int main(int argc, char *argv[])
+>                 printf("chunk2_size:%d\n", data_info.chunk2_size);
+>                 printf("rollover_cnt:%d\n", data_info.rollover_cnt);
+>                 printf("reset_cnt:%d\n", data_info.reset_cnt);
+> -
+> +               close(fd_update);
+> +               close(fd_update_log);
+>                 return 0;
+>         }
+>
+> @@ -358,6 +360,7 @@ int main(int argc, char *argv[])
+>
+>                 if (ret =3D=3D -1) {
+>                         perror("Failed to load capsule file");
+> +                       munmap(addr_map_capsule, st.st_size);
+>                         close(fd_capsule);
+>                         close(fd_update);
+>                         close(fd_update_log);
+> @@ -420,7 +423,7 @@ int main(int argc, char *argv[])
+>                 if (p_mmap =3D=3D MAP_FAILED) {
+>                         perror("mmap error.");
+>                         close(fd_update_log);
+> -
+> +                       free(log_buf);
+>                         return 1;
+>                 }
+>
+> --
 
-For the APEI part,
-
-Reviewed-by: Hanjun Guo <guohanjun@huawei.com>
-
-Thanks
-Hanjun
+Applied as 6.19 material, thanks!
