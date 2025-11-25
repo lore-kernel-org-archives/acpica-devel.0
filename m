@@ -1,100 +1,119 @@
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A813F218596
-	for <acpica-devel@lists.linux.dev>; Tue, 25 Nov 2025 17:43:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 572FF284671
+	for <acpica-devel@lists.linux.dev>; Tue, 25 Nov 2025 19:46:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764092584; cv=none; b=Hj6GihdjK88Fh/BTBLVOZ20tWCynnzk616yjvKmH+j8KL9QsdodvBXLgYmJmgr7xRoAG78pgIb2gPHXLipr/Gk41S3EYePqJsDjAJuo6GHhcAJUeVG64+t0GQ5pHGxDLYZAyAXq+FaOYc5Zwg+JXM9j4f0z0tkoqZa+Gw50dl+w=
+	t=1764100008; cv=none; b=bH362QBoBixLZoqjTG7/3SZkam0IZik/4UKIyF3D+9QZ0Y6pOnXMvtsHZW98jWYf6wv2ACGZKe5K5Y50+WmR4F6H6GmHK2rhNpl6cKcxZ171NxPT8jd/FsO3O7DuWTgvDIAkgCupWyvwgIMiMdo87BeV/IiVqFaRfcJuDzrh3tQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764092584; c=relaxed/simple;
-	bh=7KG5i1mNmQWFJnds+8rhq9qv7Msw5Lw3zPxusJTiGSI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NkoD0Be93u06vSikWKYg+qylRh6GbJDpMtG4Ra1qG2tN1slpIZgZfotr/pMphrMc7JQOI2KrprIfbx7xKZ8uHGiguJKYlkc6PVtVYdC6a0CffNaDNpHZdFvaqXYo/rfh8RR9/yKPWnwZry6kLnlUMV/uef8CcibxfitlPXXjLr0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=jfig/jpu; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+	s=arc-20240116; t=1764100008; c=relaxed/simple;
+	bh=yvrl0wOjR+XSH5uRR3LWNSF0SaBkf3JIyH+0olitB1Q=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KFx84hh7fLKbd8S38QbI/qdgZfYpDyjTAf1hBH6pMuPPpwJD7lPSr4uqWDtNY05q/VHOXl9iAT5I3z2INFa2CiH+ehz6Cr3fVblQ9Xf560FAmAE4hFEPB61cpxaacMB7QS/Vpydkj15q1qC5Vjfyt5k+xIQPoq/mxaGvKe8FOHc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Gx7b6fVI; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="jfig/jpu"
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id AC03640E0253;
-	Tue, 25 Nov 2025 17:42:52 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id To3KnAzsrizz; Tue, 25 Nov 2025 17:42:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1764092566; bh=Flf67ZijIH8cHplKxTy2qaA6YRgNZ0as3pFMcflAhlI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jfig/jpuvuAzxZouWtelYFbmMFFHxJ7ybHn8YOnj59P6YChLrwbQWwni5nlQpSTSs
-	 bvB0xGsVpaXuVuxQIHKRHJrCMcbR/8UIOkp3o/5vWJY1p4U05ycL7Xf8V2mwPd9Ysd
-	 2N/dsxxMZLLQ+sbecT2+TzFjuQQpnAaB0FE7InXjDiekXjcMYVi75X5IZIFqPTp5rx
-	 SjQ6wkoQKeIdix2Hb6aDtl/4fLsqegxkJJcAwQ72jil2HjY0aNwSNvKIp5EyMxiIUm
-	 pFsk0svA5WyubEzPDwun1ybZzgQQ5NWbj1QFmQz2Nwf/W5vb4MJa4r3FdPqyJ7NJZi
-	 Jb7o5Sm5U6IHTmQ00HlXHUyc9wSb4KGbPlHz5ugmohz3eFGFsZYvglXeJHZOvLatVG
-	 2hH/bHOFZBGc6Dp79RY0iYHubByFihteXMTQzInm6OIc5EoEoM1JDhoFNuoczlvLQF
-	 O7yTMorRdwPGmA6D9asEgU7j4rKaqUnQ8AWUA1mmQWLFlf9GaI43ASOzy167gjY9jD
-	 gI5yky67zV9afaW92sKmwuHdnykIYm9ktxVAHYiinDogo1jzo64TrcKPwVl/Fyv+hT
-	 lTjQR5i4RqPcE4U56eBICJw8j0i3g1w3rtD8VYlCrgua2OZBRfQ4ijERPEzkll/t8Z
-	 nAlDqigrayea84xsUnnD8vVs=
-Received: from zn.tnic (p57969402.dip0.t-ipconnect.de [87.150.148.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with UTF8SMTPSA id 5046E40E015B;
-	Tue, 25 Nov 2025 17:42:19 +0000 (UTC)
-Date: Tue, 25 Nov 2025 18:42:11 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Breno Leitao <leitao@debian.org>, tony.luck@intel.com,
-	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	acpica-devel@lists.linux.dev, osandov@osandov.com,
-	xueshuai@linux.alibaba.com, konrad.wilk@oracle.com,
-	linux-edac@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	linux-pci@vger.kernel.org, kernel-team@meta.com,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>, James Morse <james.morse@arm.com>,
-	Robert Moore <robert.moore@intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>, Hanjun Guo <guohanjun@huawei.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-	Oliver O'Halloran <oohall@gmail.com>,
-	Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH RESEND v5] vmcoreinfo: Track and log recoverable hardware
- errors
-Message-ID: <20251125174211.GIaSXqc1tAdGejYYwh@fat_crate.local>
-References: <20251010-vmcore_hw_error-v5-1-636ede3efe44@debian.org>
- <vpilvvscosdl4o4cvbmtsrrp4btfwr5iidywmuiawfrgtlcwrr@ubtdbxfqyqpu>
- <20251118141002.GEaRx-Oge8ZxtR4Vzi@fat_crate.local>
- <20251125093211.081d4ba0e18f1f9a85a0de5f@linux-foundation.org>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gx7b6fVI"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 092CBC19423
+	for <acpica-devel@lists.linux.dev>; Tue, 25 Nov 2025 19:46:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1764100008;
+	bh=yvrl0wOjR+XSH5uRR3LWNSF0SaBkf3JIyH+0olitB1Q=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=Gx7b6fVIqOl4LtYkUHQfgWaRe3aaZTA/qrAlds132jXu590WaSwd4CWT+XoaKmYah
+	 BJV1g6TgMaCNdqZ5WlqDZQsoGT2lobf1Wr/nacgWPXX4xJWGuVHVEZWx5HtpDhf6cU
+	 aHMBURi2qnZVQ6mk5/NXLPbd52K4ZbORQJg85yOd0QP1O1f2ukOwgw52OuT6/zGtIG
+	 eqd8DsC7k7bYIbIIXmhJ/OKzUK7KhoQUj3vMe4I0809E2j8/2AWXpXW9KPFAjK11/4
+	 RY17sDV9GNjitBDBsaVWZeppeyrpkWBJ9B1V5ja3VWMyzMn3y6yuxnytboqZ6vRXkm
+	 kIivrQSB2rjbg==
+Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-7c750b10e14so1966516a34.2
+        for <acpica-devel@lists.linux.dev>; Tue, 25 Nov 2025 11:46:48 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXsBhHtq0eceqAvVKsNU9/iCfvpu61ELWbm3abTuicM4bxiMZaO89bolZZq1XwSGFM1CEry/SWKkBk6I0k=@lists.linux.dev
+X-Gm-Message-State: AOJu0YzHLhi/AmGNibM40NlRl8+umLwwiYQULQ79E3nDDWp08CmMVl0l
+	jZA53l6tEY5zx8ZNbGINVAdl37JEHev6UEoS8TtKnSZyKIj+zCIdwJuAyyJyzQnURcrYjfbj+Ma
+	qKnrRzURdBNHl5C0+EWiseAFpYMq2eTg=
+X-Google-Smtp-Source: AGHT+IFGMFIfq2+kvnTPZJazL4Yeg+8WQgSO/dFZk40t4JEEBh6K8WyxoehpLBTypvtAqzSsfFAhpjmr/CS3BpOKo/A=
+X-Received: by 2002:a05:6830:4424:b0:7c7:6348:594a with SMTP id
+ 46e09a7af769-7c798ac9963mr8031111a34.7.1764100007330; Tue, 25 Nov 2025
+ 11:46:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20251125093211.081d4ba0e18f1f9a85a0de5f@linux-foundation.org>
+References: <20251006120944.7880-1-spasswolf@web.de> <8edcc464-c467-4e83-a93b-19b92a2cf193@kernel.org>
+ <4903e7c36adf377bcca289dbd3528055dc6cfb32.camel@web.de> <4a8302a0-209f-446a-9825-36cb267c1718@kernel.org>
+ <25f36fa7-d1d6-4b81-a42f-64c445d6f065@amd.com> <1853e2af7f70cf726df278137b6d2d89d9d9dc82.camel@web.de>
+ <f18bafacbd8316c9623658e2935f8fc3b276af64.camel@web.de> <26bf82303f661cdd34e4e8c16997e33eb21d1ee4.camel@web.de>
+ <635b6cb19b5969bed7432dfd1cd651124e63aebb.camel@web.de> <18e472a0489ee5337465d5dc26685cebaf7c4f8d.camel@web.de>
+ <3772b8f5-6d1a-403e-ad27-99a711e78902@kernel.org> <0cb75fae3a9cdb8dd82ca82348f4df919d34844d.camel@web.de>
+ <ab51bd58919a31107caf8f8753804cb2dbfa791d.camel@web.de> <0719d985-1c09-4039-84c1-8736a1ca5e2d@amd.com>
+ <3f790ee59129e5e49dd875526cb308cc4d97b99d.camel@web.de> <CAJZ5v0iRaYBU+1S4rqYR7D6XC+rfQ2+0hgbodweV5JsFr8EEnQ@mail.gmail.com>
+ <b1fadb15d1869bde81315be7488c50dbbc9f7dbd.camel@web.de>
+In-Reply-To: <b1fadb15d1869bde81315be7488c50dbbc9f7dbd.camel@web.de>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Tue, 25 Nov 2025 20:46:36 +0100
+X-Gmail-Original-Message-ID: <CAJZ5v0iAJN4eTdp9S=CKbMnVn78R7UnBKbLjBTdRhHebE0i7dA@mail.gmail.com>
+X-Gm-Features: AWmQ_bmiY3C3Fd0jUd8YOkwb-S7v2_w9pN95wDBnISKEEEKCJJwUosvxEK3SrZI
+Message-ID: <CAJZ5v0iAJN4eTdp9S=CKbMnVn78R7UnBKbLjBTdRhHebE0i7dA@mail.gmail.com>
+Subject: Re: Crash during resume of pcie bridge due to infinite loop in ACPICA
+To: Bert Karwatzki <spasswolf@web.de>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	"Mario Limonciello (AMD) (kernel.org)" <superm1@kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-next@vger.kernel.org, regressions@lists.linux.dev, 
+	linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org, 
+	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>, acpica-devel@lists.linux.dev, 
+	Robert Moore <robert.moore@intel.com>, Saket Dumbre <saket.dumbre@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Nov 25, 2025 at 09:32:11AM -0800, Andrew Morton wrote:
-> I don't feel I'll add much value here so please take it via the
-> appropriate tree.
+On Mon, Nov 24, 2025 at 11:34=E2=80=AFPM Bert Karwatzki <spasswolf@web.de> =
+wrote:
+>
+> Am Montag, dem 17.11.2025 um 17:40 +0100 schrieb Rafael J. Wysocki:
+> >
+> > Well, what you have found appears to be an issue in the AML bytecode
+> > interpreter which may be one of two things: (1) a bug in the
+> > interpreter itself or (2) a bytecode issue that causes the interpreter
+> > to crash (eventually) and the latter is quite a bit more likely.
+> >
+> > I'd suggest opening a new issue at
+> > https://github.com/acpica/acpica/issues and attaching the acpidump
+> > output from the affected system, to start with.
+>
+> I've reported the bug to ACPICA github:
+> https://github.com/acpica/acpica/issues/1060
 
-Yeah, that's the thing - judging from the diffstat your tree is probably the
-most fitting one. So I think we're on the right track here.
+I've seen your report, thanks for filing it.
 
-:-)
+> There's no "infinite" loop, but a loop running for 5051 (0x13BB) iteratio=
+n until its timeout
+> counter reaches Zero (most likely because the hardware is unresponsive). =
+Soon (only a
+> handfull of iterations in the walk loop in acpi_ps_parse_aml()) the crash=
+ happens. I think
+> the crash actually occurs inside acpi_ps_parse_loop(), so I wouldn't rule=
+ out an interpreter
+> bug just yet.
+>  The crash also always happens (if it happens ...) in the 30592th iterati=
+on of the walk loop,
+> so I'm now monitoring the internal of acpi_ps_parse_loop() only in this i=
+teration of the walk
+> loop. (I've tried to monitor the parse loop before, but that only led to =
+excessive memory
+> consumption and an activated OOM killer). The debugging code can be found=
+ here:
+> https://gitlab.freedesktop.org/spasswolf/linux-stable/-/commits/amdgpu_su=
+spend_resume?ref_type=3Dheads
+>
+> So far I've had no crash with this.
 
-Thx.
+What may be happening, but this is just a theory, is that the
+interpreter aborts the evaluation of a method due to an internal
+timeout, essentially the control_state->control.loop_timeout check in
+acpi_ds_exec_end_control_op() and that leads to a subsequent hard
+failure like a deadlock.
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+This may be tested by increasing the ACPI_MAX_LOOP_TIMEOUT value, but
+I'm not sure it's practical to try that.
