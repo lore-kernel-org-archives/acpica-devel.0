@@ -1,34 +1,50 @@
-Received: from mail.ksb-soft.ru (mail.ksb-soft.ru [5.167.76.63])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FF223B186
-	for <acpica-devel@lists.linux.dev>; Thu, 11 Dec 2025 12:34:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.167.76.63
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23EA133A71B
+	for <acpica-devel@lists.linux.dev>; Wed, 17 Dec 2025 09:33:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765456460; cv=none; b=bt0BVf1VIBgN3rAmnU27Kb3+YQuWHYj1VrqsQ0AynMMuWV0iDitvfa4lVwb+Gb+cRdrpGFekD/LtMb5fjQUldp06B0BGctds43eA0NEb+FeKEYLZu68cDAddFqRAWbibXX82GoOyEErp6qCWsk9aRrIkQHqM9b4HnLOLE4g5Azg=
+	t=1765963995; cv=none; b=ajWwZky9AbUCbwywTDAdS8vGQmjb9MCf1fvociUYyXaNjplA1BjkQlerjhohcWtoE5EEzGLk3PE/1IAI8QJowa15+ezAKAdhZGO2ZZXhsDjJo32u/glUMXAFm8pFKfu0pO3Hxo4Z8KpQg7K93RQycxyErRuDiHUTaVXyJa/UVK4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765456460; c=relaxed/simple;
-	bh=odDAQbgQA3c4km/LwyHrvw9SrvPSWXoSJuS72nK0Jiw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FcJGD7AZ+CdX+72k9jsB+KxneMnOuhyS5LhITGMl8OHtS/HpnM1Z5GJFFUf8nRve04owjKBH6o8bPXnfeJlItB7ZrDM6ubQtR29u2m1zwQ8YyPCed+Au+Ff6TAD5zxjYDOQQTauzpbUR87KKfq4ZEw6xD+rtN6MLZeWMtD1YSuI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=npc-ksb.ru; spf=pass smtp.mailfrom=npc-ksb.ru; arc=none smtp.client-ip=5.167.76.63
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=npc-ksb.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=npc-ksb.ru
-Received: from ksb-289.ksb.ksb-soft.ru (ksb-289.ksb.ksb-soft.ru [10.38.30.64])
-	by mail.ksb-soft.ru (Postfix) with ESMTPA id 4dRsKq40thz4LJR1;
-	Thu, 11 Dec 2025 15:27:27 +0300 (MSK)
-From: Markov Gleb <markov.gi@npc-ksb.ru>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: Markov Gleb <markov.gi@npc-ksb.ru>,
-	Robert Moore <robert.moore@intel.com>,
-	Len Brown <lenb@kernel.org>,
+	s=arc-20240116; t=1765963995; c=relaxed/simple;
+	bh=lhUAAyW2nf5zdVzrWdMqP/A+MUrbyUVRmzZVyRzSO7k=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=lONDMNGN3Pe9VzWtDBYsc5LKk4QEBOGE6FPvdri36xxoAFYYEh2OC4bJG+j6lIIGKyBF5CUWD3O5wpL1bz2U86Gz0BaIa9cdR9uPEeODRuhLgP5LGwjOj7OY5jEDlNEKZ31ckpAlKxNrJ4bXpOteR6Y4qfLHgv89C6jxEz/fSVA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 660e0c0edb2b11f0a38c85956e01ac42-20251217
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.3.6,REQID:1f1ef67e-943d-4777-b55f-52c99ce21a9e,IP:0,UR
+	L:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:-5
+X-CID-META: VersionHash:a9d874c,CLOUDID:2e41b52dafa57e876e5c1268609958da,BulkI
+	D:nil,BulkQuantity:0,Recheck:0,SF:102|123|850|898,TC:nil,Content:0|15|50,E
+	DM:-3,IP:nil,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA
+	:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC:0
+X-CID-BVR: 2,SSN|SDN
+X-CID-BAS: 2,SSN|SDN,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
+X-UUID: 660e0c0edb2b11f0a38c85956e01ac42-20251217
+X-User: fengchenguang@kylinos.cn
+Received: from localhost.localdomain [(10.44.16.150)] by mailgw.kylinos.cn
+	(envelope-from <fengchenguang@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
+	with ESMTP id 172906047; Wed, 17 Dec 2025 17:33:09 +0800
+From: fengchenguang@kylinos.cn
+To: rafael@kernel.org
+Cc: lenb@kernel.org,
+	robert.moore@intel.com,
 	linux-acpi@vger.kernel.org,
 	acpica-devel@lists.linux.dev,
 	linux-kernel@vger.kernel.org,
-	ldv-project@linuxtesting.org
-Subject: [PATCH] exstore.c/exoparg.c: Add null-check on return_desc->pointer use.
-Date: Thu, 11 Dec 2025 15:27:24 +0300
-Message-ID: <20251211122725.987-1-markov.gi@npc-ksb.ru>
-X-Mailer: git-send-email 2.52.0.windows.1
+	fengchenguang <fengchenguang@kylinos.cn>,
+	k2ci <kernel-bot@kylinos.cn>
+Subject: [PATCH] ACPICA: Fix RSDP signature validation to avoid -Wstringop-overread
+Date: Wed, 17 Dec 2025 17:33:04 +0800
+Message-Id: <20251217093304.116728-1-fengchenguang@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -36,64 +52,37 @@ List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-KLMS-Rule-ID: 1
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Lua-Profiles: 197590 [Oct 29 2025]
-X-KLMS-AntiSpam-Version: 6.1.1.11
-X-KLMS-AntiSpam-Envelope-From: markov.gi@npc-ksb.ru
-X-KLMS-AntiSpam-Rate: 0
-X-KLMS-AntiSpam-Status: not_detected
-X-KLMS-AntiSpam-Method: none
-X-KLMS-AntiSpam-Auth: dkim=none
-X-KLMS-AntiSpam-Info: LuaCore: 72 0.3.72 80ff96170b649fb7ebd1aa4cb544c36c109810bd, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, FromAlignment: s
-X-MS-Exchange-Organization-SCL: -1
-X-KLMS-AntiSpam-Interceptor-Info: scan successful
-X-KLMS-AntiPhishing: Clean
-X-KLMS-LinksScanning: Clean
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 10.0.0.7427, bases: 2025/10/29 20:57:00 #27800623
-X-KLMS-AntiVirus-Status: Clean, skipped
 
-If the requested length is == 0,
-then the length variable will be set to == 0.
+From: fengchenguang <fengchenguang@kylinos.cn>
 
-Call of acpi_ex_opcode_3A_1T_1R in exoparg3.c
-with length == 0 may lead a skip of code block
-with buffer initialization so usage of any
-buffer fields will lead to dereference of null.
+The RSDP signature is an 8-byte binary identifier,not a NUL-terminated
+C string. Using strncmp() on it triggers a -Wstringop-overread warning
+with GCC 8+, because the source operand is smaller than the requested
+compare length of 8 bytes.
 
-The problem occurs when calling acpi_ex_store
-with return_desc as the first parameter.
+Replace strncmp() with memcmp() for exact 8-byte binary comparison,
+and remove the redundant (sizeof(a) < 8) conditional, as the RSDP
+signature field is always 8 bytes per the ACPI specification.
 
-Added null check to exstore.c to avoid
-dereferencing.
-Make status change on uninitialized buffer.
-If the solution is trivial, this section can be omitted.
-Not tried to initialize the buffer again.
-
-Found by Linux Driver Verification project (linuxtesting.org).
-
-Signed-off-by: Markov Gleb <markov.gi@npc-ksb.ru>
+Reported-by: k2ci <kernel-bot@kylinos.cn>
+Signed-off-by: fengchenguang <fengchenguang@kylinos.cn>
 ---
- drivers/acpi/acpica/exstore.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ include/acpi/actypes.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/acpi/acpica/exstore.c b/drivers/acpi/acpica/exstore.c
-index cbc42207496d..791ecf89d71c 100644
---- a/drivers/acpi/acpica/exstore.c
-+++ b/drivers/acpi/acpica/exstore.c
-@@ -299,6 +299,12 @@ acpi_ex_store_object_to_index(union acpi_operand_object *source_desc,
+diff --git a/include/acpi/actypes.h b/include/acpi/actypes.h
+index 8fe893d776dd..3714b197b1dd 100644
+--- a/include/acpi/actypes.h
++++ b/include/acpi/actypes.h
+@@ -527,7 +527,7 @@ typedef u64 acpi_integer;
  
- 			/* Note: Takes advantage of common string/buffer fields */
+ /* Support for the special RSDP signature (8 characters) */
  
-+			if (source_desc->buffer.pointer == NULL ||
-+			    source_desc->buffer.length == 0) {
-+				status = AE_BAD_PARAMETER;
-+				break;
-+			}
-+
- 			value = source_desc->buffer.pointer[0];
- 			break;
+-#define ACPI_VALIDATE_RSDP_SIG(a)       (!strncmp (ACPI_CAST_PTR (char, (a)), ACPI_SIG_RSDP, (sizeof(a) < 8) ? ACPI_NAMESEG_SIZE : 8))
++#define ACPI_VALIDATE_RSDP_SIG(a)       (!memcmp(ACPI_CAST_PTR(char, (a)), ACPI_SIG_RSDP, 8))
+ #define ACPI_MAKE_RSDP_SIG(dest)        (memcpy (ACPI_CAST_PTR (char, (dest)), ACPI_SIG_RSDP, 8))
  
+ /* Support for OEMx signature (x can be any character) */
 -- 
-2.43.0
+2.25.1
 
