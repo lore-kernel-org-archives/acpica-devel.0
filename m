@@ -1,267 +1,122 @@
-Received: from canpmsgout11.his.huawei.com (canpmsgout11.his.huawei.com [113.46.200.226])
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F4333148C2
-	for <acpica-devel@lists.linux.dev>; Fri, 26 Dec 2025 08:03:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.226
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B80C7334692
+	for <acpica-devel@lists.linux.dev>; Mon,  5 Jan 2026 12:01:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766736230; cv=none; b=Z+YmpOOK9Id1ZxkNE+W+XY903l7sUGCXWtviamym8GokxPsGhY/bs3IC97I1ODuT6HRjK+VAG538sk1BFmo/QnB2FhKK+QE/H09L1cZAPtRVI7rMRHDZUsV+qD/9o6GzRCwCc4EaP23THdwZmog3P7BuTeNt8NEXK/OQJAW+sIM=
+	t=1767614478; cv=none; b=o/sROj4P/5grmQTjFze9f8h6b5chzAjIOBqU1969+Z/steqRsekwiaZqMnfVUmSItT0X5uGtKNs81Vozh8CQOKkJNTzZHGwFDSUT3Li3DQfAL4vxu2sQ+M9dbPj2waZFGdddrGSGnS01QRq3YFRljdcz0hZt+FSgX1tNbFvyR94=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766736230; c=relaxed/simple;
-	bh=NNtcSaymVfb+eeXD+ID6HdTKYpdAZqMMojsf1gOSp5g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=M8BZSbvi9+WMgxIzkDMeE0ky9AU7bdQy7ccZhO4cpEiHE5rkz4J2EOOQP09+OMkASSmP4DVCLfZkvS2KbUt1nvNNKW0djnpqOkex9v2Ix4hEPe671dXT6ZcdTtSlXAYr3E/3Xil8qJXD0VK6RfJ9XzKO+5GLSHzf3UJCOhn8+bA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=eX5igWEe; arc=none smtp.client-ip=113.46.200.226
+	s=arc-20240116; t=1767614478; c=relaxed/simple;
+	bh=4ynjMxk0roEk3a96iXXrcKZGWIGR6B/H8t/ixLIN/Bc=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=MdqIV7EvwarQD9Rhzuvcq1EG/M/i8YDN8ZWyhJwDSvVLOrGfCd3s1LPTw+kAtx/Nq63UGa7x+ZxDVASvqoQtj3b3egBnViJGUzJLiLzwBVZcBexPf7RBH9tsccJV2oIruCIwS9VihIQynleWGnJprUSLqHzxUBvEuxQ76vt97VI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="eX5igWEe"
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=yr33QlKfyzpoEI3opWrGPCwz6K45y5MtWloabdDJsYs=;
-	b=eX5igWEe88qSEW5scW/+bRuLCxXMSVK2HTq+/1I05IQxh55LC56HxfXLLpOXS27G95zZHZkOS
-	r7Igd+y6GGS+H4PslOzrdL7qGsLTlPEjpSSRzTih0FKpnN7nq6gAIHCHKtRe/poeaIEcxCST6eL
-	8cERpNX+JvlyYhzZI1WB0JI=
-Received: from mail.maildlp.com (unknown [172.19.163.214])
-	by canpmsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dcyht0FrbzKm6H;
-	Fri, 26 Dec 2025 16:00:30 +0800 (CST)
-Received: from kwepemf200001.china.huawei.com (unknown [7.202.181.227])
-	by mail.maildlp.com (Postfix) with ESMTPS id C983E40539;
-	Fri, 26 Dec 2025 16:03:38 +0800 (CST)
-Received: from [10.67.121.90] (10.67.121.90) by kwepemf200001.china.huawei.com
- (7.202.181.227) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Fri, 26 Dec
- 2025 16:03:37 +0800
-Message-ID: <3887747b-214e-45e5-9f85-d4e20a5e2e68@huawei.com>
-Date: Fri, 26 Dec 2025 16:03:37 +0800
+Received: from mail.maildlp.com (unknown [172.18.224.150])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTPS id 4dlCYw6g49zHnH7t;
+	Mon,  5 Jan 2026 20:01:08 +0800 (CST)
+Received: from dubpeml100005.china.huawei.com (unknown [7.214.146.113])
+	by mail.maildlp.com (Postfix) with ESMTPS id 17D0240565;
+	Mon,  5 Jan 2026 20:01:11 +0800 (CST)
+Received: from localhost (10.48.157.23) by dubpeml100005.china.huawei.com
+ (7.214.146.113) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.36; Mon, 5 Jan
+ 2026 12:01:09 +0000
+Date: Mon, 5 Jan 2026 12:01:08 +0000
+From: Jonathan Cameron <jonathan.cameron@huawei.com>
+To: Lorenzo Pieralisi <lpieralisi@kernel.org>
+CC: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
+	Robert Moore <robert.moore@intel.com>, Thomas Gleixner <tglx@linutronix.de>,
+	Hanjun Guo <guohanjun@huawei.com>, Sudeep Holla <sudeep.holla@arm.com>, Marc
+ Zyngier <maz@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	<linux-acpi@vger.kernel.org>, <acpica-devel@lists.linux.dev>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-pci@vger.kernel.org>
+Subject: Re: [PATCH v2 3/7] irqdomain: Add parent field to struct
+ irqchip_fwid
+Message-ID: <20260105120108.00002016@huawei.com>
+In-Reply-To: <20251218-gicv5-host-acpi-v2-3-eec76cd1d40b@kernel.org>
+References: <20251218-gicv5-host-acpi-v2-0-eec76cd1d40b@kernel.org>
+	<20251218-gicv5-host-acpi-v2-3-eec76cd1d40b@kernel.org>
+X-Mailer: Claws Mail 4.3.0 (GTK 3.24.42; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 11/11] cpufreq: CPPC: add autonomous mode boot
- parameter support
-To: Sumit Gupta <sumitg@nvidia.com>, <rafael@kernel.org>,
-	<viresh.kumar@linaro.org>, <lenb@kernel.org>, <robert.moore@intel.com>,
-	<corbet@lwn.net>, <pierre.gondois@arm.com>, <rdunlap@infradead.org>,
-	<ray.huang@amd.com>, <gautham.shenoy@amd.com>, <mario.limonciello@amd.com>,
-	<perry.yuan@amd.com>, <ionela.voinescu@arm.com>, <zhanjie9@hisilicon.com>,
-	<linux-pm@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>, <acpica-devel@lists.linux.dev>,
-	<linux-kernel@vger.kernel.org>
-CC: <linux-tegra@vger.kernel.org>, <treding@nvidia.com>,
-	<jonathanh@nvidia.com>, <vsethi@nvidia.com>, <ksitaraman@nvidia.com>,
-	<sanjayc@nvidia.com>, <nhartman@nvidia.com>, <bbasu@nvidia.com>
-References: <20251223121307.711773-1-sumitg@nvidia.com>
- <20251223121307.711773-12-sumitg@nvidia.com>
-From: "zhenglifeng (A)" <zhenglifeng1@huawei.com>
-In-Reply-To: <20251223121307.711773-12-sumitg@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
- kwepemf200001.china.huawei.com (7.202.181.227)
+X-ClientProxiedBy: lhrpeml100011.china.huawei.com (7.191.174.247) To
+ dubpeml100005.china.huawei.com (7.214.146.113)
 
-On 2025/12/23 20:13, Sumit Gupta wrote:
-> Add kernel boot parameter 'cppc_cpufreq.auto_sel_mode' to enable CPPC
-> autonomous performance selection on all CPUs at system startup without
-> requiring runtime sysfs manipulation. When autonomous mode is enabled,
-> the hardware automatically adjusts CPU performance based on workload
-> demands using Energy Performance Preference (EPP) hints.
+On Thu, 18 Dec 2025 11:14:29 +0100
+Lorenzo Pieralisi <lpieralisi@kernel.org> wrote:
+
+> The GICv5 driver IRQ domain hierarchy requires adding a parent field to
+> struct irqchip_fwid so that core code can reference a fwnode_handle parent
+> for a given fwnode.
 > 
-> When auto_sel_mode=1:
-> - All CPUs are configured for autonomous operation during init
-> - EPP is set to performance preference (0x0) by default
-> - Min/max performance bounds use defaults or already set values
-> - CPU frequency scaling is handled by hardware instead of OS governor
+> Add a parent field to struct irqchip_fwid and update the related kernel API
+> functions to initialize and handle it.
 > 
-> The boot parameter is applied only during first policy initialization.
-> User's runtime sysfs configuration is preserved across hotplug.
-> 
-> For Documentation/:
-> Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+> Signed-off-by: Lorenzo Pieralisi <lpieralisi@kernel.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Marc Zyngier <maz@kernel.org>
+Hi Lorenzo,
+
+Happy new year.
+
 > ---
->  .../admin-guide/kernel-parameters.txt         | 13 +++
->  drivers/cpufreq/cppc_cpufreq.c                | 85 +++++++++++++++++--
->  2 files changed, 90 insertions(+), 8 deletions(-)
+>  include/linux/irqdomain.h | 30 ++++++++++++++++++++++++++----
+>  kernel/irq/irqdomain.c    | 14 +++++++++++++-
+>  2 files changed, 39 insertions(+), 5 deletions(-)
 > 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index aab72efa1acd..450f0b0225dc 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -1035,6 +1035,19 @@ Kernel parameters
->  			Format:
->  			<first_slot>,<last_slot>,<port>,<enum_bit>[,<debug>]
+> diff --git a/include/linux/irqdomain.h b/include/linux/irqdomain.h
+> index 62f81bbeb490..b9df84b447a1 100644
+> --- a/include/linux/irqdomain.h
+> +++ b/include/linux/irqdomain.h
+> @@ -257,7 +257,8 @@ static inline void irq_domain_set_pm_device(struct irq_domain *d, struct device
 >  
-> +	cppc_cpufreq.auto_sel_mode=
-> +			[CPU_FREQ] Enable ACPI CPPC autonomous performance
-> +			selection. When enabled, hardware automatically adjusts
-> +			CPU frequency on all CPUs based on workload demands.
-> +			In Autonomous mode, Energy Performance Preference (EPP)
-> +			hints guide hardware toward performance (0x0) or energy
-> +			efficiency (0xff).
-> +			Requires ACPI CPPC autonomous selection register support.
-> +			Format: <bool>
-> +			Default: 0 (disabled)
-> +			0: use cpufreq governors
-> +			1: enable if supported by hardware
-> +
->  	cpuidle.off=1	[CPU_IDLE]
->  			disable the cpuidle sub-system
+>  #ifdef CONFIG_IRQ_DOMAIN
+>  struct fwnode_handle *__irq_domain_alloc_fwnode(unsigned int type, int id,
+> -						const char *name, phys_addr_t *pa);
+> +						const char *name, phys_addr_t *pa,
+> +						struct fwnode_handle *parent);
 >  
-> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
-> index b3da263c18b0..8c6869e68504 100644
-> --- a/drivers/cpufreq/cppc_cpufreq.c
-> +++ b/drivers/cpufreq/cppc_cpufreq.c
-> @@ -30,6 +30,9 @@ static struct cpufreq_driver cppc_cpufreq_driver;
+>  enum {
+>  	IRQCHIP_FWNODE_REAL,
+> @@ -267,18 +268,39 @@ enum {
 >  
->  static DEFINE_MUTEX(cppc_cpufreq_update_autosel_config_lock);
->  
-> +/* Autonomous Selection boot parameter */
-> +static bool auto_sel_mode;
-> +
->  #ifdef CONFIG_ACPI_CPPC_CPUFREQ_FIE
->  static enum {
->  	FIE_UNSET = -1,
-> @@ -643,11 +646,16 @@ static int cppc_cpufreq_set_mperf_limit(struct cpufreq_policy *policy, u64 val,
->   * cppc_cpufreq_update_autosel_config - Update autonomous selection config
->   * @policy: cpufreq policy
->   * @is_auto_sel: enable/disable autonomous selection
-> + * @epp_val: EPP value (used only if update_epp true)
-> + * @update_epp: whether to update EPP register
-> + * @update_policy: whether to update policy constraints
->   *
->   * Return: 0 on success, negative error code on failure
->   */
->  static int cppc_cpufreq_update_autosel_config(struct cpufreq_policy *policy,
-> -					      bool is_auto_sel)
-> +					      bool is_auto_sel, u32 epp_val,
-> +					      bool update_epp,
-> +					      bool update_policy)
-
-cppc_cpufreq_set_mperf_limit() and cppc_cpufreq_update_autosel_config()
-have too much bool input param. Just break them down into several separate
-functions and call them only when needed. These two functions are now too
-hard to read.
-
+>  static inline struct fwnode_handle *irq_domain_alloc_named_fwnode(const char *name)
 >  {
->  	struct cppc_cpudata *cpu_data = policy->driver_data;
->  	struct cppc_perf_caps *caps = &cpu_data->perf_caps;
-> @@ -655,7 +663,6 @@ static int cppc_cpufreq_update_autosel_config(struct cpufreq_policy *policy,
->  	u64 max_perf = caps->nominal_perf;
->  	unsigned int cpu = policy->cpu;
->  	bool update_reg = is_auto_sel;
-> -	bool update_policy = true;
->  	int ret;
->  
->  	guard(mutex)(&cppc_cpufreq_update_autosel_config_lock);
-> @@ -685,6 +692,17 @@ static int cppc_cpufreq_update_autosel_config(struct cpufreq_policy *policy,
->  	if (ret && ret != -EOPNOTSUPP)
->  		return ret;
->  
-> +	/* Update EPP register */
-> +	if (update_epp) {
-> +		ret = cppc_set_epp(cpu, epp_val);
-> +		if (ret && ret != -EOPNOTSUPP) {
-> +			pr_warn("Failed to set EPP for CPU%d (%d)\n", cpu, ret);
-> +			return ret;
-> +		}
-> +		if (!ret)
-> +			cpu_data->perf_ctrls.energy_perf = epp_val;
-> +	}
+> -	return __irq_domain_alloc_fwnode(IRQCHIP_FWNODE_NAMED, 0, name, NULL);
+> +	return __irq_domain_alloc_fwnode(IRQCHIP_FWNODE_NAMED, 0, name, NULL, NULL);
+> +}
 > +
->  	/* Update auto_sel register */
->  	ret = cppc_set_auto_sel(cpu, is_auto_sel);
->  	if (ret && ret != -EOPNOTSUPP) {
-> @@ -816,11 +834,54 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
->  	policy->cur = cppc_perf_to_khz(caps, caps->highest_perf);
->  	cpu_data->perf_ctrls.desired_perf =  caps->highest_perf;
->  
-> -	ret = cppc_set_perf(cpu, &cpu_data->perf_ctrls);
-> -	if (ret) {
-> -		pr_debug("Err setting perf value:%d on CPU:%d. ret:%d\n",
-> -			 caps->highest_perf, cpu, ret);
-> -		goto out;
-> +	/*
-> +	 * Enable autonomous mode on first init if boot param is set.
-> +	 * Check last_governor to detect first init and skip if auto_sel
-> +	 * is already enabled.
-> +	 */
-> +	if (auto_sel_mode && policy->last_governor[0] == '\0' &&
-> +	    !cpu_data->perf_ctrls.auto_sel) {
-> +		/* Enable CPPC - optional register, some platforms need it */
-> +		ret = cppc_set_enable(cpu, true);
-> +		if (ret) {
-> +			if (ret == -EOPNOTSUPP)
-> +				pr_debug("CPPC enable not supported CPU%d\n",
-> +					 cpu);
-> +			else
-> +				pr_warn("Failed enable CPPC CPU%d (%d)\n",
-> +					cpu, ret);
-> +		}
-> +
-> +		/*
-> +		 * Enable autonomous mode; Pass false for update_policy to avoid
-> +		 * updating policy limits prematurely as they are not yet fully setup.
-> +		 */
-> +		ret = cppc_cpufreq_update_autosel_config(policy,
-> +							 true,  /* is_auto_sel */
-> +							 CPPC_EPP_PERFORMANCE_PREF,
-> +							 true,  /* update_epp */
-> +							 false); /* update_policy */
-> +		if (ret)
-> +			pr_warn("Failed autonomous config CPU%d (%d)\n",
-> +				cpu, ret);
-> +	}
-> +
-> +	/* If auto mode is enabled, sync policy limits with HW registers */
-> +	if (cpu_data->perf_ctrls.auto_sel) {
-> +		policy->min = cppc_perf_to_khz(caps,
-> +					       cpu_data->perf_ctrls.min_perf ?:
-> +					       caps->lowest_nonlinear_perf);
-> +		policy->max = cppc_perf_to_khz(caps,
-> +					       cpu_data->perf_ctrls.max_perf ?:
-> +					       caps->nominal_perf);
-> +	} else {
-> +		/* Standard mode: governors control frequency */
-> +		ret = cppc_set_perf(cpu, &cpu_data->perf_ctrls);
-> +		if (ret) {
-> +			pr_debug("Err setting perf value:%d CPU:%d ret:%d\n",
-> +				 caps->highest_perf, cpu, ret);
-> +			goto out;
-> +		}
->  	}
->  
->  	cppc_cpufreq_cpu_fie_init(policy);
-> @@ -991,7 +1052,7 @@ static ssize_t store_auto_select(struct cpufreq_policy *policy,
->  	if (ret)
->  		return ret;
->  
-> -	ret = cppc_cpufreq_update_autosel_config(policy, val);
-> +	ret = cppc_cpufreq_update_autosel_config(policy, val, 0, false, true);
->  	if (ret)
->  		return ret;
->  
-> @@ -1253,10 +1314,18 @@ static int __init cppc_cpufreq_init(void)
->  
->  static void __exit cppc_cpufreq_exit(void)
->  {
-> +	unsigned int cpu;
-> +
-> +	for_each_present_cpu(cpu)
-> +		cppc_set_auto_sel(cpu, false);
-> +
->  	cpufreq_unregister_driver(&cppc_cpufreq_driver);
->  	cppc_freq_invariance_exit();
+> +static inline
+> +struct fwnode_handle *irq_domain_alloc_named_fwnode_parent(const char *name,
+> +							   struct fwnode_handle *parent)
+
+The name of this makes me think it's allocating the named fwnode parent, rather that
+the named fwnode + setting it's parent.
+
+There aren't all that many calls to irq_domain_named_fwnode(), maybe to avoid challenge
+of a new name, just add the parameter to all of them? (25ish)  Mind you the current
+pattern for similar cases is a helper, so maybe not.
+
+Or go with something similar to named and have
+
+irq_domain_alloc_named_parented_fwnode()?
+
+I'm not that bothered though if you think the current naming is the best we can do.
+
+Jonathan
+
+> +{
+> +	return __irq_domain_alloc_fwnode(IRQCHIP_FWNODE_NAMED, 0, name, NULL, parent);
 >  }
->  
-> +module_param(auto_sel_mode, bool, 0000);
-> +MODULE_PARM_DESC(auto_sel_mode, "Enable Autonomous Performance Level Selection");
-> +
->  module_exit(cppc_cpufreq_exit);
->  MODULE_AUTHOR("Ashwin Chaugule");
->  MODULE_DESCRIPTION("CPUFreq driver based on the ACPI CPPC v5.0+ spec");
+
 
