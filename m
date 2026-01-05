@@ -1,188 +1,173 @@
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F877334C26
-	for <acpica-devel@lists.linux.dev>; Mon,  5 Jan 2026 15:35:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A20E2E65D;
+	Mon,  5 Jan 2026 17:35:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767627329; cv=none; b=sskC0BLyEQFdRpZPj7AIAzu88z0ivgCXJ6qYh4A6m6XVsgrV/PON27sSjmKjvOxbYeEV1GcKaUlgo7n3YV9RV5wslx2gb2Uc4Qkk2YPB71VNAzNKW8zWo2t2hCKgTcW/ovcxOcwgUEqqpB6bOBxWXohJzUGx0mLBc9zLSLwdiTs=
+	t=1767634535; cv=none; b=o4QBTnYeOha+mZf1IzXgRQcUVKpZqoiRbYCx2QiyETBpshZFQMH3JZKO3wpHRIxfcg5NuK8PA0UvyNQac4aXpugrLnVotATQAaeASlsc3yBj4RSx3t8yJgrh2m8NhNLq5rdrsx9er15DhyL6C1esBDMDLoX45ZzU8xshvAY4pgA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767627329; c=relaxed/simple;
-	bh=fWqEL1fSDMOi6b55smNYwKDSz8sNbgwB2f+osIIeNeg=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=HoD+wVRpSL3dJ/0rJaoMGzjEympUo0TYjsqsG2tlCJAkLuKkBoWDnbVHRPB5Z61JIZs2tgtj8wlwATK4sGrS8o/QuUOS3aiWuTSNfu5Kbdsv412w+wR+/RfyPcMf0bTMDqpXa43QaEzLtLJxuhLZQBNoHa+/7NeKlZKWykCg+fE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.224.107])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTPS id 4dlJK53RhWzHnH6S;
-	Mon,  5 Jan 2026 23:35:21 +0800 (CST)
-Received: from dubpeml100005.china.huawei.com (unknown [7.214.146.113])
-	by mail.maildlp.com (Postfix) with ESMTPS id E523F40570;
-	Mon,  5 Jan 2026 23:35:23 +0800 (CST)
-Received: from localhost (10.48.147.217) by dubpeml100005.china.huawei.com
- (7.214.146.113) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.36; Mon, 5 Jan
- 2026 15:35:22 +0000
-Date: Mon, 5 Jan 2026 15:35:21 +0000
-From: Jonathan Cameron <jonathan.cameron@huawei.com>
+	s=arc-20240116; t=1767634535; c=relaxed/simple;
+	bh=hRDqJrql8dctEWP20Bj6GrBkP/6rK2t9UtbGS9Tl++I=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=k8DEfi0Ly1ebOsu4LsbKvBIg6Nt+77SlfWUO/Jfxc/yFA6Yvrr7d1njXZCGiJ3waGmWgdjgUb64VPD9X8cagKhlTa0LJUIy3R237VoXH+i4TXGJfeqXbOw4meZrgjgy1ZVvkA3731vAQhckppzD7blJYpvb1OLhsV0cGz2WwDzY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=liIZlzFh; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="liIZlzFh"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 034C6C116D0;
+	Mon,  5 Jan 2026 17:35:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1767634535;
+	bh=hRDqJrql8dctEWP20Bj6GrBkP/6rK2t9UtbGS9Tl++I=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=liIZlzFhR9hQE/xJKCJAxhlo6ZD+9klal2OD/fPnl0tnPPOmGWCvjlUk49eulgzVd
+	 tgXv/z2EoaboHYtvkORhUCs7wGU5MhwzrFIsTGRKsYpUgUZ4Q2uDx9xTybyFhtF7oT
+	 kmPp+MAwvzGI9gfRQIrBMjuNYuXy4giW1ZKeVQWMh9+8BUdHRjWr0raqrzQcadpqpx
+	 vk5jbBJut7BR4a1r3e+bP+sbrcyrquLaBtE7/tEJWqDi/qwauyxwy2sZg9ADWV7zZ5
+	 vY6BWqS1xKewfo2q0klPQ0kvTSh5NmkFdf5r2g/UX06MEl/nmcWx0WuM0y40fb36UK
+	 JN1rNMDUMa2Mw==
+Date: Mon, 5 Jan 2026 11:35:33 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
 To: Lorenzo Pieralisi <lpieralisi@kernel.org>
-CC: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
-	Robert Moore <robert.moore@intel.com>, Thomas Gleixner <tglx@linutronix.de>,
-	Hanjun Guo <guohanjun@huawei.com>, Sudeep Holla <sudeep.holla@arm.com>, Marc
- Zyngier <maz@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	<linux-acpi@vger.kernel.org>, <acpica-devel@lists.linux.dev>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-pci@vger.kernel.org>
-Subject: Re: [PATCH v2 7/7] irqchip/gic-v5: Add ACPI IWB probing
-Message-ID: <20260105153521.00007e46@huawei.com>
-In-Reply-To: <20251218-gicv5-host-acpi-v2-7-eec76cd1d40b@kernel.org>
-References: <20251218-gicv5-host-acpi-v2-0-eec76cd1d40b@kernel.org>
-	<20251218-gicv5-host-acpi-v2-7-eec76cd1d40b@kernel.org>
-X-Mailer: Claws Mail 4.3.0 (GTK 3.24.42; x86_64-w64-mingw32)
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
+	Robert Moore <robert.moore@intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Hanjun Guo <guohanjun@huawei.com>,
+	Sudeep Holla <sudeep.holla@arm.com>, Marc Zyngier <maz@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>, linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH v2 4/7] PCI/MSI: Make the pci_msi_map_rid_ctlr_node()
+ interface firmware agnostic
+Message-ID: <20260105173533.GA322546@bhelgaas>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml500011.china.huawei.com (7.191.174.215) To
- dubpeml100005.china.huawei.com (7.214.146.113)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251218-gicv5-host-acpi-v2-4-eec76cd1d40b@kernel.org>
 
-On Thu, 18 Dec 2025 11:14:33 +0100
-Lorenzo Pieralisi <lpieralisi@kernel.org> wrote:
-
-> To probe an IWB in an ACPI based system it is required:
+On Thu, Dec 18, 2025 at 11:14:30AM +0100, Lorenzo Pieralisi wrote:
+> To support booting with OF and ACPI seamlessly, GIC ITS parent code
+> requires the PCI/MSI irqdomain layer to implement a function to retrieve
+> an MSI controller fwnode and map an RID in a firmware agnostic way
+> (ie pci_msi_map_rid_ctlr_node()).
 > 
-> - to implement the IORT functions handling the IWB IORT node and create
->   functions to retrieve IWB firmware information
-> - to augment the driver to match the DSDT ACPI "ARMH0003" device and
->   retrieve the IWB wire and trigger mask from the GSI interrupt descriptor
->   in the IWB msi_domain_ops.msi_translate() function
-> 
-> Make the required driver changes to enable IWB probing in ACPI systems.
-> 
-> The GICv5 GSI format requires special handling for IWB routed IRQs.
-> 
-> Add IWB GSI detection to the top level driver gic_v5_get_gsi_domain_id()
-> function so that the correct IRQ domain for a GSI can be detected by
-> parsing the GSI and check whether it is an IWB-backed IRQ or not.
+> Convert pci_msi_map_rid_ctlr_node() to an OF agnostic interface
+> (fwnode_handle based) and update the GIC ITS MSI parent code to reflect
+> the pci_msi_map_rid_ctlr_node() change.
 > 
 > Signed-off-by: Lorenzo Pieralisi <lpieralisi@kernel.org>
 > Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Hanjun Guo <guohanjun@huawei.com>
-> Cc: Sudeep Holla <sudeep.holla@arm.com>
+> Cc: Bjorn Helgaas <bhelgaas@google.com>
 > Cc: Marc Zyngier <maz@kernel.org>
-A couple of trivial comments inline. Overall this series looks in a good
-state to me.
-Reviewed-by: Jonathan Cameron <jonathan.cameron@huawei.com>
+
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+
+I assume this series will be merged via some non-PCI tree.  Let me
+know if you need anything else.
 
 > ---
->  drivers/acpi/arm64/iort.c          | 95 ++++++++++++++++++++++++++++++++------
->  drivers/irqchip/irq-gic-v5-iwb.c   | 42 +++++++++++++----
->  drivers/irqchip/irq-gic-v5.c       |  4 ++
->  include/linux/acpi_iort.h          |  1 +
->  include/linux/irqchip/arm-gic-v5.h |  6 +++
->  5 files changed, 123 insertions(+), 25 deletions(-)
+>  drivers/irqchip/irq-gic-its-msi-parent.c |  8 ++++----
+>  drivers/pci/msi/irqdomain.c              | 22 +++++++++++++++++-----
+>  include/linux/msi.h                      |  3 ++-
+>  3 files changed, 23 insertions(+), 10 deletions(-)
 > 
-> diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
-> index 17dbe66da804..4b0b753db738 100644
-> --- a/drivers/acpi/arm64/iort.c
-> +++ b/drivers/acpi/arm64/iort.c
-
-> @@ -317,12 +325,28 @@ static acpi_status iort_match_node_callback(struct acpi_iort_node *node,
->  	return status;
+> diff --git a/drivers/irqchip/irq-gic-its-msi-parent.c b/drivers/irqchip/irq-gic-its-msi-parent.c
+> index 12f45228c867..4d1ad1ee005d 100644
+> --- a/drivers/irqchip/irq-gic-its-msi-parent.c
+> +++ b/drivers/irqchip/irq-gic-its-msi-parent.c
+> @@ -104,7 +104,7 @@ static int its_pci_msi_prepare(struct irq_domain *domain, struct device *dev,
+>  static int its_v5_pci_msi_prepare(struct irq_domain *domain, struct device *dev,
+>  				  int nvec, msi_alloc_info_t *info)
+>  {
+> -	struct device_node *msi_node = NULL;
+> +	struct fwnode_handle *msi_node = NULL;
+>  	struct msi_domain_info *msi_info;
+>  	struct pci_dev *pdev;
+>  	phys_addr_t pa;
+> @@ -116,15 +116,15 @@ static int its_v5_pci_msi_prepare(struct irq_domain *domain, struct device *dev,
+>  
+>  	pdev = to_pci_dev(dev);
+>  
+> -	rid = pci_msi_map_rid_ctlr_node(pdev, &msi_node);
+> +	rid = pci_msi_map_rid_ctlr_node(domain->parent, pdev, &msi_node);
+>  	if (!msi_node)
+>  		return -ENODEV;
+>  
+> -	ret = its_translate_frame_address(msi_node, &pa);
+> +	ret = its_translate_frame_address(to_of_node(msi_node), &pa);
+>  	if (ret)
+>  		return -ENODEV;
+>  
+> -	of_node_put(msi_node);
+> +	fwnode_handle_put(msi_node);
+>  
+>  	/* ITS specific DeviceID */
+>  	info->scratchpad[0].ul = rid;
+> diff --git a/drivers/pci/msi/irqdomain.c b/drivers/pci/msi/irqdomain.c
+> index a329060287b5..3136341e802c 100644
+> --- a/drivers/pci/msi/irqdomain.c
+> +++ b/drivers/pci/msi/irqdomain.c
+> @@ -376,23 +376,35 @@ u32 pci_msi_domain_get_msi_rid(struct irq_domain *domain, struct pci_dev *pdev)
 >  }
 >  
-> +static acpi_status iort_match_iwb_callback(struct acpi_iort_node *node, void *context)
-> +{
-> +	acpi_status status = AE_NOT_FOUND;
-> +	u32 *id = context;
-> +
-> +	if (node->type == ACPI_IORT_NODE_IWB) {
-> +		struct acpi_iort_iwb *iwb;
-> +
-> +		iwb = (struct acpi_iort_iwb *)node->node_data;
-> +		status = iwb->iwb_index == *id ? AE_OK : AE_NOT_FOUND;
-> +	}
-> +
-> +	return status;
-Simpler flow with a quick exclusion of wrong nodes.
-	if (node->type != ACPI_IORT_NODE_IWB)
-		return AE_NOT_FOUND;
-	....
-	iwb = ...
-	
-Also not sure I'd use a ternary here given it's only slightly more code
-as more readable.
-	if (iwb->iwb_index != *id)
-		return AE_NOT_FOUND;
-
-	return AE_OK;
-
-> +}
-
-
-> diff --git a/drivers/irqchip/irq-gic-v5-iwb.c b/drivers/irqchip/irq-gic-v5-iwb.c
-> index ad9fdc14d1c6..c7d5fd34d053 100644
-> --- a/drivers/irqchip/irq-gic-v5-iwb.c
-> +++ b/drivers/irqchip/irq-gic-v5-iwb.c
-> @@ -4,6 +4,7 @@
+>  /**
+> - * pci_msi_map_rid_ctlr_node - Get the MSI controller node and MSI requester id (RID)
+> + * pci_msi_map_rid_ctlr_node - Get the MSI controller fwnode_handle and MSI requester id (RID)
+> + * @domain:	The interrupt domain
+>   * @pdev:	The PCI device
+> - * @node:	Pointer to store the MSI controller device node
+> + * @node:	Pointer to store the MSI controller fwnode_handle
+>   *
+> - * Use the firmware data to find the MSI controller node for @pdev.
+> + * Use the firmware data to find the MSI controller fwnode_handle for @pdev.
+>   * If found map the RID and initialize @node with it. @node value must
+>   * be set to NULL on entry.
+>   *
+>   * Returns: The RID.
 >   */
->  #define pr_fmt(fmt)	"GICv5 IWB: " fmt
->  
-> +#include <linux/acpi.h>
->  #include <linux/init.h>
->  #include <linux/kernel.h>
->  #include <linux/msi.h>
-> @@ -136,18 +137,31 @@ static int gicv5_iwb_irq_domain_translate(struct irq_domain *d, struct irq_fwspe
->  					  irq_hw_number_t *hwirq,
->  					  unsigned int *type)
+> -u32 pci_msi_map_rid_ctlr_node(struct pci_dev *pdev, struct device_node **node)
+> +u32 pci_msi_map_rid_ctlr_node(struct irq_domain *domain, struct pci_dev *pdev,
+> +			      struct fwnode_handle **node)
 >  {
-> -	if (!is_of_node(fwspec->fwnode))
-> -		return -EINVAL;
-> +	if (is_of_node(fwspec->fwnode)) {
+> +	struct device_node *of_node;
+>  	u32 rid = pci_dev_id(pdev);
 >  
-> -	if (fwspec->param_count < 2)
-> -		return -EINVAL;
-> +		if (fwspec->param_count < 2)
-> +			return -EINVAL;
+>  	pci_for_each_dma_alias(pdev, get_msi_id_cb, &rid);
 >  
-> -	/*
-> -	 * param[0] is be the wire
-> -	 * param[1] is the interrupt type
-> -	 */
-> -	*hwirq = fwspec->param[0];
-> -	*type = fwspec->param[1] & IRQ_TYPE_SENSE_MASK;
-> +		/*
-> +		 * param[0] is be the wire
-> +		 * param[1] is the interrupt type
-> +		 */
-> +		*hwirq = fwspec->param[0];
-> +		*type = fwspec->param[1] & IRQ_TYPE_SENSE_MASK;
-
-As below, FIELD_GET() would improve reviewability a little.
-
-
+> -	return of_msi_xlate(&pdev->dev, node, rid);
+> +	of_node = irq_domain_get_of_node(domain);
+> +	if (of_node) {
+> +		struct device_node *msi_ctlr_node = NULL;
+> +
+> +		rid = of_msi_xlate(&pdev->dev, &msi_ctlr_node, rid);
+> +		if (msi_ctlr_node)
+> +			*node = of_fwnode_handle(msi_ctlr_node);
 > +	}
 > +
-> +	if (is_acpi_device_node(fwspec->fwnode)) {
-> +
-> +		if (fwspec->param_count < 2)
-> +			return -EINVAL;
-> +
-> +		/*
-> +		 * Extract the wire from param[0]
-> +		 * param[1] is the interrupt type
-> +		 */
-> +		*hwirq = FIELD_GET(GICV5_GSI_IWB_WIRE, fwspec->param[0]);
-> +		*type = fwspec->param[1] & IRQ_TYPE_SENSE_MASK;
-
-I'd prefer this FIELD_GET() for this as well so there is no need to
-go sanity check that it is the lowest bits.
-
-> +	}
+> +	return rid;
+>  }
 >  
->  	return 0;
+>  /**
+> diff --git a/include/linux/msi.h b/include/linux/msi.h
+> index 8003e3218c46..8ddb05d5c96a 100644
+> --- a/include/linux/msi.h
+> +++ b/include/linux/msi.h
+> @@ -702,7 +702,8 @@ void __pci_write_msi_msg(struct msi_desc *entry, struct msi_msg *msg);
+>  void pci_msi_mask_irq(struct irq_data *data);
+>  void pci_msi_unmask_irq(struct irq_data *data);
+>  u32 pci_msi_domain_get_msi_rid(struct irq_domain *domain, struct pci_dev *pdev);
+> -u32 pci_msi_map_rid_ctlr_node(struct pci_dev *pdev, struct device_node **node);
+> +u32 pci_msi_map_rid_ctlr_node(struct irq_domain *domain, struct pci_dev *pdev,
+> +			      struct fwnode_handle **node);
+>  struct irq_domain *pci_msi_get_device_domain(struct pci_dev *pdev);
+>  void pci_msix_prepare_desc(struct irq_domain *domain, msi_alloc_info_t *arg,
+>  			   struct msi_desc *desc);
+> 
+> -- 
+> 2.50.1
+> 
