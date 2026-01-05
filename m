@@ -1,30 +1,30 @@
 Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A77BC27B347
-	for <acpica-devel@lists.linux.dev>; Mon,  5 Jan 2026 13:55:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F877334C26
+	for <acpica-devel@lists.linux.dev>; Mon,  5 Jan 2026 15:35:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767621356; cv=none; b=Or3npY8bR1wuB4w/Q+OsfLmtRSOv2O59duJMgtGNx5jWURPW4ZMyW6LJj1+T70a6GzfMjoNIlzJxsiRLCzwrJlmag1H/tfDAQXw0ez76XDPawgIjY8toW0dyXV5mL7v7GrVz6QYXKGDt46t2QGUFJJ1YabhUxZf6M69IsBMD12U=
+	t=1767627329; cv=none; b=sskC0BLyEQFdRpZPj7AIAzu88z0ivgCXJ6qYh4A6m6XVsgrV/PON27sSjmKjvOxbYeEV1GcKaUlgo7n3YV9RV5wslx2gb2Uc4Qkk2YPB71VNAzNKW8zWo2t2hCKgTcW/ovcxOcwgUEqqpB6bOBxWXohJzUGx0mLBc9zLSLwdiTs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767621356; c=relaxed/simple;
-	bh=6Wi8ccELHgOxaAXh0BIHlKDmzpuP4ORk5/SyOh1Pmq0=;
+	s=arc-20240116; t=1767627329; c=relaxed/simple;
+	bh=fWqEL1fSDMOi6b55smNYwKDSz8sNbgwB2f+osIIeNeg=;
 	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=iFF/ZvWnb0/K0HC0Pmqus9ZpZcFmQl8nAaR+9qlTlI06dRgbb+OWvHaC85UNM5tNp5xrjbI19nxk2XkwZJgeBUzGtEjyqCPIAZEQh7KqA8bcJBMeyVhNQed6Yj/9n1Tgt3rQecZBZRZ+F8AjugmKarMwfnhP8uTVaRv7vfDMIaE=
+	 MIME-Version:Content-Type; b=HoD+wVRpSL3dJ/0rJaoMGzjEympUo0TYjsqsG2tlCJAkLuKkBoWDnbVHRPB5Z61JIZs2tgtj8wlwATK4sGrS8o/QuUOS3aiWuTSNfu5Kbdsv412w+wR+/RfyPcMf0bTMDqpXa43QaEzLtLJxuhLZQBNoHa+/7NeKlZKWykCg+fE=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.224.83])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTPS id 4dlG6C3s37zHnGkW;
-	Mon,  5 Jan 2026 21:55:47 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.18.224.107])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTPS id 4dlJK53RhWzHnH6S;
+	Mon,  5 Jan 2026 23:35:21 +0800 (CST)
 Received: from dubpeml100005.china.huawei.com (unknown [7.214.146.113])
-	by mail.maildlp.com (Postfix) with ESMTPS id D2A4A40569;
-	Mon,  5 Jan 2026 21:55:49 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id E523F40570;
+	Mon,  5 Jan 2026 23:35:23 +0800 (CST)
 Received: from localhost (10.48.147.217) by dubpeml100005.china.huawei.com
  (7.214.146.113) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.36; Mon, 5 Jan
- 2026 13:55:48 +0000
-Date: Mon, 5 Jan 2026 13:55:45 +0000
+ 2026 15:35:22 +0000
+Date: Mon, 5 Jan 2026 15:35:21 +0000
 From: Jonathan Cameron <jonathan.cameron@huawei.com>
 To: Lorenzo Pieralisi <lpieralisi@kernel.org>
 CC: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
@@ -34,11 +34,11 @@ CC: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
 	<linux-acpi@vger.kernel.org>, <acpica-devel@lists.linux.dev>,
 	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
 	<linux-pci@vger.kernel.org>
-Subject: Re: [PATCH v2 6/7] irqchip/gic-v5: Add ACPI ITS probing
-Message-ID: <20260105135545.00003a59@huawei.com>
-In-Reply-To: <20251218-gicv5-host-acpi-v2-6-eec76cd1d40b@kernel.org>
+Subject: Re: [PATCH v2 7/7] irqchip/gic-v5: Add ACPI IWB probing
+Message-ID: <20260105153521.00007e46@huawei.com>
+In-Reply-To: <20251218-gicv5-host-acpi-v2-7-eec76cd1d40b@kernel.org>
 References: <20251218-gicv5-host-acpi-v2-0-eec76cd1d40b@kernel.org>
-	<20251218-gicv5-host-acpi-v2-6-eec76cd1d40b@kernel.org>
+	<20251218-gicv5-host-acpi-v2-7-eec76cd1d40b@kernel.org>
 X-Mailer: Claws Mail 4.3.0 (GTK 3.24.42; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
@@ -48,112 +48,141 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml500012.china.huawei.com (7.191.174.4) To
+X-ClientProxiedBy: lhrpeml500011.china.huawei.com (7.191.174.215) To
  dubpeml100005.china.huawei.com (7.214.146.113)
 
-On Thu, 18 Dec 2025 11:14:32 +0100
+On Thu, 18 Dec 2025 11:14:33 +0100
 Lorenzo Pieralisi <lpieralisi@kernel.org> wrote:
 
-> On ACPI ARM64 systems the GICv5 ITS configuration and translate frames
-> are described in the MADT table.
+> To probe an IWB in an ACPI based system it is required:
 > 
-> Refactor the current GICv5 ITS driver code to share common functions
-> between ACPI and OF and implement ACPI probing in the GICv5 ITS driver.
+> - to implement the IORT functions handling the IWB IORT node and create
+>   functions to retrieve IWB firmware information
+> - to augment the driver to match the DSDT ACPI "ARMH0003" device and
+>   retrieve the IWB wire and trigger mask from the GSI interrupt descriptor
+>   in the IWB msi_domain_ops.msi_translate() function
 > 
-> Add iort_msi_xlate() to map a device ID and retrieve an MSI controller
-> fwnode node for ACPI systems and update pci_msi_map_rid_ctlr_node() to
-> use it in its ACPI code path.
+> Make the required driver changes to enable IWB probing in ACPI systems.
 > 
-> Add the required functions to IORT code for deviceID retrieval and IRQ
-> domain registration and look-up so that the GICv5 ITS driver in an
-> ACPI based system can be successfully probed.
+> The GICv5 GSI format requires special handling for IWB routed IRQs.
+> 
+> Add IWB GSI detection to the top level driver gic_v5_get_gsi_domain_id()
+> function so that the correct IRQ domain for a GSI can be detected by
+> parsing the GSI and check whether it is an IWB-backed IRQ or not.
 > 
 > Signed-off-by: Lorenzo Pieralisi <lpieralisi@kernel.org>
 > Cc: Thomas Gleixner <tglx@linutronix.de>
 > Cc: Hanjun Guo <guohanjun@huawei.com>
 > Cc: Sudeep Holla <sudeep.holla@arm.com>
 > Cc: Marc Zyngier <maz@kernel.org>
-Hi Lorenzo,
-
-Diff was in a rather unfriendly mood on this one and smashing the xlate
-on top of the wrong function (wrt to what was being replaced).
-
-Ah well. Only one minor comment inline.  Not really my area of expertise
-beyond wanting this to move forwards quickly but none the less,
-
+A couple of trivial comments inline. Overall this series looks in a good
+state to me.
 Reviewed-by: Jonathan Cameron <jonathan.cameron@huawei.com>
 
 > ---
->  drivers/acpi/arm64/iort.c                |  95 +++++++++++++++++-----
->  drivers/irqchip/irq-gic-its-msi-parent.c |  39 ++++-----
->  drivers/irqchip/irq-gic-v5-irs.c         |   7 +-
->  drivers/irqchip/irq-gic-v5-its.c         | 132 ++++++++++++++++++++++++++++++-
->  drivers/pci/msi/irqdomain.c              |   2 +
->  include/linux/acpi_iort.h                |  10 ++-
->  include/linux/irqchip/arm-gic-v5.h       |   1 +
->  7 files changed, 241 insertions(+), 45 deletions(-)
+>  drivers/acpi/arm64/iort.c          | 95 ++++++++++++++++++++++++++++++++------
+>  drivers/irqchip/irq-gic-v5-iwb.c   | 42 +++++++++++++----
+>  drivers/irqchip/irq-gic-v5.c       |  4 ++
+>  include/linux/acpi_iort.h          |  1 +
+>  include/linux/irqchip/arm-gic-v5.h |  6 +++
+>  5 files changed, 123 insertions(+), 25 deletions(-)
 > 
 > diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
-> index 65f0f56ad753..17dbe66da804 100644
+> index 17dbe66da804..4b0b753db738 100644
 > --- a/drivers/acpi/arm64/iort.c
 > +++ b/drivers/acpi/arm64/iort.c
-> @@ -595,45 +595,45 @@ u32 iort_msi_map_id(struct device *dev, u32 input_id)
+
+> @@ -317,12 +325,28 @@ static acpi_status iort_match_node_callback(struct acpi_iort_node *node,
+>  	return status;
 >  }
->
-> +/**
-> + * iort_pmsi_get_msi_info() - Get the device id and translate frame PA for a device
-> + * @dev: The device for which the mapping is to be done.
-> + * @dev_id: The device ID found.
-> + * @pa: optional pointer to store translate frame address.
-> + *
-> + * Returns: 0 for successful devid and pa retrieval, -ENODEV on error
-> + */
-> +int iort_pmsi_get_msi_info(struct device *dev, u32 *dev_id, phys_addr_t *pa)
+>  
+> +static acpi_status iort_match_iwb_callback(struct acpi_iort_node *node, void *context)
 > +{
-> +	struct acpi_iort_node *node, *parent = NULL;
-> +	struct acpi_iort_its_group *its;
-> +	int i, index;
+> +	acpi_status status = AE_NOT_FOUND;
+> +	u32 *id = context;
 > +
-> +	node = iort_find_dev_node(dev);
-> +	if (!node)
-> +		return -ENODEV;
+> +	if (node->type == ACPI_IORT_NODE_IWB) {
+> +		struct acpi_iort_iwb *iwb;
 > +
-> +	index = iort_get_id_mapping_index(node);
-> +	/* if there is a valid index, go get the dev_id directly */
-> +	if (index >= 0) {
-> +		parent = iort_node_get_id(node, dev_id, index);
-> +	} else {
-> +		for (i = 0; i < node->mapping_count; i++) {
-> +			parent = iort_node_map_platform_id(node, dev_id,
-> +						      IORT_MSI_TYPE, i);
-> +			if (parent)
-> +				break;
-> +		}
+> +		iwb = (struct acpi_iort_iwb *)node->node_data;
+> +		status = iwb->iwb_index == *id ? AE_OK : AE_NOT_FOUND;
 > +	}
 > +
-Another borderline comment on what I think is a small readabilty
-improvement.
+> +	return status;
+Simpler flow with a quick exclusion of wrong nodes.
+	if (node->type != ACPI_IORT_NODE_IWB)
+		return AE_NOT_FOUND;
+	....
+	iwb = ...
+	
+Also not sure I'd use a ternary here given it's only slightly more code
+as more readable.
+	if (iwb->iwb_index != *id)
+		return AE_NOT_FOUND;
 
-I'd handle the only error case that would otherwise use the ternary below
-here
-	if (!parent)
-		return -ENODEV;
+	return AE_OK;
 
-	if (pa) {
-		...
-	}
-	return 0;
-
-> +	if (parent && pa) {
-> +		int ret;
-> +
-> +		its = (struct acpi_iort_its_group *)node->node_data;
-> +		ret = iort_find_its_base(its->identifiers[0], pa);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	return parent ? 0 : -ENODEV;
 > +}
 
 
+> diff --git a/drivers/irqchip/irq-gic-v5-iwb.c b/drivers/irqchip/irq-gic-v5-iwb.c
+> index ad9fdc14d1c6..c7d5fd34d053 100644
+> --- a/drivers/irqchip/irq-gic-v5-iwb.c
+> +++ b/drivers/irqchip/irq-gic-v5-iwb.c
+> @@ -4,6 +4,7 @@
+>   */
+>  #define pr_fmt(fmt)	"GICv5 IWB: " fmt
+>  
+> +#include <linux/acpi.h>
+>  #include <linux/init.h>
+>  #include <linux/kernel.h>
+>  #include <linux/msi.h>
+> @@ -136,18 +137,31 @@ static int gicv5_iwb_irq_domain_translate(struct irq_domain *d, struct irq_fwspe
+>  					  irq_hw_number_t *hwirq,
+>  					  unsigned int *type)
+>  {
+> -	if (!is_of_node(fwspec->fwnode))
+> -		return -EINVAL;
+> +	if (is_of_node(fwspec->fwnode)) {
+>  
+> -	if (fwspec->param_count < 2)
+> -		return -EINVAL;
+> +		if (fwspec->param_count < 2)
+> +			return -EINVAL;
+>  
+> -	/*
+> -	 * param[0] is be the wire
+> -	 * param[1] is the interrupt type
+> -	 */
+> -	*hwirq = fwspec->param[0];
+> -	*type = fwspec->param[1] & IRQ_TYPE_SENSE_MASK;
+> +		/*
+> +		 * param[0] is be the wire
+> +		 * param[1] is the interrupt type
+> +		 */
+> +		*hwirq = fwspec->param[0];
+> +		*type = fwspec->param[1] & IRQ_TYPE_SENSE_MASK;
+
+As below, FIELD_GET() would improve reviewability a little.
+
+
+> +	}
+> +
+> +	if (is_acpi_device_node(fwspec->fwnode)) {
+> +
+> +		if (fwspec->param_count < 2)
+> +			return -EINVAL;
+> +
+> +		/*
+> +		 * Extract the wire from param[0]
+> +		 * param[1] is the interrupt type
+> +		 */
+> +		*hwirq = FIELD_GET(GICV5_GSI_IWB_WIRE, fwspec->param[0]);
+> +		*type = fwspec->param[1] & IRQ_TYPE_SENSE_MASK;
+
+I'd prefer this FIELD_GET() for this as well so there is no need to
+go sanity check that it is the lowest bits.
+
+> +	}
+>  
+>  	return 0;
