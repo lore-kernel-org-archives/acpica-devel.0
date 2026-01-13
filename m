@@ -1,120 +1,209 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5265389DF0;
-	Tue, 13 Jan 2026 11:05:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A00A70830;
+	Tue, 13 Jan 2026 15:24:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768302303; cv=none; b=EGfq87qAnyzrkI6c0p+Z/FhHqpHaz5lyQJohHO2OXqY4SaEjfwBbx/pqrahGcIPLtXpAqQt6ZDDpKFHpyiXQJ39lRWma0uWHMu89sj9BhyK45ry7P0n/e+ZL/452SHDp4+6FkqZUyn3e+DGkj6N8DQCxuDukCjHLb0wTaJz5/bI=
+	t=1768317890; cv=none; b=XdegkTWPinoSs4zuGe3Wp8HwcJjHo6L4MZaD22vdtzqkw0YY8umok1101Z+xwxVBxQLp+Wzk9ygeaFtZT+0hXbrJWGyI570T2Nlu/6uBIV2WtW99kighKwH6ce0b4lTIIOaudjxw6dtQ3kvFcopwXwGILaf2NXwrWitYadXssuw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768302303; c=relaxed/simple;
-	bh=qg86Xa1BLPdLqzTfJA9tqL801nqutncRfii4YJPEuuc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=f46Xl3fEWR+KLHs1gamuF9Bcx6p9RwMQd5wL3zwdM3p34qv62BrddW1yMFlBsM10B6BRKYmdf3Hkmcv9EKZvdHhR6m3ygQ07L0HRe7nssah7Ur3VGySTZZ/FHTZXSTAwMrH0+FFP6i0ORd7IhnpPO524x5uCo849SDPxfucLKR4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jZmfJJdZ; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1768317890; c=relaxed/simple;
+	bh=taak2UygMZbdacgSedIXzlFkiSjhrP80UZpBg3+A9T4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=uKXTvmE5KTGkqPCVLoOGTPkma+MkZEPTRbdD2om7mf9QskYtaoc0d7f4ICyUmbcgMPwF4/nEgpSpUuR56u4sq8avld39mnCnmW0ZV3XKfB2A7R3m8D9YQh1fepebnWItR0z07A8mVoKv0476oS4Ipa0TETk11QbKO8rX/h4UuBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AhP/y80K; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jZmfJJdZ"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B359CC16AAE;
-	Tue, 13 Jan 2026 11:04:59 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AhP/y80K"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22D46C116C6;
+	Tue, 13 Jan 2026 15:24:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768302303;
-	bh=qg86Xa1BLPdLqzTfJA9tqL801nqutncRfii4YJPEuuc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jZmfJJdZF3SDe6dB4zuSGHvr3idM7pNiaM0Yf3tA0tz//+ULA9M+2rq3ES3aN9jPv
-	 DcrQ7w4O3nQcEhUG4dg/9+Z5uwRo0a2dlM5HQRcbyKKGWB6L39HIOYdXFHaYPl6tWF
-	 PGN2b+vhbVsz+5NbNgXHKd1kDeyGshgCrtDMQm5/9YEimzAz4O7Hpnm6ufTRbRZhMf
-	 AA36UqMNCo7RsjFG37oC5Sz1b07qteosje7epoYgcgSW3rRoIGwkH9rJyjprKq7Oq+
-	 yf9qfMvKVOh74QaKMR2Jkyti4LLdmHCZXdauGr+Q4b4MKj5jOJFDrx5mqd5Ko3nZlP
-	 md6e1ml1t719A==
-Date: Tue, 13 Jan 2026 12:04:57 +0100
-From: Lorenzo Pieralisi <lpieralisi@kernel.org>
-To: Jonathan Cameron <jonathan.cameron@huawei.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
-	Robert Moore <robert.moore@intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Hanjun Guo <guohanjun@huawei.com>,
-	Sudeep Holla <sudeep.holla@arm.com>, Marc Zyngier <maz@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>, linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH v2 3/7] irqdomain: Add parent field to struct irqchip_fwid
-Message-ID: <aWYm2Y8yzns7n8fM@lpieralisi>
-References: <20251218-gicv5-host-acpi-v2-0-eec76cd1d40b@kernel.org>
- <20251218-gicv5-host-acpi-v2-3-eec76cd1d40b@kernel.org>
- <20260105120108.00002016@huawei.com>
- <aV4gH/yHaOmOtK0J@lpieralisi>
- <20260107100452.00004b6f@huawei.com>
+	s=k20201202; t=1768317889;
+	bh=taak2UygMZbdacgSedIXzlFkiSjhrP80UZpBg3+A9T4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=AhP/y80KVpZcmRV1+NMKLTI7A3S3B1azBgUpQ1DJUoaoH/TdnGwIdSpNdf4iOtRl5
+	 VMjPXhRqRohFjpEbWulvcJ9JjRwozK8fucaQwQiM8u0Gja1ik0Q3sTcW/6IIEq+3d5
+	 hHD4PWcpVpfgVDOn0SV7bboOAc09bk7OwyDufmZublxhYqPbm49WVLbdvElM/VF8he
+	 HvtLSZJ2jXKm2fI/o+QkcMPrelVltHLBYAFKn1iSoIrObiMteKseVxFxZCfeELV8Ah
+	 IWAlUHyqaY0szCLSQBji+FnqKNi/kZEfK8gaMPepsMkMAyl1jzdeApqJdvxGLgQf5K
+	 W731h5A9eUm3w==
+From: Thomas Gleixner <tglx@kernel.org>
+To: Bert Karwatzki <spasswolf@web.de>, linux-kernel@vger.kernel.org
+Cc: Bert Karwatzki <spasswolf@web.de>, linux-next@vger.kernel.org, Mario
+ Limonciello <mario.limonciello@amd.com>, Sebastian Andrzej Siewior
+ <bigeasy@linutronix.de>, Clark Williams <clrkwllms@kernel.org>, Steven
+ Rostedt <rostedt@goodmis.org>, Christian =?utf-8?Q?K=C3=B6nig?=
+ <christian.koenig@amd.com>,
+ regressions@lists.linux.dev, linux-pci@vger.kernel.org,
+ linux-acpi@vger.kernel.org, "Rafael J . Wysocki"
+ <rafael.j.wysocki@intel.com>, acpica-devel@lists.linux.dev, Robert Moore
+ <robert.moore@intel.com>, Saket Dumbre <saket.dumbre@intel.com>, Bjorn
+ Helgaas <bhelgaas@google.com>, Clemens Ladisch <clemens@ladisch.de>,
+ Jinchao Wang <wangjinchao600@gmail.com>, Yury Norov
+ <yury.norov@gmail.com>, Anna Schumaker <anna.schumaker@oracle.com>,
+ Baoquan He <bhe@redhat.com>, "Darrick J. Wong" <djwong@kernel.org>, Dave
+ Young <dyoung@redhat.com>, Doug Anderson <dianders@chromium.org>,
+ "Guilherme G. Piccoli" <gpiccoli@igalia.com>, Helge Deller
+ <deller@gmx.de>, Ingo Molnar <mingo@kernel.org>, Jason Gunthorpe
+ <jgg@ziepe.ca>, Joanthan Cameron <Jonathan.Cameron@huawei.com>, Joel
+ Granados <joel.granados@kernel.org>, John Ogness
+ <john.ogness@linutronix.de>, Kees Cook <kees@kernel.org>, Li Huafei
+ <lihuafei1@huawei.com>, "Luck, Tony" <tony.luck@intel.com>, Luo Gengkun
+ <luogengkun@huaweicloud.com>, Max Kellermann <max.kellermann@ionos.com>,
+ Nam Cao <namcao@linutronix.de>, oushixiong <oushixiong@kylinos.cn>, Petr
+ Mladek <pmladek@suse.com>, Qianqiang Liu <qianqiang.liu@163.com>, Sergey
+ Senozhatsky <senozhatsky@chromium.org>, Sohil Mehta
+ <sohil.mehta@intel.com>, Tejun Heo <tj@kernel.org>, Thomas Zimemrmann
+ <tzimmermann@suse.de>, Thorsten Blum <thorsten.blum@linux.dev>, Ville
+ Syrjala <ville.syrjala@linux.intel.com>, Vivek Goyal <vgoyal@redhat.com>,
+ Yicong Yang <yangyicong@hisilicon.com>, Yunhui Cui
+ <cuiyunhui@bytedance.com>, Andrew Morton <akpm@linux-foundation.org>,
+ W_Armin@gmx.de
+Subject: Re: NMI stack overflow during resume of PCIe bridge with
+ CONFIG_HARDLOCKUP_DETECTOR=y
+In-Reply-To: <20260113094129.3357-1-spasswolf@web.de>
+References: <20260113094129.3357-1-spasswolf@web.de>
+Date: Tue, 13 Jan 2026 16:24:46 +0100
+Message-ID: <87h5spk01t.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260107100452.00004b6f@huawei.com>
+Content-Type: text/plain
 
-On Wed, Jan 07, 2026 at 10:04:52AM +0000, Jonathan Cameron wrote:
+On Tue, Jan 13 2026 at 10:41, Bert Karwatzki wrote:
+> Here's the result in case of the crash:
+> 2026-01-12T04:24:36.809904+01:00 T1510;acpi_ex_system_memory_space_handler 255: logical_addr_ptr = ffffc066977b3000
+> 2026-01-12T04:24:36.846170+01:00 C14;exc_nmi: 0
 
-[...]
+Here the NMI triggers in non-task context on CPU14
 
-> > > > +static inline
-> > > > +struct fwnode_handle *irq_domain_alloc_named_fwnode_parent(const char *name,
-> > > > +							   struct fwnode_handle *parent)  
-> > > 
-> > > The name of this makes me think it's allocating the named fwnode parent, rather that
-> > > the named fwnode + setting it's parent.
-> > > 
-> > > There aren't all that many calls to irq_domain_named_fwnode(), maybe to avoid challenge
-> > > of a new name, just add the parameter to all of them? (25ish)  Mind you the current
-> > > pattern for similar cases is a helper, so maybe not.  
-> > 
-> > Similar cases ? Have you got anything specific I can look into ?
-> 
-> I meant all the different irq_domain_alloc_xxxxx variants that call
-> __irq_domain_alloc_fwnode() with a subset of parameters set to NULL.
-> 
-> That seems to say there is a precedence for making the presence of the parameter
-> part of the name rather than requiring callers to set the ones they don't want to
-> NULL.  So it argues for a helper like this one just for consistency.
-> 
-> > 
-> > > Or go with something similar to named and have
-> > > 
-> > > irq_domain_alloc_named_parented_fwnode()?  
+> 2026-01-12T04:24:36.960760+01:00 C14;exc_nmi: 10.3
+> 2026-01-12T04:24:36.960760+01:00 C14;default_do_nmi 
+> 2026-01-12T04:24:36.960760+01:00 C14;nmi_handle: type=0x0
+> 2026-01-12T04:24:36.960760+01:00 C14;nmi_handle: a=0xffffffffa1612de0
+> 2026-01-12T04:24:36.960760+01:00 C14;nmi_handle: a->handler=perf_event_nmi_handler+0x0/0xa6
+> 2026-01-12T04:24:36.960760+01:00 C14;perf_event_nmi_handler: 0
+> 2026-01-12T04:24:36.960760+01:00 C14;perf_event_nmi_handler: 1
+> 2026-01-12T04:24:36.960760+01:00 C14;perf_event_nmi_handler: 2
+> 2026-01-12T04:24:36.960760+01:00 C14;x86_pmu_handle_irq: 2
+> 2026-01-12T04:24:36.960760+01:00 C14;x86_pmu_handle_irq: 2.6
+> 2026-01-12T04:24:36.960760+01:00 C14;__perf_event_overflow: 0
+> 2026-01-12T04:24:36.960760+01:00 C14;__perf_event_overflow: 6.99: overflow_handler=watchdog_overflow_callback+0x0/0x10d
+> 2026-01-12T04:24:36.960760+01:00 C14;watchdog_overflow_callback: 0
+> 2026-01-12T04:24:36.960760+01:00 C14;__ktime_get_fast_ns_debug: 0.1
+> 2026-01-12T04:24:36.960760+01:00 C14;tk_clock_read_debug: read=read_hpet+0x0/0xf0
+> 2026-01-12T04:24:36.960760+01:00 C14;read_hpet: 0
+> 2026-01-12T04:24:36.960760+01:00 C14;read_hpet: 0.1
 
-Right, given that Thomas is fine with it, I will go with this suggestion then
-albeit it is getting a bit cumbersome (_named_id_parented_fwnode..), it should
-be fine and I can rework the code to add a parent field to the existing interface
-later if we feel it is nicer.
+> 2026-01-12T04:24:36.960760+01:00 T0;exc_nmi: 0
+
+This one triggers in task context of PID0, aka idle task, but it's not
+clear on which CPU that happens. It's probably CPU13 as that continues
+with the expected 10.3 output, but that's almost ~1.71 seconds later.
+
+> 2026-01-12T04:24:38.674625+01:00 C13;exc_nmi: 10.3
+> 2026-01-12T04:24:38.674625+01:00 C13;default_do_nmi 
+> 2026-01-12T04:24:38.674625+01:00 C13;nmi_handle: type=0x0
+> 2026-01-12T04:24:38.674625+01:00 C13;nmi_handle: a=0xffffffffa1612de0
+> 2026-01-12T04:24:38.674625+01:00 C13;nmi_handle: a->handler=perf_event_nmi_handler+0x0/0xa6
+> 2026-01-12T04:24:38.674625+01:00 C13;perf_event_nmi_handler: 0
+> 2026-01-12T04:24:38.674625+01:00 C13;perf_event_nmi_handler: 1
+> 2026-01-12T04:24:38.674625+01:00 C13;perf_event_nmi_handler: 2
+> 2026-01-12T04:24:38.674625+01:00 C13;x86_pmu_handle_irq: 2
+> 2026-01-12T04:24:38.674625+01:00 C13;x86_pmu_handle_irq: 2.6
+> 2026-01-12T04:24:38.674625+01:00 C13;__perf_event_overflow: 0
+> 2026-01-12T04:24:38.674625+01:00 C13;__perf_event_overflow: 6.99: overflow_handler=watchdog_overflow_callback+0x0/0x10d
+> 2026-01-12T04:24:38.674625+01:00 C13;watchdog_overflow_callback: 0
+> 2026-01-12T04:24:38.674625+01:00 C13;__ktime_get_fast_ns_debug: 0.1
+> 2026-01-12T04:24:38.674625+01:00 C13;tk_clock_read_debug: read=read_hpet+0x0/0xf0
+> 2026-01-12T04:24:38.674625+01:00 C13;read_hpet: 0
+> 2026-01-12T04:24:38.674625+01:00 C13;read_hpet: 0.1
+
+> 2026-01-12T04:24:38.674625+01:00 T0;exc_nmi: 0
+
+Same picture as above, but this time on CPU2 with a delay of 0.68
+seconds
+
+> 2026-01-12T04:24:39.355101+01:00 C2;exc_nmi: 10.3
+> 2026-01-12T04:24:39.355101+01:00 C2;default_do_nmi 
+> 2026-01-12T04:24:39.355101+01:00 C2;nmi_handle: type=0x0
+> 2026-01-12T04:24:39.355101+01:00 C2;nmi_handle: a=0xffffffffa1612de0
+> 2026-01-12T04:24:39.355101+01:00 C2;nmi_handle: a->handler=perf_event_nmi_handler+0x0/0xa6
+> 2026-01-12T04:24:39.355101+01:00 C2;perf_event_nmi_handler: 0
+> 2026-01-12T04:24:39.355101+01:00 C2;perf_event_nmi_handler: 1
+> 2026-01-12T04:24:39.355101+01:00 C2;perf_event_nmi_handler: 2
+> 2026-01-12T04:24:39.355101+01:00 C2;x86_pmu_handle_irq: 2
+> 2026-01-12T04:24:39.355101+01:00 C2;x86_pmu_handle_irq: 2.6
+> 2026-01-12T04:24:39.355101+01:00 C2;__perf_event_overflow: 0
+> 2026-01-12T04:24:39.355101+01:00 C2;__perf_event_overflow: 6.99: overflow_handler=watchdog_overflow_callback+0x0/0x10d
+> 2026-01-12T04:24:39.355101+01:00 C2;watchdog_overflow_callback: 0
+> 2026-01-12T04:24:39.355101+01:00 C2;__ktime_get_fast_ns_debug: 0.1
+> 2026-01-12T04:24:39.355101+01:00 C2;tk_clock_read_debug: read=read_hpet+0x0/0xf0
+> 2026-01-12T04:24:39.355101+01:00 C2;read_hpet: 0
+> 2026-01-12T04:24:39.355101+01:00 C2;read_hpet: 0.1
+
+> 2026-01-12T04:24:39.355101+01:00 T0;exc_nmi: 0
+
+Again on CPU0 with a delay of 0.06 seconds
+
+> 2026-01-12T04:24:39.410207+01:00 C0;exc_nmi: 10.3
+> 2026-01-12T04:24:39.410207+01:00 C0;default_do_nmi 
+> 2026-01-12T04:24:39.410207+01:00 C0;nmi_handle: type=0x0
+> 2026-01-12T04:24:39.410207+01:00 C0;nmi_handle: a=0xffffffffa1612de0
+> 2026-01-12T04:24:39.410207+01:00 C0;nmi_handle: a->handler=perf_event_nmi_handler+0x0/0xa6
+> 2026-01-12T04:24:39.410207+01:00 C0;perf_event_nmi_handler: 0
+> 2026-01-12T04:24:39.410207+01:00 C0;perf_event_nmi_handler: 1
+> 2026-01-12T04:24:39.410207+01:00 C0;perf_event_nmi_handler: 2
+> 2026-01-12T04:24:39.410207+01:00 C0;x86_pmu_handle_irq: 2
+> 2026-01-12T04:24:39.410207+01:00 C0;x86_pmu_handle_irq: 2.6
+> 2026-01-12T04:24:39.410207+01:00 C0;__perf_event_overflow: 0
+> 2026-01-12T04:24:39.410207+01:00 C0;__perf_event_overflow: 6.99: overflow_handler=watchdog_overflow_callback+0x0/0x10d
+> 2026-01-12T04:24:39.410207+01:00 C0;watchdog_overflow_callback: 0
+> 2026-01-12T04:24:39.410207+01:00 C0;__ktime_get_fast_ns_debug: 0.1
+> 2026-01-12T04:24:39.410207+01:00 C0;tk_clock_read_debug: read=read_hpet+0x0/0xf0
+> 2026-01-12T04:24:39.410207+01:00 C0;read_hpet: 0
+> 2026-01-12T04:24:39.410207+01:00 C0;read_hpet: 0.1
+
+> 2026-01-12T04:24:39.410207+01:00 T0;exc_nmi: 0
+
+....
+
+> In the case of the crash the interrupt handler never returns because when accessing
+> the HPET another NMI is triggered. This goes on until a crash happens, probably because
+> of stack overflow.
+
+No. NMI nesting is only one level deep and immediately returns:
+
+        if (this_cpu_read(nmi_state) != NMI_NOT_RUNNING) {
+		this_cpu_write(nmi_state, NMI_LATCHED);
+		return;
+	}
+
+
+So it's not a stack overflow. What's more likely is that after a while
+_ALL_ CPUs are hung up in the NMI handler after they tripped over the
+HPET read.
+
+> The behaviour described here seems to be similar to the bug that commit
+> 3d5f4f15b778 ("watchdog: skip checks when panic is in progress") is fixing, but
+> this is actually a different bug as kernel 6.18 (which contains 3d5f4f15b778)
+> is also affected (I've conducted 5 tests with 6.18 so far and got 4 crashes (crashes occured
+> after (0.5h, 1h, 4.5h, 1.5h) of testing)). 
+> Nevertheless these look similar enough to CC the involved people.
+
+There is nothing similar.
+
+Your problem originates from a screwed up hardware state which in turn
+causes the HPET to go haywire for unknown reasons.
+
+What is the physical address of this ACPI handler access:
+
+       logical_addr_ptr = ffffc066977b3000
+
+along with the full output of /proc/iomem
 
 Thanks,
-Lorenzo
 
-> > 
-> > Or I can add a set_parent() helper (though that's a bit of churn IMO) ?
-> > 
-> > If Thomas has a preference I will follow that, all of the above is doable
-> > for me.
-> 
-> Agreed. Let's see what Thomas prefers (i.e. make the decision his problem ;)
-> 
-> Jonathan
-> 
-> > 
-> > > I'm not that bothered though if you think the current naming is the best we can do.  
-> > 
-> > I think you have a point - as per my comment above.
-> > 
-> > Thanks,
-> > Lorenzo
-> > 
-> > > Jonathan
-> > >   
-> > > > +{
-> > > > +	return __irq_domain_alloc_fwnode(IRQCHIP_FWNODE_NAMED, 0, name, NULL, parent);
-> > > >  }  
-> > > 
-> > >   
-> > 
-> 
+        tglx
