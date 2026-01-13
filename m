@@ -1,117 +1,50 @@
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 884F1328623
-	for <acpica-devel@lists.linux.dev>; Tue, 13 Jan 2026 21:15:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4000F2DC34E;
+	Tue, 13 Jan 2026 21:56:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768338954; cv=none; b=C8LYE51rpFebvh647R+0FqiOb+AY6RZqwyVZdqsEaGvkU3HKiO18CGFgp1P8VF/N2CnzOrYqKU+bOE6BxPdDwzCllCOismUsn7NhtqsBPzLrGZhWkf5aSu2NVbpXWqvQMQgwxXRwhstFJ8VzoDvyUq6SUbP5QSFLZPEOZ9rKqN4=
+	t=1768341365; cv=none; b=TRSvVl6DSwvc6FT+IPPYT/qA1TTsij/SIc+ph2jOSRC/TrlViuMHZjI8nd+ftsCI+ugM8f6aYPtEVnJ+cxTQQs6/zNeG/GTpOO62m2nQaunE9TwnaqoU6RXDZSu8SbG4yw1tLeHNluKvlz+kKO1F2oNZz63O1Qn2wnvVSaHFEKU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768338954; c=relaxed/simple;
-	bh=lSiT+5f78IAghqqameTuBM0ImkHpqh4OyDDkmFOfoGM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rV9BwkfjQGW7RRLN0jVtU8yzhuxBeYbzQUkOXC2ESmBxOhCJbtZVUhTfPWZhouDlC2RHzLVj0TT0FMjWeAUVUTeLksxb/r9TXBGnkaX7wAzlZaHC+a17c1lUt46n3sMOiZDY1lBo6iHqhZBCl8vxaxgAI4wQrF03IH/+cwgryE0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=D7uK8nHA; arc=none smtp.client-ip=209.85.160.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+	s=arc-20240116; t=1768341365; c=relaxed/simple;
+	bh=nTh7fFqg/LT3f9MdXlSs711AfVqGFXu1moivv8qFk5I=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=PnsZR0+nEDcZ+hs+npbV5VaqsNgPsVAldS44U6xrirsg7r0fDJoi0Go5zXOsJSYrgu16+XTyFJfRTdpf0En/j1Wy9rejZnCBQ4ssdL4z8BVEjQ4blwtF72L3KwKPmgi5SZkQC70/lCtlI2Y2dhudlwAs9/G4nhIQTcYpP9zTFMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KVL0x7JG; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="D7uK8nHA"
-Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-50146fcf927so1952041cf.0
-        for <acpica-devel@lists.linux.dev>; Tue, 13 Jan 2026 13:15:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1768338951; x=1768943751; darn=lists.linux.dev;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8S7FI6sNOOKEC+zXX9NqKGAvEksfTGrqIkrYgB7KQ6g=;
-        b=D7uK8nHAMXfftT63OsJ3l+LYcey3qBfshbB5b0PvHIyw5i1kX1HL6rkqpwXIUapYpE
-         Ao98GaI7gUsv9lw/ho5P3PMSmJ26T4aYOMMQgfycUXKGgXTBoXvALnD3wneg+FL6W5J1
-         1Zs6+IHgAbPoAry9NAfIszsiNNPsuVgLZT0Z30YFi8RxhMITqXcUrDR5luZLmw7jHwMY
-         vTKJhM8D2mvho11jdHqJWZHFolepLgDU7U44X072DYpQQq9YWOITYmWPDwelscc/LQAv
-         mOZnNcyqr50BqDRCNlb/IYV1uSyse1dheM6GRHmvnb5xtX5hVOwwRw+B0CHk9e/DRuj8
-         Hq0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768338951; x=1768943751;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8S7FI6sNOOKEC+zXX9NqKGAvEksfTGrqIkrYgB7KQ6g=;
-        b=SvKo91PTPs3nfuBDP3JyY7aD38BrrWkZ48hNReIDQwq82btYqqQADD5hm7YBS4KtXG
-         nAkYWUAOgLhjsZZaYGLY87Zjso2jz2xLwpzYKSmTnQW6lbirpHcMza1ioU/o6x9oOKT1
-         UL1vAC8YJvFn90y0SBrOmOX9iwXIZtVrchgccMjYPphMXjHmYpZ7GOxypoWxV8UgMDoc
-         c4g1RPOM0ynAnYjo4/+t54dAoXRf8F7vHZ25WGOA77An8vhkg9FhKliV9DPFB5gXkvXV
-         w3x2GHdzNXO4OAhlj0ktGRkxpugU3Uk4Z8iTTnxNMQDXxKbN7Sv9ct8Dscf0K3ZLtj9V
-         hXPw==
-X-Forwarded-Encrypted: i=1; AJvYcCUq5bXDnFxifXcCfOy5Mr5mxU28qaX98qD+FzSKipEVfKQdi2UzVv/S8zD2Wb5BP9LbNVk2GokYEnVPf2k=@lists.linux.dev
-X-Gm-Message-State: AOJu0YwkoP5kKm4+TYrqelFAWHWqEIXLmvc+dwTyAT2kl4kbrHhZlTow
-	J4Dx5joL5LmNdi4D1wjb5yWZE3JjZcMCMs1aVz7UM9K+IDpBo3l9tm6CUrqldjn2hfu7ujH6Iji
-	O+rSO
-X-Gm-Gg: AY/fxX71/lO1QmilQz89CvBNqNjSjpjwV0ur2v4yDPHgOoZX8/UatiP0s3dR3T4/CX1
-	/NYQYsXztZHz6+J39iqlzGmq02DlQI5136fdLuPjN44ke6DvEC1oIZKDcmBt/eh9zMF98C6XHnV
-	ZCkogvES9EN95EVPoSua25Ya4HOpCbF0FapvI1BcUuZ1Iij1PKCoVrhRPdri+ht0uXzQs4BnL4f
-	tYGUNk+NOxLF5m6o10sBbh+X+dU+rYQpeKx4LUmxOl3IpfoHUcwM3oiPkDXpzMolAwwiWXKpIcC
-	2RwUvRnzIJUu9XeVI5VR+O7ZWkWZF3x1OaCZ+U5YdS/NHrWt1m9KGvi63XEE60rXqwBouFbygN+
-	lXXXVlqGxZSnLMgF0sZzvATHM8VaYqCijFpqCADKwgq7DWX/Wph9G67bFADhcEsDjYKvBnBUfm8
-	0DepMIEtyMeXXq+TxgOfo/BcuBk6eiP3ub6wLjo3gIEHqTYA3Gpja2m9vSfzfQOQ/2jps=
-X-Received: by 2002:a05:622a:19aa:b0:4f1:de87:ad90 with SMTP id d75a77b69052e-5013972ec7emr56793941cf.4.1768338951296;
-        Tue, 13 Jan 2026 13:15:51 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-112-119.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.112.119])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-890772682besm164113626d6.50.2026.01.13.13.15.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jan 2026 13:15:50 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1vfljw-000000040dN-3h50;
-	Tue, 13 Jan 2026 17:15:48 -0400
-Date: Tue, 13 Jan 2026 17:15:48 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Thomas Gleixner <tglx@kernel.org>
-Cc: Bert Karwatzki <spasswolf@web.de>, linux-kernel@vger.kernel.org,
-	linux-next@vger.kernel.org,
-	Mario Limonciello <mario.limonciello@amd.com>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Clark Williams <clrkwllms@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-	regressions@lists.linux.dev, linux-pci@vger.kernel.org,
-	linux-acpi@vger.kernel.org,
-	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-	acpica-devel@lists.linux.dev, Robert Moore <robert.moore@intel.com>,
-	Saket Dumbre <saket.dumbre@intel.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Clemens Ladisch <clemens@ladisch.de>,
-	Jinchao Wang <wangjinchao600@gmail.com>,
-	Yury Norov <yury.norov@gmail.com>,
-	Anna Schumaker <anna.schumaker@oracle.com>,
-	Baoquan He <bhe@redhat.com>, "Darrick J. Wong" <djwong@kernel.org>,
-	Dave Young <dyoung@redhat.com>,
-	Doug Anderson <dianders@chromium.org>,
-	"Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-	Helge Deller <deller@gmx.de>, Ingo Molnar <mingo@kernel.org>,
-	Joanthan Cameron <Jonathan.Cameron@huawei.com>,
-	Joel Granados <joel.granados@kernel.org>,
-	John Ogness <john.ogness@linutronix.de>,
-	Kees Cook <kees@kernel.org>, Li Huafei <lihuafei1@huawei.com>,
-	"Luck, Tony" <tony.luck@intel.com>,
-	Luo Gengkun <luogengkun@huaweicloud.com>,
-	Max Kellermann <max.kellermann@ionos.com>,
-	Nam Cao <namcao@linutronix.de>, oushixiong <oushixiong@kylinos.cn>,
-	Petr Mladek <pmladek@suse.com>,
-	Qianqiang Liu <qianqiang.liu@163.com>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Sohil Mehta <sohil.mehta@intel.com>, Tejun Heo <tj@kernel.org>,
-	Thomas Zimemrmann <tzimmermann@suse.de>,
-	Thorsten Blum <thorsten.blum@linux.dev>,
-	Ville Syrjala <ville.syrjala@linux.intel.com>,
-	Vivek Goyal <vgoyal@redhat.com>,
-	Yunhui Cui <cuiyunhui@bytedance.com>,
-	Andrew Morton <akpm@linux-foundation.org>, W_Armin@gmx.de
-Subject: Re: NMI stack overflow during resume of PCIe bridge with
- CONFIG_HARDLOCKUP_DETECTOR=y
-Message-ID: <20260113211548.GV745888@ziepe.ca>
-References: <20260113094129.3357-1-spasswolf@web.de>
- <87h5spk01t.ffs@tglx>
- <bc20529d7520e7db7de2022bf9c96a1bc3a2f0df.camel@web.de>
- <87v7h5ia3d.ffs@tglx>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KVL0x7JG"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECE4AC116C6;
+	Tue, 13 Jan 2026 21:56:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1768341365;
+	bh=nTh7fFqg/LT3f9MdXlSs711AfVqGFXu1moivv8qFk5I=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=KVL0x7JGjD1UDylwCNvsq33YOeWSQBFTiC0+Ys1LNYVg3J074Acwc7UY/GnO/DNyq
+	 bJLC0dA+r3nyYWkHrnmVPpipU6qBFuHkj2OMXLTlhXXEzWkPR6A2q5u1TOqw1AFKVu
+	 8qyG6Y41DcW1nKub4hyAYH2bmHsXswKGrL7ifknyOCEXV9TXlmfQ4seB+DEuXruxFn
+	 YuroqYs2OUBOVmiy0BbTxnvQyW6Mq7lOVI8NcKftIPjl4yAPCvM0Ii9XYkM1p22XWQ
+	 zD47bg2Mj+wKYHbFE5Cor0+hKEq+Lm7VChI96RChOIkk4o0RtwZ6TccRsGnMDLKkbT
+	 rRiTy9Wd4sQ/A==
+Date: Tue, 13 Jan 2026 15:56:03 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: huyuye <huyuye812@163.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>, Sunil V L <sunilvl@ventanamicro.com>,
+	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
+	Robert Moore <robert.moore@intel.com>, linux-pci@vger.kernel.org,
+	linux-acpi@vger.kernel.org, linux-riscv@lists.infradead.org,
+	acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org,
+	dai.hualiang@zte.com.cn, deng.weixian@zte.com.cn,
+	guo.chang2@zte.com.cn, liu.qingtao2@zte.com.cn,
+	wu.jiabao@zte.com.cn, lin.yongchun@zte.com.cn, hu.yuye@zte.com.cn,
+	zhang.longxiang@zte.com.cn, zuo.jiang@zte.com.cn,
+	li.kunpeng@zte.com.cn
+Subject: Re: [PATCH v2] ACPI: pci_root: Clear the acpi dependencies after PCI
+ root bridge initialization on RISC-V
+Message-ID: <20260113215603.GA781891@bhelgaas>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -120,24 +53,30 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87v7h5ia3d.ffs@tglx>
+In-Reply-To: <20260112141630.2869-1-huyuye812@163.com>
 
-On Tue, Jan 13, 2026 at 08:30:46PM +0100, Thomas Gleixner wrote:
-> So gradually your machine just stalls on outstanding MMIO transactions
-> w/o further notice... The NMI is just a red herring.
+On Mon, Jan 12, 2026 at 10:16:29PM +0800, huyuye wrote:
+> Hi Rafael,
+> Thank you for your thorough review and valuable comments on v1.
+> I've updated the patch as follows:
+> 1. Removed the redundant #ifdef CONFIG_ACPI and if (!acpi_disabled) 
+> guard as you pointed out. The entire code block indeed already depends
+> on CONFIG_ACPI at a higher level, making the inner guard unnecessary.
+> 2. Moved acpi_dev_clear_dependencies to RISC-V specific architecture 
+> code (driver/acpi/riscv/acpi_pci.c). This ensures that ACPI dependency
+> clearing is handled within the appropriate architectural context.
+> 
+> Best regards
 
-CPUs usualy have timeouts for these things and they return 0xFF back
-for the timed out read. Beyond that "it depends" if any other RAS
-indications are raised.
- 
-> You need to figure out why that MMIO access to that device's
-> configuration space stalls as anything else is just subsequent
-> damage.
+This really should have the commit log here, as it did in the original
+post [1].
 
-Given this is a resume it seems likely the PCI routing inside the
-bridge chip has been messed up somehow during the suspend/resume.
+> Signed-off-by: huyuye <huyuye812@163.com> 
+> ---
 
-Possibily due to errata in the bridge, there are many weird bridge
-errata :\
+And the description of the changes from v1 to v2 can go here, after
+the "---" since it doesn't need to be part of the permanent git
+history; see [2].
 
-Jason
+[1] https://lore.kernel.org/r/20251203140716.3065-1-huyuye812@163.com
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?id=v6.18#n784
