@@ -1,164 +1,120 @@
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.3])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DF5337F8AF
-	for <acpica-devel@lists.linux.dev>; Wed, 14 Jan 2026 12:33:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE5C33A1A2B
+	for <acpica-devel@lists.linux.dev>; Wed, 14 Jan 2026 15:54:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768394032; cv=none; b=V3zp4sRrm3gPOHjd0OpSFz0OLYfc5jVj8nC6Z04R/lkO83M7f7wGwrVr8hIyokxQY2DoKizgcejWlN/PgAzITtR0pDH/p1ZxoMlNA8EDnsGgCFY8W/rBz4jhNMLiTbx4evgSe0vgrAg3+/FByUpYDk7RYWX8QK4Fp45IarowZ4s=
+	t=1768406075; cv=none; b=cAzUQPq9lwV3Li4pEyWapcgJaDuiWKE/JyYxl1fqu+hUKV3So+ZzEWKswkJQf9WnxJLk/U27VyzJ9feie4slL2DAvKkyNJ78wkwO3QuxeuGuqFNDwombfDPcKKdDnInvLJU8gbTLHbk9G5TnsfCbwmN1NQ7+O6Mb5ShvBenyPP8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768394032; c=relaxed/simple;
-	bh=nAZvwTcvE/laxBoMa7e4DUE9HFPasAG1RWIxN36k54I=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jX2RnR/U6s+RHEVlACewlBMdc+mxYJI/GfiFL6acwiTbOHRlQvSfNwCVMdV/Vvyox4r04fPqKeCN+fgBGL3RpaRqWC420dWE+or6omg/5nAQwDLnf6pS3vOLpALAG/h+g8NCgItiF3/e0wpY2Ffr+htvzU2wJly6fLR5sw9AI3k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=jxu6ALux; arc=none smtp.client-ip=220.197.31.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+	s=arc-20240116; t=1768406075; c=relaxed/simple;
+	bh=/1wTiWpsCpunOq5fzWEU9xuNhfBmPPkOYODo7GujLyk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FBkHfdNwhi4k090+7dbCsqcmGD0imDIB5AzdwY1DrT29OqT/xMHV9n0g8UKxH0blGBZAXqnB+297yIlnzcJApV/h/WY93LWHfM87JkzgolPnr8KU8OOkee5dOFaUUaS7Q7ay5LzUJ+DNepm6EqSHmDBWcSYAbTe+5FnFf3DPyQI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZiWdFN5S; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="jxu6ALux"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=mQ
-	FTKbJmOROnetJPdTEjD7x5P28wiTI7ho78GWvBYd0=; b=jxu6ALuxnRDLPlc6Aq
-	QVckfXUk2tQl/7Rw5yLgsXkBuLv7qSVz7pwR+vNdXCp6sCwu2hnLN0ygwU8Y+w3I
-	ANL6gSa8ZgRSW/gnrtEJ0+ZHG/kNXOX2bNezwwvuitLKWO31tinuVYXR+rFqfjTL
-	eeJxyOLxXEt1AQ0XPs3Q/Z0NA=
-Received: from emily-VMware-Virtual-Platform.. (unknown [])
-	by gzga-smtp-mtada-g1-3 (Coremail) with SMTP id _____wAnEXLIjGdp_IcxGQ--.5443S2;
-	Wed, 14 Jan 2026 20:32:10 +0800 (CST)
-From: huyuye <huyuye812@163.com>
-To: Bjorn Helgaas <bhelgaas@google.com>,
-	"Rafael J . Wysocki" <rafael@kernel.org>
-Cc: Len Brown <lenb@kernel.org>,
-	Sunil V L <sunilvl@ventanamicro.com>,
-	Paul Walmsley <pjw@kernel.org>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Alexandre Ghiti <alex@ghiti.fr>,
-	Robert Moore <robert.moore@intel.com>,
-	linux-pci@vger.kernel.org,
-	linux-acpi@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	acpica-devel@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	hu.yuye@zte.com.cn,
-	huyuye <huyuye812@163.com>
-Subject: [PATCH v3] ACPI: pci_root: Clear the acpi dependencies after PCI root bridge initialization on RISC-V
-Date: Wed, 14 Jan 2026 20:32:05 +0800
-Message-ID: <20260114123205.4019-1-huyuye812@163.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260112141630.2869-1-huyuye812@163.com>
-References: <20260112141630.2869-1-huyuye812@163.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZiWdFN5S"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D900C2BC87
+	for <acpica-devel@lists.linux.dev>; Wed, 14 Jan 2026 15:54:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1768406075;
+	bh=/1wTiWpsCpunOq5fzWEU9xuNhfBmPPkOYODo7GujLyk=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=ZiWdFN5SvPTdNAUhPXVsu6tOOMTlR5k8zfBkm2whiyn0TUM8irA+D9cTZqhbdgP3X
+	 Ukgbf3CcSpkm6XOXi5GtyQi/cto0zj3Ovdep4vIUD+CqQ01xdm2G83VRsbLN7TsFWa
+	 qq+uSNBtfVle6sUsVPDoMnqDwNl5oFEkcoeJzlTPqZUh60yzQi/uNX40zhsxYejw3a
+	 DnDKcKIPAnkTwSf0h0qmMsyXEcoG3jAE2j37nupLsRPB61hh4d63StfPAphGbKvvjp
+	 KfXp3kRn1j1TMzQB13ygKGl7TtyEAjuq3ThAzjbag6JWKFtbVLp2NZZ99FDcDCARh5
+	 6CPFwNcJDFPdA==
+Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-455ddb90934so2785664b6e.0
+        for <acpica-devel@lists.linux.dev>; Wed, 14 Jan 2026 07:54:35 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXHcFKYTfLmG20VBf/6PrKg287iukIogmgISR3+/C73/jTlm0ycIBufzyRtlIOpAvQVuOvj3+w1Id4CEJU=@lists.linux.dev
+X-Gm-Message-State: AOJu0YxmbB2NwjL+ojjaEedCQelmQlQdw7jWibpLjVk1N24VHqbG8S9I
+	F24mYEJrME6bDOF/Pz5wdGEfE6fxB7Cv+kvlUjFfVPWhZSptl/5QCpEOzCw5I1iJaXtRwZmwzvR
+	VBDCKD+seiClsxngs0Th8ryFQqEPaY/Q=
+X-Received: by 2002:a05:6808:1887:b0:444:1450:c1 with SMTP id
+ 5614622812f47-45c73e614d1mr2012498b6e.64.1768406074506; Wed, 14 Jan 2026
+ 07:54:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wAnEXLIjGdp_IcxGQ--.5443S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxurykKr1xGF1kKFy3tF1DJrb_yoWrGw1fpF
-	Wj9w1fCrWkJw47Kr1DZw1UXFy5JanY9342grZru34q9a1kuryYvF92yFyUAa4UuFWDGa1x
-	ZF9rtF1rCF1jvaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pRrb1bUUUUU=
-X-CM-SenderInfo: 5kx135bhyrjqqrwthudrp/xtbC5AqJkWlnjMrhdAAA3r
+References: <cover.1767871950.git.mchehab+huawei@kernel.org>
+In-Reply-To: <cover.1767871950.git.mchehab+huawei@kernel.org>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Wed, 14 Jan 2026 16:54:23 +0100
+X-Gmail-Original-Message-ID: <CAJZ5v0hq_CvW3P6F7paGSaKOw6kzX_yUEsFPfL1Coco6yBAUBw@mail.gmail.com>
+X-Gm-Features: AZwV_QgR6vNMfQl8dFjf7vOcP8tSnhD2ep8Y06c90VtuR0ELeNasIQVPSS6lTjI
+Message-ID: <CAJZ5v0hq_CvW3P6F7paGSaKOw6kzX_yUEsFPfL1Coco6yBAUBw@mail.gmail.com>
+Subject: Re: [PATCH v6 0/4] apei/ghes: don't OOPS with bad ARM error CPER records
+To: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Ard Biesheuvel <ardb@kernel.org>, 
+	Robert Moore <robert.moore@intel.com>, acpica-devel@lists.linux.dev, 
+	linux-acpi@vger.kernel.org, linux-edac@vger.kernel.org, 
+	linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Ankit Agrawal <ankita@nvidia.com>, Borislav Petkov <bp@alien8.de>, Breno Leitao <leitao@debian.org>, 
+	Dan Williams <dan.j.williams@intel.com>, Dave Jiang <dave.jiang@intel.com>, 
+	Hanjun Guo <guohanjun@huawei.com>, Huang Yiwei <quic_hyiwei@quicinc.com>, 
+	Ira Weiny <ira.weiny@intel.com>, Jason Tian <jason@os.amperecomputing.com>, 
+	Jonathan Cameron <jonathan.cameron@huawei.com>, Len Brown <lenb@kernel.org>, 
+	Mauro Carvalho Chehab <mchehab@kernel.org>, Shuai Xue <xueshuai@linux.alibaba.com>, 
+	Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>, Tony Luck <tony.luck@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On RISC-V platforms with multiple PCI root bridges, the enumeration
-order varies randomly across reboots due to APLIC driver initialization
-occurring after ACPI device scanning. This defers PCI probing to a
-unbound workqueue, resulting in non-deterministic device discovery
-sequences.
+On Thu, Jan 8, 2026 at 12:35=E2=80=AFPM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
+>
+> Rafael,
+>
+> Current parsing logic at apei/ghes for ARM Processor Error
+> assumes that the record sizes are correct. Yet, a bad BIOS
+> might produce malformed GHES reports.
+>
+> Worse than that, it may end exposing data from other memory
+> addresses, as the logic may end dumping large portions of
+> the memory.
+>
+> Avoid that by checking the buffer sizes where needed.
+>
+> ---
+>
+> v6:
+>  - No code changes, just a cosmetic change at patch 3 description
+>  - Added Jonathan's review on all patches
+>
+> v5:
+>  - Changed the name of a var as requested by Jonathan
+>
+> v4:
+>  - addressed Jonathan comments;
+>  - added two extra patches to prevent other OOM issues.
+>
+> v3:
+>   - addressed Shuai feedback;
+>   - moved all ghes code to one patch;
+>   - fixed a typo and a bad indent;
+>   - cleanup the size check logic at ghes.c.
+>
+> Mauro Carvalho Chehab (4):
+>   apei/ghes: ARM processor Error: don't go past allocated memory
+>   efi/cper: don't go past the ARM processor CPER record buffer
+>   apei/ghes: ensure that won't go past CPER allocated record
+>   efi/cper: don't dump the entire memory region
+>
+>  drivers/acpi/apei/ghes.c        | 38 ++++++++++++++++++++++++++++-----
+>  drivers/firmware/efi/cper-arm.c | 12 +++++++----
+>  drivers/firmware/efi/cper.c     |  8 ++++++-
+>  drivers/ras/ras.c               |  6 +++++-
+>  include/acpi/ghes.h             |  1 +
+>  include/linux/cper.h            |  3 ++-
+>  6 files changed, 56 insertions(+), 12 deletions(-)
+>
+> --
 
-Such random enumeration leads to changes in device naming across each
-boot, which disrupts storage configurations, network settings, and
-severely impacts the stability of server maintenance.
+Applied as 6.20 material, but I changed the spelling of EFI, APEI,
+CPER, and GHES in the subjects/changelogs to all capitals.
 
-By adding the acpi_dev_clear_dependencies() call in acpi_pci_root_add(),
-this patch enables the firmware to actively control the enumeration order
-of multiple PCI root bridges through the ACPI _DEP method, providing the
-firmware with the opportunity to initialize devices in the intended order,
-thereby ensuring consistent enumeration results across multiple boots.
-
-Signed-off-by: huyuye <huyuye812@163.com>
----
-v2 -> v3:
-- Added back the missing commit description from v1
-- Moved v2 changelog to correct location after "---"
-
-v1 -> v2:
-- Removed the redundant #ifdef CONFIG_ACPI and if (!acpi_disabled) guard
-- Moved acpi_dev_clear_dependencies to RISC-V specific architecture code 
-
- drivers/acpi/pci_root.c       |  6 ++++++
- drivers/acpi/riscv/Makefile   |  2 +-
- drivers/acpi/riscv/acpi_pci.c | 11 +++++++++++
- include/acpi/acpi_bus.h       |  1 +
- 4 files changed, 19 insertions(+), 1 deletion(-)
- create mode 100644 drivers/acpi/riscv/acpi_pci.c
-
-diff --git a/drivers/acpi/pci_root.c b/drivers/acpi/pci_root.c
-index 9d7f85dadc48..a16eb9097cdc 100644
---- a/drivers/acpi/pci_root.c
-+++ b/drivers/acpi/pci_root.c
-@@ -30,6 +30,11 @@ static int acpi_pci_root_add(struct acpi_device *device,
- 			     const struct acpi_device_id *not_used);
- static void acpi_pci_root_remove(struct acpi_device *device);
- 
-+
-+void __weak arch_acpi_pci_root_add_clear_dep(struct acpi_device *device)
-+{
-+}
-+
- static int acpi_pci_root_scan_dependent(struct acpi_device *adev)
- {
- 	acpiphp_check_host_bridge(adev);
-@@ -760,6 +765,7 @@ static int acpi_pci_root_add(struct acpi_device *device,
- 	pci_lock_rescan_remove();
- 	pci_bus_add_devices(root->bus);
- 	pci_unlock_rescan_remove();
-+	arch_acpi_pci_root_add_clear_dep(device);
- 	return 1;
- 
- remove_dmar:
-diff --git a/drivers/acpi/riscv/Makefile b/drivers/acpi/riscv/Makefile
-index 1284a076fa88..5b1bd0298fb9 100644
---- a/drivers/acpi/riscv/Makefile
-+++ b/drivers/acpi/riscv/Makefile
-@@ -1,5 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0-only
--obj-y					+= rhct.o init.o irq.o
-+obj-y					+= rhct.o init.o irq.o acpi_pci.o
- obj-$(CONFIG_ACPI_PROCESSOR_IDLE)	+= cpuidle.o
- obj-$(CONFIG_ACPI_CPPC_LIB)		+= cppc.o
- obj-$(CONFIG_ACPI_RIMT)			+= rimt.o
-diff --git a/drivers/acpi/riscv/acpi_pci.c b/drivers/acpi/riscv/acpi_pci.c
-new file mode 100644
-index 000000000000..368ff113e5c6
---- /dev/null
-+++ b/drivers/acpi/riscv/acpi_pci.c
-@@ -0,0 +1,11 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (C) 2026, ZTE Corporation
-+ *  Author: Yu Ye Hu <hu.yuye@zte.com.cn>
-+ */
-+#include <linux/acpi.h>
-+
-+void arch_acpi_pci_root_add_clear_dep(struct acpi_device *device)
-+{
-+	acpi_dev_clear_dependencies(device);
-+}
-diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-index aad1a95e6863..c00b523a6ebd 100644
---- a/include/acpi/acpi_bus.h
-+++ b/include/acpi/acpi_bus.h
-@@ -996,6 +996,7 @@ int acpi_wait_for_acpi_ipmi(void);
- 
- int acpi_scan_add_dep(acpi_handle handle, struct acpi_handle_list *dep_devices);
- u32 arch_acpi_add_auto_dep(acpi_handle handle);
-+void arch_acpi_pci_root_add_clear_dep(struct acpi_device *device);
- #else	/* CONFIG_ACPI */
- 
- static inline int register_acpi_bus_type(void *bus) { return 0; }
--- 
-2.43.0
-
+Thanks!
