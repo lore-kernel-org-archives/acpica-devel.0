@@ -1,277 +1,205 @@
-Received: from canpmsgout10.his.huawei.com (canpmsgout10.his.huawei.com [113.46.200.225])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66045337B9F
-	for <acpica-devel@lists.linux.dev>; Thu, 15 Jan 2026 08:58:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.225
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6229E35EDA0;
+	Thu, 15 Jan 2026 09:51:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768467491; cv=none; b=HKHMTaEjKSZ14u+OcdPW/aBXfvrccPmetvXga0RBdRMo+CPIw9Xv/NGgtuQULQczLBUNNav233u2BcIO2hhtcZDpmoYzXvvvSu97UclIim8ntXyfVHhoumKofH8xDJU9UbcwK+TzZbVB/55IY1YfrYKv2BqmEjdpcUnH5e9LKq4=
+	t=1768470669; cv=none; b=XUDBL9v7PWbi4DrF+99K8F9HrcaJkF5jkfjOsvaKUc46sdnFMn1RAnYEGw1zfhNxjGQfXINsO05z9OSHVZgnaQF/ViIT4oqjcMnQn49zEgOIDx8Ar6BKLixpalQIpXrQBHA3wGvAL9uy1JrdhFSnFCimU/7OlZe0hcqrX0V3eFM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768467491; c=relaxed/simple;
-	bh=B2ircWOnxIY1pU54fNDLsd4VKwrmRZJntAlog/mRaQs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=TlOpmcreVz7TXpfRwj2rXAfoiyhAjvLi7jmkWzTUQk5gSQnrKrhx60jR/oqpvoS8HEe3EBLBNCvifwYQYGB0flI7mzzHNXePGXBlmD9iBkTFdPVTN2nSliH3zVFNqn9fkfKSCidVy/+GtUM4Ee6M7f1zFQeMq4z2DU6MU3CyWD4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=RD71lJTS; arc=none smtp.client-ip=113.46.200.225
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+	s=arc-20240116; t=1768470669; c=relaxed/simple;
+	bh=pRUo4IfxKSIdmqxfjlq5gep3aUZS10dP72qqvU6sP+k=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=RP5h+2Xaw/3w3US6zRq0hbjASIpCEiHPopDhHPxdt5YJ8mgGd6yOiXl22Oce9+msxMNia9C9ViLO0R4+M+7uDtnPy7lDr6WqUzCwlm6/ZmS0WTfN5WOXPdJnmXZzOXCU2p/idRl8EcKSZmiT60v4oeE0dIYxCRZFXNterEcFL5I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HzIJoWu6; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="RD71lJTS"
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=aeiL2R6ODZn3JTHgngaW3ACQLXMC+A3IlTyFLau/KNQ=;
-	b=RD71lJTS45cgKDWBa+lYXVvBGHkXoPIHbvfnJuMjjWRhxNfHjD2pU6MQM+IxZ/YMS2s64pTll
-	0+iaiNMozD3NaSy7scq9tjyz97s6unuRKbrZ6IEQtNa52MJQZvmWYfTw1ERvB7moSdS6zlX+C4r
-	+8lDmj4dhbRAMDw1yvLfcsc=
-Received: from mail.maildlp.com (unknown [172.19.163.163])
-	by canpmsgout10.his.huawei.com (SkyGuard) with ESMTPS id 4dsGyB0JWTz1K983;
-	Thu, 15 Jan 2026 16:54:42 +0800 (CST)
-Received: from kwepemf200001.china.huawei.com (unknown [7.202.181.227])
-	by mail.maildlp.com (Postfix) with ESMTPS id 26D5140565;
-	Thu, 15 Jan 2026 16:58:00 +0800 (CST)
-Received: from [10.67.121.90] (10.67.121.90) by kwepemf200001.china.huawei.com
- (7.202.181.227) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Thu, 15 Jan
- 2026 16:57:59 +0800
-Message-ID: <7e5bfa69-96e2-4f54-9446-cc64845b52cd@huawei.com>
-Date: Thu, 15 Jan 2026 16:57:58 +0800
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HzIJoWu6"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA3C1C116D0;
+	Thu, 15 Jan 2026 09:51:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1768470669;
+	bh=pRUo4IfxKSIdmqxfjlq5gep3aUZS10dP72qqvU6sP+k=;
+	h=From:Subject:Date:To:Cc:From;
+	b=HzIJoWu6DQj06GQph5RB+kUjQyIrbkLnNGn26cDf5NdD8j+0RNIrOScndC0SyvYor
+	 l7+sVNrsv6eEJN1LpsWDgOOPOC9HjuMvH74m+uW9pXTPqpQq9H48f1Ak50zHwJ+APw
+	 GII9f1zjX46qSFcpdxKVHscq05XSQYCNDknbVKgy8cqnZ9HaP+AYq4xZH16R4WAlfM
+	 GXxr/zB8BOIcWndxZJM26VIZSgtImg6Jwbom5E0hDw18NNpLcMMpC1SD+NoooSeZKR
+	 lEZ6g95O6Z1HPxQclKxEhgtjogNnVusxksq0VhBNKBkI4+vsB7YHx7/uazqby4cGzM
+	 nXu7E4ucjcOkQ==
+From: Lorenzo Pieralisi <lpieralisi@kernel.org>
+Subject: [PATCH v3 0/6] irqchip/gic-v5: Code first ACPI boot support
+Date: Thu, 15 Jan 2026 10:50:46 +0100
+Message-Id: <20260115-gicv5-host-acpi-v3-0-c13a9a150388@kernel.org>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 09/11] cpufreq: CPPC: sync policy limits when toggling
- auto_select
-To: Sumit Gupta <sumitg@nvidia.com>
-CC: <rafael@kernel.org>, <viresh.kumar@linaro.org>, <lenb@kernel.org>,
-	<robert.moore@intel.com>, <corbet@lwn.net>, <pierre.gondois@arm.com>,
-	<rdunlap@infradead.org>, <ray.huang@amd.com>, <gautham.shenoy@amd.com>,
-	<mario.limonciello@amd.com>, <perry.yuan@amd.com>, <ionela.voinescu@arm.com>,
-	<zhanjie9@hisilicon.com>, <linux-pm@vger.kernel.org>,
-	<linux-acpi@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-	<acpica-devel@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-	<linux-tegra@vger.kernel.org>, <treding@nvidia.com>, <jonathanh@nvidia.com>,
-	<vsethi@nvidia.com>, <ksitaraman@nvidia.com>, <sanjayc@nvidia.com>,
-	<nhartman@nvidia.com>, <bbasu@nvidia.com>
-References: <20251223121307.711773-1-sumitg@nvidia.com>
- <20251223121307.711773-10-sumitg@nvidia.com>
- <ae4ff90a-d2c4-4c13-9d65-a0f266bb4b4b@huawei.com>
- <fb876f94-f92e-4c8a-9b64-fe9118a15595@nvidia.com>
-From: "zhenglifeng (A)" <zhenglifeng1@huawei.com>
-In-Reply-To: <fb876f94-f92e-4c8a-9b64-fe9118a15595@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: kwepems100002.china.huawei.com (7.221.188.206) To
- kwepemf200001.china.huawei.com (7.202.181.227)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAHe4aGkC/23PTU7DMBAF4KtEXuPInuL8CaFKPQBiC2LhjCeJK
+ YlbOxiqqnfHSYUQguUbab6Zd2aBvKXAmuzMPEUbrJtS2NxkDAc99cStSZmBACUFAO8tRsUHF2a
+ u8WC5UbUpUJqNESVLWwdPnf1cxeeXlAcbZudP64Eol+m3Vf2xouSCC6mrAjpqFertnvxEb7nzP
+ VuwCD8AyH8ASAARlgUaaW5F+wu4XN/zdHxPPefrj2ykEPTas8nuJFQAic4falcWTyY+7rZedzo
+ Rr/nHKTjc2/ulZqsDcXTjaOcmi0Uua+5RpRuXL1I6CLhTAQAA
+X-Change-ID: 20251022-gicv5-host-acpi-d59d6c1d3d07
+To: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
+ Robert Moore <robert.moore@intel.com>, Hanjun Guo <guohanjun@huawei.com>, 
+ Sudeep Holla <sudeep.holla@arm.com>, Marc Zyngier <maz@kernel.org>, 
+ Bjorn Helgaas <bhelgaas@google.com>, Thomas Gleixner <tglx@kernel.org>, 
+ Jonathan Cameron <jonathan.cameron@huawei.com>
+Cc: linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, 
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ linux-pci@vger.kernel.org, Lorenzo Pieralisi <lpieralisi@kernel.org>
+X-Mailer: b4 0.14.3
 
-On 2026/1/8 22:21, Sumit Gupta wrote:
-> 
-> On 26/12/25 08:25, zhenglifeng (A) wrote:
->> External email: Use caution opening links or attachments
->>
->>
->> On 2025/12/23 20:13, Sumit Gupta wrote:
->>> When CPPC autonomous selection (auto_select) is enabled or disabled,
->>> the policy min/max frequency limits should be updated appropriately to
->>> reflect the new operating mode.
->>>
->>> Currently, toggling auto_select only changes the hardware register but
->>> doesn't update the cpufreq policy constraints, which can lead to
->>> inconsistent behavior between the hardware state and the policy limits
->>> visible to userspace.
->>>
->>> Add cppc_cpufreq_update_autosel_config() function to handle the
->>> auto_select toggle by syncing min/max_perf values with policy
->>> constraints. When enabling auto_sel, restore preserved min/max_perf
->>> values to policy limits. When disabling, reset policy to defaults
->>> while preserving hardware register values for later use.
->>>
->>> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
->>> ---
->>>   drivers/cpufreq/cppc_cpufreq.c | 112 +++++++++++++++++++++++++++------
->>>   1 file changed, 92 insertions(+), 20 deletions(-)
->>>
->>> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
->>> index 0202c7b823e6..b1f570d6de34 100644
->>> --- a/drivers/cpufreq/cppc_cpufreq.c
->>> +++ b/drivers/cpufreq/cppc_cpufreq.c
->>> @@ -544,14 +544,20 @@ static void populate_efficiency_class(void)
->>>    * cppc_cpufreq_set_mperf_limit - Set min/max performance limit
->>>    * @policy: cpufreq policy
->>>    * @val: performance value to set
->>> + * @update_reg: whether to update hardware register
->>>    * @update_policy: whether to update policy constraints
->>>    * @is_min: true for min_perf, false for max_perf
->>>    *
->>> + * When @update_reg is true, writes to HW registers and preserves values.
->>>    * When @update_policy is true, updates cpufreq policy frequency limits.
->>> + *
->>> + * @update_reg is false when disabling auto_sel to preserve HW values.
->>> + * The preserved value is used on next enabling of the autonomous mode.
->>>    * @update_policy is false during cpu_init when policy isn't fully set up.
->>>    */
->>>   static int cppc_cpufreq_set_mperf_limit(struct cpufreq_policy *policy, u64 val,
->>> -                                     bool update_policy, bool is_min)
->>> +                                     bool update_reg, bool update_policy,
->>> +                                     bool is_min)
->>>   {
->>>        struct cppc_cpudata *cpu_data = policy->driver_data;
->>>        struct cppc_perf_caps *caps = &cpu_data->perf_caps;
->>> @@ -563,19 +569,22 @@ static int cppc_cpufreq_set_mperf_limit(struct cpufreq_policy *policy, u64 val,
->>>
->>>        perf = clamp(val, caps->lowest_perf, caps->highest_perf);
->>>
->>> -     ret = is_min ? cppc_set_min_perf(cpu, perf) :
->>> -                    cppc_set_max_perf(cpu, perf);
->>> -     if (ret) {
->>> -             if (ret != -EOPNOTSUPP)
->>> -                     pr_warn("Failed to set %s_perf (%llu) on CPU%d (%d)\n",
->>> -                             is_min ? "min" : "max", (u64)perf, cpu, ret);
->>> -             return ret;
->>> -     }
->>> +     if (update_reg) {
->>> +             ret = is_min ? cppc_set_min_perf(cpu, perf) :
->>> +                            cppc_set_max_perf(cpu, perf);
->>> +             if (ret) {
->>> +                     if (ret != -EOPNOTSUPP)
->>> +                             pr_warn("CPU%d: set %s_perf=%llu failed (%d)\n",
->>> +                                     cpu, is_min ? "min" : "max",
->>> +                                     (u64)perf, ret);
->>> +                     return ret;
->>> +             }
->>>
->>> -     if (is_min)
->>> -             cpu_data->perf_ctrls.min_perf = perf;
->>> -     else
->>> -             cpu_data->perf_ctrls.max_perf = perf;
->>> +             if (is_min)
->>> +                     cpu_data->perf_ctrls.min_perf = perf;
->>> +             else
->>> +                     cpu_data->perf_ctrls.max_perf = perf;
->>> +     }
->>>
->>>        if (update_policy) {
->>>                freq = cppc_perf_to_khz(caps, perf);
->>> @@ -592,11 +601,74 @@ static int cppc_cpufreq_set_mperf_limit(struct cpufreq_policy *policy, u64 val,
->>>        return 0;
->>>   }
->>>
->>> -#define cppc_cpufreq_set_min_perf(policy, val, update_policy) \
->>> -     cppc_cpufreq_set_mperf_limit(policy, val, update_policy, true)
->>> +#define cppc_cpufreq_set_min_perf(policy, val, update_reg, update_policy)     \
->>> +     cppc_cpufreq_set_mperf_limit(policy, val, update_reg, update_policy,  \
->>> +                                  true)
->>> +
->>> +#define cppc_cpufreq_set_max_perf(policy, val, update_reg, update_policy)     \
->>> +     cppc_cpufreq_set_mperf_limit(policy, val, update_reg, update_policy,  \
->>> +                                  false)
->>> +
->>> +/**
->>> + * cppc_cpufreq_update_autosel_config - Update autonomous selection config
->>> + * @policy: cpufreq policy
->>> + * @is_auto_sel: enable/disable autonomous selection
->>> + *
->>> + * Return: 0 on success, negative error code on failure
->>> + */
->>> +static int cppc_cpufreq_update_autosel_config(struct cpufreq_policy *policy,
->>> +                                           bool is_auto_sel)
->>> +{
->>> +     struct cppc_cpudata *cpu_data = policy->driver_data;
->>> +     struct cppc_perf_caps *caps = &cpu_data->perf_caps;
->>> +     u64 min_perf = caps->lowest_nonlinear_perf;
->>> +     u64 max_perf = caps->nominal_perf;
->>> +     unsigned int cpu = policy->cpu;
->>> +     bool update_reg = is_auto_sel;
->>> +     bool update_policy = true;
->>> +     int ret;
->>> +
->>> +     guard(mutex)(&cppc_cpufreq_update_autosel_config_lock);
->>> +
->>> +     if (is_auto_sel) {
->>> +             /* Use preserved values if available, else use defaults */
->>> +             if (cpu_data->perf_ctrls.min_perf)
->>> +                     min_perf = cpu_data->perf_ctrls.min_perf;
->>> +             if (cpu_data->perf_ctrls.max_perf)
->>> +                     max_perf = cpu_data->perf_ctrls.max_perf;
->>> +     }
->> So if !is_auto_sel, min_perf and max_perf reg will be set to
->> lowest_nonlinear_perf and nominal_perf, but perf_ctrls.min_perf and
->> perf_ctrls.max_perf remain the old value. A little bit strange I think. And
->> when this happen, min_freq_req and max_freq_req will retain the value last
->> set by the users through min_perf and max_perf. It's that alright?
-> 
-> When disabling: Reset policy to defaults for normal governor control,
-> but preserve HW min/max_perf values and cached values for when
-> auto_sel is re-enabled.
-> When enabling: Restore policy to preserved min/max_perf values.
+The ACPI and ACPI IORT specifications were updated to support bindings
+required to describe GICv5 based systems.
 
-It's easy to assume that the values store in reg and in
-cpu_data->perf_ctrls should be consistent. Perhaps adding some comments
-would be better.
+The ACPI specification GICv5 bindings ECR [1] were approved and the
+required changes merged in the ACPICA upstream repository[5].
 
-> 
->>> +
->>> +     /*
->>> +      * Set min/max performance and update policy constraints.
->>> +      *   When enabling: update both HW registers and policy.
->>> +      *   When disabling: update policy only, preserve HW registers.
->>> +      * Continue even if min/max are not supported, as EPP and autosel
->>> +      * might still be supported.
->>> +      */
->>> +     ret = cppc_cpufreq_set_min_perf(policy, min_perf, update_reg,
->>> +                                     update_policy);
->>> +     if (ret && ret != -EOPNOTSUPP)
->>> +             return ret;
->>> +
->>> +     ret = cppc_cpufreq_set_max_perf(policy, max_perf, update_reg,
->>> +                                     update_policy);
->>> +     if (ret && ret != -EOPNOTSUPP)
->>> +             return ret;
->>> +
->>> +     /* Update auto_sel register */
->>> +     ret = cppc_set_auto_sel(cpu, is_auto_sel);
->>> +     if (ret && ret != -EOPNOTSUPP) {
->>> +             pr_warn("Failed to set auto_sel=%d for CPU%d (%d)\n",
->>> +                     is_auto_sel, cpu, ret);
->>> +             return ret;
->>> +     }
->>> +     if (!ret)
->>> +             cpu_data->perf_ctrls.auto_sel = is_auto_sel;
->>> +
->>> +     return 0;
->> Better to return ret.
-> 
-> Here, return 0 is intentional.
-> If cppc_set_auto_sel() returns -EOPNOTSUPP, we still consider the
-> function successful since auto_sel is an optional register.
+The Arm IORT specification [2] has been updated to include GICv5 IWB
+specific bindings in revision E.g.
 
-Why consider it successful?
+Implement kernel code that - based on the aforementioned bindings - adds
+support for GICv5 ACPI probing.
 
-> 
->>> +}
->>> +
->>>
->>> -#define cppc_cpufreq_set_max_perf(policy, val, update_policy) \
->>> -     cppc_cpufreq_set_mperf_limit(policy, val, update_policy, false)
->>>   static struct cppc_cpudata *cppc_cpufreq_get_cpu_data(unsigned int cpu)
->>>   {
->>>        struct cppc_cpudata *cpu_data;
->>> @@ -889,7 +961,7 @@ static ssize_t store_auto_select(struct cpufreq_policy *policy,
->>>        if (ret)
->>>                return ret;
->> Since you already store auto_sel value in perf_ctrls, We can compare the
->> new value with perf_ctrls.auto_sel here, and just return if they are the
->> same.
-> 
-> Will add in v6.
-> 
-> Thank you,
-> Sumit Gupta
-> 
-> ....
-> 
-> 
-> 
+ACPICA changes supporting the bindings were posted [6] - this series
+depends on [6] to work and should not be merged stand alone.
+
+The ACPI bindings were prototyped in edk2 - code available in these
+branches [3][4].
+
+===========================
+Kernel implementation notes
+===========================
+
+IRS and ITS probing is triggered using the standard irqchip ACPI probing
+mechanism - there is no significant difference compared to previous GIC
+versions other.
+
+The only difference that is worth noting is that GICv3/4 systems include a
+single MADT component describing the interrupt controller (ie GIC distributor)
+whereas GICv5 systems include one or more IRSes. The probing code is
+implemented so that an MADT IRS detection triggers probing for all IRSes
+in one go.
+
+The IWB driver probes like any other ACPI device. IORT code is updated so
+that a deviceID for the IWB can be detected.
+
+The only major change compared to GICv3/4 systems is the GSI namespace that
+is split between PPI/SPI IRQs and IWB backed IRQs.
+
+The main GSI handle - to map an IRQ - has to detect whether to look-up
+using the top level GSI domain or an IWB domain in that the two IRQ
+namespaces are decoupled.
+
+IORT code implements the logic to retrieve an IWB domain by looking up its
+IWB frame id, as described in [1].
+
+Most important implementation detail worth noting is that - at this stage -
+ACPI code is not capable of handling devices probe order IRQ dependency on
+the interrupt controller driver their IRQ is routed to.
+
+This is not an issue on GICv3/4 systems in that the full GIC hierarchy
+probes earlier than any other device, so by the time IRQs mappings have to
+be carried out (ie acpi_register_gsi()) the GIC drivers have already
+probed.
+
+On GICv5 systems, the IWB is modelled as a device and its device driver
+probes at device_initcall time. That's when the IWB IRQ domain is actually
+registered - which poses problems for devices whose IRQs are IWB routed and
+require to resolve the IRQ mapping before the IWB driver has a chance to
+probe.
+
+Work on resolving devices<->IWB probe order dependency has started in
+parallel with this series and will be posted shortly.
+
+For PPI/SPI/LPI backed IRQs the probe dependency is not a problem because
+in GICv5 systems the IRSes and ITSes probe early so their IRQ domain are
+set in place before devices require IRQ mappings.
+
+[1] https://github.com/tianocore/edk2/issues/11148
+[2] https://developer.arm.com/documentation/den0049/eg
+[3] https://github.com/LeviYeoReum/edk2/tree/levi/gicv5_patch
+[4] https://github.com/LeviYeoReum/edk2-platforms/tree/levi/gicv5_patch
+[5] https://github.com/acpica/acpica/commits/master/
+[6] https://lore.kernel.org/linux-acpi/12822121.O9o76ZdvQC@rafael.j.wysocki/
+
+Signed-off-by: Lorenzo Pieralisi <lpieralisi@kernel.org>
+---
+Changes in v3:
+- Dropped ACPICA patches
+- Split IRS OF refactoring into a separate patch
+- Renamed new fwnode interface according to review
+- Applied minor review comments
+- Rebased on v6.19-rc5
+- Link to v2: https://lore.kernel.org/r/20251218-gicv5-host-acpi-v2-0-eec76cd1d40b@kernel.org
+
+Changes in v2:
+- Cherry-picked ACPICA upstream changes
+- Minor editorial changes
+- Removed the "not for merging" tag because now ACPI specs are approved
+- Rebased against v6.19-rc1
+- Link to v1: https://lore.kernel.org/r/20251028-gicv5-host-acpi-v1-0-01a862feb5ca@kernel.org
+
+---
+Lorenzo Pieralisi (6):
+      irqdomain: Add parent field to struct irqchip_fwid
+      PCI/MSI: Make the pci_msi_map_rid_ctlr_node() interface firmware agnostic
+      irqchip/gic-v5: Split IRS probing into OF and generic portions
+      irqchip/gic-v5: Add ACPI IRS probing
+      irqchip/gic-v5: Add ACPI ITS probing
+      irqchip/gic-v5: Add ACPI IWB probing
+
+ drivers/acpi/arm64/iort.c                | 193 +++++++++++++++++++-----
+ drivers/acpi/bus.c                       |   3 +
+ drivers/irqchip/irq-gic-its-msi-parent.c |  43 +++---
+ drivers/irqchip/irq-gic-v5-irs.c         | 247 ++++++++++++++++++++++++-------
+ drivers/irqchip/irq-gic-v5-its.c         | 132 ++++++++++++++++-
+ drivers/irqchip/irq-gic-v5-iwb.c         |  42 ++++--
+ drivers/irqchip/irq-gic-v5.c             | 138 ++++++++++++++---
+ drivers/pci/msi/irqdomain.c              |  23 ++-
+ include/linux/acpi.h                     |   1 +
+ include/linux/acpi_iort.h                |  11 +-
+ include/linux/irqchip/arm-gic-v5.h       |   8 +
+ include/linux/irqdomain.h                |  30 +++-
+ include/linux/msi.h                      |   3 +-
+ kernel/irq/irqdomain.c                   |  14 +-
+ 14 files changed, 734 insertions(+), 154 deletions(-)
+---
+base-commit: d0e305301e82474223bf26185e86e7dc2eb85350
+change-id: 20251022-gicv5-host-acpi-d59d6c1d3d07
+prerequisite-message-id: <12822121.O9o76ZdvQC@rafael.j.wysocki>
+prerequisite-patch-id: 9f722bfc7e4861af40637017a83826401b3958e4
+prerequisite-patch-id: f619b4724a25a5c2b95032ef4c6d0b53dde45142
+prerequisite-patch-id: 3738d015d93d77b3d381ba8de056be533df48794
+prerequisite-patch-id: 50b1ee01b2ee63f6db21276ec24dadd645f8931e
+prerequisite-patch-id: 6671f1c96dc89d5e375196e545c9750c2378f010
+prerequisite-patch-id: b5d91dce8f61ab75796ba6a766d499d7321c0231
+prerequisite-patch-id: 1f433eeb8848ce51c2b2fe601813939a042c6c0e
+prerequisite-patch-id: 4f9aab64e4f4a75c18ae692bd903266069100d34
+prerequisite-patch-id: 793a7b3fab40b903ffa0855e0db5336acb69505b
+prerequisite-patch-id: 3eeebe1df8abadc1606cc6dadd15031ad46ff64f
+prerequisite-patch-id: 3477bb220e91c9cdb4d778ce15e44babbefddf23
+prerequisite-patch-id: 153be22f930d0c05bc04b37006bdb1e286883a92
+prerequisite-patch-id: 1a7dcfd7e1317aeec52c772f3150c115e965af52
+prerequisite-patch-id: 43a604c0109163e51a892d888c728794bca8a0a3
+prerequisite-patch-id: 580debc0f26b7c301160504e2360de6765e7a179
+prerequisite-patch-id: 15f2c86c557c835e4aed0cb914c23e04da1392ed
+prerequisite-patch-id: 00986721db8da2e52c733971b482b9cf0c32910e
+prerequisite-patch-id: 9d0607df90015bac8768549cbb0a19580f0b2661
+prerequisite-patch-id: f478f56f3ded4d0ce43254418deb5e10f49555ef
+prerequisite-patch-id: 6f9563683e92392564935f24cc5e8be23301790c
+prerequisite-patch-id: 4d701f77a597391e0d04c5da3d6f1cb24d1e40d0
+prerequisite-patch-id: d70577c2355648acbc7c857c5512df21280e917f
+prerequisite-patch-id: 8c6408293baa1a758b0b0b4f078eaf7dbe1404e0
+prerequisite-patch-id: 84008a72aa67b54af8a294a0fc07d2b6eaede597
+prerequisite-patch-id: 97acab35d513bc6b091efa4185a9826262d5ed79
+prerequisite-patch-id: 04652a3bfdf9f4fa2ba829631c899ea3569f11a2
+
+Best regards,
+-- 
+Lorenzo Pieralisi <lpieralisi@kernel.org>
 
