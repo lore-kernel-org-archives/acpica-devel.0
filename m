@@ -1,248 +1,210 @@
-Received: from mout.web.de (mout.web.de [217.72.192.78])
+Received: from PH8PR06CU001.outbound.protection.outlook.com (mail-westus3azon11012040.outbound.protection.outlook.com [40.107.209.40])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDB1E3ECBEE;
-	Tue, 20 Jan 2026 10:28:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.72.192.78
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768904926; cv=none; b=WEuqgKe5BOTjCWNpjr4QgdYfoIYsZoxgCMYeG7ri98jePsX6dJWbmelZD1PFF9o1e/RA4hQ8raSX9rjx2owAQ14RoZ2C8WfhNudzcpj6PJGhW9OcT4pgV5yV0i9ixU39+CaU5AzxFpgkl+OISH0evBy/MOkEoPDRC7niPbodmQQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768904926; c=relaxed/simple;
-	bh=o2YEmidTzHei1Gch3ATR/a8V9bGaTg6F2uv6s1c518I=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=ZYEPi1jYtr9FrLpM2P/vpc66qzbJfzRst5d3OBwflTCtcbM51OLMD0zSiQIaa5GU7+cuj6PJpGO05XT4kOBEQEdCPQQ7T4xpljNpPa18CZz0YyRDmfqVN9yHtDoEzfwoCUQHZ0KVjvY2Bjk4W4ixt+SqTlPjnT/oaRqMp/RdJUs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=spasswolf@web.de header.b=dzsgeInW; arc=none smtp.client-ip=217.72.192.78
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C91EA44DB8D
+	for <acpica-devel@lists.linux.dev>; Tue, 20 Jan 2026 14:57:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.209.40
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768921045; cv=fail; b=MGW7gKYypQvLl+0vCG46nSrgsx1VWA889u6dxFM3uRNaxKDLJCtA7/XTFJJiAb+P+GF86F7EHqZq9BYqR6uv8scTS3n8TI4v1VGTuvMldPqSAqHIxiy5pXLr2jUgzQj0iCbOzsFYLMWOpGR7ScqEsF8uytTmwozljkHc71LirQI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768921045; c=relaxed/simple;
+	bh=8YHy7bYx3m4iaMFIavzvNRj5w+gu0UODg/av+mgpaU8=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=iDiSQDprVD72Zu+DcG8nwnNiDM6CIU+Jg3EnVXMl/cn2x6x+hycgmrQ/yRILAgusnt4lxXB7gyXRA2dXmcDN2Sn6ra6r+g0IeuQY6NyCJ+nTdAnKB43qeKbOl11/d3FWt5GphkJy74nr9UkDEsktTclp8y76D6g1rcwsHOZj/bk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=fHkfSTnC; arc=fail smtp.client-ip=40.107.209.40
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=spasswolf@web.de header.b="dzsgeInW"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1768904828; x=1769509628; i=spasswolf@web.de;
-	bh=CyHSeQ3UJv8sOqLdcbVinP5LB8wxqbnzWWo7pzqgzmk=;
-	h=X-UI-Sender-Class:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
-	 References:Content-Type:MIME-Version:Content-Transfer-Encoding:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=dzsgeInWbuZNx/dGDZRWvJVtdut+8pIUTjmGXehCiN9H6Qkya9gPC2pD9+h6b8K3
-	 sf2+PjceXwZZ1suiw30QnttMyXVCA+rWHUtIcHQfdrlmSaWcHwIbu5ojHoNaRMpOa
-	 W2CLLOAWM7YMOrQ7oSqYiwQ99oi/dGBd1YZkyNsc+gFld4bDKOE7U7/HnQ+mAvHlX
-	 ExEQPuDXlI4AGnD+9Oz6QkN0x390Oqs6D42x/6z7xE/pHxx+1cinHXhJdtYt4PtFc
-	 z3rVNmxnqTs0KMNjNkRxzrxgaxtoIGsasLIUxssOfFZdo29dokhXEIzOBVd9h923b
-	 Z4oqbGhV8kBLMPCTpg==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.0.101] ([95.223.134.88]) by smtp.web.de (mrweb106
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1M8TBS-1vmWfD3elc-00D6gh; Tue, 20
- Jan 2026 11:27:08 +0100
-Message-ID: <82b4d69a5b943aa5e8aa7cc33fcc00bce02e557c.camel@web.de>
-Subject: Re: crash during resume of PCIe bridge in v5.17 (v5.16 works)
-From: Bert Karwatzki <spasswolf@web.de>
-To: Thomas Gleixner <tglx@kernel.org>, linux-kernel@vger.kernel.org
-Cc: linux-next@vger.kernel.org, spasswolf@web.de, Mario Limonciello	
- <mario.limonciello@amd.com>, Sebastian Andrzej Siewior
- <bigeasy@linutronix.de>,  Clark Williams <clrkwllms@kernel.org>, Steven
- Rostedt <rostedt@goodmis.org>, Christian =?ISO-8859-1?Q?K=F6nig?=	
- <christian.koenig@amd.com>, regressions@lists.linux.dev, 
-	linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org, "Rafael J . Wysocki"
-	 <rafael.j.wysocki@intel.com>, acpica-devel@lists.linux.dev, Robert Moore	
- <robert.moore@intel.com>, Saket Dumbre <saket.dumbre@intel.com>, Bjorn
- Helgaas	 <bhelgaas@google.com>, Clemens Ladisch <clemens@ladisch.de>,
- Jinchao Wang	 <wangjinchao600@gmail.com>, Yury Norov
- <yury.norov@gmail.com>, Anna Schumaker	 <anna.schumaker@oracle.com>,
- Baoquan He <bhe@redhat.com>, "Darrick J. Wong"	 <djwong@kernel.org>, Dave
- Young <dyoung@redhat.com>, Doug Anderson	 <dianders@chromium.org>,
- "Guilherme G. Piccoli" <gpiccoli@igalia.com>, Helge Deller <deller@gmx.de>,
- Ingo Molnar <mingo@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,  Joanthan
- Cameron <Jonathan.Cameron@huawei.com>, Joel Granados
- <joel.granados@kernel.org>, John Ogness	 <john.ogness@linutronix.de>, Kees
- Cook <kees@kernel.org>, Li Huafei	 <lihuafei1@huawei.com>, "Luck, Tony"
- <tony.luck@intel.com>, Luo Gengkun	 <luogengkun@huaweicloud.com>, Max
- Kellermann <max.kellermann@ionos.com>, Nam Cao <namcao@linutronix.de>,
- oushixiong <oushixiong@kylinos.cn>, Petr Mladek	 <pmladek@suse.com>,
- Qianqiang Liu <qianqiang.liu@163.com>, Sergey Senozhatsky	
- <senozhatsky@chromium.org>, Sohil Mehta <sohil.mehta@intel.com>, Tejun Heo	
- <tj@kernel.org>, Thomas Zimemrmann <tzimmermann@suse.de>, Thorsten Blum	
- <thorsten.blum@linux.dev>, Ville Syrjala <ville.syrjala@linux.intel.com>, 
- Vivek Goyal <vgoyal@redhat.com>, Yunhui Cui <cuiyunhui@bytedance.com>,
- Andrew Morton	 <akpm@linux-foundation.org>, W_Armin@gmx.de
-Date: Tue, 20 Jan 2026 11:27:00 +0100
-In-Reply-To: <99f1aaba32030d2b9285dbd983fdf8518a181a8d.camel@web.de>
-References: <20260113094129.3357-1-spasswolf@web.de> <87h5spk01t.ffs@tglx>
-		 <bc20529d7520e7db7de2022bf9c96a1bc3a2f0df.camel@web.de>
-		 <87v7h5ia3d.ffs@tglx>
-	 <99f1aaba32030d2b9285dbd983fdf8518a181a8d.camel@web.de>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.56.2-0+deb13u1 
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="fHkfSTnC"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=Ht6uXiYnpaxlGLbuypLIHST39HTrpgfvdGAM73NpampLAjNMwjpxJwh4gzrCZAiPCK846q06y3r1bDcjf8V/A3ta44b12/b+oYKCY+hrQCLGqHCWvDuJVg6b7+eW72SKNRaU6swwF3LHg3joeFM8CTDZ1SZwDlXR8b+o308u6+c6FiXwRLQ56IXpnGcJd2pTs7nDHOvAflEwkHuxHteACeJazjEferXYvf6EskNyOcisdvvQINLUDYmLsIFEjDCaPTRrvpbbR4LZrT054CkZkzYnHPkp3bsE5G6xA6sOP4CV7pcdpNDFTOoxQWlW+KevqZIm6SO20ZdPf/unwlSHuw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8sOlvaeJXxqviArKK3gX0tgedNWh4WrM8OsM/lUmhas=;
+ b=nrFbDj1W2biIJaDAPnRUIGN01FVlgjEq3Ry8yqYktH/aF7zWFc/axLQ/fBa/SK41guhsVV0GJMKRSdOJjP1LjPgg7LeOMENHZxznIDkZMCFwMgtcm4LXnVGiHu/5cjUSifdNk6lh/50yIMGUbKoITcy8VWkYzw9yFQGnf4KJ4OyW5mj8HiAQV548/yU2i48OSJ8akXGNegnqw8Y5X70/EuWGxhIK4DxB2/oKREdtAYo/BwAEzBdodl/yn1I3Ts6MekwgiMjfECEj8PgcfYykADKXboVhkDgF5GAsrqUw9Z0xB7zgmXZfKvFzhTQu9E/ua+XjcIK1a49WSZ3i0PZUbA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8sOlvaeJXxqviArKK3gX0tgedNWh4WrM8OsM/lUmhas=;
+ b=fHkfSTnCyLL0PrTJUQHyEoxuWUnWLvICrwG3sA+qgn9ejS1oNuK6Amqg1x8p1iDQzN8NbQ4/ULNnkzmFNL0G8HS2OQtl8yUe7DQFnaOKEckQPn3ZGUHW0D1Ae1/71AesW7KFx2XihBUaU4RgYAQcKDC+arcLxO4Vw3FBrfjnxEu57Rb7rXEjJMAyFzhWhGNoXOotCqL0BCpVjzZfS0TrxxFxEBRjlJT5CY2Xlj01+3tyUohg3ooUAegHjtDpPUqtorwT9ZYQl62SaYu1L59/8p/oYER6LOhksANCyYeOmZ8Rv68B2KZ0S0TaP1xwiQT+mr/3C8H4T9yDOqhHyOJxpg==
+Received: from PH8PR15CA0016.namprd15.prod.outlook.com (2603:10b6:510:2d2::26)
+ by DS2PR12MB9565.namprd12.prod.outlook.com (2603:10b6:8:279::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9520.12; Tue, 20 Jan
+ 2026 14:57:14 +0000
+Received: from CY4PEPF0000E9DB.namprd05.prod.outlook.com
+ (2603:10b6:510:2d2:cafe::e0) by PH8PR15CA0016.outlook.office365.com
+ (2603:10b6:510:2d2::26) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9542.9 via Frontend Transport; Tue,
+ 20 Jan 2026 14:57:13 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ CY4PEPF0000E9DB.mail.protection.outlook.com (10.167.241.74) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9542.4 via Frontend Transport; Tue, 20 Jan 2026 14:57:13 +0000
+Received: from rnnvmail204.nvidia.com (10.129.68.6) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Tue, 20 Jan
+ 2026 06:56:38 -0800
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by rnnvmail204.nvidia.com
+ (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Tue, 20 Jan
+ 2026 06:56:38 -0800
+Received: from sumitg-l4t.nvidia.com (10.127.8.14) by mail.nvidia.com
+ (10.129.68.10) with Microsoft SMTP Server id 15.2.2562.20 via Frontend
+ Transport; Tue, 20 Jan 2026 06:56:30 -0800
+From: Sumit Gupta <sumitg@nvidia.com>
+To: <rafael@kernel.org>, <viresh.kumar@linaro.org>, <pierre.gondois@arm.com>,
+	<zhenglifeng1@huawei.com>, <ionela.voinescu@arm.com>, <lenb@kernel.org>,
+	<robert.moore@intel.com>, <corbet@lwn.net>, <rdunlap@infradead.org>,
+	<ray.huang@amd.com>, <gautham.shenoy@amd.com>, <mario.limonciello@amd.com>,
+	<perry.yuan@amd.com>, <zhanjie9@hisilicon.com>, <linux-pm@vger.kernel.org>,
+	<linux-acpi@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+	<acpica-devel@lists.linux.dev>, <linux-kernel@vger.kernel.org>
+CC: <linux-tegra@vger.kernel.org>, <treding@nvidia.com>,
+	<jonathanh@nvidia.com>, <vsethi@nvidia.com>, <ksitaraman@nvidia.com>,
+	<sanjayc@nvidia.com>, <nhartman@nvidia.com>, <bbasu@nvidia.com>,
+	<sumitg@nvidia.com>
+Subject: [PATCH v6 0/9] Enhanced autonomous selection and improvements
+Date: Tue, 20 Jan 2026 20:26:14 +0530
+Message-ID: <20260120145623.2959636-1-sumitg@nvidia.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:AMDbhLUWL5uuhXDdpMs4FD7yyH9DuhuguVKE3b9hux84CaHgoxh
- FDlZuudUAzc62+WF+PS65clDkdyylrG9S9EbY/zaSd5JHSiG8ksbGN3FMyaSCoxovcwtVF4
- 0wLxfW6ayTIvW2v+IfMZDh2ed/EPbky2krTwgxJi5p7NImlOz0drfO9yk7mngELFErL5ZEm
- 56r7D7FtCwzI+23dTbwCg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:cAJtVuTQ8/k=;VCLD6sMgAgJ0VhQqVyNcoZurWmg
- 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
- /1hApXIQ=
+X-NVConfidentiality: public
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9DB:EE_|DS2PR12MB9565:EE_
+X-MS-Office365-Filtering-Correlation-Id: de0a6c15-e1be-4db9-b0df-08de58343238
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|36860700013|7416014|376014|82310400026|1800799024|13003099007|921020;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?GDb47K65D68/waXdewffZlbCd1zbTAbluAa91lN3IHpY1nfKJNceZpHaOXeY?=
+ =?us-ascii?Q?YtgDcSfnupXNrLu95ynRvjBUU6E9i7olex3JdqN+H5uS8GvvYat8Qs//LFgB?=
+ =?us-ascii?Q?ETNuDSYLOe5ClMHRdM7U7kBizb2vQD2ABjRfcwQT5B/wxcH8J70GFVTVRUYC?=
+ =?us-ascii?Q?kQ8TNv/DrkkP51cBq4mp2aLCpthbFRi+pa8avdVwkXvG43jwQQnqFDgivm1P?=
+ =?us-ascii?Q?Gznqs1Bj68paQslY743iJC3jxWBFfHhmit6/peazAPC8P4QOWYXRKDSGM8hj?=
+ =?us-ascii?Q?E0PY6M/U9gnWoN50UGy9DyEKr3ceJ1QtFAc+wP5wNMN/m4ZgkPrgoOfPZDkl?=
+ =?us-ascii?Q?1RqUQjJAdctCLCLakwUWXNDwhytrJ0HDI7HrnYh+6I2lqauoHiKdMOCGcZEF?=
+ =?us-ascii?Q?fv+1LNBiaihP50jNkySjdDOYk997w4lo3r25uymTgrrLz0Z9r0wjaihdeq9K?=
+ =?us-ascii?Q?xtAQlVrA1qqvkr9r7+6GuvUJFiSG6nZoR72QzFgdqmJzpBTuc91HjSj6O/55?=
+ =?us-ascii?Q?0+n3T+pEUCIEtnqLazFPxl8BdBCJUmbOpTn0IDyT3BuaxTdAI/zKgbNdvSQy?=
+ =?us-ascii?Q?tjNcFVqLK4GLMhEAXopgP3KawbDEoxDwdZ9Y2GlXgM4+uzXRiFxMNDeU/Aok?=
+ =?us-ascii?Q?q/cZQYG4J5/Zvt98qw995HPreWSgExvTT7ZWOowIJgHRDULRS4Nz99lK1sWn?=
+ =?us-ascii?Q?hveI5WAXhPWF2G8bUv1UdIXWAQCqp9wFSN50nXrzB35YqoE3apc7hAAcYIXn?=
+ =?us-ascii?Q?2H7RznSmzMDv6HIWiWRsl3N7nnWvj8AZHg+0lKY6NCogcfKXJGb6jfYe0EZq?=
+ =?us-ascii?Q?pa4hYBtHBECGluZnD6Pmjhnq0efIy0QPHPgrPTHdbuiN6ZPaTlfoMDc2iuxK?=
+ =?us-ascii?Q?h9t4lRSMrnkQROlAbC9N5kvLm3fWzZrLjE/1AXzjtDKFuLBJnV/7vBvygiLc?=
+ =?us-ascii?Q?CywwMi6VOwlh1cGsM8ExZiGLfSCymMgD8++Iwq475hDC8JagE+bDQtRGUvHo?=
+ =?us-ascii?Q?2kGhEtD4Ye5nQSZOw03shc/yehtxFd1xUL0nm0afKjtAMYnI0/ucx0/67lpC?=
+ =?us-ascii?Q?/ewQnY0Xm6gsRUiTlJ0xzwXXMJ5g1OAS21189/c3GCBWd0uSDDqO7f3NO+Je?=
+ =?us-ascii?Q?SYHscPyb9ilmAvQdINL0PRSv0oR4yElW+fKV2cPy9GD4YXf3oyKeMrH1H5f/?=
+ =?us-ascii?Q?FP/Hd3IparSNGEMLh1Ezs6aCFiz1rgcDr6ybhkUkQ5TgIuRGIU+rxh3UEb7v?=
+ =?us-ascii?Q?y1epoVJPSA0Kbas0oMwOpzv+6F/aHvVK52eM8Z2G0Rfdb3fu95Ds/qSqWtOG?=
+ =?us-ascii?Q?7UtLEJATUcVH9rd0wx6Bn2nUFtMOWm94N/Q/+h8EH/VfVdbyEPhHk8Hs1qHJ?=
+ =?us-ascii?Q?Qs3w5UPVa5wHaX6yPbBKOuv3z98LSSfCAr8hIMG0hH+i/BUEKTnvWvmHLIfm?=
+ =?us-ascii?Q?o05b4cNQ+dFNb6d7CeXZw0mjbFSJxwYbdu020Wglb1qh2kxqNNO6ul7Phodm?=
+ =?us-ascii?Q?XmwV5TkslfCWKMRw0o/2cJgtuvORHpjI4qPoHHMT2bVSt9kWSYY41dWAEG/B?=
+ =?us-ascii?Q?j+6B7/HQDUssK5sSZEpceIY4EUm53X8MaXdwTd3syJK5cxzGgBIzAy8aSdAP?=
+ =?us-ascii?Q?EqQ8gD5zmSsYUl0nrwb9ILwqMXmY9KQeYrq6GyOYiX2gsl67Hf6OMckkmdYk?=
+ =?us-ascii?Q?HbKMELcKHNQR3/5glfPCIcFlqxc=3D?=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(36860700013)(7416014)(376014)(82310400026)(1800799024)(13003099007)(921020);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jan 2026 14:57:13.5935
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: de0a6c15-e1be-4db9-b0df-08de58343238
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CY4PEPF0000E9DB.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS2PR12MB9565
 
-There are exitining news here:
-I tested older linux versions with this script
+As discussed in [6], v5 is split into two parts. This is part 1
+(v5 patches 1-7) and can be applied independently. I will follow up
+separately with part 2 (v5 patches 8-11).
 
-#!/bin/bash
-for i in {0..20000}
-do
-	echo $i
-	evolution &
-	sleep 5
-	killall evolution
-	sleep 5
-done
+This patch series adds sysfs interfaces for CPPC min_perf, max_perf,
+and perf_limited registers, along with supporting ACPI APIs and
+improvements for the cppc_cpufreq driver.
 
-with the following results:
-Version v5.17, v6.1 and v6.8 show more or less the same
-behaviour as v6.12+, i.e. repreated resumes crash after a=20
-while (sometimes the discrete GPU is lost without a crash)
+CPPC autonomous mode (auto_sel) enables hardware-driven CPU performance
+scaling using Energy Performance Preference (EPP) hints. Currently,
+there's limited runtime control and visibility into CPPC performance
+registers.
 
-Version v5.15 shows a different behaviour:
-5.15.0-stable-dirty			booted 14:28, 16.1.2026 error 14:52 (25min, 142 resu=
-mes)
-[ 1453.515962] [  T18093] amdgpu 0000:03:00.0: amdgpu: Failed to setup smc=
- hw!
-[ 1453.515978] [  T18093] [drm:amdgpu_device_ip_resume_phase2 [amdgpu]] *E=
-RROR* resume of IP block <smu> failed -62
-[ 1453.516046] [  T18093] amdgpu 0000:03:00.0: amdgpu: amdgpu_device_ip_re=
-sume failed (-62). (-ETIME!)
-5.15.0-stable-dirty			booted 17:09, 16.1.2026 error 20:18 (3h, 1102 resume=
-s)
-[11337.547257] [ T157373] amdgpu 0000:03:00.0: amdgpu: Failed to setup smc=
- hw!
-[11337.547273] [ T157373] [drm:amdgpu_device_ip_resume_phase2 [amdgpu]] *E=
-RROR* resume of IP block <smu> failed -62
-[11337.547358] [ T157373] amdgpu 0000:03:00.0: amdgpu: amdgpu_device_ip_re=
-sume failed (-62).
-5.15.0-stable-dirty			booted 20:51, 16.1.2026 error 21:20 (30min, 164 resu=
-mes)
-[ 1698.065653] [  T22129] amdgpu 0000:03:00.0: amdgpu: Failed to setup smc=
- hw!
-[ 1698.065665] [  T22129] [drm:amdgpu_device_ip_resume_phase2 [amdgpu]] *E=
-RROR* resume of IP block <smu> failed -62
-[ 1698.065734] [  T22129] amdgpu 0000:03:00.0: amdgpu: amdgpu_device_ip_re=
-sume failed (-62).
-5.15.0-stable-dirty			booted 21:25, 16.1.2026 error 21:41 (10min, 91 resum=
-es)
-[  965.908197] [   T3843] amdgpu 0000:03:00.0: amdgpu: Failed to setup smc=
- hw!
-[  965.908212] [   T3843] [drm:amdgpu_device_ip_resume_phase2 [amdgpu]] *E=
-RROR* resume of IP block <smu> failed -62
-[  965.908284] [   T3843] amdgpu 0000:03:00.0: amdgpu: amdgpu_device_ip_re=
-sume failed (-62).
-5.15.0-stable-dirty			booted 21:46, 16.1.2026 error 1:43 17.1.2026 (4h, 14=
-11 resumes)
-[14220.044577] [ T203585] amdgpu 0000:03:00.0: amdgpu: Failed to setup smc=
- hw!
-[14220.044593] [ T203585] [drm:amdgpu_device_ip_resume_phase2 [amdgpu]] *E=
-RROR* resume of IP block <smu> failed -62
-[14220.044662] [ T203585] amdgpu 0000:03:00.0: amdgpu: amdgpu_device_ip_re=
-sume failed (-62).
+This series addresses these gaps by:
+1. Exposing min_perf/max_perf registers via sysfs (as frequency in kHz)
+   to allow fine-grained performance bounds control in autonomous mode.
+2. Exposing perf_limited register to detect and clear throttling events.
 
-In all 5 tests the resume failed, but with an error message not seen befor=
-e, also no crash occured.
+It also includes code improvements: generic sysfs helpers, struct
+cleanup, new APIs for reading performance controls, and extended
+epp_perf support.
 
-And most importantly v5.16 did not crash at all, and also did not show any=
- GPU suspend/resume related error
-despite being tested for 36h and 11644 resumes:
-Testing (dirty because of -Wno-error=3Duse-after-free and -Wno-error=3Dfor=
-mat-truncation compile fix)
-5.16.0-stable-dirty			booted 2:09, 17.1.2026 14:20, 18.1.2026 no error (ne=
-ither crash or loss of device)
-					(36h, 11644 resumes)
+The patches are grouped as below:
+- Patch 1: Generic sysfs helpers (refactoring, independent).
+- Patch 2-4: Code improvements (can be applied independently).
+- Patch 5: Extend cppc_set_epp_perf for FFH/SystemMemory (independent).
+- Patch 6-7: APIs and sysfs for min/max_perf, perf_limited (independent).
+- Patch 8: ABI documentation (depends on patch 6-7).
+- Patch 9: Update cached perf_ctrls on sysfs write (depends on patch 6).
 
-So the whole issue seems to be a pure software issue after all (not just a=
-n issue related to
-probably broken hardware). I'm currently bisecting this between v5.16 and =
-v5.17, but getting a
-result can take 2 weeks given the length of the testruns.
+---
+v5[5] -> v6:
+- Split patchset as described above.
+- patch1: added CPPC_CPUFREQ_ATTR_RW_U64 macro for sysfs attributes.
+- patch3: new patch to rename EPP constants for clarity.
+- patch5: simplified else block in cppc_set_epp_perf().
+- patch6: fallback to caps values if registers are uninitialized.
+- patch7: use CPPC_CPUFREQ_ATTR_RW_U64 macro for perf_limited sysfs.
+- patch9: new patch to update cached perf_ctrls on sysfs write.
+- Renamed mutex to cppc_cpufreq_autonomous_lock.
 
-The first step of the bisection is already finished and GOOD:
-Testing (dirty because of -Wno-error=3Duse-after-free and -Wno-error=3Dfor=
-mat-truncation compile fix)
-5.16.0-bisect-07203-g22ef12195e13-dirty booted 14:27, 18.1.2026 no error 1=
-:57 (35.5h, 12508 resumes)
+Sumit Gupta (9):
+  cpufreq: CPPC: Add generic helpers for sysfs show/store
+  ACPI: CPPC: Clean up cppc_perf_caps and cppc_perf_ctrls structs
+  ACPI: CPPC: Rename EPP constants for clarity
+  ACPI: CPPC: Add cppc_get_perf() API to read performance controls
+  ACPI: CPPC: Extend cppc_set_epp_perf() for FFH/SystemMemory
+  ACPI: CPPC: add APIs and sysfs interface for min/max_perf
+  ACPI: CPPC: add APIs and sysfs interface for perf_limited
+  cpufreq: CPPC: Add sysfs for min/max_perf and perf_limited
+  cpufreq: CPPC: Update cached perf_ctrls on sysfs write
 
-Bert Karwatzki
+ .../ABI/testing/sysfs-devices-system-cpu      |  44 ++++
+ drivers/acpi/cppc_acpi.c                      | 206 +++++++++++++++-
+ drivers/cpufreq/cppc_cpufreq.c                | 224 ++++++++++++++++--
+ include/acpi/cppc_acpi.h                      |  46 +++-
+ 4 files changed, 491 insertions(+), 29 deletions(-)
 
+[1] https://lore.kernel.org/lkml/20250211103737.447704-1-sumitg@nvidia.com/
+[2] https://lore.kernel.org/lkml/20250823200121.1320197-1-sumitg@nvidia.com/
+[3] https://lore.kernel.org/lkml/20251001150104.1275188-1-sumitg@nvidia.com/
+[4] https://lore.kernel.org/lkml/20251105113844.4086250-1-sumitg@nvidia.com/
+[5] https://lore.kernel.org/lkml/20251223121307.711773-1-sumitg@nvidia.com/
+[6] https://lore.kernel.org/lkml/66f58f43-631b-40a0-8d42-4e90cd24b757@arm.com/
+
+-- 
+2.34.1
 
