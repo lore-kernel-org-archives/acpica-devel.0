@@ -1,104 +1,204 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E14035B628
-	for <acpica-devel@lists.linux.dev>; Tue, 27 Jan 2026 14:34:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68E63361657
+	for <acpica-devel@lists.linux.dev>; Tue, 27 Jan 2026 16:24:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769524456; cv=none; b=PTkfjUeOlH9Zg4dZyIuLmBIpOC/5bfQLjlZys6qEXTsvdq2duS0zcl8GYbzhiYxd+xBTinx9W3h8KB8v9jdtaDee9ykoVABXbxoqJ7af5hv0lGTNtSNN9lZirVKEbEyknZTzSmYFVKRX4QWIkGEV8dMvAM/ILoX9CrzpHX9DPCQ=
+	t=1769531089; cv=none; b=B82QrvNLZmmCV6knINd6W7cbjWaY3374Nq/NsQIwzx7mLybOCzyt1RU/6x8NqBJjenPkFVVTlJ0ozRV0N7ibHTv0JlPTX+dZkSRikIOJaEniMmTGCWpoIgLi+qZu5IJgszKv0D5B1Nz1ft3hwe7GzYl26uHqTv2bjmO2uf1mcug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769524456; c=relaxed/simple;
-	bh=nLP5WPSJ4MT6lYx0a9IOsqeVgLkh+TkHWnXIWRvaeXg=;
+	s=arc-20240116; t=1769531089; c=relaxed/simple;
+	bh=Mm7PNHjxKBBGvZCLiHpXhTyu74qmhr7ObXdQIYvFD28=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lL5MzeJkT5tNw1KSfkSHx6oTG6Y1/s6Vidv4V2drzh+aiUnAaVwsChGMXFd9wBsGbFsRbIJMU7Kc9BeBfBqShWaqzs+UL6F17C/HFWhYcbo9Oyw8Gr8lO0zBQSsS95NBvmZGJXkTj5eo2awSSt6b7+ggLsL254dRCj5lCW56bUU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cFQ8eKyp; arc=none smtp.client-ip=10.30.226.201
+	 To:Cc:Content-Type; b=cMXCOW15qPdlfjJZxPf6ABwGnawgmXhnK/BghQyypndO1NcoZ31v1V/xDNeOcPVfIiZeRqBjZjS7AtTeZcS5cackGrmUgMJeWFgAQsFx4LD19wFJHmROBNhCBAqHnI+a9i2w+bAf9+V/hNpWHB2+p61xAXKhgfLb0fu96qPHZB4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eDHoZ7wz; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cFQ8eKyp"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72307C2BC9E
-	for <acpica-devel@lists.linux.dev>; Tue, 27 Jan 2026 14:34:16 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eDHoZ7wz"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49F85C2BCB3
+	for <acpica-devel@lists.linux.dev>; Tue, 27 Jan 2026 16:24:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769524456;
-	bh=nLP5WPSJ4MT6lYx0a9IOsqeVgLkh+TkHWnXIWRvaeXg=;
+	s=k20201202; t=1769531089;
+	bh=Mm7PNHjxKBBGvZCLiHpXhTyu74qmhr7ObXdQIYvFD28=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=cFQ8eKypCxJneIg4jM9c7+W0y87mV9/GiLxNnhaswgztLBP78Vz/06/PbHJdEzzEY
-	 aHF4Z9GTm3cTSjU/wQbAeKE6rQWSexI5MfvM78RJ0ot1doS6Db9RBwS/xxGuGpOBju
-	 yPeL8c4QTVuKxU7VsBz1cmo3NX9+1zle0SN969vtt/Gb0zid/QrFxhBwb6B4Dsq4du
-	 ME69Q+CuXcxq+PHoKzNBiNW3uGRf9wF7mgTbK+bGWKPyhCPeGj5dPDSMuHQI0Z+Jl0
-	 0UZinsUPOrdT+E8ETs5KgZZaXT7POvxYtjjLi3QYSPO81xkQ3YJBcENqVtpM9UGJwf
-	 Y7nzhsgWCmJAg==
-Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-45c733ccc32so1739095b6e.0
-        for <acpica-devel@lists.linux.dev>; Tue, 27 Jan 2026 06:34:16 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWIk7dBIwkkC1t4RA2lCsd6dWVuK1JKik9m7URsGf0BtSWOjpfTgvclpdbpbBR1ciHHJKMojgAdssFxR6Y=@lists.linux.dev
-X-Gm-Message-State: AOJu0YyMMnaakohcxBRkRozE/sQ3D1xtG3Jns5g/WgVuar4DjNxKGc8S
-	vKKNF10/ORsGZ3Fp1X6kg/j3h3NRbalvPTQZ2Q+qlTb4orD+Wt3XJI2lTBGS8L48ffH5QUNlyo/
-	ulkDGBTTWjY9d1qz5NMTW8JAmtoN+U/A=
-X-Received: by 2002:a05:6820:498c:b0:65f:564f:34b1 with SMTP id
- 006d021491bc7-662f2021f39mr972139eaf.16.1769524455545; Tue, 27 Jan 2026
- 06:34:15 -0800 (PST)
+	b=eDHoZ7wzov52VSRHiF8O0B+f4RfcehlRQcp9dNXea78RFjUTpz7fFO/LcDiBTKY+2
+	 YfLeL1ggHEYl+VgCSw8hwbpIDQ7m6vNgzXTPDw3hYHBVE95xBC4pZxLpeA+Sqni9XW
+	 r2iNwPsVohBqTnU9wNPLdX3TvVZixG2jJHDFSO9ZkcqEcFeEh/21J6Z6fRzlkHCbDQ
+	 W1IZStBzWGLECfsnXQ0IXHvDHajllPv43WklQ3HT9zWaWDs8gly/6SUcxNW3MQVUJ+
+	 78VyG6Vlbtk4kYTNswBjQVbhpDfM3fDFhCh77DKNF0IG0OYmq4nS1eosWIUFv1bcmI
+	 4B6bnjUQia6iA==
+Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-45c93313721so1772017b6e.2
+        for <acpica-devel@lists.linux.dev>; Tue, 27 Jan 2026 08:24:49 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUxxVxySlEooVn3C1PKQEyQL/kmeVWHC7DJfRJ3cjPvRBw+fCiPW6xgeIxgHaq2wfbQWxDxwesSv+IZHHs=@lists.linux.dev
+X-Gm-Message-State: AOJu0Yy84V3AD4/Jxfq6AnYtqZSzbp8YBPtaZEr8T7WS1M7kMCizN4x5
+	IjpGlRgBRjJ3q1S5fz8zKcZU7XJGcoMR/BBFckQAkHaP2Xg2TdFemtuiwv4zdxpOawA0stHtPMe
+	Z9k2TfGGp9RLKA1P8XBjE5wXFnk3ZPVc=
+X-Received: by 2002:a05:6808:1904:b0:450:ccef:c01f with SMTP id
+ 5614622812f47-45efc65eef8mr1065605b6e.34.1769531087995; Tue, 27 Jan 2026
+ 08:24:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20260115-gicv5-host-acpi-v3-0-c13a9a150388@kernel.org>
- <aWy9T3VDyXpVG41z@lpieralisi> <87sec30yhk.ffs@tglx> <aW3pALPxn4i9fiDO@lpieralisi>
- <87pl751zeh.ffs@tglx> <aW9V4A7lTGZWTO9e@lpieralisi> <aXM0dVthp33yUqj8@lpieralisi>
- <CAJZ5v0hOVO7N77nnyWsh_vhGcm-TzavrGBgci=a+o_-LKhkuXg@mail.gmail.com>
-In-Reply-To: <CAJZ5v0hOVO7N77nnyWsh_vhGcm-TzavrGBgci=a+o_-LKhkuXg@mail.gmail.com>
+References: <20260120145623.2959636-1-sumitg@nvidia.com> <20260120145623.2959636-2-sumitg@nvidia.com>
+In-Reply-To: <20260120145623.2959636-2-sumitg@nvidia.com>
 From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Tue, 27 Jan 2026 15:34:04 +0100
-X-Gmail-Original-Message-ID: <CAJZ5v0jotTEm87Ks70_EHUs68T_3fPvG04GAxoC3gueiS-askw@mail.gmail.com>
-X-Gm-Features: AZwV_QgMPgceilNqa1ohd2X40nvwnD9QGS8uSFdUczKAi0SenvBlTvAaDiWKd9M
-Message-ID: <CAJZ5v0jotTEm87Ks70_EHUs68T_3fPvG04GAxoC3gueiS-askw@mail.gmail.com>
-Subject: Re: [PATCH v3 0/6] irqchip/gic-v5: Code first ACPI boot support
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>, Thomas Gleixner <tglx@kernel.org>, Len Brown <lenb@kernel.org>, 
-	Robert Moore <robert.moore@intel.com>, Hanjun Guo <guohanjun@huawei.com>, 
-	Sudeep Holla <sudeep.holla@arm.com>, Marc Zyngier <maz@kernel.org>, 
-	Bjorn Helgaas <bhelgaas@google.com>, Jonathan Cameron <jonathan.cameron@huawei.com>, 
-	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-pci@vger.kernel.org
+Date: Tue, 27 Jan 2026 17:24:36 +0100
+X-Gmail-Original-Message-ID: <CAJZ5v0ipgGt7tetY6p0CW0jyOh9TVeWxgXpFzveTa2CaGB8ZpA@mail.gmail.com>
+X-Gm-Features: AZwV_Qg_oEiNndB5ZDCW_5HqO2fNprSPJkksUv7HA7IrMkSsJk1zm9cMtY4Gyck
+Message-ID: <CAJZ5v0ipgGt7tetY6p0CW0jyOh9TVeWxgXpFzveTa2CaGB8ZpA@mail.gmail.com>
+Subject: Re: [PATCH v6 1/9] cpufreq: CPPC: Add generic helpers for sysfs show/store
+To: Sumit Gupta <sumitg@nvidia.com>
+Cc: rafael@kernel.org, viresh.kumar@linaro.org, pierre.gondois@arm.com, 
+	zhenglifeng1@huawei.com, ionela.voinescu@arm.com, lenb@kernel.org, 
+	robert.moore@intel.com, corbet@lwn.net, rdunlap@infradead.org, 
+	ray.huang@amd.com, gautham.shenoy@amd.com, mario.limonciello@amd.com, 
+	perry.yuan@amd.com, zhanjie9@hisilicon.com, linux-pm@vger.kernel.org, 
+	linux-acpi@vger.kernel.org, linux-doc@vger.kernel.org, 
+	acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	linux-tegra@vger.kernel.org, treding@nvidia.com, jonathanh@nvidia.com, 
+	vsethi@nvidia.com, ksitaraman@nvidia.com, sanjayc@nvidia.com, 
+	nhartman@nvidia.com, bbasu@nvidia.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 26, 2026 at 9:42=E2=80=AFPM Rafael J. Wysocki <rafael@kernel.or=
-g> wrote:
+On Tue, Jan 20, 2026 at 3:57=E2=80=AFPM Sumit Gupta <sumitg@nvidia.com> wro=
+te:
 >
-> Hi Lorenzo,
+> Add generic helper functions for u64 sysfs attributes that follow the
+> common pattern of calling CPPC get/set APIs:
+> - cppc_cpufreq_sysfs_show_u64(): reads value and handles -EOPNOTSUPP
+> - cppc_cpufreq_sysfs_store_u64(): parses input and calls set function
 >
-> On Fri, Jan 23, 2026 at 9:42=E2=80=AFAM Lorenzo Pieralisi <lpieralisi@ker=
-nel.org> wrote:
-> >
-> > On Tue, Jan 20, 2026 at 11:16:00AM +0100, Lorenzo Pieralisi wrote:
-> > > On Mon, Jan 19, 2026 at 02:54:14PM +0100, Thomas Gleixner wrote:
-> > > > On Mon, Jan 19 2026 at 09:19, Lorenzo Pieralisi wrote:
-> > > > > On Sun, Jan 18, 2026 at 03:47:03PM +0100, Thomas Gleixner wrote:
-> > > > > I think the simplest way to sort this out is for this series to g=
-o via
-> > > > > the ACPI tree if that's OK for Thomas, given that the ACPICA code=
- will
-> > > > > go via the ACPI tree anyway and there are other dependencies on i=
-t there
-> > > > > I assume (this series is fairly self-contained).
-> > > >
-> > > > I'm fine with that
-> > > >
-> > > > Acked-by: Thomas Gleixner <tglx@kernel.org>
-> > >
-> > > Thank you Thomas, Rafael I hope that works for you too, please let me=
- know
-> > > if there is anything I can/should do.
-> >
-> > Hi Rafael,
-> >
-> > forgive me for another ping, can you please let me know whether you can=
- pull
-> > this series on top of acpica changes for v7.0 or it needs to take a dif=
-ferent
-> > route ?
+> Add CPPC_CPUFREQ_ATTR_RW_U64() macro to generate show/store functions
+> using these helpers, reducing boilerplate for simple attributes.
 >
-> Sure, I can queue it up.
+> Convert auto_act_window and energy_performance_preference_val to use
+> the new macro.
+>
+> No functional changes.
+>
+> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+> ---
+>  drivers/cpufreq/cppc_cpufreq.c | 69 ++++++++++++----------------------
+>  1 file changed, 25 insertions(+), 44 deletions(-)
+>
+> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufre=
+q.c
+> index 36e8a75a37f1..c95dcd7719c3 100644
+> --- a/drivers/cpufreq/cppc_cpufreq.c
+> +++ b/drivers/cpufreq/cppc_cpufreq.c
+> @@ -863,73 +863,54 @@ static ssize_t store_auto_select(struct cpufreq_pol=
+icy *policy,
+>         return count;
+>  }
+>
+> -static ssize_t show_auto_act_window(struct cpufreq_policy *policy, char =
+*buf)
+> +static ssize_t cppc_cpufreq_sysfs_show_u64(unsigned int cpu,
+> +                                          int (*get_func)(int, u64 *),
+> +                                          char *buf)
+>  {
+>         u64 val;
+> -       int ret;
+> -
+> -       ret =3D cppc_get_auto_act_window(policy->cpu, &val);
+> +       int ret =3D get_func((int)cpu, &val);
+>
+> -       /* show "<unsupported>" when this register is not supported by cp=
+c */
+>         if (ret =3D=3D -EOPNOTSUPP)
+>                 return sysfs_emit(buf, "<unsupported>\n");
+> -
+>         if (ret)
+>                 return ret;
+>
+>         return sysfs_emit(buf, "%llu\n", val);
+>  }
+>
+> -static ssize_t store_auto_act_window(struct cpufreq_policy *policy,
+> -                                    const char *buf, size_t count)
+> +static ssize_t cppc_cpufreq_sysfs_store_u64(unsigned int cpu,
+> +                                           int (*set_func)(int, u64),
+> +                                           const char *buf, size_t count=
+)
+>  {
+> -       u64 usec;
+> +       u64 val;
+>         int ret;
+>
+> -       ret =3D kstrtou64(buf, 0, &usec);
+> +       ret =3D kstrtou64(buf, 0, &val);
+>         if (ret)
+>                 return ret;
+>
+> -       ret =3D cppc_set_auto_act_window(policy->cpu, usec);
+> -       if (ret)
+> -               return ret;
+> +       ret =3D set_func((int)cpu, val);
+>
+> -       return count;
+> +       return ret ? ret : count;
+>  }
+>
+> -static ssize_t show_energy_performance_preference_val(struct cpufreq_pol=
+icy *policy, char *buf)
+> -{
+> -       u64 val;
+> -       int ret;
+> -
+> -       ret =3D cppc_get_epp_perf(policy->cpu, &val);
+> -
+> -       /* show "<unsupported>" when this register is not supported by cp=
+c */
+> -       if (ret =3D=3D -EOPNOTSUPP)
+> -               return sysfs_emit(buf, "<unsupported>\n");
+> -
+> -       if (ret)
+> -               return ret;
+> -
+> -       return sysfs_emit(buf, "%llu\n", val);
+> +#define CPPC_CPUFREQ_ATTR_RW_U64(_name, _get_func, _set_func)          \
+> +static ssize_t show_##_name(struct cpufreq_policy *policy, char *buf)  \
+> +{                                                                      \
+> +       return cppc_cpufreq_sysfs_show_u64(policy->cpu, _get_func, buf);\
+> +}                                                                      \
+> +static ssize_t store_##_name(struct cpufreq_policy *policy,            \
+> +                            const char *buf, size_t count)             \
+> +{                                                                      \
+> +       return cppc_cpufreq_sysfs_store_u64(policy->cpu, _set_func,     \
+> +                                           buf, count);                \
+>  }
+>
+> -static ssize_t store_energy_performance_preference_val(struct cpufreq_po=
+licy *policy,
+> -                                                      const char *buf, s=
+ize_t count)
+> -{
+> -       u64 val;
+> -       int ret;
+> +CPPC_CPUFREQ_ATTR_RW_U64(auto_act_window, cppc_get_auto_act_window,
+> +                        cppc_set_auto_act_window)
+>
+> -       ret =3D kstrtou64(buf, 0, &val);
+> -       if (ret)
+> -               return ret;
+> -
+> -       ret =3D cppc_set_epp(policy->cpu, val);
+> -       if (ret)
+> -               return ret;
+> -
+> -       return count;
+> -}
+> +CPPC_CPUFREQ_ATTR_RW_U64(energy_performance_preference_val,
+> +                        cppc_get_epp_perf, cppc_set_epp)
+>
+>  cpufreq_freq_attr_ro(freqdomain_cpus);
+>  cpufreq_freq_attr_rw(auto_select);
+> --
 
-Applied as 6.20/7.0 material now, thanks!
+It looks like this patch could be applied independently of the other
+patches in the series.
+
+Do you want me to do so?
