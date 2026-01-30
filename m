@@ -1,335 +1,297 @@
-Received: from canpmsgout10.his.huawei.com (canpmsgout10.his.huawei.com [113.46.200.225])
+Received: from GVXPR05CU001.outbound.protection.outlook.com (mail-swedencentralazon11013006.outbound.protection.outlook.com [52.101.83.6])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 578A1350A1F
-	for <acpica-devel@lists.linux.dev>; Thu, 29 Jan 2026 11:21:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.225
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769685678; cv=none; b=F3CfB8Ee18ga6t5wOOqX8S7uEyKEXnahDycIfwwYz6wt4OObqwgjZ6PM38M92KeEGTIvttlZugic173nmIc4AYGwvz0Zfd+Xxw23J/uzf3jsjuR7uguisocE3pfxXHAD51zXAiu9s6TgwOljNQzjA9wc3RkaLyNHinsDyPV6/Og=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769685678; c=relaxed/simple;
-	bh=PTHdOC/2u0HARHpH6dVwNTlez2bWqjnvXYzMqUnzC3Y=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=px11MDcmxkTNSnAFMOB9QtsFPU53q6hAdHqfNMvg4UQshkypSDN+ZZ7Q5IM50JPsl//HXRxNyTDYYBLA2wxxKfNqy7wxWJGGn7PzCluyeO/WjVR8QDQB7A2g2Ri0LfCK+jNJGOxFupaOTig2sUhRyLK1Ioy2hcJ31+ZQj2+fIAY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=MIigh4Nx; arc=none smtp.client-ip=113.46.200.225
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3259309DA5
+	for <acpica-devel@lists.linux.dev>; Fri, 30 Jan 2026 08:25:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.83.6
+ARC-Seal:i=3; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1769761508; cv=fail; b=MqUBnp33Q5SUMnCd9T89f/H09RwwQ678zRC/CwtaoPZVWaeAc/fn6R+mQCYpchfqDJC4QmI4wj8bze/JOv3QWqIUw84Pdbf2C1R2mfNhyC+YgYWHM6ODYrlu/R51DzNlJCL8S7Crc287R8QEq1Rcb7n3RMwDpzcHfxjOxWwmn5Q=
+ARC-Message-Signature:i=3; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1769761508; c=relaxed/simple;
+	bh=uL68O9Mk+AYMyqaOXe9BHjoHhJOiaI9qS75EOcj1K9c=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=MUd0VuQM+QXYJ5xR2PqWay2KO/eo+J2iijV41IlOetDW0vA6HlsSUxrR7ITMIGrZehdBzGNMk21+9lLppPyOYAjRbrU1nkCIeqw2rJYQofab7jwCSuwz1LLwf9Vtp6qxn2PsBzKR7Y2+jrRlW2N0da21iRn41k7RxSgCiIXMlc8=
+ARC-Authentication-Results:i=3; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=lLu/gWtu; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=lLu/gWtu; arc=fail smtp.client-ip=52.101.83.6
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="MIigh4Nx"
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=EZRpp77HytR0PUe3OSD6TBzO+l8szB7m4ti/mVeAWw4=;
-	b=MIigh4Nx5x89QpbjF2ltaVUTjEKkkoPpF0vo2dM16IuHxDMCvNGRNuRGsi/GZRr+S7yW7MQwN
-	F6uzf7b3XqWHEKrsNbX1dxQTOTSZ3qbvTWERB/RXZPdG5d2ItEnHkNE4SKwLs+Rn1P4nYsOyE9c
-	flXfuzEO9M47JS/+2NPr1gw=
-Received: from mail.maildlp.com (unknown [172.19.163.15])
-	by canpmsgout10.his.huawei.com (SkyGuard) with ESMTPS id 4f1xSh184cz1K97P;
-	Thu, 29 Jan 2026 19:17:40 +0800 (CST)
-Received: from kwepemr200004.china.huawei.com (unknown [7.202.195.241])
-	by mail.maildlp.com (Postfix) with ESMTPS id B61BA40565;
-	Thu, 29 Jan 2026 19:21:06 +0800 (CST)
-Received: from huawei.com (10.50.163.32) by kwepemr200004.china.huawei.com
- (7.202.195.241) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Thu, 29 Jan
- 2026 19:21:05 +0800
-From: Pengjie Zhang <zhangpengjie2@huawei.com>
-To: <rafael@kernel.org>, <lenb@kernel.org>, <viresh.kumar@linaro.org>,
-	<robert.moore@intel.com>
-CC: <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-pm@vger.kernel.org>, <acpica-devel@lists.linux.dev>,
-	<zhanjie9@hisilicon.com>, <zhenglifeng1@huawei.com>, <lihuisong@huawei.com>,
-	<yubowen8@huawei.com>, <linhongye@h-partners.com>, <linuxarm@huawei.com>,
-	<jonathan.cameron@huawei.com>, <zhangpengjie2@huawei.com>,
-	<wangzhi12@huawei.com>
-Subject: [PATCH] ACPI: CPPC: Move reference performance to capabilities
-Date: Thu, 29 Jan 2026 19:21:05 +0800
-Message-ID: <20260129112105.2511748-1-zhangpengjie2@huawei.com>
-X-Mailer: git-send-email 2.33.0
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="lLu/gWtu";
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="lLu/gWtu"
+ARC-Seal: i=2; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=pass;
+ b=xQPSu89Vzz/rgu/CyF2svF7UCi/6/SiUNJ6x4rmrmG6cGdgJGeX3//B8J1eftDfc5fCyqIbnxjCylueuyki50vMByC/tXMtCRjT8PqW/zs4SuWJ7WPeto+LmzGrVl0FiHemA3x3lDGkxf9z05j9W+CYbRzPbyluNqCd7x5vPk41DDspNJS24j+CXOo47JJikvfqlE/EwEF86gXta7A7jav5YERxbTTQ8FiY5S/Qgut49XiMLiYIbC6gmYbKL4JNmkcJ9qVZ1jDMrH7mdP/sxEI4r2fvw4k0rWGcZ/9aX6TGVWhTxXR2qCQjxZgKAWxVkmRKzqO2pMg+gY4Ysh8QUyQ==
+ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=gXVBz0DGpyhavVFC9bBHLvU2XJa7apBKt8QUeEcVP78=;
+ b=UW/Jgki7nqGgd9sZcPiKMYGVLHpRmBv7H7oGn1xcWRmpd+sEp4plCsMP/PG7fg7VflM9Z268l/WGq5C45Ncmc60xkHr1t6pB8Dmgyr2vnT470xbylYU/mvR4dUWxnhyV4Gc7x3kDR0bA74tu5KAWpJ3Iw4iJVT9AsH6TC/dYEmPzmjl1YPF3ZmptiO/AQi6F4+Q6/4Ay6Z5ILXIOYK0iF+oIxwmc/eic1iJwxXigo9LHYX+hjnGWjqAiC/dET9ayyKXPefFh03m/28hDdLKmidhdlxlveGaUWWlpU0ZJz2btrQzvDOaPPJydb5ayhcsPq9Qd5GCvbAGHjbG46AX5Ew==
+ARC-Authentication-Results: i=2; mx.microsoft.com 1; spf=pass (sender ip is
+ 4.158.2.129) smtp.rcpttodomain=nvidia.com smtp.mailfrom=arm.com; dmarc=pass
+ (p=none sp=none pct=100) action=none header.from=arm.com; dkim=pass
+ (signature was verified) header.d=arm.com; arc=pass (0 oda=1 ltdi=1
+ spf=[1,1,smtp.mailfrom=arm.com] dkim=[1,1,header.d=arm.com]
+ dmarc=[1,1,header.from=arm.com])
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arm.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gXVBz0DGpyhavVFC9bBHLvU2XJa7apBKt8QUeEcVP78=;
+ b=lLu/gWtugE1Sr54SJaZjBoUBTZ9dfmOwo84+VZ3W/ZZU8KcBXOFufkcaBsljffe/cSKNm9t5bxkOLp4QqDxR3tQKatDTYDqzKLvKXQF0u/CumVCOO8YFkxm1qcQ7EGM/rKeW8bigCpFcGciDhSpJZXzZBs4K1QjSsrwuwP6RZWI=
+Received: from DU7PR01CA0038.eurprd01.prod.exchangelabs.com
+ (2603:10a6:10:50e::20) by AS8PR08MB8635.eurprd08.prod.outlook.com
+ (2603:10a6:20b:563::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9564.7; Fri, 30 Jan
+ 2026 08:24:55 +0000
+Received: from DU6PEPF0000B61D.eurprd02.prod.outlook.com
+ (2603:10a6:10:50e:cafe::6c) by DU7PR01CA0038.outlook.office365.com
+ (2603:10a6:10:50e::20) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9564.11 via Frontend Transport; Fri,
+ 30 Jan 2026 08:24:51 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 4.158.2.129)
+ smtp.mailfrom=arm.com; dkim=pass (signature was verified)
+ header.d=arm.com;dmarc=pass action=none header.from=arm.com;
+Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
+ 4.158.2.129 as permitted sender) receiver=protection.outlook.com;
+ client-ip=4.158.2.129; helo=outbound-uk1.az.dlp.m.darktrace.com; pr=C
+Received: from outbound-uk1.az.dlp.m.darktrace.com (4.158.2.129) by
+ DU6PEPF0000B61D.mail.protection.outlook.com (10.167.8.137) with Microsoft
+ SMTP Server (version=TLS1_3, cipher=TLS_AES_256_GCM_SHA384) id 15.20.9564.3
+ via Frontend Transport; Fri, 30 Jan 2026 08:24:55 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=HucStdDuBe9o0YOj1jHYkexS8fYAv4y6AB5ODC8pNx7LyUcamLMBcnoUeoSs0RL3V+YSObCzWuGqUg338H0C8AXeNlLk/7y7GJMeF4qF7rOZEIJlu5A+coSvcBm7lC7VjJFBuTL4Tfv+n2iHdShoz8e7c0n80oQC7k24b05xurZPHRXir5nyRrTMbhR3H4ga9tTSe+vgcmzA2bMFjwrtOBomzqCfk/+mBZ5R8ZmirY8kCKualI4QZRaitmqyF22I5FKWjrXCASKoPj67W42Nem1x+vaUWFGNF11Z4m1LXWwgcWdCQa1WCTmJYbkJ+OKMhizMFbObKgcHcYqntB+V3A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=gXVBz0DGpyhavVFC9bBHLvU2XJa7apBKt8QUeEcVP78=;
+ b=y8KW1BV6pbusDqMwk/BWFfnjDW+NSwOGaAvNEYVQtvYdPZoXzDg0eG8xVL8VzI6F8HeGjgBcdGjnk+ahkMR3OglulE267gC8CPxNvEgLHBNyyFN4HBu0EltJ+Qpip1csbpMB3OgPor/0Cw4zSmEl5TeYan63aRDHe0D5lqg5jEdSES9qBKGcONzxorWEqlyCgzgcXScsOIzJePkiB8ECA+8O7hJj37CshtXs5TtPva2dGUeoz99Rj7eXmR6sFvswQMjtfFsZ5kaRtR4u913sXqSlxq4atyAl50jRMi3gcAkVgK/zeiWc7iNeCiBMl7MI8fBRjZxt7+5xLw4XL50pvg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
+ header.d=arm.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arm.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gXVBz0DGpyhavVFC9bBHLvU2XJa7apBKt8QUeEcVP78=;
+ b=lLu/gWtugE1Sr54SJaZjBoUBTZ9dfmOwo84+VZ3W/ZZU8KcBXOFufkcaBsljffe/cSKNm9t5bxkOLp4QqDxR3tQKatDTYDqzKLvKXQF0u/CumVCOO8YFkxm1qcQ7EGM/rKeW8bigCpFcGciDhSpJZXzZBs4K1QjSsrwuwP6RZWI=
+Authentication-Results-Original: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=arm.com;
+Received: from VI0PR08MB10391.eurprd08.prod.outlook.com (2603:10a6:800:20c::6)
+ by PAXPR08MB7333.eurprd08.prod.outlook.com (2603:10a6:102:230::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9564.11; Fri, 30 Jan
+ 2026 08:23:51 +0000
+Received: from VI0PR08MB10391.eurprd08.prod.outlook.com
+ ([fe80::fa6b:9ba8:5c2f:ac91]) by VI0PR08MB10391.eurprd08.prod.outlook.com
+ ([fe80::fa6b:9ba8:5c2f:ac91%4]) with mapi id 15.20.9564.006; Fri, 30 Jan 2026
+ 08:23:50 +0000
+Message-ID: <6652394f-7a44-44e9-8220-4dd45624729c@arm.com>
+Date: Fri, 30 Jan 2026 09:23:46 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 0/7] Enhanced autonomous selection and improvements
+To: Sumit Gupta <sumitg@nvidia.com>, rafael@kernel.org,
+ viresh.kumar@linaro.org, zhenglifeng1@huawei.com, ionela.voinescu@arm.com,
+ lenb@kernel.org, robert.moore@intel.com, corbet@lwn.net,
+ rdunlap@infradead.org, ray.huang@amd.com, gautham.shenoy@amd.com,
+ mario.limonciello@amd.com, perry.yuan@amd.com, zhanjie9@hisilicon.com,
+ linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
+ linux-doc@vger.kernel.org, acpica-devel@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+Cc: linux-tegra@vger.kernel.org, treding@nvidia.com, jonathanh@nvidia.com,
+ vsethi@nvidia.com, ksitaraman@nvidia.com, sanjayc@nvidia.com,
+ nhartman@nvidia.com, bbasu@nvidia.com
+References: <20260129104817.3752340-1-sumitg@nvidia.com>
+Content-Language: en-US
+From: Pierre Gondois <pierre.gondois@arm.com>
+In-Reply-To: <20260129104817.3752340-1-sumitg@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PR3P193CA0055.EURP193.PROD.OUTLOOK.COM
+ (2603:10a6:102:51::30) To VI0PR08MB10391.eurprd08.prod.outlook.com
+ (2603:10a6:800:20c::6)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: kwepems100002.china.huawei.com (7.221.188.206) To
- kwepemr200004.china.huawei.com (7.202.195.241)
+X-MS-TrafficTypeDiagnostic:
+	VI0PR08MB10391:EE_|PAXPR08MB7333:EE_|DU6PEPF0000B61D:EE_|AS8PR08MB8635:EE_
+X-MS-Office365-Filtering-Correlation-Id: c8079bfb-6ec3-40ad-2561-08de5fd90c76
+x-checkrecipientrouted: true
+NoDisclaimer: true
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam-Untrusted:
+ BCL:0;ARA:13230040|1800799024|376014|7416014|10070799003|366016|921020;
+X-Microsoft-Antispam-Message-Info-Original:
+ =?utf-8?B?SEdTbk1tVUgzVXZFakc4Y1drZVZtT3VnMGo1R3R4S0NuWFdKRmd6aGNRNTM5?=
+ =?utf-8?B?SWowL3JHZVFoMUhVQW5qT1VGMEpVUGM2NE1pbGZGN01kOHh3TWlPSGs4R2pL?=
+ =?utf-8?B?WXRySzNRVTByQ0dWclgzT250WGY0cXZ3SVJuSHU1SFhleC9xZjlJaUdNTkdH?=
+ =?utf-8?B?ZTVzV1pOVzQyNUlJL05RQVBjSVMraE9UR1FsRXlSUHBrbDIxYmxab3NoK3hx?=
+ =?utf-8?B?NWYwci83cU4yTlZuVk0xRTVrdzdRQmE2K2w4U01aL01mcUkxVFZwaTJPZGw4?=
+ =?utf-8?B?UTBZQ0U1RjVOb0FPQmE0ZXR1TU9tQXF6cHUrdzluVTdIKytsRjI5cVJvTjZV?=
+ =?utf-8?B?OHlzTUZiMXFLRlRZeWNjZ0pMRGEzM3E4YWl1bDFWT2tBL2xHWXNOc2NXbGE3?=
+ =?utf-8?B?eEdqb0x0NDd2U29YdjdmMDI4aWdZRzZKcml0QTVITmdaeDJjVjljR2ZqNUxj?=
+ =?utf-8?B?bmtiZkp4TmlsWDhYaWVtN1A2aEY0UVQvMEJkcE9WaCtGVHNxd0FZcmFFdUhW?=
+ =?utf-8?B?eHk3c3ZmY3FjeUpHODlHb2NCdDF0ZzZQUExnMFdmQjVPejFXTEgvc1pxU0NO?=
+ =?utf-8?B?dk13VkNoa0RnUzVzbXRLK1JWOUFLUWtzN2xMeityUGROcHRLSFhZcVY3eVN5?=
+ =?utf-8?B?KzlZb1NQR1RUZlg2RTRGUSsra0VEZ3RIYWFXRmxSbnQxaWdYMHdlbXl3UUc5?=
+ =?utf-8?B?T3RCRDhuc0Y3ZEJja3d0UXBua0ZhZnRIdmlaVFllbzd2Mk03ekRhd2xpeVRS?=
+ =?utf-8?B?dGtvd0J0R3p5dktpZG1MRDh5NFY2VU5IQVVVYUVaUS9lU2VpOVR0TlQ2em1M?=
+ =?utf-8?B?V3NKaHNyb2hWN2JmYnhpTXBsQmRLNFZaSUhpajZyWU5ENCtTTVp5OEN0MnZR?=
+ =?utf-8?B?UW5hd09JSC9PLzBKQnpsNUJ5WlJyeXRvUlpld3pSbkJyMmRsZUg2L2hiZ3hE?=
+ =?utf-8?B?TFpIS1poYUJEN2ZaY1hWbXZPb2kyK2NNODM5UjJHUkw0dE56U2pGZFZWVkJJ?=
+ =?utf-8?B?UWF1bVF3UnlHOThFbFgxbWtTa2VpZUZxRk1PK25tNW5YcnhURlRwVk16OUU3?=
+ =?utf-8?B?YmhObUduSHU0UUp2RWdhWFdjMXBFMy9zZVlzWk9qRCtaS0YyQThSZlErT1FK?=
+ =?utf-8?B?LzBwYU55TUQranJHME03NWpqcEswRmM1dUVZdEdJZ0FmNGtBMWVDLzIzam9l?=
+ =?utf-8?B?djVrZ2xxVzNaL3M1U2JTeTlPTXAvWGczTWkwc3VFUXlIU055bFJXYjdmamRo?=
+ =?utf-8?B?Vkwzd2tIbGNJRHlUd3dPZzZIYmRpM1A4V3l3ZmNvd2prSVQ1czhXVlQydk02?=
+ =?utf-8?B?ZGhJYWUrL3JCbWEvV0hzd0ZEcWw4QlptOVVtcklYRGdTb1hWSVErQ0hEYnFa?=
+ =?utf-8?B?Q2h3SGVSUG9salorRDVGNFBkeVdxMlplME5zMjVCUWFneHlua01rdzRxZVlV?=
+ =?utf-8?B?U0tGRU5GanpGWGsrLzlmWUpGVWY1TnFyQ2RaWWRFcmdZU20rdDl4OHVHSWww?=
+ =?utf-8?B?T1NnVVlXbXl6RlRVMmdZaERPK012eEpCTWNjRzcrR1N2bGVGbEIxS3Y0dHI4?=
+ =?utf-8?B?VmpXZzhJNUJhY1NhWC9CWUxJaHg2dlJoU2JLaitqWitiMVlUTWJjRmhTTEZO?=
+ =?utf-8?B?UGRZdlhPRFRLbUFJbGVrWWFxeDExSk5tbEhDdXcvUEZ4d254RVZYNVNkWWs3?=
+ =?utf-8?B?NnFoRkpyT1B6NnpPa1JHT01tNG1VTXZyc05tYnByeFp2Sjk1UWpzenFCQlRI?=
+ =?utf-8?B?RU5xMmJSdGkzS0tJeEFuTmVkdm1xSjhseVNrNlN0YUJFa09ZRUZXb3JNWTBu?=
+ =?utf-8?B?SjNiN0tmNkM4Q05rT2xrd0ZCdlg3VjBTVjA1UUp0MGpQZDhOZnVNbFZHS2hn?=
+ =?utf-8?B?dUlCckNzZE5PVVFVY2tVNm1lOGxLa2pjamNMS3dlVHprcFhpRXR5VTNMNSsr?=
+ =?utf-8?B?TkpIZExrTFdmMkM5RldGbzNOWkw0NzFRR3F6RG5hN0JUd3U1ZTh6ZSswOGxL?=
+ =?utf-8?B?ZHg1a1dKOHFXRHIycFBnc3FtaDF4ckY2RTRxV1p6bVRvbVRMdGdJdHNjYllP?=
+ =?utf-8?B?NFllSjI5K0QvREo3QzdMVVdkM0RjUjlyMTkxekRGT3pGdEJHNXJ5L3BHV1k5?=
+ =?utf-8?B?Q2VvMVIwY3lJbnV1YWhBc1NKUnU3Y1NmaFJkV3JWZXN4RnZwV2dRd3diMnhN?=
+ =?utf-8?Q?IlAliI1YSmv6inziH0uQBbg=3D?=
+X-Forefront-Antispam-Report-Untrusted:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI0PR08MB10391.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(10070799003)(366016)(921020);DIR:OUT;SFP:1101;
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR08MB7333
+X-EOPAttributedMessage: 0
+X-MS-Exchange-Transport-CrossTenantHeadersStripped:
+ DU6PEPF0000B61D.eurprd02.prod.outlook.com
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id-Prvs:
+	ce14a773-3491-4480-4928-08de5fd8e546
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|1800799024|35042699022|82310400026|36860700013|14060799003|7416014|376014|13003099007|921020;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?YXRYaWZCUzFDdWcyaGxpY25UcUZCUE1QOENHODJPOGNjd3ZMYzdjanMwSDJ1?=
+ =?utf-8?B?SDFBaFV2MzVuMjV3TzBSTUlpL2ZYK3pXVHRxKzc5dkVuVGtPeGRPOE5tMW9B?=
+ =?utf-8?B?Sjc3MEVzYkJHQjNrV0RxZmxTbStDMHJkaTM0ZVdsK1BUWTZ4SzdNM1dLdzkz?=
+ =?utf-8?B?bFJtdEQ1dkF1bWZUeEhuNkx3QWhXSTcwRDBZVTVNWGhsaXR1OUFvdTlLaUNR?=
+ =?utf-8?B?VnJ1M01wUlh1V2xJd1JDOFF2aktZb01kR0ZaNmZXb2JsbU9CVTdYcUxzSFpi?=
+ =?utf-8?B?QkRrb09iWUFPZHZMTnFjVHJvRFFOaU5CTTBaNXNHNklQKzBhRHU5RkJnc3Vy?=
+ =?utf-8?B?NExTcnBUTXVjWVJPUSsxZGtmakN3TEVES2x5U0tIeFYxSHBXdENvLy90eHAw?=
+ =?utf-8?B?cXN4WmpZa25qVlpiTGpXd09OVnVEcFZWUnZGeFJENFpOOU1heHZUejkvRXUw?=
+ =?utf-8?B?U2s0SEx3ZWg0UkhMTUJocHZRU1ZQc05yS0lpc3hYVHlaOHhCTC80bTRSRXc0?=
+ =?utf-8?B?ZU5uUXNsczhVekdxOEduQ1F0aC9VSmZvd0hUWHQ3WUxHYUxlWkF4cFRCdjZp?=
+ =?utf-8?B?bnBsbGdWOUt1dWZGeDgyOXExak4rSWtFVzl3QkhCZEV5QllqQ2NJTDhwZEYr?=
+ =?utf-8?B?d3NDTUp2K2lPRXlLaWJueXphNDdOTlpGUzdKZFN4MjFqUGxlVDBUak5vam5M?=
+ =?utf-8?B?YUpGOHVNWDhMNzQ4NGw4bjBhTlJqWFFFMWdXRW9iMGs4d2MxcTB2SHR2VGRl?=
+ =?utf-8?B?bkZ4N0FOY0xqdzlpaW5xazFrR294WDVwVjNhVEI1MGlQbGh0TkRRYUNCT0VL?=
+ =?utf-8?B?ZlVCNWJaejA0Wm5idll3VzBTcUJaQlA1UXBza3RLTTNSRmh3N2hlbmhlaGtY?=
+ =?utf-8?B?bFh6K0Vxa3Q2MHVMQWc2d0s2NUtXUmxOcnZIVkFTZWp4MlpjYWZTKzBLdkVi?=
+ =?utf-8?B?cGF4ZVNnWGhvQ3RUTUtxWEtZODlqbTJsaHAyZlBYVFBDRDNDK1VwM1p0c25K?=
+ =?utf-8?B?L3dUWGN3d1NRM1d2bWY2TlJ1dGJzcEgrS3dyZ3FCWVZaYUhEY0t3N2s5c2Y1?=
+ =?utf-8?B?Q21VY090SHdvYzlCOWc2eXlyZVdkdE9zZEYzdG1HT3JlQlF6V3U4M3ZIbTVN?=
+ =?utf-8?B?MjdENEJVSjN0OVdOS3Blb0VUU3pTWFVyVDJjRHJTZDlHS2dCelYvMnlCd2ZH?=
+ =?utf-8?B?RlF4eUVqZUxOYkVRZXlEQW51Ujg2L0FFMWRESXVnaG5id0p5aHZ4Y0ZaenhR?=
+ =?utf-8?B?U21Ic3VxYmZ2eE4rdndPSmlrcFNIaWpXT0k4WEFMc2EyaXc5SFE4aU9mWTZG?=
+ =?utf-8?B?aEVaS21xa1VkN2JaOTNzajRLcmk5VnM1aE9NSk9IalRxRVFCSUsvNmIyQkZM?=
+ =?utf-8?B?Q3lQdDgxMnRYM1NYN1FVWStOTGpCcE0rL3JTUEw5ekRTYktmb2loNlFGeEJF?=
+ =?utf-8?B?MG1XY2xReGh0UEN6d2x5NWc1VTBBZlRHMWNJNkIrNU03RHg2b0QrRjNSblYx?=
+ =?utf-8?B?UEhPNGgwWEgxYXF0dWZqSVdZbWo3ajU1Ymduc2NvOXZYemlmc0NzRmczK3ow?=
+ =?utf-8?B?UmNac2I5TnpEYU52VWdKY0ZIK2pRSVBmRGxhbFdoTThGd2FjVExYVUF0U3F5?=
+ =?utf-8?B?MGpOZlNzTlE5L09SeUhyYVlVR0FXUzlyUEdHaUltVWhUeFBxQXlSY2JIazBP?=
+ =?utf-8?B?OVhMakhqSERlQ25YZ3RjdXdyT1pjK3JwKzlNdkVRZFJnRHBoakgyMXBpbjgv?=
+ =?utf-8?B?V3lJQlJQZ0FMR09ZWW9MUVdLM1pWOGRqU09qNE9SUGpMVFNkSytDMXZkY3hq?=
+ =?utf-8?B?VWN1UzkralZiUlBZRVZqYWRZRnlTeGhhK2pIaGE3aFNDTjdYVTk3ZFVBaFhs?=
+ =?utf-8?B?S1E3VlUrMnlocDhMd3llUjlhV2tCRnJVNXFJdEZ1djZIbStwbU1sWndxS2Ni?=
+ =?utf-8?B?dkRBWlFTaU9oVXluTGt3a3YrQkJUa2hVZk1IVFd1YUZPT3Y1L2VUd2tyZjVY?=
+ =?utf-8?B?YjJISDJUd3lsemxaZ25EUisvUWIvejUwNHIyUXg1Mk5VYUh5STEzZ0ZlMEVM?=
+ =?utf-8?B?dUpBM2JuckJVYVh5Tm1MbEFTcG91OW1DUEdGTVRPYzdSWFhVczFZWEhCdWFU?=
+ =?utf-8?B?UHdERFMvSHd4M0sweDc4VmpoTzFOeXZKTXhpN3NTM2FJUEhHVVB3eHdHWHlu?=
+ =?utf-8?B?eFVoOW5WS1lCSTNQOUE1em05YkY0UUVUSllMS2VUNDdiMjZZemV2SnBtSHhx?=
+ =?utf-8?Q?qZP2t9ARNN2YmoTfRwRsRSrRz3rHxDXirJ4lUVzLuY=3D?=
+X-Forefront-Antispam-Report:
+	CIP:4.158.2.129;CTRY:GB;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:outbound-uk1.az.dlp.m.darktrace.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(1800799024)(35042699022)(82310400026)(36860700013)(14060799003)(7416014)(376014)(13003099007)(921020);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	DAmJh0l/dqcLmc/HGj5Auej35kC5JFoGFU+RPun+ZZoEN5zpt/eBecEFhwhCNgFpBaAy6AMVFG/f7c8iwL20ixuJ/thNOePPT7xfOY2ZycwDPq8NuagWwJnHilrpCgvO3pa/ln5HM1+vdUXnhx1Ng9tXDodIzdj4OyXRyKysKE7hpKoAuHi0D8h68c0jNV3hdgWBer02Hv2YLI0xQ3p7TqcVWuz31gkYxkcfg2koeUJkJtUqYTK66RBNsgNLj7Wt/BRo09j00E20/fch9X7Nhd2uqNk14Bm3Uth2zRj9xLHMt584TQ9Qm0K/l943YLrAx/OvnxF+FGrAKwR0xB8uI7TGEH7Z89kW4JKid3L6baCfLH1xbx8eiufvriM8oBN6qzUZ4+RazpNKk0Ks0eRmmhM9F/aAEDD6jyEvVOrwmUh06dFMwhSduHVeH1r9RpOI
+X-OriginatorOrg: arm.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jan 2026 08:24:55.3302
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: c8079bfb-6ec3-40ad-2561-08de5fd90c76
+X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d;Ip=[4.158.2.129];Helo=[outbound-uk1.az.dlp.m.darktrace.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	DU6PEPF0000B61D.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR08MB8635
 
-Currently, the `Reference Performance` register is read every time
-the CPU frequency is sampled in `cppc_get_perf_ctrs()`. This function
-is on the hot path of the cpufreq driver.
+Hi Sumit,
 
-Reference Performance indicates the performance level that corresponds
-to the Reference Counter incrementing and is not expected to change
-dynamically during runtime (unlike the Delivered and Reference counters).
+For the whole patch-set:
 
-Reading this register in the hot path incurs unnecessary overhead,
-particularly on platforms where CPC registers are located in the PCC
-(Platform Communication Channel) subspace. This patch moves
-`reference_perf` from the dynamic feedback counters structure
-(`cppc_perf_fb_ctrs`) to the static capabilities structure
-(`cppc_perf_caps`).
+Reviewed-by: Pierre Gondois <pierre.gondois@arm.com>
 
-Signed-off-by: Pengjie Zhang <zhangpengjie2@huawei.com>
----
- drivers/acpi/cppc_acpi.c       | 57 ++++++++++++++--------------------
- drivers/cpufreq/cppc_cpufreq.c | 21 +++++++------
- include/acpi/cppc_acpi.h       |  2 +-
- 3 files changed, 36 insertions(+), 44 deletions(-)
+Thanks
 
-diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-index e66e20d1f31b..7573ec1cf5f7 100644
---- a/drivers/acpi/cppc_acpi.c
-+++ b/drivers/acpi/cppc_acpi.c
-@@ -177,12 +177,12 @@ __ATTR(_name, 0444, show_##_name, NULL)
- show_cppc_data(cppc_get_perf_caps, cppc_perf_caps, highest_perf);
- show_cppc_data(cppc_get_perf_caps, cppc_perf_caps, lowest_perf);
- show_cppc_data(cppc_get_perf_caps, cppc_perf_caps, nominal_perf);
-+show_cppc_data(cppc_get_perf_caps, cppc_perf_caps, reference_perf);
- show_cppc_data(cppc_get_perf_caps, cppc_perf_caps, lowest_nonlinear_perf);
- show_cppc_data(cppc_get_perf_caps, cppc_perf_caps, guaranteed_perf);
- show_cppc_data(cppc_get_perf_caps, cppc_perf_caps, lowest_freq);
- show_cppc_data(cppc_get_perf_caps, cppc_perf_caps, nominal_freq);
- 
--show_cppc_data(cppc_get_perf_ctrs, cppc_perf_fb_ctrs, reference_perf);
- show_cppc_data(cppc_get_perf_ctrs, cppc_perf_fb_ctrs, wraparound_time);
- 
- /* Check for valid access_width, otherwise, fallback to using bit_width */
-@@ -1343,9 +1343,10 @@ int cppc_get_perf_caps(int cpunum, struct cppc_perf_caps *perf_caps)
- {
- 	struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpunum);
- 	struct cpc_register_resource *highest_reg, *lowest_reg,
--		*lowest_non_linear_reg, *nominal_reg, *guaranteed_reg,
--		*low_freq_reg = NULL, *nom_freq_reg = NULL;
--	u64 high, low, guaranteed, nom, min_nonlinear, low_f = 0, nom_f = 0;
-+		*lowest_non_linear_reg, *nominal_reg, *reference_reg,
-+		*guaranteed_reg, *low_freq_reg = NULL, *nom_freq_reg = NULL;
-+	u64 high, low, guaranteed, nom, ref, min_nonlinear,
-+	    low_f = 0, nom_f = 0;
- 	int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpunum);
- 	struct cppc_pcc_data *pcc_ss_data = NULL;
- 	int ret = 0, regs_in_pcc = 0;
-@@ -1359,6 +1360,7 @@ int cppc_get_perf_caps(int cpunum, struct cppc_perf_caps *perf_caps)
- 	lowest_reg = &cpc_desc->cpc_regs[LOWEST_PERF];
- 	lowest_non_linear_reg = &cpc_desc->cpc_regs[LOW_NON_LINEAR_PERF];
- 	nominal_reg = &cpc_desc->cpc_regs[NOMINAL_PERF];
-+	reference_reg = &cpc_desc->cpc_regs[REFERENCE_PERF];
- 	low_freq_reg = &cpc_desc->cpc_regs[LOWEST_FREQ];
- 	nom_freq_reg = &cpc_desc->cpc_regs[NOMINAL_FREQ];
- 	guaranteed_reg = &cpc_desc->cpc_regs[GUARANTEED_PERF];
-@@ -1366,6 +1368,7 @@ int cppc_get_perf_caps(int cpunum, struct cppc_perf_caps *perf_caps)
- 	/* Are any of the regs PCC ?*/
- 	if (CPC_IN_PCC(highest_reg) || CPC_IN_PCC(lowest_reg) ||
- 		CPC_IN_PCC(lowest_non_linear_reg) || CPC_IN_PCC(nominal_reg) ||
-+		(CPC_SUPPORTED(reference_reg) && CPC_IN_PCC(reference_reg)) ||
- 		CPC_IN_PCC(low_freq_reg) || CPC_IN_PCC(nom_freq_reg) ||
- 		CPC_IN_PCC(guaranteed_reg)) {
- 		if (pcc_ss_id < 0) {
-@@ -1391,6 +1394,17 @@ int cppc_get_perf_caps(int cpunum, struct cppc_perf_caps *perf_caps)
- 	cpc_read(cpunum, nominal_reg, &nom);
- 	perf_caps->nominal_perf = nom;
- 
-+	/*
-+	 * If reference perf register is not supported then we should
-+	 * use the nominal perf value
-+	 */
-+	if (CPC_SUPPORTED(reference_reg)) {
-+		cpc_read(cpunum, reference_reg, &ref);
-+		perf_caps->reference_perf = ref;
-+	} else {
-+		perf_caps->reference_perf = nom;
-+	}
-+
- 	if (guaranteed_reg->type != ACPI_TYPE_BUFFER  ||
- 	    IS_NULL_REG(&guaranteed_reg->cpc_entry.reg)) {
- 		perf_caps->guaranteed_perf = 0;
-@@ -1402,7 +1416,7 @@ int cppc_get_perf_caps(int cpunum, struct cppc_perf_caps *perf_caps)
- 	cpc_read(cpunum, lowest_non_linear_reg, &min_nonlinear);
- 	perf_caps->lowest_nonlinear_perf = min_nonlinear;
- 
--	if (!high || !low || !nom || !min_nonlinear)
-+	if (!high || !low || !nom || !ref || !min_nonlinear)
- 		ret = -EFAULT;
- 
- 	/* Read optional lowest and nominal frequencies if present */
-@@ -1437,7 +1451,6 @@ bool cppc_perf_ctrs_in_pcc(void)
- 	int cpu;
- 
- 	for_each_online_cpu(cpu) {
--		struct cpc_register_resource *ref_perf_reg;
- 		struct cpc_desc *cpc_desc;
- 
- 		cpc_desc = per_cpu(cpc_desc_ptr, cpu);
-@@ -1446,19 +1459,6 @@ bool cppc_perf_ctrs_in_pcc(void)
- 		    CPC_IN_PCC(&cpc_desc->cpc_regs[REFERENCE_CTR]) ||
- 		    CPC_IN_PCC(&cpc_desc->cpc_regs[CTR_WRAP_TIME]))
- 			return true;
--
--
--		ref_perf_reg = &cpc_desc->cpc_regs[REFERENCE_PERF];
--
--		/*
--		 * If reference perf register is not supported then we should
--		 * use the nominal perf value
--		 */
--		if (!CPC_SUPPORTED(ref_perf_reg))
--			ref_perf_reg = &cpc_desc->cpc_regs[NOMINAL_PERF];
--
--		if (CPC_IN_PCC(ref_perf_reg))
--			return true;
- 	}
- 
- 	return false;
-@@ -1476,10 +1476,10 @@ int cppc_get_perf_ctrs(int cpunum, struct cppc_perf_fb_ctrs *perf_fb_ctrs)
- {
- 	struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpunum);
- 	struct cpc_register_resource *delivered_reg, *reference_reg,
--		*ref_perf_reg, *ctr_wrap_reg;
-+		*ctr_wrap_reg;
- 	int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpunum);
- 	struct cppc_pcc_data *pcc_ss_data = NULL;
--	u64 delivered, reference, ref_perf, ctr_wrap_time;
-+	u64 delivered, reference, ctr_wrap_time;
- 	int ret = 0, regs_in_pcc = 0;
- 
- 	if (!cpc_desc) {
-@@ -1489,19 +1489,11 @@ int cppc_get_perf_ctrs(int cpunum, struct cppc_perf_fb_ctrs *perf_fb_ctrs)
- 
- 	delivered_reg = &cpc_desc->cpc_regs[DELIVERED_CTR];
- 	reference_reg = &cpc_desc->cpc_regs[REFERENCE_CTR];
--	ref_perf_reg = &cpc_desc->cpc_regs[REFERENCE_PERF];
- 	ctr_wrap_reg = &cpc_desc->cpc_regs[CTR_WRAP_TIME];
- 
--	/*
--	 * If reference perf register is not supported then we should
--	 * use the nominal perf value
--	 */
--	if (!CPC_SUPPORTED(ref_perf_reg))
--		ref_perf_reg = &cpc_desc->cpc_regs[NOMINAL_PERF];
--
- 	/* Are any of the regs PCC ?*/
- 	if (CPC_IN_PCC(delivered_reg) || CPC_IN_PCC(reference_reg) ||
--		CPC_IN_PCC(ctr_wrap_reg) || CPC_IN_PCC(ref_perf_reg)) {
-+		CPC_IN_PCC(ctr_wrap_reg)) {
- 		if (pcc_ss_id < 0) {
- 			pr_debug("Invalid pcc_ss_id\n");
- 			return -ENODEV;
-@@ -1518,8 +1510,6 @@ int cppc_get_perf_ctrs(int cpunum, struct cppc_perf_fb_ctrs *perf_fb_ctrs)
- 
- 	cpc_read(cpunum, delivered_reg, &delivered);
- 	cpc_read(cpunum, reference_reg, &reference);
--	cpc_read(cpunum, ref_perf_reg, &ref_perf);
--
- 	/*
- 	 * Per spec, if ctr_wrap_time optional register is unsupported, then the
- 	 * performance counters are assumed to never wrap during the lifetime of
-@@ -1529,14 +1519,13 @@ int cppc_get_perf_ctrs(int cpunum, struct cppc_perf_fb_ctrs *perf_fb_ctrs)
- 	if (CPC_SUPPORTED(ctr_wrap_reg))
- 		cpc_read(cpunum, ctr_wrap_reg, &ctr_wrap_time);
- 
--	if (!delivered || !reference ||	!ref_perf) {
-+	if (!delivered || !reference) {
- 		ret = -EFAULT;
- 		goto out_err;
- 	}
- 
- 	perf_fb_ctrs->delivered = delivered;
- 	perf_fb_ctrs->reference = reference;
--	perf_fb_ctrs->reference_perf = ref_perf;
- 	perf_fb_ctrs->wraparound_time = ctr_wrap_time;
- out_err:
- 	if (regs_in_pcc)
-diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
-index 9eac77c4f294..90dafb43ab18 100644
---- a/drivers/cpufreq/cppc_cpufreq.c
-+++ b/drivers/cpufreq/cppc_cpufreq.c
-@@ -50,7 +50,8 @@ struct cppc_freq_invariance {
- static DEFINE_PER_CPU(struct cppc_freq_invariance, cppc_freq_inv);
- static struct kthread_worker *kworker_fie;
- 
--static int cppc_perf_from_fbctrs(struct cppc_perf_fb_ctrs *fb_ctrs_t0,
-+static int cppc_perf_from_fbctrs(u64 reference_perf,
-+				 struct cppc_perf_fb_ctrs *fb_ctrs_t0,
- 				 struct cppc_perf_fb_ctrs *fb_ctrs_t1);
- 
- /**
-@@ -76,7 +77,7 @@ static void cppc_scale_freq_workfn(struct kthread_work *work)
- 	struct cppc_perf_fb_ctrs fb_ctrs = {0};
- 	struct cppc_cpudata *cpu_data;
- 	unsigned long local_freq_scale;
--	u64 perf;
-+	u64 perf, ref_perf;
- 
- 	cppc_fi = container_of(work, struct cppc_freq_invariance, work);
- 	cpu_data = cppc_fi->cpu_data;
-@@ -86,7 +87,9 @@ static void cppc_scale_freq_workfn(struct kthread_work *work)
- 		return;
- 	}
- 
--	perf = cppc_perf_from_fbctrs(&cppc_fi->prev_perf_fb_ctrs, &fb_ctrs);
-+	ref_perf = cpu_data->perf_caps.reference_perf;
-+	perf = cppc_perf_from_fbctrs(ref_perf,
-+				     &cppc_fi->prev_perf_fb_ctrs, &fb_ctrs);
- 	if (!perf)
- 		return;
- 
-@@ -691,13 +694,11 @@ static inline u64 get_delta(u64 t1, u64 t0)
- 	return (u32)t1 - (u32)t0;
- }
- 
--static int cppc_perf_from_fbctrs(struct cppc_perf_fb_ctrs *fb_ctrs_t0,
-+static int cppc_perf_from_fbctrs(u64 reference_perf,
-+				 struct cppc_perf_fb_ctrs *fb_ctrs_t0,
- 				 struct cppc_perf_fb_ctrs *fb_ctrs_t1)
- {
- 	u64 delta_reference, delta_delivered;
--	u64 reference_perf;
--
--	reference_perf = fb_ctrs_t0->reference_perf;
- 
- 	delta_reference = get_delta(fb_ctrs_t1->reference,
- 				    fb_ctrs_t0->reference);
-@@ -734,7 +735,7 @@ static unsigned int cppc_cpufreq_get_rate(unsigned int cpu)
- 	struct cpufreq_policy *policy __free(put_cpufreq_policy) = cpufreq_cpu_get(cpu);
- 	struct cppc_perf_fb_ctrs fb_ctrs_t0 = {0}, fb_ctrs_t1 = {0};
- 	struct cppc_cpudata *cpu_data;
--	u64 delivered_perf;
-+	u64 delivered_perf, reference_perf;
- 	int ret;
- 
- 	if (!policy)
-@@ -751,7 +752,9 @@ static unsigned int cppc_cpufreq_get_rate(unsigned int cpu)
- 			return 0;
- 	}
- 
--	delivered_perf = cppc_perf_from_fbctrs(&fb_ctrs_t0, &fb_ctrs_t1);
-+	reference_perf = cpu_data->perf_caps.reference_perf;
-+	delivered_perf = cppc_perf_from_fbctrs(reference_perf,
-+					       &fb_ctrs_t0, &fb_ctrs_t1);
- 	if (!delivered_perf)
- 		goto out_invalid_counters;
- 
-diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
-index 13fa81504844..1f7e5f164795 100644
---- a/include/acpi/cppc_acpi.h
-+++ b/include/acpi/cppc_acpi.h
-@@ -115,6 +115,7 @@ struct cppc_perf_caps {
- 	u32 guaranteed_perf;
- 	u32 highest_perf;
- 	u32 nominal_perf;
-+	u32 reference_perf;
- 	u32 lowest_perf;
- 	u32 lowest_nonlinear_perf;
- 	u32 lowest_freq;
-@@ -133,7 +134,6 @@ struct cppc_perf_ctrls {
- struct cppc_perf_fb_ctrs {
- 	u64 reference;
- 	u64 delivered;
--	u64 reference_perf;
- 	u64 wraparound_time;
- };
- 
--- 
-2.33.0
-
+On 1/29/26 11:48, Sumit Gupta wrote:
+> As discussed in [7], v5 was split into two parts. This is part 1.
+> - Patch 1-3 from v6: Applied by Rafael for 6.20.
+> - Remaining patches: Included in this v7 with review comments addressed.
+> Part 2 (v5 patches 8-11) will follow separately.
+>
+> This patch series adds sysfs interfaces for CPPC min_perf, max_perf,
+> and perf_limited registers, along with supporting ACPI APIs and
+> improvements for the cppc_cpufreq driver.
+>
+> CPPC autonomous mode (auto_sel) enables hardware-driven CPU performance
+> scaling using Energy Performance Preference (EPP) hints. Currently,
+> there's limited runtime control and visibility into CPPC performance
+> registers.
+>
+> This series addresses these gaps by:
+> 1. Exposing min_perf/max_perf registers via sysfs (as frequency in kHz)
+>     to allow fine-grained performance bounds control in autonomous mode.
+> 2. Exposing perf_limited register to detect and clear throttling events.
+>
+> It also includes code improvements: new APIs for reading performance
+> controls, a warning for missing mandatory DESIRED_PERF register, and
+> extended epp_perf support.
+>
+> The patches are grouped as below:
+> - Patch 1: Add cppc_get_perf() API (independent).
+> - Patch 2: Warn on missing mandatory DESIRED_PERF (independent).
+> - Patch 3: Extend cppc_set_epp_perf for FFH/SystemMemory (independent)
+> - Patch 4-5: APIs, sysfs for min/max_perf, perf_limited (independent)
+> - Patch 6: Doc for min/max_perf and perf_limited (depends on 4-5)
+> - Patch 7: Update cached perf_ctrls on sysfs write (independent).
+>
+> ---
+> v6[7] -> v7:
+> - patch 1-3 (v6): Dropped as they were applied by Rafael for 6.20.
+> - patch 2 (v7): Added new patch to warn on missing DESIRED_PERF as
+>    suggested by Pierre.
+> - patch 4, 7 (v7): Removed mutex from sysfs store functions as
+>    policy->rwsem already provides synchronization.
+> - patch 4 (v7): Added validation checks in store_min/max_perf.
+>
+> Sumit Gupta (7):
+>    ACPI: CPPC: Add cppc_get_perf() API to read performance controls
+>    ACPI: CPPC: Warn on missing mandatory DESIRED_PERF register
+>    ACPI: CPPC: Extend cppc_set_epp_perf() for FFH/SystemMemory
+>    ACPI: CPPC: add APIs and sysfs interface for min/max_perf
+>    ACPI: CPPC: add APIs and sysfs interface for perf_limited
+>    cpufreq: CPPC: Add sysfs for min/max_perf and perf_limited
+>    cpufreq: CPPC: Update cached perf_ctrls on sysfs write
+>
+>   .../ABI/testing/sysfs-devices-system-cpu      |  44 ++++
+>   drivers/acpi/cppc_acpi.c                      | 214 +++++++++++++++++-
+>   drivers/cpufreq/cppc_cpufreq.c                | 207 ++++++++++++++++-
+>   include/acpi/cppc_acpi.h                      |  40 ++++
+>   4 files changed, 500 insertions(+), 5 deletions(-)
+>
+> [1] https://lore.kernel.org/lkml/20250211103737.447704-1-sumitg@nvidia.com/
+> [2] https://lore.kernel.org/lkml/20250823200121.1320197-1-sumitg@nvidia.com/
+> [3] https://lore.kernel.org/lkml/20251001150104.1275188-1-sumitg@nvidia.com/
+> [4] https://lore.kernel.org/lkml/20251105113844.4086250-1-sumitg@nvidia.com/
+> [5] https://lore.kernel.org/lkml/20251223121307.711773-1-sumitg@nvidia.com/
+> [6] https://lore.kernel.org/lkml/20260120145623.2959636-1-sumitg@nvidia.com/
+> [7] https://lore.kernel.org/lkml/66f58f43-631b-40a0-8d42-4e90cd24b757@arm.com/
+>
