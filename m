@@ -1,89 +1,123 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8CA326ED3E;
-	Sun,  1 Feb 2026 16:42:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6FD634CDD
+	for <acpica-devel@lists.linux.dev>; Sun,  1 Feb 2026 18:17:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769964137; cv=none; b=CiLu8wYg9opmh+cJnCuKOuoCXi0H1xT3rWAXzPgDAyfbGMhPe2Pt9Ll4yNA6eIS/pgQOWRzryLFgrJ0vlnDKJw/wiDsxlKgownKN2YdxzHW3SbUSiWVBamRMR83IWzhiqHV8HWqF53sgK+DPACr+MRfQu4tSVfkXTS2ePqc46aw=
+	t=1769969829; cv=none; b=OsI4ytczvj67KRVLaJFK7hLYT6SShLjP+8V6goE2MKgOOyFvNCMW9gBrvWqX8uBzC8HFkrOc/UbUI/T1nYrQGYrQLcwaKwg2+61LPbZH6FRFBrjU8yd67DCt2jMSnedsB95t9q4fEY0Ejw7Ma4o7sE6fW9vFZ2OK8e5utjlLLHI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769964137; c=relaxed/simple;
-	bh=Xcg5dMcD3gfNoe5awtJkp8+RbxVdfVBZaTZPNqrYjsk=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ixbLVBKzJoQfVMG5or+2jwp/dRLyDlnpMVy/AgpXEIf9Jf/Lxmvikwzb/qkjnDH352JHbSZG9Fh0V5/o8Obj4Tz8ys2TgopTHXxTXf0wJO7Uv2vcK79lfOIdYnyjP+BrmkpPZ2nvRMdY7V8rg+WnhF8eia4mnH05+VCJDDjSe5Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mxcwkt/N; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1769969829; c=relaxed/simple;
+	bh=GUrSB2n7oRGHcPWkgJseQFjjXQatFD2FzE1j1iw6aYI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fWqZPDkxeHvF2RQh4NKZUBkUrdizc2TtFoPwW5QyhYG0/TjAAjo1zfhTeT/22v8v1Sx2zSTndmcBsoHEC1esc1jfGNW55JQgo9g6Ap995w/QGzor7xAS+zyJOUpiApi44jWvDtmPIIXC+JWrtkHnaYuMgpxhOU6lsxyN+2NiPhc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X+o6lylU; arc=none smtp.client-ip=209.85.216.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mxcwkt/N"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EB24C4CEF7;
-	Sun,  1 Feb 2026 16:42:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769964137;
-	bh=Xcg5dMcD3gfNoe5awtJkp8+RbxVdfVBZaTZPNqrYjsk=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=mxcwkt/NJDeCumyF+iPJGRDfOF3UVmIcxHuGv004PbaOKxTzEL5UkW7GumCL3+MQr
-	 ybGXH39WMcFOrskVirc1pFP7TCthYqwzVis2cs01ea0LyoKNo4OTAU08wUrYuq3NCG
-	 XMZHtCMgMTBBmoeChxlsqlrK5/JZtWJvUYGgktcRq7YAHq8kEKdGoG9tijXzjZAeLw
-	 ac1k8JaBEGEijEeSvUNipJT4oXqPMfVZsbwrdOvtxuSOrELHK6ol9r+wMeqe9zDetR
-	 BuG+UMRquoetvBTT2jt63tRn6an4Fuxk4spFesgZfw0j/NHkVjA27tCkdn6c9EKxMc
-	 T/90nh4ZXqImA==
-From: Thomas Gleixner <tglx@kernel.org>
-To: Bert Karwatzki <spasswolf@web.de>, linux-kernel@vger.kernel.org
-Cc: linux-next@vger.kernel.org, spasswolf@web.de, Mario Limonciello
- <mario.limonciello@amd.com>, Sebastian Andrzej Siewior
- <bigeasy@linutronix.de>, Clark Williams <clrkwllms@kernel.org>, Steven
- Rostedt <rostedt@goodmis.org>, Christian =?utf-8?Q?K=C3=B6nig?=
- <christian.koenig@amd.com>,
- regressions@lists.linux.dev, linux-pci@vger.kernel.org,
- linux-acpi@vger.kernel.org, "Rafael J . Wysocki"
- <rafael.j.wysocki@intel.com>, acpica-devel@lists.linux.dev, Robert Moore
- <robert.moore@intel.com>, Saket Dumbre <saket.dumbre@intel.com>, Bjorn
- Helgaas <bhelgaas@google.com>, Clemens Ladisch <clemens@ladisch.de>,
- Jinchao Wang <wangjinchao600@gmail.com>, Yury Norov
- <yury.norov@gmail.com>, Anna Schumaker <anna.schumaker@oracle.com>,
- Baoquan He <bhe@redhat.com>, "Darrick J. Wong" <djwong@kernel.org>, Dave
- Young <dyoung@redhat.com>, Doug Anderson <dianders@chromium.org>,
- "Guilherme G. Piccoli" <gpiccoli@igalia.com>, Helge Deller
- <deller@gmx.de>, Ingo Molnar <mingo@kernel.org>, Jason Gunthorpe
- <jgg@ziepe.ca>, Joanthan
- Cameron <Jonathan.Cameron@huawei.com>, Joel Granados
- <joel.granados@kernel.org>, John Ogness <john.ogness@linutronix.de>, Kees
- Cook <kees@kernel.org>, Li Huafei <lihuafei1@huawei.com>, "Luck, Tony"
- <tony.luck@intel.com>, Luo Gengkun <luogengkun@huaweicloud.com>, Max
- Kellermann <max.kellermann@ionos.com>, Nam Cao <namcao@linutronix.de>,
- oushixiong <oushixiong@kylinos.cn>, Petr Mladek <pmladek@suse.com>,
- Qianqiang Liu <qianqiang.liu@163.com>, Sergey Senozhatsky
- <senozhatsky@chromium.org>, Sohil Mehta <sohil.mehta@intel.com>, Tejun Heo
- <tj@kernel.org>, Thomas Zimemrmann <tzimmermann@suse.de>, Thorsten Blum
- <thorsten.blum@linux.dev>, Ville Syrjala <ville.syrjala@linux.intel.com>,
- Vivek Goyal <vgoyal@redhat.com>, Yunhui Cui <cuiyunhui@bytedance.com>,
- Andrew Morton <akpm@linux-foundation.org>, W_Armin@gmx.de
-Subject: Re: crash during resume of PCIe bridge from v5.17 to next-20260130
- (v5.16 works)
-In-Reply-To: <630a4020c87c122c004321971e43c334fd7aceb4.camel@web.de>
-References: <20260113094129.3357-1-spasswolf@web.de> <87h5spk01t.ffs@tglx>
- <bc20529d7520e7db7de2022bf9c96a1bc3a2f0df.camel@web.de>
- <87v7h5ia3d.ffs@tglx>
- <99f1aaba32030d2b9285dbd983fdf8518a181a8d.camel@web.de>
- <82b4d69a5b943aa5e8aa7cc33fcc00bce02e557c.camel@web.de>
- <630a4020c87c122c004321971e43c334fd7aceb4.camel@web.de>
-Date: Sun, 01 Feb 2026 17:42:13 +0100
-Message-ID: <87a4xs2z6i.ffs@tglx>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X+o6lylU"
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-34f2a0c4574so3728744a91.1
+        for <acpica-devel@lists.linux.dev>; Sun, 01 Feb 2026 10:17:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1769969827; x=1770574627; darn=lists.linux.dev;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ujk5k65rRpax7qPZizdIUInwgoyZVajK00HSdGaFW4A=;
+        b=X+o6lylUJt978KufIfND9fhDXD8IxG+grLwxH3UMhlqbvgLSOBZQ0UufipNW1iIw/o
+         /VnPDoSLA+LZvKU0nuBXC3w2S9PlZgd8RsPl1hFK587sQgDD0YtdFNfQXVGTmIaGXsmR
+         haBwHsbkokMzS6ale99E6+cC6nWzK7zfoBpoT8vwkg7v7eBMVZW1s6pch2PXD/uALRQZ
+         WXvoEjGtyS700SyKI1sQKk1bQP64N/+kBwGja8uayyxrSqUDGIpJPu1GysYzQRDyjZ46
+         /jMi38xaA7hv7e+q/rv3zT/Ce7AEB1kTBjipuWv2+stSH35Mv/OzI9wwWve1amLDhENq
+         so3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1769969827; x=1770574627;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ujk5k65rRpax7qPZizdIUInwgoyZVajK00HSdGaFW4A=;
+        b=AmCNoNjDUSKB/+D4Ih5NIB+bfwLRRQKZ1ngqgXJ6waefp7FnlZVNCQ1QOQ1GC6KYUM
+         DFIXfYiKGjcJIqujt1dM8c17JvsU//99tCL2b95S86E9j1MFCR97SNO+c6PXNs8u2Ooy
+         C8QeNF8pklTe6MyeXCMc8X25yXE0SoVEpfeOVg0bxNxIaPvUfSi/NrIJVQ5AknV2lqn0
+         MHm77HycOAM5vk+UAnT6cEVWkkFmVSeQJWqsaqGaX7/gE416VOvK71l76dqiP600Fsm6
+         WoqqjZj6jKtzX9SGYbUZVWc959ALlzhV+5BXY5pgxDXXP/FPseRfsPE8biYhjQsgDtyi
+         LEDw==
+X-Forwarded-Encrypted: i=1; AJvYcCV4tUjtITvC6h9QZmfn7kCRIXSjDkTO8+kZcsJ1rsz0Cfpuypwe8NytaJ9HLlAvb1GmMOgUdtm4LMm8hj8=@lists.linux.dev
+X-Gm-Message-State: AOJu0YwVZIydR7i2u0Nn6ikVAPoboR3uLv3GhH+JhN/DYHy4N33GQffi
+	FHrTuv4uwAZDN7+VhBFx5FbARefpPXpKCHgmTSpnyTFHodr/kKBFywXe
+X-Gm-Gg: AZuq6aKmF2vlN1iSh5IeddzNRvlwF6EIcT/xU+grluR1ZeO/+1mKcqhFe9vo+s4xUDF
+	fkzLyZk5hQxko2hi86vhDfHba+g8aTW9ccE4Y+1uMKXP+KaxSsgjqqIO5bRWf/llLoUuOzegrN9
+	ZJ8kk6VwV5FQTNXd+aiKFaPE12vVgG7v5qW+ZV3/Eqv+IbiI6h7vy42Sq2ad46gDgsQXM+PiZxL
+	5nBceBoGzQEfEoP2mDHD3Jurp9l+WwMkVjmPaychmMAxLMKQWR8QwzktI1GEPr/FrIyiwn1CEzN
+	xvHB3lvT3HcvNkbOq8xZ6tF2qYSUJrbsMShvkk/Di2qacPuyRQKXE/6wZS4ywEWLQRZdnsTrfwF
+	Asfa0cGXzy8kAWhLjO41XxGZu+s4SF6VY7wGSGIQ+sNzlOFF/S9Ik2Lbifod3QuvqlY9WNvTEkM
+	q12XYQGUGUQ7Jv1JE+
+X-Received: by 2002:a17:90b:3ccd:b0:352:bd7c:ddbd with SMTP id 98e67ed59e1d1-3543b38af32mr9508501a91.23.1769969826957;
+        Sun, 01 Feb 2026 10:17:06 -0800 (PST)
+Received: from gmail.com ([2409:4081:2d1d:b4be:89d5:e086:c91c:ec66])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3543bab8025sm3192608a91.0.2026.02.01.10.16.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Feb 2026 10:17:06 -0800 (PST)
+From: Sumeet Pawnikar <sumeet4linux@gmail.com>
+To: rafael@kernel.org,
+	robert.moore@intel.com,
+	lenb@kernel.org,
+	linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev
+Cc: linux-kernel@vger.kernel.org,
+	sumeet4linux@gmail.com
+Subject: [PATCH] tools/power/acpi: Replace strcpy/strcat with snprintf in osunixdir.c
+Date: Sun,  1 Feb 2026 23:46:20 +0530
+Message-ID: <20260201181620.4964-1-sumeet4linux@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-On Sun, Feb 01 2026 at 01:36, Bert Karwatzki wrote:
-> I found the error, the commit 
-> ("drm/amd: Check if ASPM is enabled from PCIe subsystem")
-> has been applied twice first as cba07cce39ac and a second time
-> as 7294863a6f01 after it had been superseeded by commit
-> 0ab5d711ec74 ("drm/amd: Refactor `amdgpu_aspm` to be evaluated per device") 
-> This effectively disables ASPM globally after the built-in GPU (which does not
-> support ASPM) is probed. This is the reason for the crashes and loss of devices
-> errors which on average occur after ~1000 resumes of the discrete GPU.
+Replace unsafe strcpy() and strcat() calls with snprintf() in
+osunixdir.c to prevent potential buffer overflow vulnerabilities
+when constructing file paths.
 
-Wow. Nice detective work...
+The snprintf() function performs automatic bounds checking to ensure
+the destination buffer is not overflowed.
+
+No functional change.
+
+Signed-off-by: Sumeet Pawnikar <sumeet4linux@gmail.com>
+---
+ .../power/acpi/os_specific/service_layers/osunixdir.c  | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/tools/power/acpi/os_specific/service_layers/osunixdir.c b/tools/power/acpi/os_specific/service_layers/osunixdir.c
+index b9bb83116549..5dc960c6b376 100644
+--- a/tools/power/acpi/os_specific/service_layers/osunixdir.c
++++ b/tools/power/acpi/os_specific/service_layers/osunixdir.c
+@@ -113,9 +113,8 @@ char *acpi_os_get_next_filename(void *dir_handle)
+ 				return (NULL);
+ 			}
+ 
+-			strcpy(temp_str, external_info->dir_pathname);
+-			strcat(temp_str, "/");
+-			strcat(temp_str, dir_entry->d_name);
++			snprintf(temp_str, str_len, "%s/%s",
++				 external_info->dir_pathname, dir_entry->d_name);
+ 
+ 			err = stat(temp_str, &temp_stat);
+ 			if (err == -1) {
+@@ -137,8 +136,9 @@ char *acpi_os_get_next_filename(void *dir_handle)
+ 
+ 				/* copy to a temp buffer because dir_entry struct is on the stack */
+ 
+-				strcpy(external_info->temp_buffer,
+-				       dir_entry->d_name);
++				snprintf(external_info->temp_buffer,
++					 sizeof(external_info->temp_buffer),
++					 "%s", dir_entry->d_name);
+ 				return (external_info->temp_buffer);
+ 			}
+ 		}
+-- 
+2.43.0
+
