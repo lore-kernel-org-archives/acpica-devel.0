@@ -1,61 +1,61 @@
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6FD634CDD
-	for <acpica-devel@lists.linux.dev>; Sun,  1 Feb 2026 18:17:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 971A0225415
+	for <acpica-devel@lists.linux.dev>; Sun,  1 Feb 2026 18:19:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769969829; cv=none; b=OsI4ytczvj67KRVLaJFK7hLYT6SShLjP+8V6goE2MKgOOyFvNCMW9gBrvWqX8uBzC8HFkrOc/UbUI/T1nYrQGYrQLcwaKwg2+61LPbZH6FRFBrjU8yd67DCt2jMSnedsB95t9q4fEY0Ejw7Ma4o7sE6fW9vFZ2OK8e5utjlLLHI=
+	t=1769969971; cv=none; b=iNZUUywGZOxPXYolGSdHmhMCJmDKecPSEPJfuVA5J1Z1wcqHiEa4V16wbmKmdmg4Ncy7hcNtl3ylZHgnEEBCUtDEnKwfaenDCEXQYKdgikYS3ijDmmEBGZZr8N2/jldMGnqzRYqoiRaf+bk0eNLt94mlFOkFCvo0Ad/lzuEjGWg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769969829; c=relaxed/simple;
-	bh=GUrSB2n7oRGHcPWkgJseQFjjXQatFD2FzE1j1iw6aYI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fWqZPDkxeHvF2RQh4NKZUBkUrdizc2TtFoPwW5QyhYG0/TjAAjo1zfhTeT/22v8v1Sx2zSTndmcBsoHEC1esc1jfGNW55JQgo9g6Ap995w/QGzor7xAS+zyJOUpiApi44jWvDtmPIIXC+JWrtkHnaYuMgpxhOU6lsxyN+2NiPhc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X+o6lylU; arc=none smtp.client-ip=209.85.216.42
+	s=arc-20240116; t=1769969971; c=relaxed/simple;
+	bh=9UEAYs8BOtkPMSZ+aZJXJjA/lA1oMnfd0ad1J+W/DCM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QLC+E21nlkWbfkYfiimHQeRd6SSJzfoVcaE7f8Hv093aH9XiLtklp/50FRHy3jnq2UGADT9cXjE9y9gGhU0mWQ8PmDbEPRdcqvyrS43trL+NDVJzkzDnkZbwLIRs0i5+DItY9YpuexIPjfoww8fMTQic5Fd4r6Z1n9swwCnOttQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jSSuCk3w; arc=none smtp.client-ip=209.85.214.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X+o6lylU"
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-34f2a0c4574so3728744a91.1
-        for <acpica-devel@lists.linux.dev>; Sun, 01 Feb 2026 10:17:07 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jSSuCk3w"
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-2a7b47a5460so20963355ad.1
+        for <acpica-devel@lists.linux.dev>; Sun, 01 Feb 2026 10:19:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1769969827; x=1770574627; darn=lists.linux.dev;
+        d=gmail.com; s=20230601; t=1769969970; x=1770574770; darn=lists.linux.dev;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ujk5k65rRpax7qPZizdIUInwgoyZVajK00HSdGaFW4A=;
-        b=X+o6lylUJt978KufIfND9fhDXD8IxG+grLwxH3UMhlqbvgLSOBZQ0UufipNW1iIw/o
-         /VnPDoSLA+LZvKU0nuBXC3w2S9PlZgd8RsPl1hFK587sQgDD0YtdFNfQXVGTmIaGXsmR
-         haBwHsbkokMzS6ale99E6+cC6nWzK7zfoBpoT8vwkg7v7eBMVZW1s6pch2PXD/uALRQZ
-         WXvoEjGtyS700SyKI1sQKk1bQP64N/+kBwGja8uayyxrSqUDGIpJPu1GysYzQRDyjZ46
-         /jMi38xaA7hv7e+q/rv3zT/Ce7AEB1kTBjipuWv2+stSH35Mv/OzI9wwWve1amLDhENq
-         so3w==
+        bh=w0qHBL38GMK6RiP1vSDBko5Oah8ksm+tgX8bU2a4jHo=;
+        b=jSSuCk3wrH/vyXadqMsCkE3CJNWszxHAG13nMz7VLomw3t1Ul0PwWnDXBTzWfdjJvr
+         wjYZcdgbndlHkAyCmFf/LVB491IPo64SwXfia3eHDTbMAqWbor2TTLm/mXacgt7w3jbO
+         EUnZ/DGQOOVWqFcEwRmQ9W+91xECF0HNubFH5LTvkKOPiEX0XAzc6mtbpM/Gl6QctRl6
+         F79jLKY929CEIGiJ3wHIpX67DzmmGrNj6yfVzwxY8yN8l50oZNDZQu7Blyf1X7t5Wp9h
+         tfS0LEaj1I3q/5mUo3Hb7xQRmVENcqjfQ5hbHcZOeQ7pXX0kdgfttGMMw/JlLfLimxsZ
+         n3kQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1769969827; x=1770574627;
+        d=1e100.net; s=20230601; t=1769969970; x=1770574770;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ujk5k65rRpax7qPZizdIUInwgoyZVajK00HSdGaFW4A=;
-        b=AmCNoNjDUSKB/+D4Ih5NIB+bfwLRRQKZ1ngqgXJ6waefp7FnlZVNCQ1QOQ1GC6KYUM
-         DFIXfYiKGjcJIqujt1dM8c17JvsU//99tCL2b95S86E9j1MFCR97SNO+c6PXNs8u2Ooy
-         C8QeNF8pklTe6MyeXCMc8X25yXE0SoVEpfeOVg0bxNxIaPvUfSi/NrIJVQ5AknV2lqn0
-         MHm77HycOAM5vk+UAnT6cEVWkkFmVSeQJWqsaqGaX7/gE416VOvK71l76dqiP600Fsm6
-         WoqqjZj6jKtzX9SGYbUZVWc959ALlzhV+5BXY5pgxDXXP/FPseRfsPE8biYhjQsgDtyi
-         LEDw==
-X-Forwarded-Encrypted: i=1; AJvYcCV4tUjtITvC6h9QZmfn7kCRIXSjDkTO8+kZcsJ1rsz0Cfpuypwe8NytaJ9HLlAvb1GmMOgUdtm4LMm8hj8=@lists.linux.dev
-X-Gm-Message-State: AOJu0YwVZIydR7i2u0Nn6ikVAPoboR3uLv3GhH+JhN/DYHy4N33GQffi
-	FHrTuv4uwAZDN7+VhBFx5FbARefpPXpKCHgmTSpnyTFHodr/kKBFywXe
-X-Gm-Gg: AZuq6aKmF2vlN1iSh5IeddzNRvlwF6EIcT/xU+grluR1ZeO/+1mKcqhFe9vo+s4xUDF
-	fkzLyZk5hQxko2hi86vhDfHba+g8aTW9ccE4Y+1uMKXP+KaxSsgjqqIO5bRWf/llLoUuOzegrN9
-	ZJ8kk6VwV5FQTNXd+aiKFaPE12vVgG7v5qW+ZV3/Eqv+IbiI6h7vy42Sq2ad46gDgsQXM+PiZxL
-	5nBceBoGzQEfEoP2mDHD3Jurp9l+WwMkVjmPaychmMAxLMKQWR8QwzktI1GEPr/FrIyiwn1CEzN
-	xvHB3lvT3HcvNkbOq8xZ6tF2qYSUJrbsMShvkk/Di2qacPuyRQKXE/6wZS4ywEWLQRZdnsTrfwF
-	Asfa0cGXzy8kAWhLjO41XxGZu+s4SF6VY7wGSGIQ+sNzlOFF/S9Ik2Lbifod3QuvqlY9WNvTEkM
-	q12XYQGUGUQ7Jv1JE+
-X-Received: by 2002:a17:90b:3ccd:b0:352:bd7c:ddbd with SMTP id 98e67ed59e1d1-3543b38af32mr9508501a91.23.1769969826957;
-        Sun, 01 Feb 2026 10:17:06 -0800 (PST)
+        bh=w0qHBL38GMK6RiP1vSDBko5Oah8ksm+tgX8bU2a4jHo=;
+        b=IgzCQbiGd0goFhYpnhU1nhrJWHRkOYsDQO0W0jufRs/ZajcIYaRI2L9rJ8kWL9P92R
+         0JoUAExzt4GAYvLSDGqlR6G0fMw0bNIaU6miCxXZAPkAyf/DrHSFYWzWYy55WPU6ftsT
+         G9MQWhizKH/J6eOCfOu+f57Wcf36rObbBSy2CzZr+LMKQ5khvFwKOfaDGbZVHUUFg2zn
+         XyHzFvi7Lvq/bW/vO7XgIcZrUrQ/RaDc9HSP48+iq/UGWGWHbdyJpYawMQTUurZfoDxB
+         /h9ReTyc7YVNpk833ut64NGMOOcwcuL3r0rb4zZ67e7jkKLn7CYCZkySRGlTbwVoaC36
+         crIA==
+X-Forwarded-Encrypted: i=1; AJvYcCWkKxQikpkafCsWXwu861Fkat/YdHFLZHQlmbe4PeaJOC4Tv+G6HvRTtnI0GpwsoM2paSQJynNPfUAmbak=@lists.linux.dev
+X-Gm-Message-State: AOJu0Yzyp7/SIQ1rl/S6iyHjsxXW1pHnHWchq/Ip28Bhl3ib13LG0p+X
+	BJn6qHyRJ77zDVVtwmjw/bd5TtjJUKj9o/qDGPdLsFi2th4bkv4bPmIr
+X-Gm-Gg: AZuq6aJ1zI8t4oobDDhif/Lrl0C3/BONE142YZIwzBFrxOztCEba/G6Fl15KHD+AJD+
+	NalAVaguJkGPWToH8QJBZ5dkTGoyUsmge77rgLCDkVqfqJ/p03cU6KUstl/Ty8R1pPF9uqLMLf9
+	Gb6hZmn2RbBjgwOuOjd6D5fJn/MHrmnDWzwlff1nmYIcvOB+CAm07E5cJCl87E55Y3l5MjkEbFO
+	tEMZC4NlIDVTmcALbKUYNedmB5IjsQmRMeOS/Gv+ZiLxAhVeTJIAnlxn8K/cWa+4zFar3iYk74E
+	Fo5iK+7ERLA6giJNM9tzT2adK9Ua63kzIRj8Sxpe0kEhUBj0rinvhkyQmLY1TFNoHfEG0CApCa7
+	fgT31WPz+NSAvkcUnLWBc1D2FfdV4OnqCvwtWWhHd8kshBqwLij2x4w5KrGdhU8nx1MFjSrc9AP
+	Ko4QJdkoOFCcDi9oWi+LnP8rnHM+s=
+X-Received: by 2002:a17:903:2f86:b0:2a7:a6fa:eddf with SMTP id d9443c01a7336-2a8d99514femr91910555ad.17.1769969969660;
+        Sun, 01 Feb 2026 10:19:29 -0800 (PST)
 Received: from gmail.com ([2409:4081:2d1d:b4be:89d5:e086:c91c:ec66])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3543bab8025sm3192608a91.0.2026.02.01.10.16.59
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a88b7f9a9esm125644925ad.102.2026.02.01.10.19.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Feb 2026 10:17:06 -0800 (PST)
+        Sun, 01 Feb 2026 10:19:29 -0800 (PST)
 From: Sumeet Pawnikar <sumeet4linux@gmail.com>
 To: rafael@kernel.org,
 	robert.moore@intel.com,
@@ -64,9 +64,9 @@ To: rafael@kernel.org,
 	acpica-devel@lists.linux.dev
 Cc: linux-kernel@vger.kernel.org,
 	sumeet4linux@gmail.com
-Subject: [PATCH] tools/power/acpi: Replace strcpy/strcat with snprintf in osunixdir.c
-Date: Sun,  1 Feb 2026 23:46:20 +0530
-Message-ID: <20260201181620.4964-1-sumeet4linux@gmail.com>
+Subject: [PATCH] tools/power/acpi: Replace unsafe strcat with strncat in apfiles.c
+Date: Sun,  1 Feb 2026 23:48:24 +0530
+Message-ID: <20260201181824.4999-1-sumeet4linux@gmail.com>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
@@ -76,48 +76,37 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Replace unsafe strcpy() and strcat() calls with snprintf() in
-osunixdir.c to prevent potential buffer overflow vulnerabilities
-when constructing file paths.
-
-The snprintf() function performs automatic bounds checking to ensure
-the destination buffer is not overflowed.
+Replace unsafe strcat() calls with strncat() in apfiles.c to prevent
+potential buffer overflow vulnerabilities when constructing filenames.
+The strncat() function performs bounds checking to ensure the
+destination buffer is not overflowed.
 
 No functional change.
 
 Signed-off-by: Sumeet Pawnikar <sumeet4linux@gmail.com>
 ---
- .../power/acpi/os_specific/service_layers/osunixdir.c  | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ tools/power/acpi/tools/acpidump/apfiles.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/tools/power/acpi/os_specific/service_layers/osunixdir.c b/tools/power/acpi/os_specific/service_layers/osunixdir.c
-index b9bb83116549..5dc960c6b376 100644
---- a/tools/power/acpi/os_specific/service_layers/osunixdir.c
-+++ b/tools/power/acpi/os_specific/service_layers/osunixdir.c
-@@ -113,9 +113,8 @@ char *acpi_os_get_next_filename(void *dir_handle)
- 				return (NULL);
- 			}
+diff --git a/tools/power/acpi/tools/acpidump/apfiles.c b/tools/power/acpi/tools/acpidump/apfiles.c
+index d6b8a201480b..c7b71579aae6 100644
+--- a/tools/power/acpi/tools/acpidump/apfiles.c
++++ b/tools/power/acpi/tools/acpidump/apfiles.c
+@@ -131,10 +131,12 @@ int ap_write_to_binary_file(struct acpi_table_header *table, u32 instance)
  
--			strcpy(temp_str, external_info->dir_pathname);
--			strcat(temp_str, "/");
--			strcat(temp_str, dir_entry->d_name);
-+			snprintf(temp_str, str_len, "%s/%s",
-+				 external_info->dir_pathname, dir_entry->d_name);
+ 	if (instance > 0) {
+ 		snprintf(instance_str, sizeof(instance_str), "%u", instance);
+-		strcat(filename, instance_str);
++		strncat(filename, instance_str,
++			sizeof(filename) - strlen(filename) - 1);
+ 	}
  
- 			err = stat(temp_str, &temp_stat);
- 			if (err == -1) {
-@@ -137,8 +136,9 @@ char *acpi_os_get_next_filename(void *dir_handle)
+-	strcat(filename, FILE_SUFFIX_BINARY_TABLE);
++	strncat(filename, FILE_SUFFIX_BINARY_TABLE,
++		sizeof(filename) - strlen(filename) - 1);
  
- 				/* copy to a temp buffer because dir_entry struct is on the stack */
- 
--				strcpy(external_info->temp_buffer,
--				       dir_entry->d_name);
-+				snprintf(external_info->temp_buffer,
-+					 sizeof(external_info->temp_buffer),
-+					 "%s", dir_entry->d_name);
- 				return (external_info->temp_buffer);
- 			}
- 		}
+ 	if (gbl_verbose_mode) {
+ 		fprintf(stderr,
 -- 
 2.43.0
 
