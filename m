@@ -1,230 +1,383 @@
-Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com [209.85.210.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FEE5314A64
-	for <acpica-devel@lists.linux.dev>; Tue,  3 Feb 2026 11:03:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.210.52
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770116605; cv=pass; b=cEzPg3iZcxsK9dRAqt708Yxiwv9h87y098QHRDnL+813ZM51+uxiFkc7ZcHmVMxA2Nf1jjGzyjERREghPrC4xjEoxVgb8Bvisx6n6/4Raxo9XHUg5Om1aw7vUlwcR643dsyKoLPb9KNylAxG4q4gS/fzZLMyR35eYQiU5ASQgtM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770116605; c=relaxed/simple;
-	bh=UkNMgpktyLGxh/cFTtfeZZZty1SnTeDWasdVswM1t1w=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC26B34677D
+	for <acpica-devel@lists.linux.dev>; Tue,  3 Feb 2026 12:43:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1770122608; cv=none; b=N2nrL71hZbod0rcfxW534tvHQQekSWOblY8jXhujFP16BiF0jpWFvVKyInilgWmtrJb24DBEZhrw48fAMpmu20k0k75eKF39gp7UiBA8hKwNNiCUJZSmZXBvD7dXf0U0TbAc5L+tyJaP5E99AZfg/hWoysm/+41zDCxXDOeq9hk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1770122608; c=relaxed/simple;
+	bh=mZd/rRJm+j2XLVtDNOJg8+wal/AD+zG+qijo2HsFn3k=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=U/8FKD2gs7LlxU22RJPXThJ4X9RU2m5bXJDH9HVgbjHqxOufsiHT+kjj/bccaikNgaPAAkkVvHgyvJ5LExig6XWsT3HGAzcnyyf4obY+khd15t6hn0lYM/JBUTwfEOeqM3ywjhhGuKgnUw+D0vc9ComgKyOSVXO9Is+tZHshQiA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A7N2Y0cD; arc=pass smtp.client-ip=209.85.210.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	 To:Cc:Content-Type; b=bHBHoF6eyetFuS45yQe5uGH15D1F26kUTn94E2KquK4YaQA+Ocn+lsszEhdM09io6D+mqVmO2TP72x8GBeZ0b9hopSH6gR6mfxh+ja1iq0ENo6l4TlUvPYTGIrc/ge3QM+Xu6O735FfFKaEr/SbL42Ft9PfKo7ELP6uX8RO5bvg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UCWble3H; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A7N2Y0cD"
-Received: by mail-ot1-f52.google.com with SMTP id 46e09a7af769-7d1890f7cefso4488079a34.3
-        for <acpica-devel@lists.linux.dev>; Tue, 03 Feb 2026 03:03:23 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1770116602; cv=none;
-        d=google.com; s=arc-20240605;
-        b=UM5yRTPwjbJ1L3ULda/PJ29euAwTPJIOy0C913XLwNS53xFF84LEomJS39pd+/4vYn
-         NgZRIwDxdgl3ly4sQtaBbunWwF4VmiGJK2oYlJPTDnxaTH5g6pOSdKS0R0oKLih1uizj
-         ZFP5RjtwaSRjKQqr+fl+yQO7R62wen7iXcqEe6DASRH7Ls2bR56Mh7jPN59KpxrWohMP
-         NIYJB1n5mk0dqH3qE44Y+ktzToWKK+ybixUDOFaQHUuQDjAZzQTOnjQVTVNObmHgjK06
-         E9t/1feLFMZyoxRk2Ec+asDoRkQL7M9bvQN9wqaSOqR5L45Rv1pkb4a5mnIcXJ7ZZuNy
-         yitg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=h/fgvm9k9I3pQj36j4/Ol8L8Z8tktEJAYn/oo6tMALo=;
-        fh=OgUUiOu8Q0qM2yVYSW9wae5/mlbcFXNKOd3VyE8aJMc=;
-        b=bKErxgMqh64yy496MBn2bHV+M2+X0V0k6EJ0ffoPX2orcGtd/qpMUTRHmP5A7xlZXG
-         4HhHPoYqTNqr32NY/7tDsH/lLU0w0+cSb4f+67uMT0K6UCEXN31oFPPfYT45aqIwM7xg
-         aGPkzDMU15WWDfXXfXxo+1EapjcWV8qoqr5b4TRqIn18q5Ji/7ec4/EymLW4o76tWFsB
-         P1GR4A1nFTwGBIrlVcfhpQYzKcgTYgZF4/RWTDrd0008ioNPmydtLZpEkdhrBV28rere
-         AROJIa8IaJY19+d+hafH15efbaTZQ6vTu/5PorQPV26YD2zByb8QwlGPtQ5/4M8J7ORr
-         qFnA==;
-        darn=lists.linux.dev
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1770116602; x=1770721402; darn=lists.linux.dev;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=h/fgvm9k9I3pQj36j4/Ol8L8Z8tktEJAYn/oo6tMALo=;
-        b=A7N2Y0cDtjeK9qBSfH0iXdbdI1OGPeXf1s1PngnEGxIXqXzRwUCcGih29d9aCOptJT
-         kUJTrvo+I1Id2GiCGQWyd4bnoINxF0WOxRPYkyDmq6JXgCKIjjCU2gAYp/fR1arQC3Ck
-         HnBqRFoYY/e+ZIQ8QqKWv6JGYQOl4BopxFNNPFncIQp4chWoHx9cCBGVbaBN6ABaASia
-         zgZyFXaL41vYmJbThPX2nVhMB+WnnB3cQQ+Mriu3LwOJMPO3oIq01RZgE3nOHMtkJdj7
-         ORHROhHSYiyufqwPA6sLj20GmHpMLbAY4HevSorKoGPogbBJaIYgZXJ0CHGsBo196nOP
-         Dx1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770116602; x=1770721402;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=h/fgvm9k9I3pQj36j4/Ol8L8Z8tktEJAYn/oo6tMALo=;
-        b=g5BBpy3ntoWNpapFMChLDYOYuOOPvNHsNfdUVHsTaaRLbaKoAsJHr7yPRQzeZnFPB5
-         RXdXfOSEvNamgc2mdbcmU8KLLeiycpvWsJygA0U6YO1pI6/dVDPbOnieZwkHKwvuU37O
-         O8UM93UxqnNEPrzjsfq8Fn5uyJnEDZZ9Y+59Ai6g5z/ZkLVcdlRvgUNop1WIXArEYUpq
-         CBOBRuS6s/nQU/YTdUG6NgMtJ6GalO9QkS4kScq0EOTQ4ICmiMshDbZO/Pa6WR/hzyri
-         gJowRrgtBjtoeNXRe9naBL436/dNdMGJ1bEBN7oMXORzQf5j/FYxBpCjct0KFkoL3TXk
-         /9uQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWKs9+lDMV7f80LBglNgKrca2n80Z+wUIsRQJPu4E1/dIJwRNa3YkVDd7B7Ys9Gv3X2PWUykMHrktaM4AQ=@lists.linux.dev
-X-Gm-Message-State: AOJu0YxfEmoZZitu+7Rmai6+jQ8OzbcWQ27QiXkbZJTr3ghH0lMRlhc5
-	Gg3kXydV3SlotxmTfqgxZMxhvTbgiEdxXscd+fYZcK6kCjAglJt7gyY3ZBRAPIIw4A9DSGyA6Ep
-	1W2lhwJOUcdLFQuwC9krLm3Kd/ipssnU=
-X-Gm-Gg: AZuq6aLpOtUKOY0NTWXaBEIojkZuEFX9+mXOUoo8hgKC4zbnU6t9oiVPfpbjsVLtslA
-	r3xN4Uf2U8JOw2ZpY8MKH64gI1PEuUaUkbSQ/vmRcW7FiA3XazJj7kGl6sKrqO9huk+ZMhAc2wY
-	nBbVTRpMTdgHp1Womlzrvvnd/bSrdwH3fFr3eOExLxNqIDX78xjd5hP7rojRlMMKCv0kUuiqn2u
-	E1ZngPZkcHdkDUFWURA9pLXBvSFhMReJF+s7vPn29/aNGkMfRu/toTtIWcDFcYVpGIQQK5pzwmK
-	cFtXZomwPD/JKVS8QpG8PRYq99GN0Q==
-X-Received: by 2002:a05:6830:4129:b0:7cf:e4a1:8a9d with SMTP id
- 46e09a7af769-7d1a5297c29mr8159047a34.14.1770116602510; Tue, 03 Feb 2026
- 03:03:22 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UCWble3H"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90834C2BCB1
+	for <acpica-devel@lists.linux.dev>; Tue,  3 Feb 2026 12:43:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1770122608;
+	bh=mZd/rRJm+j2XLVtDNOJg8+wal/AD+zG+qijo2HsFn3k=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=UCWble3HP3lAK0/pCkoI1qYk1oTcyLbNOFK/L4g4DlAJ2jvUc2VKrLmeVyFmpw18K
+	 KeGnAcXSPfs3S8haumG2/+WVfafWkWk8FawUx2WLc6JB3BiiyDNGwsCiHid7whozdS
+	 uS3glrOOAMJDqXeAsX+Ii4uksIKjT747TvygdjlZ9w2NYhFBxKlhtMF6Okpk8HIMSX
+	 0XwF1nxAKuQa9f6BV7scwLGoqmnv+aBTikmMfhjJfwf0+13Z3tZDYMs86A5/btpMRQ
+	 pIE+WptD/Hoy8TLaP4BG5bs7fuWpBD9u85emqx4MhsS5vp+yD0DE/6LPEiS7VqzSNk
+	 AkO/bcGoFgT9Q==
+Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-40970f97638so3234662fac.3
+        for <acpica-devel@lists.linux.dev>; Tue, 03 Feb 2026 04:43:28 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCU2oMdRWmYV4FNBFCxik2JsikLxtKQtT8/43IJBGo6KWTcsloUnCufSQb+wYlpny2eCS2UEodOAIGoKZ6Y=@lists.linux.dev
+X-Gm-Message-State: AOJu0Yzy/1y4c+O4M4TXKozcImRx095R3rqY7lyRij6GlJWJYWCfta4y
+	3PC+pjUX2TSRY/OSjOLlV6VekKmIhN62b/Rx2DfCNxJfsTeb5k7G3ppl9oh6sko9GeXtE3AnA68
+	NoUENCD92JifLfUDetzGaWtIBVsYBbeI=
+X-Received: by 2002:a05:6870:670f:b0:3e8:44ec:3416 with SMTP id
+ 586e51a60fabf-409a6fa44f9mr8478282fac.46.1770122607156; Tue, 03 Feb 2026
+ 04:43:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20260201130334.3107-1-sef1548@gmail.com> <20260201130334.3107-2-sef1548@gmail.com>
- <20260201224801.609e94d0@pumpkin>
-In-Reply-To: <20260201224801.609e94d0@pumpkin>
-From: Nick Huang <sef1548@gmail.com>
-Date: Tue, 3 Feb 2026 19:03:09 +0800
-X-Gm-Features: AZwV_QhdUgCdkKepFW4cAvOKDupDDsaAd1xiSEssbfuI1gzYSGsQjtdmNg1EZyE
-Message-ID: <CABZAGREQwVUfRQkkTTXUYD_Uvkf0Wxa=dj7r_r85vMsTnUn67A@mail.gmail.com>
-Subject: =?UTF-8?B?UmU6IFtQQVRDSCAxLzJdIEFDUEk6IG5zcmVwYWlyMjogUmVwbGFjZSBPKG7CsikgYnViYg==?=
-	=?UTF-8?B?bGUgc29ydCB3aXRoIE8obiBsb2cgbikgc29ydF9yKCk=?=
-To: David Laight <david.laight.linux@gmail.com>
-Cc: "Rafael J . Wysocki" <rafael@kernel.org>, Robert Moore <robert.moore@intel.com>, 
-	Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, paladin@ntub.edu.tw, kusogame68@gmail.com, 
-	ceyanglab@gmail.com, n1136402@ntub.edu.tw
+References: <20260129104817.3752340-1-sumitg@nvidia.com> <20260129104817.3752340-5-sumitg@nvidia.com>
+In-Reply-To: <20260129104817.3752340-5-sumitg@nvidia.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Tue, 3 Feb 2026 13:43:15 +0100
+X-Gmail-Original-Message-ID: <CAJZ5v0gBHrGf4TpjqV+W5YynM+9_xWpepgrOiRegSYS9CvPV1g@mail.gmail.com>
+X-Gm-Features: AZwV_QjVRklFsBbxunUgZdAOD-oVH-VL28_adwBbZi1k2GS2C5NcJDp_4v584rY
+Message-ID: <CAJZ5v0gBHrGf4TpjqV+W5YynM+9_xWpepgrOiRegSYS9CvPV1g@mail.gmail.com>
+Subject: Re: [PATCH v7 4/7] ACPI: CPPC: add APIs and sysfs interface for min/max_perf
+To: Sumit Gupta <sumitg@nvidia.com>
+Cc: rafael@kernel.org, viresh.kumar@linaro.org, pierre.gondois@arm.com, 
+	zhenglifeng1@huawei.com, ionela.voinescu@arm.com, lenb@kernel.org, 
+	robert.moore@intel.com, corbet@lwn.net, rdunlap@infradead.org, 
+	ray.huang@amd.com, gautham.shenoy@amd.com, mario.limonciello@amd.com, 
+	perry.yuan@amd.com, zhanjie9@hisilicon.com, linux-pm@vger.kernel.org, 
+	linux-acpi@vger.kernel.org, linux-doc@vger.kernel.org, 
+	acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	linux-tegra@vger.kernel.org, treding@nvidia.com, jonathanh@nvidia.com, 
+	vsethi@nvidia.com, ksitaraman@nvidia.com, sanjayc@nvidia.com, 
+	nhartman@nvidia.com, bbasu@nvidia.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-David Laight <david.laight.linux@gmail.com> =E6=96=BC 2026=E5=B9=B42=E6=9C=
-=882=E6=97=A5=E9=80=B1=E4=B8=80 =E4=B8=8A=E5=8D=886:48=E5=AF=AB=E9=81=93=EF=
-=BC=9A
+On Thu, Jan 29, 2026 at 11:49=E2=80=AFAM Sumit Gupta <sumitg@nvidia.com> wr=
+ote:
 >
-> On Sun,  1 Feb 2026 13:03:33 +0000
-> Nick Huang <sef1548@gmail.com> wrote:
+> Add cppc_get/set_min_perf() and cppc_get/set_max_perf() APIs to read and
+> write the MIN_PERF and MAX_PERF registers.
 >
-> >    Replace the O(n=C2=B2) bubble sort implementation in acpi_ns_sort_li=
-st()
-> >    with the kernel's sort_r() function which uses heapsort, providing
-> >    O(n log n) time complexity.
-> >
-> >    This improves performance for large ACPI package lists while also
-> >    reducing code complexity by leveraging the existing kernel sort API.
+> Also add sysfs interfaces (min_perf, max_perf) in cppc_cpufreq driver
+> to expose these controls to userspace. The sysfs values are in frequency
+> (kHz) for consistency with other cpufreq sysfs files.
+
+But this is not cpufreq and it is not consistent.
+
+> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+> ---
+>  drivers/acpi/cppc_acpi.c       |  44 +++++++++
+>  drivers/cpufreq/cppc_cpufreq.c | 165 +++++++++++++++++++++++++++++++++
+>  include/acpi/cppc_acpi.h       |  20 ++++
+>  3 files changed, 229 insertions(+)
 >
-> What is the break even size?
-> While the heapsort is O(n long n) it is also more complicated.
-> There is also the cost of the function call - especially with all the
-> mitigations that distro kernels are likely to enable.
+> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+> index 08e62b58eb83..b2b8daab69ed 100644
+> --- a/drivers/acpi/cppc_acpi.c
+> +++ b/drivers/acpi/cppc_acpi.c
+> @@ -1753,6 +1753,50 @@ int cppc_set_auto_sel(int cpu, bool enable)
+>  }
+>  EXPORT_SYMBOL_GPL(cppc_set_auto_sel);
 >
-> For large datasets the d-cache locality of both sorts is particularly hor=
-rid.
-> It is almost certainly better to allocate an array of index:value pairs
-> and sort that.
-> For very big datasets you want to sort small sections (that fit in the
-> d-cache) and then use merge sorts (also O(n log n)) to combine them.
-> (Yes - this is how you sort data with 3 mag-tape drives....)
+> +/**
+> + * cppc_get_min_perf - Read minimum performance register.
+> + * @cpu: CPU from which to read register.
+> + * @min_perf: Return address.
+> + */
+> +int cppc_get_min_perf(int cpu, u64 *min_perf)
+> +{
+> +       return cppc_get_reg_val(cpu, MIN_PERF, min_perf);
+> +}
+> +EXPORT_SYMBOL_GPL(cppc_get_min_perf);
+> +
+> +/**
+> + * cppc_set_min_perf - Write minimum performance register.
+> + * @cpu: CPU to which to write register.
+> + * @min_perf: the desired minimum performance value to be updated.
+> + */
+> +int cppc_set_min_perf(int cpu, u32 min_perf)
+> +{
+> +       return cppc_set_reg_val(cpu, MIN_PERF, min_perf);
+> +}
+> +EXPORT_SYMBOL_GPL(cppc_set_min_perf);
+> +
+> +/**
+> + * cppc_get_max_perf - Read maximum performance register.
+> + * @cpu: CPU from which to read register.
+> + * @max_perf: Return address.
+> + */
+> +int cppc_get_max_perf(int cpu, u64 *max_perf)
+> +{
+> +       return cppc_get_reg_val(cpu, MAX_PERF, max_perf);
+> +}
+> +EXPORT_SYMBOL_GPL(cppc_get_max_perf);
+> +
+> +/**
+> + * cppc_set_max_perf - Write maximum performance register.
+> + * @cpu: CPU to which to write register.
+> + * @max_perf: the desired maximum performance value to be updated.
+> + */
+> +int cppc_set_max_perf(int cpu, u32 max_perf)
+> +{
+> +       return cppc_set_reg_val(cpu, MAX_PERF, max_perf);
+> +}
+> +EXPORT_SYMBOL_GPL(cppc_set_max_perf);
+> +
+>  /**
+>   * cppc_set_enable - Set to enable CPPC on the processor by writing the
+>   * Continuous Performance Control package EnableRegister field.
+> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufre=
+q.c
+> index 1421f30e87e4..8787185cd8b0 100644
+> --- a/drivers/cpufreq/cppc_cpufreq.c
+> +++ b/drivers/cpufreq/cppc_cpufreq.c
+> @@ -570,6 +570,35 @@ static void populate_efficiency_class(void)
+>  }
+>  #endif
 >
-> Oh, in any case, write separate functions for ascending/descending.
+> +/* Set min/max performance HW register and cache the value */
+> +static int cppc_cpufreq_set_mperf_reg(struct cpufreq_policy *policy,
+> +                                     u64 val, bool is_min)
+> +{
+> +       struct cppc_cpudata *cpu_data =3D policy->driver_data;
+> +       struct cppc_perf_caps *caps =3D &cpu_data->perf_caps;
+> +       unsigned int cpu =3D policy->cpu;
+> +       u32 perf;
+> +       int ret;
+> +
+> +       perf =3D clamp(val, caps->lowest_perf, caps->highest_perf);
+> +
+> +       ret =3D is_min ? cppc_set_min_perf(cpu, perf) :
+> +                      cppc_set_max_perf(cpu, perf);
+> +       if (ret) {
+> +               if (ret !=3D -EOPNOTSUPP)
+> +                       pr_warn("CPU%d: set %s_perf=3D%u failed (%d)\n",
+> +                               cpu, is_min ? "min" : "max", perf, ret);
+> +               return ret;
+> +       }
+> +
+> +       if (is_min)
+> +               cpu_data->perf_ctrls.min_perf =3D perf;
+> +       else
+> +               cpu_data->perf_ctrls.max_perf =3D perf;
+> +
+> +       return 0;
+> +}
+> +
+>  static struct cppc_cpudata *cppc_cpufreq_get_cpu_data(unsigned int cpu)
+>  {
+>         struct cppc_cpudata *cpu_data;
+> @@ -919,16 +948,152 @@ CPPC_CPUFREQ_ATTR_RW_U64(auto_act_window, cppc_get=
+_auto_act_window,
+>  CPPC_CPUFREQ_ATTR_RW_U64(energy_performance_preference_val,
+>                          cppc_get_epp_perf, cppc_set_epp)
 >
->         David
+> +/**
+> + * show_min_perf - Show minimum performance as frequency (kHz)
+> + * @policy: cpufreq policy
+> + * @buf: buffer to write the frequency value to
+> + *
+> + * Reads the MIN_PERF register and converts the performance value to
+> + * frequency (kHz).
+> + */
+> +static ssize_t show_min_perf(struct cpufreq_policy *policy, char *buf)
+> +{
+> +       struct cppc_cpudata *cpu_data =3D policy->driver_data;
+> +       struct cppc_perf_caps *caps =3D &cpu_data->perf_caps;
+> +       u64 perf;
+> +       int ret;
+> +
+> +       ret =3D cppc_get_min_perf(policy->cpu, &perf);
+> +       if (ret =3D=3D -EOPNOTSUPP)
+> +               return sysfs_emit(buf, "<unsupported>\n");
+> +       if (ret)
+> +               return ret;
+> +
+> +       /* Use lowest_perf if register is uninitialized or out of range *=
+/
+> +       if (perf =3D=3D 0 || perf < caps->lowest_perf)
+> +               perf =3D caps->lowest_perf;
+> +
+> +       /* Convert performance to frequency (kHz) for user */
+> +       return sysfs_emit(buf, "%u\n", cppc_perf_to_khz(caps, perf));
+> +}
+> +
+> +/**
+> + * store_min_perf - Set minimum performance from frequency (kHz)
+> + * @policy: cpufreq policy
+> + * @buf: buffer containing the frequency value
+> + * @count: size of @buf
+> + *
+> + * Converts the user-provided frequency (kHz) to a performance value
+> + * and writes it to the MIN_PERF register.
+> + */
+> +static ssize_t store_min_perf(struct cpufreq_policy *policy, const char =
+*buf,
+> +                             size_t count)
+> +{
+> +       struct cppc_cpudata *cpu_data =3D policy->driver_data;
+> +       unsigned int freq_khz;
+> +       u64 perf;
+> +       int ret;
+> +
+> +       ret =3D kstrtouint(buf, 0, &freq_khz);
+> +       if (ret)
+> +               return ret;
+> +
+> +       /* Convert frequency (kHz) to performance value */
+> +       perf =3D cppc_khz_to_perf(&cpu_data->perf_caps, freq_khz);
+> +
+> +       /*
+> +        * min_perf must be less than or equal to max_perf.
+> +        * Skip check if max_perf is 0 (uninitialized).
+> +        */
+> +       if (cpu_data->perf_ctrls.max_perf &&
+> +           perf > cpu_data->perf_ctrls.max_perf)
+> +               return -EINVAL;
+> +
+> +       ret =3D cppc_cpufreq_set_mperf_reg(policy, perf, true);
+> +       if (ret)
+> +               return ret;
+> +
+> +       return count;
+> +}
+> +
+> +/**
+> + * show_max_perf - Show maximum performance as frequency (kHz)
+> + * @policy: cpufreq policy
+> + * @buf: buffer to write the frequency value to
+> + *
+> + * Reads the MAX_PERF register and converts the performance value to
+> + * frequency (kHz).
+> + */
+> +static ssize_t show_max_perf(struct cpufreq_policy *policy, char *buf)
+> +{
+> +       struct cppc_cpudata *cpu_data =3D policy->driver_data;
+> +       struct cppc_perf_caps *caps =3D &cpu_data->perf_caps;
+> +       u64 perf;
+> +       int ret;
+> +
+> +       ret =3D cppc_get_max_perf(policy->cpu, &perf);
+> +       if (ret =3D=3D -EOPNOTSUPP)
+> +               return sysfs_emit(buf, "<unsupported>\n");
+> +       if (ret)
+> +               return ret;
+> +
+> +       /* Use highest_perf if register is uninitialized or out of range =
+*/
+> +       if (perf =3D=3D 0 || perf > caps->highest_perf)
+> +               perf =3D caps->highest_perf;
+> +
+> +       /* Convert performance to frequency (kHz) for user */
+> +       return sysfs_emit(buf, "%u\n", cppc_perf_to_khz(caps, perf));
+> +}
+> +
+> +/**
+> + * store_max_perf - Set maximum performance from frequency (kHz)
+> + * @policy: cpufreq policy
+> + * @buf: buffer containing the frequency value
+> + * @count: size of @buf
+> + *
+> + * Converts the user-provided frequency (kHz) to a performance value
+> + * and writes it to the MAX_PERF register.
+> + */
+> +static ssize_t store_max_perf(struct cpufreq_policy *policy, const char =
+*buf,
+> +                             size_t count)
+> +{
+> +       struct cppc_cpudata *cpu_data =3D policy->driver_data;
+> +       unsigned int freq_khz;
+> +       u64 perf;
+> +       int ret;
+> +
+> +       ret =3D kstrtouint(buf, 0, &freq_khz);
+> +       if (ret)
+> +               return ret;
+> +
+> +       /* Convert frequency (kHz) to performance value */
+> +       perf =3D cppc_khz_to_perf(&cpu_data->perf_caps, freq_khz);
+> +
+> +       /* max_perf must be greater than or equal to min_perf */
+> +       if (perf < cpu_data->perf_ctrls.min_perf)
+> +               return -EINVAL;
+> +
+> +       ret =3D cppc_cpufreq_set_mperf_reg(policy, perf, false);
+> +       if (ret)
+> +               return ret;
+> +
+> +       return count;
+> +}
+> +
+>  cpufreq_freq_attr_ro(freqdomain_cpus);
+>  cpufreq_freq_attr_rw(auto_select);
+>  cpufreq_freq_attr_rw(auto_act_window);
+>  cpufreq_freq_attr_rw(energy_performance_preference_val);
+> +cpufreq_freq_attr_rw(min_perf);
+> +cpufreq_freq_attr_rw(max_perf);
 >
-Hi David
-
-  Thank you for your reply and the detailed feedback.
-
-
-   I ran KUnit benchmarks to investigate your questions.
-
-
-   =3D=3D=3D Break-Even Point =3D=3D=3D
-
-
-   I compared bubble sort vs heapsort across various array sizes:
-
-
-     N  | Bubble(ns) | Heap(ns) | Faster
-
-    ----|------------|----------|--------
-
-      2 |         61 |       99 | bubble
-
-      3 |         63 |      115 | bubble
-
-      4 |         78 |      163 | bubble
-
-      5 |         96 |      215 | bubble
-
-      6 |        119 |      260 | bubble
-
-      8 |        177 |      388 | bubble
-
-     10 |        257 |      539 | bubble
-
-     12 |        415 |      721 | bubble
-
-     16 |        726 |     1044 | bubble
-
-     20 |       1106 |     1484 | bubble
-
-     32 |       2854 |     3091 | bubble
-
-
-   Bubble sort is faster for all tested sizes. The break-even point was not
-
-   reached within N=3D32, which covers all realistic ACPI use cases:
-
-
-     - _ALR: 2-10 entries (ambient light response)
-
-     - _CST: 2-8 entries (C-states)
-
-     - _PSS: 5-20 entries (P-states)
-
-     - _TSS: 2-16 entries (T-states)
-
-
-   As you noted, heapsort has additional overhead from function calls and
-
-   mitigations that outweigh its O(n log n) advantage at small N.
-
-
-   =3D=3D=3D Separate Ascending/Descending Functions =3D=3D=3D
-
-
-   I also tested combined vs separate sort functions as you suggested:
-
-
-     N  | Combined(ns) | Separate(ns) | Saved
-
-    ----|--------------|--------------|------
-
-      4 |           84 |           75 |  11%
-
-      8 |          179 |          175 |   3%
-
-     16 |          737 |          806 |  -9%
-
-
-   The results are mixed. Separate functions show marginal improvement at
-
-   small N, but the combined function performs better at N=3D16, possibly
-
-   due to instruction cache effects.
-
-
-   =3D=3D=3D Conclusion =3D=3D=3D
-
-
-   Given these results, replacing bubble sort with heapsort would likely
-
-   degrade performance for typical ACPI workloads. The existing bubble
-
-   sort implementation appears to be the right choice for this use case.
-
-
-
---=20
-Regards,
-Nick Huang
+>  static struct freq_attr *cppc_cpufreq_attr[] =3D {
+>         &freqdomain_cpus,
+>         &auto_select,
+>         &auto_act_window,
+>         &energy_performance_preference_val,
+> +       &min_perf,
+> +       &max_perf,
+>         NULL,
+>  };
+>
+> diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
+> index 3fc796c0d902..b358440cd0e2 100644
+> --- a/include/acpi/cppc_acpi.h
+> +++ b/include/acpi/cppc_acpi.h
+> @@ -174,6 +174,10 @@ extern int cppc_get_auto_act_window(int cpu, u64 *au=
+to_act_window);
+>  extern int cppc_set_auto_act_window(int cpu, u64 auto_act_window);
+>  extern int cppc_get_auto_sel(int cpu, bool *enable);
+>  extern int cppc_set_auto_sel(int cpu, bool enable);
+> +extern int cppc_get_min_perf(int cpu, u64 *min_perf);
+> +extern int cppc_set_min_perf(int cpu, u32 min_perf);
+> +extern int cppc_get_max_perf(int cpu, u64 *max_perf);
+> +extern int cppc_set_max_perf(int cpu, u32 max_perf);
+>  extern int amd_get_highest_perf(unsigned int cpu, u32 *highest_perf);
+>  extern int amd_get_boost_ratio_numerator(unsigned int cpu, u64 *numerato=
+r);
+>  extern int amd_detect_prefcore(bool *detected);
+> @@ -270,6 +274,22 @@ static inline int cppc_set_auto_sel(int cpu, bool en=
+able)
+>  {
+>         return -EOPNOTSUPP;
+>  }
+> +static inline int cppc_get_min_perf(int cpu, u64 *min_perf)
+> +{
+> +       return -EOPNOTSUPP;
+> +}
+> +static inline int cppc_set_min_perf(int cpu, u32 min_perf)
+> +{
+> +       return -EOPNOTSUPP;
+> +}
+> +static inline int cppc_get_max_perf(int cpu, u64 *max_perf)
+> +{
+> +       return -EOPNOTSUPP;
+> +}
+> +static inline int cppc_set_max_perf(int cpu, u32 max_perf)
+> +{
+> +       return -EOPNOTSUPP;
+> +}
+>  static inline int amd_get_highest_perf(unsigned int cpu, u32 *highest_pe=
+rf)
+>  {
+>         return -ENODEV;
+> --
+> 2.34.1
+>
