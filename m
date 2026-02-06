@@ -1,226 +1,199 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from MW6PR02CU001.outbound.protection.outlook.com (mail-westus2azon11012061.outbound.protection.outlook.com [52.101.48.61])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA4AD326D63
-	for <acpica-devel@lists.linux.dev>; Thu,  5 Feb 2026 19:27:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770319662; cv=none; b=Me3Vrf9Xw3tJ3zOBofQbfYRHSVu/JNxNXv/yMr5OtdYMfxLSOyqLLTkdc9VY+MDewIcJpdkV9tgRWztLRuR4DdgBYm4fNpFNhrfwToV+wPtULUzG2oI9gw4eim1pbpnAGbFBn2Kw4J4MgJ/jLKVT9nvAI4EJ31m68qmHm+rsbSY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770319662; c=relaxed/simple;
-	bh=lVqH9YXUENR1THUynMSza+9sAUW6necQO2XQfXpawAg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CO/cicIlQ55MiKQEE3dCIuKwb/BqAGxH8HNe6OdhK0yfJZtNpS3IqlRJdCyIJY8e47mEkmRJ8sEmOOCGlfod1xbLk13UNpcUmAOlaao8dJkUdqAZsWEYUZ2zYDrcdzhggHt93u2X425G7GdtFd/V6kByLzFX1lVGpFR4X6K+ezk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Swl6Bhwm; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2AB0365A18
+	for <acpica-devel@lists.linux.dev>; Fri,  6 Feb 2026 14:27:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.48.61
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1770388048; cv=fail; b=Ek2aym4NzPUjlEX0zVfnMwTQa1s69aLt3Rzepa7elD+cRNgU/dc39OAkKVV5pt1M/XmSbaRIbGlnR5UzXwvvYdhsjIu9jk0iFu7pYnKV8x5cunrCb9gnRUBgU45AYSGB0CsDctj+EC6nhNF/HGp9M0TMxrx0NH2s4+iEIvrRPp0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1770388048; c=relaxed/simple;
+	bh=4gqN5Tv8qvRJgQadXdeWj9YyElFbp4AZu42AU1gFtqU=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=i7B/6+XIi/zdoqn4fbhgm+O+QIhs/0ssEig7EUZ8B/aprX9YH9NvB/md/ZavPYjkP+0H72Q0pfVQk7QRNXgPFuKR7I7C0gdUoBN5uT4T1xHpph6775KcpmWTvLA4IIgYa5CHUbIxgHXQDEmnwOg92QhrduutZMjbByEm3uJNx2I=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=YzdrKM5d; arc=fail smtp.client-ip=52.101.48.61
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Swl6Bhwm"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDA55C2BCB9
-	for <acpica-devel@lists.linux.dev>; Thu,  5 Feb 2026 19:27:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770319661;
-	bh=lVqH9YXUENR1THUynMSza+9sAUW6necQO2XQfXpawAg=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Swl6Bhwm61In1+nItp1x7MaE5aIHKD1M0B8TgOGljboJRPxhQaKAnL6ptkSQ8GimH
-	 2eYkMNQobZ8NhGphqW8y/QLZBx1zJnEnnQocdmRBzbl5fmCihrm1Txusbgz7OYleWK
-	 5AiHzQQqOREwWy3PSqJQGA16W2LPoHaGEpCa9KdrBdYAil8LPwzIQZzBgXLBK+cAbp
-	 0KQQ54mc1ef/JWMTkkMoTXz7M0cnoCkSl86oSjf0P2h3SRz/DO/feMDG9wmFHgWMVt
-	 RgmtVo1qjE+8qpWKqG72RUX7Slj8xQ+ADOHRl/DyOOLHHyOvoTyHG4Vdn9oFmKEgMz
-	 oMF9sVU/GdEAw==
-Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-7d122733808so563332a34.2
-        for <acpica-devel@lists.linux.dev>; Thu, 05 Feb 2026 11:27:41 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVfYJBPnADPiGyuFxuCCdDB3X9RNxhqp5xTRCzmmQ/A5SBGhay3SJ0ryXxv8donQLn6wX5GR7Ar7VxHAMo=@lists.linux.dev
-X-Gm-Message-State: AOJu0YwWAJHZXY9N2Q8TbTNpuHqzLoltofK+n+Ph8StFczl82R6OF5Rz
-	aErshuK+YihWQjdySIvBp8fWLbquxRfHR1YB6MKsCdp+4D7Y5mWS4eYkICkt8A4vhpXa9RmDLZO
-	an1Umzgl7i1qnsBtJ2jJOMUcb//45rCE=
-X-Received: by 2002:a05:6830:828e:b0:7c5:3c7d:7e65 with SMTP id
- 46e09a7af769-7d4644296ebmr58017a34.16.1770319660609; Thu, 05 Feb 2026
- 11:27:40 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="YzdrKM5d"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=IgAwvVQOoaX/XeXKOrhmejv9lv0uggUn54BfLSrKAAyOKBrao4VsDMKV1FCNcyeMYdN3XeQ3dnsUGsvARswG72HXX/zxQzasLEVMpd8O0kim00eg4I7liqobRgtz25YoMjLnKz0C49hWj5kkCGdNxBG2B8b9PjpKrUi2sjDBdCdYjg8nFFPgPGdgMzjqg5kHRBYcfMXPzJnfZHIcCP5tN9eV6dWsF/QxxPBqVF7EqRxgcJHrI0TENPNBAS7sWDBmraxCYdArRp8nLcdWG7hkVjio5IgkourtzkePFqZd+rnhHGOZjMT/3NyUqgAZ+tJGSk5OvGfQjYUZNdcBArKyHA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=oDgMDfC+NSfOjEdR2ggxm/nQ4zb3fNIvP5K1cXPjOdA=;
+ b=IU9C5oBX120mrXzA8pytM8rnl92xWPmwF9S5HtZuUexwUmrq0AJvyFAVb2DheJw/y23v4iv8ziY9oPZnYHptBl8VefRzTRDqyvkv6Bah1+zRkafkY8G+UdBYNbqiRrMGa+8XVQIbkr59Gp36zmcnZkgEfthP/NV552Jk1gcTHMYE1GyGpJfBvpBTA2Y2ZD8L7AC/yEicURsq5mIdjag7MoRY1LYFXpI3SZy8c3CUiisXCM4UBHwgS6UXUpXhv+CDx5EDsA3Qk4bLl0DFAidpynYtSN7Zwe+Aef/Myy6xVSAVPOa4HT1hR17mHrqn0ALuTAL3rVk3t3HqWnhhaCOHUA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.233) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oDgMDfC+NSfOjEdR2ggxm/nQ4zb3fNIvP5K1cXPjOdA=;
+ b=YzdrKM5d6x+Z7yCzsnuYWQEnv1NDWHZpIZvxPPwrBmdGQAsF3RXl+NMSvISBNepy7ZXbwqEXUmkUSl4lWDWL04z3ckLQJeSWPD2BQ5PDjzfOvoCL25hTuI3jKsXZm++EcyKe+/K3RPz2wb18xMTtmP8vLf12XV2MkvLs6MkaxdQpPIzh7KI4lTQcliTJD/QoDTTT+nu2jaqhyDqdkdm4bIExBI7yVMk4y86wcPWV0vgiv8LOe2Dtq4qKpVDQ1l+ILnPzsj3UuPjLh931jw4h0FOvT5+psjFRSWa8Y6ooJ46w/yqVIuZvVBGChlHjmSeukdNrtVloPmETIxF7jmYarg==
+Received: from BYAPR07CA0037.namprd07.prod.outlook.com (2603:10b6:a03:60::14)
+ by CH2PR12MB9542.namprd12.prod.outlook.com (2603:10b6:610:27d::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9587.15; Fri, 6 Feb
+ 2026 14:27:20 +0000
+Received: from MWH0EPF000971E6.namprd02.prod.outlook.com
+ (2603:10b6:a03:60:cafe::35) by BYAPR07CA0037.outlook.office365.com
+ (2603:10b6:a03:60::14) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9587.14 via Frontend Transport; Fri,
+ 6 Feb 2026 14:27:18 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.233) by
+ MWH0EPF000971E6.mail.protection.outlook.com (10.167.243.74) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9587.10 via Frontend Transport; Fri, 6 Feb 2026 14:27:19 +0000
+Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
+ (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Fri, 6 Feb
+ 2026 06:27:09 -0800
+Received: from drhqmail202.nvidia.com (10.126.190.181) by
+ drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.20; Fri, 6 Feb 2026 06:27:08 -0800
+Received: from sumitg-l4t.nvidia.com (10.127.8.14) by mail.nvidia.com
+ (10.126.190.181) with Microsoft SMTP Server id 15.2.2562.20 via Frontend
+ Transport; Fri, 6 Feb 2026 06:27:01 -0800
+From: Sumit Gupta <sumitg@nvidia.com>
+To: <rafael@kernel.org>, <viresh.kumar@linaro.org>, <pierre.gondois@arm.com>,
+	<zhenglifeng1@huawei.com>, <ionela.voinescu@arm.com>, <lenb@kernel.org>,
+	<robert.moore@intel.com>, <corbet@lwn.net>, <rdunlap@infradead.org>,
+	<ray.huang@amd.com>, <gautham.shenoy@amd.com>, <mario.limonciello@amd.com>,
+	<perry.yuan@amd.com>, <zhanjie9@hisilicon.com>, <yumpusamongus@gmail.com>,
+	<dedekind1@gmail.com>, <linux-pm@vger.kernel.org>,
+	<linux-acpi@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+	<acpica-devel@lists.linux.dev>, <linux-kernel@vger.kernel.org>
+CC: <linux-tegra@vger.kernel.org>, <treding@nvidia.com>,
+	<jonathanh@nvidia.com>, <vsethi@nvidia.com>, <ksitaraman@nvidia.com>,
+	<sanjayc@nvidia.com>, <nhartman@nvidia.com>, <mochs@nvidia.com>,
+	<bbasu@nvidia.com>, <sumitg@nvidia.com>
+Subject: [PATCH v8 0/7] Enhanced autonomous selection and improvements
+Date: Fri, 6 Feb 2026 19:56:51 +0530
+Message-ID: <20260206142658.72583-1-sumitg@nvidia.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20260129104817.3752340-1-sumitg@nvidia.com> <20260129104817.3752340-5-sumitg@nvidia.com>
- <4432fa04-e67c-422a-aae4-2938be431985@huawei.com> <c96312c7-b13f-4f5c-9512-cc0382c1c77b@nvidia.com>
- <74f3e6cf-7c13-43e6-a8f6-2b46184b8ad6@gmail.com> <944fc140-e5c5-425f-a6ad-883e87eed8a3@nvidia.com>
- <CAJZ5v0hUdLsh8UK5G6rHHD49RQGYLAiU1J-11DK-fLTKnuqhUQ@mail.gmail.com>
- <CAJZ5v0ggzD0PEti-r20Sm-8n0gPigPh=NgE2Oa=UKzMmwB0jpw@mail.gmail.com>
- <211d9dfa-26e6-4fc3-b70b-f5fbca49e5fd@nvidia.com> <CAJZ5v0if=tMiyLB-efkzB67SniJS-2pCVv1-eN+vzZxqrdAM8Q@mail.gmail.com>
- <e7570bc3-5420-4743-8a75-8602559ca235@amd.com> <b8603fcb-b0ab-47da-ae90-e82f7b9bcd67@nvidia.com>
- <CAJZ5v0h4yOAW5y-B76EooeBLdMBmmL1hRf3PZ0udA+FYR4EPKQ@mail.gmail.com> <a1cdc4ee-1aaa-4685-b1a9-a6961a486cd8@nvidia.com>
-In-Reply-To: <a1cdc4ee-1aaa-4685-b1a9-a6961a486cd8@nvidia.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Thu, 5 Feb 2026 20:27:29 +0100
-X-Gmail-Original-Message-ID: <CAJZ5v0jCT5exCOz1gmHN+gXaamn-W0Yg0g8KN77vB5tUmsGFOw@mail.gmail.com>
-X-Gm-Features: AZwV_QjYbWmk9CpFs4_fQbMfpghyGM5juCTPanm_jBC_7JecsACmsCoO-gdsJcQ
-Message-ID: <CAJZ5v0jCT5exCOz1gmHN+gXaamn-W0Yg0g8KN77vB5tUmsGFOw@mail.gmail.com>
-Subject: Re: [PATCH v7 4/7] ACPI: CPPC: add APIs and sysfs interface for min/max_perf
-To: Sumit Gupta <sumitg@nvidia.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Mario Limonciello <mario.limonciello@amd.com>, 
-	Russell Haley <yumpusamongus@gmail.com>, "zhenglifeng (A)" <zhenglifeng1@huawei.com>, 
-	pierre.gondois@arm.com, viresh.kumar@linaro.org, ionela.voinescu@arm.com, 
-	corbet@lwn.net, rdunlap@infradead.org, ray.huang@amd.com, 
-	gautham.shenoy@amd.com, perry.yuan@amd.com, zhanjie9@hisilicon.com, 
-	linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org, 
-	linux-doc@vger.kernel.org, acpica-devel@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org, treding@nvidia.com, 
-	jonathanh@nvidia.com, vsethi@nvidia.com, ksitaraman@nvidia.com, 
-	sanjayc@nvidia.com, nhartman@nvidia.com, bbasu@nvidia.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-NVConfidentiality: public
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MWH0EPF000971E6:EE_|CH2PR12MB9542:EE_
+X-MS-Office365-Filtering-Correlation-Id: 07a1b340-875a-4760-d4f1-08de658bd5ea
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|82310400026|376014|7416014|36860700013|1800799024|13003099007|921020;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?fLA4gxEpX47TRWLMwGlHfht3UmtUTFz0wngwQRkBrDo1E1MA/8BL5IqPEQKP?=
+ =?us-ascii?Q?CCBQOAE3I0P05DgJWbS9wB0zI4xraGOEfl0oxjVNedORq8ZsgCjeNxHkPg76?=
+ =?us-ascii?Q?XtEauC0fdVFWNjR4uCdlpTfCUGT8O4kMX12bt8aHAZaP2aiJs64pcsOJbEsu?=
+ =?us-ascii?Q?wyJaGuqTbuGO0F07nkUevrKy1SZT3XeKyAoMdaXoXNfgRLgNP/a2aZy6VbO2?=
+ =?us-ascii?Q?iWoCMR10KHro1QqlAtnQ3fKZHuC5TETUuI+h6l4Dzr7X8A9MkWISfYOtAi8P?=
+ =?us-ascii?Q?j6GpGHw3oouc+ht79ib4YWz6rhEG0Fn+w0L8zQU5sN0UO0g0untCLxiyLVYk?=
+ =?us-ascii?Q?FB2YQyPp0++l9/6ryFw5q8qFcszqpUX2Cax4OzMRDdlKQc61t4ZVQnAWmYJS?=
+ =?us-ascii?Q?oryuL951MZVQJFnuTo3Zs+XDQzHUUeJy2txzs0vH0H/1vvuwkOfzBEPEvX5Y?=
+ =?us-ascii?Q?nPVnMSFcNi1/spSBHFPpCe78Ng14BFX34m007QNPM+5ynHj/6rkvPI9/sttV?=
+ =?us-ascii?Q?NI5szSHe0z9BpRgegFrkmpiMqhGCXd9+Rh9j1ZPF4sguvzthZLWRkYQMuqG2?=
+ =?us-ascii?Q?WYJ6UezVJXfdlfcye0SaTfFssGp4oMavd2ox1+qU53eK4GXV/ZR6+ZzMd997?=
+ =?us-ascii?Q?FGQNxU8gHcQfWJcHTP1BfJ7oMxzebAqpgjIq0Mfkuts8JI0oMFWy/EpgIMqh?=
+ =?us-ascii?Q?0q1YTjAttxF/ac90+ybdt5R5X2zys72D3NwS7P7Ip/faKSIJeOeRZ/9n/CJw?=
+ =?us-ascii?Q?JIEr9Cr89P+j2f++QG2ACYU4+17x77zGrpzfvPbm6eWJq4auCnf5Aa7wXx2k?=
+ =?us-ascii?Q?+pKnkLXjp1ue5qOzM+qzvQ7BUomijj2kzEJVCn9jKgIc6KsEJs4n5XShJj7e?=
+ =?us-ascii?Q?MHiaJJDf71h9yNGXK/lASzkohfoUOopoq9WHE+VBezL7vUkXNrRjTr1FWer9?=
+ =?us-ascii?Q?iZzxT1XANdhLrJqgPiaO4GDnnL9yIFQSDakZz4Vf+DhT2Gc5vbgK/yHFz6Qt?=
+ =?us-ascii?Q?i61SdldOixAZDYDXyCiFW/0KggcNFyCPftK3AQbfS4SmznrKxKuXWC1Rb5y7?=
+ =?us-ascii?Q?qPhbVxjXFfiJI2qnVkGTyKcTUQs9dV8co8QwWdY+dcsnvynuJHMsx/QRifvR?=
+ =?us-ascii?Q?AkvTXLLQiVyRL5ogsgTf20sVY4L9x3WNlzAbCPsW1esRB3ib5t5L5xQrMfS9?=
+ =?us-ascii?Q?qJSrvV/BGyncFV7ebgUThyy2RA2/0gM55hlYPSAMOHTv+4sVBc9tmvV2Kkmi?=
+ =?us-ascii?Q?hRc/+k3P0zx8ngB6Hm7iHLMBPVWrzsr3DZijNf/HDN5Fhbg8rpm+1mGr67bV?=
+ =?us-ascii?Q?BHdpkidAfM8vRgCi6rU3c2NS19/ThvhNomfBdb2EFBpl3cIdIX7DCcEajOVO?=
+ =?us-ascii?Q?6OFSLC6WFxgUbqtyeEZA9wVPIZp/o/rJ+ngcJzRYKe0+RnjLTxt9lvW4jW1H?=
+ =?us-ascii?Q?+xlPSGdmVWbKnCrYsPhnKMLifMaKOZcRiRhiFeVZTVAvVoChGc9PZG8ivJGw?=
+ =?us-ascii?Q?oqv8tnTze8/sn0EaU3Q60WECvKFflWFWatmWIqthfuFZ8sSgttdKrBDapGPs?=
+ =?us-ascii?Q?FxVbHk0ubFC0GtIxyQWMoYBA9kcdI2UHj/bcG7532GiK5599y9+46kGb+JF9?=
+ =?us-ascii?Q?nrPqRTAxhrmY7BraKXymnymU261VUACEK9WwQV3BiJckXyZVbX0n5Hmzv+i+?=
+ =?us-ascii?Q?JEhdfti5/QqXEvboJTLnzeCeebw=3D?=
+X-Forefront-Antispam-Report:
+	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(376014)(7416014)(36860700013)(1800799024)(13003099007)(921020);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	BdqCfyUzYITJQ+O8Wv1etgHY1GHgVJpsEk/s3zVe9gcbKWga0Yk4IDecbSJtNDmYao2jUV/kJL16sQ85xeP7CJ3Ni2fYsbdxLPqHI52wudbPOP0K7L/dzMMKni58BdYimU2LQyK24/zb0179L+4ok3JkWzQiCyaI73Ccg9LxlnZMM3S/9LGON7/9Cbw51Abcq8e6RmaTZo4u+2ureuKB0NoIEo4id9JxlXUC/PAiPqqq/Q9I+F3Ho6Rvc64ceKTe3zb6XoLhz4nY/n/MH9UAXXjZBwSUfI0dr0HbN/3usxKfQFkWCu6f5f5ZW+NnEU2khkOLMScUcKo0BNxMveAoObgIzVbh5hd67DokbBRhrN6Ri90/qAsYkKVRNrHuiIvxsd3POmAb/MdzrO0p7MwKQRrDmhEm/K3wHYS4+iKvQNLwXPgA3wmXz/Tg/6VnWEuH
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Feb 2026 14:27:19.6091
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 07a1b340-875a-4760-d4f1-08de658bd5ea
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	MWH0EPF000971E6.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB9542
 
-On Thu, Feb 5, 2026 at 8:21=E2=80=AFPM Sumit Gupta <sumitg@nvidia.com> wrot=
-e:
->
-> >>>>>>>>>>> Hi Sumit,
-> >>>>>>>>>>>
-> >>>>>>>>>>> I am thinking that maybe it is better to call these two sysfs
-> >>>>>>>>>>> interface
-> >>>>>>>>>>> 'min_freq' and 'max_freq' as users read and write khz instead
-> >>>>>>>>>>> of raw
-> >>>>>>>>>>> value.
-> >>>>>>>>>> Thanks for the suggestion.
-> >>>>>>>>>> Kept min_perf/max_perf to match the CPPC register names
-> >>>>>>>>>> (MIN_PERF/MAX_PERF), making it clear to users familiar with
-> >>>>>>>>>> CPPC what's being controlled.
-> >>>>>>>>>> The kHz unit is documented in the ABI.
-> >>>>>>>>>>
-> >>>>>>>>>> Thank you,
-> >>>>>>>>>> Sumit Gupta
-> >>>>>>>>> On my x86 machine with kernel 6.18.5, the kernel is exposing ra=
-w
-> >>>>>>>>> values:
-> >>>>>>>>>
-> >>>>>>>>>> grep . /sys/devices/system/cpu/cpu0/acpi_cppc/*
-> >>>>>>>>> /sys/devices/system/cpu/cpu0/acpi_cppc/feedback_ctrs:ref:342904=
-018856568
-> >>>>>>>>>
-> >>>>>>>>> del:437439724183386
-> >>>>>>>>> /sys/devices/system/cpu/cpu0/acpi_cppc/guaranteed_perf:63
-> >>>>>>>>> /sys/devices/system/cpu/cpu0/acpi_cppc/highest_perf:88
-> >>>>>>>>> /sys/devices/system/cpu/cpu0/acpi_cppc/lowest_freq:0
-> >>>>>>>>> /sys/devices/system/cpu/cpu0/acpi_cppc/lowest_nonlinear_perf:36
-> >>>>>>>>> /sys/devices/system/cpu/cpu0/acpi_cppc/lowest_perf:1
-> >>>>>>>>> /sys/devices/system/cpu/cpu0/acpi_cppc/nominal_freq:3900
-> >>>>>>>>> /sys/devices/system/cpu/cpu0/acpi_cppc/nominal_perf:62
-> >>>>>>>>> /sys/devices/system/cpu/cpu0/acpi_cppc/reference_perf:62
-> >>>>>>>>> /sys/devices/system/cpu/cpu0/acpi_cppc/wraparound_time:18446744=
-073709551615
-> >>>>>>>>>
-> >>>>>>>>>
-> >>>>>>>>> It would be surprising for a nearby sysfs interface with very
-> >>>>>>>>> similar
-> >>>>>>>>> names to use kHz instead.
-> >>>>>>>>>
-> >>>>>>>>> Thanks,
-> >>>>>>>>>
-> >>>>>>>>> Russell Haley
-> >>>>>>>> I can rename to either of the below:
-> >>>>>>>> - min/max_freq: might be confused with scaling_min/max_freq.
-> >>>>>>>> - min/max_perf_freq: keeps the CPPC register association clear.
-> >>>>>>>>
-> >>>>>>>> Rafael, Any preferences here?
-> >>>>>>> On x86 the units in CPPC are not kHz and there is no easy reliabl=
-e
-> >>>>>>> way
-> >>>>>>> to convert them to kHz.
-> >>>>>>>
-> >>>>>>> Everything under /sys/devices/system/cpu/cpu0/acpi_cppc/ needs to=
- be
-> >>>>>>> in CPPC units, not kHz (unless, of course, kHz are CPPC units).
-> >>>>>
-> >>>>> In v1 [1], these controls were added under acpi_cppc sysfs.
-> >>>>> After discussion, they were moved under cpufreq, and [2] was merged
-> >>>>> first.
-> >>>>> The decision to use frequency scale instead of raw perf was made
-> >>>>> for consistency with other cpufreq interfaces as per (v3 [3]).
-> >>>>>
-> >>>>> CPPC units in our case are also not in kHz. The kHz conversion uses=
- the
-> >>>>> existing cppc_perf_to_khz()/cppc_khz_to_perf() helpers which are
-> >>>>> already
-> >>>>> used in cppc_cpufreq attributes. So the conversion behavior is
-> >>>>> consistent
-> >>>>> with existing cpufreq interfaces.
-> >>>>>
-> >>>>> [1]
-> >>>>> https://lore.kernel.org/lkml/076c199c-a081-4a7f-956c-f395f4d5e156@n=
-vidia.com/
-> >>>>>
-> >>>>> [2]
-> >>>>> https://lore.kernel.org/all/20250507031941.2812701-1-zhenglifeng1@h=
-uawei.com/
-> >>>>>
-> >>>>> [3]
-> >>>>> https://lore.kernel.org/lkml/80e16de0-63e4-4ead-9577-4ebba9b1a02d@n=
-vidia.com/
-> >>>>>
-> >>>>>
-> >>>>>> That said, the new attributes will show up elsewhere.
-> >>>>>>
-> >>>>>> So why do you need to add these things in the first place?
-> >>>>> Currently there's no sysfs interface to dynamically control the
-> >>>>> MIN_PERF/MAX_PERF bounds when using autonomous mode. This helps
-> >>>>> users tune power and performance at runtime.
-> >>>> So what about scaling_min_freq and scaling_max_freq?
-> >>>>
-> >>>> intel_pstate uses them for an analogous purpose.
-> >>> FWIW same thing for amd_pstate.
-> >>>
-> >> intel_pstate and amd_pstate seem to use setpolicy() to update
-> >> scaling_min/max_freq and program MIN_PERF/MAX_PERF.
-> > That's one possibility.
-> >
-> > intel_pstate has a "cpufreq-compatible" mode (in which case it is
-> > called intel_cpufreq) and still uses HWP (which is the underlying
-> > mechanism for CPPC on Intel platforms).
-> >
-> >> However, as discussed in v5 [1], cppc_cpufreq cannot switch to
-> >> a setpolicy based approach because:
-> >> - We need per-CPU control of auto_sel: With setpolicy, we can't
-> >>     dynamically disable auto_sel for individual CPUs and return to the
-> >>     target() (no target hook available).
-> >>     intel_pstate and amd_pstate seem to set HW autonomous mode for
-> >>     all CPUs, not per-CPU.
-> >> - We need to retain the target() callback - the CPPC spec allows
-> >>     desired_perf to be used even when autonomous selection is enabled.
-> > intel_pstate in the "cpufreq-compatible" mode updates its HWP min and
-> > max limits when .target() (or .fast_switch() or .adjust_perf()) is
-> > called.
-> >
-> > I guess that would not be sufficient in cppc_cpufreq for some reason?
-> >
-> >> [1]
-> >> https://lore.kernel.org/lkml/66f58f43-631b-40a0-8d42-4e90cd24b757@arm.=
-com/
->
-> We can do the same as intel_cpufreq. CPPC spec allows setting
-> MIN_PERF/MAX_PERF even when auto_selection is disabled, so we will
-> have to update them always from policy limits in target().
->
-> However, this would override BIOS-configured MIN_PERF/MAX_PERF values.
-> Since policy->min/max are set from hardware capabilities during init,
-> any governor would overwrite BIOS bounds with policy limits (hardware
-> capability bounds) on their first frequency request - even when user
-> hasn't explicitly changed scaling_min/max_freq.
->
-> Does intel_cpufreq also override BIOS-configured HWP min/max values?
+This patch series improves the CPPC cpufreq driver with new ACPI APIs
+and enhancements for Autonomous Selection (auto_select).
 
-Yes, it does.
+CPPC auto_select enables hardware-driven CPU performance scaling using
+Energy Performance Preference (EPP) hints. Currently, there's limited
+runtime control and visibility into CPPC performance registers.
 
-> Should we preserve BIOS-configured values until user explicitly changes
-> scaling_min/max_freq?
+The series adds cppc_get_perf() API to read performance controls, updates
+MIN_PERF/MAX_PERF in target callbacks using existing scaling_min/max_freq
+interface similar to intel_cpufreq HWP handling, and exposes perf_limited
+register via sysfs to detect throttling events.
 
-Why would that be useful?
+The patches are grouped as below:
+- Patch 1: Add cppc_get_perf() API (independent).
+- Patch 2: Warn on missing mandatory DESIRED_PERF (independent).
+- Patch 3: Extend cppc_set_epp_perf for FFH/SystemMemory (independent).
+- Patch 4: Update cached perf_ctrls on sysfs write (independent).
+- Patch 5: Update MIN_PERF/MAX_PERF in target callbacks (depends on 4).
+- Patch 6-7: APIs, sysfs and doc for perf_limited (independent).
 
-> Is there any mechanism in cpufreq core to detect explicit user changes to=
- scaling_min/max_freq?
+---
+v7[7] -> v8:
+- patch 4 (v7): Dropped min/max_perf sysfs patch.
+- patch 5 (v8): New patch to update MIN/MAX_PERF in target callbacks
+  using scaling_min/max_freq interface similar to intel_cpufreq.
+- patch 1-4, 6-7 (v8): Added Reviewed-by from Pierre and Lifeng on v7.
 
-Not today, but since scaling_min/max_freq have their own freq QoS
-requests, it should be doable if need be.
+Sumit Gupta (7):
+  ACPI: CPPC: Add cppc_get_perf() API to read performance controls
+  ACPI: CPPC: Warn on missing mandatory DESIRED_PERF register
+  ACPI: CPPC: Extend cppc_set_epp_perf() for FFH/SystemMemory
+  cpufreq: CPPC: Update cached perf_ctrls on sysfs write
+  cpufreq: cppc: Update MIN_PERF/MAX_PERF in target callbacks
+  ACPI: CPPC: add APIs and sysfs interface for perf_limited
+  cpufreq: CPPC: Add sysfs documentation for perf_limited
 
-In any case, I would very much prefer using the existing
-scaling_min/max_freq interface, even if that would require some
-additional plumbing, to adding new sysfs attributes pretty much for
-the same purpose that would only be used by one driver.
+ .../ABI/testing/sysfs-devices-system-cpu      |  18 ++
+ drivers/acpi/cppc_acpi.c                      | 170 +++++++++++++++++-
+ drivers/cpufreq/cppc_cpufreq.c                |  83 ++++++++-
+ include/acpi/cppc_acpi.h                      |  20 +++
+ 4 files changed, 285 insertions(+), 6 deletions(-)
+
+[1] https://lore.kernel.org/lkml/20250211103737.447704-1-sumitg@nvidia.com/
+[2] https://lore.kernel.org/lkml/20250823200121.1320197-1-sumitg@nvidia.com/
+[3] https://lore.kernel.org/lkml/20251001150104.1275188-1-sumitg@nvidia.com/
+[4] https://lore.kernel.org/lkml/20251105113844.4086250-1-sumitg@nvidia.com/
+[5] https://lore.kernel.org/lkml/20251223121307.711773-1-sumitg@nvidia.com/
+[6] https://lore.kernel.org/lkml/20260120145623.2959636-1-sumitg@nvidia.com/
+[7] https://lore.kernel.org/lkml/20260129104817.3752340-1-sumitg@nvidia.com/
+
+-- 
+2.34.1
+
