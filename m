@@ -1,67 +1,112 @@
-Received: from mxhk.zte.com.cn (mxhk.zte.com.cn [160.30.148.35])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f65.google.com (mail-pj1-f65.google.com [209.85.216.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4142136654A
-	for <acpica-devel@lists.linux.dev>; Mon,  9 Feb 2026 10:14:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=160.30.148.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07ABB284898
+	for <acpica-devel@lists.linux.dev>; Mon,  9 Feb 2026 14:17:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770632093; cv=none; b=X8A748iyRR3uMSHyVK1WYXA5s2DwjBRMebS6Ga/g8TltI1+ywP973xihUJLTfuQfIN2Tg3xmWiSPpMzhXweILyX26v966VGZ2CFNsTw489vQQ8Fe/jBkT43RxNyUD89ZFto2fUIrA2apX5EPaZeyuNWB/CNvDxGg9nQnqjP7iuA=
+	t=1770646624; cv=none; b=LoILPT3BrF5LPXm9KXiVdD7+Sv0iLyYWIA/+1Ca+XGNh/x3LPmZyrTlkfpesK5WvumwUzfxEYnFAfSLU/NQACApEJj3vzsJLw+nmGv702hWLrXtIxjubScCCkMobGDh444mo0N0e2+xw+fliJsNVPBJ+9LET5v4kC0TtHuPL4/A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770632093; c=relaxed/simple;
-	bh=Ta/VVUsj0jlGYnAYKXVuMgm27SvKAKIxZN6Ip4o2U+M=;
-	h=Message-Id:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bHBA2lBPHWF38sZbNwUercu37Meu13LCwJBcF2VU4Y37m9K5glt7RBBS7HWsfbzXv/1MuZseNOoRfrRnDudO8I8u5WNRCUa6vGOW0BH1pRf/WXWRK/lwWKNF9AquS29uQDhQ+sUWbZ/zaOhI9GZy3JqatP6sD2lvlYqe/71zOGM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sanechips.com.cn; spf=pass smtp.mailfrom=sanechips.com.cn; arc=none smtp.client-ip=160.30.148.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sanechips.com.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sanechips.com.cn
-Received: from mxct.zte.com.cn (unknown [192.168.251.13])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mxhk.zte.com.cn (FangMail) with ESMTPS id 4f8gY74vggz8Xs71
-	for <acpica-devel@lists.linux.dev>; Mon, 09 Feb 2026 18:14:51 +0800 (CST)
-Received: from mse-fl1.zte.com.cn (unknown [10.5.228.132])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mxct.zte.com.cn (FangMail) with ESMTPS id 4f8gXq59RBz4xQXF;
-	Mon, 09 Feb 2026 18:14:35 +0800 (CST)
-Received: (from root@localhost)
-	by mse-fl1.zte.com.cn id 619AEZcC084692;
-	Mon, 9 Feb 2026 18:14:35 +0800 (+08)
-	(envelope-from gong.shuai@sanechips.com.cn)
-Message-Id: <202602091014.619AEZcC084692@mse-fl1.zte.com.cn>
-Received: from szxl2zmapp07.zte.com.cn ([10.1.32.52])
-	by mse-fl1.zte.com.cn with SMTP id 619A7uLN077329;
-	Mon, 9 Feb 2026 18:07:56 +0800 (+08)
-	(envelope-from gong.shuai@sanechips.com.cn)
-Received: from localhost.localdomain (unknown [10.230.214.35])
-	by smtp (Zmail) with SMTP;
-	Mon, 9 Feb 2026 18:07:59 +0800
-X-Zmail-TransId: 3e816989b1d3001-f75c0
-X-Zmail-LocalSMTP: 1
-X-Zmail-RealSender: gong.shuai@sanechips.com.cn
-From: Gong Shuai <gong.shuai@sanechips.com.cn>
+	s=arc-20240116; t=1770646624; c=relaxed/simple;
+	bh=gfTEdIsMmUOuJYpGHiGGK9+1z6kQlfXxsYz33NHV2IE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Ng84eB261rAg9U43Wy8J/hMemLMOY08pI5x6/TqtravoLDZ2LewIX4g1QnjLbW+1MMruW/tyHTbAjI3xxCGZlp+ZwYgiVTKa7vaM1zs/TlL7n1/4vXLRb8CTG3kmYzn84N6ihnsD3bPS5BKqFPsn+dMl+Weg3UsGldWoFY8kpag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HeuErdDJ; arc=none smtp.client-ip=209.85.216.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HeuErdDJ"
+Received: by mail-pj1-f65.google.com with SMTP id 98e67ed59e1d1-35305538592so2684928a91.0
+        for <acpica-devel@lists.linux.dev>; Mon, 09 Feb 2026 06:17:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1770646623; x=1771251423; darn=lists.linux.dev;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=J+vhAUWptZLQYZPG8ROuiqprar1JCQQK4npIFBepuBs=;
+        b=HeuErdDJIOeNg/43gR3nb82ySS1Id+V7GPtrV+9ilBGVLeLcLWPnuho0S5QkQwIQIw
+         sia1fVouB+sFrnPAzXJMqwtLuvtEWCypT/xO/8+CX/fagS/Uz/0OgjfE7JrCwImz1ce8
+         Quvz5TvEWUEkM9kpiPouWXNCYW2otYYfK6ysEWB/PVv++2n4H3fzCJhVz079AZ2e8/5b
+         ohP0LwzSwFbchqfwUfPqnm+2dPy3xHg4OY3Y0gp4Xc8Qm3OG2UzxgNG2bVHd6hFRfsNi
+         wsa8WtlpxcYkgEX6+4HysiYQbAcjTkGH6iGH9jjauuJwKySsfazQI4OPiQeWelSK0jcL
+         8LXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1770646623; x=1771251423;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=J+vhAUWptZLQYZPG8ROuiqprar1JCQQK4npIFBepuBs=;
+        b=DWKfGyTuRWNZnw8rnepz7zChHA7etfFb0MsfbngbIMFqXLg4a8/VTBzB8N0FwIydHS
+         EYHdHfjzZhANg/qBLviG6gxzXbZyUi/oSMZ8gEBYPJblz8iiwIukh+KJWMJPTzcEJzy6
+         FQFlb4v0CZaHFNddaZrkJ0LcwVpg5Gdqna7TFm1gGPsjB/2ohKVG6yBvAkn5rvech3Wb
+         3kA2XPc4EvghC/IbApBlJTpkX3Nywm0EAra+J23iokVL5WgTLI2+hi+Or3oK3TFfSVgA
+         TObDnf68k/zonyI6k9z29OtMlSOZ2zq4TeXe5ub5pbQjw/IPM3n+BjgGRVYt7Vn9M+pU
+         Js3Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWki7+aZAz1i11W+6hTSPtpPNFrdf+MgQ1kFmLArkKrZE3fW9e9MCLv3Hl7VoK12gClnYD3k0+ofYwoN8I=@lists.linux.dev
+X-Gm-Message-State: AOJu0YwkgC/0y94yMWmyH3hIRY1LfhdLU4BzsP8KF3+R3m/UjrZslZCS
+	OyyExpW83RalbALDXmzk57DI5QWB9L8gFGE7wLopuE78JirAEhg/DVCo
+X-Gm-Gg: AZuq6aK48tG79E6SlEb//tnI6Pc6m7w6o4sBubNW3mMq4HYWc4PXBbpV4/4sodFxTAC
+	CILuMqONZvskFUYmmhtGcLMkS0bN9WkN45XViqtxzg7ujp+HiD2+2CEPhqJR9Mjch7JwuOX7VQ6
+	+K2zbzfu32pMSyenbnzjkekntimXT1X4yj8+Tr8bvFqjTLX9eFAqmQlATl2fZb+5kLHGx6ajcXX
+	gFqAlqHl00xv2fL9rugK2FLjZvyQh9L85xRiB5GrZjjFp7QwfL4xYzMNP8lGLj6xePZ/Z8RyoJf
+	+5HfGw1kDJdKH5LhZH4rRK/1U6PO3U2iHXzpf341rfyjDwuznlzAorfv6qMjMxXhBuHvf6qr6IH
+	1IQi/1aRzNY6T/Hcns+xqpxr6kuwTmmDqjgO+lbvLz9dfaOkSCz0eJpP4R2UPA5GicQqou0sEpP
+	kcCvPTY2epsQV3pTXxWR/CFgeuYsSewiGZVw==
+X-Received: by 2002:a17:90a:d010:b0:356:2eac:b650 with SMTP id 98e67ed59e1d1-3562eacbbccmr4038749a91.3.1770646623298;
+        Mon, 09 Feb 2026 06:17:03 -0800 (PST)
+Received: from localhost.localdomain ([106.38.154.106])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3549c5955a7sm14852844a91.17.2026.02.09.06.16.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Feb 2026 06:17:02 -0800 (PST)
+From: Gong Shuai <gsh517025@gmail.com>
+X-Google-Original-From: Gong Shuai <gong.shuai@sanechips.com.cn>
 To: fustini@kernel.org
-Cc: gong.shuai@sanechips.com.cn, Dave.Martin@arm.com,
-        acpica-devel@lists.linux.dev, alex@ghiti.fr, aou@eecs.berkeley.edu,
-        aricciardi@baylibre.com, atish.patra@linux.dev, atishp@rivosinc.com,
-        babu.moger@amd.com, ben.horgan@arm.com, conor+dt@kernel.org,
-        cp0613@linux.alibaba.com, cuiyunhui@bytedance.com,
-        devicetree@vger.kernel.org, fenghua.yu@intel.com,
-        guo.wenjia23@zte.com.cn, james.morse@arm.com, krzk+dt@kernel.org,
-        lenb@kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        liu.qingtao2@zte.com.cn, liwei1518@gmail.com, mindal@semihalf.com,
-        npitre@baylibre.com, palmer@dabbelt.com, paul.walmsley@sifive.com,
-        peternewman@google.com, pjw@kernel.org, rafael@kernel.org,
-        reinette.chatre@intel.com, rkrcmar@ventanamicro.com,
-        robert.moore@intel.com, robh@kernel.org, samuel.holland@sifive.com,
-        sunilvl@ventanamicro.com, tony.luck@intel.com, vasu@rivosinc.com,
-        ved@rivosinc.com, x86@kernel.org, zhiwei_liu@linux.alibaba.com
+Cc: Dave.Martin@arm.com,
+	acpica-devel@lists.linux.dev,
+	alex@ghiti.fr,
+	aou@eecs.berkeley.edu,
+	aricciardi@baylibre.com,
+	atish.patra@linux.dev,
+	atishp@rivosinc.com,
+	babu.moger@amd.com,
+	ben.horgan@arm.com,
+	conor+dt@kernel.org,
+	cp0613@linux.alibaba.com,
+	cuiyunhui@bytedance.com,
+	devicetree@vger.kernel.org,
+	fenghua.yu@intel.com,
+	guo.wenjia23@zte.com.cn,
+	james.morse@arm.com,
+	krzk+dt@kernel.org,
+	lenb@kernel.org,
+	linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	liu.qingtao2@zte.com.cn,
+	liwei1518@gmail.com,
+	mindal@semihalf.com,
+	npitre@baylibre.com,
+	palmer@dabbelt.com,
+	paul.walmsley@sifive.com,
+	peternewman@google.com,
+	pjw@kernel.org,
+	rafael@kernel.org,
+	reinette.chatre@intel.com,
+	rkrcmar@ventanamicro.com,
+	robert.moore@intel.com,
+	robh@kernel.org,
+	samuel.holland@sifive.com,
+	sunilvl@ventanamicro.com,
+	tony.luck@intel.com,
+	vasu@rivosinc.com,
+	ved@rivosinc.com,
+	x86@kernel.org,
+	zhiwei_liu@linux.alibaba.com,
+	gong.shuai@sanechips.com.cn
 Subject: Re: [PATCH RFC v2 08/17] RISC-V: QoS: add resctrl interface for CBQRI controllers
-Date: Mon,  9 Feb 2026 18:07:15 +0800
-X-Mailer: git-send-email 2.43.0
+Date: Mon,  9 Feb 2026 22:16:49 +0800
+Message-ID: <20260209141649.330184-1-gong.shuai@sanechips.com.cn>
+X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260128-ssqosid-cbqri-v2-8-dca586b091b9@kernel.org>
 References: <20260128-ssqosid-cbqri-v2-8-dca586b091b9@kernel.org>
 Precedence: bulk
@@ -70,135 +115,60 @@ List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-X-ZMAIL-USEORIGINALEMLTOOUTBOUND: true
 Content-Transfer-Encoding: 8bit
-Content-Type: multipart/mixed;
-	boundary="=====_001_next====="
-X-MAIL:mse-fl1.zte.com.cn 619AEZcC084692
-X-MSS: AUDITRELEASE@mse-fl1.zte.com.cn
-X-TLS: YES
-X-SPF-DOMAIN: sanechips.com.cn
-X-ENVELOPE-SENDER: gong.shuai@sanechips.com.cn
-X-SPF: None
-X-SOURCE-IP: 192.168.251.13 unknown Mon, 09 Feb 2026 18:14:51 +0800
-X-Fangmail-Anti-Spam-Filtered: true
-X-Fangmail-MID-QID: 6989B39B.000/4f8gY74vggz8Xs71
 
+Hi, Drew
 
+> Add interface for CBQRI controller drivers to make use of the resctrl
+> filesystem.
+> 
+> Co-developed-by: Adrien Ricciardi <aricciardi@baylibre.com>
+> Signed-off-by: Adrien Ricciardi <aricciardi@baylibre.com>
+> Signed-off-by: Drew Fustini <fustini@kernel.org>
+>
+> ...
+>
+> +u32 resctrl_arch_get_config(struct rdt_resource *r, struct rdt_ctrl_domain *d,
+> +			    u32 closid, enum resctrl_conf_type type)
+> +{
+> +	struct cbqri_resctrl_dom *hw_dom;
+> +	struct cbqri_controller *ctrl;
+> +	int reg_offset;
+> +	u32 percent;
+> +	u32 rbwb;
+> +	u64 reg;
+> +	int err;
+> +
+> +	hw_dom = container_of(d, struct cbqri_resctrl_dom, resctrl_ctrl_dom);
+> +
+> +	ctrl = hw_dom->hw_ctrl;
+> +
+> +	if (!r->alloc_capable)
+> +		return resctrl_get_default_ctrl(r);
+> +
+> +	switch (r->rid) {
+> +	case RDT_RESOURCE_L2:
+> +	case RDT_RESOURCE_L3:
+> +		/* Clear cc_block_mask before read limit operation */
+> +		cbqri_set_cbm(ctrl, 0);
+> +
+> +		/* Capacity read limit operation for RCID (closid) */
+> +		err = cbqri_cc_alloc_op(ctrl, CBQRI_CC_ALLOC_CTL_OP_READ_LIMIT, type, closid);
 
---=====_001_next=====
-Content-Type: multipart/related;
-	boundary="=====_002_next====="
+It looks like the parameter order might be incorrect. I believe it
+should be:
+cbqri_cc_alloc_op(ctrl, CBQRI_CC_ALLOC_CTL_OP_READ_LIMIT, closid, type);
 
+> +		if (err < 0) {
+> +			pr_err("%s(): operation failed: err = %d", __func__, err);
+> +			return resctrl_get_default_ctrl(r);
+> +		}
+> ...
 
---=====_002_next=====
-Content-Type: multipart/alternative;
-	boundary="=====_003_next====="
+Sorry for the resend, my company email had some formatting issues,
+so I'm sending this from my personal address.
 
+Hope it doesn't cause any trouble!
 
---=====_003_next=====
-Content-Type: text/plain;
-	charset="UTF-8"
-Content-Transfer-Encoding: base64
-
-SGksIERyZXcNCg0KPiBBZGQgaW50ZXJmYWNlIGZvciBDQlFSSSBjb250cm9sbGVyIGRyaXZlcnMg
-dG8gbWFrZSB1c2Ugb2YgdGhlIHJlc2N0cmwNCj4gZmlsZXN5c3RlbS4NCj4gDQo+IENvLWRldmVs
-b3BlZC1ieTogQWRyaWVuIFJpY2NpYXJkaSA8YXJpY2NpYXJkaUBiYXlsaWJyZS5jb20+DQo+IFNp
-Z25lZC1vZmYtYnk6IEFkcmllbiBSaWNjaWFyZGkgPGFyaWNjaWFyZGlAYmF5bGlicmUuY29tPg0K
-PiBTaWduZWQtb2ZmLWJ5OiBEcmV3IEZ1c3RpbmkgPGZ1c3RpbmlAa2VybmVsLm9yZz4NCj4gLS0t
-DQo+DQo+IC4uLg0KPg0KPiArdTMyIHJlc2N0cmxfYXJjaF9nZXRfY29uZmlnKHN0cnVjdCByZHRf
-cmVzb3VyY2UgKnIsIHN0cnVjdCByZHRfY3RybF9kb21haW4gKmQsDQo+ICsJCQkgICAgdTMyIGNs
-b3NpZCwgZW51bSByZXNjdHJsX2NvbmZfdHlwZSB0eXBlKQ0KPiArew0KPiArCXN0cnVjdCBjYnFy
-aV9yZXNjdHJsX2RvbSAqaHdfZG9tOw0KPiArCXN0cnVjdCBjYnFyaV9jb250cm9sbGVyICpjdHJs
-Ow0KPiArCWludCByZWdfb2Zmc2V0Ow0KPiArCXUzMiBwZXJjZW50Ow0KPiArCXUzMiByYndiOw0K
-PiArCXU2NCByZWc7DQo+ICsJaW50IGVycjsNCj4gKw0KPiArCWh3X2RvbSA9IGNvbnRhaW5lcl9v
-ZihkLCBzdHJ1Y3QgY2JxcmlfcmVzY3RybF9kb20sIHJlc2N0cmxfY3RybF9kb20pOw0KPiArDQo+
-ICsJY3RybCA9IGh3X2RvbS0+aHdfY3RybDsNCj4gKw0KPiArCWlmICghci0+YWxsb2NfY2FwYWJs
-ZSkNCj4gKwkJcmV0dXJuIHJlc2N0cmxfZ2V0X2RlZmF1bHRfY3RybChyKTsNCj4gKw0KPiArCXN3
-aXRjaCAoci0+cmlkKSB7DQo+ICsJY2FzZSBSRFRfUkVTT1VSQ0VfTDI6DQo+ICsJY2FzZSBSRFRf
-UkVTT1VSQ0VfTDM6DQo+ICsJCS8qIENsZWFyIGNjX2Jsb2NrX21hc2sgYmVmb3JlIHJlYWQgbGlt
-aXQgb3BlcmF0aW9uICovDQo+ICsJCWNicXJpX3NldF9jYm0oY3RybCwgMCk7DQo+ICsNCj4gKwkJ
-LyogQ2FwYWNpdHkgcmVhZCBsaW1pdCBvcGVyYXRpb24gZm9yIFJDSUQgKGNsb3NpZCkgKi8NCj4g
-KwkJZXJyID0gY2JxcmlfY2NfYWxsb2Nfb3AoY3RybCwgQ0JRUklfQ0NfQUxMT0NfQ1RMX09QX1JF
-QURfTElNSVQsIHR5cGUsIGNsb3NpZCk7DQoNCkl0IGxvb2tzIGxpa2UgdGhlIHBhcmFtZXRlciBv
-cmRlciBtaWdodCBiZSBpbmNvcnJlY3QuIEkgYmVsaWV2ZSBpdCBzaG91bGQgYmU6DQpjYnFyaV9j
-Y19hbGxvY19vcChjdHJsLCBDQlFSSV9DQ19BTExPQ19DVExfT1BfUkVBRF9MSU1JVCwgY2xvc2lk
-LCB0eXBlKQ0KDQpDb3VsZCB5b3UgcGxlYXNlIGRvdWJsZS1jaGVjaz8NCg0KPiArCQlpZiAoZXJy
-IDwgMCkgew0KPiArCQkJcHJfZXJyKCIlcygpOiBvcGVyYXRpb24gZmFpbGVkOiBlcnIgPSAlZCIs
-IF9fZnVuY19fLCBlcnIpOw0KPiArCQkJcmV0dXJuIHJlc2N0cmxfZ2V0X2RlZmF1bHRfY3RybChy
-KTsNCj4gKwkJfQ0KPiAuLi4NCg0KVGhhbmtzLA0KU2h1YWk=
-
-
---=====_003_next=====
-Content-Type: text/html ;
-	charset="UTF-8"
-Content-Transfer-Encoding: base64
-
-SGksJm5ic3A7RHJldzxiciAvPg08YnIgLz4mZ3Q7Jm5ic3A7QWRkJm5ic3A7aW50ZXJmYWNlJm5i
-c3A7Zm9yJm5ic3A7Q0JRUkkmbmJzcDtjb250cm9sbGVyJm5ic3A7ZHJpdmVycyZuYnNwO3RvJm5i
-c3A7bWFrZSZuYnNwO3VzZSZuYnNwO29mJm5ic3A7dGhlJm5ic3A7cmVzY3RybDxiciAvPiZndDsm
-bmJzcDtmaWxlc3lzdGVtLjxiciAvPiZndDsmbmJzcDsNPGJyIC8+Jmd0OyZuYnNwO0NvLWRldmVs
-b3BlZC1ieTombmJzcDtBZHJpZW4mbmJzcDtSaWNjaWFyZGkmbmJzcDsmbHQ7YXJpY2NpYXJkaUBi
-YXlsaWJyZS5jb20mZ3Q7DTxiciAvPiZndDsmbmJzcDtTaWduZWQtb2ZmLWJ5OiZuYnNwO0Fkcmll
-biZuYnNwO1JpY2NpYXJkaSZuYnNwOyZsdDthcmljY2lhcmRpQGJheWxpYnJlLmNvbSZndDsNPGJy
-IC8+Jmd0OyZuYnNwO1NpZ25lZC1vZmYtYnk6Jm5ic3A7RHJldyZuYnNwO0Z1c3RpbmkmbmJzcDsm
-bHQ7ZnVzdGluaUBrZXJuZWwub3JnJmd0Ow08YnIgLz4mZ3Q7Jm5ic3A7LS0tPGJyIC8+Jmd0Ow08
-YnIgLz4mZ3Q7Jm5ic3A7Li4uPGJyIC8+Jmd0Ow08YnIgLz4mZ3Q7Jm5ic3A7K3UzMiZuYnNwO3Jl
-c2N0cmxfYXJjaF9nZXRfY29uZmlnKHN0cnVjdCZuYnNwO3JkdF9yZXNvdXJjZSZuYnNwOypyLCZu
-YnNwO3N0cnVjdCZuYnNwO3JkdF9jdHJsX2RvbWFpbiZuYnNwOypkLDxiciAvPiZndDsmbmJzcDsr
-Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
-c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7dTMyJm5ic3A7Y2xvc2lkLCZu
-YnNwO2VudW0mbmJzcDtyZXNjdHJsX2NvbmZfdHlwZSZuYnNwO3R5cGUpPGJyIC8+Jmd0OyZuYnNw
-Oyt7PGJyIC8+Jmd0OyZuYnNwOysmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtzdHJ1Y3QmbmJzcDtj
-YnFyaV9yZXNjdHJsX2RvbSZuYnNwOypod19kb207PGJyIC8+Jmd0OyZuYnNwOysmbmJzcDsmbmJz
-cDsmbmJzcDsmbmJzcDtzdHJ1Y3QmbmJzcDtjYnFyaV9jb250cm9sbGVyJm5ic3A7KmN0cmw7PGJy
-IC8+Jmd0OyZuYnNwOysmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtpbnQmbmJzcDtyZWdfb2Zmc2V0
-OzxiciAvPiZndDsmbmJzcDsrJm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7dTMyJm5ic3A7cGVyY2Vu
-dDs8YnIgLz4mZ3Q7Jm5ic3A7KyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO3UzMiZuYnNwO3Jid2I7
-PGJyIC8+Jmd0OyZuYnNwOysmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDt1NjQmbmJzcDtyZWc7PGJy
-IC8+Jmd0OyZuYnNwOysmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtpbnQmbmJzcDtlcnI7PGJyIC8+
-Jmd0OyZuYnNwOys8YnIgLz4mZ3Q7Jm5ic3A7KyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO2h3X2Rv
-bSZuYnNwOz0mbmJzcDtjb250YWluZXJfb2YoZCwmbmJzcDtzdHJ1Y3QmbmJzcDtjYnFyaV9yZXNj
-dHJsX2RvbSwmbmJzcDtyZXNjdHJsX2N0cmxfZG9tKTs8YnIgLz4mZ3Q7Jm5ic3A7KzxiciAvPiZn
-dDsmbmJzcDsrJm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Y3RybCZuYnNwOz0mbmJzcDtod19kb20t
-Jmd0O2h3X2N0cmw7PGJyIC8+Jmd0OyZuYnNwOys8YnIgLz4mZ3Q7Jm5ic3A7KyZuYnNwOyZuYnNw
-OyZuYnNwOyZuYnNwO2lmJm5ic3A7KCFyLSZndDthbGxvY19jYXBhYmxlKTxiciAvPiZndDsmbmJz
-cDsrJm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7cmV0dXJu
-Jm5ic3A7cmVzY3RybF9nZXRfZGVmYXVsdF9jdHJsKHIpOzxiciAvPiZndDsmbmJzcDsrPGJyIC8+
-Jmd0OyZuYnNwOysmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtzd2l0Y2gmbmJzcDsoci0mZ3Q7cmlk
-KSZuYnNwO3s8YnIgLz4mZ3Q7Jm5ic3A7KyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO2Nhc2UmbmJz
-cDtSRFRfUkVTT1VSQ0VfTDI6PGJyIC8+Jmd0OyZuYnNwOysmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
-cDtjYXNlJm5ic3A7UkRUX1JFU09VUkNFX0wzOjxiciAvPiZndDsmbmJzcDsrJm5ic3A7Jm5ic3A7
-Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7LyombmJzcDtDbGVhciZuYnNwO2Nj
-X2Jsb2NrX21hc2smbmJzcDtiZWZvcmUmbmJzcDtyZWFkJm5ic3A7bGltaXQmbmJzcDtvcGVyYXRp
-b24mbmJzcDsqLzxiciAvPiZndDsmbmJzcDsrJm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
-Jm5ic3A7Jm5ic3A7Jm5ic3A7Y2Jxcmlfc2V0X2NibShjdHJsLCZuYnNwOzApOzxiciAvPiZndDsm
-bmJzcDsrPGJyIC8+Jmd0OyZuYnNwOysmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
-cDsmbmJzcDsmbmJzcDsvKiZuYnNwO0NhcGFjaXR5Jm5ic3A7cmVhZCZuYnNwO2xpbWl0Jm5ic3A7
-b3BlcmF0aW9uJm5ic3A7Zm9yJm5ic3A7UkNJRCZuYnNwOyhjbG9zaWQpJm5ic3A7Ki88YnIgLz4m
-Z3Q7Jm5ic3A7KyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
-O2VyciZuYnNwOz0mbmJzcDtjYnFyaV9jY19hbGxvY19vcChjdHJsLCZuYnNwO0NCUVJJX0NDX0FM
-TE9DX0NUTF9PUF9SRUFEX0xJTUlULCZuYnNwO3R5cGUsJm5ic3A7Y2xvc2lkKTs8YnIgLz4NPGJy
-IC8+SXQmbmJzcDtsb29rcyZuYnNwO2xpa2UmbmJzcDt0aGUmbmJzcDtwYXJhbWV0ZXImbmJzcDtv
-cmRlciZuYnNwO21pZ2h0Jm5ic3A7YmUmbmJzcDtpbmNvcnJlY3QuJm5ic3A7SSZuYnNwO2JlbGll
-dmUmbmJzcDtpdCZuYnNwO3Nob3VsZCZuYnNwO2JlOjxiciAvPmNicXJpX2NjX2FsbG9jX29wKGN0
-cmwsJm5ic3A7Q0JRUklfQ0NfQUxMT0NfQ1RMX09QX1JFQURfTElNSVQsJm5ic3A7Y2xvc2lkLCZu
-YnNwO3R5cGUpPGJyIC8+DTxiciAvPkNvdWxkJm5ic3A7eW91Jm5ic3A7cGxlYXNlJm5ic3A7ZG91
-YmxlLWNoZWNrPzxiciAvPg08YnIgLz4mZ3Q7Jm5ic3A7KyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
-OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO2lmJm5ic3A7KGVyciZuYnNwOyZsdDsmbmJzcDswKSZu
-YnNwO3s8YnIgLz4mZ3Q7Jm5ic3A7KyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
-OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO3ByX2VycigmcXVvdDslcygpOiZu
-YnNwO29wZXJhdGlvbiZuYnNwO2ZhaWxlZDombmJzcDtlcnImbmJzcDs9Jm5ic3A7JWQmcXVvdDss
-Jm5ic3A7X19mdW5jX18sJm5ic3A7ZXJyKTs8YnIgLz4mZ3Q7Jm5ic3A7KyZuYnNwOyZuYnNwOyZu
-YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
-O3JldHVybiZuYnNwO3Jlc2N0cmxfZ2V0X2RlZmF1bHRfY3RybChyKTs8YnIgLz4mZ3Q7Jm5ic3A7
-KyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO308YnIgLz4m
-Z3Q7Jm5ic3A7Li4uPGJyIC8+DTxiciAvPlRoYW5rcyw8YnIgLz5TaHVhaQ==
-
-
---=====_003_next=====--
-
---=====_002_next=====--
-
---=====_001_next=====--
-
+Thanks,
+Shuai
