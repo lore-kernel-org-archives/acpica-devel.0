@@ -1,214 +1,197 @@
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mxhk.zte.com.cn (mxhk.zte.com.cn [160.30.148.35])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFE9F1F0E25
-	for <acpica-devel@lists.linux.dev>; Mon,  9 Feb 2026 03:36:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.208.46
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770608189; cv=pass; b=bAKZ7X+YqJXlfoclxoynQ0aq3E2jikRoz88FcLIefMy3/XLkUnWhghavl9GUh956dDGIL/RbOYG3sOL/pmJBmwL/tKrAodvndSBUcRJg5nh/J6zuYO5ps2dcsZY6d6vnKuoEtd0fsGMlFFBijbHk9aHgGBfzPImYZm6DQCqrSFY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770608189; c=relaxed/simple;
-	bh=2F/jK64bec8jgwPV36b7Law8rG2yJcwj4/Qs/wreGxI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mopRO2I3s/9g5wlovHnhFUKwZzZnKGAHlnrRgZ0Tolste8+nLPvMKfbff9GrmcH+LC7Af++yXRHJ5E1HkJl2PF9Fr0gbXwGh90+AZoh5RABGVE0xdjuzjEihIZiPwrsALGyc8aNimf27voMo9FdiWisxhiHxn3ExexACspzA4i4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=dvHRV2DG; arc=pass smtp.client-ip=209.85.208.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="dvHRV2DG"
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-65815ec51d3so3741492a12.2
-        for <acpica-devel@lists.linux.dev>; Sun, 08 Feb 2026 19:36:28 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1770608187; cv=none;
-        d=google.com; s=arc-20240605;
-        b=bCS8SNzSKyqZtKx+N+8c3wHWtM23kHxRkbSAFcycrslgYpmn4miRwXeqkD13sved/B
-         e+l3Ec6y/7iMRR6ArjFPCJstgpjbuTYKsfbKxDZCbBmCNOzr2a+zIFfWIOKWBOkIR8sq
-         D/SGWG180/yxvS9s0M4wh77GYJak5rTDZT4PGVppl0QQvOZfrAqHISv2XcWNLM07AAQe
-         rXl77uIORDGV8Mvz9lHJ6KHhUCAJG3Nm0Io+gSo+bVwRB3ibQL3VfAA/ehgDQU0peU3O
-         gqlZDesH0eHvLbHXoGho+Zo0o+62hwLUftFfc3XhNLA1bMqeNDPIz3s/YCtI8QYbmoaa
-         hr5A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=dgf3bFVZrp6swEDkel5fmNbp8R9hFafE4rfJYRWPjoA=;
-        fh=9Njcw0xwG6PIXPMsGIHkIWRd761Fy/NaJ3VlGF9WD6o=;
-        b=WjayyzOthpUW9dReJoZ4dEzDf5X8Y3kEnjmbSkDFo4VB7Gvrhg9rodtIAroSyPmBpr
-         mT4KLbDYi8C64ojPC9YBnIwZe0hyTeKGhBqkyZibmP+tPgTn265wAEsumlooz9Gux3xX
-         BbKU/2rg1nQtY0TlyZvA0C3ThhIcM95gmeq1hXaScN3imrNgiThaNB5YIsHi88KuIBnf
-         A89e7orzXSImVejKvw6p09QzgKEt3s83bWf2tn2N4OQPIQzGhX5NGAYnt6arj2dsrO1S
-         0M8a2b4e57aPps7LI9FbJgQrRAnUrzBsnoBCOvrGg6uZSrPsZZ4YF59o3h+7nyjl0lmM
-         H2Gg==;
-        darn=lists.linux.dev
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1770608187; x=1771212987; darn=lists.linux.dev;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dgf3bFVZrp6swEDkel5fmNbp8R9hFafE4rfJYRWPjoA=;
-        b=dvHRV2DGPIORc2FC53oGAj1kI1Ctp659ebJEwpmJF8pDGcU5+EBvqPExIoZQOBCPis
-         fuVeEU66NHlbePJHR6vWzk3lT3y8UYXo7XfqYN0ANE6dN4Q1fa862MZAzoBlMfx2JWfC
-         NbUqiY+aRmqpqWWGYniYDYAY64aPZ5DGGFdTvD/Kt9fNylqrwoVjveWQE6eT3dObYphZ
-         v3lMSxvKdiGvoOj4e/63BS0k9kt9/aibBH0XbGEJLZSDUSn+y3KB+p9GVAeGIQv1lmp5
-         nRvvyAXkyOICipORXKcI1omiYRvcNoPX89xbMww24PbKexz2+/ax3zSUhI6TFsV/Kcva
-         ge3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770608187; x=1771212987;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=dgf3bFVZrp6swEDkel5fmNbp8R9hFafE4rfJYRWPjoA=;
-        b=vWxY79uoS3U6Z6AyL8nCHzlNDD+v+hOKI8MpOEijeGDG9Be836ZoZbasMBwMvH/+fQ
-         9/WVNzySr2QHoC7Q7f0Z5Xyg3yLKYPYH9Md/NNMp8RsnXbBYF5soeVPVFzHZfVnQ9BTJ
-         6TElm1wc4rryjf6ZpbJ3Uy+GyUfiY+lWDbPsgwEN2d7qGnLwfm5QXg4tSESSu1vI+iS5
-         1/vBBEx0VT5N5iYZGLIVOOmtVpbBrbEXxpWbR5YKHpAXlveNK2mmLqLQKB0dD1kPNEE3
-         kXsZHjVvm1cZu8RcNxLDCcBwjZtJ7MTsSiaQd78ymGWX3EvP2dH1bUYPnwE7gMaNZ6ph
-         EIRA==
-X-Forwarded-Encrypted: i=1; AJvYcCXxBSqFZmEzWn5Z2t3f+pyad0N5Bpz5McrL1+m85UF3yiWFwktFPowbECXk2Z9HLIOw530ow1g+f2qMxF8=@lists.linux.dev
-X-Gm-Message-State: AOJu0Yy/jyawkLDV3lz8EcIHjxmE4iT20fW2p1JqGEybCwrwVDs70HTN
-	+TvbxqBGjYJKhy3D/eoRgNe1Yx5cNtPhvUf/Rnk4QLnNU4t/hCvIYYgiyA8Zc0Bifu0vIH5ByjQ
-	NW4SgbMmk0QMuV2BBq3KIfMMyIHAe/8rjHwrILgDjcw==
-X-Gm-Gg: AZuq6aLI/31RwhEMSfoNv6D7kBcsf40xOmp2Xqgo0oWaiAqECiqffd3zRbqeHqBbC+k
-	90XxVIdLtfO/VFmQn6b9WAX2PdZtkZxNCC3lnLTrOVO1LtoFPjIS7w7rn+dHCZ1YFprhvzNjLvJ
-	f1eKEG6ub076kYsZ7u7DyNSEBrc50VyBe4ayhAZL7sMb1TZm4P2UtqBUnGx/vsHkrjQ4xYAHCWA
-	oLptHL2yk5rsuiweSkFC+vWSl2F0QQb0q4NvqOWDQPVfJRPgmsH1s+xcktpvuZcEq50FZCAt+1J
-	pliI
-X-Received: by 2002:a05:6402:5188:b0:658:cc59:1624 with SMTP id
- 4fb4d7f45d1cf-65984116e20mr4771993a12.5.1770608187211; Sun, 08 Feb 2026
- 19:36:27 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95C983EBF22
+	for <acpica-devel@lists.linux.dev>; Mon,  9 Feb 2026 07:30:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=160.30.148.35
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1770622238; cv=none; b=UP7ZvqCEflYlIpTjU89fWovMJGrsrnaeoE1I9ycU2I4ZrbQ7poAV4WEUvOulrS9fModEr8Jv2ACcZJOEsVOvm2799uwKpfP96sgGtAzBcgDZLPaWaGC75ygmJERNrOpTT9+uDCZuUCkVycXQEvaBICajMCz29WUAtItp7dVWRvA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1770622238; c=relaxed/simple;
+	bh=Ta/VVUsj0jlGYnAYKXVuMgm27SvKAKIxZN6Ip4o2U+M=;
+	h=Message-Id:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=LcPW7t6u3ZeB+R5CMHrEznaaf5oyI37w3haWDLMVFEujvZcCkGW0dWg1YeN3iIS+OejA2xFBqzpgopAdAeorlsVD51Sq1ayzPe8zkt9hGGA8sEcarmoElN6S0Fp6RufwovYbxqFoJsEbvjUTfuPcLj2yNQBvGLPv4/Ct3SVy2dk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sanechips.com.cn; spf=pass smtp.mailfrom=sanechips.com.cn; arc=none smtp.client-ip=160.30.148.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sanechips.com.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sanechips.com.cn
+Received: from mse-fl2.zte.com.cn (unknown [10.5.228.133])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mxhk.zte.com.cn (FangMail) with ESMTPS id 4f8bvT0MTrz8Xs7J;
+	Mon, 09 Feb 2026 15:30:29 +0800 (CST)
+Received: (from root@localhost)
+	by mse-fl2.zte.com.cn id 6197TrBX088760;
+	Mon, 9 Feb 2026 15:29:53 +0800 (+08)
+	(envelope-from gong.shuai@sanechips.com.cn)
+Message-Id: <202602090729.6197TrBX088760@mse-fl2.zte.com.cn>
+Received: from szxl2zmapp06.zte.com.cn ([10.1.32.108])
+	by mse-fl2.zte.com.cn with SMTP id 6197K76g070452;
+	Mon, 9 Feb 2026 15:20:07 +0800 (+08)
+	(envelope-from gong.shuai@sanechips.com.cn)
+Received: from localhost.localdomain (unknown [10.230.214.35])
+	by smtp (Zmail) with SMTP;
+	Mon, 9 Feb 2026 15:20:09 +0800
+X-Zmail-TransId: 3e8169898aa1001-f0551
+X-Zmail-LocalSMTP: 1
+X-Zmail-RealSender: gong.shuai@sanechips.com.cn
+From: Gong Shuai <gong.shuai@sanechips.com.cn>
+To: fustini@kernel.org
+Cc: gong.shuai@sanechips.com.cn, Dave.Martin@arm.com,
+        acpica-devel@lists.linux.dev, alex@ghiti.fr, aou@eecs.berkeley.edu,
+        aricciardi@baylibre.com, atish.patra@linux.dev, atishp@rivosinc.com,
+        babu.moger@amd.com, ben.horgan@arm.com, conor+dt@kernel.org,
+        cp0613@linux.alibaba.com, cuiyunhui@bytedance.com,
+        devicetree@vger.kernel.org, fenghua.yu@intel.com,
+        guo.wenjia23@zte.com.cn, james.morse@arm.com, krzk+dt@kernel.org,
+        lenb@kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        liu.qingtao2@zte.com.cn, liwei1518@gmail.com, mindal@semihalf.com,
+        npitre@baylibre.com, palmer@dabbelt.com, paul.walmsley@sifive.com,
+        peternewman@google.com, pjw@kernel.org, rafael@kernel.org,
+        reinette.chatre@intel.com, rkrcmar@ventanamicro.com,
+        robert.moore@intel.com, robh@kernel.org, samuel.holland@sifive.com,
+        sunilvl@ventanamicro.com, tony.luck@intel.com, vasu@rivosinc.com,
+        ved@rivosinc.com, x86@kernel.org, zhiwei_liu@linux.alibaba.com
+Subject: Re: [PATCH RFC v2 08/17] RISC-V: QoS: add resctrl interface for CBQRI controllers
+Date: Mon,  9 Feb 2026 15:20:00 +0800
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20260128-ssqosid-cbqri-v2-8-dca586b091b9@kernel.org>
+References: <20260128-ssqosid-cbqri-v2-8-dca586b091b9@kernel.org>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20260128-ssqosid-cbqri-v2-0-dca586b091b9@kernel.org>
- <20260128-ssqosid-cbqri-v2-3-dca586b091b9@kernel.org> <CAEEQ3wkqC4jFf1LGgh2c6dgGwT=tuvpFV+D4fiw40P3LZ7_8hg@mail.gmail.com>
- <aYfnbc3T81RRxz5r@gen8>
-In-Reply-To: <aYfnbc3T81RRxz5r@gen8>
-From: yunhui cui <cuiyunhui@bytedance.com>
-Date: Mon, 9 Feb 2026 11:36:16 +0800
-X-Gm-Features: AZwV_QgwWHnA5m1kxr57YAvjsSYdUx_1aHt2EEPh2W2BDaodUZAsXnYDqE8xcQ8
-Message-ID: <CAEEQ3wntQWi_itwA716qjaFBMd18FR3nb6rMz5STw+DGtYjp+A@mail.gmail.com>
-Subject: Re: [External] [PATCH RFC v2 03/17] RISC-V: Add support for srmcfg
- CSR from Ssqosid ext
-To: Drew Fustini <fustini@kernel.org>
-Cc: Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>, 
-	=?UTF-8?B?UmFkaW0gS3LEjW3DocWZ?= <rkrcmar@ventanamicro.com>, 
-	Samuel Holland <samuel.holland@sifive.com>, Adrien Ricciardi <aricciardi@baylibre.com>, 
-	Nicolas Pitre <npitre@baylibre.com>, =?UTF-8?Q?Kornel_Dul=C4=99ba?= <mindal@semihalf.com>, 
-	Atish Patra <atish.patra@linux.dev>, Atish Kumar Patra <atishp@rivosinc.com>, 
-	Vasudevan Srinivasan <vasu@rivosinc.com>, Ved Shanbhogue <ved@rivosinc.com>, 
-	Chen Pei <cp0613@linux.alibaba.com>, Liu Zhiwei <zhiwei_liu@linux.alibaba.com>, 
-	Weiwei Li <liwei1518@gmail.com>, guo.wenjia23@zte.com.cn, liu.qingtao2@zte.com.cn, 
-	Reinette Chatre <reinette.chatre@intel.com>, Tony Luck <tony.luck@intel.com>, 
-	Babu Moger <babu.moger@amd.com>, Peter Newman <peternewman@google.com>, 
-	Fenghua Yu <fenghua.yu@intel.com>, James Morse <james.morse@arm.com>, 
-	Ben Horgan <ben.horgan@arm.com>, Dave Martin <Dave.Martin@arm.com>, linux-kernel@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, x86@kernel.org, 
-	Rob Herring <robh@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
-	Robert Moore <robert.moore@intel.com>, Sunil V L <sunilvl@ventanamicro.com>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, linux-acpi@vger.kernel.org, 
-	acpica-devel@lists.linux.dev, devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed;
+	boundary="=====_001_next====="
+X-MAIL:mse-fl2.zte.com.cn 6197TrBX088760
+X-MSS: AUDITRELEASE@mse-fl2.zte.com.cn
+X-TLS: YES
+X-SPF-DOMAIN: sanechips.com.cn
+X-ENVELOPE-SENDER: gong.shuai@sanechips.com.cn
+X-SPF: None
+X-SOURCE-IP: 10.5.228.133 unknown Mon, 09 Feb 2026 15:30:29 +0800
+X-Fangmail-Anti-Spam-Filtered: true
+X-Fangmail-MID-QID: 69898D14.002/4f8bvT0MTrz8Xs7J
 
-Hi Drew,
 
-On Sun, Feb 8, 2026 at 9:31=E2=80=AFAM Drew Fustini <fustini@kernel.org> wr=
-ote:
->
-> On Mon, Feb 02, 2026 at 11:17:52AM +0800, yunhui cui wrote:
-> > Hi Drew,
-> >
-> > On Thu, Jan 29, 2026 at 4:28=E2=80=AFAM Drew Fustini <fustini@kernel.or=
-g> wrote:
-> > >
-> > > Add support for the srmcfg CSR defined in the Ssqosid ISA extension
-> > > (Supervisor-mode Quality of Service ID). The CSR contains two fields:
-> > >
-> > >   - Resource Control ID (RCID) used determine resource allocation
-> > >   - Monitoring Counter ID (MCID) used to track resource usage
-> > >
-> > > Requests from a hart to shared resources like cache will be tagged wi=
-th
-> > > these IDs. This allows the usage of shared resources to be associated
-> > > with the task currently running on the hart.
-> > >
-> > > A srmcfg field is added to thread_struct and has the same format as t=
-he
-> > > srmcfg CSR. This allows the scheduler to set the hart's srmcfg CSR to
-> > > contain the RCID and MCID for the task that is being scheduled in. Th=
-e
-> > > srmcfg CSR is only written to if the thread_struct.srmcfg is differen=
-t
-> > > than the current value of the CSR.
-> > >
-> > > A per-cpu variable cpu_srmcfg is used to mirror that state of the CSR=
-.
-> > > This is because access to L1D hot memory should be several times fast=
-er
-> > > than a CSR read. Also, in the case of virtualization, accesses to thi=
-s
-> > > CSR are trapped in the hypervisor.
-> > >
-> > > Link: https://github.com/riscv/riscv-ssqosid/releases/tag/v1.0
-> > > Co-developed-by: Kornel Dul=C4=99ba <mindal@semihalf.com>
-> > > Signed-off-by: Kornel Dul=C4=99ba <mindal@semihalf.com>
-> > > [fustini: rename csr, refactor switch_to, rebase on upstream]
-> > > Signed-off-by: Drew Fustini <fustini@kernel.org>
-> [..]
-> > > diff --git a/arch/riscv/include/asm/qos.h b/arch/riscv/include/asm/qo=
-s.h
-> > > new file mode 100644
-> > > index 000000000000..84830d7c6dc4
-> > > --- /dev/null
-> > > +++ b/arch/riscv/include/asm/qos.h
-> > > @@ -0,0 +1,41 @@
-> > > +/* SPDX-License-Identifier: GPL-2.0 */
-> > > +#ifndef _ASM_RISCV_QOS_H
-> > > +#define _ASM_RISCV_QOS_H
-> > > +
-> > > +#ifdef CONFIG_RISCV_ISA_SSQOSID
-> > > +
-> > > +#include <linux/sched.h>
-> > > +#include <linux/jump_label.h>
-> > > +
-> > > +#include <asm/barrier.h>
-> > > +#include <asm/csr.h>
-> > > +#include <asm/hwcap.h>
-> > > +
-> > > +/* cached value of srmcfg csr for each cpu */
-> > > +DECLARE_PER_CPU(u32, cpu_srmcfg);
-> > > +
-> > > +static inline void __switch_to_srmcfg(struct task_struct *next)
-> > > +{
-> > > +       u32 *cpu_srmcfg_ptr =3D this_cpu_ptr(&cpu_srmcfg);
-> > > +       u32 thread_srmcfg;
-> > > +
-> > > +       thread_srmcfg =3D READ_ONCE(next->thread.srmcfg);
-> >
-> >
-> > First set the cpu_list, and then the condition thread_srmcfg !=3D
-> > *cpu_srmcfg_ptr will not be satisfied. Is a default value required
-> > here? Both code paths for cpu_list and tasks are compared against the
-> > default value; you may refer to the implementation of mpam.
->
-> I'm having trouble finding cpu_list but I think that it does make sense
-> to set the initial value.
->
-> Were you thinking I should look at mpam_set_cpu_defaults() in
-> the mpam_resctrl_glue_v4 [1] branch?
 
-To be exact, it's "cpus_list".  yep, we need logic similar to that of
-arm64_mpam_default.
+--=====_001_next=====
+Content-Type: multipart/related;
+	boundary="=====_002_next====="
 
->
-> Thanks,
-> Drew
->
-> [1] https://gitlab.arm.com/linux-arm/linux-bh.git
 
-Thanks,
-Yunhui
+--=====_002_next=====
+Content-Type: multipart/alternative;
+	boundary="=====_003_next====="
+
+
+--=====_003_next=====
+Content-Type: text/plain;
+	charset="UTF-8"
+Content-Transfer-Encoding: base64
+
+SGksIERyZXcNCg0KPiBBZGQgaW50ZXJmYWNlIGZvciBDQlFSSSBjb250cm9sbGVyIGRyaXZlcnMg
+dG8gbWFrZSB1c2Ugb2YgdGhlIHJlc2N0cmwNCj4gZmlsZXN5c3RlbS4NCj4gDQo+IENvLWRldmVs
+b3BlZC1ieTogQWRyaWVuIFJpY2NpYXJkaSA8YXJpY2NpYXJkaUBiYXlsaWJyZS5jb20+DQo+IFNp
+Z25lZC1vZmYtYnk6IEFkcmllbiBSaWNjaWFyZGkgPGFyaWNjaWFyZGlAYmF5bGlicmUuY29tPg0K
+PiBTaWduZWQtb2ZmLWJ5OiBEcmV3IEZ1c3RpbmkgPGZ1c3RpbmlAa2VybmVsLm9yZz4NCj4gLS0t
+DQo+DQo+IC4uLg0KPg0KPiArdTMyIHJlc2N0cmxfYXJjaF9nZXRfY29uZmlnKHN0cnVjdCByZHRf
+cmVzb3VyY2UgKnIsIHN0cnVjdCByZHRfY3RybF9kb21haW4gKmQsDQo+ICsJCQkgICAgdTMyIGNs
+b3NpZCwgZW51bSByZXNjdHJsX2NvbmZfdHlwZSB0eXBlKQ0KPiArew0KPiArCXN0cnVjdCBjYnFy
+aV9yZXNjdHJsX2RvbSAqaHdfZG9tOw0KPiArCXN0cnVjdCBjYnFyaV9jb250cm9sbGVyICpjdHJs
+Ow0KPiArCWludCByZWdfb2Zmc2V0Ow0KPiArCXUzMiBwZXJjZW50Ow0KPiArCXUzMiByYndiOw0K
+PiArCXU2NCByZWc7DQo+ICsJaW50IGVycjsNCj4gKw0KPiArCWh3X2RvbSA9IGNvbnRhaW5lcl9v
+ZihkLCBzdHJ1Y3QgY2JxcmlfcmVzY3RybF9kb20sIHJlc2N0cmxfY3RybF9kb20pOw0KPiArDQo+
+ICsJY3RybCA9IGh3X2RvbS0+aHdfY3RybDsNCj4gKw0KPiArCWlmICghci0+YWxsb2NfY2FwYWJs
+ZSkNCj4gKwkJcmV0dXJuIHJlc2N0cmxfZ2V0X2RlZmF1bHRfY3RybChyKTsNCj4gKw0KPiArCXN3
+aXRjaCAoci0+cmlkKSB7DQo+ICsJY2FzZSBSRFRfUkVTT1VSQ0VfTDI6DQo+ICsJY2FzZSBSRFRf
+UkVTT1VSQ0VfTDM6DQo+ICsJCS8qIENsZWFyIGNjX2Jsb2NrX21hc2sgYmVmb3JlIHJlYWQgbGlt
+aXQgb3BlcmF0aW9uICovDQo+ICsJCWNicXJpX3NldF9jYm0oY3RybCwgMCk7DQo+ICsNCj4gKwkJ
+LyogQ2FwYWNpdHkgcmVhZCBsaW1pdCBvcGVyYXRpb24gZm9yIFJDSUQgKGNsb3NpZCkgKi8NCj4g
+KwkJZXJyID0gY2JxcmlfY2NfYWxsb2Nfb3AoY3RybCwgQ0JRUklfQ0NfQUxMT0NfQ1RMX09QX1JF
+QURfTElNSVQsIHR5cGUsIGNsb3NpZCk7DQoNCkl0IGxvb2tzIGxpa2UgdGhlIHBhcmFtZXRlciBv
+cmRlciBtaWdodCBiZSBpbmNvcnJlY3QuIEkgYmVsaWV2ZSBpdCBzaG91bGQgYmU6DQpjYnFyaV9j
+Y19hbGxvY19vcChjdHJsLCBDQlFSSV9DQ19BTExPQ19DVExfT1BfUkVBRF9MSU1JVCwgY2xvc2lk
+LCB0eXBlKQ0KDQpDb3VsZCB5b3UgcGxlYXNlIGRvdWJsZS1jaGVjaz8NCg0KPiArCQlpZiAoZXJy
+IDwgMCkgew0KPiArCQkJcHJfZXJyKCIlcygpOiBvcGVyYXRpb24gZmFpbGVkOiBlcnIgPSAlZCIs
+IF9fZnVuY19fLCBlcnIpOw0KPiArCQkJcmV0dXJuIHJlc2N0cmxfZ2V0X2RlZmF1bHRfY3RybChy
+KTsNCj4gKwkJfQ0KPiAuLi4NCg0KVGhhbmtzLA0KU2h1YWk=
+
+
+--=====_003_next=====
+Content-Type: text/html ;
+	charset="UTF-8"
+Content-Transfer-Encoding: base64
+
+SGksJm5ic3A7RHJldzxiciAvPg08YnIgLz4mZ3Q7Jm5ic3A7QWRkJm5ic3A7aW50ZXJmYWNlJm5i
+c3A7Zm9yJm5ic3A7Q0JRUkkmbmJzcDtjb250cm9sbGVyJm5ic3A7ZHJpdmVycyZuYnNwO3RvJm5i
+c3A7bWFrZSZuYnNwO3VzZSZuYnNwO29mJm5ic3A7dGhlJm5ic3A7cmVzY3RybDxiciAvPiZndDsm
+bmJzcDtmaWxlc3lzdGVtLjxiciAvPiZndDsmbmJzcDsNPGJyIC8+Jmd0OyZuYnNwO0NvLWRldmVs
+b3BlZC1ieTombmJzcDtBZHJpZW4mbmJzcDtSaWNjaWFyZGkmbmJzcDsmbHQ7YXJpY2NpYXJkaUBi
+YXlsaWJyZS5jb20mZ3Q7DTxiciAvPiZndDsmbmJzcDtTaWduZWQtb2ZmLWJ5OiZuYnNwO0Fkcmll
+biZuYnNwO1JpY2NpYXJkaSZuYnNwOyZsdDthcmljY2lhcmRpQGJheWxpYnJlLmNvbSZndDsNPGJy
+IC8+Jmd0OyZuYnNwO1NpZ25lZC1vZmYtYnk6Jm5ic3A7RHJldyZuYnNwO0Z1c3RpbmkmbmJzcDsm
+bHQ7ZnVzdGluaUBrZXJuZWwub3JnJmd0Ow08YnIgLz4mZ3Q7Jm5ic3A7LS0tPGJyIC8+Jmd0Ow08
+YnIgLz4mZ3Q7Jm5ic3A7Li4uPGJyIC8+Jmd0Ow08YnIgLz4mZ3Q7Jm5ic3A7K3UzMiZuYnNwO3Jl
+c2N0cmxfYXJjaF9nZXRfY29uZmlnKHN0cnVjdCZuYnNwO3JkdF9yZXNvdXJjZSZuYnNwOypyLCZu
+YnNwO3N0cnVjdCZuYnNwO3JkdF9jdHJsX2RvbWFpbiZuYnNwOypkLDxiciAvPiZndDsmbmJzcDsr
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7dTMyJm5ic3A7Y2xvc2lkLCZu
+YnNwO2VudW0mbmJzcDtyZXNjdHJsX2NvbmZfdHlwZSZuYnNwO3R5cGUpPGJyIC8+Jmd0OyZuYnNw
+Oyt7PGJyIC8+Jmd0OyZuYnNwOysmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtzdHJ1Y3QmbmJzcDtj
+YnFyaV9yZXNjdHJsX2RvbSZuYnNwOypod19kb207PGJyIC8+Jmd0OyZuYnNwOysmbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDtzdHJ1Y3QmbmJzcDtjYnFyaV9jb250cm9sbGVyJm5ic3A7KmN0cmw7PGJy
+IC8+Jmd0OyZuYnNwOysmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtpbnQmbmJzcDtyZWdfb2Zmc2V0
+OzxiciAvPiZndDsmbmJzcDsrJm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7dTMyJm5ic3A7cGVyY2Vu
+dDs8YnIgLz4mZ3Q7Jm5ic3A7KyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO3UzMiZuYnNwO3Jid2I7
+PGJyIC8+Jmd0OyZuYnNwOysmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDt1NjQmbmJzcDtyZWc7PGJy
+IC8+Jmd0OyZuYnNwOysmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtpbnQmbmJzcDtlcnI7PGJyIC8+
+Jmd0OyZuYnNwOys8YnIgLz4mZ3Q7Jm5ic3A7KyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO2h3X2Rv
+bSZuYnNwOz0mbmJzcDtjb250YWluZXJfb2YoZCwmbmJzcDtzdHJ1Y3QmbmJzcDtjYnFyaV9yZXNj
+dHJsX2RvbSwmbmJzcDtyZXNjdHJsX2N0cmxfZG9tKTs8YnIgLz4mZ3Q7Jm5ic3A7KzxiciAvPiZn
+dDsmbmJzcDsrJm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Y3RybCZuYnNwOz0mbmJzcDtod19kb20t
+Jmd0O2h3X2N0cmw7PGJyIC8+Jmd0OyZuYnNwOys8YnIgLz4mZ3Q7Jm5ic3A7KyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwO2lmJm5ic3A7KCFyLSZndDthbGxvY19jYXBhYmxlKTxiciAvPiZndDsmbmJz
+cDsrJm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7cmV0dXJu
+Jm5ic3A7cmVzY3RybF9nZXRfZGVmYXVsdF9jdHJsKHIpOzxiciAvPiZndDsmbmJzcDsrPGJyIC8+
+Jmd0OyZuYnNwOysmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtzd2l0Y2gmbmJzcDsoci0mZ3Q7cmlk
+KSZuYnNwO3s8YnIgLz4mZ3Q7Jm5ic3A7KyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO2Nhc2UmbmJz
+cDtSRFRfUkVTT1VSQ0VfTDI6PGJyIC8+Jmd0OyZuYnNwOysmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDtjYXNlJm5ic3A7UkRUX1JFU09VUkNFX0wzOjxiciAvPiZndDsmbmJzcDsrJm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7LyombmJzcDtDbGVhciZuYnNwO2Nj
+X2Jsb2NrX21hc2smbmJzcDtiZWZvcmUmbmJzcDtyZWFkJm5ic3A7bGltaXQmbmJzcDtvcGVyYXRp
+b24mbmJzcDsqLzxiciAvPiZndDsmbmJzcDsrJm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Y2Jxcmlfc2V0X2NibShjdHJsLCZuYnNwOzApOzxiciAvPiZndDsm
+bmJzcDsrPGJyIC8+Jmd0OyZuYnNwOysmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDsvKiZuYnNwO0NhcGFjaXR5Jm5ic3A7cmVhZCZuYnNwO2xpbWl0Jm5ic3A7
+b3BlcmF0aW9uJm5ic3A7Zm9yJm5ic3A7UkNJRCZuYnNwOyhjbG9zaWQpJm5ic3A7Ki88YnIgLz4m
+Z3Q7Jm5ic3A7KyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+O2VyciZuYnNwOz0mbmJzcDtjYnFyaV9jY19hbGxvY19vcChjdHJsLCZuYnNwO0NCUVJJX0NDX0FM
+TE9DX0NUTF9PUF9SRUFEX0xJTUlULCZuYnNwO3R5cGUsJm5ic3A7Y2xvc2lkKTs8YnIgLz4NPGJy
+IC8+SXQmbmJzcDtsb29rcyZuYnNwO2xpa2UmbmJzcDt0aGUmbmJzcDtwYXJhbWV0ZXImbmJzcDtv
+cmRlciZuYnNwO21pZ2h0Jm5ic3A7YmUmbmJzcDtpbmNvcnJlY3QuJm5ic3A7SSZuYnNwO2JlbGll
+dmUmbmJzcDtpdCZuYnNwO3Nob3VsZCZuYnNwO2JlOjxiciAvPmNicXJpX2NjX2FsbG9jX29wKGN0
+cmwsJm5ic3A7Q0JRUklfQ0NfQUxMT0NfQ1RMX09QX1JFQURfTElNSVQsJm5ic3A7Y2xvc2lkLCZu
+YnNwO3R5cGUpPGJyIC8+DTxiciAvPkNvdWxkJm5ic3A7eW91Jm5ic3A7cGxlYXNlJm5ic3A7ZG91
+YmxlLWNoZWNrPzxiciAvPg08YnIgLz4mZ3Q7Jm5ic3A7KyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO2lmJm5ic3A7KGVyciZuYnNwOyZsdDsmbmJzcDswKSZu
+YnNwO3s8YnIgLz4mZ3Q7Jm5ic3A7KyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO3ByX2VycigmcXVvdDslcygpOiZu
+YnNwO29wZXJhdGlvbiZuYnNwO2ZhaWxlZDombmJzcDtlcnImbmJzcDs9Jm5ic3A7JWQmcXVvdDss
+Jm5ic3A7X19mdW5jX18sJm5ic3A7ZXJyKTs8YnIgLz4mZ3Q7Jm5ic3A7KyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+O3JldHVybiZuYnNwO3Jlc2N0cmxfZ2V0X2RlZmF1bHRfY3RybChyKTs8YnIgLz4mZ3Q7Jm5ic3A7
+KyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO308YnIgLz4m
+Z3Q7Jm5ic3A7Li4uPGJyIC8+DTxiciAvPlRoYW5rcyw8YnIgLz5TaHVhaQ==
+
+
+--=====_003_next=====--
+
+--=====_002_next=====--
+
+--=====_001_next=====--
+
