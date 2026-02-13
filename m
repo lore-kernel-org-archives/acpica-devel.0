@@ -1,333 +1,120 @@
-Received: from canpmsgout08.his.huawei.com (canpmsgout08.his.huawei.com [113.46.200.223])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99F2434F47C
-	for <acpica-devel@lists.linux.dev>; Fri, 13 Feb 2026 10:09:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.223
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F8CDB67A
+	for <acpica-devel@lists.linux.dev>; Fri, 13 Feb 2026 13:31:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770977386; cv=none; b=mXmVT2WTgmFB9NZZMc7GrktpYLOP0zrtWpX0cGGwp309COiP9Ubs6aRt4gHDKCvSjljFqTAw+re2XV2xxTa19CUyDYUZtJz507bIAJkz+io3gQGAu81OrniX7lN54XHlrBgW7uxZ08egVsSM5QgopEgNSxTLKhlSWLghEmNfnYU=
+	t=1770989468; cv=none; b=OOCAllMHN+sSqZJihVY+2o4Me1vJVs+uSoveaLlOgBt/58kuadZuXs+b/UYgzfv94vQhKpz9OqGDJHBth9ctHmxl1FkkEu3y89s5CKiV4l5AIBR3HHXROR4itdJ/ga+H4doBOPADYhFdwxeaYPheYumyNgNVu7frcXQFOGQnnzk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770977386; c=relaxed/simple;
-	bh=Nn7mpqy84j7r4o94j+tLNNLq6ei9856SBxkLdcCAOOs=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=D/xy4t8s//0jj4PoQ3pqfdvN1OZDV88XdWpk3H2Fg1Fx5bWUKLG7VhhR2On3fmbUsc1+hXb/ERWWScDXFRr9qM4SjsM4cl4FlquQ6ig01WmLF5kV/moLbAkCMvJ5EKJQsnN9wRte+5hwGVpPFrGVbaP+zcR7dekGG8Gbrkv/RuQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=j9g1yxWj; arc=none smtp.client-ip=113.46.200.223
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+	s=arc-20240116; t=1770989468; c=relaxed/simple;
+	bh=wqMmN4tHpz1pEvJQ7qQAWgMQEiExFl/FmqHIqMMAv1s=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FYJEsjCuEioA56pIpWt79zQPMOTbNcYPuA02bznIYiE10fFugvUqq4l0EkH7ZsBcNsz+2zhSoL4b8FTgy6OphuUOXRdJOFgE3P8Rk72OaPBdoVVJwIsHuVk7D6ocS9wUG1plP9+lIuOmrgBUiI/zHLi+uaDD1amw7+YdJn8oLhg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KkQMpamR; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="j9g1yxWj"
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=SZ6Z3f33YNTvJD8jc9k97ue8D159LKUqhh9nY7ZJwWQ=;
-	b=j9g1yxWjicYH0bdn/pD6A5aVpsOZbtyZpCRndIRNFC3gSQyblZ9L2XyvKvKWKhgMCbeL3Nequ
-	eOkeP7aUfEUoVfG8ZnxOvsqyv22CZE29O6TRfbwYRe5/Jzl4DnI68WYdEyHz+K2/bruaf2JClxw
-	V/rFI5P0erXMl83ZdecNiV4=
-Received: from mail.maildlp.com (unknown [172.19.163.163])
-	by canpmsgout08.his.huawei.com (SkyGuard) with ESMTPS id 4fC77q6p9tzmV74;
-	Fri, 13 Feb 2026 18:04:55 +0800 (CST)
-Received: from kwepemr200004.china.huawei.com (unknown [7.202.195.241])
-	by mail.maildlp.com (Postfix) with ESMTPS id 700BA4048B;
-	Fri, 13 Feb 2026 18:09:36 +0800 (CST)
-Received: from huawei.com (10.50.163.32) by kwepemr200004.china.huawei.com
- (7.202.195.241) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Fri, 13 Feb
- 2026 18:09:35 +0800
-From: Pengjie Zhang <zhangpengjie2@huawei.com>
-To: <rafael@kernel.org>, <lenb@kernel.org>, <viresh.kumar@linaro.org>,
-	<robert.moore@intel.com>
-CC: <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-pm@vger.kernel.org>, <acpica-devel@lists.linux.dev>,
-	<zhanjie9@hisilicon.com>, <zhenglifeng1@huawei.com>, <lihuisong@huawei.com>,
-	<yubowen8@huawei.com>, <linhongye@h-partners.com>, <linuxarm@huawei.com>,
-	<jonathan.cameron@huawei.com>, <zhangpengjie2@huawei.com>,
-	<wangzhi12@huawei.com>
-Subject: [PATCH v2] ACPI: CPPC: Move reference performance to capabilities
-Date: Fri, 13 Feb 2026 18:09:35 +0800
-Message-ID: <20260213100935.19111-1-zhangpengjie2@huawei.com>
-X-Mailer: git-send-email 2.33.0
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KkQMpamR"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E50CCC116C6
+	for <acpica-devel@lists.linux.dev>; Fri, 13 Feb 2026 13:31:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1770989467;
+	bh=wqMmN4tHpz1pEvJQ7qQAWgMQEiExFl/FmqHIqMMAv1s=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=KkQMpamRcn6B3VpTS2qZrsug8il18+/oISoNKRrYCyp/O5njP2+zQNMDs0B+8VzOV
+	 G0ueyOu8eGb1IfbQwHdQznkYUsfsjhA3M6wmeWQXLT1+SWgjiruDJJHiLgTYDmEWGw
+	 eRnZVogqZ3Gep5sxALno5Yhwb4DMrLWAvleITXeqm1eTLLfGmuo2o9aT+/Yoc6KfZk
+	 N1plcCf864Ids87YAoXflKgjJnUA5NPoXVzXcdIuzX0elmCNwi2D3HisLjT1gtp73v
+	 8/MswD9Bz1FnYKPJPphYeoTN4h+EQS6fi+5zXRkvr5Z+DiAo7EQGgBn8GnM0t/CVNy
+	 4DGtwJ/h76ekA==
+Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-404263bd58fso2185699fac.1
+        for <acpica-devel@lists.linux.dev>; Fri, 13 Feb 2026 05:31:07 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWNdNt9CNzAbJye5YbNEdefLteBkNUdha3nT7v1nteVPA94q/L+ZiEO764qo2vUpQNebX5RzyNkQdTYreM=@lists.linux.dev
+X-Gm-Message-State: AOJu0Yz97VrlvHHfZUMlyeveuPgA0AIlVanr7Soux3Y4AYcpoiTADC88
+	bWqVoCYXo1BYGMK9zmilCjpiw9sY6yR4F8zYEfl3UsD9DXa8DnbGfEm+XVqPhKWeszguhFg9Wiy
+	5xem52jipS3Ha3w6WSyZJ9eHd1WvIg9M=
+X-Received: by 2002:a05:6870:90d4:b0:3ff:48b3:30b7 with SMTP id
+ 586e51a60fabf-40f08aafd87mr58113fac.29.1770989467080; Fri, 13 Feb 2026
+ 05:31:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: kwepems100001.china.huawei.com (7.221.188.238) To
- kwepemr200004.china.huawei.com (7.202.195.241)
+References: <20260201181620.4964-1-sumeet4linux@gmail.com>
+In-Reply-To: <20260201181620.4964-1-sumeet4linux@gmail.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Fri, 13 Feb 2026 14:30:55 +0100
+X-Gmail-Original-Message-ID: <CAJZ5v0h_tOvLwUEkVTrcOVepFZkObRJAkgtQgjSRnfocuqFSAQ@mail.gmail.com>
+X-Gm-Features: AZwV_QgnOmfGN8b-Gky2JP6yU3bWbjRmJbUS3kFSnyN3xzPtwj87PGy-uf9dMlM
+Message-ID: <CAJZ5v0h_tOvLwUEkVTrcOVepFZkObRJAkgtQgjSRnfocuqFSAQ@mail.gmail.com>
+Subject: Re: [PATCH] tools/power/acpi: Replace strcpy/strcat with snprintf in osunixdir.c
+To: Sumeet Pawnikar <sumeet4linux@gmail.com>
+Cc: rafael@kernel.org, robert.moore@intel.com, lenb@kernel.org, 
+	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Currently, the `Reference Performance` register is read every time
-the CPU frequency is sampled in `cppc_get_perf_ctrs()`. This function
-is on the hot path of the cpufreq driver.
+On Sun, Feb 1, 2026 at 7:17=E2=80=AFPM Sumeet Pawnikar <sumeet4linux@gmail.=
+com> wrote:
+>
+> Replace unsafe strcpy() and strcat() calls with snprintf() in
+> osunixdir.c to prevent potential buffer overflow vulnerabilities
+> when constructing file paths.
+>
+> The snprintf() function performs automatic bounds checking to ensure
+> the destination buffer is not overflowed.
+>
+> No functional change.
+>
+> Signed-off-by: Sumeet Pawnikar <sumeet4linux@gmail.com>
 
-Reference Performance indicates the performance level that corresponds
-to the Reference Counter incrementing and is not expected to change
-dynamically during runtime (unlike the Delivered and Reference counters).
+The ACPI tools come from ACPICA, so if you want to make changes to
+them, you need to do that in upstream ACPICA.
 
-Reading this register in the hot path incurs unnecessary overhead,
-particularly on platforms where CPC registers are located in the PCC
-(Platform Communication Channel) subspace. This patch moves
-`reference_perf` from the dynamic feedback counters structure
-(`cppc_perf_fb_ctrs`) to the static capabilities structure
-(`cppc_perf_caps`).
+Refer to Documentation/driver-api/acpi/linuxized-acpica.rst for more
+information.
 
-Signed-off-by: Pengjie Zhang <zhangpengjie2@huawei.com>
----
-changes in v2:
--Adapted the code to the new integration.
-Link to v1:https://lore.kernel.org/all/20260129112105.2511748-1-zhangpengjie2@huawei.com/
----
- drivers/acpi/cppc_acpi.c       | 55 +++++++++++++++-------------------
- drivers/cpufreq/cppc_cpufreq.c | 21 +++++++------
- include/acpi/cppc_acpi.h       |  2 +-
- 3 files changed, 37 insertions(+), 41 deletions(-)
+Thanks!
 
-diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-index a09bdabaa804..db1da8717078 100644
---- a/drivers/acpi/cppc_acpi.c
-+++ b/drivers/acpi/cppc_acpi.c
-@@ -177,12 +177,12 @@ __ATTR(_name, 0444, show_##_name, NULL)
- show_cppc_data(cppc_get_perf_caps, cppc_perf_caps, highest_perf);
- show_cppc_data(cppc_get_perf_caps, cppc_perf_caps, lowest_perf);
- show_cppc_data(cppc_get_perf_caps, cppc_perf_caps, nominal_perf);
-+show_cppc_data(cppc_get_perf_caps, cppc_perf_caps, reference_perf);
- show_cppc_data(cppc_get_perf_caps, cppc_perf_caps, lowest_nonlinear_perf);
- show_cppc_data(cppc_get_perf_caps, cppc_perf_caps, guaranteed_perf);
- show_cppc_data(cppc_get_perf_caps, cppc_perf_caps, lowest_freq);
- show_cppc_data(cppc_get_perf_caps, cppc_perf_caps, nominal_freq);
- 
--show_cppc_data(cppc_get_perf_ctrs, cppc_perf_fb_ctrs, reference_perf);
- show_cppc_data(cppc_get_perf_ctrs, cppc_perf_fb_ctrs, wraparound_time);
- 
- /* Check for valid access_width, otherwise, fallback to using bit_width */
-@@ -1343,9 +1343,10 @@ int cppc_get_perf_caps(int cpunum, struct cppc_perf_caps *perf_caps)
- {
- 	struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpunum);
- 	struct cpc_register_resource *highest_reg, *lowest_reg,
--		*lowest_non_linear_reg, *nominal_reg, *guaranteed_reg,
--		*low_freq_reg = NULL, *nom_freq_reg = NULL;
--	u64 high, low, guaranteed, nom, min_nonlinear, low_f = 0, nom_f = 0;
-+		*lowest_non_linear_reg, *nominal_reg, *reference_reg,
-+		*guaranteed_reg, *low_freq_reg = NULL, *nom_freq_reg = NULL;
-+	u64 high, low, guaranteed, nom, ref, min_nonlinear,
-+	    low_f = 0, nom_f = 0;
- 	int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpunum);
- 	struct cppc_pcc_data *pcc_ss_data = NULL;
- 	int ret = 0, regs_in_pcc = 0;
-@@ -1359,6 +1360,7 @@ int cppc_get_perf_caps(int cpunum, struct cppc_perf_caps *perf_caps)
- 	lowest_reg = &cpc_desc->cpc_regs[LOWEST_PERF];
- 	lowest_non_linear_reg = &cpc_desc->cpc_regs[LOW_NON_LINEAR_PERF];
- 	nominal_reg = &cpc_desc->cpc_regs[NOMINAL_PERF];
-+	reference_reg = &cpc_desc->cpc_regs[REFERENCE_PERF];
- 	low_freq_reg = &cpc_desc->cpc_regs[LOWEST_FREQ];
- 	nom_freq_reg = &cpc_desc->cpc_regs[NOMINAL_FREQ];
- 	guaranteed_reg = &cpc_desc->cpc_regs[GUARANTEED_PERF];
-@@ -1366,6 +1368,7 @@ int cppc_get_perf_caps(int cpunum, struct cppc_perf_caps *perf_caps)
- 	/* Are any of the regs PCC ?*/
- 	if (CPC_IN_PCC(highest_reg) || CPC_IN_PCC(lowest_reg) ||
- 		CPC_IN_PCC(lowest_non_linear_reg) || CPC_IN_PCC(nominal_reg) ||
-+		(CPC_SUPPORTED(reference_reg) && CPC_IN_PCC(reference_reg)) ||
- 		CPC_IN_PCC(low_freq_reg) || CPC_IN_PCC(nom_freq_reg) ||
- 		CPC_IN_PCC(guaranteed_reg)) {
- 		if (pcc_ss_id < 0) {
-@@ -1391,6 +1394,17 @@ int cppc_get_perf_caps(int cpunum, struct cppc_perf_caps *perf_caps)
- 	cpc_read(cpunum, nominal_reg, &nom);
- 	perf_caps->nominal_perf = nom;
- 
-+	/*
-+	 * If reference perf register is not supported then we should
-+	 * use the nominal perf value
-+	 */
-+	if (CPC_SUPPORTED(reference_reg)) {
-+		cpc_read(cpunum, reference_reg, &ref);
-+		perf_caps->reference_perf = ref;
-+	} else {
-+		perf_caps->reference_perf = nom;
-+	}
-+
- 	if (guaranteed_reg->type != ACPI_TYPE_BUFFER  ||
- 	    IS_NULL_REG(&guaranteed_reg->cpc_entry.reg)) {
- 		perf_caps->guaranteed_perf = 0;
-@@ -1402,7 +1416,7 @@ int cppc_get_perf_caps(int cpunum, struct cppc_perf_caps *perf_caps)
- 	cpc_read(cpunum, lowest_non_linear_reg, &min_nonlinear);
- 	perf_caps->lowest_nonlinear_perf = min_nonlinear;
- 
--	if (!high || !low || !nom || !min_nonlinear)
-+	if (!high || !low || !nom || !ref || !min_nonlinear)
- 		ret = -EFAULT;
- 
- 	/* Read optional lowest and nominal frequencies if present */
-@@ -1432,20 +1446,10 @@ EXPORT_SYMBOL_GPL(cppc_get_perf_caps);
- bool cppc_perf_ctrs_in_pcc_cpu(unsigned int cpu)
- {
- 	struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpu);
--	struct cpc_register_resource *ref_perf_reg;
--
--	/*
--	 * If reference perf register is not supported then we should use the
--	 * nominal perf value
--	 */
--	ref_perf_reg = &cpc_desc->cpc_regs[REFERENCE_PERF];
--	if (!CPC_SUPPORTED(ref_perf_reg))
--		ref_perf_reg = &cpc_desc->cpc_regs[NOMINAL_PERF];
- 
- 	return CPC_IN_PCC(&cpc_desc->cpc_regs[DELIVERED_CTR]) ||
- 		CPC_IN_PCC(&cpc_desc->cpc_regs[REFERENCE_CTR]) ||
--		CPC_IN_PCC(&cpc_desc->cpc_regs[CTR_WRAP_TIME]) ||
--		CPC_IN_PCC(ref_perf_reg);
-+		CPC_IN_PCC(&cpc_desc->cpc_regs[CTR_WRAP_TIME]);
- }
- EXPORT_SYMBOL_GPL(cppc_perf_ctrs_in_pcc_cpu);
- 
-@@ -1482,10 +1486,10 @@ int cppc_get_perf_ctrs(int cpunum, struct cppc_perf_fb_ctrs *perf_fb_ctrs)
- {
- 	struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpunum);
- 	struct cpc_register_resource *delivered_reg, *reference_reg,
--		*ref_perf_reg, *ctr_wrap_reg;
-+		*ctr_wrap_reg;
- 	int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpunum);
- 	struct cppc_pcc_data *pcc_ss_data = NULL;
--	u64 delivered, reference, ref_perf, ctr_wrap_time;
-+	u64 delivered, reference, ctr_wrap_time;
- 	int ret = 0, regs_in_pcc = 0;
- 
- 	if (!cpc_desc) {
-@@ -1495,19 +1499,11 @@ int cppc_get_perf_ctrs(int cpunum, struct cppc_perf_fb_ctrs *perf_fb_ctrs)
- 
- 	delivered_reg = &cpc_desc->cpc_regs[DELIVERED_CTR];
- 	reference_reg = &cpc_desc->cpc_regs[REFERENCE_CTR];
--	ref_perf_reg = &cpc_desc->cpc_regs[REFERENCE_PERF];
- 	ctr_wrap_reg = &cpc_desc->cpc_regs[CTR_WRAP_TIME];
- 
--	/*
--	 * If reference perf register is not supported then we should
--	 * use the nominal perf value
--	 */
--	if (!CPC_SUPPORTED(ref_perf_reg))
--		ref_perf_reg = &cpc_desc->cpc_regs[NOMINAL_PERF];
--
- 	/* Are any of the regs PCC ?*/
- 	if (CPC_IN_PCC(delivered_reg) || CPC_IN_PCC(reference_reg) ||
--		CPC_IN_PCC(ctr_wrap_reg) || CPC_IN_PCC(ref_perf_reg)) {
-+		CPC_IN_PCC(ctr_wrap_reg)) {
- 		if (pcc_ss_id < 0) {
- 			pr_debug("Invalid pcc_ss_id\n");
- 			return -ENODEV;
-@@ -1524,8 +1520,6 @@ int cppc_get_perf_ctrs(int cpunum, struct cppc_perf_fb_ctrs *perf_fb_ctrs)
- 
- 	cpc_read(cpunum, delivered_reg, &delivered);
- 	cpc_read(cpunum, reference_reg, &reference);
--	cpc_read(cpunum, ref_perf_reg, &ref_perf);
--
- 	/*
- 	 * Per spec, if ctr_wrap_time optional register is unsupported, then the
- 	 * performance counters are assumed to never wrap during the lifetime of
-@@ -1535,14 +1529,13 @@ int cppc_get_perf_ctrs(int cpunum, struct cppc_perf_fb_ctrs *perf_fb_ctrs)
- 	if (CPC_SUPPORTED(ctr_wrap_reg))
- 		cpc_read(cpunum, ctr_wrap_reg, &ctr_wrap_time);
- 
--	if (!delivered || !reference ||	!ref_perf) {
-+	if (!delivered || !reference) {
- 		ret = -EFAULT;
- 		goto out_err;
- 	}
- 
- 	perf_fb_ctrs->delivered = delivered;
- 	perf_fb_ctrs->reference = reference;
--	perf_fb_ctrs->reference_perf = ref_perf;
- 	perf_fb_ctrs->wraparound_time = ctr_wrap_time;
- out_err:
- 	if (regs_in_pcc)
-diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
-index 7e8042efedd1..befcbded126a 100644
---- a/drivers/cpufreq/cppc_cpufreq.c
-+++ b/drivers/cpufreq/cppc_cpufreq.c
-@@ -50,7 +50,8 @@ struct cppc_freq_invariance {
- static DEFINE_PER_CPU(struct cppc_freq_invariance, cppc_freq_inv);
- static struct kthread_worker *kworker_fie;
- 
--static int cppc_perf_from_fbctrs(struct cppc_perf_fb_ctrs *fb_ctrs_t0,
-+static int cppc_perf_from_fbctrs(u64 reference_perf,
-+				 struct cppc_perf_fb_ctrs *fb_ctrs_t0,
- 				 struct cppc_perf_fb_ctrs *fb_ctrs_t1);
- 
- /**
-@@ -70,7 +71,7 @@ static void __cppc_scale_freq_tick(struct cppc_freq_invariance *cppc_fi)
- 	struct cppc_perf_fb_ctrs fb_ctrs = {0};
- 	struct cppc_cpudata *cpu_data;
- 	unsigned long local_freq_scale;
--	u64 perf;
-+	u64 perf, ref_perf;
- 
- 	cpu_data = cppc_fi->cpu_data;
- 
-@@ -79,7 +80,9 @@ static void __cppc_scale_freq_tick(struct cppc_freq_invariance *cppc_fi)
- 		return;
- 	}
- 
--	perf = cppc_perf_from_fbctrs(&cppc_fi->prev_perf_fb_ctrs, &fb_ctrs);
-+	ref_perf = cpu_data->perf_caps.reference_perf;
-+	perf = cppc_perf_from_fbctrs(ref_perf,
-+				     &cppc_fi->prev_perf_fb_ctrs, &fb_ctrs);
- 	if (!perf)
- 		return;
- 
-@@ -723,13 +726,11 @@ static inline u64 get_delta(u64 t1, u64 t0)
- 	return (u32)t1 - (u32)t0;
- }
- 
--static int cppc_perf_from_fbctrs(struct cppc_perf_fb_ctrs *fb_ctrs_t0,
-+static int cppc_perf_from_fbctrs(u64 reference_perf,
-+				 struct cppc_perf_fb_ctrs *fb_ctrs_t0,
- 				 struct cppc_perf_fb_ctrs *fb_ctrs_t1)
- {
- 	u64 delta_reference, delta_delivered;
--	u64 reference_perf;
--
--	reference_perf = fb_ctrs_t0->reference_perf;
- 
- 	delta_reference = get_delta(fb_ctrs_t1->reference,
- 				    fb_ctrs_t0->reference);
-@@ -766,7 +767,7 @@ static unsigned int cppc_cpufreq_get_rate(unsigned int cpu)
- 	struct cpufreq_policy *policy __free(put_cpufreq_policy) = cpufreq_cpu_get(cpu);
- 	struct cppc_perf_fb_ctrs fb_ctrs_t0 = {0}, fb_ctrs_t1 = {0};
- 	struct cppc_cpudata *cpu_data;
--	u64 delivered_perf;
-+	u64 delivered_perf, reference_perf;
- 	int ret;
- 
- 	if (!policy)
-@@ -783,7 +784,9 @@ static unsigned int cppc_cpufreq_get_rate(unsigned int cpu)
- 			return 0;
- 	}
- 
--	delivered_perf = cppc_perf_from_fbctrs(&fb_ctrs_t0, &fb_ctrs_t1);
-+	reference_perf = cpu_data->perf_caps.reference_perf;
-+	delivered_perf = cppc_perf_from_fbctrs(reference_perf,
-+					       &fb_ctrs_t0, &fb_ctrs_t1);
- 	if (!delivered_perf)
- 		goto out_invalid_counters;
- 
-diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
-index 4d644f03098e..d3c4999e3551 100644
---- a/include/acpi/cppc_acpi.h
-+++ b/include/acpi/cppc_acpi.h
-@@ -116,6 +116,7 @@ struct cppc_perf_caps {
- 	u32 guaranteed_perf;
- 	u32 highest_perf;
- 	u32 nominal_perf;
-+	u32 reference_perf;
- 	u32 lowest_perf;
- 	u32 lowest_nonlinear_perf;
- 	u32 lowest_freq;
-@@ -133,7 +134,6 @@ struct cppc_perf_ctrls {
- struct cppc_perf_fb_ctrs {
- 	u64 reference;
- 	u64 delivered;
--	u64 reference_perf;
- 	u64 wraparound_time;
- };
- 
--- 
-2.33.0
-
+> ---
+>  .../power/acpi/os_specific/service_layers/osunixdir.c  | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+>
+> diff --git a/tools/power/acpi/os_specific/service_layers/osunixdir.c b/to=
+ols/power/acpi/os_specific/service_layers/osunixdir.c
+> index b9bb83116549..5dc960c6b376 100644
+> --- a/tools/power/acpi/os_specific/service_layers/osunixdir.c
+> +++ b/tools/power/acpi/os_specific/service_layers/osunixdir.c
+> @@ -113,9 +113,8 @@ char *acpi_os_get_next_filename(void *dir_handle)
+>                                 return (NULL);
+>                         }
+>
+> -                       strcpy(temp_str, external_info->dir_pathname);
+> -                       strcat(temp_str, "/");
+> -                       strcat(temp_str, dir_entry->d_name);
+> +                       snprintf(temp_str, str_len, "%s/%s",
+> +                                external_info->dir_pathname, dir_entry->=
+d_name);
+>
+>                         err =3D stat(temp_str, &temp_stat);
+>                         if (err =3D=3D -1) {
+> @@ -137,8 +136,9 @@ char *acpi_os_get_next_filename(void *dir_handle)
+>
+>                                 /* copy to a temp buffer because dir_entr=
+y struct is on the stack */
+>
+> -                               strcpy(external_info->temp_buffer,
+> -                                      dir_entry->d_name);
+> +                               snprintf(external_info->temp_buffer,
+> +                                        sizeof(external_info->temp_buffe=
+r),
+> +                                        "%s", dir_entry->d_name);
+>                                 return (external_info->temp_buffer);
+>                         }
+>                 }
+> --
+> 2.43.0
+>
+>
