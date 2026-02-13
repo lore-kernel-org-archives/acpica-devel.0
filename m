@@ -1,420 +1,333 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from canpmsgout08.his.huawei.com (canpmsgout08.his.huawei.com [113.46.200.223])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43E81194AD7;
-	Wed, 11 Feb 2026 12:32:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99F2434F47C
+	for <acpica-devel@lists.linux.dev>; Fri, 13 Feb 2026 10:09:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.223
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770813142; cv=none; b=ewk8vxKKkWWoPOVwqdDqT+cQ+mnK5okCpzXE97GCnYHwMjOejTc332TmJ0RGu/Qgaq6SxkqPETk7B68qJcdrvIZMf//sXLYxg5EiW2uFiM/qn34I7a14PXGhyOsHUNO7aLJL38Hu4MlBJPKiSyFpja6DKRc6lIYQZneyftLCkpc=
+	t=1770977386; cv=none; b=mXmVT2WTgmFB9NZZMc7GrktpYLOP0zrtWpX0cGGwp309COiP9Ubs6aRt4gHDKCvSjljFqTAw+re2XV2xxTa19CUyDYUZtJz507bIAJkz+io3gQGAu81OrniX7lN54XHlrBgW7uxZ08egVsSM5QgopEgNSxTLKhlSWLghEmNfnYU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770813142; c=relaxed/simple;
-	bh=DBeVNlzXfRxtvVmrxI5j3vQHOnW4Pk7f8C0h15ZA1hQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=X0/uqj4wtgu/X7GwRjyU4cEF9ZIFVRtACACB3TUXOoPIMrS8GfUcToFIrttum9ATjcJlQA7FA07IKYW3+RjDCY5+1J7fjZYQAknJiTQ1te1wLx7Xmie8T7b9XSNm6VVZhUgSvcH3dBaxB9nthIuK3W8N6yguYl++ZiYXaLMMXd0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EjiEXrBH; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1770977386; c=relaxed/simple;
+	bh=Nn7mpqy84j7r4o94j+tLNNLq6ei9856SBxkLdcCAOOs=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=D/xy4t8s//0jj4PoQ3pqfdvN1OZDV88XdWpk3H2Fg1Fx5bWUKLG7VhhR2On3fmbUsc1+hXb/ERWWScDXFRr9qM4SjsM4cl4FlquQ6ig01WmLF5kV/moLbAkCMvJ5EKJQsnN9wRte+5hwGVpPFrGVbaP+zcR7dekGG8Gbrkv/RuQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=j9g1yxWj; arc=none smtp.client-ip=113.46.200.223
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EjiEXrBH"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 162E3C19424;
-	Wed, 11 Feb 2026 12:32:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770813141;
-	bh=DBeVNlzXfRxtvVmrxI5j3vQHOnW4Pk7f8C0h15ZA1hQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=EjiEXrBHku0LHO2JvW5xzRNAsyxJYwzWgWSINYYUKJIQwgTxP0LvkeEooPHcYlP8R
-	 +Jy+h4AD+h9tibiZJw/MmpTKagl1v8w6GSs6E1P9kBtGJBeMIpDFP8XXqTYA6fyZ3M
-	 IaQ7aS2Os0qdbDvElVIZTIv24YYUhRy0nMZ9+V8ljs+THUIwds55Z5Y7V9CQ92pCyC
-	 pXbDapTPVrhT2t7L+MaXjv14F2sEC+bAeMcLSxO483jEDlCBYNfSuD98SHTuPpKJFm
-	 yRvEwHGRCyfLt8WxURU62wnSAxSkj17HUoDBOYNxSCZa0xktTkOt1/oxt830E8Ujh7
-	 HNcObfNfxNFdw==
-From: Sasha Levin <sashal@kernel.org>
-To: patches@lists.linux.dev,
-	stable@vger.kernel.org
-Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-	Jonathan Cameron <jonathan.cameron@huawei.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Hanjun Guo <guohanjun@huawei.com>,
-	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-	Sasha Levin <sashal@kernel.org>,
-	rafael@kernel.org,
-	robert.moore@intel.com,
-	xueshuai@linux.alibaba.com,
-	tony.luck@intel.com,
-	fabio.m.de.francesco@linux.intel.com,
-	leitao@debian.org,
-	Smita.KoralahalliChannabasappa@amd.com,
-	jason@os.amperecomputing.com,
-	linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.19-5.10] APEI/GHES: ensure that won't go past CPER allocated record
-Date: Wed, 11 Feb 2026 07:30:43 -0500
-Message-ID: <20260211123112.1330287-33-sashal@kernel.org>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20260211123112.1330287-1-sashal@kernel.org>
-References: <20260211123112.1330287-1-sashal@kernel.org>
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="j9g1yxWj"
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=SZ6Z3f33YNTvJD8jc9k97ue8D159LKUqhh9nY7ZJwWQ=;
+	b=j9g1yxWjicYH0bdn/pD6A5aVpsOZbtyZpCRndIRNFC3gSQyblZ9L2XyvKvKWKhgMCbeL3Nequ
+	eOkeP7aUfEUoVfG8ZnxOvsqyv22CZE29O6TRfbwYRe5/Jzl4DnI68WYdEyHz+K2/bruaf2JClxw
+	V/rFI5P0erXMl83ZdecNiV4=
+Received: from mail.maildlp.com (unknown [172.19.163.163])
+	by canpmsgout08.his.huawei.com (SkyGuard) with ESMTPS id 4fC77q6p9tzmV74;
+	Fri, 13 Feb 2026 18:04:55 +0800 (CST)
+Received: from kwepemr200004.china.huawei.com (unknown [7.202.195.241])
+	by mail.maildlp.com (Postfix) with ESMTPS id 700BA4048B;
+	Fri, 13 Feb 2026 18:09:36 +0800 (CST)
+Received: from huawei.com (10.50.163.32) by kwepemr200004.china.huawei.com
+ (7.202.195.241) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Fri, 13 Feb
+ 2026 18:09:35 +0800
+From: Pengjie Zhang <zhangpengjie2@huawei.com>
+To: <rafael@kernel.org>, <lenb@kernel.org>, <viresh.kumar@linaro.org>,
+	<robert.moore@intel.com>
+CC: <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-pm@vger.kernel.org>, <acpica-devel@lists.linux.dev>,
+	<zhanjie9@hisilicon.com>, <zhenglifeng1@huawei.com>, <lihuisong@huawei.com>,
+	<yubowen8@huawei.com>, <linhongye@h-partners.com>, <linuxarm@huawei.com>,
+	<jonathan.cameron@huawei.com>, <zhangpengjie2@huawei.com>,
+	<wangzhi12@huawei.com>
+Subject: [PATCH v2] ACPI: CPPC: Move reference performance to capabilities
+Date: Fri, 13 Feb 2026 18:09:35 +0800
+Message-ID: <20260213100935.19111-1-zhangpengjie2@huawei.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.19
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: kwepems100001.china.huawei.com (7.221.188.238) To
+ kwepemr200004.china.huawei.com (7.202.195.241)
 
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Currently, the `Reference Performance` register is read every time
+the CPU frequency is sampled in `cppc_get_perf_ctrs()`. This function
+is on the hot path of the cpufreq driver.
 
-[ Upstream commit fa2408a24f8f0db14d9cfc613ef162dc267d7ad4 ]
+Reference Performance indicates the performance level that corresponds
+to the Reference Counter incrementing and is not expected to change
+dynamically during runtime (unlike the Delivered and Reference counters).
 
-The logic at ghes_new() prevents allocating too large records, by
-checking if they're bigger than GHES_ESTATUS_MAX_SIZE (currently, 64KB).
-Yet, the allocation is done with the actual number of pages from the
-CPER bios table location, which can be smaller.
+Reading this register in the hot path incurs unnecessary overhead,
+particularly on platforms where CPC registers are located in the PCC
+(Platform Communication Channel) subspace. This patch moves
+`reference_perf` from the dynamic feedback counters structure
+(`cppc_perf_fb_ctrs`) to the static capabilities structure
+(`cppc_perf_caps`).
 
-Yet, a bad firmware could send data with a different size, which might
-be bigger than the allocated memory, causing an OOPS:
-
-    Unable to handle kernel paging request at virtual address fff00000f9b40000
-    Mem abort info:
-      ESR = 0x0000000096000007
-      EC = 0x25: DABT (current EL), IL = 32 bits
-      SET = 0, FnV = 0
-      EA = 0, S1PTW = 0
-      FSC = 0x07: level 3 translation fault
-    Data abort info:
-      ISV = 0, ISS = 0x00000007, ISS2 = 0x00000000
-      CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-      GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-    swapper pgtable: 4k pages, 52-bit VAs, pgdp=000000008ba16000
-    [fff00000f9b40000] pgd=180000013ffff403, p4d=180000013fffe403, pud=180000013f85b403, pmd=180000013f68d403, pte=0000000000000000
-    Internal error: Oops: 0000000096000007 [#1]  SMP
-    Modules linked in:
-    CPU: 0 UID: 0 PID: 303 Comm: kworker/0:1 Not tainted 6.19.0-rc1-00002-gda407d200220 #34 PREEMPT
-    Hardware name: QEMU QEMU Virtual Machine, BIOS unknown 02/02/2022
-    Workqueue: kacpi_notify acpi_os_execute_deferred
-    pstate: 214020c5 (nzCv daIF +PAN -UAO -TCO +DIT -SSBS BTYPE=--)
-    pc : hex_dump_to_buffer+0x30c/0x4a0
-    lr : hex_dump_to_buffer+0x328/0x4a0
-    sp : ffff800080e13880
-    x29: ffff800080e13880 x28: ffffac9aba86f6a8 x27: 0000000000000083
-    x26: fff00000f9b3fffc x25: 0000000000000004 x24: 0000000000000004
-    x23: ffff800080e13905 x22: 0000000000000010 x21: 0000000000000083
-    x20: 0000000000000001 x19: 0000000000000008 x18: 0000000000000010
-    x17: 0000000000000001 x16: 00000007c7f20fec x15: 0000000000000020
-    x14: 0000000000000008 x13: 0000000000081020 x12: 0000000000000008
-    x11: ffff800080e13905 x10: ffff800080e13988 x9 : 0000000000000000
-    x8 : 0000000000000000 x7 : 0000000000000001 x6 : 0000000000000020
-    x5 : 0000000000000030 x4 : 00000000fffffffe x3 : 0000000000000000
-    x2 : ffffac9aba78c1c8 x1 : ffffac9aba76d0a8 x0 : 0000000000000008
-    Call trace:
-     hex_dump_to_buffer+0x30c/0x4a0 (P)
-     print_hex_dump+0xac/0x170
-     cper_estatus_print_section+0x90c/0x968
-     cper_estatus_print+0xf0/0x158
-     __ghes_print_estatus+0xa0/0x148
-     ghes_proc+0x1bc/0x220
-     ghes_notify_hed+0x5c/0xb8
-     notifier_call_chain+0x78/0x148
-     blocking_notifier_call_chain+0x4c/0x80
-     acpi_hed_notify+0x28/0x40
-     acpi_ev_notify_dispatch+0x50/0x80
-     acpi_os_execute_deferred+0x24/0x48
-     process_one_work+0x15c/0x3b0
-     worker_thread+0x2d0/0x400
-     kthread+0x148/0x228
-     ret_from_fork+0x10/0x20
-    Code: 6b14033f 540001ad a94707e2 f100029f (b8747b44)
-    ---[ end trace 0000000000000000 ]---
-
-Prevent that by taking the actual allocated are into account when
-checking for CPER length.
-
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Reviewed-by: Jonathan Cameron <jonathan.cameron@huawei.com>
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
-Reviewed-by: Hanjun Guo <guohanjun@huawei.com>
-[ rjw: Subject tweaks ]
-Link: https://patch.msgid.link/4e70310a816577fabf37d94ed36cde4ad62b1e0a.1767871950.git.mchehab+huawei@kernel.org
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Pengjie Zhang <zhangpengjie2@huawei.com>
 ---
-
-LLM Generated explanations, may be completely bogus:
-
-Now I have a complete picture. Let me compile this detailed analysis.
-
+changes in v2:
+-Adapted the code to the new integration.
+Link to v1:https://lore.kernel.org/all/20260129112105.2511748-1-zhangpengjie2@huawei.com/
 ---
+ drivers/acpi/cppc_acpi.c       | 55 +++++++++++++++-------------------
+ drivers/cpufreq/cppc_cpufreq.c | 21 +++++++------
+ include/acpi/cppc_acpi.h       |  2 +-
+ 3 files changed, 37 insertions(+), 41 deletions(-)
 
-## Detailed Analysis of APEI/GHES CPER Buffer Overflow Fix
-
-### 1. COMMIT MESSAGE ANALYSIS
-
-The commit message clearly describes a **buffer overflow bug** in the
-ACPI APEI/GHES subsystem. Key indicators:
-
-- **Concrete crash trace**: A full kernel OOPS with call trace is
-  included, proving this is a real, reproducible crash
-- **Clear root cause explanation**: The commit explains the discrepancy
-  between the allocated buffer size and the validation check limit
-- **Crash path**: `ghes_proc` -> `__ghes_print_estatus` ->
-  `cper_estatus_print_section` -> `print_hex_dump` ->
-  `hex_dump_to_buffer` — a pagefault when reading past the allocated
-  buffer
-- **Multiple reviewers**: Reviewed-by Jonathan Cameron, Acked-by Ard
-  Biesheuvel (prominent EFI/ACPI maintainer), Reviewed-by Hanjun Guo —
-  strong confidence signals
-
-### 2. CODE CHANGE ANALYSIS — The Bug
-
-The vulnerability exists in the interaction between two functions:
-
-**`ghes_new()` (allocation)**:
-
-```288:296:drivers/acpi/apei/ghes.c
-        error_block_length = generic->error_block_length;
-        if (error_block_length > GHES_ESTATUS_MAX_SIZE) {
-                pr_warn(FW_WARN GHES_PFX
-                        "Error status block length is too long: %u for "
-                        "generic hardware error source: %d.\n",
-                        error_block_length, generic->header.source_id);
-                error_block_length = GHES_ESTATUS_MAX_SIZE;
-        }
-        ghes->estatus = kmalloc(error_block_length, GFP_KERNEL);
-```
-
-Here, if the BIOS HEST table declares `generic->error_block_length =
-128KB`, the local variable `error_block_length` is capped to
-`GHES_ESTATUS_MAX_SIZE` (64KB), and only 64KB is allocated for
-`ghes->estatus`. Critically, `ghes->generic->error_block_length` retains
-the original uncapped value of 128KB.
-
-**`__ghes_check_estatus()` (validation)**:
-
-```364:385:drivers/acpi/apei/ghes.c
-static int __ghes_check_estatus(struct ghes *ghes,
-                                struct acpi_hest_generic_status
-*estatus)
-{
-        u32 len = cper_estatus_len(estatus);
-
-        if (len < sizeof(*estatus)) {
-                pr_warn_ratelimited(FW_WARN GHES_PFX "Truncated error
-status block!\n");
-                return -EIO;
-        }
-
-        if (len > ghes->generic->error_block_length) {
-                pr_warn_ratelimited(FW_WARN GHES_PFX "Invalid error
-status block length!\n");
-                return -EIO;
-        }
-        // ...
-}
-```
-
-The validation at line 374 checks `len >
-ghes->generic->error_block_length` — comparing against the **uncapped
-BIOS-declared value** (128KB in our example), NOT the actual allocated
-buffer size (64KB).
-
-**`ghes_read_estatus()` (the dangerous read)**:
-
-```430:446:drivers/acpi/apei/ghes.c
-static int ghes_read_estatus(struct ghes *ghes,
-                             struct acpi_hest_generic_status *estatus,
-                             u64 *buf_paddr, enum fixed_addresses
-fixmap_idx)
-{
-        int rc;
-        rc = __ghes_peek_estatus(ghes, estatus, buf_paddr, fixmap_idx);
-        if (rc) return rc;
-        rc = __ghes_check_estatus(ghes, estatus);
-        if (rc) return rc;
-        return __ghes_read_estatus(estatus, *buf_paddr, fixmap_idx,
-                                   cper_estatus_len(estatus));
-}
-```
-
-After `__ghes_check_estatus()` erroneously allows a 70KB CPER record
-(because 70KB < 128KB), `__ghes_read_estatus()` copies 70KB from
-firmware into the 64KB `ghes->estatus` buffer — **a 6KB buffer
-overflow**.
-
-**`ghes_proc()`** is the main caller, passing `ghes->estatus` (the
-undersized buffer) directly:
-
-```1166:1172:drivers/acpi/apei/ghes.c
-static int ghes_proc(struct ghes *ghes)
-{
-        struct acpi_hest_generic_status *estatus = ghes->estatus;
-        u64 buf_paddr;
-        int rc;
-        rc = ghes_read_estatus(ghes, estatus, &buf_paddr,
-FIX_APEI_GHES_IRQ);
-```
-
-### 3. THE FIX
-
-The fix is minimal and surgical — 3 logical changes:
-
-1. **New field in `struct ghes`**: `unsigned int estatus_length` to
-   track the actual allocated size
-2. **Store actual allocation size**: `ghes->estatus_length =
-   error_block_length` right after `kmalloc`
-3. **Fix the validation check**: Change `len >
-   ghes->generic->error_block_length` to `!len || len >
-   min(ghes->generic->error_block_length, ghes->estatus_length)` — now
-   validates against the **minimum** of the declared and allocated sizes
-
-The fix also adds a `!len` zero-length check, preventing issues with
-zero-length CPER records that previously weren't caught.
-
-### 4. CLASSIFICATION
-
-- **Bug type**: Out-of-bounds write / buffer overflow
-- **Trigger**: Bad firmware (BIOS declares `error_block_length >
-  GHES_ESTATUS_MAX_SIZE`, then sends CPER record between the allocation
-  size and the declared size)
-- **This is NOT theoretical**: The commit includes a real OOPS trace on
-  QEMU demonstrating the crash
-- **Security relevance**: Firmware-controlled data causes kernel memory
-  corruption. While firmware is generally trusted, this is still a
-  defense-in-depth issue, and buggy firmware is common in practice
-
-### 5. SCOPE AND RISK ASSESSMENT
-
-- **Files changed**: 2 (`drivers/acpi/apei/ghes.c`,
-  `include/acpi/ghes.h`)
-- **Lines changed**: ~10 meaningful lines (adding a struct field,
-  storing it, and a `min()` check)
-- **Risk of regression**: **Extremely low**. The fix only makes the
-  validation check more restrictive — it can only reject records that
-  would have previously been accepted. No record that was correctly
-  handled before will be rejected now.
-- **Subsystem**: ACPI APEI/GHES — critical hardware error reporting used
-  on servers, enterprise systems, and ARM platforms. This is important
-  infrastructure.
-
-### 6. BUG AGE AND AFFECTED VERSIONS
-
-The vulnerable pattern has existed since the original GHES code was
-introduced in commit `d334a49113a4a` from **2010** (Linux v2.6.35). The
-`error_block_length` capping in `ghes_new()` and the check against the
-uncapped value in the validation function have coexisted since the
-beginning. This means **every stable kernel tree** with GHES support is
-affected.
-
-### 7. DEPENDENCY CHECK
-
-The fix is **fully self-contained**. It:
-- Adds a new `unsigned int` field to `struct ghes` (header change)
-- Stores the allocation size in `ghes_new()` (initialization)
-- Uses `min()` in `__ghes_check_estatus()` (validation fix)
-- Includes `<linux/minmax.h>` for the `min()` macro (though this is
-  likely already available through other includes in older kernels)
-
-No other patches are needed for this fix to work. The fix applies to the
-GHES code that has been stable for many years.
-
-### 8. USER IMPACT
-
-- **Who is affected**: Anyone with ACPI GHES hardware error reporting,
-  primarily:
-  - Enterprise servers (HP, Dell, Lenovo)
-  - ARM platforms with SDEI/GHES
-  - Systems with buggy firmware that declares large error blocks
-- **Severity**: **Kernel OOPS/crash** — system becomes unstable or
-  crashes entirely
-- **Trigger likelihood**: Requires firmware with `error_block_length >
-  64KB` AND a CPER record larger than 64KB. While not every system will
-  trigger this, the crash trace proves it happens in the real world
-  (tested on QEMU with specific firmware).
-
-### 9. REVIEW QUALITY
-
-- **Reviewed-by: Jonathan Cameron** — experienced APEI contributor
-- **Acked-by: Ard Biesheuvel** — prominent EFI/ACPI/ARM maintainer
-- **Reviewed-by: Hanjun Guo** — ACPI subsystem reviewer
-- **Committed by: Rafael J. Wysocki** — ACPI subsystem maintainer
-
-This is an exceptionally well-reviewed patch.
-
-### 10. SUMMARY
-
-| Criterion | Assessment |
-|-----------|------------|
-| Fixes real bug | YES — buffer overflow causing kernel OOPS |
-| Obviously correct | YES — adds allocation tracking and min()
-validation |
-| Small and contained | YES — ~10 lines of meaningful change |
-| Tested | YES — crash trace demonstrates the bug; multiple reviews
-confirm the fix |
-| No new features | YES — pure bug fix |
-| Risk of regression | VERY LOW — only makes validation stricter |
-| Affects stable users | YES — long-standing bug in all stable trees |
-| Self-contained | YES — no dependencies on other patches |
-
-This is a textbook stable kernel backport candidate: a small, surgical,
-well-reviewed fix for a real buffer overflow that causes kernel crashes,
-with no risk of regression. The bug has existed since 2010 and affects
-all stable kernel trees.
-
-**YES**
-
- drivers/acpi/apei/ghes.c | 6 +++++-
- include/acpi/ghes.h      | 1 +
- 2 files changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
-index 0dc767392a6c6..a37c8fb574832 100644
---- a/drivers/acpi/apei/ghes.c
-+++ b/drivers/acpi/apei/ghes.c
-@@ -29,6 +29,7 @@
- #include <linux/cper.h>
- #include <linux/cleanup.h>
- #include <linux/platform_device.h>
-+#include <linux/minmax.h>
- #include <linux/mutex.h>
- #include <linux/ratelimit.h>
- #include <linux/vmalloc.h>
-@@ -294,6 +295,7 @@ static struct ghes *ghes_new(struct acpi_hest_generic *generic)
- 		error_block_length = GHES_ESTATUS_MAX_SIZE;
- 	}
- 	ghes->estatus = kmalloc(error_block_length, GFP_KERNEL);
-+	ghes->estatus_length = error_block_length;
- 	if (!ghes->estatus) {
- 		rc = -ENOMEM;
- 		goto err_unmap_status_addr;
-@@ -365,13 +367,15 @@ static int __ghes_check_estatus(struct ghes *ghes,
- 				struct acpi_hest_generic_status *estatus)
+diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+index a09bdabaa804..db1da8717078 100644
+--- a/drivers/acpi/cppc_acpi.c
++++ b/drivers/acpi/cppc_acpi.c
+@@ -177,12 +177,12 @@ __ATTR(_name, 0444, show_##_name, NULL)
+ show_cppc_data(cppc_get_perf_caps, cppc_perf_caps, highest_perf);
+ show_cppc_data(cppc_get_perf_caps, cppc_perf_caps, lowest_perf);
+ show_cppc_data(cppc_get_perf_caps, cppc_perf_caps, nominal_perf);
++show_cppc_data(cppc_get_perf_caps, cppc_perf_caps, reference_perf);
+ show_cppc_data(cppc_get_perf_caps, cppc_perf_caps, lowest_nonlinear_perf);
+ show_cppc_data(cppc_get_perf_caps, cppc_perf_caps, guaranteed_perf);
+ show_cppc_data(cppc_get_perf_caps, cppc_perf_caps, lowest_freq);
+ show_cppc_data(cppc_get_perf_caps, cppc_perf_caps, nominal_freq);
+ 
+-show_cppc_data(cppc_get_perf_ctrs, cppc_perf_fb_ctrs, reference_perf);
+ show_cppc_data(cppc_get_perf_ctrs, cppc_perf_fb_ctrs, wraparound_time);
+ 
+ /* Check for valid access_width, otherwise, fallback to using bit_width */
+@@ -1343,9 +1343,10 @@ int cppc_get_perf_caps(int cpunum, struct cppc_perf_caps *perf_caps)
  {
- 	u32 len = cper_estatus_len(estatus);
-+	u32 max_len = min(ghes->generic->error_block_length,
-+			  ghes->estatus_length);
+ 	struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpunum);
+ 	struct cpc_register_resource *highest_reg, *lowest_reg,
+-		*lowest_non_linear_reg, *nominal_reg, *guaranteed_reg,
+-		*low_freq_reg = NULL, *nom_freq_reg = NULL;
+-	u64 high, low, guaranteed, nom, min_nonlinear, low_f = 0, nom_f = 0;
++		*lowest_non_linear_reg, *nominal_reg, *reference_reg,
++		*guaranteed_reg, *low_freq_reg = NULL, *nom_freq_reg = NULL;
++	u64 high, low, guaranteed, nom, ref, min_nonlinear,
++	    low_f = 0, nom_f = 0;
+ 	int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpunum);
+ 	struct cppc_pcc_data *pcc_ss_data = NULL;
+ 	int ret = 0, regs_in_pcc = 0;
+@@ -1359,6 +1360,7 @@ int cppc_get_perf_caps(int cpunum, struct cppc_perf_caps *perf_caps)
+ 	lowest_reg = &cpc_desc->cpc_regs[LOWEST_PERF];
+ 	lowest_non_linear_reg = &cpc_desc->cpc_regs[LOW_NON_LINEAR_PERF];
+ 	nominal_reg = &cpc_desc->cpc_regs[NOMINAL_PERF];
++	reference_reg = &cpc_desc->cpc_regs[REFERENCE_PERF];
+ 	low_freq_reg = &cpc_desc->cpc_regs[LOWEST_FREQ];
+ 	nom_freq_reg = &cpc_desc->cpc_regs[NOMINAL_FREQ];
+ 	guaranteed_reg = &cpc_desc->cpc_regs[GUARANTEED_PERF];
+@@ -1366,6 +1368,7 @@ int cppc_get_perf_caps(int cpunum, struct cppc_perf_caps *perf_caps)
+ 	/* Are any of the regs PCC ?*/
+ 	if (CPC_IN_PCC(highest_reg) || CPC_IN_PCC(lowest_reg) ||
+ 		CPC_IN_PCC(lowest_non_linear_reg) || CPC_IN_PCC(nominal_reg) ||
++		(CPC_SUPPORTED(reference_reg) && CPC_IN_PCC(reference_reg)) ||
+ 		CPC_IN_PCC(low_freq_reg) || CPC_IN_PCC(nom_freq_reg) ||
+ 		CPC_IN_PCC(guaranteed_reg)) {
+ 		if (pcc_ss_id < 0) {
+@@ -1391,6 +1394,17 @@ int cppc_get_perf_caps(int cpunum, struct cppc_perf_caps *perf_caps)
+ 	cpc_read(cpunum, nominal_reg, &nom);
+ 	perf_caps->nominal_perf = nom;
  
- 	if (len < sizeof(*estatus)) {
- 		pr_warn_ratelimited(FW_WARN GHES_PFX "Truncated error status block!\n");
- 		return -EIO;
++	/*
++	 * If reference perf register is not supported then we should
++	 * use the nominal perf value
++	 */
++	if (CPC_SUPPORTED(reference_reg)) {
++		cpc_read(cpunum, reference_reg, &ref);
++		perf_caps->reference_perf = ref;
++	} else {
++		perf_caps->reference_perf = nom;
++	}
++
+ 	if (guaranteed_reg->type != ACPI_TYPE_BUFFER  ||
+ 	    IS_NULL_REG(&guaranteed_reg->cpc_entry.reg)) {
+ 		perf_caps->guaranteed_perf = 0;
+@@ -1402,7 +1416,7 @@ int cppc_get_perf_caps(int cpunum, struct cppc_perf_caps *perf_caps)
+ 	cpc_read(cpunum, lowest_non_linear_reg, &min_nonlinear);
+ 	perf_caps->lowest_nonlinear_perf = min_nonlinear;
+ 
+-	if (!high || !low || !nom || !min_nonlinear)
++	if (!high || !low || !nom || !ref || !min_nonlinear)
+ 		ret = -EFAULT;
+ 
+ 	/* Read optional lowest and nominal frequencies if present */
+@@ -1432,20 +1446,10 @@ EXPORT_SYMBOL_GPL(cppc_get_perf_caps);
+ bool cppc_perf_ctrs_in_pcc_cpu(unsigned int cpu)
+ {
+ 	struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpu);
+-	struct cpc_register_resource *ref_perf_reg;
+-
+-	/*
+-	 * If reference perf register is not supported then we should use the
+-	 * nominal perf value
+-	 */
+-	ref_perf_reg = &cpc_desc->cpc_regs[REFERENCE_PERF];
+-	if (!CPC_SUPPORTED(ref_perf_reg))
+-		ref_perf_reg = &cpc_desc->cpc_regs[NOMINAL_PERF];
+ 
+ 	return CPC_IN_PCC(&cpc_desc->cpc_regs[DELIVERED_CTR]) ||
+ 		CPC_IN_PCC(&cpc_desc->cpc_regs[REFERENCE_CTR]) ||
+-		CPC_IN_PCC(&cpc_desc->cpc_regs[CTR_WRAP_TIME]) ||
+-		CPC_IN_PCC(ref_perf_reg);
++		CPC_IN_PCC(&cpc_desc->cpc_regs[CTR_WRAP_TIME]);
+ }
+ EXPORT_SYMBOL_GPL(cppc_perf_ctrs_in_pcc_cpu);
+ 
+@@ -1482,10 +1486,10 @@ int cppc_get_perf_ctrs(int cpunum, struct cppc_perf_fb_ctrs *perf_fb_ctrs)
+ {
+ 	struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpunum);
+ 	struct cpc_register_resource *delivered_reg, *reference_reg,
+-		*ref_perf_reg, *ctr_wrap_reg;
++		*ctr_wrap_reg;
+ 	int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpunum);
+ 	struct cppc_pcc_data *pcc_ss_data = NULL;
+-	u64 delivered, reference, ref_perf, ctr_wrap_time;
++	u64 delivered, reference, ctr_wrap_time;
+ 	int ret = 0, regs_in_pcc = 0;
+ 
+ 	if (!cpc_desc) {
+@@ -1495,19 +1499,11 @@ int cppc_get_perf_ctrs(int cpunum, struct cppc_perf_fb_ctrs *perf_fb_ctrs)
+ 
+ 	delivered_reg = &cpc_desc->cpc_regs[DELIVERED_CTR];
+ 	reference_reg = &cpc_desc->cpc_regs[REFERENCE_CTR];
+-	ref_perf_reg = &cpc_desc->cpc_regs[REFERENCE_PERF];
+ 	ctr_wrap_reg = &cpc_desc->cpc_regs[CTR_WRAP_TIME];
+ 
+-	/*
+-	 * If reference perf register is not supported then we should
+-	 * use the nominal perf value
+-	 */
+-	if (!CPC_SUPPORTED(ref_perf_reg))
+-		ref_perf_reg = &cpc_desc->cpc_regs[NOMINAL_PERF];
+-
+ 	/* Are any of the regs PCC ?*/
+ 	if (CPC_IN_PCC(delivered_reg) || CPC_IN_PCC(reference_reg) ||
+-		CPC_IN_PCC(ctr_wrap_reg) || CPC_IN_PCC(ref_perf_reg)) {
++		CPC_IN_PCC(ctr_wrap_reg)) {
+ 		if (pcc_ss_id < 0) {
+ 			pr_debug("Invalid pcc_ss_id\n");
+ 			return -ENODEV;
+@@ -1524,8 +1520,6 @@ int cppc_get_perf_ctrs(int cpunum, struct cppc_perf_fb_ctrs *perf_fb_ctrs)
+ 
+ 	cpc_read(cpunum, delivered_reg, &delivered);
+ 	cpc_read(cpunum, reference_reg, &reference);
+-	cpc_read(cpunum, ref_perf_reg, &ref_perf);
+-
+ 	/*
+ 	 * Per spec, if ctr_wrap_time optional register is unsupported, then the
+ 	 * performance counters are assumed to never wrap during the lifetime of
+@@ -1535,14 +1529,13 @@ int cppc_get_perf_ctrs(int cpunum, struct cppc_perf_fb_ctrs *perf_fb_ctrs)
+ 	if (CPC_SUPPORTED(ctr_wrap_reg))
+ 		cpc_read(cpunum, ctr_wrap_reg, &ctr_wrap_time);
+ 
+-	if (!delivered || !reference ||	!ref_perf) {
++	if (!delivered || !reference) {
+ 		ret = -EFAULT;
+ 		goto out_err;
  	}
  
--	if (len > ghes->generic->error_block_length) {
-+	if (!len || len > max_len) {
- 		pr_warn_ratelimited(FW_WARN GHES_PFX "Invalid error status block length!\n");
- 		return -EIO;
+ 	perf_fb_ctrs->delivered = delivered;
+ 	perf_fb_ctrs->reference = reference;
+-	perf_fb_ctrs->reference_perf = ref_perf;
+ 	perf_fb_ctrs->wraparound_time = ctr_wrap_time;
+ out_err:
+ 	if (regs_in_pcc)
+diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
+index 7e8042efedd1..befcbded126a 100644
+--- a/drivers/cpufreq/cppc_cpufreq.c
++++ b/drivers/cpufreq/cppc_cpufreq.c
+@@ -50,7 +50,8 @@ struct cppc_freq_invariance {
+ static DEFINE_PER_CPU(struct cppc_freq_invariance, cppc_freq_inv);
+ static struct kthread_worker *kworker_fie;
+ 
+-static int cppc_perf_from_fbctrs(struct cppc_perf_fb_ctrs *fb_ctrs_t0,
++static int cppc_perf_from_fbctrs(u64 reference_perf,
++				 struct cppc_perf_fb_ctrs *fb_ctrs_t0,
+ 				 struct cppc_perf_fb_ctrs *fb_ctrs_t1);
+ 
+ /**
+@@ -70,7 +71,7 @@ static void __cppc_scale_freq_tick(struct cppc_freq_invariance *cppc_fi)
+ 	struct cppc_perf_fb_ctrs fb_ctrs = {0};
+ 	struct cppc_cpudata *cpu_data;
+ 	unsigned long local_freq_scale;
+-	u64 perf;
++	u64 perf, ref_perf;
+ 
+ 	cpu_data = cppc_fi->cpu_data;
+ 
+@@ -79,7 +80,9 @@ static void __cppc_scale_freq_tick(struct cppc_freq_invariance *cppc_fi)
+ 		return;
  	}
-diff --git a/include/acpi/ghes.h b/include/acpi/ghes.h
-index ebd21b05fe6ed..93db60da5934e 100644
---- a/include/acpi/ghes.h
-+++ b/include/acpi/ghes.h
-@@ -21,6 +21,7 @@ struct ghes {
- 		struct acpi_hest_generic_v2 *generic_v2;
- 	};
- 	struct acpi_hest_generic_status *estatus;
-+	unsigned int estatus_length;
- 	unsigned long flags;
- 	union {
- 		struct list_head list;
+ 
+-	perf = cppc_perf_from_fbctrs(&cppc_fi->prev_perf_fb_ctrs, &fb_ctrs);
++	ref_perf = cpu_data->perf_caps.reference_perf;
++	perf = cppc_perf_from_fbctrs(ref_perf,
++				     &cppc_fi->prev_perf_fb_ctrs, &fb_ctrs);
+ 	if (!perf)
+ 		return;
+ 
+@@ -723,13 +726,11 @@ static inline u64 get_delta(u64 t1, u64 t0)
+ 	return (u32)t1 - (u32)t0;
+ }
+ 
+-static int cppc_perf_from_fbctrs(struct cppc_perf_fb_ctrs *fb_ctrs_t0,
++static int cppc_perf_from_fbctrs(u64 reference_perf,
++				 struct cppc_perf_fb_ctrs *fb_ctrs_t0,
+ 				 struct cppc_perf_fb_ctrs *fb_ctrs_t1)
+ {
+ 	u64 delta_reference, delta_delivered;
+-	u64 reference_perf;
+-
+-	reference_perf = fb_ctrs_t0->reference_perf;
+ 
+ 	delta_reference = get_delta(fb_ctrs_t1->reference,
+ 				    fb_ctrs_t0->reference);
+@@ -766,7 +767,7 @@ static unsigned int cppc_cpufreq_get_rate(unsigned int cpu)
+ 	struct cpufreq_policy *policy __free(put_cpufreq_policy) = cpufreq_cpu_get(cpu);
+ 	struct cppc_perf_fb_ctrs fb_ctrs_t0 = {0}, fb_ctrs_t1 = {0};
+ 	struct cppc_cpudata *cpu_data;
+-	u64 delivered_perf;
++	u64 delivered_perf, reference_perf;
+ 	int ret;
+ 
+ 	if (!policy)
+@@ -783,7 +784,9 @@ static unsigned int cppc_cpufreq_get_rate(unsigned int cpu)
+ 			return 0;
+ 	}
+ 
+-	delivered_perf = cppc_perf_from_fbctrs(&fb_ctrs_t0, &fb_ctrs_t1);
++	reference_perf = cpu_data->perf_caps.reference_perf;
++	delivered_perf = cppc_perf_from_fbctrs(reference_perf,
++					       &fb_ctrs_t0, &fb_ctrs_t1);
+ 	if (!delivered_perf)
+ 		goto out_invalid_counters;
+ 
+diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
+index 4d644f03098e..d3c4999e3551 100644
+--- a/include/acpi/cppc_acpi.h
++++ b/include/acpi/cppc_acpi.h
+@@ -116,6 +116,7 @@ struct cppc_perf_caps {
+ 	u32 guaranteed_perf;
+ 	u32 highest_perf;
+ 	u32 nominal_perf;
++	u32 reference_perf;
+ 	u32 lowest_perf;
+ 	u32 lowest_nonlinear_perf;
+ 	u32 lowest_freq;
+@@ -133,7 +134,6 @@ struct cppc_perf_ctrls {
+ struct cppc_perf_fb_ctrs {
+ 	u64 reference;
+ 	u64 delivered;
+-	u64 reference_perf;
+ 	u64 wraparound_time;
+ };
+ 
 -- 
-2.51.0
+2.33.0
 
