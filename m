@@ -1,160 +1,160 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC59F29AAEA;
-	Sat, 14 Feb 2026 16:34:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771086840; cv=none; b=azarcE0xHJuAdDpdrhD26vvrKfS+5Xex9LLczqUol4h6VaS5+nersUfM9P+KzVY20oZwYpFsGG3DU3bX6o51ztdsnWq/JyR+mxEADUt+Z+Oe/O1gnuyBuRMS8OQmTw9JnJ4UbmG/K+++/CJhRv2QnWqvwcyWRVTjJ7ztK58gf9k=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771086840; c=relaxed/simple;
-	bh=4W58A1qF2KMzD+CNPgn+QF1OmJw16hqgvTE9E1HsVeg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pcK0NGJK+po1xOWFd3CpVbtAUOE3tOTiHDYnCCQfFFpUJen/dAIQAX+S986//MLLVgZ4VEaufUnkLyf2bmMoQM2UJJ8iqXIUr26uAtTpqEg9A6OBsYcLdcW9fw8WqbpSnYpQbPi4ubF27jT3LMS5q16varjIqe8CBX41nJUDkTE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cs9v7tEM; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A79B81519B4
+	for <acpica-devel@lists.linux.dev>; Sun, 15 Feb 2026 01:26:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.210.44
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1771118798; cv=pass; b=osGMEsNuBWVPYyyIaRhgTodoBOJqYXRgysJUauM5YgitSFRSMxALHqccuJHMIJdJiu8n6UHFjHPYNcWgDPbTeTugYvaYnraonyKr0FC+okf2qFJ6QVJukbCpv7QZjmbI7rflvcc+kb9YdG5DcqZY7edjRH0e2ET/RGLZ7rpQRDE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1771118798; c=relaxed/simple;
+	bh=IzdGBGFCpilT6AeHHAkF6quAsV2MXMS40zGkPPdg0HE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=d4n8jwuBvHfhbvLn9KkoeEogBKSnU8kMIP5TtaT0ZQeCnlEj8wQCOIjxXKFJeMinlOtwgP2/5c9Vi1qf7kRat/DdmYCMK2+dltacTTToS1DRZ4gSXZlVpZHhis3RCle4Z8vEXEaKJ01nheHP4Zyn3sfpgyWQwVWtI7e17BgFZmc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e7FcJDQK; arc=pass smtp.client-ip=209.85.210.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cs9v7tEM"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA927C16AAE;
-	Sat, 14 Feb 2026 16:33:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771086840;
-	bh=4W58A1qF2KMzD+CNPgn+QF1OmJw16hqgvTE9E1HsVeg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cs9v7tEMNej7LNy7z7/h2afCc6HElvd5q9t+qse1Y1zd66p7wDvC2meIBgHJTTHfn
-	 RG0micMqePg+kAByNIQfRKLoCBurORHuzEbiQ6FB8qIpytQhBhowe8TG72e12U28ng
-	 io0Rb4ItKzI6PJvfj7x6BFlyfaEAK7Z+NAht2HzzxQvzYdmsGIUed6RYuS6wc0iFiu
-	 Usi43vf67e7RZwNwTE2ydq2nGkezYIJhXzxgel++t2dMSCc9NnleO1fUEcklxhMFLA
-	 UQuyHFuhmvsbmXHNg7RUu0UKO0I8Xc+astLdSmxQEnIH4s+kG9j0Ca2R6e7OejEoDx
-	 9vffDt9JGbUIw==
-Date: Sat, 14 Feb 2026 08:34:12 -0800
-From: Drew Fustini <fustini@kernel.org>
-To: Reinette Chatre <reinette.chatre@intel.com>
-Cc: Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
-	Radim =?utf-8?B?S3LEjW3DocWZ?= <rkrcmar@ventanamicro.com>,
-	Samuel Holland <samuel.holland@sifive.com>,
-	Adrien Ricciardi <aricciardi@baylibre.com>,
-	Nicolas Pitre <npitre@baylibre.com>,
-	Kornel =?utf-8?Q?Dul=C4=99ba?= <mindal@semihalf.com>,
-	Atish Patra <atish.patra@linux.dev>,
-	Atish Kumar Patra <atishp@rivosinc.com>,
-	Vasudevan Srinivasan <vasu@rivosinc.com>,
-	Ved Shanbhogue <ved@rivosinc.com>,
-	yunhui cui <cuiyunhui@bytedance.com>,
-	Chen Pei <cp0613@linux.alibaba.com>,
-	Liu Zhiwei <zhiwei_liu@linux.alibaba.com>,
-	Weiwei Li <liwei1518@gmail.com>, guo.wenjia23@zte.com.cn,
-	liu.qingtao2@zte.com.cn, Tony Luck <tony.luck@intel.com>,
-	Babu Moger <babu.moger@amd.com>,
-	Peter Newman <peternewman@google.com>,
-	Fenghua Yu <fenghua.yu@intel.com>,
-	James Morse <james.morse@arm.com>, Ben Horgan <ben.horgan@arm.com>,
-	Dave Martin <Dave.Martin@arm.com>, linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org, x86@kernel.org,
-	Rob Herring <robh@kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>,
-	Sunil V L <sunilvl@ventanamicro.com>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
-	devicetree@vger.kernel.org
-Subject: Re: [PATCH RFC v2 06/17] RISC-V: QoS: define CBQRI resctrl resources
- and domains
-Message-ID: <aZCkBOPLof_Wr0t4@gen8>
-References: <20260128-ssqosid-cbqri-v2-0-dca586b091b9@kernel.org>
- <20260128-ssqosid-cbqri-v2-6-dca586b091b9@kernel.org>
- <34bb3ae7-b48e-4c29-8762-0d16e0e7838f@intel.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e7FcJDQK"
+Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-7d195166b2cso1475909a34.3
+        for <acpica-devel@lists.linux.dev>; Sat, 14 Feb 2026 17:26:37 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1771118796; cv=none;
+        d=google.com; s=arc-20240605;
+        b=dZZtsAM8VRfZozjzLTl7Jevm2gqyCUK8D/3CBo7JaZL0jUhW5vrxMXdXPnbgHAxwRo
+         LKjfkhsbpZQRDXyqcwzzBNhI4HLgqWMUNCLiypSjdZQCjBQIZFSqBocBhabOMT+/kPWU
+         ieG84tX7EB4bnJ793lOnwxEQbytTYYcTmBtOrbg/im+AVV7Z4GGKqLyjBobsvCVA6XTM
+         MUb6YTs1LlbZie55ARraQw+TXZZrijtMXd6Pw9OEDHOUNiCLGqIUDQF2uZug2Y32ZSuX
+         Vy+ymVPB6dvyPUAZ9q58G5VOw5wrjru/dSGt8Fpy77VE0FFOlTMhWLDLsQm/q6YBXwxr
+         R2Sg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=oc6M0vaTZcmARSII2t0Y1J43OpPVtanNHASTzTLjxa4=;
+        fh=zpevZr2dOPyUaUClmlbWnNbM0bb8xVKTJ8reREtnZfE=;
+        b=FY41sT3Jbe70TCmd+vXgdRelRtVQsMm4R5h/IIFFwY5iPHuwjQoHiivkX8Hhb4/04v
+         Xuqc0dCBw37D4fOpsGzlSj/iQgvjhYwDVQBv5Ipocc25bDInviXQ1DfKB90hBURL+H/t
+         /GBRR5dqOF49Azovd4jhA27fqJSK6uosfUoty/Jq2WVtQSGXsx3/+1725qTx04ApvBg0
+         it5MLWdnJQH3udLvhSEb266//Gq4ucLLx1zYqR3ZLb7IwLdAk0KO/S8JIBpKybcbHzRe
+         GN8vrYDAkDQloY0swo9tkle8tmiu2JK2/S2kMzPwa8721oBJHqlu2dbgO9lnM2+b/v1p
+         rGLA==;
+        darn=lists.linux.dev
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1771118796; x=1771723596; darn=lists.linux.dev;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oc6M0vaTZcmARSII2t0Y1J43OpPVtanNHASTzTLjxa4=;
+        b=e7FcJDQK7ZzlI7FW6t4f1PAY7QiBgluUBf8N3FcNDm73ocL/YVbGXm5S190nNzA0+U
+         xjXgBXS5pf8EoCDCsPBxyrt9F+mkebTRRxwjs9grUlM/ygr/kZ4OxJZ3n5uso2yxmYhc
+         UkBPdXRvVVnIRkYb2XViWwv+d8dSsdZnn3EweKNxI0jA9VMdhrJgKDEBam3ORDsNvtTI
+         JWSUuJOjkVjyqGZUzzS6kBo5cOJxnwCzzNNUVIs/lOGE0Wg4RpWp2OwDjAERrOTs4TyF
+         ACqL/wG+PPAfuDSGtjahsSPW45i3KT28/3p+GxGK6apqunuTp9ivmyS/G4W8TshcBkgd
+         1xQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1771118796; x=1771723596;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=oc6M0vaTZcmARSII2t0Y1J43OpPVtanNHASTzTLjxa4=;
+        b=FW82ibdXk7WeDYfqyA5OQMs2xCe0pqGv9gIJjZzboTJfAcaAN5NkYsR2xe2Qloft1D
+         AN5G/uLCJIf3W0y7FxKr8E9IYJVSYAEPi+gdBFM05p5ckAgLHJCimKOrUD8gnIUYQKx0
+         j9X1LpD16REjTx5a0QD2ltsURSYPHBsL8NvW009IuL0yxvSXEMTyAFV8B6ZQ60perFes
+         26XFOlIto09dIrZ5Z6haz1I58K0gfp9wkXmRkLXnaYqN6Htn6lHms/bSKPtGYfKSHjAr
+         qZEX19RvjGdW1SPcSmfHhEq1tXC4CEgs5S/YCjRw6PI5EZjCVTTiiMyuRK5YJdololNI
+         UNpg==
+X-Forwarded-Encrypted: i=1; AJvYcCUJwEe4wf1VsHw1VdDwam71db0sIN0HIkzSImYY0H7u6DwnIqyxNqutWjngvVGWib1HVZ+n+Wdz5kB0iaA=@lists.linux.dev
+X-Gm-Message-State: AOJu0YxZkANiAfa4gaRHPk6KY/UHSkQ/p48YHgdBXgKqlBTeeUWBOnuM
+	6//dbBf6pHAwcMlneKNs2jAKbRvcQv2+0vvlqde8A5F7pK+6M2O8vhfiCW/TwqpimnzsGwO5NnQ
+	GZxr5yKGIz3G1mRAGqMmh7D+va6sSF+Q=
+X-Gm-Gg: AZuq6aITAE6MzNQW8U6ND1/74ZnjphTJ2aZZFAI/T6p76Yxdvs6CMMsGDZbfwpVu/CI
+	ymd2di04pFJraLKsIwLAkvE40ZRSImyYkWSP1nrYWVaBMVwOHVVU6KP3p/4V7QlQiJOBIeckWV/
+	VpR2bBz2NlfFw5K2hyTjeflWk6fhqhb8b00NTXfE9BAZEv58rfKoYqnyC2lhXBjry3YzYe3sNOe
+	aUGttt8UkbvpvY9WhdwT1w1ommgScjVhouiaKNWqsRvJptdGaiUNHKnvRLH0BZcXX8SZ7SEQQSr
+	JAOXN1CUV6sZJiIfYE6Io6BTPuIC9nRLsI+Nj1g2ug==
+X-Received: by 2002:a05:6830:90d:b0:7d1:9160:7b98 with SMTP id
+ 46e09a7af769-7d4c302911dmr3548600a34.15.1771118796565; Sat, 14 Feb 2026
+ 17:26:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <34bb3ae7-b48e-4c29-8762-0d16e0e7838f@intel.com>
+References: <20260201130334.3107-1-sef1548@gmail.com> <CAJZ5v0jtroqWSwjF3KQsmVLPYEE4a59-cxg5ZV1BAGmJtf-Q_Q@mail.gmail.com>
+In-Reply-To: <CAJZ5v0jtroqWSwjF3KQsmVLPYEE4a59-cxg5ZV1BAGmJtf-Q_Q@mail.gmail.com>
+From: Nick Huang <sef1548@gmail.com>
+Date: Sun, 15 Feb 2026 09:26:25 +0800
+X-Gm-Features: AaiRm53qbm9Rwn1Tz4PKVW8wtkl0gZZcYDHeT8RMibrNYsmuPOhzM3hobI7ScGM
+Message-ID: <CABZAGRH7SAd2r-n4q4u=7Dt-KJnAtUTLqmWM-H8GAejq=zgttA@mail.gmail.com>
+Subject: Re: [PATCH 0/2] nsrepair2: Improve sorting performance and add tests
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Robert Moore <robert.moore@intel.com>, Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org, 
+	acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	paladin@ntub.edu.tw, kusogame68@gmail.com, ceyanglab@gmail.com, 
+	n1136402@ntub.edu.tw
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 13, 2026 at 03:15:57PM -0800, Reinette Chatre wrote:
-> Hi Drew,
-> 
-> (caveat for all my comments)
-> I scanned this series for resctrl interactions and my comments are
-> focused around that instead of a thorough review of all the code
-> within. 
+Rafael J. Wysocki <rafael@kernel.org> =E6=96=BC 2026=E5=B9=B42=E6=9C=8813=
+=E6=97=A5=E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=889:40=E5=AF=AB=E9=81=93=EF=BC=
+=9A
+>
+> On Sun, Feb 1, 2026 at 2:03=E2=80=AFPM Nick Huang <sef1548@gmail.com> wro=
+te:
+> >
+> >    This patch series improves the ACPI nsrepair2 sorting implementation
+> >    and adds comprehensive KUnit tests.
+> >
+> >    Patch 1 replaces the O(n=C2=B2) bubble sort algorithm in acpi_ns_sor=
+t_list()
+> >    with the kernel's sort_r() function, which uses heapsort to achieve
+> >    O(n log n) time complexity. This improves performance when sorting
+> >    large ACPI package lists (e.g., _PSS, _TSS) while reducing code
+> >    complexity by leveraging the existing kernel sort API.
+> >
+> >    Patch 2 adds KUnit tests to verify the repair functions in nsrepair2=
+.c,
+> >    covering:
+> >      - ACPI operand object creation (integer, string, buffer, package)
+> >      - Namespace node creation and NAMESEG comparison
+> >      - Package structures for _PSS, _CST, _ALR, _PRT methods
+> >      - _HID string format verification
+> >      - _FDE buffer expansion
+> >      - Sorting logic with ascending/descending order
+> >
+> >
+> >
+> > Nick Huang (2):
+> >   ACPI: nsrepair2: Replace O(n=C2=B2) bubble sort with O(n log n) sort_=
+r()
+> >   ACPI: acpica: Add KUnit tests for nsrepair2 repair functions
+> >
+> >  drivers/acpi/acpica/nsrepair2.c      |  87 ++-
+> >  drivers/acpi/acpica/nsrepair2_test.c | 854 +++++++++++++++++++++++++++
+> >  2 files changed, 916 insertions(+), 25 deletions(-)
+> >  create mode 100644 drivers/acpi/acpica/nsrepair2_test.c
+> >
+> > --
+>
+> The ACPICA code in the kernel comes from the upstream ACPICA project
+> (hosted on GitHub) as described in
+> Documentation/driver-api/acpi/linuxized-acpica.rst.
+>
+> Changes to that code need to be made upstream from where they are
+> picked up automatically after every upstream ACPICA release (or you
+> can speed that up if need be by sending a Linux patch based on an
+> upstream ACPICA commit).
+>
+> As for the test part, I'm not sure how useful it would be given the above=
+.
+>
+> Thanks!
 
-Thanks for spending the time to review. It has helped me to realize that
-there is a lot cruft leftover from when I was developing based on the
-mpam snapshot at the time (2023) and never reorganized after rebasing on
-upstream.
+Hi Rafael J. Wysocki
 
-> 
-> On 1/28/26 12:27 PM, Drew Fustini wrote:
-> > diff --git a/arch/riscv/kernel/qos/internal.h b/arch/riscv/kernel/qos/internal.h
-> > index ff2c7eff50be..c0402dd06cfa 100644
-> > --- a/arch/riscv/kernel/qos/internal.h
-> > +++ b/arch/riscv/kernel/qos/internal.h
-> > @@ -65,6 +65,11 @@
-> >  #define CBQRI_BC_ALLOC_CTL_OP_READ_LIMIT   2
-> >  #define CBQRI_BC_ALLOC_CTL_STATUS_SUCCESS  1
-> >  
-> > +int qos_resctrl_setup(void);
-> > +void qos_resctrl_exit(void);
-> > +int qos_resctrl_online_cpu(unsigned int cpu);
-> > +int qos_resctrl_offline_cpu(unsigned int cpu);
-> > +
-> >  /* Capacity Controller hardware capabilities */
-> >  struct riscv_cbqri_capacity_caps {
-> >  	u16 ncblks; /* number of capacity blocks */
-> > @@ -125,4 +130,26 @@ struct cbqri_controller {
-> >  	bool mon_capable;
-> >  };
-> >  
-> > +struct cbqri_resctrl_res {
-> > +	struct rdt_resource     resctrl_res;
-> > +	struct cbqri_controller controller;
-> > +	u32 max_rcid;
-> > +	u32 max_mcid;
-> > +};
-> > +
-> > +struct cbqri_resctrl_dom {
-> > +	struct rdt_domain_hdr       resctrl_dom_hdr;
-> 
-> The resctrl_dom_hdr above should not be needed and indeed does
-> not seem to be used in this series. The two members below it,
-> struct rdt_ctrl_domain and struct rdt_mon_domain (now named
-> rdt_l3_mon_domain), have the necessary struct rdt_domain_hdr as
-> their first member.
-
-Thank you for the insight. I think added this when trying get the code
-working again after rebasing from an old mpam snapshot to upstream last
-year. It does seem like I didn't understand the data structures well
-enough and should clean up cbqri_resctrl_dom.
-> 
-> Without any comments or changelog that describes the other members
-> I am not able to really consider their inclusion here. From the
-> names it seems that most members are intended to support the
-> control domain usage so it is not clear to me why the cbqri domain
-> contains both a control and monitor domain while they are interacted
-> with separately by resctrl. From what I can tell resctrl_mon_dom
-> is not used by this implementation.
-> 
-> As hinted above, when you rebase you will find that struct rdt_mon_domain
-> is now named struct rdt_l3_mon_domain (see commit 4bc3ef46ff41
-> ("x86,fs/resctrl: Rename struct rdt_mon_domain and rdt_hw_mon_domain")) to
-> make it obvious that it is specific to L3 monitoring. Having this
-> as a member for all cbqri domains will then become increasingly confusing
-> since the cbqri_resctrl_dom is also used for L2 cache allocation as well as the
-> memory bandwidth allocation that are not at L3 scope.
-> 
-> I think it may be simplest to drop the resctrl_mon_dom member until
-> monitoring is supported?
-
-Thanks for the suggestion. Monitoring broke when rebasing on upstream
-and also the realization that my approach to MBM was too much of a hack.
-I think that does make sense for me to remove all the monitoring code
-until I have a working implementation based on the current upstream.
-
-Thanks,
-Drew
+Thank you for the reply. I will submit the changes via a Pull Request
+to the upstream ACPICA GitHub repository as suggested.
+--=20
+Regards,
+Nick Huang
