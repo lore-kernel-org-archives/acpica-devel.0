@@ -1,160 +1,282 @@
-Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A79B81519B4
-	for <acpica-devel@lists.linux.dev>; Sun, 15 Feb 2026 01:26:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.210.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BE4536C592
+	for <acpica-devel@lists.linux.dev>; Tue, 17 Feb 2026 16:34:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.18
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771118798; cv=pass; b=osGMEsNuBWVPYyyIaRhgTodoBOJqYXRgysJUauM5YgitSFRSMxALHqccuJHMIJdJiu8n6UHFjHPYNcWgDPbTeTugYvaYnraonyKr0FC+okf2qFJ6QVJukbCpv7QZjmbI7rflvcc+kb9YdG5DcqZY7edjRH0e2ET/RGLZ7rpQRDE=
+	t=1771346046; cv=fail; b=ToNwcqpa9iINbK/wXrW7i6WVXw8j15DXV9MfgRObHur9HnDwFJ7CI4gWSPgfZSEYLhFCagJbBuArc248Lh8bO6hqRDHdPKsq6NZDHCBOGA+hiOZ16HcywsXG23igG/iOeCmdbiKlyDz7NOYOvdCylmqcVqkrPr8SMw6PE6lUMdU=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771118798; c=relaxed/simple;
-	bh=IzdGBGFCpilT6AeHHAkF6quAsV2MXMS40zGkPPdg0HE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=d4n8jwuBvHfhbvLn9KkoeEogBKSnU8kMIP5TtaT0ZQeCnlEj8wQCOIjxXKFJeMinlOtwgP2/5c9Vi1qf7kRat/DdmYCMK2+dltacTTToS1DRZ4gSXZlVpZHhis3RCle4Z8vEXEaKJ01nheHP4Zyn3sfpgyWQwVWtI7e17BgFZmc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e7FcJDQK; arc=pass smtp.client-ip=209.85.210.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1771346046; c=relaxed/simple;
+	bh=3XP8FD8UYfM+IPKBRZDDUXaoVhDuiKcvpNGz7/4FawU=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=Ic37hS4qP/J2IEYzdGvSc0vi7cyUjn34MTCWglEMPcyuJw5V1pFlN7t2ugO54HmhXcDZ+27BbqHUbV62d6D9w47XgEKgxhb4BIP2JaBWHvdd8ROb3dXy+YxEp4MjuEhFClE9boxMUATAodFyC4hqryWABwlO8gb1cBMQ9ZQdYp4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fFxpNnSq; arc=fail smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e7FcJDQK"
-Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-7d195166b2cso1475909a34.3
-        for <acpica-devel@lists.linux.dev>; Sat, 14 Feb 2026 17:26:37 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1771118796; cv=none;
-        d=google.com; s=arc-20240605;
-        b=dZZtsAM8VRfZozjzLTl7Jevm2gqyCUK8D/3CBo7JaZL0jUhW5vrxMXdXPnbgHAxwRo
-         LKjfkhsbpZQRDXyqcwzzBNhI4HLgqWMUNCLiypSjdZQCjBQIZFSqBocBhabOMT+/kPWU
-         ieG84tX7EB4bnJ793lOnwxEQbytTYYcTmBtOrbg/im+AVV7Z4GGKqLyjBobsvCVA6XTM
-         MUb6YTs1LlbZie55ARraQw+TXZZrijtMXd6Pw9OEDHOUNiCLGqIUDQF2uZug2Y32ZSuX
-         Vy+ymVPB6dvyPUAZ9q58G5VOw5wrjru/dSGt8Fpy77VE0FFOlTMhWLDLsQm/q6YBXwxr
-         R2Sg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=oc6M0vaTZcmARSII2t0Y1J43OpPVtanNHASTzTLjxa4=;
-        fh=zpevZr2dOPyUaUClmlbWnNbM0bb8xVKTJ8reREtnZfE=;
-        b=FY41sT3Jbe70TCmd+vXgdRelRtVQsMm4R5h/IIFFwY5iPHuwjQoHiivkX8Hhb4/04v
-         Xuqc0dCBw37D4fOpsGzlSj/iQgvjhYwDVQBv5Ipocc25bDInviXQ1DfKB90hBURL+H/t
-         /GBRR5dqOF49Azovd4jhA27fqJSK6uosfUoty/Jq2WVtQSGXsx3/+1725qTx04ApvBg0
-         it5MLWdnJQH3udLvhSEb266//Gq4ucLLx1zYqR3ZLb7IwLdAk0KO/S8JIBpKybcbHzRe
-         GN8vrYDAkDQloY0swo9tkle8tmiu2JK2/S2kMzPwa8721oBJHqlu2dbgO9lnM2+b/v1p
-         rGLA==;
-        darn=lists.linux.dev
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1771118796; x=1771723596; darn=lists.linux.dev;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oc6M0vaTZcmARSII2t0Y1J43OpPVtanNHASTzTLjxa4=;
-        b=e7FcJDQK7ZzlI7FW6t4f1PAY7QiBgluUBf8N3FcNDm73ocL/YVbGXm5S190nNzA0+U
-         xjXgBXS5pf8EoCDCsPBxyrt9F+mkebTRRxwjs9grUlM/ygr/kZ4OxJZ3n5uso2yxmYhc
-         UkBPdXRvVVnIRkYb2XViWwv+d8dSsdZnn3EweKNxI0jA9VMdhrJgKDEBam3ORDsNvtTI
-         JWSUuJOjkVjyqGZUzzS6kBo5cOJxnwCzzNNUVIs/lOGE0Wg4RpWp2OwDjAERrOTs4TyF
-         ACqL/wG+PPAfuDSGtjahsSPW45i3KT28/3p+GxGK6apqunuTp9ivmyS/G4W8TshcBkgd
-         1xQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771118796; x=1771723596;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=oc6M0vaTZcmARSII2t0Y1J43OpPVtanNHASTzTLjxa4=;
-        b=FW82ibdXk7WeDYfqyA5OQMs2xCe0pqGv9gIJjZzboTJfAcaAN5NkYsR2xe2Qloft1D
-         AN5G/uLCJIf3W0y7FxKr8E9IYJVSYAEPi+gdBFM05p5ckAgLHJCimKOrUD8gnIUYQKx0
-         j9X1LpD16REjTx5a0QD2ltsURSYPHBsL8NvW009IuL0yxvSXEMTyAFV8B6ZQ60perFes
-         26XFOlIto09dIrZ5Z6haz1I58K0gfp9wkXmRkLXnaYqN6Htn6lHms/bSKPtGYfKSHjAr
-         qZEX19RvjGdW1SPcSmfHhEq1tXC4CEgs5S/YCjRw6PI5EZjCVTTiiMyuRK5YJdololNI
-         UNpg==
-X-Forwarded-Encrypted: i=1; AJvYcCUJwEe4wf1VsHw1VdDwam71db0sIN0HIkzSImYY0H7u6DwnIqyxNqutWjngvVGWib1HVZ+n+Wdz5kB0iaA=@lists.linux.dev
-X-Gm-Message-State: AOJu0YxZkANiAfa4gaRHPk6KY/UHSkQ/p48YHgdBXgKqlBTeeUWBOnuM
-	6//dbBf6pHAwcMlneKNs2jAKbRvcQv2+0vvlqde8A5F7pK+6M2O8vhfiCW/TwqpimnzsGwO5NnQ
-	GZxr5yKGIz3G1mRAGqMmh7D+va6sSF+Q=
-X-Gm-Gg: AZuq6aITAE6MzNQW8U6ND1/74ZnjphTJ2aZZFAI/T6p76Yxdvs6CMMsGDZbfwpVu/CI
-	ymd2di04pFJraLKsIwLAkvE40ZRSImyYkWSP1nrYWVaBMVwOHVVU6KP3p/4V7QlQiJOBIeckWV/
-	VpR2bBz2NlfFw5K2hyTjeflWk6fhqhb8b00NTXfE9BAZEv58rfKoYqnyC2lhXBjry3YzYe3sNOe
-	aUGttt8UkbvpvY9WhdwT1w1ommgScjVhouiaKNWqsRvJptdGaiUNHKnvRLH0BZcXX8SZ7SEQQSr
-	JAOXN1CUV6sZJiIfYE6Io6BTPuIC9nRLsI+Nj1g2ug==
-X-Received: by 2002:a05:6830:90d:b0:7d1:9160:7b98 with SMTP id
- 46e09a7af769-7d4c302911dmr3548600a34.15.1771118796565; Sat, 14 Feb 2026
- 17:26:36 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fFxpNnSq"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1771346044; x=1802882044;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=3XP8FD8UYfM+IPKBRZDDUXaoVhDuiKcvpNGz7/4FawU=;
+  b=fFxpNnSqbQuoye2/mOpoD/iW1ZJ70BTPPf3feoB8TbJBmhZ64BrTknsm
+   cLGxjjMPpA0NNCuSDIhtg8urbFt4LiPrTaJhIfJ8EAFeQgf/FB6owQ9bo
+   XXWJ6I6ep/eZufMVRagudEkNz6trXX3I/bZE3Zf5NaOdT58+rupjwYvHO
+   NYibulmxAPBI2KohOP/9m2vAOFuf7uO70v0ii/PEjg5Mt8p1RvqscxpN4
+   0CdV66ElErAIWcj0RcXgzyIujlagMvRb53RhHRR/p1ZfXsREasl4u1rwZ
+   SiETE7I3kBRgEpUCRMTrsmEFuswYmc1k8HBHp4NO3/WFNsXPyc6JGjwLx
+   Q==;
+X-CSE-ConnectionGUID: 2L+xW7MnTKaHvwi5yARExw==
+X-CSE-MsgGUID: e/PA40WfRBm5LwpPu4K1WQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11704"; a="72463614"
+X-IronPort-AV: E=Sophos;i="6.21,296,1763452800"; 
+   d="scan'208";a="72463614"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2026 08:34:03 -0800
+X-CSE-ConnectionGUID: lANBpRrrRGGeNZ+xg5FNXw==
+X-CSE-MsgGUID: TYvlJDfWT7q0o9arLTUs/A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.21,296,1763452800"; 
+   d="scan'208";a="213941678"
+Received: from orsmsx902.amr.corp.intel.com ([10.22.229.24])
+  by orviesa008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2026 08:34:03 -0800
+Received: from ORSMSX903.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX902.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.35; Tue, 17 Feb 2026 08:34:02 -0800
+Received: from ORSEDG902.ED.cps.intel.com (10.7.248.12) by
+ ORSMSX903.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.35 via Frontend Transport; Tue, 17 Feb 2026 08:34:02 -0800
+Received: from BL2PR02CU003.outbound.protection.outlook.com (52.101.52.67) by
+ edgegateway.intel.com (134.134.137.112) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.35; Tue, 17 Feb 2026 08:34:02 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=DBZ2QWlkLSFpNueuqm7X3j2QfqkrkyGFFuKFne+1m4BfVIWp4SLXvwJPWnXVKiHTK3nKBiiSakdaGjzPzAaGV8TbWqs8/6IcplyYmBnaZDU3TO8QrXEGn16I+jSmRO4LENJQ1Md6GeaUV3JkAhbovYPoGk5ZRt5q9+8hfEAKoY/PZz7KWcBINuq8jkXJbRfqfRribyRtGjf8sQrwGfCAPrmnEUquY3b97UXgcxrvrkAyvLSFl232XM+9uISORF8FF92ucG2rX/+Qf5DbeKFcBPT9Gx7qJVvp3RzT7y7CL8kHxPc1Kn9xOI3MSLawQouIrmc+/XqDa34r8/9X2fDU6g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=sTZqsmtMveNkGAPuLrlEE2kBjRLKnGUuXmDNYwUbNdU=;
+ b=snzo3XBcOrZfeBVCff7NjgXTLDLXJCNIbjJP9h4o0GODXaz9DDo3I5sAycToxCLOUwHAe1uwjpFuhXd9QBI53/l5lSMpACkuKnYirxxdUviumNAGDC4Ou3Vrbz0GjBInR+2p6jhgDk+p6hAufl1oHirUROOF1xJ/ZoUkiIv6zi/F9PrP91S74WKwRYfAhW525+8Be3bouw6b4nPlMSg3o2Zz7nrYhr1UwqbIRPt+s41R1OQb4iZNDyGEhyCYZHKNF6Z9FFiUFl/IgYfm3TYe1cZcbr7HcCLkSPPnVwdYiIzPC/t3/8HmrLhmeGeY+cgMwD4klR+WRrSUc03wPJm1cw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
+ by PH7PR11MB6524.namprd11.prod.outlook.com (2603:10b6:510:210::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9611.16; Tue, 17 Feb
+ 2026 16:33:59 +0000
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::bfe:4ce1:556:4a9d]) by SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::bfe:4ce1:556:4a9d%6]) with mapi id 15.20.9611.013; Tue, 17 Feb 2026
+ 16:33:58 +0000
+Message-ID: <0ba158fc-0c44-4b83-b733-9fc00c4d7f3a@intel.com>
+Date: Tue, 17 Feb 2026 08:32:41 -0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC v2 05/17] RISC-V: QoS: define CBQRI capacity and
+ bandwidth capabilities
+To: Drew Fustini <fustini@kernel.org>
+CC: Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
+	=?UTF-8?B?UmFkaW0gS3LEjW3DocWZ?= <rkrcmar@ventanamicro.com>, Samuel Holland
+	<samuel.holland@sifive.com>, Adrien Ricciardi <aricciardi@baylibre.com>,
+	Nicolas Pitre <npitre@baylibre.com>, =?UTF-8?Q?Kornel_Dul=C4=99ba?=
+	<mindal@semihalf.com>, Atish Patra <atish.patra@linux.dev>, Atish Kumar Patra
+	<atishp@rivosinc.com>, Vasudevan Srinivasan <vasu@rivosinc.com>, "Ved
+ Shanbhogue" <ved@rivosinc.com>, yunhui cui <cuiyunhui@bytedance.com>, Chen
+ Pei <cp0613@linux.alibaba.com>, Liu Zhiwei <zhiwei_liu@linux.alibaba.com>,
+	"Weiwei Li" <liwei1518@gmail.com>, <guo.wenjia23@zte.com.cn>,
+	<liu.qingtao2@zte.com.cn>, Tony Luck <tony.luck@intel.com>, Babu Moger
+	<babu.moger@amd.com>, Peter Newman <peternewman@google.com>, Fenghua Yu
+	<fenghua.yu@intel.com>, James Morse <james.morse@arm.com>, Ben Horgan
+	<ben.horgan@arm.com>, Dave Martin <Dave.Martin@arm.com>,
+	<linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
+	<x86@kernel.org>, Rob Herring <robh@kernel.org>, "Rafael J. Wysocki"
+	<rafael@kernel.org>, Len Brown <lenb@kernel.org>, Robert Moore
+	<robert.moore@intel.com>, Sunil V L <sunilvl@ventanamicro.com>, "Krzysztof
+ Kozlowski" <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, "Paul
+ Walmsley" <paul.walmsley@sifive.com>, <linux-acpi@vger.kernel.org>,
+	<acpica-devel@lists.linux.dev>, <devicetree@vger.kernel.org>
+References: <20260128-ssqosid-cbqri-v2-0-dca586b091b9@kernel.org>
+ <20260128-ssqosid-cbqri-v2-5-dca586b091b9@kernel.org>
+ <3f53c823-74ab-46c3-9cf0-c28b062f2c89@intel.com> <aZCh3JaS2V0pLWXm@gen8>
+From: Reinette Chatre <reinette.chatre@intel.com>
+Content-Language: en-US
+In-Reply-To: <aZCh3JaS2V0pLWXm@gen8>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW4PR04CA0347.namprd04.prod.outlook.com
+ (2603:10b6:303:8a::22) To SJ2PR11MB7573.namprd11.prod.outlook.com
+ (2603:10b6:a03:4d2::10)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20260201130334.3107-1-sef1548@gmail.com> <CAJZ5v0jtroqWSwjF3KQsmVLPYEE4a59-cxg5ZV1BAGmJtf-Q_Q@mail.gmail.com>
-In-Reply-To: <CAJZ5v0jtroqWSwjF3KQsmVLPYEE4a59-cxg5ZV1BAGmJtf-Q_Q@mail.gmail.com>
-From: Nick Huang <sef1548@gmail.com>
-Date: Sun, 15 Feb 2026 09:26:25 +0800
-X-Gm-Features: AaiRm53qbm9Rwn1Tz4PKVW8wtkl0gZZcYDHeT8RMibrNYsmuPOhzM3hobI7ScGM
-Message-ID: <CABZAGRH7SAd2r-n4q4u=7Dt-KJnAtUTLqmWM-H8GAejq=zgttA@mail.gmail.com>
-Subject: Re: [PATCH 0/2] nsrepair2: Improve sorting performance and add tests
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: Robert Moore <robert.moore@intel.com>, Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org, 
-	acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	paladin@ntub.edu.tw, kusogame68@gmail.com, ceyanglab@gmail.com, 
-	n1136402@ntub.edu.tw
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|PH7PR11MB6524:EE_
+X-MS-Office365-Filtering-Correlation-Id: d3c322e4-286c-41a1-8bc1-08de6e4259dd
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|1800799024|366016|7053199007;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?ZXJkd1U0T1pvT01ldnJEY2JsZmt5SHZJUWV1aE1DTGZGQ0Q3cFg3TnBxbW9T?=
+ =?utf-8?B?OUk1VElVTkJobzMzejNxZkRtT2dSdzZXbUM3T0RRS3g0RlhqaUhtQnladEhm?=
+ =?utf-8?B?cDVnNEhLM2VRS2ZCajFDOHVXWE1RK2FzelAzaUxPL3dEdGJqOEw3NmlHbTRY?=
+ =?utf-8?B?WndqRERBeTRvN3FwS2ZWL3lmT1gweGtxVmxQWWJnRndONTRTVk0rb2duSVh4?=
+ =?utf-8?B?cWhQSnhZZkVscFVTT0liTWNveC9XOFZhcXkwV0tYNmNvUkl3NUFCditSUEVk?=
+ =?utf-8?B?eExxUlJCM2RYdGk3Y1dNV3cxSC9QMlJLRm84ZzVxQm1WdmliV1gyVzY4RXZ5?=
+ =?utf-8?B?dTMwZUpaNy9icE5NUHI5dDdlZDlaV1NPRW5ldW9hdDVpMUozVTRFQ2I4d3Na?=
+ =?utf-8?B?cElXR3V2LzZtSGRENnFDd0Q2dmw0ZGRqWjlORGwxcGRaWHZ1aWhGQVlnWGs3?=
+ =?utf-8?B?RXlXQmlQRnRIKzhiVUpZN1NZQ1E0Z0l6ZTZqeElrQnA4RGJVM0lxak9DejJ2?=
+ =?utf-8?B?RENmNlF0TDJKMlhLbVpIc2lVN0g5OHMyM2tiU3dQNm5oeHIwYk41R3BySTVI?=
+ =?utf-8?B?K1ZlYmYyd0drWXdOOW5LeVdXSmdaSzh5QWwwcVFsQkMrN1o5ZHZZbityeTV5?=
+ =?utf-8?B?dWNySUgvQ2x3V3E1ZGMwYVpXdHZ6Qm1qbitZRmhkdURnSzJyamZjaFZIRXEw?=
+ =?utf-8?B?OG4vNk5EcjgydllEWG9XeHlkMFkxOXNNN1lKWVM3U00xbXRxU1hTQklsUEJF?=
+ =?utf-8?B?WFFHeUV0VnI5Szd5VEFTaEM1YStJMjlzUVVtVHpWUDYwaTJ5ZHpyWWFuQjQ0?=
+ =?utf-8?B?enJHUGNIdUxja1k5alVEa05uNU1wVXZMbDgrRk9NNVAzdlY4UEdKSk03blhm?=
+ =?utf-8?B?cXluM21DeFFYUU12TTR3Y2FQeFVvenlMNUJlVFM0aWdMcWFvbTdJWmFNSWNy?=
+ =?utf-8?B?cU5kNG5tTDhNUWcwT254dWlTL1ZpVWJHVnlzQXNRYnNjeGdhOG5MT1JpVFhq?=
+ =?utf-8?B?RVc5L2xZQzJ0Q3Jic3FMS1c1dGV6N2NkTG12citPa2VkdW00cExadXJEMGk1?=
+ =?utf-8?B?eTZCeUVHVUhOQ1pkV2t6Vm5tejFGVG9tR0liVzdzTGNyOGMwbElBajR0MUFG?=
+ =?utf-8?B?dkIyQU9oYW5WWmNjUjJKbjROTjZUazZ0UkdTbUdXdnhVRDVUN0ZBWllwQzRo?=
+ =?utf-8?B?SGhZVEQ1NlQ1M0tLdTVvREhkUUgyM2V0b09MNjVVdXd2L0c0ejVIN01leTFT?=
+ =?utf-8?B?Ymt5MlJ0YTFyNzhLcXZtcWs3eVNzdTIwTVVxVGh4ZHFDTXVLL00yZHBvVCts?=
+ =?utf-8?B?dEtzbUxLdDJTaURySlN3OG9WVUlsTFU4cXdsVEs5QzlnaTN6UHh3eEl0TnJM?=
+ =?utf-8?B?MlRISXZqNmpvakhlLzFrVy8yalFVdElESmgyMzc4UGlreENmZXptbmxRZGc1?=
+ =?utf-8?B?dThXOUxuYTJMQ0d3a1dTV3BtNlV2YWZEYS84a0Q3VmlocTd2bkFQS21vVUox?=
+ =?utf-8?B?anVBM0FuRm5IUWFnc3BlMGk0eVY4Mnc5dGdxL3BRRGtRUTZQRnhmYWxhMUJD?=
+ =?utf-8?B?L2pKNDd4N1BtSW1ZL0dDMWllbk41MURERmpDN0tzaUxCZFduNzlGYllkNEtp?=
+ =?utf-8?B?T3ZQTUNsUFNGRnNHN3pSNkJwT0F4MzFFZkYrRVBranVVc0hmV0ZRZ0hkT0pN?=
+ =?utf-8?B?emhnWFFNRkh6WkZjanRSWVM0MFdzbUZtZ0VjbzF6ajRTM1lKRGlZNWJRNXF6?=
+ =?utf-8?B?d3pocDkxUEJYQzI2YmNieWJKTlVuT2M2U2dBWXJlT3hNNGpibWVBNWRHZTJH?=
+ =?utf-8?B?VUdPVUJ3dzZKczcvMlVGK0U1RTZ6TWVPWGViR2RuOUl2eWpVTUVGMWRvd3BU?=
+ =?utf-8?B?MWVtU0QrYVAxTzhNaXphWklyS1NhQUhIODhxUFc5cmpoWEtBSkRlMERCa2tV?=
+ =?utf-8?B?MjNCaFZrR3M3RlF6N3FJWHZScThXZTR6UDlrUnVSZzZVY3QvSFQrVFgrL3JM?=
+ =?utf-8?B?dDJaWnVndUNlRjJtRmc0M0V6Y0hCcUdiY0k0RjZGZnZWYzlOc2hVbWtvUjdW?=
+ =?utf-8?B?clc5ZlV2TWF4eTY5RFVPSU0vT2ovL1BZMHJrUXZvTk45UkU2clV3N0NRdzFN?=
+ =?utf-8?Q?VZrI=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(366016)(7053199007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UG5DNFBJdWdFd1k1a01OejEralZsQnU0ZExaMzNrWUlUYng1cmVlNFFjTUht?=
+ =?utf-8?B?NFJrMnNTbDR0ZVh6Rm5JVUdpTFk2SEFaV0VGSW43YmpjMk1UTWV5VkVTTXEw?=
+ =?utf-8?B?U1JSWmhlaTY1N1BiZlNLUmpienp0QUNyVHF5UTRMUy9ZRDAwREtYdU1tM050?=
+ =?utf-8?B?VWhFenRkT0ZOTGNDT1JOUDV6QmgvYm5ROGR6RmpGUXpiOTMwOUw3QlhabEJV?=
+ =?utf-8?B?OUcraTB2WDYyQXREWHowaVA3SFpObURKblNZdnVEZ1FMNTdzdWFGellLYTRT?=
+ =?utf-8?B?MkprM0ZWZTdCOEVjUDYyaW5Qb0tCN3dzbSs5UWF5d24vTDd2T3dPbkgrN2Zo?=
+ =?utf-8?B?TDR6MUxZUkVrNmY3NXY3RUZhNFhLTXB1ZlFFKy9hVFJLYm8wdzRiYnJxTmlE?=
+ =?utf-8?B?aXAyd1JjTW5UQmdkVUl6SzRwUERCYWRWYU5rdzVKZkxrR3EybU5TKzhld3Ey?=
+ =?utf-8?B?OUdVQkp1MVZpdjhDNCsrKy9wMW51ZGt0bGFmS2E2MjgvYUM3Vkk0T0RJQVBo?=
+ =?utf-8?B?UWhHR3luOGZHWFRQU3JWdy83VHk4T1NqWjFkbndUSUg1eURHeTdmZ2wzRGx4?=
+ =?utf-8?B?c3ViOGxPa3VpZjUyelFuSDQ4aVJabnBZUnBVOVVtODJFYWJaTkFSaytkQll1?=
+ =?utf-8?B?bEx0VmVNeXNnWjZSNmNvRGdPZzB4NWlrN3E5Q3dndW8yeERIVDVSaTlqdm5v?=
+ =?utf-8?B?TmFubTc1YTZXNWU2U2ZRSkcreE44b0E1andzbzNSTW1ULzJ1UDNoRVFiZnZW?=
+ =?utf-8?B?L1NmOUhzVFQ5S09vTFNhcUo5Y1Vad3BqbDVKWS9idVVhcm80dnZYSUFJZmFX?=
+ =?utf-8?B?eC9XWnRQUFdJZEdoZ3R6bU1OZC9iTGZFTTIvWVZGNm4ydllFUUNqek9HVHZU?=
+ =?utf-8?B?MEJQdXBDWVNRVHNSc25EcS9vVnZpeDJiWnRXa2plQndEeS9XUHNSalNtdTFn?=
+ =?utf-8?B?VktjOGRlKzRGWllKc0dScWlGRllBWUQrbWpBVjY5a0R6K01keG4xdkJJb1l6?=
+ =?utf-8?B?MU02UWR3cWJCS05QbFlLT29mM282WnhCbTFRYUZSaXZDNkJIdkNQUisxSjE1?=
+ =?utf-8?B?dWx4T1NUeTRwamY1THRTcG14UDN2VkRwL1g2VGFBTngyQWQ0cFVUUFlYeDd6?=
+ =?utf-8?B?NDZYRmNyOEJqREFqcXBReC9XVkwzeGwyMDVES0hRdlNqa2pRMll0d3JkMUt2?=
+ =?utf-8?B?SlNHTHpia3hRNXkyYnpsZHVTTUxJYnpkSVRwQWFXYythNlphSHQ2WFNUakxK?=
+ =?utf-8?B?bnNTVDUxdWlTWWo5ejVMU1Nobk1LVUJhN0lFck9XTWtpZzhSMTE0R0JpV0R5?=
+ =?utf-8?B?TEtmaSttYmplNHJoamxia0MwSGtoSWhlQjBidDl4aXZDdzdCMk5KdTBrdGlJ?=
+ =?utf-8?B?T1AxVGxQelphQmJ0N1YxblFjYUdTN0RVUER1MUY5TUdBRldLN09ZK2ZYL0Ri?=
+ =?utf-8?B?cjB4Q0Y0S0JjMHo0VTFFRHJsVDZKYzlrbDNFa0ZVdnFTc1JjOFVZUVJlS2dK?=
+ =?utf-8?B?dm4yTUxuOG1yRHFrTUR4UGtiMG9YbFEyZnNSY2JadEgwdGhnSWpQYlkwN3pI?=
+ =?utf-8?B?Z2ZYNEdrK01JRm5oVHNzSHJja05Zcmo3VGNKSlVLRjh4VnBVVUJ6Y01pbXky?=
+ =?utf-8?B?YXhMOCtDeWtzeS83WTYzTXpMT3FjOFhYelpWQmZzb09md1lpQTRGTmlkYTlL?=
+ =?utf-8?B?RkI0QjBabDRFY0U0dFJvanZMZExvV1V6MVhTUFNNRjBpLyt3SHQzUWxOYXlH?=
+ =?utf-8?B?ZjF4NmhRb1FjNXdjbnJUVXpDNU1hWEZPUlFvaDVPdDNTWnZnTy82UDFWbk9M?=
+ =?utf-8?B?aGRUSGlWa0diYjRnUmcwcWxTU3Q1clJFczQ5VnRSbXZJVHBZcDJ3TXNMdTVS?=
+ =?utf-8?B?ZVAxL0lQWEtPN2sycXY1TXhyeVczdkNlenJoVlZLUmlLMDArcitXcmhjR3dT?=
+ =?utf-8?B?dkl0ZTdHaVpMRXRvOXR4OFM0L2k2cUVveFRnT3Y2dTVoYlBmcVd0bnVINU8w?=
+ =?utf-8?B?YTFjMG1YRzhSM2ExdkVPMU9HRWUyN3ZsMjhwTVFhQ0VYQ2RrUXdvbUk2K0dh?=
+ =?utf-8?B?cFE2bG9DaXB3VWZHMTgyNk9OQTJoZnJ5dmZnS0U3cVQ5M2JZVFk1dFczUnhW?=
+ =?utf-8?B?aGxEQlRIeFhzempRTUovU2h4bnQyM3d0dE93TzFhd2Z0ZG1MZ0dIQ3pCOERC?=
+ =?utf-8?B?ekVuU1o3Z1ZGa1gyQkVkdzdCQnRrZitteGcxZEVYWDEvcytKMEtGdHloc0RE?=
+ =?utf-8?B?YzZDVXJnVFhiRmdpTzZzVE1HQW9nQnRiU253ZzhsT3IvT1VrcXJWRlNncHFE?=
+ =?utf-8?B?MG4vWUFvb3BNNU54RGw2Qk40bjlGUTRrTzhGb0tKUUZWUjNOMkQ4RGdxdEEx?=
+ =?utf-8?Q?1LKiWQMun4/YboQ4=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: d3c322e4-286c-41a1-8bc1-08de6e4259dd
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Feb 2026 16:33:58.9389
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: T6yR6i+8TME+vOywfTDwCnGaDQEJtaNhgnn5oFE+2W4daNQnJ1NgkkmFWK4z+0+aBtWYXaEWGjUO5a0eTAItnJ1Oa3EA6HKRKMv4XRwQ0Jc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB6524
+X-OriginatorOrg: intel.com
 
-Rafael J. Wysocki <rafael@kernel.org> =E6=96=BC 2026=E5=B9=B42=E6=9C=8813=
-=E6=97=A5=E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=889:40=E5=AF=AB=E9=81=93=EF=BC=
-=9A
->
-> On Sun, Feb 1, 2026 at 2:03=E2=80=AFPM Nick Huang <sef1548@gmail.com> wro=
-te:
-> >
-> >    This patch series improves the ACPI nsrepair2 sorting implementation
-> >    and adds comprehensive KUnit tests.
-> >
-> >    Patch 1 replaces the O(n=C2=B2) bubble sort algorithm in acpi_ns_sor=
-t_list()
-> >    with the kernel's sort_r() function, which uses heapsort to achieve
-> >    O(n log n) time complexity. This improves performance when sorting
-> >    large ACPI package lists (e.g., _PSS, _TSS) while reducing code
-> >    complexity by leveraging the existing kernel sort API.
-> >
-> >    Patch 2 adds KUnit tests to verify the repair functions in nsrepair2=
-.c,
-> >    covering:
-> >      - ACPI operand object creation (integer, string, buffer, package)
-> >      - Namespace node creation and NAMESEG comparison
-> >      - Package structures for _PSS, _CST, _ALR, _PRT methods
-> >      - _HID string format verification
-> >      - _FDE buffer expansion
-> >      - Sorting logic with ascending/descending order
-> >
-> >
-> >
-> > Nick Huang (2):
-> >   ACPI: nsrepair2: Replace O(n=C2=B2) bubble sort with O(n log n) sort_=
-r()
-> >   ACPI: acpica: Add KUnit tests for nsrepair2 repair functions
-> >
-> >  drivers/acpi/acpica/nsrepair2.c      |  87 ++-
-> >  drivers/acpi/acpica/nsrepair2_test.c | 854 +++++++++++++++++++++++++++
-> >  2 files changed, 916 insertions(+), 25 deletions(-)
-> >  create mode 100644 drivers/acpi/acpica/nsrepair2_test.c
-> >
-> > --
->
-> The ACPICA code in the kernel comes from the upstream ACPICA project
-> (hosted on GitHub) as described in
-> Documentation/driver-api/acpi/linuxized-acpica.rst.
->
-> Changes to that code need to be made upstream from where they are
-> picked up automatically after every upstream ACPICA release (or you
-> can speed that up if need be by sending a Linux patch based on an
-> upstream ACPICA commit).
->
-> As for the test part, I'm not sure how useful it would be given the above=
-.
->
-> Thanks!
+Hi Drew,
 
-Hi Rafael J. Wysocki
+On 2/14/26 8:25 AM, Drew Fustini wrote:
+> On Fri, Feb 13, 2026 at 03:13:42PM -0800, Reinette Chatre wrote:
+>> Hi Drew,
+> 
+> Hi! Thanks for your detailed feedback on this series.
+> 
+>> On 1/28/26 12:27 PM, Drew Fustini wrote:
+>>> Define data structures to store the capacity and bandwidth capabilities
+>>> that are discovered for a CBQRI-capable controller.
+>>>
+>>> Co-developed-by: Adrien Ricciardi <aricciardi@baylibre.com>
+>>> Signed-off-by: Adrien Ricciardi <aricciardi@baylibre.com>
+>>> Signed-off-by: Drew Fustini <fustini@kernel.org>
+>>> ---
+>>>  arch/riscv/kernel/qos/internal.h | 128 +++++++++++++++++++++++++++++++++++++++
+>>>  1 file changed, 128 insertions(+)
+>>>
+>>> diff --git a/arch/riscv/kernel/qos/internal.h b/arch/riscv/kernel/qos/internal.h
+>>> new file mode 100644
+>>> index 000000000000..ff2c7eff50be
+>>> --- /dev/null
+>>> +++ b/arch/riscv/kernel/qos/internal.h
+>>> @@ -0,0 +1,128 @@
+>>> +/* SPDX-License-Identifier: GPL-2.0-only */
+>>> +#ifndef _ASM_RISCV_QOS_INTERNAL_H
+>>> +#define _ASM_RISCV_QOS_INTERNAL_H
+>>> +
+>>> +#include <linux/resctrl.h>
+>>
+>> The include caught my eye but I did not notice any additions in this patch
+>> refer to it.
+>>
+>> Reinette
+>>
+> 
+> I was using this to make resctrl structs available in the code that
+> includdes this header:
+> 
+> arch/riscv/kernel/qos/qos.c
+> arch/riscv/kernel/qos/qos_resctrl.c
 
-Thank you for the reply. I will submit the changes via a Pull Request
-to the upstream ACPICA GitHub repository as suggested.
---=20
-Regards,
-Nick Huang
+I see. The changelog made me believe that this patch defines new data structures
+used by the patches that follow and the inclusion of resctrl.h created expectation
+that some of these new data structures contain resctrl members that I was interested
+in seeing used. If keeping this style then a snippet in changelog that explains the
+header inclusion/organization would be helpful.
+ 
+> Should I rearrange to include resctrl.h directly where it is needed?
+I'll defer to the RISC-V folks since I understand that not all subsystems follow/enforce
+rule #1 of Documentation/process/submit-checklist.rst the same (also called "Include
+What You Use (IWYU)") quoted for convenience:
+
+	1) If you use a facility then #include the file that defines/declares           
+	   that facility.  Don't depend on other header files pulling in ones           
+	   that you use.
+
+I have worked with code following different customs and personally I do find code
+following IWYU easier to maintain.
+
+Reinette
+
