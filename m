@@ -1,317 +1,197 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from MW6PR02CU001.outbound.protection.outlook.com (mail-westus2azon11012007.outbound.protection.outlook.com [52.101.48.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EB9B1F7541;
-	Fri, 20 Feb 2026 19:54:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771617299; cv=none; b=nwTM/sVSXgJUE5jmHMAkj9AVo/qqfEKTjOYhIytxd2PonziHAYuoRAN4u2S9Oj+E76lplAldka7hAEO+xaehN89tG3Vu6YwLktBNf52UO51haOamkXmMRuhpOaAT9RAo476uznnz7zyXGels+t387+d4ybMdCPu/ZISc+M2Sb3k=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771617299; c=relaxed/simple;
-	bh=G8bBEO/g8w7OleXjDK76ZPJ7XfuuZF81p9PP5s2xJGw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UBBWuq4x+ni7HlvlNOkMEmZ3Vl/NaAAqrg/n3DzEz39clBXSxlRjhl4zwnA0DDu2SHSLD15mIZPeMpaT3T6uqGdcMmgdgd/gUvgl0JFBMYhjfnZYe2ynFmYu3iKxCntIgFxcMyvdU84V4OrWKaAwYO1wTckGcHWtSiu53jfN2rw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EbWQ4DZr; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E90923D7F5
+	for <acpica-devel@lists.linux.dev>; Thu, 26 Feb 2026 13:59:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.48.7
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1772114388; cv=fail; b=HIoVWRrcwzsa+nOB2/gSpb6gvfOJljO/fhbA25hzP3lUdpSz0wk6djZhn1t/Kb/0AkWd9aUz9dKJHQosrA4UTykRACvh46Idw2qcYCcIoIt+Fnv7MISNzAsuYUlMOSsKUvnCGvfriJi8VJSavLLVOUqnq3u6+tK3o5mbd/ZqaWo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1772114388; c=relaxed/simple;
+	bh=GgcwJ5DiSSCvX15O/IgbDJF0NW3qwY2HAuNE5KeD6Y8=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=uG6Kzasq4c5MHj+tsyrhkXuiLizwSdmUSmSOEZr2g75zt7s/lUjNWiPS4TQWSTpzb/YAJMn9jkYkdT3cbDjD5Kp9agRfoqK/TRkrFRaFFJrlzG3BsGAQMBhUSfJitYgKZlN/5d8ympKmv3l7xtdR9erytBV/+8Vw91R/U3bTqmc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=UZEfKci3; arc=fail smtp.client-ip=52.101.48.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EbWQ4DZr"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4341C116C6;
-	Fri, 20 Feb 2026 19:54:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771617298;
-	bh=G8bBEO/g8w7OleXjDK76ZPJ7XfuuZF81p9PP5s2xJGw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=EbWQ4DZrULRIpfj3CJM7KKV//fsDC8CLhHmiPL0HturNAqFKrFk527trkEU6xhW2f
-	 w3SwTGScz1OkFw/9wovoXiC5e/95USuL7WrS9naQxcnv9wrrTqtb/IlHaGMsSezJhm
-	 br/QmCkRWyndpOzfSqun5kQUylX2CtCuiuK7FT2+5dCG3hjC1sJ8nNnSFugHlLq2Ht
-	 TZ9igfItIvo0leyV6QSa6cea+Ij6FrmhLbopseM+g86V9TQ0DtTZ+E5I37+aJQhFf2
-	 JxupJktMKVQw45FKa3v1BaBYGIxB1QcTI+GrKklrwf6jKjr3cLj4fTR2h2gbQPwZ4D
-	 COnH7NWf35U8g==
-Date: Fri, 20 Feb 2026 11:54:56 -0800
-From: Drew Fustini <fustini@kernel.org>
-To: yunhui cui <cuiyunhui@bytedance.com>
-Cc: Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
-	Radim =?utf-8?B?S3LEjW3DocWZ?= <rkrcmar@ventanamicro.com>,
-	Samuel Holland <samuel.holland@sifive.com>,
-	Adrien Ricciardi <aricciardi@baylibre.com>,
-	Nicolas Pitre <npitre@baylibre.com>,
-	Kornel =?utf-8?Q?Dul=C4=99ba?= <mindal@semihalf.com>,
-	Atish Patra <atish.patra@linux.dev>,
-	Atish Kumar Patra <atishp@rivosinc.com>,
-	Vasudevan Srinivasan <vasu@rivosinc.com>,
-	Ved Shanbhogue <ved@rivosinc.com>,
-	Chen Pei <cp0613@linux.alibaba.com>,
-	Liu Zhiwei <zhiwei_liu@linux.alibaba.com>,
-	Weiwei Li <liwei1518@gmail.com>, guo.wenjia23@zte.com.cn,
-	liu.qingtao2@zte.com.cn,
-	Reinette Chatre <reinette.chatre@intel.com>,
-	Tony Luck <tony.luck@intel.com>, Babu Moger <babu.moger@amd.com>,
-	Peter Newman <peternewman@google.com>,
-	Fenghua Yu <fenghua.yu@intel.com>,
-	James Morse <james.morse@arm.com>, Ben Horgan <ben.horgan@arm.com>,
-	Dave Martin <Dave.Martin@arm.com>, linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org, x86@kernel.org,
-	Rob Herring <robh@kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>,
-	Sunil V L <sunilvl@ventanamicro.com>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
-	devicetree@vger.kernel.org
-Subject: Re: [External] [PATCH RFC v2 08/17] RISC-V: QoS: add resctrl
- interface for CBQRI controllers
-Message-ID: <aZi8ED8pzmSZEuUX@x1>
-References: <20260128-ssqosid-cbqri-v2-0-dca586b091b9@kernel.org>
- <20260128-ssqosid-cbqri-v2-8-dca586b091b9@kernel.org>
- <CAEEQ3wn1zQfn3wD-D6tz5OQjk+7ZucwyKrPHD9wP=kDDj+3XGg@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="UZEfKci3"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=CYFftD7zmm/JtbaaZ4K7VuGkFni3FMh+JtKItcRGTnABIEvx50xFf+bVGHx0h9iNgQiNDqaIoRTlAcLPQPXaVL61mO49yJGicYAhyXCwn6Sbva0DQtQL/pdC//u8KDi1YG4/DlL2OxD6fXDczgIQckIcFEWiQIOD5jI0+nvDOsJS5gnsO4zmCuaHgS83Pt9sD4Z7Y6PH78btU0GgVoIKpEFNOT8/0yBxvntoZTx+h14dYbgqg80wOHfwaiDgCkujw53AgyRRfwlGMNV1qWFJi8PX+9fCiBBoojJI/ypWBkZkWarlllCpMP5HXnsVNSkeTQFal81osSnjrqUCAIKzNQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=kl9BIvDm33OgP/0zKgy46hyOocKbKotca0EzWuVFc1w=;
+ b=cchkpC1R1FZLsEKsChVPTJPKnj22fszjf3vumEC+E/fbSTpBCTrZ17NIKA7CiFc92Fjkg1kZOZS5q+W6wYmyMfO5A4hJ2eZ7D65xbjg2l/LT7pjbbvCg8mGx1fSML+fRlwpFLgt0x9GWe86KAzSyD/m3VZfJEbKVdPbpZftWTmU9Nn4UTu0Tu5wYGGoSBNtgM7upRwiEsxSfNnbKJqYapd7RhgNoXhxyjYu23RDgbN6DFi+n7ybcglY4o09gjWzbUJ35rJKSZDq0YuywXn9R2hZ2IRbGlIVAoEgKgWC5mt/zCWAu8/YOWr1/jDmOo6dPT0/u3eu5sX7tIM9xPBnHRA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kl9BIvDm33OgP/0zKgy46hyOocKbKotca0EzWuVFc1w=;
+ b=UZEfKci3EVWCug9unWJ0MzdssFzNnmzsX16sn/s7xLhXCirkHyadNMzcC1dVt4ZCyWD5A7zi2vucN9RTtb26jas3lgrdYlrdCdCVgV9lv0XdgMW+8haNYp6gWUkyupCyFQJLG2/8eu3Mpq97aNorvNo6HsboBPtTuGPzA5AIDUJY9JZBXEyeibbv5CROf5w2/ewT7dwcU6lGx9Nnwwo9EZsxQNNvDENNEuEQfmmXhSlGeG9qcWA2IZViX/gcuK8MTpaXryOjpcsaJjzrhlXsgDx9rLLOc4eEBnUe4jQkwC0J2/I3LtbgY6ZbaiVajmZReOiOr2uMkdTLovLF8SWdZw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BN9PR12MB5179.namprd12.prod.outlook.com (2603:10b6:408:11c::18)
+ by LV2PR12MB5919.namprd12.prod.outlook.com (2603:10b6:408:173::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9632.13; Thu, 26 Feb
+ 2026 13:59:32 +0000
+Received: from BN9PR12MB5179.namprd12.prod.outlook.com
+ ([fe80::cf08:f59b:d016:c95f]) by BN9PR12MB5179.namprd12.prod.outlook.com
+ ([fe80::cf08:f59b:d016:c95f%6]) with mapi id 15.20.9654.014; Thu, 26 Feb 2026
+ 13:59:31 +0000
+Message-ID: <48b52f98-119e-4693-806b-78d47f7a43bb@nvidia.com>
+Date: Thu, 26 Feb 2026 19:29:18 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 0/7] Enhanced autonomous selection and improvements
+To: rafael@kernel.org, viresh.kumar@linaro.org, pierre.gondois@arm.com,
+ zhenglifeng1@huawei.com, ionela.voinescu@arm.com, lenb@kernel.org,
+ robert.moore@intel.com, corbet@lwn.net, rdunlap@infradead.org,
+ ray.huang@amd.com, gautham.shenoy@amd.com, mario.limonciello@amd.com,
+ perry.yuan@amd.com, zhanjie9@hisilicon.com, yumpusamongus@gmail.com,
+ dedekind1@gmail.com, linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
+ linux-doc@vger.kernel.org, acpica-devel@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+Cc: linux-tegra@vger.kernel.org, treding@nvidia.com, jonathanh@nvidia.com,
+ vsethi@nvidia.com, ksitaraman@nvidia.com, sanjayc@nvidia.com,
+ nhartman@nvidia.com, mochs@nvidia.com, bbasu@nvidia.com, sumitg@nvidia.com
+References: <20260206142658.72583-1-sumitg@nvidia.com>
+Content-Language: en-US
+From: Sumit Gupta <sumitg@nvidia.com>
+In-Reply-To: <20260206142658.72583-1-sumitg@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MA5P287CA0028.INDP287.PROD.OUTLOOK.COM
+ (2603:1096:a01:17a::12) To BN9PR12MB5179.namprd12.prod.outlook.com
+ (2603:10b6:408:11c::18)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEEQ3wn1zQfn3wD-D6tz5OQjk+7ZucwyKrPHD9wP=kDDj+3XGg@mail.gmail.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN9PR12MB5179:EE_|LV2PR12MB5919:EE_
+X-MS-Office365-Filtering-Correlation-Id: 11db8885-edf0-47e9-0ec7-08de753f438d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|376014|7416014|366016|1800799024|921020;
+X-Microsoft-Antispam-Message-Info:
+	dMCTXaxB6DycIXQk7GzZVUuvhn8j3+YVnOQFBrOPrXa2o8rsYioItJ+zJK21wIwdGL1YAN+ovWLdp3503ckcqQDMUPc26IV69e0O/VplkzHmQUJPVnp15SHgwl6DW3pyAozM9QxI0u6toFSCG0TWjwKrmEa5x9ILAOzDAodzUXXpePxoJMGD+NF6Sp5FHsmcCMk3URZsr32WE2T9L57T65PPlxTLn3caGXnX2ILAksLJ7DfhCNtP/3gzzSfh1pHrrWx6Wy7jNwFYM+k5AtMY15oYwyiTc1aMQmXYnFVAgBMJETDulhzpWjinxx7Ig2hGb2S+zjz00H8x3BccGYBestnUtTSsIHHvWajyo+JonMyX80pDq0JjVCM0vvP5851INysafZybO5l+TRbjmmlcKrJNYOu93Z1BWgpiXYOAUn8gk1Z8t++0G6vHN9PtebznUADE1N0ZiKOdYo8gHwJGzty7cLiwCfDiVlfRqMFNqqYzysb5OuaDPcNsx+kLFL0NM12588mtbygWfrMlrgyyCRxIPhwqMD3mgIRTEH+IpnGrMp0dQlz5H6x+2S3wi+QiS+JjPZnC251GPQ2LzyG5bsEnUeKjvg+BlmePNJdikUDKB00e6Agfc/EHRdD89WMSUEylLHDqj/I4BFs76FqLp4RW5Atjk6ObAk/YJrtFA5ZZopJYvNyO0yr7O2o4i9VTmMa7LatqyNd5ibuBT9jyjEsq65I75GZci+kptqDr0HbH24qMM3wfstt56wcUQkI9ZLKA29L/6c8V0jg13RWP/w==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5179.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(1800799024)(921020);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?bHR5QkIxdUo4R2thR2ZaT0V5SXh0NjhlVEJQMlpIUDJUMThrL2FqMXU1dTla?=
+ =?utf-8?B?N1ZEZGl0b3VVNW5FTldXVFpHUXN5eDdxUmZQRkMwVUUyS0Q4OXlEUDFBY0hI?=
+ =?utf-8?B?c1JPQldVaUoyaE5zcHdJM1N1T0IvNDhQSlVUUG5IRXhOb09TRVZYMEV5M1lV?=
+ =?utf-8?B?NWlGMklJSi8wMERnTU9mYVZWd29LdXVYQ1pKTk5xS050UnR0b2hGWXdtYmxV?=
+ =?utf-8?B?UmNORG5TdHRaWnJSb3lOU2Jjd0UrSWUzRERWS3Vubnd3UmpDcUJPM3ZXMnAy?=
+ =?utf-8?B?QU5BRGdVczIyVUFtbFFZRzRYN0xOeFkwR3FYWWxNbkhRMkgwZGpHdlhNWU1y?=
+ =?utf-8?B?MVQxbXhJL2JHMWJuZnh4VmtTV0ZLUmkyWXJpQ2FtTm81bjhEV2dNS3REcE51?=
+ =?utf-8?B?eWtaV0k3KzhRNVVQYWxjQ0o0YkVnSUw5eDUyY2p4N1I1MXVTTlF2Z3BPWFJS?=
+ =?utf-8?B?Y09uTERwN3YzNnFIN212U1ZFSFNTVDhNRGROUTkvdnlWMngwbjJGcmkwblM5?=
+ =?utf-8?B?b2Qvc3llYndnR3JuaTVnNnp0YlR5Tkp1SjdOODByL1ZxOFI3VnFWaWZMb3Fl?=
+ =?utf-8?B?TEJ5bnBEYm92dmJidFdESWxyaStiUkNJR1k3RkcvRGhhbmhKamFYR3BvcGZT?=
+ =?utf-8?B?U0VOU3UyZTA1NmE4R3FncGxreUZ6L1pGeXpTNHczTUVPQ245VWFkY000SENX?=
+ =?utf-8?B?VHI2cnI2V2EzTE95b05RcW1xeTR1bmNibVp1NFpLcnpQZGFtTVBMNzNNQ21N?=
+ =?utf-8?B?Vm5pVFJsdmpMYkhZM1ZiTEJjQ2E2ekg0Q0Z4aDVPSGNSNTlSa3RMTFlsZis2?=
+ =?utf-8?B?TXhXcWFXcXBlMmRkVmpxK1doZDA0N3Rya1pQYUh6OWQ2SU16NGdSLzcreHNs?=
+ =?utf-8?B?VWlKNXpZN2VyQ0I4KzN1Qk5ZUWZxQ0kwUUNDbWd0S0NVMzB6WmZDOUwzMmxw?=
+ =?utf-8?B?WXhjOVhzOHd4RjhnaWdsVEJzZWFXOTNSTkhRNmFIMlVpejdyT25IUDNNNlBj?=
+ =?utf-8?B?Wm0ybk9mam43NEhmalBJUWRlYjhycUErck01dHhLYTUyQ0JsZkNBUWp4RDZZ?=
+ =?utf-8?B?b1NibWl3VEhyaExFSkdwWVV0bWxGbWhMZUlvWjZHbXZQVy94MlJjbVNNSGFq?=
+ =?utf-8?B?QTAzNCtsdFhHMVl2MTR4WlBGa3RvVkxGSTBTUzFMQ0E0NGdIQVBHdGcrS0VX?=
+ =?utf-8?B?MFB0U3hKelJ0cVowRXNQUWUrTG41MjZSTkgyRzRxV0JzOE1VTE95M0RVUjRC?=
+ =?utf-8?B?N3pwdTFwTitvUndPY0RYeEIvZXQ1MWNrZyttM3JxZXc3ZlpzdjBqRERHb3dI?=
+ =?utf-8?B?U2dYbWROY2ZtYUVwS2k1KzJvY1ltSmpHMkI1YnhPWTV5L2FrQVlvR3FvclRv?=
+ =?utf-8?B?VDl0VXhXU2pkbTg3bGJGbTJTRkZ1OW8zUGgxb2djT1YzRm1iUDQ4Y2EvMmFw?=
+ =?utf-8?B?b2MzUEU4d0pNbUR1WHJwNllUL05XeTZhZG9pdTR0czdrTlhXTXRQZG9XTWdX?=
+ =?utf-8?B?V2ZkelRGSGpwcHZyVUlHV2Zpb2xGZDhEaGtnRE9vV3ZwdHZBSkEzSnpRZVJI?=
+ =?utf-8?B?dEJNMkdOM3BpMjh4eFVUT0theUI3Z1JPWGN5eXhRQ0psMnF6MkE5Y2ttVDFN?=
+ =?utf-8?B?ZjFDeFNtVVlDaUdHMlhtVzhpazR1RTg4TmMxWmVFaCs5UXoyVE9zNVZxbXBo?=
+ =?utf-8?B?MVNzM3EzS002MTF4QXRxUi9KL1hYQkdQUUppT09zZUdtYUkvWEl5MUxzUDdw?=
+ =?utf-8?B?ejZ0TUt3aXE5K2Yvbjlxak1JYWNXZEhpbWwreGZ0UjltOHFWMkZYYWNibnla?=
+ =?utf-8?B?Zmg1VXJOZHBIejU5UmVYUzlxRE5PYnRKY1VOYlEzRWhTbXdBNk5aMTArb2tR?=
+ =?utf-8?B?Y2Y1MnRGVXRtYWJOR0U3WGNkT2dIc2VkV1k0c21qYzV4bDBRcjBRUGE4N2Js?=
+ =?utf-8?B?Si9Ha2pnSEo2OXNwYkE2SWl1QUYxeGlUOEkrRzJIWFdPNGVSMGQ3bytQbTFG?=
+ =?utf-8?B?T1ZhL1BkTkxZZTRDNDQ3eFVZck10Z0swRXZXakNmOEhiWGVNZ3dRTUdLQ2Jk?=
+ =?utf-8?B?bjYxV05UYkh4WUl6N0FxczF5WVNoWUEvVnBPQzRWdVJZR3NsRGVNZnJ5aVZW?=
+ =?utf-8?B?VVY3MExpTmEwZTkrbGc4LysxNjhaajRadXFLWXJST1hHZi9UUFJvTDRyMzdH?=
+ =?utf-8?B?M2h4aldRV1hXQ2pKd2E1M1IvM0hkU1crUXJrUjR0Q1ExbEdORFZKdnBxQ2pQ?=
+ =?utf-8?B?TVFxQURTR1FKY29DUTRidlBWUzhLY0dLSHU1SnBnc0oramxoZ0pvWFRhOHVX?=
+ =?utf-8?B?QWMxaG9ETmV6TENINU9EY1MvRC9IbENVckdEb0syZUJyTjF0NTdpUT09?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 11db8885-edf0-47e9-0ec7-08de753f438d
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5179.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Feb 2026 13:59:31.4275
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: VXCNjH+b8awZmd09f/FswJ/CIzSfYy2j1QwP+bf8Mszx4RbMLJJHgkXtAKN0LJXrIYQQ+j1ybuBpniv0vWm3Mg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR12MB5919
 
-On Mon, Feb 02, 2026 at 12:12:28PM +0800, yunhui cui wrote:
-> Hi Drew,
 
-Hi, thanks for your review, sorry I had this reply in draft for awhile
-and failed to actually send it. All good points from you and I've been
-working on fixing up the code.
+> This patch series improves the CPPC cpufreq driver with new ACPI APIs
+> and enhancements for Autonomous Selection (auto_select).
+>
+> CPPC auto_select enables hardware-driven CPU performance scaling using
+> Energy Performance Preference (EPP) hints. Currently, there's limited
+> runtime control and visibility into CPPC performance registers.
+>
+> The series adds cppc_get_perf() API to read performance controls, updates
+> MIN_PERF/MAX_PERF in target callbacks using existing scaling_min/max_freq
+> interface similar to intel_cpufreq HWP handling, and exposes perf_limited
+> register via sysfs to detect throttling events.
+>
+> The patches are grouped as below:
+> - Patch 1: Add cppc_get_perf() API (independent).
+> - Patch 2: Warn on missing mandatory DESIRED_PERF (independent).
+> - Patch 3: Extend cppc_set_epp_perf for FFH/SystemMemory (independent).
+> - Patch 4: Update cached perf_ctrls on sysfs write (independent).
+> - Patch 5: Update MIN_PERF/MAX_PERF in target callbacks (depends on 4).
+> - Patch 6-7: APIs, sysfs and doc for perf_limited (independent).
 
-> On Thu, Jan 29, 2026 at 4:28 AM Drew Fustini <fustini@kernel.org> wrote:
-> >
-> > Add interface for CBQRI controller drivers to make use of the resctrl
-> > filesystem.
-> >
-> > Co-developed-by: Adrien Ricciardi <aricciardi@baylibre.com>
-> > Signed-off-by: Adrien Ricciardi <aricciardi@baylibre.com>
-> > Signed-off-by: Drew Fustini <fustini@kernel.org>
-> > ---
-> >  arch/riscv/kernel/qos/qos_resctrl.c | 1192 +++++++++++++++++++++++++++++++++++
-> >  1 file changed, 1192 insertions(+)
-> >
-> > diff --git a/arch/riscv/kernel/qos/qos_resctrl.c b/arch/riscv/kernel/qos/qos_resctrl.c
-> > new file mode 100644
-> > index 000000000000..d500098599d2
-> > --- /dev/null
-> > +++ b/arch/riscv/kernel/qos/qos_resctrl.c
-> > @@ -0,0 +1,1192 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +
-> > +#define pr_fmt(fmt) "qos: resctrl: " fmt
-> > +
-> > +#include <linux/slab.h>
-> > +#include <linux/err.h>
-> > +#include <linux/riscv_qos.h>
-> > +#include <linux/resctrl.h>
-> > +#include <linux/types.h>
-> > +#include <asm/csr.h>
-> > +#include <asm/qos.h>
-> > +#include "internal.h"
-> > +
-> > +#define MAX_CONTROLLERS 6
-> > +static struct cbqri_controller controllers[MAX_CONTROLLERS];
-> 
-> Switch to dynamic allocation? Remove MAX_CONTROLLERS.
+Gentle ping.
 
-Yes, I am reworking the implementation to dynamically allocate the
-cbqri_controller array based on the number of controllers actually in
-the system.
+If there are no further comments, could this be considered for merging.
 
-> > +int resctrl_arch_rmid_read(struct rdt_resource *r, struct rdt_mon_domain *d,
-> > +                          u32 closid, u32 rmid, enum resctrl_event_id eventid,
-> > +                          u64 *val, void *arch_mon_ctx)
-> > +{
-> > +       /*
-> > +        * The current Qemu implementation of CBQRI capacity and bandwidth
-> > +        * controllers do not emulate the utilization of resources over
-> > +        * time. Therefore, Qemu currently sets the invalid bit in
-> > +        * cc_mon_ctr_val and bc_mon_ctr_val, and there is no meaningful
-> > +        * value other than 0 to return for reading an RMID (e.g. MCID in
-> > +        * CBQRI terminology)
-> > +        */
-> > +
-> > +       return 0;
-> 
-> Implement per the spec's description directly, not as this comment states?
+Thank you,
+Sumit Gupta
 
-Good point that this should actually perform the operation to read the
-value, even if Qemu is just setting the invalid bit as there is no real
-value implemented in Qemu.
 
-> > +/*
-> > + * Note: for the purposes of the CBQRI proof-of-concept, debug logging
-> > + * has been left in this function that detects the properties of CBQRI
-> > + * capable controllers in the system. pr_info calls would be removed
-> > + * before submitting non-RFC patches.
-> > + */
-> > +static int cbqri_probe_controller(struct cbqri_controller_info *ctrl_info,
-> > +                                 struct cbqri_controller *ctrl)
-> > +{
-> > +       int err = 0, status;
-> > +       u64 reg;
-> > +
-> > +       pr_info("controller info: type=%d addr=0x%lx size=%lu max-rcid=%u max-mcid=%u",
-> > +               ctrl_info->type, ctrl_info->addr, ctrl_info->size,
-> > +               ctrl_info->rcid_count, ctrl_info->mcid_count);
-> > +
-> > +       /* max_rmid is used by resctrl_arch_system_num_rmid_idx() */
-> > +       max_rmid = ctrl_info->mcid_count;
-> 
-> Get the min of all controllers?
-
-Yes, I will change the logic to do that.
-
-> > +static int qos_init_domain_ctrlval(struct rdt_resource *r, struct rdt_ctrl_domain *d)
-> > +{
-> > +       struct cbqri_resctrl_res *hw_res;
-> > +       struct cbqri_resctrl_dom *hw_dom;
-> > +       u64 *dc;
-> > +       int err = 0;
-> > +       int i;
-> > +
-> > +       hw_res = container_of(r, struct cbqri_resctrl_res, resctrl_res);
-> > +       if (!hw_res)
-> > +               return -ENOMEM;
-> > +
-> > +       hw_dom = container_of(d, struct cbqri_resctrl_dom, resctrl_ctrl_dom);
-> > +       if (!hw_dom)
-> > +               return -ENOMEM;
-> > +
-> > +       dc = kmalloc_array(hw_res->max_rcid, sizeof(*hw_dom->ctrl_val),
-> > +                          GFP_KERNEL);
-> > +       if (!dc)
-> > +               return -ENOMEM;
-> > +
-> > +       hw_dom->ctrl_val = dc;
-> > +
-> > +       for (i = 0; i < hw_res->max_rcid; i++, dc++) {
-> > +               err = resctrl_arch_update_one(r, d, i, 0, resctrl_get_default_ctrl(r));
-> > +               if (err)
-> > +                       return 0;
-> 
-> return 0 ?
-
-Ah, yes, I will update to return error instead of silencing it.
-
-> > +static int qos_resctrl_add_controller_domain(struct cbqri_controller *ctrl, int *id)
-> > +{
-> > +       struct rdt_ctrl_domain *domain = NULL;
-> > +       struct cbqri_resctrl_res *cbqri_res = NULL;
-> > +       struct rdt_resource *res = NULL;
-> > +       int internal_id = *id;
-> > +       int err = 0;
-> > +
-> > +       domain = qos_new_domain(ctrl);
-> > +       if (!domain)
-> > +               return -ENOSPC;
-> > +       if (ctrl->ctrl_info->type == CBQRI_CONTROLLER_TYPE_CAPACITY) {
-> > +               cpumask_copy(&domain->hdr.cpu_mask, &ctrl->ctrl_info->cache.cpu_mask);
-> > +               if (ctrl->ctrl_info->cache.cache_level == 2) {
-> > +                       cbqri_res = &cbqri_resctrl_resources[RDT_RESOURCE_L2];
-> > +                       cbqri_res->max_rcid = ctrl->ctrl_info->rcid_count;
-> > +                       cbqri_res->max_mcid = ctrl->ctrl_info->mcid_count;
-> > +                       res = &cbqri_res->resctrl_res;
-> > +                       res->mon.num_rmid = ctrl->ctrl_info->mcid_count;
-> > +                       res->rid = RDT_RESOURCE_L2;
-> > +                       res->name = "L2";
-> > +                       res->alloc_capable = ctrl->alloc_capable;
-> > +                       res->mon_capable = ctrl->mon_capable;
-> > +                       res->schema_fmt = RESCTRL_SCHEMA_BITMAP;
-> > +                       res->ctrl_scope = RESCTRL_L2_CACHE;
-> > +                       res->cache.arch_has_sparse_bitmasks = false;
-> > +                       res->cache.arch_has_per_cpu_cfg = false;
-> > +                       res->cache.cbm_len = ctrl->cc.ncblks;
-> > +                       res->cache.shareable_bits = resctrl_get_default_ctrl(res);
-> > +                       res->cache.min_cbm_bits = 1;
-> > +               } else if (ctrl->ctrl_info->cache.cache_level == 3) {
-> > +                       cbqri_res = &cbqri_resctrl_resources[RDT_RESOURCE_L3];
-> > +                       cbqri_res->max_rcid = ctrl->ctrl_info->rcid_count;
-> > +                       cbqri_res->max_mcid = ctrl->ctrl_info->mcid_count;
-> > +                       res = &cbqri_res->resctrl_res;
-> > +                       res->mon.num_rmid = ctrl->ctrl_info->mcid_count;
-> > +                       res->rid = RDT_RESOURCE_L3;
-> > +                       res->name = "L3";
-> > +                       res->schema_fmt = RESCTRL_SCHEMA_BITMAP;
-> > +                       res->ctrl_scope = RESCTRL_L3_CACHE;
-> > +                       res->alloc_capable = ctrl->alloc_capable;
-> > +                       res->mon_capable = ctrl->mon_capable;
-> > +                       res->cache.arch_has_sparse_bitmasks = false;
-> > +                       res->cache.arch_has_per_cpu_cfg = false;
-> > +                       res->cache.cbm_len = ctrl->cc.ncblks;
-> > +                       res->cache.shareable_bits = resctrl_get_default_ctrl(res);
-> > +                       res->cache.min_cbm_bits = 1;
-> > +               } else {
-> > +                       pr_warn("%s(): unknown cache level %d", __func__,
-> > +                               ctrl->ctrl_info->cache.cache_level);
-> > +                       err = -ENODEV;
-> > +                       goto err_free_domain;
-> > +               }
-> > +       } else if (ctrl->ctrl_info->type == CBQRI_CONTROLLER_TYPE_BANDWIDTH) {
-> > +               if (ctrl->alloc_capable) {
-> > +                       cbqri_res = &cbqri_resctrl_resources[RDT_RESOURCE_MBA];
-> > +                       cbqri_res->max_rcid = ctrl->ctrl_info->rcid_count;
-> > +                       cbqri_res->max_mcid = ctrl->ctrl_info->mcid_count;
-> > +                       res = &cbqri_res->resctrl_res;
-> > +                       res->mon.num_rmid = ctrl->ctrl_info->mcid_count;
-> > +                       res->rid = RDT_RESOURCE_MBA;
-> > +                       res->name = "MB";
-> > +                       res->schema_fmt = RESCTRL_SCHEMA_RANGE;
-> > +                       res->ctrl_scope = RESCTRL_L3_CACHE;
-> > +                       res->alloc_capable = ctrl->alloc_capable;
-> > +                       res->mon_capable = false;
-> > +                       res->membw.delay_linear = true;
-> > +                       res->membw.arch_needs_linear = true;
-> > +                       res->membw.throttle_mode = THREAD_THROTTLE_UNDEFINED;
-> > +                       // The minimum percentage allowed by the CBQRI spec
-> > +                       res->membw.min_bw = 1;
-> > +                       // The maximum percentage allowed by the CBQRI spec
-> > +                       res->membw.max_bw = 80;
-> > +                       res->membw.bw_gran = 1;
-> > +               }
-> 
-> Wrap a function.
-
-I am guessing you mean to break up this long function into a couple of
-smaller functions? I will give that a try for the next rev.
-
-> > +       } else {
-> > +               pr_warn("%s(): unknown resource %d", __func__, ctrl->ctrl_info->type);
-> > +               err = -ENODEV;
-> > +               goto err_free_domain;
-> > +       }
-> > +
-> > +       domain->hdr.id = internal_id;
-> > +       err = qos_init_domain_ctrlval(res, domain);
-> > +       if (err)
-> > +               goto err_free_domain;
-> > +
-> > +       if (cbqri_res) {
-> > +               list_add_tail(&domain->hdr.list, &cbqri_res->resctrl_res.ctrl_domains);
-> > +               *id = internal_id;
-> > +               err = resctrl_online_ctrl_domain(res, domain);
-> > +               if (err) {
-> > +                       pr_warn("%s(): failed to online cbqri_res domain", __func__);
-> > +                       goto err_free_domain;
-> > +               }
-> > +       }
-> > +
-> > +       return 0;
-> > +
-> > +err_free_domain:
-> > +       pr_warn("%s(): err_free_domain", __func__);
-> > +       kfree(container_of(domain, struct cbqri_resctrl_dom, resctrl_ctrl_dom));
-> 
-> free hw_dom->ctrl_val ？
-
-I'll take a closer look at the error cleanup path and fix in the next
-rev.
-
-Thanks,
-Drew
+> ---
+> v7[7] -> v8:
+> - patch 4 (v7): Dropped min/max_perf sysfs patch.
+> - patch 5 (v8): New patch to update MIN/MAX_PERF in target callbacks
+>    using scaling_min/max_freq interface similar to intel_cpufreq.
+> - patch 1-4, 6-7 (v8): Added Reviewed-by from Pierre and Lifeng on v7.
+>
+> Sumit Gupta (7):
+>    ACPI: CPPC: Add cppc_get_perf() API to read performance controls
+>    ACPI: CPPC: Warn on missing mandatory DESIRED_PERF register
+>    ACPI: CPPC: Extend cppc_set_epp_perf() for FFH/SystemMemory
+>    cpufreq: CPPC: Update cached perf_ctrls on sysfs write
+>    cpufreq: cppc: Update MIN_PERF/MAX_PERF in target callbacks
+>    ACPI: CPPC: add APIs and sysfs interface for perf_limited
+>    cpufreq: CPPC: Add sysfs documentation for perf_limited
+>
+>   .../ABI/testing/sysfs-devices-system-cpu      |  18 ++
+>   drivers/acpi/cppc_acpi.c                      | 170 +++++++++++++++++-
+>   drivers/cpufreq/cppc_cpufreq.c                |  83 ++++++++-
+>   include/acpi/cppc_acpi.h                      |  20 +++
+>   4 files changed, 285 insertions(+), 6 deletions(-)
+>
+> [1] https://lore.kernel.org/lkml/20250211103737.447704-1-sumitg@nvidia.com/
+> [2] https://lore.kernel.org/lkml/20250823200121.1320197-1-sumitg@nvidia.com/
+> [3] https://lore.kernel.org/lkml/20251001150104.1275188-1-sumitg@nvidia.com/
+> [4] https://lore.kernel.org/lkml/20251105113844.4086250-1-sumitg@nvidia.com/
+> [5] https://lore.kernel.org/lkml/20251223121307.711773-1-sumitg@nvidia.com/
+> [6] https://lore.kernel.org/lkml/20260120145623.2959636-1-sumitg@nvidia.com/
+> [7] https://lore.kernel.org/lkml/20260129104817.3752340-1-sumitg@nvidia.com/
+>
