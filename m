@@ -1,184 +1,132 @@
-Received: from DM5PR21CU001.outbound.protection.outlook.com (mail-centralusazon11011010.outbound.protection.outlook.com [52.101.62.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from cstnet.cn (smtp25.cstnet.cn [159.226.251.25])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22CBF3E7162
-	for <acpica-devel@lists.linux.dev>; Tue,  3 Mar 2026 17:33:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.62.10
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772559185; cv=fail; b=pxvLL9Kb5FwFJ+0C4Gyg60hL6R4Sq+Ma6LudzWvklXVsbdGssbQ6XaX//CjaBQKoKuhGVgWH+CZ09JMneEtgn/IdIb7epz86dnXY8GlE2jTxvhZaCynNzwMslAg1moD+S0I7D4R28788jALKwUttV7Uekox88pAcAW/H5BJT/04=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772559185; c=relaxed/simple;
-	bh=e4sYtq0I+Hhu2C1K+SGw+TEPfN35XYUM6jK4Gq50Vp8=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=cpDLOkbnfAqhz54/vsEeJIN5daMMoZ5H72O2Llq0N5X7pIX6cMDEPALfkBhQRbcSwPU7lVpczTQjfvzeRkjFgvoUtu7GnCnkoXyS5E6/29t3+8ZBb5wz+tH1q+/zbUYeow+JMT9h/+L7BOTbAbMM+ZjBYf20OK06bOLp8vxVw9s=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=m1H+/Wj7; arc=fail smtp.client-ip=52.101.62.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="m1H+/Wj7"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=bl+R0xbf7clHyKAkKDLRCHxUl6CLFbA1X9HRK7AaEWJ/PsTT1qFnuHXIVm+XP+ykNw+dpHP9ZvoiG0m5OreCXZcreE479Lw/Z8xmmWQjg6TpyvrvIzJBzESj5GmFaGA3bWYUf6N2lEkpj3fIM3eIk9ugkswsO/Pqj7W9cTsk0ELDlNUw2IyMN/bJET+c+OlFCUdy5Lk2zTtFeYtvc9jRk0BYAZmd1+eXX+Rnee5UgDjfIcIsOqphQLuRe4gMXORSuJ98U6NNaXAgWtcVaSloZ8fyXa5UuUlTTqPc/7hIZAeEedqE6fPlVq3GCYTcL0o2gh1yYWZArTTDahFaV4qHog==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GJScsBtqVNP7sJ+Pm7/oen+PiT0zJQLonM1mP7RzOI8=;
- b=G3HjhjRWHGLbUGxLvMLArpQLZNFmn8bGxO8eZeRaL//1DKtgBlOx91YDGIgyXzlBwe38hxBI2aplUblEEdZd4MOlNkWZHUd/SDKlzStJA+b7i28kQ8BlPxSqSyLeeDL8odcU+2+dSfK0+lIwd3FD8Nw0g36IULTZICoqG15b18MB9WzTw+jOdw4m/O6WJb/jPaUS9PgjQDhOJRwPlCsuiCuZZHsjpN6X6c2k8eycvYIUx5zZTMc0kRf30C5dFhYL5Wae7VDag5NDy8yia+8MUaQTf9X1obGfXeHrY7fVBA3SeBb3l59H556oWsQQ8gVL5nijFlAI3DgvdouFYyxgqA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GJScsBtqVNP7sJ+Pm7/oen+PiT0zJQLonM1mP7RzOI8=;
- b=m1H+/Wj7JYTSazM3ULsujtrIy1x9FvG034n1rZtA5T15Pa1yCsOrwSaMVVBwU05I2asEh7RgYxgVatMMGDLx/aBmU+9byN4h/85Se05BSYAEj8OmGheCKkVTV3BEPnguAQsX2XJARpYGkPiKAJ4NdX6cnY1HB8gxW4/WgBBMVi2poOmdAwNE1qFyWryz6HdGtykfxw+79S4hwYn+TPDITt5CINxPDuv1XZ5LuULu8LIJSkQ7kwxBESmvYCyn/VOlOTHDWHmGA18Xot4JFYPjQ5TeVcMipRU9SB1mAUna8qy5UMP+bF/rEqvDYeal+dPY1aiMpUn271k0Woq2OdT0cg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BN9PR12MB5179.namprd12.prod.outlook.com (2603:10b6:408:11c::18)
- by PH7PR12MB7137.namprd12.prod.outlook.com (2603:10b6:510:1ed::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9654.22; Tue, 3 Mar
- 2026 17:32:43 +0000
-Received: from BN9PR12MB5179.namprd12.prod.outlook.com
- ([fe80::cf08:f59b:d016:c95f]) by BN9PR12MB5179.namprd12.prod.outlook.com
- ([fe80::cf08:f59b:d016:c95f%6]) with mapi id 15.20.9654.022; Tue, 3 Mar 2026
- 17:32:43 +0000
-Message-ID: <48bdf87e-39f1-402f-a7dc-1a0e1e7a819d@nvidia.com>
-Date: Tue, 3 Mar 2026 23:02:30 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 0/7] Enhanced autonomous selection and improvements
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: viresh.kumar@linaro.org, pierre.gondois@arm.com, zhenglifeng1@huawei.com,
- ionela.voinescu@arm.com, lenb@kernel.org, robert.moore@intel.com,
- corbet@lwn.net, rdunlap@infradead.org, ray.huang@amd.com,
- gautham.shenoy@amd.com, mario.limonciello@amd.com, perry.yuan@amd.com,
- zhanjie9@hisilicon.com, yumpusamongus@gmail.com, dedekind1@gmail.com,
- linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
- linux-doc@vger.kernel.org, acpica-devel@lists.linux.dev,
- linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
- treding@nvidia.com, jonathanh@nvidia.com, vsethi@nvidia.com,
- ksitaraman@nvidia.com, sanjayc@nvidia.com, nhartman@nvidia.com,
- mochs@nvidia.com, bbasu@nvidia.com, sumitg@nvidia.com
-References: <20260206142658.72583-1-sumitg@nvidia.com>
- <48b52f98-119e-4693-806b-78d47f7a43bb@nvidia.com>
- <CAJZ5v0iOsqoZx0EZ3AqEk_8mrGxSj6wj-m8phRJ0cT71NTuBWA@mail.gmail.com>
-Content-Language: en-US
-From: Sumit Gupta <sumitg@nvidia.com>
-In-Reply-To: <CAJZ5v0iOsqoZx0EZ3AqEk_8mrGxSj6wj-m8phRJ0cT71NTuBWA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: MA5P287CA0124.INDP287.PROD.OUTLOOK.COM
- (2603:1096:a01:1d0::13) To BN9PR12MB5179.namprd12.prod.outlook.com
- (2603:10b6:408:11c::18)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0754377EC6
+	for <acpica-devel@lists.linux.dev>; Mon,  9 Mar 2026 09:20:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.25
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1773048042; cv=none; b=I/zq7sZ2t+xzf319PI1d3O+SZi5plJRdGIp29N9N9aW88JVrGupiqwRDyDgXKR5tCGoC3uSt0I89uTUzXgRi/rpAsm5E4I/gZIE8JRloSRDK1QvjHJ20Vq+86ShmgNRF19ZZ7NKcT40OBFCUZSdr0+lNR7g7d/a2YXzTHN+X7fc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1773048042; c=relaxed/simple;
+	bh=zp9Rt221AmrSDf0mVc6DMXSzcqZbo8m6Bj80HUPy0Wk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=J1QRGTI9urjYasjNW7c2KSPO/UDBrzf+FcGzL77M3tniFXzfJho8O4u9ltqKrEACsu2j7W0i6BCJEtLe5xafKR64xTNZlXdYLk/rf+YgrUqSO0/L4nrlr36ws4fG+C7/PP2cVHELXOQS4ENmxnaEMAMKhvtKVzN5qU5zn5/soZA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=isrc.iscas.ac.cn; spf=pass smtp.mailfrom=isrc.iscas.ac.cn; arc=none smtp.client-ip=159.226.251.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=isrc.iscas.ac.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isrc.iscas.ac.cn
+Received: from localhost.localdomain (unknown [210.73.43.101])
+	by APP-05 (Coremail) with SMTP id zQCowACXKAzlkK5piwXyCQ--.20115S2;
+	Mon, 09 Mar 2026 17:20:38 +0800 (CST)
+From: Pengpeng Hou <pengpeng.hou@isrc.iscas.ac.cn>
+To: "Rafael J . Wysocki" <rafael@kernel.org>,
+	Robert Moore <robert.moore@intel.com>,
+	Len Brown <lenb@kernel.org>
+Cc: linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	Pengpeng Hou <pengpeng.hou@isrc.iscas.ac.cn>
+Subject: [PATCH] ACPICA: scope PCI region setup helpers to ACPI_PCI_CONFIGURED
+Date: Mon,  9 Mar 2026 09:20:31 +0000
+Message-Id: <20260309092031.720808-1-pengpeng.hou@isrc.iscas.ac.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN9PR12MB5179:EE_|PH7PR12MB7137:EE_
-X-MS-Office365-Filtering-Correlation-Id: f7efd4d9-fe6b-4bd7-12c0-08de794ae04f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|7416014|376014;
-X-Microsoft-Antispam-Message-Info:
-	JDHzVck9TUQu5dwNk21Nxqu2txLyvc3khKVt/q4MKcJTBDjfk1BjoaqFtWkbRUamQF/kkUY4mA5imAURTy2kOS4fU3/3vSyX1t9WviWWyU9kY2tKufH9xmO9EFKp3K3EPZO5apGjk1EsLl9uu9ocWUmlp/H4c091Pt0E8EdPq5YegO1e7g5POm6PQquBAwkAGBM+FkD8saKqq9tNxs5gOkssJv/1A+3/fYSdT7XuP8nDIGfWtTKlxnqXQQfxEVy7oNLP/xiguib0oWhq6uAT1lMwwo0Y40SkX25nqRpGMuqa1asvLsdTjyrVR5HE1mLWH8eiAAwGhLQKU1mm9AxtlCQ2c724aqO99s7I1Z1tjoxV8eaz7e4+AtDXD3lAHW8uhjOZkPKWJG++ohJVZxmgxNN1fixgiYgbjsH/bdZ4iUm3AHmiWP7+3RpEGxkMAA73pA1R7xIdfAynfWSweC21A1OCU+VavOqsJU+XYKgLuqSYpQ9GaLTnAhC9v4VEdP/OCqx/t69pNf3nOwyFXeTseyOXYjlrED9ISdRwXY4FtEFCtKNxeb6Zfzj9UOFaBDL2crSiA3zR4xASTCDrox2RCIz937BkJjHrZjZe01S68MjhDx8ugoCblwzSvauPm2Q0MJ/mNnl34FakQ3wD0+YZTTQ1zbuBQB5UGDC6D9Yr1nbp7Kp3r5D6kqXusaZ9lckz+qt4f3gLSxB1uRQKOAG2vnXqml31mYM9OykmKe+jYy8=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5179.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(7416014)(376014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?T3lCRWtxTXlOYU5oRlBXS0ZNQ01jb2wyQzVORDlWZ1dMQkZ5UU5DRVNGbXNT?=
- =?utf-8?B?RHdZZjNFS2RNdlNmUi9BMHlTUnV2WGIwZDVNMDhreEZyUFkydkJydjRrbjJM?=
- =?utf-8?B?V2NVQjdWK0NOSHRndHozaWt2eFlpNE84WDFCUEJ2OG81TU1uR0czM0lsalgr?=
- =?utf-8?B?L1FEek4rREVOaU52Q0Ztc0tYeUJreC9zSklkZXBONjROMWk2dDR3cXZxS0NS?=
- =?utf-8?B?cUtXa1R0aUUyQUhnM2hRNFM3V2tOZUhQbU0zbWFKVEx2Mlg2em5NUTZnUTMy?=
- =?utf-8?B?dFJzTS9HcGxaVldndmJJYVoxNjJSTnJoYitSUE1KYno1K0xMcFU3SUlwdXE4?=
- =?utf-8?B?QjlBUnphQS8xMy9FeURzTktPZWFNdUVnK2lYbHViZlI1ZWdRY2dUcXFaTEt4?=
- =?utf-8?B?UTVaaHBaQWRGd3RlVUNSUlZEdTlDdlpqYm5DK01BcXEydlpEbHF3K2FMK0Nh?=
- =?utf-8?B?Q1RWVFhNaWNrd2ZBbzJBeU90bFkxQ0JkR2poUmZTSEdxYng4b24xdGJ2RlMw?=
- =?utf-8?B?WjVha0NOQ1BRenQ4a1V5UzRwZ1Fpdk41Nmg4M3J3N1FjQklvc01IT1JOQWpO?=
- =?utf-8?B?d3NrL2NyNzM3YkYzNjMrRy9lK1RBN3pyVzM2dEE2dzczcGlaaG56QTdXZXlL?=
- =?utf-8?B?Uk0zbHJxYTFYM2VGdlBqOUpkV3VtbWpyUDhoNEg2NncrcTkvTlJMUTNUS3dx?=
- =?utf-8?B?NGR6M1VBaDJVQjlWR0g1ZWNIcFFFYlRKR09QTWZOYThFdVFiVVlJY1pkOUVD?=
- =?utf-8?B?SzBwTTJKQyt2T0t0UDRWb2pkWkNiTHFDVDk4NHU2UHNqMFAzVEFxNU4yQXhO?=
- =?utf-8?B?bnlhRmkyc01jbDR1TVhxN2VoRTh6SnUwR3J0d0NjZ1pIS3BIbkgxMUJNZGJC?=
- =?utf-8?B?K05vSDl0M0lJVDR6YUFlalhoRjhEQlhCM0w0T2MyOXBtblRCdkVXUVpCWkx2?=
- =?utf-8?B?cEtKSVk0MGVrTk54RFhZU3FCdzBFeEFob3owUXdwVzgwYlVnKy9vNGdpRFFQ?=
- =?utf-8?B?anlQeTB5R0pCc0NnVDF3NnQ2RzM3ZWYwS1MrSEpoTmdqdHBmSElYaTV3SFRP?=
- =?utf-8?B?NGtMRXNHQ3Vld1ZjeHltZFBpcWNwU0toTU03YmNRanJ1MnlMZUFpaVJ4UEsw?=
- =?utf-8?B?U2E4c05OdGJDRlB0YTYxeHRNblc3QnExWTVtbHZGVjU0TGhxR2w2ajQyUldl?=
- =?utf-8?B?L1hJYWNKeHJGME9WVHZSQ2FkTGU3czB2cjFOZGhXMmpVOFFjaGpZZE9qRjQw?=
- =?utf-8?B?Z0dNQlRudWJjYlRNN3pFMUNoQUxSWmExaXVxcUZsZjVyQU1RYzRvdmVNcnV5?=
- =?utf-8?B?RngvcUhZS1ZUaG9rTG5OSEpJbG8rTzNsT0J5ZUtzNjRlT2tka0lIWHdkMDZY?=
- =?utf-8?B?eERoVFZaTDNxMGVjZFZvNmhndWt5WTNXRmNmSVRwYU5YSmJqQmwvNVk4SFdl?=
- =?utf-8?B?QW9uZXlYSXhjYnZXZXV5OWl1azg4Yy9XTVVyWktQUzZyRjZBMlFSU095eC92?=
- =?utf-8?B?SFB0T0pNK2N5RHRDMUFrVGdJMTJPYW1tTURBa2xZeTk5Znp1Z3RWRTVZRFRE?=
- =?utf-8?B?T3RHOTRaWUNQL01oc3htbGM4Q3g4N3FXRlNCajNyclYwZko3WXM3UkVzOGxj?=
- =?utf-8?B?RkxJTEVJNEpBZU5MTWlNMzlOdmp5RGR0U2pWOENYc0U2L3htWmtzYmU3Um9I?=
- =?utf-8?B?OGtlMW1CSW1BL2s0OXpLYVZXWmVHNHVVQndCZVV6Q0k4MjVZcHE2NnovMHBa?=
- =?utf-8?B?dTVLSjdsYU91Ni94R2pPS0QwL1ZXbFlVTGNscFhmbG0xcVpiTWoybG91UlEx?=
- =?utf-8?B?aXhjb25ybHdrcVJmNWtYamRKVnQ5U0cyWlpzcVN2N1lpVUJYeWM5WEFWeloz?=
- =?utf-8?B?Q2o4WlArNkhNWElXQS80dUhrZmYwMjM0S0xRb0VnN211a0ZMMCtTNlViZllk?=
- =?utf-8?B?bEdEMWtLYTY4a2JDMWNBRTdTRGYxS0VsUkcrWGh1TlVOL2sxdHNpZm9GMnYy?=
- =?utf-8?B?SEpFR0JQTU1wZU1mOC81Mzl0QmV3VzI2L2VUandla0FWcHc3M1B6SmhMelk4?=
- =?utf-8?B?S0QyWTdtcjNxTmwwNVNzLzRUUzJFbWJ4RVAvcnFFMng0THlOaU9nZGxSN3VS?=
- =?utf-8?B?aFhhbFcxckJ3S1kyWHhRSndMNFlraFNuS1NxbVYyUnlFWXlQT2E5ZkkwUWdF?=
- =?utf-8?B?dEsvOHd0Zy9xRnJMckNTRFBZdDJHeTZlbmdHb0J4V1paWVl3TmZqTFlENFRX?=
- =?utf-8?B?dzA2c3hWclg0eDYzZndhSkF6NDJIejlIOXc5SHpBQmVqZjFsZTRzSUFvaGNx?=
- =?utf-8?Q?R3VGcndE/kgp3iWl/r?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f7efd4d9-fe6b-4bd7-12c0-08de794ae04f
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5179.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Mar 2026 17:32:43.5072
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fKspsO7exci1MEpFKBqdHOkGjE2dqQS+7/igbb205z2dTJW92tXHfTdvRZOJvycM6Nf6egSlbfe9+9PBsnuN2A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7137
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:zQCowACXKAzlkK5piwXyCQ--.20115S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Cw43KryUGryfJry5Xr4DXFb_yoW5Jryxpr
+	WUtr4UAr17JF129F1jywn5ur13A34kCF4UJwsrJryDZr1UGw15Ar1qqw17ta4UJryUtr1Y
+	vF4UJF15XF1jyaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvv14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+	6F4UM28EF7xvwVC2z280aVAFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4j6r
+	4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY1x0262kKe7AKxVWU
+	AVWUtwCY02Avz4vE14v_GFWl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+	1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+	14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+	IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E
+	87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73Uj
+	IFyTuYvjfU82NtDUUUU
+X-CM-SenderInfo: pshqw1hhqjhx1rx6x21ufox2xfdvhtffof0/
 
+In current linux.git (1954c4f01220), acpi_ev_pci_config_region_setup()
+and acpi_ev_pci_bar_region_setup() are defined and declared 
+unconditionally. However, their only in-tree references are within 
+evhandler.c, which are already guarded by #ifdef ACPI_PCI_CONFIGURED.
 
-On 28/02/26 02:06, Rafael J. Wysocki wrote:
-> External email: Use caution opening links or attachments
->
->
-> On Thu, Feb 26, 2026 at 2:59 PM Sumit Gupta <sumitg@nvidia.com> wrote:
->>
->>> This patch series improves the CPPC cpufreq driver with new ACPI APIs
->>> and enhancements for Autonomous Selection (auto_select).
->>>
->>> CPPC auto_select enables hardware-driven CPU performance scaling using
->>> Energy Performance Preference (EPP) hints. Currently, there's limited
->>> runtime control and visibility into CPPC performance registers.
->>>
->>> The series adds cppc_get_perf() API to read performance controls, updates
->>> MIN_PERF/MAX_PERF in target callbacks using existing scaling_min/max_freq
->>> interface similar to intel_cpufreq HWP handling, and exposes perf_limited
->>> register via sysfs to detect throttling events.
->>>
->>> The patches are grouped as below:
->>> - Patch 1: Add cppc_get_perf() API (independent).
->>> - Patch 2: Warn on missing mandatory DESIRED_PERF (independent).
->>> - Patch 3: Extend cppc_set_epp_perf for FFH/SystemMemory (independent).
->>> - Patch 4: Update cached perf_ctrls on sysfs write (independent).
->>> - Patch 5: Update MIN_PERF/MAX_PERF in target callbacks (depends on 4).
->>> - Patch 6-7: APIs, sysfs and doc for perf_limited (independent).
->> Gentle ping.
->>
->> If there are no further comments, could this be considered for merging.
-> Applied as 7.1 material, thanks!
+Match the internal declarations and definitions to that scope by wrapping
+them in #ifdef ACPI_PCI_CONFIGURED. This fixes the config-scope mismatch
+and avoids including PCI-specific setup logic when PCI support is not
+configured in the ACPI subsystem.
 
-Thank you for applying the series.
-
->
-> That said, wouldn't it be prudent to check cpc_read() return values 
-> everywhere? They are handled quite inconsistently and this series 
-> doesn't improve that. 
-
-I will send a follow-up patch to address this.
-
-Thank you
-Sumit Gupta
-
+Signed-off-by: Pengpeng Hou <pengpeng.hou@isrc.iscas.ac.cn>
+---
+diff --git a/drivers/acpi/acpica/acevents.h b/drivers/acpi/acpica/acevents.h
+--- a/drivers/acpi/acpica/acevents.h
++++ b/drivers/acpi/acpica/acevents.h
+@@
+ acpi_status
+ acpi_ev_io_space_region_setup(acpi_handle handle,
+ 			      u32 function,
+ 			      void *handler_context, void **region_context);
+ 
++#ifdef ACPI_PCI_CONFIGURED
+ acpi_status
+ acpi_ev_pci_config_region_setup(acpi_handle handle,
+ 				u32 function,
+ 				void *handler_context, void **region_context);
+@@
+ acpi_status
+ acpi_ev_pci_bar_region_setup(acpi_handle handle,
+ 			     u32 function,
+ 			     void *handler_context, void **region_context);
++#endif
+ 
+ acpi_status
+ acpi_ev_data_table_region_setup(acpi_handle handle,
+ 				u32 function,
+diff --git a/drivers/acpi/acpica/evrgnini.c b/drivers/acpi/acpica/evrgnini.c
+--- a/drivers/acpi/acpica/evrgnini.c
++++ b/drivers/acpi/acpica/evrgnini.c
+@@
+  *
+  ******************************************************************************/
+ 
++#ifdef ACPI_PCI_CONFIGURED
+ acpi_status
+ acpi_ev_pci_config_region_setup(acpi_handle handle,
+ 				u32 function,
+ 				void *handler_context, void **region_context)
+@@
+ 	*region_context = pci_id;
+ 	return_ACPI_STATUS(AE_OK);
+ }
++#endif
+ 
+ /*******************************************************************************
+  *
+  * FUNCTION:    acpi_ev_is_pci_root_bridge
+@@
+  *
+  ******************************************************************************/
+ 
++#ifdef ACPI_PCI_CONFIGURED
+ acpi_status
+ acpi_ev_pci_bar_region_setup(acpi_handle handle,
+ 			     u32 function,
+ 			     void *handler_context, void **region_context)
+@@
+ 
+ 	return_ACPI_STATUS(AE_OK);
+ }
++#endif
+ 
+ /*******************************************************************************
+  *
+  * FUNCTION:    acpi_ev_cmos_region_setup
 
