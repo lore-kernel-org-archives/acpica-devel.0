@@ -1,139 +1,145 @@
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8204437FF78
-	for <acpica-devel@lists.linux.dev>; Fri, 20 Mar 2026 09:55:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D070346AE3
+	for <acpica-devel@lists.linux.dev>; Sun, 22 Mar 2026 15:36:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774000521; cv=none; b=JJN+f0YlXOeU+Np9d9LVIKe5pFkNjMu3DSNeOuSDg5iORGhD2Dem4xr+wN0UXuifsv5NjtdonIm7pgJHojChJcmW8nz5xe0OIrenCvCwg7DFwKjClWWbwCZOzC9RvGOJLEuJW5TwTrond5tRVyteKqR0J4NnMEtQvE2HE0zbCHM=
+	t=1774193780; cv=none; b=Im3ny6oDa99S9GZZcLayROoqxEvjHrVVoxuncH4Pz7kjXHagcxjoSQxOZ+WAqaOz5WpaiXLhKYq453fy982rGWh0gYle4YfL7dJ4lKBBdySTyPpqY3gTbTDpAmHGLFOZl8gB0/5N7wyZLFavoq7hog8g4dqcH2d90ff0c5vOZgs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774000521; c=relaxed/simple;
-	bh=6Wg/Rw59qfqBD/NX4KINQRRR9R7/o5qx+VND2rIglxs=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Rd4uFhLSL/GYbZOZxWWsubPq3jG5xsCDseK0gn4YbTTrp7dpQL0GeeynJf6119v4OUo4EDSDixkLEkKiArVRpdOpIemMAqCeh/sDdehJlQOWGXSyulKw878h9gWH75xhPB61g44M1EY5maef3RPRDfm2fFzoNWhB+pNtspezkdU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.224.107])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTPS id 4fcdG25xxbzHnH7p;
-	Fri, 20 Mar 2026 17:54:50 +0800 (CST)
-Received: from dubpeml500005.china.huawei.com (unknown [7.214.145.207])
-	by mail.maildlp.com (Postfix) with ESMTPS id 1446D40584;
-	Fri, 20 Mar 2026 17:55:16 +0800 (CST)
-Received: from localhost (10.203.177.15) by dubpeml500005.china.huawei.com
- (7.214.145.207) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Fri, 20 Mar
- 2026 09:55:15 +0000
-Date: Fri, 20 Mar 2026 09:55:13 +0000
-From: Jonathan Cameron <jonathan.cameron@huawei.com>
-To: Kai-Heng Feng <kaihengf@nvidia.com>
-CC: <rafael@kernel.org>, Tony Luck <tony.luck@intel.com>, Borislav Petkov
-	<bp@alien8.de>, Hanjun Guo <guohanjun@huawei.com>, Mauro Carvalho Chehab
-	<mchehab@kernel.org>, Shuai Xue <xueshuai@linux.alibaba.com>, Len Brown
-	<lenb@kernel.org>, Robert Moore <robert.moore@intel.com>, Ard Biesheuvel
-	<ardb@kernel.org>, Breno Leitao <leitao@debian.org>, "Fabio M. De Francesco"
-	<fabio.m.de.francesco@linux.intel.com>, Jason Tian
-	<jason@os.amperecomputing.com>, <linux-acpi@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <acpica-devel@lists.linux.dev>
-Subject: Re: [PATCH v2 1/3] acpi/apei: Add
- devm_ghes_register_vendor_record_notifier()
-Message-ID: <20260320095513.00007636@huawei.com>
-In-Reply-To: <20260319111315.87624-1-kaihengf@nvidia.com>
-References: <20260319111315.87624-1-kaihengf@nvidia.com>
-X-Mailer: Claws Mail 4.3.0 (GTK 3.24.42; x86_64-w64-mingw32)
+	s=arc-20240116; t=1774193780; c=relaxed/simple;
+	bh=yOhi6aKiUR4eoyYlcX4c+fiyhV6dey/Bi2f/oYdMhDM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cW5kMJimz1DsHdCCxb+ogunkMBBVrskOVtnnU0ygsP+6h9nq5O0ZFyzDgckBeGI3cftpDikdY5EhyrLmXSBphYh0HBh3wY+CYQ63/z0qMPMJMwUbpBWNjdoTU4Nn+8hIx3dkbWls7lzhJzU7HdQgpX4Y1bc+0hbT4bBDca/KuK0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SiTgRFzk; arc=none smtp.client-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SiTgRFzk"
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-35ba749f441so3057666a91.1
+        for <acpica-devel@lists.linux.dev>; Sun, 22 Mar 2026 08:36:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1774193779; x=1774798579; darn=lists.linux.dev;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5WiiyveVbIeJMUarYCtN7n9x1v7YYVzdYgWfcDHMQmg=;
+        b=SiTgRFzklxK0rFHE9g+tm+D989v/hGpIhCrbyMnSOhcUnA/TunSozTQALwUpyoecT4
+         hktMRYp8q8xrqnslrOccuzknn4ystkC6tFn+qTSMms4Ym3+u1MbhwBOBm96F6PKStwfs
+         fItwpEeXh3PioViIJw7EOd1Qn7ZN+KPMNkRwchYsT9D87UmXgRBrH+i2IN69O/0qfuVy
+         rNfdMblFgbkyWNnBVTParj1vQezQkPYrDUde+kmd9sRYHLnNicwEC6RzJE8dKmvDt/Bv
+         Z0583XPDMEftCPAevQpDmmtdvx7b1RaiVVVRA6cfzbKtC5k7pUGLKNyyynkeKaDET5XV
+         QP6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1774193779; x=1774798579;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5WiiyveVbIeJMUarYCtN7n9x1v7YYVzdYgWfcDHMQmg=;
+        b=D4IHeoOp1Dhgbctr+kV0L1nDmbwlD76LTuHtLR3BwEYAN7GAV7Myh9GL4SomnhFtRQ
+         wm0/sq9rrEG/+ppsn9q06C9YoGE59761yaNnMNBJkLvHAAKEGJlhR16U8W19z1EMHyIE
+         spqxuZKwYvRc4D0SqrnIAd0N6tItr3CkANbg+4S7Y/iObGf3iVkhb+aVEa/8ncaYJqDV
+         +h8WERVkYdgAWw6rPuRvBnvFoSl6TVR+4rTMn52a4K3uwp2Yx8YajQr1xQ54q8tFjFId
+         sd/AGXNQo931N6h0flDZkCg4ZMfsIOWvRMEFLcH1WeNXtwejpOO57z07ABkDWX/Nz8Wq
+         t05A==
+X-Forwarded-Encrypted: i=1; AJvYcCXqrgOELfHbQDfttUIIsKqLU/lMXHiac9/B7fgAfYhaZGdrOMo7YYgmJbASiYnbuaR83+Ycsg6xFKbbAm4=@lists.linux.dev
+X-Gm-Message-State: AOJu0YwqpVfMHJOxdUJ3oY5jIbTJKKs6q1SupAMe8XdJ8M/rFUY/hFkj
+	OPQded9yyOcgvp040SdOkb8tTS0lu5PizbbIVLeSgl24lWXEISJs0Sg1
+X-Gm-Gg: ATEYQzzyup+otS9x1hGWBKCv/WSDKERau+OkR/VLhJxXWJwwUdybnY7SG2yJa6YqXjO
+	FVCJ+ZjeK9UQEU1EaEMbVUPZKnLEqQWEysOxvidPcplDTnPg2EM3wvUAyWwDqZgez4sqrE6+qHX
+	DIjjRq9NlgD13qalQCctmHtjee2xn1ft2sBWt8a9gbu9d7GtKXVeEhoVmDCjYEOFtbKD5qWjw1E
+	QSGAsczt2oSp3cbvFKSoO84FJ7qWjXRs+onfTWw24tpyhme1fVmpvlIlGCjKe0EYwCKJTGhSlsO
+	ZfZ0aX216JuKsgt4076fgaDNpoKv1poQYDKxzIDtIeLlG0/jGwJHd9+Zb4YJOSd/5oL4+qNztYS
+	GTqQzijV8Knc0cLUQuN3KgBOFcukYedvhv7DSWsv86lRCUMnpYqOyb/bYU+303jwbGT0EyZ9n6r
+	RAhecG4MNJOwoCGUQ+Jg1SVvdjVOa9tstOhX6YOC2U0haz932v1uva04uhBpA6v56zCgW+7kvNc
+	YvEjKN8edo=
+X-Received: by 2002:a17:90b:380c:b0:35b:b537:b03b with SMTP id 98e67ed59e1d1-35bd2bd57c7mr7961148a91.2.1774193778922;
+        Sun, 22 Mar 2026 08:36:18 -0700 (PDT)
+Received: from SLSGDTSWING002.tail0ac356.ts.net ([129.126.109.177])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-35bd2665e2bsm3166405a91.2.2026.03.22.08.36.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Mar 2026 08:36:18 -0700 (PDT)
+From: Weiming Shi <bestswngs@gmail.com>
+To: "Rafael J . Wysocki" <rafael@kernel.org>,
+	Robert Moore <robert.moore@intel.com>
+Cc: Len Brown <lenb@kernel.org>,
+	linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev,
+	Xiang Mei <xmei5@asu.edu>,
+	Weiming Shi <bestswngs@gmail.com>
+Subject: [PATCH] ACPICA: fix NULL pointer dereference in acpi_ns_custom_package()
+Date: Sun, 22 Mar 2026 23:35:31 +0800
+Message-ID: <20260322153529.3325784-3-bestswngs@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100012.china.huawei.com (7.191.174.184) To
- dubpeml500005.china.huawei.com (7.214.145.207)
+Content-Transfer-Encoding: 8bit
 
-On Thu, 19 Mar 2026 19:13:07 +0800
-Kai-Heng Feng <kaihengf@nvidia.com> wrote:
+acpi_ns_custom_package() unconditionally dereferences the first element
+of the package to read the _BIX version number, without checking for
+NULL:
 
-> Add a device-managed wrapper around ghes_register_vendor_record_notifier()
-> so drivers can avoid manual cleanup on device removal or probe failure.
-> 
-> Cc: Jonathan Cameron <jonathan.cameron@huawei.com>
-> Signed-off-by: Kai-Heng Feng <kaihengf@nvidia.com>
-Hi,
+  if ((*elements)->common.type != ACPI_TYPE_INTEGER)
 
-My only comment is about following local style. I think that
-means moving the docs to the header.  Unfortunately whether things
-are in the header or the c file is a subsystem specific thing.
+When firmware returns a _BIX package whose first element is an
+unresolvable reference, ACPICA evaluates that entry to NULL.
+acpi_ns_remove_null_elements() does not strip NULL entries for
+ACPI_PTYPE_CUSTOM packages (fixed-position format would break if
+elements were shifted), so acpi_ns_custom_package() sees the NULL
+and panics.
 
-My preference is in the c file, but local style overrides that!
-Better to have all the docs in the same place.
+ general protection fault, probably for non-canonical address
+ 0xdffffc0000000001: 0000 [#1] SMP KASAN NOPTI
+ KASAN: null-ptr-deref in range
+ [0x0000000000000008-0x000000000000000f]
+ RIP: acpi_ns_check_package
+ (drivers/acpi/acpica/nsprepkg.c:634
+  drivers/acpi/acpica/nsprepkg.c:110)
+ Call Trace:
+  <TASK>
+  acpi_ns_check_return_value (nspredef.c:136)
+  acpi_ns_evaluate (nseval.c:266)
+  acpi_evaluate_object (nsxfeval.c:360)
+  acpi_battery_get_info (battery.c:537)
+  acpi_battery_update (battery.c:1007)
+  acpi_battery_add (battery.c:1237)
+  acpi_device_probe (bus.c:1076)
+  really_probe (dd.c:659)
+  </TASK>
 
-Jonathan
+Add a NULL check for the first element (version field) before
+dereferencing it. The battery probe then fails gracefully with
+AE_AML_OPERAND_TYPE instead of crashing the kernel.
 
-> ---
-> v2:
->  - New patch.
-> 
->  drivers/acpi/apei/ghes.c | 25 +++++++++++++++++++++++++
->  include/acpi/ghes.h      |  3 +++
->  2 files changed, 28 insertions(+)
-> 
-> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
-> index 8acd2742bb27..d31a70a05538 100644
-> --- a/drivers/acpi/apei/ghes.c
-> +++ b/
-> @@ -689,6 +689,31 @@ void ghes_unregister_vendor_record_notifier(struct notifier_block *nb)
->  }
->  EXPORT_SYMBOL_GPL(ghes_unregister_vendor_record_notifier);
->  
-> +static void ghes_vendor_record_notifier_destroy(void *nb)
-> +{
-> +	ghes_unregister_vendor_record_notifier(nb);
-> +}
-> +
-> +/**
-> + * devm_ghes_register_vendor_record_notifier - device-managed vendor record notifier registration
+Required CONFIG: CONFIG_ACPI_BATTERY=y
 
-There is also quite a bit of kernel doc in header.  So I guess
-local convention is put it there not in the C code?
+Fixes: 7952d40240855932 ("ACPICA: ACPI 6.0: Update _BIX support for new package element")
+Reported-by: Xiang Mei <xmei5@asu.edu>
+Signed-off-by: Weiming Shi <bestswngs@gmail.com>
+---
+ drivers/acpi/acpica/nsprepkg.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Hence I would move the docs there.
-
-
-> + * @dev: device that owns the notifier lifetime
-> + * @nb: pointer to the notifier_block structure of the vendor record handler
-> + *
-> + * Return: 0 on success, negative errno on failure.
-> + */
-> +int devm_ghes_register_vendor_record_notifier(struct device *ev,
-> +					      struct notifier_block *nb)
-> +{
-> +	int ret;
-> +
-> +	ret = ghes_register_vendor_record_notifier(nb);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return devm_add_action_or_reset(dev, ghes_vendor_record_notifier_destroy, nb);
-> +}
-> +EXPORT_SYMBOL_GPL(devm_ghes_register_vendor_record_notifier);
-> +
->  static void ghes_vendor_record_work_func(struct work_struct *work)
->  {
->  	struct ghes_vendor_record_entry *entry;
-> diff --git a/include/acpi/ghes.h b/include/acpi/ghes.h
-> index 7bea522c0657..ca3ace828c1c 100644
-> --- a/include/acpi/ghes.h
-> +++ b/include/acpi/ghes.h
-> @@ -71,6 +71,9 @@ int ghes_register_vendor_record_notifier(struct notifier_block *nb);
->   */
->  void ghes_unregister_vendor_record_notifier(struct notifier_block *nb);
->  
-> +int devm_ghes_register_vendor_record_notifier(struct device *dev,
-> +					      struct notifier_block *nb);
-> +
->  struct list_head *ghes_get_devices(void);
->  
->  void ghes_estatus_pool_region_free(unsigned long addr, u32 size);
+diff --git a/drivers/acpi/acpica/nsprepkg.c b/drivers/acpi/acpica/nsprepkg.c
+index ca137ce5674f..c32770570120 100644
+--- a/drivers/acpi/acpica/nsprepkg.c
++++ b/drivers/acpi/acpica/nsprepkg.c
+@@ -631,6 +631,13 @@ acpi_ns_custom_package(struct acpi_evaluate_info *info,
+ 
+ 	/* Get version number, must be Integer */
+ 
++	if (!(*elements)) {
++		ACPI_WARN_PREDEFINED((AE_INFO, info->full_pathname,
++				      info->node_flags,
++				      "Return Package has a NULL version element"));
++		return_ACPI_STATUS(AE_AML_OPERAND_TYPE);
++	}
++
+ 	if ((*elements)->common.type != ACPI_TYPE_INTEGER) {
+ 		ACPI_WARN_PREDEFINED((AE_INFO, info->full_pathname,
+ 				      info->node_flags,
+-- 
+2.43.0
 
