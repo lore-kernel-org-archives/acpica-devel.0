@@ -1,133 +1,107 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E76F29AB02
-	for <acpica-devel@lists.linux.dev>; Mon, 23 Mar 2026 12:51:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 516DE3C73E5;
+	Mon, 23 Mar 2026 17:24:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774270301; cv=none; b=qDDufwpNdR5N7Rhr3GJ5QTYNLHhdNIec7y7Xa3gHxTSBS7XS+62FaP06kH5nM/INlFN8UYin+mFIQNrFI3jF1rG3uc042+9867XLbPDJDtDQriz5OW3ejefwuk2tJo+v+dgJHEMbMeNoEnTCbdW2UzniMdjJW2LRNLMNw8NQoaU=
+	t=1774286696; cv=none; b=NPsMmv6LGhTIW+/9LU2mVHVAuW5NDc0kaiYwmlUs3J72Vb9bMr3ZfWiawxGyBNZmXwdvwY08vAW2N6qN55fg/T8PLGTKLU0CO375MMhnP6JQYVL548KV4VewrWOwLGNO01I0+/y+bF+90c6TTBYnb/ENJqaWpIeZUTmRFg6wWko=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774270301; c=relaxed/simple;
-	bh=ezhpRLIBzp4mQ8CMr8bCkXIvjw0TfjiVM1Q2QAas6nw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AOox6+3Qvjyue55tZe0Mj7AznUmXHLCWjDllibUoBDYlm6ggzMEZPcRs2c5Yv0/jdXrb2aLctof8wGgkrAUJmUx8YqdAEfS3e5lyWGmqvnPJAZeodYQknDEb/OCjDBIcqP/zNTSaMclj5zOVdji9ed0uVdju4MA91LLd921YSp8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MpFlw1Dc; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1774286696; c=relaxed/simple;
+	bh=xYKa5g2CWUevgDPo8Y0Ncl5z1xFaGsm0/Xv0Zy+doaI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=hb3VHHh2Rf54CTWIgLQTi078tLFGy3yPhBTEHHZN8WaGpOd/i81triUAYenwe1BBOUxQ98EdSYJdTjFLQ+1XopjSEAHucZuZHYiIsOvd3DFcjJlmejHiciTR0giJHmfEknU3rgnYs6q5goRRCHbh57+5hOoYohsdAhYtdft2s7k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l4fjlTG9; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MpFlw1Dc"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00E70C4CEF7
-	for <acpica-devel@lists.linux.dev>; Mon, 23 Mar 2026 12:51:41 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l4fjlTG9"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F32A2C4CEF7;
+	Mon, 23 Mar 2026 17:24:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774270301;
-	bh=ezhpRLIBzp4mQ8CMr8bCkXIvjw0TfjiVM1Q2QAas6nw=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=MpFlw1DcKCZXnTGKHrbqRSlqg51Ghgf849Qe8MyDpmwUXEOVKksAWQocs//GL/6+H
-	 tfWvP/gCJyxiEX+9uO2QIkOzlgAI9l5C1WZW/w6osS8vFTQUmTzww0qWQyRRo4UYc0
-	 ByNrq0larqrEcD3qvUirsMjoCg2oQtNfovl5Es5ZAVdj3VmDMSD86pz6iyX26fOy0H
-	 j4K7/3kexveDNcbWUyg3pPojM3CecjxviYCWpLUlrRL75tPDiaVbLRIkt0Mxwfp5Ql
-	 MMk3qhGwZt6QC4+Oad1+Pfu6wFQwvMWqN+uaV7i95AvJvzN0e3GE2AytQPJSmk4UNo
-	 T/iXPpFrTkGwQ==
-Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-7d74aa6bcdbso1471259a34.2
-        for <acpica-devel@lists.linux.dev>; Mon, 23 Mar 2026 05:51:40 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUIKeEIE74gHWaN9OXxGd3V1tr1WUBMGjuSQXQ7aIZqiqbG81MpN0n7QJ/JFjbv4kehvpMHkG5DKUO94k0=@lists.linux.dev
-X-Gm-Message-State: AOJu0YxTv9bDpXNdl/XUFSxlT4T03ooBmNTcnSdJGE0lVSEXbW8wq58t
-	EbvBnBI5lA8EDgG6IutB8t7atny776t6vzy6nCOFjM7kpuvwujZM3Mgn51GRvQw90ADQ+KEDurF
-	s4K2MLKYfO3j+RmWBGtvh7oAa8iWhkVM=
-X-Received: by 2002:a05:6830:8384:b0:7d7:d702:401c with SMTP id
- 46e09a7af769-7d7eb0baf03mr8231419a34.32.1774270300147; Mon, 23 Mar 2026
- 05:51:40 -0700 (PDT)
+	s=k20201202; t=1774286696;
+	bh=xYKa5g2CWUevgDPo8Y0Ncl5z1xFaGsm0/Xv0Zy+doaI=;
+	h=From:To:Cc:Subject:Date:From;
+	b=l4fjlTG91uwOHiRBXMGOV3uwdJlj3VuttXHew/8wiaoYOa0psMrKSido/AIUtFxrc
+	 a1gvgjMjvqVdlNgdBFpRgq8JDF34Y7+XNs4HuCIciSbRv4fe67t34Jag1As+NqG2iQ
+	 jjGd4aFLmMfxK/5BlmLqBKdVW24IhKdFnGBIX2z962e7GV0djdfnj47j+Q1WXmckZZ
+	 07ehNjXi6X2xxPcB6ryJpKLvfhNl0rxcXd8sS1Xt6m9D0s1nA3fuweXIjYhyNApyEc
+	 DKidNnQ0k4pteL+LsmuiSCmmo9B7p9tNylvNRGlFiD/lS4QIytiS3e0s07gjLN0HSs
+	 Ku7QyLdhHdfYA==
+From: Kees Cook <kees@kernel.org>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Kees Cook <kees@kernel.org>,
+	Robert Moore <robert.moore@intel.com>,
+	Len Brown <lenb@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH] ACPICA: Replace strncpy() with strscpy_pad() in acpi_ut_safe_strncpy()
+Date: Mon, 23 Mar 2026 10:24:52 -0700
+Message-Id: <20260323172451.work.079-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20260322153529.3325784-3-bestswngs@gmail.com>
-In-Reply-To: <20260322153529.3325784-3-bestswngs@gmail.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Mon, 23 Mar 2026 13:51:24 +0100
-X-Gmail-Original-Message-ID: <CAJZ5v0gFizazkso9TXc1eu46=g6ht77z1Q00Aps-z9RKAnOZew@mail.gmail.com>
-X-Gm-Features: AQROBzDDpfejb6Cb8oXB0TJLJtwSvveKl1DP1qokQVpi-Dw4BRQI7hyG15KqNW0
-Message-ID: <CAJZ5v0gFizazkso9TXc1eu46=g6ht77z1Q00Aps-z9RKAnOZew@mail.gmail.com>
-Subject: Re: [PATCH] ACPICA: fix NULL pointer dereference in acpi_ns_custom_package()
-To: Weiming Shi <bestswngs@gmail.com>
-Cc: "Rafael J . Wysocki" <rafael@kernel.org>, Robert Moore <robert.moore@intel.com>, 
-	Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, 
-	Xiang Mei <xmei5@asu.edu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2340; i=kees@kernel.org; h=from:subject:message-id; bh=xYKa5g2CWUevgDPo8Y0Ncl5z1xFaGsm0/Xv0Zy+doaI=; b=owGbwMvMwCVmps19z/KJym7G02pJDJkHy1M+XHo0cdXHJ9//lxY5uj7uEtB87X8s8GfbOZcsY 7d+3Y22HaUsDGJcDLJiiixBdu5xLh5v28Pd5yrCzGFlAhnCwMUpABNZ8JKR4Xrovo55EXyh9n/4 pk4xefk9X8jOlv/1/icSp8PTdyftf83wT6cl/NNsr6zn/nUTXscvkkwRLdR65B3LWitXePXNifR b7AA=
+X-Developer-Key: i=kees@kernel.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 
-On Sun, Mar 22, 2026 at 4:36=E2=80=AFPM Weiming Shi <bestswngs@gmail.com> w=
-rote:
->
-> acpi_ns_custom_package() unconditionally dereferences the first element
-> of the package to read the _BIX version number, without checking for
-> NULL:
->
->   if ((*elements)->common.type !=3D ACPI_TYPE_INTEGER)
->
-> When firmware returns a _BIX package whose first element is an
-> unresolvable reference, ACPICA evaluates that entry to NULL.
-> acpi_ns_remove_null_elements() does not strip NULL entries for
-> ACPI_PTYPE_CUSTOM packages (fixed-position format would break if
-> elements were shifted), so acpi_ns_custom_package() sees the NULL
-> and panics.
->
->  general protection fault, probably for non-canonical address
->  0xdffffc0000000001: 0000 [#1] SMP KASAN NOPTI
->  KASAN: null-ptr-deref in range
->  [0x0000000000000008-0x000000000000000f]
->  RIP: acpi_ns_check_package
->  (drivers/acpi/acpica/nsprepkg.c:634
->   drivers/acpi/acpica/nsprepkg.c:110)
->  Call Trace:
->   <TASK>
->   acpi_ns_check_return_value (nspredef.c:136)
->   acpi_ns_evaluate (nseval.c:266)
->   acpi_evaluate_object (nsxfeval.c:360)
->   acpi_battery_get_info (battery.c:537)
->   acpi_battery_update (battery.c:1007)
->   acpi_battery_add (battery.c:1237)
->   acpi_device_probe (bus.c:1076)
->   really_probe (dd.c:659)
->   </TASK>
->
-> Add a NULL check for the first element (version field) before
-> dereferencing it. The battery probe then fails gracefully with
-> AE_AML_OPERAND_TYPE instead of crashing the kernel.
->
-> Required CONFIG: CONFIG_ACPI_BATTERY=3Dy
->
-> Fixes: 7952d40240855932 ("ACPICA: ACPI 6.0: Update _BIX support for new p=
-ackage element")
-> Reported-by: Xiang Mei <xmei5@asu.edu>
-> Signed-off-by: Weiming Shi <bestswngs@gmail.com>
-> ---
->  drivers/acpi/acpica/nsprepkg.c | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/drivers/acpi/acpica/nsprepkg.c b/drivers/acpi/acpica/nsprepk=
-g.c
-> index ca137ce5674f..c32770570120 100644
-> --- a/drivers/acpi/acpica/nsprepkg.c
-> +++ b/drivers/acpi/acpica/nsprepkg.c
-> @@ -631,6 +631,13 @@ acpi_ns_custom_package(struct acpi_evaluate_info *in=
-fo,
->
->         /* Get version number, must be Integer */
->
-> +       if (!(*elements)) {
-> +               ACPI_WARN_PREDEFINED((AE_INFO, info->full_pathname,
-> +                                     info->node_flags,
-> +                                     "Return Package has a NULL version =
-element"));
-> +               return_ACPI_STATUS(AE_AML_OPERAND_TYPE);
-> +       }
-> +
->         if ((*elements)->common.type !=3D ACPI_TYPE_INTEGER) {
->                 ACPI_WARN_PREDEFINED((AE_INFO, info->full_pathname,
->                                       info->node_flags,
-> --
+Replace the deprecated[1] strncpy() with strscpy_pad() in
+acpi_ut_safe_strncpy().
 
-ACPICA changes need to be routed via upstream ACPICA project on GitHub.
+The function is a "safe strncpy" wrapper that does
+strncpy(dest, source, dest_size) followed by manual NUL-termination
+at dest[dest_size - 1]. strscpy_pad() is a direct replacement: it
+NUL-terminates, zero-pads the remainder, and the manual termination
+is no longer needed.
 
-Please see Documentation/driver-api/acpi/linuxized-acpica.rst
+All callers pass NUL-terminated source strings (C string literals,
+__FILE__ via ACPI_MODULE_NAME, or user-provided filenames that have
+already been validated). The destinations are fixed-size char arrays
+in ACPICA internal structures (allocation->module, aml_op_name,
+acpi_gbl_db_debug_filename), all consumed as C strings.
+
+No behavioral change: strscpy_pad() produces identical output to
+strncpy() + manual NUL-termination for NUL-terminated sources that
+are shorter than dest_size. For sources longer than dest_size,
+strncpy() wrote dest_size non-NUL bytes then the manual termination
+overwrote the last byte with NUL; strscpy_pad() writes dest_size-1
+bytes plus NUL: same result.
+
+Link: https://github.com/KSPP/linux/issues/90 [1]
+Signed-off-by: Kees Cook <kees@kernel.org>
+---
+This touches the ACPICA component shared with the upstream ACPICA
+project (https://github.com/acpica/acpica), where the function
+is named AcpiUtSafeStrncpy(). The upstream codebase uses its own
+platform abstraction layer (acenv.h/acgcc.h) where I've mapped various
+kernel APIs before like ACPI_FLEX_ARRAY and similar helpers. However,
+acpi_ut_safe_strncpy() is an explicit function implementation rather
+than a macro mapping, so the approach for upstreaming this change to
+ACPICA is not clear. What's the best way to land this?
+
+(This is one of the last users of strncpy in the kernel.)
+---
+ drivers/acpi/acpica/utnonansi.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/acpi/acpica/utnonansi.c b/drivers/acpi/acpica/utnonansi.c
+index ff0802ace19b..3a7952be6545 100644
+--- a/drivers/acpi/acpica/utnonansi.c
++++ b/drivers/acpi/acpica/utnonansi.c
+@@ -168,8 +168,7 @@ void acpi_ut_safe_strncpy(char *dest, char *source, acpi_size dest_size)
+ {
+ 	/* Always terminate destination string */
+ 
+-	strncpy(dest, source, dest_size);
+-	dest[dest_size - 1] = 0;
++	strscpy_pad(dest, source, dest_size);
+ }
+ 
+ #endif
+-- 
+2.34.1
+
