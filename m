@@ -1,140 +1,224 @@
-Received: from CH4PR04CU002.outbound.protection.outlook.com (mail-northcentralusazon11013025.outbound.protection.outlook.com [40.107.201.25])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F378524BBF4;
-	Tue, 24 Mar 2026 17:22:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.201.25
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774372969; cv=fail; b=Cn0pa3NExgZins9g+atbzz4OVR5FOtuVlq+rDJuYqQVGLjMgYR7WdDdRPCbZbWiWwZBFslIH3YxeGfawiSOK5jZbqQXDTd9yW9urHk3UxUhf/SNnbSTGF17RWOej3yDph0qTe9we1Icq1daaGz4mQiRt1fBtJaI8BQvpJy0bByo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774372969; c=relaxed/simple;
-	bh=ijT+PgY21oZUROO4eaO3LpGQqk3ssFlnhBPB460XK0E=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=uyuEW1z/AVotoarxznCkoxWqLGhrj2GGTz6eC8y9qYSVmu9o9xW6MmqnzQZJJnzY5Ux8YNysOcVRa8f257bkWC7PwpF9pEXMnYZzHOvduQKDtObV/uSdSysppC6F9DmX8kSDbFF1K34LXDzHRf72Ebt44dW7CzZyLJS+ML+W3T8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=hmZl7Egm; arc=fail smtp.client-ip=40.107.201.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A31A2407597
+	for <acpica-devel@lists.linux.dev>; Tue, 24 Mar 2026 17:40:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1774374003; cv=none; b=LMLKYCBcNiAwTbWupK869snAsW3suAcjVC1EnrhMc41eA4+ICeXE5qDIvI32rjBUdPFZoWBftz7bKJoUJIF2rY4s3weFZ+EjtZX8Z+ADHZETSh8G7vbVoOZKwLiyTBMb5Fv5HkD4va9KFzQBAdcxXWBbHXe6DC2A1HSgoYBsols=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1774374003; c=relaxed/simple;
+	bh=sZ9R9A6EyluvGAUCUqlygxCnnXACQl62uyvQhMVFpEE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=go/ZTVNQTXFPYUcR6WrAfcGy7AZB3NoiO9qzUocS2uC0oGu5i0b6HKdfjF+VlLuOaWQztCODxoPYS0kIzvXJUmBZNVK9tz82faNbKcHlv9ywhgvKbgUOijCoe6jCANMuwd5ujRDGWlcpm5kTDY6uPbmzuG92QGX5EVu4ucHXvOw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TgSFwAvw; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="hmZl7Egm"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=w1vgjd+P/Xpy4aCva3RBYCh5ZlOIUJkm1IEEcGBi5GWORW1RDPNLRITiJqvgkaf22+Cdc3ETfHDWjQoLlD0nTJn/lLVnmfagE2R0NqQV9e2kyHQSkRPLf35jsQrsfdUGDZxJXXIZIQ2CaSa1rTUNGaWLcL3fruY+2SpyNd/w7oukberZtIaOe6SEwVK1ExhGe55ci5tCgrihDL+ADUQTGg0RW1aAUXqyR1MSqkQ5LOiDqTQ3CK8kKFgKFOQRMt4txQ5DuokCZKcHoi0N3Gz6pKFV3VjZpKqtCCLwxIUVmNz58PHemPYPbM7kt9xNc6yzf/bN2QKG9wgZxlJ+8zoiTg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=e44Bi+hnTC9Z/DjGZmffh7y/+KG5uB3gr/HdEQjzUVM=;
- b=D9Uxy9TfeWOQTrMwym83ic3wLWw41WgLd57L7BeruzU+T/o1HZ9kKva3dtIDFm6rpRpD4e8ZIaB1UVJhZ4yS5DDwEyECcm+nhNgJibtcfjnB4bhPrSSX+D4G2GBIQjC/CAEqaNHOq/PCrDD7uStQpW9NSx63pDPZCD46hvuZxwFbj7ztH2Pg4iPY5J6+PVJ0jH6MUQgodBSX+/+8W+AqaaNpP9fUw8lDqpECjMDgWdqu0q8YDIWuG+j4mLkO/7G3oaygL1F5o5tVEfBnK6r5VLpwzkjd7+OdL7DYHFGfHTqUWwWPPQw+T7rwo7quuaZhtHmXVUakwgjdCDJjzCGa3w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=bootlin.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=e44Bi+hnTC9Z/DjGZmffh7y/+KG5uB3gr/HdEQjzUVM=;
- b=hmZl7Egm0rWwcgSrUpMxLz0FKCLv+/kaAbu3HW+qZlksA/q/Bg21DUzfj/OQYlECQOITY5ydBjo9EP8pEzAuZ4i66zucqmJDwJuCfuV84Ir7JgtbXADmBIn2XjTIpUGdZz48pjQKb0SrET6qlFvX0WDwlNNkua1sWOOo8FSaINRQe4tCGWmEgQyCJI+JdpqmP6O1aSqbif3A+XQzjzntjRbWj8Np0p+dY/lxqbDVC8k5RsEkwB9I0jMVcibCIw9PytZ9Hqvi73btHc0HAcgiboXLNCs+B1zRgJgKh7jg6b5dgK8Nu457w4zUsjqWMK0/5rpk4G0BaoLZvytIfmafDw==
-Received: from DM6PR08CA0035.namprd08.prod.outlook.com (2603:10b6:5:80::48) by
- CY3PR12MB9655.namprd12.prod.outlook.com (2603:10b6:930:100::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9745.20; Tue, 24 Mar
- 2026 17:22:42 +0000
-Received: from CY4PEPF0000E9D2.namprd03.prod.outlook.com
- (2603:10b6:5:80:cafe::5e) by DM6PR08CA0035.outlook.office365.com
- (2603:10b6:5:80::48) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9723.31 via Frontend
- Transport; Tue, 24 Mar 2026 17:22:44 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- CY4PEPF0000E9D2.mail.protection.outlook.com (10.167.241.137) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9723.19 via Frontend Transport; Tue, 24 Mar 2026 17:22:41 +0000
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Tue, 24 Mar
- 2026 10:22:23 -0700
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail202.nvidia.com
- (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Tue, 24 Mar
- 2026 10:22:23 -0700
-Received: from BUILDSERVER-IO-L4T.nvidia.com (10.127.8.9) by mail.nvidia.com
- (10.129.68.9) with Microsoft SMTP Server id 15.2.2562.20 via Frontend
- Transport; Tue, 24 Mar 2026 10:22:16 -0700
-From: Akhil R <akhilrajeev@nvidia.com>
-To: <alexandre.belloni@bootlin.com>
-CC: <Frank.Li@nxp.com>, <acpica-devel@lists.linux.dev>,
-	<akhilrajeev@nvidia.com>, <conor+dt@kernel.org>,
-	<devicetree@vger.kernel.org>, <ebiggers@kernel.org>,
-	<fredrik.markstrom@est.tech>, <jonathanh@nvidia.com>, <krzk@kernel.org>,
-	<lenb@kernel.org>, <linux-acpi@vger.kernel.org>,
-	<linux-hwmon@vger.kernel.org>, <linux-i3c@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-	<linux@roeck-us.net>, <lkp@intel.com>, <llvm@lists.linux.dev>,
-	<miquel.raynal@bootlin.com>, <oe-kbuild-all@lists.linux.dev>,
-	<p.zabel@pengutronix.de>, <rafael@kernel.org>, <robert.moore@intel.com>,
-	<robh@kernel.org>, <smangipudi@nvidia.com>, <thierry.reding@kernel.org>
-Subject: Re: [PATCH 04/12] i3c: master: Support ACPI enumeration
-Date: Tue, 24 Mar 2026 22:52:15 +0530
-Message-ID: <20260324172215.31540-1-akhilrajeev@nvidia.com>
-X-Mailer: git-send-email 2.50.1
-In-Reply-To: <202603240843279c9e8b90@mail.local>
-References: <202603240843279c9e8b90@mail.local>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TgSFwAvw"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82059C2BCB2
+	for <acpica-devel@lists.linux.dev>; Tue, 24 Mar 2026 17:40:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1774374003;
+	bh=sZ9R9A6EyluvGAUCUqlygxCnnXACQl62uyvQhMVFpEE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=TgSFwAvwC7c0S6t29Y+Hbk/4xniNeHVNvn5ca2RnKwvoV9vzKxs8sg1syP4BsljaV
+	 2+QwzQTrOhZ+odEmy1qCG+4HVIEN8A/epUNf6bXxsC29q+Dm7y0QSF1sopf5qYnRa8
+	 jHiUE0VHWSivrWSww1XU7pwHI+PXkGKl0Lb5SbkxrSoRuj7dnUOj98Q+FAgrYVM53n
+	 9iVBP6IoRXrd6kIw9g8jpvi03WIZISoyeg3++wSGg711xT76UQJRPu/Dae5evd05uh
+	 5akGqdPcz5Yeufs2tL5r2oah7if6B7QUUAnWfUGyVey6RTCEPgGwXMDYoBWNtosGRq
+	 9Qv3xehnocjGQ==
+Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-45f053b7b90so880608b6e.0
+        for <acpica-devel@lists.linux.dev>; Tue, 24 Mar 2026 10:40:03 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUFgAKjRMxeCseBasjshb3Xt93nqdfvyFVgTVQVgTeAp4akM4fUImeCk5/AKFv3HRDCghcpjF9ILxcYHuw=@lists.linux.dev
+X-Gm-Message-State: AOJu0YzYLa3tqsSzpukRNldryMlaR0wdfTIJz9ewf4Wc9ILnSLks2SMV
+	wFiGf5t9p/F8ybH3n/gN/67r74ggFtcdXn+w4pi8QTC07yGQpDIRxvWJNNw6IV+XeOSEP9tQldK
+	sRE9mIXUN/j15Fnvowq4ffRkec94HHfI=
+X-Received: by 2002:a05:6808:144e:b0:467:880:7454 with SMTP id
+ 5614622812f47-46a5c5a3227mr224727b6e.18.1774374002202; Tue, 24 Mar 2026
+ 10:40:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D2:EE_|CY3PR12MB9655:EE_
-X-MS-Office365-Filtering-Correlation-Id: ed63bd4f-0c22-4b0c-4bb1-08de89c9f461
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|82310400026|36860700016|376014|7416014|1800799024|18002099003|56012099003|22082099003;
-X-Microsoft-Antispam-Message-Info:
-	YtYgX4QqLVx6KszpDLHCk/yIFztDUw8MMaGaL15XlEi0776586u9MIWwdgTWlF3YmBre1Hou/fne7E7YFBTJtTHKRJp29WfEfzhsmymO3sbcOhBmF2P58uxCyfr2c8/bmDqCovSdxrP4h3HNDHjslD2Buy+lOA51O180ECABVbWGPztos7IE/Bs3JuLh3Pn3z6eYSNiAfkcOrpBqFwjQoV2YeT2fl1MJK90n9qX1VqlSa4Biff6yNrxY/Ii4j8hLb4fTGgkk7ujSseRy9j1AFDcI1iqZx9W0iF2WGuoZ3xkdEOGN5xa2TnOaXt7dvtfyytWx0kNloJ9vVN9JeV/OI3QQYZo7bGrZ23CrRuzI4pcTOK0bbiAEy7w46BFmcdGYgU0rKKlfSA3oXr4Yek5SSY+2nv3FNu/JnXR4vs/NryMIJCE/obXKanJ4Vylan13g2eo8fFfmXEkyvvZA4v/s+eGuaIDJb7qpVPjnchFz2Kaz8zZWTWk9RIfzGYanP3ELRIScJhqdqml1TZVGLdNFVgCT+BbR9LGRpLyO60stH2dkXuaXAvB0Kdo0xeHTwFVxh3eMWXpaC6IpqGaWcYHvMtrs6+pvrB849ODg5XU1XlIeXpBlfurhyrxQUjVP+zXZRYSGE/V2YEx5QavKv0CInTrZBtP1TjZ0bH/ZnNbNrLOOckBTLCAml0wedEIEhdK/USZGH9050PfANixUCN4YGEU2r3CqjCytIDtzaFIIwhh8i2l1wetkpCwKCXWwcQsXZ9nyx7uqtn/N7+Kghn5Bfw==
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(36860700016)(376014)(7416014)(1800799024)(18002099003)(56012099003)(22082099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	Or6ssy8Ks6m3CBwDmXq/tL6nh0qKA65g+oC7q4IVbz1yqGPtt/s7JDhEpbwUA2OeYbENZm/HiZVXtJfkrk1gW3ea3MiwPsWor85jRJt1xedSzb2n+J9eyZ4JTLznax1LH3nbfYW5RJMEVGrUh4wJub7POGI2JdrkFedpIQozyMJ79SaezvurwCdusfLokju6v/syfIepdFr1mV86FN8Nra3rN6Nk+2bCSU1ObyhpRJYzE21m9MKxaHyd9BFhEo4Kc2OIMvEF6jIIsCPugprYtqoXRldWSNTGWo+JnSyV7ZAJiiO3riX5QJCuxSugELzvE0nvKrRkCOr8i7QY76NhjwqJOWAt9lPcPBeGVtNQdhn6ytxSnWc0YCa4biyvYMt1sSwy80DtQAYMcMzHKQv9Eiw/zE9KTAskQOxMiYRjrLnfG0BBJH8erDOOnKufzVZJ
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Mar 2026 17:22:41.3517
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ed63bd4f-0c22-4b0c-4bb1-08de89c9f461
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CY4PEPF0000E9D2.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY3PR12MB9655
+References: <20260313-synology_microp_initial-v3-0-ad6ac463a201@posteo.de>
+ <20260313-synology_microp_initial-v3-3-ad6ac463a201@posteo.de>
+ <CAJZ5v0jxHO2EH5NeEsMkxGz5xqVL00tO-W1JpaVd=GhwgQ3T=A@mail.gmail.com>
+ <e8ffc9902c0af24ce6fde2d8712ea588b36e9194.camel@posteo.de>
+ <CAJZ5v0jHQ7sHJ8SV25p2gQugC-a8f9oVFarS17NXwPzGOJUD0Q@mail.gmail.com> <f32aba79b98b357487c44e1952e536051fcd7a51.camel@posteo.de>
+In-Reply-To: <f32aba79b98b357487c44e1952e536051fcd7a51.camel@posteo.de>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Tue, 24 Mar 2026 18:39:51 +0100
+X-Gmail-Original-Message-ID: <CAJZ5v0guwtAepn2eS_fGik6iCEYWn3vt2s5oAGnnL_u62-YbpQ@mail.gmail.com>
+X-Gm-Features: AQROBzBgz9X_18TNZxhGoIzxIF6ZRQ4p9BklVyTGwPgiiSXx52mPCcekAjItT7o
+Message-ID: <CAJZ5v0guwtAepn2eS_fGik6iCEYWn3vt2s5oAGnnL_u62-YbpQ@mail.gmail.com>
+Subject: Re: [PATCH v3 3/7] acpi: add acpi_of_match_device_ids
+To: Markus Probst <markus.probst@posteo.de>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Lee Jones <lee@kernel.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Miguel Ojeda <ojeda@kernel.org>, 
+	Boqun Feng <boqun@kernel.org>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <lossin@kernel.org>, Andreas Hindborg <a.hindborg@kernel.org>, 
+	Alice Ryhl <aliceryhl@google.com>, Trevor Gross <tmgross@umich.edu>, 
+	Danilo Krummrich <dakr@kernel.org>, Igor Korotin <igor.korotin.linux@gmail.com>, 
+	Daniel Almeida <daniel.almeida@collabora.com>, Bjorn Helgaas <bhelgaas@google.com>, 
+	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kwilczynski@kernel.org>, 
+	Pavel Machek <pavel@kernel.org>, Len Brown <lenb@kernel.org>, 
+	Robert Moore <robert.moore@intel.com>, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, 
+	driver-core@lists.linux.dev, linux-pci@vger.kernel.org, 
+	linux-leds@vger.kernel.org, linux-acpi@vger.kernel.org, 
+	acpica-devel@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 24 Mar 2026 09:43:27 +0100, Alexandre Belloni wrote:
+On Tue, Mar 24, 2026 at 5:26=E2=80=AFPM Markus Probst <markus.probst@posteo=
+.de> wrote:
+>
+> On Tue, 2026-03-24 at 17:01 +0100, Rafael J. Wysocki wrote:
+> > On Tue, Mar 24, 2026 at 4:30=E2=80=AFPM Markus Probst <markus.probst@po=
+steo.de> wrote:
+> > >
+> > > On Mon, 2026-03-23 at 20:57 +0100, Rafael J. Wysocki wrote:
+> > > > On Fri, Mar 13, 2026 at 8:03=E2=80=AFPM Markus Probst via B4 Relay
+> > > > <devnull+markus.probst.posteo.de@kernel.org> wrote:
+> > > > >
+> > > > > From: Markus Probst <markus.probst@posteo.de>
+> > > > >
+> > > > > Add a function to match acpi devices against of_device_ids. This =
+will be
+> > > > > used in the following commit ("mfd: match acpi devices against PR=
+P0001")
+> > > > > to match mfd sub-devices against a of compatible string.
+> > > >
+> > > > Please always spell ACPI in capitals in patch subjects, comments,
+> > > > changelogs, etc.  It is not a regular word.
+> > > Ok.
+> > > >
+> > > > > Signed-off-by: Markus Probst <markus.probst@posteo.de>
+> > > > > ---
+> > > > >  drivers/acpi/bus.c      | 7 +++++++
+> > > > >  include/acpi/acpi_bus.h | 2 ++
+> > > > >  2 files changed, 9 insertions(+)
+> > > > >
+> > > > > diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c
+> > > > > index f6707325f582..5ddcc56edc87 100644
+> > > > > --- a/drivers/acpi/bus.c
+> > > > > +++ b/drivers/acpi/bus.c
+> > > > > @@ -1044,6 +1044,13 @@ int acpi_match_device_ids(struct acpi_devi=
+ce *device,
+> > > > >  }
+> > > > >  EXPORT_SYMBOL(acpi_match_device_ids);
+> > > > >
+> > > >
+> > > > Missing kerneldoc.
+> > > The same amount of kerneldoc as `acpi_match_device_ids`, if I am not
+> > > mistaken.
+> > > >
+> > > > > +int acpi_of_match_device_ids(struct acpi_device *device,
+> > > > > +                         const struct of_device_id *ids)
+> > > > > +{
+> > > > > +       return __acpi_match_device(device, NULL, ids, NULL, NULL)=
+ ? 0 : -ENOENT;
+> > > > > +}
+> > > > > +EXPORT_SYMBOL(acpi_of_match_device_ids);
+> > > >
+> > > > Are you aware of the consensus that using PRP0001 in production
+> > > > platform firmware will be regarded as invalid?
+> > > >
+> > > > Because of that, it is not an option for a driver to avoid providin=
+g
+> > > > ACPI match data on a platform that uses ACPI.
+> > > First of all, the driver that would have made use of it has been
+> > > restructed to not use mfd subdevices. It would not be affected anymor=
+e
+> > > through this patch set.
+> >
+> > So what exactly would be affected by it?
+> I won't have a use for myself anymore, but I still think the patch is
+> useful. Anyway,
+>
+> MFD Devices without an assigned ACPI ID, if they are present on devices
+> with ACPI platform firmware.
+>
+> >
+> > > Not sure if I should still send it as its own patch series though.
+> That is why I asked this question (see 1. sentence in the paragraph
+> above).
+>
+> > >
+> > > The device of the driver has no ACPI ID allocated by the manufacturer=
+,
+> > > as it is only used on a proprietary Linux OS (with their own modified
+> > > kernel).
+> >
+> > Do I understand correctly that there is an ACPI platform firmware on
+> > the board, but it doesn't enumerate the given device properly (that
+> > is, as an ACPI device object with a specific device ID)?
+> There is only a serial device in the ACPI platform firmware.
+> The device connected to the bus isn't specified.
+> >
+> > In which case there probably is a driver that can find that device
+> > somehow (it has hardcoded resources or similar).
+> Yes, that driver has `filp_open("/dev/ttyS1")` hardcoded.
+> >
+> > > The driver would have only been useful via device tree or an ACPI
+> > > Overlay.
+> >
+> > Do you mean a custom SSDT loaded via configfs or something else?
+> Yes, in my case via initrd.
+>
+> >
+> > > Obviously, I don't have a PNP or ACPI Vendor ID, so I can't
+> > > assign one. The parent/main driver does only have a of compatible id.
+> > > As it needs to use PRP0001 anyway on ACPI, I thought it makes more
+> > > sense to also use PRP0001 there instead of matching it with a _ADR
+> > > which is "a grey area in the ACPI specification".
+> >
+> > You can't match a device with _ADR.  By itself, _ADR doesn't provide
+> > you with any information on the device in question, it only helps to
+> > connect it to some information that can be collected by other means.
+> > The role of it, at least in principle, is to allow some device objects
+> > in the ACPI hierarchy to be associated with devices enumerated by
+> > other means (like on a PCI bus).
+>
+> This patch affects mfd devices. A bus device can via mfd register child
+> devices and those child devices will be matched to a fwnode if
+> available.
 
-...
+That only works because the parent can be recognized and properly
+enumerated, so it is parent-relative.
 
->> #include <linux/acpi.h> is added in PATCH 03/12. The functions' prototypes
->> are present in acpi.h. I think the bot checked this patch individually,
->> or did I miss something?
->> 
-> 
-> #include <acpi/acpi_bus.h> is behind an #ifdef in acpi.h and your code
-> is not.
+> According to commit 98a3be44ffa67b812de7aa7aed9f2331edcfb1a5, there is
+> a board on the market with a sub-device that will be matched using _ADR
+> [1].
 
-Thanks for pointing Alexandre and Guenter. I also noticed that we do not
-have stub functions for a few of the acpi_* functions in #else.
+With the help of a quirk though.
 
-Looks like I will have to guard calls to these functions under
-#ifdef CONFIG_ACPI.
+> [1]
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit=
+/?id=3D98a3be44ffa67b812de7aa7aed9f2331edcfb1a5
+>
+> >
+> > The enumeration with the help of PRP0001 only works if there is a
+> > device object in the ACPI hierarchy and its _HID is PRP0001 or its
+> > _CID list contains PRP0001, there is a _DSD under it and a
+> > "compatible" property is returned by that _DSD.  Who's going to
+> > provide all of that for the given device?
+> A ACPI Overlay would do that.
+>
+> >
+> > Moreover, if the device has some resources that the kernel needs to
+> > know about, there should be a _CRS under the device object in question
+> > and the resources should be listed there.  Or how are the resources
+> > going to be found otherwise?
+> Resources in mfd are usually handled by the parent device, not the mfd
+> child device. But yes, it would be using _CRS if any.
 
-Best Regards,
-Akhil
+So this is kind of a valid use case, but since you don't need it any
+more, I'd rather not put it in without a clear need.
+
+Also, it's not a huge deal for a vendor to allocate a proper ACPI
+device ID for a piece of hardware.  It just involves some due
+diligence.
