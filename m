@@ -1,148 +1,105 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 639A7364047;
-	Wed, 25 Mar 2026 07:15:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 485273B6342;
+	Wed, 25 Mar 2026 10:31:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774422901; cv=none; b=YWDtNm9WOgmUMO1tlgsn1Naxz4zty34QXr+00/fRMTad9fKrBYmktQ71uyfodrnu5r3aUomTbPEjeFxab3UXAL/BXNTcPn5FYF5Sz4v6GP+7PEqz63IfRLvqLTFklmoGeONWJGoUE/VHxfPXOMerlQx6v8s9xWr1hRAaMaHZNOg=
+	t=1774434674; cv=none; b=CjJ5CCYnoqMIrEvR+p6uXFHVL5fCu2FBYo7d1+tMdPZOLuI7G3NmfVtZlA+0WeLtbvcgXwNSNdCLq0TfjmVwCDlB+IUzApVWuuSMOLImy2r3e/7a1vvlbVskPyI3PaJnnrakTA/Kzb50Xy04b77B41S5xdKDKD++q3cdl3Ubvmw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774422901; c=relaxed/simple;
-	bh=d1MOvz/OLE69hKxRkmCSGoPjCUiu+GDaR8jlcJGuUk4=;
+	s=arc-20240116; t=1774434674; c=relaxed/simple;
+	bh=oJjXP7xdNnZ/BGIVuhLzu0MfsHL3XvKpMIM3SaBhYfk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UuOzpyOJCPwmXkzzuYvkZEPQxM9KDrB+k8lecp7QjaVsFOMsIfanUYNzzcLLhw/G/AsqPuvH1jPZxjEUKJtBCDc+LCR+jyriqVAEe8Z8V+poBXIBklbHs9VcqKxGnUrmkLQVegs53I/yC8bYoRioJ9GghvjtCSD2bNglGvh63ko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QY8M2dY9; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=oJTOnEZwmqOEOgrZ8ukUv2dAIsqrAxgZbQAuwJSnXdtgzOCzDygyYepIB+NSSGb2wEFB1hTcTGzjBZD96Tp3X+LqnSRtFyQMIL1Bkid8gYoCC6J34vwaQK6wgGvE9OFzu7J5s4ZTjsbKEbtGNzGAyRJIdTGvAOIzuaL7IuhLWPQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MNmggxTi; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QY8M2dY9"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A4FCC4CEF7;
-	Wed, 25 Mar 2026 07:14:58 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MNmggxTi"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68BABC4CEF7;
+	Wed, 25 Mar 2026 10:31:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774422901;
-	bh=d1MOvz/OLE69hKxRkmCSGoPjCUiu+GDaR8jlcJGuUk4=;
+	s=k20201202; t=1774434673;
+	bh=oJjXP7xdNnZ/BGIVuhLzu0MfsHL3XvKpMIM3SaBhYfk=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=QY8M2dY9ccpjKxKPb9fNb6qLJ7f4btwZ+9CQTps+g4qoRY6Nd3nLbbVvKKLWTmCS5
-	 LkQyzxD4C90GUSUwGRn/3H3QF6wwOyXePQJGtj3b0xadK1/5BUB6QWKR2H4ash/7HV
-	 t0szAMV2HvqmjL7PpXUw043RG/pMMro69mqnWCUIxPPesNIdTnPnBcHcC1yY55U/Yj
-	 QYRaDEkgZ9qZUh5e3j1tTUE3iZqsHeQD8c7VNUOMKfF/7xOG9U9kn8E8YPfTsxo28c
-	 +uc7OceT/uHS5qc/uOUavODtmsAroGej8+iAjCbqLSenBzujs5vjRNC62MTTE9NM3p
-	 N6fwzoaoDCpKQ==
-Date: Wed, 25 Mar 2026 00:14:57 -0700
-From: Drew Fustini <fustini@kernel.org>
-To: yunhui cui <cuiyunhui@bytedance.com>
-Cc: Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
-	Radim =?utf-8?B?S3LEjW3DocWZ?= <rkrcmar@ventanamicro.com>,
-	Samuel Holland <samuel.holland@sifive.com>,
-	Adrien Ricciardi <aricciardi@baylibre.com>,
-	Nicolas Pitre <npitre@baylibre.com>,
-	Kornel =?utf-8?Q?Dul=C4=99ba?= <mindal@semihalf.com>,
-	Atish Patra <atish.patra@linux.dev>,
-	Atish Kumar Patra <atishp@rivosinc.com>,
-	Vasudevan Srinivasan <vasu@rivosinc.com>,
-	Ved Shanbhogue <ved@rivosinc.com>,
-	Chen Pei <cp0613@linux.alibaba.com>,
-	Liu Zhiwei <zhiwei_liu@linux.alibaba.com>,
-	Weiwei Li <liwei1518@gmail.com>, guo.wenjia23@zte.com.cn,
-	liu.qingtao2@zte.com.cn,
-	Reinette Chatre <reinette.chatre@intel.com>,
-	Tony Luck <tony.luck@intel.com>, Babu Moger <babu.moger@amd.com>,
-	Peter Newman <peternewman@google.com>,
-	Fenghua Yu <fenghua.yu@intel.com>,
-	James Morse <james.morse@arm.com>, Ben Horgan <ben.horgan@arm.com>,
-	Dave Martin <Dave.Martin@arm.com>, linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org, x86@kernel.org,
-	Rob Herring <robh@kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>,
-	Sunil V L <sunilvl@ventanamicro.com>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
-	devicetree@vger.kernel.org
-Subject: Re: [External] [PATCH RFC v2 14/17] include: acpi: actbl2: Add
- structs for RQSC table
-Message-ID: <acOLcRc2TWt2wV5f@gen8>
-References: <20260128-ssqosid-cbqri-v2-0-dca586b091b9@kernel.org>
- <20260128-ssqosid-cbqri-v2-14-dca586b091b9@kernel.org>
- <CAEEQ3wnhvV03FYfqBqz8ihyFCcxKS5ztdvCHDF789ubSQAMw1A@mail.gmail.com>
+	b=MNmggxTin7K/6W/4SAhXxVVhhDmcwZaEhsjbkFJHNe0FYCa7T9o4k6z1t2QuMcGmk
+	 77wUYCQTFU54CIbmC1E+4JnJe/CDzVLutHSsNR3KlBsrlAzWiGVU8lz97OAW7eNgLn
+	 ALBL9WqwNniCGj6bi5utGFCqQ5UN9ep5k6/6yd8ImitK/Xp8jlegDjw45EM29a+j4N
+	 NkpbYmaW3cdXPPUHrBCkfPh+yfzQIXixAyYawvKhvA3/ia8HXrlMRm2a2qebz5JhoG
+	 00Pfy1wr7CgjBofXbGUNLA4uZhJ9yqh+asjiB1txJ98jFVMPlNTrrfibDmL9NQ9Sr9
+	 WARIuC86D6dCw==
+Date: Wed, 25 Mar 2026 11:31:11 +0100
+From: Thierry Reding <thierry.reding@kernel.org>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Akhil R <akhilrajeev@nvidia.com>, Frank.Li@nxp.com, 
+	acpica-devel@lists.linux.dev, alexandre.belloni@bootlin.com, conor+dt@kernel.org, 
+	devicetree@vger.kernel.org, ebiggers@kernel.org, fredrik.markstrom@est.tech, 
+	jonathanh@nvidia.com, krzk+dt@kernel.org, lenb@kernel.org, linux-acpi@vger.kernel.org, 
+	linux-hwmon@vger.kernel.org, linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	linux-tegra@vger.kernel.org, linux@roeck-us.net, miquel.raynal@bootlin.com, 
+	p.zabel@pengutronix.de, rafael@kernel.org, robert.moore@intel.com, robh@kernel.org, 
+	smangipudi@nvidia.com
+Subject: Re: [PATCH 12/12] arm64: defconfig: Enable I3C and SPD5118 hwmon
+Message-ID: <acO4NKPDUayny-I4@orome>
+References: <20260319-nano-manatee-of-vastness-fbafa1@quoll>
+ <20260319170929.14543-1-akhilrajeev@nvidia.com>
+ <67165a1f-9fa3-4853-b530-b1f9d6e4c2cf@kernel.org>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="hefw7yhop4kz6jja"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEEQ3wnhvV03FYfqBqz8ihyFCcxKS5ztdvCHDF789ubSQAMw1A@mail.gmail.com>
+In-Reply-To: <67165a1f-9fa3-4853-b530-b1f9d6e4c2cf@kernel.org>
 
-On Wed, Mar 25, 2026 at 09:48:37AM +0800, yunhui cui wrote:
-> Hi Drew,
-> 
-> On Thu, Jan 29, 2026 at 4:28 AM Drew Fustini <fustini@kernel.org> wrote:
-> >
-> > Add structs for the RQSC table which describes the properties of the
-> > RISC-V QoS controllers (CBQRI) in the system. The table also describes
-> > the topological arrangement of the QoS controllers and resources in the
-> > system. The topology is expressed in terms of the location of the
-> > resources within the system and the relation between the QoS Controller
-> > and the resource it manages.
-> >
-> > Link: https://github.com/riscv-non-isa/riscv-cbqri/releases/tag/v1.0
-> > Link: https://github.com/riscv-non-isa/riscv-rqsc/blob/main/src/chapter2.adoc
-> > Signed-off-by: Drew Fustini <fustini@kernel.org>
-> > ---
-> >  include/acpi/actbl2.h | 92 +++++++++++++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 92 insertions(+)
-> >
-> > diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
-> > index f726bce3eb84..7367990349ee 100644
-> > --- a/include/acpi/actbl2.h
-> > +++ b/include/acpi/actbl2.h
-> > @@ -53,6 +53,7 @@
-> >  #define ACPI_SIG_RGRT           "RGRT" /* Regulatory Graphics Resource Table */
-> >  #define ACPI_SIG_RHCT           "RHCT" /* RISC-V Hart Capabilities Table */
-> >  #define ACPI_SIG_RIMT           "RIMT" /* RISC-V IO Mapping Table */
-> > +#define ACPI_SIG_RQSC           "RQSC" /* RISC-V RISC-V Quality of Service Controller */
-> >  #define ACPI_SIG_SBST           "SBST" /* Smart Battery Specification Table */
-> >  #define ACPI_SIG_SDEI           "SDEI" /* Software Delegated Exception Interface Table */
-> >  #define ACPI_SIG_SDEV           "SDEV" /* Secure Devices table */
-> > @@ -3165,6 +3166,97 @@ enum acpi_rgrt_image_type {
-> >         ACPI_RGRT_TYPE_RESERVED = 2     /* 2 and greater are reserved */
-> >  };
-> >
-> > +/*******************************************************************************
-> > + *
-> > + * RQSC - RISC-V Quality of Service Controller
-> > + *        Version 1
-> > + *
-> > + ******************************************************************************/
-> > +
-> > +struct acpi_table_rqsc_fields_res {
-> > +       u8 type;        // 1
-> > +       u8 resv;        // 1
-> > +       u16 length;     // 2
-> > +       u16 flags;      // 2
-> > +       u8 resv2;       // 1
-> > +       u8 id_type;     // 1
-> > +       u64 id1;        // 8
-> > +       u32 id2;        // 4
-> > +};
-> > +
-> > +struct acpi_table_rqsc_fields {
-> > +       u8 type;        //  1
-> > +       u8 resv;        //  1
-> > +       u16 length;     //  2
-> > +       u32 reg[3];     // 12
-> > +       u32 rcid;       //  4
-> > +       u32 mcid;       //  4
-> 
-> The spec appears to specify a length of 2 bytes for this field?
 
-Yes, this was a bug. I have changed rcid and mcid to u16:
+--hefw7yhop4kz6jja
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH 12/12] arm64: defconfig: Enable I3C and SPD5118 hwmon
+MIME-Version: 1.0
 
-https://github.com/tt-fustini/linux/blob/b4/ssqosid-cbqri/include/acpi/actbl2.h
+On Thu, Mar 19, 2026 at 06:15:14PM +0100, Krzysztof Kozlowski wrote:
+> On 19/03/2026 18:09, Akhil R wrote:
+> > On Thu, 19 Mar 2026 10:40:34 +0100, Krzysztof Kozlowski wrote:
+> >> On Wed, Mar 18, 2026 at 10:57:25PM +0530, Akhil R wrote:
+> >>> Add I3C subsystem support, DesignWare I3C master controller, and
+> >>> SPD5118 hwmon sensor as modules to the defconfig.
+> >>
+> >> Why? If there is no user of that, why would we want it? Your commit msg
+> >> should explain that.
+> >=20
+> > Ack. This is for Tegra410 which has a DesignWare I3C host controller.
+> > I will add this in the commit message.
+>=20
+> Board or products. Not SoCs.
 
-Thanks,
-Drew
+Is this a new requirement? I see a bit of both in defconfig changes.
+Some mention specific products, other mention SoCs. Does this
+requirement apply to DT platforms or also ACPI platforms?
+
+Thierry
+
+--hefw7yhop4kz6jja
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmnDuWsACgkQ3SOs138+
+s6GkJQ/+KHih7KGdwK8LUXDaRizPuwcIwvX5HHc3TOdKw2Gw/XtV+JaoI7c4wtx4
+MvnJjhsHhu4zH+4SMnxqEzTP8jbxcV96L9WhQ+Zfurvs+4X+vZ0KsNXN7H+uTeOB
+UKlf8JumnoVOs74dUSxIy4c9s2XoY/q6W/pBIguuczmMO/uyuUIIV7tiS+IAHVvG
+V+ySkgCNZR+6XH9tyAdN5xTvt7K26KFKoPUgOEXzY7k1gPWCL297YdEoWAfaw0PR
+7DxE9hn9z8DcflEbdkwLwD6z5wfJBgTPvZZgXNheyMv3Spr3lpmAOLFqW6a5QicG
+HllawC3G+ShlLltKAbjxygCX87Wf6fmKKYT40da3GrEkex+GWfDsDYXK5hijGDas
+2nxOZPvXBvQ8aV4Fx4kJHr0GmL6psv8VRVvDT1GWn3clzC7VBOzeMvf7cJBXImMv
+uxr53vBDzVSuLNZbt2ZZu+teJREZG+pM4nxC3jPIgh2t2tXWDtfco9O9qUyJsK2Y
+ibZ4l+p2uBzRu3cD3obBsHjnVLY79XEd6LN9RH6ZXNGn5t6PVHarP2gLW5hx5VI/
+rc++EMVFU2qrO2fe+duASYGyQs+BS4u7u5S9j/jnjEO+Z7kZi4zPk9cnAZEZXSZl
+tWV0O0BCLlbHYHHVrKTMZmT7Ay//JLt0uEEsogX+Cm7vH3z0U6M=
+=cTw6
+-----END PGP SIGNATURE-----
+
+--hefw7yhop4kz6jja--
