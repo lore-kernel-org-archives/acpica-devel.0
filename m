@@ -1,80 +1,80 @@
-Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70D181A6811
-	for <acpica-devel@lists.linux.dev>; Wed, 25 Mar 2026 01:43:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.167.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A163A23ED60
+	for <acpica-devel@lists.linux.dev>; Wed, 25 Mar 2026 01:48:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.210.48
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774403004; cv=pass; b=TKlUCLBxOqEC6AlLgatLgpox7cIkKJuDfgptiJZECwwvOMXGToX6PlJnUWxuTOOmZloQQ2nelMijyIxbS8/fpqfZ8eSOlViP0arR/psfP4girubnihzebwruXm1oetLcLJlCfYClJoWX1ld+AJhD18zbwgRdvV2+H/4jlLYq78I=
+	t=1774403336; cv=pass; b=pWtTJ8r/HN5qcnLzOe7JlQvfvfSKFjqD1a5XLjW7oYpsFfUc8GNEodEPaIwKK9lYWV0LsFV05zDWry13CBlSIeCFlftMt+NCgJmCqMLm6h9mZUdBgTUC/5ghi4FqSNmNDsNW3FWTPNlpdnNATaiG7P8IwixPg8HkHF2XBkpR/0M=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774403004; c=relaxed/simple;
-	bh=7Z+kIRVbQ7WV37i1YmClsJWUkbW+slAO1Y2IpTQEZ3A=;
+	s=arc-20240116; t=1774403336; c=relaxed/simple;
+	bh=8j/1RkEqSK8cDEtrMb0SmRPLJt1HSounD9iRf5VcPkw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tqPYtF7+kXtk3fLfgBD8tz4B1Ul9SUCUdBFpu2w8Z2AUyS002OUDpsQcYHcy7t+GMJ2kGzFzkSkTP4Ltiar+PU0hD2QI45jg2BmC5ej5Q1qbCCtJgsn5saThCSjFd8/BKBGNgumhwNbhGq8yex6lIqobxgShpko9jBiYPYZ5HU4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=D80QoUYi; arc=pass smtp.client-ip=209.85.167.177
+	 To:Cc:Content-Type; b=Wd9t5jChFcQW+C1gIihyvKPqu0xGdQkXCxEzmwncMdhdpLBJFpSjGekOG78JXJnFDWhz5hCblreyhNEvnXYcAHqvkr+E/1d4NWyJmdq4v2z4puUWTm7in+WSzZXQUR4WsNu5mAWiQVYmvGULlVHcFeU8kSzslCWwP5Bojq3frkE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=ZhOdpcmQ; arc=pass smtp.client-ip=209.85.210.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="D80QoUYi"
-Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-466ec4c6852so966055b6e.3
-        for <acpica-devel@lists.linux.dev>; Tue, 24 Mar 2026 18:43:19 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1774402998; cv=none;
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="ZhOdpcmQ"
+Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-7d9bba96f7dso1551589a34.1
+        for <acpica-devel@lists.linux.dev>; Tue, 24 Mar 2026 18:48:49 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1774403328; cv=none;
         d=google.com; s=arc-20240605;
-        b=DfV2C9P98yzmx5TBzi5T5QoZeWNfx60wFh+6tTWXeNwdjicfeNoV0nTA8V+/oUI83P
-         BpFuV/6t3EtXyVPrIS+jAWbF7dPFmsmItIoIuWSX59lJbioqkTfrni8ELRxRQWdVR5nq
-         V/UdF3xTrbDo8uojIZvHkl0gaK8XkoKA0y1bUXa1cKxefScK5mXTrbewXvCHwauJK93g
-         ThMoe/fLivvRgAbbn3Xvws5G6tpsqKvj7OLqQEX89C7+ATpx6BaDFGzEN20vjuSVVYHs
-         1tbzaLTYw+SZDS9YdE+/pANa1bH0tS87Zu5ehLmtn1ju19I1SG23bawpYYhobJo1ntlW
-         MYJg==
+        b=MAVH/NzJF4Un86n6xuoWga+Vybdtvl9NC7osWuyec3Q6iIQ9CsD793tW7zzHErkMR/
+         fKuToUeZZaqyma/VmWytWB08kZLw5KxbyNO/MmHfQfbbK1mIZcqXsGTadqvrYVfsvly8
+         tADvQBUYf44mkC6GpfSigM5nc52BxDOULSuDRdAcNKPbA7A4ACCH1r94U5yc5Qcl6ghs
+         FBM5/e4Ta7AButzNMxlDEHs4MVCUoFacBjc+BIwoX91KYES0Wkqo1MVG1CPOKVrWGoHj
+         TxUb0x25w9P7GuNLejexdc0dHrc/20R6F376MaCo1niUStivZIxcA8RQaRPXOGhWgjeh
+         W8pQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:dkim-signature;
-        bh=BVjPu0rHHBy1UzY463CDPxiXdA8El4sI25AORgmrANA=;
-        fh=KkW2moKMmtvDZ0gl2JcJcxlZn6y4umtzC+fd+55rHY4=;
-        b=ODt3Fu/7oJBymJRqE/QSda5iy5bziwqzupUD1HNRnlrbmDftY3z8Pgh4tWUISfxdUB
-         WWoRmD1nFL6W1TXeBojoeWlYZ3Nj26GfZseAYnPC2oE33GetW5BN+ofuhOeGjwM1oRM5
-         qJ3wM5DM8XzeJs0K+aaCnTw9y9RDZ3vVQXOYULx+ltTnsdScn9fQrKERYzOx2IzRV7M9
-         nyn5509ptS/wpNTtEXI24FlMOXx7WZ7U4+OOChpYTiLhErF7MjV4ux6kk49O1Tss71oz
-         DWYw4SLCHsuWL4aYKeG4XVNVCqze5puFCyuwjml49pS5EGWcTFbbR93AlQUVBBMj2fxj
-         8iQg==;
+        bh=vGfOtY7DNTv8x0CTjSLzY868SkapZdn6D7qzRjb9QRw=;
+        fh=JsYy0CpnzbxSg3rZxkkGsVsVSrLE8DTNhyHHpiineQI=;
+        b=gsAxACaADiv8V3hRfNPF0747TN+gPpkenurSDTy4aNzsa1vmsVmfFmr6mb7IRApcTx
+         SsiVZj3A1miR/6NO77fmTDFM9iL1AvM93O75i2Wq86ySCYCFRwQe5P3WqTLZC4E2Sugn
+         TMdM1qNVQvx1pwSBOrbgkngF8wzgDGWixiFAhjUoevY+qFfPhw0cvxvzGY3hz5Dmx6lE
+         gmXJW8+IHZIrsiJkToeDTA85ULGLWWYpxe9JkRAcRjS9v30v8p6Owt7oxohBPIbpV65j
+         89sqACdQJT3nKloPXnL/hjEfZLxuVF5U0UZEkjPuowtJY/SmnBveeQvPtvuURkkaPwk7
+         Scjw==;
         darn=lists.linux.dev
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1774402998; x=1775007798; darn=lists.linux.dev;
+        d=bytedance.com; s=google; t=1774403328; x=1775008128; darn=lists.linux.dev;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BVjPu0rHHBy1UzY463CDPxiXdA8El4sI25AORgmrANA=;
-        b=D80QoUYirmhnnZNB9B97q9uUe0z9pd63Mgycz0pyEpJUWzjQ1B8RZYD9ehFvhVETul
-         PnxEnJRmTjVP+hNhg9tRBevMAfkrlLZhCtZqCahPStgVRhNWIa67wzFGKqt04iC3Qhkg
-         Gwg8A6jNuWFBG9tyzNtCHAhdMyoZoD9d24i7hJ6hYiQsqezsASQq+VaiUpJIPhJuQSlD
-         ukBBQq6XBNPiM9uxhPSxFiMPQPrh0gYUwoQKHE3KkNEDu2KVSUk9XXYCFNoDuTvpuJ58
-         QHuSRPPYKSfym+NuB6O15o9B/E9LqrF13c28ZLpVihRzRHpU9Hij7wZBcTk3au4vJCYA
-         LofA==
+        bh=vGfOtY7DNTv8x0CTjSLzY868SkapZdn6D7qzRjb9QRw=;
+        b=ZhOdpcmQFJqzk5nz1VB0F0FP7Yh0GT4fdvLiLZa2Eq0QzECqF0QDMREfKlAisgg+AL
+         HrBrfNiKvazzxB6S0iKj1H4jE8+HqqLWJmBkGu66pnITnaIppjELmLfFuL3roC2ASTA1
+         prxWurx8oYuTHls5WXadk2PZPGPALkmmJcf5go12PSIqncAgoWHkEc5XlP0YeKVU4YVq
+         ukYD7M7mIJwx92lLbwhWelZYY6NT8yh8mxdAFNIm2LfuUXOfYjghqD1cQANs9P/v+rax
+         n4bitziigpDy0YYROXSgl5MJn33uiAH4LDzdzV+8PpyqaAR0KVWe+H3vUku62YBVbbVu
+         15ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1774402998; x=1775007798;
+        d=1e100.net; s=20251104; t=1774403328; x=1775008128;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=BVjPu0rHHBy1UzY463CDPxiXdA8El4sI25AORgmrANA=;
-        b=Fwg3Ta9VXKKA9N07m5yTHcZuzsT5Cz5ChlxhasDVpVdO9rdCPcSGMqJOkfcUkG+cwY
-         Wim3WA+S0Ei9aSAnIcF6NGHrs0DT7fKHOWK43XPZB3W8R5tf729crfPEZ4dnqPcP725+
-         /FtG8f6sc+FbPKQRW5+dEDehapwNpssG42Eo2tM6OdF6HXcx6/FlepHifzgAL6y5C+ql
-         TBI9M0U/pOC1lh9LDd1CC7sW4bSHc1Ct6Mfwwhzh30amUb1LHBLeycI7z4tcc4Aox7Td
-         FeMoK1zf6jrEK+SjRsPV6S9v3i1st/9U9hZAEhfzy2LcGIeiQXzoHuhiY4EZbTdQxFtG
-         pGQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX7K5n+FAFn+4WHeGqvdaxMSY/+Bs/UGakF1YbcGoeni4jolpx2eKeZrxQDgn/UuQR0AsebA6hxB4DQEd8=@lists.linux.dev
-X-Gm-Message-State: AOJu0YyqHJXpFk9M7SeeaJ3pV5x9uYFVqmrqnEOtTiAMpp4f0Lij57vE
-	tbdPUzzS7uNc17DHns9yppnHAtA0D484CzHu0KSSChVRbr6ZVLOitxVacG+ZTbED+EBZjZBfd8E
-	ZbaQRE0BqQKG1pZsLazvJVcG2/KvsyyO0Qb3JHMfL5w==
-X-Gm-Gg: ATEYQzzHd8nXPZNGqx+6xZHTEOZlXQZ8NOg2VWz3W/KjuVhma3iP3uecfMZ5RceoKWZ
-	Q62DYWB6HL1YZM+LLT4IirBka21cAhhffMT1qfAnXLTKFvhfpBqpwDahJVqdGCpGdhcOo4Yni38
-	s/mKmxLcpt633qO+4Rn8R5mMUwrlMJRu5A7h/4ltQMIh2UH7OsfRcxoj9oT6X9wQvGJa3Xgd2M/
-	gSINeLZRtYGqiIb2moPP6WT1pSDnuWBj0y5BqzfSWjs7372K5tkZEIc5CTjmpDmwXaTQa0RghHk
-	2ZXotBkN+i/Qag==
-X-Received: by 2002:a05:6808:c222:b0:467:26e4:728e with SMTP id
- 5614622812f47-46a5c7a4ecbmr851588b6e.49.1774402998286; Tue, 24 Mar 2026
- 18:43:18 -0700 (PDT)
+        bh=vGfOtY7DNTv8x0CTjSLzY868SkapZdn6D7qzRjb9QRw=;
+        b=EQPxGOfSxAYpTVI4eKNN9nSOKQTkloctIDkyk13sZFSUNU1XY2OOp8ruutIqkkYxi/
+         f76Y0t5jFO7miTGWHVN5GS/4TR1bDaWu9ZU3la6o1gGJKkx79thtKDvAveP/Xw/hxD1q
+         MYMDzz9DMllnkhsEsUGU93BiF+9U5gozk6eowZtLD2DsXQ2+mRQQmBYmfXwrpA6+xZeZ
+         msc7L20WYdxz2r4mwDjsrt3EmzcpM8PIa3QwS57b40KMrdV9oRLSY+OMMPuCj6lN9mUd
+         1wIiIxm+H5uG1RJSOT02o6PeTCUyrMOEoBigf8UD2y5Ud680Ery24u5CPtl3V2ra5jfT
+         7FEA==
+X-Forwarded-Encrypted: i=1; AJvYcCWsq8MCOBsiRrN2kX/qnmLTBWRZWg0orx80rOnfsQpdr/TTHpAUFw/wZPvVicguipid3arc9S4931TipYY=@lists.linux.dev
+X-Gm-Message-State: AOJu0Yy+BoJQGtAv8NDsIsxpT8e2fBLgFrQ3mQ1LOyRhjTVLQAoEbsFw
+	P4RuwF1K8Ys15sWCSDHGkiR86X/Ln9z9u0IRgCzgQ7imyBcjVq+ioH4kLRpWJPmwl390wfQT+AJ
+	Lg1IJsivIbB4TzGiqhK+WPzJ5NuXnMcLVtZppzsH6Yw==
+X-Gm-Gg: ATEYQzygjBVbCvhsvOWWNBNWTBrVB8BgdGjGzsYwUhuV5sZdw0C8OBN2ohIRavvCqgd
+	kzCwXkSz9iV4ltrAY+DZyquYkNQ3AFhaGDIosta3tghG88+Iu3O3MZsX6uxudShVx6bBVKEBvpm
+	h+WrlSXFUW/FOamWxgTtb5HK2aezsdYELNAUigwY+NDfv1W2EvSYnuDyUSiBETJnpz9/jmkx/Zo
+	VfIRT98MbcG7DOgRfbIXFLcVtaBe1ZPwy0iKSgk4SdzNir8Blt8/I8F9s3P8/h6SM1N/rLextzb
+	ecMKmlM6JcrKbw==
+X-Received: by 2002:a05:6830:44a4:b0:7d7:cb13:3fe9 with SMTP id
+ 46e09a7af769-7d9d66ebce6mr746710a34.19.1774403328448; Tue, 24 Mar 2026
+ 18:48:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -84,9 +84,9 @@ MIME-Version: 1.0
 References: <20260128-ssqosid-cbqri-v2-0-dca586b091b9@kernel.org> <20260128-ssqosid-cbqri-v2-14-dca586b091b9@kernel.org>
 In-Reply-To: <20260128-ssqosid-cbqri-v2-14-dca586b091b9@kernel.org>
 From: yunhui cui <cuiyunhui@bytedance.com>
-Date: Wed, 25 Mar 2026 09:43:07 +0800
-X-Gm-Features: AaiRm519bl_Rt9ja-VV8uGqhbXi9qjWu8MIOxUSwOQfzA4YoBDggIUB3VQtcL08
-Message-ID: <CAEEQ3wm4vGcOChkj+z58nP3mjG8hvQmAhQLcLxqxwdvoo_8q6Q@mail.gmail.com>
+Date: Wed, 25 Mar 2026 09:48:37 +0800
+X-Gm-Features: AaiRm50a2XpCtEI0EunEN7ujOM94GRAQRhXw7yAPEIMaeAZSdyGXWlKvSXA68yk
+Message-ID: <CAEEQ3wnhvV03FYfqBqz8ihyFCcxKS5ztdvCHDF789ubSQAMw1A@mail.gmail.com>
 Subject: Re: [External] [PATCH RFC v2 14/17] include: acpi: actbl2: Add
  structs for RQSC table
 To: Drew Fustini <fustini@kernel.org>
@@ -182,6 +182,10 @@ nterface Table */
 > +       u32 reg[3];     // 12
 > +       u32 rcid;       //  4
 > +       u32 mcid;       //  4
+
+The spec appears to specify a length of 2 bytes for this field?
+
+
 > +       u16 flags;      //  2
 > +       u16 nres;       //  2
 > +       struct acpi_table_rqsc_fields_res res; // 20
@@ -192,9 +196,6 @@ nterface Table */
 er */
 > +       u32 num;
 > +       struct acpi_table_rqsc_fields f[6];
-
-Is a fixed array f[6] appropriate here ?
-
 > +};
 > +
 > +/* RQSC Flags */
@@ -244,9 +245,6 @@ Is a fixed array f[6] appropriate here ?
 > +       ACPI_RQSC_MMU_TYPE_SV39 =3D 0,
 > +       ACPI_RQSC_MMU_TYPE_SV48 =3D 1,
 > +       ACPI__MMU_TYPE_SV57 =3D 2
-
-ACPI_RQSC_MMU_TYPE_SV57 =3D 2  ?
-
 > +};
 > +
 > +/* Hart Info node structure */
