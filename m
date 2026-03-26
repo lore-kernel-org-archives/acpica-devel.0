@@ -1,194 +1,208 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6964C24DFF3;
-	Wed, 25 Mar 2026 13:13:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774444431; cv=none; b=QHnODjAYCDMZYk+26FvvLOpfnfzKrgC1E9PESGJVo2H8DcA1/iG713rWwsHJP/XoxLIzgxwLUwZlY41LHfr0dnjYT92VmwSQKklGol7KpHedulSeLQniyDH2qhREw0kFIZlD2G1afI1SB8yoLNiHf1/TyHEAE6L6XkUzCE+mvFo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774444431; c=relaxed/simple;
-	bh=adeypLH4Z74KNAFMkRjnUeG5Q/XEPuKzGE7SLt/uv7E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ADozisZmi1wiJQpMRSfg5kD7qyJRK71tAFjqu9VIkKN8ppCxfOA7H9/Z4D39Q8eSCl/nvZeC/sGw54rJGi6NWNScaH7aIuqqXlqdAncRdNLlBbXAx+OQuFYuIK+vpDY/JCnL+FtMd5bf70e0QfMX2uoD8VTKCqOndOxaTDDLy+0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QixVQICm; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B3B33AD532
+	for <acpica-devel@lists.linux.dev>; Thu, 26 Mar 2026 08:32:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.210.50
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1774513982; cv=pass; b=HQYq1NfMNybsrbEAV7bOCtzQ2/kixgLkye+2lLJhftLSCVIoBBO6KyHLivyEAqSjAoGqdb6vtge+bl8zQ41h6CZny/QXEJ4YCi2yIM2ry0dkQSel2esAD966mGq4KDJhVaEMlkt1SSS+Hiu6wu4ovsM8sanbpnt/GvkFJ1t+o6M=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1774513982; c=relaxed/simple;
+	bh=y1dooAU1BdG3t77Ol/IyqzrIRk3RQ4SObO3++MueMSk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZYMTNgjSlmZUIzzetAv9ThF3FN6sa98C3cIgJ4B5+dTUddQGVQ6ZRO5wiDrx2VxgTdRB4z2Sq9sslYa4u45IYmPVuJ3I1zQC8f2CZYH4m8/m8AS3L2Vmv8SAN78Ag7NBOpPpOYXnNDCUBKZpAEhJR+ill28FdnGDZOyipb/yGxc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=lwVE6oBO; arc=pass smtp.client-ip=209.85.210.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QixVQICm"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52DE7C4CEF7;
-	Wed, 25 Mar 2026 13:13:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774444431;
-	bh=adeypLH4Z74KNAFMkRjnUeG5Q/XEPuKzGE7SLt/uv7E=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=QixVQICmwxR1do0VXN8ey36RrvcUnH6mxGzIW1yiLk3H3bEBZe8NefSmOabsCcT4G
-	 Tv+QFx50+0IscUyp5UNgRlmUbpNSZkkftx8LNR8lyshtr4EmrB3JWCZX3uMBj4i9k3
-	 7gqqmK3vo6tYHkx0t2ZB6WavmknK7ERJueRLb1rAr3WGdEqApPsflJIWUYyEFztA5C
-	 51bTl6gNYKFoZhB/RWW5R9AIWiHOR+FgCw0XBbPInINMGOu4Uo9UegkGDKvJ52xP47
-	 XaBxWGgc2okE6Qz2ii490wrXH26YduMXY6vRkbvZMgtfw6JaQF9qwD5oJkmjWumMwc
-	 iJuIaUfddDqkA==
-Message-ID: <66ac3fc8-bc23-49cc-9f8c-6738a4671623@kernel.org>
-Date: Wed, 25 Mar 2026 14:13:44 +0100
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="lwVE6oBO"
+Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-7d8b2703f37so613935a34.1
+        for <acpica-devel@lists.linux.dev>; Thu, 26 Mar 2026 01:32:59 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1774513978; cv=none;
+        d=google.com; s=arc-20240605;
+        b=Trl+Csf8UPm4e/IC4XSZl+z7L0t7xeo0p1BkaUAf9WPPegw1j1XM9g4EVYfG2TQ4/Y
+         u+tk74Q9QdAIIG+UC/OFpGK+nrJDcVERKskh5YGpmNhlzTaWSUmeVskwuRcUDRyW2n32
+         4Qwf84vgkAsmCYKv2kUxE+XVM81VYHnsPeIU4Fp7E9E5xHPYiuiPn90oR7mCbbh7YJep
+         jc5kf9Nfsyz0It4h/My0835UDDuIGLLBMp0JJ3LJp0DcswkqxZPArbwKNMUo8lxhiasr
+         czB0/WCzi1dge5B1LeUc4dBaZhpWT8C7FgJEwYyXfY9szMh7DgtCT3+8jVddCMKZNJNT
+         zX2w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=mePLymdm4A/01lEY7TSspPJxPyHHrcq2b7WusiYGL2A=;
+        fh=3ouQHFgYC3r8d37qHpxOlnS8aDUdsQ7/5IlpoiobQRc=;
+        b=HpsMfbOxp4lfIDcZSAT97WpHR1WEo4Qke24xpedw6v7Qoo3vXpI1phF7g9Dq2jS2Rr
+         uFkdF4Zo7aZtuehnShbVmfEI0xF1oiq0+xIdhHLFhB47lFmkud/PLHG/j7TResD56RRo
+         6/hv4pH8UiXUmvcXy5eqf26gIr0LybSh7hc4Z453w4pldCKko6ORrk6DsJWckp9ikBrG
+         B+3F5ZYHis5mpgQVwu64kgyNvG/v7ZOD6hPZETo3JSoDgCwx6hC1pyCjDDPpEOxVRu+F
+         5AcL0xmu4qqSXRt08+3SU79LAmH9/HEw/7TC+w0cRX17p0vJRyjQaCxp4tqXCLVDY0R0
+         v9cg==;
+        darn=lists.linux.dev
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1774513978; x=1775118778; darn=lists.linux.dev;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mePLymdm4A/01lEY7TSspPJxPyHHrcq2b7WusiYGL2A=;
+        b=lwVE6oBOXvKKK3ipuqTM+gRqyOPvVALjtYhhBG9G6tkYq80h3Oa52mhGaTQy9GbGM4
+         hUN0cwXWtlbjDkemrysHVx3n/w4D5DQviKvd+YoPJ8FZbGugLrb9grdHDA2joTw4k7JT
+         yDJ10zUgugczL4J1as26ytCzgRU79i0efJoexrNrOtAJ4WTDv07PreBvl/dvXo9BxUtu
+         uU0bbtfhVrWH4Ats/edgOIBD4krNGqRZSitc/GXZYxIHl83PbSKnVzWl14ly/Wb+WJ4t
+         rFAiN54TCd6xUwx5AWwa6sicJmIJs4yeG9hZtnh9pmyZWKWF4vdBg7KQ1wSTOzx+AYd+
+         iBUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1774513978; x=1775118778;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=mePLymdm4A/01lEY7TSspPJxPyHHrcq2b7WusiYGL2A=;
+        b=BACoR6eMoPIRJbWWsh5Tx9uWBNt+Pq/OHzSqTcA7EpycUtYJAHUde6xRgJ9iT7nevm
+         t/d00B2/56U9Z48m7ljSx5swSOCNO8HRmsyR/yf0OIGguXWgKs91ml+SMe66VqZgBx5z
+         G41nN197mXJMc7sUztUqJt+4qzVdHUrwJ/3SehChCHaMYAL/j+f4pIFwPOze7ag4Y+6e
+         X+euO5bf2uBJ7R2K0MStdd14UhkZqZoI9IaSQ8h3npSGaCKgriD/Rz1zA9lWi0GMT6XQ
+         0gf4XSWHz+QnGK40Qvabk3BKIhPG25l3niHsV3B8QuJUKoomfGpg0MjMyhlBWC8AFtme
+         vRhQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXuSeRv5v1De0DJNTyHirjulGvD5AeDQ3df7RDb24F1uJkPf6RL2QPDR18fm08ZF9Lwy5E0u1D7N+SipHU=@lists.linux.dev
+X-Gm-Message-State: AOJu0YwsbZYPgyPf0FEq7WgLpEMMjeUibrLAQ2xJyO1op3bOGsnuXB9I
+	j5utpZREkJYbO7S2gGGyF4oyeN6sUnOPOZ1FImj6evP1qUPiM/Z2g68K91TV91qRQ7rv6Q8t/ti
+	yxtZSoqgQ2Z99FdFRg1Smai6qbn+ETdw+/5uJu4dbWg==
+X-Gm-Gg: ATEYQzykeFRU1NV4B/EA7GuIsfBsXHdaNXbfLB13BDfVX7H+igTFQgpK1Kk7DgMgbE1
+	T5rubx1xjtN6kXFB+zijcZTdEyRdqx9twT41NN7ZKNYnM4sy6TETTrLTBAuQvFUBBpBGwObkSoE
+	aFSkiL46h3rmJEC642PkiwzxEp6d9k4qHDAyJjA7WwKU55UirAPrOWhS0cYUSA7T/V1FRgJlyqC
+	T5tTWJY4zL9Jfy15rLITF5KBYqKocZBE47ZxhsGtr9Sru60XUpYQl+MNG/JmyxXLS/NFrUjlJKN
+	OuGl4w==
+X-Received: by 2002:a05:6830:3988:b0:7d7:de7f:1216 with SMTP id
+ 46e09a7af769-7d9d6a2ee3fmr4210937a34.34.1774513978540; Thu, 26 Mar 2026
+ 01:32:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 12/12] arm64: defconfig: Enable I3C and SPD5118 hwmon
-To: Thierry Reding <thierry.reding@kernel.org>
-Cc: Akhil R <akhilrajeev@nvidia.com>, Frank.Li@nxp.com,
- acpica-devel@lists.linux.dev, alexandre.belloni@bootlin.com,
- conor+dt@kernel.org, devicetree@vger.kernel.org, ebiggers@kernel.org,
- fredrik.markstrom@est.tech, jonathanh@nvidia.com, krzk+dt@kernel.org,
- lenb@kernel.org, linux-acpi@vger.kernel.org, linux-hwmon@vger.kernel.org,
- linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-tegra@vger.kernel.org, linux@roeck-us.net, miquel.raynal@bootlin.com,
- p.zabel@pengutronix.de, rafael@kernel.org, robert.moore@intel.com,
- robh@kernel.org, smangipudi@nvidia.com
-References: <20260319-nano-manatee-of-vastness-fbafa1@quoll>
- <20260319170929.14543-1-akhilrajeev@nvidia.com>
- <67165a1f-9fa3-4853-b530-b1f9d6e4c2cf@kernel.org> <acO4NKPDUayny-I4@orome>
- <6342b6fd-9802-49d9-a269-ecb3b70b4604@kernel.org> <acPWvjCJ426AyIQh@orome>
- <61ec49e8-9b60-467e-8ca9-c1246ae5caa2@kernel.org> <acPcM4dlvpdo3L59@orome>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 a/A=
-In-Reply-To: <acPcM4dlvpdo3L59@orome>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20260128-ssqosid-cbqri-v2-0-dca586b091b9@kernel.org>
+ <20260128-ssqosid-cbqri-v2-6-dca586b091b9@kernel.org> <CAEEQ3wmuAnHU1VBFDwbCBFb8j63ZcizJ3jEC2SiVWnoMPc4=SA@mail.gmail.com>
+ <acOFef6f9og1hft2@gen8>
+In-Reply-To: <acOFef6f9og1hft2@gen8>
+From: yunhui cui <cuiyunhui@bytedance.com>
+Date: Thu, 26 Mar 2026 16:32:47 +0800
+X-Gm-Features: AQROBzDH3jYcjM2CiSfjVYp26hEHF6X2ANXFbNRUWifhxguxrWvAlswpTfv9uY4
+Message-ID: <CAEEQ3w=zV1k+uea5D9tnO=O5X5LQUpyNVZi8V8TOANxXJQbg=w@mail.gmail.com>
+Subject: Re: [External] [PATCH RFC v2 06/17] RISC-V: QoS: define CBQRI resctrl
+ resources and domains
+To: Drew Fustini <fustini@kernel.org>
+Cc: Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>, 
+	=?UTF-8?B?UmFkaW0gS3LEjW3DocWZ?= <rkrcmar@ventanamicro.com>, 
+	Samuel Holland <samuel.holland@sifive.com>, Adrien Ricciardi <aricciardi@baylibre.com>, 
+	Nicolas Pitre <npitre@baylibre.com>, =?UTF-8?Q?Kornel_Dul=C4=99ba?= <mindal@semihalf.com>, 
+	Atish Patra <atish.patra@linux.dev>, Atish Kumar Patra <atishp@rivosinc.com>, 
+	Vasudevan Srinivasan <vasu@rivosinc.com>, Ved Shanbhogue <ved@rivosinc.com>, 
+	Chen Pei <cp0613@linux.alibaba.com>, Liu Zhiwei <zhiwei_liu@linux.alibaba.com>, 
+	Weiwei Li <liwei1518@gmail.com>, guo.wenjia23@zte.com.cn, liu.qingtao2@zte.com.cn, 
+	Reinette Chatre <reinette.chatre@intel.com>, Tony Luck <tony.luck@intel.com>, 
+	Babu Moger <babu.moger@amd.com>, Peter Newman <peternewman@google.com>, 
+	Fenghua Yu <fenghua.yu@intel.com>, James Morse <james.morse@arm.com>, 
+	Ben Horgan <ben.horgan@arm.com>, Dave Martin <Dave.Martin@arm.com>, linux-kernel@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, x86@kernel.org, 
+	Rob Herring <robh@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
+	Robert Moore <robert.moore@intel.com>, Sunil V L <sunilvl@ventanamicro.com>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, linux-acpi@vger.kernel.org, 
+	acpica-devel@lists.linux.dev, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 25/03/2026 14:05, Thierry Reding wrote:
-> On Wed, Mar 25, 2026 at 01:47:44PM +0100, Krzysztof Kozlowski wrote:
->> On 25/03/2026 13:41, Thierry Reding wrote:
->>> On Wed, Mar 25, 2026 at 11:59:36AM +0100, Krzysztof Kozlowski wrote:
->>>> On 25/03/2026 11:31, Thierry Reding wrote:
->>>>> On Thu, Mar 19, 2026 at 06:15:14PM +0100, Krzysztof Kozlowski wrote:
->>>>>> On 19/03/2026 18:09, Akhil R wrote:
->>>>>>> On Thu, 19 Mar 2026 10:40:34 +0100, Krzysztof Kozlowski wrote:
->>>>>>>> On Wed, Mar 18, 2026 at 10:57:25PM +0530, Akhil R wrote:
->>>>>>>>> Add I3C subsystem support, DesignWare I3C master controller, and
->>>>>>>>> SPD5118 hwmon sensor as modules to the defconfig.
->>>>>>>>
->>>>>>>> Why? If there is no user of that, why would we want it? Your commit msg
->>>>>>>> should explain that.
->>>>>>>
->>>>>>> Ack. This is for Tegra410 which has a DesignWare I3C host controller.
->>>>>>> I will add this in the commit message.
->>>>>>
->>>>>> Board or products. Not SoCs.
->>>>>
->>>>> Is this a new requirement? I see a bit of both in defconfig changes.
->>>>
->>>> Almost every review from me has it for 2-3 years... And it is a known
->>>> thing since always in a bit different wording: we do not care about
->>>> downstream things and downstream products. defconfig does not serve
->>>> downstream at all, makes no sense outside of our (upstream) work.
->>>
->>> I don't understand why you're turning this into a downstream vs.
->>> upstream discussion. This is all code that is being submitted upstream,
->>> because we want these new platforms with I3C support enabled upstream.
->>> It's as simple as that.
->>>
->>>>> Some mention specific products, other mention SoCs. Does this
->>>>> requirement apply to DT platforms or also ACPI platforms?
->>>>
->>>> Just like kernel, applies to all platforms, regardless of firmware
->>>> interface.
->>>
->>> Hm... again, I don't think there's every been a rule to the effect of
->>> needing to specify a particular platform or product when adding a new
->>> defconfig change. There's plenty of things that we're enabling in the
->>> defconfigs because we think they are generally useful.
->>
->> And the commit msg MUST always explain WHY we are doing it, in this case
->> - why do you think it is generally useful.
->>
->> If you add new driver, it is usually obvious why it is generally useful.
->>
->> If you add defconfig change for dead stuff, it is not obvious. That's
->> why commit msg must provide arguments WHY do we want it, WHY do you
->> think it is useful for us.
-> 
-> You're making too many assumptions. What's your basis for calling this
-> dead stuff? Do you really think we'd be spending any time on this if it
-> wasn't going to get used?
+Hi Drew=EF=BC=8C
 
-I don't know. That's why the commit msg explains that it is not dead
-stuff because we use it here and there.
+On Wed, Mar 25, 2026 at 2:49=E2=80=AFPM Drew Fustini <fustini@kernel.org> w=
+rote:
+>
+> On Wed, Mar 25, 2026 at 10:31:39AM +0800, yunhui cui wrote:
+> > Hi Drew,
+> >
+> > On Thu, Jan 29, 2026 at 4:28=E2=80=AFAM Drew Fustini <fustini@kernel.or=
+g> wrote:
+> > >
+> > > Define data structures to encapsulate the resctrl resource
+> > > and domain structures.
+> > >
+> > > Co-developed-by: Adrien Ricciardi <aricciardi@baylibre.com>
+> > > Signed-off-by: Adrien Ricciardi <aricciardi@baylibre.com>
+> > > [fustini: rebased current upstream]
+> > > Signed-off-by: Drew Fustini <fustini@kernel.org>
+> > > ---
+> > >  arch/riscv/kernel/qos/internal.h | 27 +++++++++++++++++++++++++++
+> > >  1 file changed, 27 insertions(+)
+> > >
+> > > diff --git a/arch/riscv/kernel/qos/internal.h b/arch/riscv/kernel/qos=
+/internal.h
+> > > index ff2c7eff50be..c0402dd06cfa 100644
+> > > --- a/arch/riscv/kernel/qos/internal.h
+> > > +++ b/arch/riscv/kernel/qos/internal.h
+> > > @@ -65,6 +65,11 @@
+> > >  #define CBQRI_BC_ALLOC_CTL_OP_READ_LIMIT   2
+> > >  #define CBQRI_BC_ALLOC_CTL_STATUS_SUCCESS  1
+> > >
+> > > +int qos_resctrl_setup(void);
+> > > +void qos_resctrl_exit(void);
+> > > +int qos_resctrl_online_cpu(unsigned int cpu);
+> > > +int qos_resctrl_offline_cpu(unsigned int cpu);
+> > > +
+> > >  /* Capacity Controller hardware capabilities */
+> > >  struct riscv_cbqri_capacity_caps {
+> > >         u16 ncblks; /* number of capacity blocks */
+> > > @@ -125,4 +130,26 @@ struct cbqri_controller {
+> > >         bool mon_capable;
+> > >  };
+> > >
+> > > +struct cbqri_resctrl_res {
+> > > +       struct rdt_resource     resctrl_res;
+> > > +       struct cbqri_controller controller;
+> > > +       u32 max_rcid;
+> > > +       u32 max_mcid;
+> > > +};
+> > > +
+> > > +struct cbqri_resctrl_dom {
+> > > +       struct rdt_domain_hdr       resctrl_dom_hdr;
+> > > +       struct rdt_ctrl_domain  resctrl_ctrl_dom;
+> > > +       struct rdt_mon_domain   resctrl_mon_dom;
+> > > +       u64 cbm;
+> > > +       u64 rbwb;
+> > > +       u64 *ctrl_val;
+> > > +       struct cbqri_controller *hw_ctrl;
+> > > +};
+> > > +
+> >
+> > Can we trim down some fields? For example:
+> >  struct cbqri_resctrl_res {
+> >         struct rdt_resource     resctrl_res;
+> > -       struct cbqri_controller controller;
+> >         u32 max_rcid;
+> >         u32 max_mcid;
+> >  };
+> >
+> >  struct cbqri_resctrl_dom {
+> > -       struct rdt_domain_hdr       resctrl_dom_hdr;
+> >         struct rdt_ctrl_domain  resctrl_ctrl_dom;
+> >         struct rdt_mon_domain   resctrl_mon_dom;
+> > -       u64 cbm;
+> > -       u64 rbwb;
+> >         u64 *ctrl_val;
+> >         struct cbqri_controller *hw_ctrl;
+> >  };
+>
+> Can you explain why you don't think these are needed??
 
-Let's read the commit msg:
+The functionality works well without those fields, feel free to try.
 
-"Add I3C subsystem support, DesignWare I3C master controller, and
-SPD5118 hwmon sensor as modules to the defconfig."
+Btw, when do you plan to send the next revision?
 
-Helps nothing.
+>
+> Thanks,
+> Drew
+>
 
-> 
->> If you add defconfig change for device which no one (in terms of
->> upstream) can use, then automatically it is not useful. Whether this
->> change is like that - I do not know. That's why you have commit msg to
->> provide argument WHY maintainer should take it. And it is as simple as
->> one sentence explaining the upstream kernel user/use case of this
->> defconfig change...
-> 
-> Again, why are you making this about upstream vs. downstream? The goal
-> of these submissions is to make upstream capable of running on real
-
-Up to here:
-I do not make it upstream vs downstream. I expressed the same goal as
-you here.
-
-> devices that real people want to run (preferably upstream) Linux on.
-
-But here not true. defconfig is ONLY upstream. The purpose of defconfig
-is not to give some libraries of configs for downstream trees, because
-it is useless for them. All downstreams or distros have their own
-defconfigs, thus defconfig role is *only* upstream. I do not make it
-"upstream vs downstream", but I make strong requirement of talking here
-only about upstream.
-
-Best regards,
-Krzysztof
+Thanks,
+Yunhui
