@@ -1,199 +1,136 @@
-Received: from mxhk.zte.com.cn (mxhk.zte.com.cn [160.30.148.35])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7E6E34DB56
-	for <acpica-devel@lists.linux.dev>; Thu, 26 Mar 2026 11:13:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=160.30.148.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 097B73624CA;
+	Thu, 26 Mar 2026 15:05:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774523638; cv=none; b=uZOgdRIl5CAHLAcIxLGrYSXb5UCZs3bVZUBEZmTLLMiH2rYdWsAh4nYi0tIh84CYW7NZ5SYZsSfWIUu+PAGbG45q+lgSAGu9HYqYl1pA/cyNUyblR7N5DdzYs8OPHKmTC6e+Br+Zi1O403yT8Bwm0DBOEHb13HHYsuVuVsC15Rk=
+	t=1774537507; cv=none; b=YXLZlrHIQr+D76lWaRArDpyBHYSw+7o2cPLJtwQJgJJzDlWAxAHOD1bP9z5M1ZPkCKeMlAJyn4Rn01vz41w9t5Xh2mp6Q+P8Xkb119H3i+p3cUrR188pc3QlnRrWCZ5iTPwjxex6k3V5tNh0FTT39Q1FY2aTEUjYjAzrN/8bhrg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774523638; c=relaxed/simple;
-	bh=fvAU+Ju+dI6rjigsBHAd/7B9gtQjb/SPfrAcLIZjUBA=;
-	h=Message-Id:In-Reply-To:References:Date:Mime-Version:From:To:Cc:
-	 Subject:Content-Type; b=ZRTAHNxz1D+2Ys8P/rVEsYPkLOYVzU0acsS82UC5n+y9C1f7S5Iq4y5WSQRfftLbvGtEhpYy8eg4/wuuSS9JPrXMnBNgeXndKx0KOL+oFhB7JMM0sMDhe4dAG5vF+Ik0BvOx4eY53D/YfchcB4YpjXhEMUm0Q9womwn8k4pQwTg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn; spf=pass smtp.mailfrom=zte.com.cn; arc=none smtp.client-ip=160.30.148.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zte.com.cn
-Received: from mse-db.zte.com.cn (unknown [10.5.228.131])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mxhk.zte.com.cn (FangMail) with ESMTPS id 4fhLkS4GSDz8Xs71;
-	Thu, 26 Mar 2026 19:13:52 +0800 (CST)
-Received: (from root@localhost)
-	by mse-db.zte.com.cn id 62QBDn8T007047;
-	Thu, 26 Mar 2026 19:13:49 +0800 (+08)
-	(envelope-from guo.wenjia23@zte.com.cn)
-Message-Id: <202603261113.62QBDn8T007047@mse-db.zte.com.cn>
-Received: from njb2app06.zte.com.cn ([10.55.23.119])
-	by mse-fl2.zte.com.cn with SMTP id 62QB5kdA005832;
-	Thu, 26 Mar 2026 19:05:46 +0800 (+08)
-	(envelope-from guo.wenjia23@zte.com.cn)
-Received: from mapi (njy2app08[null])
-	by mapi (Zmail) with MAPI id mid202;
-	Thu, 26 Mar 2026 19:05:48 +0800 (CST)
-X-Zmail-TransId: 2b0069c5130c527-f477b
-X-Mailer: Zmail v1.0
-In-Reply-To: <20260119-ssqosid-cbqri-v1-8-aa2a75153832@kernel.org>
-References: 20260119-ssqosid-cbqri-v1-0-aa2a75153832@kernel.org,20260119-ssqosid-cbqri-v1-8-aa2a75153832@kernel.org
-Date: Thu, 26 Mar 2026 19:05:48 +0800 (CST)
+	s=arc-20240116; t=1774537507; c=relaxed/simple;
+	bh=pM2qPJP0N0ADDCsOppxXwTkoZA/x2DQWuP5hXPmDSj4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=h9fia93GgoAsruzOByEQAfYCXRnKmhrOBIsuwWWICmDuXOYLbGlypAzQmEuuUoGgZQ34ii0tnOvulkqiyr6gGaW1VALylMw/d18Jk4izntaCajzeHI5Mr5iVbQg/xO3GGq0Fv7ctce+jKMW7ezZuUXV/LVWGF5lGqkRMsMH1gYc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=abog6Eds; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="abog6Eds"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69651C116C6;
+	Thu, 26 Mar 2026 15:05:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1774537506;
+	bh=pM2qPJP0N0ADDCsOppxXwTkoZA/x2DQWuP5hXPmDSj4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=abog6EdsAq6OJFP0NMkHKKgpox06HvO++xGDNqtPH5yVn5RhV0F9JeCLrGrSTOJ3u
+	 OTmLCfzJxb3413mKiR4n0VFIfv93CclcwtzZd+gU0mzRLBTYOPs37wXStTDSqieKb/
+	 awY0n2lRKCZlAdRJFqN4g+ZMLpwEnpT8fXpwyqkJnL5xS0jjIWH+Kesugl2qJIqWxE
+	 WQAl0S5mw7a48J09F+dDl/cedMmCcW7HZ1O+KUmQuxE2EE7tnps9H1N5FNS9Mb/C5f
+	 rtlzzhQEfmh6OLvPkmKnuBYlQJImiSyfPEqrH6uP2CqVfmip+lYA/i+CpmDkmvrETW
+	 UL8QqDqV0upGA==
+Date: Thu, 26 Mar 2026 10:05:03 -0500
+From: Rob Herring <robh@kernel.org>
+To: Conor Dooley <conor@kernel.org>
+Cc: Akhil R <akhilrajeev@nvidia.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Frank Li <Frank.Li@nxp.com>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Robert Moore <robert.moore@intel.com>, Len Brown <lenb@kernel.org>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Eric Biggers <ebiggers@kernel.org>,
+	Fredrik Markstrom <fredrik.markstrom@est.tech>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Thierry Reding <thierry.reding@kernel.org>,
+	Jon Hunter <jonathanh@nvidia.com>,
+	Suresh Mangipudi <smangipudi@nvidia.com>,
+	linux-tegra@vger.kernel.org, linux-i3c@lists.infradead.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
+	linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH 01/12] dt-bindings: i3c: Add mipi-i3c-static-method to
+ support SETAASA
+Message-ID: <20260326150503.GA2360967-robh@kernel.org>
+References: <20260318172820.13771-1-akhilrajeev@nvidia.com>
+ <20260318172820.13771-2-akhilrajeev@nvidia.com>
+ <20260318-tweed-herbicide-eb924ef056b8@spud>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
-Mime-Version: 1.0
-From: <guo.wenjia23@zte.com.cn>
-To: <fustini@kernel.org>
-Cc: <dave.martin@arm.com>, <acpica-devel@lists.linux.dev>, <alex@ghiti.fr>,
-        <aou@eecs.berkeley.edu>, <aricciardi@baylibre.com>,
-        <atish.patra@linux.dev>, <atishp@rivosinc.com>, <babu.moger@amd.com>,
-        <ben.horgan@arm.com>, <conor+dt@kernel.org>,
-        <cp0613@linux.alibaba.com>, <cuiyunhui@bytedance.com>,
-        <devicetree@vger.kernel.org>, <fenghua.yu@intel.com>,
-        <guo.wenjia23@zte.com.cn>, <james.morse@arm.com>, <krzk+dt@kernel.org>,
-        <lenb@kernel.org>, <linux-acpi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
-        <liu.qingtao2@zte.com.cn>, <liwei1518@gmail.com>,
-        <mindal@semihalf.com>, <npitre@baylibre.com>, <palmer@dabbelt.com>,
-        <paul.walmsley@sifive.com>, <peternewman@google.com>, <pjw@kernel.org>,
-        <rafael@kernel.org>, <reinette.chatre@intel.com>,
-        <rkrcmar@ventanamicro.com>, <robert.moore@intel.com>,
-        <robh@kernel.org>, <samuel.holland@sifive.com>,
-        <sunilvl@ventanamicro.com>, <tony.luck@intel.com>, <vasu@rivosinc.com>,
-        <ved@rivosinc.com>, <x86@kernel.org>, <zhiwei_liu@linux.alibaba.com>
-Subject: =?UTF-8?B?UmU6IFtQQVRDSCBSRkMgMDgvMTldIFJJU0MtVjogUW9TOiBhZGQgcmVzY3RybCBpbnRlcmZhY2UgZm9yIENCUVJJIGNvbnRyb2xsZXJz?=
-Content-Type: text/plain;
-	charset="UTF-8"
-X-MAIL:mse-db.zte.com.cn 62QBDn8T007047
-X-MSS: AUDITRELEASE@mse-db.zte.com.cn
-X-TLS: YES
-X-SPF-DOMAIN: zte.com.cn
-X-ENVELOPE-SENDER: guo.wenjia23@zte.com.cn
-X-SPF: None
-X-SOURCE-IP: 10.5.228.131 unknown Thu, 26 Mar 2026 19:13:52 +0800
-X-Fangmail-Anti-Spam-Filtered: true
-X-Fangmail-MID-QID: 69C514F0.001/4fhLkS4GSDz8Xs71
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260318-tweed-herbicide-eb924ef056b8@spud>
 
-Hi Drew,
+On Wed, Mar 18, 2026 at 05:31:50PM +0000, Conor Dooley wrote:
+> On Wed, Mar 18, 2026 at 10:57:14PM +0530, Akhil R wrote:
+> > Add the 'mipi-i3c-static-method' property mentioned in the MIPI I3C
+> > Discovery and Configuration Specification [1] to specify which discovery
+> > method an I3C device supports during bus initialization. The property is
+> > a bitmap, where a bit value of 1 indicates support for that method, and 0
+> > indicates lack of support.
+> > Bit 0: SETDASA CCC (Direct)
+> > Bit 1: SETAASA CCC (Broadcast)
+> > Bit 2: Other CCC (vendor / standards extension)
+> > All other bits are reserved.
+> > 
+> > It is specifically needed when an I3C device requires SETAASA for the
+> > address assignment. SETDASA will be supported by default if this property
+> > is absent - which means for now the property just serves as a flag to
+> > enable SETAASA, but keep the property as a bitmap to align with the
+> > specifications.
+> > 
+> > [1] https://www.mipi.org/specifications/disco
+> > 
+> > Signed-off-by: Akhil R <akhilrajeev@nvidia.com>
+> > ---
+> >  .../devicetree/bindings/i3c/i3c.yaml          | 30 ++++++++++++++++---
+> >  1 file changed, 26 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/i3c/i3c.yaml b/Documentation/devicetree/bindings/i3c/i3c.yaml
+> > index e25fa72fd785..1705d90d4d79 100644
+> > --- a/Documentation/devicetree/bindings/i3c/i3c.yaml
+> > +++ b/Documentation/devicetree/bindings/i3c/i3c.yaml
+> > @@ -31,10 +31,12 @@ properties:
+> >        described in the device tree, which in turn means we have to describe
+> >        I3C devices.
+> >  
+> > -      Another use case for describing an I3C device in the device tree is when
+> > -      this I3C device has a static I2C address and we want to assign it a
+> > -      specific I3C dynamic address before the DAA takes place (so that other
+> > -      devices on the bus can't take this dynamic address).
+> > +      Other use-cases for describing an I3C device in the device tree are:
+> > +      - When the I3C device has a static I2C address and we want to assign
+> > +        it a specific I3C dynamic address before the DAA takes place (so
+> > +        that other devices on the bus can't take this dynamic address).
+> > +      - When the I3C device requires SETAASA for its discovery and uses a
+> > +        pre-defined static address.
+> >  
+> >    "#size-cells":
+> >      const: 0
+> > @@ -147,6 +149,26 @@ patternProperties:
+> >            through SETDASA. If static address is not present, this address is assigned
+> >            through SETNEWDA after assigning a temporary address via ENTDAA.
+> >  
+> > +      mipi-i3c-static-method:
+> > +        $ref: /schemas/types.yaml#/definitions/uint32
+> > +        minimum: 0x1
+> > +        maximum: 0xff
+> > +        default: 1
+> > +        description: |
+> > +          Bitmap describing which methods of Dynamic Address Assignment from a
+> > +          static address are supported by this I3C Target. A bit value of 1
+> > +          indicates support for that method, and 0 indicates lack of support.
+> 
+> I really am not keen on properties that are bitmaps, why can't we just
+> use the strings "setdasa", "setaasa" etc?
 
-On Thu, Jan 29, 2026 at 4:28 AM Drew Fustini <fustini@kernel.org> wrote:>
-> Add interface for CBQRI controller drivers to make use of the resctrl
-> filesystem.
->
-> Co-developed-by: Adrien Ricciardi <aricciardi@baylibre.com>
-> Signed-off-by: Adrien Ricciardi <aricciardi@baylibre.com>
-> Signed-off-by: Drew Fustini <fustini@kernel.org>
-> ---
->  arch/riscv/kernel/qos/qos_resctrl.c | 1192 +++++++++++++++++++++++++++++++++++
->  1 file changed, 1192 insertions(+)
->
-> ...
->
-> +
-> +int resctrl_arch_update_one(struct rdt_resource *r, struct rdt_ctrl_domain *d,
-> +                           u32 closid, enum resctrl_conf_type t, u32 cfg_val)
-> +{
-> +       struct cbqri_controller *ctrl;
-> +       struct cbqri_resctrl_dom *dom;
-> +       struct cbqri_config cfg;
-> +       int err = 0;
-> +
-> +       dom = container_of(d, struct cbqri_resctrl_dom, resctrl_ctrl_dom);
-> +       ctrl = dom->hw_ctrl;
-> +
-> +       if (!r->alloc_capable)
-> +               return -EINVAL;
-> +
-> +       switch (r->rid) {
-> +       case RDT_RESOURCE_L2:
-> +       case RDT_RESOURCE_L3:
-> +               cfg.cbm = cfg_val;
-> +               err = cbqri_apply_cache_config(dom, closid, t, &cfg);
-> +               break;
-> +       case RDT_RESOURCE_MBA:
-> +               /* covert from percentage to bandwidth blocks */
-> +               cfg.rbwb = cfg_val * ctrl->bc.nbwblks / 100;
+If this comes from a specification, then I'd tend to just copy it rather 
+than invent our own thing. Obviously if is something structured 
+fundamentally different from how DT is designed, then we wouldn't. But 
+this is just a simple property.
 
-Should use bc.mrbwb to calculate rbwb? 
-I think bc.nbwblks represent the available bw blks in the controller. It should should decrease as they are allocated.
+Rob
 
-> +               err = cbqri_apply_bw_config(dom, closid, t, &cfg);
-> +               break;
-> +       default:
-> +               return -EINVAL;
-> +       }
-> +
-> +       return err;
-> +}
->
-> ...
->
-> +u32 resctrl_arch_get_config(struct rdt_resource *r, struct rdt_ctrl_domain *d,
-> +                           u32 closid, enum resctrl_conf_type type)
-> +{
-> +       struct cbqri_resctrl_dom *hw_dom;
-> +       struct cbqri_controller *ctrl;
-> +       int reg_offset;
-> +       u32 percent;
-> +       u32 rbwb;
-> +       u64 reg;
-> +       int err;
-> +
-> +       hw_dom = container_of(d, struct cbqri_resctrl_dom, resctrl_ctrl_dom);
-> +
-> +       ctrl = hw_dom->hw_ctrl;
-> +
-> +       if (!r->alloc_capable)
-> +               return resctrl_get_default_ctrl(r);
-> +
-> +       switch (r->rid) {
-> +       case RDT_RESOURCE_L2:
-> +       case RDT_RESOURCE_L3:
-> +               /* Clear cc_block_mask before read limit operation */
-> +               cbqri_set_cbm(ctrl, 0);
-> +
-> +               /* Capacity read limit operation for RCID (closid) */
-> +               err = cbqri_cc_alloc_op(ctrl, CBQRI_CC_ALLOC_CTL_OP_READ_LIMIT, type, closid);
-> +               if (err < 0) {
-> +                       pr_err("%s(): operation failed: err = %d", __func__, err);
-> +                       return resctrl_get_default_ctrl(r);
-> +               }
-> +
-> +               /* Read capacity block mask for RCID (closid) */
-> +               reg_offset = CBQRI_CC_BLOCK_MASK_OFF;
-> +               reg = ioread64(ctrl->base + reg_offset);
-> +
-> +               /* Update the config value for the closid in this domain */
-> +               hw_dom->ctrl_val[closid] = reg;
-> +               return hw_dom->ctrl_val[closid];
-> +
-> +       case RDT_RESOURCE_MBA:
-> +               /* Capacity read limit operation for RCID (closid) */
-> +               err = cbqri_bc_alloc_op(ctrl, CBQRI_CC_ALLOC_CTL_OP_READ_LIMIT, closid);
-> +               if (err < 0) {
-> +                       pr_err("%s(): operation failed: err = %d", __func__, err);
-> +                       return resctrl_get_default_ctrl(r);
-> +               }
-> +
-> +               hw_dom->ctrl_val[closid] = cbqri_get_rbwb(ctrl);
-> +
-> +               /* Convert from bandwidth blocks to percent */
-> +               rbwb = hw_dom->ctrl_val[closid];
-> +               rbwb *= 100;
-> +               percent = rbwb / ctrl->bc.nbwblks;
-> +               if (rbwb % ctrl->bc.nbwblks)
-
-Same problem.
-
-> +                       percent++;
-> +               return percent;
-> +
-> +       default:
-> +               return resctrl_get_default_ctrl(r);
-> +       }
-> +}
-
-
-Thank,
-Wenjia
