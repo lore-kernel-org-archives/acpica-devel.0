@@ -1,207 +1,215 @@
-Received: from mxhk.zte.com.cn (mxhk.zte.com.cn [160.30.148.34])
+Received: from SN4PR0501CU005.outbound.protection.outlook.com (mail-southcentralusazon11011059.outbound.protection.outlook.com [40.93.194.59])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 642CC2BE7DB
-	for <acpica-devel@lists.linux.dev>; Sun, 29 Mar 2026 10:45:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=160.30.148.34
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774781110; cv=none; b=fi2+kZxIka21/Kw+XtOeSStENV0MzrtOss8X0zPKf2ZRjMMoGb6KS9rvH+hoMBtZnQrBPsP4lDIYnzzsdi1AhzMMbAyqN7WRIHao0so+YB4QdA3P517lvFeGyFEiaLxKQPDP71J1405k/8So/UCrHZVFt4Wwa5SBhItqIw/cByk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774781110; c=relaxed/simple;
-	bh=5UYg7ALgX1M21HjBAk1fFUnAqf7oVErtnGioVT0EgM4=;
-	h=Message-Id:In-Reply-To:References:Date:Mime-Version:From:To:Cc:
-	 Subject:Content-Type; b=q5lalYqHhSWZe0c+zpUY3s3s9htPWQxVel6pbxqa8O42/8+c0oGlBmzfAozKNLSfWoqN13PfPdg2dQi117whzCP049P2luBPq/k/3t+5N7Lzs6/ui2oRtdyKD4P6Qi4APnZ1jmKOqijopL56nM3Ok9njpBr/ZVQ2Z7eWvt7a9JQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn; spf=pass smtp.mailfrom=zte.com.cn; arc=none smtp.client-ip=160.30.148.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zte.com.cn
-Received: from mse-fl2.zte.com.cn (unknown [10.5.228.133])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mxhk.zte.com.cn (FangMail) with ESMTPS id 4fk9xm0pPYz5BNS0;
-	Sun, 29 Mar 2026 18:45:00 +0800 (CST)
-Received: (from root@localhost)
-	by mse-fl2.zte.com.cn id 62TAiv5H081340;
-	Sun, 29 Mar 2026 18:44:57 +0800 (+08)
-	(envelope-from guo.wenjia23@zte.com.cn)
-Message-Id: <202603291044.62TAiv5H081340@mse-fl2.zte.com.cn>
-Received: from njy2app02.zte.com.cn ([10.40.13.116])
-	by mse-fl2.zte.com.cn with SMTP id 62TARphR075539;
-	Sun, 29 Mar 2026 18:27:51 +0800 (+08)
-	(envelope-from guo.wenjia23@zte.com.cn)
-Received: from mapi (njb2app07[null])
-	by mapi (Zmail) with MAPI id mid202;
-	Sun, 29 Mar 2026 18:27:53 +0800 (CST)
-X-Zmail-TransId: 2aff69c8fea9ced-ace99
-X-Mailer: Zmail v1.0
-In-Reply-To: <20260128-ssqosid-cbqri-v2-8-dca586b091b9@kernel.org>
-References: 20260128-ssqosid-cbqri-v2-0-dca586b091b9@kernel.org,20260128-ssqosid-cbqri-v2-8-dca586b091b9@kernel.org
-Date: Sun, 29 Mar 2026 18:27:53 +0800 (CST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6BC233CE92
+	for <acpica-devel@lists.linux.dev>; Mon, 30 Mar 2026 05:27:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.194.59
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1774848435; cv=fail; b=La0/v/fsE6ftSHoQbZ0D3ATLfPu+CNFSCR0ugbrtjtRd86xDtbaBHRQt48ebYIJDW+SbBUE3IYcMJ4qanDoyG3feNSvxsP22+g7z0SGafMs3w8Hbd1yZbmMLTgomOcz0DR9dK7Q3YUd/7jBpcrVF19w+uT28n7giNFOt5ItkGmw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1774848435; c=relaxed/simple;
+	bh=U16FbXtpoQjWIhREAszw3cYVlRYkje68m2wrI0UGQ2s=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=rNqcxYJhL4V0u4oCRuoyiygdX66UadfoIkuHYm/C7UqzChx8chvzk1crBV3D4UnDFen/2h7bbyzzNxlFPLEolQzrkK+POKPToU6PE9qldqu4lBEVIg/0ASWBUamRfJLu+eFTQqenVstL/7KocYtm08ErNbDQEvkMmcRot3tLhq8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Em/T5LiU; arc=fail smtp.client-ip=40.93.194.59
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Em/T5LiU"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=U1+zF3o0NDB+ZsauXzu/VKAwmlUH/23igk0Bb4xVXIAYif7DkWtK/Vu6kjOS5Rmr/vm7EhlAWDKk9KFNe7VT/hISdDLVZh1THtBPrxw2BysnSQ/gnSXAWcBln5NjjtYnFtLrMTpnsCX9ZuG0NpVfooqwfw4QnL/cpLsEcDVKowY+qwX6EQF/vfmCfcs+LTtW87mLII7nMjJGSyCxNjp+O/8RaZO0kusAaB5gcrvFoG+aHKa4Z6Q4TMt9/kYxUJTRGjrKfC09tbRIgz7Rlr/p1tPPATLCT7Dt906nR8XAGf4bKCy53ZUil/udB93krL2Fuuu3Cmcf+eazItCDKuLcLQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=T5SAysfwpQelhuj+aCnXbL3FXUDdEA7jD+yOjuzV00A=;
+ b=gK7MWOnYBWA4N1jc1gplbeBN9YHNhikceUPUyHt76WU6fP6ToO7PGZ+XTC3N4jGPfo0//Qgw1S7JCcu2g8fM+1WARmbUDHoF2aRV96vNZzg9YzKvIkinggOur8kv60+Kuox3PJE93c71EGoNUQugyoUBlW778pEfTG6hnwkq8k5GVGUP+3Hp/JKlMATufZJkssrqK5ummhYyF3lVZCvYOrJwZkD93uYkX3lWasCLj2HimtbRvE4cC6rNt+RKxHwvt2njW0GHbvlIUYLqT23c+WhBOLIljLt2tC4qKJx4KxMl/SoZzy69G6nr9bz6pDntiiDZNURN8T1bKjS0s2Wdpw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.233) smtp.rcpttodomain=bootlin.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=T5SAysfwpQelhuj+aCnXbL3FXUDdEA7jD+yOjuzV00A=;
+ b=Em/T5LiU2f6Z3I3BS9ANfM/XA5Ag8z4hCR9GANOuSaustxUdlXjLZ4s/CbtXzwBbGmrvn5XfeBK0d5Ns6/f7bVJVyP8ClZw47oeVTHSSg0d+q0yzLDWvrav3OMe6Ml80ZKDIrNZa6yvwuiTs/TMo2sazAus6XB4t1ajiw5kanyheXZERB9Fhdeil+70cdUyMHKVCQo0sgClP2iDPM2VapkvlTn0BJb5hejarYFWS3qeqyeGobVIRoOBm3lHCCHypkJxVnebnoq6Ji0/cZcPTfib2MtGvjyVNv6r8IDPpnFSvQMGMdPLG9oiAt6oX0OqEEQs3Tg2+rFFt9OwbxC4rVw==
+Received: from BLAPR03CA0126.namprd03.prod.outlook.com (2603:10b6:208:32e::11)
+ by DM4PR12MB7693.namprd12.prod.outlook.com (2603:10b6:8:103::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9769.12; Mon, 30 Mar
+ 2026 05:27:05 +0000
+Received: from BL6PEPF0001AB75.namprd02.prod.outlook.com
+ (2603:10b6:208:32e:cafe::37) by BLAPR03CA0126.outlook.office365.com
+ (2603:10b6:208:32e::11) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9745.28 via Frontend Transport; Mon,
+ 30 Mar 2026 05:27:05 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.233) by
+ BL6PEPF0001AB75.mail.protection.outlook.com (10.167.242.168) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9745.21 via Frontend Transport; Mon, 30 Mar 2026 05:27:04 +0000
+Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
+ (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Sun, 29 Mar
+ 2026 22:26:53 -0700
+Received: from drhqmail203.nvidia.com (10.126.190.182) by
+ drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.20; Sun, 29 Mar 2026 22:26:53 -0700
+Received: from BUILDSERVER-IO-L4T.nvidia.com (10.127.8.9) by mail.nvidia.com
+ (10.126.190.182) with Microsoft SMTP Server id 15.2.2562.20 via Frontend
+ Transport; Sun, 29 Mar 2026 22:26:47 -0700
+From: Akhil R <akhilrajeev@nvidia.com>
+To: <alexandre.belloni@bootlin.com>
+CC: <Frank.Li@nxp.com>, <acpica-devel@lists.linux.dev>,
+	<akhilrajeev@nvidia.com>, <conor+dt@kernel.org>, <conor@kernel.org>,
+	<devicetree@vger.kernel.org>, <ebiggers@kernel.org>,
+	<fredrik.markstrom@est.tech>, <jonathanh@nvidia.com>, <krzk+dt@kernel.org>,
+	<lenb@kernel.org>, <linux-acpi@vger.kernel.org>,
+	<linux-hwmon@vger.kernel.org>, <linux-i3c@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+	<linux@roeck-us.net>, <miquel.raynal@bootlin.com>, <p.zabel@pengutronix.de>,
+	<rafael@kernel.org>, <robert.moore@intel.com>, <robh@kernel.org>,
+	<smangipudi@nvidia.com>, <thierry.reding@kernel.org>
+Subject: Re: [PATCH 01/12] dt-bindings: i3c: Add mipi-i3c-static-method to support SETAASA
+Date: Mon, 30 Mar 2026 10:56:46 +0530
+Message-ID: <20260330052646.29412-1-akhilrajeev@nvidia.com>
+X-Mailer: git-send-email 2.50.1
+In-Reply-To: <2026032717064247cc495e@mail.local>
+References: <2026032717064247cc495e@mail.local>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
-Mime-Version: 1.0
-From: <guo.wenjia23@zte.com.cn>
-To: <fustini@kernel.org>
-Cc: <pjw@kernel.org>, <palmer@dabbelt.com>, <aou@eecs.berkeley.edu>,
-        <alex@ghiti.fr>, <rkrcmar@ventanamicro.com>,
-        <samuel.holland@sifive.com>, <aricciardi@baylibre.com>,
-        <npitre@baylibre.com>, <mindal@semihalf.com>, <atish.patra@linux.dev>,
-        <atishp@rivosinc.com>, <vasu@rivosinc.com>, <ved@rivosinc.com>,
-        <cuiyunhui@bytedance.com>, <cp0613@linux.alibaba.com>,
-        <zhiwei_liu@linux.alibaba.com>, <liwei1518@gmail.com>,
-        <liu.qingtao2@zte.com.cn>, <reinette.chatre@intel.com>,
-        <tony.luck@intel.com>, <babu.moger@amd.com>, <peternewman@google.com>,
-        <fenghua.yu@intel.com>, <james.morse@arm.com>, <ben.horgan@arm.com>,
-        <Dave.Martin@arm.com>, <fustini@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
-        <x86@kernel.org>, <robh@kernel.org>, <rafael@kernel.org>,
-        <lenb@kernel.org>, <robert.moore@intel.com>,
-        <sunilvl@ventanamicro.com>, <krzk+dt@kernel.org>,
-        <conor+dt@kernel.org>, <paul.walmsley@sifive.com>,
-        <linux-acpi@vger.kernel.org>, <acpica-devel@lists.linux.dev>,
-        <devicetree@vger.kernel.org>
-Subject: =?UTF-8?B?UmU6IFtQQVRDSCBSRkMgdjIgMDgvMTddIFJJU0MtVjogUW9TOiBhZGQgcmVzY3RybCBpbnRlcmZhY2UgZm9yIENCUVJJIGNvbnRyb2xsZXJz?=
-Content-Type: text/plain;
-	charset="UTF-8"
-X-MAIL:mse-fl2.zte.com.cn 62TAiv5H081340
-X-MSS: AUDITRELEASE@mse-fl2.zte.com.cn
-X-TLS: YES
-X-SPF-DOMAIN: zte.com.cn
-X-ENVELOPE-SENDER: guo.wenjia23@zte.com.cn
-X-SPF: None
-X-SOURCE-IP: 10.5.228.133 unknown Sun, 29 Mar 2026 18:45:00 +0800
-X-Fangmail-Anti-Spam-Filtered: true
-X-Fangmail-MID-QID: 69C902AC.000/4fk9xm0pPYz5BNS0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB75:EE_|DM4PR12MB7693:EE_
+X-MS-Office365-Filtering-Correlation-Id: e74e59fc-55ec-47fc-57b1-08de8e1cfa56
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|82310400026|1800799024|7416014|36860700016|376014|13003099007|18002099003|56012099003|22082099003;
+X-Microsoft-Antispam-Message-Info:
+	11C8DZU8OkiOp3sjFlWinkhkP6jF0GUo//z3lqzHINpPjJv2b19VEsYt1Y9+HrVAYeqfBoMahAL2A3YquY/ouoKYk1L3+1WCFtI1YOG9zUtCnD7dq2Y+LYnLMhjumZDyIijaEeorQph0R3vyROwZJn2RG+wt2hdVEEi7plZ4zyI/qydxiR8U5TgZ3HK8eDghxbDbDpBQp4xVsqK73IQF91A9U0HaIQRs2JvCFAowaHU3w+y1y4bjEzsU7WFg9+ZUG6/ik02kV3es0SYdtH7lX7UV7gTqGgNyeDxvRUV1ub7aQc3DKeAfIHuVLDzLnedOb+Td6nCtrLKtZ7MqKdcB53GJoSu0+PD4+bKGk9xzN/JviMxqQRbTquwBiLTjAtC1WkJKzeoKrGvnGyoIBSGNo5Ur4Pm9d4wpWSeLtD/3XEo43LZbbfGkb+7ge/MwflPY6Tga5fW0XUCtyjsLMYoV0GGfb1ErXlZphpqx4ZyOP1dkDsPkPevQgiefIrxp6vjhHx9auneJufimuCFJq2lGeuKYyvlGvqjAt27Te8QHP2vDvE41HcCb3LFSBmyl8wXgfyzG3u9MCp1rlzMUtCiFr7GSGb9odBKA+YhWjoAF2fUoKMi2h9JUw9gkvRebLBoPRpLQusz4f/mCYIbg3kWVhX7O5797Cpnn8Q9XURmoVfYtK/cNBrJlbyn20mVtd0Z0TcY8AEQ+t955J7rtwgDbu507Rj/QWHL4hFA6Z/KN5D7fBgLWy7LSS8LjMpFVn6eTQk6t/1eMXh/qCxG3AB027g==
+X-Forefront-Antispam-Report:
+	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(1800799024)(7416014)(36860700016)(376014)(13003099007)(18002099003)(56012099003)(22082099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	OuB51rYhEYCgADxWMePgiWvCz+6flTalGpf6cecJGtpji9eRYZMQukIoh/oMZsiKtfDIQU160Wwn4hmGINYDqQ+bbou5S0ENexytO2eS1MAgOWCGe6dufOoU23jN6kO5g5AU/FLlB/ECqH8KJiL4c6hI/VAlyVugLEh5ie+1GgsQyIpAIQh49FdyKtb/CFxwZBvmzQ4elaPOPbKGxPmoXrqRozFyDK3hKOk0ZUWSAjvdoNDmU9jt1Si7cmqioebjOAMOpRFN6lrtK7wL6+UvI6U1Lf8g3dSHC6xot1rPhAAZ5OQCkx69FI4yLCo45X9mvIyB1nkifvU9WmqYnkX9ios6tFEYTM4u6swWg/8cPIKHOyBtb6t4UVBqdkH9rc6f4JmHYz3QdZ2jqYj+oxDGfo6vGj06uWXyDGpc8VYDRsnpnkUGmkznr/1zzb5cvto8
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2026 05:27:04.1457
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: e74e59fc-55ec-47fc-57b1-08de8e1cfa56
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BL6PEPF0001AB75.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB7693
 
-Hi Drew,
+On Fri, 27 Mar 2026 18:06:42 +0100, Alexandre Belloni wrote:
+> On 27/03/2026 17:12:04+0530, Akhil R wrote:
+>> On Fri, 27 Mar 2026 09:27:21 +0100, Alexandre Belloni wrote:
+>> > On 27/03/2026 13:48:58+0530, Akhil R wrote:
+>> >> On Thu, 26 Mar 2026 16:44:31 +0100, Alexandre Belloni wrote:
+>> >> > On 26/03/2026 10:05:03-0500, Rob Herring wrote:
+>> >> >> On Wed, Mar 18, 2026 at 05:31:50PM +0000, Conor Dooley wrote:
+>> >> >> > On Wed, Mar 18, 2026 at 10:57:14PM +0530, Akhil R wrote:
+>> >> >> > > Add the 'mipi-i3c-static-method' property mentioned in the MIPI I3C
+>> >> >> > > Discovery and Configuration Specification [1] to specify which discovery
+>> >> >> > > method an I3C device supports during bus initialization. The property is
+>> >> >> > > a bitmap, where a bit value of 1 indicates support for that method, and 0
+>> >> >> > > indicates lack of support.
+>> >> >> > > Bit 0: SETDASA CCC (Direct)
+>> >> >> > > Bit 1: SETAASA CCC (Broadcast)
+>> >> >> > > Bit 2: Other CCC (vendor / standards extension)
+>> >> >> > > All other bits are reserved.
+>> >> >> > > 
+>> >> >> > > It is specifically needed when an I3C device requires SETAASA for the
+>> >> >> > > address assignment. SETDASA will be supported by default if this property
+>> >> >> > > is absent - which means for now the property just serves as a flag to
+>> >> >> > > enable SETAASA, but keep the property as a bitmap to align with the
+>> >> >> > > specifications.
+>> >> >> > > 
+>> >> >> > > [1] https://www.mipi.org/specifications/disco
+>> >> >> > > 
+>> >> >> > > Signed-off-by: Akhil R <akhilrajeev@nvidia.com>
+>> >> >> > > ---
+>> >> >> > >  .../devicetree/bindings/i3c/i3c.yaml          | 30 ++++++++++++++++---
+>> >> >> > >  1 file changed, 26 insertions(+), 4 deletions(-)
+>> >> >> > > 
+>> >> >> > > diff --git a/Documentation/devicetree/bindings/i3c/i3c.yaml b/Documentation/devicetree/bindings/i3c/i3c.yaml
+>> >> >> > > index e25fa72fd785..1705d90d4d79 100644
+>> >> >> > > --- a/Documentation/devicetree/bindings/i3c/i3c.yaml
+>> >> >> > > +++ b/Documentation/devicetree/bindings/i3c/i3c.yaml
+>> >> >> > > @@ -31,10 +31,12 @@ properties:
+>> >> >> > >        described in the device tree, which in turn means we have to describe
+>> >> >> > >        I3C devices.
+>> >> >> > >  
+>> >> >> > > -      Another use case for describing an I3C device in the device tree is when
+>> >> >> > > -      this I3C device has a static I2C address and we want to assign it a
+>> >> >> > > -      specific I3C dynamic address before the DAA takes place (so that other
+>> >> >> > > -      devices on the bus can't take this dynamic address).
+>> >> >> > > +      Other use-cases for describing an I3C device in the device tree are:
+>> >> >> > > +      - When the I3C device has a static I2C address and we want to assign
+>> >> >> > > +        it a specific I3C dynamic address before the DAA takes place (so
+>> >> >> > > +        that other devices on the bus can't take this dynamic address).
+>> >> >> > > +      - When the I3C device requires SETAASA for its discovery and uses a
+>> >> >> > > +        pre-defined static address.
+>> >> >> > >  
+>> >> >> > >    "#size-cells":
+>> >> >> > >      const: 0
+>> >> >> > > @@ -147,6 +149,26 @@ patternProperties:
+>> >> >> > >            through SETDASA. If static address is not present, this address is assigned
+>> >> >> > >            through SETNEWDA after assigning a temporary address via ENTDAA.
+>> >> >> > >  
+>> >> >> > > +      mipi-i3c-static-method:
+>> >> >> > > +        $ref: /schemas/types.yaml#/definitions/uint32
+>> >> >> > > +        minimum: 0x1
+>> >> >> > > +        maximum: 0xff
+>> >> >> > > +        default: 1
+>> >> >> > > +        description: |
+>> >> >> > > +          Bitmap describing which methods of Dynamic Address Assignment from a
+>> >> >> > > +          static address are supported by this I3C Target. A bit value of 1
+>> >> >> > > +          indicates support for that method, and 0 indicates lack of support.
+>> >> >> > 
+>> >> >> > I really am not keen on properties that are bitmaps, why can't we just
+>> >> >> > use the strings "setdasa", "setaasa" etc?
+>> >> >> 
+>> >> >> If this comes from a specification, then I'd tend to just copy it rather 
+>> >> >> than invent our own thing. Obviously if is something structured 
+>> >> >> fundamentally different from how DT is designed, then we wouldn't. But 
+>> >> >> this is just a simple property.
+>> >> >> 
+>> >> > 
+>> >> > The issue being that the specification is not public so it is difficult
+>> >> > to take any decision.
+>> >> 
+>> >> There is a public version available in the same link, but you would still
+>> >> have to provide them a name and an email ID. The document will be sent to
+>> >> the mail ID.
+>> >> 
+>> > 
+>> > The public version only contains one property:
+>> > mipi-disco-interface-revision
+>> 
+>> Could you check once if the below link works?
+>> https://www.mipi.org/mipi-disco-for-i3c-download
+> 
+> It works, thanks. The bitfield is fine then.
 
-On Thu, Jan 29, 2026 at 4:28 AM Drew Fustini <fustini@kernel.org> wrote:>
-> Add interface for CBQRI controller drivers to make use of the resctrl
-> filesystem.
->
-> Co-developed-by: Adrien Ricciardi <aricciardi@baylibre.com>
-> Signed-off-by: Adrien Ricciardi <aricciardi@baylibre.com>
-> Signed-off-by: Drew Fustini <fustini@kernel.org>
-> ---
-> arch/riscv/kernel/qos/qos_resctrl.c | 1192 +++++++++++++++++++++++++++++++++++
-> 1 file changed, 1192 insertions(+)
->
-> ...
->
-> +
-> +int resctrl_arch_update_one(struct rdt_resource *r, struct rdt_ctrl_domain *d,
-> + u32 closid, enum resctrl_conf_type t, u32 cfg_val)
-> +{
-> + struct cbqri_controller *ctrl;
-> + struct cbqri_resctrl_dom *dom;
-> + struct cbqri_config cfg;
-> + int err = 0;
-> +
-> + dom = container_of(d, struct cbqri_resctrl_dom, resctrl_ctrl_dom);
-> + ctrl = dom->hw_ctrl;
-> +
-> + if (!r->alloc_capable)
-> + return -EINVAL;
-> +
-> + switch (r->rid) {
-> + case RDT_RESOURCE_L2:
-> + case RDT_RESOURCE_L3:
-> + cfg.cbm = cfg_val;
-> + err = cbqri_apply_cache_config(dom, closid, t, &cfg);
-> + break;
-> + case RDT_RESOURCE_MBA:
-> + /* covert from percentage to bandwidth blocks */
-> + cfg.rbwb = cfg_val * ctrl->bc.nbwblks / 100;
+Thanks for checking. I will update the link in the commit description and
+keep the rest of the patch as is. Hope that sounds good.
 
-Should use bc.mrbwb to calculate rbwb?
-I think bc.nbwblks represent the available bw blks in the controller. It should should decrease as they are allocated.
-
-> + err = cbqri_apply_bw_config(dom, closid, t, &cfg);
-> + break;
-> + default:
-> + return -EINVAL;
-> + }
-> +
-> + return err;
-> +}
->
-> ...
->
-> +u32 resctrl_arch_get_config(struct rdt_resource *r, struct rdt_ctrl_domain *d,
-> + u32 closid, enum resctrl_conf_type type)
-> +{
-> + struct cbqri_resctrl_dom *hw_dom;
-> + struct cbqri_controller *ctrl;
-> + int reg_offset;
-> + u32 percent;
-> + u32 rbwb;
-> + u64 reg;
-> + int err;
-> +
-> + hw_dom = container_of(d, struct cbqri_resctrl_dom, resctrl_ctrl_dom);
-> +
-> + ctrl = hw_dom->hw_ctrl;
-> +
-> + if (!r->alloc_capable)
-> + return resctrl_get_default_ctrl(r);
-> +
-> + switch (r->rid) {
-> + case RDT_RESOURCE_L2:
-> + case RDT_RESOURCE_L3:
-> + /* Clear cc_block_mask before read limit operation */
-> + cbqri_set_cbm(ctrl, 0);
-> +
-> + /* Capacity read limit operation for RCID (closid) */
-> + err = cbqri_cc_alloc_op(ctrl, CBQRI_CC_ALLOC_CTL_OP_READ_LIMIT, type, closid);
-> + if (err < 0) {
-> + pr_err("%s(): operation failed: err = %d", __func__, err);
-> + return resctrl_get_default_ctrl(r);
-> + }
-> +
-> + /* Read capacity block mask for RCID (closid) */
-> + reg_offset = CBQRI_CC_BLOCK_MASK_OFF;
-> + reg = ioread64(ctrl->base + reg_offset);
-> +
-> + /* Update the config value for the closid in this domain */
-> + hw_dom->ctrl_val[closid] = reg;
-> + return hw_dom->ctrl_val[closid];
-> +
-> + case RDT_RESOURCE_MBA:
-> + /* Capacity read limit operation for RCID (closid) */
-> + err = cbqri_bc_alloc_op(ctrl, CBQRI_CC_ALLOC_CTL_OP_READ_LIMIT, closid);
-> + if (err < 0) {
-> + pr_err("%s(): operation failed: err = %d", __func__, err);
-> + return resctrl_get_default_ctrl(r);
-> + }
-> +
-> + hw_dom->ctrl_val[closid] = cbqri_get_rbwb(ctrl);
-> +
-> + /* Convert from bandwidth blocks to percent */
-> + rbwb = hw_dom->ctrl_val[closid];
-> + rbwb *= 100;
-> + percent = rbwb / ctrl->bc.nbwblks;
-> + if (rbwb % ctrl->bc.nbwblks)
-
-Same Question.
-
-> + percent++;
-> + return percent;
-> +
-> + default:
-> + return resctrl_get_default_ctrl(r);
-> + }
-> +}
-
-Sorry for my previous reply on old patch. Please ignore it. I’m re-sending this comment on v2.
-
-Thank,
-Wenjia
-
-
-
-
-
-郭文佳10158971
+Best Regards,
+Akhil
