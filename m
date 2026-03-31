@@ -1,155 +1,160 @@
-Received: from PH0PR06CU001.outbound.protection.outlook.com (mail-westus3azon11011070.outbound.protection.outlook.com [40.107.208.70])
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADB963A1A38;
-	Tue, 31 Mar 2026 10:09:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.208.70
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774951777; cv=fail; b=gcbZ9tHVbxySP0LpUIRFDCkDtWNvU7zavIYkucEfmsxEfI9Gcjzt7X9ntYo6E27/nCRu0m/vVtEl2r0xWzl+eYh/IyBMOAoHdvOrrsipRsmcu54nYqbKieRHluWc0Y5LC9SH3nlPxVLpyRt2V8GVyf35orJskDg6pKE63bKXlNw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774951777; c=relaxed/simple;
-	bh=/Q7VyRE0kz2w0ERqr2gblIsDYOpcA2IW9vANTQE8nLg=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=J5wmrEb6t/8sI6sKdTHRY1pRlBBzhL7jqKrxDEEqKaPVYhCHwrsz6kDAByeDLjtPOLIgNKPH7Uo8Gq1VoTwVU/4xn8RszR0a4Mwbhd27oEVnZAPmCxQlnCQeSmqSoU9i3jfj4DMO3KZ1bpZ42IIHQzd2WYYXkbjvQSy7UqlEo4w=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=i3oxRlQ5; arc=fail smtp.client-ip=40.107.208.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="i3oxRlQ5"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Qb48zAQFIXMpKf3cbZoXyNcvHYh4ut0s5sEDVbVdpPMBq8euubYbuNl3KBOXyCdBsyY6FAN/+0soK0ZwkVGMfDKQgkgtUBUShNuUjwrvu0dmP53VkeTPZQdQ6xTdG8K0O8ySpTfrosKrIo7FqWsq/8rbqIwkacNNzarCM/pZ9hob3Fog8RxafZVhJOQ9ikIJf5+4c17Z2pRQp5EmUSQKnDgSzCLU5trPokh+wKNpGQuUn9w+OsM8Nd7H4w5SN+nPgoEcy1EbrjlRt0kQwskodV/5WSXJhOOBnqkOeW5xowJ9fazAVlCtGclR+oeLofAaUaSVFSVuhfjTCc2b5hQTFg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rkzTy732sh6+Kc/GptaD4U1dc5kPwfd1HhpxUZvmFdo=;
- b=URz4UjvfyeM00mJ4WmE698Cl/zpSXj1B2HlfQGUzJdLw9axw/m35oEo8tnJtC4fN0Zg99TYgFfvs0PzGJH4Ac4uMxf/LK+TMecl1tba9kTdnxQ/gngJIO5GzVi6QQcWUz8eHO2J5ilcH59T9ezGWnvUBsK70sUsLOdBY31LgY/Dc/EhuA1GrHq3WlTA/Qpmbdmvs92rVn2CVkjn3UgcOwj9Sqqm1Guedf6ghlbpaGRdPwZqG83iu4UANoFJlOTJwIRL5NR7cffAZMFyTdLGU/exugbUxJcu3SE8lXevJOs2uYHMe1HMuhWKLVW/D5Wf4AvsspBhQsuz6O1uNMBqVNg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rkzTy732sh6+Kc/GptaD4U1dc5kPwfd1HhpxUZvmFdo=;
- b=i3oxRlQ5X45WCdGHStooJwcWzz0HzQq2vf+Wl+rZcjbPkfqX9b7d7x7uo1UPZnxfmOIL8orTd2RynKeDRMFqoYU3umZwW7kuV93m87FetdBwOZ9zGcozWEWSOX9dlb7is7eh/QD1ZQgTEeJiP1BNZ/8z5xZ/jmdElCQjrdZh+4DcoL4CXJO83dN24BFiXHsrXEhlKl8kxUl5fKH03H7QXSKUpdlBQwAiPeFmk8heVNIoTIsyF0p0ZAi7hRi+fP7MmwSNdBOTPNGER9bmI8Jj7MGul2+g02s0kFRBVV7/8xwZAFA37FwILSO1+/BnoGt6GGXstfStAfF55OUIL8utnw==
-Received: from MN0PR03CA0009.namprd03.prod.outlook.com (2603:10b6:208:52f::14)
- by IA1PR12MB6138.namprd12.prod.outlook.com (2603:10b6:208:3ea::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9769.15; Tue, 31 Mar
- 2026 10:09:29 +0000
-Received: from BL02EPF0001A104.namprd05.prod.outlook.com
- (2603:10b6:208:52f::4) by MN0PR03CA0009.outlook.office365.com
- (2603:10b6:208:52f::14) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9745.29 via Frontend Transport; Tue,
- 31 Mar 2026 10:09:29 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- BL02EPF0001A104.mail.protection.outlook.com (10.167.241.135) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9745.21 via Frontend Transport; Tue, 31 Mar 2026 10:09:29 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Tue, 31 Mar
- 2026 03:09:13 -0700
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Tue, 31 Mar
- 2026 03:09:12 -0700
-Received: from BUILDSERVER-IO-L4T.nvidia.com (10.127.8.13) by mail.nvidia.com
- (10.129.68.7) with Microsoft SMTP Server id 15.2.2562.20 via Frontend
- Transport; Tue, 31 Mar 2026 03:09:05 -0700
-From: Akhil R <akhilrajeev@nvidia.com>
-To: <thierry.reding@kernel.org>
-CC: <Frank.Li@nxp.com>, <acpica-devel@lists.linux.dev>,
-	<akhilrajeev@nvidia.com>, <alexandre.belloni@bootlin.com>,
-	<conor+dt@kernel.org>, <devicetree@vger.kernel.org>, <ebiggers@kernel.org>,
-	<fredrik.markstrom@est.tech>, <jonathanh@nvidia.com>, <krzk@kernel.org>,
-	<lenb@kernel.org>, <linux-acpi@vger.kernel.org>,
-	<linux-hwmon@vger.kernel.org>, <linux-i3c@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-	<linux@roeck-us.net>, <lkp@intel.com>, <llvm@lists.linux.dev>,
-	<miquel.raynal@bootlin.com>, <oe-kbuild-all@lists.linux.dev>,
-	<p.zabel@pengutronix.de>, <rafael@kernel.org>, <robert.moore@intel.com>,
-	<robh@kernel.org>
-Subject: Re: [PATCH 04/12] i3c: master: Support ACPI enumeration
-Date: Tue, 31 Mar 2026 15:39:04 +0530
-Message-ID: <20260331100904.30932-1-akhilrajeev@nvidia.com>
-X-Mailer: git-send-email 2.50.1
-In-Reply-To: <acO_PUjS_VG07qcS@orome>
-References: <acO_PUjS_VG07qcS@orome>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1A253FE677
+	for <acpica-devel@lists.linux.dev>; Tue, 31 Mar 2026 14:42:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1774968142; cv=none; b=Ncn5ZUkFyvDNDvDPRwYyavdrJsfdqzbIqQtH5NKjSanM7I0g0rM0vglo3aq+rWlLTCPubijcZj4we2S4404Q2tDWw1mzgSdfcQNqyE9fsk/vxgErbSCIT0b9SJ+c5AUK6AOYLE1hk8OdYhBWHbGi9XuNMiv+e4PtuVSjsDVSSso=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1774968142; c=relaxed/simple;
+	bh=fYIT+cqEDxgHSO28QxCRmWesd/bKgSrSZYDth0wro10=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=s8rr4Ephz0W5GLvp3MCoeUGwQjK6Em/TB+LLH/t7Yzcn5YMAhre0VH7oZB6Pm+sFNqIOy9dLado/84YADo+ueSP/fAe8EWBG1p/5MXz5cV2yTR/V5NV7zw5Hx9wZDVWzV0FyjeDvWp3z+J4SYMHxNWw+WTMNA1j7+ckg5liVV4Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.224.107])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTPS id 4flW5h6S3GzHnGdq;
+	Tue, 31 Mar 2026 22:41:28 +0800 (CST)
+Received: from dubpeml500006.china.huawei.com (unknown [7.214.146.138])
+	by mail.maildlp.com (Postfix) with ESMTPS id 4300540587;
+	Tue, 31 Mar 2026 22:42:16 +0800 (CST)
+Received: from dubpeml500008.china.huawei.com (7.214.146.94) by
+ dubpeml500006.china.huawei.com (7.214.146.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Tue, 31 Mar 2026 15:42:15 +0100
+Received: from dubpeml500008.china.huawei.com ([7.214.146.94]) by
+ dubpeml500008.china.huawei.com ([7.214.146.94]) with mapi id 15.02.1544.011;
+ Tue, 31 Mar 2026 15:42:15 +0100
+From: Shiju Jose <shiju.jose@huawei.com>
+To: Kai-Heng Feng <kaihengf@nvidia.com>, "rafael@kernel.org"
+	<rafael@kernel.org>
+CC: Jonathan Cameron <jonathan.cameron@huawei.com>, "helgaas@kernel.org"
+	<helgaas@kernel.org>, "Guohanjun (Hanjun Guo)" <guohanjun@huawei.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+	"acpica-devel@lists.linux.dev" <acpica-devel@lists.linux.dev>,
+	"linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>, "Tony
+ Luck" <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>, "Mauro Carvalho
+ Chehab" <mchehab@kernel.org>, Shuai Xue <xueshuai@linux.alibaba.com>, "Len
+ Brown" <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>, "Fabio M. De
+ Francesco" <fabio.m.de.francesco@linux.intel.com>, Breno Leitao
+	<leitao@debian.org>, Jason Tian <jason@os.amperecomputing.com>
+Subject: RE: [PATCH v3 1/3] ACPI: APEI: GHES: Add
+ devm_ghes_register_vendor_record_notifier()
+Thread-Topic: [PATCH v3 1/3] ACPI: APEI: GHES: Add
+ devm_ghes_register_vendor_record_notifier()
+Thread-Index: AQHcwCmNhLqdgm9+6UO86Dnyr2nw5LXIuGrg
+Date: Tue, 31 Mar 2026 14:42:15 +0000
+Message-ID: <1d4350a5e55640c68d051229e8d79576@huawei.com>
+References: <20260330094203.38022-1-kaihengf@nvidia.com>
+ <20260330094203.38022-2-kaihengf@nvidia.com>
+In-Reply-To: <20260330094203.38022-2-kaihengf@nvidia.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL02EPF0001A104:EE_|IA1PR12MB6138:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0178985a-f202-4647-67ff-08de8f0d98e0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|36860700016|7416014|376014|1800799024|82310400026|22082099003|18002099003|56012099003;
-X-Microsoft-Antispam-Message-Info:
-	o66Hi730BBYN4PsXul8TRyNJNTRWyLlrDJxFC9jpJpF7I2Ob1qgIhUAHDNEGvPsYARzSEHcnZt092aTt+96hjjiLf7mlmwdaByLY7eBVc2s7T2Jb3YML/tXN2VtIOSDuyPFrW5qflpO2njlIXJ4sG3/MgqydVZks9ZO585NZZMj9DLL+QtPf1/bDdPICX6DwSorO2tXq5683ky8JaoTTGG0eLG8vlnJwbWikQJrLgsSWsHJcUTLuA4j0PEUti6fcMlL/LWmgNtkJ9H3ywb6c5GgMTQTBhKDqQgktXTbWHTABJxrZJVFoogO1v5w9wx8xDQr4UUe1G4xcNpx6nSwBFyuSdzLiRQmrIJkyfKcp1Ah6wPiFNkOIVZwFI3N8vGSwe0k3URYhDh/WbNojFneEHdyJLrpy9p5IApDIcGK+w02TA0WGbXEkocqzOvXz+rsbZ90yEWm1u50syx/JPt5qEVsQZPOdCN27mZDscJ0qB+YYXyQ7l8bLpCf1a8avGzLsUCBZxfvwIo7HVxIcmJMwDUsSwj9VGkbdtcgexWh2OwLec0PmLaX44rsh6cbZLPSofntEpyHq7gzi7uIiYrQQDQAXFlm4hrxfjBKIFIhVgpyA5rVkYAtvnBvJyxQrY4H4YTXhSkXxrAa1mMJSP28QnRXH3P95oWM/Z276ZJZEpentn8QoIoZj8Q5v3AODjYSyjtoUVd+P1qsuud8t/wtGG0NJdKciQUiFcek1g+Rzh8JCB9OIqrSdlieNSjWeRG5PDBUGg76+wRlSBnmq8rFYQA==
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(36860700016)(7416014)(376014)(1800799024)(82310400026)(22082099003)(18002099003)(56012099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	xTvS9JM/gPYed1yWoTFxG5DSrVMgL4FXA3s4LiLXzwutjkK9D6irMDTUKWs+M2woxZKj63S8KrY57S+e2Nu8vT2iKwhOwFdJskM8NUywTRSU/0EmyJA33ZILjM91aZLsl2dg2/QMZuzRcMARhBB7BfOHTrikfoeCLkyDb3PSkxUN4nMxHB1U42NQLilTBfnH6q6dVfPOTQ67NOwRGHzdDBVPzo8r+vpzQKMH5V/YV4TZLV1NvNpxOEhtPtdTXkegLDziuJszpEiDrMjehM2iyZPE6wxYmOJzfL6NorQZ1RdI3mbzlf/gvhZl7Ot/pGEcIZqzxKtrq1tO/0Pd/8spLM6pvVrRH7cWUWhqm+j2/lsWxR/F041phU0K6m57TagWXlNA/XAYTjl6nQiwGIHtE1kZ9xzo+FYWjxHcG8TgvB8VuLyV8/WbEr3svc+ga+n2
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Mar 2026 10:09:29.3415
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0178985a-f202-4647-67ff-08de8f0d98e0
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BL02EPF0001A104.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6138
 
-On Wed, 25 Mar 2026 11:59:12 +0100, Thierry Reding wrote:
-> On Tue, Mar 24, 2026 at 10:52:15PM +0530, Akhil R wrote:
->> On Tue, 24 Mar 2026 09:43:27 +0100, Alexandre Belloni wrote:
->> 
->> ...
->> 
->> >> #include <linux/acpi.h> is added in PATCH 03/12. The functions' prototypes
->> >> are present in acpi.h. I think the bot checked this patch individually,
->> >> or did I miss something?
->> >> 
->> > 
->> > #include <acpi/acpi_bus.h> is behind an #ifdef in acpi.h and your code
->> > is not.
->> 
->> Thanks for pointing Alexandre and Guenter. I also noticed that we do not
->> have stub functions for a few of the acpi_* functions in #else.
->> 
->> Looks like I will have to guard calls to these functions under
->> #ifdef CONFIG_ACPI.
-> 
-> Alternatively it might make sense to add the stubs in a separate patch.
-> I don't know if they were purposefully left out or nobody's ever run
-> into the lack of these before.
+>-----Original Message-----
+>From: Kai-Heng Feng <kaihengf@nvidia.com>
+>Sent: 30 March 2026 10:42
+>To: rafael@kernel.org
+>Cc: Jonathan Cameron <jonathan.cameron@huawei.com>;
+>helgaas@kernel.org; Guohanjun (Hanjun Guo) <guohanjun@huawei.com>;
+>linux-kernel@vger.kernel.org; linux-acpi@vger.kernel.org; linux-
+>pci@vger.kernel.org; acpica-devel@lists.linux.dev; linux-
+>hardening@vger.kernel.org; Kai-Heng Feng <kaihengf@nvidia.com>; Shiju Jose
+><shiju.jose@huawei.com>; Tony Luck <tony.luck@intel.com>; Borislav Petkov
+><bp@alien8.de>; Mauro Carvalho Chehab <mchehab@kernel.org>; Shuai Xue
+><xueshuai@linux.alibaba.com>; Len Brown <lenb@kernel.org>; Robert Moore
+><robert.moore@intel.com>; Fabio M. De Francesco
+><fabio.m.de.francesco@linux.intel.com>; Breno Leitao <leitao@debian.org>;
+>Jason Tian <jason@os.amperecomputing.com>
+>Subject: [PATCH v3 1/3] ACPI: APEI: GHES: Add
+>devm_ghes_register_vendor_record_notifier()
+>
+>Add a device-managed wrapper around
+>ghes_register_vendor_record_notifier()
+>so drivers can avoid manual cleanup on device removal or probe failure.
+>
+>Cc: Shiju Jose <shiju.jose@huawei.com>
+>Cc: Jonathan Cameron <jonathan.cameron@huawei.com>
+>Signed-off-by: Kai-Heng Feng <kaihengf@nvidia.com>
 
-I looked into this and it turns out to be more involved than expected,
-and requires adding stubs at multiple layers. We may end up either
-sneaking in only what we require or a non-trivial change which may
-involve too many parameters.
+Reviewed-by: Shiju Jose <shiju.jose@huawei.com>
+>---
+>v3:
+> - Change patch title
+> - Move documentation to header file.
+>v2:
+> - New patch.
+>
+> drivers/acpi/apei/ghes.c | 18 ++++++++++++++++++
+> include/acpi/ghes.h      | 11 +++++++++++
+> 2 files changed, 29 insertions(+)
+>
+>diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c index
+>8acd2742bb27..3236a3ce79d6 100644
+>--- a/drivers/acpi/apei/ghes.c
+>+++ b/drivers/acpi/apei/ghes.c
+>@@ -689,6 +689,24 @@ void ghes_unregister_vendor_record_notifier(struct
+>notifier_block *nb)  }
+>EXPORT_SYMBOL_GPL(ghes_unregister_vendor_record_notifier);
+>
+>+static void ghes_vendor_record_notifier_destroy(void *nb) {
+>+	ghes_unregister_vendor_record_notifier(nb);
+>+}
+>+
+>+int devm_ghes_register_vendor_record_notifier(struct device *dev,
+>+					      struct notifier_block *nb)
+>+{
+>+	int ret;
+>+
+>+	ret =3D ghes_register_vendor_record_notifier(nb);
+>+	if (ret)
+>+		return ret;
+>+
+>+	return devm_add_action_or_reset(dev,
+>+ghes_vendor_record_notifier_destroy, nb); }
+>+EXPORT_SYMBOL_GPL(devm_ghes_register_vendor_record_notifier);
+>+
+> static void ghes_vendor_record_work_func(struct work_struct *work)  {
+> 	struct ghes_vendor_record_entry *entry; diff --git
+>a/include/acpi/ghes.h b/include/acpi/ghes.h index
+>7bea522c0657..8d7e5caef3f1 100644
+>--- a/include/acpi/ghes.h
+>+++ b/include/acpi/ghes.h
+>@@ -71,6 +71,17 @@ int ghes_register_vendor_record_notifier(struct
+>notifier_block *nb);
+>  */
+> void ghes_unregister_vendor_record_notifier(struct notifier_block *nb);
+>
+>+/**
+>+ * devm_ghes_register_vendor_record_notifier - device-managed vendor
+>+ * record notifier registration.
+>+ * @dev: device that owns the notifier lifetime
+>+ * @nb: pointer to the notifier_block structure of the vendor record
+>+handler
+>+ *
+>+ * Return: 0 on success, negative errno on failure.
+>+ */
+>+int devm_ghes_register_vendor_record_notifier(struct device *dev,
+>+					      struct notifier_block *nb);
+>+
+> struct list_head *ghes_get_devices(void);
+>
+> void ghes_estatus_pool_region_free(unsigned long addr, u32 size);
+>--
+>2.50.1 (Apple Git-155)
+>
 
-If you would agree, I will guard the ACPI calls used in this patchset with
-#ifdef CONFIG_ACPI to keep things self-contained. If you think adding the
-stubs is worthwhile, we can take them up as a separate series.
-
-Best Regards,
-Akhil
