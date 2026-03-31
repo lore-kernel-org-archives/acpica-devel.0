@@ -1,45 +1,54 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C649F175A6B;
-	Tue, 31 Mar 2026 05:34:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C88A940DFCA;
+	Tue, 31 Mar 2026 05:57:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774935286; cv=none; b=RO+YjDx30sgDi2IuaLCmaetxjnGEVGs8QYFhtJrIgrnGhXBtVOxiKcoUOQD4PhrEdB0EI1ZcWASL6W/k1SIEK5P+C3b9VZ54J353QYFFYTylAjHItg8Wizw4yOJx3yy2wJzsHm9jHcSzBA7aBpHibgMD+4roGlKkTZCF8StzAW8=
+	t=1774936676; cv=none; b=dd68RNzZfiwcRD8kw0U02EzOwRddOTy2hQvGmvcORcnB0SeS/jHQqKlrY7OXps3jWiv0iSN3FFZsEJDFHUqvH1afD2jDwEm6vuxxk0eOFlBACWFM88Sh9ZaKNFBRVaWvtpuzdOJ5NZI974GQiEFR3Ps4h0pDGTE4Co/Z7ZAx1ZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774935286; c=relaxed/simple;
-	bh=ERgkL2Rh8Uk73V3Zb2z9UjJCCMin0IIArfID3g+LSbk=;
+	s=arc-20240116; t=1774936676; c=relaxed/simple;
+	bh=5hADumHSBXCjIT1+LmAVrQVfEhe+8GDNiqeARvyfA+I=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JpFD+T5H2bLaWqqAcF18LQNawjo2WSThSItk7uNlz2IYBwPr/EevyKGUSLdQ2IecZ6DftU2yeFR1/xnz+nPu2cRCIwjZhhupoElmta9W4uRmlLucURJlz5R9Up1tgHsFxX2czdYtM7SoK2yC2tzIB0mqYSWPT+crzB+4iIt18Kg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NwzrqdnY; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=gVgqoDF18OlAaJO3kGNOZsoD+tTZIGp2+CyKCF04dLchWBWCM6kTzcPW1QcTYDXKetPbs5P4qUQgwAij6coPLCm/CwkmTC7L97pPJ7Y72EpVksZpLwXjb3MiWTXqMJ3tkpbVZ8+b0VQ5NfXcVZcKDDmq0qdIeeKITvyxrZ7ofLo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mIyEdRjM; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NwzrqdnY"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A73DC19424;
-	Tue, 31 Mar 2026 05:34:40 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mIyEdRjM"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAE5CC19423;
+	Tue, 31 Mar 2026 05:57:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774935286;
-	bh=ERgkL2Rh8Uk73V3Zb2z9UjJCCMin0IIArfID3g+LSbk=;
+	s=k20201202; t=1774936676;
+	bh=5hADumHSBXCjIT1+LmAVrQVfEhe+8GDNiqeARvyfA+I=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NwzrqdnYKdEzHYC3yTxdkylUQ1f/98RlsJ5axnZ7I7R/tVsGV4biNd2hgONpDJ7g2
-	 qW0H0i8yTJug3ZPpHlP9XeHTf92syolzyfxB+PMYIEkPZh5EotX/7F6Bl4gOFUNg0+
-	 wpOKKjZKVm4/Xr8jpVZciDfs/7fEMb2hMBUpznpkyoaDs8t2lzZxTqRmPg3aGm3tWn
-	 mip77J2Rgp93M0L2OHVAcbZepnWHmf2Ax7+S2C9Fq5BIXr8aBETGODFOJzoxQUFqRE
-	 uCmh100aL7SEvftal4YMDH/TFg1hb4jk5Agu6UC4YtvaNMS04nAzVpoC2zzrlI5ncE
-	 nnMkoYZM8k0wQ==
-Date: Tue, 31 Mar 2026 11:04:32 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Kai-Heng Feng <kaihengf@nvidia.com>
-Cc: rafael@kernel.org, jonathan.cameron@huawei.com, helgaas@kernel.org, 
-	guohanjun@huawei.com, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, 
-	linux-pci@vger.kernel.org, acpica-devel@lists.linux.dev, linux-hardening@vger.kernel.org, 
-	Shiju Jose <shiju.jose@huawei.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kwilczynski@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH v3 2/3] PCI: hisi: Use
- devm_ghes_register_vendor_record_notifier()
-Message-ID: <i4pg4fvo3vulzevo5cnjb5qku73cqtucuxqwhiw73dfxcufhqi@ofsvdrffsegl>
-References: <20260330094203.38022-1-kaihengf@nvidia.com>
- <20260330094203.38022-3-kaihengf@nvidia.com>
+	b=mIyEdRjMgpcYCfx8c2wkR1g9VBqLaIM+JUvM94CrucqM8dJfEWLApjrIuG5eqArjg
+	 QorgFLXDc6ZfIpx7w254FmJvjd01xC6pC7lMhDgaf6fuUDhUM/sRpCv+1AtfEn49Gz
+	 ems2dTvkV+doldKZL09o+HBJ3cIncReLiFwIG8KKbIcCDzBJMhEHJJAhTJj6nICM48
+	 kHAGWQ/MTlrcniA/NcP3wMs2DOnN1+VpqCKRoyyXGUnWFc8TCnZRduI6DtNBYySZft
+	 VOOmZEM5sNsGsXdH1kCX1imhiqJg9AS1s53HKHLn5KWxbVRfd69xa6gIk4QdZKELRC
+	 B2WhVDvepMeqQ==
+Date: Mon, 30 Mar 2026 22:57:54 -0700
+From: Drew Fustini <fustini@kernel.org>
+To: guo.wenjia23@zte.com.cn
+Cc: dave.martin@arm.com, acpica-devel@lists.linux.dev, alex@ghiti.fr,
+	aou@eecs.berkeley.edu, aricciardi@baylibre.com,
+	atish.patra@linux.dev, atishp@rivosinc.com, babu.moger@amd.com,
+	ben.horgan@arm.com, conor+dt@kernel.org, cp0613@linux.alibaba.com,
+	cuiyunhui@bytedance.com, devicetree@vger.kernel.org,
+	fenghua.yu@intel.com, james.morse@arm.com, krzk+dt@kernel.org,
+	lenb@kernel.org, linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+	liu.qingtao2@zte.com.cn, liwei1518@gmail.com, mindal@semihalf.com,
+	npitre@baylibre.com, palmer@dabbelt.com, paul.walmsley@sifive.com,
+	peternewman@google.com, pjw@kernel.org, rafael@kernel.org,
+	reinette.chatre@intel.com, rkrcmar@ventanamicro.com,
+	robert.moore@intel.com, robh@kernel.org, samuel.holland@sifive.com,
+	sunilvl@ventanamicro.com, tony.luck@intel.com, vasu@rivosinc.com,
+	ved@rivosinc.com, x86@kernel.org, zhiwei_liu@linux.alibaba.com
+Subject: Re: [PATCH RFC 08/19] RISC-V: QoS: add resctrl interface for CBQRI
+ controllers
+Message-ID: <actiYi6ACcOrvz9J@gen8>
+References: <20260119-ssqosid-cbqri-v1-8-aa2a75153832@kernel.org>
+ <202603261113.62QBDn8T007047@mse-db.zte.com.cn>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -49,74 +58,61 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20260330094203.38022-3-kaihengf@nvidia.com>
+In-Reply-To: <202603261113.62QBDn8T007047@mse-db.zte.com.cn>
 
-On Mon, Mar 30, 2026 at 05:41:56PM +0800, Kai-Heng Feng wrote:
-> Switch to the device-managed variant so the notifier is automatically
-> unregistered on device removal, allowing the open-coded remove callback
-> to be dropped entirely.
+On Thu, Mar 26, 2026 at 07:05:48PM +0800, guo.wenjia23@zte.com.cn wrote:
+> Hi Drew,
 > 
-> Cc: Shiju Jose <shiju.jose@huawei.com>
-> Cc: Jonathan Cameron <jonathan.cameron@huawei.com>
-> Signed-off-by: Kai-Heng Feng <kaihengf@nvidia.com>
-
-Acked-by: Manivannan Sadhasivam <mani@kernel.org>
-
-Since there is an API dependency, feel free to take it through ACPI tree.
-
-- Mani
-
-> ---
-> v3:
->  - No change.
-> v2:
->  - New patch.
+> On Thu, Jan 29, 2026 at 4:28 AM Drew Fustini <fustini@kernel.org> wrote:>
+> > Add interface for CBQRI controller drivers to make use of the resctrl
+> > filesystem.
+> >
+> > Co-developed-by: Adrien Ricciardi <aricciardi@baylibre.com>
+> > Signed-off-by: Adrien Ricciardi <aricciardi@baylibre.com>
+> > Signed-off-by: Drew Fustini <fustini@kernel.org>
+> > ---
+> >  arch/riscv/kernel/qos/qos_resctrl.c | 1192 +++++++++++++++++++++++++++++++++++
+> >  1 file changed, 1192 insertions(+)
+> >
+> > ...
+> >
+> > +
+> > +int resctrl_arch_update_one(struct rdt_resource *r, struct rdt_ctrl_domain *d,
+> > +                           u32 closid, enum resctrl_conf_type t, u32 cfg_val)
+> > +{
+> > +       struct cbqri_controller *ctrl;
+> > +       struct cbqri_resctrl_dom *dom;
+> > +       struct cbqri_config cfg;
+> > +       int err = 0;
+> > +
+> > +       dom = container_of(d, struct cbqri_resctrl_dom, resctrl_ctrl_dom);
+> > +       ctrl = dom->hw_ctrl;
+> > +
+> > +       if (!r->alloc_capable)
+> > +               return -EINVAL;
+> > +
+> > +       switch (r->rid) {
+> > +       case RDT_RESOURCE_L2:
+> > +       case RDT_RESOURCE_L3:
+> > +               cfg.cbm = cfg_val;
+> > +               err = cbqri_apply_cache_config(dom, closid, t, &cfg);
+> > +               break;
+> > +       case RDT_RESOURCE_MBA:
+> > +               /* covert from percentage to bandwidth blocks */
+> > +               cfg.rbwb = cfg_val * ctrl->bc.nbwblks / 100;
 > 
->  drivers/pci/controller/pcie-hisi-error.c | 12 +-----------
->  1 file changed, 1 insertion(+), 11 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/pcie-hisi-error.c b/drivers/pci/controller/pcie-hisi-error.c
-> index aaf1ed2b6e59..36be86d827a8 100644
-> --- a/drivers/pci/controller/pcie-hisi-error.c
-> +++ b/drivers/pci/controller/pcie-hisi-error.c
-> @@ -287,25 +287,16 @@ static int hisi_pcie_error_handler_probe(struct platform_device *pdev)
->  
->  	priv->nb.notifier_call = hisi_pcie_notify_error;
->  	priv->dev = &pdev->dev;
-> -	ret = ghes_register_vendor_record_notifier(&priv->nb);
-> +	ret = devm_ghes_register_vendor_record_notifier(&pdev->dev, &priv->nb);
->  	if (ret) {
->  		dev_err(&pdev->dev,
->  			"Failed to register hisi pcie controller error handler with apei\n");
->  		return ret;
->  	}
->  
-> -	platform_set_drvdata(pdev, priv);
-> -
->  	return 0;
->  }
->  
-> -static void hisi_pcie_error_handler_remove(struct platform_device *pdev)
-> -{
-> -	struct hisi_pcie_error_private *priv = platform_get_drvdata(pdev);
-> -
-> -	ghes_unregister_vendor_record_notifier(&priv->nb);
-> -}
-> -
->  static const struct acpi_device_id hisi_pcie_acpi_match[] = {
->  	{ "HISI0361", 0 },
->  	{ }
-> @@ -317,7 +308,6 @@ static struct platform_driver hisi_pcie_error_handler_driver = {
->  		.acpi_match_table = hisi_pcie_acpi_match,
->  	},
->  	.probe		= hisi_pcie_error_handler_probe,
-> -	.remove		= hisi_pcie_error_handler_remove,
->  };
->  module_platform_driver(hisi_pcie_error_handler_driver);
->  
-> -- 
-> 2.50.1 (Apple Git-155)
-> 
+> Should use bc.mrbwb to calculate rbwb? 
+> I think bc.nbwblks represent the available bw blks in the controller.
+> It should should decrease as they are allocated.
 
--- 
-மணிவண்ணன் சதாசிவம்
+The resctrl MBA resource is supposed to be the percentage of total
+memory bandwidth. nbwblks is the total number of bandwidth blocks, so I
+think the existing calucation is correct.
+
+From the example SoC configuration, the number of bandwidth blocks is
+1024, and mrbwb is meant to be 80% of nbwblks which is 819.
+
+Setting MB to 80% in schemata would yield: 80 * 1024 / 100 = 819
+
+Thanks,
+Drew
