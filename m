@@ -1,71 +1,133 @@
-Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8ABB1F7575
-	for <acpica-devel@lists.linux.dev>; Wed,  1 Apr 2026 01:55:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BA191DC985;
+	Thu,  2 Apr 2026 02:44:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775008518; cv=none; b=Rydm0uEutSeqL7eEvaZULyb31WM7f7p2LlA0gLRUmJZLi0Wf4mdGUU6qQidMfwStSvz0EA4Jrj9hCk4PSA+YHEvbmfs7vzewuXSTJtmLdGNjx9zCmyRz7QXSKK4sgaOLplrO9wybbO7hFhh+/g3MyeH6Ftzt2QrOHH3QLeQSyWY=
+	t=1775097894; cv=none; b=Zgtlnzg/G+/Mj+VmTqZP7lqLT2hMsiVOagrFLqLp4OUt8lUY2aTBR+rC0GEDPSRZxNmDp8X/qGPMSKcAEWqpWwlT3IZnz4t44C7x1qh+v2cGCC72VdylyrGZpzBLMPO6xLoUuXBU2PbEkWiLnkNuB1YMBdtB3w7hwqsbAosAZ0Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775008518; c=relaxed/simple;
-	bh=q50Bz65E+OyJ9vDk1N9jM1vlWen+ne5EUNUrgXUwgJY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=e+xfYYa5Fv7JREk6InJccbjrRUkXhisSpyNwuwFx2q/Tu4A8AdwjXtx+UT5gcvZd4D2cnIhjpU1qZORkxwmPzBoCrEMKsQ4s2CTgZmn+6VClMY4Cx10JwRMYDCqBqZy+HiX1xCEG5BTQ8Gg8o090tW57sN56nTCC0GxVucWwHQk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=NOWj6NiB; arc=none smtp.client-ip=115.124.30.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+	s=arc-20240116; t=1775097894; c=relaxed/simple;
+	bh=rx9xKdXJN71RUiaBeg38q4nVQgqAHlUDWmMLMw+OMRE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GK60UGCX0+pNzjmPC6/YMDU13rvyPJQ6ymYQp4Vl2MHQsvf8A80jfY6xnpOhAu7RbxKJywJkAkytnPaJPPsfuyvW0h1RHb1oGlny2jsOk2QmsJyiGRFA3bSH8gZBScZUDTQhgwTIcib8LERW1qQJSI0LkZdLdxBTfGTNpnbP8H0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KqZ01y7B; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="NOWj6NiB"
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1775008512; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=etQknAdonqm8UWH0ocwzl5DXIHYZ47qOaMPkJRg7jIs=;
-	b=NOWj6NiB9lHDbjmZvcCt+/GLnHv+rSKBrXzp+PfSAPpXtI0fcVpYmsaeBt3TLBOZ/rA6g4pbSOZCUT1Dg6BTyo3askrxS9gTzLBdtynHsUV2/GdQi8GdmojM0k8bbIcaZ38ltzpg/M4tSxMB/Vl4vMlI7nx9m7NvGQ+rIT1bkmw=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R241e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam011083073210;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0X061LQV_1775008509;
-Received: from 30.246.177.235(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0X061LQV_1775008509 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Wed, 01 Apr 2026 09:55:10 +0800
-Message-ID: <32ad70fc-c07e-47c0-8511-fed3bc3fc76f@linux.alibaba.com>
-Date: Wed, 1 Apr 2026 09:55:21 +0800
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KqZ01y7B"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73027C4CEF7;
+	Thu,  2 Apr 2026 02:44:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1775097894;
+	bh=rx9xKdXJN71RUiaBeg38q4nVQgqAHlUDWmMLMw+OMRE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KqZ01y7BcMo3KNVYIEoZ/bcbwlHEokEwhhP0jPfvq21ZKJyXPqQSPvlCtu3in1Llm
+	 r637XNyzJfxmLlAfwJc+24ZWBv9J2TF94o8vWKzbabJAn9WVwBatdRj+nbD1tV56AG
+	 4qRQ2hzzEDNQcuTivUkNrbuJuQIrXBD9gJvICz1tmjEXft+nwWzIDdX/RwEJgne9SQ
+	 5iQcbhGhE/k19kAQCbBVixW1hI/i8d82XPkU+m1Zlzv4wi9PsSitNGj4vwAPjo8EPs
+	 Fi70xhpMEtUfnS5C814UiFgshcw1xajJx8y1Z42Vlqn5VkZ11sN+ZrH3Qt7hb+355c
+	 o3NGYS2O/Ga4A==
+Date: Wed, 1 Apr 2026 19:44:52 -0700
+From: Drew Fustini <fustini@kernel.org>
+To: Radim =?utf-8?B?S3LEjW3DocWZ?= <radim.krcmar@oss.qualcomm.com>
+Cc: Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
+	Samuel Holland <samuel.holland@sifive.com>,
+	Adrien Ricciardi <aricciardi@baylibre.com>,
+	Nicolas Pitre <npitre@baylibre.com>,
+	Kornel =?utf-8?Q?Dul=C4=99ba?= <mindal@semihalf.com>,
+	Atish Patra <atish.patra@linux.dev>,
+	Atish Kumar Patra <atishp@rivosinc.com>,
+	Vasudevan Srinivasan <vasu@rivosinc.com>,
+	Ved Shanbhogue <ved@rivosinc.com>,
+	yunhui cui <cuiyunhui@bytedance.com>,
+	Chen Pei <cp0613@linux.alibaba.com>,
+	Liu Zhiwei <zhiwei_liu@linux.alibaba.com>,
+	Weiwei Li <liwei1518@gmail.com>, guo.wenjia23@zte.com.cn,
+	liu.qingtao2@zte.com.cn,
+	Reinette Chatre <reinette.chatre@intel.com>,
+	Tony Luck <tony.luck@intel.com>, Babu Moger <babu.moger@amd.com>,
+	Peter Newman <peternewman@google.com>,
+	Fenghua Yu <fenghua.yu@intel.com>,
+	James Morse <james.morse@arm.com>, Ben Horgan <ben.horgan@arm.com>,
+	Dave Martin <Dave.Martin@arm.com>, linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org, x86@kernel.org,
+	Rob Herring <robh@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>,
+	Sunil V L <sunilvl@ventanamicro.com>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
+	devicetree@vger.kernel.org,
+	linux-riscv <linux-riscv-bounces@lists.infradead.org>
+Subject: Re: [PATCH RFC v2 08/17] RISC-V: QoS: add resctrl interface for
+ CBQRI controllers
+Message-ID: <ac3YJMI2U/zGEBM0@x1>
+References: <20260128-ssqosid-cbqri-v2-0-dca586b091b9@kernel.org>
+ <20260128-ssqosid-cbqri-v2-8-dca586b091b9@kernel.org>
+ <DHH5NGQGQYBE.31X8OI8AKTYRU@oss.qualcomm.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/3] ACPI: APEI: GHES: Add
- devm_ghes_register_vendor_record_notifier()
-To: Kai-Heng Feng <kaihengf@nvidia.com>, rafael@kernel.org
-Cc: jonathan.cameron@huawei.com, helgaas@kernel.org, guohanjun@huawei.com,
- linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
- linux-pci@vger.kernel.org, acpica-devel@lists.linux.dev,
- linux-hardening@vger.kernel.org, Shiju Jose <shiju.jose@huawei.com>,
- Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>,
- Mauro Carvalho Chehab <mchehab@kernel.org>, Len Brown <lenb@kernel.org>,
- Robert Moore <robert.moore@intel.com>,
- "Fabio M. De Francesco" <fabio.m.de.francesco@linux.intel.com>,
- Breno Leitao <leitao@debian.org>, Jason Tian <jason@os.amperecomputing.com>
-References: <20260330094203.38022-1-kaihengf@nvidia.com>
- <20260330094203.38022-2-kaihengf@nvidia.com>
-From: Shuai Xue <xueshuai@linux.alibaba.com>
-In-Reply-To: <20260330094203.38022-2-kaihengf@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <DHH5NGQGQYBE.31X8OI8AKTYRU@oss.qualcomm.com>
 
-
-
-On 3/30/26 5:41 PM, Kai-Heng Feng wrote:
-> Add a device-managed wrapper around ghes_register_vendor_record_notifier()
-> so drivers can avoid manual cleanup on device removal or probe failure.
+On Tue, Mar 31, 2026 at 07:48:27PM +0200, Radim Krčmář wrote:
+> 2026-01-28T12:27:29-08:00, Drew Fustini <fustini@kernel.org>:
+> > Add interface for CBQRI controller drivers to make use of the resctrl
+> > filesystem.
+> >
+> > Co-developed-by: Adrien Ricciardi <aricciardi@baylibre.com>
+> > Signed-off-by: Adrien Ricciardi <aricciardi@baylibre.com>
+> > Signed-off-by: Drew Fustini <fustini@kernel.org>
+> > ---
 > 
-> Cc: Shiju Jose <shiju.jose@huawei.com>
-> Cc: Jonathan Cameron <jonathan.cameron@huawei.com>
-> Signed-off-by: Kai-Heng Feng <kaihengf@nvidia.com>
+> Hi Drew, I have just a few minor comments as I noticed that you plan to
+> send a new version soon, so I'll try for a review then...
 
-LGTM.
+Thanks for reviewing.
 
-Reviewed-by: Shuai Xue <xueshuai@linux.alibaba.com>
+> > diff --git a/arch/riscv/kernel/qos/qos_resctrl.c b/arch/riscv/kernel/qos/qos_resctrl.c
+> > +static int cbqri_probe_controller(struct cbqri_controller_info *ctrl_info,
+> > +				  struct cbqri_controller *ctrl)
+> > +{
+> > +	int err = 0, status;
+> > +	u64 reg;
+> [...]
+> > +	ctrl->base = ioremap(ctrl_info->addr, ctrl_info->size);
+> > +	if (!ctrl->base) {
+> > +		pr_warn("%s(): goto err_release_mem_region", __func__);
+> 
+> Missing "err = -E...".
 
-Thanks.
-Shuai
+Good point, I will fix.
+
+> 
+> > +		goto err_release_mem_region;
+> > +	}
+> [...]
+> > +		ctrl->ver_minor = reg & CBQRI_CC_CAPABILITIES_VER_MINOR_MASK;
+> > +		ctrl->ver_major = reg & CBQRI_CC_CAPABILITIES_VER_MAJOR_MASK;
+> 
+> Major version is shifted.
+
+Thanks, I will fix.
+
+> 
+> > +
+> > +		ctrl->cc.supports_alloc_op_flush_rcid = (reg >> CBQRI_CC_CAPABILITIES_FRCID_SHIFT)
+> > +			& CBQRI_CC_CAPABILITIES_FRCID_MASK;
+> 
+> FIELD_GET() could be used to make the mask+shift pattern nicer when
+> defined by GENMASK().
+
+Good point, I will switch to GENMASK and FIELD_GET.
+
+Thanks,
+Drew
