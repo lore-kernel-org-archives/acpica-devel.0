@@ -1,46 +1,46 @@
 Received: from jpms-ob02-os7.noc.sony.co.jp (jpms-ob02-os7.noc.sony.co.jp [211.125.139.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49D9138B7CF;
-	Thu, 16 Apr 2026 07:36:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C8E338B7BD;
+	Thu, 16 Apr 2026 07:36:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=211.125.139.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776324994; cv=none; b=GC2fZyb5W27WaD5JFsl6u5WeL6jwKzItYagp7anIUxzLHthFkn+bZpCWq8MpWBga+iN+j5yY/CsR3wi0C6o74ckpheZ2n3TRWuUg6uGXSBLc2/QfkF5ty3qLbR9iFJTpnR+EWAZ6YL1rUmZf9Gi5Tun5pWRBZ6mnrgQ2qny/gpc=
+	t=1776324997; cv=none; b=uDZQ/Ut6PHgFKzXXMKI66sKT2tVeEXuBK5068rG8gowaRSqOJIcsumBj0AJk7fKzMCyUN86dH8+89APw2VAZEKUJ8UQb9AcGlH9QUU/+6EisymSF9+t0ZqOgI7BkI4YBoI38He8menoUNahmZlfY8xLQobHPmCI0AsmgyAOTNyM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776324994; c=relaxed/simple;
-	bh=Nc2UQueJJpx5cEnw6QVS+cko2jCSmKFZTBhfxDS9FDE=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=i5rK0NKcyfqpsq9NbS7rr6mgGDZvlGDCudYfGp79lvFbALXHRYxM3akMT4+Yu6etfFy5UlnOqzHBWDlH+GZhglK/BCJ06o1OvxDW6VbSiBKoeD20Ez5t7U85qA2ukI9Yl7nKDW9jLd5XK6K/Y+NyfiJ4x9xlfiGrkpl/I1CRzts=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sony.com; spf=fail smtp.mailfrom=sony.com; dkim=pass (2048-bit key) header.d=sony.com header.i=@sony.com header.b=SA9CcAcG; arc=none smtp.client-ip=211.125.139.72
+	s=arc-20240116; t=1776324997; c=relaxed/simple;
+	bh=6VevYWrs8NqWN2y3Eq38+J1jFjlWELnxkvsZaY351vU=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=k24gQ4TvzvO1wFcUSRRxFcFFckkxGuMYRPuNFJpf8Y8hb5K5KCNW9F/wvTBE+HUDx1NhZhRC5yZEAUxfOS02lmaB/o3DmbFG1HJthq2PowB1f7iEdjJoXdPUCitWhNqBUx7mluXzWcWrOs0R2aEa6lq0GP8CxBjto8puc8oI8iY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sony.com; spf=fail smtp.mailfrom=sony.com; dkim=pass (2048-bit key) header.d=sony.com header.i=@sony.com header.b=UwtS7tZy; arc=none smtp.client-ip=211.125.139.72
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sony.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=sony.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sony.com header.i=@sony.com header.b="SA9CcAcG"
+	dkim=pass (2048-bit key) header.d=sony.com header.i=@sony.com header.b="UwtS7tZy"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=sony.com; s=s1jp; t=1776324993; x=1807860993;
-  h=from:subject:date:message-id:mime-version:
-   content-transfer-encoding:to:cc;
-  bh=Orn2LLlhCQ0KgjJvKbkCqKUkE5z35R+KTPfG1kMwGRY=;
-  b=SA9CcAcGbN3tpHdmkLucS/HIzFu4ZJQRK2a2OBdplTvCB3u2NETn9afD
-   5POn+xVTcPMQUjm/iI5LNWdzeF1Jdebsr/mJ2m/nopnC4mi+zU9LH0OOq
-   iT9U3xaQMEXvah/Ef/iSPAqOkdrQ0D0qJA4SELPHBWtF4OE9l4kGVtrUl
-   p1hHUINYOH8R3ZGyds5kZrvBICkl8aE2RPUj9QcG43NQSegkHKw6OyqGD
-   Z2tFnxv6JeBx/E8qKbXV981VOXwglAXOOMZ3eWPIqn43Ij7rf5GUyX+He
-   /r/d3H5WIZkS7K7FK7xfITDa9o1jEfoXlwF/achFHb8Ch77lJEpUWo0rd
-   g==;
-X-CSE-ConnectionGUID: T3EBnxIbQZOYROkMip9jPw==
-X-CSE-MsgGUID: RFX+ZOexQr6ZtY57TQhxRA==
+  d=sony.com; s=s1jp; t=1776324995; x=1807860995;
+  h=from:date:subject:mime-version:content-transfer-encoding:
+   message-id:references:in-reply-to:to:cc;
+  bh=P1H8FkBnSqxqtSxdd4aW+R2l9i7ipYi67lARmUWjnnk=;
+  b=UwtS7tZyr4DQDRmffwGhMJXBS/WCADwUrf5XsJOKlBaLf6JjLEnT02ZJ
+   kBKR6j7I2H2++jYx2znd3Lb/E9EJcILijT8xHPNK7snds/vVKh/vYKw9M
+   6yeK+O1UvMWIBrTqGgOw8SUZPqe8Ua6uh/uGKwvWuCxEoY7rAgf+ERjqq
+   UyIpWYrT7lV4+uhfn36pO4o4uvjEo8yO1tR0iei+JiE47GgKbiXcXss39
+   L1nth/Azh2kR9dzLmxTjuQbCr6GB/92dzI//eDQDaOhjmKIxSQ06i4Ocm
+   sCxgtK3+eOyKA356zzDlC9B0AYZzfxF53BlDYwpu+emm3TtHBgfG129IJ
+   A==;
+X-CSE-ConnectionGUID: puuXOtVQTLKIDmDQBqmQPA==
+X-CSE-MsgGUID: gvr2bwGJSc+5iVkJbfSZNA==
 Received: from unknown (HELO jpmta-ob01-os7.noc.sony.co.jp) ([IPv6:2001:cf8:acf:1104::6])
-  by jpms-ob02-os7.noc.sony.co.jp with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2026 16:26:21 +0900
-X-CSE-ConnectionGUID: RuTO5Z8yRlKM0lZk2jlxEQ==
-X-CSE-MsgGUID: lcFHQUBpTqCWChMP43wQAw==
+  by jpms-ob02-os7.noc.sony.co.jp with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2026 16:26:23 +0900
+X-CSE-ConnectionGUID: Gap9FMZIR4yR+/UsOrelaQ==
+X-CSE-MsgGUID: RCj85djZSR6e3ZBDGeVJRw==
 X-IronPort-AV: E=Sophos;i="6.23,181,1770562800"; 
-   d="scan'208";a="61013880"
+   d="scan'208";a="61013883"
 Received: from unknown (HELO [127.0.1.1]) ([IPv6:2001:cf8:1:573:0:dddd:6b3e:119e])
-  by jpmta-ob01-os7.noc.sony.co.jp with ESMTP; 16 Apr 2026 16:26:20 +0900
+  by jpmta-ob01-os7.noc.sony.co.jp with ESMTP; 16 Apr 2026 16:26:21 +0900
 From: Shashank Balaji <shashank.mahadasyam@sony.com>
-Subject: [PATCH] Enable sysfs module symlink for more built-in drivers
-Date: Thu, 16 Apr 2026 16:26:15 +0900
-Message-Id: <20260416-acpi_mod_name-v1-0-1a4d96fd86c9@sony.com>
+Date: Thu, 16 Apr 2026 16:26:16 +0900
+Subject: [PATCH] ACPI: bus: set mod_name in driver registration
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -49,10 +49,9 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIABeP4GkC/yXM0QpAMBSA4VfRubZimPIqkmY7OMpoQ2rt3Q2X3
- 8X/e3BoCR00iQeLFznaTESeJqBmaSZkpKOBZ1xkZS6YVDv166Z7I1dkoygrWQssinqA2OwWR7q
- /X9v9duewoDreCYTwAONSLcFxAAAA
-X-Change-ID: 20260416-acpi_mod_name-f645a76e337b
+Message-Id: <20260416-acpi_mod_name-v1-1-1a4d96fd86c9@sony.com>
+References: <20260416-acpi_mod_name-v1-0-1a4d96fd86c9@sony.com>
+In-Reply-To: <20260416-acpi_mod_name-v1-0-1a4d96fd86c9@sony.com>
 To: "Rafael J. Wysocki" <rafael@kernel.org>, 
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
  Danilo Krummrich <dakr@kernel.org>, Len Brown <lenb@kernel.org>, 
@@ -64,57 +63,74 @@ Cc: linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
  Rahul Bukte <rahul.bukte@sony.com>, Daniel Palmer <daniel.palmer@sony.com>, 
  Tim Bird <tim.bird@sony.com>
 X-Mailer: b4 0.16-dev-3bfbc
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1889;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2453;
  i=shashank.mahadasyam@sony.com; h=from:subject:message-id;
- bh=Nc2UQueJJpx5cEnw6QVS+cko2jCSmKFZTBhfxDS9FDE=;
- b=owGbwMvMwCU2bX1+URVTXyjjabUkhswH/dJL2D0a97jHreFLi2AxuqfrfuKb4/OQIKV/K/2/s
- UVujd/TUcrCIMbFICumyFKqVP1r74qgJT1nXivCzGFlAhnCwMUpABMJO83IsKQm+c3W2/MvOtXt
- XZ/smqqsHBfNcmgf37zr11xZrrtWPGD4ZyPDzfJSRTil/EDWh3XnYxKvhu882rK9ruvHustl4pW
- P+AA=
+ bh=6VevYWrs8NqWN2y3Eq38+J1jFjlWELnxkvsZaY351vU=;
+ b=owGbwMvMwCU2bX1+URVTXyjjabUkhswH/TJmz98cUmR78+XYBZeCI67+RYUTTn18fKF0f/3WZ
+ 2fcEsTqOkpZGMS4GGTFFFlKlap/7V0RtKTnzGtFmDmsTCBDGLg4BWAiga6MDO99rufu3LzWdvU1
+ jlChG1x1jSEe4j+3TfOesaJa7OqXzm6G/65dsyz1uUq9un73l6lWd/lcdFuX3Vyuelgy+XiCwpk
+ UTgA=
 X-Developer-Key: i=shashank.mahadasyam@sony.com; a=openpgp;
  fpr=75227BFABDA852A48CCCEB2196AF6F727A028E55
 
-struct device_driver's mod_name is not set by a number of bus' driver registration
-functions. Without that, built-in drivers don't have the module symlink in sysfs.
-We want this to go from unbound driver name -> module name -> kernel config name.
-This is useful on embedded platforms to minimize kernel config, reduce kernel size,
-and reduce boot time.
+Pass KBUILD_MODNAME through the driver registration macro so that
+the driver core can create the module symlink in sysfs for built-in
+drivers.
 
-In order to achieve this, mod_name has to be set to KBUILD_MODNAME, and this has
-to be done for all buses which don't yet do this.
-
-Here are some treewide stats after analysis by Claude:
-- 110 registration functions across all bus types
-- 20 of them set mod_name
-- Remaining 90 do not set mod_name:
-    1. 36 functions under pattern 1:
-        They have a __register function + register macro. KBUILD_MODNAME needs to
-        be passed and the function needs to take mod_name as input.
-    2. 42 functions under pattern 2:
-        These have no macro wrapper. They need a double-underscore rename + macro
-        wrapper to make them similar to pattern 1.
-    3. Remaining 12 do not have such a clean registration interface. More analysis
-       is required.
-
-We plan to start with pattern 1, since it's the easiest category of changes.
-Within that, for now we're only sending the acpi patch. If we get the go-ahead
-on that, we'll send the remaining ones.
-
+Fixes: 48b9c4862bd3 ("ACPI: store owner from modules with acpi_bus_register_driver()")
+Assisted-by: Claude:claude-4.6-opus
 Co-developed-by: Rahul Bukte <rahul.bukte@sony.com>
 Signed-off-by: Rahul Bukte <rahul.bukte@sony.com>
 Signed-off-by: Shashank Balaji <shashank.mahadasyam@sony.com>
 ---
-Shashank Balaji (1):
-      ACPI: bus: set mod_name in driver registration
-
  drivers/acpi/bus.c      | 5 ++++-
  include/acpi/acpi_bus.h | 5 +++--
  2 files changed, 7 insertions(+), 3 deletions(-)
----
-base-commit: 1d51b370a0f8f642f4fc84c795fbedac0fcdbbd2
-change-id: 20260416-acpi_mod_name-f645a76e337b
 
-Best regards,
---  
-Shashank Balaji <shashank.mahadasyam@sony.com>
+diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c
+index 2ec095e2009e..152ef49e5970 100644
+--- a/drivers/acpi/bus.c
++++ b/drivers/acpi/bus.c
+@@ -1062,18 +1062,21 @@ EXPORT_SYMBOL_GPL(acpi_driver_match_device);
+  * __acpi_bus_register_driver - register a driver with the ACPI bus
+  * @driver: driver being registered
+  * @owner: owning module/driver
++ * @mod_name: module name string
+  *
+  * Registers a driver with the ACPI bus.  Searches the namespace for all
+  * devices that match the driver's criteria and binds.  Returns zero for
+  * success or a negative error status for failure.
+  */
+-int __acpi_bus_register_driver(struct acpi_driver *driver, struct module *owner)
++int __acpi_bus_register_driver(struct acpi_driver *driver, struct module *owner,
++			       const char *mod_name)
+ {
+ 	if (acpi_disabled)
+ 		return -ENODEV;
+ 	driver->drv.name = driver->name;
+ 	driver->drv.bus = &acpi_bus_type;
+ 	driver->drv.owner = owner;
++	driver->drv.mod_name = mod_name;
+ 
+ 	return driver_register(&driver->drv);
+ }
+diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+index b701b5f972cb..53952ec544e6 100644
+--- a/include/acpi/acpi_bus.h
++++ b/include/acpi/acpi_bus.h
+@@ -672,8 +672,9 @@ int acpi_scan_add_handler(struct acpi_scan_handler *handler);
+  * use a macro to avoid include chaining to get THIS_MODULE
+  */
+ #define acpi_bus_register_driver(drv) \
+-	__acpi_bus_register_driver(drv, THIS_MODULE)
+-int __acpi_bus_register_driver(struct acpi_driver *driver, struct module *owner);
++	__acpi_bus_register_driver(drv, THIS_MODULE, KBUILD_MODNAME)
++int __acpi_bus_register_driver(struct acpi_driver *driver, struct module *owner,
++			       const char *mod_name);
+ void acpi_bus_unregister_driver(struct acpi_driver *driver);
+ int acpi_bus_scan(acpi_handle handle);
+ void acpi_bus_trim(struct acpi_device *start);
+
+-- 
+2.43.0
 
