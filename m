@@ -1,136 +1,145 @@
-Received: from jpms-ob02-os7.noc.sony.co.jp (jpms-ob02-os7.noc.sony.co.jp [211.125.139.72])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C8E338B7BD;
-	Thu, 16 Apr 2026 07:36:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=211.125.139.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D778839D6D1;
+	Thu, 16 Apr 2026 11:59:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776324997; cv=none; b=uDZQ/Ut6PHgFKzXXMKI66sKT2tVeEXuBK5068rG8gowaRSqOJIcsumBj0AJk7fKzMCyUN86dH8+89APw2VAZEKUJ8UQb9AcGlH9QUU/+6EisymSF9+t0ZqOgI7BkI4YBoI38He8menoUNahmZlfY8xLQobHPmCI0AsmgyAOTNyM=
+	t=1776340763; cv=none; b=qFHfouTkNLN47eztD5yWesgXo7EzaKkR6RG8evutD0Ngy0ypezbBNrCnRG0+eAtbsayz8sAaCrCKb61jxBEv+jNldKgM8srcGUttwEDh5lvrG0eBl2mpdGZDfKOuxPZ/6dgwS+vkKrDdD2/thoA/vAjI2LJI8NKpuhmgo9yhatQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776324997; c=relaxed/simple;
-	bh=6VevYWrs8NqWN2y3Eq38+J1jFjlWELnxkvsZaY351vU=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=k24gQ4TvzvO1wFcUSRRxFcFFckkxGuMYRPuNFJpf8Y8hb5K5KCNW9F/wvTBE+HUDx1NhZhRC5yZEAUxfOS02lmaB/o3DmbFG1HJthq2PowB1f7iEdjJoXdPUCitWhNqBUx7mluXzWcWrOs0R2aEa6lq0GP8CxBjto8puc8oI8iY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sony.com; spf=fail smtp.mailfrom=sony.com; dkim=pass (2048-bit key) header.d=sony.com header.i=@sony.com header.b=UwtS7tZy; arc=none smtp.client-ip=211.125.139.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sony.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=sony.com
+	s=arc-20240116; t=1776340763; c=relaxed/simple;
+	bh=py7wWhiWmBXGzlBtBHNVd2e7B5dJrS5FkveYE/aeNek=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RrPv4c5ddFFk3wgt85HzUlctA+Ip1R4pJ5Z4q7eqOVTHCTCV8dqDvqTnRoVO7LsPFt7QP+TRjF7EkCZc5gAbtzdY/mSEgcEBJLY8b1Jnk/S0z3M9OI/oZno3/S2hcXH6mqeCys+Jl8MiPZdKH7PtxHOWyP55nJfQAS/zlh1QHkQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FKQSpSff; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sony.com header.i=@sony.com header.b="UwtS7tZy"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=sony.com; s=s1jp; t=1776324995; x=1807860995;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:references:in-reply-to:to:cc;
-  bh=P1H8FkBnSqxqtSxdd4aW+R2l9i7ipYi67lARmUWjnnk=;
-  b=UwtS7tZyr4DQDRmffwGhMJXBS/WCADwUrf5XsJOKlBaLf6JjLEnT02ZJ
-   kBKR6j7I2H2++jYx2znd3Lb/E9EJcILijT8xHPNK7snds/vVKh/vYKw9M
-   6yeK+O1UvMWIBrTqGgOw8SUZPqe8Ua6uh/uGKwvWuCxEoY7rAgf+ERjqq
-   UyIpWYrT7lV4+uhfn36pO4o4uvjEo8yO1tR0iei+JiE47GgKbiXcXss39
-   L1nth/Azh2kR9dzLmxTjuQbCr6GB/92dzI//eDQDaOhjmKIxSQ06i4Ocm
-   sCxgtK3+eOyKA356zzDlC9B0AYZzfxF53BlDYwpu+emm3TtHBgfG129IJ
-   A==;
-X-CSE-ConnectionGUID: puuXOtVQTLKIDmDQBqmQPA==
-X-CSE-MsgGUID: gvr2bwGJSc+5iVkJbfSZNA==
-Received: from unknown (HELO jpmta-ob01-os7.noc.sony.co.jp) ([IPv6:2001:cf8:acf:1104::6])
-  by jpms-ob02-os7.noc.sony.co.jp with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2026 16:26:23 +0900
-X-CSE-ConnectionGUID: Gap9FMZIR4yR+/UsOrelaQ==
-X-CSE-MsgGUID: RCj85djZSR6e3ZBDGeVJRw==
-X-IronPort-AV: E=Sophos;i="6.23,181,1770562800"; 
-   d="scan'208";a="61013883"
-Received: from unknown (HELO [127.0.1.1]) ([IPv6:2001:cf8:1:573:0:dddd:6b3e:119e])
-  by jpmta-ob01-os7.noc.sony.co.jp with ESMTP; 16 Apr 2026 16:26:21 +0900
-From: Shashank Balaji <shashank.mahadasyam@sony.com>
-Date: Thu, 16 Apr 2026 16:26:16 +0900
-Subject: [PATCH] ACPI: bus: set mod_name in driver registration
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FKQSpSff"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34ACAC2BCAF;
+	Thu, 16 Apr 2026 11:59:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1776340763;
+	bh=py7wWhiWmBXGzlBtBHNVd2e7B5dJrS5FkveYE/aeNek=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=FKQSpSffpiBziKTs2wrKLd54/U5m8YfRAOg7k9HlmeUGd0cqVQsHQmICDl1sS4fWw
+	 7YxEtCqUdJ3/MMg2ymrm4NgXW185Jd+gcoFxX0mGJwVeJenMzT1VFgtZGuoU9cE2lb
+	 hefo+YQtU9/oXiL9AyKUpgbzPvnCDLQCYsPil9MjvqVU+3ONKf15yRSE5eLwxA9lss
+	 IClFfY+vWWpS/vOvKtoMcw9m1/40d0SRkN3aPIWBP0gdwreaAfdJofPlZEemcw8sk8
+	 igPnINMEYDlNRCj7pupcdNWvr31ITdhrXpfd5GI9lpJc2pgWBQiXpx6Nqde0sazqrh
+	 fPlu2DYfBWzrA==
+Date: Thu, 16 Apr 2026 06:59:21 -0500
+From: Rob Herring <robh@kernel.org>
+To: Akhil R <akhilrajeev@nvidia.com>
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Frank Li <Frank.Li@nxp.com>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Robert Moore <robert.moore@intel.com>, Len Brown <lenb@kernel.org>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Eric Biggers <ebiggers@kernel.org>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	linux-i3c@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev, linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH v2 01/13] dt-bindings: i3c: Add mipi-i3c-static-method to
+ support SETAASA
+Message-ID: <20260416115921.GA2724261-robh@kernel.org>
+References: <20260409105747.48158-1-akhilrajeev@nvidia.com>
+ <20260409105747.48158-2-akhilrajeev@nvidia.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260416-acpi_mod_name-v1-1-1a4d96fd86c9@sony.com>
-References: <20260416-acpi_mod_name-v1-0-1a4d96fd86c9@sony.com>
-In-Reply-To: <20260416-acpi_mod_name-v1-0-1a4d96fd86c9@sony.com>
-To: "Rafael J. Wysocki" <rafael@kernel.org>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- Danilo Krummrich <dakr@kernel.org>, Len Brown <lenb@kernel.org>, 
- Saket Dumbre <saket.dumbre@intel.com>, 
- Krzysztof Kozlowski <krzk@kernel.org>
-Cc: linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
- acpica-devel@lists.linux.dev, driver-core@lists.linux.dev, 
- Shashank Balaji <shashank.mahadasyam@sony.com>, 
- Rahul Bukte <rahul.bukte@sony.com>, Daniel Palmer <daniel.palmer@sony.com>, 
- Tim Bird <tim.bird@sony.com>
-X-Mailer: b4 0.16-dev-3bfbc
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2453;
- i=shashank.mahadasyam@sony.com; h=from:subject:message-id;
- bh=6VevYWrs8NqWN2y3Eq38+J1jFjlWELnxkvsZaY351vU=;
- b=owGbwMvMwCU2bX1+URVTXyjjabUkhswH/TJmz98cUmR78+XYBZeCI67+RYUTTn18fKF0f/3WZ
- 2fcEsTqOkpZGMS4GGTFFFlKlap/7V0RtKTnzGtFmDmsTCBDGLg4BWAiga6MDO99rufu3LzWdvU1
- jlChG1x1jSEe4j+3TfOesaJa7OqXzm6G/65dsyz1uUq9un73l6lWd/lcdFuX3Vyuelgy+XiCwpk
- UTgA=
-X-Developer-Key: i=shashank.mahadasyam@sony.com; a=openpgp;
- fpr=75227BFABDA852A48CCCEB2196AF6F727A028E55
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260409105747.48158-2-akhilrajeev@nvidia.com>
 
-Pass KBUILD_MODNAME through the driver registration macro so that
-the driver core can create the module symlink in sysfs for built-in
-drivers.
+On Thu, Apr 09, 2026 at 04:27:31PM +0530, Akhil R wrote:
+> Add the 'mipi-i3c-static-method' property mentioned in the MIPI I3C
+> Discovery and Configuration Specification [1] to specify which discovery
+> method an I3C device supports during bus initialization. The property is
+> a bitmap, where a bit value of 1 indicates support for that method, and 0
+> indicates lack of support.
+> Bit 0: SETDASA CCC (Direct)
+> Bit 1: SETAASA CCC (Broadcast)
+> Bit 2: Other CCC (vendor / standards extension)
+> All other bits are reserved.
+> 
+> It is specifically needed when an I3C device requires SETAASA for the
+> address assignment. SETDASA will be supported by default if this property
+> is absent, which means for now the property just serves as a flag to
+> enable SETAASA, but keep the property as a bitmap to align with the
+> specifications.
+> 
+> [1] https://www.mipi.org/mipi-disco-for-i3c-download
+> 
+> Signed-off-by: Akhil R <akhilrajeev@nvidia.com>
+> ---
+>  .../devicetree/bindings/i3c/i3c.yaml          | 30 ++++++++++++++++---
+>  1 file changed, 26 insertions(+), 4 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/i3c/i3c.yaml b/Documentation/devicetree/bindings/i3c/i3c.yaml
+> index e25fa72fd785..1705d90d4d79 100644
+> --- a/Documentation/devicetree/bindings/i3c/i3c.yaml
+> +++ b/Documentation/devicetree/bindings/i3c/i3c.yaml
+> @@ -31,10 +31,12 @@ properties:
+>        described in the device tree, which in turn means we have to describe
+>        I3C devices.
+>  
+> -      Another use case for describing an I3C device in the device tree is when
+> -      this I3C device has a static I2C address and we want to assign it a
+> -      specific I3C dynamic address before the DAA takes place (so that other
+> -      devices on the bus can't take this dynamic address).
+> +      Other use-cases for describing an I3C device in the device tree are:
+> +      - When the I3C device has a static I2C address and we want to assign
+> +        it a specific I3C dynamic address before the DAA takes place (so
+> +        that other devices on the bus can't take this dynamic address).
+> +      - When the I3C device requires SETAASA for its discovery and uses a
+> +        pre-defined static address.
+>  
+>    "#size-cells":
+>      const: 0
+> @@ -147,6 +149,26 @@ patternProperties:
+>            through SETDASA. If static address is not present, this address is assigned
+>            through SETNEWDA after assigning a temporary address via ENTDAA.
+>  
+> +      mipi-i3c-static-method:
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        minimum: 0x1
+> +        maximum: 0xff
 
-Fixes: 48b9c4862bd3 ("ACPI: store owner from modules with acpi_bus_register_driver()")
-Assisted-by: Claude:claude-4.6-opus
-Co-developed-by: Rahul Bukte <rahul.bukte@sony.com>
-Signed-off-by: Rahul Bukte <rahul.bukte@sony.com>
-Signed-off-by: Shashank Balaji <shashank.mahadasyam@sony.com>
----
- drivers/acpi/bus.c      | 5 ++++-
- include/acpi/acpi_bus.h | 5 +++--
- 2 files changed, 7 insertions(+), 3 deletions(-)
+Looks like the max is 0x7 currently.
 
-diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c
-index 2ec095e2009e..152ef49e5970 100644
---- a/drivers/acpi/bus.c
-+++ b/drivers/acpi/bus.c
-@@ -1062,18 +1062,21 @@ EXPORT_SYMBOL_GPL(acpi_driver_match_device);
-  * __acpi_bus_register_driver - register a driver with the ACPI bus
-  * @driver: driver being registered
-  * @owner: owning module/driver
-+ * @mod_name: module name string
-  *
-  * Registers a driver with the ACPI bus.  Searches the namespace for all
-  * devices that match the driver's criteria and binds.  Returns zero for
-  * success or a negative error status for failure.
-  */
--int __acpi_bus_register_driver(struct acpi_driver *driver, struct module *owner)
-+int __acpi_bus_register_driver(struct acpi_driver *driver, struct module *owner,
-+			       const char *mod_name)
- {
- 	if (acpi_disabled)
- 		return -ENODEV;
- 	driver->drv.name = driver->name;
- 	driver->drv.bus = &acpi_bus_type;
- 	driver->drv.owner = owner;
-+	driver->drv.mod_name = mod_name;
- 
- 	return driver_register(&driver->drv);
- }
-diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-index b701b5f972cb..53952ec544e6 100644
---- a/include/acpi/acpi_bus.h
-+++ b/include/acpi/acpi_bus.h
-@@ -672,8 +672,9 @@ int acpi_scan_add_handler(struct acpi_scan_handler *handler);
-  * use a macro to avoid include chaining to get THIS_MODULE
-  */
- #define acpi_bus_register_driver(drv) \
--	__acpi_bus_register_driver(drv, THIS_MODULE)
--int __acpi_bus_register_driver(struct acpi_driver *driver, struct module *owner);
-+	__acpi_bus_register_driver(drv, THIS_MODULE, KBUILD_MODNAME)
-+int __acpi_bus_register_driver(struct acpi_driver *driver, struct module *owner,
-+			       const char *mod_name);
- void acpi_bus_unregister_driver(struct acpi_driver *driver);
- int acpi_bus_scan(acpi_handle handle);
- void acpi_bus_trim(struct acpi_device *start);
+> +        default: 1
+> +        description: |
+> +          Bitmap describing which methods of Dynamic Address Assignment from a
+> +          static address are supported by this I3C Target. A bit value of 1
+> +          indicates support for that method, and 0 indicates lack of support.
 
--- 
-2.43.0
+blank line here.
 
+> +          Bit 0: SETDASA CCC (Direct)
+> +          Bit 1: SETAASA CCC (Broadcast)
+> +          Bit 2: Other CCC (vendor / standards extension)
+> +          All other bits are reserved.
+
+Indent these by 2 more.
+
+> +
+> +          This property follows the MIPI I3C specification. The primary use
+> +          of this property is to indicate support for SETAASA, i.e Bit 1, but
+> +          will allow all values so that it is aligned with the specifications.
+> +          SETDASA will remain as the default method even if this property is
+> +          not present.
+> +
+>      required:
+>        - reg
+>  
+> -- 
+> 2.50.1
+> 
