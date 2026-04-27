@@ -1,143 +1,311 @@
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+Received: from BL2PR02CU003.outbound.protection.outlook.com (mail-eastusazon11011068.outbound.protection.outlook.com [52.101.52.68])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99B713B6364
-	for <acpica-devel@lists.linux.dev>; Mon, 27 Apr 2026 11:23:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777288984; cv=none; b=ODNgFYeVqPGVvzMn8WmopVIXPFRPve2wHd9CZdiIX6bcCVt3xCVTPD4pnZWjnyFr3yTbMQm4AD8HjDU1sN7VnMhb+oRh8EaGVaNhxrdixTJmRCbyfuUnhwfwNU+3PGeN9Cp84QJc+3jzS9f25RJC4Yhndm2P1a/RQZ81dYZurnk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777288984; c=relaxed/simple;
-	bh=XgzHn885FWid3cTTZxGylf++YQN4FERwJEs8Jjsu50o=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=b42vwrUW2NQPI0KpYphp+LNN3BXdNNRj27rGcNF0J2xveMGnOYMrQs7WlpO+t+J8GChGA6ZU8A1myJAyj4Sh0LQhdBzUeJuO3V0It5mQEP3/UeFBgqYw/xB5Ap9993FN/HU1s9a2ZpedKioVoQi4sB8NxsqIFP9dMszknZbJktQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com; spf=pass smtp.mailfrom=oss.qualcomm.com; dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b=D5DNrB+C; dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b=ImGCYUtB; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.qualcomm.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56CCB26F46F
+	for <acpica-devel@lists.linux.dev>; Mon, 27 Apr 2026 15:33:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.52.68
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1777304007; cv=fail; b=ahTMDP7Uh4YGxY4bE07jvLFBc22s9cWcc8JuPT1Y7Kf7g4QoDC9B5HRHg2QWSb+7fp3vHWO4GFyJdVKYTMyvfy77XHcbvH4DNlHiKseH+Xfm8iqNR7LvHuDqiqS4YOs5xuRLR6mp4b2yWkQn4giAnzPOPzeqRItBSetCP+Ti4C0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1777304007; c=relaxed/simple;
+	bh=KqJ0gj0n1FLtFTAG5GSfP0VaQDx9nxa0F/5S0uNmYOU=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=nfoHsxUxTjY5wndWPkHxbwkA6MtwfKyN8pPhsSbKS5rDeFDE9oJlh355MYCOgDToDOObvSSDyB8ZDg5z9aIQeIK+EEhhrPh75rX+doQUvjN4DhoLt/6zcLjk+8VdgDEet0ZCN1rFoXwkqT7p953mOmxe8Rnc0/9l3/MqTAAMPn8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=ZCTTIga4; arc=fail smtp.client-ip=52.101.52.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b="D5DNrB+C";
-	dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b="ImGCYUtB"
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 63RB73fa1237224
-	for <acpica-devel@lists.linux.dev>; Mon, 27 Apr 2026 11:23:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	cc:content-transfer-encoding:date:from:message-id:mime-version
-	:subject:to; s=qcppdkim1; bh=I0hy7Pqqez7D6hC5jhpZMX9oVReaOUnQN5f
-	qbMLiLSw=; b=D5DNrB+CWpt0dN7GLAmqXDh5Z/L09GJ2m8lIHkFTjHxlgqIHM5p
-	o8vuOdR/3N49MEUEkYC3yvaXPlyCy3E/qD0Uobk3QgzTKx3ufjiuAQ8Um0vFr8KU
-	ElHM6+5rvD2plb1934/IzcYzOyaIub1nOpA7tEYpq1DKmQTSZ9UZp8MN3P/SZWku
-	RJbZjO+rxPCiF9bT17uUY4r+IuYc91ebf8cKpOS13CyHnZf8kABT8xNA3LVwCl4s
-	z7YdCKaefejvc9Nq5mXtJbFfj0G5iKKKsNJ0F+lYSUvIHx4CF+aSVxcv/iek4GX4
-	bDXWvWUhzYDl6m5DIU0wXEz4hiiHsAGM3KQ==
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com [209.85.160.198])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4dt6n4g1f1-1
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <acpica-devel@lists.linux.dev>; Mon, 27 Apr 2026 11:23:02 +0000 (GMT)
-Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-50edf0245b0so33704211cf.1
-        for <acpica-devel@lists.linux.dev>; Mon, 27 Apr 2026 04:23:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1777288982; x=1777893782; darn=lists.linux.dev;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=I0hy7Pqqez7D6hC5jhpZMX9oVReaOUnQN5fqbMLiLSw=;
-        b=ImGCYUtBsFGElHEj8v57J6siHItISNSNtqUuxOIgYRttLLw25pePwsJpWCeB9eEBfe
-         10/JWpX/LjL/hcS23PEVYCrMecugvLuVhoEaCsOD8CbIRCDFjHhKeOuPnC9HFjrkGNQ8
-         Lg+ApwWROTfdR0fkcXr7vQyKpS1m4RuGEc7CK1Q0yLoXQs8HHJ/7viF+cc87SEH4NkGy
-         UuOw49J5i++njekuT4raB5GSfWH0s6Qujs5mLVwuMaO6FizB55FbZVQDFCYrHv+koZPY
-         VMWWbwI3Hc2xsOpJWwu/iCetC786VE7KYYOeYo4AzwnCurOy4LLY8FpVLptkqbg1rnCk
-         +vgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777288982; x=1777893782;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=I0hy7Pqqez7D6hC5jhpZMX9oVReaOUnQN5fqbMLiLSw=;
-        b=IpAX9mv84FjA7PG/AqPSFxPTmZ8VdYN/rCOL6JP/i8WUYUtIZCZ9Bvhy7FXFJbc0hz
-         PP5Czk7pzVewIKqfXi+VYGEaJ69P/xiQ+SYOPE8U4+wHSb3IVakFj9qBF63ikHmzX0N+
-         E1yWWy8fJX3qCkmtrzeRhecazssdGhmdc6tTG1ZhK1u6moWccyu2ZVDDJDblukXcBEyR
-         VrIBt2G+SMuJvBOlmIKSbCuBa4RktG9oS+FDZxi2UIRptPJ9EEb9/EPftErGZU2LNIUi
-         iMK7b+BJXVNL8IeHT4ZkvaS/cW3LXOntj3ksU/CU79CZKFbeWFKZbDvyEhCtDCTNvXSe
-         lmvg==
-X-Forwarded-Encrypted: i=1; AFNElJ9aUbDNXn3ZZnwYxGQtcxDVKiVnvezNqyvfGqVntLpcDcju7TyzMlfkKI5zhH/BQmfwK85iz5uWHo52UgE=@lists.linux.dev
-X-Gm-Message-State: AOJu0Yxruzwpjok4J3cIL/UwGub1g3wU8ycCuvrN6EO3QD90KuJK0xId
-	v/LEqujVsO+YNEEnVHTjkBOrOuFp6ueCjFAnvrLQ1fYL3CZ/+11mroA8r1fZbmIoHN+GhVbtPIc
-	VXsjJc8yoWFrbJTh6H3pTVeO9sbvjDtBb6WBuMyAFah6d7jgraBLtYdQ/p66fdezaIbQ=
-X-Gm-Gg: AeBDieuUorwNAnfHb0e+cbT9AsgcDSO0pm5RPKTZAQcTy/gVIF212uE4gyLmxMbMjE0
-	WLAqyhDukhuLEur4gCG43JA0KM+hpSJD0/p9xhkcsgKwevMd01PGaVQ+YJMmbeSRkA/g4Q5yVbl
-	d64fP9X31FXo2ZqGohfQH7lMSidTfp6rw8G5eyBiQ4uJCXRiKA9/cg45MFjnIMfJxCCZYnVsxUV
-	S7nBMqloqOgvCimp0Us0yy3e8BSvLPJsF/FrMf5zm0R5IOTo8TvzekfFQnhhflys5i4ChBYS4QZ
-	vx25firhnJN/2dV5hCzRkAftRLn9j6lQupJJkJxoU5qwusBaeMv5iKzaLa3wnTXu5RSg9XGNZ5J
-	478xWNEdhHTnItFbDdWziJe8UL06QvVnub58Ykf4YdakTCg1Qbl4M8atVJzBQ
-X-Received: by 2002:a05:622a:7103:b0:50e:5eba:caec with SMTP id d75a77b69052e-50e5ebad365mr322642231cf.54.1777288982017;
-        Mon, 27 Apr 2026 04:23:02 -0700 (PDT)
-X-Received: by 2002:a05:622a:7103:b0:50e:5eba:caec with SMTP id d75a77b69052e-50e5ebad365mr322641901cf.54.1777288981559;
-        Mon, 27 Apr 2026 04:23:01 -0700 (PDT)
-Received: from brgl-qcom.home ([2a01:cb1d:dc:7e00:5062:ae86:23aa:702c])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48a525a0b1asm234825375e9.2.2026.04.27.04.22.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Apr 2026 04:23:00 -0700 (PDT)
-From: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
-To: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
-        Saket Dumbre <saket.dumbre@intel.com>
-Cc: linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
-        linux-kernel@vger.kernel.org, brgl@kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
-Subject: [PATCH] ACPI: add missing forward declaration to acpi_bus.h
-Date: Mon, 27 Apr 2026 13:22:38 +0200
-Message-ID: <20260427112238.132419-1-bartosz.golaszewski@oss.qualcomm.com>
-X-Mailer: git-send-email 2.47.3
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="ZCTTIga4"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=L4UQae/g7N4ubtBAVZV3p1nRxNXxet/Fh7/Wy27Elh2QuI91Nu5npc927KXFT7zoEwLDA7JCaNJ4GAtzKCFfwpzKHuQ7E3e/maHm64AC82ZMhFgNYiD7xB0d4b2YoaMHK8UxHQUPHfC8zhMDgK/e5xytqTcBSBTFSiFNh0h4jYQGbZbsZKgHOArY2PYbdbZvYevAHOO6b6KJpeLIYPpG0tThHjlc9wmykbXKhz7n0Y7AJ2vZqeWUOK7737OgirisNjOvc7LVMnJb5XC8BSaSlWuzX0sA3guDBbXMngczzas+41c9KLw5XwqLnP0iaGKiG0VWtF0LmNsgkm5h9BnMRg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=AWq/EqRUV08IvNjzbwJQpa70EUGjOK8cwa+TlLH+K20=;
+ b=AhImKjp0ZHupBy3wr5gcNHLamAdeQ0nRvauZaEYY6u/P4oxgnvqVjE8rneI8kxigdXrK+AROZYoIqhT+r3LqlwBZsS66B/N+VQm4qdC4odFQmXRRbSvAIcq/qX7APnZcdYWk762zB2sjZLPSF2TJRSo3Vtgt4V0vwvQHQf2GkXfu4Xd1i12dq2FIEXNop15V16MfqlpTB7Ryu9SSgCkzVEsNzzlTeAOzdBxMiAiFh/tzl+TSCDof8lxAiBl1yNX1bkNyIvTfPanE0CKcSIr6bnY+iEasZ6iHhUwof8//ZaEHfrlUT+sOrEjjU8w19zOyMRZfDhRVufJ3RsDnTFUpZg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AWq/EqRUV08IvNjzbwJQpa70EUGjOK8cwa+TlLH+K20=;
+ b=ZCTTIga4XSVtcJGA5DpCsZIo28ziliJW4nbdTrZ7DwDyfmDYNX3OAtS89feNYOp1s9ajTalg3EjWyCvSM2pSILA+FSmIP40jaIfMIvJ1WCxZoiVbMRmXB/7Tjedx1C4uJUXwhjsMKe/gsXUC/pUSe7+kYaEYdIzg7/9IvtYTqpE=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from SA0PR12MB4557.namprd12.prod.outlook.com (2603:10b6:806:9d::10)
+ by CY8PR12MB7123.namprd12.prod.outlook.com (2603:10b6:930:60::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9870.16; Mon, 27 Apr
+ 2026 15:33:21 +0000
+Received: from SA0PR12MB4557.namprd12.prod.outlook.com
+ ([fe80::885a:79b3:8288:287]) by SA0PR12MB4557.namprd12.prod.outlook.com
+ ([fe80::885a:79b3:8288:287%5]) with mapi id 15.20.9870.013; Mon, 27 Apr 2026
+ 15:33:21 +0000
+Message-ID: <d76e7f9d-f418-457a-b08f-90f929bfe71b@amd.com>
+Date: Mon, 27 Apr 2026 10:33:13 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] ACPI: CPPC: Add support for CPPC v4
+Content-Language: en-US
+To: Sumit Gupta <sumitg@nvidia.com>, "zhenglifeng (A)"
+ <zhenglifeng1@huawei.com>, rafael@kernel.org, viresh.kumar@linaro.org,
+ lenb@kernel.org, pierre.gondois@arm.com, zhanjie9@hisilicon.com,
+ saket.dumbre@intel.com, linux-acpi@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+ acpica-devel@lists.linux.dev
+Cc: treding@nvidia.com, jonathanh@nvidia.com, vsethi@nvidia.com,
+ ksitaraman@nvidia.com, sanjayc@nvidia.com, bbasu@nvidia.com
+References: <20260427051823.280419-1-sumitg@nvidia.com>
+ <20260427051823.280419-2-sumitg@nvidia.com>
+ <bdcc0785-9930-49e4-9918-c1255bd296a4@huawei.com>
+ <8badf464-a44b-4636-9202-6fcf00fc50eb@nvidia.com>
+From: Mario Limonciello <mario.limonciello@amd.com>
+In-Reply-To: <8badf464-a44b-4636-9202-6fcf00fc50eb@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: CH2PR14CA0027.namprd14.prod.outlook.com
+ (2603:10b6:610:60::37) To SA0PR12MB4557.namprd12.prod.outlook.com
+ (2603:10b6:806:9d::10)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-ORIG-GUID: wbr5w_9GsECnphap-7KAnfon1iu6FBYR
-X-Authority-Analysis: v=2.4 cv=Xba5Co55 c=1 sm=1 tr=0 ts=69ef4716 cx=c_pps
- a=mPf7EqFMSY9/WdsSgAYMbA==:117 a=xqWC_Br6kY4A:10 a=A5OVakUREuEA:10
- a=s4-Qcg_JpJYA:10 a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22
- a=gowsoOTTUOVcmtlkKump:22 a=EUspDBNiAAAA:8 a=IbMZajSweJTZi3pcCa0A:9
- a=dawVfQjAaf238kedN5IG:22
-X-Proofpoint-GUID: wbr5w_9GsECnphap-7KAnfon1iu6FBYR
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNDI3MDEyMCBTYWx0ZWRfX2kvmCsCEKkih
- BoRRTqn39tSU2Te05a3RJA5MiVrsrGoEowSsptl+lm5ukOAXEcW0l9pjiOQNnJ/5zT2hSLD89Zi
- R83f1grGGhlStyThY5NpqkxV1EcKdE9XB65NLdjFF3m/TUQAtfgVdZ2afvhPcFD5Yg6OvpEMNB2
- CwJtVKPq8rM57i8xLyfvsAgiiRzNoYVEIlSesL5Cuf6UtyGjR83IsnkJlsSJR+DpvewVyW8uCRG
- Bydhh7JZopo4tmbxpr04DKhHRv+FfSoSNNGwmj+CHYVfiJwNtI6LTnReqf4b0f4xDaVEsgtQF3L
- S8Y/0xyq1T+kukJEWPEuSeDWDISLIOtRexr/Erq5irNNSVxuELZFeIDJNwmDHUiLetIOC8Ptpxj
- l9aKOn12MeoC4CwW/Hm6kiq0U7Wk3hR/NGPdv7yPW9wejAtVKbrbn666KxHrVwxx+vii2gYcnha
- 7osF7ee3GGisJhC09fw==
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-04-27_03,2026-04-21_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501 bulkscore=0 suspectscore=0 phishscore=0 adultscore=0
- impostorscore=0 lowpriorityscore=0 spamscore=0 clxscore=1011 malwarescore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2604200000 definitions=main-2604270120
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA0PR12MB4557:EE_|CY8PR12MB7123:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8e8815dc-4e1d-4070-7978-08dea472501e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|1800799024|376014|7416014|366016|921020|56012099003|22082099003|18002099003;
+X-Microsoft-Antispam-Message-Info:
+	WuFMzyv+DiZDM6GNnTR1WtwhlKZ35a+sk0xRLMx4NNouorGeyPLVMSBa4WEVSNz9rm4HYHkqR8MhPMtdH3lyln5jdOz0eA/jBxC6S/xuP5rfK870sioLg4gx4gdYaeL7O955hAAvNJH5Oe4mMbYEA1Fj+SZlasWW70rsHhS0vmKecP+Kw63VxKuGFCOSrfJffJEXVokmo+iiYxS5SD5xkVlfECd1PhSPQ+yzvvW2OvJ0Y70ttNOX8TuY59fjMLpIhHmR0U81uGSmnjnBgcgZEBGsdWEPNBN0s/9Pb+xYlKQ/tlIXxB3aGBoctV1V7p2nZcrPTjXc4779+GOQsZqwcScoJ4HFcR0jB7P9tuWD0ZEtP3+hv+IWXx3SyLu7J1tA6IKtR8EGFtOrlszpSJdwHoy5AtZ6IcPMcQ3dr9JE5bH7jGVZRIUwDqcMnSkIYmREZWL/MKZzYIRrB9ZwriOL0Ph3+9Qf6ekEXNHtJH/z8GuCxxeQcN/HPRxN0GD2KCHY+h9KkjcKqoLAe9MB27v4hzM6JbTx3wFMZl0I6MxJfDRwDO2CHdCzP3l2XeaUHuEvePmYYM86KJaysdT0Gtcw7QIv9c32QV0Z8HPLCjQEwG3ZzbHteIKgmlzoXsUoapQzFDZQD3qM0PrL4l4kYSM76tUHxMTkIBER5i1BgtBOX0G1G94E2S2P9kOmjuUwC4AkYp7LXwvVIB1Q2R3QJsxDUrJZVNGJX5533f6AZVXmMyTjhcb7XyTw5OzQFHVd1xNmzAydT6eAvNpADw1HSgYRUA==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA0PR12MB4557.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(366016)(921020)(56012099003)(22082099003)(18002099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?ZGhiTG41cThNSnQyWW5jSFg0RGZDR0lLWHFlbFl5Vldob1FqRkF6TXUvUGVC?=
+ =?utf-8?B?dGdKcHRqTEhYUGZCZmsya3puai9wRFp1M1VYMVZUekZBYUVvcWtrVDZiU2p3?=
+ =?utf-8?B?NlNNSFRvMGl1VlBvS3JmMXpCcWJTQTZ1aGk5S0lHNEVJei9mLzRVZzI2QmV3?=
+ =?utf-8?B?REVLYUFGOG1FdjRDbzdpRlBwdFlVdERoN3pkb3dxdlN1clNVYThydTF5UnUw?=
+ =?utf-8?B?ODA1ak5KakY1RisyanA2ektjekl2Ym1ESUVnOG1xRzB3VVcrbzdGU09VVnZR?=
+ =?utf-8?B?YUtuY3YweWZ0VC90WkM5bkRGalFhUm9aTHQ3OWRwTHJTbHl6UnIzcEJ5SVly?=
+ =?utf-8?B?SHdrb0d0K1dVdEdBS3VhbGI5OG5QQWUvS2p2NmhVT2w5L1l3WkRQTGp3eTNP?=
+ =?utf-8?B?UDR4b0RIRjdySzl6Tjh0cFloTUpSQ1pIMjBKcWluMHY0UDZ3ZnZhZnduSFV1?=
+ =?utf-8?B?YWxUbzFZUEs5dU4rOUUzTlJ5VFl5bTg5cm5iT25qSjRwV0tNZHhBcFdmNEtt?=
+ =?utf-8?B?K3RtUkY5WVlma1p6RUhVbE1XU2tCaUlGYmNGS1hlLzgxTFgzU0Q3RnhqRi9F?=
+ =?utf-8?B?MndDYWljL1V3ZEJuejV0YzhqaE9aL2tWRCtDSjJMOHdvMU5HWWQyZmpSMjdP?=
+ =?utf-8?B?VEhxa2FMT3FQVzllTHQ1WURLQ1NyeGh0ZDRWWVhTT3Nxa0NaQWxaY2NUdW1r?=
+ =?utf-8?B?SjJBc2RXWlB0L1FXa0hFam1Dd21RNWF6eVFvRkFzZy9idnFtNmhlaTJnb2Zr?=
+ =?utf-8?B?YlIwUndGc2tTWTlVaGZmUWJiZEhSM0xnS0RvencvRjdZZkQ2MDc2bFRHVTlk?=
+ =?utf-8?B?ZXJyWWJRWkc2cnlXY09jYm9IVWkyVDVkWEtuQlkrVFhnRzRKYWMxajkrZFZr?=
+ =?utf-8?B?OTNBT3RKejRncVBpaUVVbWg2MDVPa0ZWa2JkdXRNSWxSdzM2cU1pTW9yelZE?=
+ =?utf-8?B?bnR4elZPdU9NbjFSZkZEYk1RajdKbCtjRzBUa28wZnZSdWgvSXYxQjJSY1li?=
+ =?utf-8?B?eUhzR3QvM2xJMlpJMGF6NXk4bGpocVhQbTFydU84OENBVER3dWwwclgySkxx?=
+ =?utf-8?B?RFhOa1NESlRNTW82ZXc0ZStuZnd4dHVBbzJBTFQ4TGdwWWpyS0pPeU96TllB?=
+ =?utf-8?B?TStWMmtLK0xMMU1WWHI5TjVsazJ2UVhhU1lKRUkyV2hqbmpUMGxwTnJoL3Ny?=
+ =?utf-8?B?SVFQbzFNMExQN1BrdWdsTUp0bmpTTVAxYTk3UUpkeUszczROUHFUeSthTmlG?=
+ =?utf-8?B?Mmtzb0RucFQ2WXF0ZEsxSGpqYURZbVdMNUdCeG5Ha0Jqd05jNTB0VVpqdkFW?=
+ =?utf-8?B?WVgybDM3VFB6TmtQcW9aMzZqb2UrQ1NUUDlwVFREckM1NnZ5NVJhNjVyRnNP?=
+ =?utf-8?B?YWhXSnNjOTZXeUl0Y3JKUUN0WmNvZVB6NVZjdDZ6TEhITFNmWXJCdjN3OTRV?=
+ =?utf-8?B?dTk3RVJwS3Z0VERqZkNGSzMzQm5tVERxWmtlbytPOFB4ODN2YUM3dkFQSDJX?=
+ =?utf-8?B?OE1ZemhGVmhsRDM0RTBtdmpIN21OZWRIVC9MNmVwM3ljUFcxb2VMMEc4YXZG?=
+ =?utf-8?B?bEgzQkQyaUFmUFBmQU0vYnNBTzJtWCs2L2RDZGxYKzg1RGhuYjdJc3VJTS9k?=
+ =?utf-8?B?UjFHOHl0bGw1NU9pbDhtM2ZldCtuTzVoL1l5ZXcyOXZwOGMrekFaV2sxSEQ5?=
+ =?utf-8?B?d3hFWG00UTB0cmdRRHR0eit5d05RdnByenRJdUJZU0g2MVpNbS9xZ2pEazJB?=
+ =?utf-8?B?QjNoYkVMWHkyWlVUZHRCeVJwUnZNNVBIVWhZc2h5MzVQSWM1VUhhaFpGbzlW?=
+ =?utf-8?B?OG5ac1h6a3AwTSs2ZU1jaWNXSFFjaHJjZnJOV3JHdEZkbkxLbDFrVEFmTXFk?=
+ =?utf-8?B?OGZ0Qy9kcCtrNk5wVjNyNkRqaUNRZ0V6YmpCNW0yR0twcjlLcWpkVVR4OWhT?=
+ =?utf-8?B?N0ZwK3hNaGdHbWd0MG5sbHNMbG5CUUhTamRnRHAweEZHYjcrT0VnVzJmR2lU?=
+ =?utf-8?B?cU9qYW9QK0NNZEZWQ1Q3eE1GQzFydnUxSUZKa0djRDRKSzVPVnRWTTk5aHBy?=
+ =?utf-8?B?ays1aDcwSWpWamtXa1pJbEJqSVptMnhtajBqMkVXWjFlQy95UTZnZFloQlk0?=
+ =?utf-8?B?QzFhL2N4ZTdLbGp3Ym9pb3NEbFZBRGc2RjhRWkxDbFh2c2RMbVliR05JL2xl?=
+ =?utf-8?B?emtwRm9CaTFqaUd6TU9Ma1R5eGNmdUdPYVE3bThaRzZmSHlVdU9mNU5sMllh?=
+ =?utf-8?B?TVRVU1VMb2tVQ3NPUHpqMGxFeFZjZ0FnbFRsd1orK2RIdEVZQUFKL1FGRGFV?=
+ =?utf-8?Q?rdwkrZzSNkmCtaxWnV?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8e8815dc-4e1d-4070-7978-08dea472501e
+X-MS-Exchange-CrossTenant-AuthSource: SA0PR12MB4557.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Apr 2026 15:33:21.2647
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4gmiopAvYxXZOpruXSClcrMzkgQJMHtqh7CN70cYxDjMi0Z10QSMRQfk1MdwYBRtlXMmm0lE3pEB0erWYcv3fg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7123
 
-The header references struct notifier_block but neither includes
-linux/notifier.h nor contains the relevant forward declaration. Add the
-latter for correctness.
 
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
----
- include/acpi/acpi_bus.h | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-index b701b5f972cb..c41d9a7565cf 100644
---- a/include/acpi/acpi_bus.h
-+++ b/include/acpi/acpi_bus.h
-@@ -17,6 +17,8 @@
- #include <linux/property.h>
- #include <linux/types.h>
- 
-+struct notifier_block;
-+
- struct acpi_handle_list {
- 	u32 count;
- 	acpi_handle *handles;
--- 
-2.47.3
+On 4/27/26 03:04, Sumit Gupta wrote:
+> 
+> On 27/04/26 12:36, zhenglifeng (A) wrote:
+>> External email: Use caution opening links or attachments
+>>
+>>
+>> It seems that mario has sent a similar patch:
+>>
+>> https://lore.kernel.org/all/20260427035520.1427080-3-superm1@kernel.org/
+> 
+> 
+> Thank you for sharing.
+> Yes, both look similar with below two change.
+> 1. REG_OPTIONAL needs the 0x1FC7D0 -> 0x7FC7D0 update to mark
+>     the two new registers optional. This is present in my [PATCH 1/2].
+> 2. For Resource Priority, pkg_data added to cpc_entry.
+>      This is present in Mario's [PATCH 2/6].
+> 
+> 
+> Hi Mario,
+> How would you like to proceed? A few options:
+>    (a) Let both CPPCv4 patches from this series go separately.
+>    (b) Fold the REG_OPTIONAL update from my patch 1/2 into your
+>        patch, and pull my patch 2/2 into your series.
+>    (c) Anything else you'd prefer.
+> Either way works for me.
+> 
+> Thank you,
+> Sumit Gupta
+> 
+
+
+Reviewing yours points out that I totally missed updating REG_OPTIONAL 
+with the two new ACPI 6.7 fields being optional too.
+
+In my series I only add in CPPv4 so I can build on top of the changes 
+for CPPCv5.
+
+So - I would say we should let your patches merge for v4 and I'll drop 
+the relevant ones from my series and rebase mine on top of your work.
+
+
+> 
+>>
+>> On 4/27/2026 1:18 PM, Sumit Gupta wrote:
+>>> CPPC v4 (ACPI 6.6, Section 8.4.6) adds two optional entries to the
+>>> _CPC package:
+>>>
+>>> 1. OSPM Nominal Performance (8.4.6.1.2.6): A write-only register that
+>>>     lets OSPM inform the platform what it considers nominal performance.
+>>>     The platform classifies performance above this level as boost and
+>>>     below as throttle for its power/thermal decisions.
+>>>
+>>> 2. Resource Priority (8.4.6.1.2.7): A Package of Resource Priority
+>>>     Register Descriptor sub-packages that allow OSPM to set relative
+>>>     priority among processors for shared resources (boost, throttle,
+>>>     L2/L3 cache, memory bandwidth). Parsing the full structure is not
+>>>     yet supported; such entries are marked as unsupported.
+>>>
+>>> Add v4 _CPC table parsing (25 entries) and update REG_OPTIONAL to
+>>> mark the two new registers as optional.
+>>>
+>>> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+>>> ---
+>>>   drivers/acpi/cppc_acpi.c | 24 ++++++++++++++++++------
+>>>   include/acpi/cppc_acpi.h |  8 ++++++--
+>>>   2 files changed, 24 insertions(+), 8 deletions(-)
+>>>
+>>> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+>>> index 2e91c5a97761..a1c91ce20cc8 100644
+>>> --- a/drivers/acpi/cppc_acpi.c
+>>> +++ b/drivers/acpi/cppc_acpi.c
+>>> @@ -134,7 +134,7 @@ static DEFINE_PER_CPU(struct cpc_desc *, 
+>>> cpc_desc_ptr);
+>>>    * cpc_regs[] with the corresponding index. 0 means mandatory and 1
+>>>    * means optional.
+>>>    */
+>>> -#define REG_OPTIONAL (0x1FC7D0)
+>>> +#define REG_OPTIONAL (0x7FC7D0)
+>>>
+>>>   /*
+>>>    * Use the index of the register in per-cpu cpc_regs[] to check if
+>>> @@ -751,18 +751,19 @@ int acpi_cppc_processor_probe(struct 
+>>> acpi_processor *pr)
+>>>        /*
+>>>         * Disregard _CPC if the number of entries in the return 
+>>> package is not
+>>>         * as expected, but support future revisions being proper 
+>>> supersets of
+>>> -      * the v3 and only causing more entries to be returned by _CPC.
+>>> +      * the v4 and only causing more entries to be returned by _CPC.
+>>>         */
+>>>        if ((cpc_rev == CPPC_V2_REV && num_ent != CPPC_V2_NUM_ENT) ||
+>>>            (cpc_rev == CPPC_V3_REV && num_ent != CPPC_V3_NUM_ENT) ||
+>>> -         (cpc_rev > CPPC_V3_REV && num_ent <= CPPC_V3_NUM_ENT)) {
+>>> +         (cpc_rev == CPPC_V4_REV && num_ent != CPPC_V4_NUM_ENT) ||
+>>> +         (cpc_rev > CPPC_V4_REV && num_ent <= CPPC_V4_NUM_ENT)) {
+>>>                pr_debug("Unexpected number of _CPC return package 
+>>> entries (%d) for CPU:%d\n",
+>>>                         num_ent, pr->id);
+>>>                goto out_free;
+>>>        }
+>>> -     if (cpc_rev > CPPC_V3_REV) {
+>>> -             num_ent = CPPC_V3_NUM_ENT;
+>>> -             cpc_rev = CPPC_V3_REV;
+>>> +     if (cpc_rev > CPPC_V4_REV) {
+>>> +             num_ent = CPPC_V4_NUM_ENT;
+>>> +             cpc_rev = CPPC_V4_REV;
+>>>        }
+>>>
+>>>        cpc_ptr->num_entries = num_ent;
+>>> @@ -845,6 +846,17 @@ int acpi_cppc_processor_probe(struct 
+>>> acpi_processor *pr)
+>>>
+>>>                        cpc_ptr->cpc_regs[i-2].type = ACPI_TYPE_BUFFER;
+>>>                        memcpy(&cpc_ptr->cpc_regs[i-2].cpc_entry.reg, 
+>>> gas_t, sizeof(*gas_t));
+>>> +             } else if (cpc_obj->type == ACPI_TYPE_PACKAGE) {
+>>> +                     /*
+>>> +                      * ACPI 6.6, s8.4.6.1.2.7 defines Resource 
+>>> Priority
+>>> +                      * as a Package of Resource Priority Register 
+>>> Descriptor
+>>> +                      * sub-packages.  Parsing the full structure is 
+>>> not yet
+>>> +                      * supported; mark the register as unsupported 
+>>> for now.
+>>> +                      */
+>>> +                     pr_debug("CPU:%d entry %d: package type not 
+>>> supported\n",
+>>> +                              pr->id, i);
+>>> +                     cpc_ptr->cpc_regs[i-2].type = ACPI_TYPE_INTEGER;
+>>> +                     cpc_ptr->cpc_regs[i-2].cpc_entry.int_value = 0;
+>>>                } else {
+>>>                        pr_debug("Invalid entry type (%d) in _CPC for 
+>>> CPU:%d\n",
+>>>                                 i, pr->id);
+>>> diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
+>>> index d1f02ceec4f9..8693890a7275 100644
+>>> --- a/include/acpi/cppc_acpi.h
+>>> +++ b/include/acpi/cppc_acpi.h
+>>> @@ -17,16 +17,18 @@
+>>>   #include <acpi/pcc.h>
+>>>   #include <acpi/processor.h>
+>>>
+>>> -/* CPPCv2 and CPPCv3 support */
+>>> +/* CPPCv2, CPPCv3 and CPPCv4 support */
+>>>   #define CPPC_V2_REV  2
+>>>   #define CPPC_V3_REV  3
+>>> +#define CPPC_V4_REV  4
+>>>   #define CPPC_V2_NUM_ENT      21
+>>>   #define CPPC_V3_NUM_ENT      23
+>>> +#define CPPC_V4_NUM_ENT      25
+>>>
+>>>   #define PCC_CMD_COMPLETE_MASK        (1 << 0)
+>>>   #define PCC_ERROR_MASK               (1 << 2)
+>>>
+>>> -#define MAX_CPC_REG_ENT 21
+>>> +#define MAX_CPC_REG_ENT 23
+>>>
+>>>   /* CPPC specific PCC commands. */
+>>>   #define      CMD_READ 0
+>>> @@ -109,6 +111,8 @@ enum cppc_regs {
+>>>        REFERENCE_PERF,
+>>>        LOWEST_FREQ,
+>>>        NOMINAL_FREQ,
+>>> +     OSPM_NOMINAL_PERF,
+>>> +     RESOURCE_PRIORITY,
+>>>   };
+>>>
+>>>   /*
 
