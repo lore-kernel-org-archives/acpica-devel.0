@@ -1,379 +1,361 @@
-Received: from DUZPR83CU001.outbound.protection.outlook.com (mail-northeuropeazon11012036.outbound.protection.outlook.com [52.101.66.36])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 782D7472791
-	for <acpica-devel@lists.linux.dev>; Thu, 30 Apr 2026 16:26:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.66.36
-ARC-Seal:i=3; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777566411; cv=fail; b=amARnwzDC94qZ7LZ1tYJb20TeqEO5fFiBQF3ouDrgsHWpN7mjWfArhkHyTy40tJDc4MfTHL0vkn1Fd/uiW46fj1fQfG2P4Jg1RcP6KgTEpLTh2r8gJuAZgdc9JW+jZxrpUF009tTbg1MbTzzi7tHCb+MKcE/8NexbGl7OJGJk1c=
-ARC-Message-Signature:i=3; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777566411; c=relaxed/simple;
-	bh=SaAlzw1cx1JgJ3GIWSm1bixzG67VXao365brfBucJGI=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=izGUWA1kvRV7ykja8+98RfI9By1q8mch83RGyFUi1RA4MCugfx15vZBFvPEU1gQhSIV356KciuMjQ1xtP+bQUA1H0UEkQnoNstfY4iB8DZYujkTNN+xYdybZClOLxKjVqwOWbULcKkjnPydqS1lMRwNrlQSnhu0Z4jEvedVFXRc=
-ARC-Authentication-Results:i=3; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=cyrFoNgv; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=cyrFoNgv; arc=fail smtp.client-ip=52.101.66.36
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B40563B3899
+	for <acpica-devel@lists.linux.dev>; Thu, 30 Apr 2026 23:15:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.15
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1777590922; cv=fail; b=imY5dFZa9DsrE5m32+5uZjeIJyQ2ay6k+Q/9zG0fz4KzDVvqoGzbJNxwaAeOUva+rgk1awCHK3f+fnV/r+VrlvnCT1HPMU74F+s3jlm+BmMWhVhsoJl7JxU5mm4h+1Fu5aG4S+y77/b0v+mgo+JvZ4R869+bDz62aRtDVMBrBEM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1777590922; c=relaxed/simple;
+	bh=65gEOG6Lqz7U9cethDAoa2DqjAgXkSZuhmepeuSEEfw=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=W5OatTyTWnV2n/DURHdPTDyMkdzTPUBBLE+CL3PF49vJe1tDSn2skyttE/c/hVHpw/ZPgpGELmF1t4+algPCJZUdfGjd/JE6GnyubZ8Zx19LlulO/FyXBaBc+Obey0AUnpgiLlinwqScm2Mrq/gCQN8j4TnTxjA2F/lJJurMYek=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Bhl8yw1B; arc=fail smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="cyrFoNgv";
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="cyrFoNgv"
-ARC-Seal: i=2; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=pass;
- b=VQGnlKv7RNIplr0fvYD3rX6Mf/zBejeelxU/vrTY9u751JBSpusmqTa6ZkrnPsJWnDUdzrgNEk3N8UretpqYwyuU4aGHKBWXyWFB97FFNUgKGZ4Tww911pObx3VaO6/iaaOIB/jT8g/nIMqRq4Dv5+JsAHAb6HhnDpMhO52AOeOWrksAPKDLr3PnOFbCygJbnWyqhg21gmCbpiAv3jvpheJTmc4ukWpL8F2t0K4UkTEEUrNvs2uSBh0Gh+Ods5N460499/X3oRaSCRJARrmruxVsrNw1ocRurZG3SAB8Lvh4Z15uNACivmhp9wIA6nr/aPg6pv73QGPdbHyw3M9Qmg==
-ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7W4qFj8VLz7QVaoCK5FlhYTz3sB3QdokN8qSvYvzxBA=;
- b=Yb0iDonhhAWPjumcqAb5cE90nEA2k7bppUBGGrjJSWrllk/0oMOure/Ts0NN2I3spiZNEGTZRaHo6LG0OSgNIDGhaxDn50ZrY2wJ64Yo16rd3T0zQa/8qhqXlpoUHVZ1jJ7GkF0fCeuRKA57uTzEX7NoZuHzfNk+dzzeNoVK1HPeVwmuxmCCbw8pMYrhT7XMneJCn1OC4AHr4lzOZfnXSL9IdrvBiUdvmsTQhmtC5+TMJ12M6xOSx9JDEqI7RBbZi8hI0UlE10d4XZEyNRUYewV+jksL+t5nYfTG/CEqUw2RABMbLdalv2FYkQZYI+MKcKT1rKlQzhL5rq8MbSDakw==
-ARC-Authentication-Results: i=2; mx.microsoft.com 1; spf=pass (sender ip is
- 4.158.2.129) smtp.rcpttodomain=nvidia.com smtp.mailfrom=arm.com; dmarc=pass
- (p=none sp=none pct=100) action=none header.from=arm.com; dkim=pass
- (signature was verified) header.d=arm.com; arc=pass (0 oda=1 ltdi=1
- spf=[1,1,smtp.mailfrom=arm.com] dkim=[1,1,header.d=arm.com]
- dmarc=[1,1,header.from=arm.com])
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arm.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7W4qFj8VLz7QVaoCK5FlhYTz3sB3QdokN8qSvYvzxBA=;
- b=cyrFoNgvVhVBsB+q43wuzR+bGDgWgRviWdGiZg0JGLYidxILWUC0OYprZoxPxpeGuhQcf4tBySLotj/aAYT5KAY5VyymzX/i2t9zRyEiQgy3xszWIAlCpoL7HCMOmaYkNHqkRRSJ2RoOGtAb4lcG1YFdbdytGMxFKvZZBnXOQ8o=
-Received: from DB8P191CA0008.EURP191.PROD.OUTLOOK.COM (2603:10a6:10:130::18)
- by PR3PR08MB5786.eurprd08.prod.outlook.com (2603:10a6:102:85::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9846.16; Thu, 30 Apr
- 2026 16:26:44 +0000
-Received: from DB5PEPF00014B9D.eurprd02.prod.outlook.com
- (2603:10a6:10:130:cafe::73) by DB8P191CA0008.outlook.office365.com
- (2603:10a6:10:130::18) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9846.30 via Frontend Transport; Thu,
- 30 Apr 2026 16:26:43 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 4.158.2.129)
- smtp.mailfrom=arm.com; dkim=pass (signature was verified)
- header.d=arm.com;dmarc=pass action=none header.from=arm.com;
-Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
- 4.158.2.129 as permitted sender) receiver=protection.outlook.com;
- client-ip=4.158.2.129; helo=outbound-uk1.az.dlp.m.darktrace.com; pr=C
-Received: from outbound-uk1.az.dlp.m.darktrace.com (4.158.2.129) by
- DB5PEPF00014B9D.mail.protection.outlook.com (10.167.8.164) with Microsoft
- SMTP Server (version=TLS1_3, cipher=TLS_AES_256_GCM_SHA384) id 15.20.9846.18
- via Frontend Transport; Thu, 30 Apr 2026 16:26:42 +0000
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Bhl8yw1B"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1777590919; x=1809126919;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=65gEOG6Lqz7U9cethDAoa2DqjAgXkSZuhmepeuSEEfw=;
+  b=Bhl8yw1BhbmnP98IoG5DX6GuqT/un0vwZl5r5oHzkhXHFMgrX3YFZw7c
+   eTs2U21TM1bbq9J86tABxYTNSAOSf9p9PpYDISXRm1QJBz4MUsx578UCg
+   ykxehQs7T9FH2I6K0otDDiQ0ZqEnN4+0qSnIQ3hYIcTARExP5lcOW5qYR
+   cd5GBddF3PxSPuIcLeJGYfhcT9Mo9IOtnSe5bJu7hL84PNUejVd1kOR+n
+   cFhElwqe8m4MRIA7B7viI5VQZdkeMz8pVewWFWMFetrNF8pT8A1r9PLPQ
+   xVNygusDvqRUmrDsItwLdjpIeyzkeKkoVGe/zJGtAuDfzOgCBTqdSMmIP
+   w==;
+X-CSE-ConnectionGUID: 1Ma8CaNsSWam7e6cs/T1vQ==
+X-CSE-MsgGUID: RafFeUB1QRmBGu85EAg7bw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11772"; a="78662392"
+X-IronPort-AV: E=Sophos;i="6.23,209,1770624000"; 
+   d="scan'208";a="78662392"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2026 16:15:18 -0700
+X-CSE-ConnectionGUID: umoqGcWAQp+yh1GuJLj/Mg==
+X-CSE-MsgGUID: kyFPOolTQDq2scThGi+9ZQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,209,1770624000"; 
+   d="scan'208";a="230370902"
+Received: from orsmsx901.amr.corp.intel.com ([10.22.229.23])
+  by fmviesa010.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2026 16:15:18 -0700
+Received: from ORSMSX902.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.37; Thu, 30 Apr 2026 16:15:17 -0700
+Received: from ORSEDG902.ED.cps.intel.com (10.7.248.12) by
+ ORSMSX902.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.37 via Frontend Transport; Thu, 30 Apr 2026 16:15:17 -0700
+Received: from CY3PR05CU001.outbound.protection.outlook.com (40.93.201.55) by
+ edgegateway.intel.com (134.134.137.112) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.37; Thu, 30 Apr 2026 16:15:17 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=elG5rkArT7Z3VV/YHGkIzxNDJ1kBHXjogVGLZzbwUOipwpSYWZjC2QDrTdvqAtPdDfwHeYBEpn/fcg3DbgPGPUFM8JdRPz0RZr/YcxeJyOL/gxS3SkOUOMFkNX8mYUNQlN65htjWxa/GGDQSsBMnd5aAbnTEEA6bRGGi9fqhvXZBMdWRBcz66S8T2CqzsJ1x/emMi9D32hAt9O0Q87xahBpiH3YNQIvcV1RaWTCsYEy6Y2JrHKoaGlsNZGg+dVGC2INHIiB0uBMJAfBYWsE3afb9yux79FbiAZYjVwVud+xpBX89hFc7YyzZIoawWo8hjSm+QXLcR63uwIBHsPnDNg==
+ b=GO/7yL+N5f+ffewkXTsuCacMCwI1Z3WHE9I59Rx067yOs9Ul5nR4WqMzTlKAEfi3FZFn7vV8D11uqHgr+4zynjIkYrcGGuvvrFhR9T0A4/ja5bNmThJq8CohkWNaI0uxAnEVXHSJuWwMGbAL6Das63RqGPFqa2/y23SZhApL1H5hv+/tRnXRvosZqztRh/rUMhBI/BGwJt0urkcaSDCIGuop6CNAVA1TTKgcL7g1blA1ud0v5gxZDd/n7nWOf+3xrOAA/ikV/eA5IRfKzX8+yjGxTCk2ZARRAw2069DXXqJ+tbKaECWmM8e2ZDHSkS3IsGuQTTDPiN5MRObHk2CrKg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7W4qFj8VLz7QVaoCK5FlhYTz3sB3QdokN8qSvYvzxBA=;
- b=jHlSprLea+tf7b3orPJVihyzyFrnt1Ej/sqzzTc/K4nYyi6wP/DrI+9fhnXzf1uFWicecGhYBWVA16aQDk5/3Izs8yBdRU6NGc4+NY+wQhH2IW4qF6IF7U5QLOPrODulE0pFkS7M6aVXHOFplRPcbh56+E0B1l0yRQlyYkUFvLE+Hg3ICPgyKTg97ppC8FVn3JLzjdjsrEG+a8M/d6xWUGzD89AT1uDhCyOxd+FHZmPfH+/p/5zQXFYrOeedmt8XJusbh67XWMXhLTPUugHGwdGnFHGYGHSb8emBaVNWB9/uBXW8gN0PVNu51fhd3RPMISV5AdnaSPxm0UyC48p/nw==
+ bh=bTM7GAb5qt0fAtYW31XKOoZRhH29UdkgJHcr+enR1N8=;
+ b=btnfknuMSUBkaYR+mXfZEgs06BjCayyZ0YQ8yw/UXm9EGOi0aPk2MIW7ltDmptFcKj6sBiu+FsGgl29C5c5gjRVBEg96b0GrLgAQVKTsyxRIw5LzBw9K4/SRySoNKuY5TwNbyfv+JI/TQgGQ5dhAx+iiKa2HMNyKZ/l09C4k/3vHabb1dO4a+rzHBco+laqHB3HN6rM9TZg7iMFE6sIF9UTdAW8oNiWkjS5bd2Vk6lRVHpg2PF0i/IwEGb3eN85o+K+CMxFUUtpRT30CpmTsiZKBSaEwtk5mhRf6eM+gLK3oH/42M8FpcPgR3oubJ5IE0w7Bc3Mu/tCt/EHcT2uJ+g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
- header.d=arm.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arm.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7W4qFj8VLz7QVaoCK5FlhYTz3sB3QdokN8qSvYvzxBA=;
- b=cyrFoNgvVhVBsB+q43wuzR+bGDgWgRviWdGiZg0JGLYidxILWUC0OYprZoxPxpeGuhQcf4tBySLotj/aAYT5KAY5VyymzX/i2t9zRyEiQgy3xszWIAlCpoL7HCMOmaYkNHqkRRSJ2RoOGtAb4lcG1YFdbdytGMxFKvZZBnXOQ8o=
-Authentication-Results-Original: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=arm.com;
-Received: from VI0PR08MB10391.eurprd08.prod.outlook.com (2603:10a6:800:20c::6)
- by AS2PR08MB10267.eurprd08.prod.outlook.com (2603:10a6:20b:647::12) with
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
+ by MW3PR11MB4651.namprd11.prod.outlook.com (2603:10b6:303:2c::21) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9870.20; Thu, 30 Apr
- 2026 16:25:39 +0000
-Received: from VI0PR08MB10391.eurprd08.prod.outlook.com
- ([fe80::fa6b:9ba8:5c2f:ac91]) by VI0PR08MB10391.eurprd08.prod.outlook.com
- ([fe80::fa6b:9ba8:5c2f:ac91%3]) with mapi id 15.20.9870.020; Thu, 30 Apr 2026
- 16:25:38 +0000
-Message-ID: <8516aeea-f20b-4afa-a737-1dff636f5c2d@arm.com>
-Date: Thu, 30 Apr 2026 18:25:36 +0200
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9870.22; Thu, 30 Apr
+ 2026 23:15:09 +0000
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::bfe:4ce1:556:4a9d]) by SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::bfe:4ce1:556:4a9d%5]) with mapi id 15.20.9870.020; Thu, 30 Apr 2026
+ 23:15:08 +0000
+Message-ID: <eeecb5df-64ee-46ef-b4a8-0f0cdc88f0ae@intel.com>
+Date: Thu, 30 Apr 2026 16:15:05 -0700
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] ACPI: CPPC: Add ospm_nominal_perf support
-To: Sumit Gupta <sumitg@nvidia.com>, rafael@kernel.org,
- viresh.kumar@linaro.org, lenb@kernel.org, zhenglifeng1@huawei.com,
- zhanjie9@hisilicon.com, mario.limonciello@amd.com, saket.dumbre@intel.com,
- linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-pm@vger.kernel.org, acpica-devel@lists.linux.dev
-Cc: treding@nvidia.com, jonathanh@nvidia.com, vsethi@nvidia.com,
- ksitaraman@nvidia.com, sanjayc@nvidia.com, bbasu@nvidia.com
-References: <20260430142430.755437-1-sumitg@nvidia.com>
- <20260430142430.755437-3-sumitg@nvidia.com>
+Subject: Re: [PATCH RFC v3 04/11] RISC-V: QoS: add CBQRI hardware interface
+To: Drew Fustini <fustini@kernel.org>, Paul Walmsley <pjw@kernel.org>, "Palmer
+ Dabbelt" <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, "Alexandre
+ Ghiti" <alex@ghiti.fr>, =?UTF-8?B?UmFkaW0gS3LEjW3DocWZ?=
+	<rkrcmar@ventanamicro.com>, Samuel Holland <samuel.holland@sifive.com>,
+	Adrien Ricciardi <aricciardi@baylibre.com>, Nicolas Pitre
+	<npitre@baylibre.com>, =?UTF-8?Q?Kornel_Dul=C4=99ba?= <mindal@semihalf.com>,
+	Atish Patra <atish.patra@linux.dev>, Atish Kumar Patra <atishp@rivosinc.com>,
+	Vasudevan Srinivasan <vasu@rivosinc.com>, Ved Shanbhogue <ved@rivosinc.com>,
+	Conor Dooley <conor.dooley@microchip.com>, yunhui cui
+	<cuiyunhui@bytedance.com>, Chen Pei <cp0613@linux.alibaba.com>, Liu Zhiwei
+	<zhiwei_liu@linux.alibaba.com>, Weiwei Li <liwei1518@gmail.com>,
+	<guo.wenjia23@zte.com.cn>, Gong Shuai <gong.shuai@sanechips.com.cn>, "Gong
+ Shuai" <gsh517@gmail.com>, <liu.qingtao2@zte.com.cn>, Tony Luck
+	<tony.luck@intel.com>, Babu Moger <babu.moger@amd.com>, Peter Newman
+	<peternewman@google.com>, Fenghua Yu <fenghua.yu@intel.com>, James Morse
+	<james.morse@arm.com>, Ben Horgan <ben.horgan@arm.com>, Dave Martin
+	<Dave.Martin@arm.com>, Rob Herring <robh@kernel.org>, Conor Dooley
+	<conor+dt@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, "Rafael J.
+ Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, Robert Moore
+	<robert.moore@intel.com>, Sunil V L <sunilvl@ventanamicro.com>
+CC: <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
+	<x86@kernel.org>, <linux-acpi@vger.kernel.org>,
+	<acpica-devel@lists.linux.dev>, <devicetree@vger.kernel.org>, Paul Walmsley
+	<paul.walmsley@sifive.com>
+References: <20260414-ssqosid-cbqri-rqsc-v7-0-v3-0-b3b2e7e9847a@kernel.org>
+ <20260414-ssqosid-cbqri-rqsc-v7-0-v3-4-b3b2e7e9847a@kernel.org>
 Content-Language: en-US
-From: Pierre Gondois <pierre.gondois@arm.com>
-In-Reply-To: <20260430142430.755437-3-sumitg@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: PR3P189CA0039.EURP189.PROD.OUTLOOK.COM
- (2603:10a6:102:53::14) To VI0PR08MB10391.eurprd08.prod.outlook.com
- (2603:10a6:800:20c::6)
+From: Reinette Chatre <reinette.chatre@intel.com>
+In-Reply-To: <20260414-ssqosid-cbqri-rqsc-v7-0-v3-4-b3b2e7e9847a@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW4PR03CA0228.namprd03.prod.outlook.com
+ (2603:10b6:303:b9::23) To SJ2PR11MB7573.namprd11.prod.outlook.com
+ (2603:10b6:a03:4d2::10)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-X-MS-TrafficTypeDiagnostic:
-	VI0PR08MB10391:EE_|AS2PR08MB10267:EE_|DB5PEPF00014B9D:EE_|PR3PR08MB5786:EE_
-X-MS-Office365-Filtering-Correlation-Id: c7eb965b-9ba7-45df-eb6f-08dea6d5439c
-x-checkrecipientrouted: true
-NoDisclaimer: true
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|MW3PR11MB4651:EE_
+X-MS-Office365-Filtering-Correlation-Id: d50ac75f-b76b-4413-9c10-08dea70e526e
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam-Untrusted:
- BCL:0;ARA:13230040|1800799024|376014|7416014|366016|921020|56012099003|22082099003|18002099003;
-X-Microsoft-Antispam-Message-Info-Original:
- h7rmyB3iGG0aT1Ckwk33x2S+op2wNg9bLjRS4aP98IYOVsB7TV7KM4TzXn0DxqWXkIPXEfFLUFfgrrerTx3ekKYX3W7hOxlKi3A/qrj8iqfGQAelSSB8ayZbcEZtU+xoN022lHD/oJByE7dz+hHw9s0k+IYgw0JgQ7i1+OB/oyn/qt/OkeZSNBchq80TN9bF2PEMys5g728Kp0G7W4TXUgJh2zURaZrAr/XEX6FPpzIen22wzB7QyU+OmXjDUpPQ+rQ5k20TfHCCDeGbXnZKLHIWYKcu1JW2ICpt8FWEUEcTiC9o+2EV7dCXeGQ7zoUu5O0/hk2pmjo1/MGkF8oVygpDic55wEeYKtFfwReTfeufvCYkJLGpcFEzZFAZ5slceR1F7EtJaXa6L2WMt3MCsGM996Pt7KG0usyC4/fjDnjDvj+gTF9DA0IO0HZyK26FyUvTIl/+3UubjJc4kWua25Hct5AW+HGXf6aJ/UhQP1eTUTIzJD0ef00M7LBcbQnLw+iIWeir81XXU7j+RRgQm40NMdyamKUJVrp3oWZgVG4yAVxVk6YCVyt2f1OoGfDQlwnfnLghls5dW0hxKByd315Pbd5Xc0tbCxY97k3/kYRSFo9YY6b1hlABP5Hl4DuoYT99HTaEPpK+lAzjyCtIIOFJ21kMFaBwRlko3Bd5IMhzt2tgT7fIXeGdPQD7kKW2jxBUARv38aGIwTcpzE4KfymqXMS+Dh+ye6bLHQ5OOdtf8XBUpO4LZIteGAL+KKokFHC3FHnUA6NreXxKIl5IRQ==
-X-Forefront-Antispam-Report-Untrusted:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI0PR08MB10391.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(366016)(921020)(56012099003)(22082099003)(18002099003);DIR:OUT;SFP:1101;
-X-Exchange-RoutingPolicyChecked:
- LLqmNeXZqGY2LzTk2SX9m/uSSng5j7un7RvGj9oqovK9mQHPRumY39PdHnG6HJHwBQtKLkMP1i1zbk0gaSX+TrGykjB7zOQmUtSzeIG6bUwmzu7idOVVDZ/xJTp9bybmGzQT4N/163ccgyPaL3r1M4/cZZ7PwYoymxqae0WaKRK9v5H26BcPKfEmwF82b29aO16ryE5QWpehZvI74ZG/pjK7IM8DwzMOhMXqrfRafL/30ZFIUH3WmQoTPbavxUFTbzyPierKs3Vcs1DNQufeMCPN7bSYpBOK3S3sW11nuhRqpbpeQD3zgyaIxlAyb/1U4WdMAYABVPIaF31W2FK/ZA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS2PR08MB10267
-X-EOPAttributedMessage: 0
-X-MS-Exchange-Transport-CrossTenantHeadersStripped:
- DB5PEPF00014B9D.eurprd02.prod.outlook.com
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id-Prvs:
-	1f128407-3d49-400a-e9f8-08dea6d51d93
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|36860700016|7416014|376014|14060799003|35042699022|82310400026|56012099003|921020|22082099003|18002099003;
-X-Microsoft-Antispam-Message-Info:
-	OZpsMjAYYvbzNeb2/UqmsmNhcBlFpXkWjob1D5xPyO9dzCz7XthoCk+tBi7WEAxIo1Zu4J3gZ+Xgn115OkXHusWL13GDKt+2DyxFbTjkBMHBSHEfBvWjOvGcHMapqj43KSNgZzFVIvQmVRx9kaJicsfR0xu+oCcudqirmMoXdKtwHOqlJnDFoaVTkq5Kk9vF7xwqROAoPGPO6hWRuKgiZBKZLXYpAPbZ8OySLuEC2LRfyMYDjLOyvnkkFOFbm4ERyT4pFtZYDsgS71SPVG4LqE+kDkpeM6ODwHRbZ00Wq9XuYMSdKhxQOYs6lg8uozNPn9nvRgKS5FyMx4q2YK6ZAmRfFMHTe+rwfchZ0iyB5zgBy0H1jFjSt/3Z6qg8RfcR9geRIDmZ++rv3olBcx9X0Tq9o/9hsz2cLtAPkTjyp7erSisrT5BStmLCt3a6yiEsCRjnWnZZ0+402+enKI7zYocmq2pjwyT0bKjPEBXxVMHSLOeiBU0utOalLTyJ6DN/2JwGqwPazfXTnutMtuq9qa5LoPloAhncbXN/rp716EEA3aYRRbbIdgdNEdZDHqUjPmAnhEt5qfo0FDygvV/VtJWGgkdH7Bu3FoANeYagvYoWWu6JLGKRQ1j8+REAQTycNoOISFvyXZN+R0EBW8ltMTf4FHtOGJnz5DXpazFUatEFsDXvJz+CZNjzHpLezih5dvkRAq4WXMsN7DivaHSRGpQoVNxAOlMv9+fL5EopTzAchaKQWTPBeX9hsS0kAjZKvxVjH5g6BiJtMCiFnkP4qV0Xtt7xVRL6eL4YuzgWulG/2T2BjTix9HfWmikzYZbj
-X-Forefront-Antispam-Report:
-	CIP:4.158.2.129;CTRY:GB;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:outbound-uk1.az.dlp.m.darktrace.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(1800799024)(36860700016)(7416014)(376014)(14060799003)(35042699022)(82310400026)(56012099003)(921020)(22082099003)(18002099003);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|1800799024|366016|22082099003|18002099003|56012099003|921020;
+X-Microsoft-Antispam-Message-Info: CrWICR5v3nIgf/TYJcfuI1BPOWlB6wyFBtem/2vWo8ffZYq0+rWkZkTgxHRjIXES0+Hz4KqEenHkFDZ4o/n5qCVNUSpDtDkJZXU9SAaT662LsWBl1b2QezYzuR6hC+ySrN05JTA5iXovmyMEQrw+MPmzDa/aijbLku4Dku7FUT4rbBMvNhd+k/tZrLikHIRCj6UQTLroOgtrHQRyRMygC+EVImYZoVXHteBxEgtFg3t2FtjVV1HpZFNyzIFurV5g/H8wRVzYVa4NhN+YbO3cUmaEtH3Z6I9EQ/DwNO1p1ax+DvvvOxR4JdAch4ETK144r+oR57TamkyAHGqF0zs4kKmGqm9uBv5K272KVnC2dkBQ4rKqhq0S+5mFYBXg6F2SkO08kHFnUcRLvTnnOh5F7nEbQCBNFkYA6P1HPHHkKi/cIN2VztB0mqzFJRIRuflBmIWATAz0jC6hW1mxTGPw+8IXEN3I625BeAbFM/sgTQADgVK3mZ9Yij/ik8VcJ1EQcpKuWhoEA3kxfo6XasS+fsTbh9+621mjUYiOzDv0/azy9L6rlzswmczue/Bq25/NSJrcyMeKCfE+RonaQMLb1jZMD+UcpagNHo0wlehR+eolFl4Y+7rm0hVGHkoQ0v236PA4eWfVXyddIT+QxRLj0O2lxkEl98U/HMCmhpOLiMZnXfy/sAigymtLd7t22ro7TOQGavMz65MyEcV475bKHBG8oSpp5RJxUdmZDgWWd/8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(366016)(22082099003)(18002099003)(56012099003)(921020);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	hAGLw1ZMVy3RlrIkO14YKdo0aemQje89D5WsLtHJUyaxYdGb3Rj95YK+6i6UDIpa4FcEU61qLHGjcOYHwvGy+S2wzMGNFCm+RT5LrNyBIjdoVN54ccDPCwQA4Hm+lTdSAvMnnfxEUsOLzdCtEnUKrpiaSpum4VCQn3URM6TtORBiSCpDQ0rEnD8U5afUKXwKMcr8eIZJNKd/rC55bttYfl15pQ4C7c+PxIobmcMhLcsIV+s2UdcUOMyB3d6VBxFnpYfSL1wh/Eq3DS67U5G7Rq3gKkjhamaahVU4hR8dTCUsL5Nfju+jUY4XdJGrjLRgjgNujQ8p8aMye5UddIwURIhbdiMRBkBjzI6vcJuYtSe8fRQfOcMO3KyMQnwje9p0DMJHkiUyPP2l8zvK7TUtCbXon06BKDta/dRThtdfxfFwgyUWyh5TImty5YR77pLI
-X-OriginatorOrg: arm.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2026 16:26:42.4710
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?L2JySUV3WnJtR21FMnNuUTNKNFRVcm5YOGF4U1FTT1h4VkR5RHVKNjBqelRh?=
+ =?utf-8?B?aTZYdTEzcHE5NDhQdi91cFprYWV4SE9lTGZiNkhKc3pGODNvVHdYaTJFQlly?=
+ =?utf-8?B?eVNBaE04ZFFyNmc5YVI0UldUVTVHMkJiR3FMTW4zcXhWeHpmVGZvR25TakV2?=
+ =?utf-8?B?QTlueXdZQWNCdGtwcHU4eVo2MUttZHM4L2VFbTNSSjV4bEtzbTY3dzU2clhJ?=
+ =?utf-8?B?UHlURFFkQldOVWtYZUxrWHBubEM0VlpPY1dxRUFvblk5bTBoNEtPMSt1cVBy?=
+ =?utf-8?B?dnVwK0JMRXM0bmxFMnVDVGllZ1Q0ajI2K0ViSlVQaG9mTUxkSkZDc2pjeHpn?=
+ =?utf-8?B?MGQ3OG5HYldrN0g2eTMxK1orcjZtcnRqNm4xR3hzUXFvQ3d5RjRqRWJET1V5?=
+ =?utf-8?B?SWRjT0UyN0owQTB4TUhGWHJwSCtmbWIxOWdRWUFQaVFiRU4wN1RZVlY3azVW?=
+ =?utf-8?B?S1NnRG4ybWZXblgyUVN5VlF1K2pZSWp6azFGdTRKSER3dUlvcnYyYkxxNS82?=
+ =?utf-8?B?WW9uK3o0N21VTHJBUWJrYldUM3ZuWlJubzVyTWh3UEN4WVk2V3piT3RqTlZR?=
+ =?utf-8?B?Qm1qMDhLZ3lIZk54cnFyODhFNTQ2MnY2cnpxa0FEb05MUWNxVzhvVVJqOXZr?=
+ =?utf-8?B?dlo4WFNaZndsNUtxZW5zTi8ra3UwSWdILzFMMDFpMnFDSHFQZVgyK0pDdzlw?=
+ =?utf-8?B?K0xYbzFhMVRSWjYvN3JPQmJTdCtZVm50Q2lVSE5qc0JmWmM2TEVjYTFJVEhQ?=
+ =?utf-8?B?b1NmcnJjeEJjV0l6YnZSVlh5NWFkZ3VrWTBTU2x1blM5TWdoeThZNjZPR1VS?=
+ =?utf-8?B?T2s2MHQrZ1VxM3BlUmFiSjk3ZGpwVittMmk4Qm1QM3pFVVBMcEU3ZThNR3Rm?=
+ =?utf-8?B?UGlLcnk0aGxMUFZ5TkhlaGVJNE1rT0NDaVoyK3ZtWktydVliRGlEbFhVRTRo?=
+ =?utf-8?B?d2lsOEMwMkJuaVMyZVVKMFFINFlCSmo1K0RsYUdLRk10OU5rdVR4QWhwTm5U?=
+ =?utf-8?B?TDlldmNrcmU4S0tRbEMvanZoNkkreGUvWG5DRXB6b2x6amJVdXdpcm1vNVJv?=
+ =?utf-8?B?QTRsNUVUV3JLY2hjcitHdkNpejBEcDM0M1hwVEJkSE8zTmVRWksxUEVVWnJB?=
+ =?utf-8?B?ZVpUdnFuM3V4N2JNai95aFY4TmI3dS9iQmtLUVZ1bFB0YkQvaWkxZHhiRzRM?=
+ =?utf-8?B?V3BEdHZaSi9JMTZlUjRYRGp4b2d2WXhOYUdDeWNqUjVvcjdFSEdDRmtMNlVK?=
+ =?utf-8?B?c0FZTU40UndOYkYwQU9RVGw5WkJjKzdoeEdVU2R0UHNpbExqUnVMTDdnMnBu?=
+ =?utf-8?B?c1NoRjZySmFlbXE0amgvbXdlVWNvUldmdG0wSEZuejNoWXlGREZyNFlDa2tC?=
+ =?utf-8?B?cE9GVXV2dEV2TXdHL2ExcjJmKzBFend1WllWRklKckJGaUJaaFM2aUxxd3ZW?=
+ =?utf-8?B?UWtFeERaajIycSs0eUx4ZkEwcVJzK3RqRkx5SksrZ3VVdFIreFdIZ0NHMzJz?=
+ =?utf-8?B?UHdEUWhsYWNlM3BDZnIzbE9PU2FjOG1vMlU2bFJkVmZvdXo3TnNsSmFLVEsz?=
+ =?utf-8?B?RUp5T3ZDMWpyNlVsYitQb3E4bG16MTV2THhxano4Y1VmV1ZZMzlRR3VTQnhz?=
+ =?utf-8?B?SVlLVis4TGNmdGlMTzFaS0luWmtIWm9hVXJmblZxb0lnc2psVk5WQk5QYXY2?=
+ =?utf-8?B?b1hDTGRtYXZjQ2hIbUpBV3BQMHlkeXpRQlNwRXpsaUhsaFhMMkJ6YXVIQ3RN?=
+ =?utf-8?B?YmpXMzY5SGUxR0YrZkpXcVpKZE1pNFloVlVuQ3hKWnQwNy8yd0V2YzJMZlBz?=
+ =?utf-8?B?V0lYcC8vLzN1K3l6ajIrc3RIc2dSdVVmemNrQ3gvaUxEcDVPSC9tdTR5dGFS?=
+ =?utf-8?B?QjdIV3hKb3hXZkJ2SlhSeDZDdTVxWjE1T1ZETGJmam1ITmJoMmErWHIvbk5J?=
+ =?utf-8?B?S0hISlBxRG5iNlkwcm9KNzlxTjgyUW1iM0RuemtGcnBnZWxRNkMrUVZtVzRL?=
+ =?utf-8?B?YlF0SHF4YlN2S1N0QStiV1poQ1dyZlZhcW1hZURXV2RrNFozN0xCck9aYlUz?=
+ =?utf-8?B?OWNjeGN1N0Z6OFVlM254ZXZsNDA3VjIwRjA0aUZmanBSakxEb2dEem50aTF5?=
+ =?utf-8?B?YWdKa0IvcjV2cjcrYXlwcXBXR2k2R21tZHlGRG4rbE1uTXY3UHFocldlSWJi?=
+ =?utf-8?B?Wk1YQ3cwYk5zSEpLeDBEZ29mNmJ4VktNNHpmd1lJNkdBVW5WUDJkemJMTWVJ?=
+ =?utf-8?B?aEpaTGUvY01nMldwbUdGMlNtZitRY1dUbHNRcjFHbllkVDJDcWdVRDVicUkz?=
+ =?utf-8?B?bEJjcnBXVm1hYk9zaElpbzZFQmNyVlY4cFUvNisrRjgxRTVwdW5hZDFBRmo3?=
+ =?utf-8?Q?O92JX0qlkbs+fpR0=3D?=
+X-Exchange-RoutingPolicyChecked: vduWlyMgAsPFyocrqBHKADvgytaz/V6HaARZRx5uL1weBMOlcGphGi4ScES+eLRbOGxYqdoTLdrzdRQ8A6EZGm/gtsRG3o9DH16dMnKVhY2HyB2yMv+9zFR1/CuD/wuSOXzuoPzvHD/RwTVPsMjac702Q/g/GVaoTiTmFN0kUb1lK+EBrvYngwURfWSynl+dF27ZsEDk/GErhbDeHOOnUmjNRQ9rOx5izKf7liMTZHeBrifxBaGbAecWI4SiIzMpB2O9N7Wv9HVTZO0TMpbmn1FeZc5oHEEWnO3Dvf2VSdnggAPO+mY72+Jp4nxFKC3iPruPwzsKK4ninJe7KCQnCg==
+X-MS-Exchange-CrossTenant-Network-Message-Id: d50ac75f-b76b-4413-9c10-08dea70e526e
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2026 23:15:08.8878
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c7eb965b-9ba7-45df-eb6f-08dea6d5439c
-X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d;Ip=[4.158.2.129];Helo=[outbound-uk1.az.dlp.m.darktrace.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DB5PEPF00014B9D.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3PR08MB5786
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xQHrWf+2r+uIm4dFPO13/EliNk3ajxEqlETycNyNCEnSBgzfMgWDP7BpK9uqfNYhF4YYio5xlItXcq7bGM6lMPm2YqzYWnq5zBe5TbgLd0M=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4651
+X-OriginatorOrg: intel.com
 
-Hello Sumit,
+Hi Drew,
 
-On 4/30/26 16:24, Sumit Gupta wrote:
-> Add acpi_cppc/ospm_nominal_perf sysfs attribute (read-write) and
-> cppc_set_ospm_nominal_perf() API for the OSPM Nominal Performance
-> register (ACPI 6.6, Section 8.4.6.1.2.6).
->
-> The register conveys the desired nominal performance level at which
-> the platform may run. OSPM can request a lower level than platform
-> nominal. Valid range is [Lowest Performance, Nominal Performance].
-> The value tells the platform what OSPM considers nominal. The
-> platform classifies performance above this as boosted and below as
-> throttled. It uses that for its power/thermal decisions.
->
-> Although the register is write-only per spec, cache the OSPM-written
-> value in cpc_desc so userspace can observe it via sysfs, and to
-> skip redundant writes.
->
-> Initialize to platform nominal at policy init. Override via sysfs
-> if needed.
->
-> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
-> ---
->   drivers/acpi/cppc_acpi.c       | 69 ++++++++++++++++++++++++++++++++++
->   drivers/cpufreq/cppc_cpufreq.c | 10 +++++
->   include/acpi/cppc_acpi.h       |  6 +++
->   3 files changed, 85 insertions(+)
->
-> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-> index a1c91ce20cc8..fbc620adafad 100644
-> --- a/drivers/acpi/cppc_acpi.c
-> +++ b/drivers/acpi/cppc_acpi.c
-> @@ -155,6 +155,10 @@ static DEFINE_PER_CPU(struct cpc_desc *, cpc_desc_ptr);
->   static struct kobj_attribute _name =		\
->   __ATTR(_name, 0444, show_##_name, NULL)
->   
-> +#define define_one_cppc_rw(_name)		\
-> +static struct kobj_attribute _name =		\
-> +__ATTR(_name, 0644, show_##_name, store_##_name)
+On 4/14/26 6:53 PM, Drew Fustini wrote:
+> diff --git a/arch/riscv/kernel/qos/internal.h b/arch/riscv/kernel/qos/internal.h
+> new file mode 100644
+> index 000000000000..edbcbd9471b1
+> --- /dev/null
+> +++ b/arch/riscv/kernel/qos/internal.h
+
+...
+
 > +
->   #define to_cpc_desc(a) container_of(a, struct cpc_desc, kobj)
->   
->   #define show_cppc_data(access_fn, struct_name, member_name)		\
-> @@ -211,6 +215,38 @@ static ssize_t show_feedback_ctrs(struct kobject *kobj,
->   }
->   define_one_cppc_ro(feedback_ctrs);
->   
-> +static ssize_t show_ospm_nominal_perf(struct kobject *kobj,
-> +				      struct kobj_attribute *attr, char *buf)
+> +struct cbqri_config {
+> +	u64 cbm; /* capacity block mask */
+> +	u64 rbwb; /* reserved bandwidth blocks */
+> +};
+
+Is this struct necessary? From what I can tell it is used to pass a parameter to
+cbqri_apply_cache_config() and cbqri_apply_bw_config() where each just picks the
+one member of interest. Could parameter of interest just be provided directly to
+cbqri_apply_cache_config() and cbqri_apply_bw_config() without bouncing it
+through this struct first?
+
+> +
+> +#endif /* _ASM_RISCV_QOS_INTERNAL_H */
+> diff --git a/arch/riscv/kernel/qos/qos_resctrl.c b/arch/riscv/kernel/qos/qos_resctrl.c
+> new file mode 100644
+> index 000000000000..6d294f2f2504
+> --- /dev/null
+> +++ b/arch/riscv/kernel/qos/qos_resctrl.c
+> @@ -0,0 +1,432 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +
+> +#define pr_fmt(fmt) "qos: resctrl: " fmt
+> +
+> +#include <linux/err.h>
+> +#include <linux/io.h>
+> +#include <linux/io-64-nonatomic-lo-hi.h>
+> +#include <linux/iopoll.h>
+> +#include <linux/ioport.h>
+> +#include <linux/resctrl.h>
+> +#include <linux/riscv_qos.h>
+> +#include <linux/slab.h>
+> +#include <linux/types.h>
+> +#include <asm/csr.h>
+> +#include <asm/qos.h>
+> +#include "internal.h"
+> +
+> +static struct cbqri_resctrl_res cbqri_resctrl_resources[RDT_NUM_RESOURCES];
+> +
+> +static bool exposed_alloc_capable;
+> +/* CDP (code data prioritization) on x86 is AT (access type) on RISC-V */
+> +static bool exposed_cdp_l2_capable;
+> +static bool exposed_cdp_l3_capable;
+> +static bool is_cdp_l2_enabled;
+> +static bool is_cdp_l3_enabled;
+
+These CDP values could also be handled as part of struct cbqri_resctrl_res, similar
+to how CDP is managed with struct rdt_hw_resource. There does seem to be a hidden
+assumption in this implementation that if *any* cache controller at particular level
+supports CDP (which will cause global exposed_cdp_l{2,3}_capable to be true) then all cache
+controllers at that level are assumed to support CDP even though this property is
+enumerated separately for every cache controller making it possible for this
+support to not be uniform.
+
+...
+
+> +/* Perform capacity allocation control operation on capacity controller */
+> +static int cbqri_cc_alloc_op(struct cbqri_controller *ctrl, int operation, int rcid,
+> +			     enum resctrl_conf_type type)
 > +{
-> +	struct cpc_desc *cpc_ptr = to_cpc_desc(kobj);
-> +	u64 val = READ_ONCE(cpc_ptr->ospm_nominal_perf);
+> +	int reg_offset = CBQRI_CC_ALLOC_CTL_OFF;
+> +	int status;
+> +	u64 reg;
 > +
-> +	if (!val)
-> +		return -ENODATA;
+> +	reg = ioread64(ctrl->base + reg_offset);
+> +	reg &= ~CBQRI_CONTROL_REGISTERS_OP_MASK;
+> +	reg |= FIELD_PREP(CBQRI_CONTROL_REGISTERS_OP_MASK, operation);
+> +	reg &= ~CBQRI_CONTROL_REGISTERS_RCID_MASK;
+> +	reg |= FIELD_PREP(CBQRI_CONTROL_REGISTERS_RCID_MASK, rcid);
 > +
-> +	return sysfs_emit(buf, "%llu\n", val);
-> +}
-> +
-> +static ssize_t store_ospm_nominal_perf(struct kobject *kobj,
-> +				       struct kobj_attribute *attr,
-> +				       const char *buf, size_t count)
+> +	/* CBQRI capacity AT is only supported on L2 and L3 caches for now */
+> +	if (ctrl->type == CBQRI_CONTROLLER_TYPE_CAPACITY &&
+> +	    ((ctrl->cache.cache_level == 2 && is_cdp_l2_enabled) ||
+> +	    (ctrl->cache.cache_level == 3 && is_cdp_l3_enabled))) {
+> +		reg &= ~CBQRI_CONTROL_REGISTERS_AT_MASK;
+> +		switch (type) {
+> +		case CDP_CODE:
+> +			reg |= FIELD_PREP(CBQRI_CONTROL_REGISTERS_AT_MASK,
+> +					  CBQRI_CONTROL_REGISTERS_AT_CODE);
+> +			break;
+> +		case CDP_DATA:
+> +		default:
+> +			reg |= FIELD_PREP(CBQRI_CONTROL_REGISTERS_AT_MASK,
+> +					  CBQRI_CONTROL_REGISTERS_AT_DATA);
+> +			break;
+> +		}
+> +	}
+
+There does not seem to be any special enabling when resctrl enables CDP via
+resctrl_arch_set_cdp_enabled() so I assume CDP is always enabled? Does that mean
+that when CDP is disabled from resctrl perspective (thus, both is_cdp_l2_enabled
+and is_cdp_l3_enabled are false, but exposed_cdp_l2_capable and exposed_cdp_l3_capable
+are true) then the default behavior is that allocation applies to both code and data
+and it is not necessary to set both CBQRI_CONTROL_REGISTERS_AT_CODE and
+CBQRI_CONTROL_REGISTERS_AT_DATA?
+
+
+...
+
+> +static int cbqri_probe_controller(struct cbqri_controller *ctrl)
 > +{
-> +	struct cpc_desc *cpc_ptr = to_cpc_desc(kobj);
-> +	u64 val;
-> +	int ret;
+> +	int err;
 > +
-> +	ret = kstrtou64(buf, 0, &val);
-> +	if (ret)
-> +		return ret;
+> +	pr_debug("controller info: type=%d addr=%pa size=%pa max-rcid=%u max-mcid=%u\n",
+> +		 ctrl->type, &ctrl->addr, &ctrl->size,
+> +		 ctrl->rcid_count, ctrl->mcid_count);
 > +
-> +	ret = cppc_set_ospm_nominal_perf(cpc_ptr->cpu_id, val);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return count;
-> +}
-> +define_one_cppc_rw(ospm_nominal_perf);
-> +
->   static struct attribute *cppc_attrs[] = {
->   	&feedback_ctrs.attr,
->   	&reference_perf.attr,
-> @@ -222,6 +258,7 @@ static struct attribute *cppc_attrs[] = {
->   	&nominal_perf.attr,
->   	&nominal_freq.attr,
->   	&lowest_freq.attr,
-> +	&ospm_nominal_perf.attr,
->   	NULL
->   };
->   ATTRIBUTE_GROUPS(cppc);
-> @@ -1683,6 +1720,38 @@ int cppc_set_epp(int cpu, u64 epp_val)
->   }
->   EXPORT_SYMBOL_GPL(cppc_set_epp);
->   
-> +/**
-> + * cppc_set_ospm_nominal_perf() - Write OSPM Nominal Performance register.
-> + * @cpu: CPU on which to write register.
-> + * @ospm_nominal_perf: Value to write to the OSPM Nominal Performance register.
-> + *
-> + * OSPM Nominal Performance allows OSPM to inform the platform of the nominal
-> + * performance level it intends to maintain.
-> + *
-> + * Return: 0 for success, -EINVAL on invalid input, -EOPNOTSUPP if not
-> + * supported, -EIO otherwise.
-> + */
-> +int cppc_set_ospm_nominal_perf(int cpu, u64 ospm_nominal_perf)
-> +{
-> +	struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpu);
-> +	int ret;
-> +
-> +	if (!ospm_nominal_perf || ospm_nominal_perf > U32_MAX)
+> +	if (!ctrl->addr) {
+> +		pr_warn("%s(): controller has invalid addr=0x0, skipping\n", __func__);
 > +		return -EINVAL;
-I think the spec also requests to have a value in the range
-
-[lowest:nominal]. As these registers are read-only it should
-
-be ok to read the values here ?
-
+> +	}
 > +
-> +	if (cpc_desc &&
-> +	    READ_ONCE(cpc_desc->ospm_nominal_perf) == ospm_nominal_perf)
-> +		return 0;
+> +	if (!request_mem_region(ctrl->addr, ctrl->size, "cbqri_controller")) {
+> +		pr_err("%s(): request_mem_region failed for %pa\n",
+> +		       __func__, &ctrl->addr);
+> +		return -EBUSY;
+> +	}
 > +
-> +	ret = cppc_set_reg_val(cpu, OSPM_NOMINAL_PERF, ospm_nominal_perf);
-> +	if (ret)
-> +		return ret;
+> +	ctrl->base = ioremap(ctrl->addr, ctrl->size);
+> +	if (!ctrl->base) {
+> +		pr_err("%s(): ioremap failed for %pa\n", __func__, &ctrl->addr);
+> +		err = -ENOMEM;
+> +		goto err_release;
+> +	}
 > +
-
-Shouldn't we have some protection against concurrent accesses ?
-
-> +	WRITE_ONCE(cpc_desc->ospm_nominal_perf, ospm_nominal_perf);
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(cppc_set_ospm_nominal_perf);
+> +	spin_lock_init(&ctrl->lock);
 > +
->   /**
->    * cppc_get_auto_act_window() - Read autonomous activity window register.
->    * @cpu: CPU from which to read register.
-> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
-> index 7e7f9dfb7a24..d06cba963550 100644
-> --- a/drivers/cpufreq/cppc_cpufreq.c
-> +++ b/drivers/cpufreq/cppc_cpufreq.c
-> @@ -715,6 +715,16 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
->   		goto out;
->   	}
->   
+> +	switch (ctrl->type) {
+> +	case CBQRI_CONTROLLER_TYPE_CAPACITY:
+> +		err = cbqri_probe_cc(ctrl);
+> +		break;
+> +	case CBQRI_CONTROLLER_TYPE_BANDWIDTH:
+> +		err = cbqri_probe_bc(ctrl);
+> +		break;
+> +	default:
+> +		pr_err("unknown controller type %d\n", ctrl->type);
+> +		err = -ENODEV;
+> +		break;
+> +	}
+> +
+> +	if (err)
+> +		goto err_iounmap;
+> +
 > +	/*
-> +	 * Initialize OSPM Nominal Performance to inform firmware of
-> +	 * OSPM's nominal level. Performance above this value = boost;
-> +	 * below = throttle. Uses platform nominal by default.
+> +	 * max_rmid is used by resctrl_arch_system_num_rmid_idx()
+> +	 * Find the smallest mcid_count amongst all controllers.
 > +	 */
-> +	ret = cppc_set_ospm_nominal_perf(cpu, caps->nominal_perf);
-> +	if (ret && ret != -EOPNOTSUPP)
-> +		pr_debug("Failed to set ospm_nominal_perf for CPU%d: %d\n",
-> +			 cpu, ret);
+> +	max_rmid = min(max_rmid, ctrl->mcid_count);
+
+This computation appears to include all controllers, whether they support monitoring or not.
+What will ctrl->mcid_count be on a controller that does not support monitoring?
+
 > +
-
-IIUC, if (ospm_nominal_perf == nominal_perf), the firmware should
-not behave differently. Is this really useful ?
-
-------------
-
-Also this seems like there will need some synchronization
-mechanism to keep-up with the boost state.
-
-If the ospm_nominal_perf is lowered and boost is disabled,
-a freq. update should happen. IMO it looks like this could
-be handled with (another) freq_qos_request.
-
-This new freq_qos_request, if we name it ospm_nominal_freq_req,
-should only be taken into account if boost is disabled.
-Otherwise, if boost is enabled, ospm_nominal_freq_req
-should be ignored.
-
-------------
-
-Also, the function seems to set the ospm_nominal_freq for
-a single CPU when the policy might be common for multiple
-CPUs right ?
-
-The issues this field raises seems similar to the auto_sel
-ones. I.e. :
-
-- concurrency accesses + need for a scratch value
-
-- what should happen when unloading the driver
-
-- the value can be set for single CPUs but we might
-want to have the same value for the whole policy
-
-Maybe a common solution should be found.
-(I m not suggesting anything right now unfortunately).
-
-
->   	cppc_cpufreq_cpu_fie_init(policy);
->   	return 0;
->   
-> diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
-> index 8693890a7275..3771e2ed507d 100644
-> --- a/include/acpi/cppc_acpi.h
-> +++ b/include/acpi/cppc_acpi.h
-> @@ -86,6 +86,7 @@ struct cpc_desc {
->   	struct cpc_register_resource cpc_regs[MAX_CPC_REG_ENT];
->   	struct acpi_psd_package domain_info;
->   	struct kobject kobj;
-> +	u32 ospm_nominal_perf;
->   };
->   
->   /* These are indexes into the per-cpu cpc_regs[]. Order is important. */
-> @@ -180,6 +181,7 @@ extern int cpc_write_ffh(int cpunum, struct cpc_reg *reg, u64 val);
->   extern int cppc_get_epp_perf(int cpunum, u64 *epp_perf);
->   extern int cppc_set_epp_perf(int cpu, struct cppc_perf_ctrls *perf_ctrls, bool enable);
->   extern int cppc_set_epp(int cpu, u64 epp_val);
-> +extern int cppc_set_ospm_nominal_perf(int cpu, u64 ospm_nominal_perf);
->   extern int cppc_get_auto_act_window(int cpu, u64 *auto_act_window);
->   extern int cppc_set_auto_act_window(int cpu, u64 auto_act_window);
->   extern int cppc_get_auto_sel(int cpu, bool *enable);
-> @@ -266,6 +268,10 @@ static inline int cppc_set_epp(int cpu, u64 epp_val)
->   {
->   	return -EOPNOTSUPP;
->   }
-> +static inline int cppc_set_ospm_nominal_perf(int cpu, u64 ospm_nominal_perf)
-> +{
-> +	return -EOPNOTSUPP;
+> +	return 0;
+> +
+> +err_iounmap:
+> +	iounmap(ctrl->base);
+> +	ctrl->base = NULL;
+> +err_release:
+> +	release_mem_region(ctrl->addr, ctrl->size);
+> +	return err;
 > +}
->   static inline int cppc_get_auto_act_window(int cpu, u64 *auto_act_window)
->   {
->   	return -EOPNOTSUPP;
+
+Reinette
+
