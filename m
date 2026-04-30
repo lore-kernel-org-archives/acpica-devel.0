@@ -1,153 +1,158 @@
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19B1E423A81;
-	Thu, 30 Apr 2026 13:29:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777555790; cv=none; b=kS64K5aXBnem7Yz76jZ0htwcvZgoWHp5OWKUaCsI8c/aa8v6Qb5JC2dMJfQKXulqZ8eRH/a9g6hQVqAJC3HJ/ZsNvqio5E+iygwqU7jvxLJkvRbon2P2w+Cfnk4XqI14SS2CmPTbRfyBJCOGZ/f0Tcrlmi0eLpVafirY9iE0xLk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777555790; c=relaxed/simple;
-	bh=/W1GRuxZq0cC6A7wpquemE4YB2GQRO11YgKNzJgpAzE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type:Content-Disposition; b=CJUgm2bCqU2MevY6xPmnzO7FqYNwcbg7H71WFvBueUFfZgzCnIZxKTXJmsbUxisqoYiJSFFAB7414cwGh04KrrzYLwSuIKS5u8UC2AwVr9WMfpNYjPRQey94ZcX7HRsW6u+rgO03p0ut+2hurLC4563VP6+izLgvQsdpV3M9Yrs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=MIV0wfnW; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from BL2PR02CU003.outbound.protection.outlook.com (mail-eastusazon11011027.outbound.protection.outlook.com [52.101.52.27])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54C9742668E
+	for <acpica-devel@lists.linux.dev>; Thu, 30 Apr 2026 14:25:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.52.27
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1777559111; cv=fail; b=buNf3NirbYzLxhDbSrAAtgV3AiLikeQ6kaexa+7OQhVSQ+pfgbQCVy59ZWwMDnpgeA/q0IvHFdSfwqJ24hCF25ug07Pp+MtIlDoo/fWik/jpxeJxMfwPzx5Z9mwHzR1lNoIyOH83k22XssGxB6QYKxbIPqb9zEZhOd1JEKPJ2tQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1777559111; c=relaxed/simple;
+	bh=knKxvyicbAOvPcM0x+tm5iEdmKVj+3JFnGlUotndIFQ=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=mR0echlZqkZX0/OWfUK3SRjQbvv95Pl+qi/E5oQwKm9ARIIRIFA2gVL5hkPGOCLg03YCj/t60GA0U7MXFMY2ILGlm4DuARoiYiKLB/vKoRuiUwqjZlyREk8kOcT97jEOPjin64lleJdlfrqtZmiUzUzz91ErAf3RvCstzL2jUak=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=WtcqQsty; arc=fail smtp.client-ip=52.101.52.27
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="MIV0wfnW"
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EBE341AED;
-	Thu, 30 Apr 2026 06:29:42 -0700 (PDT)
-Received: from devkitleo.cambridge.arm.com (devkitleo.cambridge.arm.com [10.1.196.90])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D026C3F7B4;
-	Thu, 30 Apr 2026 06:29:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1777555788; bh=/W1GRuxZq0cC6A7wpquemE4YB2GQRO11YgKNzJgpAzE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MIV0wfnWvMpN+DWDEs3DC7LO+ywU67ncAAqeBECPc/hmIVJgitsfq1OPtKUbFTwdg
-	 nvOWGEn5C1XToufUlAVzncZQtaq2SSb2kSiSyexB5Rb+sxsNKCvPTOvEJa/YsvsNmT
-	 E6Ci7q2Kk9ABl0De8i+eB010YSc/82PNfDsg8rYA=
-From: Leonardo Bras <leo.bras@arm.com>
-To: Marc Zyngier <maz@kernel.org>
-Cc: Leonardo Bras <leo.bras@arm.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Oliver Upton <oupton@kernel.org>,
-	Joey Gouly <joey.gouly@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>,
-	Saket Dumbre <saket.dumbre@intel.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Chengwen Feng <fengchengwen@huawei.com>,
-	Jonathan Cameron <jic23@kernel.org>,
-	Kees Cook <kees@kernel.org>,
-	=?utf-8?Q?Miko=C5=82aj?= Lenczewski <miko.lenczewski@arm.com>,
-	Ryan Roberts <ryan.roberts@arm.com>,
-	Yang Shi <yang@os.amperecomputing.com>,
-	Thomas Huth <thuth@redhat.com>,
-	mrigendrachaubey <mrigendra.chaubey@gmail.com>,
-	Yeoreum Yun <yeoreum.yun@arm.com>,
-	Mark Brown <broonie@kernel.org>,
-	Kevin Brodsky <kevin.brodsky@arm.com>,
-	James Clark <james.clark@linaro.org>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Fuad Tabba <tabba@google.com>,
-	Raghavendra Rao Ananta <rananta@google.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Vincent Donnefort <vdonnefort@google.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Sascha Bischoff <Sascha.Bischoff@arm.com>,
-	Anshuman Khandual <anshuman.khandual@arm.com>,
-	Tian Zheng <zhengtian10@huawei.com>,
-	Wei-Lin Chang <weilin.chang@arm.com>,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	kvmarm@lists.linux.dev,
-	linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev,
-	kvm@vger.kernel.org
-Subject: Re: [PATCH v1 00/12] KVM Dirty-bit cleaning accelerator (HACDBS)
-Date: Thu, 30 Apr 2026 14:29:37 +0100
-Message-ID: <afNZQKIiKmHPD5My@devkitleo>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <86bjf0zj2p.wl-maz@kernel.org>
-References: <20260430111424.3479613-2-leo.bras@arm.com> <86bjf0zj2p.wl-maz@kernel.org>
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="WtcqQsty"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=MEmVPg4gu7Vy2xffESMqmW0MaET095fEmt/8Sc9dQFbnDkaQW+TqM4vIfCPQcssa8Ff5IkCf+O2Ak+F2Cp0AQqRxOt9S943qKz5RyEbJ+EpGMsYXpcl340yNuWPxcLAjphGs6ri1Vf2Efaz6fMyZOkWbTk4rJhUOljVb27OEt07rk0x3SWU4bFHHIfY9dTY5/O9IAuOAHv2lONwxIgl4irinD0Vd43RdC24I6Myge09RHohsfROcQ7RALHdOWajy5Xi6RGHRSyk0ncE/H2Upg1VzRp1UL8SyNoHQjca68UImCy1CXOTxrnUWi98KMhwUOehUmguE4KY4fT9Zz0UcmQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=RBaPHeg0LF8n7R2JavkwJL2MeIRZvdGpJmrhUI0ZF3c=;
+ b=QMJ4evVeNRqoejTfRMmAuEDgjjObf9hgFE+xpmrZlxM/S1d/VflXnTtCF/8NDZHU3Tsz2p1ziGBjkH5RnI9tvpgCD6rqyZRbvqGyXEHMT/nfzBb+FoZNh3KwY2Weirqq4dlgyHhfDq+ZV7b+qItAuGY5/jMX6L7hTss3t3oRJ67ZkyXLKQozhDzy0V8xLqwV5auKuGMj6BPjmdBjSzjBPnePpaxcFyGE3iqDDsIBhd97ViYDdid//XLfVuPXeo2mqoS3/ct8RyxjJS5SQ1QPFyXZp914mws66tYGkmrZrI8t915vCfNu95jS5inyRXxtcxXxUaBeSEqA97WLLuCS+g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RBaPHeg0LF8n7R2JavkwJL2MeIRZvdGpJmrhUI0ZF3c=;
+ b=WtcqQstyp/rtXDvjUmag1Lx9BqP1TWKmORXB0DjT4OpGyRwTjNN2GSHIKnzLBBYEkZvBaYK9DygbdE7y57SPNZD1Xs1MbBYtmJCaTGK0bGWcOjlFQxwxXe8qyVVkP2uVnbIqzo+TaAFBTQQzBEWfWbm3dENxav7BAddlLlyo2oFShATPVyaSbhGEknplpX0MYg7DpnSY5jRAntZdnYBXq5UzIXOdjn3aRgdq+1LDzp7HCF99Hoi7/FeK0lJjqEuM7/CbWTw0JQu/qj1MSn2uOrsMy/OlCi1BmS6y9phgaF62ilXVg+LeoslWikMfsO095zQ1A7ofhiW8oj0y0Er4ig==
+Received: from SJ0PR03CA0299.namprd03.prod.outlook.com (2603:10b6:a03:39e::34)
+ by MN2PR12MB4142.namprd12.prod.outlook.com (2603:10b6:208:1dd::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9870.21; Thu, 30 Apr
+ 2026 14:25:03 +0000
+Received: from MWH0EPF000C6189.namprd02.prod.outlook.com
+ (2603:10b6:a03:39e:cafe::f7) by SJ0PR03CA0299.outlook.office365.com
+ (2603:10b6:a03:39e::34) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9846.30 via Frontend Transport; Thu,
+ 30 Apr 2026 14:25:02 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ MWH0EPF000C6189.mail.protection.outlook.com (10.167.249.121) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9870.22 via Frontend Transport; Thu, 30 Apr 2026 14:25:02 +0000
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Thu, 30 Apr
+ 2026 07:24:40 -0700
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail202.nvidia.com
+ (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Thu, 30 Apr
+ 2026 07:24:39 -0700
+Received: from sumitg-l4t.nvidia.com (10.127.8.14) by mail.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server id 15.2.2562.20 via Frontend
+ Transport; Thu, 30 Apr 2026 07:24:34 -0700
+From: Sumit Gupta <sumitg@nvidia.com>
+To: <rafael@kernel.org>, <viresh.kumar@linaro.org>, <lenb@kernel.org>,
+	<pierre.gondois@arm.com>, <zhenglifeng1@huawei.com>,
+	<zhanjie9@hisilicon.com>, <mario.limonciello@amd.com>,
+	<saket.dumbre@intel.com>, <linux-acpi@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+	<acpica-devel@lists.linux.dev>
+CC: <treding@nvidia.com>, <jonathanh@nvidia.com>, <vsethi@nvidia.com>,
+	<ksitaraman@nvidia.com>, <sanjayc@nvidia.com>, <bbasu@nvidia.com>,
+	<sumitg@nvidia.com>
+Subject: [PATCH v2 0/2] ACPI: CPPC: Add CPPC v4 support (ACPI 6.6)
+Date: Thu, 30 Apr 2026 19:54:28 +0530
+Message-ID: <20260430142430.755437-1-sumitg@nvidia.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-NVConfidentiality: public
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MWH0EPF000C6189:EE_|MN2PR12MB4142:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2689cb4c-36f4-4ed8-88b2-08dea6c4447f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|82310400026|36860700016|376014|7416014|1800799024|921020|56012099003|18002099003;
+X-Microsoft-Antispam-Message-Info:
+	JtlHuTG1eC614wpXnKs4OFddBXY4Zg7DS1q1jIWLeEQa40WyGAmOBo75qZ9/Lpr+Ey8TOyQzvw90dieAXRF0VRZNVNSKSsOZSFP68aievm9mMzqyvhKB1nSxAn9JAySsEuMUkX/iTWHIcSNRRrMnOYe1qW2oibc63glmH5YHj7vlCfEhSpdN+UmhgmjOE7iJ9FwiBs4VYBpC9Q635Q3dnoMshWLoEmGGk0vQ2221jnebMYNKP6xgERl1mkRbWg0APZ1fsOTY4Hei0yzfWEdzBfqmF96onI9pBKEgyc+zOUChVpWnjK31sX1MJV7u7gTUWJfH4O7/VxTlURHZInlW0E8Pb5ifWbo73vlGyoetYXlbyqwJ0uFrx3nKB6owEJyyB7x6Oo9n8SAxz8LkJz7kUMCRKHqq/98i/Eg9pqNaE+hYYNlOLUAK/icF+6QpMqNJqS7IhS5laF6yGgCxo7xXm0dnuVoipnGtbD5WHA3FP7djb2lrDRRW7GNDATbCM0uQGBYVSR7zcuinX3wunxm6RfzgwOp4EEsLijAneqbO83kDez83ZSLILRyqeuETXVP7lzn7TOdBQEbRXIPug2HxNGQEO9NIjv5Uwe3JmaQiijJToh6yN2uaMLHbJsDox8oF+BP5cMJGwBWz4WzyIYeUfXwqCCFIgWMUlMyRZfbHGlTMf0oV85k05XVL9+LnQ9Oq2FE1+wVa8L+mUYoSW2uEr5JVmnazvr3rF2Wxm1V5/J8os5tIa0Im8rNRzjMqrd8z3L88ug+IuKP5lrRzkpMbtej/07R4vIuhCCMg45i7V5X+GlQFYKacnaav3sAgxsWM0E8Pv3uTy4BFOwANUjMOrA==
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(36860700016)(376014)(7416014)(1800799024)(921020)(56012099003)(18002099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	fJfGp3042flLz8D4eWSg56ISECxJAlVSo0dOVsDG5HFeVI5FK6gYCWo5QBi3DM4cd49UkNJgn3/L5Zu9snzQjEWSqqXkhB6LHtW8mp5Sbcwo6J5v5WTZ+H5tfUGafg1DjM5Kq9Pt+UvtYslLRXj9qXTqzswRRaN6l6TLkbAd/XnIcSABfuz7CQftsrSBUGn0dQJEximQCwrOdMLd7CHyB8IpUX/wtUCnpWimy/YyA6A9lH4zS5yZ9pNLD/FZAWKXnLDJH9132qnrBauibE/NjC+bugek8JgbPci5daE056HgD/F/HMb74SvkigGwMxnQOUzpaIGQomXjIxYwve3tZH97vHVpgy8pCZ8GU18KHARThKXCwfD3qkhyLy567UEU+YynE9Ab6iH7Yx8dvm2yROBW6tKAezq9VNLXqVlWbGI2Q92hfDr3Bv25Scc9kAbG
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2026 14:25:02.5285
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2689cb4c-36f4-4ed8-88b2-08dea6c4447f
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	MWH0EPF000C6189.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4142
 
-On Thu, Apr 30, 2026 at 02:14:22PM +0100, Marc Zyngier wrote:
-> On Thu, 30 Apr 2026 12:14:04 +0100,
-> Leonardo Bras <leo.bras@arm.com> wrote:
-> 
-> [...]
-> 
-> I haven't had a chance to look at any of this yet, but just on these
-> points:
-> 
-> > b - checkpatch.pl keeps bothering me to add an entry in MAINTAINERS file,
-> >     and I like the idea of maintaining this. Is there any rule or
-> >     common sense on this? Should I add this entry, or should I leave it
-> >     in the arch/arm64/kvm/ general rule?
-> 
-> No specific entry in MAINTAINERS required (or wanted). This falls into
-> the normal KVM/arm64 maintenance. And don't worry, we know where to
-> find you when it will come to fixing this stuff.
-> 
+Add initial kernel support for CPPC v4 (ACPI 6.6, Section 8.4.6),
+which extends the _CPC package from 23 to 25 entries with two
+optional fields:
 
-Got it
+  - OSPM Nominal Performance (8.4.6.1.2.6): register used by OSPM
+    to tell the platform what it considers nominal. The platform
+    classifies performance above this as boost and below as
+    throttle for power/thermal decisions.
 
-> > c - There are some trace_prink() I have left in the code, as they could
-> >     be helpful to check when HACDBS is not performing as well as it
-> >     should. Should I introduce a tracepoint instead? or just ignore it?
-> >     (it's triggered on HACDBS error, but as it falls back to software in
-> >     that case, it should not impact correctness, only performance).
-> 
-> Debug infrastructure should be preferably *removed* altogether.
-> trace_printk() is definitely a big no-no.
-> 
+  - Resource Priority (8.4.6.1.2.7): Package of Resource Priority
+    Register Descriptor sub-packages. Full parsing is not yet
+    implemented; such entries are marked as unsupported.
 
-Will remove it then
+Patch 1: Add v4 _CPC parsing - validate the 25-entry layout,
+handle the Resource Priority package, and mark the two new
+registers optional.
 
-> > d - In __kvm_arch_dirty_log_clear() there is no way to predict how long
-> >     should be the buffer, so I used 1x PAGE_SIZE, and when it gets full
-> >     it's cleaned and reused. Should I let users configure that over a
-> >     parameter, or is it overthinking?
-> 
-> How long is a piece of string? We can't know that. A single page feels
-> very small in the 4kB case, and letting userspace define the size of
-> that buffer seems a likely requirement.
-> 
+Patch 2: Add acpi_cppc/ospm_nominal_perf as a read-write sysfs
+attribute, and initialize it to the platform nominal value
+during cppc_cpufreq policy init.
 
-Ok, as a KVM parameter, or as a compile-time option?
+---
+v1[1] -> v2:
+- Patch 1: added Reviewed-by from Mario Limonciello.
+- Patch 2:
+  - Make ospm_nominal_perf sysfs read-write; cache last write in
+    cpc_desc and skip redundant register writes.
+  - Validate input in cppc_set_ospm_nominal_perf.
 
-> > 
-> > Kernel v7.0.0 + this patchset builds properly, passing both kvm selftests
-> > for dirty-bit tracking[2], on HW HACDBS enabled or disabled.
-> 
-> I have absolutely no trust in these tests.
-> 
-> Have you enabled a VMM to make use of these APIs, and actively
-> migrated running guests? That's the level of testing I'd like to see,
-> as the selftests are not what people run in production...
-> 
+Sumit Gupta (2):
+  ACPI: CPPC: Add support for CPPC v4
+  ACPI: CPPC: Add ospm_nominal_perf support
 
-There is no enablement needed on VMM side.
-Yes, I have created a VM on upstream qemu with --enable-kvm and migrated it 
-on the same host. (Inside a model)
+ drivers/acpi/cppc_acpi.c       | 93 +++++++++++++++++++++++++++++++---
+ drivers/cpufreq/cppc_cpufreq.c | 10 ++++
+ include/acpi/cppc_acpi.h       | 14 ++++-
+ 3 files changed, 109 insertions(+), 8 deletions(-)
 
-That was the first test I used, but then I found out that kvm selftests 
-stress up multiple scenarios in an easier way.
+[1] https://lore.kernel.org/lkml/20260427051823.280419-1-sumitg@nvidia.com/
 
-Do you prefer me to test on any specific scenario, or does whatever qemu 
-uses as a default parameter work well enough?
+-- 
+2.34.1
 
-Thanks!
-Leo
