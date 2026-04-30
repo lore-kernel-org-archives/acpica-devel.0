@@ -1,106 +1,134 @@
-Received: from canpmsgout04.his.huawei.com (canpmsgout04.his.huawei.com [113.46.200.219])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5FF83AA4F1
-	for <acpica-devel@lists.linux.dev>; Thu, 30 Apr 2026 10:00:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.219
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D9353FB7D3;
+	Thu, 30 Apr 2026 11:15:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777543250; cv=none; b=ncpw+d9DYs73mIJxhOxE15o0c0Xg0vwAgT+CVxHeGT2Hkc/yHstOK/CkYJu2Ld1DOxo5TYORyfIKzqvCMR+lI04xLQyRXO0VjaiphyIUF5ep27dtRXPKRMvfBac/c5LN82rA47ukMSuXkXo1tQNOtto3ZvF62h81EgbkZVpRzNo=
+	t=1777547725; cv=none; b=kNkob2s+mnZxHDCPX54z88m0HMkCMQ4EvKIcaZAZYt0wgpM+Uca3/2hi4+r3/HVTJACGUpSPXSC0CL0EP/5rYwH7PC4kk8rU27RR3hCssEa0sWEbh4WU9Fl7xjcI/fWwUawR90+l3NNkvZ7wHOKDhIisBIJZZ/PHqC0vPucPf4k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777543250; c=relaxed/simple;
-	bh=cG5mm5L1DMdDHae99z2sjBPEaKaBSG9Y2UhpIA83xPQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=cSn6veOMT0QFmAgFZcgy48aRZaUrrfhkWR+aKVp1WLo7/ErsZo9SR7YmvOU97sGL6QT//Y4Ok/CN3gP846apkJlPT3qfbLQ4YusP0TLpy6hbZ5yKM2brD7trDSI2rNfQiGohmDhGG5Tjvi07uQfnszHgN9EGRTAQgFYM+OBcHwA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=5DhB24bF; arc=none smtp.client-ip=113.46.200.219
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+	s=arc-20240116; t=1777547725; c=relaxed/simple;
+	bh=BxOAhxaI3ep0pCLZHvFXFWhljUjYRpulIZeDdhTGMx0=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=HuG6glUfnm78bjrg0s2Z+c0mCbWVRKO45+upOfriF4y2tCQvq5BZsoSR57ttvXaJ6kcVaW6k51U8yiYzfZp60jDG1s9/ZT06IjC6tatp+xE0MUZmuVE0y1ojF7UUcXuXC/rPmFHfyu69HbHNPmoUtsU92/Kp8hXshU72CtYR/8w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=tW6C+0X8; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="5DhB24bF"
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=WwwpkRJwkZezUuyadC6pFLx+PVDNGEiT19B/YITflFU=;
-	b=5DhB24bFvvGN0JfZCRxg/8DOOEZLKWNzogjjgdaQa8VOk03uLUKMMos83Kajwjd4ZU5THwYtA
-	uyddoWHhasNOgtD+WczcsMc4G8ZfTnA8lDL7yaRL+u7hXJuYriJVl1f2MVvBug/e4KVITObXavG
-	7eEvBZ5yz0zJyoXGMkiQHyo=
-Received: from mail.maildlp.com (unknown [172.19.162.223])
-	by canpmsgout04.his.huawei.com (SkyGuard) with ESMTPS id 4g5qJR6Tmrz1prLm;
-	Thu, 30 Apr 2026 17:54:15 +0800 (CST)
-Received: from kwepemr200004.china.huawei.com (unknown [7.202.195.241])
-	by mail.maildlp.com (Postfix) with ESMTPS id 27C3140561;
-	Thu, 30 Apr 2026 18:00:46 +0800 (CST)
-Received: from [10.67.121.62] (10.67.121.62) by kwepemr200004.china.huawei.com
- (7.202.195.241) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Thu, 30 Apr
- 2026 18:00:45 +0800
-Message-ID: <aa1284c1-ea26-48ca-a7d7-022027c8228a@huawei.com>
-Date: Thu, 30 Apr 2026 18:00:44 +0800
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="tW6C+0X8"
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 32AF13311;
+	Thu, 30 Apr 2026 04:15:18 -0700 (PDT)
+Received: from devkitleo.cambridge.arm.com (devkitleo.cambridge.arm.com [10.1.196.90])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 37C233F763;
+	Thu, 30 Apr 2026 04:15:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
+	t=1777547723; bh=BxOAhxaI3ep0pCLZHvFXFWhljUjYRpulIZeDdhTGMx0=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=tW6C+0X8vWRpU3tueo+qCaEfYKtSSWq3qISrRQm4ow8VE9Xc/V868i7jDfltdB2Wa
+	 W4LAqThuXJkL6IDVuGj4WbH6zdbCygpLtMzu87JLzao4jj2Vh3q+EO/fhzFl/y7ncK
+	 LYWyKsSrgT7UthhHo3POxnaq9EpFRZiy1RBSCdHs=
+From: Leonardo Bras <leo.bras@arm.com>
+To: Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Leonardo Bras <leo.bras@arm.com>,
+	Marc Zyngier <maz@kernel.org>,
+	Oliver Upton <oupton@kernel.org>,
+	Joey Gouly <joey.gouly@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>,
+	Saket Dumbre <saket.dumbre@intel.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Chengwen Feng <fengchengwen@huawei.com>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Kees Cook <kees@kernel.org>,
+	=?UTF-8?q?Miko=C5=82aj=20Lenczewski?= <miko.lenczewski@arm.com>,
+	Ryan Roberts <ryan.roberts@arm.com>,
+	Yang Shi <yang@os.amperecomputing.com>,
+	Thomas Huth <thuth@redhat.com>,
+	mrigendrachaubey <mrigendra.chaubey@gmail.com>,
+	Yeoreum Yun <yeoreum.yun@arm.com>,
+	Mark Brown <broonie@kernel.org>,
+	Kevin Brodsky <kevin.brodsky@arm.com>,
+	James Clark <james.clark@linaro.org>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Fuad Tabba <tabba@google.com>,
+	Raghavendra Rao Ananta <rananta@google.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Vincent Donnefort <vdonnefort@google.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Sascha Bischoff <Sascha.Bischoff@arm.com>,
+	Anshuman Khandual <anshuman.khandual@arm.com>,
+	Tian Zheng <zhengtian10@huawei.com>,
+	Wei-Lin Chang <weilin.chang@arm.com>
+Cc: linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	kvmarm@lists.linux.dev,
+	linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev,
+	kvm@vger.kernel.org
+Subject: [PATCH v1 01/12] KVM: arm64: Enable eager hugepage splitting if HDBSS is available
+Date: Thu, 30 Apr 2026 12:14:05 +0100
+Message-ID: <20260430111424.3479613-3-leo.bras@arm.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260430111424.3479613-2-leo.bras@arm.com>
+References: <20260430111424.3479613-2-leo.bras@arm.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] CPPC: reduce FFH feedback-counter sampling skew on
- arm64
-To: <catalin.marinas@arm.com>, <will@kernel.org>, <rafael@kernel.org>,
-	<lenb@kernel.org>, <robert.moore@intel.com>, <beata.michalska@arm.com>,
-	<zhenglifeng1@huawei.com>, <zhanjie9@hisilicon.com>, <sumitg@nvidia.com>,
-	<cuiyunhui@bytedance.com>
-CC: <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<linux-acpi@vger.kernel.org>, <acpica-devel@lists.linux.dev>,
-	<linuxarm@huawei.com>, <jonathan.cameron@huawei.com>,
-	<prime.zeng@hisilicon.com>, <wanghuiqiang@huawei.com>, <xuwei5@huawei.com>,
-	<lihuisong@huawei.com>, <yubowen8@huawei.com>, <wangzhi12@huawei.com>
-References: <20260410094145.4132082-1-zhangpengjie2@huawei.com>
-From: "zhangpengjie (A)" <zhangpengjie2@huawei.com>
-In-Reply-To: <20260410094145.4132082-1-zhangpengjie2@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: kwepems200001.china.huawei.com (7.221.188.67) To
- kwepemr200004.china.huawei.com (7.202.195.241)
+Content-Transfer-Encoding: 8bit
 
-Hi all,
+FEAT_HDBSS speeds up guest memory dirty tracking by avoiding a page fault
+and saving the entry in a tracking structure.
 
-Gentle ping on this thread. It has been a while since I posted it.
+That may be a problem when we have guest memory backed by hugepages or
+transparent huge pages, as it's not possible to do on-demand hugepage
+splitting, relying only on eager hugepage splitting.
 
-Could someone please take a look when you have time? If there is anything
-I should revise or any additional information needed, I'd be happy to
-update it.
+So, at stage2 initialization, enable eager hugepage splitting with
+chunk = PAGE_SIZE if the system supports HDBSS.
 
-Thanks!
+Signed-off-by: Leonardo Bras <leo.bras@arm.com>
+---
+ arch/arm64/kvm/mmu.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-On 4/10/2026 5:41 PM, Pengjie Zhang wrote:
-> The legacy CPPC feedback-counter path reads the delivered and reference
-> performance counters separately.
->
-> On arm64 systems using AMU-backed CPPC FFH counters, each FFH read is
-> served through a cross-CPU counter read helper. Reading the counters
-> separately therefore widens the sampling window between them and can
-> skew the delivered/reference ratio used by cpuinfo_cur_freq. Under heavy
-> load, the skew is observable as transient values that may exceed the
-> platform maximum, as discussed in [1] and [2].
->
-> This series adds a small generic hook for architectures that can obtain
-> both FFH feedback counters in one operation, while preserving the
-> existing per-register read path as the fallback.
->
-> Patch 1 adds the generic CPPC hook and uses it from cppc_get_perf_ctrs().
-> Patch 2 implements the hook on arm64 by sampling both AMU counters in a
-> single operation on the target CPU.
->
-> [1] https://lore.kernel.org/all/20231025093847.3740104-4-zengheng4@huawei.com/
-> [2] https://lore.kernel.org/all/20231212072617.14756-1-lihuisong@huawei.com/
->
-> Signed-off-by: Pengjie Zhang <zhangpengjie2@huawei.com>
->
-> Pengjie Zhang (2):
->    ACPI: CPPC: add paired FFH feedback-counter read hook
->    arm64: topology: read CPPC FFH feedback counters in one operation
->
->   arch/arm64/kernel/topology.c | 75 ++++++++++++++++++++++++++++++++----
->   drivers/acpi/cppc_acpi.c     | 58 +++++++++++++++++++++++++---
->   include/acpi/cppc_acpi.h     |  7 ++++
->   3 files changed, 127 insertions(+), 13 deletions(-)
->
+diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+index d089c107d9b7..42c734423253 100644
+--- a/arch/arm64/kvm/mmu.c
++++ b/arch/arm64/kvm/mmu.c
+@@ -993,22 +993,26 @@ int kvm_init_stage2_mmu(struct kvm *kvm, struct kvm_s2_mmu *mmu, unsigned long t
+ 
+ 	mmu->last_vcpu_ran = alloc_percpu(typeof(*mmu->last_vcpu_ran));
+ 	if (!mmu->last_vcpu_ran) {
+ 		err = -ENOMEM;
+ 		goto out_destroy_pgtable;
+ 	}
+ 
+ 	for_each_possible_cpu(cpu)
+ 		*per_cpu_ptr(mmu->last_vcpu_ran, cpu) = -1;
+ 
+-	 /* The eager page splitting is disabled by default */
+-	mmu->split_page_chunk_size = KVM_ARM_EAGER_SPLIT_CHUNK_SIZE_DEFAULT;
++	 /* The eager page splitting is disabled by default if system has no HDBSS */
++	if (system_supports_hacdbs())
++		mmu->split_page_chunk_size = PAGE_SIZE;
++	else
++		mmu->split_page_chunk_size = KVM_ARM_EAGER_SPLIT_CHUNK_SIZE_DEFAULT;
++
+ 	mmu->split_page_cache.gfp_zero = __GFP_ZERO;
+ 
+ 	mmu->pgd_phys = __pa(pgt->pgd);
+ 
+ 	if (kvm_is_nested_s2_mmu(kvm, mmu))
+ 		kvm_init_nested_s2_mmu(mmu);
+ 
+ 	return 0;
+ 
+ out_destroy_pgtable:
+-- 
+2.54.0
+
