@@ -1,186 +1,177 @@
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 345642E3B15;
-	Thu, 30 Apr 2026 15:36:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777563361; cv=none; b=LkosrFUpHtrzqGQnOiV+7kw/8vTDNzebcXqb3srjZJDFsJKL0kuacDWS7UDLlkik5sDkbrISacv1jF0pEZ5rReKrp89YBv5bmWYXiJ5grHXV42n7pWODvyRnNPrFNuzWxH9BlBhrWYoIq2TkBtCttTu7MAH47c0LkXQa86nElRY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777563361; c=relaxed/simple;
-	bh=gzTlnjHw8z8mwv/xrWX3uCr8DWsCDpEaX9cnmlYIzL4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type:Content-Disposition; b=n0mUb5mZkIKUZv2kZ9uElRLGuZjz7HfNzCecwIOgdVOTKOXa3/mtOVkHTg4CHlFyrkv8DNSFsUYN3VTsXKeC8l1YJlB8PZAlu0cXhOVqmqofgBxLAvHxEG/ODApcxb27AI70pVdt6/USw7DMR+Rzt/5nFyvpCuYpYUGlHPHrnzo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=rxVLEs6U; arc=none smtp.client-ip=217.140.110.172
+Received: from AS8PR04CU009.outbound.protection.outlook.com (mail-westeuropeazon11011009.outbound.protection.outlook.com [52.101.70.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DB5034D4CC
+	for <acpica-devel@lists.linux.dev>; Thu, 30 Apr 2026 16:26:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.70.9
+ARC-Seal:i=3; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1777566394; cv=fail; b=iWPnAzg6WAwwnMiEqcLUW84Zvw41SRST0xH1v9oDNy/UlhiS/CcXNLsHUDkpphs3+fh+rWmn+L3DR8V6X3hC0JGkkHVbdLingFbDghkJQ+ojoxzss0U+a2kW9zurSz8cgMEtywkWzh+HGV4w7Ewo1RNlSCDC8dmxSqk8tmgUd+Y=
+ARC-Message-Signature:i=3; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1777566394; c=relaxed/simple;
+	bh=Re9alRvzVy7UWChFXIUV3OmhwA+vRWpHu5/f8b5AX1M=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=dP+PY8KaCtZoryAKkGBi+frkY2ICftiTnLfbkT5A1vZLwY5DzfqjaDWo68IIIJozDcQLoa/iJ+xq9nYnNjV/rT/m3bQwNeJVegfhSNBag/w83zuuTmj2jscLYxmau2cOwWfawRw1hvASm9R7SL652Cc/XrBuXPuS2PF/xv8avEs=
+ARC-Authentication-Results:i=3; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=S+/RhCWs; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=S+/RhCWs; arc=fail smtp.client-ip=52.101.70.9
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="rxVLEs6U"
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3D4A332D1;
-	Thu, 30 Apr 2026 08:35:54 -0700 (PDT)
-Received: from devkitleo.cambridge.arm.com (devkitleo.cambridge.arm.com [10.1.196.90])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 212283F763;
-	Thu, 30 Apr 2026 08:35:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1777563359; bh=gzTlnjHw8z8mwv/xrWX3uCr8DWsCDpEaX9cnmlYIzL4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rxVLEs6Uu9YtFHgDKWpqFThQucat2oz2BVkAKJuDquKK56IPfzpBNZYTsMFNEbVp1
-	 pemTxhelUalIb7Qi82U6Rxdc/+UMhQAMRDNwKfIkadkFtpiJHVDXyWH9iIQJcPlhY+
-	 k6wBIDO5CwXuT6qTDMLK+lOqFVOyJml4tIhzFcX0=
-From: Leonardo Bras <leo.bras@arm.com>
-To: Marc Zyngier <maz@kernel.org>
-Cc: Leonardo Bras <leo.bras@arm.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Oliver Upton <oupton@kernel.org>,
-	Joey Gouly <joey.gouly@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>,
-	Saket Dumbre <saket.dumbre@intel.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Chengwen Feng <fengchengwen@huawei.com>,
-	Jonathan Cameron <jic23@kernel.org>,
-	Kees Cook <kees@kernel.org>,
-	=?utf-8?Q?Miko=C5=82aj?= Lenczewski <miko.lenczewski@arm.com>,
-	Ryan Roberts <ryan.roberts@arm.com>,
-	Yang Shi <yang@os.amperecomputing.com>,
-	Thomas Huth <thuth@redhat.com>,
-	mrigendrachaubey <mrigendra.chaubey@gmail.com>,
-	Yeoreum Yun <yeoreum.yun@arm.com>,
-	Mark Brown <broonie@kernel.org>,
-	Kevin Brodsky <kevin.brodsky@arm.com>,
-	James Clark <james.clark@linaro.org>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Fuad Tabba <tabba@google.com>,
-	Raghavendra Rao Ananta <rananta@google.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Vincent Donnefort <vdonnefort@google.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Sascha Bischoff <Sascha.Bischoff@arm.com>,
-	Anshuman Khandual <anshuman.khandual@arm.com>,
-	Tian Zheng <zhengtian10@huawei.com>,
-	Wei-Lin Chang <weilin.chang@arm.com>,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	kvmarm@lists.linux.dev,
-	linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev,
-	kvm@vger.kernel.org
-Subject: Re: [PATCH v1 00/12] KVM Dirty-bit cleaning accelerator (HACDBS)
-Date: Thu, 30 Apr 2026 16:35:52 +0100
-Message-ID: <afN21w6J4Awg3gV3@devkitleo>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <86a4ukzel3.wl-maz@kernel.org>
-References: <20260430111424.3479613-2-leo.bras@arm.com> <86bjf0zj2p.wl-maz@kernel.org> <afNZQKIiKmHPD5My@devkitleo> <86a4ukzel3.wl-maz@kernel.org>
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="S+/RhCWs";
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="S+/RhCWs"
+ARC-Seal: i=2; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=pass;
+ b=ii0iCY52yc68ajXHRBVBYTjcgi6ceNP+F3YpRLlnqB5FwNMabful9WQiyLE5aX0zaPX0ngfBeGlis+HB8IloAz/+vEyJmtyxme6F0/oZPfz/wbpDfvTHb9C3XvYP4YpVvol62Pp5bNooKe8UhRi5nRWiMWLAcrCIokEYqTjT1CMe9Q2j+2XlEUBGtNNlDQD0tXyNT53iTXUuE5CTxztrBSoeYuhKqCnWS78qf03+qlUfj/0q0O8splqb4LbeltphJBwErTkbuDmCGZAzxdIVnhGyFCqMaFeSuT6RVdnukw0zBqlWu8ocne7RCZ3roe3t/oTphya2+mI0yIu3doVN8w==
+ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=oKHswm1FoJnIx81QvlnL9P1o0U7ycpIZlyGJkix0GdM=;
+ b=G3dqSit+EVtphJTCDBJoNDQsUvH6g2jkQSP48V67kg4FRgd53niALUt1dct97tG7LDnKitMcxQGwT/WLtZimMkrMVtxeOEJ3mOjgHOC+PYLyLp+vXAixKo/fCSEZe1WBjTvZZ/SweYxhWzVnd52LQmlvqVg+SNQbmPV6CcEp5XdEJfPEOxg3x1ygpe7cJ0r2Ph0ejM+4wx2CLSzKSHIIlgqmlH67cDnGVKy/pFfpKkytSoR+2SCsirKp05xJV8zT2SLWqWmOT3lnPxivJSmu0vQUs8ec7JPzT6W/98g3cN0YIwJefmqP8brKwRJo3ANmVCJ/fRaJG1BwJqtezuKOZQ==
+ARC-Authentication-Results: i=2; mx.microsoft.com 1; spf=pass (sender ip is
+ 4.158.2.129) smtp.rcpttodomain=nvidia.com smtp.mailfrom=arm.com; dmarc=pass
+ (p=none sp=none pct=100) action=none header.from=arm.com; dkim=pass
+ (signature was verified) header.d=arm.com; arc=pass (0 oda=1 ltdi=1
+ spf=[1,1,smtp.mailfrom=arm.com] dkim=[1,1,header.d=arm.com]
+ dmarc=[1,1,header.from=arm.com])
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arm.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oKHswm1FoJnIx81QvlnL9P1o0U7ycpIZlyGJkix0GdM=;
+ b=S+/RhCWsPuIr0Sn0YVSdvCUr2CbVA34dYxus4LHP5EkJydwg9IJzaISm0bU8mOprk59L1Mm/SHFK+rerZmVStWoXz8aFMqLjNlIENkZgQo48t6mmJcEO3A5GUsaWBUJBJvMrZ9wbxKAZqPXWv761I9GAMkz1nXwRhAJnd4umMc4=
+Received: from DB8PR04CA0010.eurprd04.prod.outlook.com (2603:10a6:10:110::20)
+ by AS4PR08MB7408.eurprd08.prod.outlook.com (2603:10a6:20b:4e3::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9870.18; Thu, 30 Apr
+ 2026 16:26:27 +0000
+Received: from DU6PEPF0000A7E1.eurprd02.prod.outlook.com
+ (2603:10a6:10:110:cafe::42) by DB8PR04CA0010.outlook.office365.com
+ (2603:10a6:10:110::20) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9846.30 via Frontend Transport; Thu,
+ 30 Apr 2026 16:26:26 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 4.158.2.129)
+ smtp.mailfrom=arm.com; dkim=pass (signature was verified)
+ header.d=arm.com;dmarc=pass action=none header.from=arm.com;
+Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
+ 4.158.2.129 as permitted sender) receiver=protection.outlook.com;
+ client-ip=4.158.2.129; helo=outbound-uk1.az.dlp.m.darktrace.com; pr=C
+Received: from outbound-uk1.az.dlp.m.darktrace.com (4.158.2.129) by
+ DU6PEPF0000A7E1.mail.protection.outlook.com (10.167.8.40) with Microsoft SMTP
+ Server (version=TLS1_3, cipher=TLS_AES_256_GCM_SHA384) id 15.20.9846.18 via
+ Frontend Transport; Thu, 30 Apr 2026 16:26:26 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=YWAEyPA8/nP9rwYwhbA4e9zw0aQN6ymbJLah0kW4uNu02N0T0Wi+teNohj7BgURQh7aCYklHZ3amsstgTdUH/cxnZfTeEjwT+wgMLqb8IxxiO8RNEgijCcYFla6ZwCNhSpBu1ZafQMwWIF8H07Y6KLr2chfs/arf+bMZQi8c4dDGLHEhySu0VPqmoTW1yKhxKZwO9QNS8NrqntqWHszMVJ81FrxA4GKMGAoDQ5VxVV9g+sX3RuVcLor+0kmwiylfxj7Nsr5yVHskv2yIIj6DlUZwWHqn28j8ZsZH90xZv0CYKINxJNJJnAgEzw8DyIOsQnMqfP8cEh/4A7Z5vlHQLg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=oKHswm1FoJnIx81QvlnL9P1o0U7ycpIZlyGJkix0GdM=;
+ b=Es+NS7UaCtATI6JICVFtCM4sYOLqYO2mThWznOW0KvkI5TTGTv6SCgDLUBisYw8DlCQS84BkUFIUc8K6yanQldybvtCB4mwkGjEEIUZp99mT3MRvJfoztSJ7nb2lYlauAPE639K98itCV3m8TNElOm7mfpi1YgnTbzVk1vZM3GeBrkOD+34GZX9BKAmQDRN/fZb2RKQM6zwYWTrcWVxVtWDabjNM921z9y9djApllTgiv3wEdGJ9NWq+ZKeUHmez8ALofEvDC6aUnknJwMURsYkh5u9v9UFpMGgtt3YLU0qiytanf5JcME2iXNh6UpE/E+iSbPLo/nwRjdbKThXsaQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
+ header.d=arm.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arm.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oKHswm1FoJnIx81QvlnL9P1o0U7ycpIZlyGJkix0GdM=;
+ b=S+/RhCWsPuIr0Sn0YVSdvCUr2CbVA34dYxus4LHP5EkJydwg9IJzaISm0bU8mOprk59L1Mm/SHFK+rerZmVStWoXz8aFMqLjNlIENkZgQo48t6mmJcEO3A5GUsaWBUJBJvMrZ9wbxKAZqPXWv761I9GAMkz1nXwRhAJnd4umMc4=
+Authentication-Results-Original: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=arm.com;
+Received: from VI0PR08MB10391.eurprd08.prod.outlook.com (2603:10a6:800:20c::6)
+ by AS2PR08MB10267.eurprd08.prod.outlook.com (2603:10a6:20b:647::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9870.20; Thu, 30 Apr
+ 2026 16:25:23 +0000
+Received: from VI0PR08MB10391.eurprd08.prod.outlook.com
+ ([fe80::fa6b:9ba8:5c2f:ac91]) by VI0PR08MB10391.eurprd08.prod.outlook.com
+ ([fe80::fa6b:9ba8:5c2f:ac91%3]) with mapi id 15.20.9870.020; Thu, 30 Apr 2026
+ 16:25:23 +0000
+Message-ID: <2eff2693-622a-4605-974a-ab138c75130f@arm.com>
+Date: Thu, 30 Apr 2026 18:25:21 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] ACPI: CPPC: Add support for CPPC v4
+To: Sumit Gupta <sumitg@nvidia.com>, rafael@kernel.org,
+ viresh.kumar@linaro.org, lenb@kernel.org, zhenglifeng1@huawei.com,
+ zhanjie9@hisilicon.com, mario.limonciello@amd.com, saket.dumbre@intel.com,
+ linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-pm@vger.kernel.org, acpica-devel@lists.linux.dev
+Cc: treding@nvidia.com, jonathanh@nvidia.com, vsethi@nvidia.com,
+ ksitaraman@nvidia.com, sanjayc@nvidia.com, bbasu@nvidia.com,
+ Mario Limonciello <superm1@kernel.org>
+References: <20260430142430.755437-1-sumitg@nvidia.com>
+ <20260430142430.755437-2-sumitg@nvidia.com>
+Content-Language: en-US
+From: Pierre Gondois <pierre.gondois@arm.com>
+In-Reply-To: <20260430142430.755437-2-sumitg@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PR3P189CA0051.EURP189.PROD.OUTLOOK.COM
+ (2603:10a6:102:53::26) To VI0PR08MB10391.eurprd08.prod.outlook.com
+ (2603:10a6:800:20c::6)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+X-MS-TrafficTypeDiagnostic:
+	VI0PR08MB10391:EE_|AS2PR08MB10267:EE_|DU6PEPF0000A7E1:EE_|AS4PR08MB7408:EE_
+X-MS-Office365-Filtering-Correlation-Id: a6fe3c4e-5ee2-4257-748d-08dea6d539fe
+x-checkrecipientrouted: true
+NoDisclaimer: true
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam-Untrusted:
+ BCL:0;ARA:13230040|1800799024|376014|7416014|366016|921020|56012099003|22082099003|18002099003;
+X-Microsoft-Antispam-Message-Info-Original:
+ Sb3IC0qo0eE4tiAW/6nHU0cX+fX+Vz4/XKE1OiwDn3+72xHrW9fi9N4EQSjw3Igxkp098WVgSkY9ouw84E2FYvJPPT2ConSCtGDcO+Ve1hF5lN4aJRustmk8T9RAIKjUu7V9wlGlFEpI1LQaPKsVyV7mq+mclOKQFWZeSHnKhzvjfRTc02xUk9yQBC4EP7y3JBlAyox3Y+3TVJl1UUXtR7NhTI3jBG7mTu+XkxHEhXBt0vha2NOL7hZwQUhDRLmF2gUmU/RR4otbIqvI7TI0h+X3S+jg/uQ8VKkdQe6ioAgLV0x4onySGCQoRYVtuE+cAczFBk3WBjJ7piSsp6aPkMYsRaMwv1f8LAf4Xfu0bN9lqZVAcO6G8BHkJfvTdyX8YQQ3ASSHMG3EM7ej7V5XEAdqLvd5uaL4wOJq8RbBwA7P9HDmPqxTVoKGsKfd26fQoc3aJ+E1e7iQ9MkYfjbUr0jI7kMmFAbSs4HrCdexzhkGsy6FQLCDEJ1hxoTaDI7oYWoScleVsjQRf2k0z6usRDxSE+OB9Ic5HMU4UmQlotlDcJQu+n2DM/QgaeAGnEVdzLjFuEIFHSdEU3UcxKWTR2TJKBJIUNxuUevVr4CV4hORMcLYDCST57rRWG34/4h5gA9qunfnMiQ7YaW8azHSNKnt5C07A/JBxhhhuwR++iubSee2uxLf/eQz0dj6YK2ixH0r9BH4HT8QvqEQaCjS3BdYG3Sbtr1kJGYXVbMScegKnZ0akYNdgiHgYJ5KLoqBAe+IO0t1epawCKmQ9P39gg==
+X-Forefront-Antispam-Report-Untrusted:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI0PR08MB10391.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(366016)(921020)(56012099003)(22082099003)(18002099003);DIR:OUT;SFP:1101;
+X-Exchange-RoutingPolicyChecked:
+ HxSQySafJ4vKub3r5eJOVMxKD3LzqUCYbH+sBaolrlRHTzIUHfTbqZwzcbnA7hnEYq7BlWAZFInPmJd8mVq2QXLPk9d5Lr7VU1HQM5vxUHkv9oXp2tEfb+H3OJLoW427YY1Mz4IgjOfmP3aiUQS8w7FjyUxO3qoSMBLRRAlAGgGsRbWLAwus9AX33M8oHC8PRVJDFNiiP6J7A/3FoFqLilIhoLTRr0fyIHdZbPvItHYAL/1e0yxKqTQ2eiXy9JYJszlWRqLXn0l/QCY7GJ2buf7E7yJumJwRzM4ImGc+KC3aTPghxvEAsTwWSTvph78M0qKGZo4xrYHhlD+dli4SdQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS2PR08MB10267
+X-EOPAttributedMessage: 0
+X-MS-Exchange-Transport-CrossTenantHeadersStripped:
+ DU6PEPF0000A7E1.eurprd02.prod.outlook.com
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id-Prvs:
+	a204911b-9818-4288-379a-08dea6d51440
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|82310400026|376014|14060799003|35042699022|7416014|36860700016|1800799024|921020|22082099003|56012099003|18002099003;
+X-Microsoft-Antispam-Message-Info:
+	4snO3aZu+QFL86mBxsN2RvLBkbBECSNod8NJed72iQTWuQb/JiRXvHI4QAs0gLAxNaqc6Bus70H1XrRjMFFiOps0GITn5Jc0F8N2duDKPsEolDVkWD8kgrvmXcB098rOLTL4+hLOc6W24+igNa0b6LScYCCvyBQdjhcOK2INYiu7rc+VEQ6HaiFUgahdtO39Qd7/2qmGTFwkRSXGoMaVZhRa/c4EDpmvt9QS5simB5naz81ZgoYFdiGXg89muYaMR8LG6+eeYgE7U/L9Yo/fcL9y1WdpgUSbmIRykRB2CPyCPm6PFg0/po/5FdhJi6FRnPHy/lSNtyws20rhN+QlN4KHW6v1Ms+9eXHz9HLQY4y8dfnzZIlmlmUvef9w6xYqweQTRiS2YcmsqrUZYq/dyGGuvjOeatj8JRAuJdo5HUwilRedMDOyS72DgSN7z0oGQpvB46BtljFL3EbBnQeHAo5JUCnTEhIQz9sLsQmA4wYudfdPqAVhWMNLL6sV3G/o3WbVI94DfdWYvo+/JW1g9AW9FtagJpHtts+462mhUopCAiNInf6WBJv1Ly63W1rPz9WY78wSLMdh855R4JJ8dbQtyI0YkDpizEcXyVqlSFFCEOtEg+6DF+d6BEfuQkOvsqw2vXvVAw+g47T4f5Z3lDhds8JTSY6ZZfczpbm5zZ++6VaSvHHkruaioTWg2WoiaQK6zw+NUR0/KhC/Q44QDbyhBm9VWOMNBofxnLHfo9PBpGxonQaSOzbNXGm6c4Jz59UIzQ+NdZ3xJ+Z+X91/hVgba6Sj7hxwnzU8aqNP5XyANGLyXugNS+Is2XbGa37U
+X-Forefront-Antispam-Report:
+	CIP:4.158.2.129;CTRY:GB;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:outbound-uk1.az.dlp.m.darktrace.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(82310400026)(376014)(14060799003)(35042699022)(7416014)(36860700016)(1800799024)(921020)(22082099003)(56012099003)(18002099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	1WOuWWbb6L1UUoegrrHRmhPTEMPHUMoKMfhYNxMtRyqNFkxtuK/3H01pgsZ34I3RLcX2BAtkUXBDW1xvnQutl+TPKzcT6B60+igtpf+cwNhAx7CxydtJnytcu2NtwccHKWgdV4xPke+fnRXOUccyUnZKsaw+7FqyYpAXuJtbIWVs7wDnOSpUO6iyZZ1tXKPmLfVK0rr2/tSWoXcY8XC4JUyNzEje6I/4msG9CHj/ob+LknS7stJbLK+IOlozsGJ+sLNvP+EG0q7zVIbylPe721h/TLqgFYIFG2LlmrT9NhiJ72ehyJ8W4OJyFqb5jKDCaPUkgNaLrhWgzAo3E5rLSlr/X+6L579b7owDZPiQurmDmc7t9nh8SFIEzq2rg6AIDU4bxurymIMgVmdvOxU9AGfXMVz3QksV/E82qcQCLxX00kHG3BhEKobueVziR7HG
+X-OriginatorOrg: arm.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2026 16:26:26.3269
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: a6fe3c4e-5ee2-4257-748d-08dea6d539fe
+X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d;Ip=[4.158.2.129];Helo=[outbound-uk1.az.dlp.m.darktrace.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	DU6PEPF0000A7E1.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS4PR08MB7408
 
-On Thu, Apr 30, 2026 at 03:51:20PM +0100, Marc Zyngier wrote:
-> On Thu, 30 Apr 2026 14:29:37 +0100,
-> Leonardo Bras <leo.bras@arm.com> wrote:
-> > 
-> > On Thu, Apr 30, 2026 at 02:14:22PM +0100, Marc Zyngier wrote:
-> > > On Thu, 30 Apr 2026 12:14:04 +0100,
-> > > Leonardo Bras <leo.bras@arm.com> wrote:
-> > > 
-> > > > d - In __kvm_arch_dirty_log_clear() there is no way to predict how long
-> > > >     should be the buffer, so I used 1x PAGE_SIZE, and when it gets full
-> > > >     it's cleaned and reused. Should I let users configure that over a
-> > > >     parameter, or is it overthinking?
-> > > 
-> > > How long is a piece of string? We can't know that. A single page feels
-> > > very small in the 4kB case, and letting userspace define the size of
-> > > that buffer seems a likely requirement.
-> > > 
-> > 
-> > Ok, as a KVM parameter, or as a compile-time option?
-> 
-> Noticed the "userspace" word in there? It *has* to be controlled by
-> userspace one way or another. So not as a kernel parameter, and
-> *never* as a compile option.
+Hello Sumit,
 
-Okay, I would suggest that a module parameter could be set by userspace, 
-but I remember now that it is usually built in the kernel instead. Also, it 
-could be bad having this set for the whole system, instead of per-VM.
+On 4/30/26 16:24, Sumit Gupta wrote:
+> CPPC v4 (ACPI 6.6, Section 8.4.6) adds two optional entries to the
+> _CPC package:
+>
+> 1. OSPM Nominal Performance (8.4.6.1.2.6): A write-only register that
+>     lets OSPM inform the platform what it considers nominal performance.
+>     The platform classifies performance above this level as boost and
+>     below as throttle for its power/thermal decisions.
+>
+> 2. Resource Priority (8.4.6.1.2.7): A Package of Resource Priority
+>     Register Descriptor sub-packages that allow OSPM to set relative
+>     priority among processors for shared resources (boost, throttle,
+>     L2/L3 cache, memory bandwidth). Parsing the full structure is not
+>     yet supported; such entries are marked as unsupported.
+>
+> Add v4 _CPC table parsing (25 entries) and update REG_OPTIONAL to
+> mark the two new registers as optional.
+>
+> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+> Reviewed-by: Mario Limonciello (AMD) <superm1@kernel.org>
 
-How do you suggest letting userspace control that?
-(All I could think was using an ioctl / API of any sorts, which would 
-require changing the VMMs as well.)
-
-> 
-> > > > Kernel v7.0.0 + this patchset builds properly, passing both kvm selftests
-> > > > for dirty-bit tracking[2], on HW HACDBS enabled or disabled.
-> > > 
-> > > I have absolutely no trust in these tests.
-> > > 
-> > > Have you enabled a VMM to make use of these APIs, and actively
-> > > migrated running guests? That's the level of testing I'd like to see,
-> > > as the selftests are not what people run in production...
-> > > 
-> > 
-> > There is no enablement needed on VMM side.
-> > Yes, I have created a VM on upstream qemu with --enable-kvm and migrated it 
-> > on the same host. (Inside a model)
-> > 
-> > That was the first test I used, but then I found out that kvm selftests 
-> > stress up multiple scenarios in an easier way.
-> 
-> Except when they don't. In my experience, the selftests are only there
-> to give the CI people the fuzzy feeling that they are doing something
-> useful.
-
-LOL
-
-> I have a collection of examples indicating that what these
-> things test is not representative of the bugs we have in KVM.
-> 
-
-Fair enough... it was tested in qemu live migration, and it works properly 
-(migrated from 2 instances of qemu in the same host, emulated by model).
-
-> > Do you prefer me to test on any specific scenario, or does whatever qemu
-> > uses as a default parameter work well enough?
-> 
-> I want to hear about testing at a scale that make sense for production
-> VMs, including live migrating between hosts while under memory
-> pressure (swapping out).
-
-I agree that's a more interesting test.
-
-> 
-> I'm also interested in efficiency: how much better is HACDBS compared
-> to the current page faulting? 
-
-The terms are indeed confusing, but HACDBS is just the cleaning accelerator 
-for dirty-bit. It means it will only affect how long it takes to transverse 
-the page table making pages in the array writable-dirty -> writable-clean.
-
-That being said, it regards to efficiency:
-Well, as I only have the model to test that, I am limmited to those 
-results, which may not reflect reality.
-
-As an example, on dirty_log_perf_test, the cleaning process took much 
-longer (8x) compared to software cleaning, even when faced with no error, 
-and entries that fit the array (4k page above). If it took that long even 
-in this ideal scenario, it means the HACDBS mechanism implemented in the 
-model takes much longer than software, which is counter-intuitive.
-
-> Just having patches for a feature is not
-> enough to decide adoption of that feature. Show me the benefits in a
-> quantitative way (within the limits of the model, of course).
-
-Sure, I will try measuring migration between 2 instances of the model, and 
-see how qemu live migration time is affected, then post the results in this 
-thread for us to compare.
-
-Thanks!
-Leo
+Reviewed-by: Pierre Gondois <pierre.gondois@arm.com>
 
