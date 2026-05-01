@@ -1,261 +1,138 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 205953DA7E9
-	for <acpica-devel@lists.linux.dev>; Thu, 30 Apr 2026 23:52:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.9
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777593143; cv=fail; b=GHx2kHsCgylsiNjz1mMxXJte6XPizKDLsFS9BlllxEKcyj0JOOH7XtNKJVzZnN6CODeKctjjs+mGeQnOmBbEaaBSU/ed3gXp4JZUZRy+txRnPrNLui32XRTsjfZgKhywkOqkqd5YXEyy3W0wWCFdDZla1i45B3MjpBTSGLf2dtI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777593143; c=relaxed/simple;
-	bh=Nr1pZK6L9ewdRVP4FZat+YI77SNs2AaSf0jdhOTA2Xg=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=d28VVlfTU3DYCazKZq2P6OwrLqzJfVao8GfP92Wd7x23gRwGBifLpd9tyhTUvXBAdnOF0s961001bDovRTzEfebf/bzLph2hzmlwLuIXEh5eUEhZLRkASzIy+1AiuzcWhSEGVY5U3aD6R5kmWOYjwXY87WDzcl6hTCZs2134G4E=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kp9K6A+1; arc=fail smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BD4654768;
+	Fri,  1 May 2026 02:11:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1777601477; cv=none; b=jYmT8H9SKmAbvXdZbivEmwd2R60j3D+8iQATJgsyCaZCrfyCcDp5N3AzgN3SsIPaswpdR+OjdpA5AIf4Ju7z0jHok8uTXvCnRiVMZoMkdx6lqE05DXaaJAbt+ZY33PHClf5TKOYNI86dLwOkw59UCyF5J4uwcTiBv2BHNICOEuY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1777601477; c=relaxed/simple;
+	bh=9QR0cnUgXF6rP+G/fgL1ZOPWMm8v63S58EfEC1IYVzQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OHEWWJGvM5+6YcI/22U2P26dQfVWruzteqmNgT/tOabSX8XnN5BpyjYfMA5FUnnPNfA5rGZu8txwnrHJ83Eg95Sm7Xc4HjLSNq7dw9C06s+YlENuzPoUqXKnho9eVFtFFf/bf56HC7eLmk/+/rJqFPesIC9iVjFZ3T6FE6AXMOc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uRa3t4sD; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kp9K6A+1"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1777593141; x=1809129141;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=Nr1pZK6L9ewdRVP4FZat+YI77SNs2AaSf0jdhOTA2Xg=;
-  b=kp9K6A+1+jImwV1+2AvXvmo3UrpKOUDEvt4iIVAArNDfs6Hvu5otgSqC
-   qC5sm+n53uW/QnBMfD6IJstshfxn2b6/OHCjrvldcPUQM3N9avWrA0hTF
-   zEAb9BoQ04wQ1hPiKOtd8znElC22ZX+IcScE1WLEeBAxiQEanJin7Qcdy
-   K2zc6/xqIEq8rvMKy571Z+N3lr6rzrGG1MfHj+bFsedecZYpsB+WAWQgQ
-   M8XTQNf/wuU/kQTIRxT2S2gNPemcTj7ky6b8nYPZcDU0YeG4MiMxUxmy8
-   7qhzcaA8NaGqHQBZZ8xqnit5pjj+Hom+Ym2IYaaj+1kwMA2i9UOKG+xCn
-   Q==;
-X-CSE-ConnectionGUID: a7cSdO8/S6uKnCY67Sf5Aw==
-X-CSE-MsgGUID: bNBINJSvQfiuWzJlSQqTzA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11772"; a="101227702"
-X-IronPort-AV: E=Sophos;i="6.23,209,1770624000"; 
-   d="scan'208";a="101227702"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2026 16:52:20 -0700
-X-CSE-ConnectionGUID: IgEO2u5iQ7OJcTmZv3E0HA==
-X-CSE-MsgGUID: bD4cyQ+ZSYm5ByhN0oPweg==
-X-ExtLoop1: 1
-Received: from fmsmsx901.amr.corp.intel.com ([10.18.126.90])
-  by fmviesa003.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2026 16:52:19 -0700
-Received: from FMSMSX901.amr.corp.intel.com (10.18.126.90) by
- fmsmsx901.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.37; Thu, 30 Apr 2026 16:52:18 -0700
-Received: from fmsedg903.ED.cps.intel.com (10.1.192.145) by
- FMSMSX901.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.37 via Frontend Transport; Thu, 30 Apr 2026 16:52:18 -0700
-Received: from DM1PR04CU001.outbound.protection.outlook.com (52.101.61.27) by
- edgegateway.intel.com (192.55.55.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.37; Thu, 30 Apr 2026 16:52:18 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Y+edqTKdnR11UXk6POWADTSRLO7RUCMBN3O3Kpu/T/cIQejdmxLybk4l78jZH+IRZKiUM06XTvBA50WljkbhY+Kno1P39yNkrdawucDfKjET1+LStCmDTuMJCBlj65ky1RTQCFIkpoMHXqyrn+vVo+N/UOavC+YpDwo7Z7z0IAPVJaKRyL0Tw+s+Rb0yPLizaXUJijeDKyxI8caiAJ0oQCP38iMKCmtApWARqCBqLr/MOyf2Nw5jJ4spJ6aZnsOzUfkNQD7kOwm5qfRd9I1cuH+owABLh74IRogohXH/+tI+fAMvPLs1xTvpngkL6FPnnkJnfVdfFaKIo7ThFARrLw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=N/PIkss/QgdG4nlPdN9/LaI4TZfXLYDG3UxC0uw+yIE=;
- b=Qgot6NksU75uR4rOWUuOEQHM1aZcj2OugfqxWW/0MDHu3erBA8a6Kb3QgvrZaw8fBkYLj1agCURF3utisRcN0XKb0eX5bME9SyY30WWoW9BiFSMSqCfdU5koTMRXpgqjthzoavxuJefS7OMukbPWzOYjiVhNfxFMZ6LPBGw/ewxUOyOo/pCSqd+rPocHZ0u1g2w364MDSnaTx9GPizwrAOeBSLL7U6z77YuSUeg0VGMrzUiy8It4pSwD+S9whP2Qv+Y0BFk/n+7CbVsCCgWEaM1duWN/u09Azc0JTEkfNDXe5wIcOyzzNNkHHB+N+diV2/0s7s1TrfhMk0SosVUbaA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
- by SN7PR11MB7468.namprd11.prod.outlook.com (2603:10b6:806:329::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9870.16; Thu, 30 Apr
- 2026 23:52:08 +0000
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::bfe:4ce1:556:4a9d]) by SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::bfe:4ce1:556:4a9d%5]) with mapi id 15.20.9870.020; Thu, 30 Apr 2026
- 23:52:08 +0000
-Message-ID: <3b6f86ef-c00b-4d7d-96e2-b57fd4231e0d@intel.com>
-Date: Thu, 30 Apr 2026 16:52:05 -0700
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v3 05/11] RISC-V: QoS: add resctrl arch callbacks for
- CBQRI controllers
-To: Drew Fustini <fustini@kernel.org>
-CC: Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
-	=?UTF-8?B?UmFkaW0gS3LEjW3DocWZ?= <rkrcmar@ventanamicro.com>, Samuel Holland
-	<samuel.holland@sifive.com>, Adrien Ricciardi <aricciardi@baylibre.com>,
-	Nicolas Pitre <npitre@baylibre.com>, =?UTF-8?Q?Kornel_Dul=C4=99ba?=
-	<mindal@semihalf.com>, Atish Patra <atish.patra@linux.dev>, Atish Kumar Patra
-	<atishp@rivosinc.com>, Vasudevan Srinivasan <vasu@rivosinc.com>, "Ved
- Shanbhogue" <ved@rivosinc.com>, Conor Dooley <conor.dooley@microchip.com>,
-	yunhui cui <cuiyunhui@bytedance.com>, Chen Pei <cp0613@linux.alibaba.com>,
-	Liu Zhiwei <zhiwei_liu@linux.alibaba.com>, Weiwei Li <liwei1518@gmail.com>,
-	<guo.wenjia23@zte.com.cn>, Gong Shuai <gong.shuai@sanechips.com.cn>, "Gong
- Shuai" <gsh517@gmail.com>, <liu.qingtao2@zte.com.cn>, Tony Luck
-	<tony.luck@intel.com>, Babu Moger <babu.moger@amd.com>, Peter Newman
-	<peternewman@google.com>, Fenghua Yu <fenghua.yu@intel.com>, James Morse
-	<james.morse@arm.com>, Ben Horgan <ben.horgan@arm.com>, Dave Martin
-	<Dave.Martin@arm.com>, Rob Herring <robh@kernel.org>, Conor Dooley
-	<conor+dt@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, "Rafael J.
- Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, Robert Moore
-	<robert.moore@intel.com>, Sunil V L <sunilvl@ventanamicro.com>,
-	<linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
-	<x86@kernel.org>, <linux-acpi@vger.kernel.org>,
-	<acpica-devel@lists.linux.dev>, <devicetree@vger.kernel.org>, Paul Walmsley
-	<paul.walmsley@sifive.com>
-References: <20260414-ssqosid-cbqri-rqsc-v7-0-v3-0-b3b2e7e9847a@kernel.org>
- <20260414-ssqosid-cbqri-rqsc-v7-0-v3-5-b3b2e7e9847a@kernel.org>
- <03085c36-315a-47c8-85aa-f3de88fa43bd@intel.com> <afPnrjAseS00a8k9@x1>
-Content-Language: en-US
-From: Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <afPnrjAseS00a8k9@x1>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR03CA0104.namprd03.prod.outlook.com
- (2603:10b6:303:b7::19) To SJ2PR11MB7573.namprd11.prod.outlook.com
- (2603:10b6:a03:4d2::10)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uRa3t4sD"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA878C2BCB3;
+	Fri,  1 May 2026 02:11:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1777601477;
+	bh=9QR0cnUgXF6rP+G/fgL1ZOPWMm8v63S58EfEC1IYVzQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=uRa3t4sDDbQpv7M6lTSaoochov6MAYzb6y7riWmPgQGz26Fxvq1g0V6HxcEVB4OOZ
+	 dDm6eFhIZRdVv31oRZYaYzcM7dzco1gJXHNAbV9z2w6ENGowfGEpvZjgqb+1Ow3lsx
+	 9gYSbxshRf5euC1t6Eq4JDevvKjmwWKRicLObAiTsLAHsFzXK7MlcdnWyBzJwVVYBM
+	 OXGarWvtRJ0/zcrnZPCMdqlgy6S/nsKNYM2bX5T6wASoFB/USX7PPs2/5lDpaeNa5f
+	 sIQhDVq9nGKrvIyg/x9pS/ik1r8n0Pn28IWUnGTQvJqAD8FFrt8N5nUDZyBahPQGnu
+	 zC9DTSnlxWZGA==
+Received: by finisterre.sirena.org.uk (Postfix, from userid 1000)
+	id 94D0A1AC5863; Fri, 01 May 2026 03:11:14 +0100 (BST)
+Date: Fri, 1 May 2026 11:11:14 +0900
+From: Mark Brown <broonie@kernel.org>
+To: Marc Zyngier <maz@kernel.org>
+Cc: Leonardo Bras <leo.bras@arm.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Oliver Upton <oupton@kernel.org>,
+	Joey Gouly <joey.gouly@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>, Saket Dumbre <saket.dumbre@intel.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Chengwen Feng <fengchengwen@huawei.com>,
+	Jonathan Cameron <jic23@kernel.org>, Kees Cook <kees@kernel.org>,
+	=?utf-8?Q?Miko=C5=82aj?= Lenczewski <miko.lenczewski@arm.com>,
+	Ryan Roberts <ryan.roberts@arm.com>,
+	Yang Shi <yang@os.amperecomputing.com>,
+	Thomas Huth <thuth@redhat.com>,
+	mrigendrachaubey <mrigendra.chaubey@gmail.com>,
+	Yeoreum Yun <yeoreum.yun@arm.com>,
+	Kevin Brodsky <kevin.brodsky@arm.com>,
+	James Clark <james.clark@linaro.org>,
+	Ard Biesheuvel <ardb@kernel.org>, Fuad Tabba <tabba@google.com>,
+	Raghavendra Rao Ananta <rananta@google.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Vincent Donnefort <vdonnefort@google.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Sascha Bischoff <Sascha.Bischoff@arm.com>,
+	Anshuman Khandual <anshuman.khandual@arm.com>,
+	Tian Zheng <zhengtian10@huawei.com>,
+	Wei-Lin Chang <weilin.chang@arm.com>, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
+	kvm@vger.kernel.org
+Subject: Re: [PATCH v1 00/12] KVM Dirty-bit cleaning accelerator (HACDBS)
+Message-ID: <afQLwhnDLtCHnjeQ@sirena.co.uk>
+References: <20260430111424.3479613-2-leo.bras@arm.com>
+ <86bjf0zj2p.wl-maz@kernel.org>
+ <afNZQKIiKmHPD5My@devkitleo>
+ <86a4ukzel3.wl-maz@kernel.org>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|SN7PR11MB7468:EE_
-X-MS-Office365-Filtering-Correlation-Id: 73258154-043f-4a96-4efe-08dea7137d9b
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|366016|7416014|18002099003|22082099003|56012099003;
-X-Microsoft-Antispam-Message-Info: LG+68nMKMMLR1FBDoWK7mNlGhBwV2oB+pb2lTDrjZZBzFft1OhH417ct9g96UWhfk7iZmhOMsVUIN+UtXyz+SiMwyJ2Z2S3QBfGpfvQFgDTyWNiS0sMr4WzZLTMFciy0ZrxL+roFQuvmoAEzgi+l9tPqRoZZVky4jZS5I2U6FGiA90zBgAnXGgXB8WK29Uf8oeFQonKJElaz22g/XnZCI2gtNDcTugEVnujAWmFcKTx0FdEU5ZDrmnR8fOiqV54AxabEC7UBIm2TwQvCb4JWuHr+SeNMd1upUgfyV11X2sN+TqTGJoZJEqZQVIxWwN7l29j4N7PFQEuey6zL2ToCjqJK2P9CCaLR5SVn7blyRiV8j6moMbd22wpT9rirA+BWLw7IqyfZab0PYaX2Ro63xMY7W/9PpSzMDP4MT1slNsn+9BfVyOX/CuwL/MsVwoinWraz+cmvoeGacQy2c+cGFL6LVt8/UXPaAvqVkKyiziPKe2u0u/B7D7T1jKsOB8Q96pv5IpfejGjvG9ea1e/YxUE/QmTIIYsDXtbiY2Sr2SnLfq9KUAo6cfToeNrf2GjDgAz9okwzarGwIPdolwhXZ8bD1Z7RFL4Q+jg9EOXPZWqtKKXKjeCyFu5IwPQLz+rra6JpxZ8gqtrKM56CUMGf0g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016)(7416014)(18002099003)(22082099003)(56012099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?b3FaaHg2Z0J2dW1tV29GN2o3SE5EaloxVHViTzgxMHpRVkoweWtoT3ZUdE5G?=
- =?utf-8?B?akUxSXFiTzdGSFNvV0pxaTJtS3k2ZmV0WkRtaGlZWU16REkzTWtMeU9KUjdW?=
- =?utf-8?B?NG5iYXluTSt5cG5EZXlhRlAxOHJudjViUkpxTjFLaTJ0R0xhQVFVRXJQaFFj?=
- =?utf-8?B?MUxkZURnUmVaeHNEcDdGL1BQb3YyYWFWQlhNWXh2dnZzdnBXTExneEN1eGlZ?=
- =?utf-8?B?c0pQVnVRTDFNdEZrcDA4T0lOOThMREJjQURpcTBHWHBkN2o5N0pGekNzekJG?=
- =?utf-8?B?UCtLUGU4VmNqcXQ4UC9EUnROYnlhTDRWTldWRU96TVFFMldsUnRzdTBaK1RQ?=
- =?utf-8?B?b2ZUTWdHVytaT0w5WEJIV3FDU2g5aklMNUFaVzRSTk1VaHV5RHRSY3o0d0Ft?=
- =?utf-8?B?VGJ1U0JGKzZtOWJYTDQzZjJwaDEvMGJXN2F6cU40bEY5a3BEeDFLazQraC9E?=
- =?utf-8?B?UjRCSk5OcTI0bWd5TmpHRS9zaDVSVkUzOGZkM3JhdWNrUTdvMTExbXhyLzlB?=
- =?utf-8?B?MVliUmlzOGM4Mit3Mm53K2FBUmh2RUVUVk9WdFZvWXlucGpBVFBFQm9PN0VY?=
- =?utf-8?B?N2Vhc2dRTU42TFNpS05oSFI0Z1FnNEJWOWFGWlcvQnV2V3NCM2lnVUpWQjdL?=
- =?utf-8?B?anNybXd0S3pYcUxlUUFJYmhjbThTVU82akgxTGhtNFY4a0t2R2lRdXd0WmRU?=
- =?utf-8?B?dWloVHVDY3A0aDhidjBRWkF3MFdtQzZUL2VkM2xkMzZtOWtLRWEwK2UzN1ZG?=
- =?utf-8?B?UndtbXV6NkdMd0RHcSthR0hicEdzRFdBYVU4S3BVSHlBc1pZaFB4MWUwMDJL?=
- =?utf-8?B?ZVM0SUFKMDdEYzYzOVhrczRnQjBNUFFmSE5ubEowT0tYUVZubzlHWXRkSlBT?=
- =?utf-8?B?dHEzYkMyZmFQTXhIV3JlQjVOR0Z5MWRFeU5obUZ3a2dYcXdudVI4bUFicld2?=
- =?utf-8?B?TFdrbFYwRzM4eGR6QllKQjZJY2pBREZMODRWZjh4L2lXYXE5MVlPby8yRkth?=
- =?utf-8?B?dFBiZk14akxRSW5Vcjh0UDBnSEd0eExHaE9YSk1EdVRNUFp4eXd2VEFaSC9S?=
- =?utf-8?B?b1VvRys4aG03SERTYzNpOFpwNTRMNlcrakpTbVQvT1NwWlNQMmtzUGZOZE5R?=
- =?utf-8?B?a3BMQWZyVTVLMmpPeVQ5RkNNNjNjL1ZtMkFqNGtuZStGYWR4bkNHb0VJbWdI?=
- =?utf-8?B?aG9kSG92L1V4eFNWZnU0ZjVvc2NWVG5pY2svNzFJcExjOFBiaUgrSVd6QzVQ?=
- =?utf-8?B?b1IwamJUV05ReGR0QWl6TjR0VWhBb3FnVjZCWGZRcU1HOTZTQTIxVTNNOXFU?=
- =?utf-8?B?dk95TkIvWlMycE41blpSVml6QUF5TEgxbmdBaWx4K2RKbitmSzc1N0RKT2g1?=
- =?utf-8?B?aW1MQVBTVmlLUXNvRUhzeTBxd1BVZUFBZFdQRFhLTm5lWmJYNXV5Qk0yYlFm?=
- =?utf-8?B?c0F2Q2pzSVRrT2xCS2NlZkhKSDU2b3gxSThGWURNWkhaUHIra2luZUFKVzQ0?=
- =?utf-8?B?dU0rNEJCcWluaFcrd3FrV3c3RGQ0VGw2VG9EWS9UdmN5M0x5WERFUXRQSEZW?=
- =?utf-8?B?K2JjWjBPRnNXWk56RDlBWldzWVM0L3BzT1VZQUpTTlJKU2FpRW0vS25Rd1dt?=
- =?utf-8?B?QmFIcGduMDZ0cGV3b3VtTHA0TGZ2UEk3M3lXY3YwdU01TlgvT29JdWRiMnlq?=
- =?utf-8?B?VHl2dzIvSzlZMmkvb3plaGdtZE5Pdzc0TkpHSS9Va29yMVBsRjZLVkhGOCtC?=
- =?utf-8?B?end6ZnRWMURqTzliTjJTNUVXeDU2cVUrVEYxQzhIV0FUbGpYVDFVTU44VnFB?=
- =?utf-8?B?MW9hK203UUREc0VCaklNdmZXSk5ESU1KcHFKdHdnR3h0UDh0Z01qamJRak5Z?=
- =?utf-8?B?UWd6eXRVUVlKQmxuSExkbFpIOEtqaW5kajdsakU4ZDFQVXRVZzNna084L0l2?=
- =?utf-8?B?cllhdFRkcTk0R2JlVVZuWG5qbndZOWxIN0FBKzBWTlZXczN0UTU5RG00S0hO?=
- =?utf-8?B?RFFaWVFLTUJEZFY4QXMrWnBkOENiYWRDWWt3eWV0L1dxQ2xnL28vR0YwY3FZ?=
- =?utf-8?B?cFR5TkdvZjJpV1RxN1hHWGQvajAvV3p4MXA2a0NCcTZiZTZ2Tmd1VnIvdFpF?=
- =?utf-8?B?emVNSzF4SG5GeHdnYUVxK2tCQWRlWTVWdHh1ZWtvMS9wT01EVUlyZUdJRmJh?=
- =?utf-8?B?WmJzUzM2K2lmd08vS2Y2bFpYUTAzNFZLb0VRYjRVMTdDQzJaTTUyMmJPQ3Jo?=
- =?utf-8?B?MHFjVVhXaDNtcHdKTGJyUFpvemJGYWo2VlN0K2dhTUJiZXEyaml1SDdGQ000?=
- =?utf-8?B?VUJ0VGNpZHFmTXpWdmNJRy9QdXZocWRscmVnTnA0TVhPZHR2ODYxTXNWUVhj?=
- =?utf-8?Q?EkWGFERW6FMOGqtA=3D?=
-X-Exchange-RoutingPolicyChecked: YY5S1/m/WCPVCPPxn4jMpuROReLyEvbsKyU5fzDwp6AV+nAz1bhx7XDbb3oW/htL4OW1YCO547qtQRl+h0XzKJi0qbkF4OJ9nz7OpgD8FsvRQkVPThgexq/Ap9MxafwlvxrQzu6KACb+F3WvHq++RIMw2o+S2jFUgEYFYzJpXvOBZru80ULs2yUtOTRlk1AlYHG9LOGOo/ez/FGNrbPD2wlQMwp2mz81eiJhWJlGrwTdGffEYWmcr2RO81kleUCiWsA1fOveyS6G0qW4o4qU4edEo0LbaALLZ05p7DdjITwyRQ7icKJ+GmY5sKeRTNYqGjjGvl2IG6qA/8aSX8kwcA==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 73258154-043f-4a96-4efe-08dea7137d9b
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2026 23:52:08.7646
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: E4uWMejWQzInRtzUg558NwJYglnBrErgWdcsRkM0t0KO0vqUoYMLRArNxT7tkLvBzbdCbi9WOOLichz7KXhLKVaAhGwKl6CHiFY40IWDLWk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB7468
-X-OriginatorOrg: intel.com
-
-Hi Drew,
-
-On 4/30/26 4:37 PM, Drew Fustini wrote:
-> On Thu, Apr 30, 2026 at 04:17:22PM -0700, Reinette Chatre wrote:
->> Hi Drew,
->>
->> On 4/14/26 6:53 PM, Drew Fustini wrote:
->>
->>> +int resctrl_arch_update_one(struct rdt_resource *r, struct rdt_ctrl_domain *d,
->>> +			    u32 closid, enum resctrl_conf_type t, u32 cfg_val)
->>> +{
->>> +	struct cbqri_controller *ctrl;
->>> +	struct cbqri_resctrl_dom *dom;
->>> +	struct cbqri_config cfg;
->>> +	int err = 0;
->>> +
->>> +	dom = container_of(d, struct cbqri_resctrl_dom, resctrl_ctrl_dom);
->>> +	ctrl = dom->hw_ctrl;
->>> +
->>> +	if (!r->alloc_capable)
->>> +		return -EINVAL;
->>> +
->>> +	switch (r->rid) {
->>> +	case RDT_RESOURCE_L2:
->>> +	case RDT_RESOURCE_L3:
->>> +		cfg.cbm = cfg_val;
->>> +		err = cbqri_apply_cache_config(dom, closid, t, &cfg);
->>> +		break;
->>> +	case RDT_RESOURCE_MBA:
->>> +		/* convert from percentage to bandwidth blocks */
->>> +		cfg.rbwb = cfg_val * ctrl->bc.nbwblks / 100;
->>> +		cfg.rbwb = min_t(u64, cfg.rbwb, ctrl->bc.mrbwb);
->>> +		err = cbqri_apply_bw_config(dom, closid, t, &cfg);
->>
->> (Earlier comment wondered about whether rbwb cannot just be provided
->> directly to cbqri_apply_bw_config().)
->>
->> Apart from that it looks like this can benefit from "emulated controls"
->> that we mused about at https://lore.kernel.org/lkml/e788ca62-ec63-4552-978b-9569f369afd5@intel.com/
->>
->> At this time this MBA resource is constrained by the 1% steps that the
->> default MB control supports and clearly it is emulated with a control that
->> can support finer granularities. I am currently working on a PoC of the
->> base schema descriptions on which the support for emulated controls can
->> be built that should be able to expose full hardware capability.
->>
->> Reinette
-> 
-> Thank you for your review. I have been working on a large overhaul to
-> the series in v4 and was about to send it. I finally realized the
-> sematic mismatch between resctl MB resource and what the RISC-V CBQRI
-> spec offers. I decided to create MB_MIN for reserved bandwidth and
-> MB_WGHT (weight) for shared bandwidth porpotional weight.
-> 
-> I didn't expect adding two new resources to be the best solution but I
-> wanted to offer something tangible to move the discussion forward. I
-> look forward to your proof of concept as I expect I can then build
-> proper support CBQRI bandwidth allocation (reservation and proportional
-> share) on top of that.
-
-Creating multiple resources to support discussion seems reasonable.
-Part of what my PoC introduces is that a single resource can have multiple
-controls. This sounds relevant here. 
-My initial PoC ended up giving the architecture too much control over
-the user interface in deciding how these controls are presented to the user.
-Things like this have been ok so far with the architectures behaving well (for
-example, all architectures making sure to name their cache resources
-"L2" and "L3" to have these appear identical to user space), but resctrl fs
-can make this simpler. This does mean that resctrl fs would need to be "taught"
-about new controls like "WGHT"/weight. I am reworking the series as we speak
-so that we can use it to discuss more.
-
-Reinette
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ssT59TgwkbIJmTw+"
+Content-Disposition: inline
+In-Reply-To: <86a4ukzel3.wl-maz@kernel.org>
+X-Cookie: 667:
 
 
+--ssT59TgwkbIJmTw+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, Apr 30, 2026 at 03:51:20PM +0100, Marc Zyngier wrote:
+> Leonardo Bras <leo.bras@arm.com> wrote:
+
+> > There is no enablement needed on VMM side.
+> > Yes, I have created a VM on upstream qemu with --enable-kvm and migrate=
+d it=20
+> > on the same host. (Inside a model)
+
+> > That was the first test I used, but then I found out that kvm selftests=
+=20
+> > stress up multiple scenarios in an easier way.
+
+> Except when they don't. In my experience, the selftests are only there
+> to give the CI people the fuzzy feeling that they are doing something
+> useful. I have a collection of examples indicating that what these
+> things test is not representative of the bugs we have in KVM.
+
+There's a bit of a circular thing there - if things are working well
+then the selftests really shouldn't be representitive of the problems
+that turn up since people ought to have seen any issues they show during
+development.  If you could share your list that'd be helpful.
+
+TBH the various stress style tests like the dirty bit ones in the KVM
+selftests are actually a bit of a pain for CI IME.  Since they all
+control their runtimes by iteration counts rather than time there's
+scaling issues, the performance is such that on lower end systems
+they're often on the edge of generating timeouts leading to unstable
+results.  They also interact so poorly with the fast models that the run
+time blows up spectacularly which is it's own problem trying to run
+them, that's partly on the model side of course.  These performance
+and/or stress tests really aren't idiomatic for kselftest so there's
+always going to be some tension with trying to run them in that
+framework.
+
+--ssT59TgwkbIJmTw+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmn0C8EACgkQJNaLcl1U
+h9CS4gf6A7/M0j4C+bjIv3MUjhE/mp8ttmFweM6NFGjW71XsY5UMxrlSOLPo8FsA
+dc18jjcaPaGl6ozZGbZnEdt4/olC2ZeZCW+itSIOMNCTlcUpK7MRkAu6/L0/NRyF
+hUup3657nGbemC0awUnJgdPtnRl2cUej+eLw6rLa6LUpC2VNQixM1GputtDlcbMB
+xtTncUwiuypXtPjVfGwx6NasjoOux+XHXF3s2tdeFX8crXdtFojI6aGqNZ0+abxH
+RT/GD1WIOVZwmAQ0PYhC8XkPYyL8wQ92yjVZGjw5vXDPNlS/CesakgrnLJcL5pfq
+wxdoTRitTAuP8hoREPUgw/vN5C7QQA==
+=FWnL
+-----END PGP SIGNATURE-----
+
+--ssT59TgwkbIJmTw+--
