@@ -1,29 +1,30 @@
-Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FFCE33F8DC
-	for <acpica-devel@lists.linux.dev>; Fri,  8 May 2026 08:20:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 014D43C1F
+	for <acpica-devel@lists.linux.dev>; Fri,  8 May 2026 08:20:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778228431; cv=none; b=nFWgz8mdyCK3LC88f5QwgkFN7Dxuyfrtl3xahVARHSv1pa5weko6ZcFeYMwo846bRywdYZiCv8zWsfnykFGMEEbVxrSLhn0Nq7qKHXe+3vMri7qM6MnRSWsHGZeb1eUl/IG4Cfl48mwC2Vu9vYedJQh6hKsk5+mW32vMXB5BMEI=
+	t=1778228436; cv=none; b=JzxmgByzlSZw1uA9EnwmnsNc52tzb1uha2VE72qd8G0ImEIsWwRQl92dFYm0aoooXOiyXm9mNQSPyvSW5IDbxdhIO5U9+fZp3DoWIXWF1pgduxDa6e+EwDj6ortKRAP32jEySWdSikCkVRz1Bw+eFnm8bdDrhegzBSjfGFO3K90=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778228431; c=relaxed/simple;
-	bh=Wr3XT2/tW7zSvgi5fTELVXgSjAUFhLbxW9RVaNkB0rs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MI3tIYFQJ8wWcK7PU4qbcIIky/YcDy7Iz9Zx+vt10VEOQ/K2/WPPJ7O2YuPEth+pgUTNvzmYpVXJiC00dIo4eBQTsbw5BJ/hl+UDciFzd4SWbPH2AprKJA7hxNPL6qsDPaZPngvPc6tt0lO5+EKEGdbL/T40iwJ5Dde8FRzwZNQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=yWILmYOd; arc=none smtp.client-ip=115.124.30.130
+	s=arc-20240116; t=1778228436; c=relaxed/simple;
+	bh=IgNldgSNJuH2+rIIQUxUrYE1LC7TJ2fKuJV1Gfi7Ce0=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=tff0ONSTv9alaWfU46M17yEhBjskSp0+PvIBnAJp9MKHh72f9I4vILAjyo1oeIJl/2NDdKxI7d9ya7vWOzIqMXQk/f3O9rEvXIQUwl2HJ+c9hfruw+EugwWh2jYL3c9Wq9z3+FxDlQAOtXPnjObzx1EWCoY6r146PBMiLI86n5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Z6nCrJrZ; arc=none smtp.client-ip=115.124.30.132
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="yWILmYOd"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Z6nCrJrZ"
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1778228425; h=From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=+7QdPcCzeWAnAa1oaJ9PNAr6xemcX6oyHA0viBSsOL0=;
-	b=yWILmYOdCyM+kzmfMrwBHzapYkRrJFMFs3GqqtRfoIHnWAqrtNFE8nxGPsEiwz2uayUnErusR8P1zF6Ot1r3qbuQRZMfkK1aDW/FwY0Gtdzckgbvw8xpvW4CS0e+E/wp+aSdpNgsIfQTGiebU159FieZ1QBdSowFfa5PuMGb0HI=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033045098064;MF=tianruidong@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0X2WlM8y_1778228422;
-Received: from localhost(mailfrom:tianruidong@linux.alibaba.com fp:SMTPD_---0X2WlM8y_1778228422 cluster:ay36)
+	t=1778228428; h=From:To:Subject:Date:Message-ID:MIME-Version;
+	bh=JFOE0oOtrup94m1Ct2dbwxOhyCe8CzDhIKZx+1CT/OA=;
+	b=Z6nCrJrZiEuLXapQ/cqoPIQlir4hyQDw4h9inZLqn4NmXtZ54pXuBRLYB2Q3IXc9BU9lA8YsgsGHEvGKoQjTWO+nIB4utjYoVSv4fuwvs2okBJstWPUWFGhNKP7li7nzI3e7CKUnR0YKPVmFFTMti22sa1vuGlJe12rlMzAIfVA=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R251e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037026112;MF=tianruidong@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0X2Wljwh_1778228426;
+Received: from localhost(mailfrom:tianruidong@linux.alibaba.com fp:SMTPD_---0X2Wljwh_1778228426 cluster:ay36)
           by smtp.aliyun-inc.com;
-          Fri, 08 May 2026 16:20:24 +0800
+          Fri, 08 May 2026 16:20:28 +0800
 From: Ruidong Tian <tianruidong@linux.alibaba.com>
 To: pjw@kernel.org,
 	palmer@dabbelt.com,
@@ -42,10 +43,12 @@ Cc: linux-riscv@lists.infradead.org,
 	linux-acpi@vger.kernel.org,
 	acpica-devel@lists.linux.dev,
 	Ruidong Tian <tianruidong@linux.alibaba.com>
-Subject: [PATCH 0/3] riscv: log Hardware Error Exception via APEI
-Date: Fri,  8 May 2026 16:20:17 +0800
-Message-ID: <20260508082020.3368109-1-tianruidong@linux.alibaba.com>
+Subject: [PATCH 1/3] acpi: Introduce HEE in HEST notification types
+Date: Fri,  8 May 2026 16:20:18 +0800
+Message-ID: <20260508082020.3368109-2-tianruidong@linux.alibaba.com>
 X-Mailer: git-send-email 2.43.7
+In-Reply-To: <20260508082020.3368109-1-tianruidong@linux.alibaba.com>
+References: <20260508082020.3368109-1-tianruidong@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -54,71 +57,29 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This series extends the handling of do_trap_hardware_error() based on
-the works in [1].
+Introduce a new HEST notification type for RISC-V Hardware
+Error Exception. The GHES entry's notification structure
+contains the notification to be used for a given error source.
 
-RISC-V already dispatches Hardware Error Exception (cause 19, "HEE") via
-do_trap_hardware_error(), but today the trap handler has no way to learn
-*what* went wrong: the offending task is killed (or the kernel panics)
-with no diagnostic about the underlying hardware fault, no error record
-is logged, no page is isolated, and memory_failure() is never invoked.
+Signed-off-by: Ruidong Tian <tianruidong@linux.alibaba.com>
+---
+ include/acpi/actbl1.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-There are two principal ways to obtain hardware error information on
-HEE:
-
-  1. Let firmware parse platform error registers and hand the kernel a
-     standardized CPER record through ACPI / APEI / GHES.
-  2. Have the kernel read the error registers directly.
-
-Option (2) is not yet viable on RISC-V: the architecture does not
-define a unified, mandatory layout for hardware error status registers
-across implementations, so there is nothing stable for common code to
-decode. This series therefore implements option (1) and wires HEE into
-the existing APEI / GHES path, mirroring how arm64 treats SEA.
-
-Future work: option (2) is not ruled out. Once the RISC-V architecture
-standardizes a common hardware error register layout (either as part
-of the privileged spec or via a well-defined SBI / ACPI namespace
-interface), a kernel-native decoder could be added alongside the
-ACPI/APEI path. The two can then coexist and be selected per
-platform through a Kconfig choice. This series keeps the door open
-by routing HEE through apei_claim_hee() behind CONFIG_ACPI_APEI_HEE,
-so disabling that config already restores the legacy path and does
-not block a future native decoder from being wired in.
-
-After this series:
-
-  * Firmware reports RAS events to the OS as CPER records through a
-    HEST GHES entry whose notification type is HEE (new value 13).
-  * If CONFIG_ACPI_APEI_HEE is set, do_trap_hardware_error() calls
-    apei_claim_hee() first. On success GHES queues the record, drains
-    irq_work inline, and delivers a BUS_MCEERR_AR SIGBUS to the faulting
-    user task via task_work after isolating the poisoned page with 
-    memory_failure(MF_ACTION_REQUIRED).
-  * If firmware does not claim the error or CONFIG_ACPI_APEI_HEE not set:
-      - user mode falls back to SIGBUS / BUS_MCEERR_AR via do_trap_error(),
-      - kernel mode tries fixup_exception() to let MC-safe copy routines
-        recover; otherwise die().
-
-References:
-----------
-[1] [RISC-V RAS patch]: https://lore.kernel.org/all/20260109090224.3105465-1-himanshu.chauhan@oss.qualcomm.com/
-
-Ruidong Tian (3):
-  acpi: Introduce HEE in HEST notification types
-  riscv: Introduce HEST HEE notification handlers for APEI
-  riscv: collect hardware error information via APEI on HEE
-
- arch/riscv/include/asm/acpi.h   |  2 +
- arch/riscv/include/asm/fixmap.h |  3 ++
- arch/riscv/kernel/acpi.c        | 54 ++++++++++++++++++++++++++
- arch/riscv/kernel/traps.c       | 35 ++++++++++++++++-
- drivers/acpi/apei/Kconfig       | 12 ++++++
- drivers/acpi/apei/ghes.c        | 68 ++++++++++++++++++++++++++++++++-
- include/acpi/actbl1.h           |  3 +-
- include/acpi/ghes.h             |  6 +++
- 8 files changed, 178 insertions(+), 5 deletions(-)
-
+diff --git a/include/acpi/actbl1.h b/include/acpi/actbl1.h
+index 14924383e2d0..2c1ad1d8587b 100644
+--- a/include/acpi/actbl1.h
++++ b/include/acpi/actbl1.h
+@@ -1793,7 +1793,8 @@ enum acpi_hest_notify_types {
+ 	ACPI_HEST_NOTIFY_GSIV = 10,	/* ACPI 6.1 */
+ 	ACPI_HEST_NOTIFY_SOFTWARE_DELEGATED = 11,	/* ACPI 6.2 */
+ 	ACPI_HEST_NOTIFY_SSE = 12, /* RISCV SSE */
+-	ACPI_HEST_NOTIFY_RESERVED = 13	/* 13 and greater are reserved */
++	ACPI_HEST_NOTIFY_HEE = 13, /* RISCV Hardware Error Exception */
++	ACPI_HEST_NOTIFY_RESERVED = 14	/* 14 and greater are reserved */
+ };
+ 
+ /* Values for config_write_enable bitfield above */
 -- 
 2.51.2.612.gdc70283dfc
 
