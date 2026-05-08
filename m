@@ -1,242 +1,113 @@
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81CBC37B40B
-	for <acpica-devel@lists.linux.dev>; Fri,  8 May 2026 08:20:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 179AD413248
+	for <acpica-devel@lists.linux.dev>; Fri,  8 May 2026 19:01:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778228446; cv=none; b=I8QTRQbPqZ+plPEKIJY4KFesjNlIfsIZ1yzQM9KpyDUrYRmBY+W3XD900NF6qmiQJ+6kOZoNgsEaY1Qn77u6sp7z75juemkh2hP5d4HfGiYR1neCVm5JMApWdgMrxdwyTOiEPFujq1M+oFbrFDwnLNgMafUdyoMLPZhbIub0aNw=
+	t=1778266898; cv=none; b=u/eS5kgBG9LgubleNqIrR4E1twm8/RScWU+Y1JkqBUfohJEOUWwXhujLorlVTnikatWpXbJoSeYgfUlqxqirSPgFAehWo3kTE0u386fLBP5Voybo9WuRRr+GfUS4ooRoCtXF7f7UErZsTdntR7WpyjlQL+velkzP1fLGRPTi9zQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778228446; c=relaxed/simple;
-	bh=7CpcYWW59GNFu0zvHmne9YhOrdVY3oWN8KsAngA3nTU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MXno3EIfzfyuHOIVtHHWGWqcAztmeBpvzo/G8EaAfvmRa2T/0GVg+s/Wg5m5Hdr1w7eu8jphvDC6+EiGQfBtu2vqIwVWfB8P3GbW1qd1Ngw1VSlTbYbsa6fLYhAdV3TLnPs3IEbYw5ezbctBY8Ne5RJQsRTevhpQ+no0L3djdsA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=kbWIPRZQ; arc=none smtp.client-ip=115.124.30.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+	s=arc-20240116; t=1778266898; c=relaxed/simple;
+	bh=50SMXz4G7+Ucp6B0QXGQ4Eq9CUeIww16GU//taPwKuw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VvjqkyjsE0DKKZrjOITSqF1vXd7iycJXphZSQfpuz6sWiBItvlNq9ZjWCLNK5muRg30e0NA8Tdc38y3M4lV3ly39qIzLz3wRx+JKREbglAhOyoooK2Md3pw/0WkNoz/+RZsUyvAuoXenjmCqQMxHspXPAhi5R1thpRn9SIsSOaA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kMxjnNKD; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="kbWIPRZQ"
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1778228432; h=From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=DJjZjMBaJYjkF31HlOdl7z3vyeK8rjsgXy5CRpGf2GE=;
-	b=kbWIPRZQiQi+Kn8rUfcyiXUorAhxCI2n1zSJThSsfdhF2h3Zq2EhnF8CZ3Nx0M/lj31xTutVZd3STq3aHBYIV09bh1xCVNhjxqDQCXdpNgNRVCAeBcrK2RWPpKJ85lReV94kTetdQ6lKup29PEwiCeZbgMA5nw+hkFkBO7as2Ak=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R821e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037009110;MF=tianruidong@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0X2WlMBj_1778228429;
-Received: from localhost(mailfrom:tianruidong@linux.alibaba.com fp:SMTPD_---0X2WlMBj_1778228429 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Fri, 08 May 2026 16:20:31 +0800
-From: Ruidong Tian <tianruidong@linux.alibaba.com>
-To: pjw@kernel.org,
-	palmer@dabbelt.com,
-	aou@eecs.berkeley.edu,
-	alex@ghiti.fr,
-	rafael@kernel.org,
-	tony.luck@intel.com,
-	bp@alien8.de,
-	guohanjun@huawei.com,
-	mchehab@kernel.org,
-	xueshuai@linux.alibaba.com,
-	lenb@kernel.org,
-	saket.dumbre@intel.com
-Cc: linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev,
-	Ruidong Tian <tianruidong@linux.alibaba.com>
-Subject: [PATCH 2/3] riscv: Introduce HEST HEE notification handlers for APEI
-Date: Fri,  8 May 2026 16:20:19 +0800
-Message-ID: <20260508082020.3368109-3-tianruidong@linux.alibaba.com>
-X-Mailer: git-send-email 2.43.7
-In-Reply-To: <20260508082020.3368109-1-tianruidong@linux.alibaba.com>
-References: <20260508082020.3368109-1-tianruidong@linux.alibaba.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kMxjnNKD"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9475C2BCC9
+	for <acpica-devel@lists.linux.dev>; Fri,  8 May 2026 19:01:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1778266897;
+	bh=50SMXz4G7+Ucp6B0QXGQ4Eq9CUeIww16GU//taPwKuw=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=kMxjnNKDNACcMoFB78LDcCOzWocwxbYqW5h8W+x0prfhCo9EhQzA4IjE6AGd3Yoma
+	 X+mJYXfcP26r4yDsMW/LFG3NjcuzR5PDVg/ZI7Ps9bHnVLCM8sA34XmAqNa36iniC2
+	 g9Hj6E7V123CGeFBplW9SYyoLrX3Klhj1RsYp8TTNp7BkNd67gz7e/KBD1N1sq7cIH
+	 g4Y81Qg5JNa5NmQzoenA4W9H5XpwnpwCe+edWPxcSwB/r4sqlduXjsPWEFl2HGL8K3
+	 iRbODU7TfhB54BLvpIwmwl3pRJIjsGx3dVBHIopXePVVhVQPl8Xj5LBOLHkOAsq3Td
+	 aUkAl59YGfV3g==
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-38e7c3a2deaso19117791fa.2
+        for <acpica-devel@lists.linux.dev>; Fri, 08 May 2026 12:01:37 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AFNElJ9frLVrFbJIQRuB6rNErFcLtHTIV9emws7jlLJOUYuj5NQqpNkvLA0FSGLuaGkz+NwDhcjOulgvQxN3qig=@lists.linux.dev
+X-Gm-Message-State: AOJu0Yw5gs16dQKT+4614KHlQsQunuKIvrmST5LzvGu24YZvecWSVx22
+	fizSF17p2lRpVQUECc3Esc+e1oMwdwk/HUE6EcchaP243/YiSF5k3lK9XmzYIxRLuiGigEDwZd+
+	PHqTK9GOKSIFrH/AtDGJD5csxjJU7lz8=
+X-Received: by 2002:a05:6512:1095:b0:5a4:4ea:9977 with SMTP id
+ 2adb3069b0e04-5a887adac13mr6102930e87.8.1778266896242; Fri, 08 May 2026
+ 12:01:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20260430142430.755437-1-sumitg@nvidia.com>
+In-Reply-To: <20260430142430.755437-1-sumitg@nvidia.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Fri, 8 May 2026 21:01:22 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0gCSPjnxE2Vd+Py14ENJ6U46KBQVHiBetLfEKGybtDh8g@mail.gmail.com>
+X-Gm-Features: AVHnY4KDNOdtryvfMGgDj_cDqWpBdpyIVcpUjhjZQjhE5vuQhaFeqwKRZcl3OjE
+Message-ID: <CAJZ5v0gCSPjnxE2Vd+Py14ENJ6U46KBQVHiBetLfEKGybtDh8g@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] ACPI: CPPC: Add CPPC v4 support (ACPI 6.6)
+To: Sumit Gupta <sumitg@nvidia.com>
+Cc: rafael@kernel.org, viresh.kumar@linaro.org, lenb@kernel.org, 
+	pierre.gondois@arm.com, zhenglifeng1@huawei.com, zhanjie9@hisilicon.com, 
+	mario.limonciello@amd.com, saket.dumbre@intel.com, linux-acpi@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, 
+	acpica-devel@lists.linux.dev, treding@nvidia.com, jonathanh@nvidia.com, 
+	vsethi@nvidia.com, ksitaraman@nvidia.com, sanjayc@nvidia.com, 
+	bbasu@nvidia.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add functions to register a ghes entry with HEE, allowing the OS
-to receive hardware error notifications from firmware through
-standardized ACPI interfaces.
+On Thu, Apr 30, 2026 at 4:25=E2=80=AFPM Sumit Gupta <sumitg@nvidia.com> wro=
+te:
+>
+> Add initial kernel support for CPPC v4 (ACPI 6.6, Section 8.4.6),
+> which extends the _CPC package from 23 to 25 entries with two
+> optional fields:
+>
+>   - OSPM Nominal Performance (8.4.6.1.2.6): register used by OSPM
+>     to tell the platform what it considers nominal. The platform
+>     classifies performance above this as boost and below as
+>     throttle for power/thermal decisions.
+>
+>   - Resource Priority (8.4.6.1.2.7): Package of Resource Priority
+>     Register Descriptor sub-packages. Full parsing is not yet
+>     implemented; such entries are marked as unsupported.
+>
+> Patch 1: Add v4 _CPC parsing - validate the 25-entry layout,
+> handle the Resource Priority package, and mark the two new
+> registers optional.
+>
+> Patch 2: Add acpi_cppc/ospm_nominal_perf as a read-write sysfs
+> attribute, and initialize it to the platform nominal value
+> during cppc_cpufreq policy init.
+>
+> ---
+> v1[1] -> v2:
+> - Patch 1: added Reviewed-by from Mario Limonciello.
+> - Patch 2:
+>   - Make ospm_nominal_perf sysfs read-write; cache last write in
+>     cpc_desc and skip redundant register writes.
+>   - Validate input in cppc_set_ospm_nominal_perf.
+>
+> Sumit Gupta (2):
+>   ACPI: CPPC: Add support for CPPC v4
+>   ACPI: CPPC: Add ospm_nominal_perf support
+>
+>  drivers/acpi/cppc_acpi.c       | 93 +++++++++++++++++++++++++++++++---
+>  drivers/cpufreq/cppc_cpufreq.c | 10 ++++
+>  include/acpi/cppc_acpi.h       | 14 ++++-
+>  3 files changed, 109 insertions(+), 8 deletions(-)
+>
+> [1] https://lore.kernel.org/lkml/20260427051823.280419-1-sumitg@nvidia.co=
+m/
+>
+> --
 
-Signed-off-by: Ruidong Tian <tianruidong@linux.alibaba.com>
----
- arch/riscv/include/asm/fixmap.h |  3 ++
- drivers/acpi/apei/Kconfig       | 12 ++++++
- drivers/acpi/apei/ghes.c        | 68 ++++++++++++++++++++++++++++++++-
- include/acpi/ghes.h             |  6 +++
- 4 files changed, 87 insertions(+), 2 deletions(-)
+Can you please see the sashiko.dev feedback on this set:
 
-diff --git a/arch/riscv/include/asm/fixmap.h b/arch/riscv/include/asm/fixmap.h
-index e874fd952286..9b3d5bbfda24 100644
---- a/arch/riscv/include/asm/fixmap.h
-+++ b/arch/riscv/include/asm/fixmap.h
-@@ -45,6 +45,9 @@ enum fixed_addresses {
- 	FIX_APEI_GHES_SSE_LOW_PRIORITY,
- 	FIX_APEI_GHES_SSE_HIGH_PRIORITY,
- #endif /* CONFIG_RISCV_SBI_SSE */
-+#ifdef CONFIG_ACPI_APEI_HEE
-+	FIX_APEI_GHES_HEE,
-+#endif /* CONFIG_ACPI_APEI_HEE */
- #endif /* CONFIG_ACPI_APEI_GHES */
- 	__end_of_permanent_fixed_addresses,
- 	/*
-diff --git a/drivers/acpi/apei/Kconfig b/drivers/acpi/apei/Kconfig
-index 895a843d0e36..ff487ab28a65 100644
---- a/drivers/acpi/apei/Kconfig
-+++ b/drivers/acpi/apei/Kconfig
-@@ -51,6 +51,18 @@ config ACPI_APEI_SSE
- 	depends on RISCV && RISCV_SBI_SSE && ACPI_APEI_GHES
- 	default y
- 
-+config ACPI_APEI_HEE
-+	bool "APEI Hardware Error Exception support"
-+	depends on RISCV && ACPI_APEI_GHES
-+	default y
-+	help
-+	  Enable support for RISC-V Hardware Error Exception (HEE) notification
-+	  in ACPI Platform Error Interface (APEI). This allows firmware
-+	  to report hardware errors through RISC-V exception mechanism.
-+
-+	  Say Y if you want to support firmware-first error handling
-+	  on RISC-V platforms with ACPI.
-+
- config ACPI_APEI_MEMORY_FAILURE
- 	bool "APEI memory error recovering support"
- 	depends on ACPI_APEI && MEMORY_FAILURE
-diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
-index f228640d3f25..e0a5db80e554 100644
---- a/drivers/acpi/apei/ghes.c
-+++ b/drivers/acpi/apei/ghes.c
-@@ -125,7 +125,8 @@ static inline bool is_hest_sync_notify(struct ghes *ghes)
- {
- 	u8 notify_type = ghes->generic->notify.type;
- 
--	return notify_type == ACPI_HEST_NOTIFY_SEA;
-+	return notify_type == ACPI_HEST_NOTIFY_SEA ||
-+		   notify_type == ACPI_HEST_NOTIFY_HEE;
- }
- 
- /*
-@@ -1404,7 +1405,8 @@ static int ghes_in_nmi_queue_one_entry(struct ghes *ghes,
- 	return rc;
- }
- 
--#if defined(CONFIG_HAVE_ACPI_APEI_NMI) || defined(CONFIG_ACPI_APEI_SEA)
-+#if defined(CONFIG_HAVE_ACPI_APEI_NMI) || defined(CONFIG_ACPI_APEI_SEA) || \
-+	defined(CONFIG_ACPI_APEI_HEE)
- static int ghes_in_nmi_spool_from_list(struct list_head *rcu_list,
- 				       enum fixed_addresses fixmap_idx)
- {
-@@ -1540,6 +1542,53 @@ static inline int ghes_sea_add(struct ghes *ghes) { return -EINVAL; }
- static inline void ghes_sea_remove(struct ghes *ghes) { }
- #endif /* CONFIG_ACPI_APEI_SEA */
- 
-+#ifdef CONFIG_ACPI_APEI_HEE
-+static LIST_HEAD(ghes_hee);
-+
-+/*
-+ * Return 0 only if one of the HEE error sources successfully reported an error
-+ * record sent from the firmware.
-+ */
-+int ghes_notify_hee(void)
-+{
-+	static DEFINE_RAW_SPINLOCK(ghes_notify_lock_hee);
-+	int rv;
-+
-+	raw_spin_lock(&ghes_notify_lock_hee);
-+	rv = ghes_in_nmi_spool_from_list(&ghes_hee, FIX_APEI_GHES_HEE);
-+	raw_spin_unlock(&ghes_notify_lock_hee);
-+
-+	return rv;
-+}
-+EXPORT_SYMBOL_GPL(ghes_notify_hee);
-+
-+static int ghes_hee_add(struct ghes *ghes)
-+{
-+	int rc;
-+
-+	rc = ghes_map_error_status(ghes);
-+	if (rc)
-+		return rc;
-+
-+	mutex_lock(&ghes_list_mutex);
-+	list_add_rcu(&ghes->list, &ghes_hee);
-+	mutex_unlock(&ghes_list_mutex);
-+
-+	return 0;
-+}
-+
-+static void ghes_hee_remove(struct ghes *ghes)
-+{
-+	mutex_lock(&ghes_list_mutex);
-+	list_del_rcu(&ghes->list);
-+	mutex_unlock(&ghes_list_mutex);
-+	synchronize_rcu();
-+}
-+#else /* CONFIG_ACPI_APEI_HEE */
-+static inline void ghes_hee_add(struct ghes *ghes) { }
-+static inline void ghes_hee_remove(struct ghes *ghes) { }
-+#endif /* CONFIG_ACPI_APEI_HEE */
-+
- #ifdef CONFIG_HAVE_ACPI_APEI_NMI
- /*
-  * NMI may be triggered on any CPU, so ghes_in_nmi is used for
-@@ -1754,6 +1803,13 @@ static int ghes_probe(struct platform_device *ghes_dev)
- 			goto err;
- 		}
- 		break;
-+	case ACPI_HEST_NOTIFY_HEE:
-+		if (!IS_ENABLED(CONFIG_ACPI_APEI_HEE)) {
-+			pr_warn(GHES_PFX "Generic hardware error source: %d notified via HEE is not supported\n",
-+				generic->header.source_id);
-+			goto err;
-+		}
-+		break;
- 	case ACPI_HEST_NOTIFY_NMI:
- 		if (!IS_ENABLED(CONFIG_HAVE_ACPI_APEI_NMI)) {
- 			pr_warn(GHES_PFX "Generic hardware error source: %d notified via NMI interrupt is not supported!\n",
-@@ -1837,6 +1893,11 @@ static int ghes_probe(struct platform_device *ghes_dev)
- 		if (rc)
- 			goto err;
- 		break;
-+	case ACPI_HEST_NOTIFY_HEE:
-+		rc = ghes_hee_add(ghes);
-+		if (rc)
-+			goto err;
-+		break;
- 	case ACPI_HEST_NOTIFY_NMI:
- 		rc = ghes_nmi_add(ghes);
- 		if (rc)
-@@ -1917,6 +1978,9 @@ static void ghes_remove(struct platform_device *ghes_dev)
- 	case ACPI_HEST_NOTIFY_SEA:
- 		ghes_sea_remove(ghes);
- 		break;
-+	case ACPI_HEST_NOTIFY_HEE:
-+		ghes_hee_remove(ghes);
-+		break;
- 	case ACPI_HEST_NOTIFY_NMI:
- 		ghes_nmi_remove(ghes);
- 		break;
-diff --git a/include/acpi/ghes.h b/include/acpi/ghes.h
-index 8d7e5caef3f1..bf4f6077ca39 100644
---- a/include/acpi/ghes.h
-+++ b/include/acpi/ghes.h
-@@ -140,6 +140,12 @@ int ghes_notify_sea(void);
- static inline int ghes_notify_sea(void) { return -ENOENT; }
- #endif
- 
-+#ifdef CONFIG_ACPI_APEI_HEE
-+int ghes_notify_hee(void);
-+#else
-+static inline int ghes_notify_hee(void) { return -ENOENT; }
-+#endif
-+
- struct notifier_block;
- extern void ghes_register_report_chain(struct notifier_block *nb);
- extern void ghes_unregister_report_chain(struct notifier_block *nb);
--- 
-2.51.2.612.gdc70283dfc
+https://sashiko.dev/#/patchset/20260430142430.755437-1-sumitg%40nvidia.com
 
+and let me know what you think?  Especially regarding the second patch?
