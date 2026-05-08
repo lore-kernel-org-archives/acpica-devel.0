@@ -1,30 +1,30 @@
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 014D43C1F
-	for <acpica-devel@lists.linux.dev>; Fri,  8 May 2026 08:20:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2325384224
+	for <acpica-devel@lists.linux.dev>; Fri,  8 May 2026 08:20:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778228436; cv=none; b=JzxmgByzlSZw1uA9EnwmnsNc52tzb1uha2VE72qd8G0ImEIsWwRQl92dFYm0aoooXOiyXm9mNQSPyvSW5IDbxdhIO5U9+fZp3DoWIXWF1pgduxDa6e+EwDj6ortKRAP32jEySWdSikCkVRz1Bw+eFnm8bdDrhegzBSjfGFO3K90=
+	t=1778228441; cv=none; b=runTKEJ+2xoickKArdAJTRE5rYh3zNChCy9bdxxkg6v64GJnpOvkpyiqFUMNTELhTo3YTduSnK5whq/U4khFCXykfGfMYk2NxY/+xP2yLQ8b6D33v3E8u24eAzxUxZ80WtKFun42K6G7DTsfx/APHCCHMq+vPv7zw8A6QCqfdm4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778228436; c=relaxed/simple;
-	bh=IgNldgSNJuH2+rIIQUxUrYE1LC7TJ2fKuJV1Gfi7Ce0=;
+	s=arc-20240116; t=1778228441; c=relaxed/simple;
+	bh=DdTUDZpQZBodq+Jsf2rbL/+2JWxAwch78X6dd8N6dhw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tff0ONSTv9alaWfU46M17yEhBjskSp0+PvIBnAJp9MKHh72f9I4vILAjyo1oeIJl/2NDdKxI7d9ya7vWOzIqMXQk/f3O9rEvXIQUwl2HJ+c9hfruw+EugwWh2jYL3c9Wq9z3+FxDlQAOtXPnjObzx1EWCoY6r146PBMiLI86n5E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Z6nCrJrZ; arc=none smtp.client-ip=115.124.30.132
+	 MIME-Version; b=tfdRRpbNr/8i7P1Ia3OVjiA0tWBmEVzLQRwYP0gEbTH9p8w0Dz8YEb5ZFPxw7fYhfZHq0zo3jEDJTO7xCFT2BUhyN/IrF/g/uNFbKiOtLsHnvnies0tyGQl1+OEBa5S0k7L0In474YEN0V9jvagF+I5N4c46CWt+6gAxAjouTzY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=lWUtowmF; arc=none smtp.client-ip=115.124.30.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Z6nCrJrZ"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="lWUtowmF"
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1778228428; h=From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=JFOE0oOtrup94m1Ct2dbwxOhyCe8CzDhIKZx+1CT/OA=;
-	b=Z6nCrJrZiEuLXapQ/cqoPIQlir4hyQDw4h9inZLqn4NmXtZ54pXuBRLYB2Q3IXc9BU9lA8YsgsGHEvGKoQjTWO+nIB4utjYoVSv4fuwvs2okBJstWPUWFGhNKP7li7nzI3e7CKUnR0YKPVmFFTMti22sa1vuGlJe12rlMzAIfVA=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R251e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037026112;MF=tianruidong@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0X2Wljwh_1778228426;
-Received: from localhost(mailfrom:tianruidong@linux.alibaba.com fp:SMTPD_---0X2Wljwh_1778228426 cluster:ay36)
+	t=1778228435; h=From:To:Subject:Date:Message-ID:MIME-Version;
+	bh=hjnsD0ELdUzIO/JJbHc3X7gLpHKxXYAa5gL1Sp3NwVg=;
+	b=lWUtowmFSs7r/qfg38HLWSkNKhqcuj1BSUKnVhjj849HJbpCg296iYnkYLsqPRppjhrDqhGDU1ZaVcgoqwMusOGVwUh47JPCFsRUPyNo9QtvFYM0t5SbRfgu/yXrf9ucgPvC7r5ZB7v1csR85EtJ1adGzqff9/9bshfDHorNCXU=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033045098064;MF=tianruidong@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0X2Wljyz_1778228432;
+Received: from localhost(mailfrom:tianruidong@linux.alibaba.com fp:SMTPD_---0X2Wljyz_1778228432 cluster:ay36)
           by smtp.aliyun-inc.com;
-          Fri, 08 May 2026 16:20:28 +0800
+          Fri, 08 May 2026 16:20:34 +0800
 From: Ruidong Tian <tianruidong@linux.alibaba.com>
 To: pjw@kernel.org,
 	palmer@dabbelt.com,
@@ -43,9 +43,9 @@ Cc: linux-riscv@lists.infradead.org,
 	linux-acpi@vger.kernel.org,
 	acpica-devel@lists.linux.dev,
 	Ruidong Tian <tianruidong@linux.alibaba.com>
-Subject: [PATCH 1/3] acpi: Introduce HEE in HEST notification types
-Date: Fri,  8 May 2026 16:20:18 +0800
-Message-ID: <20260508082020.3368109-2-tianruidong@linux.alibaba.com>
+Subject: [PATCH 3/3] riscv: collect hardware error information via APEI on HEE
+Date: Fri,  8 May 2026 16:20:20 +0800
+Message-ID: <20260508082020.3368109-4-tianruidong@linux.alibaba.com>
 X-Mailer: git-send-email 2.43.7
 In-Reply-To: <20260508082020.3368109-1-tianruidong@linux.alibaba.com>
 References: <20260508082020.3368109-1-tianruidong@linux.alibaba.com>
@@ -57,29 +57,179 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Introduce a new HEST notification type for RISC-V Hardware
-Error Exception. The GHES entry's notification structure
-contains the notification to be used for a given error source.
+RISC-V already dispatches Hardware Error Exceptions through
+do_trap_hardware_error(), but the trap handler currently has no way to
+learn *what* went wrong: the user sees the offending task killed, or
+the kernel panic, with no diagnostic about the underlying hardware
+fault. No error record is logged, and the subsequent memory_failure()
+handling has no input.
+
+There are two principal ways to obtain that information on HEE:
+
+  1. Have firmware parse the platform error registers and hand the
+     kernel a CPER record through APEI / GHES.
+  2. Have the kernel read the error registers directly.
+
+Option (2) is not yet viable on RISC-V: the architecture does not
+define a unified, mandatory layout for hardware error status
+registers across implementations, so there is nothing stable for
+common code to read. This patch therefore only implements option (1):
+collect hardware error information on HEE through the existing APEI /
+GHES path, mirroring how arm64 treats SEA.
 
 Signed-off-by: Ruidong Tian <tianruidong@linux.alibaba.com>
 ---
- include/acpi/actbl1.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/riscv/include/asm/acpi.h |  2 ++
+ arch/riscv/kernel/acpi.c      | 54 +++++++++++++++++++++++++++++++++++
+ arch/riscv/kernel/traps.c     | 35 +++++++++++++++++++++--
+ 3 files changed, 89 insertions(+), 2 deletions(-)
 
-diff --git a/include/acpi/actbl1.h b/include/acpi/actbl1.h
-index 14924383e2d0..2c1ad1d8587b 100644
---- a/include/acpi/actbl1.h
-+++ b/include/acpi/actbl1.h
-@@ -1793,7 +1793,8 @@ enum acpi_hest_notify_types {
- 	ACPI_HEST_NOTIFY_GSIV = 10,	/* ACPI 6.1 */
- 	ACPI_HEST_NOTIFY_SOFTWARE_DELEGATED = 11,	/* ACPI 6.2 */
- 	ACPI_HEST_NOTIFY_SSE = 12, /* RISCV SSE */
--	ACPI_HEST_NOTIFY_RESERVED = 13	/* 13 and greater are reserved */
-+	ACPI_HEST_NOTIFY_HEE = 13, /* RISCV Hardware Error Exception */
-+	ACPI_HEST_NOTIFY_RESERVED = 14	/* 14 and greater are reserved */
- };
+diff --git a/arch/riscv/include/asm/acpi.h b/arch/riscv/include/asm/acpi.h
+index aa889093f531..e4d18421063e 100644
+--- a/arch/riscv/include/asm/acpi.h
++++ b/arch/riscv/include/asm/acpi.h
+@@ -87,6 +87,7 @@ int acpi_get_riscv_isa(struct acpi_table_header *table,
  
- /* Values for config_write_enable bitfield above */
+ void acpi_get_cbo_block_size(struct acpi_table_header *table, u32 *cbom_size,
+ 			     u32 *cboz_size, u32 *cbop_size);
++int apei_claim_hee(struct pt_regs *regs);
+ #else
+ static inline void acpi_init_rintc_map(void) { }
+ static inline struct acpi_madt_rintc *acpi_cpu_get_madt_rintc(int cpu)
+@@ -104,6 +105,7 @@ static inline void acpi_get_cbo_block_size(struct acpi_table_header *table,
+ 					   u32 *cbom_size, u32 *cboz_size,
+ 					   u32 *cbop_size) { }
+ 
++static inline int apei_claim_hee(struct pt_regs *regs) { return -ENOENT; }
+ #endif /* CONFIG_ACPI */
+ 
+ #ifdef CONFIG_ACPI_NUMA
+diff --git a/arch/riscv/kernel/acpi.c b/arch/riscv/kernel/acpi.c
+index 068e0b404b6f..77ad1e18a092 100644
+--- a/arch/riscv/kernel/acpi.c
++++ b/arch/riscv/kernel/acpi.c
+@@ -21,6 +21,9 @@
+ #include <linux/of_fdt.h>
+ #include <linux/pci.h>
+ #include <linux/serial_core.h>
++#include <linux/irq_work.h>
++#include <linux/nmi.h>
++#include <acpi/ghes.h>
+ 
+ int acpi_noirq = 1;		/* skip ACPI IRQ initialization */
+ int acpi_disabled = 1;
+@@ -353,3 +356,54 @@ int acpi_get_cpu_uid(unsigned int cpu, u32 *uid)
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(acpi_get_cpu_uid);
++
++/*
++ * Claim Hardware Error Exception as a firmware first notification.
++ *
++ * Used by RISC-V exception handler for hardware error processing.
++ */
++int apei_claim_hee(struct pt_regs *regs)
++{
++	int err = -ENOENT;
++	unsigned long flags;
++	bool return_to_irqs_enabled;
++	bool need_nmi_ctx = !in_nmi();
++
++	if (!IS_ENABLED(CONFIG_ACPI_APEI_GHES))
++		return err;
++
++	local_irq_save(flags);
++
++	/*
++	 * Determine whether the interrupted context had IRQs enabled.
++	 * This decides if we can run irq_work immediately after.
++	 */
++	return_to_irqs_enabled = false;
++	if (regs)
++		return_to_irqs_enabled = !regs_irqs_disabled(regs);
++
++	if (need_nmi_ctx)
++		nmi_enter();
++	err = ghes_notify_hee();
++	if (need_nmi_ctx)
++		nmi_exit();
++
++	/*
++	 * APEI NMI-like notifications are deferred to irq_work. Unless
++	 * we interrupted irqs-masked code, we can do that now.
++	 */
++	if (!err) {
++		if (return_to_irqs_enabled) {
++			__irq_enter();
++			irq_work_run();
++			__irq_exit();
++		} else {
++			pr_warn_ratelimited("APEI work queued but not completed");
++			err = -EINPROGRESS;
++		}
++	}
++
++	local_irq_restore(flags);
++	return err;
++}
++EXPORT_SYMBOL(apei_claim_hee);
+diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
+index 8c62c771a656..5ee0ac8b0745 100644
+--- a/arch/riscv/kernel/traps.c
++++ b/arch/riscv/kernel/traps.c
+@@ -22,6 +22,7 @@
+ #include <linux/irq.h>
+ #include <linux/kexec.h>
+ #include <linux/entry-common.h>
++#include <linux/acpi.h>
+ 
+ #include <asm/asm-prototypes.h>
+ #include <asm/bug.h>
+@@ -161,8 +162,6 @@ asmlinkage __visible __trap_section void name(struct pt_regs *regs)		\
+ 
+ DO_ERROR_INFO(do_trap_unknown,
+ 	SIGILL, ILL_ILLTRP, "unknown exception");
+-DO_ERROR_INFO(do_trap_hardware_error,
+-	SIGBUS, BUS_MCEERR_AR, "hardware error");
+ DO_ERROR_INFO(do_trap_insn_misaligned,
+ 	SIGBUS, BUS_ADRALN, "instruction address misaligned");
+ DO_ERROR_INFO(do_trap_insn_fault,
+@@ -484,3 +483,35 @@ asmlinkage void handle_bad_stack(struct pt_regs *regs)
+ 		wait_for_interrupt();
+ }
+ #endif
++
++static int claim_hardware_error(struct pt_regs *regs)
++{
++	if (IS_ENABLED(CONFIG_ACPI_APEI_HEE))
++		return apei_claim_hee(regs);
++	return -ENOENT;
++}
++
++asmlinkage __visible __trap_section void do_trap_hardware_error(struct pt_regs *regs)
++{
++	if (user_mode(regs)) {
++		irqentry_enter_from_user_mode(regs);
++		local_irq_enable();
++
++		if (claim_hardware_error(regs))
++			do_trap_error(regs, SIGBUS, BUS_MCEERR_AR,
++				      regs->badaddr,
++				      "Hardware Error Exception");
++
++		local_irq_disable();
++		irqentry_exit_to_user_mode(regs);
++	} else {
++		irqentry_state_t state = irqentry_nmi_enter(regs);
++
++		claim_hardware_error(regs);
++
++		if (!fixup_exception(regs))
++			die(regs, "Hardware Error Exception");
++
++		irqentry_nmi_exit(regs, state);
++	}
++}
 -- 
 2.51.2.612.gdc70283dfc
 
