@@ -1,112 +1,273 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from PH8PR06CU001.outbound.protection.outlook.com (mail-westus3azon11012002.outbound.protection.outlook.com [40.107.209.2])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8368383C7E;
-	Mon, 11 May 2026 05:11:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778476281; cv=none; b=Xmqk98wEUmO/iSGIY14Svu8VBlBKy7t+3aRRKkvdgEN0KrupzaDcqhVhIMdalDJbO0+b+ps6jrc5fegfDzBhNaFyMgymP7DbewjdTk3jWDFrpQIMsfF5buHhJyYCUMFkyeBRTPqvc3ZdrE6moIIS+u9S/cW1DbE1cyk+mwKEKU0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778476281; c=relaxed/simple;
-	bh=IfK90oL89PLZ77zZUqMTiT6Ew+f2/fOrCwuhT7VtBQ0=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=j/uB8aMCDVaFSdaYbKnrXh/uJpPB6xl7IX5U4UxuWGGYpqyF8CuK3Yy2o/IPI0PF5yRIt30Bz1koyDoHbRybyYqDlXVJdZt5a8+ruADpc5sNDOi7B3IiBrsxquCk+CflxJofQfRRUBkHJuNuo8XEBkoe901RBzBLnFYrj4L1FL0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NO5H17Mo; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3593530F958
+	for <acpica-devel@lists.linux.dev>; Mon, 11 May 2026 21:20:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.209.2
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1778534453; cv=fail; b=Pb+eLt/haiFPtF21R4ouGFPBtqeVJGU2RnlxGD5iCm8JWklgLXZeMcUzBJZ1cNAqyKBkFXOBen9FjVH31xVCuEiS4lVwiz6C8FfwO5J5xN4TfBaLW2KN1djZLKrVMq3CBczP8veCvz5KM4k7yDA6lXYaYo8m/TbbQSSYrp1bmj0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1778534453; c=relaxed/simple;
+	bh=nXN3W2meuftnA0y5A54F7L9H4Cbz0EPW7Cw2+H+Ysoc=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=Z9+wvSUg2IOvaIAFO2zx2BJpYUZzKXGqjPn302dhvHl3yLS3qW16jLQhflUiAsJaSR1ZwIXs1U0UkcD99WjmTaRz3nM0GihxIfZxfY8WKAoKfAjXqVw8nYJetu/MeRLrTeEkDewvuqRYwj8L91h1mXos5iNa0juYnVtZolviN38=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=g4OHo0XP; arc=fail smtp.client-ip=40.107.209.2
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NO5H17Mo"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC7E1C2BCF5;
-	Mon, 11 May 2026 05:11:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778476281;
-	bh=IfK90oL89PLZ77zZUqMTiT6Ew+f2/fOrCwuhT7VtBQ0=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=NO5H17MoG/pw6yzuPDowtnsunSDQIo679yk1cZvTcR8hnDUSQQhjA/0uI6E+t97Gf
-	 tzdPuyigKDPkEANJxOlSponqMMUkAqnMrx+TqlwPsaSb/NVelm1X90Rd4iDaSlPCg3
-	 WJ/rTsx+X/h1WJni3NVoVMjtl5k99+cPHWPcOyz2zd+lNXidaLj5MaPsAG5hrMHF9P
-	 PkgjQqdPLRleCLTgumxOqkL8/M4qElXssAG22cRWIWnIzMGbClZsLIhzqAwGegTDe4
-	 pDokNii24iXjMhDJH6DT9SqqCEtNsujHEW562hPDS0V3hq7pPSMn/bDDSFF3iWGcRF
-	 D3gLonk8WA0UQ==
-From: Drew Fustini <fustini@kernel.org>
-Date: Sun, 10 May 2026 22:11:14 -0700
-Subject: [PATCH RFC v4 18/18] riscv: enable resctrl filesystem for Ssqosid
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="g4OHo0XP"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=iNUa5Q1I+KJeKJ8P3zFV+tmszoVYAhrHKZ0binu3ag3OwdDprfDu4Vm6t/fjU5gGmY0gsyQx1SZd/edIwUGoFuHY55apc5ZCnCPIz5uHL4oP4nb2E0WCWpNUrrS4A2wUFY8nXoNBeDzq+L/UDlm0D57NfnDqcSE6al0dlOLWia18HJvaaSMsfzrUzyFLrzlsX0nNtXeIl4HJBqOfEOk3syzf7gz0bINmumQrbJbyX9lsDZjRlNGpQoEqhQVpkwCR7a0fMT/azK1eigW93FQOpyaguVBqAKub60SuCbeIDxffOu6dv0ouLnTw34RD5ey3VvJTRiXIpyB0csHY3Kpz+A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6py+6TD2tMBRfsNgJAGQSY198l4u8URjgXsbJUogmS4=;
+ b=MMiemA+fVYOeMZEmDFW+bVaVGKkXZHA4172pH9+55pIDYJmanxvi8oSYUwISM/327LOL2TE7pXHUV3SrAKZ/FtEH13FW9G1Bq6v41tIzsA5fqmgXwqF9mzXpr1MyplYCvqHnSo7oNDXbs4PrjPE95WhcO9OfFzDobNv+pwasz4LDiBIPgjR7kKipglbTk0ggNR5El2imgCee9T5K9Zaoa7hPv7XYDiaZ+KuIs/lq+H14iu7pcJgCXgEd80dgPeAj4lZv1QLxfFelohCp2oIcDGLkJ5co/roZi8cWMUaYp0ueatJxhHysdVa6nebV9zNrafpy/id8z4ezIdXOQCvk/A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6py+6TD2tMBRfsNgJAGQSY198l4u8URjgXsbJUogmS4=;
+ b=g4OHo0XPeiKbHhbiwugLoZWn6+nKzYN74z+G8p/Bknbaq/jlXkl0xIeh5ERDoX5PC8DkRrmEKHqpneV2K4VsIvp1ZhIUeLy95z86uJG6XBZQSzOJb5qLX9tZMh6OD7WBLGzWQMmmrun3ddYPJ0fXXI1DQ4rjv1BoGKOL4mPqxTtwd/YCO3LKg1IPw4SV8oB8MVg7hwBm5eceoYyTbp3mlMoO7j1WysVEuKxy+T5H6IpAzIFjs8F5nu+uDFeCJOtgRItqEwsv3X1EsBoDyBCMFGVtt2MzCkVceLlhdIyB4KXrG9z2rBRC8sq1nTqAXn+SCoOHeWws362RZWJT/xVeOg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BN9PR12MB5179.namprd12.prod.outlook.com (2603:10b6:408:11c::18)
+ by PH7PR12MB9102.namprd12.prod.outlook.com (2603:10b6:510:2f8::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9891.22; Mon, 11 May
+ 2026 21:20:44 +0000
+Received: from BN9PR12MB5179.namprd12.prod.outlook.com
+ ([fe80::cf08:f59b:d016:c95f]) by BN9PR12MB5179.namprd12.prod.outlook.com
+ ([fe80::cf08:f59b:d016:c95f%4]) with mapi id 15.20.9891.021; Mon, 11 May 2026
+ 21:20:43 +0000
+Message-ID: <3b0b5f30-437e-43c0-8b5a-d3ef84932113@nvidia.com>
+Date: Tue, 12 May 2026 02:50:33 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/2] ACPI: CPPC: Add CPPC v4 support (ACPI 6.6)
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: viresh.kumar@linaro.org, lenb@kernel.org, pierre.gondois@arm.com,
+ zhenglifeng1@huawei.com, zhanjie9@hisilicon.com, mario.limonciello@amd.com,
+ saket.dumbre@intel.com, linux-acpi@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+ acpica-devel@lists.linux.dev, treding@nvidia.com, jonathanh@nvidia.com,
+ vsethi@nvidia.com, ksitaraman@nvidia.com, sanjayc@nvidia.com,
+ bbasu@nvidia.com, sumitg@nvidia.com
+References: <20260430142430.755437-1-sumitg@nvidia.com>
+ <CAJZ5v0gCSPjnxE2Vd+Py14ENJ6U46KBQVHiBetLfEKGybtDh8g@mail.gmail.com>
+Content-Language: en-US
+From: Sumit Gupta <sumitg@nvidia.com>
+In-Reply-To: <CAJZ5v0gCSPjnxE2Vd+Py14ENJ6U46KBQVHiBetLfEKGybtDh8g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MA0PR01CA0017.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:a01:80::12) To BN9PR12MB5179.namprd12.prod.outlook.com
+ (2603:10b6:408:11c::18)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260510-ssqosid-cbqri-rqsc-v7-0-v4-18-eb53831ef683@kernel.org>
-References: <20260510-ssqosid-cbqri-rqsc-v7-0-v4-0-eb53831ef683@kernel.org>
-In-Reply-To: <20260510-ssqosid-cbqri-rqsc-v7-0-v4-0-eb53831ef683@kernel.org>
-To: Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
- Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>, 
- =?utf-8?q?Radim_Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@ventanamicro.com>, 
- Samuel Holland <samuel.holland@sifive.com>, 
- Adrien Ricciardi <aricciardi@baylibre.com>, 
- Nicolas Pitre <npitre@baylibre.com>, 
- =?utf-8?q?Kornel_Dul=C4=99ba?= <mindal@semihalf.com>, 
- Atish Patra <atish.patra@linux.dev>, 
- Atish Kumar Patra <atishp@rivosinc.com>, 
- Vasudevan Srinivasan <vasu@rivosinc.com>, Ved Shanbhogue <ved@rivosinc.com>, 
- Conor Dooley <conor.dooley@microchip.com>, 
- yunhui cui <cuiyunhui@bytedance.com>, Chen Pei <cp0613@linux.alibaba.com>, 
- Liu Zhiwei <zhiwei_liu@linux.alibaba.com>, Weiwei Li <liwei1518@gmail.com>, 
- guo.wenjia23@zte.com.cn, Gong Shuai <gong.shuai@sanechips.com.cn>, 
- Gong Shuai <gsh517@gmail.com>, liu.qingtao2@zte.com.cn, 
- Reinette Chatre <reinette.chatre@intel.com>, 
- Tony Luck <tony.luck@intel.com>, Babu Moger <babu.moger@amd.com>, 
- Peter Newman <peternewman@google.com>, Fenghua Yu <fenghua.yu@intel.com>, 
- James Morse <james.morse@arm.com>, Ben Horgan <ben.horgan@arm.com>, 
- Dave Martin <Dave.Martin@arm.com>, Rob Herring <robh@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
- Robert Moore <robert.moore@intel.com>, Sunil V L <sunilvl@ventanamicro.com>, 
- Drew Fustini <fustini@kernel.org>, Thomas Gleixner <tglx@kernel.org>, 
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
- Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
- Clark Williams <clrkwllms@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
- Jonathan Corbet <corbet@lwn.net>
-Cc: linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, 
- x86@kernel.org, linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, 
- devicetree@vger.kernel.org, Paul Walmsley <paul.walmsley@sifive.com>, 
- Conor Dooley <conor@kernel.org>, linux-rt-devel@lists.linux.dev, 
- linux-doc@vger.kernel.org, Palmer Dabbelt <palmer@sifive.com>
-X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=732; i=fustini@kernel.org;
- h=from:subject:message-id; bh=IfK90oL89PLZ77zZUqMTiT6Ew+f2/fOrCwuhT7VtBQ0=;
- b=owGbwMvMwCV2+43O4ZsaG3kYT6slMWQxprxZ2yOz0U5U4FPV5R8Ry+qPTpdcertH7Katwh6N+
- M+PWdpXdZSyMIhxMciKKbJs+pB3YYlX6NcF819sg5nDygQyhIGLUwAmsqubkWFGeN+b36eXx8WY
- 9nqx/rB26E1dau6n1u1gmqRulS4dXsLI8OSMZOeaibGdr4NX7876/iTnk4bTVflTFtlPkvQFq2b
- rsQIA
-X-Developer-Key: i=fustini@kernel.org; a=openpgp;
- fpr=1B6F948213EA489734F3997035D5CD577C1E6010
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN9PR12MB5179:EE_|PH7PR12MB9102:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1dc70a52-63aa-4fe8-1533-08deafa3289c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|376014|7416014|366016|1800799024|22082099003|56012099003|18002099003|11063799003;
+X-Microsoft-Antispam-Message-Info:
+	GMdT+ig2vnTn80padArk8J9LGpPWkVSIFoE4yYVfEQ/dzMhd7EH87dFQlAOVMtV0YOOZD2Z+aGbICLBF6q0w8xb25KchkSef03MdEvnxccDpP+e36i27gBH4HyB6NM2vq3+57GcIVBOHXHRAj3nIHyErN4MXM4lUidta1Faud7SpprL53e0kknX/qQRsY/0e0ChV5j3cP41fCjz/HsgVaGsdHzIp5w5owKW2v8dZG6PWRdv0PI1kAk+SLsPDGy45Hlt+oawbfQaJ0Ngk+/mur2ze9kdef5DNBbQlKzsaUGn5VPgce91+HqjmlOiKi8ujbztTs3KX0qIzR2nLB44f/pmCjB6coiXCT0NpGb4bL8bHxLYra8zoTKVlNW9FD9n0XPgvZFLZXkf/fjCtVFtdwKBmXKFtsY609JNzstXG/TAsRvJgizlDbo0/eEhHgMwRwXz4vfsEThquBjowodhpKwisBfDsel5Jj4JNec4UDz5dBGZaQyKwcOE11T3uHfCW/TIi2NEQAA9hwRy1JxuJWP1Gd/0Dwl4hHFZsQ/NjAPUesIiUvRwhJZTfGl62I3hg8Bqg5VZ0WQwz9aaRKWPWHOpWpVAVCq1RrrjNU5VJgsyVqzqrNISxRm11iUfQkB4g7g4zn6PK6n60CTx+qM9VOlU78iYA0WMWbL7tqS6Y0QR7rdqfMSRsXv79AJy/+WyR
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5179.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(1800799024)(22082099003)(56012099003)(18002099003)(11063799003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?MWxnSlEzNFFSKy9aVDUya21Vcnhrb1dOSU90NnVLV2pncnRrTm9IMkVrb1lX?=
+ =?utf-8?B?bGVDMHRUcUxDL2RPcFRURXptQTRtSlhWVWJYRGQ5S0htRDBaRXdmcHdYV2Vn?=
+ =?utf-8?B?R0pSYXJkVXozVnRMWHJ0MVFXMU40UFRBem5xMjdpY0ZGbkVUMlIvdGRpUVlN?=
+ =?utf-8?B?Z3ZCejRLL0VIS1IxaGtIQjZ1UzlleUJVdnYzMCttZzZtZ3Zya3lxcEZqb2p3?=
+ =?utf-8?B?U052ZHZIY2orZjExS3ZXeWc2eThHZWEvMDN4cUs0L3NLNnVXbnBaOEhnaVJo?=
+ =?utf-8?B?d2RydG85SVE5dE0vaXNGajk0RkhmQmRMZHJYQ2dVZUpodlVMLzFHNzFTMElC?=
+ =?utf-8?B?WnNWS01aUE5OSDRUN3dUZWZ5VWZKSndaRXlYK0VqQm5Va0ZuUHE3MUplQjVm?=
+ =?utf-8?B?RERsWVI4Yk02RGp4cDcyZFhNSlJqZ2FEVnpZTkV1TVNLWlhYaGsvU0JVeUt3?=
+ =?utf-8?B?OUxDSm9qdXhIdlc0dUFTVVZDazZMMk1kZTFPSm15czk1WDhXcXRPNmVocGZi?=
+ =?utf-8?B?aDBzR3dJU3VReGtKQVk3SDJPWjRUUmZkY2hGbXZtaTlLbC9JV2d3ZGozd3pO?=
+ =?utf-8?B?MDhoY1cyVkdFWkVvRXdvUkZKUkNFZFZvbG5TRkY1R2ZRcGl5bVZQM2lhRVU1?=
+ =?utf-8?B?d0J5RW43aFBMbTFqcCtOb3IwdnE0cUtpamJsU2xLbG5VL0dmUUxNUEpIWXkr?=
+ =?utf-8?B?T2VOalVOSlZGNDBORlNTRXFORUVSZXdTbll0NTFxRVNYZGg0VzRMU3ROUFhB?=
+ =?utf-8?B?UE5yUFFyVExFaHZQbEVEbGFkeUpUUDVLNjVzeVBrQTUzbWxUQVFIK0NyS1ZU?=
+ =?utf-8?B?aHdmVFBtTjJIbWZEanlWUmZhb3R1RmUzVGJoTXlBbnNjb2pQWXZINnFZaHM1?=
+ =?utf-8?B?Ym13YzY5RmxJZ0pXTVlOZTBqTU1USGUydjZWZm8vU1h2eThoY2xqemNpZnpV?=
+ =?utf-8?B?WWo2eGxNbS8ydnJBUUdZM1hYc2VuZWlXdDhXNmxGSmZDdDFPMHRmeFd1bVVL?=
+ =?utf-8?B?YkY2bGxNaUxoNXJ6UGw0L2N1OFExREVlZVhyTmJpN1BFQVNEbWQwcHdjdU9X?=
+ =?utf-8?B?R0pKOG9ySHdQUmFCSU1lRmgzK2hFMjBSVDBaT3Voa3lUTHF0Nk1rbXMrKzNV?=
+ =?utf-8?B?Y2xNNFB6dER0b2ZzYmlQZ0FRanpMQ3ZFOGVJTG1WbFRQbXZVZzluSFQrUDAz?=
+ =?utf-8?B?VlpPUzJDdU54aHZzaDI0SmdmOFBKUmcyckVGVzhlaE5xcmRlUkhFNlVRcmho?=
+ =?utf-8?B?K0JzUWxXODlTc3cxaUsyZW5URGNqak5aZFNhYjgwL0srMkdlcXhoakg3bkFu?=
+ =?utf-8?B?dWozNDVZb0oybWlLdExPY2RnVWxZZ2M2ZkNnaUhZSWNlRjlUTVhxZ3ZHU0VH?=
+ =?utf-8?B?YWxJei9KVG5Ncld5YjlVOWE2YTFPRWFNWlBQZk1IR05uYjdGNXJ6NU9rbU00?=
+ =?utf-8?B?RzhjeUZDdUx3Zi9WR0licWZCWS90SldSc0RReWpTaFNVTk0vaUJHYjluY1hp?=
+ =?utf-8?B?OW5rcE5Ub29iNjZ2c3hMazZONHJtMFdPMWZHZGZseDd1aTBlMVJ2T1NCTkdH?=
+ =?utf-8?B?WXhTTDBUcXhPaHZxUVZueStwcTIybGdUQjhLdmx2d2hsdEJzTjUzQXFWQXhr?=
+ =?utf-8?B?bHloSGNzOUl4b1R2Mm93VVZzYzNOMGtZTDhxK3RReTRZYngvMTJQUXpNT21F?=
+ =?utf-8?B?YnRkSXZ5MmlOendLOTl5dXY0MXRMbWtKVldHZGwxMCtweE9YOENkc1A4NStt?=
+ =?utf-8?B?NGFrY0wyZFRYVFJHa3cxdm1Zd09MNVFhZVczOFhsZ1czVEpwZjdUeTJSVkRP?=
+ =?utf-8?B?MktKSm1tNkJKamJqUDlGV2c3djJSTG53Qkh4TU5kTGxRT205YXhpM1dweGoy?=
+ =?utf-8?B?THpKV2VjQVQ1VDB5azRHRHNubk1KTGttaUVnZHYrUzNKSHgxUnkvejJCZndZ?=
+ =?utf-8?B?dm1UWmhLRGFuY1kweTRmZ2Q5YkJzZi9pNXpZSEJFMmRQcUxTMVBsR3U1NHBr?=
+ =?utf-8?B?Q2ppR1piTlhCZ05NTjFTdUNMMFFjN09xUTZlY1lDVkduMjRKRjM1bjVmMVRR?=
+ =?utf-8?B?dk5xUmRIWjVSZWttMGU3dFprblFESzJLdDk0bnUyNEFpT0RwanluZUloSWtv?=
+ =?utf-8?B?d0NlV054TW5Ba3VIaUh5VUZZb2Ntd1lzQUw1dlVCZU1oWlIxSDdnTUFGUVdC?=
+ =?utf-8?B?V1Vuck9WUmxTN1NkM2t2RzZPcFpiUVBXRUFWTDliTXpYOFMyeHh6VTM0cU5M?=
+ =?utf-8?B?d3ZxQ2ExY0pZb21ydFh0RE9aSjVhTHgxbTR2SEc0RCtmWTQ1RXl3eUZJVGt2?=
+ =?utf-8?Q?8/snkVzF6F0CbNxPSz?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1dc70a52-63aa-4fe8-1533-08deafa3289c
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5179.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 May 2026 21:20:43.5725
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: EX9zUBOOXGDvbs7yMB7KChTA58H3xbT84eu1ZzWF/4h7xqYYIfzE8wBeB5Fpt78X8+hzK/pZEKOR5o7KLRBKGg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB9102
 
-RISCV_ISA_SSQOSID selects RISCV_CBQRI_DRIVER, which in turn depends
-on RESCTRL_FS. Enabling the resctrl filesystem itself stays a user
-choice via the standard fs/Kconfig MISC_FILESYSTEMS menu.
+Hi Rafael,
 
-Signed-off-by: Drew Fustini <fustini@kernel.org>
----
- arch/riscv/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index a0c73edbe734..ea430b4a3aab 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -596,6 +596,7 @@ config RISCV_ISA_SSQOSID
- 	depends on 64BIT
- 	default n
- 	select ARCH_HAS_CPU_RESCTRL
-+	select RISCV_CBQRI_DRIVER if RESCTRL_FS
- 	help
- 	  Adds support for the Ssqosid ISA extension (Supervisor-mode
- 	  Quality of Service ID).
+On 09/05/26 00:31, Rafael J. Wysocki wrote:
+> External email: Use caution opening links or attachments
+>
+>
+> On Thu, Apr 30, 2026 at 4:25 PM Sumit Gupta <sumitg@nvidia.com> wrote:
+>> Add initial kernel support for CPPC v4 (ACPI 6.6, Section 8.4.6),
+>> which extends the _CPC package from 23 to 25 entries with two
+>> optional fields:
+>>
+>>    - OSPM Nominal Performance (8.4.6.1.2.6): register used by OSPM
+>>      to tell the platform what it considers nominal. The platform
+>>      classifies performance above this as boost and below as
+>>      throttle for power/thermal decisions.
+>>
+>>    - Resource Priority (8.4.6.1.2.7): Package of Resource Priority
+>>      Register Descriptor sub-packages. Full parsing is not yet
+>>      implemented; such entries are marked as unsupported.
+>>
+>> Patch 1: Add v4 _CPC parsing - validate the 25-entry layout,
+>> handle the Resource Priority package, and mark the two new
+>> registers optional.
+>>
+>> Patch 2: Add acpi_cppc/ospm_nominal_perf as a read-write sysfs
+>> attribute, and initialize it to the platform nominal value
+>> during cppc_cpufreq policy init.
+>>
+>> ---
+>> v1[1] -> v2:
+>> - Patch 1: added Reviewed-by from Mario Limonciello.
+>> - Patch 2:
+>>    - Make ospm_nominal_perf sysfs read-write; cache last write in
+>>      cpc_desc and skip redundant register writes.
+>>    - Validate input in cppc_set_ospm_nominal_perf.
+>>
+>> Sumit Gupta (2):
+>>    ACPI: CPPC: Add support for CPPC v4
+>>    ACPI: CPPC: Add ospm_nominal_perf support
+>>
+>>   drivers/acpi/cppc_acpi.c       | 93 +++++++++++++++++++++++++++++++---
+>>   drivers/cpufreq/cppc_cpufreq.c | 10 ++++
+>>   include/acpi/cppc_acpi.h       | 14 ++++-
+>>   3 files changed, 109 insertions(+), 8 deletions(-)
+>>
+>> [1] https://lore.kernel.org/lkml/20260427051823.280419-1-sumitg@nvidia.com/
+>>
+>> --
+> Can you please see the sashiko.dev feedback on this set:
+>
+> https://sashiko.dev/#/patchset/20260430142430.755437-1-sumitg%40nvidia.com
+>
+> and let me know what you think?  Especially regarding the second patch?
 
--- 
-2.43.0
+
+Thank you for sharing this.
+
+Patch 1:
+- Comments #1 and #2 are pre-existing issues with rare occurrence.
+   I will address them in a separate hardening patch.
+
+- Comment #3: In v3, will limit the ACPI_TYPE_PACKAGE handling to the
+   RESOURCE_PRIORITY entry. So a Package at any other slot will be
+   treated as invalid and abort probe, as it did before this patch.
+
+----------------
+
+Patch 2:
+Discussed the changes for v3 in some detail on this thread already
+which address most of the points (Please see my reply to Pierre [1]).
+
+Summary of how each point will be addressed below:
+
+
+ > The commit message states the valid range is [Lowest Performance,
+ > Nominal Performance]. Does this code allow writing arbitrary values
+ > outside that range by only checking against U32_MAX, without fetching
+ > the CPU's capabilities to validate the input?
+Will fetch the bounds via cppc_get_perf_caps() and reject values
+outside [lowest_perf, nominal_perf] in v3.
+
+
+ > If the hardware loses state during a logical CPU hotplug or system
+ > suspend, but the software cache is not invalidated, will this check
+ > prevent the register from being correctly re-initialized when the CPU
+ > comes back online?
+The redundant write check will be removed in v3, so the stale cache
+failure mode won't be possible.
+
+
+ > Can concurrent sysfs writes permanently desynchronize the software
+ > cache from the hardware register?
+ > ...
+ > Is a lock needed around the read-modify-write cycle?
+This will not occur in v3 since concurrent calls for the same
+policy are serialized by policy->rwsem at the cpufreq layer (see [1]).
+
+
+ > Additionally, can a time-of-check to time-of-use race lead to a NULL
+ > pointer dereference if cpc_desc_ptr is initialized concurrently?
+ > ...
+ > Would this cause the WRITE_ONCE() to dereference the locally fetched NULL
+ > cpc_desc pointer? Should this explicitly return -ENODEV early if 
+!cpc_desc?
+Will add the early -ENODEV return at the top of the function in v3,
+eliminating the NULL cpc_desc race.
+
+
+ > For shared cpufreq policies where policy->cpus contains multiple
+ > logical cores (such as CPUFREQ_SHARED_TYPE_ANY), does this skip
+ > initializing the secondary CPUs in the domain?
+ >
+ > If they are uninitialized, will their local cache remain 0, causing
+ > sysfs reads for those secondary CPUs to incorrectly return -ENODATA?
+Will move the rw sysfs from the per-CPU acpi_cppc interface to a
+per-policy cpufreq interface in v3, and write the register on every
+CPU in policy->cpus/domain.
+The -ENODATA on unwritten read path will go away with the per-CPU node,
+and the per-policy show returns 0 until user-space writes a value. See [1].
+
+
+ > Also, since the sysfs attribute is tied to the physical CPU device
+ > lifetime and persists independently of cpufreq policy teardowns, will
+ > unconditionally setting the nominal performance here silently clobber
+ > any persistent userspace configurations when a CPU is taken offline
+ > and online?
+Will drop the unconditional cpu_init write in v3, so the user-set
+value won't be overwritten on CPU hotplug.
+
+[1] 
+https://lore.kernel.org/all/9c32f75a-294f-4cea-810e-c011c4dd91ab@nvidia.com/
+
+Thank you,
+Sumit Gupta
+
 
