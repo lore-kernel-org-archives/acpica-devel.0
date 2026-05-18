@@ -1,322 +1,211 @@
-Received: from CH5PR02CU005.outbound.protection.outlook.com (mail-northcentralusazon11012015.outbound.protection.outlook.com [40.107.200.15])
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2BBF190473
-	for <acpica-devel@lists.linux.dev>; Thu, 14 May 2026 19:49:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.200.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC17037CD50
+	for <acpica-devel@lists.linux.dev>; Mon, 18 May 2026 03:06:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=205.220.168.131
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778788171; cv=fail; b=r5TX6ftsUoXrRc8i2v2KZVY8EbmcH5gykc5uY82B02L85lBcvmlYFrOTezE/RlhPppFiVMhrGyD832kffrp9s3YngSxK7i18B2Wx0m7qjQj6o9APDMvFoEZ4o0dvvA7UaYZLXbgiXnbHy9dc5EHSgZZwKc1mIwU45Oq0/gmRr0U=
+	t=1779073616; cv=pass; b=RcRO0K77t6CnO6DfQaAOV3TcNYJRhX67fXkf+Dl1k0MXNNHT6BNveDLmS90k5qVqG3VIc4yCYX1PhMSCUDc7JBguTlQpRfMY+Ok3QdQP0bGbkBIkQOxwh7pD8ozxlQO/qjb8grGIx27qBr9Pl/sGMEKoEud8BLVaKtHxDhOd10s=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778788171; c=relaxed/simple;
-	bh=S+iD3u6OI5HcGrsCJ3bol/RiwTtfUVu7a9x21vEcDQQ=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jj6vjLelc7mVI+t52weQrx7XBPg3h70xOF89Vu6lyMCOTg9KwVWEGwbmS4GYKi+UrGLihCbaNL5a7bU9Bit0NVVRj1x52XBxJ/bDrJF2y8ED8Ln63xnEoO4I/e85jwySRNwVW0B5uadiiMCvQp2H9Ycs9UExiQOxeQVyqPZ2z+0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=a2RnrQGw; arc=fail smtp.client-ip=40.107.200.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	s=arc-20240116; t=1779073616; c=relaxed/simple;
+	bh=fO0syQPa6DgAL6Biu5LOpvUimHkt27lXFQ4HIpa68wE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=T1nyyfI03sR9Wrs7L6XpqGKu01Yk+C11b4FimGGm0SaVRp2ArqASu7pN9AUPqXVkERipmtlUMb9+jnAuZ8lWyz59/Xk6Nwl1j0EHmSG4Sb+zAtrFntKpH58+/WNTGQN0RbgF9kdN3rVBOCB9TBgRJHpRAx4KkBgoVTeyT90gvPs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com; spf=pass smtp.mailfrom=oss.qualcomm.com; dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b=mAEEYiqL; dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b=FxlAllah; arc=pass smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.qualcomm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="a2RnrQGw"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=IwnPJoF1RXB7yZekXYzGr9z6qokM23PRpr2aG/SxMK7uvK//D4KsPn78Usie6Do48NgNX/XQT7CQ47P1ux3olPF+NiWspNC9VXgIjB5So8OF1S8O+N7mHiExdRiQyNpgUUBcMhFKW/4aj+yQlG2Du/ZF/LQ1OrnyxHM77IC03Nrjb8J3CHjMR0MuYk9RQN8uhJuF3VQrBJDzC1aZ8Tnq7WvjYzBBgheG3FTnQ0gZGwPWCOLbwF8sLJ1QO+XYHXljqM5Xqar0djelS6dJaF3FbaIY+fJC9h/5MyoNzWXUnuVu/aMb1jtUzcVw0oTNupcZ17SrxT7/hQ1CY7UcXKaXyg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qAoB+z00nmrryyLLCAyI78pvXpkSiXwRZOYizsMqqJU=;
- b=Gn+MSUUgWH1OvmIUFoqYIrpbCG+4rGuulm3F8iozqj+1e9n8tt6aKHchShPCu2vO3p8gb7hqOQsIWbmNauMOD6qmLQcqLcxoBI5svK592tuLe9zbToDGc/f2wiQv/C80SBCrdhj+cM98KtvyNQU8pavdjuBlpb817H4L6Eyc5hhsApVqeWuvFSK2LG1yC8XCEg7jIs7W8jgvjRvVvApKPzyYtgmcDG+p8NXqeXJg5Fi7vieab5LNcXKNISBQzN8dYcfSThZ7mubnoJ4NTa5M0V4/lUMGUjyfabf1wYXvnH+G+7djXgMlYwVLpy28MnjFnfu1Hzt+6nepI2G8lMmxhQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.233) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qAoB+z00nmrryyLLCAyI78pvXpkSiXwRZOYizsMqqJU=;
- b=a2RnrQGwUT1D8XX2UKeEZOsZUAgg3mQWynHyGPfII/XsL+2MG5Y6xB1nuAnSujxbPv1uI5nqOX/J1n+ZfTp8d+nloEcS4biCuCY9qA7EqBxmNv8528sYfkjlC6Mg9M9OJK1xdnFf9n0CHiuECUjY8uny2G9EMoPgQkvxWo4MMxPto3xl+Zzl9JcUq7COaCMd4IIMXuItIm6DFjqtUu3WlODjb27BuukAyHrbZlpGdtWCeuqiNWeteVsnPeec9ahsfhsJgMcR+iu/ymToIB6Zn6r6Jec9HqrBfP/WDwsGIpOukxJtP0ikHOHj/GzBOR8fjb1yClJugEBiooeXygjgIg==
-Received: from MN2PR22CA0024.namprd22.prod.outlook.com (2603:10b6:208:238::29)
- by MN2PR12MB4077.namprd12.prod.outlook.com (2603:10b6:208:1da::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.25.18; Thu, 14 May
- 2026 19:49:20 +0000
-Received: from BN2PEPF000055DA.namprd21.prod.outlook.com
- (2603:10b6:208:238:cafe::b) by MN2PR22CA0024.outlook.office365.com
- (2603:10b6:208:238::29) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.25.18 via Frontend Transport; Thu, 14
- May 2026 19:49:20 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.233) by
- BN2PEPF000055DA.mail.protection.outlook.com (10.167.245.4) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.48.3 via Frontend Transport; Thu, 14 May 2026 19:49:20 +0000
-Received: from drhqmail201.nvidia.com (10.126.190.180) by mail.nvidia.com
- (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Thu, 14 May
- 2026 12:48:55 -0700
-Received: from drhqmail201.nvidia.com (10.126.190.180) by
- drhqmail201.nvidia.com (10.126.190.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.20; Thu, 14 May 2026 12:48:54 -0700
-Received: from sumitg-l4t.nvidia.com (10.127.8.14) by mail.nvidia.com
- (10.126.190.180) with Microsoft SMTP Server id 15.2.2562.20 via Frontend
- Transport; Thu, 14 May 2026 12:48:49 -0700
-From: Sumit Gupta <sumitg@nvidia.com>
-To: <rafael@kernel.org>, <viresh.kumar@linaro.org>, <lenb@kernel.org>,
-	<pierre.gondois@arm.com>, <zhenglifeng1@huawei.com>,
-	<zhanjie9@hisilicon.com>, <mario.limonciello@amd.com>,
-	<saket.dumbre@intel.com>, <linux-acpi@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-	<acpica-devel@lists.linux.dev>
-CC: <treding@nvidia.com>, <jonathanh@nvidia.com>, <vsethi@nvidia.com>,
-	<ksitaraman@nvidia.com>, <sanjayc@nvidia.com>, <bbasu@nvidia.com>,
-	<sumitg@nvidia.com>
-Subject: [PATCH v3 2/2] ACPI: CPPC: Add ospm_nominal_perf support
-Date: Fri, 15 May 2026 01:18:22 +0530
-Message-ID: <20260514194822.1841748-3-sumitg@nvidia.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20260514194822.1841748-1-sumitg@nvidia.com>
-References: <20260514194822.1841748-1-sumitg@nvidia.com>
+	dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b="mAEEYiqL";
+	dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b="FxlAllah"
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 64HLvYOd756636
+	for <acpica-devel@lists.linux.dev>; Mon, 18 May 2026 03:06:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	X708K6u8SzSx52/GxLg4ntRNIqhO0X/cHHFOcijQWfw=; b=mAEEYiqLjDj3ISSj
+	U5DTIyGChBAQ/hDH6mDWkV6zMwT8BOQuX2+8nzAyS9aaOYA0uF35nWjqMAnPO9CO
+	kDURFnlI2SvtZVFtL2PMfoSaJwmZkWBzsUTC0cnUSVkhA6e+rZcH8vMNrK/YHxrv
+	NjyQV02h7yktq+80nCCu2aPwj3jeGUzsnYijL010Z5NCWM+E7/iezZiQ9ZVkGZxV
+	ha8zvgvtHH05doMuKKYrYfQ1p2puHZypDxlp6iANSMc14+Muu/dft+LVBA/Wk8wG
+	yqDsVg+F2SCwMf70CJ/xSX5we1QXkH4hbl5d3oaco9SCSGaPGCmTXgUiPaYuclDx
+	2WjEtQ==
+Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com [209.85.210.70])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4e6tvck4fk-1
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
+	for <acpica-devel@lists.linux.dev>; Mon, 18 May 2026 03:06:54 +0000 (GMT)
+Received: by mail-ot1-f70.google.com with SMTP id 46e09a7af769-7dbd60b7ecbso4400821a34.1
+        for <acpica-devel@lists.linux.dev>; Sun, 17 May 2026 20:06:53 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1779073613; cv=none;
+        d=google.com; s=arc-20240605;
+        b=Ie5+EdV+eBy7OJMOpqZ6Hn1Z+rih94HeHEyrQkkbAF6pxTlvsSZ6AiJFmcBozMifOb
+         ZCMDhu1LDKcBQR+m2u0MOgM68igyUpK9Y3xOoAAdacp9Gx/k40EdayRr5r2u0dmP0/PV
+         aROr0yR/zB0wlwaB/JkEsvw9Po8/43kCtX/ZkJ7h+6O5UhfWJzj1KDHjbA4wai9We+9V
+         uowxDuVjuU6RY0xuVfJjKkwYzYuOINzl19muhoYoi6pNOqKzQMmu/SURxuHJdKBl+XOl
+         QmhDOwUTaJkwd8CTFYSuDmY/LR4yOGuLfXdrtnQuEVr7syBwfcFd3Ajo5n8NuVblwYli
+         f1HA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=X708K6u8SzSx52/GxLg4ntRNIqhO0X/cHHFOcijQWfw=;
+        fh=UVE4n/9v6jPtcLprC9t+33iLEl8pBm7nfTQ+9kdvsiU=;
+        b=Z6fIipORiGrpD+7+wQT3yMNCyPKcvA5qios/cK9vdJjTdp261iNqUW2Vw4cemm25g9
+         dThFmo8MTOdIYbsw+ELGnkWs80u6tCR4MWDBEs2tOm5sw4BXCD+5E9TMt0pOfSolMlGj
+         wikU1WWSFeGani6iRi1vd/YdYBP0Of3Ov5+xmvGD1iCHgc3qH9YJx2PWho5tSIXPQvpr
+         GsjuK11Qb/tiO6eLCABjrUYshSIJ3krBSth9PmjH+j2Eu+kFMiAKi1rHUG6F08cOmZ51
+         Hf+Cz5KPhTg5rKqPP4X1MxEC0WvSSWYeGNtz3ukM1Gb3mB98OccQbj/P8wS2YPU8TFsZ
+         V3ow==;
+        darn=lists.linux.dev
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=oss.qualcomm.com; s=google; t=1779073613; x=1779678413; darn=lists.linux.dev;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=X708K6u8SzSx52/GxLg4ntRNIqhO0X/cHHFOcijQWfw=;
+        b=FxlAllahV5NTk3fqqCcmaNPGH1ZSy9X4QLwTWiJKgMt3ZPr+AxFTv5yK34Ay4lcH0C
+         olLydCOVKkEuOg01rn8Kuh1uVwmow9IU8V4SaPf2Uz3F+0viB91SpfOFRNrebsLBC9Wl
+         I2B63sWYKiVilHCcLMHNVoEjFK2enMbMhNg5eRH4ycI95eaN2OHluVOGkK3DY1kdfcCd
+         eVVgx9VCmrf+P/l3w6MVsy1EPgZPfkx7Z+GrAJAXni5rstNQ82U/JwjHMfCA0X1hnoaS
+         QNC31SgWMZeE0CAuqy/PB2W0PZxC4kfHyicszBvWysL+F8VOQImY4/YhYP3N9C5bQxYv
+         SlfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1779073613; x=1779678413;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=X708K6u8SzSx52/GxLg4ntRNIqhO0X/cHHFOcijQWfw=;
+        b=V7T6KkOEN8e2+v1xlTrw493REfw1rUy+5dq4wHqoVmW/CahPUiGHpqe0X57TkYndSJ
+         3/5O1xZWHxWp2tjfe4RTqX70chqfTaGRkoTX2ZIxXu41RAI+O3UBIkM6GIPBOZFnLuEF
+         b4dH5eZAEt0U22gITym6G+3tE1GJ9wtLjEpX+tpIBoNZ+W/pLRlOfcNPXTuKrpykwKlm
+         sFiwL7DxVWhy1kSm1lXyzZGjwNc/Kl/QQwnla7SfUmDzNZbK44zWzoFbVGRxxb4uwJdk
+         h8SIzxNCmeD93atA+TwJMr/wz1zkElOG/9diE4B+TQxBjrEzwu6uDcWma4tUdnoKe2D7
+         +eQA==
+X-Forwarded-Encrypted: i=1; AFNElJ+AgF6JB9Cmyc9emRp1RWgwqRu7jgD4jJpgUmpPMUdo7kpqW5ZZ7SBvS5lmNp+fPTRwvi7tsS4HlI9lDig=@lists.linux.dev
+X-Gm-Message-State: AOJu0YxpCjZXZ186ajILafH23taHbWjdfbQKwfDY6xEmKBzWT62IgibP
+	t2haT5srtYM2pGZMERqmQ+MxN9LmSlxUJ5pbbiQUQbRFBe5/eucBfw5Q0PTopGCpcSyHAXDH/C8
+	pZeSsurok46/2YlP7f5Cx5sAi6OodneFCa7JF2oxBx2cV0YVDoTpL7g47WIfcfopWkhShZm6li6
+	AAgy0lOZb8UD3occ6aMYTndEcAp9FaOj3CF6Ea4E1fuw==
+X-Gm-Gg: Acq92OEDQW21PS1aeY+w8AvGrV46ogN2IhRLLTZvucHfHgq5aIPZsdVscT+CLKCpt9k
+	fL8Z3DLtowl/pWB/VdL2faqVqZDewPLP7VLPNFhUzE9wqL2LFIKoCLxf7LeGbeZ3JW7MFBo2jau
+	w9Bt/cqBgfKzciDdcgxpTRLsmjBC6SnFn3mYBaRxPAPhteQO8TZZ5svHGB0o7SQ5NLeU1AbzXV3
+	qszFMDdoSIFiZX9ZA==
+X-Received: by 2002:a05:6830:828b:b0:7e3:7697:9b5a with SMTP id 46e09a7af769-7e4f2b9bfd7mr9164810a34.18.1779073613217;
+        Sun, 17 May 2026 20:06:53 -0700 (PDT)
+X-Received: by 2002:a05:6830:828b:b0:7e3:7697:9b5a with SMTP id
+ 46e09a7af769-7e4f2b9bfd7mr9164792a34.18.1779073612814; Sun, 17 May 2026
+ 20:06:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN2PEPF000055DA:EE_|MN2PR12MB4077:EE_
-X-MS-Office365-Filtering-Correlation-Id: c960c173-1d23-4ed0-4bb2-08deb1f1e3ed
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|376014|7416014|82310400026|36860700016|921020|11063799003|56012099003|22082099003|18002099003;
-X-Microsoft-Antispam-Message-Info:
-	QWkg+hckPbQ8xRNMw1/gRgtnyOWcCoaxex3S2vcF81ygJOaHcGcMUbeFZKPRgGuFvGUiM/4DUARw0QwuF9GrBarvHxW0Y1qX210tWvuiR25DAPN0/3dv6qEn+qvG6qzts+UIRiwXg5kuPWuySMYacfLlDJKrvia5/WdmKeKrBTXgxAbNzns6LCQGkoTdxzQMDtdDnO1g5V2Do2qBC9Mofu9ZlXE5RWQ15mtTi24wftCYhL1vjUmzg2pZg+8JtJFxmVsqm+/19Lk8Uf+hC5rcZ1dDCSf6Idxan84FXCipxLIivT4LOxV32D2MC6bci8ySfYTHOIji33HiLzuwoMlMk/9hi3lcRWJNXWUK/N2gXh/GrfvRPddLjhwC7C7mcCiwtelS6HJmENjqj0G8X61DLA7EHRCmu++XHd9fIXUGK0vyjzM2G5NeS9NBsVOvqkVo2RX8tHsyUiKSJe/0MALmDMQg138sjG1IfPVMtUcvILxmdkVXNgcjryTdGvV7WsVJqX99ITNZ9P1trYptYOBOU6gqyxQNTEN3704/gQd0rslsrR1s5VGpl+Euhd6SpxXX6TwqoEyzqdE29v5PVjsKUsBY0PWVxsiVFFLRA6mBkUF/qV+HJQxefDuRdnmJcChpLYWSxtcbtyQ3QGd03ErJAnrBJHVVj84oxJqhVxu855au2sIYUN21g/cQR9Fdse4H2UcaY52YWna/X5dSKiPF3oLApoOMnh+ggE+gGROQ1inj1hykz7oGx9K7EdKA6RfY
-X-Forefront-Antispam-Report:
-	CIP:216.228.118.233;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(82310400026)(36860700016)(921020)(11063799003)(56012099003)(22082099003)(18002099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	YoyUtLXRnOE9Cz2yp/sGa0bj/GHiqw4LYvOvekqKKbhvQ0IeLSX42Uk/N4I0pA7mr1i16RoaJ4Wo4ICDKCvxLbJllbzea0Jt8+T8j9b4vrYEfnrh0BE0Ik+7SkO81rY+cnrUPamVC171ZJuwbjPLYw4SgOnXhs/KSRs4R42fOOoxpyBbMkVzp2sJILEQBzW5V/VRsq9qwgza3udG/UG9TEYhFGNeQFkIEOM261YQ3HKOb2ZqWJkoBItKgrOQKTMkV+lvcjYaXG4hdgbxIxAJH6EbWHXWMazfvca5E01WisniYDqHu6NqFk5F9/+TNWJENIO5DJOwQsH7P8qifHKnVxAgiOeVQGZyOG62/J2+kXPO7jjcnD2gYdh06kPHSf6tlRjaya3Nj+aO1acdC8MmBigHcick7aITiR4JBQ8/JHQsxVlEH113luf2wM/kOyWm
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 May 2026 19:49:20.0456
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c960c173-1d23-4ed0-4bb2-08deb1f1e3ed
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BN2PEPF000055DA.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4077
+References: <20260513084325.2176952-1-himanshu.chauhan@oss.qualcomm.com>
+ <20260513084325.2176952-4-himanshu.chauhan@oss.qualcomm.com> <CAJZ5v0g2kjfAvcTzp8898A8HdMymU1SQ-rHW_DFhZP49c9=s5Q@mail.gmail.com>
+In-Reply-To: <CAJZ5v0g2kjfAvcTzp8898A8HdMymU1SQ-rHW_DFhZP49c9=s5Q@mail.gmail.com>
+From: Himanshu Chauhan <himanshu.chauhan@oss.qualcomm.com>
+Date: Mon, 18 May 2026 08:36:40 +0530
+X-Gm-Features: AVHnY4IXHSTvGb4jHkiTrfKvQSC_eyAqKXiBE4l4KpJ5S_P8fZyP7mnKGJ0aI8I
+Message-ID: <CA+Ht8=YbMLXnCFtoyVosrjS56ye_bUp16awgxnXkEmHB4_5_Dw@mail.gmail.com>
+Subject: Re: [PATCH v4 03/10] acpi: Introduce SSE in HEST notification types
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-efi@vger.kernel.org,
+        acpica-devel@lists.linux.dev, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, lenb@kernel.org, james.morse@arm.com,
+        tony.luck@intel.com, ardb@kernel.org, conor@kernel.org,
+        cleger@rivosinc.com, robert.moore@intel.com, sunilvl@oss.qualcomm.com,
+        anup.patel@oss.qualcomm.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-ORIG-GUID: 0ffvR46ehzfNi-lQepdqdW6oz_-BSnnQ
+X-Authority-Analysis: v=2.4 cv=UIDt2ify c=1 sm=1 tr=0 ts=6a0a824e cx=c_pps
+ a=7uPEO8VhqeOX8vTJ3z8K6Q==:117 a=IkcTkHD0fZMA:10 a=NGcC8JguVDcA:10
+ a=s4-Qcg_JpJYA:10 a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22
+ a=DJpcGTmdVt4CTyJn9g5Z:22 a=NEAV23lmAAAA:8 a=VwQbUJbxAAAA:8 a=EUspDBNiAAAA:8
+ a=h0uksLzaAAAA:8 a=sBTH58jHExCepGOTGfcA:9 a=QEXdDO2ut3YA:10
+ a=EXS-LbY8YePsIyqnH6vw:22 a=MSi_79tMYmZZG2gvAgS0:22
+X-Proofpoint-GUID: 0ffvR46ehzfNi-lQepdqdW6oz_-BSnnQ
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNTE4MDAyNyBTYWx0ZWRfX521beLxMyr7J
+ vgklUVunReSW9DqlsHeaDAUCLclkjHpdljkBjIq7fAPvlsWR6QEFZMe0N3QNVP2Jodgu0z0Lru6
+ g5X2e6uz59nnacX1axwAuzddrWGt4dzLC+gQMBMS7EuJEy5tf3/eOh+pr0R0tMdj791PcP7cpqm
+ u3kD+gOBGdJeqe2Tp2ymRj1Q4bJaALuEoshKjt1tcQQEEc2eshqbtO9T+vB9ihXY47eJTTHkFLS
+ 10buKDBXZbGrUTw9Pn7EeQ7YMM2cITuFi4CNd1pvD8I0YhfMBqQ8rZdxc+yUKWc8S4ISJqewgj5
+ mqpehdrX1OD8OxA7SKDM/dE7N9MAGmv/JdG/hL7NdM+YoTmVN2hhww4D8IYNo2exg2FI5aKGhfF
+ jkcNQ9g1iuSy+0GD2JWKIz0cDpQoqjarrtzh0JDMSffH/iGRoodL5X3JbTjtQRa7JJeRtbK9d4w
+ M49nIbkTZdcLKsOSv9Q==
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-05-18_01,2026-05-15_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ lowpriorityscore=0 impostorscore=0 phishscore=0 priorityscore=1501
+ bulkscore=0 suspectscore=0 malwarescore=0 spamscore=0 clxscore=1015
+ adultscore=0 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2605130000
+ definitions=main-2605180027
 
-Expose the OSPM Nominal Performance register (ACPI 6.6, Section
-8.4.6.1.2.6), which conveys the desired nominal performance level
-at which the platform may run. Unlike the existing read-only
-Nominal Performance register, it is writable and lets OSPM
-request a lower nominal level than the platform-reported nominal.
-The platform classifies performance above this level as boosted
-and below as throttled for its power/thermal decisions.
+Hi Rafael,
 
-It is exposed as a per-policy cpufreq sysfs attribute in kHz, to
-match the cpufreq sysfs unit convention:
+On Thu, May 14, 2026 at 12:56=E2=80=AFAM Rafael J. Wysocki <rafael@kernel.o=
+rg> wrote:
+>
+> On Wed, May 13, 2026 at 10:44=E2=80=AFAM Himanshu Chauhan
+> <himanshu.chauhan@oss.qualcomm.com> wrote:
+> >
+> > Introduce a new HEST notification type for RISC-V SSE events.
+> > The GHES entry's notification structure contains the notification
+> > to be used for a given error source. For error sources delivering
+> > events over SSE, it should contain the new SSE notification type.
+> >
+> > Signed-off-by: Himanshu Chauhan <himanshu.chauhan@oss.qualcomm.com>
+> > Reviewed-by: Cl=C3=A9ment L=C3=A9ger <cleger@rivosinc.com>
+> > ---
+> >  include/acpi/actbl1.h | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/include/acpi/actbl1.h b/include/acpi/actbl1.h
+> > index f72e00517eb3..2a8167979458 100644
+> > --- a/include/acpi/actbl1.h
+> > +++ b/include/acpi/actbl1.h
+>
+> This is an ACPICA change, so it should go through the upstream ACPICA
+> project on GitHub.  See
+>
+> Documentation/driver-api/acpi/linuxized-acpica.rst
+>
+> for more information.
+>
+> If there is already an upstream ACPICA commit making this change,
+> please add a Link: tag pointing to that commit to the $subject patch.
 
-  /sys/devices/system/cpu/cpufreq/policyN/ospm_nominal_freq
+I have already provided the pull request in ACPICA on github in the
+cover letter.
+Below is the part of the cover letter.
 
-The attribute is documented in
-Documentation/ABI/testing/sysfs-devices-system-cpu.
+ - Raised a review request for patch "Introduce SSE in HEST
+notification types" in ACPICA
+   https://github.com/acpica/acpica/pull/1170
+   Keeping the patch here for complete functionality
 
-Writes are converted to perf via cppc_khz_to_perf(), validated
-against [Lowest Performance, Nominal Performance], and applied to
-every CPU in policy->cpus.
-
-The register is write-only; the kernel caches the last written
-value in struct cppc_cpudata for sysfs readback (returns 0 until
-userspace writes a value).
-
-Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
----
- .../ABI/testing/sysfs-devices-system-cpu      | 17 ++++++++
- drivers/acpi/cppc_acpi.c                      | 35 ++++++++++++++++
- drivers/cpufreq/cppc_cpufreq.c                | 40 +++++++++++++++++++
- include/acpi/cppc_acpi.h                      |  7 ++++
- 4 files changed, 99 insertions(+)
-
-diff --git a/Documentation/ABI/testing/sysfs-devices-system-cpu b/Documentation/ABI/testing/sysfs-devices-system-cpu
-index 82d10d556cc8..ac1bf1b89ac4 100644
---- a/Documentation/ABI/testing/sysfs-devices-system-cpu
-+++ b/Documentation/ABI/testing/sysfs-devices-system-cpu
-@@ -346,6 +346,23 @@ Description:	Performance Limited
- 
- 		This file is only present if the cppc-cpufreq driver is in use.
- 
-+What:		/sys/devices/system/cpu/cpuX/cpufreq/ospm_nominal_freq
-+Date:		May 2026
-+Contact:	linux-pm@vger.kernel.org
-+Description:	OSPM Nominal Performance (kHz)
-+
-+		OSPM uses this attribute to request a nominal performance
-+		level lower than the platform-reported nominal. The
-+		platform treats performance above this level as boost
-+		and below as throttle for power and thermal decisions.
-+
-+		Read returns the last written value in kHz, or 0 if no
-+		value has been written. Write a kHz value in the range
-+		[lowest_freq, nominal_freq].
-+
-+		This file is only present if the cppc-cpufreq driver is
-+		in use.
-+
- What:		/sys/devices/system/cpu/cpu*/cache/index3/cache_disable_{0,1}
- Date:		August 2008
- KernelVersion:	2.6.27
-diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-index c76cfafa3589..ad6ece16c30d 100644
---- a/drivers/acpi/cppc_acpi.c
-+++ b/drivers/acpi/cppc_acpi.c
-@@ -1682,6 +1682,41 @@ int cppc_set_epp(int cpu, u64 epp_val)
- }
- EXPORT_SYMBOL_GPL(cppc_set_epp);
- 
-+/**
-+ * cppc_set_ospm_nominal_perf() - Write OSPM Nominal Performance register.
-+ * @cpu: CPU on which to write register.
-+ * @ospm_nominal_perf: Value to write to the OSPM Nominal Performance register.
-+ *
-+ * OSPM Nominal Performance conveys the desired nominal performance level
-+ * at which the platform may run. Per ACPI 6.6, s8.4.6.1.2.6, the value
-+ * must lie within [Lowest Performance, Nominal Performance] and may be
-+ * set independently of Minimum, Maximum and Desired performance.
-+ *
-+ * Return: 0 on success or negative error code.
-+ */
-+int cppc_set_ospm_nominal_perf(int cpu, u64 ospm_nominal_perf)
-+{
-+	struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpu);
-+	struct cppc_perf_caps caps;
-+	int ret;
-+
-+	if (!cpc_desc) {
-+		pr_debug("No CPC descriptor for CPU:%d\n", cpu);
-+		return -ENODEV;
-+	}
-+
-+	ret = cppc_get_perf_caps(cpu, &caps);
-+	if (ret)
-+		return ret;
-+
-+	if (ospm_nominal_perf < caps.lowest_perf ||
-+	    ospm_nominal_perf > caps.nominal_perf)
-+		return -EINVAL;
-+
-+	return cppc_set_reg_val(cpu, OSPM_NOMINAL_PERF, ospm_nominal_perf);
-+}
-+EXPORT_SYMBOL_GPL(cppc_set_ospm_nominal_perf);
-+
- /**
-  * cppc_get_auto_act_window() - Read autonomous activity window register.
-  * @cpu: CPU from which to read register.
-diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
-index 7e7f9dfb7a24..6379b7ceee34 100644
---- a/drivers/cpufreq/cppc_cpufreq.c
-+++ b/drivers/cpufreq/cppc_cpufreq.c
-@@ -985,11 +985,50 @@ store_energy_performance_preference_val(struct cpufreq_policy *policy,
- CPPC_CPUFREQ_ATTR_RW_U64(perf_limited, cppc_get_perf_limited,
- 			 cppc_set_perf_limited)
- 
-+static ssize_t show_ospm_nominal_freq(struct cpufreq_policy *policy, char *buf)
-+{
-+	struct cppc_cpudata *cpu_data = policy->driver_data;
-+	unsigned int freq_khz;
-+
-+	if (!cpu_data->ospm_nominal_perf)
-+		return sysfs_emit(buf, "0\n");
-+
-+	freq_khz = cppc_perf_to_khz(&cpu_data->perf_caps,
-+				    cpu_data->ospm_nominal_perf);
-+	return sysfs_emit(buf, "%u\n", freq_khz);
-+}
-+
-+static ssize_t store_ospm_nominal_freq(struct cpufreq_policy *policy,
-+				       const char *buf, size_t count)
-+{
-+	struct cppc_cpudata *cpu_data = policy->driver_data;
-+	unsigned int sib;
-+	u64 freq_khz;
-+	u32 perf;
-+	int ret;
-+
-+	ret = kstrtou64(buf, 0, &freq_khz);
-+	if (ret)
-+		return ret;
-+
-+	perf = cppc_khz_to_perf(&cpu_data->perf_caps, freq_khz);
-+
-+	for_each_cpu(sib, policy->cpus) {
-+		ret = cppc_set_ospm_nominal_perf(sib, perf);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	cpu_data->ospm_nominal_perf = perf;
-+	return count;
-+}
-+
- cpufreq_freq_attr_ro(freqdomain_cpus);
- cpufreq_freq_attr_rw(auto_select);
- cpufreq_freq_attr_rw(auto_act_window);
- cpufreq_freq_attr_rw(energy_performance_preference_val);
- cpufreq_freq_attr_rw(perf_limited);
-+cpufreq_freq_attr_rw(ospm_nominal_freq);
- 
- static struct freq_attr *cppc_cpufreq_attr[] = {
- 	&freqdomain_cpus,
-@@ -997,6 +1036,7 @@ static struct freq_attr *cppc_cpufreq_attr[] = {
- 	&auto_act_window,
- 	&energy_performance_preference_val,
- 	&perf_limited,
-+	&ospm_nominal_freq,
- 	NULL,
- };
- 
-diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
-index 8693890a7275..0b1dcdbea10a 100644
---- a/include/acpi/cppc_acpi.h
-+++ b/include/acpi/cppc_acpi.h
-@@ -153,6 +153,8 @@ struct cppc_cpudata {
- 	struct cppc_perf_fb_ctrs perf_fb_ctrs;
- 	unsigned int shared_type;
- 	cpumask_var_t shared_cpu_map;
-+	/* Cached OSPM Nominal Performance value (write-only register). */
-+	u32 ospm_nominal_perf;
- };
- 
- #ifdef CONFIG_ACPI_CPPC_LIB
-@@ -180,6 +182,7 @@ extern int cpc_write_ffh(int cpunum, struct cpc_reg *reg, u64 val);
- extern int cppc_get_epp_perf(int cpunum, u64 *epp_perf);
- extern int cppc_set_epp_perf(int cpu, struct cppc_perf_ctrls *perf_ctrls, bool enable);
- extern int cppc_set_epp(int cpu, u64 epp_val);
-+extern int cppc_set_ospm_nominal_perf(int cpu, u64 ospm_nominal_perf);
- extern int cppc_get_auto_act_window(int cpu, u64 *auto_act_window);
- extern int cppc_set_auto_act_window(int cpu, u64 auto_act_window);
- extern int cppc_get_auto_sel(int cpu, bool *enable);
-@@ -266,6 +269,10 @@ static inline int cppc_set_epp(int cpu, u64 epp_val)
- {
- 	return -EOPNOTSUPP;
- }
-+static inline int cppc_set_ospm_nominal_perf(int cpu, u64 ospm_nominal_perf)
-+{
-+	return -EOPNOTSUPP;
-+}
- static inline int cppc_get_auto_act_window(int cpu, u64 *auto_act_window)
- {
- 	return -EOPNOTSUPP;
--- 
-2.34.1
-
+Thanks
+Regards
+Himanshu
+>
+> > @@ -1798,7 +1798,8 @@ enum acpi_hest_notify_types {
+> >         ACPI_HEST_NOTIFY_SEI =3D 9,       /* ACPI 6.1 */
+> >         ACPI_HEST_NOTIFY_GSIV =3D 10,     /* ACPI 6.1 */
+> >         ACPI_HEST_NOTIFY_SOFTWARE_DELEGATED =3D 11,       /* ACPI 6.2 *=
+/
+> > -       ACPI_HEST_NOTIFY_RESERVED =3D 12  /* 12 and greater are reserve=
+d */
+> > +       ACPI_HEST_NOTIFY_SSE =3D 12, /* RISCV SSE */
+> > +       ACPI_HEST_NOTIFY_RESERVED =3D 13  /* 13 and greater are reserve=
+d */
+> >  };
+> >
+> >  /* Values for config_write_enable bitfield above */
+> > --
+> > 2.43.0
+> >
+> >
