@@ -1,545 +1,427 @@
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C24CD3E1687
-	for <acpica-devel@lists.linux.dev>; Mon, 25 May 2026 08:23:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=205.220.168.131
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779697404; cv=pass; b=OnQSr7dChQ283koiq2u7UBdF3o47aExrRzTbiQ7iNX/Vaos+qy+wlz4N3H2zpe9QS0lraMBgn6oGaDLdxv1v7N7D5eeCkfoF/h7gX4Jx1ajPj6jq7sBW+ArzY8ZIc3BSj2EFh0Xg5kFlswS3s/CLDGEZ5Kfpkcb/iA2zlr9J0KQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779697404; c=relaxed/simple;
-	bh=0achz9n+qw0t1Oo82cOOIyvX9+EU24sy7AuCwSzREkU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=b0xTL8WHF8dg/0Tdf/h+rZtOSz1kXzG8HIe9bcvbLSw/e3Yq742FE97OAkZLiu/AnJUE28m/w98MEGP/UKN781ILkgB9IwHpasx6PASY9FLFATkEHycT6wuKnYRgTmoaRX31fbVZ/3RQGe9fQGusWteW2x9ucU8xvjU3Z333vMM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com; spf=pass smtp.mailfrom=oss.qualcomm.com; dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b=dnS3UKKI; dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b=cVpcFWZc; arc=pass smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1802400E04;
+	Tue, 26 May 2026 14:53:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1779807224; cv=none; b=JE/rcLwgMIgTb+yzzkcNY9dwSkV2us/VApOTde8BFF9QWmiicJ6rHF3YnhN1DStjv0eUtmpIoOstMccmEtHWhe5c6EXpF/9JSox5ygRJkPgjNeo946KRpDti1toQ6VvaDmKZ23jxkcG99tOT900mb4WIIdnV6aCIOeAu/dT4tRo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1779807224; c=relaxed/simple;
+	bh=mrdlOoKNFYSoZV05qStZtthKTUH+7JSmhh200dUELcQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MBndJVX91G6TUg6PzxhNOHf+ca9K4MFRv4y3mS31r5iFtsIOkz0ozeQXZ8AdF2GCGM/BGQIkAfjuGIsR+zAcwoiUmXa7Lbb12tmC1wom2zjJAMK1ZmEw+zRQgNcCs6BQaSU4ZR1QyN8B/acvDCIb1asKwnXjc167Gz6w6WWfqu0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b=VDJqhJKH; arc=none smtp.client-ip=205.220.180.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.qualcomm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b="dnS3UKKI";
-	dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b="cVpcFWZc"
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 64P6VIO22028624
-	for <acpica-devel@lists.linux.dev>; Mon, 25 May 2026 08:23:22 GMT
+	dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b="VDJqhJKH"
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 64QDFiMb2437640;
+	Tue, 26 May 2026 14:52:51 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:to; s=
-	qcppdkim1; bh=Y00jVBsOO5l3g5o3U2vjZ9VsbHwpeMj0hXubWYDZVoE=; b=dn
-	S3UKKIUaiBLrAZwS0idvEBG9uLwSe38I9zNIU0aBjXqnXXGFennybsL2PX9kvf4y
-	XBPwDUKGPZUe/E+Sl2FBLU2WYdrHRyBoibT9UiLwlGuI0/9kZlQld+nbNDhgUPlO
-	X6RdacDuhzmD1uULNM1A4NkKZjcjvldfHFaiVDgfVHc3TWf2ofXypIW8ZBawLv7x
-	bWLg5Yaib53OBZXheovHkGqWKmCmBCCNuknxrjX32gJjLCW5p/QCzqvU32kEZBv4
-	nuPHrAxHPt1ONgp6dJIiIqkGFIpITz1VgqMczdrxZKV8fjhLZ2WYO7BPjS4fx14n
-	gMVF8uufE8IIZqeVWr8w==
-Received: from mail-yw1-f198.google.com (mail-yw1-f198.google.com [209.85.128.198])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4eb50fwnx3-1
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <acpica-devel@lists.linux.dev>; Mon, 25 May 2026 08:23:21 +0000 (GMT)
-Received: by mail-yw1-f198.google.com with SMTP id 00721157ae682-7cfea0b5cb7so44183217b3.3
-        for <acpica-devel@lists.linux.dev>; Mon, 25 May 2026 01:23:21 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1779697401; cv=none;
-        d=google.com; s=arc-20240605;
-        b=HLQi/Qny6ahEOXC7O2ezSlDJ7xwlz9IpZ48ty3TMHm+pxcJA2QMZOjxt2RP4tBrrwk
-         vGocsgn4wJKmjQN6GMTfv/dqagShhj48iXx9VJPfYmBwUjR0E+hSRU52yvypH3/V0rsK
-         ee+PgSnogJYly0X6EaiWfKoq7rfkBnuFmvNcunIBUg3J3+FNzcmlW2n+26M8oWBN5ZQL
-         pEifwz3U4UW1hVy/YhK5aJSaljl8uZHa9gt5q5wlCQp+Q5zMn3gRYRdiS0KJ9i7zLuJ/
-         B9YDwGNjfSjbUzRhaTLnP9s2/fO1j2gOCgoTHbcQd7JramYPgyL5UfwfGzme614Ez05O
-         HYgQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :reply-to:in-reply-to:references:mime-version:dkim-signature;
-        bh=Y00jVBsOO5l3g5o3U2vjZ9VsbHwpeMj0hXubWYDZVoE=;
-        fh=Xl92/p2RnJUOnk5wRZdLhhGM9t5UIWOBOSt2n26MZrM=;
-        b=H51FZbLoQgvhtkVcVZV446xf35Apcc9HtK+HfiqpGjBxX0yPlx38vLiQnNSPoXS3Kg
-         Ygch66qxliydkCGcJ5+Wsu7W6+qOgi9eLVVcB+oP4MNwmq5oO/4NS+w86LXDfwZERDuK
-         KxlxRhRAJPP4RjdnNY94I4NKumMwR2yvhk/91WlqSiuHufp/T5qRmKIXe5xckroxTob1
-         wEm0e2xIhUygf0PE5tePQ8bb2IKyrj37coXaAOBdr+fy/9lTZQ7IH+efT5eS3e5xfjcE
-         CY1YaZGVuF3QU7k37iY2EWpKDhpQpBpOgZ04lvkRLBaHlfrJ11us/JF5J+9a+csxaNPR
-         ERSw==;
-        darn=lists.linux.dev
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1779697401; x=1780302201; darn=lists.linux.dev;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :reply-to:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Y00jVBsOO5l3g5o3U2vjZ9VsbHwpeMj0hXubWYDZVoE=;
-        b=cVpcFWZcNXGo/j/GHSEHjxjuV/DQdPEbiw348yZ7eo97YwbLzPxLAMLcazobCzUOJP
-         /Fb05ugS/fGe+CoZl0UWIC0TmZES3sZD9yYuG6E89Q5KxrKz3CntpI1CRBx1o0bmy/zv
-         TDAWHlUEgSbvBzNzMXjGDPL9gBy1NK8xzEx12H4YfrbWFnoCcyHMlfXwCqojp6nXQliN
-         araIBoksCGKdIz0oBUQHoiM7+Sc8BUV1Vbzq36sF5LTZ4c0LD+Pjfs4TDuypbHb5Nh73
-         Kon6QoYV/CC/j5xClTp6eUateQP2r8YkOhGL5BkiHpwXL+PJ6FJ5/lAORTHDZSGTUAGW
-         lLKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779697401; x=1780302201;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :reply-to:in-reply-to:references:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y00jVBsOO5l3g5o3U2vjZ9VsbHwpeMj0hXubWYDZVoE=;
-        b=qnDGrO8lD2ejORmh0TahnULAQNRCL+vLIisWEyI/WfI75JvCEuVb2Ue2h+Lqb2RoOM
-         0c9ami3ulyee32JneiYjg+Jvhrmhk+q6DBKCRl86xb6TP5ycOc7C8alr7v0N3cY3iFjV
-         4gIxPolWcWEUEcyaRz/JdBVdMtCZvvJIxiW8pN8CGOdOsah0l9IdsuBLg5gtA+jGJtqv
-         bwRGTVJcie41MhveqXjZ8m97yMil8j0rtBBMdAQrw3C7dHlW0XTSvujSlD/LydRL/b1v
-         wISLU2TEvt0qdLqR4qM9lBstUqCcCXGSdluKwIfljOlxJyJeQ0pUdXJR5lVfBJMVPcWv
-         ybSQ==
-X-Forwarded-Encrypted: i=1; AFNElJ8iGP57IKnXQLwRZdO4nszJSKbrDOoVeBLMEBobjA4rq6x/Y3AH/XxnH34h3W+CKb6KVPqRD5zPokXpHC4=@lists.linux.dev
-X-Gm-Message-State: AOJu0YzWKfU6Gqd8boxtmtwYsjZq2hhHyZqRMTQCXgROowtP+o9mKu1Q
-	7JfrOr+eAQDxs319jvaAq5RR2ABBZirSkVnqSm6T2tEXtal6q1Fi72e1fd46CqOoX29PhIy+86S
-	38W6rheXpH8jl3Yl4BKJ19NzNnoHDr924TA8th0QD8WAF5ajc/jS4a8FuycJNkqQ+EF7/Nj7dGn
-	LGDozeIS/I0iBhbCbiBpsVR4kDdbLzp8qGXrwY9A5mfw==
-X-Gm-Gg: Acq92OFhWpAG0/ueBX/6282qGo2mOktpLT84v4jI2fhgB0J+zDO4S03xjIWpBH0iNFH
-	WUkskMCV9oOKdJG/06czOTqN752QB6PV37NDnirqGOonbJXecc3XbkSmKIfzODpMpOfHi5hy9+g
-	C/j9vk74j4nFk0eJ4lGC8+1VEAxBjZ/uEn2V/PwdnutVTsmwsEWGgRRuilyjVvkVYyJdWA6AcTQ
-	BIkNCNp
-X-Received: by 2002:a05:690c:6b04:b0:7d0:3bbc:c81 with SMTP id 00721157ae682-7d335fbcccamr151395117b3.13.1779697400728;
-        Mon, 25 May 2026 01:23:20 -0700 (PDT)
-X-Received: by 2002:a05:690c:6b04:b0:7d0:3bbc:c81 with SMTP id
- 00721157ae682-7d335fbcccamr151394667b3.13.1779697400112; Mon, 25 May 2026
- 01:23:20 -0700 (PDT)
+	cc:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=qcppdkim1; bh=DtEI7WfC5+U62ltVi9RfCYz6d6BvUdBEhCw
+	V0F2LcJ0=; b=VDJqhJKHNju8IKcn9t1qu43G/VBPuu9ARS2y2EHvztuTyMiyhFf
+	rgfRLg3okTLGVE+M5WkAJO/YtpNKW3OSPPoBWDKXkfKpB8qm669C+M4QwHET92wt
+	1twqVleeMF5w82rDDpTDX1fH2WvkAifaCtMhcAV4ZopkCPHBboXxR5oNoixkJdBX
+	ZnHAgBFrJy85LCwpOCfPfg+2HxGCovmUyCfnadbgqUUsPdhxMVmWawVtAWO7rzWK
+	g+PcqmqN/7R+p6P37XDhEgGVJKrKCp3drYp2/0qZ1CB/hXSz/zo6yD8f3g+FJiD8
+	FWEhWjco2Me5GT3f9prBfmnZnd+qI+QVE8Q==
+Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4ecnhs5ay0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 26 May 2026 14:52:51 +0000 (GMT)
+Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+	by APBLRPPMTA01.qualcomm.com (8.18.1.7/8.18.1.7) with ESMTP id 64QEqlWb017831;
+	Tue, 26 May 2026 14:52:47 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTPS id 4eb5aj97q3-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 26 May 2026 14:52:47 +0000 (GMT)
+Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.1.12) with ESMTP id 64QEqlkU017823;
+	Tue, 26 May 2026 14:52:47 GMT
+Received: from hu-devc-blr-u24-a.qualcomm.com (hu-anuppate-blr.qualcomm.com [10.131.36.165])
+	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTPS id 64QEql8L017820
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 26 May 2026 14:52:47 +0000 (GMT)
+Received: by hu-devc-blr-u24-a.qualcomm.com (Postfix, from userid 486687)
+	id 6A81F21A82; Tue, 26 May 2026 20:22:46 +0530 (+0530)
+From: Anup Patel <anup.patel@oss.qualcomm.com>
+To: Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <pjw@kernel.org>,
+        Alexandre Ghiti <alex@ghiti.fr>, Thomas Gleixner <tglx@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Danilo Krummrich <dakr@kernel.org>,
+        Tomasz Jeznach <tomasz.jeznach@linux.dev>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jassi Brar <jassisinghbrar@gmail.com>, Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski <krzk+dt@kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>
+Cc: Saket Dumbre <saket.dumbre@intel.com>, Rahul Pathak <rahul@summations.net>,
+        Atish Patra <atish.patra@linux.dev>, Anup Patel <anup@brainfault.org>,
+        Andrew Jones <andrew.jones@oss.qualcomm.com>,
+        linux-acpi@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        driver-core@lists.linux.dev, iommu@lists.linux.dev,
+        acpica-devel@lists.linux.dev, Anup Patel <anup.patel@oss.qualcomm.com>,
+        Sunil V L <sunilvl@oss.qualcomm.com>
+Subject: [PATCH] driver core: platform: Setup device MSI domain just before driver probe
+Date: Tue, 26 May 2026 20:22:40 +0530
+Message-ID: <20260526145240.1627200-1-anup.patel@oss.qualcomm.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20260524-ssqosid-cbqri-rqsc-v7-0-v5-0-78d3a7ba9dbe@kernel.org> <20260524-ssqosid-cbqri-rqsc-v7-0-v5-16-78d3a7ba9dbe@kernel.org>
-In-Reply-To: <20260524-ssqosid-cbqri-rqsc-v7-0-v5-16-78d3a7ba9dbe@kernel.org>
-Reply-To: sunilvl@oss.qualcomm.com
-From: Sunil V L <sunilvl@oss.qualcomm.com>
-Date: Mon, 25 May 2026 13:53:09 +0530
-X-Gm-Features: AVHnY4I5dwBeqtX2znAoYje4xvPMK0mJtZxt7UsaZlw7JojvDtp7xcPyAAfXdI0
-Message-ID: <CAB19ukE9r_V=0eop3=f8zohhnCavd=9GjDEK1VMMbOb0ReOtDA@mail.gmail.com>
-Subject: Re: [PATCH RFC v5 16/18] ACPI: RISC-V: Parse RISC-V Quality of
- Service Controller (RQSC) table
-To: Drew Fustini <fustini@kernel.org>
-Cc: Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
-        =?UTF-8?B?UmFkaW0gS3LEjW3DocWZ?= <rkrcmar@ventanamicro.com>,
-        Samuel Holland <samuel.holland@sifive.com>,
-        Adrien Ricciardi <aricciardi@baylibre.com>,
-        Nicolas Pitre <npitre@baylibre.com>,
-        =?UTF-8?Q?Kornel_Dul=C4=99ba?= <mindal@semihalf.com>,
-        Atish Patra <atish.patra@linux.dev>,
-        Atish Kumar Patra <atishp@rivosinc.com>,
-        Vasudevan Srinivasan <vasu@rivosinc.com>,
-        Ved Shanbhogue <ved@rivosinc.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        yunhui cui <cuiyunhui@bytedance.com>,
-        Chen Pei <cp0613@linux.alibaba.com>,
-        Liu Zhiwei <zhiwei_liu@linux.alibaba.com>,
-        Weiwei Li <liwei1518@gmail.com>, guo.wenjia23@zte.com.cn,
-        Gong Shuai <gong.shuai@sanechips.com.cn>,
-        Gong Shuai <gsh517@gmail.com>, liu.qingtao2@zte.com.cn,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Tony Luck <tony.luck@intel.com>, Babu Moger <babu.moger@amd.com>,
-        Peter Newman <peternewman@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>, James Morse <james.morse@arm.com>,
-        Ben Horgan <ben.horgan@arm.com>, Dave Martin <Dave.Martin@arm.com>,
-        Rob Herring <robh@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk+dt@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Sunil V L <sunilvl@ventanamicro.com>,
-        Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Clark Williams <clrkwllms@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>, Jonathan Corbet <corbet@lwn.net>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, linux-acpi@vger.kernel.org,
-        acpica-devel@lists.linux.dev, devicetree@vger.kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Conor Dooley <conor@kernel.org>, linux-rt-devel@lists.linux.dev,
-        linux-doc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNTI1MDA4NCBTYWx0ZWRfX/+TK+XgDOXrX
- cGvCDzW9ghv28VOGcDDoaeP1HyqwieUQ3qVRdPoA7zcEutquhoGjAQ+LEJiLm1pyMV+1wJZGbqx
- Cf9JWevPEl0dOhvSxQ8HFkrpSMIeDeZFYjCuFwuzt/6Gj6su71spCXms9Lt/dB5jzp7lJiXryDK
- lwiF7qLfRF+/Gt/OVYpPiD/V8NiPxCihBuNEf8+1Fv/g89Xz/suhiLgSH8Ye5kiLt/ta4hldm4z
- coL4U+kKbAUGlzNuSuARQkTNsGeE931HTFGsGy2Wp9r2SmjwkmGShMG02IFHr5APbrx9RyrgtUr
- VxhUMJfciKY9r9wJrBA8l4vEaog1fpihMm2D0rW0W/NmEd3DaxHT6VZIugvL7PW7W69p85NcYYS
- QJY73Ll4mQ+gvI1XAZgOvCZ13ftjumVWpG92+SDkSHLBDRdGqgqYGcDUOmqTzpMYvEEKBCPUSPJ
- SWfCf/Ku9vF+5EF+S6w==
-X-Proofpoint-ORIG-GUID: Ass6e3LpitPTaFxhEjvcO-bNrojh0_4L
-X-Authority-Analysis: v=2.4 cv=UdBhjqSN c=1 sm=1 tr=0 ts=6a1406f9 cx=c_pps
- a=g1v0Z557R90hA0UpD/5Yag==:117 a=IkcTkHD0fZMA:10 a=NGcC8JguVDcA:10
- a=s4-Qcg_JpJYA:10 a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22
- a=_K5XuSEh1TEqbUxoQ0s3:22 a=V1jnuoLLAAAA:20 a=VwQbUJbxAAAA:8
- a=oLomzfTcYbT1FT28YPsA:9 a=QEXdDO2ut3YA:10 a=MFSWADHSvvjO3QEy5MdX:22
- a=bA3UWDv6hWIuX7UZL3qL:22
-X-Proofpoint-GUID: Ass6e3LpitPTaFxhEjvcO-bNrojh0_4L
+Content-Transfer-Encoding: 8bit
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Authority-Analysis: v=2.4 cv=Vd3H+lp9 c=1 sm=1 tr=0 ts=6a15b3c3 cx=c_pps
+ a=Ou0eQOY4+eZoSc0qltEV5Q==:117 a=Ou0eQOY4+eZoSc0qltEV5Q==:17
+ a=NGcC8JguVDcA:10 a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22
+ a=rJkE3RaqiGZ5pbrm-msn:22 a=EUspDBNiAAAA:8 a=XO0VMO9KiYcrIKbrk7YA:9
+X-Proofpoint-GUID: lty04NSPDty1OQPPj3lse-ZDKCwr8rqX
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNTI2MDEyNyBTYWx0ZWRfXybDV0cdVrn9a
+ cW4JY0oYmLmSW9VtMnddMU+ogYKG7BxrIRKYvaGEdEC24+aqrpRRl4JBanv5SINeJSvLH8ll+5D
+ yKrHOhKDhbIOnFw3o5jQLT6FqfoQDT/gWpPZV53pZu5IETVaw1dWVvSmPakzpBiVuYC6CuymSA6
+ j0ZBjZuldEWEOyzxl7/Nlpje0izBxmun/cuDxVlI0kNkWfyO9uWU+o/yFxEuWijsDqn/o+ChRp6
+ NwbALiSEe1r+goStmolCJFb3ib/JdXldKU2Uffx1j4/uyK4/UC5zq3dHlcUAMobJXwkawa/a5DF
+ LL7PcUxQLWK2DWPChqb657ugZiqoxeldJBznayQzhdLvgITOr6/YcYOzyxkEPs7UphfEuHSV5G1
+ l5aduVCwtbflDAT0VstEzFFmDbql4XqsoZ2nIuzq4f89BpdqazopkvOwqHYYU9xgpAqeNzfbk8p
+ 61D9FGO5KBYoXt5pYPQ==
+X-Proofpoint-ORIG-GUID: lty04NSPDty1OQPPj3lse-ZDKCwr8rqX
 X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-05-25_02,2026-05-18_01,2025-10-01_01
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
+ definitions=2026-05-26_03,2026-05-26_03,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- spamscore=0 adultscore=0 suspectscore=0 clxscore=1011 impostorscore=0
- priorityscore=1501 malwarescore=0 lowpriorityscore=0 phishscore=0 bulkscore=0
+ impostorscore=0 suspectscore=0 malwarescore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 phishscore=0 adultscore=0 priorityscore=1501 bulkscore=0
  classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2605130000 definitions=main-2605250084
+ reason=mlx scancount=1 engine=8.22.0-2605130000 definitions=main-2605260127
 
-Hi Drew,
+On RISC-V, the MSI controller (aka RISC-V IMSIC) is probed as a regular
+platform device and MSI client drivers are always probed after the MSI
+controller driver using fw_devlink. Unfortunately, this is not sufficient
+to ensure device MSI domain is set for MSI client devices before driver
+probe because OF framework sets device MSI domain at the time of platform
+device creation whereas ACPI framework expects arch specific code to set
+the device MSI domain at the time of platform device creation.
 
-On Mon, May 25, 2026 at 5:32=E2=80=AFAM Drew Fustini <fustini@kernel.org> w=
-rote:
->
-> Add a parser for the ACPI RQSC table, which describes the CBQRI
-> controllers in a system. For each table entry, populate a
-> cbqri_controller_info descriptor and hand it to the CBQRI driver via
-> riscv_cbqri_register_controller(). The driver owns all subsequent state,
-> including cpumask resolution at cbqri_resctrl_setup() time.
->
-> Link: https://github.com/riscv-non-isa/riscv-rqsc/blob/main/src/
-> Link: https://github.com/riscv-non-isa/riscv-cbqri/releases/tag/v1.0
-> Assisted-by: Claude:claude-opus-4-7
-> Signed-off-by: Drew Fustini <fustini@kernel.org>
-> ---
->  MAINTAINERS                   |   2 +
->  arch/riscv/include/asm/acpi.h |  10 +++
->  drivers/acpi/riscv/Makefile   |   1 +
->  drivers/acpi/riscv/rqsc.c     | 194 ++++++++++++++++++++++++++++++++++++=
-++++++
->  drivers/acpi/riscv/rqsc.h     |  63 ++++++++++++++
->  5 files changed, 270 insertions(+)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 7821dd5159cb..eab31c7b5e91 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -23025,6 +23025,8 @@ S:      Supported
->  F:     arch/riscv/include/asm/qos.h
->  F:     arch/riscv/include/asm/resctrl.h
->  F:     arch/riscv/kernel/qos.c
-> +F:     drivers/acpi/riscv/rqsc.c
-> +F:     drivers/acpi/riscv/rqsc.h
->  F:     drivers/resctrl/cbqri_devices.c
->  F:     drivers/resctrl/cbqri_internal.h
->  F:     drivers/resctrl/cbqri_resctrl.c
-> diff --git a/arch/riscv/include/asm/acpi.h b/arch/riscv/include/asm/acpi.=
-h
-> index 26ab37c171bc..3cfd0102085e 100644
-> --- a/arch/riscv/include/asm/acpi.h
-> +++ b/arch/riscv/include/asm/acpi.h
-> @@ -67,6 +67,16 @@ int acpi_get_riscv_isa(struct acpi_table_header *table=
-,
->
->  void acpi_get_cbo_block_size(struct acpi_table_header *table, u32 *cbom_=
-size,
->                              u32 *cboz_size, u32 *cbop_size);
-> +
-> +#ifdef CONFIG_RISCV_CBQRI_DRIVER
-> +int __init acpi_parse_rqsc(struct acpi_table_header *table);
-> +#else
-> +static inline int acpi_parse_rqsc(struct acpi_table_header *table)
-> +{
-> +       return -EINVAL;
-> +}
-> +#endif /* CONFIG_RISCV_CBQRI_DRIVER */
-> +
->  #else
->  static inline void acpi_init_rintc_map(void) { }
->  static inline struct acpi_madt_rintc *acpi_cpu_get_madt_rintc(int cpu)
-> diff --git a/drivers/acpi/riscv/Makefile b/drivers/acpi/riscv/Makefile
-> index 1284a076fa88..77f8f0101b7e 100644
-> --- a/drivers/acpi/riscv/Makefile
-> +++ b/drivers/acpi/riscv/Makefile
-> @@ -1,5 +1,6 @@
->  # SPDX-License-Identifier: GPL-2.0-only
->  obj-y                                  +=3D rhct.o init.o irq.o
-> +obj-$(CONFIG_RISCV_CBQRI_DRIVER)       +=3D rqsc.o
->  obj-$(CONFIG_ACPI_PROCESSOR_IDLE)      +=3D cpuidle.o
->  obj-$(CONFIG_ACPI_CPPC_LIB)            +=3D cppc.o
->  obj-$(CONFIG_ACPI_RIMT)                        +=3D rimt.o
-> diff --git a/drivers/acpi/riscv/rqsc.c b/drivers/acpi/riscv/rqsc.c
-> new file mode 100644
-> index 000000000000..1cbc5c07e191
-> --- /dev/null
-> +++ b/drivers/acpi/riscv/rqsc.c
-> @@ -0,0 +1,194 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +
-> +#define pr_fmt(fmt) "ACPI: RQSC: " fmt
-> +
-> +#include <linux/acpi.h>
-> +#include <linux/bits.h>
-> +#include <linux/riscv_cbqri.h>
-> +
-> +#include "rqsc.h"
-> +
-> +#define CBQRI_CTRL_SIZE 0x1000
-> +
-> +int __init acpi_parse_rqsc(struct acpi_table_header *table)
-> +{
-> +       struct acpi_table_rqsc *rqsc =3D (struct acpi_table_rqsc *)table;
-> +       struct acpi_rqsc_node *end, *node;
-> +       int num_controllers =3D 0;
-> +
-> +       /*
-> +        * Reject revisions newer than this parser was written against.  =
-A
-> +        * future revision could extend the fixed RQSC header before the
-> +        * first node, which would shift the resource subtables and cause=
- the
-> +        * sizeof(*node)-based offset below to point into the wrong place=
-.
-> +        */
-> +       if (rqsc->header.revision !=3D ACPI_RQSC_REVISION) {
-> +               pr_err("RQSC table revision %u, expected %u, aborting\n",
-> +                      rqsc->header.revision, ACPI_RQSC_REVISION);
-> +               return -EINVAL;
-> +       }
-> +
-> +       /* Reject tables shorter than the fixed RQSC header. */
-> +       if (rqsc->header.length < sizeof(struct acpi_table_rqsc)) {
-> +               pr_err("RQSC table truncated: length %u < %zu, aborting\n=
-",
-> +                      rqsc->header.length, sizeof(struct acpi_table_rqsc=
-));
-> +               return -EINVAL;
-> +       }
-> +
-> +       end =3D ACPI_ADD_PTR(struct acpi_rqsc_node, rqsc, rqsc->header.le=
-ngth);
-> +
-> +       for (node =3D ACPI_ADD_PTR(struct acpi_rqsc_node, rqsc,
-> +                                sizeof(struct acpi_table_rqsc));
-> +            node < end;
-> +            node =3D ACPI_ADD_PTR(struct acpi_rqsc_node, node, node->len=
-gth)
-> +       ) {
-> +               const struct acpi_rqsc_resource *res0;
-> +               struct cbqri_controller_info info =3D {};
-> +               int ret;
-> +
-> +               if ((void *)node + sizeof(*node) > (void *)end) {
-> +                       pr_err("truncated entry at end of table, aborting=
-\n");
-> +                       riscv_cbqri_unregister_last(num_controllers);
-> +                       return -EINVAL;
-> +               }
-> +
-> +               if (node->length < sizeof(*node)) {
-> +                       pr_err("malformed RQSC entry: length %u < %zu, ab=
-orting\n",
-> +                              node->length, sizeof(*node));
-> +                       riscv_cbqri_unregister_last(num_controllers);
-> +                       return -EINVAL;
-> +               }
-> +
-> +               /*
-> +                * Without this check, a node whose length claims to exte=
-nd
-> +                * past the end of the table would advance the loop curso=
-r
-> +                * past `end` and silently terminate.  Flag the corruptio=
-n
-> +                * explicitly so a malformed firmware table cannot trunca=
-te
-> +                * the controller list without noise.
-> +                */
-> +               if ((void *)node + node->length > (void *)end) {
-> +                       pr_err("RQSC entry length %u overruns table end, =
-aborting\n",
-> +                              node->length);
-> +                       riscv_cbqri_unregister_last(num_controllers);
-> +                       return -EINVAL;
-> +               }
-> +
-> +               /* GAS must describe system memory. ioremap() consumes it=
- later. */
-> +               if (node->reg.space_id !=3D ACPI_ADR_SPACE_SYSTEM_MEMORY)=
+Currently, to work-around the problem of missing device MSI domain,
+various RISC-V MSI client drivers explicitly set device MSI domain
+in the driver probe function using below code pattern:
+
+	/*
+	 * The device MSI domain for platform devices on RISC-V architecture
+	 * is only available after the MSI controller driver is probed so,
+	 * explicitly configure here.
+	 */
+	if (!dev_get_msi_domain(dev)) {
+		/*
+		 * The device MSI domain for OF devices is only set at the
+		 * time of populating/creating OF device. If the device MSI
+		 * domain is discovered later after the OF device is created
+		 * then we need to set it explicitly before using any platform
+		 * MSI functions.
+		 */
+		if (is_of_node(fwnode)) {
+			of_msi_configure(dev, dev_of_node(dev));
+		} else if (is_acpi_device_node(fwnode)) {
+			struct irq_domain *msi_domain;
+			msi_domain = irq_find_matching_fwnode(imsic_acpi_get_fwnode(dev),
+							      DOMAIN_BUS_PLATFORM_MSI);
+			dev_set_msi_domain(dev, msi_domain);
+		}
+
+		if (!dev_get_msi_domain(dev))
+			return -EPROBE_DEFER;
+	}
+
+Instead of the above approach, extend the platform_dma_configure() to set
+device MSI domain for both OF and ACPI based platform devices before driver
+probe and remove the duplicate code pattern from RISC-V MSI client drivers.
+
+Co-developed-by: Sunil V L <sunilvl@oss.qualcomm.com>
+Signed-off-by: Sunil V L <sunilvl@oss.qualcomm.com>
+Signed-off-by: Anup Patel <anup.patel@oss.qualcomm.com>
+---
+ drivers/acpi/riscv/irq.c                | 13 +++++++++++
+ drivers/acpi/scan.c                     | 10 +++++++++
+ drivers/base/platform.c                 |  4 ++++
+ drivers/iommu/riscv/iommu-platform.c    |  9 --------
+ drivers/irqchip/irq-riscv-aplic-msi.c   | 27 -----------------------
+ drivers/irqchip/irq-riscv-rpmi-sysmsi.c | 29 -------------------------
+ drivers/mailbox/riscv-sbi-mpxy-mbox.c   | 29 -------------------------
+ include/acpi/acpi_bus.h                 |  1 +
+ include/linux/acpi.h                    | 10 +++++++++
+ 9 files changed, 38 insertions(+), 94 deletions(-)
+
+diff --git a/drivers/acpi/riscv/irq.c b/drivers/acpi/riscv/irq.c
+index 9b88d0993e88..17fa5dcdd2c0 100644
+--- a/drivers/acpi/riscv/irq.c
++++ b/drivers/acpi/riscv/irq.c
+@@ -5,8 +5,11 @@
+  */
+ 
+ #include <linux/acpi.h>
++#include <linux/device.h>
+ #include <linux/sort.h>
+ #include <linux/irq.h>
++#include <linux/irqdomain.h>
++#include <linux/irqchip/riscv-imsic.h>
+ 
+ #include "init.h"
+ 
+@@ -397,6 +400,16 @@ static u32 riscv_acpi_add_irq_dep(acpi_handle handle)
+ 	return count;
+ }
+ 
++void acpi_arch_msi_configure(struct device *dev)
++{
++	struct irq_domain *msi_domain;
++
++	msi_domain = irq_find_matching_fwnode(imsic_acpi_get_fwnode(dev),
++					      DOMAIN_BUS_PLATFORM_MSI);
++	if (msi_domain)
++		dev_set_msi_domain(dev, msi_domain);
++}
++
+ u32 arch_acpi_add_auto_dep(acpi_handle handle)
  {
-> +                       pr_warn("controller has unsupported address space=
-_id=3D%u, skipping\n",
-> +                               node->reg.space_id);
-> +                       continue;
-> +               }
-> +
-> +               /* Address 0 would map page 0 (reset vectors, SBI, boot R=
-OM). */
-> +               if (!node->reg.address) {
-> +                       pr_warn("controller has zero address, skipping\n"=
-);
-> +                       continue;
-> +               }
-> +
-> +               info.type =3D node->type;
-> +               /* RQSC v0.9.2 section 2 Table 2: 12-byte GAS-format regi=
-ster interface address */
-> +               info.addr =3D node->reg.address;
-> +               info.size =3D CBQRI_CTRL_SIZE;
-> +               info.rcid_count =3D node->rcid;
-> +               info.mcid_count =3D node->mcid;
-> +
-> +               /* See CBQRI_MAX_RCID/MCID in <linux/riscv_cbqri.h> for t=
-he rationale. */
-> +               if (info.rcid_count > CBQRI_MAX_RCID) {
-> +                       pr_warn("controller at %pa: rcid_count %u exceeds=
- CBQRI_MAX_RCID %u, skipping\n",
-> +                               &info.addr, info.rcid_count, CBQRI_MAX_RC=
-ID);
-> +                       continue;
-> +               }
-> +
-> +               if (info.mcid_count > CBQRI_MAX_MCID) {
-> +                       pr_warn("controller at %pa: mcid_count %u exceeds=
- CBQRI_MAX_MCID %u, skipping\n",
-> +                               &info.addr, info.mcid_count, CBQRI_MAX_MC=
-ID);
-> +                       continue;
-> +               }
-> +
-Do you also want to add a check for the statement in the spec "At
-least one of RCID Count or MCID Count must be non-zero." ?
+ 	if (acpi_has_method(handle, "_PRT"))
+diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+index 530547cda8b2..e50e5d246a54 100644
+--- a/drivers/acpi/scan.c
++++ b/drivers/acpi/scan.c
+@@ -1648,6 +1648,16 @@ static int acpi_iommu_configure_id(struct device *dev, const u32 *id_in)
+ 
+ #endif /* !CONFIG_IOMMU_API */
+ 
++/**
++ * acpi_msi_configure - Set-up MSI domain for the device.
++ * @dev: The pointer to the device
++ */
++void acpi_msi_configure(struct device *dev)
++{
++	acpi_arch_msi_configure(dev);
++}
++EXPORT_SYMBOL_GPL(acpi_msi_configure);
++
+ /**
+  * acpi_dma_configure_id - Set-up DMA configuration for the device.
+  * @dev: The pointer to the device
+diff --git a/drivers/base/platform.c b/drivers/base/platform.c
+index a19dd22deef2..225e33080bc6 100644
+--- a/drivers/base/platform.c
++++ b/drivers/base/platform.c
+@@ -1470,8 +1470,12 @@ static int platform_dma_configure(struct device *dev)
+ 	int ret = 0;
+ 
+ 	if (is_of_node(fwnode)) {
++		if (!dev_get_msi_domain(dev))
++			of_msi_configure(dev, dev->of_node);
+ 		ret = of_dma_configure(dev, to_of_node(fwnode), true);
+ 	} else if (is_acpi_device_node(fwnode)) {
++		if (!dev_get_msi_domain(dev))
++			acpi_msi_configure(dev);
+ 		attr = acpi_get_dma_attr(to_acpi_device_node(fwnode));
+ 		ret = acpi_dma_configure(dev, attr);
+ 	}
+diff --git a/drivers/iommu/riscv/iommu-platform.c b/drivers/iommu/riscv/iommu-platform.c
+index 399ba8fe1b3e..ddc6370b96b0 100644
+--- a/drivers/iommu/riscv/iommu-platform.c
++++ b/drivers/iommu/riscv/iommu-platform.c
+@@ -48,7 +48,6 @@ static int riscv_iommu_platform_probe(struct platform_device *pdev)
+ 	enum riscv_iommu_igs_settings igs;
+ 	struct device *dev = &pdev->dev;
+ 	struct riscv_iommu_device *iommu = NULL;
+-	struct irq_domain *msi_domain;
+ 	struct resource *res = NULL;
+ 	int vec, ret;
+ 
+@@ -74,14 +73,6 @@ static int riscv_iommu_platform_probe(struct platform_device *pdev)
+ 	switch (igs) {
+ 	case RISCV_IOMMU_CAPABILITIES_IGS_BOTH:
+ 	case RISCV_IOMMU_CAPABILITIES_IGS_MSI:
+-		if (is_of_node(dev_fwnode(dev))) {
+-			of_msi_configure(dev, to_of_node(dev->fwnode));
+-		} else {
+-			msi_domain = irq_find_matching_fwnode(imsic_acpi_get_fwnode(dev),
+-							      DOMAIN_BUS_PLATFORM_MSI);
+-			dev_set_msi_domain(dev, msi_domain);
+-		}
+-
+ 		if (!dev_get_msi_domain(dev)) {
+ 			dev_warn(dev, "failed to find an MSI domain\n");
+ 			goto msi_fail;
+diff --git a/drivers/irqchip/irq-riscv-aplic-msi.c b/drivers/irqchip/irq-riscv-aplic-msi.c
+index fb8d1838609f..2cf5d42cd66a 100644
+--- a/drivers/irqchip/irq-riscv-aplic-msi.c
++++ b/drivers/irqchip/irq-riscv-aplic-msi.c
+@@ -175,7 +175,6 @@ static const struct msi_domain_template aplic_msi_template = {
+ int aplic_msi_setup(struct device *dev, void __iomem *regs)
+ {
+ 	const struct imsic_global_config *imsic_global;
+-	struct irq_domain *msi_domain;
+ 	struct aplic_priv *priv;
+ 	struct aplic_msicfg *mc;
+ 	phys_addr_t pa;
+@@ -245,32 +244,6 @@ int aplic_msi_setup(struct device *dev, void __iomem *regs)
+ 	/* Setup global config and interrupt delivery */
+ 	aplic_init_hw_global(priv, true);
+ 
+-	/* Set the APLIC device MSI domain if not available */
+-	if (!dev_get_msi_domain(dev)) {
+-		/*
+-		 * The device MSI domain for OF devices is only set at the
+-		 * time of populating/creating OF device. If the device MSI
+-		 * domain is discovered later after the OF device is created
+-		 * then we need to set it explicitly before using any platform
+-		 * MSI functions.
+-		 *
+-		 * In case of APLIC device, the parent MSI domain is always
+-		 * IMSIC and the IMSIC MSI domains are created later through
+-		 * the platform driver probing so we set it explicitly here.
+-		 */
+-		if (is_of_node(dev->fwnode)) {
+-			of_msi_configure(dev, to_of_node(dev->fwnode));
+-		} else {
+-			msi_domain = irq_find_matching_fwnode(imsic_acpi_get_fwnode(dev),
+-							      DOMAIN_BUS_PLATFORM_MSI);
+-			if (msi_domain)
+-				dev_set_msi_domain(dev, msi_domain);
+-		}
+-
+-		if (!dev_get_msi_domain(dev))
+-			return -EPROBE_DEFER;
+-	}
+-
+ 	if (!msi_create_device_irq_domain(dev, MSI_DEFAULT_DOMAIN, &aplic_msi_template,
+ 					  priv->nr_irqs + 1, priv, priv)) {
+ 		dev_err(dev, "failed to create MSI irq domain\n");
+diff --git a/drivers/irqchip/irq-riscv-rpmi-sysmsi.c b/drivers/irqchip/irq-riscv-rpmi-sysmsi.c
+index 612f3972f7af..e6cdb4b635a6 100644
+--- a/drivers/irqchip/irq-riscv-rpmi-sysmsi.c
++++ b/drivers/irqchip/irq-riscv-rpmi-sysmsi.c
+@@ -260,35 +260,6 @@ static int rpmi_sysmsi_probe(struct platform_device *pdev)
+ 			riscv_acpi_update_gsi_range(priv->gsi_base, priv->nr_irqs);
+ 	}
+ 
+-	/*
+-	 * The device MSI domain for platform devices on RISC-V architecture
+-	 * is only available after the MSI controller driver is probed so,
+-	 * explicitly configure here.
+-	 */
+-	if (!dev_get_msi_domain(dev)) {
+-		/*
+-		 * The device MSI domain for OF devices is only set at the
+-		 * time of populating/creating OF device. If the device MSI
+-		 * domain is discovered later after the OF device is created
+-		 * then we need to set it explicitly before using any platform
+-		 * MSI functions.
+-		 */
+-		if (is_of_node(fwnode)) {
+-			of_msi_configure(dev, dev_of_node(dev));
+-		} else if (is_acpi_device_node(fwnode)) {
+-			struct irq_domain *msi_domain;
+-
+-			msi_domain = irq_find_matching_fwnode(imsic_acpi_get_fwnode(dev),
+-							      DOMAIN_BUS_PLATFORM_MSI);
+-			dev_set_msi_domain(dev, msi_domain);
+-		}
+-
+-		if (!dev_get_msi_domain(dev)) {
+-			mbox_free_channel(priv->chan);
+-			return -EPROBE_DEFER;
+-		}
+-	}
+-
+ 	if (!msi_create_device_irq_domain(dev, MSI_DEFAULT_DOMAIN,
+ 					  &rpmi_sysmsi_template,
+ 					  priv->nr_irqs, priv, priv)) {
+diff --git a/drivers/mailbox/riscv-sbi-mpxy-mbox.c b/drivers/mailbox/riscv-sbi-mpxy-mbox.c
+index 7c9c006b7244..759512aba19f 100644
+--- a/drivers/mailbox/riscv-sbi-mpxy-mbox.c
++++ b/drivers/mailbox/riscv-sbi-mpxy-mbox.c
+@@ -902,35 +902,6 @@ static int mpxy_mbox_probe(struct platform_device *pdev)
+ 
+ 	/* Setup MSIs for mailbox (if required) */
+ 	if (mbox->msi_count) {
+-		/*
+-		 * The device MSI domain for platform devices on RISC-V architecture
+-		 * is only available after the MSI controller driver is probed so,
+-		 * explicitly configure here.
+-		 */
+-		if (!dev_get_msi_domain(dev)) {
+-			struct fwnode_handle *fwnode = dev_fwnode(dev);
+-
+-			/*
+-			 * The device MSI domain for OF devices is only set at the
+-			 * time of populating/creating OF device. If the device MSI
+-			 * domain is discovered later after the OF device is created
+-			 * then we need to set it explicitly before using any platform
+-			 * MSI functions.
+-			 */
+-			if (is_of_node(fwnode)) {
+-				of_msi_configure(dev, dev_of_node(dev));
+-			} else if (is_acpi_device_node(fwnode)) {
+-				struct irq_domain *msi_domain;
+-
+-				msi_domain = irq_find_matching_fwnode(imsic_acpi_get_fwnode(dev),
+-								      DOMAIN_BUS_PLATFORM_MSI);
+-				dev_set_msi_domain(dev, msi_domain);
+-			}
+-
+-			if (!dev_get_msi_domain(dev))
+-				return -EPROBE_DEFER;
+-		}
+-
+ 		mbox->msi_index_to_channel = devm_kcalloc(dev, mbox->msi_count,
+ 							  sizeof(*mbox->msi_index_to_channel),
+ 							  GFP_KERNEL);
+diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+index c41d9a7565cf..b31ba661245e 100644
+--- a/include/acpi/acpi_bus.h
++++ b/include/acpi/acpi_bus.h
+@@ -744,6 +744,7 @@ bool acpi_dma_supported(const struct acpi_device *adev);
+ enum dev_dma_attr acpi_get_dma_attr(struct acpi_device *adev);
+ int acpi_iommu_fwspec_init(struct device *dev, u32 id,
+ 			   struct fwnode_handle *fwnode);
++void acpi_msi_configure(struct device *dev);
+ int acpi_dma_get_range(struct device *dev, const struct bus_dma_region **map);
+ int acpi_dma_configure_id(struct device *dev, enum dev_dma_attr attr,
+ 			   const u32 *input_id);
+diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+index 67effb91fa98..e8829be3ca55 100644
+--- a/include/linux/acpi.h
++++ b/include/linux/acpi.h
+@@ -260,6 +260,12 @@ acpi_numa_processor_affinity_init(struct acpi_srat_cpu_affinity *pa) { }
+ 
+ void acpi_numa_x2apic_affinity_init(struct acpi_srat_x2apic_cpu_affinity *pa);
+ 
++#if defined(CONFIG_RISCV)
++void acpi_arch_msi_configure(struct device *dev);
++#else
++static inline void acpi_arch_msi_configure(struct device *dev) { }
++#endif
++
+ #if defined(CONFIG_ARM64) || defined(CONFIG_LOONGARCH)
+ void acpi_arch_dma_setup(struct device *dev);
+ #else
+@@ -1058,6 +1064,10 @@ static inline int acpi_dma_get_range(struct device *dev, const struct bus_dma_re
+ 	return -ENODEV;
+ }
+ 
++static inline void acpi_msi_configure(struct device *dev)
++{
++}
++
+ static inline int acpi_dma_configure(struct device *dev,
+ 				     enum dev_dma_attr attr)
+ {
+-- 
+2.43.0
 
-> +               if (node->nres =3D=3D 0) {
-> +                       pr_warn("controller at %pa has no resource descri=
-ptors, skipping\n",
-> +                               &info.addr);
-> +                       continue;
-> +               }
-> +
-> +               /*
-> +                * Resources follow the node header in-line. Only res[0] =
-is
-> +                * consumed. Bound it against end before reading its pref=
-ix so
-> +                * a table that ends partway through a resource subtable =
-is
-> +                * rejected rather than read past the mapping.
-> +                */
-> +               res0 =3D (const struct acpi_rqsc_resource *)
-> +                      ((const u8 *)node + sizeof(*node));
-> +               if ((void *)res0 + sizeof(*res0) > (void *)end ||
-> +                   node->length < sizeof(*node) + sizeof(*res0) ||
-> +                   res0->length < sizeof(*res0)) {
-> +                       pr_warn("controller at %pa: node too short for re=
-source descriptor, skipping\n",
-> +                               &info.addr);
-> +                       continue;
-> +               }
-> +
-> +               if (node->nres > 1)
-> +                       pr_warn("controller at %pa has %u resource descri=
-ptors, using first\n",
-> +                               &info.addr, node->nres);
-> +
-> +               /*
-> +                * id1 is u64 on the wire but cache_id and prox_dom are u=
-32
-> +                * downstream (PPTT cache_id, ACPI proximity domain). Rej=
-ect
-> +                * rather than truncate, so a too-large id is not silentl=
-y
-> +                * mapped to the wrong PPTT entry or NUMA node.
-> +                */
-> +               if (res0->id1 > U32_MAX) {
-> +                       pr_warn("controller at %pa: id1 0x%llx exceeds u3=
-2, skipping\n",
-> +                               &info.addr, res0->id1);
-> +                       continue;
-> +               }
-> +
-> +               /*
-> +                * Pair the QoS controller type with the resource descrip=
-tor
-> +                * fields that index id1.  RQSC v0.9.2 Table 4 defines th=
-e
-> +                * mapping: a Capacity controller indexes a Processor Cac=
-he
-> +                * via PPTT cache_id, a Bandwidth controller indexes a Me=
-mory
-> +                * Range via SRAT proximity domain.  Mismatched pairings
-> +                * (e.g. a CC whose first resource is Memory) would other=
-wise
-> +                * route id1 into the wrong downstream lookup.
-> +                */
-> +               switch (info.type) {
-> +               case CBQRI_CONTROLLER_TYPE_CAPACITY:
-> +                       if (res0->type !=3D ACPI_RQSC_RESOURCE_TYPE_CACHE=
- ||
-> +                           res0->id_type !=3D ACPI_RQSC_RESOURCE_ID_TYPE=
-_PROCESSOR_CACHE) {
-> +                               pr_warn("CC at %pa: resource type=3D%u id=
-_type=3D%u not (cache, processor cache), skipping\n",
-> +                                       &info.addr, res0->type, res0->id_=
-type);
-> +                               continue;
-> +                       }
-> +                       info.cache_id =3D (u32)res0->id1;
-> +                       break;
-> +               case CBQRI_CONTROLLER_TYPE_BANDWIDTH:
-> +                       if (res0->type !=3D ACPI_RQSC_RESOURCE_TYPE_MEMOR=
-Y ||
-> +                           res0->id_type !=3D ACPI_RQSC_RESOURCE_ID_TYPE=
-_MEMORY_RANGE) {
-> +                               pr_warn("BC at %pa: resource type=3D%u id=
-_type=3D%u not (memory, memory range), skipping\n",
-> +                                       &info.addr, res0->type, res0->id_=
-type);
-> +                               continue;
-> +                       }
-> +                       info.prox_dom =3D (u32)res0->id1;
-> +                       break;
-> +               default:
-> +                       pr_warn("controller at %pa: unknown type %u, skip=
-ping\n",
-> +                               &info.addr, info.type);
-> +                       continue;
-> +               }
-> +
-> +               pr_debug("registering controller type=3D%u addr=3D%pa rci=
-d=3D%u mcid=3D%u\n",
-> +                        info.type, &info.addr, info.rcid_count, info.mci=
-d_count);
-> +
-> +               ret =3D riscv_cbqri_register_controller(&info);
-> +               if (ret =3D=3D 0)
-> +                       num_controllers++;
-> +               else
-> +                       pr_warn("controller at %pa: registration failed (=
-%d), skipping\n",
-> +                               &info.addr, ret);
-> +       }
-> +
-> +       pr_info("found %d CBQRI controllers\n", num_controllers);
-> +       return 0;
-> +}
-> diff --git a/drivers/acpi/riscv/rqsc.h b/drivers/acpi/riscv/rqsc.h
-> new file mode 100644
-> index 000000000000..f7b556f29e16
-> --- /dev/null
-> +++ b/drivers/acpi/riscv/rqsc.h
-> @@ -0,0 +1,63 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Local definitions for the RISC-V Quality of Service Controller (RQSC)
-> + * ACPI table. Will move to ACPICA's include/acpi/actbl2.h once the spec
-> + * is ratified.
-> + */
-> +#ifndef _DRIVERS_ACPI_RISCV_RQSC_H
-> +#define _DRIVERS_ACPI_RISCV_RQSC_H
-> +
-> +#include <linux/types.h>
-> +#include <acpi/actbl.h>
-> +
-> +#define ACPI_SIG_RQSC  "RQSC"  /* RISC-V Quality of Service Controller *=
-/
-> +
-> +/* RQSC v0.9.2 Table 1: current revision number. */
-> +#define ACPI_RQSC_REVISION     1
-> +
-> +/* RQSC v0.9.2 Table 4: Resource Type values for acpi_rqsc_resource.type=
-. */
-> +#define ACPI_RQSC_RESOURCE_TYPE_CACHE  0
-> +#define ACPI_RQSC_RESOURCE_TYPE_MEMORY 1
-> +
-> +/* RQSC v0.9.2 Table 4: Resource ID Type values for .id_type. */
-> +#define ACPI_RQSC_RESOURCE_ID_TYPE_PROCESSOR_CACHE     0
-> +#define ACPI_RQSC_RESOURCE_ID_TYPE_MEMORY_RANGE                1
-> +
-Memory-Side Cache, ACPI, PCI devices missing?
-
-Thanks,
-Sunil
