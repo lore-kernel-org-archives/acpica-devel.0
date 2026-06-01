@@ -1,116 +1,195 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE10C23ABA8;
-	Sun, 31 May 2026 01:51:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4BBB176FB1
+	for <acpica-devel@lists.linux.dev>; Mon,  1 Jun 2026 02:31:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780192273; cv=none; b=Fy+0l3O7IMVaPRhEzasK1PZf8a0S0jFpN9bZ6uUagvngbnEc72MjO/osMAtG3bE2FlBmSLG+TO+MExfHjKg0q1CNcAHcchNvKWElmaOJZ4+RErWtwwnSmm2SaJUVN+Y4APc87kGyctFnP3KU3Y/5KwhC1Tg0jEjh6IX1r9u3hhI=
+	t=1780281118; cv=none; b=n+N7os5igQv/L7/iuKO45wOrOIcWvGSkFUrP0LYjmbnU2PQ5F8DwfiRY7IR7AHiOfbxISKwDweyEhBbn72jsCuzPLW8+v3RO+b36WC9vXeSFERAtCcEor4pAcM65MXzZd/Tg74VSjNzK962UqGEXKCo069pxFU7Flm2Ut9a46/s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780192273; c=relaxed/simple;
-	bh=kgQ1INYmGkCFtHjfF37gquvimy7OqaTM1L0UoNYKxYk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TOQANcTBLAuCpVOZ9xn5GeuNUbrKac6hgwvH9ZlSecWYCLN3SjzfTJtXhUu7IDrUm3U0PgBsxIkHFxyyxLPX7badlvaxngIqONlufU3TI69qRExLIFWEf0j++ueT7wK2p+KGODds3ntCHliROwPsgxhzPKdCA5zLTKlPjo1wrZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kLY60Wfh; arc=none smtp.client-ip=100.103.45.18
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kLY60Wfh"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 766BE1F00893;
-	Sun, 31 May 2026 01:51:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1780192272;
-	bh=1miKEZAnGiSRcJQWtswcD5dFRkY3BK0eDKYXOh7h6zk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=kLY60WfhyXnSawaNZl+ilX4Ak1L0nLfHZVo5wooZbVNLdLl6+VwBm6FBMlSa46wp2
-	 RhTtMwa0RiiIopa/dJ6a4pY7B1OWJ6JG6HV0TQp+U2W/HKI248r6TyYHbRTreyNyVz
-	 yUz2338GeKxTE6CjYYCC6b361QBAF7FbhAnXKsfdt2WOCXOxGmOr6XE4nuBsWSm68w
-	 aiWbuaU68w9QP8FiUzIoZ1Bv2H7Ru5HQw2gQGmLT2bdMaYe7+sdfPcvgs8KQZWMZpX
-	 upA3cR23f39TzrUVNIHAGvC/dbMTqphfDDHLjSUuECnm+NaeIS8qJ8xIn5Vit4bcaE
-	 MoQcXwuCuMEJw==
-Date: Sat, 30 May 2026 18:51:01 -0700
-From: Drew Fustini <fustini@kernel.org>
-To: Sunil V L <sunilvl@oss.qualcomm.com>
-Cc: Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
-	Radim =?utf-8?B?S3LEjW3DocWZ?= <rkrcmar@ventanamicro.com>,
-	Samuel Holland <samuel.holland@sifive.com>,
-	Adrien Ricciardi <aricciardi@baylibre.com>,
-	Nicolas Pitre <npitre@baylibre.com>,
-	Kornel =?utf-8?Q?Dul=C4=99ba?= <mindal@semihalf.com>,
-	Atish Patra <atish.patra@linux.dev>,
-	Atish Kumar Patra <atishp@rivosinc.com>,
-	Vasudevan Srinivasan <vasu@rivosinc.com>,
-	Ved Shanbhogue <ved@rivosinc.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	yunhui cui <cuiyunhui@bytedance.com>,
-	Chen Pei <cp0613@linux.alibaba.com>,
-	Liu Zhiwei <zhiwei_liu@linux.alibaba.com>,
-	Weiwei Li <liwei1518@gmail.com>, guo.wenjia23@zte.com.cn,
-	Gong Shuai <gong.shuai@sanechips.com.cn>,
-	Gong Shuai <gsh517@gmail.com>, liu.qingtao2@zte.com.cn,
-	Reinette Chatre <reinette.chatre@intel.com>,
-	Tony Luck <tony.luck@intel.com>, Babu Moger <babu.moger@amd.com>,
-	Peter Newman <peternewman@google.com>,
-	Fenghua Yu <fenghua.yu@intel.com>,
-	James Morse <james.morse@arm.com>, Ben Horgan <ben.horgan@arm.com>,
-	Dave Martin <Dave.Martin@arm.com>, Rob Herring <robh@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>,
-	Sunil V L <sunilvl@ventanamicro.com>,
-	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Clark Williams <clrkwllms@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org, x86@kernel.org,
-	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
-	devicetree@vger.kernel.org,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Conor Dooley <conor@kernel.org>, linux-rt-devel@lists.linux.dev,
-	linux-doc@vger.kernel.org
-Subject: Re: [PATCH RFC v5 16/18] ACPI: RISC-V: Parse RISC-V Quality of
- Service Controller (RQSC) table
-Message-ID: <ahuUBV8QYo_ToOrB@gen8>
-References: <20260524-ssqosid-cbqri-rqsc-v7-0-v5-0-78d3a7ba9dbe@kernel.org>
- <20260524-ssqosid-cbqri-rqsc-v7-0-v5-16-78d3a7ba9dbe@kernel.org>
- <CAB19ukE9r_V=0eop3=f8zohhnCavd=9GjDEK1VMMbOb0ReOtDA@mail.gmail.com>
+	s=arc-20240116; t=1780281118; c=relaxed/simple;
+	bh=mMceGhfGGhIyUIAPtc4wT2ZortdfXYgsMpxqn8eoBA0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=H0h424lgPBJ1tdoLD7tAaZRE5YjAL+kCDCDKDL9ThFcqv3J1S4sB9KTW8nTbBlbWwdnQKys8bp6FQDekRbboY/6H6hzjsLjmKBoAObCzSTAIpZzrJGnBPi+24K8T+rTUZJeDAnGTZ19EvuLurZnlzVLWRwR7WsedTzfN8GZdihI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 098874ec5d6211f1aa26b74ffac11d73-20260601
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.3.12,REQID:e8df8b6f-1adc-4009-a840-06959c90a7ca,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:0
+X-CID-META: VersionHash:e7bac3a,CLOUDID:4f66cb218efca946c6ff02be308f0345,BulkI
+	D:nil,BulkQuantity:0,Recheck:0,SF:80|81|82|83|102|865|898,TC:nil,Content:0
+	|15|52,EDM:-3,IP:nil,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,O
+	SI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC:0
+X-CID-BVR: 2,SSN|SDN
+X-CID-BAS: 2,SSN|SDN,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
+X-UUID: 098874ec5d6211f1aa26b74ffac11d73-20260601
+Received: from [10.42.13.56] [(10.44.16.150)] by mailgw.kylinos.cn
+	(envelope-from <luoxueqin@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_128_GCM_SHA256 128/128)
+	with ESMTP id 1043785512; Mon, 01 Jun 2026 10:31:47 +0800
+Message-ID: <5e91635e-8aa5-4113-bce9-b7a82320e09c@kylinos.cn>
+Date: Mon, 1 Jun 2026 10:31:46 +0800
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAB19ukE9r_V=0eop3=f8zohhnCavd=9GjDEK1VMMbOb0ReOtDA@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ACPI: CPPC: Add helper to get effective guaranteed
+ performance
+Content-Language: en-US
+To: srinivas pandruvada <srinivas.pandruvada@linux.intel.com>,
+ rafael@kernel.org, lenb@kernel.org, viresh.kumar@linaro.org,
+ saket.dumbre@intel.com, linux-acpi@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+ acpica-devel@lists.linux.dev
+References: <20260529081801.29346-1-luoxueqin@kylinos.cn>
+ <60119eb883057391dc6def200be119e56a6e4fb5.camel@linux.intel.com>
+From: luoxueqin <luoxueqin@kylinos.cn>
+In-Reply-To: <60119eb883057391dc6def200be119e56a6e4fb5.camel@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, May 25, 2026 at 01:53:09PM +0530, Sunil V L wrote:
-> > +               if (info.mcid_count > CBQRI_MAX_MCID) {
-> > +                       pr_warn("controller at %pa: mcid_count %u exceeds CBQRI_MAX_MCID %u, skipping\n",
-> > +                               &info.addr, info.mcid_count, CBQRI_MAX_MCID);
-> > +                       continue;
-> > +               }
-> > +
-> Do you also want to add a check for the statement in the spec "At
-> least one of RCID Count or MCID Count must be non-zero." ?
 
-Good idea, I'll add a skip with pr_warn when both are zero.
+在 2026/5/29 23:33, srinivas pandruvada 写道:
+> On Fri, 2026-05-29 at 16:18 +0800, Xueqin Luo wrote:
+>> According to the ACPI CPPC specification, if the Guaranteed
+>> Performance register is not implemented, OSPM assumes the
+>> guaranteed performance is equal to nominal performance.
+>>
+>> Add cppc_get_effective_guaranteed_perf() helper to provide a
+>> spec-compliant effective guaranteed performance value while
+>> preserving the raw values returned by cppc_get_perf_caps().
+>>
+> Hi Luo,
+>
+> Are you trying to fix any issue where you have issue with
+> "base_frequency" display? intel_pstate will revert to native MSR, which
+> is always present when we are using CPPC.
+>
+> I worry about some bad nominal perf in some platforms as we will be
+> dependent on OEM BIOS.
+>
+> Thanks,
+> Srinivas
+>
+Thanks Srinivas.
 
-> > +/* RQSC v0.9.2 Table 4: Resource Type values for acpi_rqsc_resource.type. */
-> > +#define ACPI_RQSC_RESOURCE_TYPE_CACHE  0
-> > +#define ACPI_RQSC_RESOURCE_TYPE_MEMORY 1
-> > +
-> > +/* RQSC v0.9.2 Table 4: Resource ID Type values for .id_type. */
-> > +#define ACPI_RQSC_RESOURCE_ID_TYPE_PROCESSOR_CACHE     0
-> > +#define ACPI_RQSC_RESOURCE_ID_TYPE_MEMORY_RANGE                1
-> > +
-> Memory-Side Cache, ACPI, PCI devices missing?
+The intent is not to fix any issue in intel_pstate. It already
+implements the fallback correctly today.
 
-I'll add the constants for the future.
-
-Thanks,
-Drew
+My goal was to provide a common helper encapsulating the ACPI
+CPPC semantics, with intel_pstate serving as the first user.
+That said, I agree the benefit may not justify a new exported
+helper at this point.
+>> Signed-off-by: Xueqin Luo <luoxueqin@kylinos.cn>
+>> ---
+>>   drivers/acpi/cppc_acpi.c       | 26 ++++++++++++++++++++++++++
+>>   drivers/cpufreq/intel_pstate.c | 10 ++++------
+>>   include/acpi/cppc_acpi.h       |  5 +++++
+>>   3 files changed, 35 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+>> index f370be8715ae..6dc11030707a 100644
+>> --- a/drivers/acpi/cppc_acpi.c
+>> +++ b/drivers/acpi/cppc_acpi.c
+>> @@ -1328,6 +1328,32 @@ int cppc_get_highest_perf(int cpunum, u64
+>> *highest_perf)
+>>   }
+>>   EXPORT_SYMBOL_GPL(cppc_get_highest_perf);
+>>   
+>> +/**
+>> + * cppc_get_effective_guaranteed_perf - get effective guaranteed
+>> performance
+>> + * @cpunum: CPU number
+>> + * @guaranteed_perf: Effective guaranteed performance value
+>> + *
+>> + * The ACPI CPPC specification states that if the Guaranteed
+>> + * Performance register is not implemented, OSPM assumes the
+>> + * guaranteed performance is equal to nominal performance.
+>> + *
+>> + * Return: 0 on success, negative errno on failure.
+>> + */
+>> +int cppc_get_effective_guaranteed_perf(int cpunum, u64
+>> *guaranteed_perf)
+>> +{
+>> +	struct cppc_perf_caps perf_caps;
+>> +	int ret;
+>> +
+>> +	ret = cppc_get_perf_caps(cpunum, &perf_caps);
+>> +	if (ret)
+>> +		return ret;
+>> +	*guaranteed_perf = perf_caps.guaranteed_perf ?:
+>> +			   perf_caps.nominal_perf;
+>> +
+>> +	return 0;
+>> +}
+>> +EXPORT_SYMBOL_GPL(cppc_get_effective_guaranteed_perf);
+>> +
+>>   /**
+>>    * cppc_get_epp_perf - Get the epp register value.
+>>    * @cpunum: CPU from which to get epp preference value.
+>> diff --git a/drivers/cpufreq/intel_pstate.c
+>> b/drivers/cpufreq/intel_pstate.c
+>> index 8dc22a65e025..8934e48f71a2 100644
+>> --- a/drivers/cpufreq/intel_pstate.c
+>> +++ b/drivers/cpufreq/intel_pstate.c
+>> @@ -404,17 +404,15 @@ static void intel_pstate_set_itmt_prio(int cpu)
+>>   
+>>   static int intel_pstate_get_cppc_guaranteed(int cpu)
+>>   {
+>> -	struct cppc_perf_caps cppc_perf;
+>> +	u64 guaranteed_perf;
+>>   	int ret;
+>>   
+>> -	ret = cppc_get_perf_caps(cpu, &cppc_perf);
+>> +	ret = cppc_get_effective_guaranteed_perf(cpu,
+>> &guaranteed_perf);
+>> +
+>>   	if (ret)
+>>   		return ret;
+>>   
+>> -	if (cppc_perf.guaranteed_perf)
+>> -		return cppc_perf.guaranteed_perf;
+>> -
+>> -	return cppc_perf.nominal_perf;
+>> +	return guaranteed_perf;
+>>   }
+>>   
+>>   static int intel_pstate_cppc_get_scaling(int cpu)
+>> diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
+>> index d1f02ceec4f9..c02f3bc1fc1a 100644
+>> --- a/include/acpi/cppc_acpi.h
+>> +++ b/include/acpi/cppc_acpi.h
+>> @@ -155,6 +155,7 @@ struct cppc_cpudata {
+>>   extern int cppc_get_desired_perf(int cpunum, u64 *desired_perf);
+>>   extern int cppc_get_nominal_perf(int cpunum, u64 *nominal_perf);
+>>   extern int cppc_get_highest_perf(int cpunum, u64 *highest_perf);
+>> +extern int cppc_get_effective_guaranteed_perf(int cpunum, u64
+>> *guaranteed_perf);
+>>   extern int cppc_get_perf_ctrs(int cpu, struct cppc_perf_fb_ctrs
+>> *perf_fb_ctrs);
+>>   extern int cppc_get_perf(int cpu, struct cppc_perf_ctrls
+>> *perf_ctrls);
+>>   extern int cppc_set_perf(int cpu, struct cppc_perf_ctrls
+>> *perf_ctrls);
+>> @@ -198,6 +199,10 @@ static inline int cppc_get_highest_perf(int
+>> cpunum, u64 *highest_perf)
+>>   {
+>>   	return -EOPNOTSUPP;
+>>   }
+>> +static inline int cppc_get_effective_guaranteed_perf(int cpunum, u64
+>> *guaranteed_perf)
+>> +{
+>> +	return -EOPNOTSUPP;
+>> +}
+>>   static inline int cppc_get_perf_ctrs(int cpu, struct
+>> cppc_perf_fb_ctrs *perf_fb_ctrs)
+>>   {
+>>   	return -EOPNOTSUPP;
