@@ -1,142 +1,223 @@
-Received: from CH4PR04CU002.outbound.protection.outlook.com (mail-northcentralusazon11013012.outbound.protection.outlook.com [40.107.201.12])
+Received: from PH0PR06CU001.outbound.protection.outlook.com (mail-westus3azon11011055.outbound.protection.outlook.com [40.107.208.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70F6A33EB06
-	for <acpica-devel@lists.linux.dev>; Fri,  5 Jun 2026 04:10:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.201.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C44B43DD51B
+	for <acpica-devel@lists.linux.dev>; Tue,  9 Jun 2026 07:37:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.208.55
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780632626; cv=fail; b=V6mOxGj8qMsnCd/eU+c++Me/VHqwqd5i25Gr8liQxpaO4ibVAdDcwX3Typ/wpsYOLhMzZAKNlAsE7vpFCSOPDA3tXc/5K6+am45F0zTkBButQA/DfUxYatZedgLVp1yN2f7SINZnRBVMr0nxUR2LKqQLNsojswboUJ5AMsmG+VI=
+	t=1780990662; cv=fail; b=OMDUdigmWheV31OVWm3DWPLYXVnDSgOAu0nNb5Vs3DCAnP3Eu8p3MEdNcrgufy7ejKJpWoRAV2OQ2mEvfOl03lDDAmEan6q+FZCHrbiukzxC6JkBbtGCtd3XurWk/O+FScLEGfiAmMDlgraJWmX4ryT86PZbT5ckPrRImm2/n/4=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780632626; c=relaxed/simple;
-	bh=VA+l24e7JVm0uJf9ff2aCVcRAAO636Iwx7Jvfk8j+9U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=CjSKyyvJ1w1RwKKgCpthVLpbmrE3LHnRqcO2CfDpGP3xfsHDOSDmxFBy3+kiGTjqBmAkA4f7fAruK9YGaCFWqZTpnoE+CEC41Rb2zAP0SSp0wRylQNRMMzRqE5wrXYCHMldV9BenavTkGo2DRaqpCaPY4cUZeZ6abRY7+bN6WcU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=3rmhMfN+; arc=fail smtp.client-ip=40.107.201.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+	s=arc-20240116; t=1780990662; c=relaxed/simple;
+	bh=sEfWo5r3CjZTfMJ/N7YegkrGFFauAe+zmywWgCliElo=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=SLiUILc7q3sIfQpMExCcI0CnOWoqWCAqiBr84Ret9nlNlcPQvBD59BfwnP6Imi4hvKjACqNVs8Z7ZCaIAedAaXY7elRomzoM0kvOmgGp3VSuaxI5694ZgCyV8NxD2kiy9QLn+7Os8zD3GOCwOWmjuZIv86ijBXdwLovjGDB4FbU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=klLl30Jb; arc=fail smtp.client-ip=40.107.208.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="3rmhMfN+"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="klLl30Jb"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=VWIu9wAuwzxGFoDYkOj1JFCjRS9uEM3eIXFzy1FNgRP6pRZwCBxi/toH64L7nQFZzudl+MJwiOnyH4R/p8rn5GOaOTz1MxXnRouxM2NVWlWeO0DmNWeWn1rggGDLYmWcvq1W0gYT13SLoFMn9ivf5pNptu7W93zXIB60Z5W/JwT0YwmRbcD30jcDTiJgZm3lTLOmGSggq7fl8/9gaEialCjAVH1OVH3/BcmY3rf8EOvWqSzmLSUXmWAlF820h7pcLCfapIscMpCTNDdBPCoD4oR9vSWal92vgXGcWhdUdxhaU7EecivMOInGNs9A3OvYfqGJAyAr9RkEnehC7xfd7Q==
+ b=CzNUtiWvi776+iyiYWwaFbfuUYYv2RvE7gJyxK+dk1nmM1gingtw7evp45DxhvUGY0VJ75NY0RBvuMNr0ZcfGUMC9QUyr10JFkkIDhqIlBmMggQtSpMYeYUpEEwhqezxviE+1PjXZMeyxP4qYY6LrQ+vMWvjP1dM2noNG5RCxhau8fIiqg92N18g3llApsc0jIxqq1WZPOzAGXW7ZMKeTLwjlY9TVbaozlOWi2jQL3sE7COLDqOZGqqNxKhn2N9XqhNLgmAes9FkKTa+DXV1ru8hi8UBzdaXyGJEoY6k6aHaUmvArs4P9o3Xx5+2tjVCcPLl3+7sH84Az/E1o1Drkw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kOlkO7LuhSZwyArTOzfkGw6mvgV/74hMuZtXKzu/APo=;
- b=MGoFxQeFWJPwOtf8HyCZr8tBTdF1hJnxLrBekBYbTfn4aODNQvE9fBhyLZ56dtLo+NnQi723DpsP2hda2epOP6+TXeIJif2k+s8lBmoPIQjSf75FlqPutkt4VxQ5ZnpZa2KRb1N4bAhR5KB5hXw9aoDhyMb54L0MMIcee/ga2BSIJGrBk5fUIyTv/k+LyXhad+snJlKUrjpAsVAXi5OmYyOFnQLWpX/U83TCYkjrJ6DqSjUrlQtBv8IMRIZHNDyFyr6QnXEIHgDpLSzSdysHA9SyVtr1IKONQezqJNKfmSIWv3rBEIwKITwhyHMzhDLMlhXsEAACtwnuQFIBgz66IA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ bh=WuToAVhsZdLvaknkdKxTMGpdF3LjOMujoGkZbTMPjqQ=;
+ b=Qr2R9rnDQypwvdYM8wLmdv8oUFh/+6NrsiuwQukG4iW5ZI7a4iJXKmExpKC+M89Y+ToSoxnt8tvinV2WWM1kTVymv7We8WVdUCS4FFM8WoXyAkXoKHEzj3065BaNwBMVXPXZ7sj3xyzBpqKOqRos7IiPjOJLSU+8am8Ij9Ce/rYOe6znclBiX3eclxAep+0UrIg82n9SPNYDH/L8s6bzAdNfErmk6iNLfYrEzSf6VfIVxNVZnBJQ4I5r2DTsosJ7gBwcF2Hbd/ngvkH4EYTi8PSFFzta43VaQYrGaQ239ZeFgy/YSU8xNe8Sf0EAb2nvsHFloTzPAppG4UsPRzn3/w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kOlkO7LuhSZwyArTOzfkGw6mvgV/74hMuZtXKzu/APo=;
- b=3rmhMfN+QxKXbQg9PtR43hKlvIGBUbOtT9Y1sDk9Yx4+dkDgK3FDvSvsGjnppPtC/7AWnN3mCUkg7lVDoEtyLnleonxPNeOZ5gEWsp7/T2RmyVzg70opgeayM1wTRzMbonZgq8zH3U2hCyaxy/+kdhrvgp5HKP/sN9dLQdCcMtM=
-Received: from BL1PR13CA0352.namprd13.prod.outlook.com (2603:10b6:208:2c6::27)
- by MN2PR12MB4190.namprd12.prod.outlook.com (2603:10b6:208:1dd::24) with
+ bh=WuToAVhsZdLvaknkdKxTMGpdF3LjOMujoGkZbTMPjqQ=;
+ b=klLl30JbUPVvkI9mtIhhd4XzhQ+U7BZYKjp2TdajQeVnlKuxzYzu2yYH20tTQeoYnFfWUz5dNLv/9P+t/qCVCpt3/axUVbRLZI5JBwX4DbKc+g+o/VVxcQ1qUsU2YESrweB5/dx98vv5DrQuukdgPES66appKOnHuh6AiNl7kAmHQK0Jl7HYsug91FacXbhitUdVFDrTQngklPbh/L1iKvrRx1McKkojsGgx9BQ760FZQ4wIBLcuoayv6r62BZfCM1//YojbqVEas5njRJxPsNTR4e2+b+FODVt2Jtrm5zD8OoRqivjSYYiwOO8wWtDRDVfjW8nldlsmOKFMpFgQkg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BN9PR12MB5179.namprd12.prod.outlook.com (2603:10b6:408:11c::18)
+ by LV2PR12MB5870.namprd12.prod.outlook.com (2603:10b6:408:175::10) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.92.8; Fri, 5 Jun 2026
- 04:10:20 +0000
-Received: from BN1PEPF00005FFC.namprd05.prod.outlook.com
- (2603:10b6:208:2c6:cafe::a0) by BL1PR13CA0352.outlook.office365.com
- (2603:10b6:208:2c6::27) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.92.7 via Frontend Transport; Fri, 5
- Jun 2026 04:10:20 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=satlexmb08.amd.com; pr=C
-Received: from satlexmb08.amd.com (165.204.84.17) by
- BN1PEPF00005FFC.mail.protection.outlook.com (10.167.243.228) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.92.5 via Frontend Transport; Fri, 5 Jun 2026 04:10:20 +0000
-Received: from satlexmb10.amd.com (10.181.42.219) by satlexmb08.amd.com
- (10.181.42.217) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.41; Thu, 4 Jun
- 2026 23:10:20 -0500
-Received: from satlexmb08.amd.com (10.181.42.217) by satlexmb10.amd.com
- (10.181.42.219) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.41; Thu, 4 Jun
- 2026 23:10:20 -0500
-Received: from [10.136.33.4] (10.180.168.240) by satlexmb08.amd.com
- (10.181.42.217) with Microsoft SMTP Server id 15.2.2562.41 via Frontend
- Transport; Thu, 4 Jun 2026 23:10:15 -0500
-Message-ID: <d258b3dd-633d-4733-9eb3-4b65013e81e7@amd.com>
-Date: Fri, 5 Jun 2026 09:40:14 +0530
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.92.13; Tue, 9 Jun 2026
+ 07:37:37 +0000
+Received: from BN9PR12MB5179.namprd12.prod.outlook.com
+ ([fe80::cf08:f59b:d016:c95f]) by BN9PR12MB5179.namprd12.prod.outlook.com
+ ([fe80::cf08:f59b:d016:c95f%4]) with mapi id 15.21.0092.011; Tue, 9 Jun 2026
+ 07:37:37 +0000
+Message-ID: <6af59ba9-8d90-48a1-823f-f98bbcb5d8f5@nvidia.com>
+Date: Tue, 9 Jun 2026 13:07:27 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 2/2] ACPI: CPPC: Add ospm_nominal_perf support
+To: Christian Loehle <christian.loehle@arm.com>, rafael@kernel.org,
+ viresh.kumar@linaro.org, lenb@kernel.org, pierre.gondois@arm.com,
+ zhenglifeng1@huawei.com, zhanjie9@hisilicon.com, mario.limonciello@amd.com,
+ saket.dumbre@intel.com, linux-acpi@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+ acpica-devel@lists.linux.dev
+Cc: treding@nvidia.com, jonathanh@nvidia.com, vsethi@nvidia.com,
+ ksitaraman@nvidia.com, sanjayc@nvidia.com, mochs@nvidia.com,
+ bbasu@nvidia.com, sumitg@nvidia.com
+References: <20260527194626.185286-1-sumitg@nvidia.com>
+ <20260527194626.185286-3-sumitg@nvidia.com>
+ <19b92583-ab78-4b45-a260-03a13874b0fe@arm.com>
+Content-Language: en-US
+From: Sumit Gupta <sumitg@nvidia.com>
+In-Reply-To: <19b92583-ab78-4b45-a260-03a13874b0fe@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: DS7PR03CA0270.namprd03.prod.outlook.com
+ (2603:10b6:5:3b3::35) To BN9PR12MB5179.namprd12.prod.outlook.com
+ (2603:10b6:408:11c::18)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 3/3] x86/cpu/amd: Fetch S5_RESET_STATUS from PHAT when
- supported
-To: Mario Limonciello <mario.limonciello@amd.com>, "Rafael J. Wysocki"
-	<rafael@kernel.org>, Len Brown <lenb@kernel.org>, Borislav Petkov
-	<bp@alien8.de>, Yazen Ghannam <yazen.ghannam@amd.com>,
-	<linux-kernel@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
-	<acpica-devel@lists.linux.dev>, Thomas Gleixner <tglx@kernel.org>, "Ingo
- Molnar" <mingo@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>,
-	<x86@kernel.org>
-CC: Vilas Sridharan <Vilas.Sridharan@amd.com>, "H. Peter Anvin"
-	<hpa@zytor.com>, Andrew Cooper <andrew.cooper3@citrix.com>, Mikhail Paulyshka
-	<me@mixaill.net>, Kai Huang <kai.huang@intel.com>, Rong Zhang <i@rong.moe>
-References: <20260603063317.13665-1-kprateek.nayak@amd.com>
- <20260603063317.13665-4-kprateek.nayak@amd.com>
- <d45e3051-ced5-45d8-b3ff-c50f4e41cd1f@amd.com>
-Content-Language: en-US
-From: K Prateek Nayak <kprateek.nayak@amd.com>
-In-Reply-To: <d45e3051-ced5-45d8-b3ff-c50f4e41cd1f@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN1PEPF00005FFC:EE_|MN2PR12MB4190:EE_
-X-MS-Office365-Filtering-Correlation-Id: 48b1bdb8-95ff-40e7-a88c-08dec2b85be4
+X-MS-TrafficTypeDiagnostic: BN9PR12MB5179:EE_|LV2PR12MB5870:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1a328051-a410-4fef-a168-08dec5f9fa1e
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|7416014|82310400026|1800799024|36860700016|22082099003|18002099003|921020|56012099006|4143699003|11063799006;
+	BCL:0;ARA:13230040|1800799024|376014|7416014|366016|6133799003|22082099003|18002099003|921020|4143699003|56012099006|11063799006;
 X-Microsoft-Antispam-Message-Info:
-	ua1iDmHjYp/0OEUhEKuznGd1ocKfDTeRtvevszG1/Yka4nvZwRnNs2jBKhXWoTLiw78R6+0XQdHd8XPklYrhJC8BWOhmrGSK/KWer9K5j0OeuC8zMivxAiUI38u4CBbqSp7wOPb2tvMGJa9cAyZf+JU2+JTIs5ZPwHvCtvTBYakQJqN0EEqKgu0tYYed6tR3G7w1VxWZLvy7r6UNBYCvaTs1KkJiCK8c3QNaoJYkzuootOFdXqx2cFIxcrzVRIsF7W2rg+/6kcND2mt+ZXEC0SUVqoPB+q6PAHCe0IjZZmDfLn4gCOIiRUT6EvFrmqMTtWswwPZL2rv5kKj5fFanvGLvHso2lxupxO+i7sbKDJoFS7XAviYFi+T4dXW+fC5SLY8F13USeneZtwCvrmWgvRjLpxusLKqkGlb1CtTnTwWdmYK6BmauUg+/CrZZoTWpKvQwWP5O6PhPQauosc6i+wOwWCzA9JmBXSWIDikiDouaQ+X6+4YsYIvWbdiP4se8YZoqO/KAzt4A1LG/bOgdI+9peiarOi7MGfXn7mYEka1UKNDSf92iTjTRVXjgs93TicoZZRx78LWQT4jWvxE/JKWnPkM5xPNcVq/HZKS8i8ZRPXl3powcuaVAv/dxh4idMNnTedsmkXW5LIJWtC4znpvTGRGHwsIAUeohlP5P+S2VwFdV3F9EAYxCN7rMhUKriimmGl7Jb7w/zEht7cyuTrGUmjVWZ9T+k+x8d/8/9toNKKIHqPPu3rdUpVJR/sOC+yoMQ7xFDov00Hcqng0Q1w==
+	Xfk3OCSPWjXWITIUcEyI3joJcdBlFACx6jtJ4frR5+bqgNw3EEoHujRz8lP1xdCPfb8Mprl9BPP/wo9wc46MfTUbTVDsGvxjguvl7TbLichnh+ZBr2pRyaCiStUmCrw6cBaEW/3lbEzyf81rzURnSnC/O8t//qu8d/nrZ4pHj0+cVY22dkZYnKFmkrix7zWIr4YT645SvT6rWA02AY4jomyiwPJLC/tObhoXeKu93uwmdGKhTMhgz0qD+K6aYDKcqlw69MDnS0MNCg+2KN3sNhDUPww7N0rj421PGJNh1HvT4yszvMn84niQBOm7x1BKnCDH3/ayDWY4atQXFcPbc0Vz3P7c7khukyehk3Zf9T9cJ6a1kwh7crvX5Km4GZWJgAUTyiESUl+6/CHWVQ/h+Am9GT1TlFbmK7NvwrVhHis2hOvF5uRPohbG5O/oiqjOaCpRcX7EhS2YPsiQIpwA49NBg0Kx36lOk+YyM8nY/ASMJUNkqySWBdPJ52SYGpYvO9/nyuLpFflxGszzG3/OfxNM6076n4iq4eBQs9nkS8aMz03C4UJ5sPG5n2szRVVbrepdQymRsJQpgi0XWm50Z1cqKSyfiu4G+C0WYbOAO4frxo7HKZfEwbwld4xR5OyuJhLSobkCaNB+UBSVdsf815zK5KvAdnpaO6pNoBP2nNgtHwIpQ+ur8jPZQH/LxiI/tNieKiEyIDaY6kU9UGuFNbYUp6kmigJdpp/7O+JlvMObS7VZRafHLmjYAmwZo+Zk
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb08.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(376014)(7416014)(82310400026)(1800799024)(36860700016)(22082099003)(18002099003)(921020)(56012099006)(4143699003)(11063799006);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5179.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(366016)(6133799003)(22082099003)(18002099003)(921020)(4143699003)(56012099006)(11063799006);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	rll1xbzIchbv21JIspP+73gXTDRtpDXs1NBowKB/W4qseZ7w9bbq8QvfEa0o3jhpvjX2Urqy8orSdpjGscmxY9hb8CkiL1fRxadhQpJNajvqRrxiU8IIBfwpYiqMItjfO/Buk/qgQgPtj3jhfUk4Y2xUt8yqJEkYjjinChomHrZZ8Nj67UhHAG513NHppHPJEBf+C2ONlzx0kCapwFCxswEOybv7ugvONugwQdxT924xkUI1HmRAHzCLGorullE99rWOjRkGMrct44hTIG56GDogTFfWT13x+kusvgM3pBWVQFYNITS63P4Ed4zO8ttqrBdlb+4Tlqc2PGsIkaOIu8/K2ut3M1RP9mGB+sYd2XR9EU412Fit2c3P9NKL/mR+5535/gBiDjun/HzWoe6rkyPxaHTz9knfxxFb+D1qJ3wmvh9QLcDI2DWiye5QhW20
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jun 2026 04:10:20.4269
+	=?utf-8?B?YW1hMDVsV0RyZmhreWV6dFdmOGdnZW5qUlJESnZTSzZtN3RXL0w3ZzZTS1d5?=
+ =?utf-8?B?VVVZY09JdGxjK3drNnJpN1hpUkpmRmFqZHM5WS8xSmRTSmpmZ3Q0SFR2eUpm?=
+ =?utf-8?B?SGhWZ2tlbEFrSDJzc3hoTEwreTdIcENOSXdjcERUa0VTV3h4WUxDRWVjWkpW?=
+ =?utf-8?B?QXhOWXdrRS8wTWZwT0tlMjROdEtUNU9Wakt1ZTdFdG5TRUVBcFBOM1N3TEJm?=
+ =?utf-8?B?NytYL2ZHLysvZlZ1VHZpN1JxbkxqanZaVG9rd05ReXJ5aVEvdTc0SVVRd3Bm?=
+ =?utf-8?B?ajB6K2J2eDY4a2tiNXRaTk5kb1BUMlhLbkRJbGgyZE10UldhdE5hbXBxcmJD?=
+ =?utf-8?B?MWxlalZETzdackw4ak9XSDQ3YnloK05TNStyWGJsUXl2MThsbHkxbmNmVnZr?=
+ =?utf-8?B?QnJsQUl0R3JwNnNub0V0bTgzSXBTaE5weitWMlhGTU1LWU1qZUx5WmVFcmhv?=
+ =?utf-8?B?STZKNGNJSmZsWnNuRm5WVW5wZmE0T3JOMkMwSllmeWNCMThjd0x0MkQwK2U0?=
+ =?utf-8?B?aXM4dFdWelV5ckNNV2RUemxyZDN6NG5xVUQ2SktpMkNRTjk2L2RpRjk1amwv?=
+ =?utf-8?B?SHQxQmQvcEtjb2lWQjByMHhqeTFLSk15bmhFUW16ejlNdVpGbTJBejZtQ1Vp?=
+ =?utf-8?B?cDNucmRCc2xDaFpvTGRBUWRUdGZ5aGd0Mk9tUmlka1d1SGplMkJiS2NBeUVL?=
+ =?utf-8?B?ZmpkOTZBV25wZWlVNGVDMjdDa01MWENWL3BHWkM3bFNuNXlHZmJySzdsQ25B?=
+ =?utf-8?B?TlNIaGxlQVNiMk0xd0p1V0lZQkkwdFJ5OUpadkw3eTZlNm1ldHZHV0luTEsz?=
+ =?utf-8?B?b3EvdWFKRUdXbHZ0T3hTU25CL0JsYUphanFLRmJLb1dYbmp1UWVBRDl2Nnl3?=
+ =?utf-8?B?WlFSSnNMYTQzVm1pVXFKN3o5SlUxSzY1aGZQaGhyOUh1QmJpQms0OWMwUzNN?=
+ =?utf-8?B?cUVRbXdDVEZBbjFZUTJWNlg0d0RkV2NDTHZBOGlhOWRQM2JDR3hGT2ZXeUhy?=
+ =?utf-8?B?UzVnS1FZZC9wa0pTTzVYMEtRbHJ4emNJSUZ2ZE5vVm0wTmxCaTczamVqSkc5?=
+ =?utf-8?B?aG1yT1E4WjhsbFMrRVBuN2RmZXR2dFY5U0pCZkhvUXJkbVdUR1ltaGRZbjlS?=
+ =?utf-8?B?K1g5d1dERjhiNlgyRDZycXRzTStnalF5aCt4Y1hDUEd1b0lGSU1iQmhlWXUv?=
+ =?utf-8?B?eU1FcHVHODZKa2xzQ2h4WXFSMnVzbTJXRUR5Z3ZkcXhwYzUyclN3RzNLb2pM?=
+ =?utf-8?B?dGxrTmlpVkVwa1VXMEhMSlltNlNBbjM2WlNHdllhakg4ZFVNT3p4ZlFBSGhs?=
+ =?utf-8?B?MENabDFnQm5nUTFYN3FGWWFHdThSWnA0eC9UclE5Ymdmc2NoMTM0Kzc2UzZP?=
+ =?utf-8?B?L3JseVhlZXlQbVRZZjdnelJqSXZTcFRUQXRTbnBMREVpMDJESzdzbnFaWHc5?=
+ =?utf-8?B?NWVRRnRDeE13Yzd1MGVzU2VURXRMUWliVis1ZU1jVlNScFJXSjBQdXppbFoy?=
+ =?utf-8?B?eFh0aHg4Y2YxdTdsNE1SamhoZTVUNUJZSkl6eEJpa3ZKTUdjZkhCNHdEbW52?=
+ =?utf-8?B?OUhiR1duZDhPcG8wbllDZ2s3RmR4djZhN3VPY3R4RFFsUW50a2QrbmJ4UUtZ?=
+ =?utf-8?B?UnBSVzAxd1dyUDUwZmJoV2VEK1RkQ0ZrVkR6em5EL0RHemw5dTB6UHlpbTMy?=
+ =?utf-8?B?clJlWlNWbFA3T05VaFlneFdXQy8waENkekxzWW9GSCtNNzExeTVKMUQyRXZr?=
+ =?utf-8?B?YVA5ZzlqcXZpbUFpUUM3bnFWYUVpYlhDenFQOTk5T0NzUVlVR254bnlkL3Ju?=
+ =?utf-8?B?Z081YWVvSW1lakpUTURiQmlzVDI5VEhkbkdWeHZZSVVDZUN6NUVRNVRxVmtX?=
+ =?utf-8?B?VmgzMjg1cWlIai9LVUVxQVE5cG9PSXRMVmV6blBUQXpiWE9VaitGOW0rNVZs?=
+ =?utf-8?B?Qll4eE5IN0N6bkY4S01GMklpWDRwNnZyOFZlMHQ5Sk5BUWpoNFpIdVNCZm0w?=
+ =?utf-8?B?WGxSNkRlT21PUkkrL3cxc2ZYc0FzQ3RDcHRkZ1FWQktIK3VRaWk5NmlZQzhO?=
+ =?utf-8?B?SURXeUtSd0hwMjBEK01HYzRKMWNMV2dVM0puTHRscTRpYVZXMExwLzRudFN2?=
+ =?utf-8?B?S3JvMlJSVFQ5UGtUdmc1blAraGVEVFpYVVhTMjR6V1U4V0NKVUF1ZnFSYmJ3?=
+ =?utf-8?B?L1NFZlpFNnpPNHFDdURyUzRwcFVVbXpHTTM4d1h3cDMzQ1ZGU0VFUlovNEkx?=
+ =?utf-8?B?ODlMZTVzQTJIVjRMWWdKS0xlOWYwL0laVW1YS1kxcHord1dvVjdVeU1SZ1F5?=
+ =?utf-8?Q?LoolEufyKRQnBOiSpn?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1a328051-a410-4fef-a168-08dec5f9fa1e
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5179.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jun 2026 07:37:36.8371
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 48b1bdb8-95ff-40e7-a88c-08dec2b85be4
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb08.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BN1PEPF00005FFC.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4190
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7JeY97Iz8HUcz687Qb2oG47jN7mxmuigzyTBDjft0v8tJaoG1djK9Zh+E+lJsRyiZAq5WHvRFHbCMJ4jZQxWiQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR12MB5870
 
-Hello Mario,
 
-On 6/3/2026 7:56 PM, Mario Limonciello wrote:
->> +    record = (void *)acpi_phat_get_vendor_reset_reason(&guid);
->> +    if (!IS_ERR(record)) {
->> +        bool record_valid = false;
+On 29/05/26 18:42, Christian Loehle wrote:
+> External email: Use caution opening links or attachments
+>
+>
+> On 5/27/26 20:46, Sumit Gupta wrote:
+>> Expose the OSPM Nominal Performance register (ACPI 6.6, Section
+>> 8.4.6.1.2.6), which conveys the desired nominal performance level
+>> at which the platform may run. Unlike the existing read-only
+>> Nominal Performance register, it is writable and lets OSPM
+>> request a lower nominal level than the platform-reported nominal.
+>> The platform classifies performance above this level as boosted
+>> and below as throttled for its power/thermal decisions.
+>>
+>> It is exposed as a per-policy cpufreq sysfs attribute in kHz, to
+>> match the cpufreq sysfs unit convention:
+>>
+>>    /sys/devices/system/cpu/cpufreq/policyN/ospm_nominal_freq
+>>
+>> The attribute is documented in
+>> Documentation/ABI/testing/sysfs-devices-system-cpu.
+>>
+>> Writes are converted to perf via cppc_khz_to_perf(), validated
+>> against [Lowest Performance, Nominal Performance], and applied to
+>> every CPU in policy->cpus.
+>>
+>> The register is write-only; the kernel caches the last written
+>> value in struct cppc_cpudata for sysfs readback (returns 0 until
+>> userspace writes a value).
+>>
+>> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+>> ---
+>>   .../ABI/testing/sysfs-devices-system-cpu      | 17 ++++++
+>>   drivers/acpi/cppc_acpi.c                      | 35 +++++++++++
+>>   drivers/cpufreq/cppc_cpufreq.c                | 60 +++++++++++++++++++
+>>   include/acpi/cppc_acpi.h                      | 12 ++++
+>>   4 files changed, 124 insertions(+)
+>>
+>> diff --git a/Documentation/ABI/testing/sysfs-devices-system-cpu b/Documentation/ABI/testing/sysfs-devices-system-cpu
+>> index 82d10d556cc8..ac1bf1b89ac4 100644
+>> --- a/Documentation/ABI/testing/sysfs-devices-system-cpu
+>> +++ b/Documentation/ABI/testing/sysfs-devices-system-cpu
+>> @@ -346,6 +346,23 @@ Description:     Performance Limited
+>>
+>>                This file is only present if the cppc-cpufreq driver is in use.
+>>
+>> +What:                /sys/devices/system/cpu/cpuX/cpufreq/ospm_nominal_freq
+>> +Date:                May 2026
+>> +Contact:     linux-pm@vger.kernel.org
+>> +Description: OSPM Nominal Performance (kHz)
 >> +
->> +        /* Sanity check before using the parsed record. */
->> +        if (record->header.length == sizeof(*record)) {
-> 
-> Why not do this sanity check in acpi_phat_get_vendor_reset_reason()
-> directly?  Then we can always assume if something is returned it's
-> valid and it's simpler here (and any other potential callers in future).
+>> +             OSPM uses this attribute to request a nominal performance
+>> +             level lower than the platform-reported nominal. The
+>> +             platform treats performance above this level as boost
+>> +             and below as throttle for power and thermal decisions.
+>> +
+>> +             Read returns the last written value in kHz, or 0 if no
+>> +             value has been written. Write a kHz value in the range
+>> +             [lowest_freq, nominal_freq].
+>> +
+>> +             This file is only present if the cppc-cpufreq driver is
+>> +             in use.
+>> +
+> Given that this value, based also on firmware behavior, can create vast asymmetries
+> between CPUs, which the scheduler would be unaware of I wonder if this warrants
+> a similar disclaimer like intel_pstate carries for their per-CPU EPP:
+> https://www.kernel.org/doc/html/v7.0/admin-guide/pm/intel_pstate.html#energy-vs-performance-hints
+>
+> "[Note that tasks may by migrated from one CPU to another by the scheduler’s load-balancing algorithm and if different energy vs performance hints are set for those CPUs, that may lead to undesirable outcomes. To avoid such issues it is better to set the same energy vs performance hint for all CPUs or to pin every task potentially sensitive to them to a specific CPU.]"
 
-My intention here was to catch any changes to the PHAT record format
-for this GUID. If we can reasonably assume that isn't going to happen,
-we can skip this check entirely.
+Good point.
+In v5 added below to the sysfs ABI doc, modeled on similar note:
 
--- 
-Thanks and Regards,
-Prateek
+   Note that tasks may be migrated from one CPU to another
+   by the scheduler's load-balancing algorithm, and if
+   different OSPM Nominal Performance values are set for
+   those CPUs, that may lead to undesirable outcomes. To
+   avoid such issues it is better to set the same value
+   across all policies, or to pin every potentially
+   sensitive task to a specific CPU.
+
+Thank you,
+Sumit Gupta
+
 
