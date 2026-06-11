@@ -1,49 +1,49 @@
-Received: from AM0PR83CU005.outbound.protection.outlook.com (mail-westeuropeazon11010000.outbound.protection.outlook.com [52.101.69.0])
+Received: from AM0PR02CU008.outbound.protection.outlook.com (mail-westeuropeazon11013069.outbound.protection.outlook.com [52.101.72.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6A733B774B
-	for <acpica-devel@lists.linux.dev>; Thu, 11 Jun 2026 12:44:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.69.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C46928850E
+	for <acpica-devel@lists.linux.dev>; Thu, 11 Jun 2026 14:33:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.72.69
 ARC-Seal:i=3; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781181854; cv=fail; b=r0oWzmoLhqIQZevI2u6pGF8VoxjO6YfuKFaHyrM6lwyEZCL9Cl6jyWeQpXkHFzvMLQH2Ez2DWVghKIYbKJR5tGXZgFbwXe7B7he+KF/CYxBcPAlTLDBycykBN1mgTHdGDNqPdHlgZuIQEgP5BeWeGsf0sGU0vGO4JojBepZaA3s=
+	t=1781188398; cv=fail; b=JGPAhPRdQNqxlUdJHqgj/vctYoNg2GKkeH5BTJjmTEMLdf/haDDUnhTJV0ybBrdSM3yYzCoIb/eubFT7ymfwtzu7Y/rc+u5VSLwtFPH/RZ4An9Yo15fI5oVR8o4uZLOMFsmmotycUOECn9rFHudyQxYFyDPz1dCZucVAGU6eDN0=
 ARC-Message-Signature:i=3; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781181854; c=relaxed/simple;
-	bh=EYZsP7iBxWFTl7K1KvX0pD7T7NLikWBzK/cTtT9UVKI=;
+	s=arc-20240116; t=1781188398; c=relaxed/simple;
+	bh=j6HWz9BlXycNqB+XsOV5B+nJRLmlmse3HKEOPgVAQ6s=;
 	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=RyFplPlGE+p6vMI8RXHiBqLuTUbVX9/2pzlC91ciKQHbI6pfoE6ex0YnhN3LaC3TvBpuV9nWDKTWZjimClECEMi1uN4oZvl/DOxaX9B3cMhoErEF86W5aX+gBqG9aLSFMeA0oJJ5o0jbJQUUO41tbj5h+CxhMueGR1IK7TUEf+Q=
-ARC-Authentication-Results:i=3; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=TDXtJhLy; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=TDXtJhLy; arc=fail smtp.client-ip=52.101.69.0
+	 Content-Type:MIME-Version; b=gictlYXrZ7iMxySyKdE6nXqBGTWfY7+L3EgScMz6Z72VqnWtPDFJhuwY5XgbjZpeRkj0b1pxaJagz6CymLnZR+/6W5v6iXcjDzfeobcWp7bPInQdZ4DKfl5B3KSoLz4J9jt5IDVwNrjU7A8eHSZw6d+aFUkZRfp8etAiucdYBFY=
+ARC-Authentication-Results:i=3; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=lDfvWMvW; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=lDfvWMvW; arc=fail smtp.client-ip=52.101.72.69
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="TDXtJhLy";
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="TDXtJhLy"
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="lDfvWMvW";
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="lDfvWMvW"
 ARC-Seal: i=2; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=pass;
- b=JSuosJXWsqIi7e5bleHdB/EO6ywfhTg7ktNzENURwTgcJq6M5qvtNBqa1Ve4kx0YatRgdwylnpsABluvq8s4z1HuKuLJSj2KmoDbBx2rjpJHBcejDTVNW4d7I4zL1zKMJHjjSGcWZ/a/rLyoR1/c/KtW1pCV8TScSa1nQ5jppBmtV1spVpfLVM49cU3DbSqG7rsXfr1FlKUMGLX/DACEZ/eZVrqj45SHzQ69fDeyKlX7bYkjajvEg8aMHBNgyKPv8f8JxDb/dYgyAh5jZi93eQ66O5YxeLcPHBePq04u3glNTel6GyNltnBvPLldggX9e0fey6w/acu6L864Mw2yPQ==
+ b=PrzKHbw3A5W4jm/CBMlExDxj+ThITasQokO8DTNx2wZL/jsb0zyFcOfKCXn51mMUfdZuID4sW/BvH/v9TzTikrNu/drf1jaLcDfptgDZTuUKtgfZJcjUGyiWXdj5WQDonnDF5D9/rgJ/zgEDDDGh8lu4LKriQCf+Vfn87naNN4IkJ5x961MiwA4BtUzaMRbHCOstBfdpSZhupa8NiAdAFObFRTGsdmCLnJPuBIWoa9pNQLBr77vKb6ab3MiIzLNmdFQl0Wc895q29Y9M7ElNr32VM96JsbLQdQrr423ePNDv7AYjVKuokbM5qUh+iyVI9xZL0yFNwbwuAJGo7sW+3A==
 ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ywsnunz5O4sx7NPH+J2HUpV+L5yYIn3iyeiVua0NrOQ=;
- b=dGIbbe/oEhdhlWz6WGB5YA0s5Sf5ui+lmR6aiZoukXV/MbFd8Pzd6yid2ieG9lZNxeXAX+ie730+PHONHXmIkNkShZglx/s8TfKBgNj4S3MtQLs4JAHaNZ6ips1X542RzbIDGOUmVEeABbvXu0QtgAxu2tO6OK91GiRBqpIfgatgx1bjAPh+Cde+tFqyDg/q8aeamcqoDYBLs5nNLzHVLPqcSB6SIXrDKGChikkre6lrJMyTtOoF+dAxMlu5KZn9/y/Z3gojAHJ+RsSjBGPqI1aw2X9U0SIs+YCGVCPZLq3V3l2M8qD+bEK9giwuj0tRW4eSdkiwL/mXgklhR8jsQA==
+ bh=8YEgSMVpmT4jGMwn7j4EJTnovCm223mKfQvTNV6JlcA=;
+ b=VQZ4EexRu9h5gArVKfVw0Xh0klvcmHO9HSYFGwQkyx4aqZ8zUtf6t0kTZbpntoCIv4vk0p/6Yfsx546NmI8uDlHVGqMF7A2rvWalEGiD42+XMCXPdP7rv3lAj+qAJ9Qa0NsubJToOH41WP3mvZXwK91A/BlP0DQ4c/OXy31k0b9q3QW61a7C+DD5A5PLcqY01Q7rOpzibhjgOADZzSsBCX0my46WJ6+zS/an3hCgYSUYvLI1F6KPzc7KsN1sExLMn0QKD3AtYg6/KkKKhfu1BuQFycJXrOFlMoExXdUOv39UG92jdRFUyCIxvJn2XmVtg1OOxZutC3lKmK7QmjsaSA==
 ARC-Authentication-Results: i=2; mx.microsoft.com 1; spf=pass (sender ip is
- 4.158.2.129) smtp.rcpttodomain=kernel.org smtp.mailfrom=arm.com; dmarc=pass
+ 4.158.2.129) smtp.rcpttodomain=nvidia.com smtp.mailfrom=arm.com; dmarc=pass
  (p=none sp=none pct=100) action=none header.from=arm.com; dkim=pass
  (signature was verified) header.d=arm.com; arc=pass (0 oda=1 ltdi=1
  spf=[1,1,smtp.mailfrom=arm.com] dkim=[1,1,header.d=arm.com]
  dmarc=[1,1,header.from=arm.com])
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arm.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ywsnunz5O4sx7NPH+J2HUpV+L5yYIn3iyeiVua0NrOQ=;
- b=TDXtJhLyVpF5izBjVtouGQUmlcrwmB8GIj03PjXhm+wg5cnL+o6On4My4uYBUFFz4kUApvRLXjJrI+ofgp6XJb+SzR2kng/9xjjZF+c0nMzbFNhhf803/e5c/Lu4dbyA7O/PjyjHX1Zi9EJZP4qt2Teq9p/7SMBlqBi7AveU0yI=
-Received: from DUZP191CA0006.EURP191.PROD.OUTLOOK.COM (2603:10a6:10:4f9::16)
- by VI0PR08MB11668.eurprd08.prod.outlook.com (2603:10a6:800:30c::6) with
+ bh=8YEgSMVpmT4jGMwn7j4EJTnovCm223mKfQvTNV6JlcA=;
+ b=lDfvWMvW8Jet1/AKcQr5WRFrKrH5TfgsD+1rf65eNUAYqVcNpxHnRdL/Y4aAIpnPPN28yb1DwIcqryUbW5cmNZMORfhMjFFw3gTZN0CI1RIs9rHjng9LW9fGaqrfI2Jk0yj4sxl/5dHRRanAiNhqd8KL2zvqKfRjKEZpS3rs75E=
+Received: from DU6P191CA0041.EURP191.PROD.OUTLOOK.COM (2603:10a6:10:53f::21)
+ by PAVPR08MB8847.eurprd08.prod.outlook.com (2603:10a6:102:2fd::5) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.92.11; Thu, 11 Jun
- 2026 12:44:04 +0000
-Received: from DB1PEPF000509F6.eurprd02.prod.outlook.com
- (2603:10a6:10:4f9:cafe::7a) by DUZP191CA0006.outlook.office365.com
- (2603:10a6:10:4f9::16) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.113.13; Thu, 11 Jun
+ 2026 14:33:08 +0000
+Received: from DB3PEPF0000885E.eurprd02.prod.outlook.com
+ (2603:10a6:10:53f:cafe::79) by DU6P191CA0041.outlook.office365.com
+ (2603:10a6:10:53f::21) with Microsoft SMTP Server (version=TLS1_3,
  cipher=TLS_AES_256_GCM_SHA384) id 15.21.113.13 via Frontend Transport; Thu,
- 11 Jun 2026 12:44:04 +0000
+ 11 Jun 2026 14:32:38 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 4.158.2.129)
  smtp.mailfrom=arm.com; dkim=pass (signature was verified)
  header.d=arm.com;dmarc=pass action=none header.from=arm.com;
@@ -51,62 +51,63 @@ Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
  4.158.2.129 as permitted sender) receiver=protection.outlook.com;
  client-ip=4.158.2.129; helo=outbound-uk1.az.dlp.m.darktrace.com; pr=C
 Received: from outbound-uk1.az.dlp.m.darktrace.com (4.158.2.129) by
- DB1PEPF000509F6.mail.protection.outlook.com (10.167.242.152) with Microsoft
+ DB3PEPF0000885E.mail.protection.outlook.com (10.167.242.9) with Microsoft
  SMTP Server (version=TLS1_3, cipher=TLS_AES_256_GCM_SHA384) id 15.21.113.7
- via Frontend Transport; Thu, 11 Jun 2026 12:44:03 +0000
+ via Frontend Transport; Thu, 11 Jun 2026 14:32:38 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=UzXoOB6N5XaQUkllNRYEINF1eYYg1NDF19GC3UYyItqgn+BBxsKrTxSIpVnCHsF3UMxHXGHfMj+wF5TyKmPuIgutbfMeQXrtK3VPthTDsHF7WYDluVerVcJXMNBnK9h9JbsG8WuDpj7Rh/WkYJjLwAkUX9QCRDj8dmqaJh3javWb/C3TEWGJQiG35VRrwLkyqHrowVaIB01pfnd2DfwDOrgUxwxJuhXd1kJ1OKRm3VzwY8jfhfjGVxNhTlE7jiLSNZosNSCM8tYKk6RSYMPtHwpUjR7OyI6EygfzvSpgK4BYRhvn5VxECLekRMeDz9Bz2HnWsOGcU9D+Sb+Fy4RUow==
+ b=TuJo6pRfuUmL46zHAE5wavyClKtGGoTFTwNwfbgXYBW4Avt3eTZvgIuQAZoE/VqPImiM3Av0s8MLGyi+qGaOxGx1OKEY7+lQOwrCduslgrDi5vRQJ2ndr1XJ8uRyBBbtg58szZApLwAZbl1Ww3AhHSGvTNs2HY2mb2bUmzdEXQB2EN7q+uxQt3xeUu/8MIE1O88xh2MSwVYUN8NQoikXBbTYuLOGT0v77d8qpbKZmW/BCAMViht2YMMfhESdH1Lk2LSmiWuITrM2lpOOGj7PU6D/jza3wzIuVSIibjhslVh9PfQ9ppffQ8ZOYym5pMYjPsfAssdpo7tVp3t9/wsixA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ywsnunz5O4sx7NPH+J2HUpV+L5yYIn3iyeiVua0NrOQ=;
- b=bToh8ihN3yWJFx4gh9MFcCN/LmbGLRXR8Mjfhs/9CW/D9Qy+XAfvwb5sZziQ2XgGg89HSoFYP8dz/VonGTgKo3xzUFqpoU5RByrFjo8pkxMFqyIlt9JqEH0QqN1sSQ0EvAot98ZfUDJFl+adzsI7+j8x9ndjm7OnpOIeaa9fEyRPBMB7RBh6zrbtcNeL63TmcUNgF4beLlMjhvXEnhop+QYjtMOVlrYrfa1AHJe7823sey3TReAwKg16i9XbdapFcZ/5kgJMLyL4iLA9RkJFvI31NYIgkrZMubjLf3WqryiV5/R1d5OvWsQpaO7M5TPwR2aqj4IrMRpQxPguCg4hLg==
+ bh=8YEgSMVpmT4jGMwn7j4EJTnovCm223mKfQvTNV6JlcA=;
+ b=a/EnKHDGM4gD67gFKbFYDgYa7Kq7G1jCM/VBWxOIpNhqajntK8DSaE70gra2Bo3PkfV1cMPCpYkUFFNflH7Cw9LNGBQo56EDKCDWJBE5Nb96Ix9C77llnX9Srg3eWMsHyqDq0GIZ2XNpvHpOiguM+fwhCi9zGSk3vwz0vyWZmlkR0DojBy8SNdBQMNZzZSqmgsjdx7xr/0/pnmaJP6heFPnvdpCjwdMb0dE9kbzMt3cTum1vW7tKzLWjDnKNG5GkieyDjETkqAKg/RiVqlIgr6UxXl2gO23QGcn86y7Vync6mYtnBuEExMSaXvp2aycA62bdqBSO5+DP/U2Q9krA9w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
  header.d=arm.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arm.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ywsnunz5O4sx7NPH+J2HUpV+L5yYIn3iyeiVua0NrOQ=;
- b=TDXtJhLyVpF5izBjVtouGQUmlcrwmB8GIj03PjXhm+wg5cnL+o6On4My4uYBUFFz4kUApvRLXjJrI+ofgp6XJb+SzR2kng/9xjjZF+c0nMzbFNhhf803/e5c/Lu4dbyA7O/PjyjHX1Zi9EJZP4qt2Teq9p/7SMBlqBi7AveU0yI=
+ bh=8YEgSMVpmT4jGMwn7j4EJTnovCm223mKfQvTNV6JlcA=;
+ b=lDfvWMvW8Jet1/AKcQr5WRFrKrH5TfgsD+1rf65eNUAYqVcNpxHnRdL/Y4aAIpnPPN28yb1DwIcqryUbW5cmNZMORfhMjFFw3gTZN0CI1RIs9rHjng9LW9fGaqrfI2Jk0yj4sxl/5dHRRanAiNhqd8KL2zvqKfRjKEZpS3rs75E=
 Authentication-Results-Original: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=arm.com;
-Received: from MRWPR08MB11806.eurprd08.prod.outlook.com (2603:10a6:501:9a::22)
- by AS4PR08MB8024.eurprd08.prod.outlook.com (2603:10a6:20b:587::7) with
+Received: from VI0PR08MB10391.eurprd08.prod.outlook.com (2603:10a6:800:20c::6)
+ by VI0PR08MB11200.eurprd08.prod.outlook.com (2603:10a6:800:257::18) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.92.17; Thu, 11 Jun
- 2026 12:42:56 +0000
-Received: from MRWPR08MB11806.eurprd08.prod.outlook.com
- ([fe80::20ea:c85e:c8c9:a8d4]) by MRWPR08MB11806.eurprd08.prod.outlook.com
- ([fe80::20ea:c85e:c8c9:a8d4%4]) with mapi id 15.21.0113.013; Thu, 11 Jun 2026
- 12:42:56 +0000
-Message-ID: <84b929cd-f726-4422-9b1a-1f0edf68e163@arm.com>
-Date: Thu, 11 Jun 2026 13:42:54 +0100
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.113.11; Thu, 11 Jun
+ 2026 14:31:33 +0000
+Received: from VI0PR08MB10391.eurprd08.prod.outlook.com
+ ([fe80::fa6b:9ba8:5c2f:ac91]) by VI0PR08MB10391.eurprd08.prod.outlook.com
+ ([fe80::fa6b:9ba8:5c2f:ac91%3]) with mapi id 15.21.0092.017; Thu, 11 Jun 2026
+ 14:31:33 +0000
+Message-ID: <37f4fe05-39f5-4e7e-9ca2-c9f5eb79ad87@arm.com>
+Date: Thu, 11 Jun 2026 16:31:27 +0200
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 08/10] ACPI: APEI: share GHES CPER helpers
-Content-Language: en-GB
-To: Jonathan Cameron <jic23@kernel.org>
-Cc: will@kernel.org, xueshuai@linux.alibaba.com, saket.dumbre@intel.com,
- mchehab@kernel.org, dave@stgolabs.net, djbw@kernel.org, bp@alien8.de,
- tony.luck@intel.com, guohanjun@huawei.com, lenb@kernel.org,
- skhan@linuxfoundation.org, vishal.l.verma@intel.com, rafael@kernel.org,
- corbet@lwn.net, ira.weiny@intel.com, dave.jiang@intel.com,
- krzk+dt@kernel.org, robh@kernel.org, catalin.marinas@arm.com,
- alison.schofield@intel.com, conor+dt@kernel.org,
- linux-arm-kernel@lists.infradead.org, Michael.Zhao2@arm.com,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-cxl@vger.kernel.org, Dmitry.Lamerov@arm.com,
- devicetree@vger.kernel.org, linux-acpi@vger.kernel.org,
- linux-edac@vger.kernel.org, acpica-devel@lists.linux.dev
-References: <20260529-topics-ahmtib01-ras_ffh_arm_internal_review-v5-0-2e0500d42642@arm.com>
- <20260529-topics-ahmtib01-ras_ffh_arm_internal_review-v5-8-2e0500d42642@arm.com>
- <20260529173229.18843384@jic23-huawei>
-From: Ahmed Tiba <ahmed.tiba@arm.com>
-In-Reply-To: <20260529173229.18843384@jic23-huawei>
+Subject: Re: [PATCH v3 2/2] ACPI: CPPC: Add ospm_nominal_perf support
+To: Sumit Gupta <sumitg@nvidia.com>, rafael@kernel.org,
+ viresh.kumar@linaro.org, lenb@kernel.org, zhenglifeng1@huawei.com,
+ zhanjie9@hisilicon.com, mario.limonciello@amd.com, saket.dumbre@intel.com
+Cc: treding@nvidia.com, jonathanh@nvidia.com, vsethi@nvidia.com,
+ ksitaraman@nvidia.com, sanjayc@nvidia.com, bbasu@nvidia.com,
+ linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ acpica-devel@lists.linux.dev, linux-acpi@vger.kernel.org
+References: <20260514194822.1841748-1-sumitg@nvidia.com>
+ <20260514194822.1841748-3-sumitg@nvidia.com>
+ <457972d4-eabd-4db9-8d82-b4c6a5f79465@arm.com>
+ <5bf877d5-42b8-4e0d-9afd-6cb9c4b45bb1@nvidia.com>
+ <86780f97-29ee-4a72-b311-38c89434b707@arm.com>
+ <ad12ad81-5d39-4090-b53a-13480e85731d@nvidia.com>
+Content-Language: en-US
+From: Pierre Gondois <pierre.gondois@arm.com>
+X-Mozilla-Draft-Info: internal/draft; vcard=0; receipt=0; DSN=0; uuencode=0;
+ attachmentreminder=0; deliveryformat=1
+X-Identity-Key: id1
+Fcc: imap://pierre.gondois%40arm.com@outlook.office365.com/Sent
+In-Reply-To: <ad12ad81-5d39-4090-b53a-13480e85731d@nvidia.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO6P265CA0020.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:2ff::11) To MRWPR08MB11806.eurprd08.prod.outlook.com
- (2603:10a6:501:9a::22)
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: LO4P265CA0046.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:2ac::20) To VI0PR08MB10391.eurprd08.prod.outlook.com
+ (2603:10a6:800:20c::6)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -114,165 +115,184 @@ List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 X-MS-TrafficTypeDiagnostic:
-	MRWPR08MB11806:EE_|AS4PR08MB8024:EE_|DB1PEPF000509F6:EE_|VI0PR08MB11668:EE_
-X-MS-Office365-Filtering-Correlation-Id: 61007ce0-fc7c-47ec-94e9-08dec7b71ea5
-X-LD-Processed: f34e5979-57d9-4aaa-ad4d-b122a662184d,ExtAddr,ExtAddr
+	VI0PR08MB10391:EE_|VI0PR08MB11200:EE_|DB3PEPF0000885E:EE_|PAVPR08MB8847:EE_
+X-MS-Office365-Filtering-Correlation-Id: 27183599-7b3f-4215-d6c1-08dec7c64963
 x-checkrecipientrouted: true
 NoDisclaimer: true
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam-Untrusted:
- BCL:0;ARA:13230040|366016|23010399003|376014|7416014|1800799024|56012099006|11063799006|4143699003|18002099003|22082099003;
+ BCL:0;ARA:13230040|7416014|23010399003|1800799024|10070799003|376014|366016|18002099003|22082099003|6133799003|56012099006|11063799006|4143699003;
 X-Microsoft-Antispam-Message-Info-Original:
- YwTWCEDhAXizuvd4NNmTgkcCv+/TYRlFg54Xa1yk0vNtO+l7uivMsnhmQ+NFp7vJjHizVb+oBmkV7/z8mWsREPk+S9p8ibr8ect7HW7+7576tiuEThdKUiKVkpQZ9T5kZT8pYUy2LV0MHSm9IviNSH0k36oP/gJT0O9NrTxEA19DV059L0X7QuMb47UVCion1nLB6NRELrOdpC0whYfYVbRl7vFw6PdMAwy6qQNwkHnPe+GqlRHx4QGVW7J4Ho3e7Gqs6H8kuTwi067qtOmKQp8vv3wIBZpLLDhK10ofBPu9hcI6eutqGyky+Q2Cx+IbavqVtY7V4N5fasqIo0PpwBJ9o9mj56RcqYdozRkQx85414BEXgetMCj1OBiP91Er3N0A1cZzrUsgQCSnj+79FAPv+//Jcr8kWgvl8djxg6ge8JnGHNl4MdyF2K+V4kh7beYckqBB/PU8TU3LVPofPsgtTL9yvU5AiEaDlvOrElQsICn4TA3vvm3tU892DS3AXTrNJHyEehLz0LBK5rh1a0CrlfV4e3Y9q9qbZYEUOE+kMKvRSrm3bY4TZvHqMbqQ7FjQylQp5Vmbpr0aN2nuCNIuw+cXLhKTRMmIfQ7a60pqElBLiY9Vijj3+xZzbURRCGZ3wTjt4zCH0sGds3NCQyV+hf6QqFv8mji031rQNyk8CyVYJMwXzqwqlOh70wvn
+ 7X+pWF4RiZMFyBFQe4TyA0+k+jyFFJXfvsmSMb6tP+XG/k1jllZHlCUyuB2uXCMaX2Yzu3JD2a9/Xe8Gm+IqgLqcZw/E148WmUeDtzUmiCzzITtFl6lDE0SZA2/HZWAnvB8pggTxQiNVZ0o8DgTvGgCKnAhQyg/oJX56E6ZivoOlAgrb8bNcf5Qp4xe++0EKTq9BncpxejnniOPhc1xZCDvtTuh11eT+TVdRjjuqTPomHhzmaLwoYMTMeV4ZHU4NIJa1jy7d3Vuu5SOrTL6JtcokCMNLhICM77bZjeFN4VbhS+7xxOr3wvGGFKUNor9TI1RpWiYFaKwpyH92Pb0J4MR2Uxsp5hLEmK5NaxX3P/gyYIQgS+zgeixT2JQythg5myxFevLuEnUgLE1HKWrrRatXJnq8t0kVrHVzP/CqZfdN1RrKcIu32JLmr/9fBb4ZZbT9Zvud31Mi5gkE27OO+cwDZX9bi4W6PsJHpWvKXl20FaZZzNohEYIEPZWzTRnszDhah2JPPvB5SBkkbyYnYhGGWz59hOP2Gj3rx+x93Il/yN/2ZUgA2F8CFZWYLktp5Z/vbnSEVGoLrZvi6WmxWf/2EsnVttwWkbk9RH1HcvFEeEhQ5aRJZz0uoFjJa54YC0+RPa4yx5ZUzLc2hlhK5fQ+oT+lEGlZtyAJAgI+j9b8DokTYk2AQQ713zEtRGdM
 X-Forefront-Antispam-Report-Untrusted:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRWPR08MB11806.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(23010399003)(376014)(7416014)(1800799024)(56012099006)(11063799006)(4143699003)(18002099003)(22082099003);DIR:OUT;SFP:1101;
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI0PR08MB10391.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(23010399003)(1800799024)(10070799003)(376014)(366016)(18002099003)(22082099003)(6133799003)(56012099006)(11063799006)(4143699003);DIR:OUT;SFP:1101;
 X-Exchange-RoutingPolicyChecked:
- Jgh3s5cMsIMk12FJzs0jUj2ogbXRritogNb627O0rjxwIp1/3hUXFukYZSycs8Qs1u0tFmYwMuUT/4lXz2szCiLQGsdRn2h9pKI2CZf7Q1huEXpI4jj7DY7DHrQaS3jKqByLxH7YDbgSaHV81zl0rgvXBn4LmC/+nGHuRMWQPMPaO6DVgPcAPVLSm6Hdn1A8eT/ybLCB90G0KmmGRCiHCdoEoe3+oX/nhViMzD7Il81Ic8r1ZDd+WcWEPSzFhNUnwmwztVSW5Mn25pp+WEkVniQs/7GCmNhF1x6/KRWbuux1TfPfpzOvGcZ8Nt3gooZqY05CkagF2jh/AptfCfJRdg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS4PR08MB8024
+ ZO8RgPtl2KDA2v9gCK8IDeyD25ZfeGvvFSRqNm//EBVS4pMy9sMqVRF7eLHjXM9kPAr0SOgFmvfK2D3jgn6Hr/oGK/V5FJ/pGtnWFs36e2GamR/CNlOp+cBvwEhybRtPw6aLbD5IPJOe/4R20TaD4yfuzV4XDBoqAcOTKkeqRk5ptqHIB1NEUlNGm6p/CeTX8Sb4JGB+xRsY6hjzFu4dlFhl5AIoc9LUM5/lrqFZABpxByG6kE61cZ4UAeTWfUOLPKJE9RQLVdrS4nlvJ4UnxmHlTPOeHTfSHCavItpif8pJALrpHtGr08OMFLeSFI9qiaWG7mRBCOky9+WDNijyMg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI0PR08MB11200
 X-EOPAttributedMessage: 0
 X-MS-Exchange-Transport-CrossTenantHeadersStripped:
- DB1PEPF000509F6.eurprd02.prod.outlook.com
+ DB3PEPF0000885E.eurprd02.prod.outlook.com
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-Correlation-Id-Prvs:
-	8807fba9-b2c3-405d-ff6c-08dec7b6f5f5
+	0b41011c-e345-4025-de4a-08dec7c6228f
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|35042699022|376014|36860700016|7416014|14060799003|82310400026|23010399003|1800799024|11063799006|56012099006|4143699003|18002099003|22082099003;
+	BCL:0;ARA:13230040|1800799024|14060799003|82310400026|23010399003|376014|7416014|36860700016|35042699022|22082099003|18002099003|6133799003|11063799006|4143699003|56012099006;
 X-Microsoft-Antispam-Message-Info:
-	w5EVhT1YexDFpFb1NcgPH/vbyqVb9YsfDfjIq6LXOYfBjv/K0oNbzWa32G5ndYqBIV0y8sb7KDGQ6yKO32CHWa5TK0d5990Ik96twMlQYhPVbRJjD9jQbmJO5LN2RFMKrYW8DENw2bSQjcadxTbV7eRdA3jkWpcJUphbbw2S6hM8teFp/nIVOnqjk3NfC1/Gzn6uZ7bAcApWefyg5kELN09SGlmcVbo/3ti+1cLJZMsn8CzWm6Vc/GIFPdwzjq5q7jtVvWeF+8ZLxymX5I4KHvhHyAklqC/3DbwDbNyzj7WFqVZg35vBV7Mg76OcjTM59VwnOSF826NDkwNFnj6x+MW9GjV5vn5cBkBETgp/h8Ddigu5VDFzST6b09qvyMkY2crkju2sz3f4DBW3QMkY8aEyXPl9mUSCTovdZM8+nr2txBET5lOYEXEfkW0y0vT2ERh4VYWZlDWAoAzTwQQn9HePQ63abQ5NKkfQhvCz9Fe85autWK6el9xqYgkDoxEwE/HTvjHfX+pSIxljXOHmdtSTGLUHunOqiwoGw57pera+2+kWfUBZPW1hFJVYd5xP03fA2mAdnFx6kWwyKEBS9kOCZHF9X6R+GPSzVjPfOHgK8tyhGf5qkJ51/kzuecuAI3Yt/rxxhMjvTyMcOSvJT7mrsg5sbER/29QQyW9oDPxUovR3lMQvdPA/vCQ+EO1SAmk4GMlVw9MtRtUAweFEYHBJ0EE+heITd1KO2/VxvxE=
+	EVl7z1nvcmVuag6Agl2lnoMZbQfhJRLGN72c3dydLe8ud+OTzqZQPqKViKA7WduYTNoAo/iY7HDpBosU4Ja45jzeHGCPbrlRkpTVyFpHZL5J7FfDW9stcIKz9rx8pCBES9SGQ5e80UyteEVb8wt8+3rqLVMbeCt+QYGakGPtRF6mD9crDU6JyNCusB5G498TpyOusu9faVWZAeRGQSDx4pXEpIZYzL2Ws+kbjZ2v1WDpCBefko28f5wW0tduJaL9QarHyMtmir4F5iRfadkTlTY+Ro4c1XMxNJDObUeSRj+RvKbcMb/5SZErPXBDcqSeAXay4TIVXO3sIcBj1eZsVqs4ZdN1aeaIKkPMZt7vpCVYyt1LkBhzMahyrNJ+T5h3bgMmucp6BwNyf9Zh8Ptl59BBiMd8Y4kMtOwXWSJsSm6pLKjpmfRgqtP2XOTRHRxjoxrM7AbrcxmVMb7V9HIrH6WgqZ/1CR9rZY97VE5GBxi4dTSMh6lN6OPt4n07TM93zA+NWtAktR41DBoM3qGNMQj/Be6Lta7xsE4Fr7NNRW0ibT/ERqL9578ubAwA0ycEd/uy0Cu0bYJpMdBg8dgJO0rRhRe5AhC26/MkKL7hiqNg1F1C/AHIv1BAoD+w2myKN7rzxXaEhNqC+CSr000VJMo9J5KlFLszzuYp9giWMH/QezhqThSONGusShp+2wzugkeY9SAaSg7odN/EHm6Y6ECLe4AeXhxrBMfalyUWS/k=
 X-Forefront-Antispam-Report:
-	CIP:4.158.2.129;CTRY:GB;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:outbound-uk1.az.dlp.m.darktrace.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(35042699022)(376014)(36860700016)(7416014)(14060799003)(82310400026)(23010399003)(1800799024)(11063799006)(56012099006)(4143699003)(18002099003)(22082099003);DIR:OUT;SFP:1101;
+	CIP:4.158.2.129;CTRY:GB;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:outbound-uk1.az.dlp.m.darktrace.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(1800799024)(14060799003)(82310400026)(23010399003)(376014)(7416014)(36860700016)(35042699022)(22082099003)(18002099003)(6133799003)(11063799006)(4143699003)(56012099006);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	WKbZOjkcCARuhbiICuw9OKPyURxsLU7PJcQ3tp2Zu4BzZ+Ia9CWlCrHwuGu9hnVnjNJz2YKGwcBOBRn2z23bA1sQ6CqE2mTVPK0o53kRDfl7l6Ad02p20EDQGr4EOcdSNhQdhKaBNhPlpRDmU0YtrJY8WmacfU8fvPhxs4ZKU47utJod6kB043NnKjfrH6pppafbCWR0i/qA9LWnGlQaBgw3POqQJdjPCzWJmLOgVwkcp9LUdy0GVFSd45KxIEW+BkYbf0xpcI+sMeLGtQ9YNjEHGcRjz0y7lowH7XUztYraWtDNbFjzlYVPv0gTmETyeX0N7pAm8qJS8oGXFIRSMH9yM1OFL3Nxg11dXxCanq1+1N033wYjpl7vDHPVxmJ3l3r+GDNcZQK3P7TwrfSGhovb6MQ8Lp1o34HTy4Xd8nyAHLg30aTHps2jF8F5Wn03
+	RgmSNg81zYtCyVx8a9i0cunAWZUXuVFdH6R+WcdnNIe4WFGC50b+9dvl5hsT+t4wq6Nf8/VbHfoh+VgpjLE/DsDN2q/+AkhJlZh15cmCJyn8izzCkq2v4SzWd5a4riBGooPbFFhsTes94JrGNn8EWJJ87gqM7xK2SqavJ1AC3EpEKpbKWC2rtc2Z0xFgbLjh9vbwV7F8ClMZPBAHdyUnzx90olUZorjXZXwFrXZblarHRIfWgKJmjG6C5j/a5smxKECczDwn8/P4zde2QatPWU7HswFq4ufRSiqAUZRn8mmiqeXrJnXt7QwETh1we1cCSPw2UDTzt54ifBo0ZKWHKDiMdt5n5io0nav/HDqZxmTkpu3+XnFRQs+6AQAmCWsbtQYMei2dnr3fc5RSDTmzx4h8469of9ysWZzMnP2JJ9u6iEAqDVZFmm329V+DRjgZ
 X-OriginatorOrg: arm.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jun 2026 12:44:03.9088
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jun 2026 14:32:38.0743
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 61007ce0-fc7c-47ec-94e9-08dec7b71ea5
+X-MS-Exchange-CrossTenant-Network-Message-Id: 27183599-7b3f-4215-d6c1-08dec7c64963
 X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d;Ip=[4.158.2.129];Helo=[outbound-uk1.az.dlp.m.darktrace.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	DB1PEPF000509F6.eurprd02.prod.outlook.com
+	DB3PEPF0000885E.eurprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI0PR08MB11668
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAVPR08MB8847
 
-On 29/05/2026 17:32, Jonathan Cameron wrote:
-> On Fri, 29 May 2026 10:50:48 +0100
-> Ahmed Tiba <ahmed.tiba@arm.com> wrote:
-> 
->> Wire GHES up to the helper routines in ghes_cper.c and remove the local
->> copies from ghes.c. This keeps the control flow identical while letting
->> the helpers be shared with other firmware-first providers.
+
+On 6/9/26 10:53, Sumit Gupta wrote:
+>
+> On 28/05/26 17:37, Pierre Gondois wrote:
+>> External email: Use caution opening links or attachments
 >>
->> Signed-off-by: Ahmed Tiba <ahmed.tiba@arm.com>
-> Mostly looks fine.  The one bit that rather makes this exercise of breaking
-> out generic code look dodgy is the ifdefs in the generic file.
-> 
-
-As below.
-
-> 
->> ---
->>   drivers/acpi/apei/ghes.c      | 416 +--------------------------------------
->>   drivers/acpi/apei/ghes_cper.c | 438 +++++++++++++++++++++++++++++++++++++++++-
->>   include/acpi/ghes_cper.h      |  20 ++
->>   3 files changed, 459 insertions(+), 415 deletions(-)
 >>
->> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
->> index 85be2ebf4d3e..f85b97c4db4c 100644
->> --- a/drivers/acpi/apei/ghes.c
->> +++ b/drivers/acpi/apei/ghes.c
-> 
->>   
->>   static void __ghes_panic(struct ghes *ghes,
->> diff --git a/drivers/acpi/apei/ghes_cper.c b/drivers/acpi/apei/ghes_cper.c
->> index d7a666a163c3..0ff9d06eb78f 100644
->> --- a/drivers/acpi/apei/ghes_cper.c
->> +++ b/drivers/acpi/apei/ghes_cper.c
->> @@ -13,22 +13,32 @@
-> 
->>   
->>   #include "apei-internal.h"
->>   
->> +ATOMIC_NOTIFIER_HEAD(ghes_report_chain);
->> +
->> +#ifndef CONFIG_ACPI_APEI
->> +void __weak arch_apei_report_mem_error(int sev, struct cper_sec_mem_err *mem_err) { }
->> +#endif
-> This is non obvious enough that the reasoning for a new weak function should be mentioned in
-> the patch description.  Why not stub it in include/acpi/apei.h?
-> 
+>> Hello Sumit,
+>>>
+>>> Hi Pierre,
+>>>
+>>> Thanks for the review and the complementary patch.
+>>> Going point by point:
+>>>
+>>> 1. Rollback for a partially applied multiple CPU write in
+>>>     store_ospm_nominal_freq(): Agreed, will add into v4.
+>>>
+>>> 2. cppc_get_ospm_nominal_perf() and the show/init/exit coherence
+>>>     checks that rely on it: I'd skip these as the register is 
+>>> write-only
+>>>     as per spec.
+>>>
+>> NIT:
+>> IIUC having a write-only register doesn't mean we cannot read it.
+>> Cf. cppc_get_desired_perf()
+>
+>
+> Good point.
+> v5 reads the register via a new cppc_get_ospm_nominal_perf().
+> So, show() returns the register value or "<unsupported>",
+> and dropped the cache/bool.
+>
+>
+>>
+>>> 3. Initializing the register at startup and restoring at exit: In 
+>>> v3, we
+>>>     dropped the unconditional cpu_init write so user values would
+>>>     survive CPU hotplug. The spec also makes the explicit init
+>>>     unnecessary: "If this register is not provided, then OSPM must
+>>>     assume that the OSPM Nominal Performance value is equal to
+>>>     the Nominal Performance value.". The unwritten default already
+>>>     looks well defined.
+>>
+>> The concern I had was for the scenario where:
+>>
+>> - the driver is loaded
+>>
+>> - the user sets an ospm_nominal_freq value
+>>
+>> - the driver is unloaded
+>>
+>> In such case, the ospm_nominal_freq value will still be set to a
+>> non-default value. The modifications suggested previously would
+>> allow to handle that case to come back to the default value.
+>>
+>> FWIU, we have:
+>>
+>> +------+     +---------+     +-----------+     +------+
+>> | User | <-> | CPPC    | <-> | CPPC      | <-> | CPPC |
+>> +------+     | driver  |     | reg       |     | HW   |
+>>              +---------+     | interface |     | reg  |
+>>                              +-----------+     +------+
+>>
+>> So if we want to handle:
+>>
+>> - the case described above
+>>
+>> - the case you mentioned, i.e. hot-plugging CPUs
+>>
+>> maybe the scratch values should be stored along the CPPC register
+>> interface. This would allow to handle complex cases where CPUs
+>> are hotplugged and the driver is loaded/unloaded ?
+>>
+>> Note: the same kind of scenario should apply to the auto_sel register
+>>
+>
+> Right.
+> After unload, the register keeps the user set value instead of the
+> firmware value. In a follow-up, I will restore the firmware value on
+> unload and reapply the user value across hotplug, grouping the
+> OSPM-set registers together (ospm_nominal_perf, auto_sel and EPP).
+> On my test platforms the registers survive hotplug, but that isn't
+> guaranteed in general.
+>
+> I think it's better to keep the saved state in the cppc_cpufreq driver
+> rather than the CPPC register interface. intel_pstate and amd-pstate
+> do the same.
+> For reapply, will use a CPU hotplug callback rather than ->online/
+> ->offline hooks. Those are only called when a policy gains its first
+> online CPU or loses its last one. cppc_cpufreq also has shared
+> (SHARED_TYPE_ANY) policy, offlining and onlining a single CPU
+> keeps the policy active, so neither hook is called for it. A per-CPU
+> hotplug callback is needed to cover that case.
+>
+> Let me know if you have other thoughts.
+>
+Is it necessary to have cpuhp callbacks ?
 
-Agreed. I should have explained that in the changelog.
+The cppc_cpufreq driver should only support:
+- SHARED_TYPE_HW/NONE: in such case, the polity should
+only have one CPU
+- SHARED_TYPE_ANY: in such case, configuring any CPU should
+configure all the CPUs of the policy. The only issue is that
+we currently don't know whether the CPUs in the policy
+share the same CPPC registers or have individual registers.
+I think it is currently strongly assumed there is only one
+registers for all the CPUs.
 
-The weak arch_apei_report_mem_error() fallback was only meant to keep
-the shared helper buildable when GHES_CPER_HELPERS is enabled without
-ACPI_APEI, while preserving the current GHES behaviour when ACPI_APEI
-is enabled.
+For instance, if:
+- CPU0/1 are in the same perf. domain
+- don't have the same CPPC registers
+- have a SHARED_TYPE_ANY policy (i.e. writing to any
+of CPU0/1's CPPC registers triggers an update of the
+hardware for the 2 CPUs)
+- policy->cpu = 0
+then:
+- enabling auto_sel for the policy means configuring
+CPU0's CPPC register
+- if CPU0 is offlined, policy->cpu is updated to 1 (pointing to CPU1),
+- then reading the policy's auto_sel register means reading
+CPU1's CPPC register, which was not updated
 
-I kept it local because this fallback is only needed by this helper 
-split and I did not want to widen the APEI header API for that.
+So using the already present online()/offline() callbacks should be
+enough. It would also be good to check that, for a policy, all the
+CPPC registers are identical.
 
->> +
->>   static struct ghes_estatus_cache __rcu *ghes_estatus_caches[GHES_ESTATUS_CACHES_SIZE];
->>   static atomic_t ghes_estatus_cache_alloced;
-> 
->> +void __ghes_print_estatus(const char *pfx,
->> +			  const struct acpi_hest_generic *generic,
->> +			  const struct acpi_hest_generic_status *estatus)
->> +{
->> +	static atomic_t seqno;
->> +	unsigned int curr_seqno;
->> +	char pfx_seq[64];
->> +
->> +	if (!pfx) {
->> +		if (ghes_severity(estatus->error_severity) <=
->> +		    GHES_SEV_CORRECTED)
->> +			pfx = KERN_WARNING;
->> +		else
->> +			pfx = KERN_ERR;
->> +	}
->> +	curr_seqno = atomic_inc_return(&seqno);
->> +	snprintf(pfx_seq, sizeof(pfx_seq), "%s{%u}" HW_ERR, pfx, curr_seqno);
->> +	printk("%sHardware error from APEI Generic Hardware Error Source: %d\n",
->> +	       pfx_seq, generic->header.source_id);
->> +	cper_estatus_print(pfx_seq, estatus);
->> +}
->> +
->> +int ghes_print_estatus(const char *pfx,
->> +		       const struct acpi_hest_generic *generic,
->> +		       const struct acpi_hest_generic_status *estatus)
->> +{
->> +	/* Not more than 2 messages every 5 seconds */
->> +	static DEFINE_RATELIMIT_STATE(ratelimit_corrected, 5 * HZ, 2);
->> +	static DEFINE_RATELIMIT_STATE(ratelimit_uncorrected, 5 * HZ, 2);
->> +	struct ratelimit_state *ratelimit;
->> +
->> +	if (ghes_severity(estatus->error_severity) <= GHES_SEV_CORRECTED)
->> +		ratelimit = &ratelimit_corrected;
->> +	else
->> +		ratelimit = &ratelimit_uncorrected;
->> +	if (__ratelimit(ratelimit)) {
->> +		__ghes_print_estatus(pfx, generic, estatus);
->> +		return 1;
->> +	}
->> +	return 0;
->> +}
->> +
->> +#ifdef CONFIG_ACPI_APEI
-> 
-> So after the effort to break the the generic stuff we end up with non generic
-> bits in the broken out file?  Is there no way to avoid this?
-> 
-The intent here was not to create a new generic estatus core
-but to keep the existing GHES control flow and lift the CPER helper flow
-for reuse by the DT provider.
+Note: having per-CPU CPPC registers + SHARED_TYPE_ANY
+policy is theoretically valid, but unsupported FWIU.
 
-Splitting the remaining ACPI GHES specific read/clear path back out into
-ghes.c would break that flow across files again. The CONFIG_ACPI_APEI
-guard keeps that ACPI specific piece local while the DT side reuses the
-same CPER parsing and status-dispatch path.
+Let me know if it makes sense or not,
 
-Best regards,
-Ahmed
+Regards,
+
+Pierre
+
+
+> Thank you,
+> Sumit Gupta
+>
