@@ -1,184 +1,302 @@
-Received: from PH7PR06CU001.outbound.protection.outlook.com (mail-westus3azon11010059.outbound.protection.outlook.com [52.101.201.59])
+Received: from DM5PR21CU001.outbound.protection.outlook.com (mail-centralusazon11011066.outbound.protection.outlook.com [52.101.62.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 225373B0AD1
-	for <acpica-devel@lists.linux.dev>; Mon, 15 Jun 2026 06:26:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.201.59
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2844E30E859
+	for <acpica-devel@lists.linux.dev>; Mon, 15 Jun 2026 18:23:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.62.66
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781504764; cv=fail; b=f9+lFbMBSW4oSS0OgRBY9dHkujy6nV+Mjyag3j8S7ziD2v4pxnW3vKp1wIXcCXenrDB3ENBFhRLiCeeevPFGXaVG5vUzLrlZnXBf6Pp9vxr194sidwPiTpn79D3l2Nrx6tcITK9zJ7I1dzE+xlDfuMM6dW0crMqsOWDZLql3KaY=
+	t=1781547829; cv=fail; b=CCx5O5gmuQxVQxDkxePgIJDcew8yZoEj8yFg1BLG9+mNYuzeKkSz2a3Kfp8VmS0K7ELdx6DBiY0d8AI6OPfzOq6/zo+eDliORR1Mjwz1KP6TmIqv8kDKITGcIHttvVkKa+FjL6d5PlJrbwfcEeeEa4qVPXzWvEhjAw0/duTy7Hc=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781504764; c=relaxed/simple;
-	bh=4Yd3KSbpcFvHjpG4AvkimUV1Cur1Qzfd0XqUePuTxIk=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=DarXoqcboBOlmKTSam04kLQ2iJPsabQU0vzhEV9fMl7ll5ZAjXI2C+SKnsF2mrP0mNjh7cToPXdGv+bXwkT+Lz46wPr6REzpmHLaqUUbofLFJT5OkNk3Vm/ycIL/L9HgQsQUxmytYIdScHp8fMOo0v0gp9eliLmMgCMlvsBcqE0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=P25cl6zJ; arc=fail smtp.client-ip=52.101.201.59
+	s=arc-20240116; t=1781547829; c=relaxed/simple;
+	bh=hfBgI7hSCuVToCseqJje42BNS/qtsvMzVjfvwvbIojs=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=iohcjenC9iYAOYtkdTbSZcIH1dW+9vc8Z9uBZTV3a1DU7BlqdttU6er5yi+I3bqIfUjOmTaLAkJn5HHC7qmx3JFpGLSOEmgnILGBriuAAqoLB8CHvsXavnrzQiin1vmGDFqItPAtIKDwAQVqTth3gPq0MSH2l6WhTfC3jtAy35k=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=OXplGRgj; arc=fail smtp.client-ip=52.101.62.66
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="P25cl6zJ"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="OXplGRgj"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Q/akVQZ1r5zcDfB+c1hVxI5rbUaw2iZtA5ta1MHLhRVz0ew4H4edHLy9uFzv+sOFJCpmBi94bOwF75/HWhv80us9YX7z5zFXqK6K5fFZ0Nzm2bvmr3mzRjZFtG+AgOsOwCxQb0fXIFdnctkzyBX3XkC81gZ/QgVjEeGqwvJUVuS51FYopUbP4tReoeiL17JBulCgpbgKvtkQZLqQ6WGwtOnNAKxnXN/x0SwiJ9xQwBB4g+BEfziREG6acPLi3zfSPDPvnvnCPpb9NyM4bbUob8FQ8BHC6yAX0GzVTyTpcyQX6LWUyLV+IsmSkwwK8y2kfChcmNqR3CHhb/EzBBnpkg==
+ b=rrUjlIh3dKb8e5hkcJ013b/X+heZsm3CG9MvdccFZDTdjDAwwsNF5CKTedbq01dCSwBx82SxdLqzvYKuvgdP5UkeMjvEmFxWzXEHVk0OsbbhAPrSK/MEZv1pKCSuHtcnN3fr3JhE1RfcWqBcw4mzKWr7JsloR4qKj2TAZ0XZtdLGfET0rAoIowWiHkaKIUmbzdztYntPp2uQNIw+3FMKD0MIkqiDlyfdbzfyKUZaWHfuIYe2JWSkCsMjevcHS6krQAkdKW4wuSxnisqh4CfTSmLvmHGmO7X7GRmXVxMtmscoD9nQOeGpVcnpiqhmkHFyc/2XaAHGLx9adVXtPjeSjg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fYupdNe3nQtdmMiyaFghCII9D+Vtcv+moO5pfmsKQhY=;
- b=mqa+U0pTkwvAeKGRPEAIXBgt4vuRkm96PiljgsF39XFwBcOkeLRsnpKBnPtTDh/1h/C23y3gbZN99DPvSOlBqEgdV6pzq9jywapoUsnXxAtNlvFZTipKZfo3T4SSz4GyO51HX3r6zECDXxvvIFH5iuRk/eYIpU9fmrxrNQ6+dXAWHpKEU+tsCcwD9wGEpJQkNUfgMXs4IXclUgbWIJ2cL5TPN3yXp8Y3xcRuGeZ/PfofcWKfyacE5W8+HC0F0G5Ck7uD05+0FNZ6/ct1B+vi8btcGDzkSfuEF4crUNQ5KKjNp34DsNmbPDQ6mM/b2kPY2b8rZ6ko2hFCii75bAQyEw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.233) smtp.rcpttodomain=bootlin.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
+ bh=hfBgI7hSCuVToCseqJje42BNS/qtsvMzVjfvwvbIojs=;
+ b=J0BNuO8SR0lJW7Y25H8vvCdQSf2dtE1argsKWJ3zgju6zRdOsNN84bS9dO+I2g4Xg4a8bdCRIk70bqTiVxwrz4LYWwhuVaFAOtpEz9Fc0qgnmXywdM2c5zCG4J7I6vqBWT927/8UQGAMXnCeCZtMEyuiHwzXP+sX6ouYEh82l436Im+kUnspDB2iuKgs53jZRX7RZ+ktz2jNFujEJb7YFo+/zLe621U/taMIvt+fpsc4Mq7IQoqAvZDDC84YsM9ttGL0g/x6C1XbJjhR35icIXrK08rcnxY2lnVduWpcetNp/UHmjSjXFUCfGGjUIBd9P8MVVQ+DcAlA+fjoaKPPxQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fYupdNe3nQtdmMiyaFghCII9D+Vtcv+moO5pfmsKQhY=;
- b=P25cl6zJCldmgTl8Iw3pyCQj8cas+xpInFk+Waqj/odlGnladLPctXIfxM829tZ+Nq2E/IhCOA1KRI2lgxiJT7T/wJNZo2GFdJWT30KDqzpgRvPjupGkDo4FJp1Ia0KnjmjARD9uiX+a/b3l2S2J4yreVzwnfUF4ycNV0qyeZaL1KXcmKzNwdh4j9ioCt+ETgZON8ZBvueCZ/canWm+umaY00S1wgbSgGHZu1J8uIU+1AYH0f8QTsofZgf21z114BwPrsOWam4EdTNHOC7lHRU4eHJFKDOJbwKhSLm88M9CMezmFq9S/2xO5NHrGODivvufzKiTusSwb8X33Qa2g9w==
-Received: from DM6PR06CA0091.namprd06.prod.outlook.com (2603:10b6:5:336::24)
- by SJ5PPF2CD49510F.namprd12.prod.outlook.com (2603:10b6:a0f:fc02::98f) with
+ bh=hfBgI7hSCuVToCseqJje42BNS/qtsvMzVjfvwvbIojs=;
+ b=OXplGRgjE+mN+ApwrnG3yWo9vhebppvBVcELSyHynJfcHcapdNQPm9FJ8bTvtuRKET2YjNtHTBQU9Y127G6bFNV4YLqnlMVZKlWQlQxsGj3jwtVrZMGU55zFYcEioqHzghgMO9OQBeVNzUmhvDUjZHU0n5XGPYlI0chgolpv7/E35VvENhE45PRTKfZg1XzvwiuE1WuZvcfxgrZgkD4OM4wKTuPS14cpt1N+ryF0hNpRBWhwgBe8B3lPDav6ocTcoUBpGHcUUu2Zr83KDqSfgGXg2FPAlzJwEUI5bMIn2nj97cl2rAGO/n0Rqvf2lbi6X59Kr4K8PGA17qXMg3GGUA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BN9PR12MB5179.namprd12.prod.outlook.com (2603:10b6:408:11c::18)
+ by DS4PR12MB9681.namprd12.prod.outlook.com (2603:10b6:8:281::12) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.113.18; Mon, 15 Jun
- 2026 06:25:56 +0000
-Received: from DM2PEPF00003FC5.namprd04.prod.outlook.com
- (2603:10b6:5:336:cafe::34) by DM6PR06CA0091.outlook.office365.com
- (2603:10b6:5:336::24) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.113.18 via Frontend Transport; Mon,
- 15 Jun 2026 06:25:55 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.233) by
- DM2PEPF00003FC5.mail.protection.outlook.com (10.167.23.23) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.139.8 via Frontend Transport; Mon, 15 Jun 2026 06:25:54 +0000
-Received: from drhqmail201.nvidia.com (10.126.190.180) by mail.nvidia.com
- (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Sun, 14 Jun
- 2026 23:25:47 -0700
-Received: from drhqmail202.nvidia.com (10.126.190.181) by
- drhqmail201.nvidia.com (10.126.190.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.20; Sun, 14 Jun 2026 23:25:47 -0700
-Received: from build-akhilrajeev-noble-20260602.internal (10.127.8.11) by
- mail.nvidia.com (10.126.190.181) with Microsoft SMTP Server id 15.2.2562.20
- via Frontend Transport; Sun, 14 Jun 2026 23:25:40 -0700
-From: Akhil R <akhilrajeev@nvidia.com>
-To: <alexandre.belloni@bootlin.com>
-CC: <Frank.Li@nxp.com>, <acpica-devel@lists.linux.dev>,
-	<akhilrajeev@nvidia.com>, <arnd@arndb.de>,
-	<bjorn.andersson@oss.qualcomm.com>, <conor+dt@kernel.org>,
-	<devicetree@vger.kernel.org>, <dmitry.baryshkov@oss.qualcomm.com>,
-	<ebiggers@kernel.org>, <geert@linux-m68k.org>, <jonathanh@nvidia.com>,
-	<krzk+dt@kernel.org>, <lenb@kernel.org>, <linux-acpi@vger.kernel.org>,
-	<linux-hwmon@vger.kernel.org>, <linux-i3c@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-	<linux@roeck-us.net>, <miquel.raynal@bootlin.com>, <p.zabel@pengutronix.de>,
-	<rafael@kernel.org>, <robh@kernel.org>, <saket.dumbre@intel.com>,
-	<treding@nvidia.com>, <wsa+renesas@sang-engineering.com>
-Subject: Re: [PATCH v3 00/13] Support ACPI and SETAASA device discovery
-Date: Mon, 15 Jun 2026 06:25:39 +0000
-Message-ID: <20260615062539.3225240-1-akhilrajeev@nvidia.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <2026061420560674ab6fb9@mail.local>
-References: <2026061420560674ab6fb9@mail.local>
+ 2026 18:23:42 +0000
+Received: from BN9PR12MB5179.namprd12.prod.outlook.com
+ ([fe80::cf08:f59b:d016:c95f]) by BN9PR12MB5179.namprd12.prod.outlook.com
+ ([fe80::cf08:f59b:d016:c95f%4]) with mapi id 15.21.0113.015; Mon, 15 Jun 2026
+ 18:23:41 +0000
+Message-ID: <257d8e9d-16fa-4030-ae0a-aed7bf17b46f@nvidia.com>
+Date: Mon, 15 Jun 2026 23:53:31 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/2] ACPI: CPPC: Add ospm_nominal_perf support
+To: Pierre Gondois <pierre.gondois@arm.com>, rafael@kernel.org,
+ viresh.kumar@linaro.org, lenb@kernel.org, zhenglifeng1@huawei.com,
+ zhanjie9@hisilicon.com, mario.limonciello@amd.com, saket.dumbre@intel.com
+Cc: treding@nvidia.com, jonathanh@nvidia.com, vsethi@nvidia.com,
+ ksitaraman@nvidia.com, sanjayc@nvidia.com, bbasu@nvidia.com,
+ linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ acpica-devel@lists.linux.dev, linux-acpi@vger.kernel.org, sumitg@nvidia.com
+References: <20260514194822.1841748-1-sumitg@nvidia.com>
+ <20260514194822.1841748-3-sumitg@nvidia.com>
+ <457972d4-eabd-4db9-8d82-b4c6a5f79465@arm.com>
+ <5bf877d5-42b8-4e0d-9afd-6cb9c4b45bb1@nvidia.com>
+ <86780f97-29ee-4a72-b311-38c89434b707@arm.com>
+ <ad12ad81-5d39-4090-b53a-13480e85731d@nvidia.com>
+ <37f4fe05-39f5-4e7e-9ca2-c9f5eb79ad87@arm.com>
+Content-Language: en-US
+From: Sumit Gupta <sumitg@nvidia.com>
+In-Reply-To: <37f4fe05-39f5-4e7e-9ca2-c9f5eb79ad87@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: PN3PR01CA0005.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:95::6) To BN9PR12MB5179.namprd12.prod.outlook.com
+ (2603:10b6:408:11c::18)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM2PEPF00003FC5:EE_|SJ5PPF2CD49510F:EE_
-X-MS-Office365-Filtering-Correlation-Id: f9c2c01e-af50-4370-ca80-08decaa6f49e
+X-MS-TrafficTypeDiagnostic: BN9PR12MB5179:EE_|DS4PR12MB9681:EE_
+X-MS-Office365-Filtering-Correlation-Id: a263e4ca-fa77-4f60-729d-08decb0b3a35
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|36860700016|1800799024|82310400026|23010399003|7416014|376014|22082099003|18002099003|6133799003|3023799007|56012099006|11063799006;
+	BCL:0;ARA:13230040|1800799024|366016|23010399003|7416014|376014|4143699003|18002099003|56012099006|11063799006|22082099003|6133799003;
 X-Microsoft-Antispam-Message-Info:
-	ELaeA9CD2usk5fqhLjnP3egjL45Nrobn1uWTjZnR5/th98C87Tfg3nRgeQvkmC+0DIug8fAfJtD5Ii3tu4aHar3+kXqem4Tu2XLLIGvkFEYEY4eUuKkle1tdm382E49wO5xI7xM6nJUE9/SyW2uI2e/l/1ciLpgYusuyeFiOOKDf3Ja0MSQJ0cDyONEz1K+6OjzSqcV9/pGRcZWSnsXBLyVkPJIwpbmqo9V2mV8pIJQNRnyil8B+fYnEvSxvLQjbIZWg3yjZFVf7/7oZi+F0P2R6lLs3SGJ00lCJOBmzBKZt3cuE/hK3vjzsw/jZToTNi196C7gMtC4ymNhjykUaDKVS8cn4Xc3zvI2S2aartObt2d6M5XSzQwkzHfSFtFlyMxP7bM37lYp1xSddo5y0tKrm6d4p2+ZsHdQLvhw91yQUlaKsdsYZq7a1c9RKp62D9xMeMypAbSbrQ87+q9Nvy28AaLPrNmuNuPc/MiFFkFtarjpJZ9xpMc0Cg+oUjuSSnYzqS+dVKOA4ziiMb6+YhnOvy494D6/dOvjgpZqFU4PQyyfrJBax+jfeLYefQGFmeMwYi4ihjTDlFDmhZRsh2zHshE1dAeDXRYkQ9qrgpb+I+IMI0PJbkaYL7q9gI4TuarUI4okKNDn0GtM512uEp/00Y/3kBxbG/YB6lu7J6u/anpBn73t0d6ynb4QFWOVvJx7ynq+BKHKsyWHPOPsKq10vwCDB6WmOeXvGFg4s5Hc=
+	OsiSsWDsbkc2bjdFVQLTq85DIiW8QTYhCglUmAN+hwFybDHTfc0DgRJTapA4oot6MlztXyGCs7PutExnvfcW8cUJciADMpsa8vNIJu/0AAsWTcst1QcAmmUHz3Lfqh3mzM8xCrzdbrL4WfdlvTFPPF2Tp4wqnsqwcg+Eh2iUl/mqdEzPEjm4d5lToD4C1M9BEYRCJL1mroWSwRk5xXeW/6RamVFh3mUUc4DocuSvkqRpIXtBd2RwFxRMZgnwPKm8pywXATJCUnYjRd0t7SvXxW2A4YSZORCRQuw3c3oipZAOV4Z2dqHkUjHERKxLTkNOLhgOevhBF83J+yJCvOEYcz1jWyRh2UMQg+AjImVvTkE4B5QJD0mzDFEGuZNMy/fxbmX8xclVpgdsvNZYOtFTictt8+68whlSpXIY0jqT5I8dyr7EEbYDRVucmBeT/wb5FylfhDG0yUN6ydBS2C42lSyKA82d4uPmrK+3YJSR5FEWtOPQjnI02/PA0Xjus7nPJQm2ATW3gv1op3hcVI8vc5WXEJLzgz9nTPNmrRUXVw4VlA7pG9rP8SS0Pk8MwY25Cy8xrQdVnPdpg2kzoZTuErMZVngW3OjusjBw9+ZUkpYK9Gp7ktRcejlinvmOpZ53Q7liJRyA7KrvIzHuY/GO3ULzDbjs2hMqVrpJnqjVqkSHyXQgbsOwYfgJGvUS3qGS
 X-Forefront-Antispam-Report:
-	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230040)(36860700016)(1800799024)(82310400026)(23010399003)(7416014)(376014)(22082099003)(18002099003)(6133799003)(3023799007)(56012099006)(11063799006);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5179.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(23010399003)(7416014)(376014)(4143699003)(18002099003)(56012099006)(11063799006)(22082099003)(6133799003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	q5eSdfSxXRdzvMA+DVmPpSPQuspCae6xLucRk86lYdXTLEoXynBlqbtqPFjgFQ6xbeGTzP/Lw9rETq4sl1zWbrU9ExZFi2AvnidoKF2sfhoCcapzQTUwgmIeS8BytC1S0+XEEZLzpmGDs9cWeNDCJfoRNmrHgrG2bwqiuly7KM8fHIj3fzBfoRbGCXfLzbiOUTy2bsbhzKgYPuyySitIH5nEb+E3E3rZ1aMjIIX91QyI8gTjMwQHxkFJctPPf4VjHbsTwjfcx/CxlOb/Iq/DaAA6eNtMT78KxAmWqDmJJlxnSok9FTZXJlWXxYZwxAGb0+PCsWpuHS0C5k2VMo+t2h/zvPAlrK3s3gDJJdrqGjWqwKHGn9X84cgfeEKqcVxWi05JRtv7ujx8nYNbiLvetZnhGopc60LlqdEFDrzAJOjVC+DV1Atc4/iwCAqmg9pS
+	=?utf-8?B?SWhQSFRkaTQ4aDAvbjRidUtabk9adXVVWFBZWHNqeEdSdFNWRlNkbTdiQ2pU?=
+ =?utf-8?B?ODNrRUxIR1k3Zmg1OGcwanFOUHo3RGpLdWc0Qkk3cEZVeXk4ZE1LTjl0Z0NL?=
+ =?utf-8?B?MGNqMHRoOFZGMm5uT2xOMmx3REZ6aDBMczVVUzhLeTVxTlNUVjkzN1J6TUll?=
+ =?utf-8?B?R0pxU0ZINDhYQjN3a2NUQ3dBSEthOHJ2NTRRUVBhWjdHRldaTU4zdFgwSkR0?=
+ =?utf-8?B?NzBma1BtaSsrMHA2L3BrQk9XTU9pcU1vQk55ZGZmZmpVVEN6L2dmTGEzaDZv?=
+ =?utf-8?B?Q1pZdlhHQ04xU3J5NDJnTUtyOVJidXJ3RUFpNm1nVVFGMUFnSjNncndTV0wr?=
+ =?utf-8?B?a2hiVFpxMmxsbWp1dVh0bmUzRWI2RmxCdHBhNFJITnVVQjN3UnRjQVV5NC92?=
+ =?utf-8?B?RkUxbkdqdFFEdjRIaGk2c1dubzZ3UkRmcU1GOUtITy9zNXJvQnRmZVZQYlY2?=
+ =?utf-8?B?MjVqZHM4bVJTWlV1ZHFjdk0yNGVDZUdvZjNEUlZ6dWtTZGFkUEh4akgvakRr?=
+ =?utf-8?B?VTJrZEF0K1pnZGlOSy9LM3RIdEVRWk5jd1JnUjZTUXY3YVNlZzNEQUNsUU9j?=
+ =?utf-8?B?UUl1N01kWDJTY0ZsYVRGV2FqRzdlZVNJV25TZmxzYXI1V2VCUTNqUlAxcmd4?=
+ =?utf-8?B?MG14TjRZWTB2UDliSHpxS0xOOGYzL3ZIRVZTaDZjOVhaeS93MHp5dHg1UVRK?=
+ =?utf-8?B?YVlVbGRqRHM0Mlo3SDMvWTFDRm5hRTRBMU1uUTZ2d25Xc2Q2YWh3YWdydG5N?=
+ =?utf-8?B?dFZmbXNWUTZlaDZXSjlKUUR3UTl3MmJUV2srNWd1aStRMnhxOEdvSkVmZDJC?=
+ =?utf-8?B?cVZzUDBhMzlrbmZpVDF2R2cxT1lPM3dzdUhpelA3YmNMM2k2QmlWUWNaQlE0?=
+ =?utf-8?B?cG9JS2ZJSmlNTTZveGdBVUhYVnJEejRjcG5aZ2VyQi9JUEtsUjdmbC9ERVRv?=
+ =?utf-8?B?b095TEdRK1FNbjFvMks5Nkd3WUhnOG9YRWhYWlJQazFIS0h2ZDBkN2Z4V3oz?=
+ =?utf-8?B?S3FDRzdCM2RrNkF5eElmenJQU1ZZSUs4b2cwbXdxVFp5a0liU1QyVHRkaEor?=
+ =?utf-8?B?eU1oVFNwa0hrVjNNOWJGQ2tGdWNqdWp0TlNIN1lwMmNITjFBUk5SVmI5RU5F?=
+ =?utf-8?B?VHdRdmNEQ3cxTTJyMlJscW1kUzhIUk9GcDZpNGVLUzRtUVNpTzVmUEZ6alpU?=
+ =?utf-8?B?d2QxMXErTDRwcTNEOXNFZHRuYjhHc1JKU1VkTUgwSXNsL1FHV2lXVWRLeHkw?=
+ =?utf-8?B?THdQN1B5TDhCSnNhU2VaeDVJUmJhU0QyaGxYMFNwVUh6elVvb01OMnYzMnQ1?=
+ =?utf-8?B?RHRTNzRMV1RUR1cvOXRlUTcrcFo3UTZ4R1FyV3V2ajQ2ckkwbUFvSkRqK3lj?=
+ =?utf-8?B?cUIzUHpSa2hSUUtzZmhqN3ZoeEFxUWVTVGdiSmd3SnZDUnh1WWFOT0wyZXpL?=
+ =?utf-8?B?S2s0T3lqUzY0L1l0NUxoaWVWWGtzd1Nmc0dlTzFzakQ2a3JnR1c3MHJHcnh0?=
+ =?utf-8?B?MHhOeWl3YjR1MVNNN2pEYWs5dzlKd1VJMzdqUEprVGxXWGFpVi9XQkxLYTRz?=
+ =?utf-8?B?bXY4aEcvVG9wUWRQVEVJUDJsSU05ZW4rSm1CUDRGcGluNE5PbjRMUmlNRzJB?=
+ =?utf-8?B?SHNLRmFiQlRUajBQKzJyajl5R1d1bytqR0hOTlZEWllSWGMwSEIranF3REJk?=
+ =?utf-8?B?WE53Y0k2bzRkanJqZ3NiejlyVW5oQjE4MWtXcFdDWm1pREtDaTllNVdTcFFi?=
+ =?utf-8?B?UmNBMmZDOS9QZ2tMdkFOcEwvblk3TDF6RGhmQmdhSWdldVBqUGNwOEtrNko5?=
+ =?utf-8?B?T3k2SzdOWXl6RXBXR2YyYXg5R3BJOVdHTldEMEFCTDZqekpiRmRmdVBOanZV?=
+ =?utf-8?B?cUZRWHE5eUo3RUZqRUQ4NTZiTTBCRGdrVzA3azQ4V0VtZGxVSk51QkFvR2ox?=
+ =?utf-8?B?OGxaaU80NmNJL1Zha0pxdDliRGN5K2s3ZGowMUc1TnJsci9RQXBzQVRYVXMz?=
+ =?utf-8?B?WEpGbWNES0p1Tm1IaWZzWStWUWU0MWoySmQ0eVJsZ3pnMEdPYytidHphQ0ZH?=
+ =?utf-8?B?VVhuTzdpbk5RWEJOUEtGQWtsZE0vNGdnRlFNSnFmbzhpT1k2S2l3TlRENDlZ?=
+ =?utf-8?B?RVM3ZGNBV0F1R2tIUDcyVzVCOUFjenRHSXhWaGI4Q0pvK01tUER0ZzIrZ09x?=
+ =?utf-8?B?SUxQZXJTVXFwc3NtV1NuMVpvUVIyRkhsM3dZMHlwM1FhRHEwclRzSmZLdUdE?=
+ =?utf-8?B?WHpXb2o3RlQ1cUhiY3RYcmxqVE9yRll5RDNMZUpsMUdMd044K1kyUGc0blNO?=
+ =?utf-8?Q?mjS8TjYjt/gvvKHXXR?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jun 2026 06:25:54.9037
+X-MS-Exchange-CrossTenant-Network-Message-Id: a263e4ca-fa77-4f60-729d-08decb0b3a35
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5179.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jun 2026 18:23:41.8799
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: f9c2c01e-af50-4370-ca80-08decaa6f49e
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DM2PEPF00003FC5.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ5PPF2CD49510F
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9vnFGqpg6mLRS+61qczHOi8agAVv0YZU+h36wpQ0e6OvxE6nXkAuEKqNK9vkBZXU/KjKvp72H7WdNE3PRuyBmg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS4PR12MB9681
 
-On Sun, 14 Jun 2026 22:56:06 +0200, Alexandre Belloni wrote:
-> On 23/04/2026 14:26:59+0530, Akhil R wrote:
->> This patch series adds SETAASA device discovery to the I3C subsystem,
->> enabling support for SPD5118 temperature sensors found on DDR5 memory
->> modules. The changes also add ACPI support for all existing DAA
->> methods like SETDASA, SETNEWDA as well as I2C devices on I3C bus.
->> 
->> SPD5118 and similar devices on DDR5 memory modules differ from typical
->> I3C devices in their initialization. They use SETAASA broadcast CCC
->> instead of ENTDAA for address assignment, and per JEDEC specification,
->> are not required to have a Provisioned ID or implement standard device
->> information CCC commands (GETPID, GETDCR, GETBCR).
->> 
->> The series enables to describe all I3C and I2C devices on both Device
->> Tree and the ACPI table, using unified device property APIs throughout
->> the I3C core and the Synopsys DesignWare I3C master driver.
->> 
->> Please note that the series modifies drivers across multiple subsystems,
->> like Device Tree bindings, ACPI, I3C and HWMON.
->> 
->> v2->v3:
->>   * Fix maximum value and indent bit list for mipi-i3c-static-method.
->>   * Move I3C_ADDR_METHOD_* macros to dt-bindings header.
->>   * Drop ACPICA commit IDs, keep only the Link: tags.
->>   * Revert the change which proceeds to register other devices if SETAASA
->>     is not supported so that it aligns with the rest of the driver and to
->>     avoid the issues pointed by Sashiko.
->>   * Rework multiple commit messages.
->> 
->> v1->v2:
->>   * Added patch to remove 16-bit addressing support for SPD5118
->>   * Guard ACPI calls with #ifdef CONFIG_ACPI
->>   * Remove CONFIG_OF guard for of_alias_get_highest_id()
->>   * Mask mipi-i3c-static-method in the driver to select only valid values.
->>   * Proceed to register other devices if SETAASA is not supported.
->>   * Update commit message and links in the description of multiple commits.
->> 
->> 
->> Akhil R (13):
->>   dt-bindings: i3c: Add mipi-i3c-static-method to support SETAASA
->>   ACPICA: Read LVR from the I2C resource descriptor
->>   i3c: master: Use unified device property interface
->>   i3c: master: Support ACPI enumeration of child devices
->>   i3c: master: Add support for devices using SETAASA
->>   i3c: master: Add support for devices without PID
->>   i3c: master: match I3C device through DT and ACPI
->>   i3c: dw-i3c-master: Add SETAASA as supported CCC
->>   i3c: dw-i3c-master: Add a quirk to skip clock and reset
->>   i3c: dw-i3c-master: Add ACPI ID for Tegra410
->>   hwmon: spd5118: Remove 16-bit addressing
->>   hwmon: spd5118: Add I3C support
->>   arm64: defconfig: Enable I3C and SPD5118 hwmon
->> 
-> 
-> I'd really like to apply this but I would have preferred having an
-> actual ack from Rob on patch 1. Also, you are going to have to rebase on
-> the current i3c-next. Can you do this?
+Hi Pierre,
 
-Definitely. I had been addressing the comments from Rob and Saashiko, but
-got hooked up into somethings else in the last few weeks. I will send v4
-soon. Thanks for reaching out.
 
-Best Regards,
-Akhil
+On 11/06/26 20:01, Pierre Gondois wrote:
+> External email: Use caution opening links or attachments
+>
+>
+> On 6/9/26 10:53, Sumit Gupta wrote:
+>>
+>> On 28/05/26 17:37, Pierre Gondois wrote:
+>>> External email: Use caution opening links or attachments
+>>>
+>>>
+>>> Hello Sumit,
+>>>>
+>>>> Hi Pierre,
+>>>>
+>>>> Thanks for the review and the complementary patch.
+>>>> Going point by point:
+>>>>
+>>>> 1. Rollback for a partially applied multiple CPU write in
+>>>>     store_ospm_nominal_freq(): Agreed, will add into v4.
+>>>>
+>>>> 2. cppc_get_ospm_nominal_perf() and the show/init/exit coherence
+>>>>     checks that rely on it: I'd skip these as the register is
+>>>> write-only
+>>>>     as per spec.
+>>>>
+>>> NIT:
+>>> IIUC having a write-only register doesn't mean we cannot read it.
+>>> Cf. cppc_get_desired_perf()
+>>
+>>
+>> Good point.
+>> v5 reads the register via a new cppc_get_ospm_nominal_perf().
+>> So, show() returns the register value or "<unsupported>",
+>> and dropped the cache/bool.
+>>
+>>
+>>>
+>>>> 3. Initializing the register at startup and restoring at exit: In
+>>>> v3, we
+>>>>     dropped the unconditional cpu_init write so user values would
+>>>>     survive CPU hotplug. The spec also makes the explicit init
+>>>>     unnecessary: "If this register is not provided, then OSPM must
+>>>>     assume that the OSPM Nominal Performance value is equal to
+>>>>     the Nominal Performance value.". The unwritten default already
+>>>>     looks well defined.
+>>>
+>>> The concern I had was for the scenario where:
+>>>
+>>> - the driver is loaded
+>>>
+>>> - the user sets an ospm_nominal_freq value
+>>>
+>>> - the driver is unloaded
+>>>
+>>> In such case, the ospm_nominal_freq value will still be set to a
+>>> non-default value. The modifications suggested previously would
+>>> allow to handle that case to come back to the default value.
+>>>
+>>> FWIU, we have:
+>>>
+>>> +------+     +---------+     +-----------+     +------+
+>>> | User | <-> | CPPC    | <-> | CPPC      | <-> | CPPC |
+>>> +------+     | driver  |     | reg       |     | HW   |
+>>>              +---------+     | interface |     | reg  |
+>>>                              +-----------+     +------+
+>>>
+>>> So if we want to handle:
+>>>
+>>> - the case described above
+>>>
+>>> - the case you mentioned, i.e. hot-plugging CPUs
+>>>
+>>> maybe the scratch values should be stored along the CPPC register
+>>> interface. This would allow to handle complex cases where CPUs
+>>> are hotplugged and the driver is loaded/unloaded ?
+>>>
+>>> Note: the same kind of scenario should apply to the auto_sel register
+>>>
+>>
+>> Right.
+>> After unload, the register keeps the user set value instead of the
+>> firmware value. In a follow-up, I will restore the firmware value on
+>> unload and reapply the user value across hotplug, grouping the
+>> OSPM-set registers together (ospm_nominal_perf, auto_sel and EPP).
+>> On my test platforms the registers survive hotplug, but that isn't
+>> guaranteed in general.
+>>
+>> I think it's better to keep the saved state in the cppc_cpufreq driver
+>> rather than the CPPC register interface. intel_pstate and amd-pstate
+>> do the same.
+>> For reapply, will use a CPU hotplug callback rather than ->online/
+>> ->offline hooks. Those are only called when a policy gains its first
+>> online CPU or loses its last one. cppc_cpufreq also has shared
+>> (SHARED_TYPE_ANY) policy, offlining and onlining a single CPU
+>> keeps the policy active, so neither hook is called for it. A per-CPU
+>> hotplug callback is needed to cover that case.
+>>
+>> Let me know if you have other thoughts.
+>>
+> Is it necessary to have cpuhp callbacks ?
+>
+> The cppc_cpufreq driver should only support:
+> - SHARED_TYPE_HW/NONE: in such case, the polity should
+> only have one CPU
+> - SHARED_TYPE_ANY: in such case, configuring any CPU should
+> configure all the CPUs of the policy. The only issue is that
+> we currently don't know whether the CPUs in the policy
+> share the same CPPC registers or have individual registers.
+> I think it is currently strongly assumed there is only one
+> registers for all the CPUs.
+>
+> For instance, if:
+> - CPU0/1 are in the same perf. domain
+> - don't have the same CPPC registers
+> - have a SHARED_TYPE_ANY policy (i.e. writing to any
+> of CPU0/1's CPPC registers triggers an update of the
+> hardware for the 2 CPUs)
+> - policy->cpu = 0
+> then:
+> - enabling auto_sel for the policy means configuring
+> CPU0's CPPC register
+> - if CPU0 is offlined, policy->cpu is updated to 1 (pointing to CPU1),
+> - then reading the policy's auto_sel register means reading
+> CPU1's CPPC register, which was not updated
+>
+> So using the already present online()/offline() callbacks should be
+> enough. It would also be good to check that, for a policy, all the
+> CPPC registers are identical.
+>
+> Note: having per-CPU CPPC registers + SHARED_TYPE_ANY
+> policy is theoretically valid, but unsupported FWIU.
+>
+> Let me know if it makes sense or not,
+>
+> Regards,
+>
+> Pierre
+>
+
+
+Agreed, the cpuhp callback isn't needed.
+For a SHARED_TYPE_ANY policy cppc_cpufreq treats the control registers
+as equivalent across the policy's CPUs. A single CPU offline/online
+within the policy therefore doesn't lose the value. Only a full teardown
+and bring-up can lose value on the platforms that reset the register on
+hotplug. That path already goes through ->exit/->init, so reapplying the
+saved value from ->init() covers it without adding callbacks.
+
+We can add a check that guards this assumption in cppc_cpufreq_cpu_init,
+for the CPUFREQ_SHARED_TYPE_ANY case. Compare the control registers each
+CPU in policy->cpus exposes (excluding per-CPU feedback counters) and
+warn on a mismatch rather than failing init. Since it concerns existing
+behavior, the change can be a separate independent patch. It flags the
+per CPU registers case you described. Does that match what you had in mind?
+
+Thank you,
+Sumit Gupta
+
+
