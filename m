@@ -1,68 +1,68 @@
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 163C13385AA
-	for <acpica-devel@lists.linux.dev>; Wed, 17 Jun 2026 17:17:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F34E4340A6B
+	for <acpica-devel@lists.linux.dev>; Wed, 17 Jun 2026 17:40:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781716678; cv=none; b=eHa/BYuPXvTLuxvZjHs0pLoI9uyWN6lRxbxc6RcBIBnQkpWzZNNn5tMkA8MR5OwN/I5S+TQEn5k8C/Fndpv142cWyk6enjg8llar7tbL90Pu1n0qx8qumU1UL5tR4SfPKJgh5zGEOcGzxNlwnSQ9ByX6OMOmSqP7y1bblv37z6Y=
+	t=1781718010; cv=none; b=OzpNEZGHxdxwhK0nSP34xH7W4qSWEPpqck8OBCmYBsyhKGscuA+Tg8+puRTxX+kXR3APkeiGaFkq2bixQlRs7j6usxfRTJw7+dbLOUD+IkSaDxiu6kj9v8/eFe0OajBP5IFpN0Fwxtn0gvY+kpOtEemuMxXmMRf5Bxl31o5WULI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781716678; c=relaxed/simple;
-	bh=V3CcxOLia9CY0H8zjb+ZTGSXWDv/g65LFKetUF1X0Sg=;
+	s=arc-20240116; t=1781718010; c=relaxed/simple;
+	bh=3H6Tx8GKVFXGcwT6woXKZw4U9eyeRFNU5j+1Z0MDS6o=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Be3m7z+z6gM4OoULgHa/IQKr3hYoROC2fJvvD72mRT0xuQvlhCyLfhBEw6FSodzKR0i43dhu3u9qBe8uH66Lhu1BU5OaJU8t94ajJ3extwox+IC5oEEZjMu7WOUCjyq97X6HaUuV9xH1d8djkd+m1w/xLbUiFL9ovWaC8IrOcGg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dRUE2k/x; arc=none smtp.client-ip=209.85.221.49
+	 In-Reply-To:Content-Type; b=VdxK/YMxH2TuB6OK9jP9EIZ26L/UV0kULQsOez7x3CluZYOd7MjLas97xSSYwjCmbLC1tDMHKgchKR5gumVSy8K5aa32tZpBng54jMkCK3Ah32wVpfo0o9+ICaRcYPIkhpZjyhNK4uoGLN6rOq2VvQff1lp+t+T11u80Oa4FQZM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jogdPkLs; arc=none smtp.client-ip=209.85.128.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dRUE2k/x"
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-461a15cce0bso59646f8f.0
-        for <acpica-devel@lists.linux.dev>; Wed, 17 Jun 2026 10:17:54 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jogdPkLs"
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-490be29c1c5so63570235e9.2
+        for <acpica-devel@lists.linux.dev>; Wed, 17 Jun 2026 10:40:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1781716673; x=1782321473; darn=lists.linux.dev;
+        d=gmail.com; s=20251104; t=1781718007; x=1782322807; darn=lists.linux.dev;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=DHkZUMk1sAqmgYkyu6MiPiSjqHXH7Sbq1n0RCyPRFfc=;
-        b=dRUE2k/xugtqCmhDKwTorjoad4aJEyU/BkjHQ9MfAXW+gW1QlS5B3D9yQcE0wObp7Z
-         FkTvE4Zi1eu+XYCOFO3Z/lj01BFLOHEnRrtfGLc/hJ3R8Uf1fIR4n+F5LkJCuCbz0yD2
-         bhr25WlH6u9vzSCJlWWTFOo2w9lmiJuAWe3gzQDvUpYwSIk0GwCXcp2r5+QC4fQSw69V
-         OUN19Ddr1LDMAb+z1UgbsxSzN3U4WkVBzzB9xslBkB7gfqzDjga7osGjzSD6vmQ6pZ+p
-         WEoSkxwl8c22j98MIQ+27zHYTdawuOvEc8WWdE78tOE43Z68o04jv216gr+eqkVSDf7l
-         M8vw==
+        bh=E4aTYQpCEBfoHlNp/ih1aDYhCnw5Uq36PYKp2Wj/2Xk=;
+        b=jogdPkLs659GxtPLgAblXV91NYRqFN1z0yHFpgxD3CVXrGu0y44Q5n2BBRgADp1sWu
+         LpCz/z5AzY38UqAIO14/Vi37nwQDfL90003+UV6JKjXKvWyNa4OKxtH79uTFN15zHJG+
+         Cjly9KXApgFe2aAnHqUitYTRchtTX0QSthONoX5KV5bVQwmBpHhK1ITlf4xOltZd+6Of
+         HXq068x8iuQYqP2rXItpv0sRlWUyJ+RhJLnOCj7IPegqx/kXXt2SI5rgp9yxNSPaNyAs
+         Hj/a3NqsFOmVGfITlDl+3XDVO5DkgLOj4JsTrDOkxiCQE3y9/oNO1bo3aSOhB+KaoORi
+         RcPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781716673; x=1782321473;
+        d=1e100.net; s=20251104; t=1781718007; x=1782322807;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :sender:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DHkZUMk1sAqmgYkyu6MiPiSjqHXH7Sbq1n0RCyPRFfc=;
-        b=Pt1mlbZIrnhFilhQhhlm0NBhiCDN0KapiYe7B6yt9X4iB+jMO4pRAkmP3ZrpL2Xg5E
-         Bog/MZXon+0QApii1NnPRgpJN6eoZc3AturHv+ORLVQv8u82qUCoBS76Ue1tECfs6YPl
-         a34Jq3AlwlMvjXsIGRfkm5BIM/p3kPJvDHgtXh1zjesrE5Hpw+/8VhNMa167wBCAgJJm
-         aSyvLHWRRYtsLhVfjpxdfGwA/orcPX+EGcF96aqzH1of8vCtg+RxAMT8amPH8nb+MwPI
-         /hI/FcSI/4WA4m4DdVzqCIOITqno8QQ4y/WT8q4hQ/3V4MAjCmkk8ruAGs1O+noZCBhY
-         5Jpg==
-X-Forwarded-Encrypted: i=1; AFNElJ+Na5R2IOyQonXGcX6yGhS3O5T1l8y4WszRS1O/NuCEEzvPGH6Sd8Tz2vcrZEpTKOfyW48mD4KcwvG6FFo=@lists.linux.dev
-X-Gm-Message-State: AOJu0YzxBXJF0j1E7U9lChFVL/EyYFcXw9xp3AaAr4i1IyH5MDAXrq0a
-	QD043yH3Iy1EMPBVKMkCA7tS6rUFxWpBd9Ot8LKXldyFSYRWfNiwB6cB
-X-Gm-Gg: Acq92OGGDBewOkX6qm65KfNrZ6/Bi7XNGqIRaMyLuOoVh8TKtV9xosB7bMi9kY2vy1i
-	p9p7ItD9joqFKNWDfnh//NdwErMIB/S+sAoLhJKXFYCddcqS2sFj9jzYgY7G9HUxg3fpbNrYwAh
-	EmE+ESIr96jKZ3ngF96qXmQZ6oYHbFd87iyooAJUREpQr+VZV0iV4oAyswk8IfJCHbLAh0jDqSJ
-	9bUCWPomIXN5fDMSqr4PIENCKIGK77hDyqosINhP6n5kTWa6SRb16WJQ+rqBfUlq0u8HZ3x2Xsj
-	FC9e9hasSQBUZFnKtjCzK9PaQaHtSRKwaVkF+Vli3Q1fIaFA/3TloHcOgdAYQbPXJf8APupKYfN
-	scNcJFUaJ1u6Q+qpnEHq6y3E0p0yjF5/8MsYBPIBO8bRJVCaUf3BGjcnRWqwVVFXFWZ+nfJHscb
-	TnzNt7G4vWdkB1QbiNTk5QeAApgyUZuAlHmX7GdTn0Nizku/r1YwmkPe+g7c1m3d4yRTCzj5UIC
-	ezC+GE=
-X-Received: by 2002:a05:600c:1394:b0:490:b8e6:be40 with SMTP id 5b1f17b1804b1-4923821bef1mr5753465e9.21.1781716672843;
-        Wed, 17 Jun 2026 10:17:52 -0700 (PDT)
+        bh=E4aTYQpCEBfoHlNp/ih1aDYhCnw5Uq36PYKp2Wj/2Xk=;
+        b=hH4MdtO51meckH1tDaQE5xJLlz9FlSQ8GZo3361IFRJQ+9EbQgcBPjYoE6CXKV4td+
+         iHBmaVWHLzEO0JtP+BFfhNz8RNuu/g/z/v4noXbCnnxikaWSAfr1nYjCWSlmUATSKHZl
+         MPEUsHui2nnhhtJqtA2vunO9xiD1uIwTOy+i86+Gle8Cj7yXEbvL0SB/jAR5kuWUI6mk
+         eBawlgzJyA78WSpKkkzYj8Wo0AmXpl5P2ZMnIWO1uBr4gbccm/VCKSuUZEnpOs7T6K28
+         LjTiKWFVpVMKeYH9TzkO1MXKXrLp0LbtqZrCH2CIGZG8xkAl31X+UcdEA8sbUPU+NzTl
+         Da+g==
+X-Forwarded-Encrypted: i=1; AFNElJ82lv8QeDi8L/AE0JDLRZAyY72GFNZHTht+MOczVNt4MXtFFy7+c95SnNGDu8meEh3fjMNcnrQIbnyZQJE=@lists.linux.dev
+X-Gm-Message-State: AOJu0Yxt0UyX2xZtADK9mokZVj8CmxuKZf8FNzlL3+yIDzKWAVwH9vJa
+	s2PPQLnKkeTWO383WCm5klo9qG75wwglVp9OvxX/QfpWIKI4ctzk2BN8
+X-Gm-Gg: Acq92OHbcr/tgZ9GedDZx/kyLp70E+ccmQryEiQK81d88gWhtps96Opvpxe7qzA0XrH
+	QagkrcNeTVQ+hEuVur8oI9kXXgfh8aJz3eHnT5lkOBGSduK7rXZ+mtA7or7hzamYdu9sM1GsK19
+	KxdKZdvCuUK8FG0uCKuqrqJ9rJUB3fgUN8rrK/Hgg1Xn2IuUDJllq/InJcAOIgjOLu8SJlQplfz
+	Q3aV/+NBNuzIFTT9dnvijmRfP8wBKwvJeh4OysQYFQ4JN4HuV61EkyUTOvJiVtoU8tWpFgIbcH6
+	vNp3p2PWFKcRZKqfsDvhAgVCFa8Qxc6z9D2lY8y+Bw8uL8TxE/rJUZ2zR6FjMYWEExC5aJf4Dv0
+	eJ7I/IG0qcbl1ONw8CbT7Zjmntr4IrFPIVfvOfILjuUl0Bf+uEpcluEUXXVETkVnAkOrCMjasv+
+	ut3fylH2g/2VojEfyjyMTU1559Dky7Rp9YoecdhSoJ1aRvlQ6UALGmipCktPM+G78xqAR7278Ow
+	pMpgFaBaVMhBETHbg==
+X-Received: by 2002:a05:600c:3e1a:b0:490:e974:e01f with SMTP id 5b1f17b1804b1-492333ecb80mr88065235e9.28.1781718007311;
+        Wed, 17 Jun 2026 10:40:07 -0700 (PDT)
 Received: from [10.128.11.42] (195-23-151-163.net.novis.pt. [195.23.151.163])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4606f2dbfb1sm58928836f8f.35.2026.06.17.10.17.51
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49234daafc7sm59819515e9.10.2026.06.17.10.40.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Jun 2026 10:17:52 -0700 (PDT)
+        Wed, 17 Jun 2026 10:40:06 -0700 (PDT)
 Sender: Julian Braha <julian.braha@gmail.com>
-Message-ID: <58f7163f-2fce-41e9-bc35-d1d8e6f4a298@gmail.com>
-Date: Wed, 17 Jun 2026 18:17:50 +0100
+Message-ID: <0f131ee4-d335-45d2-b6ae-49c18df1353b@gmail.com>
+Date: Wed, 17 Jun 2026 18:40:05 +0100
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -70,7 +70,7 @@ List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 07/10] ACPI: APEI: introduce GHES helper
+Subject: Re: [PATCH v6 10/10] RAS: add firmware-first CPER provider
 To: Ahmed Tiba <ahmed.tiba@arm.com>, "Rafael J. Wysocki" <rafael@kernel.org>,
  Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>,
  Hanjun Guo <guohanjun@huawei.com>, Mauro Carvalho Chehab
@@ -89,23 +89,35 @@ Cc: linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
  devicetree@vger.kernel.org, linux-edac@vger.kernel.org,
  linux-doc@vger.kernel.org, Dmitry.Lamerov@arm.com
 References: <20260617-topics-ahmtib01-ras_ffh_arm_internal_review-v6-0-91f725174aa0@arm.com>
- <20260617-topics-ahmtib01-ras_ffh_arm_internal_review-v6-7-91f725174aa0@arm.com>
+ <20260617-topics-ahmtib01-ras_ffh_arm_internal_review-v6-10-91f725174aa0@arm.com>
 Content-Language: en-US
 From: Julian Braha <julianbraha@gmail.com>
-In-Reply-To: <20260617-topics-ahmtib01-ras_ffh_arm_internal_review-v6-7-91f725174aa0@arm.com>
+In-Reply-To: <20260617-topics-ahmtib01-ras_ffh_arm_internal_review-v6-10-91f725174aa0@arm.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-Hi Ahmed,
+Hi again Ahmed,
 
 On 6/17/26 14:54, Ahmed Tiba wrote:
+> +config RAS_CPER_ESOURCE
+> +	bool "Firmware-first CPER error source block provider"
+> +	select GHES_CPER_HELPERS
+> +	help
+> +	  Enable support for firmware-first Common Platform Error Record
+> +	  (CPER) error source block providers. The current in-tree user is
+> +	  described by the arm,ras-cper DeviceTree binding. The driver
+> +	  reuses the existing GHES CPER helpers so the error processing
+> +	  matches the ACPI code paths, but it can be built even when ACPI is
+> +	  disabled.
 
-> +config GHES_CPER_HELPERS
-> +	bool
-> +	select UEFI_CPER
+Yep, sure enough, this patch causes a build error when you enable
+RAS_CPER_ESOURCE without enabling ACPI:
 
-This config option should probably also depend on ACPI (could just move
-it into the if ACPI..endif block), or at least have a comment that
-selector options ensure ACPI is enabled.
+drivers/firmware/efi/cper-x86.c: In function ‘cper_print_proc_ia’:
+drivers/firmware/efi/cper-x86.c:352:21: error: implicit declaration of
+function ‘arch_apei_report_x86_error’ [-Wimplicit-function-declaration]
+  352 |                     arch_apei_report_x86_error(ctx_info,
+proc->lapic_id)) {
+      |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Julian Braha
