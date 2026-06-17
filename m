@@ -1,23 +1,23 @@
 Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7716F3BD62E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 640943542F6;
 	Wed, 17 Jun 2026 07:49:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781682596; cv=none; b=hHzU0x3v8zSd/jXk4UNje13Fhg+E/eOqxSAbk0bFRTxPsGWBI0JKiIrQgwsaw6p3u9afNXc5hyOTGBrnAylVXxmTdlwxMZJmQq2+OLfrZSIJjm9fkwIoIeQABK+6dyUEL1Moxyr8AyKD4dq+xjK9ZDJ2Yl4W8ag3ugaGbyu4LQE=
+	t=1781682597; cv=none; b=kuGrj9LUfRxLO3PXVXW7Hbmalomo/u4o3iURLxZycQsF3b8qGnJD94Uku3oj6dGgaHV2bwHkvLEUYVnPOWmv2tyIrNNbyVCkuI1CZ5ltMlhJdlItn906IPQMaCJuAaOx9hHvDy3H5vCjWBOglSqGgy/k+/TkERIiJtfJycNv//w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781682596; c=relaxed/simple;
-	bh=wcO7wgTZL5ELFNpa5ZhvsoQyj47g/zvGMEObycA99Uc=;
+	s=arc-20240116; t=1781682597; c=relaxed/simple;
+	bh=DRHuHHOgXubk8Y/CUORpqlqZzU1jLk88krXJ/gZe+d4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ondeLFemdVOFROb4HDuiS034hzKKB6b26uLX7btMQdmjexUfr2OvXTHlSk5TV5B2/3Ydr9qSfySfQ2EDX0ipSGiAEM8UdDK/DggVlFcV6JILv2RltbTOkzW0HIQ39HNngObe657D8m27lo6TtYMZcGcN6mHxU2tAhCwHfKjgzIA=
+	 MIME-Version; b=p4rV0uNQposNxXSpR8xhhq617oA5sznxSTiQGcHqiWuhPSm0EpROcbFZM5t+w8nzANGGDgBx9ED/XjiuibQrcAvxCTvZqCmSF1RcdhAtHUe1ueiD9FXHZIDCq0u94KF3p08DKDLHjqq27ixq9zaJbksDhBrM8sxXBmdQRzx64K4=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
 Received: from loongson.cn (unknown [10.2.5.213])
-	by gateway (Coremail) with SMTP id _____8BxzsBWUTJq0w4VAA--.31590S3;
-	Wed, 17 Jun 2026 15:48:38 +0800 (CST)
+	by gateway (Coremail) with SMTP id _____8DxRelXUTJq3A4VAA--.48840S3;
+	Wed, 17 Jun 2026 15:48:39 +0800 (CST)
 Received: from localhost.localdomain (unknown [10.2.5.213])
-	by front1 (Coremail) with SMTP id qMiowJAxHMJVUTJqoAupAA--.58693S3;
-	Wed, 17 Jun 2026 15:48:37 +0800 (CST)
+	by front1 (Coremail) with SMTP id qMiowJAxHMJVUTJqoAupAA--.58693S4;
+	Wed, 17 Jun 2026 15:48:38 +0800 (CST)
 From: Bibo Mao <maobibo@loongson.cn>
 To: Huacai Chen <chenhuacai@kernel.org>,
 	"Rafael J . Wysocki" <rafael@kernel.org>
@@ -29,9 +29,9 @@ Cc: Len Brown <lenb@kernel.org>,
 	acpica-devel@lists.linux.dev,
 	lixianglai@loongson.cn,
 	bibo.mao@gmail.com
-Subject: [PATCH 5/8] ACPI: LoongArch: Scan IOMMU devices in IOVT table
-Date: Wed, 17 Jun 2026 15:48:26 +0800
-Message-Id: <20260617074829.2396638-6-maobibo@loongson.cn>
+Subject: [PATCH 6/8] ACPI: LoongArch: Add iovt device entry table scanning
+Date: Wed, 17 Jun 2026 15:48:27 +0800
+Message-Id: <20260617074829.2396638-7-maobibo@loongson.cn>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20260617074829.2396638-1-maobibo@loongson.cn>
 References: <20260617074829.2396638-1-maobibo@loongson.cn>
@@ -42,185 +42,108 @@ List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:qMiowJAxHMJVUTJqoAupAA--.58693S3
+X-CM-TRANSID:qMiowJAxHMJVUTJqoAupAA--.58693S4
 X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
 X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
 	ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
 	nUUI43ZEXa7xR_UUUUUUUUU==
 
-In function acpi_iovt_init(), IOMMU devices are parsed in IOVT table.
-And these IOMMU devices can put in list iovt_fwnode_list.
+Iovt device entry table are device entry lists which are managed by
+IOMMU device, each IOMMU device has its ownd device entry table.
+
+Here add iovt device entry table scanning function in function
+iovt_add_iommu().
 
 Signed-off-by: Bibo Mao <maobibo@loongson.cn>
 ---
- drivers/acpi/loongarch/init.c |   2 +
- drivers/acpi/loongarch/init.h |   1 +
- drivers/acpi/loongarch/iovt.c | 121 ++++++++++++++++++++++++++++++++++
- 3 files changed, 124 insertions(+)
+ drivers/acpi/loongarch/iovt.c | 53 ++++++++++++++++++++++++++++++++++-
+ 1 file changed, 52 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/acpi/loongarch/init.c b/drivers/acpi/loongarch/init.c
-index 1aa9bfa66e51..e7272ee197c7 100644
---- a/drivers/acpi/loongarch/init.c
-+++ b/drivers/acpi/loongarch/init.c
-@@ -11,4 +11,6 @@ void __init acpi_arch_init(void)
- 
- void __init acpi_arch_late_init(void)
- {
-+	if (IS_ENABLED(CONFIG_ACPI_IOVT))
-+		acpi_iovt_late_init();
- }
-diff --git a/drivers/acpi/loongarch/init.h b/drivers/acpi/loongarch/init.h
-index 070ea187bfae..85e5197553ad 100644
---- a/drivers/acpi/loongarch/init.h
-+++ b/drivers/acpi/loongarch/init.h
-@@ -2,3 +2,4 @@
- #include <linux/init.h>
- 
- void __init acpi_iovt_init(void);
-+void __init acpi_iovt_late_init(void);
 diff --git a/drivers/acpi/loongarch/iovt.c b/drivers/acpi/loongarch/iovt.c
-index 5e3d866796a9..47d2ce20e3f5 100644
+index 47d2ce20e3f5..7deedb8219b2 100644
 --- a/drivers/acpi/loongarch/iovt.c
 +++ b/drivers/acpi/loongarch/iovt.c
-@@ -4,6 +4,19 @@
+@@ -4,6 +4,12 @@
  #include <linux/pci.h>
  #include "init.h"
  
-+struct iovt_fwnode {
++struct iovt_device_entry {
 +	struct list_head list;
-+	struct fwnode_handle *fwnode;
-+	int flag;
-+	int segment;
-+	int devid;
-+	int nid;
++	int start_devid;
++	int end_devid;
 +};
 +
-+/* Root pointer to the mapped IOVT table */
-+static LIST_HEAD(iovt_fwnode_list);
-+static DEFINE_SPINLOCK(iovt_fwnode_lock);
-+
- #ifdef CONFIG_PCI
- static void __init iovt_enable_acs(struct acpi_iovt_iommu *iommu)
- {
-@@ -23,6 +36,94 @@ static void __init iovt_enable_acs(struct acpi_iovt_iommu *iommu)
- static inline void iovt_enable_acs(struct acpi_iovt_iommu *iommu) { }
- #endif
+ struct iovt_fwnode {
+ 	struct list_head list;
+ 	struct fwnode_handle *fwnode;
+@@ -11,6 +17,7 @@ struct iovt_fwnode {
+ 	int segment;
+ 	int devid;
+ 	int nid;
++	struct list_head ep_list;
+ };
  
-+static int __init iovt_get_pci_iommu_fwnode(struct iovt_fwnode *np, u16 segment, u16 bdf)
-+{
-+	struct pci_dev *pdev;
-+	struct fwnode_handle *fwnode;
-+
-+	pdev = pci_get_domain_bus_and_slot(segment, PCI_BUS_NUM(bdf), bdf & 0xff);
-+	if (!pdev) {
-+		pr_err("Could not find PCI IOMMU\n");
-+		return -ENODEV;
-+	}
-+
-+	fwnode = dev_fwnode(&pdev->dev);
-+	if (!fwnode) {
-+		/*
-+		 * PCI devices aren't necessarily described by ACPI. Create a
-+		 * fwnode so the IOMMU subsystem can identify this device.
-+		 */
-+		fwnode = acpi_alloc_fwnode_static();
-+		if (!fwnode) {
-+			pci_dev_put(pdev);
-+			return -ENOMEM;
-+		}
-+		set_primary_fwnode(&pdev->dev, fwnode);
-+	}
-+
-+	np->fwnode = dev_fwnode(&pdev->dev);
-+	if (np->flag & ACPI_IOVT_PXM_VALID)
-+		set_dev_node(&pdev->dev, np->nid);
-+	pci_dev_put(pdev);
-+	return 0;
-+}
-+
-+static int __init iovt_add_iommu(struct acpi_iovt_iommu *iommu)
-+{
-+	struct iovt_fwnode *np;
-+	struct fwnode_handle *fwnode;
-+	int ret;
-+
-+	np = kzalloc_obj(struct iovt_fwnode, GFP_ATOMIC);
-+	if (WARN_ON(!np))
-+		return -ENOMEM;
-+
-+	INIT_LIST_HEAD(&np->list);
-+	np->flag = iommu->flags;
-+	np->segment = iommu->segment;
-+	if (np->flag & ACPI_IOVT_PXM_VALID)
-+		np->nid = pxm_to_node(iommu->proximity_domain);
-+
-+	if (np->flag & ACPI_IOVT_PCI_DEVICE) {
-+		np->devid = iommu->device_id;
-+		ret = iovt_get_pci_iommu_fwnode(np, np->segment, np->devid);
-+		if (ret) {
-+			kfree(np);
-+			return ret;
-+		}
-+
-+	} else {
-+		fwnode = acpi_alloc_fwnode_static();
-+		if (!fwnode) {
-+			kfree(np);
-+			return -ENOMEM;
-+		}
-+
-+		np->fwnode = fwnode;
-+	}
-+
-+	spin_lock(&iovt_fwnode_lock);
-+	list_add_tail(&np->list, &iovt_fwnode_list);
-+	spin_unlock(&iovt_fwnode_lock);
-+	return 0;
-+}
-+
-+static void __init iovt_init_devices(struct acpi_table_header *header)
-+{
-+	struct acpi_iovt_iommu *iommu;
-+	struct acpi_table_iovt *iovt;
-+	int i;
-+
-+	iovt = (struct acpi_table_iovt *)header;
-+
-+	/* Get the first IOVT node */
-+	iommu = ACPI_ADD_PTR(struct acpi_iovt_iommu, iovt, iovt->iommu_offset);
-+	for (i = 0; i < iovt->iommu_count; i++) {
-+		iovt_add_iommu(iommu);
-+		iommu = ACPI_ADD_PTR(struct acpi_iovt_iommu, iommu, iommu->header.length);
-+	}
-+}
-+
- void __init acpi_iovt_init(void)
+ /* Root pointer to the mapped IOVT table */
+@@ -72,7 +79,10 @@ static int __init iovt_add_iommu(struct acpi_iovt_iommu *iommu)
  {
- 	acpi_status status;
-@@ -52,3 +153,23 @@ void __init acpi_iovt_init(void)
+ 	struct iovt_fwnode *np;
+ 	struct fwnode_handle *fwnode;
+-	int ret;
++	struct acpi_iovt_device_entry *ep;
++	struct iovt_device_entry *entry;
++	int i, ret, start_devid;
++	bool is_start = false;
  
- 	acpi_put_table(hdr);
- }
+ 	np = kzalloc_obj(struct iovt_fwnode, GFP_ATOMIC);
+ 	if (WARN_ON(!np))
+@@ -102,6 +112,47 @@ static int __init iovt_add_iommu(struct acpi_iovt_iommu *iommu)
+ 		np->fwnode = fwnode;
+ 	}
+ 
++	if (np->flag & ACPI_IOVT_MAGAGE_BY_SEGMENT)
++		goto skip;
 +
-+void __init acpi_iovt_late_init(void)
-+{
-+	acpi_status status;
-+	struct acpi_table_header *hdr;
++	INIT_LIST_HEAD(&np->ep_list);
++	ep = ACPI_ADD_PTR(struct acpi_iovt_device_entry, iommu, iommu->device_entry_offset);
++	for (i = 0; i < iommu->device_entry_num; i++) {
++		switch (ep->type) {
++		case ACPI_IOVT_DEVICE_ENTRY_START:
++			is_start = true;
++			start_devid = ep->device_id;
++			break;
++		case ACPI_IOVT_DEVICE_ENTRY_END:
++			if (!is_start)
++				break;
 +
-+	status = acpi_get_table(ACPI_SIG_IOVT, 0, &hdr);
-+	if (ACPI_FAILURE(status)) {
-+		if (status != AE_NOT_FOUND) {
-+			const char *msg = acpi_format_exception(status);
++			entry = kzalloc_obj(struct iovt_device_entry, GFP_ATOMIC);
++			if (!entry)
++				return -ENOMEM;
 +
-+			pr_err("Failed to get table, %s\n", msg);
++			entry->start_devid = start_devid;
++			entry->end_devid = ep->device_id;
++			list_add_tail(&entry->list, &np->ep_list);
++			is_start = false;
++			break;
++		case ACPI_IOVT_DEVICE_ENTRY_SINGLE:
++			entry = kzalloc_obj(struct iovt_device_entry, GFP_ATOMIC);
++			if (!entry)
++				return -ENOMEM;
++
++			entry->start_devid = ep->device_id;
++			entry->end_devid = ep->device_id;
++			list_add_tail(&entry->list, &np->ep_list);
++			is_start = false;
++			break;
++		default:
++			break;
 +		}
-+
-+		return;
++		ep = ACPI_ADD_PTR(struct acpi_iovt_device_entry, ep, ep->length);
 +	}
 +
-+	iovt_init_devices(hdr);
-+	acpi_put_table(hdr);
-+}
++skip:
+ 	spin_lock(&iovt_fwnode_lock);
+ 	list_add_tail(&np->list, &iovt_fwnode_list);
+ 	spin_unlock(&iovt_fwnode_lock);
 -- 
 2.39.3
 
