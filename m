@@ -1,100 +1,108 @@
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23D062AD00
-	for <acpica-devel@lists.linux.dev>; Fri, 19 Jun 2026 16:17:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A7573BFAEE
+	for <acpica-devel@lists.linux.dev>; Fri, 19 Jun 2026 17:46:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781885841; cv=none; b=kPkebuuugqRPgBPaoC163rWAujFm8dJmbeOo7vEP9Khbfktc39Z9wrjF4IL4wqOTCSoYIRywMhjtYa8Bp4i6sun0a0FQ5fTeAhf6I4LQnTsor3vniKaha1n8dlqsi59sJCOLJHwWSxTMTPWFkTAzJdKjVb+cjitlfQOlqiwYDOM=
+	t=1781891199; cv=none; b=JBhPVzMJjA8wxnKxZUy3JZEhdQGXmWRlPvL71Qe2qDL8JKpmBQbavC8tzXeP3piophtOh3SaSk9TAExopvLDktRBTs6p7jcFQ/stxep+MedQLfAHO9k2XEu5Rb9Q3YMbegWCQ6049yfsCzPkYu3TeqNSKZBWe6WSEqTGnk7cGTs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781885841; c=relaxed/simple;
-	bh=Hez/6THJzlNXGiz/OjgNp3YP/wptBZbyvAYu93ZLYJg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SKVG3WIGtdnupFfiqnfbK+JkDAofctq980eHO1AeVk9w1F1P9MRmdCVQgpKDkOxqsLhVpAPftpbQQRIJWHsOUHrlZX0WcsFr0T8jYXo7HVifsgUp49d4UHX5SjHJrb2B5BVm5QadXRjdKv7EqhngFRpAB1xCbT3oXXrfM4H9eYk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=FbFcWs3f; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+	s=arc-20240116; t=1781891199; c=relaxed/simple;
+	bh=H7f14CYwNP46ECpdeY80MJ+vB0wytZ/WUeIVEgw1f+A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=i03CR3On5I/ZkA6/3i2SAz9R3o4ucFB7SoDG9zMnrlrLILXZ4ABhHp6tjTEddVY0rPqEwMc8ryQywODt1aRmK34/UIwSi5jr4FkC0VE889PyRYlRIO6kCP0i3141ax2RQQtjbOBRXH8csdR14/t6pYTOr0hEXZ8xdfhCp0GSFD8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=em1mFc5a; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="FbFcWs3f"
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id EE47740E00C0;
-	Fri, 19 Jun 2026 16:17:11 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id CsVRI4SkSUaf; Fri, 19 Jun 2026 16:17:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1781885822; bh=0NbenZSMXYebM0Gsy498bp9VLyj7xrVg223GYzgur9k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FbFcWs3fCT+DOLcODMx5M/yVEJZdNzuoawHCl1GWlb3q3WvRGXUm2KvJlevmVFMZL
-	 tL7TxH01Onso0WohYbvzLPMCSl3kTfxO8eTfAuqQWLSUmKOsg59gM/uJ9N+9mzGRx3
-	 ksfljx+eViwR7yB+f8OJPGScVVl0B+o0ZvXnRvz9cFoGlPWVEbe7PSIoVZTgBF/xPj
-	 BmocnXhL2JHAfEwTYTKeuD9tYymxd4meODFtB5D1PEO9534K4APooZhOp4Vsmhh7ev
-	 yp3W5t2X/r8mgSvP4y/3EwCEYoQRRMY9Ct39i7czoHxBsc4EJb9WKVFo+bhdteAgk4
-	 Hd0X+oD4Y6sZ5/J6pQ1l9Oabw/FHU0dYcesErG4rN5NsqBfJMX8ufJj8N9h1+Fe/aE
-	 u4JU/HO+Z41xW3uIROhBROSJm+RKgPMvJxus0Jg0+hjWUzGd26c5EAYyGhcmqoqcPS
-	 FI883ZndyvWyfSx7ng6dWWD+cQbLFTCFcwjEu8zwIX7/i90FBcNkHSjxNNiLCnIuMv
-	 KuW5+QNqhlqLngdHCvwu0ovDm2BOs4WctgZ6SG/HZcuhSdILDLj/AOPjYHikvu54Nu
-	 lM9/oDOH2UZ1tSifvg2PzGpMItuQLQNHyEK9NaZjs4deQdg7LSMdaeelOMnhflahLp
-	 FD6yNSBYpTKHOXq5Q4fVdj/I=
-Received: from stx.tnic (unknown [IPv6:2600:1700:38ca:c00::1a])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 35D8140E0140;
-	Fri, 19 Jun 2026 16:16:33 +0000 (UTC)
-Date: Fri, 19 Jun 2026 09:16:30 -0700
-From: Borislav Petkov <bp@alien8.de>
-To: Ahmed Tiba <ahmed.tiba@arm.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
-	Tony Luck <tony.luck@intel.com>, Hanjun Guo <guohanjun@huawei.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Shuai Xue <xueshuai@linux.alibaba.com>, Len Brown <lenb@kernel.org>,
-	Saket Dumbre <saket.dumbre@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Jonathan Cameron <jic23@kernel.org>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Alison Schofield <alison.schofield@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	Ira Weiny <ira.weiny@intel.com>, Dan Williams <djbw@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev, linux-cxl@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-edac@vger.kernel.org,
-	linux-doc@vger.kernel.org, Dmitry.Lamerov@arm.com
-Subject: Re: [PATCH v6 00/10] ACPI: APEI: share GHES CPER helpers and add DT
- FFH provider
-Message-ID: <20260619161630.GAajVrXuZ3XWvK83G7@fat_crate.local>
-References: <20260617-topics-ahmtib01-ras_ffh_arm_internal_review-v6-0-91f725174aa0@arm.com>
- <20260618164807.GAajQhR9J_00j4LxaC@fat_crate.local>
- <eccbf574-a145-47af-889b-ca6dd80f98f2@arm.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="em1mFc5a"
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-4923139e940so14114795e9.3
+        for <acpica-devel@lists.linux.dev>; Fri, 19 Jun 2026 10:46:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1781891196; x=1782495996; darn=lists.linux.dev;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=H7f14CYwNP46ECpdeY80MJ+vB0wytZ/WUeIVEgw1f+A=;
+        b=em1mFc5a9DAdHnko9MmXhbsHEjfUMg7X5aq8c5lwyiLcMlN8Upzm3ibja5gZbIvB+u
+         JBigKzHQqhqvvCBCucFQlRkifZVGrQ3tL/I2VC/33UZNUJbBKVL2zJJBO0iR8uQD1TYF
+         j9T06+4rq/tE44z++YpkZzHH9CZ355cRToYdCnl3kOQjbjh4J5iJHFJGi28/9y1YBW02
+         AKQ2AsQ8A5IwJOa903HkEQ4eL9lacE+UgYFAsBL60phXMhd6Cooadlu3JaZU0PFf3X6g
+         N3u3+VRFRbkrOwEU1FMFjKQ6leRdpL3Pb4iQe2T5Fap1PYLbt1wiiLOLMPhgXjAabD/G
+         uEPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1781891196; x=1782495996;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=H7f14CYwNP46ECpdeY80MJ+vB0wytZ/WUeIVEgw1f+A=;
+        b=cRnu+FFd5EIWZPCLSRTWGlFb6AHLs2vbXwLbxkcMs+ay9DlafOfHp7tFesAgOI5ALJ
+         Elhwk3gd6fiR6GIi3e1MJFx6Rs5BNrRWgnjjYJJF+CKKJrow9JUUWlkyKDRW5gaNOxXH
+         4PEh/jU2EThX7ZymVDhp5V1f4kafO/XIM0LPr5Mjh1Vma5/S4kW5KCA3JEUh2tEjxXEB
+         RFU7LsdnysSXSPUWFwhraN6jjz14qd5ESPBuHJ3wf8XWFXM4FlaeDkuHC9i9FnhXK3Gc
+         Q/5dHmbqbshptsBMzdOb77+ihN84xI9pIFlvox58N833dioIvzV8VxMhMK9lIo+TwpgS
+         ELyA==
+X-Forwarded-Encrypted: i=1; AFNElJ8GMTf/a2Zvmrq2XfIeSRL0DIna6UKYlR8KqomBTnW2ZvnZojm79fSxzv+B7ZmW/zChTl1v3wXwsOqFs1k=@lists.linux.dev
+X-Gm-Message-State: AOJu0Yzg0s3VnUfuHYA+mAsXAelbbJC4PJ/krkYSEv0lyxH5naqwGjE9
+	a90Hc69nWCM85M2XDpJ9V0h5QxEGGdGscN3h+klO0rMVKCe+fA5wA6KOyII2puxUjT8=
+X-Gm-Gg: AfdE7clYt7sRX4zBidMz1tryOP4hpN32fOwCXYspCNiGWIME65eCeIzTXdpLxgpU0TP
+	NvWFAXZ1/cTiIBpZOj/BVdlHfM0v06nnClDgIVd2R6WFDdcPnjZjPgc9mY2gQ/NE6O2aJCSOAk7
+	LhNVXb+T1ZUkG7I+bAbrlQpbd8ob5i5WRxoKYT3n8sWpj8Xj6Up+bpt3t9AwcaZ81iTXw2BFKvi
+	T4hppLhp4oUS/RKNGtk2iP6b54hgkSKyceianK93wjQK698CJ2kBOfejLBTJp02nYd8BzT9qv4Q
+	uZgTvSWIlCSjqbiGqEf/iw/W6sP1Ibc0pfXq8URL7wj2ItPGoLhhJtnNs5WHcp5bkDcxa2zvozw
+	o8sAXrC+3wmQfbNVfWomxaYTC2o3FYY2uSx7AFoPYGzVPsCScaMsI+67382TgVLvNa+TRAYrCIl
+	X+8BeFF6gS1K0hfoFd92MIHUmGioGUAJfNbTNmLIP5tZ8B56HNNz9j8a/siX5wJMV4px1DHCGwX
+	iEGLo0=
+X-Received: by 2002:a05:600c:a15:b0:492:39b6:5a30 with SMTP id 5b1f17b1804b1-49242591d5dmr53790795e9.35.1781891196410;
+        Fri, 19 Jun 2026 10:46:36 -0700 (PDT)
+Received: from [10.128.11.42] (195-23-151-163.net.novis.pt. [195.23.151.163])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49249238bfbsm1569755e9.5.2026.06.19.10.46.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Jun 2026 10:46:36 -0700 (PDT)
+Sender: Julian Braha <julian.braha@gmail.com>
+Message-ID: <84dabe49-8405-4213-8b73-433cf736ded9@gmail.com>
+Date: Fri, 19 Jun 2026 18:46:34 +0100
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <eccbf574-a145-47af-889b-ca6dd80f98f2@arm.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 07/10] ACPI: APEI: introduce GHES helper
+To: Ahmed Tiba <ahmed.tiba@arm.com>, "Rafael J. Wysocki" <rafael@kernel.org>,
+ Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>,
+ Hanjun Guo <guohanjun@huawei.com>, Mauro Carvalho Chehab
+ <mchehab@kernel.org>, Shuai Xue <xueshuai@linux.alibaba.com>,
+ Len Brown <lenb@kernel.org>, Saket Dumbre <saket.dumbre@intel.com>,
+ Davidlohr Bueso <dave@stgolabs.net>, Jonathan Cameron <jic23@kernel.org>,
+ Dave Jiang <dave.jiang@intel.com>,
+ Alison Schofield <alison.schofield@intel.com>,
+ Vishal Verma <vishal.l.verma@intel.com>, Ira Weiny <ira.weiny@intel.com>,
+ Dan Williams <djbw@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+ Shuah Khan <skhan@linuxfoundation.org>
+Cc: linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+ acpica-devel@lists.linux.dev, linux-cxl@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-edac@vger.kernel.org,
+ linux-doc@vger.kernel.org, Dmitry.Lamerov@arm.com
+References: <20260617-topics-ahmtib01-ras_ffh_arm_internal_review-v6-0-91f725174aa0@arm.com>
+ <20260617-topics-ahmtib01-ras_ffh_arm_internal_review-v6-7-91f725174aa0@arm.com>
+ <58f7163f-2fce-41e9-bc35-d1d8e6f4a298@gmail.com>
+ <81dd6d0d-427f-49ae-9573-fbe84dc2185a@arm.com>
+Content-Language: en-US
+From: Julian Braha <julianbraha@gmail.com>
+In-Reply-To: <81dd6d0d-427f-49ae-9573-fbe84dc2185a@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Jun 19, 2026 at 04:41:40PM +0100, Ahmed Tiba wrote:
-> I will address the issues introduced by this series. Pre-existing
-> behaviour is carried forward unchanged.
+On 6/19/26 16:45, Ahmed Tiba wrote:
+> GHES_CPER_HELPERS is intended for both the ACPI GHES path and the DT
+> firmware-first provider, so I do not want to tie it to ACPI.
 
-So you carve out that code, you use it for your use case while *knowing* there
-are preexisting bugs. Wonderful.
+So what's the plan to fix the build error when ACPI is disabled:
+https://lore.kernel.org/all/0f131ee4-d335-45d2-b6ae-49c18df1353b@gmail.com/
 
-Sorry, first bug fixes then features.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+- Julian Braha
