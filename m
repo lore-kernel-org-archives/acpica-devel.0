@@ -1,108 +1,193 @@
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A7573BFAEE
-	for <acpica-devel@lists.linux.dev>; Fri, 19 Jun 2026 17:46:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 032A5175A87
+	for <acpica-devel@lists.linux.dev>; Wed, 24 Jun 2026 10:51:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781891199; cv=none; b=JBhPVzMJjA8wxnKxZUy3JZEhdQGXmWRlPvL71Qe2qDL8JKpmBQbavC8tzXeP3piophtOh3SaSk9TAExopvLDktRBTs6p7jcFQ/stxep+MedQLfAHO9k2XEu5Rb9Q3YMbegWCQ6049yfsCzPkYu3TeqNSKZBWe6WSEqTGnk7cGTs=
+	t=1782298275; cv=none; b=MTd8RcQHGyTrG9NWHwGzlS7tM0Rs/OlErEMvcXCVB/3vRVbF8p8K8J3lrS/4N+qUh0DwYFQjXZzS0S4p8gogq3zRbx4MUdX9ojh255rXIOSOskCJcFEA/FbNqT1AVJtJx1/k1eUxBRWY94BVzxjLVWlnDBKa+nwzTRaNniH3Yzk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781891199; c=relaxed/simple;
-	bh=H7f14CYwNP46ECpdeY80MJ+vB0wytZ/WUeIVEgw1f+A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=i03CR3On5I/ZkA6/3i2SAz9R3o4ucFB7SoDG9zMnrlrLILXZ4ABhHp6tjTEddVY0rPqEwMc8ryQywODt1aRmK34/UIwSi5jr4FkC0VE889PyRYlRIO6kCP0i3141ax2RQQtjbOBRXH8csdR14/t6pYTOr0hEXZ8xdfhCp0GSFD8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=em1mFc5a; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1782298275; c=relaxed/simple;
+	bh=Vxbl+8d2dZu7By/7j3gmZfNsyU67n8jQ5SXbplRIN68=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BJLUsblKujmqcPt9DbVwbC9Q15jbXz6zG55STJvunNwsSlbHXdDw8txSY9++dXQYyyssRma6IVMxb6DfZUwaIaK9EPC0sZz0RE+Y/rzXRz/z13fqv0k1QSBgJ8s/4gJ9oMnTBmwl1RAj3D9WH2k+eA97Bft0RdlLaCPF5YOHTFM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=tx8vEeSA; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="em1mFc5a"
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-4923139e940so14114795e9.3
-        for <acpica-devel@lists.linux.dev>; Fri, 19 Jun 2026 10:46:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1781891196; x=1782495996; darn=lists.linux.dev;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=H7f14CYwNP46ECpdeY80MJ+vB0wytZ/WUeIVEgw1f+A=;
-        b=em1mFc5a9DAdHnko9MmXhbsHEjfUMg7X5aq8c5lwyiLcMlN8Upzm3ibja5gZbIvB+u
-         JBigKzHQqhqvvCBCucFQlRkifZVGrQ3tL/I2VC/33UZNUJbBKVL2zJJBO0iR8uQD1TYF
-         j9T06+4rq/tE44z++YpkZzHH9CZ355cRToYdCnl3kOQjbjh4J5iJHFJGi28/9y1YBW02
-         AKQ2AsQ8A5IwJOa903HkEQ4eL9lacE+UgYFAsBL60phXMhd6Cooadlu3JaZU0PFf3X6g
-         N3u3+VRFRbkrOwEU1FMFjKQ6leRdpL3Pb4iQe2T5Fap1PYLbt1wiiLOLMPhgXjAabD/G
-         uEPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781891196; x=1782495996;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H7f14CYwNP46ECpdeY80MJ+vB0wytZ/WUeIVEgw1f+A=;
-        b=cRnu+FFd5EIWZPCLSRTWGlFb6AHLs2vbXwLbxkcMs+ay9DlafOfHp7tFesAgOI5ALJ
-         Elhwk3gd6fiR6GIi3e1MJFx6Rs5BNrRWgnjjYJJF+CKKJrow9JUUWlkyKDRW5gaNOxXH
-         4PEh/jU2EThX7ZymVDhp5V1f4kafO/XIM0LPr5Mjh1Vma5/S4kW5KCA3JEUh2tEjxXEB
-         RFU7LsdnysSXSPUWFwhraN6jjz14qd5ESPBuHJ3wf8XWFXM4FlaeDkuHC9i9FnhXK3Gc
-         Q/5dHmbqbshptsBMzdOb77+ihN84xI9pIFlvox58N833dioIvzV8VxMhMK9lIo+TwpgS
-         ELyA==
-X-Forwarded-Encrypted: i=1; AFNElJ8GMTf/a2Zvmrq2XfIeSRL0DIna6UKYlR8KqomBTnW2ZvnZojm79fSxzv+B7ZmW/zChTl1v3wXwsOqFs1k=@lists.linux.dev
-X-Gm-Message-State: AOJu0Yzg0s3VnUfuHYA+mAsXAelbbJC4PJ/krkYSEv0lyxH5naqwGjE9
-	a90Hc69nWCM85M2XDpJ9V0h5QxEGGdGscN3h+klO0rMVKCe+fA5wA6KOyII2puxUjT8=
-X-Gm-Gg: AfdE7clYt7sRX4zBidMz1tryOP4hpN32fOwCXYspCNiGWIME65eCeIzTXdpLxgpU0TP
-	NvWFAXZ1/cTiIBpZOj/BVdlHfM0v06nnClDgIVd2R6WFDdcPnjZjPgc9mY2gQ/NE6O2aJCSOAk7
-	LhNVXb+T1ZUkG7I+bAbrlQpbd8ob5i5WRxoKYT3n8sWpj8Xj6Up+bpt3t9AwcaZ81iTXw2BFKvi
-	T4hppLhp4oUS/RKNGtk2iP6b54hgkSKyceianK93wjQK698CJ2kBOfejLBTJp02nYd8BzT9qv4Q
-	uZgTvSWIlCSjqbiGqEf/iw/W6sP1Ibc0pfXq8URL7wj2ItPGoLhhJtnNs5WHcp5bkDcxa2zvozw
-	o8sAXrC+3wmQfbNVfWomxaYTC2o3FYY2uSx7AFoPYGzVPsCScaMsI+67382TgVLvNa+TRAYrCIl
-	X+8BeFF6gS1K0hfoFd92MIHUmGioGUAJfNbTNmLIP5tZ8B56HNNz9j8a/siX5wJMV4px1DHCGwX
-	iEGLo0=
-X-Received: by 2002:a05:600c:a15:b0:492:39b6:5a30 with SMTP id 5b1f17b1804b1-49242591d5dmr53790795e9.35.1781891196410;
-        Fri, 19 Jun 2026 10:46:36 -0700 (PDT)
-Received: from [10.128.11.42] (195-23-151-163.net.novis.pt. [195.23.151.163])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49249238bfbsm1569755e9.5.2026.06.19.10.46.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Jun 2026 10:46:36 -0700 (PDT)
-Sender: Julian Braha <julian.braha@gmail.com>
-Message-ID: <84dabe49-8405-4213-8b73-433cf736ded9@gmail.com>
-Date: Fri, 19 Jun 2026 18:46:34 +0100
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="tx8vEeSA"
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B0D8C2008;
+	Wed, 24 Jun 2026 03:51:08 -0700 (PDT)
+Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 019113F62B;
+	Wed, 24 Jun 2026 03:51:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
+	t=1782298273; bh=Vxbl+8d2dZu7By/7j3gmZfNsyU67n8jQ5SXbplRIN68=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=tx8vEeSA8U3NbamPN3QZUlJ7JLqNBQZ2TGZftsruuPP9mLSVYkpZLqJ7xjLOlsrUT
+	 lY8pZLyo4RXM8vd17slBrPiYkqFvs2ZwxJu8QUk+C2CnmOQp0zAdwGzdJSgnPssOTI
+	 n9AU05vYj0O7lixsQOzui3lbUkacSw8lxWJdz6Jg=
+Date: Wed, 24 Jun 2026 12:51:00 +0200
+From: Beata Michalska <beata.michalska@arm.com>
+To: Pengjie Zhang <zhangpengjie2@huawei.com>
+Cc: Will Deacon <will@kernel.org>, catalin.marinas@arm.com,
+	rafael@kernel.org, lenb@kernel.org, robert.moore@intel.com,
+	zhenglifeng1@huawei.com, zhanjie9@hisilicon.com, sumitg@nvidia.com,
+	cuiyunhui@bytedance.com, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev, linuxarm@huawei.com,
+	jonathan.cameron@huawei.com, prime.zeng@hisilicon.com,
+	wanghuiqiang@huawei.com, xuwei5@huawei.com, lihuisong@huawei.com,
+	yubowen8@huawei.com, wangzhi12@huawei.com, ionela.voinescu@arm.com,
+	jeremy.linton@arm.com
+Subject: Re: [PATCH 0/2] CPPC: reduce FFH feedback-counter sampling skew on
+ arm64
+Message-ID: <aju2lAJsEpErbf0s@arm.com>
+References: <20260410094145.4132082-1-zhangpengjie2@huawei.com>
+ <aa1284c1-ea26-48ca-a7d7-022027c8228a@huawei.com>
+ <agw_1IYaY4zeobZE@willie-the-truck>
+ <443104e2-ba6e-454e-8469-909f35817a99@huawei.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 07/10] ACPI: APEI: introduce GHES helper
-To: Ahmed Tiba <ahmed.tiba@arm.com>, "Rafael J. Wysocki" <rafael@kernel.org>,
- Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>,
- Hanjun Guo <guohanjun@huawei.com>, Mauro Carvalho Chehab
- <mchehab@kernel.org>, Shuai Xue <xueshuai@linux.alibaba.com>,
- Len Brown <lenb@kernel.org>, Saket Dumbre <saket.dumbre@intel.com>,
- Davidlohr Bueso <dave@stgolabs.net>, Jonathan Cameron <jic23@kernel.org>,
- Dave Jiang <dave.jiang@intel.com>,
- Alison Schofield <alison.schofield@intel.com>,
- Vishal Verma <vishal.l.verma@intel.com>, Ira Weiny <ira.weiny@intel.com>,
- Dan Williams <djbw@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
- Shuah Khan <skhan@linuxfoundation.org>
-Cc: linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
- acpica-devel@lists.linux.dev, linux-cxl@vger.kernel.org,
- devicetree@vger.kernel.org, linux-edac@vger.kernel.org,
- linux-doc@vger.kernel.org, Dmitry.Lamerov@arm.com
-References: <20260617-topics-ahmtib01-ras_ffh_arm_internal_review-v6-0-91f725174aa0@arm.com>
- <20260617-topics-ahmtib01-ras_ffh_arm_internal_review-v6-7-91f725174aa0@arm.com>
- <58f7163f-2fce-41e9-bc35-d1d8e6f4a298@gmail.com>
- <81dd6d0d-427f-49ae-9573-fbe84dc2185a@arm.com>
-Content-Language: en-US
-From: Julian Braha <julianbraha@gmail.com>
-In-Reply-To: <81dd6d0d-427f-49ae-9573-fbe84dc2185a@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <443104e2-ba6e-454e-8469-909f35817a99@huawei.com>
 
-On 6/19/26 16:45, Ahmed Tiba wrote:
-> GHES_CPER_HELPERS is intended for both the ACPI GHES path and the DT
-> firmware-first provider, so I do not want to tie it to ACPI.
+Apologies but this one completely skipped my radar.
+Will have a look in the next few days.
 
-So what's the plan to fix the build error when ACPI is disabled:
-https://lore.kernel.org/all/0f131ee4-d335-45d2-b6ae-49c18df1353b@gmail.com/
-
-- Julian Braha
+---
+BR
+Beata
+On Wed, May 20, 2026 at 10:55:54AM +0800, Pengjie Zhang wrote:
+> 
+> On 5/19/2026 6:47 PM, Will Deacon wrote:
+> > On Thu, Apr 30, 2026 at 06:00:44PM +0800, zhangpengjie (A) wrote:
+> > > Hi all,
+> > > 
+> > > Gentle ping on this thread. It has been a while since I posted it.
+> > > 
+> > > Could someone please take a look when you have time? If there is anything
+> > > I should revise or any additional information needed, I'd be happy to
+> > > update it.
+> > It's hard to find active folks who have contributed meaningfully to the
+> > cppc_acpi driver... I've added Ionella and Jeremy, in case they can take
+> > a look.
+> > 
+> > Will
+> Thanks Will, and thanks for adding Ionela and Jeremy.
+> 
+> While waiting for further comments, I would like to add some
+> test data to make the effect of this series clearer.
+> 
+> On the test platform, the maximum frequency reported by the platform
+> is 2300000. I sampled cpuinfo_cur_freq before and after applying this
+> series.
+> 
+> Before applying the series, the samples showed visible transient outliers.
+>  The minimum value was 2154583 and the maximum value was 2491071.
+> There were 8 samples above 2400000 and 8 samples below 2200000.
+> The largest value exceeded the platform maximum by about 8.3%.
+> 
+> After applying the series, the samples became much more stable.
+> The minimum value was 2290243 and the maximum value was 2306310.
+> There were no samples above 2400000 and no samples below 2200000.
+> The largest value exceeded the platform maximum by only about 0.27%.
+> 
+> A summary of the 96 samples is:
+> 
+>                     before          after
+> min              2154583         2290243
+> max              2491071         2306310
+> range             336488           16067
+> average          2298436.4       2298479.4
+> stddev             55184.1          2868.2
+> samples > 2300000  26 / 96         16 / 96
+> samples > 2400000   8 / 96          0 / 96
+> samples < 2200000   8 / 96          0 / 96
+> 
+> So this series does not try to clamp the value to the platform maximum.
+>  Instead, it reduces the sampling skew between the delivered and reference
+> feedback counters. The remaining small deviation around 2300000 is
+>  much smaller than the previous transient spikes.
+> 
+> One concern that may come up is that an FFH read may cause an idle
+> target CPU to be woken, depending on the platform/vendor implementation.
+> However, that behavior is not introduced by this series. It is already part
+> of how FFH counter reads are implemented on such platforms. This series
+> only changes the sampling form for the FFH feedback counters: when both
+> delivered and reference counters are FFH counters, read them together
+> instead of issuing two separate FFH reads.
+> 
+> If the target CPU has to be involved for an FFH read, doing one paired
+> read should be no worse than doing two separate reads, and it also
+> narrows the sampling window between the two counters.
+> 
+> If there is any concern about the generic hook or the arm64 implementation,
+> I would be happy to revise it.
+> 
+> The raw data is as follows:
+> before:
+> 2303809 2294827 2300000 2293643 2290740 2300000 2297228 2296082
+> 2301707 2295354 2296601 2303163 2296766 2296543 2295412 2298394
+> 2297387 2300000 2308274 2301882 2297752 2418568 2491071 2300000
+> 2183264 2296238 2434731 2296721 2439777 2302159 2301773 2298226
+> 2300000 2305936 2301133 2297511 2300000 2300000 2294408 2298494
+> 2295011 2302721 2295955 2301505 2298064 2297419 2298933 2189595
+> 2298058 2296046 2300000 2301449 2414908 2296559 2305251 2166666
+> 2296626 2173303 2300000 2298806 2411389 2301822 2297291 2300000
+> 2423831 2297902 2300000 2435730 2302433 2295353 2298898 2296043
+> 2321868 2294907 2300000 2157841 2296052 2206530 2300000 2297811
+> 2297920 2294382 2297767 2157230 2302564 2298504 2296822 2300000
+> 2296868 2294866 2154583 2290888 2302542 2292549 2300000 2184259
+> 
+> after:
+> 2303738 2296153 2298087 2295607 2301373 2298076 2300000 2295081
+> 2297788 2300000 2300000 2295238 2301449 2300000 2298488 2297911
+> 2301477 2298507 2294976 2296852 2293689 2294077 2293887 2292619
+> 2300000 2300000 2298072 2300000 2291943 2300000 2295370 2300000
+> 2301873 2304645 2300000 2296766 2300000 2300000 2290243 2297954
+> 2297183 2306310 2300000 2296889 2300000 2303800 2301970 2296888
+> 2300000 2301354 2300000 2298405 2298202 2296767 2298663 2302522
+> 2297821 2302471 2300000 2303233 2298226 2298698 2300000 2297291
+> 2296470 2300000 2298398 2300000 2295681 2300000 2300000 2296344
+> 2300000 2296008 2302375 2297977 2298447 2296519 2295565 2294866
+> 2297945 2300000 2294978 2303595 2300000 2300000 2294930 2301096
+> 2296271 2296086 2294482 2300000 2294843 2300000 2296803 2295708
+> > > On 4/10/2026 5:41 PM, Pengjie Zhang wrote:
+> > > > The legacy CPPC feedback-counter path reads the delivered and reference
+> > > > performance counters separately.
+> > > > 
+> > > > On arm64 systems using AMU-backed CPPC FFH counters, each FFH read is
+> > > > served through a cross-CPU counter read helper. Reading the counters
+> > > > separately therefore widens the sampling window between them and can
+> > > > skew the delivered/reference ratio used by cpuinfo_cur_freq. Under heavy
+> > > > load, the skew is observable as transient values that may exceed the
+> > > > platform maximum, as discussed in [1] and [2].
+> > > > 
+> > > > This series adds a small generic hook for architectures that can obtain
+> > > > both FFH feedback counters in one operation, while preserving the
+> > > > existing per-register read path as the fallback.
+> > > > 
+> > > > Patch 1 adds the generic CPPC hook and uses it from cppc_get_perf_ctrs().
+> > > > Patch 2 implements the hook on arm64 by sampling both AMU counters in a
+> > > > single operation on the target CPU.
+> > > > 
+> > > > [1] https://lore.kernel.org/all/20231025093847.3740104-4-zengheng4@huawei.com/
+> > > > [2] https://lore.kernel.org/all/20231212072617.14756-1-lihuisong@huawei.com/
+> > > > 
+> > > > Signed-off-by: Pengjie Zhang <zhangpengjie2@huawei.com>
+> > > > 
+> > > > Pengjie Zhang (2):
+> > > >     ACPI: CPPC: add paired FFH feedback-counter read hook
+> > > >     arm64: topology: read CPPC FFH feedback counters in one operation
+> > > > 
+> > > >    arch/arm64/kernel/topology.c | 75 ++++++++++++++++++++++++++++++++----
+> > > >    drivers/acpi/cppc_acpi.c     | 58 +++++++++++++++++++++++++---
+> > > >    include/acpi/cppc_acpi.h     |  7 ++++
+> > > >    3 files changed, 127 insertions(+), 13 deletions(-)
+> > > > 
