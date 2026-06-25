@@ -1,193 +1,180 @@
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 032A5175A87
-	for <acpica-devel@lists.linux.dev>; Wed, 24 Jun 2026 10:51:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782298275; cv=none; b=MTd8RcQHGyTrG9NWHwGzlS7tM0Rs/OlErEMvcXCVB/3vRVbF8p8K8J3lrS/4N+qUh0DwYFQjXZzS0S4p8gogq3zRbx4MUdX9ojh255rXIOSOskCJcFEA/FbNqT1AVJtJx1/k1eUxBRWY94BVzxjLVWlnDBKa+nwzTRaNniH3Yzk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782298275; c=relaxed/simple;
-	bh=Vxbl+8d2dZu7By/7j3gmZfNsyU67n8jQ5SXbplRIN68=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BJLUsblKujmqcPt9DbVwbC9Q15jbXz6zG55STJvunNwsSlbHXdDw8txSY9++dXQYyyssRma6IVMxb6DfZUwaIaK9EPC0sZz0RE+Y/rzXRz/z13fqv0k1QSBgJ8s/4gJ9oMnTBmwl1RAj3D9WH2k+eA97Bft0RdlLaCPF5YOHTFM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=tx8vEeSA; arc=none smtp.client-ip=217.140.110.172
+Received: from AM0PR02CU008.outbound.protection.outlook.com (mail-westeuropeazon11013030.outbound.protection.outlook.com [52.101.72.30])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B05E2EC086
+	for <acpica-devel@lists.linux.dev>; Thu, 25 Jun 2026 13:14:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.72.30
+ARC-Seal:i=3; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1782393252; cv=fail; b=DKEu/fU0VvjoTivwdJI8kGPLWOCb2IIrBlMG7otvhq+m90GNO+Iice6y4TzF5p0CauLeAXAbuDcVPYVtngTHVgiLbpxWz0JpUF2WsJ0Z2y5J3HRdTgzt5do6PN7AggHeWM+JPVcR6/b+QvkNcwcXwGPTQP0daw5/zstxdJvSpBQ=
+ARC-Message-Signature:i=3; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1782393252; c=relaxed/simple;
+	bh=Qwd64o9zizXLsl4SavaaUzMFsOJwI28g8R581DFp91Q=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=Bcq37IX2/2sikxOVac2WOBcjYDIUBxBRNFhQ0wyCcPs4aA7diVDCOeoIZMIMI50Dea2z+d7a59T0j6atOvnnUE148YwWAQNxzb45zQHjxMQ4dzdpG2cIAV+FIYYxBfAoktujIf3qwinbpxrdLxTAP/06J9Uo5nNLeqmVwNjEOAY=
+ARC-Authentication-Results:i=3; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=sPH9gKAQ; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=sPH9gKAQ; arc=fail smtp.client-ip=52.101.72.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="tx8vEeSA"
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B0D8C2008;
-	Wed, 24 Jun 2026 03:51:08 -0700 (PDT)
-Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 019113F62B;
-	Wed, 24 Jun 2026 03:51:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1782298273; bh=Vxbl+8d2dZu7By/7j3gmZfNsyU67n8jQ5SXbplRIN68=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=tx8vEeSA8U3NbamPN3QZUlJ7JLqNBQZ2TGZftsruuPP9mLSVYkpZLqJ7xjLOlsrUT
-	 lY8pZLyo4RXM8vd17slBrPiYkqFvs2ZwxJu8QUk+C2CnmOQp0zAdwGzdJSgnPssOTI
-	 n9AU05vYj0O7lixsQOzui3lbUkacSw8lxWJdz6Jg=
-Date: Wed, 24 Jun 2026 12:51:00 +0200
-From: Beata Michalska <beata.michalska@arm.com>
-To: Pengjie Zhang <zhangpengjie2@huawei.com>
-Cc: Will Deacon <will@kernel.org>, catalin.marinas@arm.com,
-	rafael@kernel.org, lenb@kernel.org, robert.moore@intel.com,
-	zhenglifeng1@huawei.com, zhanjie9@hisilicon.com, sumitg@nvidia.com,
-	cuiyunhui@bytedance.com, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev, linuxarm@huawei.com,
-	jonathan.cameron@huawei.com, prime.zeng@hisilicon.com,
-	wanghuiqiang@huawei.com, xuwei5@huawei.com, lihuisong@huawei.com,
-	yubowen8@huawei.com, wangzhi12@huawei.com, ionela.voinescu@arm.com,
-	jeremy.linton@arm.com
-Subject: Re: [PATCH 0/2] CPPC: reduce FFH feedback-counter sampling skew on
- arm64
-Message-ID: <aju2lAJsEpErbf0s@arm.com>
-References: <20260410094145.4132082-1-zhangpengjie2@huawei.com>
- <aa1284c1-ea26-48ca-a7d7-022027c8228a@huawei.com>
- <agw_1IYaY4zeobZE@willie-the-truck>
- <443104e2-ba6e-454e-8469-909f35817a99@huawei.com>
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="sPH9gKAQ";
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="sPH9gKAQ"
+ARC-Seal: i=2; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=pass;
+ b=Crmo5V0l5p9Hv9o9gt2O/thfi/oJWTRXxkwKarmFgoYcJfIiuyS0MwdpWJSJ9ib2zRNz1LG04Fwd/SyWgkyVV+qcd/+ffl8jA9HJx0GEinwiDRGsg8SfPpRnpXQ3rCHQsBLxSmvmXSOTg01Wp6VnkS5cc8uGmoylRGaY1tIPyXUAJ8H9dDwu38t9T8RE97oDrKbFZad0TZFgzS74b8taQ5XJj7d9XO3U3k/At91Mhd8aKx+5cqBPMyVOHZRf737YKFTCHlmbpEwE1m+yb0gECbxkGZRNr9+mE8u++RMGkSJ/kL54DHuab5kMgpOCpa0CeHrMsC6su2x3HfwTLxxHDA==
+ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=envSEUffQ2QOpftGK1JNm5jPQy2+D+BWs8Scvl4vT0k=;
+ b=CFwZGnT6meLKeu1CgoAk0NbxwXeMY4y8fhorhZTCbu+AwXpMsKu1zGcTllxNIo2Gtt1+Zyddl1TskeI1Cqn0ajONjVJQX0Lew6zGFQaYFfZ8ukgGMimNnOnUU0O/4SUm8158Fn1l44g32tNGgJC7T12s2fSFBP+j2Fy7ZaM8J/MYkXyOUSyhYPZXR40Aipa3gRtwsR+ttR4bTKypkdzUEZeBomfKLAWFD24OzH4566rxQxRARhw7qpEEUhPdVNdxZhTRvfXs0Hzm/9jtDRArICe7iUwSvKZZdRLfIiuAfakU41cq0PjktTBnFjGrmGjI900xOMeJ8EIG9YXTIerqZg==
+ARC-Authentication-Results: i=2; mx.microsoft.com 1; spf=pass (sender ip is
+ 4.158.2.129) smtp.rcpttodomain=gmail.com smtp.mailfrom=arm.com; dmarc=pass
+ (p=none sp=none pct=100) action=none header.from=arm.com; dkim=pass
+ (signature was verified) header.d=arm.com; arc=pass (0 oda=1 ltdi=1
+ spf=[1,1,smtp.mailfrom=arm.com] dkim=[1,1,header.d=arm.com]
+ dmarc=[1,1,header.from=arm.com])
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arm.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=envSEUffQ2QOpftGK1JNm5jPQy2+D+BWs8Scvl4vT0k=;
+ b=sPH9gKAQJ2NusglxXWgjnRexqV34BuBTRC5j8z5U4buMui2QP//wrFpW0BYZZGnONX3vUwjLaidN2AOeCBTdruh3w5oPstRFrjoXnOY4l/jiINkebS/SjornHedPKt7E5C4vW4D8KZdCHRlENpxsob0e2GnQYYfHdpF3JK1UyCU=
+Received: from AS4PR09CA0006.eurprd09.prod.outlook.com (2603:10a6:20b:5e0::16)
+ by GVXPR08MB7749.eurprd08.prod.outlook.com (2603:10a6:150:69::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.139.18; Thu, 25 Jun
+ 2026 13:14:02 +0000
+Received: from AMS0EPF000001B1.eurprd05.prod.outlook.com
+ (2603:10a6:20b:5e0:cafe::4f) by AS4PR09CA0006.outlook.office365.com
+ (2603:10a6:20b:5e0::16) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.159.16 via Frontend Transport; Thu,
+ 25 Jun 2026 13:14:02 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 4.158.2.129)
+ smtp.mailfrom=arm.com; dkim=pass (signature was verified)
+ header.d=arm.com;dmarc=pass action=none header.from=arm.com;
+Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
+ 4.158.2.129 as permitted sender) receiver=protection.outlook.com;
+ client-ip=4.158.2.129; helo=outbound-uk1.az.dlp.m.darktrace.com; pr=C
+Received: from outbound-uk1.az.dlp.m.darktrace.com (4.158.2.129) by
+ AMS0EPF000001B1.mail.protection.outlook.com (10.167.16.165) with Microsoft
+ SMTP Server (version=TLS1_3, cipher=TLS_AES_256_GCM_SHA384) id 15.21.181.6
+ via Frontend Transport; Thu, 25 Jun 2026 13:14:01 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=HDuxKEmnAPsEBYE6RGMAsvhZjPI7a32jOCVToXOSY3SGLc04PaE/UU4+dNxavSEoPhHAxVzhvv/2qRpvcyytmPgwoQ+IpN3xeymyPlA+PVFNiwdnCuyD+3684MgcrQgMw+Tf5+zpGJCKNW2bj2W3iQKB04fn4B4tC0/2J4pBPgVqqv19wS7CD3+Hu8HSXnmdfYnjgvKfcei5BW0BbRfxOcrwHPQUrWLCf9nKnK0hkcgnaciro/OY/xJiMP5wLlzWGk9qrTAV0YKIBqzpr2iLu+MC7eCxMGi0dTP950FgdBjaT99TiS0wCgwGmPi/Tc+epC0aKD7QZdv6O7smL+7QeA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=envSEUffQ2QOpftGK1JNm5jPQy2+D+BWs8Scvl4vT0k=;
+ b=vq30EqLTn0YbwJSbeRh9CW6vsNhTLc7rM79lm7jMLiIgasa+QWS0I5qG2Oz5SCV0zGRXZ0IDrxNIbfUtkTAR48cfFptJ8GrApKSehuyInvzPJ9jH84pzKc1OPh12q0KlgKyJW+OLPgW5g0ILkwvsaQFFLhue4WDVxyOPNm9aik+Y9rxIjzgRfLy9XT2npM2m/corQVflOd9ao/BxxdZPYMcuzOy/kWOsh8NmikQqUSq5IOHT+ZkmOsoeTTnx9vmJk1oO+mlgJLfkic1/zoCZ4eaZgcGvF97atriCeAZd5iZxnSDvJaTZLuM5UG0DzqTY852PBoUeH7fhTVtx2hMLaw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
+ header.d=arm.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arm.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=envSEUffQ2QOpftGK1JNm5jPQy2+D+BWs8Scvl4vT0k=;
+ b=sPH9gKAQJ2NusglxXWgjnRexqV34BuBTRC5j8z5U4buMui2QP//wrFpW0BYZZGnONX3vUwjLaidN2AOeCBTdruh3w5oPstRFrjoXnOY4l/jiINkebS/SjornHedPKt7E5C4vW4D8KZdCHRlENpxsob0e2GnQYYfHdpF3JK1UyCU=
+Authentication-Results-Original: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=arm.com;
+Received: from VI0PR08MB11823.eurprd08.prod.outlook.com (2603:10a6:800:324::5)
+ by DU0PR08MB7883.eurprd08.prod.outlook.com (2603:10a6:10:3b1::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.159.16; Thu, 25 Jun
+ 2026 13:12:58 +0000
+Received: from VI0PR08MB11823.eurprd08.prod.outlook.com
+ ([fe80::694c:3790:be1a:8ddd]) by VI0PR08MB11823.eurprd08.prod.outlook.com
+ ([fe80::694c:3790:be1a:8ddd%5]) with mapi id 15.21.0159.014; Thu, 25 Jun 2026
+ 13:12:58 +0000
+Message-ID: <ed31c2bf-a835-4d1f-a701-33851f1ac45e@arm.com>
+Date: Thu, 25 Jun 2026 14:12:56 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 07/10] ACPI: APEI: introduce GHES helper
+To: Julian Braha <julianbraha@gmail.com>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, Tony Luck <tony.luck@intel.com>,
+ Borislav Petkov <bp@alien8.de>, Hanjun Guo <guohanjun@huawei.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Shuai Xue <xueshuai@linux.alibaba.com>, Len Brown <lenb@kernel.org>,
+ Saket Dumbre <saket.dumbre@intel.com>, Davidlohr Bueso <dave@stgolabs.net>,
+ Jonathan Cameron <jic23@kernel.org>, Dave Jiang <dave.jiang@intel.com>,
+ Alison Schofield <alison.schofield@intel.com>,
+ Vishal Verma <vishal.l.verma@intel.com>, Ira Weiny <ira.weiny@intel.com>,
+ Dan Williams <djbw@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+ Shuah Khan <skhan@linuxfoundation.org>
+Cc: linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+ acpica-devel@lists.linux.dev, linux-cxl@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-edac@vger.kernel.org,
+ linux-doc@vger.kernel.org, Dmitry.Lamerov@arm.com
+References: <20260617-topics-ahmtib01-ras_ffh_arm_internal_review-v6-0-91f725174aa0@arm.com>
+ <20260617-topics-ahmtib01-ras_ffh_arm_internal_review-v6-7-91f725174aa0@arm.com>
+ <58f7163f-2fce-41e9-bc35-d1d8e6f4a298@gmail.com>
+ <81dd6d0d-427f-49ae-9573-fbe84dc2185a@arm.com>
+ <84dabe49-8405-4213-8b73-433cf736ded9@gmail.com>
+Content-Language: en-GB
+From: Ahmed Tiba <ahmed.tiba@arm.com>
+In-Reply-To: <84dabe49-8405-4213-8b73-433cf736ded9@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO4P123CA0315.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:197::14) To VI0PR08MB11823.eurprd08.prod.outlook.com
+ (2603:10a6:800:324::5)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <443104e2-ba6e-454e-8469-909f35817a99@huawei.com>
+X-MS-TrafficTypeDiagnostic:
+	VI0PR08MB11823:EE_|DU0PR08MB7883:EE_|AMS0EPF000001B1:EE_|GVXPR08MB7749:EE_
+X-MS-Office365-Filtering-Correlation-Id: 21c74074-b5fa-4895-ebfd-08ded2bba01f
+X-LD-Processed: f34e5979-57d9-4aaa-ad4d-b122a662184d,ExtAddr,ExtAddr
+x-checkrecipientrouted: true
+NoDisclaimer: true
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam-Untrusted:
+ BCL:0;ARA:13230040|1800799024|366016|7416014|376014|23010399003|921020|4143699003|56012099006|11063799006|18002099003|22082099003;
+X-Microsoft-Antispam-Message-Info-Original:
+ mIk4ZuDnB4xqxqOks4ygtso2p+TlvJxE3SAPtBW7XNwnWbPl7+Mhw8TaMLdOPoFbXPtrcJKAxBYpd0DxpW3qs7KEzzXHm/QEXg0SBeXw/vB/BcKlUg7i1J+H7Yce7T0uNKW62WGeP1CYCthyLJgj48sAdPbBB7lkK3OiYx6WBB9ugRGWOtV4sMG0JzpqsVC8j4M0LipZYhKb5uewZkCp/cgj/gVOXqWwCPj4NJXqsqkor4Ob0+AoT31FjZD/DMJgajZDMuodhdt2SjLpSYoPOo0CxAhHVUI/7gka0b7sOBSWkpxKfOfF83HGPmjEUlZGT4ZqDRgpWW0iDMQLE5PLGpKPGy/F1LiTKKppWENMZin1rBeNpP7GwIiVud4eQNgFQBaSiUkZRhXoQUv7c+FSkfGmBvFV6mUfOmBpiVIBJsceVf65DsHYFj3J3F2e7+vc0l/wy4nrCV2YVvFln6f7xGeplBhE4PNiHkS3Kcv3FFtMBqfNpBFbnXdnDadJSIDFXhvhSWHJTPFaOelF+JXeFRv78sE3st/XCebUkK4vR7Jr/2dUz6hTk0OsyYKDjBRhZ61W4G6TkOzk+7CvSoGoNRjQXwt0YXSgYkZDHknJicWJn1joMhRjdOQjH99AXIQ/pvS5Zg27mtP877fd6yCP7ewBEZKqgid4YbQFPr8nSto4j3D0FrgOUQkQgwBUVQnTAqRuZgZasLFs3pjA8wta1g==
+X-Forefront-Antispam-Report-Untrusted:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI0PR08MB11823.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014)(23010399003)(921020)(4143699003)(56012099006)(11063799006)(18002099003)(22082099003);DIR:OUT;SFP:1101;
+X-Exchange-RoutingPolicyChecked:
+ Bn8k7cddErPVHTpdoec4qT1Zh6wJ22Um/C1s9BtRiLLhgOhZyu1Jn/0GaWy2FW6sIJ5sxB5Suc0UYU5R2EVTZx4NfR5IF3PO3F2F5ssOCYIAkNp0ReJk4rbX0agRHls6GZL4W83a2i+mvm+1ZqSTQ0bLPXgjI9onWR76Xslje9Q2wFR9XURUA/Ex13BjJOBNZrgzgWuRxP4jEBunVEkZ+Pla+RAe7Dv/mp6wGdy56wLzLZ/X3UkVQBAH/Tzd71YE9cBroapIy5bLL1zgz8DLUN9quIkKrsNIicxBaOWRxhAiNT6KXtal4pN4B/0knOgMAVcJORsHb2oln8hc8/QZcw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR08MB7883
+X-EOPAttributedMessage: 0
+X-MS-Exchange-Transport-CrossTenantHeadersStripped:
+ AMS0EPF000001B1.eurprd05.prod.outlook.com
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id-Prvs:
+	80c206f5-a6c2-44f1-b765-08ded2bb7a1a
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|82310400026|1800799024|35042699022|7416014|376014|23010399003|14060799003|36860700016|56012099006|18002099003|22082099003|11063799006|4143699003|921020;
+X-Microsoft-Antispam-Message-Info:
+	h4Fz/XSs073lJRltn8kdslRpCcqxlCSlyvaDDJYhpvzwoQLBnZn+AEptsxPP9SV7oCQqJqHsZ4zkdnt1+oswI+44m83JMJCe4m7CDS+z38NXlNXs2xGr80hQaAWyMN0Szwz1OIoa0xeEUr00lRWkG+V0yPLtzlaG8htwgC1TMVP9jGuc/sXh2uWUyHZs4YKbZg3eu9IGRvdNaGwJjuNERMlvcc/lELidUVnA1cMAyn+8DfNZfkI/dfqtBNQpVTsaDiN6oSafkOLrOpSPtqH6YsNEwvcs5yAa5REZkmosWAgDN3Z3HTSMiZgFmgW8HheHYX0KnEzMRurJf8y8JPhkoxYbANd3HV32oy2sEkcfSIibOj+Vn1DCVWp1KVIyTkZz0Xtzt0uOybVsPLbgu+fPYMzfV27l7Vc66AMPdZyWaR24vx1SXP1jtsIx22H4rZN+OAuSLVDw6WE+CKDLfT/D6KEM0Qj+TWdpgm+5bY9AOrltSOVNGVJeuB11HPgDqEieZd2UKSBxj2yS+Y35UTjANh1govb7hH6jXoD8Q7aeF1r4yFAx1bbNrhMkWcGrmMIUL8mMgywu6S7Gfyx0Q3wkjKNc6p3abKdjUDtlfZ72E49ZOAxIps+Q8Sa3Huu4JfzIv5HjQmkDW4LuU1AT/tztJaw6S+qZ2H6hVe6P+cSsP7F87Cby2LCZ6xif/MSVN9W8vczkWQSReLPd3B0oPf15uJXxxrQCFrAQH29gO1onaQDrQTcKk0m9TB6knOCzM8hu
+X-Forefront-Antispam-Report:
+	CIP:4.158.2.129;CTRY:GB;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:outbound-uk1.az.dlp.m.darktrace.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(82310400026)(1800799024)(35042699022)(7416014)(376014)(23010399003)(14060799003)(36860700016)(56012099006)(18002099003)(22082099003)(11063799006)(4143699003)(921020);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	3K8LYtF5+d7sO+0GpQif0Rbr0804upxLB7k/jvXLzPacMx77qvm+rga3DCUmotZPMJ17YywEHpshwunY0hHVc+aXt6vEwNHD/w3JePlFKQwFqN2YqRgtCyvpv3Aq50yc2mHYBVy/VzA8K/GDHmshH9uVkSNsaplsTHnUK+EbkvJPo//441ZcQdcTp3TFCwyfHe3q3zx3lThkYTDM3FRdMjUx7m3W7COP0u1c7SgKuoRFFz9fRlkeyF4aay4KpYoU4X78jw/wR8b6wDdjMPWv9m30yHOl0SCock5hN0HVIvbAZwIyxblL4cCT0hT9O+CS9ZPOYpf05QEAbuiG1EM1lVDKmOw/xMjwDaNQNWBU42RnH0v8w4rTzPA+ilWTQ8yrtcyjCLoiGHv1i2l2sQwtNCSSiQhjSSnXc+oaNQSogpbG1n24HxJmCBIufJB4LzVj
+X-OriginatorOrg: arm.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jun 2026 13:14:01.9375
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 21c74074-b5fa-4895-ebfd-08ded2bba01f
+X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d;Ip=[4.158.2.129];Helo=[outbound-uk1.az.dlp.m.darktrace.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	AMS0EPF000001B1.eurprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: GVXPR08MB7749
 
-Apologies but this one completely skipped my radar.
-Will have a look in the next few days.
+On 19/06/2026 18:46, Julian Braha wrote:
+> On 6/19/26 16:45, Ahmed Tiba wrote:
+>> GHES_CPER_HELPERS is intended for both the ACPI GHES path and the DT
+>> firmware-first provider, so I do not want to tie it to ACPI.
+> 
+> So what's the plan to fix the build error when ACPI is disabled:
+> https://lore.kernel.org/all/0f131ee4-d335-45d2-b6ae-49c18df1353b@gmail.com/
+> 
+> - Julian Braha
 
----
-BR
-Beata
-On Wed, May 20, 2026 at 10:55:54AM +0800, Pengjie Zhang wrote:
-> 
-> On 5/19/2026 6:47 PM, Will Deacon wrote:
-> > On Thu, Apr 30, 2026 at 06:00:44PM +0800, zhangpengjie (A) wrote:
-> > > Hi all,
-> > > 
-> > > Gentle ping on this thread. It has been a while since I posted it.
-> > > 
-> > > Could someone please take a look when you have time? If there is anything
-> > > I should revise or any additional information needed, I'd be happy to
-> > > update it.
-> > It's hard to find active folks who have contributed meaningfully to the
-> > cppc_acpi driver... I've added Ionella and Jeremy, in case they can take
-> > a look.
-> > 
-> > Will
-> Thanks Will, and thanks for adding Ionela and Jeremy.
-> 
-> While waiting for further comments, I would like to add some
-> test data to make the effect of this series clearer.
-> 
-> On the test platform, the maximum frequency reported by the platform
-> is 2300000. I sampled cpuinfo_cur_freq before and after applying this
-> series.
-> 
-> Before applying the series, the samples showed visible transient outliers.
->  The minimum value was 2154583 and the maximum value was 2491071.
-> There were 8 samples above 2400000 and 8 samples below 2200000.
-> The largest value exceeded the platform maximum by about 8.3%.
-> 
-> After applying the series, the samples became much more stable.
-> The minimum value was 2290243 and the maximum value was 2306310.
-> There were no samples above 2400000 and no samples below 2200000.
-> The largest value exceeded the platform maximum by only about 0.27%.
-> 
-> A summary of the 96 samples is:
-> 
->                     before          after
-> min              2154583         2290243
-> max              2491071         2306310
-> range             336488           16067
-> average          2298436.4       2298479.4
-> stddev             55184.1          2868.2
-> samples > 2300000  26 / 96         16 / 96
-> samples > 2400000   8 / 96          0 / 96
-> samples < 2200000   8 / 96          0 / 96
-> 
-> So this series does not try to clamp the value to the platform maximum.
->  Instead, it reduces the sampling skew between the delivered and reference
-> feedback counters. The remaining small deviation around 2300000 is
->  much smaller than the previous transient spikes.
-> 
-> One concern that may come up is that an FFH read may cause an idle
-> target CPU to be woken, depending on the platform/vendor implementation.
-> However, that behavior is not introduced by this series. It is already part
-> of how FFH counter reads are implemented on such platforms. This series
-> only changes the sampling form for the FFH feedback counters: when both
-> delivered and reference counters are FFH counters, read them together
-> instead of issuing two separate FFH reads.
-> 
-> If the target CPU has to be involved for an FFH read, doing one paired
-> read should be no worse than doing two separate reads, and it also
-> narrows the sampling window between the two counters.
-> 
-> If there is any concern about the generic hook or the arm64 implementation,
-> I would be happy to revise it.
-> 
-> The raw data is as follows:
-> before:
-> 2303809 2294827 2300000 2293643 2290740 2300000 2297228 2296082
-> 2301707 2295354 2296601 2303163 2296766 2296543 2295412 2298394
-> 2297387 2300000 2308274 2301882 2297752 2418568 2491071 2300000
-> 2183264 2296238 2434731 2296721 2439777 2302159 2301773 2298226
-> 2300000 2305936 2301133 2297511 2300000 2300000 2294408 2298494
-> 2295011 2302721 2295955 2301505 2298064 2297419 2298933 2189595
-> 2298058 2296046 2300000 2301449 2414908 2296559 2305251 2166666
-> 2296626 2173303 2300000 2298806 2411389 2301822 2297291 2300000
-> 2423831 2297902 2300000 2435730 2302433 2295353 2298898 2296043
-> 2321868 2294907 2300000 2157841 2296052 2206530 2300000 2297811
-> 2297920 2294382 2297767 2157230 2302564 2298504 2296822 2300000
-> 2296868 2294866 2154583 2290888 2302542 2292549 2300000 2184259
-> 
-> after:
-> 2303738 2296153 2298087 2295607 2301373 2298076 2300000 2295081
-> 2297788 2300000 2300000 2295238 2301449 2300000 2298488 2297911
-> 2301477 2298507 2294976 2296852 2293689 2294077 2293887 2292619
-> 2300000 2300000 2298072 2300000 2291943 2300000 2295370 2300000
-> 2301873 2304645 2300000 2296766 2300000 2300000 2290243 2297954
-> 2297183 2306310 2300000 2296889 2300000 2303800 2301970 2296888
-> 2300000 2301354 2300000 2298405 2298202 2296767 2298663 2302522
-> 2297821 2302471 2300000 2303233 2298226 2298698 2300000 2297291
-> 2296470 2300000 2298398 2300000 2295681 2300000 2300000 2296344
-> 2300000 2296008 2302375 2297977 2298447 2296519 2295565 2294866
-> 2297945 2300000 2294978 2303595 2300000 2300000 2294930 2301096
-> 2296271 2296086 2294482 2300000 2294843 2300000 2296803 2295708
-> > > On 4/10/2026 5:41 PM, Pengjie Zhang wrote:
-> > > > The legacy CPPC feedback-counter path reads the delivered and reference
-> > > > performance counters separately.
-> > > > 
-> > > > On arm64 systems using AMU-backed CPPC FFH counters, each FFH read is
-> > > > served through a cross-CPU counter read helper. Reading the counters
-> > > > separately therefore widens the sampling window between them and can
-> > > > skew the delivered/reference ratio used by cpuinfo_cur_freq. Under heavy
-> > > > load, the skew is observable as transient values that may exceed the
-> > > > platform maximum, as discussed in [1] and [2].
-> > > > 
-> > > > This series adds a small generic hook for architectures that can obtain
-> > > > both FFH feedback counters in one operation, while preserving the
-> > > > existing per-register read path as the fallback.
-> > > > 
-> > > > Patch 1 adds the generic CPPC hook and uses it from cppc_get_perf_ctrs().
-> > > > Patch 2 implements the hook on arm64 by sampling both AMU counters in a
-> > > > single operation on the target CPU.
-> > > > 
-> > > > [1] https://lore.kernel.org/all/20231025093847.3740104-4-zengheng4@huawei.com/
-> > > > [2] https://lore.kernel.org/all/20231212072617.14756-1-lihuisong@huawei.com/
-> > > > 
-> > > > Signed-off-by: Pengjie Zhang <zhangpengjie2@huawei.com>
-> > > > 
-> > > > Pengjie Zhang (2):
-> > > >     ACPI: CPPC: add paired FFH feedback-counter read hook
-> > > >     arm64: topology: read CPPC FFH feedback counters in one operation
-> > > > 
-> > > >    arch/arm64/kernel/topology.c | 75 ++++++++++++++++++++++++++++++++----
-> > > >    drivers/acpi/cppc_acpi.c     | 58 +++++++++++++++++++++++++---
-> > > >    include/acpi/cppc_acpi.h     |  7 ++++
-> > > >    3 files changed, 127 insertions(+), 13 deletions(-)
-> > > > 
+I can fix this by adding a !CONFIG_ACPI fallback for
+arch_apei_report_x86_error() in drivers/firmware/efi/cper-x86.c.
+
+Thanks,
+Ahmed
