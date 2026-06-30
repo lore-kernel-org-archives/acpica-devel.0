@@ -1,66 +1,48 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3461A35E95C;
-	Mon, 29 Jun 2026 17:36:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E28939D6D5
+	for <acpica-devel@lists.linux.dev>; Tue, 30 Jun 2026 07:35:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782754603; cv=none; b=mFakMg5ABTi5q3gblVehDph1Q+0WT3zS0esptkOl9IYdKP0JOD6/VOQkQeSdD9wKELGKK+rygEM1hcTfD05/0Il9g5WTmw4wotJDII1zhg9OnaexjP/3UiPSKiMj/3BjK59gwV3O7/ayGKCbys45KtcVkUzY8b+p1ErrPwjAE/k=
+	t=1782804922; cv=none; b=R7/EySLPTJBO8mbfLiL14STvXsPfsf9uCZRz+GZg+wnXXD+2tQAUotVuwctmDjPWohXTPk0J6HL0Cr3aTKD5g3xwmgBr2RnFe5H9sxRKyPBRQX6RtHRddclsInKF889QYtVI7/2QL4tL+RHOLrRT+kDwGAiMU3gpO51iglT5KMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782754603; c=relaxed/simple;
-	bh=uULf8Fw4shY92kL1nYHScaoVpSRpERDCQQhHxA+XxtU=;
+	s=arc-20240116; t=1782804922; c=relaxed/simple;
+	bh=0taVGT1m4jf8+Bd5/fvY49UWd51JJF0GPZjMsn5vOUw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KcfCJksoGvr+yaM/Tu8eQTzWTXUVyM2RKAFgHs8QvBDWIou61iYPb5pKvuvUQsr3r2jnoEqiRT38uPJ8PzlEPBAZbCdVVwb57FUTCZiu4Ejme01QyKKvqJO6JU5fZAmZkZdcczqJLKwdLQz798bxs5ShiqFNwrb3IxHmU7qbVFc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KjaI50+g; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:Content-Disposition:In-Reply-To; b=jAlazxUB6rp6knSNkhHTLvpj7GUeyziLTaggreb6pLQHBcZX56lzQikAjNfg6Ah/55LVuJuK16OyqnHwofP2TaGsOPB5LTOD982ONh7BrzGwSw76+lGfla4kYLI6jzIQ9V1Ki1YnU2vfVoWBIq3XluVT63BbPsG+Np/1q+jY5mA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=oLTfMik4; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KjaI50+g"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 620E31F000E9;
-	Mon, 29 Jun 2026 17:36:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1782754601;
-	bh=Ck52aVERa/dSK9EW2phIhpiajUjsHvNg/KF8jAj4tKg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=KjaI50+gv3cmFnwRjqe6vTKfy49cDAY23fDmMF3N9T/0Io5q/qT0Q0F2n+Gv1EWzk
-	 GOIm5WnE+sogMZ6SOs6TV9DkwIpebLa+2JgRbXc4BqMd1ieftFthZcvUZEdkoAbIyF
-	 iCKEbj2tJIVRZgPqaF1Axib5kH6LONGp5AdMT8RovzBryMJSQXwma2rQytxsxJ7/XT
-	 +zns84KvzucCrgsGo1h6+jn6PWZTU3nUUnizHk6V5hX891lQRZB3UPhPm9K34CAWai
-	 gixob5Cg7h5dd44cQ98s+DsEdSITlckacEJqhfYJShwirdeuiz4hAjbV9CANlQ+E6b
-	 2g92MUpvRF56g==
-Date: Mon, 29 Jun 2026 10:36:40 -0700
-From: Oliver Upton <oupton@kernel.org>
-To: Leonardo Bras <leo.bras@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-	Joey Gouly <joey.gouly@arm.com>,
-	Steffen Eiden <seiden@linux.ibm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>, Saket Dumbre <saket.dumbre@intel.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Jonathan Cameron <jic23@kernel.org>,
-	Chengwen Feng <fengchengwen@huawei.com>,
-	Kees Cook <kees@kernel.org>,
-	=?utf-8?Q?Miko=C5=82aj?= Lenczewski <miko.lenczewski@arm.com>,
-	James Morse <james.morse@arm.com>, Zeng Heng <zengheng4@huawei.com>,
-	mrigendrachaubey <mrigendra.chaubey@gmail.com>,
-	Thomas Huth <thuth@redhat.com>, Ryan Roberts <ryan.roberts@arm.com>,
-	Yeoreum Yun <yeoreum.yun@arm.com>, Mark Brown <broonie@kernel.org>,
-	Kevin Brodsky <kevin.brodsky@arm.com>,
-	James Clark <james.clark@linaro.org>, Fuad Tabba <tabba@google.com>,
-	Raghavendra Rao Ananta <rananta@google.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Sascha Bischoff <Sascha.Bischoff@arm.com>,
-	Anshuman Khandual <anshuman.khandual@arm.com>,
-	Tian Zheng <zhengtian10@huawei.com>,
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="oLTfMik4"
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1EBDC22D9;
+	Tue, 30 Jun 2026 00:35:10 -0700 (PDT)
+Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4483F3F836;
+	Tue, 30 Jun 2026 00:35:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
+	t=1782804914; bh=0taVGT1m4jf8+Bd5/fvY49UWd51JJF0GPZjMsn5vOUw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=oLTfMik4Sv9mAkGsjjAf+7Vw1YD65vPjYpiOO3eGivwLAIwZEOqZbFzuzd+SthVgY
+	 4DZsFldgSMW0BIm8uAG1typFraDU8wUL2m8mY3apZUbABO0JI7DWl03d1yxkjK4JVY
+	 KxYC9wZpnXlleUIJyHY1t/26eMymZHQbTBDKcMw4=
+Date: Tue, 30 Jun 2026 09:34:59 +0200
+From: Beata Michalska <beata.michalska@arm.com>
+To: Pengjie Zhang <zhangpengjie2@huawei.com>
+Cc: catalin.marinas@arm.com, will@kernel.org, rafael@kernel.org,
+	lenb@kernel.org, robert.moore@intel.com, zhenglifeng1@huawei.com,
+	zhanjie9@hisilicon.com, sumitg@nvidia.com, cuiyunhui@bytedance.com,
 	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	kvmarm@lists.linux.dev, linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev, kvm@vger.kernel.org
-Subject: Re: [PATCH v2 06/13] KVM: arm64: dirty_bit: Add base FEAT_HACDBS
- cleaning routine
-Message-ID: <akKtKH8O5hngLenm@kernel.org>
-References: <20260629111820.1873540-1-leo.bras@arm.com>
- <20260629111820.1873540-7-leo.bras@arm.com>
+	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
+	linuxarm@huawei.com, jonathan.cameron@huawei.com,
+	prime.zeng@hisilicon.com, wanghuiqiang@huawei.com,
+	xuwei5@huawei.com, lihuisong@huawei.com, yubowen8@huawei.com,
+	wangzhi12@huawei.com
+Subject: Re: [PATCH 2/2] arm64: topology: read CPPC FFH feedback counters in
+ one operation
+Message-ID: <akNxo5HzHARnrCT1@arm.com>
+References: <20260410094145.4132082-1-zhangpengjie2@huawei.com>
+ <20260410094145.4132082-3-zhangpengjie2@huawei.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -69,136 +51,152 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260629111820.1873540-7-leo.bras@arm.com>
+In-Reply-To: <20260410094145.4132082-3-zhangpengjie2@huawei.com>
 
-On Mon, Jun 29, 2026 at 12:17:54PM +0100, Leonardo Bras wrote:
-> Introduce the basic cleaning routine that is going to be used for both
-> dirty-bitmap and dirty-ring routines.
+On Fri, Apr 10, 2026 at 05:41:45PM +0800, Pengjie Zhang wrote:
+> arm64 implements CPPC FFH feedback-counter reads using AMU counters.
+> Because those counters must be sampled on the target CPU, reading the
+> delivered and reference counters separately widens the observation window
+> between them.
 > 
-> It sets the required registers with the input buffer, and wait for
-> HACDBSIRQ to happen, which means either the task is done, or there was some
-> error during processing.
+> Implement the paired FFH feedback-counter read hook on arm64 and sample
+> both AMU counters together before decoding the requested CPC register
+> values.
 > 
-> It is ran with preemption disabled, as a task being scheduled in could
-> change the translation registers used by HACDBS and end up corrupting the
-> current dirty-bit tracking and the sched-in task's S2 pagetables.
+> Also factor the FFH bitfield extraction logic into a helper and reuse
+> it from the existing single-counter FFH read path.
 > 
-> Signed-off-by: Leonardo Bras <leo.bras@arm.com>
+> Signed-off-by: Pengjie Zhang <zhangpengjie2@huawei.com>
 > ---
->  arch/arm64/kvm/dirty_bit.c | 81 ++++++++++++++++++++++++++++++++++++++
->  1 file changed, 81 insertions(+)
+>  arch/arm64/kernel/topology.c | 75 ++++++++++++++++++++++++++++++++----
+>  1 file changed, 67 insertions(+), 8 deletions(-)
 > 
-> diff --git a/arch/arm64/kvm/dirty_bit.c b/arch/arm64/kvm/dirty_bit.c
-> index 789da8712b1b..e4283828b780 100644
-> --- a/arch/arm64/kvm/dirty_bit.c
-> +++ b/arch/arm64/kvm/dirty_bit.c
-> @@ -1,36 +1,117 @@
->  // SPDX-License-Identifier: GPL-2.0-only
->  /*
->   * Copyright (C) 2026 ARM Ltd.
->   * Author: Leonardo Bras <leo.bras@arm.com>
->   */
->  
->  #include <asm/kvm_dirty_bit.h>
-> +#include <asm/kvm_mmu.h>
->  #include <linux/kconfig.h>
->  #include <linux/acpi.h>
->  
->  DEFINE_PER_CPU(struct hacdbs, hacdbs_pcp) = {
->  	.status = HACDBS_OFF,
->  	.size = 0,
+> diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
+> index b32f13358fbb..b90a767b2a1f 100644
+> --- a/arch/arm64/kernel/topology.c
+> +++ b/arch/arm64/kernel/topology.c
+> @@ -50,6 +50,16 @@ struct amu_cntr_sample {
+>  	unsigned long	last_scale_update;
 >  };
 >  
->  /* HDBSS entry field definitions */
->  #define HDBSS_ENTRY_VALID BIT(0)
->  #define HDBSS_ENTRY_TTWL_SHIFT (1)
->  #define HDBSS_ENTRY_TTWL_MASK (GENMASK(3, 1))
->  #define HDBSS_ENTRY_TTWL(x) \
->  	(((x) << HDBSS_ENTRY_TTWL_SHIFT) & HDBSS_ENTRY_TTWL_MASK)
->  #define HDBSS_ENTRY_TTWL_RESV HDBSS_ENTRY_TTWL(-4)
->  #define HDBSS_ENTRY_IPA GENMASK_ULL(55, 12)
+> +struct amu_ffh_ctrs {
+> +	u64 corecnt;
+> +	u64 constcnt;
+> +};
+> +
+> +enum cpc_ffh_ctr_id {
+> +	CPC_FFH_CTR_CORE  = 0x0,
+> +	CPC_FFH_CTR_CONST = 0x1,
+> +};
+> +
+Those should probably go under the #ifdef CONFIG_ACPI_CPPC_LIB section.
+>  static DEFINE_PER_CPU_SHARED_ALIGNED(struct amu_cntr_sample, cpu_amu_samples);
 >  
->  static __ro_after_init int hacdbsirq = -1;
+>  void update_freq_counters_refs(void)
+> @@ -397,7 +407,7 @@ static void cpu_read_constcnt(void *val)
+>  }
 >  
-> +static void hacdbs_start(u64 *hw_entries, int size)
+>  static inline
+> -int counters_read_on_cpu(int cpu, smp_call_func_t func, u64 *val)
+> +int counters_read_on_cpu(int cpu, smp_call_func_t func, void *val)
+>  {
+>  	/*
+>  	 * Abort call on counterless CPU.
+> @@ -447,24 +457,73 @@ bool cpc_ffh_supported(void)
+>  	return true;
+>  }
+>  
+> +static void amu_read_core_const_ctrs(void *val)
 > +{
-> +	u64 br;
-> +	/* Each entry is 8 bytes */
-> +	int size_b = size * sizeof(hw_entries[0]);
-> +	int size_p2 = max(roundup_pow_of_two(size_b), PAGE_SIZE);
+> +	struct amu_ffh_ctrs *ctrs = val;
 > +
-> +	/* If not using the full size of the array, put a stop entry at the end */
-> +	if (size_b < size_p2)
-> +		hw_entries[size] = HDBSS_ENTRY_VALID | HDBSS_ENTRY_TTWL_RESV;
-> +
-> +	sysreg_clear_set_s(SYS_HACDBSCONS_EL2,
-> +			   HACDBSCONS_EL2_ERR_REASON | HACDBSCONS_EL2_INDEX, 0);
-> +
-> +	br = (virt_to_phys(hw_entries) & HACDBSBR_EL2_BADDR_MASK) |
-> +	     FIELD_PREP(HACDBSBR_EL2_SZ, ilog2(size_p2) - 12) |
-> +	     FIELD_PREP(HACDBSBR_EL2_EN, 1);
-> +
-> +	this_cpu_write(hacdbs_pcp.status, HACDBS_RUNNING);
-> +	this_cpu_write(hacdbs_pcp.size, size);
-> +	write_sysreg_s(br, SYS_HACDBSBR_EL2);
-> +	isb();
+> +	cpu_read_constcnt(&ctrs->constcnt);
+> +	cpu_read_corecnt(&ctrs->corecnt);
 > +}
 > +
-> +static int hacdbs_stop(void)
+> +static u64 cpc_ffh_extract_bits(const struct cpc_reg *reg, u64 val)
 > +{
-> +	write_sysreg_s(0, SYS_HACDBSBR_EL2);
-> +	isb();
+> +	val &= GENMASK_ULL(reg->bit_offset + reg->bit_width - 1,
+> +			   reg->bit_offset);
+> +	val >>= reg->bit_offset;
 > +
-> +	if (this_cpu_read(hacdbs_pcp.status) == HACDBS_ERROR) {
-> +		/* In case of error, HACDBSCONS_EL2.INDEX should point the faulty entry */
-> +		u64 cons = read_sysreg_s(SYS_HACDBSCONS_EL2);
-> +		int idx = FIELD_GET(HACDBSCONS_EL2_INDEX, cons);
+> +	return val;
+> +}
 > +
-> +		this_cpu_write(hacdbs_pcp.status, HACDBS_IDLE);
-> +
-> +		return idx;
+> +static bool cpc_ffh_ctr_value(const struct cpc_reg *reg,
+> +			      const struct amu_ffh_ctrs *ctrs, u64 *val)
+> +{
+> +	switch ((u64)reg->address) {
+> +	case CPC_FFH_CTR_CORE:
+> +		*val = ctrs->corecnt;
+> +		break;
+> +	case CPC_FFH_CTR_CONST:
+> +		*val = ctrs->constcnt;
+> +		break;
+> +	default:
+> +		return false;
 > +	}
 > +
-> +	return this_cpu_read(hacdbs_pcp.size);
+> +	*val = cpc_ffh_extract_bits(reg, *val);
+> +	return true;
 > +}
 > +
-> +/*
-> + * Clears dirty-bits for an array of pages (hw_entries) using HACDBS
-> + * Returns the number of items cleaned from the array. If returns value < size,
-> + *	there was an error in the processing.
-> + */
-> +static int dirty_bit_clear(struct kvm *kvm, u64 *hw_entries, int size)
+> +int cpc_read_ffh_fb_ctrs(int cpu, struct cpc_reg *reg1, u64 *val1,
+> +			 struct cpc_reg *reg2, u64 *val2)
 > +{
-> +	u64 hcr_el2;
+> +	struct amu_ffh_ctrs ctrs;
 > +	int ret;
 > +
-> +	preempt_disable();
+> +	ret = counters_read_on_cpu(cpu, amu_read_core_const_ctrs, &ctrs);
+> +	if (ret)
+> +		return ret;
 > +
-> +	hcr_el2 = read_sysreg(HCR_EL2);
-> +	write_sysreg(hcr_el2 | HCR_EL2_VM, HCR_EL2);
+> +	if (!cpc_ffh_ctr_value(reg1, &ctrs, val1) ||
+> +	    !cpc_ffh_ctr_value(reg2, &ctrs, val2))
+> +		return -EOPNOTSUPP;
+Right, so there might be an issues with that:
+If you return EOPNOTSUPP here, that would trigger reading the registers again,
+this time one by one. Is that intentional ?
+Also counters_read_on_cpu might also return EOPNOTSUPP, in which case trying
+again to read the counters is pointless.
 
-sysreg_clear_set_hcr(). I'm pretty sure all the speculative AT errata
-depend on HCR_EL2.VM being set _after_ the stage-2 MMU has been loaded.
+I'm not entirely sure I understand the condition itself though.
+This will fail if either of the requested registers in not really expected.
+And that should probably be verified upfront ?
 
-> +	__load_stage2(&kvm->arch.mmu);
 
-Pretty sure you need an ISB here to ensure loading the MMU is ordered
-with enabling HACDBS.
-
-> +	hacdbs_start(hw_entries, size);
+---
+BR
+Beata
 > +
-> +	do {
-> +		wfi();
-> +	} while (this_cpu_read(hacdbs_pcp.status) == HACDBS_RUNNING);
-
-This is exactly why I said you should just poll hardware instead. It is
-entirely possible that the IRQ arrives before you WFI.
-
-> +	ret = hacdbs_stop();
+> +	return 0;
+> +}
 > +
-> +	write_sysreg(hcr_el2, HCR_EL2);
-
-write_sysreg_hcr()
-
-Thanks,
-Oliver
+>  int cpc_read_ffh(int cpu, struct cpc_reg *reg, u64 *val)
+>  {
+>  	int ret = -EOPNOTSUPP;
+>  
+>  	switch ((u64)reg->address) {
+> -	case 0x0:
+> +	case CPC_FFH_CTR_CORE:
+>  		ret = counters_read_on_cpu(cpu, cpu_read_corecnt, val);
+>  		break;
+> -	case 0x1:
+> +	case CPC_FFH_CTR_CONST:
+>  		ret = counters_read_on_cpu(cpu, cpu_read_constcnt, val);
+>  		break;
+>  	}
+>  
+> -	if (!ret) {
+> -		*val &= GENMASK_ULL(reg->bit_offset + reg->bit_width - 1,
+> -				    reg->bit_offset);
+> -		*val >>= reg->bit_offset;
+> -	}
+> +	if (!ret)
+> +		*val = cpc_ffh_extract_bits(reg, *val);
+>  
+>  	return ret;
+>  }
+> -- 
+> 2.33.0
+> 
