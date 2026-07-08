@@ -1,186 +1,131 @@
-Received: from canpmsgout04.his.huawei.com (canpmsgout04.his.huawei.com [113.46.200.219])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2718A3AC0F1
-	for <acpica-devel@lists.linux.dev>; Wed,  8 Jul 2026 08:28:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.219
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9519738C2C3
+	for <acpica-devel@lists.linux.dev>; Wed,  8 Jul 2026 13:59:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783499317; cv=none; b=QgmAZs1v6Vc1OWI36uQEoTNF4Xa8+BrrZYI113E5qAkbWlSP9ETtZKdqmNa7XZmFnL7GDItzzezGT5idfui7vJX2DcT9/c06eLWdKtRp9CCLTXLl//SyNJntvTzegOgsWqv7hRgbWpmSrQJxu5W/gGrxQBQxGaimWrtIIV7GT4k=
+	t=1783519165; cv=none; b=C5j1KvrR9/1aIguWLVTCHfM9gXbMgT21GZdQ1CmD1VJZPU7nLDf0cgV4DryCXBYevk9jTekoQvkusCRgwLqBlJvgG0s84fs0u/9/ozYv8yEHodryHO/kCv2R/WbbnBg+H9jcQi/ofNOi8sSqasDGgbp7+2D8seFzyyxsjuz90DE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783499317; c=relaxed/simple;
-	bh=tgkfhUmsZKWADF8cAE40xBoAD1FIFnP+WaYLOPjr6aw=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=VwFjlYqR9aqwHO40dhF5z7j1E3wlTNK294jjCuvEdppTuKTZI/V6hB76DPm6MkNZibxeT+QD9IkpoNjL0LJacXz+k1Tfw4BQpG5ejQyPxns9uGz56j7eggXYdb5GiWJ+go+UVo/rtdDXOd/UXbpisRyy2fwEurFqPlQY1LHC3tU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=nJNt57ML; arc=none smtp.client-ip=113.46.200.219
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+	s=arc-20240116; t=1783519165; c=relaxed/simple;
+	bh=egpzf7FOljHOA/UNeDZ0uuZAzOwk9J//58dI10sIFww=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=cKHSd416rvP20Xw0v5q+4vG/mlvKuPckYNx/oI7w7R3tf8FYH69969VZnfaBgR3nBzDxco+CTp0rvugEgYQdrYtt7KWgWDS7MdHyA7nTO2df8rj5WEzJh/W9ne1AIRtBg0pkLatpdibXLaBH0ojErstaQoolmIikqk64w67afeA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=PPh5n0Rc; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="nJNt57ML"
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=m7OCS9ttjcsJjAtXg7NkqqhNNIFwWFmPdzpD3nDuHjg=;
-	b=nJNt57MLrEVPte5Syar1+jRTg+YWjqen7Dz1aoXFz0/qSO1DjzXv/s+xQNLHSzE2c8xL6ZBJO
-	a8y4KdgCkrkIT4/D1eHnyiTb+dVxJULuS1y8JNOd26kzKJaZ5ZCBJbWx/LBaSt617rIK3iiTjW3
-	CHxgZjTGpR1jcm5e7Z9DaDo=
-Received: from mail.maildlp.com (unknown [172.19.162.144])
-	by canpmsgout04.his.huawei.com (SkyGuard) with ESMTPS id 4gw9wm2VTLz1prPP;
-	Wed,  8 Jul 2026 16:19:04 +0800 (CST)
-Received: from kwepemr200004.china.huawei.com (unknown [7.202.195.241])
-	by mail.maildlp.com (Postfix) with ESMTPS id 51A1A4056D;
-	Wed,  8 Jul 2026 16:28:20 +0800 (CST)
-Received: from huawei.com (10.50.163.32) by kwepemr200004.china.huawei.com
- (7.202.195.241) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Wed, 8 Jul
- 2026 16:28:19 +0800
-From: Pengjie Zhang <zhangpengjie2@huawei.com>
-To: <catalin.marinas@arm.com>, <will@kernel.org>, <rafael@kernel.org>,
-	<lenb@kernel.org>, <saket.dumbre@intel.com>, <beata.michalska@arm.com>,
-	<zhenglifeng1@huawei.com>, <sumitg@nvidia.com>, <zhanjie9@hisilicon.com>,
-	<geert+renesas@glider.be>, <cuiyunhui@bytedance.com>,
-	<vanshikonda@os.amperecomputing.com>, <ionela.voinescu@arm.com>,
-	<jeremy.linton@arm.com>, <viresh.kumar@linaro.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<linux-acpi@vger.kernel.org>, <acpica-devel@lists.linux.dev>,
-	<linuxarm@huawei.com>
-CC: <prime.zeng@hisilicon.com>, <wanghuiqiang@huawei.com>,
-	<xuwei5@huawei.com>, <lihuisong@huawei.com>, <yubowen8@huawei.com>,
-	<zhangpengjie2@huawei.com>, <wangzhi12@huawei.com>
-Subject: [PATCH v2 1/2] ACPI: CPPC: add paired FFH feedback-counter read hook
-Date: Wed, 8 Jul 2026 16:28:17 +0800
-Message-ID: <20260708082818.808041-2-zhangpengjie2@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20260708082818.808041-1-zhangpengjie2@huawei.com>
-References: <20260708082818.808041-1-zhangpengjie2@huawei.com>
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="PPh5n0Rc"
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A0B6B152B;
+	Wed,  8 Jul 2026 06:59:18 -0700 (PDT)
+Received: from e134710.arm.com (e134710.arm.com [10.33.10.82])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1EC253F66F;
+	Wed,  8 Jul 2026 06:59:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
+	t=1783519162; bh=egpzf7FOljHOA/UNeDZ0uuZAzOwk9J//58dI10sIFww=;
+	h=From:Subject:Date:To:Cc:From;
+	b=PPh5n0Rckf4lPT5ow/Rp0ugC+rxNZkCQVJJXF0ETmkRNYeQcxFnVRsmQo1ikDUSUN
+	 NHgcSsIjM1TaYUpQRzAsK5Iu7jfGNS9QvFXLun9ISW97tCqPB5kZMG02XcsGCa7tyW
+	 34qZIeUqLvT1FPNy3Efqhmh1/RrhEH/7DAsWJEzI=
+From: Ahmed Tiba <ahmed.tiba@arm.com>
+Subject: [PATCH v7 00/10] ACPI: APEI: share GHES CPER helpers and add DT
+ FFH provider
+Date: Wed, 08 Jul 2026 14:58:59 +0100
+Message-Id: <20260708-topics-ahmtib01-ras_ffh_arm_internal_review-v7-0-8b3a85216cef@arm.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: kwepems100002.china.huawei.com (7.221.188.206) To
- kwepemr200004.china.huawei.com (7.202.195.241)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAKNXTmoC/5XRzWqEMBSG4VsZsm4k50x+dFa9j1Ik5qcGqg6J2
+ JbBe+9xoFiXLr9AnjeQByshp1DY7fJgOSyppGmkYV4uzPV2/Ag8edoMBWqBKPg83ZMr3PbDnDo
+ BPNvSxti3Ng9tGueQR/vZblL44l303pnojLMdI/GeQ0zfz9rbO+0+lXnKP8/4Atvp1lGAYACwl
+ qqCGiRAw2ELBl9R075SqnLTwDZiwb9r55+3IBf8Kk206M1VQXeU5S4rqM/JkmSJuqm1UZ3VcJT
+ VPxmbc7IiGYNQQngKSDzKepc1mHOyJrmBaOgDjLRW7PK6rr881bvuKQIAAA==
+To: "Rafael J. Wysocki" <rafael@kernel.org>, 
+ Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>, 
+ Hanjun Guo <guohanjun@huawei.com>, 
+ Mauro Carvalho Chehab <mchehab@kernel.org>, 
+ Shuai Xue <xueshuai@linux.alibaba.com>, Len Brown <lenb@kernel.org>, 
+ Saket Dumbre <saket.dumbre@intel.com>, Davidlohr Bueso <dave@stgolabs.net>, 
+ Jonathan Cameron <jic23@kernel.org>, Dave Jiang <dave.jiang@intel.com>, 
+ Alison Schofield <alison.schofield@intel.com>, 
+ Vishal Verma <vishal.l.verma@intel.com>, Dan Williams <djbw@kernel.org>, 
+ Ira Weiny <iweiny@kernel.org>, Li Ming <ming.li@zohomail.com>, 
+ Mahesh J Salgaonkar <mahesh@linux.ibm.com>, 
+ Oliver O'Halloran <oohall@gmail.com>, Bjorn Helgaas <bhelgaas@google.com>, 
+ Ahmed Tiba <ahmed.tiba@arm.com>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
+ Shuah Khan <skhan@linuxfoundation.org>
+Cc: linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, 
+ acpica-devel@lists.linux.dev, linux-cxl@vger.kernel.org, 
+ linuxppc-dev@lists.ozlabs.org, linux-pci@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-edac@vger.kernel.org, 
+ linux-doc@vger.kernel.org, Dmitry.Lamerov@arm.com
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1783519157; l=2775;
+ i=ahmed.tiba@arm.com; s=20260219; h=from:subject:message-id;
+ bh=egpzf7FOljHOA/UNeDZ0uuZAzOwk9J//58dI10sIFww=;
+ b=z0wp9aIYNr5NMorh09jiJbcMtJLugd5jUHOdl53jOd3TImjbi3fvS+YXV8tvo1u999mp+hyAF
+ A6HNDu/8MqQCkzA5Have9zBAay47klANWoyQ5GlaL26mz974WlQDnIH
+X-Developer-Key: i=ahmed.tiba@arm.com; a=ed25519;
+ pk=xVOtd+Qklh/4tuM3tB+BEZD4jj5a6W59C3KCNX6v7OE=
 
-cppc_get_perf_ctrs() reads the delivered and reference performance
-counters one at a time.
+This is v7 of the GHES refactor series. Compared to v6, it addresses
+the Sashiko-reported issues including pre-existing ones and fixes
+the ACPI-disabled cper-x86 build break.
 
-Allow architectures to provide both FFH feedback counters in one
-operation when that either narrows the sampling window or avoids extra
-cross-CPU reads. Add a small FFH-specific hook for that case and fall
-back to the existing per-register reads when unsupported.
+The DT firmware-first CPER provider is intended for the upstream zena-css
+platform. Validation so far has been on FVP.
 
-Tested-by: Sumit Gupta <sumitg@nvidia.com>
-Reviewed-by: Sumit Gupta <sumitg@nvidia.com>
-Tested-by: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
-Reviewed-by: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
-Signed-off-by: Pengjie Zhang <zhangpengjie2@huawei.com>
+Changes in v7:
+- Address Sashiko-reported issues for this series, including pre-existing ones.
+- Fix pre-existing CPER header overflow validation in cper.c.
+- Fix AER recovery leak when no pci_dev is found.
+- For DT provider: serialize pool init, return IRQ_NONE on empty status,
+  add OF_RESERVED_MEM dependency, and harden status length checks.
+- Include <asm/acpi.h> in cper-x86.c for ACPI-disabled builds.
+- Link to v6: https://lore.kernel.org/r/20260617-topics-ahmtib01-ras_ffh_arm_internal_review-v6-0-91f725174aa0@arm.com
+
 ---
- drivers/acpi/cppc_acpi.c | 50 ++++++++++++++++++++++++++++++++++++----
- include/acpi/cppc_acpi.h |  7 ++++++
- 2 files changed, 52 insertions(+), 5 deletions(-)
+Ahmed Tiba (10):
+      ACPI: APEI: GHES: share macros via a private header
+      ACPI: APEI: GHES: move CPER read helpers
+      ACPI: APEI: GHES: move GHESv2 ack and alloc helpers
+      ACPI: APEI: GHES: move estatus cache helpers
+      ACPI: APEI: GHES: move vendor record helpers
+      ACPI: APEI: GHES: move CXL CPER helpers
+      ACPI: APEI: introduce GHES helper
+      ACPI: APEI: share GHES CPER helpers
+      dt-bindings: firmware: add arm,ras-cper
+      RAS: add firmware-first CPER provider
 
-diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-index 9f572f481241..b6356476a46e 100644
---- a/drivers/acpi/cppc_acpi.c
-+++ b/drivers/acpi/cppc_acpi.c
-@@ -1004,6 +1004,22 @@ int __weak cpc_read_ffh(int cpunum, struct cpc_reg *reg, u64 *val)
- 	return -ENOTSUPP;
- }
- 
-+/**
-+ * cpc_read_ffh_fb_ctrs() - Read FFH feedback counters together
-+ * @cpunum:	Target CPU
-+ * @reg1:	first CPPC register information
-+ * @val1:	place holder for first return value
-+ * @reg2:	second CPPC register information
-+ * @val2:	place holder for second return value
-+ *
-+ * Return: 0 on success, error code otherwise
-+ */
-+int __weak cpc_read_ffh_fb_ctrs(int cpunum, struct cpc_reg *reg1,
-+				u64 *val1, struct cpc_reg *reg2, u64 *val2)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
- /**
-  * cpc_write_ffh() - Write FFH register
-  * @cpunum:	CPU number to write
-@@ -1496,6 +1512,33 @@ bool cppc_perf_ctrs_in_pcc_cpu(unsigned int cpu)
- }
- EXPORT_SYMBOL_GPL(cppc_perf_ctrs_in_pcc_cpu);
- 
-+static int cppc_read_fb_ctrs(int cpunum,
-+			     struct cpc_register_resource *delivered_reg,
-+			     struct cpc_register_resource *reference_reg,
-+			     u64 *delivered, u64 *reference)
-+{
-+	int ret;
-+
-+	/*
-+	 * For FFH feedback counters, try a paired read first to reduce
-+	 * sampling skew between delivered and reference counters. Fall
-+	 * back to the existing per-register reads if unsupported.
-+	 */
-+	if (CPC_IN_FFH(delivered_reg) && CPC_IN_FFH(reference_reg)) {
-+		ret = cpc_read_ffh_fb_ctrs(cpunum,
-+					&delivered_reg->cpc_entry.reg, delivered,
-+					&reference_reg->cpc_entry.reg, reference);
-+		if (ret != -EOPNOTSUPP)
-+			return ret;
-+	}
-+
-+	ret = cpc_read(cpunum, delivered_reg, delivered);
-+	if (ret)
-+		return ret;
-+
-+	return cpc_read(cpunum, reference_reg, reference);
-+}
-+
- /**
-  * cppc_perf_ctrs_in_pcc - Check if any perf counters are in a PCC region.
-  *
-@@ -1561,11 +1604,8 @@ int cppc_get_perf_ctrs(int cpunum, struct cppc_perf_fb_ctrs *perf_fb_ctrs)
- 		}
- 	}
- 
--	ret = cpc_read(cpunum, delivered_reg, &delivered);
--	if (ret)
--		goto out_err;
--
--	ret = cpc_read(cpunum, reference_reg, &reference);
-+	ret = cppc_read_fb_ctrs(cpunum, delivered_reg, reference_reg,
-+				&delivered, &reference);
- 	if (ret)
- 		goto out_err;
- 
-diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
-index 8693890a7275..5acebe62feac 100644
---- a/include/acpi/cppc_acpi.h
-+++ b/include/acpi/cppc_acpi.h
-@@ -176,6 +176,8 @@ extern int cppc_get_transition_latency(int cpu);
- extern bool cpc_ffh_supported(void);
- extern bool cpc_supported_by_cpu(void);
- extern int cpc_read_ffh(int cpunum, struct cpc_reg *reg, u64 *val);
-+extern int cpc_read_ffh_fb_ctrs(int cpu, struct cpc_reg *reg1, u64 *val1,
-+				struct cpc_reg *reg2, u64 *val2);
- extern int cpc_write_ffh(int cpunum, struct cpc_reg *reg, u64 val);
- extern int cppc_get_epp_perf(int cpunum, u64 *epp_perf);
- extern int cppc_set_epp_perf(int cpu, struct cppc_perf_ctrls *perf_ctrls, bool enable);
-@@ -250,6 +252,11 @@ static inline int cpc_read_ffh(int cpunum, struct cpc_reg *reg, u64 *val)
- {
- 	return -EOPNOTSUPP;
- }
-+static inline int cpc_read_ffh_fb_ctrs(int cpu, struct cpc_reg *reg1, u64 *val1,
-+				       struct cpc_reg *reg2, u64 *val2)
-+{
-+	return -EOPNOTSUPP;
-+}
- static inline int cpc_write_ffh(int cpunum, struct cpc_reg *reg, u64 val)
- {
- 	return -EOPNOTSUPP;
+ Documentation/admin-guide/RAS/main.rst             |   15 +
+ .../devicetree/bindings/firmware/arm,ras-cper.yaml |   52 +
+ MAINTAINERS                                        |    6 +
+ drivers/Makefile                                   |    1 +
+ drivers/acpi/Kconfig                               |    4 +
+ drivers/acpi/apei/Kconfig                          |    1 +
+ drivers/acpi/apei/apei-internal.h                  |    3 +-
+ drivers/acpi/apei/ghes.c                           | 1044 +-----------------
+ drivers/acpi/apei/ghes_cper.c                      | 1122 ++++++++++++++++++++
+ drivers/firmware/efi/cper-x86.c                    |    1 +
+ drivers/firmware/efi/cper.c                        |    3 +-
+ drivers/pci/pcie/aer.c                             |    9 +-
+ drivers/ras/Kconfig                                |   12 +
+ drivers/ras/Makefile                               |    1 +
+ drivers/ras/cper-esource.c                         |  332 ++++++
+ include/acpi/ghes.h                                |   10 +-
+ include/acpi/ghes_cper.h                           |  141 +++
+ include/cxl/event.h                                |    2 +-
+ 18 files changed, 1709 insertions(+), 1050 deletions(-)
+---
+base-commit: 0e35b9b6ec0ffcc5e23cbdec09f5c622ad532b53
+change-id: 20260220-topics-ahmtib01-ras_ffh_arm_internal_review-bfddc7fc7cab
+
+Best regards,
 -- 
-2.33.0
+Ahmed Tiba <ahmed.tiba@arm.com>
 
