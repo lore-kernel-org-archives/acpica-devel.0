@@ -1,116 +1,129 @@
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C356E374E5A
-	for <acpica-devel@lists.linux.dev>; Fri, 10 Jul 2026 13:42:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 879DB37A82D
+	for <acpica-devel@lists.linux.dev>; Sun, 12 Jul 2026 22:21:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783690933; cv=none; b=sZSblNYJWZHZgeH5bSZx/hITH/gG8lXNkJcP9CG/pJJ8g+4uhY0yDGvGLlxsvBO6nK27slVlUBqBmHNnRI/cgheaM+gnZtrwdf4B2BrXEsh57UtHBj7qIxxylda17k/uf05KeJpnJgZTFQgCcyQYZfyCg9/mfRaGfv/8pFdKEQo=
+	t=1783894890; cv=none; b=BfSc0OvvTRbte5OE2Nqgu+Yj6pne86nsy8dieed8Usa60NomCuWJBehjj2dHYWvywrHevzelf5hAEdRDJmQ0m90bqDQN5tbqPLjBbC/CQUkofeC66v3J1YJX5m5WMj1UOelpP8OkWMunczE4SRxMBcmv6FGdCEJ6BHGbuERakzA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783690933; c=relaxed/simple;
-	bh=8H5ByFfTRvXUXT/9aX7bZ3Ahq+SupbteOjZbiE/Kh7s=;
+	s=arc-20240116; t=1783894890; c=relaxed/simple;
+	bh=yXFkHL5kLy0YmcSeIBWJ/pJv7FWST/0rD1sn/vpnnlo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i13CaNN6eRdRiL/y7VQQzmIhMkKASeliPFAsB+QDgaNX00r59OkjFz8R/YJVw07LXIpVRwDzOyBAOdBCg7kjUbM8A0XQIHtAfwUAM8wLEFD7XXwwiRdoYgIZ2eiwaUHagGTj3vY9af/FXzYxwPnPFZU3/WSrjI+m3DIEHbZeuSA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=FWxckjJq; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=S+c/fnzh2OhYubO5jDISMNt/almudaFcm+0oIo4octF6lEZS2uL2Z8cU1VJeJkmOnpvdoMdhDZaRsORVOgVKKsWPJimJJ91JUu3V2AvtpXNQGSowzjgF7XOxRiJHMAPoYuLRN1X36YOkdBUY6QVpV7gzXCB3yvbbAAvR26FOseI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b=OhsRHKAV; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="FWxckjJq"
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B59A4176A;
-	Fri, 10 Jul 2026 06:42:06 -0700 (PDT)
-Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0EFC83F66F;
-	Fri, 10 Jul 2026 06:42:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1783690931; bh=8H5ByFfTRvXUXT/9aX7bZ3Ahq+SupbteOjZbiE/Kh7s=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FWxckjJqRXLQXo0phZBNuTL410ZFitFuyUj3LjvnhNru64zxYeVLL+J3W+BqcCRVY
-	 ioIZP7EfXsnUd4EYMDQBIQmkeKt7KfHjxumv910CfTIeyX3koMEHr/OQ5L6kuC4Tia
-	 FmQtNyVkB9BiUiAXHUooSTey4QCTW8Hwd+xyRk44=
-Date: Fri, 10 Jul 2026 15:42:01 +0200
-From: Beata Michalska <beata.michalska@arm.com>
-To: Pengjie Zhang <zhangpengjie2@huawei.com>
-Cc: catalin.marinas@arm.com, will@kernel.org, rafael@kernel.org,
-	lenb@kernel.org, saket.dumbre@intel.com, zhenglifeng1@huawei.com,
-	sumitg@nvidia.com, zhanjie9@hisilicon.com, geert+renesas@glider.be,
-	cuiyunhui@bytedance.com, vanshikonda@os.amperecomputing.com,
-	ionela.voinescu@arm.com, jeremy.linton@arm.com,
-	viresh.kumar@linaro.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev, linuxarm@huawei.com,
-	prime.zeng@hisilicon.com, wanghuiqiang@huawei.com,
-	xuwei5@huawei.com, lihuisong@huawei.com, yubowen8@huawei.com,
-	wangzhi12@huawei.com
-Subject: Re: [PATCH v2 0/2] CPPC: reduce FFH feedback-counter sampling skew
- on arm64
-Message-ID: <alD2qU4FNoGvP7SN@arm.com>
-References: <20260708082818.808041-1-zhangpengjie2@huawei.com>
+	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b="OhsRHKAV"
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-493f0ae9572so9421055e9.3
+        for <acpica-devel@lists.linux.dev>; Sun, 12 Jul 2026 15:21:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre.com; s=google; t=1783894887; x=1784499687; darn=lists.linux.dev;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=yXFkHL5kLy0YmcSeIBWJ/pJv7FWST/0rD1sn/vpnnlo=;
+        b=OhsRHKAVa07Y8flQfGgnBIQPyqimIPrFxsLTej6NbXlBOE3Ga35ar32H0wR9YRTp2o
+         PlVcLGuipu+F535hT/N87NjYMTaicZYbfzSyz/zIbLdt4/sGDO4jmIP8sWBag5SMcibj
+         99Jsy8JUTuNYAIa77yBHtbQkFT48y8LCuxgZeFlHkiMdpzWY9ItmEvZY/CrTdJNK30O9
+         fVjLMU80nKoMJLJYWONfWxPNVgD7MYRVJC0Qa3jinztlrJkbo0WWN1tdxRXK+5+GD1HA
+         5Qie55aChqlPO8xnllGAeuIajc5kjc5w9OnZVEt3wLZp5X5uKH5DSrIZ0nhEzGwQRKB1
+         q1Mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1783894887; x=1784499687;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=yXFkHL5kLy0YmcSeIBWJ/pJv7FWST/0rD1sn/vpnnlo=;
+        b=qMD+EA7Fv0hdVoG/wq3vITzNrhkGtrEpjRexVCbdMriQx+lGqak89Ya3xKljstj/Ae
+         PKDjuIXuZd4rRoWKMLtOOF+pd/E1bmWeKftGk7dmp6L1jJvR9SBWSCid+xg8zerIoa34
+         hPj4g3+fi6WIEhWvlnE4ubUV+m3oQqsjAg86+TK7qeorY3OGBMTE+HNayVDwZJbJmbC7
+         QvTGuJGtvUDzlU4hR8bEfCy2JTs7nvPLq6VaPKqYjXzCTic77cI7MLN3KuRZjNL5CUOS
+         UVqidxy+omK5BqKsqZddXiC28gbaY3NaSWJTj6RANM+LW4oKFaZUWLxpRS67dGBVKGNK
+         c/6A==
+X-Forwarded-Encrypted: i=1; AHgh+RqKlOCc6v+SCbovS/xDS+Jd8V/UiQi519T9eQnFs6bFrnEjsucB88pEhwqOktSc1sMbCPJT2CFgnDbtkFk=@lists.linux.dev
+X-Gm-Message-State: AOJu0YwAQgW45r7Y/kWng2JYLi2MNN3baIVM1Q3fAJeHYJINYSzlWpGS
+	ORbjtYAYsf7N137IWrU+C/BhYvwEFhUIoVNJEaFwmsw8ZB/3E5EVDBvg/5GHSVrJJrg=
+X-Gm-Gg: AfdE7clVBiIlMt6pLv3f2YQHz9w+Gb2k1Kj1k+39BBZqs2FTWcIM87h+I8rUbKN4lE8
+	KUJeH6FtTMqK6XRhcwBNhoJaJVpWQ9TsRWZQDIrqCEJwDxEl+BwvifJNLFNcpkwQNil4x/2Ij05
+	rH4afAHFphHRFyNLR71vC0rW352ebhCM5gps213HEd7wclPxywnRKuNdX+g2FpeZRPueLgDEdCn
+	V1s08RLkYcum3Et7GveQiipve6SQqk3PnyNl+qz9nTly1779nWiFguOMTmW8Io6m/IX+G7SnmKv
+	TVzdnCY8fOYfOxGEp419vtU89dg/Ie2EjI6VdDemVBi94IVIkIGbX32OqMjKJqXIxStfzC97Nqo
+	KxUjAR6xEk/3uOM2WaxBGzG/aQ3cCwhRjlORtN+U/V3LKtHXHJ7ScnB6LJ9Aay/1dnKj0INISo7
+	ihzUtdTdtX+nzvVHE50Q==
+X-Received: by 2002:a05:600c:3543:b0:493:f6c1:2f09 with SMTP id 5b1f17b1804b1-493f87dc753mr64927015e9.6.1783894886966;
+        Sun, 12 Jul 2026 15:21:26 -0700 (PDT)
+Received: from localhost ([2a02:8071:56d1:2de0:1d24:d58d:2b65:c291])
+        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-493eb742a49sm296924145e9.12.2026.07.12.15.21.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 12 Jul 2026 15:21:26 -0700 (PDT)
+Date: Mon, 13 Jul 2026 00:21:24 +0200
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@baylibre.com>
+To: Ahmed Tiba <ahmed.tiba@arm.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>, 
+	Hanjun Guo <guohanjun@huawei.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, 
+	Shuai Xue <xueshuai@linux.alibaba.com>, Len Brown <lenb@kernel.org>, 
+	Saket Dumbre <saket.dumbre@intel.com>, Davidlohr Bueso <dave@stgolabs.net>, 
+	Jonathan Cameron <jic23@kernel.org>, Dave Jiang <dave.jiang@intel.com>, 
+	Alison Schofield <alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, 
+	Dan Williams <djbw@kernel.org>, Ira Weiny <iweiny@kernel.org>, Li Ming <ming.li@zohomail.com>, 
+	Mahesh J Salgaonkar <mahesh@linux.ibm.com>, Oliver O'Halloran <oohall@gmail.com>, 
+	Bjorn Helgaas <bhelgaas@google.com>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, 
+	linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, 
+	linux-cxl@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-pci@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-edac@vger.kernel.org, linux-doc@vger.kernel.org, 
+	Dmitry.Lamerov@arm.com
+Subject: Re: [PATCH v7 10/10] RAS: add firmware-first CPER provider
+Message-ID: <alQTUuwze5ZjGabk@monoceros>
+References: <20260708-topics-ahmtib01-ras_ffh_arm_internal_review-v7-0-8b3a85216cef@arm.com>
+ <20260708-topics-ahmtib01-ras_ffh_arm_internal_review-v7-10-8b3a85216cef@arm.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="o63zw6szpf3k5nqs"
 Content-Disposition: inline
-In-Reply-To: <20260708082818.808041-1-zhangpengjie2@huawei.com>
+In-Reply-To: <20260708-topics-ahmtib01-ras_ffh_arm_internal_review-v7-10-8b3a85216cef@arm.com>
 
-Looks good to me, though I guess you might need an ack from Rafael (?)
 
-Thank you for the patches.
+--o63zw6szpf3k5nqs
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Subject: Re: [PATCH v7 10/10] RAS: add firmware-first CPER provider
+MIME-Version: 1.0
 
----
-BR
-Beata
-On Wed, Jul 08, 2026 at 04:28:16PM +0800, Pengjie Zhang wrote:
-> The legacy CPPC feedback-counter path reads the delivered and reference
-> performance counters separately.
-> 
-> On arm64 systems using AMU-backed CPPC FFH counters, each FFH read is
-> served through a cross-CPU counter read helper. Reading the counters
-> separately therefore widens the sampling window between them and can
-> skew the delivered/reference ratio used by cpuinfo_cur_freq. Under heavy
-> load, the skew is observable as transient values that may exceed the
-> platform maximum, as discussed in [1] and [2].
-> 
-> This series adds a small generic hook for architectures that can obtain
-> both FFH feedback counters in one operation, while preserving the
-> existing per-register read path as the fallback.
-> 
-> Patch 1 adds the generic CPPC hook and uses it from cppc_get_perf_ctrs().
-> Patch 2 implements the hook on arm64 by sampling both AMU counters in a
-> single operation on the target CPU.
-> 
-> For detailed test results and data demonstrating the observable skew and
-> the improvements brought by this series, please refer to [3] and [4].
-> 
-> [1] https://lore.kernel.org/all/20231025093847.3740104-4-zengheng4@huawei.com/
-> [2] https://lore.kernel.org/all/20231212072617.14756-1-lihuisong@huawei.com/
-> [3] https://lore.kernel.org/all/443104e2-ba6e-454e-8469-909f35817a99@huawei.com/
-> [4] https://lore.kernel.org/all/317d33d5-8279-4aa8-84b7-6ae1976636ac@huawei.com/
-> 
-> Tested-by: Sumit Gupta <sumitg@nvidia.com>
-> Reviewed-by: Sumit Gupta <sumitg@nvidia.com>
-> Tested-by: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
-> Reviewed-by: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
-> Signed-off-by: Pengjie Zhang <zhangpengjie2@huawei.com>
-> ---
-> Changes in v2:
-> - Simplified the CPPC generic layer fallback logic to prevent pointless single-read retries.
-> - Added upfront register validation in the arm64 hook to avoid unnecessary IPI overhead.
-> - Explicitly flipped the -EOPNOTSUPP error to -ENODEV in the arm64 hook when AMU is unsupported, cleanly bypassing redundant CPPC generic fallbacks.
-> - Addressed other kernel-doc and naming feedbacks from Beata.
-> - Added Reviewed-by and Tested-by tags from Vanshidhar and Sumit
-> - Link to v1: https://lore.kernel.org/all/20260410094145.4132082-1-zhangpengjie2@huawei.com/
-> 
-> Pengjie Zhang (2):
->   ACPI: CPPC: add paired FFH feedback-counter read hook
->   arm64: topology: read CPPC FFH feedback counters in one operation
-> 
->  arch/arm64/kernel/topology.c | 92 ++++++++++++++++++++++++++++++++----
->  drivers/acpi/cppc_acpi.c     | 50 ++++++++++++++++++--
->  include/acpi/cppc_acpi.h     |  7 +++
->  3 files changed, 136 insertions(+), 13 deletions(-)
-> 
-> -- 
-> 2.33.0
-> 
+Hello Ahmed,
+
+On Wed, Jul 08, 2026 at 02:59:09PM +0100, Ahmed Tiba wrote:
+> +#include <linux/mod_devicetable.h>
+
+Please don't add new users for this header file. Only use those
+<linux/device-id/*.h> that you actually need (if any).
+
+Thanks
+Uwe
+
+--o63zw6szpf3k5nqs
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmpUE2IACgkQj4D7WH0S
+/k5Aagf+IcCM3MbiQFXq44EFdGthF9zwEU47GU8P9/gSXah2GXOz59WKWZqRlJgo
+j4mZ9uRbJqwLqZ7OtPIZj1IyEY9Bmeix2uL7sJuVUBcZ2qRaX3OxW/xi8zEaH0fi
+1DgPWPB5MHOhvc5d5JJAeoqaV3TCXNxNEF8uvyiaGJWFIr7oGvWZVJCPTmjbqVt8
+vzyFYzCac+qNGAzM6F6FhjNsegEgpsSAP2XIIruYv2+iPpHWzMbx+LpknKOq8Rws
+N/Cmj3SBH5ULfApKqkL4QqeHk6RnfAclAjr/EdYS7nE6L5Bdot9DOOil56IDxCps
+pX4u0VGI9OqUoeIeIDXaS9GJsG261A==
+=Eag/
+-----END PGP SIGNATURE-----
+
+--o63zw6szpf3k5nqs--
