@@ -1,129 +1,59 @@
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 879DB37A82D
-	for <acpica-devel@lists.linux.dev>; Sun, 12 Jul 2026 22:21:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BC903C81A9;
+	Mon, 13 Jul 2026 10:13:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783894890; cv=none; b=BfSc0OvvTRbte5OE2Nqgu+Yj6pne86nsy8dieed8Usa60NomCuWJBehjj2dHYWvywrHevzelf5hAEdRDJmQ0m90bqDQN5tbqPLjBbC/CQUkofeC66v3J1YJX5m5WMj1UOelpP8OkWMunczE4SRxMBcmv6FGdCEJ6BHGbuERakzA=
+	t=1783937643; cv=none; b=H127ZcO/xtVhgiBuYmHskOcFqHEE9LstqkwZk1HLlLpldxBvQ4mlcExx5nF2UllB/97ce+JkFBooETxtHjPcegjWJDQT8I82yG/R05fJq1ZFos/aBO1+NK9VdtEWQaFFqoa4IvhrEs/8wD33lSPlPTB+0c+WkN+Y+hr+6Fck06U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783894890; c=relaxed/simple;
-	bh=yXFkHL5kLy0YmcSeIBWJ/pJv7FWST/0rD1sn/vpnnlo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=S+c/fnzh2OhYubO5jDISMNt/almudaFcm+0oIo4octF6lEZS2uL2Z8cU1VJeJkmOnpvdoMdhDZaRsORVOgVKKsWPJimJJ91JUu3V2AvtpXNQGSowzjgF7XOxRiJHMAPoYuLRN1X36YOkdBUY6QVpV7gzXCB3yvbbAAvR26FOseI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b=OhsRHKAV; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b="OhsRHKAV"
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-493f0ae9572so9421055e9.3
-        for <acpica-devel@lists.linux.dev>; Sun, 12 Jul 2026 15:21:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre.com; s=google; t=1783894887; x=1784499687; darn=lists.linux.dev;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=yXFkHL5kLy0YmcSeIBWJ/pJv7FWST/0rD1sn/vpnnlo=;
-        b=OhsRHKAVa07Y8flQfGgnBIQPyqimIPrFxsLTej6NbXlBOE3Ga35ar32H0wR9YRTp2o
-         PlVcLGuipu+F535hT/N87NjYMTaicZYbfzSyz/zIbLdt4/sGDO4jmIP8sWBag5SMcibj
-         99Jsy8JUTuNYAIa77yBHtbQkFT48y8LCuxgZeFlHkiMdpzWY9ItmEvZY/CrTdJNK30O9
-         fVjLMU80nKoMJLJYWONfWxPNVgD7MYRVJC0Qa3jinztlrJkbo0WWN1tdxRXK+5+GD1HA
-         5Qie55aChqlPO8xnllGAeuIajc5kjc5w9OnZVEt3wLZp5X5uKH5DSrIZ0nhEzGwQRKB1
-         q1Mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783894887; x=1784499687;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=yXFkHL5kLy0YmcSeIBWJ/pJv7FWST/0rD1sn/vpnnlo=;
-        b=qMD+EA7Fv0hdVoG/wq3vITzNrhkGtrEpjRexVCbdMriQx+lGqak89Ya3xKljstj/Ae
-         PKDjuIXuZd4rRoWKMLtOOF+pd/E1bmWeKftGk7dmp6L1jJvR9SBWSCid+xg8zerIoa34
-         hPj4g3+fi6WIEhWvlnE4ubUV+m3oQqsjAg86+TK7qeorY3OGBMTE+HNayVDwZJbJmbC7
-         QvTGuJGtvUDzlU4hR8bEfCy2JTs7nvPLq6VaPKqYjXzCTic77cI7MLN3KuRZjNL5CUOS
-         UVqidxy+omK5BqKsqZddXiC28gbaY3NaSWJTj6RANM+LW4oKFaZUWLxpRS67dGBVKGNK
-         c/6A==
-X-Forwarded-Encrypted: i=1; AHgh+RqKlOCc6v+SCbovS/xDS+Jd8V/UiQi519T9eQnFs6bFrnEjsucB88pEhwqOktSc1sMbCPJT2CFgnDbtkFk=@lists.linux.dev
-X-Gm-Message-State: AOJu0YwAQgW45r7Y/kWng2JYLi2MNN3baIVM1Q3fAJeHYJINYSzlWpGS
-	ORbjtYAYsf7N137IWrU+C/BhYvwEFhUIoVNJEaFwmsw8ZB/3E5EVDBvg/5GHSVrJJrg=
-X-Gm-Gg: AfdE7clVBiIlMt6pLv3f2YQHz9w+Gb2k1Kj1k+39BBZqs2FTWcIM87h+I8rUbKN4lE8
-	KUJeH6FtTMqK6XRhcwBNhoJaJVpWQ9TsRWZQDIrqCEJwDxEl+BwvifJNLFNcpkwQNil4x/2Ij05
-	rH4afAHFphHRFyNLR71vC0rW352ebhCM5gps213HEd7wclPxywnRKuNdX+g2FpeZRPueLgDEdCn
-	V1s08RLkYcum3Et7GveQiipve6SQqk3PnyNl+qz9nTly1779nWiFguOMTmW8Io6m/IX+G7SnmKv
-	TVzdnCY8fOYfOxGEp419vtU89dg/Ie2EjI6VdDemVBi94IVIkIGbX32OqMjKJqXIxStfzC97Nqo
-	KxUjAR6xEk/3uOM2WaxBGzG/aQ3cCwhRjlORtN+U/V3LKtHXHJ7ScnB6LJ9Aay/1dnKj0INISo7
-	ihzUtdTdtX+nzvVHE50Q==
-X-Received: by 2002:a05:600c:3543:b0:493:f6c1:2f09 with SMTP id 5b1f17b1804b1-493f87dc753mr64927015e9.6.1783894886966;
-        Sun, 12 Jul 2026 15:21:26 -0700 (PDT)
-Received: from localhost ([2a02:8071:56d1:2de0:1d24:d58d:2b65:c291])
-        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-493eb742a49sm296924145e9.12.2026.07.12.15.21.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Jul 2026 15:21:26 -0700 (PDT)
-Date: Mon, 13 Jul 2026 00:21:24 +0200
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@baylibre.com>
-To: Ahmed Tiba <ahmed.tiba@arm.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>, 
-	Hanjun Guo <guohanjun@huawei.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, 
-	Shuai Xue <xueshuai@linux.alibaba.com>, Len Brown <lenb@kernel.org>, 
-	Saket Dumbre <saket.dumbre@intel.com>, Davidlohr Bueso <dave@stgolabs.net>, 
-	Jonathan Cameron <jic23@kernel.org>, Dave Jiang <dave.jiang@intel.com>, 
-	Alison Schofield <alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, 
-	Dan Williams <djbw@kernel.org>, Ira Weiny <iweiny@kernel.org>, Li Ming <ming.li@zohomail.com>, 
-	Mahesh J Salgaonkar <mahesh@linux.ibm.com>, Oliver O'Halloran <oohall@gmail.com>, 
-	Bjorn Helgaas <bhelgaas@google.com>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, 
-	linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, 
-	linux-cxl@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-pci@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-edac@vger.kernel.org, linux-doc@vger.kernel.org, 
-	Dmitry.Lamerov@arm.com
-Subject: Re: [PATCH v7 10/10] RAS: add firmware-first CPER provider
-Message-ID: <alQTUuwze5ZjGabk@monoceros>
-References: <20260708-topics-ahmtib01-ras_ffh_arm_internal_review-v7-0-8b3a85216cef@arm.com>
- <20260708-topics-ahmtib01-ras_ffh_arm_internal_review-v7-10-8b3a85216cef@arm.com>
+	s=arc-20240116; t=1783937643; c=relaxed/simple;
+	bh=MGnbOfYmkJ6Rn5mwzIMCDHGvnNJ82HKjflE86fPGRvY=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=OxtxfVEJAimFiwmbAYi7DcwA7B3MFGzBtVFlaQ4pK7amRWL7d9sUEr2IGq3bS5YCtApJpuNDXmrlMwBMws6YPl/bZG6d0WGU3/hUKf4VvWzTTs40AVjPiw+j5skZyqZkJwJFpUZXcY2B62yFSvTRlepT5E5dvLpXgLdYm4RF67A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [10.2.5.213])
+	by gateway (Coremail) with SMTP id _____8DxOOtfulRqBgMDAA--.12152S3;
+	Mon, 13 Jul 2026 18:13:51 +0800 (CST)
+Received: from localhost.localdomain (unknown [10.2.5.213])
+	by front1 (Coremail) with SMTP id qMiowJCxvMZbulRqcd0LAA--.37576S2;
+	Mon, 13 Jul 2026 18:13:47 +0800 (CST)
+From: Bibo Mao <maobibo@loongson.cn>
+To: maobibo@loongson.cn
+Cc: acpica-devel@lists.linux.dev,
+	chenhuacai@kernel.org,
+	lenb@kernel.org,
+	linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	lixianglai@loongson.cn,
+	loongarch@lists.linux.dev,
+	rafael@kernel.org,
+	saket.dumbre@intel.com
+Subject: RE: [PATCH 0/8] ACPI: LoongArch: Add IOVT table support
+Date: Mon, 13 Jul 2026 18:06:33 +0800
+Message-Id: <20260713100633.2102708-1-maobibo@loongson.cn>
+X-Mailer: git-send-email 2.39.3
+In-Reply-To: <20260617074829.2396638-1-maobibo@loongson.cn>
+References: <20260617074829.2396638-1-maobibo@loongson.cn>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="o63zw6szpf3k5nqs"
-Content-Disposition: inline
-In-Reply-To: <20260708-topics-ahmtib01-ras_ffh_arm_internal_review-v7-10-8b3a85216cef@arm.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:qMiowJCxvMZbulRqcd0LAA--.37576S2
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
+	ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
+	nUUI43ZEXa7xR_UUUUUUUUU==
 
+slightly ping.
 
---o63zw6szpf3k5nqs
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
-Subject: Re: [PATCH v7 10/10] RAS: add firmware-first CPER provider
-MIME-Version: 1.0
+>I/O Virtualization Table is ACPI table for LoongArch IOMMU devices, it
+>is merged on ACPI Spec 6.6, and it can be located at
+>  https://www.loongson.cn/uploads/images/2024110517404135188.LoongArch-IO-Virtualization-Table-Specification.pdf
+>
+>Here add IOVT table parsing on LoongArch system, it is for use about
+>LoongArch IOMMU driver in future.
 
-Hello Ahmed,
-
-On Wed, Jul 08, 2026 at 02:59:09PM +0100, Ahmed Tiba wrote:
-> +#include <linux/mod_devicetable.h>
-
-Please don't add new users for this header file. Only use those
-<linux/device-id/*.h> that you actually need (if any).
-
-Thanks
-Uwe
-
---o63zw6szpf3k5nqs
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmpUE2IACgkQj4D7WH0S
-/k5Aagf+IcCM3MbiQFXq44EFdGthF9zwEU47GU8P9/gSXah2GXOz59WKWZqRlJgo
-j4mZ9uRbJqwLqZ7OtPIZj1IyEY9Bmeix2uL7sJuVUBcZ2qRaX3OxW/xi8zEaH0fi
-1DgPWPB5MHOhvc5d5JJAeoqaV3TCXNxNEF8uvyiaGJWFIr7oGvWZVJCPTmjbqVt8
-vzyFYzCac+qNGAzM6F6FhjNsegEgpsSAP2XIIruYv2+iPpHWzMbx+LpknKOq8Rws
-N/Cmj3SBH5ULfApKqkL4QqeHk6RnfAclAjr/EdYS7nE6L5Bdot9DOOil56IDxCps
-pX4u0VGI9OqUoeIeIDXaS9GJsG261A==
-=Eag/
------END PGP SIGNATURE-----
-
---o63zw6szpf3k5nqs--
