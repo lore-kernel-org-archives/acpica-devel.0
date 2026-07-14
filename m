@@ -1,86 +1,99 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACCEF42DA59
-	for <acpica-devel@lists.linux.dev>; Mon, 13 Jul 2026 13:40:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DE1F1F942;
+	Tue, 14 Jul 2026 02:23:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783950015; cv=none; b=P5HIPyJFgz3/ddGOfknhGRMnj+psOBnVJXR0eAmEtwqWwNlPPpP8vWhcvIP4laCruGFBqjpo3crAlrf0wlRNVuVCztOA/Mb0mnDuR12htEaqMBInG3P3rE/K+apvKkef+jdb2MY7CmGVnerzig8KzpyCr9I4vxzP7r6O8LmBrLM=
+	t=1783995818; cv=none; b=OKNrt2WVx7eS1SJtnm2hC/Soq2MBKRGsh0w7bhrhi6jms2Z4UsrNppM3DOK6Z4q4YmDqJXrdEkJpKUlIV9xJB6ceFkOuzl9bn3FNa35r53i3s6dY1emnHpjidoJPc5OstHsHK9YXiWUfKUZEQMowN1sRk3KnpbvzXIW8hR1fxXI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783950015; c=relaxed/simple;
-	bh=JlP+rLDA8xHpeTEciojVMWyDJhCdOHnJPAkAVVALz8s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DoCFw50uCd4GeiH28IcKVpylhGTSpI561bMsW53r9+NcSKPGCpfSeg0CLimSQFJ3CJGtFzBfdI2h5ON68wTyd1wWpz26DecYv94tQmsF4sKfZYJ5UhPdBWVJOvdMEAB+JR7oer7+M5U9eDqd1zsMFvip7vVdssUMI7GEWDZKjdM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dyZ2Zjnk; arc=none smtp.client-ip=100.103.45.18
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dyZ2Zjnk"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F5761F000E9
-	for <acpica-devel@lists.linux.dev>; Mon, 13 Jul 2026 13:40:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783950014;
-	bh=nkeMDe+RHMrwa9r8btZmpkxvCSV+QZMyDw6SMzBhwCc=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=dyZ2ZjnkFdwph/EgT3r/Lp9c/B3VxCSiW/bhnk5ASdD7kRps92njq+zGyfiJE3XY/
-	 vRU2gClUvsGntmuvmKUR1jhw61gLMOH+Q8xPBBrbBcSuVVzO+pRQabYUiVKIwD45lw
-	 LU5hFd8WRvrKNeFGLsCUaclzDPSO5hIgd+Dq09E6Gh+12HkEFuqv3+puSl98rS+YCG
-	 GNrbAW5GhvRGmYae1nmhrirpCZGg35llL+GX+8AK2kRTkeNDVnRKm918tI0jESJD1O
-	 ZL10IR4T/4E6txGwsLxNQycsDc3RNfl25kM31rBC1Ttfi7T4B7ur8z6iBEHvVyUnKR
-	 0wN6EG6owBixA==
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-6986578d8c0so4648150a12.1
-        for <acpica-devel@lists.linux.dev>; Mon, 13 Jul 2026 06:40:14 -0700 (PDT)
-X-Gm-Message-State: AOJu0YxoqXQrEBZ/4AfINfu1m06HdTqBgMKFw2y18s9P2FJqVBq04MqG
-	Ia4UnPk8y3U6s4hGE+10MrE23gcwmsuxoJU+x5HzLeQCb1VPFqG9+nxPIGM8spWmM13kBHnl63i
-	eWf9KaiRB3eTL91NVPLWGlWaznR8HveM=
-X-Received: by 2002:a05:6402:4587:b0:698:3b7c:7e4b with SMTP id
- 4fb4d7f45d1cf-69c5f1297e0mr3713512a12.33.1783950013153; Mon, 13 Jul 2026
- 06:40:13 -0700 (PDT)
+	s=arc-20240116; t=1783995818; c=relaxed/simple;
+	bh=H6KTJybBPvk9qFrkBiisz7CKeto40sUhI261xWb94jU=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=CKChlNz+JEc1g8uRyEH6dVl443l8rBSkikKKVa9vgvl6y01EPIKVXUnQIwKlTXpM1/nBSQx6xP0y0EibbkLbj2aLNuRbkKpAc38IxuAHVwqYGMOU52xg18Feo45442WNXwbU2LwdLHroDJB1E7K9CKyRICIvS1wO7/zuL/k/zp0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [10.20.42.62])
+	by gateway (Coremail) with SMTP id _____8DxNOqmnVVqtEQDAA--.11896S3;
+	Tue, 14 Jul 2026 10:23:34 +0800 (CST)
+Received: from [10.20.42.62] (unknown [10.20.42.62])
+	by front1 (Coremail) with SMTP id qMiowJDxPcWlnVVqQlYMAA--.57718S2;
+	Tue, 14 Jul 2026 10:23:33 +0800 (CST)
+Subject: Re: [PATCH 0/8] ACPI: LoongArch: Add IOVT table support
+To: Huacai Chen <chenhuacai@kernel.org>
+Cc: acpica-devel@lists.linux.dev, lenb@kernel.org,
+ linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+ lixianglai@loongson.cn, loongarch@lists.linux.dev, rafael@kernel.org,
+ saket.dumbre@intel.com
+References: <20260617074829.2396638-1-maobibo@loongson.cn>
+ <20260713100633.2102708-1-maobibo@loongson.cn>
+ <CAAhV-H5FGWPnJraY9aYLrLKa5B+eo74eScTFzUeGGXT6f=4FZA@mail.gmail.com>
+From: Bibo Mao <maobibo@loongson.cn>
+Message-ID: <9fa686b4-cc51-3abe-1922-b70769774a98@loongson.cn>
+Date: Tue, 14 Jul 2026 10:23:26 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20260617074829.2396638-1-maobibo@loongson.cn> <20260713100633.2102708-1-maobibo@loongson.cn>
-In-Reply-To: <20260713100633.2102708-1-maobibo@loongson.cn>
-From: Huacai Chen <chenhuacai@kernel.org>
-Date: Mon, 13 Jul 2026 21:40:02 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H5FGWPnJraY9aYLrLKa5B+eo74eScTFzUeGGXT6f=4FZA@mail.gmail.com>
-X-Gm-Features: AUfX_mzMLRFBJvMA4bDQCkBYc-o3ArKsoAgyA4Fx5P5p3gqMqtb6ZmwrgozCfOo
-Message-ID: <CAAhV-H5FGWPnJraY9aYLrLKa5B+eo74eScTFzUeGGXT6f=4FZA@mail.gmail.com>
-Subject: Re: [PATCH 0/8] ACPI: LoongArch: Add IOVT table support
-To: Bibo Mao <maobibo@loongson.cn>
-Cc: acpica-devel@lists.linux.dev, lenb@kernel.org, linux-acpi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, lixianglai@loongson.cn, 
-	loongarch@lists.linux.dev, rafael@kernel.org, saket.dumbre@intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-Hi, Bibo,
-
-On Mon, Jul 13, 2026 at 6:14=E2=80=AFPM Bibo Mao <maobibo@loongson.cn> wrot=
-e:
->
-> slightly ping.
-I think the series can be re-organized as 3 patches:
-
-ACPI: LoongArch: Add acpi_arch_[late]_init()
-includes Patch-1/4 in this series roughly.
-
-ACPI: LoongArch: Add IOVT device entry table scanning
-includes Patch-3/5/6/7 in this series roughly.
-
-ACPI: LoongArch: Add ACPI_IOVT config options
-includes Patch-2/8 in this series roughly.
+In-Reply-To: <CAAhV-H5FGWPnJraY9aYLrLKa5B+eo74eScTFzUeGGXT6f=4FZA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:qMiowJDxPcWlnVVqQlYMAA--.57718S2
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj9xXoWrur1UXw45KF4rJrWftFy3Jrc_yoWDWFg_uF
+	92y3WDury8Kr17tanayFs5AasxKw18XF4kKrykCrn2v34fJrZY9FsxuF15W3yS9ryUAFs5
+	XrsFqr4UCrn8WosvyTuYvTs0mTUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUj1kv1TuYvT
+	s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
+	cSsGvfJTRUUUbxxYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
+	vaj40_Wr0E3s1l1IIY67AEw4v_JrI_Jryl8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+	WUJVW8JwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267AKxVW8
+	JVW8Jr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27wAqx4
+	xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v2
+	6r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67
+	vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAF
+	wI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc4
+	0Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AK
+	xVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr
+	1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxU25EfUUUU
+	U
 
 
-Huacai
 
->
-> >I/O Virtualization Table is ACPI table for LoongArch IOMMU devices, it
-> >is merged on ACPI Spec 6.6, and it can be located at
-> >  https://www.loongson.cn/uploads/images/2024110517404135188.LoongArch-I=
-O-Virtualization-Table-Specification.pdf
-> >
-> >Here add IOVT table parsing on LoongArch system, it is for use about
-> >LoongArch IOMMU driver in future.
->
+On 2026/7/13 下午9:40, Huacai Chen wrote:
+> Hi, Bibo,
+> 
+> On Mon, Jul 13, 2026 at 6:14 PM Bibo Mao <maobibo@loongson.cn> wrote:
+>>
+>> slightly ping.
+> I think the series can be re-organized as 3 patches:
+> 
+> ACPI: LoongArch: Add acpi_arch_[late]_init()
+> includes Patch-1/4 in this series roughly.
+> 
+> ACPI: LoongArch: Add IOVT device entry table scanning
+> includes Patch-3/5/6/7 in this series roughly.
+> 
+> ACPI: LoongArch: Add ACPI_IOVT config options
+> includes Patch-2/8 in this series roughly.
+Waiting the response from others, will do this if there is no disagreement.
+
+Regards
+Bibo Mao
+> 
+> 
+> Huacai
+> 
+>>
+>>> I/O Virtualization Table is ACPI table for LoongArch IOMMU devices, it
+>>> is merged on ACPI Spec 6.6, and it can be located at
+>>>   https://www.loongson.cn/uploads/images/2024110517404135188.LoongArch-IO-Virtualization-Table-Specification.pdf
+>>>
+>>> Here add IOVT table parsing on LoongArch system, it is for use about
+>>> LoongArch IOMMU driver in future.
+>>
+
